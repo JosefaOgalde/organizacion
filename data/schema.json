@@ -1,27 +1,41 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "OrganizacionData",
-  "description": "Estructura de datos para el organizador diario",
   "type": "object",
   "properties": {
     "clientes": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "nombre", "tipo", "fechaLimite", "entregables", "prioridad"],
+        "required": ["id", "nombre", "roles"],
         "properties": {
           "id": { "type": "string" },
           "nombre": { "type": "string" },
           "tipo": { "enum": ["freelance", "fulltime", "personal"] },
           "color": { "type": "string" },
-          "descripcion": { "type": "string" },
-          "fechaInicio": { "type": "string", "format": "date" },
-          "fechaLimite": { "type": "string", "format": "date" },
-          "entregables": { "type": "string" },
-          "horasSemanales": { "type": ["integer", "null"] },
-          "prioridad": { "enum": ["alta", "media", "baja"] },
-          "notas": { "type": "string" },
-          "creado": { "type": "string", "format": "date" }
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "nombre", "funciones", "tareasAlMes", "plazosEntregables"],
+              "properties": {
+                "id": { "type": "string" },
+                "nombre": { "type": "string" },
+                "funciones": { "type": "string" },
+                "tareasAlMes": { "type": "string" },
+                "plazosEntregables": { "type": "string" }
+              }
+            }
+          },
+          "creado": { "type": "string", "format": "date" },
+          "actualizado": { "type": "string", "format": "date" },
+          "ultimoPlan": {
+            "type": "object",
+            "properties": {
+              "fecha": { "type": "string" },
+              "tareasGeneradas": { "type": "integer" }
+            }
+          }
         }
       }
     },
@@ -29,28 +43,95 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "titulo", "clienteId", "fecha", "prioridad"],
+        "required": ["id", "titulo", "clienteId", "fecha"],
         "properties": {
           "id": { "type": "string" },
           "titulo": { "type": "string" },
           "clienteId": { "type": "string" },
+          "rolId": { "type": "string" },
+          "rolNombre": { "type": "string" },
           "fecha": { "type": "string", "format": "date" },
-          "horaInicio": { "type": "string" },
-          "horaFin": { "type": "string" },
-          "descripcion": { "type": "string" },
           "prioridad": { "enum": ["alta", "media", "baja"] },
-          "estimadoMin": { "type": ["integer", "null"] },
+          "tipoTarea": { "enum": ["trabajo", "entregable"] },
+          "subtareas": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "titulo": { "type": "string" },
+                "rolId": { "type": "string" },
+                "completada": { "type": "boolean" }
+              }
+            }
+          },
           "completada": { "type": "boolean" },
           "pendiente": { "type": "boolean" },
-          "fechaOriginal": { "type": "string", "format": "date" },
-          "creado": { "type": "string", "format": "date" }
+          "fechaOriginal": { "type": "string" }
         }
       }
     },
-    "ultimaVisita": {
-      "type": ["string", "null"],
-      "format": "date",
-      "description": "Última fecha en que se abrió la app; usada para mover tareas vencidas a pendientes"
+    "ultimaVisita": { "type": ["string", "null"] },
+    "citasSalud": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "fecha", "hora", "especialidad"],
+        "properties": {
+          "id": { "type": "string" },
+          "fecha": { "type": "string", "format": "date" },
+          "hora": { "type": "string" },
+          "especialidad": { "type": "string" },
+          "notas": { "type": "string" },
+          "alertaId": { "type": "string" },
+          "creado": { "type": "string" },
+          "actualizado": { "type": "string" }
+        }
+      }
+    },
+    "inputAgente": {
+      "type": "object",
+      "properties": {
+        "textoLibre": { "type": "string" },
+        "actualizado": { "type": ["string", "null"] }
+      }
+    },
+    "alertas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "titulo": { "type": "string" },
+          "tipo": { "enum": ["entregable", "diaria", "pendientes", "semanal", "personalizada", "salud"] },
+          "clienteId": { "type": ["string", "null"] },
+          "citaSaludId": { "type": ["string", "null"] },
+          "hora": { "type": ["string", "null"] },
+          "diasAntes": { "type": ["integer", "null"] },
+          "fecha": { "type": ["string", "null"] },
+          "mensaje": { "type": "string" },
+          "instruccionesAgente": { "type": "string" },
+          "prioridad": { "enum": ["alta", "media", "baja"] },
+          "activa": { "type": "boolean" },
+          "creado": { "type": "string" },
+          "actualizado": { "type": "string" }
+        }
+      }
+    },
+    "archivos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "nombre": { "type": "string" },
+          "tipo": { "type": "string" },
+          "tamano": { "type": "number" },
+          "clienteId": { "type": ["string", "null"] },
+          "tareaId": { "type": ["string", "null"] },
+          "creado": { "type": "string" }
+        }
+      }
     }
   }
 }

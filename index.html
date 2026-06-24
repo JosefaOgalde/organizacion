@@ -25,13 +25,12 @@
       <button type="button" class="tab" data-view="pendientes">Pendientes</button>
       <button type="button" class="tab" data-view="clientes">Clientes</button>
       <button type="button" class="tab" data-view="salud"><span class="tab-swatch tab-swatch--salud"></span>Salud</button>
-      <button type="button" class="tab" data-view="nueva-tarea">+ Nueva tarea</button>
+      <button type="button" class="tab" data-view="nueva">+ Nueva</button>
       <button type="button" class="tab tab--respaldo" id="btn-descargar-respaldo" title="Descargar JSON con tareas y manuales de marca">↓ Respaldo</button>
     </nav>
 
     <main>
       <section id="view-mes" class="view view--active">
-        <div id="alertas-hoy-mes" class="alertas-hoy"></div>
         <div class="week-nav">
           <button type="button" id="btn-mes-anterior" class="btn btn--ghost">← Mes anterior</button>
           <span id="rango-mes" class="week-nav__range"></span>
@@ -46,7 +45,6 @@
         <nav class="breadcrumb" id="breadcrumb-semana">
           <button type="button" class="breadcrumb__link" data-nav="mes">← Mes</button>
         </nav>
-        <div id="alertas-hoy" class="alertas-hoy"></div>
         <div class="week-nav">
           <button type="button" id="btn-semana-anterior" class="btn btn--ghost">← Semana anterior</button>
           <span id="rango-semana" class="week-nav__range"></span>
@@ -71,7 +69,7 @@
         <div class="panel panel--dia">
           <h2 id="dia-titulo">Día</h2>
           <p id="dia-subtitulo" class="panel__desc"></p>
-          <p class="vista-hint">Clic en una tarea o en <strong>Realizar tarea</strong> → skill del cliente, manual de marca y prompt para Cursor</p>
+          <p class="vista-hint">Clic en una tarea o en <strong>Realizar tarea</strong> → agente del cliente y descarga de contexto para resolver</p>
           <div id="dia-contenido" class="dia-detalle"></div>
         </div>
         <div class="panel panel--semana-mini">
@@ -89,7 +87,7 @@
           <span class="breadcrumb__sep">›</span>
           <button type="button" id="btn-volver-dia" class="breadcrumb__link">Día</button>
         </nav>
-        <p class="vista-hint">Skill por cliente · Carga el <strong>manual de marca</strong> en diseño · Al realizar tarea escribe tu prompt y cópialo a Cursor</p>
+        <p class="vista-hint">Cada tarea tiene URL única: <code>index.html#/cliente/tarea/01</code> · Pide el entregable y <strong>se arma en el chat</strong></p>
         <div class="tarea-layout">
           <div class="panel panel--tarea-detalle">
             <div id="tarea-detalle-contenido"></div>
@@ -103,6 +101,7 @@
       <section id="view-pendientes" class="view">
         <div class="panel">
           <h2>Tareas pendientes</h2>
+          <p class="vista-hint">Acceso directo a tareas pospuestas. Editar o realizar aquí modifica la <strong>misma tarea</strong> del calendario — no se duplica.</p>
           <div id="lista-pendientes" class="task-list"></div>
         </div>
       </section>
@@ -110,38 +109,8 @@
       <section id="view-clientes" class="view">
         <div class="panel">
           <h2>Mis clientes</h2>
-          <p class="vista-hint">Clic en un cliente para cargar <strong>metas</strong>, <strong>contexto</strong> y <strong>manual de marca</strong>. Esa info se usa al generar el prompt para Cursor.</p>
+          <p class="vista-hint">Clic en un cliente: se abre su ficha. Si falta información, te la pedimos; si ya hay datos, puedes sumar más.</p>
           <div id="lista-clientes" class="clientes-grid"></div>
-        </div>
-        <div class="panel panel--form">
-          <h2>Reuniones con clientes</h2>
-          <p class="vista-hint">Las reuniones bloquean el horario: las tareas que choquen se reubican solas al recargar.</p>
-          <div id="lista-reuniones" class="reuniones-lista"></div>
-          <form id="form-reunion" class="form">
-            <div class="form__row form__row--2">
-              <div>
-                <label for="reunion-cliente">Cliente *</label>
-                <select id="reunion-cliente" required><option value="">Elegir cliente</option></select>
-              </div>
-              <div>
-                <label for="reunion-fecha">Fecha *</label>
-                <input type="date" id="reunion-fecha" required>
-              </div>
-            </div>
-            <div class="form__row form__row--2">
-              <div><label for="reunion-inicio">Inicio *</label><input type="time" id="reunion-inicio" required></div>
-              <div><label for="reunion-fin">Fin *</label><input type="time" id="reunion-fin" required></div>
-            </div>
-            <div class="form__row">
-              <label for="reunion-titulo">Título</label>
-              <input type="text" id="reunion-titulo" placeholder="Ej. Reunión seguimiento">
-            </div>
-            <div class="form__row">
-              <label for="reunion-notas">Notas</label>
-              <textarea id="reunion-notas" rows="2"></textarea>
-            </div>
-            <button type="submit" class="btn btn--primary">Agendar reunión</button>
-          </form>
         </div>
       </section>
 
@@ -170,8 +139,13 @@
         </div>
       </section>
 
-      <section id="view-nueva-tarea" class="view">
-        <div class="panel panel--form">
+      <section id="view-nueva" class="view">
+        <div class="nueva-switch" role="tablist" aria-label="Tipo de registro">
+          <button type="button" class="nueva-switch__btn nueva-switch__btn--active" data-nueva-tipo="tarea" role="tab" aria-selected="true">Nueva tarea</button>
+          <button type="button" class="nueva-switch__btn" data-nueva-tipo="reunion" role="tab" aria-selected="false">Nueva reunión</button>
+        </div>
+
+        <div id="nueva-panel-tarea" class="panel panel--form nueva-panel" role="tabpanel">
           <h2>Crear tarea</h2>
           <p class="vista-hint">Para encargos esporádicos (ej. Desafío Latam), elige cliente, fecha y horario según cada proyecto.</p>
           <form id="form-tarea" class="form">
@@ -200,45 +174,43 @@
             <button type="submit" class="btn btn--primary">Crear tarea</button>
           </form>
         </div>
+
+        <div id="nueva-panel-reunion" class="panel panel--form nueva-panel" role="tabpanel" hidden>
+          <h2>Agendar reunión</h2>
+          <p class="vista-hint">Las reuniones bloquean el horario: las tareas que choquen se reubican solas al recargar.</p>
+          <form id="form-reunion" class="form">
+            <div class="form__row form__row--2">
+              <div>
+                <label for="reunion-cliente">Cliente *</label>
+                <select id="reunion-cliente" required><option value="">Elegir cliente</option></select>
+              </div>
+              <div>
+                <label for="reunion-fecha">Fecha *</label>
+                <input type="date" id="reunion-fecha" required>
+              </div>
+            </div>
+            <div class="form__row form__row--2">
+              <div><label for="reunion-inicio">Inicio *</label><input type="time" id="reunion-inicio" required></div>
+              <div><label for="reunion-fin">Fin *</label><input type="time" id="reunion-fin" required></div>
+            </div>
+            <div class="form__row">
+              <label for="reunion-titulo">Título</label>
+              <input type="text" id="reunion-titulo" placeholder="Ej. Reunión seguimiento">
+            </div>
+            <div class="form__row">
+              <label for="reunion-notas">Notas</label>
+              <textarea id="reunion-notas" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary">Agendar reunión</button>
+          </form>
+          <h3 class="nueva-subtitulo">Reuniones agendadas</h3>
+          <div id="lista-reuniones" class="reuniones-lista"></div>
+        </div>
       </section>
     </main>
   </div>
 
-  <div id="modal-cliente-perfil" class="modal" hidden aria-hidden="true">
-    <div class="modal__backdrop" data-cerrar-perfil></div>
-    <div class="modal__panel panel panel--form modal__panel--perfil" role="dialog" aria-labelledby="modal-perfil-titulo">
-      <div id="perfil-cliente-header" class="perfil-cliente__header"></div>
-      <h2 id="modal-perfil-titulo">Perfil del cliente</h2>
-      <p class="vista-hint">Metas, contexto y manual se incluyen automáticamente al copiar el prompt en <strong>Realizar tarea</strong>.</p>
-      <form id="form-perfil-cliente" class="form">
-        <input type="hidden" id="perfil-cliente-id">
-        <div class="form__row">
-          <label for="perfil-metas">Metas a lograr</label>
-          <textarea id="perfil-metas" rows="3" placeholder="Objetivos del mes, KPIs, entregables clave…"></textarea>
-        </div>
-        <div class="form__row">
-          <label for="perfil-contexto">Contexto adicional para prompts</label>
-          <textarea id="perfil-contexto" rows="3" placeholder="Tono, audiencia, restricciones, links útiles, preferencias…"></textarea>
-        </div>
-        <div class="form__row">
-          <label for="perfil-manual">Manual de marca</label>
-          <p class="vista-hint vista-hint--compact">Directrices visuales, colores, tipografías, logo, ejemplos… También puedes subir .txt / .md.</p>
-          <textarea id="perfil-manual" class="manual-marca-texto" rows="6" placeholder="Colores, tipografías, logo, tono…"></textarea>
-          <div class="manual-marca-archivos">
-            <label class="btn btn--small btn--ghost manual-marca-upload">
-              + Archivo de texto
-              <input type="file" accept=".txt,.md,.csv,text/plain,text/markdown" id="perfil-manual-file" hidden>
-            </label>
-            <ul class="manual-archivo-lista" id="perfil-manual-archivos-lista"></ul>
-          </div>
-        </div>
-        <div class="modal__acciones">
-          <button type="button" class="btn btn--ghost" data-cerrar-perfil>Cancelar</button>
-          <button type="submit" class="btn btn--primary">Guardar perfil</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <div id="modal-cliente-perfil" class="modal modal--ficha" hidden aria-hidden="true"></div>
 
   <div id="modal-editar-tarea" class="modal" hidden aria-hidden="true">
     <div class="modal__backdrop" data-cerrar-editar></div>
@@ -280,6 +252,12 @@
         </div>
         <div class="form__row form__row--check">
           <label class="form__check">
+            <input type="checkbox" id="edit-tarea-pendiente">
+            En lista de pendientes (oculta del calendario)
+          </label>
+        </div>
+        <div class="form__row form__row--check">
+          <label class="form__check">
             <input type="checkbox" id="edit-tarea-completada">
             Marcar como hecha
           </label>
@@ -291,6 +269,22 @@
       </form>
     </div>
   </div>
+  <div id="modal-skill-recomendacion" class="modal" hidden aria-hidden="true">
+    <div class="modal__backdrop" data-cerrar-skill-rec></div>
+    <div class="modal__panel modal__panel--skill-rec">
+      <h3 class="modal__titulo">Recomendación para ahorrar tiempo</h3>
+      <div id="modal-skill-recomendacion-body" class="skill-rec-body"></div>
+      <div class="modal__acciones">
+        <button type="button" class="btn btn--primary" data-cerrar-skill-rec>Entendido, continuar</button>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="data/jm-backup-contenido.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="app.js"></script>
+  <script src="ficha-extractores.js"></script>
+  <script src="ficha-cliente.js"></script>
 </body>
 </html>

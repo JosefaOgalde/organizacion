@@ -46,6 +46,26 @@ organizacion/
 └── README.md
 ```
 
+## Respaldo (importante)
+
+Los datos del día a día (tareas completadas, manuales de marca pegados en la app) viven en **localStorage del navegador**, no en git automáticamente.
+
+Antes de cerrar el navegador o cambiar de PC:
+
+```js
+descargarRespaldo()   // Descarga JSON con todo
+// o
+exportarDatos()       // Ver en consola y copiar
+```
+
+Guarda el archivo en `data/` y haz commit con **SUBIR.bat**.
+
+Para restaurar:
+
+```js
+importarDatos(/* objeto JSON */)
+```
+
 ## Integración con Cursor
 
 En la consola del navegador:

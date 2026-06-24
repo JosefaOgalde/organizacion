@@ -1,0 +1,25 @@
+Manual de marca — Joyas Mercury
+Fuente: Manual de marca - Joyas Mercury.pdf (17 páginas)
+
+## Propósito
+Este manual reúne las herramientas básicas para el correcto uso y aplicación gráfica de la marca en todas sus posibles expresiones. Pensado para quienes interpretan, articulan, comunican y aplican la marca. El uso consistente refuerza la identidad de Joyas Mercury.
+
+## Logotipo
+- Marca: JOYAS MERCURY
+- Margen obligatorio: la distancia entre el logo y el siguiente elemento debe ser la cuarta parte (¼) del tamaño del logo.
+
+## Isotipo
+- Isotipo: letra «M»
+- Mismo margen obligatorio que el logotipo (¼ del tamaño).
+
+## Paleta de colores
+- #ECC54A — dorado / amarillo
+- #A97E23 — dorado oscuro
+- #C88F9C — rosa
+- #D8BFB1 — beige / nude
+- #C4C4C4 — gris
+
+## Aplicación web (Fase 2 WooCommerce)
+- Líneas de producto en filtros: Esencial · Gold · Deluxe
+- Usar la paleta en chips de filtro, destacados, botones y componentes del rediseño joyasmercury.cl
+- Respetar márgenes del logo e isotipo en headers, favicon y piezas gráficas
