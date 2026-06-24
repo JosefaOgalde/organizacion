@@ -1,0 +1,6 @@
+.DS_Store
+Thumbs.db
+*.log
+git-log.txt
+GIT_RESULT.txt
+shell-test.txt
