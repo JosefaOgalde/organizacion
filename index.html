@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Organización — Trabajo Diario</title>
+  <title>Organización</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -20,183 +20,277 @@
     </header>
 
     <nav class="tabs">
-      <button class="tab tab--active" data-view="semana">Semana actual</button>
-      <button class="tab" data-view="pendientes">Pendientes</button>
-      <button class="tab" data-view="clientes">Clientes</button>
-      <button class="tab" data-view="nueva-tarea">+ Nueva tarea</button>
+      <button type="button" class="tab tab--active" data-view="mes">Mes actual</button>
+      <button type="button" class="tab" data-view="semana">Semana</button>
+      <button type="button" class="tab" data-view="pendientes">Pendientes</button>
+      <button type="button" class="tab" data-view="clientes">Clientes</button>
+      <button type="button" class="tab" data-view="salud"><span class="tab-swatch tab-swatch--salud"></span>Salud</button>
+      <button type="button" class="tab" data-view="nueva-tarea">+ Nueva tarea</button>
+      <button type="button" class="tab tab--respaldo" id="btn-descargar-respaldo" title="Descargar JSON con tareas y manuales de marca">↓ Respaldo</button>
     </nav>
 
-    <!-- Vista: Semana actual -->
-    <section id="view-semana" class="view view--active">
-      <div class="week-nav">
-        <button id="btn-semana-anterior" class="btn btn--ghost">← Semana anterior</button>
-        <span id="rango-semana" class="week-nav__range"></span>
-        <button id="btn-semana-siguiente" class="btn btn--ghost">Semana siguiente →</button>
-        <button id="btn-semana-hoy" class="btn btn--accent">Ir a hoy</button>
-      </div>
-      <div id="calendario-semana" class="calendario"></div>
-    </section>
+    <main>
+      <section id="view-mes" class="view view--active">
+        <div id="alertas-hoy-mes" class="alertas-hoy"></div>
+        <div class="week-nav">
+          <button type="button" id="btn-mes-anterior" class="btn btn--ghost">← Mes anterior</button>
+          <span id="rango-mes" class="week-nav__range"></span>
+          <button type="button" id="btn-mes-siguiente" class="btn btn--ghost">Mes siguiente →</button>
+          <button type="button" id="btn-mes-hoy" class="btn btn--accent">Ir a hoy</button>
+        </div>
+        <p class="vista-hint">Clic en un día → ver semana · Clic en día de la semana → ver detalle</p>
+        <div id="calendario-mes" class="calendario-mes" aria-label="Calendario mensual"></div>
+      </section>
 
-    <!-- Vista: Pendientes -->
-    <section id="view-pendientes" class="view">
-      <div class="panel">
-        <h2>Tareas pendientes</h2>
-        <p class="panel__desc">Tareas no completadas de días anteriores. Se mueven aquí automáticamente cada día.</p>
-        <div id="lista-pendientes" class="task-list"></div>
-      </div>
-    </section>
+      <section id="view-semana" class="view">
+        <nav class="breadcrumb" id="breadcrumb-semana">
+          <button type="button" class="breadcrumb__link" data-nav="mes">← Mes</button>
+        </nav>
+        <div id="alertas-hoy" class="alertas-hoy"></div>
+        <div class="week-nav">
+          <button type="button" id="btn-semana-anterior" class="btn btn--ghost">← Semana anterior</button>
+          <span id="rango-semana" class="week-nav__range"></span>
+          <button type="button" id="btn-semana-siguiente" class="btn btn--ghost">Semana siguiente →</button>
+          <button type="button" id="btn-semana-hoy" class="btn btn--accent">Ir a hoy</button>
+        </div>
+        <p class="vista-hint">Clic en el encabezado de un día para ver sus tareas en detalle</p>
+        <div id="calendario-semana" class="calendario"></div>
+      </section>
 
-    <!-- Vista: Clientes -->
-    <section id="view-clientes" class="view">
-      <div class="panel">
-        <h2>Mis clientes y proyectos</h2>
-        <div id="lista-clientes" class="clientes-grid"></div>
-      </div>
+      <section id="view-dia" class="view">
+        <nav class="breadcrumb" id="breadcrumb-dia">
+          <button type="button" class="breadcrumb__link" data-nav="mes">Mes</button>
+          <span class="breadcrumb__sep">›</span>
+          <button type="button" class="breadcrumb__link" data-nav="semana">Semana</button>
+        </nav>
+        <div class="week-nav dia-nav">
+          <button type="button" id="btn-dia-anterior" class="btn btn--ghost">← Día anterior</button>
+          <button type="button" id="btn-dia-siguiente" class="btn btn--ghost">Día siguiente →</button>
+          <button type="button" id="btn-dia-hoy" class="btn btn--accent">Ir a hoy</button>
+        </div>
+        <div class="panel panel--dia">
+          <h2 id="dia-titulo">Día</h2>
+          <p id="dia-subtitulo" class="panel__desc"></p>
+          <p class="vista-hint">Clic en una tarea o en <strong>Realizar tarea</strong> → skill del cliente, manual de marca y prompt para Cursor</p>
+          <div id="dia-contenido" class="dia-detalle"></div>
+        </div>
+        <div class="panel panel--semana-mini">
+          <p id="rango-semana-mini" class="semana-mini__rango"></p>
+          <div id="calendario-semana-mini" class="calendario calendario--mini" aria-label="Semana en miniatura"></div>
+          <p class="vista-hint vista-hint--mini">Clic en un día de la semana para ver su detalle</p>
+        </div>
+      </section>
 
-      <div class="panel panel--form">
-        <h2>Registrar nuevo cliente / proyecto</h2>
-        <p class="panel__desc">Completa esta información para que pueda ayudarte a crear tareas diarias y cumplir fechas.</p>
-        <form id="form-cliente" class="form">
-          <div class="form__row">
-            <label for="cliente-nombre">Nombre del cliente o proyecto *</label>
-            <input type="text" id="cliente-nombre" required placeholder="Ej: Empresa ABC, Proyecto web X">
+      <section id="view-tarea" class="view">
+        <nav class="breadcrumb" id="breadcrumb-tarea">
+          <button type="button" class="breadcrumb__link" data-nav="mes">Mes</button>
+          <span class="breadcrumb__sep">›</span>
+          <button type="button" class="breadcrumb__link" data-nav="semana">Semana</button>
+          <span class="breadcrumb__sep">›</span>
+          <button type="button" id="btn-volver-dia" class="breadcrumb__link">Día</button>
+        </nav>
+        <p class="vista-hint">Skill por cliente · Carga el <strong>manual de marca</strong> en diseño · Al realizar tarea escribe tu prompt y cópialo a Cursor</p>
+        <div class="tarea-layout">
+          <div class="panel panel--tarea-detalle">
+            <div id="tarea-detalle-contenido"></div>
           </div>
-          <div class="form__row form__row--2">
-            <div>
-              <label for="cliente-tipo">Tipo *</label>
-              <select id="cliente-tipo" required>
-                <option value="">Seleccionar...</option>
-                <option value="freelance">Freelance</option>
-                <option value="fulltime">Full-time</option>
-                <option value="personal">Personal</option>
-              </select>
-            </div>
-            <div>
-              <label for="cliente-color">Color identificador</label>
-              <select id="cliente-color">
-                <option value="celeste">Celeste</option>
-                <option value="blanco">Blanco</option>
-                <option value="gris">Gris claro</option>
-              </select>
-            </div>
+          <div class="panel panel--agente">
+            <div id="agente-contenido"></div>
           </div>
-          <div class="form__row">
-            <label for="cliente-descripcion">Descripción del trabajo</label>
-            <textarea id="cliente-descripcion" rows="2" placeholder="¿Qué haces para este cliente?"></textarea>
-          </div>
-          <div class="form__row form__row--2">
-            <div>
-              <label for="cliente-fecha-inicio">Fecha de inicio</label>
-              <input type="date" id="cliente-fecha-inicio">
-            </div>
-            <div>
-              <label for="cliente-fecha-limite">Fecha límite / entrega *</label>
-              <input type="date" id="cliente-fecha-limite" required>
-            </div>
-          </div>
-          <div class="form__row">
-            <label for="cliente-entregables">Entregables principales *</label>
-            <textarea id="cliente-entregables" rows="3" required placeholder="Lista los entregables: diseño, desarrollo, reuniones, etc."></textarea>
-          </div>
-          <div class="form__row form__row--2">
-            <div>
-              <label for="cliente-horas">Horas disponibles por semana</label>
-              <input type="number" id="cliente-horas" min="1" max="80" placeholder="Ej: 10">
-            </div>
-            <div>
-              <label for="cliente-prioridad">Prioridad</label>
-              <select id="cliente-prioridad">
-                <option value="alta">Alta</option>
-                <option value="media" selected>Media</option>
-                <option value="baja">Baja</option>
-              </select>
-            </div>
-          </div>
-          <div class="form__row">
-            <label for="cliente-notas">Notas adicionales</label>
-            <textarea id="cliente-notas" rows="2" placeholder="Reuniones fijas, contacto, restricciones..."></textarea>
-          </div>
-          <button type="submit" class="btn btn--primary">Guardar cliente</button>
-        </form>
-      </div>
-    </section>
+        </div>
+      </section>
 
-    <!-- Vista: Nueva tarea -->
-    <section id="view-nueva-tarea" class="view">
-      <div class="panel panel--form">
-        <h2>Crear tarea</h2>
-        <form id="form-tarea" class="form">
-          <div class="form__row">
-            <label for="tarea-titulo">Título *</label>
-            <input type="text" id="tarea-titulo" required placeholder="Ej: Revisar mockups, Llamada con cliente">
-          </div>
-          <div class="form__row form__row--2">
-            <div>
-              <label for="tarea-cliente">Cliente / categoría *</label>
-              <select id="tarea-cliente" required>
-                <option value="">Seleccionar...</option>
-              </select>
-            </div>
-            <div>
-              <label for="tarea-fecha">Fecha *</label>
-              <input type="date" id="tarea-fecha" required>
-            </div>
-          </div>
-          <div class="form__row form__row--2">
-            <div>
-              <label for="tarea-hora-inicio">Hora inicio</label>
-              <input type="time" id="tarea-hora-inicio">
-            </div>
-            <div>
-              <label for="tarea-hora-fin">Hora fin</label>
-              <input type="time" id="tarea-hora-fin">
-            </div>
-          </div>
-          <div class="form__row">
-            <label for="tarea-descripcion">Descripción</label>
-            <textarea id="tarea-descripcion" rows="2"></textarea>
-          </div>
-          <div class="form__row form__row--2">
-            <div>
-              <label for="tarea-prioridad">Prioridad</label>
-              <select id="tarea-prioridad">
-                <option value="alta">Alta</option>
-                <option value="media" selected>Media</option>
-                <option value="baja">Baja</option>
-              </select>
-            </div>
-            <div>
-              <label for="tarea-estimado">Tiempo estimado (min)</label>
-              <input type="number" id="tarea-estimado" min="15" step="15" placeholder="60">
-            </div>
-          </div>
-          <button type="submit" class="btn btn--primary">Crear tarea</button>
-        </form>
-      </div>
-    </section>
+      <section id="view-pendientes" class="view">
+        <div class="panel">
+          <h2>Tareas pendientes</h2>
+          <div id="lista-pendientes" class="task-list"></div>
+        </div>
+      </section>
 
-    <!-- Modal info para el agente -->
-    <div id="modal-info" class="modal">
-      <div class="modal__content">
-        <button class="modal__close" id="cerrar-modal">&times;</button>
-        <h2>Información que necesito por cliente</h2>
-        <p>Para ayudarte a planificar tu semana, necesito estos datos de cada cliente o proyecto:</p>
-        <ol class="info-list">
-          <li><strong>Nombre</strong> del cliente o proyecto</li>
-          <li><strong>Tipo:</strong> freelance, full-time o personal</li>
-          <li><strong>Descripción</strong> breve del trabajo</li>
-          <li><strong>Fecha límite</strong> o entrega final</li>
-          <li><strong>Entregables</strong> principales (qué hay que entregar)</li>
-          <li><strong>Horas semanales</strong> que puedes dedicarle</li>
-          <li><strong>Prioridad</strong> (alta / media / baja)</li>
-          <li><strong>Notas:</strong> reuniones fijas, horarios, contactos</li>
-        </ol>
-        <p class="modal__hint">Ve a la pestaña <em>Clientes</em> y completa el formulario, o compárteme la info en el chat del agente.</p>
-        <button class="btn btn--primary" id="ir-clientes">Ir a Clientes</button>
-      </div>
+      <section id="view-clientes" class="view">
+        <div class="panel">
+          <h2>Mis clientes</h2>
+          <p class="vista-hint">Clic en un cliente para cargar <strong>metas</strong>, <strong>contexto</strong> y <strong>manual de marca</strong>. Esa info se usa al generar el prompt para Cursor.</p>
+          <div id="lista-clientes" class="clientes-grid"></div>
+        </div>
+        <div class="panel panel--form">
+          <h2>Reuniones con clientes</h2>
+          <p class="vista-hint">Las reuniones bloquean el horario: las tareas que choquen se reubican solas al recargar.</p>
+          <div id="lista-reuniones" class="reuniones-lista"></div>
+          <form id="form-reunion" class="form">
+            <div class="form__row form__row--2">
+              <div>
+                <label for="reunion-cliente">Cliente *</label>
+                <select id="reunion-cliente" required><option value="">Elegir cliente</option></select>
+              </div>
+              <div>
+                <label for="reunion-fecha">Fecha *</label>
+                <input type="date" id="reunion-fecha" required>
+              </div>
+            </div>
+            <div class="form__row form__row--2">
+              <div><label for="reunion-inicio">Inicio *</label><input type="time" id="reunion-inicio" required></div>
+              <div><label for="reunion-fin">Fin *</label><input type="time" id="reunion-fin" required></div>
+            </div>
+            <div class="form__row">
+              <label for="reunion-titulo">Título</label>
+              <input type="text" id="reunion-titulo" placeholder="Ej. Reunión seguimiento">
+            </div>
+            <div class="form__row">
+              <label for="reunion-notas">Notas</label>
+              <textarea id="reunion-notas" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary">Agendar reunión</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="view-salud" class="view">
+        <div class="panel">
+          <h2>Citas médicas</h2>
+          <div id="lista-citas-salud" class="citas-lista"></div>
+        </div>
+        <div class="panel panel--form panel--salud">
+          <h2>Agendar cita</h2>
+          <form id="form-salud" class="form">
+            <div class="form__row form__row--2">
+              <div><label for="cita-fecha">Fecha *</label><input type="date" id="cita-fecha" required></div>
+              <div><label for="cita-hora">Hora *</label><input type="time" id="cita-hora" required></div>
+            </div>
+            <div class="form__row">
+              <label for="cita-especialidad">Especialidad *</label>
+              <input type="text" id="cita-especialidad" required>
+            </div>
+            <div class="form__row">
+              <label for="cita-notas">Notas</label>
+              <textarea id="cita-notas" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary">Guardar cita</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="view-nueva-tarea" class="view">
+        <div class="panel panel--form">
+          <h2>Crear tarea</h2>
+          <p class="vista-hint">Para encargos esporádicos (ej. Desafío Latam), elige cliente, fecha y horario según cada proyecto.</p>
+          <form id="form-tarea" class="form">
+            <div class="form__row">
+              <label for="tarea-titulo">Título *</label>
+              <input type="text" id="tarea-titulo" required>
+            </div>
+            <div class="form__row form__row--2">
+              <div>
+                <label for="tarea-cliente">Cliente</label>
+                <select id="tarea-cliente"><option value="">Sin cliente</option></select>
+              </div>
+              <div>
+                <label for="tarea-fecha">Fecha *</label>
+                <input type="date" id="tarea-fecha" required>
+              </div>
+            </div>
+            <div class="form__row form__row--2">
+              <div><label for="tarea-hora-inicio">Hora inicio</label><input type="time" id="tarea-hora-inicio"></div>
+              <div><label for="tarea-hora-fin">Hora fin</label><input type="time" id="tarea-hora-fin"></div>
+            </div>
+            <div class="form__row">
+              <label for="tarea-notas">Notas</label>
+              <textarea id="tarea-notas" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary">Crear tarea</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal-cliente-perfil" class="modal" hidden aria-hidden="true">
+    <div class="modal__backdrop" data-cerrar-perfil></div>
+    <div class="modal__panel panel panel--form modal__panel--perfil" role="dialog" aria-labelledby="modal-perfil-titulo">
+      <div id="perfil-cliente-header" class="perfil-cliente__header"></div>
+      <h2 id="modal-perfil-titulo">Perfil del cliente</h2>
+      <p class="vista-hint">Metas, contexto y manual se incluyen automáticamente al copiar el prompt en <strong>Realizar tarea</strong>.</p>
+      <form id="form-perfil-cliente" class="form">
+        <input type="hidden" id="perfil-cliente-id">
+        <div class="form__row">
+          <label for="perfil-metas">Metas a lograr</label>
+          <textarea id="perfil-metas" rows="3" placeholder="Objetivos del mes, KPIs, entregables clave…"></textarea>
+        </div>
+        <div class="form__row">
+          <label for="perfil-contexto">Contexto adicional para prompts</label>
+          <textarea id="perfil-contexto" rows="3" placeholder="Tono, audiencia, restricciones, links útiles, preferencias…"></textarea>
+        </div>
+        <div class="form__row">
+          <label for="perfil-manual">Manual de marca</label>
+          <p class="vista-hint vista-hint--compact">Directrices visuales, colores, tipografías, logo, ejemplos… También puedes subir .txt / .md.</p>
+          <textarea id="perfil-manual" class="manual-marca-texto" rows="6" placeholder="Colores, tipografías, logo, tono…"></textarea>
+          <div class="manual-marca-archivos">
+            <label class="btn btn--small btn--ghost manual-marca-upload">
+              + Archivo de texto
+              <input type="file" accept=".txt,.md,.csv,text/plain,text/markdown" id="perfil-manual-file" hidden>
+            </label>
+            <ul class="manual-archivo-lista" id="perfil-manual-archivos-lista"></ul>
+          </div>
+        </div>
+        <div class="modal__acciones">
+          <button type="button" class="btn btn--ghost" data-cerrar-perfil>Cancelar</button>
+          <button type="submit" class="btn btn--primary">Guardar perfil</button>
+        </div>
+      </form>
     </div>
   </div>
 
+  <div id="modal-editar-tarea" class="modal" hidden aria-hidden="true">
+    <div class="modal__backdrop" data-cerrar-editar></div>
+    <div class="modal__panel panel panel--form" role="dialog" aria-labelledby="modal-editar-titulo">
+      <h2 id="modal-editar-titulo">Editar tarea</h2>
+      <form id="form-editar-tarea" class="form">
+        <input type="hidden" id="edit-tarea-id">
+        <div class="form__row">
+          <label for="edit-tarea-titulo">Título *</label>
+          <input type="text" id="edit-tarea-titulo" required>
+        </div>
+        <div class="form__row form__row--2">
+          <div>
+            <label for="edit-tarea-cliente">Cliente</label>
+            <select id="edit-tarea-cliente"><option value="">Sin cliente</option></select>
+          </div>
+          <div>
+            <label for="edit-tarea-fecha">Fecha *</label>
+            <input type="date" id="edit-tarea-fecha" required>
+          </div>
+        </div>
+        <div class="form__row form__row--2">
+          <div><label for="edit-tarea-hora-inicio">Hora inicio</label><input type="time" id="edit-tarea-hora-inicio"></div>
+          <div><label for="edit-tarea-hora-fin">Hora fin</label><input type="time" id="edit-tarea-hora-fin"></div>
+        </div>
+        <div class="form__row form__row--2">
+          <div>
+            <label for="edit-tarea-prioridad">Prioridad</label>
+            <select id="edit-tarea-prioridad">
+              <option value="alta">Alta</option>
+              <option value="media">Media</option>
+              <option value="baja">Baja</option>
+            </select>
+          </div>
+        </div>
+        <div class="form__row">
+          <label for="edit-tarea-notas">Notas</label>
+          <textarea id="edit-tarea-notas" rows="3"></textarea>
+        </div>
+        <div class="form__row form__row--check">
+          <label class="form__check">
+            <input type="checkbox" id="edit-tarea-completada">
+            Marcar como hecha
+          </label>
+        </div>
+        <div class="modal__acciones">
+          <button type="button" class="btn btn--ghost" data-cerrar-editar>Cancelar</button>
+          <button type="submit" class="btn btn--primary">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>
