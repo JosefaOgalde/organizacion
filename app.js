@@ -20,6 +20,45 @@ const COLORES = {
   reunion: { border: '#4a6f9c', bg: '#cddced', text: '#243d5c' }
 };
 
+/** Una frase breve por día — índice según la fecha */
+const FRASES_MOTIVACIONALES = [
+  'Un paso a la vez 💪',
+  'Hoy también suma ✨',
+  'Enfócate en lo importante 🎯',
+  'Pequeños avances, gran impacto 🌱',
+  'Tú puedes con este día ☀️',
+  'Respira y sigue 🌬️',
+  'Hecho es mejor que perfecto ✅',
+  'Una tarea menos, más cerca 🚀',
+  'Constancia gana la carrera 🐢',
+  'Tu futuro yo te lo agradecerá 🙌',
+  'Menos scroll, más entregar 📵',
+  'Prioriza, ejecuta, celebra 🎉',
+  'El progreso es progreso 📈',
+  'Mantén la calma y organiza 🧘',
+  'Hoy es buen día para avanzar 🌤️',
+  'Disciplina suave, resultados reales 💎',
+  'Cierra lo que abriste 🔒',
+  'Energía enfocada ⚡',
+  'Menos ruido, más claridad 🎧',
+  'Cada entrega cuenta 📦',
+  'Confía en tu ritmo 🎵',
+  'Empieza por lo más simple 🪜',
+  'Buen trabajo se nota 👀',
+  'Agenda clara, mente clara 🧠',
+  'Pequeña victoria del día 🏆',
+  'Sigue, estás más cerca 🔥',
+  'Orden crea tranquilidad 🗂️',
+  'Hoy mereces orgullo 💜',
+  'Hazlo con calma, hazlo bien ✍️',
+  'Un bloque, un logro ⏱️',
+  'Menos multitarea, más foco 🔦',
+  'Avanza aunque sea poquito 🌊',
+  'Tu esfuerzo de hoy importa 💫',
+  'Empieza: el resto fluye 🍃',
+  'Celebra lo que ya hiciste 🥳'
+];
+
 const AGENTES_CLIENTE = {
   'cli-trendseeker': {
     nombre: 'Agente Trendseeker',
@@ -306,6 +345,21 @@ function parseISO(s) {
 
 function formatFecha(d) {
   return d.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function fraseMotivacionalDelDia(fecha = hoy()) {
+  const d = typeof fecha === 'string' ? parseISO(fecha) : fecha;
+  const dias = Math.floor(d.getTime() / 86400000);
+  const idx = ((dias % FRASES_MOTIVACIONALES.length) + FRASES_MOTIVACIONALES.length) % FRASES_MOTIVACIONALES.length;
+  return FRASES_MOTIVACIONALES[idx];
+}
+
+function actualizarHeaderFecha() {
+  const hoyDate = hoy();
+  const fechaEl = document.getElementById('fecha-actual');
+  const fraseEl = document.getElementById('header-frase-motivacional');
+  if (fechaEl) fechaEl.textContent = formatFecha(hoyDate);
+  if (fraseEl) fraseEl.textContent = fraseMotivacionalDelDia(hoyDate);
 }
 
 function escapeHtml(s) {
@@ -4499,7 +4553,7 @@ function renderSalud() {
 }
 
 function render() {
-  document.getElementById('fecha-actual').textContent = formatFecha(hoy());
+  actualizarHeaderFecha();
   renderCalendarioMes();
   renderCalendario();
   if (diaSeleccionado && document.getElementById('view-dia')?.classList.contains('view--active')) {

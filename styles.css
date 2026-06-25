@@ -51,8 +51,10 @@ body {
 
 .header__subtitle {
   color: var(--celeste-light);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   margin-top: 0.25rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .header__date {
