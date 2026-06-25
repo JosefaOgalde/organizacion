@@ -49,6 +49,21 @@ index/clientes/DesafioLatam/CLA.html
 
 Certificados modulares: Fase 1 (participación/aprobación), Fase 2, Fase 3 (4 especializaciones) y certificado final. Export PNG 1123×794 px.
 
+## Backend Laravel + API (curso paso a paso)
+
+Guía visual en [`docs/laravel/README.md`](docs/laravel/README.md).
+
+| Paso | Qué haces |
+|------|-----------|
+| ① | Instalar Laragon + `composer create-project` en `backend/` |
+| ② | MySQL + migraciones |
+| ③ | Modelos Eloquent |
+| ④ | API REST `/api/clientes` |
+| ⑤ | Conectar portal HTML |
+| ⑥ | Auth (opcional) |
+
+Empieza: [`docs/laravel/PASO-1-entorno.md`](docs/laravel/PASO-1-entorno.md)
+
 ## Flujo diario
 
 1. Al abrir la app, se muestra la semana actual con el día de hoy resaltado.
