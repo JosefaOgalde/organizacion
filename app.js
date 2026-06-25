@@ -1923,6 +1923,34 @@ function rutaHistoricaTarea(tarea) {
   return `${slug}/tarea/${numero}.html`;
 }
 
+/** Slug + número para query ?tarea=joyas-mercury/01 (funciona en file:// y sin servidor SPA) */
+function slugNumeroTareaUrl(tarea) {
+  if (!tarea) return '';
+  const cli = clienteDe(tarea.clienteId);
+  const slug = slugClienteUrl(cli);
+  const numero = asegurarNumeroHistoricoTarea(tarea);
+  return `${slug}/${numero}`;
+}
+
+function parsearSegmentoTareaUrl(segmento) {
+  if (!segmento) return null;
+  const s = decodeURIComponent(String(segmento).trim()).replace(/^#/, '');
+  let m = s.match(/^([^/]+)\/tarea\/([^/.]+)(?:\.html)?$/i);
+  if (m) return { slug: m[1], numero: m[2] };
+  m = s.match(/^([^/]+)\/([^/.]+)$/);
+  if (m) return { slug: m[1], numero: m[2] };
+  return null;
+}
+
+function parsearQueryTareaDesdeUrl() {
+  try {
+    const params = new URLSearchParams(location.search || '');
+    const t = params.get('tarea');
+    if (t) return parsearSegmentoTareaUrl(t);
+  } catch (_) { /* file:// u origen sin URL API */ }
+  return null;
+}
+
 function baseIndexHtmlUrl() {
   const path = location.pathname || '';
   const idx = path.toLowerCase().lastIndexOf('index.html');
@@ -1934,23 +1962,33 @@ function baseIndexHtmlUrl() {
 
 function urlTareaAbsoluta(tarea) {
   if (!tarea) return baseIndexHtmlUrl();
-  asegurarNumeroHistoricoTarea(tarea);
+  const base = baseIndexHtmlUrl();
+  const seg = slugNumeroTareaUrl(tarea);
+  return `${base}${base.includes('?') ? '&' : '?'}tarea=${encodeURIComponent(seg)}`;
+}
+
+/** Formato legible (path) — requiere serve.json o hash; preferir urlTareaAbsoluta al compartir */
+function urlTareaPathLegible(tarea) {
+  if (!tarea) return baseIndexHtmlUrl();
   return `${baseIndexHtmlUrl()}/${rutaHistoricaTarea(tarea)}`;
 }
 
 function parsearRutaTareaDesdeUrl() {
+  const desdeQuery = parsearQueryTareaDesdeUrl();
+  if (desdeQuery) return desdeQuery;
+
   const path = location.pathname || '';
   const idx = path.toLowerCase().indexOf('index.html');
   const rest = idx >= 0 ? path.slice(idx + 'index.html'.length) : path;
-  let m = rest.match(/^\/?([^/]+)\/tarea\/([^/.]+)\.html$/i);
-  if (m) return { slug: m[1], numero: m[2] };
+  let m = rest.match(/^\/?([^/]+)\/tarea\/([^/.]+)(?:\.html)?$/i);
+  if (m) return { slug: m[1], numero: m[2], legacyPath: true };
 
-  m = path.match(/\/([^/]+)\/tarea\/([^/.]+)\.html$/i);
-  if (m) return { slug: m[1], numero: m[2] };
+  m = path.match(/\/([^/]+)\/tarea\/([^/.]+)(?:\.html)?$/i);
+  if (m) return { slug: m[1], numero: m[2], legacyPath: true };
 
   const hash = (location.hash || '').replace(/^#\/?/, '');
-  m = hash.match(/^([^/]+)\/tarea\/([^/.]+)(?:\.html)?$/i);
-  if (m) return { slug: m[1], numero: m[2], legacy: true };
+  const desdeHash = parsearSegmentoTareaUrl(hash);
+  if (desdeHash) return { ...desdeHash, legacy: true };
   return null;
 }
 
@@ -1980,7 +2018,7 @@ function aplicarRutaDesdeUrl() {
   tareaSeleccionada = tarea.id;
   if (tarea.fecha) diaSeleccionado = tarea.fecha;
   asegurarSesionAgente(tarea);
-  if (parsed.legacy) escribirRutaTarea(tarea, { reemplazar: true });
+  if (parsed.legacy || parsed.legacyPath) escribirRutaTarea(tarea, { reemplazar: true });
   mostrarVista('tarea');
   render();
   return true;
@@ -3928,11 +3966,14 @@ function renderTarea() {
   const agentePanel = document.getElementById('agente-contenido');
   if (!detalle || !agentePanel) return;
 
-  const rutaRef = `index.html/${rutaHistoricaTarea(tarea)}`;
+  const rutaRef = urlTareaAbsoluta(tarea);
 
   detalle.innerHTML = `
     <div class="tarea-detalle" style="border-left-color:${col.border}">
-      <p class="tarea-detalle__ref" title="URL única de esta tarea">${escapeHtml(rutaRef)}</p>
+      <p class="tarea-detalle__ref" title="Abre o comparte este enlace para ir directo a la tarea">
+        <a href="${escapeHtml(rutaRef)}" class="tarea-detalle__ref-link">${escapeHtml(rutaRef)}</a>
+        <button type="button" class="btn btn--small btn--ghost tarea-detalle__ref-copiar" data-copiar-ruta-tarea title="Copiar enlace">Copiar</button>
+      </p>
       <p class="tarea-detalle__fecha">${escapeHtml(fecha)} · ${escapeHtml(etiquetaHoraTarea(tarea))}</p>
       <h2 class="tarea-detalle__titulo">${escapeHtml(titulo)}</h2>
       ${cli ? `<p class="tarea-detalle__cliente"><strong>Cliente:</strong> ${escapeHtml(cli.nombre)}</p>` : ''}
@@ -3989,6 +4030,10 @@ function renderTarea() {
     </form>`;
 
   bindAccionesTarea(detalle);
+  detalle.querySelector('[data-copiar-ruta-tarea]')?.addEventListener('click', async () => {
+    const ok = await copiarTexto(urlTareaAbsoluta(tarea));
+    mostrarToast(ok ? 'Enlace copiado' : 'No se pudo copiar — selecciona el enlace manualmente');
+  });
   detalle.querySelectorAll('[data-abrir-ficha-cliente]').forEach(btn => {
     btn.addEventListener('click', () => (window.abrirFichaCliente || abrirPerfilCliente)(btn.dataset.abrirFichaCliente));
   });

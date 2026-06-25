@@ -1905,11 +1905,24 @@ body.modal-abierto {
 }
 
 .tarea-detalle__ref {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
   font-family: ui-monospace, 'Cascadia Code', monospace;
   font-size: 0.72rem;
   color: var(--celeste-dark);
   margin: 0 0 0.35rem;
   word-break: break-all;
+}
+
+.tarea-detalle__ref-link {
+  color: var(--accent, #4a8ab0);
+  text-decoration: none;
+}
+
+.tarea-detalle__ref-link:hover {
+  text-decoration: underline;
 }
 
 .tarea-detalle__fecha {

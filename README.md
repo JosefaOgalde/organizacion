@@ -7,8 +7,20 @@ Organizador semanal (lunes a domingo) para gestionar trabajo full-time, clientes
 Abre `index.html` en el navegador. Los datos se guardan en `localStorage` del navegador.
 
 ```bash
-# Servidor local opcional
+# Servidor local (recomendado para abrir tareas por enlace)
 npx serve .
+```
+
+Para ir directo a una tarea, usa el enlace con `?tarea=` (funciona siempre):
+
+```
+index.html?tarea=joyas-mercury/01
+```
+
+Ejemplo con servidor en el puerto 3000:
+
+```
+http://localhost:3000/index.html?tarea=joyas-mercury/01
 ```
 
 ## Flujo diario
