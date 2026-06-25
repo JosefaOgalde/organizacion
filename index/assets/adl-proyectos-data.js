@@ -9,13 +9,15 @@ window.ADL_PROYECTOS = {
     identidadOrigen: 'screencapture-localhost-3002-2026-06-18-13_21_00.pdf',
     canvas: { ancho: 1123, alto: 794 },
     colores: {
-      primario: '#007A3D',
-      secundario: '#00A651',
-      acento: '#F5B335',
-      fondo: '#F7FAF8',
-      texto: '#1A2E24',
-      textoClaro: '#FFFFFF'
+      primario: '#051933',
+      secundario: '#0066FF',
+      acento: '#FFD200',
+      fondo: '#FFFFFF',
+      texto: '#051933',
+      textoClaro: '#FFFFFF',
+      teal: '#00A878'
     },
+    fondoCertificado: 'CLA/identidad/fondo-certificado-1123x794.png',
     fases: [
       {
         id: 'fase-1',

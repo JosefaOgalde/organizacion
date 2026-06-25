@@ -1,28 +1,27 @@
 # Identidad visual — Proyecto CLA (Caja Los Andes)
 
-Coloca aquí el manual de marca del proyecto.
+Recursos de marca para certificados modulares (1123 × 794 px).
 
-## Archivo esperado
+## Archivos
 
-```
-manual-marca-caja-los-andes.pdf
-```
+| Archivo | Descripción |
+|---------|-------------|
+| `manual-marca-caja-los-andes.pdf` | Manual de marca (origen: screencapture localhost) |
+| `fondo-certificado-1123x794.png` | Fondo: borde navy/azul/dorado, **centro blanco** para el texto |
+| `plantilla-certificado-1123x794.svg` | Referencia vectorial de composición |
 
-Origen del brief: `screencapture-localhost-3002-2026-06-18-13_21_00.pdf`
-
-## Cómo cargarlo
-
-1. Copia tu PDF a esta carpeta con el nombre `manual-marca-caja-los-andes.pdf`
-2. Abre `CLA.html` y usa el enlace «Manual de marca / identidad visual»
-3. Los certificados usan los colores definidos en `index/assets/adl-proyectos-data.js`
-
-## Colores CLA (referencia)
+## Colores CLA (manual / portal)
 
 | Token | Hex | Uso |
 |-------|-----|-----|
-| Primario | `#007A3D` | Encabezado certificado |
-| Secundario | `#00A651` | Acentos |
-| Acento | `#F5B335` | Línea decorativa |
-| Fondo | `#F7FAF8` | Cuerpo del certificado |
+| Primario (navy) | `#051933` | Marco, títulos |
+| Secundario (azul) | `#0066FF` | Franjas, acentos |
+| Acento (dorado) | `#FFD200` | Líneas y ornamentos |
+| Teal | `#00A878` | Detalles en esquinas |
+| Fondo centro | `#FFFFFF` | Área del certificado |
 
-Ajusta estos valores si el PDF oficial indica otros tonos.
+Los valores viven en `index/assets/adl-proyectos-data.js` y se usan en `cla-certificados.js`.
+
+## Vista previa
+
+Abre `../CLA.html` → genera certificado de prueba y descarga PNG.
