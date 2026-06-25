@@ -4727,6 +4727,8 @@ window.importarRespaldoDefecto = async () => {
 window.descargarRespaldo = () => {
   const d = exportarDatos();
   if (!d) return;
+  d.respaldoVersion = (d.respaldoVersion || 0) + 1;
+  d.respaldoActualizado = toISO(hoy());
   const blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
