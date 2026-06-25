@@ -89,4 +89,4 @@ mysql -u root organizacion -e "SHOW TABLES;"
 
 Responde: **«Paso 2 Laravel OK»** → Paso 3 (Modelos Eloquent).
 
-SQL de referencia completo: [`../../backend/database/schema-organizacion.sql`](../../backend/database/schema-organizacion.sql)
+SQL de referencia completo: [`schema-organizacion.sql`](./schema-organizacion.sql)

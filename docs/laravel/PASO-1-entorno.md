@@ -55,7 +55,10 @@ git pull origin main
 
 ## Tarea 1.3 — Crear Laravel en `backend/`
 
+Si la carpeta `backend` ya existe (aunque tenga solo un README), bórrala primero:
+
 ```powershell
+rmdir /s /q backend
 composer create-project laravel/laravel backend
 ```
 

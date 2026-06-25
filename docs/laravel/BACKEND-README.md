@@ -1,11 +1,13 @@
 # Backend Laravel — Organización
 
-Aquí vivirá la API PHP. **Aún no está instalado** — lo creas en el [Paso 1](../docs/laravel/PASO-1-entorno.md).
+Aquí vivirá la API PHP. **Aún no está instalado** — lo creas en el [Paso 1](./PASO-1-entorno.md).
 
 ```powershell
 cd "C:\Users\Josefa Ogalde\organizacion"
 composer create-project laravel/laravel backend
 ```
+
+> La carpeta `backend/` debe estar **vacía** antes de ese comando. Si git dejó archivos ahí, bórralos o renómbrala.
 
 ## Estructura final (preview)
 

@@ -5,12 +5,5 @@ git-log.txt
 GIT_RESULT.txt
 shell-test.txt
 
-# Laravel (Paso 1+)
-backend/vendor/
-backend/node_modules/
-backend/.env
-backend/storage/*.key
-backend/.phpunit.result.cache
-backend/public/hot
-backend/public/storage
-backend/bootstrap/cache/*.php
+# Laravel — generado localmente con composer (no subir vendor)
+backend/

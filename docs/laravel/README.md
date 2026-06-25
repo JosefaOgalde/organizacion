@@ -95,7 +95,7 @@ erDiagram
     }
 ```
 
-SQL de referencia: [`../../backend/database/schema-organizacion.sql`](../../backend/database/schema-organizacion.sql)
+SQL de referencia: [`schema-organizacion.sql`](./schema-organizacion.sql)
 
 ---
 
