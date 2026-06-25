@@ -23,6 +23,24 @@ Ejemplo con servidor en el puerto 3000:
 http://localhost:3000/index.html?tarea=joyas-mercury/01
 ```
 
+### Portal de clientes (Paso 1 — estático)
+
+```
+index/clientes.html
+index/clientes/Trendseeker.html
+index/clientes/ECR.html
+… (un HTML por cliente)
+```
+
+Con `npx serve .`:
+
+```
+http://localhost:3000/index/clientes.html
+http://localhost:3000/index/clientes/Trendseeker.html
+```
+
+También funciona con doble clic (`file://`) porque no depende del servidor.
+
 ## Flujo diario
 
 1. Al abrir la app, se muestra la semana actual con el día de hoy resaltado.
@@ -50,6 +68,10 @@ Para planificar tareas, cada cliente necesita:
 ```
 organizacion/
 ├── index.html          # Vista principal
+├── index/
+│   ├── clientes.html   # Landing portal de clientes (Paso 1)
+│   ├── clientes/       # Ficha por cliente (Trendseeker.html, ECR.html, …)
+│   └── assets/         # portal.css, clientes-data.js
 ├── styles.css          # Estilos (gris, blanco, celeste)
 ├── app.js              # Lógica y localStorage
 ├── data/
