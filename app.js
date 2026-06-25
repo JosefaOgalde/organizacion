@@ -4630,3 +4630,14 @@ window.descargarRespaldo = () => {
   URL.revokeObjectURL(a.href);
   mostrarToast('Respaldo descargado — guárdalo en data/ y haz commit');
 };
+
+/** Consola: abrirTareaPorSlug('joyas-mercury', '01') */
+window.abrirTareaPorSlug = (slug, numero) => {
+  const t = tareaPorRutaHistorica(slug, numero);
+  if (!t) {
+    console.error(`Tarea no encontrada: ${slug}/${numero}. Recarga la página (F5) para regenerar el cronograma JM.`);
+    return null;
+  }
+  irATarea(t.id);
+  return t;
+};
