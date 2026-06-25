@@ -3211,6 +3211,8 @@ function mostrarVista(vista, { activarTab = false } = {}) {
     document.querySelectorAll('.tab').forEach(t => {
       t.classList.toggle('tab--active', t.dataset.view === vista);
     });
+  } else if (VISTAS_CALENDARIO.has(vista)) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
   }
   actualizarVistaCalendarioNav(vista);
 }
@@ -3300,7 +3302,7 @@ function volverAMes() {
   tareaSeleccionada = null;
   diaSeleccionado = null;
   limpiarRutaTarea();
-  mostrarVista('mes', { activarTab: true });
+  mostrarVista('mes');
   renderCalendarioMes();
 }
 
@@ -4612,8 +4614,6 @@ function setupUI() {
       if (!tab.dataset.view) return;
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
       tab.classList.add('tab--active');
-      if (tab.dataset.view === 'semana') { semanaOffset = 0; diaSeleccionado = null; tareaSeleccionada = null; limpiarRutaTarea(); }
-      if (tab.dataset.view === 'mes') { mesOffset = 0; diaSeleccionado = null; tareaSeleccionada = null; limpiarRutaTarea(); }
       mostrarVista(tab.dataset.view, { activarTab: true });
       render();
     });
@@ -4794,7 +4794,7 @@ function setupUI() {
     if (aplicarRutaDesdeUrl()) return;
     if (tareaSeleccionada) {
       tareaSeleccionada = null;
-      mostrarVista('mes', { activarTab: true });
+      mostrarVista('mes');
       render();
     }
   });
@@ -4857,7 +4857,7 @@ async function iniciarApp() {
   }
   setupUI();
   if (!aplicarRutaDesdeUrl()) {
-    mostrarVista('mes', { activarTab: true });
+    mostrarVista('mes');
     render();
   }
   if (origenCarga === 'respaldo') {
