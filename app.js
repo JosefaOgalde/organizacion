@@ -14,7 +14,10 @@ const COLORES = {
   agua: { border: '#a8d8dc', bg: '#e8f6f8', text: '#4a7a80' },
   rosa: { border: '#e8b8c8', bg: '#fdf0f4', text: '#9a5a6e' },
   grafito: { border: '#b8c0c8', bg: '#eef0f4', text: '#5a6a7a' },
-  salud: { border: '#98d4bc', bg: '#e8f6f0', text: '#4a8a72' }
+  /** Salud — verde más definido, aún claro pero distinto de clientes menta/celeste */
+  salud: { border: '#2f9d72', bg: '#c5e8d8', text: '#1a5c42' },
+  /** Reuniones — azul pizarra, no usa el color del cliente */
+  reunion: { border: '#4a6f9c', bg: '#cddced', text: '#243d5c' }
 };
 
 const AGENTES_CLIENTE = {
@@ -3143,6 +3146,10 @@ function colorDe(cliente) {
   return COLORES[cliente?.color] || COLORES.lavanda;
 }
 
+function colorReunion() {
+  return COLORES.reunion;
+}
+
 function mostrarVista(vista, { activarTab = false } = {}) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('view--active'));
   document.getElementById('view-' + vista)?.classList.add('view--active');
@@ -3536,7 +3543,7 @@ function htmlCitaDia(c) {
 
 function htmlReunionDia(r) {
   const cli = clienteDe(r.clienteId);
-  const col = colorDe(cli);
+  const col = colorReunion();
   const hora = r.horaFin ? `${r.horaInicio} – ${r.horaFin}` : r.horaInicio;
   const titulo = r.titulo || `Reunión ${cli?.nombre || 'cliente'}`;
   return `<article class="dia-item dia-item--reunion${claseReunionEstado(r)}" style="border-left-color:${col.border};background:${col.bg}">
@@ -3739,8 +3746,7 @@ function renderCalendarioMes() {
         html: `<span class="mes-item mes-item--salud${claseCitaEstado(c)}" style="background:${COLORES.salud.bg};border-left-color:${COLORES.salud.border};color:${COLORES.salud.text}" title="${escapeHtml(c.especialidad + ' ' + c.hora + (etiquetaEstadoCita(c) ? ' · ' + etiquetaEstadoCita(c) : ''))}">${escapeHtml(textoCitaCompacto(c, 0))}</span>`
       })),
       ...reuniones.map(r => {
-        const cli = clienteDe(r.clienteId);
-        const col = colorDe(cli);
+        const col = colorReunion();
         const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
         return {
           minutos: minutosHora(r.horaInicio),
@@ -3781,7 +3787,7 @@ function htmlItemCalendarioSemana(item) {
   }
   if (item.tipo === 'reunion') {
     const r = item.data;
-    const col = colorDe(clienteDe(r.clienteId));
+    const col = colorReunion();
     const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
     const icon = ESTADOS_CITA[r.estado]?.icon || '📅';
     return `<div class="cita-cal cita-cal--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border}"><span class="cita-cal__icon">${icon}</span><span class="cita-cal__text" style="color:${col.text}">${escapeHtml(r.titulo || 'Reunión')} · ${escapeHtml(hora)}${etiquetaEstadoReunion(r) ? ' · ' + escapeHtml(etiquetaEstadoReunion(r)) : ''}</span></div>`;
@@ -3880,7 +3886,7 @@ function renderSemanaMini() {
       }
       if (item.tipo === 'reunion') {
         const r = item.data;
-        const col = colorDe(clienteDe(r.clienteId));
+        const col = colorReunion();
         const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
         return `<span class="semana-mini-item semana-mini-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 14))}</span>`;
       }
@@ -4391,7 +4397,7 @@ function renderReunionesClientes() {
   } else {
     lista.innerHTML = ordenadas.map(r => {
       const cli = clienteDe(r.clienteId);
-      const col = colorDe(cli);
+      const col = colorReunion();
       const hora = r.horaFin ? `${r.horaInicio} – ${r.horaFin}` : r.horaInicio;
       return `<div class="reunion-card ${r.fecha < hoyStr ? 'reunion-card--pasada' : ''}${claseReunionEstado(r)}" style="border-left-color:${col.border}">
         <div class="reunion-card__fecha">

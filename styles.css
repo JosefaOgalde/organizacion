@@ -1043,8 +1043,8 @@ body {
 }
 
 .tab-swatch--salud {
-  background: #e8f6f0;
-  border: 2px solid #98d4bc;
+  background: #c5e8d8;
+  border: 2px solid #2f9d72;
 }
 
 .panel--agente {
@@ -1110,7 +1110,7 @@ body {
 
 /* Salud */
 .panel--salud {
-  border-top: 4px solid #98d4bc;
+  border-top: 4px solid #2f9d72;
 }
 
 .color-picker {
@@ -1217,9 +1217,9 @@ body {
 }
 
 .cita-estado--asisti {
-  background: #e8f6f0;
-  color: #2d6b55;
-  border: 1px solid #4a8a72;
+  background: #c5e8d8;
+  color: #1a5c42;
+  border: 1px solid #2f9d72;
 }
 
 .cita-estado--reagendada {
@@ -1261,12 +1261,12 @@ body {
 }
 
 .cita-accion--asisti {
-  border-color: #4a8a72;
-  color: #2d6b55;
+  border-color: #2f9d72;
+  color: #1a5c42;
 }
 
 .cita-accion--asisti.cita-accion--activa {
-  background: #e8f6f0;
+  background: #c5e8d8;
 }
 
 .cita-accion--reagendada {
@@ -1478,10 +1478,6 @@ body {
 }
 
 .semana-mini-item--reunion {
-  font-weight: 600;
-}
-
-.mes-item--reunion {
   font-weight: 600;
 }
 
@@ -2764,6 +2760,12 @@ body.modal-abierto {
 
 .mes-item--salud {
   font-weight: 600;
+  border-left-width: 3px;
+}
+
+.mes-item--reunion {
+  font-weight: 600;
+  border-left-width: 3px;
 }
 
 .mes-item__rol {
