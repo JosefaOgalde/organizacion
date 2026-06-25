@@ -1,52 +1,108 @@
 # Paso 4 — Tu primera API REST
 
-> ⏳ Completa [Paso 3](./PASO-3-modelos.md) primero.
+> ✅ Paso 3 listo si insertaste Trendseeker con tinker (`id: 1`)
 
-**Meta:** abrir `http://127.0.0.1:8000/api/clientes` y ver JSON.
+**Meta:** `http://127.0.0.1:8000/api/clientes` → JSON en Chrome.
 
 ---
 
-## Qué es una API REST (en 10 segundos)
+## Errores que viste (y cómo evitarlos)
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| `Parse error` en tinker | Corriste `artisan` **dentro** de tinker | Escribe `exit` primero |
+| `ERR_CONNECTION_REFUSED` | Servidor apagado | `php artisan serve` en otra terminal |
+
+---
+
+## Dos terminales
 
 ```mermaid
-sequenceDiagram
-    participant Chrome
-    participant Laravel
-    participant DB as MySQL
-
-    Chrome->>Laravel: GET /api/clientes
-    Laravel->>DB: SELECT * FROM clientes
-    DB-->>Laravel: filas
-    Laravel-->>Chrome: JSON [{"id":1,"nombre":"Trendseeker"}]
+flowchart LR
+    T1["Terminal 1\nphp artisan serve\n(siempre abierta)"]
+    T2["Terminal 2\ncomandos artisan"]
+    T1 --> CHROME["Chrome\n/api/clientes"]
 ```
-
-| Método HTTP | Acción | Ejemplo |
-|-------------|--------|---------|
-| **GET** | Leer | Listar clientes |
-| **POST** | Crear | Nueva tarea |
-| **PUT/PATCH** | Actualizar | Marcar tarea hecha |
-| **DELETE** | Borrar | Eliminar tarea |
 
 ---
 
-## Tareas
+## Tarea 4.0 — Salir de tinker
 
-| # | Qué haces | Archivo |
-|---|-----------|---------|
-| 4.1 | Crear controlador | `php artisan make:controller Api/ClienteController` |
-| 4.2 | Método `index()` → `Cliente::all()` | `ClienteController.php` |
-| 4.3 | Ruta GET | `routes/api.php` |
-| 4.4 | Probar en Chrome | `/api/clientes` |
+Si ves el prompt `>`:
 
-### Ejemplo de respuesta JSON
-
-```json
-[
-  {"id": 1, "nombre": "Trendseeker - Talk", "abrev": "TS", "tipo": "full-time"},
-  {"id": 2, "nombre": "ECR - Talk", "abrev": "ECR", "tipo": "full-time"}
-]
+```php
+exit
 ```
 
-Confirmación: **«Paso 4 Laravel OK»**
+---
 
-Siguiente: [PASO 5 — Conectar frontend](./PASO-5-conectar-frontend.md)
+## Tarea 4.1 — Crear controlador
+
+```cmd
+cd "C:\Users\Josefa Ogalde\organizacion\backend"
+php artisan make:controller Api/ClienteController
+```
+
+---
+
+## Tarea 4.2 — Código del controlador
+
+Abre `app\Http\Controllers\Api\ClienteController.php`
+
+Pega (reemplaza todo) — ver [`ejemplos/ClienteController.php`](./ejemplos/ClienteController.php):
+
+```php
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Cliente;
+
+class ClienteController extends Controller
+{
+    public function index()
+    {
+        return response()->json(Cliente::all());
+    }
+}
+```
+
+---
+
+## Tarea 4.3 — Ruta en `routes/api.php`
+
+Abre `routes\api.php` y **añade** al final (antes del cierre si hay):
+
+```php
+use App\Http\Controllers\Api\ClienteController;
+
+Route::get('/clientes', [ClienteController::class, 'index']);
+```
+
+---
+
+## Tarea 4.4 — Arrancar servidor
+
+**Terminal 1** (déjala abierta):
+
+```cmd
+cd "C:\Users\Josefa Ogalde\organizacion\backend"
+php artisan serve
+```
+
+---
+
+## Tarea 4.5 — Probar en Chrome
+
+```
+http://127.0.0.1:8000/api/clientes
+```
+
+✅ Debes ver JSON con Trendseeker.
+
+---
+
+## Confirmación
+
+**「Paso 4 Laravel OK」** → [Paso 5 — Conectar portal](./PASO-5-conectar-frontend.md)
