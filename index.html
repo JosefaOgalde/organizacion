@@ -30,6 +30,12 @@
     </nav>
 
     <main>
+      <nav id="vista-calendario-nav" class="vista-switch" aria-label="Vista del calendario" hidden>
+        <button type="button" class="vista-switch__btn" data-vista-nav="mes">Mes</button>
+        <button type="button" class="vista-switch__btn" data-vista-nav="semana">Semana</button>
+        <button type="button" class="vista-switch__btn" data-vista-nav="dia">Día</button>
+      </nav>
+
       <section id="view-mes" class="view view--active">
         <div class="week-nav">
           <button type="button" id="btn-mes-anterior" class="btn btn--ghost">← Mes anterior</button>
@@ -42,9 +48,6 @@
       </section>
 
       <section id="view-semana" class="view">
-        <nav class="breadcrumb" id="breadcrumb-semana">
-          <button type="button" class="breadcrumb__link" data-nav="mes">← Mes</button>
-        </nav>
         <div class="week-nav">
           <button type="button" id="btn-semana-anterior" class="btn btn--ghost">← Semana anterior</button>
           <span id="rango-semana" class="week-nav__range"></span>
@@ -56,11 +59,6 @@
       </section>
 
       <section id="view-dia" class="view">
-        <nav class="breadcrumb" id="breadcrumb-dia">
-          <button type="button" class="breadcrumb__link" data-nav="mes">Mes</button>
-          <span class="breadcrumb__sep">›</span>
-          <button type="button" class="breadcrumb__link" data-nav="semana">Semana</button>
-        </nav>
         <div class="week-nav dia-nav">
           <button type="button" id="btn-dia-anterior" class="btn btn--ghost">← Día anterior</button>
           <button type="button" id="btn-dia-siguiente" class="btn btn--ghost">Día siguiente →</button>
@@ -80,14 +78,7 @@
       </section>
 
       <section id="view-tarea" class="view">
-        <nav class="breadcrumb" id="breadcrumb-tarea">
-          <button type="button" class="breadcrumb__link" data-nav="mes">Mes</button>
-          <span class="breadcrumb__sep">›</span>
-          <button type="button" class="breadcrumb__link" data-nav="semana">Semana</button>
-          <span class="breadcrumb__sep">›</span>
-          <button type="button" id="btn-volver-dia" class="breadcrumb__link">Día</button>
-        </nav>
-        <p class="vista-hint">Cada tarea tiene URL única: <code>index.html#/cliente/tarea/01</code> · Pide el entregable y <strong>se arma en el chat</strong></p>
+        <p class="vista-hint vista-hint--tarea">Cada tarea tiene URL única · Pide el entregable y <strong>se arma en el chat</strong></p>
         <div class="tarea-layout">
           <div class="panel panel--tarea-detalle">
             <div id="tarea-detalle-contenido"></div>

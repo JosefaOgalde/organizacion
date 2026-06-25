@@ -3212,6 +3212,33 @@ function mostrarVista(vista, { activarTab = false } = {}) {
       t.classList.toggle('tab--active', t.dataset.view === vista);
     });
   }
+  actualizarVistaCalendarioNav(vista);
+}
+
+const VISTAS_CALENDARIO = new Set(['mes', 'semana', 'dia', 'tarea']);
+
+function actualizarVistaCalendarioNav(vista) {
+  const nav = document.getElementById('vista-calendario-nav');
+  if (!nav) return;
+  const visible = VISTAS_CALENDARIO.has(vista);
+  nav.hidden = !visible;
+  nav.setAttribute('aria-hidden', visible ? 'false' : 'true');
+  const activa = vista === 'tarea' ? 'dia' : vista;
+  nav.querySelectorAll('[data-vista-nav]').forEach(btn => {
+    const on = btn.dataset.vistaNav === activa;
+    btn.classList.toggle('vista-switch__btn--active', on);
+    btn.setAttribute('aria-current', on ? 'page' : 'false');
+  });
+}
+
+function irAVistaCalendario(vista) {
+  if (vista === 'mes') volverAMes();
+  else if (vista === 'semana') volverASemana();
+  else if (vista === 'dia') {
+    if (tareaSeleccionada) volverADiaDesdeTarea();
+    else if (diaSeleccionado) irADia(diaSeleccionado);
+    else irADia(toISO(hoy()));
+  }
 }
 
 function semanaOffsetPara(fecha) {
@@ -4592,11 +4619,8 @@ function setupUI() {
     });
   });
 
-  document.querySelectorAll('[data-nav="mes"]').forEach(btn => {
-    btn.addEventListener('click', volverAMes);
-  });
-  document.querySelectorAll('[data-nav="semana"]').forEach(btn => {
-    btn.addEventListener('click', volverASemana);
+  document.querySelectorAll('[data-vista-nav]').forEach(btn => {
+    btn.addEventListener('click', () => irAVistaCalendario(btn.dataset.vistaNav));
   });
 
   document.getElementById('btn-semana-anterior').addEventListener('click', () => { semanaOffset--; renderCalendario(); });
@@ -4610,8 +4634,6 @@ function setupUI() {
   document.getElementById('btn-dia-anterior')?.addEventListener('click', () => cambiarDia(-1));
   document.getElementById('btn-dia-siguiente')?.addEventListener('click', () => cambiarDia(1));
   document.getElementById('btn-dia-hoy')?.addEventListener('click', () => irADia(toISO(hoy())));
-
-  document.getElementById('btn-volver-dia')?.addEventListener('click', volverADiaDesdeTarea);
 
   document.getElementById('form-salud').addEventListener('submit', e => {
     e.preventDefault();

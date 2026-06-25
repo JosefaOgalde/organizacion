@@ -130,10 +130,62 @@ body {
 /* Week navigation */
 .week-nav {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 1rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
+}
+
+.vista-switch {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.vista-switch[hidden] {
+  display: none !important;
+}
+
+.vista-switch__btn {
+  flex: 1 1 0;
+  min-width: 5.25rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  background: var(--bg-panel);
+  color: var(--celeste-dark);
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.vista-switch__btn:hover {
+  background: var(--celeste-light);
+}
+
+.vista-switch__btn--active {
+  background: var(--celeste-dark);
+  color: #fff;
+  border-color: var(--celeste-dark);
+}
+
+.vista-switch__btn--active:hover {
+  background: var(--celeste);
+  border-color: var(--celeste);
+}
+
+.week-nav .btn {
+  min-height: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .week-nav__range {
