@@ -1,28 +1,103 @@
-# Paso 3 — Modelos Eloquent
+# Paso 3 — Modelo Eloquent `Cliente`
 
-> ⏳ Completa [Paso 2](./PASO-2-base-datos.md) primero.
+> ✅ Paso 2 listo si `php artisan migrate` mostró `create_clientes_table ... DONE`
 
-**Meta:** en `php artisan tinker` poder escribir `Cliente::count()` y ver un número.
+**Meta:** guardar y leer clientes desde PHP con `Cliente::all()`.
 
 ---
 
+## Diagrama
+
 ```mermaid
 flowchart LR
-    M["Modelo Cliente.php"] --> E["Eloquent"]
-    E --> T["tabla clientes"]
-    T --> E
-    E --> M
+    PHP["Cliente.php\nModelo"] <-->|"Eloquent"| T["tabla clientes\nMySQL"]
+    TINKER["php artisan tinker"] --> PHP
 ```
 
-## Tareas
+| Capa | Qué es |
+|------|--------|
+| **Modelo** | Clase PHP que representa una fila de `clientes` |
+| **Eloquent** | Traductor automático PHP ↔ SQL |
+| **Tinker** | Consola para probar sin API |
 
-| # | Comando / acción | Resultado |
-|---|------------------|-----------|
-| 3.1 | `php artisan make:model Cliente` | Archivo en `app/Models/Cliente.php` |
-| 3.2 | Definir `$fillable` | Campos que se pueden guardar |
-| 3.3 | `php artisan tinker` → `Cliente::create([...])` | 1 fila en MySQL |
-| 3.4 | `Cliente::all()` | Lista en consola |
+---
 
-Confirmación: **«Paso 3 Laravel OK»**
+## Tarea 3.1 — Crear modelo
 
-Siguiente: [PASO 4 — API REST](./PASO-4-api-rest.md)
+```cmd
+cd "C:\Users\Josefa Ogalde\organizacion\backend"
+php artisan make:model Cliente
+```
+
+---
+
+## Tarea 3.2 — Editar `Cliente.php`
+
+Abre: `backend\app\Models\Cliente.php`
+
+Reemplaza el contenido con [`ejemplos/Model_Cliente.php`](./ejemplos/Model_Cliente.php) o pega:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Cliente extends Model
+{
+    protected $table = 'clientes';
+
+    protected $fillable = [
+        'slug', 'nombre', 'abrev', 'tipo',
+        'color_border', 'color_bg', 'color_text',
+        'agente', 'resumen',
+    ];
+}
+```
+
+---
+
+## Tarea 3.3 — Insertar un cliente de prueba
+
+```cmd
+php artisan tinker
+```
+
+Dentro de tinker (copia línea por línea):
+
+```php
+\App\Models\Cliente::create([
+    'slug' => 'trendseeker',
+    'nombre' => 'Trendseeker - Talk',
+    'abrev' => 'TS',
+    'tipo' => 'full-time',
+    'agente' => 'Community Manager + WordPress',
+    'resumen' => 'Redes y WordPress',
+]);
+```
+
+Salir: `exit`
+
+---
+
+## Tarea 3.4 — Verificar
+
+```cmd
+php artisan tinker
+```
+
+```php
+\App\Models\Cliente::count();
+\App\Models\Cliente::all();
+```
+
+✅ `count()` debe ser **1** (o más si insertaste varios).
+
+En **HeidiSQL**: `organizacion` → tabla `clientes` → **Datos** → debe aparecer Trendseeker.
+
+---
+
+## Confirmación
+
+**「Paso 3 Laravel OK」** → [Paso 4 — API REST](./PASO-4-api-rest.md)
