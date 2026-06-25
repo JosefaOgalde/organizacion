@@ -602,6 +602,18 @@ function initMetaDatos(data) {
   return data;
 }
 
+/** No pisar fecha/horario si el usuario ya ajustó la agenda (o viene del respaldo). */
+function sincronizarAgendaTarea(tarea, { fecha, horaInicio, horaFin } = {}) {
+  if (!tarea || tarea.agendaFijada) return;
+  if (fecha != null) tarea.fecha = fecha;
+  if (horaInicio != null) tarea.horaInicio = horaInicio;
+  if (horaFin != null) tarea.horaFin = horaFin;
+}
+
+function fijarAgendaUsuario(tarea) {
+  if (tarea) tarea.agendaFijada = true;
+}
+
 function fingerprintTarea(t) {
   const titulo = nombreBaseTarea(t).toLowerCase().replace(/\s+/g, ' ').trim();
   const cli = t.clienteId || 'sin-cliente';
@@ -760,8 +772,10 @@ function normalizarTareasTS(data) {
     t.titulo = t.titulo
       .replace(/^\[(Community Manager|Desarrollo Wordpress)\]\s*/i, `[${abrev}] `)
       .replace(/^\[Trendseeker[^\]]*\]\s*/i, `[${abrev}] `);
-    if (/Pub redes\s*10/i.test(t.titulo)) t.fecha = '2026-06-25';
-    if (/Pub redes\s*11/i.test(t.titulo)) t.fecha = '2026-06-26';
+    if (!t.agendaFijada) {
+      if (/Pub redes\s*10/i.test(t.titulo)) t.fecha = '2026-06-25';
+      if (/Pub redes\s*11/i.test(t.titulo)) t.fecha = '2026-06-26';
+    }
   });
 
   data.tareas = data.tareas.filter(t => {
@@ -850,9 +864,7 @@ function asegurarClienteECR(data) {
       tarea.titulo = '[ECR] Propuesta sección blog';
       tarea.clienteId = cliId;
       tarea.rolId = 'rol-ecr-dev';
-      tarea.fecha = '2026-06-24';
-      tarea.horaInicio = '15:00';
-      tarea.horaFin = '17:00';
+      sincronizarAgendaTarea(tarea, { fecha: '2026-06-24', horaInicio: '15:00', horaFin: '17:00' });
       tarea.notas = notasBlog;
     }
   }
@@ -938,7 +950,7 @@ function asegurarClienteContenidosMes(data, cliId, abrev, color, anio, mes, desf
         tarea.titulo = `[${abrev}] Pub contenido ${num}`;
         tarea.clienteId = cliId;
         tarea.rolId = rolId;
-        tarea.fecha = fecha;
+        sincronizarAgendaTarea(tarea, { fecha });
         tarea.notas = NOTAS_PUB_CONTENIDO;
       }
     }
@@ -1014,9 +1026,11 @@ function asegurarHistoriasPiscineria(data) {
         tarea.titulo = '[PISC] Subir historia con link WSP';
         tarea.clienteId = cliId;
         tarea.rolId = rolId;
-        tarea.fecha = fecha;
-        tarea.horaInicio = '17:15';
-        tarea.horaFin = '17:30';
+        sincronizarAgendaTarea(tarea, {
+          fecha,
+          horaInicio: '17:15',
+          horaFin: '17:30'
+        });
         tarea.notas = NOTAS_HISTORIA_WSP_PISC;
         tarea.prioridad = tarea.prioridad || 'media';
       }
@@ -1067,9 +1081,11 @@ function asegurarHistoriasHotspring(data) {
       tarea.titulo = '[HS] Subir historia con link WSP';
       tarea.clienteId = cliId;
       tarea.rolId = rolId;
-      tarea.fecha = fecha;
-      tarea.horaInicio = '17:15';
-      tarea.horaFin = '17:30';
+      sincronizarAgendaTarea(tarea, {
+        fecha,
+        horaInicio: '17:15',
+        horaFin: '17:30'
+      });
       tarea.notas = NOTAS_HISTORIA_WSP_HS;
       tarea.prioridad = tarea.prioridad || 'media';
     }
@@ -1371,9 +1387,11 @@ function asegurarTareasSIE(data) {
         tarea.titulo = plan.titulo;
         tarea.clienteId = SIE_CLI_ID;
         tarea.rolId = rolId;
-        tarea.fecha = fechaStr;
-        tarea.horaInicio = slot.horaInicio;
-        tarea.horaFin = slot.horaFin;
+        sincronizarAgendaTarea(tarea, {
+          fecha: fechaStr,
+          horaInicio: slot.horaInicio,
+          horaFin: slot.horaFin
+        });
         tarea.notas = plan.notas;
         tarea.prioridad = tarea.prioridad || 'media';
       }
@@ -1460,9 +1478,11 @@ function asegurarTareaEntregaSitioJM(data, fechaEntrega) {
       tarea.titulo = '[JM] Entrega sitio web';
       tarea.clienteId = JM_CLI_ID;
       tarea.rolId = rolId;
-      tarea.fecha = fechaEntrega;
-      tarea.horaInicio = slot.horaInicio || tarea.horaInicio || '14:00';
-      tarea.horaFin = slot.horaFin || tarea.horaFin || '16:00';
+      sincronizarAgendaTarea(tarea, {
+        fecha: fechaEntrega,
+        horaInicio: slot.horaInicio || tarea.horaInicio || '14:00',
+        horaFin: slot.horaFin || tarea.horaFin || '16:00'
+      });
       tarea.notas = `Entrega oficial del rediseño joyasmercury.cl · Fase 2 · ${fechaLarga}. Inicio ventana de 10 días de soporte incluido.`;
       tarea.prioridad = tarea.prioridad || 'alta';
     }
@@ -1519,9 +1539,11 @@ function asegurarTareasJoyasMercuryFase2(data) {
         tarea.titulo = plan.titulo;
         tarea.clienteId = JM_CLI_ID;
         tarea.rolId = rolId;
-        tarea.fecha = fechaStr;
-        tarea.horaInicio = slot.horaInicio;
-        tarea.horaFin = slot.horaFin;
+        sincronizarAgendaTarea(tarea, {
+          fecha: fechaStr,
+          horaInicio: slot.horaInicio,
+          horaFin: slot.horaFin
+        });
         tarea.notas = plan.notas;
         tarea.prioridad = tarea.prioridad || 'alta';
       }
@@ -1727,6 +1749,7 @@ function marcarTareaPendiente(t) {
   if (!t) return;
   if (!t.pendiente) t.fechaOriginal = t.fecha;
   t.pendiente = true;
+  fijarAgendaUsuario(t);
 }
 
 function quitarTareaPendiente(t, { fecha } = {}) {
@@ -1734,12 +1757,14 @@ function quitarTareaPendiente(t, { fecha } = {}) {
   t.pendiente = false;
   if (fecha) t.fecha = fecha;
   else if (t.fechaOriginal) t.fecha = t.fechaOriginal;
+  fijarAgendaUsuario(t);
 }
 
 function completarTarea(t) {
   if (!t) return;
   t.completada = true;
   t.pendiente = false;
+  fijarAgendaUsuario(t);
 }
 
 function agenteDe(cliente) {
@@ -3516,6 +3541,7 @@ function bindAccionesTarea(contenedor) {
       else if (btn.dataset.act === 'toggle') {
         t.completada = !t.completada;
         if (t.completada) t.pendiente = false;
+        fijarAgendaUsuario(t);
       } else if (btn.dataset.act === 'pendiente') {
         marcarTareaPendiente(t);
         mostrarToast('Tarea en Pendientes — es la misma tarea, sin duplicar');
@@ -4514,6 +4540,7 @@ function setupUI() {
     if (t.completada) t.pendiente = false;
     if (t.pendiente && !eraPendiente) t.fechaOriginal = t.fecha;
     if (!t.pendiente && t.fechaOriginal) delete t.fechaOriginal;
+    fijarAgendaUsuario(t);
     t.rolId = null;
 
     asignarRolesATareas(datos);

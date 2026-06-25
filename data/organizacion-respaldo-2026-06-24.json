@@ -394,7 +394,8 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "01"
+      "numeroHistorico": "01",
+      "agendaFijada": true
     },
     {
       "id": "mqscg79iquxgx",
@@ -407,7 +408,8 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "02"
+      "numeroHistorico": "02",
+      "agendaFijada": true
     },
     {
       "id": "mqscg79i03c8k",
@@ -499,22 +501,24 @@
       "notas": "Revisar y entregar solicitud de una parte específica del blog (Elementor / WordPress).",
       "prioridad": "alta",
       "completada": false,
-      "pendiente": false,
-      "numeroHistorico": "01"
+      "pendiente": true,
+      "numeroHistorico": "01",
+      "agendaFijada": true
     },
     {
       "id": "tarea-mkof-gantt-etapa2",
       "titulo": "[MKOF] Gantt etapa 2 post auditoría",
       "clienteId": "cli-mkof",
       "rolId": "rol-mkof-dev",
-      "fecha": "2026-06-24",
+      "fecha": "2026-06-25",
       "horaInicio": "17:00",
       "horaFin": "18:00",
       "notas": "Entregar Gantt de la etapa 2 post auditoría para establecer tiempos y entregables.",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "01"
+      "numeroHistorico": "01",
+      "agendaFijada": true
     },
     {
       "id": "tarea-cli-piscineria-202605-pub-1",
@@ -752,7 +756,8 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "08"
+      "numeroHistorico": "08",
+      "agendaFijada": true
     },
     {
       "id": "tarea-cli-piscineria-202607-pub-1",
@@ -1436,9 +1441,11 @@
       "horaFin": "12:00",
       "notas": "Etapa 1 · Menú y limpieza visual (3d). Revisar menú actual, identificar bloques repetidos y definir estructura con colecciones como protagonista.",
       "prioridad": "alta",
-      "completada": false,
-      "pendiente": false,
-      "numeroHistorico": "01"
+      "completada": true,
+      "pendiente": true,
+      "numeroHistorico": "01",
+      "fechaOriginal": "2026-06-24",
+      "agendaFijada": true
     },
     {
       "id": "tarea-jm-f2-02",
@@ -1461,7 +1468,8 @@
           }
         ]
       },
-      "numeroHistorico": "02"
+      "numeroHistorico": "02",
+      "agendaFijada": true
     },
     {
       "id": "tarea-jm-f2-03",
@@ -1475,7 +1483,8 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "03"
+      "numeroHistorico": "03",
+      "agendaFijada": true
     },
     {
       "id": "tarea-jm-f2-04",
@@ -1489,7 +1498,8 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "04"
+      "numeroHistorico": "04",
+      "agendaFijada": true
     },
     {
       "id": "tarea-jm-f2-05",
@@ -1503,7 +1513,8 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "05"
+      "numeroHistorico": "05",
+      "agendaFijada": true
     },
     {
       "id": "tarea-jm-f2-06",
@@ -1783,7 +1794,8 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "01"
+      "numeroHistorico": "01",
+      "agendaFijada": true
     },
     {
       "id": "tarea-sie-02",
@@ -1797,7 +1809,8 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "02"
+      "numeroHistorico": "02",
+      "agendaFijada": true
     },
     {
       "id": "tarea-sie-03",
@@ -2035,7 +2048,8 @@
       "completada": false,
       "pendiente": false,
       "notas": "Subir historia en Instagram (repost del feed) con link de WhatsApp. Verificar que el enlace WSP abra correctamente. Agregar música si no es video.",
-      "numeroHistorico": "09"
+      "numeroHistorico": "09",
+      "agendaFijada": true
     },
     {
       "id": "tarea-pisc-historia-2026-06-26",
@@ -2049,7 +2063,8 @@
       "completada": false,
       "pendiente": false,
       "notas": "Subir historia en Instagram (repost del feed) con link de WhatsApp. Verificar que el enlace WSP abra correctamente. Agregar música si no es video.",
-      "numeroHistorico": "10"
+      "numeroHistorico": "10",
+      "agendaFijada": true
     },
     {
       "id": "tarea-pisc-historia-2026-06-29",
@@ -2106,6 +2121,229 @@
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "25"
+    },
+    {
+      "id": "tarea-cli-piscineria-202606-pub-1",
+      "titulo": "[PISC] Pub contenido 1",
+      "clienteId": "cli-piscineria",
+      "rolId": "rol-pisc-cm",
+      "fecha": "2026-06-02",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": true,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-piscineria-202606-pub-2",
+      "titulo": "[PISC] Pub contenido 2",
+      "clienteId": "cli-piscineria",
+      "rolId": "rol-pisc-cm",
+      "fecha": "2026-06-02",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": true,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-piscineria-202606-pub-3",
+      "titulo": "[PISC] Pub contenido 3",
+      "clienteId": "cli-piscineria",
+      "rolId": "rol-pisc-cm",
+      "fecha": "2026-06-02",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": true,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-piscineria-202606-pub-4",
+      "titulo": "[PISC] Pub contenido 4",
+      "clienteId": "cli-piscineria",
+      "rolId": "rol-pisc-cm",
+      "fecha": "2026-06-02",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": true,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-piscineria-202606-pub-6",
+      "titulo": "[PISC] Pub contenido 6",
+      "clienteId": "cli-piscineria",
+      "rolId": "rol-pisc-cm",
+      "fecha": "2026-06-02",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": true,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-piscineria-202606-pub-5",
+      "titulo": "[PISC] Pub contenido 5",
+      "clienteId": "cli-piscineria",
+      "rolId": "rol-pisc-cm",
+      "fecha": "2026-06-24",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": true,
+      "pendiente": false,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-piscineria-202606-pub-7",
+      "titulo": "[PISC] Pub contenido 7",
+      "clienteId": "cli-piscineria",
+      "rolId": "rol-pisc-cm",
+      "fecha": "2026-06-24",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": true,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-piscineria-202606-pub-8",
+      "titulo": "[PISC] Pub contenido 8",
+      "clienteId": "cli-piscineria",
+      "rolId": "rol-pisc-cm",
+      "fecha": "2026-06-26",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": false,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-hotspring-202606-pub-1",
+      "titulo": "[HS] Pub contenido 1",
+      "clienteId": "cli-hotspring",
+      "rolId": "rol-hs-cm",
+      "fecha": "2026-06-03",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": true,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-hotspring-202606-pub-2",
+      "titulo": "[HS] Pub contenido 2",
+      "clienteId": "cli-hotspring",
+      "rolId": "rol-hs-cm",
+      "fecha": "2026-06-03",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": true,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-hotspring-202606-pub-3",
+      "titulo": "[HS] Pub contenido 3",
+      "clienteId": "cli-hotspring",
+      "rolId": "rol-hs-cm",
+      "fecha": "2026-06-03",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": true,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-hotspring-202606-pub-4",
+      "titulo": "[HS] Pub contenido 4",
+      "clienteId": "cli-hotspring",
+      "rolId": "rol-hs-cm",
+      "fecha": "2026-06-03",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": true,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-hotspring-202606-pub-5",
+      "titulo": "[HS] Pub contenido 5",
+      "clienteId": "cli-hotspring",
+      "rolId": "rol-hs-cm",
+      "fecha": "2026-06-03",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": true,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-hotspring-202606-pub-6",
+      "titulo": "[HS] Pub contenido 6",
+      "clienteId": "cli-hotspring",
+      "rolId": "rol-hs-cm",
+      "fecha": "2026-06-03",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": true,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-cli-hotspring-202606-pub-7",
+      "titulo": "[HS] Pub contenido 7",
+      "clienteId": "cli-hotspring",
+      "rolId": "rol-hs-cm",
+      "fecha": "2026-06-25",
+      "horaInicio": "10:00",
+      "horaFin": "10:45",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": false,
+      "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-ts-carga-masiva-28",
+      "titulo": "[TS] Carga masiva",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-wp",
+      "fecha": "2026-06-28",
+      "horaInicio": "09:30",
+      "horaFin": "12:00",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "agendaFijada": true
     }
   ],
   "citasSalud": [
@@ -2152,5 +2390,6 @@
       "titulo": "Reunión ECR",
       "notas": "Reunión con cliente"
     }
-  ]
+  ],
+  "ultimaVisita": "2026-06-25"
 }
