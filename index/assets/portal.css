@@ -182,3 +182,7 @@ body {
   font-size: 0.82rem;
   color: var(--muted);
 }
+
+.portal-grid--proyectos {
+  margin-top: 0.75rem;
+}

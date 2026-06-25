@@ -86,6 +86,15 @@ window.CLIENTES_PORTAL = [
     tipo: 'Freelance',
     color: { border: '#e8c4a8', bg: '#fdf4ec', text: '#9a6a4a' },
     agente: 'Diseño freelance',
-    resumen: 'Piezas gráficas y visuales según encargo esporádico.'
+    resumen: 'Encargos esporádicos. Cada proyecto tiene su propia identidad y manual de marca.',
+    proyectos: [
+      {
+        codigo: 'CLA',
+        nombre: 'Caja Los Andes',
+        archivo: 'DesafioLatam/CLA.html',
+        resumen: 'Programa IA — certificados modulares Fase 1, 2, 3 y final (1123×794 px).',
+        color: { border: '#1a6b4a', bg: '#edf7f2', text: '#1a5c40' }
+      }
+    ]
   }
 ];

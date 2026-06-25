@@ -13,6 +13,27 @@
 
   document.title = `${c.nombre} · Clientes`;
 
+  const proyectosHtml =
+    c.proyectos?.length
+      ? `<section>
+          <h2>Proyectos (identidad separada)</h2>
+          <p>Cada proyecto mantiene su manual de marca y entregables sin mezclar gráficas.</p>
+          <div class="portal-grid portal-grid--proyectos">
+            ${c.proyectos
+              .map(
+                (p) => `
+              <a href="${p.archivo}" class="portal-card"
+                 style="--card-border:${p.color.border};--card-bg:${p.color.bg};--card-text:${p.color.text}">
+                <div class="portal-card__tipo">${p.codigo}</div>
+                <h2 class="portal-card__nombre">${p.nombre}</h2>
+                <div class="portal-card__abrev">${p.resumen}</div>
+              </a>`
+              )
+              .join('')}
+          </div>
+        </section>`
+      : '';
+
   root.innerHTML = `
     <article class="portal-cliente"
       style="--card-border:${c.color.border};--card-bg:${c.color.bg};--card-text:${c.color.text}">
@@ -23,6 +44,7 @@
         <h2>Resumen</h2>
         <p>${c.resumen}</p>
       </section>
+      ${proyectosHtml}
       <section>
         <h2>Enlaces</h2>
         <ul>
@@ -33,8 +55,7 @@
       </section>
       <a href="../../index.html" class="portal-app-link">Ir al organizador →</a>
       <p class="portal-paso">
-        <strong>Paso 1 completado:</strong> ficha estática. En el Paso 2 conectaremos Laravel + SQL
-        para cargar tareas y documentos desde el servidor.
+        <strong>ADL multi-proyecto:</strong> usa las fichas de proyecto arriba para no confundir identidades visuales.
       </p>
     </article>
   `;

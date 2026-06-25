@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794">
+  <defs>
+    <linearGradient id="hdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#007A3D"/>
+      <stop offset="100%" stop-color="#00A651"/>
+    </linearGradient>
+  </defs>
+  <rect width="1123" height="140" fill="url(#hdr)"/>
+  <rect y="140" width="1123" height="654" fill="#F7FAF8"/>
+  <rect x="24" y="24" width="1075" height="746" fill="none" stroke="#F5B335" stroke-width="4"/>
+  <text x="48" y="58" fill="#fff" font-family="Georgia, serif" font-size="28" font-weight="bold">Caja Los Andes</text>
+  <text x="48" y="92" fill="#fff" font-family="system-ui, sans-serif" font-size="18">Programa de Formación en Inteligencia Artificial</text>
+  <text x="48" y="118" fill="#fff" font-family="system-ui, sans-serif" font-size="14">Proyecto CLA · Desafío Latam</text>
+  <text x="561.5" y="210" fill="#1A2E24" font-family="Georgia, serif" font-size="42" font-weight="bold" text-anchor="middle">CERTIFICADO</text>
+  <text x="561.5" y="250" fill="#007A3D" font-family="system-ui, sans-serif" font-size="24" text-anchor="middle">de Aprobación</text>
+  <text x="561.5" y="310" fill="#1A2E24" font-family="system-ui, sans-serif" font-size="18" text-anchor="middle">Se certifica que</text>
+  <text x="561.5" y="365" fill="#1A2E24" font-family="Georgia, serif" font-size="36" font-weight="bold" text-anchor="middle">Nombre Participante</text>
+  <text x="561.5" y="420" fill="#1A2E24" font-family="system-ui, sans-serif" font-size="18" text-anchor="middle">Fase 1: Webinars de exploración tecnológica</text>
+  <text x="561.5" y="490" fill="#1A2E24" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle">16 horas · sincrónico  ·  Asistencia e 75%</text>
+  <rect x="441.5" y="674" width="240" height="3" fill="#F5B335"/>
+  <text x="561.5" y="709" fill="#6a7a72" font-family="system-ui, sans-serif" font-size="13" text-anchor="middle">Caja Los Andes · CLA · Desafío Latam</text>
+  <text x="561.5" y="732" fill="#6a7a72" font-family="system-ui, sans-serif" font-size="13" text-anchor="middle">1123 × 794 px</text>
+</svg>

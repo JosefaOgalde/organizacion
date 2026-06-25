@@ -41,6 +41,14 @@ http://localhost:3000/index/clientes/Trendseeker.html
 
 También funciona con doble clic (`file://`) porque no depende del servidor.
 
+Ruta CLA (Caja Los Andes):
+
+```
+index/clientes/DesafioLatam/CLA.html
+```
+
+Certificados modulares: Fase 1 (participación/aprobación), Fase 2, Fase 3 (4 especializaciones) y certificado final. Export PNG 1123×794 px.
+
 ## Flujo diario
 
 1. Al abrir la app, se muestra la semana actual con el día de hoy resaltado.
