@@ -395,7 +395,8 @@
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "01",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "mqscg79iquxgx",
@@ -409,7 +410,8 @@
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "02",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "mqscg79i03c8k",
@@ -422,7 +424,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "03"
+      "numeroHistorico": "03",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-reporte-2026-07-01",
@@ -435,7 +439,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "04"
+      "numeroHistorico": "04",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-revision-descuento-jul",
@@ -449,7 +455,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Verificar que los banners no estén publicados y que los productos que terminaron su descuento no se vean en precio promoción en el sitio.",
-      "numeroHistorico": "05"
+      "numeroHistorico": "05",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-reporte-2026-05-01",
@@ -462,7 +470,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "06"
+      "numeroHistorico": "06",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-reporte-2026-08-01",
@@ -475,7 +485,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "07"
+      "numeroHistorico": "07",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-reporte-2026-09-01",
@@ -488,7 +500,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "08"
+      "numeroHistorico": "08",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-ecr-blog-24",
@@ -503,7 +517,8 @@
       "completada": false,
       "pendiente": true,
       "numeroHistorico": "01",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-mkof-gantt-etapa2",
@@ -518,7 +533,8 @@
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "01",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202605-pub-1",
@@ -532,7 +548,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "01"
+      "numeroHistorico": "01",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202605-pub-2",
@@ -546,7 +564,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "02"
+      "numeroHistorico": "02",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202605-pub-3",
@@ -560,7 +580,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "03"
+      "numeroHistorico": "03",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202605-pub-4",
@@ -574,7 +596,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "04"
+      "numeroHistorico": "04",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202605-pub-5",
@@ -588,7 +612,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "05"
+      "numeroHistorico": "05",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202605-pub-6",
@@ -602,7 +628,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "06"
+      "numeroHistorico": "06",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202605-pub-7",
@@ -616,7 +644,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "07"
+      "numeroHistorico": "07",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202605-pub-8",
@@ -630,7 +660,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "08"
+      "numeroHistorico": "08",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202605-pub-1",
@@ -644,7 +676,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "01"
+      "numeroHistorico": "01",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202605-pub-2",
@@ -658,7 +692,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "02"
+      "numeroHistorico": "02",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202605-pub-3",
@@ -672,7 +708,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "03"
+      "numeroHistorico": "03",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202605-pub-4",
@@ -686,7 +724,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "04"
+      "numeroHistorico": "04",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202605-pub-5",
@@ -700,7 +740,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "05"
+      "numeroHistorico": "05",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202605-pub-6",
@@ -714,7 +756,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "06"
+      "numeroHistorico": "06",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202605-pub-7",
@@ -728,7 +772,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "07"
+      "numeroHistorico": "07",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202605-pub-8",
@@ -742,7 +788,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "08"
+      "numeroHistorico": "08",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202606-pub-8",
@@ -757,7 +805,8 @@
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
       "numeroHistorico": "08",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202607-pub-1",
@@ -771,7 +820,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "01"
+      "numeroHistorico": "01",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202607-pub-2",
@@ -785,7 +836,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "02"
+      "numeroHistorico": "02",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202607-pub-3",
@@ -799,7 +852,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "03"
+      "numeroHistorico": "03",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202607-pub-4",
@@ -813,7 +868,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "04"
+      "numeroHistorico": "04",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202607-pub-5",
@@ -827,7 +884,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "05"
+      "numeroHistorico": "05",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202607-pub-6",
@@ -841,7 +900,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "06"
+      "numeroHistorico": "06",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202607-pub-7",
@@ -855,7 +916,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "07"
+      "numeroHistorico": "07",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202607-pub-8",
@@ -869,7 +932,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "08"
+      "numeroHistorico": "08",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202607-pub-1",
@@ -883,7 +948,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "01"
+      "numeroHistorico": "01",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202607-pub-2",
@@ -897,7 +964,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "02"
+      "numeroHistorico": "02",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202607-pub-3",
@@ -911,7 +980,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "03"
+      "numeroHistorico": "03",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202607-pub-4",
@@ -925,7 +996,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "04"
+      "numeroHistorico": "04",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202607-pub-5",
@@ -939,7 +1012,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "05"
+      "numeroHistorico": "05",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202607-pub-6",
@@ -953,7 +1028,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "06"
+      "numeroHistorico": "06",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202607-pub-7",
@@ -967,7 +1044,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "07"
+      "numeroHistorico": "07",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202607-pub-8",
@@ -981,7 +1060,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "08"
+      "numeroHistorico": "08",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202608-pub-1",
@@ -995,7 +1076,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "01"
+      "numeroHistorico": "01",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202608-pub-2",
@@ -1009,7 +1092,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "02"
+      "numeroHistorico": "02",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202608-pub-3",
@@ -1023,7 +1108,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "03"
+      "numeroHistorico": "03",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202608-pub-4",
@@ -1037,7 +1124,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "04"
+      "numeroHistorico": "04",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202608-pub-5",
@@ -1051,7 +1140,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "05"
+      "numeroHistorico": "05",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202608-pub-6",
@@ -1065,7 +1156,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "06"
+      "numeroHistorico": "06",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202608-pub-7",
@@ -1079,7 +1172,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "07"
+      "numeroHistorico": "07",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202608-pub-8",
@@ -1093,7 +1188,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "08"
+      "numeroHistorico": "08",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202608-pub-1",
@@ -1107,7 +1204,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "01"
+      "numeroHistorico": "01",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202608-pub-2",
@@ -1121,7 +1220,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "02"
+      "numeroHistorico": "02",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202608-pub-3",
@@ -1135,7 +1236,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "03"
+      "numeroHistorico": "03",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202608-pub-4",
@@ -1149,7 +1252,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "04"
+      "numeroHistorico": "04",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202608-pub-5",
@@ -1163,7 +1268,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "05"
+      "numeroHistorico": "05",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202608-pub-6",
@@ -1177,7 +1284,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "06"
+      "numeroHistorico": "06",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202608-pub-7",
@@ -1191,7 +1300,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "07"
+      "numeroHistorico": "07",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202608-pub-8",
@@ -1205,7 +1316,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "08"
+      "numeroHistorico": "08",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202609-pub-1",
@@ -1219,7 +1332,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "01"
+      "numeroHistorico": "01",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202609-pub-2",
@@ -1233,7 +1348,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "02"
+      "numeroHistorico": "02",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202609-pub-3",
@@ -1247,7 +1364,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "03"
+      "numeroHistorico": "03",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202609-pub-4",
@@ -1261,7 +1380,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "04"
+      "numeroHistorico": "04",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202609-pub-5",
@@ -1275,7 +1396,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "05"
+      "numeroHistorico": "05",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202609-pub-6",
@@ -1289,7 +1412,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "06"
+      "numeroHistorico": "06",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202609-pub-7",
@@ -1303,7 +1428,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "07"
+      "numeroHistorico": "07",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202609-pub-8",
@@ -1317,7 +1444,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "08"
+      "numeroHistorico": "08",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202609-pub-1",
@@ -1331,7 +1460,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "01"
+      "numeroHistorico": "01",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202609-pub-2",
@@ -1345,7 +1476,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "02"
+      "numeroHistorico": "02",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202609-pub-3",
@@ -1359,7 +1492,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "03"
+      "numeroHistorico": "03",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202609-pub-4",
@@ -1373,7 +1508,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "04"
+      "numeroHistorico": "04",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202609-pub-5",
@@ -1387,7 +1524,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "05"
+      "numeroHistorico": "05",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202609-pub-6",
@@ -1401,7 +1540,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "06"
+      "numeroHistorico": "06",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202609-pub-7",
@@ -1415,7 +1556,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "07"
+      "numeroHistorico": "07",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202609-pub-8",
@@ -1429,7 +1572,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "numeroHistorico": "08"
+      "numeroHistorico": "08",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-01",
@@ -1445,7 +1590,8 @@
       "pendiente": true,
       "numeroHistorico": "01",
       "fechaOriginal": "2026-06-24",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-02",
@@ -1469,7 +1615,8 @@
         ]
       },
       "numeroHistorico": "02",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-03",
@@ -1484,7 +1631,8 @@
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "03",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-04",
@@ -1499,7 +1647,8 @@
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "04",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-05",
@@ -1514,7 +1663,8 @@
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "05",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-06",
@@ -1528,7 +1678,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "06"
+      "numeroHistorico": "06",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-07",
@@ -1542,7 +1694,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "07"
+      "numeroHistorico": "07",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-08",
@@ -1556,7 +1710,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "08"
+      "numeroHistorico": "08",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-09",
@@ -1570,7 +1726,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "09"
+      "numeroHistorico": "09",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-10",
@@ -1584,7 +1742,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "10"
+      "numeroHistorico": "10",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-11",
@@ -1598,7 +1758,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "11"
+      "numeroHistorico": "11",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-12",
@@ -1612,7 +1774,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "12"
+      "numeroHistorico": "12",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-13",
@@ -1626,7 +1790,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "13"
+      "numeroHistorico": "13",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-14",
@@ -1640,7 +1806,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "14"
+      "numeroHistorico": "14",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-15",
@@ -1654,7 +1822,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "15"
+      "numeroHistorico": "15",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-16",
@@ -1668,7 +1838,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "16"
+      "numeroHistorico": "16",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-17",
@@ -1682,7 +1854,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "17"
+      "numeroHistorico": "17",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-18",
@@ -1696,7 +1870,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "18"
+      "numeroHistorico": "18",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-19",
@@ -1710,7 +1886,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "19"
+      "numeroHistorico": "19",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-20",
@@ -1724,7 +1902,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "20"
+      "numeroHistorico": "20",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-21",
@@ -1738,7 +1918,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "21"
+      "numeroHistorico": "21",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-22",
@@ -1752,7 +1934,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "22"
+      "numeroHistorico": "22",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-23",
@@ -1766,7 +1950,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "23"
+      "numeroHistorico": "23",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-f2-24",
@@ -1780,7 +1966,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "24"
+      "numeroHistorico": "24",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-01",
@@ -1795,7 +1983,8 @@
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "01",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-02",
@@ -1810,7 +1999,8 @@
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "02",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-03",
@@ -1824,7 +2014,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "03"
+      "numeroHistorico": "03",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-04",
@@ -1838,7 +2030,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "04"
+      "numeroHistorico": "04",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-05",
@@ -1852,7 +2046,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "05"
+      "numeroHistorico": "05",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-06",
@@ -1866,7 +2062,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "06"
+      "numeroHistorico": "06",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-07",
@@ -1880,7 +2078,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "07"
+      "numeroHistorico": "07",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-08",
@@ -1894,7 +2094,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "08"
+      "numeroHistorico": "08",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-09",
@@ -1908,7 +2110,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "09"
+      "numeroHistorico": "09",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-10",
@@ -1922,7 +2126,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "10"
+      "numeroHistorico": "10",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-11",
@@ -1936,7 +2142,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "11"
+      "numeroHistorico": "11",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-12",
@@ -1950,7 +2158,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "12"
+      "numeroHistorico": "12",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-13",
@@ -1964,7 +2174,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "13"
+      "numeroHistorico": "13",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-14",
@@ -1978,7 +2190,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "14"
+      "numeroHistorico": "14",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-15",
@@ -1992,7 +2206,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "15"
+      "numeroHistorico": "15",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-16",
@@ -2006,7 +2222,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "16"
+      "numeroHistorico": "16",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-17",
@@ -2020,7 +2238,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "17"
+      "numeroHistorico": "17",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-sie-18",
@@ -2034,7 +2254,9 @@
       "prioridad": "media",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "18"
+      "numeroHistorico": "18",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-pisc-historia-2026-06-25",
@@ -2049,7 +2271,8 @@
       "pendiente": false,
       "notas": "Subir historia en Instagram (repost del feed) con link de WhatsApp. Verificar que el enlace WSP abra correctamente. Agregar música si no es video.",
       "numeroHistorico": "09",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-pisc-historia-2026-06-26",
@@ -2064,7 +2287,8 @@
       "pendiente": false,
       "notas": "Subir historia en Instagram (repost del feed) con link de WhatsApp. Verificar que el enlace WSP abra correctamente. Agregar música si no es video.",
       "numeroHistorico": "10",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-pisc-historia-2026-06-29",
@@ -2078,7 +2302,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Subir historia en Instagram (repost del feed) con link de WhatsApp. Verificar que el enlace WSP abra correctamente. Agregar música si no es video.",
-      "numeroHistorico": "11"
+      "numeroHistorico": "11",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-pisc-historia-2026-06-30",
@@ -2092,7 +2318,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Subir historia en Instagram (repost del feed) con link de WhatsApp. Verificar que el enlace WSP abra correctamente. Agregar música si no es video.",
-      "numeroHistorico": "12"
+      "numeroHistorico": "12",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-hs-historia-2026-06-30",
@@ -2106,7 +2334,9 @@
       "completada": false,
       "pendiente": false,
       "notas": "Subir historia en Instagram (repost del feed) con link de WhatsApp. Verificar que el enlace WSP abra correctamente. Agregar música si no es video.",
-      "numeroHistorico": "09"
+      "numeroHistorico": "09",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-jm-entrega-sitio",
@@ -2120,7 +2350,9 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "numeroHistorico": "25"
+      "numeroHistorico": "25",
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202606-pub-1",
@@ -2134,7 +2366,8 @@
       "completada": false,
       "pendiente": true,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202606-pub-2",
@@ -2148,7 +2381,8 @@
       "completada": false,
       "pendiente": true,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202606-pub-3",
@@ -2162,7 +2396,8 @@
       "completada": false,
       "pendiente": true,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202606-pub-4",
@@ -2176,7 +2411,8 @@
       "completada": false,
       "pendiente": true,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202606-pub-6",
@@ -2190,7 +2426,8 @@
       "completada": false,
       "pendiente": true,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202606-pub-5",
@@ -2204,7 +2441,8 @@
       "completada": true,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202606-pub-7",
@@ -2218,7 +2456,8 @@
       "completada": false,
       "pendiente": true,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-piscineria-202606-pub-8",
@@ -2232,7 +2471,8 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202606-pub-1",
@@ -2246,7 +2486,8 @@
       "completada": false,
       "pendiente": true,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202606-pub-2",
@@ -2260,7 +2501,8 @@
       "completada": false,
       "pendiente": true,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202606-pub-3",
@@ -2274,7 +2516,8 @@
       "completada": false,
       "pendiente": true,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202606-pub-4",
@@ -2288,7 +2531,8 @@
       "completada": false,
       "pendiente": true,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202606-pub-5",
@@ -2302,7 +2546,8 @@
       "completada": false,
       "pendiente": true,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202606-pub-6",
@@ -2316,7 +2561,8 @@
       "completada": false,
       "pendiente": true,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-cli-hotspring-202606-pub-7",
@@ -2330,7 +2576,8 @@
       "completada": false,
       "pendiente": false,
       "notas": "Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.",
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-carga-masiva-28",
@@ -2343,7 +2590,8 @@
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
-      "agendaFijada": true
+      "agendaFijada": true,
+      "estadoFijado": true
     }
   ],
   "citasSalud": [
@@ -2391,5 +2639,7 @@
       "notas": "Reunión con cliente"
     }
   ],
-  "ultimaVisita": "2026-06-25"
+  "ultimaVisita": "2026-06-25",
+  "respaldoVersion": 3,
+  "respaldoActualizado": "2026-06-25"
 }

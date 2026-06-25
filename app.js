@@ -610,8 +610,22 @@ function sincronizarAgendaTarea(tarea, { fecha, horaInicio, horaFin } = {}) {
   if (horaFin != null) tarea.horaFin = horaFin;
 }
 
+/** Las tareas existentes conservan hecha / pendiente — solo las nuevas usan valores por defecto. */
+function sincronizarEstadoTarea(tarea, { completada, pendiente } = {}) {
+  if (!tarea) return;
+  if (tarea.estadoFijado) return;
+  if (completada != null && tarea.completada == null) tarea.completada = completada;
+  if (pendiente != null && tarea.pendiente == null) tarea.pendiente = pendiente;
+}
+
 function fijarAgendaUsuario(tarea) {
-  if (tarea) tarea.agendaFijada = true;
+  if (!tarea) return;
+  tarea.agendaFijada = true;
+  tarea.estadoFijado = true;
+}
+
+function fijarEstadoUsuario(tarea) {
+  if (tarea) tarea.estadoFijado = true;
 }
 
 function fingerprintTarea(t) {
@@ -1750,6 +1764,7 @@ function marcarTareaPendiente(t) {
   if (!t.pendiente) t.fechaOriginal = t.fecha;
   t.pendiente = true;
   fijarAgendaUsuario(t);
+  fijarEstadoUsuario(t);
 }
 
 function quitarTareaPendiente(t, { fecha } = {}) {
@@ -1758,6 +1773,7 @@ function quitarTareaPendiente(t, { fecha } = {}) {
   if (fecha) t.fecha = fecha;
   else if (t.fechaOriginal) t.fecha = t.fechaOriginal;
   fijarAgendaUsuario(t);
+  fijarEstadoUsuario(t);
 }
 
 function completarTarea(t) {
@@ -1765,6 +1781,7 @@ function completarTarea(t) {
   t.completada = true;
   t.pendiente = false;
   fijarAgendaUsuario(t);
+  fijarEstadoUsuario(t);
 }
 
 function agenteDe(cliente) {
@@ -3542,6 +3559,7 @@ function bindAccionesTarea(contenedor) {
         t.completada = !t.completada;
         if (t.completada) t.pendiente = false;
         fijarAgendaUsuario(t);
+        fijarEstadoUsuario(t);
       } else if (btn.dataset.act === 'pendiente') {
         marcarTareaPendiente(t);
         mostrarToast('Tarea en Pendientes — es la misma tarea, sin duplicar');
@@ -4541,6 +4559,7 @@ function setupUI() {
     if (t.pendiente && !eraPendiente) t.fechaOriginal = t.fecha;
     if (!t.pendiente && t.fechaOriginal) delete t.fechaOriginal;
     fijarAgendaUsuario(t);
+    fijarEstadoUsuario(t);
     t.rolId = null;
 
     asignarRolesATareas(datos);
@@ -4613,18 +4632,22 @@ async function fetchRespaldoDefecto() {
 
 async function cargarDatosInicio() {
   const params = new URLSearchParams(location.search || '');
-  const forzarRespaldo = params.get('respaldo') === 'importar';
-  const hayLocal = !!localStorage.getItem(STORAGE_KEY);
 
-  if (hayLocal && !forzarRespaldo) return cargar();
+  // ?local=1 → conservar lo del navegador (solo si hiciste cambios hoy sin subir respaldo)
+  if (params.get('local') === '1') {
+    return { datos: cargar(), origen: 'local' };
+  }
 
   const remoto = await fetchRespaldoDefecto();
   if (remoto) {
+    const datos = normalizarDatos(remoto);
+    datos.respaldoVersion = remoto.respaldoVersion || 1;
+    datos.respaldoActualizado = remoto.respaldoActualizado || '';
     console.info('Respaldo oficial cargado:', RESPALDO_DEFECTO_URL);
-    return { datos: normalizarDatos(remoto), origen: forzarRespaldo ? 'forzado' : 'respaldo' };
+    return { datos, origen: 'respaldo' };
   }
 
-  return { datos: cargar(), origen: hayLocal ? 'local' : 'semilla' };
+  return { datos: cargar(), origen: 'local' };
 }
 
 function init() {
@@ -4655,8 +4678,10 @@ async function iniciarApp() {
     mostrarVista('mes', { activarTab: true });
     render();
   }
-  if (origenCarga === 'respaldo' || origenCarga === 'forzado') {
-    mostrarToast('Datos del respaldo 24-jun cargados');
+  if (origenCarga === 'respaldo') {
+    mostrarToast('Calendario cargado desde respaldo — sin reconfigurar');
+  } else if (location.protocol === 'file:') {
+    mostrarToast('Abre con npx serve . para cargar el respaldo automáticamente');
   }
 }
 

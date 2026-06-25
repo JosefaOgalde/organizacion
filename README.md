@@ -69,30 +69,31 @@ data/organizacion-respaldo-2026-06-24.json
 
 (123 tareas · 8 clientes · ficha JM completa)
 
-### Primera vez en un PC nuevo
+### Primera vez en un PC nuevo (o después de git pull)
 
 ```powershell
 cd "C:\Users\Josefa Ogalde\organizacion"
+git pull
 npx serve .
 ```
 
-Abre `http://localhost:3000` — si el navegador no tiene datos guardados, **carga el respaldo automáticamente**.
+Abre `http://localhost:3000` — **carga el respaldo solo**, con tareas hechas, fechas y estados ya guardados. No hace falta marcar nada de nuevo.
 
-Para forzar reimportar (pisar lo del navegador):
+Solo usa `?local=1` si hiciste cambios hoy en el navegador y aún no subiste un respaldo nuevo:
 
 ```
-http://localhost:3000/index.html?respaldo=importar
-```
-
-O en consola (F12):
-
-```js
-importarRespaldoDefecto()
+http://localhost:3000/index.html?local=1
 ```
 
 ### Guardar cambios nuevos
 
-Los datos del día a día viven en **localStorage del navegador**. Antes de cambiar de PC:
+Cuando marques tareas o muevas fechas, al cerrar el día:
+
+```js
+descargarRespaldo()   // Descarga JSON con todo
+```
+
+Guarda el archivo en `data/` (reemplaza el anterior) y haz commit con **SUBIR.bat**.
 
 ```js
 descargarRespaldo()   // Descarga JSON con todo
