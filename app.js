@@ -1805,6 +1805,18 @@ function cargar() {
   return normalizarDatos(datosIniciales());
 }
 
+/** ¿Hay datos guardados en este navegador? (borrados y ajustes del usuario) */
+function tieneDatosLocales() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    return d && Array.isArray(d.tareas) && Array.isArray(d.clientes);
+  } catch {
+    return false;
+  }
+}
+
 function guardar() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
 }
@@ -4815,8 +4827,15 @@ async function fetchRespaldoDefecto() {
 async function cargarDatosInicio() {
   const params = new URLSearchParams(location.search || '');
 
-  // ?local=1 → conservar lo del navegador (solo si hiciste cambios hoy sin subir respaldo)
-  if (params.get('local') === '1') {
+  // Forzar respaldo del repo (?respaldo=1) — ignora cambios locales del navegador
+  const forzarRespaldo = params.get('respaldo') === '1';
+  if (!forzarRespaldo && params.get('local') === '1') {
+    return { datos: cargar(), origen: 'local' };
+  }
+
+  // Por defecto: conservar lo del navegador (borrados, fechas, estados)
+  if (!forzarRespaldo && tieneDatosLocales()) {
+    console.info('Datos cargados desde localStorage (tus cambios locales)');
     return { datos: cargar(), origen: 'local' };
   }
 
@@ -4861,7 +4880,9 @@ async function iniciarApp() {
     render();
   }
   if (origenCarga === 'respaldo') {
-    mostrarToast('Calendario cargado desde respaldo — sin reconfigurar');
+    mostrarToast('Calendario cargado desde respaldo — primera vez en este navegador');
+  } else if (origenCarga === 'local') {
+    mostrarToast('Calendario con tus cambios guardados');
   } else if (location.protocol === 'file:') {
     mostrarToast('Abre con npx serve . para cargar el respaldo automáticamente');
   }

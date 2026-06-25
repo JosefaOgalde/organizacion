@@ -107,13 +107,15 @@ git pull
 npx serve .
 ```
 
-Abre `http://localhost:3000` — **carga el respaldo solo**, con tareas hechas, fechas y estados ya guardados. No hace falta marcar nada de nuevo.
+Abre `http://localhost:3000` — la **primera vez** carga el respaldo del repo. Después **conserva tus cambios** (borrados, fechas, estados) en este navegador.
 
-Solo usa `?local=1` si hiciste cambios hoy en el navegador y aún no subiste un respaldo nuevo:
+Para **volver al respaldo del repo** (ignora cambios locales):
 
 ```
-http://localhost:3000/index.html?local=1
+http://localhost:3000/index.html?respaldo=1
 ```
+
+Después de ajustar tareas, descarga tu respaldo con el botón **↓ Respaldo** para no perderlos al cambiar de PC.
 
 ### Guardar cambios nuevos
 
