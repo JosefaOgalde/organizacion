@@ -1714,6 +1714,7 @@ function normalizarDatos(data) {
   initContextoCliente(data);
   aplicarTareasEliminadas(data);
   normalizarCitasSalud(data);
+  normalizarReunionesClientes(data);
   asegurarReunionesClientes(data);
   normalizarTareasTS(data);
   asegurarClienteECR(data);
@@ -3369,6 +3370,100 @@ function normalizarCitasSalud(data) {
   return data;
 }
 
+function normalizarReunionesClientes(data) {
+  if (!Array.isArray(data.reunionesClientes)) data.reunionesClientes = [];
+  data.reunionesClientes.forEach(r => {
+    if (r.estado && !ESTADOS_CITA[r.estado]) delete r.estado;
+  });
+  return data;
+}
+
+function etiquetaEstadoReunion(r) {
+  return ESTADOS_CITA[r.estado]?.label || '';
+}
+
+function claseReunionEstado(r) {
+  return r.estado ? ` reunion--${r.estado}` : '';
+}
+
+function htmlBadgeEstadoReunion(r) {
+  if (!r.estado) return '';
+  const e = ESTADOS_CITA[r.estado];
+  return `<span class="cita-estado cita-estado--${r.estado}">${e.icon} ${e.label}</span>`;
+}
+
+function htmlBotonesReunion(r) {
+  const fechaOrig = r.fechaOriginal && r.fechaOriginal !== r.fecha
+    ? `<span class="reunion-fecha-orig">Antes: ${escapeHtml(formatFecha(parseISO(r.fechaOriginal)))}</span>`
+    : '';
+  return `<div class="cita__acciones cita__acciones--dia reunion__acciones">
+    <button type="button" class="cita-accion cita-accion--asisti${r.estado === 'asisti' ? ' cita-accion--activa' : ''}" data-reunion-estado="asisti" data-id="${r.id}" title="Marcar si asististe">
+      <span class="cita-accion__icon" aria-hidden="true">✓</span>
+      <span class="cita-accion__label">Asistí</span>
+    </button>
+    <label class="reunion-cambiar-fecha" title="Mover a otro día">
+      <span class="cita-accion__icon" aria-hidden="true">↻</span>
+      <span class="cita-accion__label">Otro día</span>
+      <input type="date" data-reunion-fecha data-id="${r.id}" value="${escapeHtml(r.fecha)}" class="reunion-fecha-input">
+    </label>
+    <button type="button" class="cita-accion cita-accion--anulada reunion-accion--del" data-reunion-del data-id="${r.id}" title="Eliminar reunión">
+      <span class="cita-accion__icon" aria-hidden="true">✕</span>
+      <span class="cita-accion__label">Eliminar</span>
+    </button>
+    ${fechaOrig}
+  </div>`;
+}
+
+function setEstadoReunion(reunionId, estado) {
+  const r = (datos.reunionesClientes || []).find(x => x.id === reunionId);
+  if (!r || !ESTADOS_CITA[estado]) return;
+  r.estado = r.estado === estado ? undefined : estado;
+  guardar();
+  render();
+}
+
+function cambiarFechaReunion(reunionId, nuevaFecha) {
+  const r = (datos.reunionesClientes || []).find(x => x.id === reunionId);
+  if (!r || !nuevaFecha || nuevaFecha === r.fecha) return;
+  if (!r.fechaOriginal) r.fechaOriginal = r.fecha;
+  r.fecha = nuevaFecha;
+  r.estado = 'reagendada';
+  datos = normalizarDatos(datos);
+  guardar();
+  render();
+  mostrarToast(`Reunión movida al ${formatFecha(parseISO(nuevaFecha))}`);
+}
+
+function eliminarReunion(reunionId) {
+  if (!confirm('¿Eliminar esta reunión?')) return;
+  datos.reunionesClientes = (datos.reunionesClientes || []).filter(r => r.id !== reunionId);
+  datos = normalizarDatos(datos);
+  guardar();
+  render();
+  mostrarToast('Reunión eliminada');
+}
+
+function bindAccionesReunion(contenedor) {
+  if (!contenedor) return;
+  contenedor.querySelectorAll('[data-reunion-estado]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      setEstadoReunion(btn.dataset.id, btn.dataset.reunionEstado);
+    });
+  });
+  contenedor.querySelectorAll('[data-reunion-fecha]').forEach(input => {
+    input.addEventListener('change', () => {
+      cambiarFechaReunion(input.dataset.id, input.value);
+    });
+  });
+  contenedor.querySelectorAll('[data-reunion-del]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      eliminarReunion(btn.dataset.id);
+    });
+  });
+}
+
 function etiquetaEstadoCita(c) {
   return ESTADOS_CITA[c.estado]?.label || '';
 }
@@ -3418,11 +3513,11 @@ function textoCitaCompacto(c, maxLen = 10) {
 }
 
 function textoReunionCompacto(r, maxLen = 14) {
-  const cli = clienteDe(r.clienteId);
-  const abrev = cli?.abrev || 'Reunión';
-  const titulo = (r.titulo || `Reunión ${abrev}`).replace(/^\[.*?\]\s*/, '');
-  if (!maxLen) return `📅 ${titulo}`;
-  return `📅 ${titulo.slice(0, maxLen)}`;
+  const e = ESTADOS_CITA[r.estado];
+  const pref = e ? `${e.icon} ` : '📅 ';
+  const titulo = (r.titulo || 'Reunión').replace(/^\[.*?\]\s*/, '');
+  if (!maxLen) return pref + titulo;
+  return pref + titulo.slice(0, maxLen);
 }
 
 function htmlCitaDia(c) {
@@ -3444,13 +3539,15 @@ function htmlReunionDia(r) {
   const col = colorDe(cli);
   const hora = r.horaFin ? `${r.horaInicio} – ${r.horaFin}` : r.horaInicio;
   const titulo = r.titulo || `Reunión ${cli?.nombre || 'cliente'}`;
-  return `<article class="dia-item dia-item--reunion" style="border-left-color:${col.border};background:${col.bg}">
+  return `<article class="dia-item dia-item--reunion${claseReunionEstado(r)}" style="border-left-color:${col.border};background:${col.bg}">
     <div class="dia-item__hora" style="color:${col.text}">${escapeHtml(hora)}</div>
     <div class="dia-item__cuerpo">
-      <div class="dia-item__tipo" style="color:${col.text}">Reunión con cliente</div>
+      <div class="dia-item__tipo" style="color:${col.text}">Reunión con cliente${etiquetaEstadoReunion(r) ? ` · ${etiquetaEstadoReunion(r)}` : ''}</div>
       <h3 class="dia-item__titulo">${escapeHtml(titulo)}</h3>
       ${cli ? `<p class="dia-item__detalle">${escapeHtml(cli.nombre)}</p>` : ''}
       ${r.notas ? `<p class="dia-item__detalle">${escapeHtml(r.notas)}</p>` : ''}
+      ${htmlBadgeEstadoReunion(r)}
+      ${htmlBotonesReunion(r)}
     </div>
   </article>`;
 }
@@ -3647,7 +3744,7 @@ function renderCalendarioMes() {
         const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
         return {
           minutos: minutosHora(r.horaInicio),
-          html: `<span class="mes-item mes-item--reunion" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora)}">${escapeHtml(textoReunionCompacto(r, 0))}</span>`
+          html: `<span class="mes-item mes-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 0))}</span>`
         };
       }),
       ...tareas.map(t => {
@@ -3686,7 +3783,8 @@ function htmlItemCalendarioSemana(item) {
     const r = item.data;
     const col = colorDe(clienteDe(r.clienteId));
     const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
-    return `<div class="cita-cal cita-cal--reunion" style="background:${col.bg};border-left-color:${col.border}"><span class="cita-cal__icon">📅</span><span class="cita-cal__text" style="color:${col.text}">${escapeHtml(r.titulo || 'Reunión')} · ${escapeHtml(hora)}</span></div>`;
+    const icon = ESTADOS_CITA[r.estado]?.icon || '📅';
+    return `<div class="cita-cal cita-cal--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border}"><span class="cita-cal__icon">${icon}</span><span class="cita-cal__text" style="color:${col.text}">${escapeHtml(r.titulo || 'Reunión')} · ${escapeHtml(hora)}${etiquetaEstadoReunion(r) ? ' · ' + escapeHtml(etiquetaEstadoReunion(r)) : ''}</span></div>`;
   }
   const t = item.data;
   const col = colorDe(clienteDe(t.clienteId));
@@ -3784,7 +3882,7 @@ function renderSemanaMini() {
         const r = item.data;
         const col = colorDe(clienteDe(r.clienteId));
         const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
-        return `<span class="semana-mini-item semana-mini-item--reunion" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora)}">${escapeHtml(textoReunionCompacto(r, 14))}</span>`;
+        return `<span class="semana-mini-item semana-mini-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 14))}</span>`;
       }
       const t = item.data;
       const col = colorDe(clienteDe(t.clienteId));
@@ -3860,6 +3958,7 @@ function renderDia() {
     bindAccionesTarea(cont);
   }
   bindAccionesCita(cont);
+  bindAccionesReunion(cont);
   renderSemanaMini();
 }
 
@@ -4294,7 +4393,7 @@ function renderReunionesClientes() {
       const cli = clienteDe(r.clienteId);
       const col = colorDe(cli);
       const hora = r.horaFin ? `${r.horaInicio} – ${r.horaFin}` : r.horaInicio;
-      return `<div class="reunion-card ${r.fecha < hoyStr ? 'reunion-card--pasada' : ''}" style="border-left-color:${col.border}">
+      return `<div class="reunion-card ${r.fecha < hoyStr ? 'reunion-card--pasada' : ''}${claseReunionEstado(r)}" style="border-left-color:${col.border}">
         <div class="reunion-card__fecha">
           <span>${parseISO(r.fecha).toLocaleDateString('es-CL', { weekday: 'short', day: 'numeric', month: 'short' })}</span>
           <span style="color:${col.text}">${escapeHtml(hora)}</span>
@@ -4302,21 +4401,22 @@ function renderReunionesClientes() {
         <div class="reunion-card__body">
           <strong style="color:${col.text}">${escapeHtml(r.titulo || 'Reunión')}</strong>
           <span class="reunion-card__cli">${escapeHtml(cli?.nombre || '')}</span>
+          ${htmlBadgeEstadoReunion(r)}
           ${r.notas ? `<p class="reunion-card__notas">${escapeHtml(r.notas)}</p>` : ''}
+          <div class="reunion-card__acciones">${htmlBotonesReunion(r)}</div>
         </div>
-        <button type="button" class="btn btn--small archivo-btn--del" data-del-reunion="${r.id}" title="Eliminar reunión">Eliminar</button>
       </div>`;
     }).join('');
   }
 
-  lista.querySelectorAll('[data-del-reunion]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (!confirm('¿Eliminar reunión?')) return;
-      datos.reunionesClientes = datos.reunionesClientes.filter(r => r.id !== btn.dataset.delReunion);
-      datos = normalizarDatos(datos);
-      guardar();
-      render();
-    });
+  lista.querySelectorAll('[data-reunion-estado]').forEach(btn => {
+    btn.addEventListener('click', () => setEstadoReunion(btn.dataset.id, btn.dataset.reunionEstado));
+  });
+  lista.querySelectorAll('[data-reunion-fecha]').forEach(input => {
+    input.addEventListener('change', () => cambiarFechaReunion(input.dataset.id, input.value));
+  });
+  lista.querySelectorAll('[data-reunion-del]').forEach(btn => {
+    btn.addEventListener('click', () => eliminarReunion(btn.dataset.id));
   });
 
   const opts = '<option value="">Elegir cliente</option>' +

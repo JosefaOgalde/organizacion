@@ -1404,6 +1404,79 @@ body {
   border-left-width: 4px;
 }
 
+.reunion--asisti {
+  opacity: 0.85;
+}
+
+.reunion--reagendada {
+  border-left-style: dashed;
+}
+
+.reunion--anulada {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+.reunion__acciones {
+  margin-top: 0.5rem;
+}
+
+.reunion-cambiar-fecha {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid #d4a017;
+  background: #fff8e6;
+  color: #8a6510;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reunion-fecha-input {
+  border: 1px solid #d4c48a;
+  border-radius: 6px;
+  padding: 0.2rem 0.35rem;
+  font-size: 0.74rem;
+  font-family: inherit;
+  background: #fff;
+  color: inherit;
+  max-width: 9.5rem;
+}
+
+.reunion-fecha-orig {
+  flex-basis: 100%;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.reunion-accion--del {
+  border-color: #e57373;
+  color: #b71c1c;
+}
+
+.reunion-card__acciones {
+  margin-top: 0.5rem;
+}
+
+.reunion-card__acciones .reunion__acciones {
+  margin-top: 0;
+}
+
+.semana-mini-item--reunion.reunion--asisti,
+.mes-item--reunion.reunion--asisti {
+  opacity: 0.75;
+}
+
+.semana-mini-item--reunion.reunion--anulada,
+.mes-item--reunion.reunion--anulada {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
 .semana-mini-item--reunion {
   font-weight: 600;
 }
