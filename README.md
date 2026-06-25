@@ -53,26 +53,54 @@ organizacion/
 ├── styles.css          # Estilos (gris, blanco, celeste)
 ├── app.js              # Lógica y localStorage
 ├── data/
-│   ├── schema.json     # Esquema de datos
-│   └── clientes-ejemplo.json
+│   ├── schema.json
+│   ├── clientes-ejemplo.json
+│   └── organizacion-respaldo-2026-06-24.json   # Respaldo oficial
 └── README.md
 ```
 
 ## Respaldo (importante)
 
-Los datos del día a día (tareas completadas, manuales de marca pegados en la app) viven en **localStorage del navegador**, no en git automáticamente.
+El respaldo más actualizado está en:
 
-Antes de cerrar el navegador o cambiar de PC:
+```
+data/organizacion-respaldo-2026-06-24.json
+```
+
+(123 tareas · 8 clientes · ficha JM completa)
+
+### Primera vez en un PC nuevo
+
+```powershell
+cd "C:\Users\Josefa Ogalde\organizacion"
+npx serve .
+```
+
+Abre `http://localhost:3000` — si el navegador no tiene datos guardados, **carga el respaldo automáticamente**.
+
+Para forzar reimportar (pisar lo del navegador):
+
+```
+http://localhost:3000/index.html?respaldo=importar
+```
+
+O en consola (F12):
+
+```js
+importarRespaldoDefecto()
+```
+
+### Guardar cambios nuevos
+
+Los datos del día a día viven en **localStorage del navegador**. Antes de cambiar de PC:
 
 ```js
 descargarRespaldo()   // Descarga JSON con todo
-// o
-exportarDatos()       // Ver en consola y copiar
 ```
 
 Guarda el archivo en `data/` y haz commit con **SUBIR.bat**.
 
-Para restaurar:
+Para restaurar manualmente:
 
 ```js
 importarDatos(/* objeto JSON */)

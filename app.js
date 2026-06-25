@@ -1,5 +1,6 @@
 /* Organización v2 */
 const STORAGE_KEY = 'organizacion_v2';
+const RESPALDO_DEFECTO_URL = 'data/organizacion-respaldo-2026-06-24.json';
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const DIAS_CORTOS = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'];
 const MAX_TITULO_SEMANA = 40;
@@ -4571,12 +4572,48 @@ function setupUI() {
   });
 }
 
-function init() {
+async function fetchRespaldoDefecto() {
   try {
-    datos = cargar();
+    const res = await fetch(RESPALDO_DEFECTO_URL, { cache: 'no-store' });
+    if (!res.ok) return null;
+    const obj = await res.json();
+    if (obj && Array.isArray(obj.clientes) && Array.isArray(obj.tareas)) return obj;
+  } catch (e) {
+    console.warn('No se pudo leer el respaldo en data/ (abre con npx serve .)', e);
+  }
+  return null;
+}
+
+async function cargarDatosInicio() {
+  const params = new URLSearchParams(location.search || '');
+  const forzarRespaldo = params.get('respaldo') === 'importar';
+  const hayLocal = !!localStorage.getItem(STORAGE_KEY);
+
+  if (hayLocal && !forzarRespaldo) return cargar();
+
+  const remoto = await fetchRespaldoDefecto();
+  if (remoto) {
+    console.info('Respaldo oficial cargado:', RESPALDO_DEFECTO_URL);
+    return { datos: normalizarDatos(remoto), origen: forzarRespaldo ? 'forzado' : 'respaldo' };
+  }
+
+  return { datos: cargar(), origen: hayLocal ? 'local' : 'semilla' };
+}
+
+function init() {
+  iniciarApp();
+}
+
+async function iniciarApp() {
+  let origenCarga = 'local';
+  try {
+    const res = await cargarDatosInicio();
+    datos = res.datos;
+    origenCarga = res.origen;
   } catch (e) {
     console.error('Error al cargar datos', e);
     datos = normalizarDatos(datosIniciales());
+    origenCarga = 'semilla';
   }
   try {
     guardar();
@@ -4590,6 +4627,9 @@ function init() {
   if (!aplicarRutaDesdeUrl()) {
     mostrarVista('mes', { activarTab: true });
     render();
+  }
+  if (origenCarga === 'respaldo' || origenCarga === 'forzado') {
+    mostrarToast('Datos del respaldo 24-jun cargados');
   }
 }
 
@@ -4616,6 +4656,19 @@ window.importarDatos = (obj) => {
   guardar();
   render();
   console.log('Datos importados OK');
+  return true;
+};
+
+/** Recarga el respaldo oficial desde data/ (requiere npx serve .) */
+window.importarRespaldoDefecto = async () => {
+  const remoto = await fetchRespaldoDefecto();
+  if (!remoto) {
+    console.error('No se encontró', RESPALDO_DEFECTO_URL);
+    mostrarToast('No se pudo cargar el respaldo — usa npx serve .');
+    return false;
+  }
+  importarDatos(remoto);
+  mostrarToast('Respaldo 24-jun importado');
   return true;
 };
 
