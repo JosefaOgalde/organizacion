@@ -2592,6 +2592,22 @@
       "pendiente": false,
       "agendaFijada": true,
       "estadoFijado": true
+    },
+    {
+      "id": "tarea-adl-cla-certificados-25jun",
+      "titulo": "[ADL] CLA — Certificados modulares (plantillas 1123×794)",
+      "clienteId": "cli-desafio-latam",
+      "rolId": "rol-dlat-dis",
+      "fecha": "2026-06-25",
+      "horaInicio": "14:00",
+      "horaFin": "17:00",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "notas": "Proyecto Caja Los Andes (CLA). Entregar plantillas certificado: Fase 1 (participación ≥50% / aprobación ≥75%), Fase 2 (aprobación), Fase 3 (nota ≥6,0 · 4 especializaciones), certificado final (3 aprobaciones). Tamaño fijo 1123×794 px. Portal: index/clientes/DesafioLatam/CLA.html · Manual: CLA/identidad/manual-marca-caja-los-andes.pdf",
+      "agendaFijada": true,
+      "estadoFijado": true,
+      "numeroHistorico": "01"
     }
   ],
   "citasSalud": [
@@ -2640,6 +2656,6 @@
     }
   ],
   "ultimaVisita": "2026-06-25",
-  "respaldoVersion": 3,
+  "respaldoVersion": 4,
   "respaldoActualizado": "2026-06-25"
 }
