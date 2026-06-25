@@ -36,6 +36,18 @@ exit
 
 ---
 
+## Tarea 4.0b — Instalar rutas API (Laravel 11)
+
+Si en `routes\` **no ves** `api.php`, ejecuta:
+
+```cmd
+php artisan install:api
+```
+
+Esto crea `routes\api.php`. Responde **yes** si pregunta por Sanctum.
+
+---
+
 ## Tarea 4.1 — Crear controlador
 
 ```cmd
