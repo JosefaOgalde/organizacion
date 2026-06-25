@@ -1,8 +1,8 @@
 # Paso 2 — Base de datos MySQL
 
-> ⏳ **Completa el [Paso 1](./PASO-1-entorno.md) antes de continuar.**
+> ✅ Paso 1 listo si ves Laravel en `127.0.0.1:8000`
 
-**Meta:** Laravel conectado a MySQL y primera tabla `clientes` creada.
+**Meta:** MySQL conectado + tabla `clientes` creada.
 
 ---
 
@@ -10,28 +10,28 @@
 
 ```mermaid
 flowchart LR
-    ENV[".env\nDB_DATABASE=organizacion"] --> ART["php artisan migrate"]
-    ART --> MYSQL[(MySQL)]
-    MYSQL --> T1["tabla clientes"]
-    MYSQL --> T2["tabla proyectos"]
-    MYSQL --> T3["tabla tareas"]
+    ENV[".env → MySQL"] --> ART["php artisan migrate"]
+    ART --> MYSQL[(MySQL Laragon)]
+    MYSQL --> T1["tabla clientes ✅"]
 ```
 
 ---
 
-## Tarea 2.1 — Crear la base de datos
+## Tarea 2.1 — Crear base de datos
 
-En **Laragon** → **Database** → **Open** (HeidiSQL) o en terminal:
+**Opción A — Laragon:** botón **「Base de Datos」** → HeidiSQL → Create database → `organizacion`
 
-```powershell
+**Opción B — Terminal:**
+
+```cmd
 mysql -u root -e "CREATE DATABASE IF NOT EXISTS organizacion CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 ```
 
 ---
 
-## Tarea 2.2 — Configurar `.env`
+## Tarea 2.2 — Editar `.env`
 
-Archivo: `backend/.env`
+Archivo: `backend\.env`
 
 ```env
 DB_CONNECTION=mysql
@@ -42,51 +42,49 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-*(Laragon suele dejar password vacío.)*
-
-Probar conexión:
-
-```powershell
-cd backend
-php artisan migrate:status
-```
-
-✅ Sin error de conexión.
+> Cambia `DB_CONNECTION=sqlite` → `mysql` (Laravel 11 usa SQLite por defecto).
 
 ---
 
-## Tarea 2.3 — Primera migración (tabla clientes)
+## Tarea 2.3 — Probar conexión
 
-En Cursor, pídeme:
+```cmd
+cd "C:\Users\Josefa Ogalde\organizacion\backend"
+php artisan migrate:status
+```
 
-> "Crea la migración de clientes Paso 2"
+✅ Sin error rojo.
 
-O tú misma:
+---
 
-```powershell
+## Tarea 2.4 — Crear migración `clientes`
+
+```cmd
 php artisan make:migration create_clientes_table
 ```
 
-Luego editamos la migración y ejecutamos:
+Copia el código de [`ejemplos/migration_create_clientes_table.php`](./ejemplos/migration_create_clientes_table.php) al archivo generado.
 
-```powershell
+---
+
+## Tarea 2.5 — Ejecutar migración
+
+```cmd
 php artisan migrate
 ```
 
 ---
 
-## Tarea 2.4 — Verificar en MySQL
+## Tarea 2.6 — Verificar
 
-```powershell
+```cmd
 mysql -u root organizacion -e "SHOW TABLES;"
 ```
 
-✅ Debe aparecer `clientes`.
+✅ Aparece `clientes`.
 
 ---
 
 ## Confirmación
 
-Responde: **«Paso 2 Laravel OK»** → Paso 3 (Modelos Eloquent).
-
-SQL de referencia completo: [`schema-organizacion.sql`](./schema-organizacion.sql)
+**「Paso 2 Laravel OK」** → [Paso 3 — Modelos](./PASO-3-modelos.md)
