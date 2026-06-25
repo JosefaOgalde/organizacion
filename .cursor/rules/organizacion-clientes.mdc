@@ -1,0 +1,39 @@
+---
+description: Agentes por cliente — organización trabajo (TS, ECR, JM, ADL, etc.)
+globs:
+  - index/**
+  - app.js
+  - data/**
+alwaysApply: false
+---
+
+# Organización — agentes por cliente
+
+Responde en **español**. El repo es un organizador + portal de clientes.
+
+## Invocar agente específico
+
+El usuario puede decir:
+
+- `@adl-cla` o abrir archivos en `DesafioLatam/` → regla **Agente ADL CLA**
+- `Agente Trendseeker` → CM + WordPress, manual marca
+- `Agente ECR` → newsletter + blog Elementor
+- `Agente JM` → WooCommerce Joyas Mercury Fase 2
+- `Agente MKOF` → Gantt y planificación
+
+## Rutas portal
+
+| Cliente | Ficha |
+|---------|--------|
+| Listado | `index/clientes.html` |
+| ADL | `index/clientes/Desafio-Latam.html` |
+| ADL → CLA | `index/clientes/DesafioLatam/CLA.html` |
+
+## Datos
+
+- Respaldo: `data/organizacion-respaldo-2026-06-24.json`
+- API local: `http://127.0.0.1:8000/api/clientes` (Laravel en `backend/`)
+
+## Guía completa
+
+Ver `docs/GUIA-PREGUNTAS-POR-CLIENTE.md`

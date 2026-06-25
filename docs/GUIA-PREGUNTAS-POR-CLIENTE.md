@@ -104,3 +104,11 @@ Ajusta colores según manual-marca-caja-los-andes.pdf
 ## Resumen en 1 frase
 
 **Preguntas de trabajo → Cursor Chat.** Indica siempre **cliente + proyecto** (ej. ADL + CLA). **Ficha y herramientas → portal** en `index/clientes/…`.
+
+---
+
+## Agente Cursor dedicado (ADL · CLA)
+
+Invocación rápida: **`docs/cursor/INVOCAR-AGENTE-ADL.md`**
+
+En Chat (**Ctrl+L**): escribe **`@adl-cla`** y tu pregunta. La regla vive en `.cursor/rules/adl-cla.mdc`.
