@@ -9,12 +9,25 @@ window.ADL_PROYECTOS = {
     identidadOrigen: 'screencapture-localhost-3002-2026-06-18-13_21_00.pdf',
     canvas: { ancho: 1123, alto: 794 },
     colores: {
-      primario: '#007A3D',
-      secundario: '#00A651',
-      acento: '#F5B335',
-      fondo: '#F7FAF8',
-      texto: '#1A2E24',
-      textoClaro: '#FFFFFF'
+      primario: '#0A1E46',
+      secundario: '#0066FF',
+      acento: '#FFD200',
+      fondo: '#FFFFFF',
+      texto: '#0A1E46',
+      textoClaro: '#FFFFFF',
+      teal: '#00A878'
+    },
+    firmas: {
+      cla: { nombre: 'Catalina Araya', cargo: 'Directora Centro de Educación y Habilidades para el Futuro' },
+      dl: { nombre: 'Andrés Gallardo', cargo: 'Director General Desafío Latam' }
+    },
+    textosDiploma: {
+      encabezado: 'Se certifica a',
+      f1Participacion: 'ha participado en la Fase 1: Webinars de exploración tecnológica, del Programa de Formación en Inteligencia Artificial de Caja Los Andes, con una asistencia de {asistencia}%, cumpliendo el requisito mínimo del 50%.',
+      f1Aprobacion: 'ha aprobado la Fase 1: Webinars de exploración tecnológica, del Programa de Formación en Inteligencia Artificial de Caja Los Andes, con una asistencia de {asistencia}%, cumpliendo el requisito mínimo del 75%.',
+      f2Aprobacion: 'ha aprobado la Fase 2: Transformación Digital con IA y Automatización, del Programa de Formación en Inteligencia Artificial de Caja Los Andes, completando satisfactoriamente el módulo asincrónico de 32 horas.',
+      f3Aprobacion: 'ha aprobado la Fase 3: Especialización aplicada en {especializacion}, del Programa de Formación en Inteligencia Artificial de Caja Los Andes, con una calificación de {nota}/10, cumpliendo el requisito mínimo de 6,0.',
+      final: 'ha completado y aprobado las tres fases del Programa de Formación en Inteligencia Artificial de Caja Los Andes, obteniendo el Certificado Final del programa.'
     },
     fases: [
       {
@@ -27,14 +40,16 @@ window.ADL_PROYECTOS = {
           {
             id: 'f1-aprobacion',
             tipo: 'aprobacion',
-            etiqueta: 'Certificado de aprobación',
+            etiqueta: 'Diploma de aprobación',
+            tituloDiploma: 'DIPLOMA DE APROBACIÓN',
             requisito: 'Asistencia ≥ 75%',
             validar: (d) => Number(d.asistencia) >= 75
           },
           {
             id: 'f1-participacion',
             tipo: 'participacion',
-            etiqueta: 'Certificado de participación',
+            etiqueta: 'Diploma de participación',
+            tituloDiploma: 'DIPLOMA DE PARTICIPACIÓN',
             requisito: 'Asistencia ≥ 50%',
             validar: (d) => Number(d.asistencia) >= 50
           }
@@ -50,7 +65,8 @@ window.ADL_PROYECTOS = {
           {
             id: 'f2-aprobacion',
             tipo: 'aprobacion',
-            etiqueta: 'Certificado de aprobación',
+            etiqueta: 'Diploma de aprobación',
+            tituloDiploma: 'DIPLOMA DE APROBACIÓN',
             requisito: 'Aprobar el módulo',
             validar: (d) => d.estado === 'aprobado'
           }
@@ -72,7 +88,8 @@ window.ADL_PROYECTOS = {
           {
             id: 'f3-aprobacion',
             tipo: 'aprobacion',
-            etiqueta: 'Certificado de aprobación',
+            etiqueta: 'Diploma de aprobación',
+            tituloDiploma: 'DIPLOMA DE APROBACIÓN',
             requisito: 'Nota ≥ 6,0 / 10,0',
             validar: (d) => Number(d.nota) >= 6
           }
