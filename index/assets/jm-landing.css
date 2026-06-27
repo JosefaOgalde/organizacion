@@ -484,3 +484,93 @@
   .jm-gantt__grid { min-width: 100%; grid-template-columns: 110px 1fr; }
   .jm-gantt__escala { padding-left: 110px; }
 }
+
+/* Menú objetivo · Paso 4 */
+.jm-menu__intro,
+.jm-mapa__intro {
+  margin: 0 0 0.85rem;
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.45;
+}
+
+.jm-menu__arbol,
+.jm-menu__nivel,
+.jm-menu__colecciones,
+.jm-menu__categorias {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.jm-menu__arbol {
+  background: var(--jm-bg);
+  border: 1px solid var(--jm-border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.jm-menu__nivel {
+  margin: 0.35rem 0 0 1rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--jm-border);
+}
+
+.jm-menu__item { margin: 0.25rem 0; color: #444; }
+.jm-menu__item--raiz > strong { color: var(--jm-text); }
+
+.jm-menu__coleccion-nombre {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--jm-text);
+  margin-top: 0.35rem;
+}
+
+.jm-menu__categorias {
+  margin: 0.2rem 0 0.5rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+}
+
+.jm-menu__cat {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.jm-menu__cat::before { content: '~ '; color: var(--jm-accent); }
+
+/* Mapa navegación · Paso 5 */
+.jm-mapa__tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.jm-mapa__tabla th,
+.jm-mapa__tabla td {
+  text-align: left;
+  padding: 0.5rem 0.65rem;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.jm-mapa__tabla th {
+  background: #fafafa;
+  color: var(--jm-text);
+  font-size: 0.82rem;
+}
+
+.jm-mapa__fila--n0 .jm-mapa__ruta { font-weight: 700; color: var(--jm-text); }
+.jm-mapa__fila--n1 .jm-mapa__ruta { padding-left: 0.5rem; }
+.jm-mapa__fila--n2 .jm-mapa__ruta { padding-left: 1.25rem; color: #555; font-size: 0.85rem; }
+
+.jm-mapa__detalle { color: #888; font-size: 0.82rem; }
+
+.jm-mapa__total {
+  margin: 0.75rem 0 0;
+  font-size: 0.82rem;
+  color: #888;
+}

@@ -37,6 +37,68 @@
     el._t = setTimeout(() => el.classList.remove('jm-toast--visible'), 2400);
   }
 
+  function asegurarLandingJM(cli) {
+    const v = cli.ficha.landingVersion || 0;
+    const backupV = window.JM_BACKUP_FICHA?.version || 0;
+    if (v < backupV) {
+      cli.ficha.landing.objetivosEspecificos = [...(window.JM_OBJETIVOS?.especificos || [])];
+      cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({ ...t, completada: false }));
+      cli.ficha.landingVersion = backupV;
+    }
+    if (!Array.isArray(cli.ficha.landing.todos) || !cli.ficha.landing.todos.length) {
+      cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({ ...t }));
+    }
+  }
+
+  function menuObjetivoHtml() {
+    const menu = window.JM_MENU_OBJETIVO;
+    if (!menu?.inicio) return '';
+    const hijosHtml = (menu.inicio.hijos || []).map((item) => {
+      if (item.colecciones) {
+        const cols = item.colecciones.map((col) => {
+          const cats = (col.categorias || [])
+            .map((c) => `<li class="jm-menu__cat">${escapeHtml(c)}</li>`)
+            .join('');
+          return `<li class="jm-menu__coleccion"><span class="jm-menu__coleccion-nombre">${escapeHtml(col.nombre)}</span>
+            <ul class="jm-menu__categorias">${cats}</ul></li>`;
+        }).join('');
+        return `<li class="jm-menu__item"><span>Colecciones</span><ul class="jm-menu__colecciones">${cols}</ul></li>`;
+      }
+      return `<li class="jm-menu__item"><span>${escapeHtml(item.titulo)}</span></li>`;
+    }).join('');
+    return `<div class="jm-menu">
+      <p class="jm-menu__intro">Estructura acordada para Fase 2 · <strong>Paso 4</strong></p>
+      <ul class="jm-menu__arbol">
+        <li class="jm-menu__item jm-menu__item--raiz"><strong>${escapeHtml(menu.titulo || 'Menú')}</strong>
+          <ul class="jm-menu__nivel">
+            <li class="jm-menu__item jm-menu__item--raiz"><strong>${escapeHtml(menu.inicio.titulo)}</strong>
+              <ul class="jm-menu__nivel">${hijosHtml}</ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>`;
+  }
+
+  function mapaNavegacionHtml() {
+    const rutas = window.JM_MAPA_NAVEGACION || [];
+    if (!rutas.length) return '';
+    const filas = rutas.map((r) =>
+      `<tr class="jm-mapa__fila jm-mapa__fila--n${r.nivel}">
+        <td class="jm-mapa__ruta">${escapeHtml(r.ruta)}</td>
+        <td class="jm-mapa__detalle">${escapeHtml(r.detalle || '')}</td>
+      </tr>`
+    ).join('');
+    return `<div class="jm-mapa">
+      <p class="jm-mapa__intro">Recorridos de usuario derivados del menú · <strong>Paso 5</strong></p>
+      <table class="jm-mapa__tabla">
+        <thead><tr><th>Ruta</th><th>Qué es</th></tr></thead>
+        <tbody>${filas}</tbody>
+      </table>
+      <p class="jm-mapa__total">${rutas.length} rutas · 3 colecciones × 5 categorías = 15 combinaciones + Novedades + Últimas unidades + Carrito</p>
+    </div>`;
+  }
+
   function cargarDatos() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -80,9 +142,7 @@
         todos: (window.JM_TODO_SEED || []).map((t) => ({ ...t }))
       };
     }
-    if (!Array.isArray(cli.ficha.landing.todos) || !cli.ficha.landing.todos.length) {
-      cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({ ...t }));
-    }
+    asegurarLandingJM(cli);
     if (typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
     landing = cli.ficha.landing;
     return cli;
@@ -232,6 +292,16 @@
 
         <section class="jm-block" id="jm-seccion-objetivos">
           <div class="jm-block__body">${objetivosHtml()}</div>
+        </section>
+
+        <section class="jm-block" id="jm-seccion-menu">
+          <div class="jm-block__head"><h2>Menú objetivo · Paso 4</h2></div>
+          <div class="jm-block__body">${menuObjetivoHtml()}</div>
+        </section>
+
+        <section class="jm-block" id="jm-seccion-mapa">
+          <div class="jm-block__head"><h2>Mapa de navegación · Paso 5</h2></div>
+          <div class="jm-block__body">${mapaNavegacionHtml()}</div>
         </section>
 
         <section class="jm-block" id="jm-seccion-gantt">

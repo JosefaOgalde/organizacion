@@ -29,7 +29,7 @@ Este manual reúne las herramientas básicas para el correcto uso y aplicación 
 - Respetar márgenes del logo e isotipo en headers, favicon y piezas gráficas`;
 
 window.JM_BACKUP_FICHA = {
-  version: 3,
+  version: 4,
   metas: `Etapa 2 — Rediseño joyasmercury.cl
 - Navegación limpia y elegante (referencia joyería premium)
 - Filtros visuales Esencial / Gold / Deluxe en la misma vista (sin cambiar de página)
@@ -403,7 +403,7 @@ function jmHtmlObjetivoMini(wf) {
     </figure>`;
   }).join('');
   return `<div class="ficha-wireframes__grupo ficha-wireframes__grupo--mini ficha-wireframes__grupo--objetivo">
-    <h4 class="ficha-wireframes__sub">Objetivo Fase 2 (referencia)</h4>
+    <h4 class="ficha-wireframes__sub">Objetivo Fase 2</h4>
     <div class="ficha-wireframes__grid ficha-wireframes__grid--mini">${mini}</div>
   </div>`;
 }
@@ -435,7 +435,7 @@ window.JM_OBJETIVOS = {
     'Eliminar bloques de categorías con conteo; el menú es protagonista.',
     'Productos Destacados solo en Inicio (con capacitación para Camila).',
     'Filtros en misma landing: 3 colecciones × 5 categorías (15 combinaciones), sin recargar página.',
-    'Menú objetivo: Inicio · Colecciones (Esencial/Gold/Deluxe) · Historias que Brillan · Mi Cuenta · Contacto · Mi Carrito.',
+    'Menú objetivo: Inicio → Novedades · Colecciones (Esencial/Gold/Deluxe × 5 categorías) · Últimas unidades · Mi Carrito.',
     'Carrito WooCommerce funcional con personalización visual superior.',
     'Páginas legales + Nosotros + WhatsApp como canal principal.',
     'Pruebas integrales, guías de catálogo y entrega con soporte post-entrega.'
@@ -447,16 +447,67 @@ window.JM_TODO_SEED = [
   { id: 'jm-todo-01', titulo: 'Auditoría menú actual + mapa de navegación propuesto', dias: '1–2', fase: 1, completada: false },
   { id: 'jm-todo-02', titulo: 'Implementar menú limpio (desktop + móvil)', dias: '3–4', fase: 1, completada: false },
   { id: 'jm-todo-03', titulo: 'Definir 3 colecciones × 5 categorías en WooCommerce', dias: '5–6', fase: 2, completada: false },
-  { id: 'jm-todo-04', titulo: 'Validar 15 combinaciones, slugs y URLs', dias: '7–8', fase: 2, completada: false },
-  { id: 'jm-todo-05', titulo: 'Diseñar chips de filtro Esencial / Gold / Deluxe', dias: '9–10', fase: 3, completada: false },
-  { id: 'jm-todo-06', titulo: 'Landing colección 1 con filtros visuales', dias: '11–12', fase: 3, completada: false },
-  { id: 'jm-todo-07', titulo: 'Landings colecciones 2 y 3 + filtrado AJAX', dias: '13–14', fase: 3, completada: false },
-  { id: 'jm-todo-08', titulo: 'QA filtros (mobile, estados activos, rendimiento)', dias: '15–16', fase: 3, completada: false },
-  { id: 'jm-todo-09', titulo: 'Bloque Productos Destacados en Inicio + guía', dias: '17–18', fase: 4, completada: false },
-  { id: 'jm-todo-10', titulo: 'Nosotros, contacto, WhatsApp y páginas legales', dias: '19–20', fase: 5, completada: false },
-  { id: 'jm-todo-11', titulo: 'Maquetación carrito + checkout alineado a marca', dias: '21–22', fase: 6, completada: false },
-  { id: 'jm-todo-12', titulo: 'Pruebas integrales, capacitación y entrega Fase 2', dias: '23–25', fase: 7, completada: false }
+  { id: 'jm-todo-04', titulo: 'Paso 4 · Definir menú objetivo (Inicio, Colecciones, Últimas unidades, Mi Carrito)', dias: '7–8', fase: 1, completada: false },
+  { id: 'jm-todo-05', titulo: 'Paso 5 · Armar mapa de navegación según menú del paso 4', dias: '9–10', fase: 1, completada: false },
+  { id: 'jm-todo-06', titulo: 'Definir 3 colecciones × 5 categorías en WooCommerce + validar URLs', dias: '11–12', fase: 2, completada: false },
+  { id: 'jm-todo-07', titulo: 'Diseñar chips de filtro Esencial / Gold / Deluxe', dias: '13–14', fase: 3, completada: false },
+  { id: 'jm-todo-08', titulo: 'Landings colección con filtros visuales + filtrado AJAX', dias: '15–16', fase: 3, completada: false },
+  { id: 'jm-todo-09', titulo: 'QA filtros (mobile, estados activos, rendimiento)', dias: '17–18', fase: 3, completada: false },
+  { id: 'jm-todo-10', titulo: 'Bloque Productos Destacados / Novedades en Inicio + guía', dias: '19–20', fase: 4, completada: false },
+  { id: 'jm-todo-11', titulo: 'Últimas unidades + páginas legales y WhatsApp', dias: '21–22', fase: 5, completada: false },
+  { id: 'jm-todo-12', titulo: 'Maquetación carrito + pruebas integrales y entrega Fase 2', dias: '23–25', fase: 7, completada: false }
 ];
+
+/** Categorías por colección */
+window.JM_CATEGORIAS_MENU = ['Aros', 'Cadenas', 'Anillos', 'Pulseras', 'Conjuntos'];
+
+/** Menú objetivo Fase 2 — Paso 4 */
+window.JM_MENU_OBJETIVO = {
+  titulo: 'Menú',
+  inicio: {
+    titulo: 'Inicio',
+    hijos: [
+      { titulo: 'Novedades' },
+      {
+        titulo: 'Colecciones',
+        colecciones: [
+          { nombre: 'Esencial', categorias: ['Aros', 'Cadenas', 'Anillos', 'Pulseras', 'Conjuntos'] },
+          { nombre: 'Gold', categorias: ['Aros', 'Cadenas', 'Anillos', 'Pulseras', 'Conjuntos'] },
+          { nombre: 'Deluxe', categorias: ['Aros', 'Cadenas', 'Anillos', 'Pulseras', 'Conjuntos'] }
+        ]
+      },
+      { titulo: 'Últimas unidades' },
+      { titulo: 'Mi Carrito' }
+    ]
+  }
+};
+
+/** Rutas del mapa de navegación — derivadas del menú (Paso 5) */
+window.JM_MAPA_NAVEGACION = (function () {
+  const menu = window.JM_MENU_OBJETIVO;
+  const rutas = [{ nivel: 0, ruta: 'Inicio', detalle: 'Home joyasmercury.cl' }];
+  (menu.inicio.hijos || []).forEach((item) => {
+    if (item.titulo === 'Novedades') {
+      rutas.push({ nivel: 1, ruta: 'Inicio → Novedades', detalle: 'Productos nuevos / destacados recientes' });
+    } else if (item.titulo === 'Últimas unidades') {
+      rutas.push({ nivel: 1, ruta: 'Inicio → Últimas unidades', detalle: 'Stock limitado' });
+    } else if (item.titulo === 'Mi Carrito') {
+      rutas.push({ nivel: 1, ruta: 'Inicio → Mi Carrito', detalle: 'Checkout WooCommerce' });
+    } else if (item.colecciones) {
+      item.colecciones.forEach((col) => {
+        rutas.push({ nivel: 1, ruta: `Inicio → Colecciones → ${col.nombre}`, detalle: 'Landing de colección' });
+        (col.categorias || []).forEach((cat) => {
+          rutas.push({
+            nivel: 2,
+            ruta: `Inicio → Colecciones → ${col.nombre} → ${cat}`,
+            detalle: 'Filtro / categoría en misma vista'
+          });
+        });
+      });
+    }
+  });
+  return rutas;
+})();
 
 /** Resumen breve identidad (landing) */
 window.JM_IDENTIDAD_RESUMEN = 'La identidad de Joyas Mercury exige uso consistente del logotipo JOYAS MERCURY, isotipo «M» con márgenes de ¼, y paleta dorado (#ECC54A, #A97E23), rosa (#C88F9C), nude (#D8BFB1) y gris (#C4C4C4). En Fase 2 aplicamos estos tokens en filtros Esencial/Gold/Deluxe, destacados, botones y cabecera del e-commerce.';
