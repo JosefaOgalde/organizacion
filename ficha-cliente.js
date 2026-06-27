@@ -554,9 +554,9 @@
     const btnVista = document.getElementById('btn-ficha-modo-vista');
     const esJM = esClienteJM(cli);
     if (btnVista) {
-      btnVista.textContent = esJM ? 'Wireframes actuales' : 'Vista ficha';
+      btnVista.textContent = esJM ? 'Prototipo interactivo' : 'Vista ficha';
       btnVista.title = esJM
-        ? 'Diagramación actual de joyasmercury.cl'
+        ? 'Wireframes en calidad media · navega clicando zonas del sitio'
         : 'Ver ficha en modo lectura';
     }
     if (btnEditar) {
@@ -754,8 +754,8 @@
     actualizarToolbarFicha(cli);
     setModoFicha(modoActual);
     sincronizarCamposVacios();
-    if (typeof window.initJMGalerias === 'function') {
-      window.initJMGalerias(doc);
+    if (typeof window.initJMWireframesUI === 'function') {
+      window.initJMWireframesUI(doc);
     }
   }
 

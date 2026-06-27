@@ -4554,7 +4554,7 @@ function renderPanelWireframesJM() {
   });
   if (html) {
     full.innerHTML = html;
-    if (typeof window.initJMGalerias === 'function') window.initJMGalerias(full);
+    if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(full);
   }
 }
 

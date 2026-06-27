@@ -65,5 +65,5 @@
       </p>` : ''}
     </article>
   `;
-  if (typeof window.initJMGalerias === 'function') window.initJMGalerias(root);
+  if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
 })();

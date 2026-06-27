@@ -53,7 +53,7 @@
       const root = document.getElementById('galeria-root');
       if (!root || typeof window.jmHtmlWireframes !== 'function') return;
       root.innerHTML = window.jmHtmlWireframes();
-      if (typeof window.initJMGalerias === 'function') window.initJMGalerias(root);
+      if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
     })();
   </script>
 </body>
