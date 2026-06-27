@@ -1,9 +1,9 @@
 .cla-wrap {
-  --cla-primario: #007a3d;
-  --cla-sec: #00a651;
-  --cla-acento: #f5b335;
-  --cla-bg: #f7faf8;
-  --cla-text: #1a2e24;
+  --cla-primario: #051933;
+  --cla-sec: #0066ff;
+  --cla-acento: #ffd200;
+  --cla-bg: #f0f4fa;
+  --cla-text: #051933;
 }
 
 .cla-hero {
@@ -177,3 +177,79 @@
 }
 
 .cla-emitidos li { margin: 0.25rem 0; }
+
+.cla-hero__links {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+}
+
+.cla-hero__links a {
+  color: var(--cla-sec);
+  font-weight: 600;
+}
+
+.cla-field {
+  display: block;
+  margin-bottom: 0.65rem;
+  font-size: 0.78rem;
+  color: #4a5a62;
+}
+
+.cla-field input,
+.cla-field select {
+  display: block;
+  width: 100%;
+  margin-top: 0.2rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid #cfd8e3;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.cla-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.cla-btn--sec {
+  background: var(--cla-sec);
+}
+
+.cla-btn--sm {
+  margin-top: 0.25rem;
+  margin-left: 0.35rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.72rem;
+}
+
+.cla-fase__certs {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.8rem;
+}
+
+.cla-preview-hint {
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.cla-canvas-wrap {
+  overflow: auto;
+  border: 1px dashed #c5d0e0;
+  border-radius: 8px;
+  padding: 0.5rem;
+  background: #f8fafc;
+}
+
+.cla-canvas-wrap canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  box-shadow: 0 4px 16px rgba(5, 25, 51, 0.15);
+}
+
+.cla-panel--preview { position: sticky; top: 1rem; align-self: start; }
