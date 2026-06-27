@@ -22,6 +22,7 @@
     <nav class="tabs">
       <button type="button" class="tab" data-view="pendientes">Pendientes</button>
       <button type="button" class="tab" data-view="clientes">Clientes</button>
+      <button type="button" class="tab" data-view="agentes">Agentes</button>
       <button type="button" class="tab" data-view="salud"><span class="tab-swatch tab-swatch--salud"></span>Salud</button>
       <button type="button" class="tab" data-view="nueva">+ Nueva</button>
       <button type="button" class="tab tab--respaldo" id="btn-descargar-respaldo" title="Descargar JSON con tareas y manuales de marca">↓ Respaldo</button>
@@ -100,6 +101,19 @@
           <h2>Mis clientes</h2>
           <p class="vista-hint">Clic en un cliente: se abre su ficha. Si falta información, te la pedimos; si ya hay datos, puedes sumar más.</p>
           <div id="lista-clientes" class="clientes-grid"></div>
+        </div>
+      </section>
+
+      <section id="view-agentes" class="view">
+        <div class="panel">
+          <h2>Agentes Cursor · ramas Git</h2>
+          <p class="vista-hint">Cada agente trabaja en ramas <code>cursor/…</code>. El calendario está en <strong>modo manual</strong>: crea tareas con <strong>+ Nueva</strong> cuando avances; al terminar, avisa al agente y descarga respaldo.</p>
+          <p class="vista-hint vista-hint--agentes">
+            <button type="button" class="btn btn--ghost btn--sm" id="btn-vaciar-tareas">Vaciar calendario (local)</button>
+            ·
+            <a href="?respaldo=1" class="agentes-link">Recargar respaldo vacío del repo</a>
+          </p>
+          <div id="lista-agentes-ramas" class="agentes-grid" aria-live="polite"></div>
         </div>
       </section>
 

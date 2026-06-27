@@ -525,6 +525,137 @@ body {
   color: var(--text-muted);
 }
 
+/* Agentes Cursor · ramas Git */
+.agentes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.agente-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 4px solid var(--celeste-dark);
+}
+
+.agente-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.agente-card__invocar {
+  font-family: ui-monospace, monospace;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--celeste-dark);
+}
+
+.agente-card__abrev {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--celeste-light);
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
+}
+
+.agente-card__cliente {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+
+.agente-card__desc {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.agente-card__portal {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--celeste-dark);
+}
+
+.agente-card__ramas {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.agente-rama {
+  padding: 0.45rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 0.8rem;
+}
+
+.agente-rama__nombre {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text);
+  word-break: break-all;
+}
+
+.agente-rama__titulo {
+  display: block;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.agente-rama__estado {
+  display: inline-block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-right: 0.35rem;
+}
+
+.agente-rama__estado--activa {
+  color: #1a6b40;
+}
+
+.agente-rama__pr {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--celeste-dark);
+}
+
+.agentes-meta {
+  grid-column: 1 / -1;
+  margin: 0.5rem 0 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.agentes-loading,
+.agentes-error {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.vista-hint--agentes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn--sm {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.78rem;
+}
+
+.agentes-link {
+  color: var(--celeste-dark);
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
 .perfil-cliente__header {
   display: flex;
   align-items: center;

@@ -1,0 +1,81 @@
+{
+  "actualizado": "2026-06-27",
+  "repo": "https://github.com/JosefaOgalde/organizacion",
+  "agentes": [
+    {
+      "id": "joyas-mercury",
+      "invocar": "@joyas-mercury",
+      "clienteId": "cli-joyas-mercury",
+      "cliente": "Joyas Mercury",
+      "abrev": "JM",
+      "descripcion": "Fase 2 WooCommerce + Elementor (copia Inicio v2)",
+      "portal": "index/clientes/JoyasMercury/",
+      "ramas": [
+        {
+          "nombre": "cursor/joyas-mercury-agent-dia1-d6a1",
+          "titulo": "Agente JM + guía Día 1 + interfaces",
+          "pr": 6,
+          "estado": "activa"
+        }
+      ]
+    },
+    {
+      "id": "adl-cla",
+      "invocar": "@adl-cla",
+      "clienteId": "cli-desafio-latam",
+      "cliente": "Desafío Latam · CLA",
+      "abrev": "ADL",
+      "descripcion": "Certificados Caja Los Andes 1123×794",
+      "portal": "index/clientes/DesafioLatam/CLA.html",
+      "ramas": [
+        {
+          "nombre": "cursor/cla-fondo-certificado-d6a1",
+          "titulo": "Fondo certificado + generador",
+          "pr": 3,
+          "estado": "activa"
+        },
+        {
+          "nombre": "cursor/cla-redes-1080-d6a1",
+          "titulo": "Piezas redes 1080×1080 + textos diplomas",
+          "pr": 5,
+          "estado": "activa"
+        }
+      ]
+    },
+    {
+      "id": "organizacion",
+      "invocar": "@organizacion-clientes",
+      "clienteId": null,
+      "cliente": "Organizador / portal",
+      "abrev": "ORG",
+      "descripcion": "App calendario, portal clientes, ramas transversales",
+      "portal": "index.html",
+      "ramas": [
+        {
+          "nombre": "cursor/vista-calendario-global-d6a1",
+          "titulo": "Mes / Semana / Hoy visibles",
+          "pr": 4,
+          "estado": "activa"
+        },
+        {
+          "nombre": "cursor/clientes-portal-paso1-d6a1",
+          "titulo": "Portal clientes estático",
+          "pr": null,
+          "estado": "historica"
+        },
+        {
+          "nombre": "cursor/fix-rutas-tarea-query-d6a1",
+          "titulo": "Rutas ?tarea=slug/01",
+          "pr": null,
+          "estado": "historica"
+        },
+        {
+          "nombre": "cursor/organizador-agentes-ramas-d6a1",
+          "titulo": "Modo manual + panel agentes/ramas",
+          "pr": null,
+          "estado": "activa"
+        }
+      ]
+    }
+  ]
+}

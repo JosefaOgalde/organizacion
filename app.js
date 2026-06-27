@@ -1,6 +1,7 @@
 /* Organización v2 */
 const STORAGE_KEY = 'organizacion_v2';
 const RESPALDO_DEFECTO_URL = 'data/organizacion-respaldo-2026-06-24.json';
+const AGENTES_RAMAS_URL = 'data/agentes-ramas.json';
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const DIAS_CORTOS = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'];
 const MAX_TITULO_SEMANA = 40;
@@ -598,42 +599,7 @@ function datosIniciales() {
         ]
       }
     ],
-    tareas: [
-      { id: id(), titulo: '[TS] Pub redes 10', clienteId: cliTS, rolId: 'rol-cm', fecha: '2026-06-25', horaInicio: '10:00', horaFin: '10:30', prioridad: 'alta', completada: false, pendiente: false },
-      { id: id(), titulo: '[TS] Pub redes 11', clienteId: cliTS, rolId: 'rol-cm', fecha: '2026-06-26', horaInicio: '11:00', horaFin: '11:30', prioridad: 'alta', completada: false, pendiente: false },
-      { id: id(), titulo: '[TS] Pub redes 12', clienteId: cliTS, rolId: 'rol-cm', fecha: '2026-06-30', horaInicio: '10:00', horaFin: '10:30', prioridad: 'alta', completada: false, pendiente: false },
-      { id: id(), titulo: '[TS] Reporte junio', clienteId: cliTS, rolId: 'rol-cm', fecha: '2026-07-01', horaInicio: '10:00', horaFin: '11:00', prioridad: 'alta', completada: false, pendiente: false },
-      { id: 'tarea-revision-descuento-jul', titulo: '[TS] Revisión término descuento', clienteId: cliTS, rolId: 'rol-wp', fecha: '2026-07-01', horaInicio: '09:00', horaFin: '10:30', prioridad: 'alta', completada: false, pendiente: false, notas: 'Verificar que los banners no estén publicados y que los productos que terminaron su descuento no se vean en precio promoción en el sitio.' },
-      { id: id(), titulo: '[TS] Carga masiva', clienteId: cliTS, rolId: 'rol-wp', fecha: '2026-06-28', horaInicio: '09:30', horaFin: '12:00', prioridad: 'alta', completada: false, pendiente: false },
-      {
-        id: 'tarea-ecr-blog-24',
-        titulo: '[ECR] Propuesta sección blog',
-        clienteId: cliECR,
-        rolId: 'rol-ecr-dev',
-        fecha: '2026-06-24',
-        horaInicio: '15:00',
-        horaFin: '17:00',
-        prioridad: 'alta',
-        completada: false,
-        pendiente: false,
-        notas: 'Revisar y entregar solicitud de una parte específica del blog (Elementor / WordPress).'
-      },
-      ...tareasContenidosMensuales(cliPISC, 'PISC', 'rol-pisc-cm', 2026, 6, 0),
-      ...tareasContenidosMensuales(cliHS, 'HS', 'rol-hs-cm', 2026, 6, 1),
-      {
-        id: 'tarea-mkof-gantt-etapa2',
-        titulo: '[MKOF] Gantt etapa 2 post auditoría',
-        clienteId: cliMKOF,
-        rolId: 'rol-mkof-dev',
-        fecha: hoyStr,
-        horaInicio: '17:00',
-        horaFin: '18:00',
-        prioridad: 'alta',
-        completada: false,
-        pendiente: false,
-        notas: 'Entregar Gantt de la etapa 2 post auditoría para establecer tiempos y entregables.'
-      }
-    ],
+    tareas: [],
     citasSalud: [
       { id: 'cita-psiq', fecha: '2026-06-25', hora: '18:00', especialidad: 'Psiquiatra', notas: 'Consulta online' },
       { id: 'cita-cesfam', fecha: '2026-06-26', hora: '08:30', especialidad: 'Exámenes Cesfam', notas: 'Cesfam Vitacura' }
@@ -649,13 +615,20 @@ function datosIniciales() {
         notas: 'Reunión con cliente'
       }
     ],
-    tareasEliminadas: []
+    tareasEliminadas: [],
+    meta: { autoGenerarTareas: false, modoTrabajo: 'manual' }
   };
+}
+
+function debeAutoGenerarTareas(data) {
+  return data?.meta?.autoGenerarTareas === true;
 }
 
 function initMetaDatos(data) {
   if (!Array.isArray(data.tareasEliminadas)) data.tareasEliminadas = [];
   if (!Array.isArray(data.reunionesClientes)) data.reunionesClientes = [];
+  if (!data.meta || typeof data.meta !== 'object') data.meta = {};
+  if (data.meta.autoGenerarTareas == null) data.meta.autoGenerarTareas = false;
   return data;
 }
 
@@ -860,7 +833,7 @@ function normalizarTareasTS(data) {
   let revision = data.tareas.find(t =>
     t.id === 'tarea-revision-descuento-jul' || /revisi[oó]n t[eé]rmino descuento/i.test(t.titulo)
   );
-  if (!revision && !tareaFueEliminada(data, 'tarea-revision-descuento-jul', {
+  if (!revision && debeAutoGenerarTareas(data) && !tareaFueEliminada(data, 'tarea-revision-descuento-jul', {
     id: 'tarea-revision-descuento-jul',
     titulo: `[${abrev}] Revisión término descuento`,
     clienteId: cliId,
@@ -904,6 +877,8 @@ function asegurarClienteECR(data) {
     cli.abrev = 'ECR';
     if (!cli.color) cli.color = 'celeste';
   }
+
+  if (!debeAutoGenerarTareas(data)) return data;
 
   const notasBlog = 'Revisar y entregar solicitud de una parte específica del blog (Elementor / WordPress).';
   const plantillaECR = {
@@ -1042,6 +1017,8 @@ function asegurarClientesRedes(data) {
     migrarContenidosLegacy(data, c.id);
   });
 
+  if (!debeAutoGenerarTareas(data)) return data;
+
   for (let offset = -1; offset <= 3; offset++) {
     const ref = new Date(base.getFullYear(), base.getMonth() + offset, 1);
     clientes.forEach(c => {
@@ -1057,6 +1034,7 @@ const NOTAS_HISTORIA_WSP_PISC = 'Subir historia en Instagram (repost del feed) c
 const FECHAS_HISTORIAS_PISC_JUN2026 = ['2026-06-25', '2026-06-26', '2026-06-29', '2026-06-30'];
 
 function asegurarHistoriasPiscineria(data) {
+  if (!debeAutoGenerarTareas(data)) return data;
   const cliId = 'cli-piscineria';
   const rolId = 'rol-pisc-cm';
 
@@ -1113,6 +1091,7 @@ function asegurarHistoriasPiscineria(data) {
 const NOTAS_HISTORIA_WSP_HS = 'Subir historia en Instagram (repost del feed) con link de WhatsApp. Verificar que el enlace WSP abra correctamente. Agregar música si no es video.';
 
 function asegurarHistoriasHotspring(data) {
+  if (!debeAutoGenerarTareas(data)) return data;
   const cliId = 'cli-hotspring';
   const rolId = 'rol-hs-cm';
   const fecha = '2026-06-30';
@@ -1165,6 +1144,7 @@ function asegurarHistoriasHotspring(data) {
 }
 
 function asegurarReportesMensuales(data) {
+  if (!debeAutoGenerarTareas(data)) return data;
   const cliId = 'cli-trendseeker';
   const cli = data.clientes.find(c => c.id === cliId);
   const abrev = abrevDe(cli) || 'TS';
@@ -1221,6 +1201,8 @@ function asegurarClienteMKOF(data) {
     cli.abrev = 'MKOF';
     if (!cli.color) cli.color = 'agua';
   }
+
+  if (!debeAutoGenerarTareas(data)) return data;
 
   const notasGantt = 'Entregar Gantt de la etapa 2 post auditoría para establecer tiempos y entregables.';
   const hoyStr = toISO(hoy());
@@ -1413,6 +1395,7 @@ function horasTrabajoSIE(data, fechaISO) {
 }
 
 function asegurarTareasSIE(data) {
+  if (!debeAutoGenerarTareas(data)) return data;
   const rolId = 'rol-sie-dev';
   let fecha = parseISO(SIE_INICIO);
   let indice = 0;
@@ -1563,6 +1546,7 @@ function asegurarTareaEntregaSitioJM(data, fechaEntrega) {
 }
 
 function asegurarTareasJoyasMercuryFase2(data) {
+  if (!debeAutoGenerarTareas(data)) return data;
   const rolId = 'rol-jm-dev';
   let fecha = parseISO(JM_FASE2_INICIO);
   let indice = 0;
@@ -4561,6 +4545,74 @@ function renderClientes() {
   }
 }
 
+let cacheAgentesRamas = null;
+
+async function fetchAgentesRamas() {
+  if (cacheAgentesRamas) return cacheAgentesRamas;
+  try {
+    const res = await fetch(AGENTES_RAMAS_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    cacheAgentesRamas = await res.json();
+    return cacheAgentesRamas;
+  } catch (e) {
+    console.warn('No se pudo cargar agentes-ramas.json', e);
+    return null;
+  }
+}
+
+function renderAgentesRamas() {
+  const cont = document.getElementById('lista-agentes-ramas');
+  if (!cont) return;
+  cont.innerHTML = '<p class="agentes-loading">Cargando ramas…</p>';
+  fetchAgentesRamas().then(data => {
+    if (!data || !Array.isArray(data.agentes)) {
+      cont.innerHTML = '<p class="agentes-error">No se encontró data/agentes-ramas.json — abre con npx serve .</p>';
+      return;
+    }
+    const repo = data.repo || '';
+    const act = data.actualizado
+      ? `<p class="agentes-meta">Actualizado: ${escapeHtml(data.actualizado)} · <a href="${escapeHtml(repo)}" target="_blank" rel="noopener">${escapeHtml(repo)}</a></p>`
+      : '';
+    cont.innerHTML = data.agentes.map(ag => {
+      const ramas = (ag.ramas || []).map(r => {
+        const pr = r.pr ? `<a class="agente-rama__pr" href="${repo}/pull/${r.pr}" target="_blank" rel="noopener">PR #${r.pr}</a>` : '';
+        const estado = r.estado === 'activa'
+          ? '<span class="agente-rama__estado agente-rama__estado--activa">activa</span>'
+          : '<span class="agente-rama__estado">histórica</span>';
+        return `<li class="agente-rama">
+          <code class="agente-rama__nombre">${escapeHtml(r.nombre)}</code>
+          <span class="agente-rama__titulo">${escapeHtml(r.titulo || '')}</span>
+          ${estado} ${pr}
+        </li>`;
+      }).join('');
+      const portal = ag.portal
+        ? `<a class="agente-card__portal" href="${escapeHtml(ag.portal)}" target="_blank" rel="noopener">Abrir portal</a>`
+        : '';
+      return `<article class="agente-card">
+        <header class="agente-card__head">
+          <span class="agente-card__invocar">${escapeHtml(ag.invocar)}</span>
+          <span class="agente-card__abrev">${escapeHtml(ag.abrev || '')}</span>
+        </header>
+        <h3 class="agente-card__cliente">${escapeHtml(ag.cliente)}</h3>
+        <p class="agente-card__desc">${escapeHtml(ag.descripcion || '')}</p>
+        ${portal}
+        <ul class="agente-card__ramas">${ramas || '<li>Sin ramas registradas</li>'}</ul>
+      </article>`;
+    }).join('') + act;
+  });
+}
+
+function vaciarTareasLocales() {
+  if (!confirm('¿Vaciar todas las tareas del calendario en este navegador? Los clientes y fichas se mantienen.')) return;
+  datos.tareas = [];
+  if (!datos.meta) datos.meta = {};
+  datos.meta.autoGenerarTareas = false;
+  datos.meta.modoTrabajo = 'manual';
+  guardar();
+  render();
+  mostrarToast('Calendario vacío — crea tareas con + Nueva cuando avances');
+}
+
 function renderSalud() {
   const lista = document.getElementById('lista-citas-salud');
   if (!lista) return;
@@ -4605,6 +4657,7 @@ function render() {
   }
   renderPendientes();
   renderClientes();
+  renderAgentesRamas();
   renderReunionesClientes();
   renderSalud();
 }
@@ -4646,6 +4699,8 @@ function setupUI() {
   document.getElementById('btn-dia-anterior')?.addEventListener('click', () => cambiarDia(-1));
   document.getElementById('btn-dia-siguiente')?.addEventListener('click', () => cambiarDia(1));
   document.getElementById('btn-dia-hoy')?.addEventListener('click', () => irADia(toISO(hoy())));
+
+  document.getElementById('btn-vaciar-tareas')?.addEventListener('click', vaciarTareasLocales);
 
   document.getElementById('form-salud').addEventListener('submit', e => {
     e.preventDefault();
@@ -4866,11 +4921,27 @@ async function iniciarApp() {
     datos = normalizarDatos(datosIniciales());
     origenCarga = 'semilla';
   }
+
+  const params = new URLSearchParams(location.search || '');
+  if (params.get('vaciar-tareas') === '1') {
+    datos.tareas = [];
+    if (!datos.meta) datos.meta = {};
+    datos.meta.autoGenerarTareas = false;
+    datos.meta.modoTrabajo = 'manual';
+    origenCarga = 'vaciar';
+  }
+
   try {
     guardar();
   } catch (e) {
     console.warn('No se pudo guardar en localStorage', e);
   }
+
+  if (params.get('vaciar-tareas') === '1') {
+    const clean = location.pathname + (location.hash || '');
+    history.replaceState({}, '', clean);
+  }
+
   if (window.mermaid) {
     mermaid.initialize({ startOnLoad: false, theme: 'neutral', securityLevel: 'loose' });
   }
@@ -4880,9 +4951,11 @@ async function iniciarApp() {
     render();
   }
   if (origenCarga === 'respaldo') {
-    mostrarToast('Calendario cargado desde respaldo — primera vez en este navegador');
+    mostrarToast('Calendario vacío desde respaldo — modo manual (+ Nueva tarea)');
   } else if (origenCarga === 'local') {
     mostrarToast('Calendario con tus cambios guardados');
+  } else if (origenCarga === 'vaciar') {
+    mostrarToast('Tareas eliminadas — modo manual activo');
   } else if (location.protocol === 'file:') {
     mostrarToast('Abre con npx serve . para cargar el respaldo automáticamente');
   }

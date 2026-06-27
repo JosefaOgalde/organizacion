@@ -6,6 +6,12 @@ Organizador semanal (lunes a domingo) para gestionar trabajo full-time, clientes
 
 Abre `index.html` en el navegador. Los datos se guardan en `localStorage` del navegador.
 
+**Modo manual (desde jun 2026):** el calendario inicia **sin tareas**. Creas encargos con **+ Nueva** cuando avanzas con cada cliente. Las tareas automáticas (JM, PISC, etc.) están desactivadas salvo que actives `meta.autoGenerarTareas` en el respaldo.
+
+**Pestaña Agentes:** visualiza ramas Git `cursor/…` por agente (`@joyas-mercury`, `@adl-cla`, …). Datos en `data/agentes-ramas.json`.
+
+Para vaciar tareas en el navegador: pestaña **Agentes → Vaciar calendario**, o abre `?vaciar-tareas=1`. Para forzar respaldo del repo: `?respaldo=1`.
+
 ```bash
 # Servidor local (recomendado para abrir tareas por enlace)
 npx serve .
