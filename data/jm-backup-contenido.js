@@ -1,7 +1,33 @@
 /**
  * Contenido importado de joyasmercury-backup → ficha Joyas Mercury.
- * Cargado por app.js
+ * Cargado por app.js y landing JM
  */
+window.JM_MANUAL_MARCA = `Manual de marca — Joyas Mercury
+Fuente: Manual de marca - Joyas Mercury.pdf (17 páginas)
+
+## Propósito
+Este manual reúne las herramientas básicas para el correcto uso y aplicación gráfica de la marca en todas sus posibles expresiones. Pensado para quienes interpretan, articulan, comunican y aplican la marca. El uso consistente refuerza la identidad de Joyas Mercury.
+
+## Logotipo
+- Marca: JOYAS MERCURY
+- Margen obligatorio: la distancia entre el logo y el siguiente elemento debe ser la cuarta parte (¼) del tamaño del logo.
+
+## Isotipo
+- Isotipo: letra «M»
+- Mismo margen obligatorio que el logotipo (¼ del tamaño).
+
+## Paleta de colores
+- #ECC54A — dorado / amarillo
+- #A97E23 — dorado oscuro
+- #C88F9C — rosa
+- #D8BFB1 — beige / nude
+- #C4C4C4 — gris
+
+## Aplicación web (Fase 2 WooCommerce)
+- Líneas de producto en filtros: Esencial · Gold · Deluxe
+- Usar la paleta en chips de filtro, destacados, botones y componentes del rediseño joyasmercury.cl
+- Respetar márgenes del logo e isotipo en headers, favicon y piezas gráficas`;
+
 window.JM_BACKUP_FICHA = {
   version: 2,
   metas: `Etapa 2 — Rediseño joyasmercury.cl
@@ -347,6 +373,59 @@ function jmHtmlObjetivoMini(wf) {
     <div class="ficha-wireframes__grid ficha-wireframes__grid--mini">${mini}</div>
   </div>`;
 }
+
+/** Solo prototipo interactivo (página dedicada, sin galería embebida) */
+window.jmHtmlPrototipoPagina = function jmHtmlPrototipoPagina() {
+  const cuerpo = jmHtmlPrototipoInteractivo();
+  if (!cuerpo) return '';
+  return `<section id="ficha-prototipo-jm" class="ficha-seccion ficha-seccion--wireframes ficha-seccion--prototipo ficha-seccion--prototipo-solo">
+    ${cuerpo}
+  </section>`;
+};
+
+/** Fases Gantt Fase 2 (días hábiles acumulados) */
+window.JM_GANTT_FASES = [
+  { id: 1, nombre: 'Menú y limpieza', dias: 3, inicio: 0, monto: '$20.000' },
+  { id: 2, nombre: 'Categorías WC', dias: 3, inicio: 3, monto: '$30.000' },
+  { id: 3, nombre: 'Filtros visuales', dias: 7, inicio: 6, monto: '$50.000' },
+  { id: 4, nombre: 'Destacados', dias: 2, inicio: 13, monto: '$25.000' },
+  { id: 5, nombre: 'Legales y contenidos', dias: 2, inicio: 15, monto: '$15.000' },
+  { id: 6, nombre: 'Carrito', dias: 3, inicio: 17, monto: '$25.000' },
+  { id: 7, nombre: 'Pruebas y entrega', dias: 5, inicio: 20, monto: '$35.000' }
+];
+
+/** Objetivos estructurados Fase 2 */
+window.JM_OBJETIVOS = {
+  general: 'Rediseñar joyasmercury.cl (Fase 2) con navegación limpia tipo joyería premium, filtros Esencial/Gold/Deluxe en la misma vista, menú con colecciones como protagonista, destacados en Inicio, páginas legales y carrito alineados a la marca — entrega en 22–25 días hábiles.',
+  especificos: [
+    'Eliminar bloques de categorías con conteo; el menú es protagonista.',
+    'Productos Destacados solo en Inicio (con capacitación para Camila).',
+    'Filtros en misma landing: 3 colecciones × 5 categorías (15 combinaciones), sin recargar página.',
+    'Menú objetivo: Inicio · Colecciones (Esencial/Gold/Deluxe) · Historias que Brillan · Mi Cuenta · Contacto · Mi Carrito.',
+    'Carrito WooCommerce funcional con personalización visual superior.',
+    'Páginas legales + Nosotros + WhatsApp como canal principal.',
+    'Pruebas integrales, guías de catálogo y entrega con soporte post-entrega.'
+  ]
+};
+
+/** Tareas checklist ~cada 2 días hábiles */
+window.JM_TODO_SEED = [
+  { id: 'jm-todo-01', titulo: 'Auditoría menú actual + mapa de navegación propuesto', dias: '1–2', fase: 1, completada: false },
+  { id: 'jm-todo-02', titulo: 'Implementar menú limpio (desktop + móvil)', dias: '3–4', fase: 1, completada: false },
+  { id: 'jm-todo-03', titulo: 'Definir 3 colecciones × 5 categorías en WooCommerce', dias: '5–6', fase: 2, completada: false },
+  { id: 'jm-todo-04', titulo: 'Validar 15 combinaciones, slugs y URLs', dias: '7–8', fase: 2, completada: false },
+  { id: 'jm-todo-05', titulo: 'Diseñar chips de filtro Esencial / Gold / Deluxe', dias: '9–10', fase: 3, completada: false },
+  { id: 'jm-todo-06', titulo: 'Landing colección 1 con filtros visuales', dias: '11–12', fase: 3, completada: false },
+  { id: 'jm-todo-07', titulo: 'Landings colecciones 2 y 3 + filtrado AJAX', dias: '13–14', fase: 3, completada: false },
+  { id: 'jm-todo-08', titulo: 'QA filtros (mobile, estados activos, rendimiento)', dias: '15–16', fase: 3, completada: false },
+  { id: 'jm-todo-09', titulo: 'Bloque Productos Destacados en Inicio + guía', dias: '17–18', fase: 4, completada: false },
+  { id: 'jm-todo-10', titulo: 'Nosotros, contacto, WhatsApp y páginas legales', dias: '19–20', fase: 5, completada: false },
+  { id: 'jm-todo-11', titulo: 'Maquetación carrito + checkout alineado a marca', dias: '21–22', fase: 6, completada: false },
+  { id: 'jm-todo-12', titulo: 'Pruebas integrales, capacitación y entrega Fase 2', dias: '23–25', fase: 7, completada: false }
+];
+
+/** Resumen breve identidad (landing) */
+window.JM_IDENTIDAD_RESUMEN = 'La identidad de Joyas Mercury exige uso consistente del logotipo JOYAS MERCURY, isotipo «M» con márgenes de ¼, y paleta dorado (#ECC54A, #A97E23), rosa (#C88F9C), nude (#D8BFB1) y gris (#C4C4C4). En Fase 2 aplicamos estos tokens en filtros Esencial/Gold/Deluxe, destacados, botones y cabecera del e-commerce.';
 
 /** Galería HTML de wireframes JM (ficha cliente + portal) */
 window.jmHtmlWireframes = function jmHtmlWireframes(opts) {

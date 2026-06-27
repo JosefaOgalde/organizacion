@@ -4557,7 +4557,7 @@ function renderClientes() {
     const ag = agenteDe(c);
     const perfilOk = contextoClienteCargado(c);
     const badge = c.id === 'cli-joyas-mercury'
-      ? '<span class="cliente-card__badge cliente-card__badge--wireframes">Prototipo interactivo</span>'
+      ? '<span class="cliente-card__badge cliente-card__badge--wireframes">Landing del cliente</span>'
       : perfilOk
         ? '<span class="cliente-card__badge cliente-card__badge--ok">Ficha con datos</span>'
         : '<span class="cliente-card__badge cliente-card__badge--pending">Ver ficha · sin datos</span>';
@@ -4572,7 +4572,13 @@ function renderClientes() {
   }).join('');
 
   grid.querySelectorAll('[data-cliente-id]').forEach(btn => {
-    btn.addEventListener('click', () => (window.abrirFichaCliente || abrirPerfilCliente)(btn.dataset.clienteId));
+    btn.addEventListener('click', () => {
+      if (btn.dataset.clienteId === JM_CLI_ID) {
+        window.location.href = 'index/clientes/Joyas-Mercury.html';
+        return;
+      }
+      (window.abrirFichaCliente || abrirPerfilCliente)(btn.dataset.clienteId);
+    });
   });
 
   if (select) {
