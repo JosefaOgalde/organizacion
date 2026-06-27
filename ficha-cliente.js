@@ -556,7 +556,7 @@
     if (btnVista) {
       btnVista.textContent = esJM ? 'Prototipo interactivo' : 'Vista ficha';
       btnVista.title = esJM
-        ? 'Wireframes en calidad media · navega clicando zonas del sitio'
+        ? 'Prototipo interactivo · flujo actual joyasmercury.cl'
         : 'Ver ficha en modo lectura';
     }
     if (btnEditar) {

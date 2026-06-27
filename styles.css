@@ -3935,10 +3935,100 @@ body.modal-abierto {
   border-top: 1px dashed #e8b8c8;
 }
 
-/* Prototipo interactivo JM — calidad media 720px */
+/* Prototipo interactivo JM */
 .jm-prototipo {
   margin-bottom: 1rem;
   outline: none;
+}
+
+.jm-prototipo__layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.jm-prototipo__flujo {
+  background: #fdf0f4;
+  border: 1px solid #e8b8c8;
+  border-radius: 10px;
+  padding: 0.75rem 0.65rem;
+  position: sticky;
+  top: 0.5rem;
+}
+
+.jm-prototipo__flujo-titulo {
+  margin: 0 0 0.65rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #9a5a6e;
+  line-height: 1.3;
+}
+
+.jm-prototipo__flujo-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.jm-prototipo__flujo-lista li {
+  margin-bottom: 0.25rem;
+}
+
+.jm-prototipo__flujo-paso {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.4rem 0.5rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #7a5a66;
+  cursor: pointer;
+  line-height: 1.25;
+}
+
+.jm-prototipo__flujo-paso:hover {
+  background: rgba(154, 90, 110, 0.1);
+}
+
+.jm-prototipo__flujo-paso--activo {
+  background: #9a5a6e;
+  color: #fff;
+}
+
+.jm-prototipo__flujo-doc {
+  margin: 0.65rem 0 0;
+  font-size: 0.72rem;
+}
+
+.jm-prototipo__flujo-doc a {
+  color: #9a5a6e;
+}
+
+.jm-prototipo--flujo .jm-prototipo__stack {
+  aspect-ratio: auto;
+  min-height: 420px;
+  max-height: 78vh;
+}
+
+.jm-prototipo--flujo .jm-prototipo__pantalla--activa {
+  overflow-y: auto;
+  max-height: 78vh;
+}
+
+.jm-prototipo--flujo .jm-prototipo__img {
+  height: auto;
+  max-height: none;
+  min-height: 400px;
+}
+
+.jm-prototipo__paso {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #9a5a6e;
 }
 
 .jm-prototipo__bar {
@@ -4080,6 +4170,25 @@ body.modal-abierto {
 }
 
 @media (max-width: 520px) {
+  .jm-prototipo__layout {
+    grid-template-columns: 1fr;
+  }
+  .jm-prototipo__flujo {
+    position: static;
+  }
+  .jm-prototipo__flujo-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .jm-prototipo__flujo-lista li {
+    margin: 0;
+  }
+  .jm-prototipo__flujo-paso {
+    width: auto;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.5rem;
+  }
   .jm-prototipo__breadcrumb {
     max-width: 100%;
     text-align: left;

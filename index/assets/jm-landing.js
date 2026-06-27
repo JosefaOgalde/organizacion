@@ -223,10 +223,9 @@
           <div class="jm-block__head"><h2>Prototipo interactivo</h2></div>
           <div class="jm-block__body jm-block__body--compact">
             <a href="${prototipoUrl}" target="_blank" rel="noopener" class="jm-prototipo-card">
-              <span class="jm-prototipo-card__tag">Calidad media–alta · 720px</span>
-              <h3 class="jm-prototipo-card__titulo">Abrir prototipo navegable en pantalla completa</h3>
-              <p class="jm-prototipo-card__desc">Wireframes del estado actual de joyasmercury.cl con zonas clicables — menú, colecciones, carrito y mapa de flujo. Se abre en una pestaña aparte (no embebido aquí).</p>
-              <span class="jm-prototipo-card__cta">Abrir prototipo →</span>
+              <h3 class="jm-prototipo-card__titulo">Prototipo interactivo</h3>
+              <p class="jm-prototipo-card__desc">Flujo actual de joyasmercury.cl en orden: Inicio → Esencial / Gold / Deluxe → Tienda → Mi Carrito → Nosotros. Se abre en pestaña aparte; haz clic en el panel lateral o en las zonas de cada captura.</p>
+              <span class="jm-prototipo-card__cta">Abrir prototipo interactivo →</span>
             </a>
           </div>
         </section>
