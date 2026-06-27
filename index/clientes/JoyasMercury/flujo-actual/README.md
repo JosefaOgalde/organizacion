@@ -7,6 +7,22 @@ Capturas del **sitio en producción** (jun 2026), ordenadas para recorrer el pro
 
 ---
 
+## Capturas reales (producción)
+
+Las imágenes de esta carpeta son **capturas del sitio en vivo** (`joyasmercury.cl`), las mismas pantallas que ves en producción.
+
+Regenerar desde el sitio:
+
+```bash
+pip install playwright
+python3 -m playwright install chromium
+python3 scripts/capturar-jm-flujo-actual.py
+```
+
+Si prefieres pegar tus propios PNG, usa los mismos nombres de la tabla y reemplaza los archivos aquí.
+
+---
+
 ## Orden del recorrido
 
 | Paso | Archivo | Pantalla | Qué muestra |
@@ -57,17 +73,11 @@ Iconos: redes (FB, IG, TikTok) · corona/logo · bolsa con contador.
 
 ---
 
-## Reemplazar con capturas reales
+## Reemplazar manualmente (opcional)
 
-1. Guarda tus PNG con **exactamente** los nombres de la tabla (1080 px de ancho recomendado; alto libre).
+1. Guarda tus PNG con **exactamente** los nombres de la tabla.
 2. Copia en esta carpeta: `index/clientes/JoyasMercury/flujo-actual/`
 3. Recarga el prototipo en el navegador.
-
-Regenerar placeholders (solo desarrollo):
-
-```bash
-python3 scripts/generar-jm-flujo-actual.py
-```
 
 ---
 

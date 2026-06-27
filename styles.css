@@ -4010,19 +4010,34 @@ body.modal-abierto {
 
 .jm-prototipo--flujo .jm-prototipo__stack {
   aspect-ratio: auto;
-  min-height: 420px;
-  max-height: 78vh;
+  min-height: 480px;
+  max-height: none;
+  height: auto;
+  overflow: visible;
+  background: #f5f5f5;
+}
+
+.jm-prototipo--flujo .jm-prototipo__pantalla {
+  position: relative;
+  inset: auto;
+  display: none;
+  opacity: 1;
+  pointer-events: none;
 }
 
 .jm-prototipo--flujo .jm-prototipo__pantalla--activa {
+  display: block;
+  pointer-events: auto;
+  max-height: 82vh;
   overflow-y: auto;
-  max-height: 78vh;
+  border-radius: 10px;
 }
 
 .jm-prototipo--flujo .jm-prototipo__img {
   height: auto;
   max-height: none;
-  min-height: 400px;
+  width: 100%;
+  min-height: 0;
 }
 
 .jm-prototipo__paso {
