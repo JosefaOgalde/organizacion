@@ -4543,21 +4543,6 @@ function renderReunionesClientes() {
   if (select) select.innerHTML = opts;
 }
 
-function renderPanelWireframesJM() {
-  const full = document.getElementById('jm-wireframes-full');
-  if (!full || typeof window.jmHtmlWireframes !== 'function') return;
-  const cli = datos.clientes.find(c => c.id === 'cli-joyas-mercury');
-  if (cli && typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
-  const html = window.jmHtmlWireframes({
-    wireframes: cli?.ficha?.wireframes,
-    claseExtra: 'ficha-seccion--clientes-tab'
-  });
-  if (html) {
-    full.innerHTML = html;
-    if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(full);
-  }
-}
-
 function renderClientes() {
   const grid = document.getElementById('lista-clientes');
   const select = document.getElementById('tarea-cliente');
@@ -4572,7 +4557,7 @@ function renderClientes() {
     const ag = agenteDe(c);
     const perfilOk = contextoClienteCargado(c);
     const badge = c.id === 'cli-joyas-mercury'
-      ? '<span class="cliente-card__badge cliente-card__badge--wireframes">Ver wireframes →</span>'
+      ? '<span class="cliente-card__badge cliente-card__badge--wireframes">Prototipo interactivo</span>'
       : perfilOk
         ? '<span class="cliente-card__badge cliente-card__badge--ok">Ficha con datos</span>'
         : '<span class="cliente-card__badge cliente-card__badge--pending">Ver ficha · sin datos</span>';
@@ -4594,7 +4579,6 @@ function renderClientes() {
     select.innerHTML = '<option value="">Sin cliente</option>' +
       datos.clientes.map(c => `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`).join('');
   }
-  renderPanelWireframesJM();
 }
 
 let cacheAgentesRamas = null;
