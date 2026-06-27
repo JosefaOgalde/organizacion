@@ -351,14 +351,8 @@ function jmHtmlPrototipoInteractivo() {
   const pantallasHtml = Object.entries(proto.pantallas).map(([id, p]) => {
     const src = jmWireframeSrc(p.carpeta, p.archivo);
     const activa = id === inicio ? ' jm-prototipo__pantalla--activa' : '';
-    const hotspots = (p.hotspots || []).map((h) =>
-      `<button type="button" class="jm-prototipo__hotspot" data-destino="${jmEscapeHtml(h.destino)}" ` +
-      `style="left:${h.x}%;top:${h.y}%;width:${h.w}%;height:${h.h}%" ` +
-      `title="${jmEscapeHtml(h.etiqueta)}" aria-label="${jmEscapeHtml(h.etiqueta)}"></button>`
-    ).join('');
     return `<div class="jm-prototipo__pantalla${activa}" data-pantalla-id="${jmEscapeHtml(id)}" role="tabpanel">
       <img class="jm-prototipo__img" src="${src}" alt="${jmEscapeHtml(p.titulo)}" loading="${id === inicio ? 'eager' : 'lazy'}">
-      <div class="jm-prototipo__hotspots">${hotspots}</div>
     </div>`;
   }).join('');
   const flujoHtml = pasos.length
@@ -380,11 +374,10 @@ function jmHtmlPrototipoInteractivo() {
         <div class="jm-prototipo__bar">
           <span class="jm-prototipo__badge">Prototipo interactivo</span>
           <div class="jm-prototipo__acciones">
-            <button type="button" class="btn btn--ghost btn--sm jm-prototipo__btn-zonas" data-jm-toggle-zonas aria-pressed="true">Zonas clicables</button>
             <button type="button" class="btn btn--ghost btn--sm" data-jm-reiniciar>Reiniciar recorrido</button>
           </div>
         </div>
-        <p class="jm-prototipo__hint">Recorre el sitio en orden (panel izquierdo) o haz clic en las zonas resaltadas de cada captura.</p>
+        <p class="jm-prototipo__hint">Recorre el flujo con el panel izquierdo (pasos 1–8). Por ahora solo capturas, sin zonas clicables.</p>
         <div class="jm-prototipo__viewport">
           <div class="jm-prototipo__stack">${pantallasHtml}</div>
         </div>
@@ -581,12 +574,6 @@ window.initJMPrototipo = function initJMPrototipo(root) {
       ir(proto.inicio || 'inicio', { pushHistory: false });
     });
 
-    el.querySelector('[data-jm-toggle-zonas]')?.addEventListener('click', e => {
-      const on = el.classList.toggle('jm-prototipo--mostrar-zonas');
-      e.currentTarget.setAttribute('aria-pressed', on ? 'true' : 'false');
-      e.currentTarget.textContent = on ? 'Zonas clicables' : 'Ocultar zonas';
-    });
-
     el.addEventListener('keydown', e => {
       if (e.key === 'Escape' && historial.length) {
         e.preventDefault();
@@ -595,7 +582,6 @@ window.initJMPrototipo = function initJMPrototipo(root) {
       }
     });
 
-    el.classList.add('jm-prototipo--mostrar-zonas');
     ir(actualId, { pushHistory: false });
   });
 };
