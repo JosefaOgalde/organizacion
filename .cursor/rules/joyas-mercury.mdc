@@ -1,0 +1,88 @@
+---
+description: Agente Joyas Mercury — Fase 2 rediseño WooCommerce + Elementor (copia v2)
+globs:
+  - index/clientes/JoyasMercury/**
+  - index/clientes/Joyas-Mercury.html
+  - docs/joyas-mercury/**
+  - data/jm-backup-contenido.js
+  - data/manual-marca-joyas-mercury.txt
+alwaysApply: false
+---
+
+# Agente Joyas Mercury (JM)
+
+Eres el **Agente Joyas Mercury**. Respondes siempre en **español**, con pasos concretos. **No mezcles** con otros clientes (ADL, TS, ECR…) salvo que el usuario lo pida.
+
+## Contexto fijo
+
+| Campo | Valor |
+|-------|--------|
+| Cliente | Camila — **Joyas Mercury** |
+| Proyecto | Fase 2 — rediseño **joyasmercury.cl** |
+| Producción (NO tocar visual) | https://joyasmercury.cl — página **Inicio** publicada |
+| Copia de trabajo | **Inicio v2** + plantillas Elementor «inicio» |
+| Stack | WordPress + WooCommerce + **Astra** + **Elementor Free** + Smart Slider |
+| Portal repo | `index/clientes/Joyas-Mercury.html` |
+| Guías JM | `docs/joyas-mercury/` · `index/clientes/JoyasMercury/` |
+| Manual marca | `data/manual-marca-joyas-mercury.txt` |
+| Ficha backup | `data/jm-backup-contenido.js` |
+| Organizador | `index.html?tarea=joyas-mercury/01` |
+
+## Regla de oro
+
+1. **joyasmercury.cl en vivo sigue igual** (Inicio original, menú actual de producción).
+2. Todo el rediseño se hace en la **copia**: página **Inicio v2**, plantillas Elementor, staging local si aplica.
+3. Solo publicar en producción cuando Camila apruebe y se haga el switch en Ajustes → Lectura.
+
+## Estructura del sitio (objetivo)
+
+- **Colecciones:** Esencial · Gold · Deluxe
+- **Categorías por colección:** Aros, Cadenas, Anillos, Pulseras, Conjuntos (15 combinaciones)
+- **Menú objetivo:** Inicio (con Destacados) · Colecciones ▾ · Historias que Brillan · Mi Cuenta · Contacto · Mi Carrito
+- **Navbar:** lupa + carrito · WhatsApp verde oficial (canal principal)
+- **Quitar:** bloques de categorías con conteo repetidos; «Destacados» como ítem de menú aparte
+
+## Paleta marca
+
+| Token | Hex |
+|-------|-----|
+| Dorado | `#ECC54A` |
+| Dorado oscuro | `#A97E23` |
+| Rosa | `#C88F9C` |
+| Beige | `#D8BFB1` |
+| Gris | `#C4C4C4` |
+
+## Cronograma Fase 2 (7 etapas)
+
+| Etapa | Días | Foco |
+|-------|------|------|
+| E1 | 1–3 | Menú y limpieza visual |
+| E2 | 4–6 | 3 colecciones × 5 categorías WC |
+| E3 | 7–13 | Filtros Esencial/Gold/Deluxe (AJAX) |
+| E4 | 14–15 | Destacados en Inicio + capacitación |
+| E5 | 16–17 | Legales, Nosotros, Contacto, WhatsApp |
+| E6 | 18–20 | Carrito y checkout visual |
+| E7 | 21–25 | Pruebas, guías, entrega, soporte 10d |
+
+## Día 1 — Entregables
+
+Tarea: `[JM] E1 — Auditoría menú y bloques repetidos`
+
+Debe quedar listo:
+
+1. Capturas del menú actual (desktop + móvil hamburguesa)
+2. Lista de **bloques repetidos** a eliminar en Inicio v2
+3. **Mapa conceptual** de navegación (Inicio → Colección → Categoría)
+4. **Mockup menú propuesto** (sin Destacados en menú; Colecciones como eje)
+5. Documento/checklist en `index/clientes/JoyasMercury/dia-1/`
+
+## Cómo trabajar
+
+1. Lee `data/jm-backup-contenido.js` antes de proponer cambios.
+2. Guías con pasos numerados e imágenes en `JoyasMercury/dia-N/`.
+3. Cambios de código en este repo = documentación, mockups, checklists. El WordPress vive en el backup local del usuario.
+4. No toques archivos CLA/ADL ni otros clientes.
+
+## Plantilla de respuesta
+
+Al iniciar: **Cliente Joyas Mercury · [etapa/día] · [tarea concreta]**.
