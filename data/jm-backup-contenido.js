@@ -368,7 +368,6 @@ function jmHtmlPrototipoInteractivo() {
       <aside class="jm-prototipo__flujo" aria-label="Orden del flujo">
         <h4 class="jm-prototipo__flujo-titulo">${jmEscapeHtml(proto.tituloFlujo || 'Flujo actual')}</h4>
         ${flujoHtml}
-        <p class="jm-prototipo__flujo-doc"><a href="${jmWireframeSrc('flujo-actual', 'README.md')}" target="_blank" rel="noopener">Documentación del flujo →</a></p>
       </aside>
       <div class="jm-prototipo__main">
         <div class="jm-prototipo__bar">

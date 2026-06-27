@@ -3999,15 +3999,6 @@ body.modal-abierto {
   color: #fff;
 }
 
-.jm-prototipo__flujo-doc {
-  margin: 0.65rem 0 0;
-  font-size: 0.72rem;
-}
-
-.jm-prototipo__flujo-doc a {
-  color: #9a5a6e;
-}
-
 .jm-prototipo--flujo .jm-prototipo__stack {
   aspect-ratio: auto;
   min-height: 480px;
