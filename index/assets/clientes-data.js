@@ -56,7 +56,7 @@ window.CLIENTES_PORTAL = [
     resumen: 'Gantt, cronogramas y entregables post auditoría.'
   },
   {
-    archivo: 'Joyas-Mercury.html',
+    archivo: 'joyasmercury.html',
     id: 'cli-joyas-mercury',
     slug: 'joyas-mercury',
     nombre: 'Joyas Mercury',

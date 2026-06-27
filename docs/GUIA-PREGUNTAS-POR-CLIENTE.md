@@ -35,7 +35,7 @@ flowchart TB
 |---------|--------------|-------------------------------|
 | **Trendseeker** | `index/clientes/Trendseeker.html` | «Tarea TS de hoy: publicación redes…» |
 | **ECR** | `index/clientes/ECR.html` | «Necesito copy newsletter ECR…» |
-| **Joyas Mercury** | `index/clientes/Joyas-Mercury.html` | «JM tarea 01: menú WooCommerce…» |
+| **Joyas Mercury** | `index/clientes/joyasmercury.html` | «JM tarea 01: menú WooCommerce…» |
 | **Desafío Latam** | `index/clientes/Desafio-Latam.html` | «Encargo ADL: …» (elige **proyecto** abajo) |
 | **ADL → CLA** | `index/clientes/DesafioLatam/CLA.html` | «Proyecto CLA Caja Los Andes: certificados…» |
 

@@ -85,6 +85,6 @@ Iconos: redes (FB, IG, TikTok) · corona/logo · bolsa con contador.
 
 ```
 http://localhost:3000/prototipo-joyas-mercury.html
-http://localhost:3000/index/clientes/Joyas-Mercury.html
+http://localhost:3000/index/clientes/joyasmercury.html
 http://localhost:3000/index/clientes/JoyasMercury/flujo-actual/01-inicio-home.png
 ```

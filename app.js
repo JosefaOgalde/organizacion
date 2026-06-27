@@ -4543,6 +4543,15 @@ function renderReunionesClientes() {
   if (select) select.innerHTML = opts;
 }
 
+function urlPortalCliente(cliId) {
+  if (typeof CLIENTES_PORTAL !== 'undefined') {
+    const e = CLIENTES_PORTAL.find(x => x.id === cliId);
+    if (e?.archivo) return `index/clientes/${e.archivo}`;
+  }
+  if (cliId === JM_CLI_ID) return 'index/clientes/joyasmercury.html';
+  return null;
+}
+
 function renderClientes() {
   const grid = document.getElementById('lista-clientes');
   const select = document.getElementById('tarea-cliente');
@@ -4573,8 +4582,9 @@ function renderClientes() {
 
   grid.querySelectorAll('[data-cliente-id]').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (btn.dataset.clienteId === JM_CLI_ID) {
-        window.location.href = 'index/clientes/Joyas-Mercury.html';
+      const url = urlPortalCliente(btn.dataset.clienteId);
+      if (url) {
+        window.location.href = url;
         return;
       }
       (window.abrirFichaCliente || abrirPerfilCliente)(btn.dataset.clienteId);
