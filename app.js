@@ -4569,7 +4569,7 @@ function renderClientes() {
     const ag = agenteDe(c);
     const perfilOk = contextoClienteCargado(c);
     const badge = c.id === 'cli-joyas-mercury'
-      ? '<span class="cliente-card__badge cliente-card__badge--wireframes">Wireframes abajo ↓</span>'
+      ? '<span class="cliente-card__badge cliente-card__badge--wireframes">Ver wireframes →</span>'
       : perfilOk
         ? '<span class="cliente-card__badge cliente-card__badge--ok">Ficha con datos</span>'
         : '<span class="cliente-card__badge cliente-card__badge--pending">Ver ficha · sin datos</span>';

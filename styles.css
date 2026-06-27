@@ -3896,6 +3896,43 @@ body.modal-abierto {
   display: block !important;
 }
 
+/* Joyas Mercury: modo wireframes = solo diagramación del sitio */
+.ficha-doc--wireframes .ficha-doc__encabezado {
+  padding-bottom: 0.75rem;
+  margin-bottom: 0;
+}
+
+.ficha-doc--wireframes .ficha-doc__subtitulo {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ficha-text, #9a5a6e);
+  font-weight: 600;
+}
+
+.ficha-doc--wireframes .ficha-doc__roles,
+.ficha-doc--wireframes .ficha-seccion--operativa,
+.ficha-doc--wireframes .ficha-completar,
+.ficha-doc--wireframes .ficha-doc__intro,
+.ficha-doc--wireframes .ficha-seccion:not(.ficha-seccion--wireframes),
+.ficha-doc--wireframes #ficha-secciones-extra,
+.ficha-doc--wireframes .ficha-doc__pie {
+  display: none !important;
+}
+
+.ficha-doc--wireframes .ficha-seccion--wireframes {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.ficha-doc--wireframes .ficha-seccion--wireframes .ficha-seccion__headline {
+  margin-bottom: 0.5rem;
+}
+
+.ficha-doc--wireframes .ficha-wireframes__grid {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
 .ficha-footer__meta {
   display: flex;
   flex-direction: column;

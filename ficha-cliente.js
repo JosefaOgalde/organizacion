@@ -551,7 +551,16 @@
   function actualizarToolbarFicha(cli) {
     const faltantes = camposFichaFaltantes(cli);
     const btnEditar = document.getElementById('btn-ficha-modo-editar');
+    const btnVista = document.getElementById('btn-ficha-modo-vista');
+    const esJM = esClienteJM(cli);
+    if (btnVista) {
+      btnVista.textContent = esJM ? 'Wireframes actuales' : 'Vista ficha';
+      btnVista.title = esJM
+        ? 'Diagramación actual de joyasmercury.cl'
+        : 'Ver ficha en modo lectura';
+    }
     if (btnEditar) {
+      btnEditar.textContent = esJM ? 'Editar datos' : 'Editar';
       btnEditar.classList.toggle('btn--warning', faltantes.length > 0);
       btnEditar.title = faltantes.length
         ? 'Faltan ' + faltantes.length + ' campo(s) — puedes guardar igual con lo que tengas'
@@ -578,11 +587,7 @@
       }
     }
     const btnWireframes = document.getElementById('btn-ficha-wireframes');
-    if (btnWireframes) {
-      const esJM = cli && cli.id === 'cli-joyas-mercury';
-      btnWireframes.hidden = !esJM;
-      btnWireframes.title = esJM ? 'Ir a wireframes actuales del sitio' : '';
-    }
+    if (btnWireframes) btnWireframes.hidden = true;
     const lblGuardado = document.getElementById('ficha-footer-guardado');
     if (lblGuardado && cli?.ficha?.actualizado) {
       const d = parseISO(cli.ficha.actualizado);
@@ -631,16 +636,30 @@
     return htmlAvisoCompletarFicha(cli);
   }
 
+  function esClienteJM(cli) {
+    return !!(cli && cli.id === 'cli-joyas-mercury');
+  }
+
+  function modoVistaFicha(cli) {
+    return esClienteJM(cli) ? 'wireframes' : 'vista';
+  }
+
   function setModoFicha(modo) {
     const doc = document.getElementById('ficha-doc');
     if (!doc) return;
-    doc.classList.toggle('ficha-doc--vista', modo === 'vista');
+    const cli = clienteDe(clientePerfilAbierto);
+    const esJM = esClienteJM(cli);
+    if (esJM && modo === 'vista') modo = 'wireframes';
+    doc.classList.toggle('ficha-doc--vista', !esJM && modo === 'vista');
+    doc.classList.toggle('ficha-doc--wireframes', esJM && modo === 'wireframes');
     doc.classList.toggle('ficha-doc--edicion', modo === 'edicion');
-    document.getElementById('btn-ficha-modo-vista')?.classList.toggle('btn--accent', modo === 'vista');
+    const btnVista = document.getElementById('btn-ficha-modo-vista');
+    if (btnVista) {
+      btnVista.classList.toggle('btn--accent', modo === 'vista' || modo === 'wireframes');
+    }
     document.getElementById('btn-ficha-modo-editar')?.classList.toggle('btn--accent', modo === 'edicion');
     if (modo === 'vista') actualizarVistaDesdeFormulario();
-    else sincronizarCamposVacios();
-    const cli = clienteDe(clientePerfilAbierto);
+    else if (modo === 'edicion') sincronizarCamposVacios();
     if (cli) actualizarToolbarFicha(cli);
   }
 
@@ -688,7 +707,9 @@
     const seccionesCampos = campos.map(c =>
       htmlSeccionCampo(c, c.esManual ? manualExtra : '')
     ).join('');
-    const modoActual = doc.classList.contains('ficha-doc--edicion') ? 'edicion' : 'vista';
+    const modoActual = doc.classList.contains('ficha-doc--edicion')
+      ? 'edicion'
+      : (esClienteJM(cli) ? 'wireframes' : 'vista');
     const actualizado = cli.manualMarca?.actualizado || f.actualizado;
     const fechaAct = actualizado
       ? parseISO(actualizado).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -696,6 +717,7 @@
 
     doc.classList.toggle('ficha-doc--sin-datos', !tieneContenido);
     doc.classList.toggle('ficha-doc--incompleta', !fichaEstaCompleta(cli));
+    doc.classList.toggle('ficha-doc--jm', cli.id === 'cli-joyas-mercury');
     aplicarTemaClienteFicha(cli);
     doc.innerHTML =
       '<header class="ficha-doc__encabezado" style="border-bottom-color:' + col.border + '">' +
@@ -703,7 +725,9 @@
       '<div class="ficha-doc__head-grid"><div>' +
       '<p class="ficha-doc__tipo">' + escapeHtml(etiquetaTipoCliente(cli.tipo)) + '</p>' +
       '<h2 id="modal-perfil-titulo" class="ficha-doc__titulo">' + escapeHtml(cli.nombre) + '</h2>' +
-      '<p class="ficha-doc__codigo">Código: <strong>' + escapeHtml(cli.abrev || abrevDe(cli)) + '</strong></p>' +
+      (cli.id === 'cli-joyas-mercury'
+        ? '<p class="ficha-doc__subtitulo">joyasmercury.cl · diagramación del sitio</p>'
+        : '<p class="ficha-doc__codigo">Código: <strong>' + escapeHtml(cli.abrev || abrevDe(cli)) + '</strong></p>') +
       '</div><div class="ficha-doc__meta-block">' +
       '<p><span class="ficha-doc__meta-label">Agente</span> ' + agente.emoji + ' ' + escapeHtml(agente.nombre) + '</p>' +
       '<p><span class="ficha-doc__meta-label">Skill</span> ' + escapeHtml(skill.nombre) + '</p>' +
@@ -750,8 +774,9 @@
   }
 
   function imprimirFichaCliente() {
+    const cli = clienteDe(clientePerfilAbierto);
     const eraEdicion = document.getElementById('ficha-doc')?.classList.contains('ficha-doc--edicion');
-    setModoFicha('vista');
+    setModoFicha(modoVistaFicha(cli));
     sincronizarTitulosSeccionesExtra(document.getElementById('ficha-doc'));
     window.print();
     if (eraEdicion) setModoFicha('edicion');
@@ -779,15 +804,7 @@
     }
     const faltantes = camposFichaFaltantes(cli);
     if (cli.id === 'cli-joyas-mercury') {
-      setModoFicha('vista');
-      setTimeout(() => {
-        document.getElementById('ficha-wireframes-jm')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 150);
-      if (!fichaTieneContenido(cli)) {
-        mostrarToast('Wireframes del sitio arriba — edita la ficha con el botón Editar');
-      } else if (faltantes.length) {
-        mostrarToast('Ficha con datos · wireframes arriba');
-      }
+      setModoFicha('wireframes');
       return;
     }
     if (!fichaTieneContenido(cli)) {
@@ -832,17 +849,12 @@
     const faltantes = camposFichaFaltantes(cli);
     if (faltantes.length) {
       mostrarToast('Ficha guardada para «' + (cli.abrev || cli.nombre) + '» — puedes seguir editando');
-      setModoFicha('vista');
+      setModoFicha(esClienteJM(cli) ? 'wireframes' : 'edicion');
     } else {
       mostrarToast('Ficha de «' + (cli.abrev || cli.nombre) + '» guardada');
-      setModoFicha('vista');
+      setModoFicha(modoVistaFicha(cli));
     }
     if (typeof renderClientes === 'function') renderClientes();
-    if (cli.id === 'cli-joyas-mercury') {
-      setTimeout(() => {
-        document.getElementById('ficha-wireframes-jm')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 120);
-    }
   };
 
   window.agregarDocumentoFicha = agregarDocumentoFicha;
@@ -860,13 +872,13 @@
         return;
       }
       const t = e.target.closest('#btn-ficha-modo-vista');
-      if (t) { setModoFicha('vista'); return; }
-      if (e.target.closest('#btn-ficha-modo-editar')) { setModoFicha('edicion'); return; }
-      if (e.target.closest('#btn-ficha-agregar-seccion')) { agregarSeccionFicha(); return; }
-      if (e.target.closest('#btn-ficha-wireframes')) {
-        document.getElementById('ficha-wireframes-jm')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (t) {
+        const cli = clienteDe(clientePerfilAbierto);
+        setModoFicha(modoVistaFicha(cli));
         return;
       }
+      if (e.target.closest('#btn-ficha-modo-editar')) { setModoFicha('edicion'); return; }
+      if (e.target.closest('#btn-ficha-agregar-seccion')) { agregarSeccionFicha(); return; }
       if (e.target.closest('#btn-ficha-imprimir')) { imprimirFichaCliente(); }
     });
     document.addEventListener('submit', e => {
@@ -891,7 +903,6 @@
       '<div class="ficha-toolbar__acciones">' +
       '<button type="button" class="btn btn--ghost btn--small" id="btn-ficha-modo-vista">Vista ficha</button>' +
       '<button type="button" class="btn btn--ghost btn--small" id="btn-ficha-modo-editar">Editar</button>' +
-      '<button type="button" class="btn btn--ghost btn--small" id="btn-ficha-wireframes" hidden>Wireframes</button>' +
       '<button type="button" class="btn btn--ghost btn--small" id="btn-ficha-agregar-seccion">+ Sección</button>' +
       '<button type="button" class="btn btn--ghost btn--small" id="btn-ficha-imprimir">Imprimir / PDF</button>' +
       '</div></div>' +
