@@ -1,0 +1,77 @@
+{
+  "sitio": "joyasmercury.cl",
+  "actualizado": "2026-06-26",
+  "stack": {
+    "cms": "WordPress",
+    "tema": "Astra",
+    "builder": "Elementor Free",
+    "ecommerce": "WooCommerce",
+    "slider": "Smart Slider",
+    "menuMovil": "WP Bottom Menu"
+  },
+  "produccion": {
+    "paginaInicio": "Inicio",
+    "postId": 4387,
+    "url": "https://joyasmercury.cl",
+    "lecturaWp": "Ajustes → Lectura → página estática Inicio"
+  },
+  "copiaTrabajo": {
+    "pagina": "Inicio v2",
+    "plantillaElementor": "inicio",
+    "respaldoPlantilla": "Backup Inicio - Original",
+    "estado": "Borrador / no publicada como home"
+  },
+  "paginas": [
+    { "nombre": "Inicio", "rol": "producción", "builder": "mixto" },
+    { "nombre": "Inicio v2", "rol": "copia trabajo", "builder": "Elementor" },
+    { "nombre": "Blog", "rol": "contenido", "builder": "—" },
+    { "nombre": "Contacto", "rol": "confianza", "builder": "Elementor" },
+    { "nombre": "Nosotros", "rol": "confianza", "builder": "Elementor" },
+    { "nombre": "Newsletter", "rol": "marketing", "builder": "—" },
+    { "nombre": "Historias que Brillan", "rol": "reseñas", "builder": "—" },
+    { "nombre": "Tienda", "rol": "woocommerce", "builder": "WC" },
+    { "nombre": "Mi Carrito", "rol": "woocommerce", "builder": "WC" },
+    { "nombre": "Mi Cuenta", "rol": "woocommerce", "builder": "WC" },
+    { "nombre": "Checkout", "rol": "woocommerce", "builder": "WC" },
+    { "nombre": "Políticas", "rol": "legal", "builder": "—" },
+    { "nombre": "Landings Esencial / Gold / Deluxe", "rol": "colección", "builder": "Elementor", "nota": "Etapa 1 parcial" }
+  ],
+  "cabeceraAstra": {
+    "filas": [
+      { "nombre": "Encima de cabecera", "contenido": "Franja negra móvil", "accion": "Ocultar en Fase 2" },
+      { "nombre": "Cabecera principal", "contenido": "Logo centro · lupa · carrito", "accion": "Mantener" },
+      { "nombre": "Barra de menú", "contenido": "Menú horizontal desktop / hamburguesa móvil", "accion": "Simplificar E1" }
+    ]
+  },
+  "seccionesInicioV2": [
+    { "id": "header", "nombre": "Cabecera Astra", "estado": "config tema" },
+    { "id": "slider", "nombre": "Smart Slider 1920×600", "estado": "activo" },
+    { "id": "categorias-destacadas", "nombre": "Círculos Esencial / Gold / Deluxe", "estado": "activo", "css": "#categorias-destacadas" },
+    { "id": "bloque-conteo", "nombre": "Grid categorías con número (12)", "estado": "eliminar", "problema": "repetición" },
+    { "id": "destacados", "nombre": "Productos destacados", "estado": "pendiente integrar home" },
+    { "id": "footer", "nombre": "Pie + redes + legales", "estado": "parcial" }
+  ],
+  "menuActualProblemas": [
+    "Categorías repetidas (Aros, Cadenas… × colección)",
+    "Destacados como ítem de menú",
+    "Landings categoría sueltas",
+    "Sin eje Colecciones ▾"
+  ],
+  "menuObjetivo": [
+    "Inicio",
+    "Colecciones ▾ (Esencial, Gold, Deluxe → 5 categorías c/u)",
+    "Historias que Brillan",
+    "Mi Cuenta",
+    "Contacto",
+    "Mi Carrito"
+  ],
+  "colecciones": ["Esencial", "Gold", "Deluxe"],
+  "categorias": ["Aros", "Cadenas", "Anillos", "Pulseras", "Conjuntos"],
+  "paleta": {
+    "dorado": "#ECC54A",
+    "doradoOscuro": "#A97E23",
+    "rosa": "#C88F9C",
+    "beige": "#D8BFB1",
+    "gris": "#C4C4C4"
+  }
+}
