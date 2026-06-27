@@ -34,6 +34,11 @@
         </section>`
       : '';
 
+  const wireframesHtml =
+    c.slug === 'joyas-mercury' && typeof window.jmHtmlWireframes === 'function'
+      ? window.jmHtmlWireframes({ claseExtra: 'ficha-seccion--portal' })
+      : '';
+
   root.innerHTML = `
     <article class="portal-cliente"
       style="--card-border:${c.color.border};--card-bg:${c.color.bg};--card-text:${c.color.text}">
@@ -44,19 +49,20 @@
         <h2>Resumen</h2>
         <p>${c.resumen}</p>
       </section>
+      ${wireframesHtml}
       ${proyectosHtml}
       <section>
         <h2>Enlaces</h2>
         <ul>
           <li><a href="../../index.html">Abrir organizador principal</a></li>
-          <li><a href="../../index.html?tarea=${c.slug}/01">Primera tarea (si existe)</a></li>
+          <li><a href="../../index.html#clientes">Ficha completa en Clientes</a></li>
           <li><a href="../clientes.html">Volver al listado de clientes</a></li>
         </ul>
       </section>
       <a href="../../index.html" class="portal-app-link">Ir al organizador →</a>
-      <p class="portal-paso">
+      ${c.slug !== 'joyas-mercury' ? `<p class="portal-paso">
         <strong>ADL multi-proyecto:</strong> usa las fichas de proyecto arriba para no confundir identidades visuales.
-      </p>
+      </p>` : ''}
     </article>
   `;
 })();

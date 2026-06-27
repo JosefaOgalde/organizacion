@@ -122,5 +122,62 @@ Plugins: Elementor, WooCommerce, Astra, WP Bottom Menu.`
 Restaurar: subir wordpress, importar SQL, wp-config en servidor, guardar enlaces permanentes.
 No subir wp-config a git. Repo privado GitHub JosefaOgalde/joyasmercury-backup.`
     }
+  ],
+
+  wireframes: [
+    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '01-arquitectura-sitio-1080x1080.png', titulo: 'Arquitectura del sitio' },
+    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '02-home-produccion-desktop-1080x1080.png', titulo: 'Home producción (desktop)' },
+    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '03-home-produccion-mobile-1080x1080.png', titulo: 'Home producción (móvil)' },
+    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '04-menu-hamburguesa-actual-1080x1080.png', titulo: 'Menú hamburguesa actual' },
+    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '05-wp-admin-paginas-1080x1080.png', titulo: 'WP Admin — páginas' },
+    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '06-elementor-inicio-v2-1080x1080.png', titulo: 'Elementor Inicio v2' },
+    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '07-landing-esencial-1080x1080.png', titulo: 'Landing Esencial' },
+    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '08-woocommerce-carrito-1080x1080.png', titulo: 'Carrito WooCommerce' },
+    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '09-astra-cabecera-3-filas-1080x1080.png', titulo: 'Cabecera Astra (3 filas)' },
+    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '10-flujo-actual-vs-objetivo-1080x1080.png', titulo: 'Flujo actual vs objetivo' },
+    { grupo: 'Objetivo (Fase 2)', carpeta: 'dia-1', archivo: '05-mockup-menu-propuesto-1080x1080.png', titulo: 'Menú propuesto' },
+    { grupo: 'Objetivo (Fase 2)', carpeta: 'dia-1', archivo: '06-mapa-navegacion-1080x1080.png', titulo: 'Mapa de navegación' }
   ]
+};
+
+/** Ruta a PNG según organizador (/) o portal clientes (/index/clientes/) */
+window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo) {
+  const enPortal = /\/index\/clientes\//i.test(location.pathname || '')
+    && !/\/index\.html$/i.test(location.pathname || '');
+  const base = enPortal ? 'JoyasMercury' : 'index/clientes/JoyasMercury';
+  return `${base}/${carpeta}/${archivo}`;
+};
+
+/** Galería HTML de wireframes JM (ficha cliente + portal) */
+window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
+  const wf = window.JM_BACKUP_FICHA?.wireframes;
+  if (!wf?.length) return '';
+  const claseExtra = (opts && opts.claseExtra) || '';
+  const grupos = [];
+  wf.forEach(item => {
+    if (!grupos.includes(item.grupo)) grupos.push(item.grupo);
+  });
+  const bloques = grupos.map(grupo => {
+    const items = wf.filter(w => w.grupo === grupo).map(w => {
+      const src = jmWireframeSrc(w.carpeta, w.archivo);
+      return `<figure class="ficha-wireframe">
+        <a href="${src}" target="_blank" rel="noopener" title="Abrir ${w.titulo}">
+          <img src="${src}" alt="${w.titulo}" loading="lazy" width="540" height="540">
+        </a>
+        <figcaption>${w.titulo}</figcaption>
+      </figure>`;
+    }).join('');
+    return `<div class="ficha-wireframes__grupo">
+      <h4 class="ficha-wireframes__sub">${grupo}</h4>
+      <div class="ficha-wireframes__grid">${items}</div>
+    </div>`;
+  }).join('');
+  return `<section class="ficha-seccion ficha-seccion--wireframes ${claseExtra}">
+    <div class="ficha-seccion__headline">
+      <h3 class="ficha-seccion__titulo">Wireframes del sitio</h3>
+      <span class="ficha-seccion__estado">Diagramación · joyasmercury.cl</span>
+    </div>
+    <p class="ficha-wireframes__intro">Estado actual del sitio y objetivo Fase 2. Clic en una imagen para verla en tamaño completo.</p>
+    ${bloques}
+  </section>`;
 };

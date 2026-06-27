@@ -229,6 +229,12 @@
     }).join('') + '</ul>';
   }
 
+  function htmlSeccionWireframesJM(cli) {
+    if (!cli || cli.id !== 'cli-joyas-mercury') return '';
+    if (typeof window.jmHtmlWireframes !== 'function') return '';
+    return window.jmHtmlWireframes();
+  }
+
   function htmlSeccionDocumentos(cli) {
     const docs = (cli.ficha.documentos || []).filter(d => d.clienteId === cli.id);
     const sinDocs = !docs.length;
@@ -694,6 +700,7 @@
       avisoCompletar +
       '<p class="ficha-doc__intro ficha-solo-edicion">Esta ficha se incluye al generar prompts en <strong>Realizar tarea</strong>. Puedes guardar solo lo que tengas — no hace falta completar todo.</p>' +
       seccionesCampos +
+      htmlSeccionWireframesJM(cli) +
       htmlSeccionDocumentos(cli) +
       '<div id="ficha-secciones-extra">' + extras + '</div>' +
       '<footer class="ficha-doc__pie"><span>Última actualización: ' + escapeHtml(fechaAct) + '</span>' +

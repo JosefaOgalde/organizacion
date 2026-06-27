@@ -10,7 +10,7 @@ Abre `index.html` en el navegador. Los datos se guardan en `localStorage` del na
 
 **Pestaña Agentes:** visualiza ramas Git `cursor/…` por agente (`@joyas-mercury`, `@adl-cla`, …). Datos en `data/agentes-ramas.json`.
 
-Para vaciar tareas en el navegador: pestaña **Agentes → Vaciar calendario**, o abre `?vaciar-tareas=1`. Para forzar respaldo del repo: `?respaldo=1`.
+Para vaciar tareas en el navegador: pestaña **Agentes → Vaciar calendario**, o abre `?vaciar-tareas=1`. Al actualizar el repo (respaldo v6) el calendario se vacía solo una vez.
 
 ```bash
 # Servidor local (recomendado para abrir tareas por enlace)

@@ -429,11 +429,11 @@
     }
   ],
   "ultimaVisita": "2026-06-25",
-  "respaldoVersion": 5,
+  "respaldoVersion": 6,
   "respaldoActualizado": "2026-06-27",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
-    "nota": "Tareas solo cuando las creas con + Nueva o avises al agente"
+    "nota": "Calendario vacío — agrega encargos con + Nueva cuando avances"
   }
 }

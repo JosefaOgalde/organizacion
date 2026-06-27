@@ -632,6 +632,22 @@ function initMetaDatos(data) {
   return data;
 }
 
+/** v6: calendario vacío — tareas solo con + Nueva (jun 2026) */
+const RESPALDO_VERSION_ACTUAL = 6;
+
+function aplicarMigracionRespaldo(data) {
+  const v = data.respaldoVersion || 0;
+  if (v >= RESPALDO_VERSION_ACTUAL) return data;
+  data.tareas = [];
+  if (!data.meta) data.meta = {};
+  data.meta.autoGenerarTareas = false;
+  data.meta.modoTrabajo = 'manual';
+  data.meta.nota = 'Calendario vacío — agrega encargos con + Nueva cuando avances';
+  data.respaldoVersion = RESPALDO_VERSION_ACTUAL;
+  data.respaldoActualizado = '2026-06-27';
+  return data;
+}
+
 /** No pisar fecha/horario si el usuario ya ajustó la agenda (o viene del respaldo). */
 function sincronizarAgendaTarea(tarea, { fecha, horaInicio, horaFin } = {}) {
   if (!tarea || tarea.agendaFijada) return;
@@ -1752,6 +1768,7 @@ function asegurarAgentesClientes(data) {
 
 function normalizarDatos(data) {
   initMetaDatos(data);
+  aplicarMigracionRespaldo(data);
   initContextoCliente(data);
   aplicarTareasEliminadas(data);
   normalizarCitasSalud(data);
