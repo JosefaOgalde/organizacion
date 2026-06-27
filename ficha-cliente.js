@@ -778,6 +778,18 @@
       return;
     }
     const faltantes = camposFichaFaltantes(cli);
+    if (cli.id === 'cli-joyas-mercury') {
+      setModoFicha('vista');
+      setTimeout(() => {
+        document.getElementById('ficha-wireframes-jm')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+      if (!fichaTieneContenido(cli)) {
+        mostrarToast('Wireframes del sitio arriba — edita la ficha con el botón Editar');
+      } else if (faltantes.length) {
+        mostrarToast('Ficha con datos · wireframes arriba');
+      }
+      return;
+    }
     if (!fichaTieneContenido(cli)) {
       setModoFicha('edicion');
       const primero = faltantes[0];
@@ -791,11 +803,6 @@
       mostrarToast('Faltan ' + faltantes.length + ' dato(s) — puedes agregarlos desde Editar');
     } else {
       setModoFicha('vista');
-    }
-    if (cli.id === 'cli-joyas-mercury') {
-      setTimeout(() => {
-        document.getElementById('ficha-wireframes-jm')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 200);
     }
   };
 

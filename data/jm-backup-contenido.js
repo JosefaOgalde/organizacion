@@ -140,12 +140,9 @@ No subir wp-config a git. Repo privado GitHub JosefaOgalde/joyasmercury-backup.`
   ]
 };
 
-/** Ruta a PNG según organizador (/) o portal clientes (/index/clientes/) */
+/** Ruta absoluta a PNG (funciona desde index.html y portal clientes con npx serve .) */
 window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo) {
-  const enPortal = /\/index\/clientes\//i.test(location.pathname || '')
-    && !/\/index\.html$/i.test(location.pathname || '');
-  const base = enPortal ? 'JoyasMercury' : 'index/clientes/JoyasMercury';
-  return `${base}/${carpeta}/${archivo}`;
+  return `/index/clientes/JoyasMercury/${carpeta}/${archivo}`;
 };
 
 /** Copia wireframes al objeto ficha (persisten en localStorage al guardar) */

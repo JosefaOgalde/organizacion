@@ -3979,3 +3979,38 @@ body.modal-abierto {
     gap: 0.65rem;
   }
 }
+
+/* Panel wireframes en pestaña Clientes */
+.panel--jm-wireframes {
+  margin-top: 1.25rem;
+  border: 2px solid #e8b8c8;
+  background: #fdf8fa;
+}
+
+.jm-wireframes-panel__head {
+  margin-bottom: 0.75rem;
+}
+
+.jm-wireframes-panel__titulo {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+  color: #9a5a6e;
+}
+
+.ficha-seccion--clientes-tab {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ficha-seccion--clientes-tab .ficha-seccion__headline {
+  display: none;
+}
+
+.ficha-seccion--clientes-tab .ficha-wireframes__intro {
+  display: none;
+}
+
+.cliente-card__badge--wireframes {
+  background: #9a5a6e;
+  color: #fff;
+}
