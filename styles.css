@@ -3892,6 +3892,23 @@ body.modal-abierto {
   padding-top: 1.25rem;
 }
 
+.ficha-doc--vista .ficha-seccion--wireframes {
+  display: block !important;
+}
+
+.ficha-footer__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.ficha-footer__guardado {
+  font-size: 0.78rem;
+  color: var(--ficha-text, #5a8a5a);
+  font-weight: 600;
+}
+
 .ficha-wireframes__intro {
   margin: 0 0 1rem;
   font-size: 0.9rem;

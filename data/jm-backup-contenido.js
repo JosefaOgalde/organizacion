@@ -3,7 +3,7 @@
  * Cargado por app.js
  */
 window.JM_BACKUP_FICHA = {
-  version: 1,
+  version: 2,
   metas: `Etapa 2 — Rediseño joyasmercury.cl
 - Navegación limpia y elegante (referencia joyería premium)
 - Filtros visuales Esencial / Gold / Deluxe en la misma vista (sin cambiar de página)
@@ -148,9 +148,22 @@ window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo) {
   return `${base}/${carpeta}/${archivo}`;
 };
 
+/** Copia wireframes al objeto ficha (persisten en localStorage al guardar) */
+window.asegurarWireframesJM = function asegurarWireframesJM(cli) {
+  if (!cli || cli.id !== 'cli-joyas-mercury') return;
+  if (!cli.ficha || typeof cli.ficha !== 'object') {
+    cli.ficha = { contacto: '', links: '', notas: '', seccionesExtra: [], documentos: [] };
+  }
+  const src = window.JM_BACKUP_FICHA?.wireframes;
+  if (!src?.length) return;
+  if (!Array.isArray(cli.ficha.wireframes) || !cli.ficha.wireframes.length) {
+    cli.ficha.wireframes = src.map(w => ({ ...w }));
+  }
+};
+
 /** Galería HTML de wireframes JM (ficha cliente + portal) */
 window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
-  const wf = window.JM_BACKUP_FICHA?.wireframes;
+  const wf = (opts && opts.wireframes) || window.JM_BACKUP_FICHA?.wireframes;
   if (!wf?.length) return '';
   const claseExtra = (opts && opts.claseExtra) || '';
   const grupos = [];
@@ -172,12 +185,12 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
       <div class="ficha-wireframes__grid">${items}</div>
     </div>`;
   }).join('');
-  return `<section class="ficha-seccion ficha-seccion--wireframes ${claseExtra}">
+  return `<section id="ficha-wireframes-jm" class="ficha-seccion ficha-seccion--wireframes ${claseExtra}">
     <div class="ficha-seccion__headline">
-      <h3 class="ficha-seccion__titulo">Wireframes del sitio</h3>
+      <h3 class="ficha-seccion__titulo">Wireframes actuales</h3>
       <span class="ficha-seccion__estado">Diagramación · joyasmercury.cl</span>
     </div>
-    <p class="ficha-wireframes__intro">Estado actual del sitio y objetivo Fase 2. Clic en una imagen para verla en tamaño completo.</p>
+    <p class="ficha-wireframes__intro">Estado actual del sitio y objetivo Fase 2. Clic en una imagen para verla en tamaño completo. Esta sección permanece al guardar la ficha.</p>
     ${bloques}
   </section>`;
 };

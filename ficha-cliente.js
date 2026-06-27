@@ -231,8 +231,9 @@
 
   function htmlSeccionWireframesJM(cli) {
     if (!cli || cli.id !== 'cli-joyas-mercury') return '';
+    if (typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
     if (typeof window.jmHtmlWireframes !== 'function') return '';
-    return window.jmHtmlWireframes();
+    return window.jmHtmlWireframes({ wireframes: cli.ficha?.wireframes });
   }
 
   function htmlSeccionDocumentos(cli) {
@@ -576,6 +577,22 @@
         badge.style.color = '#fff';
       }
     }
+    const btnWireframes = document.getElementById('btn-ficha-wireframes');
+    if (btnWireframes) {
+      const esJM = cli && cli.id === 'cli-joyas-mercury';
+      btnWireframes.hidden = !esJM;
+      btnWireframes.title = esJM ? 'Ir a wireframes actuales del sitio' : '';
+    }
+    const lblGuardado = document.getElementById('ficha-footer-guardado');
+    if (lblGuardado && cli?.ficha?.actualizado) {
+      const d = parseISO(cli.ficha.actualizado);
+      lblGuardado.textContent = 'Guardada · ' + d.toLocaleString('es-CL', {
+        day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+      lblGuardado.hidden = false;
+    } else if (lblGuardado) {
+      lblGuardado.hidden = true;
+    }
   }
 
   function bindCompletarFicha() {
@@ -697,10 +714,10 @@
         ? '<section class="ficha-seccion ficha-seccion--operativa"><h3 class="ficha-seccion__titulo">Información operativa</h3>' +
           '<div class="ficha-roles-detalle">' + rolesDetalle + '</div></section>'
         : '') +
+      htmlSeccionWireframesJM(cli) +
       avisoCompletar +
       '<p class="ficha-doc__intro ficha-solo-edicion">Esta ficha se incluye al generar prompts en <strong>Realizar tarea</strong>. Puedes guardar solo lo que tengas — no hace falta completar todo.</p>' +
       seccionesCampos +
-      htmlSeccionWireframesJM(cli) +
       htmlSeccionDocumentos(cli) +
       '<div id="ficha-secciones-extra">' + extras + '</div>' +
       '<footer class="ficha-doc__pie"><span>Última actualización: ' + escapeHtml(fechaAct) + '</span>' +
@@ -771,9 +788,14 @@
       mostrarToast('Completa la información del cliente — se guarda en su ficha');
     } else if (faltantes.length) {
       setModoFicha('vista');
-      mostrarToast('Faltan ' + faltantes.length + ' dato(s) — puedes agregarlos desde la ficha');
+      mostrarToast('Faltan ' + faltantes.length + ' dato(s) — puedes agregarlos desde Editar');
     } else {
       setModoFicha('vista');
+    }
+    if (cli.id === 'cli-joyas-mercury') {
+      setTimeout(() => {
+        document.getElementById('ficha-wireframes-jm')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 200);
     }
   };
 
@@ -795,17 +817,25 @@
     const cli = clienteDe(cliId);
     if (!cli) return;
     leerFichaDesdeFormulario(cli);
-    guardar();
+    if (cli.id === 'cli-joyas-mercury' && typeof window.asegurarWireframesJM === 'function') {
+      window.asegurarWireframesJM(cli);
+    }
+    if (guardar() === false) return;
     renderFichaCliente(cli);
     const faltantes = camposFichaFaltantes(cli);
     if (faltantes.length) {
-      mostrarToast('Guardado para «' + (cli.abrev || cli.nombre) + '» — puedes avanzar con lo que cargaste');
-      setModoFicha('edicion');
+      mostrarToast('Ficha guardada para «' + (cli.abrev || cli.nombre) + '» — puedes seguir editando');
+      setModoFicha('vista');
     } else {
       mostrarToast('Ficha de «' + (cli.abrev || cli.nombre) + '» guardada');
       setModoFicha('vista');
     }
-    render();
+    if (typeof renderClientes === 'function') renderClientes();
+    if (cli.id === 'cli-joyas-mercury') {
+      setTimeout(() => {
+        document.getElementById('ficha-wireframes-jm')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 120);
+    }
   };
 
   window.agregarDocumentoFicha = agregarDocumentoFicha;
@@ -826,6 +856,10 @@
       if (t) { setModoFicha('vista'); return; }
       if (e.target.closest('#btn-ficha-modo-editar')) { setModoFicha('edicion'); return; }
       if (e.target.closest('#btn-ficha-agregar-seccion')) { agregarSeccionFicha(); return; }
+      if (e.target.closest('#btn-ficha-wireframes')) {
+        document.getElementById('ficha-wireframes-jm')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
       if (e.target.closest('#btn-ficha-imprimir')) { imprimirFichaCliente(); }
     });
     document.addEventListener('submit', e => {
@@ -850,6 +884,7 @@
       '<div class="ficha-toolbar__acciones">' +
       '<button type="button" class="btn btn--ghost btn--small" id="btn-ficha-modo-vista">Vista ficha</button>' +
       '<button type="button" class="btn btn--ghost btn--small" id="btn-ficha-modo-editar">Editar</button>' +
+      '<button type="button" class="btn btn--ghost btn--small" id="btn-ficha-wireframes" hidden>Wireframes</button>' +
       '<button type="button" class="btn btn--ghost btn--small" id="btn-ficha-agregar-seccion">+ Sección</button>' +
       '<button type="button" class="btn btn--ghost btn--small" id="btn-ficha-imprimir">Imprimir / PDF</button>' +
       '</div></div>' +
@@ -859,7 +894,10 @@
       '<article id="ficha-doc" class="ficha-doc ficha-doc--vista" aria-label="Ficha del cliente"></article>' +
       '</div>' +
       '<footer class="ficha-footer no-print">' +
+      '<div class="ficha-footer__meta">' +
       '<span id="ficha-footer-cliente" class="ficha-footer__cliente"></span>' +
+      '<span id="ficha-footer-guardado" class="ficha-footer__guardado" hidden></span>' +
+      '</div>' +
       '<button type="submit" class="btn btn--primary" id="btn-ficha-guardar-footer">Guardar ficha</button>' +
       '</footer></form></div></div>';
     window._fichaUiBound = false;
@@ -887,6 +925,9 @@
         if (typeof cli.ficha.notas !== 'string') cli.ficha.notas = '';
         if (!Array.isArray(cli.ficha.seccionesExtra)) cli.ficha.seccionesExtra = [];
         if (!Array.isArray(cli.ficha.documentos)) cli.ficha.documentos = [];
+        if (cli.id === 'cli-joyas-mercury' && typeof window.asegurarWireframesJM === 'function') {
+          window.asegurarWireframesJM(cli);
+        }
       });
       return data;
     };

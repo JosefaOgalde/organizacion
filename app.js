@@ -1636,7 +1636,10 @@ function importarFichaBackupJoyasMercury(cli) {
     cli.ficha = { contacto: '', links: '', notas: '', seccionesExtra: [], documentos: [] };
   }
   const v = cli.ficha.backupJoyasMercuryV || 0;
-  if (v >= backup.version) return;
+  if (v >= backup.version) {
+    if (typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
+    return;
+  }
 
   function mergeCampo(actual, nuevo) {
     if (!(nuevo || '').trim()) return actual || '';
@@ -1675,6 +1678,12 @@ function importarFichaBackupJoyasMercury(cli) {
       });
     }
   });
+
+  if (Array.isArray(backup.wireframes) && backup.wireframes.length) {
+    cli.ficha.wireframes = backup.wireframes.map(w => ({ ...w }));
+  } else if (typeof window.asegurarWireframesJM === 'function') {
+    window.asegurarWireframesJM(cli);
+  }
 
   cli.ficha.backupJoyasMercuryV = backup.version;
   cli.ficha.actualizado = toISO(hoy());
@@ -1722,6 +1731,7 @@ function asegurarClienteJoyasMercury(data) {
       cli.ficha.actualizado = toISO(hoy());
     }
     importarFichaBackupJoyasMercury(cli);
+    if (typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
   }
   asegurarTareasJoyasMercuryFase2(data);
   return data;
@@ -1819,7 +1829,14 @@ function tieneDatosLocales() {
 }
 
 function guardar() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+    return true;
+  } catch (e) {
+    console.error('Error al guardar en localStorage', e);
+    mostrarToast('No se pudo guardar — el almacenamiento del navegador puede estar lleno');
+    return false;
+  }
 }
 
 function clienteDe(idCliente) {
