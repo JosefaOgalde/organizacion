@@ -4544,26 +4544,15 @@ function renderReunionesClientes() {
 }
 
 function renderPanelWireframesJM() {
-  const panel = document.getElementById('jm-wireframes-panel');
-  if (!panel) return;
+  const full = document.getElementById('jm-wireframes-full');
+  if (!full || typeof window.jmHtmlWireframes !== 'function') return;
   const cli = datos.clientes.find(c => c.id === 'cli-joyas-mercury');
-  if (!cli || typeof window.jmHtmlWireframes !== 'function') {
-    panel.hidden = true;
-    panel.innerHTML = '';
-    return;
-  }
-  if (typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
-  panel.hidden = false;
-  panel.innerHTML =
-    '<div class="jm-wireframes-panel__head">' +
-    '<h2 class="jm-wireframes-panel__titulo">Joyas Mercury · wireframes actuales</h2>' +
-    '<p class="vista-hint">Diagramación del sitio (estado actual + objetivo Fase 2). También están en la ficha al hacer clic en la tarjeta JM.</p>' +
-    '<button type="button" class="btn btn--ghost btn--sm" id="btn-abrir-ficha-jm">Abrir ficha completa</button>' +
-    '</div>' +
-    window.jmHtmlWireframes({ wireframes: cli.ficha?.wireframes, claseExtra: 'ficha-seccion--clientes-tab' });
-  panel.querySelector('#btn-abrir-ficha-jm')?.addEventListener('click', () => {
-    if (window.abrirFichaCliente) window.abrirFichaCliente('cli-joyas-mercury');
+  if (cli && typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
+  const html = window.jmHtmlWireframes({
+    wireframes: cli?.ficha?.wireframes,
+    claseExtra: 'ficha-seccion--clientes-tab'
   });
+  if (html) full.innerHTML = html;
 }
 
 function renderClientes() {
@@ -5007,7 +4996,11 @@ async function iniciarApp() {
   }
   setupUI();
   if (!aplicarRutaDesdeUrl()) {
-    mostrarVista('mes');
+    if (location.hash.replace(/^#/, '') === 'clientes') {
+      mostrarVista('clientes', { activarTab: true });
+    } else {
+      mostrarVista('mes');
+    }
     render();
   }
   if (origenCarga === 'respaldo') {

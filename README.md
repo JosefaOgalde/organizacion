@@ -6,6 +6,8 @@ Organizador semanal (lunes a domingo) para gestionar trabajo full-time, clientes
 
 Abre `index.html` en el navegador. Los datos se guardan en `localStorage` del navegador.
 
+**Wireframes Joyas Mercury:** página dedicada → [`wireframes-joyas-mercury.html`](wireframes-joyas-mercury.html) (también botón en pestaña Clientes).
+
 **Modo manual (desde jun 2026):** el calendario inicia **sin tareas**. Creas encargos con **+ Nueva** cuando avanzas con cada cliente. Las tareas automáticas (JM, PISC, etc.) están desactivadas salvo que actives `meta.autoGenerarTareas` en el respaldo.
 
 **Pestaña Agentes:** visualiza ramas Git `cursor/…` por agente (`@joyas-mercury`, `@adl-cla`, …). Datos en `data/agentes-ramas.json`.

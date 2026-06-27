@@ -140,9 +140,14 @@ No subir wp-config a git. Repo privado GitHub JosefaOgalde/joyasmercury-backup.`
   ]
 };
 
-/** Ruta absoluta a PNG (funciona desde index.html y portal clientes con npx serve .) */
+/** Ruta relativa según página (organizador, portal o wireframes.html) */
 window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo) {
-  return `/index/clientes/JoyasMercury/${carpeta}/${archivo}`;
+  const file = `${carpeta}/${archivo}`;
+  const p = (location.pathname || '').replace(/\\/g, '/');
+  if (/\/index\/clientes\//i.test(p)) {
+    return `JoyasMercury/${file}`;
+  }
+  return `index/clientes/JoyasMercury/${file}`;
 };
 
 /** Copia wireframes al objeto ficha (persisten en localStorage al guardar) */
@@ -160,7 +165,10 @@ window.asegurarWireframesJM = function asegurarWireframesJM(cli) {
 
 /** Galería HTML de wireframes JM (ficha cliente + portal) */
 window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
-  const wf = (opts && opts.wireframes) || window.JM_BACKUP_FICHA?.wireframes;
+  const fromOpts = opts && opts.wireframes;
+  const wf = (Array.isArray(fromOpts) && fromOpts.length)
+    ? fromOpts
+    : (window.JM_BACKUP_FICHA?.wireframes || []);
   if (!wf?.length) return '';
   const claseExtra = (opts && opts.claseExtra) || '';
   const grupos = [];
