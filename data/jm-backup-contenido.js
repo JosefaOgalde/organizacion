@@ -163,6 +163,46 @@ window.asegurarWireframesJM = function asegurarWireframesJM(cli) {
   }
 };
 
+/** Escapar texto para atributos HTML */
+function jmEscapeHtml(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/"/g, '&quot;');
+}
+
+/** HTML carrusel con flechas y clic izquierda/derecha */
+function jmHtmlGaleriaWireframes(grupo, items) {
+  if (!items.length) return '';
+  const slides = items.map((w, i) => {
+    const src = jmWireframeSrc(w.carpeta, w.archivo);
+    const titulo = jmEscapeHtml(w.titulo);
+    return `<figure class="jm-galeria__slide${i === 0 ? ' jm-galeria__slide--activa' : ''}" data-index="${i}">
+      <a href="${src}" target="_blank" rel="noopener" class="jm-galeria__link" title="Abrir ${titulo} en tamaño completo">
+        <img src="${src}" alt="${titulo}" loading="${i === 0 ? 'eager' : 'lazy'}">
+      </a>
+    </figure>`;
+  }).join('');
+  const gid = 'jm-galeria-' + grupo.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+  return `<div class="jm-galeria" id="${gid}" data-jm-galeria tabindex="0" role="region" aria-label="${jmEscapeHtml(grupo)}">
+    <h4 class="ficha-wireframes__sub">${jmEscapeHtml(grupo)}</h4>
+    <p class="jm-galeria__hint">Flechas o clic en el <strong>lado izquierdo / derecho</strong> de la imagen para recorrer el sitio · ${items.length} pantallas</p>
+    <div class="jm-galeria__viewport">
+      <button type="button" class="jm-galeria__flecha jm-galeria__flecha--izq" aria-label="Pantalla anterior">‹</button>
+      <div class="jm-galeria__stage">
+        <div class="jm-galeria__slides">${slides}</div>
+        <button type="button" class="jm-galeria__zona jm-galeria__zona--izq" aria-label="Anterior"></button>
+        <button type="button" class="jm-galeria__zona jm-galeria__zona--der" aria-label="Siguiente"></button>
+      </div>
+      <button type="button" class="jm-galeria__flecha jm-galeria__flecha--der" aria-label="Pantalla siguiente">›</button>
+    </div>
+    <div class="jm-galeria__pie">
+      <strong class="jm-galeria__titulo">${jmEscapeHtml(items[0].titulo)}</strong>
+      <span class="jm-galeria__contador">1 / ${items.length}</span>
+    </div>
+  </div>`;
+}
+
 /** Galería HTML de wireframes JM (ficha cliente + portal) */
 window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
   const fromOpts = opts && opts.wireframes;
@@ -176,18 +216,22 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
     if (!grupos.includes(item.grupo)) grupos.push(item.grupo);
   });
   const bloques = grupos.map(grupo => {
-    const items = wf.filter(w => w.grupo === grupo).map(w => {
+    const items = wf.filter(w => w.grupo === grupo);
+    if (grupo === 'Estado actual del sitio' || items.length >= 3) {
+      return jmHtmlGaleriaWireframes(grupo, items);
+    }
+    const mini = items.map(w => {
       const src = jmWireframeSrc(w.carpeta, w.archivo);
       return `<figure class="ficha-wireframe">
-        <a href="${src}" target="_blank" rel="noopener" title="Abrir ${w.titulo}">
-          <img src="${src}" alt="${w.titulo}" loading="lazy" width="540" height="540">
+        <a href="${src}" target="_blank" rel="noopener" title="Abrir ${jmEscapeHtml(w.titulo)}">
+          <img src="${src}" alt="${jmEscapeHtml(w.titulo)}" loading="lazy">
         </a>
-        <figcaption>${w.titulo}</figcaption>
+        <figcaption>${jmEscapeHtml(w.titulo)}</figcaption>
       </figure>`;
     }).join('');
-    return `<div class="ficha-wireframes__grupo">
-      <h4 class="ficha-wireframes__sub">${grupo}</h4>
-      <div class="ficha-wireframes__grid">${items}</div>
+    return `<div class="ficha-wireframes__grupo ficha-wireframes__grupo--mini">
+      <h4 class="ficha-wireframes__sub">${jmEscapeHtml(grupo)}</h4>
+      <div class="ficha-wireframes__grid ficha-wireframes__grid--mini">${mini}</div>
     </div>`;
   }).join('');
   return `<section id="ficha-wireframes-jm" class="ficha-seccion ficha-seccion--wireframes ${claseExtra}">
@@ -195,7 +239,61 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
       <h3 class="ficha-seccion__titulo">Wireframes actuales</h3>
       <span class="ficha-seccion__estado">Diagramación · joyasmercury.cl</span>
     </div>
-    <p class="ficha-wireframes__intro">Estado actual del sitio y objetivo Fase 2. Clic en una imagen para verla en tamaño completo. Esta sección permanece al guardar la ficha.</p>
+    <p class="ficha-wireframes__intro">Recorre el estado actual del sitio con las flechas o clic izquierda/derecha sobre la imagen.</p>
     ${bloques}
   </section>`;
 };
+
+/** Inicializa carruseles JM (ficha, Clientes, portal) */
+window.initJMGalerias = function initJMGalerias(root) {
+  const scope = root && root.querySelectorAll ? root : document;
+  const nodos = scope.querySelectorAll ? scope.querySelectorAll('[data-jm-galeria]') : [];
+  nodos.forEach(galeria => {
+    if (galeria.dataset.jmGaleriaBound === '1') return;
+    galeria.dataset.jmGaleriaBound = '1';
+    const slides = [...galeria.querySelectorAll('.jm-galeria__slide')];
+    if (!slides.length) return;
+    const tituloEl = galeria.querySelector('.jm-galeria__titulo');
+    const contadorEl = galeria.querySelector('.jm-galeria__contador');
+    const titulos = slides.map(s => s.querySelector('img')?.getAttribute('alt') || '');
+    let idx = slides.findIndex(s => s.classList.contains('jm-galeria__slide--activa'));
+    if (idx < 0) idx = 0;
+
+    function ir(n) {
+      slides[idx]?.classList.remove('jm-galeria__slide--activa');
+      idx = (n + slides.length) % slides.length;
+      slides[idx]?.classList.add('jm-galeria__slide--activa');
+      if (tituloEl) tituloEl.textContent = titulos[idx] || '';
+      if (contadorEl) contadorEl.textContent = `${idx + 1} / ${slides.length}`;
+    }
+
+    galeria.querySelector('.jm-galeria__flecha--izq')?.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      ir(idx - 1);
+    });
+    galeria.querySelector('.jm-galeria__flecha--der')?.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      ir(idx + 1);
+    });
+    galeria.querySelector('.jm-galeria__zona--izq')?.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      ir(idx - 1);
+    });
+    galeria.querySelector('.jm-galeria__zona--der')?.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      ir(idx + 1);
+    });
+    galeria.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); ir(idx - 1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); ir(idx + 1); }
+    });
+  });
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof window.initJMGalerias === 'function') window.initJMGalerias();
+});

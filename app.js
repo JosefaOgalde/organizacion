@@ -4552,7 +4552,10 @@ function renderPanelWireframesJM() {
     wireframes: cli?.ficha?.wireframes,
     claseExtra: 'ficha-seccion--clientes-tab'
   });
-  if (html) full.innerHTML = html;
+  if (html) {
+    full.innerHTML = html;
+    if (typeof window.initJMGalerias === 'function') window.initJMGalerias(full);
+  }
 }
 
 function renderClientes() {

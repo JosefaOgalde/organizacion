@@ -754,6 +754,9 @@
     actualizarToolbarFicha(cli);
     setModoFicha(modoActual);
     sincronizarCamposVacios();
+    if (typeof window.initJMGalerias === 'function') {
+      window.initJMGalerias(doc);
+    }
   }
 
   function agregarSeccionFicha() {

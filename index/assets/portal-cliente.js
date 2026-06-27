@@ -65,4 +65,5 @@
       </p>` : ''}
     </article>
   `;
+  if (typeof window.initJMGalerias === 'function') window.initJMGalerias(root);
 })();
