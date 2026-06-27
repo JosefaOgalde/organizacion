@@ -15,7 +15,8 @@ Responde en **español**. El repo es un organizador + portal de clientes.
 
 El usuario puede decir:
 
-- `@adl-cla` o abrir archivos en `DesafioLatam/` → regla **Agente ADL CLA**
+- `@organizacion-clientes` → organizador (`index.html`, `app.js`) y portal de clientes
+- `@adl-cla` o abrir archivos en `DesafioLatam/` → regla **Agente ADL CLA** (solo certificados Caja Los Andes)
 - `Agente Trendseeker` → CM + WordPress, manual marca
 - `Agente ECR` → newsletter + blog Elementor
 - `Agente JM` → WooCommerce Joyas Mercury Fase 2

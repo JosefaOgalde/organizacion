@@ -3252,12 +3252,16 @@ const VISTAS_CALENDARIO = new Set(['mes', 'semana', 'dia', 'tarea']);
 function actualizarVistaCalendarioNav(vista) {
   const nav = document.getElementById('vista-calendario-nav');
   if (!nav) return;
-  const visible = VISTAS_CALENDARIO.has(vista);
-  nav.hidden = !visible;
-  nav.setAttribute('aria-hidden', visible ? 'false' : 'true');
-  const activa = vista === 'tarea' ? 'dia' : vista;
+  const enCalendario = VISTAS_CALENDARIO.has(vista);
+  const hoyStr = toISO(hoy());
   nav.querySelectorAll('[data-vista-nav]').forEach(btn => {
-    const on = btn.dataset.vistaNav === activa;
+    const navVista = btn.dataset.vistaNav;
+    let on = false;
+    if (enCalendario) {
+      if (navVista === 'mes') on = vista === 'mes';
+      else if (navVista === 'semana') on = vista === 'semana';
+      else if (navVista === 'hoy') on = (vista === 'dia' || vista === 'tarea') && diaSeleccionado === hoyStr;
+    }
     btn.classList.toggle('vista-switch__btn--active', on);
     btn.setAttribute('aria-current', on ? 'page' : 'false');
   });
@@ -3266,7 +3270,10 @@ function actualizarVistaCalendarioNav(vista) {
 function irAVistaCalendario(vista) {
   if (vista === 'mes') volverAMes();
   else if (vista === 'semana') volverASemana();
-  else if (vista === 'dia') {
+  else if (vista === 'hoy') {
+    tareaSeleccionada = null;
+    irADia(toISO(hoy()));
+  } else if (vista === 'dia') {
     if (tareaSeleccionada) volverADiaDesdeTarea();
     else if (diaSeleccionado) irADia(diaSeleccionado);
     else irADia(toISO(hoy()));

@@ -145,6 +145,17 @@ body {
   max-width: 420px;
 }
 
+.vista-switch--global {
+  max-width: none;
+  margin-top: -0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.vista-switch--global .vista-switch__btn {
+  flex: 0 1 auto;
+  min-width: 6.5rem;
+}
+
 .vista-switch[hidden] {
   display: none !important;
 }

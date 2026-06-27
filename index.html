@@ -28,13 +28,13 @@
       <button type="button" class="tab tab--respaldo" id="btn-descargar-respaldo" title="Descargar JSON con tareas y manuales de marca">↓ Respaldo</button>
     </nav>
 
-    <main>
-      <nav id="vista-calendario-nav" class="vista-switch" aria-label="Vista del calendario" hidden>
-        <button type="button" class="vista-switch__btn" data-vista-nav="mes">Mes</button>
-        <button type="button" class="vista-switch__btn" data-vista-nav="semana">Semana</button>
-        <button type="button" class="vista-switch__btn" data-vista-nav="dia">Día</button>
-      </nav>
+    <nav id="vista-calendario-nav" class="vista-switch vista-switch--global" aria-label="Vista del calendario">
+      <button type="button" class="vista-switch__btn vista-switch__btn--active" data-vista-nav="mes">Mes</button>
+      <button type="button" class="vista-switch__btn" data-vista-nav="semana">Semana</button>
+      <button type="button" class="vista-switch__btn" data-vista-nav="hoy">Hoy</button>
+    </nav>
 
+    <main>
       <section id="view-mes" class="view view--active">
         <div class="week-nav">
           <button type="button" id="btn-mes-anterior" class="btn btn--ghost">← Mes anterior</button>
