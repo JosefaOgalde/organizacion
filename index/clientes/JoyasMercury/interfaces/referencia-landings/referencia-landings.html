@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referencia landings · Joyas Mercury</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="referencia-landings.css">
+</head>
+<body>
+  <p class="ref-tag">Referencia entregada · captura carrusel</p>
+
+  <!-- INICIO -->
+  <div class="ref-page" id="page-inicio">
+    <div class="ref-topbar">
+      <div class="ref-topbar__social"><span>f</span><span>ig</span><span>tk</span></div>
+      <div class="ref-topbar__logo"><img src="../../identidad/isotipo-jm-gold.png" alt="Joyas Mercury"></div>
+      <div class="ref-topbar__bag">🛍<small>0</small></div>
+    </div>
+    <nav class="ref-nav">
+      <a href="#">Nosotros</a><a href="#">Mi Cuenta</a><a href="#">Mi Carrito</a><a href="#">Contacto</a>
+    </nav>
+
+    <section class="ref-hero-home">
+      <div class="ref-hero-home__copy">
+        <img class="ref-hero-home__logo" src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury">
+        <h1 class="ref-hero-home__title">JOYAS QUE TE HACEN BRILLAR</h1>
+        <p class="ref-hero-home__script">todos los días ♡</p>
+        <p class="ref-hero-home__sub">Belleza, calidad y estilo para cada momento</p>
+      </div>
+    </section>
+
+    <div class="ref-trust">
+      <div class="ref-trust__item"><span class="ref-trust__icon">◆</span>Joyas con baño de oro 18k</div>
+      <div class="ref-trust__item"><span class="ref-trust__icon">◎</span>Calidad y durabilidad</div>
+      <div class="ref-trust__item"><span class="ref-trust__icon">🚚</span>Envíos a todo Chile</div>
+      <div class="ref-trust__item"><span class="ref-trust__icon">🛡</span>Compra 100% segura</div>
+    </div>
+
+    <section class="ref-section">
+      <h2 class="ref-section__title">COLECCIONES</h2>
+      <div class="ref-circles-3">
+        <div class="ref-circle-lg">
+          <div class="ref-circle-lg__img" style="background-image:url('../../flujo-actual/02-coleccion-esencial.png');background-position:center 35%;background-size:280%"></div>
+          <p class="ref-circle-lg__name">ESENCIAL</p>
+        </div>
+        <div class="ref-circle-lg">
+          <div class="ref-circle-lg__img" style="background-image:url('../../flujo-actual/03-coleccion-gold.png');background-position:center 35%;background-size:280%"></div>
+          <p class="ref-circle-lg__name">GOLD</p>
+        </div>
+        <div class="ref-circle-lg">
+          <div class="ref-circle-lg__img" style="background-image:url('../../flujo-actual/04-coleccion-deluxe.png');background-position:center 35%;background-size:280%"></div>
+          <p class="ref-circle-lg__name">DELUXE</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="ref-section ref-section--alt">
+      <h2 class="ref-section__title ref-section__title--gold">NOVEDADES</h2>
+      <div class="ref-products" id="grid-novedades"></div>
+      <a class="ref-cta" href="#">VER TIENDA COMPLETA</a>
+    </section>
+
+    <section class="ref-section">
+      <h2 class="ref-section__title">ÚLTIMAS UNIDADES</h2>
+      <div class="ref-products" id="grid-stock"></div>
+    </section>
+
+    <footer class="ref-footer" id="footer-inicio"></footer>
+  </div>
+
+  <!-- COLECCIÓN (Esencial / Gold / Deluxe) -->
+  <div class="ref-page" id="page-coleccion">
+    <div class="ref-topbar">
+      <div class="ref-topbar__social"><span>f</span><span>ig</span><span>tk</span></div>
+      <div class="ref-topbar__logo"><img src="../../identidad/isotipo-jm-gold.png" alt=""></div>
+      <div class="ref-topbar__bag">🛍<small>0</small></div>
+    </div>
+    <nav class="ref-nav">
+      <a href="#">Nosotros</a><a href="#">Mi Cuenta</a><a href="#">Mi Carrito</a><a href="#">Contacto</a>
+    </nav>
+
+    <section class="ref-hero-col">
+      <p class="ref-hero-col__star">✦</p>
+      <h1 class="ref-hero-col__title" id="col-title">ESENCIAL</h1>
+      <p class="ref-hero-col__heart">♡</p>
+      <p class="ref-hero-col__sub" id="col-sub"></p>
+    </section>
+
+    <div class="ref-cat-circles" id="cat-circles"></div>
+
+    <div class="ref-catalog">
+      <aside class="ref-panel">
+        <p class="ref-panel__title">Categoría · panel</p>
+        <ul class="ref-panel__list">
+          <li class="is-active"><span>Todas</span><span>8</span></li>
+          <li><span>Aros</span><span>3</span></li>
+          <li><span>Cadenas</span><span>2</span></li>
+          <li><span>Anillos</span><span>2</span></li>
+          <li><span>Pulseras</span><span>1</span></li>
+          <li><span>Conjuntos</span><span>1</span></li>
+        </ul>
+      </aside>
+      <div>
+        <div class="ref-grid-head">
+          <span>8 productos</span>
+          <select><option>Destacados</option></select>
+        </div>
+        <div class="ref-grid" id="grid-catalog"></div>
+      </div>
+    </div>
+
+    <footer class="ref-footer" id="footer-col"></footer>
+  </div>
+
+  <script>
+    const COLECCIONES = {
+      esencial: {
+        titulo: 'ESENCIAL',
+        clase: 'ref-hero-col__title--esencial',
+        sub: 'Por que sentirse bonita y encontrar algo especial debería estar al alcance de todas.',
+        chip: 'esencial',
+        bg: '../../flujo-actual/02-coleccion-esencial.png'
+      },
+      gold: {
+        titulo: 'GOLD',
+        clase: 'ref-hero-col__title--gold',
+        sub: 'Mayor resistencia y duración para acompañarte más tiempo',
+        chip: 'gold',
+        bg: '../../flujo-actual/03-coleccion-gold.png'
+      },
+      deluxe: {
+        titulo: 'DELUXE',
+        clase: 'ref-hero-col__title--deluxe',
+        sub: 'Diseños exclusivos que elevan cada look. Porque algunos detalles te hacen brillar.',
+        chip: 'deluxe',
+        bg: '../../flujo-actual/04-coleccion-deluxe.png'
+      }
+    };
+
+    const CATS = ['PULSERAS', 'CONJUNTOS', 'CADENAS', 'ANILLOS', 'AROS'];
+    const PRODS = [
+      ['Aros Corazón Rosa', '$12.990'],
+      ['Cadena Fina Esencial', '$11.990'],
+      ['Anillo Minimal', '$9.990'],
+      ['Pulsera Eslabón', '$10.990'],
+      ['Aros Perla Mini', '$8.990'],
+      ['Conjunto Brillo', '$24.990'],
+      ['Cadena Veneziana', '$13.990'],
+      ['Anillo Corazón', '$7.990'],
+      ['Aros Luna', '$11.490'],
+      ['Cadena Snake', '$14.990'],
+      ['Anillo Perla', '$9.490'],
+      ['Pulsera Charm', '$12.490']
+    ];
+
+    function footerHtml() {
+      return `<div class="ref-footer__grid">
+        <div><img class="ref-footer__logo" src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury"></div>
+        <div class="ref-footer__cols">
+          <div><h4>Colecciones</h4><a href="#">Esencial</a><a href="#">Gold</a><a href="#">Deluxe</a></div>
+          <div><h4>Información</h4><a href="#">Nosotros</a><a href="#">Políticas</a><a href="#">Despachos</a></div>
+        </div>
+        <div class="ref-footer__wa-box">
+          <p>Canal principal de atención</p>
+          <a class="ref-footer__wa" href="#">WhatsApp</a>
+          <div class="ref-footer__social"><span>f</span><span>ig</span><span>tk</span></div>
+        </div>
+      </div>
+      <p class="ref-footer__copy">Derechos reservados © 2024 joyasmercury.cl</p>`;
+    }
+
+    function productCard(name, price, chip, stock) {
+      const stockHtml = stock ? `<span class="ref-product__stock">${stock}</span>` : '';
+      return `<article class="ref-product">
+        <div class="ref-product__img">
+          <span class="ref-product__chip ref-product__chip--${chip}">${chip.toUpperCase()}</span>${stockHtml}
+        </div>
+        <p class="ref-product__name">${name}</p>
+        <p class="ref-product__price">${price}</p>
+      </article>`;
+    }
+
+    document.getElementById('footer-inicio').innerHTML = footerHtml();
+    document.getElementById('footer-col').innerHTML = footerHtml();
+
+    document.getElementById('grid-novedades').innerHTML = [
+      productCard('Aros Corazón Rosa', '$12.990', 'esencial'),
+      productCard('Cadena Eslabón Dorado', '$18.990', 'gold'),
+      productCard('Anillo Solitario Premium', '$24.990', 'deluxe'),
+      productCard('Pulsera Minimal', '$9.990', 'esencial')
+    ].join('');
+
+    document.getElementById('grid-stock').innerHTML = [
+      productCard('Conjunto Brillante', '$32.990', 'gold', 'QUEDAN 2'),
+      productCard('Aros Perla Deluxe', '$19.990', 'deluxe', 'QUEDAN 1'),
+      productCard('Cadena Fina Esencial', '$11.990', 'esencial', 'QUEDAN 3'),
+      productCard('Anillo Eternity Gold', '$22.990', 'gold', 'ÚLTIMA')
+    ].join('');
+
+    const params = new URLSearchParams(location.search);
+    const pagina = params.get('pagina') || 'inicio';
+    const col = params.get('coleccion') || 'esencial';
+
+    if (pagina === 'inicio') {
+      document.getElementById('page-inicio').classList.add('is-active');
+    } else {
+      document.getElementById('page-coleccion').classList.add('is-active');
+      const c = COLECCIONES[col] || COLECCIONES.esencial;
+      const title = document.getElementById('col-title');
+      title.textContent = c.titulo;
+      title.className = 'ref-hero-col__title ' + c.clase;
+      document.getElementById('col-sub').textContent = c.sub;
+      document.getElementById('cat-circles').innerHTML = CATS.map((n, i) =>
+        `<div class="ref-cat-circle">
+          <div class="ref-cat-circle__img" style="background-image:url('${c.bg}');background-position:${15 + i * 18}% 28%;background-size:500%"></div>
+          <p class="ref-cat-circle__name">${n}</p>
+        </div>`
+      ).join('');
+      document.getElementById('grid-catalog').innerHTML = PRODS.map(([n, p]) =>
+        productCard(n, p, c.chip)
+      ).join('');
+    }
+
+    if (params.get('shot') === '1') document.body.dataset.shot = '1';
+  </script>
+</body>
+</html>

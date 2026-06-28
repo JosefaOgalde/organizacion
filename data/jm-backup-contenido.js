@@ -504,21 +504,27 @@ function jmEscapeHtml(s) {
     .replace(/"/g, '&quot;');
 }
 
-/** Landings Fase 2 · carrusel ficha (orden fijo, sin modificar imágenes) */
+/** Landings referencia · carrusel ficha (mockups entregados, orden fijo) */
 window.JM_LANDINGS_CARRUSEL = [
-  { archivo: 'interfaces/mockups-inicio/jm-inicio-wireframe-desktop.png', titulo: 'Inicio' },
-  { archivo: 'interfaces/mockups-coleccion/jm-coleccion-esencial-desktop.png', titulo: 'Esencial' },
-  { archivo: 'interfaces/mockups-coleccion/jm-coleccion-gold-desktop.png', titulo: 'Gold' },
-  { archivo: 'interfaces/mockups-coleccion/jm-coleccion-deluxe-desktop.png', titulo: 'Deluxe' }
+  { carpeta: 'interfaces/referencia-landings', archivo: '01-inicio-referencia.png', titulo: 'Inicio' },
+  { carpeta: 'interfaces/referencia-landings', archivo: '02-esencial-referencia.png', titulo: 'Esencial' },
+  { carpeta: 'interfaces/referencia-landings', archivo: '03-gold-referencia.png', titulo: 'Gold' },
+  { carpeta: 'interfaces/referencia-landings', archivo: '04-deluxe-referencia.png', titulo: 'Deluxe' }
 ];
 
-/** HTML carrusel landings Fase 2 · Inicio → Esencial → Gold → Deluxe */
+function jmLandingCarruselSrc(item) {
+  if (item.carpeta && item.archivo) return jmWireframeSrc(item.carpeta, item.archivo);
+  if (item.archivo) return jmNuevoPrototipoSrc(item.archivo);
+  return '';
+}
+
+/** HTML carrusel landings · Inicio → Esencial → Gold → Deluxe */
 function jmHtmlLandingsCarrusel() {
   const items = window.JM_LANDINGS_CARRUSEL || [];
   if (!items.length) return '';
 
   const cards = items.map((w, i) => {
-    const src = jmNuevoPrototipoSrc(w.archivo);
+    const src = jmLandingCarruselSrc(w);
     const activa = i === 0 ? ' jm-interfaces__card--activa' : '';
     return `<figure class="jm-interfaces__card${activa}" data-jm-int-index="${i}" data-jm-int-src="${jmEscapeHtml(src)}" data-jm-int-titulo="${jmEscapeHtml(w.titulo)}" data-jm-int-grupo="landings">
       <button type="button" class="jm-interfaces__card-btn" title="${jmEscapeHtml(w.titulo)}">
@@ -529,12 +535,12 @@ function jmHtmlLandingsCarrusel() {
   }).join('');
 
   const primera = items[0];
-  const visorSrc = jmNuevoPrototipoSrc(primera.archivo);
+  const visorSrc = jmLandingCarruselSrc(primera);
 
-  return `<div class="jm-interfaces" data-jm-interfaces tabindex="0" aria-label="Landings Fase 2">
+  return `<div class="jm-interfaces" data-jm-interfaces tabindex="0" aria-label="Landings referencia">
     <div class="jm-interfaces__head">
-      <h4 class="jm-interfaces__titulo-seccion">Landings Fase 2</h4>
-      <p class="jm-interfaces__intro">Inicio · Esencial · Gold · Deluxe — clic en miniatura o flechas del carrusel.</p>
+      <h4 class="jm-interfaces__titulo-seccion">Landings referencia</h4>
+      <p class="jm-interfaces__intro">Mockups entregados · orden: <strong>Inicio → Esencial → Gold → Deluxe</strong> · clic en miniatura o flechas.</p>
     </div>
     <div class="jm-interfaces__visor" data-jm-int-visor>
       <a href="${jmEscapeHtml(visorSrc)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Abrir en tamaño completo">
@@ -937,7 +943,7 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
       }).join('');
     })();
   const intro = usarPrototipo
-    ? 'Prototipo del flujo actual (pasos 1–8) y carrusel de landings Fase 2: <strong>Inicio → Esencial → Gold → Deluxe</strong>.'
+    ? 'Prototipo del flujo actual (pasos 1–8) y carrusel con las landings entregadas: <strong>Inicio → Esencial → Gold → Deluxe</strong>.'
     : 'Recorre el estado actual del sitio con las flechas o clic izquierda/derecha sobre la imagen.';
   return `<section id="ficha-wireframes-jm" class="ficha-seccion ficha-seccion--wireframes ${claseExtra}${usarPrototipo ? ' ficha-seccion--prototipo' : ''}">
     <div class="ficha-seccion__headline">

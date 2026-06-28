@@ -299,7 +299,7 @@
 .jm-interfaces__visor-img {
   max-width: 100%;
   height: auto;
-  max-height: 480px;
+  max-height: 640px;
   object-fit: contain;
   border-radius: 6px;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
