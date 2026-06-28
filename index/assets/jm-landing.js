@@ -301,6 +301,7 @@
             </button>
           </div>
         </header>
+        ${modoEdicion ? '<p class="jm-landing__hint-edicion jm-solo-edicion">Puedes reemplazar cualquier imagen del prototipo con «Cambiar imagen» debajo de cada captura.</p>' : ''}
 
         <article class="ficha-doc ficha-doc--jm ficha-doc--wireframes jm-ficha-doc">
           <header class="ficha-doc__encabezado" style="border-bottom-color:${colores.border}">
@@ -363,6 +364,25 @@
 
     bindEvents(cli);
     if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
+    initImagenesEditor(cli);
+  }
+
+  function initImagenesEditor(cli) {
+    if (typeof window.initJMImagenesEditorUI !== 'function') return;
+    if (!landing.imagenesOverrides || typeof landing.imagenesOverrides !== 'object') {
+      landing.imagenesOverrides = {};
+    }
+    window.initJMImagenesEditorUI(root, {
+      imagenesOverrides: landing.imagenesOverrides,
+      onChange(ov) {
+        landing.imagenesOverrides = ov;
+        cli.ficha.actualizado = new Date().toISOString();
+        guardar();
+      },
+      onError(msg) {
+        toast(msg);
+      }
+    });
   }
 
   function aplicarEdicion(cli) {

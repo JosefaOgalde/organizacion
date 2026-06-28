@@ -757,6 +757,21 @@
     if (typeof window.initJMWireframesUI === 'function') {
       window.initJMWireframesUI(doc);
     }
+    if (typeof window.initJMImagenesEditorUI === 'function' && esClienteJM(cli)) {
+      if (typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
+      const overrides = cli.ficha.landing?.imagenesOverrides || {};
+      window.initJMImagenesEditorUI(doc, {
+        imagenesOverrides: overrides,
+        onChange(ov) {
+          if (!cli.ficha.landing) cli.ficha.landing = {};
+          cli.ficha.landing.imagenesOverrides = ov;
+          guardar();
+        },
+        onError(msg) {
+          mostrarToast(msg);
+        }
+      });
+    }
   }
 
   function agregarSeccionFicha() {

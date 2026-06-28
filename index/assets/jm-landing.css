@@ -523,6 +523,16 @@
   align-items: center;
 }
 
+.jm-landing__hint-edicion {
+  margin: 0 0 0.75rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  color: var(--jm-text);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px dashed var(--jm-border);
+  border-radius: 8px;
+}
+
 .jm-btn {
   display: inline-flex;
   align-items: center;
@@ -911,6 +921,83 @@
 /* Modo edición */
 .jm-landing--edicion .jm-solo-vista { display: none !important; }
 .jm-landing:not(.jm-landing--edicion) .jm-solo-edicion { display: none !important; }
+
+/* Editor de imágenes del prototipo (modo edición) */
+.jm-img-editable {
+  position: relative;
+  display: block;
+}
+
+.jm-img-editable > img,
+.jm-img-editable > a > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.jm-img-editable__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.jm-landing:not(.jm-landing--edicion) .jm-img-editable__bar,
+.ficha-doc:not(.ficha-doc--edicion) .jm-img-editable__bar {
+  display: none !important;
+}
+
+.jm-img-editable__btn {
+  border: 1px solid var(--jm-border, #e8b8c8);
+  background: #fff;
+  color: var(--jm-text, #9a5a6e);
+  border-radius: 6px;
+  padding: 0.28rem 0.55rem;
+  font-size: 0.72rem;
+  font-family: inherit;
+  cursor: pointer;
+  line-height: 1.3;
+}
+
+.jm-img-editable__btn:hover {
+  background: var(--jm-bg, #fdf0f4);
+}
+
+.jm-img-editable__btn--ghost {
+  background: transparent;
+  border-style: dashed;
+  opacity: 0.85;
+}
+
+.jm-nuevo-proto__card .jm-img-editable,
+.jm-interfaces__card .jm-img-editable {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.jm-nuevo-proto__card .jm-img-editable__bar,
+.jm-interfaces__card .jm-img-editable__bar {
+  padding: 0.25rem;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.jm-prototipo__pantalla .jm-img-editable__bar {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  right: 0.5rem;
+  margin: 0;
+  padding: 0.35rem;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 2;
+}
+
+.jm-prototipo__pantalla .jm-img-editable {
+  position: relative;
+  height: 100%;
+}
 
 .jm-field {
   width: 100%;

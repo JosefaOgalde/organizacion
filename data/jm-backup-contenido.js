@@ -428,7 +428,7 @@ window.jmHtmlNuevoPrototipo = function jmHtmlNuevoPrototipo(opts) {
       const activa = i === 0 ? ' jm-nuevo-proto__card--activa' : '';
       return `<figure class="jm-nuevo-proto__card${activa}" data-jm-nuevo-id="${jmEscapeHtml(p.id)}" data-jm-nuevo-src="${jmEscapeHtml(src)}">
         <a href="${src}" target="_blank" rel="noopener" title="Abrir ${jmEscapeHtml(p.titulo)}">
-          <img src="${src}" alt="${jmEscapeHtml(p.titulo)}" loading="${i === 0 ? 'eager' : 'lazy'}">
+          <img src="${src}" alt="${jmEscapeHtml(p.titulo)}"${jmImgAttrs('', p.archivo, src)} loading="${i === 0 ? 'eager' : 'lazy'}">
         </a>
         <figcaption>
           <span class="jm-nuevo-proto__vista jm-nuevo-proto__vista--${jmEscapeHtml(p.vista || 'all')}">${jmEscapeHtml(p.vista || 'pantalla')}</span>
@@ -477,8 +477,10 @@ window.initJMNuevoPrototipoUI = function initJMNuevoPrototipoUI(root) {
     sec.querySelectorAll('.jm-nuevo-proto__card').forEach((card) => {
       card.addEventListener('click', (e) => {
         if (e.target.closest('a[target="_blank"]') && e.target.tagName === 'A') return;
+        if (e.target.closest('.jm-img-editable__bar')) return;
         e.preventDefault();
-        const src = card.dataset.jmNuevoSrc;
+        const img = card.querySelector('img[data-jm-img-key]');
+        const src = img?.src || card.dataset.jmNuevoSrc;
         const cap = card.querySelector('figcaption')?.textContent?.trim() || '';
         if (visorImg && src) {
           visorImg.src = src;
@@ -499,6 +501,12 @@ window.asegurarWireframesJM = function asegurarWireframesJM(cli) {
   if (!cli.ficha || typeof cli.ficha !== 'object') {
     cli.ficha = { contacto: '', links: '', notas: '', seccionesExtra: [], documentos: [] };
   }
+  if (!cli.ficha.landing || typeof cli.ficha.landing !== 'object') {
+    cli.ficha.landing = {};
+  }
+  if (!cli.ficha.landing.imagenesOverrides || typeof cli.ficha.landing.imagenesOverrides !== 'object') {
+    cli.ficha.landing.imagenesOverrides = {};
+  }
   const src = window.JM_BACKUP_FICHA?.wireframes;
   if (!src?.length) return;
   if (!Array.isArray(cli.ficha.wireframes) || !cli.ficha.wireframes.length) {
@@ -512,6 +520,20 @@ function jmEscapeHtml(s) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/"/g, '&quot;');
+}
+
+/** Clave estable para reemplazo de imagen en localStorage */
+function jmImgKeyDePath(carpeta, archivo) {
+  const path = carpeta
+    ? `${carpeta}/${archivo}`.replace(/\/+/g, '/')
+    : String(archivo || '').replace(/^\/+/, '');
+  return 'jm:' + path.replace(/^\/+/, '');
+}
+
+/** Atributos data-jm-img-* para editor de imágenes */
+function jmImgAttrs(carpeta, archivo, src) {
+  const key = jmImgKeyDePath(carpeta, archivo);
+  return ` data-jm-img-key="${jmEscapeHtml(key)}" data-jm-img-default="${jmEscapeHtml(src)}"`;
 }
 
 /** Landings referencia · carrusel ficha (mockups entregados, orden fijo) */
@@ -538,7 +560,7 @@ function jmHtmlLandingsCarrusel() {
     const activa = i === 0 ? ' jm-interfaces__card--activa' : '';
     return `<figure class="jm-interfaces__card${activa}" data-jm-int-index="${i}" data-jm-int-src="${jmEscapeHtml(src)}" data-jm-int-titulo="${jmEscapeHtml(w.titulo)}" data-jm-int-grupo="landings">
       <button type="button" class="jm-interfaces__card-btn" title="${jmEscapeHtml(w.titulo)}">
-        <img src="${src}" alt="${jmEscapeHtml(w.titulo)}" loading="${i === 0 ? 'eager' : 'lazy'}">
+        <img src="${src}" alt="${jmEscapeHtml(w.titulo)}"${jmImgAttrs(w.carpeta, w.archivo, src)} loading="${i === 0 ? 'eager' : 'lazy'}">
       </button>
       <figcaption>${jmEscapeHtml(w.titulo)}</figcaption>
     </figure>`;
@@ -584,7 +606,7 @@ function jmHtmlInterfacesCarrusel(wf) {
     const gid = (w.grupo || '').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
     return `<figure class="jm-interfaces__card${activa}" data-jm-int-index="${i}" data-jm-int-src="${jmEscapeHtml(src)}" data-jm-int-titulo="${jmEscapeHtml(w.titulo)}" data-jm-int-grupo="${jmEscapeHtml(w.grupo || '')}">
       <button type="button" class="jm-interfaces__card-btn" title="${jmEscapeHtml(w.titulo)}">
-        <img src="${src}" alt="${jmEscapeHtml(w.titulo)}" loading="${i < 4 ? 'eager' : 'lazy'}">
+        <img src="${src}" alt="${jmEscapeHtml(w.titulo)}"${jmImgAttrs(w.carpeta, w.archivo, src)} loading="${i < 4 ? 'eager' : 'lazy'}">
       </button>
       <figcaption>
         <span class="jm-interfaces__card-grupo">${jmEscapeHtml(w.grupo || 'Interfaces')}</span>
@@ -636,7 +658,7 @@ function jmHtmlGaleriaWireframes(grupo, items) {
     const titulo = jmEscapeHtml(w.titulo);
     return `<figure class="jm-galeria__slide${i === 0 ? ' jm-galeria__slide--activa' : ''}" data-index="${i}">
       <a href="${src}" target="_blank" rel="noopener" class="jm-galeria__link" title="Abrir ${titulo} en tamaño completo">
-        <img src="${src}" alt="${titulo}" loading="${i === 0 ? 'eager' : 'lazy'}">
+        <img src="${src}" alt="${titulo}"${jmImgAttrs(w.carpeta, w.archivo, src)} loading="${i === 0 ? 'eager' : 'lazy'}">
       </a>
     </figure>`;
   }).join('');
@@ -670,7 +692,7 @@ function jmHtmlPrototipoInteractivo() {
     const src = jmWireframeSrc(p.carpeta, p.archivo);
     const activa = id === inicio ? ' jm-prototipo__pantalla--activa' : '';
     return `<div class="jm-prototipo__pantalla${activa}" data-pantalla-id="${jmEscapeHtml(id)}" role="tabpanel">
-      <img class="jm-prototipo__img" src="${src}" alt="${jmEscapeHtml(p.titulo)}" loading="${id === inicio ? 'eager' : 'lazy'}">
+      <img class="jm-prototipo__img" src="${src}" alt="${jmEscapeHtml(p.titulo)}"${jmImgAttrs(p.carpeta, p.archivo, src)} loading="${id === inicio ? 'eager' : 'lazy'}">
     </div>`;
   }).join('');
   const flujoHtml = pasos.length
@@ -715,7 +737,7 @@ function jmHtmlObjetivoMini(wf) {
     const src = jmWireframeSrc(w.carpeta, w.archivo);
     return `<figure class="ficha-wireframe">
       <a href="${src}" target="_blank" rel="noopener" title="Abrir ${jmEscapeHtml(w.titulo)}">
-        <img src="${src}" alt="${jmEscapeHtml(w.titulo)}" loading="lazy">
+        <img src="${src}" alt="${jmEscapeHtml(w.titulo)}"${jmImgAttrs(w.carpeta, w.archivo, src)} loading="lazy">
       </a>
       <figcaption>${jmEscapeHtml(w.titulo)}</figcaption>
     </figure>`;
@@ -947,7 +969,7 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
         if (grupo === 'Estado actual del sitio' || items.length >= 3) return jmHtmlGaleriaWireframes(grupo, items);
         const mini = items.map(w => {
           const src = jmWireframeSrc(w.carpeta, w.archivo);
-          return `<figure class="ficha-wireframe"><a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${jmEscapeHtml(w.titulo)}"></a><figcaption>${jmEscapeHtml(w.titulo)}</figcaption></figure>`;
+          return `<figure class="ficha-wireframe"><a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${jmEscapeHtml(w.titulo)}"${jmImgAttrs(w.carpeta, w.archivo, src)}></a><figcaption>${jmEscapeHtml(w.titulo)}</figcaption></figure>`;
         }).join('');
         return `<div class="ficha-wireframes__grupo ficha-wireframes__grupo--mini"><h4 class="ficha-wireframes__sub">${jmEscapeHtml(grupo)}</h4><div class="ficha-wireframes__grid ficha-wireframes__grid--mini">${mini}</div></div>`;
       }).join('');
@@ -1077,7 +1099,8 @@ window.initJMInterfacesUI = function initJMInterfacesUI(root) {
 
     function actualizarVisor(card) {
       if (!card) return;
-      const src = card.dataset.jmIntSrc;
+      const img = card.querySelector('img[data-jm-img-key]');
+      const src = img?.src || card.dataset.jmIntSrc;
       const titulo = card.dataset.jmIntTitulo || '';
       const grupo = card.dataset.jmIntGrupo || '';
       if (visorImg && src) {
@@ -1138,6 +1161,145 @@ window.initJMWireframesUI = function initJMWireframesUI(root) {
   if (typeof window.initJMGalerias === 'function') window.initJMGalerias(root);
   if (typeof window.initJMInterfacesUI === 'function') window.initJMInterfacesUI(root);
   if (typeof window.initJMNuevoPrototipoUI === 'function') window.initJMNuevoPrototipoUI(root);
+};
+
+/** Aplica reemplazos guardados y, en modo edición, permite cambiar imágenes del prototipo */
+window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
+  opts = opts || {};
+  const overrides = opts.imagenesOverrides && typeof opts.imagenesOverrides === 'object'
+    ? opts.imagenesOverrides
+    : {};
+  const onChange = typeof opts.onChange === 'function' ? opts.onChange : null;
+  const onError = typeof opts.onError === 'function' ? opts.onError : null;
+  const maxBytes = opts.maxBytes || 700 * 1024;
+  const scope = root && root.querySelectorAll ? root : document;
+
+  function syncParentLinks(img, src) {
+    const card = img.closest('[data-jm-int-src], [data-jm-nuevo-src]');
+    if (card) {
+      if ('jmIntSrc' in card.dataset) card.dataset.jmIntSrc = src;
+      if ('jmNuevoSrc' in card.dataset) card.dataset.jmNuevoSrc = src;
+    }
+    const link = img.closest('a');
+    if (link) link.href = src;
+  }
+
+  function syncVisorSiActiva(img, src) {
+    const card = img.closest('.jm-interfaces__card--activa, .jm-nuevo-proto__card--activa');
+    if (!card) return;
+    const sec = img.closest('[data-jm-interfaces], [data-jm-nuevo-prototipo]');
+    if (!sec) return;
+    const visorImg = sec.querySelector('[data-jm-int-visor-img], [data-jm-nuevo-visor-img]');
+    const visorLink = sec.querySelector('.jm-interfaces__visor-link, .jm-nuevo-proto__visor-link');
+    if (visorImg) {
+      visorImg.src = src;
+      visorImg.alt = img.alt || '';
+    }
+    if (visorLink) visorLink.href = src;
+  }
+
+  function applyToImg(img) {
+    const key = img.dataset.jmImgKey;
+    if (!key) return null;
+    const def = img.dataset.jmImgDefault || img.src;
+    const src = overrides[key] || def;
+    if (img.getAttribute('src') !== src) img.setAttribute('src', src);
+    syncParentLinks(img, src);
+    syncVisorSiActiva(img, src);
+    return { key, hasOverride: !!overrides[key] };
+  }
+
+  scope.querySelectorAll('[data-jm-img-key]').forEach((img) => {
+    if (img.dataset.jmImgEditorBound === '1') {
+      applyToImg(img);
+      const btnRestore = scope.querySelector(`[data-jm-img-bar-for="${img.dataset.jmImgKey}"] .jm-img-editable__btn--ghost`);
+      if (btnRestore) btnRestore.hidden = !overrides[img.dataset.jmImgKey];
+      return;
+    }
+    img.dataset.jmImgEditorBound = '1';
+    const info = applyToImg(img);
+    if (!info) return;
+
+    const interactiveParent = img.closest('a, button');
+    const card = img.closest('.jm-nuevo-proto__card, .jm-interfaces__card, .ficha-wireframe, .jm-galeria__slide, .jm-prototipo__pantalla, figure');
+
+    const bar = document.createElement('div');
+    bar.className = 'jm-img-editable__bar';
+    bar.dataset.jmImgBarFor = info.key;
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.hidden = true;
+
+    const btnChange = document.createElement('button');
+    btnChange.type = 'button';
+    btnChange.className = 'jm-img-editable__btn';
+    btnChange.textContent = 'Cambiar imagen';
+
+    const btnRestore = document.createElement('button');
+    btnRestore.type = 'button';
+    btnRestore.className = 'jm-img-editable__btn jm-img-editable__btn--ghost';
+    btnRestore.textContent = 'Restaurar original';
+    btnRestore.hidden = !info.hasOverride;
+
+    btnChange.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      input.click();
+    });
+
+    btnRestore.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      delete overrides[info.key];
+      applyToImg(img);
+      btnRestore.hidden = true;
+      if (onChange) onChange({ ...overrides });
+    });
+
+    input.addEventListener('change', () => {
+      const file = input.files?.[0];
+      input.value = '';
+      if (!file || !/^image\//.test(file.type)) return;
+      if (file.size > maxBytes) {
+        if (onError) onError('Imagen muy grande (máx. ' + Math.round(maxBytes / 1024) + ' KB)');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        overrides[info.key] = reader.result;
+        applyToImg(img);
+        btnRestore.hidden = false;
+        if (onChange) onChange({ ...overrides });
+      };
+      reader.onerror = () => {
+        if (onError) onError('No se pudo leer la imagen');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    bar.appendChild(btnChange);
+    bar.appendChild(btnRestore);
+    bar.appendChild(input);
+
+    if (interactiveParent && card) {
+      interactiveParent.insertAdjacentElement('afterend', bar);
+    } else {
+      const parent = img.parentNode;
+      if (!parent) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'jm-img-editable';
+      parent.insertBefore(wrap, img);
+      wrap.appendChild(img);
+      wrap.appendChild(bar);
+    }
+  });
+
+  scope.querySelectorAll('[data-jm-interfaces], [data-jm-nuevo-prototipo]').forEach((sec) => {
+    const active = sec.querySelector('.jm-interfaces__card--activa img[data-jm-img-key], .jm-nuevo-proto__card--activa img[data-jm-img-key]');
+    if (active) syncVisorSiActiva(active, active.src);
+  });
 };
 
 /** Inicializa carruseles JM (ficha, Clientes, portal) */

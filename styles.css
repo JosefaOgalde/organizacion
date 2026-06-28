@@ -3796,6 +3796,52 @@ body.modal-abierto {
   display: none;
 }
 
+/* Editor imágenes prototipo JM (ficha modal) */
+.jm-img-editable {
+  position: relative;
+  display: block;
+}
+
+.jm-img-editable > img,
+.jm-img-editable > a > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.jm-img-editable__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.ficha-doc:not(.ficha-doc--edicion) .jm-img-editable__bar {
+  display: none !important;
+}
+
+.jm-img-editable__btn {
+  border: 1px solid var(--ficha-accent, #e8b8c8);
+  background: #fff;
+  color: var(--ficha-text, #9a5a6e);
+  border-radius: 6px;
+  padding: 0.28rem 0.55rem;
+  font-size: 0.72rem;
+  font-family: inherit;
+  cursor: pointer;
+  line-height: 1.3;
+}
+
+.jm-img-editable__btn:hover {
+  background: var(--ficha-bg, #fdf0f4);
+}
+
+.jm-img-editable__btn--ghost {
+  background: transparent;
+  border-style: dashed;
+  opacity: 0.85;
+}
+
 .ficha-seccion__head {
   display: flex;
   gap: 0.5rem;
