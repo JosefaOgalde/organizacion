@@ -264,6 +264,11 @@
       </div>`;
   }
 
+  function nuevoPrototipoHtml() {
+    if (typeof window.jmHtmlNuevoPrototipo !== 'function') return '';
+    return window.jmHtmlNuevoPrototipo({ claseExtra: 'ficha-seccion--portal' });
+  }
+
   function prototipoEmbebidoHtml() {
     if (typeof window.jmHtmlWireframes !== 'function') return '';
     return window.jmHtmlWireframes({ interactivo: true, objetivoMini: false, claseExtra: 'ficha-seccion--portal' });
@@ -281,6 +286,7 @@
 
   function render() {
     const cli = cargarDatos();
+    const nuevoPrototipo = nuevoPrototipoHtml();
     const wireframes = prototipoEmbebidoHtml();
     const guardadoTxt = fechaGuardadoTexto(cli);
     root.innerHTML = `
@@ -311,6 +317,8 @@
               </div>
             </div>
           </header>
+
+          ${nuevoPrototipo}
 
           ${wireframes}
 

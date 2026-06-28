@@ -292,6 +292,124 @@ window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo) {
   return `index/clientes/JoyasMercury/${file}`;
 };
 
+/** Pantallas del diseño Fase 2 (se van agregando aquí) */
+window.JM_NUEVO_PROTOTIPO = {
+  version: 1,
+  intro: 'Diseño propuesto Fase 2 · logos del manual de marca · responsive mobile/desktop.',
+  secciones: [
+    {
+      id: 'inicio',
+      titulo: 'Inicio · navbar + carrusel',
+      descripcion: 'Logo centrado (manual JM), menú hamburguesa, búsqueda y carrito vanguardistas, banner carrusel principal.',
+      wireframe: 'interfaces/mockups-inicio/wireframe-inicio.html',
+      pantallas: [
+        {
+          id: 'inicio-mobile',
+          vista: 'mobile',
+          titulo: 'Mobile · 390px',
+          archivo: 'interfaces/mockups-inicio/jm-inicio-wireframe-mobile.png'
+        },
+        {
+          id: 'inicio-desktop',
+          vista: 'desktop',
+          titulo: 'Desktop · 1440px',
+          archivo: 'interfaces/mockups-inicio/jm-inicio-wireframe-desktop.png'
+        }
+      ]
+    }
+  ]
+};
+
+/** Ruta asset nuevo prototipo */
+window.jmNuevoPrototipoSrc = function jmNuevoPrototipoSrc(archivo) {
+  const file = String(archivo || '').replace(/^\/+/, '');
+  const p = (location.pathname || '').replace(/\\/g, '/');
+  if (/\/index\/clientes\/joyasmercury/i.test(p)) {
+    return `../JoyasMercury/${file}`;
+  }
+  if (/\/index\/clientes/i.test(p)) {
+    return `JoyasMercury/${file}`;
+  }
+  return `index/clientes/JoyasMercury/${file}`;
+};
+
+/** HTML sección «Nuevo prototipo» */
+window.jmHtmlNuevoPrototipo = function jmHtmlNuevoPrototipo(opts) {
+  const data = window.JM_NUEVO_PROTOTIPO;
+  if (!data?.secciones?.length) return '';
+  const claseExtra = (opts && opts.claseExtra) || '';
+  const bloques = data.secciones.map((sec) => {
+    const pantallas = sec.pantallas || [];
+    const cards = pantallas.map((p, i) => {
+      const src = jmNuevoPrototipoSrc(p.archivo);
+      const activa = i === 0 ? ' jm-nuevo-proto__card--activa' : '';
+      return `<figure class="jm-nuevo-proto__card${activa}" data-jm-nuevo-id="${jmEscapeHtml(p.id)}" data-jm-nuevo-src="${jmEscapeHtml(src)}">
+        <a href="${src}" target="_blank" rel="noopener" title="Abrir ${jmEscapeHtml(p.titulo)}">
+          <img src="${src}" alt="${jmEscapeHtml(p.titulo)}" loading="${i === 0 ? 'eager' : 'lazy'}">
+        </a>
+        <figcaption>
+          <span class="jm-nuevo-proto__vista jm-nuevo-proto__vista--${jmEscapeHtml(p.vista || 'all')}">${jmEscapeHtml(p.vista || 'pantalla')}</span>
+          ${jmEscapeHtml(p.titulo)}
+        </figcaption>
+      </figure>`;
+    }).join('');
+    const wf = sec.wireframe
+      ? `<a class="jm-nuevo-proto__link" href="${jmNuevoPrototipoSrc(sec.wireframe)}" target="_blank" rel="noopener">Abrir wireframe interactivo →</a>`
+      : '';
+    return `<article class="jm-nuevo-proto__bloque" data-jm-nuevo-seccion="${jmEscapeHtml(sec.id)}">
+      <h4 class="jm-nuevo-proto__bloque-titulo">${jmEscapeHtml(sec.titulo)}</h4>
+      <p class="jm-nuevo-proto__bloque-desc">${jmEscapeHtml(sec.descripcion || '')}</p>
+      <div class="jm-nuevo-proto__grid">${cards}</div>
+      ${wf}
+    </article>`;
+  }).join('');
+  const primera = data.secciones[0]?.pantallas?.[0];
+  const visorSrc = primera ? jmNuevoPrototipoSrc(primera.archivo) : '';
+  const visorTitulo = primera?.titulo || '';
+  return `<section id="jm-nuevo-prototipo" class="ficha-seccion ficha-seccion--nuevo-prototipo ${claseExtra}" data-jm-nuevo-prototipo>
+    <div class="ficha-seccion__headline">
+      <h3 class="ficha-seccion__titulo">Nuevo prototipo</h3>
+      <span class="ficha-seccion__estado">Fase 2 · diseño JM</span>
+    </div>
+    <p class="jm-nuevo-proto__intro">${jmEscapeHtml(data.intro || '')}</p>
+    <div class="jm-nuevo-proto__visor" data-jm-nuevo-visor>
+      <a href="${jmEscapeHtml(visorSrc)}" target="_blank" rel="noopener" class="jm-nuevo-proto__visor-link" title="Abrir en tamaño completo">
+        <img class="jm-nuevo-proto__visor-img" src="${jmEscapeHtml(visorSrc)}" alt="${jmEscapeHtml(visorTitulo)}" data-jm-nuevo-visor-img>
+      </a>
+      <p class="jm-nuevo-proto__visor-caption" data-jm-nuevo-visor-caption>${jmEscapeHtml(visorTitulo)}</p>
+    </div>
+    ${bloques}
+  </section>`;
+};
+
+/** Clic en miniaturas → actualiza visor principal */
+window.initJMNuevoPrototipoUI = function initJMNuevoPrototipoUI(root) {
+  const scope = root && root.querySelectorAll ? root : document;
+  scope.querySelectorAll('[data-jm-nuevo-prototipo]').forEach((sec) => {
+    if (sec.dataset.jmNuevoBound === '1') return;
+    sec.dataset.jmNuevoBound = '1';
+    const visorImg = sec.querySelector('[data-jm-nuevo-visor-img]');
+    const visorCap = sec.querySelector('[data-jm-nuevo-visor-caption]');
+    const visorLink = sec.querySelector('.jm-nuevo-proto__visor-link');
+    sec.querySelectorAll('.jm-nuevo-proto__card').forEach((card) => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('a[target="_blank"]') && e.target.tagName === 'A') return;
+        e.preventDefault();
+        const src = card.dataset.jmNuevoSrc;
+        const cap = card.querySelector('figcaption')?.textContent?.trim() || '';
+        if (visorImg && src) {
+          visorImg.src = src;
+          visorImg.alt = cap;
+        }
+        if (visorCap) visorCap.textContent = cap;
+        if (visorLink && src) visorLink.href = src;
+        sec.querySelectorAll('.jm-nuevo-proto__card').forEach((c) => c.classList.remove('jm-nuevo-proto__card--activa'));
+        card.classList.add('jm-nuevo-proto__card--activa');
+      });
+    });
+  });
+};
+
 /** Copia wireframes al objeto ficha (persisten en localStorage al guardar) */
 window.asegurarWireframesJM = function asegurarWireframesJM(cli) {
   if (!cli || cli.id !== 'cli-joyas-mercury') return;
@@ -739,6 +857,7 @@ window.initJMPrototipo = function initJMPrototipo(root) {
 window.initJMWireframesUI = function initJMWireframesUI(root) {
   if (typeof window.initJMPrototipo === 'function') window.initJMPrototipo(root);
   if (typeof window.initJMGalerias === 'function') window.initJMGalerias(root);
+  if (typeof window.initJMNuevoPrototipoUI === 'function') window.initJMNuevoPrototipoUI(root);
 };
 
 /** Inicializa carruseles JM (ficha, Clientes, portal) */
