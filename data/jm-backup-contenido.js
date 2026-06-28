@@ -279,17 +279,18 @@ No subir wp-config a git. Repo privado GitHub JosefaOgalde/joyasmercury-backup.`
   }
 };
 
-/** Ruta relativa según página (organizador, portal o wireframes.html) */
+/** Base absoluta de assets JM (evita rutas rotas según desde dónde se abre la ficha) */
+window.jmAssetBase = '/index/clientes/JoyasMercury/';
+
 window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo) {
-  const file = `${carpeta}/${archivo}`;
-  const p = (location.pathname || '').replace(/\\/g, '/');
-  if (/\/index\/clientes\/joyasmercury/i.test(p)) {
-    return `../JoyasMercury/${file}`;
-  }
-  if (/\/index\/clientes/i.test(p)) {
-    return `JoyasMercury/${file}`;
-  }
-  return `index/clientes/JoyasMercury/${file}`;
+  const file = `${carpeta}/${archivo}`.replace(/^\/+/, '');
+  return `${window.jmAssetBase}${file}`;
+};
+
+/** Ruta absoluta asset nuevo prototipo */
+window.jmNuevoPrototipoSrc = function jmNuevoPrototipoSrc(archivo) {
+  const file = String(archivo || '').replace(/^\/+/, '');
+  return `${window.jmAssetBase}${file}`;
 };
 
 /** Pantallas del diseño Fase 2 (se van agregando aquí) */

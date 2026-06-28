@@ -16,12 +16,15 @@ Banner **1000 × 500 px** — solo identifica que el usuario está en la página
 - `jm-banner-carrito-1000x500.png` — PNG para Elementor
 - `wireframe-carrito-landing.html` — landing con banner + nota fase 2
 
-## URLs
+## URLs (copiar tal cual)
 
 ```
+http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-carrito/
 http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-carrito/banner-carrito-landing.html
 http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-carrito/wireframe-carrito-landing.html
 ```
+
+Ficha JM (sección Nuevo prototipo): `http://localhost:3000/index/clientes/joyasmercury/`
 
 ```bash
 python3 scripts/capturar-jm-banner-carrito.py
