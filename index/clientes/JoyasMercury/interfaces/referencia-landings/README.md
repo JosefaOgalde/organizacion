@@ -17,11 +17,13 @@ Mockups del carrusel en la landing del cliente.
 ## Agregar o reemplazar PNG
 
 1. Copia tus `.png` en **esta carpeta**.
-2. Regenera el manifiesto:
+2. Regenera el manifiesto y el JSON (lee **todos** los `.png` de esta carpeta):
 
 ```bash
 python3 scripts/sync-jm-landings-carrusel.py
 ```
+
+Esto actualiza `carrusel.manifest.js` y `carrusel.json`. La landing carga `carrusel.json` al abrir y muestra **todas** las imágenes listadas.
 
 3. Recarga la landing con **Ctrl+Shift+R**:
    `http://localhost:3000/index/clientes/joyasmercury/`

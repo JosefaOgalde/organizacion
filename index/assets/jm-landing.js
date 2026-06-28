@@ -508,5 +508,13 @@
   }
 
   document.title = 'Joyas Mercury · Landing cliente';
-  render();
+  const boot = () => {
+    const ready = window.jmLandingsCarruselReady;
+    if (ready && typeof ready.then === 'function') {
+      ready.finally(() => render());
+    } else {
+      render();
+    }
+  };
+  boot();
 })();

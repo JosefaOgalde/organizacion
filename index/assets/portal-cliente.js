@@ -189,5 +189,12 @@
     initImagenes(root, cli);
   }
 
-  render();
+  function boot() {
+    const wait = c.slug === 'joyas-mercury' && window.jmLandingsCarruselReady
+      ? window.jmLandingsCarruselReady
+      : Promise.resolve();
+    wait.finally(() => render());
+  }
+
+  boot();
 })();

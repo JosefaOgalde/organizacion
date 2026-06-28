@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Sincroniza carrusel.manifest.js con los PNG de referencia-landings/."""
+"""Sincroniza carrusel.manifest.js y carrusel.json con los PNG de referencia-landings/."""
 
+import json
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CARPETA = ROOT / "index/clientes/JoyasMercury/interfaces/referencia-landings"
 MANIFEST = CARPETA / "carrusel.manifest.js"
+JSON_FILE = CARPETA / "carrusel.json"
 
 TITULOS = (
     ("inicio", "Inicio"),
@@ -35,11 +37,18 @@ def main():
         raise SystemExit(f"No hay PNG en {CARPETA}")
 
     items = []
+    json_items = []
     for p in pngs:
+        titulo = titulo_de(p.name)
         items.append(
             f"  {{ carpeta: 'interfaces/referencia-landings', "
-            f"archivo: '{p.name}', titulo: '{titulo_de(p.name)}' }}"
+            f"archivo: '{p.name}', titulo: '{titulo}' }}"
         )
+        json_items.append({
+            "carpeta": "interfaces/referencia-landings",
+            "archivo": p.name,
+            "titulo": titulo,
+        })
 
     version = 1
     if MANIFEST.exists():
@@ -60,7 +69,12 @@ window.JM_LANDINGS_CARRUSEL = [
 window.JM_LANDINGS_CARRUSEL_VERSION = {version};
 """
     MANIFEST.write_text(body, encoding="utf-8")
+    JSON_FILE.write_text(
+        json.dumps({"version": version, "items": json_items}, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
     print(f"Actualizado {MANIFEST.relative_to(ROOT)} · {len(pngs)} PNG · versión {version}")
+    print(f"Actualizado {JSON_FILE.relative_to(ROOT)}")
     for p in pngs:
         print(f"  · {p.name}")
 

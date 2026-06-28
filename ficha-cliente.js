@@ -700,6 +700,15 @@
   }
 
   function renderFichaCliente(cli) {
+    const run = () => renderFichaClienteSync(cli);
+    if (cli?.id === 'cli-joyas-mercury' && window.jmLandingsCarruselReady) {
+      window.jmLandingsCarruselReady.finally(run);
+      return;
+    }
+    run();
+  }
+
+  function renderFichaClienteSync(cli) {
     const doc = document.getElementById('ficha-doc');
     if (!doc || !cli) return;
     asegurarFichaCliente(cli);

@@ -577,6 +577,25 @@ function jmLandingCarruselSrc(item) {
   return '';
 }
 
+/** Carga carrusel.json (todos los PNG de referencia-landings/) antes de renderizar */
+window.jmCargarLandingsCarruselDesdeJson = function jmCargarLandingsCarruselDesdeJson() {
+  const base = window.jmAssetBase || '/index/clientes/JoyasMercury/';
+  const url = base + 'interfaces/referencia-landings/carrusel.json?t=' + Date.now();
+  return fetch(url, { cache: 'no-store' })
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => {
+      if (!data || !Array.isArray(data.items) || !data.items.length) return false;
+      window.JM_LANDINGS_CARRUSEL = data.items;
+      if (typeof data.version === 'number') {
+        window.JM_LANDINGS_CARRUSEL_VERSION = data.version;
+      }
+      return true;
+    })
+    .catch(() => false);
+};
+
+window.jmLandingsCarruselReady = window.jmCargarLandingsCarruselDesdeJson();
+
 /** HTML carrusel landings referencia (manifiesto en referencia-landings/carrusel.manifest.js) */
 function jmHtmlLandingsCarrusel() {
   const items = window.JM_LANDINGS_CARRUSEL || [];
