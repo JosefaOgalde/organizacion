@@ -13,6 +13,9 @@ TITULOS = (
     ("esencial", "Esencial"),
     ("gold", "Gold"),
     ("deluxe", "Deluxe"),
+    ("carrito", "Carrito"),
+    ("ayuda", "Ayuda"),
+    ("producto", "Productos"),
 )
 
 
@@ -44,12 +47,13 @@ def main():
         if m:
             version = int(m.group(1)) + 1
 
+    items_str = ",\n".join(items)
     body = f"""/**
  * Carrusel Landings referencia · editar al agregar/reemplazar PNGs en esta carpeta.
  * Regenerar con: python3 scripts/sync-jm-landings-carrusel.py
  */
 window.JM_LANDINGS_CARRUSEL = [
-{",\\n".join(items)}
+{items_str}
 ];
 
 /** Súbelo al reemplazar PNGs para forzar recarga en el navegador */

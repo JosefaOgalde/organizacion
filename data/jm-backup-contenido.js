@@ -559,7 +559,10 @@ if (!window.JM_LANDINGS_CARRUSEL || !window.JM_LANDINGS_CARRUSEL.length) {
     { carpeta: 'interfaces/referencia-landings', archivo: '01-inicio-referencia.png', titulo: 'Inicio' },
     { carpeta: 'interfaces/referencia-landings', archivo: '02-esencial-referencia.png', titulo: 'Esencial' },
     { carpeta: 'interfaces/referencia-landings', archivo: '03-gold-referencia.png', titulo: 'Gold' },
-    { carpeta: 'interfaces/referencia-landings', archivo: '04-deluxe-referencia.png', titulo: 'Deluxe' }
+    { carpeta: 'interfaces/referencia-landings', archivo: '04-deluxe-referencia.png', titulo: 'Deluxe' },
+    { carpeta: 'interfaces/referencia-landings', archivo: '05-carrito-referencia.png', titulo: 'Carrito' },
+    { carpeta: 'interfaces/referencia-landings', archivo: '06-ayuda-referencia.png', titulo: 'Ayuda' },
+    { carpeta: 'interfaces/referencia-landings', archivo: '07-productos-referencia.png', titulo: 'Productos' }
   ];
 }
 if (typeof window.JM_LANDINGS_CARRUSEL_VERSION !== 'number') {
@@ -574,10 +577,11 @@ function jmLandingCarruselSrc(item) {
   return '';
 }
 
-/** HTML carrusel landings · Inicio → Esencial → Gold → Deluxe */
+/** HTML carrusel landings referencia (manifiesto en referencia-landings/carrusel.manifest.js) */
 function jmHtmlLandingsCarrusel() {
   const items = window.JM_LANDINGS_CARRUSEL || [];
   if (!items.length) return '';
+  const ordenTitulos = items.map((w) => w.titulo).join(' → ');
 
   const cards = items.map((w, i) => {
     const src = jmLandingCarruselSrc(w);
@@ -596,7 +600,7 @@ function jmHtmlLandingsCarrusel() {
   return `<div class="jm-interfaces jm-interfaces--landings-ref" data-jm-interfaces tabindex="0" aria-label="Landings referencia">
     <div class="jm-interfaces__head">
       <h4 class="jm-interfaces__titulo-seccion">Landings referencia</h4>
-      <p class="jm-interfaces__intro">Tus 4 capturas del sitio · orden: <strong>Inicio → Esencial → Gold → Deluxe</strong> · clic en miniatura o flechas.</p>
+      <p class="jm-interfaces__intro">${items.length} capturas del sitio · orden: <strong>${jmEscapeHtml(ordenTitulos)}</strong> · clic en miniatura o flechas.</p>
       <p class="jm-interfaces__hint-reemplazo jm-solo-vista">Puedes reemplazar cada una por tu diseño actualizado. Pulsa <button type="button" class="jm-interfaces__link-editar" data-jm-activar-edicion-imagenes>Editar datos</button> arriba a la derecha.</p>
       <p class="jm-interfaces__hint-reemplazo jm-interfaces__hint-reemplazo--activo jm-solo-edicion">Imagen activa: usa <strong>Cambiar imagen</strong> en el recuadro de abajo o en cada miniatura.</p>
     </div>
@@ -1004,7 +1008,7 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
       }).join('');
     })();
   const intro = usarPrototipo
-    ? 'Prototipo del flujo actual (pasos 1–8) y carrusel con las landings entregadas: <strong>Inicio → Esencial → Gold → Deluxe</strong>.'
+    ? 'Prototipo del flujo actual (pasos 1–8) y carrusel con las landings entregadas.'
     : 'Recorre el estado actual del sitio con las flechas o clic izquierda/derecha sobre la imagen.';
   return `<section id="ficha-wireframes-jm" class="ficha-seccion ficha-seccion--wireframes ${claseExtra}${usarPrototipo ? ' ficha-seccion--prototipo' : ''}">
     <div class="ficha-seccion__headline">
