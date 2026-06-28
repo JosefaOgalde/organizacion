@@ -492,6 +492,18 @@
   margin-top: 0.15rem;
 }
 
+.jm-todo__comentario {
+  display: block;
+  margin-top: 0.35rem;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.82rem;
+  color: #666;
+  background: #faf5f7;
+  border-left: 3px solid var(--jm-border, #e8b8c8);
+  border-radius: 4px;
+  white-space: pre-wrap;
+}
+
 .jm-todo__progreso {
   margin-top: 0.85rem;
   font-size: 0.88rem;

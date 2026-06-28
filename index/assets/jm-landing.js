@@ -43,11 +43,11 @@
     const backupV = window.JM_BACKUP_FICHA?.version || 0;
     if (v < backupV) {
       cli.ficha.landing.objetivosEspecificos = [...(window.JM_OBJETIVOS?.especificos || [])];
-      cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({ ...t, completada: false }));
+      cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({ ...t, completada: false, comentario: '' }));
       cli.ficha.landingVersion = backupV;
     }
     if (!Array.isArray(cli.ficha.landing.todos) || !cli.ficha.landing.todos.length) {
-      cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({ ...t }));
+      cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({ ...t, comentario: t.comentario || '' }));
     }
   }
 
@@ -110,6 +110,8 @@
     if (!datos || !Array.isArray(datos.clientes)) {
       datos = { clientes: [], tareas: [], version: 2 };
     }
+    if (!Array.isArray(datos.tareas)) datos.tareas = [];
+    if (typeof window.jmAsegurarDatosMinimos === 'function') window.jmAsegurarDatosMinimos(datos);
     let cli = datos.clientes.find((c) => c.id === CLI_ID);
     if (!cli) {
       const seed = typeof CLIENTES_PORTAL !== 'undefined'
@@ -145,12 +147,16 @@
     }
     asegurarLandingJM(cli);
     if (typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
+    if (typeof window.jmSyncLandingDesdeTareas === 'function') window.jmSyncLandingDesdeTareas(datos);
     landing = cli.ficha.landing;
     return cli;
   }
 
   function guardar() {
     try {
+      if (typeof window.jmSyncTareasDesdeLanding === 'function') {
+        window.jmSyncTareasDesdeLanding(datos);
+      }
       const cli = datos.clientes.find((c) => c.id === CLI_ID);
       if (cli?.ficha) cli.ficha.actualizado = new Date().toISOString();
       localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
@@ -206,12 +212,13 @@
             <span class="jm-todo__texto">
               ${escapeHtml(t.titulo)}
               <span class="jm-todo__meta">Día ${escapeHtml(t.dias || '—')} · Fase ${t.fase || '—'}</span>
+              ${t.comentario ? `<span class="jm-todo__comentario">${escapeHtml(t.comentario)}</span>` : ''}
             </span>
             <button type="button" class="jm-todo__eliminar jm-solo-edicion" data-eliminar-todo="${escapeHtml(t.id)}" title="Eliminar">×</button>
           </li>`
       )
       .join('');
-    return `<p class="jm-todo__intro">Una tarea por día hábil, alineada al Gantt y a los objetivos de Fase 2 (25 días). Marca lo que ya avanzaste.</p>
+    return `<p class="jm-todo__intro">20 tareas · 1 por día desde el 23 jun 2026 · sincronizadas con el calendario del organizador (color rosa JM). Marca lo que avances aquí o en el calendario.</p>
       <ul class="jm-todo__lista">${lista}</ul>
       <p class="jm-todo__progreso">${hechos} / ${items.length} completadas</p>
       <div class="jm-todo__add jm-solo-edicion">
@@ -332,7 +339,7 @@
           </section>
 
           <section class="jm-block" id="jm-seccion-todo">
-            <div class="jm-block__head"><h2>Tareas · checklist (1 por día)</h2></div>
+            <div class="jm-block__head"><h2>Tareas · checklist (20 días)</h2></div>
             <div class="jm-block__body">${todosHtml()}</div>
           </section>
 

@@ -191,7 +191,7 @@ const MAX_ARCHIVO_MANUAL_CHARS = 40000;
 
 const NOTAS_PUB_CONTENIDO = 'Publicar en feed (solo días hábiles: lun–vie, sin feriados). Repostear en historias con link. Agregar música si no es video.';
 
-const JM_FASE2_INICIO = '2026-06-24';
+const JM_FASE2_INICIO = '2026-06-23';
 const JM_CLI_ID = 'cli-joyas-mercury';
 const JM_ENTREGA_SITIO_ID = 'tarea-jm-entrega-sitio';
 
@@ -222,33 +222,7 @@ Este manual reúne las herramientas básicas para el correcto uso y aplicación 
 - Usar la paleta en chips de filtro, destacados, botones y componentes del rediseño joyasmercury.cl
 - Respetar márgenes del logo e isotipo en headers, favicon y piezas gráficas`;
 
-/** Gantt Fase 2 — herramientas gratuitas (sin Elementor): 24 días · joyasmercury.cl */
-const PLAN_JM_FASE2 = [
-  { etapa: 1, titulo: '[JM] E1 — Auditoría menú y bloques repetidos', notas: 'Etapa 1 · Menú y limpieza visual (3d). Revisar menú actual, identificar bloques repetidos y definir estructura con colecciones como protagonista.' },
-  { etapa: 1, titulo: '[JM] E1 — Menú limpio y navegación por colección', notas: 'Etapa 1 · Implementar menú limpio. Colecciones como eje principal de navegación (Inicio → Colección → Categoría).' },
-  { etapa: 1, titulo: '[JM] E1 — Ajustes responsive y revisión visual', notas: 'Etapa 1 · Pulir menú en mobile/desktop, coherencia visual y flujo de navegación.' },
-  { etapa: 2, titulo: '[JM] E2 — Estructura 3 colecciones × 5 categorías', notas: 'Etapa 2 · Categorías y etiquetas (3d). Definir 3 colecciones con 5 categorías c/u (Aros, Cadenas, etc.) = 15 combinaciones.' },
-  { etapa: 2, titulo: '[JM] E2 — Configurar categorías y etiquetas WC', notas: 'Etapa 2 · Crear categorías, etiquetas y relaciones en WooCommerce según la estructura acordada.' },
-  { etapa: 2, titulo: '[JM] E2 — Validar 15 combinaciones y URLs', notas: 'Etapa 2 · Probar cada combinación colección/categoría, slugs y enlaces internos.' },
-  { etapa: 3, titulo: '[JM] E3 — Diseño filtros Esencial / Gold / Deluxe', notas: 'Etapa 3 · Filtros visuales (5–7d). Diseñar chips/botones de filtro para las 3 líneas de producto.' },
-  { etapa: 3, titulo: '[JM] E3 — Landing filtros · colección 1', notas: 'Etapa 3 · Primera landing de colección con filtros visuales integrados.' },
-  { etapa: 3, titulo: '[JM] E3 — Landing filtros · colección 2', notas: 'Etapa 3 · Segunda landing de colección con filtros visuales.' },
-  { etapa: 3, titulo: '[JM] E3 — Landing filtros · colección 3', notas: 'Etapa 3 · Tercera landing de colección con filtros visuales (3 landings totales).' },
-  { etapa: 3, titulo: '[JM] E3 — Filtrado AJAX sin recargar página', notas: 'Etapa 3 · Misma página, filtros Esencial/Gold/Deluxe sin recarga. Probar en las 3 colecciones.' },
-  { etapa: 3, titulo: '[JM] E3 — Pruebas UX y ajustes de filtros', notas: 'Etapa 3 · QA filtros, estados activos, mobile y rendimiento.' },
-  { etapa: 4, titulo: '[JM] E4 — Sección Productos Destacados en Inicio', notas: 'Etapa 4 · Destacados + capacitación (2d). Bloque en home donde Camila elige qué mostrar.' },
-  { etapa: 4, titulo: '[JM] E4 — Capacitación productos destacados', notas: 'Etapa 4 · Documentar y capacitar cómo marcar/desmarcar productos destacados.' },
-  { etapa: 5, titulo: '[JM] E5 — Nosotros, contacto y WhatsApp', notas: 'Etapa 5 · Páginas legales y contenidos (1–2d). Nosotros, contacto y enlace/botón WhatsApp.' },
-  { etapa: 5, titulo: '[JM] E5 — Políticas legales y contenidos', notas: 'Etapa 5 · Políticas de envío, privacidad, términos y textos legales pendientes.' },
-  { etapa: 6, titulo: '[JM] E6 — Maquetación página carrito', notas: 'Etapa 6 · Página carrito (3d). Layout carrito alineado al rediseño de la tienda.' },
-  { etapa: 6, titulo: '[JM] E6 — Flujo checkout y resumen de pedido', notas: 'Etapa 6 · Checkout, totales, envío y experiencia de compra.' },
-  { etapa: 6, titulo: '[JM] E6 — Ajustes mobile y pruebas carrito', notas: 'Etapa 6 · Pruebas carrito/checkout en mobile y correcciones.' },
-  { etapa: 7, titulo: '[JM] E7 — Pruebas integrales del sitio', notas: 'Etapa 7 · Pruebas, guía y entrega (5d). Recorrido completo: menú, filtros, destacados, legales, carrito.' },
-  { etapa: 7, titulo: '[JM] E7 — Corrección de bugs y refinamiento', notas: 'Etapa 7 · Resolver issues detectados en pruebas integrales.' },
-  { etapa: 7, titulo: '[JM] E7 — Guía gestión de catálogo', notas: 'Etapa 7 · Redactar guía para que Camila gestione productos, colecciones y destacados sola.' },
-  { etapa: 7, titulo: '[JM] E7 — Capacitación final con cliente', notas: 'Etapa 7 · Sesión de capacitación: catálogo, páginas, banners y pedidos.' },
-  { etapa: 7, titulo: '[JM] E7 — Entrega Fase 2 y soporte inicial', notas: 'Etapa 7 · Entrega del sitio aprobado. Inicio de ventana de 10 días de soporte incluido.' }
-];
+/** Plan JM Fase 2 — 20 tareas en data/jm-backup-contenido.js → JM_TODO_SEED */
 
 const SIE_CLI_ID = 'cli-sie';
 const SIE_INICIO = '2026-06-24';
@@ -697,6 +671,7 @@ function clavesEliminacionTarea(t) {
   if (/propuesta.*blog/i.test(t.titulo || '') && t.clienteId === 'cli-ecr') claves.push('tarea-ecr-blog-24');
   if (/gantt.*etapa\s*2/i.test(t.titulo || '') && t.clienteId === 'cli-mkof') claves.push('tarea-mkof-gantt-etapa2');
   if ((t.id || '').startsWith('tarea-jm-f2-')) claves.push(t.id);
+  if (t.jmTodoId) claves.push(t.jmTodoId);
   if (/^\[JM\]/i.test(t.titulo || '') && t.clienteId === JM_CLI_ID && t.fecha) {
     claves.push(`fp-jm:${t.fecha}:${nombreBaseTarea(t).toLowerCase()}`);
   }
@@ -1561,70 +1536,78 @@ function asegurarTareaEntregaSitioJM(data, fechaEntrega) {
   return data;
 }
 
+function fechaCalendarioJMChecklist(indice) {
+  const inicio = window.JM_CALENDARIO_INICIO || JM_FASE2_INICIO;
+  const d = parseISO(inicio);
+  d.setDate(d.getDate() + indice);
+  return toISO(d);
+}
+
+function limpiarTareasJMLegacy(data) {
+  const seeds = window.JM_TODO_SEED || [];
+  const idsValidos = new Set(seeds.map((_, i) =>
+    (window.jmTareaCalendarioId || ((n) => `tarea-jm-f2-${String(n + 1).padStart(2, '0')}`))(i)
+  ));
+  data.tareas = data.tareas.filter((t) => {
+    if (t.id === JM_ENTREGA_SITIO_ID) return false;
+    if (!(t.id || '').startsWith('tarea-jm-f2-')) return true;
+    return idsValidos.has(t.id);
+  });
+  return data;
+}
+
 function asegurarTareasJoyasMercuryFase2(data) {
-  if (!debeAutoGenerarTareas(data)) return data;
+  const seeds = window.JM_TODO_SEED;
+  if (!Array.isArray(seeds) || !seeds.length) return data;
+
+  limpiarTareasJMLegacy(data);
   const rolId = 'rol-jm-dev';
-  let fecha = parseISO(JM_FASE2_INICIO);
-  let indice = 0;
-  let ultimaFechaJM = null;
+  const tituloDe = window.jmTituloCalendario || ((todo) => `[JM] D${todo.dias} — ${todo.titulo}`);
+  const idDe = window.jmTareaCalendarioId || ((i) => `tarea-jm-f2-${String(i + 1).padStart(2, '0')}`);
 
-  while (indice < PLAN_JM_FASE2.length) {
-    const fechaStr = toISO(fecha);
-    if (!esDiaCalendarioJM(fechaStr)) {
-      fecha.setDate(fecha.getDate() + 1);
-      continue;
-    }
-
-    const horas = horasTrabajoJMFase2(data, fechaStr);
-    if (horas <= 0) {
-      fecha.setDate(fecha.getDate() + 1);
-      continue;
-    }
-
-    const plan = PLAN_JM_FASE2[indice];
-    const taskId = `tarea-jm-f2-${String(indice + 1).padStart(2, '0')}`;
-    const duracionMin = horas * 60;
+  seeds.forEach((todo, indice) => {
+    const taskId = idDe(indice);
+    const fechaStr = fechaCalendarioJMChecklist(indice);
+    const titulo = tituloDe(todo);
+    const duracionMin = 180;
     const slot = buscarSlotAgenda(data, fechaStr, duracionMin, JM_CLI_ID);
-    const plantilla = { id: taskId, titulo: plan.titulo, clienteId: JM_CLI_ID, fecha: fechaStr };
-    ultimaFechaJM = fechaStr;
+    const plantilla = { id: taskId, titulo, clienteId: JM_CLI_ID, fecha: fechaStr, jmTodoId: todo.id };
 
     let tarea = data.tareas.find(t => t.id === taskId);
     if (!tarea && !tareaFueEliminada(data, taskId, plantilla)) {
       data.tareas.push({
         id: taskId,
-        titulo: plan.titulo,
+        titulo,
         clienteId: JM_CLI_ID,
         rolId,
         fecha: fechaStr,
         horaInicio: slot.horaInicio,
         horaFin: slot.horaFin,
-        notas: plan.notas,
+        notas: todo.notas || '',
         prioridad: 'alta',
-        completada: false,
-        pendiente: false
+        completada: !!todo.completada,
+        pendiente: false,
+        jmTodoId: todo.id,
+        jmChecklistDia: todo.dias
       });
-    } else if (tarea) {
-      if (tareaFueEliminada(data, taskId, tarea)) {
-        data.tareas = data.tareas.filter(t => t.id !== taskId);
-      } else {
-        tarea.titulo = plan.titulo;
-        tarea.clienteId = JM_CLI_ID;
-        tarea.rolId = rolId;
-        sincronizarAgendaTarea(tarea, {
-          fecha: fechaStr,
-          horaInicio: slot.horaInicio,
-          horaFin: slot.horaFin
-        });
-        tarea.notas = plan.notas;
-        tarea.prioridad = tarea.prioridad || 'alta';
-      }
+    } else if (tarea && !tareaFueEliminada(data, taskId, tarea)) {
+      tarea.titulo = titulo;
+      tarea.clienteId = JM_CLI_ID;
+      tarea.rolId = rolId;
+      tarea.jmTodoId = todo.id;
+      tarea.jmChecklistDia = todo.dias;
+      sincronizarAgendaTarea(tarea, {
+        fecha: fechaStr,
+        horaInicio: slot.horaInicio,
+        horaFin: slot.horaFin
+      });
+      if (!tarea.notas && todo.notas) tarea.notas = todo.notas;
     }
+  });
 
-    indice += 1;
-    fecha.setDate(fecha.getDate() + 1);
+  if (typeof window.jmSyncLandingDesdeTareas === 'function') {
+    window.jmSyncLandingDesdeTareas(data);
   }
-
-  asegurarTareaEntregaSitioJM(data, ultimaFechaJM);
 
   return data;
 }
@@ -1830,6 +1813,9 @@ function tieneDatosLocales() {
 
 function guardar() {
   try {
+    if (typeof window.jmSyncLandingDesdeTareas === 'function') {
+      window.jmSyncLandingDesdeTareas(datos);
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
     return true;
   } catch (e) {

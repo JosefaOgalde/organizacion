@@ -29,7 +29,7 @@ Este manual reúne las herramientas básicas para el correcto uso y aplicación 
 - Respetar márgenes del logo e isotipo en headers, favicon y piezas gráficas`;
 
 window.JM_BACKUP_FICHA = {
-  version: 5,
+  version: 6,
   metas: `Etapa 2 — Rediseño joyasmercury.cl
 - Navegación limpia y elegante (referencia joyería premium)
 - Filtros visuales Esencial / Gold / Deluxe en la misma vista (sin cambiar de página)
@@ -445,34 +445,116 @@ window.JM_OBJETIVOS = {
   ]
 };
 
-/** Tareas checklist — una tarea por día hábil (25 días · Fase 2) */
+/** Inicio calendario JM — tarea 1 = este día */
+window.JM_CALENDARIO_INICIO = '2026-06-23';
+window.JM_CLI_SYNC_ID = 'cli-joyas-mercury';
+
+/** Checklist Fase 2 — 20 tareas · 1 por día · sincronizado con el organizador */
 window.JM_TODO_SEED = [
-  { id: 'jm-todo-01', titulo: 'Auditoría menú actual (desktop y móvil)', dias: '1', fase: 1, completada: false },
-  { id: 'jm-todo-02', titulo: 'Mapa de navegación propuesto', dias: '2', fase: 1, completada: false },
-  { id: 'jm-todo-03', titulo: 'Implementar menú limpio (desktop + móvil)', dias: '3', fase: 1, completada: false },
-  { id: 'jm-todo-04', titulo: 'Paso 4 · Definir menú objetivo (Inicio, Colecciones, Últimas unidades, Mi Carrito)', dias: '4', fase: 1, completada: false },
-  { id: 'jm-todo-05', titulo: 'Paso 5 · Armar mapa de navegación según menú del paso 4', dias: '5', fase: 1, completada: false },
-  { id: 'jm-todo-06', titulo: 'Colección Esencial · 5 categorías en WooCommerce', dias: '6', fase: 2, completada: false },
-  { id: 'jm-todo-07', titulo: 'Colección Gold · 5 categorías en WooCommerce', dias: '7', fase: 2, completada: false },
-  { id: 'jm-todo-08', titulo: 'Colección Deluxe · 5 categorías + validar URLs', dias: '8', fase: 2, completada: false },
-  { id: 'jm-todo-09', titulo: 'Diseñar chips de filtro Esencial / Gold / Deluxe', dias: '9', fase: 3, completada: false },
-  { id: 'jm-todo-10', titulo: 'Landings colección · layout y estructura', dias: '10', fase: 3, completada: false },
-  { id: 'jm-todo-11', titulo: 'Filtrado AJAX · lógica base', dias: '11', fase: 3, completada: false },
-  { id: 'jm-todo-12', titulo: 'Filtrado AJAX · estados activos y UX', dias: '12', fase: 3, completada: false },
-  { id: 'jm-todo-13', titulo: 'QA filtros · mobile y touch', dias: '13', fase: 3, completada: false },
-  { id: 'jm-todo-14', titulo: 'QA filtros · rendimiento y edge cases', dias: '14', fase: 3, completada: false },
-  { id: 'jm-todo-15', titulo: 'Bloque Productos Destacados / Novedades en Inicio', dias: '15', fase: 4, completada: false },
-  { id: 'jm-todo-16', titulo: 'Guía para Camila · gestionar destacados', dias: '16', fase: 4, completada: false },
-  { id: 'jm-todo-17', titulo: 'Página Últimas unidades', dias: '17', fase: 5, completada: false },
-  { id: 'jm-todo-18', titulo: 'Páginas legales (políticas, despachos, garantías)', dias: '18', fase: 5, completada: false },
-  { id: 'jm-todo-19', titulo: 'Nosotros + WhatsApp como canal principal', dias: '19', fase: 5, completada: false },
-  { id: 'jm-todo-20', titulo: 'Maquetación carrito · parte visual superior', dias: '20', fase: 6, completada: false },
-  { id: 'jm-todo-21', titulo: 'Carrito · pruebas checkout WooCommerce', dias: '21', fase: 6, completada: false },
-  { id: 'jm-todo-22', titulo: 'Pruebas integrales cross-browser', dias: '22', fase: 6, completada: false },
-  { id: 'jm-todo-23', titulo: 'Guías de catálogo y documentación de entrega', dias: '23', fase: 7, completada: false },
-  { id: 'jm-todo-24', titulo: 'Revisión con Camila + ajustes finales', dias: '24', fase: 7, completada: false },
-  { id: 'jm-todo-25', titulo: 'Entrega Fase 2 + inicio ventana de soporte', dias: '25', fase: 7, completada: false }
+  { id: 'jm-todo-01', titulo: 'Auditoría menú actual + mapa de navegación', dias: '1', fase: 1, completada: false, notas: 'Etapa 1 · Inventario menú desktop/móvil y mapa de navegación propuesto.' },
+  { id: 'jm-todo-02', titulo: 'Implementar menú limpio (desktop + móvil)', dias: '2', fase: 1, completada: false, notas: 'Etapa 1 · Menú limpio con colecciones como eje principal.' },
+  { id: 'jm-todo-03', titulo: 'Menú objetivo (paso 4) + mapa de navegación (paso 5)', dias: '3', fase: 1, completada: false, notas: 'Estructura acordada: Inicio, Colecciones, Últimas unidades, Mi Carrito + rutas.' },
+  { id: 'jm-todo-04', titulo: '3 colecciones × 5 categorías en WooCommerce', dias: '4', fase: 2, completada: false, notas: 'Etapa 2 · Esencial, Gold y Deluxe con Aros, Cadenas, Anillos, Pulseras, Conjuntos.' },
+  { id: 'jm-todo-05', titulo: 'Validar URLs y slugs de colecciones', dias: '5', fase: 2, completada: false, notas: 'Probar las 15 combinaciones colección/categoría.' },
+  { id: 'jm-todo-06', titulo: 'Diseñar chips filtro Esencial / Gold / Deluxe', dias: '6', fase: 3, completada: false, notas: 'Etapa 3 · Filtros visuales en la misma landing.' },
+  { id: 'jm-todo-07', titulo: 'Landings colección · layout y estructura', dias: '7', fase: 3, completada: false, notas: 'Maquetación base de las 3 landings de colección.' },
+  { id: 'jm-todo-08', titulo: 'Filtrado AJAX sin recargar página', dias: '8', fase: 3, completada: false, notas: 'Filtros activos, estados y UX en misma vista.' },
+  { id: 'jm-todo-09', titulo: 'QA filtros (mobile, UX y rendimiento)', dias: '9', fase: 3, completada: false, notas: 'Pruebas mobile, touch, estados activos y rendimiento.' },
+  { id: 'jm-todo-10', titulo: 'Destacados / Novedades en Inicio', dias: '10', fase: 4, completada: false, notas: 'Etapa 4 · Bloque en home para productos destacados.' },
+  { id: 'jm-todo-11', titulo: 'Guía para Camila · gestionar destacados', dias: '11', fase: 4, completada: false, notas: 'Documentar cómo marcar/desmarcar destacados.' },
+  { id: 'jm-todo-12', titulo: 'Últimas unidades + páginas legales', dias: '12', fase: 5, completada: false, notas: 'Etapa 5 · Stock limitado, políticas, despachos y garantías.' },
+  { id: 'jm-todo-13', titulo: 'Nosotros + WhatsApp canal principal', dias: '13', fase: 5, completada: false, notas: 'Página Nosotros y botón WhatsApp oficial.' },
+  { id: 'jm-todo-14', titulo: 'Maquetación carrito · parte visual superior', dias: '14', fase: 6, completada: false, notas: 'Etapa 6 · Carrito alineado al rediseño de la tienda.' },
+  { id: 'jm-todo-15', titulo: 'Carrito · pruebas checkout WooCommerce', dias: '15', fase: 6, completada: false, notas: 'Checkout, totales, envío y flujo de compra.' },
+  { id: 'jm-todo-16', titulo: 'Pruebas integrales del sitio', dias: '16', fase: 7, completada: false, notas: 'Etapa 7 · Recorrido menú → filtros → destacados → legales → carrito.' },
+  { id: 'jm-todo-17', titulo: 'Corrección de bugs y refinamiento', dias: '17', fase: 7, completada: false, notas: 'Resolver issues detectados en pruebas.' },
+  { id: 'jm-todo-18', titulo: 'Guías de catálogo y documentación', dias: '18', fase: 7, completada: false, notas: 'Guía para que Camila gestione catálogo y colecciones.' },
+  { id: 'jm-todo-19', titulo: 'Revisión con Camila + ajustes finales', dias: '19', fase: 7, completada: false, notas: 'Sesión de revisión y últimos ajustes.' },
+  { id: 'jm-todo-20', titulo: 'Entrega Fase 2 + soporte post-entrega', dias: '20', fase: 7, completada: false, notas: 'Entrega oficial joyasmercury.cl · inicio ventana 10 días de soporte.' }
 ];
+
+/** Asegura tareas JM en datos (landing sin abrir organizador) */
+window.jmAsegurarDatosMinimos = function jmAsegurarDatosMinimos(data) {
+  if (!data || typeof data !== 'object') return data;
+  if (!Array.isArray(data.tareas)) data.tareas = [];
+  if (!Array.isArray(data.clientes)) data.clientes = [];
+  const seeds = window.JM_TODO_SEED || [];
+  const inicio = window.JM_CALENDARIO_INICIO || '2026-06-23';
+  seeds.forEach((todo, indice) => {
+    const id = window.jmTareaCalendarioId(indice);
+    const d = new Date(`${inicio}T12:00:00`);
+    d.setDate(d.getDate() + indice);
+    const fecha = d.toISOString().slice(0, 10);
+    const titulo = window.jmTituloCalendario(todo);
+    let t = data.tareas.find((x) => x.id === id);
+    if (!t) {
+      data.tareas.push({
+        id,
+        titulo,
+        clienteId: window.JM_CLI_SYNC_ID,
+        rolId: 'rol-jm-dev',
+        fecha,
+        horaInicio: '09:00',
+        horaFin: '12:00',
+        notas: todo.notas || '',
+        prioridad: 'alta',
+        completada: !!todo.completada,
+        pendiente: false,
+        jmTodoId: todo.id,
+        jmChecklistDia: todo.dias
+      });
+    } else {
+      t.jmTodoId = todo.id;
+      t.clienteId = window.JM_CLI_SYNC_ID;
+      if (!t.fecha) t.fecha = fecha;
+    }
+  });
+  window.jmSyncLandingDesdeTareas(data);
+  return data;
+};
+
+/** Sincroniza checklist ← tareas del organizador (completada + notas) */
+window.jmSyncLandingDesdeTareas = function jmSyncLandingDesdeTareas(data) {
+  if (!data?.clientes || !data?.tareas) return data;
+  const cli = data.clientes.find((c) => c.id === window.JM_CLI_SYNC_ID);
+  const todos = cli?.ficha?.landing?.todos;
+  if (!Array.isArray(todos)) return data;
+  data.tareas.forEach((t) => {
+    if (t.clienteId !== window.JM_CLI_SYNC_ID || !t.jmTodoId) return;
+    const todo = todos.find((x) => x.id === t.jmTodoId);
+    if (!todo) return;
+    todo.completada = !!t.completada;
+    const notas = (t.notas || '').trim();
+    todo.comentario = notas;
+  });
+  return data;
+};
+
+/** Sincroniza tareas del organizador ← checklist (completada + comentario → notas) */
+window.jmSyncTareasDesdeLanding = function jmSyncTareasDesdeLanding(data) {
+  if (!data?.clientes || !data?.tareas) return data;
+  const cli = data.clientes.find((c) => c.id === window.JM_CLI_SYNC_ID);
+  const todos = cli?.ficha?.landing?.todos;
+  if (!Array.isArray(todos)) return data;
+  todos.forEach((todo) => {
+    const t = data.tareas.find((x) => x.jmTodoId === todo.id);
+    if (!t) return;
+    t.completada = !!todo.completada;
+    const com = (todo.comentario || '').trim();
+    t.notas = com || undefined;
+  });
+  return data;
+};
+
+/** ID de tarea calendario para índice 0-based del checklist */
+window.jmTareaCalendarioId = function jmTareaCalendarioId(indice) {
+  return `tarea-jm-f2-${String(indice + 1).padStart(2, '0')}`;
+};
+
+/** Título corto para el calendario */
+window.jmTituloCalendario = function jmTituloCalendario(todo) {
+  return `[JM] D${todo.dias} — ${todo.titulo}`;
+};
 
 /** Categorías por colección */
 window.JM_CATEGORIAS_MENU = ['Aros', 'Cadenas', 'Anillos', 'Pulseras', 'Conjuntos'];
