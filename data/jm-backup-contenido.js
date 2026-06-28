@@ -925,9 +925,12 @@ function jmHtmlPrototipoInteractivo() {
             <button type="button" class="btn btn--ghost btn--sm" data-jm-reiniciar>Reiniciar recorrido</button>
           </div>
         </div>
-        <p class="jm-prototipo__hint">Recorre el flujo con el panel izquierdo (pasos 1–8). Por ahora solo capturas, sin zonas clicables.</p>
+        <p class="jm-prototipo__hint">Recorre el flujo con el panel izquierdo (pasos 1–8). <span class="jm-solo-vista">Para cambiar capturas: <button type="button" class="jm-interfaces__link-editar" data-jm-activar-edicion-prototipo>Editar datos</button> (arriba a la derecha).</span><span class="jm-solo-edicion">Paso activo: usa <strong>Cambiar imagen</strong> en el recuadro de abajo. Se guarda en tu organizador y en otro PC con <strong>↓ Respaldo</strong> + git.</span></p>
         <div class="jm-prototipo__viewport">
           <div class="jm-prototipo__stack">${pantallasHtml}</div>
+        </div>
+        <div class="jm-prototipo__visor-edit jm-solo-edicion" data-jm-proto-visor-edit aria-live="polite">
+          <p class="jm-prototipo__visor-edit-label">Reemplazar captura del paso actual</p>
         </div>
         <div class="jm-prototipo__pie">
           <strong class="jm-prototipo__titulo">${jmEscapeHtml(tituloInicio)}</strong>
@@ -1324,6 +1327,9 @@ window.initJMPrototipo = function initJMPrototipo(root) {
       actualizarFlujoUI(id);
       el.classList.add('jm-prototipo--transicion');
       setTimeout(() => el.classList.remove('jm-prototipo--transicion'), 220);
+      if (typeof window.jmSyncPrototipoVisorEditBar === 'function') {
+        window.jmSyncPrototipoVisorEditBar(el);
+      }
     }
 
     el.querySelectorAll('.jm-prototipo__hotspot').forEach(btn => {
@@ -1730,8 +1736,37 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
 
   window.jmSyncVisorEditBar = syncCarouselVisorBar;
 
+  function syncPrototipoVisorEditBar(protoEl) {
+    if (!protoEl) return;
+    const slot = protoEl.querySelector('[data-jm-proto-visor-edit]');
+    if (!slot) return;
+    const label = slot.querySelector('.jm-prototipo__visor-edit-label');
+    slot.querySelectorAll('.jm-img-editable__bar').forEach((el) => el.remove());
+    const activeImg = protoEl.querySelector('.jm-prototipo__pantalla--activa img[data-jm-img-key]');
+    if (!activeImg) return;
+    const info = applyToImg(activeImg);
+    if (!info || info.hidden) return;
+    const pasoTitulo = activeImg.alt || 'captura';
+    const archivo = info.key?.replace(/^jm:/, '').split('/').pop() || '';
+    if (label) {
+      label.textContent = archivo
+        ? `Reemplazar «${pasoTitulo}» · ${archivo}`
+        : `Reemplazar «${pasoTitulo}»`;
+    }
+    const bar = buildImgEditBar(activeImg, info);
+    bar.classList.add('jm-img-editable__bar--visor');
+    slot.appendChild(bar);
+  }
+
+  window.jmSyncPrototipoVisorEditBar = syncPrototipoVisorEditBar;
+
   scope.querySelectorAll('[data-jm-img-key]').forEach((img) => {
     if (img.hasAttribute('data-jm-int-visor-img') || img.classList.contains('jm-interfaces__visor-img')) {
+      applyToImg(img);
+      return;
+    }
+    if (img.closest('.jm-prototipo__pantalla')) {
+      if (img.dataset.jmImgEditorBound !== '1') img.dataset.jmImgEditorBound = '1';
       applyToImg(img);
       return;
     }
@@ -1753,6 +1788,10 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
 
   scope.querySelectorAll('[data-jm-interfaces]').forEach((sec) => {
     syncCarouselVisorBar(sec);
+  });
+
+  scope.querySelectorAll('[data-jm-prototipo]').forEach((protoEl) => {
+    syncPrototipoVisorEditBar(protoEl);
   });
 
   scope.querySelectorAll('[data-jm-interfaces], [data-jm-nuevo-prototipo]').forEach((sec) => {

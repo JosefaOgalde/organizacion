@@ -85,6 +85,7 @@ Los archivos en disco **no dependen** del navegador.
 | `data/organizacion-live.json` | Auto-guardado local (servidor Node) |
 | `data/organizacion-respaldo-*.json` | Respaldos manuales en el repo |
 | `localStorage` `organizacion_v2` | Copia en el navegador (caché) |
+| `cli.ficha.landing.imagenesOverrides` | Reemplazos de imágenes (prototipo + carruseles) en JSON |
 | PNG en `referencia-landings/` | Carrusel JM en disco/Git |
 
 ---

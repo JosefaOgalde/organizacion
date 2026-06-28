@@ -410,6 +410,7 @@
       imagenesOverrides: landing.imagenesOverrides,
       imagenesOcultas: landing.imagenesOcultas,
       imagenesMeta: landing.imagenesMeta,
+      maxBytes: 2.5 * 1024 * 1024,
       onChange(state) {
         Object.assign(landing, state);
         cli.ficha.actualizado = new Date().toISOString();
@@ -461,6 +462,25 @@
         setTimeout(() => {
           carrusel?.querySelector('[data-jm-int-visor-edit]')?.classList.remove('jm-interfaces__visor-edit--pulse');
         }, 2000);
+      });
+    });
+
+    root.querySelectorAll('[data-jm-activar-edicion-prototipo]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (!modoEdicion) {
+          modoEdicion = true;
+          render();
+        }
+        const proto = root.querySelector('[data-jm-prototipo]');
+        proto?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        proto?.querySelector('[data-jm-proto-visor-edit]')?.classList.add('jm-prototipo__visor-edit--pulse');
+        setTimeout(() => {
+          proto?.querySelector('[data-jm-proto-visor-edit]')?.classList.remove('jm-prototipo__visor-edit--pulse');
+        }, 2000);
+        if (typeof window.jmSyncPrototipoVisorEditBar === 'function' && proto) {
+          window.jmSyncPrototipoVisorEditBar(proto);
+        }
       });
     });
 
