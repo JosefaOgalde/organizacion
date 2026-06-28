@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CARPETA = ROOT / "index/clientes/JoyasMercury/interfaces/referencia-landings"
+CARPETA = ROOT / "index/clientes/joyasmercury/interfaces/referencia-landings"
 MANIFEST = CARPETA / "carrusel.manifest.js"
 JSON_FILE = CARPETA / "carrusel.json"
 

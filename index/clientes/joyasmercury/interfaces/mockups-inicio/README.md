@@ -7,7 +7,7 @@ Wireframe HTML completo del **Inicio** propuesto para joyasmercury.cl.
 Con `npx serve .` desde la raíz del repo:
 
 ```
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-inicio/wireframe-inicio.html
+http://localhost:3000/index/clientes/joyasmercury/interfaces/mockups-inicio/wireframe-inicio.html
 ```
 
 ## Secciones (de arriba hacia abajo)
@@ -48,7 +48,7 @@ Las mismas imágenes aparecen en la ficha **Nuevo prototipo** → `/index/client
 Comparativa interactiva (alternativas al pie actual con logo izquierda + links apilados):
 
 ```
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-inicio/wireframe-footer-opciones.html
+http://localhost:3000/index/clientes/joyasmercury/interfaces/mockups-inicio/wireframe-footer-opciones.html
 ```
 
 | Opción | Estilo |

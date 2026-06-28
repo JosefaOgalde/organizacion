@@ -300,6 +300,8 @@
           <a href="../" class="jm-btn jm-btn--ghost">← Volver</a>
           <span class="jm-ficha-top__tipo">Freelance · JM</span>
           <div class="jm-landing__toolbar">
+            <a href="wireframes.html" class="jm-btn jm-btn--ghost">Wireframes</a>
+            <a href="prototipo.html" class="jm-btn jm-btn--ghost">Prototipo</a>
             <a href="../../../" class="jm-btn jm-btn--celeste">Organizador</a>
             <button type="button" class="jm-btn${modoEdicion ? ' jm-btn--active' : ''}" id="jm-btn-editar">
               ${modoEdicion ? 'Guardar datos' : 'Editar datos'}

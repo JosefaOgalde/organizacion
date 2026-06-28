@@ -33,6 +33,6 @@ El script detecta todos los PNG, actualiza `carrusel.manifest.js` y sube la vers
 ## Wireframe interactivo
 
 ```
-/index/clientes/JoyasMercury/interfaces/referencia-landings/referencia-landings.html?pagina=inicio
-/index/clientes/JoyasMercury/interfaces/referencia-landings/referencia-landings.html?pagina=coleccion&coleccion=esencial
+/index/clientes/joyasmercury/interfaces/referencia-landings/referencia-landings.html?pagina=inicio
+/index/clientes/joyasmercury/interfaces/referencia-landings/referencia-landings.html?pagina=coleccion&coleccion=esencial
 ```

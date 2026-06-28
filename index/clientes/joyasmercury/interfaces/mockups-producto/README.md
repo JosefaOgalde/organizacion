@@ -11,7 +11,7 @@ Colección / Inicio → clic tarjeta producto → Ficha producto → Agregar al 
 ## URL
 
 ```
-/index/clientes/JoyasMercury/interfaces/mockups-producto/wireframe-producto-landing.html
+/index/clientes/joyasmercury/interfaces/mockups-producto/wireframe-producto-landing.html
 ```
 
 | Variante | Query |

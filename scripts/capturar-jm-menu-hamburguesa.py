@@ -4,7 +4,7 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-HTML = ROOT / "index/clientes/JoyasMercury/interfaces/mockups-navbar/menu-hamburguesa-jm-maqueta.html"
+HTML = ROOT / "index/clientes/joyasmercury/interfaces/mockups-navbar/menu-hamburguesa-jm-maqueta.html"
 OUT = HTML.parent
 
 

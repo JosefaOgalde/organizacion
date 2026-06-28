@@ -3,7 +3,7 @@
 Capturas del **sitio en producción** (jun 2026), ordenadas para recorrer el prototipo interactivo de arriba hacia abajo.
 
 **Agente:** `@joyas-mercury`  
-**Prototipo:** [`prototipo-joyas-mercury.html`](../../../../prototipo-joyas-mercury.html) (desde la raíz del repo)
+**Prototipo:** [prototipo.html](../prototipo.html) · [wireframes.html](../wireframes.html)
 
 ---
 
@@ -76,7 +76,7 @@ Iconos: redes (FB, IG, TikTok) · corona/logo · bolsa con contador.
 ## Reemplazar manualmente (opcional)
 
 1. Guarda tus PNG con **exactamente** los nombres de la tabla.
-2. Copia en esta carpeta: `index/clientes/JoyasMercury/flujo-actual/`
+2. Copia en esta carpeta: `index/clientes/joyasmercury/flujo-actual/`
 3. Recarga el prototipo en el navegador.
 
 ---
@@ -86,5 +86,5 @@ Iconos: redes (FB, IG, TikTok) · corona/logo · bolsa con contador.
 ```
 http://localhost:3000/prototipo-joyas-mercury.html
 http://localhost:3000/index/clientes/joyasmercury.html
-http://localhost:3000/index/clientes/JoyasMercury/flujo-actual/01-inicio-home.png
+http://localhost:3000/index/clientes/joyasmercury/flujo-actual/01-inicio-home.png
 ```

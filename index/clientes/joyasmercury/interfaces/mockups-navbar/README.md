@@ -17,12 +17,12 @@ Maquetas HTML/CSS del navbar desktop y **menú hamburguesa móvil** (Fase 2).
 
 **Navbar desktop:**
 ```
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-navbar/navbar-jm-maqueta.html
+http://localhost:3000/index/clientes/joyasmercury/interfaces/mockups-navbar/navbar-jm-maqueta.html
 ```
 
 **Menú hamburguesa (interactivo · drawer abierto con `?open=1`):**
 ```
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-navbar/menu-hamburguesa-jm-maqueta.html?open=1
+http://localhost:3000/index/clientes/joyasmercury/interfaces/mockups-navbar/menu-hamburguesa-jm-maqueta.html?open=1
 ```
 
 ## Generar PNG

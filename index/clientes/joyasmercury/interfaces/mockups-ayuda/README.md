@@ -12,7 +12,7 @@ Wireframe Fase 2 con las 4 secciones de ayuda + banner + footer E.
 ## URL
 
 ```
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-ayuda/wireframe-ayuda-landing.html
+http://localhost:3000/index/clientes/joyasmercury/interfaces/mockups-ayuda/wireframe-ayuda-landing.html
 ```
 
 ```bash

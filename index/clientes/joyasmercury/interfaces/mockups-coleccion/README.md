@@ -5,7 +5,7 @@ Páginas de **Esencial · Gold · Deluxe** con la misma identidad visual del ini
 ## Abrir
 
 ```
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-coleccion/wireframe-coleccion.html
+http://localhost:3000/index/clientes/joyasmercury/interfaces/mockups-coleccion/wireframe-coleccion.html
 ```
 
 | Colección | URL |
@@ -25,12 +25,12 @@ http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-coleccion/w
 
 **Diagrama explicativo:**
 ```
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-coleccion/wireframe-filtros-opciones.html
+http://localhost:3000/index/clientes/joyasmercury/interfaces/mockups-coleccion/wireframe-filtros-opciones.html
 ```
 
 **Ejemplo completo:**
 ```
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-coleccion/wireframe-coleccion.html?coleccion=esencial&filtro=circulos
+http://localhost:3000/index/clientes/joyasmercury/interfaces/mockups-coleccion/wireframe-coleccion.html?coleccion=esencial&filtro=circulos
 ```
 
 ## Estructura (de arriba hacia abajo)

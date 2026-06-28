@@ -55,6 +55,6 @@ python3 scripts/generar-jm-interfaces-actuales.py
 ## Links locales (`npx serve .`)
 
 ```
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/README.md
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/01-arquitectura-sitio-1080x1080.png
+http://localhost:3000/index/clientes/joyasmercury/interfaces/README.md
+http://localhost:3000/index/clientes/joyasmercury/interfaces/01-arquitectura-sitio-1080x1080.png
 ```

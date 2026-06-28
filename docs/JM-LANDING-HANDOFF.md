@@ -23,7 +23,7 @@ SERVIR.bat
 
 Landing: **http://localhost:3000/index/clientes/joyasmercury/**
 
-Maqueta diseño Inicio: **http://localhost:3000/index/clientes/JoyasMercury/interfaces/maqueta-diseno/index.html**
+Maqueta diseño Inicio: **http://localhost:3000/index/clientes/joyasmercury/interfaces/maqueta-diseno/index.html**
 
 ---
 
@@ -192,7 +192,7 @@ Pendiente inmediato:
 | Nude | `#D8BFB1` |
 | Gray | `#C4C4C4` |
 
-Logo + isotipo M en `index/clientes/JoyasMercury/identidad/`
+Logo + isotipo M en `index/clientes/joyasmercury/identidad/`
 
 ---
 

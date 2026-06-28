@@ -19,7 +19,7 @@ maqueta-diseno/
 ## Ver sin instalar
 
 ```
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/maqueta-diseno/index.html
+http://localhost:3000/index/clientes/joyasmercury/interfaces/maqueta-diseno/index.html
 ```
 
 (con `node scripts/organizacion-server.js`)
@@ -27,7 +27,7 @@ http://localhost:3000/index/clientes/JoyasMercury/interfaces/maqueta-diseno/inde
 ## Desarrollo con Vite
 
 ```bash
-cd index/clientes/JoyasMercury/interfaces/maqueta-diseno
+cd index/clientes/joyasmercury/interfaces/maqueta-diseno
 pnpm install   # o npm install
 pnpm dev
 ```

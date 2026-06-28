@@ -23,9 +23,9 @@ Wireframe Fase 2 con banner + contenido WooCommerce + footer E.
 ## URLs (copiar tal cual)
 
 ```
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-carrito/wireframe-carrito-landing.html
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-carrito/wireframe-carrito-landing.html?estado=vacio
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-carrito/banner-carrito-landing.html
+http://localhost:3000/index/clientes/joyasmercury/interfaces/mockups-carrito/wireframe-carrito-landing.html
+http://localhost:3000/index/clientes/joyasmercury/interfaces/mockups-carrito/wireframe-carrito-landing.html?estado=vacio
+http://localhost:3000/index/clientes/joyasmercury/interfaces/mockups-carrito/banner-carrito-landing.html
 ```
 
 Ficha JM: `http://localhost:3000/index/clientes/joyasmercury/`

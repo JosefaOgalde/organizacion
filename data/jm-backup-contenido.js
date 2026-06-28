@@ -285,8 +285,8 @@ window.jmAssetBase = (function jmDetectAssetBase() {
     return window.JM_ASSET_BASE.replace(/\/?$/, '/');
   }
   const m = (typeof location !== 'undefined' && location.pathname || '').match(/^(.*\/index\/clientes\/)[^/]+\/?/i);
-  if (m) return m[1] + 'JoyasMercury/';
-  return '/index/clientes/JoyasMercury/';
+  if (m) return m[1] + 'joyasmercury/';
+  return '/index/clientes/joyasmercury/';
 })();
 
 window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo, opts) {
@@ -425,12 +425,6 @@ window.JM_NUEVO_PROTOTIPO = {
       ]
     }
   ]
-};
-
-/** Ruta asset nuevo prototipo */
-window.jmNuevoPrototipoSrc = function jmNuevoPrototipoSrc(archivo) {
-  const file = String(archivo || '').replace(/^\/+/, '');
-  return `${window.jmAssetBase}${file}`;
 };
 
 /** HTML sección «Nuevo prototipo» */
@@ -606,7 +600,7 @@ function jmTituloLandingArchivo(archivo) {
 
 /** Escanea el listado HTML del directorio (npx serve) y detecta todos los PNG */
 window.jmCargarLandingsCarruselDesdeDirectorio = function jmCargarLandingsCarruselDesdeDirectorio() {
-  const base = window.jmAssetBase || '/index/clientes/JoyasMercury/';
+  const base = window.jmAssetBase || '/index/clientes/joyasmercury/';
   const dirUrl = base + 'interfaces/referencia-landings/?t=' + Date.now();
   return fetch(dirUrl, { cache: 'no-store' })
     .then((res) => (res.ok ? res.text() : ''))
@@ -637,7 +631,7 @@ window.jmActualizarLandingsCarrusel = function jmActualizarLandingsCarrusel() {
 
   return cargarDir.then((okDir) => {
     if (okDir) return true;
-    const base = window.jmAssetBase || '/index/clientes/JoyasMercury/';
+    const base = window.jmAssetBase || '/index/clientes/joyasmercury/';
     const url = base + 'interfaces/referencia-landings/carrusel.json?t=' + Date.now();
     return fetch(url, { cache: 'no-store' })
       .then((res) => (res.ok ? res.json() : null))
@@ -677,7 +671,7 @@ if (typeof window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION !== 'number') {
 }
 
 window.jmCargarLandingsCarruselMobileDesdeDirectorio = function jmCargarLandingsCarruselMobileDesdeDirectorio() {
-  const base = window.jmAssetBase || '/index/clientes/JoyasMercury/';
+  const base = window.jmAssetBase || '/index/clientes/joyasmercury/';
   const dirUrl = base + 'interfaces/referencia-landings-mobile/?t=' + Date.now();
   return fetch(dirUrl, { cache: 'no-store' })
     .then((res) => (res.ok ? res.text() : ''))
@@ -707,7 +701,7 @@ window.jmActualizarLandingsCarruselMobile = function jmActualizarLandingsCarruse
 
   return cargarDir.then((okDir) => {
     if (okDir) return true;
-    const base = window.jmAssetBase || '/index/clientes/JoyasMercury/';
+    const base = window.jmAssetBase || '/index/clientes/joyasmercury/';
     const url = base + 'interfaces/referencia-landings-mobile/carrusel.json?t=' + Date.now();
     return fetch(url, { cache: 'no-store' })
       .then((res) => (res.ok ? res.json() : null))
@@ -816,34 +810,46 @@ function jmHtmlMaquetaDisenoInicio() {
   </div>`;
 }
 
-/** Mockups navbar · solo desktop */
+/** Mockups navbar desktop + menú hamburguesa móvil */
 function jmHtmlNavbarMaqueta() {
   const carpeta = 'interfaces/mockups-navbar';
-  const archivo = 'navbar-jm-maqueta-desktop.png';
-  const titulo = 'Navbar · desktop';
-  const src = jmWireframeSrc(carpeta, archivo);
-  const maquetaUrl = (window.jmAssetBase || '') + 'interfaces/mockups-navbar/navbar-jm-maqueta.html?shot=desktop';
+  const archivoDesktop = 'navbar-jm-maqueta-desktop.png';
+  const archivoMenu = 'menu-hamburguesa-jm-maqueta-open.png';
+  const tituloDesktop = 'Navbar · desktop';
+  const tituloMenu = 'Menú hamburguesa · móvil';
+  const srcDesktop = jmWireframeSrc(carpeta, archivoDesktop);
+  const srcMenu = jmWireframeSrc(carpeta, archivoMenu);
+  const navbarUrl = (window.jmAssetBase || '') + 'interfaces/mockups-navbar/navbar-jm-maqueta.html?shot=desktop';
+  const menuUrl = (window.jmAssetBase || '') + 'interfaces/mockups-navbar/menu-hamburguesa-jm-maqueta.html?open=1';
 
-  return `<div class="jm-interfaces jm-interfaces--navbar-maqueta" tabindex="0" aria-label="Mockups navbar Joyas Mercury">
+  return `<div class="jm-interfaces jm-interfaces--navbar-maqueta" tabindex="0" aria-label="Mockups navegación Joyas Mercury">
     <div class="jm-interfaces__head">
-      <h4 class="jm-interfaces__titulo-seccion">Mockups navbar</h4>
-      <p class="jm-interfaces__intro">Maqueta <strong>desktop</strong> · identidad JM (gold, rosa, nude) · referencias Aurelia, SP y boutique.</p>
-      <div class="jm-interfaces__viewport-tabs jm-interfaces__viewport-tabs--solo" role="tablist" aria-label="Vista">
+      <h4 class="jm-interfaces__titulo-seccion">Navegación · desktop y móvil</h4>
+      <p class="jm-interfaces__intro">Navbar horizontal en desktop · drawer hamburguesa en móvil (&lt; 900px) · identidad JM.</p>
+      <div class="jm-interfaces__viewport-tabs" role="tablist" aria-label="Vista">
         <span class="jm-interfaces__viewport-tab is-active" role="tab" aria-selected="true">Desktop</span>
+        <span class="jm-interfaces__viewport-tab" role="tab" aria-selected="false">Móvil · drawer</span>
       </div>
       <p class="jm-interfaces__accion-maqueta">
-        <a href="${jmEscapeHtml(maquetaUrl)}" target="_blank" rel="noopener" class="jm-btn-maqueta">Visualizar maqueta interactiva</a>
+        <a href="${jmEscapeHtml(navbarUrl)}" target="_blank" rel="noopener" class="jm-btn-maqueta">Navbar desktop</a>
+        <a href="${jmEscapeHtml(menuUrl)}" target="_blank" rel="noopener" class="jm-btn-maqueta jm-btn-maqueta--ghost">Menú hamburguesa</a>
       </p>
-      <p class="jm-interfaces__hint-reemplazo jm-solo-vista">Captura de referencia. Abre la maqueta HTML para revisar el navbar en vivo.</p>
     </div>
-    <div class="jm-interfaces__visor jm-interfaces__visor--navbar">
-      <a href="${jmEscapeHtml(maquetaUrl)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Abrir maqueta interactiva">
-        <img class="jm-interfaces__visor-img" src="${jmEscapeHtml(src)}" alt="${jmEscapeHtml(titulo)}"${jmImgAttrs(carpeta, archivo, src)}>
-      </a>
-      <div class="jm-interfaces__visor-pie">
-        <div class="jm-interfaces__visor-meta">
-          <strong class="jm-interfaces__visor-caption">${jmEscapeHtml(titulo)}</strong>
-          <span class="jm-interfaces__visor-vista">Desktop · 1280px</span>
+    <div class="jm-interfaces__visor-grid jm-interfaces__visor-grid--2">
+      <div class="jm-interfaces__visor jm-interfaces__visor--navbar">
+        <a href="${jmEscapeHtml(navbarUrl)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Navbar desktop">
+          <img class="jm-interfaces__visor-img" src="${jmEscapeHtml(srcDesktop)}" alt="${jmEscapeHtml(tituloDesktop)}"${jmImgAttrs(carpeta, archivoDesktop, srcDesktop)}>
+        </a>
+        <div class="jm-interfaces__visor-pie">
+          <strong class="jm-interfaces__visor-caption">${jmEscapeHtml(tituloDesktop)}</strong>
+        </div>
+      </div>
+      <div class="jm-interfaces__visor jm-interfaces__visor--navbar">
+        <a href="${jmEscapeHtml(menuUrl)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Menú hamburguesa">
+          <img class="jm-interfaces__visor-img" src="${jmEscapeHtml(srcMenu)}" alt="${jmEscapeHtml(tituloMenu)}"${jmImgAttrs(carpeta, archivoMenu, srcMenu)}>
+        </a>
+        <div class="jm-interfaces__visor-pie">
+          <strong class="jm-interfaces__visor-caption">${jmEscapeHtml(tituloMenu)}</strong>
         </div>
       </div>
     </div>
@@ -1389,14 +1395,18 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
       }).join('');
     })();
   const intro = usarPrototipo
-    ? 'Prototipo del flujo (pasos 1–8), landings referencia, maqueta diseño Inicio y navbar desktop.'
+    ? 'Prototipo del flujo (pasos 1–8), landings referencia, maqueta diseño Inicio y navegación desktop/móvil.'
     : 'Recorre el estado actual del sitio con las flechas o clic izquierda/derecha sobre la imagen.';
+  const atajos = usarPrototipo
+    ? `<p class="ficha-wireframes__atajos"><a href="wireframes.html">Wireframes pantalla completa</a> · <a href="prototipo.html">Prototipo flujo actual</a></p>`
+    : '';
   return `<section id="ficha-wireframes-jm" class="ficha-seccion ficha-seccion--wireframes ${claseExtra}${usarPrototipo ? ' ficha-seccion--prototipo' : ''}">
     <div class="ficha-seccion__headline">
       <h3 class="ficha-seccion__titulo">Wireframes actuales</h3>
       <span class="ficha-seccion__estado">Prototipo · joyasmercury.cl</span>
     </div>
     <p class="ficha-wireframes__intro">${intro}</p>
+    ${atajos}
     ${cuerpo}
   </section>`;
 };

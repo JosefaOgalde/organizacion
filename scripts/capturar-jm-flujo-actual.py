@@ -4,7 +4,7 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "index/clientes/JoyasMercury/flujo-actual"
+OUT = ROOT / "index/clientes/joyasmercury/flujo-actual"
 
 CAPTURAS = [
     ("01-inicio-home.png", "https://joyasmercury.cl/", "networkidle"),

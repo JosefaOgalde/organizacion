@@ -6,7 +6,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "index/clientes/JoyasMercury/flujo-actual"
+OUT = ROOT / "index/clientes/joyasmercury/flujo-actual"
 
 PASOS = [
     ("01-inicio-home.png", "1 · Inicio", "Hero · Colecciones Esencial / Gold / Deluxe · barra inferior móvil"),

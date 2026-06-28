@@ -47,7 +47,7 @@ Así tienes copia en GitHub sin pagar nada.
 
 Carpeta:
 
-`index/clientes/JoyasMercury/interfaces/referencia-landings/`
+`index/clientes/joyasmercury/interfaces/referencia-landings/`
 
 Tras agregar o cambiar PNG:
 
