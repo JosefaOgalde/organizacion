@@ -12,4 +12,4 @@ window.JM_LANDINGS_CARRUSEL_MOBILE = [
   { carpeta: 'interfaces/referencia-landings-mobile', archivo: '07-productos-referencia-mobile.png', titulo: 'Productos' }
 ];
 
-window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION = 1;
+window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION = 2;

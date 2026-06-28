@@ -1,6 +1,20 @@
 # Landings referencia · MÓVIL (390px)
 
-Diagramación mobile de las **7 pantallas** del carrusel desktop:
+Capturas de referencia **tal cual** del mockup mobile del cliente (7 pantallas). Se usan en el carrusel unificado Desktop / Móvil de la landing.
+
+| Archivo | Pantalla |
+|---------|----------|
+| `01-inicio-referencia-mobile.png` | Inicio |
+| `02-esencial-referencia-mobile.png` | Esencial |
+| `03-gold-referencia-mobile.png` | Gold |
+| `04-deluxe-referencia-mobile.png` | Deluxe |
+| `05-carrito-referencia-mobile.png` | Carrito |
+| `06-ayuda-referencia-mobile.png` | Ayuda |
+| `07-productos-referencia-mobile.png` | Productos |
+
+## Origen wireframes (para regenerar)
+
+Si editas el HTML/CSS mobile, puedes volver a capturar desde:
 
 | Archivo | Pantalla | Wireframe fuente |
 |---------|----------|------------------|
