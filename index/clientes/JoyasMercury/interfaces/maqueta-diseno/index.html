@@ -13,107 +13,98 @@
   <p class="jm-dev-tag">Maqueta diseño · desktop 1280px</p>
 
   <header class="jm-header">
-    <div class="jm-header__accent" aria-hidden="true"></div>
-    <div class="jm-header__brand-row">
-      <a class="jm-header__brand" href="#" aria-label="Joyas Mercury — inicio">
-        <img src="../../identidad/isotipo-jm-gold.png" alt="Joyas Mercury" onerror="this.dataset.error='1'">
-        <div class="jm-header__brand-fallback" aria-hidden="true">
+    <div class="jm-topbar">
+      <div class="jm-topbar__social" aria-label="Redes sociales">
+        <span>f</span><span>ig</span><span>tk</span>
+      </div>
+      <a class="jm-topbar__logo" href="#" aria-label="Joyas Mercury — inicio">
+        <img src="../../identidad/isotipo-jm-gold.png" alt="Joyas Mercury"
+          onerror="this.dataset.error='1'">
+        <div class="jm-topbar__logo-fallback" aria-hidden="true">
           <svg viewBox="0 0 40 40" fill="none"><path d="M20 4l3 8h8l-6.5 5 2.5 8.5L20 20l-7 5.5 2.5-8.5L9 12h8L20 4z" fill="#ECC54A" stroke="#A97E23" stroke-width="1"/></svg>
         </div>
       </a>
+      <a class="jm-topbar__bag" href="#" aria-label="Mi carrito">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6l-1-3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+        <small>0</small>
+      </a>
     </div>
-    <nav class="jm-header__nav-row" aria-label="Navegación principal">
-      <ul class="jm-header__links">
-        <li><a href="#" class="is-active">Inicio</a></li>
-        <li><a href="#">Colecciones</a></li>
-      </ul>
+    <nav class="jm-nav" aria-label="Navegación principal">
+      <a href="#">Nosotros</a>
+      <a href="#">Mi Cuenta</a>
+      <a href="#">Mi Carrito</a>
+      <a href="#">Contacto</a>
     </nav>
   </header>
 
   <main>
     <section class="jm-hero" aria-label="Banner principal">
-      <div class="jm-hero__inner">
+      <div class="jm-hero__copy">
         <img class="jm-hero__logo" src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury"
           onerror="this.style.display='none'">
         <h1 class="jm-hero__title">JOYAS QUE TE HACEN BRILLAR</h1>
         <p class="jm-hero__script">todos los días ♡</p>
-        <p class="jm-hero__sub">Belleza, calidad y estilo para cada momento.</p>
+        <p class="jm-hero__sub">Belleza, calidad y estilo para cada momento</p>
       </div>
     </section>
 
     <div class="jm-trust" aria-label="Beneficios">
       <div class="jm-trust__item">
-        <span class="jm-trust__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M12 3l2.2 4.5 5 .7-3.6 3.5.85 5L12 14.8 7.55 16.7l.85-5L4.8 8.2l5-.7L12 3z"/></svg>
-        </span>
+        <span class="jm-trust__icon" aria-hidden="true">◆</span>
         <span>Joyas con baño de oro 18k</span>
       </div>
       <div class="jm-trust__item">
-        <span class="jm-trust__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg>
-        </span>
+        <span class="jm-trust__icon" aria-hidden="true">◎</span>
         <span>Calidad y durabilidad</span>
       </div>
       <div class="jm-trust__item">
-        <span class="jm-trust__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7V10z"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="17.5" cy="18" r="1.5"/></svg>
-        </span>
+        <span class="jm-trust__icon" aria-hidden="true">🚚</span>
         <span>Envíos a todo Chile</span>
       </div>
       <div class="jm-trust__item">
-        <span class="jm-trust__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 8.5-7 9-4-.5-7-4.5-7-9V7l7-4z"/></svg>
-        </span>
+        <span class="jm-trust__icon" aria-hidden="true">🛡</span>
         <span>Compra 100% segura</span>
       </div>
     </div>
 
     <section class="jm-section jm-section--floral" aria-labelledby="tit-colecciones">
-      <h2 class="jm-section__title" id="tit-colecciones">
-        <span class="jm-section__ornament" aria-hidden="true">✿</span>
-        COLECCIONES
-        <span class="jm-section__ornament" aria-hidden="true">✿</span>
-      </h2>
+      <h2 class="jm-section__title" id="tit-colecciones">COLECCIONES</h2>
       <div class="jm-collections">
-        <a class="jm-collection" href="#">
-          <div class="jm-collection__circle" style="background-image:url('../../flujo-actual/02-coleccion-esencial.png');background-position:center 35%;background-size:280%"></div>
+        <a class="jm-collection jm-collection--esencial" href="#">
+          <div class="jm-collection__circle" aria-hidden="true"></div>
           <p class="jm-collection__name">ESENCIAL</p>
         </a>
-        <a class="jm-collection" href="#">
-          <div class="jm-collection__circle" style="background-image:url('../../flujo-actual/03-coleccion-gold.png');background-position:center 35%;background-size:280%"></div>
+        <a class="jm-collection jm-collection--gold" href="#">
+          <div class="jm-collection__circle" aria-hidden="true"></div>
           <p class="jm-collection__name">GOLD</p>
         </a>
-        <a class="jm-collection" href="#">
-          <div class="jm-collection__circle" style="background-image:url('../../flujo-actual/04-coleccion-deluxe.png');background-position:center 35%;background-size:280%"></div>
+        <a class="jm-collection jm-collection--deluxe" href="#">
+          <div class="jm-collection__circle" aria-hidden="true"></div>
           <p class="jm-collection__name">DELUXE</p>
         </a>
       </div>
     </section>
 
-    <section class="jm-section jm-section--white" aria-labelledby="tit-novedades">
-      <h2 class="jm-section__title jm-section__title--gold" id="tit-novedades">
-        <span class="jm-section__ornament" aria-hidden="true">♛</span>
-        NOVEDADES
-        <span class="jm-section__ornament" aria-hidden="true">♛</span>
-      </h2>
+    <section class="jm-section jm-section--cream" aria-labelledby="tit-novedades">
+      <h2 class="jm-section__title jm-section__title--gold" id="tit-novedades">NOVEDADES</h2>
       <div class="jm-products">
         <article class="jm-product">
-          <div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial">Esencial</span></div>
+          <div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial">ESENCIAL</span></div>
           <p class="jm-product__name">Aros Corazón Rosa</p>
           <p class="jm-product__price">$12.990</p>
         </article>
         <article class="jm-product">
-          <div class="jm-product__img"><span class="jm-product__chip jm-product__chip--gold">Gold</span></div>
+          <div class="jm-product__img"><span class="jm-product__chip jm-product__chip--gold">GOLD</span></div>
           <p class="jm-product__name">Cadena Eslabón Dorado</p>
           <p class="jm-product__price">$18.990</p>
         </article>
         <article class="jm-product">
-          <div class="jm-product__img"><span class="jm-product__chip jm-product__chip--deluxe">Deluxe</span></div>
+          <div class="jm-product__img"><span class="jm-product__chip jm-product__chip--deluxe">DELUXE</span></div>
           <p class="jm-product__name">Anillo Solitario Premium</p>
           <p class="jm-product__price">$24.990</p>
         </article>
         <article class="jm-product">
-          <div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial">Esencial</span></div>
+          <div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial">ESENCIAL</span></div>
           <p class="jm-product__name">Pulsera Minimal</p>
           <p class="jm-product__price">$9.990</p>
         </article>
@@ -122,40 +113,36 @@
     </section>
 
     <section class="jm-section jm-section--floral" aria-labelledby="tit-ultimas">
-      <h2 class="jm-section__title" id="tit-ultimas">
-        <span class="jm-section__ornament" aria-hidden="true">✿</span>
-        ÚLTIMAS UNIDADES
-        <span class="jm-section__ornament" aria-hidden="true">✿</span>
-      </h2>
+      <h2 class="jm-section__title" id="tit-ultimas">ÚLTIMAS UNIDADES</h2>
       <div class="jm-products">
         <article class="jm-product">
           <div class="jm-product__img">
-            <span class="jm-product__chip jm-product__chip--gold">Gold</span>
-            <span class="jm-product__stock">Quedan 2</span>
+            <span class="jm-product__chip jm-product__chip--gold">GOLD</span>
+            <span class="jm-product__stock">QUEDAN 2</span>
           </div>
           <p class="jm-product__name">Conjunto Brillante</p>
           <p class="jm-product__price">$32.990</p>
         </article>
         <article class="jm-product">
           <div class="jm-product__img">
-            <span class="jm-product__chip jm-product__chip--deluxe">Deluxe</span>
-            <span class="jm-product__stock">Quedan 1</span>
+            <span class="jm-product__chip jm-product__chip--deluxe">DELUXE</span>
+            <span class="jm-product__stock">QUEDAN 1</span>
           </div>
           <p class="jm-product__name">Aros Perla Deluxe</p>
           <p class="jm-product__price">$19.990</p>
         </article>
         <article class="jm-product">
           <div class="jm-product__img">
-            <span class="jm-product__chip jm-product__chip--esencial">Esencial</span>
-            <span class="jm-product__stock">Quedan 3</span>
+            <span class="jm-product__chip jm-product__chip--esencial">ESENCIAL</span>
+            <span class="jm-product__stock">QUEDAN 3</span>
           </div>
           <p class="jm-product__name">Cadena Fina Esencial</p>
           <p class="jm-product__price">$11.990</p>
         </article>
         <article class="jm-product">
           <div class="jm-product__img">
-            <span class="jm-product__chip jm-product__chip--gold">Gold</span>
-            <span class="jm-product__stock">Última</span>
+            <span class="jm-product__chip jm-product__chip--gold">GOLD</span>
+            <span class="jm-product__stock">ÚLTIMA</span>
           </div>
           <p class="jm-product__name">Anillo Eternity Gold</p>
           <p class="jm-product__price">$22.990</p>
@@ -184,7 +171,7 @@
           <a href="#">Despachos</a>
         </div>
       </div>
-      <div class="jm-footer__contact">
+      <div class="jm-footer__wa-box">
         <p>Canal principal de atención</p>
         <a class="jm-footer__wa" href="#">WhatsApp</a>
         <div class="jm-footer__social" aria-label="Redes sociales">

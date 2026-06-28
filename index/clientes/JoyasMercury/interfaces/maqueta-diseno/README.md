@@ -32,10 +32,10 @@ pnpm install   # o npm install
 pnpm dev
 ```
 
-## Layout navbar
+## Layout navbar (referencia 01-inicio-referencia)
 
-- **Arriba:** isotipo centrado
-- **Abajo:** Inicio · Colecciones (alineados a la derecha)
+- **Topbar:** redes · isotipo · carrito (badge 0)
+- **Nav beige:** Nosotros · Mi Cuenta · Mi Carrito · Contacto
 
 ## Captura PNG
 

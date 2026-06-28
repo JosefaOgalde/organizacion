@@ -6,7 +6,7 @@ Replicar fielmente la captura de referencia del **Inicio desktop** para validaci
 
 ## Secciones (orden)
 
-1. Header — isotipo + nav Inicio/Colecciones
+1. Header — topbar (redes · isotipo · carrito) + nav Nosotros/Mi Cuenta/Mi Carrito/Contacto
 2. Hero — foto joyería + copy centrado
 3. Trust bar — 4 beneficios
 4. Colecciones — fondo floral, 3 círculos
