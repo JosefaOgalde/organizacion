@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe · Inicio Joyas Mercury</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #faf8f6;
+      --mauve: #6a4048;
+      --gold: #c9a227;
+      --line: #e8e0dc;
+      --carousel-h-mobile: 420px;
+      --carousel-h-desktop: 520px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Montserrat', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--mauve);
+    }
+
+    /* —— Header 2 filas —— */
+    .jm-header {
+      background: var(--cream);
+      border-bottom: 1px solid var(--line);
+    }
+    .jm-header__logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 1.25rem 0.65rem;
+    }
+    .jm-header__logo-row img {
+      height: 72px;
+      width: auto;
+      object-fit: contain;
+    }
+    .jm-header__nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.55rem 1.25rem 0.85rem;
+      gap: 1rem;
+    }
+    .jm-header__left {
+      display: flex;
+      align-items: center;
+      min-width: 2.5rem;
+    }
+    .jm-header__right {
+      display: flex;
+      align-items: center;
+      gap: 1.15rem;
+    }
+
+    /* Iconos vanguardistas — trazo fino */
+    .jm-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--mauve);
+      cursor: pointer;
+    }
+    .jm-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.35;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .jm-icon--bag svg { width: 20px; height: 22px; }
+
+    /* Búsqueda — solo desktop */
+    .jm-search {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      max-width: 420px;
+      border-bottom: 1px solid var(--mauve);
+      padding-bottom: 0.35rem;
+    }
+    .jm-search span {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .jm-search svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    /* —— Carrusel banner —— */
+    .jm-hero {
+      position: relative;
+      overflow: hidden;
+      height: var(--carousel-h-mobile);
+      background: #2a2220;
+    }
+    .jm-hero__track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.4s ease;
+    }
+    .jm-hero__slide {
+      flex: 0 0 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      background-size: cover;
+      background-position: center top;
+    }
+    .jm-hero__slide--1 {
+      background-image: linear-gradient(180deg, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.45) 100%),
+        url('../../flujo-actual/01-inicio-home.png');
+      background-color: #f5ece8;
+    }
+    .jm-hero__slide--2 {
+      background: linear-gradient(135deg, #fdf0f4 0%, #f5e6d8 50%, #ecc54a33 100%);
+    }
+    .jm-hero__slide--3 {
+      background: linear-gradient(160deg, #2a2220 0%, #5a4048 100%);
+    }
+    .jm-hero__copy {
+      text-align: center;
+      color: #fff;
+      max-width: 28rem;
+    }
+    .jm-hero__copy h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      font-weight: 600;
+      line-height: 1.15;
+      margin-bottom: 0.35rem;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.35);
+    }
+    .jm-hero__copy p {
+      font-size: 0.85rem;
+      opacity: 0.92;
+      letter-spacing: 0.02em;
+    }
+    .jm-hero__dots {
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.45rem;
+    }
+    .jm-hero__dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.45);
+      border: none;
+    }
+    .jm-hero__dot--on { background: #fff; }
+    .jm-hero__arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.35);
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    .jm-hero__arrow--prev { left: 0.75rem; }
+    .jm-hero__arrow--next { right: 0.75rem; }
+
+    .jm-wireframe-tag {
+      position: fixed;
+      bottom: 0.5rem;
+      right: 0.5rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #999;
+      background: rgba(255,255,255,0.85);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    @media (min-width: 900px) {
+      .jm-header__logo-row img { height: 96px; }
+      .jm-header__nav-row {
+        padding: 0.65rem 2.5rem 1rem;
+      }
+      .jm-header__left { flex: 1; gap: 0; }
+      .jm-icon--menu { display: none; }
+      .jm-search { display: flex; margin-left: 0; }
+      .jm-header__right { gap: 1.35rem; }
+      .jm-hero { height: var(--carousel-h-desktop); }
+    }
+
+    /* Modo captura — ocultar tag en screenshot si ?shot=1 */
+    body[data-shot="1"] .jm-wireframe-tag { display: none; }
+  </style>
+</head>
+<body>
+  <header class="jm-header">
+    <div class="jm-header__logo-row">
+      <img src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury — logotipo oficial manual de marca" width="280" height="88">
+    </div>
+    <div class="jm-header__nav-row">
+      <div class="jm-header__left">
+        <button type="button" class="jm-icon jm-icon--menu" aria-label="Menú">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <form class="jm-search" role="search" aria-label="Buscar productos">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+          <span>Buscar</span>
+        </form>
+      </div>
+      <div class="jm-header__right">
+        <button type="button" class="jm-icon jm-icon--search-mobile" aria-label="Buscar">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        </button>
+        <button type="button" class="jm-icon jm-icon--bag" aria-label="Mi carrito">
+          <svg viewBox="0 0 24 24">
+            <path d="M6 7h12l-1.2 11H7.2L6 7z"/>
+            <path d="M9 7V5a3 3 0 016 0v2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="jm-hero" aria-label="Banner principal carrusel">
+    <div class="jm-hero__track" id="hero-track">
+      <article class="jm-hero__slide jm-hero__slide--1">
+        <div class="jm-hero__copy">
+          <h2>Joyas que te hacen brillar todos los días</h2>
+          <p>Esencial · Gold · Deluxe</p>
+        </div>
+      </article>
+      <article class="jm-hero__slide jm-hero__slide--2">
+        <div class="jm-hero__copy" style="color:#6a4048">
+          <h2 style="text-shadow:none;color:#6a4048">Novedades de temporada</h2>
+          <p>Colecciones con filtros en la misma vista</p>
+        </div>
+      </article>
+      <article class="jm-hero__slide jm-hero__slide--3">
+        <div class="jm-hero__copy">
+          <h2>Últimas unidades</h2>
+          <p>Stock limitado · envíos a todo Chile</p>
+        </div>
+      </article>
+    </div>
+    <button type="button" class="jm-hero__arrow jm-hero__arrow--prev" id="hero-prev" aria-label="Anterior">‹</button>
+    <button type="button" class="jm-hero__arrow jm-hero__arrow--next" id="hero-next" aria-label="Siguiente">›</button>
+    <div class="jm-hero__dots" id="hero-dots">
+      <button type="button" class="jm-hero__dot jm-hero__dot--on" aria-label="Slide 1"></button>
+      <button type="button" class="jm-hero__dot" aria-label="Slide 2"></button>
+      <button type="button" class="jm-hero__dot" aria-label="Slide 3"></button>
+    </div>
+  </section>
+
+  <p class="jm-wireframe-tag">Wireframe Fase 2 · manual de marca JM</p>
+
+  <script>
+    (function () {
+      const mobile = window.matchMedia('(max-width: 899px)');
+      const searchMobile = document.querySelector('.jm-icon--search-mobile');
+      function syncSearchIcon() {
+        searchMobile.style.display = mobile.matches ? 'inline-flex' : 'none';
+      }
+      mobile.addEventListener('change', syncSearchIcon);
+      syncSearchIcon();
+
+      let idx = 0;
+      const track = document.getElementById('hero-track');
+      const dots = [...document.querySelectorAll('.jm-hero__dot')];
+      const total = dots.length;
+      function go(n) {
+        idx = (n + total) % total;
+        track.style.transform = `translateX(-${idx * 100}%)`;
+        dots.forEach((d, i) => d.classList.toggle('jm-hero__dot--on', i === idx));
+      }
+      document.getElementById('hero-prev').onclick = () => go(idx - 1);
+      document.getElementById('hero-next').onclick = () => go(idx + 1);
+      dots.forEach((d, i) => d.onclick = () => go(i));
+      if (new URLSearchParams(location.search).get('shot') === '1') {
+        document.body.dataset.shot = '1';
+      }
+    })();
+  </script>
+  <style>
+    @media (min-width: 900px) {
+      .jm-icon--search-mobile { display: none !important; }
+    }
+  </style>
+</body>
+</html>
