@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navbar · maqueta Joyas Mercury</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="navbar-jm-maqueta.css">
+</head>
+<body>
+  <div class="maqueta-page">
+    <header class="maqueta-page__head">
+      <h1>Navbar · Joyas Mercury</h1>
+      <p>Maqueta Fase 2 · identidad manual (#ECC54A · #C88F9C · #D8BFB1) · referencias Aurelia / SP / boutique</p>
+    </header>
+
+    <!-- DESKTOP -->
+    <section class="maqueta-block maqueta-block--desktop" aria-label="Navbar desktop">
+      <p class="maqueta-block__label">Desktop · 1280px</p>
+      <div class="maqueta-frame maqueta-frame--desktop">
+        <div class="jm-navbar-wrap">
+          <div class="jm-navbar-accent" aria-hidden="true"></div>
+          <div class="jm-topbar">
+            <div class="jm-topbar__social" aria-label="Redes sociales">
+              <a href="#" title="Facebook">f</a>
+              <a href="#" title="Instagram">ig</a>
+              <a href="#" title="TikTok">tk</a>
+            </div>
+            <button type="button" class="jm-navbar__icon-btn jm-navbar__icon-btn--cart" aria-label="Carrito">
+              <svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 11H7.2L6 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></svg>
+              <span class="jm-navbar__badge">0</span>
+            </button>
+          </div>
+
+          <nav class="jm-navbar jm-navbar--desktop" aria-label="Navegación principal">
+            <ul class="jm-navbar__links">
+              <li><a href="#" class="is-active">Inicio</a></li>
+              <li><a href="#">Colecciones</a></li>
+              <li><a href="#">Novedades</a></li>
+              <li><a href="#">Últimas unidades</a></li>
+            </ul>
+
+            <a class="jm-navbar__brand" href="#" aria-label="Joyas Mercury — inicio">
+              <img src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury"
+                onerror="this.dataset.error='1'">
+              <div class="jm-navbar__brand-fallback" aria-hidden="true">
+                <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 4l3 8h8l-6.5 5 2.5 8.5L20 20l-7 5.5 2.5-8.5L9 12h8L20 4z" fill="#ECC54A" stroke="#A97E23" stroke-width="1"/>
+                </svg>
+                <span>JOYAS MERCURY</span>
+              </div>
+            </a>
+
+            <div class="jm-navbar__actions">
+              <button type="button" class="jm-navbar__icon-btn" aria-label="Buscar">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+              </button>
+              <a href="#" class="jm-navbar__text-link">Mi Cuenta</a>
+              <button type="button" class="jm-navbar__icon-btn jm-navbar__icon-btn--cart" aria-label="Mi Carrito, 0 productos">
+                <svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 11H7.2L6 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></svg>
+                <span class="jm-navbar__badge">0</span>
+              </button>
+              <a href="#" class="jm-navbar__cta">Contacto</a>
+            </div>
+          </nav>
+        </div>
+        <div class="jm-preview-hero" aria-hidden="true">
+          <p>Joyas que te hacen brillar</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MÓVIL -->
+    <section class="maqueta-block maqueta-block--mobile-only" aria-label="Navbar móvil">
+      <p class="maqueta-block__label">Móvil · 390px</p>
+      <div class="maqueta-frame maqueta-frame--mobile">
+        <div class="jm-navbar-wrap">
+          <div class="jm-navbar-accent" aria-hidden="true"></div>
+
+          <nav class="jm-navbar jm-navbar--mobile" aria-label="Navegación móvil">
+            <div class="jm-navbar__left">
+              <button type="button" class="jm-hamburger" aria-label="Abrir menú">
+                <span></span><span></span>
+              </button>
+            </div>
+
+            <a class="jm-navbar__brand" href="#" aria-label="Joyas Mercury">
+              <img src="../../identidad/isotipo-jm-gold.png" alt="Joyas Mercury"
+                onerror="this.dataset.error='1'">
+              <div class="jm-navbar__brand-fallback" aria-hidden="true">
+                <svg viewBox="0 0 40 40" fill="none"><path d="M20 4l3 8h8l-6.5 5 2.5 8.5L20 20l-7 5.5 2.5-8.5L9 12h8L20 4z" fill="#ECC54A"/></svg>
+                <span>JM</span>
+              </div>
+            </a>
+
+            <div class="jm-navbar__actions">
+              <button type="button" class="jm-navbar__icon-btn" aria-label="Buscar">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+              </button>
+              <button type="button" class="jm-navbar__icon-btn jm-navbar__icon-btn--cart" aria-label="Carrito">
+                <svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 11H7.2L6 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></svg>
+                <span class="jm-navbar__badge">0</span>
+              </button>
+            </div>
+          </nav>
+
+          <ul class="jm-navbar__secondary">
+            <li><a href="#" class="is-active">Inicio</a></li>
+            <li><a href="#">Colecciones</a></li>
+            <li><a href="#">Carrito</a></li>
+            <li><a href="#">Cuenta</a></li>
+          </ul>
+        </div>
+        <div class="jm-preview-hero" aria-hidden="true">
+          <p>Inicio</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      const p = new URLSearchParams(location.search);
+      if (p.get('shot') === '1' || p.get('shot') === 'desktop' || p.get('shot') === 'mobile') {
+        document.body.dataset.shot = p.get('shot') === '1' ? 'desktop' : p.get('shot');
+      }
+    })();
+  </script>
+</body>
+</html>
