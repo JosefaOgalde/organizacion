@@ -378,6 +378,16 @@ window.JM_NUEVO_PROTOTIPO = {
       ]
     },
     {
+      id: 'producto',
+      titulo: 'Ficha producto · detalle',
+      descripcion: 'Vista al seleccionar un producto: galería, precio, cantidad, agregar al carrito, tabs descripción/cuidado y relacionados. Desde colección o inicio.',
+      wireframe: 'interfaces/mockups-producto/wireframe-producto-landing.html',
+      pantallas: [
+        { id: 'producto-desktop', vista: 'desktop', titulo: 'Ficha producto · desktop', archivo: 'interfaces/mockups-producto/jm-producto-landing-desktop.png' },
+        { id: 'producto-mobile', vista: 'mobile', titulo: 'Ficha producto · mobile', archivo: 'interfaces/mockups-producto/jm-producto-landing-mobile.png' }
+      ]
+    },
+    {
       id: 'footer-opciones',
       titulo: 'Footer · E (nuevo) · A · D',
       descripcion: 'E claro premium sin marco dorado (recomendado) · A editorial horizontal · D columnas + contacto.',

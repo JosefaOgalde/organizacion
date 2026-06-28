@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ficha producto · Joyas Mercury</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #faf8f6;
+      --mauve: #6a4048;
+      --gold: #ecc54a;
+      --gold-dark: #a97e23;
+      --rose: #c88f9c;
+      --line: #e8e0dc;
+      --bottom-nav-h: 62px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Montserrat', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--mauve);
+      padding-bottom: var(--bottom-nav-h);
+    }
+
+    .jm-header { background: var(--cream); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 40; }
+    .jm-header__logo-row { display: flex; justify-content: center; padding: 0.85rem 1.25rem 0.55rem; }
+    .jm-header__logo-row img { height: 68px; width: auto; }
+    .jm-header__nav-row { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 1.25rem 0.65rem; }
+    .jm-header__left, .jm-header__right { display: flex; align-items: center; gap: 1rem; }
+    .jm-icon { background: none; border: none; color: var(--mauve); cursor: pointer; display: inline-flex; text-decoration: none; }
+    .jm-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.35; }
+    .jm-search { display: none; align-items: center; gap: 0.5rem; flex: 1; max-width: 420px; border-bottom: 1px solid var(--mauve); padding-bottom: 0.35rem; }
+    .jm-search span { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+    .jm-header__menu-row {
+      display: none; justify-content: center; gap: 2rem; padding: 0.65rem 2rem 0.85rem;
+      border-top: 1px solid var(--line); font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .jm-header__menu-row a { color: var(--mauve); text-decoration: none; }
+    .jm-header__menu-row a.is-here { color: var(--gold-dark); border-bottom: 1px solid var(--gold-dark); }
+
+    .jm-crumb {
+      font-size: 0.65rem; color: #9a858c; padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--line); background: #fff;
+    }
+    .jm-crumb a { color: #9a858c; text-decoration: none; }
+
+    .jm-pdp {
+      max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem 2rem;
+    }
+    .jm-pdp__grid {
+      display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+    }
+
+    /* Galería */
+    .jm-pdp__gallery {}
+    .jm-pdp__main {
+      aspect-ratio: 1; background: linear-gradient(145deg, #f8f2ee, #ece4de);
+      border: 1px solid var(--line); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; margin-bottom: 0.65rem;
+    }
+    .jm-pdp__main::after {
+      content: ''; width: 48%; height: 48%;
+      border: 1.5px dashed rgba(106,64,72,0.22); border-radius: 50%;
+    }
+    .jm-pdp__chip {
+      position: absolute; top: 0.75rem; left: 0.75rem;
+      font-size: 0.6rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 0.25rem 0.5rem; border-radius: 3px;
+    }
+    .jm-pdp__chip--esencial { background: rgba(200,143,156,0.35); color: var(--mauve); }
+    .jm-pdp__chip--gold { background: rgba(236,197,74,0.45); color: #8a6a10; }
+    .jm-pdp__chip--deluxe { background: rgba(106,64,72,0.15); color: var(--mauve); }
+    .jm-pdp__thumbs {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;
+    }
+    .jm-pdp__thumb {
+      aspect-ratio: 1; border: 2px solid var(--line); border-radius: 4px;
+      background: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .jm-pdp__thumb::after {
+      content: ''; width: 50%; height: 50%;
+      border: 1px dashed rgba(106,64,72,0.15); border-radius: 50%;
+    }
+    .jm-pdp__thumb.is-active { border-color: var(--gold-dark); }
+
+    /* Info producto */
+    .jm-pdp__info {}
+    .jm-pdp__cat {
+      font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gold-dark); margin-bottom: 0.35rem;
+    }
+    .jm-pdp__title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 600;
+      line-height: 1.15; margin-bottom: 0.5rem;
+    }
+    .jm-pdp__price {
+      font-size: 1.35rem; font-weight: 600; color: var(--gold-dark);
+      margin-bottom: 0.75rem;
+    }
+    .jm-pdp__price small {
+      font-size: 0.72rem; font-weight: 400; color: #9a858c; text-decoration: line-through;
+      margin-left: 0.5rem;
+    }
+    .jm-pdp__excerpt {
+      font-size: 0.78rem; line-height: 1.55; color: #6a5a60;
+      margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line);
+    }
+    .jm-pdp__meta {
+      display: grid; gap: 0.35rem; margin-bottom: 1rem;
+      font-size: 0.68rem; color: #8a7078;
+    }
+    .jm-pdp__meta span strong { color: var(--mauve); font-weight: 600; }
+
+    .jm-pdp__qty-row {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .jm-pdp__qty {
+      display: flex; align-items: center; border: 1px solid var(--line);
+      border-radius: 4px; background: #fff;
+    }
+    .jm-pdp__qty button {
+      width: 36px; height: 36px; border: none; background: none;
+      font-size: 1rem; color: var(--mauve); cursor: pointer;
+    }
+    .jm-pdp__qty input {
+      width: 40px; text-align: center; border: none; border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line); font-size: 0.78rem; height: 36px;
+    }
+    .jm-pdp__add {
+      flex: 1; min-width: 160px;
+      background: var(--mauve); color: #fff; border: none;
+      padding: 0.75rem 1.25rem; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase; border-radius: 4px;
+      cursor: pointer;
+    }
+    .jm-pdp__wa {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      width: 100%; background: #25d366; color: #fff; border: none;
+      padding: 0.65rem 1rem; font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.04em; text-transform: uppercase; border-radius: 4px;
+      text-decoration: none; margin-bottom: 1rem;
+    }
+    .jm-pdp__trust {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+      font-size: 0.62rem; color: #8a7078;
+    }
+    .jm-pdp__trust div {
+      padding: 0.5rem; background: #fff; border: 1px solid var(--line);
+      border-radius: 4px; text-align: center;
+    }
+
+    /* Tabs detalle */
+    .jm-pdp__tabs {
+      margin-top: 2rem; border-top: 1px solid var(--line); padding-top: 1.5rem;
+    }
+    .jm-pdp__tab-nav {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;
+    }
+    .jm-pdp__tab-nav button {
+      padding: 0.45rem 0.85rem; border: 1px solid var(--line); background: #fff;
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em;
+      text-transform: uppercase; color: var(--mauve); border-radius: 4px; cursor: pointer;
+    }
+    .jm-pdp__tab-nav button.is-active {
+      border-color: var(--gold-dark); color: var(--gold-dark);
+      background: rgba(236,197,74,0.12);
+    }
+    .jm-pdp__tab-panel {
+      background: #fff; border: 1px solid var(--line); border-radius: 6px;
+      padding: 1.25rem; font-size: 0.75rem; line-height: 1.6; color: #5a4a50;
+    }
+    .jm-pdp__tab-panel h3 {
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--gold-dark); margin: 0.85rem 0 0.4rem;
+    }
+    .jm-pdp__tab-panel h3:first-child { margin-top: 0; }
+    .jm-pdp__tab-panel ul { padding-left: 1.1rem; margin-bottom: 0.35rem; }
+
+    /* Relacionados */
+    .jm-pdp__related {
+      max-width: 1100px; margin: 0 auto; padding: 0 1.25rem 2.5rem;
+    }
+    .jm-pdp__related-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.25rem; text-align: center; color: var(--rose);
+      margin-bottom: 1.25rem;
+    }
+    .jm-products { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .jm-product {
+      background: #fff; border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+      text-decoration: none; color: inherit;
+    }
+    .jm-product__img {
+      aspect-ratio: 1; background: linear-gradient(145deg, #f8f2ee, #ece4de);
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .jm-product__img::after {
+      content: ''; width: 42%; height: 42%;
+      border: 1.5px dashed rgba(106,64,72,0.2); border-radius: 50%;
+    }
+    .jm-product__chip {
+      position: absolute; top: 0.5rem; left: 0.5rem;
+      font-size: 0.58rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 0.2rem 0.45rem; border-radius: 3px;
+    }
+    .jm-product__chip--esencial { background: rgba(200,143,156,0.35); color: var(--mauve); }
+    .jm-product__body { padding: 0.65rem 0.7rem 0.75rem; }
+    .jm-product__name { font-size: 0.72rem; font-weight: 500; line-height: 1.35; margin-bottom: 0.25rem; }
+    .jm-product__price { font-size: 0.78rem; font-weight: 600; color: var(--gold-dark); }
+
+    /* Footer E */
+    .ft-e {
+      background: var(--cream); color: var(--mauve);
+      border-top: 3px solid var(--gold); padding: 2rem 1.25rem 0;
+    }
+    .ft-e a { color: var(--mauve); text-decoration: none; }
+    .ft-e__inner { text-align: center; max-width: 1000px; margin: 0 auto; }
+    .ft-e__logo { height: 48px; margin: 0 auto 1rem; display: block; }
+    .ft-e__nav { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; max-width: 280px; margin: 0 auto 1rem; text-align: left; font-size: 0.72rem; }
+    .ft-e__legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+    .ft-e__legal a { font-size: 0.65rem; color: #8a7078; }
+    .ft-e__bottom { background: #fff; border-top: 1px solid var(--line); padding: 0.85rem 1.25rem; text-align: center; }
+    .ft-e__copy { font-size: 0.62rem; color: #9a858c; }
+
+    .jm-wa-fab {
+      position: fixed; bottom: calc(var(--bottom-nav-h) + 0.75rem); right: 0.85rem;
+      width: 52px; height: 52px; border-radius: 50%; background: #25d366; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.22); z-index: 50; text-decoration: none;
+    }
+    .jm-wa-fab svg { width: 28px; height: 28px; fill: currentColor; }
+
+    .jm-bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-h);
+      background: #fff; border-top: 1px solid var(--line);
+      display: grid; grid-template-columns: repeat(4, 1fr); z-index: 45;
+    }
+    .jm-bottom-nav a {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0.2rem; font-size: 0.58rem; font-weight: 600; text-transform: uppercase;
+      color: #9a858c; text-decoration: none;
+    }
+
+    .jm-wireframe-switch {
+      position: fixed; top: 0.5rem; left: 0.5rem; z-index: 60;
+      background: rgba(255,255,255,0.95); border: 1px solid var(--line);
+      border-radius: 6px; padding: 0.4rem 0.65rem; font-size: 0.62rem;
+    }
+    .jm-wireframe-switch a { color: var(--gold-dark); }
+
+    @media (min-width: 900px) {
+      body { padding-bottom: 0; }
+      .jm-header__menu-row { display: flex; }
+      .jm-search { display: flex; }
+      .jm-bottom-nav { display: none; }
+      .jm-pdp__grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+      .jm-products { grid-template-columns: repeat(4, 1fr); }
+      .jm-pdp__add { flex: 0 1 auto; min-width: 200px; }
+      .jm-pdp__wa { width: auto; display: inline-flex; }
+    }
+
+    body[data-shot="1"] .jm-wireframe-switch,
+    body[data-shot="1"] .jm-wa-fab,
+    body[data-shot="1"] .jm-bottom-nav { display: none !important; }
+    body[data-shot="1"] { padding-bottom: 0; }
+  </style>
+</head>
+<body>
+  <header class="jm-header">
+    <div class="jm-header__logo-row">
+      <a href="../mockups-inicio/wireframe-inicio.html"><img src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury"></a>
+    </div>
+    <div class="jm-header__nav-row">
+      <div class="jm-header__left">
+        <button type="button" class="jm-icon" aria-label="Menú"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+        <form class="jm-search" role="search"><span>Buscar</span></form>
+      </div>
+      <div class="jm-header__right">
+        <button type="button" class="jm-icon" aria-label="Buscar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+        <a class="jm-icon" href="../mockups-carrito/wireframe-carrito-landing.html" aria-label="Mi Carrito"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 11H7.2L6 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></svg></a>
+      </div>
+    </div>
+    <nav class="jm-header__menu-row">
+      <a href="../mockups-inicio/wireframe-inicio.html">Inicio</a>
+      <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">Colecciones</a>
+      <a href="#">Historias que Brillan</a>
+      <a href="#">Mi Cuenta</a>
+      <a href="#">Contacto</a>
+      <a href="../mockups-carrito/wireframe-carrito-landing.html">Mi Carrito</a>
+    </nav>
+  </header>
+
+  <p class="jm-crumb">
+    <a href="../mockups-inicio/wireframe-inicio.html">Inicio</a> ›
+    <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial" id="crumb-col-link">Esencial</a> ›
+    <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial&filtro=circulos" id="crumb-cat">Aros</a> ›
+    <span id="crumb-product">Aros Corazón Rosa</span>
+  </p>
+
+  <main class="jm-pdp">
+    <div class="jm-pdp__grid">
+      <div class="jm-pdp__gallery">
+        <div class="jm-pdp__main">
+          <span class="jm-pdp__chip jm-pdp__chip--esencial" id="pdp-chip">Esencial</span>
+        </div>
+        <div class="jm-pdp__thumbs">
+          <div class="jm-pdp__thumb is-active"></div>
+          <div class="jm-pdp__thumb"></div>
+          <div class="jm-pdp__thumb"></div>
+          <div class="jm-pdp__thumb"></div>
+        </div>
+      </div>
+
+      <div class="jm-pdp__info">
+        <p class="jm-pdp__cat" id="pdp-cat">Aros · Colección Esencial</p>
+        <h1 class="jm-pdp__title" id="pdp-title">Aros Corazón Rosa</h1>
+        <p class="jm-pdp__price" id="pdp-price">$12.990</p>
+        <p class="jm-pdp__excerpt" id="pdp-excerpt">
+          Aros tipo argolla con detalle corazón en tono rosa. Baño de oro 18k · perfectos para uso diario y combinar con otras piezas de la línea Esencial.
+        </p>
+        <div class="jm-pdp__meta">
+          <span><strong>SKU:</strong> JM-AR-001</span>
+          <span><strong>Material:</strong> Baño de oro 18k</span>
+          <span><strong>Medida:</strong> 1,2 cm diámetro</span>
+          <span><strong>Stock:</strong> Disponible</span>
+        </div>
+        <div class="jm-pdp__qty-row">
+          <div class="jm-pdp__qty">
+            <button type="button" aria-label="Menos">−</button>
+            <input type="text" value="1" aria-label="Cantidad" readonly>
+            <button type="button" aria-label="Más">+</button>
+          </div>
+          <button type="button" class="jm-pdp__add">Agregar al carrito</button>
+        </div>
+        <a class="jm-pdp__wa" href="#">Consultar por WhatsApp</a>
+        <div class="jm-pdp__trust">
+          <div>Envío a todo Chile</div>
+          <div>Garantía de fábrica</div>
+          <div>Compra segura</div>
+          <div>Cuidado incluido</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="jm-pdp__tabs">
+      <div class="jm-pdp__tab-nav" role="tablist">
+        <button type="button" class="is-active">Descripción</button>
+        <button type="button">Detalles</button>
+        <button type="button">Cuidado</button>
+      </div>
+      <div class="jm-pdp__tab-panel">
+        <h3>Descripción</h3>
+        <p id="pdp-desc">Diseño minimal con corazón rosa en el centro. Ideales para regalo o uso personal. Incluyen empaque de marca listo para obsequiar.</p>
+        <h3>Ideal para</h3>
+        <ul>
+          <li>Uso diario y ocasiones especiales</li>
+          <li>Combinar con cadenas y anillos Esencial</li>
+          <li>Regalo con empaque incluido</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <section class="jm-pdp__related" aria-labelledby="rel-title">
+    <h2 class="jm-pdp__related-title" id="rel-title">También te puede gustar</h2>
+    <div class="jm-products">
+      <a class="jm-product" href="wireframe-producto-landing.html?coleccion=esencial&producto=cadena-fina">
+        <div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial">Esencial</span></div>
+        <div class="jm-product__body"><p class="jm-product__name">Cadena Fina Esencial</p><p class="jm-product__price">$11.990</p></div>
+      </a>
+      <a class="jm-product" href="wireframe-producto-landing.html?coleccion=esencial&producto=anillo-minimal">
+        <div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial">Esencial</span></div>
+        <div class="jm-product__body"><p class="jm-product__name">Anillo Minimal</p><p class="jm-product__price">$9.990</p></div>
+      </a>
+      <a class="jm-product" href="wireframe-producto-landing.html?coleccion=esencial&producto=aros-perla">
+        <div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial">Esencial</span></div>
+        <div class="jm-product__body"><p class="jm-product__name">Aros Perla Mini</p><p class="jm-product__price">$8.990</p></div>
+      </a>
+      <a class="jm-product" href="wireframe-producto-landing.html?coleccion=esencial&producto=conjunto-brillo">
+        <div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial">Esencial</span></div>
+        <div class="jm-product__body"><p class="jm-product__name">Conjunto Brillo</p><p class="jm-product__price">$24.990</p></div>
+      </a>
+    </div>
+  </section>
+
+  <footer class="ft-e">
+    <div class="ft-e__inner">
+      <img class="ft-e__logo" src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury">
+      <nav class="ft-e__nav">
+        <a href="#">Nosotros</a><a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">Esencial</a>
+        <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=gold">Gold</a>
+        <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=deluxe">Deluxe</a>
+        <a href="#">Mi Cuenta</a><a href="../mockups-ayuda/wireframe-ayuda-landing.html">Ayuda</a>
+      </nav>
+      <div class="ft-e__legal">
+        <a href="../mockups-ayuda/wireframe-ayuda-landing.html#envio">Despachos</a>
+        <a href="../mockups-ayuda/wireframe-ayuda-landing.html#cambios">Cambios</a>
+        <a href="../mockups-ayuda/wireframe-ayuda-landing.html#cuidado">Cuidado</a>
+      </div>
+    </div>
+    <div class="ft-e__bottom"><p class="ft-e__copy">Derechos reservados © 2026 joyasmercury.cl</p></div>
+  </footer>
+
+  <a class="jm-wa-fab" href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+
+  <nav class="jm-bottom-nav">
+    <a href="../mockups-inicio/wireframe-inicio.html">Inicio</a>
+    <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">Tienda</a>
+    <a href="../mockups-carrito/wireframe-carrito-landing.html">Carrito</a>
+    <a href="#">Cuenta</a>
+  </nav>
+
+  <div class="jm-wireframe-switch">
+    <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">← Colección</a>
+    · <a href="?coleccion=esencial&producto=aros-corazon">Esencial</a>
+    · <a href="?coleccion=gold&producto=anillo-eternity">Gold</a>
+    · <a href="?coleccion=deluxe&producto=aros-perla">Deluxe</a>
+  </div>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      if (params.get('shot') === '1') document.body.dataset.shot = '1';
+
+      var catalog = {
+        esencial: {
+          col: 'Esencial', colLink: '?coleccion=esencial',
+          products: {
+            'aros-corazon': { cat: 'Aros', name: 'Aros Corazón Rosa', price: '$12.990', chip: 'esencial',
+              excerpt: 'Aros tipo argolla con detalle corazón en tono rosa. Baño de oro 18k · perfectos para uso diario.',
+              desc: 'Diseño minimal con corazón rosa en el centro. Ideales para regalo o uso personal.' },
+            'cadena-fina': { cat: 'Cadenas', name: 'Cadena Fina Esencial', price: '$11.990', chip: 'esencial',
+              excerpt: 'Cadena fina de eslabones delicados. Baño de oro 18k · 45 cm de largo.',
+              desc: 'Cadena versátil para usar sola o con dijes de la colección.' },
+            'anillo-minimal': { cat: 'Anillos', name: 'Anillo Minimal', price: '$9.990', chip: 'esencial',
+              excerpt: 'Anillo fino con acabado dorado. Tallas 10–16 disponibles.',
+              desc: 'Pieza básica para combinar con otras joyas de la línea.' }
+          }
+        },
+        gold: {
+          col: 'Gold', colLink: '?coleccion=gold',
+          products: {
+            'anillo-eternity': { cat: 'Anillos', name: 'Anillo Eternity Gold', price: '$22.990', chip: 'gold',
+              excerpt: 'Anillo eternity con circonitas. Baño de oro intenso · mayor resistencia.',
+              desc: 'Diseño clásico con mayor duración para uso frecuente.' }
+          }
+        },
+        deluxe: {
+          col: 'Deluxe', colLink: '?coleccion=deluxe',
+          products: {
+            'aros-perla': { cat: 'Aros', name: 'Aros Perla Deluxe', price: '$19.990', chip: 'deluxe',
+              excerpt: 'Aros con perla cultivada y baño premium. Diseño exclusivo.',
+              desc: 'Pieza statement de la línea premium Joyas Mercury.' }
+          }
+        }
+      };
+
+      var colKey = params.get('coleccion') || 'esencial';
+      var prodKey = params.get('producto') || 'aros-corazon';
+      var col = catalog[colKey] || catalog.esencial;
+      var prod = (col.products && col.products[prodKey]) || col.products[Object.keys(col.products)[0]];
+
+      document.getElementById('crumb-col-link').textContent = col.col;
+      document.getElementById('crumb-col-link').href = '../mockups-coleccion/wireframe-coleccion.html' + col.colLink;
+      document.getElementById('crumb-cat').textContent = prod.cat;
+      document.getElementById('crumb-product').textContent = prod.name;
+      document.getElementById('pdp-cat').textContent = prod.cat + ' · Colección ' + col.col;
+      document.getElementById('pdp-title').textContent = prod.name;
+      document.getElementById('pdp-price').textContent = prod.price;
+      document.getElementById('pdp-excerpt').textContent = prod.excerpt;
+      document.getElementById('pdp-desc').textContent = prod.desc;
+      var chip = document.getElementById('pdp-chip');
+      chip.textContent = col.col;
+      chip.className = 'jm-pdp__chip jm-pdp__chip--' + prod.chip;
+    })();
+  </script>
+</body>
+</html>

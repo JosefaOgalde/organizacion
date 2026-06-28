@@ -250,6 +250,7 @@
     .jm-products { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
     .jm-product {
       background: #fff; border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+      cursor: pointer;
     }
     .jm-product__img {
       aspect-ratio: 1; background: linear-gradient(145deg, #f8f2ee, #ece4de);
@@ -623,6 +624,22 @@
       document.querySelectorAll('[data-cat]').forEach(function (btn) {
         btn.addEventListener('click', function () { filterCat(btn.dataset.cat); });
       });
+
+      var PROD_SLUG = {
+        'Aros Corazón Rosa': 'aros-corazon',
+        'Cadena Fina Esencial': 'cadena-fina',
+        'Anillo Minimal': 'anillo-minimal',
+        'Aros Perla Mini': 'aros-perla',
+        'Conjunto Brillo': 'conjunto-brillo'
+      };
+      document.querySelectorAll('.jm-product').forEach(function (p) {
+        p.addEventListener('click', function () {
+          var nameEl = p.querySelector('.jm-product__name');
+          var slug = PROD_SLUG[nameEl && nameEl.textContent.trim()] || 'aros-corazon';
+          location.href = '../mockups-producto/wireframe-producto-landing.html?coleccion=' + col + '&producto=' + slug;
+        });
+      });
+
       filterCat(cat);
     })();
   </script>
