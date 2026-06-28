@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "items": [
     { "carpeta": "interfaces/referencia-landings", "archivo": "01-inicio-referencia.png", "titulo": "Inicio" },
     { "carpeta": "interfaces/referencia-landings", "archivo": "02-esencial-referencia.png", "titulo": "Esencial" },

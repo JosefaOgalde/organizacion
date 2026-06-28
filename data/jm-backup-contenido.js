@@ -577,24 +577,83 @@ function jmLandingCarruselSrc(item) {
   return '';
 }
 
-/** Carga carrusel.json (todos los PNG de referencia-landings/) antes de renderizar */
-window.jmCargarLandingsCarruselDesdeJson = function jmCargarLandingsCarruselDesdeJson() {
+function jmTituloLandingArchivo(archivo) {
+  const lower = String(archivo || '').toLowerCase();
+  const map = [
+    ['inicio', 'Inicio'],
+    ['esencial', 'Esencial'],
+    ['gold', 'Gold'],
+    ['deluxe', 'Deluxe'],
+    ['carrito', 'Carrito'],
+    ['ayuda', 'Ayuda'],
+    ['producto', 'Productos']
+  ];
+  for (const [clave, titulo] of map) {
+    if (lower.includes(clave)) return titulo;
+  }
+  return String(archivo || '')
+    .replace(/\.png$/i, '')
+    .replace(/^\d+[-_]/, '')
+    .replace(/-referencia/gi, '')
+    .replace(/[-_]/g, ' ')
+    .trim() || archivo;
+}
+
+/** Escanea el listado HTML del directorio (npx serve) y detecta todos los PNG */
+window.jmCargarLandingsCarruselDesdeDirectorio = function jmCargarLandingsCarruselDesdeDirectorio() {
   const base = window.jmAssetBase || '/index/clientes/JoyasMercury/';
-  const url = base + 'interfaces/referencia-landings/carrusel.json?t=' + Date.now();
-  return fetch(url, { cache: 'no-store' })
-    .then((res) => (res.ok ? res.json() : null))
-    .then((data) => {
-      if (!data || !Array.isArray(data.items) || !data.items.length) return false;
-      window.JM_LANDINGS_CARRUSEL = data.items;
-      if (typeof data.version === 'number') {
-        window.JM_LANDINGS_CARRUSEL_VERSION = data.version;
-      }
+  const dirUrl = base + 'interfaces/referencia-landings/?t=' + Date.now();
+  return fetch(dirUrl, { cache: 'no-store' })
+    .then((res) => (res.ok ? res.text() : ''))
+    .then((html) => {
+      if (!html || !/\.png/i.test(html)) return false;
+      const pngs = [...new Set(
+        [...html.matchAll(/href="([^"?]+\.png)"/gi)]
+          .map((m) => decodeURIComponent(m[1].split('/').pop() || ''))
+          .filter((name) => name && !name.includes('..'))
+      )].sort();
+      if (!pngs.length) return false;
+      window.JM_LANDINGS_CARRUSEL = pngs.map((archivo) => ({
+        carpeta: 'interfaces/referencia-landings',
+        archivo,
+        titulo: jmTituloLandingArchivo(archivo)
+      }));
+      window.JM_LANDINGS_CARRUSEL_VERSION = (window.JM_LANDINGS_CARRUSEL_VERSION || 0) + 1;
       return true;
     })
     .catch(() => false);
 };
 
-window.jmLandingsCarruselReady = window.jmCargarLandingsCarruselDesdeJson();
+/** Actualiza carrusel: 1) escanea carpeta PNG  2) carrusel.json  3) manifest.js */
+window.jmActualizarLandingsCarrusel = function jmActualizarLandingsCarrusel() {
+  const cargarDir = typeof window.jmCargarLandingsCarruselDesdeDirectorio === 'function'
+    ? window.jmCargarLandingsCarruselDesdeDirectorio()
+    : Promise.resolve(false);
+
+  return cargarDir.then((okDir) => {
+    if (okDir) return true;
+    const base = window.jmAssetBase || '/index/clientes/JoyasMercury/';
+    const url = base + 'interfaces/referencia-landings/carrusel.json?t=' + Date.now();
+    return fetch(url, { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.items) && data.items.length) {
+          window.JM_LANDINGS_CARRUSEL = data.items;
+          if (typeof data.version === 'number') {
+            window.JM_LANDINGS_CARRUSEL_VERSION = data.version;
+          }
+          return true;
+        }
+        return !!(window.JM_LANDINGS_CARRUSEL && window.JM_LANDINGS_CARRUSEL.length);
+      })
+      .catch(() => !!(window.JM_LANDINGS_CARRUSEL && window.JM_LANDINGS_CARRUSEL.length));
+  });
+};
+
+/** @deprecated usar jmActualizarLandingsCarrusel */
+window.jmCargarLandingsCarruselDesdeJson = window.jmActualizarLandingsCarrusel;
+
+window.jmLandingsCarruselReady = window.jmActualizarLandingsCarrusel();
 
 /** HTML carrusel landings referencia (manifiesto en referencia-landings/carrusel.manifest.js) */
 function jmHtmlLandingsCarrusel() {
