@@ -1,6 +1,96 @@
 /* Landing Joyas Mercury — portal del cliente (no modal) */
 
-.jm-landing {
+.jm-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+}
+
+.jm-btn--primary {
+  background: var(--jm-text);
+  border-color: var(--jm-text);
+  color: #fff;
+}
+
+.jm-ficha-page {
+  background: #3d3d3d;
+  min-height: 100vh;
+}
+
+.portal-main--ficha {
+  max-width: 980px;
+  padding-top: 0.75rem;
+}
+
+.jm-ficha-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+  color: #fff;
+}
+
+.jm-ficha-top__tipo {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.9;
+}
+
+.jm-ficha-top .jm-landing__toolbar {
+  margin-left: auto;
+}
+
+.jm-ficha-doc {
+  background: #fff;
+  border-radius: var(--jm-radius);
+  overflow: hidden;
+  box-shadow: var(--jm-shadow);
+}
+
+.jm-ficha-doc .ficha-doc__titulo {
+  margin: 0.25rem 0;
+  font-size: 1.65rem;
+}
+
+.jm-ficha-doc .ficha-seccion--wireframes {
+  margin: 0;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+
+.jm-ficha-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.15rem;
+  background: #fafafa;
+  border-top: 1px solid #eee;
+  font-size: 0.88rem;
+  color: #666;
+}
+
+.jm-ficha-pie__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.jm-ficha-pie__fecha {
+  font-size: 0.82rem;
+  color: #888;
+}
+
+.jm-landing--ficha .jm-block {
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+  border-top: 1px solid #eee;
+}
   --jm-border: #e8b8c8;
   --jm-bg: #fdf0f4;
   --jm-text: #9a5a6e;

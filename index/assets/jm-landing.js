@@ -5,7 +5,8 @@
   if (!root) return;
 
   const colores = { border: '#e8b8c8', bg: '#fdf0f4', text: '#9a5a6e' };
-  const prototipoUrl = '../../prototipo-joyas-mercury.html';
+  const AGENTE_JM = { emoji: '💎', nombre: 'Agente Joyas Mercury' };
+  const SKILL_JM = { nombre: 'Dev WooCommerce JM' };
 
   let datos = null;
   let landing = null;
@@ -150,6 +151,8 @@
 
   function guardar() {
     try {
+      const cli = datos.clientes.find((c) => c.id === CLI_ID);
+      if (cli?.ficha) cli.ficha.actualizado = new Date().toISOString();
       localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
       toast('Cambios guardados');
     } catch (e) {
@@ -254,68 +257,97 @@
       </div>`;
   }
 
+  function prototipoEmbebidoHtml() {
+    if (typeof window.jmHtmlWireframes !== 'function') return '';
+    return window.jmHtmlWireframes({ interactivo: true, objetivoMini: false, claseExtra: 'ficha-seccion--portal' });
+  }
+
+  function fechaGuardadoTexto(cli) {
+    const raw = cli.ficha?.actualizado;
+    if (!raw) return '';
+    const d = new Date(raw.includes('T') ? raw : raw + 'T12:00:00');
+    if (Number.isNaN(d.getTime())) return '';
+    return 'Guardada · ' + d.toLocaleString('es-CL', {
+      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+  }
+
   function render() {
     const cli = cargarDatos();
+    const wireframes = prototipoEmbebidoHtml();
+    const guardadoTxt = fechaGuardadoTexto(cli);
     root.innerHTML = `
-      <div class="jm-landing${modoEdicion ? ' jm-landing--edicion' : ''}" style="--jm-border:${colores.border};--jm-bg:${colores.bg};--jm-text:${colores.text}">
-        <header class="jm-landing__hero">
-          <div class="jm-landing__hero-top">
-            <div>
-              <span class="jm-landing__badge">Landing cliente</span>
-              <h1>${escapeHtml(cli.nombre)}</h1>
-              <p class="jm-landing__meta">JM · ${escapeHtml(cli.tipo || 'Freelance')} · Fase 2 joyasmercury.cl · @joyas-mercury</p>
-            </div>
-            <div class="jm-landing__toolbar">
-              <button type="button" class="jm-btn${modoEdicion ? ' jm-btn--active' : ''}" id="jm-btn-editar" title="Editar identidad, objetivos y tareas">
-                ${modoEdicion ? 'Guardar JM' : 'Editar JM'}
-              </button>
-              <a href="../../index.html#clientes" class="jm-btn">Organizador</a>
-            </div>
+      <div class="jm-landing jm-landing--ficha${modoEdicion ? ' jm-landing--edicion' : ''}" style="--jm-border:${colores.border};--jm-bg:${colores.bg};--jm-text:${colores.text}">
+        <header class="jm-ficha-top">
+          <a href="../" class="jm-btn jm-btn--ghost">← Volver</a>
+          <span class="jm-ficha-top__tipo">Freelance · JM</span>
+          <div class="jm-landing__toolbar">
+            <button type="button" class="jm-btn" id="jm-btn-prototipo" title="Ir al prototipo interactivo">Prototipo interactivo</button>
+            <button type="button" class="jm-btn${modoEdicion ? ' jm-btn--active' : ''}" id="jm-btn-editar">
+              ${modoEdicion ? 'Guardar datos' : 'Editar datos'}
+            </button>
           </div>
         </header>
 
-        <section class="jm-block" id="jm-seccion-identidad">
-          <div class="jm-block__head"><h2>Identidad de marca</h2></div>
-          <div class="jm-block__body">${identidadHtml(cli)}</div>
-        </section>
+        <article class="ficha-doc ficha-doc--jm ficha-doc--wireframes jm-ficha-doc">
+          <header class="ficha-doc__encabezado" style="border-bottom-color:${colores.border}">
+            <div class="ficha-doc__marca" style="background:${colores.border}"></div>
+            <div class="ficha-doc__head-grid">
+              <div>
+                <p class="ficha-doc__tipo">Freelance</p>
+                <h1 class="ficha-doc__titulo">${escapeHtml(cli.nombre)}</h1>
+                <p class="ficha-doc__subtitulo">joyasmercury.cl · diagramación del sitio</p>
+              </div>
+              <div class="ficha-doc__meta-block">
+                <p><span class="ficha-doc__meta-label">Agente</span> ${AGENTE_JM.emoji} ${escapeHtml(AGENTE_JM.nombre)}</p>
+                <p><span class="ficha-doc__meta-label">Skill</span> ${escapeHtml(SKILL_JM.nombre)}</p>
+              </div>
+            </div>
+          </header>
 
-        <section class="jm-block" id="jm-seccion-prototipo">
-          <div class="jm-block__head"><h2>Prototipo interactivo</h2></div>
-          <div class="jm-block__body jm-block__body--compact">
-            <a href="${prototipoUrl}" target="_blank" rel="noopener" class="jm-prototipo-card">
-              <h3 class="jm-prototipo-card__titulo">Prototipo interactivo</h3>
-              <p class="jm-prototipo-card__desc">Flujo actual de joyasmercury.cl en orden: Inicio → Esencial / Gold / Deluxe → Tienda → Mi Carrito → Nosotros. Se abre en pestaña aparte; haz clic en el panel lateral o en las zonas de cada captura.</p>
-              <span class="jm-prototipo-card__cta">Abrir prototipo interactivo →</span>
-            </a>
-          </div>
-        </section>
+          ${wireframes}
 
-        <section class="jm-block" id="jm-seccion-objetivos">
-          <div class="jm-block__body">${objetivosHtml()}</div>
-        </section>
+          <section class="jm-block" id="jm-seccion-identidad">
+            <div class="jm-block__head"><h2>Identidad de marca</h2></div>
+            <div class="jm-block__body">${identidadHtml(cli)}</div>
+          </section>
 
-        <section class="jm-block" id="jm-seccion-menu">
-          <div class="jm-block__head"><h2>Menú objetivo · Paso 4</h2></div>
-          <div class="jm-block__body">${menuObjetivoHtml()}</div>
-        </section>
+          <section class="jm-block" id="jm-seccion-objetivos">
+            <div class="jm-block__body">${objetivosHtml()}</div>
+          </section>
 
-        <section class="jm-block" id="jm-seccion-mapa">
-          <div class="jm-block__head"><h2>Mapa de navegación · Paso 5</h2></div>
-          <div class="jm-block__body">${mapaNavegacionHtml()}</div>
-        </section>
+          <section class="jm-block" id="jm-seccion-menu">
+            <div class="jm-block__head"><h2>Menú objetivo · Paso 4</h2></div>
+            <div class="jm-block__body">${menuObjetivoHtml()}</div>
+          </section>
 
-        <section class="jm-block" id="jm-seccion-gantt">
-          <div class="jm-block__head"><h2>Carta Gantt · tiempos Fase 2</h2></div>
-          <div class="jm-block__body">${ganttHtml()}</div>
-        </section>
+          <section class="jm-block" id="jm-seccion-mapa">
+            <div class="jm-block__head"><h2>Mapa de navegación · Paso 5</h2></div>
+            <div class="jm-block__body">${mapaNavegacionHtml()}</div>
+          </section>
 
-        <section class="jm-block" id="jm-seccion-todo">
-          <div class="jm-block__head"><h2>Tareas · checklist (~2 días)</h2></div>
-          <div class="jm-block__body">${todosHtml()}</div>
-        </section>
+          <section class="jm-block" id="jm-seccion-gantt">
+            <div class="jm-block__head"><h2>Carta Gantt · tiempos Fase 2</h2></div>
+            <div class="jm-block__body">${ganttHtml()}</div>
+          </section>
+
+          <section class="jm-block" id="jm-seccion-todo">
+            <div class="jm-block__head"><h2>Tareas · checklist (~2 días)</h2></div>
+            <div class="jm-block__body">${todosHtml()}</div>
+          </section>
+
+          <footer class="jm-ficha-pie">
+            <div class="jm-ficha-pie__info">
+              <span>Cliente: ${escapeHtml(cli.nombre)}</span>
+              ${guardadoTxt ? `<span class="jm-ficha-pie__fecha">${escapeHtml(guardadoTxt)}</span>` : ''}
+            </div>
+            <button type="button" class="jm-btn jm-btn--primary" id="jm-btn-guardar">Guardar ficha</button>
+          </footer>
+        </article>
       </div>`;
 
     bindEvents(cli);
+    if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
   }
 
   function aplicarEdicion(cli) {
@@ -330,6 +362,15 @@
   }
 
   function bindEvents(cli) {
+    document.getElementById('jm-btn-prototipo')?.addEventListener('click', () => {
+      document.getElementById('ficha-wireframes-jm')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    document.getElementById('jm-btn-guardar')?.addEventListener('click', () => {
+      guardar();
+      render();
+    });
+
     document.getElementById('jm-btn-editar')?.addEventListener('click', () => {
       if (modoEdicion) {
         aplicarEdicion(cli);

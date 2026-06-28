@@ -2677,6 +2677,11 @@ function renderListaArchivosPerfil(cli) {
 }
 
 function abrirPerfilCliente(cliId) {
+  const portal = urlPortalCliente(cliId);
+  if (portal) {
+    window.location.href = portal;
+    return;
+  }
   if (window.abrirFichaCliente) {
     window.abrirFichaCliente(cliId);
     return;
@@ -4548,7 +4553,7 @@ function urlPortalCliente(cliId) {
     const e = CLIENTES_PORTAL.find(x => x.id === cliId);
     if (e?.archivo) return `index/clientes/${e.archivo}`;
   }
-  if (cliId === JM_CLI_ID) return 'index/clientes/joyasmercury.html';
+  if (cliId === JM_CLI_ID) return 'index/clientes/joyasmercury/';
   return null;
 }
 
@@ -4729,6 +4734,10 @@ function setupUI() {
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       if (!tab.dataset.view) return;
+      if (tab.dataset.view === 'clientes') {
+        window.location.href = 'index/clientes/';
+        return;
+      }
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
       tab.classList.add('tab--active');
       mostrarVista(tab.dataset.view, { activarTab: true });
@@ -5000,11 +5009,11 @@ async function iniciarApp() {
   setupUI();
   if (!aplicarRutaDesdeUrl()) {
     if (location.hash.replace(/^#/, '') === 'clientes') {
-      mostrarVista('clientes', { activarTab: true });
+      window.location.href = 'index/clientes/';
     } else {
       mostrarVista('mes');
+      render();
     }
-    render();
   }
   if (origenCarga === 'respaldo') {
     mostrarToast('Calendario vacío desde respaldo — modo manual (+ Nueva tarea)');

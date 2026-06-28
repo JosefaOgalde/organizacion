@@ -32,6 +32,13 @@
     return tipo.replace('full-time', 'Full time').replace('-', ' ');
   }
 
+  function hrefFicha(archivo) {
+    const p = (location.pathname || '').replace(/\\/g, '/');
+    const enListadoClientes = /\/index\/clientes\/?(index\.html)?$/i.test(p);
+    if (enListadoClientes) return archivo;
+    return `clientes/${archivo}`;
+  }
+
   function renderTarjetas(lista, origen) {
     grid.innerHTML = lista
       .map((c) => {
@@ -42,7 +49,7 @@
         const archivo = archivoDe(c);
         const agente = c.agente || estatico?.agente || '';
         return `
-    <a href="clientes/${archivo}" class="portal-card"
+    <a href="${hrefFicha(archivo)}" class="portal-card"
        style="--card-border:${col.border};--card-bg:${col.bg};--card-text:${col.text}">
       <div class="portal-card__tipo">${escapeHtml(tipoLabel(c.tipo))}${origen === 'api' ? ' · API' : ''}</div>
       <h2 class="portal-card__nombre">${escapeHtml(c.nombre)}</h2>

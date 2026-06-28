@@ -785,7 +785,29 @@
     if (eraEdicion) setModoFicha('edicion');
   }
 
+  function urlLandingCliente(cliId) {
+    if (cliId === 'cli-joyas-mercury') {
+      const p = (location.pathname || '').replace(/\\/g, '/');
+      if (/\/index\/clientes\//i.test(p)) return 'joyasmercury/';
+      return 'index/clientes/joyasmercury/';
+    }
+    if (typeof window.CLIENTES_PORTAL !== 'undefined') {
+      const e = window.CLIENTES_PORTAL.find((x) => x.id === cliId);
+      if (e?.archivo?.endsWith('/')) {
+        const p = (location.pathname || '').replace(/\\/g, '/');
+        if (/\/index\/clientes\//i.test(p)) return e.archivo;
+        return `index/clientes/${e.archivo}`;
+      }
+    }
+    return null;
+  }
+
   window.abrirFichaCliente = function (cliId) {
+    const landing = urlLandingCliente(cliId);
+    if (landing) {
+      window.location.href = landing;
+      return;
+    }
     const cli = clienteDe(cliId);
     if (!cli) return;
     const modal = document.getElementById('modal-cliente-perfil');

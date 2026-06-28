@@ -283,7 +283,10 @@ No subir wp-config a git. Repo privado GitHub JosefaOgalde/joyasmercury-backup.`
 window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo) {
   const file = `${carpeta}/${archivo}`;
   const p = (location.pathname || '').replace(/\\/g, '/');
-  if (/\/index\/clientes\//i.test(p)) {
+  if (/\/index\/clientes\/joyasmercury/i.test(p)) {
+    return `../JoyasMercury/${file}`;
+  }
+  if (/\/index\/clientes/i.test(p)) {
     return `JoyasMercury/${file}`;
   }
   return `index/clientes/JoyasMercury/${file}`;
@@ -521,8 +524,9 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
   if (!wf?.length && !window.JM_BACKUP_FICHA?.prototipo) return '';
   const claseExtra = (opts && opts.claseExtra) || '';
   const usarPrototipo = !opts || opts.interactivo !== false;
+  const mostrarObjetivoMini = !opts || opts.objetivoMini !== false;
   const cuerpo = usarPrototipo
-    ? jmHtmlPrototipoInteractivo() + jmHtmlObjetivoMini(wf)
+    ? jmHtmlPrototipoInteractivo() + (mostrarObjetivoMini ? jmHtmlObjetivoMini(wf) : '')
     : (() => {
       const grupos = [];
       wf.forEach(item => { if (!grupos.includes(item.grupo)) grupos.push(item.grupo); });
