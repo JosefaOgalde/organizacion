@@ -288,6 +288,70 @@
   max-height: 140px;
 }
 
+.jm-interfaces__viewport-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.jm-interfaces__viewport-tab {
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid #e8d8de;
+  background: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8a7078;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.jm-interfaces__viewport-tab.is-active {
+  border-color: var(--jm-border, #e8b8c8);
+  background: #fdf0f4;
+  color: var(--jm-text, #9a5a6e);
+}
+
+.jm-interfaces--landings-paired.jm-interfaces--viewport-mobile .jm-interfaces__visor {
+  background: linear-gradient(180deg, #f8f4f2 0%, #efe8e4 100%);
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+}
+
+.jm-interfaces--landings-paired.jm-interfaces--viewport-mobile .jm-interfaces__visor-link {
+  display: flex;
+  justify-content: center;
+  max-width: 420px;
+  margin: 0 auto;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 3px #2a2a2a,
+    0 0 0 6px #1a1a1a,
+    0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.jm-interfaces--landings-paired.jm-interfaces--viewport-mobile .jm-interfaces__visor-img {
+  max-height: 72vh;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: top center;
+}
+
+.jm-interfaces__visor-vista {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #a97e23;
+  margin-top: 0.15rem;
+}
+
 .jm-interfaces__wireframe-link {
   margin: -0.35rem 0 0.85rem;
   font-size: 0.82rem;
