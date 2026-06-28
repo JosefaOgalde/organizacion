@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Banner carrito vacío · 1000×500 · Joyas Mercury</title>
+  <title>Banner Mi Carrito · 1000×500 · Joyas Mercury</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -11,7 +11,6 @@
       --mauve: #3d3d3d;
       --rose: #e197ac;
       --gold: #c59446;
-      --gold-light: #ecc54a;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -35,184 +34,180 @@
       aspect-ratio: auto !important;
     }
 
-    .preview-note {
-      font-size: 0.75rem; color: #888; text-align: center; max-width: 520px; line-height: 1.5;
-    }
+    .preview-note { font-size: 0.75rem; color: #888; text-align: center; max-width: 520px; line-height: 1.5; }
     .preview-wrap h1 {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 1.1rem; color: var(--mauve); margin-bottom: 0.75rem; text-align: center;
     }
 
-    /* —— Banner 1000 × 500 —— */
     .jm-cart-banner {
-      width: 1000px;
-      height: 500px;
-      max-width: 100%;
-      aspect-ratio: 2 / 1;
-      position: relative;
-      overflow: hidden;
-      background: var(--cream);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      width: 1000px; height: 500px; max-width: 100%; aspect-ratio: 2 / 1;
+      position: relative; overflow: hidden; background: var(--cream);
+      display: grid; grid-template-columns: 1fr 1fr;
     }
 
     .jm-cart-banner__copy {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 3rem 2.5rem 3rem 3.5rem;
-      z-index: 2;
-      position: relative;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 3rem 2rem 3rem 3.5rem; z-index: 2;
     }
 
-    .jm-cart-banner__icon {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 1.25rem;
-      color: var(--gold);
-    }
-    .jm-cart-banner__icon svg {
-      width: 100%; height: 100%;
-      stroke: currentColor; fill: none; stroke-width: 1.2;
-      stroke-linecap: round; stroke-linejoin: round;
+    .jm-cart-banner__eyebrow {
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.65rem; font-weight: 600;
     }
 
     .jm-cart-banner__title {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 2.15rem;
-      font-weight: 600;
-      line-height: 1.15;
-      letter-spacing: 0.02em;
-      color: var(--mauve);
-      margin-bottom: 0.85rem;
+      font-size: 2.35rem; font-weight: 600; line-height: 1.1;
+      color: var(--mauve); margin-bottom: 0.85rem;
     }
-    .jm-cart-banner__title em {
-      font-style: normal;
-      color: var(--rose);
-    }
+    .jm-cart-banner__title em { font-style: normal; color: var(--rose); }
 
     .jm-cart-banner__rule {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      margin-bottom: 1rem;
-      max-width: 220px;
+      display: flex; align-items: center; gap: 0.65rem;
+      margin-bottom: 1rem; max-width: 200px;
     }
-    .jm-cart-banner__rule::before,
-    .jm-cart-banner__rule::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--gold);
-      opacity: 0.75;
+    .jm-cart-banner__rule::before, .jm-cart-banner__rule::after {
+      content: ''; flex: 1; height: 1px; background: var(--gold); opacity: 0.75;
     }
-    .jm-cart-banner__rule span {
-      color: var(--gold);
-      font-size: 0.55rem;
-      transform: rotate(45deg);
-      display: inline-block;
-    }
+    .jm-cart-banner__rule span { color: var(--gold); font-size: 0.55rem; transform: rotate(45deg); display: inline-block; }
 
     .jm-cart-banner__text {
-      font-size: 0.78rem;
-      line-height: 1.55;
-      color: #6a6a6a;
-      max-width: 22rem;
-      margin-bottom: 1.5rem;
+      font-size: 0.78rem; line-height: 1.6; color: #6a6a6a;
+      max-width: 21rem; margin-bottom: 1.35rem;
     }
+
+    .jm-cart-banner__trust {
+      display: flex; flex-wrap: wrap; gap: 0.5rem 1rem;
+      font-size: 0.62rem; color: #888; margin-bottom: 1.35rem;
+    }
+    .jm-cart-banner__trust span { display: flex; align-items: center; gap: 0.3rem; }
+    .jm-cart-banner__trust span::before { content: '✦'; color: var(--gold); font-size: 0.5rem; }
 
     .jm-cart-banner__cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.75rem 1.65rem;
-      background: var(--gold);
-      color: #fff;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border-radius: 4px;
-      width: fit-content;
-      box-shadow: 0 2px 8px rgba(197,148,70,0.25);
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.75rem 1.65rem; background: var(--gold); color: #fff;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; text-decoration: none; border-radius: 4px;
+      width: fit-content; box-shadow: 0 2px 8px rgba(197,148,70,0.25);
     }
-    .jm-cart-banner__cta:hover { background: #b0843e; }
 
+    /* —— Visual derecho: bolsa + joyas —— */
     .jm-cart-banner__visual {
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
+      background: linear-gradient(145deg, #f8f0ea 0%, #f5e8dc 100%);
     }
     .jm-cart-banner__visual::before {
       content: '';
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      background: linear-gradient(90deg, var(--cream) 0%, rgba(253,251,248,0.92) 12%, rgba(253,251,248,0.4) 35%, transparent 55%);
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(90deg, var(--cream) 0%, rgba(253,251,248,0.85) 8%, rgba(253,251,248,0.25) 28%, transparent 45%);
     }
     .jm-cart-banner__photo {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 30%;
+      position: absolute; inset: 0;
+      background: url('../../flujo-actual/01-inicio-home.png') center / cover no-repeat;
+      opacity: 0.55;
     }
-    .jm-cart-banner__photo-fallback {
-      width: 100%;
-      height: 100%;
-      background:
-        linear-gradient(145deg, rgba(225,151,172,0.08) 0%, transparent 50%),
-        url('../../flujo-actual/01-inicio-home.png') center / cover no-repeat;
+    .jm-cart-banner__scene {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
     }
+    .jm-cart-banner__bag-wrap {
+      position: relative; width: 280px; height: 320px;
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .jm-cart-banner__bag {
+      width: 200px; height: 240px;
+      position: relative; z-index: 2;
+    }
+    .jm-cart-banner__bag svg {
+      width: 100%; height: 100%;
+      filter: drop-shadow(0 12px 24px rgba(197,148,70,0.2));
+    }
+    .jm-cart-banner__jewel {
+      position: absolute; border-radius: 50%;
+      background: linear-gradient(145deg, #fff8f0, #f0e0d0);
+      border: 1.5px solid rgba(197,148,70,0.35);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .jm-cart-banner__jewel--1 { width: 52px; height: 52px; top: 18%; left: 8%; }
+    .jm-cart-banner__jewel--2 { width: 44px; height: 44px; top: 8%; right: 12%; }
+    .jm-cart-banner__jewel--3 { width: 38px; height: 38px; bottom: 28%; left: 5%; }
+    .jm-cart-banner__jewel--4 { width: 48px; height: 48px; bottom: 22%; right: 6%; }
+    .jm-cart-banner__jewel::after {
+      content: '';
+      position: absolute; inset: 28%;
+      border: 1px dashed rgba(197,148,70,0.4);
+      border-radius: 50%;
+    }
+    .jm-cart-banner__spark {
+      position: absolute; color: var(--gold); font-size: 0.85rem; opacity: 0.7;
+    }
+    .jm-cart-banner__spark--1 { top: 15%; right: 22%; }
+    .jm-cart-banner__spark--2 { bottom: 35%; left: 18%; font-size: 0.65rem; }
 
     @media (max-width: 1020px) {
       .jm-cart-banner {
-        width: 100%;
-        height: auto;
-        min-height: 280px;
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 200px;
+        width: 100%; height: auto; min-height: 280px;
+        grid-template-columns: 1fr; grid-template-rows: auto 220px;
       }
       .jm-cart-banner__copy { padding: 2rem 1.5rem; }
       .jm-cart-banner__title { font-size: 1.65rem; }
-      .jm-cart-banner__visual { min-height: 200px; }
+      .jm-cart-banner__visual { min-height: 220px; }
       .jm-cart-banner__visual::before {
-        background: linear-gradient(180deg, var(--cream) 0%, transparent 30%);
+        background: linear-gradient(180deg, var(--cream) 0%, transparent 25%);
       }
     }
   </style>
 </head>
 <body>
   <div class="preview-wrap">
-    <h1>Banner carrito vacío · 1000 × 500 px</h1>
-    <p class="preview-note">Referencia diseño JM · exportar PNG con <code>python3 scripts/capturar-jm-banner-carrito.py</code></p>
+    <h1>Banner Mi Carrito · 1000 × 500 px · general</h1>
+    <p class="preview-note">Banner para sección carrito (con o sin productos) · PNG: <code>python3 scripts/capturar-jm-banner-carrito.py</code></p>
 
-    <article class="jm-cart-banner" id="banner-carrito" aria-label="Tu carrito está vacío">
+    <article class="jm-cart-banner" id="banner-carrito" aria-label="Mi Carrito Joyas Mercury">
       <div class="jm-cart-banner__copy">
-        <div class="jm-cart-banner__icon" aria-hidden="true">
-          <svg viewBox="0 0 48 48">
-            <path d="M14 18h20l-2 16H16L14 18z"/>
-            <path d="M18 18V14a6 6 0 0112 0v4"/>
-            <path d="M24 26c-2 0-3.5 1.5-3.5 3.5S22 33 24 33s3.5-1.5 3.5-3.5S26 26 24 26z" fill="currentColor" stroke="none" opacity="0.85"/>
-            <path d="M20 8l1 2M28 8l-1 2M24 5v2" stroke-width="1"/>
-          </svg>
-        </div>
-        <h2 class="jm-cart-banner__title">Tu carrito está <em>vacío</em></h2>
+        <p class="jm-cart-banner__eyebrow">Joyas Mercury</p>
+        <h2 class="jm-cart-banner__title">Mi <em>Carrito</em></h2>
         <div class="jm-cart-banner__rule" aria-hidden="true"><span>◆</span></div>
         <p class="jm-cart-banner__text">
-          Parece que aún no agregaste ninguna joya. ¡Descubre nuestras colecciones y encuentra tu próxima joya favorita! ♡
+          Revisa tus joyas seleccionadas antes de finalizar tu compra. Cada pieza está pensada para hacerte brillar todos los días.
         </p>
-        <a class="jm-cart-banner__cta" href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">✦ Ver colecciones</a>
+        <div class="jm-cart-banner__trust">
+          <span>Envíos a todo Chile</span>
+          <span>Garantía de fábrica</span>
+          <span>Compra segura</span>
+        </div>
+        <a class="jm-cart-banner__cta" href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">✦ Seguir comprando</a>
       </div>
-      <div class="jm-cart-banner__visual">
-        <div class="jm-cart-banner__photo-fallback" role="img" aria-label="Joyas sobre fondo suave"></div>
+      <div class="jm-cart-banner__visual" aria-hidden="true">
+        <div class="jm-cart-banner__photo"></div>
+        <div class="jm-cart-banner__scene">
+          <div class="jm-cart-banner__bag-wrap">
+            <span class="jm-cart-banner__jewel jm-cart-banner__jewel--1"></span>
+            <span class="jm-cart-banner__jewel jm-cart-banner__jewel--2"></span>
+            <span class="jm-cart-banner__jewel jm-cart-banner__jewel--3"></span>
+            <span class="jm-cart-banner__jewel jm-cart-banner__jewel--4"></span>
+            <span class="jm-cart-banner__spark jm-cart-banner__spark--1">✦</span>
+            <span class="jm-cart-banner__spark jm-cart-banner__spark--2">✦</span>
+            <div class="jm-cart-banner__bag">
+              <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30 70h140l-12 150H42L30 70z" fill="#faf6f0" stroke="#c59446" stroke-width="2"/>
+                <path d="M55 70V48a45 45 0 0190 0v22" stroke="#c59446" stroke-width="2.5" fill="none"/>
+                <path d="M70 70c0-20 15-32 30-32s30 12 30 32" stroke="#e197ac" stroke-width="1.5" fill="none" opacity="0.6"/>
+                <circle cx="100" cy="130" r="22" fill="rgba(225,151,172,0.15)" stroke="#c59446" stroke-width="1.2"/>
+                <path d="M88 130h24M100 118v24" stroke="#c59446" stroke-width="1" opacity="0.5"/>
+                <path d="M50 95h100" stroke="#c59446" stroke-width="1" opacity="0.35"/>
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
     </article>
   </div>
 
   <script>
-    if (new URLSearchParams(location.search).get('shot') === '1') {
-      document.body.dataset.shot = '1';
-    }
+    if (new URLSearchParams(location.search).get('shot') === '1') document.body.dataset.shot = '1';
   </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exporta banner carrito vacío 1000×500 px."""
+"""Exporta banner Mi Carrito general 1000×500 px."""
 
 from pathlib import Path
 
@@ -21,22 +21,25 @@ def main():
         context = browser.new_context(viewport={"width": 1000, "height": 500}, device_scale_factor=1)
         page = context.new_page()
         page.goto(url, wait_until="networkidle", timeout=60000)
-        page.wait_for_timeout(800)
+        page.wait_for_timeout(900)
 
-        banner = page.locator("#banner-carrito")
-        dest = OUT / "jm-banner-carrito-vacio-1000x500.png"
-        banner.screenshot(path=str(dest))
-        print(f"→ {dest.relative_to(ROOT)} ({dest.stat().st_size // 1024} KB) · 1000×500")
+        for name in (
+            "jm-banner-carrito-1000x500.png",
+            "jm-banner-carrito-vacio-1000x500.png",
+        ):
+            dest = OUT / name
+            page.locator("#banner-carrito").screenshot(path=str(dest))
+            print(f"→ {dest.relative_to(ROOT)} ({dest.stat().st_size // 1024} KB) · 1000×500")
 
         page.set_viewport_size({"width": 1440, "height": 900})
         page.goto(
-            (ROOT / "index/clientes/JoyasMercury/interfaces/mockups-carrito/wireframe-carrito-vacio.html").as_uri(),
+            (OUT / "wireframe-carrito-vacio.html").as_uri(),
             wait_until="networkidle",
         )
         page.wait_for_timeout(600)
         full = OUT / "jm-carrito-vacio-desktop.png"
         page.screenshot(path=str(full), full_page=True)
-        print(f"→ {full.relative_to(ROOT)} ({full.stat().st_size // 1024} KB) · página completa")
+        print(f"→ {full.relative_to(ROOT)} ({full.stat().st_size // 1024} KB)")
 
         browser.close()
 
