@@ -1,30 +1,34 @@
-# Banner landing · Mi Carrito
+# Mi Carrito · landing completa
 
-Banner **1000 × 500 px** — solo identifica que el usuario está en la página del carrito.
+Wireframe Fase 2 con banner + contenido WooCommerce + footer E.
 
-## Qué dice (y qué no)
+## Estructura
 
-| Sí | No (fase 2) |
-|----|-------------|
-| Mi Carrito | Carrito vacío |
-| Estás en tu carrito de compras | Con productos / checkout |
-| Visual bolsa + joyas (derecha) | CTAs, confianza, favoritos |
+| Sección | Contenido |
+|---------|-----------|
+| Header | Logo, menú, carrito activo |
+| Banner 1000×500 | Mi Carrito + visual bolsa/joyas |
+| Cuerpo | Tabla productos **o** mensaje vacío |
+| Sidebar | Resumen, total, finalizar compra |
+| Confianza | Despacho, garantía, pago seguro |
+| Footer E | Igual que inicio y colecciones |
 
-## Archivos
+## Estados
 
-- `banner-carrito-landing.html` — preview banner
-- `jm-banner-carrito-1000x500.png` — PNG para Elementor
-- `wireframe-carrito-landing.html` — landing con banner + nota fase 2
+```
+?estado=productos   → 2 productos + resumen (default)
+?estado=vacio       → carrito vacío + CTA colecciones
+```
 
 ## URLs (copiar tal cual)
 
 ```
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-carrito/
-http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-carrito/banner-carrito-landing.html
 http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-carrito/wireframe-carrito-landing.html
+http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-carrito/wireframe-carrito-landing.html?estado=vacio
+http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-carrito/banner-carrito-landing.html
 ```
 
-Ficha JM (sección Nuevo prototipo): `http://localhost:3000/index/clientes/joyasmercury/`
+Ficha JM: `http://localhost:3000/index/clientes/joyasmercury/`
 
 ```bash
 python3 scripts/capturar-jm-banner-carrito.py

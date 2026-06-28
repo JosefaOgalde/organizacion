@@ -3,30 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Landing · Mi Carrito · Joyas Mercury</title>
+  <title>Mi Carrito · Joyas Mercury</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --cream: #fdfbf8; --mauve: #3d3d3d; --rose: #e197ac; --gold: #c59446; --line: #e8e0dc;
+      --cream: #faf8f6;
+      --cream-banner: #fdfbf8;
+      --mauve: #6a4048;
+      --mauve-text: #3d3d3d;
+      --gold: #c59446;
+      --gold-dark: #a97e23;
+      --rose: #e197ac;
+      --line: #e8e0dc;
+      --bottom-nav-h: 62px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Montserrat', sans-serif; background: var(--cream); color: var(--mauve); }
-
-    .jm-header {
-      border-bottom: 1px solid var(--line); padding: 0.85rem 1.5rem;
-      display: flex; justify-content: space-between; align-items: center;
+    body {
+      font-family: 'Montserrat', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--mauve);
+      padding-bottom: var(--bottom-nav-h);
     }
-    .jm-header img { height: 36px; }
-    .jm-header__icons { display: flex; gap: 1rem; color: var(--gold); }
-    .jm-header__icons svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.3; }
 
-    .jm-cart-page { max-width: 1000px; margin: 0 auto; padding: 0 0 3rem; }
+    /* Header */
+    .jm-header { background: var(--cream); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 40; }
+    .jm-header__logo-row { display: flex; justify-content: center; padding: 0.85rem 1.25rem 0.55rem; }
+    .jm-header__logo-row img { height: 68px; width: auto; }
+    .jm-header__nav-row { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 1.25rem 0.65rem; }
+    .jm-header__left, .jm-header__right { display: flex; align-items: center; gap: 1rem; }
+    .jm-icon { background: none; border: none; color: var(--mauve); cursor: pointer; display: inline-flex; }
+    .jm-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.35; }
+    .jm-icon--active { color: var(--gold-dark); }
+    .jm-search { display: none; align-items: center; gap: 0.5rem; flex: 1; max-width: 420px; border-bottom: 1px solid var(--mauve); padding-bottom: 0.35rem; }
+    .jm-search span { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+    .jm-header__menu-row {
+      display: none; justify-content: center; gap: 2rem; padding: 0.65rem 2rem 0.85rem;
+      border-top: 1px solid var(--line); font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .jm-header__menu-row a { color: var(--mauve); text-decoration: none; }
+    .jm-header__menu-row a.is-here { color: var(--gold-dark); border-bottom: 1px solid var(--gold-dark); }
 
+    .jm-crumb {
+      font-size: 0.65rem; color: #9a858c; padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--line); background: #fff; max-width: 1000px; margin: 0 auto;
+    }
+    .jm-crumb a { color: #9a858c; text-decoration: none; }
+    .jm-crumb a:hover { color: var(--mauve); }
+
+    /* Banner */
     .jm-cart-banner {
       width: 100%; max-width: 1000px; margin: 0 auto;
       aspect-ratio: 2 / 1; max-height: 500px;
       display: grid; grid-template-columns: 1fr 1fr;
-      overflow: hidden; background: var(--cream);
+      overflow: hidden; background: var(--cream-banner);
     }
     .jm-cart-banner__copy {
       display: flex; flex-direction: column; justify-content: center;
@@ -38,7 +68,8 @@
     }
     .jm-cart-banner__title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.5rem, 3.5vw, 2.35rem); font-weight: 600; line-height: 1.1; margin-bottom: 0.65rem;
+      font-size: clamp(1.5rem, 3.5vw, 2.35rem); font-weight: 600; line-height: 1.1;
+      color: var(--mauve-text); margin-bottom: 0.65rem;
     }
     .jm-cart-banner__title em { font-style: normal; color: var(--rose); }
     .jm-cart-banner__rule {
@@ -56,7 +87,7 @@
     }
     .jm-cart-banner__visual::before {
       content: ''; position: absolute; inset: 0; z-index: 1;
-      background: linear-gradient(90deg, var(--cream) 0%, rgba(253,251,248,0.88) 10%, rgba(253,251,248,0.2) 32%, transparent 48%);
+      background: linear-gradient(90deg, var(--cream-banner) 0%, rgba(253,251,248,0.88) 10%, rgba(253,251,248,0.2) 32%, transparent 48%);
     }
     .jm-cart-banner__visual::after {
       content: ''; position: absolute; inset: 0; z-index: 0;
@@ -97,70 +128,448 @@
     .jm-cart-banner__spark--1 { top: 10%; right: 16%; }
     .jm-cart-banner__spark--2 { bottom: 40%; left: 12%; font-size: 0.6rem; }
 
-    .jm-cart-body { padding: 2rem 1.25rem; max-width: 900px; margin: 0 auto; }
-    .jm-cart-fase2 {
-      text-align: center; padding: 2rem 1.5rem; font-size: 0.78rem; color: #9a858c;
-      border: 1px dashed var(--line); border-radius: 6px; background: #fff;
-      line-height: 1.6;
+    /* Cuerpo carrito */
+    .jm-cart-main {
+      max-width: 1000px; margin: 0 auto;
+      padding: 1.75rem 1.25rem 2.5rem;
     }
-    .jm-cart-fase2 strong { color: var(--mauve); font-weight: 600; }
+    .jm-cart-layout {
+      display: grid; gap: 1.5rem;
+    }
+    @media (min-width: 860px) {
+      .jm-cart-layout { grid-template-columns: 1fr 300px; align-items: start; }
+    }
 
-    .jm-cart-foot { text-align: center; padding: 1.5rem; font-size: 0.65rem; color: #aaa; }
+    .jm-cart-table-wrap {
+      background: #fff; border: 1px solid var(--line); border-radius: 8px;
+      overflow: hidden;
+    }
+    .jm-cart-table-head {
+      display: none; padding: 0.75rem 1rem;
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #9a858c;
+      border-bottom: 1px solid var(--line); background: #fdfbf8;
+    }
+    @media (min-width: 640px) {
+      .jm-cart-table-head {
+        display: grid; grid-template-columns: 2.5fr 1fr 1fr 1fr 40px; gap: 0.75rem;
+      }
+    }
+
+    .jm-cart-item {
+      display: grid; grid-template-columns: 72px 1fr; gap: 0.85rem;
+      padding: 1rem; border-bottom: 1px solid var(--line); align-items: center;
+    }
+    @media (min-width: 640px) {
+      .jm-cart-item {
+        grid-template-columns: 72px 2fr 1fr 1fr 1fr 40px;
+        gap: 0.75rem; align-items: center;
+      }
+      .jm-cart-item__name-block { grid-column: 2; }
+      .jm-cart-item__price { grid-column: 3; }
+      .jm-cart-item__qty { grid-column: 4; }
+      .jm-cart-item__subtotal { grid-column: 5; }
+      .jm-cart-item__remove { grid-column: 6; }
+    }
+    .jm-cart-item:last-child { border-bottom: none; }
+    .jm-cart-item__img {
+      width: 72px; height: 72px; border-radius: 6px;
+      background: linear-gradient(145deg, #f5ebe3, #ebe0d8);
+      border: 1px solid var(--line);
+    }
+    .jm-cart-item__name {
+      font-size: 0.82rem; font-weight: 600; color: var(--mauve); margin-bottom: 0.2rem;
+    }
+    .jm-cart-item__meta { font-size: 0.65rem; color: #9a858c; }
+    .jm-cart-item__chip {
+      display: inline-block; margin-top: 0.35rem; padding: 0.15rem 0.45rem;
+      border-radius: 999px; font-size: 0.55rem; font-weight: 600; letter-spacing: 0.04em;
+      text-transform: uppercase; background: rgba(225,151,172,0.15); color: var(--rose);
+    }
+    .jm-cart-item__chip--gold { background: rgba(197,148,70,0.15); color: var(--gold-dark); }
+    .jm-cart-item__price, .jm-cart-item__subtotal {
+      font-size: 0.78rem; font-weight: 600; color: var(--mauve);
+    }
+    .jm-cart-item__qty {
+      display: inline-flex; align-items: center; border: 1px solid var(--line);
+      border-radius: 4px; overflow: hidden;
+    }
+    .jm-cart-item__qty button {
+      width: 28px; height: 28px; border: none; background: #fdfbf8;
+      color: var(--mauve); font-size: 0.9rem; cursor: pointer;
+    }
+    .jm-cart-item__qty span {
+      min-width: 28px; text-align: center; font-size: 0.75rem; font-weight: 600;
+    }
+    .jm-cart-item__remove {
+      background: none; border: none; color: #bbb; font-size: 1.1rem; cursor: pointer;
+      justify-self: end;
+    }
+    .jm-cart-item__remove:hover { color: var(--rose); }
+    @media (max-width: 639px) {
+      .jm-cart-item__price::before { content: 'Precio: '; color: #9a858c; font-weight: 400; }
+      .jm-cart-item__subtotal::before { content: 'Subtotal: '; color: #9a858c; font-weight: 400; }
+      .jm-cart-item__price, .jm-cart-item__subtotal { font-size: 0.72rem; margin-top: 0.35rem; }
+      .jm-cart-item__qty { margin-top: 0.35rem; }
+      .jm-cart-item__remove { position: absolute; top: 1rem; right: 1rem; }
+      .jm-cart-item { position: relative; padding-right: 2rem; }
+    }
+
+    /* Vacío */
+    .jm-cart-empty {
+      text-align: center; padding: 2.5rem 1.5rem; background: #fff;
+      border: 1px solid var(--line); border-radius: 8px;
+    }
+    .jm-cart-empty__icon { font-size: 2rem; color: var(--gold); margin-bottom: 0.75rem; opacity: 0.7; }
+    .jm-cart-empty__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem; font-weight: 600; color: var(--mauve); margin-bottom: 0.5rem;
+    }
+    .jm-cart-empty__text { font-size: 0.78rem; color: #8a7078; line-height: 1.55; max-width: 22rem; margin: 0 auto 1.25rem; }
+    .jm-cart-empty__actions { display: flex; flex-wrap: wrap; gap: 0.65rem; justify-content: center; }
+
+    /* Totales */
+    .jm-cart-totals {
+      background: #fff; border: 1px solid var(--line); border-radius: 8px;
+      padding: 1.25rem; position: sticky; top: 5.5rem;
+    }
+    .jm-cart-totals__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; font-weight: 600; color: var(--mauve);
+      margin-bottom: 1rem; padding-bottom: 0.65rem; border-bottom: 1px solid var(--line);
+    }
+    .jm-cart-totals__row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.75rem; margin-bottom: 0.55rem; color: #8a7078;
+    }
+    .jm-cart-totals__row strong { color: var(--mauve); font-weight: 600; }
+    .jm-cart-totals__row--total {
+      margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--line);
+      font-size: 0.88rem; color: var(--mauve);
+    }
+    .jm-cart-totals__row--total strong { font-size: 1rem; color: var(--gold-dark); }
+    .jm-cart-totals__note {
+      font-size: 0.62rem; color: #9a858c; line-height: 1.45; margin: 0.85rem 0 1rem;
+    }
+    .jm-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.65rem 1.25rem; border-radius: 4px; font-size: 0.72rem;
+      font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      text-decoration: none; border: none; cursor: pointer; width: 100%;
+      font-family: inherit;
+    }
+    .jm-btn--primary { background: var(--gold); color: #fff; margin-bottom: 0.5rem; }
+    .jm-btn--primary:hover { background: var(--gold-dark); }
+    .jm-btn--ghost {
+      background: transparent; color: var(--mauve); border: 1px solid var(--line);
+    }
+    .jm-btn--ghost:hover { border-color: var(--gold); color: var(--gold-dark); }
+
+    .jm-cart-actions {
+      display: flex; flex-wrap: wrap; gap: 0.65rem; margin-top: 1.25rem;
+    }
+    .jm-cart-actions .jm-btn { width: auto; flex: 1; min-width: 140px; }
+
+    .jm-cart-trust {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;
+      margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid var(--line);
+    }
+    .jm-cart-trust__item {
+      text-align: center; font-size: 0.62rem; color: #8a7078; line-height: 1.4;
+    }
+    .jm-cart-trust__item span {
+      display: block; font-size: 1rem; color: var(--gold); margin-bottom: 0.25rem;
+    }
+
+    body[data-estado="vacio"] .jm-cart-con-productos { display: none !important; }
+    body[data-estado="productos"] .jm-cart-vacio { display: none !important; }
+
+    /* Footer E */
+    .ft-e {
+      background: var(--cream); border-top: 1px solid var(--line);
+      padding: 2rem 1.25rem 0; margin-top: 1rem;
+    }
+    .ft-e a { color: var(--mauve); text-decoration: none; }
+    .ft-e__inner { text-align: center; max-width: 1000px; margin: 0 auto; }
+    .ft-e__logo { height: 48px; margin: 0 auto 1rem; display: block; }
+    .ft-e__nav {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem;
+      max-width: 280px; margin: 0 auto 1rem; text-align: left; font-size: 0.72rem;
+    }
+    .ft-e__legal {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1rem;
+      margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line);
+    }
+    .ft-e__legal a { font-size: 0.65rem; color: #8a7078; }
+    .ft-e__bottom { background: #fff; border-top: 1px solid var(--line); padding: 0.85rem 1.25rem; text-align: center; }
+    .ft-e__copy { font-size: 0.62rem; color: #9a858c; }
+
+    .jm-wa-fab {
+      position: fixed; bottom: calc(var(--bottom-nav-h) + 1rem); right: 1rem;
+      width: 52px; height: 52px; border-radius: 50%; background: #25d366; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(37,211,102,0.4); z-index: 30;
+    }
+    .jm-wa-fab svg { width: 28px; height: 28px; fill: currentColor; }
+
+    .jm-bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-h);
+      background: #fff; border-top: 1px solid var(--line);
+      display: flex; justify-content: space-around; align-items: center; z-index: 35;
+      font-size: 0.58rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .jm-bottom-nav a {
+      display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+      color: #9a858c; text-decoration: none; padding: 0.35rem;
+    }
+    .jm-bottom-nav a.is-here { color: var(--gold-dark); }
+    .jm-bottom-nav a svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.4; }
+
+    .jm-wireframe-switch {
+      position: fixed; bottom: calc(var(--bottom-nav-h) + 0.5rem); left: 0.75rem;
+      font-size: 0.62rem; color: #9a858c; background: rgba(255,255,255,0.95);
+      padding: 0.35rem 0.6rem; border-radius: 4px; border: 1px solid var(--line); z-index: 25;
+    }
+    .jm-wireframe-switch a { color: var(--gold-dark); }
+    .jm-wireframe-switch a.is-active { font-weight: 700; text-decoration: underline; }
+
+    @media (min-width: 900px) {
+      .jm-header__menu-row { display: flex; }
+      .jm-search { display: flex; }
+      .jm-icon--search-mobile { display: none !important; }
+      .jm-bottom-nav { display: none; }
+      body { padding-bottom: 0; }
+      .jm-wa-fab { bottom: 1.5rem; }
+      .jm-wireframe-switch { bottom: 1rem; }
+      .ft-e__nav { display: flex; flex-wrap: wrap; justify-content: center; max-width: none; gap: 0.5rem 2rem; text-align: center; }
+      .jm-cart-banner { border-bottom: 1px solid var(--line); }
+    }
+
+    @media (max-width: 720px) {
+      .jm-cart-banner {
+        grid-template-columns: 1fr; grid-template-rows: auto minmax(200px, 38vw);
+        aspect-ratio: auto; max-height: none;
+      }
+      .jm-cart-trust { grid-template-columns: 1fr; gap: 0.5rem; }
+    }
+
+    body[data-shot="1"] .jm-wireframe-switch,
+    body[data-shot="1"] .jm-wa-fab,
+    body[data-shot="1"] .jm-bottom-nav { display: none !important; }
+    body[data-shot="1"] { padding-bottom: 0; }
   </style>
 </head>
-<body>
+<body data-estado="productos">
   <header class="jm-header">
-    <img src="../../identidad/isotipo-jm-gold.png" alt="Joyas Mercury">
-    <div class="jm-header__icons">
-      <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      <svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 11H7.2L6 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></svg>
+    <div class="jm-header__logo-row">
+      <a href="../mockups-inicio/wireframe-inicio.html"><img src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury"></a>
     </div>
+    <div class="jm-header__nav-row">
+      <div class="jm-header__left">
+        <button type="button" class="jm-icon" aria-label="Menú">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <form class="jm-search" role="search"><span>Buscar</span></form>
+      </div>
+      <div class="jm-header__right">
+        <button type="button" class="jm-icon jm-icon--search-mobile" aria-label="Buscar">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        </button>
+        <button type="button" class="jm-icon jm-icon--active" aria-label="Mi Carrito" aria-current="page">
+          <svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 11H7.2L6 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav class="jm-header__menu-row">
+      <a href="../mockups-inicio/wireframe-inicio.html">Inicio</a>
+      <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">Colecciones</a>
+      <a href="#">Historias que Brillan</a>
+      <a href="#">Mi Cuenta</a>
+      <a href="#">Contacto</a>
+      <a href="wireframe-carrito-landing.html" class="is-here">Mi Carrito</a>
+    </nav>
   </header>
 
-  <main class="jm-cart-page">
-    <article class="jm-cart-banner">
-      <div class="jm-cart-banner__copy">
-        <p class="jm-cart-banner__eyebrow">joyasmercury.cl</p>
-        <h1 class="jm-cart-banner__title">Mi <em>Carrito</em></h1>
-        <div class="jm-cart-banner__rule"><span>◆</span></div>
-        <p class="jm-cart-banner__text">Estás en tu carrito de compras</p>
-      </div>
-      <div class="jm-cart-banner__visual">
-        <div class="jm-cart-banner__scene">
-          <p class="jm-cart-banner__scene-label">Carrito de compras</p>
-          <div class="jm-cart-banner__bag-wrap">
-            <span class="jm-cart-banner__jewel jm-cart-banner__jewel--1"></span>
-            <span class="jm-cart-banner__jewel jm-cart-banner__jewel--2"></span>
-            <span class="jm-cart-banner__jewel jm-cart-banner__jewel--3"></span>
-            <span class="jm-cart-banner__jewel jm-cart-banner__jewel--4"></span>
-            <span class="jm-cart-banner__spark jm-cart-banner__spark--1">✦</span>
-            <span class="jm-cart-banner__spark jm-cart-banner__spark--2">✦</span>
-            <div class="jm-cart-banner__bag">
-              <svg viewBox="0 0 200 240" fill="none">
-                <path d="M30 70h140l-12 150H42L30 70z" fill="#faf6f0" stroke="#c59446" stroke-width="2"/>
-                <path d="M55 70V48a45 45 0 0190 0v22" stroke="#c59446" stroke-width="2.5" fill="none"/>
-                <path d="M70 70c0-20 15-32 30-32s30 12 30 32" stroke="#e197ac" stroke-width="1.5" fill="none" opacity="0.6"/>
-                <circle cx="100" cy="130" r="22" fill="rgba(225,151,172,0.15)" stroke="#c59446" stroke-width="1.2"/>
-                <path d="M88 130h24M100 118v24" stroke="#c59446" stroke-width="1" opacity="0.5"/>
-                <path d="M50 95h100" stroke="#c59446" stroke-width="1" opacity="0.35"/>
-              </svg>
-            </div>
+  <p class="jm-crumb">
+    <a href="../mockups-inicio/wireframe-inicio.html">Inicio</a> ›
+    <span>Mi Carrito</span>
+  </p>
+
+  <article class="jm-cart-banner" aria-label="Banner Mi Carrito">
+    <div class="jm-cart-banner__copy">
+      <p class="jm-cart-banner__eyebrow">joyasmercury.cl</p>
+      <h1 class="jm-cart-banner__title">Mi <em>Carrito</em></h1>
+      <div class="jm-cart-banner__rule" aria-hidden="true"><span>◆</span></div>
+      <p class="jm-cart-banner__text">Estás en tu carrito de compras</p>
+    </div>
+    <div class="jm-cart-banner__visual" aria-hidden="true">
+      <div class="jm-cart-banner__scene">
+        <p class="jm-cart-banner__scene-label">Carrito de compras</p>
+        <div class="jm-cart-banner__bag-wrap">
+          <span class="jm-cart-banner__jewel jm-cart-banner__jewel--1"></span>
+          <span class="jm-cart-banner__jewel jm-cart-banner__jewel--2"></span>
+          <span class="jm-cart-banner__jewel jm-cart-banner__jewel--3"></span>
+          <span class="jm-cart-banner__jewel jm-cart-banner__jewel--4"></span>
+          <span class="jm-cart-banner__spark jm-cart-banner__spark--1">✦</span>
+          <span class="jm-cart-banner__spark jm-cart-banner__spark--2">✦</span>
+          <div class="jm-cart-banner__bag">
+            <svg viewBox="0 0 200 240" fill="none" aria-hidden="true">
+              <path d="M30 70h140l-12 150H42L30 70z" fill="#faf6f0" stroke="#c59446" stroke-width="2"/>
+              <path d="M55 70V48a45 45 0 0190 0v22" stroke="#c59446" stroke-width="2.5" fill="none"/>
+              <path d="M70 70c0-20 15-32 30-32s30 12 30 32" stroke="#e197ac" stroke-width="1.5" fill="none" opacity="0.6"/>
+              <circle cx="100" cy="130" r="22" fill="rgba(225,151,172,0.15)" stroke="#c59446" stroke-width="1.2"/>
+              <path d="M88 130h24M100 118v24" stroke="#c59446" stroke-width="1" opacity="0.5"/>
+              <path d="M50 95h100" stroke="#c59446" stroke-width="1" opacity="0.35"/>
+            </svg>
           </div>
         </div>
       </div>
-    </article>
+    </div>
+  </article>
 
-    <div class="jm-cart-body">
-      <p class="jm-cart-fase2">
-        <strong>Fase 2 · debajo del banner</strong><br>
-        Aquí irá el contenido dinámico de WooCommerce: productos en el carrito <em>o</em> mensaje si está vacío.<br>
-        Por ahora solo definimos la landing del carrito (banner superior).
-      </p>
+  <main class="jm-cart-main">
+    <!-- Con productos -->
+    <div class="jm-cart-layout jm-cart-con-productos">
+      <div>
+        <div class="jm-cart-table-wrap">
+          <div class="jm-cart-table-head">
+            <span>Producto</span><span>Precio</span><span>Cantidad</span><span>Subtotal</span><span></span>
+          </div>
+          <article class="jm-cart-item">
+            <div class="jm-cart-item__img" role="img" aria-label="Aros Corazón Rosa"></div>
+            <div class="jm-cart-item__name-block">
+              <p class="jm-cart-item__name">Aros Corazón Rosa</p>
+              <p class="jm-cart-item__meta">Baño de oro 18k · Esencial</p>
+              <span class="jm-cart-item__chip">Esencial</span>
+            </div>
+            <p class="jm-cart-item__price">$12.990</p>
+            <div class="jm-cart-item__qty">
+              <button type="button" aria-label="Disminuir">−</button>
+              <span>1</span>
+              <button type="button" aria-label="Aumentar">+</button>
+            </div>
+            <p class="jm-cart-item__subtotal">$12.990</p>
+            <button type="button" class="jm-cart-item__remove" aria-label="Eliminar">×</button>
+          </article>
+          <article class="jm-cart-item">
+            <div class="jm-cart-item__img" role="img" aria-label="Cadena Eslabón Dorado"></div>
+            <div class="jm-cart-item__name-block">
+              <p class="jm-cart-item__name">Cadena Eslabón Dorado</p>
+              <p class="jm-cart-item__meta">Gold · 45 cm</p>
+              <span class="jm-cart-item__chip jm-cart-item__chip--gold">Gold</span>
+            </div>
+            <p class="jm-cart-item__price">$18.990</p>
+            <div class="jm-cart-item__qty">
+              <button type="button" aria-label="Disminuir">−</button>
+              <span>1</span>
+              <button type="button" aria-label="Aumentar">+</button>
+            </div>
+            <p class="jm-cart-item__subtotal">$18.990</p>
+            <button type="button" class="jm-cart-item__remove" aria-label="Eliminar">×</button>
+          </article>
+        </div>
+        <div class="jm-cart-actions">
+          <a class="jm-btn jm-btn--ghost" href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">← Seguir comprando</a>
+          <button type="button" class="jm-btn jm-btn--ghost">Actualizar carrito</button>
+        </div>
+      </div>
+
+      <aside class="jm-cart-totals" aria-label="Resumen del pedido">
+        <h2 class="jm-cart-totals__title">Resumen</h2>
+        <div class="jm-cart-totals__row"><span>Subtotal</span><strong>$31.980</strong></div>
+        <div class="jm-cart-totals__row"><span>Envío</span><strong>Calculado en checkout</strong></div>
+        <div class="jm-cart-totals__row jm-cart-totals__row--total"><span>Total</span><strong>$31.980</strong></div>
+        <p class="jm-cart-totals__note">Los cupones y el costo de despacho se aplican al finalizar la compra.</p>
+        <button type="button" class="jm-btn jm-btn--primary">Finalizar compra</button>
+        <a class="jm-btn jm-btn--ghost" href="../mockups-inicio/wireframe-inicio.html">Seguir explorando</a>
+      </aside>
+    </div>
+
+    <!-- Vacío -->
+    <div class="jm-cart-vacio">
+      <div class="jm-cart-empty">
+        <p class="jm-cart-empty__icon" aria-hidden="true">✦</p>
+        <h2 class="jm-cart-empty__title">Tu carrito está vacío</h2>
+        <p class="jm-cart-empty__text">Aún no has agregado joyas. Explora nuestras colecciones Esencial, Gold y Deluxe.</p>
+        <div class="jm-cart-empty__actions">
+          <a class="jm-btn jm-btn--primary" href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">Ver colecciones</a>
+          <a class="jm-btn jm-btn--ghost" href="../mockups-inicio/wireframe-inicio.html">Volver al inicio</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="jm-cart-trust" aria-label="Confianza">
+      <p class="jm-cart-trust__item"><span>🚚</span>Despacho a todo Chile</p>
+      <p class="jm-cart-trust__item"><span>♡</span>Garantía de calidad</p>
+      <p class="jm-cart-trust__item"><span>✦</span>Pago seguro</p>
     </div>
   </main>
 
-  <footer class="jm-cart-foot">© 2026 Joyas Mercury. Todos los derechos reservados. ♡</footer>
+  <footer class="ft-e">
+    <div class="ft-e__inner">
+      <img class="ft-e__logo" src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury">
+      <nav class="ft-e__nav">
+        <a href="#">Nosotros</a>
+        <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">Esencial</a>
+        <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=gold">Gold</a>
+        <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=deluxe">Deluxe</a>
+        <a href="#">Mi Cuenta</a>
+        <a href="wireframe-carrito-landing.html">Mi Carrito</a>
+        <a href="#">Contacto</a>
+      </nav>
+      <div class="ft-e__legal">
+        <a href="#">Políticas de compra</a>
+        <a href="#">Cambios y garantías</a>
+        <a href="#">Despachos</a>
+        <a href="#">Cuidado de joyas</a>
+      </div>
+    </div>
+    <div class="ft-e__bottom">
+      <p class="ft-e__copy">Derechos reservados © 2026 joyasmercury.cl</p>
+    </div>
+  </footer>
+
+  <a class="jm-wa-fab" href="#" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <nav class="jm-bottom-nav" aria-label="Navegación móvil">
+    <a href="../mockups-inicio/wireframe-inicio.html">
+      <svg viewBox="0 0 24 24"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-9.5z"/></svg>
+      Inicio
+    </a>
+    <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>
+      Tienda
+    </a>
+    <a href="wireframe-carrito-landing.html" class="is-here">
+      <svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 11H7.2L6 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></svg>
+      Carrito
+    </a>
+    <a href="#">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      Cuenta
+    </a>
+  </nav>
+
+  <div class="jm-wireframe-switch">
+    <a href="../mockups-inicio/wireframe-inicio.html">← Inicio</a>
+    · Estado:
+    <a href="?estado=productos" id="sw-productos">Con productos</a>
+    <a href="?estado=vacio" id="sw-vacio">Vacío</a>
+  </div>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var estado = params.get('estado') === 'vacio' ? 'vacio' : 'productos';
+      document.body.dataset.estado = estado;
+      if (params.get('shot') === '1') document.body.dataset.shot = '1';
+      var swP = document.getElementById('sw-productos');
+      var swV = document.getElementById('sw-vacio');
+      if (swP) swP.classList.toggle('is-active', estado === 'productos');
+      if (swV) swV.classList.toggle('is-active', estado === 'vacio');
+    })();
+  </script>
 </body>
 </html>

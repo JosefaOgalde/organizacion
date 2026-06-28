@@ -358,12 +358,13 @@ window.JM_NUEVO_PROTOTIPO = {
     },
     {
       id: 'carrito',
-      titulo: 'Mi Carrito · landing banner 1000×500',
-      descripcion: 'Solo identifica la página: «Mi Carrito» + «Estás en tu carrito de compras». Visual bolsa+joyas. Sin vacío/con productos (fase 2).',
+      titulo: 'Mi Carrito · landing completa',
+      descripcion: 'Banner 1000×500 + tabla WooCommerce, resumen, confianza y footer E. Alternar ?estado=productos o ?estado=vacio.',
       wireframe: 'interfaces/mockups-carrito/wireframe-carrito-landing.html',
       pantallas: [
         { id: 'carrito-banner', vista: 'desktop', titulo: 'Banner · 1000×500 px', archivo: 'interfaces/mockups-carrito/jm-banner-carrito-1000x500.png' },
-        { id: 'carrito-pagina', vista: 'desktop', titulo: 'Página Mi Carrito', archivo: 'interfaces/mockups-carrito/jm-carrito-landing-desktop.png' }
+        { id: 'carrito-desktop', vista: 'desktop', titulo: 'Landing completa · desktop', archivo: 'interfaces/mockups-carrito/jm-carrito-landing-desktop.png' },
+        { id: 'carrito-mobile', vista: 'mobile', titulo: 'Landing completa · mobile', archivo: 'interfaces/mockups-carrito/jm-carrito-landing-mobile.png' }
       ]
     },
     {
