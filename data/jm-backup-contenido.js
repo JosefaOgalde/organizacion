@@ -295,12 +295,12 @@ window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo) {
 /** Pantallas del diseño Fase 2 (se van agregando aquí) */
 window.JM_NUEVO_PROTOTIPO = {
   version: 1,
-  intro: 'Diseño propuesto Fase 2 · logos del manual de marca · responsive mobile/desktop.',
+  intro: 'Diseño propuesto Fase 2 · inicio completo · logos manual de marca · responsive mobile/desktop.',
   secciones: [
     {
       id: 'inicio',
-      titulo: 'Inicio · navbar + carrusel',
-      descripcion: 'Logo centrado (manual JM), menú hamburguesa, búsqueda y carrito vanguardistas, banner carrusel principal.',
+      titulo: 'Inicio · wireframe completo',
+      descripcion: 'Header (logo + búsqueda + carrito), carrusel banner, barra de valor, círculos Esencial/Gold/Deluxe, Novedades, Últimas unidades, Historias que Brillan, footer dorado, WhatsApp y nav inferior móvil.',
       wireframe: 'interfaces/mockups-inicio/wireframe-inicio.html',
       pantallas: [
         {
