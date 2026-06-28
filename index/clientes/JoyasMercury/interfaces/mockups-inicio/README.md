@@ -42,3 +42,24 @@ python3 scripts/capturar-jm-wireframe-inicio.py
 | `jm-inicio-wireframe-desktop.png` | 1440px · full page |
 
 Las mismas imágenes aparecen en la ficha **Nuevo prototipo** → `/index/clientes/joyasmercury/`.
+
+## Footer · 4 opciones de diagramación
+
+Comparativa interactiva (alternativas al pie actual con logo izquierda + links apilados):
+
+```
+http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-inicio/wireframe-footer-opciones.html
+```
+
+| Opción | Estilo |
+|--------|--------|
+| **A** | Editorial horizontal — logo + links en fila + redes |
+| **B** | Dos niveles — franja crema (marca + WhatsApp) + dorado (4 columnas) |
+| **C** | Centrado minimal — logo y links al centro, estilo boutique |
+| **D** | 3 columnas + bloque contacto WhatsApp a la derecha |
+
+Regenerar capturas:
+
+```bash
+python3 scripts/capturar-jm-footer-opciones.py
+```

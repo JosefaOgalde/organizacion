@@ -316,6 +316,26 @@ window.JM_NUEVO_PROTOTIPO = {
           archivo: 'interfaces/mockups-inicio/jm-inicio-wireframe-desktop.png'
         }
       ]
+    },
+    {
+      id: 'footer-opciones',
+      titulo: 'Footer · 4 diagramaciones',
+      descripcion: 'Alternativas al pie actual: A editorial horizontal · B dos niveles · C centrado minimal · D columnas + contacto.',
+      wireframe: 'interfaces/mockups-inicio/wireframe-footer-opciones.html',
+      pantallas: [
+        {
+          id: 'footer-opciones-desktop',
+          vista: 'desktop',
+          titulo: 'Comparativa · desktop',
+          archivo: 'interfaces/mockups-inicio/jm-footer-opciones-desktop.png'
+        },
+        {
+          id: 'footer-opciones-mobile',
+          vista: 'mobile',
+          titulo: 'Comparativa · mobile',
+          archivo: 'interfaces/mockups-inicio/jm-footer-opciones-mobile.png'
+        }
+      ]
     }
   ]
 };
