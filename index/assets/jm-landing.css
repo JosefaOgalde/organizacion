@@ -969,6 +969,38 @@
   opacity: 0.85;
 }
 
+.jm-img-editable__btn--danger {
+  color: #b33;
+  border-color: #e8b4b4;
+}
+
+.jm-img-ocultas-panel {
+  margin: 1rem 0;
+  padding: 0.65rem 0.85rem;
+  border: 1px dashed var(--jm-border, #e8b8c8);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.jm-img-ocultas-panel__titulo {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--jm-text);
+}
+
+.jm-img-meta-nota {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
+  color: var(--jm-muted, #888);
+}
+
+.jm-landing:not(.jm-landing--edicion) .landing-img__solo-edicion,
+.ficha-doc:not(.ficha-doc--edicion) .landing-img__solo-edicion {
+  display: none !important;
+}
+
 .jm-nuevo-proto__card .jm-img-editable,
 .jm-interfaces__card .jm-img-editable {
   border-radius: 6px;

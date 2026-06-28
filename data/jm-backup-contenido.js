@@ -507,6 +507,11 @@ window.asegurarWireframesJM = function asegurarWireframesJM(cli) {
   if (!cli.ficha.landing.imagenesOverrides || typeof cli.ficha.landing.imagenesOverrides !== 'object') {
     cli.ficha.landing.imagenesOverrides = {};
   }
+  if (!Array.isArray(cli.ficha.landing.imagenesOcultas)) cli.ficha.landing.imagenesOcultas = [];
+  if (!cli.ficha.landing.imagenesMeta || typeof cli.ficha.landing.imagenesMeta !== 'object') {
+    cli.ficha.landing.imagenesMeta = {};
+  }
+  if (!Array.isArray(cli.ficha.landing.imagenes)) cli.ficha.landing.imagenes = [];
   const src = window.JM_BACKUP_FICHA?.wireframes;
   if (!src?.length) return;
   if (!Array.isArray(cli.ficha.wireframes) || !cli.ficha.wireframes.length) {
@@ -1169,10 +1174,21 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
   const overrides = opts.imagenesOverrides && typeof opts.imagenesOverrides === 'object'
     ? opts.imagenesOverrides
     : {};
+  const ocultas = Array.isArray(opts.imagenesOcultas) ? opts.imagenesOcultas : [];
+  const meta = opts.imagenesMeta && typeof opts.imagenesMeta === 'object' ? opts.imagenesMeta : {};
   const onChange = typeof opts.onChange === 'function' ? opts.onChange : null;
   const onError = typeof opts.onError === 'function' ? opts.onError : null;
   const maxBytes = opts.maxBytes || 700 * 1024;
   const scope = root && root.querySelectorAll ? root : document;
+
+  function emitChange() {
+    if (!onChange) return;
+    onChange({
+      imagenesOverrides: { ...overrides },
+      imagenesOcultas: [...ocultas],
+      imagenesMeta: { ...meta }
+    });
+  }
 
   function syncParentLinks(img, src) {
     const card = img.closest('[data-jm-int-src], [data-jm-nuevo-src]');
@@ -1198,15 +1214,73 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
     if (visorLink) visorLink.href = src;
   }
 
+  function applyMetaToImg(img, key) {
+    const m = meta[key];
+    if (!m) return;
+    if (m.titulo) img.alt = m.titulo;
+    const card = img.closest('.jm-nuevo-proto__card, .jm-interfaces__card, .ficha-wireframe, figure');
+    if (!card) return;
+    if (m.notas && !card.querySelector('.jm-img-meta-nota')) {
+      const cap = card.querySelector('figcaption');
+      if (cap) {
+        const nota = document.createElement('span');
+        nota.className = 'jm-img-meta-nota';
+        nota.textContent = m.notas;
+        cap.appendChild(nota);
+      }
+    }
+  }
+
   function applyToImg(img) {
     const key = img.dataset.jmImgKey;
     if (!key) return null;
+    const host = img.closest('.jm-nuevo-proto__card, .jm-interfaces__card, .ficha-wireframe, .jm-galeria__slide, .jm-prototipo__pantalla, figure');
+    if (ocultas.includes(key)) {
+      if (host) host.style.display = 'none';
+      return { key, hidden: true };
+    }
+    if (host) host.style.display = '';
     const def = img.dataset.jmImgDefault || img.src;
     const src = overrides[key] || def;
     if (img.getAttribute('src') !== src) img.setAttribute('src', src);
     syncParentLinks(img, src);
     syncVisorSiActiva(img, src);
+    applyMetaToImg(img, key);
     return { key, hasOverride: !!overrides[key] };
+  }
+
+  function bindOcultaRestore(key) {
+    if (!key || scope.querySelector(`[data-jm-img-restore-key="${key}"]`)) return;
+    let panel = scope.querySelector('[data-jm-img-ocultas-panel]');
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.className = 'jm-img-ocultas-panel landing-img__solo-edicion';
+      panel.dataset.jmImgOcultasPanel = '1';
+      panel.innerHTML = '<p class="jm-img-ocultas-panel__titulo">Imágenes ocultas</p>';
+      const wire = scope.querySelector('#ficha-wireframes-jm, #jm-nuevo-prototipo, .jm-landing--ficha');
+      (wire || scope).appendChild(panel);
+    }
+    if (panel.querySelector(`[data-jm-img-restore-key="${key}"]`)) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'jm-img-editable__btn jm-img-editable__btn--ghost';
+    btn.dataset.jmImgRestoreKey = key;
+    btn.textContent = 'Mostrar: ' + key.replace(/^jm:/, '').split('/').pop();
+    btn.addEventListener('click', () => {
+      const idx = ocultas.indexOf(key);
+      if (idx >= 0) ocultas.splice(idx, 1);
+      const imgEl = scope.querySelector(`[data-jm-img-key="${key}"]`);
+      if (imgEl) {
+        imgEl.dataset.jmImgEditorBound = '0';
+        const host = imgEl.closest('.jm-nuevo-proto__card, .jm-interfaces__card, .ficha-wireframe, .jm-galeria__slide, .jm-prototipo__pantalla, figure');
+        if (host) host.style.display = '';
+      }
+      btn.remove();
+      if (!panel.querySelector('[data-jm-img-restore-key]')) panel.remove();
+      emitChange();
+      window.initJMImagenesEditorUI(scope, opts);
+    });
+    panel.appendChild(btn);
   }
 
   scope.querySelectorAll('[data-jm-img-key]').forEach((img) => {
@@ -1218,7 +1292,10 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
     }
     img.dataset.jmImgEditorBound = '1';
     const info = applyToImg(img);
-    if (!info) return;
+    if (!info || info.hidden) {
+      if (info?.hidden) bindOcultaRestore(info.key);
+      return;
+    }
 
     const interactiveParent = img.closest('a, button');
     const card = img.closest('.jm-nuevo-proto__card, .jm-interfaces__card, .ficha-wireframe, .jm-galeria__slide, .jm-prototipo__pantalla, figure');
@@ -1243,6 +1320,16 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
     btnRestore.textContent = 'Restaurar original';
     btnRestore.hidden = !info.hasOverride;
 
+    const btnEdit = document.createElement('button');
+    btnEdit.type = 'button';
+    btnEdit.className = 'jm-img-editable__btn';
+    btnEdit.textContent = 'Editar';
+
+    const btnDelete = document.createElement('button');
+    btnDelete.type = 'button';
+    btnDelete.className = 'jm-img-editable__btn jm-img-editable__btn--danger';
+    btnDelete.textContent = 'Borrar';
+
     btnChange.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -1255,7 +1342,30 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
       delete overrides[info.key];
       applyToImg(img);
       btnRestore.hidden = true;
-      if (onChange) onChange({ ...overrides });
+      emitChange();
+    });
+
+    btnEdit.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const actual = meta[info.key] || { titulo: img.alt || '', notas: '' };
+      const titulo = prompt('Título de la imagen:', actual.titulo || '');
+      if (titulo === null) return;
+      const notas = prompt('Notas (opcional):', actual.notas || '');
+      if (notas === null) return;
+      meta[info.key] = { titulo: titulo.trim(), notas: notas.trim() };
+      applyToImg(img);
+      emitChange();
+    });
+
+    btnDelete.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!confirm('¿Ocultar esta imagen de la landing?')) return;
+      if (!ocultas.includes(info.key)) ocultas.push(info.key);
+      applyToImg(img);
+      bindOcultaRestore(info.key);
+      emitChange();
     });
 
     input.addEventListener('change', () => {
@@ -1271,7 +1381,7 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
         overrides[info.key] = reader.result;
         applyToImg(img);
         btnRestore.hidden = false;
-        if (onChange) onChange({ ...overrides });
+        emitChange();
       };
       reader.onerror = () => {
         if (onError) onError('No se pudo leer la imagen');
@@ -1280,7 +1390,9 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
     });
 
     bar.appendChild(btnChange);
+    bar.appendChild(btnEdit);
     bar.appendChild(btnRestore);
+    bar.appendChild(btnDelete);
     bar.appendChild(input);
 
     if (interactiveParent && card) {
@@ -1300,6 +1412,8 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
     const active = sec.querySelector('.jm-interfaces__card--activa img[data-jm-img-key], .jm-nuevo-proto__card--activa img[data-jm-img-key]');
     if (active) syncVisorSiActiva(active, active.src);
   });
+
+  ocultas.forEach((key) => bindOcultaRestore(key));
 };
 
 /** Inicializa carruseles JM (ficha, Clientes, portal) */

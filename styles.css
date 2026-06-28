@@ -3842,6 +3842,63 @@ body.modal-abierto {
   opacity: 0.85;
 }
 
+.ficha-doc:not(.ficha-doc--edicion) .landing-img__solo-edicion {
+  display: none !important;
+}
+
+.landing-img__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.landing-img__card {
+  margin: 0;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.landing-img__card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+
+.landing-img__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0.35rem;
+  background: #fafafa;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.landing-img__btn {
+  border: 1px solid var(--ficha-accent, #ccc);
+  background: #fff;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.72rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.landing-img__btn--primary {
+  background: var(--ficha-accent, #4a8ab0);
+  color: #fff;
+  border-color: transparent;
+}
+
+.landing-img__btn--danger {
+  color: #b33;
+  border-color: #e8b4b4;
+}
+
 .ficha-seccion__head {
   display: flex;
   gap: 0.5rem;

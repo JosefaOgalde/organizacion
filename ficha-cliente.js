@@ -14,6 +14,9 @@
     cli.ficha.documentos.forEach(d => {
       if (!d.clienteId) d.clienteId = cli.id;
     });
+    if (typeof window.LandingImagenesStore !== 'undefined') {
+      window.LandingImagenesStore.asegurarLanding(cli);
+    }
   }
 
   function readFileAsDataURL(file) {
@@ -227,6 +230,16 @@
         '</div>' +
         '<button type="button" class="btn btn--small archivo-btn--del ficha-solo-edicion" data-del-doc-ficha="' + d.id + '" title="Quitar">✕</button></li>';
     }).join('') + '</ul>';
+  }
+
+  function htmlSeccionLandingImagenes(cli) {
+    if (typeof window.htmlLandingImagenesSeccion !== 'function') return '';
+    if (typeof window.LandingImagenesStore !== 'undefined') {
+      window.LandingImagenesStore.asegurarLanding(cli);
+    } else if (!cli.ficha.landing) {
+      cli.ficha.landing = { imagenes: [] };
+    }
+    return window.htmlLandingImagenesSeccion(cli.ficha.landing, { claseExtra: '' });
   }
 
   function htmlSeccionWireframesJM(cli) {
@@ -739,6 +752,7 @@
           '<div class="ficha-roles-detalle">' + rolesDetalle + '</div></section>'
         : '') +
       htmlSeccionWireframesJM(cli) +
+      htmlSeccionLandingImagenes(cli) +
       avisoCompletar +
       '<p class="ficha-doc__intro ficha-solo-edicion">Esta ficha se incluye al generar prompts en <strong>Realizar tarea</strong>. Puedes guardar solo lo que tengas — no hace falta completar todo.</p>' +
       seccionesCampos +
@@ -757,14 +771,30 @@
     if (typeof window.initJMWireframesUI === 'function') {
       window.initJMWireframesUI(doc);
     }
+    if (typeof window.initLandingImagenesGaleriaUI === 'function') {
+      if (typeof window.LandingImagenesStore !== 'undefined') {
+        window.LandingImagenesStore.asegurarLanding(cli);
+      }
+      window.initLandingImagenesGaleriaUI(doc, {
+        landing: cli.ficha.landing,
+        onChange() {
+          guardar();
+        },
+        onError(msg) {
+          mostrarToast(msg);
+        }
+      });
+    }
     if (typeof window.initJMImagenesEditorUI === 'function' && esClienteJM(cli)) {
       if (typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
-      const overrides = cli.ficha.landing?.imagenesOverrides || {};
+      const landing = cli.ficha.landing || {};
       window.initJMImagenesEditorUI(doc, {
-        imagenesOverrides: overrides,
-        onChange(ov) {
+        imagenesOverrides: landing.imagenesOverrides || {},
+        imagenesOcultas: landing.imagenesOcultas || [],
+        imagenesMeta: landing.imagenesMeta || {},
+        onChange(state) {
           if (!cli.ficha.landing) cli.ficha.landing = {};
-          cli.ficha.landing.imagenesOverrides = ov;
+          Object.assign(cli.ficha.landing, state);
           guardar();
         },
         onError(msg) {

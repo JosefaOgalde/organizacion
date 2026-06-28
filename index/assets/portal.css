@@ -222,3 +222,165 @@ body {
 .portal-grid--proyectos {
   margin-top: 0.75rem;
 }
+
+/* Landing cliente — edición e imágenes */
+.portal-cliente__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.portal-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--card-border, var(--accent));
+  background: #fff;
+  color: var(--card-text, var(--text));
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.portal-btn--ghost {
+  background: transparent;
+}
+
+.portal-btn--active {
+  background: var(--card-border, var(--accent));
+  color: #fff;
+  border-color: transparent;
+}
+
+.portal-cliente__hint {
+  margin: 0 0 1rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.85rem;
+  border: 1px dashed var(--card-border, var(--accent));
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.portal-cliente:not(.portal-cliente--edicion) .landing-img__solo-edicion {
+  display: none !important;
+}
+
+.portal-toast {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  background: #333;
+  color: #fff;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  z-index: 999;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+}
+
+.portal-toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.landing-img__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.landing-img__card {
+  margin: 0;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.landing-img__card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+
+.landing-img__caption {
+  padding: 0.45rem 0.55rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.landing-img__notas {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.landing-img__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0.35rem;
+  background: #fafafa;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.landing-img__btn {
+  border: 1px solid var(--card-border, #ccc);
+  background: #fff;
+  color: var(--card-text, inherit);
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.72rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.landing-img__btn--primary {
+  background: var(--card-border, var(--accent));
+  color: #fff;
+  border-color: transparent;
+}
+
+.landing-img__btn--danger {
+  color: #b33;
+  border-color: #e8b4b4;
+}
+
+.landing-img__acciones {
+  margin-top: 0.85rem;
+}
+
+.landing-img__vacio {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.landing-img__intro {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.landing-img__intro--vista {
+  display: block;
+}
+
+.portal-cliente--edicion .landing-img__intro--vista {
+  display: none;
+}
+
+.ficha-doc:not(.ficha-doc--edicion) .landing-img__solo-edicion,
+.jm-landing:not(.jm-landing--edicion) .landing-img__solo-edicion {
+  display: none !important;
+}

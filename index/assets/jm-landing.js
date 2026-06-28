@@ -301,7 +301,7 @@
             </button>
           </div>
         </header>
-        ${modoEdicion ? '<p class="jm-landing__hint-edicion jm-solo-edicion">Puedes reemplazar cualquier imagen del prototipo con «Cambiar imagen» debajo de cada captura.</p>' : ''}
+        ${modoEdicion ? '<p class="jm-landing__hint-edicion jm-solo-edicion">Imágenes cargadas: agregar, reemplazar, editar título/notas o borrar. En prototipos JM también puedes cambiar u ocultar capturas integradas.</p>' : ''}
 
         <article class="ficha-doc ficha-doc--jm ficha-doc--wireframes jm-ficha-doc">
           <header class="ficha-doc__encabezado" style="border-bottom-color:${colores.border}">
@@ -320,6 +320,8 @@
           </header>
 
           ${nuevoPrototipo}
+
+          ${imagenesGaleriaHtml()}
 
           ${wireframes}
 
@@ -365,6 +367,29 @@
     bindEvents(cli);
     if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
     initImagenesEditor(cli);
+    initImagenesGaleria(cli);
+  }
+
+  function initImagenesGaleria(cli) {
+    if (typeof window.initLandingImagenesGaleriaUI !== 'function') return;
+    if (typeof window.LandingImagenesStore !== 'undefined') {
+      window.LandingImagenesStore.asegurarLanding(cli);
+    }
+    window.initLandingImagenesGaleriaUI(root, {
+      landing,
+      onChange() {
+        cli.ficha.actualizado = new Date().toISOString();
+        guardar();
+      },
+      onError(msg) {
+        toast(msg);
+      }
+    });
+  }
+
+  function imagenesGaleriaHtml() {
+    if (typeof window.htmlLandingImagenesSeccion !== 'function') return '';
+    return window.htmlLandingImagenesSeccion(landing, { claseExtra: 'ficha-seccion--portal' });
   }
 
   function initImagenesEditor(cli) {
@@ -372,10 +397,16 @@
     if (!landing.imagenesOverrides || typeof landing.imagenesOverrides !== 'object') {
       landing.imagenesOverrides = {};
     }
+    if (!Array.isArray(landing.imagenesOcultas)) landing.imagenesOcultas = [];
+    if (!landing.imagenesMeta || typeof landing.imagenesMeta !== 'object') {
+      landing.imagenesMeta = {};
+    }
     window.initJMImagenesEditorUI(root, {
       imagenesOverrides: landing.imagenesOverrides,
-      onChange(ov) {
-        landing.imagenesOverrides = ov;
+      imagenesOcultas: landing.imagenesOcultas,
+      imagenesMeta: landing.imagenesMeta,
+      onChange(state) {
+        Object.assign(landing, state);
         cli.ficha.actualizado = new Date().toISOString();
         guardar();
       },
