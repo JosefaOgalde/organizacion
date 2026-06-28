@@ -112,33 +112,127 @@
     body[data-col="gold"] .jm-col-switch a.is-active { background: var(--gold-dark); border-color: var(--gold-dark); }
     body[data-col="deluxe"] .jm-col-switch a.is-active { background: var(--mauve); border-color: var(--mauve); }
 
-    /* Filtros categoría */
+    /* —— Filtros · 4 modos —— */
+    .jm-filters-block { background: var(--cream); }
+    body[data-filtro="panel"] .jm-filters-block { background: #fff; }
+
+    body[data-filtro="chips"] .filt-ui--circulos,
+    body[data-filtro="chips"] .filt-ui--tabs,
+    body[data-filtro="chips"] .filt-layout--panel { display: none !important; }
+    body[data-filtro="circulos"] .filt-ui--chips,
+    body[data-filtro="circulos"] .filt-ui--tabs,
+    body[data-filtro="circulos"] .filt-layout--panel { display: none !important; }
+    body[data-filtro="tabs"] .filt-ui--chips,
+    body[data-filtro="tabs"] .filt-ui--circulos,
+    body[data-filtro="tabs"] .filt-layout--panel { display: none !important; }
+    body[data-filtro="panel"] .filt-ui--chips,
+    body[data-filtro="panel"] .filt-ui--circulos,
+    body[data-filtro="panel"] .filt-ui--tabs { display: none !important; }
+
     .jm-filters {
-      padding: 1rem 1.25rem 0.5rem; background: var(--cream);
+      padding: 1rem 1.25rem 0.5rem;
       position: sticky; top: 0; z-index: 30;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     .jm-filters__label {
-      font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: #9a858c; margin-bottom: 0.55rem;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 0.95rem; color: var(--rose); text-align: center;
+      margin-bottom: 0.75rem;
     }
+    .jm-filters__label small {
+      display: block; font-family: 'Montserrat', sans-serif;
+      font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: #9a858c; margin-top: 0.2rem;
+    }
+
+    /* 1 · Chips */
     .jm-filters__row {
       display: flex; gap: 0.45rem; overflow-x: auto; padding-bottom: 0.5rem;
-      -webkit-overflow-scrolling: touch;
     }
-    .jm-filters__chip {
+    .jm-filt-btn {
       flex-shrink: 0; padding: 0.4rem 0.85rem; border-radius: 999px;
       border: 1px solid var(--beige); background: #fff;
       font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em;
       text-transform: uppercase; color: var(--mauve); cursor: pointer;
-      text-decoration: none; transition: all 0.2s;
     }
-    .jm-filters__chip.is-active {
+    .jm-filt-btn.is-active {
       background: var(--col-accent); border-color: var(--col-accent); color: #fff;
     }
-    body[data-col="gold"] .jm-filters__chip.is-active { background: var(--gold-dark); border-color: var(--gold-dark); }
-    body[data-col="deluxe"] .jm-filters__chip.is-active { background: var(--mauve); border-color: var(--mauve); }
+    body[data-col="gold"] .jm-filt-btn.is-active { background: var(--gold-dark); border-color: var(--gold-dark); }
+    body[data-col="deluxe"] .jm-filt-btn.is-active { background: var(--mauve); border-color: var(--mauve); }
 
+    /* 2 · Círculos (como inicio) */
+    .jm-filt-circles {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;
+      max-width: 420px; margin: 0 auto; padding-bottom: 0.75rem;
+    }
+    .jm-filt-circle {
+      background: none; border: none; cursor: pointer; text-align: center; padding: 0;
+      color: inherit; font-family: inherit;
+    }
+    .jm-filt-circle__ring {
+      width: 100%; aspect-ratio: 1; border-radius: 50%;
+      border: 2px solid var(--line); background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: var(--col-accent); margin-bottom: 0.35rem;
+      transition: all 0.2s;
+    }
+    .jm-filt-circle.is-active .jm-filt-circle__ring {
+      border-color: var(--col-accent); background: rgba(200,143,156,0.12);
+      box-shadow: 0 0 0 2px var(--col-accent);
+    }
+    body[data-col="gold"] .jm-filt-circle.is-active .jm-filt-circle__ring {
+      border-color: var(--gold-dark); background: rgba(236,197,74,0.15); box-shadow: 0 0 0 2px var(--gold-dark);
+    }
+    body[data-col="deluxe"] .jm-filt-circle.is-active .jm-filt-circle__ring {
+      border-color: var(--mauve); background: rgba(106,64,72,0.08); box-shadow: 0 0 0 2px var(--mauve);
+    }
+    .jm-filt-circle__name {
+      font-size: 0.58rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    /* 3 · Tabs */
+    .jm-filt-tabs {
+      display: flex; border-bottom: 1px solid var(--line);
+      overflow-x: auto; padding-bottom: 0;
+    }
+    .jm-filt-tab {
+      flex: 1; min-width: 4.5rem; padding: 0.65rem 0.5rem;
+      background: none; border: none; border-bottom: 2px solid transparent;
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.05em;
+      text-transform: uppercase; color: #9a858c; cursor: pointer;
+      margin-bottom: -1px;
+    }
+    .jm-filt-tab.is-active {
+      color: var(--col-accent); border-bottom-color: var(--col-accent);
+    }
+    body[data-col="gold"] .jm-filt-tab.is-active { color: var(--gold-dark); border-bottom-color: var(--gold-dark); }
+    body[data-col="deluxe"] .jm-filt-tab.is-active { color: var(--mauve); border-bottom-color: var(--mauve); }
+
+    /* 4 · Panel lateral */
+    .filt-layout--panel {
+      display: grid; grid-template-columns: 1fr; gap: 0;
+      max-width: 1100px; margin: 0 auto; padding: 0 1.25rem;
+    }
+    .jm-filt-panel {
+      background: var(--cream); border: 1px solid var(--line);
+      border-radius: 8px; padding: 1rem; margin-bottom: 1rem;
+    }
+    .jm-filt-panel__title {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 0.65rem; color: var(--mauve);
+    }
+    .jm-filt-panel__list { list-style: none; }
+    .jm-filt-panel__list button {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; padding: 0.5rem 0; background: none; border: none;
+      border-bottom: 1px solid var(--line); font-size: 0.72rem;
+      color: var(--mauve); cursor: pointer; text-align: left;
+    }
+    .jm-filt-panel__list button.is-active { color: var(--col-accent); font-weight: 600; }
+    .jm-filt-panel__list button span { font-size: 0.62rem; color: #9a858c; }
+
+    .jm-catalog-wrap { min-width: 0; }
     .jm-catalog {
       padding: 1.25rem 1.25rem 2.5rem;
       max-width: 1100px; margin: 0 auto;
@@ -237,7 +331,10 @@
       background: rgba(255,255,255,0.95); border: 1px solid var(--line);
       border-radius: 6px; padding: 0.4rem 0.65rem; font-size: 0.62rem;
     }
-    .jm-wireframe-switch a { color: var(--mauve); font-weight: 600; margin: 0 0.2rem; }
+    body[data-filtro="panel"] #catalog-main { display: none; }
+    body:not([data-filtro="panel"]) .filt-layout--panel { display: none !important; }
+
+    .jm-wireframe-switch a.is-active { color: var(--gold-dark); text-decoration: underline; }
 
     @media (min-width: 900px) {
       body { padding-bottom: 0; }
@@ -248,6 +345,13 @@
       .jm-products { grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
       .ft-e__nav { display: flex; flex-wrap: wrap; justify-content: center; max-width: none; gap: 0.5rem 2rem; text-align: center; }
       .jm-bottom-nav { display: none; }
+      .jm-filt-circles { grid-template-columns: repeat(6, 1fr); max-width: 720px; }
+      .filt-layout--panel {
+        grid-template-columns: 200px 1fr; gap: 1.5rem;
+        padding: 1.25rem 2.5rem 0;
+      }
+      .jm-filt-panel { margin-bottom: 0; position: sticky; top: 1rem; align-self: start; }
+      .jm-catalog { padding: 0 0 2.5rem; max-width: none; }
       .jm-filters { top: auto; position: relative; box-shadow: none; }
     }
     body[data-shot="1"] .jm-wireframe-switch,
@@ -305,19 +409,86 @@
     <a href="?coleccion=deluxe" data-col="deluxe">Deluxe</a>
   </nav>
 
-  <div class="jm-filters">
-    <p class="jm-filters__label">Filtrar por categoría · misma vista (AJAX en producción)</p>
-    <div class="jm-filters__row" role="tablist">
-      <button type="button" class="jm-filters__chip is-active" data-cat="todos">Todos</button>
-      <button type="button" class="jm-filters__chip" data-cat="aros">Aros</button>
-      <button type="button" class="jm-filters__chip" data-cat="cadenas">Cadenas</button>
-      <button type="button" class="jm-filters__chip" data-cat="anillos">Anillos</button>
-      <button type="button" class="jm-filters__chip" data-cat="pulseras">Pulseras</button>
-      <button type="button" class="jm-filters__chip" data-cat="conjuntos">Conjuntos</button>
+  <div class="jm-filters-block">
+    <!-- 1 · Chips -->
+    <div class="jm-filters filt-ui--chips">
+      <p class="jm-filters__label">Categoría<small>Modo chips · scroll horizontal</small></p>
+      <div class="jm-filters__row">
+        <button type="button" class="jm-filt-btn is-active" data-cat="todos">Todos</button>
+        <button type="button" class="jm-filt-btn" data-cat="aros">Aros</button>
+        <button type="button" class="jm-filt-btn" data-cat="cadenas">Cadenas</button>
+        <button type="button" class="jm-filt-btn" data-cat="anillos">Anillos</button>
+        <button type="button" class="jm-filt-btn" data-cat="pulseras">Pulseras</button>
+        <button type="button" class="jm-filt-btn" data-cat="conjuntos">Conjuntos</button>
+      </div>
+    </div>
+
+    <!-- 2 · Círculos (como inicio) -->
+    <div class="jm-filters filt-ui--circulos">
+      <p class="jm-filters__label">Categoría<small>Modo círculos · igual que COLECCIONES del inicio</small></p>
+      <div class="jm-filt-circles">
+        <button type="button" class="jm-filt-circle is-active" data-cat="todos"><span class="jm-filt-circle__ring">◎</span><span class="jm-filt-circle__name">Todos</span></button>
+        <button type="button" class="jm-filt-circle" data-cat="aros"><span class="jm-filt-circle__ring">◐</span><span class="jm-filt-circle__name">Aros</span></button>
+        <button type="button" class="jm-filt-circle" data-cat="cadenas"><span class="jm-filt-circle__ring">⌇</span><span class="jm-filt-circle__name">Cadenas</span></button>
+        <button type="button" class="jm-filt-circle" data-cat="anillos"><span class="jm-filt-circle__ring">◇</span><span class="jm-filt-circle__name">Anillos</span></button>
+        <button type="button" class="jm-filt-circle" data-cat="pulseras"><span class="jm-filt-circle__ring">◯</span><span class="jm-filt-circle__name">Pulseras</span></button>
+        <button type="button" class="jm-filt-circle" data-cat="conjuntos"><span class="jm-filt-circle__ring">✦</span><span class="jm-filt-circle__name">Conjuntos</span></button>
+      </div>
+    </div>
+
+    <!-- 3 · Tabs -->
+    <div class="jm-filters filt-ui--tabs">
+      <p class="jm-filters__label">Categoría<small>Modo tabs · barra completa</small></p>
+      <div class="jm-filt-tabs">
+        <button type="button" class="jm-filt-tab is-active" data-cat="todos">Todos</button>
+        <button type="button" class="jm-filt-tab" data-cat="aros">Aros</button>
+        <button type="button" class="jm-filt-tab" data-cat="cadenas">Cadenas</button>
+        <button type="button" class="jm-filt-tab" data-cat="anillos">Anillos</button>
+        <button type="button" class="jm-filt-tab" data-cat="pulseras">Pulseras</button>
+        <button type="button" class="jm-filt-tab" data-cat="conjuntos">Conjuntos</button>
+      </div>
+    </div>
+
+    <!-- 4 · Panel + grilla -->
+    <div class="filt-layout--panel">
+      <aside class="jm-filt-panel">
+        <p class="jm-filt-panel__title">Categoría · panel</p>
+        <ul class="jm-filt-panel__list">
+          <li><button type="button" class="is-active" data-cat="todos">Todos <span>8</span></button></li>
+          <li><button type="button" data-cat="aros">Aros <span>2</span></button></li>
+          <li><button type="button" data-cat="cadenas">Cadenas <span>2</span></button></li>
+          <li><button type="button" data-cat="anillos">Anillos <span>2</span></button></li>
+          <li><button type="button" data-cat="pulseras">Pulseras <span>1</span></button></li>
+          <li><button type="button" data-cat="conjuntos">Conjuntos <span>1</span></button></li>
+        </ul>
+      </aside>
+      <div class="jm-catalog-wrap">
+        <main class="jm-catalog">
+          <div class="jm-catalog__meta">
+            <span id="product-count-panel">8 productos</span>
+            <select class="jm-catalog__sort" aria-label="Ordenar">
+              <option>Destacados</option>
+              <option>Precio: menor a mayor</option>
+              <option>Precio: mayor a menor</option>
+              <option>Más recientes</option>
+            </select>
+          </div>
+          <div class="jm-products" id="product-grid-panel">
+            <article class="jm-product" data-cat="aros"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip-p>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Aros Corazón Rosa</p><p class="jm-product__price">$12.990</p></div></article>
+            <article class="jm-product" data-cat="cadenas"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip-p>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Cadena Fina Esencial</p><p class="jm-product__price">$11.990</p></div></article>
+            <article class="jm-product" data-cat="anillos"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip-p>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Anillo Minimal</p><p class="jm-product__price">$9.990</p></div></article>
+            <article class="jm-product" data-cat="pulseras"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip-p>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Pulsera Eslabón</p><p class="jm-product__price">$10.990</p></div></article>
+            <article class="jm-product" data-cat="aros"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip-p>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Aros Perla Mini</p><p class="jm-product__price">$8.990</p></div></article>
+            <article class="jm-product" data-cat="conjuntos"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip-p>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Conjunto Brillo</p><p class="jm-product__price">$24.990</p></div></article>
+            <article class="jm-product" data-cat="cadenas"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip-p>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Cadena Veneziana</p><p class="jm-product__price">$13.990</p></div></article>
+            <article class="jm-product" data-cat="anillos"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip-p>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Anillo Corazón</p><p class="jm-product__price">$7.990</p></div></article>
+          </div>
+        </main>
+      </div>
     </div>
   </div>
 
-  <main class="jm-catalog">
+  <main class="jm-catalog" id="catalog-main">
     <div class="jm-catalog__meta">
       <span id="product-count">8 productos</span>
       <select class="jm-catalog__sort" aria-label="Ordenar">
@@ -373,6 +544,12 @@
 
   <div class="jm-wireframe-switch">
     <a href="../mockups-inicio/wireframe-inicio.html">← Inicio</a>
+    · Filtro:
+    <a href="?coleccion=esencial&filtro=circulos" id="sw-circulos">②</a>
+    <a href="?coleccion=esencial&filtro=chips" id="sw-chips">①</a>
+    <a href="?coleccion=esencial&filtro=tabs" id="sw-tabs">③</a>
+    <a href="?coleccion=esencial&filtro=panel" id="sw-panel">④</a>
+    · <a href="wireframe-filtros-opciones.html">Diagrama</a>
   </div>
 
   <script>
@@ -382,10 +559,13 @@
         gold: { title: 'Gold', sub: 'Mayor resistencia y duración · acabado dorado intenso', chip: 'gold', label: 'Gold' },
         deluxe: { title: 'Deluxe', sub: 'Diseños exclusivos · línea premium · piezas statement', chip: 'deluxe', label: 'Deluxe' }
       };
+      var FILTROS = ['chips', 'circulos', 'tabs', 'panel'];
       var params = new URLSearchParams(location.search);
       var col = COLS[params.get('coleccion')] ? params.get('coleccion') : 'esencial';
+      var filtro = FILTROS.indexOf(params.get('filtro')) >= 0 ? params.get('filtro') : 'circulos';
       var cat = params.get('categoria') || 'todos';
       document.body.dataset.col = col;
+      document.body.dataset.filtro = filtro;
       if (params.get('shot') === '1') document.body.dataset.shot = '1';
 
       var info = COLS[col];
@@ -395,35 +575,53 @@
       document.title = 'Wireframe · Colección ' + info.title + ' · Joyas Mercury';
 
       document.querySelectorAll('.jm-col-switch a').forEach(function (a) {
+        a.href = '?coleccion=' + a.dataset.col + '&filtro=' + filtro;
         a.classList.toggle('is-active', a.dataset.col === col);
       });
 
-      document.querySelectorAll('[data-chip]').forEach(function (el) {
+      document.querySelectorAll('[data-chip], [data-chip-p]').forEach(function (el) {
         el.textContent = info.label;
         el.className = 'jm-product__chip jm-product__chip--' + info.chip;
       });
 
       var others = { esencial: ['gold', 'deluxe'], gold: ['esencial', 'deluxe'], deluxe: ['esencial', 'gold'] };
-      var grid = document.querySelector('.jm-col-others__grid');
-      grid.innerHTML = others[col].map(function (c) {
-        return '<a class="jm-col-others__link" href="?coleccion=' + c + '">' + COLS[c].label + '</a>';
+      document.querySelector('.jm-col-others__grid').innerHTML = others[col].map(function (c) {
+        return '<a class="jm-col-others__link" href="?coleccion=' + c + '&filtro=' + filtro + '">' + COLS[c].label + '</a>';
       }).join('');
+
+      ['circulos', 'chips', 'tabs', 'panel'].forEach(function (f) {
+        var el = document.getElementById('sw-' + f);
+        if (el) {
+          el.href = '?coleccion=' + col + '&filtro=' + f;
+          el.classList.toggle('is-active', filtro === f);
+        }
+      });
+
+      function setCount(n) {
+        var txt = n + ' producto' + (n !== 1 ? 's' : '');
+        var c1 = document.getElementById('product-count');
+        var c2 = document.getElementById('product-count-panel');
+        if (c1) c1.textContent = txt;
+        if (c2) c2.textContent = txt;
+      }
 
       function filterCat(c) {
         var visible = 0;
-        document.querySelectorAll('.jm-filters__chip').forEach(function (ch) {
-          ch.classList.toggle('is-active', ch.dataset.cat === c);
+        document.querySelectorAll('[data-cat]').forEach(function (btn) {
+          if (btn.tagName === 'BUTTON') {
+            btn.classList.toggle('is-active', btn.dataset.cat === c);
+          }
         });
         document.querySelectorAll('.jm-product').forEach(function (p) {
           var show = c === 'todos' || p.dataset.cat === c;
           p.classList.toggle('is-hidden', !show);
           if (show) visible++;
         });
-        document.getElementById('product-count').textContent = visible + ' producto' + (visible !== 1 ? 's' : '');
+        setCount(visible);
       }
 
-      document.querySelectorAll('.jm-filters__chip').forEach(function (ch) {
-        ch.addEventListener('click', function () { filterCat(ch.dataset.cat); });
+      document.querySelectorAll('[data-cat]').forEach(function (btn) {
+        btn.addEventListener('click', function () { filterCat(btn.dataset.cat); });
       });
       filterCat(cat);
     })();

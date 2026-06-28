@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagrama filtros · Joyas Mercury</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #faf8f6; --mauve: #6a4048; --gold: #ecc54a;
+      --gold-dark: #a97e23; --rose: #c88f9c; --beige: #d8bfb1; --line: #e8e0dc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: #f0ebe8; color: var(--mauve); padding: 2rem 1rem 3rem; }
+    .wrap { max-width: 960px; margin: 0 auto; }
+    h1 { font-family: 'Cormorant Garamond', serif; text-align: center; font-size: 1.75rem; margin-bottom: 0.5rem; }
+    .lead { text-align: center; font-size: 0.85rem; color: #8a7078; margin-bottom: 2rem; line-height: 1.55; }
+    .lead a { color: var(--gold-dark); }
+    .card {
+      background: #fff; border: 1px solid var(--line); border-radius: 8px;
+      padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+    }
+    .card h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; margin-bottom: 0.75rem; color: var(--rose); }
+    .card p { font-size: 0.78rem; line-height: 1.55; color: #6a5058; margin-bottom: 0.75rem; }
+
+    /* Matriz visual */
+    .matrix { overflow-x: auto; margin: 1rem 0; }
+    .matrix table { width: 100%; border-collapse: collapse; font-size: 0.68rem; min-width: 520px; }
+    .matrix th, .matrix td {
+      border: 1px solid var(--line); padding: 0.55rem 0.65rem; text-align: center;
+    }
+    .matrix th { background: var(--cream); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+    .matrix th.row-h { text-align: left; background: #fff; }
+    .matrix td { background: #fff; }
+    .matrix td.on { background: rgba(200,143,156,0.2); font-weight: 600; color: var(--mauve); }
+    .matrix td.off { color: #ccc; }
+
+    /* Diagrama flujo ASCII */
+    .diagram {
+      background: var(--cream); border: 1px dashed var(--beige);
+      border-radius: 6px; padding: 1rem; font-family: ui-monospace, monospace;
+      font-size: 0.62rem; line-height: 1.6; overflow-x: auto; white-space: pre;
+      color: var(--mauve);
+    }
+
+    .opciones { display: grid; gap: 1rem; }
+    @media (min-width: 700px) { .opciones { grid-template-columns: 1fr 1fr; } }
+    .op {
+      border: 1px solid var(--line); border-radius: 6px; padding: 1rem; background: var(--cream);
+    }
+    .op__num {
+      display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+      background: var(--mauve); color: #fff; font-size: 0.65rem; font-weight: 700;
+      text-align: center; line-height: 22px; margin-bottom: 0.5rem;
+    }
+    .op h3 { font-size: 0.82rem; margin-bottom: 0.35rem; }
+    .op p { font-size: 0.72rem; color: #8a7078; line-height: 1.45; margin: 0; }
+    .op a { font-size: 0.68rem; color: var(--gold-dark); font-weight: 600; display: inline-block; margin-top: 0.5rem; }
+    .op--rec { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Cómo funcionan los filtros</h1>
+    <p class="lead">
+      3 colecciones × 5 categorías = <strong>15 combinaciones</strong>, sin cambiar de página.<br>
+      Probar en vivo → <a href="wireframe-coleccion.html?coleccion=esencial&filtro=circulos">wireframe colección</a>
+    </p>
+
+    <div class="card">
+      <h2>Matriz de filtros (una sola landing)</h2>
+      <p>Arriba eliges la <strong>línea</strong> (Esencial / Gold / Deluxe). Abajo la <strong>categoría</strong> (Aros…Conjuntos). La grilla muestra solo la intersección activa.</p>
+      <div class="matrix">
+        <table>
+          <thead>
+            <tr>
+              <th class="row-h">Colección ↓ · Categoría →</th>
+              <th>Todos</th><th>Aros</th><th>Cadenas</th><th>Anillos</th><th>Pulseras</th><th>Conjuntos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="row-h">Esencial</th>
+              <td class="on">●</td><td class="on">●</td><td class="on">●</td><td class="on">●</td><td class="on">●</td><td class="on">●</td>
+            </tr>
+            <tr>
+              <th class="row-h">Gold</th>
+              <td class="off">○</td><td class="off">○</td><td class="off">○</td><td class="off">○</td><td class="off">○</td><td class="off">○</td>
+            </tr>
+            <tr>
+              <th class="row-h">Deluxe</th>
+              <td class="off">○</td><td class="off">○</td><td class="off">○</td><td class="off">○</td><td class="off">○</td><td class="off">○</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:0.68rem;color:#9a858c">Ejemplo: fila <strong>Esencial</strong> + columna <strong>Aros</strong> = solo aros de la línea Esencial. En WP esto es AJAX sobre la misma URL.</p>
+    </div>
+
+    <div class="card">
+      <h2>Flujo visual</h2>
+      <div class="diagram">INICIO
+  │
+  ├─ Círculos Esencial / Gold / Deluxe
+  │
+  ▼
+LANDING COLECCIÓN  ←─── una sola plantilla
+  │
+  ├─ [Pills]  Esencial · Gold · Deluxe     ← filtro eje 1 (colección)
+  │
+  ├─ [UI]     Todos · Aros · Cadenas …      ← filtro eje 2 (categoría)
+  │              ↑ 4 formas de mostrarlo (abajo)
+  │
+  ▼
+GRILLA PRODUCTOS  (mismas tarjetas que Novedades)
+  │
+  ▼
+FICHA → CARRITO</div>
+    </div>
+
+    <div class="card">
+      <h2>4 formas de diagramar los filtros de categoría</h2>
+      <div class="opciones">
+        <div class="op op--rec">
+          <span class="op__num">2</span>
+          <h3>Círculos visuales</h3>
+          <p>Igual que la sección COLECCIONES del inicio. Icono en círculo + nombre. Recomendado: coherencia con el mockup.</p>
+          <a href="wireframe-coleccion.html?filtro=circulos">Ver en wireframe →</a>
+        </div>
+        <div class="op">
+          <span class="op__num">1</span>
+          <h3>Chips / pills</h3>
+          <p>Scroll horizontal compacto. Útil en móvil si hay poco espacio vertical.</p>
+          <a href="wireframe-coleccion.html?filtro=chips">Ver en wireframe →</a>
+        </div>
+        <div class="op">
+          <span class="op__num">3</span>
+          <h3>Tabs / barra</h3>
+          <p>Pestañas con subrayado. Estilo editorial, ocupa todo el ancho.</p>
+          <a href="wireframe-coleccion.html?filtro=tabs">Ver en wireframe →</a>
+        </div>
+        <div class="op">
+          <span class="op__num">4</span>
+          <h3>Panel lateral</h3>
+          <p>Lista vertical con conteo en desktop; en móvil queda arriba de la grilla. Estilo tienda clásica.</p>
+          <a href="wireframe-coleccion.html?filtro=panel">Ver en wireframe →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>En WordPress (Fase 2)</h2>
+      <p>
+        <strong>Pills colección</strong> → taxonomía o atributo WooCommerce «Línea».<br>
+        <strong>Chips categoría</strong> → categorías de producto (Aros, Cadenas…).<br>
+        <strong>Plugin</strong> Filter Everything o desarrollo custom AJAX · sin recargar la página.<br>
+        <strong>Productos</strong> deben estar etiquetados antes de que los filtros funcionen en producción.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -28,7 +28,7 @@ def main():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         for archivo, width, height, col in CAPTURAS:
-            url = f"{base}&coleccion={col}"
+            url = f"{base}&coleccion={col}&filtro=circulos"
             if width >= 900:
                 url += "&viewport=desktop"
             context = browser.new_context(

@@ -344,7 +344,7 @@ window.JM_NUEVO_PROTOTIPO = {
     {
       id: 'colecciones',
       titulo: 'Colecciones · Esencial / Gold / Deluxe',
-      descripcion: 'Misma identidad que inicio: banner por línea, pills colección (misma vista), filtros Aros–Conjuntos, grilla igual a Novedades, footer E.',
+      descripcion: 'Misma identidad que inicio: banner por línea, pills colección (misma vista), filtros en 4 modos (círculos/chips/tabs/panel), grilla igual a Novedades, footer E.',
       wireframe: 'interfaces/mockups-coleccion/wireframe-coleccion.html',
       pantallas: [
         { id: 'col-esencial-m', vista: 'mobile', titulo: 'Esencial · mobile', archivo: 'interfaces/mockups-coleccion/jm-coleccion-esencial-mobile.png' },
