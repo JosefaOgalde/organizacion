@@ -280,11 +280,23 @@ No subir wp-config a git. Repo privado GitHub JosefaOgalde/joyasmercury-backup.`
 };
 
 /** Base absoluta de assets JM (evita rutas rotas según desde dónde se abre la ficha) */
-window.jmAssetBase = '/index/clientes/JoyasMercury/';
+window.jmAssetBase = (function jmDetectAssetBase() {
+  if (typeof window.JM_ASSET_BASE === 'string' && window.JM_ASSET_BASE) {
+    return window.JM_ASSET_BASE.replace(/\/?$/, '/');
+  }
+  const m = (typeof location !== 'undefined' && location.pathname || '').match(/^(.*\/index\/clientes\/)[^/]+\/?/i);
+  if (m) return m[1] + 'JoyasMercury/';
+  return '/index/clientes/JoyasMercury/';
+})();
 
-window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo) {
+window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo, opts) {
   const file = `${carpeta}/${archivo}`.replace(/^\/+/, '');
-  return `${window.jmAssetBase}${file}`;
+  let url = `${window.jmAssetBase}${file}`;
+  if (opts && opts.cacheBust && carpeta === 'interfaces/referencia-landings') {
+    const v = window.JM_LANDINGS_CARRUSEL_VERSION || 1;
+    url += (url.includes('?') ? '&' : '?') + 'v=' + v;
+  }
+  return url;
 };
 
 /** Ruta absoluta asset nuevo prototipo */
@@ -541,16 +553,23 @@ function jmImgAttrs(carpeta, archivo, src) {
   return ` data-jm-img-key="${jmEscapeHtml(key)}" data-jm-img-default="${jmEscapeHtml(src)}"`;
 }
 
-/** Landings referencia · carrusel ficha (mockups entregados, orden fijo) */
-window.JM_LANDINGS_CARRUSEL = [
-  { carpeta: 'interfaces/referencia-landings', archivo: '01-inicio-referencia.png', titulo: 'Inicio' },
-  { carpeta: 'interfaces/referencia-landings', archivo: '02-esencial-referencia.png', titulo: 'Esencial' },
-  { carpeta: 'interfaces/referencia-landings', archivo: '03-gold-referencia.png', titulo: 'Gold' },
-  { carpeta: 'interfaces/referencia-landings', archivo: '04-deluxe-referencia.png', titulo: 'Deluxe' }
-];
+/** Landings referencia · carrusel ficha (fallback si no hay carrusel.manifest.js) */
+if (!window.JM_LANDINGS_CARRUSEL || !window.JM_LANDINGS_CARRUSEL.length) {
+  window.JM_LANDINGS_CARRUSEL = [
+    { carpeta: 'interfaces/referencia-landings', archivo: '01-inicio-referencia.png', titulo: 'Inicio' },
+    { carpeta: 'interfaces/referencia-landings', archivo: '02-esencial-referencia.png', titulo: 'Esencial' },
+    { carpeta: 'interfaces/referencia-landings', archivo: '03-gold-referencia.png', titulo: 'Gold' },
+    { carpeta: 'interfaces/referencia-landings', archivo: '04-deluxe-referencia.png', titulo: 'Deluxe' }
+  ];
+}
+if (typeof window.JM_LANDINGS_CARRUSEL_VERSION !== 'number') {
+  window.JM_LANDINGS_CARRUSEL_VERSION = 1;
+}
 
 function jmLandingCarruselSrc(item) {
-  if (item.carpeta && item.archivo) return jmWireframeSrc(item.carpeta, item.archivo);
+  if (item.carpeta && item.archivo) {
+    return jmWireframeSrc(item.carpeta, item.archivo, { cacheBust: true });
+  }
   if (item.archivo) return jmNuevoPrototipoSrc(item.archivo);
   return '';
 }
