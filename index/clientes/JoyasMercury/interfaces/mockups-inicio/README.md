@@ -53,10 +53,12 @@ http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-inicio/wire
 
 | Opción | Estilo |
 |--------|--------|
-| **A** | Editorial horizontal — logo + links en fila + redes |
+| **A** ✓ | Editorial horizontal — logo + links en fila + redes |
 | **B** | Dos niveles — franja crema (marca + WhatsApp) + dorado (4 columnas) |
 | **C** | Centrado minimal — logo y links al centro, estilo boutique |
-| **D** | 3 columnas + bloque contacto WhatsApp a la derecha |
+| **D** ✓ | 3 columnas + bloque contacto WhatsApp a la derecha |
+
+En el wireframe de inicio alterna entre **A** (default) y **D** con `?footer=a` o `?footer=d`, o el selector arriba a la izquierda.
 
 Regenerar capturas:
 

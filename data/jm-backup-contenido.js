@@ -295,32 +295,44 @@ window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo) {
 /** Pantallas del diseño Fase 2 (se van agregando aquí) */
 window.JM_NUEVO_PROTOTIPO = {
   version: 1,
-  intro: 'Diseño propuesto Fase 2 · inicio completo · logos manual de marca · responsive mobile/desktop.',
+  intro: 'Diseño propuesto Fase 2 · inicio completo · footers A y D seleccionados · responsive mobile/desktop.',
   secciones: [
     {
       id: 'inicio',
       titulo: 'Inicio · wireframe completo',
-      descripcion: 'Header (logo + búsqueda + carrito), carrusel banner, barra de valor, círculos Esencial/Gold/Deluxe, Novedades, Últimas unidades, Historias que Brillan, footer dorado, WhatsApp y nav inferior móvil.',
+      descripcion: 'Header, carrusel, colecciones, Novedades, Últimas unidades, Historias. Footer A (default) o D con ?footer=d en el wireframe.',
       wireframe: 'interfaces/mockups-inicio/wireframe-inicio.html',
       pantallas: [
         {
-          id: 'inicio-mobile',
+          id: 'inicio-mobile-a',
           vista: 'mobile',
-          titulo: 'Mobile · 390px',
+          titulo: 'Mobile · footer A',
           archivo: 'interfaces/mockups-inicio/jm-inicio-wireframe-mobile.png'
         },
         {
-          id: 'inicio-desktop',
+          id: 'inicio-desktop-a',
           vista: 'desktop',
-          titulo: 'Desktop · 1440px',
+          titulo: 'Desktop · footer A',
           archivo: 'interfaces/mockups-inicio/jm-inicio-wireframe-desktop.png'
+        },
+        {
+          id: 'inicio-mobile-d',
+          vista: 'mobile',
+          titulo: 'Mobile · footer D',
+          archivo: 'interfaces/mockups-inicio/jm-inicio-footer-d-mobile.png'
+        },
+        {
+          id: 'inicio-desktop-d',
+          vista: 'desktop',
+          titulo: 'Desktop · footer D',
+          archivo: 'interfaces/mockups-inicio/jm-inicio-footer-d-desktop.png'
         }
       ]
     },
     {
       id: 'footer-opciones',
-      titulo: 'Footer · 4 diagramaciones',
-      descripcion: 'Alternativas al pie actual: A editorial horizontal · B dos niveles · C centrado minimal · D columnas + contacto.',
+      titulo: 'Footer · A y D seleccionadas',
+      descripcion: 'Opción A editorial horizontal (default) · Opción D columnas + contacto WhatsApp. Comparativa completa en wireframe-footer-opciones.html.',
       wireframe: 'interfaces/mockups-inicio/wireframe-footer-opciones.html',
       pantallas: [
         {

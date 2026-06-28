@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genera capturas PNG del wireframe inicio completo (mobile + desktop)."""
+"""Genera capturas PNG del wireframe inicio (footers A y D · mobile + desktop)."""
 
 from pathlib import Path
 
@@ -8,8 +8,10 @@ HTML = ROOT / "index/clientes/JoyasMercury/interfaces/mockups-inicio/wireframe-i
 OUT = HTML.parent
 
 CAPTURAS = [
-    ("jm-inicio-wireframe-mobile.png", 390, 844, "mobile"),
-    ("jm-inicio-wireframe-desktop.png", 1440, 900, "desktop"),
+    ("jm-inicio-wireframe-mobile.png", 390, 844, "mobile", "a"),
+    ("jm-inicio-wireframe-desktop.png", 1440, 900, "desktop", "a"),
+    ("jm-inicio-footer-d-mobile.png", 390, 844, "mobile", "d"),
+    ("jm-inicio-footer-d-desktop.png", 1440, 900, "desktop", "d"),
 ]
 
 
@@ -22,18 +24,20 @@ def main():
     if not HTML.is_file():
         raise SystemExit(f"No existe {HTML}")
 
-    url = HTML.as_uri() + "?shot=1"
+    base = HTML.as_uri() + "?shot=1"
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        for archivo, width, height, viewport in CAPTURAS:
-            shot_url = url + ("&viewport=desktop" if viewport == "desktop" else "")
+        for archivo, width, height, viewport, footer in CAPTURAS:
+            shot_url = f"{base}&footer={footer}"
+            if viewport == "desktop":
+                shot_url += "&viewport=desktop"
             context = browser.new_context(
                 viewport={"width": width, "height": height},
                 device_scale_factor=2 if viewport == "mobile" else 1,
             )
             page = context.new_page()
-            print(f"Capturando {archivo} ({width}px) …")
+            print(f"Capturando {archivo} (footer {footer.upper()} · {width}px) …")
             page.goto(shot_url, wait_until="networkidle", timeout=60000)
             page.wait_for_timeout(800)
             dest = OUT / archivo
