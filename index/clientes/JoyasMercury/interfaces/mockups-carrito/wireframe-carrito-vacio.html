@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe · Mi Carrito · Joyas Mercury</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #fdfbf8; --mauve: #3d3d3d; --rose: #e197ac; --gold: #c59446;
+      --gold-dark: #a97e23; --line: #e8e0dc; --jm-rose: #c88f9c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--cream); color: var(--mauve); }
+
+    .jm-header {
+      border-bottom: 1px solid var(--line); padding: 0.85rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .jm-header img { height: 36px; }
+    .jm-header__icons { display: flex; gap: 1rem; color: var(--gold); }
+    .jm-header__icons svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.3; }
+
+    .jm-cart-page { max-width: 1000px; margin: 0 auto; padding: 0 0 3rem; }
+
+    /* Banner embebido — escala al ancho del contenedor */
+    .jm-cart-banner-wrap { padding: 0; }
+    .jm-cart-banner {
+      width: 100%; max-width: 1000px; margin: 0 auto;
+      aspect-ratio: 2 / 1; max-height: 500px;
+      position: relative; overflow: hidden; background: var(--cream);
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .jm-cart-banner__copy {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 3.5rem); z-index: 2;
+    }
+    .jm-cart-banner__icon { width: 40px; height: 40px; margin-bottom: 1rem; color: var(--gold); }
+    .jm-cart-banner__icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.2; }
+    .jm-cart-banner__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.35rem, 3.5vw, 2.15rem); font-weight: 600; line-height: 1.15;
+      margin-bottom: 0.65rem;
+    }
+    .jm-cart-banner__title em { font-style: normal; color: var(--rose); }
+    .jm-cart-banner__rule {
+      display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; max-width: 180px;
+    }
+    .jm-cart-banner__rule::before, .jm-cart-banner__rule::after {
+      content: ''; flex: 1; height: 1px; background: var(--gold); opacity: 0.75;
+    }
+    .jm-cart-banner__rule span { color: var(--gold); font-size: 0.5rem; transform: rotate(45deg); display: inline-block; }
+    .jm-cart-banner__text { font-size: 0.75rem; line-height: 1.55; color: #6a6a6a; margin-bottom: 1.15rem; max-width: 20rem; }
+    .jm-cart-banner__cta {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.65rem 1.4rem; background: var(--gold); color: #fff;
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none; border-radius: 4px; width: fit-content;
+    }
+    .jm-cart-banner__visual { position: relative; overflow: hidden; }
+    .jm-cart-banner__visual::before {
+      content: ''; position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(90deg, var(--cream) 0%, rgba(253,251,248,0.9) 15%, transparent 50%);
+    }
+    .jm-cart-banner__photo {
+      width: 100%; height: 100%;
+      background: url('../../flujo-actual/01-inicio-home.png') center / cover no-repeat;
+    }
+
+    /* Favoritos Mercury */
+    .jm-fav { padding: 2.5rem 1.25rem; text-align: center; }
+    .jm-fav__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.2rem, 3vw, 1.5rem); font-weight: 600;
+      letter-spacing: 0.04em; margin-bottom: 0.5rem;
+    }
+    .jm-fav__title em { font-style: normal; color: var(--rose); }
+    .jm-fav__spark { color: var(--gold); font-size: 0.75rem; letter-spacing: 0.5em; margin-bottom: 0.65rem; }
+    .jm-fav__rule {
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      margin-bottom: 1.75rem; max-width: 120px; margin-left: auto; margin-right: auto;
+    }
+    .jm-fav__rule::before, .jm-fav__rule::after { content: ''; flex: 1; height: 1px; background: var(--gold); opacity: 0.6; }
+    .jm-fav__rule span { color: var(--rose); font-size: 0.65rem; }
+
+    .jm-fav__grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
+      max-width: 900px; margin: 0 auto;
+    }
+    @media (min-width: 700px) { .jm-fav__grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .jm-fav-card { text-align: center; }
+    .jm-fav-card__img {
+      aspect-ratio: 1; background: linear-gradient(145deg, #faf6f2, #efe8e0);
+      border-radius: 4px; margin-bottom: 0.55rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .jm-fav-card__img::after {
+      content: ''; width: 40%; height: 40%;
+      border: 1px dashed rgba(0,0,0,0.12); border-radius: 50%;
+    }
+    .jm-fav-card__name { font-size: 0.72rem; font-weight: 500; margin-bottom: 0.15rem; }
+    .jm-fav-card__line { font-size: 0.62rem; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.15rem; }
+    .jm-fav-card__price { font-size: 0.78rem; font-weight: 600; }
+
+    .jm-cart-foot {
+      text-align: center; padding: 1.5rem; font-size: 0.65rem; color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <header class="jm-header">
+    <img src="../../identidad/isotipo-jm-gold.png" alt="Joyas Mercury" height="36">
+    <div class="jm-header__icons">
+      <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 11H7.2L6 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></svg>
+    </div>
+  </header>
+
+  <main class="jm-cart-page">
+    <div class="jm-cart-banner-wrap">
+      <article class="jm-cart-banner">
+        <div class="jm-cart-banner__copy">
+          <div class="jm-cart-banner__icon">
+            <svg viewBox="0 0 48 48">
+              <path d="M14 18h20l-2 16H16L14 18z"/><path d="M18 18V14a6 6 0 0112 0v4"/>
+              <path d="M24 26c-2 0-3.5 1.5-3.5 3.5S22 33 24 33s3.5-1.5 3.5-3.5S26 26 24 26z" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <h1 class="jm-cart-banner__title">Tu carrito está <em>vacío</em></h1>
+          <div class="jm-cart-banner__rule"><span>◆</span></div>
+          <p class="jm-cart-banner__text">Parece que aún no agregaste ninguna joya. ¡Descubre nuestras colecciones y encuentra tu próxima joya favorita! ♡</p>
+          <a class="jm-cart-banner__cta" href="../mockups-coleccion/wireframe-coleccion.html">✦ Ver colecciones</a>
+        </div>
+        <div class="jm-cart-banner__visual"><div class="jm-cart-banner__photo"></div></div>
+      </article>
+    </div>
+
+    <section class="jm-fav" aria-labelledby="fav-title">
+      <p class="jm-fav__spark">✦ ✦</p>
+      <h2 class="jm-fav__title" id="fav-title">Favoritos <em>Mercury</em></h2>
+      <div class="jm-fav__rule"><span>♡</span></div>
+      <div class="jm-fav__grid">
+        <article class="jm-fav-card">
+          <div class="jm-fav-card__img"></div>
+          <p class="jm-fav-card__name">Collar Corazones Mini</p>
+          <p class="jm-fav-card__line">Gold</p>
+          <p class="jm-fav-card__price">$16.990</p>
+        </article>
+        <article class="jm-fav-card">
+          <div class="jm-fav-card__img"></div>
+          <p class="jm-fav-card__name">Aros Corazón Rosa</p>
+          <p class="jm-fav-card__line">Esencial</p>
+          <p class="jm-fav-card__price">$12.990</p>
+        </article>
+        <article class="jm-fav-card">
+          <div class="jm-fav-card__img"></div>
+          <p class="jm-fav-card__name">Anillo Solitario</p>
+          <p class="jm-fav-card__line">Deluxe</p>
+          <p class="jm-fav-card__price">$24.990</p>
+        </article>
+        <article class="jm-fav-card">
+          <div class="jm-fav-card__img"></div>
+          <p class="jm-fav-card__name">Pulsera Minimal</p>
+          <p class="jm-fav-card__line">Esencial</p>
+          <p class="jm-fav-card__price">$9.990</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="jm-cart-foot">© 2026 Joyas Mercury. Todos los derechos reservados. ♡</footer>
+</body>
+</html>

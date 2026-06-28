@@ -356,6 +356,16 @@ window.JM_NUEVO_PROTOTIPO = {
       ]
     },
     {
+      id: 'carrito',
+      titulo: 'Mi Carrito · banner vacío 1000×500',
+      descripcion: 'Banner carrito vacío: bolsa + corazón, título bicolor, CTA Ver colecciones, foto lifestyle. Incluye sección Favoritos Mercury.',
+      wireframe: 'interfaces/mockups-carrito/wireframe-carrito-vacio.html',
+      pantallas: [
+        { id: 'carrito-banner', vista: 'desktop', titulo: 'Banner · 1000×500 px', archivo: 'interfaces/mockups-carrito/jm-banner-carrito-vacio-1000x500.png' },
+        { id: 'carrito-pagina', vista: 'desktop', titulo: 'Página carrito vacío', archivo: 'interfaces/mockups-carrito/jm-carrito-vacio-desktop.png' }
+      ]
+    },
+    {
       id: 'footer-opciones',
       titulo: 'Footer · E (nuevo) · A · D',
       descripcion: 'E claro premium sin marco dorado (recomendado) · A editorial horizontal · D columnas + contacto.',
