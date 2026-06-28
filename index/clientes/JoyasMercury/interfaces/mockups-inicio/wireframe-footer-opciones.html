@@ -330,6 +330,38 @@
     .ft-d--mobile .ft-d__brand img { margin: 0 auto; display: block; }
     .ft-d--mobile .ft-d__mid { grid-template-columns: 1fr 1fr; text-align: left; }
 
+    /* —— E · Claro premium —— */
+    .ft-e {
+      background: var(--cream);
+      color: var(--mauve);
+      border-top: 3px solid var(--gold);
+      padding: 2rem 1.5rem 0;
+    }
+    .ft-e a { color: var(--mauve); text-decoration: none; }
+    .ft-e__inner { text-align: center; }
+    .ft-e__logo { height: 52px; margin-bottom: 1rem; filter: none; }
+    .ft-e__nav {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 0.5rem 1.5rem; margin-bottom: 1rem;
+    }
+    .ft-e__nav a { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.03em; }
+    .ft-e__legal {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 0.5rem 1rem; margin-bottom: 1rem;
+      padding-bottom: 1rem; border-bottom: 1px solid var(--line);
+    }
+    .ft-e__legal a { font-size: 0.65rem; color: #8a7078; }
+    .ft-e__bottom {
+      background: #fff; border-top: 1px solid var(--line);
+      padding: 0.85rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.75rem;
+    }
+    .ft-e__social span { border-color: var(--beige); color: var(--mauve); }
+    .ft-e__copy { font-size: 0.62rem; color: #9a858c; }
+    .ft-e--mobile .ft-e__nav { flex-direction: column; gap: 0.55rem; }
+    .ft-e--mobile .ft-e__bottom { flex-direction: column; text-align: center; }
+
     @media (max-width: 700px) {
       body { padding: 1.25rem 0.5rem 2rem; }
       .opcion__meta { padding: 1rem; }
@@ -567,6 +599,59 @@
               </div>
             </div>
             <div class="ft-d__copy"><p class="ft__copy">© 2026 joyasmercury.cl</p></div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- OPCIÓN E -->
+  <article class="opcion" id="opcion-e">
+    <div class="opcion__meta">
+      <span class="opcion__tag opcion__tag--sel">Opción E · nueva · recomendada</span>
+      <h2 class="opcion__titulo">Claro premium · sin marco dorado</h2>
+      <p class="opcion__desc">Fondo crema como el resto del sitio, línea dorada fina arriba, logo centrado, links limpios, legales en gris, barra blanca con redes y copyright. WhatsApp solo flotante.</p>
+    </div>
+    <div class="opcion__previews">
+      <div class="preview">
+        <p class="preview__label">Desktop · 1440px</p>
+        <div class="preview__frame preview__frame--desktop">
+          <footer class="ft-e">
+            <div class="ft-e__inner">
+              <img class="ft-e__logo" src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury">
+              <nav class="ft-e__nav">
+                <a href="#">Nosotros</a><a href="#">Esencial</a><a href="#">Gold</a><a href="#">Deluxe</a>
+                <a href="#">Mi Cuenta</a><a href="#">Mi Carrito</a><a href="#">Contacto</a>
+              </nav>
+              <div class="ft-e__legal">
+                <a href="#">Políticas de compra</a><a href="#">Cambios y garantías</a>
+                <a href="#">Despachos</a><a href="#">Cuidado de joyas</a>
+              </div>
+            </div>
+            <div class="ft-e__bottom">
+              <div class="ft__social ft-e__social"><span>f</span><span>ig</span><span>tk</span></div>
+              <p class="ft-e__copy">Derechos reservados © 2026 joyasmercury.cl</p>
+            </div>
+          </footer>
+        </div>
+      </div>
+      <div class="preview">
+        <p class="preview__label">Mobile · 390px</p>
+        <div class="preview__frame preview__frame--mobile">
+          <footer class="ft-e ft-e--mobile">
+            <div class="ft-e__inner">
+              <img class="ft-e__logo ft__logo--sm" src="../../identidad/logo-jm-gold-vertical.png" alt="">
+              <nav class="ft-e__nav">
+                <a href="#">Nosotros</a><a href="#">Mi Cuenta</a><a href="#">Mi Carrito</a><a href="#">Contacto</a>
+              </nav>
+              <div class="ft-e__legal">
+                <a href="#">Políticas</a><a href="#">Garantías</a><a href="#">Despachos</a>
+              </div>
+            </div>
+            <div class="ft-e__bottom">
+              <div class="ft__social ft-e__social"><span>f</span><span>ig</span><span>tk</span></div>
+              <p class="ft-e__copy">© 2026 joyasmercury.cl</p>
+            </div>
           </footer>
         </div>
       </div>

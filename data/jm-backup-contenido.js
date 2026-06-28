@@ -295,25 +295,37 @@ window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo) {
 /** Pantallas del diseño Fase 2 (se van agregando aquí) */
 window.JM_NUEVO_PROTOTIPO = {
   version: 1,
-  intro: 'Diseño propuesto Fase 2 · inicio completo · footers A y D seleccionados · responsive mobile/desktop.',
+  intro: 'Diseño propuesto Fase 2 · footer E claro premium (default) · también A y D.',
   secciones: [
     {
       id: 'inicio',
       titulo: 'Inicio · wireframe completo',
-      descripcion: 'Header, carrusel, colecciones, Novedades, Últimas unidades, Historias. Footer A (default) o D con ?footer=d en el wireframe.',
+      descripcion: 'Header, carrusel, colecciones, Novedades, Últimas unidades, Historias. Footer E (default) sin marco dorado · A y D con ?footer=a o ?footer=d.',
       wireframe: 'interfaces/mockups-inicio/wireframe-inicio.html',
       pantallas: [
+        {
+          id: 'inicio-mobile-e',
+          vista: 'mobile',
+          titulo: 'Mobile · footer E',
+          archivo: 'interfaces/mockups-inicio/jm-inicio-wireframe-mobile.png'
+        },
+        {
+          id: 'inicio-desktop-e',
+          vista: 'desktop',
+          titulo: 'Desktop · footer E',
+          archivo: 'interfaces/mockups-inicio/jm-inicio-wireframe-desktop.png'
+        },
         {
           id: 'inicio-mobile-a',
           vista: 'mobile',
           titulo: 'Mobile · footer A',
-          archivo: 'interfaces/mockups-inicio/jm-inicio-wireframe-mobile.png'
+          archivo: 'interfaces/mockups-inicio/jm-inicio-footer-a-mobile.png'
         },
         {
           id: 'inicio-desktop-a',
           vista: 'desktop',
           titulo: 'Desktop · footer A',
-          archivo: 'interfaces/mockups-inicio/jm-inicio-wireframe-desktop.png'
+          archivo: 'interfaces/mockups-inicio/jm-inicio-footer-a-desktop.png'
         },
         {
           id: 'inicio-mobile-d',
@@ -331,8 +343,8 @@ window.JM_NUEVO_PROTOTIPO = {
     },
     {
       id: 'footer-opciones',
-      titulo: 'Footer · A y D seleccionadas',
-      descripcion: 'Opción A editorial horizontal (default) · Opción D columnas + contacto WhatsApp. Comparativa completa en wireframe-footer-opciones.html.',
+      titulo: 'Footer · E (nuevo) · A · D',
+      descripcion: 'E claro premium sin marco dorado (recomendado) · A editorial horizontal · D columnas + contacto.',
       wireframe: 'interfaces/mockups-inicio/wireframe-footer-opciones.html',
       pantallas: [
         {

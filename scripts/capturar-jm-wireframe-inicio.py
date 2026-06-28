@@ -8,8 +8,10 @@ HTML = ROOT / "index/clientes/JoyasMercury/interfaces/mockups-inicio/wireframe-i
 OUT = HTML.parent
 
 CAPTURAS = [
-    ("jm-inicio-wireframe-mobile.png", 390, 844, "mobile", "a"),
-    ("jm-inicio-wireframe-desktop.png", 1440, 900, "desktop", "a"),
+    ("jm-inicio-wireframe-mobile.png", 390, 844, "mobile", "e"),
+    ("jm-inicio-wireframe-desktop.png", 1440, 900, "desktop", "e"),
+    ("jm-inicio-footer-a-mobile.png", 390, 844, "mobile", "a"),
+    ("jm-inicio-footer-a-desktop.png", 1440, 900, "desktop", "a"),
     ("jm-inicio-footer-d-mobile.png", 390, 844, "mobile", "d"),
     ("jm-inicio-footer-d-desktop.png", 1440, 900, "desktop", "d"),
 ]

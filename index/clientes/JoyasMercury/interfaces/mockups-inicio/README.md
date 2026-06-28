@@ -22,7 +22,7 @@ http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-inicio/wire
 | 6 | Novedades / destacados | Grilla productos WC |
 | 7 | Últimas unidades | Scroll horizontal móvil |
 | 8 | Historias que Brillan | Teaser reseñas |
-| 9 | Footer dorado | Legales · newsletter · redes |
+| 9 | Footer claro premium (E) | Sin marco dorado · línea gold fina |
 | 10 | WhatsApp flotante | Verde oficial |
 | 11 | Nav inferior móvil | WP Bottom Menu |
 
@@ -53,12 +53,13 @@ http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-inicio/wire
 
 | Opción | Estilo |
 |--------|--------|
+| **E** ✓ nuevo | Claro premium — crema, sin bloque dorado, línea gold fina |
 | **A** ✓ | Editorial horizontal — logo + links en fila + redes |
 | **B** | Dos niveles — franja crema (marca + WhatsApp) + dorado (4 columnas) |
 | **C** | Centrado minimal — logo y links al centro, estilo boutique |
 | **D** ✓ | 3 columnas + bloque contacto WhatsApp a la derecha |
 
-En el wireframe de inicio alterna entre **A** (default) y **D** con `?footer=a` o `?footer=d`, o el selector arriba a la izquierda.
+En el wireframe de inicio: **E** es el default. Alterna con `?footer=e`, `?footer=a` o `?footer=d`.
 
 Regenerar capturas:
 

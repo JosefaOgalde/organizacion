@@ -450,7 +450,11 @@
     .ft__wa-dot { width: 8px; height: 8px; background: #fff; border-radius: 50%; }
 
     body[data-footer="a"] #footer-d,
-    body[data-footer="d"] #footer-a { display: none; }
+    body[data-footer="a"] #footer-e,
+    body[data-footer="d"] #footer-a,
+    body[data-footer="d"] #footer-e,
+    body[data-footer="e"] #footer-a,
+    body[data-footer="e"] #footer-d { display: none; }
 
     .ft-a {
       background: var(--gold-dark);
@@ -502,6 +506,72 @@
     .ft-d__copy {
       border-top: 1px solid rgba(255,255,255,0.2);
       padding-top: 0.75rem; text-align: center;
+    }
+
+    /* —— Footer E · claro premium (sin marco dorado) —— */
+    .ft-e {
+      background: var(--cream);
+      color: var(--mauve);
+      border-top: 3px solid var(--gold);
+      padding: 2rem 1.25rem 0;
+    }
+    .ft-e a { color: var(--mauve); }
+    .ft-e a:hover { color: var(--gold-dark); }
+    .ft-e__inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .ft-e__logo {
+      height: 52px;
+      width: auto;
+      margin: 0 auto 1.25rem;
+      display: block;
+      filter: none;
+    }
+    .ft-e__nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.45rem 1.5rem;
+      max-width: 320px;
+      margin: 0 auto 1.25rem;
+      text-align: left;
+    }
+    .ft-e__nav a {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+    .ft-e__legal {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem 1.25rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .ft-e__legal a {
+      font-size: 0.65rem;
+      color: #8a7078;
+    }
+    .ft-e__bottom {
+      background: #fff;
+      border-top: 1px solid var(--line);
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .ft-e__social span {
+      border-color: var(--beige);
+      color: var(--mauve);
+    }
+    .ft-e__copy {
+      font-size: 0.62rem;
+      color: #9a858c;
+      opacity: 1;
     }
 
     .jm-footer-switch {
@@ -643,6 +713,20 @@
       }
       .ft-d__brand img { margin: 0; height: 48px; }
       .ft-d__mid { grid-template-columns: repeat(3, 1fr); }
+      .ft-e { padding: 2.5rem 2.5rem 0; }
+      .ft-e__nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: none;
+        gap: 0.5rem 2rem;
+        text-align: center;
+      }
+      .ft-e__bottom {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0.85rem 2.5rem;
+      }
       .jm-bottom-nav { display: none; }
       .jm-wa-fab { bottom: 1.25rem; }
     }
@@ -881,11 +965,38 @@
 
   <div class="jm-footer-switch" aria-label="Alternar footer">
     Footer:
+    <a href="?footer=e" id="switch-e">E</a>
     <a href="?footer=a" id="switch-a">A</a>
     <a href="?footer=d" id="switch-d">D</a>
   </div>
 
-  <!-- Footer A · editorial horizontal (default) -->
+  <!-- Footer E · claro premium (default) -->
+  <footer class="ft ft-e" id="footer-e" aria-label="Pie de página · opción E">
+    <div class="ft-e__inner">
+      <img class="ft-e__logo" src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury">
+      <nav class="ft-e__nav" aria-label="Enlaces principales">
+        <a href="#">Nosotros</a>
+        <a href="#">Esencial</a>
+        <a href="#">Gold</a>
+        <a href="#">Deluxe</a>
+        <a href="#">Mi Cuenta</a>
+        <a href="#">Mi Carrito</a>
+        <a href="#">Contacto</a>
+      </nav>
+      <div class="ft-e__legal">
+        <a href="#">Políticas de compra</a>
+        <a href="#">Cambios y garantías</a>
+        <a href="#">Despachos</a>
+        <a href="#">Cuidado de joyas</a>
+      </div>
+    </div>
+    <div class="ft-e__bottom">
+      <div class="ft__social ft-e__social"><span>f</span><span>ig</span><span>tk</span></div>
+      <p class="ft-e__copy">Derechos reservados © 2026 joyasmercury.cl</p>
+    </div>
+  </footer>
+
+  <!-- Footer A · editorial horizontal -->
   <footer class="ft ft-a" id="footer-a" aria-label="Pie de página · opción A">
     <div class="ft-a__row">
       <img class="ft__logo" src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury">
@@ -976,12 +1087,13 @@
       dots.forEach(function (d, i) { d.onclick = function () { go(i); }; });
 
       var params = new URLSearchParams(location.search);
-      var footer = params.get('footer') === 'd' ? 'd' : 'a';
+      var footerParam = params.get('footer');
+      var footer = (footerParam === 'a' || footerParam === 'd') ? footerParam : 'e';
       document.body.dataset.footer = footer;
-      var swA = document.getElementById('switch-a');
-      var swD = document.getElementById('switch-d');
-      if (swA) swA.classList.toggle('is-active', footer === 'a');
-      if (swD) swD.classList.toggle('is-active', footer === 'd');
+      ['e', 'a', 'd'].forEach(function (k) {
+        var el = document.getElementById('switch-' + k);
+        if (el) el.classList.toggle('is-active', footer === k);
+      });
       if (params.get('shot') === '1') document.body.dataset.shot = '1';
       if (params.get('viewport') === 'desktop') document.body.dataset.shot = 'desktop';
     })();
