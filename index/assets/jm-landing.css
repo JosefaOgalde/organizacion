@@ -943,8 +943,30 @@
 }
 
 .jm-landing:not(.jm-landing--edicion) .jm-img-editable__bar,
-.ficha-doc:not(.ficha-doc--edicion) .jm-img-editable__bar {
+.ficha-doc--jm:not(.ficha-doc--edicion) .jm-img-editable__bar {
   display: none !important;
+}
+
+.jm-interfaces__visor-edit {
+  margin-top: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px dashed var(--jm-border, #e8b8c8);
+  border-radius: 8px;
+}
+
+.jm-img-editable__bar--visor {
+  margin-top: 0;
+}
+
+.jm-img-editable__bar--visor .jm-img-editable__btn {
+  font-size: 0.8rem;
+  padding: 0.38rem 0.7rem;
+}
+
+.jm-landing--edicion .jm-interfaces__card,
+.ficha-doc--edicion .jm-interfaces__card {
+  overflow: visible;
 }
 
 .jm-img-editable__btn {

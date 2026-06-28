@@ -3816,7 +3816,7 @@ body.modal-abierto {
   margin-top: 0.35rem;
 }
 
-.ficha-doc:not(.ficha-doc--edicion) .jm-img-editable__bar {
+.ficha-doc:not(.ficha-doc--edicion):not(.ficha-doc--jm) .jm-img-editable__bar {
   display: none !important;
 }
 

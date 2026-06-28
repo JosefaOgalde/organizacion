@@ -303,7 +303,7 @@
         </header>
         ${modoEdicion ? '<p class="jm-landing__hint-edicion jm-solo-edicion">Imágenes cargadas: agregar, reemplazar, editar título/notas o borrar. En prototipos JM también puedes cambiar u ocultar capturas integradas.</p>' : ''}
 
-        <article class="ficha-doc ficha-doc--jm ficha-doc--wireframes jm-ficha-doc">
+        <article class="ficha-doc ficha-doc--jm ficha-doc--wireframes jm-ficha-doc${modoEdicion ? ' ficha-doc--edicion' : ''}">
           <header class="ficha-doc__encabezado" style="border-bottom-color:${colores.border}">
             <div class="ficha-doc__marca" style="background:${colores.border}"></div>
             <div class="ficha-doc__head-grid">

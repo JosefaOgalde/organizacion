@@ -581,7 +581,7 @@ function jmHtmlLandingsCarrusel() {
     </div>
     <div class="jm-interfaces__visor" data-jm-int-visor>
       <a href="${jmEscapeHtml(visorSrc)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Abrir en tamaño completo">
-        <img class="jm-interfaces__visor-img" src="${jmEscapeHtml(visorSrc)}" alt="${jmEscapeHtml(primera.titulo)}" data-jm-int-visor-img>
+        <img class="jm-interfaces__visor-img" src="${jmEscapeHtml(visorSrc)}" alt="${jmEscapeHtml(primera.titulo)}"${jmImgAttrs(primera.carpeta, primera.archivo, visorSrc)} data-jm-int-visor-img>
       </a>
       <div class="jm-interfaces__visor-pie">
         <div class="jm-interfaces__visor-meta">
@@ -593,6 +593,7 @@ function jmHtmlLandingsCarrusel() {
           <button type="button" class="jm-interfaces__flecha" data-jm-int-next aria-label="Imagen siguiente">›</button>
         </div>
       </div>
+      <div class="jm-interfaces__visor-edit jm-solo-edicion" data-jm-int-visor-edit aria-live="polite"></div>
     </div>
     <div class="jm-interfaces__grid" data-jm-int-grid>${cards}</div>
   </div>`;
@@ -1111,6 +1112,10 @@ window.initJMInterfacesUI = function initJMInterfacesUI(root) {
       if (visorImg && src) {
         visorImg.src = src;
         visorImg.alt = titulo;
+        if (img?.dataset.jmImgKey) {
+          visorImg.dataset.jmImgKey = img.dataset.jmImgKey;
+          visorImg.dataset.jmImgDefault = img.dataset.jmImgDefault || '';
+        }
       }
       if (visorCap) visorCap.textContent = titulo;
       if (visorGrupo) visorGrupo.textContent = grupo;
@@ -1120,6 +1125,7 @@ window.initJMInterfacesUI = function initJMInterfacesUI(root) {
       const vis = cardsVisibles();
       const i = vis.indexOf(card);
       if (contadorEl && i >= 0) contadorEl.textContent = `${i + 1} / ${vis.length}`;
+      if (typeof window.jmSyncVisorEditBar === 'function') window.jmSyncVisorEditBar(sec);
     }
 
     function ir(delta) {
@@ -1283,23 +1289,13 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
     panel.appendChild(btn);
   }
 
-  scope.querySelectorAll('[data-jm-img-key]').forEach((img) => {
-    if (img.dataset.jmImgEditorBound === '1') {
-      applyToImg(img);
-      const btnRestore = scope.querySelector(`[data-jm-img-bar-for="${img.dataset.jmImgKey}"] .jm-img-editable__btn--ghost`);
-      if (btnRestore) btnRestore.hidden = !overrides[img.dataset.jmImgKey];
-      return;
-    }
-    img.dataset.jmImgEditorBound = '1';
-    const info = applyToImg(img);
-    if (!info || info.hidden) {
-      if (info?.hidden) bindOcultaRestore(info.key);
-      return;
-    }
+  function applyKeyToAll(key) {
+    scope.querySelectorAll('[data-jm-img-key]').forEach((el) => {
+      if (el.dataset.jmImgKey === key) applyToImg(el);
+    });
+  }
 
-    const interactiveParent = img.closest('a, button');
-    const card = img.closest('.jm-nuevo-proto__card, .jm-interfaces__card, .ficha-wireframe, .jm-galeria__slide, .jm-prototipo__pantalla, figure');
-
+  function buildImgEditBar(img, info) {
     const bar = document.createElement('div');
     bar.className = 'jm-img-editable__bar';
     bar.dataset.jmImgBarFor = info.key;
@@ -1340,7 +1336,7 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
       e.preventDefault();
       e.stopPropagation();
       delete overrides[info.key];
-      applyToImg(img);
+      applyKeyToAll(info.key);
       btnRestore.hidden = true;
       emitChange();
     });
@@ -1354,7 +1350,7 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
       const notas = prompt('Notas (opcional):', actual.notas || '');
       if (notas === null) return;
       meta[info.key] = { titulo: titulo.trim(), notas: notas.trim() };
-      applyToImg(img);
+      applyKeyToAll(info.key);
       emitChange();
     });
 
@@ -1363,7 +1359,7 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
       e.stopPropagation();
       if (!confirm('¿Ocultar esta imagen de la landing?')) return;
       if (!ocultas.includes(info.key)) ocultas.push(info.key);
-      applyToImg(img);
+      applyKeyToAll(info.key);
       bindOcultaRestore(info.key);
       emitChange();
     });
@@ -1379,7 +1375,7 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
       const reader = new FileReader();
       reader.onload = () => {
         overrides[info.key] = reader.result;
-        applyToImg(img);
+        applyKeyToAll(info.key);
         btnRestore.hidden = false;
         emitChange();
       };
@@ -1394,18 +1390,83 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
     bar.appendChild(btnRestore);
     bar.appendChild(btnDelete);
     bar.appendChild(input);
+    return bar;
+  }
 
+  function attachImgEditBar(img, bar) {
+    const visorRoot = img.closest('[data-jm-int-visor], [data-jm-nuevo-visor]');
+    if (visorRoot && (img.hasAttribute('data-jm-int-visor-img') || img.classList.contains('jm-interfaces__visor-img'))) {
+      return;
+    }
+
+    const thumbCard = img.closest('.jm-interfaces__card');
+    if (thumbCard) {
+      const cap = thumbCard.querySelector('figcaption');
+      if (cap) cap.insertAdjacentElement('afterend', bar);
+      else thumbCard.appendChild(bar);
+      return;
+    }
+
+    const interactiveParent = img.closest('a, button');
+    const card = img.closest('.jm-nuevo-proto__card, .ficha-wireframe, .jm-galeria__slide, .jm-prototipo__pantalla, figure');
     if (interactiveParent && card) {
       interactiveParent.insertAdjacentElement('afterend', bar);
-    } else {
-      const parent = img.parentNode;
-      if (!parent) return;
-      const wrap = document.createElement('div');
-      wrap.className = 'jm-img-editable';
-      parent.insertBefore(wrap, img);
-      wrap.appendChild(img);
-      wrap.appendChild(bar);
+      return;
     }
+
+    const parent = img.parentNode;
+    if (!parent) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'jm-img-editable';
+    parent.insertBefore(wrap, img);
+    wrap.appendChild(img);
+    wrap.appendChild(bar);
+  }
+
+  function syncCarouselVisorBar(sec) {
+    const slot = sec.querySelector('[data-jm-int-visor-edit]');
+    if (!slot) return;
+    slot.innerHTML = '';
+    const activeImg = sec.querySelector('.jm-interfaces__card--activa img[data-jm-img-key]');
+    if (!activeImg) return;
+    const info = applyToImg(activeImg);
+    if (!info || info.hidden) return;
+    const visorImg = sec.querySelector('[data-jm-int-visor-img]');
+    if (visorImg && activeImg.dataset.jmImgKey) {
+      visorImg.dataset.jmImgKey = activeImg.dataset.jmImgKey;
+      visorImg.dataset.jmImgDefault = activeImg.dataset.jmImgDefault || '';
+      applyToImg(visorImg);
+    }
+    const bar = buildImgEditBar(activeImg, info);
+    bar.classList.add('jm-img-editable__bar--visor');
+    slot.appendChild(bar);
+  }
+
+  window.jmSyncVisorEditBar = syncCarouselVisorBar;
+
+  scope.querySelectorAll('[data-jm-img-key]').forEach((img) => {
+    if (img.hasAttribute('data-jm-int-visor-img') || img.classList.contains('jm-interfaces__visor-img')) {
+      applyToImg(img);
+      return;
+    }
+    if (img.dataset.jmImgEditorBound === '1') {
+      applyToImg(img);
+      const btnRestore = scope.querySelector(`[data-jm-img-bar-for="${img.dataset.jmImgKey}"] .jm-img-editable__btn--ghost`);
+      if (btnRestore) btnRestore.hidden = !overrides[img.dataset.jmImgKey];
+      return;
+    }
+    img.dataset.jmImgEditorBound = '1';
+    const info = applyToImg(img);
+    if (!info || info.hidden) {
+      if (info?.hidden) bindOcultaRestore(info.key);
+      return;
+    }
+
+    attachImgEditBar(img, buildImgEditBar(img, info));
+  });
+
+  scope.querySelectorAll('[data-jm-interfaces]').forEach((sec) => {
+    syncCarouselVisorBar(sec);
   });
 
   scope.querySelectorAll('[data-jm-interfaces], [data-jm-nuevo-prototipo]').forEach((sec) => {
