@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Captura PNG de la maqueta navbar JM (desktop + móvil)."""
+"""Captura PNG de la maqueta navbar JM (solo desktop)."""
 
 from pathlib import Path
 
@@ -9,7 +9,6 @@ OUT = HTML.parent
 
 CAPTURAS = [
     ("navbar-jm-maqueta-desktop.png", 1280, 400, "desktop", ".maqueta-frame--desktop .jm-navbar-wrap"),
-    ("navbar-jm-maqueta-mobile.png", 390, 320, "mobile", ".maqueta-frame--mobile .jm-navbar-wrap"),
 ]
 
 
@@ -25,7 +24,7 @@ def main():
             url = HTML.as_uri() + f"?shot={shot}"
             ctx = browser.new_context(
                 viewport={"width": width, "height": height},
-                device_scale_factor=2 if width < 500 else 1,
+                device_scale_factor=1,
             )
             page = ctx.new_page()
             page.goto(url, wait_until="networkidle", timeout=60000)

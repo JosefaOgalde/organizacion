@@ -367,6 +367,52 @@
   text-decoration: underline;
 }
 
+/* Mockups navbar · solo desktop */
+.jm-interfaces--navbar-maqueta {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e8e0dc;
+}
+
+.jm-interfaces__viewport-tabs--solo .jm-interfaces__viewport-tab {
+  cursor: default;
+  pointer-events: none;
+}
+
+.jm-interfaces__accion-maqueta {
+  margin: 0.25rem 0 0.85rem;
+}
+
+.jm-btn-maqueta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.15rem;
+  border-radius: 999px;
+  background: var(--jm-text, #6a4048);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  transition: background 0.15s;
+}
+
+.jm-btn-maqueta:hover {
+  background: var(--jm-gold, #a97e23);
+  color: #fff;
+}
+
+.jm-interfaces__visor--navbar .jm-interfaces__visor-img {
+  max-height: 220px;
+  width: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.jm-interfaces__filtros {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;

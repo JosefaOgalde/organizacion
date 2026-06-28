@@ -77,17 +77,16 @@ body {
   box-shadow: 0 8px 32px rgba(106, 64, 72, 0.1);
 }
 
-.maqueta-frame--mobile {
-  max-width: 390px;
-  margin: 0 auto;
-  border-radius: 24px;
-  box-shadow:
-    0 0 0 3px #2a2a2a,
-    0 0 0 6px #1a1a1a,
-    0 16px 40px rgba(0, 0, 0, 0.2);
+/* Captura (ocultar chrome de página) */
+body[data-shot='desktop'] {
+  background: #fff;
+  padding: 0;
 }
 
-/* —— Barra superior social (producción JM) —— */
+body[data-shot='desktop'] .maqueta-page__head,
+body[data-shot='desktop'] .maqueta-block__label {
+  display: none;
+}
 .jm-navbar-wrap {
   position: relative;
   background: var(--jm-cream);
@@ -304,84 +303,6 @@ body {
   background: var(--jm-gold-dark);
 }
 
-/* —— Navbar móvil (ref SP · hamburguesa + logo centro) —— */
-.jm-navbar--mobile {
-  display: none;
-  grid-template-columns: auto 1fr auto;
-  min-height: 58px;
-  padding: 0.55rem 1rem;
-}
-
-.jm-navbar--mobile .jm-navbar__brand img {
-  height: 36px;
-}
-
-.jm-navbar--mobile .jm-navbar__brand {
-  justify-self: center;
-}
-
-.jm-navbar--mobile .jm-navbar__left {
-  display: flex;
-  align-items: center;
-}
-
-.jm-navbar--mobile .jm-navbar__actions {
-  gap: 0.65rem;
-}
-
-.jm-hamburger {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  width: 28px;
-  height: 28px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-.jm-hamburger span {
-  display: block;
-  height: 2px;
-  width: 22px;
-  background: var(--jm-mauve);
-  border-radius: 1px;
-}
-
-.jm-navbar__secondary {
-  display: flex;
-  justify-content: center;
-  gap: 0;
-  padding: 0;
-  background: var(--jm-nude);
-  border-bottom: 1px solid var(--jm-line);
-  list-style: none;
-}
-
-.jm-navbar__secondary a {
-  flex: 1;
-  text-align: center;
-  padding: 0.55rem 0.35rem;
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--jm-gold-dark);
-  text-decoration: none;
-  border-right: 1px solid rgba(255, 255, 255, 0.35);
-}
-
-.jm-navbar__secondary li:last-child a {
-  border-right: none;
-}
-
-.jm-navbar__secondary a.is-active {
-  background: rgba(255, 255, 255, 0.45);
-  color: var(--jm-mauve);
-}
-
 /* —— Preview hero debajo (contexto) —— */
 .jm-preview-hero {
   height: 120px;
@@ -399,62 +320,3 @@ body {
   color: var(--jm-gold-dark);
 }
 
-/* Bloque móvil dedicado: siempre muestra variante mobile */
-.maqueta-block--mobile-only .jm-navbar--desktop,
-.maqueta-block--mobile-only .jm-topbar {
-  display: none;
-}
-
-.maqueta-block--mobile-only .jm-navbar--mobile {
-  display: grid;
-}
-
-/* —— Responsive toggle en página demo —— */
-@media (max-width: 899px) {
-  body {
-    padding: 1rem 0.75rem 2rem;
-  }
-
-  .maqueta-frame--desktop .jm-navbar--desktop,
-  .maqueta-frame--desktop .jm-topbar {
-    display: none;
-  }
-
-  .maqueta-frame--desktop .jm-navbar--mobile {
-    display: grid;
-  }
-}
-
-/* Captura (ocultar chrome de página) */
-body[data-shot='1'] {
-  background: #fff;
-  padding: 0;
-}
-
-body[data-shot='1'] .maqueta-page__head,
-body[data-shot='1'] .maqueta-block__label,
-body[data-shot='1'] .maqueta-block--mobile-only {
-  display: none;
-}
-
-body[data-shot='desktop'] .maqueta-block--mobile-only {
-  display: none;
-}
-
-body[data-shot='mobile'] .maqueta-block--desktop {
-  display: none;
-}
-
-body[data-shot='mobile'] .maqueta-page__head {
-  display: none;
-}
-
-body[data-shot='mobile'] .jm-navbar--mobile,
-body[data-shot='mobile'] .maqueta-block--mobile-only .jm-navbar--mobile {
-  display: grid;
-}
-
-body[data-shot='mobile'] .jm-navbar--desktop,
-body[data-shot='mobile'] .jm-topbar {
-  display: none;
-}
