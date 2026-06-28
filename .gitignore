@@ -7,3 +7,6 @@ shell-test.txt
 
 # Laravel — generado localmente con composer (no subir vendor)
 backend/
+
+# Auto-guardado local del servidor Node (respaldar con ↓ Respaldo + SUBIR.bat)
+data/organizacion-live.json

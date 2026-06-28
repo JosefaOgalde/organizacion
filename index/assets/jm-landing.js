@@ -160,6 +160,9 @@
       const cli = datos.clientes.find((c) => c.id === CLI_ID);
       if (cli?.ficha) cli.ficha.actualizado = new Date().toISOString();
       localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+      if (typeof window.persistOrganizacionToDisk === 'function') {
+        window.persistOrganizacionToDisk(datos);
+      }
       toast('Cambios guardados');
     } catch (e) {
       toast('No se pudo guardar');

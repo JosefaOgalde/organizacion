@@ -1816,7 +1816,11 @@ function guardar() {
     if (typeof window.jmSyncLandingDesdeTareas === 'function') {
       window.jmSyncLandingDesdeTareas(datos);
     }
+    datos.respaldoActualizado = toISO(hoy());
     localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+    if (typeof window.persistOrganizacionToDisk === 'function') {
+      window.persistOrganizacionToDisk(datos);
+    }
     return true;
   } catch (e) {
     console.error('Error al guardar en localStorage', e);
@@ -4935,10 +4939,25 @@ async function cargarDatosInicio() {
     return { datos: cargar(), origen: 'local' };
   }
 
+  const live = typeof window.fetchOrganizacionLive === 'function'
+    ? await window.fetchOrganizacionLive()
+    : null;
+
   // Por defecto: conservar lo del navegador (borrados, fechas, estados)
   if (!forzarRespaldo && tieneDatosLocales()) {
+    const local = cargar();
+    if (live && typeof window.organizacionLiveEsMasReciente === 'function'
+      && window.organizacionLiveEsMasReciente(local, live)) {
+      console.info('Datos cargados desde data/organizacion-live.json (más reciente que el navegador)');
+      return { datos: normalizarDatos(live), origen: 'live' };
+    }
     console.info('Datos cargados desde localStorage (tus cambios locales)');
-    return { datos: cargar(), origen: 'local' };
+    return { datos: local, origen: 'local' };
+  }
+
+  if (!forzarRespaldo && live) {
+    console.info('Datos cargados desde data/organizacion-live.json');
+    return { datos: normalizarDatos(live), origen: 'live' };
   }
 
   const remoto = await fetchRespaldoDefecto();
@@ -5003,6 +5022,8 @@ async function iniciarApp() {
   }
   if (origenCarga === 'respaldo') {
     mostrarToast('Calendario vacío desde respaldo — modo manual (+ Nueva tarea)');
+  } else if (origenCarga === 'live') {
+    mostrarToast('Datos cargados desde data/organizacion-live.json');
   } else if (origenCarga === 'local') {
     mostrarToast('Calendario con tus cambios guardados');
   } else if (origenCarga === 'vaciar') {
