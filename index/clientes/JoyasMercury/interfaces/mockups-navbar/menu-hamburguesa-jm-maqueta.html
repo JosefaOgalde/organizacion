@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menú hamburguesa · maqueta móvil · Joyas Mercury</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="menu-hamburguesa-jm-maqueta.css">
+</head>
+<body>
+  <div class="jm-menu-demo">
+    <header class="jm-menu-demo__head">
+      <h1>Menú hamburguesa · Joyas Mercury</h1>
+      <p>Propuesta Fase 2 · alineada a <code>01-inicio-referencia-mobile</code></p>
+      <nav>
+        <a href="../maqueta-diseno/index.html">← Maqueta inicio</a>
+        <button type="button" id="btn-toggle-menu" aria-expanded="false">Abrir / cerrar menú</button>
+      </nav>
+    </header>
+
+    <div class="jm-phone" aria-label="Vista móvil 390px">
+      <div class="jm-phone__screen">
+        <header class="jm-mheader">
+          <button type="button" class="jm-mheader__menu" id="btn-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="jm-drawer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+          </button>
+          <a class="jm-mheader__logo" href="#" aria-label="Joyas Mercury">
+            <img src="../../identidad/isotipo-jm-gold.png" alt="">
+          </a>
+          <a class="jm-mheader__bag" href="#" aria-label="Mi carrito">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+            <small>0</small>
+          </a>
+        </header>
+
+        <div class="jm-mheader__social" aria-hidden="true">
+          <span>f</span><span>ig</span><span>tk</span>
+          <span class="jm-mheader__wa">wa</span>
+        </div>
+
+        <div class="jm-preview-hero" aria-hidden="true">
+          <p class="jm-preview-hero__title">JOYAS QUE TE HACEN BRILLAR</p>
+          <p class="jm-preview-hero__script">todos los días ♡</p>
+        </div>
+
+        <div class="jm-backdrop" id="jm-backdrop" hidden></div>
+
+        <aside class="jm-drawer" id="jm-drawer" aria-hidden="true" aria-label="Menú de navegación">
+          <div class="jm-drawer__head">
+            <span class="jm-drawer__brand">JOYAS MERCURY</span>
+            <button type="button" class="jm-drawer__close" id="btn-close-menu" aria-label="Cerrar menú">×</button>
+          </div>
+
+          <nav class="jm-drawer__nav">
+            <a class="jm-drawer__link jm-drawer__link--main is-active" href="#">Inicio</a>
+
+            <div class="jm-drawer__group is-open">
+              <button type="button" class="jm-drawer__link jm-drawer__link--colecciones" id="btn-colecciones" aria-expanded="true">
+                Colecciones <span class="jm-drawer__chev" aria-hidden="true">▾</span>
+              </button>
+              <div class="jm-drawer__sub" id="sub-colecciones">
+                <div class="jm-drawer__col-block">
+                  <a class="jm-drawer__col-name" href="#">Esencial</a>
+                  <p class="jm-drawer__col-cats">Aros · Cadenas · Anillos · Pulseras · Conjuntos</p>
+                </div>
+                <div class="jm-drawer__col-block">
+                  <a class="jm-drawer__col-name" href="#">Gold</a>
+                  <p class="jm-drawer__col-cats">Aros · Cadenas · Anillos · Pulseras · Conjuntos</p>
+                </div>
+                <div class="jm-drawer__col-block">
+                  <a class="jm-drawer__col-name" href="#">Deluxe</a>
+                  <p class="jm-drawer__col-cats">Aros · Cadenas · Anillos · Pulseras · Conjuntos</p>
+                </div>
+              </div>
+            </div>
+
+            <a class="jm-drawer__link jm-drawer__link--main" href="#">Historias que Brillan</a>
+            <a class="jm-drawer__link jm-drawer__link--main" href="#">Mi Cuenta</a>
+            <a class="jm-drawer__link jm-drawer__link--main" href="#">Contacto</a>
+            <a class="jm-drawer__link jm-drawer__link--main" href="#">Mi Carrito</a>
+          </nav>
+
+          <p class="jm-drawer__note">Sin «Productos Destacados» en menú · van dentro de Inicio</p>
+        </aside>
+
+        <nav class="jm-bottom-nav" aria-label="Navegación inferior" aria-hidden="true">
+          <a href="#" class="is-active">Inicio</a>
+          <a href="#">Mi Cuenta</a>
+          <a href="#">Mi Carrito</a>
+          <a href="#">Buscar</a>
+        </nav>
+      </div>
+    </div>
+
+    <aside class="jm-menu-spec">
+      <h2>Cómo debe verse (Fase 2)</h2>
+      <ul>
+        <li><strong>Drawer</strong> desde la izquierda (~85% ancho), fondo crema, borde gold.</li>
+        <li><strong>Cabecera dorada</strong> con marca + botón cerrar (×).</li>
+        <li><strong>Colecciones</strong> en rosa, desplegable con 3 líneas (Esencial / Gold / Deluxe).</li>
+        <li>Categorías en una sola línea gris bajo cada colección — <em>sin repetir ítems sueltos</em>.</li>
+        <li><strong>No incluir</strong> «Productos Destacados» ni categorías sueltas tipo «Aros» repetido.</li>
+        <li>Complemento móvil: barra inferior fija (Inicio · Cuenta · Carrito · Buscar).</li>
+      </ul>
+      <p class="jm-menu-spec__vs"><span class="bad">Actual</span> Tienda → Aros, Cadenas, Anillos, Aros otra vez…</p>
+      <p class="jm-menu-spec__vs"><span class="good">Propuesto</span> Colecciones ▾ → Esencial / Gold / Deluxe + categorías agrupadas</p>
+    </aside>
+  </div>
+
+  <script>
+    (function () {
+      const drawer = document.getElementById('jm-drawer');
+      const backdrop = document.getElementById('jm-backdrop');
+      const btnOpen = document.getElementById('btn-hamburger');
+      const btnClose = document.getElementById('btn-close-menu');
+      const btnToggle = document.getElementById('btn-toggle-menu');
+      const btnCols = document.getElementById('btn-colecciones');
+      const subCols = document.getElementById('sub-colecciones');
+      const groupCols = btnCols?.closest('.jm-drawer__group');
+
+      function setOpen(open) {
+        drawer.classList.toggle('is-open', open);
+        backdrop.hidden = !open;
+        drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+        btnOpen?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btnToggle?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        document.body.dataset.menuOpen = open ? '1' : '0';
+      }
+
+      btnOpen?.addEventListener('click', () => setOpen(true));
+      btnClose?.addEventListener('click', () => setOpen(false));
+      backdrop?.addEventListener('click', () => setOpen(false));
+      btnToggle?.addEventListener('click', () => setOpen(!drawer.classList.contains('is-open')));
+
+      btnCols?.addEventListener('click', () => {
+        const open = !groupCols.classList.contains('is-open');
+        groupCols.classList.toggle('is-open', open);
+        btnCols.setAttribute('aria-expanded', open ? 'true' : 'false');
+        subCols.hidden = !open;
+      });
+
+      const params = new URLSearchParams(location.search);
+      if (params.get('open') === '1' || params.get('shot') === 'open') {
+        setOpen(true);
+      }
+      if (params.get('shot') === '1' || params.get('shot') === 'open') {
+        document.body.dataset.shot = '1';
+      }
+    })();
+  </script>
+</body>
+</html>
