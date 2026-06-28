@@ -512,9 +512,10 @@
 
   document.title = 'Joyas Mercury · Landing cliente';
   const boot = () => {
-    const ready = window.jmLandingsCarruselReady;
-    if (ready && typeof ready.then === 'function') {
-      ready.finally(() => render());
+    const promises = [window.jmLandingsCarruselReady, window.jmLandingsCarruselMobileReady]
+      .filter((p) => p && typeof p.then === 'function');
+    if (promises.length) {
+      Promise.all(promises).finally(() => render());
     } else {
       render();
     }

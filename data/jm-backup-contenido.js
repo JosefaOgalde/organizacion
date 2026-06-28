@@ -292,9 +292,14 @@ window.jmAssetBase = (function jmDetectAssetBase() {
 window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo, opts) {
   const file = `${carpeta}/${archivo}`.replace(/^\/+/, '');
   let url = `${window.jmAssetBase}${file}`;
-  if (opts && opts.cacheBust && carpeta === 'interfaces/referencia-landings') {
-    const v = window.JM_LANDINGS_CARRUSEL_VERSION || 1;
-    url += (url.includes('?') ? '&' : '?') + 'v=' + v;
+  if (opts && opts.cacheBust) {
+    if (carpeta === 'interfaces/referencia-landings') {
+      const v = window.JM_LANDINGS_CARRUSEL_VERSION || 1;
+      url += (url.includes('?') ? '&' : '?') + 'v=' + v;
+    } else if (carpeta === 'interfaces/referencia-landings-mobile') {
+      const v = window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION || 1;
+      url += (url.includes('?') ? '&' : '?') + 'v=' + v;
+    }
   }
   return url;
 };
@@ -655,16 +660,85 @@ window.jmCargarLandingsCarruselDesdeJson = window.jmActualizarLandingsCarrusel;
 
 window.jmLandingsCarruselReady = window.jmActualizarLandingsCarrusel();
 
-/** HTML carrusel landings referencia (manifiesto en referencia-landings/carrusel.manifest.js) */
-function jmHtmlLandingsCarrusel() {
-  const items = window.JM_LANDINGS_CARRUSEL || [];
+/** Landings referencia · móvil (fallback) */
+if (!window.JM_LANDINGS_CARRUSEL_MOBILE || !window.JM_LANDINGS_CARRUSEL_MOBILE.length) {
+  window.JM_LANDINGS_CARRUSEL_MOBILE = [
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '01-inicio-referencia-mobile.png', titulo: 'Inicio' },
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '02-esencial-referencia-mobile.png', titulo: 'Esencial' },
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '03-gold-referencia-mobile.png', titulo: 'Gold' },
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '04-deluxe-referencia-mobile.png', titulo: 'Deluxe' },
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '05-carrito-referencia-mobile.png', titulo: 'Carrito' },
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '06-ayuda-referencia-mobile.png', titulo: 'Ayuda' },
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '07-productos-referencia-mobile.png', titulo: 'Productos' }
+  ];
+}
+if (typeof window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION !== 'number') {
+  window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION = 1;
+}
+
+window.jmCargarLandingsCarruselMobileDesdeDirectorio = function jmCargarLandingsCarruselMobileDesdeDirectorio() {
+  const base = window.jmAssetBase || '/index/clientes/JoyasMercury/';
+  const dirUrl = base + 'interfaces/referencia-landings-mobile/?t=' + Date.now();
+  return fetch(dirUrl, { cache: 'no-store' })
+    .then((res) => (res.ok ? res.text() : ''))
+    .then((html) => {
+      if (!html || !/\.png/i.test(html)) return false;
+      const pngs = [...new Set(
+        [...html.matchAll(/href="([^"?]+\.png)"/gi)]
+          .map((m) => decodeURIComponent(m[1].split('/').pop() || ''))
+          .filter((name) => name && !name.includes('..'))
+      )].sort();
+      if (!pngs.length) return false;
+      window.JM_LANDINGS_CARRUSEL_MOBILE = pngs.map((archivo) => ({
+        carpeta: 'interfaces/referencia-landings-mobile',
+        archivo,
+        titulo: jmTituloLandingArchivo(archivo)
+      }));
+      window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION = (window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION || 0) + 1;
+      return true;
+    })
+    .catch(() => false);
+};
+
+window.jmActualizarLandingsCarruselMobile = function jmActualizarLandingsCarruselMobile() {
+  const cargarDir = typeof window.jmCargarLandingsCarruselMobileDesdeDirectorio === 'function'
+    ? window.jmCargarLandingsCarruselMobileDesdeDirectorio()
+    : Promise.resolve(false);
+
+  return cargarDir.then((okDir) => {
+    if (okDir) return true;
+    const base = window.jmAssetBase || '/index/clientes/JoyasMercury/';
+    const url = base + 'interfaces/referencia-landings-mobile/carrusel.json?t=' + Date.now();
+    return fetch(url, { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.items) && data.items.length) {
+          window.JM_LANDINGS_CARRUSEL_MOBILE = data.items;
+          if (typeof data.version === 'number') {
+            window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION = data.version;
+          }
+          return true;
+        }
+        return !!(window.JM_LANDINGS_CARRUSEL_MOBILE && window.JM_LANDINGS_CARRUSEL_MOBILE.length);
+      })
+      .catch(() => !!(window.JM_LANDINGS_CARRUSEL_MOBILE && window.JM_LANDINGS_CARRUSEL_MOBILE.length));
+  });
+};
+
+window.jmLandingsCarruselMobileReady = window.jmActualizarLandingsCarruselMobile();
+
+/** HTML carrusel landings referencia (desktop o móvil) */
+function jmHtmlLandingsCarruselBlock(items, opts) {
   if (!items.length) return '';
+  const o = opts || {};
   const ordenTitulos = items.map((w) => w.titulo).join(' → ');
+  const grupo = o.grupo || 'landings';
+  const claseExtra = o.claseExtra || '';
 
   const cards = items.map((w, i) => {
     const src = jmLandingCarruselSrc(w);
     const activa = i === 0 ? ' jm-interfaces__card--activa' : '';
-    return `<figure class="jm-interfaces__card${activa}" data-jm-int-index="${i}" data-jm-int-src="${jmEscapeHtml(src)}" data-jm-int-titulo="${jmEscapeHtml(w.titulo)}" data-jm-int-grupo="landings">
+    return `<figure class="jm-interfaces__card${activa}" data-jm-int-index="${i}" data-jm-int-src="${jmEscapeHtml(src)}" data-jm-int-titulo="${jmEscapeHtml(w.titulo)}" data-jm-int-grupo="${jmEscapeHtml(grupo)}">
       <button type="button" class="jm-interfaces__card-btn" title="${jmEscapeHtml(w.titulo)}">
         <img src="${src}" alt="${jmEscapeHtml(w.titulo)}"${jmImgAttrs(w.carpeta, w.archivo, src)} loading="${i === 0 ? 'eager' : 'lazy'}">
       </button>
@@ -674,11 +748,15 @@ function jmHtmlLandingsCarrusel() {
 
   const primera = items[0];
   const visorSrc = jmLandingCarruselSrc(primera);
+  const wireframeLink = o.wireframeReadme
+    ? `<p class="jm-interfaces__wireframe-link"><a href="${jmEscapeHtml(o.wireframeReadme)}" target="_blank" rel="noopener">Abrir wireframes interactivos →</a></p>`
+    : '';
 
-  return `<div class="jm-interfaces jm-interfaces--landings-ref" data-jm-interfaces tabindex="0" aria-label="Landings referencia">
+  return `<div class="jm-interfaces jm-interfaces--landings-ref ${claseExtra}" data-jm-interfaces tabindex="0" aria-label="${jmEscapeHtml(o.ariaLabel || o.titulo || 'Landings referencia')}">
     <div class="jm-interfaces__head">
-      <h4 class="jm-interfaces__titulo-seccion">Landings referencia</h4>
-      <p class="jm-interfaces__intro">${items.length} capturas del sitio · orden: <strong>${jmEscapeHtml(ordenTitulos)}</strong> · clic en miniatura o flechas.</p>
+      <h4 class="jm-interfaces__titulo-seccion">${jmEscapeHtml(o.titulo || 'Landings referencia')}</h4>
+      <p class="jm-interfaces__intro">${items.length} capturas · orden: <strong>${jmEscapeHtml(ordenTitulos)}</strong> · clic en miniatura o flechas.${o.introExtra ? ' ' + o.introExtra : ''}</p>
+      ${wireframeLink}
       <p class="jm-interfaces__hint-reemplazo jm-solo-vista">Puedes reemplazar cada una por tu diseño actualizado. Pulsa <button type="button" class="jm-interfaces__link-editar" data-jm-activar-edicion-imagenes>Editar datos</button> arriba a la derecha.</p>
       <p class="jm-interfaces__hint-reemplazo jm-interfaces__hint-reemplazo--activo jm-solo-edicion">Imagen activa: usa <strong>Cambiar imagen</strong> en el recuadro de abajo o en cada miniatura.</p>
     </div>
@@ -702,6 +780,26 @@ function jmHtmlLandingsCarrusel() {
     </div>
     <div class="jm-interfaces__grid" data-jm-int-grid>${cards}</div>
   </div>`;
+}
+
+function jmHtmlLandingsCarrusel() {
+  return jmHtmlLandingsCarruselBlock(window.JM_LANDINGS_CARRUSEL || [], {
+    titulo: 'Landings referencia · Desktop',
+    ariaLabel: 'Landings referencia desktop',
+    grupo: 'landings',
+    introExtra: 'Vista escritorio.'
+  });
+}
+
+function jmHtmlLandingsCarruselMobile() {
+  return jmHtmlLandingsCarruselBlock(window.JM_LANDINGS_CARRUSEL_MOBILE || [], {
+    titulo: 'Landings referencia · Móvil',
+    ariaLabel: 'Landings referencia móvil',
+    grupo: 'landings-mobile',
+    claseExtra: 'jm-interfaces--landings-ref-mobile',
+    introExtra: 'Diagramación 390px · mismas 7 pantallas.',
+    wireframeReadme: (window.jmAssetBase || '') + 'interfaces/referencia-landings-mobile/README.md'
+  });
 }
 
 /** HTML carrusel interfaces (auditoría + estado actual) con miniaturas — legacy */
@@ -1071,6 +1169,7 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
   const cuerpo = usarPrototipo
     ? jmHtmlPrototipoInteractivo()
       + jmHtmlLandingsCarrusel()
+      + jmHtmlLandingsCarruselMobile()
       + (mostrarObjetivoMini ? jmHtmlObjetivoMini(wf) : '')
     : (() => {
       const grupos = [];
