@@ -289,7 +289,7 @@
           <a href="../" class="jm-btn jm-btn--ghost">← Volver</a>
           <span class="jm-ficha-top__tipo">Freelance · JM</span>
           <div class="jm-landing__toolbar">
-            <button type="button" class="jm-btn" id="jm-btn-prototipo" title="Ir al prototipo interactivo">Prototipo interactivo</button>
+            <a href="../../../" class="jm-btn jm-btn--celeste">Organizador</a>
             <button type="button" class="jm-btn${modoEdicion ? ' jm-btn--active' : ''}" id="jm-btn-editar">
               ${modoEdicion ? 'Guardar datos' : 'Editar datos'}
             </button>
@@ -369,10 +369,6 @@
   }
 
   function bindEvents(cli) {
-    document.getElementById('jm-btn-prototipo')?.addEventListener('click', () => {
-      document.getElementById('ficha-wireframes-jm')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-
     document.getElementById('jm-btn-guardar')?.addEventListener('click', () => {
       guardar();
       render();

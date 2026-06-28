@@ -5,6 +5,20 @@
   border-color: transparent;
 }
 
+.jm-btn--celeste {
+  background: #98c8e0;
+  border-color: #98c8e0;
+  color: #2a5a72;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.jm-btn--celeste:hover {
+  background: #7eb8d4;
+  border-color: #7eb8d4;
+  color: #1e4558;
+}
+
 .jm-btn--primary {
   background: var(--jm-text);
   border-color: var(--jm-text);
