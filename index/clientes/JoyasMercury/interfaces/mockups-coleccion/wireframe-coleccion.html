@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe · Colección · Joyas Mercury</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #faf8f6;
+      --mauve: #6a4048;
+      --gold: #ecc54a;
+      --gold-dark: #a97e23;
+      --rose: #c88f9c;
+      --beige: #d8bfb1;
+      --grey: #c4c4c4;
+      --line: #e8e0dc;
+      --bottom-nav-h: 62px;
+      --col-accent: var(--rose);
+      --col-bg: linear-gradient(135deg, #fdf5f0 0%, #f5ebe3 100%);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Montserrat', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--mauve);
+      padding-bottom: var(--bottom-nav-h);
+    }
+    body[data-col="gold"] {
+      --col-accent: var(--gold-dark);
+      --col-bg: linear-gradient(135deg, #fff8e6 0%, #f5ecd0 100%);
+    }
+    body[data-col="deluxe"] {
+      --col-accent: var(--mauve);
+      --col-bg: linear-gradient(135deg, #f5eef0 0%, #ebe0e4 100%);
+    }
+
+    /* Header (igual inicio) */
+    .jm-header { background: var(--cream); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 40; }
+    .jm-header__logo-row { display: flex; justify-content: center; padding: 0.85rem 1.25rem 0.55rem; }
+    .jm-header__logo-row img { height: 68px; width: auto; }
+    .jm-header__nav-row { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 1.25rem 0.65rem; }
+    .jm-header__left, .jm-header__right { display: flex; align-items: center; gap: 1rem; }
+    .jm-icon { background: none; border: none; color: var(--mauve); cursor: pointer; display: inline-flex; }
+    .jm-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.35; }
+    .jm-search { display: none; align-items: center; gap: 0.5rem; flex: 1; max-width: 420px; border-bottom: 1px solid var(--mauve); padding-bottom: 0.35rem; }
+    .jm-search span { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+    .jm-header__menu-row {
+      display: none; justify-content: center; gap: 2rem; padding: 0.65rem 2rem 0.85rem;
+      border-top: 1px solid var(--line); font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .jm-header__menu-row a { color: var(--mauve); text-decoration: none; }
+    .jm-header__menu-row a.is-here { color: var(--gold-dark); border-bottom: 1px solid var(--gold-dark); }
+
+    /* Migas */
+    .jm-crumb {
+      font-size: 0.65rem; color: #9a858c; padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--line); background: #fff;
+    }
+    .jm-crumb a { color: #9a858c; text-decoration: none; }
+    .jm-crumb a:hover { color: var(--mauve); }
+
+    /* Banner colección */
+    .jm-col-hero {
+      background: var(--col-bg);
+      padding: 2rem 1.25rem 1.75rem;
+      text-align: center;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+    .jm-col-hero::before {
+      content: '✦'; position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+      font-size: 1.25rem; color: var(--col-accent); opacity: 0.35;
+    }
+    .jm-col-hero::after {
+      content: '✦'; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+      font-size: 1.25rem; color: var(--col-accent); opacity: 0.35;
+    }
+    .jm-col-hero__eyebrow {
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--col-accent); margin-bottom: 0.35rem;
+    }
+    .jm-col-hero__title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.75rem, 5vw, 2.35rem);
+      font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--col-accent); margin-bottom: 0.35rem;
+    }
+    .jm-col-hero__sub {
+      font-size: 0.82rem; color: #8a7078; max-width: 22rem; margin: 0 auto;
+      line-height: 1.45;
+    }
+
+    /* Switcher colecciones (misma vista) */
+    .jm-col-switch {
+      display: flex; justify-content: center; gap: 0.5rem;
+      padding: 1rem 1.25rem; background: #fff;
+      border-bottom: 1px solid var(--line); flex-wrap: wrap;
+    }
+    .jm-col-switch a {
+      padding: 0.45rem 1rem; border-radius: 999px;
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; text-decoration: none;
+      border: 1.5px solid var(--line); color: var(--mauve);
+      transition: all 0.2s;
+    }
+    .jm-col-switch a.is-active {
+      border-color: var(--col-accent); background: var(--col-accent); color: #fff;
+    }
+    body[data-col="gold"] .jm-col-switch a.is-active { background: var(--gold-dark); border-color: var(--gold-dark); }
+    body[data-col="deluxe"] .jm-col-switch a.is-active { background: var(--mauve); border-color: var(--mauve); }
+
+    /* Filtros categoría */
+    .jm-filters {
+      padding: 1rem 1.25rem 0.5rem; background: var(--cream);
+      position: sticky; top: 0; z-index: 30;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .jm-filters__label {
+      font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: #9a858c; margin-bottom: 0.55rem;
+    }
+    .jm-filters__row {
+      display: flex; gap: 0.45rem; overflow-x: auto; padding-bottom: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .jm-filters__chip {
+      flex-shrink: 0; padding: 0.4rem 0.85rem; border-radius: 999px;
+      border: 1px solid var(--beige); background: #fff;
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em;
+      text-transform: uppercase; color: var(--mauve); cursor: pointer;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .jm-filters__chip.is-active {
+      background: var(--col-accent); border-color: var(--col-accent); color: #fff;
+    }
+    body[data-col="gold"] .jm-filters__chip.is-active { background: var(--gold-dark); border-color: var(--gold-dark); }
+    body[data-col="deluxe"] .jm-filters__chip.is-active { background: var(--mauve); border-color: var(--mauve); }
+
+    .jm-catalog {
+      padding: 1.25rem 1.25rem 2.5rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .jm-catalog__meta {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1rem; font-size: 0.68rem; color: #8a7078;
+    }
+    .jm-catalog__sort {
+      border: 1px solid var(--line); background: #fff; padding: 0.35rem 0.65rem;
+      font-size: 0.65rem; color: var(--mauve); border-radius: 4px;
+    }
+
+    /* Grilla productos (igual inicio · Novedades) */
+    .jm-products { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .jm-product {
+      background: #fff; border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+    }
+    .jm-product__img {
+      aspect-ratio: 1; background: linear-gradient(145deg, #f8f2ee, #ece4de);
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .jm-product__img::after {
+      content: ''; width: 42%; height: 42%;
+      border: 1.5px dashed rgba(106,64,72,0.2); border-radius: 50%;
+    }
+    .jm-product__chip {
+      position: absolute; top: 0.5rem; left: 0.5rem;
+      font-size: 0.58rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 0.2rem 0.45rem; border-radius: 3px;
+    }
+    .jm-product__chip--esencial { background: rgba(200,143,156,0.35); color: var(--mauve); }
+    .jm-product__chip--gold { background: rgba(236,197,74,0.45); color: #8a6a10; }
+    .jm-product__chip--deluxe { background: rgba(106,64,72,0.15); color: var(--mauve); }
+    .jm-product__body { padding: 0.65rem 0.7rem 0.75rem; }
+    .jm-product__name { font-size: 0.72rem; font-weight: 500; line-height: 1.35; margin-bottom: 0.25rem; }
+    .jm-product__price { font-size: 0.78rem; font-weight: 600; color: var(--gold-dark); }
+    .jm-product.is-hidden { display: none; }
+
+    /* Otros accesos */
+    .jm-col-others {
+      padding: 2rem 1.25rem; background: #fff; border-top: 1px solid var(--line);
+      text-align: center;
+    }
+    .jm-col-others__title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.1rem; color: var(--rose); margin-bottom: 1rem;
+    }
+    .jm-col-others__grid {
+      display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;
+    }
+    .jm-col-others__link {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 2px solid var(--line); display: flex; align-items: center;
+      justify-content: center; font-size: 0.58rem; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;
+      color: var(--mauve);
+    }
+
+    /* Footer E */
+    .ft-e {
+      background: var(--cream); color: var(--mauve);
+      border-top: 3px solid var(--gold); padding: 2rem 1.25rem 0;
+    }
+    .ft-e a { color: var(--mauve); text-decoration: none; }
+    .ft-e__inner { text-align: center; max-width: 1000px; margin: 0 auto; }
+    .ft-e__logo { height: 48px; margin: 0 auto 1rem; display: block; }
+    .ft-e__nav { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; max-width: 280px; margin: 0 auto 1rem; text-align: left; font-size: 0.72rem; }
+    .ft-e__legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+    .ft-e__legal a { font-size: 0.65rem; color: #8a7078; }
+    .ft-e__bottom { background: #fff; border-top: 1px solid var(--line); padding: 0.85rem 1.25rem; text-align: center; }
+    .ft-e__copy { font-size: 0.62rem; color: #9a858c; }
+
+    .jm-wa-fab {
+      position: fixed; bottom: calc(var(--bottom-nav-h) + 0.75rem); right: 0.85rem;
+      width: 52px; height: 52px; border-radius: 50%; background: #25d366; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.22); z-index: 50; text-decoration: none;
+    }
+    .jm-wa-fab svg { width: 28px; height: 28px; fill: currentColor; }
+
+    .jm-bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-h);
+      background: #fff; border-top: 1px solid var(--line);
+      display: grid; grid-template-columns: repeat(4, 1fr); z-index: 45;
+    }
+    .jm-bottom-nav a {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0.2rem; font-size: 0.58rem; font-weight: 600; text-transform: uppercase;
+      color: var(--grey); text-decoration: none;
+    }
+    .jm-bottom-nav a svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.4; }
+
+    .jm-wireframe-switch {
+      position: fixed; top: 0.5rem; left: 0.5rem; z-index: 60;
+      background: rgba(255,255,255,0.95); border: 1px solid var(--line);
+      border-radius: 6px; padding: 0.4rem 0.65rem; font-size: 0.62rem;
+    }
+    .jm-wireframe-switch a { color: var(--mauve); font-weight: 600; margin: 0 0.2rem; }
+
+    @media (min-width: 900px) {
+      body { padding-bottom: 0; }
+      .jm-header__logo-row img { height: 88px; }
+      .jm-header__menu-row { display: flex; }
+      .jm-search { display: flex; }
+      .jm-icon--menu { display: none; }
+      .jm-products { grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+      .ft-e__nav { display: flex; flex-wrap: wrap; justify-content: center; max-width: none; gap: 0.5rem 2rem; text-align: center; }
+      .jm-bottom-nav { display: none; }
+      .jm-filters { top: auto; position: relative; box-shadow: none; }
+    }
+    body[data-shot="1"] .jm-wireframe-switch,
+    body[data-shot="1"] .jm-wa-fab { display: none; }
+    body[data-shot="1"] { padding-bottom: 0; }
+    @media (min-width: 900px) { .jm-icon--search-mobile { display: none !important; } }
+  </style>
+</head>
+<body data-col="esencial">
+  <header class="jm-header">
+    <div class="jm-header__logo-row">
+      <a href="../mockups-inicio/wireframe-inicio.html"><img src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury"></a>
+    </div>
+    <div class="jm-header__nav-row">
+      <div class="jm-header__left">
+        <button type="button" class="jm-icon jm-icon--menu" aria-label="Menú">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <form class="jm-search" role="search"><span>Buscar</span></form>
+      </div>
+      <div class="jm-header__right">
+        <button type="button" class="jm-icon jm-icon--search-mobile" aria-label="Buscar">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        </button>
+        <button type="button" class="jm-icon" aria-label="Carrito">
+          <svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 11H7.2L6 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav class="jm-header__menu-row">
+      <a href="../mockups-inicio/wireframe-inicio.html">Inicio</a>
+      <a href="?coleccion=esencial" class="is-here">Colecciones</a>
+      <a href="#">Historias que Brillan</a>
+      <a href="#">Mi Cuenta</a>
+      <a href="#">Contacto</a>
+      <a href="#">Mi Carrito</a>
+    </nav>
+  </header>
+
+  <p class="jm-crumb">
+    <a href="../mockups-inicio/wireframe-inicio.html">Inicio</a> ›
+    <a href="?coleccion=esencial">Colecciones</a> ›
+    <span id="crumb-col">Esencial</span>
+  </p>
+
+  <section class="jm-col-hero" aria-labelledby="col-title">
+    <p class="jm-col-hero__eyebrow">Colección</p>
+    <h1 class="jm-col-hero__title" id="col-title">Esencial</h1>
+    <p class="jm-col-hero__sub" id="col-sub">Joyas de uso diario · baño de oro 18k · perfectas para combinar</p>
+  </section>
+
+  <nav class="jm-col-switch" aria-label="Cambiar colección sin salir de la página">
+    <a href="?coleccion=esencial" data-col="esencial" class="is-active">Esencial</a>
+    <a href="?coleccion=gold" data-col="gold">Gold</a>
+    <a href="?coleccion=deluxe" data-col="deluxe">Deluxe</a>
+  </nav>
+
+  <div class="jm-filters">
+    <p class="jm-filters__label">Filtrar por categoría · misma vista (AJAX en producción)</p>
+    <div class="jm-filters__row" role="tablist">
+      <button type="button" class="jm-filters__chip is-active" data-cat="todos">Todos</button>
+      <button type="button" class="jm-filters__chip" data-cat="aros">Aros</button>
+      <button type="button" class="jm-filters__chip" data-cat="cadenas">Cadenas</button>
+      <button type="button" class="jm-filters__chip" data-cat="anillos">Anillos</button>
+      <button type="button" class="jm-filters__chip" data-cat="pulseras">Pulseras</button>
+      <button type="button" class="jm-filters__chip" data-cat="conjuntos">Conjuntos</button>
+    </div>
+  </div>
+
+  <main class="jm-catalog">
+    <div class="jm-catalog__meta">
+      <span id="product-count">8 productos</span>
+      <select class="jm-catalog__sort" aria-label="Ordenar">
+        <option>Destacados</option>
+        <option>Precio: menor a mayor</option>
+        <option>Precio: mayor a menor</option>
+        <option>Más recientes</option>
+      </select>
+    </div>
+    <div class="jm-products" id="product-grid">
+      <article class="jm-product" data-cat="aros"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Aros Corazón Rosa</p><p class="jm-product__price">$12.990</p></div></article>
+      <article class="jm-product" data-cat="cadenas"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Cadena Fina Esencial</p><p class="jm-product__price">$11.990</p></div></article>
+      <article class="jm-product" data-cat="anillos"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Anillo Minimal</p><p class="jm-product__price">$9.990</p></div></article>
+      <article class="jm-product" data-cat="pulseras"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Pulsera Eslabón</p><p class="jm-product__price">$10.990</p></div></article>
+      <article class="jm-product" data-cat="aros"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Aros Perla Mini</p><p class="jm-product__price">$8.990</p></div></article>
+      <article class="jm-product" data-cat="conjuntos"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Conjunto Brillo</p><p class="jm-product__price">$24.990</p></div></article>
+      <article class="jm-product" data-cat="cadenas"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Cadena Veneziana</p><p class="jm-product__price">$13.990</p></div></article>
+      <article class="jm-product" data-cat="anillos"><div class="jm-product__img"><span class="jm-product__chip jm-product__chip--esencial" data-chip>Esencial</span></div><div class="jm-product__body"><p class="jm-product__name">Anillo Corazón</p><p class="jm-product__price">$7.990</p></div></article>
+    </div>
+  </main>
+
+  <section class="jm-col-others" aria-label="Otras colecciones">
+    <h2 class="jm-col-others__title">También te puede gustar</h2>
+    <div class="jm-col-others__grid">
+      <a class="jm-col-others__link" href="?coleccion=gold" id="other-gold">Gold</a>
+      <a class="jm-col-others__link" href="?coleccion=deluxe" id="other-deluxe">Deluxe</a>
+    </div>
+  </section>
+
+  <footer class="ft-e">
+    <div class="ft-e__inner">
+      <img class="ft-e__logo" src="../../identidad/logo-jm-gold-vertical.png" alt="">
+      <nav class="ft-e__nav">
+        <a href="#">Nosotros</a><a href="?coleccion=esencial">Esencial</a>
+        <a href="?coleccion=gold">Gold</a><a href="?coleccion=deluxe">Deluxe</a>
+        <a href="#">Mi Cuenta</a><a href="#">Contacto</a>
+      </nav>
+      <div class="ft-e__legal">
+        <a href="#">Políticas</a><a href="#">Garantías</a><a href="#">Despachos</a>
+      </div>
+    </div>
+    <div class="ft-e__bottom"><p class="ft-e__copy">© 2026 joyasmercury.cl</p></div>
+  </footer>
+
+  <a class="jm-wa-fab" href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+
+  <nav class="jm-bottom-nav">
+    <a href="../mockups-inicio/wireframe-inicio.html">Inicio</a>
+    <a href="#">Cuenta</a>
+    <a href="#">Carrito</a>
+    <a href="#">Buscar</a>
+  </nav>
+
+  <div class="jm-wireframe-switch">
+    <a href="../mockups-inicio/wireframe-inicio.html">← Inicio</a>
+  </div>
+
+  <script>
+    (function () {
+      var COLS = {
+        esencial: { title: 'Esencial', sub: 'Joyas de uso diario · baño de oro 18k · perfectas para combinar', chip: 'esencial', label: 'Esencial' },
+        gold: { title: 'Gold', sub: 'Mayor resistencia y duración · acabado dorado intenso', chip: 'gold', label: 'Gold' },
+        deluxe: { title: 'Deluxe', sub: 'Diseños exclusivos · línea premium · piezas statement', chip: 'deluxe', label: 'Deluxe' }
+      };
+      var params = new URLSearchParams(location.search);
+      var col = COLS[params.get('coleccion')] ? params.get('coleccion') : 'esencial';
+      var cat = params.get('categoria') || 'todos';
+      document.body.dataset.col = col;
+      if (params.get('shot') === '1') document.body.dataset.shot = '1';
+
+      var info = COLS[col];
+      document.getElementById('col-title').textContent = info.title;
+      document.getElementById('col-sub').textContent = info.sub;
+      document.getElementById('crumb-col').textContent = info.label;
+      document.title = 'Wireframe · Colección ' + info.title + ' · Joyas Mercury';
+
+      document.querySelectorAll('.jm-col-switch a').forEach(function (a) {
+        a.classList.toggle('is-active', a.dataset.col === col);
+      });
+
+      document.querySelectorAll('[data-chip]').forEach(function (el) {
+        el.textContent = info.label;
+        el.className = 'jm-product__chip jm-product__chip--' + info.chip;
+      });
+
+      var others = { esencial: ['gold', 'deluxe'], gold: ['esencial', 'deluxe'], deluxe: ['esencial', 'gold'] };
+      var grid = document.querySelector('.jm-col-others__grid');
+      grid.innerHTML = others[col].map(function (c) {
+        return '<a class="jm-col-others__link" href="?coleccion=' + c + '">' + COLS[c].label + '</a>';
+      }).join('');
+
+      function filterCat(c) {
+        var visible = 0;
+        document.querySelectorAll('.jm-filters__chip').forEach(function (ch) {
+          ch.classList.toggle('is-active', ch.dataset.cat === c);
+        });
+        document.querySelectorAll('.jm-product').forEach(function (p) {
+          var show = c === 'todos' || p.dataset.cat === c;
+          p.classList.toggle('is-hidden', !show);
+          if (show) visible++;
+        });
+        document.getElementById('product-count').textContent = visible + ' producto' + (visible !== 1 ? 's' : '');
+      }
+
+      document.querySelectorAll('.jm-filters__chip').forEach(function (ch) {
+        ch.addEventListener('click', function () { filterCat(ch.dataset.cat); });
+      });
+      filterCat(cat);
+    })();
+  </script>
+</body>
+</html>

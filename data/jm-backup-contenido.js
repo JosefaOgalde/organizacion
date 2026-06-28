@@ -342,6 +342,20 @@ window.JM_NUEVO_PROTOTIPO = {
       ]
     },
     {
+      id: 'colecciones',
+      titulo: 'Colecciones · Esencial / Gold / Deluxe',
+      descripcion: 'Misma identidad que inicio: banner por línea, pills colección (misma vista), filtros Aros–Conjuntos, grilla igual a Novedades, footer E.',
+      wireframe: 'interfaces/mockups-coleccion/wireframe-coleccion.html',
+      pantallas: [
+        { id: 'col-esencial-m', vista: 'mobile', titulo: 'Esencial · mobile', archivo: 'interfaces/mockups-coleccion/jm-coleccion-esencial-mobile.png' },
+        { id: 'col-esencial-d', vista: 'desktop', titulo: 'Esencial · desktop', archivo: 'interfaces/mockups-coleccion/jm-coleccion-esencial-desktop.png' },
+        { id: 'col-gold-m', vista: 'mobile', titulo: 'Gold · mobile', archivo: 'interfaces/mockups-coleccion/jm-coleccion-gold-mobile.png' },
+        { id: 'col-gold-d', vista: 'desktop', titulo: 'Gold · desktop', archivo: 'interfaces/mockups-coleccion/jm-coleccion-gold-desktop.png' },
+        { id: 'col-deluxe-m', vista: 'mobile', titulo: 'Deluxe · mobile', archivo: 'interfaces/mockups-coleccion/jm-coleccion-deluxe-mobile.png' },
+        { id: 'col-deluxe-d', vista: 'desktop', titulo: 'Deluxe · desktop', archivo: 'interfaces/mockups-coleccion/jm-coleccion-deluxe-desktop.png' }
+      ]
+    },
+    {
       id: 'footer-opciones',
       titulo: 'Footer · E (nuevo) · A · D',
       descripcion: 'E claro premium sin marco dorado (recomendado) · A editorial horizontal · D columnas + contacto.',
