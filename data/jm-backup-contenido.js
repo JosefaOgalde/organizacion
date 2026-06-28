@@ -1019,6 +1019,79 @@ window.JM_TODO_SEED = [
   { id: 'jm-todo-20', titulo: 'Entrega Fase 2 + soporte post-entrega', dias: '20', fase: 7, completada: false, notas: 'Entrega oficial joyasmercury.cl · inicio ventana 10 días de soporte.' }
 ];
 
+/** Progreso confirmado en repo → se fusiona al cargar (checklist + calendario) */
+window.JM_TODO_PROGRESO = {
+  'jm-todo-01': { completada: true },
+  'jm-todo-03': { completada: true },
+  'jm-todo-04': { completada: true }
+};
+
+/** Ítems de sesión en checklist landing (sin tarea en calendario) */
+window.JM_TODO_EXTRA = [
+  {
+    id: 'jm-sesion-01-carrusel-desktop',
+    titulo: 'Validar carrusel referencia desktop (7 pantallas)',
+    dias: 'hoy',
+    fase: 0,
+    completada: true,
+    comentario: 'OK · Inicio, Esencial, Gold, Deluxe, Carrito, Ayuda, Productos.',
+    sinCalendario: true
+  }
+];
+
+/** Marca completadas las tareas del plan JM según JM_TODO_PROGRESO */
+window.jmAplicarProgresoChecklist = function jmAplicarProgresoChecklist(data) {
+  const prog = window.JM_TODO_PROGRESO;
+  if (!prog || !data?.clientes) return data;
+  const cli = data.clientes.find((c) => c.id === window.JM_CLI_SYNC_ID);
+  if (!cli?.ficha?.landing) return data;
+  if (!Array.isArray(cli.ficha.landing.todos)) {
+    cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({
+      ...t,
+      comentario: t.comentario || ''
+    }));
+  }
+  Object.entries(prog).forEach(([todoId, patch]) => {
+    const todo = cli.ficha.landing.todos.find((x) => x.id === todoId);
+    if (todo && patch.completada) {
+      todo.completada = true;
+      if (patch.comentario) todo.comentario = patch.comentario;
+    }
+    if (data.tareas) {
+      const tarea = data.tareas.find((t) => t.jmTodoId === todoId);
+      if (tarea && patch.completada) {
+        tarea.completada = true;
+        if (patch.comentario) tarea.notas = patch.comentario;
+      }
+    }
+  });
+  return data;
+};
+
+/** Agrega ítems de sesión al checklist de la landing */
+window.jmFusionarTodosExtra = function jmFusionarTodosExtra(data) {
+  const extras = window.JM_TODO_EXTRA;
+  if (!extras?.length || !data?.clientes) return data;
+  const cli = data.clientes.find((c) => c.id === window.JM_CLI_SYNC_ID);
+  if (!cli?.ficha) return data;
+  if (!cli.ficha.landing) cli.ficha.landing = {};
+  if (!Array.isArray(cli.ficha.landing.todos)) {
+    cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({
+      ...t,
+      comentario: t.comentario || ''
+    }));
+  }
+  extras.forEach((extra) => {
+    const todo = cli.ficha.landing.todos.find((x) => x.id === extra.id);
+    if (!todo) {
+      cli.ficha.landing.todos.push({ ...extra });
+    } else {
+      Object.assign(todo, extra);
+    }
+  });
+  return data;
+};
+
 /** Asegura tareas JM en datos (landing sin abrir organizador) */
 window.jmAsegurarDatosMinimos = function jmAsegurarDatosMinimos(data) {
   if (!data || typeof data !== 'object') return data;
@@ -1055,6 +1128,8 @@ window.jmAsegurarDatosMinimos = function jmAsegurarDatosMinimos(data) {
       if (!t.fecha) t.fecha = fecha;
     }
   });
+  if (typeof window.jmAplicarProgresoChecklist === 'function') window.jmAplicarProgresoChecklist(data);
+  if (typeof window.jmFusionarTodosExtra === 'function') window.jmFusionarTodosExtra(data);
   window.jmSyncLandingDesdeTareas(data);
   return data;
 };

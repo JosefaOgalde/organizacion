@@ -147,6 +147,8 @@
     }
     asegurarLandingJM(cli);
     if (typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
+    if (typeof window.jmAplicarProgresoChecklist === 'function') window.jmAplicarProgresoChecklist(datos);
+    if (typeof window.jmFusionarTodosExtra === 'function') window.jmFusionarTodosExtra(datos);
     if (typeof window.jmSyncLandingDesdeTareas === 'function') window.jmSyncLandingDesdeTareas(datos);
     landing = cli.ficha.landing;
     return cli;

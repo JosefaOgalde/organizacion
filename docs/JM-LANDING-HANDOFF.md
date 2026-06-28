@@ -103,12 +103,11 @@ Ver **`docs/PERSISTENCIA.md`**.
 
 20 tareas DEV JM D1–D20 sincronizadas con calendario (color rosa JM).
 
-Completadas (última sesión conocida):
-- D1 Auditoría menú
-- D3 Menú objetivo + mapa
-- D4 3 colecciones × 5 categorías WooCommerce
+Completadas (última sesión):
+- D1 Auditoría menú · D3 Menú objetivo · D4 Colecciones WC
+- Sesión: **Validar carrusel desktop 7 pantallas** ✓ (paso 1 de hoy)
 
-Pendiente inmediato (diagramación mobile):
+Pendiente inmediato:
 - Ajustar wireframes mobile si el cliente pide cambios
 - Regenerar capturas mobile tras cada ajuste
 - Validar paridad desktop ↔ mobile en las 7 pantallas

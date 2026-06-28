@@ -1605,6 +1605,12 @@ function asegurarTareasJoyasMercuryFase2(data) {
     }
   });
 
+  if (typeof window.jmAplicarProgresoChecklist === 'function') {
+    window.jmAplicarProgresoChecklist(data);
+  }
+  if (typeof window.jmFusionarTodosExtra === 'function') {
+    window.jmFusionarTodosExtra(data);
+  }
   if (typeof window.jmSyncLandingDesdeTareas === 'function') {
     window.jmSyncLandingDesdeTareas(data);
   }
