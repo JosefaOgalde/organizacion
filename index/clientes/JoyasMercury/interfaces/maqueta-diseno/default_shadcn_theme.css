@@ -1,0 +1,44 @@
+/**
+ * Joyas Mercury · tokens de diseño (base shadcn adaptada)
+ * Manual: #ECC54A #A97E23 #C88F9C #D8BFB1 #C4C4C4
+ */
+:root {
+  --background: #faf8f6;
+  --foreground: #6a4048;
+  --card: #ffffff;
+  --card-foreground: #6a4048;
+  --primary: #a97e23;
+  --primary-foreground: #ffffff;
+  --secondary: #d8bfb1;
+  --secondary-foreground: #6a4048;
+  --muted: #e8e0dc;
+  --muted-foreground: #8a7078;
+  --accent: #ecc54a;
+  --accent-foreground: #6a4048;
+  --destructive: #c88f9c;
+  --border: #e8e0dc;
+  --ring: #ecc54a;
+  --radius: 0.375rem;
+
+  /* JM específicos */
+  --jm-cream: #faf8f6;
+  --jm-nude: #d8bfb1;
+  --jm-nude-light: #e8ddd4;
+  --jm-nude-section: #f3ebe4;
+  --jm-mauve: #6a4048;
+  --jm-gold: #ecc54a;
+  --jm-gold-mid: #c59446;
+  --jm-gold-dark: #a97e23;
+  --jm-gold-footer: #a97e23;
+  --jm-gold-footer-dark: #6b4f1a;
+  --jm-rose: #c88f9c;
+  --jm-rose-light: #e8b4c0;
+  --jm-grey: #c4c4c4;
+  --jm-chip-esencial: #f0d4dc;
+  --jm-chip-gold: #f5e6b8;
+  --jm-chip-deluxe: #e8c4d0;
+  --jm-font-sans: 'Montserrat', system-ui, sans-serif;
+  --jm-font-serif: 'Cormorant Garamond', Georgia, serif;
+  --jm-font-script: 'Great Vibes', cursive;
+  --jm-max: 1280px;
+}

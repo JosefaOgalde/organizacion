@@ -412,6 +412,19 @@
   object-position: top center;
 }
 
+.jm-interfaces--maqueta-diseno {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e8e0dc;
+}
+
+.jm-interfaces__visor--fullpage .jm-interfaces__visor-img {
+  max-height: 720px;
+  width: 100%;
+  object-fit: contain;
+  object-position: top center;
+}
+
 .jm-interfaces__filtros {
   display: flex;
   flex-wrap: wrap;

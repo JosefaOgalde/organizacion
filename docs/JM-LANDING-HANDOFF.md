@@ -8,28 +8,51 @@ Documento de continuidad para retomar el trabajo. Última actualización: **25 j
 
 | Item | Valor |
 |------|--------|
-| **Rama activa** | `cursor/jm-navbar-seccion-desktop-d6a1` |
+| **Rama activa** | `cursor/jm-maqueta-diseno-d6a1` |
+| **PR maqueta diseño Inicio** | (pendiente crear) |
 | **PR navbar + sección landing** | [#12](https://github.com/JosefaOgalde/organizacion/pull/12) |
 | **PR mobile landings** | [#10](https://github.com/JosefaOgalde/organizacion/pull/10) |
-| **PR landing JM base** | [#8](https://github.com/JosefaOgalde/organizacion/pull/8) |
 
 ### Al retomar
 
 ```bash
 cd organizacion
-git pull origin cursor/jm-navbar-seccion-desktop-d6a1
+git pull origin cursor/jm-maqueta-diseno-d6a1
 SERVIR.bat
 ```
 
 Landing: **http://localhost:3000/index/clientes/joyasmercury/**
 
-Maqueta navbar: **http://localhost:3000/index/clientes/JoyasMercury/interfaces/mockups-navbar/navbar-jm-maqueta.html**
+Maqueta diseño Inicio: **http://localhost:3000/index/clientes/JoyasMercury/interfaces/maqueta-diseno/index.html**
 
 ---
 
 ## Estado actual del proyecto
 
-### Mockups navbar (NUEVO · solo desktop)
+### Maqueta diseño · Inicio (NUEVO)
+
+Carpeta: `interfaces/maqueta-diseno/`
+
+Stack: Vite + HTML/CSS + tokens `default_shadcn_theme.css` (adaptación JM).
+
+| Archivo | Rol |
+|---------|-----|
+| `index.html` | Landing completa desktop |
+| `src/styles.css` | Estilos secciones |
+| `jm-maqueta-diseno-inicio-desktop.png` | Captura full page |
+
+**Secciones (idénticas a referencia):** hero joyería · trust bar · colecciones · novedades · últimas unidades · footer gold.
+
+**Navbar:** isotipo arriba centrado · Inicio · Colecciones abajo derecha.
+
+En landing JM: sección **Maqueta diseño · Inicio** con botón **Visualizar maqueta completa**.
+
+```bash
+python3 scripts/capturar-jm-maqueta-diseno.py
+cd interfaces/maqueta-diseno && pnpm dev   # opcional
+```
+
+### Mockups navbar (solo desktop)
 
 Carpeta: `interfaces/mockups-navbar/`
 

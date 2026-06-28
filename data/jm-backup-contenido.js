@@ -782,6 +782,40 @@ function jmHtmlLandingsCarruselBlock(items, opts) {
   </div>`;
 }
 
+/** Maqueta diseño Inicio · desktop (referencia entregada) */
+function jmHtmlMaquetaDisenoInicio() {
+  const carpeta = 'interfaces/maqueta-diseno';
+  const archivo = 'jm-maqueta-diseno-inicio-desktop.png';
+  const titulo = 'Inicio · maqueta diseño';
+  const src = jmWireframeSrc(carpeta, archivo);
+  const maquetaUrl = (window.jmAssetBase || '') + 'interfaces/maqueta-diseno/index.html?shot=desktop';
+
+  return `<div class="jm-interfaces jm-interfaces--maqueta-diseno" tabindex="0" aria-label="Maqueta diseño Inicio Joyas Mercury">
+    <div class="jm-interfaces__head">
+      <h4 class="jm-interfaces__titulo-seccion">Maqueta diseño · Inicio</h4>
+      <p class="jm-interfaces__intro">Landing desktop <strong>idéntica a la referencia</strong> · hero, colecciones, novedades, últimas unidades y footer gold.</p>
+      <div class="jm-interfaces__viewport-tabs jm-interfaces__viewport-tabs--solo" role="tablist" aria-label="Vista">
+        <span class="jm-interfaces__viewport-tab is-active" role="tab" aria-selected="true">Desktop</span>
+      </div>
+      <p class="jm-interfaces__accion-maqueta">
+        <a href="${jmEscapeHtml(maquetaUrl)}" target="_blank" rel="noopener" class="jm-btn-maqueta">Visualizar maqueta completa</a>
+      </p>
+      <p class="jm-interfaces__hint-reemplazo jm-solo-vista">HTML/CSS en <code>interfaces/maqueta-diseno/</code> · stack Vite + tokens shadcn adaptados a JM.</p>
+    </div>
+    <div class="jm-interfaces__visor jm-interfaces__visor--fullpage">
+      <a href="${jmEscapeHtml(maquetaUrl)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Abrir maqueta diseño">
+        <img class="jm-interfaces__visor-img" src="${jmEscapeHtml(src)}" alt="${jmEscapeHtml(titulo)}"${jmImgAttrs(carpeta, archivo, src)}>
+      </a>
+      <div class="jm-interfaces__visor-pie">
+        <div class="jm-interfaces__visor-meta">
+          <strong class="jm-interfaces__visor-caption">${jmEscapeHtml(titulo)}</strong>
+          <span class="jm-interfaces__visor-vista">Desktop · 1280px</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
 /** Mockups navbar · solo desktop */
 function jmHtmlNavbarMaqueta() {
   const carpeta = 'interfaces/mockups-navbar';
@@ -1338,6 +1372,7 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
   const cuerpo = usarPrototipo
     ? jmHtmlPrototipoInteractivo()
       + jmHtmlLandingsCarrusel()
+      + jmHtmlMaquetaDisenoInicio()
       + jmHtmlNavbarMaqueta()
       + (mostrarObjetivoMini ? jmHtmlObjetivoMini(wf) : '')
     : (() => {
@@ -1354,7 +1389,7 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
       }).join('');
     })();
   const intro = usarPrototipo
-    ? 'Prototipo del flujo actual (pasos 1–8), landings de referencia y maqueta navbar desktop.'
+    ? 'Prototipo del flujo (pasos 1–8), landings referencia, maqueta diseño Inicio y navbar desktop.'
     : 'Recorre el estado actual del sitio con las flechas o clic izquierda/derecha sobre la imagen.';
   return `<section id="ficha-wireframes-jm" class="ficha-seccion ficha-seccion--wireframes ${claseExtra}${usarPrototipo ? ' ficha-seccion--prototipo' : ''}">
     <div class="ficha-seccion__headline">
