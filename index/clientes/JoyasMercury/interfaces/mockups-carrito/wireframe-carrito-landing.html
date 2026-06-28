@@ -52,31 +52,50 @@
 
     .jm-cart-banner__visual {
       position: relative; overflow: hidden;
-      background: linear-gradient(145deg, #f8f0ea, #f5e8dc);
+      background: linear-gradient(145deg, #f8f0ea 0%, #f5e8dc 55%, #f0e4d8 100%);
     }
     .jm-cart-banner__visual::before {
       content: ''; position: absolute; inset: 0; z-index: 1;
-      background: linear-gradient(90deg, var(--cream) 0%, rgba(253,251,248,0.85) 10%, transparent 45%);
+      background: linear-gradient(90deg, var(--cream) 0%, rgba(253,251,248,0.88) 10%, rgba(253,251,248,0.2) 32%, transparent 48%);
     }
-    .jm-cart-banner__photo {
-      position: absolute; inset: 0;
-      background: url('../../flujo-actual/01-inicio-home.png') center / cover no-repeat;
-      opacity: 0.5;
+    .jm-cart-banner__visual::after {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(circle at 78% 28%, rgba(225,151,172,0.22) 0%, transparent 42%),
+        radial-gradient(circle at 62% 72%, rgba(197,148,70,0.16) 0%, transparent 38%);
     }
     .jm-cart-banner__scene {
       position: absolute; inset: 0; z-index: 2;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 1.5rem; gap: 0.75rem;
     }
-    .jm-cart-banner__bag-wrap { position: relative; width: 200px; height: 240px; }
+    .jm-cart-banner__scene-label {
+      font-size: 0.55rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--gold); font-weight: 600; opacity: 0.85;
+    }
+    .jm-cart-banner__bag-wrap {
+      position: relative; width: 200px; height: 240px;
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .jm-cart-banner__bag { width: 156px; height: 188px; position: relative; z-index: 2; }
     .jm-cart-banner__bag svg { width: 100%; height: 100%; filter: drop-shadow(0 8px 16px rgba(197,148,70,0.15)); }
     .jm-cart-banner__jewel {
       position: absolute; border-radius: 50%;
       background: linear-gradient(145deg, #fff8f0, #f0e0d0);
-      border: 1px solid rgba(197,148,70,0.35);
+      border: 1.5px solid rgba(197,148,70,0.35);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    .jm-cart-banner__jewel--1 { width: 40px; height: 40px; top: 0; left: -10px; }
-    .jm-cart-banner__jewel--2 { width: 34px; height: 34px; top: -8px; right: -5px; }
-    .jm-cart-banner__jewel--3 { width: 30px; height: 30px; bottom: 40px; left: -15px; }
+    .jm-cart-banner__jewel--1 { width: 40px; height: 40px; top: 12%; left: 0; }
+    .jm-cart-banner__jewel--2 { width: 34px; height: 34px; top: 4%; right: 2%; }
+    .jm-cart-banner__jewel--3 { width: 28px; height: 28px; bottom: 32%; left: -4%; }
+    .jm-cart-banner__jewel--4 { width: 36px; height: 36px; bottom: 26%; right: -2%; }
+    .jm-cart-banner__jewel::after {
+      content: ''; position: absolute; inset: 28%;
+      border: 1px dashed rgba(197,148,70,0.4); border-radius: 50%;
+    }
+    .jm-cart-banner__spark { position: absolute; color: var(--gold); font-size: 0.75rem; opacity: 0.7; }
+    .jm-cart-banner__spark--1 { top: 10%; right: 16%; }
+    .jm-cart-banner__spark--2 { bottom: 40%; left: 12%; font-size: 0.6rem; }
 
     .jm-cart-body { padding: 2rem 1.25rem; max-width: 900px; margin: 0 auto; }
     .jm-cart-fase2 {
@@ -109,17 +128,23 @@
         <p class="jm-cart-banner__text">Estás en tu carrito de compras</p>
       </div>
       <div class="jm-cart-banner__visual">
-        <div class="jm-cart-banner__photo"></div>
         <div class="jm-cart-banner__scene">
+          <p class="jm-cart-banner__scene-label">Carrito de compras</p>
           <div class="jm-cart-banner__bag-wrap">
             <span class="jm-cart-banner__jewel jm-cart-banner__jewel--1"></span>
             <span class="jm-cart-banner__jewel jm-cart-banner__jewel--2"></span>
             <span class="jm-cart-banner__jewel jm-cart-banner__jewel--3"></span>
+            <span class="jm-cart-banner__jewel jm-cart-banner__jewel--4"></span>
+            <span class="jm-cart-banner__spark jm-cart-banner__spark--1">✦</span>
+            <span class="jm-cart-banner__spark jm-cart-banner__spark--2">✦</span>
             <div class="jm-cart-banner__bag">
               <svg viewBox="0 0 200 240" fill="none">
                 <path d="M30 70h140l-12 150H42L30 70z" fill="#faf6f0" stroke="#c59446" stroke-width="2"/>
                 <path d="M55 70V48a45 45 0 0190 0v22" stroke="#c59446" stroke-width="2.5" fill="none"/>
+                <path d="M70 70c0-20 15-32 30-32s30 12 30 32" stroke="#e197ac" stroke-width="1.5" fill="none" opacity="0.6"/>
                 <circle cx="100" cy="130" r="22" fill="rgba(225,151,172,0.15)" stroke="#c59446" stroke-width="1.2"/>
+                <path d="M88 130h24M100 118v24" stroke="#c59446" stroke-width="1" opacity="0.5"/>
+                <path d="M50 95h100" stroke="#c59446" stroke-width="1" opacity="0.35"/>
               </svg>
             </div>
           </div>
