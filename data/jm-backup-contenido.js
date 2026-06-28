@@ -29,7 +29,7 @@ Este manual reúne las herramientas básicas para el correcto uso y aplicación 
 - Respetar márgenes del logo e isotipo en headers, favicon y piezas gráficas`;
 
 window.JM_BACKUP_FICHA = {
-  version: 4,
+  version: 5,
   metas: `Etapa 2 — Rediseño joyasmercury.cl
 - Navegación limpia y elegante (referencia joyería premium)
 - Filtros visuales Esencial / Gold / Deluxe en la misma vista (sin cambiar de página)
@@ -445,20 +445,33 @@ window.JM_OBJETIVOS = {
   ]
 };
 
-/** Tareas checklist ~cada 2 días hábiles */
+/** Tareas checklist — una tarea por día hábil (25 días · Fase 2) */
 window.JM_TODO_SEED = [
-  { id: 'jm-todo-01', titulo: 'Auditoría menú actual + mapa de navegación propuesto', dias: '1–2', fase: 1, completada: false },
-  { id: 'jm-todo-02', titulo: 'Implementar menú limpio (desktop + móvil)', dias: '3–4', fase: 1, completada: false },
-  { id: 'jm-todo-03', titulo: 'Definir 3 colecciones × 5 categorías en WooCommerce', dias: '5–6', fase: 2, completada: false },
-  { id: 'jm-todo-04', titulo: 'Paso 4 · Definir menú objetivo (Inicio, Colecciones, Últimas unidades, Mi Carrito)', dias: '7–8', fase: 1, completada: false },
-  { id: 'jm-todo-05', titulo: 'Paso 5 · Armar mapa de navegación según menú del paso 4', dias: '9–10', fase: 1, completada: false },
-  { id: 'jm-todo-06', titulo: 'Definir 3 colecciones × 5 categorías en WooCommerce + validar URLs', dias: '11–12', fase: 2, completada: false },
-  { id: 'jm-todo-07', titulo: 'Diseñar chips de filtro Esencial / Gold / Deluxe', dias: '13–14', fase: 3, completada: false },
-  { id: 'jm-todo-08', titulo: 'Landings colección con filtros visuales + filtrado AJAX', dias: '15–16', fase: 3, completada: false },
-  { id: 'jm-todo-09', titulo: 'QA filtros (mobile, estados activos, rendimiento)', dias: '17–18', fase: 3, completada: false },
-  { id: 'jm-todo-10', titulo: 'Bloque Productos Destacados / Novedades en Inicio + guía', dias: '19–20', fase: 4, completada: false },
-  { id: 'jm-todo-11', titulo: 'Últimas unidades + páginas legales y WhatsApp', dias: '21–22', fase: 5, completada: false },
-  { id: 'jm-todo-12', titulo: 'Maquetación carrito + pruebas integrales y entrega Fase 2', dias: '23–25', fase: 7, completada: false }
+  { id: 'jm-todo-01', titulo: 'Auditoría menú actual (desktop y móvil)', dias: '1', fase: 1, completada: false },
+  { id: 'jm-todo-02', titulo: 'Mapa de navegación propuesto', dias: '2', fase: 1, completada: false },
+  { id: 'jm-todo-03', titulo: 'Implementar menú limpio (desktop + móvil)', dias: '3', fase: 1, completada: false },
+  { id: 'jm-todo-04', titulo: 'Paso 4 · Definir menú objetivo (Inicio, Colecciones, Últimas unidades, Mi Carrito)', dias: '4', fase: 1, completada: false },
+  { id: 'jm-todo-05', titulo: 'Paso 5 · Armar mapa de navegación según menú del paso 4', dias: '5', fase: 1, completada: false },
+  { id: 'jm-todo-06', titulo: 'Colección Esencial · 5 categorías en WooCommerce', dias: '6', fase: 2, completada: false },
+  { id: 'jm-todo-07', titulo: 'Colección Gold · 5 categorías en WooCommerce', dias: '7', fase: 2, completada: false },
+  { id: 'jm-todo-08', titulo: 'Colección Deluxe · 5 categorías + validar URLs', dias: '8', fase: 2, completada: false },
+  { id: 'jm-todo-09', titulo: 'Diseñar chips de filtro Esencial / Gold / Deluxe', dias: '9', fase: 3, completada: false },
+  { id: 'jm-todo-10', titulo: 'Landings colección · layout y estructura', dias: '10', fase: 3, completada: false },
+  { id: 'jm-todo-11', titulo: 'Filtrado AJAX · lógica base', dias: '11', fase: 3, completada: false },
+  { id: 'jm-todo-12', titulo: 'Filtrado AJAX · estados activos y UX', dias: '12', fase: 3, completada: false },
+  { id: 'jm-todo-13', titulo: 'QA filtros · mobile y touch', dias: '13', fase: 3, completada: false },
+  { id: 'jm-todo-14', titulo: 'QA filtros · rendimiento y edge cases', dias: '14', fase: 3, completada: false },
+  { id: 'jm-todo-15', titulo: 'Bloque Productos Destacados / Novedades en Inicio', dias: '15', fase: 4, completada: false },
+  { id: 'jm-todo-16', titulo: 'Guía para Camila · gestionar destacados', dias: '16', fase: 4, completada: false },
+  { id: 'jm-todo-17', titulo: 'Página Últimas unidades', dias: '17', fase: 5, completada: false },
+  { id: 'jm-todo-18', titulo: 'Páginas legales (políticas, despachos, garantías)', dias: '18', fase: 5, completada: false },
+  { id: 'jm-todo-19', titulo: 'Nosotros + WhatsApp como canal principal', dias: '19', fase: 5, completada: false },
+  { id: 'jm-todo-20', titulo: 'Maquetación carrito · parte visual superior', dias: '20', fase: 6, completada: false },
+  { id: 'jm-todo-21', titulo: 'Carrito · pruebas checkout WooCommerce', dias: '21', fase: 6, completada: false },
+  { id: 'jm-todo-22', titulo: 'Pruebas integrales cross-browser', dias: '22', fase: 6, completada: false },
+  { id: 'jm-todo-23', titulo: 'Guías de catálogo y documentación de entrega', dias: '23', fase: 7, completada: false },
+  { id: 'jm-todo-24', titulo: 'Revisión con Camila + ajustes finales', dias: '24', fase: 7, completada: false },
+  { id: 'jm-todo-25', titulo: 'Entrega Fase 2 + inicio ventana de soporte', dias: '25', fase: 7, completada: false }
 ];
 
 /** Categorías por colección */

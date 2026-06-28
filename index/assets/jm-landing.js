@@ -205,17 +205,17 @@
             <input type="checkbox" class="jm-todo-check jm-solo-vista" ${t.completada ? 'checked' : ''} aria-label="Marcar tarea">
             <span class="jm-todo__texto">
               ${escapeHtml(t.titulo)}
-              <span class="jm-todo__meta">Días ${escapeHtml(t.dias || '—')} · Fase ${t.fase || '—'}</span>
+              <span class="jm-todo__meta">Día ${escapeHtml(t.dias || '—')} · Fase ${t.fase || '—'}</span>
             </span>
             <button type="button" class="jm-todo__eliminar jm-solo-edicion" data-eliminar-todo="${escapeHtml(t.id)}" title="Eliminar">×</button>
           </li>`
       )
       .join('');
-    return `<p class="jm-todo__intro">Tareas pequeñas cada ~2 días hábiles, alineadas al Gantt y a los objetivos de Fase 2. Marca lo que ya avanzaste.</p>
+    return `<p class="jm-todo__intro">Una tarea por día hábil, alineada al Gantt y a los objetivos de Fase 2 (25 días). Marca lo que ya avanzaste.</p>
       <ul class="jm-todo__lista">${lista}</ul>
       <p class="jm-todo__progreso">${hechos} / ${items.length} completadas</p>
       <div class="jm-todo__add jm-solo-edicion">
-        <input type="text" id="jm-todo-nuevo" placeholder="Nueva tarea (~2 días)…">
+        <input type="text" id="jm-todo-nuevo" placeholder="Nueva tarea (1 día)…">
         <button type="button" class="jm-btn" id="jm-todo-agregar">Agregar</button>
       </div>`;
   }
@@ -332,7 +332,7 @@
           </section>
 
           <section class="jm-block" id="jm-seccion-todo">
-            <div class="jm-block__head"><h2>Tareas · checklist (~2 días)</h2></div>
+            <div class="jm-block__head"><h2>Tareas · checklist (1 por día)</h2></div>
             <div class="jm-block__body">${todosHtml()}</div>
           </section>
 
