@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centro de Ayuda · Joyas Mercury</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #faf8f6;
+      --cream-banner: #fdfbf8;
+      --mauve: #6a4048;
+      --mauve-text: #3d3d3d;
+      --gold: #c59446;
+      --gold-dark: #a97e23;
+      --rose: #e197ac;
+      --line: #e8e0dc;
+      --bottom-nav-h: 62px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Montserrat', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--mauve);
+      padding-bottom: var(--bottom-nav-h);
+    }
+
+    .jm-header { background: var(--cream); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 40; }
+    .jm-header__logo-row { display: flex; justify-content: center; padding: 0.85rem 1.25rem 0.55rem; }
+    .jm-header__logo-row img { height: 68px; width: auto; }
+    .jm-header__nav-row { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 1.25rem 0.65rem; }
+    .jm-header__left, .jm-header__right { display: flex; align-items: center; gap: 1rem; }
+    .jm-icon { background: none; border: none; color: var(--mauve); cursor: pointer; display: inline-flex; }
+    .jm-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.35; }
+    .jm-search { display: none; align-items: center; gap: 0.5rem; flex: 1; max-width: 420px; border-bottom: 1px solid var(--mauve); padding-bottom: 0.35rem; }
+    .jm-search span { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+    .jm-header__menu-row {
+      display: none; justify-content: center; gap: 2rem; padding: 0.65rem 2rem 0.85rem;
+      border-top: 1px solid var(--line); font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .jm-header__menu-row a { color: var(--mauve); text-decoration: none; }
+    .jm-header__menu-row a.is-here { color: var(--gold-dark); border-bottom: 1px solid var(--gold-dark); }
+
+    .jm-crumb {
+      font-size: 0.65rem; color: #9a858c; padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--line); background: #fff; max-width: 1000px; margin: 0 auto;
+    }
+    .jm-crumb a { color: #9a858c; text-decoration: none; }
+
+    /* Banner */
+    .jm-help-banner {
+      max-width: 1000px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      aspect-ratio: 2 / 1; max-height: 500px; overflow: hidden;
+      background: var(--cream-banner); border-bottom: 1px solid var(--line);
+    }
+    .jm-help-banner__copy {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 3.5rem);
+    }
+    .jm-help-banner__eyebrow {
+      font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.5rem; font-weight: 600;
+    }
+    .jm-help-banner__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.35rem); font-weight: 600; line-height: 1.1;
+      color: var(--mauve-text); margin-bottom: 0.65rem;
+    }
+    .jm-help-banner__title em { font-style: normal; color: var(--rose); }
+    .jm-help-banner__rule {
+      display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.85rem; max-width: 180px;
+    }
+    .jm-help-banner__rule::before, .jm-help-banner__rule::after {
+      content: ''; flex: 1; height: 1px; background: var(--gold); opacity: 0.75;
+    }
+    .jm-help-banner__rule span { color: var(--gold); font-size: 0.5rem; transform: rotate(45deg); display: inline-block; }
+    .jm-help-banner__text { font-size: 0.8rem; line-height: 1.55; color: #6a6a6a; font-weight: 500; max-width: 20rem; }
+
+    .jm-help-banner__visual {
+      position: relative; overflow: hidden;
+      background: linear-gradient(145deg, #f8f0ea 0%, #f5e8dc 55%, #f0e4d8 100%);
+    }
+    .jm-help-banner__visual::before {
+      content: ''; position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(90deg, var(--cream-banner) 0%, rgba(253,251,248,0.88) 10%, rgba(253,251,248,0.2) 32%, transparent 48%);
+    }
+    .jm-help-banner__visual::after {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(circle at 75% 30%, rgba(225,151,172,0.2) 0%, transparent 42%),
+        radial-gradient(circle at 60% 75%, rgba(197,148,70,0.14) 0%, transparent 38%);
+    }
+    .jm-help-banner__scene {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 1.5rem; gap: 0.75rem;
+    }
+    .jm-help-banner__scene-label {
+      font-size: 0.55rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--gold); font-weight: 600;
+    }
+    .jm-help-banner__icon {
+      width: 120px; height: 120px; border-radius: 50%;
+      background: linear-gradient(145deg, #fff8f0, #f5ebe3);
+      border: 2px solid rgba(197,148,70,0.35);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 12px 28px rgba(197,148,70,0.15);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem; font-weight: 600; color: var(--rose);
+    }
+    .jm-help-banner__spark { position: absolute; color: var(--gold); font-size: 0.85rem; opacity: 0.65; }
+    .jm-help-banner__spark--1 { top: 18%; right: 20%; }
+    .jm-help-banner__spark--2 { bottom: 22%; left: 18%; font-size: 0.65rem; }
+
+    /* Nav tarjetas */
+    .jm-help-nav {
+      max-width: 1000px; margin: 0 auto;
+      padding: 1.25rem 1.25rem 0;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem;
+    }
+    @media (min-width: 720px) {
+      .jm-help-nav { grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+    }
+    .jm-help-nav__card {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      padding: 1rem 0.65rem; background: #fff; border: 1px solid var(--line);
+      border-radius: 8px; text-decoration: none; color: var(--mauve);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .jm-help-nav__card:hover, .jm-help-nav__card.is-active {
+      border-color: var(--gold); box-shadow: 0 4px 14px rgba(197,148,70,0.1);
+    }
+    .jm-help-nav__card.is-active { background: #fffdf9; }
+    .jm-help-nav__icon { font-size: 1.25rem; color: var(--gold); margin-bottom: 0.4rem; }
+    .jm-help-nav__label {
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.04em;
+      line-height: 1.35; text-transform: uppercase;
+    }
+
+    /* Contenido */
+    .jm-help-main {
+      max-width: 1000px; margin: 0 auto;
+      padding: 1.5rem 1.25rem 2.5rem;
+      display: grid; gap: 1.25rem;
+    }
+    @media (min-width: 860px) {
+      .jm-help-main { grid-template-columns: 220px 1fr; gap: 2rem; align-items: start; }
+    }
+
+    .jm-help-sidebar {
+      display: none; position: sticky; top: 5.5rem;
+      background: #fff; border: 1px solid var(--line); border-radius: 8px;
+      padding: 1rem; font-size: 0.72rem;
+    }
+    @media (min-width: 860px) { .jm-help-sidebar { display: block; } }
+    .jm-help-sidebar__title {
+      font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: #9a858c; margin-bottom: 0.65rem; font-weight: 600;
+    }
+    .jm-help-sidebar a {
+      display: block; padding: 0.45rem 0; color: var(--mauve); text-decoration: none;
+      border-bottom: 1px solid var(--line);
+    }
+    .jm-help-sidebar a:last-child { border-bottom: none; }
+    .jm-help-sidebar a:hover, .jm-help-sidebar a.is-active { color: var(--gold-dark); font-weight: 600; }
+
+    .jm-help-sections { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .jm-help-block {
+      background: #fff; border: 1px solid var(--line); border-radius: 8px;
+      padding: 1.35rem 1.25rem; scroll-margin-top: 5rem;
+    }
+    .jm-help-block__head {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      margin-bottom: 1rem; padding-bottom: 0.85rem; border-bottom: 1px solid var(--line);
+    }
+    .jm-help-block__icon {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(197,148,70,0.1); color: var(--gold-dark);
+      display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    }
+    .jm-help-block__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem; font-weight: 600; color: var(--mauve); line-height: 1.2;
+    }
+    .jm-help-block__intro { font-size: 0.75rem; color: #8a7078; line-height: 1.5; margin-top: 0.25rem; }
+
+    .jm-help-block h3 {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em;
+      text-transform: uppercase; color: var(--gold-dark); margin: 1rem 0 0.45rem;
+    }
+    .jm-help-block p, .jm-help-block li {
+      font-size: 0.75rem; line-height: 1.6; color: #5a4a50;
+    }
+    .jm-help-block ul { padding-left: 1.1rem; margin-bottom: 0.5rem; }
+    .jm-help-block li { margin-bottom: 0.35rem; }
+
+    .jm-help-faq details {
+      border: 1px solid var(--line); border-radius: 6px; margin-bottom: 0.5rem;
+      padding: 0.65rem 0.85rem; background: #fdfbf8;
+    }
+    .jm-help-faq summary {
+      font-size: 0.75rem; font-weight: 600; color: var(--mauve); cursor: pointer;
+      list-style: none; display: flex; justify-content: space-between; align-items: center;
+    }
+    .jm-help-faq summary::-webkit-details-marker { display: none; }
+    .jm-help-faq summary::after { content: '+'; color: var(--gold); font-size: 1rem; }
+    .jm-help-faq details[open] summary::after { content: '−'; }
+    .jm-help-faq details p { margin-top: 0.55rem; font-size: 0.72rem; color: #6a5a60; }
+
+    .jm-help-care-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; margin-top: 0.5rem;
+    }
+    @media (max-width: 520px) { .jm-help-care-grid { grid-template-columns: 1fr; } }
+    .jm-help-care-item {
+      padding: 0.75rem; border-radius: 6px; background: #fdfbf8;
+      border: 1px solid var(--line); font-size: 0.68rem; line-height: 1.45;
+    }
+    .jm-help-care-item strong {
+      display: block; font-size: 0.62rem; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--rose); margin-bottom: 0.25rem;
+    }
+
+    .jm-help-contact {
+      text-align: center; padding: 1.5rem 1.25rem; margin-top: 0.5rem;
+      background: linear-gradient(145deg, #fdf5f0, #f8efe8);
+      border: 1px solid var(--line); border-radius: 8px;
+    }
+    .jm-help-contact__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem; font-weight: 600; color: var(--mauve); margin-bottom: 0.35rem;
+    }
+    .jm-help-contact__text { font-size: 0.72rem; color: #8a7078; margin-bottom: 1rem; line-height: 1.5; }
+    .jm-help-contact__actions { display: flex; flex-wrap: wrap; gap: 0.65rem; justify-content: center; }
+    .jm-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
+      padding: 0.6rem 1.1rem; border-radius: 4px; font-size: 0.68rem;
+      font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+      text-decoration: none; border: none; cursor: pointer; font-family: inherit;
+    }
+    .jm-btn--wa { background: #25d366; color: #fff; }
+    .jm-btn--ghost { background: #fff; color: var(--mauve); border: 1px solid var(--line); }
+    .jm-help-social {
+      display: flex; justify-content: center; gap: 0.75rem; margin-top: 1rem;
+      font-size: 0.65rem; color: #9a858c;
+    }
+    .jm-help-social span {
+      width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: center; background: #fff;
+      font-weight: 600; color: var(--mauve);
+    }
+
+    .ft-e {
+      background: var(--cream); border-top: 1px solid var(--line);
+      padding: 2rem 1.25rem 0; margin-top: 0.5rem;
+    }
+    .ft-e a { color: var(--mauve); text-decoration: none; }
+    .ft-e__inner { text-align: center; max-width: 1000px; margin: 0 auto; }
+    .ft-e__logo { height: 48px; margin: 0 auto 1rem; display: block; }
+    .ft-e__nav {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem;
+      max-width: 280px; margin: 0 auto 1rem; text-align: left; font-size: 0.72rem;
+    }
+    .ft-e__legal {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1rem;
+      margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line);
+    }
+    .ft-e__legal a { font-size: 0.65rem; color: #8a7078; }
+    .ft-e__bottom { background: #fff; border-top: 1px solid var(--line); padding: 0.85rem 1.25rem; text-align: center; }
+    .ft-e__copy { font-size: 0.62rem; color: #9a858c; }
+
+    .jm-wa-fab {
+      position: fixed; bottom: calc(var(--bottom-nav-h) + 1rem); right: 1rem;
+      width: 52px; height: 52px; border-radius: 50%; background: #25d366; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(37,211,102,0.4); z-index: 30;
+    }
+    .jm-wa-fab svg { width: 28px; height: 28px; fill: currentColor; }
+
+    .jm-bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-h);
+      background: #fff; border-top: 1px solid var(--line);
+      display: flex; justify-content: space-around; align-items: center; z-index: 35;
+      font-size: 0.58rem; font-weight: 600; text-transform: uppercase;
+    }
+    .jm-bottom-nav a {
+      display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+      color: #9a858c; text-decoration: none; padding: 0.35rem;
+    }
+    .jm-bottom-nav a svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.4; }
+
+    .jm-wireframe-switch {
+      position: fixed; bottom: calc(var(--bottom-nav-h) + 0.5rem); left: 0.75rem;
+      font-size: 0.62rem; color: #9a858c; background: rgba(255,255,255,0.95);
+      padding: 0.35rem 0.6rem; border-radius: 4px; border: 1px solid var(--line); z-index: 25;
+    }
+    .jm-wireframe-switch a { color: var(--gold-dark); }
+
+    @media (min-width: 900px) {
+      .jm-header__menu-row { display: flex; }
+      .jm-search { display: flex; }
+      .jm-icon--search-mobile { display: none !important; }
+      .jm-bottom-nav { display: none; }
+      body { padding-bottom: 0; }
+      .jm-wa-fab { bottom: 1.5rem; }
+      .jm-wireframe-switch { bottom: 1rem; }
+      .ft-e__nav { display: flex; flex-wrap: wrap; justify-content: center; max-width: none; gap: 0.5rem 2rem; text-align: center; }
+    }
+    @media (max-width: 720px) {
+      .jm-help-banner {
+        grid-template-columns: 1fr; grid-template-rows: auto minmax(180px, 36vw);
+        aspect-ratio: auto; max-height: none;
+      }
+    }
+
+    body[data-shot="1"] .jm-wireframe-switch,
+    body[data-shot="1"] .jm-wa-fab,
+    body[data-shot="1"] .jm-bottom-nav { display: none !important; }
+    body[data-shot="1"] { padding-bottom: 0; }
+  </style>
+</head>
+<body>
+  <header class="jm-header">
+    <div class="jm-header__logo-row">
+      <a href="../mockups-inicio/wireframe-inicio.html"><img src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury"></a>
+    </div>
+    <div class="jm-header__nav-row">
+      <div class="jm-header__left">
+        <button type="button" class="jm-icon" aria-label="Menú"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+        <form class="jm-search" role="search"><span>Buscar</span></form>
+      </div>
+      <div class="jm-header__right">
+        <button type="button" class="jm-icon jm-icon--search-mobile" aria-label="Buscar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+        <a class="jm-icon" href="../mockups-carrito/wireframe-carrito-landing.html" aria-label="Mi Carrito"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 11H7.2L6 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></svg></a>
+      </div>
+    </div>
+    <nav class="jm-header__menu-row">
+      <a href="../mockups-inicio/wireframe-inicio.html">Inicio</a>
+      <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">Colecciones</a>
+      <a href="#">Historias que Brillan</a>
+      <a href="#">Mi Cuenta</a>
+      <a href="wireframe-ayuda-landing.html" class="is-here">Ayuda</a>
+      <a href="#">Contacto</a>
+    </nav>
+  </header>
+
+  <p class="jm-crumb">
+    <a href="../mockups-inicio/wireframe-inicio.html">Inicio</a> › <span>Centro de Ayuda</span>
+  </p>
+
+  <article class="jm-help-banner" aria-label="Banner Centro de Ayuda">
+    <div class="jm-help-banner__copy">
+      <p class="jm-help-banner__eyebrow">joyasmercury.cl</p>
+      <h1 class="jm-help-banner__title">Centro de <em>Ayuda</em></h1>
+      <div class="jm-help-banner__rule" aria-hidden="true"><span>◆</span></div>
+      <p class="jm-help-banner__text">Información sobre envíos, cambios, preguntas frecuentes y cuidado de tus joyas.</p>
+    </div>
+    <div class="jm-help-banner__visual" aria-hidden="true">
+      <div class="jm-help-banner__scene">
+        <p class="jm-help-banner__scene-label">Estamos para ayudarte</p>
+        <span class="jm-help-banner__spark jm-help-banner__spark--1">✦</span>
+        <span class="jm-help-banner__spark jm-help-banner__spark--2">✦</span>
+        <div class="jm-help-banner__icon">?</div>
+      </div>
+    </div>
+  </article>
+
+  <nav class="jm-help-nav" aria-label="Temas de ayuda">
+    <a class="jm-help-nav__card is-active" href="#envio"><span class="jm-help-nav__icon">🚚</span><span class="jm-help-nav__label">Políticas de envío</span></a>
+    <a class="jm-help-nav__card" href="#cambios"><span class="jm-help-nav__icon">↩</span><span class="jm-help-nav__label">Cambios y devoluciones</span></a>
+    <a class="jm-help-nav__card" href="#faq"><span class="jm-help-nav__icon">?</span><span class="jm-help-nav__label">Preguntas frecuentes</span></a>
+    <a class="jm-help-nav__card" href="#cuidado"><span class="jm-help-nav__icon">✦</span><span class="jm-help-nav__label">Cuidado del producto</span></a>
+  </nav>
+
+  <main class="jm-help-main">
+    <aside class="jm-help-sidebar" aria-label="Índice">
+      <p class="jm-help-sidebar__title">En esta página</p>
+      <a href="#envio" class="is-active">Políticas de envío</a>
+      <a href="#cambios">Cambios y devoluciones</a>
+      <a href="#faq">Preguntas frecuentes</a>
+      <a href="#cuidado">Cuidado del producto</a>
+    </aside>
+
+    <div class="jm-help-sections">
+      <section class="jm-help-block" id="envio">
+        <div class="jm-help-block__head">
+          <span class="jm-help-block__icon">🚚</span>
+          <div>
+            <h2 class="jm-help-block__title">Políticas de envío</h2>
+            <p class="jm-help-block__intro">Despachos a todo Chile · plazos y seguimiento de tu pedido.</p>
+          </div>
+        </div>
+        <h3>Plazos de despacho</h3>
+        <ul>
+          <li>Los pedidos se preparan en un plazo de <strong>2 a 4 días hábiles</strong> después de confirmado el pago.</li>
+          <li>El tiempo de tránsito depende de la región y del transportista seleccionado en checkout.</li>
+          <li>Recibirás un correo con el número de seguimiento cuando tu pedido sea despachado.</li>
+        </ul>
+        <h3>Costos de envío</h3>
+        <p>El valor del despacho se calcula automáticamente en el checkout según comuna y peso del pedido. Ocasionalmente ofrecemos envío gratuito en campañas especiales (se informará en el sitio).</p>
+        <h3>Retiro en tienda</h3>
+        <p>Si está disponible, podrás elegir retiro en punto acordado con la tienda. Te avisaremos por WhatsApp cuando tu pedido esté listo.</p>
+      </section>
+
+      <section class="jm-help-block" id="cambios">
+        <div class="jm-help-block__head">
+          <span class="jm-help-block__icon">↩</span>
+          <div>
+            <h2 class="jm-help-block__title">Cambios y devoluciones</h2>
+            <p class="jm-help-block__intro">Queremos que ames tu compra. Revisa las condiciones antes de solicitar un cambio.</p>
+          </div>
+        </div>
+        <h3>Plazo para cambios</h3>
+        <ul>
+          <li>Tienes <strong>10 días</strong> desde que recibes el producto para solicitar cambio o devolución.</li>
+          <li>La joya debe estar sin uso, en su empaque original y con etiquetas.</li>
+          <li>Productos personalizados o en liquidación pueden tener condiciones especiales.</li>
+        </ul>
+        <h3>Cómo solicitar un cambio</h3>
+        <p>Escríbenos por WhatsApp indicando número de pedido, producto y motivo. Te responderemos con los pasos para el envío de vuelta y el reemplazo o reembolso según corresponda.</p>
+        <h3>Garantía</h3>
+        <p>Las joyas Mercury cuentan con garantía por defectos de fabricación. No cubre desgaste por uso, golpes o exposición a químicos agresivos.</p>
+      </section>
+
+      <section class="jm-help-block" id="faq">
+        <div class="jm-help-block__head">
+          <span class="jm-help-block__icon">?</span>
+          <div>
+            <h2 class="jm-help-block__title">Preguntas frecuentes</h2>
+            <p class="jm-help-block__intro">Respuestas rápidas a las dudas más comunes de nuestras clientas.</p>
+          </div>
+        </div>
+        <div class="jm-help-faq">
+          <details open>
+            <summary>¿De qué material están hechas las joyas?</summary>
+            <p>Nuestras piezas Esencial, Gold y Deluxe utilizan baño de oro 18k sobre base de latón u otros metales según la línea. Cada ficha de producto indica la colección y características.</p>
+          </details>
+          <details>
+            <summary>¿Cómo sé mi talla de anillo?</summary>
+            <p>Consulta nuestra guía de tallas en la ficha del producto o escríbenos por WhatsApp con la circunferencia de tu dedo en mm.</p>
+          </details>
+          <details>
+            <summary>¿Puedo pagar en cuotas?</summary>
+            <p>Sí, según los medios de pago habilitados en WooCommerce (Webpay, transferencia u otros configurados en la tienda).</p>
+          </details>
+          <details>
+            <summary>¿Hacen envíos a regiones?</summary>
+            <p>Sí, despachamos a todo Chile a través de empresas de courier. El plazo y costo se muestran antes de pagar.</p>
+          </details>
+          <details>
+            <summary>¿Cómo contacto a la tienda?</summary>
+            <p>WhatsApp es nuestro canal principal. También puedes usar el formulario de contacto o escribir al correo indicado en el pie del sitio.</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="jm-help-block" id="cuidado">
+        <div class="jm-help-block__head">
+          <span class="jm-help-block__icon">✦</span>
+          <div>
+            <h2 class="jm-help-block__title">Información sobre el cuidado del producto</h2>
+            <p class="jm-help-block__intro">Prolonga el brillo de tus joyas Mercury con estos cuidados simples.</p>
+          </div>
+        </div>
+        <div class="jm-help-care-grid">
+          <div class="jm-help-care-item"><strong>Evita</strong> Perfume, cloro, cremas y limpiadores directamente sobre la joya.</div>
+          <div class="jm-help-care-item"><strong>Guarda</strong> Cada pieza por separado, en bolsa o estuche, lejos de humedad.</div>
+          <div class="jm-help-care-item"><strong>Limpia</strong> Con paño suave y seco. Para más brillo, paño específico para joyas bañadas en oro.</div>
+          <div class="jm-help-care-item"><strong>Retira</strong> Tus joyas antes de dormir, ducharte, nadar o hacer deporte.</div>
+        </div>
+        <h3>Baño de oro 18k</h3>
+        <p>Con el uso natural puede aparecer un desgaste gradual del baño. Evita fricción constante y guarda bien tus piezas para mantenerlas por más tiempo.</p>
+        <h3>Si pierde brillo</h3>
+        <p>Contáctanos: según el caso podemos orientarte sobre limpieza en casa o servicios de mantención disponibles.</p>
+      </section>
+
+      <div class="jm-help-contact">
+        <h2 class="jm-help-contact__title">¿No encontraste lo que buscabas?</h2>
+        <p class="jm-help-contact__text">Escríbenos por WhatsApp — es nuestro canal principal de atención.</p>
+        <div class="jm-help-contact__actions">
+          <a class="jm-btn jm-btn--wa" href="#">WhatsApp</a>
+          <a class="jm-btn jm-btn--ghost" href="#">Formulario de contacto</a>
+        </div>
+        <div class="jm-help-social" aria-label="Redes sociales">
+          <span>f</span><span>ig</span><span>tk</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ft-e">
+    <div class="ft-e__inner">
+      <img class="ft-e__logo" src="../../identidad/logo-jm-gold-vertical.png" alt="Joyas Mercury">
+      <nav class="ft-e__nav">
+        <a href="#">Nosotros</a>
+        <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">Esencial</a>
+        <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=gold">Gold</a>
+        <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=deluxe">Deluxe</a>
+        <a href="#">Mi Cuenta</a>
+        <a href="wireframe-ayuda-landing.html">Ayuda</a>
+        <a href="#">Contacto</a>
+      </nav>
+      <div class="ft-e__legal">
+        <a href="#envio">Políticas de envío</a>
+        <a href="#cambios">Cambios y devoluciones</a>
+        <a href="#faq">Preguntas frecuentes</a>
+        <a href="#cuidado">Cuidado de joyas</a>
+      </div>
+    </div>
+    <div class="ft-e__bottom"><p class="ft-e__copy">Derechos reservados © 2026 joyasmercury.cl</p></div>
+  </footer>
+
+  <a class="jm-wa-fab" href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+
+  <nav class="jm-bottom-nav" aria-label="Navegación móvil">
+    <a href="../mockups-inicio/wireframe-inicio.html"><svg viewBox="0 0 24 24"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-9.5z"/></svg>Inicio</a>
+    <a href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>Tienda</a>
+    <a href="wireframe-ayuda-landing.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>Ayuda</a>
+    <a href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Cuenta</a>
+  </nav>
+
+  <div class="jm-wireframe-switch">
+    <a href="../mockups-inicio/wireframe-inicio.html">← Inicio</a>
+    · <a href="../mockups-carrito/wireframe-carrito-landing.html">Carrito</a>
+  </div>
+
+  <script>
+    if (new URLSearchParams(location.search).get('shot') === '1') document.body.dataset.shot = '1';
+  </script>
+</body>
+</html>

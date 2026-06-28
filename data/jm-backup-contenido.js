@@ -368,6 +368,16 @@ window.JM_NUEVO_PROTOTIPO = {
       ]
     },
     {
+      id: 'ayuda',
+      titulo: 'Centro de Ayuda · landing completa',
+      descripcion: 'Envío, cambios y devoluciones, FAQ acordeón, cuidado del producto, WhatsApp y redes.',
+      wireframe: 'interfaces/mockups-ayuda/wireframe-ayuda-landing.html',
+      pantallas: [
+        { id: 'ayuda-desktop', vista: 'desktop', titulo: 'Centro de Ayuda · desktop', archivo: 'interfaces/mockups-ayuda/jm-ayuda-landing-desktop.png' },
+        { id: 'ayuda-mobile', vista: 'mobile', titulo: 'Centro de Ayuda · mobile', archivo: 'interfaces/mockups-ayuda/jm-ayuda-landing-mobile.png' }
+      ]
+    },
+    {
       id: 'footer-opciones',
       titulo: 'Footer · E (nuevo) · A · D',
       descripcion: 'E claro premium sin marco dorado (recomendado) · A editorial horizontal · D columnas + contacto.',
