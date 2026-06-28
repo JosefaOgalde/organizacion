@@ -19,7 +19,6 @@ Incluye: nuevo prototipo Fase 2, landings referencia, maqueta inicio, navegació
 | Prototipo flujo actual | `/index/clientes/joyasmercury/prototipo.html` |
 | Inicio interactivo | `/index/clientes/joyasmercury/interfaces/mockups-inicio/wireframe-inicio.html` |
 | Maqueta inicio referencia | `/index/clientes/joyasmercury/interfaces/maqueta-diseno/index.html` |
-| Menú hamburguesa | `/index/clientes/joyasmercury/interfaces/mockups-navbar/menu-hamburguesa-jm-maqueta.html?open=1` |
 
 ## Estructura
 
@@ -37,7 +36,6 @@ joyasmercury/
 │   ├── mockups-carrito/
 │   ├── mockups-ayuda/
 │   ├── mockups-producto/
-│   ├── mockups-navbar/
 │   ├── referencia-landings/
 │   └── referencia-landings-mobile/
 └── dia-1/              ← guías auditoría menú

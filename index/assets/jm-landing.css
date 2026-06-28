@@ -367,13 +367,6 @@
   text-decoration: underline;
 }
 
-/* Mockups navbar · solo desktop */
-.jm-interfaces--navbar-maqueta {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid #e8e0dc;
-}
-
 .jm-interfaces__viewport-tabs--solo .jm-interfaces__viewport-tab {
   cursor: default;
   pointer-events: none;
@@ -440,13 +433,6 @@
 .ficha-wireframes__atajos a {
   color: var(--jm-gold, #a97e23);
   font-weight: 600;
-}
-
-.jm-interfaces__visor--navbar .jm-interfaces__visor-img {
-  max-height: 220px;
-  width: 100%;
-  object-fit: cover;
-  object-position: top center;
 }
 
 .jm-interfaces--maqueta-diseno {

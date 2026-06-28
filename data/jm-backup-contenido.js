@@ -810,52 +810,6 @@ function jmHtmlMaquetaDisenoInicio() {
   </div>`;
 }
 
-/** Mockups navbar desktop + menú hamburguesa móvil */
-function jmHtmlNavbarMaqueta() {
-  const carpeta = 'interfaces/mockups-navbar';
-  const archivoDesktop = 'navbar-jm-maqueta-desktop.png';
-  const archivoMenu = 'menu-hamburguesa-jm-maqueta-open.png';
-  const tituloDesktop = 'Navbar · desktop';
-  const tituloMenu = 'Menú hamburguesa · móvil';
-  const srcDesktop = jmWireframeSrc(carpeta, archivoDesktop);
-  const srcMenu = jmWireframeSrc(carpeta, archivoMenu);
-  const navbarUrl = (window.jmAssetBase || '') + 'interfaces/mockups-navbar/navbar-jm-maqueta.html?shot=desktop';
-  const menuUrl = (window.jmAssetBase || '') + 'interfaces/mockups-navbar/menu-hamburguesa-jm-maqueta.html?open=1';
-
-  return `<div class="jm-interfaces jm-interfaces--navbar-maqueta" tabindex="0" aria-label="Mockups navegación Joyas Mercury">
-    <div class="jm-interfaces__head">
-      <h4 class="jm-interfaces__titulo-seccion">Navegación · desktop y móvil</h4>
-      <p class="jm-interfaces__intro">Navbar horizontal en desktop · drawer hamburguesa en móvil (&lt; 900px) · identidad JM.</p>
-      <div class="jm-interfaces__viewport-tabs" role="tablist" aria-label="Vista">
-        <span class="jm-interfaces__viewport-tab is-active" role="tab" aria-selected="true">Desktop</span>
-        <span class="jm-interfaces__viewport-tab" role="tab" aria-selected="false">Móvil · drawer</span>
-      </div>
-      <p class="jm-interfaces__accion-maqueta">
-        <a href="${jmEscapeHtml(navbarUrl)}" target="_blank" rel="noopener" class="jm-btn-maqueta">Navbar desktop</a>
-        <a href="${jmEscapeHtml(menuUrl)}" target="_blank" rel="noopener" class="jm-btn-maqueta jm-btn-maqueta--ghost">Menú hamburguesa</a>
-      </p>
-    </div>
-    <div class="jm-interfaces__visor-grid jm-interfaces__visor-grid--2">
-      <div class="jm-interfaces__visor jm-interfaces__visor--navbar">
-        <a href="${jmEscapeHtml(navbarUrl)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Navbar desktop">
-          <img class="jm-interfaces__visor-img" src="${jmEscapeHtml(srcDesktop)}" alt="${jmEscapeHtml(tituloDesktop)}"${jmImgAttrs(carpeta, archivoDesktop, srcDesktop)}>
-        </a>
-        <div class="jm-interfaces__visor-pie">
-          <strong class="jm-interfaces__visor-caption">${jmEscapeHtml(tituloDesktop)}</strong>
-        </div>
-      </div>
-      <div class="jm-interfaces__visor jm-interfaces__visor--navbar">
-        <a href="${jmEscapeHtml(menuUrl)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Menú hamburguesa">
-          <img class="jm-interfaces__visor-img" src="${jmEscapeHtml(srcMenu)}" alt="${jmEscapeHtml(tituloMenu)}"${jmImgAttrs(carpeta, archivoMenu, srcMenu)}>
-        </a>
-        <div class="jm-interfaces__visor-pie">
-          <strong class="jm-interfaces__visor-caption">${jmEscapeHtml(tituloMenu)}</strong>
-        </div>
-      </div>
-    </div>
-  </div>`;
-}
-
 function jmHtmlLandingsCarrusel() {
   return jmHtmlLandingsCarruselUnificado();
 }
@@ -1379,7 +1333,6 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
     ? jmHtmlPrototipoInteractivo()
       + jmHtmlLandingsCarrusel()
       + jmHtmlMaquetaDisenoInicio()
-      + jmHtmlNavbarMaqueta()
       + (mostrarObjetivoMini ? jmHtmlObjetivoMini(wf) : '')
     : (() => {
       const grupos = [];
@@ -1395,7 +1348,7 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
       }).join('');
     })();
   const intro = usarPrototipo
-    ? 'Prototipo del flujo (pasos 1–8), landings referencia, maqueta diseño Inicio y navegación desktop/móvil.'
+    ? 'Prototipo del flujo (pasos 1–8), landings referencia y maqueta diseño Inicio.'
     : 'Recorre el estado actual del sitio con las flechas o clic izquierda/derecha sobre la imagen.';
   const atajos = usarPrototipo
     ? `<p class="ficha-wireframes__atajos"><a href="wireframes.html">Wireframes pantalla completa</a> · <a href="prototipo.html">Prototipo flujo actual</a></p>`

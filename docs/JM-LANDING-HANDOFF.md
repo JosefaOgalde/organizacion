@@ -10,7 +10,6 @@ Documento de continuidad para retomar el trabajo. Última actualización: **25 j
 |------|--------|
 | **Rama activa** | `cursor/jm-maqueta-diseno-d6a1` |
 | **PR maqueta diseño Inicio** | (pendiente crear) |
-| **PR navbar + sección landing** | [#12](https://github.com/JosefaOgalde/organizacion/pull/12) |
 | **PR mobile landings** | [#10](https://github.com/JosefaOgalde/organizacion/pull/10) |
 
 ### Al retomar
@@ -50,28 +49,6 @@ En landing JM: sección **Maqueta diseño · Inicio** con botón **Visualizar ma
 ```bash
 python3 scripts/capturar-jm-maqueta-diseno.py
 cd interfaces/maqueta-diseno && pnpm dev   # opcional
-```
-
-### Mockups navbar (solo desktop)
-
-Carpeta: `interfaces/mockups-navbar/`
-
-| Archivo | Rol |
-|---------|-----|
-| `navbar-jm-maqueta.html` | Maqueta interactiva desktop |
-| `navbar-jm-maqueta.css` | Estilos |
-| `navbar-jm-maqueta-desktop.png` | Captura para la landing |
-
-**Layout acordado:**
-- **Fila superior:** solo isotipo centrado
-- **Fila inferior:** links alineados a la **derecha** → Inicio · Colecciones
-
-En la landing JM: sección **Mockups navbar** (debajo de Landings referencia) con botón **Visualizar maqueta interactiva**.
-
-Regenerar captura tras editar HTML/CSS:
-
-```bash
-python3 scripts/capturar-jm-navbar-maqueta.py
 ```
 
 ### Carrusel Desktop (7 pantallas)
@@ -124,9 +101,6 @@ python3 scripts/sync-jm-landings-carrusel-mobile.py
 python3 scripts/capturar-jm-referencia-landings.py
 python3 scripts/sync-jm-landings-carrusel.py
 
-# Regenerar captura navbar
-python3 scripts/capturar-jm-navbar-maqueta.py
-
 # Subir a GitHub
 SUBIR.bat
 ```
@@ -159,9 +133,6 @@ Completadas (última sesión):
 - Sesión: **Validar carrusel desktop 7 pantallas** ✓ (paso 1 de hoy)
 
 Pendiente inmediato:
-- Validar navbar en landing (sección Mockups navbar + maqueta HTML)
-- Agregar más links al navbar si el cliente lo pide (Novedades, Contacto, etc.)
-- Integrar navbar en wireframe Inicio cuando esté aprobado
 - Ajustar wireframes mobile si el cliente pide cambios
 - Validar paridad desktop ↔ mobile en las 7 pantallas
 
@@ -171,11 +142,9 @@ Pendiente inmediato:
 
 | Archivo | Rol |
 |---------|-----|
-| `data/jm-backup-contenido.js` | Carruseles, prototipo, `jmHtmlNavbarMaqueta()` |
+| `data/jm-backup-contenido.js` | Carruseles, prototipo, maqueta Inicio |
 | `index/assets/jm-landing.js` | Landing JM |
-| `index/assets/jm-landing.css` | Estilos + sección Mockups navbar |
-| `interfaces/mockups-navbar/` | Maqueta navbar desktop |
-| `scripts/capturar-jm-navbar-maqueta.py` | Captura PNG navbar |
+| `index/assets/jm-landing.css` | Estilos landing JM |
 | `scripts/capturar-jm-referencia-landings-mobile.py` | Genera 7 PNG mobile |
 | `scripts/sync-jm-landings-carrusel-mobile.py` | Sync manifest mobile |
 | `scripts/organizacion-server.js` | Auto-guardado disco |
@@ -198,8 +167,5 @@ Logo + isotipo M en `index/clientes/joyasmercury/identidad/`
 
 ## Próximos pasos sugeridos
 
-1. Validar navbar desktop (isotipo arriba + Inicio/Colecciones abajo derecha)
-2. Definir links restantes del navbar (Mi Cuenta, Carrito, Contacto, etc.)
-3. Integrar navbar aprobado en wireframe Inicio
-4. Revisar las 7 capturas mobile con el cliente
-5. Continuar tareas D5+ (URLs/slugs, chips filtro, landings AJAX)
+1. Revisar las 7 capturas mobile con el cliente
+2. Continuar tareas D5+ (URLs/slugs, chips filtro, landings AJAX)
