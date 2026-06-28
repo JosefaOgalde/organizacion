@@ -73,23 +73,8 @@
     .jm-cart-banner__rule span { color: var(--gold); font-size: 0.55rem; transform: rotate(45deg); display: inline-block; }
 
     .jm-cart-banner__text {
-      font-size: 0.78rem; line-height: 1.6; color: #6a6a6a;
-      max-width: 21rem; margin-bottom: 1.35rem;
-    }
-
-    .jm-cart-banner__trust {
-      display: flex; flex-wrap: wrap; gap: 0.5rem 1rem;
-      font-size: 0.62rem; color: #888; margin-bottom: 1.35rem;
-    }
-    .jm-cart-banner__trust span { display: flex; align-items: center; gap: 0.3rem; }
-    .jm-cart-banner__trust span::before { content: '✦'; color: var(--gold); font-size: 0.5rem; }
-
-    .jm-cart-banner__cta {
-      display: inline-flex; align-items: center; gap: 0.45rem;
-      padding: 0.75rem 1.65rem; background: var(--gold); color: #fff;
-      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; text-decoration: none; border-radius: 4px;
-      width: fit-content; box-shadow: 0 2px 8px rgba(197,148,70,0.25);
+      font-size: 0.82rem; line-height: 1.55; color: #6a6a6a;
+      max-width: 20rem; font-weight: 500; letter-spacing: 0.02em;
     }
 
     /* —— Visual derecho: bolsa + joyas —— */
@@ -162,23 +147,15 @@
 </head>
 <body>
   <div class="preview-wrap">
-    <h1>Banner Mi Carrito · 1000 × 500 px · general</h1>
-    <p class="preview-note">Banner para sección carrito (con o sin productos) · PNG: <code>python3 scripts/capturar-jm-banner-carrito.py</code></p>
+    <h1>Banner landing Mi Carrito · 1000 × 500 px</h1>
+    <p class="preview-note">Solo identifica la página de carrito · sin estado vacío/con productos · fase 2 abajo del banner</p>
 
-    <article class="jm-cart-banner" id="banner-carrito" aria-label="Mi Carrito Joyas Mercury">
+    <article class="jm-cart-banner" id="banner-carrito" aria-label="Mi Carrito — Joyas Mercury">
       <div class="jm-cart-banner__copy">
-        <p class="jm-cart-banner__eyebrow">Joyas Mercury</p>
+        <p class="jm-cart-banner__eyebrow">joyasmercury.cl</p>
         <h2 class="jm-cart-banner__title">Mi <em>Carrito</em></h2>
         <div class="jm-cart-banner__rule" aria-hidden="true"><span>◆</span></div>
-        <p class="jm-cart-banner__text">
-          Revisa tus joyas seleccionadas antes de finalizar tu compra. Cada pieza está pensada para hacerte brillar todos los días.
-        </p>
-        <div class="jm-cart-banner__trust">
-          <span>Envíos a todo Chile</span>
-          <span>Garantía de fábrica</span>
-          <span>Compra segura</span>
-        </div>
-        <a class="jm-cart-banner__cta" href="../mockups-coleccion/wireframe-coleccion.html?coleccion=esencial">✦ Seguir comprando</a>
+        <p class="jm-cart-banner__text">Estás en tu carrito de compras</p>
       </div>
       <div class="jm-cart-banner__visual" aria-hidden="true">
         <div class="jm-cart-banner__photo"></div>
