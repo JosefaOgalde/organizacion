@@ -403,14 +403,7 @@ window.JM_NUEVO_PROTOTIPO = {
 /** Ruta asset nuevo prototipo */
 window.jmNuevoPrototipoSrc = function jmNuevoPrototipoSrc(archivo) {
   const file = String(archivo || '').replace(/^\/+/, '');
-  const p = (location.pathname || '').replace(/\\/g, '/');
-  if (/\/index\/clientes\/joyasmercury/i.test(p)) {
-    return `../JoyasMercury/${file}`;
-  }
-  if (/\/index\/clientes/i.test(p)) {
-    return `JoyasMercury/${file}`;
-  }
-  return `index/clientes/JoyasMercury/${file}`;
+  return `${window.jmAssetBase}${file}`;
 };
 
 /** HTML sección «Nuevo prototipo» */
@@ -509,6 +502,63 @@ function jmEscapeHtml(s) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/"/g, '&quot;');
+}
+
+/** HTML carrusel interfaces (auditoría + estado actual) con miniaturas */
+function jmHtmlInterfacesCarrusel(wf) {
+  const items = (wf || []).filter(w => w.carpeta === 'interfaces');
+  if (!items.length) return '';
+  const grupos = [];
+  items.forEach(item => { if (!grupos.includes(item.grupo)) grupos.push(item.grupo); });
+
+  const cards = items.map((w, i) => {
+    const src = jmWireframeSrc(w.carpeta, w.archivo);
+    const activa = i === 0 ? ' jm-interfaces__card--activa' : '';
+    const gid = (w.grupo || '').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+    return `<figure class="jm-interfaces__card${activa}" data-jm-int-index="${i}" data-jm-int-src="${jmEscapeHtml(src)}" data-jm-int-titulo="${jmEscapeHtml(w.titulo)}" data-jm-int-grupo="${jmEscapeHtml(w.grupo || '')}">
+      <button type="button" class="jm-interfaces__card-btn" title="${jmEscapeHtml(w.titulo)}">
+        <img src="${src}" alt="${jmEscapeHtml(w.titulo)}" loading="${i < 4 ? 'eager' : 'lazy'}">
+      </button>
+      <figcaption>
+        <span class="jm-interfaces__card-grupo">${jmEscapeHtml(w.grupo || 'Interfaces')}</span>
+        ${jmEscapeHtml(w.titulo)}
+      </figcaption>
+    </figure>`;
+  }).join('');
+
+  const filtros = `<button type="button" class="jm-interfaces__filtro is-active" data-jm-int-filtro="all">Todas · ${items.length}</button>`
+    + grupos.map(g => {
+      const n = items.filter(w => w.grupo === g).length;
+      return `<button type="button" class="jm-interfaces__filtro" data-jm-int-filtro="${jmEscapeHtml(g)}">${jmEscapeHtml(g)} · ${n}</button>`;
+    }).join('');
+
+  const primera = items[0];
+  const visorSrc = jmWireframeSrc(primera.carpeta, primera.archivo);
+
+  return `<div class="jm-interfaces" data-jm-interfaces tabindex="0" aria-label="Inventario interfaces joyasmercury.cl">
+    <div class="jm-interfaces__head">
+      <h4 class="jm-interfaces__titulo-seccion">Interfaces · inventario del sitio</h4>
+      <p class="jm-interfaces__intro">Capturas de la carpeta <code>interfaces/</code> — auditoría técnica y estado actual en producción. Clic en miniatura o flechas del carrusel.</p>
+    </div>
+    <div class="jm-interfaces__filtros" role="tablist">${filtros}</div>
+    <div class="jm-interfaces__visor" data-jm-int-visor>
+      <a href="${jmEscapeHtml(visorSrc)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Abrir en tamaño completo">
+        <img class="jm-interfaces__visor-img" src="${jmEscapeHtml(visorSrc)}" alt="${jmEscapeHtml(primera.titulo)}" data-jm-int-visor-img>
+      </a>
+      <div class="jm-interfaces__visor-pie">
+        <div class="jm-interfaces__visor-meta">
+          <strong class="jm-interfaces__visor-caption" data-jm-int-visor-caption>${jmEscapeHtml(primera.titulo)}</strong>
+          <span class="jm-interfaces__visor-grupo" data-jm-int-visor-grupo>${jmEscapeHtml(primera.grupo || '')}</span>
+        </div>
+        <div class="jm-interfaces__visor-nav">
+          <button type="button" class="jm-interfaces__flecha" data-jm-int-prev aria-label="Imagen anterior">‹</button>
+          <span class="jm-interfaces__contador" data-jm-int-contador>1 / ${items.length}</span>
+          <button type="button" class="jm-interfaces__flecha" data-jm-int-next aria-label="Imagen siguiente">›</button>
+        </div>
+      </div>
+    </div>
+    <div class="jm-interfaces__grid" data-jm-int-grid>${cards}</div>
+  </div>`;
 }
 
 /** HTML carrusel con flechas y clic izquierda/derecha */
@@ -819,7 +869,9 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
   const usarPrototipo = !opts || opts.interactivo !== false;
   const mostrarObjetivoMini = !opts || opts.objetivoMini !== false;
   const cuerpo = usarPrototipo
-    ? jmHtmlPrototipoInteractivo() + (mostrarObjetivoMini ? jmHtmlObjetivoMini(wf) : '')
+    ? jmHtmlPrototipoInteractivo()
+      + jmHtmlInterfacesCarrusel(wf)
+      + (mostrarObjetivoMini ? jmHtmlObjetivoMini(wf) : '')
     : (() => {
       const grupos = [];
       wf.forEach(item => { if (!grupos.includes(item.grupo)) grupos.push(item.grupo); });
@@ -834,7 +886,7 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
       }).join('');
     })();
   const intro = usarPrototipo
-    ? 'Prototipo navegable del flujo actual de joyasmercury.cl (Inicio → colecciones → Tienda → Carrito).'
+    ? 'Prototipo del flujo actual (pasos 1–8) y carrusel de capturas en <strong>interfaces/</strong> (auditoría y producción).'
     : 'Recorre el estado actual del sitio con las flechas o clic izquierda/derecha sobre la imagen.';
   return `<section id="ficha-wireframes-jm" class="ficha-seccion ficha-seccion--wireframes ${claseExtra}${usarPrototipo ? ' ficha-seccion--prototipo' : ''}">
     <div class="ficha-seccion__headline">
@@ -933,10 +985,91 @@ window.initJMPrototipo = function initJMPrototipo(root) {
   });
 };
 
+/** Inicializa carrusel interfaces (miniaturas + visor) */
+window.initJMInterfacesUI = function initJMInterfacesUI(root) {
+  const scope = root && root.querySelectorAll ? root : document;
+  scope.querySelectorAll('[data-jm-interfaces]').forEach((sec) => {
+    if (sec.dataset.jmInterfacesBound === '1') return;
+    sec.dataset.jmInterfacesBound = '1';
+
+    const visorImg = sec.querySelector('[data-jm-int-visor-img]');
+    const visorCap = sec.querySelector('[data-jm-int-visor-caption]');
+    const visorGrupo = sec.querySelector('[data-jm-int-visor-grupo]');
+    const visorLink = sec.querySelector('.jm-interfaces__visor-link');
+    const contadorEl = sec.querySelector('[data-jm-int-contador]');
+    const cards = [...sec.querySelectorAll('.jm-interfaces__card')];
+    let filtro = 'all';
+
+    function cardsVisibles() {
+      return cards.filter(c => filtro === 'all' || c.dataset.jmIntGrupo === filtro);
+    }
+
+    function idxActivo() {
+      return cardsVisibles().findIndex(c => c.classList.contains('jm-interfaces__card--activa'));
+    }
+
+    function actualizarVisor(card) {
+      if (!card) return;
+      const src = card.dataset.jmIntSrc;
+      const titulo = card.dataset.jmIntTitulo || '';
+      const grupo = card.dataset.jmIntGrupo || '';
+      if (visorImg && src) {
+        visorImg.src = src;
+        visorImg.alt = titulo;
+      }
+      if (visorCap) visorCap.textContent = titulo;
+      if (visorGrupo) visorGrupo.textContent = grupo;
+      if (visorLink && src) visorLink.href = src;
+      cards.forEach(c => c.classList.remove('jm-interfaces__card--activa'));
+      card.classList.add('jm-interfaces__card--activa');
+      const vis = cardsVisibles();
+      const i = vis.indexOf(card);
+      if (contadorEl && i >= 0) contadorEl.textContent = `${i + 1} / ${vis.length}`;
+    }
+
+    function ir(delta) {
+      const vis = cardsVisibles();
+      if (!vis.length) return;
+      let i = idxActivo();
+      if (i < 0) i = 0;
+      i = (i + delta + vis.length) % vis.length;
+      actualizarVisor(vis[i]);
+    }
+
+    cards.forEach(card => {
+      card.querySelector('.jm-interfaces__card-btn')?.addEventListener('click', () => actualizarVisor(card));
+    });
+
+    sec.querySelector('[data-jm-int-prev]')?.addEventListener('click', () => ir(-1));
+    sec.querySelector('[data-jm-int-next]')?.addEventListener('click', () => ir(1));
+
+    sec.querySelectorAll('[data-jm-int-filtro]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        filtro = btn.dataset.jmIntFiltro || 'all';
+        sec.querySelectorAll('.jm-interfaces__filtro').forEach(b => {
+          b.classList.toggle('is-active', b.dataset.jmIntFiltro === filtro);
+        });
+        cards.forEach(c => {
+          const show = filtro === 'all' || c.dataset.jmIntGrupo === filtro;
+          c.classList.toggle('jm-interfaces__card--oculta', !show);
+        });
+        const vis = cardsVisibles();
+        actualizarVisor(vis[0] || null);
+      });
+    });
+
+    sec.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); ir(-1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); ir(1); }
+    });
+  });
+};
+
 /** Inicializa carruseles y prototipos JM */
 window.initJMWireframesUI = function initJMWireframesUI(root) {
   if (typeof window.initJMPrototipo === 'function') window.initJMPrototipo(root);
   if (typeof window.initJMGalerias === 'function') window.initJMGalerias(root);
+  if (typeof window.initJMInterfacesUI === 'function') window.initJMInterfacesUI(root);
   if (typeof window.initJMNuevoPrototipoUI === 'function') window.initJMNuevoPrototipoUI(root);
 };
 
