@@ -443,6 +443,22 @@
       render();
     });
 
+    root.querySelectorAll('[data-jm-activar-edicion-imagenes]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (!modoEdicion) {
+          modoEdicion = true;
+          render();
+        }
+        const carrusel = root.querySelector('.jm-interfaces--landings-ref');
+        carrusel?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        carrusel?.querySelector('[data-jm-int-visor-edit]')?.classList.add('jm-interfaces__visor-edit--pulse');
+        setTimeout(() => {
+          carrusel?.querySelector('[data-jm-int-visor-edit]')?.classList.remove('jm-interfaces__visor-edit--pulse');
+        }, 2000);
+      });
+    });
+
     document.getElementById('jm-identidad-toggle')?.addEventListener('click', () => {
       const det = document.getElementById('jm-identidad-detalle');
       const btn = document.getElementById('jm-identidad-toggle');

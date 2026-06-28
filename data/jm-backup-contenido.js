@@ -567,17 +567,19 @@ function jmHtmlLandingsCarrusel() {
       <button type="button" class="jm-interfaces__card-btn" title="${jmEscapeHtml(w.titulo)}">
         <img src="${src}" alt="${jmEscapeHtml(w.titulo)}"${jmImgAttrs(w.carpeta, w.archivo, src)} loading="${i === 0 ? 'eager' : 'lazy'}">
       </button>
-      <figcaption>${jmEscapeHtml(w.titulo)}</figcaption>
+      <figcaption>${jmEscapeHtml(w.titulo)}<span class="jm-interfaces__archivo jm-solo-edicion">${jmEscapeHtml(w.archivo)}</span></figcaption>
     </figure>`;
   }).join('');
 
   const primera = items[0];
   const visorSrc = jmLandingCarruselSrc(primera);
 
-  return `<div class="jm-interfaces" data-jm-interfaces tabindex="0" aria-label="Landings referencia">
+  return `<div class="jm-interfaces jm-interfaces--landings-ref" data-jm-interfaces tabindex="0" aria-label="Landings referencia">
     <div class="jm-interfaces__head">
       <h4 class="jm-interfaces__titulo-seccion">Landings referencia</h4>
-      <p class="jm-interfaces__intro">Mockups entregados · orden: <strong>Inicio → Esencial → Gold → Deluxe</strong> · clic en miniatura o flechas.</p>
+      <p class="jm-interfaces__intro">Tus 4 capturas del sitio · orden: <strong>Inicio → Esencial → Gold → Deluxe</strong> · clic en miniatura o flechas.</p>
+      <p class="jm-interfaces__hint-reemplazo jm-solo-vista">Puedes reemplazar cada una por tu diseño actualizado. Pulsa <button type="button" class="jm-interfaces__link-editar" data-jm-activar-edicion-imagenes>Editar datos</button> arriba a la derecha.</p>
+      <p class="jm-interfaces__hint-reemplazo jm-interfaces__hint-reemplazo--activo jm-solo-edicion">Imagen activa: usa <strong>Cambiar imagen</strong> en el recuadro de abajo o en cada miniatura.</p>
     </div>
     <div class="jm-interfaces__visor" data-jm-int-visor>
       <a href="${jmEscapeHtml(visorSrc)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Abrir en tamaño completo">
@@ -593,7 +595,9 @@ function jmHtmlLandingsCarrusel() {
           <button type="button" class="jm-interfaces__flecha" data-jm-int-next aria-label="Imagen siguiente">›</button>
         </div>
       </div>
-      <div class="jm-interfaces__visor-edit jm-solo-edicion" data-jm-int-visor-edit aria-live="polite"></div>
+      <div class="jm-interfaces__visor-edit jm-solo-edicion" data-jm-int-visor-edit aria-live="polite">
+        <p class="jm-interfaces__visor-edit-label">Reemplazar esta captura</p>
+      </div>
     </div>
     <div class="jm-interfaces__grid" data-jm-int-grid>${cards}</div>
   </div>`;
@@ -1426,7 +1430,8 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
   function syncCarouselVisorBar(sec) {
     const slot = sec.querySelector('[data-jm-int-visor-edit]');
     if (!slot) return;
-    slot.innerHTML = '';
+    const label = slot.querySelector('.jm-interfaces__visor-edit-label');
+    slot.querySelectorAll('.jm-img-editable__bar').forEach((el) => el.remove());
     const activeImg = sec.querySelector('.jm-interfaces__card--activa img[data-jm-img-key]');
     if (!activeImg) return;
     const info = applyToImg(activeImg);
@@ -1436,6 +1441,12 @@ window.initJMImagenesEditorUI = function initJMImagenesEditorUI(root, opts) {
       visorImg.dataset.jmImgKey = activeImg.dataset.jmImgKey;
       visorImg.dataset.jmImgDefault = activeImg.dataset.jmImgDefault || '';
       applyToImg(visorImg);
+    }
+    const archivo = activeImg.dataset.jmImgKey?.replace(/^jm:/, '').split('/').pop() || '';
+    if (label) {
+      label.textContent = archivo
+        ? `Reemplazar «${activeImg.alt || 'captura'}» · ${archivo}`
+        : `Reemplazar «${activeImg.alt || 'captura'}»`;
     }
     const bar = buildImgEditBar(activeImg, info);
     bar.classList.add('jm-img-editable__bar--visor');
