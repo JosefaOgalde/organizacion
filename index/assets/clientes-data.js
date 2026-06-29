@@ -53,7 +53,16 @@ window.CLIENTES_PORTAL = [
     tipo: 'Full time',
     color: { border: '#a8d8dc', bg: '#e8f6f8', text: '#4a7a80' },
     agente: 'Planificación de proyectos',
-    resumen: 'Gantt, cronogramas y entregables post auditoría.'
+    resumen: 'Gantt, cronogramas y entregables post auditoría.',
+    proyectos: [
+      {
+        codigo: 'MOVA',
+        nombre: 'Auditoría Charlas',
+        archivo: 'MKOF/MOVA.html',
+        resumen: 'MOVA-Auditoria-Charlas — revisión de charlas, hallazgos e informes.',
+        color: { border: '#9a7ab8', bg: '#f5f0fa', text: '#5a4080' }
+      }
+    ]
   },
   {
     archivo: 'joyasmercury/index.html?v=secciones3',

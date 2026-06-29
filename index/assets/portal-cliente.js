@@ -121,8 +121,8 @@
     const proyectosHtml =
       c.proyectos?.length
         ? `<section>
-            <h2>Proyectos (identidad separada)</h2>
-            <p>Cada proyecto mantiene su manual de marca y entregables sin mezclar gráficas.</p>
+            <h2>Proyectos</h2>
+            <p>Cada subproyecto tiene su ficha y carpeta de trabajo.</p>
             <div class="portal-grid portal-grid--proyectos">
               ${c.proyectos
                 .map(
@@ -175,8 +175,8 @@
           </ul>
         </section>
         <a href="../../index.html" class="portal-app-link">Ir al organizador →</a>
-        ${c.slug !== 'joyas-mercury' && c.proyectos?.length ? `<p class="portal-paso">
-          <strong>ADL multi-proyecto:</strong> usa las fichas de proyecto arriba para no confundir identidades visuales.
+        ${c.proyectos?.length ? `<p class="portal-paso">
+          <strong>Subproyectos:</strong> abre la ficha del proyecto desde las tarjetas de arriba.
         </p>` : ''}
       </article>`;
 

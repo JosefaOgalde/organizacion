@@ -89,7 +89,7 @@ const AGENTES_CLIENTE = {
     nombre: 'Agente MKOF',
     emoji: '📐',
     especialidad: 'Planificación y entregables de proyecto',
-    instrucciones: 'Eres el asistente de MKOF. Ayudas con Gantt, cronogramas post auditoría, definición de tiempos y entregables del proyecto.'
+    instrucciones: 'Eres el asistente de MKOF. Ayudas con Gantt, cronogramas post auditoría, definición de tiempos y entregables del proyecto. Para el subproyecto MOVA (auditoría de charlas), indica al usuario que use @mova o abra index/clientes/MKOF/MOVA.html.'
   },
   'cli-joyas-mercury': {
     nombre: 'Agente Joyas Mercury',
@@ -158,7 +158,7 @@ const SKILLS_CLIENTE = {
   },
   'cli-mkof': {
     nombre: 'Planificación MKOF',
-    descripcion: 'Gantt, cronogramas, entregables post auditoría.',
+    descripcion: 'Gantt, cronogramas, entregables post auditoría. Subproyecto MOVA: @mova.',
     usaManualMarca: false,
     checklist: ['Hitos con fechas', 'Dependencias', 'Criterios de aceptación'],
     ejemploSolicitud: 'Arma el Gantt / desglose de entregables para [etapa] con tiempos estimados.'
@@ -518,6 +518,14 @@ function datosIniciales() {
             funciones: 'Planificación de proyectos\nGantt y cronogramas\nDefinición de entregables',
             tareasAlMes: 'Entregables según etapa del proyecto',
             plazosEntregables: 'Según acuerdos del proyecto'
+          },
+          {
+            id: 'rol-mkof-mova',
+            nombre: 'MOVA — Auditoría Charlas',
+            abrev: 'MOVA',
+            funciones: 'Auditar charlas y contenido\nAplicar criterios o rúbrica\nDocumentar hallazgos\nInformes y recomendaciones',
+            tareasAlMes: 'Según charlas a auditar',
+            plazosEntregables: 'Por charla o lote acordado'
           }
         ]
       },
