@@ -451,6 +451,58 @@ function jmHtmlLandingsCarrusel() {
   });
 }
 
+if (!window.JM_LANDINGS_CARRUSEL_MOBILE || !window.JM_LANDINGS_CARRUSEL_MOBILE.length) {
+  window.JM_LANDINGS_CARRUSEL_MOBILE = [
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '01-inicio-referencia-mobile.png', titulo: 'Inicio' },
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '02-esencial-referencia-mobile.png', titulo: 'Esencial' },
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '03-gold-referencia-mobile.png', titulo: 'Gold' },
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '04-deluxe-referencia-mobile.png', titulo: 'Deluxe' },
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '05-carrito-referencia-mobile.png', titulo: 'Carrito' },
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '06-ayuda-referencia-mobile.png', titulo: 'Ayuda' },
+    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '07-productos-referencia-mobile.png', titulo: 'Productos' }
+  ];
+}
+
+window.jmActualizarLandingsCarruselMobile = function jmActualizarLandingsCarruselMobile() {
+  const base = window.jmAssetBase || '/index/clientes/joyasmercury/';
+  const dirUrl = base + 'interfaces/referencia-landings-mobile/?t=' + Date.now();
+  return fetch(dirUrl, { cache: 'no-store' })
+    .then((res) => (res.ok ? res.text() : ''))
+    .then((html) => {
+      if (!html || !/\.png/i.test(html)) return false;
+      const pngs = [...new Set(
+        [...html.matchAll(/href="([^"?]+\.png)"/gi)]
+          .map((m) => decodeURIComponent(m[1].split('/').pop() || ''))
+          .filter((name) => name && !name.includes('..'))
+      )].sort();
+      if (!pngs.length) return false;
+      window.JM_LANDINGS_CARRUSEL_MOBILE = pngs.map((archivo) => ({
+        carpeta: 'interfaces/referencia-landings-mobile',
+        archivo,
+        titulo: jmTituloLandingArchivo(archivo)
+      }));
+      return true;
+    })
+    .catch(() => false)
+    .then((ok) => ok || !!(window.JM_LANDINGS_CARRUSEL_MOBILE && window.JM_LANDINGS_CARRUSEL_MOBILE.length));
+};
+
+window.jmLandingsCarruselMobileReady = window.jmActualizarLandingsCarruselMobile();
+
+function jmHtmlLandingsCarruselMobile() {
+  const mobile = window.JM_LANDINGS_CARRUSEL_MOBILE || [];
+  if (!mobile.length) {
+    return '<p class="jm-wireframes-vacio">Sin capturas mobile en <code>interfaces/referencia-landings-mobile/</code>.</p>';
+  }
+  return jmHtmlLandingsCarruselBlock(mobile, {
+    titulo: 'Wireframes · Mobile',
+    ariaLabel: 'Wireframes mobile Joyas Mercury',
+    grupo: 'landings-mobile',
+    claseExtra: 'jm-interfaces--landings-ref-mobile',
+    introExtra: '7 pantallas · vista mobile 390px.',
+  });
+}
+
 /** HTML carrusel interfaces (auditoría + estado actual) con miniaturas — legacy */
 function jmHtmlInterfacesCarrusel(wf) {
   const items = (wf || []).filter(w => w.carpeta === 'interfaces');
@@ -824,6 +876,33 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
     ${atajos}
     ${cuerpo}
   </section>`;
+};
+
+/** Galería HTML wireframes JM — mobile referencia */
+window.jmHtmlWireframesMobile = function jmHtmlWireframesMobile(opts) {
+  const claseExtra = (opts && opts.claseExtra) || '';
+  const cuerpo = jmHtmlLandingsCarruselMobile();
+  return `<section class="ficha-seccion ficha-seccion--wireframes ${claseExtra}" data-jm-seccion="wireframes-mobile">
+    <div class="ficha-seccion__headline">
+      <h3 class="ficha-seccion__titulo">Wireframes · Mobile</h3>
+      <span class="ficha-seccion__estado">390px · Fase 2</span>
+    </div>
+    <p class="ficha-wireframes__intro">7 pantallas de referencia en mobile: Inicio, Esencial, Gold, Deluxe, Carrito, Ayuda y Productos.</p>
+    <p class="ficha-wireframes__atajos"><a href="wireframes-mobile.html">Wireframes mobile pantalla completa</a></p>
+    ${cuerpo}
+  </section>`;
+};
+
+/** Menú desplegable Wireframe (desktop / mobile) */
+window.jmHtmlWireframeMenu = function jmHtmlWireframeMenu(active) {
+  const act = String(active || '').toLowerCase();
+  return `<details class="jm-dropdown jm-wireframe-menu"${act ? ` data-jm-wireframe-active="${jmEscapeHtml(act)}"` : ''}>
+    <summary class="jm-btn jm-btn--ghost jm-dropdown__toggle">Wireframe <span class="jm-dropdown__caret" aria-hidden="true">▾</span></summary>
+    <div class="jm-dropdown__menu" role="menu">
+      <a href="wireframes.html" class="jm-dropdown__item${act === 'desktop' ? ' jm-dropdown__item--activo' : ''}" role="menuitem">desktop</a>
+      <a href="wireframes-mobile.html" class="jm-dropdown__item${act === 'mobile' ? ' jm-dropdown__item--activo' : ''}" role="menuitem">mobile</a>
+    </div>
+  </details>`;
 };
 /** Inicializa carrusel interfaces (miniaturas + visor) */
 window.initJMInterfacesUI = function initJMInterfacesUI(root) {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wireframes desktop · Joyas Mercury</title>
+  <title>Wireframes mobile · Joyas Mercury</title>
   <link rel="stylesheet" href="../../../styles.css">
   <link rel="stylesheet" href="../../assets/jm-landing.css">
   <style>
@@ -18,7 +18,7 @@
     }
     header h1 { margin: 0 0 0.35rem; color: #9a5a6e; font-size: 1.45rem; }
     header p { margin: 0; color: #666; }
-    header nav { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    header nav { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
     header nav a {
       padding: 0.45rem 0.85rem;
       background: #9a5a6e;
@@ -39,8 +39,8 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>Joyas Mercury · wireframes desktop</h1>
-      <p>7 pantallas de referencia · flechas o miniaturas para navegar.</p>
+      <h1>Joyas Mercury · wireframes mobile</h1>
+      <p>7 pantallas de referencia · 390px · flechas o miniaturas para navegar.</p>
       <nav>
         <a href="./">← Landing JM</a>
         <span id="wireframe-menu-root"></span>
@@ -49,20 +49,19 @@
     </header>
     <div id="galeria-root"></div>
   </div>
-  <script src="interfaces/referencia-landings/carrusel.manifest.js?v=7"></script>
   <script src="../../../data/jm-backup-contenido.js?v=wireframe1"></script>
   <script src="../../assets/cliente-landing-imagenes.js?v=wireframe1"></script>
   <script>
     (function () {
       const menuRoot = document.getElementById('wireframe-menu-root');
       if (menuRoot && typeof window.jmHtmlWireframeMenu === 'function') {
-        menuRoot.innerHTML = window.jmHtmlWireframeMenu('desktop');
+        menuRoot.innerHTML = window.jmHtmlWireframeMenu('mobile');
       }
       const root = document.getElementById('galeria-root');
-      if (!root || typeof window.jmHtmlWireframes !== 'function') return;
-      const ready = window.jmLandingsCarruselReady;
+      if (!root || typeof window.jmHtmlWireframesMobile !== 'function') return;
+      const ready = window.jmLandingsCarruselMobileReady;
       const boot = () => {
-        root.innerHTML = window.jmHtmlWireframes();
+        root.innerHTML = window.jmHtmlWireframesMobile();
         if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
       };
       if (ready && typeof ready.then === 'function') ready.finally(boot);

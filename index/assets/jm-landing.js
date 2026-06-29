@@ -441,6 +441,11 @@
     });
   }
 
+  function wireframeMenuHtml() {
+    if (typeof window.jmHtmlWireframeMenu === 'function') return window.jmHtmlWireframeMenu('');
+    return '<a href="wireframes.html" class="jm-btn jm-btn--ghost">Wireframe</a>';
+  }
+
   function render() {
     const cli = cargarDatos();
     const wireframes = wireframesEmbebidosHtml();
@@ -451,7 +456,7 @@
           <a href="../" class="jm-btn jm-btn--ghost">← Volver</a>
           <span class="jm-ficha-top__tipo">Freelance · JM</span>
           <div class="jm-landing__toolbar">
-            <a href="wireframes.html" class="jm-btn jm-btn--ghost">Wireframes desktop</a>
+            ${wireframeMenuHtml()}
             <a href="../../../" class="jm-btn jm-btn--celeste" title="Ir al calendario mensual">Organizador</a>
             <button type="button" class="jm-btn${modoEdicion ? ' jm-btn--active' : ''}" id="jm-btn-editar">
               ${modoEdicion ? 'Guardar datos' : 'Editar datos'}
