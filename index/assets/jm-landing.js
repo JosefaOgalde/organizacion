@@ -304,8 +304,8 @@
 
   function toolbarSeccionHtml(id) {
     return `<div class="jm-seccion__acciones" role="group" aria-label="Acciones de sección">
-      <button type="button" class="jm-btn jm-btn--ghost jm-btn--sm" data-jm-seccion-editar="${escapeHtml(id)}">Editar</button>
-      <button type="button" class="jm-btn jm-btn--ghost jm-btn--sm jm-btn--danger" data-jm-seccion-eliminar="${escapeHtml(id)}">Eliminar</button>
+      <button type="button" class="jm-btn jm-btn--seccion jm-btn--sm" data-jm-seccion-editar="${escapeHtml(id)}">Editar</button>
+      <button type="button" class="jm-btn jm-btn--seccion jm-btn--sm jm-btn--seccion-danger" data-jm-seccion-eliminar="${escapeHtml(id)}">Eliminar</button>
     </div>`;
   }
 

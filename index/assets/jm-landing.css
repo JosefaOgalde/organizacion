@@ -633,6 +633,8 @@
   box-shadow: none;
   border-top: 1px solid #eee;
 }
+
+.jm-landing {
   --jm-border: #e8b8c8;
   --jm-bg: #fdf0f4;
   --jm-text: #9a5a6e;
@@ -762,8 +764,33 @@
 .jm-seccion__acciones {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.4rem;
   margin-left: auto;
+  flex-shrink: 0;
+}
+
+.jm-btn--seccion {
+  background: #fff;
+  border: 1px solid var(--jm-border, #e8b8c8);
+  color: var(--jm-text, #9a5a6e);
+  box-shadow: 0 1px 2px rgba(154, 90, 110, 0.1);
+}
+
+.jm-btn--seccion:hover {
+  background: var(--jm-bg, #fdf0f4);
+}
+
+.jm-btn--seccion-danger {
+  color: #922;
+  border-color: #e0a0a0;
+  background: #fff5f5;
+}
+
+.jm-btn--seccion-danger:hover {
+  background: #ffe8e8;
+  border-color: #c55;
+  color: #711;
 }
 
 .jm-btn--sm {
