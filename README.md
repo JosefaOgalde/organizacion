@@ -10,7 +10,9 @@ Abre `index.html` en el navegador. Los datos se guardan en `localStorage` del na
 
 **Modo manual (desde jun 2026):** el calendario inicia **sin tareas**. Creas encargos con **+ Nueva** cuando avanzas con cada cliente. Las tareas automáticas (JM, PISC, etc.) están desactivadas salvo que actives `meta.autoGenerarTareas` en el respaldo.
 
-**Pestaña Agentes:** visualiza ramas Git `cursor/…` por agente (`@joyas-mercury`, `@adl-cla`, …). Datos en `data/agentes-ramas.json`.
+**Pestaña Agentes:** visualiza ramas Git `cursor/…` por agente (`@joyas-mercury`, `@adl-cla`, `@mova`, …). Datos en `data/agentes-ramas.json`.
+
+**Mova (auditoría charlas):** [`index/clientes/Mova.html`](index/clientes/Mova.html) · proyecto en [`index/clientes/mova/auditoria-charlas/`](index/clientes/mova/auditoria-charlas/) · agente `@mova` · atajo [`ABRIR-MOVA.bat`](ABRIR-MOVA.bat)
 
 Para vaciar tareas en el navegador: pestaña **Agentes → Vaciar calendario**, o abre `?vaciar-tareas=1`. Al actualizar el repo (respaldo v6) el calendario se vacía solo una vez.
 

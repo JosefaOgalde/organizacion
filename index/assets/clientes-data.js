@@ -96,5 +96,25 @@ window.CLIENTES_PORTAL = [
         color: { border: '#1a6b4a', bg: '#edf7f2', text: '#1a5c40' }
       }
     ]
+  },
+  {
+    archivo: 'Mova.html',
+    id: 'cli-mova',
+    slug: 'mova',
+    nombre: 'Mova',
+    abrev: 'MOVA',
+    tipo: 'Freelance',
+    color: { border: '#b8a8e0', bg: '#f2eef8', text: '#5a4080' },
+    agente: 'Auditoría de charlas',
+    resumen: 'Auditoría de charlas — revisión de contenido, hallazgos e informes.',
+    proyectos: [
+      {
+        codigo: 'AUD',
+        nombre: 'Auditoría Charlas',
+        archivo: 'mova/index.html',
+        resumen: 'Proyecto MOVA-Auditoria-Charlas — código, criterios y entregables.',
+        color: { border: '#9a7ab8', bg: '#f5f0fa', text: '#5a4080' }
+      }
+    ]
   }
 ];

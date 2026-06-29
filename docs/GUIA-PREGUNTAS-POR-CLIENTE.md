@@ -37,6 +37,7 @@ flowchart TB
 | **ECR** | `index/clientes/ECR.html` | «Necesito copy newsletter ECR…» |
 | **Joyas Mercury** | `index/clientes/joyasmercury/` | «JM tarea 01: menú WooCommerce…» |
 | **Desafío Latam** | `index/clientes/Desafio-Latam.html` | «Encargo ADL: …» (elige **proyecto** abajo) |
+| **Mova** | `index/clientes/Mova.html` | «MOVA: auditar charla [título]…» |
 | **ADL → CLA** | `index/clientes/DesafioLatam/CLA.html` | «Proyecto CLA Caja Los Andes: certificados…» |
 
 ---
@@ -112,3 +113,9 @@ Ajusta colores según manual-marca-caja-los-andes.pdf
 Invocación rápida: **`docs/cursor/INVOCAR-AGENTE-ADL.md`**
 
 En Chat (**Ctrl+L**): escribe **`@adl-cla`** y tu pregunta. La regla vive en `.cursor/rules/adl-cla.mdc`.
+
+## Agente Cursor dedicado (Mova)
+
+Invocación rápida: **`docs/cursor/INVOCAR-AGENTE-MOVA.md`**
+
+En Chat (**Ctrl+L**): escribe **`@mova`** y tu pregunta. La regla vive en `.cursor/rules/mova.mdc`.

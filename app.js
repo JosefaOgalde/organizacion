@@ -15,6 +15,7 @@ const COLORES = {
   agua: { border: '#a8d8dc', bg: '#e8f6f8', text: '#4a7a80' },
   rosa: { border: '#e8b8c8', bg: '#fdf0f4', text: '#9a5a6e' },
   grafito: { border: '#b8c0c8', bg: '#eef0f4', text: '#5a6a7a' },
+  violeta: { border: '#b8a8e0', bg: '#f2eef8', text: '#5a4080' },
   /** Salud — verde más definido, aún claro pero distinto de clientes menta/celeste */
   salud: { border: '#2f9d72', bg: '#c5e8d8', text: '#1a5c42' },
   /** Reuniones — azul pizarra, no usa el color del cliente */
@@ -108,6 +109,12 @@ const AGENTES_CLIENTE = {
     emoji: '🎨',
     especialidad: 'Diseño freelance',
     instrucciones: 'Eres el asistente de Desafío Latam. Ayudas con diseño freelance: piezas gráficas, presentaciones, identidad visual, banners, materiales para redes y entregables visuales según cada encargo esporádico.'
+  },
+  'cli-mova': {
+    nombre: 'Agente Mova',
+    emoji: '🎤',
+    especialidad: 'Auditoría de charlas y contenido',
+    instrucciones: 'Eres el asistente del proyecto MOVA — Auditoría Charlas. Ayudas a auditar charlas, revisar contenido y calidad, aplicar criterios o rúbricas, documentar hallazgos, redactar informes y preparar entregables. El código vive en index/clientes/mova/auditoria-charlas/ o MOVA-Auditoria-Charlas/.'
   }
 };
 
@@ -183,6 +190,13 @@ const SKILLS_CLIENTE = {
     usaManualMarca: true,
     checklist: ['Manual de marca cargado', 'Brief y formatos de entrega', 'Colores y tipografías oficiales', 'Márgenes de logo'],
     ejemploSolicitud: 'Diseña [pieza: banner / presentación / key visual] para [campaña]. Formato: [dimensiones]. Mensaje: …'
+  },
+  'cli-mova': {
+    nombre: 'Auditoría Charlas MOVA',
+    descripcion: 'Revisión de charlas, criterios de auditoría, hallazgos e informes.',
+    usaManualMarca: false,
+    checklist: ['Charla o material a auditar', 'Criterios / rúbrica definidos', 'Hallazgos documentados', 'Informe o entregable final'],
+    ejemploSolicitud: 'Audita la charla [título] según [criterios]. Entregable: informe con hallazgos y recomendaciones.'
   }
 };
 
@@ -292,7 +306,8 @@ const PERFILES_CLIENTE = {
   'cli-hotspring': { nombre: 'Hotspring - Talk (full time)', tipo: 'full-time' },
   'cli-mkof': { nombre: 'MKOF - Talk (full time)', tipo: 'full-time' },
   'cli-sie': { tipo: 'oportunidad' },
-  'cli-desafio-latam': { abrev: 'ADL' }
+  'cli-desafio-latam': { abrev: 'ADL' },
+  'cli-mova': { nombre: 'Mova', tipo: 'freelance', abrev: 'MOVA' }
 };
 let datos = null;
 
@@ -416,6 +431,7 @@ function datosIniciales() {
   const cliJM = 'cli-joyas-mercury';
   const cliSIE = 'cli-sie';
   const cliDLAT = 'cli-desafio-latam';
+  const cliMOVA = 'cli-mova';
   const hoyStr = toISO(hoy());
 
   return {
@@ -569,6 +585,23 @@ function datosIniciales() {
             funciones: 'Piezas gráficas y visuales\nPresentaciones y materiales\nBanners y piezas para redes\nEncargos esporádicos según proyecto',
             tareasAlMes: 'Según encargos del momento',
             plazosEntregables: 'Agregar cada tarea en + Nueva tarea cuando llegue un encargo'
+          }
+        ]
+      },
+      {
+        id: cliMOVA,
+        nombre: 'Mova',
+        abrev: 'MOVA',
+        tipo: 'freelance',
+        color: 'violeta',
+        roles: [
+          {
+            id: 'rol-mova-aud',
+            nombre: 'Auditoría Charlas',
+            abrev: 'AUD',
+            funciones: 'Auditar charlas y contenido\nAplicar criterios o rúbrica\nDocumentar hallazgos\nInformes y recomendaciones',
+            tareasAlMes: 'Según charlas a auditar',
+            plazosEntregables: 'Por charla o lote acordado'
           }
         ]
       }

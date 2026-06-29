@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-06-27",
+  "actualizado": "2026-06-29",
   "repo": "https://github.com/JosefaOgalde/organizacion",
   "agentes": [
     {
@@ -38,6 +38,23 @@
           "nombre": "cursor/cla-redes-1080-d6a1",
           "titulo": "Piezas redes 1080×1080 + textos diplomas",
           "pr": 5,
+          "estado": "activa"
+        }
+      ]
+    },
+    {
+      "id": "mova",
+      "invocar": "@mova",
+      "clienteId": "cli-mova",
+      "cliente": "Mova · Auditoría Charlas",
+      "abrev": "MOVA",
+      "descripcion": "Auditoría de charlas — hallazgos e informes",
+      "portal": "index/clientes/Mova.html",
+      "ramas": [
+        {
+          "nombre": "cursor/mova-cliente-portal-agente-7749",
+          "titulo": "Alta portal + agente @mova + carpeta proyecto",
+          "pr": null,
           "estado": "activa"
         }
       ]
