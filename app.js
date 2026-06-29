@@ -4553,7 +4553,7 @@ function urlPortalCliente(cliId) {
     const e = CLIENTES_PORTAL.find(x => x.id === cliId);
     if (e?.archivo) return `index/clientes/${e.archivo}`;
   }
-  if (cliId === JM_CLI_ID) return 'index/clientes/joyasmercury/index.html?v=landing8';
+  if (cliId === JM_CLI_ID) return 'index/clientes/joyasmercury/index.html?v=secciones3';
   return null;
 }
 

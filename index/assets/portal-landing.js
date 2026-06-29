@@ -21,7 +21,7 @@
   }
 
   function landingJoyasMercury() {
-    return 'joyasmercury/index.html?v=landing8';
+    return 'joyasmercury/index.html?v=secciones3';
   }
 
   function archivoDe(c) {

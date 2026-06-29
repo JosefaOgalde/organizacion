@@ -844,8 +844,8 @@
   function urlLandingCliente(cliId) {
     if (cliId === 'cli-joyas-mercury') {
       const p = (location.pathname || '').replace(/\\/g, '/');
-      if (/\/index\/clientes\//i.test(p)) return 'joyasmercury/index.html?v=landing8';
-      return 'index/clientes/joyasmercury/index.html?v=landing8';
+      if (/\/index\/clientes\//i.test(p)) return 'joyasmercury/index.html?v=secciones3';
+      return 'index/clientes/joyasmercury/index.html?v=secciones3';
     }
     if (typeof window.CLIENTES_PORTAL !== 'undefined') {
       const e = window.CLIENTES_PORTAL.find((x) => x.id === cliId);

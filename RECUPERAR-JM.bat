@@ -2,30 +2,35 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 echo.
-echo  Recuperar landing Joyas Mercury (descarta cambios locales en index.html)
+echo  === Recuperar Joyas Mercury (forzar codigo de GitHub) ===
 echo.
 
-git stash push -u -m "backup antes de recuperar JM" 2>nul
-git checkout main
+where git >nul 2>&1
 if errorlevel 1 (
-  echo Error al cambiar a main. Revisa git status.
+  echo Git no esta en el PATH.
   pause
   exit /b 1
 )
 
-git checkout -- index/clientes/joyasmercury/index.html 2>nul
-git checkout -- index/clientes/JoyasMercury/index.html 2>nul
-git pull origin main
+echo Guardando copia en stash por si acaso...
+git stash push -u -m "backup RECUPERAR-JM" 2>nul
+
+echo Descargando ultima version...
+git fetch origin
 if errorlevel 1 (
-  echo.
-  echo  Si sigue fallando, ejecuta: git reset --hard origin/main
+  echo Error en git fetch. Revisa internet.
   pause
   exit /b 1
 )
 
+echo Cambiando a main y descartando cambios locales...
+git checkout -f main
+git reset --hard origin/main
+
 echo.
-echo  Listo. Ejecuta SERVIR.bat y abre:
-echo  http://localhost:3000/index/clientes/joyasmercury/index.html?v=secciones3
-echo  Recarga con Ctrl+Shift+R
+echo  === LISTO ===
+echo  1. Ejecuta SERVIR.bat
+echo  2. Abre: http://localhost:3000/index/clientes/joyasmercury/index.html?v=secciones3
+echo  3. Recarga con Ctrl+Shift+R
 echo.
 pause

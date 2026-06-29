@@ -45,6 +45,13 @@ function safePath(urlPath) {
   return abs;
 }
 
+function redirectJoyasMercury(res, urlPath) {
+  const q = urlPath.includes('?') ? urlPath.slice(urlPath.indexOf('?')) : '';
+  const target = `/index/clientes/joyasmercury/index.html${q || '?v=secciones3'}`;
+  res.writeHead(302, { Location: target, 'Cache-Control': 'no-store' });
+  res.end();
+}
+
 function readBody(req) {
   return new Promise((resolve, reject) => {
     const chunks = [];
@@ -88,6 +95,11 @@ const server = http.createServer((req, res) => {
 
   if (url.startsWith('/api/organizacion')) {
     return handleApiOrganizacion(req, res);
+  }
+
+  const urlPath = url.split('?')[0];
+  if (/\/index\/clientes\/JoyasMercury\/?$/i.test(urlPath)) {
+    return redirectJoyasMercury(res, url);
   }
 
   const filePath = safePath(url);
