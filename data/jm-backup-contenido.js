@@ -742,9 +742,11 @@ function jmHtmlLandingsCarruselBlock(items, opts) {
 
   const primera = items[0];
   const visorSrc = jmLandingCarruselSrc(primera);
-  const wireframeLink = o.wireframeReadme
-    ? `<p class="jm-interfaces__wireframe-link"><a href="${jmEscapeHtml(o.wireframeReadme)}" target="_blank" rel="noopener">Abrir wireframes interactivos →</a></p>`
-    : '';
+  const wireframeLink = o.wireframeLink
+    ? o.wireframeLink
+    : (o.wireframeReadme
+      ? `<p class="jm-interfaces__wireframe-link"><a href="${jmEscapeHtml(o.wireframeReadme)}" target="_blank" rel="noopener">${jmEscapeHtml(o.wireframeLinkText || 'Abrir wireframes interactivos →')}</a></p>`
+      : '');
 
   return `<div class="jm-interfaces jm-interfaces--landings-ref ${claseExtra}" data-jm-interfaces tabindex="0" aria-label="${jmEscapeHtml(o.ariaLabel || o.titulo || 'Landings referencia')}">
     <div class="jm-interfaces__head">
@@ -815,76 +817,37 @@ function jmHtmlLandingsCarrusel() {
 }
 
 function jmHtmlLandingsCarruselMobile() {
-  return '';
+  const mobileList = window.JM_LANDINGS_CARRUSEL_MOBILE || [];
+  return jmHtmlLandingsCarruselBlock(mobileList, {
+    titulo: 'Landings referencia · Móvil',
+    ariaLabel: 'Landings referencia móvil 390px',
+    grupo: 'landings-mobile',
+    claseExtra: 'jm-interfaces--landings-ref-mobile',
+    introExtra: 'Diagramación <strong>390px</strong>.',
+  });
 }
 
-/** Carrusel unificado con pestañas Desktop / Móvil (misma pantalla, dos vistas) */
+/** Desktop arriba · móvil abajo (dos carruseles independientes) */
 function jmHtmlLandingsCarruselUnificado() {
   const desktop = window.JM_LANDINGS_CARRUSEL || [];
   const mobileList = window.JM_LANDINGS_CARRUSEL_MOBILE || [];
   if (!desktop.length) return '';
 
-  const mobileByTitulo = {};
-  mobileList.forEach((m) => { mobileByTitulo[m.titulo] = m; });
-
-  const ordenTitulos = desktop.map((w) => w.titulo).join(' → ');
-  const cards = desktop.map((w, i) => {
-    const m = mobileByTitulo[w.titulo] || mobileList[i];
-    const srcD = jmLandingCarruselSrc(w);
-    const srcM = m ? jmLandingCarruselSrc(m) : '';
-    const activa = i === 0 ? ' jm-interfaces__card--activa' : '';
-    const keyD = jmImgKeyDePath(w.carpeta, w.archivo);
-    const keyM = m ? jmImgKeyDePath(m.carpeta, m.archivo) : '';
-    return `<figure class="jm-interfaces__card${activa}" data-jm-int-index="${i}"
-      data-jm-int-src="${jmEscapeHtml(srcD)}" data-jm-int-src-desktop="${jmEscapeHtml(srcD)}"
-      data-jm-int-src-mobile="${jmEscapeHtml(srcM)}"
-      data-jm-int-img-key-desktop="${jmEscapeHtml(keyD)}"
-      data-jm-int-img-key-mobile="${jmEscapeHtml(keyM)}"
-      data-jm-int-titulo="${jmEscapeHtml(w.titulo)}" data-jm-int-grupo="landings">
-      <button type="button" class="jm-interfaces__card-btn" title="${jmEscapeHtml(w.titulo)}">
-        <img src="${srcD}" alt="${jmEscapeHtml(w.titulo)}"${jmImgAttrs(w.carpeta, w.archivo, srcD)} loading="${i === 0 ? 'eager' : 'lazy'}">
-      </button>
-      <figcaption>${jmEscapeHtml(w.titulo)}<span class="jm-interfaces__archivo jm-solo-edicion">${jmEscapeHtml(w.archivo)}</span></figcaption>
-    </figure>`;
-  }).join('');
-
-  const primera = desktop[0];
-  const visorSrc = jmLandingCarruselSrc(primera);
   const wireInicio = (window.jmAssetBase || '') + 'interfaces/mockups-inicio/wireframe-inicio.html';
 
-  return `<div class="jm-interfaces jm-interfaces--landings-ref jm-interfaces--landings-paired" data-jm-interfaces data-jm-landings-paired data-jm-viewport="desktop" tabindex="0" aria-label="Landings referencia desktop y móvil">
-    <div class="jm-interfaces__head">
-      <h4 class="jm-interfaces__titulo-seccion">Landings referencia</h4>
-      <p class="jm-interfaces__intro">${desktop.length} pantallas · orden: <strong>${jmEscapeHtml(ordenTitulos)}</strong> · usa las pestañas para cambiar vista.</p>
-      <div class="jm-interfaces__viewport-tabs" role="tablist" aria-label="Vista desktop o móvil">
-        <button type="button" class="jm-interfaces__viewport-tab is-active" data-jm-viewport-tab="desktop" role="tab" aria-selected="true">Desktop</button>
-        <button type="button" class="jm-interfaces__viewport-tab" data-jm-viewport-tab="mobile" role="tab" aria-selected="false">Móvil · 390px</button>
-      </div>
-      <p class="jm-interfaces__wireframe-link"><a href="${jmEscapeHtml(wireInicio)}" target="_blank" rel="noopener">Abrir Inicio interactivo (wireframe) →</a></p>
-      <p class="jm-interfaces__hint-reemplazo jm-solo-vista">Reemplaza capturas con <button type="button" class="jm-interfaces__link-editar" data-jm-activar-edicion-imagenes>Editar datos</button>.</p>
-      <p class="jm-interfaces__hint-reemplazo jm-interfaces__hint-reemplazo--activo jm-solo-edicion">Imagen activa: <strong>Cambiar imagen</strong> en el recuadro de abajo.</p>
-    </div>
-    <div class="jm-interfaces__visor" data-jm-int-visor>
-      <a href="${jmEscapeHtml(visorSrc)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Abrir en tamaño completo">
-        <img class="jm-interfaces__visor-img" src="${jmEscapeHtml(visorSrc)}" alt="${jmEscapeHtml(primera.titulo)}"${jmImgAttrs(primera.carpeta, primera.archivo, visorSrc)} data-jm-int-visor-img>
-      </a>
-      <div class="jm-interfaces__visor-pie">
-        <div class="jm-interfaces__visor-meta">
-          <strong class="jm-interfaces__visor-caption" data-jm-int-visor-caption>${jmEscapeHtml(primera.titulo)}</strong>
-          <span class="jm-interfaces__visor-vista" data-jm-visor-vista-label>Desktop</span>
-        </div>
-        <div class="jm-interfaces__visor-nav">
-          <button type="button" class="jm-interfaces__flecha" data-jm-int-prev aria-label="Imagen anterior">‹</button>
-          <span class="jm-interfaces__contador" data-jm-int-contador>1 / ${desktop.length}</span>
-          <button type="button" class="jm-interfaces__flecha" data-jm-int-next aria-label="Imagen siguiente">›</button>
-        </div>
-      </div>
-      <div class="jm-interfaces__visor-edit jm-solo-edicion" data-jm-int-visor-edit aria-live="polite">
-        <p class="jm-interfaces__visor-edit-label">Reemplazar esta captura</p>
-      </div>
-    </div>
-    <div class="jm-interfaces__grid" data-jm-int-grid>${cards}</div>
-  </div>`;
+  const desktopBlock = jmHtmlLandingsCarruselBlock(desktop, {
+    titulo: 'Landings referencia · Desktop',
+    ariaLabel: 'Landings referencia desktop',
+    grupo: 'landings-desktop',
+    claseExtra: 'jm-interfaces--landings-ref-desktop',
+    wireframeReadme: wireInicio,
+    wireframeLinkText: 'Abrir Inicio interactivo (wireframe) →',
+    introExtra: 'Vista desktop.',
+  });
+
+  const mobileBlock = mobileList.length ? jmHtmlLandingsCarruselMobile() : '';
+
+  return desktopBlock + mobileBlock;
 }
 
 /** HTML carrusel interfaces (auditoría + estado actual) con miniaturas — legacy */
@@ -1466,56 +1429,19 @@ window.initJMInterfacesUI = function initJMInterfacesUI(root) {
     const visorGrupo = sec.querySelector('[data-jm-int-visor-grupo]');
     const visorLink = sec.querySelector('.jm-interfaces__visor-link');
     const contadorEl = sec.querySelector('[data-jm-int-contador]');
-    const vistaLabelEl = sec.querySelector('[data-jm-visor-vista-label]');
     const cards = [...sec.querySelectorAll('.jm-interfaces__card')];
-    const paired = sec.hasAttribute('data-jm-landings-paired');
     let filtro = 'all';
-
-    function viewportActual() {
-      return sec.dataset.jmViewport || 'desktop';
-    }
-
-    function srcDeCard(card) {
-      if (!card) return '';
-      const vp = viewportActual();
-      if (vp === 'mobile' && card.dataset.jmIntSrcMobile) return card.dataset.jmIntSrcMobile;
-      return card.dataset.jmIntSrcDesktop || card.dataset.jmIntSrc || '';
-    }
-
-    function aplicarViewportUI(vp) {
-      sec.dataset.jmViewport = vp;
-      sec.classList.toggle('jm-interfaces--viewport-mobile', vp === 'mobile');
-      sec.querySelectorAll('[data-jm-viewport-tab]').forEach((btn) => {
-        const on = btn.dataset.jmViewportTab === vp;
-        btn.classList.toggle('is-active', on);
-        btn.setAttribute('aria-selected', on ? 'true' : 'false');
-      });
-      if (vistaLabelEl) vistaLabelEl.textContent = vp === 'mobile' ? 'Móvil' : 'Desktop';
-      cards.forEach((card) => {
-        const thumb = card.querySelector('img');
-        const src = srcDeCard(card);
-        if (thumb && src) thumb.src = src;
-      });
-      const activa = cards.find((c) => c.classList.contains('jm-interfaces__card--activa'));
-      if (activa) actualizarVisor(activa);
-    }
 
     function actualizarVisor(card) {
       if (!card) return;
       const img = card.querySelector('img[data-jm-img-key]');
-      const vp = viewportActual();
-      let src = srcDeCard(card);
+      const src = card.dataset.jmIntSrc || '';
       const titulo = card.dataset.jmIntTitulo || '';
       const grupo = card.dataset.jmIntGrupo || '';
       if (visorImg && src) {
         visorImg.src = src;
         visorImg.alt = titulo;
-        const key = vp === 'mobile' ? card.dataset.jmIntImgKeyMobile : card.dataset.jmIntImgKeyDesktop;
-        const def = img?.dataset.jmImgDefault || src;
-        if (key) {
-          visorImg.dataset.jmImgKey = key;
-          visorImg.dataset.jmImgDefault = def;
-        } else if (img?.dataset.jmImgKey) {
+        if (img?.dataset.jmImgKey) {
           visorImg.dataset.jmImgKey = img.dataset.jmImgKey;
           visorImg.dataset.jmImgDefault = img.dataset.jmImgDefault || '';
         }
@@ -1554,18 +1480,6 @@ window.initJMInterfacesUI = function initJMInterfacesUI(root) {
 
     sec.querySelector('[data-jm-int-prev]')?.addEventListener('click', () => ir(-1));
     sec.querySelector('[data-jm-int-next]')?.addEventListener('click', () => ir(1));
-
-    if (paired) {
-      sec.querySelectorAll('[data-jm-viewport-tab]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const vp = btn.dataset.jmViewportTab || 'desktop';
-          if (vp === 'mobile' && !sec.querySelector('[data-jm-int-src-mobile]')?.dataset.jmIntSrcMobile) {
-            return;
-          }
-          aplicarViewportUI(vp);
-        });
-      });
-    }
 
     sec.querySelectorAll('[data-jm-int-filtro]').forEach(btn => {
       btn.addEventListener('click', () => {

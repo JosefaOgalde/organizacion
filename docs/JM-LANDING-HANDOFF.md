@@ -65,7 +65,7 @@ Carpeta: `interfaces/referencia-landings/`
 | 6 | `06-ayuda-referencia.png` | Ayuda |
 | 7 | `07-productos-referencia.png` | Productos |
 
-Sección en landing: **Landings referencia** · pestañas Desktop / Móvil · 390px
+Sección en landing: **Landings referencia · Desktop** (arriba) y **Landings referencia · Móvil** (abajo) · 390px
 
 ### Carrusel Móvil (7 pantallas)
 
@@ -73,7 +73,7 @@ Carpeta: `interfaces/referencia-landings-mobile/`
 
 Mismas 7 pantallas en diagramación **390px** (wireframes responsive existentes).
 
-Sección en landing: misma sección **Landings referencia** (pestaña Móvil)
+Sección en landing: **Landings referencia · Móvil** (debajo del bloque desktop)
 
 | # | Archivo | Wireframe fuente |
 |---|---------|------------------|
