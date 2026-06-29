@@ -43,6 +43,28 @@ body {
   gap: 1rem;
 }
 
+.header__brand {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.header__brand:hover h1,
+.header__brand:focus-visible h1 {
+  color: var(--celeste-light);
+}
+
+.header__brand:focus-visible {
+  outline: 2px solid var(--celeste);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
 .header h1 {
   font-size: 1.75rem;
   font-weight: 600;

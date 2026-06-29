@@ -3329,9 +3329,13 @@ function volverADiaDesdeTarea() {
   }
 }
 
-function volverAMes() {
+function volverAMes(opts = {}) {
   tareaSeleccionada = null;
   diaSeleccionado = null;
+  if (opts.irAHoy) {
+    mesOffset = 0;
+    semanaOffset = 0;
+  }
   limpiarRutaTarea();
   mostrarVista('mes');
   renderCalendarioMes();
@@ -4727,6 +4731,12 @@ function mostrarTipoNueva(tipo) {
 }
 
 function setupUI() {
+  document.getElementById('btn-ir-vista-mes')?.addEventListener('click', () => {
+    volverAMes({ irAHoy: true });
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       if (!tab.dataset.view) return;
