@@ -1,6 +1,6 @@
 # Landings referencia · MÓVIL (390px)
 
-Capturas de referencia **tal cual** del mockup mobile del cliente (7 pantallas). Se usan en el carrusel unificado Desktop / Móvil de la landing.
+Capturas de referencia **tal cual** del mockup mobile del cliente (7 pantallas). Se muestran en la landing bajo **Landings referencia · Móvil** (debajo del bloque desktop).
 
 | Archivo | Pantalla |
 |---------|----------|
