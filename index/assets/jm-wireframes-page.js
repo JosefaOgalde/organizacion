@@ -11,7 +11,7 @@
 
   let datos = null;
   let landing = null;
-  let modoEdicion = false;
+  let modoEdicion = true;
 
   function toast(msg) {
     let el = document.getElementById('jm-wf-toast');
@@ -78,6 +78,9 @@
   }
 
   function carruselHtml() {
+    if (typeof window.jmHtmlLandingsCarruselPagina === 'function') {
+      return window.jmHtmlLandingsCarruselPagina(mode);
+    }
     if (mode === 'mobile') {
       return typeof window.jmHtmlLandingsCarruselMobile === 'function'
         ? window.jmHtmlLandingsCarruselMobile()
@@ -89,9 +92,10 @@
   }
 
   function render(cli) {
+    document.body.classList.add('jm-wf-page');
+    document.body.classList.toggle('jm-wf-edicion', modoEdicion);
     const editClass = modoEdicion ? ' jm-landing--edicion ficha-doc--edicion' : '';
     root.innerHTML = `<div class="jm-landing jm-landing--ficha ficha-doc--jm${editClass}">${carruselHtml()}</div>`;
-    document.body.classList.toggle('jm-wf-edicion', modoEdicion);
     const btn = document.getElementById('jm-wf-btn-editar');
     if (btn) btn.textContent = modoEdicion ? 'Listo' : 'Cambiar imágenes';
     if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
@@ -125,10 +129,27 @@
     });
   }
 
-  function boot() {
+  async function boot() {
+    if (typeof window.fetchOrganizacionLive === 'function') {
+      try {
+        const live = await window.fetchOrganizacionLive();
+        if (live && typeof window.organizacionLiveEsMasReciente === 'function') {
+          const localRaw = localStorage.getItem(STORAGE_KEY);
+          const local = localRaw ? JSON.parse(localRaw) : null;
+          if (window.organizacionLiveEsMasReciente(local, live)) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(live));
+          }
+        }
+      } catch {
+        /* ignore */
+      }
+    }
     const cli = cargarDatos();
     bindToolbar(cli);
     render(cli);
+    if (modoEdicion) {
+      toast('Pulsa «Cambiar imagen» bajo la captura o en la miniatura');
+    }
   }
 
   const ready = mode === 'mobile'

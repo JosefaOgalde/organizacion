@@ -1,3 +1,21 @@
+body.jm-wf-page .jm-solo-edicion,
+body.jm-wf-page.jm-wf-edicion .jm-solo-edicion {
+  display: block !important;
+}
+
+body.jm-wf-page .jm-interfaces__visor-edit {
+  display: block !important;
+}
+
+body.jm-wf-page .jm-img-editable__bar,
+body.jm-wf-page [data-jm-int-visor-edit] .jm-img-editable__bar {
+  display: flex !important;
+}
+
+body.jm-wf-page .jm-interfaces__hint-reemplazo.jm-solo-vista {
+  display: none !important;
+}
+
 body.jm-wf-edicion .jm-solo-edicion { display: block !important; }
 body:not(.jm-wf-edicion) .jm-solo-edicion { display: none !important; }
 

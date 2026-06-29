@@ -414,8 +414,10 @@ function jmHtmlLandingsCarruselBlock(items, opts) {
       <h4 class="jm-interfaces__titulo-seccion">${jmEscapeHtml(o.titulo || 'Landings referencia')}</h4>
       <p class="jm-interfaces__intro">${items.length} capturas · orden: <strong>${jmEscapeHtml(ordenTitulos)}</strong> · clic en miniatura o flechas.${o.introExtra ? ' ' + o.introExtra : ''}</p>
       ${wireframeLink}
-      <p class="jm-interfaces__hint-reemplazo jm-solo-vista">Puedes reemplazar cada una por tu diseño actualizado. Pulsa <button type="button" class="jm-interfaces__link-editar" data-jm-activar-edicion-imagenes>Editar datos</button> arriba a la derecha.</p>
-      <p class="jm-interfaces__hint-reemplazo jm-interfaces__hint-reemplazo--activo jm-solo-edicion">Imagen activa: usa <strong>Cambiar imagen</strong> en el recuadro de abajo o en cada miniatura.</p>
+      ${o.paginaWireframes
+    ? '<p class="jm-interfaces__hint-reemplazo">Usa <strong>Cambiar imagen</strong> en el recuadro de abajo o en cada miniatura.</p>'
+    : `<p class="jm-interfaces__hint-reemplazo jm-solo-vista">Puedes reemplazar cada una por tu diseño actualizado. Pulsa <button type="button" class="jm-interfaces__link-editar" data-jm-activar-edicion-imagenes>Editar datos</button> arriba a la derecha.</p>
+      <p class="jm-interfaces__hint-reemplazo jm-interfaces__hint-reemplazo--activo jm-solo-edicion">Imagen activa: usa <strong>Cambiar imagen</strong> en el recuadro de abajo o en cada miniatura.</p>`}
     </div>
     <div class="jm-interfaces__visor" data-jm-int-visor>
       <a href="${jmEscapeHtml(visorSrc)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Abrir en tamaño completo">
@@ -505,6 +507,25 @@ function jmHtmlLandingsCarruselMobile() {
 
 window.jmHtmlLandingsCarrusel = jmHtmlLandingsCarrusel;
 window.jmHtmlLandingsCarruselMobile = jmHtmlLandingsCarruselMobile;
+
+/** Carrusel para páginas wireframes/desktop|mobile (edición directa) */
+window.jmHtmlLandingsCarruselPagina = function jmHtmlLandingsCarruselPagina(tipo) {
+  const mobile = String(tipo || '').toLowerCase() === 'mobile';
+  const items = mobile ? (window.JM_LANDINGS_CARRUSEL_MOBILE || []) : (window.JM_LANDINGS_CARRUSEL || []);
+  if (!items.length) {
+    return mobile
+      ? '<p class="jm-wireframes-vacio">Sin capturas mobile en <code>interfaces/referencia-landings-mobile/</code>.</p>'
+      : '<p class="jm-wireframes-vacio">Sin capturas desktop.</p>';
+  }
+  return jmHtmlLandingsCarruselBlock(items, {
+    titulo: mobile ? 'Wireframes · Mobile' : 'Wireframes · Desktop',
+    ariaLabel: mobile ? 'Wireframes mobile Joyas Mercury' : 'Wireframes desktop Joyas Mercury',
+    grupo: mobile ? 'landings-mobile' : 'landings-desktop',
+    claseExtra: mobile ? 'jm-interfaces--landings-ref-mobile' : 'jm-interfaces--landings-ref-desktop',
+    introExtra: mobile ? '7 pantallas · vista mobile 390px.' : '7 pantallas · vista desktop.',
+    paginaWireframes: true
+  });
+};
 
 /** HTML carrusel interfaces (auditoría + estado actual) con miniaturas — legacy */
 function jmHtmlInterfacesCarrusel(wf) {
