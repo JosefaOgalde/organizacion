@@ -233,6 +233,7 @@
   }
 
   function htmlSeccionLandingImagenes(cli) {
+    if (cli?.id === 'cli-joyas-mercury') return '';
     if (typeof window.htmlLandingImagenesSeccion !== 'function') return '';
     if (typeof window.LandingImagenesStore !== 'undefined') {
       window.LandingImagenesStore.asegurarLanding(cli);
@@ -244,9 +245,10 @@
 
   function htmlSeccionWireframesJM(cli) {
     if (!cli || cli.id !== 'cli-joyas-mercury') return '';
-    if (typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
-    if (typeof window.jmHtmlWireframes !== 'function') return '';
-    return window.jmHtmlWireframes({ wireframes: cli.ficha?.wireframes });
+    const url = urlLandingCliente(cli.id) || 'index/clientes/joyasmercury/';
+    return '<section class="ficha-seccion ficha-seccion--jm-redirect">' +
+      '<p class="ficha-wireframes__intro">Joyas Mercury usa una sola landing en <a href="' + escapeHtml(url) + '">' +
+      escapeHtml(url) + '</a> — wireframes desktop, identidad y checklist.</p></section>';
   }
 
   function htmlSeccionDocumentos(cli) {
@@ -567,9 +569,9 @@
     const btnVista = document.getElementById('btn-ficha-modo-vista');
     const esJM = esClienteJM(cli);
     if (btnVista) {
-      btnVista.textContent = esJM ? 'Prototipo interactivo' : 'Vista ficha';
+      btnVista.textContent = esJM ? 'Abrir landing JM' : 'Vista ficha';
       btnVista.title = esJM
-        ? 'Prototipo interactivo · flujo actual joyasmercury.cl'
+        ? 'Ir a la landing del cliente (wireframes desktop)'
         : 'Ver ficha en modo lectura';
     }
     if (btnEditar) {
@@ -654,7 +656,7 @@
   }
 
   function modoVistaFicha(cli) {
-    return esClienteJM(cli) ? 'wireframes' : 'vista';
+    return 'vista';
   }
 
   function setModoFicha(modo) {
@@ -662,9 +664,9 @@
     if (!doc) return;
     const cli = clienteDe(clientePerfilAbierto);
     const esJM = esClienteJM(cli);
-    if (esJM && modo === 'vista') modo = 'wireframes';
-    doc.classList.toggle('ficha-doc--vista', !esJM && modo === 'vista');
-    doc.classList.toggle('ficha-doc--wireframes', esJM && modo === 'wireframes');
+    if (esJM && modo === 'wireframes') modo = 'vista';
+    doc.classList.toggle('ficha-doc--vista', modo === 'vista');
+    doc.classList.toggle('ficha-doc--wireframes', false);
     doc.classList.toggle('ficha-doc--edicion', modo === 'edicion');
     const btnVista = document.getElementById('btn-ficha-modo-vista');
     if (btnVista) {
@@ -731,7 +733,7 @@
     ).join('');
     const modoActual = doc.classList.contains('ficha-doc--edicion')
       ? 'edicion'
-      : (esClienteJM(cli) ? 'wireframes' : 'vista');
+      : 'vista';
     const actualizado = cli.manualMarca?.actualizado || f.actualizado;
     const fechaAct = actualizado
       ? parseISO(actualizado).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -883,7 +885,7 @@
     }
     const faltantes = camposFichaFaltantes(cli);
     if (cli.id === 'cli-joyas-mercury') {
-      setModoFicha('wireframes');
+      setModoFicha('vista');
       return;
     }
     if (!fichaTieneContenido(cli)) {
@@ -928,7 +930,7 @@
     const faltantes = camposFichaFaltantes(cli);
     if (faltantes.length) {
       mostrarToast('Ficha guardada para «' + (cli.abrev || cli.nombre) + '» — puedes seguir editando');
-      setModoFicha(esClienteJM(cli) ? 'wireframes' : 'edicion');
+      setModoFicha(esClienteJM(cli) ? 'vista' : 'edicion');
     } else {
       mostrarToast('Ficha de «' + (cli.abrev || cli.nombre) + '» guardada');
       setModoFicha(modoVistaFicha(cli));
@@ -953,6 +955,13 @@
       const t = e.target.closest('#btn-ficha-modo-vista');
       if (t) {
         const cli = clienteDe(clientePerfilAbierto);
+        if (esClienteJM(cli)) {
+          const landing = urlLandingCliente(cli.id);
+          if (landing) {
+            window.location.href = landing;
+            return;
+          }
+        }
         setModoFicha(modoVistaFicha(cli));
         return;
       }

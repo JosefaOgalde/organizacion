@@ -758,13 +758,15 @@ window.JM_IDENTIDAD_RESUMEN = 'La identidad de Joyas Mercury exige uso consisten
 /** Galería HTML wireframes JM — solo desktop referencia */
 window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
   const claseExtra = (opts && opts.claseExtra) || '';
+  const accionesHtml = (opts && opts.accionesHtml) || '';
   const cuerpo = jmHtmlLandingsCarrusel();
   if (!cuerpo) return '';
   const atajos = `<p class="ficha-wireframes__atajos"><a href="wireframes.html">Wireframes pantalla completa</a></p>`;
-  return `<section id="ficha-wireframes-jm" class="ficha-seccion ficha-seccion--wireframes ${claseExtra}">
+  return `<section id="ficha-wireframes-jm" class="ficha-seccion ficha-seccion--wireframes ${claseExtra}" data-jm-seccion="wireframes">
     <div class="ficha-seccion__headline">
       <h3 class="ficha-seccion__titulo">Wireframes · Desktop</h3>
       <span class="ficha-seccion__estado">joyasmercury.cl · Fase 2</span>
+      ${accionesHtml}
     </div>
     <p class="ficha-wireframes__intro">7 pantallas de referencia en desktop: Inicio, Esencial, Gold, Deluxe, Carrito, Ayuda y Productos.</p>
     ${atajos}

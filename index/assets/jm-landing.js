@@ -147,6 +147,7 @@
     }
     asegurarLandingJM(cli);
     if (typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
+    asegurarSeccionesLanding();
     if (typeof window.jmAplicarProgresoChecklist === 'function') window.jmAplicarProgresoChecklist(datos);
     if (typeof window.jmFusionarTodosExtra === 'function') window.jmFusionarTodosExtra(datos);
     if (typeof window.jmSyncLandingDesdeTareas === 'function') window.jmSyncLandingDesdeTareas(datos);
@@ -269,9 +270,153 @@
       </div>`;
   }
 
+  const JM_SECCIONES = {
+    wireframes: { titulo: 'Wireframes · Desktop', etiqueta: 'los wireframes desktop' },
+    identidad: { titulo: 'Identidad de marca', etiqueta: 'la identidad de marca' },
+    objetivos: { titulo: 'Objetivos · Fase 2', etiqueta: 'los objetivos' },
+    menu: { titulo: 'Menú objetivo · Paso 4', etiqueta: 'el menú objetivo' },
+    mapa: { titulo: 'Mapa de navegación · Paso 5', etiqueta: 'el mapa de navegación' },
+    gantt: { titulo: 'Carta Gantt · tiempos Fase 2', etiqueta: 'la carta Gantt' },
+    todo: { titulo: 'Tareas · checklist (20 días)', etiqueta: 'el checklist de tareas' }
+  };
+
+  let seccionPendienteEliminar = null;
+
+  function asegurarSeccionesLanding() {
+    if (!Array.isArray(landing.seccionesEliminadas)) landing.seccionesEliminadas = [];
+  }
+
+  function seccionVisible(id) {
+    asegurarSeccionesLanding();
+    return !landing.seccionesEliminadas.includes(id);
+  }
+
+  function toolbarSeccionHtml(id) {
+    return `<div class="jm-seccion__acciones" role="group" aria-label="Acciones de sección">
+      <button type="button" class="jm-btn jm-btn--ghost jm-btn--sm" data-jm-seccion-editar="${escapeHtml(id)}">Editar</button>
+      <button type="button" class="jm-btn jm-btn--ghost jm-btn--sm jm-btn--danger" data-jm-seccion-eliminar="${escapeHtml(id)}">Eliminar</button>
+    </div>`;
+  }
+
+  function htmlModalEliminar() {
+    return `<div id="jm-modal-eliminar" class="jm-modal" hidden aria-hidden="true">
+      <div class="jm-modal__backdrop" data-jm-modal-cerrar></div>
+      <div class="jm-modal__panel" role="dialog" aria-labelledby="jm-modal-eliminar-titulo" aria-modal="true">
+        <h3 id="jm-modal-eliminar-titulo" class="jm-modal__titulo">Eliminar sección</h3>
+        <p id="jm-modal-eliminar-msg" class="jm-modal__texto"></p>
+        <p class="jm-modal__aviso">Se borrará el contenido guardado de esta sección en tu organizador.</p>
+        <div class="jm-modal__acciones">
+          <button type="button" class="jm-btn jm-btn--ghost" data-jm-modal-cerrar>Cancelar</button>
+          <button type="button" class="jm-btn jm-btn--danger" id="jm-modal-confirmar-eliminar">Eliminar</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function limpiarDatosSeccion(id) {
+    if (id === 'wireframes') {
+      const pref = 'jm:interfaces/referencia-landings';
+      if (landing.imagenesOverrides) {
+        Object.keys(landing.imagenesOverrides).forEach((k) => {
+          if (k.startsWith(pref)) delete landing.imagenesOverrides[k];
+        });
+      }
+      if (Array.isArray(landing.imagenesOcultas)) {
+        landing.imagenesOcultas = landing.imagenesOcultas.filter((k) => !k.startsWith(pref));
+      }
+      if (landing.imagenesMeta) {
+        Object.keys(landing.imagenesMeta).forEach((k) => {
+          if (k.startsWith(pref)) delete landing.imagenesMeta[k];
+        });
+      }
+    } else if (id === 'identidad') {
+      landing.identidadResumen = '';
+      landing.identidadExpandida = '';
+      const cli = datos.clientes.find((c) => c.id === CLI_ID);
+      if (cli?.manualMarca) cli.manualMarca.texto = '';
+    } else if (id === 'objetivos') {
+      landing.objetivoGeneral = '';
+      landing.objetivosEspecificos = [];
+    } else if (id === 'todo') {
+      landing.todos = [];
+      if (Array.isArray(datos.tareas)) {
+        datos.tareas = datos.tareas.filter(
+          (t) => !(t.clienteId === CLI_ID && (t.jmTodoId || /^tarea-jm-f2-/.test(t.id || '')))
+        );
+      }
+    }
+  }
+
+  function eliminarSeccion(cli, id) {
+    if (!JM_SECCIONES[id] || !seccionVisible(id)) return;
+    asegurarSeccionesLanding();
+    limpiarDatosSeccion(id);
+    landing.seccionesEliminadas.push(id);
+    cli.ficha.actualizado = new Date().toISOString();
+    guardar();
+    render();
+    toast('Sección eliminada');
+  }
+
+  function abrirModalEliminar(id) {
+    const meta = JM_SECCIONES[id];
+    if (!meta) return;
+    seccionPendienteEliminar = id;
+    const modal = document.getElementById('jm-modal-eliminar');
+    const msg = document.getElementById('jm-modal-eliminar-msg');
+    if (msg) {
+      msg.textContent = `¿Eliminar ${meta.etiqueta}? Esta acción no se puede deshacer.`;
+    }
+    if (modal) {
+      modal.hidden = false;
+      modal.removeAttribute('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('jm-modal-abierto');
+    }
+  }
+
+  function cerrarModalEliminar() {
+    seccionPendienteEliminar = null;
+    const modal = document.getElementById('jm-modal-eliminar');
+    if (modal) {
+      modal.hidden = true;
+      modal.setAttribute('hidden', '');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+    document.body.classList.remove('jm-modal-abierto');
+  }
+
+  function editarSeccion(id) {
+    if (!modoEdicion) {
+      modoEdicion = true;
+      render();
+    }
+    const el = root.querySelector(`[data-jm-seccion="${id}"], #jm-seccion-${id}`);
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const focusable = el?.querySelector('textarea, input, button, [tabindex]');
+    if (focusable && typeof focusable.focus === 'function') {
+      setTimeout(() => focusable.focus(), 300);
+    }
+  }
+
+  function blockSeccion(id, titulo, bodyHtml) {
+    if (!seccionVisible(id)) return '';
+    return `<section class="jm-block" id="jm-seccion-${id}" data-jm-seccion="${id}">
+      <div class="jm-block__head">
+        <h2>${escapeHtml(titulo)}</h2>
+        ${toolbarSeccionHtml(id)}
+      </div>
+      <div class="jm-block__body">${bodyHtml}</div>
+    </section>`;
+  }
+
   function wireframesEmbebidosHtml() {
+    if (!seccionVisible('wireframes')) return '';
     if (typeof window.jmHtmlWireframes !== 'function') return '';
-    return window.jmHtmlWireframes({ claseExtra: 'ficha-seccion--portal' });
+    return window.jmHtmlWireframes({
+      claseExtra: 'ficha-seccion--portal',
+      accionesHtml: toolbarSeccionHtml('wireframes')
+    });
   }
 
   function fechaGuardadoTexto(cli) {
@@ -295,7 +440,7 @@
           <span class="jm-ficha-top__tipo">Freelance · JM</span>
           <div class="jm-landing__toolbar">
             <a href="wireframes.html" class="jm-btn jm-btn--ghost">Wireframes desktop</a>
-            <a href="../../../" class="jm-btn jm-btn--celeste">Organizador</a>
+            <a href="../../../" class="jm-btn jm-btn--celeste" title="Ir al calendario mensual">Organizador</a>
             <button type="button" class="jm-btn${modoEdicion ? ' jm-btn--active' : ''}" id="jm-btn-editar">
               ${modoEdicion ? 'Guardar datos' : 'Editar datos'}
             </button>
@@ -321,34 +466,17 @@
 
           ${wireframes}
 
-          <section class="jm-block" id="jm-seccion-identidad">
-            <div class="jm-block__head"><h2>Identidad de marca</h2></div>
-            <div class="jm-block__body">${identidadHtml(cli)}</div>
-          </section>
+          ${blockSeccion('identidad', JM_SECCIONES.identidad.titulo, identidadHtml(cli))}
 
-          <section class="jm-block" id="jm-seccion-objetivos">
-            <div class="jm-block__body">${objetivosHtml()}</div>
-          </section>
+          ${blockSeccion('objetivos', JM_SECCIONES.objetivos.titulo, objetivosHtml())}
 
-          <section class="jm-block" id="jm-seccion-menu">
-            <div class="jm-block__head"><h2>Menú objetivo · Paso 4</h2></div>
-            <div class="jm-block__body">${menuObjetivoHtml()}</div>
-          </section>
+          ${blockSeccion('menu', JM_SECCIONES.menu.titulo, menuObjetivoHtml())}
 
-          <section class="jm-block" id="jm-seccion-mapa">
-            <div class="jm-block__head"><h2>Mapa de navegación · Paso 5</h2></div>
-            <div class="jm-block__body">${mapaNavegacionHtml()}</div>
-          </section>
+          ${blockSeccion('mapa', JM_SECCIONES.mapa.titulo, mapaNavegacionHtml())}
 
-          <section class="jm-block" id="jm-seccion-gantt">
-            <div class="jm-block__head"><h2>Carta Gantt · tiempos Fase 2</h2></div>
-            <div class="jm-block__body">${ganttHtml()}</div>
-          </section>
+          ${blockSeccion('gantt', JM_SECCIONES.gantt.titulo, ganttHtml())}
 
-          <section class="jm-block" id="jm-seccion-todo">
-            <div class="jm-block__head"><h2>Tareas · checklist (20 días)</h2></div>
-            <div class="jm-block__body">${todosHtml()}</div>
-          </section>
+          ${blockSeccion('todo', JM_SECCIONES.todo.titulo, todosHtml())}
 
           <footer class="jm-ficha-pie">
             <div class="jm-ficha-pie__info">
@@ -358,6 +486,7 @@
             <button type="button" class="jm-btn jm-btn--primary" id="jm-btn-guardar">Guardar ficha</button>
           </footer>
         </article>
+        ${htmlModalEliminar()}
       </div>`;
 
     bindEvents(cli);
@@ -438,6 +567,31 @@
         modoEdicion = true;
       }
       render();
+    });
+
+    const modalEliminar = document.getElementById('jm-modal-eliminar');
+    if (modalEliminar && modalEliminar.dataset.jmModalBound !== '1') {
+      modalEliminar.dataset.jmModalBound = '1';
+      modalEliminar.querySelectorAll('[data-jm-modal-cerrar]').forEach((btn) => {
+        btn.addEventListener('click', cerrarModalEliminar);
+      });
+      document.getElementById('jm-modal-confirmar-eliminar')?.addEventListener('click', () => {
+        if (seccionPendienteEliminar) eliminarSeccion(cli, seccionPendienteEliminar);
+        cerrarModalEliminar();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const m = document.getElementById('jm-modal-eliminar');
+        if (m && !m.hidden) cerrarModalEliminar();
+      });
+    }
+
+    root.querySelectorAll('[data-jm-seccion-editar]').forEach((btn) => {
+      btn.addEventListener('click', () => editarSeccion(btn.dataset.jmSeccionEditar));
+    });
+
+    root.querySelectorAll('[data-jm-seccion-eliminar]').forEach((btn) => {
+      btn.addEventListener('click', () => abrirModalEliminar(btn.dataset.jmSeccionEliminar));
     });
 
     root.querySelectorAll('[data-jm-activar-edicion-imagenes]').forEach((btn) => {
