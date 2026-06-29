@@ -53,7 +53,16 @@ window.CLIENTES_PORTAL = [
     tipo: 'Full time',
     color: { border: '#a8d8dc', bg: '#e8f6f8', text: '#4a7a80' },
     agente: 'Planificación de proyectos',
-    resumen: 'Gantt, cronogramas y entregables post auditoría.'
+    resumen: 'Gantt, cronogramas y entregables post auditoría.',
+    proyectos: [
+      {
+        codigo: 'MOVA',
+        nombre: 'Auditoría Charlas',
+        archivo: 'MKOF/MOVA.html',
+        resumen: 'MOVA-Auditoria-Charlas — revisión de charlas, hallazgos e informes.',
+        color: { border: '#9a7ab8', bg: '#f5f0fa', text: '#5a4080' }
+      }
+    ]
   },
   {
     archivo: 'joyasmercury/index.html?v=secciones3',
@@ -94,26 +103,6 @@ window.CLIENTES_PORTAL = [
         archivo: 'DesafioLatam/CLA.html',
         resumen: 'Programa IA — certificados modulares Fase 1, 2, 3 y final (1123×794 px).',
         color: { border: '#1a6b4a', bg: '#edf7f2', text: '#1a5c40' }
-      }
-    ]
-  },
-  {
-    archivo: 'Mova.html',
-    id: 'cli-mova',
-    slug: 'mova',
-    nombre: 'Mova',
-    abrev: 'MOVA',
-    tipo: 'Freelance',
-    color: { border: '#b8a8e0', bg: '#f2eef8', text: '#5a4080' },
-    agente: 'Auditoría de charlas',
-    resumen: 'Auditoría de charlas — revisión de contenido, hallazgos e informes.',
-    proyectos: [
-      {
-        codigo: 'AUD',
-        nombre: 'Auditoría Charlas',
-        archivo: 'mova/index.html',
-        resumen: 'Proyecto MOVA-Auditoria-Charlas — código, criterios y entregables.',
-        color: { border: '#9a7ab8', bg: '#f5f0fa', text: '#5a4080' }
       }
     ]
   }

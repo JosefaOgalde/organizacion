@@ -1,66 +1,38 @@
-# Invocar agente Mova en Cursor
+# Invocar agente MOVA (proyecto MKOF)
 
-## Forma más rápida (3 clics)
+MOVA es un **subproyecto de MKOF**, no un cliente aparte.
 
-```mermaid
-flowchart LR
-    A["Ctrl+L\nChat"] --> B["Escribe:\n@mova"]
-    B --> C["Tu pregunta"]
-```
+## Forma más rápida
 
 1. **Ctrl + L** (chat)
-2. Escribe **`@`** → busca **`mova`** o **「Agente Mova」**
-3. Pega tu pregunta:
+2. Escribe **`@mova`**
+3. Tu pregunta:
 
 ```
-Necesito auditar la charla [título] con la rúbrica del proyecto.
-Entregable: informe con hallazgos y recomendaciones.
+Cliente MKOF · Proyecto MOVA
+Auditar charla [título] según [criterios]. Entregable: informe con hallazgos.
 ```
 
----
+## Ver en el navegador
 
-## Forma automática
-
-Abre cualquier archivo del proyecto Mova en el editor:
-
-- `index/clientes/mova/auditoria-charlas/`
-- `MOVA-Auditoria-Charlas/` (raíz del repo)
-- `index/clientes/Mova.html`
-
-Cursor **activa solo** la regla del agente Mova al chatear.
-
----
-
-## Unir tu carpeta de Windows
-
-1. Copia el contenido de `MOVA-Auditoria-Charlas` → `organizacion\index\clientes\mova\auditoria-charlas\`
-2. Abre en Cursor la carpeta **`organizacion`** (raíz), no el workspace viejo suelto.
-3. Si tenías reglas en `.cursor/rules/` del proyecto viejo, fusiona el texto en `.cursor/rules/mova.mdc`
-
----
-
-## Atajo desde el organizador
-
-1. Abre: `index.html?tarea=mova/01`
-2. Usa **「Realizar tarea」** para copiar contexto al portapapeles
-3. En Cursor Chat: `@mova` + pega
-
----
-
-## Ver Mova en el navegador
-
-```bash
-npx serve .
-```
+Con `SERVIR.bat` (puerto 3000):
 
 | Página | URL |
 |--------|-----|
-| Listado | `http://localhost:3000/index/clientes/` |
-| Ficha | `http://localhost:3000/index/clientes/Mova.html` |
-| Proyecto | `http://localhost:3000/index/clientes/mova/` |
+| MKOF (tarjeta + proyecto) | `http://localhost:3000/index/clientes/MKOF.html` |
+| Proyecto MOVA | `http://localhost:3000/index/clientes/MKOF/MOVA.html` |
+| Código | `http://localhost:3000/index/clientes/MKOF/MOVA/auditoria-charlas/` |
 
----
+## Copiar tu workspace Windows
 
-## Archivo de regla (avanzado)
+Pega el contenido de `MOVA-Auditoria-Charlas` en:
 
-`.cursor/rules/mova.mdc` — edítalo si cambia el brief o las rutas del proyecto.
+```
+organizacion\index\clientes\MKOF\MOVA\auditoria-charlas\
+```
+
+## Activación automática
+
+Abre archivos en `index/clientes/MKOF/` o `MOVA-Auditoria-Charlas/` — Cursor activa la regla `@mova`.
+
+Regla: `.cursor/rules/mova.mdc`

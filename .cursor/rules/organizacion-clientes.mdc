@@ -16,7 +16,7 @@ Responde en **español**. El repo es un organizador + portal de clientes.
 El usuario puede decir:
 
 - `@adl-cla` o abrir archivos en `DesafioLatam/` → regla **Agente ADL CLA**
-- `@mova` o abrir archivos en `mova/` o `MOVA-Auditoria-Charlas/` → regla **Agente Mova**
+- `@mova` o abrir archivos en `MKOF/` o `MOVA-Auditoria-Charlas/` → regla **Agente MOVA** (subproyecto MKOF)
 - `Agente Trendseeker` → CM + WordPress, manual marca
 - `Agente ECR` → newsletter + blog Elementor
 - `Agente JM` → WooCommerce Joyas Mercury Fase 2
@@ -29,8 +29,8 @@ El usuario puede decir:
 | Listado | `index/clientes.html` |
 | ADL | `index/clientes/Desafio-Latam.html` |
 | ADL → CLA | `index/clientes/DesafioLatam/CLA.html` |
-| Mova | `index/clientes/Mova.html` |
-| Mova → Auditoría Charlas | `index/clientes/mova/` |
+| MKOF | `index/clientes/MKOF.html` |
+| MKOF → MOVA | `index/clientes/MKOF/MOVA.html` |
 
 ## Datos
 

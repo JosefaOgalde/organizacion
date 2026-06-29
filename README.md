@@ -12,7 +12,7 @@ Abre `index.html` en el navegador. Los datos se guardan en `localStorage` del na
 
 **Pestaña Agentes:** visualiza ramas Git `cursor/…` por agente (`@joyas-mercury`, `@adl-cla`, `@mova`, …). Datos en `data/agentes-ramas.json`.
 
-**Mova (auditoría charlas):** [`index/clientes/Mova.html`](index/clientes/Mova.html) · proyecto en [`index/clientes/mova/auditoria-charlas/`](index/clientes/mova/auditoria-charlas/) · agente `@mova` · atajo [`ABRIR-MOVA.bat`](ABRIR-MOVA.bat)
+**Mova (subproyecto MKOF):** [`index/clientes/MKOF/MOVA.html`](index/clientes/MKOF/MOVA.html) · código en [`index/clientes/MKOF/MOVA/auditoria-charlas/`](index/clientes/MKOF/MOVA/auditoria-charlas/) · agente `@mova` · atajo [`ABRIR-MOVA.bat`](ABRIR-MOVA.bat)
 
 Para vaciar tareas en el navegador: pestaña **Agentes → Vaciar calendario**, o abre `?vaciar-tareas=1`. Al actualizar el repo (respaldo v6) el calendario se vacía solo una vez.
 

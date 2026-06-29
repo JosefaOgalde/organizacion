@@ -1,23 +1,21 @@
 # MOVA-Auditoria-Charlas
 
-Punto de entrada en la **raíz del repo** para el proyecto que tenías en un workspace aparte.
+Subproyecto de **MKOF** en el organizador.
 
-## Unir con el organizador
-
-Copia el contenido de esta carpeta (o la carpeta entera desde Windows) a:
+## Dónde pegar tu código (Windows)
 
 ```
-index/clientes/mova/auditoria-charlas/
+organizacion\index\clientes\MKOF\MOVA\auditoria-charlas\
 ```
 
-Esa ruta es la recomendada: queda junto al portal y al calendario.
+También funciona en la raíz: `organizacion\MOVA-Auditoria-Charlas\`
 
-Si prefieres trabajar aquí en la raíz, también funciona: el agente `@mova` incluye ambas rutas en sus reglas.
+## Ver en el portal
 
-## Después de copiar
+1. `SERVIR.bat`
+2. `http://localhost:3000/index/clientes/MKOF.html` → tarjeta **MOVA**
+3. O directo: `http://localhost:3000/index/clientes/MKOF/MOVA.html`
 
-1. Abre **solo** la carpeta `organizacion` en Cursor (no el workspace viejo suelto).
-2. Chat: `@mova` + tu pregunta.
-3. Portal: `http://localhost:3000/index/clientes/Mova.html`
+## Agente
 
-Ver también: [`index/clientes/mova/README.md`](index/clientes/mova/README.md)
+`@mova` en Cursor · guía en `docs/cursor/INVOCAR-AGENTE-MOVA.md`

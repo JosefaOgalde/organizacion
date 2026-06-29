@@ -45,16 +45,16 @@
     {
       "id": "mova",
       "invocar": "@mova",
-      "clienteId": "cli-mova",
-      "cliente": "Mova · Auditoría Charlas",
+      "clienteId": "cli-mkof",
+      "cliente": "MKOF · MOVA",
       "abrev": "MOVA",
-      "descripcion": "Auditoría de charlas — hallazgos e informes",
-      "portal": "index/clientes/Mova.html",
+      "descripcion": "Subproyecto auditoría de charlas",
+      "portal": "index/clientes/MKOF/MOVA.html",
       "ramas": [
         {
           "nombre": "cursor/mova-cliente-portal-agente-7749",
-          "titulo": "Alta portal + agente @mova + carpeta proyecto",
-          "pr": null,
+          "titulo": "MOVA como subproyecto MKOF + agente @mova",
+          "pr": 18,
           "estado": "activa"
         }
       ]

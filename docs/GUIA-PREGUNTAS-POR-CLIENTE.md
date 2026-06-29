@@ -36,9 +36,21 @@ flowchart TB
 | **Trendseeker** | `index/clientes/Trendseeker.html` | «Tarea TS de hoy: publicación redes…» |
 | **ECR** | `index/clientes/ECR.html` | «Necesito copy newsletter ECR…» |
 | **Joyas Mercury** | `index/clientes/joyasmercury/` | «JM tarea 01: menú WooCommerce…» |
+| **MKOF** | `index/clientes/MKOF.html` | «Gantt MKOF etapa 2…» |
+| **MKOF → MOVA** | `index/clientes/MKOF/MOVA.html` | «MKOF · MOVA: auditar charla [título]…» |
 | **Desafío Latam** | `index/clientes/Desafio-Latam.html` | «Encargo ADL: …» (elige **proyecto** abajo) |
-| **Mova** | `index/clientes/Mova.html` | «MOVA: auditar charla [título]…» |
 | **ADL → CLA** | `index/clientes/DesafioLatam/CLA.html` | «Proyecto CLA Caja Los Andes: certificados…» |
+
+---
+
+## MKOF — dos niveles
+
+MKOF tiene **subproyectos** con trabajo distinto. No mezcles briefs.
+
+| Nivel | URL local | Para qué preguntar |
+|-------|-----------|-------------------|
+| Cliente MKOF | `…/clientes/MKOF.html` | Gantt, cronogramas, planificación general |
+| **Proyecto MOVA** | `…/clientes/MKOF/MOVA.html` | Auditoría de charlas, informes, `@mova` |
 
 ---
 
@@ -114,7 +126,7 @@ Invocación rápida: **`docs/cursor/INVOCAR-AGENTE-ADL.md`**
 
 En Chat (**Ctrl+L**): escribe **`@adl-cla`** y tu pregunta. La regla vive en `.cursor/rules/adl-cla.mdc`.
 
-## Agente Cursor dedicado (Mova)
+## Agente Cursor dedicado (MOVA · subproyecto MKOF)
 
 Invocación rápida: **`docs/cursor/INVOCAR-AGENTE-MOVA.md`**
 
