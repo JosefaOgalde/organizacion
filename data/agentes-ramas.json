@@ -20,6 +20,23 @@
       ]
     },
     {
+      "id": "sakura-casco",
+      "invocar": "@sakura-casco",
+      "clienteId": "cli-sakura",
+      "cliente": "Sakura · Prototipo Casco",
+      "abrev": "SKR",
+      "descripcion": "Prototipo de casco — concepto, modelado y renders",
+      "portal": "index/clientes/Sakura/prototipo-casco.html",
+      "ramas": [
+        {
+          "nombre": "cursor/sakura-cliente-prototipo-casco-aee0",
+          "titulo": "Cliente Sakura + proyecto Prototipo Casco",
+          "pr": null,
+          "estado": "activa"
+        }
+      ]
+    },
+    {
       "id": "adl-cla",
       "invocar": "@adl-cla",
       "clienteId": "cli-desafio-latam",

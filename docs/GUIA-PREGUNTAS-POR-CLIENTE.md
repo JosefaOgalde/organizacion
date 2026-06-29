@@ -38,6 +38,8 @@ flowchart TB
 | **Joyas Mercury** | `index/clientes/joyasmercury/` | «JM tarea 01: menú WooCommerce…» |
 | **Desafío Latam** | `index/clientes/Desafio-Latam.html` | «Encargo ADL: …» (elige **proyecto** abajo) |
 | **ADL → CLA** | `index/clientes/DesafioLatam/CLA.html` | «Proyecto CLA Caja Los Andes: certificados…» |
+| **Sakura** | `index/clientes/Sakura.html` | «Encargo Sakura: …» (elige **proyecto** abajo) |
+| **Sakura → Prototipo Casco** | `index/clientes/Sakura/prototipo-casco.html` | «Prototipo casco: concepto / modelo / renders…» |
 
 ---
 
@@ -55,6 +57,25 @@ flowchart LR
 |-------|-----------|-------------------|
 | Cliente ADL | `…/clientes/Desafio-Latam.html` | Encargos generales, nuevo proyecto |
 | **Proyecto CLA** | `…/clientes/DesafioLatam/CLA.html` | Certificados, manual Caja Los Andes, 1123×794 |
+
+---
+
+## Sakura — dos niveles
+
+Sakura tiene **proyectos independientes** con identidad propia.
+
+```mermaid
+flowchart LR
+    SKR["Sakura.html\nCliente Sakura"] --> CASCO["Sakura/prototipo-casco.html\nPrototipo Casco"]
+    SKR --> OTRO["Futuro proyecto X\n(otra carpeta)"]
+```
+
+| Nivel | URL local | Para qué preguntar |
+|-------|-----------|-------------------|
+| Cliente Sakura | `…/clientes/Sakura.html` | Encargos generales, nuevo proyecto |
+| **Prototipo Casco** | `…/clientes/Sakura/prototipo-casco.html` | Concepto, modelado, renders del casco |
+
+Invocación rápida en Cursor: `@sakura-casco`
 
 ---
 

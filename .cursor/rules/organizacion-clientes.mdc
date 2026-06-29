@@ -16,6 +16,7 @@ Responde en **español**. El repo es un organizador + portal de clientes.
 El usuario puede decir:
 
 - `@adl-cla` o abrir archivos en `DesafioLatam/` → regla **Agente ADL CLA**
+- `@sakura-casco` o abrir archivos en `Sakura/prototipo-casco/` → regla **Agente Sakura Prototipo Casco**
 - `Agente Trendseeker` → CM + WordPress, manual marca
 - `Agente ECR` → newsletter + blog Elementor
 - `Agente JM` → WooCommerce Joyas Mercury Fase 2
@@ -28,6 +29,8 @@ El usuario puede decir:
 | Listado | `index/clientes.html` |
 | ADL | `index/clientes/Desafio-Latam.html` |
 | ADL → CLA | `index/clientes/DesafioLatam/CLA.html` |
+| Sakura | `index/clientes/Sakura.html` |
+| Sakura → Prototipo Casco | `index/clientes/Sakura/prototipo-casco.html` |
 
 ## Datos
 

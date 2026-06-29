@@ -176,7 +176,7 @@
         </section>
         <a href="../../index.html" class="portal-app-link">Ir al organizador →</a>
         ${c.slug !== 'joyas-mercury' && c.proyectos?.length ? `<p class="portal-paso">
-          <strong>ADL multi-proyecto:</strong> usa las fichas de proyecto arriba para no confundir identidades visuales.
+          <strong>Multi-proyecto:</strong> usa las fichas de proyecto arriba para no confundir identidades visuales.
         </p>` : ''}
       </article>`;
 
