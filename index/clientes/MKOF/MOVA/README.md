@@ -4,11 +4,18 @@ Subproyecto de **MKOF - Talk** dentro del organizador.
 
 ## Ver en el navegador
 
-| Página | URL (con `SERVIR.bat` o `npx serve .`) |
-|--------|----------------------------------------|
+| Página | URL (con `SERVIR.bat`) |
+|--------|------------------------|
 | Ficha MKOF | `http://localhost:3000/index/clientes/MKOF.html` |
 | Proyecto MOVA | `http://localhost:3000/index/clientes/MKOF/MOVA.html` |
 | Código charlas | `http://localhost:3000/index/clientes/MKOF/MOVA/auditoria-charlas/` |
+
+## Documentación online (otro PC)
+
+Tras `git pull`, lee:
+
+- **Handoff completo:** [`docs/MKOF-MOVA-HANDOFF.md`](../../../docs/MKOF-MOVA-HANDOFF.md)
+- **Resumen visible en portal:** [`RESUMEN.md`](RESUMEN.md)
 
 ## Traer tu carpeta de Windows
 
