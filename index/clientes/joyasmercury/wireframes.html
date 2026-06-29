@@ -3,70 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wireframes desktop · Joyas Mercury</title>
+  <title>Wireframes · Joyas Mercury</title>
   <link rel="stylesheet" href="../../../styles.css">
-  <link rel="stylesheet" href="../../assets/jm-landing.css">
+  <link rel="stylesheet" href="../../assets/jm-landing.css?v=wireframe2">
+  <link rel="stylesheet" href="wireframes-page.css?v=wireframe2">
   <style>
-    body { margin: 0; background: #f5f0ec; padding: 1rem; }
-    .wrap { max-width: 980px; margin: 0 auto; }
-    header {
-      background: #fdf0f4;
-      border: 2px solid #e8b8c8;
-      border-radius: 12px;
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1rem;
-    }
-    header h1 { margin: 0 0 0.35rem; color: #9a5a6e; font-size: 1.45rem; }
-    header p { margin: 0; color: #666; }
-    header nav { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    header nav a {
-      padding: 0.45rem 0.85rem;
-      background: #9a5a6e;
+    body { margin: 0; background: #3d3d3d; padding: 1rem; min-height: 100vh; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    .jm-wf-page-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1rem;
+      margin-bottom: 0.85rem;
       color: #fff;
+    }
+    .jm-wf-page-top h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      flex: 1 1 auto;
+    }
+    .jm-wf-page-top nav { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center; }
+    .jm-wf-page-top nav a {
+      padding: 0.42rem 0.8rem;
+      background: #fff;
+      color: #9a5a6e;
       text-decoration: none;
       border-radius: 8px;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 600;
     }
-    header nav a.ghost { background: #fff; color: #9a5a6e; border: 1px solid #e8b8c8; }
-    #galeria-root {
+    .jm-wf-page-top nav a.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.35); }
+    #hub-root {
       background: #fff;
       border-radius: 12px;
-      padding: 1rem 1.25rem 1.25rem;
+      padding: 1.25rem 1.35rem 1.5rem;
     }
+    .jm-wf-hub-intro { margin: 0 0 1rem; color: #666; font-size: 0.92rem; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <h1>Joyas Mercury · wireframes desktop</h1>
-      <p>7 pantallas de referencia · flechas o miniaturas para navegar.</p>
+    <header class="jm-wf-page-top">
+      <h1>Joyas Mercury · Wireframes</h1>
       <nav>
-        <a href="./">← Landing JM</a>
-        <span id="wireframe-menu-root"></span>
+        <a href="./" class="ghost">← Landing</a>
         <a href="../../../index.html" class="ghost">Organizador</a>
       </nav>
     </header>
-    <div id="galeria-root"></div>
+    <div id="hub-root">
+      <p class="jm-wf-hub-intro">Elige la vista para revisar las 7 pantallas de referencia.</p>
+      <div id="hub-cards"></div>
+    </div>
   </div>
   <script src="interfaces/referencia-landings/carrusel.manifest.js?v=7"></script>
-  <script src="../../../data/jm-backup-contenido.js?v=wireframe1"></script>
-  <script src="../../assets/cliente-landing-imagenes.js?v=wireframe1"></script>
+  <script src="../../../data/jm-backup-contenido.js?v=wireframe2"></script>
   <script>
     (function () {
-      const menuRoot = document.getElementById('wireframe-menu-root');
-      if (menuRoot && typeof window.jmHtmlWireframeMenu === 'function') {
-        menuRoot.innerHTML = window.jmHtmlWireframeMenu('desktop');
-      }
-      const root = document.getElementById('galeria-root');
-      if (!root || typeof window.jmHtmlWireframes !== 'function') return;
-      const ready = window.jmLandingsCarruselReady;
-      const boot = () => {
-        root.innerHTML = window.jmHtmlWireframes();
-        if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
-      };
-      if (ready && typeof ready.then === 'function') ready.finally(boot);
-      else boot();
+      const root = document.getElementById('hub-cards');
+      if (!root || typeof window.jmHtmlWireframesHub !== 'function') return;
+      const readyDesktop = window.jmLandingsCarruselReady;
+      const readyMobile = window.jmLandingsCarruselMobileReady;
+      const boot = () => { root.innerHTML = window.jmHtmlWireframesHub(); };
+      Promise.all([
+        readyDesktop && typeof readyDesktop.then === 'function' ? readyDesktop : Promise.resolve(),
+        readyMobile && typeof readyMobile.then === 'function' ? readyMobile : Promise.resolve()
+      ]).finally(boot);
     })();
   </script>
 </body>

@@ -2,71 +2,11 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wireframes mobile · Joyas Mercury</title>
-  <link rel="stylesheet" href="../../../styles.css">
-  <link rel="stylesheet" href="../../assets/jm-landing.css">
-  <style>
-    body { margin: 0; background: #f5f0ec; padding: 1rem; }
-    .wrap { max-width: 980px; margin: 0 auto; }
-    header {
-      background: #fdf0f4;
-      border: 2px solid #e8b8c8;
-      border-radius: 12px;
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1rem;
-    }
-    header h1 { margin: 0 0 0.35rem; color: #9a5a6e; font-size: 1.45rem; }
-    header p { margin: 0; color: #666; }
-    header nav { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
-    header nav a {
-      padding: 0.45rem 0.85rem;
-      background: #9a5a6e;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 0.88rem;
-      font-weight: 600;
-    }
-    header nav a.ghost { background: #fff; color: #9a5a6e; border: 1px solid #e8b8c8; }
-    #galeria-root {
-      background: #fff;
-      border-radius: 12px;
-      padding: 1rem 1.25rem 1.25rem;
-    }
-  </style>
+  <meta http-equiv="refresh" content="0; url=wireframes/mobile.html">
+  <title>Redirigiendo…</title>
+  <script>location.replace('wireframes/mobile.html');</script>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Joyas Mercury · wireframes mobile</h1>
-      <p>7 pantallas de referencia · 390px · flechas o miniaturas para navegar.</p>
-      <nav>
-        <a href="./">← Landing JM</a>
-        <span id="wireframe-menu-root"></span>
-        <a href="../../../index.html" class="ghost">Organizador</a>
-      </nav>
-    </header>
-    <div id="galeria-root"></div>
-  </div>
-  <script src="../../../data/jm-backup-contenido.js?v=wireframe1"></script>
-  <script src="../../assets/cliente-landing-imagenes.js?v=wireframe1"></script>
-  <script>
-    (function () {
-      const menuRoot = document.getElementById('wireframe-menu-root');
-      if (menuRoot && typeof window.jmHtmlWireframeMenu === 'function') {
-        menuRoot.innerHTML = window.jmHtmlWireframeMenu('mobile');
-      }
-      const root = document.getElementById('galeria-root');
-      if (!root || typeof window.jmHtmlWireframesMobile !== 'function') return;
-      const ready = window.jmLandingsCarruselMobileReady;
-      const boot = () => {
-        root.innerHTML = window.jmHtmlWireframesMobile();
-        if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
-      };
-      if (ready && typeof ready.then === 'function') ready.finally(boot);
-      else boot();
-    })();
-  </script>
+  <p><a href="wireframes/mobile.html">Ir a wireframes mobile →</a></p>
 </body>
 </html>

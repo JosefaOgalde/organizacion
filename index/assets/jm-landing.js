@@ -442,7 +442,10 @@
   }
 
   function wireframeMenuHtml() {
-    if (typeof window.jmHtmlWireframeMenu === 'function') return window.jmHtmlWireframeMenu('');
+    if (typeof window.jmHtmlWireframeMenu === 'function') {
+      window.jmWireframePathPrefix = 'wireframes/';
+      return `<a href="wireframes.html" class="jm-btn jm-btn--ghost">Wireframe</a>`;
+    }
     return '<a href="wireframes.html" class="jm-btn jm-btn--ghost">Wireframe</a>';
   }
 

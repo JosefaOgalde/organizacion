@@ -503,6 +503,9 @@ function jmHtmlLandingsCarruselMobile() {
   });
 }
 
+window.jmHtmlLandingsCarrusel = jmHtmlLandingsCarrusel;
+window.jmHtmlLandingsCarruselMobile = jmHtmlLandingsCarruselMobile;
+
 /** HTML carrusel interfaces (auditoría + estado actual) con miniaturas — legacy */
 function jmHtmlInterfacesCarrusel(wf) {
   const items = (wf || []).filter(w => w.carpeta === 'interfaces');
@@ -865,7 +868,7 @@ window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
   const accionesHtml = (opts && opts.accionesHtml) || '';
   const cuerpo = jmHtmlLandingsCarrusel();
   if (!cuerpo) return '';
-  const atajos = `<p class="ficha-wireframes__atajos"><a href="wireframes.html">Wireframes pantalla completa</a></p>`;
+  const atajos = `<p class="ficha-wireframes__atajos"><a href="wireframes/desktop.html">Ver wireframes desktop</a> · <a href="wireframes/mobile.html">Ver mobile</a></p>`;
   return `<section id="ficha-wireframes-jm" class="ficha-seccion ficha-seccion--wireframes ${claseExtra}" data-jm-seccion="wireframes">
     <div class="ficha-seccion__headline">
       <h3 class="ficha-seccion__titulo">Wireframes · Desktop</h3>
@@ -888,19 +891,42 @@ window.jmHtmlWireframesMobile = function jmHtmlWireframesMobile(opts) {
       <span class="ficha-seccion__estado">390px · Fase 2</span>
     </div>
     <p class="ficha-wireframes__intro">7 pantallas de referencia en mobile: Inicio, Esencial, Gold, Deluxe, Carrito, Ayuda y Productos.</p>
-    <p class="ficha-wireframes__atajos"><a href="wireframes-mobile.html">Wireframes mobile pantalla completa</a></p>
+    <p class="ficha-wireframes__atajos"><a href="wireframes/mobile.html">Ver wireframes mobile</a></p>
     ${cuerpo}
   </section>`;
+};
+
+/** Hub: elegir desktop o mobile */
+window.jmHtmlWireframesHub = function jmHtmlWireframesHub() {
+  const desktopThumb = (window.JM_LANDINGS_CARRUSEL && window.JM_LANDINGS_CARRUSEL[0])
+    ? jmLandingCarruselSrc(window.JM_LANDINGS_CARRUSEL[0])
+    : '';
+  const mobileThumb = (window.JM_LANDINGS_CARRUSEL_MOBILE && window.JM_LANDINGS_CARRUSEL_MOBILE[0])
+    ? jmLandingCarruselSrc(window.JM_LANDINGS_CARRUSEL_MOBILE[0])
+    : '';
+  const card = (href, titulo, desc, thumb, extraClass) => `
+    <a href="${jmEscapeHtml(href)}" class="jm-wf-hub__card ${extraClass || ''}">
+      <div class="jm-wf-hub__thumb">${thumb ? `<img src="${jmEscapeHtml(thumb)}" alt="" loading="lazy">` : '<span class="jm-wf-hub__placeholder">7 pantallas</span>'}</div>
+      <h2 class="jm-wf-hub__titulo">${jmEscapeHtml(titulo)}</h2>
+      <p class="jm-wf-hub__desc">${jmEscapeHtml(desc)}</p>
+      <span class="jm-wf-hub__cta">Abrir →</span>
+    </a>`;
+  return `<div class="jm-wf-hub">
+    ${card('wireframes/desktop.html', 'desktop', '7 pantallas de referencia · vista escritorio', desktopThumb, 'jm-wf-hub__card--desktop')}
+    ${card('wireframes/mobile.html', 'mobile', '7 pantallas de referencia · 390px', mobileThumb, 'jm-wf-hub__card--mobile')}
+  </div>`;
 };
 
 /** Menú desplegable Wireframe (desktop / mobile) */
 window.jmHtmlWireframeMenu = function jmHtmlWireframeMenu(active) {
   const act = String(active || '').toLowerCase();
+  const prefix = (typeof window.jmWireframePathPrefix === 'string') ? window.jmWireframePathPrefix : 'wireframes/';
   return `<details class="jm-dropdown jm-wireframe-menu"${act ? ` data-jm-wireframe-active="${jmEscapeHtml(act)}"` : ''}>
     <summary class="jm-btn jm-btn--ghost jm-dropdown__toggle">Wireframe <span class="jm-dropdown__caret" aria-hidden="true">▾</span></summary>
     <div class="jm-dropdown__menu" role="menu">
-      <a href="wireframes.html" class="jm-dropdown__item${act === 'desktop' ? ' jm-dropdown__item--activo' : ''}" role="menuitem">desktop</a>
-      <a href="wireframes-mobile.html" class="jm-dropdown__item${act === 'mobile' ? ' jm-dropdown__item--activo' : ''}" role="menuitem">mobile</a>
+      <a href="${jmEscapeHtml(prefix)}desktop.html" class="jm-dropdown__item${act === 'desktop' ? ' jm-dropdown__item--activo' : ''}" role="menuitem">desktop</a>
+      <a href="${jmEscapeHtml(prefix)}mobile.html" class="jm-dropdown__item${act === 'mobile' ? ' jm-dropdown__item--activo' : ''}" role="menuitem">mobile</a>
+      <a href="${jmEscapeHtml(prefix === 'wireframes/' ? 'wireframes.html' : '../wireframes.html')}" class="jm-dropdown__item" role="menuitem">todas</a>
     </div>
   </details>`;
 };
