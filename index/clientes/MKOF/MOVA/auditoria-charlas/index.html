@@ -4,16 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Auditoría Charlas · MOVA · MKOF</title>
-  <link rel="stylesheet" href="../../../assets/portal.css?v=mova-light1">
+  <link rel="stylesheet" href="../../../assets/portal.css?v=mova-light2">
   <style>
     .mova-proyecto__aviso {
-      background: #f5f0fa;
-      border: 1px solid #b8a8e0;
+      background: #f8f6fc;
+      border: 1px solid #d4c8e8;
       border-radius: 8px;
       padding: 1rem 1.25rem;
       margin: 1rem 0;
     }
-    .mova-proyecto__aviso p { margin: 0.35rem 0; }
+    .mova-proyecto__aviso p { margin: 0.35rem 0; color: var(--text); }
   </style>
 </head>
 <body class="portal-page--light">
@@ -29,13 +29,21 @@
   <main class="portal-main">
     <article class="portal-cliente"
       style="--card-border:#9a7ab8;--card-bg:#ffffff;--card-text:#4a7a80">
-      <div class="mova-proyecto__aviso">
-        <p><strong>Carpeta lista para tu proyecto.</strong></p>
-        <p>Pega aquí los archivos de <code>MOVA-Auditoria-Charlas</code> (código, informes, plantillas).</p>
-        <p>Cliente: <strong>MKOF</strong> · Agente: <code>@mova</code></p>
-      </div>
-      <p><a href="../README.md">Ver README del proyecto MOVA</a></p>
+
+      <div id="mova-resumen-root" data-resumen="../RESUMEN.md"></div>
+
+      <section>
+        <h2>Carpeta de trabajo</h2>
+        <div class="mova-proyecto__aviso">
+          <p><strong>Copia aquí tu proyecto.</strong></p>
+          <p>Pega los archivos de <code>MOVA-Auditoria-Charlas</code> (código, informes, plantillas).</p>
+          <p>Cliente: <strong>MKOF</strong> · Agente: <code>@mova</code></p>
+        </div>
+        <p><a href="../README.md">Ver README del proyecto MOVA</a></p>
+      </section>
     </article>
   </main>
+  <script src="../../../assets/mkof-mova-data.js?v=1"></script>
+  <script src="../../../assets/mova-portal-page.js?v=1"></script>
 </body>
 </html>
