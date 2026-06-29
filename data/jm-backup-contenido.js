@@ -151,132 +151,14 @@ No subir wp-config a git. Repo privado GitHub JosefaOgalde/joyasmercury-backup.`
   ],
 
   wireframes: [
-    { grupo: 'Flujo actual (prototipo)', carpeta: 'flujo-actual', archivo: '01-inicio-home.png', titulo: '1 · Inicio' },
-    { grupo: 'Flujo actual (prototipo)', carpeta: 'flujo-actual', archivo: '02-coleccion-esencial.png', titulo: '2 · Esencial' },
-    { grupo: 'Flujo actual (prototipo)', carpeta: 'flujo-actual', archivo: '03-coleccion-gold.png', titulo: '3 · Gold' },
-    { grupo: 'Flujo actual (prototipo)', carpeta: 'flujo-actual', archivo: '04-coleccion-deluxe.png', titulo: '4 · Deluxe' },
-    { grupo: 'Flujo actual (prototipo)', carpeta: 'flujo-actual', archivo: '05-tienda-catalogo.png', titulo: '5 · Tienda' },
-    { grupo: 'Flujo actual (prototipo)', carpeta: 'flujo-actual', archivo: '06-mi-carrito.png', titulo: '6 · Mi Carrito' },
-    { grupo: 'Flujo actual (prototipo)', carpeta: 'flujo-actual', archivo: '07-nosotros.png', titulo: '7 · Nosotros' },
-    { grupo: 'Flujo actual (prototipo)', carpeta: 'flujo-actual', archivo: '08-pie-garantia-footer.png', titulo: '8 · Pie y garantía' },
-    { grupo: 'Auditoría técnica', carpeta: 'interfaces', archivo: '01-arquitectura-sitio-1080x1080.png', titulo: 'Arquitectura del sitio' },
-    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '02-home-produccion-desktop-1080x1080.png', titulo: 'Home producción (desktop)' },
-    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '03-home-produccion-mobile-1080x1080.png', titulo: 'Home producción (móvil)' },
-    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '04-menu-hamburguesa-actual-1080x1080.png', titulo: 'Menú hamburguesa actual' },
-    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '05-wp-admin-paginas-1080x1080.png', titulo: 'WP Admin — páginas' },
-    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '06-elementor-inicio-v2-1080x1080.png', titulo: 'Elementor Inicio v2' },
-    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '07-landing-esencial-1080x1080.png', titulo: 'Landing Esencial' },
-    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '08-woocommerce-carrito-1080x1080.png', titulo: 'Carrito WooCommerce' },
-    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '09-astra-cabecera-3-filas-1080x1080.png', titulo: 'Cabecera Astra (3 filas)' },
-    { grupo: 'Estado actual del sitio', carpeta: 'interfaces', archivo: '10-flujo-actual-vs-objetivo-1080x1080.png', titulo: 'Flujo actual vs objetivo' },
-    { grupo: 'Objetivo (Fase 2)', carpeta: 'dia-1', archivo: '05-mockup-menu-propuesto-1080x1080.png', titulo: 'Menú propuesto' },
-    { grupo: 'Objetivo (Fase 2)', carpeta: 'dia-1', archivo: '06-mapa-navegacion-1080x1080.png', titulo: 'Mapa de navegación' }
-  ],
-
-  /** Prototipo interactivo — flujo actual producción (capturas en flujo-actual/) */
-  prototipo: {
-    tituloFlujo: 'Flujo actual · joyasmercury.cl',
-    inicio: 'inicio',
-    pasos: [
-      { id: 'inicio', orden: 1, carpeta: 'flujo-actual', archivo: '01-inicio-home.png', titulo: '1 · Inicio' },
-      { id: 'esencial', orden: 2, carpeta: 'flujo-actual', archivo: '02-coleccion-esencial.png', titulo: '2 · Esencial' },
-      { id: 'gold', orden: 3, carpeta: 'flujo-actual', archivo: '03-coleccion-gold.png', titulo: '3 · Gold' },
-      { id: 'deluxe', orden: 4, carpeta: 'flujo-actual', archivo: '04-coleccion-deluxe.png', titulo: '4 · Deluxe' },
-      { id: 'tienda', orden: 5, carpeta: 'flujo-actual', archivo: '05-tienda-catalogo.png', titulo: '5 · Tienda' },
-      { id: 'carrito', orden: 6, carpeta: 'flujo-actual', archivo: '06-mi-carrito.png', titulo: '6 · Mi Carrito' },
-      { id: 'nosotros', orden: 7, carpeta: 'flujo-actual', archivo: '07-nosotros.png', titulo: '7 · Nosotros' },
-      { id: 'pie', orden: 8, carpeta: 'flujo-actual', archivo: '08-pie-garantia-footer.png', titulo: '8 · Pie y garantía' }
-    ],
-    pantallas: {
-      inicio: {
-        carpeta: 'flujo-actual',
-        archivo: '01-inicio-home.png',
-        titulo: 'Inicio · joyasmercury.cl',
-        hotspots: [
-          { x: 22, y: 7, w: 14, h: 4, destino: 'nosotros', etiqueta: 'Nosotros' },
-          { x: 52, y: 7, w: 16, h: 4, destino: 'carrito', etiqueta: 'Mi Carrito' },
-          { x: 12, y: 48, w: 24, h: 14, destino: 'esencial', etiqueta: 'Colección Esencial' },
-          { x: 38, y: 48, w: 24, h: 14, destino: 'gold', etiqueta: 'Colección Gold' },
-          { x: 64, y: 48, w: 24, h: 14, destino: 'deluxe', etiqueta: 'Colección Deluxe' },
-          { x: 40, y: 92, w: 20, h: 5, destino: 'tienda', etiqueta: 'Ir a Tienda' }
-        ]
-      },
-      esencial: {
-        carpeta: 'flujo-actual',
-        archivo: '02-coleccion-esencial.png',
-        titulo: 'Colección Esencial',
-        hotspots: [
-          { x: 42, y: 5, w: 16, h: 5, destino: 'inicio', etiqueta: 'Volver al Inicio' },
-          { x: 52, y: 7, w: 16, h: 4, destino: 'carrito', etiqueta: 'Mi Carrito' },
-          { x: 8, y: 32, w: 18, h: 7, destino: 'tienda', etiqueta: 'Categoría · Pulseras' },
-          { x: 35, y: 58, w: 28, h: 14, destino: 'carrito', etiqueta: 'Producto destacado' },
-          { x: 38, y: 48, w: 24, h: 14, destino: 'gold', etiqueta: 'Ver Gold' }
-        ]
-      },
-      gold: {
-        carpeta: 'flujo-actual',
-        archivo: '03-coleccion-gold.png',
-        titulo: 'Colección Gold',
-        hotspots: [
-          { x: 42, y: 5, w: 16, h: 5, destino: 'inicio', etiqueta: 'Volver al Inicio' },
-          { x: 12, y: 48, w: 24, h: 14, destino: 'esencial', etiqueta: 'Ver Esencial' },
-          { x: 64, y: 48, w: 24, h: 14, destino: 'deluxe', etiqueta: 'Ver Deluxe' },
-          { x: 35, y: 58, w: 28, h: 14, destino: 'tienda', etiqueta: 'Ver catálogo' }
-        ]
-      },
-      deluxe: {
-        carpeta: 'flujo-actual',
-        archivo: '04-coleccion-deluxe.png',
-        titulo: 'Colección Deluxe',
-        hotspots: [
-          { x: 42, y: 5, w: 16, h: 5, destino: 'inicio', etiqueta: 'Volver al Inicio' },
-          { x: 12, y: 48, w: 24, h: 14, destino: 'gold', etiqueta: 'Ver Gold' },
-          { x: 35, y: 58, w: 28, h: 14, destino: 'tienda', etiqueta: 'Ver catálogo' }
-        ]
-      },
-      tienda: {
-        carpeta: 'flujo-actual',
-        archivo: '05-tienda-catalogo.png',
-        titulo: 'Tienda · catálogo',
-        hotspots: [
-          { x: 42, y: 5, w: 16, h: 5, destino: 'inicio', etiqueta: 'Inicio' },
-          { x: 52, y: 7, w: 16, h: 4, destino: 'carrito', etiqueta: 'Mi Carrito' },
-          { x: 8, y: 28, w: 22, h: 22, destino: 'carrito', etiqueta: 'Añadir al carrito' },
-          { x: 32, y: 28, w: 22, h: 22, destino: 'carrito', etiqueta: 'Producto 2' },
-          { x: 12, y: 48, w: 24, h: 14, destino: 'esencial', etiqueta: 'Filtro Esencial' }
-        ]
-      },
-      carrito: {
-        carpeta: 'flujo-actual',
-        archivo: '06-mi-carrito.png',
-        titulo: 'Mi Carrito',
-        hotspots: [
-          { x: 35, y: 36, w: 30, h: 6, destino: 'tienda', etiqueta: 'Volver a la tienda' },
-          { x: 42, y: 5, w: 16, h: 5, destino: 'inicio', etiqueta: 'Inicio' },
-          { x: 22, y: 7, w: 14, h: 4, destino: 'nosotros', etiqueta: 'Nosotros' }
-        ]
-      },
-      nosotros: {
-        carpeta: 'flujo-actual',
-        archivo: '07-nosotros.png',
-        titulo: 'Nosotros',
-        hotspots: [
-          { x: 42, y: 5, w: 16, h: 5, destino: 'inicio', etiqueta: 'Inicio' },
-          { x: 52, y: 7, w: 16, h: 4, destino: 'carrito', etiqueta: 'Mi Carrito' },
-          { x: 85, y: 88, w: 12, h: 10, destino: 'pie', etiqueta: 'Ver pie y garantía' }
-        ]
-      },
-      pie: {
-        carpeta: 'flujo-actual',
-        archivo: '08-pie-garantia-footer.png',
-        titulo: 'Pie · garantía y footer',
-        hotspots: [
-          { x: 42, y: 5, w: 16, h: 5, destino: 'inicio', etiqueta: 'Volver al Inicio' },
-          { x: 88, y: 75, w: 10, h: 12, destino: 'carrito', etiqueta: 'WhatsApp / contacto' }
-        ]
-      }
-    }
-  }
+    { grupo: 'Landings referencia · Desktop', carpeta: 'interfaces/referencia-landings', archivo: '01-inicio-referencia.png', titulo: 'Inicio' },
+    { grupo: 'Landings referencia · Desktop', carpeta: 'interfaces/referencia-landings', archivo: '02-esencial-referencia.png', titulo: 'Esencial' },
+    { grupo: 'Landings referencia · Desktop', carpeta: 'interfaces/referencia-landings', archivo: '03-gold-referencia.png', titulo: 'Gold' },
+    { grupo: 'Landings referencia · Desktop', carpeta: 'interfaces/referencia-landings', archivo: '04-deluxe-referencia.png', titulo: 'Deluxe' },
+    { grupo: 'Landings referencia · Desktop', carpeta: 'interfaces/referencia-landings', archivo: '05-carrito-referencia.png', titulo: 'Carrito' },
+    { grupo: 'Landings referencia · Desktop', carpeta: 'interfaces/referencia-landings', archivo: '06-ayuda-referencia.png', titulo: 'Ayuda' },
+    { grupo: 'Landings referencia · Desktop', carpeta: 'interfaces/referencia-landings', archivo: '07-productos-referencia.png', titulo: 'Productos' }
+  ]
 };
 
 /** Base absoluta de assets JM (evita rutas rotas según desde dónde se abre la ficha) */
@@ -296,215 +178,11 @@ window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo, opts) {
     if (carpeta === 'interfaces/referencia-landings') {
       const v = window.JM_LANDINGS_CARRUSEL_VERSION || 1;
       url += (url.includes('?') ? '&' : '?') + 'v=' + v;
-    } else if (carpeta === 'interfaces/referencia-landings-mobile') {
-      const v = window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION || 1;
-      url += (url.includes('?') ? '&' : '?') + 'v=' + v;
     }
   }
   return url;
 };
 
-/** Ruta absoluta asset nuevo prototipo */
-window.jmNuevoPrototipoSrc = function jmNuevoPrototipoSrc(archivo) {
-  const file = String(archivo || '').replace(/^\/+/, '');
-  return `${window.jmAssetBase}${file}`;
-};
-
-/** Pantallas del diseño Fase 2 (se van agregando aquí) */
-window.JM_NUEVO_PROTOTIPO = {
-  version: 1,
-  intro: 'Diseño propuesto Fase 2 · footer E claro premium (default) · también A y D.',
-  secciones: [
-    {
-      id: 'inicio',
-      titulo: 'Inicio · wireframe completo',
-      descripcion: 'Header, carrusel, colecciones, Novedades, Últimas unidades, Historias. Footer E (default) sin marco dorado · A y D con ?footer=a o ?footer=d.',
-      wireframe: 'interfaces/mockups-inicio/wireframe-inicio.html',
-      pantallas: [
-        {
-          id: 'inicio-mobile-e',
-          vista: 'mobile',
-          titulo: 'Mobile · footer E',
-          archivo: 'interfaces/mockups-inicio/jm-inicio-wireframe-mobile.png'
-        },
-        {
-          id: 'inicio-desktop-e',
-          vista: 'desktop',
-          titulo: 'Desktop · footer E',
-          archivo: 'interfaces/mockups-inicio/jm-inicio-wireframe-desktop.png'
-        },
-        {
-          id: 'inicio-mobile-a',
-          vista: 'mobile',
-          titulo: 'Mobile · footer A',
-          archivo: 'interfaces/mockups-inicio/jm-inicio-footer-a-mobile.png'
-        },
-        {
-          id: 'inicio-desktop-a',
-          vista: 'desktop',
-          titulo: 'Desktop · footer A',
-          archivo: 'interfaces/mockups-inicio/jm-inicio-footer-a-desktop.png'
-        },
-        {
-          id: 'inicio-mobile-d',
-          vista: 'mobile',
-          titulo: 'Mobile · footer D',
-          archivo: 'interfaces/mockups-inicio/jm-inicio-footer-d-mobile.png'
-        },
-        {
-          id: 'inicio-desktop-d',
-          vista: 'desktop',
-          titulo: 'Desktop · footer D',
-          archivo: 'interfaces/mockups-inicio/jm-inicio-footer-d-desktop.png'
-        }
-      ]
-    },
-    {
-      id: 'colecciones',
-      titulo: 'Colecciones · Esencial / Gold / Deluxe',
-      descripcion: 'Misma identidad que inicio: banner por línea, pills colección (misma vista), filtros en 4 modos (círculos/chips/tabs/panel), grilla igual a Novedades, footer E.',
-      wireframe: 'interfaces/mockups-coleccion/wireframe-coleccion.html',
-      pantallas: [
-        { id: 'col-esencial-m', vista: 'mobile', titulo: 'Esencial · mobile', archivo: 'interfaces/mockups-coleccion/jm-coleccion-esencial-mobile.png' },
-        { id: 'col-esencial-d', vista: 'desktop', titulo: 'Esencial · desktop', archivo: 'interfaces/mockups-coleccion/jm-coleccion-esencial-desktop.png' },
-        { id: 'col-gold-m', vista: 'mobile', titulo: 'Gold · mobile', archivo: 'interfaces/mockups-coleccion/jm-coleccion-gold-mobile.png' },
-        { id: 'col-gold-d', vista: 'desktop', titulo: 'Gold · desktop', archivo: 'interfaces/mockups-coleccion/jm-coleccion-gold-desktop.png' },
-        { id: 'col-deluxe-m', vista: 'mobile', titulo: 'Deluxe · mobile', archivo: 'interfaces/mockups-coleccion/jm-coleccion-deluxe-mobile.png' },
-        { id: 'col-deluxe-d', vista: 'desktop', titulo: 'Deluxe · desktop', archivo: 'interfaces/mockups-coleccion/jm-coleccion-deluxe-desktop.png' }
-      ]
-    },
-    {
-      id: 'carrito',
-      titulo: 'Mi Carrito · landing completa',
-      descripcion: 'Banner 1000×500 + tabla WooCommerce, resumen, confianza y footer E. Alternar ?estado=productos o ?estado=vacio.',
-      wireframe: 'interfaces/mockups-carrito/wireframe-carrito-landing.html',
-      pantallas: [
-        { id: 'carrito-banner', vista: 'desktop', titulo: 'Banner · 1000×500 px', archivo: 'interfaces/mockups-carrito/jm-banner-carrito-1000x500.png' },
-        { id: 'carrito-desktop', vista: 'desktop', titulo: 'Landing completa · desktop', archivo: 'interfaces/mockups-carrito/jm-carrito-landing-desktop.png' },
-        { id: 'carrito-mobile', vista: 'mobile', titulo: 'Landing completa · mobile', archivo: 'interfaces/mockups-carrito/jm-carrito-landing-mobile.png' }
-      ]
-    },
-    {
-      id: 'ayuda',
-      titulo: 'Centro de Ayuda · landing completa',
-      descripcion: 'Misma estética que Inicio/Colecciones · hero + círculos + 4 secciones + footer D dorado.',
-      wireframe: 'interfaces/mockups-ayuda/wireframe-ayuda-landing.html',
-      pantallas: [
-        { id: 'ayuda-desktop', vista: 'desktop', titulo: 'Centro de Ayuda · desktop', archivo: 'interfaces/mockups-ayuda/jm-ayuda-landing-desktop.png' },
-        { id: 'ayuda-mobile', vista: 'mobile', titulo: 'Centro de Ayuda · mobile', archivo: 'interfaces/mockups-ayuda/jm-ayuda-landing-mobile.png' }
-      ]
-    },
-    {
-      id: 'producto',
-      titulo: 'Ficha producto · detalle',
-      descripcion: 'Vista al seleccionar un producto: galería, precio, cantidad, agregar al carrito, tabs descripción/cuidado y relacionados. Desde colección o inicio.',
-      wireframe: 'interfaces/mockups-producto/wireframe-producto-landing.html',
-      pantallas: [
-        { id: 'producto-desktop', vista: 'desktop', titulo: 'Ficha producto · desktop', archivo: 'interfaces/mockups-producto/jm-producto-landing-desktop.png' },
-        { id: 'producto-mobile', vista: 'mobile', titulo: 'Ficha producto · mobile', archivo: 'interfaces/mockups-producto/jm-producto-landing-mobile.png' }
-      ]
-    },
-    {
-      id: 'footer-opciones',
-      titulo: 'Footer · E (nuevo) · A · D',
-      descripcion: 'E claro premium sin marco dorado (recomendado) · A editorial horizontal · D columnas + contacto.',
-      wireframe: 'interfaces/mockups-inicio/wireframe-footer-opciones.html',
-      pantallas: [
-        {
-          id: 'footer-opciones-desktop',
-          vista: 'desktop',
-          titulo: 'Comparativa · desktop',
-          archivo: 'interfaces/mockups-inicio/jm-footer-opciones-desktop.png'
-        },
-        {
-          id: 'footer-opciones-mobile',
-          vista: 'mobile',
-          titulo: 'Comparativa · mobile',
-          archivo: 'interfaces/mockups-inicio/jm-footer-opciones-mobile.png'
-        }
-      ]
-    }
-  ]
-};
-
-/** HTML sección «Nuevo prototipo» */
-window.jmHtmlNuevoPrototipo = function jmHtmlNuevoPrototipo(opts) {
-  const data = window.JM_NUEVO_PROTOTIPO;
-  if (!data?.secciones?.length) return '';
-  const claseExtra = (opts && opts.claseExtra) || '';
-  const bloques = data.secciones.map((sec) => {
-    const pantallas = sec.pantallas || [];
-    const cards = pantallas.map((p, i) => {
-      const src = jmNuevoPrototipoSrc(p.archivo);
-      const activa = i === 0 ? ' jm-nuevo-proto__card--activa' : '';
-      return `<figure class="jm-nuevo-proto__card${activa}" data-jm-nuevo-id="${jmEscapeHtml(p.id)}" data-jm-nuevo-src="${jmEscapeHtml(src)}">
-        <a href="${src}" target="_blank" rel="noopener" title="Abrir ${jmEscapeHtml(p.titulo)}">
-          <img src="${src}" alt="${jmEscapeHtml(p.titulo)}"${jmImgAttrs('', p.archivo, src)} loading="${i === 0 ? 'eager' : 'lazy'}">
-        </a>
-        <figcaption>
-          <span class="jm-nuevo-proto__vista jm-nuevo-proto__vista--${jmEscapeHtml(p.vista || 'all')}">${jmEscapeHtml(p.vista || 'pantalla')}</span>
-          ${jmEscapeHtml(p.titulo)}
-        </figcaption>
-      </figure>`;
-    }).join('');
-    const wf = sec.wireframe
-      ? `<a class="jm-nuevo-proto__link" href="${jmNuevoPrototipoSrc(sec.wireframe)}" target="_blank" rel="noopener">Abrir wireframe interactivo →</a>`
-      : '';
-    return `<article class="jm-nuevo-proto__bloque" data-jm-nuevo-seccion="${jmEscapeHtml(sec.id)}">
-      <h4 class="jm-nuevo-proto__bloque-titulo">${jmEscapeHtml(sec.titulo)}</h4>
-      <p class="jm-nuevo-proto__bloque-desc">${jmEscapeHtml(sec.descripcion || '')}</p>
-      <div class="jm-nuevo-proto__grid">${cards}</div>
-      ${wf}
-    </article>`;
-  }).join('');
-  const primera = data.secciones[0]?.pantallas?.[0];
-  const visorSrc = primera ? jmNuevoPrototipoSrc(primera.archivo) : '';
-  const visorTitulo = primera?.titulo || '';
-  return `<section id="jm-nuevo-prototipo" class="ficha-seccion ficha-seccion--nuevo-prototipo ${claseExtra}" data-jm-nuevo-prototipo>
-    <div class="ficha-seccion__headline">
-      <h3 class="ficha-seccion__titulo">Nuevo prototipo</h3>
-      <span class="ficha-seccion__estado">Fase 2 · diseño JM</span>
-    </div>
-    <p class="jm-nuevo-proto__intro">${jmEscapeHtml(data.intro || '')}</p>
-    <div class="jm-nuevo-proto__visor" data-jm-nuevo-visor>
-      <a href="${jmEscapeHtml(visorSrc)}" target="_blank" rel="noopener" class="jm-nuevo-proto__visor-link" title="Abrir en tamaño completo">
-        <img class="jm-nuevo-proto__visor-img" src="${jmEscapeHtml(visorSrc)}" alt="${jmEscapeHtml(visorTitulo)}" data-jm-nuevo-visor-img>
-      </a>
-      <p class="jm-nuevo-proto__visor-caption" data-jm-nuevo-visor-caption>${jmEscapeHtml(visorTitulo)}</p>
-    </div>
-    ${bloques}
-  </section>`;
-};
-
-/** Clic en miniaturas → actualiza visor principal */
-window.initJMNuevoPrototipoUI = function initJMNuevoPrototipoUI(root) {
-  const scope = root && root.querySelectorAll ? root : document;
-  scope.querySelectorAll('[data-jm-nuevo-prototipo]').forEach((sec) => {
-    if (sec.dataset.jmNuevoBound === '1') return;
-    sec.dataset.jmNuevoBound = '1';
-    const visorImg = sec.querySelector('[data-jm-nuevo-visor-img]');
-    const visorCap = sec.querySelector('[data-jm-nuevo-visor-caption]');
-    const visorLink = sec.querySelector('.jm-nuevo-proto__visor-link');
-    sec.querySelectorAll('.jm-nuevo-proto__card').forEach((card) => {
-      card.addEventListener('click', (e) => {
-        if (e.target.closest('a[target="_blank"]') && e.target.tagName === 'A') return;
-        if (e.target.closest('.jm-img-editable__bar')) return;
-        e.preventDefault();
-        const img = card.querySelector('img[data-jm-img-key]');
-        const src = img?.src || card.dataset.jmNuevoSrc;
-        const cap = card.querySelector('figcaption')?.textContent?.trim() || '';
-        if (visorImg && src) {
-          visorImg.src = src;
-          visorImg.alt = cap;
-        }
-        if (visorCap) visorCap.textContent = cap;
-        if (visorLink && src) visorLink.href = src;
-        sec.querySelectorAll('.jm-nuevo-proto__card').forEach((c) => c.classList.remove('jm-nuevo-proto__card--activa'));
-        card.classList.add('jm-nuevo-proto__card--activa');
-      });
-    });
-  });
-};
 
 /** Copia wireframes al objeto ficha (persisten en localStorage al guardar) */
 window.asegurarWireframesJM = function asegurarWireframesJM(cli) {
@@ -569,10 +247,9 @@ if (typeof window.JM_LANDINGS_CARRUSEL_VERSION !== 'number') {
 }
 
 function jmLandingCarruselSrc(item) {
-  if (item.carpeta && item.archivo) {
+  if (item?.carpeta && item?.archivo) {
     return jmWireframeSrc(item.carpeta, item.archivo, { cacheBust: true });
   }
-  if (item.archivo) return jmNuevoPrototipoSrc(item.archivo);
   return '';
 }
 
@@ -654,72 +331,6 @@ window.jmCargarLandingsCarruselDesdeJson = window.jmActualizarLandingsCarrusel;
 
 window.jmLandingsCarruselReady = window.jmActualizarLandingsCarrusel();
 
-/** Landings referencia · móvil (fallback) */
-if (!window.JM_LANDINGS_CARRUSEL_MOBILE || !window.JM_LANDINGS_CARRUSEL_MOBILE.length) {
-  window.JM_LANDINGS_CARRUSEL_MOBILE = [
-    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '01-inicio-referencia-mobile.png', titulo: 'Inicio' },
-    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '02-esencial-referencia-mobile.png', titulo: 'Esencial' },
-    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '03-gold-referencia-mobile.png', titulo: 'Gold' },
-    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '04-deluxe-referencia-mobile.png', titulo: 'Deluxe' },
-    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '05-carrito-referencia-mobile.png', titulo: 'Carrito' },
-    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '06-ayuda-referencia-mobile.png', titulo: 'Ayuda' },
-    { carpeta: 'interfaces/referencia-landings-mobile', archivo: '07-productos-referencia-mobile.png', titulo: 'Productos' }
-  ];
-}
-if (typeof window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION !== 'number') {
-  window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION = 1;
-}
-
-window.jmCargarLandingsCarruselMobileDesdeDirectorio = function jmCargarLandingsCarruselMobileDesdeDirectorio() {
-  const base = window.jmAssetBase || '/index/clientes/joyasmercury/';
-  const dirUrl = base + 'interfaces/referencia-landings-mobile/?t=' + Date.now();
-  return fetch(dirUrl, { cache: 'no-store' })
-    .then((res) => (res.ok ? res.text() : ''))
-    .then((html) => {
-      if (!html || !/\.png/i.test(html)) return false;
-      const pngs = [...new Set(
-        [...html.matchAll(/href="([^"?]+\.png)"/gi)]
-          .map((m) => decodeURIComponent(m[1].split('/').pop() || ''))
-          .filter((name) => name && !name.includes('..'))
-      )].sort();
-      if (!pngs.length) return false;
-      window.JM_LANDINGS_CARRUSEL_MOBILE = pngs.map((archivo) => ({
-        carpeta: 'interfaces/referencia-landings-mobile',
-        archivo,
-        titulo: jmTituloLandingArchivo(archivo)
-      }));
-      window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION = (window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION || 0) + 1;
-      return true;
-    })
-    .catch(() => false);
-};
-
-window.jmActualizarLandingsCarruselMobile = function jmActualizarLandingsCarruselMobile() {
-  const cargarDir = typeof window.jmCargarLandingsCarruselMobileDesdeDirectorio === 'function'
-    ? window.jmCargarLandingsCarruselMobileDesdeDirectorio()
-    : Promise.resolve(false);
-
-  return cargarDir.then((okDir) => {
-    if (okDir) return true;
-    const base = window.jmAssetBase || '/index/clientes/joyasmercury/';
-    const url = base + 'interfaces/referencia-landings-mobile/carrusel.json?t=' + Date.now();
-    return fetch(url, { cache: 'no-store' })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data && Array.isArray(data.items) && data.items.length) {
-          window.JM_LANDINGS_CARRUSEL_MOBILE = data.items;
-          if (typeof data.version === 'number') {
-            window.JM_LANDINGS_CARRUSEL_MOBILE_VERSION = data.version;
-          }
-          return true;
-        }
-        return !!(window.JM_LANDINGS_CARRUSEL_MOBILE && window.JM_LANDINGS_CARRUSEL_MOBILE.length);
-      })
-      .catch(() => !!(window.JM_LANDINGS_CARRUSEL_MOBILE && window.JM_LANDINGS_CARRUSEL_MOBILE.length));
-  });
-};
-
-window.jmLandingsCarruselMobileReady = window.jmActualizarLandingsCarruselMobile();
 
 /** HTML carrusel landings referencia (desktop o móvil) */
 function jmHtmlLandingsCarruselBlock(items, opts) {
@@ -778,76 +389,16 @@ function jmHtmlLandingsCarruselBlock(items, opts) {
   </div>`;
 }
 
-/** Maqueta diseño Inicio · desktop (referencia entregada) */
-function jmHtmlMaquetaDisenoInicio() {
-  const carpeta = 'interfaces/maqueta-diseno';
-  const archivo = 'jm-maqueta-diseno-inicio-desktop.png';
-  const titulo = 'Inicio · maqueta diseño';
-  const src = jmWireframeSrc(carpeta, archivo);
-  const maquetaUrl = (window.jmAssetBase || '') + 'interfaces/maqueta-diseno/index.html?shot=desktop';
-
-  return `<div class="jm-interfaces jm-interfaces--maqueta-diseno" tabindex="0" aria-label="Maqueta diseño Inicio Joyas Mercury">
-    <div class="jm-interfaces__head">
-      <h4 class="jm-interfaces__titulo-seccion">Maqueta diseño · Inicio</h4>
-      <p class="jm-interfaces__intro">Landing desktop <strong>idéntica a la referencia</strong> · hero, colecciones, novedades, últimas unidades y footer gold.</p>
-      <div class="jm-interfaces__viewport-tabs jm-interfaces__viewport-tabs--solo" role="tablist" aria-label="Vista">
-        <span class="jm-interfaces__viewport-tab is-active" role="tab" aria-selected="true">Desktop</span>
-      </div>
-      <p class="jm-interfaces__accion-maqueta">
-        <a href="${jmEscapeHtml(maquetaUrl)}" target="_blank" rel="noopener" class="jm-btn-maqueta">Visualizar maqueta completa</a>
-      </p>
-      <p class="jm-interfaces__hint-reemplazo jm-solo-vista">HTML/CSS en <code>interfaces/maqueta-diseno/</code> · stack Vite + tokens shadcn adaptados a JM.</p>
-    </div>
-    <div class="jm-interfaces__visor jm-interfaces__visor--fullpage">
-      <a href="${jmEscapeHtml(maquetaUrl)}" target="_blank" rel="noopener" class="jm-interfaces__visor-link" title="Abrir maqueta diseño">
-        <img class="jm-interfaces__visor-img" src="${jmEscapeHtml(src)}" alt="${jmEscapeHtml(titulo)}"${jmImgAttrs(carpeta, archivo, src)}>
-      </a>
-      <div class="jm-interfaces__visor-pie">
-        <div class="jm-interfaces__visor-meta">
-          <strong class="jm-interfaces__visor-caption">${jmEscapeHtml(titulo)}</strong>
-          <span class="jm-interfaces__visor-vista">Desktop · 1280px</span>
-        </div>
-      </div>
-    </div>
-  </div>`;
-}
-
 function jmHtmlLandingsCarrusel() {
-  return jmHtmlLandingsCarruselUnificado();
-}
-
-function jmHtmlLandingsCarruselMobile() {
-  const mobileList = window.JM_LANDINGS_CARRUSEL_MOBILE || [];
-  return jmHtmlLandingsCarruselBlock(mobileList, {
-    titulo: 'Landings referencia · Móvil',
-    ariaLabel: 'Landings referencia móvil 390px',
-    grupo: 'landings-mobile',
-    claseExtra: 'jm-interfaces--landings-ref-mobile',
-    introExtra: 'Diagramación <strong>390px</strong>.',
-  });
-}
-
-/** Desktop arriba · móvil abajo (dos carruseles independientes) */
-function jmHtmlLandingsCarruselUnificado() {
   const desktop = window.JM_LANDINGS_CARRUSEL || [];
-  const mobileList = window.JM_LANDINGS_CARRUSEL_MOBILE || [];
   if (!desktop.length) return '';
-
-  const wireInicio = (window.jmAssetBase || '') + 'interfaces/mockups-inicio/wireframe-inicio.html';
-
-  const desktopBlock = jmHtmlLandingsCarruselBlock(desktop, {
-    titulo: 'Landings referencia · Desktop',
-    ariaLabel: 'Landings referencia desktop',
+  return jmHtmlLandingsCarruselBlock(desktop, {
+    titulo: 'Wireframes · Desktop',
+    ariaLabel: 'Wireframes desktop Joyas Mercury',
     grupo: 'landings-desktop',
     claseExtra: 'jm-interfaces--landings-ref-desktop',
-    wireframeReadme: wireInicio,
-    wireframeLinkText: 'Abrir Inicio interactivo (wireframe) →',
-    introExtra: 'Vista desktop.',
+    introExtra: '7 pantallas · vista desktop.',
   });
-
-  const mobileBlock = mobileList.length ? jmHtmlLandingsCarruselMobile() : '';
-
-  return desktopBlock + mobileBlock;
 }
 
 /** HTML carrusel interfaces (auditoría + estado actual) con miniaturas — legacy */
@@ -938,84 +489,6 @@ function jmHtmlGaleriaWireframes(grupo, items) {
     </div>
   </div>`;
 }
-
-/** HTML prototipo interactivo — flujo actual ordenado */
-function jmHtmlPrototipoInteractivo() {
-  const proto = window.JM_BACKUP_FICHA?.prototipo;
-  if (!proto?.pantallas) return '';
-  const inicio = proto.inicio || 'inicio';
-  const pasos = proto.pasos || [];
-  const pantallasHtml = Object.entries(proto.pantallas).map(([id, p]) => {
-    const src = jmWireframeSrc(p.carpeta, p.archivo);
-    const activa = id === inicio ? ' jm-prototipo__pantalla--activa' : '';
-    return `<div class="jm-prototipo__pantalla${activa}" data-pantalla-id="${jmEscapeHtml(id)}" role="tabpanel">
-      <img class="jm-prototipo__img" src="${src}" alt="${jmEscapeHtml(p.titulo)}"${jmImgAttrs(p.carpeta, p.archivo, src)} loading="${id === inicio ? 'eager' : 'lazy'}">
-    </div>`;
-  }).join('');
-  const flujoHtml = pasos.length
-    ? `<ol class="jm-prototipo__flujo-lista">${pasos.map(p =>
-        `<li><button type="button" class="jm-prototipo__flujo-paso${p.id === inicio ? ' jm-prototipo__flujo-paso--activo' : ''}" data-jm-paso="${jmEscapeHtml(p.id)}" data-orden="${p.orden}">${jmEscapeHtml(p.titulo)}</button></li>`
-      ).join('')}</ol>`
-    : '';
-  const tituloInicio = proto.pantallas[inicio]?.titulo || 'Inicio';
-  const totalPasos = pasos.length || Object.keys(proto.pantallas).length;
-  const pasoActual = pasos.find(p => p.id === inicio)?.orden || 1;
-  return `<div class="jm-prototipo jm-prototipo--flujo" data-jm-prototipo tabindex="0" role="application" aria-label="Prototipo interactivo joyasmercury.cl">
-    <div class="jm-prototipo__layout">
-      <aside class="jm-prototipo__flujo" aria-label="Orden del flujo">
-        <h4 class="jm-prototipo__flujo-titulo">${jmEscapeHtml(proto.tituloFlujo || 'Flujo actual')}</h4>
-        ${flujoHtml}
-      </aside>
-      <div class="jm-prototipo__main">
-        <div class="jm-prototipo__bar">
-          <span class="jm-prototipo__badge">Prototipo interactivo</span>
-          <div class="jm-prototipo__acciones">
-            <button type="button" class="btn btn--ghost btn--sm" data-jm-reiniciar>Reiniciar recorrido</button>
-          </div>
-        </div>
-        <p class="jm-prototipo__hint">Recorre el flujo con el panel izquierdo (pasos 1–8). <span class="jm-solo-vista">Para cambiar capturas: <button type="button" class="jm-interfaces__link-editar" data-jm-activar-edicion-prototipo>Editar datos</button> (arriba a la derecha).</span><span class="jm-solo-edicion">Paso activo: usa <strong>Cambiar imagen</strong> en el recuadro de abajo. Se guarda en tu organizador y en otro PC con <strong>↓ Respaldo</strong> + git.</span></p>
-        <div class="jm-prototipo__viewport">
-          <div class="jm-prototipo__stack">${pantallasHtml}</div>
-        </div>
-        <div class="jm-prototipo__visor-edit jm-solo-edicion" data-jm-proto-visor-edit aria-live="polite">
-          <p class="jm-prototipo__visor-edit-label">Reemplazar captura del paso actual</p>
-        </div>
-        <div class="jm-prototipo__pie">
-          <strong class="jm-prototipo__titulo">${jmEscapeHtml(tituloInicio)}</strong>
-          <span class="jm-prototipo__paso" data-jm-paso-contador>Paso ${pasoActual} / ${totalPasos}</span>
-          <span class="jm-prototipo__breadcrumb" data-jm-breadcrumb>Inicio</span>
-        </div>
-      </div>
-    </div>
-  </div>`;
-}
-
-function jmHtmlObjetivoMini(wf) {
-  const items = wf.filter(w => w.grupo === 'Objetivo (Fase 2)');
-  if (!items.length) return '';
-  const mini = items.map(w => {
-    const src = jmWireframeSrc(w.carpeta, w.archivo);
-    return `<figure class="ficha-wireframe">
-      <a href="${src}" target="_blank" rel="noopener" title="Abrir ${jmEscapeHtml(w.titulo)}">
-        <img src="${src}" alt="${jmEscapeHtml(w.titulo)}"${jmImgAttrs(w.carpeta, w.archivo, src)} loading="lazy">
-      </a>
-      <figcaption>${jmEscapeHtml(w.titulo)}</figcaption>
-    </figure>`;
-  }).join('');
-  return `<div class="ficha-wireframes__grupo ficha-wireframes__grupo--mini ficha-wireframes__grupo--objetivo">
-    <h4 class="ficha-wireframes__sub">Objetivo Fase 2</h4>
-    <div class="ficha-wireframes__grid ficha-wireframes__grid--mini">${mini}</div>
-  </div>`;
-}
-
-/** Solo prototipo interactivo (página dedicada, sin galería embebida) */
-window.jmHtmlPrototipoPagina = function jmHtmlPrototipoPagina() {
-  const cuerpo = jmHtmlPrototipoInteractivo();
-  if (!cuerpo) return '';
-  return `<section id="ficha-prototipo-jm" class="ficha-seccion ficha-seccion--wireframes ficha-seccion--prototipo ficha-seccion--prototipo-solo">
-    ${cuerpo}
-  </section>`;
-};
 
 /** Fases Gantt Fase 2 (días hábiles acumulados) */
 window.JM_GANTT_FASES = [
@@ -1282,141 +755,22 @@ window.JM_MAPA_NAVEGACION = (function () {
 /** Resumen breve identidad (landing) */
 window.JM_IDENTIDAD_RESUMEN = 'La identidad de Joyas Mercury exige uso consistente del logotipo JOYAS MERCURY, isotipo «M» con márgenes de ¼, y paleta dorado (#ECC54A, #A97E23), rosa (#C88F9C), nude (#D8BFB1) y gris (#C4C4C4). En Fase 2 aplicamos estos tokens en filtros Esencial/Gold/Deluxe, destacados, botones y cabecera del e-commerce.';
 
-/** Galería HTML de wireframes JM (ficha cliente + portal) */
+/** Galería HTML wireframes JM — solo desktop referencia */
 window.jmHtmlWireframes = function jmHtmlWireframes(opts) {
-  const fromOpts = opts && opts.wireframes;
-  const wf = (Array.isArray(fromOpts) && fromOpts.length)
-    ? fromOpts
-    : (window.JM_BACKUP_FICHA?.wireframes || []);
-  if (!wf?.length && !window.JM_BACKUP_FICHA?.prototipo) return '';
   const claseExtra = (opts && opts.claseExtra) || '';
-  const usarPrototipo = !opts || opts.interactivo !== false;
-  const mostrarObjetivoMini = !opts || opts.objetivoMini !== false;
-  const cuerpo = usarPrototipo
-    ? jmHtmlPrototipoInteractivo()
-      + jmHtmlLandingsCarrusel()
-      + jmHtmlMaquetaDisenoInicio()
-      + (mostrarObjetivoMini ? jmHtmlObjetivoMini(wf) : '')
-    : (() => {
-      const grupos = [];
-      wf.forEach(item => { if (!grupos.includes(item.grupo)) grupos.push(item.grupo); });
-      return grupos.map(grupo => {
-        const items = wf.filter(w => w.grupo === grupo);
-        if (grupo === 'Estado actual del sitio' || items.length >= 3) return jmHtmlGaleriaWireframes(grupo, items);
-        const mini = items.map(w => {
-          const src = jmWireframeSrc(w.carpeta, w.archivo);
-          return `<figure class="ficha-wireframe"><a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${jmEscapeHtml(w.titulo)}"${jmImgAttrs(w.carpeta, w.archivo, src)}></a><figcaption>${jmEscapeHtml(w.titulo)}</figcaption></figure>`;
-        }).join('');
-        return `<div class="ficha-wireframes__grupo ficha-wireframes__grupo--mini"><h4 class="ficha-wireframes__sub">${jmEscapeHtml(grupo)}</h4><div class="ficha-wireframes__grid ficha-wireframes__grid--mini">${mini}</div></div>`;
-      }).join('');
-    })();
-  const intro = usarPrototipo
-    ? 'Prototipo del flujo (pasos 1–8), landings referencia y maqueta diseño Inicio.'
-    : 'Recorre el estado actual del sitio con las flechas o clic izquierda/derecha sobre la imagen.';
-  const atajos = usarPrototipo
-    ? `<p class="ficha-wireframes__atajos"><a href="wireframes.html">Wireframes pantalla completa</a> · <a href="prototipo.html">Prototipo flujo actual</a></p>`
-    : '';
-  return `<section id="ficha-wireframes-jm" class="ficha-seccion ficha-seccion--wireframes ${claseExtra}${usarPrototipo ? ' ficha-seccion--prototipo' : ''}">
+  const cuerpo = jmHtmlLandingsCarrusel();
+  if (!cuerpo) return '';
+  const atajos = `<p class="ficha-wireframes__atajos"><a href="wireframes.html">Wireframes pantalla completa</a></p>`;
+  return `<section id="ficha-wireframes-jm" class="ficha-seccion ficha-seccion--wireframes ${claseExtra}">
     <div class="ficha-seccion__headline">
-      <h3 class="ficha-seccion__titulo">Wireframes actuales</h3>
-      <span class="ficha-seccion__estado">Prototipo · joyasmercury.cl</span>
+      <h3 class="ficha-seccion__titulo">Wireframes · Desktop</h3>
+      <span class="ficha-seccion__estado">joyasmercury.cl · Fase 2</span>
     </div>
-    <p class="ficha-wireframes__intro">${intro}</p>
+    <p class="ficha-wireframes__intro">7 pantallas de referencia en desktop: Inicio, Esencial, Gold, Deluxe, Carrito, Ayuda y Productos.</p>
     ${atajos}
     ${cuerpo}
   </section>`;
 };
-
-/** Navegación del prototipo interactivo */
-window.initJMPrototipo = function initJMPrototipo(root) {
-  const scope = root && root.querySelectorAll ? root : document;
-  const nodos = scope.querySelectorAll ? scope.querySelectorAll('[data-jm-prototipo]') : [];
-  const proto = window.JM_BACKUP_FICHA?.prototipo;
-  if (!proto) return;
-
-  nodos.forEach(el => {
-    if (el.dataset.jmPrototipoBound === '1') return;
-    el.dataset.jmPrototipoBound = '1';
-    const pantallas = [...el.querySelectorAll('.jm-prototipo__pantalla')];
-    const tituloEl = el.querySelector('.jm-prototipo__titulo');
-    const breadcrumbEl = el.querySelector('[data-jm-breadcrumb]');
-    const pasoContadorEl = el.querySelector('[data-jm-paso-contador]');
-    const pasos = proto.pasos || [];
-    const historial = [];
-    let actualId = proto.inicio || 'inicio';
-
-    function ordenDe(id) {
-      const p = pasos.find(x => x.id === id);
-      return p ? p.orden : 0;
-    }
-
-    function tituloDe(id) {
-      return proto.pantallas[id]?.titulo || id;
-    }
-
-    function actualizarFlujoUI(id) {
-      el.querySelectorAll('.jm-prototipo__flujo-paso').forEach(btn => {
-        btn.classList.toggle('jm-prototipo__flujo-paso--activo', btn.dataset.jmPaso === id);
-      });
-      if (pasoContadorEl && pasos.length) {
-        const n = ordenDe(id) || 1;
-        pasoContadorEl.textContent = `Paso ${n} / ${pasos.length}`;
-      }
-    }
-
-    function ir(id, { pushHistory = true } = {}) {
-      if (!proto.pantallas[id]) return;
-      if (pushHistory && actualId !== id) historial.push(actualId);
-      actualId = id;
-      pantallas.forEach(p => {
-        p.classList.toggle('jm-prototipo__pantalla--activa', p.dataset.pantallaId === id);
-      });
-      if (tituloEl) tituloEl.textContent = tituloDe(id);
-      if (breadcrumbEl) {
-        const trail = [...historial, id].map(tituloDe).slice(-3);
-        breadcrumbEl.textContent = trail.join(' → ');
-      }
-      actualizarFlujoUI(id);
-      el.classList.add('jm-prototipo--transicion');
-      setTimeout(() => el.classList.remove('jm-prototipo--transicion'), 220);
-      if (typeof window.jmSyncPrototipoVisorEditBar === 'function') {
-        window.jmSyncPrototipoVisorEditBar(el);
-      }
-    }
-
-    el.querySelectorAll('.jm-prototipo__hotspot').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.preventDefault();
-        e.stopPropagation();
-        const dest = btn.dataset.destino;
-        if (dest) ir(dest);
-      });
-    });
-
-    el.querySelectorAll('[data-jm-paso]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        historial.length = 0;
-        ir(btn.dataset.jmPaso, { pushHistory: false });
-      });
-    });
-
-    el.querySelector('[data-jm-reiniciar]')?.addEventListener('click', () => {
-      historial.length = 0;
-      ir(proto.inicio || 'inicio', { pushHistory: false });
-    });
-
-    el.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && historial.length) {
-        e.preventDefault();
-        const prev = historial.pop();
-        ir(prev, { pushHistory: false });
-      }
-    });
-
-    ir(actualId, { pushHistory: false });
-  });
-};
-
 /** Inicializa carrusel interfaces (miniaturas + visor) */
 window.initJMInterfacesUI = function initJMInterfacesUI(root) {
   const scope = root && root.querySelectorAll ? root : document;
@@ -1503,12 +857,9 @@ window.initJMInterfacesUI = function initJMInterfacesUI(root) {
   });
 };
 
-/** Inicializa carruseles y prototipos JM */
+/** Inicializa carrusel wireframes desktop JM */
 window.initJMWireframesUI = function initJMWireframesUI(root) {
-  if (typeof window.initJMPrototipo === 'function') window.initJMPrototipo(root);
-  if (typeof window.initJMGalerias === 'function') window.initJMGalerias(root);
   if (typeof window.initJMInterfacesUI === 'function') window.initJMInterfacesUI(root);
-  if (typeof window.initJMNuevoPrototipoUI === 'function') window.initJMNuevoPrototipoUI(root);
 };
 
 /** Aplica reemplazos guardados y, en modo edición, permite cambiar imágenes del prototipo */

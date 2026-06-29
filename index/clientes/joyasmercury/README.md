@@ -8,36 +8,45 @@ Todo el trabajo de **joyasmercury.cl** (Fase 2) vive en esta carpeta.
 http://localhost:3000/index/clientes/joyasmercury/
 ```
 
-Incluye: nuevo prototipo Fase 2, landings referencia, maqueta inicio, navegación, identidad, menú objetivo, Gantt y checklist.
+Incluye: **wireframes desktop** (7 pantallas), identidad, menú objetivo, Gantt y checklist.
 
 ## Atajos
 
 | Página | URL |
 |--------|-----|
 | Landing | `/index/clientes/joyasmercury/` |
-| Wireframes (pantalla completa) | `/index/clientes/joyasmercury/wireframes.html` |
-| Prototipo flujo actual | `/index/clientes/joyasmercury/prototipo.html` |
-| Inicio interactivo | `/index/clientes/joyasmercury/interfaces/mockups-inicio/wireframe-inicio.html` |
-| Maqueta inicio referencia | `/index/clientes/joyasmercury/interfaces/maqueta-diseno/index.html` |
+| Wireframes desktop (pantalla completa) | `/index/clientes/joyasmercury/wireframes.html` |
+
+## Wireframes desktop (7 pantallas)
+
+Carpeta: `interfaces/referencia-landings/`
+
+| # | Archivo | Pantalla |
+|---|---------|----------|
+| 1 | `01-inicio-referencia.png` | Inicio |
+| 2 | `02-esencial-referencia.png` | Esencial |
+| 3 | `03-gold-referencia.png` | Gold |
+| 4 | `04-deluxe-referencia.png` | Deluxe |
+| 5 | `05-carrito-referencia.png` | Carrito |
+| 6 | `06-ayuda-referencia.png` | Ayuda |
+| 7 | `07-productos-referencia.png` | Productos |
+
+Regenerar manifiesto tras reemplazar PNG:
+
+```bash
+python3 scripts/sync-jm-landings-carrusel.py
+```
 
 ## Estructura
 
 ```
 joyasmercury/
-├── index.html          ← landing cliente (única ficha)
-├── wireframes.html     ← wireframes embebidos, pantalla completa
-├── prototipo.html      ← flujo actual 8 pantallas
+├── index.html          ← landing cliente
+├── wireframes.html     ← carrusel desktop pantalla completa
 ├── identidad/          ← manual de marca, logos
-├── flujo-actual/       ← capturas producción (prototipo)
-├── interfaces/         ← mockups, referencias, maquetas
-│   ├── maqueta-diseno/
-│   ├── mockups-inicio/
-│   ├── mockups-coleccion/
-│   ├── mockups-carrito/
-│   ├── mockups-ayuda/
-│   ├── mockups-producto/
-│   ├── referencia-landings/
-│   └── referencia-landings-mobile/
+├── interfaces/
+│   ├── referencia-landings/   ← 7 PNG desktop + HTML fuente capturas
+│   └── README.md              ← auditoría sitio (PNG estáticos)
 └── dia-1/              ← guías auditoría menú
 ```
 

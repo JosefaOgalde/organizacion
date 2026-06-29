@@ -6,7 +6,7 @@ Organizador semanal (lunes a domingo) para gestionar trabajo full-time, clientes
 
 Abre `index.html` en el navegador. Los datos se guardan en `localStorage` del navegador.
 
-**Joyas Mercury (landing cliente):** [`index/clientes/joyasmercury/`](index/clientes/joyasmercury/) — wireframes, prototipo, mockups e identidad en un solo lugar. Atajos raíz: [`wireframes-joyas-mercury.html`](wireframes-joyas-mercury.html) · [`prototipo-joyas-mercury.html`](prototipo-joyas-mercury.html) (redirigen a la landing).
+**Joyas Mercury (landing cliente):** [`index/clientes/joyasmercury/`](index/clientes/joyasmercury/) — wireframes desktop e identidad. Atajos raíz: [`wireframes-joyas-mercury.html`](wireframes-joyas-mercury.html) · [`prototipo-joyas-mercury.html`](prototipo-joyas-mercury.html) (redirigen a wireframes desktop).
 
 **Modo manual (desde jun 2026):** el calendario inicia **sin tareas**. Creas encargos con **+ Nueva** cuando avanzas con cada cliente. Las tareas automáticas (JM, PISC, etc.) están desactivadas salvo que actives `meta.autoGenerarTareas` en el respaldo.
 

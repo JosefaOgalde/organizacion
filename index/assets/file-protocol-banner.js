@@ -21,7 +21,7 @@
     '<li>Entra en el navegador a: <a href="' + destino + '">' + destino + '</a></li>' +
     '</ol>' +
     '<p class="file-protocol-banner__nota">Landing JM: <code>/index/clientes/joyasmercury/</code> · ' +
-    'Wireframes y prototipo también viven en esa carpeta.</p>';
+    'Wireframes desktop también viven en esa carpeta.</p>';
 
   document.body.prepend(banner);
 })();

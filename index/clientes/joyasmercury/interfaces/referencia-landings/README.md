@@ -1,8 +1,6 @@
-# Landings referencia · carrusel ficha JM
+# Landings referencia · Desktop
 
-Mockups del carrusel en la landing del cliente.
-
-## Archivos del carrusel (7)
+Capturas **desktop** de las 7 pantallas del diseño Fase 2. Son las únicas visualizadas en la landing JM.
 
 | Archivo | Pantalla |
 |---------|----------|
@@ -14,25 +12,15 @@ Mockups del carrusel en la landing del cliente.
 | `06-ayuda-referencia.png` | Ayuda |
 | `07-productos-referencia.png` | Productos |
 
-## Agregar o reemplazar PNG
-
-1. Copia tus `.png` en **esta carpeta**.
-2. Regenera el manifiesto y el JSON (lee **todos** los `.png` de esta carpeta):
+## Fuente HTML (regenerar inicio + colecciones)
 
 ```bash
+python3 scripts/capturar-jm-referencia-landings.py
 python3 scripts/sync-jm-landings-carrusel.py
 ```
 
-Esto actualiza `carrusel.manifest.js` y `carrusel.json`. La landing carga `carrusel.json` al abrir y muestra **todas** las imágenes listadas.
+Para Carrito, Ayuda y Productos: reemplaza los PNG directamente en esta carpeta y ejecuta `sync-jm-landings-carrusel.py`.
 
-3. Recarga la landing con **Ctrl+Shift+R**:
-   `http://localhost:3000/index/clientes/joyasmercury/`
+## Ver en la landing
 
-El script detecta todos los PNG, actualiza `carrusel.manifest.js` y sube la versión de caché.
-
-## Wireframe interactivo
-
-```
-/index/clientes/joyasmercury/interfaces/referencia-landings/referencia-landings.html?pagina=inicio
-/index/clientes/joyasmercury/interfaces/referencia-landings/referencia-landings.html?pagina=coleccion&coleccion=esencial
-```
+`http://localhost:3000/index/clientes/joyasmercury/` → sección **Wireframes · Desktop**

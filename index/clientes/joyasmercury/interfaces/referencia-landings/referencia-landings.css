@@ -135,6 +135,10 @@ body[data-shot="1"] .ref-tag { display: none; }
   color: var(--gold-dark);
 }
 
+.ref-circle-lg__img--esencial { background: linear-gradient(145deg, #f8e8e8, #e8c4c4); }
+.ref-circle-lg__img--gold { background: linear-gradient(145deg, #f5ecd8, #d4b86a); }
+.ref-circle-lg__img--deluxe { background: linear-gradient(145deg, #efe4f0, #c8a8d0); }
+
 .ref-products {
   display: grid; grid-template-columns: repeat(4, 1fr);
   gap: 1.25rem; max-width: 1100px; margin: 0 auto;
@@ -213,6 +217,10 @@ body[data-shot="1"] .ref-tag { display: none; }
   font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em;
   color: var(--gold-dark);
 }
+
+.ref-cat-circle__img--esencial { background: linear-gradient(145deg, #f8e8e8, #e8c4c4); }
+.ref-cat-circle__img--gold { background: linear-gradient(145deg, #f5ecd8, #d4b86a); }
+.ref-cat-circle__img--deluxe { background: linear-gradient(145deg, #efe4f0, #c8a8d0); }
 
 /* —— Catálogo panel —— */
 .ref-catalog {

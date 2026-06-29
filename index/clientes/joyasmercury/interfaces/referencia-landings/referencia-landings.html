@@ -41,15 +41,15 @@
       <h2 class="ref-section__title">COLECCIONES</h2>
       <div class="ref-circles-3">
         <div class="ref-circle-lg">
-          <div class="ref-circle-lg__img" style="background-image:url('../../flujo-actual/02-coleccion-esencial.png');background-position:center 35%;background-size:280%"></div>
+          <div class="ref-circle-lg__img ref-circle-lg__img--esencial"></div>
           <p class="ref-circle-lg__name">ESENCIAL</p>
         </div>
         <div class="ref-circle-lg">
-          <div class="ref-circle-lg__img" style="background-image:url('../../flujo-actual/03-coleccion-gold.png');background-position:center 35%;background-size:280%"></div>
+          <div class="ref-circle-lg__img ref-circle-lg__img--gold"></div>
           <p class="ref-circle-lg__name">GOLD</p>
         </div>
         <div class="ref-circle-lg">
-          <div class="ref-circle-lg__img" style="background-image:url('../../flujo-actual/04-coleccion-deluxe.png');background-position:center 35%;background-size:280%"></div>
+          <div class="ref-circle-lg__img ref-circle-lg__img--deluxe"></div>
           <p class="ref-circle-lg__name">DELUXE</p>
         </div>
       </div>
@@ -120,21 +120,21 @@
         clase: 'ref-hero-col__title--esencial',
         sub: 'Por que sentirse bonita y encontrar algo especial debería estar al alcance de todas.',
         chip: 'esencial',
-        bg: '../../flujo-actual/02-coleccion-esencial.png'
+        bg: 'esencial'
       },
       gold: {
         titulo: 'GOLD',
         clase: 'ref-hero-col__title--gold',
         sub: 'Mayor resistencia y duración para acompañarte más tiempo',
         chip: 'gold',
-        bg: '../../flujo-actual/03-coleccion-gold.png'
+        bg: 'gold'
       },
       deluxe: {
         titulo: 'DELUXE',
         clase: 'ref-hero-col__title--deluxe',
         sub: 'Diseños exclusivos que elevan cada look. Porque algunos detalles te hacen brillar.',
         chip: 'deluxe',
-        bg: '../../flujo-actual/04-coleccion-deluxe.png'
+        bg: 'deluxe'
       }
     };
 
@@ -213,7 +213,7 @@
       document.getElementById('col-sub').textContent = c.sub;
       document.getElementById('cat-circles').innerHTML = CATS.map((n, i) =>
         `<div class="ref-cat-circle">
-          <div class="ref-cat-circle__img" style="background-image:url('${c.bg}');background-position:${15 + i * 18}% 28%;background-size:500%"></div>
+          <div class="ref-cat-circle__img ref-cat-circle__img--${c.bg}" data-i="${i}"></div>
           <p class="ref-cat-circle__name">${n}</p>
         </div>`
       ).join('');

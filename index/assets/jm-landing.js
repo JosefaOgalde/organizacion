@@ -269,14 +269,9 @@
       </div>`;
   }
 
-  function nuevoPrototipoHtml() {
-    if (typeof window.jmHtmlNuevoPrototipo !== 'function') return '';
-    return window.jmHtmlNuevoPrototipo({ claseExtra: 'ficha-seccion--portal' });
-  }
-
-  function prototipoEmbebidoHtml() {
+  function wireframesEmbebidosHtml() {
     if (typeof window.jmHtmlWireframes !== 'function') return '';
-    return window.jmHtmlWireframes({ interactivo: true, objetivoMini: false, claseExtra: 'ficha-seccion--portal' });
+    return window.jmHtmlWireframes({ claseExtra: 'ficha-seccion--portal' });
   }
 
   function fechaGuardadoTexto(cli) {
@@ -291,8 +286,7 @@
 
   function render() {
     const cli = cargarDatos();
-    const nuevoPrototipo = nuevoPrototipoHtml();
-    const wireframes = prototipoEmbebidoHtml();
+    const wireframes = wireframesEmbebidosHtml();
     const guardadoTxt = fechaGuardadoTexto(cli);
     root.innerHTML = `
       <div class="jm-landing jm-landing--ficha${modoEdicion ? ' jm-landing--edicion' : ''}" style="--jm-border:${colores.border};--jm-bg:${colores.bg};--jm-text:${colores.text}">
@@ -300,15 +294,14 @@
           <a href="../" class="jm-btn jm-btn--ghost">← Volver</a>
           <span class="jm-ficha-top__tipo">Freelance · JM</span>
           <div class="jm-landing__toolbar">
-            <a href="wireframes.html" class="jm-btn jm-btn--ghost">Wireframes</a>
-            <a href="prototipo.html" class="jm-btn jm-btn--ghost">Prototipo</a>
+            <a href="wireframes.html" class="jm-btn jm-btn--ghost">Wireframes desktop</a>
             <a href="../../../" class="jm-btn jm-btn--celeste">Organizador</a>
             <button type="button" class="jm-btn${modoEdicion ? ' jm-btn--active' : ''}" id="jm-btn-editar">
               ${modoEdicion ? 'Guardar datos' : 'Editar datos'}
             </button>
           </div>
         </header>
-        ${modoEdicion ? '<p class="jm-landing__hint-edicion jm-solo-edicion">Imágenes cargadas: agregar, reemplazar, editar título/notas o borrar. En prototipos JM también puedes cambiar u ocultar capturas integradas.</p>' : ''}
+        ${modoEdicion ? '<p class="jm-landing__hint-edicion jm-solo-edicion">Imágenes cargadas: agregar, reemplazar, editar título/notas o borrar en los wireframes desktop.</p>' : ''}
 
         <article class="ficha-doc ficha-doc--jm ficha-doc--wireframes jm-ficha-doc${modoEdicion ? ' ficha-doc--edicion' : ''}">
           <header class="ficha-doc__encabezado" style="border-bottom-color:${colores.border}">
@@ -325,10 +318,6 @@
               </div>
             </div>
           </header>
-
-          ${nuevoPrototipo}
-
-          ${imagenesGaleriaHtml()}
 
           ${wireframes}
 
@@ -467,25 +456,6 @@
       });
     });
 
-    root.querySelectorAll('[data-jm-activar-edicion-prototipo]').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (!modoEdicion) {
-          modoEdicion = true;
-          render();
-        }
-        const proto = root.querySelector('[data-jm-prototipo]');
-        proto?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        proto?.querySelector('[data-jm-proto-visor-edit]')?.classList.add('jm-prototipo__visor-edit--pulse');
-        setTimeout(() => {
-          proto?.querySelector('[data-jm-proto-visor-edit]')?.classList.remove('jm-prototipo__visor-edit--pulse');
-        }, 2000);
-        if (typeof window.jmSyncPrototipoVisorEditBar === 'function' && proto) {
-          window.jmSyncPrototipoVisorEditBar(proto);
-        }
-      });
-    });
-
     document.getElementById('jm-identidad-toggle')?.addEventListener('click', () => {
       const det = document.getElementById('jm-identidad-detalle');
       const btn = document.getElementById('jm-identidad-toggle');
@@ -536,13 +506,9 @@
 
   document.title = 'Joyas Mercury · Landing cliente';
   const boot = () => {
-    const promises = [window.jmLandingsCarruselReady, window.jmLandingsCarruselMobileReady]
-      .filter((p) => p && typeof p.then === 'function');
-    if (promises.length) {
-      Promise.all(promises).finally(() => render());
-    } else {
-      render();
-    }
+    const ready = window.jmLandingsCarruselReady;
+    if (ready && typeof ready.then === 'function') ready.finally(() => render());
+    else render();
   };
   boot();
 })();

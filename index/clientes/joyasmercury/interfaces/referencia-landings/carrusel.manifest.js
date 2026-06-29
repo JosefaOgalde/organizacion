@@ -13,4 +13,4 @@ window.JM_LANDINGS_CARRUSEL = [
 ];
 
 /** Súbelo al reemplazar PNGs para forzar recarga en el navegador */
-window.JM_LANDINGS_CARRUSEL_VERSION = 6;
+window.JM_LANDINGS_CARRUSEL_VERSION = 7;

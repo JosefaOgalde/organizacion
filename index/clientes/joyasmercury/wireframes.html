@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wireframes · Joyas Mercury</title>
+  <title>Wireframes desktop · Joyas Mercury</title>
   <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../assets/jm-landing.css">
   <style>
-    body { margin: 0; background: #3d3d3d; padding: 1rem; }
-    .wrap { max-width: 920px; margin: 0 auto; }
+    body { margin: 0; background: #f5f0ec; padding: 1rem; }
+    .wrap { max-width: 980px; margin: 0 auto; }
     header {
       background: #fdf0f4;
       border: 2px solid #e8b8c8;
@@ -38,23 +39,29 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>Joyas Mercury · wireframes actuales</h1>
-      <p>joyasmercury.cl — flechas o clic izquierda/derecha en la imagen para navegar.</p>
+      <h1>Joyas Mercury · wireframes desktop</h1>
+      <p>7 pantallas de referencia · flechas o miniaturas para navegar.</p>
       <nav>
         <a href="./">← Landing JM</a>
-        <a href="prototipo.html" class="ghost">Prototipo interactivo</a>
         <a href="../../../index.html" class="ghost">Organizador</a>
       </nav>
     </header>
     <div id="galeria-root"></div>
   </div>
+  <script src="interfaces/referencia-landings/carrusel.manifest.js"></script>
   <script src="../../../data/jm-backup-contenido.js"></script>
+  <script src="../../assets/cliente-landing-imagenes.js"></script>
   <script>
     (function () {
       const root = document.getElementById('galeria-root');
       if (!root || typeof window.jmHtmlWireframes !== 'function') return;
-      root.innerHTML = window.jmHtmlWireframes();
-      if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
+      const ready = window.jmLandingsCarruselReady;
+      const boot = () => {
+        root.innerHTML = window.jmHtmlWireframes();
+        if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
+      };
+      if (ready && typeof ready.then === 'function') ready.finally(boot);
+      else boot();
     })();
   </script>
 </body>
