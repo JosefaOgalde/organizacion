@@ -844,8 +844,8 @@
   function urlLandingCliente(cliId) {
     if (cliId === 'cli-joyas-mercury') {
       const p = (location.pathname || '').replace(/\\/g, '/');
-      if (/\/index\/clientes\//i.test(p)) return 'joyasmercury/';
-      return 'index/clientes/joyasmercury/';
+      if (/\/index\/clientes\//i.test(p)) return 'joyasmercury/index.html?v=landing8';
+      return 'index/clientes/joyasmercury/index.html?v=landing8';
     }
     if (typeof window.CLIENTES_PORTAL !== 'undefined') {
       const e = window.CLIENTES_PORTAL.find((x) => x.id === cliId);

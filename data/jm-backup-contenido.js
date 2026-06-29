@@ -29,7 +29,7 @@ Este manual reúne las herramientas básicas para el correcto uso y aplicación 
 - Respetar márgenes del logo e isotipo en headers, favicon y piezas gráficas`;
 
 window.JM_BACKUP_FICHA = {
-  version: 6,
+  version: 8,
   metas: `Etapa 2 — Rediseño joyasmercury.cl
 - Navegación limpia y elegante (referencia joyería premium)
 - Filtros visuales Esencial / Gold / Deluxe en la misma vista (sin cambiar de página)
@@ -184,9 +184,54 @@ window.jmWireframeSrc = function jmWireframeSrc(carpeta, archivo, opts) {
 };
 
 
+/** Migra datos JM guardados (rutas JoyasMercury, prototipo, overrides rotos) */
+window.jmMigrarLandingJM = function jmMigrarLandingJM(cli) {
+  if (!cli || cli.id !== 'cli-joyas-mercury') return false;
+  if (!cli.ficha || typeof cli.ficha !== 'object') cli.ficha = {};
+  if (!cli.ficha.landing || typeof cli.ficha.landing !== 'object') cli.ficha.landing = {};
+  const landing = cli.ficha.landing;
+  const schemaV = landing.landingSchemaVersion || 0;
+  const needs = schemaV < 8
+    || !!cli.ficha.prototipo
+    || (Array.isArray(cli.ficha.wireframes) && cli.ficha.wireframes.some((w) => (
+      w.grupo && String(w.grupo).includes('prototipo')
+    ) || (w.carpeta && !String(w.carpeta).includes('referencia-landings'))));
+  if (!needs) return false;
+
+  const src = window.JM_BACKUP_FICHA?.wireframes || [];
+  cli.ficha.wireframes = src.map((w) => ({ ...w }));
+  delete cli.ficha.prototipo;
+
+  const ov = landing.imagenesOverrides && typeof landing.imagenesOverrides === 'object'
+    ? landing.imagenesOverrides
+    : {};
+  const fixed = {};
+  Object.keys(ov).forEach((k) => {
+    const m = String(k).match(/(\d{2}-[a-z]+-referencia\.png)/i);
+    if (m) fixed[`jm:interfaces/referencia-landings/${m[1].toLowerCase()}`] = ov[k];
+    else if (k.startsWith('jm:interfaces/referencia-landings/')) fixed[k] = ov[k];
+  });
+  landing.imagenesOverrides = fixed;
+
+  if (Array.isArray(landing.imagenesOcultas)) {
+    landing.imagenesOcultas = landing.imagenesOcultas
+      .map((k) => {
+        const m = String(k).match(/(\d{2}-[a-z]+-referencia\.png)/i);
+        if (m) return `jm:interfaces/referencia-landings/${m[1].toLowerCase()}`;
+        return k.startsWith('jm:interfaces/referencia-landings/') ? k : null;
+      })
+      .filter(Boolean);
+  }
+
+  landing.landingSchemaVersion = 8;
+  cli.ficha.landingVersion = Math.max(cli.ficha.landingVersion || 0, 8);
+  return true;
+};
+
 /** Copia wireframes al objeto ficha (persisten en localStorage al guardar) */
 window.asegurarWireframesJM = function asegurarWireframesJM(cli) {
   if (!cli || cli.id !== 'cli-joyas-mercury') return;
+  if (typeof window.jmMigrarLandingJM === 'function') window.jmMigrarLandingJM(cli);
   if (!cli.ficha || typeof cli.ficha !== 'object') {
     cli.ficha = { contacto: '', links: '', notas: '', seccionesExtra: [], documentos: [] };
   }
@@ -203,8 +248,13 @@ window.asegurarWireframesJM = function asegurarWireframesJM(cli) {
   if (!Array.isArray(cli.ficha.landing.imagenes)) cli.ficha.landing.imagenes = [];
   const src = window.JM_BACKUP_FICHA?.wireframes;
   if (!src?.length) return;
-  if (!Array.isArray(cli.ficha.wireframes) || !cli.ficha.wireframes.length) {
-    cli.ficha.wireframes = src.map(w => ({ ...w }));
+  const actual = Array.isArray(cli.ficha.wireframes) ? cli.ficha.wireframes : [];
+  const obsoleto = !actual.length || actual.some((w) => (
+    (w.grupo && String(w.grupo).toLowerCase().includes('prototipo'))
+    || (w.carpeta && !String(w.carpeta).includes('referencia-landings'))
+  ));
+  if (obsoleto || actual.length !== src.length) {
+    cli.ficha.wireframes = src.map((w) => ({ ...w }));
   }
 };
 
@@ -621,6 +671,8 @@ window.jmAsegurarDatosMinimos = function jmAsegurarDatosMinimos(data) {
   if (!data || typeof data !== 'object') return data;
   if (!Array.isArray(data.tareas)) data.tareas = [];
   if (!Array.isArray(data.clientes)) data.clientes = [];
+  const cli = data.clientes.find((c) => c.id === window.JM_CLI_SYNC_ID);
+  if (cli && typeof window.jmMigrarLandingJM === 'function') window.jmMigrarLandingJM(cli);
   const seeds = window.JM_TODO_SEED || [];
   const inicio = window.JM_CALENDARIO_INICIO || '2026-06-23';
   seeds.forEach((todo, indice) => {

@@ -20,9 +20,16 @@
     return { border: '#98c8e0', bg: '#e8f4fc', text: '#4a7a9e' };
   }
 
+  function landingJoyasMercury() {
+    return 'joyasmercury/index.html?v=landing8';
+  }
+
   function archivoDe(c) {
+    if (c.id === 'cli-joyas-mercury' || c.slug === 'joyas-mercury' || c.slug === 'joyasmercury') {
+      return landingJoyasMercury();
+    }
     const estatico = typeof CLIENTES_PORTAL !== 'undefined'
-      ? CLIENTES_PORTAL.find((x) => x.slug === c.slug || x.id === `cli-${c.slug}`)
+      ? CLIENTES_PORTAL.find((x) => x.slug === c.slug || x.id === c.id || x.id === `cli-${c.slug}`)
       : null;
     return estatico?.archivo || `${c.slug}.html`;
   }

@@ -113,6 +113,17 @@
     if (!Array.isArray(datos.tareas)) datos.tareas = [];
     if (typeof window.jmAsegurarDatosMinimos === 'function') window.jmAsegurarDatosMinimos(datos);
     let cli = datos.clientes.find((c) => c.id === CLI_ID);
+    if (cli && typeof window.jmMigrarLandingJM === 'function' && window.jmMigrarLandingJM(cli)) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+        if (typeof window.persistOrganizacionToDisk === 'function') {
+          window.persistOrganizacionToDisk(datos);
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    cli = datos.clientes.find((c) => c.id === CLI_ID);
     if (!cli) {
       const seed = typeof CLIENTES_PORTAL !== 'undefined'
         ? CLIENTES_PORTAL.find((c) => c.id === CLI_ID)
