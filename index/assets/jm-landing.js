@@ -158,11 +158,11 @@
     }
     asegurarLandingJM(cli);
     if (typeof window.asegurarWireframesJM === 'function') window.asegurarWireframesJM(cli);
+    landing = cli.ficha.landing;
     asegurarSeccionesLanding();
     if (typeof window.jmAplicarProgresoChecklist === 'function') window.jmAplicarProgresoChecklist(datos);
     if (typeof window.jmFusionarTodosExtra === 'function') window.jmFusionarTodosExtra(datos);
     if (typeof window.jmSyncLandingDesdeTareas === 'function') window.jmSyncLandingDesdeTareas(datos);
-    landing = cli.ficha.landing;
     return cli;
   }
 
@@ -294,6 +294,7 @@
   let seccionPendienteEliminar = null;
 
   function asegurarSeccionesLanding() {
+    if (!landing) return;
     if (!Array.isArray(landing.seccionesEliminadas)) landing.seccionesEliminadas = [];
   }
 
@@ -671,9 +672,18 @@
 
   document.title = 'Joyas Mercury · Landing cliente';
   const boot = () => {
-    const ready = window.jmLandingsCarruselReady;
-    if (ready && typeof ready.then === 'function') ready.finally(() => render());
-    else render();
+    try {
+      const ready = window.jmLandingsCarruselReady;
+      if (ready && typeof ready.then === 'function') ready.finally(() => render());
+      else render();
+    } catch (err) {
+      console.error('[jm-landing]', err);
+      root.innerHTML = `<div class="jm-landing jm-landing--error" style="padding:1.5rem;background:#fff;border-radius:12px;margin:1rem">
+        <h1 style="margin:0 0 0.5rem;font-size:1.1rem">No se pudo cargar la landing</h1>
+        <p style="margin:0 0 0.75rem;color:#666">Actualiza el proyecto (<code>git pull origin main</code>) y recarga con <strong>Ctrl+Shift+R</strong>.</p>
+        <p style="margin:0;font-size:0.85rem;color:#a33">${escapeHtml(err && err.message ? err.message : String(err))}</p>
+      </div>`;
+    }
   };
   boot();
 })();
