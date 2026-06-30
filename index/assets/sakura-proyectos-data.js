@@ -4,7 +4,7 @@ window.SAKURA_PROYECTOS = {
     codigo: 'CASCO',
     nombre: 'Prototipo Casco',
     descripcion:
-      'Casco modular anti-rascado para felina — barrera lisa en nuca/dorso, ranuras para orejas, anillo TPU en cuello.',
+      'Bóveda anti-rascado: cubre cabeza (no hocico), ranuras para orejas, acoples para collar. Modular PETG+TPU.',
     cliente: 'Sakura',
     carpeta: 'prototipo-casco',
     fase: 2,

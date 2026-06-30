@@ -6,6 +6,8 @@ Gatita de 3,5 kg se rasca detrás de las orejas hasta lastimarse. El collar isab
 
 ## Principio rector
 
+Ver **`CONCEPTO-CASCO.md`** — bóveda minimalista, orejas por ranuras, secciones para collar. **No espartano.**
+
 ```
 Pata trasera ──► arco hacia nuca
                       │
