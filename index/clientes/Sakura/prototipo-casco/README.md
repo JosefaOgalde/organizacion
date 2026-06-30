@@ -19,7 +19,7 @@ index/clientes/Sakura/prototipo-casco.html
 ## Estado Fase 1
 
 - [x] Medidas base (10 valores)
-- [ ] Confirmar ancho base oreja (¿60 mm o ~20 mm?)
+- [x] Ancho base oreja confirmado: **20 mm**
 - [ ] Medidas bigotes / bostezo / mandíbula
 - [ ] Fotos + video con escala
 - [ ] Réplica 3D validada ±2 mm

@@ -15,14 +15,14 @@
     "anchoCabeza": 100,
     "alturaCabeza": 60,
     "orejaLargo": 70,
-    "orejaAnchoBase": 60,
+    "orejaAnchoBase": 20,
     "orejaSeparacionBases": 30,
     "ojoABaseOreja": 30,
     "baseOrejaAZonaRascado": 30,
     "largoCuello": 70
   },
   "notasMedicion": {
-    "orejaAnchoBase": "Revisar: 60 mm parece alto para cabeza de 100 mm ancho; confirmar si es 20-25 mm por oreja"
+    "orejaAnchoBase": "Confirmado 20 mm (2 cm) por oreja"
   },
   "holguras": {
     "interiorCraneal": 3,
@@ -32,7 +32,7 @@
   "diseno": {
     "extensionPanelNuca": 50,
     "ranuraOrejaAltura": 80,
-    "ranuraOrejaAnchoProvisional": 28,
+    "ranuraOrejaAncho": 25,
     "anilloCuelloInterior": 207,
     "grosorParedPetg": 2,
     "grosorTpu": 1.5,

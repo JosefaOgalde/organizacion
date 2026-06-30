@@ -24,7 +24,7 @@ window.SAKURA_PROYECTOS = {
       largoCabeza: '120 mm',
       anchoCabeza: '100 mm',
       alturaCabeza: '60 mm',
-      oreja: '70 mm largo · separación bases 30 mm',
+      oreja: '70 mm largo · base 20 mm · separación bases 30 mm',
       zonaRascado: '30 mm detrás de base oreja',
       peso: '3,5 kg'
     },

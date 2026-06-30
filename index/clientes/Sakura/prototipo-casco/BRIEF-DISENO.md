@@ -50,7 +50,7 @@ Diseña en Fusion 360 (paramétrico):
 2. Módulo A+C: bóveda continua PETG, superficie exterior lisa
    - Cubre dorso + nuca con extensión posterior ≥50 mm desde base oreja
    - Interior offset +3 mm sobre réplica
-3. Módulo B: dos ranuras 80×28 mm (ajustar tras confirmar ancho oreja)
+3. Módulo B: dos ranuras 80×25 mm
 4. Módulo D: anillo TPU circ. interior 207 mm, altura 15–20 mm
 5. Ventilación: perforaciones 4–6 mm en cúpula
 6. Exportar STEP + STL; simular arco de pata trasera (radio ~80–100 mm)
