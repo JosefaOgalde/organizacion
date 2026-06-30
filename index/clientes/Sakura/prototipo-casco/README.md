@@ -21,19 +21,17 @@
 | [VIDEO-ANALISIS.md](./VIDEO-ANALISIS.md) | Análisis video referencia |
 | [parametros-cad.json](./parametros-cad.json) | Valores numéricos |
 
-## CAD (Fase 2)
+## CAD (Fase 2.2 — modular impresora)
 
 ```
-cad/fase-2/
-├── replica_gata.stl
-├── casco_AC_boveda.stl
-├── anillo_D_cuello.stl
-├── casco_ensamblado.stl
-├── casco_parametrico.scad        ← maestro Fase 2
-└── casco_parametrico_v2.1.scad   ← falda+anillo, flancos 18 mm
+cad/fase-2/modular/
+├── 01_modA_espartano_sakura.stl   ← cúpula (PETG, reparar malla)
+├── 02_modC_panel_nuca.stl         ← panel nuca (PETG)
+├── 03_modD_anillo_cuello.stl      ← anillo cuello (TPU)
+└── GUIA-IMPRESION.md              ← configuración slicer
 ```
 
-Abrir `.scad` en OpenSCAD → F6 → exportar STL.
+Ver también `cad/fase-2/` para versión monolítica Fase 2.
 
 ## Portal
 

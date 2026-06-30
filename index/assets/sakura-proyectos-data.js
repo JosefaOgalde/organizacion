@@ -49,8 +49,8 @@ window.SAKURA_PROYECTOS = {
       {
         id: 'fase-22-modular',
         titulo: 'STL modular para impresora',
-        estado: 'pendiente',
-        notas: 'Usar PROMPT-IMPRESION-MODULAR.md — piezas separadas PETG+TPU.'
+        estado: 'en-progreso',
+        notas: '3 piezas en cad/fase-2/modular/ + GUIA-IMPRESION.md. Falta falda, clips, correa.'
       },
       {
         id: 'prototipo-impreso',
@@ -60,7 +60,7 @@ window.SAKURA_PROYECTOS = {
       }
     ],
     recursos: [
-      { titulo: 'CAD Fase 2 (STL + SCAD)', ruta: 'prototipo-casco/cad/fase-2/' },
+      { titulo: 'Prompt impresión modular', ruta: 'prototipo-casco/PROMPT-IMPRESION-MODULAR.md' },
       { titulo: 'Resultados Fase 2', ruta: 'prototipo-casco/FASE-2-RESULTADOS.md' },
       { titulo: 'Frames clave', ruta: 'prototipo-casco/referencias/video-2026-06-29/clave/' },
       { titulo: 'Medidas gatita', ruta: 'prototipo-casco/medidas-gatita.md' },

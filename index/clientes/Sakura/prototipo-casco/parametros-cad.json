@@ -62,5 +62,15 @@
     "archivos": "cad/fase-2/",
     "resultados": "FASE-2-RESULTADOS.md",
     "pendienteFase21": ["falda-anillo-fundida", "flancos-18mm", "carton-1-1", "bigotes", "video-rascado"]
+  },
+  "fase22Modular": {
+    "estado": "parcial-3-piezas",
+    "carpeta": "cad/fase-2/modular/",
+    "piezas": [
+      { "archivo": "01_modA_espartano_sakura.stl", "modulo": "A", "material": "PETG", "watertight": false },
+      { "archivo": "02_modC_panel_nuca.stl", "modulo": "C", "material": "PETG", "masaEstG": 16.9, "watertight": true },
+      { "archivo": "03_modD_anillo_cuello.stl", "modulo": "D", "material": "TPU", "masaEstG": 4.6, "watertight": true }
+    ],
+    "guia": "cad/fase-2/modular/GUIA-IMPRESION.md"
   }
 }
