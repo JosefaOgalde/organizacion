@@ -1,0 +1,42 @@
+{
+  "proyecto": "Sakura · Prototipo Casco",
+  "fase": 1,
+  "objetivo": "barrera anti-rascado nuca — no encapsulamiento",
+  "fechaMedicion": "2026-06-29",
+  "unidad": "mm",
+  "sujeto": {
+    "pesoKg": 3.5,
+    "pesoMaxCascoG": 100
+  },
+  "medidas": {
+    "circunferenciaCraneal": 230,
+    "circunferenciaCuello": 200,
+    "largoCabeza": 120,
+    "anchoCabeza": 100,
+    "alturaCabeza": 60,
+    "orejaLargo": 70,
+    "orejaAnchoBase": 60,
+    "orejaSeparacionBases": 30,
+    "ojoABaseOreja": 30,
+    "baseOrejaAZonaRascado": 30,
+    "largoCuello": 70
+  },
+  "notasMedicion": {
+    "orejaAnchoBase": "Revisar: 60 mm parece alto para cabeza de 100 mm ancho; confirmar si es 20-25 mm por oreja"
+  },
+  "holguras": {
+    "interiorCraneal": 3,
+    "interiorCuello": 7,
+    "ranuraOrejaPorLado": 5
+  },
+  "diseno": {
+    "extensionPanelNuca": 50,
+    "ranuraOrejaAltura": 80,
+    "ranuraOrejaAnchoProvisional": 28,
+    "anilloCuelloInterior": 207,
+    "grosorParedPetg": 2,
+    "grosorTpu": 1.5,
+    "fileteBordeMinimo": 2.5
+  },
+  "modulos": ["A-cupula", "B-ranuras-orejas", "C-panel-nuca", "D-anillo-cuello-tpu", "E-mentonera-opcional", "F-cierre"]
+}

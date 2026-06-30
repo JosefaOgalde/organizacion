@@ -33,12 +33,29 @@
     )
     .join('');
 
+  const medidasHtml = proyecto.medidas
+    ? `<section>
+        <h2>Medidas registradas</h2>
+        <p><em>${escapeHtml(proyecto.principioDiseno || '')}</em></p>
+        <ul>
+          <li>Circ. craneal: ${escapeHtml(proyecto.medidas.circunferenciaCraneal)}</li>
+          <li>Circ. cuello: ${escapeHtml(proyecto.medidas.circunferenciaCuello)}</li>
+          <li>Cabeza: ${escapeHtml(proyecto.medidas.largoCabeza)} × ${escapeHtml(proyecto.medidas.anchoCabeza)} × ${escapeHtml(proyecto.medidas.alturaCabeza)}</li>
+          <li>Orejas: ${escapeHtml(proyecto.medidas.oreja)}</li>
+          <li>Zona rascado: ${escapeHtml(proyecto.medidas.zonaRascado)}</li>
+          <li>Peso: ${escapeHtml(proyecto.medidas.peso)}</li>
+        </ul>
+      </section>`
+    : '';
+
   root.innerHTML = `
     <article class="portal-cliente portal-cliente--proyecto"
       style="--card-border:${col.secundario};--card-bg:${col.fondo};--card-text:${col.texto}">
-      <span class="portal-badge">${escapeHtml(proyecto.codigo)}</span>
+      <span class="portal-badge">${escapeHtml(proyecto.codigo)} · Fase ${proyecto.fase || 1}</span>
       <h1>${escapeHtml(proyecto.nombre)}</h1>
       <p class="portal-cliente__meta">${escapeHtml(proyecto.cliente)} · ${escapeHtml(proyecto.descripcion)}</p>
+
+      ${medidasHtml}
 
       <section>
         <h2>Entregables</h2>

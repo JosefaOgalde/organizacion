@@ -1,6 +1,14 @@
 # Proyecto Prototipo Casco — Sakura
 
-Espacio de trabajo para el desarrollo del prototipo de casco.
+**Casco modular anti-rascado** para felina (3,5 kg). Barrera lisa en nuca/dorso — no encapsulamiento de orejas.
+
+## Documentos clave
+
+| Archivo | Contenido |
+|---------|-----------|
+| [BRIEF-DISENO.md](./BRIEF-DISENO.md) | Principio rector, módulos, prompt Fase 2 |
+| [medidas-gatita.md](./medidas-gatita.md) | Tabla de medidas y parámetros derivados |
+| [parametros-cad.json](./parametros-cad.json) | Valores numéricos para Fusion / Blender |
 
 ## Portal
 
@@ -8,33 +16,14 @@ Espacio de trabajo para el desarrollo del prototipo de casco.
 index/clientes/Sakura/prototipo-casco.html
 ```
 
-Con servidor local (`npx serve .`):
+## Estado Fase 1
 
-```
-http://localhost:3000/index/clientes/Sakura/prototipo-casco.html
-```
+- [x] Medidas base (10 valores)
+- [ ] Confirmar ancho base oreja (¿60 mm o ~20 mm?)
+- [ ] Medidas bigotes / bostezo / mandíbula
+- [ ] Fotos + video con escala
+- [ ] Réplica 3D validada ±2 mm
 
-## Estructura
+## Invocar en Cursor
 
-```
-prototipo-casco/
-├── README.md          ← este archivo
-└── identidad/         ← manual de marca, referencias, assets del proyecto
-```
-
-## Trabajar en Cursor
-
-```
-Cliente: Sakura
-Proyecto: Prototipo Casco
-Tarea de hoy: [concepto / modelo / renders]
-Necesito: [lo concreto]
-```
-
-También puedes invocar `@sakura-casco` en el chat.
-
-## Entregables previstos
-
-1. **Concepto inicial** — referencias, silueta y materiales
-2. **Modelo 3D / wireframe** — volumetría y proporciones
-3. **Renders / vistas** — frontales, laterales y detalle de acabados
+`@sakura-casco` + medidas en `parametros-cad.json`

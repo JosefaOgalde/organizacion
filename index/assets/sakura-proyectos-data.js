@@ -3,9 +3,13 @@ window.SAKURA_PROYECTOS = {
   CASCO: {
     codigo: 'CASCO',
     nombre: 'Prototipo Casco',
-    descripcion: 'Prototipo de casco — diseño, modelado y entregables visuales.',
+    descripcion:
+      'Casco modular anti-rascado para felina — barrera lisa en nuca/dorso, ranuras para orejas, anillo TPU en cuello.',
     cliente: 'Sakura',
     carpeta: 'prototipo-casco',
+    fase: 1,
+    principioDiseno:
+      'Barrera abovedada de huella mínima: la pata resbala; no encapsular orejas (ranuras, no cavidades).',
     colores: {
       primario: '#C45C7A',
       secundario: '#E8A8B8',
@@ -14,28 +18,40 @@ window.SAKURA_PROYECTOS = {
       texto: '#5A2A3A',
       textoClaro: '#FFFFFF'
     },
+    medidas: {
+      circunferenciaCraneal: '230 mm',
+      circunferenciaCuello: '200 mm',
+      largoCabeza: '120 mm',
+      anchoCabeza: '100 mm',
+      alturaCabeza: '60 mm',
+      oreja: '70 mm largo · separación bases 30 mm',
+      zonaRascado: '30 mm detrás de base oreja',
+      peso: '3,5 kg'
+    },
     entregables: [
       {
-        id: 'concepto',
-        titulo: 'Concepto inicial',
+        id: 'medidas',
+        titulo: 'Medidas + réplica 3D',
         estado: 'en-progreso',
-        notas: 'Definir referencias, silueta y materiales del casco.'
+        notas: 'Medidas base registradas. Pendiente: fotos, video, validación ±2 mm.'
       },
       {
-        id: 'modelo-3d',
-        titulo: 'Modelo 3D / wireframe',
+        id: 'mockup-digital',
+        titulo: 'Mockup digital bóveda A+C',
         estado: 'pendiente',
-        notas: 'Volumetría y proporciones del prototipo.'
+        notas: 'Modelar sobre réplica; ranuras orejas; chequeo interferencias.'
       },
       {
-        id: 'renders',
-        titulo: 'Renders / vistas',
+        id: 'prototipo-impreso',
+        titulo: 'Prototipo impreso (PLA → PETG+TPU)',
         estado: 'pendiente',
-        notas: 'Vistas frontales, laterales y detalle de acabados.'
+        notas: 'Tras validar digital y plantilla cartón 1:1.'
       }
     ],
     recursos: [
-      { titulo: 'README del proyecto', ruta: 'prototipo-casco/README.md' },
+      { titulo: 'Brief de diseño', ruta: 'prototipo-casco/BRIEF-DISENO.md' },
+      { titulo: 'Medidas gatita', ruta: 'prototipo-casco/medidas-gatita.md' },
+      { titulo: 'Parámetros CAD (JSON)', ruta: 'prototipo-casco/parametros-cad.json' },
       { titulo: 'Carpeta identidad', ruta: 'prototipo-casco/identidad/' }
     ]
   }
