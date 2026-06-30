@@ -1,8 +1,9 @@
 {
   "proyecto": "Sakura · Prototipo Casco",
-  "fase": 1,
+  "fase": 2,
   "objetivo": "barrera anti-rascado nuca — no encapsulamiento",
   "fechaMedicion": "2026-06-29",
+  "fechaFase2": "2026-06-30",
   "unidad": "mm",
   "sujeto": {
     "pesoKg": 3.5,
@@ -49,5 +50,17 @@
     "grosorTpu": 1.5,
     "fileteBordeMinimo": 2.5
   },
-  "modulos": ["A-cupula", "B-ranuras-orejas", "C-panel-nuca", "D-anillo-cuello-tpu", "E-mentonera-opcional", "F-cierre"]
+  "modulos": ["A-cupula", "B-ranuras-orejas", "C-panel-nuca", "D-anillo-cuello-tpu", "E-mentonera-opcional", "F-cierre"],
+  "fase2": {
+    "estado": "mockup-digital-validado",
+    "masaTotalG": 28.7,
+    "masaBovedaG": 24.1,
+    "masaAnilloG": 4.6,
+    "separacionLesionMm": 5.1,
+    "contactoUnaMm": { "caudalLesion": 4.1, "sobrePiel": 3.6 },
+    "arcoPataRadioMm": [80, 90, 100],
+    "archivos": "cad/fase-2/",
+    "resultados": "FASE-2-RESULTADOS.md",
+    "pendienteFase21": ["falda-anillo-fundida", "flancos-18mm", "carton-1-1", "bigotes", "video-rascado"]
+  }
 }

@@ -38,7 +38,8 @@ Sesión: 2026-06-29 · Fase 1 · Réplica 3D y validación digital
 | Holgura interior cáscara | +3–4 mm sobre pelo | offset 3 mm mínimo |
 | Extensión panel nuca (C) | base oreja → lesión + margen | 30 + 20 = **50 mm** mínimo posterior |
 | Ranura oreja (altura) | largo oreja + holgura | **78–82 mm** |
-| Ranura oreja (ancho) | ancho base 20 mm + holgura | **25 mm** c/u |
+| Ranura oreja (ancho) | ancho base 20 mm + holgura; video: base ancha | **27 mm** c/u |
+| Cobertura lateral lesión | frame zona lesión | **18 mm** por lado en panel C |
 | Separación entre ranuras | medida #6 | **30 mm** entre ejes |
 | Anillo cuello (D) interior | circ. cuello + holgura | **206–208 mm** (~65–66 mm Ø) |
 | Borde frontal casco | detrás ojos + bigotes | usar medida ➕11 cuando exista |
