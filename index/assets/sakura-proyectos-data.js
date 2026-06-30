@@ -47,10 +47,10 @@ window.SAKURA_PROYECTOS = {
         notas: 'STL watertight 28,7 g. Simulación pata OK. Ver FASE-2-RESULTADOS.md.'
       },
       {
-        id: 'fase-21',
-        titulo: 'Fase 2.1 — falda+anillo + flancos 18 mm',
-        estado: 'en-progreso',
-        notas: 'casco_parametrico_v2.1.scad listo para exportar y validar.'
+        id: 'fase-22-modular',
+        titulo: 'STL modular para impresora',
+        estado: 'pendiente',
+        notas: 'Usar PROMPT-IMPRESION-MODULAR.md — piezas separadas PETG+TPU.'
       },
       {
         id: 'prototipo-impreso',
