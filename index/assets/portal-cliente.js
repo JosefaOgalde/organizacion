@@ -144,6 +144,11 @@
         ? window.jmHtmlWireframes({ claseExtra: 'ficha-seccion--portal' })
         : '';
 
+    const mkofLandingHtml =
+      c.slug === 'mkof' && typeof window.mkofHtmlLandingSections === 'function'
+        ? window.mkofHtmlLandingSections()
+        : '';
+
     const imagenesHtml = imagenesSeccionHtml(landing);
 
     root.innerHTML = `
@@ -164,6 +169,7 @@
           <p>${escapeHtml(c.resumen)}</p>
         </section>
         ${imagenesHtml}
+        ${mkofLandingHtml}
         ${wireframesHtml}
         ${proyectosHtml}
         <section>

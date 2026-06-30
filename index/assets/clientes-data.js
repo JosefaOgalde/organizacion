@@ -53,7 +53,7 @@ window.CLIENTES_PORTAL = [
     tipo: 'Full time',
     color: { border: '#a8d8dc', bg: '#e8f6f8', text: '#4a7a80' },
     agente: 'Planificación de proyectos',
-    resumen: 'Gantt, cronogramas y entregables post auditoría.'
+    resumen: 'Gantt MOVA post-auditoría (3 semanas), cronogramas y entregables.'
   },
   {
     archivo: 'joyasmercury/index.html?v=secciones3',
