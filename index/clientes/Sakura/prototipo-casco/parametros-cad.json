@@ -21,8 +21,18 @@
     "baseOrejaAZonaRascado": 30,
     "largoCuello": 70
   },
-  "notasMedicion": {
-    "orejaAnchoBase": "Confirmado 20 mm (2 cm) por oreja"
+  "videoReferencia": {
+    "archivo": "WhatsApp Video 2026-06-29 at 8.47.15 PM.mp4",
+    "fecha": "2026-06-29",
+    "duracionSeg": 16,
+    "analisis": "VIDEO-ANALISIS.md",
+    "framesClave": "referencias/video-2026-06-29/clave/",
+    "tipoCraneo": "mesocefalo",
+    "lesion": {
+      "ubicacion": "base posterior oreja + lateral entre oreja y ojo",
+      "signos": "alopecia, eritema, piel expuesta",
+      "coberturaLateralMm": 18
+    }
   },
   "holguras": {
     "interiorCraneal": 3,
@@ -31,8 +41,9 @@
   },
   "diseno": {
     "extensionPanelNuca": 50,
+    "coberturaLateralLesion": 18,
     "ranuraOrejaAltura": 80,
-    "ranuraOrejaAncho": 25,
+    "ranuraOrejaAncho": 27,
     "anilloCuelloInterior": 207,
     "grosorParedPetg": 2,
     "grosorTpu": 1.5,

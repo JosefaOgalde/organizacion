@@ -23,7 +23,7 @@ Sesión: 2026-06-29 · Fase 1 · Réplica 3D y validación digital
 
 ### Pendientes (Fase 1)
 
-- [x] Ancho base oreja confirmado: **20 mm**
+- [x] Video referencia analizado (`VIDEO-ANALISIS.md`)
 - [ ] Medidas ➕11–14 (bigotes, mandíbula-coronilla, línea visión, boca abierta)
 - [ ] Doble lectura pelo / hueso
 - [ ] Fotos ortográficas + escala

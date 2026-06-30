@@ -49,7 +49,8 @@ window.SAKURA_PROYECTOS = {
       }
     ],
     recursos: [
-      { titulo: 'Brief de diseño', ruta: 'prototipo-casco/BRIEF-DISENO.md' },
+      { titulo: 'Análisis video', ruta: 'prototipo-casco/VIDEO-ANALISIS.md' },
+      { titulo: 'Frames clave', ruta: 'prototipo-casco/referencias/video-2026-06-29/clave/' },
       { titulo: 'Medidas gatita', ruta: 'prototipo-casco/medidas-gatita.md' },
       { titulo: 'Parámetros CAD (JSON)', ruta: 'prototipo-casco/parametros-cad.json' },
       { titulo: 'Carpeta identidad', ruta: 'prototipo-casco/identidad/' }
