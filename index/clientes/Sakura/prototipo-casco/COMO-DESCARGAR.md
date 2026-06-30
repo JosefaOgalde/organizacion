@@ -4,6 +4,26 @@ Los archivos están en GitHub, rama `cursor/sakura-cliente-prototipo-casco-aee0`
 
 ---
 
+## Opción 0 — Windows / Laragon (SIN Git)
+
+**Doble clic** en la raíz del repo:
+
+```
+DESCARGAR-CASCO.bat
+```
+
+Guarda el archivo en `Descargas\sakura-casco-cura.stl` y abre esa carpeta.
+
+O con Laragon encendido, abre en el navegador:
+
+```
+http://organizacion.test/descargar-casco.html
+```
+
+(o `http://localhost/organizacion/descargar-casco.html`)
+
+---
+
 ## Opción 1 — Enlace directo (más fácil)
 
 Abre en el navegador y guarda el archivo:
