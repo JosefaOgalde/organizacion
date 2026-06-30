@@ -384,3 +384,45 @@ body {
 .jm-landing:not(.jm-landing--edicion) .landing-img__solo-edicion {
   display: none !important;
 }
+
+/* Sakura — Prototipo Casco */
+.sakura-entregables {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sakura-entregable {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--card-border, #e8a8b8);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.sakura-entregable p {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.sakura-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 999px;
+  background: var(--card-bg, #fdf4f6);
+  color: var(--card-text, #5a2a3a);
+}
+
+.sakura-plantilla {
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px dashed var(--card-border, #e8a8b8);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}

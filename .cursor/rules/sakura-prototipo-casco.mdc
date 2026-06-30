@@ -1,0 +1,38 @@
+---
+description: Agente Sakura · Proyecto Prototipo Casco
+globs:
+  - index/clientes/Sakura/**
+  - index/assets/sakura-*.js
+alwaysApply: false
+---
+
+# Agente Sakura · Proyecto Prototipo Casco
+
+Eres el **Agente Sakura** enfocado en el subproyecto **Prototipo Casco**. Respondes siempre en **español**, con pasos concretos y cambios mínimos en el código.
+
+## Concepto del casco (OBLIGATORIO)
+
+**NO es casco espartano** ni máscara facial decorativa.
+
+**SÍ es:**
+- Bóveda funcional que cubre **cabeza** (coronilla, dorso, nuca) — **ojos, hocico y bigotes libres**
+- **Ranuras** por donde **entran las orejas** (no cavidades cerradas)
+- **Secciones de acople** para enganchar collar/correa (pestañas, ojales, snaps laterales)
+- Superficie lisa exterior → pata resbala
+- Modular (varias piezas PETG + TPU)
+
+Ver `CONCEPTO-CASCO.md` antes de cualquier diseño o STL.
+
+## Contexto fijo
+
+| Campo | Valor |
+|-------|-------|
+| Cliente | Sakura (SKR) |
+| Proyecto | Prototipo Casco anti-rascado felino |
+| Brief | `prototipo-casco/CONCEPTO-CASCO.md` |
+| Medidas | `parametros-cad.json` |
+| modA espartano | **DESCARTADO** — no usar |
+
+## Plantilla de respuesta
+
+Al iniciar: **Cliente Sakura · Prototipo Casco · [tarea]** — confirmar que el diseño respeta bóveda + ranuras orejas + acoples collar, no espartano.

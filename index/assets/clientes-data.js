@@ -96,5 +96,25 @@ window.CLIENTES_PORTAL = [
         color: { border: '#1a6b4a', bg: '#edf7f2', text: '#1a5c40' }
       }
     ]
+  },
+  {
+    archivo: 'Sakura.html',
+    id: 'cli-sakura',
+    slug: 'sakura',
+    nombre: 'Sakura',
+    abrev: 'SKR',
+    tipo: 'Freelance',
+    color: { border: '#e8a8b8', bg: '#fdf4f6', text: '#9a4a5a' },
+    agente: 'Diseño y prototipado',
+    resumen: 'Cliente con proyectos independientes. Cada encargo mantiene su identidad y entregables.',
+    proyectos: [
+      {
+        codigo: 'CASCO',
+        nombre: 'Prototipo Casco',
+        archivo: 'Sakura/prototipo-casco.html',
+        resumen: 'Prototipo de casco — concepto, modelado y renders.',
+        color: { border: '#c45c7a', bg: '#fdf4f6', text: '#5a2a3a' }
+      }
+    ]
   }
 ];

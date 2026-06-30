@@ -1,0 +1,76 @@
+{
+  "proyecto": "Sakura · Prototipo Casco",
+  "fase": 2,
+  "objetivo": "barrera anti-rascado nuca — no encapsulamiento",
+  "fechaMedicion": "2026-06-29",
+  "fechaFase2": "2026-06-30",
+  "unidad": "mm",
+  "sujeto": {
+    "pesoKg": 3.5,
+    "pesoMaxCascoG": 100
+  },
+  "medidas": {
+    "circunferenciaCraneal": 230,
+    "circunferenciaCuello": 200,
+    "largoCabeza": 120,
+    "anchoCabeza": 100,
+    "alturaCabeza": 60,
+    "orejaLargo": 70,
+    "orejaAnchoBase": 20,
+    "orejaSeparacionBases": 30,
+    "ojoABaseOreja": 30,
+    "baseOrejaAZonaRascado": 30,
+    "largoCuello": 70
+  },
+  "videoReferencia": {
+    "archivo": "WhatsApp Video 2026-06-29 at 8.47.15 PM.mp4",
+    "fecha": "2026-06-29",
+    "duracionSeg": 16,
+    "analisis": "VIDEO-ANALISIS.md",
+    "framesClave": "referencias/video-2026-06-29/clave/",
+    "tipoCraneo": "mesocefalo",
+    "lesion": {
+      "ubicacion": "base posterior oreja + lateral entre oreja y ojo",
+      "signos": "alopecia, eritema, piel expuesta",
+      "coberturaLateralMm": 18
+    }
+  },
+  "holguras": {
+    "interiorCraneal": 3,
+    "interiorCuello": 7,
+    "ranuraOrejaPorLado": 5
+  },
+  "diseno": {
+    "extensionPanelNuca": 50,
+    "coberturaLateralLesion": 18,
+    "ranuraOrejaAltura": 80,
+    "ranuraOrejaAncho": 27,
+    "anilloCuelloInterior": 207,
+    "grosorParedPetg": 2,
+    "grosorTpu": 1.5,
+    "fileteBordeMinimo": 2.5
+  },
+  "modulos": ["A-cupula", "B-ranuras-orejas", "C-panel-nuca", "D-anillo-cuello-tpu", "E-mentonera-opcional", "F-cierre"],
+  "fase2": {
+    "estado": "mockup-digital-validado",
+    "masaTotalG": 28.7,
+    "masaBovedaG": 24.1,
+    "masaAnilloG": 4.6,
+    "separacionLesionMm": 5.1,
+    "contactoUnaMm": { "caudalLesion": 4.1, "sobrePiel": 3.6 },
+    "arcoPataRadioMm": [80, 90, 100],
+    "archivos": "cad/fase-2/",
+    "resultados": "FASE-2-RESULTADOS.md",
+    "pendienteFase21": ["falda-anillo-fundida", "flancos-18mm", "carton-1-1", "bigotes", "video-rascado"]
+  },
+  "fase22Modular": {
+    "estado": "parcial-3-piezas",
+    "carpeta": "cad/fase-2/modular/",
+    "piezas": [
+      { "archivo": "01_modA_espartano_sakura.stl", "modulo": "A", "material": "PETG", "watertight": false },
+      { "archivo": "02_modC_panel_nuca.stl", "modulo": "C", "material": "PETG", "masaEstG": 16.9, "watertight": true },
+      { "archivo": "03_modD_anillo_cuello.stl", "modulo": "D", "material": "TPU", "masaEstG": 4.6, "watertight": true }
+    ],
+    "guia": "cad/fase-2/modular/GUIA-IMPRESION.md"
+  }
+}
