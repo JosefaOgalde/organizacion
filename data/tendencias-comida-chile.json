@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-07-01T16:27:27-0400",
+  "actualizado": "2026-07-01T16:36:51-0400",
   "nicho": "recetas-comida-chile",
   "region": "Chile",
   "plataformas": [
@@ -18,19 +18,11 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Ola churrascas TikTok"
+          "detalle": "Ola de recetas en TikTok"
         },
         {
           "red": "instagram",
-          "detalle": "Reels al sartén"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts del dorado"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Pins churrascas caseras"
+          "detalle": "Reels al sartén (En Cancha / RedBakery)"
         }
       ],
       "kpis": {
@@ -54,7 +46,7 @@
         "Agua tibia",
         "Polvo de hornear"
       ],
-      "resumenReceta": "Pan chileno sin leudar en sartén; receta de Camila (Canal 13) replicada masivamente en TikTok por lo económico.",
+      "resumenReceta": "Pan chileno sin leudar en sartén; receta de Camila (Canal 13) replicada en TikTok e Instagram.",
       "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/27/receta-de-churrascas-chilenas-asi-de-facil-rapido-y-economico-puedes-preparar-este-pan-al-sarten/",
       "prioridad": 22
     },
@@ -65,20 +57,8 @@
       "fechaFuente": "2026-06-26",
       "publicadoEn": [
         {
-          "red": "tiktok",
-          "detalle": "Clips de la campaña"
-        },
-        {
           "red": "instagram",
-          "detalle": "Reels Caro + Noni"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts del recetario"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Dulces invierno Chile"
+          "detalle": "Campaña en Instagram/Reels (Reporte Diario)"
         }
       ],
       "kpis": {
@@ -102,7 +82,7 @@
         "Calabaza",
         "Huevos"
       ],
-      "resumenReceta": "Calzones rotos y picarones reinterpretados con Daily; clips de la chef y su abuela viralizados en Instagram.",
+      "resumenReceta": "Calzones rotos y picarones reinterpretados con Daily; campaña en Reels de Caro Rocco.",
       "fuente": "https://reportediario.cl/2026/06/26/chef-caro-rocco-y-noni-lanzan-recetario-de-invierno-recetas-tradicionales-para-disfrutar-sin-culpa/",
       "prioridad": 21
     },
@@ -113,24 +93,12 @@
       "fechaFuente": "2026-06-25",
       "publicadoEn": [
         {
-          "red": "tiktok",
-          "detalle": "Dorado del cordero TikTok"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Reels de asado"
-        },
-        {
           "red": "youtube",
-          "detalle": "Shorts del glaseado"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Cordero al horno"
+          "detalle": "Clip Yo Invito · BioBioTV"
         }
       ],
       "kpis": {
-        "vistas": "Clips invierno",
+        "vistas": "Segmento TV",
         "engagement": "6.0%",
         "crecimiento": "+102%",
         "senal": "medio-alto"
@@ -140,7 +108,6 @@
         "#miel",
         "#pastelera",
         "#recetachilena",
-        "#foodtok",
         "#invierno"
       ],
       "ingredientes": [
@@ -151,7 +118,7 @@
         "Cebolla",
         "Pastelera de choclo"
       ],
-      "resumenReceta": "Cordero macerado y glaseado con miel al horno; clip viral por técnica de dorado y acompañamiento pastelera.",
+      "resumenReceta": "Cordero macerado y glaseado con miel al horno; segmento Yo Invito.",
       "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-cordero-a-la-miel-con-pastelera.shtml",
       "prioridad": 19
     },
@@ -162,24 +129,12 @@
       "fechaFuente": "2026-06-25",
       "publicadoEn": [
         {
-          "red": "tiktok",
-          "detalle": "Relleno en TikTok"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Reels familiares"
-        },
-        {
           "red": "youtube",
-          "detalle": "Shorts del gratinado"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Pollo relleno papas"
+          "detalle": "Clip Yo Invito · BioBioTV"
         }
       ],
       "kpis": {
-        "vistas": "Guardados en Reels",
+        "vistas": "Segmento TV",
         "engagement": "5.9%",
         "crecimiento": "+90%",
         "senal": "medio"
@@ -189,7 +144,6 @@
         "#pollo",
         "#papas",
         "#recetachilena",
-        "#foodtok",
         "#horno"
       ],
       "ingredientes": [
@@ -200,7 +154,7 @@
         "Crema",
         "Huevo"
       ],
-      "resumenReceta": "Pollo relleno con papas gratinadas; receta nostálgica del chef compartida en redes por lo rendidor del plato.",
+      "resumenReceta": "Pollo relleno con papas gratinadas; segmento Yo Invito del chef Enrique Araya.",
       "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-una-suprema-de-ave-rellena-con-papas-gratinadas.shtml",
       "prioridad": 20
     },
@@ -211,24 +165,12 @@
       "fechaFuente": "2026-06-16",
       "publicadoEn": [
         {
-          "red": "tiktok",
-          "detalle": "Clip del programa en TikTok"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Reels de mariscos"
-        },
-        {
           "red": "youtube",
-          "detalle": "Shorts del emplatado"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Pins ceviche chileno"
+          "detalle": "Clip Yo Invito · BioBioTV"
         }
       ],
       "kpis": {
-        "vistas": "Clips en alza",
+        "vistas": "Segmento TV",
         "engagement": "6.2%",
         "crecimiento": "+95%",
         "senal": "medio-alto"
@@ -238,7 +180,6 @@
         "#cochayuyo",
         "#mariscos",
         "#recetachilena",
-        "#foodtok",
         "#chile"
       ],
       "ingredientes": [
@@ -249,7 +190,7 @@
         "Cebolla morada",
         "Ají"
       ],
-      "resumenReceta": "Ceviche con algas chilenas y camarones; segmento Yo Invito replicado en clips verticales por uso de cochayuyo.",
+      "resumenReceta": "Ceviche con algas chilenas y camarones; segmento Yo Invito de BioBioTV.",
       "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-entretenido-ceviche-de-camarones-y-cochayuyo.shtml",
       "prioridad": 17
     },
@@ -260,24 +201,12 @@
       "fechaFuente": "2026-06-16",
       "publicadoEn": [
         {
-          "red": "tiktok",
-          "detalle": "Salteado en TikTok"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Reels de pasta"
-        },
-        {
           "red": "youtube",
-          "detalle": "Shorts del ajillo"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Pasta con mariscos"
+          "detalle": "Clip Yo Invito · BioBioTV"
         }
       ],
       "kpis": {
-        "vistas": "Compartidos en Reels",
+        "vistas": "Segmento TV",
         "engagement": "5.8%",
         "crecimiento": "+88%",
         "senal": "medio"
@@ -287,7 +216,6 @@
         "#mariscos",
         "#merken",
         "#recetachilena",
-        "#foodtok",
         "#pasta"
       ],
       "ingredientes": [
@@ -298,7 +226,7 @@
         "Merkén",
         "Aceite"
       ],
-      "resumenReceta": "Pasta con mariscos salteados y merkén; receta del chef Enrique Araya compartida en vertical por ingredientes locales.",
+      "resumenReceta": "Pasta con mariscos salteados y merkén; segmento Yo Invito del chef Enrique Araya.",
       "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-rico-espagueti-de-colores-con-mariscos-al-ajillo.shtml",
       "prioridad": 18
     },
@@ -307,26 +235,9 @@
       "titulo": "Pan amasado rápido (chef Barrientos)",
       "formato": "Pan chileno · horno",
       "fechaFuente": "2026-06-13",
-      "publicadoEn": [
-        {
-          "red": "tiktok",
-          "detalle": "Amasado en TikTok"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Reels del horno"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts del pan caliente"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Receta pan amasado"
-        }
-      ],
+      "publicadoEn": [],
       "kpis": {
-        "vistas": "Alto engagement invierno",
+        "vistas": "Receta web",
         "engagement": "7.1%",
         "crecimiento": "+135%",
         "senal": "alto"
@@ -335,7 +246,6 @@
         "#panamasado",
         "#recetachilena",
         "#desayuno",
-        "#foodtok",
         "#hornear",
         "#chile"
       ],
@@ -347,7 +257,7 @@
         "Azúcar",
         "Agua"
       ],
-      "resumenReceta": "Pan amasado dorado por fuera y blando por dentro; receta del chef viralizada en redes de cocina chilena.",
+      "resumenReceta": "Pan amasado dorado por fuera y blando por dentro; receta del chef publicada en En Cancha.",
       "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/13/receta-facil-de-pan-amasado-por-el-chef-alvaro-barrientos-rapido-y-para-el-mejor-desayuno/",
       "prioridad": 16
     },
@@ -356,26 +266,9 @@
       "titulo": "Queque casero de vainilla (chef Barrientos)",
       "formato": "Repostería económica · horno",
       "fechaFuente": "2026-06-09",
-      "publicadoEn": [
-        {
-          "red": "tiktok",
-          "detalle": "Receta en TikTok"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Reels del horneado"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts del corte"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Pins queque casero"
-        }
-      ],
+      "publicadoEn": [],
       "kpis": {
-        "vistas": "Alto share en Reels",
+        "vistas": "Receta web",
         "engagement": "6.4%",
         "crecimiento": "+110%",
         "senal": "medio-alto"
@@ -384,7 +277,6 @@
         "#queque",
         "#recetafacil",
         "#vainilla",
-        "#foodtok",
         "#reposteria",
         "#chile"
       ],
@@ -397,7 +289,7 @@
         "Vainilla",
         "Polvos de hornear"
       ],
-      "resumenReceta": "Bizcocho húmedo con medición en gramos; clip del chef replicado en TikTok e Instagram por lo simple y económico.",
+      "resumenReceta": "Bizcocho húmedo con medición en gramos; receta del chef Álvaro Barrientos publicada en En Cancha.",
       "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/09/receta-de-queque-casero-de-vainilla-al-estilo-del-chef-alvaro-barrientos-facil-muy-rapido-y-economico/",
       "prioridad": 15
     },
@@ -408,20 +300,12 @@
       "fechaFuente": "2026-06-03",
       "publicadoEn": [
         {
-          "red": "tiktok",
-          "detalle": "Reacciones en TikTok"
-        },
-        {
           "red": "instagram",
-          "detalle": "Duelo en Instagram"
+          "detalle": "Duelo en Instagram de Rodrigo Fernandini"
         },
         {
           "red": "youtube",
-          "detalle": "Shorts del completo"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Sánguches chilenos"
+          "detalle": "Respuesta de Álvaro Barrientos en YouTube"
         }
       ],
       "kpis": {
@@ -446,7 +330,7 @@
         "Mayonesa",
         "Carne de lomo"
       ],
-      "resumenReceta": "Chef peruano enfrentó completo italiano con lomo saltado en Instagram; Álvaro Barrientos respondió invitando a cocinar sabores chilenos.",
+      "resumenReceta": "Chef peruano enfrentó completo italiano con lomo saltado en Instagram; Álvaro Barrientos respondió desde YouTube.",
       "fuente": "https://reportediario.cl/2026/06/03/alvaro-barrientos-responde-a-chef-peruano-por-viral-duelo-de-sanguches/",
       "prioridad": 13
     },
@@ -458,11 +342,11 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Video original de Gabo Gutiérrez (157K+ likes)"
+          "detalle": "Video en TikTok — 157K+ likes (BioBio)"
         },
         {
           "red": "instagram",
-          "detalle": "Publicación paralela en Reels (111K+ likes)"
+          "detalle": "Reels en Instagram — 111K+ likes (BioBio)"
         }
       ],
       "kpis": {
@@ -498,20 +382,12 @@
       "fechaFuente": "2026-05-22",
       "publicadoEn": [
         {
-          "red": "tiktok",
-          "detalle": "Receta fit en TikTok"
-        },
-        {
           "red": "instagram",
-          "detalle": "Reels con macros"
+          "detalle": "Sweet Fran en Instagram/Reels"
         },
         {
-          "red": "youtube",
-          "detalle": "Shorts del armado"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Completos saludables"
+          "red": "tiktok",
+          "detalle": "Receta viral en TikTok"
         }
       ],
       "kpis": {
@@ -548,19 +424,11 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Viral inicial en TikTok"
+          "detalle": "Viral en TikTok (TVN)"
         },
         {
           "red": "instagram",
-          "detalle": "Reels de la torta"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts del armado"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Ideas torta salada"
+          "detalle": "Publicación en Instagram (TVN)"
         }
       ],
       "kpis": {
@@ -585,7 +453,7 @@
         "Mayonesa",
         "Queso"
       ],
-      "resumenReceta": "Capas de pan, vienesa, palta y tomate en forma de torta; viral previo a la torta de arroz del mismo influencer.",
+      "resumenReceta": "Capas de pan, vienesa, palta y tomate en forma de torta; viral en redes del influencer Gabo Gutiérrez.",
       "fuente": "https://www.tvn.cl/noticias/tendencias/influencer-crea-torta-de-completo-y-desata-polemica-en-redes-sociales",
       "prioridad": 12
     },
@@ -594,26 +462,9 @@
       "titulo": "Sopaipleto de Osorno (30 cm)",
       "formato": "Street food · completo + sopaipilla",
       "fechaFuente": "2026-04-14",
-      "publicadoEn": [
-        {
-          "red": "tiktok",
-          "detalle": "Videos del local en TikTok"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Reels del sopaipleto"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts de degustación"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Pins comida Osorno"
-        }
-      ],
+      "publicadoEn": [],
       "kpis": {
-        "vistas": "Alto share regional",
+        "vistas": "Cobertura regional",
         "engagement": "7.0%",
         "crecimiento": "+125%",
         "senal": "alto"
@@ -623,7 +474,6 @@
         "#osorno",
         "#comidachilena",
         "#streetfood",
-        "#foodtok",
         "#completo"
       ],
       "ingredientes": [
@@ -633,7 +483,7 @@
         "Tomate",
         "Mostaza opcional"
       ],
-      "resumenReceta": "Fusión completo y sopaipilla del local El Pato en Barrio Lynch; viral por tamaño y precio accesible para estudiantes.",
+      "resumenReceta": "Fusión completo y sopaipilla del local El Pato en Barrio Lynch; nota de Radio Bío Bío sin video viral en redes.",
       "fuente": "https://www.biobiochile.cl/noticias/sociedad/historia/2026/04/14/sopaipleto-la-innovacion-culinaria-que-revoluciona-osorno-lo-hice-para-la-juventud.shtml",
       "prioridad": 10
     },
@@ -645,19 +495,7 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Stitch del debate"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Reels de pebre casero"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts de reacciones"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Recetas de pebre"
+          "detalle": "Debate viral en TikTok (BioBio)"
         }
       ],
       "kpis": {
@@ -682,7 +520,7 @@
         "Vinagre",
         "Sal"
       ],
-      "resumenReceta": "Influencer español atribuye raíz catalana al pebre; estallido de comentarios y recetas caseras en TikTok chileno.",
+      "resumenReceta": "Influencer español atribuye raíz catalana al pebre; estallido de comentarios en TikTok.",
       "fuente": "https://www.biobiochile.cl/noticias/sociedad/debate/2026/01/07/origen-del-pebre-influencer-asegura-que-es-una-mezcla-de-chile-y-espana-y-redes-estallan.shtml",
       "prioridad": 24
     },
@@ -694,19 +532,7 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Viral @gallardo_martin"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Reels del debate"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts de reacciones"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Variantes pastel choclo"
+          "detalle": "Viral @gallardo_martin en TikTok (24 Horas)"
         }
       ],
       "kpis": {
@@ -741,20 +567,8 @@
       "fechaFuente": "2025-09-16",
       "publicadoEn": [
         {
-          "red": "tiktok",
-          "detalle": "Clips del local en TikTok"
-        },
-        {
           "red": "instagram",
-          "detalle": "Serie viral en Instagram"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts de degustación"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Ideas fusión 18"
+          "detalle": "Serie viral en Instagram (24 Horas)"
         }
       ],
       "kpis": {
@@ -788,20 +602,12 @@
       "fechaFuente": "2025-09-08",
       "publicadoEn": [
         {
-          "red": "tiktok",
-          "detalle": "Tutorial air fryer TikTok"
-        },
-        {
           "red": "instagram",
-          "detalle": "Reels crujientes"
+          "detalle": "Receta compartida en Reels"
         },
         {
-          "red": "youtube",
-          "detalle": "Shorts del pincelado"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Receta empanada air fryer"
+          "red": "tiktok",
+          "detalle": "Tutorial en TikTok"
         }
       ],
       "kpis": {
@@ -826,7 +632,7 @@
         "Aceitunas",
         "Pasas"
       ],
-      "resumenReceta": "Empanadas crujientes sin horno convencional; tendencia de cocina chilena adaptada a freidora de aire en redes.",
+      "resumenReceta": "Empanadas crujientes en freidora de aire; receta compartida en redes de cocina chilena.",
       "fuente": "https://reportediario.cl/2025/09/08/empanadas-de-pino-crujientes-en-freidora-de-aire-un-clasico-chileno-reinventado/",
       "prioridad": 8
     },
@@ -837,20 +643,16 @@
       "fechaFuente": "2025-09-03",
       "publicadoEn": [
         {
-          "red": "tiktok",
-          "detalle": "Votación y memes en TikTok"
+          "red": "instagram",
+          "detalle": "Votaciones en Instagram (Reporte Diario)"
         },
         {
-          "red": "instagram",
-          "detalle": "Reels del desayuno"
+          "red": "tiktok",
+          "detalle": "Votaciones en TikTok (Reporte Diario)"
         },
         {
           "red": "youtube",
-          "detalle": "Shorts de reacciones"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Pins desayuno chileno"
+          "detalle": "Votaciones en YouTube (Reporte Diario)"
         }
       ],
       "kpis": {
@@ -873,7 +675,7 @@
         "Sal",
         "Limón opcional"
       ],
-      "resumenReceta": "Desayuno chileno impulsado por el Mundial de Ibai; Boric y redes posicionaron marraqueta con palta vs. desayuno peruano.",
+      "resumenReceta": "Desayuno chileno impulsado por el Mundial de Ibai; votaciones en Instagram, YouTube y TikTok.",
       "fuente": "https://reportediario.cl/2025/09/03/marraqueta-y-palta-el-desayuno-campeon-de-chile-en-el-mundial-de-ibai/",
       "prioridad": 7
     },
@@ -885,19 +687,11 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Video polémico en TikTok"
+          "detalle": "Video viral en TikTok (BioBio)"
         },
         {
           "red": "instagram",
-          "detalle": "Reels de la fusión"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts del emplatado"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Receta fusión guardada"
+          "detalle": "Debate en Instagram (BioBio)"
         }
       ],
       "kpis": {
@@ -930,26 +724,9 @@
       "titulo": "Fiebre del pistacho (ingrediente Dubai)",
       "formato": "Ingrediente en alza · noticia",
       "fechaFuente": "2025-07-01",
-      "publicadoEn": [
-        {
-          "red": "tiktok",
-          "detalle": "Ingredientes en TikTok"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Reels informativos"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts explicativos"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Pins pistacho postres"
-        }
-      ],
+      "publicadoEn": [],
       "kpis": {
-        "vistas": "Búsquedas en alza",
+        "vistas": "Nota de prensa",
         "engagement": "5.2%",
         "crecimiento": "+160%",
         "senal": "medio"
@@ -968,7 +745,7 @@
         "Masa knafe",
         "Chocolate"
       ],
-      "resumenReceta": "Demanda por pistacho tras el viral del chocolate Dubai; noticia sobre cultivo y precio del ingrediente en Chile.",
+      "resumenReceta": "Demanda por pistacho tras el viral del chocolate Dubai; noticia de ingrediente, sin video en redes.",
       "fuente": "https://www.sancarlosonline.cl/2025/07/fiebre-por-el-chocolate-de-dubai.html",
       "prioridad": 25
     },
@@ -980,19 +757,11 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Kit y receta replicada en TikTok"
+          "detalle": "Viral en TikTok (noticia Ohzom)"
         },
         {
           "red": "instagram",
-          "detalle": "Reels del armado paso a paso"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts del corte al relleno"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Pins del molde y ingredientes"
+          "detalle": "Reels e Instagram (noticia Ohzom)"
         }
       ],
       "kpis": {
@@ -1025,26 +794,9 @@
       "titulo": "Carbonada chilena de invierno",
       "formato": "Sopa tradicional · verduras",
       "fechaFuente": "2025-05-18",
-      "publicadoEn": [
-        {
-          "red": "tiktok",
-          "detalle": "Carbonada en TikTok"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Reels de invierno"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts del caldo"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Sopas chilenas"
-        }
-      ],
+      "publicadoEn": [],
       "kpis": {
-        "vistas": "Estacional en redes",
+        "vistas": "Receta web",
         "engagement": "5.5%",
         "crecimiento": "+75%",
         "senal": "medio"
@@ -1054,7 +806,6 @@
         "#sopa",
         "#invierno",
         "#recetachilena",
-        "#foodtok",
         "#caldo"
       ],
       "ingredientes": [
@@ -1066,7 +817,7 @@
         "Cebolla",
         "Ají de color"
       ],
-      "resumenReceta": "Caldo con carne y verduras de estación; receta replicada en TikTok cada ola de frío en la zona centro-sur.",
+      "resumenReceta": "Caldo con carne y verduras de estación; receta de invierno publicada en En Cancha.",
       "fuente": "https://www.encancha.cl/enlahora/bienestar/2025/05/18/receta-de-carbonada-chilena-este-plato-es-ideal-para-dias-de-bajas-temperaturas/",
       "prioridad": 23
     },
@@ -1078,19 +829,11 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Smash burger en TikTok"
+          "detalle": "Viralizada en redes (24 Horas)"
         },
         {
           "red": "instagram",
           "detalle": "Reels del queso fundido"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts de armado"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Pins de burger casera"
         }
       ],
       "kpis": {
@@ -1127,19 +870,7 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Tutorial viral en TikTok"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Carrusel de ingredientes"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts paso a paso"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Tablero de receta Dubai"
+          "detalle": "Tendencia viral en TikTok (Sabes.cl)"
         }
       ],
       "kpis": {
@@ -1175,23 +906,11 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Explicación en TikTok"
-        },
-        {
-          "red": "instagram",
-          "detalle": "Reels del corte"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts del relleno"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Chocolate Dubai ideas"
+          "detalle": "Video referencia Maria Vehera (BioBio)"
         }
       ],
       "kpis": {
-        "vistas": "120M+ ref. global",
+        "vistas": "120M+ ref. TikTok",
         "engagement": "8.0%",
         "crecimiento": "+300%",
         "senal": "muy-alto"
@@ -1211,7 +930,7 @@
         "Tahini",
         "Oro comestible"
       ],
-      "resumenReceta": "Noticia que introduce el dulce de FIX Dessert Chocolatier; pistacho y kunafa como combo viral en redes chilenas.",
+      "resumenReceta": "Noticia que introduce el dulce viral; cita video de Maria Vehera en TikTok (120M+ vistas).",
       "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2025/03/21/que-es-el-chocolate-de-dubai-el-dulce-mas-extravagante-y-viral-del-momento-en-redes-sociales.shtml",
       "prioridad": 26
     },
@@ -1223,19 +942,11 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Viral sin horno en TikTok"
+          "detalle": "Viral en TikTok (24 Horas)"
         },
         {
           "red": "instagram",
-          "detalle": "Reels de montaje en vaso"
-        },
-        {
-          "red": "youtube",
-          "detalle": "Shorts de textura final"
-        },
-        {
-          "red": "pinterest",
-          "detalle": "Ideas de vasitos y capas"
+          "detalle": "Reels en Instagram (24 Horas)"
         }
       ],
       "kpis": {
