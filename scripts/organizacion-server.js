@@ -45,6 +45,11 @@ function safePath(urlPath) {
   return abs;
 }
 
+function redirect(res, target) {
+  res.writeHead(302, { Location: target, 'Cache-Control': 'no-store' });
+  res.end();
+}
+
 function redirectJoyasMercury(res, urlPath) {
   const q = urlPath.includes('?') ? urlPath.slice(urlPath.indexOf('?')) : '';
   const target = `/index/clientes/joyasmercury/index.html${q || '?v=secciones3'}`;
@@ -98,8 +103,20 @@ const server = http.createServer((req, res) => {
   }
 
   const urlPath = url.split('?')[0];
+  const q = url.includes('?') ? url.slice(url.indexOf('?')) : '';
+
   if (/\/index\/clientes\/JoyasMercury\/?$/i.test(urlPath)) {
     return redirectJoyasMercury(res, url);
+  }
+
+  if (/\/index\/Herramientas\.html$/i.test(urlPath)) {
+    return redirect(res, `/index/clientes/Herramientas.html${q}`);
+  }
+  if (/\/index\/Herramientas\/Tendencias\.html$/i.test(urlPath)) {
+    return redirect(res, `/index/clientes/Herramientas/Tendencias.html${q}`);
+  }
+  if (/\/index\/Herramientas\/?$/i.test(urlPath)) {
+    return redirect(res, `/index/clientes/Herramientas.html${q}`);
   }
 
   const filePath = safePath(url);
@@ -127,8 +144,11 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Organización · http://localhost:${PORT}`);
-  console.log(`  Landing JM: http://localhost:${PORT}/index/clientes/joyasmercury/`);
-  console.log(`  Guardado live: data/organizacion-live.json`);
+  console.log(`  Portal clientes: http://localhost:${PORT}/index/clientes/`);
+  console.log(`  Herramientas:    http://localhost:${PORT}/index/clientes/Herramientas.html`);
+  console.log(`  Tendencias:      http://localhost:${PORT}/index/clientes/Herramientas/Tendencias.html`);
+  console.log(`  Landing JM:      http://localhost:${PORT}/index/clientes/joyasmercury/`);
+  console.log(`  Guardado live:   data/organizacion-live.json`);
   if (!fs.existsSync(LIVE_FILE)) {
     console.log('  (sin organizacion-live.json aún — se creará al primer guardado)');
   }
