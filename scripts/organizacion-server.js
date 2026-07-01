@@ -39,7 +39,8 @@ function send(res, code, body, type) {
 
 function safePath(urlPath) {
   const decoded = decodeURIComponent(urlPath.split('?')[0]);
-  const rel = decoded.replace(/^\/+/, '') || 'index.html';
+  let rel = decoded.replace(/^\/+/, '') || 'index.html';
+  if (rel === 'index' || rel === 'index/') rel = 'index.html';
   const abs = path.normalize(path.join(ROOT, rel));
   if (!abs.startsWith(ROOT)) return null;
   return abs;

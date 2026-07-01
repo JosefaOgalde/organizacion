@@ -117,6 +117,9 @@
     const cli = cargarDatos();
     const landing = cli.ficha.landing;
     document.title = `${c.nombre} · Clientes`;
+    if (typeof window.aplicarTemaPortal === 'function') {
+      window.aplicarTemaPortal(c.color);
+    }
 
     const proyectosHtml =
       c.proyectos?.length
@@ -176,7 +179,7 @@
         </section>
         <a href="../../index.html" class="portal-app-link">Ir al organizador →</a>
         ${c.slug !== 'joyas-mercury' && c.proyectos?.length ? `<p class="portal-paso">
-          <strong>ADL multi-proyecto:</strong> usa las fichas de proyecto arriba para no confundir identidades visuales.
+          <strong>Multi-proyecto:</strong> cada tarjeta de abajo usa su propia identidad visual — los mismos colores que verás al abrir el proyecto.
         </p>` : ''}
       </article>`;
 

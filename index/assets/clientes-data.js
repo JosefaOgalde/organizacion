@@ -93,7 +93,45 @@ window.CLIENTES_PORTAL = [
         nombre: 'Caja Los Andes',
         archivo: 'DesafioLatam/CLA.html',
         resumen: 'Programa IA — certificados modulares Fase 1, 2, 3 y final (1123×794 px).',
-        color: { border: '#1a6b4a', bg: '#edf7f2', text: '#1a5c40' }
+        color: { border: '#1a6b4a', bg: '#edf7f2', text: '#1a5c40' },
+        identidad: {
+          primario: '#007A3D',
+          secundario: '#00A651',
+          acento: '#F5B335',
+          fondo: '#F7FAF8'
+        }
+      }
+    ]
+  },
+  {
+    archivo: 'Herramientas.html',
+    id: 'cli-herramientas',
+    slug: 'herramientas',
+    nombre: 'Herramientas',
+    abrev: 'HER',
+    tipo: 'Freelance',
+    color: { border: '#b8aee8', bg: '#f5f4fc', text: '#5b4fcf' },
+    agente: 'Herramientas internas',
+    resumen: 'Proyectos de herramientas y utilidades. Cada proyecto mantiene su identidad y entregables.',
+    proyectos: [
+      {
+        codigo: 'TEND',
+        nombre: 'Tendencias',
+        archivo: 'Herramientas/Tendencias.html',
+        resumen: 'Herramientas de análisis y seguimiento de tendencias.',
+        descripcion: 'Análisis de mercado, señales y seguimiento de tendencias para apoyar decisiones de contenido y producto.',
+        color: { border: '#5B4FCF', bg: '#F5F4FC', text: '#5B4FCF' },
+        identidad: {
+          primario: '#5B4FCF',
+          secundario: '#7B6FE8',
+          acento: '#F0A830',
+          fondo: '#F5F4FC'
+        },
+        entregables: [
+          'Dashboard de tendencias',
+          'Fuentes de datos configurables',
+          'Exportación de reportes'
+        ]
       }
     ]
   }
