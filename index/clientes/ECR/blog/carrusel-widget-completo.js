@@ -117,17 +117,7 @@
     }
 
     function slugsFromEmbedded(post) {
-        var slugs = [];
-        var embedded = post._embedded && post._embedded['wp:term'];
-        if (!embedded) return slugs;
-        embedded.forEach(function (group) {
-            group.forEach(function (term) {
-                if (term.taxonomy === 'category' && term.slug && !SKIP_SLUGS[term.slug]) {
-                    slugs.push(term.slug);
-                }
-            });
-        });
-        return slugs;
+        return [];
     }
 
     function fetchPostsBatch(postIds) {
@@ -139,7 +129,7 @@
         }
 
         var url = '/wp-json/wp/v2/posts?include=' + missing.join(',')
-            + '&_fields=id,date&_embed=wp:term&per_page=' + missing.length;
+            + '&_fields=id,date&per_page=' + missing.length;
 
         return fetch(url)
             .then(function (r) {
@@ -151,7 +141,7 @@
                 posts.forEach(function (p) {
                     META_CACHE[String(p.id)] = {
                         date: formatDate(p.date),
-                        slugs: slugsFromEmbedded(p)
+                        slugs: []
                     };
                 });
                 missing.forEach(function (id) {
