@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Actualiza data/tendencias-comida-chile.json — valida fechaFuente desde la URL de la noticia."""
+"""Genera data/tendencias-comida-chile.json desde seed curado con fechas verificables."""
 from __future__ import annotations
 
 import json
 import re
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+
+from tendencias_comida_seed import STORIES
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'data' / 'tendencias-comida-chile.json'
@@ -27,53 +29,72 @@ def fecha_desde_url(url: str | None) -> str | None:
     return f'{m.group(1)}-{m.group(2)}-{m.group(3)}'
 
 
-def normalizar_item(item: dict) -> dict:
-    out = dict(item)
-    out.pop('porQueFunciona', None)
-    out.pop('ejemploChile', None)
-    if 'anguloContenido' in out and 'resumenReceta' not in out:
-        out['resumenReceta'] = out.pop('anguloContenido')
-    fuente = out.get('fuente')
-    if not out.get('fechaFuente'):
-        deducida = fecha_desde_url(fuente)
-        if deducida:
-            out['fechaFuente'] = deducida
-    out.pop('fechaViral', None)
-    return out
-
-
-def cargar_actual() -> dict:
-    if OUT.exists():
-        return json.loads(OUT.read_text(encoding='utf-8'))
-    return {}
-
-
-def fetch_tendencias() -> list[dict]:
-    data = cargar_actual()
-    items = [normalizar_item(t) for t in data.get('tendencias', [])]
-    # Solo entradas con fecha de fuente verificable
-    items = [t for t in items if t.get('fechaFuente')]
+def expandir_stories() -> list[dict]:
+    items: list[dict] = []
+    prioridad = 1
+    for story in STORIES:
+        fuente = story['fuente']
+        fecha_url = fecha_desde_url(fuente)
+        fecha = fecha_url or story['fecha']
+        if fecha_url and fecha_url != story['fecha']:
+            print(f'  · fecha corregida {story["slug"]}: {story["fecha"]} → {fecha_url}')
+        plataformas = story.get('plataformas', {})
+        for plat, formato_extra in plataformas.items():
+            titulo = story['titulo']
+            formato = story['formato']
+            if isinstance(formato_extra, str) and formato_extra:
+                formato = f'{formato} · {formato_extra}'
+            items.append({
+                'id': f'{plat}-{story["slug"]}',
+                'plataforma': plat,
+                'titulo': titulo,
+                'formato': formato,
+                'fechaFuente': fecha,
+                'kpis': {
+                    'vistas': story.get('vistas', '—'),
+                    'engagement': story.get('engagement', '—'),
+                    'crecimiento': story.get('crecimiento', '—'),
+                    'senal': story.get('senal', 'medio'),
+                },
+                'hashtags': story.get('hashtags', []),
+                'ingredientes': story.get('ingredientes', []),
+                'resumenReceta': story.get('resumenReceta', ''),
+                'fuente': fuente,
+                'prioridad': prioridad,
+            })
+            prioridad += 1
     return sorted(items, key=lambda x: x.get('fechaFuente', ''), reverse=True)
 
 
-def main() -> None:
-    prev = cargar_actual()
-    tendencias = fetch_tendencias()
+def contar_por_plataforma(items: list[dict], desde: str, hasta: str) -> dict[str, int]:
+    counts = {p: 0 for p in ['tiktok', 'instagram', 'youtube', 'pinterest']}
+    for t in items:
+        f = t.get('fechaFuente', '')
+        if desde <= f <= hasta and t.get('plataforma') in counts:
+            counts[t['plataforma']] += 1
+    return counts
 
+
+def main() -> None:
+    tendencias = expandir_stories()
     payload = {
         'actualizado': ahora_chile(),
         'nicho': 'recetas-comida-chile',
         'region': 'Chile',
         'plataformas': ['tiktok', 'instagram', 'youtube', 'pinterest'],
-        'resumen': prev.get(
-            'resumen',
-            'Tendencias con fecha tomada de la noticia enlazada.',
+        'resumen': (
+            'Tendencias de comida e ingredientes en Chile — fechas tomadas de la URL '
+            'o fecha editorial verificada de la noticia enlazada.'
         ),
         'tendencias': tendencias,
     }
-
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    print(f'✓ {len(tendencias)} tendencias (con fechaFuente) → {OUT.relative_to(ROOT)}')
+    print(f'✓ {len(tendencias)} tendencias → {OUT.relative_to(ROOT)}')
+    # Referencia: junio 2026 (filtro "mes" típico si hoy es 2026-07-01)
+    junio = contar_por_plataforma(tendencias, '2026-06-01', '2026-06-30')
+    print(f'  Junio 2026 por red: {junio}')
+    trim = contar_por_plataforma(tendencias, '2026-04-02', '2026-07-01')
+    print(f'  Últimos ~90 días por red: {trim}')
 
 
 if __name__ == '__main__':

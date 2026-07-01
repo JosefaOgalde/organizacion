@@ -79,9 +79,9 @@
   function leerPeriodo() {
     try {
       const p = localStorage.getItem(PERIODO_KEY);
-      return PERIODOS.some((x) => x.id === p) ? p : 'mes';
+      return PERIODOS.some((x) => x.id === p) ? p : 'tres-meses';
     } catch {
-      return 'mes';
+      return 'tres-meses';
     }
   }
 

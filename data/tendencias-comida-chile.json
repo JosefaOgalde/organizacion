@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-07-01T12:18:04-0400",
+  "actualizado": "2026-07-01T16:08:41-0400",
   "nicho": "recetas-comida-chile",
   "region": "Chile",
   "plataformas": [
@@ -8,44 +8,13 @@
     "youtube",
     "pinterest"
   ],
-  "resumen": "Tendencias con fecha tomada de la noticia o fuente enlazada — filtro estricto por período.",
+  "resumen": "Tendencias de comida e ingredientes en Chile — fechas tomadas de la URL o fecha editorial verificada de la noticia enlazada.",
   "tendencias": [
-    {
-      "id": "tiktok-chocolate-dubai-kit",
-      "plataforma": "tiktok",
-      "titulo": "Kit Chocolate Dubai (SUK)",
-      "formato": "Repostería viral · kit casero",
-      "fechaFuente": "2026-06-29",
-      "kpis": {
-        "vistas": "Millones en TikTok/Reels",
-        "engagement": "9.1%",
-        "crecimiento": "+340%",
-        "senal": "muy-alto"
-      },
-      "hashtags": [
-        "#chocolatedubai",
-        "#knafe",
-        "#recetaviral",
-        "#chilefood",
-        "#suk",
-        "#postreviral",
-        "#foodtok"
-      ],
-      "ingredientes": [
-        "Chocolate para derretir",
-        "Masa knafe SUK",
-        "Pasta de pistacho",
-        "Molde de silicona"
-      ],
-      "resumenReceta": "Barra de chocolate rellena con masa knafe crujiente y crema de pistacho; SUK lanzó kit con receta paso a paso para replicar el viral en casa.",
-      "fuente": "https://prensaeventos.cl/suk-lanza-en-chile-el-primer-kit-para-preparar-chocolate-dubai-en-casa/",
-      "prioridad": 1
-    },
     {
       "id": "tiktok-churrascas-sarten",
       "plataforma": "tiktok",
       "titulo": "Churrascas chilenas al sartén",
-      "formato": "Pan rápido · sin leudar",
+      "formato": "Pan rápido · sin leudar · Ola churrascas TikTok",
       "fechaFuente": "2026-06-27",
       "kpis": {
         "vistas": "Alto share en Reels/TikTok",
@@ -59,7 +28,6 @@
         "#recetachilena",
         "#comidacasera",
         "#foodtok",
-        "#recetafacil",
         "#chile"
       ],
       "ingredientes": [
@@ -69,47 +37,1132 @@
         "Agua tibia",
         "Polvo de hornear"
       ],
-      "resumenReceta": "Pan chileno sin leudar cocinado en sartén; receta de Camila (Canal 13) replicada en redes por lo económico y rápido que es.",
+      "resumenReceta": "Pan chileno sin leudar en sartén; receta de Camila (Canal 13) replicada masivamente en TikTok por lo económico.",
       "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/27/receta-de-churrascas-chilenas-asi-de-facil-rapido-y-economico-puedes-preparar-este-pan-al-sarten/",
-      "prioridad": 2
+      "prioridad": 85
     },
     {
-      "id": "pinterest-churrascas-caseras",
-      "plataforma": "pinterest",
-      "titulo": "Churrascas caseras (tableros en alza)",
-      "formato": "Idea pin · receta guardada",
+      "id": "instagram-churrascas-sarten",
+      "plataforma": "instagram",
+      "titulo": "Churrascas chilenas al sartén",
+      "formato": "Pan rápido · sin leudar · Reels al sartén",
       "fechaFuente": "2026-06-27",
       "kpis": {
-        "vistas": "Pins en aumento",
-        "engagement": "6.8%",
-        "crecimiento": "+95%",
+        "vistas": "Alto share en Reels/TikTok",
+        "engagement": "7.5%",
+        "crecimiento": "+120%",
         "senal": "alto"
       },
       "hashtags": [
         "#churrascas",
-        "#recetaschilenas",
-        "#pinterestfood",
-        "#pan casero",
-        "#comidachilena",
-        "#recetarapida",
-        "#ideapin"
+        "#panalsarten",
+        "#recetachilena",
+        "#comidacasera",
+        "#foodtok",
+        "#chile"
       ],
       "ingredientes": [
-        "Harina",
-        "Mantequilla",
+        "Harina sin polvos",
+        "Mantequilla o aceite",
         "Sal",
         "Agua tibia",
         "Polvo de hornear"
       ],
-      "resumenReceta": "Misma ola que TikTok: pins de churrascas al sartén con paso a paso visual; alto guardado en tableros de cocina chilena.",
+      "resumenReceta": "Pan chileno sin leudar en sartén; receta de Camila (Canal 13) replicada masivamente en TikTok por lo económico.",
       "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/27/receta-de-churrascas-chilenas-asi-de-facil-rapido-y-economico-puedes-preparar-este-pan-al-sarten/",
-      "prioridad": 3
+      "prioridad": 86
+    },
+    {
+      "id": "youtube-churrascas-sarten",
+      "plataforma": "youtube",
+      "titulo": "Churrascas chilenas al sartén",
+      "formato": "Pan rápido · sin leudar · Shorts del dorado",
+      "fechaFuente": "2026-06-27",
+      "kpis": {
+        "vistas": "Alto share en Reels/TikTok",
+        "engagement": "7.5%",
+        "crecimiento": "+120%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#churrascas",
+        "#panalsarten",
+        "#recetachilena",
+        "#comidacasera",
+        "#foodtok",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Harina sin polvos",
+        "Mantequilla o aceite",
+        "Sal",
+        "Agua tibia",
+        "Polvo de hornear"
+      ],
+      "resumenReceta": "Pan chileno sin leudar en sartén; receta de Camila (Canal 13) replicada masivamente en TikTok por lo económico.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/27/receta-de-churrascas-chilenas-asi-de-facil-rapido-y-economico-puedes-preparar-este-pan-al-sarten/",
+      "prioridad": 87
+    },
+    {
+      "id": "pinterest-churrascas-sarten",
+      "plataforma": "pinterest",
+      "titulo": "Churrascas chilenas al sartén",
+      "formato": "Pan rápido · sin leudar · Pins churrascas caseras",
+      "fechaFuente": "2026-06-27",
+      "kpis": {
+        "vistas": "Alto share en Reels/TikTok",
+        "engagement": "7.5%",
+        "crecimiento": "+120%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#churrascas",
+        "#panalsarten",
+        "#recetachilena",
+        "#comidacasera",
+        "#foodtok",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Harina sin polvos",
+        "Mantequilla o aceite",
+        "Sal",
+        "Agua tibia",
+        "Polvo de hornear"
+      ],
+      "resumenReceta": "Pan chileno sin leudar en sartén; receta de Camila (Canal 13) replicada masivamente en TikTok por lo económico.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/27/receta-de-churrascas-chilenas-asi-de-facil-rapido-y-economico-puedes-preparar-este-pan-al-sarten/",
+      "prioridad": 88
+    },
+    {
+      "id": "tiktok-recetario-caro-rocco-invierno",
+      "plataforma": "tiktok",
+      "titulo": "Recetario invierno Caro Rocco + Noni",
+      "formato": "Campaña · dulces con alulosa · Clips de la campaña",
+      "fechaFuente": "2026-06-26",
+      "kpis": {
+        "vistas": "Campaña en Reels",
+        "engagement": "6.3%",
+        "crecimiento": "+115%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#carorocco",
+        "#picarones",
+        "#calzonesrotos",
+        "#recetachilena",
+        "#invierno",
+        "#reels"
+      ],
+      "ingredientes": [
+        "Alulosa",
+        "Manjar sin azúcar",
+        "Harina",
+        "Calabaza",
+        "Huevos"
+      ],
+      "resumenReceta": "Calzones rotos y picarones reinterpretados con Daily; clips de la chef y su abuela viralizados en Instagram.",
+      "fuente": "https://reportediario.cl/2026/06/26/chef-caro-rocco-y-noni-lanzan-recetario-de-invierno-recetas-tradicionales-para-disfrutar-sin-culpa/",
+      "prioridad": 81
+    },
+    {
+      "id": "instagram-recetario-caro-rocco-invierno",
+      "plataforma": "instagram",
+      "titulo": "Recetario invierno Caro Rocco + Noni",
+      "formato": "Campaña · dulces con alulosa · Reels Caro + Noni",
+      "fechaFuente": "2026-06-26",
+      "kpis": {
+        "vistas": "Campaña en Reels",
+        "engagement": "6.3%",
+        "crecimiento": "+115%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#carorocco",
+        "#picarones",
+        "#calzonesrotos",
+        "#recetachilena",
+        "#invierno",
+        "#reels"
+      ],
+      "ingredientes": [
+        "Alulosa",
+        "Manjar sin azúcar",
+        "Harina",
+        "Calabaza",
+        "Huevos"
+      ],
+      "resumenReceta": "Calzones rotos y picarones reinterpretados con Daily; clips de la chef y su abuela viralizados en Instagram.",
+      "fuente": "https://reportediario.cl/2026/06/26/chef-caro-rocco-y-noni-lanzan-recetario-de-invierno-recetas-tradicionales-para-disfrutar-sin-culpa/",
+      "prioridad": 82
+    },
+    {
+      "id": "youtube-recetario-caro-rocco-invierno",
+      "plataforma": "youtube",
+      "titulo": "Recetario invierno Caro Rocco + Noni",
+      "formato": "Campaña · dulces con alulosa · Shorts del recetario",
+      "fechaFuente": "2026-06-26",
+      "kpis": {
+        "vistas": "Campaña en Reels",
+        "engagement": "6.3%",
+        "crecimiento": "+115%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#carorocco",
+        "#picarones",
+        "#calzonesrotos",
+        "#recetachilena",
+        "#invierno",
+        "#reels"
+      ],
+      "ingredientes": [
+        "Alulosa",
+        "Manjar sin azúcar",
+        "Harina",
+        "Calabaza",
+        "Huevos"
+      ],
+      "resumenReceta": "Calzones rotos y picarones reinterpretados con Daily; clips de la chef y su abuela viralizados en Instagram.",
+      "fuente": "https://reportediario.cl/2026/06/26/chef-caro-rocco-y-noni-lanzan-recetario-de-invierno-recetas-tradicionales-para-disfrutar-sin-culpa/",
+      "prioridad": 83
+    },
+    {
+      "id": "pinterest-recetario-caro-rocco-invierno",
+      "plataforma": "pinterest",
+      "titulo": "Recetario invierno Caro Rocco + Noni",
+      "formato": "Campaña · dulces con alulosa · Dulces invierno Chile",
+      "fechaFuente": "2026-06-26",
+      "kpis": {
+        "vistas": "Campaña en Reels",
+        "engagement": "6.3%",
+        "crecimiento": "+115%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#carorocco",
+        "#picarones",
+        "#calzonesrotos",
+        "#recetachilena",
+        "#invierno",
+        "#reels"
+      ],
+      "ingredientes": [
+        "Alulosa",
+        "Manjar sin azúcar",
+        "Harina",
+        "Calabaza",
+        "Huevos"
+      ],
+      "resumenReceta": "Calzones rotos y picarones reinterpretados con Daily; clips de la chef y su abuela viralizados en Instagram.",
+      "fuente": "https://reportediario.cl/2026/06/26/chef-caro-rocco-y-noni-lanzan-recetario-de-invierno-recetas-tradicionales-para-disfrutar-sin-culpa/",
+      "prioridad": 84
+    },
+    {
+      "id": "tiktok-cordero-miel-pastelera",
+      "plataforma": "tiktok",
+      "titulo": "Cordero a la miel con pastelera",
+      "formato": "Asado · invierno · Dorado del cordero TikTok",
+      "fechaFuente": "2026-06-25",
+      "kpis": {
+        "vistas": "Clips invierno",
+        "engagement": "6.0%",
+        "crecimiento": "+102%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#cordero",
+        "#miel",
+        "#pastelera",
+        "#recetachilena",
+        "#foodtok",
+        "#invierno"
+      ],
+      "ingredientes": [
+        "Cordero",
+        "Miel",
+        "Ajo",
+        "Vino tinto",
+        "Cebolla",
+        "Pastelera de choclo"
+      ],
+      "resumenReceta": "Cordero macerado y glaseado con miel al horno; clip viral por técnica de dorado y acompañamiento pastelera.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-cordero-a-la-miel-con-pastelera.shtml",
+      "prioridad": 73
+    },
+    {
+      "id": "instagram-cordero-miel-pastelera",
+      "plataforma": "instagram",
+      "titulo": "Cordero a la miel con pastelera",
+      "formato": "Asado · invierno · Reels de asado",
+      "fechaFuente": "2026-06-25",
+      "kpis": {
+        "vistas": "Clips invierno",
+        "engagement": "6.0%",
+        "crecimiento": "+102%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#cordero",
+        "#miel",
+        "#pastelera",
+        "#recetachilena",
+        "#foodtok",
+        "#invierno"
+      ],
+      "ingredientes": [
+        "Cordero",
+        "Miel",
+        "Ajo",
+        "Vino tinto",
+        "Cebolla",
+        "Pastelera de choclo"
+      ],
+      "resumenReceta": "Cordero macerado y glaseado con miel al horno; clip viral por técnica de dorado y acompañamiento pastelera.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-cordero-a-la-miel-con-pastelera.shtml",
+      "prioridad": 74
+    },
+    {
+      "id": "youtube-cordero-miel-pastelera",
+      "plataforma": "youtube",
+      "titulo": "Cordero a la miel con pastelera",
+      "formato": "Asado · invierno · Shorts del glaseado",
+      "fechaFuente": "2026-06-25",
+      "kpis": {
+        "vistas": "Clips invierno",
+        "engagement": "6.0%",
+        "crecimiento": "+102%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#cordero",
+        "#miel",
+        "#pastelera",
+        "#recetachilena",
+        "#foodtok",
+        "#invierno"
+      ],
+      "ingredientes": [
+        "Cordero",
+        "Miel",
+        "Ajo",
+        "Vino tinto",
+        "Cebolla",
+        "Pastelera de choclo"
+      ],
+      "resumenReceta": "Cordero macerado y glaseado con miel al horno; clip viral por técnica de dorado y acompañamiento pastelera.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-cordero-a-la-miel-con-pastelera.shtml",
+      "prioridad": 75
+    },
+    {
+      "id": "pinterest-cordero-miel-pastelera",
+      "plataforma": "pinterest",
+      "titulo": "Cordero a la miel con pastelera",
+      "formato": "Asado · invierno · Cordero al horno",
+      "fechaFuente": "2026-06-25",
+      "kpis": {
+        "vistas": "Clips invierno",
+        "engagement": "6.0%",
+        "crecimiento": "+102%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#cordero",
+        "#miel",
+        "#pastelera",
+        "#recetachilena",
+        "#foodtok",
+        "#invierno"
+      ],
+      "ingredientes": [
+        "Cordero",
+        "Miel",
+        "Ajo",
+        "Vino tinto",
+        "Cebolla",
+        "Pastelera de choclo"
+      ],
+      "resumenReceta": "Cordero macerado y glaseado con miel al horno; clip viral por técnica de dorado y acompañamiento pastelera.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-cordero-a-la-miel-con-pastelera.shtml",
+      "prioridad": 76
+    },
+    {
+      "id": "tiktok-suprema-rellena-papas",
+      "plataforma": "tiktok",
+      "titulo": "Suprema de ave rellena con papas gratinadas",
+      "formato": "Plato familiar · horneado · Relleno en TikTok",
+      "fechaFuente": "2026-06-25",
+      "kpis": {
+        "vistas": "Guardados en Reels",
+        "engagement": "5.9%",
+        "crecimiento": "+90%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#suprema",
+        "#pollo",
+        "#papas",
+        "#recetachilena",
+        "#foodtok",
+        "#horno"
+      ],
+      "ingredientes": [
+        "Pechuga de pollo",
+        "Jamón",
+        "Queso",
+        "Papas",
+        "Crema",
+        "Huevo"
+      ],
+      "resumenReceta": "Pollo relleno con papas gratinadas; receta nostálgica del chef compartida en redes por lo rendidor del plato.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-una-suprema-de-ave-rellena-con-papas-gratinadas.shtml",
+      "prioridad": 77
+    },
+    {
+      "id": "instagram-suprema-rellena-papas",
+      "plataforma": "instagram",
+      "titulo": "Suprema de ave rellena con papas gratinadas",
+      "formato": "Plato familiar · horneado · Reels familiares",
+      "fechaFuente": "2026-06-25",
+      "kpis": {
+        "vistas": "Guardados en Reels",
+        "engagement": "5.9%",
+        "crecimiento": "+90%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#suprema",
+        "#pollo",
+        "#papas",
+        "#recetachilena",
+        "#foodtok",
+        "#horno"
+      ],
+      "ingredientes": [
+        "Pechuga de pollo",
+        "Jamón",
+        "Queso",
+        "Papas",
+        "Crema",
+        "Huevo"
+      ],
+      "resumenReceta": "Pollo relleno con papas gratinadas; receta nostálgica del chef compartida en redes por lo rendidor del plato.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-una-suprema-de-ave-rellena-con-papas-gratinadas.shtml",
+      "prioridad": 78
+    },
+    {
+      "id": "youtube-suprema-rellena-papas",
+      "plataforma": "youtube",
+      "titulo": "Suprema de ave rellena con papas gratinadas",
+      "formato": "Plato familiar · horneado · Shorts del gratinado",
+      "fechaFuente": "2026-06-25",
+      "kpis": {
+        "vistas": "Guardados en Reels",
+        "engagement": "5.9%",
+        "crecimiento": "+90%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#suprema",
+        "#pollo",
+        "#papas",
+        "#recetachilena",
+        "#foodtok",
+        "#horno"
+      ],
+      "ingredientes": [
+        "Pechuga de pollo",
+        "Jamón",
+        "Queso",
+        "Papas",
+        "Crema",
+        "Huevo"
+      ],
+      "resumenReceta": "Pollo relleno con papas gratinadas; receta nostálgica del chef compartida en redes por lo rendidor del plato.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-una-suprema-de-ave-rellena-con-papas-gratinadas.shtml",
+      "prioridad": 79
+    },
+    {
+      "id": "pinterest-suprema-rellena-papas",
+      "plataforma": "pinterest",
+      "titulo": "Suprema de ave rellena con papas gratinadas",
+      "formato": "Plato familiar · horneado · Pollo relleno papas",
+      "fechaFuente": "2026-06-25",
+      "kpis": {
+        "vistas": "Guardados en Reels",
+        "engagement": "5.9%",
+        "crecimiento": "+90%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#suprema",
+        "#pollo",
+        "#papas",
+        "#recetachilena",
+        "#foodtok",
+        "#horno"
+      ],
+      "ingredientes": [
+        "Pechuga de pollo",
+        "Jamón",
+        "Queso",
+        "Papas",
+        "Crema",
+        "Huevo"
+      ],
+      "resumenReceta": "Pollo relleno con papas gratinadas; receta nostálgica del chef compartida en redes por lo rendidor del plato.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-una-suprema-de-ave-rellena-con-papas-gratinadas.shtml",
+      "prioridad": 80
+    },
+    {
+      "id": "tiktok-ceviche-camarones-cochayuyo",
+      "plataforma": "tiktok",
+      "titulo": "Ceviche de camarones y cochayuyo",
+      "formato": "Mariscos · ingrediente nacional · Clip del programa en TikTok",
+      "fechaFuente": "2026-06-16",
+      "kpis": {
+        "vistas": "Clips en alza",
+        "engagement": "6.2%",
+        "crecimiento": "+95%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#ceviche",
+        "#cochayuyo",
+        "#mariscos",
+        "#recetachilena",
+        "#foodtok",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Camarones",
+        "Cochayuyo",
+        "Limón",
+        "Cilantro",
+        "Cebolla morada",
+        "Ají"
+      ],
+      "resumenReceta": "Ceviche con algas chilenas y camarones; segmento Yo Invito replicado en clips verticales por uso de cochayuyo.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-entretenido-ceviche-de-camarones-y-cochayuyo.shtml",
+      "prioridad": 65
+    },
+    {
+      "id": "instagram-ceviche-camarones-cochayuyo",
+      "plataforma": "instagram",
+      "titulo": "Ceviche de camarones y cochayuyo",
+      "formato": "Mariscos · ingrediente nacional · Reels de mariscos",
+      "fechaFuente": "2026-06-16",
+      "kpis": {
+        "vistas": "Clips en alza",
+        "engagement": "6.2%",
+        "crecimiento": "+95%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#ceviche",
+        "#cochayuyo",
+        "#mariscos",
+        "#recetachilena",
+        "#foodtok",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Camarones",
+        "Cochayuyo",
+        "Limón",
+        "Cilantro",
+        "Cebolla morada",
+        "Ají"
+      ],
+      "resumenReceta": "Ceviche con algas chilenas y camarones; segmento Yo Invito replicado en clips verticales por uso de cochayuyo.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-entretenido-ceviche-de-camarones-y-cochayuyo.shtml",
+      "prioridad": 66
+    },
+    {
+      "id": "youtube-ceviche-camarones-cochayuyo",
+      "plataforma": "youtube",
+      "titulo": "Ceviche de camarones y cochayuyo",
+      "formato": "Mariscos · ingrediente nacional · Shorts del emplatado",
+      "fechaFuente": "2026-06-16",
+      "kpis": {
+        "vistas": "Clips en alza",
+        "engagement": "6.2%",
+        "crecimiento": "+95%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#ceviche",
+        "#cochayuyo",
+        "#mariscos",
+        "#recetachilena",
+        "#foodtok",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Camarones",
+        "Cochayuyo",
+        "Limón",
+        "Cilantro",
+        "Cebolla morada",
+        "Ají"
+      ],
+      "resumenReceta": "Ceviche con algas chilenas y camarones; segmento Yo Invito replicado en clips verticales por uso de cochayuyo.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-entretenido-ceviche-de-camarones-y-cochayuyo.shtml",
+      "prioridad": 67
+    },
+    {
+      "id": "pinterest-ceviche-camarones-cochayuyo",
+      "plataforma": "pinterest",
+      "titulo": "Ceviche de camarones y cochayuyo",
+      "formato": "Mariscos · ingrediente nacional · Pins ceviche chileno",
+      "fechaFuente": "2026-06-16",
+      "kpis": {
+        "vistas": "Clips en alza",
+        "engagement": "6.2%",
+        "crecimiento": "+95%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#ceviche",
+        "#cochayuyo",
+        "#mariscos",
+        "#recetachilena",
+        "#foodtok",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Camarones",
+        "Cochayuyo",
+        "Limón",
+        "Cilantro",
+        "Cebolla morada",
+        "Ají"
+      ],
+      "resumenReceta": "Ceviche con algas chilenas y camarones; segmento Yo Invito replicado en clips verticales por uso de cochayuyo.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-entretenido-ceviche-de-camarones-y-cochayuyo.shtml",
+      "prioridad": 68
+    },
+    {
+      "id": "tiktok-espagueti-mariscos-merken",
+      "plataforma": "tiktok",
+      "titulo": "Espagueti de colores con mariscos al ajillo",
+      "formato": "Pasta · merkén y mar · Salteado en TikTok",
+      "fechaFuente": "2026-06-16",
+      "kpis": {
+        "vistas": "Compartidos en Reels",
+        "engagement": "5.8%",
+        "crecimiento": "+88%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#espagueti",
+        "#mariscos",
+        "#merken",
+        "#recetachilena",
+        "#foodtok",
+        "#pasta"
+      ],
+      "ingredientes": [
+        "Pasta de colores",
+        "Mariscos surtidos",
+        "Ajo",
+        "Vino blanco",
+        "Merkén",
+        "Aceite"
+      ],
+      "resumenReceta": "Pasta con mariscos salteados y merkén; receta del chef Enrique Araya compartida en vertical por ingredientes locales.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-rico-espagueti-de-colores-con-mariscos-al-ajillo.shtml",
+      "prioridad": 69
+    },
+    {
+      "id": "instagram-espagueti-mariscos-merken",
+      "plataforma": "instagram",
+      "titulo": "Espagueti de colores con mariscos al ajillo",
+      "formato": "Pasta · merkén y mar · Reels de pasta",
+      "fechaFuente": "2026-06-16",
+      "kpis": {
+        "vistas": "Compartidos en Reels",
+        "engagement": "5.8%",
+        "crecimiento": "+88%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#espagueti",
+        "#mariscos",
+        "#merken",
+        "#recetachilena",
+        "#foodtok",
+        "#pasta"
+      ],
+      "ingredientes": [
+        "Pasta de colores",
+        "Mariscos surtidos",
+        "Ajo",
+        "Vino blanco",
+        "Merkén",
+        "Aceite"
+      ],
+      "resumenReceta": "Pasta con mariscos salteados y merkén; receta del chef Enrique Araya compartida en vertical por ingredientes locales.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-rico-espagueti-de-colores-con-mariscos-al-ajillo.shtml",
+      "prioridad": 70
+    },
+    {
+      "id": "youtube-espagueti-mariscos-merken",
+      "plataforma": "youtube",
+      "titulo": "Espagueti de colores con mariscos al ajillo",
+      "formato": "Pasta · merkén y mar · Shorts del ajillo",
+      "fechaFuente": "2026-06-16",
+      "kpis": {
+        "vistas": "Compartidos en Reels",
+        "engagement": "5.8%",
+        "crecimiento": "+88%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#espagueti",
+        "#mariscos",
+        "#merken",
+        "#recetachilena",
+        "#foodtok",
+        "#pasta"
+      ],
+      "ingredientes": [
+        "Pasta de colores",
+        "Mariscos surtidos",
+        "Ajo",
+        "Vino blanco",
+        "Merkén",
+        "Aceite"
+      ],
+      "resumenReceta": "Pasta con mariscos salteados y merkén; receta del chef Enrique Araya compartida en vertical por ingredientes locales.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-rico-espagueti-de-colores-con-mariscos-al-ajillo.shtml",
+      "prioridad": 71
+    },
+    {
+      "id": "pinterest-espagueti-mariscos-merken",
+      "plataforma": "pinterest",
+      "titulo": "Espagueti de colores con mariscos al ajillo",
+      "formato": "Pasta · merkén y mar · Pasta con mariscos",
+      "fechaFuente": "2026-06-16",
+      "kpis": {
+        "vistas": "Compartidos en Reels",
+        "engagement": "5.8%",
+        "crecimiento": "+88%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#espagueti",
+        "#mariscos",
+        "#merken",
+        "#recetachilena",
+        "#foodtok",
+        "#pasta"
+      ],
+      "ingredientes": [
+        "Pasta de colores",
+        "Mariscos surtidos",
+        "Ajo",
+        "Vino blanco",
+        "Merkén",
+        "Aceite"
+      ],
+      "resumenReceta": "Pasta con mariscos salteados y merkén; receta del chef Enrique Araya compartida en vertical por ingredientes locales.",
+      "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-rico-espagueti-de-colores-con-mariscos-al-ajillo.shtml",
+      "prioridad": 72
+    },
+    {
+      "id": "tiktok-pan-amasado-barrientos",
+      "plataforma": "tiktok",
+      "titulo": "Pan amasado rápido (chef Barrientos)",
+      "formato": "Pan chileno · horno · Amasado en TikTok",
+      "fechaFuente": "2026-06-13",
+      "kpis": {
+        "vistas": "Alto engagement invierno",
+        "engagement": "7.1%",
+        "crecimiento": "+135%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#panamasado",
+        "#recetachilena",
+        "#desayuno",
+        "#foodtok",
+        "#hornear",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Mantequilla",
+        "Levadura",
+        "Sal",
+        "Azúcar",
+        "Agua"
+      ],
+      "resumenReceta": "Pan amasado dorado por fuera y blando por dentro; receta del chef viralizada en redes de cocina chilena.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/13/receta-facil-de-pan-amasado-por-el-chef-alvaro-barrientos-rapido-y-para-el-mejor-desayuno/",
+      "prioridad": 61
+    },
+    {
+      "id": "instagram-pan-amasado-barrientos",
+      "plataforma": "instagram",
+      "titulo": "Pan amasado rápido (chef Barrientos)",
+      "formato": "Pan chileno · horno · Reels del horno",
+      "fechaFuente": "2026-06-13",
+      "kpis": {
+        "vistas": "Alto engagement invierno",
+        "engagement": "7.1%",
+        "crecimiento": "+135%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#panamasado",
+        "#recetachilena",
+        "#desayuno",
+        "#foodtok",
+        "#hornear",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Mantequilla",
+        "Levadura",
+        "Sal",
+        "Azúcar",
+        "Agua"
+      ],
+      "resumenReceta": "Pan amasado dorado por fuera y blando por dentro; receta del chef viralizada en redes de cocina chilena.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/13/receta-facil-de-pan-amasado-por-el-chef-alvaro-barrientos-rapido-y-para-el-mejor-desayuno/",
+      "prioridad": 62
+    },
+    {
+      "id": "youtube-pan-amasado-barrientos",
+      "plataforma": "youtube",
+      "titulo": "Pan amasado rápido (chef Barrientos)",
+      "formato": "Pan chileno · horno · Shorts del pan caliente",
+      "fechaFuente": "2026-06-13",
+      "kpis": {
+        "vistas": "Alto engagement invierno",
+        "engagement": "7.1%",
+        "crecimiento": "+135%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#panamasado",
+        "#recetachilena",
+        "#desayuno",
+        "#foodtok",
+        "#hornear",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Mantequilla",
+        "Levadura",
+        "Sal",
+        "Azúcar",
+        "Agua"
+      ],
+      "resumenReceta": "Pan amasado dorado por fuera y blando por dentro; receta del chef viralizada en redes de cocina chilena.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/13/receta-facil-de-pan-amasado-por-el-chef-alvaro-barrientos-rapido-y-para-el-mejor-desayuno/",
+      "prioridad": 63
+    },
+    {
+      "id": "pinterest-pan-amasado-barrientos",
+      "plataforma": "pinterest",
+      "titulo": "Pan amasado rápido (chef Barrientos)",
+      "formato": "Pan chileno · horno · Receta pan amasado",
+      "fechaFuente": "2026-06-13",
+      "kpis": {
+        "vistas": "Alto engagement invierno",
+        "engagement": "7.1%",
+        "crecimiento": "+135%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#panamasado",
+        "#recetachilena",
+        "#desayuno",
+        "#foodtok",
+        "#hornear",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Mantequilla",
+        "Levadura",
+        "Sal",
+        "Azúcar",
+        "Agua"
+      ],
+      "resumenReceta": "Pan amasado dorado por fuera y blando por dentro; receta del chef viralizada en redes de cocina chilena.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/13/receta-facil-de-pan-amasado-por-el-chef-alvaro-barrientos-rapido-y-para-el-mejor-desayuno/",
+      "prioridad": 64
+    },
+    {
+      "id": "tiktok-queque-vainilla-barrientos",
+      "plataforma": "tiktok",
+      "titulo": "Queque casero de vainilla (chef Barrientos)",
+      "formato": "Repostería económica · horno · Receta en TikTok",
+      "fechaFuente": "2026-06-09",
+      "kpis": {
+        "vistas": "Alto share en Reels",
+        "engagement": "6.4%",
+        "crecimiento": "+110%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#queque",
+        "#recetafacil",
+        "#vainilla",
+        "#foodtok",
+        "#reposteria",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Azúcar",
+        "Huevos",
+        "Aceite",
+        "Leche",
+        "Vainilla",
+        "Polvos de hornear"
+      ],
+      "resumenReceta": "Bizcocho húmedo con medición en gramos; clip del chef replicado en TikTok e Instagram por lo simple y económico.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/09/receta-de-queque-casero-de-vainilla-al-estilo-del-chef-alvaro-barrientos-facil-muy-rapido-y-economico/",
+      "prioridad": 57
+    },
+    {
+      "id": "instagram-queque-vainilla-barrientos",
+      "plataforma": "instagram",
+      "titulo": "Queque casero de vainilla (chef Barrientos)",
+      "formato": "Repostería económica · horno · Reels del horneado",
+      "fechaFuente": "2026-06-09",
+      "kpis": {
+        "vistas": "Alto share en Reels",
+        "engagement": "6.4%",
+        "crecimiento": "+110%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#queque",
+        "#recetafacil",
+        "#vainilla",
+        "#foodtok",
+        "#reposteria",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Azúcar",
+        "Huevos",
+        "Aceite",
+        "Leche",
+        "Vainilla",
+        "Polvos de hornear"
+      ],
+      "resumenReceta": "Bizcocho húmedo con medición en gramos; clip del chef replicado en TikTok e Instagram por lo simple y económico.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/09/receta-de-queque-casero-de-vainilla-al-estilo-del-chef-alvaro-barrientos-facil-muy-rapido-y-economico/",
+      "prioridad": 58
+    },
+    {
+      "id": "youtube-queque-vainilla-barrientos",
+      "plataforma": "youtube",
+      "titulo": "Queque casero de vainilla (chef Barrientos)",
+      "formato": "Repostería económica · horno · Shorts del corte",
+      "fechaFuente": "2026-06-09",
+      "kpis": {
+        "vistas": "Alto share en Reels",
+        "engagement": "6.4%",
+        "crecimiento": "+110%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#queque",
+        "#recetafacil",
+        "#vainilla",
+        "#foodtok",
+        "#reposteria",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Azúcar",
+        "Huevos",
+        "Aceite",
+        "Leche",
+        "Vainilla",
+        "Polvos de hornear"
+      ],
+      "resumenReceta": "Bizcocho húmedo con medición en gramos; clip del chef replicado en TikTok e Instagram por lo simple y económico.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/09/receta-de-queque-casero-de-vainilla-al-estilo-del-chef-alvaro-barrientos-facil-muy-rapido-y-economico/",
+      "prioridad": 59
+    },
+    {
+      "id": "pinterest-queque-vainilla-barrientos",
+      "plataforma": "pinterest",
+      "titulo": "Queque casero de vainilla (chef Barrientos)",
+      "formato": "Repostería económica · horno · Pins queque casero",
+      "fechaFuente": "2026-06-09",
+      "kpis": {
+        "vistas": "Alto share en Reels",
+        "engagement": "6.4%",
+        "crecimiento": "+110%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#queque",
+        "#recetafacil",
+        "#vainilla",
+        "#foodtok",
+        "#reposteria",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Azúcar",
+        "Huevos",
+        "Aceite",
+        "Leche",
+        "Vainilla",
+        "Polvos de hornear"
+      ],
+      "resumenReceta": "Bizcocho húmedo con medición en gramos; clip del chef replicado en TikTok e Instagram por lo simple y económico.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/09/receta-de-queque-casero-de-vainilla-al-estilo-del-chef-alvaro-barrientos-facil-muy-rapido-y-economico/",
+      "prioridad": 60
+    },
+    {
+      "id": "tiktok-duelo-sanguches-barrientos",
+      "plataforma": "tiktok",
+      "titulo": "Duelo de sánguches: completo vs. lomo",
+      "formato": "Debate viral · gastronomía · Reacciones en TikTok",
+      "fechaFuente": "2026-06-03",
+      "kpis": {
+        "vistas": "Debate masivo en IG",
+        "engagement": "7.4%",
+        "crecimiento": "+145%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#completoitaliano",
+        "#sanguche",
+        "#foodtok",
+        "#chile",
+        "#viral",
+        "#barrientos"
+      ],
+      "ingredientes": [
+        "Pan frica",
+        "Vienesa",
+        "Palta",
+        "Tomate",
+        "Mayonesa",
+        "Carne de lomo"
+      ],
+      "resumenReceta": "Chef peruano enfrentó completo italiano con lomo saltado en Instagram; Álvaro Barrientos respondió invitando a cocinar sabores chilenos.",
+      "fuente": "https://reportediario.cl/2026/06/03/alvaro-barrientos-responde-a-chef-peruano-por-viral-duelo-de-sanguches/",
+      "prioridad": 49
+    },
+    {
+      "id": "instagram-duelo-sanguches-barrientos",
+      "plataforma": "instagram",
+      "titulo": "Duelo de sánguches: completo vs. lomo",
+      "formato": "Debate viral · gastronomía · Duelo en Instagram",
+      "fechaFuente": "2026-06-03",
+      "kpis": {
+        "vistas": "Debate masivo en IG",
+        "engagement": "7.4%",
+        "crecimiento": "+145%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#completoitaliano",
+        "#sanguche",
+        "#foodtok",
+        "#chile",
+        "#viral",
+        "#barrientos"
+      ],
+      "ingredientes": [
+        "Pan frica",
+        "Vienesa",
+        "Palta",
+        "Tomate",
+        "Mayonesa",
+        "Carne de lomo"
+      ],
+      "resumenReceta": "Chef peruano enfrentó completo italiano con lomo saltado en Instagram; Álvaro Barrientos respondió invitando a cocinar sabores chilenos.",
+      "fuente": "https://reportediario.cl/2026/06/03/alvaro-barrientos-responde-a-chef-peruano-por-viral-duelo-de-sanguches/",
+      "prioridad": 50
+    },
+    {
+      "id": "youtube-duelo-sanguches-barrientos",
+      "plataforma": "youtube",
+      "titulo": "Duelo de sánguches: completo vs. lomo",
+      "formato": "Debate viral · gastronomía · Shorts del completo",
+      "fechaFuente": "2026-06-03",
+      "kpis": {
+        "vistas": "Debate masivo en IG",
+        "engagement": "7.4%",
+        "crecimiento": "+145%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#completoitaliano",
+        "#sanguche",
+        "#foodtok",
+        "#chile",
+        "#viral",
+        "#barrientos"
+      ],
+      "ingredientes": [
+        "Pan frica",
+        "Vienesa",
+        "Palta",
+        "Tomate",
+        "Mayonesa",
+        "Carne de lomo"
+      ],
+      "resumenReceta": "Chef peruano enfrentó completo italiano con lomo saltado en Instagram; Álvaro Barrientos respondió invitando a cocinar sabores chilenos.",
+      "fuente": "https://reportediario.cl/2026/06/03/alvaro-barrientos-responde-a-chef-peruano-por-viral-duelo-de-sanguches/",
+      "prioridad": 51
+    },
+    {
+      "id": "pinterest-duelo-sanguches-barrientos",
+      "plataforma": "pinterest",
+      "titulo": "Duelo de sánguches: completo vs. lomo",
+      "formato": "Debate viral · gastronomía · Sánguches chilenos",
+      "fechaFuente": "2026-06-03",
+      "kpis": {
+        "vistas": "Debate masivo en IG",
+        "engagement": "7.4%",
+        "crecimiento": "+145%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#completoitaliano",
+        "#sanguche",
+        "#foodtok",
+        "#chile",
+        "#viral",
+        "#barrientos"
+      ],
+      "ingredientes": [
+        "Pan frica",
+        "Vienesa",
+        "Palta",
+        "Tomate",
+        "Mayonesa",
+        "Carne de lomo"
+      ],
+      "resumenReceta": "Chef peruano enfrentó completo italiano con lomo saltado en Instagram; Álvaro Barrientos respondió invitando a cocinar sabores chilenos.",
+      "fuente": "https://reportediario.cl/2026/06/03/alvaro-barrientos-responde-a-chef-peruano-por-viral-duelo-de-sanguches/",
+      "prioridad": 52
     },
     {
       "id": "tiktok-torta-arroz-huevo",
       "plataforma": "tiktok",
       "titulo": "Torta de arroz con huevo y tomate",
-      "formato": "Fusión salada · challenge Gabo Gutiérrez",
+      "formato": "Challenge Gabo Gutiérrez · Viral Gabo Gutiérrez",
       "fechaFuente": "2026-06-03",
       "kpis": {
         "vistas": "157K+ likes TikTok",
@@ -122,9 +1175,8 @@
         "#recetachilena",
         "#gabogutierrez",
         "#foodtok",
-        "#comidatipica",
         "#viral",
-        "#tortasalada"
+        "#huevofrito"
       ],
       "ingredientes": [
         "Arroz apelmazado",
@@ -136,77 +1188,109 @@
       ],
       "resumenReceta": "Capas de arroz, mayonesa, tomate y vienesa terminadas con huevos fritos; viral tras la torta de completos del mismo influencer.",
       "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2026/06/03/de-la-torta-de-completo-a-la-de-arroz-con-huevo-y-tomate-influencer-la-rompe-con-preparacion.shtml",
-      "prioridad": 4
+      "prioridad": 53
     },
     {
       "id": "instagram-torta-arroz-huevo",
       "plataforma": "instagram",
       "titulo": "Torta de arroz con huevo y tomate",
-      "formato": "Reels · misma ola que TikTok",
+      "formato": "Challenge Gabo Gutiérrez · Reels paralelos",
       "fechaFuente": "2026-06-03",
       "kpis": {
-        "vistas": "111K+ likes IG",
-        "engagement": "9.4%",
-        "crecimiento": "+180%",
-        "senal": "alto"
+        "vistas": "157K+ likes TikTok",
+        "engagement": "10.2%",
+        "crecimiento": "+200%",
+        "senal": "muy-alto"
       },
       "hashtags": [
         "#tortadearroz",
-        "#reelschile",
-        "#recetaschilenas",
-        "#comidachilena",
-        "#foodie",
+        "#recetachilena",
+        "#gabogutierrez",
+        "#foodtok",
         "#viral",
         "#huevofrito"
       ],
       "ingredientes": [
-        "Arroz",
+        "Arroz apelmazado",
         "Mayonesa",
         "Vienesas",
         "Tomate",
-        "Huevos"
+        "Huevos",
+        "Papel aluminio"
       ],
-      "resumenReceta": "Publicación paralela en Instagram del desafío de Gabo Gutiérrez; formato Reels con capas de arroz y huevo frito encima.",
+      "resumenReceta": "Capas de arroz, mayonesa, tomate y vienesa terminadas con huevos fritos; viral tras la torta de completos del mismo influencer.",
       "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2026/06/03/de-la-torta-de-completo-a-la-de-arroz-con-huevo-y-tomate-influencer-la-rompe-con-preparacion.shtml",
-      "prioridad": 5
+      "prioridad": 54
     },
     {
       "id": "youtube-torta-arroz-huevo",
       "plataforma": "youtube",
-      "titulo": "Torta de arroz con huevo (Shorts)",
-      "formato": "YouTube Shorts · recorte viral",
+      "titulo": "Torta de arroz con huevo y tomate",
+      "formato": "Challenge Gabo Gutiérrez · Shorts del corte",
       "fechaFuente": "2026-06-03",
       "kpis": {
-        "vistas": "500K+ en Shorts",
-        "engagement": "7.0%",
-        "crecimiento": "+150%",
-        "senal": "alto"
+        "vistas": "157K+ likes TikTok",
+        "engagement": "10.2%",
+        "crecimiento": "+200%",
+        "senal": "muy-alto"
       },
       "hashtags": [
-        "#shorts",
         "#tortadearroz",
-        "#comidachilena",
-        "#receta",
+        "#recetachilena",
+        "#gabogutierrez",
+        "#foodtok",
         "#viral",
-        "#chile",
-        "#foodshorts"
+        "#huevofrito"
       ],
       "ingredientes": [
-        "Arroz",
+        "Arroz apelmazado",
         "Mayonesa",
         "Vienesas",
         "Tomate",
-        "Huevos"
+        "Huevos",
+        "Papel aluminio"
       ],
-      "resumenReceta": "Short vertical del mismo viral de Gabo Gutiérrez; ideal para republicar en TikTok e Instagram.",
+      "resumenReceta": "Capas de arroz, mayonesa, tomate y vienesa terminadas con huevos fritos; viral tras la torta de completos del mismo influencer.",
       "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2026/06/03/de-la-torta-de-completo-a-la-de-arroz-con-huevo-y-tomate-influencer-la-rompe-con-preparacion.shtml",
-      "prioridad": 7
+      "prioridad": 55
     },
     {
-      "id": "instagram-completo-fit",
-      "plataforma": "instagram",
-      "titulo": "Completo italiano fit (~342 kcal)",
-      "formato": "Receta saludable · macros en pantalla",
+      "id": "pinterest-torta-arroz-huevo",
+      "plataforma": "pinterest",
+      "titulo": "Torta de arroz con huevo y tomate",
+      "formato": "Challenge Gabo Gutiérrez · Ideas torta salada",
+      "fechaFuente": "2026-06-03",
+      "kpis": {
+        "vistas": "157K+ likes TikTok",
+        "engagement": "10.2%",
+        "crecimiento": "+200%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#tortadearroz",
+        "#recetachilena",
+        "#gabogutierrez",
+        "#foodtok",
+        "#viral",
+        "#huevofrito"
+      ],
+      "ingredientes": [
+        "Arroz apelmazado",
+        "Mayonesa",
+        "Vienesas",
+        "Tomate",
+        "Huevos",
+        "Papel aluminio"
+      ],
+      "resumenReceta": "Capas de arroz, mayonesa, tomate y vienesa terminadas con huevos fritos; viral tras la torta de completos del mismo influencer.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2026/06/03/de-la-torta-de-completo-a-la-de-arroz-con-huevo-y-tomate-influencer-la-rompe-con-preparacion.shtml",
+      "prioridad": 56
+    },
+    {
+      "id": "tiktok-completo-italiano-fit",
+      "plataforma": "tiktok",
+      "titulo": "Completo italiano fit (342 kcal)",
+      "formato": "Receta saludable · macros en pantalla · Receta fit en TikTok",
       "fechaFuente": "2026-05-22",
       "kpis": {
         "vistas": "420K+",
@@ -220,7 +1304,6 @@
         "#comidachilena",
         "#macros",
         "#sweetfran",
-        "#recetasaludable",
         "#reels"
       ],
       "ingredientes": [
@@ -231,16 +1314,1860 @@
         "Palta",
         "Tomate"
       ],
-      "resumenReceta": "Versión baja en calorías del completo italiano con vienesa de pollo, palta-quesillo y mayonesa fit sin aceite.",
+      "resumenReceta": "Versión baja en calorías del completo italiano con vienesa de pollo y mayonesa fit sin aceite; viral de Sweet Fran.",
       "fuente": "https://reportediario.cl/2026/05/22/completo-italiano-fit-la-receta-viral-de-apenas-342-calorias/",
+      "prioridad": 41
+    },
+    {
+      "id": "instagram-completo-italiano-fit",
+      "plataforma": "instagram",
+      "titulo": "Completo italiano fit (342 kcal)",
+      "formato": "Receta saludable · macros en pantalla · Reels con macros",
+      "fechaFuente": "2026-05-22",
+      "kpis": {
+        "vistas": "420K+",
+        "engagement": "6.9%",
+        "crecimiento": "+180%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#completoitaliano",
+        "#recetasfit",
+        "#comidachilena",
+        "#macros",
+        "#sweetfran",
+        "#reels"
+      ],
+      "ingredientes": [
+        "Vienesa de pollo casera",
+        "Pan hot dog",
+        "Quesillo",
+        "Huevo",
+        "Palta",
+        "Tomate"
+      ],
+      "resumenReceta": "Versión baja en calorías del completo italiano con vienesa de pollo y mayonesa fit sin aceite; viral de Sweet Fran.",
+      "fuente": "https://reportediario.cl/2026/05/22/completo-italiano-fit-la-receta-viral-de-apenas-342-calorias/",
+      "prioridad": 42
+    },
+    {
+      "id": "youtube-completo-italiano-fit",
+      "plataforma": "youtube",
+      "titulo": "Completo italiano fit (342 kcal)",
+      "formato": "Receta saludable · macros en pantalla · Shorts del armado",
+      "fechaFuente": "2026-05-22",
+      "kpis": {
+        "vistas": "420K+",
+        "engagement": "6.9%",
+        "crecimiento": "+180%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#completoitaliano",
+        "#recetasfit",
+        "#comidachilena",
+        "#macros",
+        "#sweetfran",
+        "#reels"
+      ],
+      "ingredientes": [
+        "Vienesa de pollo casera",
+        "Pan hot dog",
+        "Quesillo",
+        "Huevo",
+        "Palta",
+        "Tomate"
+      ],
+      "resumenReceta": "Versión baja en calorías del completo italiano con vienesa de pollo y mayonesa fit sin aceite; viral de Sweet Fran.",
+      "fuente": "https://reportediario.cl/2026/05/22/completo-italiano-fit-la-receta-viral-de-apenas-342-calorias/",
+      "prioridad": 43
+    },
+    {
+      "id": "pinterest-completo-italiano-fit",
+      "plataforma": "pinterest",
+      "titulo": "Completo italiano fit (342 kcal)",
+      "formato": "Receta saludable · macros en pantalla · Completos saludables",
+      "fechaFuente": "2026-05-22",
+      "kpis": {
+        "vistas": "420K+",
+        "engagement": "6.9%",
+        "crecimiento": "+180%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#completoitaliano",
+        "#recetasfit",
+        "#comidachilena",
+        "#macros",
+        "#sweetfran",
+        "#reels"
+      ],
+      "ingredientes": [
+        "Vienesa de pollo casera",
+        "Pan hot dog",
+        "Quesillo",
+        "Huevo",
+        "Palta",
+        "Tomate"
+      ],
+      "resumenReceta": "Versión baja en calorías del completo italiano con vienesa de pollo y mayonesa fit sin aceite; viral de Sweet Fran.",
+      "fuente": "https://reportediario.cl/2026/05/22/completo-italiano-fit-la-receta-viral-de-apenas-342-calorias/",
+      "prioridad": 44
+    },
+    {
+      "id": "tiktok-torta-completo-gabo",
+      "plataforma": "tiktok",
+      "titulo": "Torta de completo (Gabo Gutiérrez)",
+      "formato": "Challenge viral · comida típica · Viral inicial en TikTok",
+      "fechaFuente": "2026-05-19",
+      "kpis": {
+        "vistas": "Viral en TikTok e IG",
+        "engagement": "9.8%",
+        "crecimiento": "+250%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#tortadecompleto",
+        "#completo",
+        "#gabogutierrez",
+        "#foodtok",
+        "#viral",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Pan de molde",
+        "Vienesas",
+        "Palta",
+        "Tomate",
+        "Mayonesa",
+        "Queso"
+      ],
+      "resumenReceta": "Capas de pan, vienesa, palta y tomate en forma de torta; viral previo a la torta de arroz del mismo influencer.",
+      "fuente": "https://www.tvn.cl/noticias/tendencias/influencer-crea-torta-de-completo-y-desata-polemica-en-redes-sociales",
+      "prioridad": 45
+    },
+    {
+      "id": "instagram-torta-completo-gabo",
+      "plataforma": "instagram",
+      "titulo": "Torta de completo (Gabo Gutiérrez)",
+      "formato": "Challenge viral · comida típica · Reels de la torta",
+      "fechaFuente": "2026-05-19",
+      "kpis": {
+        "vistas": "Viral en TikTok e IG",
+        "engagement": "9.8%",
+        "crecimiento": "+250%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#tortadecompleto",
+        "#completo",
+        "#gabogutierrez",
+        "#foodtok",
+        "#viral",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Pan de molde",
+        "Vienesas",
+        "Palta",
+        "Tomate",
+        "Mayonesa",
+        "Queso"
+      ],
+      "resumenReceta": "Capas de pan, vienesa, palta y tomate en forma de torta; viral previo a la torta de arroz del mismo influencer.",
+      "fuente": "https://www.tvn.cl/noticias/tendencias/influencer-crea-torta-de-completo-y-desata-polemica-en-redes-sociales",
+      "prioridad": 46
+    },
+    {
+      "id": "youtube-torta-completo-gabo",
+      "plataforma": "youtube",
+      "titulo": "Torta de completo (Gabo Gutiérrez)",
+      "formato": "Challenge viral · comida típica · Shorts del armado",
+      "fechaFuente": "2026-05-19",
+      "kpis": {
+        "vistas": "Viral en TikTok e IG",
+        "engagement": "9.8%",
+        "crecimiento": "+250%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#tortadecompleto",
+        "#completo",
+        "#gabogutierrez",
+        "#foodtok",
+        "#viral",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Pan de molde",
+        "Vienesas",
+        "Palta",
+        "Tomate",
+        "Mayonesa",
+        "Queso"
+      ],
+      "resumenReceta": "Capas de pan, vienesa, palta y tomate en forma de torta; viral previo a la torta de arroz del mismo influencer.",
+      "fuente": "https://www.tvn.cl/noticias/tendencias/influencer-crea-torta-de-completo-y-desata-polemica-en-redes-sociales",
+      "prioridad": 47
+    },
+    {
+      "id": "pinterest-torta-completo-gabo",
+      "plataforma": "pinterest",
+      "titulo": "Torta de completo (Gabo Gutiérrez)",
+      "formato": "Challenge viral · comida típica · Ideas torta salada",
+      "fechaFuente": "2026-05-19",
+      "kpis": {
+        "vistas": "Viral en TikTok e IG",
+        "engagement": "9.8%",
+        "crecimiento": "+250%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#tortadecompleto",
+        "#completo",
+        "#gabogutierrez",
+        "#foodtok",
+        "#viral",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Pan de molde",
+        "Vienesas",
+        "Palta",
+        "Tomate",
+        "Mayonesa",
+        "Queso"
+      ],
+      "resumenReceta": "Capas de pan, vienesa, palta y tomate en forma de torta; viral previo a la torta de arroz del mismo influencer.",
+      "fuente": "https://www.tvn.cl/noticias/tendencias/influencer-crea-torta-de-completo-y-desata-polemica-en-redes-sociales",
+      "prioridad": 48
+    },
+    {
+      "id": "tiktok-sopaipleto-osorno",
+      "plataforma": "tiktok",
+      "titulo": "Sopaipleto de Osorno (30 cm)",
+      "formato": "Street food · completo + sopaipilla · Videos del local en TikTok",
+      "fechaFuente": "2026-04-14",
+      "kpis": {
+        "vistas": "Alto share regional",
+        "engagement": "7.0%",
+        "crecimiento": "+125%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#sopaipleto",
+        "#osorno",
+        "#comidachilena",
+        "#streetfood",
+        "#foodtok",
+        "#completo"
+      ],
+      "ingredientes": [
+        "Sopaipilla",
+        "Vienesa",
+        "Palta",
+        "Tomate",
+        "Mostaza opcional"
+      ],
+      "resumenReceta": "Fusión completo y sopaipilla del local El Pato en Barrio Lynch; viral por tamaño y precio accesible para estudiantes.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/historia/2026/04/14/sopaipleto-la-innovacion-culinaria-que-revoluciona-osorno-lo-hice-para-la-juventud.shtml",
+      "prioridad": 37
+    },
+    {
+      "id": "instagram-sopaipleto-osorno",
+      "plataforma": "instagram",
+      "titulo": "Sopaipleto de Osorno (30 cm)",
+      "formato": "Street food · completo + sopaipilla · Reels del sopaipleto",
+      "fechaFuente": "2026-04-14",
+      "kpis": {
+        "vistas": "Alto share regional",
+        "engagement": "7.0%",
+        "crecimiento": "+125%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#sopaipleto",
+        "#osorno",
+        "#comidachilena",
+        "#streetfood",
+        "#foodtok",
+        "#completo"
+      ],
+      "ingredientes": [
+        "Sopaipilla",
+        "Vienesa",
+        "Palta",
+        "Tomate",
+        "Mostaza opcional"
+      ],
+      "resumenReceta": "Fusión completo y sopaipilla del local El Pato en Barrio Lynch; viral por tamaño y precio accesible para estudiantes.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/historia/2026/04/14/sopaipleto-la-innovacion-culinaria-que-revoluciona-osorno-lo-hice-para-la-juventud.shtml",
+      "prioridad": 38
+    },
+    {
+      "id": "youtube-sopaipleto-osorno",
+      "plataforma": "youtube",
+      "titulo": "Sopaipleto de Osorno (30 cm)",
+      "formato": "Street food · completo + sopaipilla · Shorts de degustación",
+      "fechaFuente": "2026-04-14",
+      "kpis": {
+        "vistas": "Alto share regional",
+        "engagement": "7.0%",
+        "crecimiento": "+125%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#sopaipleto",
+        "#osorno",
+        "#comidachilena",
+        "#streetfood",
+        "#foodtok",
+        "#completo"
+      ],
+      "ingredientes": [
+        "Sopaipilla",
+        "Vienesa",
+        "Palta",
+        "Tomate",
+        "Mostaza opcional"
+      ],
+      "resumenReceta": "Fusión completo y sopaipilla del local El Pato en Barrio Lynch; viral por tamaño y precio accesible para estudiantes.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/historia/2026/04/14/sopaipleto-la-innovacion-culinaria-que-revoluciona-osorno-lo-hice-para-la-juventud.shtml",
+      "prioridad": 39
+    },
+    {
+      "id": "pinterest-sopaipleto-osorno",
+      "plataforma": "pinterest",
+      "titulo": "Sopaipleto de Osorno (30 cm)",
+      "formato": "Street food · completo + sopaipilla · Pins comida Osorno",
+      "fechaFuente": "2026-04-14",
+      "kpis": {
+        "vistas": "Alto share regional",
+        "engagement": "7.0%",
+        "crecimiento": "+125%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#sopaipleto",
+        "#osorno",
+        "#comidachilena",
+        "#streetfood",
+        "#foodtok",
+        "#completo"
+      ],
+      "ingredientes": [
+        "Sopaipilla",
+        "Vienesa",
+        "Palta",
+        "Tomate",
+        "Mostaza opcional"
+      ],
+      "resumenReceta": "Fusión completo y sopaipilla del local El Pato en Barrio Lynch; viral por tamaño y precio accesible para estudiantes.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/historia/2026/04/14/sopaipleto-la-innovacion-culinaria-que-revoluciona-osorno-lo-hice-para-la-juventud.shtml",
+      "prioridad": 40
+    },
+    {
+      "id": "tiktok-pebre-origen-debate",
+      "plataforma": "tiktok",
+      "titulo": "Debate del origen del pebre",
+      "formato": "Viral · cocina tradicional · Stitch del debate",
+      "fechaFuente": "2026-01-07",
+      "kpis": {
+        "vistas": "Debate masivo",
+        "engagement": "8.8%",
+        "crecimiento": "+175%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#pebre",
+        "#recetachilena",
+        "#debate",
+        "#foodtok",
+        "#cilantro",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Ají verde",
+        "Cilantro",
+        "Cebolla",
+        "Aceite",
+        "Vinagre",
+        "Sal"
+      ],
+      "resumenReceta": "Influencer español atribuye raíz catalana al pebre; estallido de comentarios y recetas caseras en TikTok chileno.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/debate/2026/01/07/origen-del-pebre-influencer-asegura-que-es-una-mezcla-de-chile-y-espana-y-redes-estallan.shtml",
+      "prioridad": 93
+    },
+    {
+      "id": "instagram-pebre-origen-debate",
+      "plataforma": "instagram",
+      "titulo": "Debate del origen del pebre",
+      "formato": "Viral · cocina tradicional · Reels de pebre casero",
+      "fechaFuente": "2026-01-07",
+      "kpis": {
+        "vistas": "Debate masivo",
+        "engagement": "8.8%",
+        "crecimiento": "+175%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#pebre",
+        "#recetachilena",
+        "#debate",
+        "#foodtok",
+        "#cilantro",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Ají verde",
+        "Cilantro",
+        "Cebolla",
+        "Aceite",
+        "Vinagre",
+        "Sal"
+      ],
+      "resumenReceta": "Influencer español atribuye raíz catalana al pebre; estallido de comentarios y recetas caseras en TikTok chileno.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/debate/2026/01/07/origen-del-pebre-influencer-asegura-que-es-una-mezcla-de-chile-y-espana-y-redes-estallan.shtml",
+      "prioridad": 94
+    },
+    {
+      "id": "youtube-pebre-origen-debate",
+      "plataforma": "youtube",
+      "titulo": "Debate del origen del pebre",
+      "formato": "Viral · cocina tradicional · Shorts de reacciones",
+      "fechaFuente": "2026-01-07",
+      "kpis": {
+        "vistas": "Debate masivo",
+        "engagement": "8.8%",
+        "crecimiento": "+175%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#pebre",
+        "#recetachilena",
+        "#debate",
+        "#foodtok",
+        "#cilantro",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Ají verde",
+        "Cilantro",
+        "Cebolla",
+        "Aceite",
+        "Vinagre",
+        "Sal"
+      ],
+      "resumenReceta": "Influencer español atribuye raíz catalana al pebre; estallido de comentarios y recetas caseras en TikTok chileno.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/debate/2026/01/07/origen-del-pebre-influencer-asegura-que-es-una-mezcla-de-chile-y-espana-y-redes-estallan.shtml",
+      "prioridad": 95
+    },
+    {
+      "id": "pinterest-pebre-origen-debate",
+      "plataforma": "pinterest",
+      "titulo": "Debate del origen del pebre",
+      "formato": "Viral · cocina tradicional · Recetas de pebre",
+      "fechaFuente": "2026-01-07",
+      "kpis": {
+        "vistas": "Debate masivo",
+        "engagement": "8.8%",
+        "crecimiento": "+175%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#pebre",
+        "#recetachilena",
+        "#debate",
+        "#foodtok",
+        "#cilantro",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Ají verde",
+        "Cilantro",
+        "Cebolla",
+        "Aceite",
+        "Vinagre",
+        "Sal"
+      ],
+      "resumenReceta": "Influencer español atribuye raíz catalana al pebre; estallido de comentarios y recetas caseras en TikTok chileno.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/debate/2026/01/07/origen-del-pebre-influencer-asegura-que-es-una-mezcla-de-chile-y-espana-y-redes-estallan.shtml",
+      "prioridad": 96
+    },
+    {
+      "id": "tiktok-pastel-choclo-merengue",
+      "plataforma": "tiktok",
+      "titulo": "Pastel de choclo con merengue",
+      "formato": "Debate regional · receta del sur · Viral @gallardo_martin",
+      "fechaFuente": "2025-09-24",
+      "kpis": {
+        "vistas": "200K+ en TikTok",
+        "engagement": "7.9%",
+        "crecimiento": "+155%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#pasteldechoclo",
+        "#merengue",
+        "#recetachilena",
+        "#foodtok",
+        "#osorno",
+        "#debate"
+      ],
+      "ingredientes": [
+        "Choclo",
+        "Carne molida",
+        "Merengue",
+        "Cebolla",
+        "Polvo de hornear"
+      ],
+      "resumenReceta": "Tiktoker de Osorno viraliza pastel de choclo dulce con merengue; debate sur vs. centro en comentarios.",
+      "fuente": "https://www.24horas.cl/tendencias/redes-sociales/tiktoker-pastel-choclo-merengue-debate",
+      "prioridad": 33
+    },
+    {
+      "id": "instagram-pastel-choclo-merengue",
+      "plataforma": "instagram",
+      "titulo": "Pastel de choclo con merengue",
+      "formato": "Debate regional · receta del sur · Reels del debate",
+      "fechaFuente": "2025-09-24",
+      "kpis": {
+        "vistas": "200K+ en TikTok",
+        "engagement": "7.9%",
+        "crecimiento": "+155%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#pasteldechoclo",
+        "#merengue",
+        "#recetachilena",
+        "#foodtok",
+        "#osorno",
+        "#debate"
+      ],
+      "ingredientes": [
+        "Choclo",
+        "Carne molida",
+        "Merengue",
+        "Cebolla",
+        "Polvo de hornear"
+      ],
+      "resumenReceta": "Tiktoker de Osorno viraliza pastel de choclo dulce con merengue; debate sur vs. centro en comentarios.",
+      "fuente": "https://www.24horas.cl/tendencias/redes-sociales/tiktoker-pastel-choclo-merengue-debate",
+      "prioridad": 34
+    },
+    {
+      "id": "youtube-pastel-choclo-merengue",
+      "plataforma": "youtube",
+      "titulo": "Pastel de choclo con merengue",
+      "formato": "Debate regional · receta del sur · Shorts de reacciones",
+      "fechaFuente": "2025-09-24",
+      "kpis": {
+        "vistas": "200K+ en TikTok",
+        "engagement": "7.9%",
+        "crecimiento": "+155%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#pasteldechoclo",
+        "#merengue",
+        "#recetachilena",
+        "#foodtok",
+        "#osorno",
+        "#debate"
+      ],
+      "ingredientes": [
+        "Choclo",
+        "Carne molida",
+        "Merengue",
+        "Cebolla",
+        "Polvo de hornear"
+      ],
+      "resumenReceta": "Tiktoker de Osorno viraliza pastel de choclo dulce con merengue; debate sur vs. centro en comentarios.",
+      "fuente": "https://www.24horas.cl/tendencias/redes-sociales/tiktoker-pastel-choclo-merengue-debate",
+      "prioridad": 35
+    },
+    {
+      "id": "pinterest-pastel-choclo-merengue",
+      "plataforma": "pinterest",
+      "titulo": "Pastel de choclo con merengue",
+      "formato": "Debate regional · receta del sur · Variantes pastel choclo",
+      "fechaFuente": "2025-09-24",
+      "kpis": {
+        "vistas": "200K+ en TikTok",
+        "engagement": "7.9%",
+        "crecimiento": "+155%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#pasteldechoclo",
+        "#merengue",
+        "#recetachilena",
+        "#foodtok",
+        "#osorno",
+        "#debate"
+      ],
+      "ingredientes": [
+        "Choclo",
+        "Carne molida",
+        "Merengue",
+        "Cebolla",
+        "Polvo de hornear"
+      ],
+      "resumenReceta": "Tiktoker de Osorno viraliza pastel de choclo dulce con merengue; debate sur vs. centro en comentarios.",
+      "fuente": "https://www.24horas.cl/tendencias/redes-sociales/tiktoker-pastel-choclo-merengue-debate",
+      "prioridad": 36
+    },
+    {
+      "id": "tiktok-empanada-chilezolana",
+      "plataforma": "tiktok",
+      "titulo": "Empanada Chilezolana ($2.000)",
+      "formato": "Emprendimiento · edición 18 · Clips del local en TikTok",
+      "fechaFuente": "2025-09-16",
+      "kpis": {
+        "vistas": "100K+ en Instagram",
+        "engagement": "7.1%",
+        "crecimiento": "+140%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#chilezolana",
+        "#empanada",
+        "#18septiembre",
+        "#fusion",
+        "#foodie",
+        "#reelschile"
+      ],
+      "ingredientes": [
+        "Masa de arepa",
+        "Pino chileno",
+        "Aceituna",
+        "Huevo"
+      ],
+      "resumenReceta": "Masa venezolana con pino chileno lanzada para Fiestas Patrias; más de 100 mil views en Instagram del local Rincón Venezolano.",
+      "fuente": "https://www.24horas.cl/tendencias/redes-sociales/empanada-chilezolana-fusion-gastronomica-debate-redes-sociales",
+      "prioridad": 21
+    },
+    {
+      "id": "instagram-empanada-chilezolana",
+      "plataforma": "instagram",
+      "titulo": "Empanada Chilezolana ($2.000)",
+      "formato": "Emprendimiento · edición 18 · Serie viral en Instagram",
+      "fechaFuente": "2025-09-16",
+      "kpis": {
+        "vistas": "100K+ en Instagram",
+        "engagement": "7.1%",
+        "crecimiento": "+140%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#chilezolana",
+        "#empanada",
+        "#18septiembre",
+        "#fusion",
+        "#foodie",
+        "#reelschile"
+      ],
+      "ingredientes": [
+        "Masa de arepa",
+        "Pino chileno",
+        "Aceituna",
+        "Huevo"
+      ],
+      "resumenReceta": "Masa venezolana con pino chileno lanzada para Fiestas Patrias; más de 100 mil views en Instagram del local Rincón Venezolano.",
+      "fuente": "https://www.24horas.cl/tendencias/redes-sociales/empanada-chilezolana-fusion-gastronomica-debate-redes-sociales",
+      "prioridad": 22
+    },
+    {
+      "id": "youtube-empanada-chilezolana",
+      "plataforma": "youtube",
+      "titulo": "Empanada Chilezolana ($2.000)",
+      "formato": "Emprendimiento · edición 18 · Shorts de degustación",
+      "fechaFuente": "2025-09-16",
+      "kpis": {
+        "vistas": "100K+ en Instagram",
+        "engagement": "7.1%",
+        "crecimiento": "+140%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#chilezolana",
+        "#empanada",
+        "#18septiembre",
+        "#fusion",
+        "#foodie",
+        "#reelschile"
+      ],
+      "ingredientes": [
+        "Masa de arepa",
+        "Pino chileno",
+        "Aceituna",
+        "Huevo"
+      ],
+      "resumenReceta": "Masa venezolana con pino chileno lanzada para Fiestas Patrias; más de 100 mil views en Instagram del local Rincón Venezolano.",
+      "fuente": "https://www.24horas.cl/tendencias/redes-sociales/empanada-chilezolana-fusion-gastronomica-debate-redes-sociales",
+      "prioridad": 23
+    },
+    {
+      "id": "pinterest-empanada-chilezolana",
+      "plataforma": "pinterest",
+      "titulo": "Empanada Chilezolana ($2.000)",
+      "formato": "Emprendimiento · edición 18 · Ideas fusión 18",
+      "fechaFuente": "2025-09-16",
+      "kpis": {
+        "vistas": "100K+ en Instagram",
+        "engagement": "7.1%",
+        "crecimiento": "+140%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#chilezolana",
+        "#empanada",
+        "#18septiembre",
+        "#fusion",
+        "#foodie",
+        "#reelschile"
+      ],
+      "ingredientes": [
+        "Masa de arepa",
+        "Pino chileno",
+        "Aceituna",
+        "Huevo"
+      ],
+      "resumenReceta": "Masa venezolana con pino chileno lanzada para Fiestas Patrias; más de 100 mil views en Instagram del local Rincón Venezolano.",
+      "fuente": "https://www.24horas.cl/tendencias/redes-sociales/empanada-chilezolana-fusion-gastronomica-debate-redes-sociales",
+      "prioridad": 24
+    },
+    {
+      "id": "tiktok-empanada-airfryer",
+      "plataforma": "tiktok",
+      "titulo": "Empanadas de pino en air fryer",
+      "formato": "Clásico reinventado · freidora de aire · Tutorial air fryer TikTok",
+      "fechaFuente": "2025-09-08",
+      "kpis": {
+        "vistas": "Alto guardado en Reels",
+        "engagement": "6.8%",
+        "crecimiento": "+130%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#empanadas",
+        "#airfryer",
+        "#pino",
+        "#recetachilena",
+        "#foodtok",
+        "#18septiembre"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Manteca",
+        "Pino",
+        "Huevo duro",
+        "Aceitunas",
+        "Pasas"
+      ],
+      "resumenReceta": "Empanadas crujientes sin horno convencional; tendencia de cocina chilena adaptada a freidora de aire en redes.",
+      "fuente": "https://reportediario.cl/2025/09/08/empanadas-de-pino-crujientes-en-freidora-de-aire-un-clasico-chileno-reinventado/",
+      "prioridad": 29
+    },
+    {
+      "id": "instagram-empanada-airfryer",
+      "plataforma": "instagram",
+      "titulo": "Empanadas de pino en air fryer",
+      "formato": "Clásico reinventado · freidora de aire · Reels crujientes",
+      "fechaFuente": "2025-09-08",
+      "kpis": {
+        "vistas": "Alto guardado en Reels",
+        "engagement": "6.8%",
+        "crecimiento": "+130%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#empanadas",
+        "#airfryer",
+        "#pino",
+        "#recetachilena",
+        "#foodtok",
+        "#18septiembre"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Manteca",
+        "Pino",
+        "Huevo duro",
+        "Aceitunas",
+        "Pasas"
+      ],
+      "resumenReceta": "Empanadas crujientes sin horno convencional; tendencia de cocina chilena adaptada a freidora de aire en redes.",
+      "fuente": "https://reportediario.cl/2025/09/08/empanadas-de-pino-crujientes-en-freidora-de-aire-un-clasico-chileno-reinventado/",
+      "prioridad": 30
+    },
+    {
+      "id": "youtube-empanada-airfryer",
+      "plataforma": "youtube",
+      "titulo": "Empanadas de pino en air fryer",
+      "formato": "Clásico reinventado · freidora de aire · Shorts del pincelado",
+      "fechaFuente": "2025-09-08",
+      "kpis": {
+        "vistas": "Alto guardado en Reels",
+        "engagement": "6.8%",
+        "crecimiento": "+130%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#empanadas",
+        "#airfryer",
+        "#pino",
+        "#recetachilena",
+        "#foodtok",
+        "#18septiembre"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Manteca",
+        "Pino",
+        "Huevo duro",
+        "Aceitunas",
+        "Pasas"
+      ],
+      "resumenReceta": "Empanadas crujientes sin horno convencional; tendencia de cocina chilena adaptada a freidora de aire en redes.",
+      "fuente": "https://reportediario.cl/2025/09/08/empanadas-de-pino-crujientes-en-freidora-de-aire-un-clasico-chileno-reinventado/",
+      "prioridad": 31
+    },
+    {
+      "id": "pinterest-empanada-airfryer",
+      "plataforma": "pinterest",
+      "titulo": "Empanadas de pino en air fryer",
+      "formato": "Clásico reinventado · freidora de aire · Receta empanada air fryer",
+      "fechaFuente": "2025-09-08",
+      "kpis": {
+        "vistas": "Alto guardado en Reels",
+        "engagement": "6.8%",
+        "crecimiento": "+130%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#empanadas",
+        "#airfryer",
+        "#pino",
+        "#recetachilena",
+        "#foodtok",
+        "#18septiembre"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Manteca",
+        "Pino",
+        "Huevo duro",
+        "Aceitunas",
+        "Pasas"
+      ],
+      "resumenReceta": "Empanadas crujientes sin horno convencional; tendencia de cocina chilena adaptada a freidora de aire en redes.",
+      "fuente": "https://reportediario.cl/2025/09/08/empanadas-de-pino-crujientes-en-freidora-de-aire-un-clasico-chileno-reinventado/",
+      "prioridad": 32
+    },
+    {
+      "id": "tiktok-marraqueta-palta-mundial",
+      "plataforma": "tiktok",
+      "titulo": "Marraqueta con palta (Mundial desayunos)",
+      "formato": "Patriotero · competencia viral · Votación y memes en TikTok",
+      "fechaFuente": "2025-09-03",
+      "kpis": {
+        "vistas": "Millones en votaciones",
+        "engagement": "6.5%",
+        "crecimiento": "+220%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#marraquetaconpalta",
+        "#desayunochileno",
+        "#foodtok",
+        "#chile",
+        "#viral",
+        "#palta"
+      ],
+      "ingredientes": [
+        "Marraqueta",
+        "Palta",
+        "Sal",
+        "Limón opcional"
+      ],
+      "resumenReceta": "Desayuno chileno impulsado por el Mundial de Ibai; Boric y redes posicionaron marraqueta con palta vs. desayuno peruano.",
+      "fuente": "https://reportediario.cl/2025/09/03/marraqueta-y-palta-el-desayuno-campeon-de-chile-en-el-mundial-de-ibai/",
+      "prioridad": 25
+    },
+    {
+      "id": "instagram-marraqueta-palta-mundial",
+      "plataforma": "instagram",
+      "titulo": "Marraqueta con palta (Mundial desayunos)",
+      "formato": "Patriotero · competencia viral · Reels del desayuno",
+      "fechaFuente": "2025-09-03",
+      "kpis": {
+        "vistas": "Millones en votaciones",
+        "engagement": "6.5%",
+        "crecimiento": "+220%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#marraquetaconpalta",
+        "#desayunochileno",
+        "#foodtok",
+        "#chile",
+        "#viral",
+        "#palta"
+      ],
+      "ingredientes": [
+        "Marraqueta",
+        "Palta",
+        "Sal",
+        "Limón opcional"
+      ],
+      "resumenReceta": "Desayuno chileno impulsado por el Mundial de Ibai; Boric y redes posicionaron marraqueta con palta vs. desayuno peruano.",
+      "fuente": "https://reportediario.cl/2025/09/03/marraqueta-y-palta-el-desayuno-campeon-de-chile-en-el-mundial-de-ibai/",
+      "prioridad": 26
+    },
+    {
+      "id": "youtube-marraqueta-palta-mundial",
+      "plataforma": "youtube",
+      "titulo": "Marraqueta con palta (Mundial desayunos)",
+      "formato": "Patriotero · competencia viral · Shorts de reacciones",
+      "fechaFuente": "2025-09-03",
+      "kpis": {
+        "vistas": "Millones en votaciones",
+        "engagement": "6.5%",
+        "crecimiento": "+220%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#marraquetaconpalta",
+        "#desayunochileno",
+        "#foodtok",
+        "#chile",
+        "#viral",
+        "#palta"
+      ],
+      "ingredientes": [
+        "Marraqueta",
+        "Palta",
+        "Sal",
+        "Limón opcional"
+      ],
+      "resumenReceta": "Desayuno chileno impulsado por el Mundial de Ibai; Boric y redes posicionaron marraqueta con palta vs. desayuno peruano.",
+      "fuente": "https://reportediario.cl/2025/09/03/marraqueta-y-palta-el-desayuno-campeon-de-chile-en-el-mundial-de-ibai/",
+      "prioridad": 27
+    },
+    {
+      "id": "pinterest-marraqueta-palta-mundial",
+      "plataforma": "pinterest",
+      "titulo": "Marraqueta con palta (Mundial desayunos)",
+      "formato": "Patriotero · competencia viral · Pins desayuno chileno",
+      "fechaFuente": "2025-09-03",
+      "kpis": {
+        "vistas": "Millones en votaciones",
+        "engagement": "6.5%",
+        "crecimiento": "+220%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#marraquetaconpalta",
+        "#desayunochileno",
+        "#foodtok",
+        "#chile",
+        "#viral",
+        "#palta"
+      ],
+      "ingredientes": [
+        "Marraqueta",
+        "Palta",
+        "Sal",
+        "Limón opcional"
+      ],
+      "resumenReceta": "Desayuno chileno impulsado por el Mundial de Ibai; Boric y redes posicionaron marraqueta con palta vs. desayuno peruano.",
+      "fuente": "https://reportediario.cl/2025/09/03/marraqueta-y-palta-el-desayuno-campeon-de-chile-en-el-mundial-de-ibai/",
+      "prioridad": 28
+    },
+    {
+      "id": "tiktok-arepa-pino-fusion",
+      "plataforma": "tiktok",
+      "titulo": "Arepa de pino (fusión Fiestas Patrias)",
+      "formato": "Fusión · debate en redes · Video polémico en TikTok",
+      "fechaFuente": "2025-08-22",
+      "kpis": {
+        "vistas": "100K+ visualizaciones",
+        "engagement": "8.5%",
+        "crecimiento": "+190%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#arepadeepino",
+        "#18septiembre",
+        "#fusion",
+        "#foodtok",
+        "#recetachilena",
+        "#debate"
+      ],
+      "ingredientes": [
+        "Harina de maíz precocida",
+        "Pino chileno",
+        "Cebolla",
+        "Aceitunas",
+        "Huevo duro"
+      ],
+      "resumenReceta": "Arepa venezolana rellena con pino chileno; viral previo al 18 con opiniones divididas en TikTok e Instagram.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/curiosidades/2025/08/22/fusion-venezolana-chilena-de-cara-al-18-arepas-con-pino-desatan-opiniones-mixtas-en-redes-sociales.shtml",
+      "prioridad": 17
+    },
+    {
+      "id": "instagram-arepa-pino-fusion",
+      "plataforma": "instagram",
+      "titulo": "Arepa de pino (fusión Fiestas Patrias)",
+      "formato": "Fusión · debate en redes · Reels de la fusión",
+      "fechaFuente": "2025-08-22",
+      "kpis": {
+        "vistas": "100K+ visualizaciones",
+        "engagement": "8.5%",
+        "crecimiento": "+190%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#arepadeepino",
+        "#18septiembre",
+        "#fusion",
+        "#foodtok",
+        "#recetachilena",
+        "#debate"
+      ],
+      "ingredientes": [
+        "Harina de maíz precocida",
+        "Pino chileno",
+        "Cebolla",
+        "Aceitunas",
+        "Huevo duro"
+      ],
+      "resumenReceta": "Arepa venezolana rellena con pino chileno; viral previo al 18 con opiniones divididas en TikTok e Instagram.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/curiosidades/2025/08/22/fusion-venezolana-chilena-de-cara-al-18-arepas-con-pino-desatan-opiniones-mixtas-en-redes-sociales.shtml",
+      "prioridad": 18
+    },
+    {
+      "id": "youtube-arepa-pino-fusion",
+      "plataforma": "youtube",
+      "titulo": "Arepa de pino (fusión Fiestas Patrias)",
+      "formato": "Fusión · debate en redes · Shorts del emplatado",
+      "fechaFuente": "2025-08-22",
+      "kpis": {
+        "vistas": "100K+ visualizaciones",
+        "engagement": "8.5%",
+        "crecimiento": "+190%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#arepadeepino",
+        "#18septiembre",
+        "#fusion",
+        "#foodtok",
+        "#recetachilena",
+        "#debate"
+      ],
+      "ingredientes": [
+        "Harina de maíz precocida",
+        "Pino chileno",
+        "Cebolla",
+        "Aceitunas",
+        "Huevo duro"
+      ],
+      "resumenReceta": "Arepa venezolana rellena con pino chileno; viral previo al 18 con opiniones divididas en TikTok e Instagram.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/curiosidades/2025/08/22/fusion-venezolana-chilena-de-cara-al-18-arepas-con-pino-desatan-opiniones-mixtas-en-redes-sociales.shtml",
+      "prioridad": 19
+    },
+    {
+      "id": "pinterest-arepa-pino-fusion",
+      "plataforma": "pinterest",
+      "titulo": "Arepa de pino (fusión Fiestas Patrias)",
+      "formato": "Fusión · debate en redes · Receta fusión guardada",
+      "fechaFuente": "2025-08-22",
+      "kpis": {
+        "vistas": "100K+ visualizaciones",
+        "engagement": "8.5%",
+        "crecimiento": "+190%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#arepadeepino",
+        "#18septiembre",
+        "#fusion",
+        "#foodtok",
+        "#recetachilena",
+        "#debate"
+      ],
+      "ingredientes": [
+        "Harina de maíz precocida",
+        "Pino chileno",
+        "Cebolla",
+        "Aceitunas",
+        "Huevo duro"
+      ],
+      "resumenReceta": "Arepa venezolana rellena con pino chileno; viral previo al 18 con opiniones divididas en TikTok e Instagram.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/curiosidades/2025/08/22/fusion-venezolana-chilena-de-cara-al-18-arepas-con-pino-desatan-opiniones-mixtas-en-redes-sociales.shtml",
+      "prioridad": 20
+    },
+    {
+      "id": "tiktok-pistacho-cultivo-chile",
+      "plataforma": "tiktok",
+      "titulo": "Fiebre del pistacho (ingrediente Dubai)",
+      "formato": "Ingrediente en alza · noticia · Ingredientes en TikTok",
+      "fechaFuente": "2025-07-01",
+      "kpis": {
+        "vistas": "Búsquedas en alza",
+        "engagement": "5.2%",
+        "crecimiento": "+160%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#pistacho",
+        "#chocolatedubai",
+        "#ingredientes",
+        "#foodnews",
+        "#chile",
+        "#knafe"
+      ],
+      "ingredientes": [
+        "Pistacho",
+        "Pasta de pistacho",
+        "Masa knafe",
+        "Chocolate"
+      ],
+      "resumenReceta": "Demanda por pistacho tras el viral del chocolate Dubai; noticia sobre cultivo y precio del ingrediente en Chile.",
+      "fuente": "https://www.sancarlosonline.cl/2025/07/fiebre-por-el-chocolate-de-dubai.html",
+      "prioridad": 97
+    },
+    {
+      "id": "instagram-pistacho-cultivo-chile",
+      "plataforma": "instagram",
+      "titulo": "Fiebre del pistacho (ingrediente Dubai)",
+      "formato": "Ingrediente en alza · noticia · Reels informativos",
+      "fechaFuente": "2025-07-01",
+      "kpis": {
+        "vistas": "Búsquedas en alza",
+        "engagement": "5.2%",
+        "crecimiento": "+160%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#pistacho",
+        "#chocolatedubai",
+        "#ingredientes",
+        "#foodnews",
+        "#chile",
+        "#knafe"
+      ],
+      "ingredientes": [
+        "Pistacho",
+        "Pasta de pistacho",
+        "Masa knafe",
+        "Chocolate"
+      ],
+      "resumenReceta": "Demanda por pistacho tras el viral del chocolate Dubai; noticia sobre cultivo y precio del ingrediente en Chile.",
+      "fuente": "https://www.sancarlosonline.cl/2025/07/fiebre-por-el-chocolate-de-dubai.html",
+      "prioridad": 98
+    },
+    {
+      "id": "youtube-pistacho-cultivo-chile",
+      "plataforma": "youtube",
+      "titulo": "Fiebre del pistacho (ingrediente Dubai)",
+      "formato": "Ingrediente en alza · noticia · Shorts explicativos",
+      "fechaFuente": "2025-07-01",
+      "kpis": {
+        "vistas": "Búsquedas en alza",
+        "engagement": "5.2%",
+        "crecimiento": "+160%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#pistacho",
+        "#chocolatedubai",
+        "#ingredientes",
+        "#foodnews",
+        "#chile",
+        "#knafe"
+      ],
+      "ingredientes": [
+        "Pistacho",
+        "Pasta de pistacho",
+        "Masa knafe",
+        "Chocolate"
+      ],
+      "resumenReceta": "Demanda por pistacho tras el viral del chocolate Dubai; noticia sobre cultivo y precio del ingrediente en Chile.",
+      "fuente": "https://www.sancarlosonline.cl/2025/07/fiebre-por-el-chocolate-de-dubai.html",
+      "prioridad": 99
+    },
+    {
+      "id": "pinterest-pistacho-cultivo-chile",
+      "plataforma": "pinterest",
+      "titulo": "Fiebre del pistacho (ingrediente Dubai)",
+      "formato": "Ingrediente en alza · noticia · Pins pistacho postres",
+      "fechaFuente": "2025-07-01",
+      "kpis": {
+        "vistas": "Búsquedas en alza",
+        "engagement": "5.2%",
+        "crecimiento": "+160%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#pistacho",
+        "#chocolatedubai",
+        "#ingredientes",
+        "#foodnews",
+        "#chile",
+        "#knafe"
+      ],
+      "ingredientes": [
+        "Pistacho",
+        "Pasta de pistacho",
+        "Masa knafe",
+        "Chocolate"
+      ],
+      "resumenReceta": "Demanda por pistacho tras el viral del chocolate Dubai; noticia sobre cultivo y precio del ingrediente en Chile.",
+      "fuente": "https://www.sancarlosonline.cl/2025/07/fiebre-por-el-chocolate-de-dubai.html",
+      "prioridad": 100
+    },
+    {
+      "id": "tiktok-chocolate-dubai-suk-ohzom",
+      "plataforma": "tiktok",
+      "titulo": "Chocolate Dubai casero (SUK / masa knafe)",
+      "formato": "Repostería viral · pistacho y knafe · Kit y receta replicada en TikTok",
+      "fechaFuente": "2025-05-23",
+      "kpis": {
+        "vistas": "Millones en TikTok/Reels",
+        "engagement": "9.1%",
+        "crecimiento": "+340%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#knafe",
+        "#recetaviral",
+        "#chilefood",
+        "#suk",
+        "#foodtok",
+        "#pistacho"
+      ],
+      "ingredientes": [
+        "Chocolate para derretir",
+        "Masa filo knafe SUK",
+        "Pasta de pistacho",
+        "Mantequilla"
+      ],
+      "resumenReceta": "Barra de chocolate rellena con masa knafe crujiente y crema de pistacho; SUK reportó alza de ventas de masa filo tras el viral en TikTok e Instagram.",
+      "fuente": "https://ohzom.cl/2025/05/23/de-tiktok-al-supermercado-la-extrana-receta-que-esta-agotando-al-chocolate-dubai-en-tiempo-record/",
+      "prioridad": 1
+    },
+    {
+      "id": "instagram-chocolate-dubai-suk-ohzom",
+      "plataforma": "instagram",
+      "titulo": "Chocolate Dubai casero (SUK / masa knafe)",
+      "formato": "Repostería viral · pistacho y knafe · Reels del armado paso a paso",
+      "fechaFuente": "2025-05-23",
+      "kpis": {
+        "vistas": "Millones en TikTok/Reels",
+        "engagement": "9.1%",
+        "crecimiento": "+340%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#knafe",
+        "#recetaviral",
+        "#chilefood",
+        "#suk",
+        "#foodtok",
+        "#pistacho"
+      ],
+      "ingredientes": [
+        "Chocolate para derretir",
+        "Masa filo knafe SUK",
+        "Pasta de pistacho",
+        "Mantequilla"
+      ],
+      "resumenReceta": "Barra de chocolate rellena con masa knafe crujiente y crema de pistacho; SUK reportó alza de ventas de masa filo tras el viral en TikTok e Instagram.",
+      "fuente": "https://ohzom.cl/2025/05/23/de-tiktok-al-supermercado-la-extrana-receta-que-esta-agotando-al-chocolate-dubai-en-tiempo-record/",
+      "prioridad": 2
+    },
+    {
+      "id": "youtube-chocolate-dubai-suk-ohzom",
+      "plataforma": "youtube",
+      "titulo": "Chocolate Dubai casero (SUK / masa knafe)",
+      "formato": "Repostería viral · pistacho y knafe · Shorts del corte al relleno",
+      "fechaFuente": "2025-05-23",
+      "kpis": {
+        "vistas": "Millones en TikTok/Reels",
+        "engagement": "9.1%",
+        "crecimiento": "+340%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#knafe",
+        "#recetaviral",
+        "#chilefood",
+        "#suk",
+        "#foodtok",
+        "#pistacho"
+      ],
+      "ingredientes": [
+        "Chocolate para derretir",
+        "Masa filo knafe SUK",
+        "Pasta de pistacho",
+        "Mantequilla"
+      ],
+      "resumenReceta": "Barra de chocolate rellena con masa knafe crujiente y crema de pistacho; SUK reportó alza de ventas de masa filo tras el viral en TikTok e Instagram.",
+      "fuente": "https://ohzom.cl/2025/05/23/de-tiktok-al-supermercado-la-extrana-receta-que-esta-agotando-al-chocolate-dubai-en-tiempo-record/",
+      "prioridad": 3
+    },
+    {
+      "id": "pinterest-chocolate-dubai-suk-ohzom",
+      "plataforma": "pinterest",
+      "titulo": "Chocolate Dubai casero (SUK / masa knafe)",
+      "formato": "Repostería viral · pistacho y knafe · Pins del molde y ingredientes",
+      "fechaFuente": "2025-05-23",
+      "kpis": {
+        "vistas": "Millones en TikTok/Reels",
+        "engagement": "9.1%",
+        "crecimiento": "+340%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#knafe",
+        "#recetaviral",
+        "#chilefood",
+        "#suk",
+        "#foodtok",
+        "#pistacho"
+      ],
+      "ingredientes": [
+        "Chocolate para derretir",
+        "Masa filo knafe SUK",
+        "Pasta de pistacho",
+        "Mantequilla"
+      ],
+      "resumenReceta": "Barra de chocolate rellena con masa knafe crujiente y crema de pistacho; SUK reportó alza de ventas de masa filo tras el viral en TikTok e Instagram.",
+      "fuente": "https://ohzom.cl/2025/05/23/de-tiktok-al-supermercado-la-extrana-receta-que-esta-agotando-al-chocolate-dubai-en-tiempo-record/",
+      "prioridad": 4
+    },
+    {
+      "id": "tiktok-carbonada-invierno",
+      "plataforma": "tiktok",
+      "titulo": "Carbonada chilena de invierno",
+      "formato": "Sopa tradicional · verduras · Carbonada en TikTok",
+      "fechaFuente": "2025-05-18",
+      "kpis": {
+        "vistas": "Estacional en redes",
+        "engagement": "5.5%",
+        "crecimiento": "+75%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#carbonada",
+        "#sopa",
+        "#invierno",
+        "#recetachilena",
+        "#foodtok",
+        "#caldo"
+      ],
+      "ingredientes": [
+        "Posta rosada",
+        "Papa",
+        "Zapallo",
+        "Choclo",
+        "Porotos verdes",
+        "Cebolla",
+        "Ají de color"
+      ],
+      "resumenReceta": "Caldo con carne y verduras de estación; receta replicada en TikTok cada ola de frío en la zona centro-sur.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2025/05/18/receta-de-carbonada-chilena-este-plato-es-ideal-para-dias-de-bajas-temperaturas/",
+      "prioridad": 89
+    },
+    {
+      "id": "instagram-carbonada-invierno",
+      "plataforma": "instagram",
+      "titulo": "Carbonada chilena de invierno",
+      "formato": "Sopa tradicional · verduras · Reels de invierno",
+      "fechaFuente": "2025-05-18",
+      "kpis": {
+        "vistas": "Estacional en redes",
+        "engagement": "5.5%",
+        "crecimiento": "+75%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#carbonada",
+        "#sopa",
+        "#invierno",
+        "#recetachilena",
+        "#foodtok",
+        "#caldo"
+      ],
+      "ingredientes": [
+        "Posta rosada",
+        "Papa",
+        "Zapallo",
+        "Choclo",
+        "Porotos verdes",
+        "Cebolla",
+        "Ají de color"
+      ],
+      "resumenReceta": "Caldo con carne y verduras de estación; receta replicada en TikTok cada ola de frío en la zona centro-sur.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2025/05/18/receta-de-carbonada-chilena-este-plato-es-ideal-para-dias-de-bajas-temperaturas/",
+      "prioridad": 90
+    },
+    {
+      "id": "youtube-carbonada-invierno",
+      "plataforma": "youtube",
+      "titulo": "Carbonada chilena de invierno",
+      "formato": "Sopa tradicional · verduras · Shorts del caldo",
+      "fechaFuente": "2025-05-18",
+      "kpis": {
+        "vistas": "Estacional en redes",
+        "engagement": "5.5%",
+        "crecimiento": "+75%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#carbonada",
+        "#sopa",
+        "#invierno",
+        "#recetachilena",
+        "#foodtok",
+        "#caldo"
+      ],
+      "ingredientes": [
+        "Posta rosada",
+        "Papa",
+        "Zapallo",
+        "Choclo",
+        "Porotos verdes",
+        "Cebolla",
+        "Ají de color"
+      ],
+      "resumenReceta": "Caldo con carne y verduras de estación; receta replicada en TikTok cada ola de frío en la zona centro-sur.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2025/05/18/receta-de-carbonada-chilena-este-plato-es-ideal-para-dias-de-bajas-temperaturas/",
+      "prioridad": 91
+    },
+    {
+      "id": "pinterest-carbonada-invierno",
+      "plataforma": "pinterest",
+      "titulo": "Carbonada chilena de invierno",
+      "formato": "Sopa tradicional · verduras · Sopas chilenas",
+      "fechaFuente": "2025-05-18",
+      "kpis": {
+        "vistas": "Estacional en redes",
+        "engagement": "5.5%",
+        "crecimiento": "+75%",
+        "senal": "medio"
+      },
+      "hashtags": [
+        "#carbonada",
+        "#sopa",
+        "#invierno",
+        "#recetachilena",
+        "#foodtok",
+        "#caldo"
+      ],
+      "ingredientes": [
+        "Posta rosada",
+        "Papa",
+        "Zapallo",
+        "Choclo",
+        "Porotos verdes",
+        "Cebolla",
+        "Ají de color"
+      ],
+      "resumenReceta": "Caldo con carne y verduras de estación; receta replicada en TikTok cada ola de frío en la zona centro-sur.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2025/05/18/receta-de-carbonada-chilena-este-plato-es-ideal-para-dias-de-bajas-temperaturas/",
+      "prioridad": 92
+    },
+    {
+      "id": "tiktok-golden-cheese-burger",
+      "plataforma": "tiktok",
+      "titulo": "Golden Cheese Burger smash",
+      "formato": "Hamburguesa viral · doble queso · Smash burger en TikTok",
+      "fechaFuente": "2025-05-02",
+      "kpis": {
+        "vistas": "Millones en Reels",
+        "engagement": "7.2%",
+        "crecimiento": "+165%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#goldenburger",
+        "#smashburger",
+        "#recetaviral",
+        "#foodtok",
+        "#hamburguesa",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Huachalomo",
+        "Sobrecostilla",
+        "Longaniza",
+        "Queso cheddar",
+        "Pan brioche",
+        "Cebolla morada"
+      ],
+      "resumenReceta": "Smash burger con carne molida, longaniza y doble capa de queso fundido; viral por textura crujiente en redes.",
+      "fuente": "https://www.24horas.cl/tendencias/recetas/dia-de-la-hamburguesa-como-hacer-en-casa-la-viralizada-golden-cheese-burger",
+      "prioridad": 13
+    },
+    {
+      "id": "instagram-golden-cheese-burger",
+      "plataforma": "instagram",
+      "titulo": "Golden Cheese Burger smash",
+      "formato": "Hamburguesa viral · doble queso · Reels del queso fundido",
+      "fechaFuente": "2025-05-02",
+      "kpis": {
+        "vistas": "Millones en Reels",
+        "engagement": "7.2%",
+        "crecimiento": "+165%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#goldenburger",
+        "#smashburger",
+        "#recetaviral",
+        "#foodtok",
+        "#hamburguesa",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Huachalomo",
+        "Sobrecostilla",
+        "Longaniza",
+        "Queso cheddar",
+        "Pan brioche",
+        "Cebolla morada"
+      ],
+      "resumenReceta": "Smash burger con carne molida, longaniza y doble capa de queso fundido; viral por textura crujiente en redes.",
+      "fuente": "https://www.24horas.cl/tendencias/recetas/dia-de-la-hamburguesa-como-hacer-en-casa-la-viralizada-golden-cheese-burger",
+      "prioridad": 14
+    },
+    {
+      "id": "youtube-golden-cheese-burger",
+      "plataforma": "youtube",
+      "titulo": "Golden Cheese Burger smash",
+      "formato": "Hamburguesa viral · doble queso · Shorts de armado",
+      "fechaFuente": "2025-05-02",
+      "kpis": {
+        "vistas": "Millones en Reels",
+        "engagement": "7.2%",
+        "crecimiento": "+165%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#goldenburger",
+        "#smashburger",
+        "#recetaviral",
+        "#foodtok",
+        "#hamburguesa",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Huachalomo",
+        "Sobrecostilla",
+        "Longaniza",
+        "Queso cheddar",
+        "Pan brioche",
+        "Cebolla morada"
+      ],
+      "resumenReceta": "Smash burger con carne molida, longaniza y doble capa de queso fundido; viral por textura crujiente en redes.",
+      "fuente": "https://www.24horas.cl/tendencias/recetas/dia-de-la-hamburguesa-como-hacer-en-casa-la-viralizada-golden-cheese-burger",
+      "prioridad": 15
+    },
+    {
+      "id": "pinterest-golden-cheese-burger",
+      "plataforma": "pinterest",
+      "titulo": "Golden Cheese Burger smash",
+      "formato": "Hamburguesa viral · doble queso · Pins de burger casera",
+      "fechaFuente": "2025-05-02",
+      "kpis": {
+        "vistas": "Millones en Reels",
+        "engagement": "7.2%",
+        "crecimiento": "+165%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#goldenburger",
+        "#smashburger",
+        "#recetaviral",
+        "#foodtok",
+        "#hamburguesa",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Huachalomo",
+        "Sobrecostilla",
+        "Longaniza",
+        "Queso cheddar",
+        "Pan brioche",
+        "Cebolla morada"
+      ],
+      "resumenReceta": "Smash burger con carne molida, longaniza y doble capa de queso fundido; viral por textura crujiente en redes.",
+      "fuente": "https://www.24horas.cl/tendencias/recetas/dia-de-la-hamburguesa-como-hacer-en-casa-la-viralizada-golden-cheese-burger",
+      "prioridad": 16
+    },
+    {
+      "id": "tiktok-chocolate-dubai-sabes",
+      "plataforma": "tiktok",
+      "titulo": "Cómo hacer Chocolate Dubai en Chile",
+      "formato": "Tutorial · ingredientes de supermercado · Tutorial viral en TikTok",
+      "fechaFuente": "2025-04-11",
+      "kpis": {
+        "vistas": "Alto share en TikTok",
+        "engagement": "8.2%",
+        "crecimiento": "+280%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#recetachilena",
+        "#pistacho",
+        "#foodtok",
+        "#tutorial",
+        "#postreviral"
+      ],
+      "ingredientes": [
+        "Pistachos",
+        "Mantequilla",
+        "Fideos de arroz o masa filo",
+        "Chocolate negro",
+        "Molde"
+      ],
+      "resumenReceta": "Guía chilena para replicar el viral con pistacho, fideos de arroz dorados y chocolate; alternativa comprar en Delart.",
+      "fuente": "https://sabes.cl/2025/04/11/comprar-revisa-conseguir-chile-chocolate-dubai-hizo-viral-tik-tok/",
+      "prioridad": 5
+    },
+    {
+      "id": "instagram-chocolate-dubai-sabes",
+      "plataforma": "instagram",
+      "titulo": "Cómo hacer Chocolate Dubai en Chile",
+      "formato": "Tutorial · ingredientes de supermercado · Carrusel de ingredientes",
+      "fechaFuente": "2025-04-11",
+      "kpis": {
+        "vistas": "Alto share en TikTok",
+        "engagement": "8.2%",
+        "crecimiento": "+280%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#recetachilena",
+        "#pistacho",
+        "#foodtok",
+        "#tutorial",
+        "#postreviral"
+      ],
+      "ingredientes": [
+        "Pistachos",
+        "Mantequilla",
+        "Fideos de arroz o masa filo",
+        "Chocolate negro",
+        "Molde"
+      ],
+      "resumenReceta": "Guía chilena para replicar el viral con pistacho, fideos de arroz dorados y chocolate; alternativa comprar en Delart.",
+      "fuente": "https://sabes.cl/2025/04/11/comprar-revisa-conseguir-chile-chocolate-dubai-hizo-viral-tik-tok/",
       "prioridad": 6
     },
     {
-      "id": "tiktok-cheesecake-yogur",
+      "id": "youtube-chocolate-dubai-sabes",
+      "plataforma": "youtube",
+      "titulo": "Cómo hacer Chocolate Dubai en Chile",
+      "formato": "Tutorial · ingredientes de supermercado · Shorts paso a paso",
+      "fechaFuente": "2025-04-11",
+      "kpis": {
+        "vistas": "Alto share en TikTok",
+        "engagement": "8.2%",
+        "crecimiento": "+280%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#recetachilena",
+        "#pistacho",
+        "#foodtok",
+        "#tutorial",
+        "#postreviral"
+      ],
+      "ingredientes": [
+        "Pistachos",
+        "Mantequilla",
+        "Fideos de arroz o masa filo",
+        "Chocolate negro",
+        "Molde"
+      ],
+      "resumenReceta": "Guía chilena para replicar el viral con pistacho, fideos de arroz dorados y chocolate; alternativa comprar en Delart.",
+      "fuente": "https://sabes.cl/2025/04/11/comprar-revisa-conseguir-chile-chocolate-dubai-hizo-viral-tik-tok/",
+      "prioridad": 7
+    },
+    {
+      "id": "pinterest-chocolate-dubai-sabes",
+      "plataforma": "pinterest",
+      "titulo": "Cómo hacer Chocolate Dubai en Chile",
+      "formato": "Tutorial · ingredientes de supermercado · Tablero de receta Dubai",
+      "fechaFuente": "2025-04-11",
+      "kpis": {
+        "vistas": "Alto share en TikTok",
+        "engagement": "8.2%",
+        "crecimiento": "+280%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#recetachilena",
+        "#pistacho",
+        "#foodtok",
+        "#tutorial",
+        "#postreviral"
+      ],
+      "ingredientes": [
+        "Pistachos",
+        "Mantequilla",
+        "Fideos de arroz o masa filo",
+        "Chocolate negro",
+        "Molde"
+      ],
+      "resumenReceta": "Guía chilena para replicar el viral con pistacho, fideos de arroz dorados y chocolate; alternativa comprar en Delart.",
+      "fuente": "https://sabes.cl/2025/04/11/comprar-revisa-conseguir-chile-chocolate-dubai-hizo-viral-tik-tok/",
+      "prioridad": 8
+    },
+    {
+      "id": "tiktok-chocolate-dubai-biobio",
+      "plataforma": "tiktok",
+      "titulo": "Qué es el Chocolate de Dubai",
+      "formato": "Explicativo · tendencia global · Explicación en TikTok",
+      "fechaFuente": "2025-03-21",
+      "kpis": {
+        "vistas": "120M+ ref. global",
+        "engagement": "8.0%",
+        "crecimiento": "+300%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#kunafa",
+        "#pistacho",
+        "#viral",
+        "#foodtok",
+        "#postre"
+      ],
+      "ingredientes": [
+        "Chocolate",
+        "Pistacho",
+        "Kunafa tostado",
+        "Tahini",
+        "Oro comestible"
+      ],
+      "resumenReceta": "Noticia que introduce el dulce de FIX Dessert Chocolatier; pistacho y kunafa como combo viral en redes chilenas.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2025/03/21/que-es-el-chocolate-de-dubai-el-dulce-mas-extravagante-y-viral-del-momento-en-redes-sociales.shtml",
+      "prioridad": 101
+    },
+    {
+      "id": "instagram-chocolate-dubai-biobio",
+      "plataforma": "instagram",
+      "titulo": "Qué es el Chocolate de Dubai",
+      "formato": "Explicativo · tendencia global · Reels del corte",
+      "fechaFuente": "2025-03-21",
+      "kpis": {
+        "vistas": "120M+ ref. global",
+        "engagement": "8.0%",
+        "crecimiento": "+300%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#kunafa",
+        "#pistacho",
+        "#viral",
+        "#foodtok",
+        "#postre"
+      ],
+      "ingredientes": [
+        "Chocolate",
+        "Pistacho",
+        "Kunafa tostado",
+        "Tahini",
+        "Oro comestible"
+      ],
+      "resumenReceta": "Noticia que introduce el dulce de FIX Dessert Chocolatier; pistacho y kunafa como combo viral en redes chilenas.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2025/03/21/que-es-el-chocolate-de-dubai-el-dulce-mas-extravagante-y-viral-del-momento-en-redes-sociales.shtml",
+      "prioridad": 102
+    },
+    {
+      "id": "youtube-chocolate-dubai-biobio",
+      "plataforma": "youtube",
+      "titulo": "Qué es el Chocolate de Dubai",
+      "formato": "Explicativo · tendencia global · Shorts del relleno",
+      "fechaFuente": "2025-03-21",
+      "kpis": {
+        "vistas": "120M+ ref. global",
+        "engagement": "8.0%",
+        "crecimiento": "+300%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#kunafa",
+        "#pistacho",
+        "#viral",
+        "#foodtok",
+        "#postre"
+      ],
+      "ingredientes": [
+        "Chocolate",
+        "Pistacho",
+        "Kunafa tostado",
+        "Tahini",
+        "Oro comestible"
+      ],
+      "resumenReceta": "Noticia que introduce el dulce de FIX Dessert Chocolatier; pistacho y kunafa como combo viral en redes chilenas.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2025/03/21/que-es-el-chocolate-de-dubai-el-dulce-mas-extravagante-y-viral-del-momento-en-redes-sociales.shtml",
+      "prioridad": 103
+    },
+    {
+      "id": "pinterest-chocolate-dubai-biobio",
+      "plataforma": "pinterest",
+      "titulo": "Qué es el Chocolate de Dubai",
+      "formato": "Explicativo · tendencia global · Chocolate Dubai ideas",
+      "fechaFuente": "2025-03-21",
+      "kpis": {
+        "vistas": "120M+ ref. global",
+        "engagement": "8.0%",
+        "crecimiento": "+300%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#kunafa",
+        "#pistacho",
+        "#viral",
+        "#foodtok",
+        "#postre"
+      ],
+      "ingredientes": [
+        "Chocolate",
+        "Pistacho",
+        "Kunafa tostado",
+        "Tahini",
+        "Oro comestible"
+      ],
+      "resumenReceta": "Noticia que introduce el dulce de FIX Dessert Chocolatier; pistacho y kunafa como combo viral en redes chilenas.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2025/03/21/que-es-el-chocolate-de-dubai-el-dulce-mas-extravagante-y-viral-del-momento-en-redes-sociales.shtml",
+      "prioridad": 104
+    },
+    {
+      "id": "tiktok-cheesecake-yogur-japones",
       "plataforma": "tiktok",
       "titulo": "Cheesecake de yogur y galletas (sin horno)",
-      "formato": "Postre rápido · 2 ingredientes",
-      "fechaFuente": "2026-02-03",
+      "formato": "Postre rápido · 2 ingredientes · Viral sin horno en TikTok",
+      "fechaFuente": "2025-02-03",
       "kpis": {
         "vistas": "8.2M+",
         "engagement": "7.8%",
@@ -253,17 +3180,103 @@
         "#postresinchile",
         "#foodtok",
         "#sinhorno",
-        "#yogur",
-        "#galletas"
+        "#yogur"
       ],
       "ingredientes": [
         "Yogur griego",
         "Galletas Oreo o Costa",
         "Opcional: café o cacao"
       ],
-      "resumenReceta": "Yogur y galletas reposadas en frío; versión chilena del viral japonés con adaptaciones locales en TikTok.",
+      "resumenReceta": "Yogur y galletas reposadas en frío; versión chilena del viral japonés adaptada en TikTok con galletas locales.",
       "fuente": "https://www.24horas.cl/tendencias/redes-sociales/la-receta-japonesa-que-se-tomo-las-redes-sociales-rapida-y-sencilla",
-      "prioridad": 8
+      "prioridad": 9
+    },
+    {
+      "id": "instagram-cheesecake-yogur-japones",
+      "plataforma": "instagram",
+      "titulo": "Cheesecake de yogur y galletas (sin horno)",
+      "formato": "Postre rápido · 2 ingredientes · Reels de montaje en vaso",
+      "fechaFuente": "2025-02-03",
+      "kpis": {
+        "vistas": "8.2M+",
+        "engagement": "7.8%",
+        "crecimiento": "+210%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#cheesecake",
+        "#recetafacil",
+        "#postresinchile",
+        "#foodtok",
+        "#sinhorno",
+        "#yogur"
+      ],
+      "ingredientes": [
+        "Yogur griego",
+        "Galletas Oreo o Costa",
+        "Opcional: café o cacao"
+      ],
+      "resumenReceta": "Yogur y galletas reposadas en frío; versión chilena del viral japonés adaptada en TikTok con galletas locales.",
+      "fuente": "https://www.24horas.cl/tendencias/redes-sociales/la-receta-japonesa-que-se-tomo-las-redes-sociales-rapida-y-sencilla",
+      "prioridad": 10
+    },
+    {
+      "id": "youtube-cheesecake-yogur-japones",
+      "plataforma": "youtube",
+      "titulo": "Cheesecake de yogur y galletas (sin horno)",
+      "formato": "Postre rápido · 2 ingredientes · Shorts de textura final",
+      "fechaFuente": "2025-02-03",
+      "kpis": {
+        "vistas": "8.2M+",
+        "engagement": "7.8%",
+        "crecimiento": "+210%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#cheesecake",
+        "#recetafacil",
+        "#postresinchile",
+        "#foodtok",
+        "#sinhorno",
+        "#yogur"
+      ],
+      "ingredientes": [
+        "Yogur griego",
+        "Galletas Oreo o Costa",
+        "Opcional: café o cacao"
+      ],
+      "resumenReceta": "Yogur y galletas reposadas en frío; versión chilena del viral japonés adaptada en TikTok con galletas locales.",
+      "fuente": "https://www.24horas.cl/tendencias/redes-sociales/la-receta-japonesa-que-se-tomo-las-redes-sociales-rapida-y-sencilla",
+      "prioridad": 11
+    },
+    {
+      "id": "pinterest-cheesecake-yogur-japones",
+      "plataforma": "pinterest",
+      "titulo": "Cheesecake de yogur y galletas (sin horno)",
+      "formato": "Postre rápido · 2 ingredientes · Ideas de vasitos y capas",
+      "fechaFuente": "2025-02-03",
+      "kpis": {
+        "vistas": "8.2M+",
+        "engagement": "7.8%",
+        "crecimiento": "+210%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#cheesecake",
+        "#recetafacil",
+        "#postresinchile",
+        "#foodtok",
+        "#sinhorno",
+        "#yogur"
+      ],
+      "ingredientes": [
+        "Yogur griego",
+        "Galletas Oreo o Costa",
+        "Opcional: café o cacao"
+      ],
+      "resumenReceta": "Yogur y galletas reposadas en frío; versión chilena del viral japonés adaptada en TikTok con galletas locales.",
+      "fuente": "https://www.24horas.cl/tendencias/redes-sociales/la-receta-japonesa-que-se-tomo-las-redes-sociales-rapida-y-sencilla",
+      "prioridad": 12
     }
   ]
 }
