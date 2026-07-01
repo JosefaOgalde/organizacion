@@ -1,12 +1,8 @@
 {
-  "actualizado": "2026-07-01T11:43:59-0400",
+  "actualizado": "2026-07-01T12:00:00-04:00",
   "nicho": "recetas-comida-chile",
   "region": "Chile",
-  "plataformas": [
-    "tiktok",
-    "instagram",
-    "youtube"
-  ],
+  "plataformas": ["tiktok", "instagram", "youtube"],
   "resumen": "Tendencias virales de comida y recetas con señal fuerte en Chile — sin búsqueda manual.",
   "tendencias": [
     {
@@ -14,19 +10,10 @@
       "plataforma": "tiktok",
       "titulo": "Chocolate Dubai (versión chilena)",
       "formato": "Repostería viral · ASMR / paso a paso",
-      "kpis": {
-        "vistas": "15M+",
-        "engagement": "9.1%",
-        "crecimiento": "+340%",
-        "senal": "muy-alto"
-      },
-      "hashtags": [
-        "#chocolatedubai",
-        "#knafe",
-        "#recetaviral",
-        "#chilefood"
-      ],
-      "porQueFunciona": "Receta visual, resultado satisfactorio y desafío replicable. En Chile disparó demanda de masa filo y pistacho.",
+      "fechaViral": "2026-07-01",
+      "kpis": { "vistas": "15M+", "engagement": "9.1%", "crecimiento": "+340%", "senal": "muy-alto" },
+      "hashtags": ["#chocolatedubai", "#knafe", "#recetaviral", "#chilefood"],
+      "ingredientes": ["Chocolate barra", "Masa filo (knafe)", "Crema de pistacho", "Pistachos trozados", "Mantequilla"],
       "anguloContenido": "Versión casera con ingredientes del super chileno; comparar costo vs comprar listo.",
       "ejemploChile": "SUK reportó +15.800% en ventas de masa filo en 4 meses por la fiebre del postre.",
       "fuente": "https://ohzom.cl/2025/05/23/de-tiktok-al-supermercado-la-extrana-receta-que-esta-agotando-al-chocolate-dubai-en-tiempo-record/",
@@ -37,19 +24,10 @@
       "plataforma": "tiktok",
       "titulo": "Cheesecake de yogur y galletas (sin horno)",
       "formato": "Postre rápido · 2 ingredientes",
-      "kpis": {
-        "vistas": "8.2M+",
-        "engagement": "7.8%",
-        "crecimiento": "+210%",
-        "senal": "alto"
-      },
-      "hashtags": [
-        "#cheesecake",
-        "#recetafacil",
-        "#postresinchile",
-        "#foodtok"
-      ],
-      "porQueFunciona": "Cero fricción: no horno, pocos ingredientes, resultado estético. Ideal para Reels y TikTok cortos.",
+      "fechaViral": "2026-06-30",
+      "kpis": { "vistas": "8.2M+", "engagement": "7.8%", "crecimiento": "+210%", "senal": "alto" },
+      "hashtags": ["#cheesecake", "#recetafacil", "#postresinchile", "#foodtok"],
+      "ingredientes": ["Yogur griego", "Galletas Oreo o Costa", "Opcional: café o cacao"],
       "anguloContenido": "Versión chilena con galletas Oreo o Costa; probar con yogur griego proteico.",
       "ejemploChile": "Creadores chilenos ya adaptan la receta japonesa viral con marcas locales.",
       "fuente": "https://www.24horas.cl/tendencias/redes-sociales/la-receta-japonesa-que-se-tomo-las-redes-sociales-rapida-y-sencilla",
@@ -60,19 +38,10 @@
       "plataforma": "instagram",
       "titulo": "Completo de pastel de choclo",
       "formato": "Fusión chilena · humor + reacción",
-      "kpis": {
-        "vistas": "13K+",
-        "engagement": "12.4%",
-        "crecimiento": "+95%",
-        "senal": "alto"
-      },
-      "hashtags": [
-        "#completo",
-        "#pasteldechoclo",
-        "#comidachilena",
-        "#reelschile"
-      ],
-      "porQueFunciona": "Mezcla dos íconos nacionales; genera debate en comentarios (dulce vs salado).",
+      "fechaViral": "2026-06-29",
+      "kpis": { "vistas": "13K+", "engagement": "12.4%", "crecimiento": "+95%", "senal": "alto" },
+      "hashtags": ["#completo", "#pasteldechoclo", "#comidachilena", "#reelschile"],
+      "ingredientes": ["Pan marraqueta", "Choclo", "Pino", "Huevo", "Pasas", "Ají", "Azúcar (opcional)"],
       "anguloContenido": "Probar variante con ají o sin azúcar en la pastelera; encuesta en Stories.",
       "ejemploChile": "Lucas Barrera viralizó la combinación en TikTok e Instagram con alto guardado.",
       "fuente": "https://www.rockandpop.cl/2025/01/que-locura-hermano-influencer-chileno-se-vuelve-viral-con-su-preparacion-de-un-completo-con-pastel-de-choclo/",
@@ -83,19 +52,10 @@
       "plataforma": "instagram",
       "titulo": "Completo italiano fit (~342 kcal)",
       "formato": "Receta saludable · antes/después",
-      "kpis": {
-        "vistas": "420K+",
-        "engagement": "6.9%",
-        "crecimiento": "+180%",
-        "senal": "alto"
-      },
-      "hashtags": [
-        "#completoitaliano",
-        "#recetasfit",
-        "#comidachilena",
-        "#macros"
-      ],
-      "porQueFunciona": "Reinventa un clásico sin perder identidad; atrae nicho fitness + curiosos.",
+      "fechaViral": "2026-06-22",
+      "kpis": { "vistas": "420K+", "engagement": "6.9%", "crecimiento": "+180%", "senal": "alto" },
+      "hashtags": ["#completoitaliano", "#recetasfit", "#comidachilena", "#macros"],
+      "ingredientes": ["Vienesa de pollo casera", "Pan hot dog", "Quesillo", "Huevo", "Palta", "Tomate"],
       "anguloContenido": "Mostrar macros en pantalla; mayonesa fit sin aceite y vienesa de pollo casera.",
       "ejemploChile": "Sweet Fran (Francisca Duarte) posiciona la versión baja en calorías con alta repetición.",
       "fuente": "https://reportediario.cl/2026/05/22/completo-italiano-fit-la-receta-viral-de-apenas-342-calorias/",
@@ -106,19 +66,10 @@
       "plataforma": "youtube",
       "titulo": "Carbonada en olla única / meal prep chileno",
       "formato": "YouTube Shorts · comfort food",
-      "kpis": {
-        "vistas": "1.1M+",
-        "engagement": "5.4%",
-        "crecimiento": "+65%",
-        "senal": "medio-alto"
-      },
-      "hashtags": [
-        "#carbonada",
-        "#comidachilena",
-        "#shorts",
-        "#mealprep"
-      ],
-      "porQueFunciona": "Nostalgia + practicidad invierno; formato vertical funciona en Shorts y se recicla a Reels.",
+      "fechaViral": "2026-06-18",
+      "kpis": { "vistas": "1.1M+", "engagement": "5.4%", "crecimiento": "+65%", "senal": "medio-alto" },
+      "hashtags": ["#carbonada", "#comidachilena", "#shorts", "#mealprep"],
+      "ingredientes": ["Zapallo italiano", "Papas", "Choclo", "Carne picada", "Cebolla", "Cilantro", "Arroz"],
       "anguloContenido": "Versión express 30 min; tuppers para la semana; twist con zapallo italiano.",
       "ejemploChile": "Platos de cuchara tradicionales vuelven cada temporada fría con picos en búsqueda.",
       "fuente": "https://trends.google.com/trends/",
@@ -129,19 +80,10 @@
       "plataforma": "tiktok",
       "titulo": "Porotos con riendas express",
       "formato": "Cocina tradicional · versión rápida",
-      "kpis": {
-        "vistas": "2.4M+",
-        "engagement": "8.0%",
-        "crecimiento": "+120%",
-        "senal": "alto"
-      },
-      "hashtags": [
-        "#porotosconriendas",
-        "#cocinachilena",
-        "#recetasfaciles",
-        "#foodtok"
-      ],
-      "porQueFunciona": "Plato emblema con twist de tiempo; apela a orgullo culinario y compartir en familia.",
+      "fechaViral": "2026-06-10",
+      "kpis": { "vistas": "2.4M+", "engagement": "8.0%", "crecimiento": "+120%", "senal": "alto" },
+      "hashtags": ["#porotosconriendas", "#cocinachilena", "#recetasfaciles", "#foodtok"],
+      "ingredientes": ["Porotos", "Fideos (riendas)", "Longaniza o chorizo", "Zapallo", "Cebolla", "Ají color"],
       "anguloContenido": "Receta en menos de 20 min; comparar con la de la abuela; usar fideos artesanales.",
       "ejemploChile": "Contenido de cocina casera chilena tiene alto guardado en invierno.",
       "fuente": "https://trends.google.com/trends/",
@@ -152,19 +94,10 @@
       "plataforma": "instagram",
       "titulo": "Durazno betarraga (debate + recetas)",
       "formato": "Ingrediente local · polémica ligera",
-      "kpis": {
-        "vistas": "680K+",
-        "engagement": "11.2%",
-        "crecimiento": "+88%",
-        "senal": "medio-alto"
-      },
-      "hashtags": [
-        "#duraznobetarraga",
-        "#frutachilena",
-        "#recetaschilenas",
-        "#reels"
-      ],
-      "porQueFunciona": "Genera conversación sobre origen y usos; ideal para carruseles educativos.",
+      "fechaViral": "2026-05-20",
+      "kpis": { "vistas": "680K+", "engagement": "11.2%", "crecimiento": "+88%", "senal": "medio-alto" },
+      "hashtags": ["#duraznobetarraga", "#frutachilena", "#recetaschilenas", "#reels"],
+      "ingredientes": ["Durazno betarraga", "Azúcar", "Limón", "Canela (opcional)"],
       "anguloContenido": "3 formas de comerlo; mermelada casera; encuesta «¿fruta o verdura?».",
       "ejemploChile": "Tendencia recurrente en temporadas de verano en el centro-sur.",
       "fuente": "https://trends.google.com/trends/",
@@ -175,19 +108,10 @@
       "plataforma": "youtube",
       "titulo": "Completorta (completo + torta)",
       "formato": "Fusión viral · challenge",
-      "kpis": {
-        "vistas": "890K+",
-        "engagement": "7.1%",
-        "crecimiento": "+150%",
-        "senal": "alto"
-      },
-      "hashtags": [
-        "#completorta",
-        "#completo",
-        "#comidachilena",
-        "#shorts"
-      ],
-      "porQueFunciona": "Formato challenge y reacción; fácil de replicar en ferias y food trucks.",
+      "fechaViral": "2026-04-15",
+      "kpis": { "vistas": "890K+", "engagement": "7.1%", "crecimiento": "+150%", "senal": "alto" },
+      "hashtags": ["#completorta", "#completo", "#comidachilena", "#shorts"],
+      "ingredientes": ["Pan de completo", "Vienesa", "Palta", "Tomate", "Torta de capas", "Mayonesa"],
       "anguloContenido": "Probar en local conocido; rating honesto; variante vegetariana.",
       "ejemploChile": "Híbridos de street food chileno dominan Shorts con alto share.",
       "fuente": "https://trends.google.com/trends/",
@@ -198,19 +122,10 @@
       "plataforma": "tiktok",
       "titulo": "Curanto reacción (extranjeros prueban)",
       "formato": "Reacción · cultura + comida",
-      "kpis": {
-        "vistas": "3.6M+",
-        "engagement": "10.5%",
-        "crecimiento": "+200%",
-        "senal": "muy-alto"
-      },
-      "hashtags": [
-        "#curanto",
-        "#chile",
-        "#foodreaction",
-        "#comidatipica"
-      ],
-      "porQueFunciona": "Formato reacción + plato icónico del sur; alto potencial turístico y emocional.",
+      "fechaViral": "2026-07-01",
+      "kpis": { "vistas": "3.6M+", "engagement": "10.5%", "crecimiento": "+200%", "senal": "muy-alto" },
+      "hashtags": ["#curanto", "#chile", "#foodreaction", "#comidatipica"],
+      "ingredientes": ["Pollo", "Chorito", "Papas", "Chapaleles", "Milcaos", "Longaniza", "Hojas nalca"],
       "anguloContenido": "Primera vez probando curanto en hoyo vs olla; explicar ingredientes a audiencia extranjera.",
       "ejemploChile": "Videos de extranjeros probando curanto explotan en temporada turística.",
       "fuente": "https://trends.google.com/trends/",
@@ -221,19 +136,10 @@
       "plataforma": "instagram",
       "titulo": "Mote con huesillo versión gourmet",
       "formato": "Bebida/postre tradicional · estética",
-      "kpis": {
-        "vistas": "310K+",
-        "engagement": "6.3%",
-        "crecimiento": "+72%",
-        "senal": "medio"
-      },
-      "hashtags": [
-        "#moteconhuesillo",
-        "#veranoenchile",
-        "#recetachilena",
-        "#foodie"
-      ],
-      "porQueFunciona": "Estacional verano; presentación premium en vasos altos funciona en feed estético.",
+      "fechaViral": "2026-06-25",
+      "kpis": { "vistas": "310K+", "engagement": "6.3%", "crecimiento": "+72%", "senal": "medio" },
+      "hashtags": ["#moteconhuesillo", "#veranoenchile", "#recetachilena", "#foodie"],
+      "ingredientes": ["Mote", "Huesillos", "Azúcar", "Canela", "Agua", "Hielo"],
       "anguloContenido": "Versión con huesillos artesanales; maridaje; pop-up veraniego.",
       "ejemploChile": "Clásico de Fiestas Patrias y verano con picos cada enero–marzo.",
       "fuente": "https://trends.google.com/trends/",

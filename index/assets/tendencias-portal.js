@@ -10,7 +10,16 @@
   const FEED_URL = feedCfg.url || '../../../data/tendencias-comida-chile.json';
   const CACHE_KEY = 'tendencias-comida-chile-cache';
   const VISTA_KEY = 'tendencias-vista';
+  const PERIODO_KEY = 'tendencias-periodo';
   const CACHE_TTL_MS = (feedCfg.cacheMinutos || 30) * 60 * 1000;
+
+  const PERIODOS = [
+    { id: 'hoy', label: 'Hoy' },
+    { id: 'semana', label: 'Esta semana' },
+    { id: 'quince', label: 'Quince días' },
+    { id: 'mes', label: 'Mes' },
+    { id: 'tres-meses', label: 'Tres meses' }
+  ];
 
   const PLATAFORMAS = {
     tiktok: { label: 'TikTok', icon: '♪', clase: 'tiktok' },
@@ -20,6 +29,80 @@
 
   let feedActual = null;
   let vistaActual = leerVista();
+  let periodoActual = leerPeriodo();
+
+  function leerPeriodo() {
+    try {
+      const p = localStorage.getItem(PERIODO_KEY);
+      return PERIODOS.some((x) => x.id === p) ? p : 'mes';
+    } catch {
+      return 'mes';
+    }
+  }
+
+  function guardarPeriodo(p) {
+    periodoActual = p;
+    try {
+      localStorage.setItem(PERIODO_KEY, p);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function parseFecha(str) {
+    if (!str) return null;
+    const d = new Date(`${str}T12:00:00`);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+
+  function hoyLocal() {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  function inicioPeriodo(id) {
+    const hoy = hoyLocal();
+    if (id === 'hoy') return hoy;
+    if (id === 'semana') {
+      const d = new Date(hoy);
+      const dia = d.getDay();
+      const desdeLunes = dia === 0 ? 6 : dia - 1;
+      d.setDate(d.getDate() - desdeLunes);
+      return d;
+    }
+    const dias = { quince: 15, mes: 30, 'tres-meses': 90 }[id] || 30;
+    const d = new Date(hoy);
+    d.setDate(d.getDate() - dias);
+    return d;
+  }
+
+  function enPeriodo(fechaStr, periodoId) {
+    const f = parseFecha(fechaStr);
+    if (!f) return periodoId === 'tres-meses';
+    const inicio = inicioPeriodo(periodoId);
+    const fin = new Date();
+    fin.setHours(23, 59, 59, 999);
+    return f >= inicio && f <= fin;
+  }
+
+  function feedFiltrado(feed) {
+    const lista = (feed.tendencias || []).filter((t) => enPeriodo(t.fechaViral, periodoActual));
+    return { ...feed, tendencias: lista };
+  }
+
+  function textoIngredientes(t) {
+    if (Array.isArray(t.ingredientes)) return t.ingredientes.join(', ');
+    if (typeof t.ingredientes === 'string') return t.ingredientes;
+    return t.porQueFunciona || '—';
+  }
+
+  function renderIngredientes(t) {
+    if (Array.isArray(t.ingredientes) && t.ingredientes.length) {
+      return `<ul class="tend-ingredientes">${t.ingredientes.map((i) => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`;
+    }
+    return `<p>${escapeHtml(textoIngredientes(t))}</p>`;
+  }
 
   function leerVista() {
     try {
@@ -61,6 +144,11 @@
     });
 
     return { orden, porPlataforma };
+  }
+
+  function feedVacioHtml() {
+    const label = PERIODOS.find((p) => p.id === periodoActual)?.label || periodoActual;
+    return `<p class="tend-vacio">No hay tendencias en el período <strong>${escapeHtml(label)}</strong>. Prueba otro filtro o actualiza el feed.</p>`;
   }
 
   function listaPlana(feed) {
@@ -155,8 +243,8 @@
         </div>
         <p class="tend-card__formato">${escapeHtml(t.formato)}</p>
         ${renderKpis(t.kpis)}
-        <p class="tend-card__label">Por qué funciona</p>
-        <p>${escapeHtml(t.porQueFunciona)}</p>
+        <p class="tend-card__label">Ingredientes</p>
+        ${renderIngredientes(t)}
         <p class="tend-card__label">Ángulo de contenido</p>
         <p>${escapeHtml(t.anguloContenido)}</p>
         ${t.ejemploChile ? `<p class="tend-card__label">Señal Chile</p><p>${escapeHtml(t.ejemploChile)}</p>` : ''}
@@ -176,11 +264,13 @@
       <tr>
         <td data-label="Plataforma"><span class="tend-tabla__plat tend-tabla__plat--${escapeHtml(t.plataforma || '')}">${escapeHtml(labelPlataforma(t.plataforma))}</span></td>
         <td data-label="Tendencia"><strong>${escapeHtml(t.titulo)}</strong></td>
+        <td data-label="Fecha">${escapeHtml(t.fechaViral || '—')}</td>
         <td data-label="Formato">${escapeHtml(t.formato)}</td>
         <td data-label="Vistas">${escapeHtml(t.kpis?.vistas || '—')}</td>
         <td data-label="Engagement">${escapeHtml(t.kpis?.engagement || '—')}</td>
         <td data-label="Crecimiento">${escapeHtml(t.kpis?.crecimiento || '—')}</td>
         <td data-label="Señal"><span class="tend-card__senal tend-card__senal--${escapeHtml(senal)}">${escapeHtml((t.kpis?.senal || 'medio').replace('-', ' '))}</span></td>
+        <td data-label="Ingredientes" class="tend-tabla__ing">${escapeHtml(textoIngredientes(t))}</td>
         <td data-label="Ángulo">${escapeHtml(t.anguloContenido)}</td>
         <td data-label="Chile">${escapeHtml(t.ejemploChile || '—')}</td>
         <td data-label="Hashtags" class="tend-tabla__tags">${escapeHtml(hashtags)}</td>
@@ -189,7 +279,9 @@
   }
 
   function renderTabla(feed) {
-    const filas = listaPlana(feed).map(renderTablaFila).join('');
+    const items = listaPlana(feed);
+    if (!items.length) return feedVacioHtml();
+    const filas = items.map(renderTablaFila).join('');
     return `
       <div class="tend-tabla-wrap">
         <table class="tend-tabla">
@@ -197,11 +289,13 @@
             <tr>
               <th>Plataforma</th>
               <th>Tendencia</th>
+              <th>Fecha</th>
               <th>Formato</th>
               <th>Vistas</th>
               <th>Engagement</th>
               <th>Crecimiento</th>
               <th>Señal</th>
+              <th>Ingredientes</th>
               <th>Ángulo de contenido</th>
               <th>Señal Chile</th>
               <th>Hashtags</th>
@@ -228,10 +322,21 @@
 
   function renderTarjetas(feed) {
     const { orden, porPlataforma } = agruparPorPlataforma(feed);
-    return orden
+    const html = orden
       .filter((p) => porPlataforma[p]?.length)
       .map((p) => renderPlataforma(p, porPlataforma[p]))
       .join('');
+    return html || feedVacioHtml();
+  }
+
+  function renderFiltroPeriodo() {
+    return `
+      <div class="tend-filtro-periodo" role="group" aria-label="Filtrar por período">
+        ${PERIODOS.map(
+          (p) =>
+            `<button type="button" class="portal-btn tend-periodo-btn${periodoActual === p.id ? ' tend-periodo-btn--active' : ''}" data-periodo="${p.id}">${escapeHtml(p.label)}</button>`
+        ).join('')}
+      </div>`;
   }
 
   function renderVistaToggle() {
@@ -243,9 +348,36 @@
   }
 
   function renderContenido(feed) {
+    const filtrado = feedFiltrado(feed);
     return vistaActual === 'tabla'
-      ? renderTabla(feed)
-      : `<div class="tend-plataformas">${renderTarjetas(feed)}</div>`;
+      ? renderTabla(filtrado)
+      : `<div class="tend-plataformas">${renderTarjetas(filtrado)}</div>`;
+  }
+
+  function actualizarContenido() {
+    if (!feedActual) return;
+    const filtrado = feedFiltrado(feedActual);
+    const total = filtrado.tendencias.length;
+    const cont = document.getElementById('tend-contenido');
+    const contador = document.getElementById('tend-contador');
+    if (cont) cont.innerHTML = renderContenido(feedActual);
+    if (contador) {
+      contador.textContent = `${total} tendencia${total === 1 ? '' : 's'} en ${PERIODOS.find((p) => p.id === periodoActual)?.label || periodoActual}`;
+    }
+  }
+
+  function bindFiltroPeriodo() {
+    root.querySelectorAll('.tend-periodo-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const p = btn.dataset.periodo;
+        if (!p || p === periodoActual) return;
+        guardarPeriodo(p);
+        root.querySelectorAll('.tend-periodo-btn').forEach((b) => {
+          b.classList.toggle('tend-periodo-btn--active', b.dataset.periodo === p);
+        });
+        actualizarContenido();
+      });
+    });
   }
 
   function bindVistaToggle() {
@@ -258,14 +390,15 @@
           b.classList.toggle('tend-vista-btn--active', b.dataset.vista === v);
         });
         const cont = document.getElementById('tend-contenido');
-        if (cont) cont.innerHTML = renderContenido(feedActual);
+        if (cont) actualizarContenido();
       });
     });
   }
 
   function renderFeed(feed) {
     feedActual = feed;
-    const total = (feed.tendencias || []).length;
+    const filtrado = feedFiltrado(feed);
+    const total = filtrado.tendencias.length;
 
     root.innerHTML = `
       <article class="portal-cliente tend-dashboard portal-cliente--landing"
@@ -274,16 +407,20 @@
 
         <div class="tend-dashboard__hero">
           <h1>Tendencias comida · Chile</h1>
-          <p class="portal-cliente__meta">Recetas y formatos virales — elige vista tarjetas o tabla</p>
+          <p class="portal-cliente__meta">Ingredientes, KPIs y filtros por período</p>
           <p class="tend-dashboard__meta">
             <span class="tend-dashboard__estado" id="tend-estado">Listo</span>
-            <span>${total} tendencias · TikTok, Instagram y YouTube Shorts</span>
+            <span id="tend-contador">${total} tendencia${total === 1 ? '' : 's'} en ${escapeHtml(PERIODOS.find((p) => p.id === periodoActual)?.label || '')}</span>
             <time datetime="${escapeHtml(feed.actualizado)}">Actualizado: ${escapeHtml(formatoFecha(feed.actualizado))}</time>
           </p>
         </div>
 
         <div class="tend-resumen-box">
-          <strong>Qué hace esta herramienta:</strong> propone tendencias de comida con buenos KPIs o viralidad en Chile. Cambia entre <strong>tarjetas</strong> y <strong>tabla</strong> según cómo prefieras revisarlas.
+          Filtra por <strong>hoy</strong>, <strong>esta semana</strong>, <strong>quince días</strong>, <strong>mes</strong> o <strong>tres meses</strong>. Cada tendencia muestra sus <strong>ingredientes</strong> listos para producir.
+        </div>
+
+        <div class="tend-toolbar tend-toolbar--wrap">
+          ${renderFiltroPeriodo()}
         </div>
 
         <div class="tend-toolbar">
@@ -304,6 +441,7 @@
       </article>`;
 
     bindVistaToggle();
+    bindFiltroPeriodo();
     document.getElementById('tend-btn-refresh')?.addEventListener('click', () => boot(true));
   }
 

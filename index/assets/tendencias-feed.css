@@ -277,6 +277,55 @@
   margin-bottom: 1rem;
 }
 
+.tend-tabla__ing {
+  max-width: 14rem;
+  font-size: 0.82rem;
+}
+
+.tend-ingredientes {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.tend-ingredientes li {
+  margin-bottom: 0.2rem;
+}
+
+.tend-filtro-periodo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.tend-periodo-btn {
+  font-size: 0.82rem;
+  padding: 0.4rem 0.75rem;
+  background: #fff;
+  border: 1px solid color-mix(in srgb, var(--tend-primario) 35%, #ccc);
+}
+
+.tend-periodo-btn--active {
+  background: var(--tend-primario);
+  color: #fff;
+  border-color: var(--tend-primario);
+}
+
+.tend-toolbar--wrap {
+  margin-bottom: 0.65rem;
+}
+
+.tend-vacio {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--muted);
+  background: #fff;
+  border-radius: var(--radius);
+  border: 1px dashed #ccc;
+}
+
 .tend-vista-toggle {
   display: inline-flex;
   border-radius: 8px;
