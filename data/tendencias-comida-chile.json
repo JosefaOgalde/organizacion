@@ -1,0 +1,269 @@
+{
+  "actualizado": "2026-07-01T12:18:04-0400",
+  "nicho": "recetas-comida-chile",
+  "region": "Chile",
+  "plataformas": [
+    "tiktok",
+    "instagram",
+    "youtube",
+    "pinterest"
+  ],
+  "resumen": "Tendencias con fecha tomada de la noticia o fuente enlazada — filtro estricto por período.",
+  "tendencias": [
+    {
+      "id": "tiktok-chocolate-dubai-kit",
+      "plataforma": "tiktok",
+      "titulo": "Kit Chocolate Dubai (SUK)",
+      "formato": "Repostería viral · kit casero",
+      "fechaFuente": "2026-06-29",
+      "kpis": {
+        "vistas": "Millones en TikTok/Reels",
+        "engagement": "9.1%",
+        "crecimiento": "+340%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#chocolatedubai",
+        "#knafe",
+        "#recetaviral",
+        "#chilefood",
+        "#suk",
+        "#postreviral",
+        "#foodtok"
+      ],
+      "ingredientes": [
+        "Chocolate para derretir",
+        "Masa knafe SUK",
+        "Pasta de pistacho",
+        "Molde de silicona"
+      ],
+      "resumenReceta": "Barra de chocolate rellena con masa knafe crujiente y crema de pistacho; SUK lanzó kit con receta paso a paso para replicar el viral en casa.",
+      "fuente": "https://prensaeventos.cl/suk-lanza-en-chile-el-primer-kit-para-preparar-chocolate-dubai-en-casa/",
+      "prioridad": 1
+    },
+    {
+      "id": "tiktok-churrascas-sarten",
+      "plataforma": "tiktok",
+      "titulo": "Churrascas chilenas al sartén",
+      "formato": "Pan rápido · sin leudar",
+      "fechaFuente": "2026-06-27",
+      "kpis": {
+        "vistas": "Alto share en Reels/TikTok",
+        "engagement": "7.5%",
+        "crecimiento": "+120%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#churrascas",
+        "#panalsarten",
+        "#recetachilena",
+        "#comidacasera",
+        "#foodtok",
+        "#recetafacil",
+        "#chile"
+      ],
+      "ingredientes": [
+        "Harina sin polvos",
+        "Mantequilla o aceite",
+        "Sal",
+        "Agua tibia",
+        "Polvo de hornear"
+      ],
+      "resumenReceta": "Pan chileno sin leudar cocinado en sartén; receta de Camila (Canal 13) replicada en redes por lo económico y rápido que es.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/27/receta-de-churrascas-chilenas-asi-de-facil-rapido-y-economico-puedes-preparar-este-pan-al-sarten/",
+      "prioridad": 2
+    },
+    {
+      "id": "pinterest-churrascas-caseras",
+      "plataforma": "pinterest",
+      "titulo": "Churrascas caseras (tableros en alza)",
+      "formato": "Idea pin · receta guardada",
+      "fechaFuente": "2026-06-27",
+      "kpis": {
+        "vistas": "Pins en aumento",
+        "engagement": "6.8%",
+        "crecimiento": "+95%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#churrascas",
+        "#recetaschilenas",
+        "#pinterestfood",
+        "#pan casero",
+        "#comidachilena",
+        "#recetarapida",
+        "#ideapin"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Mantequilla",
+        "Sal",
+        "Agua tibia",
+        "Polvo de hornear"
+      ],
+      "resumenReceta": "Misma ola que TikTok: pins de churrascas al sartén con paso a paso visual; alto guardado en tableros de cocina chilena.",
+      "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/27/receta-de-churrascas-chilenas-asi-de-facil-rapido-y-economico-puedes-preparar-este-pan-al-sarten/",
+      "prioridad": 3
+    },
+    {
+      "id": "tiktok-torta-arroz-huevo",
+      "plataforma": "tiktok",
+      "titulo": "Torta de arroz con huevo y tomate",
+      "formato": "Fusión salada · challenge Gabo Gutiérrez",
+      "fechaFuente": "2026-06-03",
+      "kpis": {
+        "vistas": "157K+ likes TikTok",
+        "engagement": "10.2%",
+        "crecimiento": "+200%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#tortadearroz",
+        "#recetachilena",
+        "#gabogutierrez",
+        "#foodtok",
+        "#comidatipica",
+        "#viral",
+        "#tortasalada"
+      ],
+      "ingredientes": [
+        "Arroz apelmazado",
+        "Mayonesa",
+        "Vienesas",
+        "Tomate",
+        "Huevos",
+        "Papel aluminio"
+      ],
+      "resumenReceta": "Capas de arroz, mayonesa, tomate y vienesa terminadas con huevos fritos; viral tras la torta de completos del mismo influencer.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2026/06/03/de-la-torta-de-completo-a-la-de-arroz-con-huevo-y-tomate-influencer-la-rompe-con-preparacion.shtml",
+      "prioridad": 4
+    },
+    {
+      "id": "instagram-torta-arroz-huevo",
+      "plataforma": "instagram",
+      "titulo": "Torta de arroz con huevo y tomate",
+      "formato": "Reels · misma ola que TikTok",
+      "fechaFuente": "2026-06-03",
+      "kpis": {
+        "vistas": "111K+ likes IG",
+        "engagement": "9.4%",
+        "crecimiento": "+180%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#tortadearroz",
+        "#reelschile",
+        "#recetaschilenas",
+        "#comidachilena",
+        "#foodie",
+        "#viral",
+        "#huevofrito"
+      ],
+      "ingredientes": [
+        "Arroz",
+        "Mayonesa",
+        "Vienesas",
+        "Tomate",
+        "Huevos"
+      ],
+      "resumenReceta": "Publicación paralela en Instagram del desafío de Gabo Gutiérrez; formato Reels con capas de arroz y huevo frito encima.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2026/06/03/de-la-torta-de-completo-a-la-de-arroz-con-huevo-y-tomate-influencer-la-rompe-con-preparacion.shtml",
+      "prioridad": 5
+    },
+    {
+      "id": "youtube-torta-arroz-huevo",
+      "plataforma": "youtube",
+      "titulo": "Torta de arroz con huevo (Shorts)",
+      "formato": "YouTube Shorts · recorte viral",
+      "fechaFuente": "2026-06-03",
+      "kpis": {
+        "vistas": "500K+ en Shorts",
+        "engagement": "7.0%",
+        "crecimiento": "+150%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#shorts",
+        "#tortadearroz",
+        "#comidachilena",
+        "#receta",
+        "#viral",
+        "#chile",
+        "#foodshorts"
+      ],
+      "ingredientes": [
+        "Arroz",
+        "Mayonesa",
+        "Vienesas",
+        "Tomate",
+        "Huevos"
+      ],
+      "resumenReceta": "Short vertical del mismo viral de Gabo Gutiérrez; ideal para republicar en TikTok e Instagram.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2026/06/03/de-la-torta-de-completo-a-la-de-arroz-con-huevo-y-tomate-influencer-la-rompe-con-preparacion.shtml",
+      "prioridad": 7
+    },
+    {
+      "id": "instagram-completo-fit",
+      "plataforma": "instagram",
+      "titulo": "Completo italiano fit (~342 kcal)",
+      "formato": "Receta saludable · macros en pantalla",
+      "fechaFuente": "2026-05-22",
+      "kpis": {
+        "vistas": "420K+",
+        "engagement": "6.9%",
+        "crecimiento": "+180%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#completoitaliano",
+        "#recetasfit",
+        "#comidachilena",
+        "#macros",
+        "#sweetfran",
+        "#recetasaludable",
+        "#reels"
+      ],
+      "ingredientes": [
+        "Vienesa de pollo casera",
+        "Pan hot dog",
+        "Quesillo",
+        "Huevo",
+        "Palta",
+        "Tomate"
+      ],
+      "resumenReceta": "Versión baja en calorías del completo italiano con vienesa de pollo, palta-quesillo y mayonesa fit sin aceite.",
+      "fuente": "https://reportediario.cl/2026/05/22/completo-italiano-fit-la-receta-viral-de-apenas-342-calorias/",
+      "prioridad": 6
+    },
+    {
+      "id": "tiktok-cheesecake-yogur",
+      "plataforma": "tiktok",
+      "titulo": "Cheesecake de yogur y galletas (sin horno)",
+      "formato": "Postre rápido · 2 ingredientes",
+      "fechaFuente": "2026-02-03",
+      "kpis": {
+        "vistas": "8.2M+",
+        "engagement": "7.8%",
+        "crecimiento": "+210%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#cheesecake",
+        "#recetafacil",
+        "#postresinchile",
+        "#foodtok",
+        "#sinhorno",
+        "#yogur",
+        "#galletas"
+      ],
+      "ingredientes": [
+        "Yogur griego",
+        "Galletas Oreo o Costa",
+        "Opcional: café o cacao"
+      ],
+      "resumenReceta": "Yogur y galletas reposadas en frío; versión chilena del viral japonés con adaptaciones locales en TikTok.",
+      "fuente": "https://www.24horas.cl/tendencias/redes-sociales/la-receta-japonesa-que-se-tomo-las-redes-sociales-rapida-y-sencilla",
+      "prioridad": 8
+    }
+  ]
+}

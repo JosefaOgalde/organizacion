@@ -40,7 +40,7 @@ window.CLIENTES_PORTAL = [
     nombre: 'Hotspring - Talk',
     abrev: 'HS',
     tipo: 'Full time',
-    color: { border: '#a4d4c8', bg: '#e8f4ef', text: '#4a8670' },
+    color: { border: '#94B89A', bg: '#E6F0E8', text: '#3A6042' },
     agente: 'Publicación de contenidos',
     resumen: '8 contenidos al mes en feed e historias (días hábiles).'
   },
@@ -94,6 +94,26 @@ window.CLIENTES_PORTAL = [
         archivo: 'DesafioLatam/CLA.html',
         resumen: 'Programa IA — certificados modulares Fase 1, 2, 3 y final (1123×794 px).',
         color: { border: '#1a6b4a', bg: '#edf7f2', text: '#1a5c40' }
+      }
+    ]
+  },
+  {
+    archivo: 'Herramientas.html',
+    id: 'cli-herramientas',
+    slug: 'herramientas',
+    nombre: 'Herramientas',
+    abrev: 'HER',
+    tipo: 'Freelance',
+    color: { border: '#5C6B94', bg: '#E4E8F2', text: '#2A3348' },
+    agente: 'Herramientas internas',
+    resumen: 'Proyectos de herramientas y utilidades. Cada proyecto mantiene su identidad y entregables.',
+    proyectos: [
+      {
+        codigo: 'TEND',
+        nombre: 'Tendencias',
+        archivo: 'Herramientas/Tendencias.html',
+        resumen: 'Tendencias virales de comida Chile — TikTok, Instagram y YouTube Shorts.',
+        color: { border: '#2E7D6E', bg: '#DFF0EC', text: '#1A4A40' }
       }
     ]
   }

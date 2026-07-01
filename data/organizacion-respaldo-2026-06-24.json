@@ -380,6 +380,42 @@
         "seccionesExtra": [],
         "documentos": []
       }
+    },
+    {
+      "id": "cli-herramientas",
+      "nombre": "Herramientas",
+      "abrev": "HER",
+      "tipo": "freelance",
+      "color": "violeta",
+      "roles": [
+        {
+          "id": "rol-her-dev",
+          "nombre": "Desarrollo",
+          "abrev": "DEV",
+          "funciones": "Herramientas internas y utilidades\nAnálisis y seguimiento de tendencias\nReportes y dashboards\nAutomatizaciones según proyecto",
+          "tareasAlMes": "Según avance del proyecto activo",
+          "plazosEntregables": "Agregar cada tarea en + Nueva tarea según el proyecto"
+        }
+      ],
+      "agente": {
+        "nombre": "Agente Herramientas",
+        "emoji": "🔧",
+        "especialidad": "Herramientas internas y proyectos de utilidad",
+        "instrucciones": "Eres el asistente de Herramientas. Ayudas con proyectos internos de utilidad: análisis de tendencias, dashboards, reportes, automatizaciones y entregables según cada subproyecto."
+      },
+      "manualMarca": {
+        "texto": "",
+        "archivos": []
+      },
+      "metas": "",
+      "contextoPrompt": "",
+      "ficha": {
+        "contacto": "",
+        "links": "",
+        "notas": "",
+        "seccionesExtra": [],
+        "documentos": []
+      }
     }
   ],
   "tareas": [],

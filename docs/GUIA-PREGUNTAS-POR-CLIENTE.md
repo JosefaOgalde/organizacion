@@ -38,6 +38,8 @@ flowchart TB
 | **Joyas Mercury** | `index/clientes/joyasmercury/` | «JM tarea 01: menú WooCommerce…» |
 | **Desafío Latam** | `index/clientes/Desafio-Latam.html` | «Encargo ADL: …» (elige **proyecto** abajo) |
 | **ADL → CLA** | `index/clientes/DesafioLatam/CLA.html` | «Proyecto CLA Caja Los Andes: certificados…» |
+| **Herramientas** | `index/clientes/Herramientas.html` | «Encargo HER: …» (elige **proyecto** abajo) |
+| **HER → Tendencias** | `index/clientes/Herramientas/Tendencias.html` | «Proyecto Tendencias: análisis, reportes…» |
 
 ---
 
@@ -81,12 +83,30 @@ Ajusta colores según manual-marca-caja-los-andes.pdf
 
 ---
 
+## Herramientas — dos niveles
+
+Herramientas tiene **varios proyectos** con identidad distinta. No mezcles briefs.
+
+```mermaid
+flowchart LR
+    HER["Herramientas.html\nCliente HER"] --> TEND["Herramientas/Tendencias.html\nTendencias"]
+    HER --> OTRO["Futuro proyecto X\n(otra carpeta)"]
+```
+
+| Nivel | URL local | Para qué preguntar |
+|-------|-----------|-------------------|
+| Cliente HER | `…/clientes/Herramientas.html` | Encargos generales, nuevo proyecto |
+| **Proyecto Tendencias** | `…/clientes/Herramientas/Tendencias.html` | Análisis de tendencias, reportes, dashboards |
+
+---
+
 ## Organizador — ver la tarea de hoy
 
 | Dónde | URL |
 |-------|-----|
 | App principal | `http://localhost:3000` o `index.html` |
 | Tarea ADL CLA directa | `index.html?tarea=desafio-latam/01` |
+| Tarea HER Tendencias directa | `index.html?tarea=herramientas/01` |
 
 *(Tras `git pull` y recargar sin `?respaldo=1`.)*
 
@@ -112,3 +132,7 @@ Ajusta colores según manual-marca-caja-los-andes.pdf
 Invocación rápida: **`docs/cursor/INVOCAR-AGENTE-ADL.md`**
 
 En Chat (**Ctrl+L**): escribe **`@adl-cla`** y tu pregunta. La regla vive en `.cursor/rules/adl-cla.mdc`.
+
+## Agente Cursor dedicado (Herramientas · Tendencias)
+
+En Chat (**Ctrl+L**): escribe **`@herramientas-tendencias`** y tu pregunta. La regla vive en `.cursor/rules/herramientas-tendencias.mdc`.

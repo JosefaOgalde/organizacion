@@ -71,7 +71,9 @@ CREATE TABLE certificados_cla (
 -- Datos iniciales de ejemplo
 INSERT INTO clientes (slug, nombre, abrev, tipo, agente, resumen) VALUES
   ('trendseeker', 'Trendseeker - Talk', 'TS', 'full-time', 'Community Manager + WordPress', 'Redes y WordPress'),
-  ('desafio-latam', 'Desafío Latam', 'ADL', 'freelance', 'Diseño freelance', 'Encargos esporádicos');
+  ('desafio-latam', 'Desafío Latam', 'ADL', 'freelance', 'Diseño freelance', 'Encargos esporádicos'),
+  ('herramientas', 'Herramientas', 'HER', 'freelance', 'Herramientas internas', 'Proyectos de herramientas y utilidades');
 
 INSERT INTO proyectos (cliente_id, codigo, nombre, resumen, identidad_pdf) VALUES
-  (2, 'CLA', 'Caja Los Andes', 'Programa IA — certificados modulares', 'CLA/identidad/manual-marca-caja-los-andes.pdf');
+  (2, 'CLA', 'Caja Los Andes', 'Programa IA — certificados modulares', 'CLA/identidad/manual-marca-caja-los-andes.pdf'),
+  (3, 'TEND', 'Tendencias', 'Análisis y seguimiento de tendencias', 'tendencias/identidad/manual-marca-tendencias.pdf');
