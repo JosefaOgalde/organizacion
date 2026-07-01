@@ -277,6 +277,88 @@
   margin-bottom: 1rem;
 }
 
+.tend-vista-toggle {
+  display: inline-flex;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--tend-primario) 40%, #ccc);
+}
+
+.tend-vista-btn {
+  border-radius: 0;
+  border: none;
+  margin: 0;
+  background: #fff;
+}
+
+.tend-vista-btn--active {
+  background: var(--tend-primario);
+  color: #fff;
+}
+
+.tend-tabla-wrap {
+  overflow-x: auto;
+  margin: 1rem 0 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  background: #fff;
+}
+
+.tend-tabla {
+  width: 100%;
+  min-width: 960px;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.tend-tabla th,
+.tend-tabla td {
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.tend-tabla th {
+  background: var(--tend-fondo);
+  color: var(--tend-texto);
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.tend-tabla tbody tr:hover {
+  background: color-mix(in srgb, var(--tend-fondo) 50%, #fff);
+}
+
+.tend-tabla__tags {
+  max-width: 12rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.tend-tabla__plat {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.tend-tabla__plat--tiktok { background: #010101; }
+.tend-tabla__plat--instagram { background: #c13584; }
+.tend-tabla__plat--youtube { background: #ff0000; }
+
+@media (max-width: 720px) {
+  .tend-tabla { min-width: 100%; }
+}
+
 .tend-toolbar .portal-btn {
   cursor: pointer;
   border: none;

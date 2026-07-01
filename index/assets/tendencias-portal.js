@@ -9,6 +9,7 @@
   const feedCfg = proyecto.feed || {};
   const FEED_URL = feedCfg.url || '../../../data/tendencias-comida-chile.json';
   const CACHE_KEY = 'tendencias-comida-chile-cache';
+  const VISTA_KEY = 'tendencias-vista';
   const CACHE_TTL_MS = (feedCfg.cacheMinutos || 30) * 60 * 1000;
 
   const PLATAFORMAS = {
@@ -18,6 +19,54 @@
   };
 
   let feedActual = null;
+  let vistaActual = leerVista();
+
+  function leerVista() {
+    try {
+      const v = localStorage.getItem(VISTA_KEY);
+      return v === 'tabla' ? 'tabla' : 'tarjetas';
+    } catch {
+      return 'tarjetas';
+    }
+  }
+
+  function guardarVista(v) {
+    vistaActual = v;
+    try {
+      localStorage.setItem(VISTA_KEY, v);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function labelPlataforma(p) {
+    return PLATAFORMAS[p]?.label || p;
+  }
+
+  function agruparPorPlataforma(feed) {
+    const orden = feedCfg.plataformas || ['tiktok', 'instagram', 'youtube'];
+    const porPlataforma = {};
+    orden.forEach((p) => {
+      porPlataforma[p] = [];
+    });
+
+    (feed.tendencias || []).forEach((t) => {
+      const p = t.plataforma || 'tiktok';
+      if (!porPlataforma[p]) porPlataforma[p] = [];
+      porPlataforma[p].push(t);
+    });
+
+    Object.values(porPlataforma).forEach((lista) => {
+      lista.sort((a, b) => (a.prioridad || 99) - (b.prioridad || 99));
+    });
+
+    return { orden, porPlataforma };
+  }
+
+  function listaPlana(feed) {
+    const { orden, porPlataforma } = agruparPorPlataforma(feed);
+    return orden.flatMap((p) => porPlataforma[p] || []);
+  }
 
   function escapeHtml(s) {
     return String(s ?? '')
@@ -116,6 +165,54 @@
       </article>`;
   }
 
+  function renderTablaFila(t) {
+    const senal = (t.kpis?.senal || 'medio').replace(/\s+/g, '-');
+    const hashtags = (t.hashtags || []).join(' ');
+    const link = t.fuente
+      ? `<a href="${escapeHtml(t.fuente)}" target="_blank" rel="noopener">Ver</a>`
+      : '—';
+
+    return `
+      <tr>
+        <td data-label="Plataforma"><span class="tend-tabla__plat tend-tabla__plat--${escapeHtml(t.plataforma || '')}">${escapeHtml(labelPlataforma(t.plataforma))}</span></td>
+        <td data-label="Tendencia"><strong>${escapeHtml(t.titulo)}</strong></td>
+        <td data-label="Formato">${escapeHtml(t.formato)}</td>
+        <td data-label="Vistas">${escapeHtml(t.kpis?.vistas || '—')}</td>
+        <td data-label="Engagement">${escapeHtml(t.kpis?.engagement || '—')}</td>
+        <td data-label="Crecimiento">${escapeHtml(t.kpis?.crecimiento || '—')}</td>
+        <td data-label="Señal"><span class="tend-card__senal tend-card__senal--${escapeHtml(senal)}">${escapeHtml((t.kpis?.senal || 'medio').replace('-', ' '))}</span></td>
+        <td data-label="Ángulo">${escapeHtml(t.anguloContenido)}</td>
+        <td data-label="Chile">${escapeHtml(t.ejemploChile || '—')}</td>
+        <td data-label="Hashtags" class="tend-tabla__tags">${escapeHtml(hashtags)}</td>
+        <td data-label="Ref.">${link}</td>
+      </tr>`;
+  }
+
+  function renderTabla(feed) {
+    const filas = listaPlana(feed).map(renderTablaFila).join('');
+    return `
+      <div class="tend-tabla-wrap">
+        <table class="tend-tabla">
+          <thead>
+            <tr>
+              <th>Plataforma</th>
+              <th>Tendencia</th>
+              <th>Formato</th>
+              <th>Vistas</th>
+              <th>Engagement</th>
+              <th>Crecimiento</th>
+              <th>Señal</th>
+              <th>Ángulo de contenido</th>
+              <th>Señal Chile</th>
+              <th>Hashtags</th>
+              <th>Ref.</th>
+            </tr>
+          </thead>
+          <tbody>${filas}</tbody>
+        </table>
+      </div>`;
+  }
+
   function renderPlataforma(plataforma, items) {
     const meta = PLATAFORMAS[plataforma] || { label: plataforma, icon: '•', clase: '' };
     return `
@@ -129,29 +226,45 @@
       </section>`;
   }
 
-  function renderFeed(feed) {
-    feedActual = feed;
-    const orden = feedCfg.plataformas || ['tiktok', 'instagram', 'youtube'];
-    const porPlataforma = {};
-    orden.forEach((p) => {
-      porPlataforma[p] = [];
-    });
-
-    (feed.tendencias || []).forEach((t) => {
-      const p = t.plataforma || 'tiktok';
-      if (!porPlataforma[p]) porPlataforma[p] = [];
-      porPlataforma[p].push(t);
-    });
-
-    Object.values(porPlataforma).forEach((lista) => {
-      lista.sort((a, b) => (a.prioridad || 99) - (b.prioridad || 99));
-    });
-
-    const plataformasHtml = orden
+  function renderTarjetas(feed) {
+    const { orden, porPlataforma } = agruparPorPlataforma(feed);
+    return orden
       .filter((p) => porPlataforma[p]?.length)
       .map((p) => renderPlataforma(p, porPlataforma[p]))
       .join('');
+  }
 
+  function renderVistaToggle() {
+    return `
+      <div class="tend-vista-toggle" role="group" aria-label="Tipo de vista">
+        <button type="button" class="portal-btn tend-vista-btn${vistaActual === 'tarjetas' ? ' tend-vista-btn--active' : ''}" data-vista="tarjetas">Tarjetas</button>
+        <button type="button" class="portal-btn tend-vista-btn${vistaActual === 'tabla' ? ' tend-vista-btn--active' : ''}" data-vista="tabla">Tabla</button>
+      </div>`;
+  }
+
+  function renderContenido(feed) {
+    return vistaActual === 'tabla'
+      ? renderTabla(feed)
+      : `<div class="tend-plataformas">${renderTarjetas(feed)}</div>`;
+  }
+
+  function bindVistaToggle() {
+    root.querySelectorAll('.tend-vista-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const v = btn.dataset.vista;
+        if (!v || v === vistaActual || !feedActual) return;
+        guardarVista(v);
+        root.querySelectorAll('.tend-vista-btn').forEach((b) => {
+          b.classList.toggle('tend-vista-btn--active', b.dataset.vista === v);
+        });
+        const cont = document.getElementById('tend-contenido');
+        if (cont) cont.innerHTML = renderContenido(feedActual);
+      });
+    });
+  }
+
+  function renderFeed(feed) {
+    feedActual = feed;
     const total = (feed.tendencias || []).length;
 
     root.innerHTML = `
@@ -161,7 +274,7 @@
 
         <div class="tend-dashboard__hero">
           <h1>Tendencias comida · Chile</h1>
-          <p class="portal-cliente__meta">Recetas y formatos virales — propuestos al entrar, sin buscar palabras</p>
+          <p class="portal-cliente__meta">Recetas y formatos virales — elige vista tarjetas o tabla</p>
           <p class="tend-dashboard__meta">
             <span class="tend-dashboard__estado" id="tend-estado">Listo</span>
             <span>${total} tendencias · TikTok, Instagram y YouTube Shorts</span>
@@ -170,16 +283,16 @@
         </div>
 
         <div class="tend-resumen-box">
-          <strong>Qué hace esta herramienta:</strong> al abrir esta página carga automáticamente tendencias de comida con buenos KPIs o viralidad en Chile. No necesitas buscar hashtags ni revisar red por red — solo entra y elige qué producir hoy.
+          <strong>Qué hace esta herramienta:</strong> propone tendencias de comida con buenos KPIs o viralidad en Chile. Cambia entre <strong>tarjetas</strong> y <strong>tabla</strong> según cómo prefieras revisarlas.
         </div>
 
         <div class="tend-toolbar">
-          <button type="button" class="portal-btn tend-btn-principal" id="tend-btn-ver-otra">Ver tendencias de comida</button>
+          ${renderVistaToggle()}
           <button type="button" class="portal-btn" id="tend-btn-refresh">↻ Actualizar</button>
           <a href="../../../index.html?tarea=herramientas/01" class="portal-btn portal-btn--ghost">Ir al organizador</a>
         </div>
 
-        <div class="tend-plataformas">${plataformasHtml}</div>
+        <div id="tend-contenido">${renderContenido(feed)}</div>
 
         <details>
           <summary>Configuración y mantenimiento</summary>
@@ -190,8 +303,8 @@
         </details>
       </article>`;
 
+    bindVistaToggle();
     document.getElementById('tend-btn-refresh')?.addEventListener('click', () => boot(true));
-    document.getElementById('tend-btn-ver-otra')?.addEventListener('click', () => boot(true));
   }
 
   function renderInicio() {
