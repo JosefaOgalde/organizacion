@@ -1,74 +1,39 @@
 # ECR — Filtro + carrusel «Descubre las tendencias»
 
-## Causa real (confirmada en producción)
+> **Para continuar en otro equipo:** lee [`GUIA-CONTINUAR.md`](./GUIA-CONTINUAR.md)  
+> **Copiar/pegar en Elementor:** [`filtro-widget.html`](./filtro-widget.html) y [`carrusel-widget.html`](./carrusel-widget.html)
 
-En https://ecrgroup.cl/blog/ **ambos** filtros apuntaban al mismo loop:
-
-| Widget | Loop conectado |
-|--------|----------------|
-| `#filtro-principal` | `7f45e18` (bloque izquierdo) |
-| `#filtro-oculto` | `7f45e18` (¡el mismo!) |
-
-El carrusel central es `bc0cdd5` y **ningún filtro** lo controlaba. Por eso solo cambiaba la izquierda.
-
-## Solución
-
-El script [`filtro-sync.js`](./filtro-sync.js) llama directamente a la API de Elementor:
-
-`POST /wp-json/elementor-pro/v1/refresh-loop` con `widget_id: bc0cdd5`
-
-Ya **no depende** de `#filtro-oculto`. Puedes dejar ese widget oculto o eliminarlo.
+**Sitio:** https://ecrgroup.cl/blog/  
+**Rama Git:** `cursor/ecr-blog-filtro-carrusel-4d93`
 
 ---
 
-## Dónde pegar cada archivo
+## Resumen
 
-### 1. Filtro visible (debajo de `#filtro-principal`)
+El filtro de taxonomía de Elementor solo controlaba el bloque izquierdo (`7f45e18`). El carrusel central (`bc0cdd5`) se actualiza vía JavaScript + API `refresh-loop`.
 
-Widget HTML → pegar [`filtro-sync.js`](./filtro-sync.js) **completo**.
-
-### 2. Loop Grid 3 — carrusel central (`bc0cdd5`)
-
-**CSS personalizado** (Avanzado → CSS personalizado del Loop Grid):
-
-→ [`loop-carrusel-completo.css`](./loop-carrusel-completo.css) **completo** (reemplaza el CSS anterior).
-
-Imágenes: **168×96 px** en desktop, filas de **altura uniforme** (~108 px).
-
-### 3. Widget HTML debajo del Loop Grid 3
-
-**Reemplazar** el script actual (solo paginación) por:
-
-→ [`carrusel-widget-completo.js`](./carrusel-widget-completo.js) **completo**
-
-Incluye:
-
-- `ECR_CARRUSEL_PAGINACION` — botones Anterior / Siguiente
-- `ECR_BLOG_DECORATE` — **etiquetas Artículos / Prensa / Editorial** sobre la imagen + **fechas reales**
-
-> En producción hoy solo está publicado `ECR_CARRUSEL_PAGINACION`. Por eso **no se ven las etiquetas** en el centro. Hay que pegar el widget completo.
-
-### 4. Bloque izquierdo (`7f45e18`)
-
-CSS estilo tarjeta grande + altura igual al carrusel → [`loop-izquierdo-equal-height.css`](./loop-izquierdo-equal-height.css)
-
-> Si tienes `min-height: 550px` en el CSS del bloque izquierdo, **elimínalo** y usa este archivo.
-
-### 5. Fila 3 columnas — misma altura (`227fd49`)
-
-Contenedor que envuelve izquierda + carrusel + derecha → [`blog-columnas-misma-altura.css`](./blog-columnas-misma-altura.css)
-
-Pegar en: **Contenedor fila** (227fd49) → Avanzado → CSS personalizado.
+Al filtrar, el script refresca **ambos** loops (izquierda + carrusel) con la categoría activa.
 
 ---
 
-## Verificación rápida
+## Pegar en Elementor (2 widgets HTML)
 
-1. Recargar https://ecrgroup.cl/blog/
-2. En el carrusel central, cada imagen debe mostrar una pastilla (ej. **Articulos**, **Prensa**) arriba a la izquierda
-3. Las fechas deben cambiar por artículo (no todas «1 Jul 2026»)
-4. Las 3 columnas (izquierda, centro, derecha) deben tener **la misma altura**
-5. Al filtrar por categoría, el carrusel actualiza y mantiene etiquetas + fechas
+| Ubicación | Archivo |
+|-----------|---------|
+| Debajo de `#filtro-principal` | [`filtro-widget.html`](./filtro-widget.html) |
+| Debajo del Loop Grid `bc0cdd5` | [`carrusel-widget.html`](./carrusel-widget.html) |
+
+Fuentes editables: [`filtro-sync.js`](./filtro-sync.js) y [`carrusel-widget-completo.js`](./carrusel-widget-completo.js)
+
+---
+
+## CSS
+
+| Widget / contenedor | Archivo |
+|---------------------|---------|
+| Carrusel `bc0cdd5` | [`loop-carrusel-completo.css`](./loop-carrusel-completo.css) |
+| Izquierdo `7f45e18` | [`loop-izquierdo-big-post-1094.css`](./loop-izquierdo-big-post-1094.css) |
+| Fila 3 cols `227fd49` | [`blog-columnas-misma-altura.css`](./blog-columnas-misma-altura.css) |
 
 ---
 
@@ -80,6 +45,16 @@ Pegar en: **Contenedor fila** (227fd49) → Avanzado → CSS personalizado.
 | Contenedor 3 columnas | `227fd49` | — |
 | Bloque izquierdo | `7f45e18` | **1094** (Big post) |
 | Carrusel centro | `bc0cdd5` | 1144 |
-| Columna derecha | `aa293d3` | — |
-| Contenedor imagen (badges) | `5e4f8fb` | — |
-| Fecha | `bc5fe2f` | — |
+| Miniatura (badges) | `5e4f8fb` | — |
+| Fecha carrusel | `bc5fe2f` | — |
+
+---
+
+## Verificación
+
+1. Ctrl+F5 en `/blog/`
+2. Filtrar por categoría → cambian izquierda y centro
+3. Badges + fechas reales en carrusel
+4. Paginar carrusel → badges y fechas se mantienen
+
+Detalle completo, troubleshooting e historial: [`GUIA-CONTINUAR.md`](./GUIA-CONTINUAR.md)
