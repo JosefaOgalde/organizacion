@@ -17,7 +17,7 @@ window.HERRAMIENTAS_PROYECTOS = {
     feed: {
       url: '../../../data/tendencias-comida-chile.json',
       nicho: 'recetas-comida-chile',
-      plataformas: ['tiktok', 'instagram', 'youtube'],
+      plataformas: ['tiktok', 'instagram', 'youtube', 'pinterest'],
       cacheMinutos: 30,
       autoCargar: true
     },
@@ -30,7 +30,7 @@ window.HERRAMIENTAS_PROYECTOS = {
       {
         id: 'fuentes',
         titulo: 'Redes monitoreadas',
-        descripcion: 'TikTok, Instagram (Reels) y YouTube Shorts — las tres con mayor señal en comida Chile.'
+        descripcion: 'TikTok, Instagram (Reels), YouTube Shorts y Pinterest — filtro por fecha de la fuente.'
       },
       {
         id: 'kpis',
