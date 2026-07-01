@@ -8,7 +8,7 @@
   const col = proyecto.colores;
   const feedCfg = proyecto.feed || {};
   const FEED_URL = feedCfg.url || '../../../data/tendencias-comida-chile.json';
-  const CACHE_KEY = 'tendencias-comida-chile-cache';
+  const CACHE_KEY = 'tendencias-comida-chile-cache-v2';
   const PANEL_KEY = 'tendencias-panel';
   const VISTA_KEY = 'tendencias-vista';
   const PERIODO_KEY = 'tendencias-periodo';
@@ -164,18 +164,21 @@
     return t.resumenReceta || t.anguloContenido || '—';
   }
 
-  /** Redes donde circuló el video — compatible con formato antiguo (plataforma única). */
+  /** Redes donde circuló el video — sin repetir la misma red. */
   function publicadoEnDe(t) {
+    const vistos = new Set();
+    const lista = [];
+    const push = (red, detalle) => {
+      if (!red || vistos.has(red)) return;
+      vistos.add(red);
+      lista.push({ red, detalle: detalle || '' });
+    };
     if (Array.isArray(t.publicadoEn) && t.publicadoEn.length) {
-      return t.publicadoEn.map((x) => ({
-        red: x.red || x.plataforma,
-        detalle: x.detalle || x.nota || ''
-      })).filter((x) => x.red);
+      t.publicadoEn.forEach((x) => push(x.red || x.plataforma, x.detalle || x.nota || ''));
+    } else if (t.plataforma) {
+      push(t.plataforma, '');
     }
-    if (t.plataforma) {
-      return [{ red: t.plataforma, detalle: '' }];
-    }
-    return [];
+    return lista;
   }
 
   function tieneRed(t, redId) {
@@ -225,32 +228,36 @@
   function renderPublicadoEn(t) {
     const redes = publicadoEnDe(t);
     if (!redes.length) return '';
-    const items = redes
+    const iconos = redes
       .map((x) => {
-        const meta = PLATAFORMAS[x.red] || { label: x.red, clase: '' };
-        const detalle = x.detalle
-          ? `<span class="tend-redes__detalle">${escapeHtml(x.detalle)}</span>`
-          : '';
-        return `<li class="tend-redes__item">
-          <span class="tend-tabla__plat tend-tabla__plat--${escapeHtml(meta.clase || x.red)}">${escapeHtml(meta.label || x.red)}</span>
-          ${detalle}
-        </li>`;
+        const meta = PLATAFORMAS[x.red] || { label: x.red, icon: '•', clase: x.red };
+        const tip = x.detalle ? `${meta.label}: ${x.detalle}` : meta.label;
+        return `<span class="tend-red-icon tend-plataforma__icon tend-plataforma__icon--${escapeHtml(meta.clase || x.red)}"
+          title="${escapeHtml(tip)}" aria-label="${escapeHtml(tip)}">${meta.icon}</span>`;
       })
       .join('');
     return `
-      <div class="tend-redes-block">
-        <p class="tend-card__label">Publicado en</p>
-        <ul class="tend-redes">${items}</ul>
+      <div class="tend-redes-block" aria-label="Redes donde se publicó">
+        <p class="tend-card__label tend-redes-block__label">Publicado en</p>
+        <div class="tend-redes-icons" role="list">${iconos}</div>
       </div>`;
   }
 
-  function textoPublicadoEn(t) {
-    return publicadoEnDe(t)
+  function renderPublicadoEnTabla(t) {
+    const redes = publicadoEnDe(t);
+    if (!redes.length) return '—';
+    return `<span class="tend-redes-icons tend-redes-icons--tabla">${redes
       .map((x) => {
-        const lbl = labelPlataforma(x.red);
-        return x.detalle ? `${lbl}: ${x.detalle}` : lbl;
+        const meta = PLATAFORMAS[x.red] || { label: x.red, icon: '•', clase: x.red };
+        const tip = x.detalle ? `${meta.label}: ${x.detalle}` : meta.label;
+        return `<span class="tend-red-icon tend-plataforma__icon tend-plataforma__icon--${escapeHtml(meta.clase || x.red)}"
+          title="${escapeHtml(tip)}" aria-label="${escapeHtml(tip)}">${meta.icon}</span>`;
       })
-      .join(' · ');
+      .join('')}</span>`;
+  }
+
+  function textoPublicadoEn(t) {
+    return publicadoEnDe(t).map((x) => labelPlataforma(x.red)).join(', ');
   }
 
   function feedVacioHtml() {
@@ -439,7 +446,7 @@
     return `
       <tr>
         <td data-label="Tendencia"><strong>${escapeHtml(t.titulo)}</strong></td>
-        <td data-label="Publicado en" class="tend-tabla__redes">${escapeHtml(textoPublicadoEn(t))}</td>
+        <td data-label="Publicado en" class="tend-tabla__redes">${renderPublicadoEnTabla(t)}</td>
         <td data-label="Fecha fuente"><time datetime="${escapeHtml(fecha)}">${escapeHtml(formatoFecha(fecha))}</time></td>
         <td data-label="Formato">${escapeHtml(t.formato)}</td>
         <td data-label="Vistas">${escapeHtml(t.kpis?.vistas || '—')}</td>

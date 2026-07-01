@@ -31,15 +31,22 @@ def fecha_desde_url(url: str | None) -> str | None:
 
 def publicado_en_de_story(story: dict) -> list[dict]:
     plats = story.get('plataformas', {})
+    vistos: set[str] = set()
+    out: list[dict] = []
     if isinstance(plats, dict):
-        return [
-            {'red': red, 'detalle': detalle or ''}
-            for red, detalle in plats.items()
-            if detalle is not False
-        ]
-    if isinstance(story.get('publicadoEn'), list):
-        return story['publicadoEn']
-    return []
+        for red, detalle in plats.items():
+            if detalle is False or red in vistos:
+                continue
+            vistos.add(red)
+            out.append({'red': red, 'detalle': detalle or ''})
+    elif isinstance(story.get('publicadoEn'), list):
+        for x in story['publicadoEn']:
+            red = x.get('red') or x.get('plataforma')
+            if not red or red in vistos:
+                continue
+            vistos.add(red)
+            out.append({'red': red, 'detalle': x.get('detalle') or x.get('nota') or ''})
+    return out
 
 
 def expandir_stories() -> list[dict]:
