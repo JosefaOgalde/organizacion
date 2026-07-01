@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "actualizado": "2026-07-01T16:41:30-0400",
+  "actualizado": "2026-07-01T16:48:35-0400",
   "nicho": "recetas-comida-chile",
   "region": "Chile",
   "plataformas": [
@@ -9,7 +9,7 @@
     "youtube",
     "pinterest"
   ],
-  "resumen": "Una fila por tendencia; el campo publicadoEn indica en qué redes circuló el video.",
+  "resumen": "Una fila por tendencia; publicadoEn indica redes y, si la nota lo enlaza, url de la publicación.",
   "tendencias": [
     {
       "id": "churrascas-sarten",
@@ -95,7 +95,8 @@
       "publicadoEn": [
         {
           "red": "youtube",
-          "detalle": "Clip Yo Invito · BioBioTV"
+          "detalle": "Clip Yo Invito · BioBioTV",
+          "url": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-cordero-a-la-miel-con-pastelera.shtml"
         }
       ],
       "kpis": {
@@ -131,7 +132,8 @@
       "publicadoEn": [
         {
           "red": "youtube",
-          "detalle": "Clip Yo Invito · BioBioTV"
+          "detalle": "Clip Yo Invito · BioBioTV",
+          "url": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-una-suprema-de-ave-rellena-con-papas-gratinadas.shtml"
         }
       ],
       "kpis": {
@@ -167,7 +169,8 @@
       "publicadoEn": [
         {
           "red": "youtube",
-          "detalle": "Clip Yo Invito · BioBioTV"
+          "detalle": "Clip Yo Invito · BioBioTV",
+          "url": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-entretenido-ceviche-de-camarones-y-cochayuyo.shtml"
         }
       ],
       "kpis": {
@@ -203,7 +206,8 @@
       "publicadoEn": [
         {
           "red": "youtube",
-          "detalle": "Clip Yo Invito · BioBioTV"
+          "detalle": "Clip Yo Invito · BioBioTV",
+          "url": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-rico-espagueti-de-colores-con-mariscos-al-ajillo.shtml"
         }
       ],
       "kpis": {
@@ -343,7 +347,8 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Video en TikTok — 157K+ likes (BioBio)"
+          "detalle": "Video en TikTok — 157K+ likes (BioBio)",
+          "url": "https://www.tiktok.com/@gabogutierrezefe/video/7645365838530284821"
         },
         {
           "red": "instagram",
@@ -429,7 +434,8 @@
         },
         {
           "red": "instagram",
-          "detalle": "Publicación en Instagram (TVN)"
+          "detalle": "Publicación en Instagram (TVN)",
+          "url": "https://www.instagram.com/p/DYicoomGk4U"
         }
       ],
       "kpis": {
@@ -496,7 +502,8 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Debate viral en TikTok (BioBio)"
+          "detalle": "Debate viral en TikTok (BioBio)",
+          "url": "https://www.tiktok.com/@nutri.rixi.25/video/7584864842205367574"
         }
       ],
       "kpis": {
@@ -533,7 +540,8 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Viral @gallardo_martin en TikTok (24 Horas)"
+          "detalle": "Viral @gallardo_martin en TikTok (24 Horas)",
+          "url": "https://www.tiktok.com/@gallardoo_martin/video/7550497757115518214"
         }
       ],
       "kpis": {
@@ -569,7 +577,8 @@
       "publicadoEn": [
         {
           "red": "instagram",
-          "detalle": "Serie viral en Instagram (24 Horas)"
+          "detalle": "Serie viral en Instagram (24 Horas)",
+          "url": "https://www.instagram.com/reel/DOMRFUCjpe7"
         }
       ],
       "kpis": {
@@ -907,7 +916,8 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Video referencia Maria Vehera (BioBio)"
+          "detalle": "Video referencia Maria Vehera (BioBio)",
+          "url": "https://www.tiktok.com/@mariavehera257/video/7313986849104481538"
         }
       ],
       "kpis": {
@@ -943,11 +953,13 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Viral en TikTok (24 Horas)"
+          "detalle": "Viral en TikTok (24 Horas)",
+          "url": "https://www.tiktok.com/@fevalenzuela__/video/7600127874846215445"
         },
         {
           "red": "instagram",
-          "detalle": "Reels en Instagram (24 Horas)"
+          "detalle": "Reels en Instagram (24 Horas)",
+          "url": "https://www.instagram.com/reel/DT761nmiAqZ"
         }
       ],
       "kpis": {

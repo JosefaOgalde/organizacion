@@ -2,6 +2,8 @@
 
 Cada entrada en plataformas debe corresponder a una red citada en la fuente.
 Si la noticia no menciona video en redes, plataformas queda vacío.
+Valor por red: string (detalle) o dict con detalle y url opcional (manual).
+Al generar el JSON, actualizar-tendencias-comida.py intenta extraer url desde la noticia.
 """
 
 STORIES = [

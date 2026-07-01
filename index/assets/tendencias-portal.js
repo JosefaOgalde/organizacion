@@ -169,15 +169,17 @@
   function publicadoEnDe(t) {
     const vistos = new Set();
     const lista = [];
-    const push = (red, detalle) => {
+    const push = (red, detalle, url) => {
       if (!red || vistos.has(red)) return;
       vistos.add(red);
-      lista.push({ red, detalle: detalle || '' });
+      lista.push({ red, detalle: detalle || '', url: url || '' });
     };
     if (Array.isArray(t.publicadoEn) && t.publicadoEn.length) {
-      t.publicadoEn.forEach((x) => push(x.red || x.plataforma, x.detalle || x.nota || ''));
+      t.publicadoEn.forEach((x) =>
+        push(x.red || x.plataforma, x.detalle || x.nota || '', x.url || '')
+      );
     } else if (t.plataforma) {
-      push(t.plataforma, '');
+      push(t.plataforma, '', t.urlPublicacion || '');
     }
     return lista;
   }
@@ -233,8 +235,13 @@
       .map((x) => {
         const meta = PLATAFORMAS[x.red] || { label: x.red, icon: '•', clase: x.red };
         const tip = x.detalle ? `${meta.label}: ${x.detalle}` : meta.label;
-        return `<span class="tend-red-icon tend-plataforma__icon tend-plataforma__icon--${escapeHtml(meta.clase || x.red)}"
-          title="${escapeHtml(tip)}" aria-label="${escapeHtml(tip)}">${meta.icon}</span>`;
+        const iconInner = `<span class="tend-red-icon tend-plataforma__icon tend-plataforma__icon--${escapeHtml(meta.clase || x.red)}"
+          title="${escapeHtml(tip)}" aria-hidden="true">${meta.icon}</span>`;
+        if (x.url) {
+          return `<a class="tend-red-icon-link" href="${escapeHtml(x.url)}" target="_blank" rel="noopener noreferrer"
+            title="${escapeHtml(tip)}" aria-label="${escapeHtml(`Ver publicación en ${meta.label}`)}">${iconInner}</a>`;
+        }
+        return `<span role="listitem" title="${escapeHtml(tip)}" aria-label="${escapeHtml(tip)}">${iconInner}</span>`;
       })
       .join('');
     return `
@@ -251,10 +258,51 @@
       .map((x) => {
         const meta = PLATAFORMAS[x.red] || { label: x.red, icon: '•', clase: x.red };
         const tip = x.detalle ? `${meta.label}: ${x.detalle}` : meta.label;
-        return `<span class="tend-red-icon tend-plataforma__icon tend-plataforma__icon--${escapeHtml(meta.clase || x.red)}"
-          title="${escapeHtml(tip)}" aria-label="${escapeHtml(tip)}">${meta.icon}</span>`;
+        const iconInner = `<span class="tend-red-icon tend-plataforma__icon tend-plataforma__icon--${escapeHtml(meta.clase || x.red)}"
+          aria-hidden="true">${meta.icon}</span>`;
+        if (x.url) {
+          return `<a class="tend-red-icon-link" href="${escapeHtml(x.url)}" target="_blank" rel="noopener noreferrer"
+            title="${escapeHtml(tip)}" aria-label="${escapeHtml(`Ver en ${meta.label}`)}">${iconInner}</a>`;
+        }
+        return `<span title="${escapeHtml(tip)}" aria-label="${escapeHtml(tip)}">${iconInner}</span>`;
       })
       .join('')}</span>`;
+  }
+
+  function renderEnlaces(t) {
+    const fecha = fechaFuenteDe(t);
+    const items = [];
+    if (t.fuente) {
+      items.push(
+        `<a class="tend-card__link tend-card__link--fuente" href="${escapeHtml(t.fuente)}" target="_blank" rel="noopener">Noticia / fuente (${escapeHtml(formatoFecha(fecha))}) →</a>`
+      );
+    }
+    publicadoEnDe(t)
+      .filter((x) => x.url)
+      .forEach((x) => {
+        const label = labelPlataforma(x.red);
+        items.push(
+          `<a class="tend-card__link tend-card__link--pub tend-card__link--${escapeHtml(x.red)}" href="${escapeHtml(x.url)}" target="_blank" rel="noopener">Ver en ${escapeHtml(label)} →</a>`
+        );
+      });
+    if (!items.length) return '';
+    return `<div class="tend-enlaces">${items.join('')}</div>`;
+  }
+
+  function renderEnlacesTabla(t) {
+    const fecha = fechaFuenteDe(t);
+    const items = [];
+    if (t.fuente) {
+      items.push(`<a href="${escapeHtml(t.fuente)}" target="_blank" rel="noopener">Noticia</a>`);
+    }
+    publicadoEnDe(t)
+      .filter((x) => x.url)
+      .forEach((x) => {
+        items.push(
+          `<a href="${escapeHtml(x.url)}" target="_blank" rel="noopener">${escapeHtml(labelPlataforma(x.red))}</a>`
+        );
+      });
+    return items.length ? items.join(' · ') : '—';
   }
 
   function textoPublicadoEn(t) {
@@ -426,9 +474,6 @@
   function renderCard(t) {
     const senal = (t.kpis?.senal || 'medio').replace(/\s+/g, '-');
     const fecha = fechaFuenteDe(t);
-    const link = t.fuente
-      ? `<a class="tend-card__link" href="${escapeHtml(t.fuente)}" target="_blank" rel="noopener">Fuente (${escapeHtml(formatoFecha(fecha))}) →</a>`
-      : '';
 
     return `
       <article class="tend-card">
@@ -444,7 +489,7 @@
         <p class="tend-card__label">Resumen receta</p>
         <p>${escapeHtml(resumenRecetaDe(t))}</p>
         ${renderHashtags(t)}
-        ${link}
+        ${renderEnlaces(t)}
       </article>`;
   }
 
@@ -452,9 +497,7 @@
     const senal = (t.kpis?.senal || 'medio').replace(/\s+/g, '-');
     const fecha = fechaFuenteDe(t);
     const hashtags = (t.hashtags || []).join(' ');
-    const link = t.fuente
-      ? `<a href="${escapeHtml(t.fuente)}" target="_blank" rel="noopener">Ver</a>`
-      : '—';
+    const link = renderEnlacesTabla(t);
 
     return `
       <tr>
@@ -469,7 +512,7 @@
         <td data-label="Ingredientes" class="tend-tabla__ing">${escapeHtml(textoIngredientes(t))}</td>
         <td data-label="Resumen receta">${escapeHtml(resumenRecetaDe(t))}</td>
         <td data-label="Hashtags" class="tend-tabla__tags tend-tabla__tags--full">${escapeHtml(hashtags)}</td>
-        <td data-label="Ref.">${link}</td>
+        <td data-label="Enlaces" class="tend-tabla__enlaces">${link}</td>
       </tr>`;
   }
 
@@ -492,7 +535,7 @@
               <th>Ingredientes</th>
               <th>Resumen receta</th>
               <th>Hashtags</th>
-              <th>Ref.</th>
+              <th>Enlaces</th>
             </tr>
           </thead>
           <tbody>${items.map(renderTablaFila).join('')}</tbody>
