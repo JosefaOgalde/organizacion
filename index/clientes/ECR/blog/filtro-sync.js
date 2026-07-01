@@ -1,12 +1,40 @@
 /**
  * ECR Blog — Widget HTML debajo de #filtro-principal
- * Actualiza bloque izquierdo (Elementor nativo) + carrusel vía API REST
+ * Carrusel vía API REST con carga suave y sin parpadeo brusco
  */
 document.addEventListener('DOMContentLoaded', function () {
 
     var TAXONOMY = 'category';
     var FILTRO_PRINCIPAL = '#filtro-principal';
     var LOOP_CARRUSEL = 'bc0cdd5';
+    var fetchAbort = null;
+    var fetchSeq = 0;
+
+    (function injectStyles() {
+        if (document.getElementById('ecr-carrusel-sync-css')) return;
+        var style = document.createElement('style');
+        style.id = 'ecr-carrusel-sync-css';
+        style.textContent = [
+            '.elementor-element-' + LOOP_CARRUSEL + ' .elementor-widget-container {',
+            '  position: relative;',
+            '  transition: opacity 0.28s ease;',
+            '}',
+            '.elementor-element-' + LOOP_CARRUSEL + ' .elementor-widget-container.ecr-carrusel-cargando {',
+            '  opacity: 0.88;',
+            '  pointer-events: none;',
+            '}',
+            '.elementor-element-' + LOOP_CARRUSEL + ' .elementor-widget-container.ecr-carrusel-listo {',
+            '  opacity: 1;',
+            '}',
+            '.elementor-element-' + LOOP_CARRUSEL + ' .elementor-loop-container {',
+            '  transition: opacity 0.28s ease;',
+            '}',
+            '.elementor-element-' + LOOP_CARRUSEL + ' .ecr-carrusel-cargando .elementor-loop-container {',
+            '  opacity: 0.75;',
+            '}'
+        ].join('\n');
+        document.head.appendChild(style);
+    })();
 
     function getRestUrl() {
         if (window.elementorProFrontend && elementorProFrontend.config.urls.rest) {
@@ -30,12 +58,87 @@ document.addEventListener('DOMContentLoaded', function () {
         return window.location.href.split('?')[0];
     }
 
+    function getWidgetParts(widgetEl) {
+        var wrap = widgetEl.querySelector('.elementor-widget-container');
+        if (!wrap) return null;
+        return {
+            wrap: wrap,
+            loop: wrap.querySelector('.elementor-loop-container'),
+            nav: wrap.querySelector('.elementor-pagination'),
+            anchor: wrap.querySelector('.e-load-more-anchor')
+        };
+    }
+
+    function lockHeight(wrap) {
+        var h = wrap.offsetHeight;
+        if (h > 0) wrap.style.minHeight = h + 'px';
+    }
+
+    function unlockHeight(wrap) {
+        wrap.style.minHeight = '';
+    }
+
+    function setLoading(widgetEl, on) {
+        var parts = getWidgetParts(widgetEl);
+        if (!parts) return;
+        if (on) {
+            lockHeight(parts.wrap);
+            parts.wrap.classList.add('ecr-carrusel-cargando');
+            parts.wrap.classList.remove('ecr-carrusel-listo');
+        } else {
+            parts.wrap.classList.remove('ecr-carrusel-cargando');
+            parts.wrap.classList.add('ecr-carrusel-listo');
+            requestAnimationFrame(function () {
+                unlockHeight(parts.wrap);
+            });
+        }
+    }
+
+    function applyResponse(widgetEl, htmlString) {
+        var parts = getWidgetParts(widgetEl);
+        if (!parts) return;
+
+        var tmp = document.createElement('div');
+        tmp.innerHTML = htmlString.trim();
+        var newWrap = tmp.firstElementChild;
+        if (!newWrap) return;
+
+        var newLoop = newWrap.querySelector('.elementor-loop-container');
+        var newNav = newWrap.querySelector('.elementor-pagination');
+        var newAnchor = newWrap.querySelector('.e-load-more-anchor');
+
+        if (newLoop && parts.loop) {
+            parts.loop.replaceWith(newLoop);
+        }
+        if (newNav && parts.nav) {
+            parts.nav.replaceWith(newNav);
+        } else if (newNav && !parts.nav) {
+            parts.wrap.appendChild(newNav);
+        }
+        if (newAnchor && parts.anchor) {
+            parts.anchor.replaceWith(newAnchor);
+        } else if (newAnchor && !parts.anchor) {
+            var nav = parts.wrap.querySelector('.elementor-pagination');
+            if (nav) nav.parentNode.insertBefore(newAnchor, nav);
+        }
+
+        if (window.elementorFrontend && elementorFrontend.elementsHandler) {
+            elementorFrontend.elementsHandler.runReadyTrigger(widgetEl);
+        }
+        if (window.jQuery) {
+            jQuery(document).trigger('elementor/loop/query_filter_end');
+        }
+    }
+
     function refreshCarrusel(filterSlug) {
         var widgetEl = document.querySelector('.elementor-element-' + LOOP_CARRUSEL);
         if (!widgetEl) return Promise.resolve();
 
-        var loopContainer = widgetEl.querySelector('.elementor-loop-container');
-        if (loopContainer) loopContainer.classList.add('bucle-bloqueado-abajo');
+        if (fetchAbort) fetchAbort.abort();
+        fetchAbort = new AbortController();
+        var seq = ++fetchSeq;
+
+        setLoading(widgetEl, true);
 
         var widgetFilters = {};
         if (filterSlug) {
@@ -49,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return fetch(getRestUrl() + 'elementor-pro/v1/refresh-loop', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            signal: fetchAbort.signal,
             body: JSON.stringify({
                 post_id: getPostId(),
                 widget_id: LOOP_CARRUSEL,
@@ -58,34 +162,17 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(function (r) { return r.json(); })
             .then(function (res) {
+                if (seq !== fetchSeq) return;
                 if (!res || typeof res.data !== 'string') return;
-
-                var oldContainer = widgetEl.querySelector('.elementor-widget-container');
-                if (!oldContainer) return;
-
-                var tmp = document.createElement('div');
-                tmp.innerHTML = res.data.trim();
-                var newContainer = tmp.firstElementChild;
-                if (!newContainer) return;
-
-                widgetEl.replaceChild(newContainer, oldContainer);
-
-                if (window.elementorFrontend && elementorFrontend.elementsHandler) {
-                    elementorFrontend.elementsHandler.runReadyTrigger(widgetEl);
-                }
-
-                if (window.jQuery) {
-                    jQuery(document).trigger('elementor/loop/query_filter_end');
-                }
+                applyResponse(widgetEl, res.data);
             })
             .catch(function (err) {
+                if (err && err.name === 'AbortError') return;
                 console.error('ECR carrusel filter:', err);
             })
             .finally(function () {
-                setTimeout(function () {
-                    var c = widgetEl.querySelector('.elementor-loop-container');
-                    if (c) c.classList.remove('bucle-bloqueado-abajo');
-                }, 40);
+                if (seq !== fetchSeq) return;
+                setLoading(widgetEl, false);
             });
     }
 
@@ -109,12 +196,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     btn.dataset.ecrCarruselSync = 'true';
 
                     btn.addEventListener('click', function () {
-                        var filter = btn.dataset.filter;
-                        setTimeout(function () {
-                            var activo = btn.getAttribute('aria-pressed') === 'true';
-                            refreshCarrusel(activo ? filter : null);
-                        }, 120);
-                    });
+                        var slug = btn.dataset.filter;
+                        var yaActivo = btn.getAttribute('aria-pressed') === 'true';
+                        refreshCarrusel(yaActivo ? null : slug);
+                    }, true);
                 });
             }
 
