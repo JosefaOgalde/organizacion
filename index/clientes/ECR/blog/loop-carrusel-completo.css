@@ -109,7 +109,9 @@ selector .ecr-carrusel-badges {
     left: 8px !important;
     z-index: 5 !important;
     display: flex !important;
-    flex-wrap: wrap !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
     gap: 4px !important;
     max-width: calc(100% - 16px) !important;
     pointer-events: none !important;

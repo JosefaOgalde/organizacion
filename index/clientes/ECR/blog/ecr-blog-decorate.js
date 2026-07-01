@@ -20,6 +20,7 @@
     };
 
     var SKIP_SLUGS = { 'sin-categoria': true, uncategorized: true };
+    var SLUG_ORDER = { articulos: 1, editorial: 2, eventos: 3, prensa: 4 };
     var MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
     function injectStyles() {
@@ -37,7 +38,9 @@
             '  left: 8px !important;',
             '  z-index: 6 !important;',
             '  display: flex !important;',
-            '  flex-wrap: wrap !important;',
+            '  flex-direction: column !important;',
+            '  flex-wrap: nowrap !important;',
+            '  align-items: flex-start !important;',
             '  gap: 4px !important;',
             '  max-width: calc(100% - 16px) !important;',
             '  pointer-events: none !important;',

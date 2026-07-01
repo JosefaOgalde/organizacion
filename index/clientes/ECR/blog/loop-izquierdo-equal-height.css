@@ -47,8 +47,9 @@ selector .ecr-card-blog .elementor-widget-shortcode .elementor-shortcode {
     left: 20px !important;
     z-index: 4 !important;
     display: flex !important;
-    flex-wrap: wrap !important;
-    align-items: center !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
     gap: 8px !important;
     max-width: calc(100% - 40px) !important;
     pointer-events: none !important;
