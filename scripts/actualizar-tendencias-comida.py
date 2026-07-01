@@ -84,6 +84,7 @@ def expandir_stories() -> list[dict]:
 def main() -> None:
     tendencias = expandir_stories()
     payload = {
+        'schemaVersion': 2,
         'actualizado': ahora_chile(),
         'nicho': 'recetas-comida-chile',
         'region': 'Chile',

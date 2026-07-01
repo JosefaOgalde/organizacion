@@ -8,7 +8,8 @@
   const col = proyecto.colores;
   const feedCfg = proyecto.feed || {};
   const FEED_URL = feedCfg.url || '../../../data/tendencias-comida-chile.json';
-  const CACHE_KEY = 'tendencias-comida-chile-cache-v2';
+  const CACHE_KEY = 'tendencias-comida-chile-cache-v4';
+  const FEED_SCHEMA = 2;
   const PANEL_KEY = 'tendencias-panel';
   const VISTA_KEY = 'tendencias-vista';
   const PERIODO_KEY = 'tendencias-periodo';
@@ -287,12 +288,24 @@
     }
   }
 
+  function feedPareceAntiguo(feed) {
+    const items = feed?.tendencias || [];
+    if (!items.length) return false;
+    if (feed.schemaVersion != null && feed.schemaVersion >= FEED_SCHEMA) return false;
+    const conCuatro = items.filter((t) => (t.publicadoEn || []).length === 4).length;
+    return conCuatro >= Math.max(3, Math.ceil(items.length * 0.4));
+  }
+
   function leerCache() {
     try {
       const raw = localStorage.getItem(CACHE_KEY);
       if (!raw) return null;
       const { ts, data } = JSON.parse(raw);
       if (Date.now() - ts > CACHE_TTL_MS) return null;
+      if (!data || feedPareceAntiguo(data)) {
+        localStorage.removeItem(CACHE_KEY);
+        return null;
+      }
       return data;
     } catch {
       return null;
@@ -657,9 +670,10 @@
   async function boot(forzar = false) {
     guardarPanel('buscador');
     if (forzar) {
-      try {
-        localStorage.removeItem(CACHE_KEY);
-      } catch {
+    try {
+      localStorage.removeItem(CACHE_KEY);
+      localStorage.removeItem('tendencias-comida-chile-cache-v3');
+    } catch {
         /* ignore */
       }
     }
