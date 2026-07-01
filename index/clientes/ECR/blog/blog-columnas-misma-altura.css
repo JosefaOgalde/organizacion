@@ -1,0 +1,184 @@
+/* Contenedor fila 3 columnas (227fd49)
+   Pegar en: Contenedor de la fila → Avanzado → CSS personalizado
+   (El contenedor que envuelve izquierda + carrusel + derecha) */
+
+/* Fila: las 3 columnas estiran a la misma altura */
+selector {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+}
+
+selector > .elementor-element-bf7e0a0,
+selector > .elementor-element-7dab3e7,
+selector > .elementor-element-aa293d3 {
+    display: flex !important;
+    flex-direction: column !important;
+    align-self: stretch !important;
+    height: auto !important;
+    min-height: 100% !important;
+}
+
+/* ========== COLUMNA IZQUIERDA (bf7e0a0 / 7f45e18) ========== */
+selector .elementor-element-bf7e0a0,
+selector .elementor-element-bf7e0a0 .elementor-element-04ba037,
+selector .elementor-element-7f45e18,
+selector .elementor-element-7f45e18 > .elementor-widget-container,
+selector .elementor-element-7f45e18 .elementor-loop-container,
+selector .elementor-element-7f45e18 .e-loop-item {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    align-self: stretch !important;
+}
+
+selector .elementor-element-7f45e18 .e-loop-item > .elementor {
+    flex: 1 1 auto !important;
+    height: 100% !important;
+    min-height: 0 !important;
+}
+
+selector .ecr-card-blog {
+    flex: 1 1 auto !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    align-self: stretch !important;
+}
+
+selector .ecr-card-blog .e-con-inner {
+    min-height: 100% !important;
+    height: 100% !important;
+}
+
+selector .ecr-card-blog__bg,
+selector .ecr-card-blog__overlay {
+    min-height: 100% !important;
+    height: 100% !important;
+}
+
+selector .ecr-card-blog__inner {
+    min-height: 100% !important;
+    height: 100% !important;
+    flex: 1 1 auto !important;
+}
+
+/* Badges: evitar superposición cuando hay 2 categorías */
+selector .ecr-card-blog .elementor-widget-shortcode .elementor-shortcode {
+    position: absolute !important;
+    top: 20px !important;
+    left: 20px !important;
+    z-index: 4 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    max-width: calc(100% - 40px) !important;
+    pointer-events: none !important;
+}
+
+selector .ecr-card-blog .ecr-card-blog__badge {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    white-space: nowrap !important;
+}
+
+/* ========== COLUMNA CENTRO (7dab3e7 / bc0cdd5) ========== */
+selector .elementor-element-7dab3e7 {
+    justify-content: flex-start !important;
+}
+
+selector .elementor-element-bc0cdd5 {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    height: 100% !important;
+    min-height: 100% !important;
+}
+
+selector .elementor-element-bc0cdd5 > .elementor-widget-container {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    height: 100% !important;
+    min-height: 100% !important;
+}
+
+selector .elementor-element-bc0cdd5 .elementor-loop-container {
+    flex: 1 1 auto !important;
+}
+
+selector .elementor-element-bc0cdd5 .elementor-pagination {
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
+}
+
+/* ========== COLUMNA DERECHA (aa293d3) ========== */
+selector .elementor-element-aa293d3 {
+    justify-content: flex-start !important;
+}
+
+selector .elementor-element-aa293d3 > .elementor-element-7129d08 {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+}
+
+selector .elementor-element-7129d08 > .e-con-inner {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 100% !important;
+}
+
+selector .elementor-element-7129d08 .elementor-element-aa17fd8 {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    min-height: 100% !important;
+}
+
+/* ========== RESPONSIVE ========== */
+/* Tablet: mantener izquierda + centro en fila con la MISMA altura */
+@media (max-width: 1200px) and (min-width: 768px) {
+    selector {
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+    }
+
+    selector > .elementor-element-bf7e0a0,
+    selector > .elementor-element-7dab3e7 {
+        align-self: stretch !important;
+        height: auto !important;
+        min-height: 0 !important;
+    }
+}
+
+/* Móvil: columnas apiladas — cada una con altura propia */
+@media (max-width: 767px) {
+    selector {
+        flex-wrap: wrap !important;
+    }
+
+    selector > .elementor-element-bf7e0a0,
+    selector > .elementor-element-7dab3e7,
+    selector > .elementor-element-aa293d3 {
+        width: 100% !important;
+        min-height: auto !important;
+        height: auto !important;
+    }
+
+    selector .ecr-card-blog,
+    selector .ecr-card-blog__inner {
+        min-height: 280px !important;
+        height: auto !important;
+    }
+}

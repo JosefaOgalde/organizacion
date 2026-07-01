@@ -1,0 +1,143 @@
+/* Loop Grid izquierdo (7f45e18) — altura igual al carrusel
+   Pegar en: Loop Grid izquierdo → Avanzado → CSS personalizado
+   REEMPLAZA reglas con min-height: 550px si las tienes */
+
+selector .ecr-card-blog {
+    position: relative !important;
+    border-radius: 25px !important;
+    overflow: hidden !important;
+    min-height: 100% !important;
+    height: 100% !important;
+    cursor: pointer;
+}
+
+selector .ecr-card-blog__bg {
+    position: absolute !important;
+    inset: 0 !important;
+    background-size: cover !important;
+    background-position: center !important;
+    z-index: 0 !important;
+    min-height: 100% !important;
+    height: 100% !important;
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+selector .ecr-card-blog__overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+    opacity: 1 !important;
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.75) 0%,
+        rgba(0, 0, 0, 0.35) 55%,
+        rgba(0, 0, 0, 0.2) 100%
+    ) !important;
+}
+
+selector .ecr-card-blog__bg-orange {
+    display: none !important;
+}
+
+/* Contenedor del shortcode: agrupa badges sin superponerlos */
+selector .ecr-card-blog .elementor-widget-shortcode .elementor-shortcode {
+    position: absolute !important;
+    top: 20px !important;
+    left: 20px !important;
+    z-index: 4 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    max-width: calc(100% - 40px) !important;
+    pointer-events: none !important;
+}
+
+selector .ecr-card-blog__badge {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 7px 14px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    color: #fff !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+}
+
+selector .ecr-card-blog__badge svg {
+    display: inline-block !important;
+    width: 16px !important;
+    height: 16px !important;
+}
+
+selector .ecr-card-blog__inner {
+    position: relative !important;
+    z-index: 3 !important;
+    min-height: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 30px !important;
+}
+
+selector .ecr-card-blog__title .elementor-heading-title {
+    color: #fff !important;
+    font-family: "Encode Sans Condensed", sans-serif !important;
+    font-weight: 600 !important;
+    font-size: clamp(1.1rem, 2vw, 1.6rem) !important;
+    text-align: center !important;
+}
+
+selector .ecr-card-blog__reveal,
+selector .ecr-card-blog__reveal-inner {
+    display: none !important;
+}
+
+selector .ecr-card-blog__footer {
+    position: relative !important;
+    z-index: 4 !important;
+    margin-top: 20px !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+}
+
+selector .ecr-card-blog__btn .elementor-button {
+    background: #fff !important;
+    color: var(--e-global-color-primary, #2c9fe0) !important;
+    border-radius: 25px !important;
+    padding: 12px 25px !important;
+    font-weight: 500 !important;
+}
+
+selector .ecr-card-blog:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+selector .ecr-card-blog:hover .ecr-card-blog__bg {
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+selector .elementor-loop-container,
+selector .e-loop-item {
+    height: 100% !important;
+    min-height: 100% !important;
+}
+
+selector .e-loop-item > .elementor {
+    height: 100% !important;
+    min-height: 100% !important;
+}
