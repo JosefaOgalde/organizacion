@@ -15,7 +15,7 @@ const COLORES = {
   agua: { border: '#a8d8dc', bg: '#e8f6f8', text: '#4a7a80' },
   rosa: { border: '#e8b8c8', bg: '#fdf0f4', text: '#9a5a6e' },
   grafito: { border: '#b8c0c8', bg: '#eef0f4', text: '#5a6a7a' },
-  violeta: { border: '#b8b0e8', bg: '#f0eef8', text: '#5a4a8e' },
+  violeta: { border: '#5C6B94', bg: '#E4E8F2', text: '#2A3348' },
   /** Salud — verde más definido, aún claro pero distinto de clientes menta/celeste */
   salud: { border: '#2f9d72', bg: '#c5e8d8', text: '#1a5c42' },
   /** Reuniones — azul pizarra, no usa el color del cliente */
@@ -192,11 +192,11 @@ const SKILLS_CLIENTE = {
     ejemploSolicitud: 'Diseña [pieza: banner / presentación / key visual] para [campaña]. Formato: [dimensiones]. Mensaje: …'
   },
   'cli-herramientas': {
-    nombre: 'Tendencias HER',
-    descripcion: 'Análisis, seguimiento y reportes de tendencias del mercado.',
-    usaManualMarca: true,
-    checklist: ['Fuentes de datos definidas', 'Formato de entregable', 'Periodicidad del reporte', 'Identidad visual Tendencias'],
-    ejemploSolicitud: 'Necesito un reporte de tendencias sobre [tema]. Fuentes: […]. Formato: [dashboard / resumen / alertas].'
+    nombre: 'Tendencias comida Chile',
+    descripcion: 'Feed automático de recetas virales en TikTok, Instagram y YouTube Shorts.',
+    usaManualMarca: false,
+    checklist: ['Abrir Tendencias.html (carga sola)', 'Elegir tendencia por plataforma', 'Usar ángulo de contenido sugerido', 'Producir sin buscar hashtags'],
+    ejemploSolicitud: 'Entré a Tendencias — ¿qué receta viral debo producir hoy para TikTok en Chile?'
   }
 };
 

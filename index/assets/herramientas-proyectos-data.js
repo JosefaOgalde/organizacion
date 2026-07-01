@@ -3,7 +3,7 @@ window.HERRAMIENTAS_PROYECTOS = {
   TEND: {
     codigo: 'TEND',
     nombre: 'Tendencias',
-    descripcion: 'Herramientas de análisis y seguimiento de tendencias',
+    descripcion: 'Tendencias virales de comida y recetas en Chile — carga automática al entrar',
     cliente: 'Herramientas',
     identidadPdf: 'tendencias/identidad/manual-marca-tendencias.pdf',
     colores: {
@@ -14,21 +14,28 @@ window.HERRAMIENTAS_PROYECTOS = {
       texto: '#1A4A40',
       textoClaro: '#FFFFFF'
     },
+    feed: {
+      url: '../../../data/tendencias-comida-chile.json',
+      nicho: 'recetas-comida-chile',
+      plataformas: ['tiktok', 'instagram', 'youtube'],
+      cacheMinutos: 30,
+      autoCargar: true
+    },
     secciones: [
       {
-        id: 'resumen',
-        titulo: 'Resumen',
-        descripcion: 'Seguimiento y análisis de tendencias del mercado y la industria.'
+        id: 'auto',
+        titulo: 'Carga automática',
+        descripcion: 'Al abrir Tendencias.html se proponen formatos virales sin buscar hashtags ni revisar red por red.'
       },
       {
         id: 'fuentes',
-        titulo: 'Fuentes de datos',
-        descripcion: 'Define las fuentes, APIs y canales de información a monitorear.'
+        titulo: 'Redes monitoreadas',
+        descripcion: 'TikTok, Instagram (Reels) y YouTube Shorts — las tres con mayor señal en comida Chile.'
       },
       {
-        id: 'entregables',
-        titulo: 'Entregables',
-        descripcion: 'Reportes, dashboards, alertas y resúmenes periódicos.'
+        id: 'kpis',
+        titulo: 'KPIs y señal',
+        descripcion: 'Cada tarjeta muestra vistas, engagement, crecimiento y ángulo de contenido listo para producir.'
       }
     ]
   }

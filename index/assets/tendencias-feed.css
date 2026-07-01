@@ -1,0 +1,258 @@
+/* Dashboard Tendencias — comida Chile */
+
+.tend-dashboard {
+  --tend-primario: var(--card-border, #2e7d6e);
+  --tend-fondo: var(--card-bg, #dff0ec);
+  --tend-texto: var(--card-text, #1a4a40);
+  --tend-acento: #c4962a;
+}
+
+.tend-dashboard__hero {
+  margin-bottom: 1.25rem;
+}
+
+.tend-dashboard__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin: 0.5rem 0 0;
+}
+
+.tend-dashboard__meta time {
+  font-weight: 600;
+  color: var(--tend-texto);
+}
+
+.tend-dashboard__estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--tend-fondo);
+  color: var(--tend-texto);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.tend-dashboard__estado--cargando::before {
+  content: '';
+  width: 0.65rem;
+  height: 0.65rem;
+  border: 2px solid var(--tend-primario);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: tend-spin 0.7s linear infinite;
+}
+
+@keyframes tend-spin {
+  to { transform: rotate(360deg); }
+}
+
+.tend-plataformas {
+  display: grid;
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.tend-plataforma__header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.tend-plataforma__icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 700;
+}
+
+.tend-plataforma__icon--tiktok { background: #010101; }
+.tend-plataforma__icon--instagram {
+  background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
+}
+.tend-plataforma__icon--youtube { background: #ff0000; }
+
+.tend-plataforma__header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.tend-plataforma__count {
+  margin-left: auto;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.tend-grid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+@media (min-width: 640px) {
+  .tend-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.tend-card {
+  border: 1px solid color-mix(in srgb, var(--tend-primario) 35%, #ccc);
+  border-left: 4px solid var(--tend-primario);
+  border-radius: var(--radius);
+  background: #fff;
+  padding: 0.9rem 1rem;
+  box-shadow: var(--shadow);
+}
+
+.tend-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.tend-card__senal {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.tend-card__senal--muy-alto { background: #1a6b4a; }
+.tend-card__senal--alto { background: #2e7d6e; }
+.tend-card__senal--medio-alto { background: #3d8b7a; }
+.tend-card__senal--medio { background: #6a8a7a; }
+
+.tend-card h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  line-height: 1.3;
+  color: var(--tend-texto);
+}
+
+.tend-card__formato {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0 0 0.65rem;
+}
+
+.tend-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.tend-kpi {
+  background: var(--tend-fondo);
+  border-radius: 6px;
+  padding: 0.35rem 0.45rem;
+  text-align: center;
+}
+
+.tend-kpi__val {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--tend-texto);
+}
+
+.tend-kpi__lbl {
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tend-card p {
+  margin: 0 0 0.5rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.tend-card__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--tend-primario);
+  margin: 0.5rem 0 0.2rem;
+}
+
+.tend-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.45rem;
+}
+
+.tend-tag {
+  font-size: 0.75rem;
+  padding: 0.12rem 0.4rem;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--tend-primario) 12%, #fff);
+  color: var(--tend-texto);
+}
+
+.tend-card__link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.tend-resumen-box {
+  background: color-mix(in srgb, var(--tend-acento) 18%, #fff);
+  border: 1px solid color-mix(in srgb, var(--tend-acento) 40%, #ccc);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.tend-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.tend-toolbar .portal-btn {
+  cursor: pointer;
+  border: none;
+  font: inherit;
+}
+
+.tend-error {
+  color: #9a2a2a;
+  background: #fde8e8;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+}
+
+.tend-dashboard details {
+  margin-top: 1.5rem;
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+}
+
+.tend-dashboard summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--muted);
+}

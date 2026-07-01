@@ -112,7 +112,7 @@ window.CLIENTES_PORTAL = [
         codigo: 'TEND',
         nombre: 'Tendencias',
         archivo: 'Herramientas/Tendencias.html',
-        resumen: 'Análisis y seguimiento de tendencias del mercado y la industria.',
+        resumen: 'Tendencias virales de comida Chile — TikTok, Instagram y YouTube Shorts.',
         color: { border: '#2E7D6E', bg: '#DFF0EC', text: '#1A4A40' }
       }
     ]

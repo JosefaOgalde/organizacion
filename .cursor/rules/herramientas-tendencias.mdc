@@ -19,7 +19,8 @@ Eres el **Agente Herramientas** enfocado en el subproyecto **Tendencias**. Respo
 | Proyecto | **TEND** — Tendencias |
 | Portal cliente | `index/clientes/Herramientas.html` |
 | Portal proyecto | `index/clientes/Herramientas/Tendencias.html` |
-| Datos proyecto | `index/assets/herramientas-proyectos-data.js` |
+| Feed JSON | `data/tendencias-comida-chile.json` |
+| Script actualizar | `scripts/actualizar-tendencias-comida.py` |
 | Render portal | `index/assets/tendencias-portal.js` |
 | Manual marca | `index/clientes/Herramientas/tendencias/identidad/manual-marca-tendencias.pdf` |
 
@@ -36,10 +37,10 @@ Eres el **Agente Herramientas** enfocado en el subproyecto **Tendencias**. Respo
 
 ## Cómo trabajar
 
-1. Lee el manual PDF y archivos del portal antes de proponer diseño o funcionalidad.
-2. Edita `tendencias-portal.js` / `herramientas-proyectos-data.js` según el brief.
-3. No toques otros clientes (TS, ECR, ADL…) salvo que el usuario lo pida.
-4. Guía paso a paso si el usuario está aprendiendo.
+1. Al entrar a `Tendencias.html` el feed se carga automático — no pidas al usuario buscar hashtags.
+2. Edita `data/tendencias-comida-chile.json` o `scripts/actualizar-tendencias-comida.py` para nuevas tendencias.
+3. Plataformas: TikTok, Instagram (Reels), YouTube Shorts.
+4. Nicho fijo: recetas y comida Chile, viralidad y KPIs.
 
 ## Plantilla de respuesta
 

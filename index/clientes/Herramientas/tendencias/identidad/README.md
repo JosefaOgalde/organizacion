@@ -14,6 +14,12 @@ manual-marca-tendencias.pdf
 2. Abre `Tendencias.html` y usa el enlace «Manual de marca / identidad visual»
 3. Los colores de referencia están en `index/assets/herramientas-proyectos-data.js`
 
+## Cómo funciona
+
+1. Abre `Tendencias.html` — las tendencias se cargan solas (sin buscar hashtags)
+2. El feed vive en `data/tendencias-comida-chile.json`
+3. Para refrescar: `python3 scripts/actualizar-tendencias-comida.py`
+
 ## Colores Tendencias (referencia)
 
 | Token | Hex | Uso |

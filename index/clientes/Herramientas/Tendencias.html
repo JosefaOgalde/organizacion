@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tendencias · Herramientas</title>
+  <title>Tendencias · Comida Chile · Herramientas</title>
   <link rel="stylesheet" href="../../assets/portal.css">
+  <link rel="stylesheet" href="../../assets/tendencias-feed.css">
 </head>
 <body>
   <header class="portal-header">
@@ -13,11 +14,12 @@
       ·
       <a href="../../clientes.html">Todos los clientes</a>
     </nav>
-    <h1>Proyecto TEND — Tendencias</h1>
-    <p>Herramientas de análisis y seguimiento de tendencias</p>
+    <h1>Tendencias comida · Chile</h1>
+    <p>Recetas virales en TikTok, Instagram y YouTube — se cargan solas al entrar</p>
   </header>
-  <main class="portal-main" id="tendencias-root"></main>
+  <main class="portal-main" id="tendencias-root" aria-live="polite"></main>
+  <script src="../../assets/file-protocol-banner.js"></script>
   <script src="../../assets/herramientas-proyectos-data.js"></script>
-  <script src="../../assets/tendencias-portal.js"></script>
+  <script src="../../assets/tendencias-portal.js?v=feed1"></script>
 </body>
 </html>
