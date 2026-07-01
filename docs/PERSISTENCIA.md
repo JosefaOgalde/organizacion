@@ -74,7 +74,8 @@ Los archivos en disco **no dependen** del navegador.
 
 1. Abrir con **`SERVIR.bat`**
 2. Trabajar con normalidad (tareas, landings, imágenes)
-3. Antes de cerrar: **↓ Respaldo** + **`SUBIR.bat`** si quieres copia en la nube
+3. Antes de cerrar: **↓ Respaldo** → guardar JSON en carpeta **local segura** (no en Git)
+4. **`SUBIR.bat`** solo para **código** — los respaldos quedan fuera del repo (ver `docs/SEGURIDAD.md`)
 
 ---
 
@@ -92,5 +93,6 @@ Los archivos en disco **no dependen** del navegador.
 
 ## Recuperar si algo se rompe
 
-- Forzar respaldo del repo: `http://localhost:3000/index/?respaldo=1`
+- Importar JSON desde Descargas: **`IMPORTAR-RESPALDO.bat`** (copia a `data/organizacion-respaldo-2026-07-01.json` y `organizacion-live.json`)
+- Forzar respaldo del repo: `http://localhost:3000/index.html?respaldo=1`
 - Restaurar desde archivo: en consola del navegador (F12), pegar el contenido de un JSON de respaldo en la variable y recargar — o reemplazar `data/organizacion-live.json` y recargar con el servidor Node.

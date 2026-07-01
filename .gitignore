@@ -5,8 +5,16 @@ git-log.txt
 GIT_RESULT.txt
 shell-test.txt
 
+# Secretos y tokens locales
+.env
+.organizacion-token
+
 # Laravel — generado localmente con composer (no subir vendor)
 backend/
 
-# Auto-guardado local del servidor Node (respaldar con ↓ Respaldo + SUBIR.bat)
+# Datos personales — NO subir a GitHub (usar ↓ Respaldo en carpeta local segura)
 data/organizacion-live.json
+data/organizacion-respaldo-*.json
+
+# Excepción: plantilla vacía sin PII (sí puede ir al repo)
+!data/organizacion-respaldo-ejemplo.json

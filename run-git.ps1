@@ -33,16 +33,32 @@ if (-not (git config --local user.email 2>$null)) {
 Log-Output "--- git status ---"
 Log-Output (git status 2>&1 | Out-String)
 
-git add app.js index.html styles.css README.md data .gitignore SUBIR.bat run-git.ps1 do-commit.ps1 .vscode .cursor 2>&1 | Out-Null
+# Staging acotado — nunca subir respaldos con datos personales ni secretos
+git add app.js index.html styles.css README.md docs .gitignore SUBIR.bat run-git.ps1 do-commit.ps1 .vscode .cursor scripts SERVIR.bat IMPORTAR-RESPALDO.bat .env.example 2>&1 | Out-Null
+git add index assets data/agentes-ramas.json data/jm-backup-contenido.js data/schema.json data/manual-marca-joyas-mercury.txt data/clientes-ejemplo.json data/organizacion-respaldo-ejemplo.json 2>&1 | Out-Null
 git add -A 2>&1 | Out-Null
-if (Test-Path GIT_RESULT.txt) { git reset HEAD GIT_RESULT.txt 2>&1 | Out-Null }
-if (Test-Path git-log.txt) { git reset HEAD git-log.txt 2>&1 | Out-Null }
+
+# Quitar del staging archivos sensibles aunque existan en disco
+$excluir = @(
+    'data/organizacion-live.json',
+    '.env',
+    '.organizacion-token',
+    'GIT_RESULT.txt',
+    'git-log.txt'
+)
+foreach ($pat in $excluir) {
+    git reset HEAD -- $pat 2>&1 | Out-Null
+}
+Get-ChildItem -Path 'data' -Filter 'organizacion-respaldo-*.json' -ErrorAction SilentlyContinue | ForEach-Object {
+    if ($_.Name -ne 'organizacion-respaldo-ejemplo.json') {
+        git reset HEAD -- $_.FullName.Replace((Get-Location).Path + '\', '').Replace('\', '/') 2>&1 | Out-Null
+    }
+}
 
 $msg = @"
-Perfil de clientes: tarjetas con color, nombres full time y modal de contexto.
+Actualización organización — ver docs/SEGURIDAD.md para datos personales.
 
-Tarjetas con fondo del color del cliente; nombres Talk (full time), SIE como oportunidad y ADL.
-Modal al clic con metas, contexto y manual de marca integrados en el prompt para Cursor.
+No se suben respaldos JSON ni .env (gitignore + run-git.ps1).
 "@
 
 $statusPorcelain = git status --porcelain 2>&1

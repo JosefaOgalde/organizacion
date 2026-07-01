@@ -157,7 +157,7 @@
 
     root.innerHTML = `
       <nav class="mkof-guia-breadcrumb">
-        <a href="../MKOF.html">← MKOF / MOVA</a>
+        <a href="index.html">← MKOF / MOVA</a>
       </nav>
       <header class="mkof-guia-header">
         <h1>GitHub para MOVA · Paso 1: crear cuenta</h1>

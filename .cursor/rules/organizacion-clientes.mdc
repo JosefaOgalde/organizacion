@@ -31,7 +31,7 @@ El usuario puede decir:
 
 ## Datos
 
-- Respaldo: `data/organizacion-respaldo-2026-06-24.json`
+- Respaldo local: `data/organizacion-respaldo-*.json` (no subir a Git — ver `docs/SEGURIDAD.md`)
 - API local: `http://127.0.0.1:8000/api/clientes` (Laravel en `backend/`)
 
 ## Guía completa

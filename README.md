@@ -12,7 +12,9 @@ Abre `index.html` en el navegador. Los datos se guardan en `localStorage` del na
 
 **Pestaña Agentes:** visualiza ramas Git `cursor/…` por agente (`@joyas-mercury`, `@adl-cla`, …). Datos en `data/agentes-ramas.json`.
 
-Para vaciar tareas en el navegador: pestaña **Agentes → Vaciar calendario**, o abre `?vaciar-tareas=1`. Al actualizar el repo (respaldo v6) el calendario se vacía solo una vez.
+Para vaciar tareas en el navegador: pestaña **Agentes → Vaciar calendario**, o abre `?vaciar-tareas=1&confirm=1`. Al actualizar el repo (respaldo v6) el calendario se vacía solo una vez.
+
+**Seguridad:** ver [`docs/SEGURIDAD.md`](docs/SEGURIDAD.md) — respaldos con datos personales no se suben a Git.
 
 ```bash
 # Servidor local (recomendado para abrir tareas por enlace)
@@ -108,7 +110,7 @@ organizacion/
 ├── data/
 │   ├── schema.json
 │   ├── clientes-ejemplo.json
-│   └── organizacion-respaldo-2026-06-24.json   # Respaldo oficial
+│   └── organizacion-respaldo-2026-07-01.json   # Respaldo oficial (IMPORTAR-RESPALDO.bat)
 └── README.md
 ```
 
@@ -117,7 +119,7 @@ organizacion/
 El respaldo más actualizado está en:
 
 ```
-data/organizacion-respaldo-2026-06-24.json
+data/organizacion-respaldo-2026-07-01.json
 ```
 
 (123 tareas · 8 clientes · ficha JM completa)
