@@ -478,3 +478,93 @@
   font-weight: 600;
   color: var(--muted);
 }
+
+/* Navegación Brief / Buscador */
+.tend-panel-nav {
+  display: inline-flex;
+  gap: 0;
+  margin: 0 0 1.25rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--tend-primario) 40%, #ccc);
+}
+
+.tend-panel-btn {
+  border-radius: 0;
+  border: none;
+  margin: 0;
+  background: #fff;
+  padding: 0.5rem 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tend-panel-btn--active {
+  background: var(--tend-primario);
+  color: #fff;
+}
+
+/* Vista Brief */
+.tend-brief__hero {
+  margin-bottom: 1.25rem;
+}
+
+.tend-brief__hero h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+  color: var(--tend-texto);
+}
+
+.tend-brief__intro {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.tend-brief__cuerpo {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.tend-brief__bloque {
+  background: #fff;
+  border: 1px solid color-mix(in srgb, var(--tend-primario) 25%, #ccc);
+  border-left: 4px solid var(--tend-primario);
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+}
+
+.tend-brief__bloque h3 {
+  margin: 0 0 0.4rem;
+  font-size: 0.95rem;
+  color: var(--tend-primario);
+}
+
+.tend-brief__bloque p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.tend-brief__lista {
+  margin: 0 0 1.25rem;
+  padding-left: 1.25rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.tend-brief__lista li {
+  margin-bottom: 0.4rem;
+}
+
+.tend-brief__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}

@@ -9,6 +9,7 @@
   const feedCfg = proyecto.feed || {};
   const FEED_URL = feedCfg.url || '../../../data/tendencias-comida-chile.json';
   const CACHE_KEY = 'tendencias-comida-chile-cache';
+  const PANEL_KEY = 'tendencias-panel';
   const VISTA_KEY = 'tendencias-vista';
   const PERIODO_KEY = 'tendencias-periodo';
   const PLATAFORMA_KEY = 'tendencias-plataforma';
@@ -31,9 +32,32 @@
   };
 
   let feedActual = null;
+  let panelActual = leerPanel();
   let vistaActual = leerVista();
   let periodoActual = leerPeriodo();
   let plataformaActual = leerPlataforma();
+
+  function leerPanel() {
+    try {
+      const p = localStorage.getItem(PANEL_KEY);
+      return p === 'buscador' ? 'buscador' : 'brief';
+    } catch {
+      return 'brief';
+    }
+  }
+
+  function guardarPanel(p) {
+    panelActual = p;
+    try {
+      localStorage.setItem(PANEL_KEY, p);
+    } catch {
+      /* ignore */
+    }
+    const url = new URL(location.href);
+    if (p === 'buscador') url.searchParams.set('vista', 'buscador');
+    else url.searchParams.delete('vista');
+    history.replaceState(null, '', url);
+  }
 
   function leerVista() {
     try {
@@ -262,6 +286,80 @@
     return data;
   }
 
+  function renderNavPanel() {
+    return `
+      <nav class="tend-panel-nav" role="tablist" aria-label="Vista del proyecto">
+        <button type="button" role="tab" aria-selected="${panelActual === 'brief' ? 'true' : 'false'}"
+          class="portal-btn tend-panel-btn${panelActual === 'brief' ? ' tend-panel-btn--active' : ''}"
+          data-panel="brief" id="tend-panel-brief">Brief</button>
+        <button type="button" role="tab" aria-selected="${panelActual === 'buscador' ? 'true' : 'false'}"
+          class="portal-btn tend-panel-btn${panelActual === 'buscador' ? ' tend-panel-btn--active' : ''}"
+          data-panel="buscador" id="tend-panel-buscador">Buscador</button>
+      </nav>`;
+  }
+
+  function bindNavPanel() {
+    root.querySelectorAll('.tend-panel-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const p = btn.dataset.panel;
+        if (!p || p === panelActual) return;
+        guardarPanel(p);
+        if (p === 'brief') renderBrief();
+        else if (feedActual) renderFeed(feedActual);
+        else boot(false);
+      });
+    });
+  }
+
+  function renderBrief() {
+    const brief = proyecto.brief || {};
+    const bloques = (brief.cuerpo || [])
+      .map(
+        (b) => `
+        <section class="tend-brief__bloque">
+          <h3>${escapeHtml(b.titulo)}</h3>
+          <p>${escapeHtml(b.texto)}</p>
+        </section>`
+      )
+      .join('');
+
+    const secciones = (proyecto.secciones || [])
+      .map(
+        (s) => `
+        <li>
+          <strong>${escapeHtml(s.titulo)}</strong> — ${escapeHtml(s.descripcion)}
+        </li>`
+      )
+      .join('');
+
+    root.innerHTML = `
+      <article class="portal-cliente tend-dashboard tend-brief"
+        style="--card-border:${col.primario};--card-bg:${col.fondo};--card-text:${col.texto}">
+        <span class="portal-badge">Proyecto ${escapeHtml(proyecto.codigo)} · Chile</span>
+        ${renderNavPanel()}
+        <div class="tend-brief__hero">
+          <h1>${escapeHtml(brief.titulo || 'Brief del proyecto')}</h1>
+          <p class="tend-brief__intro">${escapeHtml(brief.intro || proyecto.descripcion || '')}</p>
+        </div>
+        <div class="tend-brief__cuerpo">${bloques}</div>
+        ${secciones ? `<ul class="tend-brief__lista">${secciones}</ul>` : ''}
+        <div class="tend-brief__acciones">
+          <button type="button" class="portal-btn tend-btn-principal" id="tend-btn-abrir-buscador">
+            Abrir buscador de tendencias
+          </button>
+          <a href="../../../index.html?tarea=herramientas/01" class="portal-btn portal-btn--ghost">Ir al organizador</a>
+        </div>
+        <p class="tend-inicio__ruta">Página: <code>Herramientas/Tendencias.html</code></p>
+      </article>`;
+
+    bindNavPanel();
+    document.getElementById('tend-btn-abrir-buscador')?.addEventListener('click', () => {
+      guardarPanel('buscador');
+      if (feedActual) renderFeed(feedActual);
+      else boot(false);
+    });
+  }
+
   function renderKpis(kpis) {
     if (!kpis) return '';
     const items = [
@@ -459,6 +557,7 @@
       <article class="portal-cliente tend-dashboard portal-cliente--landing"
         style="--card-border:${col.primario};--card-bg:${col.fondo};--card-text:${col.texto}">
         <span class="portal-badge">Proyecto ${escapeHtml(proyecto.codigo)} · ${escapeHtml(feed.region || 'Chile')}</span>
+        ${renderNavPanel()}
 
         <div class="tend-dashboard__hero">
           <h1>Tendencias comida · Chile</h1>
@@ -495,52 +594,28 @@
         </details>
       </article>`;
 
+    bindNavPanel();
     bindSelectFiltros();
     bindVistaToggle();
     document.getElementById('tend-btn-refresh')?.addEventListener('click', () => boot(true));
   }
 
-  function renderInicio() {
-    const btn = document.getElementById('tend-btn-ver');
-    if (btn) {
-      btn.disabled = false;
-      btn.classList.remove('tend-btn-principal--cargando');
-      btn.textContent = 'Ver tendencias de comida';
-      btn.onclick = () => boot(true);
-      return;
-    }
-    root.innerHTML = `
-      <article class="portal-cliente tend-dashboard tend-inicio"
-        style="--card-border:${col.primario};--card-bg:${col.fondo};--card-text:${col.texto}">
-        <span class="portal-badge">Proyecto ${escapeHtml(proyecto.codigo)} · Chile</span>
-        <h2>Tendencias comida · Chile</h2>
-        <p class="portal-cliente__meta">TikTok, Instagram, YouTube Shorts y Pinterest</p>
-        <p class="tend-inicio__texto">Pulsa el botón para cargar tendencias filtradas por fecha real de la fuente.</p>
-        <button type="button" class="portal-btn tend-btn-principal" id="tend-btn-ver">Ver tendencias de comida</button>
-      </article>`;
-    document.getElementById('tend-btn-ver')?.addEventListener('click', () => boot(true));
-  }
-
   function renderCargando() {
-    const btn = document.getElementById('tend-btn-ver');
-    if (btn) {
-      btn.disabled = true;
-      btn.classList.add('tend-btn-principal--cargando');
-      btn.textContent = 'Cargando tendencias…';
-      return;
-    }
     root.innerHTML = `
       <article class="portal-cliente tend-dashboard" style="--card-border:${col.primario};--card-bg:${col.fondo};--card-text:${col.texto}">
+        ${renderNavPanel()}
         <h1>Tendencias comida · Chile</h1>
         <p class="tend-dashboard__meta">
           <span class="tend-dashboard__estado tend-dashboard__estado--cargando">Cargando tendencias…</span>
         </p>
       </article>`;
+    bindNavPanel();
   }
 
   function renderError(err) {
     root.innerHTML = `
       <article class="portal-cliente tend-dashboard" style="--card-border:${col.primario};--card-bg:${col.fondo};--card-text:${col.texto}">
+        ${renderNavPanel()}
         <h1>Tendencias comida · Chile</h1>
         <div class="tend-error" role="alert">
           No se pudieron cargar las tendencias. Abre con <code>npx serve .</code>
@@ -548,12 +623,19 @@
         </div>
         <p style="margin-top:1rem">
           <button type="button" class="portal-btn tend-btn-principal" id="tend-btn-retry">Reintentar</button>
+          <button type="button" class="portal-btn portal-btn--ghost" id="tend-btn-volver-brief">Volver al brief</button>
         </p>
       </article>`;
+    bindNavPanel();
     document.getElementById('tend-btn-retry')?.addEventListener('click', () => boot(true));
+    document.getElementById('tend-btn-volver-brief')?.addEventListener('click', () => {
+      guardarPanel('brief');
+      renderBrief();
+    });
   }
 
   async function boot(forzar = false) {
+    guardarPanel('buscador');
     if (forzar) {
       try {
         localStorage.removeItem(CACHE_KEY);
@@ -572,7 +654,15 @@
   }
 
   const params = new URLSearchParams(location.search);
-  document.getElementById('tend-btn-ver')?.addEventListener('click', () => boot(true));
-  if (params.get('ver') === '1') boot();
-  else renderInicio();
+  const abrirBuscador = params.get('vista') === 'buscador' || params.get('ver') === '1';
+  if (abrirBuscador) {
+    guardarPanel('buscador');
+    boot();
+  } else if (panelActual === 'buscador' && leerCache()) {
+    guardarPanel('buscador');
+    boot();
+  } else {
+    guardarPanel('brief');
+    renderBrief();
+  }
 })();

@@ -138,11 +138,14 @@
             </div>
             ${c.slug === 'herramientas' ? `
             <p style="margin-top:1rem">
-              <a href="Herramientas/Tendencias.html" class="portal-btn tend-btn-principal" style="display:inline-block;text-decoration:none">
-                Ver tendencias de comida →
+              <a href="Herramientas/Tendencias.html" class="portal-btn portal-btn--ghost" style="display:inline-block;text-decoration:none;margin-right:0.5rem">
+                Ver brief del proyecto
+              </a>
+              <a href="Herramientas/Tendencias.html?vista=buscador" class="portal-btn tend-btn-principal" style="display:inline-block;text-decoration:none">
+                Abrir buscador de tendencias →
               </a>
               <span style="display:block;margin-top:0.5rem;font-size:0.82rem;color:var(--muted)">
-                Abre <code>Herramientas/Tendencias.html</code> y pulsa el botón para cargar el feed
+                En <code>Herramientas/Tendencias.html</code> puedes leer el brief o abrir el buscador con filtros por fecha y red
               </span>
             </p>` : ''}
           </section>`
