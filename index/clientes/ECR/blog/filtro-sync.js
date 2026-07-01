@@ -1,15 +1,16 @@
 /**
  * ECR Blog — Widget HTML debajo de #filtro-principal
- * Íconos + ocultar Sin categoría + refreshCarrusel (bc0cdd5) con paginación filtrada
+ * Íconos + refresh bloque izquierdo (7f45e18) + carrusel (bc0cdd5)
  */
 document.addEventListener('DOMContentLoaded', function () {
 
     var TAXONOMY = 'category';
     var FILTRO_PRINCIPAL = '#filtro-principal';
+    var LOOP_IZQUIERDO = '7f45e18';
     var LOOP_CARRUSEL = 'bc0cdd5';
-    var fetchAbort = null;
-    var fetchSeq = 0;
-    var lastRequestKey = '';
+    var abortByWidget = {};
+    var seqByWidget = {};
+    var lastKeyByWidget = {};
 
     (function injectStyles() {
         if (document.getElementById('ecr-carrusel-sync-css')) return;
@@ -17,12 +18,10 @@ document.addEventListener('DOMContentLoaded', function () {
         style.id = 'ecr-carrusel-sync-css';
         style.textContent = [
             '.elementor-element-' + LOOP_CARRUSEL + ' .elementor-widget-container {',
-            '  position: relative;',
-            '  transition: opacity 0.28s ease;',
+            '  position: relative; transition: opacity 0.28s ease;',
             '}',
             '.elementor-element-' + LOOP_CARRUSEL + ' .elementor-widget-container.ecr-carrusel-cargando {',
-            '  opacity: 0.88;',
-            '  pointer-events: none;',
+            '  opacity: 0.88; pointer-events: none;',
             '}',
             '.elementor-element-' + LOOP_CARRUSEL + ' .elementor-widget-container.ecr-carrusel-listo {',
             '  opacity: 1;',
@@ -85,32 +84,22 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    function lockHeight(wrap) {
-        var h = wrap.offsetHeight;
-        if (h > 0) wrap.style.minHeight = h + 'px';
-    }
-
-    function unlockHeight(wrap) {
-        wrap.style.minHeight = '';
-    }
-
     function setLoading(widgetEl, on) {
         var parts = getWidgetParts(widgetEl);
         if (!parts) return;
         if (on) {
-            lockHeight(parts.wrap);
+            var h = parts.wrap.offsetHeight;
+            if (h > 0) parts.wrap.style.minHeight = h + 'px';
             parts.wrap.classList.add('ecr-carrusel-cargando');
             parts.wrap.classList.remove('ecr-carrusel-listo');
         } else {
             parts.wrap.classList.remove('ecr-carrusel-cargando');
             parts.wrap.classList.add('ecr-carrusel-listo');
-            requestAnimationFrame(function () {
-                unlockHeight(parts.wrap);
-            });
+            requestAnimationFrame(function () { parts.wrap.style.minHeight = ''; });
         }
     }
 
-    function applyResponse(widgetEl, htmlString) {
+    function applyResponse(widgetEl, htmlString, widgetId) {
         var parts = getWidgetParts(widgetEl);
         if (!parts) return;
 
@@ -123,17 +112,11 @@ document.addEventListener('DOMContentLoaded', function () {
         var newNav = newWrap.querySelector('.elementor-pagination');
         var newAnchor = newWrap.querySelector('.e-load-more-anchor');
 
-        if (newLoop && parts.loop) {
-            parts.loop.replaceWith(newLoop);
-        }
-        if (newNav && parts.nav) {
-            parts.nav.replaceWith(newNav);
-        } else if (newNav && !parts.nav) {
-            parts.wrap.appendChild(newNav);
-        }
-        if (newAnchor && parts.anchor) {
-            parts.anchor.replaceWith(newAnchor);
-        } else if (newAnchor && !parts.anchor) {
+        if (newLoop && parts.loop) parts.loop.replaceWith(newLoop);
+        if (newNav && parts.nav) parts.nav.replaceWith(newNav);
+        else if (newNav && !parts.nav) parts.wrap.appendChild(newNav);
+        if (newAnchor && parts.anchor) parts.anchor.replaceWith(newAnchor);
+        else if (newAnchor && !parts.anchor) {
             var nav = parts.wrap.querySelector('.elementor-pagination');
             if (nav) nav.parentNode.insertBefore(newAnchor, nav);
         }
@@ -141,38 +124,34 @@ document.addEventListener('DOMContentLoaded', function () {
         if (window.elementorFrontend && elementorFrontend.elementsHandler) {
             elementorFrontend.elementsHandler.runReadyTrigger(widgetEl);
         }
-        if (window.jQuery) {
-            jQuery(document).trigger('elementor/loop/query_filter_end');
-        }
-        if (window.ECR && typeof window.ECR.decorateCarrusel === 'function') {
+
+        if (widgetId === LOOP_CARRUSEL && window.ECR && typeof window.ECR.decorateCarrusel === 'function') {
             setTimeout(function () { window.ECR.decorateCarrusel(document); }, 100);
             setTimeout(function () { window.ECR.decorateCarrusel(document); }, 450);
         }
     }
 
-    function refreshCarruselLoop(filterSlug, paginationPage) {
-        var widgetEl = document.querySelector('.elementor-element-' + LOOP_CARRUSEL);
+    function refreshLoopWidget(widgetId, filterSlug, paginationPage) {
+        var widgetEl = document.querySelector('.elementor-element-' + widgetId);
         if (!widgetEl) return Promise.resolve();
 
         var page = paginationPage || 1;
         var requestKey = (filterSlug || '') + '|' + page;
-        if (requestKey === lastRequestKey) return Promise.resolve();
-        lastRequestKey = requestKey;
+        if (lastKeyByWidget[widgetId] === requestKey) return Promise.resolve();
+        lastKeyByWidget[widgetId] = requestKey;
 
-        if (fetchAbort) fetchAbort.abort();
-        fetchAbort = new AbortController();
-        var seq = ++fetchSeq;
+        if (abortByWidget[widgetId]) abortByWidget[widgetId].abort();
+        abortByWidget[widgetId] = new AbortController();
+        if (!seqByWidget[widgetId]) seqByWidget[widgetId] = 0;
+        var seq = ++seqByWidget[widgetId];
 
-        setLoading(widgetEl, true);
+        if (widgetId === LOOP_CARRUSEL) setLoading(widgetEl, true);
 
         var widgetFilters = {};
         if (filterSlug) {
             widgetFilters = {
                 taxonomy: {
-                    category: {
-                        terms: [filterSlug],
-                        logicalJoin: 'AND'
-                    }
+                    category: { terms: [filterSlug], logicalJoin: 'AND' }
                 }
             };
         }
@@ -181,20 +160,18 @@ document.addEventListener('DOMContentLoaded', function () {
         var nonce = getNonce();
         if (nonce) headers['X-WP-Nonce'] = nonce;
 
-        var body = {
-            post_id: getPostId(),
-            widget_id: LOOP_CARRUSEL,
-            widget_filters: widgetFilters,
-            pagination_base_url: getBaseUrl(),
-            pagination_page: page
-        };
-
         return fetch(getRestUrl() + 'elementor-pro/v1/refresh-loop', {
             method: 'POST',
             headers: headers,
             credentials: 'same-origin',
-            signal: fetchAbort.signal,
-            body: JSON.stringify(body)
+            signal: abortByWidget[widgetId].signal,
+            body: JSON.stringify({
+                post_id: getPostId(),
+                widget_id: widgetId,
+                widget_filters: widgetFilters,
+                pagination_base_url: getBaseUrl(),
+                pagination_page: page
+            })
         })
             .then(function (r) {
                 return r.json().then(function (data) {
@@ -202,64 +179,56 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             })
             .then(function (res) {
-                if (seq !== fetchSeq) return;
-                if (!res.ok) {
-                    console.error('ECR carrusel filter HTTP ' + res.status, res.data);
-                    lastRequestKey = '';
+                if (seq !== seqByWidget[widgetId]) return;
+                if (!res.ok || !res.data || typeof res.data.data !== 'string') {
+                    delete lastKeyByWidget[widgetId];
                     return;
                 }
-                if (!res.data || typeof res.data.data !== 'string') {
-                    console.error('ECR carrusel filter: respuesta inesperada', res.data);
-                    lastRequestKey = '';
-                    return;
-                }
-                applyResponse(widgetEl, res.data.data);
+                applyResponse(widgetEl, res.data.data, widgetId);
             })
             .catch(function (err) {
                 if (err && err.name === 'AbortError') return;
-                console.error('ECR carrusel filter:', err);
-                lastRequestKey = '';
+                delete lastKeyByWidget[widgetId];
             })
             .finally(function () {
-                if (seq !== fetchSeq) return;
-                setLoading(widgetEl, false);
+                if (seq !== seqByWidget[widgetId]) return;
+                if (widgetId === LOOP_CARRUSEL) setLoading(widgetEl, false);
+                if (window.jQuery) {
+                    jQuery(document).trigger('elementor/loop/query_filter_end');
+                }
             });
     }
 
-    function handleFilterClick(btn) {
-        var slug = btn.dataset.filter || null;
-        var wasActive = btn.getAttribute('aria-pressed') === 'true';
-        lastRequestKey = '';
-        refreshCarruselLoop(wasActive ? null : slug, 1);
+    function syncLoopsFromFilter(page) {
+        var slug = getActiveSlug();
+        refreshLoopWidget(LOOP_IZQUIERDO, slug, page || 1);
+        refreshLoopWidget(LOOP_CARRUSEL, slug, page || 1);
     }
 
-    function bindCarruselSync() {
+    function scheduleSync(page) {
+        setTimeout(function () { syncLoopsFromFilter(page); }, 150);
+    }
+
+    function bindFilterSync() {
         var filterRoot = document.querySelector(FILTRO_PRINCIPAL);
-        if (!filterRoot || filterRoot.dataset.ecrCarruselSync) return;
-        filterRoot.dataset.ecrCarruselSync = 'true';
+        if (!filterRoot || filterRoot.dataset.ecrFilterSync) return;
+        filterRoot.dataset.ecrFilterSync = 'true';
 
         filterRoot.addEventListener('click', function (e) {
-            var btn = e.target.closest('.e-filter-item');
-            if (!btn) return;
-            setTimeout(function () { handleFilterClick(btn); }, 80);
+            if (!e.target.closest('.e-filter-item')) return;
+            delete lastKeyByWidget[LOOP_IZQUIERDO];
+            delete lastKeyByWidget[LOOP_CARRUSEL];
+            scheduleSync(1);
         });
-
-        if (window.jQuery) {
-            jQuery(document).on('click', FILTRO_PRINCIPAL + ' .e-filter-item', function () {
-                var btn = this;
-                setTimeout(function () { handleFilterClick(btn); }, 80);
-            });
-        }
     }
 
     window.ECR = window.ECR || {};
     window.ECR.getActiveFilterSlug = getActiveSlug;
-    window.ECR.refreshCarruselLoop = refreshCarruselLoop;
+    window.ECR.refreshCarruselLoop = function (filterSlug, page) {
+        return refreshLoopWidget(LOOP_CARRUSEL, filterSlug, page);
+    };
 
-    bindCarruselSync();
-
-    var iconObserver;
-    var injecting = false;
+    bindFilterSync();
 
     function getLabel(btn) {
         var filter = btn.dataset.filter || '';
@@ -267,55 +236,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function injectIcons(icons) {
-        if (injecting) return;
-        injecting = true;
-
-        if (iconObserver) iconObserver.disconnect();
-
         document.querySelectorAll(FILTRO_PRINCIPAL + ' .e-filter-item').forEach(function (btn) {
-            var label = getLabel(btn);
             var slug = (btn.dataset.filter || '').toLowerCase();
             if (slug === 'sin-categoria' || slug === 'uncategorized') {
                 btn.style.display = 'none';
                 return;
             }
+            if (btn.querySelector('.ecr-tax-icon')) return;
+
+            var label = getLabel(btn);
             var svg = icons[label];
-            if (!svg) {
-                btn.textContent = label;
-                return;
-            }
+            if (!svg) return;
+
             btn.innerHTML =
                 '<span class="ecr-tax-icon">' + svg + '</span>' +
                 '<span class="ecr-tax-label">' + label + '</span>';
         });
-
-        injecting = false;
-
-        var filterEl = document.querySelector(FILTRO_PRINCIPAL + ' .e-filter');
-        if (filterEl && iconObserver) {
-            iconObserver.observe(filterEl, { childList: true, subtree: false });
-        }
     }
 
-    function loadIcons() {
-        fetch('/wp-admin/admin-ajax.php?action=ecr_get_term_icons&taxonomy=' + TAXONOMY)
-            .then(function (r) { return r.json(); })
-            .then(function (res) {
-                var icons = (res && res.success && res.data) ? res.data : {};
-                injectIcons(icons);
-
-                var filterEl = document.querySelector(FILTRO_PRINCIPAL + ' .e-filter');
-                if (filterEl) {
-                    iconObserver = new MutationObserver(function () {
-                        injectIcons(icons);
-                    });
-                    iconObserver.observe(filterEl, { childList: true, subtree: false });
-                }
-            })
-            .catch(function () {
-                injectIcons({});
-            });
-    }
-
-    loadIcons();
+    fetch('/wp-admin/admin-ajax.php?action=ecr_get_term_icons&taxonomy=' + TAXONOMY)
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+            injectIcons((res && res.success && res.data) ? res.data : {});
+        })
+        .catch(function () { injectIcons({}); });
 });
