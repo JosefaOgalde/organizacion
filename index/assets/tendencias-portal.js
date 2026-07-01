@@ -228,8 +228,28 @@
     return PLATAFORMAS[p]?.label || p;
   }
 
+  /** URL directa a la red — no la noticia periodística. */
+  function urlPublicacionValida(red, url) {
+    if (!url) return false;
+    const u = String(url).toLowerCase();
+    if (red === 'tiktok') return u.includes('tiktok.com') && (u.includes('/video/') || u.includes('vm.tiktok.com'));
+    if (red === 'instagram') return u.includes('instagram.com') && /\/(p|reel|reels|tv)\//.test(u);
+    if (red === 'youtube') {
+      return (u.includes('youtube.com') || u.includes('youtu.be')) && (u.includes('/watch') || u.includes('/shorts/') || u.includes('youtu.be/'));
+    }
+    if (red === 'pinterest') return u.includes('pinterest.') && u.includes('/pin/');
+    return false;
+  }
+
+  function publicadoEnConUrl(t) {
+    return publicadoEnDe(t).map((x) => ({
+      ...x,
+      url: urlPublicacionValida(x.red, x.url) ? x.url : ''
+    }));
+  }
+
   function renderPublicadoEn(t) {
-    const redes = publicadoEnDe(t);
+    const redes = publicadoEnConUrl(t);
     if (!redes.length) return '';
     const iconos = redes
       .map((x) => {
@@ -252,7 +272,7 @@
   }
 
   function renderPublicadoEnTabla(t) {
-    const redes = publicadoEnDe(t);
+    const redes = publicadoEnConUrl(t);
     if (!redes.length) return '—';
     return `<span class="tend-redes-icons tend-redes-icons--tabla">${redes
       .map((x) => {
@@ -277,7 +297,7 @@
         `<a class="tend-card__link tend-card__link--fuente" href="${escapeHtml(t.fuente)}" target="_blank" rel="noopener">Noticia / fuente (${escapeHtml(formatoFecha(fecha))}) →</a>`
       );
     }
-    publicadoEnDe(t)
+    publicadoEnConUrl(t)
       .filter((x) => x.url)
       .forEach((x) => {
         const label = labelPlataforma(x.red);
@@ -295,7 +315,7 @@
     if (t.fuente) {
       items.push(`<a href="${escapeHtml(t.fuente)}" target="_blank" rel="noopener">Noticia</a>`);
     }
-    publicadoEnDe(t)
+    publicadoEnConUrl(t)
       .filter((x) => x.url)
       .forEach((x) => {
         items.push(

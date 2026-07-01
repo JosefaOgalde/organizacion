@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "actualizado": "2026-07-01T16:48:35-0400",
+  "actualizado": "2026-07-01T16:52:49-0400",
   "nicho": "recetas-comida-chile",
   "region": "Chile",
   "plataformas": [
@@ -95,8 +95,7 @@
       "publicadoEn": [
         {
           "red": "youtube",
-          "detalle": "Clip Yo Invito · BioBioTV",
-          "url": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-cordero-a-la-miel-con-pastelera.shtml"
+          "detalle": "Clip Yo Invito · BioBioTV"
         }
       ],
       "kpis": {
@@ -132,8 +131,7 @@
       "publicadoEn": [
         {
           "red": "youtube",
-          "detalle": "Clip Yo Invito · BioBioTV",
-          "url": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-una-suprema-de-ave-rellena-con-papas-gratinadas.shtml"
+          "detalle": "Clip Yo Invito · BioBioTV"
         }
       ],
       "kpis": {
@@ -169,8 +167,7 @@
       "publicadoEn": [
         {
           "red": "youtube",
-          "detalle": "Clip Yo Invito · BioBioTV",
-          "url": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-entretenido-ceviche-de-camarones-y-cochayuyo.shtml"
+          "detalle": "Clip Yo Invito · BioBioTV"
         }
       ],
       "kpis": {
@@ -206,8 +203,7 @@
       "publicadoEn": [
         {
           "red": "youtube",
-          "detalle": "Clip Yo Invito · BioBioTV",
-          "url": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-rico-espagueti-de-colores-con-mariscos-al-ajillo.shtml"
+          "detalle": "Clip Yo Invito · BioBioTV"
         }
       ],
       "kpis": {

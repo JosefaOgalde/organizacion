@@ -29,6 +29,7 @@ RED_PATTERNS: dict[str, list[re.Pattern[str]]] = {
     ],
     'youtube': [
         re.compile(r'https?://(?:www\.)?youtube\.com/watch\?v=[\w-]+', re.I),
+        re.compile(r'https?://(?:www\.)?youtube\.com/shorts/[\w-]+', re.I),
         re.compile(r'https?://youtu\.be/[\w-]+', re.I),
         re.compile(r'https?://(?:www\.)?youtube\.com/embed/[\w-]+', re.I),
     ],
@@ -69,7 +70,28 @@ def limpiar_url(url: str) -> str:
     m = re.search(r'/embed/([\w-]+)', u)
     if m:
         return f'https://www.youtube.com/watch?v={m.group(1)}'
+    m = re.search(r'/shorts/([\w-]+)', u)
+    if m:
+        return f'https://www.youtube.com/shorts/{m.group(1)}'
     return u.rstrip('/')
+
+
+def es_url_publicacion(red: str, url: str) -> bool:
+    """Solo URLs directas a la red; nunca la noticia periodística."""
+    if not url:
+        return False
+    u = url.lower()
+    if red == 'tiktok':
+        return 'tiktok.com' in u and ('/video/' in u or 'vm.tiktok.com' in u)
+    if red == 'instagram':
+        return 'instagram.com' in u and re.search(r'/(p|reel|reels|tv)/', u)
+    if red == 'youtube':
+        return ('youtube.com' in u or 'youtu.be' in u) and (
+            '/watch' in u or '/shorts/' in u or 'youtu.be/' in u
+        )
+    if red == 'pinterest':
+        return 'pinterest.' in u and '/pin/' in u
+    return False
 
 
 def extraer_enlaces_desde_html(html: str) -> dict[str, str]:
@@ -99,8 +121,6 @@ def enlaces_desde_fuente(fuente: str, plataformas: set[str]) -> dict[str, str]:
         return {}
     found = extraer_enlaces_desde_html(html)
     matched = {red: url for red, url in found.items() if red in plataformas}
-    if 'youtube' in plataformas and 'youtube' not in matched and '/biobiotv/' in fuente:
-        matched['youtube'] = fuente
     return matched
 
 
@@ -143,7 +163,7 @@ def publicado_en_de_story(story: dict, enlaces_extra: dict[str, str] | None = No
             url = url or enlaces_extra.get(red, '')
             vistos.add(red)
             item: dict = {'red': red, 'detalle': detalle or ''}
-            if url:
+            if url and es_url_publicacion(red, url):
                 item['url'] = url
             out.append(item)
     elif isinstance(story.get('publicadoEn'), list):
@@ -157,7 +177,7 @@ def publicado_en_de_story(story: dict, enlaces_extra: dict[str, str] | None = No
                 'detalle': x.get('detalle') or x.get('nota') or '',
             }
             url = x.get('url') or enlaces_extra.get(red, '')
-            if url:
+            if url and es_url_publicacion(red, url):
                 item['url'] = url
             out.append(item)
     return out
