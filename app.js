@@ -15,6 +15,7 @@ const COLORES = {
   agua: { border: '#a8d8dc', bg: '#e8f6f8', text: '#4a7a80' },
   rosa: { border: '#e8b8c8', bg: '#fdf0f4', text: '#9a5a6e' },
   grafito: { border: '#b8c0c8', bg: '#eef0f4', text: '#5a6a7a' },
+  violeta: { border: '#b8b0e8', bg: '#f0eef8', text: '#5a4a8e' },
   /** Salud — verde más definido, aún claro pero distinto de clientes menta/celeste */
   salud: { border: '#2f9d72', bg: '#c5e8d8', text: '#1a5c42' },
   /** Reuniones — azul pizarra, no usa el color del cliente */
@@ -108,6 +109,12 @@ const AGENTES_CLIENTE = {
     emoji: '🎨',
     especialidad: 'Diseño freelance',
     instrucciones: 'Eres el asistente de Desafío Latam. Ayudas con diseño freelance: piezas gráficas, presentaciones, identidad visual, banners, materiales para redes y entregables visuales según cada encargo esporádico.'
+  },
+  'cli-herramientas': {
+    nombre: 'Agente Herramientas',
+    emoji: '🔧',
+    especialidad: 'Herramientas internas y proyectos de utilidad',
+    instrucciones: 'Eres el asistente de Herramientas. Ayudas con proyectos internos de utilidad: análisis de tendencias, dashboards, reportes, automatizaciones y entregables según cada subproyecto.'
   }
 };
 
@@ -183,6 +190,13 @@ const SKILLS_CLIENTE = {
     usaManualMarca: true,
     checklist: ['Manual de marca cargado', 'Brief y formatos de entrega', 'Colores y tipografías oficiales', 'Márgenes de logo'],
     ejemploSolicitud: 'Diseña [pieza: banner / presentación / key visual] para [campaña]. Formato: [dimensiones]. Mensaje: …'
+  },
+  'cli-herramientas': {
+    nombre: 'Tendencias HER',
+    descripcion: 'Análisis, seguimiento y reportes de tendencias del mercado.',
+    usaManualMarca: true,
+    checklist: ['Fuentes de datos definidas', 'Formato de entregable', 'Periodicidad del reporte', 'Identidad visual Tendencias'],
+    ejemploSolicitud: 'Necesito un reporte de tendencias sobre [tema]. Fuentes: […]. Formato: [dashboard / resumen / alertas].'
   }
 };
 
@@ -292,7 +306,8 @@ const PERFILES_CLIENTE = {
   'cli-hotspring': { nombre: 'Hotspring - Talk (full time)', tipo: 'full-time' },
   'cli-mkof': { nombre: 'MKOF - Talk (full time)', tipo: 'full-time' },
   'cli-sie': { tipo: 'oportunidad' },
-  'cli-desafio-latam': { abrev: 'ADL' }
+  'cli-desafio-latam': { abrev: 'ADL' },
+  'cli-herramientas': { abrev: 'HER' }
 };
 let datos = null;
 
@@ -416,6 +431,7 @@ function datosIniciales() {
   const cliJM = 'cli-joyas-mercury';
   const cliSIE = 'cli-sie';
   const cliDLAT = 'cli-desafio-latam';
+  const cliHER = 'cli-herramientas';
   const hoyStr = toISO(hoy());
 
   return {
@@ -569,6 +585,23 @@ function datosIniciales() {
             funciones: 'Piezas gráficas y visuales\nPresentaciones y materiales\nBanners y piezas para redes\nEncargos esporádicos según proyecto',
             tareasAlMes: 'Según encargos del momento',
             plazosEntregables: 'Agregar cada tarea en + Nueva tarea cuando llegue un encargo'
+          }
+        ]
+      },
+      {
+        id: cliHER,
+        nombre: 'Herramientas',
+        abrev: 'HER',
+        tipo: 'freelance',
+        color: 'violeta',
+        roles: [
+          {
+            id: 'rol-her-dev',
+            nombre: 'Desarrollo',
+            abrev: 'DEV',
+            funciones: 'Herramientas internas y utilidades\nAnálisis y seguimiento de tendencias\nReportes y dashboards\nAutomatizaciones según proyecto',
+            tareasAlMes: 'Según avance del proyecto activo',
+            plazosEntregables: 'Agregar cada tarea en + Nueva tarea según el proyecto'
           }
         ]
       }

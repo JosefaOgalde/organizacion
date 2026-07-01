@@ -96,5 +96,25 @@ window.CLIENTES_PORTAL = [
         color: { border: '#1a6b4a', bg: '#edf7f2', text: '#1a5c40' }
       }
     ]
+  },
+  {
+    archivo: 'Herramientas.html',
+    id: 'cli-herramientas',
+    slug: 'herramientas',
+    nombre: 'Herramientas',
+    abrev: 'HER',
+    tipo: 'Freelance',
+    color: { border: '#b8b0e8', bg: '#f0eef8', text: '#5a4a8e' },
+    agente: 'Herramientas internas',
+    resumen: 'Proyectos de herramientas y utilidades. Cada proyecto mantiene su identidad y entregables.',
+    proyectos: [
+      {
+        codigo: 'TEND',
+        nombre: 'Tendencias',
+        archivo: 'Herramientas/Tendencias.html',
+        resumen: 'Análisis y seguimiento de tendencias del mercado y la industria.',
+        color: { border: '#5B4FCF', bg: '#F5F4FC', text: '#2A2548' }
+      }
+    ]
   }
 ];

@@ -43,6 +43,23 @@
       ]
     },
     {
+      "id": "herramientas-tendencias",
+      "invocar": "@herramientas-tendencias",
+      "clienteId": "cli-herramientas",
+      "cliente": "Herramientas · Tendencias",
+      "abrev": "HER",
+      "descripcion": "Análisis y seguimiento de tendencias",
+      "portal": "index/clientes/Herramientas/Tendencias.html",
+      "ramas": [
+        {
+          "nombre": "cursor/herramientas-tendencias-07b0",
+          "titulo": "Cliente Herramientas + proyecto Tendencias",
+          "pr": null,
+          "estado": "activa"
+        }
+      ]
+    },
+    {
       "id": "organizacion",
       "invocar": "@organizacion-clientes",
       "clienteId": null,
