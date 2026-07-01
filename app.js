@@ -5005,12 +5005,14 @@ async function iniciarApp() {
   }
 
   const params = new URLSearchParams(location.search || '');
-  if (params.get('vaciar-tareas') === '1') {
+  if (params.get('vaciar-tareas') === '1' && params.get('confirm') === '1') {
     datos.tareas = [];
     if (!datos.meta) datos.meta = {};
     datos.meta.autoGenerarTareas = false;
     datos.meta.modoTrabajo = 'manual';
     origenCarga = 'vaciar';
+  } else if (params.get('vaciar-tareas') === '1') {
+    console.warn('Para vaciar tareas por URL usa ?vaciar-tareas=1&confirm=1 (acción destructiva)');
   }
 
   try {
@@ -5019,7 +5021,7 @@ async function iniciarApp() {
     console.warn('No se pudo guardar en localStorage', e);
   }
 
-  if (params.get('vaciar-tareas') === '1') {
+  if (params.get('vaciar-tareas') === '1' && params.get('confirm') === '1') {
     const clean = location.pathname + (location.hash || '');
     history.replaceState({}, '', clean);
   }

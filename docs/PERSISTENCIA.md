@@ -74,7 +74,8 @@ Los archivos en disco **no dependen** del navegador.
 
 1. Abrir con **`SERVIR.bat`**
 2. Trabajar con normalidad (tareas, landings, imágenes)
-3. Antes de cerrar: **↓ Respaldo** + **`SUBIR.bat`** si quieres copia en la nube
+3. Antes de cerrar: **↓ Respaldo** → guardar JSON en carpeta **local segura** (no en Git)
+4. **`SUBIR.bat`** solo para **código** — los respaldos quedan fuera del repo (ver `docs/SEGURIDAD.md`)
 
 ---
 

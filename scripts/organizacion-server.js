@@ -2,15 +2,22 @@
 /**
  * Servidor local: archivos estáticos + API que guarda organizacion_v2 en disco.
  * Uso: node scripts/organizacion-server.js
- * Puerto: 3000 (o PORT)
+ * Puerto: 3000 (o PORT) · Solo localhost por defecto (HOST=127.0.0.1)
+ *
+ * Seguridad opcional: define ORGANIZACION_TOKEN en .env para exigir cabecera
+ * X-Organizacion-Token en GET/POST /api/organizacion
  */
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const ROOT = path.join(__dirname, '..');
 const PORT = Number(process.env.PORT) || 3000;
+const HOST = process.env.HOST || '127.0.0.1';
 const LIVE_FILE = path.join(ROOT, 'data', 'organizacion-live.json');
+const MAX_BODY_BYTES = Number(process.env.MAX_BODY_BYTES) || 12 * 1024 * 1024;
+const API_TOKEN = (process.env.ORGANIZACION_TOKEN || '').trim();
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -29,40 +36,127 @@ const MIME = {
   '.md': 'text/markdown; charset=utf-8',
 };
 
+/** Rutas que no se sirven por HTTP (aunque existan en disco) */
+const STATIC_DENY = [
+  /^\.git(?:\/|$)/i,
+  /^\.env$/i,
+  /^\.organizacion-token$/i,
+  /^backend(?:\/|$)/i,
+  /^node_modules(?:\/|$)/i,
+  /^data\/organizacion-live\.json$/i,
+  /\.log$/i,
+  /^GIT_RESULT\.txt$/i,
+  /^git-log\.txt$/i,
+  /^run-git\.ps1$/i,
+];
+
+function loadEnvFile() {
+  const envPath = path.join(ROOT, '.env');
+  if (!fs.existsSync(envPath)) return;
+  fs.readFileSync(envPath, 'utf8').split(/\r?\n/).forEach((line) => {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) return;
+    const eq = trimmed.indexOf('=');
+    if (eq <= 0) return;
+    const key = trimmed.slice(0, eq).trim();
+    let val = trimmed.slice(eq + 1).trim();
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+      val = val.slice(1, -1);
+    }
+    if (!process.env[key]) process.env[key] = val;
+  });
+}
+
+loadEnvFile();
+
+const RUNTIME_TOKEN = (process.env.ORGANIZACION_TOKEN || API_TOKEN || '').trim();
+const RUNTIME_HOST = process.env.HOST || HOST;
+const RUNTIME_MAX_BODY = Number(process.env.MAX_BODY_BYTES) || MAX_BODY_BYTES;
+
+function securityHeaders() {
+  return {
+    'Cache-Control': 'no-store',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'SAMEORIGIN',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+  };
+}
+
 function send(res, code, body, type) {
   res.writeHead(code, {
+    ...securityHeaders(),
     'Content-Type': type || 'text/plain; charset=utf-8',
-    'Cache-Control': 'no-store',
   });
   res.end(body);
 }
 
-function safePath(urlPath) {
+function relFromUrl(urlPath) {
   const decoded = decodeURIComponent(urlPath.split('?')[0]);
-  let rel = decoded.replace(/^\/+/, '') || 'index.html';
+  return decoded.replace(/^\/+/, '') || 'index.html';
+}
+
+function isPathDenied(rel) {
+  const normalized = rel.replace(/\\/g, '/');
+  return STATIC_DENY.some((re) => re.test(normalized));
+}
+
+function safePath(urlPath) {
+  let rel = relFromUrl(urlPath);
   if (rel === 'index' || rel === 'index/') rel = 'index.html';
+  if (isPathDenied(rel)) return null;
   const abs = path.normalize(path.join(ROOT, rel));
   if (!abs.startsWith(ROOT)) return null;
+  const relCheck = path.relative(ROOT, abs).replace(/\\/g, '/');
+  if (isPathDenied(relCheck)) return null;
   return abs;
 }
 
 function redirectJoyasMercury(res, urlPath) {
   const q = urlPath.includes('?') ? urlPath.slice(urlPath.indexOf('?')) : '';
   const target = `/index/clientes/joyasmercury/index.html${q || '?v=secciones3'}`;
-  res.writeHead(302, { Location: target, 'Cache-Control': 'no-store' });
+  res.writeHead(302, { Location: target, ...securityHeaders() });
   res.end();
+}
+
+function tokensMatch(given, expected) {
+  if (!expected) return true;
+  if (!given || typeof given !== 'string') return false;
+  const a = Buffer.from(given);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
+
+function checkApiAuth(req, res) {
+  if (!RUNTIME_TOKEN) return true;
+  const given = req.headers['x-organizacion-token'];
+  if (tokensMatch(given, RUNTIME_TOKEN)) return true;
+  send(res, 401, JSON.stringify({ error: 'No autorizado — falta X-Organizacion-Token' }), 'application/json');
+  return false;
 }
 
 function readBody(req) {
   return new Promise((resolve, reject) => {
     const chunks = [];
-    req.on('data', (c) => chunks.push(c));
+    let size = 0;
+    req.on('data', (c) => {
+      size += c.length;
+      if (size > RUNTIME_MAX_BODY) {
+        reject(new Error('BODY_TOO_LARGE'));
+        req.destroy();
+        return;
+      }
+      chunks.push(c);
+    });
     req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
     req.on('error', reject);
   });
 }
 
 function handleApiOrganizacion(req, res) {
+  if (!checkApiAuth(req, res)) return;
+
   if (req.method === 'GET') {
     if (!fs.existsSync(LIVE_FILE)) {
       return send(res, 404, JSON.stringify({ error: 'sin archivo live' }), 'application/json');
@@ -70,6 +164,7 @@ function handleApiOrganizacion(req, res) {
     const body = fs.readFileSync(LIVE_FILE, 'utf8');
     return send(res, 200, body, 'application/json');
   }
+
   if (req.method === 'POST') {
     return readBody(req).then((raw) => {
       let obj;
@@ -86,13 +181,30 @@ function handleApiOrganizacion(req, res) {
       fs.writeFileSync(LIVE_FILE, JSON.stringify(obj, null, 2), 'utf8');
       console.log('[api] Guardado', LIVE_FILE, `(${obj.tareas.length} tareas, ${obj.clientes.length} clientes)`);
       return send(res, 200, JSON.stringify({ ok: true, path: 'data/organizacion-live.json' }), 'application/json');
-    }).catch((e) => send(res, 500, String(e), 'text/plain'));
+    }).catch((e) => {
+      if (e && e.message === 'BODY_TOO_LARGE') {
+        return send(res, 413, JSON.stringify({ error: 'cuerpo demasiado grande' }), 'application/json');
+      }
+      return send(res, 500, String(e), 'text/plain');
+    });
   }
+
   send(res, 405, 'Método no permitido');
+}
+
+function handleApiConfig(res) {
+  send(res, 200, JSON.stringify({
+    authRequired: !!RUNTIME_TOKEN,
+    maxBodyBytes: RUNTIME_MAX_BODY,
+  }), 'application/json');
 }
 
 const server = http.createServer((req, res) => {
   const url = req.url || '/';
+
+  if (url.startsWith('/api/organizacion-config')) {
+    return handleApiConfig(res);
+  }
 
   if (url.startsWith('/api/organizacion')) {
     return handleApiOrganizacion(req, res);
@@ -126,10 +238,16 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`Organización · http://localhost:${PORT}`);
+server.listen(PORT, RUNTIME_HOST, () => {
+  console.log(`Organización · http://${RUNTIME_HOST}:${PORT}`);
+  console.log(`  Solo accesible desde esta PC (${RUNTIME_HOST})`);
   console.log(`  Landing JM: http://localhost:${PORT}/index/clientes/joyasmercury/`);
-  console.log(`  Guardado live: data/organizacion-live.json`);
+  console.log(`  Guardado live: data/organizacion-live.json (solo vía API)`);
+  if (RUNTIME_TOKEN) {
+    console.log('  API protegida con ORGANIZACION_TOKEN (.env)');
+  } else {
+    console.log('  API sin token — define ORGANIZACION_TOKEN en .env para más seguridad');
+  }
   if (!fs.existsSync(LIVE_FILE)) {
     console.log('  (sin organizacion-live.json aún — se creará al primer guardado)');
   }
