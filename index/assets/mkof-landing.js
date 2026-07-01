@@ -120,6 +120,9 @@
   function guiasHtml() {
     return `<section class="ficha-seccion ficha-seccion--portal">
         <h2>Guías en curso · MOVA</h2>
+        <p style="margin:0 0 0.85rem;font-size:0.9rem">
+          <a href="mkof/MOVA-GitHub-Paso1-Crear-Cuenta.pptx" download>⬇ Descargar presentación PPT para el encargado</a>
+        </p>
         <div class="mkof-guias-grid">
           <a href="mkof/github-cuenta.html" class="mkof-guia-card mkof-guia-card--activa">
             <span class="mkof-guia-card__paso">Paso 1 · En curso</span>

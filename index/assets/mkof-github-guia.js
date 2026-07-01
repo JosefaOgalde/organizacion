@@ -162,6 +162,9 @@
       <header class="mkof-guia-header">
         <h1>GitHub para MOVA · Paso 1: crear cuenta</h1>
         <p class="mkof-guia-header__meta">${escapeHtml(g.hito)} · Guía visual paso a paso</p>
+        <p style="margin:0.5rem 0 0;font-size:0.9rem">
+          <a href="MOVA-GitHub-Paso1-Crear-Cuenta.pptx" download>⬇ Descargar presentación PPT</a>
+        </p>
       </header>
 
       <div class="mkof-guia-progreso">
