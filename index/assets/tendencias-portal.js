@@ -164,12 +164,31 @@
     return t.resumenReceta || t.anguloContenido || '—';
   }
 
+  /** Redes donde circuló el video — compatible con formato antiguo (plataforma única). */
+  function publicadoEnDe(t) {
+    if (Array.isArray(t.publicadoEn) && t.publicadoEn.length) {
+      return t.publicadoEn.map((x) => ({
+        red: x.red || x.plataforma,
+        detalle: x.detalle || x.nota || ''
+      })).filter((x) => x.red);
+    }
+    if (t.plataforma) {
+      return [{ red: t.plataforma, detalle: '' }];
+    }
+    return [];
+  }
+
+  function tieneRed(t, redId) {
+    if (redId === 'todas') return true;
+    return publicadoEnDe(t).some((x) => x.red === redId);
+  }
+
   function feedFiltrado(feed) {
     const lista = (feed.tendencias || [])
       .filter((t) => {
         const fecha = fechaFuenteDe(t);
         if (!fecha) return false;
-        if (plataformaActual !== 'todas' && t.plataforma !== plataformaActual) return false;
+        if (!tieneRed(t, plataformaActual)) return false;
         return enPeriodo(fecha, periodoActual);
       })
       .sort((a, b) => fechaFuenteDe(b).localeCompare(fechaFuenteDe(a)));
@@ -203,24 +222,35 @@
     return PLATAFORMAS[p]?.label || p;
   }
 
-  function agruparPorPlataforma(feed) {
-    const orden = (feedCfg.plataformas || ['tiktok', 'instagram', 'youtube', 'pinterest']).filter((p) => p !== 'todas');
-    const porPlataforma = {};
-    orden.forEach((p) => {
-      porPlataforma[p] = [];
-    });
+  function renderPublicadoEn(t) {
+    const redes = publicadoEnDe(t);
+    if (!redes.length) return '';
+    const items = redes
+      .map((x) => {
+        const meta = PLATAFORMAS[x.red] || { label: x.red, clase: '' };
+        const detalle = x.detalle
+          ? `<span class="tend-redes__detalle">${escapeHtml(x.detalle)}</span>`
+          : '';
+        return `<li class="tend-redes__item">
+          <span class="tend-tabla__plat tend-tabla__plat--${escapeHtml(meta.clase || x.red)}">${escapeHtml(meta.label || x.red)}</span>
+          ${detalle}
+        </li>`;
+      })
+      .join('');
+    return `
+      <div class="tend-redes-block">
+        <p class="tend-card__label">Publicado en</p>
+        <ul class="tend-redes">${items}</ul>
+      </div>`;
+  }
 
-    (feed.tendencias || []).forEach((t) => {
-      const p = t.plataforma || 'tiktok';
-      if (!porPlataforma[p]) porPlataforma[p] = [];
-      porPlataforma[p].push(t);
-    });
-
-    Object.values(porPlataforma).forEach((lista) => {
-      lista.sort((a, b) => fechaFuenteDe(b).localeCompare(fechaFuenteDe(a)));
-    });
-
-    return { orden, porPlataforma };
+  function textoPublicadoEn(t) {
+    return publicadoEnDe(t)
+      .map((x) => {
+        const lbl = labelPlataforma(x.red);
+        return x.detalle ? `${lbl}: ${x.detalle}` : lbl;
+      })
+      .join(' · ');
   }
 
   function feedVacioHtml() {
@@ -230,8 +260,7 @@
   }
 
   function listaPlana(feed) {
-    const { orden, porPlataforma } = agruparPorPlataforma(feed);
-    return orden.flatMap((p) => porPlataforma[p] || []);
+    return feedFiltrado(feed).tendencias || [];
   }
 
   function escapeHtml(s) {
@@ -388,6 +417,7 @@
           <span class="tend-card__senal tend-card__senal--${escapeHtml(senal)}">${escapeHtml((t.kpis?.senal || 'medio').replace('-', ' '))}</span>
         </div>
         <p class="tend-card__formato">${escapeHtml(t.formato)} · <time datetime="${escapeHtml(fecha)}">${escapeHtml(formatoFecha(fecha))}</time></p>
+        ${renderPublicadoEn(t)}
         ${renderKpis(t.kpis)}
         <p class="tend-card__label">Ingredientes</p>
         ${renderIngredientes(t)}
@@ -408,8 +438,8 @@
 
     return `
       <tr>
-        <td data-label="Plataforma"><span class="tend-tabla__plat tend-tabla__plat--${escapeHtml(t.plataforma || '')}">${escapeHtml(labelPlataforma(t.plataforma))}</span></td>
         <td data-label="Tendencia"><strong>${escapeHtml(t.titulo)}</strong></td>
+        <td data-label="Publicado en" class="tend-tabla__redes">${escapeHtml(textoPublicadoEn(t))}</td>
         <td data-label="Fecha fuente"><time datetime="${escapeHtml(fecha)}">${escapeHtml(formatoFecha(fecha))}</time></td>
         <td data-label="Formato">${escapeHtml(t.formato)}</td>
         <td data-label="Vistas">${escapeHtml(t.kpis?.vistas || '—')}</td>
@@ -431,8 +461,8 @@
         <table class="tend-tabla">
           <thead>
             <tr>
-              <th>Plataforma</th>
               <th>Tendencia</th>
+              <th>Publicado en</th>
               <th>Fecha fuente</th>
               <th>Formato</th>
               <th>Vistas</th>
@@ -450,26 +480,17 @@
       </div>`;
   }
 
-  function renderPlataforma(plataforma, items) {
-    const meta = PLATAFORMAS[plataforma] || { label: plataforma, icon: '•', clase: '' };
-    return `
-      <section class="tend-plataforma" aria-labelledby="tend-plat-${escapeHtml(plataforma)}">
-        <div class="tend-plataforma__header">
-          <span class="tend-plataforma__icon tend-plataforma__icon--${meta.clase}" aria-hidden="true">${meta.icon}</span>
-          <h2 id="tend-plat-${escapeHtml(plataforma)}">${escapeHtml(meta.label)}</h2>
-          <span class="tend-plataforma__count">${items.length} tendencia${items.length === 1 ? '' : 's'}</span>
-        </div>
-        <div class="tend-grid">${items.map(renderCard).join('')}</div>
-      </section>`;
+  function renderTarjetas(feed) {
+    const items = listaPlana(feed);
+    if (!items.length) return feedVacioHtml();
+    return `<div class="tend-grid tend-grid--unica">${items.map(renderCard).join('')}</div>`;
   }
 
-  function renderTarjetas(feed) {
-    const { orden, porPlataforma } = agruparPorPlataforma(feed);
-    const html = orden
-      .filter((p) => porPlataforma[p]?.length)
-      .map((p) => renderPlataforma(p, porPlataforma[p]))
-      .join('');
-    return html || feedVacioHtml();
+  function renderContenido(feed) {
+    const filtrado = feedFiltrado(feed);
+    return vistaActual === 'tabla'
+      ? renderTabla(filtrado)
+      : renderTarjetas(filtrado);
   }
 
   function renderSelectFiltros() {
@@ -499,13 +520,6 @@
         <button type="button" class="portal-btn tend-vista-btn${vistaActual === 'tarjetas' ? ' tend-vista-btn--active' : ''}" data-vista="tarjetas">Tarjetas</button>
         <button type="button" class="portal-btn tend-vista-btn${vistaActual === 'tabla' ? ' tend-vista-btn--active' : ''}" data-vista="tabla">Tabla</button>
       </div>`;
-  }
-
-  function renderContenido(feed) {
-    const filtrado = feedFiltrado(feed);
-    return vistaActual === 'tabla'
-      ? renderTabla(filtrado)
-      : `<div class="tend-plataformas">${renderTarjetas(filtrado)}</div>`;
   }
 
   function actualizarContenido() {

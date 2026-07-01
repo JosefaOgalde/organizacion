@@ -275,10 +275,8 @@ STORIES = [
         "crecimiento": "+200%",
         "hashtags": ["#tortadearroz", "#recetachilena", "#gabogutierrez", "#foodtok", "#viral", "#huevofrito"],
         "plataformas": {
-            "tiktok": "Viral Gabo Gutiérrez",
-            "instagram": "Reels paralelos",
-            "youtube": "Shorts del corte",
-            "pinterest": "Ideas torta salada",
+            "tiktok": "Video original de Gabo Gutiérrez (157K+ likes)",
+            "instagram": "Publicación paralela en Reels (111K+ likes)",
         },
     },
     {
