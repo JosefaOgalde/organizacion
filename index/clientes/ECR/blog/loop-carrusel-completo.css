@@ -1,0 +1,171 @@
+/* Loop Grid 3 — carrusel central (bc0cdd5)
+   Reemplazar TODO el CSS personalizado del Loop Grid 3 */
+
+/* ==========================================================
+   1. LISTA VERTICAL (3 ARTÍCULOS)
+   ========================================================== */
+selector .elementor-loop-container {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 30px !important;
+}
+
+selector .e-loop-item,
+selector .elementor-post {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    position: relative !important;
+}
+
+selector .elementor-element-5e4f8fb {
+    position: relative !important;
+    overflow: hidden !important;
+    min-height: 170px !important;
+    border-radius: 20px !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+selector .elementor-element-5e4f8fb:not(.elementor-motion-effects-element-type-background),
+selector .elementor-element-5e4f8fb > .elementor-motion-effects-container > .elementor-motion-effects-layer {
+    width: 240px !important;
+    min-width: 240px !important;
+    height: 170px !important;
+    min-height: 170px !important;
+    border-radius: 20px !important;
+}
+
+selector .elementor-element-d100041 {
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+}
+
+selector .elementor-element-1728794 {
+    gap: 8px !important;
+}
+
+/* Fecha visible; NO ocultar svg de badges */
+selector .elementor-element-bc5fe2f .elementor-shortcode {
+    display: block !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #133854 !important;
+}
+
+selector .elementor-element-dceb7ee {
+    display: none !important;
+}
+
+selector .elementor-element-24ce162 .elementor-heading-title {
+    color: var(--e-global-color-primary, #2c9fe0) !important;
+    font-family: "Encode Sans Condensed", sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+}
+
+/* ==========================================================
+   2. TRANSICIÓN SUAVE
+   ========================================================== */
+selector .elementor-widget-container {
+    position: relative !important;
+    transition: opacity 0.28s ease !important;
+}
+
+selector .elementor-loop-container {
+    transition: opacity 0.28s ease !important;
+}
+
+selector .elementor-loop-container .e-loop-item {
+    opacity: 1 !important;
+}
+
+/* ==========================================================
+   3. BOTÓN VER MÁS
+   ========================================================== */
+selector .elementor-button {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border: 2px solid #e2e8f0 !important;
+    font-family: "Open Sans", "Montserrat", "Roboto", sans-serif !important;
+    font-weight: 700 !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+selector .e-loop-item:hover .elementor-button,
+selector .elementor-post:hover .elementor-button {
+    background-color: #ff6b00 !important;
+    color: #ffffff !important;
+    border-color: #ff6b00 !important;
+    transform: scale(1.05);
+}
+
+/* ==========================================================
+   4. PAGINACIÓN
+   ========================================================== */
+selector .elementor-pagination {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 20px !important;
+    margin-top: 30px !important;
+    min-height: 44px;
+}
+
+selector .elementor-pagination .page-numbers {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 10px 28px !important;
+    background-color: #ffffff !important;
+    color: #133854 !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 50px !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    font-family: "Open Sans", "Montserrat", "Roboto", sans-serif !important;
+    text-decoration: none !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.25s ease-in-out !important;
+}
+
+selector .elementor-pagination .prev::before { content: "←\00a0\00a0" !important; font-weight: bold !important; }
+selector .elementor-pagination .next::after { content: "\00a0\00a0→" !important; font-weight: bold !important; }
+
+selector .elementor-pagination a.page-numbers:hover {
+    background-color: #ff6b00 !important;
+    color: #ffffff !important;
+    border-color: #ff6b00 !important;
+    transform: translateY(-2px) !important;
+}
+
+selector .elementor-pagination .page-numbers.disabled,
+selector .elementor-pagination span.page-numbers.disabled {
+    background-color: #f1f5f9 !important;
+    color: #94a3b8 !important;
+    border-color: #cbd5e1 !important;
+    pointer-events: none !important;
+}
+
+selector .elementor-pagination .page-numbers:not(.prev):not(.next) { display: none !important; }
+
+/* ==========================================================
+   5. RESPONSIVE
+   ========================================================== */
+@media (max-width: 767px) {
+    selector .elementor-element-d100041 {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    selector .elementor-element-5e4f8fb:not(.elementor-motion-effects-element-type-background),
+    selector .elementor-element-5e4f8fb > .elementor-motion-effects-container > .elementor-motion-effects-layer {
+        width: 100% !important;
+        min-width: 100% !important;
+        height: 160px !important;
+        min-height: 160px !important;
+    }
+    selector .elementor-pagination .page-numbers { padding: 8px 22px !important; font-size: 13px !important; }
+}
