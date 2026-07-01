@@ -255,6 +255,77 @@ body.portal-body--themed .portal-nav a {
   opacity: 0.92;
 }
 
+/* —— Landing cliente (hero) —— */
+.portal-landing-hero {
+  margin: 0 0 1.25rem;
+  padding: 1.35rem 1.25rem 1.15rem;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--card-bg) 72%, white);
+  border: 1px solid color-mix(in srgb, var(--card-border) 40%, white);
+}
+
+.portal-landing-hero__titulo {
+  margin: 0.45rem 0 0.35rem;
+  font-size: 1.55rem;
+  color: var(--card-text);
+}
+
+.portal-landing-hero__tagline {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--card-text);
+  opacity: 0.92;
+}
+
+.portal-landing-hero__meta {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--card-text);
+  opacity: 0.72;
+}
+
+.portal-landing-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+}
+
+.portal-landing-stat {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card-border) 18%, white);
+  color: var(--card-text);
+}
+
+.portal-landing-chips {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.portal-landing-chip {
+  font-size: 0.8rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card-border) 15%, white);
+  border: 1px solid color-mix(in srgb, var(--card-border) 45%, white);
+  color: var(--card-text);
+}
+
+.portal-header--themed {
+  color: var(--card-text, #fff);
+}
+
+.portal-header--themed p {
+  color: color-mix(in srgb, var(--card-text, #c8e4f4) 75%, white);
+}
+
 /* —— Ficha proyecto (TEND, CLA, etc.) —— */
 .portal-proyecto {
   background: var(--card-bg, #fff);

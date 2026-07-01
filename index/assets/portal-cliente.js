@@ -1,8 +1,14 @@
 (function () {
-  const archivo = document.body.dataset.cliente;
-  if (!archivo || typeof CLIENTES_PORTAL === 'undefined') return;
+  if (typeof CLIENTES_PORTAL === 'undefined') return;
 
-  const c = CLIENTES_PORTAL.find((x) => x.archivo === archivo);
+  const slug = document.body.dataset.clienteSlug;
+  const archivoLegacy = document.body.dataset.cliente;
+  const depth = Number(document.body.dataset.portalDepth || (slug ? 1 : 0));
+
+  const c = slug
+    ? CLIENTES_PORTAL.find((x) => x.slug === slug)
+    : CLIENTES_PORTAL.find((x) => x.archivo === archivoLegacy || x.archivo?.startsWith(archivoLegacy));
+
   const root = document.getElementById('portal-root');
   if (!root) return;
 
@@ -14,6 +20,10 @@
   const STORAGE_KEY = 'organizacion_v2';
   let datos = null;
   let modoEdicion = false;
+
+  const pathUp = depth ? '../'.repeat(depth) : './';
+  const pathOrganizador = depth ? '../../../index.html' : '../../index.html';
+  const pathListado = depth ? '../' : '../clientes.html';
 
   function escapeHtml(s) {
     return String(s ?? '')
@@ -35,6 +45,21 @@
     el.classList.add('portal-toast--visible');
     clearTimeout(el._t);
     el._t = setTimeout(() => el.classList.remove('portal-toast--visible'), 2400);
+  }
+
+  function hrefProyecto(archivo) {
+    if (!archivo) return '#';
+    if (/^https?:\/\//i.test(archivo) || archivo.startsWith('/')) return archivo;
+    return depth ? `${pathUp}${archivo}` : archivo;
+  }
+
+  function contarTareasCliente() {
+    if (!datos?.tareas) return { total: 0, pendientes: 0 };
+    const delCliente = datos.tareas.filter((t) => t.clienteId === c.id);
+    return {
+      total: delCliente.length,
+      pendientes: delCliente.filter((t) => !t.completada && !t.pendiente).length
+    };
   }
 
   function cargarDatos() {
@@ -89,12 +114,8 @@
     if (typeof window.initLandingImagenesGaleriaUI === 'function') {
       window.initLandingImagenesGaleriaUI(rootEl, {
         landing,
-        onChange() {
-          guardar(cli);
-        },
-        onError(msg) {
-          toast(msg);
-        }
+        onChange() { guardar(cli); },
+        onError(msg) { toast(msg); }
       });
     }
     if (typeof window.initJMImagenesEditorUI === 'function') {
@@ -106,41 +127,76 @@
           Object.assign(landing, state);
           guardar(cli);
         },
-        onError(msg) {
-          toast(msg);
-        }
+        onError(msg) { toast(msg); }
       });
     }
   }
 
+  function heroHtml(cfg, stats) {
+    const tagline = cfg?.tagline || c.agente;
+    return `<header class="portal-landing-hero">
+      <span class="portal-badge">${escapeHtml(c.tipo)}</span>
+      <h1 class="portal-landing-hero__titulo">${escapeHtml(c.nombre)}</h1>
+      <p class="portal-landing-hero__tagline">${escapeHtml(tagline)}</p>
+      <p class="portal-landing-hero__meta">${escapeHtml(c.abrev)} · ${escapeHtml(c.agente)}</p>
+      ${stats.total ? `<div class="portal-landing-stats">
+        <span class="portal-landing-stat"><strong>${stats.total}</strong> tareas</span>
+        ${stats.pendientes ? `<span class="portal-landing-stat"><strong>${stats.pendientes}</strong> activas</span>` : ''}
+      </div>` : ''}
+    </header>`;
+  }
+
+  function entregablesHtml(cfg) {
+    const items = cfg?.entregables || [];
+    if (!items.length) return '';
+    return `<section class="portal-landing-entregables">
+      <h2>Entregables</h2>
+      <ul class="portal-landing-chips">
+        ${items.map((e) => `<li class="portal-landing-chip">${escapeHtml(e)}</li>`).join('')}
+      </ul>
+    </section>`;
+  }
+
+  function seccionesHtml(cfg) {
+    const secs = cfg?.secciones || [];
+    if (!secs.length) {
+      return `<section>
+        <h2>Resumen</h2>
+        <p>${escapeHtml(c.resumen)}</p>
+      </section>`;
+    }
+    return secs.map((s) => `<section>
+      <h2>${escapeHtml(s.titulo)}</h2>
+      <p>${escapeHtml(s.texto)}</p>
+    </section>`).join('');
+  }
+
   function render() {
     const cli = cargarDatos();
+    const landingCfg = c.landing || {};
     const landing = cli.ficha.landing;
-    document.title = `${c.nombre} · Clientes`;
+    const stats = contarTareasCliente();
+
+    document.title = `${c.nombre} · Landing`;
     if (typeof window.aplicarTemaPortal === 'function') {
       window.aplicarTemaPortal(c.color);
     }
 
-    const proyectosHtml =
-      c.proyectos?.length
-        ? `<section>
-            <h2>Proyectos (identidad separada)</h2>
-            <p>Cada proyecto mantiene su manual de marca y entregables sin mezclar gráficas.</p>
-            <div class="portal-grid portal-grid--proyectos">
-              ${c.proyectos
-                .map(
-                  (p) => `
-                <a href="${p.archivo}" class="portal-card"
-                   style="--card-border:${p.color.border};--card-bg:${p.color.bg};--card-text:${p.color.text}">
-                  <div class="portal-card__tipo">${p.codigo}</div>
-                  <h2 class="portal-card__nombre">${p.nombre}</h2>
-                  <div class="portal-card__abrev">${p.resumen}</div>
-                </a>`
-                )
-                .join('')}
-            </div>
-          </section>`
-        : '';
+    const proyectosHtml = c.proyectos?.length
+      ? `<section>
+          <h2>Proyectos</h2>
+          <p>Cada proyecto tiene su propia landing e identidad visual.</p>
+          <div class="portal-grid portal-grid--proyectos">
+            ${c.proyectos.map((p) => `
+              <a href="${hrefProyecto(p.archivo)}" class="portal-card"
+                 style="--card-border:${p.color.border};--card-bg:${p.color.bg};--card-text:${p.color.text}">
+                <div class="portal-card__tipo">${escapeHtml(p.codigo)}</div>
+                <h2 class="portal-card__nombre">${escapeHtml(p.nombre)}</h2>
+                <div class="portal-card__abrev">${escapeHtml(p.resumen)}</div>
+              </a>`).join('')}
+          </div>
+        </section>`
+      : '';
 
     const wireframesHtml =
       c.slug === 'joyas-mercury' && typeof window.jmHtmlWireframes === 'function'
@@ -153,34 +209,28 @@
       <article class="portal-cliente portal-cliente--landing${modoEdicion ? ' portal-cliente--edicion' : ''}"
         style="--card-border:${c.color.border};--card-bg:${c.color.bg};--card-text:${c.color.text}">
         <div class="portal-cliente__toolbar">
-          <a href="../../index.html" class="portal-btn portal-btn--ghost">Organizador</a>
+          <a href="${pathListado}" class="portal-btn portal-btn--ghost">← Clientes</a>
+          <a href="${pathOrganizador}" class="portal-btn portal-btn--ghost">Organizador</a>
           <button type="button" class="portal-btn${modoEdicion ? ' portal-btn--active' : ''}" id="portal-btn-editar">
             ${modoEdicion ? 'Listo' : 'Editar landing'}
           </button>
         </div>
-        ${modoEdicion ? '<p class="portal-cliente__hint landing-img__solo-edicion">Agrega imágenes propias, reemplázalas, edita título/notas o bórralas. Todo queda guardado en tu organizador.</p>' : ''}
-        <span class="portal-badge">${c.tipo}</span>
-        <h1>${escapeHtml(c.nombre)}</h1>
-        <p class="portal-cliente__meta">${escapeHtml(c.abrev)} · ${escapeHtml(c.agente)}</p>
-        <section>
-          <h2>Resumen</h2>
-          <p>${escapeHtml(c.resumen)}</p>
-        </section>
+        ${modoEdicion ? '<p class="portal-cliente__hint landing-img__solo-edicion">Agrega imágenes, mockups o referencias. Se guardan en tu organizador local.</p>' : ''}
+        ${heroHtml(landingCfg, stats)}
+        ${entregablesHtml(landingCfg)}
+        ${seccionesHtml(landingCfg)}
         ${imagenesHtml}
         ${wireframesHtml}
         ${proyectosHtml}
         <section>
           <h2>Enlaces</h2>
           <ul>
-            <li><a href="../../index.html">Abrir organizador principal</a></li>
-            <li><a href="../../index.html#clientes">Ficha completa en Clientes</a></li>
-            <li><a href="../clientes.html">Volver al listado de clientes</a></li>
+            <li><a href="${pathOrganizador}">Abrir organizador principal</a></li>
+            <li><a href="${pathOrganizador}#clientes">Ficha completa en Clientes</a></li>
+            <li><a href="${pathListado}">Volver al listado de clientes</a></li>
           </ul>
         </section>
-        <a href="../../index.html" class="portal-app-link">Ir al organizador →</a>
-        ${c.slug !== 'joyas-mercury' && c.proyectos?.length ? `<p class="portal-paso">
-          <strong>Multi-proyecto:</strong> cada tarjeta de abajo usa su propia identidad visual — los mismos colores que verás al abrir el proyecto.
-        </p>` : ''}
+        <a href="${pathOrganizador}" class="portal-app-link">Ir al organizador →</a>
       </article>`;
 
     document.getElementById('portal-btn-editar')?.addEventListener('click', () => {

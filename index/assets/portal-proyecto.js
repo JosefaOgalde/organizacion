@@ -15,6 +15,8 @@
   const { cliente, proyecto: p } = found;
   const col = p.color || cliente.color;
   const id = p.identidad || {};
+  const archivoCliente = (cliente.archivo || '').split('?')[0];
+  const hrefCliente = `../${archivoCliente}`;
 
   if (typeof window.aplicarTemaPortal === 'function') {
     window.aplicarTemaPortal(col);
@@ -61,11 +63,11 @@
       <section>
         <h2>Enlaces</h2>
         <ul>
-          <li><a href="../../index.html">Abrir en organizador</a></li>
-          <li><a href="../${cliente.archivo}">Volver a ${cliente.nombre}</a></li>
+          <li><a href="../../../index.html">Abrir en organizador</a></li>
+          <li><a href="${hrefCliente}">Volver a ${cliente.nombre}</a></li>
           <li><a href="../../clientes.html">Listado de clientes</a></li>
         </ul>
       </section>
-      <a href="../${cliente.archivo}" class="portal-app-link">Volver a ${cliente.abrev} →</a>
+      <a href="${hrefCliente}" class="portal-app-link">Volver a ${cliente.abrev} →</a>
     </article>`;
 })();
