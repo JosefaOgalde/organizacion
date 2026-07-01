@@ -7,11 +7,11 @@ window.HERRAMIENTAS_PROYECTOS = {
     cliente: 'Herramientas',
     identidadPdf: 'tendencias/identidad/manual-marca-tendencias.pdf',
     colores: {
-      primario: '#5B4FCF',
-      secundario: '#7B6FE8',
-      acento: '#F0A830',
-      fondo: '#F5F4FC',
-      texto: '#2A2548',
+      primario: '#2E7D6E',
+      secundario: '#3D9A88',
+      acento: '#C4962A',
+      fondo: '#DFF0EC',
+      texto: '#1A4A40',
       textoClaro: '#FFFFFF'
     },
     secciones: [

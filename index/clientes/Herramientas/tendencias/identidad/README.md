@@ -18,9 +18,9 @@ manual-marca-tendencias.pdf
 
 | Token | Hex | Uso |
 |-------|-----|-----|
-| Primario | `#5B4FCF` | Encabezados y acentos |
-| Secundario | `#7B6FE8` | Gradientes y hover |
-| Acento | `#F0A830` | Destacados |
-| Fondo | `#F5F4FC` | Fondo de secciones |
+| Primario | `#2E7D6E` | Encabezados y acentos |
+| Secundario | `#3D9A88` | Gradientes y hover |
+| Acento | `#C4962A` | Destacados |
+| Fondo | `#DFF0EC` | Fondo de secciones |
 
 Ajusta estos valores si el manual oficial indica otros tonos.

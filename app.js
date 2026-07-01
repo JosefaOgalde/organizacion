@@ -10,7 +10,7 @@ const COLORES = {
   lavanda: { border: '#c4b8e8', bg: '#f0ecfa', text: '#6a5a9e' },
   celeste: { border: '#98c8e0', bg: '#e8f4fc', text: '#4a7a9e' },
   menta: { border: '#a8dcc8', bg: '#eaf8f2', text: '#4a8a6e' },
-  mentaSuave: { border: '#a4d4c8', bg: '#e8f4ef', text: '#4a8670' },
+  mentaSuave: { border: '#94B89A', bg: '#E6F0E8', text: '#3A6042' },
   durazno: { border: '#e8c4a8', bg: '#fdf4ec', text: '#9a6a4a' },
   agua: { border: '#a8d8dc', bg: '#e8f6f8', text: '#4a7a80' },
   rosa: { border: '#e8b8c8', bg: '#fdf0f4', text: '#9a5a6e' },

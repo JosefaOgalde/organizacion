@@ -40,7 +40,7 @@ window.CLIENTES_PORTAL = [
     nombre: 'Hotspring - Talk',
     abrev: 'HS',
     tipo: 'Full time',
-    color: { border: '#a4d4c8', bg: '#e8f4ef', text: '#4a8670' },
+    color: { border: '#94B89A', bg: '#E6F0E8', text: '#3A6042' },
     agente: 'Publicación de contenidos',
     resumen: '8 contenidos al mes en feed e historias (días hábiles).'
   },
@@ -104,7 +104,7 @@ window.CLIENTES_PORTAL = [
     nombre: 'Herramientas',
     abrev: 'HER',
     tipo: 'Freelance',
-    color: { border: '#b8b0e8', bg: '#f0eef8', text: '#5a4a8e' },
+    color: { border: '#5C6B94', bg: '#E4E8F2', text: '#2A3348' },
     agente: 'Herramientas internas',
     resumen: 'Proyectos de herramientas y utilidades. Cada proyecto mantiene su identidad y entregables.',
     proyectos: [
@@ -113,7 +113,7 @@ window.CLIENTES_PORTAL = [
         nombre: 'Tendencias',
         archivo: 'Herramientas/Tendencias.html',
         resumen: 'Análisis y seguimiento de tendencias del mercado y la industria.',
-        color: { border: '#5B4FCF', bg: '#F5F4FC', text: '#2A2548' }
+        color: { border: '#2E7D6E', bg: '#DFF0EC', text: '#1A4A40' }
       }
     ]
   }
