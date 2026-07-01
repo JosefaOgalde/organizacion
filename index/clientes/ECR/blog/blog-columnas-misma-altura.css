@@ -64,6 +64,27 @@ selector .ecr-card-blog__inner {
     flex: 1 1 auto !important;
 }
 
+/* Badges: evitar superposición cuando hay 2 categorías */
+selector .ecr-card-blog .elementor-widget-shortcode .elementor-shortcode {
+    position: absolute !important;
+    top: 20px !important;
+    left: 20px !important;
+    z-index: 4 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    max-width: calc(100% - 40px) !important;
+    pointer-events: none !important;
+}
+
+selector .ecr-card-blog .ecr-card-blog__badge {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    white-space: nowrap !important;
+}
+
 /* ========== COLUMNA CENTRO (7dab3e7 / bc0cdd5) ========== */
 selector .elementor-element-7dab3e7 {
     justify-content: flex-start !important;

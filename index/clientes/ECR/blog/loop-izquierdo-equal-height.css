@@ -40,21 +40,36 @@ selector .ecr-card-blog__bg-orange {
     display: none !important;
 }
 
-selector .ecr-card-blog__badge {
+/* Contenedor del shortcode: agrupa badges sin superponerlos */
+selector .ecr-card-blog .elementor-widget-shortcode .elementor-shortcode {
     position: absolute !important;
-    top: 30px !important;
-    left: 30px !important;
+    top: 20px !important;
+    left: 20px !important;
     z-index: 4 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    max-width: calc(100% - 40px) !important;
+    pointer-events: none !important;
+}
+
+selector .ecr-card-blog__badge {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
     display: inline-flex !important;
     align-items: center !important;
     gap: 6px !important;
     padding: 7px 14px !important;
-    border-radius: 25px !important;
-    border: 1px solid #fff !important;
-    background: rgba(0, 0, 0, 0.3) !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
     color: #fff !important;
-    font-size: 14px !important;
+    font-size: 12px !important;
     font-weight: 600 !important;
+    white-space: nowrap !important;
 }
 
 selector .ecr-card-blog__badge svg {
