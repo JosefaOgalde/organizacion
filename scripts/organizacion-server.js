@@ -39,7 +39,9 @@ function send(res, code, body, type) {
 
 function safePath(urlPath) {
   const decoded = decodeURIComponent(urlPath.split('?')[0]);
-  const rel = decoded.replace(/^\/+/, '') || 'index.html';
+  let rel = decoded.replace(/^\/+/, '') || 'index.html';
+  // Organizador está en la raíz (index.html), no en carpeta index/
+  if (rel === 'index' || rel === 'index/') rel = 'index.html';
   const abs = path.normalize(path.join(ROOT, rel));
   if (!abs.startsWith(ROOT)) return null;
   return abs;
@@ -114,7 +116,8 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Organización · http://localhost:${PORT}`);
+  console.log(`Organización · http://localhost:${PORT}/index.html`);
+  console.log(`  Portal clientes: http://localhost:${PORT}/index/clientes.html`);
   console.log(`  Landing JM: http://localhost:${PORT}/index/clientes/joyasmercury/`);
   console.log(`  Guardado live: data/organizacion-live.json`);
   if (!fs.existsSync(LIVE_FILE)) {
