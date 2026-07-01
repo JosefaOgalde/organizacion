@@ -1,6 +1,6 @@
 /**
  * ECR Blog — Widget HTML debajo de #filtro-principal
- * Íconos + ocultar Sin categoría + refreshCarrusel (bc0cdd5)
+ * Íconos + ocultar Sin categoría + refreshCarrusel (bc0cdd5) con paginación filtrada
  */
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var LOOP_CARRUSEL = 'bc0cdd5';
     var fetchAbort = null;
     var fetchSeq = 0;
-    var lastSlug = '__init__';
+    var lastRequestKey = '';
 
     (function injectStyles() {
         if (document.getElementById('ecr-carrusel-sync-css')) return;
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function getBaseUrl() {
         var filterEl = document.querySelector(FILTRO_PRINCIPAL + ' .e-filter');
         if (filterEl && filterEl.dataset.baseUrl) {
-            return filterEl.dataset.baseUrl;
+            return filterEl.dataset.baseUrl.split('?')[0];
         }
         return window.location.href.split('?')[0];
     }
@@ -145,17 +145,19 @@ document.addEventListener('DOMContentLoaded', function () {
             jQuery(document).trigger('elementor/loop/query_filter_end');
         }
         if (window.ECR && typeof window.ECR.decorateCarrusel === 'function') {
-            setTimeout(function () { window.ECR.decorateCarrusel(document); }, 150);
+            setTimeout(function () { window.ECR.decorateCarrusel(document); }, 100);
+            setTimeout(function () { window.ECR.decorateCarrusel(document); }, 450);
         }
     }
 
-    function refreshCarrusel(filterSlug) {
+    function refreshCarruselLoop(filterSlug, paginationPage) {
         var widgetEl = document.querySelector('.elementor-element-' + LOOP_CARRUSEL);
         if (!widgetEl) return Promise.resolve();
 
-        var slugKey = filterSlug || '';
-        if (slugKey === lastSlug) return Promise.resolve();
-        lastSlug = slugKey;
+        var page = paginationPage || 1;
+        var requestKey = (filterSlug || '') + '|' + page;
+        if (requestKey === lastRequestKey) return Promise.resolve();
+        lastRequestKey = requestKey;
 
         if (fetchAbort) fetchAbort.abort();
         fetchAbort = new AbortController();
@@ -167,7 +169,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (filterSlug) {
             widgetFilters = {
                 taxonomy: {
-                    category: { terms: [filterSlug] }
+                    category: {
+                        terms: [filterSlug],
+                        logicalJoin: 'AND'
+                    }
                 }
             };
         }
@@ -176,17 +181,20 @@ document.addEventListener('DOMContentLoaded', function () {
         var nonce = getNonce();
         if (nonce) headers['X-WP-Nonce'] = nonce;
 
+        var body = {
+            post_id: getPostId(),
+            widget_id: LOOP_CARRUSEL,
+            widget_filters: widgetFilters,
+            pagination_base_url: getBaseUrl(),
+            pagination_page: page
+        };
+
         return fetch(getRestUrl() + 'elementor-pro/v1/refresh-loop', {
             method: 'POST',
             headers: headers,
             credentials: 'same-origin',
             signal: fetchAbort.signal,
-            body: JSON.stringify({
-                post_id: getPostId(),
-                widget_id: LOOP_CARRUSEL,
-                widget_filters: widgetFilters,
-                pagination_base_url: getBaseUrl()
-            })
+            body: JSON.stringify(body)
         })
             .then(function (r) {
                 return r.json().then(function (data) {
@@ -197,12 +205,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (seq !== fetchSeq) return;
                 if (!res.ok) {
                     console.error('ECR carrusel filter HTTP ' + res.status, res.data);
-                    lastSlug = '__init__';
+                    lastRequestKey = '';
                     return;
                 }
                 if (!res.data || typeof res.data.data !== 'string') {
                     console.error('ECR carrusel filter: respuesta inesperada', res.data);
-                    lastSlug = '__init__';
+                    lastRequestKey = '';
                     return;
                 }
                 applyResponse(widgetEl, res.data.data);
@@ -210,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(function (err) {
                 if (err && err.name === 'AbortError') return;
                 console.error('ECR carrusel filter:', err);
-                lastSlug = '__init__';
+                lastRequestKey = '';
             })
             .finally(function () {
                 if (seq !== fetchSeq) return;
@@ -218,10 +226,11 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    function scheduleCarruselSync() {
-        setTimeout(function () {
-            refreshCarrusel(getActiveSlug());
-        }, 120);
+    function handleFilterClick(btn) {
+        var slug = btn.dataset.filter || null;
+        var wasActive = btn.getAttribute('aria-pressed') === 'true';
+        lastRequestKey = '';
+        refreshCarruselLoop(wasActive ? null : slug, 1);
     }
 
     function bindCarruselSync() {
@@ -230,16 +239,22 @@ document.addEventListener('DOMContentLoaded', function () {
         filterRoot.dataset.ecrCarruselSync = 'true';
 
         filterRoot.addEventListener('click', function (e) {
-            if (!e.target.closest('.e-filter-item')) return;
-            scheduleCarruselSync();
+            var btn = e.target.closest('.e-filter-item');
+            if (!btn) return;
+            setTimeout(function () { handleFilterClick(btn); }, 80);
         });
 
         if (window.jQuery) {
             jQuery(document).on('click', FILTRO_PRINCIPAL + ' .e-filter-item', function () {
-                scheduleCarruselSync();
+                var btn = this;
+                setTimeout(function () { handleFilterClick(btn); }, 80);
             });
         }
     }
+
+    window.ECR = window.ECR || {};
+    window.ECR.getActiveFilterSlug = getActiveSlug;
+    window.ECR.refreshCarruselLoop = refreshCarruselLoop;
 
     bindCarruselSync();
 

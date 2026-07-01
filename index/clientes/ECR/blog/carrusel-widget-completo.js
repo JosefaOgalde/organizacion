@@ -1,6 +1,6 @@
 /**
  * ECR Blog — Widget HTML debajo del Loop Grid 3 (carrusel central)
- * Paginación + badges + fechas reales (ligero, sin bucles)
+ * Paginación filtrada + badges + fechas reales
  *
  * ECR_CARRUSEL_PAGINACION
  * ECR_BLOG_DECORATE
@@ -208,14 +208,37 @@
         if (loopObserver) loopObserver.disconnect();
     }
 
-    function resumeObserver(loop) {
-        if (loopObserver && loop) {
-            loopObserver.observe(loop, { childList: true, subtree: false });
+    function resumeObserver(target) {
+        if (loopObserver && target) {
+            loopObserver.observe(target, { childList: true, subtree: true });
         }
     }
 
     function getCarruselGrid(root) {
         return (root || document).querySelector('.elementor-element-' + LOOP_CARRUSEL);
+    }
+
+    function clearDecorationState(grid) {
+        if (!grid) return;
+        grid.querySelectorAll('.e-loop-item').forEach(function (item) {
+            delete item.dataset.ecrDecorated;
+            var dateEl = getDateEl(item);
+            if (dateEl) dateEl.removeAttribute('data-ecr-date');
+        });
+        grid.querySelectorAll('[data-ecr-badges]').forEach(function (thumb) {
+            delete thumb.dataset.ecrBadges;
+            var badges = thumb.querySelector('.ecr-carrusel-badges');
+            if (badges) badges.remove();
+        });
+    }
+
+    function resetObserver() {
+        if (loopObserver) {
+            loopObserver.disconnect();
+            loopObserver = null;
+        }
+        var grid = getCarruselGrid(document);
+        if (grid) delete grid.dataset.ecrDecorateObserved;
     }
 
     function decorateCarrusel(root) {
@@ -238,7 +261,7 @@
         if (!work.length) return;
 
         isDecorating = true;
-        var loop = grid.querySelector('.elementor-loop-container');
+        var wrap = grid.querySelector('.elementor-widget-container');
         pauseObserver();
 
         loadIcons()
@@ -254,7 +277,7 @@
             })
             .finally(function () {
                 isDecorating = false;
-                resumeObserver(loop);
+                resumeObserver(wrap);
             });
     }
 
@@ -262,38 +285,38 @@
         if (decorateTimer) clearTimeout(decorateTimer);
         decorateTimer = setTimeout(function () {
             decorateCarrusel(document);
-        }, 250);
+        }, 200);
     }
 
     function resetAndDecorate() {
         var grid = getCarruselGrid(document);
-        if (grid) {
-            grid.querySelectorAll('.e-loop-item').forEach(function (item) {
-                delete item.dataset.ecrDecorated;
-            });
-        }
+        resetObserver();
+        clearDecorationState(grid);
+        bindObserver();
         scheduleDecorate();
+        setTimeout(scheduleDecorate, 500);
+        setTimeout(scheduleDecorate, 1000);
     }
 
     function bindObserver() {
         var grid = getCarruselGrid(document);
         if (!grid || grid.dataset.ecrDecorateObserved) return;
 
-        var loop = grid.querySelector('.elementor-loop-container');
-        if (!loop) return;
+        var wrap = grid.querySelector('.elementor-widget-container');
+        if (!wrap) return;
 
         grid.dataset.ecrDecorateObserved = '1';
         loopObserver = new MutationObserver(function (mutations) {
-            var added = false;
+            var changed = false;
             for (var i = 0; i < mutations.length; i++) {
-                if (mutations[i].addedNodes && mutations[i].addedNodes.length) {
-                    added = true;
+                if (mutations[i].type === 'childList') {
+                    changed = true;
                     break;
                 }
             }
-            if (added) scheduleDecorate();
+            if (changed) scheduleDecorate();
         });
-        loopObserver.observe(loop, { childList: true, subtree: false });
+        loopObserver.observe(wrap, { childList: true, subtree: true });
     }
 
     injectStyles();
@@ -335,6 +358,33 @@ jQuery(document).ready(function ($) {
         return $('.elementor-element-' + LOOP_CARRUSEL);
     }
 
+    function getCurrentPage($grid) {
+        var $cur = $grid.find('.elementor-pagination .page-numbers.current');
+        if ($cur.length) {
+            var n = parseInt($cur.text(), 10);
+            if (!isNaN(n)) return n;
+        }
+        return 1;
+    }
+
+    function getPageFromLink($link, $grid) {
+        var href = $link.attr('href') || '';
+        var param = 'e-page-' + LOOP_CARRUSEL;
+        var re = new RegExp('[?&]' + param + '=(\\d+)');
+        var m = href.match(re);
+        if (m) return parseInt(m[1], 10);
+
+        if ($link.hasClass('prev')) {
+            return Math.max(1, getCurrentPage($grid) - 1);
+        }
+        if ($link.hasClass('next')) {
+            return getCurrentPage($grid) + 1;
+        }
+
+        var n = parseInt($link.text(), 10);
+        return isNaN(n) ? 1 : n;
+    }
+
     function setCargando($grid, on) {
         var $wrap = $grid.find('.elementor-widget-container');
         if (!$wrap.length) return;
@@ -365,16 +415,34 @@ jQuery(document).ready(function ($) {
 
     $(document).on('click', '.elementor-element-' + LOOP_CARRUSEL + ' .elementor-pagination a', function (e) {
         var $grid = getCarruselGrid();
+        var $link = $(this);
         if (!$grid.length || !$.contains($grid[0], this)) return;
-        if ($(this).hasClass('disabled') || $(this).parent().hasClass('disabled')) {
+
+        if ($link.hasClass('disabled') || $link.parent().hasClass('disabled')) {
             e.preventDefault();
             return false;
         }
+
+        if (window.ECR && typeof window.ECR.refreshCarruselLoop === 'function') {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            var page = getPageFromLink($link, $grid);
+            var slug = window.ECR.getActiveFilterSlug ? window.ECR.getActiveFilterSlug() : null;
+
+            setCargando($grid, true);
+            window.ECR.refreshCarruselLoop(slug, page);
+            return false;
+        }
+
         setCargando($grid, true);
     });
 
     $(document).on('elementor/loop/query_filter_end', function () {
         forzarBotonesAbajo();
         setCargando(getCarruselGrid(), false);
+        if (window.ECR && typeof window.ECR.decorateCarrusel === 'function') {
+            window.ECR.decorateCarrusel(document);
+        }
     });
 });
