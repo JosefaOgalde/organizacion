@@ -116,10 +116,6 @@
             });
     }
 
-    function slugsFromEmbedded(post) {
-        return [];
-    }
-
     function fetchPostsBatch(postIds) {
         var missing = postIds.filter(function (id) {
             return !Object.prototype.hasOwnProperty.call(META_CACHE, id);
@@ -197,9 +193,7 @@
             thumb.style.overflow = 'hidden';
         }
 
-        var slugs = (meta && meta.slugs && meta.slugs.length)
-            ? meta.slugs
-            : getSlugsFromClasses(item);
+        var slugs = getSlugsFromClasses(item);
 
         if (thumb && slugs.length) {
             renderBadges(thumb, slugs, icons);
