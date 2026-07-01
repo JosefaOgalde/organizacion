@@ -94,6 +94,14 @@
         return SLUG_LABEL[slug] || (slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' '));
     }
 
+    function sortSlugs(slugs) {
+        return slugs.slice().sort(function (a, b) {
+            var oa = SLUG_ORDER[a] || 99;
+            var ob = SLUG_ORDER[b] || 99;
+            return oa - ob;
+        });
+    }
+
     function getThumb(item) {
         return item.querySelector('.elementor-element-' + THUMB_ID)
             || item.querySelector('[data-id="' + THUMB_ID + '"]');
@@ -165,7 +173,7 @@
         var wrap = document.createElement('div');
         wrap.className = 'ecr-carrusel-badges';
         wrap.setAttribute('aria-hidden', 'true');
-        wrap.innerHTML = slugs.slice(0, 2).map(function (s) {
+        wrap.innerHTML = sortSlugs(slugs).slice(0, 2).map(function (s) {
             return buildBadgeHtml(s, icons);
         }).join('');
 

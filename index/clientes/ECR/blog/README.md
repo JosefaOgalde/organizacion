@@ -78,7 +78,7 @@ Pegar en: **Contenedor fila** (227fd49) → Avanzado → CSS personalizado.
 |----------|-----------|-----------|
 | Filtro visible | `49c7550` / `#filtro-principal` | — |
 | Contenedor 3 columnas | `227fd49` | — |
-| Bloque izquierdo | `7f45e18` | 1135 |
+| Bloque izquierdo | `7f45e18` | **1094** (Big post) |
 | Carrusel centro | `bc0cdd5` | 1144 |
 | Columna derecha | `aa293d3` | — |
 | Contenedor imagen (badges) | `5e4f8fb` | — |
