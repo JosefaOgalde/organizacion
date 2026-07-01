@@ -31,20 +31,22 @@ selector .elementor-element-7f45e18 .e-loop-item {
     flex-direction: column !important;
     flex: 1 1 auto !important;
     height: 100% !important;
-    min-height: 100% !important;
+    min-height: 0 !important;
+    align-self: stretch !important;
 }
 
 selector .elementor-element-7f45e18 .e-loop-item > .elementor {
     flex: 1 1 auto !important;
     height: 100% !important;
-    min-height: 100% !important;
+    min-height: 0 !important;
 }
 
 selector .ecr-card-blog {
     flex: 1 1 auto !important;
     height: 100% !important;
-    min-height: 100% !important;
+    min-height: 0 !important;
     max-height: none !important;
+    align-self: stretch !important;
 }
 
 selector .ecr-card-blog .e-con-inner {
@@ -144,8 +146,24 @@ selector .elementor-element-7129d08 .elementor-element-aa17fd8 {
     min-height: 100% !important;
 }
 
-/* ========== RESPONSIVE: en móvil no forzar altura ========== */
-@media (max-width: 1024px) {
+/* ========== RESPONSIVE ========== */
+/* Tablet: mantener izquierda + centro en fila con la MISMA altura */
+@media (max-width: 1200px) and (min-width: 768px) {
+    selector {
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+    }
+
+    selector > .elementor-element-bf7e0a0,
+    selector > .elementor-element-7dab3e7 {
+        align-self: stretch !important;
+        height: auto !important;
+        min-height: 0 !important;
+    }
+}
+
+/* Móvil: columnas apiladas — cada una con altura propia */
+@media (max-width: 767px) {
     selector {
         flex-wrap: wrap !important;
     }
@@ -155,11 +173,12 @@ selector .elementor-element-7129d08 .elementor-element-aa17fd8 {
     selector > .elementor-element-aa293d3 {
         width: 100% !important;
         min-height: auto !important;
+        height: auto !important;
     }
 
     selector .ecr-card-blog,
     selector .ecr-card-blog__inner {
-        min-height: 320px !important;
+        min-height: 280px !important;
         height: auto !important;
     }
 }

@@ -1,14 +1,39 @@
-/* Loop Grid bloque izquierdo "Descubre tendencias" (7f45e18)
+/* Loop Grid bloque izquierdo (7f45e18) — tarjeta .ecr-card-blog
    Pegar en: Loop Grid izquierdo → Avanzado → CSS personalizado
-   O aplicar si cambias la plantilla a la 1094 (bloque superior). */
+   REQUIERE también blog-columnas-misma-altura.css en el contenedor fila (227fd49) */
+
+/* Cadena flex: la tarjeta estira al alto de la columna (= carrusel centro) */
+selector,
+selector > .elementor-widget-container,
+selector .elementor-loop-container,
+selector .e-loop-item,
+selector .e-loop-item > .elementor {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  align-self: stretch !important;
+  height: 100% !important;
+  min-height: 0 !important;
+}
 
 selector .ecr-card-blog {
   position: relative !important;
   border-radius: 25px !important;
   overflow: hidden !important;
-  min-height: 100% !important;
+  flex: 1 1 auto !important;
+  align-self: stretch !important;
   height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
   cursor: pointer;
+}
+
+selector .ecr-card-blog .e-con-inner {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 selector .ecr-card-blog__bg {
@@ -18,6 +43,7 @@ selector .ecr-card-blog__bg {
   background-position: center !important;
   z-index: 0 !important;
   min-height: 100% !important;
+  height: 100% !important;
   opacity: 1 !important;
   transform: none !important;
 }
@@ -27,6 +53,8 @@ selector .ecr-card-blog__overlay {
   inset: 0 !important;
   z-index: 1 !important;
   opacity: 1 !important;
+  min-height: 100% !important;
+  height: 100% !important;
   background: linear-gradient(
     to top,
     rgba(0, 0, 0, 0.75) 0%,
@@ -39,17 +67,18 @@ selector .ecr-card-blog__bg-orange {
   display: none !important;
 }
 
+/* Badges en columna (Articulos arriba, Prensa abajo) */
 selector .ecr-card-blog .elementor-widget-shortcode .elementor-shortcode {
   position: absolute !important;
-  top: 20px !important;
-  left: 20px !important;
+  top: 30px !important;
+  left: 30px !important;
   z-index: 4 !important;
   display: flex !important;
   flex-direction: column !important;
   flex-wrap: nowrap !important;
   align-items: flex-start !important;
   gap: 8px !important;
-  max-width: calc(100% - 40px) !important;
+  max-width: calc(100% - 60px) !important;
   pointer-events: none !important;
 }
 
@@ -61,12 +90,11 @@ selector .ecr-card-blog__badge {
   align-items: center !important;
   gap: 6px !important;
   padding: 7px 14px !important;
-  border-radius: 999px !important;
-  border: 1px solid rgba(255, 255, 255, 0.35) !important;
-  background: rgba(255, 255, 255, 0.2) !important;
-  backdrop-filter: blur(10px) !important;
+  border-radius: 25px !important;
+  border: 1px solid #fff !important;
+  background: rgba(0, 0, 0, 0.3) !important;
   color: #fff !important;
-  font-size: 12px !important;
+  font-size: 14px !important;
   font-weight: 600 !important;
   white-space: nowrap !important;
 }
@@ -75,12 +103,14 @@ selector .ecr-card-blog__badge svg {
   display: inline-block !important;
   width: 16px !important;
   height: 16px !important;
+  flex-shrink: 0 !important;
 }
 
 selector .ecr-card-blog__inner {
   position: relative !important;
   z-index: 3 !important;
-  min-height: 100% !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
   height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
@@ -94,8 +124,12 @@ selector .ecr-card-blog__title .elementor-heading-title {
   color: #fff !important;
   font-family: "Encode Sans Condensed", sans-serif !important;
   font-weight: 600 !important;
-  font-size: clamp(1.1rem, 2vw, 1.6rem) !important;
+  font-size: clamp(1rem, 1.8vw, 1.6rem) !important;
   text-align: center !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 5 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
 }
 
 selector .ecr-card-blog__reveal,
@@ -109,6 +143,7 @@ selector .ecr-card-blog__footer {
   margin-top: 20px !important;
   justify-content: flex-end !important;
   width: 100% !important;
+  flex-shrink: 0 !important;
 }
 
 selector .ecr-card-blog__btn .elementor-button {
@@ -127,4 +162,29 @@ selector .ecr-card-blog:hover {
 selector .ecr-card-blog:hover .ecr-card-blog__bg {
   opacity: 1 !important;
   transform: none !important;
+}
+
+/* Tablet: título más compacto si la columna es baja */
+@media (max-width: 1200px) {
+  selector .ecr-card-blog__title .elementor-heading-title {
+    -webkit-line-clamp: 4 !important;
+    font-size: clamp(0.95rem, 1.6vw, 1.35rem) !important;
+  }
+
+  selector .ecr-card-blog__inner {
+    padding: 24px !important;
+  }
+}
+
+/* Móvil apilado: altura libre (ya no comparte fila con el carrusel) */
+@media (max-width: 767px) {
+  selector,
+  selector > .elementor-widget-container,
+  selector .elementor-loop-container,
+  selector .e-loop-item,
+  selector .e-loop-item > .elementor,
+  selector .ecr-card-blog {
+    height: auto !important;
+    min-height: 280px !important;
+  }
 }
