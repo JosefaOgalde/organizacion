@@ -76,14 +76,34 @@
     }
 
     function formatDate(iso) {
-        var d = new Date(iso);
-        if (isNaN(d.getTime())) return '';
-        return d.getDate() + ' ' + MESES[d.getMonth()] + ' ' + d.getFullYear();
+        if (!iso || typeof iso !== 'string') return '';
+        var part = iso.split('T')[0];
+        var bits = part.split('-');
+        if (bits.length !== 3) return '';
+        var day = parseInt(bits[2], 10);
+        var month = parseInt(bits[1], 10) - 1;
+        var year = parseInt(bits[0], 10);
+        if (isNaN(day) || isNaN(month) || isNaN(year) || month < 0 || month > 11) return '';
+        return day + ' ' + MESES[month] + ' ' + year;
     }
 
     function getPostId(item) {
         var m = (item.className || '').match(/\bpost-(\d+)\b/);
-        return m ? m[1] : null;
+        if (m) return m[1];
+        m = (item.id || '').match(/post-(\d+)/);
+        if (m) return m[1];
+        var link = item.querySelector('a[href*="/?p="], a[href*="/blog/"]');
+        if (link && link.href) {
+            m = link.href.match(/[?&]p=(\d+)/);
+            if (m) return m[1];
+        }
+        return null;
+    }
+
+    function getDateEl(item) {
+        return item.querySelector('.elementor-element-bc5fe2f .elementor-shortcode')
+            || item.querySelector('[data-id="bc5fe2f"] .elementor-shortcode')
+            || item.querySelector('.elementor-element-bc5fe2f .elementor-widget-container');
     }
 
     function getCategorySlugsFromClass(item) {
@@ -128,17 +148,23 @@
     }
 
     function fetchPostMeta(postId) {
-        if (DATE_CACHE[postId] && CAT_CACHE[postId]) {
+        if (Object.prototype.hasOwnProperty.call(DATE_CACHE, postId)
+            && Object.prototype.hasOwnProperty.call(CAT_CACHE, postId)) {
             return Promise.resolve({ date: DATE_CACHE[postId], slugs: CAT_CACHE[postId] });
         }
 
-        return fetch('/wp-json/wp/v2/posts/' + postId + '?_fields=date,categories')
-            .then(function (r) { return r.json(); })
+        return fetch('/wp-json/wp/v2/posts/' + postId + '?_fields=id,date,categories')
+            .then(function (r) {
+                if (!r.ok) throw new Error('post ' + postId);
+                return r.json();
+            })
             .then(function (p) {
+                if (!p || !p.id) throw new Error('invalid post ' + postId);
+
                 var dateTxt = formatDate(p.date);
                 DATE_CACHE[postId] = dateTxt;
 
-                if (CAT_CACHE[postId]) {
+                if (Object.prototype.hasOwnProperty.call(CAT_CACHE, postId)) {
                     return { date: dateTxt, slugs: CAT_CACHE[postId] };
                 }
 
@@ -149,7 +175,7 @@
 
                 return Promise.all(p.categories.map(function (catId) {
                     return fetch('/wp-json/wp/v2/categories/' + catId + '?_fields=slug,name')
-                        .then(function (r) { return r.json(); })
+                        .then(function (r) { return r.ok ? r.json() : null; })
                         .catch(function () { return null; });
                 })).then(function (cats) {
                     var slugs = cats.filter(Boolean).map(function (c) { return c.slug; })
@@ -159,7 +185,7 @@
                 });
             })
             .catch(function () {
-                return { date: '', slugs: [] };
+                return { date: DATE_CACHE[postId] || '', slugs: CAT_CACHE[postId] || [] };
             });
     }
 
@@ -188,9 +214,11 @@
     }
 
     function injectDate(item, dateTxt) {
-        var dateEl = item.querySelector('.elementor-element-bc5fe2f .elementor-shortcode');
+        if (!dateTxt) return;
+        var dateEl = getDateEl(item);
         if (!dateEl) return;
-        if (dateTxt) dateEl.textContent = dateTxt;
+        dateEl.textContent = dateTxt;
+        dateEl.setAttribute('data-ecr-date', dateTxt);
     }
 
     function decorateItem(item, icons) {
@@ -257,21 +285,44 @@
     window.ECR = window.ECR || {};
     window.ECR.decorateCarrusel = decorateCarrusel;
 
-    document.addEventListener('DOMContentLoaded', function () {
+    function bindElementorHooks() {
+        if (!window.elementorFrontend || !elementorFrontend.hooks) return;
+
+        elementorFrontend.hooks.addAction('frontend/element_ready/loop-grid.default', function ($scope) {
+            var el = $scope[0];
+            if (!el) return;
+            if (el.classList.contains('elementor-element-' + LOOP_CARRUSEL) || el.querySelector('.elementor-element-' + LOOP_CARRUSEL)) {
+                scheduleDecorate();
+            }
+        });
+    }
+
+    function startDecorate() {
         scheduleDecorate();
         bindObserver();
-        [350, 800, 1500].forEach(function (ms) {
+        [100, 300, 600, 1000, 2000, 4000].forEach(function (ms) {
             setTimeout(scheduleDecorate, ms);
         });
-    });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startDecorate);
+    } else {
+        startDecorate();
+    }
 
     window.addEventListener('load', scheduleDecorate);
 
     if (window.jQuery) {
-        jQuery(window).on('elementor/frontend/init', scheduleDecorate);
+        jQuery(window).on('elementor/frontend/init', function () {
+            bindElementorHooks();
+            scheduleDecorate();
+        });
         jQuery(document).on('elementor/loop/query_filter_end', function () {
             setTimeout(scheduleDecorate, 100);
         });
+    } else if (window.elementorFrontend) {
+        bindElementorHooks();
     }
 })();
 
