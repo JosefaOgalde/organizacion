@@ -136,6 +136,15 @@
                 )
                 .join('')}
             </div>
+            ${c.slug === 'herramientas' ? `
+            <p style="margin-top:1rem">
+              <a href="Herramientas/Tendencias.html" class="portal-btn tend-btn-principal" style="display:inline-block;text-decoration:none">
+                Ver tendencias de comida →
+              </a>
+              <span style="display:block;margin-top:0.5rem;font-size:0.82rem;color:var(--muted)">
+                Abre <code>Herramientas/Tendencias.html</code> y pulsa el botón para cargar el feed
+              </span>
+            </p>` : ''}
           </section>`
         : '';
 

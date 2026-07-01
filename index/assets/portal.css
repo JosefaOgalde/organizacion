@@ -256,6 +256,19 @@ body {
   border-color: transparent;
 }
 
+.tend-btn-principal {
+  font-size: 1rem;
+  padding: 0.7rem 1.35rem;
+  background: var(--card-border, #2e7d6e);
+  color: #fff;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.tend-btn-principal:hover {
+  filter: brightness(1.08);
+}
+
 .portal-cliente__hint {
   margin: 0 0 1rem;
   padding: 0.55rem 0.75rem;

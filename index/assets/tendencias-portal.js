@@ -174,7 +174,8 @@
         </div>
 
         <div class="tend-toolbar">
-          <button type="button" class="portal-btn" id="tend-btn-refresh">↻ Actualizar tendencias</button>
+          <button type="button" class="portal-btn tend-btn-principal" id="tend-btn-ver-otra">Ver tendencias de comida</button>
+          <button type="button" class="portal-btn" id="tend-btn-refresh">↻ Actualizar</button>
           <a href="../../../index.html?tarea=herramientas/01" class="portal-btn portal-btn--ghost">Ir al organizador</a>
         </div>
 
@@ -190,9 +191,42 @@
       </article>`;
 
     document.getElementById('tend-btn-refresh')?.addEventListener('click', () => boot(true));
+    document.getElementById('tend-btn-ver-otra')?.addEventListener('click', () => boot(true));
+  }
+
+  function renderInicio() {
+    const btn = document.getElementById('tend-btn-ver');
+    const inicio = document.getElementById('tendencias-inicio');
+    if (inicio && btn) {
+      btn.disabled = false;
+      btn.classList.remove('tend-btn-principal--cargando');
+      btn.textContent = 'Ver tendencias de comida';
+      btn.onclick = () => boot(true);
+      return;
+    }
+
+    root.innerHTML = `
+      <article class="portal-cliente tend-dashboard tend-inicio"
+        style="--card-border:${col.primario};--card-bg:${col.fondo};--card-text:${col.texto}">
+        <span class="portal-badge">Proyecto ${escapeHtml(proyecto.codigo)} · Chile</span>
+        <h2>Tendencias comida · Chile</h2>
+        <p class="portal-cliente__meta">TikTok, Instagram y YouTube Shorts — recetas virales con KPIs</p>
+        <p class="tend-inicio__texto">Pulsa el botón para cargar las tendencias del momento. No necesitas buscar hashtags ni revisar red por red.</p>
+        <button type="button" class="portal-btn tend-btn-principal" id="tend-btn-ver">Ver tendencias de comida</button>
+        <p class="tend-inicio__ruta">Página: <code>Herramientas/Tendencias.html</code></p>
+      </article>`;
+    document.getElementById('tend-btn-ver')?.addEventListener('click', () => boot(true));
   }
 
   function renderCargando() {
+    const btn = document.getElementById('tend-btn-ver');
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add('tend-btn-principal--cargando');
+      btn.textContent = 'Cargando tendencias…';
+      return;
+    }
+
     root.innerHTML = `
       <article class="portal-cliente tend-dashboard" style="--card-border:${col.primario};--card-bg:${col.fondo};--card-text:${col.texto}">
         <h1>Tendencias comida · Chile</h1>
@@ -211,7 +245,9 @@
           No se pudieron cargar las tendencias. Abre con <code>npx serve .</code> en la raíz del proyecto.
           <br><small>${escapeHtml(err.message)}</small>
         </div>
-        <p style="margin-top:1rem"><button type="button" class="portal-btn" id="tend-btn-retry">Reintentar</button></p>
+        <p style="margin-top:1rem">
+          <button type="button" class="portal-btn tend-btn-principal" id="tend-btn-retry">Ver tendencias de comida</button>
+        </p>
       </article>`;
     document.getElementById('tend-btn-retry')?.addEventListener('click', () => boot(true));
   }
@@ -227,5 +263,14 @@
     }
   }
 
-  boot();
+  const params = new URLSearchParams(location.search);
+  const btnInicio = document.getElementById('tend-btn-ver');
+  if (btnInicio) {
+    btnInicio.addEventListener('click', () => boot(true));
+  }
+  if (params.get('ver') === '1') {
+    boot();
+  } else {
+    renderInicio();
+  }
 })();
