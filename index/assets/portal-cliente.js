@@ -50,7 +50,8 @@
   function hrefProyecto(archivo) {
     if (!archivo) return '#';
     if (/^https?:\/\//i.test(archivo) || archivo.startsWith('/')) return archivo;
-    return depth ? `${pathUp}${archivo}` : archivo;
+    const limpio = archivo.replace(/\.html$/i, '');
+    return depth ? `${pathUp}${limpio}` : limpio;
   }
 
   function contarTareasCliente() {

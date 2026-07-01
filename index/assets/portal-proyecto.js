@@ -15,7 +15,7 @@
   const { cliente, proyecto: p } = found;
   const col = p.color || cliente.color;
   const id = p.identidad || {};
-  const archivoCliente = (cliente.archivo || '').split('?')[0];
+  const archivoCliente = (cliente.archivo || '').split('?')[0].replace(/\.html$/i, '');
   const hrefCliente = `../${archivoCliente}`;
 
   if (typeof window.aplicarTemaPortal === 'function') {

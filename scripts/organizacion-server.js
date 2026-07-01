@@ -112,6 +112,26 @@ function safePath(urlPath) {
   return abs;
 }
 
+/** Resuelve ruta sin .html, carpetas con index.html, etc. */
+function resolveStaticFile(urlPath) {
+  const base = safePath(urlPath);
+  if (!base) return null;
+
+  const candidates = [];
+  if (fs.existsSync(base)) {
+    const stat = fs.statSync(base);
+    if (stat.isFile()) return base;
+    if (stat.isDirectory()) candidates.push(path.join(base, 'index.html'));
+  }
+  if (!base.endsWith('.html')) candidates.push(`${base}.html`);
+  candidates.push(path.join(base, 'index.html'));
+
+  for (const c of candidates) {
+    if (fs.existsSync(c) && fs.statSync(c).isFile()) return c;
+  }
+  return null;
+}
+
 function redirectJoyasMercury(res, urlPath) {
   const q = urlPath.includes('?') ? urlPath.slice(urlPath.indexOf('?')) : '';
   const target = `/index/clientes/joyasmercury/index.html${q || '?v=secciones3'}`;
@@ -215,26 +235,13 @@ const server = http.createServer((req, res) => {
     return redirectJoyasMercury(res, url);
   }
 
-  const filePath = safePath(url);
-  if (!filePath) return send(res, 403, 'Forbidden');
+  const filePath = resolveStaticFile(url);
+  if (!filePath) return send(res, 404, 'Not found');
 
-  fs.stat(filePath, (err, stat) => {
-    if (err) return send(res, 404, 'Not found');
-    if (stat.isDirectory()) {
-      const index = path.join(filePath, 'index.html');
-      if (fs.existsSync(index)) {
-        return fs.readFile(index, (e, data) => {
-          if (e) return send(res, 500, 'Error');
-          send(res, 200, data, MIME['.html']);
-        });
-      }
-      return send(res, 404, 'Not found');
-    }
-    const ext = path.extname(filePath).toLowerCase();
-    fs.readFile(filePath, (e, data) => {
-      if (e) return send(res, 500, 'Error');
-      send(res, 200, data, MIME[ext] || 'application/octet-stream');
-    });
+  const ext = path.extname(filePath).toLowerCase();
+  fs.readFile(filePath, (e, data) => {
+    if (e) return send(res, 500, 'Error');
+    send(res, 200, data, MIME[ext] || 'application/octet-stream');
   });
 });
 

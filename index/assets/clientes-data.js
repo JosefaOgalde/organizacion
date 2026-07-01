@@ -154,7 +154,7 @@ window.CLIENTES_PORTAL = [
       {
         codigo: 'CLA',
         nombre: 'Caja Los Andes',
-        archivo: 'DesafioLatam/CLA.html',
+        archivo: 'DesafioLatam/CLA',
         resumen: 'Programa IA — certificados modulares Fase 1, 2, 3 y final (1123×794 px).',
         color: { border: '#1a6b4a', bg: '#edf7f2', text: '#1a5c40' },
         identidad: {
@@ -187,7 +187,7 @@ window.CLIENTES_PORTAL = [
       {
         codigo: 'TEND',
         nombre: 'Tendencias',
-        archivo: 'Herramientas/Tendencias.html',
+        archivo: 'Herramientas/Tendencias',
         resumen: 'Herramientas de análisis y seguimiento de tendencias.',
         descripcion: 'Análisis de mercado, señales y seguimiento de tendencias para apoyar decisiones de contenido y producto.',
         color: { border: '#5B4FCF', bg: '#F5F4FC', text: '#5B4FCF' },
