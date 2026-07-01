@@ -117,9 +117,28 @@
       .join('')}</div>`;
   }
 
+  function guiasHtml() {
+    return `<section class="ficha-seccion ficha-seccion--portal">
+        <h2>Guías en curso · MOVA</h2>
+        <div class="mkof-guias-grid">
+          <a href="mkof/github-cuenta.html" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Paso 1 · En curso</span>
+            <strong>Crear cuenta GitHub</strong>
+            <span class="mkof-guia-card__desc">Correo general del proyecto · guía visual paso a paso</span>
+          </a>
+          <div class="mkof-guia-card mkof-guia-card--pendiente">
+            <span class="mkof-guia-card__paso">Paso 2 · Próximo</span>
+            <strong>Repo privado mova-n8n-workflows</strong>
+            <span class="mkof-guia-card__desc">Se publicará después de crear la cuenta</span>
+          </div>
+        </div>
+      </section>`;
+  }
+
   function mkofLandingSectionsHtml() {
     if (!G()) return '';
     return `
+      ${guiasHtml()}
       <section class="ficha-seccion ficha-seccion--portal">
         <h2>MOVA · Post-auditoría</h2>
         ${contextoHtml()}

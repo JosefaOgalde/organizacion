@@ -241,6 +241,63 @@
   line-height: 1.5;
 }
 
+.mkof-guias-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 520px) {
+  .mkof-guias-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.mkof-guia-card {
+  display: block;
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius);
+  border: 2px solid #d0e8ec;
+  background: #f8fcfd;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+a.mkof-guia-card:hover {
+  border-color: var(--mkof-accent-light);
+  box-shadow: 0 2px 10px rgba(74, 122, 128, 0.12);
+}
+
+.mkof-guia-card--activa {
+  border-color: var(--mkof-accent);
+  background: var(--mkof-bg);
+}
+
+.mkof-guia-card--pendiente {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.mkof-guia-card__paso {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mkof-accent);
+  margin-bottom: 0.35rem;
+}
+
+.mkof-guia-card strong {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.mkof-guia-card__desc {
+  font-size: 0.82rem;
+  color: #666;
+  line-height: 1.4;
+}
+
 @media (max-width: 600px) {
   .mkof-gantt__grid { min-width: 100%; grid-template-columns: 120px 1fr; }
   .mkof-gantt__escala,
