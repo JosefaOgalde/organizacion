@@ -48,9 +48,17 @@ Incluye:
 
 > En producción hoy solo está publicado `ECR_CARRUSEL_PAGINACION`. Por eso **no se ven las etiquetas** en el centro. Hay que pegar el widget completo.
 
-### 4. Bloque izquierdo (`7f45e18`) — opcional
+### 4. Bloque izquierdo (`7f45e18`)
 
-CSS estilo tarjeta grande → [`loop-izquierdo-big-post.css`](./loop-izquierdo-big-post.css)
+CSS estilo tarjeta grande + altura igual al carrusel → [`loop-izquierdo-equal-height.css`](./loop-izquierdo-equal-height.css)
+
+> Si tienes `min-height: 550px` en el CSS del bloque izquierdo, **elimínalo** y usa este archivo.
+
+### 5. Fila 3 columnas — misma altura (`227fd49`)
+
+Contenedor que envuelve izquierda + carrusel + derecha → [`blog-columnas-misma-altura.css`](./blog-columnas-misma-altura.css)
+
+Pegar en: **Contenedor fila** (227fd49) → Avanzado → CSS personalizado.
 
 ---
 
@@ -59,7 +67,7 @@ CSS estilo tarjeta grande → [`loop-izquierdo-big-post.css`](./loop-izquierdo-b
 1. Recargar https://ecrgroup.cl/blog/
 2. En el carrusel central, cada imagen debe mostrar una pastilla (ej. **Articulos**, **Prensa**) arriba a la izquierda
 3. Las fechas deben cambiar por artículo (no todas «1 Jul 2026»)
-4. Las 3 filas deben tener **la misma altura** y miniaturas más bajas
+4. Las 3 columnas (izquierda, centro, derecha) deben tener **la misma altura**
 5. Al filtrar por categoría, el carrusel actualiza y mantiene etiquetas + fechas
 
 ---

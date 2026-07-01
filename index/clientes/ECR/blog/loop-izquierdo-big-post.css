@@ -6,7 +6,8 @@ selector .ecr-card-blog {
   position: relative !important;
   border-radius: 25px !important;
   overflow: hidden !important;
-  min-height: 550px !important;
+  min-height: 100% !important;
+  height: 100% !important;
   cursor: pointer;
 }
 
@@ -64,7 +65,8 @@ selector .ecr-card-blog__badge svg {
 selector .ecr-card-blog__inner {
   position: relative !important;
   z-index: 3 !important;
-  min-height: 550px !important;
+  min-height: 100% !important;
+  height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: flex-end !important;
