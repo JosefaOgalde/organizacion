@@ -1,7 +1,6 @@
 /**
  * ECR Blog — Widget HTML debajo del Loop Grid 3 (carrusel central)
- * Incluye: paginación + etiquetas de categoría + fechas reales
- * Reemplazar el widget HTML actual del carrusel con ESTE archivo completo.
+ * Paginación + badges + fechas reales (ligero, sin bucles)
  *
  * ECR_CARRUSEL_PAGINACION
  * ECR_BLOG_DECORATE
@@ -12,9 +11,10 @@
     var LOOP_CARRUSEL = 'bc0cdd5';
     var THUMB_ID = '5e4f8fb';
     var ICONS = null;
-    var DATE_CACHE = {};
-    var CAT_CACHE = {};
+    var META_CACHE = {};
     var decorateTimer = null;
+    var isDecorating = false;
+    var loopObserver = null;
 
     var SLUG_LABEL = {
         articulos: 'Articulos',
@@ -35,41 +35,22 @@
         style.id = 'ecr-blog-decorate-css';
         style.textContent = [
             '.elementor-element-' + LOOP_CARRUSEL + ' .elementor-element-' + THUMB_ID + ' {',
-            '  position: relative !important;',
-            '  overflow: hidden !important;',
+            '  position: relative !important; overflow: hidden !important;',
             '}',
             '.elementor-element-' + LOOP_CARRUSEL + ' .ecr-carrusel-badges {',
-            '  position: absolute !important;',
-            '  top: 8px !important;',
-            '  left: 8px !important;',
-            '  z-index: 6 !important;',
-            '  display: flex !important;',
-            '  flex-direction: column !important;',
-            '  flex-wrap: nowrap !important;',
-            '  align-items: flex-start !important;',
-            '  gap: 4px !important;',
-            '  max-width: calc(100% - 16px) !important;',
-            '  pointer-events: none !important;',
+            '  position: absolute !important; top: 8px !important; left: 8px !important;',
+            '  z-index: 6 !important; display: flex !important; flex-direction: column !important;',
+            '  gap: 4px !important; max-width: calc(100% - 16px) !important; pointer-events: none !important;',
             '}',
             '.elementor-element-' + LOOP_CARRUSEL + ' .ecr-carrusel-badges .ecr-card-blog__badge {',
-            '  display: inline-flex !important;',
-            '  align-items: center !important;',
-            '  gap: 4px !important;',
-            '  padding: 4px 10px !important;',
-            '  border-radius: 999px !important;',
-            '  border: 1px solid #fff !important;',
-            '  background: rgba(0, 0, 0, 0.65) !important;',
-            '  color: #fff !important;',
-            '  font-size: 11px !important;',
-            '  font-weight: 600 !important;',
-            '  line-height: 1 !important;',
+            '  display: inline-flex !important; align-items: center !important; gap: 4px !important;',
+            '  padding: 4px 10px !important; border-radius: 999px !important;',
+            '  border: 1px solid #fff !important; background: rgba(0,0,0,0.65) !important;',
+            '  color: #fff !important; font-size: 11px !important; font-weight: 600 !important;',
             '  white-space: nowrap !important;',
             '}',
             '.elementor-element-' + LOOP_CARRUSEL + ' .ecr-carrusel-badges .ecr-card-blog__badge svg {',
-            '  display: inline-block !important;',
-            '  width: 12px !important;',
-            '  height: 12px !important;',
-            '  flex-shrink: 0 !important;',
+            '  width: 12px !important; height: 12px !important; flex-shrink: 0 !important;',
             '}'
         ].join('\n');
         document.head.appendChild(style);
@@ -77,36 +58,31 @@
 
     function formatDate(iso) {
         if (!iso || typeof iso !== 'string') return '';
-        var part = iso.split('T')[0];
-        var bits = part.split('-');
+        var bits = iso.split('T')[0].split('-');
         if (bits.length !== 3) return '';
         var day = parseInt(bits[2], 10);
         var month = parseInt(bits[1], 10) - 1;
         var year = parseInt(bits[0], 10);
-        if (isNaN(day) || isNaN(month) || isNaN(year) || month < 0 || month > 11) return '';
+        if (isNaN(day) || month < 0 || month > 11) return '';
         return day + ' ' + MESES[month] + ' ' + year;
     }
 
     function getPostId(item) {
         var m = (item.className || '').match(/\bpost-(\d+)\b/);
-        if (m) return m[1];
-        m = (item.id || '').match(/post-(\d+)/);
-        if (m) return m[1];
-        var link = item.querySelector('a[href*="/?p="], a[href*="/blog/"]');
-        if (link && link.href) {
-            m = link.href.match(/[?&]p=(\d+)/);
-            if (m) return m[1];
-        }
-        return null;
+        return m ? m[1] : null;
     }
 
     function getDateEl(item) {
         return item.querySelector('.elementor-element-bc5fe2f .elementor-shortcode')
-            || item.querySelector('[data-id="bc5fe2f"] .elementor-shortcode')
-            || item.querySelector('.elementor-element-bc5fe2f .elementor-widget-container');
+            || item.querySelector('[data-id="bc5fe2f"] .elementor-shortcode');
     }
 
-    function getCategorySlugsFromClass(item) {
+    function getThumb(item) {
+        return item.querySelector('.elementor-element-' + THUMB_ID)
+            || item.querySelector('[data-id="' + THUMB_ID + '"]');
+    }
+
+    function getSlugsFromClasses(item) {
         return (item.className || '').split(/\s+/).filter(function (c) {
             return c.indexOf('category-') === 0;
         }).map(function (c) {
@@ -122,15 +98,8 @@
 
     function sortSlugs(slugs) {
         return slugs.slice().sort(function (a, b) {
-            var oa = SLUG_ORDER[a] || 99;
-            var ob = SLUG_ORDER[b] || 99;
-            return oa - ob;
+            return (SLUG_ORDER[a] || 99) - (SLUG_ORDER[b] || 99);
         });
-    }
-
-    function getThumb(item) {
-        return item.querySelector('.elementor-element-' + THUMB_ID)
-            || item.querySelector('[data-id="' + THUMB_ID + '"]');
     }
 
     function loadIcons() {
@@ -147,45 +116,53 @@
             });
     }
 
-    function fetchPostMeta(postId) {
-        if (Object.prototype.hasOwnProperty.call(DATE_CACHE, postId)
-            && Object.prototype.hasOwnProperty.call(CAT_CACHE, postId)) {
-            return Promise.resolve({ date: DATE_CACHE[postId], slugs: CAT_CACHE[postId] });
+    function slugsFromEmbedded(post) {
+        var slugs = [];
+        var embedded = post._embedded && post._embedded['wp:term'];
+        if (!embedded) return slugs;
+        embedded.forEach(function (group) {
+            group.forEach(function (term) {
+                if (term.taxonomy === 'category' && term.slug && !SKIP_SLUGS[term.slug]) {
+                    slugs.push(term.slug);
+                }
+            });
+        });
+        return slugs;
+    }
+
+    function fetchPostsBatch(postIds) {
+        var missing = postIds.filter(function (id) {
+            return !Object.prototype.hasOwnProperty.call(META_CACHE, id);
+        });
+        if (!missing.length) {
+            return Promise.resolve(META_CACHE);
         }
 
-        return fetch('/wp-json/wp/v2/posts/' + postId + '?_fields=id,date,categories')
+        var url = '/wp-json/wp/v2/posts?include=' + missing.join(',')
+            + '&_fields=id,date&_embed=wp:term&per_page=' + missing.length;
+
+        return fetch(url)
             .then(function (r) {
-                if (!r.ok) throw new Error('post ' + postId);
+                if (!r.ok) throw new Error('batch');
                 return r.json();
             })
-            .then(function (p) {
-                if (!p || !p.id) throw new Error('invalid post ' + postId);
-
-                var dateTxt = formatDate(p.date);
-                DATE_CACHE[postId] = dateTxt;
-
-                if (Object.prototype.hasOwnProperty.call(CAT_CACHE, postId)) {
-                    return { date: dateTxt, slugs: CAT_CACHE[postId] };
-                }
-
-                if (!p.categories || !p.categories.length) {
-                    CAT_CACHE[postId] = [];
-                    return { date: dateTxt, slugs: [] };
-                }
-
-                return Promise.all(p.categories.map(function (catId) {
-                    return fetch('/wp-json/wp/v2/categories/' + catId + '?_fields=slug,name')
-                        .then(function (r) { return r.ok ? r.json() : null; })
-                        .catch(function () { return null; });
-                })).then(function (cats) {
-                    var slugs = cats.filter(Boolean).map(function (c) { return c.slug; })
-                        .filter(function (slug) { return !SKIP_SLUGS[slug]; });
-                    CAT_CACHE[postId] = slugs;
-                    return { date: dateTxt, slugs: slugs };
+            .then(function (posts) {
+                if (!Array.isArray(posts)) return META_CACHE;
+                posts.forEach(function (p) {
+                    META_CACHE[String(p.id)] = {
+                        date: formatDate(p.date),
+                        slugs: slugsFromEmbedded(p)
+                    };
                 });
+                missing.forEach(function (id) {
+                    if (!META_CACHE[id]) {
+                        META_CACHE[id] = { date: '', slugs: [] };
+                    }
+                });
+                return META_CACHE;
             })
             .catch(function () {
-                return { date: DATE_CACHE[postId] || '', slugs: CAT_CACHE[postId] || [] };
+                return META_CACHE;
             });
     }
 
@@ -197,7 +174,9 @@
     }
 
     function renderBadges(thumb, slugs, icons) {
-        if (!thumb || !slugs.length) return false;
+        if (!thumb || !slugs.length) return;
+        var key = sortSlugs(slugs).slice(0, 2).join(',');
+        if (thumb.dataset.ecrBadges === key) return;
 
         var existing = thumb.querySelector('.ecr-carrusel-badges');
         if (existing) existing.remove();
@@ -210,38 +189,45 @@
         }).join('');
 
         thumb.appendChild(wrap);
-        return true;
+        thumb.dataset.ecrBadges = key;
     }
 
     function injectDate(item, dateTxt) {
         if (!dateTxt) return;
         var dateEl = getDateEl(item);
-        if (!dateEl) return;
+        if (!dateEl || dateEl.getAttribute('data-ecr-date') === dateTxt) return;
         dateEl.textContent = dateTxt;
         dateEl.setAttribute('data-ecr-date', dateTxt);
     }
 
-    function decorateItem(item, icons) {
+    function applyItem(item, icons, meta) {
         var thumb = getThumb(item);
         if (thumb) {
             thumb.style.position = 'relative';
             thumb.style.overflow = 'hidden';
         }
 
-        var slugs = getCategorySlugsFromClass(item);
-        if (slugs.length && thumb) {
+        var slugs = (meta && meta.slugs && meta.slugs.length)
+            ? meta.slugs
+            : getSlugsFromClasses(item);
+
+        if (thumb && slugs.length) {
             renderBadges(thumb, slugs, icons);
         }
 
-        var postId = getPostId(item);
-        if (!postId) return;
-
-        fetchPostMeta(postId).then(function (meta) {
-            if (meta.slugs && meta.slugs.length && thumb) {
-                renderBadges(thumb, meta.slugs, icons);
-            }
+        if (meta && meta.date) {
             injectDate(item, meta.date);
-        });
+        }
+    }
+
+    function pauseObserver() {
+        if (loopObserver) loopObserver.disconnect();
+    }
+
+    function resumeObserver(loop) {
+        if (loopObserver && loop) {
+            loopObserver.observe(loop, { childList: true, subtree: false });
+        }
     }
 
     function getCarruselGrid(root) {
@@ -249,22 +235,60 @@
     }
 
     function decorateCarrusel(root) {
+        if (isDecorating) return;
+
         var grid = getCarruselGrid(root);
         if (!grid) return;
 
-        loadIcons().then(function (icons) {
-            var items = grid.querySelectorAll('.e-loop-item');
-            if (!items.length) return;
-            items.forEach(function (item) {
-                decorateItem(item, icons);
-            });
+        var items = grid.querySelectorAll('.e-loop-item');
+        if (!items.length) return;
+
+        var work = [];
+        items.forEach(function (item) {
+            var postId = getPostId(item);
+            if (!postId) return;
+            if (item.dataset.ecrDecorated === postId) return;
+            work.push({ item: item, postId: postId });
         });
+
+        if (!work.length) return;
+
+        isDecorating = true;
+        var loop = grid.querySelector('.elementor-loop-container');
+        pauseObserver();
+
+        loadIcons()
+            .then(function (icons) {
+                return fetchPostsBatch(work.map(function (w) { return w.postId; }))
+                    .then(function () {
+                        work.forEach(function (w) {
+                            var meta = META_CACHE[w.postId] || { date: '', slugs: [] };
+                            applyItem(w.item, icons, meta);
+                            w.item.dataset.ecrDecorated = w.postId;
+                        });
+                    });
+            })
+            .finally(function () {
+                isDecorating = false;
+                resumeObserver(loop);
+            });
     }
 
     function scheduleDecorate() {
         if (decorateTimer) clearTimeout(decorateTimer);
-        decorateCarrusel(document);
-        decorateTimer = setTimeout(function () { decorateCarrusel(document); }, 150);
+        decorateTimer = setTimeout(function () {
+            decorateCarrusel(document);
+        }, 250);
+    }
+
+    function resetAndDecorate() {
+        var grid = getCarruselGrid(document);
+        if (grid) {
+            grid.querySelectorAll('.e-loop-item').forEach(function (item) {
+                delete item.dataset.ecrDecorated;
+            });
+        }
+        scheduleDecorate();
     }
 
     function bindObserver() {
@@ -275,54 +299,47 @@
         if (!loop) return;
 
         grid.dataset.ecrDecorateObserved = '1';
-        new MutationObserver(function () {
-            scheduleDecorate();
-        }).observe(loop, { childList: true, subtree: true });
+        loopObserver = new MutationObserver(function (mutations) {
+            var added = false;
+            for (var i = 0; i < mutations.length; i++) {
+                if (mutations[i].addedNodes && mutations[i].addedNodes.length) {
+                    added = true;
+                    break;
+                }
+            }
+            if (added) scheduleDecorate();
+        });
+        loopObserver.observe(loop, { childList: true, subtree: false });
     }
 
     injectStyles();
 
     window.ECR = window.ECR || {};
-    window.ECR.decorateCarrusel = decorateCarrusel;
+    window.ECR.decorateCarrusel = resetAndDecorate;
 
-    function bindElementorHooks() {
-        if (!window.elementorFrontend || !elementorFrontend.hooks) return;
-
-        elementorFrontend.hooks.addAction('frontend/element_ready/loop-grid.default', function ($scope) {
-            var el = $scope[0];
-            if (!el) return;
-            if (el.classList.contains('elementor-element-' + LOOP_CARRUSEL) || el.querySelector('.elementor-element-' + LOOP_CARRUSEL)) {
-                scheduleDecorate();
-            }
-        });
-    }
-
-    function startDecorate() {
-        scheduleDecorate();
+    function init() {
         bindObserver();
-        [100, 300, 600, 1000, 2000, 4000].forEach(function (ms) {
-            setTimeout(scheduleDecorate, ms);
-        });
+        scheduleDecorate();
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', startDecorate);
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-        startDecorate();
+        init();
     }
-
-    window.addEventListener('load', scheduleDecorate);
 
     if (window.jQuery) {
         jQuery(window).on('elementor/frontend/init', function () {
-            bindElementorHooks();
-            scheduleDecorate();
+            if (window.elementorFrontend && elementorFrontend.hooks) {
+                elementorFrontend.hooks.addAction('frontend/element_ready/loop-grid.default', function ($scope) {
+                    var el = $scope[0];
+                    if (el && el.classList.contains('elementor-element-' + LOOP_CARRUSEL)) {
+                        scheduleDecorate();
+                    }
+                });
+            }
         });
-        jQuery(document).on('elementor/loop/query_filter_end', function () {
-            setTimeout(scheduleDecorate, 100);
-        });
-    } else if (window.elementorFrontend) {
-        bindElementorHooks();
+        jQuery(document).on('elementor/loop/query_filter_end', resetAndDecorate);
     }
 })();
 
@@ -331,22 +348,7 @@ jQuery(document).ready(function ($) {
     var LOOP_CARRUSEL = 'bc0cdd5';
 
     function getCarruselGrid() {
-        var $byId = $('.elementor-element-' + LOOP_CARRUSEL);
-        if ($byId.length) return $byId;
-
-        var $htmlWidget = $('script').filter(function () {
-            return this.textContent.indexOf('ECR_CARRUSEL_PAGINACION') !== -1;
-        }).last().closest('.elementor-widget-html');
-
-        if ($htmlWidget.length) {
-            var $sibling = $htmlWidget.prev('.elementor-widget-loop-grid');
-            if ($sibling.length) return $sibling;
-        }
-
-        var $conPaginacion = $('.elementor-widget-loop-grid').filter(function () {
-            return $(this).find('.elementor-pagination .prev, .elementor-pagination .next').length > 0;
-        });
-        return $conPaginacion.length > 1 ? $conPaginacion.eq(1) : $conPaginacion.eq(0);
+        return $('.elementor-element-' + LOOP_CARRUSEL);
     }
 
     function setCargando($grid, on) {
@@ -367,10 +369,10 @@ jQuery(document).ready(function ($) {
         var $nav = $grid.find('.elementor-pagination');
         if (!$nav.length) return;
 
-        if ($nav.find('.prev').length === 0 && $nav.find('.page-numbers.prev.disabled').length === 0) {
+        if (!$nav.find('.prev').length && !$nav.find('.page-numbers.prev.disabled').length) {
             $nav.prepend('<span class="page-numbers prev disabled">Anterior</span>');
         }
-        if ($nav.find('.next').length === 0 && $nav.find('.page-numbers.next.disabled').length === 0) {
+        if (!$nav.find('.next').length && !$nav.find('.page-numbers.next.disabled').length) {
             $nav.append('<span class="page-numbers next disabled">Siguiente</span>');
         }
     }
@@ -380,7 +382,6 @@ jQuery(document).ready(function ($) {
     $(document).on('click', '.elementor-element-' + LOOP_CARRUSEL + ' .elementor-pagination a', function (e) {
         var $grid = getCarruselGrid();
         if (!$grid.length || !$.contains($grid[0], this)) return;
-
         if ($(this).hasClass('disabled') || $(this).parent().hasClass('disabled')) {
             e.preventDefault();
             return false;
@@ -390,10 +391,6 @@ jQuery(document).ready(function ($) {
 
     $(document).on('elementor/loop/query_filter_end', function () {
         forzarBotonesAbajo();
-        var $grid = getCarruselGrid();
-        setCargando($grid, false);
-        if (window.ECR && typeof window.ECR.decorateCarrusel === 'function') {
-            window.ECR.decorateCarrusel(document);
-        }
+        setCargando(getCarruselGrid(), false);
     });
 });
