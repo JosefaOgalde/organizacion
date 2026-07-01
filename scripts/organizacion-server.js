@@ -118,6 +118,9 @@ const server = http.createServer((req, res) => {
   if (/\/index\/Herramientas\/?$/i.test(urlPath)) {
     return redirect(res, `/index/clientes/Herramientas.html${q}`);
   }
+  if (/\/index\/clientes\/Herramientas\/Tendencias\/?$/i.test(urlPath)) {
+    return redirect(res, `/index/clientes/Herramientas/Tendencias.html${q}`);
+  }
 
   const filePath = safePath(url);
   if (!filePath) return send(res, 403, 'Forbidden');
