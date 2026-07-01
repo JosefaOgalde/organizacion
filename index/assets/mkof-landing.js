@@ -121,13 +121,15 @@
     return `<section class="ficha-seccion ficha-seccion--portal">
         <h2>Guías en curso · MOVA</h2>
         <p style="margin:0 0 0.85rem;font-size:0.9rem">
-          <a href="MOVA-GitHub-Paso1-Crear-Cuenta.pptx" download>⬇ Descargar presentación PPT para el encargado</a>
+          <a href="MOVA-GitHub-Paso1-Crear-Cuenta.pdf" target="_blank" rel="noopener">⬇ PDF con capturas reales</a>
+          ·
+          <a href="MOVA-GitHub-Paso1-Crear-Cuenta.pptx" download>PPT</a>
         </p>
         <div class="mkof-guias-grid">
           <a href="github-cuenta.html" class="mkof-guia-card mkof-guia-card--activa">
             <span class="mkof-guia-card__paso">Paso 1 · En curso</span>
             <strong>Crear cuenta GitHub</strong>
-            <span class="mkof-guia-card__desc">Correo general del proyecto · guía visual paso a paso</span>
+            <span class="mkof-guia-card__desc">Capturas reales de github.com</span>
           </a>
           <div class="mkof-guia-card mkof-guia-card--pendiente">
             <span class="mkof-guia-card__paso">Paso 2 · Próximo</span>
