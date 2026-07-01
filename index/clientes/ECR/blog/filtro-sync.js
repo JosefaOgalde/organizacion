@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
             jQuery(document).trigger('elementor/loop/query_filter_end');
         }
         if (window.ECR && typeof window.ECR.decorateCarrusel === 'function') {
-            setTimeout(function () { window.ECR.decorateCarrusel(document); }, 80);
+            setTimeout(function () { window.ECR.decorateCarrusel(document); }, 150);
         }
     }
 

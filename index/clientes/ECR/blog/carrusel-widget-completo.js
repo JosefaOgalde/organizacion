@@ -10,9 +10,11 @@
 /* ========== ECR_BLOG_DECORATE ========== */
 (function () {
     var LOOP_CARRUSEL = 'bc0cdd5';
+    var THUMB_ID = '5e4f8fb';
     var ICONS = null;
     var DATE_CACHE = {};
     var CAT_CACHE = {};
+    var decorateTimer = null;
 
     var SLUG_LABEL = {
         articulos: 'Articulos',
@@ -24,8 +26,51 @@
     };
 
     var SKIP_SLUGS = { 'sin-categoria': true, uncategorized: true };
-
     var MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+    function injectStyles() {
+        if (document.getElementById('ecr-blog-decorate-css')) return;
+        var style = document.createElement('style');
+        style.id = 'ecr-blog-decorate-css';
+        style.textContent = [
+            '.elementor-element-' + LOOP_CARRUSEL + ' .elementor-element-' + THUMB_ID + ' {',
+            '  position: relative !important;',
+            '  overflow: hidden !important;',
+            '}',
+            '.elementor-element-' + LOOP_CARRUSEL + ' .ecr-carrusel-badges {',
+            '  position: absolute !important;',
+            '  top: 8px !important;',
+            '  left: 8px !important;',
+            '  z-index: 6 !important;',
+            '  display: flex !important;',
+            '  flex-wrap: wrap !important;',
+            '  gap: 4px !important;',
+            '  max-width: calc(100% - 16px) !important;',
+            '  pointer-events: none !important;',
+            '}',
+            '.elementor-element-' + LOOP_CARRUSEL + ' .ecr-carrusel-badges .ecr-card-blog__badge {',
+            '  display: inline-flex !important;',
+            '  align-items: center !important;',
+            '  gap: 4px !important;',
+            '  padding: 4px 10px !important;',
+            '  border-radius: 999px !important;',
+            '  border: 1px solid #fff !important;',
+            '  background: rgba(0, 0, 0, 0.65) !important;',
+            '  color: #fff !important;',
+            '  font-size: 11px !important;',
+            '  font-weight: 600 !important;',
+            '  line-height: 1 !important;',
+            '  white-space: nowrap !important;',
+            '}',
+            '.elementor-element-' + LOOP_CARRUSEL + ' .ecr-carrusel-badges .ecr-card-blog__badge svg {',
+            '  display: inline-block !important;',
+            '  width: 12px !important;',
+            '  height: 12px !important;',
+            '  flex-shrink: 0 !important;',
+            '}'
+        ].join('\n');
+        document.head.appendChild(style);
+    }
 
     function formatDate(iso) {
         var d = new Date(iso);
@@ -52,6 +97,11 @@
         return SLUG_LABEL[slug] || (slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' '));
     }
 
+    function getThumb(item) {
+        return item.querySelector('.elementor-element-' + THUMB_ID)
+            || item.querySelector('[data-id="' + THUMB_ID + '"]');
+    }
+
     function loadIcons() {
         if (ICONS) return Promise.resolve(ICONS);
         return fetch('/wp-admin/admin-ajax.php?action=ecr_get_term_icons&taxonomy=category')
@@ -68,10 +118,7 @@
 
     function fetchPostMeta(postId) {
         if (DATE_CACHE[postId] && CAT_CACHE[postId]) {
-            return Promise.resolve({
-                date: DATE_CACHE[postId],
-                slugs: CAT_CACHE[postId]
-            });
+            return Promise.resolve({ date: DATE_CACHE[postId], slugs: CAT_CACHE[postId] });
         }
 
         return fetch('/wp-json/wp/v2/posts/' + postId + '?_fields=date,categories')
@@ -80,22 +127,25 @@
                 var dateTxt = formatDate(p.date);
                 DATE_CACHE[postId] = dateTxt;
 
-                var slugs = CAT_CACHE[postId];
-                if (!slugs && p.categories && p.categories.length) {
-                    return Promise.all(p.categories.map(function (catId) {
-                        return fetch('/wp-json/wp/v2/categories/' + catId + '?_fields=slug,name')
-                            .then(function (r) { return r.json(); })
-                            .catch(function () { return null; });
-                    })).then(function (cats) {
-                        slugs = cats.filter(Boolean).map(function (c) { return c.slug; })
-                            .filter(function (slug) { return !SKIP_SLUGS[slug]; });
-                        CAT_CACHE[postId] = slugs;
-                        return { date: dateTxt, slugs: slugs };
-                    });
+                if (CAT_CACHE[postId]) {
+                    return { date: dateTxt, slugs: CAT_CACHE[postId] };
                 }
 
-                CAT_CACHE[postId] = slugs || [];
-                return { date: dateTxt, slugs: CAT_CACHE[postId] };
+                if (!p.categories || !p.categories.length) {
+                    CAT_CACHE[postId] = [];
+                    return { date: dateTxt, slugs: [] };
+                }
+
+                return Promise.all(p.categories.map(function (catId) {
+                    return fetch('/wp-json/wp/v2/categories/' + catId + '?_fields=slug,name')
+                        .then(function (r) { return r.json(); })
+                        .catch(function () { return null; });
+                })).then(function (cats) {
+                    var slugs = cats.filter(Boolean).map(function (c) { return c.slug; })
+                        .filter(function (slug) { return !SKIP_SLUGS[slug]; });
+                    CAT_CACHE[postId] = slugs;
+                    return { date: dateTxt, slugs: slugs };
+                });
             })
             .catch(function () {
                 return { date: '', slugs: [] };
@@ -110,7 +160,7 @@
     }
 
     function renderBadges(thumb, slugs, icons) {
-        if (!thumb || !slugs.length) return;
+        if (!thumb || !slugs.length) return false;
 
         var existing = thumb.querySelector('.ecr-carrusel-badges');
         if (existing) existing.remove();
@@ -123,21 +173,7 @@
         }).join('');
 
         thumb.appendChild(wrap);
-    }
-
-    function injectBadges(item, icons, slugs) {
-        var thumb = item.querySelector('.elementor-element-5e4f8fb');
-        if (!thumb) return;
-
-        if (slugs && slugs.length) {
-            renderBadges(thumb, slugs, icons);
-            return;
-        }
-
-        var fromClass = getCategorySlugsFromClass(item);
-        if (fromClass.length) {
-            renderBadges(thumb, fromClass, icons);
-        }
+        return true;
     }
 
     function injectDate(item, dateTxt) {
@@ -147,25 +183,30 @@
     }
 
     function decorateItem(item, icons) {
+        var thumb = getThumb(item);
+        if (thumb) {
+            thumb.style.position = 'relative';
+            thumb.style.overflow = 'hidden';
+        }
+
+        var slugs = getCategorySlugsFromClass(item);
+        if (slugs.length && thumb) {
+            renderBadges(thumb, slugs, icons);
+        }
+
         var postId = getPostId(item);
-        var classSlugs = getCategorySlugsFromClass(item);
-
-        injectBadges(item, icons, classSlugs);
-
         if (!postId) return;
 
         fetchPostMeta(postId).then(function (meta) {
-            if (meta.slugs && meta.slugs.length) {
-                var thumb = item.querySelector('.elementor-element-5e4f8fb');
-                if (thumb) renderBadges(thumb, meta.slugs, icons);
+            if (meta.slugs && meta.slugs.length && thumb) {
+                renderBadges(thumb, meta.slugs, icons);
             }
             injectDate(item, meta.date);
         });
     }
 
     function getCarruselGrid(root) {
-        var scope = root || document;
-        return scope.querySelector('.elementor-element-' + LOOP_CARRUSEL);
+        return (root || document).querySelector('.elementor-element-' + LOOP_CARRUSEL);
     }
 
     function decorateCarrusel(root) {
@@ -173,22 +214,52 @@
         if (!grid) return;
 
         loadIcons().then(function (icons) {
-            grid.querySelectorAll('.e-loop-item').forEach(function (item) {
+            var items = grid.querySelectorAll('.e-loop-item');
+            if (!items.length) return;
+            items.forEach(function (item) {
                 decorateItem(item, icons);
             });
         });
     }
 
+    function scheduleDecorate() {
+        if (decorateTimer) clearTimeout(decorateTimer);
+        decorateCarrusel(document);
+        decorateTimer = setTimeout(function () { decorateCarrusel(document); }, 150);
+    }
+
+    function bindObserver() {
+        var grid = getCarruselGrid(document);
+        if (!grid || grid.dataset.ecrDecorateObserved) return;
+
+        var loop = grid.querySelector('.elementor-loop-container');
+        if (!loop) return;
+
+        grid.dataset.ecrDecorateObserved = '1';
+        new MutationObserver(function () {
+            scheduleDecorate();
+        }).observe(loop, { childList: true, subtree: true });
+    }
+
+    injectStyles();
+
     window.ECR = window.ECR || {};
     window.ECR.decorateCarrusel = decorateCarrusel;
 
     document.addEventListener('DOMContentLoaded', function () {
-        decorateCarrusel(document);
+        scheduleDecorate();
+        bindObserver();
+        [350, 800, 1500].forEach(function (ms) {
+            setTimeout(scheduleDecorate, ms);
+        });
     });
 
+    window.addEventListener('load', scheduleDecorate);
+
     if (window.jQuery) {
+        jQuery(window).on('elementor/frontend/init', scheduleDecorate);
         jQuery(document).on('elementor/loop/query_filter_end', function () {
-            setTimeout(function () { decorateCarrusel(document); }, 80);
+            setTimeout(scheduleDecorate, 100);
         });
     }
 })();
