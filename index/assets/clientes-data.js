@@ -85,13 +85,13 @@ window.CLIENTES_PORTAL = [
     tipo: 'Full time',
     color: { border: '#a8d8dc', bg: '#e8f6f8', text: '#4a7a80' },
     agente: 'Planificación de proyectos',
-    resumen: 'Gantt, cronogramas y entregables post auditoría.',
+    resumen: 'Gantt MOVA post-auditoría (3 semanas), cronogramas y entregables.',
     landing: {
-      tagline: 'Orden en cada entrega',
-      entregables: ['Gantt de proyectos', 'Cronogramas por fase', 'Seguimiento post-auditoría'],
+      tagline: 'MOVA · Post-auditoría',
+      entregables: ['Carta Gantt 3 semanas', 'Guía GitHub Paso 1', 'PPT para encargado'],
       secciones: [
-        { titulo: 'Planificación', texto: 'Diagramas de tiempo y dependencias entre hitos.' },
-        { titulo: 'Entregables', texto: 'Control de avance y fechas comprometidas con el cliente.' }
+        { titulo: 'Planificación MOVA', texto: 'Cronograma según playbook del cliente: Cloudflare, mova_auth y MySQL.' },
+        { titulo: 'Entregables', texto: 'Gantt, guías visuales y presentaciones para el equipo.' }
       ]
     }
   },
