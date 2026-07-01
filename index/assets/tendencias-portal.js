@@ -17,7 +17,7 @@
 
   const PERIODOS = [
     { id: 'hoy', label: 'Hoy' },
-    { id: 'semana', label: 'Esta semana' },
+    { id: 'semana', label: 'Esta semana (7 días)' },
     { id: 'quince', label: 'Quince días' },
     { id: 'mes', label: 'Mes' },
     { id: 'tres-meses', label: 'Tres meses' }
@@ -142,9 +142,7 @@
     if (id === 'hoy') return hoy;
     if (id === 'semana') {
       const d = new Date(hoy);
-      const dia = d.getDay();
-      const desdeLunes = dia === 0 ? 6 : dia - 1;
-      d.setDate(d.getDate() - desdeLunes);
+      d.setDate(d.getDate() - 6);
       return d;
     }
     const dias = { quince: 15, mes: 30, 'tres-meses': 90 }[id] || 30;
@@ -570,7 +568,8 @@
         </div>
 
         <div class="tend-resumen-box">
-          Solo se listan tendencias cuya <strong>fecha de publicación de la fuente</strong> cae en el período elegido. Sin fechas de 2025 ni datos sin enlace fechado.
+          Solo se listan tendencias cuya <strong>fecha de publicación de la fuente</strong> cae en el período elegido.
+          «Esta semana» = últimos 7 días. Sin fechas inventadas ni datos sin enlace fechado.
         </div>
 
         <div class="tend-toolbar tend-toolbar--wrap">
