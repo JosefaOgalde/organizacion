@@ -1,6 +1,6 @@
 /**
  * ECR Blog — Widget HTML debajo de #filtro-principal
- * Carrusel vía API REST con carga suave y sin parpadeo brusco
+ * Íconos + ocultar Sin categoría + refreshCarrusel (bc0cdd5)
  */
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var LOOP_CARRUSEL = 'bc0cdd5';
     var fetchAbort = null;
     var fetchSeq = 0;
+    var lastSlug = '__init__';
 
     (function injectStyles() {
         if (document.getElementById('ecr-carrusel-sync-css')) return;
@@ -43,11 +44,18 @@ document.addEventListener('DOMContentLoaded', function () {
         return '/wp-json/';
     }
 
+    function getNonce() {
+        if (window.elementorFrontend && elementorFrontend.config.nonce) {
+            return elementorFrontend.config.nonce;
+        }
+        return '';
+    }
+
     function getPostId() {
         if (window.elementorFrontend && elementorFrontend.config.post) {
-            return elementorFrontend.config.post.id;
+            return String(elementorFrontend.config.post.id);
         }
-        return 1072;
+        return '1072';
     }
 
     function getBaseUrl() {
@@ -56,6 +64,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return filterEl.dataset.baseUrl;
         }
         return window.location.href.split('?')[0];
+    }
+
+    function getActiveSlug() {
+        var slug = null;
+        document.querySelectorAll(FILTRO_PRINCIPAL + ' .e-filter-item[aria-pressed="true"]').forEach(function (btn) {
+            slug = btn.dataset.filter || null;
+        });
+        return slug;
     }
 
     function getWidgetParts(widgetEl) {
@@ -137,6 +153,10 @@ document.addEventListener('DOMContentLoaded', function () {
         var widgetEl = document.querySelector('.elementor-element-' + LOOP_CARRUSEL);
         if (!widgetEl) return Promise.resolve();
 
+        var slugKey = filterSlug || '';
+        if (slugKey === lastSlug) return Promise.resolve();
+        lastSlug = slugKey;
+
         if (fetchAbort) fetchAbort.abort();
         fetchAbort = new AbortController();
         var seq = ++fetchSeq;
@@ -152,9 +172,14 @@ document.addEventListener('DOMContentLoaded', function () {
             };
         }
 
+        var headers = { 'Content-Type': 'application/json' };
+        var nonce = getNonce();
+        if (nonce) headers['X-WP-Nonce'] = nonce;
+
         return fetch(getRestUrl() + 'elementor-pro/v1/refresh-loop', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
+            credentials: 'same-origin',
             signal: fetchAbort.signal,
             body: JSON.stringify({
                 post_id: getPostId(),
@@ -163,15 +188,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 pagination_base_url: getBaseUrl()
             })
         })
-            .then(function (r) { return r.json(); })
+            .then(function (r) {
+                return r.json().then(function (data) {
+                    return { ok: r.ok, status: r.status, data: data };
+                });
+            })
             .then(function (res) {
                 if (seq !== fetchSeq) return;
-                if (!res || typeof res.data !== 'string') return;
-                applyResponse(widgetEl, res.data);
+                if (!res.ok) {
+                    console.error('ECR carrusel filter HTTP ' + res.status, res.data);
+                    lastSlug = '__init__';
+                    return;
+                }
+                if (!res.data || typeof res.data.data !== 'string') {
+                    console.error('ECR carrusel filter: respuesta inesperada', res.data);
+                    lastSlug = '__init__';
+                    return;
+                }
+                applyResponse(widgetEl, res.data.data);
             })
             .catch(function (err) {
                 if (err && err.name === 'AbortError') return;
                 console.error('ECR carrusel filter:', err);
+                lastSlug = '__init__';
             })
             .finally(function () {
                 if (seq !== fetchSeq) return;
@@ -179,75 +218,89 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    fetch('/wp-admin/admin-ajax.php?action=ecr_get_term_icons&taxonomy=' + TAXONOMY)
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-            if (!res.success) return;
+    function scheduleCarruselSync() {
+        setTimeout(function () {
+            refreshCarrusel(getActiveSlug());
+        }, 120);
+    }
 
-            var icons = res.data;
-            var observer;
-            var injecting = false;
+    function bindCarruselSync() {
+        var filterRoot = document.querySelector(FILTRO_PRINCIPAL);
+        if (!filterRoot || filterRoot.dataset.ecrCarruselSync) return;
+        filterRoot.dataset.ecrCarruselSync = 'true';
 
-            function getLabel(btn) {
-                var filter = btn.dataset.filter || '';
-                return filter.charAt(0).toUpperCase() + filter.slice(1);
+        filterRoot.addEventListener('click', function (e) {
+            if (!e.target.closest('.e-filter-item')) return;
+            scheduleCarruselSync();
+        });
+
+        if (window.jQuery) {
+            jQuery(document).on('click', FILTRO_PRINCIPAL + ' .e-filter-item', function () {
+                scheduleCarruselSync();
+            });
+        }
+    }
+
+    bindCarruselSync();
+
+    var iconObserver;
+    var injecting = false;
+
+    function getLabel(btn) {
+        var filter = btn.dataset.filter || '';
+        return filter.charAt(0).toUpperCase() + filter.slice(1);
+    }
+
+    function injectIcons(icons) {
+        if (injecting) return;
+        injecting = true;
+
+        if (iconObserver) iconObserver.disconnect();
+
+        document.querySelectorAll(FILTRO_PRINCIPAL + ' .e-filter-item').forEach(function (btn) {
+            var label = getLabel(btn);
+            var slug = (btn.dataset.filter || '').toLowerCase();
+            if (slug === 'sin-categoria' || slug === 'uncategorized') {
+                btn.style.display = 'none';
+                return;
             }
-
-            function bindCarruselSync() {
-                document.querySelectorAll(FILTRO_PRINCIPAL + ' .e-filter-item').forEach(function (btn) {
-                    if (btn.dataset.ecrCarruselSync) return;
-                    btn.dataset.ecrCarruselSync = 'true';
-
-                    btn.addEventListener('click', function () {
-                        var slug = btn.dataset.filter;
-                        var yaActivo = btn.getAttribute('aria-pressed') === 'true';
-                        refreshCarrusel(yaActivo ? null : slug);
-                    }, true);
-                });
+            var svg = icons[label];
+            if (!svg) {
+                btn.textContent = label;
+                return;
             }
+            btn.innerHTML =
+                '<span class="ecr-tax-icon">' + svg + '</span>' +
+                '<span class="ecr-tax-label">' + label + '</span>';
+        });
 
-            function injectIcons() {
-                if (injecting) return;
-                injecting = true;
+        injecting = false;
 
-                if (observer) observer.disconnect();
+        var filterEl = document.querySelector(FILTRO_PRINCIPAL + ' .e-filter');
+        if (filterEl && iconObserver) {
+            iconObserver.observe(filterEl, { childList: true, subtree: false });
+        }
+    }
 
-                document.querySelectorAll(FILTRO_PRINCIPAL + ' .e-filter-item').forEach(function (btn) {
-                    var label = getLabel(btn);
-                    var svg = icons[label];
-                    if (!svg) {
-                        btn.textContent = label;
-                        return;
-                    }
-                    btn.innerHTML =
-                        '<span class="ecr-tax-icon">' + svg + '</span>' +
-                        '<span class="ecr-tax-label">' + label + '</span>';
-                });
-
-                document.querySelectorAll(FILTRO_PRINCIPAL + ' .e-filter-item').forEach(function (btn) {
-                    var label = (btn.dataset.filter || '').toLowerCase();
-                    if (label === 'sin-categoria' || label === 'uncategorized') {
-                        btn.style.display = 'none';
-                    }
-                });
-
-                injecting = false;
-                bindCarruselSync();
+    function loadIcons() {
+        fetch('/wp-admin/admin-ajax.php?action=ecr_get_term_icons&taxonomy=' + TAXONOMY)
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                var icons = (res && res.success && res.data) ? res.data : {};
+                injectIcons(icons);
 
                 var filterEl = document.querySelector(FILTRO_PRINCIPAL + ' .e-filter');
-                if (filterEl && observer) {
-                    observer.observe(filterEl, { childList: true, subtree: false });
+                if (filterEl) {
+                    iconObserver = new MutationObserver(function () {
+                        injectIcons(icons);
+                    });
+                    iconObserver.observe(filterEl, { childList: true, subtree: false });
                 }
-            }
+            })
+            .catch(function () {
+                injectIcons({});
+            });
+    }
 
-            injectIcons();
-
-            var filterEl = document.querySelector(FILTRO_PRINCIPAL + ' .e-filter');
-            if (filterEl) {
-                observer = new MutationObserver(function () {
-                    injectIcons();
-                });
-                observer.observe(filterEl, { childList: true, subtree: false });
-            }
-        });
+    loadIcons();
 });
