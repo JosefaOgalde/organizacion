@@ -128,6 +128,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (window.jQuery) {
             jQuery(document).trigger('elementor/loop/query_filter_end');
         }
+        if (window.ECR && typeof window.ECR.decorateCarrusel === 'function') {
+            setTimeout(function () { window.ECR.decorateCarrusel(document); }, 80);
+        }
     }
 
     function refreshCarrusel(filterSlug) {

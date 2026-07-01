@@ -67,5 +67,8 @@ jQuery(document).ready(function ($) {
         forzarBotonesAbajo();
         var $grid = getCarruselGrid();
         setCargando($grid, false);
+        if (window.ECR && typeof window.ECR.decorateCarrusel === 'function') {
+            window.ECR.decorateCarrusel(document);
+        }
     });
 });

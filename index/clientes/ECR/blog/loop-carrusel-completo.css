@@ -2,13 +2,13 @@
    Reemplazar TODO el CSS personalizado del Loop Grid 3 */
 
 /* ==========================================================
-   1. LISTA VERTICAL (3 ARTÍCULOS)
+   1. LISTA VERTICAL — 3 filas de altura uniforme
    ========================================================== */
 selector .elementor-loop-container {
     display: flex !important;
     flex-direction: column !important;
     width: 100% !important;
-    gap: 30px !important;
+    gap: 16px !important;
 }
 
 selector .e-loop-item,
@@ -16,44 +16,74 @@ selector .elementor-post {
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
-    min-height: auto !important;
+    min-height: 108px !important;
     position: relative !important;
+    flex-shrink: 0 !important;
 }
 
+/* Fila imagen + texto alineada al centro */
+selector .elementor-element-d100041 {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 14px !important;
+    width: 100% !important;
+    min-height: 108px !important;
+}
+
+/* Miniatura compacta (menos altura) */
 selector .elementor-element-5e4f8fb {
     position: relative !important;
     overflow: hidden !important;
-    min-height: 170px !important;
-    border-radius: 20px !important;
+    flex: 0 0 168px !important;
+    width: 168px !important;
+    min-width: 168px !important;
+    max-width: 168px !important;
+    height: 96px !important;
+    min-height: 96px !important;
+    max-height: 96px !important;
+    border-radius: 16px !important;
     background-size: cover !important;
     background-position: center !important;
+    --min-height: 96px !important;
+    --width: 168px !important;
 }
 
 selector .elementor-element-5e4f8fb:not(.elementor-motion-effects-element-type-background),
 selector .elementor-element-5e4f8fb > .elementor-motion-effects-container > .elementor-motion-effects-layer {
-    width: 240px !important;
-    min-width: 240px !important;
-    height: 170px !important;
-    min-height: 170px !important;
-    border-radius: 20px !important;
+    width: 168px !important;
+    min-width: 168px !important;
+    max-width: 168px !important;
+    height: 96px !important;
+    min-height: 96px !important;
+    max-height: 96px !important;
+    border-radius: 16px !important;
 }
 
-selector .elementor-element-d100041 {
+/* Columna de texto */
+selector .elementor-element-6eaa27c {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
     display: flex !important;
-    align-items: center !important;
-    gap: 20px !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    --width: auto !important;
 }
 
 selector .elementor-element-1728794 {
-    gap: 8px !important;
+    gap: 6px !important;
+    width: 100% !important;
 }
 
-/* Fecha visible; NO ocultar svg de badges */
+/* Fecha visible */
 selector .elementor-element-bc5fe2f .elementor-shortcode {
     display: block !important;
-    font-size: 13px !important;
+    font-size: 12px !important;
     font-weight: 600 !important;
-    color: #133854 !important;
+    color: #64748b !important;
+    line-height: 1.2 !important;
+    margin-bottom: 2px !important;
 }
 
 selector .elementor-element-dceb7ee {
@@ -63,9 +93,48 @@ selector .elementor-element-dceb7ee {
 selector .elementor-element-24ce162 .elementor-heading-title {
     color: var(--e-global-color-primary, #2c9fe0) !important;
     font-family: "Encode Sans Condensed", sans-serif !important;
-    font-size: 15px !important;
+    font-size: 14px !important;
     font-weight: 600 !important;
     line-height: 1.25 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+}
+
+/* Badges sobre la imagen (inyectados por JS) */
+selector .ecr-carrusel-badges {
+    position: absolute !important;
+    top: 8px !important;
+    left: 8px !important;
+    z-index: 5 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    max-width: calc(100% - 16px) !important;
+    pointer-events: none !important;
+}
+
+selector .ecr-carrusel-badges .ecr-card-blog__badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 4px 8px !important;
+    border-radius: 999px !important;
+    border: 1px solid #fff !important;
+    background: rgba(0, 0, 0, 0.55) !important;
+    color: #fff !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+}
+
+selector .ecr-carrusel-badges .ecr-card-blog__badge svg {
+    display: inline-block !important;
+    width: 12px !important;
+    height: 12px !important;
+    flex-shrink: 0 !important;
 }
 
 /* ==========================================================
@@ -93,6 +162,8 @@ selector .elementor-button {
     border: 2px solid #e2e8f0 !important;
     font-family: "Open Sans", "Montserrat", "Roboto", sans-serif !important;
     font-weight: 700 !important;
+    font-size: 12px !important;
+    padding: 4px 14px !important;
     transition: all 0.2s ease-in-out !important;
 }
 
@@ -101,7 +172,7 @@ selector .elementor-post:hover .elementor-button {
     background-color: #ff6b00 !important;
     color: #ffffff !important;
     border-color: #ff6b00 !important;
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
 /* ==========================================================
@@ -111,7 +182,7 @@ selector .elementor-pagination {
     display: flex !important;
     justify-content: center !important;
     gap: 20px !important;
-    margin-top: 30px !important;
+    margin-top: 20px !important;
     min-height: 44px;
 }
 
@@ -155,17 +226,55 @@ selector .elementor-pagination .page-numbers:not(.prev):not(.next) { display: no
 /* ==========================================================
    5. RESPONSIVE
    ========================================================== */
-@media (max-width: 767px) {
-    selector .elementor-element-d100041 {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-    }
+@media (max-width: 1024px) {
+    selector .elementor-element-5e4f8fb,
     selector .elementor-element-5e4f8fb:not(.elementor-motion-effects-element-type-background),
     selector .elementor-element-5e4f8fb > .elementor-motion-effects-container > .elementor-motion-effects-layer {
-        width: 100% !important;
-        min-width: 100% !important;
-        height: 160px !important;
-        min-height: 160px !important;
+        flex: 0 0 140px !important;
+        width: 140px !important;
+        min-width: 140px !important;
+        max-width: 140px !important;
+        height: 88px !important;
+        min-height: 88px !important;
+        max-height: 88px !important;
     }
-    selector .elementor-pagination .page-numbers { padding: 8px 22px !important; font-size: 13px !important; }
+
+    selector .e-loop-item,
+    selector .elementor-element-d100041 {
+        min-height: 96px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    selector .elementor-loop-container {
+        gap: 14px !important;
+    }
+
+    selector .elementor-element-d100041 {
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 12px !important;
+    }
+
+    selector .elementor-element-5e4f8fb,
+    selector .elementor-element-5e4f8fb:not(.elementor-motion-effects-element-type-background),
+    selector .elementor-element-5e4f8fb > .elementor-motion-effects-container > .elementor-motion-effects-layer {
+        flex: 0 0 120px !important;
+        width: 120px !important;
+        min-width: 120px !important;
+        max-width: 120px !important;
+        height: 80px !important;
+        min-height: 80px !important;
+        max-height: 80px !important;
+    }
+
+    selector .elementor-element-24ce162 .elementor-heading-title {
+        font-size: 13px !important;
+        -webkit-line-clamp: 2 !important;
+    }
+
+    selector .elementor-pagination .page-numbers {
+        padding: 8px 22px !important;
+        font-size: 13px !important;
+    }
 }
