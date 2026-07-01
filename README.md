@@ -108,7 +108,7 @@ organizacion/
 ├── data/
 │   ├── schema.json
 │   ├── clientes-ejemplo.json
-│   └── organizacion-respaldo-2026-06-24.json   # Respaldo oficial
+│   └── organizacion-respaldo-2026-07-01.json   # Respaldo oficial (IMPORTAR-RESPALDO.bat)
 └── README.md
 ```
 
@@ -117,7 +117,7 @@ organizacion/
 El respaldo más actualizado está en:
 
 ```
-data/organizacion-respaldo-2026-06-24.json
+data/organizacion-respaldo-2026-07-01.json
 ```
 
 (123 tareas · 8 clientes · ficha JM completa)

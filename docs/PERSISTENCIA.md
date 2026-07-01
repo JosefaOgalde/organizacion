@@ -92,5 +92,6 @@ Los archivos en disco **no dependen** del navegador.
 
 ## Recuperar si algo se rompe
 
-- Forzar respaldo del repo: `http://localhost:3000/index/?respaldo=1`
+- Importar JSON desde Descargas: **`IMPORTAR-RESPALDO.bat`** (copia a `data/organizacion-respaldo-2026-07-01.json` y `organizacion-live.json`)
+- Forzar respaldo del repo: `http://localhost:3000/index.html?respaldo=1`
 - Restaurar desde archivo: en consola del navegador (F12), pegar el contenido de un JSON de respaldo en la variable y recargar — o reemplazar `data/organizacion-live.json` y recargar con el servidor Node.

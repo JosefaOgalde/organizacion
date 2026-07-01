@@ -31,7 +31,7 @@ El usuario puede decir:
 
 ## Datos
 
-- Respaldo: `data/organizacion-respaldo-2026-06-24.json`
+- Respaldo: `data/organizacion-respaldo-2026-07-01.json` (importar con `IMPORTAR-RESPALDO.bat`)
 - API local: `http://127.0.0.1:8000/api/clientes` (Laravel en `backend/`)
 
 ## Guía completa

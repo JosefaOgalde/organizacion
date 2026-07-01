@@ -1,6 +1,6 @@
 /* Organización v2 */
 const STORAGE_KEY = 'organizacion_v2';
-const RESPALDO_DEFECTO_URL = 'data/organizacion-respaldo-2026-06-24.json';
+const RESPALDO_DEFECTO_URL = 'data/organizacion-respaldo-2026-07-01.json';
 const AGENTES_RAMAS_URL = 'data/agentes-ramas.json';
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const DIAS_CORTOS = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'];
@@ -5084,7 +5084,7 @@ window.importarRespaldoDefecto = async () => {
     return false;
   }
   importarDatos(remoto);
-  mostrarToast('Respaldo 24-jun importado');
+  mostrarToast('Respaldo jul-2026 importado');
   return true;
 };
 
