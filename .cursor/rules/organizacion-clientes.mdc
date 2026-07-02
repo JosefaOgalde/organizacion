@@ -32,9 +32,9 @@ Con `SERVIR.bat` en puerto 3000:
 | **MOVA** (subproyecto MKOF) | http://localhost:3000/index/clientes/MKOF/MOVA |
 | MOVA · auditoría charlas | http://localhost:3000/index/clientes/MKOF/MOVA/auditoria-charlas/ |
 
-MOVA vive en rama `cursor/mova-cliente-portal-agente-7749` hasta fusionar a main. Ver `docs/MKOF-MOVA-HANDOFF.md`.
+MOVA está en **main** (portal + hub). El trabajo nuevo va en rama **`cursor/mova-trabajo-d6a1`** y se fusiona a main con PR al terminar. Ver `docs/MOVA-RUTINA.md`.
 
-Atajo Windows: `ABRIR-MOVA.bat` (tras `SERVIR.bat`).
+Atajo Windows: **`ABRIR-MOVA.bat`** (servidor + sync + abre MKOF y MOVA).
 
 ## Rutas portal (otros clientes)
 

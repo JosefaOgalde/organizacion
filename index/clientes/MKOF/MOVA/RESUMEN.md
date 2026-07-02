@@ -71,9 +71,10 @@ Auditar charlas (capacitaciones, webinars o sesiones): revisar contenido, calida
 ```bat
 cd /d "C:\Users\Josefa Ogalde\organizacion"
 git fetch origin
-git checkout cursor/mova-cliente-portal-agente-7749
-git pull origin cursor/mova-cliente-portal-agente-7749
-SERVIR.bat
+git checkout cursor/mova-trabajo-d6a1
+git pull origin cursor/mova-trabajo-d6a1
+ACTUALIZAR-RAMA-MOVA.bat
+ABRIR-MOVA.bat
 ```
 
 URL: http://localhost:3000/index/clientes/MKOF/MOVA.html
@@ -82,7 +83,7 @@ URL: http://localhost:3000/index/clientes/MKOF/MOVA.html
 
 ## Próximos pasos
 
-1. `git pull` en el otro computador (rama `cursor/mova-cliente-portal-agente-7749`).
+1. `git checkout cursor/mova-trabajo-d6a1` → `ACTUALIZAR-RAMA-MOVA.bat` → `ABRIR-MOVA.bat`
 2. Copiar `MOVA-Auditoria-Charlas` → `index/clientes/MKOF/MOVA/auditoria-charlas/`.
 3. Completar sección «agente anterior» arriba.
 4. Cursor: abrir carpeta `organizacion` → `@mova` para continuar trabajo.

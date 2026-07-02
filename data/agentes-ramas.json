@@ -43,6 +43,35 @@
       ]
     },
     {
+      "id": "mova",
+      "invocar": "@mova",
+      "clienteId": "cli-mkof",
+      "cliente": "MKOF · MOVA",
+      "abrev": "MOVA",
+      "descripcion": "Auditoría de charlas — subproyecto MKOF",
+      "portal": "index/clientes/MKOF/MOVA",
+      "ramas": [
+        {
+          "nombre": "cursor/mova-trabajo-d6a1",
+          "titulo": "Rama de trabajo MOVA (fusionar a main al terminar)",
+          "pr": null,
+          "estado": "activa"
+        },
+        {
+          "nombre": "cursor/mkof-mova-gantt-3-semanas-f2f9",
+          "titulo": "Gantt 3 semanas + guía GitHub",
+          "pr": null,
+          "estado": "historica"
+        },
+        {
+          "nombre": "cursor/mova-cliente-portal-agente-7749",
+          "titulo": "Integración portal MOVA (ya en main)",
+          "pr": 18,
+          "estado": "fusionada"
+        }
+      ]
+    },
+    {
       "id": "organizacion",
       "invocar": "@organizacion-clientes",
       "clienteId": null,

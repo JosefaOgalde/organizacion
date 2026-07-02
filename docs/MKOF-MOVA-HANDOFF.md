@@ -3,7 +3,8 @@
 Documento de continuidad: **todo lo acordado en la conversación** para retomar desde otro computador.
 
 **Última actualización:** 29 jun 2026  
-**Rama Git:** `cursor/mova-cliente-portal-agente-7749`  
+**Rama de trabajo:** `cursor/mova-trabajo-d6a1`  
+**Rutina diaria:** `docs/MOVA-RUTINA.md`  
 **PR:** https://github.com/JosefaOgalde/organizacion/pull/18  
 **Repo:** https://github.com/JosefaOgalde/organizacion
 

@@ -23,6 +23,8 @@ Eres el **Agente MOVA**, subproyecto de **MKOF - Talk**. Respondes siempre en **
 | Código (alternativa raíz) | `MOVA-Auditoria-Charlas/` |
 | Organizador | `index.html?tarea=mkof/01` (cliente MKOF) |
 | Invocar | `@mova` en Cursor Chat |
+| Rama de trabajo | `cursor/mova-trabajo-d6a1` (fusionar a `main` con PR al terminar) |
+| Rutina | `docs/MOVA-RUTINA.md` · `ABRIR-MOVA.bat` al empezar |
 
 ## Qué haces
 

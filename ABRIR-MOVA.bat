@@ -2,7 +2,8 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 echo.
-echo  === Abrir Organizador (ultima version automatica) ===
+echo  === Abrir MOVA (MKOF) — servidor + portal ===
+echo  Rama recomendada: cursor/mova-trabajo-d6a1
 echo.
 
 call "%~dp0CERRAR-SERVIDOR.bat"
@@ -27,10 +28,15 @@ if errorlevel 1 (
   exit /b 1
 )
 
-start "" "http://localhost:3000/index.html?disco=1"
+start "" "http://localhost:3000/index/clientes/mkof/"
+timeout /t 1 /nobreak >nul
+start "" "http://localhost:3000/index/clientes/MKOF/MOVA"
 
 echo.
-echo  Listo. Si ves datos viejos: Ctrl+Shift+R en el navegador.
-echo  Portal clientes: http://localhost:3000/index/clientes/
+echo  MKOF:  http://localhost:3000/index/clientes/mkof/
+echo  MOVA:  http://localhost:3000/index/clientes/MKOF/MOVA
+echo  Organizador: http://localhost:3000/index.html?disco=1
+echo.
+echo  En Cursor: @mova + tu tarea
 echo.
 pause
