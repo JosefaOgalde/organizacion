@@ -126,7 +126,12 @@
             <strong>Crear cuenta GitHub</strong>
             <span class="mkof-guia-card__desc">PDF con capturas reales</span>
           </a>
-          <a href="mova-auth-guia.html" class="mkof-guia-card mkof-guia-card--activa">
+          <a href="github-repo.html" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Paso 2 · GitHub</span>
+            <strong>Repo privado mova-n8n-workflows</strong>
+            <span class="mkof-guia-card__desc">10 pasos · PPT y PDF</span>
+          </a>
+          <a href="mova-auth-guia.html" class="mkof-guia-card">
             <span class="mkof-guia-card__paso">Fase 1 · En curso</span>
             <strong>Login unificado mova_auth</strong>
             <span class="mkof-guia-card__desc">12 pasos · diagramas · PDF</span>
@@ -136,11 +141,6 @@
             <strong>mova_auth paso a paso</strong>
             <span class="mkof-guia-card__desc">Para entregar al encargado</span>
           </a>
-          <div class="mkof-guia-card mkof-guia-card--pendiente">
-            <span class="mkof-guia-card__paso">Paso 2 · Próximo</span>
-            <strong>Repo privado mova-n8n-workflows</strong>
-            <span class="mkof-guia-card__desc">Después de la cuenta GitHub</span>
-          </div>
         </div>
       </section>`;
   }

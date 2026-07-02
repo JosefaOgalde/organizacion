@@ -75,8 +75,8 @@
           Crear cuenta con correo general
         </div>
         <div class="mkof-guia-progreso__item mkof-guia-progreso__item--pendiente">
-          <div class="mkof-guia-progreso__num">Paso 2 · Próximo</div>
-          Repo privado <code>${escapeHtml(g.pasoSiguiente.nombreRepo)}</code>
+          <div class="mkof-guia-progreso__num">Paso 2 · Siguiente</div>
+          <a href="${escapeHtml(g.pasoSiguiente.url || 'github-repo.html')}">Repo privado <code>${escapeHtml(g.pasoSiguiente.nombreRepo)}</code></a>
         </div>
       </div>
 
@@ -93,10 +93,11 @@
         <ul>${checklistHtml}</ul>
       </section>
 
-      <section class="mkof-guia-siguiente" id="paso-2-pendiente">
-        <h2>Paso 2 · Crear repositorio privado (próximamente)</h2>
-        <p>Cuando la cuenta esté lista, el siguiente paso será crear el repo privado
-        <strong>${escapeHtml(g.pasoSiguiente.nombreRepo)}</strong> para respaldar los workflows de n8n.</p>
+      <section class="mkof-guia-siguiente" id="paso-2">
+        <h2>Paso 2 · Crear repositorio privado</h2>
+        <p>Continúa con la guía para crear el repo privado
+        <strong>${escapeHtml(g.pasoSiguiente.nombreRepo)}</strong> y respaldar los workflows de n8n.</p>
+        <p><a class="mkof-guia-btn-siguiente" href="${escapeHtml(g.pasoSiguiente.url || 'github-repo.html')}">Ir al Paso 2 →</a></p>
       </section>`;
   }
 

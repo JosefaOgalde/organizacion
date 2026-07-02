@@ -36,6 +36,17 @@ window.MOVA_DOCUMENTOS = {
           pdf: 'MOVA-GitHub-Paso1-Crear-Cuenta.pdf',
           pptx: 'MOVA-GitHub-Paso1-Crear-Cuenta.pptx',
           editar: 'mkof-github-guia.js'
+        },
+        {
+          id: 'github-repo',
+          titulo: 'GitHub Paso 2 — Repo privado',
+          descripcion: 'Crear mova-n8n-workflows · visibilidad Private',
+          hito: '1.1',
+          fecha: 'Jul 2026',
+          verHtml: 'github-repo.html',
+          pdf: 'MOVA-GitHub-Paso2-Repo-Privado.pdf',
+          pptx: 'MOVA-GitHub-Paso2-Repo-Privado.pptx',
+          editar: 'mkof-github-repo-guia.js'
         }
       ]
     },

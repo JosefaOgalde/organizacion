@@ -141,6 +141,55 @@
   opacity: 0.65;
 }
 
+.mkof-guia-progreso__item--hecho {
+  border-color: var(--guia-ok);
+  background: #f0faf4;
+}
+
+.mkof-guia-progreso__item--hecho a {
+  color: var(--guia-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.mkof-guia-progreso__item--hecho a:hover {
+  text-decoration: underline;
+}
+
+.mkof-guia-repo-resumen {
+  margin-bottom: 1.5rem;
+}
+
+.mkof-guia-repo-resumen h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.mkof-guia-repo-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.mkof-guia-repo-tabla th,
+.mkof-guia-repo-tabla td {
+  border: 1px solid var(--guia-border);
+  padding: 0.45rem 0.65rem;
+  text-align: left;
+}
+
+.mkof-guia-repo-tabla th {
+  width: 28%;
+  background: var(--guia-bg);
+  font-weight: 600;
+}
+
+.mkof-guia-siguiente--ok {
+  border-style: solid;
+  border-color: var(--guia-ok);
+  background: #f0faf4;
+}
+
 .mkof-guia-progreso__num {
   font-weight: 800;
   font-size: 0.72rem;
@@ -441,6 +490,25 @@
   font-size: 0.9rem;
   line-height: 1.5;
   color: var(--guia-muted);
+}
+
+.mkof-guia-siguiente p + p {
+  margin-top: 0.75rem;
+}
+
+.mkof-guia-btn-siguiente {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: var(--guia-accent);
+  color: #fff !important;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.mkof-guia-btn-siguiente:hover {
+  background: #3a6a70;
 }
 
 .mkof-guia-checklist {

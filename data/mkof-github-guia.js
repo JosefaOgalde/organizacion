@@ -13,7 +13,8 @@ window.MKOF_GITHUB_GUIA = {
     num: 2,
     titulo: 'Crear repositorio privado',
     nombreRepo: 'mova-n8n-workflows',
-    estado: 'pendiente'
+    url: 'github-repo.html',
+    estado: 'disponible'
   },
   correoRecomendado: {
     titulo: 'Usar un correo general del proyecto (no personal)',
@@ -110,7 +111,7 @@ window.MKOF_GITHUB_GUIA = {
       url: 'https://github.com/login',
       imagen: '07-pagina-login.png',
       destacar: 'Tras verificar → verás el inicio de sesión o el dashboard de GitHub',
-      tip: 'Siguiente entrega: repo privado mova-n8n-workflows (Paso 2).'
+      tip: 'Siguiente: crear el repo privado mova-n8n-workflows (Paso 2).'
     }
   ],
   checklist: [
@@ -119,6 +120,6 @@ window.MKOF_GITHUB_GUIA = {
     'Correo verificado con el código de 8 dígitos',
     'Plan Free activo',
     'Usuario y contraseña guardados en gestor del equipo',
-    'Pendiente: Paso 2 — crear repo privado mova-n8n-workflows'
+    'Siguiente: Paso 2 — crear repo privado mova-n8n-workflows'
   ]
 };

@@ -309,14 +309,14 @@ def slide_checklist(prs):
         y += Inches(0.65)
 
 
-def slide_paso2_pendiente(prs):
+def slide_paso2_disponible(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, C_ACCENT_DARK)
-    add_textbox(slide, Inches(0.8), Inches(2.2), Inches(11.5), Inches(0.7), "Paso 2 · Próxima entrega", size=32, bold=True, color=C_WHITE)
+    add_textbox(slide, Inches(0.8), Inches(2.2), Inches(11.5), Inches(0.7), "Paso 2 · Continuación disponible", size=32, bold=True, color=C_WHITE)
     add_textbox(slide, Inches(0.8), Inches(3.2), Inches(11.5), Inches(1.2),
                 "Crear repositorio privado:\n\nmova-n8n-workflows", size=28, color=C_BG)
     add_textbox(slide, Inches(0.8), Inches(5.0), Inches(11.5), Inches(0.8),
-                "Cuando la cuenta esté lista, avisar al equipo para recibir la guía del Paso 2.", size=18, color=RGBColor(0xA8, 0xD8, 0xDC))
+                "Guía: github-repo.html · PPT: MOVA-GitHub-Paso2-Repo-Privado.pptx", size=18, color=RGBColor(0xA8, 0xD8, 0xDC))
     add_textbox(slide, Inches(0.8), Inches(6.3), Inches(11.5), Inches(0.4), "MOVA · GRUPO MAKING OF · Jun 2026", size=14, color=C_MUTED)
 
 
@@ -344,7 +344,7 @@ def main():
     for p in PASOS:
         slide_paso(prs, *p)
     slide_checklist(prs)
-    slide_paso2_pendiente(prs)
+    slide_paso2_disponible(prs)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     prs.save(str(OUT))
