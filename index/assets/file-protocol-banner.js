@@ -17,11 +17,11 @@
     'Por eso ves listados de carpetas o enlaces rotos. El flujo continuo solo funciona con servidor local.</p>' +
     '<ol class="file-protocol-banner__pasos">' +
     '<li>Abre <strong>PowerShell</strong> o <strong>Terminal</strong> en la carpeta <code>organizacion</code></li>' +
-    '<li>Ejecuta: <code>npx serve .</code></li>' +
-    '<li>Entra en el navegador a: <a href="' + destino + '">' + destino + '</a></li>' +
+    '<li>Ejecuta: <code>SERVIR.bat</code></li>' +
+    '<li>Organizador: <a href="http://localhost:3000/index.html">http://localhost:3000/index.html</a></li>' +
+    '<li>Portal clientes: <a href="http://localhost:3000/index/clientes/">http://localhost:3000/index/clientes/</a></li>' +
     '</ol>' +
-    '<p class="file-protocol-banner__nota">Landing JM: <code>/index/clientes/joyasmercury/</code> · ' +
-    'Wireframes desktop también viven en esa carpeta.</p>';
+    '<p class="file-protocol-banner__nota">Todas las landings (JM, MKOF, ECR, etc.) están en el portal de clientes.</p>';
 
   document.body.prepend(banner);
 })();
