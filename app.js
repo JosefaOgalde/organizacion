@@ -1591,6 +1591,10 @@ function asegurarTareasJoyasMercuryFase2(data) {
         jmChecklistDia: todo.dias
       });
     } else if (tarea && !tareaFueEliminada(data, taskId, tarea)) {
+      // Respaldos y ediciones manuales: no pisar fecha si el usuario ya movió la tarea
+      if (tarea.fecha && tarea.fecha !== fechaStr) {
+        fijarAgendaUsuario(tarea);
+      }
       tarea.titulo = titulo;
       tarea.clienteId = JM_CLI_ID;
       tarea.rolId = rolId;
