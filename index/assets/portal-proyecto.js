@@ -1,4 +1,6 @@
 (function () {
+  document.body.classList.add('portal-page--light');
+
   const clienteSlug = document.body.dataset.clienteSlug;
   const codigo = document.body.dataset.proyectoCodigo;
   const root = document.getElementById('portal-proyecto-root');

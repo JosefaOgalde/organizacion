@@ -1,5 +1,6 @@
 :root {
   --bg: #3d3d3d;
+  --portal-page-bg: #fbfbfb;
   --panel: #ffffff;
   --text: #2a2a2a;
   --muted: #6e6e6e;
@@ -14,7 +15,7 @@
 body {
   margin: 0;
   font-family: var(--font);
-  background: var(--bg);
+  background: var(--portal-page-bg);
   color: var(--text);
   min-height: 100vh;
 }
@@ -23,17 +24,18 @@ body {
   max-width: 960px;
   margin: 0 auto;
   padding: 1.5rem 1.25rem 0.5rem;
-  color: #fff;
+  color: var(--text);
 }
 
 .portal-header h1 {
   margin: 0 0 0.35rem;
   font-size: 1.6rem;
+  color: var(--text);
 }
 
 .portal-header p {
   margin: 0;
-  color: #c8e4f4;
+  color: var(--muted);
   font-size: 0.95rem;
 }
 
@@ -80,13 +82,43 @@ body {
 }
 
 .portal-nav a {
-  color: #fff;
+  color: var(--accent);
   text-decoration: none;
   font-size: 0.85rem;
-  opacity: 0.9;
+  font-weight: 500;
 }
 
 .portal-nav a:hover { text-decoration: underline; }
+
+/* Títulos fuera de .portal-cliente (páginas nuevas bajo clientes/) */
+.portal-nav ~ h1,
+.portal-main > h1,
+.portal-main > p,
+body > .portal-nav ~ h1,
+body > .portal-nav ~ p {
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.portal-nav ~ h1,
+.portal-main > h1,
+body > .portal-nav ~ h1 {
+  color: var(--text);
+  font-size: 1.5rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.35rem;
+}
+
+.portal-nav ~ p,
+.portal-main > p,
+body > .portal-nav ~ p {
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 0;
+}
 
 .portal-main {
   max-width: 960px;
@@ -319,11 +351,15 @@ body.portal-body--themed .portal-nav a {
 }
 
 .portal-header--themed {
-  color: var(--card-text, #fff);
+  color: var(--card-text, var(--text));
+}
+
+.portal-header--themed h1 {
+  color: var(--card-text, var(--text));
 }
 
 .portal-header--themed p {
-  color: color-mix(in srgb, var(--card-text, #c8e4f4) 75%, white);
+  color: color-mix(in srgb, var(--card-text, var(--muted)) 72%, var(--muted));
 }
 
 /* —— Ficha proyecto (TEND, CLA, etc.) —— */
@@ -560,7 +596,7 @@ body.portal-body--themed .portal-nav a {
 
 /* —— MOVA (subproyecto MKOF) —— */
 body.portal-page--light {
-  background: #eef2f6;
+  background: var(--portal-page-bg);
   color: var(--text);
 }
 
