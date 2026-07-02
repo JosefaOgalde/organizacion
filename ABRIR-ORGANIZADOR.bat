@@ -7,7 +7,7 @@ echo.
 
 call "%~dp0CERRAR-SERVIDOR.bat"
 
-node scripts/sync-respaldo-auto.js
+node scripts/sync-respaldo-auto.js --force
 if errorlevel 1 (
   echo Error en sync-respaldo-auto.js
   pause
@@ -21,7 +21,7 @@ start "Organizacion servidor" cmd /k "cd /d "%~dp0" && node scripts/organizacion
 echo  Esperando servidor...
 timeout /t 2 /nobreak >nul
 
-start "" "http://localhost:3000/index.html?v=live"
+start "" "http://localhost:3000/index.html?disco=1"
 
 echo.
 echo  Listo. Si ves datos viejos: Ctrl+Shift+R en el navegador.

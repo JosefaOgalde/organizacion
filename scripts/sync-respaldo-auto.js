@@ -70,44 +70,26 @@ function candidatos() {
 }
 
 function main() {
-  const all = candidatos();
+  const force = process.argv.includes('--force');
+  const all = candidatos().filter((c) => !c.esLive);
   if (!all.length) {
-    console.log('[sync] Sin respaldos organizacion-respaldo-*.json — se usará live vacío o datos del navegador');
+    if (fs.existsSync(LIVE) && leerJson(LIVE)) {
+      console.log('[sync] Usando organizacion-live.json existente');
+      return;
+    }
+    console.log('[sync] Sin respaldos organizacion-respaldo-*.json en data/ ni Descargas');
     return;
   }
 
   all.sort((a, b) => b.score - a.score || b.mtime - a.mtime);
   const mejor = all[0];
 
-  let liveMtime = 0;
-  if (fs.existsSync(LIVE)) {
-    try {
-      liveMtime = fs.statSync(LIVE).mtimeMs;
-    } catch {
-      liveMtime = 0;
-    }
-  }
-
-  // Actualizar si el candidato es más nuevo por fecha O por hora de archivo en disco
-  if (mejor.esLive) {
-    console.log('[sync] organizacion-live.json ya es el más reciente en disco');
-    return;
-  }
-
-  if (mejor.mtime <= liveMtime && mejor.score <= (liveMtime || 0)) {
+  if (!force && fs.existsSync(LIVE)) {
+    const liveMtime = fs.statSync(LIVE).mtimeMs;
     const liveObj = leerJson(LIVE);
     const liveScore = liveObj ? marcaTiempo(liveObj, liveMtime) : 0;
-    if (mejor.score <= liveScore && mejor.mtime <= liveMtime) {
-      console.log('[sync] Live en disco ya está al día (', path.basename(mejor.path), ')');
-      return;
-    }
-  }
-
-  if (!mejor.esLive && fs.existsSync(LIVE)) {
-    const liveObj = leerJson(LIVE);
-    const liveScore = liveObj ? marcaTiempo(liveObj, liveMtime) : 0;
-    if (mejor.score < liveScore && mejor.mtime <= liveMtime) {
-      console.log('[sync] Live en disco ya está al día (', path.basename(mejor.path), ')');
+    if (mejor.mtime <= liveMtime && mejor.score <= liveScore) {
+      console.log('[sync] Live ya al día ←', path.basename(mejor.path));
       return;
     }
   }
@@ -116,6 +98,7 @@ function main() {
   fs.copyFileSync(mejor.path, LIVE);
   console.log('[sync] Actualizado data/organizacion-live.json ←', mejor.path);
   console.log('[sync] Fecha respaldo:', mejor.obj.respaldoActualizado || '(sin fecha)');
+  if (force) console.log('[sync] Modo --force (ignoró comparación con live anterior)');
 }
 
 main();

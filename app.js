@@ -4957,6 +4957,7 @@ async function cargarDatosInicio() {
 
   // Forzar respaldo del repo (?respaldo=1) — ignora cambios locales del navegador
   const forzarRespaldo = params.get('respaldo') === '1';
+  const forzarDisco = params.get('disco') === '1';
   if (!forzarRespaldo && params.get('local') === '1') {
     return { datos: cargar(), origen: 'local' };
   }
@@ -4964,6 +4965,12 @@ async function cargarDatosInicio() {
   const live = typeof window.fetchOrganizacionLive === 'function'
     ? await window.fetchOrganizacionLive()
     : null;
+
+  // Forzar datos del disco — ignora caché del navegador (ABRIR-ORGANIZADOR.bat)
+  if ((forzarDisco || forzarRespaldo) && live) {
+    console.info('Datos cargados desde disco (forzado)');
+    return { datos: normalizarDatos(live), origen: forzarDisco ? 'disco' : 'respaldo' };
+  }
 
   // Con servidor Node: priorizar disco (live) — evita caché vieja del navegador
   if (!forzarRespaldo && live && !params.get('local')) {
@@ -5039,6 +5046,8 @@ async function iniciarApp() {
   if (params.get('vaciar-tareas') === '1' && params.get('confirm') === '1') {
     const clean = location.pathname + (location.hash || '');
     history.replaceState({}, '', clean);
+  } else if (params.get('disco') === '1') {
+    history.replaceState({}, '', location.pathname + (location.hash || ''));
   }
 
   if (window.mermaid) {
