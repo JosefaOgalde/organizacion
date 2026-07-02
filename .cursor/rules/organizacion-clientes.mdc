@@ -21,7 +21,22 @@ El usuario puede decir:
 - `Agente JM` → WooCommerce Joyas Mercury Fase 2
 - `Agente MKOF` → Gantt y planificación
 
-## Rutas portal
+## Enlace por defecto (siempre clientes, no organizador)
+
+Con `SERVIR.bat` en puerto 3000:
+
+| Qué | URL |
+|-----|-----|
+| **Entrada portal** | http://localhost:3000/index/clientes/ |
+| MKOF | http://localhost:3000/index/clientes/mkof/ |
+| **MOVA** (subproyecto MKOF) | http://localhost:3000/index/clientes/MKOF/MOVA |
+| MOVA · auditoría charlas | http://localhost:3000/index/clientes/MKOF/MOVA/auditoria-charlas/ |
+
+MOVA está en **main** (portal + hub). El trabajo nuevo va en rama **`cursor/mova-trabajo-d6a1`** y se fusiona a main con PR al terminar. Ver `docs/MOVA-RUTINA.md`.
+
+Atajo Windows: **`ABRIR-MOVA.bat`** (servidor + sync + abre MKOF y MOVA).
+
+## Rutas portal (otros clientes)
 
 | Cliente | Ficha |
 |---------|--------|

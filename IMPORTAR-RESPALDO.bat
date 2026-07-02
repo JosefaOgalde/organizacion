@@ -28,14 +28,8 @@ copy /Y "%ORIGEN%" "%LIVE%" >nul
 
 echo.
 echo  === Respaldo importado ===
-echo  %DESTINO%   ^(version en Git con SUBIR.bat^)
-echo  %LIVE%      ^(carga inmediata con SERVIR.bat^)
+echo  %LIVE%  ^(se carga solo al abrir con ABRIR-ORGANIZADOR.bat o SERVIR.bat^)
 echo.
-echo  Siguiente:
-echo   1. Ejecuta SERVIR.bat
-echo   2. Abre http://localhost:3000/index.html?respaldo=1
-echo      ^(fuerza este respaldo aunque el navegador tenga datos viejos^)
-echo.
-echo  Para guardar en GitHub: SUBIR.bat
+echo  Siguiente: doble clic en ABRIR-ORGANIZADOR.bat
 echo.
 pause

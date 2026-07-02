@@ -89,7 +89,7 @@ const AGENTES_CLIENTE = {
     nombre: 'Agente MKOF',
     emoji: '📐',
     especialidad: 'Planificación y entregables de proyecto',
-    instrucciones: 'Eres el asistente de MKOF. Ayudas con Gantt, cronogramas post auditoría, definición de tiempos y entregables del proyecto.'
+    instrucciones: 'Eres el asistente de MKOF. Ayudas con Gantt, cronogramas post auditoría, definición de tiempos y entregables del proyecto. Para el subproyecto MOVA (auditoría de charlas), indica al usuario que use @mova o abra index/clientes/MKOF/MOVA.'
   },
   'cli-joyas-mercury': {
     nombre: 'Agente Joyas Mercury',
@@ -518,6 +518,14 @@ function datosIniciales() {
             funciones: 'Planificación de proyectos\nGantt y cronogramas\nDefinición de entregables',
             tareasAlMes: 'Entregables según etapa del proyecto',
             plazosEntregables: 'Según acuerdos del proyecto'
+          },
+          {
+            id: 'rol-mkof-mova',
+            nombre: 'MOVA — Auditoría Charlas',
+            abrev: 'MOVA',
+            funciones: 'Auditar charlas y contenido\nAplicar criterios o rúbrica\nDocumentar hallazgos\nInformes y recomendaciones',
+            tareasAlMes: 'Según charlas a auditar',
+            plazosEntregables: 'Por charla o lote acordado'
           }
         ]
       },
@@ -1062,6 +1070,7 @@ function asegurarHistoriasPiscineria(data) {
       if (tareaFueEliminada(data, taskId, tarea)) {
         data.tareas = data.tareas.filter(t => t.id !== tarea.id);
       } else {
+        if (tarea.fecha && tarea.fecha !== fecha) fijarAgendaUsuario(tarea);
         tarea.id = taskId;
         tarea.titulo = '[PISC] Subir historia con link WSP';
         tarea.clienteId = cliId;
@@ -1118,6 +1127,7 @@ function asegurarHistoriasHotspring(data) {
     if (tareaFueEliminada(data, taskId, tarea)) {
       data.tareas = data.tareas.filter(t => t.id !== tarea.id);
     } else {
+      if (tarea.fecha && tarea.fecha !== fecha) fijarAgendaUsuario(tarea);
       tarea.id = taskId;
       tarea.titulo = '[HS] Subir historia con link WSP';
       tarea.clienteId = cliId;
@@ -1591,6 +1601,10 @@ function asegurarTareasJoyasMercuryFase2(data) {
         jmChecklistDia: todo.dias
       });
     } else if (tarea && !tareaFueEliminada(data, taskId, tarea)) {
+      // Respaldos y ediciones manuales: no pisar fecha si el usuario ya movió la tarea
+      if (tarea.fecha && tarea.fecha !== fechaStr) {
+        fijarAgendaUsuario(tarea);
+      }
       tarea.titulo = titulo;
       tarea.clienteId = JM_CLI_ID;
       tarea.rolId = rolId;
@@ -4951,6 +4965,7 @@ async function cargarDatosInicio() {
 
   // Forzar respaldo del repo (?respaldo=1) — ignora cambios locales del navegador
   const forzarRespaldo = params.get('respaldo') === '1';
+  const forzarDisco = params.get('disco') === '1';
   if (!forzarRespaldo && params.get('local') === '1') {
     return { datos: cargar(), origen: 'local' };
   }
@@ -4959,15 +4974,30 @@ async function cargarDatosInicio() {
     ? await window.fetchOrganizacionLive()
     : null;
 
-  // Por defecto: conservar lo del navegador (borrados, fechas, estados)
-  if (!forzarRespaldo && tieneDatosLocales()) {
-    const local = cargar();
-    if (live && typeof window.organizacionLiveEsMasReciente === 'function'
-      && window.organizacionLiveEsMasReciente(local, live)) {
-      console.info('Datos cargados desde data/organizacion-live.json (más reciente que el navegador)');
+  // Forzar datos del disco — ignora caché del navegador (ABRIR-ORGANIZADOR.bat)
+  if ((forzarDisco || forzarRespaldo) && live) {
+    console.info('Datos cargados desde disco (forzado)');
+    return { datos: normalizarDatos(live), origen: forzarDisco ? 'disco' : 'respaldo' };
+  }
+
+  // Con servidor Node: priorizar disco (live) — evita caché vieja del navegador
+  if (!forzarRespaldo && live && !params.get('local')) {
+    const local = tieneDatosLocales() ? cargar() : null;
+    const liveMasReciente = !local
+      || (typeof window.organizacionLiveEsMasReciente === 'function'
+        && window.organizacionLiveEsMasReciente(local, live));
+    if (liveMasReciente) {
+      console.info('Datos cargados desde data/organizacion-live.json');
       return { datos: normalizarDatos(live), origen: 'live' };
     }
-    console.info('Datos cargados desde localStorage (tus cambios locales)');
+    console.info('Datos cargados desde localStorage (más reciente que disco)');
+    return { datos: local, origen: 'local' };
+  }
+
+  // Sin servidor live: conservar navegador
+  if (!forzarRespaldo && tieneDatosLocales()) {
+    const local = cargar();
+    console.info('Datos cargados desde localStorage');
     return { datos: local, origen: 'local' };
   }
 
@@ -5024,6 +5054,8 @@ async function iniciarApp() {
   if (params.get('vaciar-tareas') === '1' && params.get('confirm') === '1') {
     const clean = location.pathname + (location.hash || '');
     history.replaceState({}, '', clean);
+  } else if (params.get('disco') === '1') {
+    history.replaceState({}, '', location.pathname + (location.hash || ''));
   }
 
   if (window.mermaid) {

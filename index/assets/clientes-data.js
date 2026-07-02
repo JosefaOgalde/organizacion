@@ -93,7 +93,27 @@ window.CLIENTES_PORTAL = [
         { titulo: 'Planificación MOVA', texto: 'Cronograma según playbook del cliente: Cloudflare, mova_auth y MySQL.' },
         { titulo: 'Entregables', texto: 'Gantt, guías visuales y presentaciones para el equipo.' }
       ]
-    }
+    },
+    proyectos: [
+      {
+        codigo: 'MOVA',
+        nombre: 'Auditoría Charlas',
+        archivo: 'MKOF/MOVA',
+        resumen: 'MOVA-Auditoria-Charlas — revisión de charlas, hallazgos e informes.',
+        color: { border: '#9a7ab8', bg: '#f5f0fa', text: '#5a4080' },
+        identidad: {
+          primario: '#9a7ab8',
+          secundario: '#7a5a98',
+          acento: '#c4a8e0',
+          fondo: '#f5f0fa'
+        },
+        entregables: [
+          'Criterios y rúbrica de auditoría',
+          'Charlas revisadas',
+          'Informe de hallazgos'
+        ]
+      }
+    ]
   },
   {
     archivo: 'joyasmercury/index.html?v=secciones3',
@@ -173,7 +193,7 @@ window.CLIENTES_PORTAL = [
     nombre: 'Herramientas',
     abrev: 'HER',
     tipo: 'Freelance',
-    color: { border: '#b8aee8', bg: '#f5f4fc', text: '#5b4fcf' },
+    color: { border: '#5C6B94', bg: '#E4E8F2', text: '#2A3348' },
     agente: 'Herramientas internas',
     resumen: 'Proyectos de herramientas y utilidades. Cada proyecto mantiene su identidad y entregables.',
     landing: {
@@ -188,14 +208,14 @@ window.CLIENTES_PORTAL = [
         codigo: 'TEND',
         nombre: 'Tendencias',
         archivo: 'Herramientas/Tendencias',
-        resumen: 'Herramientas de análisis y seguimiento de tendencias.',
-        descripcion: 'Análisis de mercado, señales y seguimiento de tendencias para apoyar decisiones de contenido y producto.',
-        color: { border: '#5B4FCF', bg: '#F5F4FC', text: '#5B4FCF' },
+        resumen: 'Tendencias virales de comida Chile — TikTok, Instagram y YouTube Shorts.',
+        descripcion: 'Análisis de tendencias virales de comida y recetas en Chile para apoyar decisiones de contenido y producto.',
+        color: { border: '#2E7D6E', bg: '#DFF0EC', text: '#1A4A40' },
         identidad: {
-          primario: '#5B4FCF',
-          secundario: '#7B6FE8',
-          acento: '#F0A830',
-          fondo: '#F5F4FC'
+          primario: '#2E7D6E',
+          secundario: '#3D9A88',
+          acento: '#C4962A',
+          fondo: '#DFF0EC'
         },
         entregables: [
           'Dashboard de tendencias',

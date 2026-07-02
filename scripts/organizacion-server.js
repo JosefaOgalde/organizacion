@@ -248,7 +248,8 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, RUNTIME_HOST, () => {
   console.log(`Organización · http://${RUNTIME_HOST}:${PORT}`);
   console.log(`  Solo accesible desde esta PC (${RUNTIME_HOST})`);
-  console.log(`  Landing JM: http://localhost:${PORT}/index/clientes/joyasmercury/`);
+  console.log(`  Organizador: http://localhost:${PORT}/index.html`);
+  console.log(`  Portal clientes: http://localhost:${PORT}/index/clientes/`);
   console.log(`  Guardado live: data/organizacion-live.json (solo vía API)`);
   if (RUNTIME_TOKEN) {
     console.log('  API protegida con ORGANIZACION_TOKEN (.env)');
