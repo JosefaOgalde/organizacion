@@ -93,7 +93,27 @@ window.CLIENTES_PORTAL = [
         { titulo: 'Planificación', texto: 'Diagramas de tiempo y dependencias entre hitos.' },
         { titulo: 'Entregables', texto: 'Control de avance y fechas comprometidas con el cliente.' }
       ]
-    }
+    },
+    proyectos: [
+      {
+        codigo: 'MOVA',
+        nombre: 'Auditoría Charlas',
+        archivo: 'MKOF/MOVA',
+        resumen: 'MOVA-Auditoria-Charlas — revisión de charlas, hallazgos e informes.',
+        color: { border: '#9a7ab8', bg: '#f5f0fa', text: '#5a4080' },
+        identidad: {
+          primario: '#9a7ab8',
+          secundario: '#7a5a98',
+          acento: '#c4a8e0',
+          fondo: '#f5f0fa'
+        },
+        entregables: [
+          'Criterios y rúbrica de auditoría',
+          'Charlas revisadas',
+          'Informe de hallazgos'
+        ]
+      }
+    ]
   },
   {
     archivo: 'joyasmercury/index.html?v=secciones3',
