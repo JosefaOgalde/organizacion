@@ -1316,7 +1316,7 @@ function reajustarTareasConflictosAgenda(data) {
     const fecha = reunion.fecha;
 
     data.tareas.forEach(t => {
-      if (t.fecha !== fecha || t.pendiente || t.completada || !t.horaInicio) return;
+      if (t.agendaFijada || t.fecha !== fecha || t.pendiente || t.completada || !t.horaInicio) return;
       const tIni = minutosHora(t.horaInicio);
       const tFin = tIni + duracionMinutosTarea(t);
       if (!bloquesSolapan(tIni, tFin, rIni, rFin)) return;
@@ -4940,6 +4940,20 @@ function setupUI() {
   });
 }
 
+async function esperar(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchOrganizacionLiveConReintentos(intentos = 12, pausaMs = 500) {
+  if (typeof window.fetchOrganizacionLive !== 'function') return null;
+  for (let i = 0; i < intentos; i++) {
+    const live = await window.fetchOrganizacionLive();
+    if (live) return live;
+    if (i < intentos - 1) await esperar(pausaMs);
+  }
+  return null;
+}
+
 async function fetchRespaldoDefecto() {
   try {
     const res = await fetch(RESPALDO_DEFECTO_URL, { cache: 'no-store' });
@@ -4962,14 +4976,25 @@ async function cargarDatosInicio() {
     return { datos: cargar(), origen: 'local' };
   }
 
-  const live = typeof window.fetchOrganizacionLive === 'function'
-    ? await window.fetchOrganizacionLive()
-    : null;
+  const live = (forzarDisco || forzarRespaldo)
+    ? await fetchOrganizacionLiveConReintentos()
+    : (typeof window.fetchOrganizacionLive === 'function'
+      ? await window.fetchOrganizacionLive()
+      : null);
 
   // Forzar datos del disco — ignora caché del navegador (ABRIR-ORGANIZADOR.bat)
-  if ((forzarDisco || forzarRespaldo) && live) {
-    console.info('Datos cargados desde disco (forzado)');
-    return { datos: normalizarDatos(live), origen: forzarDisco ? 'disco' : 'respaldo' };
+  if (forzarDisco || forzarRespaldo) {
+    if (live) {
+      console.info('Datos cargados desde disco (forzado)');
+      return { datos: normalizarDatos(live), origen: forzarDisco ? 'disco' : 'respaldo' };
+    }
+    const remoto = await fetchRespaldoDefecto();
+    if (remoto) {
+      console.warn('Servidor sin live — usando respaldo en data/');
+      return { datos: normalizarDatos(remoto), origen: forzarDisco ? 'disco' : 'respaldo' };
+    }
+    console.error('?disco=1: no se pudo leer disco. Cierra y vuelve a abrir con ABRIR-ORGANIZADOR.bat');
+    return { datos: normalizarDatos(datosIniciales()), origen: 'disco-fallo' };
   }
 
   // Con servidor Node: priorizar disco (live) — evita caché vieja del navegador
@@ -5064,6 +5089,10 @@ async function iniciarApp() {
   }
   if (origenCarga === 'respaldo') {
     mostrarToast('Calendario vacío desde respaldo — modo manual (+ Nueva tarea)');
+  } else if (origenCarga === 'disco') {
+    mostrarToast('Datos actualizados desde disco (respaldo más reciente)');
+  } else if (origenCarga === 'disco-fallo') {
+    mostrarToast('No se leyó el disco — ejecuta ABRIR-ORGANIZADOR.bat de nuevo');
   } else if (origenCarga === 'live') {
     mostrarToast('Datos cargados desde data/organizacion-live.json');
   } else if (origenCarga === 'local') {

@@ -19,7 +19,13 @@ echo  Iniciando servidor...
 start "Organizacion servidor" cmd /k "cd /d "%~dp0" && node scripts/organizacion-server.js"
 
 echo  Esperando servidor...
-timeout /t 2 /nobreak >nul
+node scripts/wait-organizacion-server.js
+if errorlevel 1 (
+  echo.
+  echo  El servidor tardo demasiado. Revisa la ventana "Organizacion servidor".
+  pause
+  exit /b 1
+)
 
 start "" "http://localhost:3000/index.html?disco=1"
 
