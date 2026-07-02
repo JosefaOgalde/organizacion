@@ -34,6 +34,8 @@ const MIME = {
   '.woff2': 'font/woff2',
   '.txt': 'text/plain; charset=utf-8',
   '.md': 'text/markdown; charset=utf-8',
+  '.pdf': 'application/pdf',
+  '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
 };
 
 /** Rutas que no se sirven por HTTP (aunque existan en disco) */
@@ -241,7 +243,18 @@ const server = http.createServer((req, res) => {
   const ext = path.extname(filePath).toLowerCase();
   fs.readFile(filePath, (e, data) => {
     if (e) return send(res, 500, 'Error');
-    send(res, 200, data, MIME[ext] || 'application/octet-stream');
+    const headers = {
+      ...securityHeaders(),
+      'Content-Type': MIME[ext] || 'application/octet-stream',
+    };
+    const filename = path.basename(filePath);
+    if (ext === '.pdf') {
+      headers['Content-Disposition'] = `inline; filename="${filename}"`;
+    } else if (ext === '.pptx') {
+      headers['Content-Disposition'] = `attachment; filename="${filename}"`;
+    }
+    res.writeHead(200, headers);
+    res.end(data);
   });
 });
 

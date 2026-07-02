@@ -32,7 +32,7 @@
 
     const descargarBtn =
       item.tipo === 'pdf' || item.tipo === 'pptx'
-        ? `<a class="mova-doc-btn mova-doc-btn--sec" href="${escapeHtml(url)}" target="_blank" rel="noopener" download>Descargar</a>`
+        ? `<a class="mova-doc-btn mova-doc-btn--sec" href="${escapeHtml(url)}" download="${escapeHtml(item.archivo)}">Descargar</a>`
         : '';
 
     const nuevaPestana =
@@ -87,20 +87,41 @@
     const tituloEl = document.getElementById('mova-doc-viewer-titulo');
 
     root.querySelectorAll('[data-ver]').forEach((btn) => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
         const url = btn.getAttribute('data-ver');
         const titulo = btn.getAttribute('data-titulo') || 'Documento';
         if (!frame || !viewer) return;
-        frame.src = url;
-        tituloEl.textContent = titulo;
+
         viewer.classList.remove('mova-doc-viewer--hidden');
+        tituloEl.textContent = `${titulo} — cargando…`;
+        frame.src = 'about:blank';
         viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('No se pudo cargar');
+          const blob = await res.blob();
+          const pdfBlob =
+            blob.type === 'application/pdf' ? blob : new Blob([blob], { type: 'application/pdf' });
+          if (frame._blobUrl) URL.revokeObjectURL(frame._blobUrl);
+          frame._blobUrl = URL.createObjectURL(pdfBlob);
+          frame.src = frame._blobUrl;
+          tituloEl.textContent = titulo;
+        } catch {
+          tituloEl.textContent = `${titulo} — error al cargar`;
+        }
       });
     });
 
     document.getElementById('mova-doc-viewer-cerrar')?.addEventListener('click', () => {
       viewer?.classList.add('mova-doc-viewer--hidden');
-      if (frame) frame.src = 'about:blank';
+      if (frame) {
+        if (frame._blobUrl) {
+          URL.revokeObjectURL(frame._blobUrl);
+          frame._blobUrl = null;
+        }
+        frame.src = 'about:blank';
+      }
     });
 
     const params = new URLSearchParams(location.search);
