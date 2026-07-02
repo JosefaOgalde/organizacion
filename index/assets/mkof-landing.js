@@ -120,21 +120,26 @@
   function guiasHtml() {
     return `<section class="ficha-seccion ficha-seccion--portal">
         <h2>Guías en curso · MOVA</h2>
-        <p style="margin:0 0 0.85rem;font-size:0.9rem">
-          <a href="MOVA-GitHub-Paso1-Crear-Cuenta.pdf" target="_blank" rel="noopener">⬇ PDF con capturas reales</a>
-          ·
-          <a href="MOVA-GitHub-Paso1-Crear-Cuenta.pptx" download>PPT</a>
-        </p>
         <div class="mkof-guias-grid">
-          <a href="github-cuenta.html" class="mkof-guia-card mkof-guia-card--activa">
-            <span class="mkof-guia-card__paso">Paso 1 · En curso</span>
+          <a href="github-cuenta.html" class="mkof-guia-card">
+            <span class="mkof-guia-card__paso">Paso 1 · GitHub</span>
             <strong>Crear cuenta GitHub</strong>
-            <span class="mkof-guia-card__desc">Capturas reales de github.com</span>
+            <span class="mkof-guia-card__desc">PDF con capturas reales</span>
+          </a>
+          <a href="mova-auth-guia.html" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Fase 1 · En curso</span>
+            <strong>Login unificado mova_auth</strong>
+            <span class="mkof-guia-card__desc">12 pasos · diagramas · PDF</span>
+          </a>
+          <a href="MOVA-Auth-Login-Unificado.pdf" target="_blank" rel="noopener" class="mkof-guia-card">
+            <span class="mkof-guia-card__paso">PDF directo</span>
+            <strong>mova_auth paso a paso</strong>
+            <span class="mkof-guia-card__desc">Para entregar al encargado</span>
           </a>
           <div class="mkof-guia-card mkof-guia-card--pendiente">
             <span class="mkof-guia-card__paso">Paso 2 · Próximo</span>
             <strong>Repo privado mova-n8n-workflows</strong>
-            <span class="mkof-guia-card__desc">Se publicará después de crear la cuenta</span>
+            <span class="mkof-guia-card__desc">Después de la cuenta GitHub</span>
           </div>
         </div>
       </section>`;
