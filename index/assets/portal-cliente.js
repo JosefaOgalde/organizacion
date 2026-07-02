@@ -1,6 +1,8 @@
 (function () {
   if (typeof CLIENTES_PORTAL === 'undefined') return;
 
+  document.body.classList.add('portal-page--light');
+
   const slug = document.body.dataset.clienteSlug;
   const archivoLegacy = document.body.dataset.cliente;
   const depth = Number(document.body.dataset.portalDepth || (slug ? 1 : 0));

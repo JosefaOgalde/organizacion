@@ -7,7 +7,9 @@ window.aplicarTemaPortal = function aplicarTemaPortal(color) {
   document.body.style.setProperty('--card-border', border);
   document.body.style.setProperty('--card-bg', bg);
   document.body.style.setProperty('--card-text', text);
-  document.body.classList.add('portal-body--themed');
+  document.body.style.setProperty('--portal-page-bg', bg);
+  document.body.style.setProperty('--accent', border);
+  document.body.classList.add('portal-body--themed', 'portal-page--light');
 };
 
 window.buscarProyectoPortal = function buscarProyectoPortal(clienteSlug, codigo) {

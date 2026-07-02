@@ -168,3 +168,86 @@
 .mova-docs-aviso code {
   font-size: 0.82rem;
 }
+
+.mova-doc-card__nota {
+  margin: 0 0 0.65rem;
+  font-size: 0.75rem;
+  color: #7a6a90;
+  line-height: 1.4;
+}
+
+/* Visor pantalla completa (ver.html) */
+.mova-doc-ver-page {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f0f4f5;
+}
+
+.mova-doc-ver-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0;
+  max-width: none;
+}
+
+.mova-doc-ver__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: 0.65rem 1rem;
+  background: #4a7a80;
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.mova-doc-ver__titulo {
+  flex: 1;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-width: 120px;
+}
+
+.mova-doc-ver__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mova-doc-ver__toolbar .mova-doc-btn--sec {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.mova-doc-ver__toolbar .mova-doc-btn--sec:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.mova-doc-ver__edit-hint {
+  font-size: 0.72rem;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  color: #e8f6f8;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mova-doc-ver__frame {
+  flex: 1;
+  width: 100%;
+  min-height: calc(100vh - 52px);
+  border: none;
+  background: #fff;
+}

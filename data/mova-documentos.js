@@ -1,32 +1,24 @@
 /**
- * Catálogo de entregables MOVA alojados en el proyecto.
- * PDF/PPT en index/clientes/mkof/ · guías HTML en la misma carpeta.
+ * Catálogo MOVA — ver en HTML (editable en repo); PDF/PPT solo para exportar.
  */
 window.MOVA_DOCUMENTOS = {
-  version: '1.0',
+  version: '2.0',
   baseMkof: '../../../mkof/',
+  baseData: '../../../../../data/',
   categorias: [
     {
       id: 'auth',
       titulo: 'Login unificado · mova_auth',
       items: [
         {
-          id: 'auth-pdf',
-          titulo: 'mova_auth — Login unificado (PDF)',
+          id: 'auth',
+          titulo: 'mova_auth — Login unificado',
           descripcion: '12 pasos · diagramas · checklist · errores comunes',
-          tipo: 'pdf',
-          archivo: 'MOVA-Auth-Login-Unificado.pdf',
+          hito: '2.1 + 2.2',
           fecha: 'Jul 2026',
-          hito: '2.1 + 2.2'
-        },
-        {
-          id: 'auth-web',
-          titulo: 'mova_auth — Guía web interactiva',
-          descripcion: 'Misma guía con diagramas en el navegador',
-          tipo: 'html',
-          archivo: 'mova-auth-guia.html',
-          fecha: 'Jul 2026',
-          hito: '2.1 + 2.2'
+          verHtml: 'mova-auth-guia.html',
+          pdf: 'MOVA-Auth-Login-Unificado.pdf',
+          editar: 'mkof-mova-auth-guia.js'
         }
       ]
     },
@@ -35,31 +27,15 @@ window.MOVA_DOCUMENTOS = {
       titulo: 'Respaldo n8n → GitHub',
       items: [
         {
-          id: 'gh-pdf',
-          titulo: 'GitHub Paso 1 — Crear cuenta (PDF)',
+          id: 'github',
+          titulo: 'GitHub Paso 1 — Crear cuenta',
           descripcion: 'Capturas reales de github.com/signup',
-          tipo: 'pdf',
-          archivo: 'MOVA-GitHub-Paso1-Crear-Cuenta.pdf',
+          hito: '1.1',
           fecha: 'Jul 2026',
-          hito: '1.1'
-        },
-        {
-          id: 'gh-ppt',
-          titulo: 'GitHub Paso 1 — Presentación (PPT)',
-          descripcion: 'Para entregar al encargado',
-          tipo: 'pptx',
-          archivo: 'MOVA-GitHub-Paso1-Crear-Cuenta.pptx',
-          fecha: 'Jul 2026',
-          hito: '1.1'
-        },
-        {
-          id: 'gh-web',
-          titulo: 'GitHub Paso 1 — Guía web',
-          descripcion: 'Paso a paso con capturas en pantalla',
-          tipo: 'html',
-          archivo: 'github-cuenta.html',
-          fecha: 'Jul 2026',
-          hito: '1.1'
+          verHtml: 'github-cuenta.html',
+          pdf: 'MOVA-GitHub-Paso1-Crear-Cuenta.pdf',
+          pptx: 'MOVA-GitHub-Paso1-Crear-Cuenta.pptx',
+          editar: 'mkof-github-guia.js'
         }
       ]
     },
@@ -70,20 +46,19 @@ window.MOVA_DOCUMENTOS = {
         {
           id: 'gantt',
           titulo: 'Carta Gantt MOVA — 3 semanas',
-          descripcion: 'Cronograma comprimido según playbook del cliente',
-          tipo: 'html',
-          archivo: 'index.html',
+          descripcion: 'Cronograma según playbook del cliente',
+          hito: 'Gantt',
           fecha: 'Jun 2026',
-          hito: 'Gantt'
+          verHtml: 'index.html',
+          editar: 'mkof-mova-gantt.js'
         },
         {
           id: 'playbook',
           titulo: 'Playbook cliente (externo)',
           descripcion: 'Post-Auditoría MOVA — acme-chile.cl',
-          tipo: 'externo',
-          url: 'https://acme-chile.cl/documentos/auditoria_mova.html',
+          hito: 'Referencia',
           fecha: 'Jun 2026',
-          hito: 'Referencia'
+          externo: 'https://acme-chile.cl/documentos/auditoria_mova.html'
         }
       ]
     }

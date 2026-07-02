@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Título · Cliente</title>
+  <link rel="stylesheet" href="../../assets/portal.css">
+</head>
+<!--
+  Colores del cliente/proyecto: define en data-cliente-slug y opcional data-proyecto-codigo.
+  Ej. MKOF/MOVA: data-cliente-slug="mkof" data-proyecto-codigo="MOVA"
+  Sin atributos, portal-theme-auto.js infiere la ruta desde la URL.
+-->
+<body class="portal-page--light" data-cliente-slug="mkof" data-proyecto-codigo="MOVA">
+  <header class="portal-header portal-header--themed">
+    <nav class="portal-nav">
+      <a href="../">← Cliente padre</a>
+      ·
+      <a href="../../clientes.html">Todos los clientes</a>
+    </nav>
+    <h1>Título de la página</h1>
+    <p>Subtítulo o descripción breve</p>
+  </header>
+  <main class="portal-main">
+    <article class="portal-cliente">
+      <section>
+        <h2>Contenido</h2>
+        <p>Texto del proyecto…</p>
+      </section>
+    </article>
+  </main>
+  <script src="../../assets/clientes-data.js"></script>
+  <script src="../../assets/portal-theme.js"></script>
+  <script src="../../assets/portal-theme-auto.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+/* ?embed=1 — documento dentro del visor MOVA (sin chrome del portal) */
+html.is-embed .portal-header,
+html.is-embed .mkof-guia-breadcrumb {
+  display: none !important;
+}
+
+html.is-embed body {
+  margin: 0;
+}
+
+html.is-embed .portal-main {
+  max-width: none;
+  margin: 0 auto;
+  padding: 1rem 1.25rem 2rem;
+}
+
+html.is-embed .mkof-guia-header__descargas {
+  display: none;
+}

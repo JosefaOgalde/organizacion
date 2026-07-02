@@ -9,47 +9,48 @@
       .replace(/"/g, '&quot;');
   }
 
-  function urlItem(item, base) {
-    if (item.tipo === 'externo') return item.url;
-    return base + item.archivo;
-  }
+  function cardHtml(item, base, baseData) {
+    const verUrl = item.externo
+      ? item.externo
+      : item.verHtml
+        ? `ver.html?id=${encodeURIComponent(item.id)}`
+        : null;
 
-  function tipoLabel(tipo) {
-    const map = { pdf: 'PDF', pptx: 'PowerPoint', html: 'Guía web', externo: 'Enlace' };
-    return map[tipo] || tipo;
-  }
+    const editPath = item.editar ? `${baseData}${item.editar}` : '';
 
-  function cardHtml(item, base) {
-    const url = urlItem(item, base);
-    const verBtn =
-      item.tipo === 'pdf'
-        ? `<button type="button" class="mova-doc-btn mova-doc-btn--ver" data-ver="${escapeHtml(url)}" data-titulo="${escapeHtml(item.titulo)}">Ver aquí</button>`
-        : item.tipo === 'html'
-          ? `<a class="mova-doc-btn mova-doc-btn--ver" href="${escapeHtml(url)}" target="_blank" rel="noopener">Abrir guía</a>`
-          : item.tipo === 'externo'
-            ? `<a class="mova-doc-btn mova-doc-btn--ver" href="${escapeHtml(url)}" target="_blank" rel="noopener">Abrir</a>`
-            : '';
+    const acciones = [];
+    if (verUrl && !item.externo) {
+      acciones.push(
+        `<a class="mova-doc-btn mova-doc-btn--ver" href="${escapeHtml(verUrl)}">Ver completo</a>`
+      );
+    } else if (item.externo) {
+      acciones.push(
+        `<a class="mova-doc-btn mova-doc-btn--ver" href="${escapeHtml(item.externo)}" target="_blank" rel="noopener">Abrir</a>`
+      );
+    }
+    if (editPath) {
+      acciones.push(
+        `<span class="mova-doc-btn mova-doc-btn--sec mova-doc-btn--editar" title="Editar en Cursor: ${escapeHtml(editPath)}">Editar: ${escapeHtml(item.editar)}</span>`
+      );
+    }
+    if (item.pdf) {
+      acciones.push(
+        `<a class="mova-doc-btn mova-doc-btn--sec" href="${escapeHtml(base + item.pdf)}" download="${escapeHtml(item.pdf)}">Descargar PDF</a>`
+      );
+    }
+    if (item.pptx) {
+      acciones.push(
+        `<a class="mova-doc-btn mova-doc-btn--sec" href="${escapeHtml(base + item.pptx)}" download="${escapeHtml(item.pptx)}">Descargar PPT</a>`
+      );
+    }
 
-    const descargarBtn =
-      item.tipo === 'pdf' || item.tipo === 'pptx'
-        ? `<a class="mova-doc-btn mova-doc-btn--sec" href="${escapeHtml(url)}" download="${escapeHtml(item.archivo)}">Descargar</a>`
-        : '';
-
-    const nuevaPestana =
-      item.tipo === 'pdf'
-        ? `<a class="mova-doc-btn mova-doc-btn--sec" href="${escapeHtml(url)}" target="_blank" rel="noopener">Nueva pestaña</a>`
-        : '';
-
-    return `<article class="mova-doc-card" data-id="${escapeHtml(item.id)}">
-      <div class="mova-doc-card__tipo mova-doc-card__tipo--${escapeHtml(item.tipo)}">${escapeHtml(tipoLabel(item.tipo))}</div>
+    return `<article class="mova-doc-card">
+      <div class="mova-doc-card__tipo mova-doc-card__tipo--html">Documento vivo</div>
       <h3>${escapeHtml(item.titulo)}</h3>
       <p class="mova-doc-card__desc">${escapeHtml(item.descripcion)}</p>
       <p class="mova-doc-card__meta">Hito ${escapeHtml(item.hito)} · ${escapeHtml(item.fecha)}</p>
-      <div class="mova-doc-card__acciones">
-        ${verBtn}
-        ${nuevaPestana}
-        ${descargarBtn}
-      </div>
+      <p class="mova-doc-card__nota">Ver completo en pantalla · editar el .js en el repo · PDF solo si lo pides</p>
+      <div class="mova-doc-card__acciones">${acciones.join('')}</div>
     </article>`;
   }
 
@@ -59,77 +60,22 @@
     if (!d || !root) return;
 
     const base = d.baseMkof || '../../../mkof/';
-    const categoriasHtml = d.categorias
-      .map(
-        (cat) => `<section class="mova-docs-categoria">
-          <h2>${escapeHtml(cat.titulo)}</h2>
-          <div class="mova-docs-grid">${cat.items.map((item) => cardHtml(item, base)).join('')}</div>
-        </section>`
-      )
-      .join('');
+    const baseData = d.baseData || '../../../../../data/';
 
     root.innerHTML = `
       <div class="mova-docs-aviso">
-        Todos los entregables MOVA viven en <code>index/clientes/mkof/</code>.
-        Los PDF y PPT se pueden <strong>ver aquí</strong> o descargar para enviar al cliente.
+        <strong>Ver completo</strong> abre la guía HTML en pantalla (no descarga).
+        Para cambiar textos, edita el archivo <code>.js</code> en <code>data/</code> con Cursor.
+        <strong>Descargar PDF</strong> o <strong>Imprimir → Guardar como PDF</strong> solo cuando lo necesites.
       </div>
-      ${categoriasHtml}
-      <div id="mova-doc-viewer" class="mova-doc-viewer mova-doc-viewer--hidden" aria-live="polite">
-        <div class="mova-doc-viewer__bar">
-          <span id="mova-doc-viewer-titulo">Documento</span>
-          <button type="button" id="mova-doc-viewer-cerrar">Cerrar visor</button>
-        </div>
-        <iframe id="mova-doc-viewer-frame" title="Visor de documento MOVA"></iframe>
-      </div>`;
-
-    const viewer = document.getElementById('mova-doc-viewer');
-    const frame = document.getElementById('mova-doc-viewer-frame');
-    const tituloEl = document.getElementById('mova-doc-viewer-titulo');
-
-    root.querySelectorAll('[data-ver]').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const url = btn.getAttribute('data-ver');
-        const titulo = btn.getAttribute('data-titulo') || 'Documento';
-        if (!frame || !viewer) return;
-
-        viewer.classList.remove('mova-doc-viewer--hidden');
-        tituloEl.textContent = `${titulo} — cargando…`;
-        frame.src = 'about:blank';
-        viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        try {
-          const res = await fetch(url);
-          if (!res.ok) throw new Error('No se pudo cargar');
-          const blob = await res.blob();
-          const pdfBlob =
-            blob.type === 'application/pdf' ? blob : new Blob([blob], { type: 'application/pdf' });
-          if (frame._blobUrl) URL.revokeObjectURL(frame._blobUrl);
-          frame._blobUrl = URL.createObjectURL(pdfBlob);
-          frame.src = frame._blobUrl;
-          tituloEl.textContent = titulo;
-        } catch {
-          tituloEl.textContent = `${titulo} — error al cargar`;
-        }
-      });
-    });
-
-    document.getElementById('mova-doc-viewer-cerrar')?.addEventListener('click', () => {
-      viewer?.classList.add('mova-doc-viewer--hidden');
-      if (frame) {
-        if (frame._blobUrl) {
-          URL.revokeObjectURL(frame._blobUrl);
-          frame._blobUrl = null;
-        }
-        frame.src = 'about:blank';
-      }
-    });
-
-    const params = new URLSearchParams(location.search);
-    const ver = params.get('ver');
-    if (ver) {
-      const match = root.querySelector(`[data-ver$="${CSS.escape(ver)}"]`);
-      match?.click();
-    }
+      ${d.categorias
+        .map(
+          (cat) => `<section class="mova-docs-categoria">
+            <h2>${escapeHtml(cat.titulo)}</h2>
+            <div class="mova-docs-grid">${cat.items.map((i) => cardHtml(i, base, baseData)).join('')}</div>
+          </section>`
+        )
+        .join('')}`;
   }
 
   if (document.readyState === 'loading') {
