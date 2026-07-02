@@ -79,23 +79,37 @@ function main() {
   all.sort((a, b) => b.score - a.score || b.mtime - a.mtime);
   const mejor = all[0];
 
-  let liveActual = null;
-  let liveScore = 0;
+  let liveMtime = 0;
   if (fs.existsSync(LIVE)) {
-    liveActual = leerJson(LIVE);
-    if (liveActual) {
-      liveScore = marcaTiempo(liveActual, fs.statSync(LIVE).mtimeMs);
+    try {
+      liveMtime = fs.statSync(LIVE).mtimeMs;
+    } catch {
+      liveMtime = 0;
     }
   }
 
-  if (mejor.esLive && mejor.score <= liveScore) {
-    console.log('[sync] organizacion-live.json ya está al día');
+  // Actualizar si el candidato es más nuevo por fecha O por hora de archivo en disco
+  if (mejor.esLive) {
+    console.log('[sync] organizacion-live.json ya es el más reciente en disco');
     return;
   }
 
-  if (!mejor.esLive && liveScore >= mejor.score) {
-    console.log('[sync] Live en disco ya es igual o más reciente que', path.basename(mejor.path));
-    return;
+  if (mejor.mtime <= liveMtime && mejor.score <= (liveMtime || 0)) {
+    const liveObj = leerJson(LIVE);
+    const liveScore = liveObj ? marcaTiempo(liveObj, liveMtime) : 0;
+    if (mejor.score <= liveScore && mejor.mtime <= liveMtime) {
+      console.log('[sync] Live en disco ya está al día (', path.basename(mejor.path), ')');
+      return;
+    }
+  }
+
+  if (!mejor.esLive && fs.existsSync(LIVE)) {
+    const liveObj = leerJson(LIVE);
+    const liveScore = liveObj ? marcaTiempo(liveObj, liveMtime) : 0;
+    if (mejor.score < liveScore && mejor.mtime <= liveMtime) {
+      console.log('[sync] Live en disco ya está al día (', path.basename(mejor.path), ')');
+      return;
+    }
   }
 
   fs.mkdirSync(path.dirname(LIVE), { recursive: true });

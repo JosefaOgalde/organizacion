@@ -1062,6 +1062,7 @@ function asegurarHistoriasPiscineria(data) {
       if (tareaFueEliminada(data, taskId, tarea)) {
         data.tareas = data.tareas.filter(t => t.id !== tarea.id);
       } else {
+        if (tarea.fecha && tarea.fecha !== fecha) fijarAgendaUsuario(tarea);
         tarea.id = taskId;
         tarea.titulo = '[PISC] Subir historia con link WSP';
         tarea.clienteId = cliId;
@@ -1118,6 +1119,7 @@ function asegurarHistoriasHotspring(data) {
     if (tareaFueEliminada(data, taskId, tarea)) {
       data.tareas = data.tareas.filter(t => t.id !== tarea.id);
     } else {
+      if (tarea.fecha && tarea.fecha !== fecha) fijarAgendaUsuario(tarea);
       tarea.id = taskId;
       tarea.titulo = '[HS] Subir historia con link WSP';
       tarea.clienteId = cliId;
