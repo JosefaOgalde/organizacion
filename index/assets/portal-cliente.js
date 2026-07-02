@@ -246,6 +246,7 @@
         <section>
           <h2>Enlaces</h2>
           <ul>
+            <li><a href="../MKOF/MOVA/documentos/">Documentos MOVA (PDF, PPT, guías)</a></li>
             <li><a href="${pathOrganizador}">Abrir organizador principal</a></li>
             <li><a href="${pathOrganizador}#clientes">Ficha completa en Clientes</a></li>
             <li><a href="${pathListado}">Volver al listado de clientes</a></li>

@@ -1,0 +1,170 @@
+/* MOVA · Hub de documentos */
+.mova-docs-header h1 {
+  margin: 0 0 0.35rem;
+}
+
+.mova-docs-header p {
+  margin: 0;
+  color: #5a4080;
+}
+
+.mova-docs-categoria {
+  margin: 1.75rem 0 1rem;
+}
+
+.mova-docs-categoria h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  color: #4a7a80;
+  border-bottom: 2px solid #a8d8dc;
+  padding-bottom: 0.35rem;
+}
+
+.mova-docs-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 560px) {
+  .mova-docs-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.mova-doc-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.1rem;
+  border: 1px solid #d0e8ec;
+  border-radius: 10px;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.mova-doc-card:hover {
+  border-color: #4a7a80;
+  box-shadow: 0 2px 12px rgba(74, 122, 128, 0.12);
+}
+
+.mova-doc-card__tipo {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #4a7a80;
+  margin-bottom: 0.35rem;
+}
+
+.mova-doc-card__tipo--pdf { color: #c5221f; }
+.mova-doc-card__tipo--pptx { color: #d4640a; }
+.mova-doc-card__tipo--html { color: #0969da; }
+
+.mova-doc-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.mova-doc-card__desc {
+  margin: 0 0 0.65rem;
+  font-size: 0.82rem;
+  color: #666;
+  line-height: 1.45;
+  flex: 1;
+}
+
+.mova-doc-card__meta {
+  font-size: 0.72rem;
+  color: #999;
+  margin-bottom: 0.65rem;
+}
+
+.mova-doc-card__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.mova-doc-btn {
+  display: inline-block;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.mova-doc-btn--ver {
+  background: #4a7a80;
+  color: #fff;
+}
+
+.mova-doc-btn--ver:hover {
+  background: #3a6a70;
+  color: #fff;
+}
+
+.mova-doc-btn--sec {
+  background: #f0f4f5;
+  color: #4a7a80;
+  border: 1px solid #d0e8ec;
+}
+
+.mova-doc-btn--sec:hover {
+  background: #e8f6f8;
+}
+
+.mova-doc-viewer {
+  margin-top: 1.5rem;
+  border: 2px solid #4a7a80;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f6f8fa;
+}
+
+.mova-doc-viewer__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.55rem 1rem;
+  background: #4a7a80;
+  color: #fff;
+  font-size: 0.88rem;
+}
+
+.mova-doc-viewer__bar button {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.5);
+  color: #fff;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+.mova-doc-viewer iframe {
+  display: block;
+  width: 100%;
+  height: 75vh;
+  min-height: 480px;
+  border: none;
+  background: #fff;
+}
+
+.mova-doc-viewer--hidden {
+  display: none;
+}
+
+.mova-docs-aviso {
+  margin: 1rem 0;
+  padding: 0.85rem 1rem;
+  background: #e8f6f8;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.mova-docs-aviso code {
+  font-size: 0.82rem;
+}
