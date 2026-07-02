@@ -178,7 +178,8 @@ body.portal-body--themed {
   color: var(--card-text);
 }
 
-body.portal-body--themed .portal-header {
+body.portal-body--themed .portal-header,
+body.portal-body--themed .portal-header h1 {
   color: var(--card-text);
 }
 
@@ -187,8 +188,26 @@ body.portal-body--themed .portal-header p {
 }
 
 body.portal-body--themed .portal-nav a {
+  color: var(--card-border);
+  opacity: 1;
+  font-weight: 600;
+}
+
+body.portal-body--themed .portal-nav ~ h1,
+body.portal-body--themed .portal-main > h1,
+body.portal-body--themed .portal-nav ~ p,
+body.portal-body--themed .portal-main > p {
   color: var(--card-text);
-  opacity: 0.88;
+}
+
+body.portal-body--themed .portal-nav ~ p,
+body.portal-body--themed .portal-main > p {
+  color: color-mix(in srgb, var(--card-text) 78%, white);
+}
+
+body.portal-body--themed .portal-cliente {
+  background: #ffffff;
+  border-left-color: var(--card-border);
 }
 
 .portal-cliente {
@@ -708,8 +727,20 @@ body.portal-page--light code {
   margin: 0.75rem 0;
 }
 
-.mova-resumen__edit {
-  margin: 0.75rem 0 0;
-  font-size: 0.8rem;
-  color: var(--muted);
+.mova-hub__meta {
+  color: var(--card-text);
+  margin: 0 0 1rem;
+}
+
+.mova-proyecto__aviso {
+  background: #ffffff;
+  border: 1px solid color-mix(in srgb, var(--card-border) 55%, white);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+}
+
+.mova-proyecto__aviso p {
+  margin: 0.35rem 0;
+  color: var(--card-text);
 }

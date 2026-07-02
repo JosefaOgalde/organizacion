@@ -6,9 +6,13 @@
   <title>Título · Cliente</title>
   <link rel="stylesheet" href="../../assets/portal.css">
 </head>
-<!-- Siempre portal-page--light: fondo #fbfbfb y texto legible -->
-<body class="portal-page--light">
-  <header class="portal-header">
+<!--
+  Colores del cliente/proyecto: define en data-cliente-slug y opcional data-proyecto-codigo.
+  Ej. MKOF/MOVA: data-cliente-slug="mkof" data-proyecto-codigo="MOVA"
+  Sin atributos, portal-theme-auto.js infiere la ruta desde la URL.
+-->
+<body class="portal-page--light" data-cliente-slug="mkof" data-proyecto-codigo="MOVA">
+  <header class="portal-header portal-header--themed">
     <nav class="portal-nav">
       <a href="../">← Cliente padre</a>
       ·
@@ -18,12 +22,15 @@
     <p>Subtítulo o descripción breve</p>
   </header>
   <main class="portal-main">
-    <article class="portal-cliente" style="--card-border:#9a7ab8;--card-bg:#ffffff;--card-text:#2a2a2a">
+    <article class="portal-cliente">
       <section>
         <h2>Contenido</h2>
         <p>Texto del proyecto…</p>
       </section>
     </article>
   </main>
+  <script src="../../assets/clientes-data.js"></script>
+  <script src="../../assets/portal-theme.js"></script>
+  <script src="../../assets/portal-theme-auto.js"></script>
 </body>
 </html>
