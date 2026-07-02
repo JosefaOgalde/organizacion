@@ -220,6 +220,11 @@
         ? window.jmHtmlWireframes({ claseExtra: 'ficha-seccion--portal' })
         : '';
 
+    const mkofLandingHtml =
+      c.slug === 'mkof' && typeof window.mkofHtmlLandingSections === 'function'
+        ? window.mkofHtmlLandingSections()
+        : '';
+
     const imagenesHtml = imagenesSeccionHtml(landing);
 
     root.innerHTML = `
@@ -237,6 +242,7 @@
         ${entregablesHtml(landingCfg)}
         ${seccionesHtml(landingCfg)}
         ${imagenesHtml}
+        ${mkofLandingHtml}
         ${wireframesHtml}
         ${proyectosHtml}
         <section>
