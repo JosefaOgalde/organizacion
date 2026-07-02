@@ -70,12 +70,18 @@ Los archivos en disco **no dependen** del navegador.
 
 ---
 
-## Rutina diaria (2 minutos)
+## Rutina diaria (un clic)
 
-1. Abrir con **`SERVIR.bat`**
-2. Trabajar con normalidad (tareas, landings, imágenes)
-3. Antes de cerrar: **↓ Respaldo** → guardar JSON en carpeta **local segura** (no en Git)
-4. **`SUBIR.bat`** solo para **código** — los respaldos quedan fuera del repo (ver `docs/SEGURIDAD.md`)
+1. Doble clic en **`ABRIR-ORGANIZADOR.bat`**
+   - Busca el respaldo más reciente en `data/` y en **Descargas**
+   - Actualiza `organizacion-live.json` si hay uno más nuevo
+   - Abre el navegador en el organizador
+
+2. Trabaja con normalidad (tareas, landings, imágenes) — cada guardado escribe en disco.
+
+3. Al terminar el día: **↓ Respaldo** en la app (queda en Descargas para la próxima vez).
+
+**No hace falta** `?respaldo=1` ni `IMPORTAR-RESPALDO.bat` cada día si usas `ABRIR-ORGANIZADOR.bat`.
 
 ---
 

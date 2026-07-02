@@ -4963,15 +4963,24 @@ async function cargarDatosInicio() {
     ? await window.fetchOrganizacionLive()
     : null;
 
-  // Por defecto: conservar lo del navegador (borrados, fechas, estados)
-  if (!forzarRespaldo && tieneDatosLocales()) {
-    const local = cargar();
-    if (live && typeof window.organizacionLiveEsMasReciente === 'function'
-      && window.organizacionLiveEsMasReciente(local, live)) {
-      console.info('Datos cargados desde data/organizacion-live.json (más reciente que el navegador)');
+  // Con servidor Node: priorizar disco (live) — evita caché vieja del navegador
+  if (!forzarRespaldo && live && !params.get('local')) {
+    const local = tieneDatosLocales() ? cargar() : null;
+    const liveMasReciente = !local
+      || (typeof window.organizacionLiveEsMasReciente === 'function'
+        && window.organizacionLiveEsMasReciente(local, live));
+    if (liveMasReciente) {
+      console.info('Datos cargados desde data/organizacion-live.json');
       return { datos: normalizarDatos(live), origen: 'live' };
     }
-    console.info('Datos cargados desde localStorage (tus cambios locales)');
+    console.info('Datos cargados desde localStorage (más reciente que disco)');
+    return { datos: local, origen: 'local' };
+  }
+
+  // Sin servidor live: conservar navegador
+  if (!forzarRespaldo && tieneDatosLocales()) {
+    const local = cargar();
+    console.info('Datos cargados desde localStorage');
     return { datos: local, origen: 'local' };
   }
 
