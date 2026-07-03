@@ -108,9 +108,25 @@ window.ADL_PROYECTOS = {
           {
             id: 'f2-aprobacion',
             tipo: 'aprobacion',
-            etiqueta: 'Certificado de aprobación',
+            etiqueta: 'Certificado de aprobación modular — Fase 2',
             requisito: 'Aprobar el módulo',
-            validar: (d) => d.estado === 'aprobado'
+            validar: (d) => d.estado === 'aprobado',
+            aprobado: true,
+            plantilla: {
+              tituloVisual: 'CERTIFICADO DE APROBACIÓN MODULAR',
+              emisor: 'DESAFÍO LATAM Certifica que:',
+              placeholderParticipante: ['NOMBRE', 'RUT'],
+              parrafos: [
+                'Ha aprobado de forma sobresaliente las evaluaciones y contenidos obligatorios del cohorte asincrónico del módulo "Fase 2: Formación Base - Curso Transformación Digital con IA", dictado a través de nuestra plataforma LMS para el programa institucional de Caja Los Andes.',
+                'Contenidos acreditados: Fundamentos de IA generativa, metodologías de transformación digital, uso de asistentes virtuales (ChatGPT, Claude) y optimización avanzada de flujos digitales individuales.'
+              ],
+              duracion: '32 horas académicas (asincrónicas)',
+              fechaEmisionFormato: '[Mes, Año]',
+              firma: {
+                nombre: 'Andrés Gallardo',
+                cargo: 'Director General Desafío Latam'
+              }
+            }
           }
         ]
       },
