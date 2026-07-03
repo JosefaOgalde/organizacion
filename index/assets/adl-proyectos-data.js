@@ -31,7 +31,23 @@ window.ADL_PROYECTOS = {
             tipo: 'aprobacion',
             etiqueta: 'Certificado de aprobación modular — Fase 1',
             requisito: 'Asistencia ≥ 75%',
-            validar: (d) => Number(d.asistencia) >= 75
+            validar: (d) => Number(d.asistencia) >= 75,
+            aprobado: true,
+            plantilla: {
+              tituloVisual: 'CERTIFICADO DE APROBACIÓN MODULAR',
+              emisor: 'DESAFÍO LATAM Certifica que:',
+              placeholderParticipante: ['NOMBRE', 'RUT'],
+              parrafos: [
+                'Ha cumplido exitosamente con los requisitos académicos y el 75% de asistencia obligatoria establecidos para el módulo "Fase 1: Exploración Tecnológica", parte del Programa de Formación en Inteligencia Artificial y Productividad Digital para afiliados de Caja Los Andes.',
+                'Contenidos acreditados: Introducción a la inteligencia artificial, productividad con herramientas de IA, automatización de tareas repetitivas, análisis de datos básico, marketing digital y tendencias, y tecnologías emergentes.'
+              ],
+              duracion: '16 horas académicas',
+              fechaEmisionFormato: '[Mes, Año]',
+              firma: {
+                nombre: 'Andrés Gallardo',
+                cargo: 'Director General Desafío Latam'
+              }
+            }
           },
           {
             id: 'f1-participacion',
