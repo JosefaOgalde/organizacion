@@ -16,6 +16,7 @@ const ROOT = path.join(__dirname, '..');
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '127.0.0.1';
 const LIVE_FILE = path.join(ROOT, 'data', 'organizacion-live.json');
+const CLA_IMAGENES_FILE = path.join(ROOT, 'data', 'cla-certificados-imagenes.json');
 const MAX_BODY_BYTES = Number(process.env.MAX_BODY_BYTES) || 12 * 1024 * 1024;
 const API_TOKEN = (process.env.ORGANIZACION_TOKEN || '').trim();
 
@@ -212,6 +213,44 @@ function handleApiOrganizacion(req, res) {
   send(res, 405, 'Método no permitido');
 }
 
+function handleApiClaImagenes(req, res) {
+  if (!checkApiAuth(req, res)) return;
+
+  if (req.method === 'GET') {
+    if (!fs.existsSync(CLA_IMAGENES_FILE)) {
+      return send(res, 404, JSON.stringify({ error: 'sin cla-certificados-imagenes.json' }), 'application/json');
+    }
+    const body = fs.readFileSync(CLA_IMAGENES_FILE, 'utf8');
+    return send(res, 200, body, 'application/json');
+  }
+
+  if (req.method === 'POST') {
+    return readBody(req).then((raw) => {
+      let obj;
+      try {
+        obj = JSON.parse(raw);
+      } catch {
+        return send(res, 400, JSON.stringify({ error: 'JSON inválido' }), 'application/json');
+      }
+      if (!obj?.certificados || typeof obj.certificados !== 'object') {
+        return send(res, 400, JSON.stringify({ error: 'falta certificados{}' }), 'application/json');
+      }
+      obj.actualizado = obj.actualizado || new Date().toISOString().slice(0, 10);
+      fs.mkdirSync(path.dirname(CLA_IMAGENES_FILE), { recursive: true });
+      fs.writeFileSync(CLA_IMAGENES_FILE, JSON.stringify(obj, null, 2), 'utf8');
+      console.log('[api] Guardado', CLA_IMAGENES_FILE);
+      return send(res, 200, JSON.stringify({ ok: true, path: 'data/cla-certificados-imagenes.json' }), 'application/json');
+    }).catch((e) => {
+      if (e && e.message === 'BODY_TOO_LARGE') {
+        return send(res, 413, JSON.stringify({ error: 'cuerpo demasiado grande' }), 'application/json');
+      }
+      return send(res, 500, String(e), 'text/plain');
+    });
+  }
+
+  send(res, 405, 'Método no permitido');
+}
+
 function handleApiConfig(res) {
   send(res, 200, JSON.stringify({
     authRequired: !!RUNTIME_TOKEN,
@@ -224,6 +263,10 @@ const server = http.createServer((req, res) => {
 
   if (url.startsWith('/api/organizacion-config')) {
     return handleApiConfig(res);
+  }
+
+  if (url.startsWith('/api/cla-imagenes')) {
+    return handleApiClaImagenes(req, res);
   }
 
   if (url.startsWith('/api/organizacion')) {

@@ -1,6 +1,7 @@
 (function () {
   const STORAGE_KEY = 'cla-certificados-emitidos';
   const STORAGE_IMAGENES = 'cla-certificados-imagenes';
+  const CONFIG_URL = '../../data/cla-certificados-imagenes.json';
   const proyecto = window.ADL_PROYECTOS?.CLA;
   if (!proyecto) return;
 
@@ -8,6 +9,7 @@
   if (!root) return;
 
   const { ancho: W, alto: H } = proyecto.canvas;
+  let imagenesRepo = {};
 
   function escapeHtml(s) {
     return String(s ?? '')
@@ -102,13 +104,78 @@
   }
 
   function leerImagenCert(certId) {
-    return { ...configImagenDefault(), ...(leerImagenes()[certId] || {}) };
+    const local = leerImagenes()[certId] || {};
+    const repo = imagenesRepo[certId] || {};
+    return { ...configImagenDefault(), ...repo, ...local };
+  }
+
+  const CERT_IDS_LIST = [
+    'f1-participacion',
+    'f1-aprobacion',
+    'f2-participacion',
+    'f2-aprobacion',
+    'f3-participacion',
+    'f3-aprobacion',
+    'final'
+  ];
+
+  async function cargarImagenesRepo() {
+    try {
+      const res = await fetch(`${CONFIG_URL}?v=${Date.now()}`, { cache: 'no-store' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data?.certificados && typeof data.certificados === 'object') {
+        imagenesRepo = data.certificados;
+      }
+    } catch {
+      /* sin archivo en disco */
+    }
+  }
+
+  async function persistirImagenesDisco() {
+    const certificados = { ...imagenesRepo };
+    CERT_IDS_LIST.forEach((id) => {
+      certificados[id] = leerImagenCert(id);
+    });
+    try {
+      await fetch('/api/cla-imagenes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          actualizado: new Date().toISOString().slice(0, 10),
+          certificados
+        })
+      });
+    } catch {
+      /* servidor estático sin API */
+    }
   }
 
   function guardarImagenCert(certId, config) {
+    const merged = { ...configImagenDefault(), ...config };
     const all = leerImagenes();
-    all[certId] = { ...configImagenDefault(), ...config };
+    all[certId] = merged;
     localStorage.setItem(STORAGE_IMAGENES, JSON.stringify(all));
+    imagenesRepo[certId] = merged;
+    persistirImagenesDisco();
+  }
+
+  function exportarImagenesCla() {
+    const certificados = {};
+    CERT_IDS_LIST.forEach((id) => {
+      certificados[id] = leerImagenCert(id);
+    });
+    const payload = {
+      actualizado: new Date().toISOString().slice(0, 10),
+      claCertificadosImagenes: certificados,
+      certificados
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `cla-diplomas-imagenes-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
   }
 
   function imgStyle(cfg, prefix) {
@@ -316,6 +383,9 @@
       .join('');
   }
 
+  async function initCla() {
+    await cargarImagenesRepo();
+
   root.innerHTML = `
     <div class="cla-wrap">
       <header class="cla-hero">
@@ -325,6 +395,7 @@
         <div class="cla-hero__links">
           <a class="cla-identidad-link" href="${proyecto.identidadPdf}" target="_blank" rel="noopener">Manual de marca (PDF)</a>
           <a class="cla-identidad-link" href="CLA/certificados-aprobados.md" target="_blank" rel="noopener">Textos oficiales (MD)</a>
+          <button type="button" class="cla-identidad-link cla-identidad-link--btn" id="cla-exportar-imagenes">↓ Exportar imágenes (JSON)</button>
         </div>
       </header>
 
@@ -736,5 +807,10 @@
     }
   });
 
+  document.getElementById('cla-exportar-imagenes')?.addEventListener('click', exportarImagenesCla);
+
   window.addEventListener('resize', ajustarEscalaPreview);
+  }
+
+  initCla();
 })();
