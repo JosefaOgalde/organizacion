@@ -3,7 +3,9 @@ window.ADL_PROYECTOS = {
   CLA: {
     codigo: 'CLA',
     nombre: 'Caja Los Andes',
-    programa: 'Programa de Formación en Inteligencia Artificial',
+    programa:
+      'Programa de Formación en Inteligencia Artificial y Productividad Digital',
+    diplomasPdf: 'CLA/identidad/CLA-Diplomas.pdf',
     cliente: 'Desafío Latam',
     identidadPdf: 'CLA/identidad/manual-marca-caja-los-andes.pdf',
     identidadOrigen: 'screencapture-localhost-3002-2026-06-18-13_21_00.pdf',
@@ -20,23 +22,40 @@ window.ADL_PROYECTOS = {
       {
         id: 'fase-1',
         numero: 1,
-        titulo: 'Webinars de exploración tecnológica',
+        titulo: 'Exploración Tecnológica',
         modalidad: 'sincrónico',
         horas: 16,
         certificados: [
           {
             id: 'f1-aprobacion',
             tipo: 'aprobacion',
-            etiqueta: 'Certificado de aprobación',
+            etiqueta: 'Certificado de aprobación modular — Fase 1',
             requisito: 'Asistencia ≥ 75%',
             validar: (d) => Number(d.asistencia) >= 75
           },
           {
             id: 'f1-participacion',
             tipo: 'participacion',
-            etiqueta: 'Certificado de participación',
+            etiqueta: 'Diploma de participación — Fase 1',
             requisito: 'Asistencia ≥ 50%',
-            validar: (d) => Number(d.asistencia) >= 50
+            validar: (d) => Number(d.asistencia) >= 50,
+            aprobado: true,
+            plantilla: {
+              tituloVisual: 'DIPLOMA DE PARTICIPACIÓN',
+              emisor:
+                'DESAFÍO LATAM concede la presente constancia de participación a:',
+              placeholderParticipante: 'NOMBRE / RUT',
+              parrafos: [
+                'Por haber asistido al ciclo de webinars sincrónicos "Fase 1: Exploración Tecnológica", dictado en modalidad remota en el marco del Programa de Formación en Inteligencia Artificial y Productividad Digital desarrollado en convenio con Caja Los Andes.',
+                'Se extiende el presente documento en reconocimiento a su asistencia e interés por actualizar sus competencias frente a las nuevas demandas del mercado tecnológico.'
+              ],
+              duracion: '16 horas académicas',
+              fechaEmisionFormato: '[Mes, Año]',
+              firma: {
+                nombre: 'Andrés Gallardo',
+                cargo: 'Director General Desafío Latam'
+              }
+            }
           }
         ]
       },
