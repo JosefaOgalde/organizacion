@@ -78,10 +78,33 @@ window.ADL_PROYECTOS = {
       {
         id: 'fase-2',
         numero: 2,
-        titulo: 'Transformación Digital con IA y Automatización',
+        titulo: 'Formación Base',
         modalidad: 'asincrónico',
         horas: 32,
         certificados: [
+          {
+            id: 'f2-participacion',
+            tipo: 'participacion',
+            etiqueta: 'Diploma de participación — Fase 2',
+            requisito: 'Acceso a contenidos LMS',
+            validar: () => true,
+            aprobado: true,
+            plantilla: {
+              tituloVisual: 'DIPLOMA DE PARTICIPACIÓN',
+              emisor:
+                'DESAFÍO LATAM concede la presente constancia de participación a:',
+              placeholderParticipante: ['NOMBRE', 'RUT'],
+              parrafos: [
+                'Por haber cursado la instancia asincrónica del módulo "Fase 2: Formación Base", accediendo a los contenidos interactivos dispuestos en nuestra plataforma virtual de aprendizaje (LMS) correspondientes al Programa de Formación en Inteligencia Artificial y Productividad Digital.'
+              ],
+              duracion: '32 horas de autoaprendizaje',
+              fechaEmisionFormato: '[Mes, Año]',
+              firma: {
+                nombre: 'Andrés Gallardo',
+                cargo: 'Director General Desafío Latam'
+              }
+            }
+          },
           {
             id: 'f2-aprobacion',
             tipo: 'aprobacion',
