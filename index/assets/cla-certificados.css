@@ -64,8 +64,14 @@
 
 .cla-catalogo__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
   gap: 0.55rem;
+}
+
+.cla-catalogo__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
 .cla-catalogo__item {
@@ -81,6 +87,18 @@
   text-align: left;
   font: inherit;
   transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+
+.cla-catalogo__item.has-imagen::after {
+  content: 'Imagen cargada';
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #1a6b40;
+  background: #e8f6ee;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  margin-top: 0.15rem;
 }
 
 .cla-catalogo__item:hover,
@@ -228,6 +246,34 @@
   color: #3a2e10;
 }
 
+.cla-btn--edit {
+  background: #eef4f0;
+  color: var(--cla-primario);
+  width: 100%;
+  margin-top: 0;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.cla-btn--sm {
+  width: auto;
+  margin-top: 0;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.65rem;
+}
+
+.cla-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.cla-panel__head h2 {
+  margin: 0;
+}
+
 .cla-alerta {
   margin-top: 0.5rem;
   padding: 0.55rem 0.65rem;
@@ -310,6 +356,52 @@
   align-items: center;
   text-align: center;
   position: relative;
+  overflow: hidden;
+}
+
+.cla-cert__fondo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center center;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cla-cert__contenido {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cla-cert__contenido--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cla-cert__logo-img,
+.cla-cert__firma-img {
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+.cla-cert__logo-img {
+  max-height: 48px;
+  width: auto;
+  margin-bottom: 18px;
+}
+
+.cla-cert__firma-img {
+  max-width: 160px;
+  height: auto;
+  display: block;
+  margin: 0 auto 4px;
 }
 
 .cla-cert__logo {
@@ -442,3 +534,104 @@
   font-size: 11px;
   color: #4a5568;
 }
+
+/* —— Editor de imágenes —— */
+.cla-editor {
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  max-width: 520px;
+  width: calc(100% - 2rem);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.cla-editor::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.cla-editor__box {
+  margin: 0;
+  padding: 0;
+}
+
+.cla-editor__head {
+  padding: 1rem 1.1rem 0.75rem;
+  border-bottom: 1px solid #e2ebe6;
+  position: relative;
+}
+
+.cla-editor__head h2 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--cla-primario);
+}
+
+.cla-editor__cert {
+  margin: 0.25rem 0 0;
+  font-size: 0.78rem;
+  color: #6a7a72;
+}
+
+.cla-editor__close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.75rem;
+  border: none;
+  background: transparent;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #6a7a72;
+}
+
+.cla-editor__body {
+  padding: 0.85rem 1.1rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.cla-editor__bloque {
+  margin-bottom: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid #eef3f0;
+}
+
+.cla-editor__bloque h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+}
+
+.cla-editor__bloque input[type='file'] {
+  width: 100%;
+  font-size: 0.78rem;
+  margin: 0.35rem 0;
+}
+
+.cla-editor__sliders label {
+  display: grid;
+  grid-template-columns: 90px 1fr 36px;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  margin: 0.35rem 0;
+  color: #4a5a52;
+}
+
+.cla-editor__check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: #4a5a52;
+  cursor: pointer;
+}
+
+.cla-editor__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.75rem 1.1rem 1rem;
+  border-top: 1px solid #e2ebe6;
+}
+
+.cla-editor__foot .cla-btn { margin-top: 0; }

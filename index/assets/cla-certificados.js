@@ -1,5 +1,6 @@
 (function () {
   const STORAGE_KEY = 'cla-certificados-emitidos';
+  const STORAGE_IMAGENES = 'cla-certificados-imagenes';
   const proyecto = window.ADL_PROYECTOS?.CLA;
   if (!proyecto) return;
 
@@ -74,17 +75,70 @@
     return { nombre, rut, fechaInput };
   }
 
+  function configImagenDefault() {
+    return {
+      fondo: '',
+      fondoScale: 100,
+      fondoX: 0,
+      fondoY: 0,
+      logo: '',
+      logoScale: 100,
+      logoX: 0,
+      logoY: 0,
+      firmaImg: '',
+      firmaScale: 100,
+      firmaX: 0,
+      firmaY: 0,
+      ocultarTexto: false
+    };
+  }
+
+  function leerImagenes() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_IMAGENES) || '{}');
+    } catch {
+      return {};
+    }
+  }
+
+  function leerImagenCert(certId) {
+    return { ...configImagenDefault(), ...(leerImagenes()[certId] || {}) };
+  }
+
+  function guardarImagenCert(certId, config) {
+    const all = leerImagenes();
+    all[certId] = { ...configImagenDefault(), ...config };
+    localStorage.setItem(STORAGE_IMAGENES, JSON.stringify(all));
+  }
+
+  function imgStyle(cfg, prefix) {
+    const scale = (cfg[`${prefix}Scale`] ?? 100) / 100;
+    const x = cfg[`${prefix}X`] ?? 0;
+    const y = cfg[`${prefix}Y`] ?? 0;
+    return `transform: translate(${x}px, ${y}px) scale(${scale});`;
+  }
+
+  function leerArchivoComoDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
   function aplicarMencion(texto, mencion) {
     if (!texto.includes('[la que cursó el alumno]')) return texto;
     return texto.replace('[la que cursó el alumno]', mencion || '—');
   }
 
   function buildModelo(plantilla, opts) {
-    const { nombre, rut, fechaInput, esFinal, mencion } = opts;
+    const { nombre, rut, fechaInput, esFinal, mencion, certId } = opts;
     const fechaTexto = formatFecha(esFinal, fechaInput);
     const parrafos = (plantilla.parrafos || []).map((p) => aplicarMencion(p, mencion));
 
     return {
+      certId: certId || '',
       tituloVisual: plantilla.tituloVisual,
       emisor: plantilla.emisor,
       nombre,
@@ -96,11 +150,19 @@
         : '',
       cargaHorariaTotal: plantilla.cargaHorariaTotal,
       fechaEmision: esFinal ? fechaTexto : fechaTexto,
-      firma: plantilla.firma
+      firma: plantilla.firma,
+      imagen: certId ? leerImagenCert(certId) : configImagenDefault()
     };
   }
 
+  function capaImagen(src, clase, cfg, prefix) {
+    if (!src) return '';
+    return `<img class="${clase}" src="${src}" alt="" style="${imgStyle(cfg, prefix)}" draggable="false">`;
+  }
+
   function renderCertificadoHtml(modelo) {
+    const cfg = modelo.imagen || configImagenDefault();
+    const ocultar = cfg.ocultarTexto ? ' cla-cert__contenido--hidden' : '';
     const parrafos = modelo.parrafos
       .map((p) => `<p class="cla-cert__p">${escapeHtml(p)}</p>`)
       .join('');
@@ -118,10 +180,12 @@
       <article class="cla-cert" aria-label="${escapeHtml(modelo.tituloVisual)}">
         <div class="cla-cert__frame">
           <div class="cla-cert__inner">
-            <div class="cla-cert__logo" aria-hidden="true">
+            ${capaImagen(cfg.fondo, 'cla-cert__fondo', cfg, 'fondo')}
+            <div class="cla-cert__contenido${ocultar}">
+              ${cfg.logo ? capaImagen(cfg.logo, 'cla-cert__logo-img', cfg, 'logo') : `<div class="cla-cert__logo" aria-hidden="true">
               <span class="cla-cert__logo-mark"></span>
               <span class="cla-cert__logo-text">CAJA LOS ANDES</span>
-            </div>
+            </div>`}
             <h2 class="cla-cert__titulo">${escapeHtml(modelo.tituloVisual)}</h2>
             <p class="cla-cert__emisor">${escapeHtml(modelo.emisor)}</p>
             <p class="cla-cert__nombre">${escapeHtml(modelo.nombre)}</p>
@@ -130,11 +194,12 @@
             <footer class="cla-cert__pie">
               <div class="cla-cert__pie-izq">${pieIzq}</div>
               <div class="cla-cert__firma">
-                <span class="cla-cert__firma-linea" aria-hidden="true"></span>
+                ${cfg.firmaImg ? capaImagen(cfg.firmaImg, 'cla-cert__firma-img', cfg, 'firmaImg') : `<span class="cla-cert__firma-linea" aria-hidden="true"></span>`}
                 <strong>${escapeHtml(modelo.firma.nombre)}</strong>
                 <span>${escapeHtml(modelo.firma.cargo)}</span>
               </div>
             </footer>
+            </div>
           </div>
         </div>
       </article>`;
@@ -217,6 +282,7 @@
           ${camposExtra(fase, cert)}
           <div class="cla-fase__acciones">
             <button type="button" class="cla-btn cla-btn--ghost" data-preview="${cert.id}" data-fase="${fase.id}">Vista previa</button>
+            <button type="button" class="cla-btn cla-btn--ghost" data-editar="${cert.id}" data-fase="${fase.id}">Editar imagen</button>
             <button type="button" class="cla-btn" data-generar="${cert.id}" data-fase="${fase.id}">Generar</button>
           </div>
           <div class="cla-alerta" id="alert-${cert.id}" hidden></div>
@@ -236,11 +302,16 @@
       .map(({ fase, cert, esFinal }) => {
         const titulo = cert.plantilla?.tituloVisual || cert.etiqueta;
         const faseLabel = esFinal ? 'Final' : `F${fase.numero}`;
-        return `<button type="button" class="cla-catalogo__item" data-catalogo="${cert.id}" data-fase="${esFinal ? 'final' : fase.id}">
-          <span class="cla-catalogo__fase">${faseLabel}</span>
-          <span class="cla-catalogo__titulo">${escapeHtml(titulo)}</span>
-          <span class="cla-catalogo__tipo">${escapeHtml(cert.etiqueta)}</span>
-        </button>`;
+        const faseId = esFinal ? 'final' : fase.id;
+        const tieneImg = !!leerImagenCert(cert.id).fondo;
+        return `<div class="cla-catalogo__card">
+          <button type="button" class="cla-catalogo__item${tieneImg ? ' has-imagen' : ''}" data-catalogo="${cert.id}" data-fase="${faseId}">
+            <span class="cla-catalogo__fase">${faseLabel}</span>
+            <span class="cla-catalogo__titulo">${escapeHtml(titulo)}</span>
+            <span class="cla-catalogo__tipo">${escapeHtml(cert.etiqueta)}</span>
+          </button>
+          <button type="button" class="cla-btn cla-btn--edit" data-editar="${cert.id}" data-fase="${faseId}" title="Editar imágenes">Editar</button>
+        </div>`;
       })
       .join('');
   }
@@ -279,6 +350,7 @@
             <p class="cla-fase__meta">${escapeHtml(proyecto.certificadoFinal.requisito)} · ${escapeHtml(proyecto.certificadoFinal.plantilla?.cargaHorariaTotal || '108 horas')}</p>
             <div class="cla-fase__acciones">
               <button type="button" class="cla-btn cla-btn--ghost" data-preview="final" data-fase="final">Vista previa</button>
+              <button type="button" class="cla-btn cla-btn--ghost" data-editar="final" data-fase="final">Editar imagen</button>
               <button type="button" class="cla-btn cla-btn--acento" id="cla-generar-final">Generar diploma final</button>
             </div>
             <div class="cla-alerta" id="alert-final" hidden></div>
@@ -286,7 +358,10 @@
         </section>
 
         <section class="cla-panel cla-panel--preview">
-          <h2>Vista previa · ${W} × ${H} px</h2>
+          <div class="cla-panel__head">
+            <h2>Vista previa · ${W} × ${H} px</h2>
+            <button type="button" class="cla-btn cla-btn--edit cla-btn--sm" id="cla-editar-activo" hidden>Editar imagen</button>
+          </div>
           <div class="cla-preview-wrap" id="cla-preview-wrap"></div>
           <p class="cla-size-hint" id="cla-size-hint">Selecciona un certificado del catálogo o genera uno</p>
           <button type="button" class="cla-btn cla-btn--ghost" id="cla-descargar" style="width:100%;margin-top:0.75rem">Descargar PNG (${W}×${H})</button>
@@ -294,6 +369,54 @@
           <ul class="cla-emitidos" id="cla-emitidos"></ul>
         </section>
       </div>
+
+      <dialog class="cla-editor" id="cla-editor">
+        <form method="dialog" class="cla-editor__box" id="cla-editor-form">
+          <header class="cla-editor__head">
+            <h2>Editar imágenes</h2>
+            <p class="cla-editor__cert" id="cla-editor-cert-label"></p>
+            <button type="button" class="cla-editor__close" id="cla-editor-cerrar" aria-label="Cerrar">×</button>
+          </header>
+          <div class="cla-editor__body">
+            <section class="cla-editor__bloque">
+              <h3>Plantilla de fondo (1123×794)</h3>
+              <p class="cla-fase__meta">PNG o JPG del diseño aprobado. Ajusta escala y posición.</p>
+              <input type="file" id="cla-ed-fondo" accept="image/png,image/jpeg,image/webp">
+              <div class="cla-editor__sliders">
+                <label>Escala %<input type="range" id="cla-ed-fondo-scale" min="50" max="150" value="100"></label>
+                <label>Posición X<input type="range" id="cla-ed-fondo-x" min="-200" max="200" value="0"></label>
+                <label>Posición Y<input type="range" id="cla-ed-fondo-y" min="-200" max="200" value="0"></label>
+              </div>
+            </section>
+            <section class="cla-editor__bloque">
+              <h3>Logo (opcional)</h3>
+              <input type="file" id="cla-ed-logo" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+              <div class="cla-editor__sliders">
+                <label>Escala %<input type="range" id="cla-ed-logo-scale" min="20" max="200" value="100"></label>
+                <label>Posición X<input type="range" id="cla-ed-logo-x" min="-400" max="400" value="0"></label>
+                <label>Posición Y<input type="range" id="cla-ed-logo-y" min="-200" max="200" value="0"></label>
+              </div>
+            </section>
+            <section class="cla-editor__bloque">
+              <h3>Firma (opcional)</h3>
+              <input type="file" id="cla-ed-firma" accept="image/png,image/jpeg,image/webp">
+              <div class="cla-editor__sliders">
+                <label>Escala %<input type="range" id="cla-ed-firma-scale" min="20" max="200" value="100"></label>
+                <label>Posición X<input type="range" id="cla-ed-firma-x" min="-400" max="400" value="0"></label>
+                <label>Posición Y<input type="range" id="cla-ed-firma-y" min="-200" max="200" value="0"></label>
+              </div>
+            </section>
+            <label class="cla-editor__check">
+              <input type="checkbox" id="cla-ed-ocultar-texto">
+              Ocultar textos generados (solo mostrar imagen de fondo)
+            </label>
+          </div>
+          <footer class="cla-editor__foot">
+            <button type="button" class="cla-btn cla-btn--ghost" id="cla-editor-reset">Restablecer</button>
+            <button type="button" class="cla-btn" id="cla-editor-guardar">Guardar y aplicar</button>
+          </footer>
+        </form>
+      </dialog>
     </div>
   `;
 
@@ -329,7 +452,8 @@
       rut: form.rut,
       fechaInput: form.fechaInput,
       esFinal: res.esFinal,
-      mencion
+      mencion,
+      certId
     });
 
     return {
@@ -351,6 +475,128 @@
     document.querySelectorAll('.cla-catalogo__item').forEach((el) => {
       el.classList.toggle('is-active', el.dataset.catalogo === certId);
     });
+    const btnEdit = document.getElementById('cla-editar-activo');
+    if (btnEdit) {
+      btnEdit.hidden = false;
+      btnEdit.dataset.editar = certId;
+      btnEdit.dataset.fase = faseId;
+    }
+  }
+
+  let editorCertId = null;
+  let editorFaseId = null;
+  let editorDraft = configImagenDefault();
+
+  function syncEditorDraftToForm() {
+    const map = [
+      ['fondo', 'cla-ed-fondo-scale', 'fondoScale'],
+      ['fondo', 'cla-ed-fondo-x', 'fondoX'],
+      ['fondo', 'cla-ed-fondo-y', 'fondoY'],
+      ['logo', 'cla-ed-logo-scale', 'logoScale'],
+      ['logo', 'cla-ed-logo-x', 'logoX'],
+      ['logo', 'cla-ed-logo-y', 'logoY'],
+      ['firma', 'cla-ed-firma-scale', 'firmaScale'],
+      ['firma', 'cla-ed-firma-x', 'firmaX'],
+      ['firma', 'cla-ed-firma-y', 'firmaY']
+    ];
+    map.forEach(([, id, key]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = editorDraft[key];
+    });
+    const chk = document.getElementById('cla-ed-ocultar-texto');
+    if (chk) chk.checked = !!editorDraft.ocultarTexto;
+  }
+
+  function leerEditorDraftFromForm() {
+    return {
+      ...editorDraft,
+      fondoScale: Number(document.getElementById('cla-ed-fondo-scale')?.value ?? 100),
+      fondoX: Number(document.getElementById('cla-ed-fondo-x')?.value ?? 0),
+      fondoY: Number(document.getElementById('cla-ed-fondo-y')?.value ?? 0),
+      logoScale: Number(document.getElementById('cla-ed-logo-scale')?.value ?? 100),
+      logoX: Number(document.getElementById('cla-ed-logo-x')?.value ?? 0),
+      logoY: Number(document.getElementById('cla-ed-logo-y')?.value ?? 0),
+      firmaScale: Number(document.getElementById('cla-ed-firma-scale')?.value ?? 100),
+      firmaX: Number(document.getElementById('cla-ed-firma-x')?.value ?? 0),
+      firmaY: Number(document.getElementById('cla-ed-firma-y')?.value ?? 0),
+      ocultarTexto: !!document.getElementById('cla-ed-ocultar-texto')?.checked
+    };
+  }
+
+  function abrirEditorImagen(faseId, certId) {
+    const res = resolverCert(faseId, certId);
+    if (!res?.cert) return;
+
+    editorCertId = certId;
+    editorFaseId = faseId;
+    editorDraft = leerImagenCert(certId);
+    syncEditorDraftToForm();
+
+    const label = document.getElementById('cla-editor-cert-label');
+    if (label) label.textContent = res.cert.etiqueta;
+
+    previewCert(faseId, certId);
+    document.getElementById('cla-editor')?.showModal();
+  }
+
+  function aplicarEditorDraftPreview() {
+    if (!editorCertId) return;
+    editorDraft = leerEditorDraftFromForm();
+    guardarImagenCert(editorCertId, editorDraft);
+    previewCert(editorFaseId, editorCertId);
+    actualizarIndicadoresImagen();
+  }
+
+  function actualizarIndicadoresImagen() {
+    document.querySelectorAll('[data-catalogo]').forEach((el) => {
+      const cfg = leerImagenCert(el.dataset.catalogo);
+      el.classList.toggle('has-imagen', !!cfg.fondo);
+    });
+  }
+
+  function bindEditorImagen() {
+    const dialog = document.getElementById('cla-editor');
+    if (!dialog) return;
+
+    ['cla-ed-fondo-scale', 'cla-ed-fondo-x', 'cla-ed-fondo-y', 'cla-ed-logo-scale', 'cla-ed-logo-x', 'cla-ed-logo-y', 'cla-ed-firma-scale', 'cla-ed-firma-x', 'cla-ed-firma-y', 'cla-ed-ocultar-texto'].forEach((id) => {
+      document.getElementById(id)?.addEventListener('input', () => {
+        editorDraft = leerEditorDraftFromForm();
+        guardarImagenCert(editorCertId, editorDraft);
+        previewCert(editorFaseId, editorCertId);
+      });
+    });
+
+    async function cargarImagen(inputId, key) {
+      const input = document.getElementById(inputId);
+      input?.addEventListener('change', async () => {
+        const file = input.files?.[0];
+        if (!file) return;
+        editorDraft[key] = await leerArchivoComoDataUrl(file);
+        guardarImagenCert(editorCertId, editorDraft);
+        previewCert(editorFaseId, editorCertId);
+        actualizarIndicadoresImagen();
+        input.value = '';
+      });
+    }
+
+    cargarImagen('cla-ed-fondo', 'fondo');
+    cargarImagen('cla-ed-logo', 'logo');
+    cargarImagen('cla-ed-firma', 'firmaImg');
+
+    document.getElementById('cla-editor-guardar')?.addEventListener('click', () => {
+      aplicarEditorDraftPreview();
+      dialog.close();
+    });
+
+    document.getElementById('cla-editor-cerrar')?.addEventListener('click', () => dialog.close());
+
+    document.getElementById('cla-editor-reset')?.addEventListener('click', () => {
+      editorDraft = configImagenDefault();
+      guardarImagenCert(editorCertId, editorDraft);
+      syncEditorDraftToForm();
+      previewCert(editorFaseId, editorCertId);
+      actualizarIndicadoresImagen();
+    });
   }
 
   const primer = resolverCert('fase-1', 'f1-participacion');
@@ -362,7 +608,8 @@
         rut: form.rut,
         fechaInput: form.fechaInput,
         esFinal: false,
-        mencion: ''
+        mencion: '',
+        certId: 'f1-participacion'
       }),
       { certId: 'f1-participacion', etiqueta: primer.cert.etiqueta }
     );
@@ -383,6 +630,15 @@
   root.querySelectorAll('[data-preview]').forEach((btn) => {
     btn.addEventListener('click', () => previewCert(btn.dataset.fase, btn.dataset.preview));
   });
+
+  root.querySelectorAll('[data-editar]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      abrirEditorImagen(btn.dataset.fase, btn.dataset.editar);
+    });
+  });
+
+  bindEditorImagen();
 
   root.querySelectorAll('[data-catalogo]').forEach((btn) => {
     btn.addEventListener('click', () => previewCert(btn.dataset.fase, btn.dataset.catalogo));
