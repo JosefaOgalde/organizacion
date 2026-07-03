@@ -7,7 +7,6 @@
   if (!root) return;
 
   const { ancho: W, alto: H } = proyecto.canvas;
-  const col = proyecto.colores;
 
   function escapeHtml(s) {
     return String(s ?? '')
@@ -52,136 +51,174 @@
       .join('');
   }
 
-  function dibujarCertificado(canvas, datos) {
-    const ctx = canvas.getContext('2d');
-    canvas.width = W;
-    canvas.height = H;
-
-    const g = ctx.createLinearGradient(0, 0, W, 0);
-    g.addColorStop(0, col.primario);
-    g.addColorStop(1, col.secundario);
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, W, 140);
-
-    ctx.fillStyle = col.fondo;
-    ctx.fillRect(0, 140, W, H - 140);
-
-    ctx.strokeStyle = col.acento;
-    ctx.lineWidth = 4;
-    ctx.strokeRect(24, 24, W - 48, H - 48);
-
-    ctx.fillStyle = col.textoClaro;
-    ctx.font = 'bold 28px Georgia, serif';
-    ctx.fillText(proyecto.nombre, 48, 58);
-    ctx.font = '18px system-ui, sans-serif';
-    ctx.fillText(proyecto.programa, 48, 92);
-    ctx.font = '14px system-ui, sans-serif';
-    ctx.fillText(`Proyecto ${proyecto.codigo} · Desafío Latam`, 48, 118);
-
-    ctx.fillStyle = col.texto;
-    ctx.font = 'bold 42px Georgia, serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('CERTIFICADO', W / 2, 210);
-
-    const tipoLabel =
-      datos.tipo === 'final'
-        ? 'Certificado Final'
-        : datos.tipo === 'participacion'
-          ? 'de Participación'
-          : 'de Aprobación';
-    ctx.font = '24px system-ui, sans-serif';
-    ctx.fillStyle = col.primario;
-    ctx.fillText(tipoLabel, W / 2, 250);
-
-    ctx.fillStyle = col.texto;
-    ctx.font = '18px system-ui, sans-serif';
-    ctx.fillText('Se certifica que', W / 2, 310);
-
-    ctx.font = 'bold 36px Georgia, serif';
-    ctx.fillText(datos.participante, W / 2, 365);
-
-    ctx.font = '18px system-ui, sans-serif';
-    const linea1 = datos.faseTitulo || 'Programa completo de formación en IA';
-    wrapText(ctx, linea1, W / 2, 420, W - 160, 26);
-
-    if (datos.especializacion) {
-      ctx.font = '16px system-ui, sans-serif';
-      ctx.fillStyle = col.secundario;
-      ctx.fillText(`Especialización: ${datos.especializacion}`, W / 2, 480);
+  function formatFecha(tipoFinal, fechaInput) {
+    const d = fechaInput
+      ? new Date(fechaInput + 'T12:00:00')
+      : new Date();
+    if (tipoFinal) {
+      return d.toLocaleDateString('es-CL', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
     }
+    const mes = d.toLocaleDateString('es-CL', { month: 'long' });
+    const anio = d.getFullYear();
+    return `${mes.charAt(0).toUpperCase() + mes.slice(1)}, ${anio}`;
+  }
 
-    ctx.fillStyle = col.texto;
-    ctx.font = '15px system-ui, sans-serif';
-    const detalle = [
-      datos.horas ? `${datos.horas} horas · ${datos.modalidad || ''}` : '',
-      datos.requisitoCumplido || '',
-      `Fecha: ${datos.fecha}`
+  function leerFormulario() {
+    const nombre = document.getElementById('cla-participante')?.value?.trim() || 'Nombre Apellido';
+    const rut = document.getElementById('cla-rut')?.value?.trim() || '12.345.678-9';
+    const fechaInput = document.getElementById('cla-fecha')?.value;
+    return { nombre, rut, fechaInput };
+  }
+
+  function aplicarMencion(texto, mencion) {
+    if (!texto.includes('[la que cursó el alumno]')) return texto;
+    return texto.replace('[la que cursó el alumno]', mencion || '—');
+  }
+
+  function buildModelo(plantilla, opts) {
+    const { nombre, rut, fechaInput, esFinal, mencion } = opts;
+    const fechaTexto = formatFecha(esFinal, fechaInput);
+    const parrafos = (plantilla.parrafos || []).map((p) => aplicarMencion(p, mencion));
+
+    return {
+      tituloVisual: plantilla.tituloVisual,
+      emisor: plantilla.emisor,
+      nombre,
+      rut,
+      parrafos,
+      duracion: plantilla.duracion,
+      cierre: plantilla.cierre
+        ? plantilla.cierre.replace('[Día] de [Mes] de [Año]', fechaTexto)
+        : '',
+      cargaHorariaTotal: plantilla.cargaHorariaTotal,
+      fechaEmision: esFinal ? fechaTexto : fechaTexto,
+      firma: plantilla.firma
+    };
+  }
+
+  function renderCertificadoHtml(modelo) {
+    const parrafos = modelo.parrafos
+      .map((p) => `<p class="cla-cert__p">${escapeHtml(p)}</p>`)
+      .join('');
+
+    const pieIzq = [
+      modelo.duracion ? `<p><strong>Duración:</strong> ${escapeHtml(modelo.duracion)}.</p>` : '',
+      modelo.cierre
+        ? `<p>${escapeHtml(modelo.cierre)}${modelo.cargaHorariaTotal ? ` Carga Horaria Total Acreditada: ${escapeHtml(modelo.cargaHorariaTotal)}.` : ''}</p>`
+        : `<p><strong>Fecha de emisión:</strong> ${escapeHtml(modelo.fechaEmision)}</p>`
     ]
       .filter(Boolean)
-      .join('  ·  ');
-    wrapText(ctx, detalle, W / 2, datos.especializacion ? 520 : 490, W - 120, 22);
+      .join('');
 
-    ctx.fillStyle = col.acento;
-    ctx.fillRect(W / 2 - 120, H - 120, 240, 3);
-
-    ctx.fillStyle = '#6a7a72';
-    ctx.font = '13px system-ui, sans-serif';
-    ctx.fillText('Caja Los Andes · CLA · Desafío Latam', W / 2, H - 85);
-    ctx.fillText(`${W} × ${H} px`, W / 2, H - 62);
-
-    ctx.textAlign = 'left';
+    return `
+      <article class="cla-cert" aria-label="${escapeHtml(modelo.tituloVisual)}">
+        <div class="cla-cert__frame">
+          <div class="cla-cert__inner">
+            <div class="cla-cert__logo" aria-hidden="true">
+              <span class="cla-cert__logo-mark"></span>
+              <span class="cla-cert__logo-text">CAJA LOS ANDES</span>
+            </div>
+            <h2 class="cla-cert__titulo">${escapeHtml(modelo.tituloVisual)}</h2>
+            <p class="cla-cert__emisor">${escapeHtml(modelo.emisor)}</p>
+            <p class="cla-cert__nombre">${escapeHtml(modelo.nombre)}</p>
+            <p class="cla-cert__rut">${escapeHtml(modelo.rut)}</p>
+            <div class="cla-cert__cuerpo">${parrafos}</div>
+            <footer class="cla-cert__pie">
+              <div class="cla-cert__pie-izq">${pieIzq}</div>
+              <div class="cla-cert__firma">
+                <span class="cla-cert__firma-linea" aria-hidden="true"></span>
+                <strong>${escapeHtml(modelo.firma.nombre)}</strong>
+                <span>${escapeHtml(modelo.firma.cargo)}</span>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </article>`;
   }
 
-  function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-    const words = String(text).split(' ');
-    let line = '';
-    let yy = y;
-    ctx.textAlign = 'center';
-    for (let i = 0; i < words.length; i++) {
-      const test = line + words[i] + ' ';
-      if (ctx.measureText(test).width > maxWidth && i > 0) {
-        ctx.fillText(line.trim(), x, yy);
-        line = words[i] + ' ';
-        yy += lineHeight;
-      } else {
-        line = test;
-      }
-    }
-    ctx.fillText(line.trim(), x, yy);
-    ctx.textAlign = 'left';
+  function ajustarEscalaPreview() {
+    const wrap = document.getElementById('cla-preview-wrap');
+    const cert = wrap?.querySelector('.cla-cert');
+    if (!wrap || !cert) return;
+    const scale = Math.min(1, (wrap.clientWidth - 16) / W);
+    cert.style.setProperty('--cla-scale', String(scale));
   }
 
-  function descargarPng(canvas, nombre) {
-    const a = document.createElement('a');
-    a.download = nombre;
-    a.href = canvas.toDataURL('image/png');
-    a.click();
-  }
-
-  function mostrarPreview(datos) {
-    const canvas = document.getElementById('cla-canvas');
-    if (!canvas) return;
-    dibujarCertificado(canvas, datos);
+  function mostrarPreview(modelo, meta) {
+    const wrap = document.getElementById('cla-preview-wrap');
     const hint = document.getElementById('cla-size-hint');
-    if (hint) hint.textContent = `Vista previa · exportación ${W} × ${H} px`;
+    if (!wrap) return;
+    wrap.innerHTML = renderCertificadoHtml(modelo);
+    ultimoModelo = modelo;
+    ultimoMeta = meta;
+    requestAnimationFrame(ajustarEscalaPreview);
+    if (hint) {
+      hint.textContent = meta?.etiqueta
+        ? `Vista previa · ${meta.etiqueta} · ${W} × ${H} px`
+        : `Vista previa · exportación ${W} × ${H} px`;
+    }
+  }
+
+  function todosLosCertificados() {
+    const list = [];
+    proyecto.fases.forEach((fase) => {
+      const ordenados = [...fase.certificados].sort((a, b) => {
+        if (a.tipo === b.tipo) return 0;
+        return a.tipo === 'participacion' ? -1 : 1;
+      });
+      ordenados.forEach((cert) => list.push({ fase, cert, esFinal: false }));
+    });
+    list.push({
+      fase: null,
+      cert: { ...proyecto.certificadoFinal, id: 'final', tipo: 'final' },
+      esFinal: true
+    });
+    return list;
+  }
+
+  function camposExtra(fase, cert) {
+    if (cert.id === 'f1-participacion') {
+      return `<label>Asistencia (%)</label><input type="number" min="0" max="100" data-field="asistencia" data-fase="${fase.id}" data-cert="${cert.id}" value="75">`;
+    }
+    if (cert.id === 'f1-aprobacion') {
+      return `<label>Asistencia (%)</label><input type="number" min="0" max="100" data-field="asistencia" data-fase="${fase.id}" data-cert="${cert.id}" value="80">`;
+    }
+    if (cert.id === 'f2-aprobacion') {
+      return `<label>Estado del módulo</label><select data-field="estado" data-fase="${fase.id}" data-cert="${cert.id}"><option value="aprobado">Aprobado</option><option value="reprobado">Reprobado</option></select>`;
+    }
+    if (cert.id === 'f3-aprobacion') {
+      return `<label>Mención de especialidad</label><select data-field="mencion" data-fase="${fase.id}" data-cert="${cert.id}">${fase.especializaciones.map((e) => `<option>${escapeHtml(e)}</option>`).join('')}</select>
+              <label>Nota portafolio (0–10)</label><input type="number" min="0" max="10" step="0.1" data-field="nota" data-fase="${fase.id}" data-cert="${cert.id}" value="7">`;
+    }
+    return '';
   }
 
   function formFase(fase) {
-    const certs = fase.certificados
-      .map((cert) => {
-        const extra =
-          fase.id === 'fase-1'
-            ? `<label>Asistencia (%)</label><input type="number" min="0" max="100" data-field="asistencia" data-fase="${fase.id}" data-cert="${cert.id}" value="75">`
-            : fase.id === 'fase-2'
-              ? `<label>Estado</label><select data-field="estado" data-fase="${fase.id}" data-cert="${cert.id}"><option value="aprobado">Aprobado</option><option value="reprobado">Reprobado</option></select>`
-              : `<label>Especialización</label><select data-field="especializacion" data-fase="${fase.id}" data-cert="${cert.id}">${fase.especializaciones.map((e) => `<option>${escapeHtml(e)}</option>`).join('')}</select>
-                 <label>Nota (0–10)</label><input type="number" min="0" max="10" step="0.1" data-field="nota" data-fase="${fase.id}" data-cert="${cert.id}" value="6">`;
+    const ordenados = [...fase.certificados].sort((a, b) => {
+      if (a.tipo === b.tipo) return 0;
+      return a.tipo === 'participacion' ? -1 : 1;
+    });
 
-        return `<div class="cla-fase__cert">
-          <strong>${escapeHtml(cert.etiqueta)}</strong>
+    const certs = ordenados
+      .map((cert) => {
+        const badge = cert.aprobado
+          ? '<span class="cla-cert-badge">Aprobado</span>'
+          : '';
+        return `<div class="cla-fase__cert" data-cert-card="${cert.id}">
+          <div class="cla-fase__cert-head">
+            <strong>${escapeHtml(cert.etiqueta)}</strong>${badge}
+          </div>
+          <p class="cla-fase__meta">${escapeHtml(cert.plantilla?.tituloVisual || '')}</p>
           <p class="cla-fase__meta">Requisito: ${escapeHtml(cert.requisito)}</p>
-          ${extra}
-          <button type="button" class="cla-btn" data-generar="${cert.id}" data-fase="${fase.id}">Generar certificado</button>
+          ${camposExtra(fase, cert)}
+          <div class="cla-fase__acciones">
+            <button type="button" class="cla-btn cla-btn--ghost" data-preview="${cert.id}" data-fase="${fase.id}">Vista previa</button>
+            <button type="button" class="cla-btn" data-generar="${cert.id}" data-fase="${fase.id}">Generar</button>
+          </div>
           <div class="cla-alerta" id="alert-${cert.id}" hidden></div>
         </div>`;
       })
@@ -194,105 +231,167 @@
     </article>`;
   }
 
+  function renderCatalogo() {
+    return todosLosCertificados()
+      .map(({ fase, cert, esFinal }) => {
+        const titulo = cert.plantilla?.tituloVisual || cert.etiqueta;
+        const faseLabel = esFinal ? 'Final' : `F${fase.numero}`;
+        return `<button type="button" class="cla-catalogo__item" data-catalogo="${cert.id}" data-fase="${esFinal ? 'final' : fase.id}">
+          <span class="cla-catalogo__fase">${faseLabel}</span>
+          <span class="cla-catalogo__titulo">${escapeHtml(titulo)}</span>
+          <span class="cla-catalogo__tipo">${escapeHtml(cert.etiqueta)}</span>
+        </button>`;
+      })
+      .join('');
+  }
+
   root.innerHTML = `
-    <div class="cla-wrap" style="--cla-primario:${col.primario};--cla-sec:${col.secundario};--cla-acento:${col.acento};--cla-bg:${col.fondo};--cla-text:${col.texto}">
+    <div class="cla-wrap">
       <header class="cla-hero">
-        <span class="cla-badge">${proyecto.codigo}</span>
+        <span class="cla-badge">${proyecto.codigo} · ${proyecto.certificadosAprobados?.total || 7} certificados aprobados</span>
         <h1>${escapeHtml(proyecto.nombre)}</h1>
-        <p class="cla-hero__meta">${escapeHtml(proyecto.programa)} · Identidad propia del proyecto (no mezclar con otros encargos ADL)</p>
-        <a class="cla-identidad-link" href="${proyecto.identidadPdf}" target="_blank" rel="noopener">📄 Manual de marca / identidad visual (PDF)</a>
+        <p class="cla-hero__meta">${escapeHtml(proyecto.programa)}</p>
+        <div class="cla-hero__links">
+          <a class="cla-identidad-link" href="${proyecto.identidadPdf}" target="_blank" rel="noopener">Manual de marca (PDF)</a>
+          <a class="cla-identidad-link" href="CLA/certificados-aprobados.md" target="_blank" rel="noopener">Textos oficiales (MD)</a>
+        </div>
       </header>
+
+      <section class="cla-catalogo">
+        <h2>Catálogo de certificados</h2>
+        <div class="cla-catalogo__grid">${renderCatalogo()}</div>
+      </section>
 
       <div class="cla-grid">
         <section class="cla-panel">
-          <h2>Generar certificados modulares</h2>
+          <h2>Generar certificado</h2>
           <div class="cla-form">
-            <label>Nombre del participante</label>
+            <label>Nombre completo</label>
             <input type="text" id="cla-participante" placeholder="Nombre Apellido" value="">
-            <label>Fecha del certificado</label>
+            <label>RUT</label>
+            <input type="text" id="cla-rut" placeholder="12.345.678-9" value="">
+            <label>Fecha de emisión</label>
             <input type="date" id="cla-fecha" value="${new Date().toISOString().slice(0, 10)}">
           </div>
           ${proyecto.fases.map(formFase).join('')}
           <article class="cla-fase">
-            <h3>Certificado final</h3>
-            <p class="cla-fase__meta">${escapeHtml(proyecto.certificadoFinal.requisito)}</p>
-            <button type="button" class="cla-btn cla-btn--acento" id="cla-generar-final">Generar certificado final</button>
+            <h3>Diploma final del programa</h3>
+            <p class="cla-fase__meta">${escapeHtml(proyecto.certificadoFinal.requisito)} · ${escapeHtml(proyecto.certificadoFinal.plantilla?.cargaHorariaTotal || '108 horas')}</p>
+            <div class="cla-fase__acciones">
+              <button type="button" class="cla-btn cla-btn--ghost" data-preview="final" data-fase="final">Vista previa</button>
+              <button type="button" class="cla-btn cla-btn--acento" id="cla-generar-final">Generar diploma final</button>
+            </div>
             <div class="cla-alerta" id="alert-final" hidden></div>
           </article>
         </section>
 
-        <section class="cla-panel">
+        <section class="cla-panel cla-panel--preview">
           <h2>Vista previa · ${W} × ${H} px</h2>
-          <div class="cla-preview-wrap">
-            <canvas id="cla-canvas" width="${W}" height="${H}"></canvas>
-          </div>
-          <p class="cla-size-hint" id="cla-size-hint">Formato fijo para impresión y entrega</p>
+          <div class="cla-preview-wrap" id="cla-preview-wrap"></div>
+          <p class="cla-size-hint" id="cla-size-hint">Selecciona un certificado del catálogo o genera uno</p>
           <button type="button" class="cla-btn cla-btn--ghost" id="cla-descargar" style="width:100%;margin-top:0.75rem">Descargar PNG (${W}×${H})</button>
-          <h2 style="margin-top:1.25rem">Certificados emitidos (local)</h2>
+          <h2 class="cla-subtitle">Emitidos (local)</h2>
           <ul class="cla-emitidos" id="cla-emitidos"></ul>
         </section>
       </div>
     </div>
   `;
 
-  let ultimoDatos = {
-    participante: 'Participante',
-    fecha: new Date().toLocaleDateString('es-CL'),
-    faseTitulo: proyecto.programa,
-    tipo: 'aprobacion',
-    requisitoCumplido: ''
-  };
+  let ultimoModelo = null;
+  let ultimoMeta = { certId: 'f1-participacion', etiqueta: 'Diploma de participación — Fase 1' };
 
-  mostrarPreview(ultimoDatos);
-  renderEmitidos();
-
-  function leerFormulario() {
-    const participante = document.getElementById('cla-participante')?.value?.trim();
-    const fechaInput = document.getElementById('cla-fecha')?.value;
-    const fecha = fechaInput
-      ? new Date(fechaInput + 'T12:00:00').toLocaleDateString('es-CL', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        })
-      : new Date().toLocaleDateString('es-CL');
-    return { participante: participante || 'Participante', fecha };
-  }
-
-  function datosDeFase(faseId, certId) {
+  function resolverCert(faseId, certId) {
+    if (faseId === 'final' || certId === 'final') {
+      return { fase: null, cert: proyecto.certificadoFinal, esFinal: true };
+    }
     const fase = proyecto.fases.find((f) => f.id === faseId);
     const cert = fase?.certificados.find((c) => c.id === certId);
-    if (!fase || !cert) return null;
+    return fase && cert ? { fase, cert, esFinal: false } : null;
+  }
+
+  function datosDeCert(faseId, certId, soloPreview) {
+    const res = resolverCert(faseId, certId);
+    if (!res?.cert?.plantilla) return null;
 
     const campos = {};
-    root.querySelectorAll(`[data-fase="${faseId}"][data-cert="${certId}"]`).forEach((el) => {
-      campos[el.dataset.field] = el.value;
+    if (!res.esFinal && res.fase) {
+      root.querySelectorAll(`[data-fase="${res.fase.id}"][data-cert="${certId}"]`).forEach((el) => {
+        campos[el.dataset.field] = el.value;
+      });
+    }
+
+    const ok = soloPreview || res.esFinal ? true : res.cert.validar(campos);
+    const form = leerFormulario();
+    const mencion = campos.mencion || res.fase?.especializaciones?.[0] || '';
+
+    const modelo = buildModelo(res.cert.plantilla, {
+      nombre: form.nombre,
+      rut: form.rut,
+      fechaInput: form.fechaInput,
+      esFinal: res.esFinal,
+      mencion
     });
 
-    const ok = cert.validar(campos);
     return {
       ok,
-      cert,
-      fase,
+      cert: res.cert,
+      fase: res.fase,
+      esFinal: res.esFinal,
       campos,
-      datos: {
-        participante: leerFormulario().participante,
-        fecha: leerFormulario().fecha,
-        faseTitulo: `Fase ${fase.numero}: ${fase.titulo}`,
-        horas: fase.horas,
-        modalidad: fase.modalidad,
-        tipo: cert.tipo,
-        especializacion: campos.especializacion || '',
-        requisitoCumplido: cert.requisito + (campos.asistencia ? ` (${campos.asistencia}%)` : campos.nota ? ` (${campos.nota}/10)` : '')
-      }
+      modelo,
+      meta: { certId, etiqueta: res.cert.etiqueta }
     };
   }
 
+  function previewCert(faseId, certId) {
+    const res = datosDeCert(faseId, certId, true);
+    if (!res) return;
+    ultimoMeta = { ...res.meta, faseId };
+    mostrarPreview(res.modelo, res.meta);
+    document.querySelectorAll('.cla-catalogo__item').forEach((el) => {
+      el.classList.toggle('is-active', el.dataset.catalogo === certId);
+    });
+  }
+
+  const primer = resolverCert('fase-1', 'f1-participacion');
+  if (primer?.cert?.plantilla) {
+    const form = leerFormulario();
+    mostrarPreview(
+      buildModelo(primer.cert.plantilla, {
+        nombre: form.nombre,
+        rut: form.rut,
+        fechaInput: form.fechaInput,
+        esFinal: false,
+        mencion: ''
+      }),
+      { certId: 'f1-participacion', etiqueta: primer.cert.etiqueta }
+    );
+  }
+  renderEmitidos();
+
+  root.querySelectorAll('#cla-participante, #cla-rut, #cla-fecha').forEach((el) => {
+    el.addEventListener('input', () => {
+      if (ultimoMeta?.certId) {
+        previewCert(
+          ultimoMeta.certId === 'final' ? 'final' : ultimoMeta.faseId || 'fase-1',
+          ultimoMeta.certId
+        );
+      }
+    });
+  });
+
+  root.querySelectorAll('[data-preview]').forEach((btn) => {
+    btn.addEventListener('click', () => previewCert(btn.dataset.fase, btn.dataset.preview));
+  });
+
+  root.querySelectorAll('[data-catalogo]').forEach((btn) => {
+    btn.addEventListener('click', () => previewCert(btn.dataset.fase, btn.dataset.catalogo));
+  });
+
   root.querySelectorAll('[data-generar]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const { fase, cert } = { fase: btn.dataset.fase, cert: btn.dataset.generar };
-      const res = datosDeFase(fase, cert);
-      const alert = document.getElementById(`alert-${cert}`);
+      const res = datosDeCert(btn.dataset.fase, btn.dataset.generar, false);
+      const alert = document.getElementById(`alert-${btn.dataset.generar}`);
       if (!res) return;
 
       if (!res.ok) {
@@ -304,14 +403,14 @@
 
       alert.hidden = false;
       alert.className = 'cla-alerta cla-alerta--ok';
-      alert.textContent = 'Requisito cumplido. Certificado generado.';
-      ultimoDatos = res.datos;
-      mostrarPreview(ultimoDatos);
+      alert.textContent = 'Certificado generado.';
+      mostrarPreview(res.modelo, res.meta);
       guardarEmitido({
-        certId: cert,
-        participante: res.datos.participante,
+        certId: btn.dataset.generar,
+        participante: res.modelo.nombre,
+        rut: res.modelo.rut,
         etiqueta: res.cert.etiqueta,
-        fase: res.fase.numero
+        fase: res.fase?.numero ?? 'final'
       });
     });
   });
@@ -325,33 +424,61 @@
       alert.hidden = false;
       alert.className = 'cla-alerta cla-alerta--error';
       alert.textContent =
-        'Faltan certificados de aprobación. Se requieren: Fase 1, Fase 2 y Fase 3 (una especialización).';
+        'Faltan certificados de aprobación. Se requieren: Fase 1, Fase 2 y Fase 3.';
       return;
     }
 
-    const form = leerFormulario();
-    ultimoDatos = {
-      participante: form.participante,
-      fecha: form.fecha,
-      faseTitulo: 'Programa completo — 3 fases aprobadas',
-      tipo: 'final',
-      requisitoCumplido: proyecto.certificadoFinal.requisito
-    };
-    mostrarPreview(ultimoDatos);
+    const res = datosDeCert('final', 'final', true);
+    if (!res) return;
+
+    mostrarPreview(res.modelo, res.meta);
     alert.hidden = false;
     alert.className = 'cla-alerta cla-alerta--ok';
-    alert.textContent = 'Certificado final generado.';
+    alert.textContent = 'Diploma final generado.';
     guardarEmitido({
       certId: 'final',
-      participante: form.participante,
+      participante: res.modelo.nombre,
+      rut: res.modelo.rut,
       etiqueta: proyecto.certificadoFinal.etiqueta,
       fase: 'final'
     });
   });
 
-  document.getElementById('cla-descargar')?.addEventListener('click', () => {
-    const canvas = document.getElementById('cla-canvas');
-    const slug = (ultimoDatos.participante || 'participante').replace(/\s+/g, '-').toLowerCase();
-    descargarPng(canvas, `CLA-certificado-${slug}-${W}x${H}.png`);
+  document.getElementById('cla-descargar')?.addEventListener('click', async () => {
+    if (!ultimoModelo) return;
+
+    const slug = (ultimoModelo.nombre || 'participante').replace(/\s+/g, '-').toLowerCase();
+    const fileName = `CLA-${ultimoMeta.certId || 'cert'}-${slug}-${W}x${H}.png`;
+
+    if (!window.html2canvas) {
+      const hint = document.getElementById('cla-size-hint');
+      if (hint) hint.textContent = 'No se pudo cargar html2canvas. Revisa tu conexión.';
+      return;
+    }
+
+    const off = document.createElement('div');
+    off.style.cssText = 'position:fixed;left:-9999px;top:0;';
+    off.innerHTML = renderCertificadoHtml(ultimoModelo);
+    document.body.appendChild(off);
+    const certEl = off.querySelector('.cla-cert');
+    certEl.style.setProperty('--cla-scale', '1');
+
+    try {
+      const canvas = await html2canvas(certEl, {
+        scale: 1,
+        width: W,
+        height: H,
+        useCORS: true,
+        backgroundColor: '#0c2340'
+      });
+      const a = document.createElement('a');
+      a.download = fileName;
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    } finally {
+      document.body.removeChild(off);
+    }
   });
+
+  window.addEventListener('resize', ajustarEscalaPreview);
 })();

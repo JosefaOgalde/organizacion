@@ -4,6 +4,10 @@
   --cla-acento: #f5b335;
   --cla-bg: #f7faf8;
   --cla-text: #1a2e24;
+  --cla-cert-border: #0c2340;
+  --cla-cert-title: #2b7fd4;
+  --cla-cert-name: #3daae8;
+  --cla-cert-muted: #4a5568;
 }
 
 .cla-hero {
@@ -27,6 +31,13 @@
   font-size: 0.9rem;
 }
 
+.cla-hero__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
 .cla-badge {
   display: inline-block;
   padding: 0.2rem 0.55rem;
@@ -37,13 +48,73 @@
   color: #fff;
 }
 
+.cla-catalogo {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1rem;
+}
+
+.cla-catalogo h2 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  color: var(--cla-primario);
+}
+
+.cla-catalogo__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.55rem;
+}
+
+.cla-catalogo__item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #dce8e1;
+  border-radius: 8px;
+  background: #fafcfa;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.cla-catalogo__item:hover,
+.cla-catalogo__item.is-active {
+  border-color: var(--cla-primario);
+  box-shadow: 0 0 0 2px rgba(0, 122, 61, 0.12);
+}
+
+.cla-catalogo__fase {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--cla-primario);
+  text-transform: uppercase;
+}
+
+.cla-catalogo__titulo {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1a2e24;
+  line-height: 1.25;
+}
+
+.cla-catalogo__tipo {
+  font-size: 0.7rem;
+  color: #6a7a72;
+}
+
 .cla-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.1fr;
   gap: 1rem;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .cla-grid { grid-template-columns: 1fr; }
 }
 
@@ -54,11 +125,14 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-.cla-panel h2 {
+.cla-panel h2,
+.cla-subtitle {
   margin: 0 0 0.75rem;
   font-size: 0.95rem;
   color: var(--cla-primario);
 }
+
+.cla-subtitle { margin-top: 1.25rem; }
 
 .cla-fase {
   border: 1px solid #e2ebe6;
@@ -76,6 +150,40 @@
   margin: 0 0 0.5rem;
   font-size: 0.78rem;
   color: #6a7a72;
+}
+
+.cla-fase__cert {
+  border-top: 1px solid #eef3f0;
+  padding-top: 0.65rem;
+  margin-top: 0.65rem;
+}
+
+.cla-fase__cert:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.cla-fase__cert-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.cla-fase__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.cla-cert-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  background: #e8f6ee;
+  color: #1a6b40;
 }
 
 .cla-form label {
@@ -105,6 +213,8 @@
   background: var(--cla-primario);
   color: #fff;
 }
+
+.cla-fase__acciones .cla-btn { margin-top: 0.45rem; }
 
 .cla-btn:hover { filter: brightness(1.06); }
 
@@ -142,15 +252,8 @@
   border: 1px dashed #c5d5cc;
   border-radius: 8px;
   padding: 0.5rem;
-  background: #fafcfa;
-}
-
-.cla-preview-wrap canvas {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  margin: 0 auto;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  background: #e8ecef;
+  min-height: 200px;
 }
 
 .cla-size-hint {
@@ -161,10 +264,6 @@
 }
 
 .cla-identidad-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.5rem;
   color: var(--cla-primario);
   font-weight: 600;
   font-size: 0.85rem;
@@ -177,3 +276,169 @@
 }
 
 .cla-emitidos li { margin: 0.25rem 0; }
+
+/* —— Certificado HTML 1123×794 —— */
+.cla-cert {
+  --cla-scale: 1;
+  width: 1123px;
+  height: 794px;
+  transform: scale(var(--cla-scale));
+  transform-origin: top left;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: #1a2e44;
+  box-sizing: border-box;
+}
+
+.cla-cert__frame {
+  width: 100%;
+  height: 100%;
+  padding: 14px;
+  background: linear-gradient(145deg, #1a3358 0%, #0c2340 100%);
+  box-sizing: border-box;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+.cla-cert__inner {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #ffffff 0%, #f4f7fb 100%);
+  border: 2px solid #d4dce8;
+  box-sizing: border-box;
+  padding: 36px 56px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.cla-cert__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.cla-cert__logo-mark {
+  width: 42px;
+  height: 28px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #2b7fd4 0%, #1a5fa8 100%);
+  position: relative;
+}
+
+.cla-cert__logo-mark::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  background: #f5b335;
+  border-radius: 1px;
+}
+
+.cla-cert__logo-text {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #1a5fa8;
+}
+
+.cla-cert__titulo {
+  margin: 0 0 14px;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1.15;
+  color: var(--cla-cert-title);
+  max-width: 900px;
+}
+
+.cla-cert__emisor {
+  margin: 0 0 22px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a2e44;
+  max-width: 820px;
+  line-height: 1.45;
+}
+
+.cla-cert__nombre {
+  margin: 0;
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--cla-cert-name);
+  text-transform: uppercase;
+}
+
+.cla-cert__rut {
+  margin: 4px 0 18px;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--cla-cert-name);
+  text-transform: uppercase;
+}
+
+.cla-cert__cuerpo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 880px;
+  width: 100%;
+}
+
+.cla-cert__p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #2a3548;
+}
+
+.cla-cert__pie {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: end;
+  margin-top: auto;
+  text-align: left;
+}
+
+.cla-cert__pie-izq {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--cla-cert-muted);
+}
+
+.cla-cert__pie-izq p { margin: 0 0 4px; }
+
+.cla-cert__firma {
+  min-width: 200px;
+  text-align: center;
+  font-size: 12px;
+  color: #1a2e44;
+}
+
+.cla-cert__firma-linea {
+  display: block;
+  width: 160px;
+  height: 36px;
+  margin: 0 auto 4px;
+  border-bottom: 2px solid #1a2e44;
+  background: linear-gradient(180deg, transparent 60%, rgba(26, 46, 68, 0.08));
+}
+
+.cla-cert__firma strong {
+  display: block;
+  font-size: 13px;
+}
+
+.cla-cert__firma span {
+  display: block;
+  font-size: 11px;
+  color: #4a5568;
+}
