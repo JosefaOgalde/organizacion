@@ -169,9 +169,33 @@ window.ADL_PROYECTOS = {
           {
             id: 'f3-aprobacion',
             tipo: 'aprobacion',
-            etiqueta: 'Certificado de aprobación',
-            requisito: 'Nota ≥ 6,0 / 10,0',
-            validar: (d) => Number(d.nota) >= 6
+            etiqueta: 'Certificado de aprobación modular — Fase 3',
+            requisito: 'Nota ≥ 6,0 / 10,0 y 75% asistencia',
+            validar: (d) => Number(d.nota) >= 6,
+            aprobado: true,
+            plantilla: {
+              tituloVisual: 'CERTIFICADO DE APROBACIÓN MODULAR',
+              emisor: 'DESAFÍO LATAM Certifica que:',
+              placeholderParticipante: ['NOMBRE', 'RUT'],
+              parrafos: [
+                'Ha aprobado con distinción el módulo de bootcamp de alta intensidad "Fase 3: Especialización Aplicada", tras haber cumplido con el 75% de asistencia a las clases virtuales y obtenido una calificación sobresaliente en la defensa de su portafolio técnico.',
+                'Mención de Especialidad realizada: [la que cursó el alumno]'
+              ],
+              mencionesEspecialidad: [
+                'Automatización con IA: Creación de workflows no-code e integración digital',
+                'IA para Productividad Diaria: Construcción de prompts productivos y gestión de reportes',
+                'Data Analytics: Análisis con Google Sheets, SQL y Dashboards',
+                'IA para Marketing y Ventas: Flujos de marketing y generación de contenido creativo'
+              ],
+              notaImpresion:
+                'Al imprimir, reemplazar el placeholder por una sola mención — la cursada por el alumno.',
+              duracion: '60 horas académicas (sincrónicas intensivas)',
+              fechaEmisionFormato: '[Mes, Año]',
+              firma: {
+                nombre: 'Andrés Gallardo',
+                cargo: 'Director General Desafío Latam'
+              }
+            }
           }
         ]
       }
