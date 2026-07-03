@@ -133,16 +133,39 @@ window.ADL_PROYECTOS = {
       {
         id: 'fase-3',
         numero: 3,
-        titulo: 'Especialización aplicada',
+        titulo: 'Especialización Aplicada',
         modalidad: 'sincrónico',
         horas: 60,
         especializaciones: [
-          'Automatización con IA',
-          'Data Analytics',
-          'IA para Productividad Diaria',
-          'IA para Marketing y Ventas'
+          'Automatización con IA: Creación de workflows no-code e integración digital',
+          'IA para Productividad Diaria: Construcción de prompts productivos y gestión de reportes',
+          'Data Analytics: Análisis con Google Sheets, SQL y Dashboards',
+          'IA para Marketing y Ventas: Flujos de marketing y generación de contenido creativo'
         ],
         certificados: [
+          {
+            id: 'f3-participacion',
+            tipo: 'participacion',
+            etiqueta: 'Diploma de participación — Fase 3',
+            requisito: 'Asistencia a sesiones Zoom',
+            validar: () => true,
+            aprobado: true,
+            plantilla: {
+              tituloVisual: 'DIPLOMA DE PARTICIPACIÓN',
+              emisor:
+                'DESAFÍO LATAM concede la presente constancia de participación a:',
+              placeholderParticipante: ['NOMBRE', 'RUT'],
+              parrafos: [
+                'Por haber cursado las sesiones en vivo vía Zoom pertenecientes al bootcamp avanzado "Fase 3: Especialización Aplicada", como parte del beneficio de formación online provisto en conjunto con Caja Los Andes.'
+              ],
+              duracion: '60 horas cronológicas',
+              fechaEmisionFormato: '[Mes, Año]',
+              firma: {
+                nombre: 'Andrés Gallardo',
+                cargo: 'Director General Desafío Latam'
+              }
+            }
+          },
           {
             id: 'f3-aprobacion',
             tipo: 'aprobacion',
