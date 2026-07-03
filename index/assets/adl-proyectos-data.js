@@ -202,12 +202,31 @@ window.ADL_PROYECTOS = {
     ],
     certificadoFinal: {
       id: 'final',
-      etiqueta: 'Certificado final del programa',
+      etiqueta: 'Certificado de aprobación final del programa',
       requisito: '3 certificados de aprobación (Fase 1 + Fase 2 + Fase 3)',
       idsRequeridos: ['f1-aprobacion', 'f2-aprobacion', 'f3-aprobacion'],
       validar: (emitidos) => {
         const req = ['f1-aprobacion', 'f2-aprobacion', 'f3-aprobacion'];
         return req.every((id) => emitidos.includes(id));
+      },
+      aprobado: true,
+      plantilla: {
+        tituloVisual: 'CERTIFICADO DE APROBACIÓN PROGRAMA',
+        emisor:
+          'DESAFÍO LATAM & CAJA LOS ANDES otorgan el presente diploma de Aprobación Final a:',
+        placeholderParticipante: ['NOMBRE', 'RUT'],
+        parrafos: [
+          'Por haber completado con pleno éxito la totalidad de las exigencias académicas, de asistencia y proyectos prácticos requeridos por el "Programa de Formación en Inteligencia Artificial y Productividad Digital".',
+          'Este bootcamp de especialización tecnológica ha sido desarrollado e impartido para dotar a los profesionales de habilidades digitales avanzadas, uso aplicado de IA generativa y herramientas de eficiencia laboral, potenciando su empleabilidad dentro de la industria actual.'
+        ],
+        cierre:
+          'Se extiende el presente certificado de alta especialización técnica en Santiago de Chile, a [Día] de [Mes] de [Año].',
+        cargaHorariaTotal: '108 horas académicas',
+        fechaEmisionFormato: '[Día] de [Mes] de [Año]',
+        firma: {
+          nombre: 'Andrés Gallardo',
+          cargo: 'Director General Desafío Latam'
+        }
       }
     }
   }
