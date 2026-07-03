@@ -16,11 +16,23 @@
 
 ## Al empezar a trabajar (cada día)
 
+**Atajo recomendado (03/07 y siguientes):**
+
+```bat
+cd C:\Users\josef\organizacion
+ABRIR-ORGANIZADOR-HOY.bat
+```
+
+Hace `git pull`, sync del respaldo más reciente en Descargas/`data/` y abre el calendario con `?disco=1`.
+
+O manualmente:
+
 ```bat
 cd C:\Users\josef\organizacion
 git checkout cursor/mova-trabajo-d6a1
-ACTUALIZAR-RAMA-MOVA.bat
-ABRIR-MOVA.bat
+git pull origin cursor/mova-trabajo-d6a1
+IMPORTAR-RESPALDO.bat
+ABRIR-ORGANIZADOR.bat
 ```
 
 En Cursor: **`@mova`** + describe la tarea.

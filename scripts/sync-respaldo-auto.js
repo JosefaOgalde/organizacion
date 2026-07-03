@@ -41,6 +41,7 @@ function candidatos() {
     }
     files.forEach((name) => {
       if (!/^organizacion-respaldo-.*\.json$/i.test(name)) return;
+      if (/ejemplo/i.test(name)) return;
       const abs = path.join(dir, name);
       try {
         const st = fs.statSync(abs);
