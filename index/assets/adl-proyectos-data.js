@@ -1,4 +1,5 @@
 /** Proyectos segmentados bajo Desafío Latam (ADL) — cada uno con su identidad y reglas. */
+/** CLA: textos aprobados → index/clientes/DesafioLatam/CLA/certificados-aprobados.md */
 window.ADL_PROYECTOS = {
   CLA: {
     codigo: 'CLA',
@@ -6,6 +7,20 @@ window.ADL_PROYECTOS = {
     programa:
       'Programa de Formación en Inteligencia Artificial y Productividad Digital',
     diplomasPdf: 'CLA/identidad/CLA-Diplomas.pdf',
+    referenciaTextos: 'CLA/certificados-aprobados.md',
+    certificadosAprobados: {
+      fecha: '2026-07',
+      total: 7,
+      ids: [
+        'f1-participacion',
+        'f1-aprobacion',
+        'f2-participacion',
+        'f2-aprobacion',
+        'f3-participacion',
+        'f3-aprobacion',
+        'final'
+      ]
+    },
     cliente: 'Desafío Latam',
     identidadPdf: 'CLA/identidad/manual-marca-caja-los-andes.pdf',
     identidadOrigen: 'screencapture-localhost-3002-2026-06-18-13_21_00.pdf',
