@@ -6,8 +6,8 @@ echo  === Organizador — inicio del dia ===
 echo.
 
 git fetch origin 2>nul
-git pull origin cursor/mova-trabajo-d6a1 --no-rebase 2>nul
-if errorlevel 1 git pull origin main --no-rebase 2>nul
+git checkout main 2>nul
+git pull origin main --no-rebase 2>nul
 
 echo  Sincronizando respaldo mas reciente ^(Descargas / data^)...
 node scripts/sync-respaldo-auto.js --force
