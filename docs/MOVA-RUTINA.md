@@ -19,7 +19,7 @@
 **Atajo recomendado (03/07 y siguientes):**
 
 ```bat
-cd C:\Users\josef\organizacion
+cd C:\Users\Josefa Ogalde\organizacion
 ABRIR-ORGANIZADOR-HOY.bat
 ```
 
@@ -28,7 +28,7 @@ Hace `git pull`, sync del respaldo más reciente en Descargas/`data/` y abre el 
 O manualmente:
 
 ```bat
-cd C:\Users\josef\organizacion
+cd C:\Users\Josefa Ogalde\organizacion
 git checkout cursor/mova-trabajo-d6a1
 git pull origin cursor/mova-trabajo-d6a1
 IMPORTAR-RESPALDO.bat
