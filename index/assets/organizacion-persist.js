@@ -6,14 +6,24 @@
   const API = '/api/organizacion';
   const TOKEN_KEY = 'organizacion_api_token';
   let debounceTimer = null;
-  let lastPost = 0;
   let authRequired = false;
+  let loginRequired = false;
 
   function apiHeaders(json) {
     const h = json ? { 'Content-Type': 'application/json' } : {};
     const token = sessionStorage.getItem(TOKEN_KEY);
     if (token) h['X-Organizacion-Token'] = token;
     return h;
+  }
+
+  function fetchOpts(extra) {
+    return { credentials: 'include', cache: 'no-store', ...(extra || {}) };
+  }
+
+  function redirectLogin() {
+    if (/\/login\.html/i.test(window.location.pathname)) return;
+    const next = encodeURIComponent(window.location.pathname + window.location.search);
+    window.location.replace('/login.html?next=' + next);
   }
 
   function maxActualizado(datos) {
@@ -31,16 +41,17 @@
 
   async function ensureApiConfig() {
     try {
-      const res = await fetch('/api/organizacion-config?t=' + Date.now(), { cache: 'no-store' });
+      const res = await fetch('/api/organizacion-config?t=' + Date.now(), fetchOpts());
       if (!res.ok) return;
       const cfg = await res.json();
       authRequired = !!cfg.authRequired;
+      loginRequired = !!cfg.loginRequired;
     } catch {
       /* servidor sin config — compatibilidad */
     }
   }
 
-  /** Consola: setOrganizacionApiToken('tu-token-del-env') */
+  /** Consola legacy: setOrganizacionApiToken('tu-token-del-env') */
   window.setOrganizacionApiToken = function setOrganizacionApiToken(token) {
     if (!token) {
       sessionStorage.removeItem(TOKEN_KEY);
@@ -51,15 +62,21 @@
     console.info('Token API guardado en sessionStorage (solo esta pestaña)');
   };
 
+  window.cerrarSesionOrganizacion = async function cerrarSesionOrganizacion() {
+    try {
+      await fetch('/api/auth/logout', fetchOpts({ method: 'POST' }));
+    } catch { /* ignore */ }
+    sessionStorage.removeItem(TOKEN_KEY);
+    window.location.replace('/login.html');
+  };
+
   window.fetchOrganizacionLive = async function fetchOrganizacionLive() {
     await ensureApiConfig();
     try {
-      const res = await fetch(API + '?t=' + Date.now(), {
-        cache: 'no-store',
-        headers: apiHeaders(false),
-      });
+      const res = await fetch(API + '?t=' + Date.now(), fetchOpts({ headers: apiHeaders(false) }));
       if (res.status === 401) {
-        console.warn('API requiere token — usa setOrganizacionApiToken("...") en consola (F12)');
+        if (loginRequired) redirectLogin();
+        else console.warn('API requiere token — inicia sesión en /login.html o usa setOrganizacionApiToken');
         return null;
       }
       if (!res.ok) return null;
@@ -77,17 +94,18 @@
     debounceTimer = setTimeout(async () => {
       await ensureApiConfig();
       const payload = JSON.stringify(datos);
-      fetch(API, {
+      fetch(API, fetchOpts({
         method: 'POST',
         headers: apiHeaders(true),
         body: payload,
-      })
+      }))
         .then((res) => {
-          if (res.status === 401 && authRequired) {
-            console.warn('No se guardó en disco — falta token API (setOrganizacionApiToken)');
+          if (res.status === 401) {
+            if (loginRequired) redirectLogin();
+            else console.warn('No se guardó en disco — falta autenticación');
             return;
           }
-          if (res.ok) lastPost = Date.now();
+          if (res.ok) return;
         })
         .catch(() => {});
     }, 600);

@@ -4,8 +4,9 @@
  * Uso: node scripts/organizacion-server.js
  * Puerto: 3000 (o PORT) · Solo localhost por defecto (HOST=127.0.0.1)
  *
- * Seguridad opcional: define ORGANIZACION_TOKEN en .env para exigir cabecera
- * X-Organizacion-Token en GET/POST /api/organizacion
+ * Seguridad opcional (.env):
+ * - ORGANIZACION_ACCESS_KEY → login en /login.html + protege todo el sitio y la API
+ * - ORGANIZACION_TOKEN (legacy) → solo API si no hay ACCESS_KEY
  */
 const http = require('http');
 const fs = require('fs');
@@ -17,7 +18,8 @@ const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '127.0.0.1';
 const LIVE_FILE = path.join(ROOT, 'data', 'organizacion-live.json');
 const MAX_BODY_BYTES = Number(process.env.MAX_BODY_BYTES) || 12 * 1024 * 1024;
-const API_TOKEN = (process.env.ORGANIZACION_TOKEN || '').trim();
+const SESSION_COOKIE = 'org_session';
+const SESSION_MAX_AGE = Number(process.env.ORGANIZACION_SESSION_HOURS || 24) * 3600;
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -50,6 +52,12 @@ const STATIC_DENY = [
   /^run-git\.ps1$/i,
 ];
 
+const PUBLIC_PATHS = new Set([
+  '/login.html',
+  '/index/assets/login.css',
+  '/index/assets/login.js',
+]);
+
 function loadEnvFile() {
   const envPath = path.join(ROOT, '.env');
   if (!fs.existsSync(envPath)) return;
@@ -69,7 +77,13 @@ function loadEnvFile() {
 
 loadEnvFile();
 
-const RUNTIME_TOKEN = (process.env.ORGANIZACION_TOKEN || API_TOKEN || '').trim();
+const ACCESS_KEY = (process.env.ORGANIZACION_ACCESS_KEY || '').trim();
+const LEGACY_TOKEN = (process.env.ORGANIZACION_TOKEN || '').trim();
+const RUNTIME_TOKEN = ACCESS_KEY || LEGACY_TOKEN;
+const SITE_LOCKED = !!ACCESS_KEY;
+const SESSION_VALUE = ACCESS_KEY
+  ? crypto.createHash('sha256').update(`organizacion:${ACCESS_KEY}`).digest('hex')
+  : '';
 const RUNTIME_HOST = process.env.HOST || HOST;
 const RUNTIME_MAX_BODY = Number(process.env.MAX_BODY_BYTES) || MAX_BODY_BYTES;
 
@@ -83,10 +97,11 @@ function securityHeaders() {
   };
 }
 
-function send(res, code, body, type) {
+function send(res, code, body, type, extraHeaders) {
   res.writeHead(code, {
     ...securityHeaders(),
     'Content-Type': type || 'text/plain; charset=utf-8',
+    ...(extraHeaders || {}),
   });
   res.end(body);
 }
@@ -148,12 +163,63 @@ function tokensMatch(given, expected) {
   return crypto.timingSafeEqual(a, b);
 }
 
-function checkApiAuth(req, res) {
+function parseCookies(header) {
+  const out = {};
+  if (!header) return out;
+  header.split(';').forEach((pair) => {
+    const idx = pair.indexOf('=');
+    if (idx <= 0) return;
+    const k = pair.slice(0, idx).trim();
+    const v = pair.slice(idx + 1).trim();
+    out[k] = decodeURIComponent(v);
+  });
+  return out;
+}
+
+function sessionCookieHeader() {
+  return `${SESSION_COOKIE}=${SESSION_VALUE}; HttpOnly; Path=/; SameSite=Strict; Max-Age=${SESSION_MAX_AGE}`;
+}
+
+function clearSessionCookieHeader() {
+  return `${SESSION_COOKIE}=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0`;
+}
+
+function hasValidSession(req) {
   if (!RUNTIME_TOKEN) return true;
-  const given = req.headers['x-organizacion-token'];
-  if (tokensMatch(given, RUNTIME_TOKEN)) return true;
-  send(res, 401, JSON.stringify({ error: 'No autorizado — falta X-Organizacion-Token' }), 'application/json');
+
+  if (SITE_LOCKED) {
+    const cookies = parseCookies(req.headers.cookie);
+    if (tokensMatch(cookies[SESSION_COOKIE], SESSION_VALUE)) return true;
+  }
+
+  const header = req.headers['x-organizacion-token'];
+  if (tokensMatch(header, RUNTIME_TOKEN)) return true;
+
   return false;
+}
+
+function isPublicRequest(urlPath, req) {
+  if (PUBLIC_PATHS.has(urlPath)) return true;
+  if (urlPath === '/api/organizacion-config') return true;
+  if (urlPath === '/api/auth/login' && req.method === 'POST') return true;
+  if (urlPath === '/api/auth/logout' && req.method === 'POST') return true;
+  return false;
+}
+
+function wantsHtml(req) {
+  const accept = req.headers.accept || '';
+  return accept.includes('text/html') || accept === '*/*' || !accept.includes('application/json');
+}
+
+function redirectToLogin(res, req) {
+  const next = encodeURIComponent((req.url || '/index.html').split('?')[0] || '/index.html');
+  res.writeHead(302, { Location: `/login.html?next=${next}`, ...securityHeaders() });
+  res.end();
+}
+
+function denyUnauthorized(req, res) {
+  if (wantsHtml(req)) return redirectToLogin(res, req);
+  return send(res, 401, JSON.stringify({ error: 'No autorizado — inicia sesión en /login.html' }), 'application/json');
 }
 
 function readBody(req) {
@@ -174,9 +240,38 @@ function readBody(req) {
   });
 }
 
-function handleApiOrganizacion(req, res) {
-  if (!checkApiAuth(req, res)) return;
+function handleAuthLogin(req, res) {
+  if (!ACCESS_KEY) {
+    return send(res, 400, JSON.stringify({ error: 'Login desactivado — define ORGANIZACION_ACCESS_KEY en .env' }), 'application/json');
+  }
+  return readBody(req).then((raw) => {
+    let body;
+    try {
+      body = JSON.parse(raw || '{}');
+    } catch {
+      return send(res, 400, JSON.stringify({ error: 'JSON inválido' }), 'application/json');
+    }
+    if (!tokensMatch(String(body.key || ''), ACCESS_KEY)) {
+      return send(res, 401, JSON.stringify({ error: 'Clave incorrecta' }), 'application/json');
+    }
+    return send(res, 200, JSON.stringify({ ok: true }), 'application/json', {
+      'Set-Cookie': sessionCookieHeader(),
+    });
+  }).catch((e) => {
+    if (e && e.message === 'BODY_TOO_LARGE') {
+      return send(res, 413, JSON.stringify({ error: 'cuerpo demasiado grande' }), 'application/json');
+    }
+    return send(res, 500, String(e), 'text/plain');
+  });
+}
 
+function handleAuthLogout(res) {
+  return send(res, 200, JSON.stringify({ ok: true }), 'application/json', {
+    'Set-Cookie': clearSessionCookieHeader(),
+  });
+}
+
+function handleApiOrganizacion(req, res) {
   if (req.method === 'GET') {
     if (!fs.existsSync(LIVE_FILE)) {
       return send(res, 404, JSON.stringify({ error: 'sin archivo live' }), 'application/json');
@@ -215,22 +310,35 @@ function handleApiOrganizacion(req, res) {
 function handleApiConfig(res) {
   send(res, 200, JSON.stringify({
     authRequired: !!RUNTIME_TOKEN,
+    loginRequired: SITE_LOCKED,
     maxBodyBytes: RUNTIME_MAX_BODY,
   }), 'application/json');
 }
 
 const server = http.createServer((req, res) => {
   const url = req.url || '/';
+  const urlPath = url.split('?')[0];
 
-  if (url.startsWith('/api/organizacion-config')) {
+  if (urlPath === '/api/auth/login') {
+    return handleAuthLogin(req, res);
+  }
+
+  if (urlPath === '/api/auth/logout' && req.method === 'POST') {
+    return handleAuthLogout(res);
+  }
+
+  if (urlPath.startsWith('/api/organizacion-config')) {
     return handleApiConfig(res);
   }
 
-  if (url.startsWith('/api/organizacion')) {
+  if (!isPublicRequest(urlPath, req) && !hasValidSession(req)) {
+    return denyUnauthorized(req, res);
+  }
+
+  if (urlPath.startsWith('/api/organizacion')) {
     return handleApiOrganizacion(req, res);
   }
 
-  const urlPath = url.split('?')[0];
   if (/\/index\/clientes\/JoyasMercury\/?$/i.test(urlPath)) {
     return redirectJoyasMercury(res, url);
   }
@@ -251,10 +359,13 @@ server.listen(PORT, RUNTIME_HOST, () => {
   console.log(`  Organizador: http://localhost:${PORT}/index.html`);
   console.log(`  Portal clientes: http://localhost:${PORT}/index/clientes/`);
   console.log(`  Guardado live: data/organizacion-live.json (solo vía API)`);
-  if (RUNTIME_TOKEN) {
-    console.log('  API protegida con ORGANIZACION_TOKEN (.env)');
+  if (SITE_LOCKED) {
+    console.log('  Sitio protegido con login — ORGANIZACION_ACCESS_KEY (.env)');
+    console.log('  Entrada: http://localhost:' + PORT + '/login.html');
+  } else if (RUNTIME_TOKEN) {
+    console.log('  API protegida con ORGANIZACION_TOKEN (.env) — sin login de sitio');
   } else {
-    console.log('  API sin token — define ORGANIZACION_TOKEN en .env para más seguridad');
+    console.log('  Sin clave — ejecuta CONFIGURAR-CLAVE.bat para activar login');
   }
   if (!fs.existsSync(LIVE_FILE)) {
     console.log('  (sin organizacion-live.json aún — se creará al primer guardado)');

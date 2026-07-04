@@ -21,36 +21,41 @@ Guía para **no filtrar datos personales** (tareas, citas de salud, fichas de cl
 
 ### 1. Servidor solo en tu PC
 
-Siempre usa **`SERVIR.bat`** (no abras carpetas con `file://` ni `npx serve` para trabajo diario).
+Siempre usa **`SERVIR.bat`** o **`ABRIR-ORGANIZADOR.bat`** (no abras carpetas con `file://` ni `npx serve` para trabajo diario).
 
 El servidor escucha solo en **`127.0.0.1`** — otras PCs de la red no pueden entrar.
 
-### 2. Respaldos fuera de Git
+### 2. Clave de acceso (login) — **recomendado**
+
+La forma más práctica de proteger el organizador y los portales de clientes:
+
+1. Ejecuta **`CONFIGURAR-CLAVE.bat`** (genera `.env` con una clave larga aleatoria).
+2. **Anota la clave** en un gestor de contraseñas (1Password, Bitwarden, bloc seguro).
+3. Reinicia el servidor (`SERVIR.bat` o `ABRIR-ORGANIZADOR.bat`).
+4. Al abrir `http://localhost:3000` te redirige a **`/login.html`** — introduces la clave una vez por sesión.
+
+**Qué protege:**
+
+| Capa | Detalle |
+|------|---------|
+| Pantalla de login | Nadie ve calendario, clientes ni portales sin la clave |
+| Cookie HttpOnly | La sesión no la lee JavaScript de la página |
+| API `/api/organizacion` | Sin sesión no lee ni guarda el JSON en disco |
+| Archivos estáticos | HTML, wireframes JM, portales ADL/MOVA, etc. |
+
+**Qué NO protege (limitaciones):**
+
+- Si alguien ya tiene acceso a tu Windows y abre el JSON en `data/` directamente desde el Explorador.
+- Si compartes el archivo `.env` o la clave por WhatsApp/email.
+- Exponer el servidor a internet (`HOST=0.0.0.0`) sin HTTPS ni firewall.
+
+Para uso en **PC compartida o portátil**, el login es la capa mínima recomendada.
+
+### 3. Respaldos fuera de Git
 
 - **↓ Respaldo** → guarda el JSON en una carpeta segura (OneDrive cifrado, disco externo, etc.).
 - **`IMPORTAR-RESPALDO.bat`** → restaura en `data/` local.
 - **`SUBIR.bat`** ya **no sube** `organizacion-respaldo-*.json` ni `.env`.
-
-### 3. Token opcional en la API
-
-Si compartes la PC o quieres una capa extra:
-
-1. Copia `.env.example` → `.env`
-2. Genera un token:
-   ```bat
-   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-   ```
-3. Pégalo en `.env`:
-   ```
-   ORGANIZACION_TOKEN=tu-token-largo-aqui
-   ```
-4. Reinicia `SERVIR.bat`
-5. En el navegador (F12 → consola), una vez por sesión:
-   ```javascript
-   setOrganizacionApiToken('tu-token-largo-aqui')
-   ```
-
-Sin token en `.env`, la API funciona como antes (solo localhost).
 
 ### 4. Repo en GitHub
 
@@ -59,12 +64,38 @@ Sin token en `.env`, la API funciona como antes (solo localhost).
 
 ---
 
-## Qué protege el servidor (desde esta versión)
+## Configuración `.env`
+
+| Variable | Uso |
+|----------|-----|
+| `ORGANIZACION_ACCESS_KEY` | **Recomendado** — login + protección total del sitio |
+| `ORGANIZACION_TOKEN` | Legacy — solo API (sin pantalla login) si no hay ACCESS_KEY |
+| `ORGANIZACION_SESSION_HOURS` | Horas de sesión tras login (default 24) |
+| `HOST` | Siempre `127.0.0.1` en local |
+| `PORT` | Default `3000` |
+
+Generar clave manualmente:
+
+```bat
+node scripts/generar-clave-organizacion.js --mostrar
+```
+
+Cerrar sesión desde consola del navegador (F12):
+
+```javascript
+cerrarSesionOrganizacion()
+```
+
+---
+
+## Qué protege el servidor
 
 | Medida | Detalle |
 |--------|---------|
 | Solo localhost | `HOST=127.0.0.1` por defecto |
-| API con token opcional | `ORGANIZACION_TOKEN` en `.env` |
+| Login con clave | `ORGANIZACION_ACCESS_KEY` → `/login.html` |
+| Cookie de sesión | HttpOnly, SameSite=Strict, expira en N horas |
+| API protegida | Sin sesión → 401; datos live no accesibles |
 | Límite de tamaño POST | 12 MB máximo (evita llenar disco) |
 | Rutas bloqueadas | `.git`, `.env`, `organizacion-live.json` directo, `backend/`, logs |
 | Cabeceras HTTP | `nosniff`, `X-Frame-Options`, `Referrer-Policy` |
@@ -82,6 +113,7 @@ Sin token en `.env`, la API funciona como antes (solo localhost).
 | Repo público con JSON de respaldo | Cualquiera clona y lee todo |
 | Servidor en `0.0.0.0` sin firewall | Otras máquinas en la red acceden a tus datos |
 | Enviar **↓ Respaldo** por WhatsApp/email | Filtración de datos personales |
+| Dejar `.env` en el escritorio o subirlo a Git | Cualquiera con la clave entra al organizador |
 
 ---
 
@@ -107,8 +139,11 @@ Cuando montes backend (`docs/laravel/`):
 ## Archivos de referencia
 
 | Archivo | Uso |
-|---------|-----|
+|---------|---------|
+| `CONFIGURAR-CLAVE.bat` | Genera clave y crea `.env` |
 | `.env.example` | Plantilla de configuración segura |
 | `.gitignore` | Excluye respaldos, `.env`, live JSON |
+| `login.html` | Pantalla de acceso |
 | `run-git.ps1` | SUBIR.bat — excluye datos sensibles del commit |
 | `scripts/organizacion-server.js` | Servidor endurecido |
+| `scripts/generar-clave-organizacion.js` | Generador de clave |

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso · Organización</title>
+  <link rel="stylesheet" href="index/assets/login.css">
+</head>
+<body>
+  <main class="login">
+    <div class="login__card">
+      <p class="login__eyebrow">Organización</p>
+      <h1 class="login__title">Clave de acceso</h1>
+      <p class="login__hint">Introduce la clave configurada en tu archivo <code>.env</code> local. Solo funciona en esta PC.</p>
+
+      <form id="form-login" class="login__form" autocomplete="off">
+        <label class="login__label" for="clave">Clave</label>
+        <input
+          id="clave"
+          name="clave"
+          type="password"
+          class="login__input"
+          placeholder="Pega tu clave aquí"
+          required
+          autofocus
+        >
+        <p id="login-error" class="login__error" hidden></p>
+        <button type="submit" class="login__btn" id="btn-login">Entrar</button>
+      </form>
+
+      <p class="login__footer">
+        ¿Primera vez? Ejecuta <code>CONFIGURAR-CLAVE.bat</code> en la carpeta del proyecto.
+      </p>
+    </div>
+  </main>
+  <script src="index/assets/login.js"></script>
+</body>
+</html>

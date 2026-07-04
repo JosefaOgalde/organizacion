@@ -1,0 +1,121 @@
+:root {
+  --bg: #8a8a8a;
+  --bg-panel: #fbfbfb;
+  --celeste: #7ec8e3;
+  --celeste-dark: #5ab4d4;
+  --text: #2d2d2d;
+  --text-muted: #5a5a5a;
+  --border: #d0d0d0;
+  --radius: 10px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.login__card {
+  width: min(420px, 100%);
+  background: var(--bg-panel);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.login__eyebrow {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.login__title {
+  font-size: 1.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.login__hint {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+.login__hint code,
+.login__footer code {
+  font-size: 0.85em;
+  background: #eee;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+.login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.login__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.login__input {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font: inherit;
+}
+
+.login__input:focus {
+  outline: 2px solid var(--celeste);
+  border-color: var(--celeste-dark);
+}
+
+.login__error {
+  color: #b42318;
+  font-size: 0.9rem;
+}
+
+.login__btn {
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--celeste-dark);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login__btn:hover {
+  background: #4899b8;
+}
+
+.login__btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.login__footer {
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
