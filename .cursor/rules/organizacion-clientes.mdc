@@ -15,10 +15,11 @@ Responde en **español**. El repo es un organizador + portal de clientes.
 
 El usuario puede decir:
 
+- `@joyas-mercury` o abrir archivos en `joyasmercury/` → regla **Agente Joyas Mercury**
 - `@adl-cla` o abrir archivos en `DesafioLatam/` → regla **Agente ADL CLA**
+- `@mova` o abrir archivos en `MKOF/MOVA/` → regla **Agente MOVA**
 - `Agente Trendseeker` → CM + WordPress, manual marca
 - `Agente ECR` → newsletter + blog Elementor
-- `Agente JM` → WooCommerce Joyas Mercury Fase 2
 - `Agente MKOF` → Gantt y planificación
 
 ## Enlace por defecto (siempre clientes, no organizador)
@@ -35,6 +36,14 @@ Con `SERVIR.bat` en puerto 3000:
 MOVA está en **main** (portal + hub). El trabajo nuevo va en rama **`cursor/mova-trabajo-d6a1`** y se fusiona a main con PR al terminar. Ver `docs/MOVA-RUTINA.md`.
 
 Atajo Windows: **`ABRIR-MOVA.bat`** (servidor + sync + abre MKOF y MOVA).
+
+| **Joyas Mercury (JM)** | http://localhost:3000/index/clientes/joyasmercury/ |
+| JM · wireframes desktop | http://localhost:3000/index/clientes/joyasmercury/wireframes.html |
+| JM · tarea del día | http://localhost:3000/index.html?tarea=joyas-mercury/11 |
+
+Portal JM en **main**. Trabajo nuevo en rama **`cursor/jm-trabajo-d6a1`**. Ver `docs/JM-RUTINA.md` y `docs/cursor/INVOCAR-AGENTE-JM.md`.
+
+Atajo Windows: **`ABRIR-JM.bat`** (servidor + sync + abre portal JM).
 
 ## Rutas portal (otros clientes)
 

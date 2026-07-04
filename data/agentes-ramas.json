@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-06-27",
+  "actualizado": "2026-07-04",
   "repo": "https://github.com/JosefaOgalde/organizacion",
   "agentes": [
     {
@@ -12,10 +12,16 @@
       "portal": "index/clientes/joyasmercury/",
       "ramas": [
         {
+          "nombre": "cursor/jm-trabajo-d6a1",
+          "titulo": "Rama de trabajo JM Fase 2 (fusionar a main al terminar)",
+          "pr": null,
+          "estado": "activa"
+        },
+        {
           "nombre": "cursor/joyas-mercury-agent-dia1-d6a1",
           "titulo": "Agente JM + guía Día 1 + interfaces",
           "pr": 6,
-          "estado": "activa"
+          "estado": "historica"
         }
       ]
     },

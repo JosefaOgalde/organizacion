@@ -54,6 +54,14 @@ joyasmercury/
 
 `@joyas-mercury` · organiser: `index.html?tarea=joyas-mercury/01`
 
+Atajo Windows: **`ABRIR-JM.bat`** (servidor + portal + wireframes).
+
+| Doc | Ruta |
+|-----|------|
+| Invocar agente | `docs/cursor/INVOCAR-AGENTE-JM.md` |
+| Rutina diaria | `docs/JM-RUTINA.md` |
+| Regla Cursor | `.cursor/rules/joyas-mercury.mdc` |
+
 ## Guías Fase 2
 
 Ver [GUIAS-FASE2.md](GUIAS-FASE2.md) y [interfaces/README.md](interfaces/README.md).
