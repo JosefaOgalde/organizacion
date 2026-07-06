@@ -457,3 +457,19 @@ Inspeccionar `<li class="product ...">` en el navegador. Debe incluir p. ej. `pr
 2. Invocar `@joyas-mercury`
 3. Prioridad: **subcategorías/etiquetas en productos** antes de tocar más CSS
 4. Usuario (`josef`): paso a paso, esperar OK entre pasos, español
+
+---
+
+## Respaldo organizador (datos tareas / clientes)
+
+| Item | Valor |
+|------|--------|
+| **Respaldo actual (6 jul 2026)** | `C:\Users\josef\Downloads\organizacion-respaldo-2026-07-06.json` |
+| **Regla** | Siempre usar el respaldo **más actualizado** (no uno fijo por fecha en el nombre) |
+| **Detección automática** | `node scripts/respaldo-reciente.js` — busca en `data/` y `Downloads`, ordena por `respaldoActualizado`, fecha en nombre y `mtime` |
+| **Sync a live** | `ABRIR-ORGANIZADOR.bat` o `node scripts/sync-respaldo-auto.js` |
+| **Import manual** | `IMPORTAR-RESPALDO.bat` |
+
+Si el usuario guarda un respaldo nuevo (`organizacion-respaldo-AAAA-MM-DD.json`), **ese** reemplaza al anterior aunque el handoff cite una fecha vieja.
+
+Ver también: `docs/PERSISTENCIA.md`
