@@ -2316,6 +2316,85 @@ const PASOS_POR_ETAPA_JM = {
   ]
 };
 
+function movaAuthTodoDeTarea(tarea) {
+  if (!tarea?.movaAuthTodoId) return null;
+  const seeds = window.MOVA_AUTH_TODO_SEED || [];
+  return seeds.find((s) => s.id === tarea.movaAuthTodoId) || null;
+}
+
+function esTareaMovaAuth(tarea) {
+  return !!(tarea?.movaAuthTodoId || (tarea?.id || '').startsWith('tarea-mova-auth-'));
+}
+
+function esTareaMovaAuthDia1(tarea) {
+  return tarea?.movaAuthTodoId === 'mova-auth-d1' || tarea?.id === 'tarea-mova-auth-01';
+}
+
+function plantillaSolicitudMova(tarea, skill) {
+  const todo = movaAuthTodoDeTarea(tarea);
+  if (!todo) return skill.ejemploSolicitud;
+  const titulo = nombreBaseTarea(tarea) || tarea.titulo;
+  if (todo.dia === 1) {
+    return 'Entrégame el inventario de módulos MOVA en acme-chile.cl: tabla con URL, auth actual, JWT/localStorage, n8n y si pasa por mova_auth. Listo para completar desde cPanel.';
+  }
+  return `Arma el entregable del Día ${todo.dia} MOVA: ${todo.entregable || titulo}`;
+}
+
+function urlRecursoMova(href) {
+  if (!href) return '';
+  if (/^https?:\/\//i.test(href)) return href;
+  const base = location.pathname.replace(/\/[^/]*$/, '/');
+  return `${base}${href.replace(/^\//, '')}`;
+}
+
+function htmlMovaTareaRecursos(tarea) {
+  const todo = movaAuthTodoDeTarea(tarea);
+  if (!todo) return '';
+  const enlaces = (todo.enlaces || []).map((href) => {
+    const url = urlRecursoMova(href);
+    const label = href.replace(/^https?:\/\//, '').replace(/^index\/clientes\/mkof\//, '');
+    return `<li><a href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(label)}</a></li>`;
+  }).join('');
+  const inv = todo.inventario || window.MOVA_INVENTARIO_ENTREGABLE || '';
+  const invUrl = inv ? urlRecursoMova(inv) : '';
+  return `<div class="tarea-detalle__mova">
+    <strong>MOVA · Día ${todo.dia}</strong>
+    ${todo.entregable ? `<p class="tarea-detalle__mova-entregable"><strong>Entregable:</strong> ${escapeHtml(todo.entregable)}</p>` : ''}
+    ${invUrl ? `<p><a class="btn btn--small btn--accent" href="${escapeHtml(invUrl)}" target="_blank" rel="noopener">Abrir plantilla inventario</a></p>` : ''}
+    ${enlaces ? `<ul class="tarea-detalle__mova-links">${enlaces}</ul>` : ''}
+  </div>`;
+}
+
+function inventarioModulosMova(tarea, cli, mensajeUsuario) {
+  const filas = window.MOVA_INVENTARIO_MODULOS_SEED || [];
+  const lineasTabla = filas.map((m, i) =>
+    `| ${i + 1} | ${m.modulo} | ${m.carpeta} | ${m.url} | ${m.auth} | ${m.jwt} | ${m.n8n} | ${m.movaAuth} | ${m.responsable || '—'} | ${m.notas || '—'} |`
+  );
+  const invPath = window.MOVA_INVENTARIO_ENTREGABLE || 'index/clientes/mkof/Inventario-MOVA-modulos.md';
+  return [
+    `**Inventario MOVA — módulos M (acme-chile.cl)**`,
+    '',
+    '#### Instrucción',
+    mensajeUsuario.trim() || 'Completar desde cPanel sin tocar código.',
+    '',
+    '#### Tabla (plantilla — reemplaza «?» tras revisar cPanel y DevTools)',
+    '',
+    '| # | Módulo | Carpeta | URL | Auth | JWT/LS | n8n | mova_auth | Resp. | Notas |',
+    '|---|--------|---------|-----|------|--------|-----|-----------|-------|-------|',
+    ...lineasTabla,
+    '',
+    '#### Próximos pasos en cPanel',
+    '1. `public_html` → copiar listado de carpetas al archivo del repo.',
+    '2. Por cada fila con `?`: abrir URL, revisar Network (n8n) y Application (JWT).',
+    '3. Marcar en rojo los módulos que **no** pasan por mova_auth.',
+    '',
+    `#### Archivo en repo`,
+    `Edita y guarda: \`${invPath}\``,
+    '',
+    '**Criterio de cierre D1:** sin `?` en módulos M · tabla compartida con equipo · listo para D2 (Reglas mova_auth).'
+  ].join('\n');
+}
+
 function generarPasosTarea(tarea, solicitudUsuario = '') {
   const cli = clienteDe(tarea.clienteId);
   const titulo = nombreBaseTarea(tarea) || tarea.titulo;
@@ -2336,6 +2415,13 @@ function generarPasosTarea(tarea, solicitudUsuario = '') {
         notas: `Tarea del día: ${titulo}. ${tarea.notas || ''}`.trim()
       });
     }
+  } else if (esTareaMovaAuth(tarea)) {
+    const todo = movaAuthTodoDeTarea(tarea);
+    const checklist = todo?.checklist || [];
+    pasos = checklist.map((c) => ({
+      titulo: `[MOVA] D${todo?.dia || '?'} · ${c}`,
+      notas: todo?.entregable || tarea.notas || ''
+    }));
   } else if (/pub|redes|metricool|historia/i.test(tituloL + sol)) {
     pasos = [
       { titulo: `[${abrev}] Revisar material del cliente`, notas: 'Confirmar copy, imágenes y links antes de publicar' },
@@ -2516,6 +2602,7 @@ function generarPromptTrabajo(tarea, solicitudUsuario = '') {
     .filter(m => m.rol === 'usuario')
     .map(m => m.texto)
     .join('\n');
+  const todoMova = movaAuthTodoDeTarea(tarea);
 
   const bloques = [
     'Eres un asistente experto. Ejecuta la solicitud y entrega el resultado listo para usar.',
@@ -2527,7 +2614,7 @@ function generarPromptTrabajo(tarea, solicitudUsuario = '') {
     skill.descripcion,
     '',
     '### Checklist',
-    ...skill.checklist.map((c, i) => `${i + 1}. ${c}`),
+    ...(todoMova?.checklist || skill.checklist).map((c, i) => `${i + 1}. ${c}`),
     '',
     '## Tarea actual',
     `Título: ${titulo}`,
@@ -2538,6 +2625,17 @@ function generarPromptTrabajo(tarea, solicitudUsuario = '') {
     tarea.notas ? `Notas de la tarea: ${tarea.notas}` : '',
     tarea.prioridad ? `Prioridad: ${tarea.prioridad}` : ''
   ].filter(Boolean);
+
+  ].filter(Boolean);
+
+  if (todoMova) {
+    bloques.push(
+      '',
+      `## MOVA · Día ${todoMova.dia}`,
+      todoMova.entregable ? `Entregable: ${todoMova.entregable}` : '',
+      window.MOVA_INVENTARIO_ENTREGABLE ? `Plantilla inventario: ${window.MOVA_INVENTARIO_ENTREGABLE}` : ''
+    );
+  }
 
   if (cli?.metas?.trim()) {
     bloques.push('', '## Metas del cliente', cli.metas.trim());
@@ -2583,13 +2681,15 @@ function generarPromptTrabajo(tarea, solicitudUsuario = '') {
   return bloques.join('\n');
 }
 
-function htmlSkillResumen(cli, col) {
+function htmlSkillResumen(cli, col, tarea = null) {
   if (!cli) return '';
   const skill = skillDe(cli);
   const agente = agenteDe(cli);
   const manualOk = manualMarcaCargado(cli);
   const perfilOk = contextoClienteCargado(cli);
-  const checklist = skill.checklist.map(c => `<li>${escapeHtml(c)}</li>`).join('');
+  const todoMova = tarea ? movaAuthTodoDeTarea(tarea) : null;
+  const itemsChecklist = todoMova?.checklist?.length ? todoMova.checklist : skill.checklist;
+  const checklist = itemsChecklist.map(c => `<li>${escapeHtml(c)}</li>`).join('');
   let manualHtml = '';
   if (skill.usaManualMarca || perfilOk) {
     const extracto = extractoManualMarca(cli, 400);
@@ -2608,8 +2708,8 @@ function htmlSkillResumen(cli, col) {
     <div class="skill-panel__head">
       <span class="skill-panel__emoji">${agente.emoji}</span>
       <div>
-        <h3 class="skill-panel__titulo" style="color:${col.text}">Skill · ${escapeHtml(skill.nombre)}</h3>
-        <p class="skill-panel__desc">${escapeHtml(skill.descripcion)}</p>
+        <h3 class="skill-panel__titulo" style="color:${col.text}">Skill · ${escapeHtml(todoMova ? `MOVA D${todoMova.dia}` : skill.nombre)}</h3>
+        <p class="skill-panel__desc">${escapeHtml(todoMova ? (todoMova.entregable || skill.descripcion) : skill.descripcion)}</p>
       </div>
     </div>
     <ul class="skill-panel__checklist">${checklist}</ul>
@@ -3215,7 +3315,11 @@ function generarEntregableTarea(tarea, cli, mensajeUsuario) {
   const tipo = detectarTipoEntregable(tarea, mensajeUsuario);
   const titulo = (nombreBaseTarea(tarea) || tarea.titulo || '').toLowerCase();
   const esJME1Menu = cli?.id === JM_CLI_ID && /auditor|menú|menu|bloques|e1/i.test(`${titulo} ${tarea.notas || ''}`);
+  const esMovaD1 = esTareaMovaAuthDia1(tarea) || (esTareaMovaAuth(tarea) && /inventario|m[oó]dulos?/i.test(`${titulo} ${tarea.notas || ''} ${mensajeUsuario || ''}`));
 
+  if (esMovaD1 && (tipo === 'inventario' || /inventario|m[oó]dulos?|acme-chile|cPanel|public_html/i.test(mensajeUsuario || ''))) {
+    return inventarioModulosMova(tarea, cli, mensajeUsuario);
+  }
   if ((tipo === 'mapa-conceptual' || tipo === 'wireframe') && esJME1Menu) return mapaConceptualJMAuditoriaMenu(tarea, cli, mensajeUsuario);
   if (tipo === 'mapa-conceptual') return mapaConceptualGenerico(tarea, cli, mensajeUsuario);
   if (tipo === 'inventario' && esJME1Menu) return inventarioAuditoriaMenuJM(tarea, cli);
@@ -4287,6 +4391,10 @@ function renderTarea() {
   if (!tarea) return;
 
   asegurarSesionAgente(tarea);
+  const todoMova = movaAuthTodoDeTarea(tarea);
+  if (todoMova && !tarea.sesionAgente?.pasosVisibles) {
+    mostrarProximosPasos(tarea);
+  }
   const cli = clienteDe(tarea.clienteId);
   const col = colorDe(cli);
   const rol = rolDe(tarea);
@@ -4313,7 +4421,8 @@ function renderTarea() {
       ${tarea.prioridad ? `<p class="tarea-detalle__meta"><strong>Prioridad:</strong> ${escapeHtml(tarea.prioridad)}</p>` : ''}
       ${tarea.pendiente ? '<p class="tarea-detalle__meta tarea-detalle__meta--pendiente"><strong>Estado:</strong> En pendientes (no visible en calendario)</p>' : ''}
       ${tarea.notas ? `<div class="tarea-detalle__notas"><strong>Notas</strong><p>${escapeHtml(tarea.notas)}</p></div>` : ''}
-      ${cli ? htmlSkillResumen(cli, col) : ''}
+      ${htmlMovaTareaRecursos(tarea)}
+      ${cli ? htmlSkillResumen(cli, col, tarea) : ''}
       <div class="tarea-detalle__acciones">
         ${htmlBotonesTarea(tarea, { modo: 'detalle' })}
       </div>
@@ -4428,7 +4537,9 @@ function bindAgenteTarea(tarea) {
   if (btnPlantilla) {
     btnPlantilla.onclick = () => {
       const titulo = nombreBaseTarea(tarea) || tarea.titulo;
-      input.value = skill.ejemploSolicitud.replace('[entregable]', titulo).replace('[tema]', titulo);
+      input.value = esTareaMovaAuth(tarea)
+        ? plantillaSolicitudMova(tarea, skill)
+        : skill.ejemploSolicitud.replace('[entregable]', titulo).replace('[tema]', titulo);
       ajustarAlturaTextarea(input);
       input.focus();
     };
