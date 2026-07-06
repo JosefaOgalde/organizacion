@@ -3,6 +3,7 @@
  * Completar columnas «?» desde cPanel → public_html (sin tocar código).
  */
 window.MOVA_INVENTARIO_ENTREGABLE = 'index/clientes/mkof/Inventario-MOVA-modulos.md';
+window.MOVA_INVENTARIO_ENTREGABLE_TXT = 'index/clientes/mkof/Inventario-MOVA-modulos.txt';
 
 window.MOVA_INVENTARIO_MODULOS_SEED = [
   {

@@ -30,9 +30,11 @@ window.MOVA_AUTH_TODO_SEED = [
       'https://acme-chile.cl/mova/',
       'https://acme-chile.cl/documentos/auditoria_mova.html',
       'index/clientes/mkof/mova-auth-guia.html',
-      'index/clientes/mkof/Inventario-MOVA-modulos.md'
+      'index/clientes/mkof/Inventario-MOVA-modulos.md',
+      'index/clientes/mkof/Inventario-MOVA-modulos.txt'
     ],
-    inventario: 'index/clientes/mkof/Inventario-MOVA-modulos.md'
+    inventario: 'index/clientes/mkof/Inventario-MOVA-modulos.md',
+    inventarioTxt: 'index/clientes/mkof/Inventario-MOVA-modulos.txt'
   },
   {
     id: 'mova-auth-d2',

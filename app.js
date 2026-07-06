@@ -2357,10 +2357,15 @@ function htmlMovaTareaRecursos(tarea) {
   }).join('');
   const inv = todo.inventario || window.MOVA_INVENTARIO_ENTREGABLE || '';
   const invUrl = inv ? urlRecursoMova(inv) : '';
+  const invTxt = todo.inventarioTxt || window.MOVA_INVENTARIO_ENTREGABLE_TXT || '';
+  const invTxtUrl = invTxt ? urlRecursoMova(invTxt) : '';
+  const botonesInv = [invUrl, invTxtUrl].filter(Boolean).map((url, i) =>
+    `<a class="btn btn--small ${i === 0 ? 'btn--accent' : 'btn--ghost'}" href="${escapeHtml(url)}" target="_blank" rel="noopener">${i === 0 ? 'Inventario (.md)' : 'Inventario (.txt)'}</a>`
+  ).join(' ');
   return `<div class="tarea-detalle__mova">
     <strong>MOVA · Día ${todo.dia}</strong>
     ${todo.entregable ? `<p class="tarea-detalle__mova-entregable"><strong>Entregable:</strong> ${escapeHtml(todo.entregable)}</p>` : ''}
-    ${invUrl ? `<p><a class="btn btn--small btn--accent" href="${escapeHtml(invUrl)}" target="_blank" rel="noopener">Abrir plantilla inventario</a></p>` : ''}
+    ${botonesInv ? `<p class="tarea-detalle__mova-btns">${botonesInv}</p>` : ''}
     ${enlaces ? `<ul class="tarea-detalle__mova-links">${enlaces}</ul>` : ''}
   </div>`;
 }
