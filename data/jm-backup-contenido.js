@@ -50,7 +50,7 @@ Filtros: misma landing, AJAX o plugin (Filter Everything / desarrollo custom). P
 
 Páginas legales: Políticas de compra, Cambios y garantías, Despachos, Cuidados de joyas, Contacto — con redes en páginas de ayuda.
 
-Backup técnico local: C:\\Users\\josef\\joyasmercury-backup (wordpress/, database/, exports/, docs/). Repo privado GitHub: JosefaOgalde/joyasmercury-backup.`,
+Backup técnico local: %USERPROFILE%\\joyasmercury-backup (wordpress/, database/, exports/, docs/). Repo privado GitHub: JosefaOgalde/joyasmercury-backup.`,
 
   contacto: `Cliente: Camila — Joyas Mercury
 Canal principal: WhatsApp (icono verde, no personalizar color)
@@ -58,7 +58,7 @@ Correo: alternativa secundaria / respaldo WooCommerce en compras
 Formulario contacto: no prioritario si no hay capacidad de revisar correos`,
 
   links: `Sitio en producción: https://joyasmercury.cl
-Backup local: C:\\Users\\josef\\joyasmercury-backup
+Backup local: %USERPROFILE%\\joyasmercury-backup
 Repo backup (privado): https://github.com/JosefaOgalde/joyasmercury-backup
 Inicio v2 (post trabajo): página Inicio v2 · plantilla Elementor «inicio»
 Inventario exportado: exports/site-inventory.json`,

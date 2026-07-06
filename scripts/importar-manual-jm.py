@@ -4,9 +4,10 @@ import json
 import os
 import sys
 
-PDF = r"C:\Users\josef\Downloads\Manual de marca - Joyas Mercury.pdf"
-OUT_TXT = r"C:\Users\josef\organizacion\joyas-mercury-manual-extraido.txt"
-OUT_JSON = r"C:\Users\josef\organizacion\joyas-mercury-manual-seed.json"
+ROOT = os.path.join(os.path.dirname(__file__), "..")
+PDF = os.path.join(os.environ.get("USERPROFILE", ""), "Downloads", "Manual de marca - Joyas Mercury.pdf")
+OUT_TXT = os.path.join(ROOT, "joyas-mercury-manual-extraido.txt")
+OUT_JSON = os.path.join(ROOT, "joyas-mercury-manual-seed.json")
 
 def extract():
     if not os.path.exists(PDF):

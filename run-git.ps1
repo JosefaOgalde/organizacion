@@ -34,7 +34,7 @@ Log-Output "--- git status ---"
 Log-Output (git status 2>&1 | Out-String)
 
 # Staging acotado — nunca subir respaldos con datos personales ni secretos
-git add app.js index.html styles.css README.md docs .gitignore SUBIR.bat run-git.ps1 do-commit.ps1 .vscode .cursor scripts SERVIR.bat IMPORTAR-RESPALDO.bat .env.example ABRIR-ORGANIZADOR.bat ABRIR-MOVA.bat ACTUALIZAR-RAMA-MOVA.bat FUSIONAR-MOVA-A-MAIN.bat CERRAR-SERVIDOR.bat 2>&1 | Out-Null
+git add app.js index.html styles.css README.md docs .gitignore SUBIR.bat run-git.ps1 do-commit.ps1 .vscode .cursor scripts SERVIR.bat IMPORTAR-RESPALDO.bat .env.example ABRIR-ORGANIZADOR.bat ABRIR-ORGANIZADOR-HOY.bat ABRIR-MOVA.bat ACTUALIZAR-RAMA-MOVA.bat FUSIONAR-MOVA-A-MAIN.bat CERRAR-SERVIDOR.bat 2>&1 | Out-Null
 git add index assets data/agentes-ramas.json data/jm-backup-contenido.js data/schema.json data/manual-marca-joyas-mercury.txt data/clientes-ejemplo.json data/organizacion-respaldo-ejemplo.json 2>&1 | Out-Null
 git add -A 2>&1 | Out-Null
 
