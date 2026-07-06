@@ -20,6 +20,16 @@ window.MOVA_DOCUMENTOS = {
           pdf: 'MOVA-Auth-Login-Unificado.pdf',
           pptx: 'MOVA-Auth-Plan-Ejecucion.pptx',
           editar: 'mkof-mova-auth-guia.js'
+        },
+        {
+          id: 'mova-auth-plan',
+          titulo: 'Plan 7 días — Login mova_auth',
+          descripcion: 'PPT ejecución · acme-chile.cl · D1 inventario → D7 cierre',
+          hito: '2.1 + 2.2',
+          fecha: 'Jul 2026',
+          verHtml: 'mova-auth-guia.html',
+          pptx: 'MOVA-Auth-Plan-Ejecucion.pptx',
+          editar: 'mkof-mova-auth-plan.js'
         }
       ]
     },

@@ -5,7 +5,7 @@
 window.MKOF_MOVA_AUTH_GUIA = {
   version: '1.0',
   proyecto: 'MOVA',
-  hito: '2.1 + 2.2 · Centralizar mova_auth + sesión server-side',
+  hito: '2.1 + 2.2 · Login unificado · plan 7 días hábiles',
   imagenesBase: 'guia-mova-auth/img/',
   pdf: 'MOVA-Auth-Login-Unificado.pdf',
   referencias: {

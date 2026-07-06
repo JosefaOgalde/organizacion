@@ -678,6 +678,8 @@ function clavesEliminacionTarea(t) {
   if (/revisi[oó]n t[eé]rmino descuento/i.test(t.titulo || '')) claves.push('tarea-revision-descuento-jul');
   if (/propuesta.*blog/i.test(t.titulo || '') && t.clienteId === 'cli-ecr') claves.push('tarea-ecr-blog-24');
   if (/gantt.*etapa\s*2/i.test(t.titulo || '') && t.clienteId === 'cli-mkof') claves.push('tarea-mkof-gantt-etapa2');
+  if ((t.id || '').startsWith('tarea-mova-auth-')) claves.push(t.id);
+  if (t.movaAuthTodoId) claves.push(t.movaAuthTodoId);
   if ((t.id || '').startsWith('tarea-jm-f2-')) claves.push(t.id);
   if (t.jmTodoId) claves.push(t.jmTodoId);
   if (/^\[JM\]/i.test(t.titulo || '') && t.clienteId === JM_CLI_ID && t.fecha) {
@@ -1190,6 +1192,89 @@ function asegurarReportesMensuales(data) {
   return data;
 }
 
+function fechaCalendarioMovaAuth(indice) {
+  const inicio = window.MOVA_AUTH_CALENDARIO_INICIO || '2026-07-06';
+  let d = parseISO(inicio);
+  while (!esDiaHabil(d)) d.setDate(d.getDate() + 1);
+  let n = 0;
+  while (n < indice) {
+    d.setDate(d.getDate() + 1);
+    if (esDiaHabil(d)) n++;
+  }
+  return toISO(d);
+}
+
+function limpiarTareasMovaAuthLegacy(data) {
+  const seeds = window.MOVA_AUTH_TODO_SEED || [];
+  const idsValidos = new Set(
+    seeds.map((_, i) =>
+      (window.movaAuthTareaCalendarioId || ((n) => `tarea-mova-auth-${String(n + 1).padStart(2, '0')}`))(i)
+    )
+  );
+  data.tareas = data.tareas.filter((t) => {
+    if (!(t.id || '').startsWith('tarea-mova-auth-')) return true;
+    return idsValidos.has(t.id);
+  });
+  return data;
+}
+
+function asegurarTareasMovaAuthLogin(data) {
+  const seeds = window.MOVA_AUTH_TODO_SEED;
+  if (!Array.isArray(seeds) || !seeds.length) return data;
+  if (!debeAutoGenerarTareas(data)) return data;
+
+  limpiarTareasMovaAuthLegacy(data);
+  const cliId = window.MOVA_AUTH_CLI_SYNC_ID || 'cli-mkof';
+  const rolId = 'rol-mkof-dev';
+  const tituloDe = window.movaAuthTituloCalendario || ((todo) => `[MOVA] D${todo.dia} — ${todo.titulo}`);
+  const idDe = window.movaAuthTareaCalendarioId || ((i) => `tarea-mova-auth-${String(i + 1).padStart(2, '0')}`);
+
+  seeds.forEach((todo, indice) => {
+    const taskId = idDe(indice);
+    const fechaStr = fechaCalendarioMovaAuth(indice);
+    const titulo = tituloDe(todo);
+    const duracionMin = 120;
+    const slot = buscarSlotAgenda(data, fechaStr, duracionMin, cliId);
+    const notas = [todo.notas, todo.entregable ? `Entregable: ${todo.entregable}` : '']
+      .filter(Boolean)
+      .join('\n\n');
+    const plantilla = { id: taskId, titulo, clienteId: cliId, fecha: fechaStr, movaAuthTodoId: todo.id };
+
+    let tarea = data.tareas.find((t) => t.id === taskId);
+    if (!tarea && !tareaFueEliminada(data, taskId, plantilla)) {
+      data.tareas.push({
+        id: taskId,
+        titulo,
+        clienteId: cliId,
+        rolId,
+        fecha: fechaStr,
+        horaInicio: slot.horaInicio,
+        horaFin: slot.horaFin,
+        notas,
+        prioridad: 'alta',
+        completada: false,
+        pendiente: false,
+        movaAuthTodoId: todo.id,
+        movaAuthDia: todo.dia
+      });
+    } else if (tarea && !tareaFueEliminada(data, taskId, tarea)) {
+      if (tarea.fecha && tarea.fecha !== fechaStr) fijarAgendaUsuario(tarea);
+      tarea.titulo = titulo;
+      tarea.clienteId = cliId;
+      tarea.rolId = rolId;
+      tarea.movaAuthTodoId = todo.id;
+      tarea.movaAuthDia = todo.dia;
+      sincronizarAgendaTarea(tarea, {
+        fecha: fechaStr,
+        horaInicio: slot.horaInicio,
+        horaFin: slot.horaFin
+      });
+      if (notas) tarea.notas = notas;
+    }
+  });
+  return data;
+}
+
 function asegurarClienteMKOF(data) {
   const cliId = 'cli-mkof';
   let cli = data.clientes.find(c => c.id === cliId);
@@ -1203,47 +1288,7 @@ function asegurarClienteMKOF(data) {
     if (!cli.color) cli.color = 'agua';
   }
 
-  if (!debeAutoGenerarTareas(data)) return data;
-
-  const notasGantt = 'Entregar Gantt de la etapa 2 post auditoría para establecer tiempos y entregables.';
-  const hoyStr = toISO(hoy());
-  const plantillaMKOF = {
-    id: 'tarea-mkof-gantt-etapa2',
-    titulo: '[MKOF] Gantt etapa 2 post auditoría',
-    clienteId: cliId,
-    fecha: hoyStr
-  };
-  let tarea = data.tareas.find(t =>
-    t.id === plantillaMKOF.id || (t.clienteId === cliId && /gantt.*etapa\s*2/i.test(t.titulo))
-  );
-  if (!tarea && !tareaFueEliminada(data, plantillaMKOF.id, plantillaMKOF)) {
-    data.tareas.push({
-      id: 'tarea-mkof-gantt-etapa2',
-      titulo: '[MKOF] Gantt etapa 2 post auditoría',
-      clienteId: cliId,
-      rolId: 'rol-mkof-dev',
-      fecha: hoyStr,
-      horaInicio: '17:00',
-      horaFin: '18:00',
-      notas: notasGantt,
-      prioridad: 'alta',
-      completada: false,
-      pendiente: false
-    });
-  } else if (tarea) {
-    if (tareaFueEliminada(data, plantillaMKOF.id, tarea)) {
-      data.tareas = data.tareas.filter(t => t.id !== tarea.id);
-    } else {
-      tarea.id = tarea.id || 'tarea-mkof-gantt-etapa2';
-      tarea.titulo = '[MKOF] Gantt etapa 2 post auditoría';
-      tarea.clienteId = cliId;
-      tarea.rolId = 'rol-mkof-dev';
-      tarea.horaInicio = '17:00';
-      tarea.horaFin = '18:00';
-      tarea.notas = notasGantt;
-      tarea.prioridad = tarea.prioridad || 'alta';
-    }
-  }
+  asegurarTareasMovaAuthLogin(data);
   return data;
 }
 
