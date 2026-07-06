@@ -18,6 +18,7 @@ window.MOVA_DOCUMENTOS = {
           fecha: 'Jul 2026',
           verHtml: 'mova-auth-guia.html',
           pdf: 'MOVA-Auth-Login-Unificado.pdf',
+          pptx: 'MOVA-Auth-Plan-Ejecucion.pptx',
           editar: 'mkof-mova-auth-guia.js'
         }
       ]
