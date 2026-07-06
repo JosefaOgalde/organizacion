@@ -1212,6 +1212,7 @@ function limpiarTareasMovaAuthLegacy(data) {
     )
   );
   data.tareas = data.tareas.filter((t) => {
+    if (t.id === 'tarea-mkof-gantt-etapa2') return false;
     if (!(t.id || '').startsWith('tarea-mova-auth-')) return true;
     return idsValidos.has(t.id);
   });
@@ -1221,7 +1222,6 @@ function limpiarTareasMovaAuthLegacy(data) {
 function asegurarTareasMovaAuthLogin(data) {
   const seeds = window.MOVA_AUTH_TODO_SEED;
   if (!Array.isArray(seeds) || !seeds.length) return data;
-  if (!debeAutoGenerarTareas(data)) return data;
 
   limpiarTareasMovaAuthLegacy(data);
   const cliId = window.MOVA_AUTH_CLI_SYNC_ID || 'cli-mkof';
@@ -1241,6 +1241,7 @@ function asegurarTareasMovaAuthLogin(data) {
     const plantilla = { id: taskId, titulo, clienteId: cliId, fecha: fechaStr, movaAuthTodoId: todo.id };
 
     let tarea = data.tareas.find((t) => t.id === taskId);
+    const numeroHistorico = String(indice + 1).padStart(2, '0');
     if (!tarea && !tareaFueEliminada(data, taskId, plantilla)) {
       data.tareas.push({
         id: taskId,
@@ -1255,7 +1256,8 @@ function asegurarTareasMovaAuthLogin(data) {
         completada: false,
         pendiente: false,
         movaAuthTodoId: todo.id,
-        movaAuthDia: todo.dia
+        movaAuthDia: todo.dia,
+        numeroHistorico
       });
     } else if (tarea && !tareaFueEliminada(data, taskId, tarea)) {
       if (tarea.fecha && tarea.fecha !== fechaStr) fijarAgendaUsuario(tarea);
@@ -1264,6 +1266,7 @@ function asegurarTareasMovaAuthLogin(data) {
       tarea.rolId = rolId;
       tarea.movaAuthTodoId = todo.id;
       tarea.movaAuthDia = todo.dia;
+      tarea.numeroHistorico = numeroHistorico;
       sincronizarAgendaTarea(tarea, {
         fecha: fechaStr,
         horaInicio: slot.horaInicio,
@@ -2067,6 +2070,8 @@ function clientePorSlugUrl(slug) {
 
 function extraerNumeroDesdeIdTarea(tarea) {
   const id = tarea?.id || '';
+  const mova = id.match(/tarea-mova-auth-(\d+)/i);
+  if (mova) return mova[1].padStart(2, '0');
   const jm = id.match(/tarea-jm-f2-(\d+)/i);
   if (jm) return jm[1].padStart(2, '0');
   const sie = id.match(/tarea-sie-(\d+)/i);
