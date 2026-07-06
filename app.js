@@ -2631,8 +2631,6 @@ function generarPromptTrabajo(tarea, solicitudUsuario = '') {
     tarea.prioridad ? `Prioridad: ${tarea.prioridad}` : ''
   ].filter(Boolean);
 
-  ].filter(Boolean);
-
   if (todoMova) {
     bloques.push(
       '',
