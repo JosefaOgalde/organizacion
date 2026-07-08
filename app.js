@@ -1231,7 +1231,9 @@ function asegurarTareasMovaAuthLogin(data) {
 
   seeds.forEach((todo, indice) => {
     const taskId = idDe(indice);
-    const fechaStr = fechaCalendarioMovaAuth(indice);
+    const fechaStr = todo.fecha || (window.movaAuthFechaCalendario
+      ? window.movaAuthFechaCalendario(todo, indice)
+      : fechaCalendarioMovaAuth(indice));
     const titulo = tituloDe(todo);
     const duracionMin = 120;
     const slot = buscarSlotAgenda(data, fechaStr, duracionMin, cliId);
@@ -2330,12 +2332,28 @@ function esTareaMovaAuthDia1(tarea) {
   return tarea?.movaAuthTodoId === 'mova-auth-d1' || tarea?.id === 'tarea-mova-auth-01';
 }
 
+function esTareaMovaAuthDia2(tarea) {
+  return tarea?.movaAuthTodoId === 'mova-auth-d2' || tarea?.id === 'tarea-mova-auth-02';
+}
+
 function plantillaSolicitudMova(tarea, skill) {
   const todo = movaAuthTodoDeTarea(tarea);
   if (!todo) return skill.ejemploSolicitud;
   const titulo = nombreBaseTarea(tarea) || tarea.titulo;
   if (todo.dia === 1) {
     return 'Entrégame el inventario de módulos MOVA en acme-chile.cl: tabla con URL, auth actual, JWT/localStorage, n8n y si pasa por mova_auth. Listo para completar desde cPanel.';
+  }
+  if (todo.dia === 2) {
+    return 'Redacta el documento de auditoría «Reglas-mova_auth»: regla único validador, excepciones, módulos públicos y acuerdo del equipo. Sin tocar código en servidor.';
+  }
+  if (todo.dia === 3) {
+    return 'Documenta carpetas y archivos núcleo de mova_auth (6 PHP): qué debe existir, permisos y gap vs cPanel actual. Solo auditoría, sin subir archivos.';
+  }
+  if (todo.dia === 4) {
+    return 'Diseña en documento el flujo login único + cookie HttpOnly (sin JWT en cliente). Diagrama + especificación para el equipo.';
+  }
+  if (todo.dia === 5) {
+    return 'Arma la matriz de validación por módulo M: cómo debería validar cada uno con guard.php y validate.php. Sin implementar aún.';
   }
   return `Arma el entregable del Día ${todo.dia} MOVA: ${todo.entregable || titulo}`;
 }
@@ -2373,8 +2391,12 @@ function htmlMovaTareaRecursos(tarea) {
       <a class="btn btn--small btn--ghost" href="${escapeHtml(pptStatus)}" download>Descargar PPT</a>
     </p>`;
   }
+  const aud = window.MOVA_AUTH_SOLO_AUDITORIA
+    ? '<p class="tarea-detalle__mova-aviso"><strong>Modo auditoría</strong> — documentar y acordar; no tocar código en el servidor.</p>'
+    : '';
   return `<div class="tarea-detalle__mova">
     <strong>MOVA · Día ${todo.dia}</strong>
+    ${aud}
     ${todo.entregable ? `<p class="tarea-detalle__mova-entregable"><strong>Entregable:</strong> ${escapeHtml(todo.entregable)}</p>` : ''}
     ${botonesStatus}
     ${botonesInv ? `<p class="tarea-detalle__mova-btns">${botonesInv}</p>` : ''}
