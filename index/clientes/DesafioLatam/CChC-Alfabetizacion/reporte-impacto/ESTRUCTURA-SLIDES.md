@@ -14,8 +14,8 @@
 | 8 | Módulo 2 — Clave Única y trámites digitales | ✅ Prompt entregado |
 | 9 | Seguridad digital y prevención de fraudes | ✅ Prompt entregado |
 | 10 | Resultados e indicadores de impacto | ✅ Prompt entregado |
-| 11 | Satisfacción y percepción de participantes | ⏳ Prompt entregado |
-| 12 | Empresas participantes | Pendiente |
+| 11 | Satisfacción y percepción de participantes | ✅ Prompt entregado |
+| 12 | Empresas participantes | ⏳ Prompt entregado |
 | 13 | Aprendizajes del piloto | Pendiente |
 | 14 | Proyección 2027 | Pendiente |
 | 15 | Cierre / agradecimientos | Pendiente |
