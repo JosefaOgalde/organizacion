@@ -37,8 +37,7 @@ Manual de marca oficial — paleta y tipografía entregadas por el cliente.
 
 - Una línea vertical fina `#729E2E` en borde izquierdo
 - Bordes finos `#729E2E` en tarjetas o franjas
-- Bullets pequeños en `#729E2E`
-- Nada más: sin watermarks, sin números gigantes, sin formas decorativas
+- Iconografía (cuando se indique): línea fina 1.5–2 px, color `#729E2E`, sin relleno, tamaño pequeño y funcional
 
 ## Estilo gráfico
 
