@@ -31,6 +31,7 @@ Referencia extraída del sitio oficial [desafiolatam.com](https://desafiolatam.c
 - Líneas divisorias finas en `#7AAF2E` al 30% opacidad
 - Iconografía lineal, trazo 1.5–2 px, esquinas redondeadas
 - Fotografía: trabajadores reales, luz natural, contexto construcción/minería norte de Chile
+- **Casco de seguridad:** siempre lo más simple posible — superficie lisa, un solo color (blanco o amarillo mate), sin calcomanías, logos, franjas reflectantes ni accesorios decorativos
 - Evitar saturación excesiva; priorizar autenticidad
 
 ## Co-branding CChC
