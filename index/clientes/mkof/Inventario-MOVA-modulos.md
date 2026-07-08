@@ -2,20 +2,22 @@
 
 **Cliente:** MKOF · **Proyecto:** MOVA (login unificado mova_auth)  
 **Tarea:** Día 1 · `[MOVA] D1 — Inventario módulos M`  
-**Fecha inicio:** 6 jul 2026  
+**Fecha inicio:** 6 jul 2026 · **Actualizado:** 8 jul 2026 (cPanel)  
 **Regla del día:** solo inventario — **no tocar código**
+
+**Ruta real del sitio en hosting:** `public_html/acme-chile.cl/`
 
 ---
 
 ## Cómo completar este documento
 
-1. Entra a **cPanel → Administrador de archivos → `public_html`** (GoDaddy).
-2. Lista **todas las carpetas** bajo `public_html` en la sección [Carpetas en servidor](#carpetas-en-servidor).
-3. Por cada módulo M, abre la URL en el navegador (logueado y en incógnito).
-4. En DevTools → **Application**: revisa `localStorage` / `sessionStorage` (¿hay JWT?).
-5. En **Network**: busca llamadas a webhooks n8n al cargar o al validar sesión.
-6. Marca en **rojo** (columna «¿Pasa mova_auth?» = `no`) todo lo que valide por su cuenta o use JWT en el cliente.
-7. Comparte este archivo (o la hoja Sheets equivalente) con el equipo técnico.
+1. ~~Entra a cPanel → `public_html`~~ ✅
+2. ~~Lista carpetas de `acme-chile.cl/`~~ ✅ (ver abajo)
+3. Por cada módulo M: abre URL en navegador (logueado + incógnito).
+4. DevTools → **Application**: ¿JWT en localStorage/sessionStorage?
+5. DevTools → **Network**: ¿llamadas a webhooks n8n?
+6. Marca `no` en «¿Pasa mova_auth?» lo que valide por su cuenta.
+7. Comparte este archivo con el equipo técnico.
 
 **Enlaces útiles**
 
@@ -27,42 +29,107 @@
 
 ---
 
-## Tabla de módulos
+## Tabla de módulos (nivel 1 — carpetas principales)
 
 | Módulo | Carpeta cPanel | URL | Auth actual | ¿JWT/localStorage? | ¿n8n? | ¿Pasa mova_auth? | Responsable | Notas |
 |--------|----------------|-----|-------------|-------------------|-------|------------------|-------------|-------|
-| Landing corporativa | `/` | https://acme-chile.cl/ | ? | ? | ? | ? | | Página pública |
-| Portal MOVA (panel) | `mova/` | https://acme-chile.cl/mova/ | ? | ? | ? | ? | | Menú lateral interno |
-| MOVA (memoria operacional) | ? | https://acme-chile.cl/mova/ | ? | ? | ? | ? | | Vista dentro del panel |
-| AXON | ? | ? | ? | ? | ? | ? | | Administrador GMO |
-| Brújula | ? | ? | ? | ? | ? | ? | | |
-| Evaluador | ? | ? | ? | ? | ? | ? | | |
-| Pulso | ? | ? | ? | ? | ? | ? | | |
-| Stack | ? | ? | ? | ? | ? | ? | | |
-| Biblioteca | ? | ? | ? | ? | ? | ? | | |
-| News | ? | ? | ? | ? | ? | ? | | |
-| Talent | ? | ? | ? | ? | ? | ? | | |
-| ERP & Finanzas (área) | ? | ? | ? | ? | ? | ? | | Ver MAESTRO abajo |
-| MOVA MAESTRO | `MAESTRO/` (confirmar) | ? | ? | ? | ? | ? | | Módulo M — playbook |
-| INGRESOS | `INGRESOS/` (confirmar) | ? | ? | ? | ? | ? | | Submódulo ERP |
-| EGRESOS | `EGRESOS/` (confirmar) | ? | ? | ? | ? | ? | | Submódulo ERP |
-| Estrategia (área) | ? | ? | ? | ? | ? | ? | | |
-| RRHH (área) | ? | ? | ? | ? | ? | ? | | |
-| mova_auth (actual) | `mova_auth/` (confirmar) | https://acme-chile.cl/mova_auth/ | ? | ? | ? | parcial | | Meta: único validador |
-| Playbook auditoría | `documentos/` | https://acme-chile.cl/documentos/auditoria_mova.html | público | no | no | n/a | | Solo documentación |
+| Landing corporativa | `acme-chile.cl/` (raíz) | https://acme-chile.cl/ | ? | ? | ? | ? | | Página pública |
+| Portal MOVA | `acme-chile.cl/mova/` | https://acme-chile.cl/mova/ | ? | ? | ? | ? | | Panel con menú lateral |
+| mova_auth (núcleo actual) | `acme-chile.cl/mova_auth/` | https://acme-chile.cl/mova_auth/login.php | Google + PHP (ver archivos) | ? | ? | parcial | | `auth.php`, `google_login.php`, `login.php`, `logout.php`, `panel.php`, `config.php` |
+| AXON | `acme-chile.cl/axon/` | https://acme-chile.cl/axon/ | ? | ? | ? | ? | | PWA: `manifest.json`, `sw.js`, `index.html` |
+| AXON News | `acme-chile.cl/axon-news/` | https://acme-chile.cl/axon-news/ | ? | ? | ? | ? | | |
+| Boletín AXON | `acme-chile.cl/Boletin_Axon/` | https://acme-chile.cl/Boletin_Axon/ | ? | ? | ? | ? | | |
+| Admin | `acme-chile.cl/admin/` | https://acme-chile.cl/admin/ | ? | ? | ? | ? | | |
+| CRM | `acme-chile.cl/crm/` | https://acme-chile.cl/crm/ | ? | ? | ? | ? | | Solo `versiones_anteriores/` visible |
+| Documentos / playbooks | `acme-chile.cl/documentos/` | https://acme-chile.cl/documentos/ | público | no | ? | n/a | | HTML: mova, n8n, playbook, forecast, etc. |
+| GAMKOF | `acme-chile.cl/gamkof/` | https://acme-chile.cl/gamkof/ | ? | ? | ? | ? | | `gmof-html-template.zip` |
+| Gestión EERR | `acme-chile.cl/gestion/eerr/` | https://acme-chile.cl/gestion/eerr/ | ? | ? | ? | ? | | Subcarpeta `resumen/` (vacía) |
+| Operaciones | `acme-chile.cl/operaciones/` | https://acme-chile.cl/operaciones/ | ? | ? | ? | ? | | `comite.html` |
+| Pruebas / sandbox | `acme-chile.cl/pruebas/` | https://acme-chile.cl/pruebas/ | ? | ? | ? | ? | | `mova.html`, `brujula_1.html` — candidato Día 5 |
+| RRHH | `acme-chile.cl/rrhh/` | https://acme-chile.cl/rrhh/ | ? | ? | ? | ? | | `capacitaciones/`, `informe_rrss/`, `playbook/` |
+| Skill (herramientas) | `acme-chile.cl/skill/` | https://acme-chile.cl/skill/ | ? | ? | ? | ? | | asana, claude, n8n, drive, playbook, etc. |
+| Multimedia | `acme-chile.cl/multimedia/` | https://acme-chile.cl/multimedia/ | ? | ? | ? | ? | | No explorado aún |
 
-> **Valores auth:** `Google OAuth` · `mova_auth` · `JWT local` · `sesión PHP` · `ninguno` · `otro (describir)`  
+> **Valores auth:** `Google OAuth` · `mova_auth` · `JWT local` · `sesión PHP` · `ninguno` · `otro`  
 > **¿Pasa mova_auth?:** `sí` · `parcial` · `no` · `n/a`
 
 ---
 
-## Carpetas en servidor
+## Tabla de submódulos MOVA (`mova/`)
 
-_Pega aquí el listado de `public_html` desde cPanel (una carpeta por línea):_
+| Submódulo | Carpeta | URL probable | Auth | JWT | n8n | mova_auth | Notas |
+|-----------|---------|--------------|------|-----|-----|-----------|-------|
+| Agencia | `mova/agencia/` | https://acme-chile.cl/mova/agencia/ | ? | ? | ? | ? | |
+| Brief | `mova/brief/` | https://acme-chile.cl/mova/brief/ | ? | ? | ? | ? | |
+| Cotizador | `mova/cotizador/` | https://acme-chile.cl/mova/cotizador/ | ? | ? | ? | ? | |
+| Cuentas | `mova/cuentas/` | https://acme-chile.cl/mova/cuentas/ | ? | ? | ? | ? | |
+| Doc | `mova/doc/` | https://acme-chile.cl/mova/doc/ | ? | ? | ? | ? | |
+| **ERP** | `mova/erp/` | https://acme-chile.cl/mova/erp/ | ? | ? | ? | ? | Reemplaza MAESTRO raíz — abrir subcarpetas |
+| Estudios | `mova/estudios/` | https://acme-chile.cl/mova/estudios/ | ? | ? | ? | ? | |
+| Facturas | `mova/facturas/` | https://acme-chile.cl/mova/facturas/ | ? | ? | ? | ? | |
+| Forecast | `mova/forecast/` | https://acme-chile.cl/mova/forecast/ | ? | ? | ? | ? | |
+| Negocios | `mova/negocios/` | https://acme-chile.cl/mova/negocios/ | ? | ? | ? | ? | |
+| OC | `mova/oc/` | https://acme-chile.cl/mova/oc/ | ? | ? | ? | ? | |
+| Operación | `mova/operacion/` | https://acme-chile.cl/mova/operacion/ | ? | ? | ? | ? | |
+| Restringido | `mova/restringido/` | https://acme-chile.cl/mova/restringido/ | ? | ? | ? | ? | |
+| SEO | `mova/seo/` | https://acme-chile.cl/mova/seo/ | ? | ? | ? | ? | |
+| Strack | `mova/strack/` | https://acme-chile.cl/mova/strack/ | ? | ? | ? | ? | |
+| Suscripciones | `mova/suscripciones/` | https://acme-chile.cl/mova/suscripciones/ | ? | ? | ? | ? | |
+
+**Nota:** No existen carpetas `MAESTRO/`, `INGRESOS/`, `EGRESOS/` en la raíz. El ERP está bajo **`mova/erp/`** — abrir en cPanel para listar INGRESOS/EGRESOS si están ahí.
+
+---
+
+## Archivos en `mova_auth/` (referencia)
+
+```
+mova_auth/
+├── auth.php
+├── config.php
+├── google_login.php
+├── login.php
+├── logout.php
+├── panel.php
+└── setup.sql
+```
+
+Hipótesis (confirmar en DevTools): login Google + sesión PHP; aún no valida todos los módulos M.
+
+---
+
+## Carpetas en servidor (completado desde cPanel)
 
 ```
 public_html/
-├── (pegar listado real)
+├── .well-known/
+├── acme-chile.cl/
+│   ├── .well-known/
+│   ├── admin/
+│   ├── assets/
+│   ├── axon/
+│   ├── axon-news/
+│   ├── Boletin_Axon/
+│   ├── cgi-bin/
+│   ├── crm/
+│   │   └── versiones_anteriores/
+│   ├── css/
+│   ├── documentos/          ← playbooks HTML (mova, n8n, playbook…)
+│   ├── gamkof/
+│   ├── gestion/
+│   │   └── eerr/
+│   │       └── resumen/     ← vacío
+│   ├── js/
+│   ├── multimedia/
+│   ├── mova/                ← submódulos (agencia, erp, facturas…)
+│   ├── mova_auth/           ← login actual (PHP)
+│   ├── operaciones/         ← comite.html
+│   ├── pruebas/             ← mova.html, brujula_1.html
+│   ├── rrhh/
+│   └── skill/
+├── assets/
+├── cgi-bin/
+├── css/
+└── respaldo/
 ```
 
 ---
@@ -71,21 +138,21 @@ public_html/
 
 | Webhook / URL | Módulo que lo usa | ¿Auth? | Notas |
 |---------------|-------------------|--------|-------|
-| | | | |
+| | | | _Completar con DevTools → Network_ |
 
 ---
 
 ## Checklist de cierre (Día 1)
 
-- [ ] Acceso cPanel / FTP GoDaddy confirmado
-- [ ] Listado de carpetas en `public_html` pegado arriba
-- [ ] URL completa de cada módulo M anotada
-- [ ] Flujo actual documentado (Google / mova_auth / otro)
+- [x] Acceso cPanel / FTP GoDaddy confirmado
+- [x] Listado de carpetas en `public_html/acme-chile.cl/` pegado arriba
+- [ ] URL completa de cada módulo M verificada en navegador
+- [ ] Flujo actual documentado (Google / mova_auth / otro) — columnas Auth sin `?`
 - [ ] JWT o localStorage identificados donde existan
 - [ ] Endpoints n8n listados
 - [ ] Tabla compartida con el equipo técnico
 
-**Criterio de cierre:** inventario 100% con columnas sin `?` en módulos M (excepto playbook público). Listo para Día 2 (acuerdo mova_auth).
+**Criterio de cierre:** columnas Auth, JWT, n8n y mova_auth sin `?` en módulos M.
 
 ---
 
@@ -93,4 +160,5 @@ public_html/
 
 | Fecha | Autor | Cambio |
 |-------|-------|--------|
-| 6 jul 2026 | | Plantilla creada en repo — completar desde cPanel |
+| 6 jul 2026 | | Plantilla creada en repo |
+| 8 jul 2026 | cPanel | Árbol real + tablas con URLs y carpetas |
