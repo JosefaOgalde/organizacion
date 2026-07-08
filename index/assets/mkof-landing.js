@@ -124,10 +124,15 @@
           <a href="../MKOF/MOVA/documentos/">📁 Todos los documentos MOVA</a>
         </p>
         <div class="mkof-guias-grid">
-          <a href="../MKOF/MOVA/documentos/ver.html?id=d1-inventario-status" class="mkof-guia-card mkof-guia-card--activa">
+          <a href="../MKOF/MOVA/documentos/ver.html?id=d1-inventario-status" class="mkof-guia-card">
             <span class="mkof-guia-card__paso">Día 1 · Entregable</span>
             <strong>Status inventario módulos</strong>
             <span class="mkof-guia-card__desc">Ver · PDF · PPT · mkof/01</span>
+          </a>
+          <a href="../MKOF/MOVA/documentos/ver.html?id=d2-reglas-mova-auth" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Día 2 · Entregable</span>
+            <strong>Reglas mova_auth</strong>
+            <span class="mkof-guia-card__desc">Ver · PDF · PPT · mkof/02</span>
           </a>
           <a href="github-cuenta.html" class="mkof-guia-card">
             <span class="mkof-guia-card__paso">Paso 1 · GitHub</span>

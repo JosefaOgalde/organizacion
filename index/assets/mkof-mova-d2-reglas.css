@@ -1,0 +1,174 @@
+/* MOVA · Día 2 — Reglas mova_auth */
+.mova-d2-reglas {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #1f2328;
+  background: #f4fafb;
+  margin: 0;
+  line-height: 1.55;
+}
+
+.mova-d2-reglas__hero {
+  background: linear-gradient(135deg, #2a4a4e, #4a7a80);
+  color: #fff;
+  padding: 2rem 2.5rem 2.25rem;
+}
+
+.mova-d2-reglas__eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+}
+
+.mova-d2-reglas h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.85rem;
+}
+
+.mova-d2-reglas__sub {
+  margin: 0;
+  opacity: 0.92;
+  font-size: 0.95rem;
+}
+
+.mova-d2-reglas__badge {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.35rem 0.85rem;
+  background: #fff8c5;
+  color: #2a4a4e;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.mova-d2-reglas__main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 2rem;
+}
+
+.mova-d2-reglas__main section {
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.mova-d2-reglas h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  color: #2a4a4e;
+}
+
+.mova-d2-reglas__oro {
+  margin: 0;
+  padding: 1rem 1.15rem;
+  background: #fff8c5;
+  border-left: 4px solid #bf3f00;
+  border-radius: 0 8px 8px 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #2a4a4e;
+}
+
+.mova-d2-reglas__oro small {
+  display: block;
+  margin-top: 0.5rem;
+  font-weight: 400;
+  font-size: 0.88rem;
+  color: #444;
+}
+
+.mova-d2-reglas__tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+
+.mova-d2-reglas__tabla th,
+.mova-d2-reglas__tabla td {
+  border: 1px solid #e6eaef;
+  padding: 0.45rem 0.55rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.mova-d2-reglas__tabla th {
+  background: #e8f6f8;
+  color: #2a4a4e;
+}
+
+.mova-d2-reglas .si { color: #1a7f37; font-weight: 700; }
+.mova-d2-reglas .no { color: #cf222e; font-weight: 700; }
+.mova-d2-reglas .gate { color: #6f42c1; font-weight: 700; }
+.mova-d2-reglas .na { color: #656d76; }
+
+.mova-d2-reglas ol,
+.mova-d2-reglas ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.mova-d2-reglas li {
+  margin-bottom: 0.35rem;
+}
+
+.mova-d2-reglas__check {
+  list-style: none;
+  padding: 0;
+}
+
+.mova-d2-reglas__check li {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.mova-d2-reglas__check li::before {
+  content: "○ ";
+  color: #bf3f00;
+  font-weight: bold;
+}
+
+.mova-d2-reglas__diagrama {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 1rem;
+  background: #f6f8fa;
+  border-radius: 8px;
+  margin-top: 0.75rem;
+}
+
+.mova-d2-reglas__puerta {
+  padding: 0.5rem 0.85rem;
+  background: #6f42c1;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.mova-d2-reglas__mods span {
+  display: inline-block;
+  margin: 0.2rem;
+  padding: 0.3rem 0.5rem;
+  background: #fff;
+  border: 1px solid #4a7a80;
+  border-radius: 6px;
+  font-size: 0.78rem;
+}
+
+.mova-d2-reglas__foot {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.8rem;
+  color: #656d76;
+}
+
+@media print {
+  .mova-d2-reglas { background: #fff; }
+  .mova-d2-reglas__main section { break-inside: avoid; }
+}

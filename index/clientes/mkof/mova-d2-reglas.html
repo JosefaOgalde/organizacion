@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOVA · Día 2 — Reglas mova_auth</title>
+  <link rel="stylesheet" href="../../assets/portal.css">
+  <link rel="stylesheet" href="../../assets/mkof-mova-d2-reglas.css">
+  <script src="../../assets/embed-chrome.js"></script>
+  <link rel="stylesheet" href="../../assets/embed-chrome.css">
+</head>
+<body class="mova-d2-reglas">
+  <header class="mova-d2-reglas__hero">
+    <p class="mova-d2-reglas__eyebrow">GRUPO MAKING OF · MOVA · AUDITORÍA</p>
+    <h1>Día 2 — Reglas mova_auth</h1>
+    <p class="mova-d2-reglas__sub">acme-chile.cl · Tarea <code>mkof/02</code> · 8 jul 2026</p>
+    <p class="mova-d2-reglas__badge">Solo documentar y acordar — no tocar código en servidor</p>
+  </header>
+
+  <main class="mova-d2-reglas__main">
+    <section>
+      <h2>Contexto (hallazgo Día 1)</h2>
+      <p>El login está <strong>fragmentado</strong>: Google OAuth en <code>/mova/</code>, correo+clave en <code>/mova_auth/</code>, contraseña en <code>/mova/erp/</code>. Ningún módulo revisado usa solo <code>mova_auth</code> como validador.</p>
+    </section>
+
+    <section>
+      <h2>Regla de oro</h2>
+      <blockquote class="mova-d2-reglas__oro">
+        Si el usuario no pasó por mova_auth con sesión válida, no entra a ningún módulo M.
+        <small>Operación: guard.php al inicio · sesión PHP server-side · redirect a login.php?redirect= · sin JWT en localStorage.</small>
+      </blockquote>
+      <div class="mova-d2-reglas__diagrama">
+        <span>Usuario</span> →
+        <span class="mova-d2-reglas__puerta">mova_auth</span> →
+        <div class="mova-d2-reglas__mods">
+          <span>/mova/</span><span>/mova/erp/</span><span>/axon/</span><span>/rrhh/</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Clasificación por módulo</h2>
+      <table class="mova-d2-reglas__tabla">
+        <thead>
+          <tr><th>Módulo</th><th>URL</th><th>Auth hoy</th><th>¿Debe pasar por mova_auth?</th><th>Notas</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Portal MOVA</td><td>/mova/</td><td>Google OAuth</td><td class="si">Sí</td><td>Hoy no pasa</td></tr>
+          <tr><td>mova_auth</td><td>/mova_auth/login.php</td><td>PHP correo+clave</td><td class="gate">Es el gate</td><td>Parcial hoy</td></tr>
+          <tr><td>MOVA ERP</td><td>/mova/erp/</td><td>Contraseña local</td><td class="si">Sí</td><td>Login aparte</td></tr>
+          <tr><td>AXON</td><td>/axon/</td><td>Sin login visible</td><td class="si">Sí</td><td>Validar en D5</td></tr>
+          <tr><td>RRHH</td><td>/rrhh/</td><td>403 Forbidden</td><td class="si">Sí</td><td>Sin acceso público</td></tr>
+          <tr><td>Documentos</td><td>/documentos/</td><td>Público</td><td class="na">No (excepción)</td><td>Playbooks</td></tr>
+          <tr><td>/pruebas/</td><td>—</td><td>—</td><td class="na">Fuera de alcance</td><td>Etapa 1 obsoleta</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Excepciones públicas</h2>
+      <ul>
+        <li><strong>/documentos/</strong> — playbooks HTML sin login</li>
+        <li><strong>Assets estáticos</strong> — CSS, JS, imágenes públicas</li>
+        <li><strong>login.php / logout.php</strong> — entrada y salida del sistema</li>
+        <li><strong>validate.php</strong> — API JSON 200/401 (sin redirect HTML)</li>
+      </ul>
+      <p>Toda nueva excepción debe documentarse aquí con responsable y fecha.</p>
+    </section>
+
+    <section>
+      <h2>Lo que no se permite (post-acuerdo)</h2>
+      <ul>
+        <li>Google OAuth directo en el módulo sin pasar por mova_auth</li>
+        <li>JWT o access_token en localStorage del cliente</li>
+        <li>Pantallas de login duplicadas por módulo</li>
+        <li>Asumir sesión de accounts.google.com como sesión MOVA</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Checklist cierre Día 2</h2>
+      <ul class="mova-d2-reglas__check">
+        <li>Regla de oro acordada con el equipo técnico</li>
+        <li>Tabla de módulos revisada (sin objeciones o comentarios anotados)</li>
+        <li>Excepciones públicas confirmadas</li>
+        <li>Documento compartido (PDF/PPT o enlace portal)</li>
+        <li>Tarea <code>mkof/02</code> marcada completada</li>
+      </ul>
+      <p><strong>Pendiente acuerdo formal:</strong> correo o acta · Responsable: _______________ · Fecha: _______</p>
+    </section>
+
+    <section>
+      <h2>Próximo paso — Día 3</h2>
+      <p>Documentar carpetas y archivos núcleo de <code>mova_auth/</code> (sin subirlos aún).</p>
+      <p>Tarea: <code>index.html?tarea=mkof/03</code></p>
+    </section>
+  </main>
+
+  <footer class="mova-d2-reglas__foot">
+    MOVA · Reglas Día 2 · GRUPO MAKING OF · acme-chile.cl
+  </footer>
+</body>
+</html>

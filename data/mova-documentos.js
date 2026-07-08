@@ -23,6 +23,23 @@ window.MOVA_DOCUMENTOS = {
       ]
     },
     {
+      id: 'reglas',
+      titulo: 'Día 2 — Reglas mova_auth',
+      items: [
+        {
+          id: 'd2-reglas-mova-auth',
+          titulo: 'Día 2 — Reglas mova_auth (entregable)',
+          descripcion: 'mkof/02 · regla único validador · excepciones · acuerdo equipo · solo auditoría',
+          hito: 'D2',
+          fecha: '8 jul 2026',
+          verHtml: 'mova-d2-reglas.html',
+          pdf: 'MOVA-D2-Reglas-mova_auth.pdf',
+          pptx: 'MOVA-D2-Reglas-mova_auth.pptx',
+          editar: 'Reglas-mova_auth.md'
+        }
+      ]
+    },
+    {
       id: 'auth',
       titulo: 'Login unificado · mova_auth',
       items: [

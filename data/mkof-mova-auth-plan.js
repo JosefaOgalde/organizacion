@@ -54,8 +54,11 @@ window.MOVA_AUTH_TODO_SEED = [
     enlaces: [
       'https://acme-chile.cl/documentos/auditoria_mova.html',
       'index/clientes/mkof/mova-auth-guia.html',
-      'index/clientes/mkof/Inventario-MOVA-modulos.md'
-    ]
+      'index/clientes/mkof/Inventario-MOVA-modulos.md',
+      'index/clientes/mkof/Reglas-mova_auth.md',
+      'index/clientes/MKOF/MOVA/documentos/ver.html?id=d2-reglas-mova-auth'
+    ],
+    reglas: 'index/clientes/mkof/Reglas-mova_auth.md'
   },
   {
     id: 'mova-auth-d3',

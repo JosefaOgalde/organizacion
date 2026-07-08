@@ -2391,6 +2391,18 @@ function htmlMovaTareaRecursos(tarea) {
       <a class="btn btn--small btn--ghost" href="${escapeHtml(pptStatus)}" download>Descargar PPT</a>
     </p>`;
   }
+  if (todo.dia === 2) {
+    const verReglas = urlRecursoMova('index/clientes/MKOF/MOVA/documentos/ver.html?id=d2-reglas-mova-auth');
+    const pdfReglas = urlRecursoMova('index/clientes/mkof/MOVA-D2-Reglas-mova_auth.pdf');
+    const pptReglas = urlRecursoMova('index/clientes/mkof/MOVA-D2-Reglas-mova_auth.pptx');
+    const mdReglas = urlRecursoMova('index/clientes/mkof/Reglas-mova_auth.md');
+    botonesStatus = `<p class="tarea-detalle__mova-btns">
+      <a class="btn btn--small btn--accent" href="${escapeHtml(verReglas)}" target="_blank" rel="noopener">Ver reglas D2</a>
+      <a class="btn btn--small btn--ghost" href="${escapeHtml(pdfReglas)}" target="_blank" rel="noopener">PDF</a>
+      <a class="btn btn--small btn--ghost" href="${escapeHtml(pptReglas)}" download>Descargar PPT</a>
+      <a class="btn btn--small btn--ghost" href="${escapeHtml(mdReglas)}" target="_blank" rel="noopener">Markdown</a>
+    </p>`;
+  }
   const aud = window.MOVA_AUTH_SOLO_AUDITORIA
     ? '<p class="tarea-detalle__mova-aviso"><strong>Modo auditoría</strong> — documentar y acordar; no tocar código en el servidor.</p>'
     : '';
@@ -2402,6 +2414,46 @@ function htmlMovaTareaRecursos(tarea) {
     ${botonesInv ? `<p class="tarea-detalle__mova-btns">${botonesInv}</p>` : ''}
     ${enlaces ? `<ul class="tarea-detalle__mova-links">${enlaces}</ul>` : ''}
   </div>`;
+}
+
+function reglasMovaAuth(tarea, cli, mensajeUsuario) {
+  const reglasPath = 'index/clientes/mkof/Reglas-mova_auth.md';
+  return [
+    '**Reglas mova_auth — Día 2 (auditoría)**',
+    '',
+    '#### Instrucción',
+    mensajeUsuario.trim() || 'Documento de acuerdo: único validador, excepciones y clasificación por módulo. Sin tocar código.',
+    '',
+    '#### Regla de oro',
+    '> Si el usuario no pasó por **mova_auth** con sesión válida, **no entra** a ningún módulo M.',
+    '',
+    '#### Clasificación (resumen inventario D1)',
+    '',
+    '| Módulo | ¿Debe pasar por mova_auth? |',
+    '|--------|---------------------------|',
+    '| Portal /mova/ | **Sí** (hoy Google OAuth directo) |',
+    '| mova_auth | **Es el gate** |',
+    '| /mova/erp/ | **Sí** (hoy contraseña local) |',
+    '| /axon/ | **Sí** |',
+    '| /rrhh/ | **Sí** |',
+    '| /documentos/ | **No** — excepción pública |',
+    '',
+    '#### Excepciones',
+    '- Playbooks en `/documentos/`',
+    '- login.php, logout.php, validate.php',
+    '- Assets estáticos públicos',
+    '',
+    '#### Cierre D2',
+    '- [ ] Regla acordada con equipo técnico',
+    '- [ ] Tabla revisada sin objeciones',
+    '- [ ] Documento compartido',
+    '- [ ] Tarea mkof/02 completada',
+    '',
+    `#### Archivo en repo`,
+    `Edita: \`${reglasPath}\``,
+    '',
+    '**Entregables:** mova-d2-reglas.html · MOVA-D2-Reglas-mova_auth.pdf · .pptx'
+  ].join('\n');
 }
 
 function inventarioModulosMova(tarea, cli, mensajeUsuario) {
@@ -3353,7 +3405,11 @@ function generarEntregableTarea(tarea, cli, mensajeUsuario) {
   const titulo = (nombreBaseTarea(tarea) || tarea.titulo || '').toLowerCase();
   const esJME1Menu = cli?.id === JM_CLI_ID && /auditor|menú|menu|bloques|e1/i.test(`${titulo} ${tarea.notas || ''}`);
   const esMovaD1 = esTareaMovaAuthDia1(tarea) || (esTareaMovaAuth(tarea) && /inventario|m[oó]dulos?/i.test(`${titulo} ${tarea.notas || ''} ${mensajeUsuario || ''}`));
+  const esMovaD2 = esTareaMovaAuthDia2(tarea) || (esTareaMovaAuth(tarea) && /reglas?|mova_auth|validador|acuerdo/i.test(`${titulo} ${tarea.notas || ''} ${mensajeUsuario || ''}`));
 
+  if (esMovaD2 && (tipo === 'documento' || /reglas?|mova_auth|acuerdo|validador/i.test(mensajeUsuario || ''))) {
+    return reglasMovaAuth(tarea, cli, mensajeUsuario);
+  }
   if (esMovaD1 && (tipo === 'inventario' || /inventario|m[oó]dulos?|acme-chile|cPanel|public_html/i.test(mensajeUsuario || ''))) {
     return inventarioModulosMova(tarea, cli, mensajeUsuario);
   }
