@@ -20,6 +20,8 @@ C_MUTED = RGBColor(0x65, 0x6D, 0x76)
 C_OK = RGBColor(0x1A, 0x7F, 0x37)
 C_WARN = RGBColor(0xBF, 0x3F, 0x00)
 C_HIGHLIGHT = RGBColor(0xFF, 0xF8, 0xC5)
+C_N8N = RGBColor(0x6F, 0x42, 0xC1)
+C_N8N_LIGHT = RGBColor(0xE8, 0xE0, 0xF8)
 
 SLIDE_W = Inches(13.333)
 SLIDE_H = Inches(7.5)
@@ -361,6 +363,76 @@ def slide_siguiente(prs):
                 "Entregables: MOVA-D1-Inventario-Status.pptx · MOVA-D1-Inventario-Status.pdf", size=14, color=C_MUTED)
 
 
+def slide_n8n_solicitud(prs):
+    """Slide final: qué pedir al equipo n8n (sin necesidad de acceso propio)."""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide)
+    add_header_bar(slide, "Qué necesitamos de n8n", "Para el equipo que administra n8n · complemento al inventario")
+
+    # Badge: no bloquea
+    badge = add_round_box(slide, Inches(10.2), Inches(1.12), Inches(2.55), Inches(0.42), C_N8N_LIGHT, C_N8N)
+    add_textbox(slide, Inches(10.2), Inches(1.17), Inches(2.55), Inches(0.32), "No bloquea Día 1", size=10, bold=True, color=C_N8N, align=PP_ALIGN.CENTER)
+
+    pasos = [
+        ("1", "Listar workflows activos", "Todos los que sirven a acme-chile.cl o módulos M."),
+        ("2", "URL de cada webhook", "Copiar la URL completa del endpoint (producción)."),
+        ("3", "Módulo que lo usa", "Portal MOVA, ERP, AXON, RRHH, documentos…"),
+        ("4", "¿Requiere auth?", "Token, API key, whitelist Google o sin validación."),
+        ("5", "Enviar tabla a MOVA", "Correo o carpeta compartida con el equipo técnico."),
+    ]
+    y = Inches(1.42)
+    for num, tit, desc in pasos:
+        circ = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(0.6), y + Inches(0.04), Inches(0.38), Inches(0.38))
+        circ.fill.solid()
+        circ.fill.fore_color.rgb = C_N8N
+        circ.line.fill.background()
+        add_textbox(slide, Inches(0.6), y + Inches(0.08), Inches(0.38), Inches(0.3), num, size=12, bold=True, color=C_WHITE, align=PP_ALIGN.CENTER)
+        card = add_round_box(slide, Inches(1.1), y, Inches(5.35), Inches(0.72), C_WHITE, C_N8N)
+        add_textbox(slide, Inches(1.25), y + Inches(0.06), Inches(5.1), Inches(0.28), tit, size=12, bold=True, color=C_N8N)
+        add_textbox(slide, Inches(1.25), y + Inches(0.32), Inches(5.1), Inches(0.35), desc, size=10, color=C_TEXT)
+        y += Inches(0.82)
+
+    # Panel derecho: diagrama + plantilla tabla
+    panel = add_round_box(slide, Inches(6.75), Inches(1.42), Inches(6.05), Inches(4.85), C_N8N_LIGHT, C_N8N, 2)
+    add_textbox(slide, Inches(6.95), Inches(1.55), Inches(5.6), Inches(0.3), "Flujo visual", size=13, bold=True, color=C_N8N)
+
+    # Diagrama: módulos → n8n → respuesta
+    mods = [("Portal", 7.0), ("ERP", 8.15), ("AXON", 9.3)]
+    for label, x in mods:
+        mbox = add_round_box(slide, Inches(x), Inches(2.0), Inches(0.95), Inches(0.45), C_WHITE, C_ACCENT)
+        add_textbox(slide, Inches(x), Inches(2.08), Inches(0.95), Inches(0.3), label, size=9, bold=True, color=C_ACCENT_DARK, align=PP_ALIGN.CENTER)
+    n8n_box = add_round_box(slide, Inches(8.0), Inches(2.75), Inches(3.5), Inches(0.65), C_N8N)
+    add_textbox(slide, Inches(8.0), Inches(2.9), Inches(3.5), Inches(0.35), "n8n · webhooks", size=14, bold=True, color=C_WHITE, align=PP_ALIGN.CENTER)
+    for x in [7.45, 8.6, 9.75]:
+        add_connector(slide, Inches(x) + Inches(0.47), Inches(2.45), Inches(9.75), Inches(2.75), C_N8N)
+    arrow = slide.shapes.add_shape(MSO_SHAPE.DOWN_ARROW, Inches(9.55), Inches(3.5), Inches(0.35), Inches(0.35))
+    arrow.fill.solid()
+    arrow.fill.fore_color.rgb = C_N8N
+    arrow.line.fill.background()
+    resp = add_round_box(slide, Inches(7.85), Inches(3.95), Inches(3.8), Inches(0.5), C_WHITE, C_N8N)
+    add_textbox(slide, Inches(7.85), Inches(4.05), Inches(3.8), Inches(0.3), "Respuesta al módulo (datos / validación)", size=10, bold=True, color=C_N8N, align=PP_ALIGN.CENTER)
+
+    # Mini tabla plantilla
+    add_textbox(slide, Inches(6.95), Inches(4.65), Inches(5.6), Inches(0.28), "Plantilla a completar", size=11, bold=True, color=C_N8N)
+    headers = ["Webhook URL", "Módulo", "Auth", "Notas"]
+    xs = [Inches(6.95), Inches(9.05), Inches(10.35), Inches(11.35)]
+    for i, h in enumerate(headers):
+        add_round_box(slide, xs[i], Inches(5.0), Inches(1.0 if i < 3 else 1.35), Inches(0.32), C_N8N, C_N8N)
+        add_textbox(slide, xs[i], Inches(5.04), Inches(1.0 if i < 3 else 1.35), Inches(0.25), h, size=7, bold=True, color=C_WHITE, align=PP_ALIGN.CENTER)
+    for row_y in [Inches(5.38), Inches(5.72)]:
+        for i, x in enumerate(xs):
+            w = Inches(1.0 if i < 3 else 1.35)
+            add_round_box(slide, x, row_y, w, Inches(0.28), C_WHITE, C_MUTED)
+            add_textbox(slide, x, row_y + Inches(0.04), w, Inches(0.2), "…", size=8, color=C_MUTED, align=PP_ALIGN.CENTER)
+
+    # Pie: hito paralelo + mensaje clave
+    box = add_round_box(slide, Inches(0.55), Inches(6.35), Inches(12.2), Inches(0.72), C_HIGHLIGHT, C_N8N)
+    add_textbox(slide, Inches(0.75), Inches(6.48), Inches(11.8), Inches(0.45),
+                "Hito paralelo (opcional): backup semanal de workflows → repo privado mova-n8n-workflows en GitHub.\n"
+                "Tú puedes seguir con mova_auth (Días 2–7) sin entrar a n8n.",
+                size=11, bold=True, color=C_ACCENT_DARK)
+
+
 def main():
     prs = Presentation()
     prs.slide_width = SLIDE_W
@@ -373,6 +445,7 @@ def main():
     slide_cpanel(prs)
     slide_localstorage(prs)
     slide_siguiente(prs)
+    slide_n8n_solicitud(prs)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     prs.save(str(OUT))
     print(f"PPT generado: {OUT}")

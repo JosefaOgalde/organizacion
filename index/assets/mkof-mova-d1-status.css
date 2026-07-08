@@ -414,6 +414,172 @@
   background: #fff;
 }
 
+/* Slide n8n — qué pedir al equipo */
+.mova-d1-status__n8n {
+  border-color: #c4b0d8;
+}
+
+.mova-d1-status__n8n-badge {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: #e8e0f8;
+  border: 1px solid #6f42c1;
+  color: #6f42c1;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.mova-d1-status__n8n-grid {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+@media (min-width: 720px) {
+  .mova-d1-status__n8n-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.mova-d1-status__n8n-pasos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: n8n-step;
+}
+
+.mova-d1-status__n8n-pasos li {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0.5rem 0.65rem;
+  align-items: start;
+  margin-bottom: 0.55rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #d8c8ec;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.mova-d1-status__n8n-pasos li::before {
+  counter-increment: n8n-step;
+  content: counter(n8n-step);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: #6f42c1;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  grid-row: 1 / 3;
+}
+
+.mova-d1-status__n8n-pasos strong {
+  display: block;
+  grid-column: 2;
+  color: #6f42c1;
+  font-size: 0.88rem;
+}
+
+.mova-d1-status__n8n-pasos span {
+  grid-column: 2;
+  font-size: 0.8rem;
+  color: #444;
+}
+
+.mova-d1-status__n8n-visual {
+  padding: 0.85rem;
+  border-radius: 10px;
+  background: #f3eef8;
+  border: 2px solid #6f42c1;
+}
+
+.mova-d1-status__n8n-visual-tit {
+  margin: 0 0 0.6rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #6f42c1;
+}
+
+.mova-d1-status__n8n-flow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.mova-d1-status__n8n-mods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.mova-d1-status__n8n-mods span {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: #fff;
+  border: 1px solid #4a7a80;
+  color: #2a4a4e;
+}
+
+.mova-d1-status__n8n-core {
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  background: #6f42c1;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.mova-d1-status__n8n-resp {
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid #6f42c1;
+  color: #6f42c1;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.mova-d1-status__n8n-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.72rem;
+}
+
+.mova-d1-status__n8n-tabla th {
+  background: #6f42c1;
+  color: #fff;
+  padding: 0.35rem 0.4rem;
+  text-align: left;
+}
+
+.mova-d1-status__n8n-tabla td {
+  border: 1px solid #d8c8ec;
+  padding: 0.3rem 0.4rem;
+  background: #fff;
+  color: #656d76;
+}
+
+.mova-d1-status__n8n-pie {
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  background: #fff8c5;
+  border: 1px solid #6f42c1;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
 @media print {
   .mova-d1-status { background: #fff; }
   .mova-d1-status__main section { break-inside: avoid; }

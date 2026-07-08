@@ -207,6 +207,66 @@
       </ol>
       <p>Tarea: <code>index.html?tarea=mkof/02</code></p>
     </section>
+
+    <section class="mova-d1-status__n8n">
+      <h2>Qué necesitamos de n8n</h2>
+      <p class="mova-d1-status__explica-intro">
+        Para el equipo que administra n8n · complemento al inventario ·
+        <span class="mova-d1-status__n8n-badge">No bloquea Día 1</span>
+      </p>
+
+      <div class="mova-d1-status__n8n-grid">
+        <ol class="mova-d1-status__n8n-pasos">
+          <li>
+            <strong>Listar workflows activos</strong>
+            <span>Todos los que sirven a acme-chile.cl o módulos M.</span>
+          </li>
+          <li>
+            <strong>URL de cada webhook</strong>
+            <span>Copiar la URL completa del endpoint en producción.</span>
+          </li>
+          <li>
+            <strong>Módulo que lo usa</strong>
+            <span>Portal MOVA, ERP, AXON, RRHH, documentos…</span>
+          </li>
+          <li>
+            <strong>¿Requiere auth?</strong>
+            <span>Token, API key, whitelist Google o sin validación.</span>
+          </li>
+          <li>
+            <strong>Enviar tabla a MOVA</strong>
+            <span>Correo o carpeta compartida con el equipo técnico.</span>
+          </li>
+        </ol>
+
+        <div class="mova-d1-status__n8n-visual">
+          <p class="mova-d1-status__n8n-visual-tit">Flujo visual</p>
+          <div class="mova-d1-status__n8n-flow">
+            <div class="mova-d1-status__n8n-mods">
+              <span>Portal</span><span>ERP</span><span>AXON</span>
+            </div>
+            <div class="mova-d1-status__n8n-core">n8n · webhooks</div>
+            <div class="mova-d1-status__n8n-resp">Respuesta al módulo (datos / validación)</div>
+          </div>
+
+          <table class="mova-d1-status__n8n-tabla">
+            <thead>
+              <tr><th>Webhook URL</th><th>Módulo</th><th>Auth</th><th>Notas</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+              <tr><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="mova-d1-status__n8n-pie">
+        <strong>Hito paralelo (opcional):</strong> backup semanal de workflows → repo privado
+        <code>mova-n8n-workflows</code> en GitHub.
+        Puedes seguir con <code>mova_auth</code> (Días 2–7) sin entrar a n8n.
+      </p>
+    </section>
   </main>
 
   <footer class="mova-d1-status__foot">
