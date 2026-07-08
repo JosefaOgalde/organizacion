@@ -197,6 +197,24 @@
       </div>
     </section>
 
+    <section class="mova-d1-status__storage">
+      <h2>DevTools · Local Storage</h2>
+      <p class="mova-d1-status__explica-intro">Sesión en <code>https://acme-chile.cl/mova/</code></p>
+      <div class="mova-d1-status__storage-block">
+        <h3>Origen acme-chile.cl</h3>
+        <p>Clave: <code>axon_chats</code> → historial chats widget AXON</p>
+      </div>
+      <div class="mova-d1-status__storage-block">
+        <h3>Origen accounts.google.com (terceros)</h3>
+        <p>Sesión Google OAuth — fuera del top-level site</p>
+      </div>
+      <p>No se detectó clave <code>jwt</code> / <code>token</code> / <code>access_token</code> en acme-chile.cl.<br>
+      Sesión principal: Google OAuth + cookies.</p>
+      <p class="mova-d1-status__hallazgo">
+        <strong>Objetivo Día 2–7:</strong> unificar en <code>mova_auth</code> con cookie HttpOnly — sin JWT en cliente.
+      </p>
+    </section>
+
     <section>
       <h2>Próximo paso — Día 2</h2>
       <ol>

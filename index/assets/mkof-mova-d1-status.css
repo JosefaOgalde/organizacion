@@ -253,6 +253,21 @@
   color: #2a4a4e;
 }
 
+.mova-d1-status__storage-block {
+  margin-bottom: 0.75rem;
+}
+
+.mova-d1-status__storage-block h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  color: #2a4a4e;
+}
+
+.mova-d1-status__storage-block p {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
 .mova-d1-status__foot {
   text-align: center;
   padding: 1rem;

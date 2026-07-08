@@ -1,0 +1,480 @@
+/* MOVA D1 — PDF slide deck (1 página = 1 slide del PPT) */
+@page {
+  size: 13.333in 7.5in;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #1f2328;
+  background: #fff;
+}
+
+.mova-d1-pdf__slide {
+  width: 13.333in;
+  height: 7.5in;
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+  break-after: page;
+  background: #e8f6f8;
+}
+
+.mova-d1-pdf__slide:last-child {
+  page-break-after: auto;
+}
+
+.mova-d1-pdf__bar {
+  background: #4a7a80;
+  color: #fff;
+  padding: 0.28in 0.45in 0.22in;
+}
+
+.mova-d1-pdf__bar h2 {
+  margin: 0;
+  font-size: 22pt;
+  font-weight: 700;
+}
+
+.mova-d1-pdf__bar p {
+  margin: 0.06in 0 0;
+  font-size: 11pt;
+  opacity: 0.92;
+}
+
+.mova-d1-pdf__body {
+  padding: 0.32in 0.45in 0.4in;
+}
+
+/* Slide 1 — portada */
+.mova-d1-pdf__slide--title {
+  background: linear-gradient(135deg, #2a4a4e, #4a7a80);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.8in 0.75in;
+}
+
+.mova-d1-pdf__slide--title .eyebrow {
+  margin: 0 0 0.15in;
+  font-size: 13pt;
+  color: #a8d8dc;
+  letter-spacing: 0.08em;
+}
+
+.mova-d1-pdf__slide--title h1 {
+  margin: 0 0 0.2in;
+  font-size: 40pt;
+  line-height: 1.1;
+}
+
+.mova-d1-pdf__slide--title .sub {
+  margin: 0;
+  font-size: 17pt;
+  color: #e8f6f8;
+}
+
+.mova-d1-pdf__slide--title .meta {
+  margin: 0.35in 0 0;
+  font-size: 11pt;
+  color: #a8d8dc;
+}
+
+.mova-d1-pdf__slide--title .badge {
+  display: inline-block;
+  margin-top: 0.45in;
+  padding: 0.12in 0.22in;
+  background: #fff8c5;
+  color: #2a4a4e;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13pt;
+}
+
+/* Listas y texto */
+.mova-d1-pdf__bullets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mova-d1-pdf__bullets li {
+  margin: 0 0 0.14in;
+  padding-left: 0.22in;
+  font-size: 13pt;
+  line-height: 1.35;
+  position: relative;
+}
+
+.mova-d1-pdf__bullets li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #4a7a80;
+  font-weight: bold;
+}
+
+.mova-d1-pdf__check {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mova-d1-pdf__check li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15in;
+  margin-bottom: 0.12in;
+  font-size: 13pt;
+}
+
+.mova-d1-pdf__check .mark { font-weight: 800; width: 0.25in; }
+.mova-d1-pdf__check .ok { color: #1a7f37; }
+.mova-d1-pdf__check .pend { color: #bf3f00; }
+
+.mova-d1-pdf__footer-note {
+  position: absolute;
+  left: 0.45in;
+  right: 0.45in;
+  bottom: 0.35in;
+  font-size: 12pt;
+  font-weight: 700;
+  color: #2a4a4e;
+}
+
+.mova-d1-pdf__warn {
+  color: #bf3f00;
+  font-weight: 700;
+}
+
+/* Tabla módulos */
+.mova-d1-pdf__tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.5pt;
+}
+
+.mova-d1-pdf__tabla th {
+  text-align: left;
+  color: #2a4a4e;
+  font-size: 10pt;
+  padding: 0.06in 0.08in 0.1in;
+  border-bottom: 2px solid #4a7a80;
+}
+
+.mova-d1-pdf__tabla td {
+  padding: 0.07in 0.08in;
+  border-bottom: 1px solid #d0e8ec;
+  vertical-align: top;
+}
+
+.mova-d1-pdf__tabla .no { color: #cf222e; font-weight: 700; }
+.mova-d1-pdf__tabla .parcial { color: #bf3f00; font-weight: 700; }
+
+/* Tarjetas 4 columnas */
+.mova-d1-pdf__cards4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.12in;
+  margin-bottom: 0.2in;
+}
+
+.mova-d1-pdf__card {
+  background: #fff;
+  border: 1px solid #4a7a80;
+  border-radius: 8px;
+  padding: 0.12in 0.14in;
+  min-height: 1.1in;
+}
+
+.mova-d1-pdf__card h3 {
+  margin: 0 0 0.06in;
+  font-size: 10pt;
+  color: #2a4a4e;
+}
+
+.mova-d1-pdf__card p {
+  margin: 0;
+  font-size: 8.5pt;
+  line-height: 1.35;
+}
+
+/* Diagrama login */
+.mova-d1-pdf__flow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0.15in;
+  align-items: center;
+  margin: 0.15in 0;
+}
+
+.mova-d1-pdf__flow h4 {
+  margin: 0 0 0.08in;
+  font-size: 10pt;
+}
+
+.mova-d1-pdf__flow h4.warn { color: #bf3f00; }
+.mova-d1-pdf__flow h4.ok { color: #1a7f37; }
+
+.mova-d1-pdf__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.06in;
+}
+
+.mova-d1-pdf__chips span {
+  padding: 0.05in 0.1in;
+  border-radius: 5px;
+  font-size: 8pt;
+  font-weight: 700;
+}
+
+.mova-d1-pdf__chips--warn span {
+  background: #ffe8d6;
+  border: 1px solid #bf3f00;
+  color: #8a2f00;
+}
+
+.mova-d1-pdf__gate {
+  padding: 0.1in;
+  text-align: center;
+  background: #d4edda;
+  border: 2px solid #1a7f37;
+  border-radius: 8px;
+  font-size: 10pt;
+  font-weight: 700;
+  color: #145a24;
+}
+
+.mova-d1-pdf__highlight {
+  margin: 0.12in 0;
+  padding: 0.14in 0.18in;
+  background: #fff8c5;
+  border: 1px solid #4a7a80;
+  border-radius: 8px;
+  font-size: 11pt;
+  font-weight: 700;
+  color: #2a4a4e;
+}
+
+.mova-d1-pdf__chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.08in;
+  align-items: center;
+  font-size: 9pt;
+}
+
+.mova-d1-pdf__chip-row .chip {
+  padding: 0.04in 0.12in;
+  border-radius: 999px;
+  border: 1px solid;
+  font-weight: 700;
+  background: #fff;
+}
+
+.chip--ok { color: #1a7f37; border-color: #1a7f37; }
+.chip--no { color: #bf3f00; border-color: #bf3f00; }
+.chip--muted { color: #656d76; border-color: #656d76; }
+
+/* cPanel mapa compacto */
+.mova-d1-pdf__root {
+  text-align: center;
+  background: #2a4a4e;
+  color: #fff;
+  padding: 0.1in;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 11pt;
+  margin-bottom: 0.12in;
+}
+
+.mova-d1-pdf__cpanel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.12in;
+}
+
+.mova-d1-pdf__folder {
+  border-radius: 8px;
+  border: 2px solid;
+  padding: 0.1in;
+  background: #fff;
+  font-size: 7.5pt;
+}
+
+.mova-d1-pdf__folder--mova { border-color: #4a7a80; }
+.mova-d1-pdf__folder--auth { border-color: #9a7ab8; }
+
+.mova-d1-pdf__folder h3 {
+  margin: 0 0 0.08in;
+  padding: 0.06in 0.1in;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 9pt;
+}
+
+.mova-d1-pdf__folder--mova h3 { background: #4a7a80; }
+.mova-d1-pdf__folder--auth h3 { background: #9a7ab8; }
+
+.mova-d1-pdf__folder .chips span {
+  display: inline-block;
+  margin: 0.03in;
+  padding: 0.03in 0.06in;
+  border-radius: 4px;
+  border: 1px solid #d0e8ec;
+  background: #f8fcfd;
+}
+
+.mova-d1-pdf__folder .chips span.hl {
+  background: #fff8c5;
+  border-color: #bf3f00;
+  font-weight: 800;
+}
+
+/* Local storage */
+.mova-d1-pdf__block {
+  margin-bottom: 0.18in;
+}
+
+.mova-d1-pdf__block h3 {
+  margin: 0 0 0.06in;
+  font-size: 13pt;
+  color: #2a4a4e;
+}
+
+.mova-d1-pdf__block p {
+  margin: 0;
+  font-size: 12pt;
+  padding-left: 0.12in;
+}
+
+/* n8n slide */
+.mova-d1-pdf__n8n-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 0.15in;
+}
+
+.mova-d1-pdf__n8n-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mova-d1-pdf__n8n-steps li {
+  display: grid;
+  grid-template-columns: 0.28in 1fr;
+  gap: 0.1in;
+  margin-bottom: 0.08in;
+  padding: 0.08in;
+  background: #fff;
+  border: 1px solid #c4b0d8;
+  border-radius: 6px;
+  font-size: 8.5pt;
+}
+
+.mova-d1-pdf__n8n-steps .num {
+  width: 0.28in;
+  height: 0.28in;
+  border-radius: 50%;
+  background: #6f42c1;
+  color: #fff;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9pt;
+}
+
+.mova-d1-pdf__n8n-steps strong {
+  display: block;
+  color: #6f42c1;
+  font-size: 9pt;
+}
+
+.mova-d1-pdf__n8n-panel {
+  background: #f3eef8;
+  border: 2px solid #6f42c1;
+  border-radius: 8px;
+  padding: 0.12in;
+  font-size: 8pt;
+}
+
+.mova-d1-pdf__n8n-panel h4 {
+  margin: 0 0 0.08in;
+  color: #6f42c1;
+  font-size: 10pt;
+}
+
+.mova-d1-pdf__n8n-flow {
+  text-align: center;
+  margin-bottom: 0.1in;
+}
+
+.mova-d1-pdf__n8n-flow .mods span {
+  display: inline-block;
+  margin: 0.03in;
+  padding: 0.04in 0.08in;
+  border: 1px solid #4a7a80;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 7.5pt;
+}
+
+.mova-d1-pdf__n8n-core {
+  margin: 0.06in 0;
+  padding: 0.08in;
+  background: #6f42c1;
+  color: #fff;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.mova-d1-pdf__mini-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 7pt;
+}
+
+.mova-d1-pdf__mini-tabla th {
+  background: #6f42c1;
+  color: #fff;
+  padding: 0.04in;
+}
+
+.mova-d1-pdf__mini-tabla td {
+  border: 1px solid #d8c8ec;
+  padding: 0.04in;
+  background: #fff;
+}
+
+.mova-d1-pdf__badge-n8n {
+  display: inline-block;
+  padding: 0.04in 0.12in;
+  border-radius: 999px;
+  background: #e8e0f8;
+  border: 1px solid #6f42c1;
+  color: #6f42c1;
+  font-size: 8pt;
+  font-weight: 700;
+  margin-left: 0.1in;
+}
+
+@media screen {
+  body {
+    background: #ccc;
+    padding: 0.5in 0;
+  }
+  .mova-d1-pdf__slide {
+    margin: 0 auto 0.5in;
+    box-shadow: 0 4px 24px rgba(0,0,0,.2);
+  }
+}
