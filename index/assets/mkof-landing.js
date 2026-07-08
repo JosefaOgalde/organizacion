@@ -121,6 +121,10 @@
     return `<section class="ficha-seccion ficha-seccion--portal">
         <h2>Guías en curso · MOVA</h2>
         <p style="margin:0 0 0.85rem;font-size:0.9rem">
+          <a href="MOVA-D1-Inventario-Status.pdf" target="_blank" rel="noopener">⬇ PDF Día 1 Status</a>
+          ·
+          <a href="MOVA-D1-Inventario-Status.pptx" download>PPT Día 1 Status</a>
+          ·
           <a href="MOVA-GitHub-Paso1-Crear-Cuenta.pdf" target="_blank" rel="noopener">⬇ PDF Paso 1</a>
           ·
           <a href="MOVA-GitHub-Paso1-Crear-Cuenta.pptx" download>PPT Paso 1</a>

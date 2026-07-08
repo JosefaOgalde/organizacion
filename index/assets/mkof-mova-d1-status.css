@@ -1,0 +1,132 @@
+/* MOVA · Día 1 status — impresión / PDF */
+.mova-d1-status {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #1f2328;
+  background: #f4fafb;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.mova-d1-status__hero {
+  background: linear-gradient(135deg, #2a4a4e, #4a7a80);
+  color: #fff;
+  padding: 2rem 2.5rem 2.25rem;
+}
+
+.mova-d1-status__eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  opacity: 0.85;
+}
+
+.mova-d1-status h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.85rem;
+}
+
+.mova-d1-status__sub {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.mova-d1-status__badge {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.35rem 0.85rem;
+  background: #fff8c5;
+  color: #2a4a4e;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.mova-d1-status__main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 2rem;
+}
+
+.mova-d1-status__main section {
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.mova-d1-status h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  color: #2a4a4e;
+}
+
+.mova-d1-status ul,
+.mova-d1-status ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.mova-d1-status li {
+  margin-bottom: 0.35rem;
+}
+
+.mova-d1-status__tabla,
+.mova-d1-status__check {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.mova-d1-status__tabla th,
+.mova-d1-status__tabla td,
+.mova-d1-status__check td {
+  border: 1px solid #e6eaef;
+  padding: 0.45rem 0.55rem;
+  text-align: left;
+}
+
+.mova-d1-status__tabla th {
+  background: #e8f6f8;
+  color: #2a4a4e;
+}
+
+.mova-d1-status__check td:first-child {
+  width: 2rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.mova-d1-status__check .ok { color: #1a7f37; }
+.mova-d1-status__check .pend { color: #bf3f00; }
+
+.mova-d1-status .no { color: #cf222e; font-weight: 600; }
+.mova-d1-status .parcial { color: #bf3f00; font-weight: 600; }
+
+.mova-d1-status__nota {
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  color: #656d76;
+}
+
+.mova-d1-status__tree {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background: #f6f8fa;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  overflow-x: auto;
+}
+
+.mova-d1-status__foot {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.8rem;
+  color: #656d76;
+}
+
+@media print {
+  .mova-d1-status { background: #fff; }
+  .mova-d1-status__main section { break-inside: avoid; }
+}

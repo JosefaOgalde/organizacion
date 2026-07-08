@@ -1,0 +1,215 @@
+#!/usr/bin/env python3
+"""Genera PPT: MOVA · Día 1 — Status inventario módulos (acme-chile.cl)."""
+
+from pathlib import Path
+
+from pptx import Presentation
+from pptx.dml.color import RGBColor
+from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.util import Inches, Pt
+
+OUT = Path(__file__).resolve().parent.parent / "index/clientes/mkof/MOVA-D1-Inventario-Status.pptx"
+
+C_BG = RGBColor(0xE8, 0xF6, 0xF8)
+C_ACCENT = RGBColor(0x4A, 0x7A, 0x80)
+C_ACCENT_DARK = RGBColor(0x2A, 0x4A, 0x4E)
+C_WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+C_TEXT = RGBColor(0x1F, 0x23, 0x28)
+C_MUTED = RGBColor(0x65, 0x6D, 0x76)
+C_OK = RGBColor(0x1A, 0x7F, 0x37)
+C_WARN = RGBColor(0xBF, 0x3F, 0x00)
+C_HIGHLIGHT = RGBColor(0xFF, 0xF8, 0xC5)
+
+SLIDE_W = Inches(13.333)
+SLIDE_H = Inches(7.5)
+
+MODULOS = [
+    ("Portal MOVA", "/mova/", "Google OAuth", "sí · axon_chats", "no", "Producción"),
+    ("mova_auth", "/mova_auth/login.php", "PHP correo+clave", "pendiente", "parcial", "No gate del panel"),
+    ("MOVA ERP", "/mova/erp/", "Contraseña local", "pendiente", "no", "Login aparte"),
+    ("AXON", "/axon/", "Sin login visible", "pendiente", "no", "Chat directo"),
+    ("RRHH", "/rrhh/", "403 Forbidden", "n/a", "no", "Sin index público"),
+    ("Documentos", "/documentos/", "Público", "no", "n/a", "Playbooks"),
+]
+
+CHECKLIST = [
+    ("Acceso cPanel GoDaddy", True),
+    ("Árbol public_html/acme-chile.cl/", True),
+    ("Auth documentada (módulos revisados)", True),
+    ("localStorage en /mova/ (axon_chats)", True),
+    ("n8n — delegado equipo n8n", True),
+    ("Compartir status con equipo técnico", False),
+    ("Marcar tarea mkof/01 completada", False),
+]
+
+
+def set_slide_bg(slide, color=C_BG):
+    fill = slide.background.fill
+    fill.solid()
+    fill.fore_color.rgb = color
+
+
+def add_textbox(slide, left, top, width, height, text, size=18, bold=False, color=C_TEXT, align=PP_ALIGN.LEFT):
+    box = slide.shapes.add_textbox(left, top, width, height)
+    tf = box.text_frame
+    tf.word_wrap = True
+    p = tf.paragraphs[0]
+    p.text = text
+    p.font.size = Pt(size)
+    p.font.bold = bold
+    p.font.color.rgb = color
+    p.alignment = align
+    return box
+
+
+def add_header_bar(slide, title, subtitle=""):
+    bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), SLIDE_W, Inches(1.05))
+    bar.fill.solid()
+    bar.fill.fore_color.rgb = C_ACCENT
+    bar.line.fill.background()
+    add_textbox(slide, Inches(0.55), Inches(0.18), Inches(11), Inches(0.5), title, size=24, bold=True, color=C_WHITE)
+    if subtitle:
+        add_textbox(slide, Inches(0.55), Inches(0.62), Inches(11), Inches(0.35), subtitle, size=13, color=C_BG)
+
+
+def slide_title(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, C_ACCENT_DARK)
+    add_textbox(slide, Inches(0.8), Inches(1.4), Inches(11.5), Inches(0.5), "MOVA · Día 1 — Status", size=20, color=RGBColor(0xA8, 0xD8, 0xDC))
+    add_textbox(slide, Inches(0.8), Inches(2.0), Inches(11.5), Inches(1.0), "Inventario módulos M", size=44, bold=True, color=C_WHITE)
+    add_textbox(slide, Inches(0.8), Inches(3.1), Inches(11.5), Inches(0.7), "acme-chile.cl · public_html/acme-chile.cl/", size=24, color=C_BG)
+    add_textbox(slide, Inches(0.8), Inches(4.0), Inches(11.5), Inches(0.5), "Tarea organizador: index.html?tarea=mkof/01", size=16, color=RGBColor(0xA8, 0xD8, 0xDC))
+    add_textbox(slide, Inches(0.8), Inches(4.6), Inches(11.5), Inches(0.5), "Actualizado: 8 jul 2026 · GRUPO MAKING OF", size=14, color=C_MUTED)
+    add_textbox(slide, Inches(0.8), Inches(5.8), Inches(11.5), Inches(0.6), "Estado: EN PROGRESO — listo para cierre formal", size=18, bold=True, color=C_HIGHLIGHT)
+
+
+def slide_resumen(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide)
+    add_header_bar(slide, "Resumen ejecutivo", "Día 1 · solo inventario — sin tocar código")
+    items = [
+        "Ruta real del sitio: public_html/acme-chile.cl/ (no en raíz de public_html).",
+        "Problema confirmado: login FRAGMENTADO (Google + mova_auth PHP + contraseña ERP).",
+        "Panel MOVA (/mova/) usa Google OAuth — NO pasa por mova_auth.",
+        "localStorage en acme-chile.cl: clave axon_chats (widget AXON). Sin jwt/token visible.",
+        "n8n: pendiente del equipo que lo administra (no bloquea este status).",
+        "/pruebas/ queda fuera de alcance — era etapa 1, producción es /mova/.",
+    ]
+    y = Inches(1.45)
+    for b in items:
+        add_textbox(slide, Inches(0.85), y, Inches(11.5), Inches(0.55), f"•  {b}", size=17, color=C_TEXT)
+        y += Inches(0.58)
+
+
+def slide_checklist(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide)
+    add_header_bar(slide, "Checklist Día 1", "Criterio de cierre")
+    y = Inches(1.5)
+    for label, ok in CHECKLIST:
+        mark = "✓" if ok else "○"
+        col = C_OK if ok else C_WARN
+        add_textbox(slide, Inches(0.85), y, Inches(0.5), Inches(0.4), mark, size=20, bold=True, color=col)
+        add_textbox(slide, Inches(1.35), y, Inches(10.5), Inches(0.4), label, size=18, color=C_TEXT)
+        y += Inches(0.52)
+    done = sum(1 for _, ok in CHECKLIST if ok)
+    add_textbox(slide, Inches(0.85), Inches(6.2), Inches(11), Inches(0.45),
+                f"Avance: {done}/{len(CHECKLIST)} ítems · Faltan: compartir + marcar tarea", size=16, bold=True, color=C_ACCENT_DARK)
+
+
+def slide_tabla(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide)
+    add_header_bar(slide, "Módulos revisados en navegador", "https://acme-chile.cl/")
+    headers = ["Módulo", "URL", "Auth", "localStorage", "mova_auth"]
+    xs = [Inches(0.6), Inches(2.5), Inches(5.8), Inches(8.2), Inches(10.5)]
+    for i, h in enumerate(headers):
+        add_textbox(slide, xs[i], Inches(1.35), Inches(2.2), Inches(0.35), h, size=12, bold=True, color=C_ACCENT_DARK)
+    y = Inches(1.75)
+    for mod, url, auth, jwt, mova, nota in MODULOS:
+        add_textbox(slide, xs[0], y, Inches(1.8), Inches(0.32), mod, size=11, bold=True, color=C_TEXT)
+        add_textbox(slide, xs[1], y, Inches(3.2), Inches(0.32), url, size=10, color=C_MUTED)
+        add_textbox(slide, xs[2], y, Inches(2.3), Inches(0.32), auth, size=10, color=C_TEXT)
+        add_textbox(slide, xs[3], y, Inches(2.1), Inches(0.32), jwt, size=10, color=C_TEXT)
+        add_textbox(slide, xs[4], y, Inches(1.5), Inches(0.32), mova, size=10, color=C_TEXT)
+        y += Inches(0.38)
+    add_textbox(slide, Inches(0.6), Inches(6.0), Inches(12), Inches(0.5),
+                "Conclusión: ningún módulo M revisado usa mova_auth como único validador.", size=14, bold=True, color=C_WARN)
+
+
+def slide_cpanel(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide)
+    add_header_bar(slide, "Estructura cPanel", "public_html/acme-chile.cl/")
+    tree = """admin · axon · axon-news · Boletin_Axon · crm · documentos
+gamkof · gestion/eerr · js · multimedia · mova/ · mova_auth/
+operaciones · rrhh · skill
+
+mova/ → agencia · brief · cotizador · cuentas · doc · erp · estudios
+facturas · forecast · negocios · oc · operacion · restringido · seo
+strack · suscripciones · versiones_anteriores
+
+mova_auth/ → auth.php · config.php · google_login.php · login.php
+logout.php · panel.php · setup.sql"""
+    add_textbox(slide, Inches(0.75), Inches(1.4), Inches(11.5), Inches(5.2), tree, size=15, color=C_TEXT)
+    add_textbox(slide, Inches(0.75), Inches(6.0), Inches(11.5), Inches(0.45),
+                "No hay MAESTRO/INGRESOS/EGRESOS en raíz — ERP bajo mova/erp/", size=14, bold=True, color=C_ACCENT)
+
+
+def slide_localstorage(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide)
+    add_header_bar(slide, "DevTools · Local Storage", "Sesión en https://acme-chile.cl/mova/")
+    add_textbox(slide, Inches(0.8), Inches(1.5), Inches(11.5), Inches(0.5), "Origen acme-chile.cl", size=18, bold=True, color=C_ACCENT_DARK)
+    add_textbox(slide, Inches(0.9), Inches(2.1), Inches(11), Inches(0.45), "Clave: axon_chats  →  historial chats widget AXON", size=17, color=C_TEXT)
+    add_textbox(slide, Inches(0.8), Inches(2.9), Inches(11.5), Inches(0.5), "Origen accounts.google.com (terceros)", size=18, bold=True, color=C_ACCENT_DARK)
+    add_textbox(slide, Inches(0.9), Inches(3.5), Inches(11), Inches(0.45), "Sesión Google OAuth — fuera del top-level site", size=17, color=C_TEXT)
+    add_textbox(slide, Inches(0.8), Inches(4.3), Inches(11.5), Inches(0.9),
+                "No se detectó clave jwt / token / access_token en acme-chile.cl.\nSesión principal: Google OAuth + cookies.", size=16, color=C_TEXT)
+    box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.75), Inches(5.5), Inches(11.8), Inches(1.0))
+    box.fill.solid()
+    box.fill.fore_color.rgb = C_HIGHLIGHT
+    box.line.color.rgb = C_ACCENT
+    add_textbox(slide, Inches(0.95), Inches(5.65), Inches(11.4), Inches(0.7),
+                "Objetivo Día 2–7: unificar en mova_auth con cookie HttpOnly — sin JWT en cliente.", size=15, bold=True, color=C_ACCENT_DARK)
+
+
+def slide_siguiente(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide)
+    add_header_bar(slide, "Próximo paso — Día 2", "mkof/02 · Acuerdo + diseño mova_auth")
+    pasos = [
+        "1. Documento «Reglas-mova_auth» — regla: si no pasó por mova_auth, no entra.",
+        "2. Lista de 6 archivos PHP: config, session, login, validate, guard, logout.",
+        "3. Elegir módulo sandbox para migración (Día 5) — sugerencia: módulo simple bajo /mova/.",
+        "4. Solicitar al equipo n8n listado de webhooks por módulo (complemento inventario).",
+        "5. Marcar Día 1 completado en organizador tras compartir este PPT/PDF.",
+    ]
+    y = Inches(1.5)
+    for p in pasos:
+        add_textbox(slide, Inches(0.85), y, Inches(11.5), Inches(0.55), p, size=17, color=C_TEXT)
+        y += Inches(0.62)
+    add_textbox(slide, Inches(0.85), Inches(5.8), Inches(11.5), Inches(0.5),
+                "Entregables: MOVA-D1-Inventario-Status.pptx · MOVA-D1-Inventario-Status.pdf", size=14, color=C_MUTED)
+
+
+def main():
+    prs = Presentation()
+    prs.slide_width = SLIDE_W
+    prs.slide_height = SLIDE_H
+    slide_title(prs)
+    slide_resumen(prs)
+    slide_checklist(prs)
+    slide_tabla(prs)
+    slide_cpanel(prs)
+    slide_localstorage(prs)
+    slide_siguiente(prs)
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    prs.save(str(OUT))
+    print(f"PPT generado: {OUT}")
+    print(f"Tamaño: {OUT.stat().st_size // 1024} KB")
+
+
+if __name__ == "__main__":
+    main()

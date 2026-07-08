@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOVA · Día 1 — Status inventario</title>
+  <link rel="stylesheet" href="../../assets/mkof-mova-d1-status.css">
+</head>
+<body class="mova-d1-status">
+  <header class="mova-d1-status__hero">
+    <p class="mova-d1-status__eyebrow">GRUPO MAKING OF · MOVA</p>
+    <h1>Día 1 — Status inventario módulos M</h1>
+    <p class="mova-d1-status__sub">acme-chile.cl · Tarea <code>mkof/01</code> · Actualizado 8 jul 2026</p>
+    <p class="mova-d1-status__badge">Estado: en progreso — listo para cierre formal</p>
+  </header>
+
+  <main class="mova-d1-status__main">
+    <section>
+      <h2>Resumen ejecutivo</h2>
+      <ul>
+        <li><strong>Ruta real:</strong> <code>public_html/acme-chile.cl/</code></li>
+        <li><strong>Problema confirmado:</strong> login fragmentado (Google + mova_auth PHP + contraseña ERP)</li>
+        <li><strong>Producción:</strong> <code>https://acme-chile.cl/mova/</code> — no usar <code>/pruebas/</code></li>
+        <li><strong>localStorage:</strong> clave <code>axon_chats</code> en <code>acme-chile.cl</code></li>
+        <li><strong>n8n:</strong> pendiente equipo n8n (no administra Josefa)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Checklist Día 1</h2>
+      <table class="mova-d1-status__check">
+        <tbody>
+          <tr><td class="ok">✓</td><td>Acceso cPanel GoDaddy</td></tr>
+          <tr><td class="ok">✓</td><td>Árbol <code>public_html/acme-chile.cl/</code></td></tr>
+          <tr><td class="ok">✓</td><td>Auth documentada (módulos revisados)</td></tr>
+          <tr><td class="ok">✓</td><td>localStorage en <code>/mova/</code> (<code>axon_chats</code>)</td></tr>
+          <tr><td class="ok">✓</td><td>n8n delegado al equipo correspondiente</td></tr>
+          <tr><td class="pend">○</td><td>Compartir status con equipo técnico</td></tr>
+          <tr><td class="pend">○</td><td>Marcar tarea <code>mkof/01</code> completada</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Módulos revisados</h2>
+      <table class="mova-d1-status__tabla">
+        <thead>
+          <tr>
+            <th>Módulo</th><th>URL</th><th>Auth</th><th>localStorage</th><th>mova_auth</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Portal MOVA</td>
+            <td>/mova/</td>
+            <td>Google OAuth</td>
+            <td>sí · axon_chats</td>
+            <td class="no">no</td>
+          </tr>
+          <tr>
+            <td>mova_auth</td>
+            <td>/mova_auth/login.php</td>
+            <td>PHP correo+clave</td>
+            <td>pendiente</td>
+            <td class="parcial">parcial</td>
+          </tr>
+          <tr>
+            <td>MOVA ERP</td>
+            <td>/mova/erp/</td>
+            <td>Contraseña local</td>
+            <td>pendiente</td>
+            <td class="no">no</td>
+          </tr>
+          <tr>
+            <td>AXON</td>
+            <td>/axon/</td>
+            <td>Sin login visible</td>
+            <td>pendiente</td>
+            <td class="no">no</td>
+          </tr>
+          <tr>
+            <td>RRHH</td>
+            <td>/rrhh/</td>
+            <td>403 Forbidden</td>
+            <td>n/a</td>
+            <td class="no">no</td>
+          </tr>
+          <tr>
+            <td>Documentos</td>
+            <td>/documentos/</td>
+            <td>Público</td>
+            <td>no</td>
+            <td>n/a</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="mova-d1-status__nota"><strong>Conclusión:</strong> ningún módulo M revisado usa mova_auth como único validador.</p>
+    </section>
+
+    <section>
+      <h2>Estructura cPanel (resumen)</h2>
+      <pre class="mova-d1-status__tree">public_html/acme-chile.cl/
+├── mova/          (agencia, erp, facturas, oc, …)
+├── mova_auth/     (login.php, auth.php, google_login.php, …)
+├── axon/ · rrhh/ · documentos/ · admin/ · skill/ …</pre>
+    </section>
+
+    <section>
+      <h2>Próximo paso — Día 2</h2>
+      <ol>
+        <li>Documento «Reglas-mova_auth»</li>
+        <li>6 archivos PHP núcleo acordados</li>
+        <li>Módulo sandbox para Día 5</li>
+        <li>Listado n8n del equipo técnico</li>
+      </ol>
+      <p>Tarea: <code>index.html?tarea=mkof/02</code></p>
+    </section>
+  </main>
+
+  <footer class="mova-d1-status__foot">
+  MOVA · Inventario Día 1 · GRUPO MAKING OF · acme-chile.cl
+  </footer>
+</body>
+</html>
