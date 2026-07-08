@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 """Genera PDF: MOVA · Día 1 — Status inventario.
 
-El PDF replica las 9 slides del PPT MOVA-D1-Inventario-Status.pptx
-(una página landscape por slide). Fuente HTML: mova-d1-status-pdf.html
+Por defecto convierte el PPT a PDF con LibreOffice (idéntico al .pptx).
+El HTML slide-deck solo se usa como respaldo (--html-fallback).
 
-Uso con tu PPT final en Downloads:
+En Windows (con PowerPoint instalado), usa en su lugar:
+  powershell -File scripts\\generar-pdf-mova-d1-status.ps1
+
+Con tu PPT final en Downloads:
   copy C:\\Users\\josef\\Downloads\\MOVA-D1-Inventario-Status.pptx index\\clientes\\mkof\\
   python scripts\\generar-pdf-mova-d1-status.py
 """
 
+from __future__ import annotations
+
 import argparse
 import http.server
+import shutil
 import socket
 import subprocess
 import sys
@@ -24,9 +30,16 @@ HTML_PATH = "/index/clientes/mkof/mova-d1-status-pdf.html"
 PPT_PATH = ROOT / "index/clientes/mkof/MOVA-D1-Inventario-Status.pptx"
 OUT_PDF = ROOT / "index/clientes/mkof/MOVA-D1-Inventario-Status.pdf"
 
-# Mismas dimensiones que el PPT widescreen (13.333" × 7.5")
 SLIDE_WIDTH = "13.333in"
 SLIDE_HEIGHT = "7.5in"
+
+SOFFICE_CANDIDATES = (
+    "soffice",
+    "libreoffice",
+    "soffice.exe",
+    r"C:\Program Files\LibreOffice\program\soffice.exe",
+    r"C:\Program Files (x86)\LibreOffice\program\soffice.exe",
+)
 
 
 def free_port():
@@ -45,6 +58,15 @@ def serve_root(port):
     return httpd
 
 
+def find_soffice() -> str | None:
+    for cmd in SOFFICE_CANDIDATES:
+        if Path(cmd).exists():
+            return cmd
+        if shutil.which(cmd):
+            return cmd
+    return None
+
+
 def count_ppt_slides(path: Path) -> int | None:
     try:
         from pptx import Presentation
@@ -53,23 +75,38 @@ def count_ppt_slides(path: Path) -> int | None:
         return None
 
 
-def try_convert_pptx_to_pdf(pptx: Path, out_pdf: Path) -> bool:
-    """Intenta LibreOffice si está instalado (opcional en Windows con LO)."""
-    for cmd in ("soffice", "libreoffice"):
-        try:
-            subprocess.run(
-                [cmd, "--headless", "--convert-to", "pdf", "--outdir", str(out_pdf.parent), str(pptx)],
-                check=True,
-                capture_output=True,
-                timeout=120,
-            )
-            generated = out_pdf.parent / f"{pptx.stem}.pdf"
-            if generated.exists() and generated != out_pdf:
-                generated.replace(out_pdf)
-            return out_pdf.exists()
-        except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
-            continue
-    return False
+def convert_pptx_to_pdf(pptx: Path, out_pdf: Path) -> bool:
+    soffice = find_soffice()
+    if not soffice:
+        return False
+
+    out_pdf.parent.mkdir(parents=True, exist_ok=True)
+    tmp_dir = out_pdf.parent
+    try:
+        subprocess.run(
+            [
+                soffice,
+                "--headless",
+                "--convert-to",
+                "pdf",
+                "--outdir",
+                str(tmp_dir),
+                str(pptx.resolve()),
+            ],
+            check=True,
+            capture_output=True,
+            timeout=180,
+        )
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError) as exc:
+        print(f"  Error LibreOffice: {exc}", file=sys.stderr)
+        return False
+
+    generated = tmp_dir / f"{pptx.stem}.pdf"
+    if not generated.exists():
+        return False
+    if generated.resolve() != out_pdf.resolve():
+        generated.replace(out_pdf)
+    return out_pdf.exists()
 
 
 def render_html_pdf(url: str, out_pdf: Path) -> None:
@@ -90,46 +127,66 @@ def render_html_pdf(url: str, out_pdf: Path) -> None:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Genera PDF alineado al PPT D1 MOVA")
-    parser.add_argument(
-        "--from-pptx",
-        action="store_true",
-        help="Intentar convertir el .pptx con LibreOffice (si está instalado)",
+    parser = argparse.ArgumentParser(
+        description="Genera PDF idéntico al PPT MOVA D1 (convierte el .pptx)"
     )
     parser.add_argument(
         "--pptx",
         type=Path,
         default=PPT_PATH,
-        help="Ruta al PPT fuente",
+        help="Ruta al PPT fuente (default: index/clientes/mkof/MOVA-D1-Inventario-Status.pptx)",
+    )
+    parser.add_argument(
+        "--html-fallback",
+        action="store_true",
+        help="Usar HTML slide-deck solo si LibreOffice no está disponible (no recomendado)",
+    )
+    parser.add_argument(
+        "--force-html",
+        action="store_true",
+        help="Forzar generación desde HTML (aproximación visual, no idéntica al PPT)",
     )
     args = parser.parse_args()
+
+    if not args.pptx.exists():
+        print(f"Error: no existe el PPT: {args.pptx}", file=sys.stderr)
+        print("Copia tu archivo:", file=sys.stderr)
+        print("  copy C:\\Users\\josef\\Downloads\\MOVA-D1-Inventario-Status.pptx index\\clientes\\mkof\\", file=sys.stderr)
+        sys.exit(1)
 
     slides = count_ppt_slides(args.pptx)
     if slides is not None:
         print(f"PPT fuente: {args.pptx} ({slides} slides)")
-        if slides != 9:
-            print(f"  Aviso: el HTML PDF espera 9 slides; el PPT tiene {slides}.", file=sys.stderr)
 
-    if args.from_pptx and args.pptx.exists():
-        print("Intentando conversión directa PPT → PDF (LibreOffice)…")
-        if try_convert_pptx_to_pdf(args.pptx, OUT_PDF):
-            print(f"PDF generado desde PPT: {OUT_PDF}")
+    if not args.force_html:
+        print("Convirtiendo PPT → PDF con LibreOffice (salida idéntica al .pptx)…")
+        if convert_pptx_to_pdf(args.pptx, OUT_PDF):
+            print(f"PDF generado: {OUT_PDF}")
             print(f"Tamaño: {OUT_PDF.stat().st_size // 1024} KB")
+            print("Método: conversión directa del PPT")
             return
-        print("  LibreOffice no disponible — usando HTML slide deck.", file=sys.stderr)
+        print("LibreOffice no encontrado.", file=sys.stderr)
+        if not args.html_fallback:
+            print(file=sys.stderr)
+            print("En Windows con PowerPoint instalado, usa:", file=sys.stderr)
+            print("  powershell -File scripts\\generar-pdf-mova-d1-status.ps1", file=sys.stderr)
+            print(file=sys.stderr)
+            print("O instala LibreOffice: https://www.libreoffice.org/download/", file=sys.stderr)
+            print("O fuerza HTML (no idéntico): python scripts\\generar-pdf-mova-d1-status.py --force-html", file=sys.stderr)
+            sys.exit(2)
 
     port = free_port()
     httpd = serve_root(port)
     url = f"http://127.0.0.1:{port}{HTML_PATH}"
     try:
-        print(f"Generando PDF desde HTML (1 página = 1 slide PPT)…")
+        print("Generando PDF desde HTML (respaldo — puede diferir del PPT)…")
         render_html_pdf(url, OUT_PDF)
     finally:
         httpd.shutdown()
 
     print(f"PDF generado: {OUT_PDF}")
     print(f"Tamaño: {OUT_PDF.stat().st_size // 1024} KB")
-    print(f"Slides en PDF: 9 (formato {SLIDE_WIDTH} × {SLIDE_HEIGHT})")
+    print("Método: HTML fallback (no idéntico al PPT)")
 
 
 if __name__ == "__main__":

@@ -52,50 +52,58 @@ html, body {
   padding: 0.32in 0.45in 0.4in;
 }
 
-/* Slide 1 — portada */
+/* Slide 1 — portada (réplica del PPT: fondo sólido #2A4A4E) */
 .mova-d1-pdf__slide--title {
-  background: linear-gradient(135deg, #2a4a4e, #4a7a80);
+  background: #2a4a4e;
   color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0.8in 0.75in;
+  padding: 1.4in 0.8in 0.8in;
+  display: block;
 }
 
 .mova-d1-pdf__slide--title .eyebrow {
-  margin: 0 0 0.15in;
-  font-size: 13pt;
+  margin: 0 0 0.1in;
+  font-size: 20pt;
+  font-weight: 400;
   color: #a8d8dc;
-  letter-spacing: 0.08em;
+  letter-spacing: normal;
 }
 
 .mova-d1-pdf__slide--title h1 {
-  margin: 0 0 0.2in;
-  font-size: 40pt;
-  line-height: 1.1;
+  margin: 0 0 0.1in;
+  font-size: 44pt;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.05;
 }
 
 .mova-d1-pdf__slide--title .sub {
-  margin: 0;
-  font-size: 17pt;
+  margin: 0 0 0.2in;
+  font-size: 24pt;
+  font-weight: 400;
   color: #e8f6f8;
 }
 
-.mova-d1-pdf__slide--title .meta {
-  margin: 0.35in 0 0;
-  font-size: 11pt;
+.mova-d1-pdf__slide--title .task {
+  margin: 0 0 0.1in;
+  font-size: 16pt;
   color: #a8d8dc;
 }
 
+.mova-d1-pdf__slide--title .meta {
+  margin: 0;
+  font-size: 14pt;
+  color: #656d76;
+}
+
 .mova-d1-pdf__slide--title .badge {
-  display: inline-block;
-  margin-top: 0.45in;
-  padding: 0.12in 0.22in;
-  background: #fff8c5;
-  color: #2a4a4e;
-  border-radius: 6px;
+  display: block;
+  margin: 0.55in 0 0;
+  padding: 0;
+  background: transparent;
+  color: #fff8c5;
+  border-radius: 0;
   font-weight: 700;
-  font-size: 13pt;
+  font-size: 18pt;
 }
 
 /* Listas y texto */
