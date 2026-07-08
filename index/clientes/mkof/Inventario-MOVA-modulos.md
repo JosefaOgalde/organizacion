@@ -34,7 +34,7 @@
 | Módulo | Carpeta cPanel | URL | Auth actual | ¿JWT/localStorage? | ¿n8n? | ¿Pasa mova_auth? | Responsable | Notas |
 |--------|----------------|-----|-------------|-------------------|-------|------------------|-------------|-------|
 | Landing corporativa | `acme-chile.cl/` (raíz) | https://acme-chile.cl/ | ? | ? | ? | ? | | Página pública — no revisada en navegador |
-| Portal MOVA | `acme-chile.cl/mova/` | https://acme-chile.cl/mova/ | **Google OAuth** | ? | ? | **no** | Josefa | Login Google · sesión muestra usuario en panel |
+| Portal MOVA (producción) | `acme-chile.cl/mova/` | https://acme-chile.cl/mova/ | **Google OAuth** | **sí** — clave `axon_chats` | ver nota n8n | **no** | Josefa | Sesión Google · localStorage en `acme-chile.cl` · sin clave `jwt`/`token` visible |
 | mova_auth (núcleo actual) | `acme-chile.cl/mova_auth/` | https://acme-chile.cl/mova_auth/login.php | **mova_auth PHP** (correo + clave) | ? | ? | **parcial** | | Login **independiente** — no es el gate del panel MOVA |
 | MOVA ERP | `acme-chile.cl/mova/erp/` | https://acme-chile.cl/mova/erp/ | **Contraseña local** (solo campo clave) | ? | ? | **no** | | Login separado del panel MOVA y de mova_auth |
 | AXON | `acme-chile.cl/axon/` | https://acme-chile.cl/axon/ | **Sin login visible** (carga chat directo) | ? | ? | **no** | | En incógnito abre UI AXON sin pantalla previa — revisar auth al enviar mensaje |
@@ -46,7 +46,7 @@
 | GAMKOF | `acme-chile.cl/gamkof/` | https://acme-chile.cl/gamkof/ | ? | ? | ? | ? | | No revisado |
 | Gestión EERR | `acme-chile.cl/gestion/eerr/` | https://acme-chile.cl/gestion/eerr/ | ? | ? | ? | ? | | `resumen/` vacía |
 | Operaciones | `acme-chile.cl/operaciones/` | https://acme-chile.cl/operaciones/comite.html | ? | ? | ? | ? | | `comite.html` en cPanel |
-| Pruebas / sandbox | `acme-chile.cl/pruebas/` | https://acme-chile.cl/pruebas/mova.html | **Google OAuth** | ? | ? | **no** | Josefa | **Sesión OK** · `josefa@talkprod.cl` · panel completo · **sandbox Día 5** |
+| Pruebas (obsoleto etapa 1) | `acme-chile.cl/pruebas/` | https://acme-chile.cl/pruebas/mova.html | — | — | — | — | | **No usar en adelante** — solo referencia histórica |
 | RRHH | `acme-chile.cl/rrhh/` | https://acme-chile.cl/rrhh/ | **403 Forbidden** (servidor) | n/a | n/a | **no** | | Sin acceso web directo · probar subrutas: `/rrhh/capacitaciones/` etc. |
 | Skill (herramientas) | `acme-chile.cl/skill/` | https://acme-chile.cl/skill/ | ? | ? | ? | ? | | No revisado |
 | Multimedia | `acme-chile.cl/multimedia/` | https://acme-chile.cl/multimedia/ | ? | ? | ? | ? | | No revisado |
@@ -106,7 +106,8 @@ Hipótesis confirmada parcial: **fragmentación de login** — Google en `/mova/
 | `/mova_auth/login.php` | PHP correo+clave | parcial | Es mova_auth pero no usado por todos los M |
 | `/mova/erp/` | Contraseña local | no | Campo «Contraseña de acceso» |
 | `/axon/` | Sin login visible | no | Chat AXON carga directo |
-| `/pruebas/mova.html` | Google OAuth | no | **Logueado:** Josefa Ogalde · `josefa@talkprod.cl` · panel MOVA completo |
+| `/mova/` (logueado) | Google OAuth | no | Panel MOVA · usuario corporativo (ej. `@talkprod.cl`) |
+| `/pruebas/mova.html` | — | — | **Ignorar** — etapa 1, no producción |
 | `/rrhh/` | 403 Forbidden | no | Bloqueo servidor — probar subcarpetas |
 
 **Conclusión (problema real):** validación **fragmentada** — Google en panel MOVA, login PHP en `/mova_auth/` (no usado por el panel), contraseña en `/mova/erp/`, AXON sin gate visible.
@@ -132,6 +133,16 @@ Hipótesis confirmada parcial: **fragmentación de login** — Google en `/mova/
 | Ctas. Cobrar/Pagar | ERP | `mova/cuentas/` |
 
 **Importante:** entrar al panel por Google **no desbloquea** `/mova_auth/login.php` ni `/mova/erp/` (siguen con login propio).
+
+### Local Storage — `https://acme-chile.cl` (sesión en `/mova/`)
+
+| Clave | Uso probable | ¿JWT/sesión? |
+|-------|--------------|--------------|
+| `axon_chats` | Historial chats widget AXON | No — datos de chat en cliente |
+
+También existe Local Storage en `https://accounts.google.com` (sesión Google OAuth).
+
+**Conclusión JWT:** hay **localStorage**, pero en `/mova/` no se vio clave típica (`jwt`, `token`, `access_token`). La sesión principal parece **Google OAuth + cookies**, no JWT explícito en `acme-chile.cl`.
 
 ---
 
@@ -188,11 +199,11 @@ public_html/
 - [x] Listado de carpetas en `public_html/acme-chile.cl/` pegado arriba
 - [x] URL completa de módulos prioritarios verificada en navegador (6 URLs)
 - [x] Flujo actual documentado para módulos revisados (Google / mova_auth / contraseña / 403)
-- [ ] JWT o localStorage identificados donde existan (falta DevTools **después de login**)
-- [ ] Endpoints n8n listados (falta DevTools → Network)
+- [ ] JWT o localStorage identificados (captura DevTools en **`/mova/`** logueado)
+- [x] Endpoints n8n — **delegado** al equipo que administra n8n (no bloquea D1)
 - [ ] Tabla compartida con el equipo técnico
 
-**Criterio de cierre:** columnas Auth, JWT, n8n y mova_auth sin `?` en módulos M.
+**Criterio de cierre D1 (ajustado):** Auth y mova_auth documentados · JWT verificado en `/mova/` · n8n pendiente equipo n8n · **no usar `/pruebas/`**.
 
 ---
 
