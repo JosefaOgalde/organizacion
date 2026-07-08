@@ -100,6 +100,61 @@
       <p class="mova-d1-status__nota"><strong>Conclusión:</strong> ningún módulo M revisado usa mova_auth como único validador.</p>
     </section>
 
+    <section class="mova-d1-status__explica">
+      <h2>Inventario explicado</h2>
+      <p class="mova-d1-status__explica-intro">Guía visual para quienes no trabajan con código técnico.</p>
+
+      <div class="mova-d1-status__leyenda">
+        <article class="mova-d1-status__card">
+          <h3>Módulo</h3>
+          <p>Cada app o sección del sitio: portal MOVA, ERP, AXON, RRHH, documentos…</p>
+        </article>
+        <article class="mova-d1-status__card">
+          <h3>Auth</h3>
+          <p>Cómo entra el usuario: cuenta Google, correo+clave PHP, contraseña local o sin login.</p>
+        </article>
+        <article class="mova-d1-status__card">
+          <h3>localStorage</h3>
+          <p>Datos que el navegador guarda en el PC del usuario (ej. historial de chats AXON).</p>
+        </article>
+        <article class="mova-d1-status__card">
+          <h3>mova_auth</h3>
+          <p>¿Ese módulo pasa por el login unificado? <strong>sí</strong> · <strong>no</strong> · <strong>parcial</strong></p>
+        </article>
+      </div>
+
+      <div class="mova-d1-status__diagrama">
+        <div class="mova-d1-status__hoy">
+          <p class="mova-d1-status__diagrama-tit">Hoy: varias puertas de entrada</p>
+          <div class="mova-d1-status__puertas">
+            <span>Google</span>
+            <span>PHP clave</span>
+            <span>Contraseña ERP</span>
+            <span>Sin login</span>
+          </div>
+        </div>
+        <div class="mova-d1-status__flecha" aria-hidden="true">→</div>
+        <div class="mova-d1-status__meta">
+          <p class="mova-d1-status__diagrama-tit mova-d1-status__diagrama-tit--ok">Objetivo MOVA: una sola puerta</p>
+          <div class="mova-d1-status__puerta-unica">mova_auth → todos los módulos M</div>
+        </div>
+      </div>
+
+      <div class="mova-d1-status__hallazgo">
+        <strong>Hallazgo Día 1:</strong> ningún módulo revisado usa solo <code>mova_auth</code>.
+        El login está repartido; los días 2–7 unifican el acceso.
+      </div>
+
+      <div class="mova-d1-status__chips">
+        <span class="mova-d1-status__chips-label">Lectura rápida:</span>
+        <span class="chip chip--ok">sí</span>
+        <span class="chip chip--no">no</span>
+        <span class="chip chip--warn">parcial</span>
+        <span class="chip chip--muted">pendiente</span>
+        <span class="chip chip--muted">n/a</span>
+      </div>
+    </section>
+
     <section>
       <h2>Estructura cPanel (resumen)</h2>
       <pre class="mova-d1-status__tree">public_html/acme-chile.cl/

@@ -252,12 +252,12 @@ body.portal-body--themed .portal-cliente {
   opacity: 0.9;
 }
 
-.portal-cliente a:not(.portal-btn):not(.portal-app-link):not(.portal-card) {
+.portal-cliente a:not(.portal-btn):not(.portal-app-link):not(.portal-card):not(.mova-doc-btn) {
   color: var(--card-text, var(--accent));
   font-weight: 600;
 }
 
-.portal-cliente a:not(.portal-btn):not(.portal-app-link):not(.portal-card):hover {
+.portal-cliente a:not(.portal-btn):not(.portal-app-link):not(.portal-card):not(.mova-doc-btn):hover {
   text-decoration: underline;
 }
 

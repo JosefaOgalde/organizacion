@@ -126,6 +126,160 @@
   color: #656d76;
 }
 
+/* Sección explicativa del inventario */
+.mova-d1-status__explica {
+  border-color: #a8d8dc;
+}
+
+.mova-d1-status__explica-intro {
+  margin: 0 0 1rem;
+  color: #656d76;
+  font-size: 0.9rem;
+}
+
+.mova-d1-status__leyenda {
+  display: grid;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .mova-d1-status__leyenda {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.mova-d1-status__card {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #d0e8ec;
+  border-radius: 8px;
+  background: #f8fcfd;
+}
+
+.mova-d1-status__card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  color: #2a4a4e;
+}
+
+.mova-d1-status__card p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #444;
+}
+
+.mova-d1-status__diagrama {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f6f8fa;
+  border-radius: 8px;
+}
+
+.mova-d1-status__diagrama-tit {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #bf3f00;
+}
+
+.mova-d1-status__diagrama-tit--ok {
+  color: #1a7f37;
+}
+
+.mova-d1-status__puertas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.mova-d1-status__puertas span {
+  padding: 0.35rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #ffe8d6;
+  border: 1px solid #bf3f00;
+  color: #8a2f00;
+}
+
+.mova-d1-status__flecha {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4a7a80;
+}
+
+.mova-d1-status__puerta-unica {
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  background: #d4edda;
+  border: 2px solid #1a7f37;
+  color: #145a24;
+}
+
+.mova-d1-status__hallazgo {
+  margin-bottom: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: #fff8c5;
+  border: 1px solid #4a7a80;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.mova-d1-status__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.mova-d1-status__chips-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #2a4a4e;
+  margin-right: 0.25rem;
+}
+
+.mova-d1-status .chip {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border: 1px solid;
+}
+
+.mova-d1-status .chip--ok {
+  color: #1a7f37;
+  border-color: #1a7f37;
+  background: #fff;
+}
+
+.mova-d1-status .chip--no {
+  color: #cf222e;
+  border-color: #cf222e;
+  background: #fff;
+}
+
+.mova-d1-status .chip--warn {
+  color: #bf3f00;
+  border-color: #bf3f00;
+  background: #fff;
+}
+
+.mova-d1-status .chip--muted {
+  color: #656d76;
+  border-color: #656d76;
+  background: #fff;
+}
+
 @media print {
   .mova-d1-status { background: #fff; }
   .mova-d1-status__main section { break-inside: avoid; }

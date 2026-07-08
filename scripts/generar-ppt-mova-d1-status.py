@@ -138,6 +138,75 @@ def slide_tabla(prs):
                 "Conclusión: ningún módulo M revisado usa mova_auth como único validador.", size=14, bold=True, color=C_WARN)
 
 
+def slide_tabla_explicacion(prs):
+    """Slide visual para audiencia no técnica — qué significa el inventario."""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide)
+    add_header_bar(slide, "Inventario explicado", "Para quienes no trabajan con código")
+
+    # Leyenda de columnas (tarjetas)
+    cols = [
+        ("Módulo", "Cada app o sección del sitio (portal, ERP, AXON…)."),
+        ("Auth", "Cómo entra el usuario: Google, clave, o sin login."),
+        ("localStorage", "Datos guardados en el navegador del usuario."),
+        ("mova_auth", "¿Pasa por el login unificado? sí · no · parcial"),
+    ]
+    x0 = Inches(0.55)
+    card_w = Inches(3.05)
+    for i, (tit, desc) in enumerate(cols):
+        left = x0 + i * Inches(3.15)
+        box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, Inches(1.35), card_w, Inches(1.55))
+        box.fill.solid()
+        box.fill.fore_color.rgb = C_WHITE
+        box.line.color.rgb = C_ACCENT
+        add_textbox(slide, left + Inches(0.15), Inches(1.5), card_w - Inches(0.3), Inches(0.35), tit, size=13, bold=True, color=C_ACCENT_DARK)
+        add_textbox(slide, left + Inches(0.15), Inches(1.9), card_w - Inches(0.3), Inches(0.9), desc, size=11, color=C_TEXT)
+
+    # Diagrama: login fragmentado vs objetivo
+    add_textbox(slide, Inches(0.55), Inches(3.15), Inches(5.5), Inches(0.35), "Hoy: varias puertas de entrada", size=14, bold=True, color=C_WARN)
+    puertas = [("Google", 0.55), ("PHP clave", 2.05), ("Contraseña ERP", 3.55), ("Sin login", 5.05)]
+    for label, x in puertas:
+        door = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(3.55), Inches(1.35), Inches(0.75))
+        door.fill.solid()
+        door.fill.fore_color.rgb = RGBColor(0xFF, 0xE8, 0xD6)
+        door.line.color.rgb = C_WARN
+        add_textbox(slide, Inches(x), Inches(3.72), Inches(1.35), Inches(0.4), label, size=10, bold=True, color=C_WARN, align=PP_ALIGN.CENTER)
+
+    arrow = slide.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW, Inches(6.15), Inches(3.75), Inches(0.55), Inches(0.35))
+    arrow.fill.solid()
+    arrow.fill.fore_color.rgb = C_ACCENT
+    arrow.line.fill.background()
+
+    add_textbox(slide, Inches(6.85), Inches(3.15), Inches(5.8), Inches(0.35), "Objetivo MOVA: una sola puerta", size=14, bold=True, color=C_OK)
+    gate = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.2), Inches(3.55), Inches(4.5), Inches(0.75))
+    gate.fill.solid()
+    gate.fill.fore_color.rgb = RGBColor(0xD4, 0xED, 0xDA)
+    gate.line.color.rgb = C_OK
+    add_textbox(slide, Inches(7.2), Inches(3.68), Inches(4.5), Inches(0.5), "mova_auth  →  todos los módulos M", size=12, bold=True, color=C_OK, align=PP_ALIGN.CENTER)
+
+    # Hallazgo principal
+    box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.55), Inches(4.65), Inches(12.2), Inches(1.15))
+    box.fill.solid()
+    box.fill.fore_color.rgb = C_HIGHLIGHT
+    box.line.color.rgb = C_ACCENT
+    add_textbox(slide, Inches(0.75), Inches(4.82), Inches(11.8), Inches(0.85),
+                "Hallazgo Día 1: ningún módulo revisado usa solo mova_auth.\n"
+                "Eso confirma que el login está repartido y hay que unificarlo en los días 2–7.",
+                size=14, bold=True, color=C_ACCENT_DARK)
+
+    # Chips de estado
+    estados = [("sí", C_OK), ("no", C_WARN), ("parcial", C_WARN), ("pendiente", C_MUTED), ("n/a", C_MUTED)]
+    add_textbox(slide, Inches(0.55), Inches(6.05), Inches(2.5), Inches(0.3), "Lectura rápida:", size=12, bold=True, color=C_ACCENT_DARK)
+    x_chip = Inches(2.2)
+    for label, col in estados:
+        chip = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x_chip, Inches(5.95), Inches(1.35), Inches(0.42))
+        chip.fill.solid()
+        chip.fill.fore_color.rgb = C_WHITE
+        chip.line.color.rgb = col
+        add_textbox(slide, x_chip, Inches(6.02), Inches(1.35), Inches(0.3), label, size=11, bold=True, color=col, align=PP_ALIGN.CENTER)
+        x_chip += Inches(1.55)
+
+
 def slide_cpanel(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide)
@@ -202,6 +271,7 @@ def main():
     slide_resumen(prs)
     slide_checklist(prs)
     slide_tabla(prs)
+    slide_tabla_explicacion(prs)
     slide_cpanel(prs)
     slide_localstorage(prs)
     slide_siguiente(prs)

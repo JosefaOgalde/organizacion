@@ -21,11 +21,17 @@
     const acciones = [];
     if (verUrl && !item.externo) {
       acciones.push(
-        `<a class="mova-doc-btn mova-doc-btn--ver" href="${escapeHtml(verUrl)}">Ver completo</a>`
+        `<div class="mova-doc-accion">
+          <span class="mova-doc-accion__label">Leer en pantalla</span>
+          <a class="mova-doc-btn mova-doc-btn--ver" href="${escapeHtml(verUrl)}">Ver documento completo</a>
+        </div>`
       );
     } else if (item.externo) {
       acciones.push(
-        `<a class="mova-doc-btn mova-doc-btn--ver" href="${escapeHtml(item.externo)}" target="_blank" rel="noopener">Abrir</a>`
+        `<div class="mova-doc-accion">
+          <span class="mova-doc-accion__label">Abrir en el sitio</span>
+          <a class="mova-doc-btn mova-doc-btn--ver" href="${escapeHtml(item.externo)}" target="_blank" rel="noopener">Abrir enlace externo</a>
+        </div>`
       );
     }
     if (editPath) {
@@ -52,7 +58,6 @@
       <h3>${escapeHtml(item.titulo)}</h3>
       <p class="mova-doc-card__desc">${escapeHtml(item.descripcion)}</p>
       <p class="mova-doc-card__meta">Hito ${escapeHtml(item.hito)} · ${escapeHtml(item.fecha)}</p>
-      <p class="mova-doc-card__nota">Ver completo en pantalla · editar el .js en el repo · PDF solo si lo pides</p>
       <div class="mova-doc-card__acciones">${acciones.join('')}</div>
     </article>`;
   }
