@@ -16,8 +16,8 @@
 | 10 | Resultados e indicadores de impacto | ✅ Prompt entregado |
 | 11 | Satisfacción y percepción de participantes | ✅ Prompt entregado |
 | 12 | Empresas participantes | ✅ Prompt entregado |
-| 13 | Aprendizajes del piloto | ⏳ Prompt entregado |
-| 14 | Proyección 2027 | Pendiente |
+| 13 | Aprendizajes del piloto | ✅ Prompt entregado |
+| 14 | Proyección 2027 | ⏳ Prompt entregado |
 | 15 | Cierre / agradecimientos | Pendiente |
 
 ## Reglas globales para todos los prompts
