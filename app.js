@@ -2362,9 +2362,21 @@ function htmlMovaTareaRecursos(tarea) {
   const botonesInv = [invUrl, invTxtUrl].filter(Boolean).map((url, i) =>
     `<a class="btn btn--small ${i === 0 ? 'btn--accent' : 'btn--ghost'}" href="${escapeHtml(url)}" target="_blank" rel="noopener">${i === 0 ? 'Inventario (.md)' : 'Inventario (.txt)'}</a>`
   ).join(' ');
+  let botonesStatus = '';
+  if (todo.dia === 1) {
+    const verStatus = urlRecursoMova('index/clientes/MKOF/MOVA/documentos/ver.html?id=d1-inventario-status');
+    const pdfStatus = urlRecursoMova('index/clientes/mkof/MOVA-D1-Inventario-Status.pdf');
+    const pptStatus = urlRecursoMova('index/clientes/mkof/MOVA-D1-Inventario-Status.pptx');
+    botonesStatus = `<p class="tarea-detalle__mova-btns">
+      <a class="btn btn--small btn--accent" href="${escapeHtml(verStatus)}" target="_blank" rel="noopener">Ver status D1</a>
+      <a class="btn btn--small btn--ghost" href="${escapeHtml(pdfStatus)}" target="_blank" rel="noopener">PDF</a>
+      <a class="btn btn--small btn--ghost" href="${escapeHtml(pptStatus)}" download>Descargar PPT</a>
+    </p>`;
+  }
   return `<div class="tarea-detalle__mova">
     <strong>MOVA · Día ${todo.dia}</strong>
     ${todo.entregable ? `<p class="tarea-detalle__mova-entregable"><strong>Entregable:</strong> ${escapeHtml(todo.entregable)}</p>` : ''}
+    ${botonesStatus}
     ${botonesInv ? `<p class="tarea-detalle__mova-btns">${botonesInv}</p>` : ''}
     ${enlaces ? `<ul class="tarea-detalle__mova-links">${enlaces}</ul>` : ''}
   </div>`;

@@ -7,6 +7,22 @@ window.MOVA_DOCUMENTOS = {
   baseData: '../../../../../data/',
   categorias: [
     {
+      id: 'inventario',
+      titulo: 'Día 1 — Inventario módulos M',
+      items: [
+        {
+          id: 'd1-inventario-status',
+          titulo: 'Día 1 — Status inventario (entregable)',
+          descripcion: 'mkof/01 · cPanel acme-chile.cl · auth fragmentada · localStorage axon_chats',
+          hito: 'D1',
+          fecha: '8 jul 2026',
+          verHtml: 'mova-d1-status.html',
+          pdf: 'MOVA-D1-Inventario-Status.pdf',
+          pptx: 'MOVA-D1-Inventario-Status.pptx'
+        }
+      ]
+    },
+    {
       id: 'auth',
       titulo: 'Login unificado · mova_auth',
       items: [

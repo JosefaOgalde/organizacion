@@ -121,19 +121,14 @@
     return `<section class="ficha-seccion ficha-seccion--portal">
         <h2>Guías en curso · MOVA</h2>
         <p style="margin:0 0 0.85rem;font-size:0.9rem">
-          <a href="MOVA-D1-Inventario-Status.pdf" target="_blank" rel="noopener">⬇ PDF Día 1 Status</a>
-          ·
-          <a href="MOVA-D1-Inventario-Status.pptx" download>PPT Día 1 Status</a>
-          ·
-          <a href="MOVA-GitHub-Paso1-Crear-Cuenta.pdf" target="_blank" rel="noopener">⬇ PDF Paso 1</a>
-          ·
-          <a href="MOVA-GitHub-Paso1-Crear-Cuenta.pptx" download>PPT Paso 1</a>
-          ·
-          <a href="MOVA-GitHub-Paso2-Repo-Privado.pdf" target="_blank" rel="noopener">⬇ PDF Paso 2</a>
-          ·
-          <a href="MOVA-GitHub-Paso2-Repo-Privado.pptx" download>PPT Paso 2</a>
+          <a href="../MKOF/MOVA/documentos/">📁 Todos los documentos MOVA</a>
         </p>
         <div class="mkof-guias-grid">
+          <a href="../MKOF/MOVA/documentos/ver.html?id=d1-inventario-status" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Día 1 · Entregable</span>
+            <strong>Status inventario módulos</strong>
+            <span class="mkof-guia-card__desc">Ver · PDF · PPT · mkof/01</span>
+          </a>
           <a href="github-cuenta.html" class="mkof-guia-card">
             <span class="mkof-guia-card__paso">Paso 1 · GitHub</span>
             <strong>Crear cuenta GitHub</strong>

@@ -34,6 +34,7 @@
     const { item, base, baseData } = found;
     const src = `${base}${item.verHtml}?embed=1`;
     const pdfHref = item.pdf ? `${base}${item.pdf}` : '';
+    const pptHref = item.pptx ? `${base}${item.pptx}` : '';
     const editPath = item.editar ? `${baseData}${item.editar}` : '';
 
     root.innerHTML = `
@@ -43,7 +44,9 @@
         <div class="mova-doc-ver__acciones">
           ${editPath ? `<code class="mova-doc-ver__edit-hint" title="Abre este archivo en Cursor">${escapeHtml(editPath)}</code>` : ''}
           <button type="button" class="mova-doc-btn mova-doc-btn--sec" id="mova-btn-imprimir">Imprimir / Guardar PDF</button>
+          ${pdfHref ? `<a class="mova-doc-btn mova-doc-btn--sec" href="${escapeHtml(pdfHref)}" target="_blank" rel="noopener">Ver PDF</a>` : ''}
           ${pdfHref ? `<a class="mova-doc-btn mova-doc-btn--sec" href="${escapeHtml(pdfHref)}" download="${escapeHtml(item.pdf)}">Descargar PDF</a>` : ''}
+          ${pptHref ? `<a class="mova-doc-btn mova-doc-btn--sec" href="${escapeHtml(pptHref)}" download="${escapeHtml(item.pptx)}">Descargar PPT</a>` : ''}
         </div>
       </div>
       <iframe id="mova-doc-ver-frame" class="mova-doc-ver__frame" src="${escapeHtml(src)}" title="${escapeHtml(item.titulo)}"></iframe>`;

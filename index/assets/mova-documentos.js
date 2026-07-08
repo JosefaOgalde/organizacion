@@ -35,6 +35,9 @@
     }
     if (item.pdf) {
       acciones.push(
+        `<a class="mova-doc-btn mova-doc-btn--sec" href="${escapeHtml(base + item.pdf)}" target="_blank" rel="noopener">Ver PDF</a>`
+      );
+      acciones.push(
         `<a class="mova-doc-btn mova-doc-btn--sec" href="${escapeHtml(base + item.pdf)}" download="${escapeHtml(item.pdf)}">Descargar PDF</a>`
       );
     }
