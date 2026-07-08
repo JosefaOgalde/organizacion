@@ -5,8 +5,8 @@
 | # | Slide | Estado |
 |---|-------|--------|
 | 1 | Portada | ✅ Prompt entregado |
-| 2 | Índice / agenda | ⏳ Prompt entregado |
-| 3 | Contexto y objetivo del piloto | Pendiente |
+| 2 | Índice / agenda | ✅ Prompt entregado |
+| 3 | Contexto y objetivo del piloto | ⏳ Prompt entregado |
 | 4 | Alcance y metodología | Pendiente |
 | 5 | Perfil de participantes | Pendiente |
 | 6 | Estructura del programa (2 módulos) | Pendiente |
