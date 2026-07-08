@@ -155,12 +155,46 @@
       </div>
     </section>
 
-    <section>
-      <h2>Estructura cPanel (resumen)</h2>
-      <pre class="mova-d1-status__tree">public_html/acme-chile.cl/
-├── mova/          (agencia, erp, facturas, oc, …)
-├── mova_auth/     (login.php, auth.php, google_login.php, …)
-├── axon/ · rrhh/ · documentos/ · admin/ · skill/ …</pre>
+    <section class="mova-d1-status__cpanel">
+      <h2>Estructura cPanel</h2>
+      <p class="mova-d1-status__explica-intro">Mapa visual del hosting en <code>public_html/acme-chile.cl/</code></p>
+
+      <div class="mova-d1-status__cpanel-map">
+        <div class="mova-d1-status__cpanel-root">public_html / acme-chile.cl /</div>
+
+        <div class="mova-d1-status__cpanel-otros">
+          <p class="mova-d1-status__cpanel-label">Otros módulos en la raíz</p>
+          <div class="mova-d1-status__cpanel-chips">
+            <span>admin</span><span>axon</span><span>documentos</span><span>rrhh</span>
+            <span>crm</span><span>skill</span><span>operaciones</span><span>multimedia</span>
+          </div>
+        </div>
+
+        <div class="mova-d1-status__cpanel-columnas">
+          <article class="mova-d1-status__cpanel-folder mova-d1-status__cpanel-folder--mova">
+            <h3>mova/ · Portal y apps MOVA</h3>
+            <div class="mova-d1-status__cpanel-chips mova-d1-status__cpanel-chips--mova">
+              <span>agencia</span><span>brief</span><span>cotizador</span><span>cuentas</span><span>doc</span>
+              <span class="highlight">erp</span><span>estudios</span><span>facturas</span><span>forecast</span>
+              <span>negocios</span><span>oc</span><span>operacion</span><span>seo</span><span>strack</span>
+            </div>
+            <p class="mova-d1-status__cpanel-nota">El ERP no está en la raíz del sitio. Está dentro de <code>mova/erp/</code>.</p>
+          </article>
+
+          <article class="mova-d1-status__cpanel-folder mova-d1-status__cpanel-folder--auth">
+            <h3>mova_auth/ · Login unificado</h3>
+            <div class="mova-d1-status__cpanel-chips mova-d1-status__cpanel-chips--auth">
+              <span>login.php</span><span>auth.php</span><span>config.php</span>
+              <span>google_login.php</span><span>logout.php</span><span>panel.php</span><span>setup.sql</span>
+            </div>
+            <p class="mova-d1-status__cpanel-nota">Aquí vivirá el único login para todos los módulos M.</p>
+          </article>
+        </div>
+
+        <p class="mova-d1-status__cpanel-leyenda">
+          <strong>Lectura rápida:</strong> teal = MOVA · violeta = login unificado · amarillo = ERP (ubicación clave)
+        </p>
+      </div>
     </section>
 
     <section>

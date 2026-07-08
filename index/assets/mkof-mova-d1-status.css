@@ -119,6 +119,140 @@
   overflow-x: auto;
 }
 
+/* Mapa visual cPanel */
+.mova-d1-status__cpanel {
+  border-color: #a8d8dc;
+}
+
+.mova-d1-status__cpanel-map {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.mova-d1-status__cpanel-root {
+  align-self: center;
+  padding: 0.55rem 1.25rem;
+  border-radius: 8px;
+  background: #2a4a4e;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(42, 74, 78, 0.25);
+}
+
+.mova-d1-status__cpanel-label {
+  margin: 0 0 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #656d76;
+}
+
+.mova-d1-status__cpanel-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.mova-d1-status__cpanel-chips span {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: #f0f4f5;
+  border: 1px solid #d0d7de;
+  color: #656d76;
+}
+
+.mova-d1-status__cpanel-columnas {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 720px) {
+  .mova-d1-status__cpanel-columnas {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+
+.mova-d1-status__cpanel-folder {
+  padding: 0.85rem;
+  border-radius: 10px;
+  border: 2px solid;
+}
+
+.mova-d1-status__cpanel-folder h3 {
+  margin: 0 0 0.6rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  color: #fff;
+}
+
+.mova-d1-status__cpanel-folder--mova {
+  border-color: #4a7a80;
+  background: #f8fcfd;
+}
+
+.mova-d1-status__cpanel-folder--mova h3 {
+  background: #4a7a80;
+}
+
+.mova-d1-status__cpanel-folder--auth {
+  border-color: #9a7ab8;
+  background: #faf8fc;
+}
+
+.mova-d1-status__cpanel-folder--auth h3 {
+  background: #9a7ab8;
+}
+
+.mova-d1-status__cpanel-chips--mova span {
+  background: #fff;
+  border-color: #a8d8dc;
+  color: #2a4a4e;
+}
+
+.mova-d1-status__cpanel-chips--mova span.highlight {
+  background: #fff8c5;
+  border-color: #bf3f00;
+  color: #8a2f00;
+  font-weight: 800;
+}
+
+.mova-d1-status__cpanel-chips--auth span {
+  background: #fff;
+  border-color: #c4b0d8;
+  color: #5a4080;
+}
+
+.mova-d1-status__cpanel-nota {
+  margin: 0.65rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.mova-d1-status__cpanel-folder--mova .mova-d1-status__cpanel-nota {
+  color: #bf3f00;
+}
+
+.mova-d1-status__cpanel-folder--auth .mova-d1-status__cpanel-nota {
+  color: #5a4080;
+}
+
+.mova-d1-status__cpanel-leyenda {
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  background: #e8f6f8;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: #2a4a4e;
+}
+
 .mova-d1-status__foot {
   text-align: center;
   padding: 1rem;

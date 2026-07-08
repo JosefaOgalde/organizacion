@@ -207,23 +207,121 @@ def slide_tabla_explicacion(prs):
         x_chip += Inches(1.55)
 
 
+def add_round_box(slide, left, top, width, height, fill, line=None, line_w=1):
+    box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
+    box.fill.solid()
+    box.fill.fore_color.rgb = fill
+    if line:
+        box.line.color.rgb = line
+        box.line.width = Pt(line_w)
+    else:
+        box.line.fill.background()
+    return box
+
+
+def add_chip(slide, left, top, label, width=Inches(1.05), height=Inches(0.34), fill=C_WHITE, line=C_MUTED, text_color=C_TEXT, size=8, bold=False):
+    add_round_box(slide, left, top, width, height, fill, line)
+    add_textbox(slide, left, top + Inches(0.05), width, height - Inches(0.08), label, size=size, bold=bold, color=text_color, align=PP_ALIGN.CENTER)
+
+
+def add_connector(slide, x1, y1, x2, y2, color=C_ACCENT):
+    conn = slide.shapes.add_connector(1, x1, y1, x2, y2)
+    conn.line.color.rgb = color
+    conn.line.width = Pt(1.5)
+    return conn
+
+
 def slide_cpanel(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide)
-    add_header_bar(slide, "Estructura cPanel", "public_html/acme-chile.cl/")
-    tree = """admin · axon · axon-news · Boletin_Axon · crm · documentos
-gamkof · gestion/eerr · js · multimedia · mova/ · mova_auth/
-operaciones · rrhh · skill
+    add_header_bar(slide, "Estructura cPanel", "public_html/acme-chile.cl/ — mapa visual del hosting")
 
-mova/ → agencia · brief · cotizador · cuentas · doc · erp · estudios
-facturas · forecast · negocios · oc · operacion · restringido · seo
-strack · suscripciones · versiones_anteriores
+    # Raíz del sitio
+    root_w = Inches(5.2)
+    root_left = Inches(4.05)
+    add_round_box(slide, root_left, Inches(1.28), root_w, Inches(0.58), C_ACCENT_DARK, C_ACCENT)
+    add_textbox(slide, root_left, Inches(1.4), root_w, Inches(0.35), "public_html / acme-chile.cl /", size=14, bold=True, color=C_WHITE, align=PP_ALIGN.CENTER)
 
-mova_auth/ → auth.php · config.php · google_login.php · login.php
-logout.php · panel.php · setup.sql"""
-    add_textbox(slide, Inches(0.75), Inches(1.4), Inches(11.5), Inches(5.2), tree, size=15, color=C_TEXT)
-    add_textbox(slide, Inches(0.75), Inches(6.0), Inches(11.5), Inches(0.45),
-                "No hay MAESTRO/INGRESOS/EGRESOS en raíz — ERP bajo mova/erp/", size=14, bold=True, color=C_ACCENT)
+    # Conectores desde raíz
+    add_connector(slide, root_left + root_w / 2, Inches(1.86), Inches(3.4), Inches(2.18))
+    add_connector(slide, root_left + root_w / 2, Inches(1.86), Inches(9.9), Inches(2.18))
+    add_connector(slide, root_left + root_w / 2, Inches(1.86), root_left + root_w / 2, Inches(2.05))
+
+    # Otros módulos en raíz (chips grises)
+    otros = ["admin", "axon", "documentos", "rrhh", "crm", "skill", "operaciones", "multimedia"]
+    x_otros = Inches(0.55)
+    for nombre in otros:
+        add_chip(slide, x_otros, Inches(2.05), nombre, width=Inches(1.15), fill=RGBColor(0xF0, 0xF4, 0xF5), line=C_MUTED, text_color=C_MUTED, size=8)
+        x_otros += Inches(1.22)
+    add_textbox(slide, Inches(0.55), Inches(2.42), Inches(12.2), Inches(0.25), "Otros módulos en la raíz del sitio", size=9, color=C_MUTED)
+
+    # Carpeta mova/ (destacada)
+    mova_left = Inches(0.55)
+    mova_top = Inches(2.75)
+    mova_w = Inches(5.95)
+    mova_h = Inches(3.55)
+    add_round_box(slide, mova_left, mova_top, mova_w, mova_h, RGBColor(0xE8, 0xF6, 0xF8), C_ACCENT, 2)
+    add_round_box(slide, mova_left + Inches(0.12), mova_top + Inches(0.12), mova_w - Inches(0.24), Inches(0.48), C_ACCENT)
+    add_textbox(slide, mova_left + Inches(0.2), mova_top + Inches(0.18), mova_w - Inches(0.4), Inches(0.35), "mova/  ·  Portal y apps MOVA", size=13, bold=True, color=C_WHITE)
+
+    mova_mods = [
+        "agencia", "brief", "cotizador", "cuentas", "doc", "erp", "estudios",
+        "facturas", "forecast", "negocios", "oc", "operacion", "seo", "strack",
+    ]
+    x_m = mova_left + Inches(0.2)
+    y_m = mova_top + Inches(0.78)
+    chip_w = Inches(1.05)
+    for i, mod in enumerate(mova_mods):
+        highlight = mod == "erp"
+        add_chip(
+            slide, x_m, y_m, mod,
+            width=chip_w,
+            fill=RGBColor(0xFF, 0xF8, 0xC5) if highlight else C_WHITE,
+            line=C_WARN if highlight else C_ACCENT,
+            text_color=C_WARN if highlight else C_ACCENT_DARK,
+            size=8,
+            bold=highlight,
+        )
+        x_m += Inches(1.12)
+        if (i + 1) % 5 == 0:
+            x_m = mova_left + Inches(0.2)
+            y_m += Inches(0.42)
+    add_textbox(slide, mova_left + Inches(0.2), mova_top + Inches(2.95), mova_w - Inches(0.4), Inches(0.45),
+                "El ERP no está en la raíz del sitio.\nEstá dentro de mova/erp/", size=10, bold=True, color=C_WARN)
+
+    # Carpeta mova_auth/ (destacada)
+    auth_left = Inches(6.85)
+    auth_top = Inches(2.75)
+    auth_w = Inches(5.95)
+    auth_h = Inches(3.55)
+    add_round_box(slide, auth_left, auth_top, auth_w, auth_h, RGBColor(0xF3, 0xEE, 0xF8), RGBColor(0x9A, 0x7A, 0xB8), 2)
+    add_round_box(slide, auth_left + Inches(0.12), auth_top + Inches(0.12), auth_w - Inches(0.24), Inches(0.48), RGBColor(0x9A, 0x7A, 0xB8))
+    add_textbox(slide, auth_left + Inches(0.2), auth_top + Inches(0.18), auth_w - Inches(0.4), Inches(0.35),
+                "mova_auth/  ·  Login unificado (objetivo MOVA)", size=13, bold=True, color=C_WHITE, align=PP_ALIGN.LEFT)
+
+    auth_files = ["login.php", "auth.php", "config.php", "google_login.php", "logout.php", "panel.php", "setup.sql"]
+    x_a = auth_left + Inches(0.25)
+    y_a = auth_top + Inches(0.85)
+    for i, f in enumerate(auth_files):
+        add_chip(
+            slide, x_a, y_a, f,
+            width=Inches(1.55),
+            fill=C_WHITE,
+            line=RGBColor(0x9A, 0x7A, 0xB8),
+            text_color=RGBColor(0x5A, 0x40, 0x80),
+            size=8,
+        )
+        x_a += Inches(1.62)
+        if (i + 1) % 3 == 0:
+            x_a = auth_left + Inches(0.25)
+            y_a += Inches(0.42)
+    add_textbox(slide, auth_left + Inches(0.25), auth_top + Inches(2.55), auth_w - Inches(0.5), Inches(0.8),
+                "Aquí vivirá el único login\npara todos los módulos M.", size=11, bold=True, color=RGBColor(0x5A, 0x40, 0x80))
+
+    # Leyenda inferior
+    add_textbox(slide, Inches(0.55), Inches(6.45), Inches(12.2), Inches(0.35),
+                "Lectura rápida:  teal = MOVA  ·  violeta = login unificado  ·  amarillo = ERP (ubicación clave)",
+                size=11, bold=True, color=C_ACCENT_DARK)
 
 
 def slide_localstorage(prs):
