@@ -56,6 +56,41 @@
   margin-bottom: 1.25rem;
 }
 
+.mova-d2-reglas__puente {
+  background: linear-gradient(135deg, #f3eef8, #faf8fc);
+  border: 1px dashed #6f42c1;
+  border-radius: 10px;
+  padding: 0.85rem 1.15rem;
+  margin: -0.5rem 0 1.25rem;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.mova-d2-reglas__puente strong {
+  display: inline-block;
+  margin-right: 0.35rem;
+  padding: 0.15rem 0.5rem;
+  background: #6f42c1;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  vertical-align: middle;
+}
+
+.mova-d2-reglas__puente-mapa {
+  margin: 0.55rem 0 0;
+  padding: 0.65rem 0.85rem;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #e0d4f0;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #2a4a4e;
+}
+
 .mova-d2-reglas h2 {
   margin: 0 0 0.75rem;
   font-size: 1.1rem;

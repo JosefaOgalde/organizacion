@@ -16,6 +16,21 @@ El **Día 1** confirmó que el login está **fragmentado**: Google OAuth en `/mo
 
 Antes de crear o mover archivos (Días 3–5), el equipo debe **acordar por escrito** cómo funcionará el acceso cuando `mova_auth` sea el único validador.
 
+### Mapa conceptual — situación HOY
+
+```
+                    Usuario
+                       │
+       ┌───────┬───────┼───────┬───────┐
+       ▼       ▼       ▼       ▼       │
+   Google   login.php  clave   sin     │
+   /mova/  mova_auth  /erp/   /axon/  │
+   (no     (parcial,  (login  (¿quién │
+   pasa)   no gate)   aparte) valida?)│
+       └───────┴───────┴───────┴───────┘
+              Ningún módulo M usa mova_auth como único validador
+```
+
 ---
 
 ## 2. Regla de oro (propuesta para acuerdo)
@@ -29,6 +44,20 @@ Traducción operativa:
 3. Sin sesión → redirect a `https://acme-chile.cl/mova_auth/login.php?redirect=<url-pedida>`.
 4. Tras login exitoso → redirect de vuelta al módulo pedido.
 5. Ningún módulo implementa su propio login paralelo (Google directo, contraseña local, etc.) salvo excepciones documentadas abajo.
+
+### Mapa conceptual — flujo OBJETIVO
+
+```
+Usuario pide /mova/erp/
+        │
+        ▼
+   guard.php  ──¿sesión?──►  No  ──►  login.php?redirect=/mova/erp/
+        │                              │
+       Sí                         Login OK + cookie
+        │                              │
+        ▼                              ▼
+   Carga módulo              Vuelve a /mova/erp/
+```
 
 ---
 
@@ -61,6 +90,17 @@ Referencia completa: [Inventario-MOVA-modulos.md](Inventario-MOVA-modulos.md)
 
 Todos los submódulos privados (`agencia`, `facturas`, `oc`, `erp`, etc.) heredan la regla: **deben pasar por mova_auth** cuando se implemente la unificación.
 
+### Lectura fila por fila (puente explicativo)
+
+| Módulo | Qué significa en lenguaje simple |
+|--------|----------------------------------|
+| Portal MOVA | Hoy Google directo → debe pasar por mova_auth primero |
+| mova_auth | Es el portero; hoy parcial porque no controla todo |
+| MOVA ERP | Clave propia hoy → misma sesión que el resto |
+| AXON | Sin login visible → validar en D5 |
+| RRHH | 403 hoy → privado, mova_auth cuando se habilite |
+| Documentos | **Excepción** pública a propósito |
+
 ---
 
 ## 5. Excepciones y contenido público
@@ -74,6 +114,19 @@ Todos los submódulos privados (`agencia`, `facturas`, `oc`, `erp`, etc.) hereda
 | **API validate** | `/mova_auth/validate.php` | Responde JSON 200/401 — no redirect |
 
 Cualquier **nueva excepción** debe quedar por escrito en este documento con responsable y fecha.
+
+### Mapa — dentro vs afuera del edificio
+
+```
+  DENTRO (requiere mova_auth)     │  AFUERA (público)
+  ─────────────────────────     │  ─────────────────
+  /mova/ y submódulos           │  /documentos/ playbooks
+  /mova/erp/                    │  CSS · JS · imágenes
+  /axon/                        │  login.php (entrada)
+  /rrhh/                        │  logout.php · validate.php
+         ▲                      │
+         └── mova_auth (portero)─┘
+```
 
 ---
 

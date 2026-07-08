@@ -64,14 +64,38 @@ def add_textbox(slide, left, top, width, height, text, size=18, bold=False, colo
     return box
 
 
-def add_header_bar(slide, title, subtitle=""):
+def add_header_bar(slide, title, subtitle="", accent=C_ACCENT):
     bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), SLIDE_W, Inches(1.05))
     bar.fill.solid()
-    bar.fill.fore_color.rgb = C_ACCENT
+    bar.fill.fore_color.rgb = accent
     bar.line.fill.background()
     add_textbox(slide, Inches(0.55), Inches(0.18), Inches(11), Inches(0.5), title, size=24, bold=True, color=C_WHITE)
     if subtitle:
         add_textbox(slide, Inches(0.55), Inches(0.62), Inches(11), Inches(0.35), subtitle, size=13, color=C_BG)
+
+
+def slide_puente(prs, de_titulo, a_titulo, cuerpo, mapa_lineas=None):
+    """Slide de transición entre bloques: texto explicativo + mini mapa ASCII."""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, RGBColor(0xF3, 0xEE, 0xF8))
+    add_header_bar(slide, "Puente — para entender el hilo", f"De «{de_titulo}» a «{a_titulo}»", C_PURPLE)
+
+    badge = add_round_box(slide, Inches(0.75), Inches(1.25), Inches(1.35), Inches(0.42), C_PURPLE)
+    add_textbox(slide, Inches(0.75), Inches(1.32), Inches(1.35), Inches(0.3), "PUENTE", size=11, bold=True, color=C_WHITE, align=PP_ALIGN.CENTER)
+
+    add_textbox(slide, Inches(2.25), Inches(1.28), Inches(10.3), Inches(0.45), cuerpo, size=15, color=C_TEXT)
+
+    if mapa_lineas:
+        box = add_round_box(slide, Inches(0.75), Inches(2.05), Inches(11.8), Inches(2.35), C_WHITE, C_PURPLE, 2)
+        add_textbox(slide, Inches(0.95), Inches(2.2), Inches(2.5), Inches(0.3), "Mapa conceptual", size=12, bold=True, color=C_PURPLE)
+        y = Inches(2.55)
+        for line in mapa_lineas:
+            add_textbox(slide, Inches(1.0), y, Inches(11.3), Inches(0.38), line, size=13, color=C_TEXT)
+            y += Inches(0.42)
+
+    flecha = add_round_box(slide, Inches(0.75), Inches(4.65), Inches(11.8), Inches(0.75), C_HIGHLIGHT, C_ACCENT)
+    add_textbox(slide, Inches(0.95), Inches(4.82), Inches(11.4), Inches(0.45),
+                f"Siguiente slide: {a_titulo}", size=14, bold=True, color=C_ACCENT_DARK, align=PP_ALIGN.CENTER)
 
 
 def add_round_box(slide, left, top, width, height, fill, line=None, lw=1):
@@ -426,15 +450,90 @@ def main():
     prs.slide_height = SLIDE_H
     slide_title(prs)
     slide_contexto(prs)
+    slide_puente(
+        prs,
+        "Hallazgos D1",
+        "Mapa situación HOY",
+        "El inventario listó cuatro formas distintas de «entrar». Antes de proponer reglas, "
+        "visualizamos el problema: el usuario no sabe qué puerta usar y ningún módulo comparte la misma sesión.",
+        [
+            "Inventario D1  →  «login fragmentado»  →  4 puertas distintas",
+            "  /mova/ (Google)     mova_auth/login.php     /mova/erp/ (clave)     /axon/ (¿?) ",
+            "Conclusión: sin portero único, no hay seguridad ni experiencia coherente.",
+        ],
+    )
     slide_mapa_fragmentado(prs)
+    slide_puente(
+        prs,
+        "Mapa HOY",
+        "¿Qué es mova_auth?",
+        "Vimos el caos actual. Ahora definimos el vocabulario del acuerdo: qué es mova_auth, "
+        "qué hace guard.php y qué entendemos por «módulo M» — para que todos hablen lo mismo.",
+        [
+            "Problema (varias puertas)  →  Solución propuesta: UN recepcionista",
+            "mova_auth = carpeta portero  |  guard.php = guardia en cada módulo  |  M = app interna MOVA",
+        ],
+    )
     slide_que_es_mova_auth(prs)
+    slide_puente(
+        prs,
+        "Glosario",
+        "Regla de oro",
+        "Con los términos claros, pasamos a la regla que el equipo debe acordar por escrito. "
+        "Es la «constitución» del acceso: una sola frase que decide quién entra y quién no.",
+        [
+            "Analogía edificio  →  Regla escrita  →  5 reglas operativas numeradas",
+            "Si no pasaste por mova_auth con sesión válida → ningún módulo M te abre.",
+        ],
+    )
     slide_regla_oro(prs)
     slide_regla_explicada(prs)
+    slide_puente(
+        prs,
+        "Regla de oro",
+        "Flujo OBJETIVO",
+        "La regla en papel se traduce en un recorrido concreto. Este mapa muestra qué pasa "
+        "cuando un usuario pide un módulo: guard verifica, login si hace falta, y vuelta al destino.",
+        [
+            "Usuario → módulo → guard.php → ¿sesión? → Sí: entra  |  No: login.php?redirect= → vuelve",
+        ],
+    )
     slide_flujo_objetivo(prs)
+    slide_puente(
+        prs,
+        "Flujo objetivo",
+        "Tabla de módulos",
+        "El flujo aplica a apps concretas. La tabla del inventario D1 dice, módulo por módulo, "
+        "quién debe pasar por mova_auth y cuál es la excepción documentada.",
+        [
+            "Diseño genérico (guard + login)  →  Inventario real: Portal, ERP, AXON, RRHH, Documentos…",
+        ],
+    )
     slide_tabla(prs)
     slide_tabla_explicada(prs)
+    slide_puente(
+        prs,
+        "Tabla módulos",
+        "Excepciones públicas",
+        "No todo el sitio es privado. Hay rutas que deben quedar abiertas (playbooks, assets, "
+        "login mismo). También listamos lo prohibido después del acuerdo.",
+        [
+            "DENTRO (módulos M)  ← mova_auth →  AFUERA (público / API validate)",
+            "Prohibido: Google suelto en módulo · JWT en localStorage · logins duplicados",
+        ],
+    )
     slide_excepciones(prs)
     slide_excepciones_mapa(prs)
+    slide_puente(
+        prs,
+        "Excepciones",
+        "Antes vs después",
+        "Cerramos con un resumen visual del cambio acordado. Importante: hoy solo documentamos; "
+        "la implementación en servidor empieza en Día 3+.",
+        [
+            "ANTES: 4 logins · sesiones sueltas     →     DESPUÉS: 1 login · guard.php · cookie HttpOnly",
+        ],
+    )
     slide_antes_despues(prs)
     slide_checklist(prs)
     OUT.parent.mkdir(parents=True, exist_ok=True)
