@@ -2,48 +2,56 @@
 
 Manual de marca oficial — paleta y tipografía entregadas por el cliente.
 
+## Regla principal de fondo
+
+**Todas las slides usan fondo blanco `#FFFFFF`.** Los colores de marca van en textos, líneas, badges y elementos — nunca como fondo completo de slide.
+
 ## Paleta de colores
 
-| Color | HEX | Uso sugerido |
-|-------|-----|--------------|
-| Verde ADL | `#729E2E` | Acento primario, líneas, KPIs, highlights |
-| Amarillo ADL | `#FFCD56` | Destacados secundarios, etiquetas, acentos cálidos |
-| Azul ADL | `#0F2E81` | Fondos oscuros, bloques principales, textos sobre claro |
-| Naranja ADL | `#E9501D` | Acento puntual, llamados de atención (usar con moderación) |
-| Blanco | `#FFFFFF` | Texto sobre fondo oscuro, fondos claros, logos |
+| Color | HEX | Uso en fondo blanco |
+|-------|-----|---------------------|
+| Blanco | `#FFFFFF` | Fondo de TODAS las slides |
+| Azul ADL | `#0F2E81` | Títulos, textos principales, logos |
+| Verde ADL | `#729E2E` | Acentos, líneas, bullets, números, subtítulos de bloque |
+| Amarillo ADL | `#FFCD56` | Etiquetas, datos destacados (uso puntual) |
+| Naranja ADL | `#E9501D` | Acento puntual excepcional (usar con moderación) |
 
-### Combinaciones aprobadas
+### Combinación estándar
 
-- Fondo oscuro: `#0F2E81` con texto `#FFFFFF` y acentos `#729E2E` / `#FFCD56`
-- Fondo claro: `#FFFFFF` con texto `#0F2E81` y acentos `#729E2E`
-- Evitar mezclar `#E9501D` con `#FFCD56` en el mismo bloque (compiten visualmente)
+- Fondo: `#FFFFFF` plano, sin degradados ni texturas
+- Título: `#0F2E81`
+- Etiqueta de sección: `#729E2E` en MAYÚSCULAS
+- Cuerpo: `#0F2E81` al 85–90%
+- Acento / línea lateral: `#729E2E`
+- Dato destacado: `#FFCD56` o `#729E2E` en negrita
 
 ## Tipografía
 
-- **Familia principal:** Uni Neue (o la alternativa más cercana disponible: **Neue Haas Unica**, **Helvetica Neue**, **Inter** solo si no hay acceso a Uni Neue)
-- **Display / títulos:** Uni Neue Bold o Heavy, tracking -1% a -2%
-- **Subtítulos:** Uni Neue Medium o SemiBold
-- **Cuerpo:** Uni Neue Regular o Book
-- **Micro / etiquetas:** Uni Neue SemiBold, MAYÚSCULAS con letter-spacing +4%
+- **Familia principal:** Uni Neue (o **Neue Haas Unica**, **Helvetica Neue**)
+- **Display / títulos:** Uni Neue Bold o Heavy, color `#0F2E81`
+- **Subtítulos de bloque:** Uni Neue SemiBold, color `#729E2E`
+- **Cuerpo:** Uni Neue Regular, color `#0F2E81`
+- **Micro / etiquetas:** Uni Neue SemiBold, MAYÚSCULAS, color `#729E2E`, letter-spacing +4%
+
+## Elementos gráficos permitidos
+
+- Una línea vertical fina `#729E2E` en borde izquierdo
+- Bordes finos `#729E2E` en tarjetas o franjas
+- Bullets pequeños en `#729E2E`
+- Nada más: sin watermarks, sin números gigantes, sin formas decorativas
 
 ## Estilo gráfico
 
-- Estética B2B tech-education: limpia, moderna, con mucho aire
-- Fondos en `#0F2E81` con acentos verde y amarillo; alternar slides claras (`#FFFFFF`) para ritmo
-- Formas geométricas suaves: rectángulos con border-radius moderado
-- Líneas divisorias finas en `#729E2E` al 30% opacidad
-- Iconografía lineal, trazo fino, esquinas redondeadas
-- Fotografía: trabajadores reales, luz natural, contexto construcción/minería norte de Chile
-- **Casco de seguridad:** siempre lo más simple posible — superficie lisa, un solo color (blanco o amarillo mate), sin calcomanías, logos, franjas reflectantes ni accesorios decorativos
-- Evitar saturación excesiva; priorizar autenticidad
+- Estética B2B limpia, editorial, mucho aire
+- Fotografía (solo cuando se indique): luz natural, contexto construcción norte de Chile
+- **Casco:** superficie lisa, un solo color, sin decoración
 
 ## Co-branding CChC
 
-- Incluir logo CChC / Fundación CChC en portada y cierre (zona inferior o esquina)
-- Logo Desafío Latam como operador del programa (más pequeño, alineado)
-- Logos en blanco o color según contraste sobre fondo `#0F2E81`
+- Logos CChC y Desafío Latam en color (`#0F2E81` o versión oficial) sobre fondo blanco
+- Pie de slide: logos pequeños, esquina inferior
 
-## Formato slide
+## Numeración
 
-- Márgenes seguros generosos en todos los bordes
-- Numeración: esquina inferior derecha, Uni Neue Medium, color `#729E2E` al 60% opacidad sobre fondo oscuro
+- Esquina inferior derecha, Uni Neue Medium, `#729E2E` al 50%, tamaño pequeño
+- Solo número de slide (01, 02, 03…), nunca número de sección grande

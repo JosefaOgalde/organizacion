@@ -21,14 +21,13 @@ Tipografía: Uni Neue en todos los niveles (o la fuente más parecida: Neue Haas
   - Título de slide: Uni Neue Bold/Heavy, color #0F2E81
   - Números de ítem: Uni Neue Bold, color #729E2E
   - Texto de ítem: Uni Neue Regular/Medium, color #0F2E81
-  - Etiqueta superior: Uni Neue SemiBold, MAYÚSCULAS, color #FFCD56 sobre franja o badge en #0F2E81
+  - Etiqueta superior: Uni Neue SemiBold, MAYÚSCULAS, color #729E2E
 
 ── FONDO Y ESTRUCTURA ──
-Fondo principal: #FFFFFF (slide clara, contraste con la portada oscura).
-Franja superior fina o badge con etiqueta en #0F2E81.
-Línea decorativa vertical o bloque lateral izquierdo en #729E2E (mismo lenguaje visual que la portada).
-Separadores entre ítems: líneas finas en #729E2E al 20% opacidad, o espaciado generoso sin líneas.
-Numeración "02" discreta en esquina inferior derecha, Uni Neue Medium, color #729E2E al 60%.
+Fondo principal: #FFFFFF en toda la slide (obligatorio en todas las slides del reporte).
+Línea vertical fina 4 px en #729E2E en borde izquierdo.
+Sin degradados, sin fondos oscuros, sin texturas.
+Numeración "02" discreta en esquina inferior derecha, Uni Neue Medium, color #729E2E al 50%.
 
 ── JERARQUÍA DE TEXTO ──
 Etiqueta superior (MAYÚSCULAS, letter-spacing amplio):
@@ -67,5 +66,5 @@ Columna derecha:
 - Pie discreto: logo Desafío Latam pequeño en esquina inferior izquierda, color #0F2E81 o #729E2E.
 
 ── ESTILO GENERAL ──
-Profesional, limpio, editorial. Ritmo visual claro que guíe la lectura de arriba a abajo por columna. Coherente con la portada (Slide 1) pero en versión clara. No usar colores fuera de la paleta oficial ADL.
+Profesional, limpio, editorial. Fondo blanco en toda la presentación. No usar colores fuera de la paleta oficial ADL.
 ```

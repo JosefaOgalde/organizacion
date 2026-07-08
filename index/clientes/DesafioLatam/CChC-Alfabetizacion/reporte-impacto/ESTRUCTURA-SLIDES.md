@@ -25,6 +25,7 @@
 - **NO** usar números de sección grandes en el centro, fondo ni como watermark.
 - El número de sección (01, 02…) va **solo** como etiqueta pequeña en MAYÚSCULAS en el encabezado superior.
 - La numeración de slide (03, 04…) va **solo** pequeña en esquina inferior derecha.
-- Ser explícito en zonas, prohibidos y estructura fija.
+- **Todas las slides:** fondo blanco `#FFFFFF`. Colores de marca solo en textos y elementos.
+- **NO** usar fondos oscuros (`#0F2E81`) como fondo de slide.
 
 _(vacío — se irán registrando conforme el usuario entregue cada una)_
