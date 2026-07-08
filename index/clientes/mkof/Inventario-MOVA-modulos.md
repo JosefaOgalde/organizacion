@@ -106,7 +106,7 @@ Hipótesis confirmada parcial: **fragmentación de login** — Google en `/mova/
 | `/mova_auth/login.php` | PHP correo+clave | parcial | Es mova_auth pero no usado por todos los M |
 | `/mova/erp/` | Contraseña local | no | Campo «Contraseña de acceso» |
 | `/axon/` | Sin login visible | no | Chat AXON carga directo |
-| `/mova/` (logueado) | Google OAuth | no | Panel MOVA · usuario corporativo (ej. `@talkprod.cl`) |
+| `/mova/` (logueado) | Google OAuth | no | Panel MOVA · `josefa@talkprod.cl` · **localStorage:** `axon_chats` |
 | `/pruebas/mova.html` | — | — | **Ignorar** — etapa 1, no producción |
 | `/rrhh/` | 403 Forbidden | no | Bloqueo servidor — probar subcarpetas |
 
@@ -199,7 +199,7 @@ public_html/
 - [x] Listado de carpetas en `public_html/acme-chile.cl/` pegado arriba
 - [x] URL completa de módulos prioritarios verificada en navegador (6 URLs)
 - [x] Flujo actual documentado para módulos revisados (Google / mova_auth / contraseña / 403)
-- [ ] JWT o localStorage identificados (captura DevTools en **`/mova/`** logueado)
+- [x] JWT o localStorage identificados en **`/mova/`** — clave `axon_chats` (sin JWT obvio)
 - [x] Endpoints n8n — **delegado** al equipo que administra n8n (no bloquea D1)
 - [ ] Tabla compartida con el equipo técnico
 
