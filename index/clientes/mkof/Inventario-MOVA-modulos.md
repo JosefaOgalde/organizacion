@@ -46,7 +46,7 @@
 | GAMKOF | `acme-chile.cl/gamkof/` | https://acme-chile.cl/gamkof/ | ? | ? | ? | ? | | No revisado |
 | Gestión EERR | `acme-chile.cl/gestion/eerr/` | https://acme-chile.cl/gestion/eerr/ | ? | ? | ? | ? | | `resumen/` vacía |
 | Operaciones | `acme-chile.cl/operaciones/` | https://acme-chile.cl/operaciones/comite.html | ? | ? | ? | ? | | `comite.html` en cPanel |
-| Pruebas / sandbox | `acme-chile.cl/pruebas/` | https://acme-chile.cl/pruebas/mova.html | **Google OAuth** | ? | ? | **no** | | Misma pantalla Google que `/mova/` — **candidato sandbox Día 5** |
+| Pruebas / sandbox | `acme-chile.cl/pruebas/` | https://acme-chile.cl/pruebas/mova.html | **Google OAuth** | ? | ? | **no** | Josefa | **Sesión OK** · `josefa@talkprod.cl` · panel completo · **sandbox Día 5** |
 | RRHH | `acme-chile.cl/rrhh/` | https://acme-chile.cl/rrhh/ | **403 Forbidden** (servidor) | n/a | n/a | **no** | | Sin acceso web directo · probar subrutas: `/rrhh/capacitaciones/` etc. |
 | Skill (herramientas) | `acme-chile.cl/skill/` | https://acme-chile.cl/skill/ | ? | ? | ? | ? | | No revisado |
 | Multimedia | `acme-chile.cl/multimedia/` | https://acme-chile.cl/multimedia/ | ? | ? | ? | ? | | No revisado |
@@ -65,7 +65,7 @@
 | Cotizador | `mova/cotizador/` | https://acme-chile.cl/mova/cotizador/ | ? | ? | ? | ? | |
 | Cuentas | `mova/cuentas/` | https://acme-chile.cl/mova/cuentas/ | ? | ? | ? | ? | |
 | Doc | `mova/doc/` | https://acme-chile.cl/mova/doc/ | ? | ? | ? | ? | |
-| **ERP** | `mova/erp/` | https://acme-chile.cl/mova/erp/ | ? | ? | ? | ? | Reemplaza MAESTRO raíz — abrir subcarpetas |
+| **ERP** | `mova/erp/` | https://acme-chile.cl/mova/erp/ | **Contraseña local** | ? | ? | **no** | Login solo clave · independiente de mova_auth |
 | Estudios | `mova/estudios/` | https://acme-chile.cl/mova/estudios/ | ? | ? | ? | ? | |
 | Facturas | `mova/facturas/` | https://acme-chile.cl/mova/facturas/ | ? | ? | ? | ? | |
 | Forecast | `mova/forecast/` | https://acme-chile.cl/mova/forecast/ | ? | ? | ? | ? | |
@@ -94,7 +94,44 @@ mova_auth/
 └── setup.sql
 ```
 
-Hipótesis (confirmar en DevTools): login Google + sesión PHP; aún no valida todos los módulos M.
+Hipótesis confirmada parcial: **fragmentación de login** — Google en `/mova/`, correo+clave en `/mova_auth/`, contraseña en `/mova/erp/`.
+
+---
+
+## Hallazgos navegador (8 jul 2026)
+
+| URL | Auth | ¿Pasa mova_auth? | Observación |
+|-----|------|------------------|-------------|
+| `/mova/` | Google OAuth | no | Pantalla «Iniciar sesión con Google» |
+| `/mova_auth/login.php` | PHP correo+clave | parcial | Es mova_auth pero no usado por todos los M |
+| `/mova/erp/` | Contraseña local | no | Campo «Contraseña de acceso» |
+| `/axon/` | Sin login visible | no | Chat AXON carga directo |
+| `/pruebas/mova.html` | Google OAuth | no | **Logueado:** Josefa Ogalde · `josefa@talkprod.cl` · panel MOVA completo |
+| `/rrhh/` | 403 Forbidden | no | Bloqueo servidor — probar subcarpetas |
+
+**Conclusión (problema real):** validación **fragmentada** — Google en panel MOVA, login PHP en `/mova_auth/` (no usado por el panel), contraseña en `/mova/erp/`, AXON sin gate visible.
+
+### Menú lateral MOVA (con sesión Google en `pruebas/mova.html`)
+
+| Ítem menú | Área | Mapeo carpeta probable |
+|-----------|------|------------------------|
+| Panel MOVA | Principal | `pruebas/mova.html` o `mova/` |
+| Portal Admin | Principal | `admin/` |
+| AXON News | Principal | `axon-news/` |
+| Pulso | Estrategia | `mova/` o `skill/` |
+| Eval. Proyectos | Estrategia | `mova/evaluador` o similar |
+| Recomienda IAs | Estrategia | `skill/` |
+| Stack GMO | Estrategia | `mova/strack/` |
+| Biblioteca GMOF | RRHH | `mova/doc/` o `multimedia/` |
+| Repositorio Documentos | RRHH | `documentos/` |
+| Talent Intelligence | RRHH | `mova/` o `rrhh/` |
+| Informe RRHH | RRHH | `rrhh/informe_rrss/` |
+| MOVA Financiero | ERP | `mova/erp/` |
+| Registro Ventas y CV | ERP | `mova/negocios/` |
+| Generador OC | ERP | `mova/oc/` |
+| Ctas. Cobrar/Pagar | ERP | `mova/cuentas/` |
+
+**Importante:** entrar al panel por Google **no desbloquea** `/mova_auth/login.php` ni `/mova/erp/` (siguen con login propio).
 
 ---
 
@@ -147,10 +184,10 @@ public_html/
 
 - [x] Acceso cPanel / FTP GoDaddy confirmado
 - [x] Listado de carpetas en `public_html/acme-chile.cl/` pegado arriba
-- [ ] URL completa de cada módulo M verificada en navegador
-- [ ] Flujo actual documentado (Google / mova_auth / otro) — columnas Auth sin `?`
-- [ ] JWT o localStorage identificados donde existan
-- [ ] Endpoints n8n listados
+- [x] URL completa de módulos prioritarios verificada en navegador (6 URLs)
+- [x] Flujo actual documentado para módulos revisados (Google / mova_auth / contraseña / 403)
+- [ ] JWT o localStorage identificados donde existan (falta DevTools **después de login**)
+- [ ] Endpoints n8n listados (falta DevTools → Network)
 - [ ] Tabla compartida con el equipo técnico
 
 **Criterio de cierre:** columnas Auth, JWT, n8n y mova_auth sin `?` en módulos M.
@@ -162,4 +199,4 @@ public_html/
 | Fecha | Autor | Cambio |
 |-------|-------|--------|
 | 6 jul 2026 | | Plantilla creada en repo |
-| 8 jul 2026 | cPanel | Árbol real + tablas con URLs y carpetas |
+| 8 jul 2026 | Navegador | Auth documentada: Google (/mova/), PHP (/mova_auth/), clave (/erp/), 403 (/rrhh/) |
