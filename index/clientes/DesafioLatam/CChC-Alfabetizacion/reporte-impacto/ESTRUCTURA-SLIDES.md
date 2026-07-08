@@ -10,8 +10,8 @@
 | 4 | Alcance y metodología | ✅ Prompt entregado |
 | 5 | Perfil de participantes | ✅ Prompt entregado |
 | 6 | Estructura del programa (2 módulos) | ✅ Prompt entregado |
-| 7 | Módulo 1 — Smartphone y correo electrónico | ⏳ Prompt entregado |
-| 8 | Módulo 2 — Clave Única y trámites digitales | Pendiente |
+| 7 | Módulo 1 — Smartphone y correo electrónico | ✅ Prompt entregado |
+| 8 | Módulo 2 — Clave Única y trámites digitales | ⏳ Prompt entregado |
 | 9 | Seguridad digital y prevención de fraudes | Pendiente |
 | 10 | Resultados e indicadores de impacto | Pendiente |
 | 11 | Satisfacción y percepción de participantes | Pendiente |
