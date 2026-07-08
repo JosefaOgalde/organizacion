@@ -33,22 +33,23 @@
 
 | Módulo | Carpeta cPanel | URL | Auth actual | ¿JWT/localStorage? | ¿n8n? | ¿Pasa mova_auth? | Responsable | Notas |
 |--------|----------------|-----|-------------|-------------------|-------|------------------|-------------|-------|
-| Landing corporativa | `acme-chile.cl/` (raíz) | https://acme-chile.cl/ | ? | ? | ? | ? | | Página pública |
-| Portal MOVA | `acme-chile.cl/mova/` | https://acme-chile.cl/mova/ | ? | ? | ? | ? | | Panel con menú lateral |
-| mova_auth (núcleo actual) | `acme-chile.cl/mova_auth/` | https://acme-chile.cl/mova_auth/login.php | Google + PHP (ver archivos) | ? | ? | parcial | | `auth.php`, `google_login.php`, `login.php`, `logout.php`, `panel.php`, `config.php` |
-| AXON | `acme-chile.cl/axon/` | https://acme-chile.cl/axon/ | ? | ? | ? | ? | | PWA: `manifest.json`, `sw.js`, `index.html` |
-| AXON News | `acme-chile.cl/axon-news/` | https://acme-chile.cl/axon-news/ | ? | ? | ? | ? | | |
-| Boletín AXON | `acme-chile.cl/Boletin_Axon/` | https://acme-chile.cl/Boletin_Axon/ | ? | ? | ? | ? | | |
-| Admin | `acme-chile.cl/admin/` | https://acme-chile.cl/admin/ | ? | ? | ? | ? | | |
-| CRM | `acme-chile.cl/crm/` | https://acme-chile.cl/crm/ | ? | ? | ? | ? | | Solo `versiones_anteriores/` visible |
-| Documentos / playbooks | `acme-chile.cl/documentos/` | https://acme-chile.cl/documentos/ | público | no | ? | n/a | | HTML: mova, n8n, playbook, forecast, etc. |
-| GAMKOF | `acme-chile.cl/gamkof/` | https://acme-chile.cl/gamkof/ | ? | ? | ? | ? | | `gmof-html-template.zip` |
-| Gestión EERR | `acme-chile.cl/gestion/eerr/` | https://acme-chile.cl/gestion/eerr/ | ? | ? | ? | ? | | Subcarpeta `resumen/` (vacía) |
-| Operaciones | `acme-chile.cl/operaciones/` | https://acme-chile.cl/operaciones/ | ? | ? | ? | ? | | `comite.html` |
-| Pruebas / sandbox | `acme-chile.cl/pruebas/` | https://acme-chile.cl/pruebas/ | ? | ? | ? | ? | | `mova.html`, `brujula_1.html` — candidato Día 5 |
-| RRHH | `acme-chile.cl/rrhh/` | https://acme-chile.cl/rrhh/ | ? | ? | ? | ? | | `capacitaciones/`, `informe_rrss/`, `playbook/` |
-| Skill (herramientas) | `acme-chile.cl/skill/` | https://acme-chile.cl/skill/ | ? | ? | ? | ? | | asana, claude, n8n, drive, playbook, etc. |
-| Multimedia | `acme-chile.cl/multimedia/` | https://acme-chile.cl/multimedia/ | ? | ? | ? | ? | | No explorado aún |
+| Landing corporativa | `acme-chile.cl/` (raíz) | https://acme-chile.cl/ | ? | ? | ? | ? | | Página pública — no revisada en navegador |
+| Portal MOVA | `acme-chile.cl/mova/` | https://acme-chile.cl/mova/ | **Google OAuth** | ? | ? | **no** | | Login «Iniciar sesión con Google» · cuentas `@mkof.cl` `@talkprod.cl` `@acme-chile.cl` |
+| mova_auth (núcleo actual) | `acme-chile.cl/mova_auth/` | https://acme-chile.cl/mova_auth/login.php | **mova_auth PHP** (correo + clave) | ? | ? | **parcial** | | Formulario email/clave · también existe `google_login.php` en carpeta |
+| MOVA ERP | `acme-chile.cl/mova/erp/` | https://acme-chile.cl/mova/erp/ | **Contraseña local** (solo campo clave) | ? | ? | **no** | | Login separado del panel MOVA y de mova_auth |
+| AXON | `acme-chile.cl/axon/` | https://acme-chile.cl/axon/ | **Sin login visible** (carga chat directo) | ? | ? | **no** | | En incógnito abre UI AXON sin pantalla previa — revisar auth al enviar mensaje |
+| AXON News | `acme-chile.cl/axon-news/` | https://acme-chile.cl/axon-news/ | ? | ? | ? | ? | | No revisado en navegador |
+| Boletín AXON | `acme-chile.cl/Boletin_Axon/` | https://acme-chile.cl/Boletin_Axon/ | ? | ? | ? | ? | | No revisado |
+| Admin | `acme-chile.cl/admin/` | https://acme-chile.cl/admin/ | ? | ? | ? | ? | | No revisado |
+| CRM | `acme-chile.cl/crm/` | https://acme-chile.cl/crm/ | ? | ? | ? | ? | | Solo `versiones_anteriores/` en cPanel |
+| Documentos / playbooks | `acme-chile.cl/documentos/` | https://acme-chile.cl/documentos/auditoria_mova.html | público | no | no | n/a | | Solo documentación |
+| GAMKOF | `acme-chile.cl/gamkof/` | https://acme-chile.cl/gamkof/ | ? | ? | ? | ? | | No revisado |
+| Gestión EERR | `acme-chile.cl/gestion/eerr/` | https://acme-chile.cl/gestion/eerr/ | ? | ? | ? | ? | | `resumen/` vacía |
+| Operaciones | `acme-chile.cl/operaciones/` | https://acme-chile.cl/operaciones/comite.html | ? | ? | ? | ? | | `comite.html` en cPanel |
+| Pruebas / sandbox | `acme-chile.cl/pruebas/` | https://acme-chile.cl/pruebas/mova.html | **Google OAuth** | ? | ? | **no** | | Misma pantalla Google que `/mova/` — **candidato sandbox Día 5** |
+| RRHH | `acme-chile.cl/rrhh/` | https://acme-chile.cl/rrhh/ | **403 Forbidden** (servidor) | n/a | n/a | **no** | | Sin acceso web directo · probar subrutas: `/rrhh/capacitaciones/` etc. |
+| Skill (herramientas) | `acme-chile.cl/skill/` | https://acme-chile.cl/skill/ | ? | ? | ? | ? | | No revisado |
+| Multimedia | `acme-chile.cl/multimedia/` | https://acme-chile.cl/multimedia/ | ? | ? | ? | ? | | No revisado |
 
 > **Valores auth:** `Google OAuth` · `mova_auth` · `JWT local` · `sesión PHP` · `ninguno` · `otro`  
 > **¿Pasa mova_auth?:** `sí` · `parcial` · `no` · `n/a`
