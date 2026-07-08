@@ -4,8 +4,8 @@
 
 | # | Slide | Estado |
 |---|-------|--------|
-| 1 | Portada | ⏳ Prompt entregado |
-| 2 | Índice / agenda | Pendiente |
+| 1 | Portada | ✅ Prompt entregado |
+| 2 | Índice / agenda | ⏳ Prompt entregado |
 | 3 | Contexto y objetivo del piloto | Pendiente |
 | 4 | Alcance y metodología | Pendiente |
 | 5 | Perfil de participantes | Pendiente |
