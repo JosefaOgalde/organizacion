@@ -34,8 +34,8 @@
 | Módulo | Carpeta cPanel | URL | Auth actual | ¿JWT/localStorage? | ¿n8n? | ¿Pasa mova_auth? | Responsable | Notas |
 |--------|----------------|-----|-------------|-------------------|-------|------------------|-------------|-------|
 | Landing corporativa | `acme-chile.cl/` (raíz) | https://acme-chile.cl/ | ? | ? | ? | ? | | Página pública — no revisada en navegador |
-| Portal MOVA | `acme-chile.cl/mova/` | https://acme-chile.cl/mova/ | **Google OAuth** | ? | ? | **no** | | Login «Iniciar sesión con Google» · cuentas `@mkof.cl` `@talkprod.cl` `@acme-chile.cl` |
-| mova_auth (núcleo actual) | `acme-chile.cl/mova_auth/` | https://acme-chile.cl/mova_auth/login.php | **mova_auth PHP** (correo + clave) | ? | ? | **parcial** | | Formulario email/clave · también existe `google_login.php` en carpeta |
+| Portal MOVA | `acme-chile.cl/mova/` | https://acme-chile.cl/mova/ | **Google OAuth** | ? | ? | **no** | Josefa | Login Google · sesión muestra usuario en panel |
+| mova_auth (núcleo actual) | `acme-chile.cl/mova_auth/` | https://acme-chile.cl/mova_auth/login.php | **mova_auth PHP** (correo + clave) | ? | ? | **parcial** | | Login **independiente** — no es el gate del panel MOVA |
 | MOVA ERP | `acme-chile.cl/mova/erp/` | https://acme-chile.cl/mova/erp/ | **Contraseña local** (solo campo clave) | ? | ? | **no** | | Login separado del panel MOVA y de mova_auth |
 | AXON | `acme-chile.cl/axon/` | https://acme-chile.cl/axon/ | **Sin login visible** (carga chat directo) | ? | ? | **no** | | En incógnito abre UI AXON sin pantalla previa — revisar auth al enviar mensaje |
 | AXON News | `acme-chile.cl/axon-news/` | https://acme-chile.cl/axon-news/ | ? | ? | ? | ? | | No revisado en navegador |
@@ -111,11 +111,11 @@ Hipótesis confirmada parcial: **fragmentación de login** — Google en `/mova/
 
 **Conclusión (problema real):** validación **fragmentada** — Google en panel MOVA, login PHP en `/mova_auth/` (no usado por el panel), contraseña en `/mova/erp/`, AXON sin gate visible.
 
-### Menú lateral MOVA (con sesión Google en `pruebas/mova.html`)
+### Menú lateral MOVA (sesión Google en **`/mova/`** — producción)
 
 | Ítem menú | Área | Mapeo carpeta probable |
 |-----------|------|------------------------|
-| Panel MOVA | Principal | `pruebas/mova.html` o `mova/` |
+| Panel MOVA | Principal | `mova/` |
 | Portal Admin | Principal | `admin/` |
 | AXON News | Principal | `axon-news/` |
 | Pulso | Estrategia | `mova/` o `skill/` |
@@ -174,9 +174,11 @@ public_html/
 
 ## Endpoints n8n detectados
 
+> **Nota:** n8n lo administra otro equipo. En Día 1 se deja como **pendiente de confirmación** (no bloquea cierre si Auth/JWT están documentados).
+
 | Webhook / URL | Módulo que lo usa | ¿Auth? | Notas |
 |---------------|-------------------|--------|-------|
-| | | | _Completar con DevTools → Network_ |
+| _Pendiente equipo n8n_ | — | — | Josefa no administra n8n — solicitar listado al responsable |
 
 ---
 
