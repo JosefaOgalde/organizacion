@@ -20,6 +20,11 @@
 | 14 | Proyección 2027 | Pendiente |
 | 15 | Cierre / agradecimientos | Pendiente |
 
-## Slides guardadas
+## Reglas globales para todos los prompts
+
+- **NO** usar números de sección grandes en el centro, fondo ni como watermark.
+- El número de sección (01, 02…) va **solo** como etiqueta pequeña en MAYÚSCULAS en el encabezado superior.
+- La numeración de slide (03, 04…) va **solo** pequeña en esquina inferior derecha.
+- Ser explícito en zonas, prohibidos y estructura fija.
 
 _(vacío — se irán registrando conforme el usuario entregue cada una)_
