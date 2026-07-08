@@ -18,7 +18,7 @@
 | 12 | Empresas participantes | ✅ Prompt entregado |
 | 13 | Aprendizajes del piloto | ✅ Prompt entregado |
 | 14 | Proyección 2027 | ✅ Prompt entregado |
-| 15 | Cierre / agradecimientos | ⏳ Prompt entregado |
+| 15 | Cierre / agradecimientos | ✅ Prompt entregado |
 
 ## Reglas globales para todos los prompts
 
@@ -28,4 +28,12 @@
 - **Todas las slides:** fondo blanco `#FFFFFF`. Colores de marca solo en textos y elementos.
 - **NO** usar fondos oscuros (`#0F2E81`) como fondo de slide.
 
-_(vacío — se irán registrando conforme el usuario entregue cada una)_
+## Slides finalizadas
+
+_(vacío — guardar en `slides/` conforme el usuario entregue cada imagen)_
+
+## Documentación relacionada
+
+- [README.md](./README.md) — índice del proyecto
+- [IDENTIDAD-ADL.md](./IDENTIDAD-ADL.md) — manual de marca
+- [REPORTE-DATOS.md](./REPORTE-DATOS.md) — datos y contenido base del piloto

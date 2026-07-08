@@ -183,6 +183,24 @@ window.CLIENTES_PORTAL = [
           acento: '#F5B335',
           fondo: '#F7FAF8'
         }
+      },
+      {
+        codigo: 'CChC',
+        nombre: 'CChC · Alfabetización Digital',
+        archivo: 'DesafioLatam/CChC-Alfabetizacion/reporte-impacto',
+        resumen: 'Reporte de impacto piloto 2026 — presentación 15 slides, Antofagasta.',
+        color: { border: '#729E2E', bg: '#f5f9f0', text: '#0F2E81' },
+        identidad: {
+          primario: '#729E2E',
+          secundario: '#0F2E81',
+          acento: '#FFCD56',
+          fondo: '#FFFFFF'
+        },
+        entregables: [
+          'Presentación 15 slides',
+          'Prompts por slide',
+          'Identidad ADL oficial'
+        ]
       }
     ]
   },

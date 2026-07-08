@@ -89,5 +89,26 @@ window.ADL_PROYECTOS = {
         return req.every((id) => emitidos.includes(id));
       }
     }
+  },
+  CChC: {
+    codigo: 'CChC',
+    nombre: 'Cámara Chilena de la Construcción',
+    programa: 'Piloto Alfabetización Digital Funcional',
+    cliente: 'Desafío Latam',
+    identidadDoc: 'CChC-Alfabetizacion/reporte-impacto/IDENTIDAD-ADL.md',
+    carpeta: 'CChC-Alfabetizacion/reporte-impacto',
+    colores: {
+      primario: '#729E2E',
+      secundario: '#0F2E81',
+      acento: '#FFCD56',
+      naranja: '#E9501D',
+      fondo: '#FFFFFF',
+      texto: '#0F2E81'
+    },
+    tipografia: 'Uni Neue',
+    entregable: 'Presentación reporte de impacto — 15 slides',
+    slides: 15,
+    territorio: 'Región de Antofagasta',
+    anio: 2026
   }
 };
