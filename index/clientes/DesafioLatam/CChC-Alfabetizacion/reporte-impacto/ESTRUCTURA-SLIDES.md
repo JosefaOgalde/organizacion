@@ -7,8 +7,8 @@
 | 1 | Portada | ✅ Prompt entregado |
 | 2 | Índice / agenda | ✅ Prompt entregado |
 | 3 | Contexto y objetivo del piloto | ✅ Prompt entregado |
-| 4 | Alcance y metodología | ⏳ Prompt entregado |
-| 5 | Perfil de participantes | Pendiente |
+| 4 | Alcance y metodología | ✅ Prompt entregado |
+| 5 | Perfil de participantes | ⏳ Prompt entregado |
 | 6 | Estructura del programa (2 módulos) | Pendiente |
 | 7 | Módulo 1 — Smartphone y correo electrónico | Pendiente |
 | 8 | Módulo 2 — Clave Única y trámites digitales | Pendiente |
