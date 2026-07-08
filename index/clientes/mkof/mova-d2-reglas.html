@@ -24,6 +24,40 @@
     </section>
 
     <section>
+      <h2>Mapa conceptual — situación HOY</h2>
+      <p class="mova-d2-reglas__explica-intro">Cada módulo tiene su propia «puerta». El usuario no sabe por dónde entrar.</p>
+      <div class="mova-d2-reglas__mapa-hoy">
+        <div class="mova-d2-reglas__puerta mova-d2-reglas__puerta--warn">
+          <strong>Google OAuth</strong><span>/mova/</span>
+          <p>Entra con cuenta Google al panel. <em>No pasa por mova_auth.</em></p>
+        </div>
+        <div class="mova-d2-reglas__puerta mova-d2-reglas__puerta--accent">
+          <strong>correo + clave</strong><span>mova_auth/login.php</span>
+          <p>Login PHP aparte. <em>Parcial — no es el gate del panel.</em></p>
+        </div>
+        <div class="mova-d2-reglas__puerta mova-d2-reglas__puerta--warn">
+          <strong>contraseña local</strong><span>/mova/erp/</span>
+          <p>Solo campo clave en ERP. <em>Login independiente.</em></p>
+        </div>
+        <div class="mova-d2-reglas__puerta mova-d2-reglas__puerta--muted">
+          <strong>sin login visible</strong><span>/axon/</span>
+          <p>Abre directo. Hay que definir quién valida (D5).</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>¿Qué es mova_auth? (glosario)</h2>
+      <div class="mova-d2-reglas__glosario">
+        <article><h3>mova_auth</h3><p>Carpeta en el servidor. El «portero» que debería validar a todos antes de entrar a apps MOVA.</p></article>
+        <article><h3>login.php</h3><p>Pantalla de entrada. Hoy existe pero NO controla el acceso al panel <code>/mova/</code>.</p></article>
+        <article><h3>guard.php</h3><p>Archivo que cada módulo privado incluirá al inicio. Pregunta: «¿hay sesión?» — si no, manda al login.</p></article>
+        <article><h3>Módulo M</h3><p>App interna MOVA: portal, ERP, AXON, RRHH, facturas bajo <code>/mova/</code>, etc.</p></article>
+      </div>
+      <p class="mova-d2-reglas__analogia"><strong>Analogía:</strong> hoy cada oficina tiene su cerradura. Objetivo: un solo recepcionista (mova_auth) en la entrada.</p>
+    </section>
+
+    <section>
       <h2>Regla de oro</h2>
       <blockquote class="mova-d2-reglas__oro">
         Si el usuario no pasó por mova_auth con sesión válida, no entra a ningún módulo M.
@@ -36,6 +70,29 @@
           <span>/mova/</span><span>/mova/erp/</span><span>/axon/</span><span>/rrhh/</span>
         </div>
       </div>
+    </section>
+
+    <section>
+      <h2>Regla de oro — paso a paso</h2>
+      <ol class="mova-d2-reglas__pasos">
+        <li><strong>guard.php</strong> — Guardia en la puerta de cada módulo. Verifica sesión antes de mostrar contenido.</li>
+        <li><strong>Sesión en servidor</strong> — La credencial vive en PHP, no en localStorage del navegador.</li>
+        <li><strong>Redirect al login</strong> — Sin sesión → <code>login.php?redirect=</code> con la URL que el usuario quería.</li>
+        <li><strong>Vuelta al módulo</strong> — Tras login, regresa donde iba (no pierde el destino).</li>
+        <li><strong>Sin logins paralelos</strong> — Se acaban Google suelto, clave ERP aparte, etc. Solo mova_auth.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Flujo objetivo (mapa)</h2>
+      <div class="mova-d2-reglas__flujo">
+        <span>1. Pide módulo</span> →
+        <span>2. guard.php</span> →
+        <span>3. ¿sesión?</span> →
+        <span class="no">No → login</span> /
+        <span class="si">Sí → entra</span>
+      </div>
+      <p>El módulo nunca decide solo quién entra — solo pregunta a mova_auth vía <code>guard.php</code>.</p>
     </section>
 
     <section>
