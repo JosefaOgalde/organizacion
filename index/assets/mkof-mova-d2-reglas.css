@@ -57,20 +57,20 @@
 }
 
 .mova-d2-reglas__puente {
-  background: linear-gradient(135deg, #f3eef8, #faf8fc);
-  border: 1px dashed #6f42c1;
+  background: linear-gradient(135deg, #e8f6f8, #f4fafb);
+  border: 1px dashed #4a7a80;
   border-radius: 10px;
   padding: 0.85rem 1.15rem;
   margin: -0.5rem 0 1.25rem;
   font-size: 0.9rem;
-  color: #444;
+  color: #1f2328;
 }
 
 .mova-d2-reglas__puente strong {
   display: inline-block;
   margin-right: 0.35rem;
   padding: 0.15rem 0.5rem;
-  background: #6f42c1;
+  background: #2a4a4e;
   color: #fff;
   border-radius: 4px;
   font-size: 0.72rem;
@@ -83,7 +83,7 @@
   padding: 0.65rem 0.85rem;
   background: #fff;
   border-radius: 6px;
-  border: 1px solid #e0d4f0;
+  border: 1px solid #b8d4d8;
   font-family: ui-monospace, "Cascadia Code", monospace;
   font-size: 0.78rem;
   line-height: 1.5;

@@ -77,23 +77,23 @@ def add_header_bar(slide, title, subtitle="", accent=C_ACCENT):
 def slide_puente(prs, de_titulo, a_titulo, cuerpo, mapa_lineas=None):
     """Slide de transición entre bloques: texto explicativo + mini mapa ASCII."""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
-    set_slide_bg(slide, RGBColor(0xF3, 0xEE, 0xF8))
-    add_header_bar(slide, "Puente — para entender el hilo", f"De «{de_titulo}» a «{a_titulo}»", C_PURPLE)
+    set_slide_bg(slide, C_BG)
+    add_header_bar(slide, "Puente — para entender el hilo", f"De «{de_titulo}» a «{a_titulo}»", C_ACCENT)
 
-    badge = add_round_box(slide, Inches(0.75), Inches(1.25), Inches(1.35), Inches(0.42), C_PURPLE)
+    badge = add_round_box(slide, Inches(0.75), Inches(1.25), Inches(1.35), Inches(0.42), C_ACCENT_DARK)
     add_textbox(slide, Inches(0.75), Inches(1.32), Inches(1.35), Inches(0.3), "PUENTE", size=11, bold=True, color=C_WHITE, align=PP_ALIGN.CENTER)
 
     add_textbox(slide, Inches(2.25), Inches(1.28), Inches(10.3), Inches(0.45), cuerpo, size=15, color=C_TEXT)
 
     if mapa_lineas:
-        box = add_round_box(slide, Inches(0.75), Inches(2.05), Inches(11.8), Inches(2.35), C_WHITE, C_PURPLE, 2)
-        add_textbox(slide, Inches(0.95), Inches(2.2), Inches(2.5), Inches(0.3), "Mapa conceptual", size=12, bold=True, color=C_PURPLE)
+        box = add_round_box(slide, Inches(0.75), Inches(2.05), Inches(11.8), Inches(2.35), C_WHITE, C_ACCENT, 2)
+        add_textbox(slide, Inches(0.95), Inches(2.2), Inches(2.5), Inches(0.3), "Mapa conceptual", size=12, bold=True, color=C_ACCENT_DARK)
         y = Inches(2.55)
         for line in mapa_lineas:
             add_textbox(slide, Inches(1.0), y, Inches(11.3), Inches(0.38), line, size=13, color=C_TEXT)
             y += Inches(0.42)
 
-    flecha = add_round_box(slide, Inches(0.75), Inches(4.65), Inches(11.8), Inches(0.75), C_HIGHLIGHT, C_ACCENT)
+    flecha = add_round_box(slide, Inches(0.75), Inches(4.65), Inches(11.8), Inches(0.75), C_HIGHLIGHT, C_ACCENT_DARK, 2)
     add_textbox(slide, Inches(0.95), Inches(4.82), Inches(11.4), Inches(0.45),
                 f"Siguiente slide: {a_titulo}", size=14, bold=True, color=C_ACCENT_DARK, align=PP_ALIGN.CENTER)
 
