@@ -187,7 +187,7 @@ window.CLIENTES_PORTAL = [
       {
         codigo: 'CChC',
         nombre: 'CChC · Alfabetización Digital',
-        archivo: 'DesafioLatam/CChC-Alfabetizacion/reporte-impacto',
+        archivo: 'DesafioLatam/CChC-Alfabetizacion/reporte-impacto/index.html',
         resumen: 'Reporte de impacto piloto 2026 — presentación 15 slides, Antofagasta.',
         color: { border: '#729E2E', bg: '#f5f9f0', text: '#0F2E81' },
         identidad: {
