@@ -1,6 +1,8 @@
 {
-  "actualizado": "2026-06-27",
+  "actualizado": "2026-07-09",
   "repo": "https://github.com/JosefaOgalde/organizacion",
+  "ramaMadre": "main",
+  "descripcionMadre": "Agente Organización — organizador, portal clientes, app.js, respaldos. Las demás ramas agente salen de main.",
   "agentes": [
     {
       "id": "joyas-mercury",
@@ -43,6 +45,24 @@
       ]
     },
     {
+      "id": "adl-cchc",
+      "invocar": "@organizacion-clientes",
+      "clienteId": "cli-desafio-latam",
+      "cliente": "Desafío Latam · CChC",
+      "abrev": "ADL",
+      "descripcion": "Reporte impacto piloto Alfabetización Digital — 15 slides",
+      "portal": "index/clientes/DesafioLatam/CChC-Alfabetizacion/reporte-impacto/index.html",
+      "ramaMadre": "main",
+      "ramas": [
+        {
+          "nombre": "cursor/cchc-reporte-prompts-90d6",
+          "titulo": "Reporte impacto CChC — prompts + hub visual",
+          "pr": 28,
+          "estado": "fusionada"
+        }
+      ]
+    },
+    {
       "id": "mova",
       "invocar": "@mova",
       "clienteId": "cli-mkof",
@@ -77,8 +97,9 @@
       "clienteId": null,
       "cliente": "Organizador / portal",
       "abrev": "ORG",
-      "descripcion": "App calendario, portal clientes, ramas transversales",
+      "descripcion": "Rama madre — app calendario, portal clientes, ramas transversales",
       "portal": "index.html",
+      "esRamaMadre": true,
       "ramas": [
         {
           "nombre": "cursor/vista-calendario-global-d6a1",

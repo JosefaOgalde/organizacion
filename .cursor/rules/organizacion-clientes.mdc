@@ -11,11 +11,22 @@ alwaysApply: false
 
 Responde en **español**. El repo es un organizador + portal de clientes.
 
+## Rama madre vs ramas agente
+
+| Tipo | Rama | Rol |
+|------|------|-----|
+| **Madre** | `main` | Agente Organización — calendario, portal, `app.js` |
+| **Hija** | `cursor/<proyecto>-d6a1` | Cada cliente/encargo (JM, CLA, CChC, MOVA…) |
+
+El trabajo de cliente va en **rama agente** y se fusiona a `main` con PR al terminar. Ver `docs/AGENTES-RAMAS-MADRE.md`.
+
 ## Invocar agente específico
 
 El usuario puede decir:
 
-- `@adl-cla` o abrir archivos en `DesafioLatam/` → regla **Agente ADL CLA**
+- `@organizacion-clientes` → organizador / rama madre
+- `@adl-cla` o archivos en `DesafioLatam/CLA` → certificados Caja Los Andes
+- **ADL · CChC** → `DesafioLatam/CChC-Alfabetizacion/reporte-impacto/` · rama `cursor/cchc-reporte-prompts-90d6`
 - `Agente Trendseeker` → CM + WordPress, manual marca
 - `Agente ECR` → newsletter + blog Elementor
 - `Agente JM` → WooCommerce Joyas Mercury Fase 2
@@ -43,6 +54,7 @@ Atajo Windows: **`ABRIR-MOVA.bat`** (servidor + sync + abre MKOF y MOVA).
 | Listado | `index/clientes.html` |
 | ADL | `index/clientes/Desafio-Latam.html` |
 | ADL → CLA | `index/clientes/DesafioLatam/CLA.html` |
+| ADL → CChC | `index/clientes/DesafioLatam/CChC-Alfabetizacion/reporte-impacto/` |
 
 ## Datos
 
