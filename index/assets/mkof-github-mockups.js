@@ -165,8 +165,7 @@
       ),
   };
 
-  function repoPaso(num, paso) {
-    const fn = REPO_MOCKUPS[num];
+  function wrapMockup(num, paso, fn) {
     if (!fn) return '';
     const destacar = paso?.destacar
       ? `<p class="mkof-guia-img__destacar">👆 ${escapeHtml(paso.destacar)}</p>`
@@ -178,5 +177,147 @@
     </figure>`;
   }
 
-  window.MKOF_GITHUB_MOCKUPS = { repoPaso };
+  function repoPaso(num, paso) {
+    return wrapMockup(num, paso, REPO_MOCKUPS[num]);
+  }
+
+  const N8N_MOCKUPS = {
+    1: () =>
+      shell(
+        'Contacto equipo',
+        `<div class="mkof-mockup__contact">
+          <div class="mkof-mockup__contact-row"><span>Admin n8n</span><strong>[nombre]</strong></div>
+          <div class="mkof-mockup__contact-row"><span>Correo</span><strong>[correo@empresa.cl]</strong></div>
+          <div class="mkof-mockup__contact-row mkof-mockup__contact-row--hi"><span>Instancia</span><strong>n8n.[empresa].cl</strong></div>
+        </div>`
+      ),
+
+    2: () =>
+      shell(
+        'Pedido 1 · Tabla',
+        `<table class="mkof-mockup__tabla">
+          <thead><tr><th>Workflow</th><th>Webhook URL</th><th>Módulo</th><th>Auth</th></tr></thead>
+          <tbody>
+            <tr><td>portal-facturas</td><td>https://…/webhook/…</td><td>/mova/</td><td>API key</td></tr>
+            <tr><td>axon-chat</td><td>https://…/webhook/…</td><td>/axon/</td><td>ninguna</td></tr>
+          </tbody>
+        </table>
+        <p class="mkof-mockup__note">Completar filas por cada workflow en producción.</p>`,
+        true
+      ),
+
+    3: () =>
+      shell(
+        'n8n → Export JSON',
+        `<div class="mkof-mockup__n8n-bar">
+          <span>Workflow: portal-facturas</span>
+          <span class="mkof-mockup__n8n-menu mkof-mockup__n8n-menu--hi">⋯ Download</span>
+        </div>
+        <div class="mkof-mockup__file">portal-facturas.json</div>
+        <div class="mkof-mockup__file">axon-chat.json</div>
+        <p class="mkof-mockup__mini">→ carpeta zip o repo mova-n8n-workflows</p>`
+      ),
+
+    4: () =>
+      shell(
+        'n8n → Workflows',
+        `<div class="mkof-mockup__n8n-list">
+          <div class="mkof-mockup__n8n-row mkof-mockup__n8n-row--hi"><span class="mkof-mockup__n8n-on">ON</span> portal-facturas</div>
+          <div class="mkof-mockup__n8n-row"><span class="mkof-mockup__n8n-on">ON</span> axon-chat</div>
+          <div class="mkof-mockup__n8n-row"><span class="mkof-mockup__n8n-off">off</span> test-borrador</div>
+        </div>
+        <p class="mkof-mockup__note">Captura: solo workflows <strong>activos</strong> en producción.</p>`,
+        true
+      ),
+
+    5: () =>
+      shell(
+        'n8n → Canvas workflow',
+        `<div class="mkof-mockup__n8n-canvas">
+          <span class="mkof-mockup__n8n-node mkof-mockup__n8n-node--trigger">Webhook</span>
+          <span class="mkof-mockup__n8n-arrow">→</span>
+          <span class="mkof-mockup__n8n-node">IF auth</span>
+          <span class="mkof-mockup__n8n-arrow">→</span>
+          <span class="mkof-mockup__n8n-node">HTTP Request</span>
+          <span class="mkof-mockup__n8n-arrow">→</span>
+          <span class="mkof-mockup__n8n-node">Respond</span>
+        </div>
+        <p class="mkof-mockup__note">Zoom out para ver todo el flujo en una captura.</p>`,
+        true
+      ),
+
+    6: () =>
+      shell(
+        'n8n → Nodo Webhook',
+        `<div class="mkof-mockup__n8n-split">
+          <div class="mkof-mockup__n8n-canvas-mini">
+            <span class="mkof-mockup__n8n-node mkof-mockup__n8n-node--hi">Webhook</span>
+          </div>
+          <div class="mkof-mockup__n8n-panel">
+            ${field('HTTP Method', 'POST', true)}
+            ${field('Path', '/webhook/mova-facturas', true)}
+            ${field('Production URL', 'https://n8n…/webhook/mova-facturas', false)}
+          </div>
+        </div>`,
+        true
+      ),
+
+    7: () =>
+      shell(
+        'n8n → Validación auth',
+        `<div class="mkof-mockup__n8n-canvas">
+          <span class="mkof-mockup__n8n-node">Webhook</span>
+          <span class="mkof-mockup__n8n-arrow">→</span>
+          <span class="mkof-mockup__n8n-node mkof-mockup__n8n-node--hi">IF token válido</span>
+          <span class="mkof-mockup__n8n-arrow">→</span>
+          <span class="mkof-mockup__n8n-node">continúa</span>
+        </div>
+        <p class="mkof-mockup__warn">Si no valida → documentar «sin auth» en la tabla.</p>`,
+        true
+      ),
+
+    8: () =>
+      shell(
+        'n8n → Executions',
+        `<div class="mkof-mockup__n8n-exec">
+          <div class="mkof-mockup__n8n-exec-row mkof-mockup__n8n-exec-row--ok"><span>✓ Success</span> portal-facturas · hace 2 h</div>
+          <div class="mkof-mockup__n8n-exec-row"><span>✓ Success</span> axon-chat · hace 5 h</div>
+          <div class="mkof-mockup__n8n-exec-row mkof-mockup__n8n-exec-row--err"><span>✗ Error</span> test · hace 1 d</div>
+        </div>
+        <p class="mkof-mockup__note">Capturar Success reciente — tapar datos del payload.</p>`
+      ),
+
+    9: () =>
+      shell(
+        'Seguridad',
+        `<div class="mkof-mockup__shield">
+          <p class="mkof-mockup__warn">✗ No enviar por correo:</p>
+          <ul class="mkof-mockup__shield-list">
+            <li>API keys · tokens · contraseñas</li>
+            <li>Capturas con secretos visibles</li>
+          </ul>
+          <p class="mkof-mockup__ok-text">✓ Sí: nombre de credencial en n8n · tipo de auth</p>
+        </div>`
+      ),
+
+    10: () =>
+      shell(
+        'Organizar entregables',
+        `<div class="mkof-mockup__folder-tree">
+          <div>📁 entregables-n8n/</div>
+          <div class="mkof-mockup__indent">📄 inventario-webhooks.xlsx</div>
+          <div class="mkof-mockup__indent">📁 portal-facturas/</div>
+          <div class="mkof-mockup__indent2">workflow.json · canvas.png · webhook.png</div>
+          <div class="mkof-mockup__indent">📁 axon-chat/ …</div>
+        </div>
+        <p class="mkof-mockup__mini">→ Inventario-MOVA-modulos.md · repo GitHub</p>`,
+        true
+      ),
+  };
+
+  function n8nPaso(num, paso) {
+    return wrapMockup(num, paso, N8N_MOCKUPS[num]);
+  }
+
+  window.MKOF_GITHUB_MOCKUPS = { repoPaso, n8nPaso };
 })();

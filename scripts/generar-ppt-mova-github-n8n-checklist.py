@@ -102,18 +102,18 @@ def slide_title(prs):
     add_textbox(slide, Inches(0.8), Inches(1.3), Inches(11.5), Inches(0.5), "MOVA · Hito 1.1", size=20, color=RGBColor(0xA8, 0xD8, 0xDC))
     add_textbox(slide, Inches(0.8), Inches(1.9), Inches(11.5), Inches(1.0), "GitHub + solicitud n8n", size=40, bold=True, color=C_WHITE)
     add_textbox(slide, Inches(0.8), Inches(3.0), Inches(11.5), Inches(0.6), "Checklist paso a paso · 10 jul 2026", size=22, color=C_BG)
-    add_textbox(slide, Inches(0.8), Inches(3.8), Inches(11.5), Inches(0.5), "Cuenta GitHub → repo privado mova-n8n-workflows → pedidos al equipo n8n", size=16, color=RGBColor(0xA8, 0xD8, 0xDC))
+    add_textbox(slide, Inches(0.8), Inches(3.8), Inches(11.5), Inches(0.5), "Paso 1 cuenta → Paso 2 repo → Paso 3 solicitud n8n (tabla + JSON + capturas)", size=16, color=RGBColor(0xA8, 0xD8, 0xDC))
     add_textbox(slide, Inches(0.8), Inches(5.2), Inches(11.5), Inches(0.55), "GRUPO MAKING OF · acme-chile.cl · auditoría MOVA", size=14, color=C_MUTED)
 
 
 def slide_agenda(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide)
-    add_header_bar(slide, "Orden del día", "Tres bloques + checklist por cada uno")
+    add_header_bar(slide, "Orden del día", "Tres pasos + checklist por cada uno")
     bloques = [
-        ("A", "Crear cuenta GitHub", "Correo general del equipo · plan Free · verificar email"),
-        ("B", "Repo privado", "mova-n8n-workflows · Private · vacío · copiar URL"),
-        ("C", "Solicitud n8n", "Tabla inventario + export JSON + contexto (3 pedidos)"),
+        ("1", "Crear cuenta GitHub", "Correo general del equipo · plan Free · verificar email"),
+        ("2", "Repo privado", "mova-n8n-workflows · Private · vacío · copiar URL"),
+        ("3", "Solicitud n8n", "Tabla + JSON + capturas por workflow · github-n8n.html"),
     ]
     y = Inches(1.5)
     for cod, tit, desc in bloques:
@@ -195,7 +195,7 @@ def slide_b_checklist(prs):
         "Equipo técnico avisado: repo listo para recibir backup n8n",
     ])
     add_textbox(slide, Inches(0.85), Inches(5.6), Inches(11.5), Inches(0.4),
-                "Guía detallada: github-repo.html · MOVA-GitHub-Paso2-Repo-Privado.pdf",
+                "Guía detallada: github-repo.html · Paso 3 → github-n8n.html",
                 size=12, color=C_MUTED)
 
 
@@ -276,7 +276,41 @@ def slide_c2_checklist(prs):
 def slide_c3_pasos(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide)
-    add_header_bar(slide, "Bloque C · Pedido 3 — Contexto", "Información complementaria", badge="C3")
+    add_header_bar(slide, "Paso 3 · Pedido 3 — Capturas n8n", "Entender el flujo visual por workflow", badge="3")
+    slide_pasos(slide, [
+        ("Lista workflows", "Captura de n8n con workflows activos (ON) visibles."),
+        ("Canvas completo", "Por workflow: todos los nodos — trigger → lógica → respuesta."),
+        ("Nodo Webhook", "Panel del webhook: URL producción, método HTTP, path."),
+        ("Validación auth", "Nodos IF/Code donde validan token o usuario (clave D5)."),
+        ("Executions", "Opcional: ejecución Success reciente — tapar datos sensibles."),
+        ("Tapar secretos", "Pedir que oculten API keys y tokens antes de enviar."),
+    ], start_y=Inches(1.3))
+    add_round_box(slide, Inches(0.75), Inches(5.65), Inches(11.8), Inches(0.7), C_GREEN_BG, C_OK, 2)
+    add_textbox(slide, Inches(0.95), Inches(5.8), Inches(11.4), Inches(0.45),
+                "Las capturas complementan tabla y JSON — no las reemplazan. Guía: github-n8n.html",
+                size=12, bold=True, color=C_OK)
+
+
+def slide_c3_checklist(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide)
+    add_header_bar(slide, "Checklist · Paso 3 — Capturas n8n", "Por cada workflow activo", badge="3 ✓")
+    slide_checklist(slide, [
+        "Correo enviado con los 3 pedidos (tabla + JSON + capturas)",
+        "Lista de capturas requeridas incluida en el correo",
+        "Captura lista workflows recibida",
+        "Captura canvas por workflow activo",
+        "Captura nodo Webhook por workflow (URL coincide con tabla)",
+        "Capturas de validación auth recibidas o «sin auth» documentado",
+        "Secretos tapados en todas las capturas",
+        "Entregables organizados en carpeta por workflow",
+    ])
+
+
+def slide_c4_pasos(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide)
+    add_header_bar(slide, "Paso 3 · Contexto complementario", "Además de tabla, JSON y capturas", badge="+")
     items = [
         ("URL instancia n8n", "Ej. n8n.empresa.cl — dónde administran."),
         ("Admin / contacto", "Quién tiene acceso admin para cambios futuros."),
@@ -293,10 +327,10 @@ def slide_c3_pasos(prs):
         y += Inches(0.82)
 
 
-def slide_c3_checklist(prs):
+def slide_c4_checklist(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide)
-    add_header_bar(slide, "Checklist · Pedido 3 — Contexto n8n", "Complemento a tabla y JSON", badge="C3 ✓")
+    add_header_bar(slide, "Checklist · Contexto n8n", "Complemento al Paso 3", badge="+ ✓")
     slide_checklist(slide, [
         "URL de la instancia n8n recibida",
         "Contacto admin n8n confirmado",
@@ -312,7 +346,7 @@ def slide_no_pedir(prs):
     add_header_bar(slide, "Qué NO pedir (o pedir con cuidado)", "Evitar riesgos de seguridad")
     rows = [
         ("Contraseñas / API keys por correo", "Pedir solo tipo de auth y nombre de credencial en n8n"),
-        ("Solo JSON sin tabla", "Pedir AMBOS: inventario (tabla) + backup (JSON)"),
+        ("Solo JSON o solo capturas", "Pedir tabla + JSON + capturas (los tres)"),
         ("Acceso admin n8n hoy", "Solo listado + exports; admin puede ser después"),
         ("Export con secretos embebidos", "Export estándar; credenciales documentadas aparte en n8n"),
     ]
@@ -336,8 +370,11 @@ def slide_correo(prs):
         "1) TABLA de workflows en producción que sirvan al sitio o módulos MOVA:\n"
         "   · Nombre · URL webhook · Módulo · Auth · Responsable · Notas\n\n"
         "2) EXPORT JSON de esos workflows activos (backup repo privado mova-n8n-workflows).\n\n"
-        "3) CONTEXTO: URL instancia n8n · contacto admin · webhooks sin auth · "
-        "workflows que validan usuario.\n\n"
+        "3) CAPTURAS por workflow activo:\n"
+        "   · Lista workflows · canvas completo · nodo Webhook\n"
+        "   · nodos validación auth · ejecución Success (opcional)\n"
+        "   Tapar secretos antes de enviar.\n\n"
+        "4) CONTEXTO: URL instancia n8n · contacto admin · webhooks sin auth.\n\n"
         "No enviar contraseñas ni tokens por correo.\n\n"
         "Plazo sugerido: [FECHA]\n"
         "Contacto MOVA: [TU CORREO]\n\n"
@@ -352,17 +389,17 @@ def slide_cierre(prs):
     set_slide_bg(slide)
     add_header_bar(slide, "Checklist maestro — cierre del día", "GitHub + solicitud n8n enviada")
     slide_checklist(slide, [
-        "Bloque A — Cuenta GitHub creada y verificada",
-        "Bloque B — Repo mova-n8n-workflows privado creado · URL anotada",
-        "Pedido C1 — Solicitud tabla inventario n8n enviada",
-        "Pedido C2 — Solicitud export JSON incluida en el correo",
-        "Pedido C3 — Solicitud contexto complementario incluida",
-        "Ficha MOVA actualizada (credenciales GitHub + URL repo)",
-        "Seguimiento agendado para cuando responda el equipo n8n",
-        "Continuar mova_auth (D2 cerrado / D3 archivos núcleo) en paralelo",
+        "Paso 1 — Cuenta GitHub creada y verificada",
+        "Paso 2 — Repo mova-n8n-workflows privado · URL anotada",
+        "Paso 3 — Correo n8n enviado (tabla + JSON + capturas)",
+        "Capturas requeridas listadas en el correo",
+        "Ficha MOVA actualizada (GitHub + repo + contacto n8n)",
+        "Seguimiento agendado cuando responda el equipo n8n",
+        "Inventario-MOVA-modulos.md listo para columna n8n",
+        "Continuar mova_auth (D3 archivos núcleo) en paralelo",
     ], start_y=Inches(1.4))
     add_textbox(slide, Inches(0.85), Inches(5.85), Inches(11.5), Inches(0.45),
-                "Entregable: MOVA-GitHub-N8n-Checklist.pptx · .pdf",
+                "Guías: github-cuenta.html · github-repo.html · github-n8n.html",
                 size=13, bold=True, color=C_ACCENT_DARK)
 
 
@@ -382,6 +419,8 @@ def main():
     slide_c2_checklist(prs)
     slide_c3_pasos(prs)
     slide_c3_checklist(prs)
+    slide_c4_pasos(prs)
+    slide_c4_checklist(prs)
     slide_no_pedir(prs)
     slide_correo(prs)
     slide_cierre(prs)

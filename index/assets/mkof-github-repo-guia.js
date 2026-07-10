@@ -59,6 +59,7 @@
       ? `<a href="${escapeHtml(g.pdf)}" download="${escapeHtml(g.pdf)}">⬇ Descargar PDF</a>`
       : '';
     const prev = g.pasoAnterior;
+    const next = g.pasoSiguiente;
 
     root.innerHTML = `
       <nav class="mkof-guia-breadcrumb">
@@ -75,7 +76,7 @@
         </p>
       </header>
 
-      <div class="mkof-guia-progreso">
+      <div class="mkof-guia-progreso mkof-guia-progreso--tres">
         <div class="mkof-guia-progreso__item mkof-guia-progreso__item--hecho">
           <div class="mkof-guia-progreso__num">Paso 1 · Listo</div>
           <a href="${escapeHtml(prev.url)}">${escapeHtml(prev.titulo)}</a>
@@ -83,6 +84,10 @@
         <div class="mkof-guia-progreso__item mkof-guia-progreso__item--activo">
           <div class="mkof-guia-progreso__num">Paso 2 · Ahora</div>
           Repo privado <code>${escapeHtml(g.repo.nombre)}</code>
+        </div>
+        <div class="mkof-guia-progreso__item mkof-guia-progreso__item--pendiente">
+          <div class="mkof-guia-progreso__num">Paso 3 · Siguiente</div>
+          <a href="${escapeHtml(next?.url || 'github-n8n.html')}">${escapeHtml(next?.titulo || 'Solicitud n8n')}</a>
         </div>
       </div>
 
@@ -111,9 +116,10 @@
       </section>
 
       <section class="mkof-guia-siguiente mkof-guia-siguiente--ok">
-        <h2>Siguiente hito técnico</h2>
-        <p>Con el repo listo, el equipo configurará el <strong>backup semanal automatizado de n8n</strong> hacia
-        <code>${escapeHtml(g.repo.nombre)}</code>. Avisa cuando hayas completado este checklist.</p>
+        <h2>Paso 3 · Solicitud al equipo n8n</h2>
+        <p>Con el repo listo, continúa con la <strong>solicitud al equipo n8n</strong>: tabla de webhooks,
+        export JSON y <strong>capturas de pantalla</strong> por workflow.</p>
+        <p><a class="mkof-guia-btn-siguiente" href="${escapeHtml(next?.url || 'github-n8n.html')}">Ir al Paso 3 →</a></p>
       </section>`;
   }
 

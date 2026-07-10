@@ -16,6 +16,11 @@ window.MKOF_GITHUB_GUIA = {
     url: 'github-repo.html',
     estado: 'disponible'
   },
+  pasoTres: {
+    num: 3,
+    titulo: 'Solicitud al equipo n8n',
+    url: 'github-n8n.html'
+  },
   correoRecomendado: {
     titulo: 'Usar un correo general del proyecto (no personal)',
     ejemplos: [

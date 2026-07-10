@@ -100,6 +100,17 @@ window.MOVA_DOCUMENTOS = {
           fecha: '10 jul 2026',
           pdf: 'MOVA-GitHub-N8n-Checklist.pdf',
           pptx: 'MOVA-GitHub-N8n-Checklist.pptx'
+        },
+        {
+          id: 'github-n8n',
+          titulo: 'Paso 3 — Solicitud n8n',
+          descripcion: 'Tabla + JSON + capturas por workflow · mockup por paso',
+          hito: '1.1',
+          fecha: '10 jul 2026',
+          verHtml: 'github-n8n.html',
+          pdf: 'MOVA-GitHub-N8n-Checklist.pdf',
+          pptx: 'MOVA-GitHub-N8n-Checklist.pptx',
+          editar: 'mkof-github-n8n-guia.js'
         }
       ]
     },

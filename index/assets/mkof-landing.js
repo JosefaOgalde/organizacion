@@ -147,7 +147,12 @@
           <a href="MOVA-GitHub-N8n-Checklist.pdf" target="_blank" rel="noopener" class="mkof-guia-card mkof-guia-card--activa">
             <span class="mkof-guia-card__paso">Hoy · Checklist</span>
             <strong>GitHub + solicitud n8n</strong>
-            <span class="mkof-guia-card__desc">PPT/PDF · 3 pedidos con checklist</span>
+            <span class="mkof-guia-card__desc">PPT/PDF · Pasos 1–3 con checklist</span>
+          </a>
+          <a href="github-n8n.html" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Paso 3 · n8n</span>
+            <strong>Solicitud capturas + tabla + JSON</strong>
+            <span class="mkof-guia-card__desc">10 pasos · mockup por captura</span>
           </a>
           <a href="mova-auth-guia.html" class="mkof-guia-card">
             <span class="mkof-guia-card__paso">Fase 1 · En curso</span>

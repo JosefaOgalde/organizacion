@@ -69,14 +69,18 @@
         </p>
       </header>
 
-      <div class="mkof-guia-progreso">
+      <div class="mkof-guia-progreso mkof-guia-progreso--tres">
         <div class="mkof-guia-progreso__item mkof-guia-progreso__item--activo">
           <div class="mkof-guia-progreso__num">Paso 1 · Ahora</div>
           Crear cuenta con correo general
         </div>
         <div class="mkof-guia-progreso__item mkof-guia-progreso__item--pendiente">
-          <div class="mkof-guia-progreso__num">Paso 2 · Siguiente</div>
+          <div class="mkof-guia-progreso__num">Paso 2</div>
           <a href="${escapeHtml(g.pasoSiguiente.url || 'github-repo.html')}">Repo privado <code>${escapeHtml(g.pasoSiguiente.nombreRepo)}</code></a>
+        </div>
+        <div class="mkof-guia-progreso__item mkof-guia-progreso__item--pendiente">
+          <div class="mkof-guia-progreso__num">Paso 3</div>
+          <a href="${escapeHtml(g.pasoTres?.url || 'github-n8n.html')}">${escapeHtml(g.pasoTres?.titulo || 'Solicitud n8n')}</a>
         </div>
       </div>
 

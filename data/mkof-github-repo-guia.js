@@ -15,6 +15,11 @@ window.MKOF_GITHUB_REPO_GUIA = {
     titulo: 'Crear cuenta GitHub',
     url: 'github-cuenta.html'
   },
+  pasoSiguiente: {
+    num: 3,
+    titulo: 'Solicitud al equipo n8n',
+    url: 'github-n8n.html'
+  },
   repo: {
     nombre: 'mova-n8n-workflows',
     descripcion: 'Respaldo de workflows n8n — proyecto MOVA',
