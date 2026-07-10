@@ -133,7 +133,20 @@ window.MKOF_GITHUB_REPO_GUIA = {
     'Visibilidad Private confirmada (candado)',
     'Repo vacío — sin README inicial',
     'URL del repo anotada en ficha MOVA',
-    'Colaboradores invitados (si aplica)',
-    'Equipo técnico avisado para configurar backup n8n'
-  ]
+    '✓ Acceso como colaborador confirmado (jul 2026)',
+    'Equipo técnico avisado — repo listo para recibir backup n8n'
+  ],
+  accesoColaborador: {
+    estado: 'confirmado',
+    fecha: '10 jul 2026',
+    titulo: 'Acceso colaborador — OK',
+    descripcion: 'Ya tienes permiso en el repo privado mova-n8n-workflows. Siguiente: clonar localmente y subir JSON cuando el equipo n8n responda.',
+    pasos: [
+      'Abrir el repo en GitHub y confirmar que ves la pestaña Code (no 404).',
+      'Clonar en tu PC: git clone https://github.com/[owner]/mova-n8n-workflows.git',
+      'Crear carpeta workflows/ y subir los .json que envíe el equipo n8n.',
+      'Commit + push: git add . && git commit -m "backup n8n workflows" && git push',
+      'Avisar al equipo n8n que el destino del backup ya está operativo.'
+    ]
+  }
 };

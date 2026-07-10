@@ -110,6 +110,13 @@
 
       ${pasosHtml}
 
+      ${g.accesoColaborador ? `<section class="mkof-guia-acceso-ok">
+        <h2>${escapeHtml(g.accesoColaborador.titulo)}</h2>
+        <p class="mkof-guia-acceso-ok__meta">Estado: ${escapeHtml(g.accesoColaborador.estado)} · ${escapeHtml(g.accesoColaborador.fecha)}</p>
+        <p>${escapeHtml(g.accesoColaborador.descripcion)}</p>
+        <ol>${g.accesoColaborador.pasos.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ol>
+      </section>` : ''}
+
       <section class="mkof-guia-checklist">
         <h2>Checklist final</h2>
         <ul>${checklistHtml}</ul>

@@ -877,7 +877,49 @@
   line-height: 1.4;
 }
 
-.mkof-guia-correo--plantilla .mkof-guia-correo__pre {
+.mkof-guia-correo--plantilla {
+  margin-top: 1rem;
+}
+
+.mkof-guia-correo--acceso {
+  border-left-color: var(--guia-ok);
+  background: #f0faf4;
+}
+
+.mkof-guia-acceso-ok {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.15rem;
+  background: #f0faf4;
+  border: 2px solid var(--guia-ok);
+  border-radius: var(--radius);
+}
+
+.mkof-guia-acceso-ok h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  color: var(--guia-ok);
+}
+
+.mkof-guia-acceso-ok__meta {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  color: var(--guia-muted);
+}
+
+.mkof-guia-acceso-ok p {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+}
+
+.mkof-guia-acceso-ok ol {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.mkof-guia-correo--plantilla .mkof-guia-correo__pre,
+.mkof-guia-correo--acceso .mkof-guia-correo__pre {
   margin: 0.5rem 0 0;
   padding: 0.85rem;
   background: #fff;

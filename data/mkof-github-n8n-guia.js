@@ -113,6 +113,8 @@ window.MKOF_GITHUB_N8N_GUIA = {
     }
   ],
   checklist: [
+    '✓ Acceso colaborador al repo mova-n8n-workflows confirmado',
+    'Repo clonado en PC local (opcional hasta recibir JSON)',
     'Contacto equipo n8n confirmado',
     'Correo enviado con los 3 pedidos (tabla + JSON + capturas)',
     'Plantilla de columnas de tabla acordada',
@@ -120,7 +122,7 @@ window.MKOF_GITHUB_N8N_GUIA = {
     'Plazo de respuesta indicado',
     'Carpeta local lista para recibir entregables',
     'Inventario-MOVA-modulos.md preparado para actualizar columna n8n',
-    'Seguimiento agendado — no bloquea mova_auth (D3–D5)'
+    'Primer push de JSON al repo cuando lleguen del equipo n8n'
   ],
   textoCorreo: `Asunto: Solicitud MOVA — inventario, backup y capturas n8n (acme-chile.cl)
 

@@ -91,6 +91,18 @@
 
       ${pasosHtml}
 
+      <section class="mkof-guia-correo mkof-guia-correo--acceso">
+        <h2>Acceso colaborador — confirmado</h2>
+        <p>Ya puedes ver y subir archivos al repo <code>mova-n8n-workflows</code>. Cuando lleguen los JSON de n8n, haz el primer push ahí.</p>
+        <pre class="mkof-guia-correo__pre">git clone https://github.com/[owner]/mova-n8n-workflows.git
+cd mova-n8n-workflows
+mkdir workflows
+# copiar *.json del equipo n8n en workflows/
+git add workflows/
+git commit -m "backup: workflows n8n MOVA"
+git push origin main</pre>
+      </section>
+
       <section class="mkof-guia-correo mkof-guia-correo--plantilla">
         <h2>Texto listo para el correo</h2>
         <pre class="mkof-guia-correo__pre">${escapeHtml(g.textoCorreo)}</pre>
