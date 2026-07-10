@@ -19,19 +19,22 @@
 .ecr-ruta-modal {
     position: fixed;
     inset: 0;
-    z-index: 99999;
-    display: flex;
+    z-index: 999999;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 1.25rem;
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition: opacity 0.28s ease, visibility 0.28s ease;
 }
 
 .ecr-ruta-modal.ecr-ruta-modal--abierto {
+    display: flex !important;
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 }
 
 .ecr-ruta-modal__backdrop {

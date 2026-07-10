@@ -24,7 +24,6 @@
         modalEl = document.createElement('div');
         modalEl.id = 'ecr-ruta-modal';
         modalEl.className = 'ecr-ruta-modal';
-        modalEl.setAttribute('hidden', '');
         modalEl.setAttribute('aria-hidden', 'true');
         modalEl.innerHTML =
             '<div class="ecr-ruta-modal__backdrop" data-ecr-cerrar-modal></div>' +
@@ -39,7 +38,9 @@
         });
 
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && modalEl && !modalEl.hasAttribute('hidden')) cerrarModal();
+            if (e.key === 'Escape' && modalEl && modalEl.classList.contains('ecr-ruta-modal--abierto')) {
+                cerrarModal();
+            }
         });
     }
 
@@ -78,7 +79,6 @@
         var contenido = modalEl.querySelector('.ecr-ruta-modal__contenido');
         if (contenido) contenido.innerHTML = renderContenido(data);
 
-        modalEl.removeAttribute('hidden');
         modalEl.setAttribute('aria-hidden', 'false');
         modalEl.classList.add('ecr-ruta-modal--abierto');
         document.body.classList.add('ecr-ruta-modal-abierto');
@@ -90,7 +90,6 @@
     function cerrarModal() {
         if (!modalEl) return;
         modalEl.classList.remove('ecr-ruta-modal--abierto');
-        modalEl.setAttribute('hidden', '');
         modalEl.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('ecr-ruta-modal-abierto');
         if (ultimoFoco && typeof ultimoFoco.focus === 'function') ultimoFoco.focus();
