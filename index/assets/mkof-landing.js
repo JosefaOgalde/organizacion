@@ -144,6 +144,11 @@
             <strong>Repo privado mova-n8n-workflows</strong>
             <span class="mkof-guia-card__desc">10 pasos · PPT y PDF</span>
           </a>
+          <a href="MOVA-GitHub-N8n-Checklist.pdf" target="_blank" rel="noopener" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Hoy · Checklist</span>
+            <strong>GitHub + solicitud n8n</strong>
+            <span class="mkof-guia-card__desc">PPT/PDF · 3 pedidos con checklist</span>
+          </a>
           <a href="mova-auth-guia.html" class="mkof-guia-card">
             <span class="mkof-guia-card__paso">Fase 1 · En curso</span>
             <strong>Login unificado mova_auth</strong>

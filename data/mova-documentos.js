@@ -91,6 +91,15 @@ window.MOVA_DOCUMENTOS = {
           pdf: 'MOVA-GitHub-Paso2-Repo-Privado.pdf',
           pptx: 'MOVA-GitHub-Paso2-Repo-Privado.pptx',
           editar: 'mkof-github-repo-guia.js'
+        },
+        {
+          id: 'github-n8n-checklist',
+          titulo: 'GitHub + n8n — Checklist paso a paso',
+          descripcion: 'Cuenta · repo privado · 3 pedidos n8n · texto correo · checklists',
+          hito: '1.1',
+          fecha: '10 jul 2026',
+          pdf: 'MOVA-GitHub-N8n-Checklist.pdf',
+          pptx: 'MOVA-GitHub-N8n-Checklist.pptx'
         }
       ]
     },
