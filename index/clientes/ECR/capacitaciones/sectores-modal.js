@@ -60,7 +60,7 @@
             '<p class="ecr-ruta-modal__subtitulo">' + escapeHtml(sector.subtitulo) + '</p>' +
             '<p class="ecr-ruta-modal__descripcion">' + escapeHtml(sector.descripcion) + '</p>' +
             '<p class="ecr-ruta-modal__competencias">' + escapeHtml(sector.competencias) + '</p>' +
-            '<h3 class="ecr-ruta-modal__ruta-titulo">Ruta de aprendizaje</h3>' +
+            '<h3 class="ecr-ruta-modal__ruta-titulo">Ruta de aprendizaje:</h3>' +
             '<ol class="ecr-ruta-modal__lista">' + cursosHtml + '</ol>'
         );
     }
