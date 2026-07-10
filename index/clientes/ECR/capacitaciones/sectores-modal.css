@@ -1,0 +1,194 @@
+/* ECR Capacitaciones — modal ruta de aprendizaje */
+
+.ecr-sector-card {
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, outline 0.2s ease;
+}
+
+.ecr-sector-card:hover,
+.ecr-sector-card.ecr-sector-card--activa {
+    outline: 3px solid #e85d04;
+    outline-offset: -3px;
+}
+
+.ecr-sector-ver-mas {
+    cursor: pointer;
+}
+
+/* Modal */
+.ecr-ruta-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+
+.ecr-ruta-modal.ecr-ruta-modal--abierto {
+    opacity: 1;
+    visibility: visible;
+}
+
+.ecr-ruta-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+}
+
+.ecr-ruta-modal__panel {
+    position: relative;
+    z-index: 1;
+    width: min(720px, 100%);
+    max-height: min(90vh, 820px);
+    overflow: auto;
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(232, 93, 4, 0.94) 0%, rgba(210, 75, 0, 0.96) 100%);
+    color: #fff;
+    padding: 2rem 2rem 1.75rem;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+    transform: translateY(12px) scale(0.98);
+    transition: transform 0.28s ease;
+}
+
+.ecr-ruta-modal--abierto .ecr-ruta-modal__panel {
+    transform: translateY(0) scale(1);
+}
+
+.ecr-ruta-modal__cerrar {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #fff;
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease;
+}
+
+.ecr-ruta-modal__cerrar:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.ecr-ruta-modal__titulo {
+    margin: 0 2rem 0.35rem 0;
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.ecr-ruta-modal__subtitulo {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    opacity: 0.95;
+}
+
+.ecr-ruta-modal__descripcion {
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    opacity: 0.92;
+}
+
+.ecr-ruta-modal__competencias {
+    margin: 0 0 1.5rem;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    opacity: 0.88;
+    font-style: italic;
+}
+
+.ecr-ruta-modal__ruta-titulo {
+    margin: 0 0 1rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-transform: none;
+}
+
+.ecr-ruta-modal__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.ecr-ruta-modal__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.15rem 0;
+}
+
+.ecr-ruta-modal__item-nombre {
+    flex: 1;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    padding-left: 1.1rem;
+    position: relative;
+}
+
+.ecr-ruta-modal__item-nombre::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+}
+
+.ecr-ruta-modal__curso-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    border: 1px solid #fff;
+    background: #fff;
+    color: #1a5f8a;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.ecr-ruta-modal__curso-btn:hover {
+    background: #f0f8fc;
+    color: #0d4a6e;
+}
+
+body.ecr-ruta-modal-abierto {
+    overflow: hidden;
+}
+
+@media (max-width: 600px) {
+    .ecr-ruta-modal__panel {
+        padding: 1.5rem 1.25rem 1.25rem;
+    }
+
+    .ecr-ruta-modal__item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .ecr-ruta-modal__curso-btn {
+        align-self: flex-end;
+    }
+}
