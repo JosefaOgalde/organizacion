@@ -20,19 +20,22 @@
 .ecr-ruta-modal {
     position: fixed;
     inset: 0;
-    z-index: 99999;
-    display: flex;
+    z-index: 999999;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 1.25rem;
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition: opacity 0.28s ease, visibility 0.28s ease;
 }
 
 .ecr-ruta-modal.ecr-ruta-modal--abierto {
+    display: flex !important;
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 }
 
 .ecr-ruta-modal__backdrop {
@@ -160,24 +163,23 @@
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 1.125rem;
+    gap: 0.35rem;
+    padding: 0.45rem 1rem;
     border-radius: 999px;
-    border: 1.5px solid #ffffff;
-    background: #98c8e0;
-    color: #ffffff;
+    border: none;
+    background: #ffffff;
+    color: #1a6fa8;
     font-size: 0.8125rem;
     font-weight: 600;
     text-decoration: none;
     white-space: nowrap;
-    transition: background 0.15s ease, transform 0.15s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transition: background 0.15s ease, color 0.15s ease;
+    box-shadow: none;
 }
 
 .ecr-ruta-modal__curso-btn:hover {
-    background: #7eb8d4;
-    color: #ffffff;
-    transform: translateY(-1px);
+    background: #f0f7fb;
+    color: #145a8a;
 }
 
 body.ecr-ruta-modal-abierto {
@@ -349,7 +351,6 @@ window.ECR_SECTORES = {
         modalEl = document.createElement('div');
         modalEl.id = 'ecr-ruta-modal';
         modalEl.className = 'ecr-ruta-modal';
-        modalEl.setAttribute('hidden', '');
         modalEl.setAttribute('aria-hidden', 'true');
         modalEl.innerHTML =
             '<div class="ecr-ruta-modal__backdrop" data-ecr-cerrar-modal></div>' +
@@ -364,7 +365,9 @@ window.ECR_SECTORES = {
         });
 
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && modalEl && !modalEl.hasAttribute('hidden')) cerrarModal();
+            if (e.key === 'Escape' && modalEl && modalEl.classList.contains('ecr-ruta-modal--abierto')) {
+                cerrarModal();
+            }
         });
     }
 
@@ -403,7 +406,6 @@ window.ECR_SECTORES = {
         var contenido = modalEl.querySelector('.ecr-ruta-modal__contenido');
         if (contenido) contenido.innerHTML = renderContenido(data);
 
-        modalEl.removeAttribute('hidden');
         modalEl.setAttribute('aria-hidden', 'false');
         modalEl.classList.add('ecr-ruta-modal--abierto');
         document.body.classList.add('ecr-ruta-modal-abierto');
@@ -415,7 +417,6 @@ window.ECR_SECTORES = {
     function cerrarModal() {
         if (!modalEl) return;
         modalEl.classList.remove('ecr-ruta-modal--abierto');
-        modalEl.setAttribute('hidden', '');
         modalEl.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('ecr-ruta-modal-abierto');
         if (ultimoFoco && typeof ultimoFoco.focus === 'function') ultimoFoco.focus();
