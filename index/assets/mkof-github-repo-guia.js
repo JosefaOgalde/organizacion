@@ -14,6 +14,13 @@
     return g?.imagenesBase || 'guia-github-repo/img/';
   }
 
+  function visualHtml(paso) {
+    if (window.MKOF_GITHUB_MOCKUPS?.repoPaso) {
+      return window.MKOF_GITHUB_MOCKUPS.repoPaso(paso.num, paso);
+    }
+    return imagenHtml(paso);
+  }
+
   function imagenHtml(paso) {
     if (!paso.imagen) return '';
     const src = `${imgBase()}${paso.imagen}`;
@@ -41,7 +48,7 @@
             <h2 class="mkof-guia-paso__titulo">${escapeHtml(p.titulo)}</h2>
           </div>
           <p class="mkof-guia-paso__texto">${escapeHtml(p.texto)}</p>
-          ${imagenHtml(p)}
+          ${visualHtml(p)}
           <p class="mkof-guia-paso__tip"><strong>Tip:</strong> ${escapeHtml(p.tip)}</p>
         </article>`
       )
@@ -61,7 +68,7 @@
       </nav>
       <header class="mkof-guia-header">
         <h1>GitHub para MOVA · Paso 2: repositorio privado</h1>
-        <p class="mkof-guia-header__meta">${escapeHtml(g.hito)} · Repo <code>${escapeHtml(g.repo.nombre)}</code></p>
+        <p class="mkof-guia-header__meta">${escapeHtml(g.hito)} · Repo <code>${escapeHtml(g.repo.nombre)}</code> · mockup por paso</p>
         <p class="mkof-guia-header__descargas">
           ${pdfLink}
           <a href="MOVA-GitHub-Paso2-Repo-Privado.pptx" download>⬇ Presentación PPT</a>

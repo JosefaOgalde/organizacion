@@ -1,6 +1,7 @@
 /**
  * MOVA · Guía GitHub — Paso 2: crear repositorio privado mova-n8n-workflows.
- * Continuación del Paso 1 (crear cuenta). Imágenes de github.com y docs oficiales.
+ * Visual: mockup HTML distinto por paso (mkof-github-mockups.js).
+ * Las rutas imagen/* son respaldo legacy si mockups no cargan.
  */
 window.MKOF_GITHUB_REPO_GUIA = {
   version: '1.0',
