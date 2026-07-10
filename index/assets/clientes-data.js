@@ -27,14 +27,15 @@ window.CLIENTES_PORTAL = [
     abrev: 'ECR',
     tipo: 'Full time',
     color: { border: '#98c8e0', bg: '#e8f4fc', text: '#4a7a9e' },
-    agente: 'Newsletter LinkedIn + Blog',
-    resumen: 'Newsletters, copys, carruseles y secciones blog en Elementor.',
+    agente: 'Newsletter LinkedIn + Blog + Capacitaciones',
+    resumen: 'Newsletters, blog ecrgroup.cl y modal rutas de aprendizaje en sitio ECR Capacitaciones (Elementor).',
     landing: {
       tagline: 'Contenido que posiciona',
-      entregables: ['2 newsletters al mes', 'Copys feed y carrusel', 'Artículos de blog', 'Secciones Elementor'],
+      entregables: ['2 newsletters al mes', 'Copys feed y carrusel', 'Artículos de blog', 'Secciones Elementor', 'Modal rutas capacitaciones'],
       secciones: [
         { titulo: 'Newsletter LinkedIn', texto: 'Invitación, carrusel y video del artículo cada ciclo.' },
-        { titulo: 'Blog', texto: 'Propuestas, maquetación y publicación en WordPress.' }
+        { titulo: 'Blog (ecrgroup.cl)', texto: 'Propuestas, maquetación y publicación en WordPress / Elementor.' },
+        { titulo: 'Capacitaciones (ecrcapacitaciones)', texto: 'Modal ruta de aprendizaje por sector — ver index/clientes/ECR/capacitaciones/' }
       ]
     }
   },
