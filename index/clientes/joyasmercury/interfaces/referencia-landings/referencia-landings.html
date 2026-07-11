@@ -103,10 +103,11 @@
       </aside>
       <div>
         <div class="ref-grid-head">
-          <span>8 productos</span>
+          <span id="grid-count">8 productos</span>
           <select><option>Destacados</option></select>
         </div>
         <div class="ref-grid" id="grid-catalog"></div>
+        <nav class="ref-pagination" id="pagination-catalog" aria-label="Paginación de productos"></nav>
       </div>
     </div>
 
@@ -198,6 +199,51 @@
       productCard('Anillo Eternity Gold', '$22.990', 'gold', 'ÚLTIMA')
     ].join('');
 
+    function renderPagination(totalPages, currentPage, onSelect) {
+      const nav = document.getElementById('pagination-catalog');
+      if (!nav) return;
+      if (totalPages <= 1) {
+        nav.innerHTML = '';
+        nav.hidden = true;
+        return;
+      }
+      nav.hidden = false;
+      const items = [];
+      for (let p = 1; p <= totalPages; p += 1) {
+        items.push(`<li class="ref-pagination__item">
+          <button type="button" class="ref-pagination__btn${p === currentPage ? ' is-active' : ''}" data-page="${p}" aria-label="Página ${p}"${p === currentPage ? ' aria-current="page"' : ''}>${p}</button>
+        </li>`);
+      }
+      items.push(`<li class="ref-pagination__item">
+        <button type="button" class="ref-pagination__btn" data-page="next" aria-label="Página siguiente"${currentPage >= totalPages ? ' disabled' : ''}>→</button>
+      </li>`);
+      nav.innerHTML = `<ul class="ref-pagination__list">${items.join('')}</ul>`;
+      nav.querySelectorAll('[data-page]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = btn.dataset.page;
+          if (target === 'next') {
+            if (currentPage < totalPages) onSelect(currentPage + 1);
+            return;
+          }
+          onSelect(Number(target));
+        });
+      });
+    }
+
+    function renderCatalogPage(c, page) {
+      const perPage = 4;
+      const total = PRODS.length;
+      const totalPages = Math.ceil(total / perPage);
+      const safePage = Math.min(Math.max(page, 1), totalPages);
+      const slice = PRODS.slice((safePage - 1) * perPage, safePage * perPage);
+      document.getElementById('grid-catalog').innerHTML = slice.map(([n, p]) =>
+        productCard(n, p, c.chip)
+      ).join('');
+      const countEl = document.getElementById('grid-count');
+      if (countEl) countEl.textContent = `${total} productos`;
+      renderPagination(totalPages, safePage, (next) => renderCatalogPage(c, next));
+    }
+
     const params = new URLSearchParams(location.search);
     const pagina = params.get('pagina') || 'inicio';
     const col = params.get('coleccion') || 'esencial';
@@ -217,9 +263,7 @@
           <p class="ref-cat-circle__name">${n}</p>
         </div>`
       ).join('');
-      document.getElementById('grid-catalog').innerHTML = PRODS.map(([n, p]) =>
-        productCard(n, p, c.chip)
-      ).join('');
+      renderCatalogPage(c, 1);
     }
 
     if (params.get('shot') === '1') document.body.dataset.shot = '1';
