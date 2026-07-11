@@ -109,8 +109,10 @@ El CSS también acepta slugs cortos (`product_cat-pulseras`) y etiquetas (`produ
 ## HTML — Columna derecha (debajo de Woo – Products)
 
 ```html
-<p class="jm-vacio-mensaje">No hay productos en esta categoría.</p>
+<p class="jm-vacio-mensaje" aria-hidden="true"></p>
 ```
+
+El texto **«Próximamente»** lo pone el CSS (`::after`). El `<p>` puede ir vacío.
 
 ---
 

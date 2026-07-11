@@ -171,10 +171,20 @@
   padding: 120px 24px;
   text-align: center;
   color: #888888;
-  font-size: 16px;
+  font-size: 0;
   letter-spacing: 0.03em;
   margin: 0;
   box-sizing: border-box;
+}
+
+.jm-catalogo-esencial .jm-vacio-mensaje::after,
+.jm-catalogo-deluxe .jm-vacio-mensaje::after,
+.jm-catalogo-gold .jm-vacio-mensaje::after {
+  content: "Próximamente";
+  font-size: 16px;
+  letter-spacing: 0.03em;
+  color: #888888;
+  display: none;
 }
 
 /* Mensaje vacío — ESENCIAL */
@@ -186,11 +196,28 @@
   display: block;
 }
 
+.jm-catalogo-esencial:has(#jm-f-pulseras:target):not(:has(li.product.pulseras)) .jm-vacio-mensaje::after,
+.jm-catalogo-esencial:has(#jm-f-conjuntos:target):not(:has(li.product.conjuntos)) .jm-vacio-mensaje::after,
+.jm-catalogo-esencial:has(#jm-f-cadenas:target):not(:has(li.product.cadenas)) .jm-vacio-mensaje::after,
+.jm-catalogo-esencial:has(#jm-f-anillos:target):not(:has(li.product.anillos)) .jm-vacio-mensaje::after,
+.jm-catalogo-esencial:has(#jm-f-aros:target):not(:has(li.product.aros)) .jm-vacio-mensaje::after {
+  display: block;
+}
+
 .jm-catalogo-esencial:has(#jm-f-pulseras:target):not(:has(li.product.pulseras)) ul.products,
 .jm-catalogo-esencial:has(#jm-f-conjuntos:target):not(:has(li.product.conjuntos)) ul.products,
 .jm-catalogo-esencial:has(#jm-f-cadenas:target):not(:has(li.product.cadenas)) ul.products,
 .jm-catalogo-esencial:has(#jm-f-anillos:target):not(:has(li.product.anillos)) ul.products,
 .jm-catalogo-esencial:has(#jm-f-aros:target):not(:has(li.product.aros)) ul.products {
+  display: none !important;
+}
+
+/* Sin paginación al filtrar subcategoría (vacía o con productos) */
+.jm-catalogo-esencial:has(#jm-f-pulseras:target) .uael-woocommerce-pagination,
+.jm-catalogo-esencial:has(#jm-f-conjuntos:target) .uael-woocommerce-pagination,
+.jm-catalogo-esencial:has(#jm-f-cadenas:target) .uael-woocommerce-pagination,
+.jm-catalogo-esencial:has(#jm-f-anillos:target) .uael-woocommerce-pagination,
+.jm-catalogo-esencial:has(#jm-f-aros:target) .uael-woocommerce-pagination {
   display: none !important;
 }
 
@@ -203,11 +230,27 @@
   display: block;
 }
 
+.jm-catalogo-deluxe:has(#jm-f-pulseras:target):not(:has(li.product.pulseras)) .jm-vacio-mensaje::after,
+.jm-catalogo-deluxe:has(#jm-f-conjuntos:target):not(:has(li.product.conjuntos)) .jm-vacio-mensaje::after,
+.jm-catalogo-deluxe:has(#jm-f-cadenas:target):not(:has(li.product.cadenas)) .jm-vacio-mensaje::after,
+.jm-catalogo-deluxe:has(#jm-f-anillos:target):not(:has(li.product.anillos)) .jm-vacio-mensaje::after,
+.jm-catalogo-deluxe:has(#jm-f-aros:target):not(:has(li.product.aros)) .jm-vacio-mensaje::after {
+  display: block;
+}
+
 .jm-catalogo-deluxe:has(#jm-f-pulseras:target):not(:has(li.product.pulseras)) ul.products,
 .jm-catalogo-deluxe:has(#jm-f-conjuntos:target):not(:has(li.product.conjuntos)) ul.products,
 .jm-catalogo-deluxe:has(#jm-f-cadenas:target):not(:has(li.product.cadenas)) ul.products,
 .jm-catalogo-deluxe:has(#jm-f-anillos:target):not(:has(li.product.anillos)) ul.products,
 .jm-catalogo-deluxe:has(#jm-f-aros:target):not(:has(li.product.aros)) ul.products {
+  display: none !important;
+}
+
+.jm-catalogo-deluxe:has(#jm-f-pulseras:target) .uael-woocommerce-pagination,
+.jm-catalogo-deluxe:has(#jm-f-conjuntos:target) .uael-woocommerce-pagination,
+.jm-catalogo-deluxe:has(#jm-f-cadenas:target) .uael-woocommerce-pagination,
+.jm-catalogo-deluxe:has(#jm-f-anillos:target) .uael-woocommerce-pagination,
+.jm-catalogo-deluxe:has(#jm-f-aros:target) .uael-woocommerce-pagination {
   display: none !important;
 }
 
@@ -220,11 +263,27 @@
   display: block;
 }
 
+.jm-catalogo-gold:has(#jm-f-pulseras:target):not(:has(li.product.pulseras)) .jm-vacio-mensaje::after,
+.jm-catalogo-gold:has(#jm-f-conjuntos:target):not(:has(li.product.conjuntos)) .jm-vacio-mensaje::after,
+.jm-catalogo-gold:has(#jm-f-cadenas:target):not(:has(li.product.cadenas)) .jm-vacio-mensaje::after,
+.jm-catalogo-gold:has(#jm-f-anillos:target):not(:has(li.product.anillos)) .jm-vacio-mensaje::after,
+.jm-catalogo-gold:has(#jm-f-aros:target):not(:has(li.product.aros)) .jm-vacio-mensaje::after {
+  display: block;
+}
+
 .jm-catalogo-gold:has(#jm-f-pulseras:target):not(:has(li.product.pulseras)) ul.products,
 .jm-catalogo-gold:has(#jm-f-conjuntos:target):not(:has(li.product.conjuntos)) ul.products,
 .jm-catalogo-gold:has(#jm-f-cadenas:target):not(:has(li.product.cadenas)) ul.products,
 .jm-catalogo-gold:has(#jm-f-anillos:target):not(:has(li.product.anillos)) ul.products,
 .jm-catalogo-gold:has(#jm-f-aros:target):not(:has(li.product.aros)) ul.products {
+  display: none !important;
+}
+
+.jm-catalogo-gold:has(#jm-f-pulseras:target) .uael-woocommerce-pagination,
+.jm-catalogo-gold:has(#jm-f-conjuntos:target) .uael-woocommerce-pagination,
+.jm-catalogo-gold:has(#jm-f-cadenas:target) .uael-woocommerce-pagination,
+.jm-catalogo-gold:has(#jm-f-anillos:target) .uael-woocommerce-pagination,
+.jm-catalogo-gold:has(#jm-f-aros:target) .uael-woocommerce-pagination {
   display: none !important;
 }
 
