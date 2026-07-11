@@ -57,3 +57,5 @@ joyasmercury/
 ## Guías Fase 2
 
 Ver [GUIAS-FASE2.md](GUIAS-FASE2.md) y [interfaces/README.md](interfaces/README.md).
+
+**Pendientes (11 jul 2026):** [docs/JM-PENDIENTES-PRIORIDAD.md](../../../docs/JM-PENDIENTES-PRIORIDAD.md)

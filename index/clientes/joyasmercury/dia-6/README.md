@@ -1,0 +1,149 @@
+# Día 6 — Filtros catálogo (Esencial / Gold / Deluxe)
+
+**Tarea:** `[JM] Diseñar chips/filtros + catálogo en landing Esencial`  
+**Organizador:** `index.html?tarea=joyas-mercury/06`  
+**Agente:** `@joyas-mercury`
+
+---
+
+## Estado al 11 jul 2026
+
+| Paso | Estado |
+|------|--------|
+| 1. Layout 2 columnas | ✓ |
+| 2. Panel CATEGORÍAS (HTML) | ✓ |
+| 3. Woo – Products + query colección | ✓ |
+| 4. Filtro sin recargar (CSS `:has`) | ✓ parcial — **falta subcategorías en productos** |
+| 5. Cabecera + orden | Pendiente |
+| 6. Móvil (círculos → anchors) | Pendiente |
+
+**Handoff técnico:** `docs/JM-FILTROS-CATALOGO-HANDOFF.md`  
+**CSS copiar/pegar:** `guias/CSS-CATALOGO-3-COLECCIONES.css`
+
+---
+
+## Paso 4 bis — Desbloquear filtros (PRIORIDAD)
+
+Si Pulseras/Aros muestran *«No hay productos…»* pero **Todas** sí tiene productos:
+
+→ Seguir `guias/GUIA-SUBCATEGORIAS-PRODUCTOS.md`
+
+No tocar más CSS hasta verificar clases en el `<li class="product">`.
+
+---
+
+## Paso 5 — Cabecera del grid
+
+### Mockup
+
+Línea sobre el grid: **«8 productos»** a la izquierda · **«Destacados»** (orden) a la derecha.
+
+### 5A — HTML en Elementor
+
+En columna derecha, **widget HTML encima** de Woo – Products:
+
+```html
+<div class="jm-grid-head">
+  <span class="jm-grid-head__label">Productos</span>
+</div>
+```
+
+Mismo HTML en Esencial, Gold y Deluxe.
+
+### 5B — Orden en el widget Woo – Products
+
+| Opción UAE | Valor sugerido |
+|------------|----------------|
+| Order By | `Menu Order` o `Date` |
+| Para destacados | Marcar productos como **Destacado** en WC → Order By `Featured` |
+
+### 5C — Contador dinámico «X productos»
+
+| Opción | Cómo |
+|--------|------|
+| **Solo CSS** | No actualiza al filtrar — mostrar «Productos» sin número |
+| **Code Snippets** (recomendado si quieren número real) | Ver snippet abajo |
+
+#### Snippet PHP (Code Snippets → PHP → Solo frontend)
+
+```php
+<?php
+add_action( 'wp_footer', function () {
+  if ( ! is_page( array( 'esencial', 'gold', 'deluxe' ) ) ) return;
+  ?>
+  <script>
+  (function () {
+    function actualizarConteo() {
+      document.querySelectorAll('[class*="jm-catalogo-"]').forEach(function (sec) {
+        var head = sec.querySelector('.jm-grid-head__label');
+        var visibles = sec.querySelectorAll('ul.products li.product:not([style*="display: none"])');
+        var n = 0;
+        visibles.forEach(function (li) {
+          if (li.offsetParent !== null && !li.classList.contains('jm-oculto')) n++;
+        });
+        if (!head) return;
+        head.textContent = n === 1 ? '1 producto' : n + ' productos';
+      });
+    }
+    window.addEventListener('hashchange', actualizarConteo);
+    document.addEventListener('DOMContentLoaded', actualizarConteo);
+    setTimeout(actualizarConteo, 500);
+  })();
+  </script>
+  <?php
+}, 99 );
+```
+
+> Sin Elementor Pro y sin snippet, deja el texto fijo **«Productos»**.
+
+### 5D — CSS cabecera
+
+Incluido en `guias/CSS-CATALOGO-3-COLECCIONES.css` (bloque `.jm-grid-head`).
+
+---
+
+## Paso 6 — Móvil
+
+### Problema
+
+En `< 768px` el panel lateral está oculto (CSS).
+
+### Solución
+
+Enlazar los **5 círculos del hero** a los mismos anchors del panel:
+
+| Círculo Elementor | URL del enlace |
+|-------------------|----------------|
+| Pulseras | `#jm-f-pulseras` |
+| Conjuntos | `#jm-f-conjuntos` |
+| Cadenas | `#jm-f-cadenas` |
+| Anillos | `#jm-f-anillos` |
+| Aros | `#jm-f-aros` |
+
+**Todas:** añadir enlace `#jm-f-todas` en texto del hero o botón «Ver todo».
+
+### Prueba móvil
+
+1. DevTools → vista iPhone
+2. Clic círculo **Aros** → URL `…/esencial/#jm-f-aros`
+3. Solo aros visibles (si tienen subcategoría)
+
+---
+
+## Checklist cierre D06
+
+- [ ] Subcategorías/etiquetas en todos los productos (3 colecciones)
+- [ ] Cabecera `.jm-grid-head` en 3 landings
+- [ ] Orden destacados configurado en widget
+- [ ] Círculos hero enlazados a `#jm-f-*` (móvil)
+- [ ] Sin «Sin categorizar» en grid
+- [ ] Publicar Elementor + Astra CSS
+- [ ] Marcar tarea 06 en organizador
+
+---
+
+## Siguiente
+
+- **D07** — Refinar landings vs mockup  
+- **D09** — QA filtros mobile  
+- **D12** — Ayuda + legales

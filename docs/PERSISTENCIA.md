@@ -83,6 +83,16 @@ Los archivos en disco **no dependen** del navegador.
 
 **No hace falta** `?respaldo=1` ni `IMPORTAR-RESPALDO.bat` cada día si usas `ABRIR-ORGANIZADOR.bat`.
 
+### Regla para agentes y scripts
+
+**Siempre usar el respaldo más actualizado**, no un archivo fijo por nombre. El proyecto ya lo resuelve así:
+
+- Patrón: `organizacion-respaldo-*.json` en `data/` y en `Downloads` (`C:\Users\josef\Downloads\`)
+- Criterio: mayor valor entre `respaldoActualizado` (dentro del JSON), fecha en el nombre del archivo y fecha de modificación del disco
+- Comando: `node scripts/respaldo-reciente.js` (imprime la ruta ganadora)
+
+Ejemplo conocido (jul 2026): `organizacion-respaldo-2026-07-06.json` — si aparece uno más nuevo, ignorar el viejo.
+
 ---
 
 ## Archivos importantes

@@ -673,7 +673,19 @@ window.JM_TODO_SEED = [
 window.JM_TODO_PROGRESO = {
   'jm-todo-01': { completada: true },
   'jm-todo-03': { completada: true },
-  'jm-todo-04': { completada: true }
+  'jm-todo-04': { completada: true },
+  'jm-todo-05': {
+    completada: true,
+    comentario: '15 URLs validadas · slugs esencial-/gold-/deluxe- hijas · base categoria-producto.'
+  },
+  'jm-todo-06': {
+    completada: false,
+    comentario: 'Panel + CSS 3 colecciones + query Woo OK. Pendiente: subcategorías productos, cabecera grid, móvil círculos.'
+  },
+  'jm-todo-07': {
+    completada: false,
+    comentario: 'Layout base Esencial/Gold/Deluxe en Elementor. Pendiente refinamiento vs mockup.'
+  }
 };
 
 /** Ítems de sesión en checklist landing (sin tarea en calendario) */
