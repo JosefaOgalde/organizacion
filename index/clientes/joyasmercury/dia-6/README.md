@@ -122,15 +122,21 @@ Incluido en `guias/CSS-CATALOGO-3-COLECCIONES.css` (bloque `.jm-grid-head`).
 
 ---
 
-## Paso 6 — Móvil
+## Paso 6 — Móvil + círculos hero
 
-### Problema
+### 6A — Clase en contenedor de círculos (Elementor)
 
-En `< 768px` el panel lateral está oculto (CSS).
+Selecciona el **contenedor padre** de los 5 círculos (imagen + texto PULSERAS, etc.) → **Avanzado → Clases CSS:**
 
-### Solución
+| Página | Clases |
+|--------|--------|
+| Esencial | `jm-circulos-categoria jm-circulos-esencial` |
+| Gold | `jm-circulos-categoria jm-circulos-gold` |
+| Deluxe | `jm-circulos-categoria jm-circulos-deluxe` |
 
-Enlazar los **5 círculos del hero** a los mismos anchors del panel:
+Eso alinea los círculos al mismo ancho que el catálogo (1200px) y evita el desborde.
+
+### 6B — Enlaces de círculos → filtros
 
 | Círculo Elementor | URL del enlace |
 |-------------------|----------------|

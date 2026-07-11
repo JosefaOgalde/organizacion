@@ -316,6 +316,93 @@
   text-transform: capitalize;
 }
 
+/* ===== Círculos categorías (hero) — misma anchura que catálogo ===== */
+.jm-circulos-categoria.e-con {
+  max-width: 1200px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 24px 20px !important;
+  box-sizing: border-box;
+  flex-wrap: nowrap !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+
+.jm-circulos-categoria > .e-con.e-child {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  max-width: 20% !important;
+  width: auto !important;
+  align-items: center !important;
+}
+
+.jm-circulos-categoria .elementor-widget-image {
+  width: 100%;
+  text-align: center;
+}
+
+.jm-circulos-categoria .elementor-widget-image img {
+  width: 100% !important;
+  max-width: 130px !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.jm-circulos-categoria.jm-circulos-esencial .elementor-widget-image img {
+  border: 2px solid #f0d4dc;
+  background: #fdf5f7;
+}
+
+.jm-circulos-categoria.jm-circulos-gold .elementor-widget-image img {
+  border: 2px solid #f5e6b8;
+  background: #fffdf5;
+}
+
+.jm-circulos-categoria.jm-circulos-deluxe .elementor-widget-image img {
+  border: 2px solid #e8c4d0;
+  background: #fdf8fa;
+}
+
+.jm-circulos-categoria .elementor-widget-text-editor {
+  width: 100%;
+}
+
+.jm-circulos-categoria .elementor-widget-text-editor p {
+  text-align: center !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase;
+  color: #A97E23 !important;
+  margin: 10px 0 0 !important;
+  line-height: 1.2 !important;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+  .jm-circulos-categoria.e-con {
+    padding: 16px 10px !important;
+    gap: 6px !important;
+  }
+
+  .jm-circulos-categoria .elementor-widget-image img {
+    max-width: 56px !important;
+  }
+
+  .jm-circulos-categoria .elementor-widget-text-editor p {
+    font-size: 8px !important;
+    letter-spacing: 0.03em !important;
+    margin-top: 6px !important;
+  }
+}
+
 /* ===== Cabecera grid (D06 paso 5) ===== */
 .jm-grid-head {
   display: flex;
