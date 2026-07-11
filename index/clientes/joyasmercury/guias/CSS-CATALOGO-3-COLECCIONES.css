@@ -425,90 +425,187 @@
 }
 
 /* ===== Círculos categorías (hero) — misma anchura que catálogo ===== */
+.elementor-element.jm-circulos-categoria.e-con,
 .jm-circulos-categoria.e-con {
+  --width: 100% !important;
   max-width: 1200px !important;
-  width: 100% !important;
+  width: min(100%, 1200px) !important;
   margin-left: auto !important;
   margin-right: auto !important;
-  padding: 24px 20px !important;
+  padding: 20px 20px 8px !important;
   box-sizing: border-box;
   flex-wrap: nowrap !important;
-  justify-content: space-between !important;
-  gap: 12px !important;
+  justify-content: center !important;
+  gap: 16px !important;
+  overflow: hidden !important;
 }
 
 .jm-circulos-categoria > .e-con.e-child {
-  flex: 1 1 0 !important;
+  flex: 0 1 18% !important;
   min-width: 0 !important;
-  max-width: 20% !important;
+  max-width: 18% !important;
   width: auto !important;
   align-items: center !important;
+  overflow: hidden !important;
+  padding: 0 !important;
 }
 
 .jm-circulos-categoria .elementor-widget-image {
   width: 100%;
-  text-align: center;
+  max-width: 96px;
+  margin: 0 auto;
 }
 
-.jm-circulos-categoria .elementor-widget-image img {
-  width: 100% !important;
-  max-width: 130px !important;
-  height: auto !important;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 50%;
-  display: block;
-  margin: 0 auto;
+.jm-circulos-categoria .elementor-widget-image .elementor-widget-container {
+  width: 96px !important;
+  height: 96px !important;
+  margin: 0 auto !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
   box-sizing: border-box;
 }
 
-.jm-circulos-categoria.jm-circulos-esencial .elementor-widget-image img {
+.jm-circulos-categoria.jm-circulos-esencial .elementor-widget-image .elementor-widget-container {
   border: 2px solid #f0d4dc;
   background: #fdf5f7;
 }
 
-.jm-circulos-categoria.jm-circulos-gold .elementor-widget-image img {
+.jm-circulos-categoria.jm-circulos-gold .elementor-widget-image .elementor-widget-container {
   border: 2px solid #f5e6b8;
   background: #fffdf5;
 }
 
-.jm-circulos-categoria.jm-circulos-deluxe .elementor-widget-image img {
+.jm-circulos-categoria.jm-circulos-deluxe .elementor-widget-image .elementor-widget-container {
   border: 2px solid #e8c4d0;
   background: #fdf8fa;
 }
 
+.jm-circulos-categoria .elementor-widget-image a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.jm-circulos-categoria .elementor-widget-image img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  border-radius: 0 !important;
+  border: none !important;
+  display: block;
+  margin: 0 !important;
+  box-sizing: border-box;
+}
+
 .jm-circulos-categoria .elementor-widget-text-editor {
   width: 100%;
+  max-width: 96px;
+  margin: 0 auto;
 }
 
 .jm-circulos-categoria .elementor-widget-text-editor p {
   text-align: center !important;
-  font-size: 11px !important;
+  font-size: 10px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.06em !important;
+  letter-spacing: 0.05em !important;
   text-transform: uppercase;
   color: #A97E23 !important;
-  margin: 10px 0 0 !important;
-  line-height: 1.2 !important;
+  margin: 8px 0 0 !important;
+  line-height: 1.15 !important;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: keep-all;
 }
 
 @media (max-width: 767px) {
   .jm-circulos-categoria.e-con {
-    padding: 16px 10px !important;
-    gap: 6px !important;
+    padding: 12px 8px 4px !important;
+    gap: 4px !important;
   }
 
-  .jm-circulos-categoria .elementor-widget-image img {
-    max-width: 56px !important;
+  .jm-circulos-categoria > .e-con.e-child {
+    flex: 0 1 20% !important;
+    max-width: 20% !important;
+  }
+
+  .jm-circulos-categoria .elementor-widget-image,
+  .jm-circulos-categoria .elementor-widget-image .elementor-widget-container {
+    width: 52px !important;
+    height: 52px !important;
+    max-width: 52px !important;
+  }
+
+  .jm-circulos-categoria .elementor-widget-text-editor {
+    max-width: 52px;
   }
 
   .jm-circulos-categoria .elementor-widget-text-editor p {
-    font-size: 8px !important;
-    letter-spacing: 0.03em !important;
-    margin-top: 6px !important;
+    font-size: 7px !important;
+    letter-spacing: 0.02em !important;
+    margin-top: 4px !important;
   }
+}
+
+/* ===== Paginación — botones pequeños y redondeados ===== */
+.jm-catalogo-esencial .uael-woocommerce-pagination,
+.jm-catalogo-deluxe .uael-woocommerce-pagination,
+.jm-catalogo-gold .uael-woocommerce-pagination {
+  margin-top: 24px;
+}
+
+.jm-catalogo-esencial .uael-woocommerce-pagination ul.page-numbers,
+.jm-catalogo-deluxe .uael-woocommerce-pagination ul.page-numbers,
+.jm-catalogo-gold .uael-woocommerce-pagination ul.page-numbers {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px !important;
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+.jm-catalogo-esencial .uael-woocommerce-pagination .page-numbers,
+.jm-catalogo-deluxe .uael-woocommerce-pagination .page-numbers,
+.jm-catalogo-gold .uael-woocommerce-pagination .page-numbers {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 32px !important;
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  border-radius: 8px !important;
+  border: 1px solid #dddddd !important;
+  background: #ffffff !important;
+  color: #333333 !important;
+  box-sizing: border-box !important;
+  text-decoration: none !important;
+}
+
+.jm-catalogo-esencial .uael-woocommerce-pagination .page-numbers.current,
+.jm-catalogo-deluxe .uael-woocommerce-pagination .page-numbers.current,
+.jm-catalogo-gold .uael-woocommerce-pagination .page-numbers.current {
+  background: #555555 !important;
+  border-color: #555555 !important;
+  color: #ffffff !important;
+}
+
+.jm-catalogo-esencial .uael-woocommerce-pagination a.page-numbers:hover,
+.jm-catalogo-deluxe .uael-woocommerce-pagination a.page-numbers:hover,
+.jm-catalogo-gold .uael-woocommerce-pagination a.page-numbers:hover {
+  background: #faf5f7 !important;
+  border-color: #C88F9C !important;
+  color: #333333 !important;
 }
 
 /* ===== Cabecera grid (D06 paso 5) ===== */
