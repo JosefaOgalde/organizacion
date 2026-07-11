@@ -147,7 +147,11 @@ Eso alinea los círculos al mismo ancho que el catálogo (1200px) y evita el des
 | Anillos | `#jm-f-anillos` |
 | Aros | `#jm-f-aros` |
 
-**Todas:** añadir enlace `#jm-f-todas` en texto del hero o botón «Ver todo».
+**Todas:** enlace `#jm-f-todas` en:
+- **Banner / mini-banner «Esencial»** (imagen superior de la landing) → al hacer clic debe mostrar **todas** las categorías
+- Texto del hero o botón «Ver todo» (opcional)
+
+Sin `#jm-f-todas` en el banner, al entrar desde el home no se puede navegar por subcategoría hasta elegir una en el panel izquierdo.
 
 ### Prueba móvil
 

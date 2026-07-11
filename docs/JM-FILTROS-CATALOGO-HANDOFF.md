@@ -183,6 +183,8 @@ Ver `docs/JM-PENDIENTES-PRIORIDAD.md`. Resumen:
 2. **D06 Paso 5** — cabecera `.jm-grid-head` + orden destacados
 3. **Móvil** — círculos hero → `#jm-f-*`
 4. D07 refinamiento landings · D12 Ayuda · D10 Destacados home
+5. **Banner Esencial** → enlace `#jm-f-todas` (Elementor: widget imagen del banner → Enlace personalizado)
+6. **CSS Astra completo** — pegar `CSS-CATALOGO-3-COLECCIONES.css` (filtro + paginación redondeada + carrito con icono)
 
 ---
 

@@ -364,50 +364,11 @@
   margin-bottom: 14px !important;
 }
 
-/* Botón carrito — mismo borde redondeado que categorías */
+/* Botón carrito — borde redondeado, icono y hover como categorías */
 .jm-catalogo-esencial .add_to_cart_button,
-.jm-catalogo-esencial a.button.add_to_cart_button {
-  margin-top: auto !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  padding: 14px 18px !important;
-  border-radius: 10px !important;
-  border: 1px solid #A97E23 !important;
-  background: #C4A052 !important;
-  color: #ffffff !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.04em !important;
-  text-align: center !important;
-  text-transform: none !important;
-  line-height: 1.3 !important;
-  box-shadow: none !important;
-  transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.jm-catalogo-esencial .add_to_cart_button:hover,
-.jm-catalogo-esencial a.button.add_to_cart_button:hover {
-  background: #b8923f !important;
-  border-color: #8f6a15 !important;
-  color: #ffffff !important;
-}
-
+.jm-catalogo-esencial a.button.add_to_cart_button,
 .jm-catalogo-deluxe .add_to_cart_button,
-.jm-catalogo-deluxe a.button.add_to_cart_button {
-  margin-top: auto !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  padding: 14px 18px !important;
-  border-radius: 10px !important;
-  border: 1px solid #b87a8f !important;
-  background: #c995a8 !important;
-  color: #ffffff !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  text-align: center !important;
-  box-shadow: none !important;
-}
-
+.jm-catalogo-deluxe a.button.add_to_cart_button,
 .jm-catalogo-gold .add_to_cart_button,
 .jm-catalogo-gold a.button.add_to_cart_button {
   margin-top: auto !important;
@@ -415,13 +376,77 @@
   box-sizing: border-box !important;
   padding: 14px 18px !important;
   border-radius: 10px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  text-align: center !important;
+  text-transform: none !important;
+  line-height: 1.3 !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.jm-catalogo-esencial .add_to_cart_button,
+.jm-catalogo-esencial a.button.add_to_cart_button {
   border: 1px solid #A97E23 !important;
   background: #C4A052 !important;
   color: #ffffff !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  text-align: center !important;
-  box-shadow: none !important;
+}
+
+.jm-catalogo-deluxe .add_to_cart_button,
+.jm-catalogo-deluxe a.button.add_to_cart_button {
+  border: 1px solid #b87a8f !important;
+  background: #c995a8 !important;
+  color: #ffffff !important;
+}
+
+.jm-catalogo-gold .add_to_cart_button,
+.jm-catalogo-gold a.button.add_to_cart_button {
+  border: 1px solid #A97E23 !important;
+  background: #C4A052 !important;
+  color: #ffffff !important;
+}
+
+/* Icono carrito (SVG inline vía máscara — hereda color del texto) */
+.jm-catalogo-esencial .add_to_cart_button::before,
+.jm-catalogo-esencial a.button.add_to_cart_button::before,
+.jm-catalogo-deluxe .add_to_cart_button::before,
+.jm-catalogo-deluxe a.button.add_to_cart_button::before,
+.jm-catalogo-gold .add_to_cart_button::before,
+.jm-catalogo-gold a.button.add_to_cart_button::before {
+  content: "";
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='21' r='1'/%3E%3Ccircle cx='20' cy='21' r='1'/%3E%3Cpath d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='21' r='1'/%3E%3Ccircle cx='20' cy='21' r='1'/%3E%3Cpath d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Hover carrito — mismo estilo que botones de categoría */
+.jm-catalogo-esencial .add_to_cart_button:hover,
+.jm-catalogo-esencial a.button.add_to_cart_button:hover {
+  background: #faf5f7 !important;
+  border-color: #C88F9C !important;
+  color: #333333 !important;
+}
+
+.jm-catalogo-deluxe .add_to_cart_button:hover,
+.jm-catalogo-deluxe a.button.add_to_cart_button:hover {
+  background: #faf0f3 !important;
+  border-color: #b87a8f !important;
+  color: #333333 !important;
+}
+
+.jm-catalogo-gold .add_to_cart_button:hover,
+.jm-catalogo-gold a.button.add_to_cart_button:hover {
+  background: #faf6ea !important;
+  border-color: #A97E23 !important;
+  color: #333333 !important;
 }
 
 /* ===== Círculos categorías (hero) — misma anchura que catálogo ===== */
@@ -584,7 +609,7 @@
   margin: 0 !important;
   font-size: 13px !important;
   line-height: 1 !important;
-  border-radius: 8px !important;
+  border-radius: 10px !important;
   border: 1px solid #dddddd !important;
   background: #ffffff !important;
   color: #333333 !important;
