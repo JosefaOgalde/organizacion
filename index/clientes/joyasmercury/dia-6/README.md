@@ -13,7 +13,7 @@
 | 1. Layout 2 columnas | ✓ |
 | 2. Panel CATEGORÍAS (HTML) | ✓ |
 | 3. Woo – Products + query colección | ✓ |
-| 4. Filtro sin recargar (CSS `:has`) | ✓ parcial — **falta subcategorías en productos** |
+| 4. Filtro sin recargar (CSS `:has`) | ✓ — CSS corregido para clases UAE (11 jul) |
 | 5. Cabecera + orden | Pendiente |
 | 6. Móvil (círculos → anchors) | Pendiente |
 
@@ -22,13 +22,16 @@
 
 ---
 
-## Paso 4 bis — Desbloquear filtros (PRIORIDAD)
+## Paso 4 bis — Desbloquear filtros (RESUELTO 11 jul)
 
-Si Pulseras/Aros muestran *«No hay productos…»* pero **Todas** sí tiene productos:
+**Causa:** UAE Woo – Products pone slugs cortos en el `<li>` (`esencial aros`, no `product_cat-esencial-aros`). El CSS con `jm-data-cat-*` ocultaba **todos** los productos al filtrar.
 
-→ Seguir `guias/GUIA-SUBCATEGORIAS-PRODUCTOS.md`
+**Solución:** Reemplazar en Astra → CSS adicional el bloque de filtrado por el de `guias/CSS-CATALOGO-3-COLECCIONES.css` (versión 11 jul).
 
-No tocar más CSS hasta verificar clases en el `<li class="product">`.
+**Prueba rápida:**
+1. `/esencial/#jm-f-aros` → solo productos con clase `aros`
+2. `/esencial/#jm-f-conjuntos` → mensaje vacío (0 productos en WC)
+3. Snippet PHP marcadores → **desactivar** (opcional, no hace falta con UAE)
 
 ---
 

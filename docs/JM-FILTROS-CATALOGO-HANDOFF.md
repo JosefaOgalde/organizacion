@@ -32,9 +32,16 @@ Contenedor (clase según colección)
 |------|-----------------|
 | **Woo – Products (Query)** | Qué colección carga: Esencial / Gold / Deluxe |
 | **HTML + CSS** | Filtrar subcategorías (Pulseras, Aros, etc.) sin recargar |
-| **WooCommerce (productos)** | Subcategoría o etiqueta en cada producto → genera clases en `<li class="product">` |
+| **WooCommerce (productos)** | Subcategoría en cada producto → UAE pone el **slug corto** en `<li class="product">` |
 
-**Importante:** Si el widget Query pide Esencial en la página Gold, se verán productos Esencial aunque el CSS esté bien. Si los productos solo tienen categoría padre sin subcategoría, **Todas** funciona pero **Pulseras/Aros/etc.** muestran *«No hay productos en esta categoría»*.
+**Importante:** El widget **UAE Woo – Products** no usa `product_cat-esencial-aros`. Pone clases directas en el `<li>`:
+
+```html
+<li class="esencial aros product …">
+<li class="esencial pulseras product …">
+```
+
+El CSS debe filtrar por `.pulseras`, `.aros`, `.cadenas`, etc. — **no** por `product_cat-*` ni `jm-data-cat-*`.
 
 ---
 
@@ -108,283 +115,24 @@ El CSS también acepta slugs cortos (`product_cat-pulseras`) y etiquetas (`produ
 
 ## CSS completo (Astra → CSS adicional)
 
-Copiar el bloque completo de abajo. Reemplaza cualquier CSS anterior del filtro JM.
+Copiar el bloque completo de `index/clientes/joyasmercury/guias/CSS-CATALOGO-3-COLECCIONES.css`.
+
+**Versión 11 jul 2026:** selectores alineados a clases UAE (`pulseras`, `aros`, `esencial`, `gold`, `deluxe`).
+
+Bloque crítico de filtrado (reemplaza cualquier versión con `product_cat-*` o `jm-data-cat-*`):
 
 ```css
-/* =============================================
-   Joyas Mercury — Filtros catálogo
-   Esencial  → contenedor: jm-catalogo-esencial
-   Deluxe    → contenedor: jm-catalogo-deluxe
-   Gold      → contenedor: jm-catalogo-gold
-   ============================================= */
-
-/* ----- Ocultar "Sin categorizar" ----- */
-.jm-catalogo-esencial li.product.product_cat-sin-categorizar,
-.jm-catalogo-esencial li.product.product_cat-uncategorized,
-.jm-catalogo-deluxe li.product.product_cat-sin-categorizar,
-.jm-catalogo-deluxe li.product.product_cat-uncategorized,
-.jm-catalogo-gold li.product.product_cat-sin-categorizar,
-.jm-catalogo-gold li.product.product_cat-uncategorized {
-  display: none !important;
-}
-
-/* ----- Forzar colección correcta por página ----- */
-.jm-catalogo-gold li.product:not(.product_cat-gold) {
-  display: none !important;
-}
-
-.jm-catalogo-deluxe li.product:not(.product_cat-deluxe) {
-  display: none !important;
-}
-
-.jm-catalogo-esencial li.product.product_cat-gold,
-.jm-catalogo-esencial li.product.product_cat-deluxe {
-  display: none !important;
-}
-
-/* ===== Panel botones — base común ===== */
-.jm-catalogo-esencial .jm-filtro-panel,
-.jm-catalogo-deluxe .jm-filtro-panel,
-.jm-catalogo-gold .jm-filtro-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-
-.jm-catalogo-esencial .jm-filtro-panel__titulo,
-.jm-catalogo-deluxe .jm-filtro-panel__titulo,
-.jm-catalogo-gold .jm-filtro-panel__titulo {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #999999;
-  margin: 0 0 14px 0;
-  font-weight: 600;
-  font-family: inherit;
-}
-
-.jm-catalogo-esencial .jm-filtro-panel a.jm-filtro,
-.jm-catalogo-deluxe .jm-filtro-panel a.jm-filtro,
-.jm-catalogo-gold .jm-filtro-panel a.jm-filtro {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 14px 18px;
-  margin: 0;
-  border: 1px solid #dddddd;
-  border-radius: 6px;
-  background: #ffffff;
-  color: #333333 !important;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  text-decoration: none !important;
-  text-align: left;
-  line-height: 1.3;
-  cursor: pointer;
-  box-shadow: none;
-  transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.jm-catalogo-esencial .jm-filtro-panel a.jm-filtro:hover {
-  background: #faf5f7;
-  border-color: #C88F9C;
-  color: #333333 !important;
-}
-
-.jm-catalogo-deluxe .jm-filtro-panel a.jm-filtro:hover {
-  background: #faf0f3;
-  border-color: #b87a8f;
-  color: #333333 !important;
-}
-
-.jm-catalogo-gold .jm-filtro-panel a.jm-filtro:hover {
-  background: #faf6ea;
-  border-color: #A97E23;
-  color: #333333 !important;
-}
-
-/* Botón activo — ESENCIAL */
-.jm-catalogo-esencial:not(:has(.jm-filtro-anchor:target)) .jm-filtro-panel a.jm-filtro[href="#jm-f-todas"],
-.jm-catalogo-esencial:has(#jm-f-todas:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-todas"],
-.jm-catalogo-esencial:has(#jm-f-pulseras:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-pulseras"],
-.jm-catalogo-esencial:has(#jm-f-conjuntos:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-conjuntos"],
-.jm-catalogo-esencial:has(#jm-f-cadenas:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-cadenas"],
-.jm-catalogo-esencial:has(#jm-f-anillos:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-anillos"],
-.jm-catalogo-esencial:has(#jm-f-aros:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-aros"] {
-  background: #f0d4dc !important;
-  border-color: #C88F9C !important;
-  color: #333333 !important;
-  font-weight: 700;
-}
-
-/* Botón activo — DELUXE */
-.jm-catalogo-deluxe:not(:has(.jm-filtro-anchor:target)) .jm-filtro-panel a.jm-filtro[href="#jm-f-todas"],
-.jm-catalogo-deluxe:has(#jm-f-todas:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-todas"],
-.jm-catalogo-deluxe:has(#jm-f-pulseras:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-pulseras"],
-.jm-catalogo-deluxe:has(#jm-f-conjuntos:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-conjuntos"],
-.jm-catalogo-deluxe:has(#jm-f-cadenas:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-cadenas"],
-.jm-catalogo-deluxe:has(#jm-f-anillos:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-anillos"],
-.jm-catalogo-deluxe:has(#jm-f-aros:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-aros"] {
-  background: #e8c4d0 !important;
-  border-color: #b87a8f !important;
-  color: #333333 !important;
-  font-weight: 700;
-}
-
-/* Botón activo — GOLD */
-.jm-catalogo-gold:not(:has(.jm-filtro-anchor:target)) .jm-filtro-panel a.jm-filtro[href="#jm-f-todas"],
-.jm-catalogo-gold:has(#jm-f-todas:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-todas"],
-.jm-catalogo-gold:has(#jm-f-pulseras:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-pulseras"],
-.jm-catalogo-gold:has(#jm-f-conjuntos:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-conjuntos"],
-.jm-catalogo-gold:has(#jm-f-cadenas:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-cadenas"],
-.jm-catalogo-gold:has(#jm-f-anillos:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-anillos"],
-.jm-catalogo-gold:has(#jm-f-aros:target) .jm-filtro-panel a.jm-filtro[href="#jm-f-aros"] {
-  background: #f5e6b8 !important;
-  border-color: #A97E23 !important;
-  color: #333333 !important;
-  font-weight: 700;
-}
-
 /* Filtrar — ESENCIAL */
-.jm-catalogo-esencial:has(#jm-f-pulseras:target) li.product:not(.product_cat-esencial-pulseras):not(.product_cat-pulseras):not(.product_tag-pulseras),
-.jm-catalogo-esencial:has(#jm-f-conjuntos:target) li.product:not(.product_cat-esencial-conjuntos):not(.product_cat-conjuntos):not(.product_tag-conjuntos),
-.jm-catalogo-esencial:has(#jm-f-cadenas:target) li.product:not(.product_cat-esencial-cadenas):not(.product_cat-cadenas):not(.product_tag-cadenas),
-.jm-catalogo-esencial:has(#jm-f-anillos:target) li.product:not(.product_cat-esencial-anillos):not(.product_cat-anillos):not(.product_tag-anillos),
-.jm-catalogo-esencial:has(#jm-f-aros:target) li.product:not(.product_cat-esencial-aros):not(.product_cat-aros):not(.product_tag-aros) {
+.jm-catalogo-esencial:has(#jm-f-pulseras:target) li.product:not(.pulseras),
+.jm-catalogo-esencial:has(#jm-f-conjuntos:target) li.product:not(.conjuntos),
+.jm-catalogo-esencial:has(#jm-f-cadenas:target) li.product:not(.cadenas),
+.jm-catalogo-esencial:has(#jm-f-anillos:target) li.product:not(.anillos),
+.jm-catalogo-esencial:has(#jm-f-aros:target) li.product:not(.aros) {
   display: none !important;
-}
-
-/* Filtrar — DELUXE */
-.jm-catalogo-deluxe:has(#jm-f-pulseras:target) li.product:not(.product_cat-deluxe-pulseras):not(.product_cat-pulseras):not(.product_tag-pulseras),
-.jm-catalogo-deluxe:has(#jm-f-conjuntos:target) li.product:not(.product_cat-deluxe-conjuntos):not(.product_cat-conjuntos):not(.product_tag-conjuntos),
-.jm-catalogo-deluxe:has(#jm-f-cadenas:target) li.product:not(.product_cat-deluxe-cadenas):not(.product_cat-cadenas):not(.product_tag-cadenas),
-.jm-catalogo-deluxe:has(#jm-f-anillos:target) li.product:not(.product_cat-deluxe-anillos):not(.product_cat-anillos):not(.product_tag-anillos),
-.jm-catalogo-deluxe:has(#jm-f-aros:target) li.product:not(.product_cat-deluxe-aros):not(.product_cat-aros):not(.product_tag-aros) {
-  display: none !important;
-}
-
-/* Filtrar — GOLD */
-.jm-catalogo-gold:has(#jm-f-pulseras:target) li.product:not(.product_cat-gold-pulseras):not(.product_cat-pulseras):not(.product_tag-pulseras),
-.jm-catalogo-gold:has(#jm-f-conjuntos:target) li.product:not(.product_cat-gold-conjuntos):not(.product_cat-conjuntos):not(.product_tag-conjuntos),
-.jm-catalogo-gold:has(#jm-f-cadenas:target) li.product:not(.product_cat-gold-cadenas):not(.product_cat-cadenas):not(.product_tag-cadenas),
-.jm-catalogo-gold:has(#jm-f-anillos:target) li.product:not(.product_cat-gold-anillos):not(.product_cat-anillos):not(.product_tag-anillos),
-.jm-catalogo-gold:has(#jm-f-aros:target) li.product:not(.product_cat-gold-aros):not(.product_cat-aros):not(.product_tag-aros) {
-  display: none !important;
-}
-
-/* Mensaje vacío — base */
-.jm-catalogo-esencial .jm-vacio-mensaje,
-.jm-catalogo-deluxe .jm-vacio-mensaje,
-.jm-catalogo-gold .jm-vacio-mensaje {
-  display: none;
-  width: 100%;
-  padding: 120px 24px;
-  text-align: center;
-  color: #888888;
-  font-size: 16px;
-  letter-spacing: 0.03em;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-/* Mensaje vacío — ESENCIAL */
-.jm-catalogo-esencial:has(#jm-f-pulseras:target):not(:has(li.product.product_cat-esencial-pulseras, li.product.product_cat-pulseras, li.product.product_tag-pulseras)) .jm-vacio-mensaje,
-.jm-catalogo-esencial:has(#jm-f-conjuntos:target):not(:has(li.product.product_cat-esencial-conjuntos, li.product.product_cat-conjuntos, li.product.product_tag-conjuntos)) .jm-vacio-mensaje,
-.jm-catalogo-esencial:has(#jm-f-cadenas:target):not(:has(li.product.product_cat-esencial-cadenas, li.product.product_cat-cadenas, li.product.product_tag-cadenas)) .jm-vacio-mensaje,
-.jm-catalogo-esencial:has(#jm-f-anillos:target):not(:has(li.product.product_cat-esencial-anillos, li.product.product_cat-anillos, li.product.product_tag-anillos)) .jm-vacio-mensaje,
-.jm-catalogo-esencial:has(#jm-f-aros:target):not(:has(li.product.product_cat-esencial-aros, li.product.product_cat-aros, li.product.product_tag-aros)) .jm-vacio-mensaje {
-  display: block;
-}
-
-.jm-catalogo-esencial:has(#jm-f-pulseras:target):not(:has(li.product.product_cat-esencial-pulseras, li.product.product_cat-pulseras, li.product.product_tag-pulseras)) ul.products,
-.jm-catalogo-esencial:has(#jm-f-conjuntos:target):not(:has(li.product.product_cat-esencial-conjuntos, li.product.product_cat-conjuntos, li.product.product_tag-conjuntos)) ul.products,
-.jm-catalogo-esencial:has(#jm-f-cadenas:target):not(:has(li.product.product_cat-esencial-cadenas, li.product.product_cat-cadenas, li.product.product_tag-cadenas)) ul.products,
-.jm-catalogo-esencial:has(#jm-f-anillos:target):not(:has(li.product.product_cat-esencial-anillos, li.product.product_cat-anillos, li.product.product_tag-anillos)) ul.products,
-.jm-catalogo-esencial:has(#jm-f-aros:target):not(:has(li.product.product_cat-esencial-aros, li.product.product_cat-aros, li.product.product_tag-aros)) ul.products {
-  display: none !important;
-}
-
-/* Mensaje vacío — DELUXE */
-.jm-catalogo-deluxe:has(#jm-f-pulseras:target):not(:has(li.product.product_cat-deluxe-pulseras, li.product.product_cat-pulseras, li.product.product_tag-pulseras)) .jm-vacio-mensaje,
-.jm-catalogo-deluxe:has(#jm-f-conjuntos:target):not(:has(li.product.product_cat-deluxe-conjuntos, li.product.product_cat-conjuntos, li.product.product_tag-conjuntos)) .jm-vacio-mensaje,
-.jm-catalogo-deluxe:has(#jm-f-cadenas:target):not(:has(li.product.product_cat-deluxe-cadenas, li.product.product_cat-cadenas, li.product.product_tag-cadenas)) .jm-vacio-mensaje,
-.jm-catalogo-deluxe:has(#jm-f-anillos:target):not(:has(li.product.product_cat-deluxe-anillos, li.product.product_cat-anillos, li.product.product_tag-anillos)) .jm-vacio-mensaje,
-.jm-catalogo-deluxe:has(#jm-f-aros:target):not(:has(li.product.product_cat-deluxe-aros, li.product.product_cat-aros, li.product.product_tag-aros)) .jm-vacio-mensaje {
-  display: block;
-}
-
-.jm-catalogo-deluxe:has(#jm-f-pulseras:target):not(:has(li.product.product_cat-deluxe-pulseras, li.product.product_cat-pulseras, li.product.product_tag-pulseras)) ul.products,
-.jm-catalogo-deluxe:has(#jm-f-conjuntos:target):not(:has(li.product.product_cat-deluxe-conjuntos, li.product.product_cat-conjuntos, li.product.product_tag-conjuntos)) ul.products,
-.jm-catalogo-deluxe:has(#jm-f-cadenas:target):not(:has(li.product.product_cat-deluxe-cadenas, li.product.product_cat-cadenas, li.product.product_tag-cadenas)) ul.products,
-.jm-catalogo-deluxe:has(#jm-f-anillos:target):not(:has(li.product.product_cat-deluxe-anillos, li.product.product_cat-anillos, li.product.product_tag-anillos)) ul.products,
-.jm-catalogo-deluxe:has(#jm-f-aros:target):not(:has(li.product.product_cat-deluxe-aros, li.product.product_cat-aros, li.product.product_tag-aros)) ul.products {
-  display: none !important;
-}
-
-/* Mensaje vacío — GOLD */
-.jm-catalogo-gold:has(#jm-f-pulseras:target):not(:has(li.product.product_cat-gold-pulseras, li.product.product_cat-pulseras, li.product.product_tag-pulseras)) .jm-vacio-mensaje,
-.jm-catalogo-gold:has(#jm-f-conjuntos:target):not(:has(li.product.product_cat-gold-conjuntos, li.product.product_cat-conjuntos, li.product.product_tag-conjuntos)) .jm-vacio-mensaje,
-.jm-catalogo-gold:has(#jm-f-cadenas:target):not(:has(li.product.product_cat-gold-cadenas, li.product.product_cat-cadenas, li.product.product_tag-cadenas)) .jm-vacio-mensaje,
-.jm-catalogo-gold:has(#jm-f-anillos:target):not(:has(li.product.product_cat-gold-anillos, li.product.product_cat-anillos, li.product.product_tag-anillos)) .jm-vacio-mensaje,
-.jm-catalogo-gold:has(#jm-f-aros:target):not(:has(li.product.product_cat-gold-aros, li.product.product_cat-aros, li.product.product_tag-aros)) .jm-vacio-mensaje {
-  display: block;
-}
-
-.jm-catalogo-gold:has(#jm-f-pulseras:target):not(:has(li.product.product_cat-gold-pulseras, li.product.product_cat-pulseras, li.product.product_tag-pulseras)) ul.products,
-.jm-catalogo-gold:has(#jm-f-conjuntos:target):not(:has(li.product.product_cat-gold-conjuntos, li.product.product_cat-conjuntos, li.product.product_tag-conjuntos)) ul.products,
-.jm-catalogo-gold:has(#jm-f-cadenas:target):not(:has(li.product.product_cat-gold-cadenas, li.product.product_cat-cadenas, li.product.product_tag-cadenas)) ul.products,
-.jm-catalogo-gold:has(#jm-f-anillos:target):not(:has(li.product.product_cat-gold-anillos, li.product.product_cat-anillos, li.product.product_tag-anillos)) ul.products,
-.jm-catalogo-gold:has(#jm-f-aros:target):not(:has(li.product.product_cat-gold-aros, li.product.product_cat-aros, li.product.product_tag-aros)) ul.products {
-  display: none !important;
-}
-
-/* Etiqueta colección en tarjeta — Gold y Deluxe */
-.jm-catalogo-gold .uael-woo-products-category,
-.jm-catalogo-gold .woocommerce-loop-category__title,
-.jm-catalogo-deluxe .uael-woo-products-category,
-.jm-catalogo-deluxe .woocommerce-loop-category__title {
-  font-size: 0 !important;
-  line-height: 0;
-}
-
-.jm-catalogo-gold .uael-woo-products-category::after,
-.jm-catalogo-gold .woocommerce-loop-category__title::after {
-  content: "Gold";
-  font-size: 12px;
-  line-height: 1.4;
-  color: #999999;
-  display: block;
-  text-transform: capitalize;
-}
-
-.jm-catalogo-deluxe .uael-woo-products-category::after,
-.jm-catalogo-deluxe .woocommerce-loop-category__title::after {
-  content: "Deluxe";
-  font-size: 12px;
-  line-height: 1.4;
-  color: #999999;
-  display: block;
-  text-transform: capitalize;
-}
-
-/* Móvil */
-@media (max-width: 767px) {
-  .jm-catalogo-esencial .jm-filtro-panel,
-  .jm-catalogo-deluxe .jm-filtro-panel,
-  .jm-catalogo-gold .jm-filtro-panel {
-    display: none;
-  }
-
-  .jm-catalogo-esencial .jm-vacio-mensaje,
-  .jm-catalogo-deluxe .jm-vacio-mensaje,
-  .jm-catalogo-gold .jm-vacio-mensaje {
-    padding: 60px 16px;
-  }
 }
 ```
+
+(Análogo para Deluxe y Gold; ver archivo CSS completo.)
 
 ---
 
@@ -403,7 +151,9 @@ Productos → filtrar por colección → seleccionar → Acciones en lote → Ed
 
 ### Verificación
 
-Inspeccionar `<li class="product ...">` en el navegador. Debe incluir p. ej. `product_cat-esencial-pulseras` o `product_tag-pulseras`.
+Inspeccionar `<li class="product …">` en el navegador. UAE debe incluir el **slug corto** de subcategoría, p. ej. `pulseras`, `aros` (junto a `esencial`, `gold` o `deluxe`).
+
+El snippet PHP **JM Marcadores categoría filtro** no es necesario con UAE — puede desactivarse.
 
 ---
 
@@ -437,8 +187,9 @@ Ver `docs/JM-PENDIENTES-PRIORIDAD.md`. Resumen:
 
 | Síntoma | Causa | Solución |
 |---------|-------|----------|
+| Clic filtro → página en blanco | CSS busca `product_cat-*` o `jm-data-cat-*` pero UAE usa `.pulseras`, `.aros`, etc. | Actualizar CSS a clases UAE (ver `CSS-CATALOGO-3-COLECCIONES.css`) |
 | Gold/Deluxe muestran Esencial | Query widget = Esencial | Query → categoría correcta |
-| Todas OK, subcategoría vacía | Productos sin subcategoría/etiqueta | WooCommerce: asignar Pulseras, Aros, etc. |
+| Todas OK, subcategoría vacía | Productos sin subcategoría | WooCommerce: asignar Pulseras, Aros, etc. |
 | Mensaje sobre botones | HTML mensaje en columna izquierda | Mover a columna derecha debajo del grid |
 | Botones como texto dorado | No es widget HTML con `jm-filtro` | Reemplazar por HTML del handoff |
 | Etiqueta «Esencial» en Gold | Producto mal categorizado | Asignar Gold + CSS `::after` ya aplicado |
