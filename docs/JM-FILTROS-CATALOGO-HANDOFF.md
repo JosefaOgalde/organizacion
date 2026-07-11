@@ -54,8 +54,9 @@ El CSS debe filtrar por `.pulseras`, `.aros`, `.cadenas`, etc. — **no** por `p
 | Deluxe | `/deluxe/` | `jm-catalogo-deluxe` | Categoría **Deluxe** |
 
 **Widget Woo – Products (las 3):**
-- Posts Per Page: **60**
+- Posts Per Page: **60** ← **obligatorio** para filtro CSS (si hay 8 + Random, Pulseras/Cadenas salen vacías aunque existan en WC)
 - Pagination: **OFF**
+- Order By: **Menu Order** o **Date** — **no Random**
 - Título del widget: **vacío** (se quitó el texto pequeño «Gold»/«Deluxe»)
 
 ---
@@ -188,6 +189,10 @@ Ver `docs/JM-PENDIENTES-PRIORIDAD.md`. Resumen:
 | Síntoma | Causa | Solución |
 |---------|-------|----------|
 | Clic filtro → página en blanco | CSS busca `product_cat-*` o `jm-data-cat-*` pero UAE usa `.pulseras`, `.aros`, etc. | Actualizar CSS a clases UAE (ver `CSS-CATALOGO-3-COLECCIONES.css`) |
+| Aros/Anillos OK, Pulseras/Cadenas vacías | Widget carga **8 productos Random** — la subcategoría no está en el DOM | Posts Per Page **60**, Order ≠ Random |
+| Productos + mensaje vacío a la vez | Falta `.jm-vacio-mensaje { display: none }` en CSS adicional | Pegar **CSS completo** del repo, no solo bloques de filtrado |
+| Panel sin botones (links dorados) | Se borró CSS del panel al pegar parcial | Restaurar bloque `.jm-filtro-panel` del archivo completo |
+| Clase duplicada | `jm-catalogo-esencial` en contenedor **y** widget HTML | Quitar clase del widget HTML; dejar solo en contenedor padre |
 | Gold/Deluxe muestran Esencial | Query widget = Esencial | Query → categoría correcta |
 | Todas OK, subcategoría vacía | Productos sin subcategoría | WooCommerce: asignar Pulseras, Aros, etc. |
 | Mensaje sobre botones | HTML mensaje en columna izquierda | Mover a columna derecha debajo del grid |

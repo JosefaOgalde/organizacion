@@ -33,6 +33,23 @@
 2. `/esencial/#jm-f-conjuntos` → mensaje vacío (0 productos en WC)
 3. Snippet PHP marcadores → **desactivar** (opcional, no hace falta con UAE)
 
+## Paso 4 ter — Ajustes tras prueba (11 jul)
+
+Si **Aros/Anillos** filtran pero **Pulseras/Cadenas** no, o el mensaje vacío aparece junto a productos:
+
+### A) Widget Woo – Products (Elementor)
+| Campo | Valor |
+|-------|-------|
+| **Posts Per Page** | `60` |
+| **Order By** | `Menu Order` (no Random) |
+| **Pagination** | OFF |
+
+### B) CSS Astra — archivo **completo**
+No pegar solo los 3 bloques de filtrado. Copiar **todo** `guias/CSS-CATALOGO-3-COLECCIONES.css` (incluye panel, `display:none` del mensaje vacío, móvil).
+
+### C) Elementor — quitar clase duplicada
+En el widget HTML del panel (columna izquierda) → Avanzado → **borrar** `jm-catalogo-esencial`. Esa clase va **solo** en el contenedor padre que envuelve ambas columnas.
+
 ---
 
 ## Paso 5 — Cabecera del grid
