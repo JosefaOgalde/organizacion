@@ -15,7 +15,8 @@
 | 3. Woo – Products + query colección | ✓ |
 | 4. Filtro sin recargar (CSS `:has`) | ✓ — CSS corregido para clases UAE (11 jul) |
 | 5. Cabecera + orden | Pendiente |
-| 6. Móvil (círculos → anchors) | Pendiente |
+| 5b. Tarjetas producto alineadas | CSS `.uael-woo-product-wrapper` — ver guía CSS |
+| 6. Móvil (círculos → anchors) | En progreso |
 
 **Handoff técnico:** `docs/JM-FILTROS-CATALOGO-HANDOFF.md`  
 **CSS copiar/pegar:** `guias/CSS-CATALOGO-3-COLECCIONES.css`

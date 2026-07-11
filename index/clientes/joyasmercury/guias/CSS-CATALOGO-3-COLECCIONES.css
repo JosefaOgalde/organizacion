@@ -316,6 +316,114 @@
   text-transform: capitalize;
 }
 
+/* ===== Tarjetas producto UAE — botones alineados abajo ===== */
+.jm-catalogo-esencial ul.products,
+.jm-catalogo-deluxe ul.products,
+.jm-catalogo-gold ul.products {
+  align-items: stretch;
+}
+
+.jm-catalogo-esencial ul.products li.product,
+.jm-catalogo-deluxe ul.products li.product,
+.jm-catalogo-gold ul.products li.product {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+.jm-catalogo-esencial .uael-woo-product-wrapper,
+.jm-catalogo-deluxe .uael-woo-product-wrapper,
+.jm-catalogo-gold .uael-woo-product-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.jm-catalogo-esencial .uael-woo-products-summary-wrap,
+.jm-catalogo-deluxe .uael-woo-products-summary-wrap,
+.jm-catalogo-gold .uael-woo-products-summary-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+  padding-bottom: 4px;
+}
+
+.jm-catalogo-esencial .woocommerce-loop-product__title,
+.jm-catalogo-deluxe .woocommerce-loop-product__title,
+.jm-catalogo-gold .woocommerce-loop-product__title {
+  min-height: 2.8em;
+  line-height: 1.35;
+  margin-bottom: 8px !important;
+}
+
+.jm-catalogo-esencial .uael-woo-products-summary-wrap .price,
+.jm-catalogo-deluxe .uael-woo-products-summary-wrap .price,
+.jm-catalogo-gold .uael-woo-products-summary-wrap .price {
+  margin-bottom: 14px !important;
+}
+
+/* Botón carrito — mismo borde redondeado que categorías */
+.jm-catalogo-esencial .add_to_cart_button,
+.jm-catalogo-esencial a.button.add_to_cart_button {
+  margin-top: auto !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 14px 18px !important;
+  border-radius: 10px !important;
+  border: 1px solid #A97E23 !important;
+  background: #C4A052 !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  text-align: center !important;
+  text-transform: none !important;
+  line-height: 1.3 !important;
+  box-shadow: none !important;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.jm-catalogo-esencial .add_to_cart_button:hover,
+.jm-catalogo-esencial a.button.add_to_cart_button:hover {
+  background: #b8923f !important;
+  border-color: #8f6a15 !important;
+  color: #ffffff !important;
+}
+
+.jm-catalogo-deluxe .add_to_cart_button,
+.jm-catalogo-deluxe a.button.add_to_cart_button {
+  margin-top: auto !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 14px 18px !important;
+  border-radius: 10px !important;
+  border: 1px solid #b87a8f !important;
+  background: #c995a8 !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  box-shadow: none !important;
+}
+
+.jm-catalogo-gold .add_to_cart_button,
+.jm-catalogo-gold a.button.add_to_cart_button {
+  margin-top: auto !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 14px 18px !important;
+  border-radius: 10px !important;
+  border: 1px solid #A97E23 !important;
+  background: #C4A052 !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  box-shadow: none !important;
+}
+
 /* ===== Círculos categorías (hero) — misma anchura que catálogo ===== */
 .jm-circulos-categoria.e-con {
   max-width: 1200px !important;
