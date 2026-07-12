@@ -5,7 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Referencia landings · Joyas Mercury</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="referencia-landings.css">
+  <link rel="stylesheet" href="referencia-landings.css?v=paginacion2">
+  <style>
+    /* Crítico: paginación siempre en fila (evita caché / conflictos) */
+    .ref-pagination,
+    nav.ref-pagination {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: center;
+      width: 100%;
+    }
+    .ref-pagination__list {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      align-items: stretch;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      gap: 0;
+    }
+    .ref-pagination__item {
+      display: flex !important;
+      flex: 0 0 auto;
+      margin: 0;
+    }
+    .ref-pagination__btn {
+      display: inline-flex !important;
+      width: auto !important;
+      max-width: none !important;
+    }
+  </style>
 </head>
 <body>
   <p class="ref-tag">Referencia entregada · captura carrusel</p>
@@ -107,9 +137,9 @@
           <select><option>Destacados</option></select>
         </div>
         <div class="ref-grid" id="grid-catalog"></div>
-        <nav class="ref-pagination" id="pagination-catalog" aria-label="Paginación de productos"></nav>
       </div>
     </div>
+    <nav class="ref-pagination ref-pagination--catalog" id="pagination-catalog" aria-label="Paginación de productos"></nav>
 
     <footer class="ref-footer" id="footer-col"></footer>
   </div>
@@ -245,8 +275,11 @@
     }
 
     const params = new URLSearchParams(location.search);
-    const pagina = params.get('pagina') || 'inicio';
-    const col = params.get('coleccion') || 'esencial';
+    const paginaRaw = params.get('pagina') || 'inicio';
+    let col = params.get('coleccion') || 'esencial';
+    const paginaCatalogo = new Set(['coleccion', 'esencial', 'gold', 'deluxe', 'productos', 'catalogo']);
+    const pagina = paginaCatalogo.has(paginaRaw) ? 'coleccion' : paginaRaw;
+    if (['esencial', 'gold', 'deluxe'].includes(paginaRaw)) col = paginaRaw;
 
     if (pagina === 'inicio') {
       document.getElementById('page-inicio').classList.add('is-active');
