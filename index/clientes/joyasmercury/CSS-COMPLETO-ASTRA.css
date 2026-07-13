@@ -3473,3 +3473,115 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+
+/* === JM NOVEDADES MOBILE 2x2 FORCE === */
+@media (max-width: 921px) {
+  /* Clase en el widget UAE — Obligatoria: jm-home-novedades */
+  .jm-home-novedades.elementor-widget-uael-woo-products,
+  .elementor-widget-uael-woo-products.jm-home-novedades,
+  .elementor-element.jm-home-novedades,
+  .jm-home-novedades {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .jm-home-novedades .uael-woo-products,
+  .jm-home-novedades .uael-woocommerce,
+  .jm-home-novedades .elementor-widget-container,
+  .jm-home-novedades .slick-slider,
+  .jm-home-novedades .slick-list {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    height: auto !important;
+    transform: none !important;
+  }
+
+  /* Ocultar clones Slick (rompe la grilla) */
+  .jm-home-novedades .slick-cloned {
+    display: none !important;
+  }
+
+  .jm-home-novedades .slick-track,
+  .jm-home-novedades ul.products,
+  .jm-home-novedades ul.products.columns-1,
+  .jm-home-novedades ul.products.columns-2,
+  .jm-home-novedades ul.products.columns-3,
+  .jm-home-novedades ul.products.columns-4 {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    left: 0 !important;
+    right: auto !important;
+  }
+
+  .jm-home-novedades ul.products::before,
+  .jm-home-novedades ul.products::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .jm-home-novedades .slick-slide,
+  .jm-home-novedades ul.products > li.product,
+  .jm-home-novedades ul.products > li,
+  .jm-home-novedades .slick-slide.slick-active,
+  .jm-home-novedades .slick-slide.slick-current {
+    display: block !important;
+    float: none !important;
+    clear: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .jm-home-novedades .slick-slide > div {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .jm-home-novedades .slick-prev,
+  .jm-home-novedades .slick-next,
+  .jm-home-novedades .slick-dots {
+    display: none !important;
+  }
+
+  /* Fallback si la clase está en jm-home-productos (sin ultimas) */
+  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]):not(.jm-home-novedades) .slick-cloned {
+    display: none !important;
+  }
+
+  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .slick-track,
+  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) ul.products {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: 100% !important;
+    transform: none !important;
+    left: 0 !important;
+  }
+
+  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .slick-slide,
+  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) li.product {
+    width: 100% !important;
+    max-width: 100% !important;
+    float: none !important;
+    margin: 0 !important;
+  }
+}
+
