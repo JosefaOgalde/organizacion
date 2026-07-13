@@ -1,15 +1,16 @@
 @echo off
 chcp 65001 >nul
+setlocal EnableDelayedExpansion
 cd /d "%~dp0"
 
 set "ORIGEN=%~1"
 set "LIVE=data\organizacion-live.json"
 
-if "%ORIGEN%"=="" (
+if "!ORIGEN!"=="" (
   for /f "usebackq delims=" %%i in (`node scripts/respaldo-reciente.js 2^>nul`) do set "ORIGEN=%%i"
 )
 
-if "%ORIGEN%"=="" (
+if "!ORIGEN!"=="" (
   echo.
   echo  No se encontro ningun organizacion-respaldo-*.json
   echo  en data\ ni en %%USERPROFILE%%\Downloads
@@ -23,21 +24,28 @@ if "%ORIGEN%"=="" (
   exit /b 1
 )
 
-if not exist "%ORIGEN%" (
+if not exist "!ORIGEN!" (
   echo.
-  echo  No existe: %ORIGEN%
+  echo  No existe: !ORIGEN!
   pause
   exit /b 1
 )
 
 if not exist "data" mkdir data
-copy /Y "%ORIGEN%" "%LIVE%" >nul
+copy /Y "!ORIGEN!" "!LIVE!" >nul
+if errorlevel 1 (
+  echo.
+  echo  Error al copiar el respaldo.
+  pause
+  exit /b 1
+)
 
 echo.
 echo  === Respaldo importado ===
-echo  Origen:  %ORIGEN%
-echo  Live:    %LIVE%
+echo  Origen:  !ORIGEN!
+echo  Live:    !LIVE!
 echo.
 echo  Siguiente: ABRIR-ORGANIZADOR.bat
 echo.
 pause
+endlocal
