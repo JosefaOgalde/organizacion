@@ -431,6 +431,14 @@
     });
   }
 
+  function wireframesMobileEmbebidosHtml() {
+    if (!seccionVisible('wireframes')) return '';
+    if (typeof window.jmHtmlWireframesMobile !== 'function') return '';
+    return window.jmHtmlWireframesMobile({
+      claseExtra: 'ficha-seccion--portal'
+    });
+  }
+
   function fechaGuardadoTexto(cli) {
     const raw = cli.ficha?.actualizado;
     if (!raw) return '';
@@ -452,6 +460,7 @@
   function render() {
     const cli = cargarDatos();
     const wireframes = wireframesEmbebidosHtml();
+    const wireframesMobile = wireframesMobileEmbebidosHtml();
     const guardadoTxt = fechaGuardadoTexto(cli);
     root.innerHTML = `
       <div class="jm-landing jm-landing--ficha${modoEdicion ? ' jm-landing--edicion' : ''}" style="--jm-border:${colores.border};--jm-bg:${colores.bg};--jm-text:${colores.text}">
@@ -466,7 +475,7 @@
             </button>
           </div>
         </header>
-        ${modoEdicion ? '<p class="jm-landing__hint-edicion jm-solo-edicion">Imágenes cargadas: agregar, reemplazar, editar título/notas o borrar en los wireframes desktop.</p>' : ''}
+        ${modoEdicion ? '<p class="jm-landing__hint-edicion jm-solo-edicion">Imágenes cargadas: agregar, reemplazar, editar título/notas o borrar en wireframes desktop y mobile.</p>' : ''}
 
         <article class="ficha-doc ficha-doc--jm ficha-doc--wireframes jm-ficha-doc${modoEdicion ? ' ficha-doc--edicion' : ''}">
           <header class="ficha-doc__encabezado" style="border-bottom-color:${colores.border}">
@@ -485,6 +494,7 @@
           </header>
 
           ${wireframes}
+          ${wireframesMobile}
 
           ${blockSeccion('identidad', JM_SECCIONES.identidad.titulo, identidadHtml(cli))}
 
@@ -681,8 +691,9 @@
   document.title = 'Joyas Mercury · Landing cliente';
   const boot = () => {
     try {
-      const ready = window.jmLandingsCarruselReady;
-      if (ready && typeof ready.then === 'function') ready.finally(() => render());
+      const promises = [window.jmLandingsCarruselReady, window.jmLandingsCarruselMobileReady]
+        .filter((p) => p && typeof p.then === 'function');
+      if (promises.length) Promise.all(promises).finally(() => render());
       else render();
     } catch (err) {
       console.error('[jm-landing]', err);

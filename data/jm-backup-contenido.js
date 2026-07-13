@@ -912,7 +912,7 @@ window.jmHtmlWireframesMobile = function jmHtmlWireframesMobile(opts) {
       <span class="ficha-seccion__estado">390px · Fase 2</span>
     </div>
     <p class="ficha-wireframes__intro">7 pantallas de referencia en mobile: Inicio, Esencial, Gold, Deluxe, Carrito, Ayuda y Productos.</p>
-    <p class="ficha-wireframes__atajos"><a href="wireframes/mobile.html">Ver wireframes mobile</a></p>
+    <p class="ficha-wireframes__atajos"><a href="wireframes/mobile.html">Ver wireframes mobile</a> · <a href="interfaces/mockups-coleccion/wireframe-coleccion.html?coleccion=esencial&filtro=circulos">Editar colección mobile</a></p>
     ${cuerpo}
   </section>`;
 };

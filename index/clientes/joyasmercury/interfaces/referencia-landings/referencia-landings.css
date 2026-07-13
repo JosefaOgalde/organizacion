@@ -388,3 +388,78 @@ nav.ref-pagination {
 
 .ref-page { display: none; }
 .ref-page.is-active { display: block; }
+
+/* —— Mobile (390px · wireframes responsive) —— */
+@media (max-width: 900px) {
+  body {
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .ref-topbar,
+  .ref-nav,
+  .ref-section,
+  .ref-hero-home,
+  .ref-hero-col,
+  .ref-cat-circles,
+  .ref-catalog,
+  .ref-pagination--catalog {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .ref-hero-home {
+    min-height: 280px;
+    padding: 2rem 1rem;
+    background-position: center top;
+  }
+
+  .ref-hero-home__title { font-size: 1.65rem; }
+
+  .ref-trust {
+    grid-template-columns: 1fr 1fr;
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .ref-circles-3 {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .ref-products,
+  .ref-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .ref-catalog {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .ref-panel { order: 2; }
+
+  .ref-hero-col__title { font-size: 2.2rem; }
+
+  .ref-cat-circles {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .ref-footer__grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .ref-footer__cols {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .ref-pagination--catalog {
+    padding-bottom: 5rem;
+  }
+}
