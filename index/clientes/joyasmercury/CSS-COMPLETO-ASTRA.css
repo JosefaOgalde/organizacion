@@ -908,7 +908,7 @@
   height: 100% !important;
 }
 
-/* Móvil: imagen ENTERA (contain), sin scale forzado en capas */
+/* Móvil: alto = ratio 1920×600 (sin franjas arriba/abajo) */
 @media (max-width: 921px) {
   .elementor-element.jm-hero-carrusel,
   .e-con:has(.jm-hero-carrusel),
@@ -928,9 +928,10 @@
     max-width: 100% !important;
     margin: 0 !important;
     overflow: hidden !important;
-    background: #f5ece8 !important;
+    background: transparent !important;
   }
 
+  /* 600/1920 = 31.25% del ancho → sin bandas crema */
   .jm-hero-carrusel .n2-ss-slider,
   .jm-hero-carrusel .n2-section-smartslider,
   .jm-hero-carrusel .n2-ss-slider-wrapper-outer,
@@ -939,9 +940,10 @@
   .jm-hero-carrusel .n2-ss-layers-container {
     width: 100% !important;
     max-width: 100% !important;
-    height: 320px !important;
-    min-height: 280px !important;
-    max-height: 360px !important;
+    height: calc(100vw * 600 / 1920) !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 1920 / 600;
     overflow: hidden !important;
   }
 
@@ -952,11 +954,10 @@
     inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: contain !important;
+    object-fit: cover !important;
     object-position: center center !important;
   }
 
-  /* NO mover ni escalar capas — las gestiona Smart Slider */
   .jm-hero-carrusel .n2-ss-layers-container > .n2-ss-layer {
     max-width: 92% !important;
   }
