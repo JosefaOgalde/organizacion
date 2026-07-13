@@ -66,7 +66,7 @@ body[data-shot="1"] .ref-tag { display: none; }
   position: relative; min-height: 420px;
   background:
     linear-gradient(90deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.55) 42%, rgba(255,255,255,0.15) 58%, transparent 72%),
-    url('../../flujo-actual/01-inicio-home.png') center 420px / cover no-repeat;
+    url('01-inicio-referencia.png') center 420px / cover no-repeat;
   display: flex; align-items: center;
   padding: 3rem 4rem;
 }
