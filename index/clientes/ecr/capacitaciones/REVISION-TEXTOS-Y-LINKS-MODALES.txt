@@ -1,0 +1,336 @@
+================================================================================
+ECR CAPACITACIONES — REVISIÓN DE TEXTOS Y LINKS DEL MODAL
+================================================================================
+Archivo para validación editorial: contenido completo de cada modal de
+“Ruta de aprendizaje” por sector (tal como está cargado en el sitio / código).
+
+Instrucciones para quien revise:
+  1) Revisar título, subtítulo, descripción y competencias SENCE.
+  2) Revisar nombre de cada curso y que el link corresponda a ese curso.
+  3) Marcar correcciones (texto o URL) y devolver este archivo anotado.
+
+Fecha de exportación: 2026-07-14
+Fuente técnica: index/clientes/ecr/capacitaciones/modal-ruta-sectores.html
+
+
+================================================================================
+1) RETAIL
+   (clave técnica: retail)
+================================================================================
+
+Título:
+  Retail
+
+Subtítulo:
+  Comercio y ventas
+
+Descripción:
+  Formación orientada al desarrollo progresivo de competencias en atención al
+  cliente, operación de punto de venta y herramientas digitales para equipos de
+  retail. Modalidad asíncrona con acompañamiento.
+
+Competencias SENCE:
+  Competencias SENCE: atención al cliente, ventas, operación comercial.
+
+Ruta de aprendizaje (cursos + links):
+
+  1. Estrategias de servicio al cliente.
+     → https://ecrcapacitacion.cl/cursos/atencion-al-cliente-digital-experiencia-que-fideliza
+
+  2. Técnicas de venta consultiva B2C.
+     → https://ecrcapacitacion.cl/cursos/ventas-consultivas-b2c-como-convertir-mas-clientes
+
+  3. Ventas consultivas B2B.
+     → https://ecrcapacitacion.cl/cursos/ventas-consultivas-b2b
+
+  4. Técnicas de ventas remotas.
+     → https://ecrcapacitacion.cl/cursos/ventas-remotas-efectivas-cierre-y-conversion-online
+
+  5. Técnicas y estrategias para la gestión de negocios.
+     → https://ecrcapacitacion.cl/cursos/gestion-de-negocios-estrategia-y-crecimiento
+
+
+================================================================================
+2) FINANCIERO
+   (clave técnica: financiero)
+================================================================================
+
+Título:
+  Financiero
+
+Subtítulo:
+  Financiera y bancaria
+
+Descripción:
+  Formación orientada al desarrollo progresivo de herramientas digitales para
+  equipos financieros y bancarios. Modalidad asíncrona con acompañamiento y
+  evaluación continua.
+
+Competencias SENCE:
+  Competencias SENCE: herramientas computacionales, análisis de datos, gestión
+  del tiempo.
+
+Ruta de aprendizaje (cursos + links):
+
+  1. Herramientas computacionales básicas de Office.
+     → https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo
+
+  2. Excel Básico
+     → https://ecrcapacitacion.cl/cursos/excel-basico
+
+  3. Excel intermedio
+     → https://ecrcapacitacion.cl/cursos/excel-intermedio
+
+  4. Excel avanzado
+     → https://ecrcapacitacion.cl/cursos/excel-avanzado
+
+  5. Excel macros
+     → https://ecrcapacitacion.cl/cursos/excel-avanzado-dominio-y-optimizacion-de-datos
+
+  6. Power BI (Básico)
+     → https://ecrcapacitacion.cl/cursos/power-bi-basico-2
+
+  7. Power BI (avanzado).
+     → https://ecrcapacitacion.cl/cursos/power-bi-avanzado-2
+
+  8. Gestión del tiempo.
+     → https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal
+
+
+================================================================================
+3) SALUD
+   (clave técnica: salud)
+================================================================================
+
+Título:
+  Salud
+
+Subtítulo:
+  Sector salud y bienestar
+
+Descripción:
+  Capacitaciones para equipos en ambientes laborales saludables, bienestar
+  emocional y competencias de convivencia en el trabajo.
+
+Competencias SENCE:
+  Competencias SENCE: prevención, bienestar, comunicación y trabajo en equipo.
+
+Ruta de aprendizaje (cursos + links):
+
+  1. Ambientes laborales saludables y respetuosos de Ley Karín.
+     → https://ecrcapacitacion.cl/cursos/ley-karin-en-la-empresa-prevencion-y-gestion-del-acoso-laboral
+
+  2. Gestión del tiempo.
+     → https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal
+
+  3. Técnicas de gestión del estrés para el bienestar emocional.
+     → https://ecrcapacitacion.cl/cursos/gestion-del-estres-laboral-bienestar-y-productividad
+
+  4. Resolución de conflictos y negociación.
+     → https://ecrcapacitacion.cl/cursos/gestion-de-conflictos-y-negociacion-liderazgo-en-accion
+
+  5. Trabajo en equipos de alto rendimiento.
+     → https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados
+
+
+================================================================================
+4) TECNOLOGÍA
+   (clave técnica: tecnologia)
+================================================================================
+
+Título:
+  Tecnología
+
+Subtítulo:
+  Transformación digital
+
+Descripción:
+  Rutas de aprendizaje en herramientas digitales, inteligencia artificial y
+  metodologías ágiles para equipos de tecnología.
+
+Competencias SENCE:
+  Competencias SENCE: herramientas digitales, IA aplicada, metodologías ágiles.
+
+Ruta de aprendizaje (cursos + links):
+
+  1. Herramientas computacionales básicas de Office.
+     → https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo
+
+  2. ChatGPT: Herramienta de inteligencia artificial, integrada al entorno laboral.
+     → https://ecrcapacitacion.cl/cursos/productividad-con-chatgpt-aplicaciones-reales-en-el-trabajo
+
+  3. Inteligencia artificial para la productividad
+     → https://ecrcapacitacion.cl/cursos/inteligencia-artificial-aplicada
+
+  4. Scrum.
+     → https://ecrcapacitacion.cl/cursos/scrum-en-accion-gestion-agil-de-equipos-y-proyectos
+
+  5. Metodologías Ágiles.
+     → https://ecrcapacitacion.cl/cursos/scrum-en-accion-gestion-agil-de-equipos-y-proyectos
+     (Nota: mismo link que Scrum, según planilla entregada.)
+
+
+================================================================================
+5) GESTIÓN
+   (clave técnica: gestion)
+================================================================================
+
+Título:
+  Gestión
+
+Subtítulo:
+  Liderazgo y administración
+
+Descripción:
+  Desarrollo de competencias directivas, planificación y gestión de equipos
+  para mandos medios y gerencias.
+
+Competencias SENCE:
+  Competencias SENCE: liderazgo, planificación, comunicación gerencial.
+
+Ruta de aprendizaje (cursos + links):
+
+  1. Contabilidad básica.
+     → https://ecrcapacitacion.cl/cursos/contabilidad-basica-control-financiero-para-el-trabajo
+
+  2. Técnicas y estrategias para la gestión de un negocio
+     → https://ecrcapacitacion.cl/cursos/gestion-de-negocios-estrategia-y-crecimiento
+
+  3. Liderazgo efectivo.
+     → https://ecrcapacitacion.cl/cursos/liderazgo-colaborativo-gestion-de-equipos-efectivos
+
+  4. Comunicación efectiva.
+     → https://ecrcapacitacion.cl/cursos/comunicacion-efectiva-en-el-trabajo
+
+  5. Trabajo en equipos de alto rendimiento.
+     → https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados
+
+
+================================================================================
+6) LOGÍSTICA
+   (clave técnica: logistica)
+================================================================================
+
+Título:
+  Logística
+
+Subtítulo:
+  Cadena de suministro
+
+Descripción:
+  Formación en operaciones logísticas, metodología 5S y competencias de equipo
+  para supply chain.
+
+Competencias SENCE:
+  Competencias SENCE: logística, productividad, liderazgo operativo.
+
+Ruta de aprendizaje (cursos + links):
+
+  1. Logística y distribución en almacenes y bodegas con método 5S.
+     → https://ecrcapacitacion.cl/cursos/logistica-eficiente-implementacion-de-metodologia-5s
+
+  2. Gestión del tiempo.
+     → https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal
+
+  3. Trabajo en equipos de alto rendimiento.
+     → https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados
+
+  4. Liderazgo efectivo.
+     → https://ecrcapacitacion.cl/cursos/liderazgo-colaborativo-gestion-de-equipos-efectivos
+
+
+================================================================================
+7) DATOS
+   (clave técnica: datos)
+================================================================================
+
+Título:
+  Datos
+
+Subtítulo:
+  Analítica e inteligencia artificial
+
+Descripción:
+  Rutas en análisis de datos, visualización e inteligencia artificial aplicada
+  a la toma de decisiones.
+
+Competencias SENCE:
+  Competencias SENCE: análisis de datos, Power BI, pensamiento analítico.
+
+Ruta de aprendizaje (cursos + links):
+
+  1. Herramientas computacionales básicas de Office.
+     → https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo
+
+  2. Excel Básico
+     → https://ecrcapacitacion.cl/cursos/excel-basico
+
+  3. Excel intermedio
+     → https://ecrcapacitacion.cl/cursos/excel-intermedio
+
+  4. Excel avanzado
+     → https://ecrcapacitacion.cl/cursos/excel-avanzado
+
+  5. Excel macros
+     → https://ecrcapacitacion.cl/cursos/excel-avanzado-dominio-y-optimizacion-de-datos
+
+  6. Power BI (Básico)
+     → https://ecrcapacitacion.cl/cursos/power-bi-basico-2
+
+  7. Power BI (avanzado).
+     → https://ecrcapacitacion.cl/cursos/power-bi-avanzado-2
+
+  8. Inteligencia artificial para la productividad.
+     → https://ecrcapacitacion.cl/cursos/inteligencia-artificial-aplicada
+
+  9. ChatGPT: Herramienta de Inteligencia Artificial, integrada al entorno laboral.
+     → https://ecrcapacitacion.cl/cursos/productividad-con-chatgpt-aplicaciones-reales-en-el-trabajo
+
+
+================================================================================
+8) SOLUCIONES IN COMPANY
+   (clave técnica: soluciones-in-company)
+================================================================================
+
+Título:
+  Soluciones In Company
+
+Subtítulo:
+  Programas a medida
+
+Descripción:
+  Diseñamos rutas de aprendizaje personalizadas según las necesidades de tu
+  organización, con diagnóstico previo y seguimiento de resultados.
+
+Competencias SENCE:
+  Competencias SENCE: según diagnóstico y plan formativo acordado.
+
+Ruta de aprendizaje (cursos + links):
+  (Sin planilla de cursos; por ahora los botones apuntan a contacto.)
+
+  1. Diagnóstico de brechas de competencias.
+     → https://ecrcapacitacion.cl/contacto/
+
+  2. Diseño de programa formativo a medida.
+     → https://ecrcapacitacion.cl/contacto/
+
+  3. Implementación y seguimiento.
+     → https://ecrcapacitacion.cl/contacto/
+
+  4. Evaluación de impacto.
+     → https://ecrcapacitacion.cl/contacto/
+
+
+================================================================================
+FIN DEL DOCUMENTO DE REVISIÓN
+================================================================================
+Espacio para comentarios del revisor:
+
+Nombre: _______________________________
+Fecha: ________________________________
+OK general: Sí / No (con observaciones)
+
+Observaciones:
+_______________________________________________________________________________
+_______________________________________________________________________________
+_______________________________________________________________________________
