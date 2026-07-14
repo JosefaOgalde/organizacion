@@ -212,14 +212,14 @@ window.CLIENTES_PORTAL = [
     abrev: 'IMP',
     tipo: 'Freelance',
     color: { border: '#d4b06a', bg: '#faf6eb', text: '#7a5c28' },
-    agente: 'Diseño e impresión',
-    resumen: 'Briefs de impresión, piezas gráficas, mockups y formatos listos para producción.',
+    agente: 'Impresión 3D + ecommerce',
+    resumen: 'Emprendimiento 3D (@impresoreando). Panel socios 50/50: gastos, ventas, luz, costos de producto y plan paid.',
     landing: {
       tagline: 'Ideas que se imprimen',
-      entregables: ['Piezas para impresión', 'Mockups', 'Identidad y formatos', 'Archivos listos para producción'],
+      entregables: ['Panel financiero 50/50', 'Costos de producción', 'Plan paid bajo presupuesto', 'Contenido redes'],
       secciones: [
-        { titulo: 'Diseño gráfico', texto: 'Piezas visuales, identidad y materiales según cada brief.' },
-        { titulo: 'Producción', texto: 'Formatos, sangrados y archivos preparados para impresión.' }
+        { titulo: 'Panel socios', texto: 'Gastos, ventas, operación y bitácora compartida en /panel/.' },
+        { titulo: 'Producción', texto: 'Filamento, horas de impresión, pintado, metal de llaveros y bolsas.' }
       ]
     }
   },

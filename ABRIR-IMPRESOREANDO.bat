@@ -2,7 +2,7 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 echo.
-echo  === Abrir Impresoreando — servidor + portal ===
+echo  === Abrir Impresoreando — panel socios ===
 echo  Rama: cursor/impresoreando-6a09
 echo.
 
@@ -28,17 +28,19 @@ if errorlevel 1 (
   exit /b 1
 )
 
+start "" "http://localhost:3000/index/clientes/impresoreando/panel/"
+timeout /t 1 /nobreak >nul
 start "" "http://localhost:3000/index/clientes/impresoreando/"
 timeout /t 1 /nobreak >nul
 start "" "http://localhost:3000/index/clientes/"
-timeout /t 1 /nobreak >nul
-start "" "http://localhost:3000/index.html?disco=1"
 
 echo.
-echo  Impresoreando: http://localhost:3000/index/clientes/impresoreando/
-echo  Portal:        http://localhost:3000/index/clientes/
-echo  Organizador:   http://localhost:3000/index.html?disco=1
+echo  PANEL SOCIOS: http://localhost:3000/index/clientes/impresoreando/panel/
+echo  Landing:      http://localhost:3000/index/clientes/impresoreando/
+echo  Portal:       http://localhost:3000/index/clientes/
 echo.
 echo  Color unico: ambar (#d4b06a)
+echo  Para compartir en WiFi con tu socio:
+echo    set HOST=0.0.0.0 ^&^& node scripts\organizacion-server.js
 echo.
 pause

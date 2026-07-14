@@ -16,6 +16,8 @@ const ROOT = path.join(__dirname, '..');
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '127.0.0.1';
 const LIVE_FILE = path.join(ROOT, 'data', 'organizacion-live.json');
+const IMP_LIVE_FILE = path.join(ROOT, 'data', 'impresoreando-live.json');
+const IMP_SEED_FILE = path.join(ROOT, 'data', 'impresoreando-seed.json');
 const MAX_BODY_BYTES = Number(process.env.MAX_BODY_BYTES) || 12 * 1024 * 1024;
 const API_TOKEN = (process.env.ORGANIZACION_TOKEN || '').trim();
 
@@ -44,6 +46,7 @@ const STATIC_DENY = [
   /^backend(?:\/|$)/i,
   /^node_modules(?:\/|$)/i,
   /^data\/organizacion-live\.json$/i,
+  /^data\/impresoreando-live\.json$/i,
   /\.log$/i,
   /^GIT_RESULT\.txt$/i,
   /^git-log\.txt$/i,
@@ -219,11 +222,66 @@ function handleApiConfig(res) {
   }), 'application/json');
 }
 
+function ensureImpresoreandoLive() {
+  if (fs.existsSync(IMP_LIVE_FILE)) return;
+  if (!fs.existsSync(IMP_SEED_FILE)) {
+    throw new Error('Falta data/impresoreando-seed.json');
+  }
+  fs.mkdirSync(path.dirname(IMP_LIVE_FILE), { recursive: true });
+  fs.copyFileSync(IMP_SEED_FILE, IMP_LIVE_FILE);
+  console.log('[api] Seed Impresoreando → data/impresoreando-live.json');
+}
+
+function handleApiImpresoreando(req, res) {
+  if (!checkApiAuth(req, res)) return;
+
+  if (req.method === 'GET') {
+    try {
+      ensureImpresoreandoLive();
+    } catch (e) {
+      return send(res, 500, JSON.stringify({ error: String(e.message || e) }), 'application/json');
+    }
+    const body = fs.readFileSync(IMP_LIVE_FILE, 'utf8');
+    return send(res, 200, body, 'application/json');
+  }
+
+  if (req.method === 'POST') {
+    return readBody(req).then((raw) => {
+      let obj;
+      try {
+        obj = JSON.parse(raw);
+      } catch {
+        return send(res, 400, JSON.stringify({ error: 'JSON inválido' }), 'application/json');
+      }
+      if (!obj || typeof obj !== 'object' || !Array.isArray(obj.gastos)) {
+        return send(res, 400, JSON.stringify({ error: 'faltan gastos[] (estructura Impresoreando)' }), 'application/json');
+      }
+      if (!obj.meta) obj.meta = {};
+      obj.meta.actualizado = new Date().toISOString();
+      fs.mkdirSync(path.dirname(IMP_LIVE_FILE), { recursive: true });
+      fs.writeFileSync(IMP_LIVE_FILE, JSON.stringify(obj, null, 2), 'utf8');
+      console.log('[api] Guardado Impresoreando', IMP_LIVE_FILE, `(${obj.gastos.length} gastos, ${(obj.ventas || []).length} ventas)`);
+      return send(res, 200, JSON.stringify({ ok: true, path: 'data/impresoreando-live.json', actualizado: obj.meta.actualizado }), 'application/json');
+    }).catch((e) => {
+      if (e && e.message === 'BODY_TOO_LARGE') {
+        return send(res, 413, JSON.stringify({ error: 'cuerpo demasiado grande' }), 'application/json');
+      }
+      return send(res, 500, String(e), 'text/plain');
+    });
+  }
+
+  send(res, 405, 'Método no permitido');
+}
+
 const server = http.createServer((req, res) => {
   const url = req.url || '/';
 
   if (url.startsWith('/api/organizacion-config')) {
     return handleApiConfig(res);
+  }
+
+  if (url.startsWith('/api/impresoreando')) {
+    return handleApiImpresoreando(req, res);
   }
 
   if (url.startsWith('/api/organizacion')) {
@@ -251,6 +309,8 @@ server.listen(PORT, RUNTIME_HOST, () => {
   console.log(`  Organizador: http://localhost:${PORT}/index.html`);
   console.log(`  Portal clientes: http://localhost:${PORT}/index/clientes/`);
   console.log(`  Guardado live: data/organizacion-live.json (solo vía API)`);
+  console.log(`  Impresoreando: http://localhost:${PORT}/index/clientes/impresoreando/panel/`);
+  console.log(`  API Impresoreando: /api/impresoreando (GET/POST)`);
   if (RUNTIME_TOKEN) {
     console.log('  API protegida con ORGANIZACION_TOKEN (.env)');
   } else {

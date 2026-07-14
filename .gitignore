@@ -15,6 +15,8 @@ backend/
 # Datos personales — NO subir a GitHub (usar ↓ Respaldo en carpeta local segura)
 data/organizacion-live.json
 data/organizacion-respaldo-*.json
+data/impresoreando-live.json
 
 # Excepción: plantilla vacía sin PII (sí puede ir al repo)
 !data/organizacion-respaldo-ejemplo.json
+!data/impresoreando-seed.json
