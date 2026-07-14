@@ -205,6 +205,25 @@ window.CLIENTES_PORTAL = [
     ]
   },
   {
+    archivo: 'impresoreando/index.html',
+    id: 'cli-impresoreando',
+    slug: 'impresoreando',
+    nombre: 'Impresoreando',
+    abrev: 'IMP',
+    tipo: 'Freelance',
+    color: { border: '#d4b06a', bg: '#faf6eb', text: '#7a5c28' },
+    agente: 'Diseño e impresión',
+    resumen: 'Briefs de impresión, piezas gráficas, mockups y formatos listos para producción.',
+    landing: {
+      tagline: 'Ideas que se imprimen',
+      entregables: ['Piezas para impresión', 'Mockups', 'Identidad y formatos', 'Archivos listos para producción'],
+      secciones: [
+        { titulo: 'Diseño gráfico', texto: 'Piezas visuales, identidad y materiales según cada brief.' },
+        { titulo: 'Producción', texto: 'Formatos, sangrados y archivos preparados para impresión.' }
+      ]
+    }
+  },
+  {
     archivo: 'herramientas/index.html',
     id: 'cli-herramientas',
     slug: 'herramientas',
