@@ -11,6 +11,7 @@ Instrucciones para quien revise:
 
 Fecha de actualización textos: 2026-07-15
 Fuente textos: Texto nuevo Rutas de Aprendizaje.docx
+Convención nombres de curso: sin punto final; niveles como «Nombre - Nivel».
 Fuente técnica: index/clientes/ecr/capacitaciones/modal-ruta-sectores.html
 
 
@@ -36,19 +37,19 @@ Competencias SENCE:
 
 Ruta de aprendizaje (cursos + links):
 
-  1. Estrategias de servicio al cliente.
+  1. Estrategias de servicio al cliente
      → https://ecrcapacitacion.cl/cursos/atencion-al-cliente-digital-experiencia-que-fideliza
 
-  2. Técnicas de venta consultiva B2C.
+  2. Ventas consultivas - B2C
      → https://ecrcapacitacion.cl/cursos/ventas-consultivas-b2c-como-convertir-mas-clientes
 
-  3. Ventas consultivas B2B.
+  3. Ventas consultivas - B2B
      → https://ecrcapacitacion.cl/cursos/ventas-consultivas-b2b
 
-  4. Técnicas de ventas remotas.
+  4. Ventas remotas
      → https://ecrcapacitacion.cl/cursos/ventas-remotas-efectivas-cierre-y-conversion-online
 
-  5. Técnicas y estrategias para la gestión de negocios.
+  5. Gestión de negocios
      → https://ecrcapacitacion.cl/cursos/gestion-de-negocios-estrategia-y-crecimiento
 
 
@@ -74,28 +75,28 @@ Competencias SENCE:
 
 Ruta de aprendizaje (cursos + links):
 
-  1. Herramientas computacionales básicas de Office.
+  1. Office - Básico
      → https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo
 
-  2. Excel Básico
+  2. Excel - Básico
      → https://ecrcapacitacion.cl/cursos/excel-basico
 
-  3. Excel intermedio
+  3. Excel - Intermedio
      → https://ecrcapacitacion.cl/cursos/excel-intermedio
 
-  4. Excel avanzado
+  4. Excel - Avanzado
      → https://ecrcapacitacion.cl/cursos/excel-avanzado
 
-  5. Excel macros
+  5. Excel - Macros
      → https://ecrcapacitacion.cl/cursos/excel-avanzado-dominio-y-optimizacion-de-datos
 
-  6. Power BI (Básico)
+  6. Power BI - Básico
      → https://ecrcapacitacion.cl/cursos/power-bi-basico-2
 
-  7. Power BI (avanzado).
+  7. Power BI - Avanzado
      → https://ecrcapacitacion.cl/cursos/power-bi-avanzado-2
 
-  8. Gestión del tiempo.
+  8. Gestión del tiempo
      → https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal
 
 
@@ -120,19 +121,19 @@ Competencias SENCE:
 
 Ruta de aprendizaje (cursos + links):
 
-  1. Ambientes laborales saludables y respetuosos de Ley Karín.
+  1. Ley Karín - Ambientes laborales saludables
      → https://ecrcapacitacion.cl/cursos/ley-karin-en-la-empresa-prevencion-y-gestion-del-acoso-laboral
 
-  2. Gestión del tiempo.
+  2. Gestión del tiempo
      → https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal
 
-  3. Técnicas de gestión del estrés para el bienestar emocional.
+  3. Gestión del estrés
      → https://ecrcapacitacion.cl/cursos/gestion-del-estres-laboral-bienestar-y-productividad
 
-  4. Resolución de conflictos y negociación.
+  4. Resolución de conflictos y negociación
      → https://ecrcapacitacion.cl/cursos/gestion-de-conflictos-y-negociacion-liderazgo-en-accion
 
-  5. Trabajo en equipos de alto rendimiento.
+  5. Equipos de alto rendimiento
      → https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados
 
 
@@ -157,19 +158,19 @@ Competencias SENCE:
 
 Ruta de aprendizaje (cursos + links):
 
-  1. Herramientas computacionales básicas de Office.
+  1. Office - Básico
      → https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo
 
-  2. ChatGPT: Herramienta de inteligencia artificial, integrada al entorno laboral.
+  2. ChatGPT - Productividad laboral
      → https://ecrcapacitacion.cl/cursos/productividad-con-chatgpt-aplicaciones-reales-en-el-trabajo
 
-  3. Inteligencia artificial para la productividad
+  3. Inteligencia artificial - Productividad
      → https://ecrcapacitacion.cl/cursos/inteligencia-artificial-aplicada
 
-  4. Scrum.
+  4. Scrum
      → https://ecrcapacitacion.cl/cursos/scrum-en-accion-gestion-agil-de-equipos-y-proyectos
 
-  5. Metodologías Ágiles.
+  5. Metodologías ágiles
      → https://ecrcapacitacion.cl/cursos/scrum-en-accion-gestion-agil-de-equipos-y-proyectos
      (Nota: mismo link que Scrum, según planilla entregada.)
 
@@ -195,19 +196,19 @@ Competencias SENCE:
 
 Ruta de aprendizaje (cursos + links):
 
-  1. Contabilidad básica.
+  1. Contabilidad - Básica
      → https://ecrcapacitacion.cl/cursos/contabilidad-basica-control-financiero-para-el-trabajo
 
-  2. Técnicas y estrategias para la gestión de un negocio
+  2. Gestión de negocios
      → https://ecrcapacitacion.cl/cursos/gestion-de-negocios-estrategia-y-crecimiento
 
-  3. Liderazgo efectivo.
+  3. Liderazgo efectivo
      → https://ecrcapacitacion.cl/cursos/liderazgo-colaborativo-gestion-de-equipos-efectivos
 
-  4. Comunicación efectiva.
+  4. Comunicación efectiva
      → https://ecrcapacitacion.cl/cursos/comunicacion-efectiva-en-el-trabajo
 
-  5. Trabajo en equipos de alto rendimiento.
+  5. Equipos de alto rendimiento
      → https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados
 
 
@@ -231,16 +232,16 @@ Competencias SENCE:
 
 Ruta de aprendizaje (cursos + links):
 
-  1. Logística y distribución en almacenes y bodegas con método 5S.
+  1. Logística - Metodología 5S
      → https://ecrcapacitacion.cl/cursos/logistica-eficiente-implementacion-de-metodologia-5s
 
-  2. Gestión del tiempo.
+  2. Gestión del tiempo
      → https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal
 
-  3. Trabajo en equipos de alto rendimiento.
+  3. Equipos de alto rendimiento
      → https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados
 
-  4. Liderazgo efectivo.
+  4. Liderazgo efectivo
      → https://ecrcapacitacion.cl/cursos/liderazgo-colaborativo-gestion-de-equipos-efectivos
 
 
@@ -265,31 +266,31 @@ Competencias SENCE:
 
 Ruta de aprendizaje (cursos + links):
 
-  1. Herramientas computacionales básicas de Office.
+  1. Office - Básico
      → https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo
 
-  2. Excel Básico
+  2. Excel - Básico
      → https://ecrcapacitacion.cl/cursos/excel-basico
 
-  3. Excel intermedio
+  3. Excel - Intermedio
      → https://ecrcapacitacion.cl/cursos/excel-intermedio
 
-  4. Excel avanzado
+  4. Excel - Avanzado
      → https://ecrcapacitacion.cl/cursos/excel-avanzado
 
-  5. Excel macros
+  5. Excel - Macros
      → https://ecrcapacitacion.cl/cursos/excel-avanzado-dominio-y-optimizacion-de-datos
 
-  6. Power BI (Básico)
+  6. Power BI - Básico
      → https://ecrcapacitacion.cl/cursos/power-bi-basico-2
 
-  7. Power BI (avanzado).
+  7. Power BI - Avanzado
      → https://ecrcapacitacion.cl/cursos/power-bi-avanzado-2
 
-  8. Inteligencia artificial para la productividad.
+  8. Inteligencia artificial - Productividad
      → https://ecrcapacitacion.cl/cursos/inteligencia-artificial-aplicada
 
-  9. ChatGPT: Herramienta de Inteligencia Artificial, integrada al entorno laboral.
+  9. ChatGPT - Productividad laboral
      → https://ecrcapacitacion.cl/cursos/productividad-con-chatgpt-aplicaciones-reales-en-el-trabajo
 
 
@@ -315,16 +316,16 @@ Competencias SENCE:
 Ruta de aprendizaje (cursos + links):
   (Sin planilla de cursos; por ahora los botones apuntan a contacto.)
 
-  1. Diagnóstico de brechas de competencias.
+  1. Diagnóstico de brechas de competencias
      → https://ecrcapacitacion.cl/contacto/
 
-  2. Diseño de programa formativo a medida.
+  2. Diseño de programa formativo a medida
      → https://ecrcapacitacion.cl/contacto/
 
-  3. Implementación y seguimiento.
+  3. Implementación y seguimiento
      → https://ecrcapacitacion.cl/contacto/
 
-  4. Evaluación de impacto.
+  4. Evaluación de impacto
      → https://ecrcapacitacion.cl/contacto/
 
 
