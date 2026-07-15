@@ -38,17 +38,19 @@ La landing también guarda al generar (API `/api/ecr-portada-historial` + localS
 
 ---
 
-## Bloque BASE (siempre)
+## Bloque BASE (siempre; sin flags Midjourney)
 
 ```
-ONLY a LinkedIn newsletter cover BACKGROUND image (not a finished cover): Editorial illustration background for ECR Capacitacion brand system, empty reserved space for later text overlay in Canva, NO text, NO logos, NO letters, NO watermarks, NO typography layout, modern corporate flat vector illustration with depth, stylized faceless characters, clean geometric shapes, high-contrast complementary palette of warm orange/amber (#E85D04 family) and deep teal/navy blue, generous negative space for later headline overlay, professional Chilean corporate learning mood, polished editorial composition, wide landscape --ar 1.91:1 --style raw --v 6.1 --no text, typography, letters, logo, watermark, signage, UI words, brand marks
+ONLY a LinkedIn newsletter cover BACKGROUND image (not a finished cover): Editorial illustration background for ECR Capacitacion brand system, empty reserved space for later text overlay in Canva, NO text, NO logos, NO letters, NO watermarks, NO typography layout, modern corporate flat vector illustration with depth, stylized faceless characters, clean geometric shapes, high-contrast complementary palette of warm orange/amber (#E85D04 family) and deep teal/navy blue, generous negative space for later headline overlay, professional Chilean corporate learning mood, polished editorial composition, wide landscape
 ```
 
 ## Prompt final
 
-Se arma solo cuando el usuario entrega el **nombre del artículo**:
+Se arman **3 opciones** cuando el usuario entrega el **nombre del artículo**:
 
-`BASE` + escena del mundo visual + concepto del título + flags.
+`BASE` + escena del mundo visual + concepto del título  
+
+**Sin** `--ar` / `--style` / `--v` / `--no …`.
 
 El resultado de Midjourney es **solo el fondo**; el armado final de portada (título, subtítulo, branding) es en Canva.
 
@@ -57,8 +59,8 @@ El resultado de Midjourney es **solo el fondo**; el armado final de portada (tí
 ## Checklist antes de generar
 
 - [ ] Nombre del artículo confirmado por el usuario  
-- [ ] Mundo visual elegido según tema  
+- [ ] 3 opciones distintas  
 - [ ] Prompt pide **solo fondo** (no portada final)  
+- [ ] Sin flags Midjourney al final del prompt  
 - [ ] Sin texto / sin logos en el prompt  
-- [ ] `--ar 1.91:1`  
 - [ ] Espacio negativo para título en Canva después  

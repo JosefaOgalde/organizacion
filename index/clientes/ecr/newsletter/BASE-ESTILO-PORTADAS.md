@@ -71,7 +71,7 @@ Esta base se armó a partir del set de portadas de referencia (retail, industria
 ## 3) Bloque BASE para Midjourney (pegar siempre)
 
 ```
-ONLY a LinkedIn newsletter cover BACKGROUND image (not a finished cover): Editorial illustration background for ECR Capacitacion brand system, empty reserved space for later text overlay in Canva, NO text, NO logos, NO letters, NO watermarks, NO typography layout, modern corporate flat vector illustration with depth, stylized faceless characters, clean geometric shapes, high-contrast complementary palette of warm orange/amber (#E85D04 family) and deep teal/navy blue, generous negative space for later headline overlay, professional Chilean corporate learning mood, polished editorial composition, wide landscape --ar 1.91:1 --style raw --v 6.1 --no text, typography, letters, logo, watermark, signage, UI words, brand marks
+ONLY a LinkedIn newsletter cover BACKGROUND image (not a finished cover): Editorial illustration background for ECR Capacitacion brand system, empty reserved space for later text overlay in Canva, NO text, NO logos, NO letters, NO watermarks, NO typography layout, modern corporate flat vector illustration with depth, stylized faceless characters, clean geometric shapes, high-contrast complementary palette of warm orange/amber (#E85D04 family) and deep teal/navy blue, generous negative space for later headline overlay, professional Chilean corporate learning mood, polished editorial composition, wide landscape
 ```
 
 ---
@@ -81,9 +81,9 @@ ONLY a LinkedIn newsletter cover BACKGROUND image (not a finished cover): Editor
 Cuando llegue la temática del newsletter:
 
 1. Se elige **1 mundo visual** de la tabla (A–P) que mejor calce con el tema.  
-2. Se une: **bloque BASE** + **escena del mundo** + **concepto de la temática**.  
-3. Se confirma que no haya texto/logos.  
-4. Se entrega el prompt final listo para Midjourney.
+2. Se une: **bloque BASE** + **escena del mundo** + **concepto de la temática** (sin flags).  
+3. Se confirma que no haya texto/logos ni `--ar`/`--style`/`--v`/`--no`.  
+4. Se entregan **3 opciones** listas para Midjourney.
 
 ---
 
