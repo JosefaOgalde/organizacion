@@ -20,5 +20,11 @@ Información **guardada** en este repositorio (rama `cursor/ecr-6a09`).
 ## Estado
 
 - Links de cursos verificados (HTTP 200) el 2026-07-13.
-- Textos exportados para revisión editorial en `REVISION-TEXTOS-Y-LINKS-MODALES.txt`.
+- **Descripciones actualizadas** 2026-07-15 con `Texto nuevo Rutas de Aprendizaje.docx`.
+- Textos en `REVISION-TEXTOS-Y-LINKS-MODALES.txt` + `ECR_SECTORES` en `modal-ruta-sectores.html`.
 - Ajustes UI: modal centrado en mobile, botones celeste + hover, espacio bajo título.
+
+## Pegar en Elementor
+
+Reemplazar el HTML personalizado del modal por el contenido completo de
+`modal-ruta-sectores.html` (incluye CSS + `ECR_SECTORES` + script).
