@@ -34,7 +34,7 @@ window.CLIENTES_PORTAL = [
       entregables: ['2 newsletters al mes', 'Copys feed y carrusel', 'Artículos de blog', 'Secciones Elementor'],
       secciones: [
         { titulo: 'Newsletter LinkedIn', texto: 'Invitación, carrusel y video del artículo cada ciclo.' },
-        { titulo: 'Portada Midjourney', texto: 'Prompt solo para la imagen de fondo de la portada (sin textos ni logos). Título se monta después en Canva.' },
+        { titulo: 'Portada Midjourney', texto: 'Prompt solo para fondo de portada. Cada resultado se guarda en historial-portadas.json / portadas-guardadas/.' },
         { titulo: 'Rutas de aprendizaje', texto: 'Finalizado — modal por sector con textos y links validados (HTML Elementor listo).' },
         { titulo: 'Blog', texto: 'Propuestas, maquetación y publicación en WordPress.' }
       ]

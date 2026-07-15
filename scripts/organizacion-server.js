@@ -16,6 +16,9 @@ const ROOT = path.join(__dirname, '..');
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '127.0.0.1';
 const LIVE_FILE = path.join(ROOT, 'data', 'organizacion-live.json');
+const ECR_PORTADA_HISTORIAL = path.join(ROOT, 'index', 'clientes', 'ecr', 'newsletter', 'historial-portadas.json');
+const ECR_PORTADA_MD = path.join(ROOT, 'index', 'clientes', 'ecr', 'newsletter', 'HISTORIAL-PORTADAS.md');
+const ECR_PORTADA_DIR = path.join(ROOT, 'index', 'clientes', 'ecr', 'newsletter', 'portadas-guardadas');
 const MAX_BODY_BYTES = Number(process.env.MAX_BODY_BYTES) || 12 * 1024 * 1024;
 const API_TOKEN = (process.env.ORGANIZACION_TOKEN || '').trim();
 
@@ -174,6 +177,141 @@ function readBody(req) {
   });
 }
 
+function slugPortada(titulo) {
+  return String(titulo || 'portada')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60) || 'portada';
+}
+
+function leerHistorialPortada() {
+  if (!fs.existsSync(ECR_PORTADA_HISTORIAL)) {
+    return { version: 1, updatedAt: null, items: [] };
+  }
+  try {
+    return JSON.parse(fs.readFileSync(ECR_PORTADA_HISTORIAL, 'utf8'));
+  } catch {
+    return { version: 1, updatedAt: null, items: [] };
+  }
+}
+
+function escribirIndiceMarkdown(data) {
+  const lines = [
+    '# Historial de portadas Midjourney (solo fondo)',
+    '',
+    'Cada prompt/resultado entregado o generado queda guardado aquí y en',
+    '[`historial-portadas.json`](./historial-portadas.json).',
+    'Archivos individuales: carpeta [`portadas-guardadas/`](./portadas-guardadas/).',
+    '',
+    '**Regla:** Midjourney = **solo imagen de fondo**. Tipografía/logo → Canva.',
+    '',
+  ];
+  const items = Array.isArray(data.items) ? data.items.slice().reverse() : [];
+  for (const it of items) {
+    lines.push(`## ${it.titulo || it.id}`);
+    lines.push('');
+    lines.push(`- **Fecha:** ${it.fecha || ''}`);
+    lines.push(`- **Mundo:** ${it.mundoId || ''} — ${it.mundoNombre || ''}`);
+    lines.push(`- **Origen:** ${it.origen || 'ui'}`);
+    if (it.archivoMarkdown) {
+      lines.push(`- **Detalle:** [${it.archivoMarkdown}](./${it.archivoMarkdown})`);
+    }
+    lines.push('');
+  }
+  fs.writeFileSync(ECR_PORTADA_MD, lines.join('\n') + '\n', 'utf8');
+}
+
+function guardarItemPortada(item) {
+  const data = leerHistorialPortada();
+  data.version = 1;
+  data.items = Array.isArray(data.items) ? data.items : [];
+  data.nota = 'Historial de prompts Midjourney — SOLO imagen de fondo de portada. Cada resultado entregado o generado queda aquí.';
+
+  const id = item.id || `portada-${slugPortada(item.titulo)}-${Date.now().toString(36)}`;
+  const fecha = item.fecha || new Date().toISOString().slice(0, 10);
+  const slug = slugPortada(item.titulo || id);
+  const mdRel = `portadas-guardadas/${slug}.md`;
+  const mdAbs = path.join(ROOT, 'index', 'clientes', 'ecr', 'newsletter', mdRel);
+
+  const entry = {
+    id,
+    fecha,
+    titulo: String(item.titulo || '').trim(),
+    mundoId: item.mundoId || '',
+    mundoNombre: item.mundoNombre || '',
+    prompt: String(item.prompt || '').trim(),
+    notas: item.notas || 'Solo fondo de portada.',
+    origen: item.origen || 'ui',
+    archivoMarkdown: mdRel,
+  };
+
+  const idx = data.items.findIndex((x) => x.id === id || (x.titulo && x.titulo === entry.titulo && x.prompt === entry.prompt));
+  if (idx >= 0) data.items[idx] = { ...data.items[idx], ...entry };
+  else data.items.push(entry);
+
+  data.updatedAt = new Date().toISOString();
+
+  fs.mkdirSync(ECR_PORTADA_DIR, { recursive: true });
+  const mdBody = [
+    `# Portada guardada — ${entry.titulo}`,
+    '',
+    '**Alcance:** solo imagen de **fondo** (sin tipografía ni logo).',
+    `**Artículo:** ${entry.titulo}`,
+    `**Fecha:** ${entry.fecha}`,
+    `**Mundo visual:** ${entry.mundoId} — ${entry.mundoNombre}`,
+    `**Origen:** ${entry.origen}`,
+    '',
+    '## Prompt Midjourney',
+    '',
+    '```',
+    entry.prompt,
+    '```',
+    '',
+    '## Notas',
+    '',
+    entry.notas,
+    '',
+  ].join('\n');
+  fs.writeFileSync(mdAbs, mdBody, 'utf8');
+  fs.writeFileSync(ECR_PORTADA_HISTORIAL, JSON.stringify(data, null, 2) + '\n', 'utf8');
+  escribirIndiceMarkdown(data);
+  return entry;
+}
+
+function handleApiEcrPortadaHistorial(req, res) {
+  if (req.method === 'GET') {
+    const data = leerHistorialPortada();
+    return send(res, 200, JSON.stringify(data), 'application/json');
+  }
+
+  if (req.method === 'POST') {
+    return readBody(req).then((raw) => {
+      let obj;
+      try {
+        obj = JSON.parse(raw);
+      } catch {
+        return send(res, 400, JSON.stringify({ error: 'JSON inválido' }), 'application/json');
+      }
+      if (!obj || !String(obj.titulo || '').trim() || !String(obj.prompt || '').trim()) {
+        return send(res, 400, JSON.stringify({ error: 'faltan titulo o prompt' }), 'application/json');
+      }
+      const saved = guardarItemPortada(obj);
+      console.log('[api] Portada guardada', saved.id, saved.titulo);
+      return send(res, 200, JSON.stringify({ ok: true, item: saved }), 'application/json');
+    }).catch((e) => {
+      if (e && e.message === 'BODY_TOO_LARGE') {
+        return send(res, 413, JSON.stringify({ error: 'cuerpo demasiado grande' }), 'application/json');
+      }
+      return send(res, 500, String(e), 'text/plain');
+    });
+  }
+
+  send(res, 405, 'Método no permitido');
+}
+
 function handleApiOrganizacion(req, res) {
   if (!checkApiAuth(req, res)) return;
 
@@ -224,6 +362,10 @@ const server = http.createServer((req, res) => {
 
   if (url.startsWith('/api/organizacion-config')) {
     return handleApiConfig(res);
+  }
+
+  if (url.startsWith('/api/ecr-portada-historial')) {
+    return handleApiEcrPortadaHistorial(req, res);
   }
 
   if (url.startsWith('/api/organizacion')) {

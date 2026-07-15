@@ -56,6 +56,99 @@
     { re: /seguridad|trazabilidad|protecci[oó]n/i, id: 'P' }
   ];
 
+  const LS_KEY = 'ecr-portada-historial-v1';
+  const HISTORIAL_API = '/api/ecr-portada-historial';
+  const HISTORIAL_JSON = 'newsletter/historial-portadas.json';
+
+  function slugSafe(titulo) {
+    return String(titulo || 'portada')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 60) || 'portada';
+  }
+
+  function leerLocalHistorial() {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function escribirLocalHistorial(items) {
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify(items.slice(0, 80)));
+    } catch {
+      /* ignore quota */
+    }
+  }
+
+  function upsertLocal(item) {
+    const items = leerLocalHistorial();
+    const i = items.findIndex((x) => x.id === item.id || (x.titulo === item.titulo && x.prompt === item.prompt));
+    if (i >= 0) items[i] = { ...items[i], ...item };
+    else items.unshift(item);
+    escribirLocalHistorial(items);
+    return items;
+  }
+
+  async function cargarHistorialRemoto() {
+    try {
+      const r = await fetch(HISTORIAL_API, { cache: 'no-store' });
+      if (r.ok) {
+        const data = await r.json();
+        return Array.isArray(data.items) ? data.items.slice().reverse() : [];
+      }
+    } catch {
+      /* fallthrough */
+    }
+    try {
+      const r2 = await fetch(HISTORIAL_JSON, { cache: 'no-store' });
+      if (r2.ok) {
+        const data = await r2.json();
+        return Array.isArray(data.items) ? data.items.slice().reverse() : [];
+      }
+    } catch {
+      /* ignore */
+    }
+    return leerLocalHistorial();
+  }
+
+  async function persistirResultado(payload) {
+    const item = {
+      id: payload.id || `portada-${slugSafe(payload.titulo)}-${Date.now().toString(36)}`,
+      fecha: payload.fecha || new Date().toISOString().slice(0, 10),
+      titulo: String(payload.titulo || '').trim(),
+      mundoId: payload.mundoId || '',
+      mundoNombre: payload.mundoNombre || '',
+      prompt: String(payload.prompt || '').trim(),
+      notas: payload.notas || 'Solo fondo de portada.',
+      origen: payload.origen || 'ui',
+    };
+    upsertLocal(item);
+    try {
+      const r = await fetch(HISTORIAL_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item),
+      });
+      if (r.ok) {
+        const data = await r.json();
+        if (data && data.item) upsertLocal(data.item);
+        return { ok: true, item: (data && data.item) || item, remoto: true };
+      }
+    } catch {
+      /* local only */
+    }
+    return { ok: true, item, remoto: false };
+  }
+
   let pdfjsLibPromise = null;
   let mammothPromise = null;
   let ultimoTextoArticulo = '';
@@ -311,15 +404,27 @@
           <button type="button" class="portal-btn portal-btn--ghost" data-ecr-portada-auto>Auto según texto</button>
         </div>
         <p class="ecr-portada__hint" data-ecr-portada-hint>Sugerencia: mundo F · Mapa / ruta logística (ajústalo si quieres otro).</p>
-        <button type="submit" class="portal-btn ecr-portada__submit">Generar prompt</button>
+        <button type="submit" class="portal-btn ecr-portada__submit">Generar y guardar prompt</button>
       </form>
       <div class="ecr-portada__resultado" data-ecr-portada-resultado hidden>
         <div class="ecr-portada__resultado-head">
           <h3 class="ecr-portada__resultado-titulo">Prompt listo (solo fondo)</h3>
-          <button type="button" class="portal-btn" data-ecr-portada-copiar>Copiar</button>
+          <div class="ecr-portada__resultado-actions">
+            <button type="button" class="portal-btn portal-btn--ghost" data-ecr-portada-guardar>Guardar de nuevo</button>
+            <button type="button" class="portal-btn" data-ecr-portada-copiar>Copiar</button>
+          </div>
         </div>
         <p class="ecr-portada__meta" data-ecr-portada-meta></p>
+        <p class="ecr-portada__save-status" data-ecr-portada-save-status></p>
         <pre class="ecr-portada__prompt" data-ecr-portada-prompt-text></pre>
+      </div>
+      <div class="ecr-portada__historial" data-ecr-portada-historial>
+        <div class="ecr-portada__historial-head">
+          <h3 class="ecr-portada__historial-titulo">Resultados guardados</h3>
+          <a class="portal-btn portal-btn--ghost" href="newsletter/HISTORIAL-PORTADAS.md" target="_blank" rel="noopener">Ver historial</a>
+        </div>
+        <p class="ecr-portada__historial-intro">Cada prompt que generes (o que se entregue) queda aquí para no perderlo.</p>
+        <ul class="ecr-portada__historial-lista" data-ecr-portada-historial-lista></ul>
       </div>
     </section>`;
   };
@@ -339,11 +444,16 @@
     const promptEl = sec.querySelector('[data-ecr-portada-prompt-text]');
     const btnAuto = sec.querySelector('[data-ecr-portada-auto]');
     const btnCopiar = sec.querySelector('[data-ecr-portada-copiar]');
+    const btnGuardar = sec.querySelector('[data-ecr-portada-guardar]');
+    const saveStatus = sec.querySelector('[data-ecr-portada-save-status]');
     const fileInput = sec.querySelector('[data-ecr-portada-archivo]');
     const drop = sec.querySelector('[data-ecr-portada-drop]');
     const fileStatus = sec.querySelector('[data-ecr-portada-file-status]');
     const extractoWrap = sec.querySelector('[data-ecr-portada-extracto-wrap]');
     const extractoEl = sec.querySelector('[data-ecr-portada-extracto]');
+    const historialLista = sec.querySelector('[data-ecr-portada-historial-lista]');
+
+    let ultimoPayload = null;
 
     function textoParaSugerir() {
       return [input.value, ultimoTextoArticulo].filter(Boolean).join('\n');
@@ -360,7 +470,71 @@
       refreshHint();
     }
 
-    function generar(e) {
+    function renderHistorial(items) {
+      if (!historialLista) return;
+      if (!items || !items.length) {
+        historialLista.innerHTML = '<li class="ecr-portada__historial-vacio">Aún no hay resultados guardados.</li>';
+        return;
+      }
+      historialLista.innerHTML = items.slice(0, 12).map((it) => {
+        const md = it.archivoMarkdown ? `newsletter/${it.archivoMarkdown}` : '';
+        const link = md
+          ? `<a href="${escapeHtml(md)}" target="_blank" rel="noopener">abrir</a>`
+          : '';
+        return `<li class="ecr-portada__historial-item">
+          <div>
+            <strong>${escapeHtml(it.titulo || 'Sin título')}</strong>
+            <span>${escapeHtml(it.fecha || '')} · Mundo ${escapeHtml(it.mundoId || '?')}</span>
+          </div>
+          <div class="ecr-portada__historial-item-actions">
+            ${link}
+            <button type="button" class="portal-btn portal-btn--ghost" data-ecr-cargar-guardado data-id="${escapeHtml(it.id)}">Usar</button>
+          </div>
+        </li>`;
+      }).join('');
+      historialLista.querySelectorAll('[data-ecr-cargar-guardado]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const it = items.find((x) => x.id === btn.getAttribute('data-id'));
+          if (!it) return;
+          input.value = it.titulo || '';
+          if (it.mundoId) select.value = it.mundoId;
+          refreshHint();
+          meta.textContent = `Artículo: ${it.titulo} · Mundo ${it.mundoId} (${it.mundoNombre || ''}) · cargado del historial`;
+          promptEl.textContent = it.prompt || '';
+          resultado.hidden = false;
+          ultimoPayload = it;
+          if (saveStatus) saveStatus.textContent = 'Cargado desde historial guardado.';
+        });
+      });
+    }
+
+    async function refrescarHistorial() {
+      const items = await cargarHistorialRemoto();
+      const local = leerLocalHistorial();
+      const byId = new Map();
+      [...items, ...local].forEach((it) => {
+        if (!it || !it.id) return;
+        if (!byId.has(it.id)) byId.set(it.id, it);
+      });
+      const merged = Array.from(byId.values()).sort((a, b) => String(b.fecha || '').localeCompare(String(a.fecha || '')));
+      renderHistorial(merged);
+    }
+
+    async function guardarActual(origen) {
+      if (!ultimoPayload || !ultimoPayload.prompt) return;
+      if (saveStatus) saveStatus.textContent = 'Guardando…';
+      const res = await persistirResultado({ ...ultimoPayload, origen: origen || 'ui' });
+      if (saveStatus) {
+        saveStatus.textContent = res.remoto
+          ? '✓ Guardado en historial del proyecto (disco).'
+          : '✓ Guardado en este navegador (servidor no disponible para disco).';
+      }
+      await refrescarHistorial();
+      if (typeof opts.onSaved === 'function') opts.onSaved(res);
+      return res;
+    }
+
+    async function generar(e) {
       if (e) e.preventDefault();
       const titulo = String(input.value || '').trim();
       if (!titulo) {
@@ -375,9 +549,19 @@
       meta.textContent = `Artículo: ${titulo} · Mundo ${mundo.id} (${mundo.nombre}) · base ECR sin textos/logos${desdeArchivo}`;
       promptEl.textContent = prompt;
       resultado.hidden = false;
+      ultimoPayload = {
+        id: `portada-${slugSafe(titulo)}`,
+        titulo,
+        mundoId: mundo.id,
+        mundoNombre: mundo.nombre,
+        prompt,
+        notas: 'Solo fondo de portada.',
+        origen: 'ui',
+      };
       if (typeof opts.onGenerate === 'function') {
         opts.onGenerate({ titulo, mundoId: mundo.id, prompt, texto: ultimoTextoArticulo });
       }
+      await guardarActual('ui');
     }
 
     async function procesarArchivo(file) {
@@ -402,8 +586,7 @@
         if (typeof opts.onFileLoaded === 'function') {
           opts.onFileLoaded({ file, titulo, texto });
         }
-        // Generar de inmediato si ya hay título
-        if (titulo) generar();
+        if (titulo) await generar();
       } catch (err) {
         console.error(err);
         fileStatus.textContent = err?.message || 'No se pudo leer el archivo';
@@ -419,6 +602,7 @@
     select.addEventListener('change', refreshHint);
     btnAuto?.addEventListener('click', aplicarSugerencia);
     form?.addEventListener('submit', generar);
+    btnGuardar?.addEventListener('click', () => guardarActual('ui-manual'));
     btnCopiar?.addEventListener('click', async () => {
       const text = promptEl.textContent || '';
       try {
@@ -467,5 +651,7 @@
       select.value = 'F';
       refreshHint();
     }
+
+    refrescarHistorial();
   };
 })();

@@ -288,7 +288,10 @@
       window.initEcrPortadaPromptUI(root, {
         onCopy(ok) { toast(ok ? 'Prompt copiado' : 'No se pudo copiar'); },
         onError(msg) { toast(msg); },
-        onGenerate() { toast('Prompt generado'); }
+        onGenerate() { toast('Prompt generado y guardado'); },
+        onSaved(res) {
+          toast(res && res.remoto ? 'Portada guardada en el proyecto' : 'Portada guardada en este navegador');
+        }
       });
     }
     initImagenes(root, cli);

@@ -23,6 +23,16 @@ Formatos: **PDF** (recomendado), **DOCX**, **TXT**. El `.doc` antiguo no se lee:
 
 Archivo de la UI: [`ecr-portada-prompt.js`](./ecr-portada-prompt.js)
 
+## Persistencia (obligatorio)
+
+Cada prompt/resultado generado o entregado queda en:
+
+- [`historial-portadas.json`](./historial-portadas.json)
+- [`HISTORIAL-PORTADAS.md`](./HISTORIAL-PORTADAS.md)
+- carpeta [`portadas-guardadas/`](./portadas-guardadas/)
+
+La landing también guarda al generar (API `/api/ecr-portada-historial` + localStorage).
+
 ---
 
 ## Bloque BASE (siempre)

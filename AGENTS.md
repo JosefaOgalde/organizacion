@@ -7,6 +7,12 @@
 - No generan tipografía, logo ni la portada terminada; el título/branding se monta después en Canva.
 - Base y UI: `index/clientes/ecr/newsletter/` (`BASE-ESTILO-PORTADAS.md`, `PROMPT-MIDJOURNEY-PORTADA.md`, `ecr-portada-prompt.js`).
 - Landing: `http://localhost:3000/index/clientes/ecr/` → sección **Portada Midjourney**.
+- **Persistencia obligatoria:** cada resultado/prompt que la usuaria entregue o que se genere debe quedar en:
+  - `index/clientes/ecr/newsletter/historial-portadas.json`
+  - `index/clientes/ecr/newsletter/HISTORIAL-PORTADAS.md`
+  - un archivo en `index/clientes/ecr/newsletter/portadas-guardadas/`
+- La UI también guarda vía `POST /api/ecr-portada-historial` y en `localStorage`.
+- Nunca descartar un prompt/resultado de portada sin archivarlo en ese historial.
 
 ### ECR — Rutas de aprendizaje
 - Modal finalizado. HTML para Elementor: `index/clientes/ecr/capacitaciones/modal-ruta-sectores.html`.
