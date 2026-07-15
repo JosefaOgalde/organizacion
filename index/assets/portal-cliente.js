@@ -225,6 +225,11 @@
         ? window.mkofHtmlLandingSections()
         : '';
 
+    const ecrPortadaHtml =
+      c.slug === 'ecr' && typeof window.ecrHtmlPortadaPrompt === 'function'
+        ? window.ecrHtmlPortadaPrompt()
+        : '';
+
     const imagenesHtml = imagenesSeccionHtml(landing);
 
     root.innerHTML = `
@@ -241,6 +246,7 @@
         ${heroHtml(landingCfg, stats)}
         ${entregablesHtml(landingCfg)}
         ${seccionesHtml(landingCfg)}
+        ${ecrPortadaHtml}
         ${imagenesHtml}
         ${mkofLandingHtml}
         ${wireframesHtml}
@@ -262,6 +268,13 @@
     });
 
     if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
+    if (typeof window.initEcrPortadaPromptUI === 'function') {
+      window.initEcrPortadaPromptUI(root, {
+        onCopy(ok) { toast(ok ? 'Prompt copiado' : 'No se pudo copiar'); },
+        onError(msg) { toast(msg); },
+        onGenerate() { toast('Prompt generado'); }
+      });
+    }
     initImagenes(root, cli);
   }
 

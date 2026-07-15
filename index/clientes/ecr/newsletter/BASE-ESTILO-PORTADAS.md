@@ -86,4 +86,5 @@ Cuando llegue la temática del newsletter:
 ## 5) Estado
 
 ✅ Base de estilo recopilada y guardada.  
-⏳ Pendiente: **temática del newsletter** (usuario la entregará a continuación).
+✅ Visualización en landing ECR (`ecr/index.html` → Portada Midjourney).  
+⏳ El **nombre del artículo** lo entrega siempre el usuario antes de generar el prompt.

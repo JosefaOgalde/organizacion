@@ -34,6 +34,7 @@ window.CLIENTES_PORTAL = [
       entregables: ['2 newsletters al mes', 'Copys feed y carrusel', 'Artículos de blog', 'Secciones Elementor'],
       secciones: [
         { titulo: 'Newsletter LinkedIn', texto: 'Invitación, carrusel y video del artículo cada ciclo.' },
+        { titulo: 'Portada Midjourney', texto: 'Indica el nombre del artículo y genera el prompt con la base de estilo ECR.' },
         { titulo: 'Blog', texto: 'Propuestas, maquetación y publicación en WordPress.' }
       ]
     }

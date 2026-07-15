@@ -8,6 +8,20 @@ Ver siempre primero: [`BASE-ESTILO-PORTADAS.md`](./BASE-ESTILO-PORTADAS.md)
 
 ---
 
+## Flujo (obligatorio)
+
+1. **Pedir el nombre del artículo** (no inventar el título).  
+2. Con el título + la **base de estilo guardada**, armar el prompt.  
+3. Entregar / visualizar en la landing del cliente ECR:
+
+`http://localhost:3000/index/clientes/ecr/` → sección **Portada Midjourney**
+
+Ahí se puede escribir el nombre, elegir (o auto-sugerir) el mundo visual A–P y copiar el prompt.
+
+Archivo de la UI: [`ecr-portada-prompt.js`](./ecr-portada-prompt.js)
+
+---
+
 ## Bloque BASE (siempre)
 
 ```
@@ -16,13 +30,15 @@ Editorial LinkedIn newsletter cover background illustration for ECR Capacitacion
 
 ## Prompt final
 
-Se arma cuando llegue la **temática**, eligiendo un mundo visual (retail, warehouse, data, liderazgo, etc.) de la base.
+Se arma solo cuando el usuario entrega el **nombre del artículo**:
+
+`BASE` + escena del mundo visual + concepto del título + flags.
 
 ---
 
 ## Checklist antes de generar
 
-- [ ] Temática definida  
+- [ ] Nombre del artículo confirmado por el usuario  
 - [ ] Mundo visual elegido según tema  
 - [ ] Sin texto / sin logos en el prompt  
 - [ ] `--ar 1.91:1`  
