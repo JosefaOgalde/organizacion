@@ -33,7 +33,7 @@ CARACTERÍSTICAS A MOSTRAR:
 5) Close-up lateral del ensamblaje (sensación artesanal, 28 piezas).
 
 SUJETO:
-Solo 1 mujer adulta (25–38 años), abrigada para temporal (impermeable/trench, pantalón oscuro arremangado para mostrar toda la bota baja). Cabello recogido o húmedo natural. Expresión segura. Lleva las botas EXACTAS de las imágenes. NO agregues una segunda persona.
+Solo 1 mujer adulta (25–38 años), abrigada para frío y temporal: impermeable/trench grueso, sweater o polar debajo, y pantalón LARGO oscuro de invierno (corte recto o slim). El bajo del pantalón baja hasta entrar DENTRO / POR ENCIMA del borde de la bota baja, cubriendo tobillo y pierna: NO se ve piel. PROHIBIDO pantalones cortos, bermudas, pantalón arremangado/remetido hacia arriba, medias a la vista o piernas descubiertas. Hace frío: look de invierno lluvioso. Cabello recogido o húmedo natural. Expresión segura. Lleva las botas EXACTAS de las imágenes. NO agregues una segunda persona.
 
 CONTEXTO:
 Lluvia intensa y densa. Calle/vereda urbana inundada con grandes posas. Sensación de temporal en ciudad (Santiago). PROHIBIDO nieve, hielo, copos.
@@ -53,8 +53,10 @@ PROHIBIDO:
 - Botas genéricas
 - Poco tiempo de producto en pantalla
 - Texto o logos inventados
+- Pantalones cortos, bermudas o piel visible entre pantalón y bota
+- Pantalón arremangado / remangado / doblado hacia arriba
 
-FIDELIDAD TOTAL al producto Rojo Militar de las fotos. MUCHA lluvia. 1 mujer caminando. Características visibles: impermeable, caucho mate, suela Hunter Original, silueta baja.
+FIDELIDAD TOTAL al producto Rojo Militar de las fotos. MUCHA lluvia. 1 mujer caminando. Pantalón largo de invierno metido en la bota (sin piel). Características visibles: impermeable, caucho mate, suela Hunter Original, silueta baja.
 ```
 
 ---
@@ -62,7 +64,7 @@ FIDELIDAD TOTAL al producto Rojo Militar de las fotos. MUCHA lluvia. 1 mujer cam
 ## Variante rápida
 
 ```
-Una sola mujer abrigada camina bajo MUCHA lluvia. Botas = Hunter de agua BAJAS Rojo Militar (exactas a las fotos): caucho vulcanizado mate, impermeables, suela Hunter Original. Close-up mate → camina sola en gran posa sin mojarse → suela/agarre → detalle borde → cierre con producto dominante. Sin nieve. Sin segunda persona. Sin convertirlas en botas altas.
+Una sola mujer abrigada para EL FRÍO camina bajo MUCHA lluvia. Pantalón LARGO oscuro de invierno que entra en la bota: no se ve piel ni tobillo desnudo. PROHIBIDO shorts o pantalón arremangado. Botas = Hunter de agua BAJAS Rojo Militar (exactas a las fotos): caucho vulcanizado mate, impermeables, suela Hunter Original. Close-up mate → camina sola en gran posa sin mojarse → suela/agarre → detalle borde con pantalón metido → cierre con producto dominante. Sin nieve. Sin segunda persona. Sin convertirlas en botas altas.
 ```
 
 ---
@@ -75,4 +77,8 @@ SOLO 1 MUJER CAMINANDO. BOTAS BAJAS HUNTER ROJO MILITAR MATE. IDÉNTICAS A LAS F
 
 ```
 LLUVIA INTENSA. GRAN POSA. COMPLETAMENTE IMPERMEABLES. PROHIBIDO NIEVE.
+```
+
+```
+PANTALÓN LARGO DE INVIERNO METIDO DENTRO DE LA BOTA. SIN PIEL VISIBLE. SIN SHORTS. SIN PANTALÓN ARREMANGADO. HACE FRÍO.
 ```

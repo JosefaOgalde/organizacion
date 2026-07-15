@@ -26,7 +26,7 @@ No inventes ni mezcles otro diseño de bota o de paraguas.
 
 SUJETO (DISTINTO AL PROMPT DE HOMBRE):
 Mujer adulta, 28–38 años, presencia natural y segura (no modelo hiperestilizada ni look “gym”). Cabello ligeramente húmedo o recogido con mechones sueltos por el viento húmedo. Makeup natural. Expresión calmada, casi intimista.
-VESTUARIO: gabán o trench impermeable de largo medio en tono tierra/beige/oliva o negro mate (NO el mismo abrigo oscuro con capucha del video de hombre). Bajo el abrigo, sweater fino o blusa; jeans oscuros o pantalón de corte recto arremangado un poco para que se vean bien las botas. Sin looks deportivos ni ropa outdoor tipo montaña.
+VESTUARIO: gabán o trench impermeable de largo medio en tono tierra/beige/oliva o negro mate (NO el mismo abrigo oscuro con capucha del video de hombre). Bajo el abrigo, sweater o polar de frío; jeans o pantalón LARGO de invierno de corte recto. El pantalón baja y entra en la bota: cubre tobillo y pierna, NO se ve piel. PROHIBIDO shorts, bermudas o pantalón arremangado. Hace frío.
 
 PRODUCTOS PROTAGONISTAS:
 - Las botas de la Imagen A, bien visibles desde el inicio.
