@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Agrega (idempotente) tarea ECR del viernes 2026-07-17:
- * [ECR] Implementación rutas de aprendizaje (rol programación/dev)
+ * Agrega/actualiza (idempotente) la tarea ECR de rutas de aprendizaje.
+ * Estado actual: FINALIZADA (2026-07-15).
  *
  *   node scripts/add-ecr-rutas-viernes.js
  * Luego: http://localhost:3000/index.html?disco=1
@@ -15,12 +15,13 @@ const TAREA = {
   titulo: '[ECR] Implementación rutas de aprendizaje',
   clienteId: 'cli-ecr',
   rolId: 'rol-ecr-dev',
-  fecha: '2026-07-17',
+  fecha: '2026-07-15',
   horaInicio: '10:00',
-  horaFin: '13:00',
-  notas: 'Implementación/programación de rutas de aprendizaje (modal sectores, links, front).',
+  horaFin: '18:00',
+  notas:
+    'FINALIZADO 2026-07-15. Modal por sector listo (textos 8 sectores, Excel/Power BI unificados, HTML Elementor en index/clientes/ecr/capacitaciones/modal-ruta-sectores.html).',
   prioridad: 'alta',
-  completada: false,
+  completada: true,
   pendiente: false,
 };
 
@@ -34,7 +35,7 @@ data.tareas = Array.isArray(data.tareas) ? data.tareas : [];
 const i = data.tareas.findIndex((t) => t.id === TAREA.id);
 if (i >= 0) {
   data.tareas[i] = { ...data.tareas[i], ...TAREA };
-  console.log('Actualizada:', TAREA.titulo, TAREA.fecha);
+  console.log('Actualizada:', TAREA.titulo, TAREA.fecha, 'completada=', TAREA.completada);
 } else {
   data.tareas.push(TAREA);
   console.log('Agregada:', TAREA.titulo, TAREA.fecha);
