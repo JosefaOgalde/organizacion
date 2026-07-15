@@ -23,7 +23,8 @@
 - Solo Excel/Power BI unificados (`Excel - Nivel` / `Power BI - Nivel`); resto de nombres literales.
 - Organizador: `node scripts/add-ecr-rutas-viernes.js` y abrir `http://localhost:3000/index.html?disco=1`.
 
-### Servidor local
-- `node scripts/organizacion-server.js` → puerto 3000.
-- Si el puerto está ocupado (`EADDRINUSE`), matar el proceso previo antes de relanzar.
-- Para forzar datos de disco en el organizador: `?disco=1` (evita localStorage viejo).
+### Portal clientes — Nueva tarea
+- En cada landing de cliente (`portal-cliente.js`) hay un botón **Nueva tarea** arriba en la toolbar.
+- La tarea hereda `clienteId`, abreviatura en el título (`[ECR] …`), color del organizador y el siguiente `numeroHistorico` del cliente.
+- Al guardar se escribe en `localStorage` (`organizacion_v2`) y se publica a `data/organizacion-live.json` vía `POST /api/organizacion`.
+- Ver en organizador: `http://localhost:3000/index.html?disco=1` (o `?disco=1&tarea=ecr/04`).

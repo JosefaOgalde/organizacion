@@ -448,13 +448,72 @@ body.portal-body--themed .portal-cliente {
 }
 
 /* Landing cliente — edición e imágenes */
-.portal-cliente__toolbar {
+.portal-btn--nueva-tarea {
+  background: var(--card-text, #4a7a9e);
+  color: #fff;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.portal-btn--nueva-tarea.portal-btn--active {
+  filter: brightness(0.92);
+}
+
+.portal-nueva-tarea {
+  margin: 0 0 1.25rem;
+}
+
+.portal-nueva-tarea__meta {
+  margin: 0 0 0.85rem;
+  font-size: 0.85rem;
+  color: var(--muted, #5a6a78);
+  line-height: 1.4;
+}
+
+.portal-nueva-tarea__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.portal-nueva-tarea__label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--card-text, #4a7a9e);
+}
+
+.portal-nueva-tarea__input {
+  font: inherit;
+  font-weight: 400;
+  font-size: 0.9rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  color: #243040;
+}
+
+.portal-nueva-tarea__textarea {
+  resize: vertical;
+  min-height: 4rem;
+}
+
+.portal-nueva-tarea__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.55rem;
+}
+
+.portal-nueva-tarea__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  align-items: center;
-  margin-bottom: 1rem;
+  margin-top: 0.25rem;
 }
+
 
 .portal-btn {
   display: inline-flex;
