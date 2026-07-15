@@ -6,6 +6,7 @@
 - Los prompts Midjourney de ECR son **solo para la imagen de fondo** de la portada del newsletter LinkedIn.
 - Flujo: la usuaria entrega PDF/DOCX (o título) → se pulsa generar → el **mundo visual se define automáticamente** según el contenido.
 - El mundo se muestra en la UI; **dentro del prompt pegable a Midjourney** solo va la escena en inglés (sin nombre de mundo en español ni marca ECR), porque si se incluyen Midjourney los dibuja como tipografía/logo.
+- **Gotcha:** si la imagen sale con tipografía en camiones (p. ej. “Logística urbana limpia” o `#E85D04 family`), el prompt pegado es el **antiguo**. Usar botón **Copiar** de la UI con `ecr-portada-prompt.js?v=8+` (hard refresh). No pegar hex ni “LinkedIn cover”. Cada opción termina con bloque `ANTITEXT` (paneles de vehículo lisos).
 - En el prompt **no poner**: nombres de marca (ECR), “LinkedIn cover”, títulos en español entre comillas, ni pedir “overlay de headline”.
 - Siempre entregar **3 opciones** de prompt por artículo.
 - **No incluir** al final del prompt: `--ar 1.91:1 --style raw --v 6.1 --no text…` (en este flujo Midjourney no los lee).

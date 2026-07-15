@@ -18,8 +18,9 @@ Ver siempre primero: [`BASE-ESTILO-PORTADAS.md`](./BASE-ESTILO-PORTADAS.md)
 
 1. La usuaria **entrega el PDF/DOCX** (o escribe el nombre del artículo).  
 2. Pulsa **Generar prompt**.  
-3. El sistema **define el mundo visual** según el contenido y entrega **3 opciones** con ese mundo **incluido en el prompt**.  
-4. Se guarda en el historial.
+3. El sistema **define el mundo visual** según el contenido y entrega **3 opciones**.  
+4. Se copia **solo** el bloque del prompt (botón **Copiar**).  
+5. Se guarda en el historial.
 
 No se elige el mundo visual a mano antes de generar.
 
@@ -27,7 +28,7 @@ No se elige el mundo visual a mano antes de generar.
 
 Formatos: **PDF** (recomendado), **DOCX**, **TXT**. El `.doc` antiguo no se lee: convertir a PDF/DOCX.
 
-Archivo de la UI: [`ecr-portada-prompt.js`](./ecr-portada-prompt.js)
+Archivo de la UI: [`ecr-portada-prompt.js`](./ecr-portada-prompt.js) (`?v=8` o superior).
 
 ## Persistencia (obligatorio)
 
@@ -41,17 +42,36 @@ La landing también guarda al generar (API `/api/ecr-portada-historial` + localS
 
 ---
 
+## Qué NO debe ir en el prompt pegable
+
+Si Midjourney pinta tipografía en camiones/paredes, casi siempre es porque el prompt incluía uno de estos triggers:
+
+- Nombre de marca (`ECR`, `Capacitacion`, etc.)
+- Frases en español (título del artículo, nombre del mundo visual)
+- Hex de color (`#E85D04`, `family`)
+- Wording de “LinkedIn cover / newsletter cover / headline overlay”
+
+La paleta naranja/teal se describe **en palabras** (`warm orange and amber… deep teal and navy`), nunca con códigos.
+
+---
+
 ## Bloque BASE (siempre; sin flags Midjourney)
 
+Fuente de verdad: constante `BASE` + `ANTITEXT` en `ecr-portada-prompt.js`.
+
 ```
-ONLY a LinkedIn newsletter cover BACKGROUND image (not a finished cover): Editorial illustration background for ECR Capacitacion brand system, empty reserved space for later text overlay in Canva, NO text, NO logos, NO letters, NO watermarks, NO typography layout, modern corporate flat vector illustration with depth, stylized faceless characters, clean geometric shapes, high-contrast complementary palette of warm orange/amber (#E85D04 family) and deep teal/navy blue, generous negative space for later headline overlay, professional Chilean corporate learning mood, polished editorial composition, wide landscape
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape
+```
+
+Cierre anti-tipografía (va al final de cada opción):
+
+```
+critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only
 ```
 
 ## Prompt final
 
-Se arman **3 opciones** cuando el usuario entrega el **nombre del artículo**:
-
-`BASE` + escena del mundo visual + concepto del título  
+`BASE` + `scene:` (inglés) + `thematic mood:` + `ANTITEXT`  
 
 **Sin** `--ar` / `--style` / `--v` / `--no …`.
 
@@ -61,9 +81,8 @@ El resultado de Midjourney es **solo el fondo**; el armado final de portada (tí
 
 ## Checklist antes de generar
 
-- [ ] Nombre del artículo confirmado por el usuario  
-- [ ] 3 opciones distintas  
-- [ ] Prompt pide **solo fondo** (no portada final)  
-- [ ] Sin flags Midjourney al final del prompt  
-- [ ] Sin texto / sin logos en el prompt  
-- [ ] Espacio negativo para título en Canva después  
+- [ ] Prompt en inglés de escena (sin título ES ni marca)
+- [ ] Sin hex codes
+- [ ] Sin “LinkedIn / cover / headline”
+- [ ] Vehículos descritos como paneles lisos en blanco (blank side panels)
+- [ ] Copiado con el botón **Copiar** de la UI (no seleccionar el título de la opción)

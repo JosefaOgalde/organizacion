@@ -8,8 +8,16 @@
  * 3) Unir con BASE guardada → mostrar prompt listo para copiar
  */
 (function () {
+  /**
+   * Solo ilustración de fondo. Nunca incluir marca, títulos ES, hex codes ni “LinkedIn cover”:
+   * Midjourney los pinta como tipografía (p. ej. en el costado de camiones).
+   */
   const BASE =
-    'Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, absolutely blank of writing: zero text, zero letters, zero numbers, zero logos, zero wordmarks, zero watermarks, zero captions, zero signs with writing, zero UI labels, zero brand names painted in the image, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space (blank sky or blank color block) with nothing written on it, polished professional composition, wide landscape';
+    'Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape';
+
+  /** Cierre fuerte anti-tipografía (MJ suele rotular vehículos; hay que insistir al final). */
+  const ANTITEXT =
+    'critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only';
 
   /** No pegar flags de Midjourney en el prompt: en este flujo Midjourney no los lee. */
   const PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs';
@@ -38,26 +46,26 @@
 
   /** Conceptos en inglés sin citar el título en español (si se cita, Midjourney lo dibuja como tipografía). */
   const CONCEPTOS = [
-    'timely coordination of mobile field teams, decisions flowing in real time, calm productive energy, no labels anywhere',
-    'operations adjusting across distant locations, clarity replacing delay, soft ambient glow, completely unmarked surfaces',
-    'people guided by simple abstract digital signals, agile work rhythm, open blank upper area, nothing written in the scene'
+    'timely coordination of mobile field teams, decisions flowing in real time, calm productive energy',
+    'operations adjusting across distant locations, clarity replacing delay, soft ambient glow',
+    'people guided by simple abstract digital signals, agile work rhythm, open blank upper area'
   ];
 
   const MUNDOS = [
     { id: 'A', nombre: 'Retail / supermercado bajo presión', escena: 'long supermarket aisle with stylized faceless shoppers and carts, reflective floor, warm orange backlight at the far end, cool teal shelves, calm blank unmarked space in the upper third' },
-    { id: 'B', nombre: 'Sala de control / industria tech', escena: 'industrial control room with glowing abstract orange screens without readable interface text, stylized helmeted workers at consoles, clean orange color block occupying the upper half as empty unmarked space, deep navy shadows' },
-    { id: 'C', nombre: 'Liderazgo sobre operación', escena: 'stylized leader silhouette in profile overlooking logistics boxes and a simplified industrial skyline, sunset orange rim light, teal atmosphere, generous open blank sky' },
+    { id: 'B', nombre: 'Sala de control / industria tech', escena: 'industrial control room with glowing abstract orange panels that show only shapes not characters, stylized helmeted workers at consoles, clean orange color block occupying the upper half as empty unmarked space, deep navy shadows' },
+    { id: 'C', nombre: 'Liderazgo sobre operación', escena: 'stylized leader silhouette in profile overlooking plain unlabeled crates and a simplified industrial skyline, sunset orange rim light, teal atmosphere, generous open blank sky' },
     { id: 'D', nombre: 'Data / ciber / infraestructura', escena: 'isometric soft 3D data infrastructure with geometric cubes and motherboard-like grid, glowing orange circuit lines, deep teal base, clean blank unmarked space to one side' },
-    { id: 'E', nombre: 'Bodega / stockroom', escena: 'warehouse stockroom aisle with orange crates on teal shelving, flat stylized workers, central corridor perspective, duotone orange and teal, open blank ceiling area' },
-    { id: 'F', nombre: 'Mapa / ruta logística', escena: 'abstract logistics map with an orange route ribbon over teal terrain, location pins, tiny vehicles, a tablet showing abstract charts without readable labels, amber horizon, wide blank unmarked space above' },
-    { id: 'G', nombre: 'Warehouse + retail humano', escena: 'warm warehouse-retail hybrid scene with stacked boxes and a simple counter display, hanging orange lamps, cyan clean upper block as empty unmarked space, faceless staff' },
-    { id: 'H', nombre: 'Automatización logística', escena: 'isometric navy and orange automated warehouse with conveyors and AGV robots, glowing accents, racking in background, open blank upper area' },
+    { id: 'E', nombre: 'Bodega / stockroom', escena: 'warehouse stockroom aisle with plain orange crates on teal shelving, flat stylized workers, central corridor perspective, duotone orange and teal, open blank ceiling area' },
+    { id: 'F', nombre: 'Mapa / ruta logística', escena: 'abstract route diagram with an orange ribbon path over teal terrain, simple pin shapes, tiny unmarked vehicles, a tablet with abstract glowing shapes only, amber horizon, wide blank unmarked space above' },
+    { id: 'G', nombre: 'Warehouse + retail humano', escena: 'warm warehouse-retail hybrid scene with stacked plain boxes and a simple counter display, hanging orange lamps, cyan clean upper block as empty unmarked space, faceless staff' },
+    { id: 'H', nombre: 'Automatización logística', escena: 'isometric navy and orange automated warehouse with conveyors and blank AGV robots, glowing accents, racking in background, open blank upper area' },
     { id: 'I', nombre: 'Crecimiento / ambición', escena: 'ascending stylized silhouettes climbing geometric bar-like steps toward an orange sky with soft clouds, teal ground plane, strong blank unmarked space on the left' },
     { id: 'J', nombre: 'Retail costero / temporada', escena: 'minimal flat retail interior in cool blue with a coastal view through glass, orange accents, generous blank unmarked space, calm seasonal mood' },
     { id: 'K', nombre: 'Oficina colaborativa', escena: 'collaborative office profiles at laptops along a teal and beige diagonal split, orange accents, subtle paper texture, open blank corner' },
-    { id: 'L', nombre: 'Logística urbana limpia', escena: 'clean urban logistics scene with an orange delivery truck beside a sage-teal building and thin trees, soft glow at the entrance, open blank sky with no lettering on truck or walls' },
+    { id: 'L', nombre: 'Logística urbana limpia', escena: 'quiet teal urban street at dusk, solid unmarked orange cargo box vehicle with completely blank side panels parked beside a sage building, thin trees, soft doorway glow, open empty sky, faceless silhouettes, no graphics on any surface' },
     { id: 'M', nombre: 'Equipo diverso', escena: 'centered group of diverse stylized field workers with simple industrial props, solid beige-teal background, orange highlights, balanced blank unmarked space around them' },
-    { id: 'N', nombre: 'Warehouse texturizado', escena: 'textured warehouse with stacked orange-blue crates, reflective floor, overhead lamp glow, pigment-like texture, open blank upper band' },
+    { id: 'N', nombre: 'Warehouse texturizado', escena: 'textured warehouse with stacked plain orange-blue crates, reflective floor, overhead lamp glow, pigment-like texture, open blank upper band' },
     { id: 'O', nombre: 'Cerebro / ideas / IA', escena: 'soft peach brain-like form with blue neural network lines and orange nodes on a clean cream background, generous blank unmarked space' },
     { id: 'P', nombre: 'Seguridad / data urbana', escena: 'central server cylinder with abstract keyhole shields and flat skyline, navy orange and beige palette, clean blank unmarked space' }
   ];
@@ -224,8 +232,8 @@
   function armarPrompt(titulo, mundoId, variante) {
     const mundo = mundoPorId(mundoId || sugerirMundo(titulo));
     const concepto = conceptoDesdeTitulo(titulo, variante || 0);
-    // No incluir nombres en español ni marcas en el texto pegable: Midjourney los dibuja como tipografía/logo.
-    return `${BASE}, scene: ${mundo.escena}, thematic mood: ${concepto}`;
+    // Solo inglés de escena. Sin marca, sin título ES, sin hex, sin “cover”: MJ los pinta.
+    return `${BASE}, scene: ${mundo.escena}, thematic mood: ${concepto}, ${ANTITEXT}`;
   }
 
   /** Siempre 3 opciones. El mundo principal se define desde el texto del artículo (no se elige a mano). */

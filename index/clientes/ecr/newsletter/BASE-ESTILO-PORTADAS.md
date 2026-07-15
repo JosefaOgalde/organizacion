@@ -71,8 +71,16 @@ Esta base se armó a partir del set de portadas de referencia (retail, industria
 ## 3) Bloque BASE para Midjourney (pegar siempre)
 
 ```
-Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, absolutely blank of writing: zero text, zero letters, zero numbers, zero logos, zero wordmarks, zero watermarks, zero captions, zero signs with writing, zero UI labels, zero brand names painted in the image, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space (blank sky or blank color block) with nothing written on it, polished professional composition, wide landscape
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape
 ```
+
+Cierre anti-tipografía (siempre al final del prompt):
+
+```
+critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only
+```
+
+**No pegar** hex (`#E85D04`), marcas ni nombres de mundo en español: Midjourney los dibuja en la imagen.
 
 ---
 
