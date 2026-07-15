@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
- * Agrega (idempotente) tareas TrendSeeker del 2026-07-15
- * en data/organizacion-live.json.
+ * Agrega (idempotente) tareas del 2026-07-15 en data/organizacion-live.json:
+ * - [TS] Cambiar banner
+ * - [TS] Crear contenido
+ * - [ECR] Crear copys
  *
  *   node scripts/add-ts-banner-task.js
  *
@@ -35,6 +37,19 @@ const TAREAS = [
     horaInicio: '11:00',
     horaFin: '13:00',
     notas: 'Crear contenido para redes TrendSeeker (copies, piezas o publicaciones del día).',
+    prioridad: 'media',
+    completada: false,
+    pendiente: false,
+  },
+  {
+    id: 'tarea-ecr-copys-2026-07-15',
+    titulo: '[ECR] Crear copys',
+    clienteId: 'cli-ecr',
+    rolId: 'rol-ecr-cm',
+    fecha: FECHA,
+    horaInicio: '14:00',
+    horaFin: '16:00',
+    notas: 'Crear copys para ECR (newsletter / feed / carrusel según necesidad del día).',
     prioridad: 'media',
     completada: false,
     pendiente: false,
