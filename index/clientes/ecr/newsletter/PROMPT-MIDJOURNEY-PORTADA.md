@@ -16,9 +16,12 @@ Ver siempre primero: [`BASE-ESTILO-PORTADAS.md`](./BASE-ESTILO-PORTADAS.md)
 
 ## Flujo (obligatorio)
 
-1. **Cargar el PDF/DOCX del artículo** en la landing (o pedir/escribir el nombre si no hay archivo).  
-2. El sistema **lee el texto**, sugiere el título y el mundo visual A–P.  
-3. Une título/temática + la **base de estilo guardada** y muestra el prompt.
+1. La usuaria **entrega el PDF/DOCX** (o escribe el nombre del artículo).  
+2. Pulsa **Generar prompt**.  
+3. El sistema **define el mundo visual** según el contenido y entrega **3 opciones** con ese mundo **incluido en el prompt**.  
+4. Se guarda en el historial.
+
+No se elige el mundo visual a mano antes de generar.
 
 `http://localhost:3000/index/clientes/ecr/` → sección **Portada Midjourney**
 

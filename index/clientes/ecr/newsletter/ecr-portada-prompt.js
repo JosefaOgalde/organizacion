@@ -228,21 +228,25 @@
   function armarPrompt(titulo, mundoId, variante) {
     const mundo = mundoPorId(mundoId || sugerirMundo(titulo));
     const concepto = conceptoDesdeTitulo(titulo, variante || 0);
-    return `${BASE}, scene: ${mundo.escena}, thematic concept: ${concepto}`;
+    return `${BASE}, visual world "${mundo.nombre}": ${mundo.escena}, thematic concept: ${concepto}`;
   }
 
-  /** Siempre 3 opciones de prompt (solo fondo, sin flags Midjourney). */
-  function armarTresOpciones(titulo, mundoPreferido) {
-    const ids = elegirTresMundos(mundoPreferido || sugerirMundo(titulo));
-    return ids.map((id, i) => {
-      const mundo = mundoPorId(id);
-      return {
-        opcion: i + 1,
-        mundoId: mundo.id,
-        mundoNombre: mundo.nombre,
-        prompt: armarPrompt(titulo, mundo.id, i),
-      };
-    });
+  /** Siempre 3 opciones. El mundo principal se define desde el texto del artículo (no se elige a mano). */
+  function armarTresOpciones(titulo, textoArticulo) {
+    const preferido = sugerirMundo([titulo, textoArticulo].filter(Boolean).join('\n'));
+    const ids = elegirTresMundos(preferido);
+    return {
+      mundoDetectado: mundoPorId(preferido),
+      opciones: ids.map((id, i) => {
+        const mundo = mundoPorId(id);
+        return {
+          opcion: i + 1,
+          mundoId: mundo.id,
+          mundoNombre: mundo.nombre,
+          prompt: armarPrompt(titulo, mundo.id, i),
+        };
+      }),
+    };
   }
 
   function limpiarLinea(raw) {
@@ -406,25 +410,21 @@
   };
 
   window.ecrHtmlPortadaPrompt = function ecrHtmlPortadaPrompt() {
-    const options = MUNDOS.map(
-      (m) => `<option value="${m.id}">${m.id} — ${escapeHtml(m.nombre)}</option>`
-    ).join('');
-
     return `<section class="ecr-portada ficha-seccion ficha-seccion--portal" data-ecr-portada-prompt>
       <div class="ficha-seccion__headline">
         <h2 class="ficha-seccion__titulo">Portada Midjourney</h2>
         <span class="ficha-seccion__estado">Solo fondo · 3 opciones</span>
       </div>
       <p class="ecr-portada__intro">
-        El prompt es <strong>solo para la imagen de fondo</strong> de la portada (no tipografía ni logo).
-        Se entregan <strong>3 opciones</strong> listas para pegar en Midjourney
-        <em>(sin flags <code>--ar</code> / <code>--style</code> / <code>--v</code> / <code>--no</code>, porque aquí Midjourney no los lee)</em>.
-        Después se monta el título en Canva. Carga PDF/DOCX o escribe el nombre; se usa la
-        <a href="newsletter/BASE-ESTILO-PORTADAS.md" target="_blank" rel="noopener">base de estilo guardada</a>.
+        1) Entrega el <strong>PDF/DOCX</strong> del artículo (o el nombre).<br>
+        2) Pulsa <strong>Generar prompt</strong>.<br>
+        3) El sistema <strong>define el mundo visual</strong> según el contenido y te entrega
+        <strong>3 opciones</strong> con ese mundo ya incluido en cada prompt
+        (solo fondo, sin tipografía/logo, sin flags <code>--ar</code>/<code>--style</code>/<code>--v</code>/<code>--no</code>).
       </p>
 
       <div class="ecr-portada__upload" data-ecr-portada-upload>
-        <label class="ecr-portada__label" for="ecr-portada-archivo">Archivo del artículo</label>
+        <label class="ecr-portada__label" for="ecr-portada-archivo">Documento del artículo</label>
         <div class="ecr-portada__drop" data-ecr-portada-drop>
           <input
             id="ecr-portada-archivo"
@@ -454,24 +454,20 @@
           name="titulo"
           required
           autocomplete="off"
-          placeholder="Ej: Equipos en terreno: la ventaja de ajustar a tiempo"
+          placeholder="Se completa al leer el PDF, o escríbelo aquí"
           data-ecr-portada-titulo
         >
-        <label class="ecr-portada__label" for="ecr-portada-mundo">Mundo visual</label>
-        <div class="ecr-portada__row">
-          <select id="ecr-portada-mundo" class="ecr-portada__select" data-ecr-portada-mundo>
-            ${options}
-          </select>
-          <button type="button" class="portal-btn portal-btn--ghost" data-ecr-portada-auto>Auto según texto</button>
-        </div>
-        <p class="ecr-portada__hint" data-ecr-portada-hint>Sugerencia: mundo F · Mapa / ruta logística (ajústalo si quieres otro).</p>
-        <button type="submit" class="portal-btn ecr-portada__submit">Generar 3 opciones y guardar</button>
+        <p class="ecr-portada__hint" data-ecr-portada-hint>
+          El mundo visual se define automáticamente al generar, según el documento.
+        </p>
+        <button type="submit" class="portal-btn ecr-portada__submit">Generar prompt</button>
       </form>
       <div class="ecr-portada__resultado" data-ecr-portada-resultado hidden>
         <div class="ecr-portada__resultado-head">
           <h3 class="ecr-portada__resultado-titulo">3 prompts listos (solo fondo)</h3>
           <button type="button" class="portal-btn portal-btn--ghost" data-ecr-portada-guardar>Guardar de nuevo</button>
         </div>
+        <p class="ecr-portada__mundo-detectado" data-ecr-portada-mundo-detectado></p>
         <p class="ecr-portada__meta" data-ecr-portada-meta></p>
         <p class="ecr-portada__save-status" data-ecr-portada-save-status></p>
         <div class="ecr-portada__opciones" data-ecr-portada-opciones></div>
@@ -495,12 +491,11 @@
 
     const form = sec.querySelector('[data-ecr-portada-form]');
     const input = sec.querySelector('[data-ecr-portada-titulo]');
-    const select = sec.querySelector('[data-ecr-portada-mundo]');
     const hint = sec.querySelector('[data-ecr-portada-hint]');
     const resultado = sec.querySelector('[data-ecr-portada-resultado]');
     const meta = sec.querySelector('[data-ecr-portada-meta]');
+    const mundoDetectadoEl = sec.querySelector('[data-ecr-portada-mundo-detectado]');
     const opcionesEl = sec.querySelector('[data-ecr-portada-opciones]');
-    const btnAuto = sec.querySelector('[data-ecr-portada-auto]');
     const btnGuardar = sec.querySelector('[data-ecr-portada-guardar]');
     const saveStatus = sec.querySelector('[data-ecr-portada-save-status]');
     const fileInput = sec.querySelector('[data-ecr-portada-archivo]');
@@ -516,24 +511,13 @@
       return [input.value, ultimoTextoArticulo].filter(Boolean).join('\n');
     }
 
-    function refreshHint() {
-      const mundo = mundoPorId(select.value);
-      hint.textContent = `Preferido: mundo ${mundo.id} · ${mundo.nombre} (se generan 3 opciones)`;
-    }
-
-    function aplicarSugerencia() {
-      const id = sugerirMundo(textoParaSugerir());
-      select.value = id;
-      refreshHint();
-    }
-
     function renderOpciones(opciones) {
       if (!opcionesEl) return;
       opcionesEl.innerHTML = (opciones || [])
         .map(
           (op) => `<article class="ecr-portada__opcion" data-opcion="${op.opcion}">
             <div class="ecr-portada__opcion-head">
-              <h4 class="ecr-portada__opcion-titulo">Opción ${op.opcion} · Mundo ${escapeHtml(op.mundoId)} — ${escapeHtml(op.mundoNombre)}</h4>
+              <h4 class="ecr-portada__opcion-titulo">Opción ${op.opcion} · Mundo visual ${escapeHtml(op.mundoId)} — ${escapeHtml(op.mundoNombre)}</h4>
               <button type="button" class="portal-btn" data-ecr-copiar-opcion="${op.opcion}">Copiar</button>
             </div>
             <pre class="ecr-portada__prompt" data-ecr-prompt-opcion="${op.opcion}">${escapeHtml(op.prompt)}</pre>
@@ -583,12 +567,17 @@
           const it = items.find((x) => x.id === btn.getAttribute('data-id'));
           if (!it) return;
           input.value = it.titulo || '';
-          if (it.mundoId) select.value = it.mundoId;
-          refreshHint();
           const ops =
             Array.isArray(it.opciones) && it.opciones.length
               ? it.opciones
               : [{ opcion: 1, mundoId: it.mundoId, mundoNombre: it.mundoNombre, prompt: it.prompt }];
+          if (mundoDetectadoEl) {
+            mundoDetectadoEl.innerHTML =
+              '<strong>Mundo visual definido:</strong> ' +
+              escapeHtml(it.mundoId || ops[0]?.mundoId || '?') +
+              ' — ' +
+              escapeHtml(it.mundoNombre || ops[0]?.mundoNombre || '');
+          }
           meta.textContent = `Artículo: ${it.titulo} · ${ops.length} opciones · cargado del historial`;
           renderOpciones(ops);
           resultado.hidden = false;
@@ -606,7 +595,9 @@
         if (!it || !it.id) return;
         if (!byId.has(it.id)) byId.set(it.id, it);
       });
-      const merged = Array.from(byId.values()).sort((a, b) => String(b.fecha || '').localeCompare(String(a.fecha || '')));
+      const merged = Array.from(byId.values()).sort((a, b) =>
+        String(b.fecha || '').localeCompare(String(a.fecha || ''))
+      );
       renderHistorial(merged);
     }
 
@@ -628,29 +619,50 @@
       if (e) e.preventDefault();
       const titulo = String(input.value || '').trim();
       if (!titulo) {
-        if (typeof opts.onError === 'function') opts.onError('Indica el nombre del artículo o carga un PDF/DOCX');
+        if (typeof opts.onError === 'function') {
+          opts.onError('Entrega el PDF/DOCX o escribe el nombre del artículo');
+        }
         input.focus();
         return;
       }
-      aplicarSugerencia();
-      const mundo = mundoPorId(select.value);
-      const opciones = armarTresOpciones(titulo, mundo.id);
-      const desdeArchivo = ultimoTextoArticulo ? ' · leído desde archivo' : '';
-      meta.textContent = `Artículo: ${titulo} · 3 opciones · preferido ${mundo.id} (${mundo.nombre}) · sin flags Midjourney${desdeArchivo}`;
+      const pack = armarTresOpciones(titulo, textoParaSugerir());
+      const mundo = pack.mundoDetectado;
+      const opciones = pack.opciones;
+      const desdeArchivo = ultimoTextoArticulo ? ' · desde documento' : '';
+      if (mundoDetectadoEl) {
+        mundoDetectadoEl.innerHTML =
+          '<strong>Mundo visual definido:</strong> ' +
+          escapeHtml(mundo.id) +
+          ' — ' +
+          escapeHtml(mundo.nombre);
+      }
+      if (hint) {
+        hint.textContent = `Definido al generar: mundo ${mundo.id} · ${mundo.nombre}`;
+      }
+      meta.textContent =
+        `Artículo: ${titulo} · 3 opciones con mundo visual incluido en el prompt${desdeArchivo}`;
       renderOpciones(opciones);
       resultado.hidden = false;
       ultimoPayload = {
         id: `portada-${slugSafe(titulo)}`,
         titulo,
-        mundoId: opciones[0].mundoId,
-        mundoNombre: opciones[0].mundoNombre,
+        mundoId: mundo.id,
+        mundoNombre: mundo.nombre,
         prompt: opciones[0].prompt,
         opciones,
-        notas: 'Solo fondo de portada. 3 opciones. Sin flags --ar/--style/--v/--no.',
+        notas:
+          'Solo fondo. Mundo visual definido automáticamente desde el documento. Sin flags Midjourney.',
         origen: 'ui',
       };
       if (typeof opts.onGenerate === 'function') {
-        opts.onGenerate({ titulo, mundoId: mundo.id, opciones, prompt: opciones[0].prompt, texto: ultimoTextoArticulo });
+        opts.onGenerate({
+          titulo,
+          mundoId: mundo.id,
+          mundoNombre: mundo.nombre,
+          opciones,
+          prompt: opciones[0].prompt,
+          texto: ultimoTextoArticulo,
+        });
       }
       await guardarActual('ui');
     }
@@ -660,6 +672,7 @@
       fileStatus.textContent = `Leyendo «${file.name}»…`;
       fileStatus.classList.remove('ecr-portada__file-status--error');
       extractoWrap.hidden = true;
+      resultado.hidden = true;
       try {
         const texto = await leerArchivoArticulo(file);
         if (!texto || texto.length < 20) {
@@ -668,16 +681,21 @@
         ultimoTextoArticulo = texto;
         const titulo = inferirTitulo(texto, file.name);
         if (titulo) input.value = titulo;
-        aplicarSugerencia();
 
         const preview = texto.slice(0, 900) + (texto.length > 900 ? '…' : '');
         extractoEl.textContent = preview;
         extractoWrap.hidden = false;
-        fileStatus.textContent = `✓ Leído: ${file.name} · ${texto.length.toLocaleString('es-CL')} caracteres${titulo ? ` · título sugerido listo` : ''}`;
+        if (hint) {
+          hint.textContent =
+            'Documento listo. Pulsa «Generar prompt» para definir el mundo visual y recibir las 3 opciones.';
+        }
+        fileStatus.textContent =
+          `✓ Documento leído: ${file.name}` +
+          (titulo ? ` · título: ${titulo}` : '') +
+          ' · ahora genera el prompt';
         if (typeof opts.onFileLoaded === 'function') {
           opts.onFileLoaded({ file, titulo, texto });
         }
-        if (titulo) await generar();
       } catch (err) {
         console.error(err);
         fileStatus.textContent = err?.message || 'No se pudo leer el archivo';
@@ -686,12 +704,6 @@
       }
     }
 
-    input.addEventListener('change', aplicarSugerencia);
-    input.addEventListener('blur', () => {
-      if (input.value.trim()) aplicarSugerencia();
-    });
-    select.addEventListener('change', refreshHint);
-    btnAuto?.addEventListener('click', aplicarSugerencia);
     form?.addEventListener('submit', generar);
     btnGuardar?.addEventListener('click', () => guardarActual('ui-manual'));
 
@@ -728,10 +740,6 @@
 
     if (opts.tituloInicial) {
       input.value = opts.tituloInicial;
-      aplicarSugerencia();
-    } else {
-      select.value = 'F';
-      refreshHint();
     }
 
     refrescarHistorial();
