@@ -110,9 +110,8 @@
   function inferirTitulo(texto, nombreArchivo) {
     const fromFile = tituloDesdeNombreArchivo(nombreArchivo);
     // Preferir nombre de archivo si es un ART_xx descriptivo
-    if (fromFile && /equipos|terreno|ventaja|retail|log[ií]st/i.test(fromFile) && fromFile.length >= 20) {
-      return fromFile.replace(/\s*la ventaja de ajustar a tiempo\.?/i, (m) => m.replace(/\.$/, '')).trim()
-        || fromFile;
+    if (fromFile && fromFile.length >= 20 && /[a-záéíóúñ]/i.test(fromFile)) {
+      return fromFile;
     }
 
     const lines = String(texto || '')
@@ -127,7 +126,6 @@
       if (line.length < 18 || line.length > 160) continue;
       if (skip.test(line)) continue;
       if (/^[•\-\d.…]+\s*$/.test(line)) continue;
-      // Evitar párrafos narrativos largos como "título"
       if (/^(durante|hoy|en una|muchas|el terreno|la gesti)/i.test(line) && line.length > 90) continue;
       candidatos.push(line);
       if (candidatos.length >= 5) break;
@@ -136,9 +134,7 @@
     if (candidatos.length) {
       const conDosPuntos = candidatos.find((c) => /:/.test(c) && c.length < 120);
       if (conDosPuntos) return conDosPuntos;
-      // Línea corta tipo titular
-      const corto = [...candidatos].sort((a, b) => a.length - b.length)[0];
-      return corto;
+      return [...candidatos].sort((a, b) => a.length - b.length)[0];
     }
 
     return fromFile || '';
