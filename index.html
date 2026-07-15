@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Organización</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=salud-esp1">
 </head>
 <body>
   <div class="app">
@@ -134,8 +134,15 @@
               <div><label for="cita-hora">Hora *</label><input type="time" id="cita-hora" required></div>
             </div>
             <div class="form__row">
-              <label for="cita-especialidad">Especialidad *</label>
-              <input type="text" id="cita-especialidad" required>
+              <label for="cita-especialista">Especialista *</label>
+              <select id="cita-especialista" required>
+                <option value="">Seleccionar…</option>
+                <option value="__nuevo__">+ Agregar otro…</option>
+              </select>
+            </div>
+            <div class="form__row form__row--especialista-nuevo" id="cita-especialista-nuevo-wrap" hidden>
+              <label for="cita-especialista-nuevo">Nombre del especialista *</label>
+              <input type="text" id="cita-especialista-nuevo" placeholder="Ej: Dra Pauli Sandoval" autocomplete="off">
             </div>
             <div class="form__row">
               <label for="cita-notas">Notas</label>
@@ -294,7 +301,7 @@
   <script src="index/assets/cliente-landing-imagenes.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=salud-esp1"></script>
   <script src="ficha-extractores.js"></script>
   <script src="ficha-cliente.js"></script>
 </body>
