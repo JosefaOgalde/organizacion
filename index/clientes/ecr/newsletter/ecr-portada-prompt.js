@@ -24,24 +24,27 @@
   const PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
   const MAMMOTH_CDN = 'https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js';
 
-  /** Alternativas cercanas por mundo (para armar siempre 3 opciones distintas). */
+  /**
+   * Vecinos temáticos por mundo (solo desempate / relleno si el texto
+   * no da 3 mundos distintos con score > 0).
+   */
   const ALTERNAS = {
-    A: ['G', 'J'],
-    B: ['D', 'C'],
-    C: ['M', 'I'],
-    D: ['O', 'P'],
-    E: ['N', 'G'],
-    F: ['L', 'H'],
-    G: ['A', 'E'],
-    H: ['F', 'E'],
-    I: ['C', 'M'],
-    J: ['A', 'L'],
-    K: ['M', 'C'],
-    L: ['F', 'J'],
-    M: ['C', 'K'],
-    N: ['E', 'G'],
-    O: ['D', 'P'],
-    P: ['D', 'O']
+    A: ['G', 'J', 'E'],
+    B: ['D', 'C', 'F'],
+    C: ['M', 'I', 'B'],
+    D: ['O', 'P', 'B'],
+    E: ['N', 'G', 'H'],
+    F: ['M', 'C', 'L'],
+    G: ['A', 'E', 'N'],
+    H: ['E', 'F', 'D'],
+    I: ['C', 'M', 'O'],
+    J: ['A', 'L', 'G'],
+    K: ['M', 'C', 'O'],
+    L: ['F', 'J', 'M'],
+    M: ['C', 'F', 'K'],
+    N: ['E', 'G', 'H'],
+    O: ['D', 'I', 'P'],
+    P: ['D', 'O', 'B']
   };
 
   /** Conceptos en inglés sin citar el título en español (si se cita, Midjourney lo dibuja como tipografía). */
@@ -70,24 +73,35 @@
     { id: 'P', nombre: 'Seguridad / data urbana', escena: 'central server cylinder with abstract keyhole shields and flat skyline, navy orange and beige palette, clean blank unmarked space' }
   ];
 
+  /**
+   * Keywords → mundo con peso. Se puntúa TODO el texto del artículo;
+   * el mundo principal y las 2 alternativas salen del ranking temático
+   * (no una terna fija por primer match).
+   */
   const KEYWORDS = [
-    // Específicos primero (evitar que "tecnología" o "equipo" ganen demasiado pronto)
-    { re: /equipos en terreno|ajustar a tiempo|cobertura|asistencia|equipos m[oó]viles|en terreno/i, id: 'F' },
-    { re: /retail|sala|supermercado|tienda|punto de venta|tpv/i, id: 'A' },
-    { re: /control|industria|monitoreo|tiempo real|operaci[oó]n en vivo/i, id: 'B' },
-    { re: /liderazgo|supervisi[oó]n experta|decisi[oó]n estrat/i, id: 'C' },
-    { re: /bodega|stock|inventario|almac[eé]n/i, id: 'E' },
-    { re: /ruta|distribuid|log[ií]stica|m[oó]vil/i, id: 'F' },
-    { re: /automatizaci[oó]n|agv|robot/i, id: 'H' },
-    { re: /data|datos|ciber|infraestructura digital/i, id: 'D' },
-    { re: /tecnolog[ií]a/i, id: 'D' },
-    { re: /crecimiento|ambici[oó]n|escala|meta/i, id: 'I' },
-    { re: /temporada|verano|playa|costero/i, id: 'J' },
-    { re: /oficina|colaboraci[oó]n|rr\.?hh|personas administrativas/i, id: 'K' },
-    { re: /urbano|despac|camion|entrega/i, id: 'L' },
-    { re: /staff|dotaci[oó]n|outsourcing/i, id: 'M' },
-    { re: /\bia\b|innovaci[oó]n|cerebro/i, id: 'O' },
-    { re: /seguridad|trazabilidad|protecci[oó]n/i, id: 'P' }
+    { re: /equipos en terreno|en terreno|equipos m[oó]viles|ajustar a tiempo/gi, id: 'F', w: 6 },
+    { re: /cobertura|asistencia en terreno|desplazamiento|ruta de trabajo/gi, id: 'F', w: 4 },
+    { re: /\brutas?\b|distribuid|log[ií]stica|flota|gps|geolocal/gi, id: 'F', w: 3 },
+    { re: /dotaci[oó]n|outsourcing|staffing|cuadrilla|brigada|equipo de terreno/gi, id: 'M', w: 5 },
+    { re: /\bstaff\b|trabajadores en terreno|operarios m[oó]viles/gi, id: 'M', w: 3 },
+    { re: /liderazgo|supervisi[oó]n experta|decisi[oó]n estrat|mando|jefatura/gi, id: 'C', w: 5 },
+    { re: /reacci[oó]n r[aá]pida|tomar decisiones|ventaja de ajustar/gi, id: 'C', w: 2 },
+    { re: /sala de control|monitoreo|tiempo real|operaci[oó]n en vivo|centro de control/gi, id: 'B', w: 5 },
+    { re: /\bindustria\b|control operacional/gi, id: 'B', w: 2 },
+    { re: /retail|supermercado|tienda|punto de venta|\btpv\b|sala de venta/gi, id: 'A', w: 5 },
+    { re: /bodega|stockroom|inventario|almac[eé]n|picking|replenish/gi, id: 'E', w: 5 },
+    { re: /automatizaci[oó]n|\bagv\b|robot|conveyor|sorter/gi, id: 'H', w: 5 },
+    { re: /ciber|infraestructura digital|motherboard|servidor|cloud/gi, id: 'D', w: 5 },
+    { re: /\bdata\b|\bdatos\b|analytics|dashboard|kpi/gi, id: 'D', w: 3 },
+    { re: /tecnolog[ií]a|digitalizaci[oó]n|software/gi, id: 'D', w: 2 },
+    { re: /crecimiento|ambici[oó]n|escala|meta|expansi[oó]n|proyecci[oó]n/gi, id: 'I', w: 4 },
+    { re: /temporada|verano|playa|costero|vacaciones/gi, id: 'J', w: 5 },
+    { re: /oficina|colaboraci[oó]n|rr\.?hh|personas administrativas|back office/gi, id: 'K', w: 4 },
+    { re: /urbano|ciudad|despacho|camin[oó]n|entrega last.?mile|van de entrega/gi, id: 'L', w: 4 },
+    { re: /warehouse|centro de distribuci[oó]n|fulfillment|cross.?dock/gi, id: 'G', w: 4 },
+    { re: /\bia\b|inteligencia artificial|innovaci[oó]n|cerebro|machine learning/gi, id: 'O', w: 5 },
+    { re: /seguridad|trazabilidad|protecci[oó]n|compliance|normativa/gi, id: 'P', w: 4 },
+    { re: /pallets?|cajas apiladas|racking|estanter/gi, id: 'N', w: 3 }
   ];
 
   const LS_KEY = 'ecr-portada-historial-v1';
@@ -201,26 +215,63 @@
     return MUNDOS.find((m) => m.id === id) || MUNDOS[5];
   }
 
-  function sugerirMundo(texto) {
+  /** Cuenta matches de un regex global sin romper lastIndex. */
+  function contarMatches(re, texto) {
+    const flags = re.flags.includes('g') ? re.flags : re.flags + 'g';
+    const r = new RegExp(re.source, flags);
+    const hits = texto.match(r);
+    return hits ? hits.length : 0;
+  }
+
+  /** Ranking de mundos según el texto del artículo (título + cuerpo). */
+  function puntuarMundos(texto) {
     const t = String(texto || '');
+    const scores = {};
+    for (const m of MUNDOS) scores[m.id] = 0;
     for (const k of KEYWORDS) {
-      if (k.re.test(t)) return k.id;
+      const n = contarMatches(k.re, t);
+      if (n > 0) scores[k.id] = (scores[k.id] || 0) + n * (k.w || 1);
     }
+    return Object.keys(scores)
+      .map((id) => ({ id, score: scores[id] }))
+      .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
+  }
+
+  function sugerirMundo(texto) {
+    const ranking = puntuarMundos(texto);
+    if (ranking[0] && ranking[0].score > 0) return ranking[0].id;
     return 'F';
   }
 
-  function elegirTresMundos(preferido) {
-    const primero = preferido || 'F';
-    const alts = ALTERNAS[primero] || ['F', 'L'];
-    const ids = [primero];
-    for (const a of alts) {
-      if (!ids.includes(a)) ids.push(a);
-      if (ids.length === 3) break;
+  /**
+   * 3 mundos según el tema del artículo:
+   * 1) top del ranking por keywords del texto
+   * 2–3) siguientes con score > 0
+   * relleno solo si hace falta con vecinos temáticos (ALTERNAS)
+   */
+  function elegirTresMundos(preferido, textoArticulo) {
+    const ranking = puntuarMundos(textoArticulo || '');
+    const ids = [];
+    const push = (id) => {
+      if (id && !ids.includes(id)) ids.push(id);
+    };
+
+    push(preferido || (ranking[0] && ranking[0].id) || 'F');
+
+    for (const row of ranking) {
+      if (ids.length >= 3) break;
+      if (row.score > 0) push(row.id);
     }
-    // Relleno si falta
+
+    const primero = ids[0] || 'F';
+    for (const a of ALTERNAS[primero] || []) {
+      if (ids.length >= 3) break;
+      push(a);
+    }
+
     for (const m of MUNDOS) {
-      if (ids.length === 3) break;
-      if (!ids.includes(m.id)) ids.push(m.id);
+      if (ids.length >= 3) break;
+      push(m.id);
     }
     return ids.slice(0, 3);
   }
@@ -236,12 +287,15 @@
     return `${BASE}, scene: ${mundo.escena}, thematic mood: ${concepto}, ${ANTITEXT}`;
   }
 
-  /** Siempre 3 opciones. El mundo principal se define desde el texto del artículo (no se elige a mano). */
+  /** Siempre 3 opciones. El mundo principal y las alternativas salen del tema del texto. */
   function armarTresOpciones(titulo, textoArticulo) {
-    const preferido = sugerirMundo([titulo, textoArticulo].filter(Boolean).join('\n'));
-    const ids = elegirTresMundos(preferido);
+    const blob = [titulo, textoArticulo].filter(Boolean).join('\n');
+    const preferido = sugerirMundo(blob);
+    const ids = elegirTresMundos(preferido, blob);
+    const ranking = puntuarMundos(blob);
     return {
       mundoDetectado: mundoPorId(preferido),
+      rankingTematico: ranking.filter((r) => r.score > 0).slice(0, 6),
       opciones: ids.map((id, i) => {
         const mundo = mundoPorId(id);
         return {
@@ -407,6 +461,8 @@
     BASE,
     MUNDOS,
     sugerirMundo,
+    puntuarMundos,
+    elegirTresMundos,
     armarPrompt,
     armarTresOpciones,
     mundoPorId,
@@ -423,8 +479,8 @@
       <p class="ecr-portada__intro">
         1) Entrega el <strong>PDF/DOCX</strong> del artículo (o el nombre).<br>
         2) Pulsa <strong>Generar prompt</strong>.<br>
-        3) El sistema <strong>define el mundo visual</strong> según el contenido y te entrega
-        <strong>3 opciones</strong> (solo ilustración de fondo).
+        3) El sistema <strong>elige 3 mundos visuales</strong> según el tema del artículo
+        (ranking por palabras clave del texto; no una terna fija).
         El prompt <strong>no incluye</strong> nombres de marca ni tipografía en español
         (si se escriben, Midjourney los dibuja como logo/texto).
         Sin flags <code>--ar</code>/<code>--style</code>/<code>--v</code>/<code>--no</code>.
@@ -636,18 +692,27 @@
       const mundo = pack.mundoDetectado;
       const opciones = pack.opciones;
       const desdeArchivo = ultimoTextoArticulo ? ' · desde documento' : '';
+      const idsOps = opciones.map((o) => o.mundoId).join(' · ');
+      const rankTxt = (pack.rankingTematico || [])
+        .slice(0, 4)
+        .map((r) => r.id)
+        .join(', ');
       if (mundoDetectadoEl) {
         mundoDetectadoEl.innerHTML =
-          '<strong>Mundo visual definido:</strong> ' +
+          '<strong>Mundos según el tema:</strong> ' +
+          escapeHtml(idsOps) +
+          ' <span style="opacity:.75">(principal ' +
           escapeHtml(mundo.id) +
           ' — ' +
-          escapeHtml(mundo.nombre);
+          escapeHtml(mundo.nombre) +
+          (rankTxt ? '; señales: ' + escapeHtml(rankTxt) : '') +
+          ')</span>';
       }
       if (hint) {
-        hint.textContent = `Definido al generar: mundo ${mundo.id} · ${mundo.nombre}`;
+        hint.textContent = `Según el artículo: ${idsOps} (principal ${mundo.id} · ${mundo.nombre})`;
       }
       meta.textContent =
-        `Artículo: ${titulo} · 3 opciones con mundo visual incluido en el prompt${desdeArchivo}`;
+        `Artículo: ${titulo} · 3 mundos temáticos distintos${desdeArchivo}`;
       renderOpciones(opciones);
       resultado.hidden = false;
       ultimoPayload = {
