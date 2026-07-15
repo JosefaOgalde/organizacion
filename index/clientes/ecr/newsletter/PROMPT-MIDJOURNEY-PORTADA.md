@@ -10,13 +10,13 @@ Ver siempre primero: [`BASE-ESTILO-PORTADAS.md`](./BASE-ESTILO-PORTADAS.md)
 
 ## Flujo (obligatorio)
 
-1. **Pedir el nombre del artículo** (no inventar el título).  
-2. Con el título + la **base de estilo guardada**, armar el prompt.  
-3. Entregar / visualizar en la landing del cliente ECR:
+1. **Cargar el PDF/DOCX del artículo** en la landing (o pedir/escribir el nombre si no hay archivo).  
+2. El sistema **lee el texto**, sugiere el título y el mundo visual A–P.  
+3. Une título/temática + la **base de estilo guardada** y muestra el prompt.
 
 `http://localhost:3000/index/clientes/ecr/` → sección **Portada Midjourney**
 
-Ahí se puede escribir el nombre, elegir (o auto-sugerir) el mundo visual A–P y copiar el prompt.
+Formatos: **PDF** (recomendado), **DOCX**, **TXT**. El `.doc` antiguo no se lee: convertir a PDF/DOCX.
 
 Archivo de la UI: [`ecr-portada-prompt.js`](./ecr-portada-prompt.js)
 

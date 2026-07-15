@@ -1,12 +1,19 @@
 /**
  * Generador de prompt Midjourney — Portada newsletter ECR
- * Flujo: pedir nombre del artículo → elegir mundo visual → unir con BASE guardada → mostrar prompt.
+ * Flujo:
+ * 1) Cargar PDF/DOCX (o escribir el nombre del artículo)
+ * 2) Leer texto → sugerir título + mundo visual
+ * 3) Unir con BASE guardada → mostrar prompt listo para copiar
  */
 (function () {
   const BASE =
     'Editorial LinkedIn newsletter cover background illustration for ECR Capacitacion brand system, NO text, NO logos, NO letters, NO watermarks, modern corporate flat vector illustration with depth, stylized faceless characters, clean geometric shapes, high-contrast complementary palette of warm orange/amber (#E85D04 family) and deep teal/navy blue, generous negative space for later headline overlay, professional Chilean corporate learning mood, polished editorial composition, wide landscape';
 
   const FLAGS = '--ar 1.91:1 --style raw --v 6.1 --no text, typography, letters, logo, watermark, signage, UI words, brand marks';
+
+  const PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs';
+  const PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
+  const MAMMOTH_CDN = 'https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js';
 
   const MUNDOS = [
     { id: 'A', nombre: 'Retail / supermercado bajo presión', escena: 'long supermarket aisle with stylized faceless shoppers and carts, reflective floor, warm orange backlight at the far end, cool teal shelves, calm negative space in the upper third' },
@@ -28,21 +35,28 @@
   ];
 
   const KEYWORDS = [
-    { re: /retail|sala|supermercado|tienda|campaña|punto de venta|tpv/i, id: 'A' },
+    // Específicos primero (evitar que "tecnología" o "equipo" ganen demasiado pronto)
+    { re: /equipos en terreno|ajustar a tiempo|cobertura|asistencia|equipos m[oó]viles|en terreno/i, id: 'F' },
+    { re: /retail|sala|supermercado|tienda|punto de venta|tpv/i, id: 'A' },
     { re: /control|industria|monitoreo|tiempo real|operaci[oó]n en vivo/i, id: 'B' },
-    { re: /liderazgo|supervisi[oó]n|criterio|decisi[oó]n estrat/i, id: 'C' },
-    { re: /data|datos|ciber|digital|tecnolog[ií]a|infraestructura/i, id: 'D' },
+    { re: /liderazgo|supervisi[oó]n experta|decisi[oó]n estrat/i, id: 'C' },
     { re: /bodega|stock|inventario|almac[eé]n/i, id: 'E' },
-    { re: /terreno|ruta|cobertura|distribuid|m[oó]vil|log[ií]stica|asistencia|ajustar a tiempo|equipos en terreno/i, id: 'F' },
+    { re: /ruta|distribuid|log[ií]stica|m[oó]vil/i, id: 'F' },
     { re: /automatizaci[oó]n|agv|robot/i, id: 'H' },
+    { re: /data|datos|ciber|infraestructura digital/i, id: 'D' },
+    { re: /tecnolog[ií]a/i, id: 'D' },
     { re: /crecimiento|ambici[oó]n|escala|meta/i, id: 'I' },
     { re: /temporada|verano|playa|costero/i, id: 'J' },
     { re: /oficina|colaboraci[oó]n|rr\.?hh|personas administrativas/i, id: 'K' },
     { re: /urbano|despac|camion|entrega/i, id: 'L' },
-    { re: /equipo|staff|dotaci[oó]n|outsourcing|personas/i, id: 'M' },
-    { re: /\bia\b|idea|innovaci[oó]n|cerebro/i, id: 'O' },
+    { re: /staff|dotaci[oó]n|outsourcing/i, id: 'M' },
+    { re: /\bia\b|innovaci[oó]n|cerebro/i, id: 'O' },
     { re: /seguridad|trazabilidad|protecci[oó]n/i, id: 'P' }
   ];
+
+  let pdfjsLibPromise = null;
+  let mammothPromise = null;
+  let ultimoTextoArticulo = '';
 
   function escapeHtml(s) {
     return String(s ?? '')
@@ -56,8 +70,8 @@
     return MUNDOS.find((m) => m.id === id) || MUNDOS[5];
   }
 
-  function sugerirMundo(titulo) {
-    const t = String(titulo || '');
+  function sugerirMundo(texto) {
+    const t = String(texto || '');
     for (const k of KEYWORDS) {
       if (k.re.test(t)) return k.id;
     }
@@ -76,13 +90,168 @@
     return `${BASE}, scene: ${mundo.escena}, thematic concept: ${concepto} ${FLAGS}`;
   }
 
+  function limpiarLinea(raw) {
+    return String(raw || '')
+      .replace(/\u0000/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function tituloDesdeNombreArchivo(name) {
+    return String(name || '')
+      .replace(/\.[^.]+$/, '')
+      .replace(/[_]+/g, ' ')
+      .replace(/^\s*ART[\s_\-]*\d+\s*[-–—:]?\s*/i, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  /** Heurística: título = primera línea sustancial (salta portada "ART 23", page markers, etc.). */
+  function inferirTitulo(texto, nombreArchivo) {
+    const fromFile = tituloDesdeNombreArchivo(nombreArchivo);
+    // Preferir nombre de archivo si es un ART_xx descriptivo
+    if (fromFile && /equipos|terreno|ventaja|retail|log[ií]st/i.test(fromFile) && fromFile.length >= 20) {
+      return fromFile.replace(/\s*la ventaja de ajustar a tiempo\.?/i, (m) => m.replace(/\.$/, '')).trim()
+        || fromFile;
+    }
+
+    const lines = String(texto || '')
+      .split(/\r?\n/)
+      .map(limpiarLinea)
+      .filter(Boolean);
+
+    const skip = /^(art(?:[ií]culo)?\s*\d+|page\s*\d+|--\s*\d+\s+of\s+\d+\s*--|ecr\s*group|www\.|http)/i;
+    const candidatos = [];
+
+    for (const line of lines.slice(0, 40)) {
+      if (line.length < 18 || line.length > 160) continue;
+      if (skip.test(line)) continue;
+      if (/^[•\-\d.…]+\s*$/.test(line)) continue;
+      // Evitar párrafos narrativos largos como "título"
+      if (/^(durante|hoy|en una|muchas|el terreno|la gesti)/i.test(line) && line.length > 90) continue;
+      candidatos.push(line);
+      if (candidatos.length >= 5) break;
+    }
+
+    if (candidatos.length) {
+      const conDosPuntos = candidatos.find((c) => /:/.test(c) && c.length < 120);
+      if (conDosPuntos) return conDosPuntos;
+      // Línea corta tipo titular
+      const corto = [...candidatos].sort((a, b) => a.length - b.length)[0];
+      return corto;
+    }
+
+    return fromFile || '';
+  }
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const existing = document.querySelector(`script[data-ecr-lib="${src}"]`);
+      if (existing) {
+        if (existing.dataset.loaded === '1') return resolve();
+        existing.addEventListener('load', () => resolve());
+        existing.addEventListener('error', () => reject(new Error('No se pudo cargar ' + src)));
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      s.dataset.ecrLib = src;
+      s.onload = () => {
+        s.dataset.loaded = '1';
+        resolve();
+      };
+      s.onerror = () => reject(new Error('No se pudo cargar ' + src));
+      document.head.appendChild(s);
+    });
+  }
+
+  async function getPdfjs() {
+    if (!pdfjsLibPromise) {
+      pdfjsLibPromise = import(PDFJS_CDN).then((mod) => {
+        const lib = mod.default || mod;
+        if (lib.GlobalWorkerOptions) {
+          lib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+        }
+        return lib;
+      });
+    }
+    return pdfjsLibPromise;
+  }
+
+  async function getMammoth() {
+    if (window.mammoth) return window.mammoth;
+    if (!mammothPromise) {
+      mammothPromise = loadScript(MAMMOTH_CDN).then(() => {
+        if (!window.mammoth) throw new Error('Mammoth no disponible');
+        return window.mammoth;
+      });
+    }
+    return mammothPromise;
+  }
+
+  async function leerPdf(file) {
+    const pdfjs = await getPdfjs();
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjs.getDocument({ data: buf }).promise;
+    const maxPages = Math.min(pdf.numPages, 8);
+    const partes = [];
+    for (let i = 1; i <= maxPages; i += 1) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const pageText = content.items.map((it) => it.str).join(' ');
+      partes.push(pageText);
+    }
+    return partes.join('\n').replace(/[ \t]+/g, ' ').trim();
+  }
+
+  async function leerDocx(file) {
+    const mammoth = await getMammoth();
+    const buf = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer: buf });
+    return String(result.value || '').trim();
+  }
+
+  async function leerTxt(file) {
+    return String(await file.text()).trim();
+  }
+
+  async function leerArchivoArticulo(file) {
+    const name = (file.name || '').toLowerCase();
+    const type = (file.type || '').toLowerCase();
+
+    if (name.endsWith('.doc') && !name.endsWith('.docx')) {
+      throw new Error(
+        'El formato .doc antiguo no se puede leer aquí. Guárdalo como PDF o .docx e inténtalo de nuevo.'
+      );
+    }
+
+    if (name.endsWith('.pdf') || type === 'application/pdf') {
+      return leerPdf(file);
+    }
+    if (
+      name.endsWith('.docx') ||
+      type.includes('wordprocessingml') ||
+      type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ) {
+      return leerDocx(file);
+    }
+    if (name.endsWith('.txt') || type.startsWith('text/')) {
+      return leerTxt(file);
+    }
+
+    throw new Error('Formato no soportado. Usa PDF, DOCX o TXT.');
+  }
+
   window.ECR_PORTADA_PROMPT = {
     BASE,
     FLAGS,
     MUNDOS,
     sugerirMundo,
     armarPrompt,
-    mundoPorId
+    mundoPorId,
+    inferirTitulo,
+    leerArchivoArticulo
   };
 
   window.ecrHtmlPortadaPrompt = function ecrHtmlPortadaPrompt() {
@@ -96,10 +265,33 @@
         <span class="ficha-seccion__estado">1.91:1 · sin textos ni logos</span>
       </div>
       <p class="ecr-portada__intro">
-        Escribe el <strong>nombre del artículo</strong>. El sistema une esa temática con la
-        <a href="newsletter/BASE-ESTILO-PORTADAS.md" target="_blank" rel="noopener">base de estilo guardada</a>
-        y te entrega el prompt listo para Midjourney.
+        Carga el <strong>PDF o DOCX</strong> del artículo (o escribe el nombre). Se lee el texto,
+        se sugiere el título y se arma el prompt con la
+        <a href="newsletter/BASE-ESTILO-PORTADAS.md" target="_blank" rel="noopener">base de estilo guardada</a>.
       </p>
+
+      <div class="ecr-portada__upload" data-ecr-portada-upload>
+        <label class="ecr-portada__label" for="ecr-portada-archivo">Archivo del artículo</label>
+        <div class="ecr-portada__drop" data-ecr-portada-drop>
+          <input
+            id="ecr-portada-archivo"
+            class="ecr-portada__file"
+            type="file"
+            accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+            data-ecr-portada-archivo
+          >
+          <p class="ecr-portada__drop-text">
+            Arrastra aquí el PDF/DOCX o <strong>elige archivo</strong>
+          </p>
+          <p class="ecr-portada__drop-hint">PDF recomendado · DOCX ok · .doc antiguo no soportado</p>
+        </div>
+        <p class="ecr-portada__file-status" data-ecr-portada-file-status></p>
+        <details class="ecr-portada__extracto" data-ecr-portada-extracto-wrap hidden>
+          <summary>Vista previa del texto leído</summary>
+          <pre class="ecr-portada__extracto-text" data-ecr-portada-extracto></pre>
+        </details>
+      </div>
+
       <form class="ecr-portada__form" data-ecr-portada-form>
         <label class="ecr-portada__label" for="ecr-portada-titulo">Nombre del artículo</label>
         <input
@@ -117,7 +309,7 @@
           <select id="ecr-portada-mundo" class="ecr-portada__select" data-ecr-portada-mundo>
             ${options}
           </select>
-          <button type="button" class="portal-btn portal-btn--ghost" data-ecr-portada-auto>Auto según título</button>
+          <button type="button" class="portal-btn portal-btn--ghost" data-ecr-portada-auto>Auto según texto</button>
         </div>
         <p class="ecr-portada__hint" data-ecr-portada-hint>Sugerencia: mundo F · Mapa / ruta logística (ajústalo si quieres otro).</p>
         <button type="submit" class="portal-btn ecr-portada__submit">Generar prompt</button>
@@ -148,6 +340,15 @@
     const promptEl = sec.querySelector('[data-ecr-portada-prompt-text]');
     const btnAuto = sec.querySelector('[data-ecr-portada-auto]');
     const btnCopiar = sec.querySelector('[data-ecr-portada-copiar]');
+    const fileInput = sec.querySelector('[data-ecr-portada-archivo]');
+    const drop = sec.querySelector('[data-ecr-portada-drop]');
+    const fileStatus = sec.querySelector('[data-ecr-portada-file-status]');
+    const extractoWrap = sec.querySelector('[data-ecr-portada-extracto-wrap]');
+    const extractoEl = sec.querySelector('[data-ecr-portada-extracto]');
+
+    function textoParaSugerir() {
+      return [input.value, ultimoTextoArticulo].filter(Boolean).join('\n');
+    }
 
     function refreshHint() {
       const mundo = mundoPorId(select.value);
@@ -155,7 +356,7 @@
     }
 
     function aplicarSugerencia() {
-      const id = sugerirMundo(input.value);
+      const id = sugerirMundo(textoParaSugerir());
       select.value = id;
       refreshHint();
     }
@@ -164,17 +365,51 @@
       if (e) e.preventDefault();
       const titulo = String(input.value || '').trim();
       if (!titulo) {
-        if (typeof opts.onError === 'function') opts.onError('Indica el nombre del artículo');
+        if (typeof opts.onError === 'function') opts.onError('Indica el nombre del artículo o carga un PDF/DOCX');
         input.focus();
         return;
       }
+      aplicarSugerencia();
       const mundo = mundoPorId(select.value);
       const prompt = armarPrompt(titulo, mundo.id);
-      meta.textContent = `Artículo: ${titulo} · Mundo ${mundo.id} (${mundo.nombre}) · base ECR sin textos/logos`;
+      const desdeArchivo = ultimoTextoArticulo ? ' · leído desde archivo' : '';
+      meta.textContent = `Artículo: ${titulo} · Mundo ${mundo.id} (${mundo.nombre}) · base ECR sin textos/logos${desdeArchivo}`;
       promptEl.textContent = prompt;
       resultado.hidden = false;
       if (typeof opts.onGenerate === 'function') {
-        opts.onGenerate({ titulo, mundoId: mundo.id, prompt });
+        opts.onGenerate({ titulo, mundoId: mundo.id, prompt, texto: ultimoTextoArticulo });
+      }
+    }
+
+    async function procesarArchivo(file) {
+      if (!file) return;
+      fileStatus.textContent = `Leyendo «${file.name}»…`;
+      fileStatus.classList.remove('ecr-portada__file-status--error');
+      extractoWrap.hidden = true;
+      try {
+        const texto = await leerArchivoArticulo(file);
+        if (!texto || texto.length < 20) {
+          throw new Error('No se pudo extraer texto útil del archivo.');
+        }
+        ultimoTextoArticulo = texto;
+        const titulo = inferirTitulo(texto, file.name);
+        if (titulo) input.value = titulo;
+        aplicarSugerencia();
+
+        const preview = texto.slice(0, 900) + (texto.length > 900 ? '…' : '');
+        extractoEl.textContent = preview;
+        extractoWrap.hidden = false;
+        fileStatus.textContent = `✓ Leído: ${file.name} · ${texto.length.toLocaleString('es-CL')} caracteres${titulo ? ` · título sugerido listo` : ''}`;
+        if (typeof opts.onFileLoaded === 'function') {
+          opts.onFileLoaded({ file, titulo, texto });
+        }
+        // Generar de inmediato si ya hay título
+        if (titulo) generar();
+      } catch (err) {
+        console.error(err);
+        fileStatus.textContent = err?.message || 'No se pudo leer el archivo';
+        fileStatus.classList.add('ecr-portada__file-status--error');
+        if (typeof opts.onError === 'function') opts.onError(fileStatus.textContent);
       }
     }
 
@@ -194,6 +429,37 @@
         if (typeof opts.onCopy === 'function') opts.onCopy(false);
       }
     });
+
+    fileInput?.addEventListener('change', () => {
+      const file = fileInput.files && fileInput.files[0];
+      procesarArchivo(file);
+    });
+
+    if (drop) {
+      ['dragenter', 'dragover'].forEach((ev) => {
+        drop.addEventListener(ev, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          drop.classList.add('ecr-portada__drop--active');
+        });
+      });
+      ['dragleave', 'drop'].forEach((ev) => {
+        drop.addEventListener(ev, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          drop.classList.remove('ecr-portada__drop--active');
+        });
+      });
+      drop.addEventListener('drop', (e) => {
+        const file = e.dataTransfer?.files?.[0];
+        if (file && fileInput) {
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          fileInput.files = dt.files;
+        }
+        procesarArchivo(file);
+      });
+    }
 
     if (opts.tituloInicial) {
       input.value = opts.tituloInicial;
