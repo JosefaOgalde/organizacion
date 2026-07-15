@@ -1,71 +1,29 @@
 # Prompt Midjourney — Portada newsletter ECR
 
-**Tarea:** `[ECR] Portada newsletter` · 15/07/2026  
-**Uso:** imagen de portada LinkedIn Newsletter / article cover  
-**Tamaño objetivo al exportar:** **1200 × 627 px** (o 1920 × 1080 y recortar a 1.91:1)  
-**En Midjourney:** `--ar 1.91:1`
+Ver siempre primero: [`BASE-ESTILO-PORTADAS.md`](./BASE-ESTILO-PORTADAS.md)  
+(ahí está el ADN visual de las portadas de referencia: solo fondos, sin textos ni logos).
 
-Marca ECR (referencia visual): naranja corporativo cálido ≈ `#E85D04`, blanco, negros suaves; look profesional de capacitación / aprendizaje corporativo Chile.
-
----
-
-## Cómo usar
-
-1. Reemplaza `[TEMA]` por el título o idea del newsletter (ej. *inteligencia artificial en el trabajo*, *liderazgo de equipos*, *Excel avanzado*).  
-2. Pega el prompt en Midjourney.  
-3. Si sale texto ilegible en la imagen: agrega `--no text, letters, watermark` o quita la línea de tipografía.  
-4. Exporta / recorta a **1200×627**.
+**Tamaño LinkedIn:** `--ar 1.91:1` · export ~1200×627  
+**Ignorar siempre en refs:** logo ECR GROUP + tipografías.
 
 ---
 
-## Prompt Midjourney (copiar)
+## Bloque BASE (siempre)
 
 ```
-Editorial LinkedIn newsletter cover for ECR Capacitacion, corporate learning brand, theme: [TEMA], cinematic wide hero, professional Chilean workplace mood, warm orange accent light #E85D04, clean modern composition, one clear visual concept, people learning or collaborating with purpose (optional, natural not staged), soft depth of field, premium educational branding, high-end corporate photography style, generous negative space on one side for headline overlay later, no clutter, photorealistic --ar 1.91:1 --style raw --v 6.1
+Editorial LinkedIn newsletter cover background illustration for ECR Capacitacion brand system, NO text, NO logos, NO letters, NO watermarks, modern corporate flat vector illustration with depth, stylized faceless characters, clean geometric shapes, high-contrast complementary palette of warm orange/amber (#E85D04 family) and deep teal/navy blue, generous negative space for later headline overlay, professional Chilean corporate learning mood, polished editorial composition, wide landscape --ar 1.91:1 --style raw --v 6.1 --no text, typography, letters, logo, watermark, signage, UI words, brand marks
 ```
 
-### Refuerzo anti-texto (recomendado)
+## Prompt final
 
-```
---no text, typography, letters, logo, watermark, UI, collage, busy background
-```
-
-Prompt completo con anti-texto:
-
-```
-Editorial LinkedIn newsletter cover for ECR Capacitacion, corporate learning brand, theme: [TEMA], cinematic wide hero, professional Chilean workplace mood, warm orange accent light #E85D04, clean modern composition, one clear visual concept, soft depth of field, premium educational branding, high-end corporate photography style, generous negative space on one side for headline overlay later, no clutter, photorealistic --ar 1.91:1 --style raw --v 6.1 --no text, typography, letters, logo, watermark, UI, collage
-```
+Se arma cuando llegue la **temática**, eligiendo un mundo visual (retail, warehouse, data, liderazgo, etc.) de la base.
 
 ---
 
-## Variantes por tono (elige una y reemplaza la parte del theme)
+## Checklist antes de generar
 
-**IA / productividad**
-```
-theme: professionals using AI tools productively in a bright office, hopeful and modern, subtle tech glow mixed with warm orange accent
-```
-
-**Liderazgo / equipos**
-```
-theme: authentic team leadership meeting, diverse Chilean professionals, collaborative energy, warm orange accent light
-```
-
-**Capacitación / aula digital**
-```
-theme: adult learning / e-learning atmosphere, focused learner with laptop, campus-like warmth, orange accent, inspiring not cold
-```
-
----
-
-## Versión corta (si Midjourney corta el prompt)
-
-```
-ECR Capacitacion newsletter cover, [TEMA], warm orange #E85D04 accents, clean corporate learning hero, photorealistic, wide LinkedIn cover, space for text later --ar 1.91:1 --style raw --v 6.1 --no text, letters, watermark
-```
-
----
-
-## Notas
-
-- El **texto del título** de la newsletter conviene ponerlo después en Canva/Photoshop (LinkedIn recorta y Midjourney deforma letras).  
-- Si me pasas el **tema exacto** del newsletter de hoy, te dejo el prompt ya relleno sin `[TEMA]`.
+- [ ] Temática definida  
+- [ ] Mundo visual elegido según tema  
+- [ ] Sin texto / sin logos en el prompt  
+- [ ] `--ar 1.91:1`  
+- [ ] Espacio negativo para título en Canva después  
