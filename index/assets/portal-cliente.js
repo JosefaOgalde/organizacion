@@ -230,6 +230,21 @@
         ? window.ecrHtmlPortadaPrompt()
         : '';
 
+    const ecrRutasHtml = c.slug === 'ecr'
+      ? `<section class="ecr-rutas ficha-seccion ficha-seccion--portal">
+          <div class="ficha-seccion__headline">
+            <h2 class="ficha-seccion__titulo">Rutas de aprendizaje</h2>
+            <span class="ficha-seccion__estado">Modal por sector</span>
+          </div>
+          <p>Textos y links del modal (Retail, Financiero, Salud, Tecnología, Gestión, Logística, Datos + In Company). Aquí puedes revisarlos y decir qué cambiar.</p>
+          <p style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem">
+            <a class="portal-btn" href="capacitaciones/preview-modal.html" target="_blank" rel="noopener">Abrir preview del modal</a>
+            <a class="portal-btn portal-btn--ghost" href="capacitaciones/REVISION-TEXTOS-Y-LINKS-MODALES.txt" target="_blank" rel="noopener">Ver textos a revisar (.txt)</a>
+            <a class="portal-btn portal-btn--ghost" href="capacitaciones/modal-ruta-sectores.html" target="_blank" rel="noopener">HTML Elementor</a>
+          </p>
+        </section>`
+      : '';
+
     const imagenesHtml = imagenesSeccionHtml(landing);
 
     root.innerHTML = `
@@ -247,6 +262,7 @@
         ${entregablesHtml(landingCfg)}
         ${seccionesHtml(landingCfg)}
         ${ecrPortadaHtml}
+        ${ecrRutasHtml}
         ${imagenesHtml}
         ${mkofLandingHtml}
         ${wireframesHtml}
