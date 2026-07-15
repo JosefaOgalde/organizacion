@@ -1,8 +1,45 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-15T23:30:07.919Z",
-  "nota": "Ranking temático de mundos (keywords con peso). 3 opciones + ANTITEXT.",
+  "updatedAt": "2026-07-15T23:43:08.687Z",
+  "nota": "Incluye fondos elegidos NL 1 ago + prompts ART23.",
   "items": [
+    {
+      "id": "nl-2026-08-01-fondos-elegidos",
+      "fecha": "2026-07-15",
+      "titulo": "NL 1 agosto — 4 fondos Midjourney elegidos (equipos en terreno)",
+      "mundoId": "F",
+      "mundoNombre": "Mapa / ruta logística (+ variantes liderazgo / cobertura)",
+      "prompt": "(fondos ya generados en Midjourney; ver markdown de selección)",
+      "opciones": [
+        {
+          "opcion": 1,
+          "mundoId": "F",
+          "mundoNombre": "Mapa / ruta logística",
+          "prompt": "seleccionado — landscape pines vans tablet"
+        },
+        {
+          "opcion": 2,
+          "mundoId": "H",
+          "mundoNombre": "Automatización (alerta tipografía)",
+          "prompt": "seleccionado con reserva — holos con hex; preferir tapar en Canva o descartar"
+        },
+        {
+          "opcion": 3,
+          "mundoId": "C",
+          "mundoNombre": "Liderazgo / equipo + skyline",
+          "prompt": "seleccionado — personas de espaldas, circuito, camiones"
+        },
+        {
+          "opcion": 4,
+          "mundoId": "F",
+          "mundoNombre": "Cobertura en terreno (variante)",
+          "prompt": "seleccionado — ruta naranja, pines, vans panel liso"
+        }
+      ],
+      "notas": "Elegidos para portada NL LinkedIn 1 ago. Armado Canva viernes 17. Flujo repetible en perfil ECR.",
+      "origen": "usuaria",
+      "archivoMarkdown": "portadas-guardadas/NL-2026-08-01-fondos-elegidos.md"
+    },
     {
       "id": "art23-equipos-en-terreno",
       "fecha": "2026-07-15",

@@ -2,7 +2,14 @@
 
 Actualizado: 2026-07-15
 
-## Equipos en terreno: la ventaja de ajustar a tiempo
+## NL 1 agosto 2026 — fondos elegidos
+
+- Artículo: Equipos en terreno: la ventaja de ajustar a tiempo
+- **4 fondos Midjourney seleccionados** (armar Canva el viernes 17-07)
+- Archivo: [portadas-guardadas/NL-2026-08-01-fondos-elegidos.md](./portadas-guardadas/NL-2026-08-01-fondos-elegidos.md)
+- Flujo repetible desde perfil ECR → Portada Midjourney
+
+## Equipos en terreno: la ventaja de ajustar a tiempo (prompts)
 
 - Mundos: F · C · M
 - Archivo: [portadas-guardadas/ART23-equipos-en-terreno.md](./portadas-guardadas/ART23-equipos-en-terreno.md)

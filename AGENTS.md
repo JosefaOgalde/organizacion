@@ -24,6 +24,7 @@
 - Modal finalizado. HTML para Elementor: `index/clientes/ecr/capacitaciones/modal-ruta-sectores.html`.
 - Solo Excel/Power BI unificados (`Excel - Nivel` / `Power BI - Nivel`); resto de nombres literales.
 - Organizador: `node scripts/add-ecr-rutas-viernes.js` y abrir `http://localhost:3000/index.html?disco=1`.
+- Portada NL 1 ago: fondos elegidos en `portadas-guardadas/NL-2026-08-01-fondos-elegidos.md`. Tarea viernes: `node scripts/add-ecr-portada-nl-agosto.js` → `?disco=1` (fecha 2026-07-17).
 
 ### Portal clientes — Nueva tarea
 - En cada landing de cliente (`portal-cliente.js`) hay un botón **Nueva tarea** arriba en la toolbar.
