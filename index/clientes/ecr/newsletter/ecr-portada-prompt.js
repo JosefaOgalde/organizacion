@@ -9,7 +9,7 @@
  */
 (function () {
   const BASE =
-    'ONLY a LinkedIn newsletter cover BACKGROUND image (not a finished cover): Editorial illustration background for ECR Capacitacion brand system, empty reserved space for later text overlay in Canva, NO text, NO logos, NO letters, NO watermarks, NO typography layout, modern corporate flat vector illustration with depth, stylized faceless characters, clean geometric shapes, high-contrast complementary palette of warm orange/amber (#E85D04 family) and deep teal/navy blue, generous negative space for later headline overlay, professional Chilean corporate learning mood, polished editorial composition, wide landscape';
+    'Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, absolutely blank of writing: zero text, zero letters, zero numbers, zero logos, zero wordmarks, zero watermarks, zero captions, zero signs with writing, zero UI labels, zero brand names painted in the image, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space (blank sky or blank color block) with nothing written on it, polished professional composition, wide landscape';
 
   /** No pegar flags de Midjourney en el prompt: en este flujo Midjourney no los lee. */
   const PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs';
@@ -36,32 +36,30 @@
     P: ['D', 'O']
   };
 
+  /** Conceptos en inglés sin citar el título en español (si se cita, Midjourney lo dibuja como tipografía). */
   const CONCEPTOS = [
-    (titulo) =>
-      `visual metaphor for the newsletter theme "${titulo}": coordinated field teams, timely operational adjustment, people data and decisions connecting without any readable text`,
-    (titulo) =>
-      `visual metaphor for the newsletter theme "${titulo}": real-time coordination across locations, clarity replacing delayed reports, calm productive energy without any readable text`,
-    (titulo) =>
-      `visual metaphor for the newsletter theme "${titulo}": human teams guided by simple digital signals, agile operations, open composition for later headline without any readable text`
+    'timely coordination of mobile field teams, decisions flowing in real time, calm productive energy, no labels anywhere',
+    'operations adjusting across distant locations, clarity replacing delay, soft ambient glow, completely unmarked surfaces',
+    'people guided by simple abstract digital signals, agile work rhythm, open blank upper area, nothing written in the scene'
   ];
 
   const MUNDOS = [
-    { id: 'A', nombre: 'Retail / supermercado bajo presión', escena: 'long supermarket aisle with stylized faceless shoppers and carts, reflective floor, warm orange backlight at the far end, cool teal shelves, calm negative space in the upper third' },
-    { id: 'B', nombre: 'Sala de control / industria tech', escena: 'industrial control room with glowing orange monitor screens, stylized helmeted workers at consoles, clean orange color block occupying the upper half for title space, deep navy shadows' },
-    { id: 'C', nombre: 'Liderazgo sobre operación', escena: 'stylized leader silhouette in profile overlooking logistics boxes and a simplified industrial skyline, sunset orange rim light, teal atmosphere, generous open sky for headline' },
-    { id: 'D', nombre: 'Data / ciber / infraestructura', escena: 'isometric soft 3D data infrastructure with geometric cubes and motherboard-like grid, glowing orange circuit lines, deep teal base, clean negative space to one side' },
-    { id: 'E', nombre: 'Bodega / stockroom', escena: 'warehouse stockroom aisle with orange crates on teal shelving, flat stylized workers, central corridor perspective, duotone orange and teal, open ceiling space for overlay' },
-    { id: 'F', nombre: 'Mapa / ruta logística', escena: 'abstract logistics map with an orange route ribbon over teal terrain, location pins, tiny vehicles, a tablet with simple charts, amber horizon, wide negative space above' },
-    { id: 'G', nombre: 'Warehouse + retail humano', escena: 'warm warehouse-retail hybrid scene with stacked boxes and a simple counter display, hanging orange lamps, cyan clean upper block for title space, faceless staff' },
-    { id: 'H', nombre: 'Automatización logística', escena: 'isometric navy and orange automated warehouse with conveyors and AGV robots, glowing accents, racking in background, open upper area for headline' },
-    { id: 'I', nombre: 'Crecimiento / ambición', escena: 'ascending stylized silhouettes climbing geometric bar-like steps toward an orange sky with soft clouds, teal ground plane, strong negative space on the left' },
-    { id: 'J', nombre: 'Retail costero / temporada', escena: 'minimal flat retail interior in cool blue with a coastal view through glass, orange accents, generous negative space, calm seasonal mood' },
-    { id: 'K', nombre: 'Oficina colaborativa', escena: 'collaborative office profiles at laptops along a teal and beige diagonal split, orange accents, subtle paper texture, open corner for title' },
-    { id: 'L', nombre: 'Logística urbana limpia', escena: 'clean urban logistics scene with an orange delivery truck beside a sage-teal building and thin trees, soft glow at the entrance, open sky for overlay' },
-    { id: 'M', nombre: 'Equipo diverso', escena: 'centered group of diverse stylized field workers with simple industrial props, solid beige-teal background, orange highlights, balanced negative space around them' },
-    { id: 'N', nombre: 'Warehouse texturizado', escena: 'textured warehouse with stacked orange-blue crates, reflective floor, overhead lamp glow, pigment-like texture, open upper band for headline' },
-    { id: 'O', nombre: 'Cerebro / ideas / IA', escena: 'soft peach brain-like form with blue neural network lines and orange nodes on a clean cream background, generous negative space' },
-    { id: 'P', nombre: 'Seguridad / data urbana', escena: 'central server cylinder with abstract keyhole shields and flat skyline, navy orange and beige palette, clean negative space for typography' }
+    { id: 'A', nombre: 'Retail / supermercado bajo presión', escena: 'long supermarket aisle with stylized faceless shoppers and carts, reflective floor, warm orange backlight at the far end, cool teal shelves, calm blank unmarked space in the upper third' },
+    { id: 'B', nombre: 'Sala de control / industria tech', escena: 'industrial control room with glowing abstract orange screens without readable interface text, stylized helmeted workers at consoles, clean orange color block occupying the upper half as empty unmarked space, deep navy shadows' },
+    { id: 'C', nombre: 'Liderazgo sobre operación', escena: 'stylized leader silhouette in profile overlooking logistics boxes and a simplified industrial skyline, sunset orange rim light, teal atmosphere, generous open blank sky' },
+    { id: 'D', nombre: 'Data / ciber / infraestructura', escena: 'isometric soft 3D data infrastructure with geometric cubes and motherboard-like grid, glowing orange circuit lines, deep teal base, clean blank unmarked space to one side' },
+    { id: 'E', nombre: 'Bodega / stockroom', escena: 'warehouse stockroom aisle with orange crates on teal shelving, flat stylized workers, central corridor perspective, duotone orange and teal, open blank ceiling area' },
+    { id: 'F', nombre: 'Mapa / ruta logística', escena: 'abstract logistics map with an orange route ribbon over teal terrain, location pins, tiny vehicles, a tablet showing abstract charts without readable labels, amber horizon, wide blank unmarked space above' },
+    { id: 'G', nombre: 'Warehouse + retail humano', escena: 'warm warehouse-retail hybrid scene with stacked boxes and a simple counter display, hanging orange lamps, cyan clean upper block as empty unmarked space, faceless staff' },
+    { id: 'H', nombre: 'Automatización logística', escena: 'isometric navy and orange automated warehouse with conveyors and AGV robots, glowing accents, racking in background, open blank upper area' },
+    { id: 'I', nombre: 'Crecimiento / ambición', escena: 'ascending stylized silhouettes climbing geometric bar-like steps toward an orange sky with soft clouds, teal ground plane, strong blank unmarked space on the left' },
+    { id: 'J', nombre: 'Retail costero / temporada', escena: 'minimal flat retail interior in cool blue with a coastal view through glass, orange accents, generous blank unmarked space, calm seasonal mood' },
+    { id: 'K', nombre: 'Oficina colaborativa', escena: 'collaborative office profiles at laptops along a teal and beige diagonal split, orange accents, subtle paper texture, open blank corner' },
+    { id: 'L', nombre: 'Logística urbana limpia', escena: 'clean urban logistics scene with an orange delivery truck beside a sage-teal building and thin trees, soft glow at the entrance, open blank sky with no lettering on truck or walls' },
+    { id: 'M', nombre: 'Equipo diverso', escena: 'centered group of diverse stylized field workers with simple industrial props, solid beige-teal background, orange highlights, balanced blank unmarked space around them' },
+    { id: 'N', nombre: 'Warehouse texturizado', escena: 'textured warehouse with stacked orange-blue crates, reflective floor, overhead lamp glow, pigment-like texture, open blank upper band' },
+    { id: 'O', nombre: 'Cerebro / ideas / IA', escena: 'soft peach brain-like form with blue neural network lines and orange nodes on a clean cream background, generous blank unmarked space' },
+    { id: 'P', nombre: 'Seguridad / data urbana', escena: 'central server cylinder with abstract keyhole shields and flat skyline, navy orange and beige palette, clean blank unmarked space' }
   ];
 
   const KEYWORDS = [
@@ -219,16 +217,15 @@
     return ids.slice(0, 3);
   }
 
-  function conceptoDesdeTitulo(titulo, variante) {
-    const limpio = String(titulo || '').trim().replace(/\s+/g, ' ') || 'field operations adjusting decisions in real time';
-    const fn = CONCEPTOS[variante % CONCEPTOS.length];
-    return fn(limpio);
+  function conceptoDesdeTitulo(_titulo, variante) {
+    return CONCEPTOS[variante % CONCEPTOS.length];
   }
 
   function armarPrompt(titulo, mundoId, variante) {
     const mundo = mundoPorId(mundoId || sugerirMundo(titulo));
     const concepto = conceptoDesdeTitulo(titulo, variante || 0);
-    return `${BASE}, visual world "${mundo.nombre}": ${mundo.escena}, thematic concept: ${concepto}`;
+    // No incluir nombres en español ni marcas en el texto pegable: Midjourney los dibuja como tipografía/logo.
+    return `${BASE}, scene: ${mundo.escena}, thematic mood: ${concepto}`;
   }
 
   /** Siempre 3 opciones. El mundo principal se define desde el texto del artículo (no se elige a mano). */
@@ -419,8 +416,10 @@
         1) Entrega el <strong>PDF/DOCX</strong> del artículo (o el nombre).<br>
         2) Pulsa <strong>Generar prompt</strong>.<br>
         3) El sistema <strong>define el mundo visual</strong> según el contenido y te entrega
-        <strong>3 opciones</strong> con ese mundo ya incluido en cada prompt
-        (solo fondo, sin tipografía/logo, sin flags <code>--ar</code>/<code>--style</code>/<code>--v</code>/<code>--no</code>).
+        <strong>3 opciones</strong> (solo ilustración de fondo).
+        El prompt <strong>no incluye</strong> nombres de marca ni tipografía en español
+        (si se escriben, Midjourney los dibuja como logo/texto).
+        Sin flags <code>--ar</code>/<code>--style</code>/<code>--v</code>/<code>--no</code>.
       </p>
 
       <div class="ecr-portada__upload" data-ecr-portada-upload>

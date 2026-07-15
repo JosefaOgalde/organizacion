@@ -71,7 +71,7 @@ Esta base se armó a partir del set de portadas de referencia (retail, industria
 ## 3) Bloque BASE para Midjourney (pegar siempre)
 
 ```
-ONLY a LinkedIn newsletter cover BACKGROUND image (not a finished cover): Editorial illustration background for ECR Capacitacion brand system, empty reserved space for later text overlay in Canva, NO text, NO logos, NO letters, NO watermarks, NO typography layout, modern corporate flat vector illustration with depth, stylized faceless characters, clean geometric shapes, high-contrast complementary palette of warm orange/amber (#E85D04 family) and deep teal/navy blue, generous negative space for later headline overlay, professional Chilean corporate learning mood, polished editorial composition, wide landscape
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, absolutely blank of writing: zero text, zero letters, zero numbers, zero logos, zero wordmarks, zero watermarks, zero captions, zero signs with writing, zero UI labels, zero brand names painted in the image, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space (blank sky or blank color block) with nothing written on it, polished professional composition, wide landscape
 ```
 
 ---
