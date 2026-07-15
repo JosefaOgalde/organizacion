@@ -1,5 +1,7 @@
 /**
  * Generador de prompt Midjourney — Portada newsletter ECR
+ * Alcance: SOLO imagen de fondo de la portada (luego se abre en Canva y se pone título/logo).
+ * No genera la portada completa ni tipografías.
  * Flujo:
  * 1) Cargar PDF/DOCX (o escribir el nombre del artículo)
  * 2) Leer texto → sugerir título + mundo visual
@@ -7,7 +9,7 @@
  */
 (function () {
   const BASE =
-    'Editorial LinkedIn newsletter cover background illustration for ECR Capacitacion brand system, NO text, NO logos, NO letters, NO watermarks, modern corporate flat vector illustration with depth, stylized faceless characters, clean geometric shapes, high-contrast complementary palette of warm orange/amber (#E85D04 family) and deep teal/navy blue, generous negative space for later headline overlay, professional Chilean corporate learning mood, polished editorial composition, wide landscape';
+    'ONLY a LinkedIn newsletter cover BACKGROUND image (not a finished cover): Editorial illustration background for ECR Capacitacion brand system, empty reserved space for later text overlay in Canva, NO text, NO logos, NO letters, NO watermarks, NO typography layout, modern corporate flat vector illustration with depth, stylized faceless characters, clean geometric shapes, high-contrast complementary palette of warm orange/amber (#E85D04 family) and deep teal/navy blue, generous negative space for later headline overlay, professional Chilean corporate learning mood, polished editorial composition, wide landscape';
 
   const FLAGS = '--ar 1.91:1 --style raw --v 6.1 --no text, typography, letters, logo, watermark, signage, UI words, brand marks';
 
@@ -258,11 +260,12 @@
     return `<section class="ecr-portada ficha-seccion ficha-seccion--portal" data-ecr-portada-prompt>
       <div class="ficha-seccion__headline">
         <h2 class="ficha-seccion__titulo">Portada Midjourney</h2>
-        <span class="ficha-seccion__estado">1.91:1 · sin textos ni logos</span>
+        <span class="ficha-seccion__estado">Solo fondo · 1.91:1</span>
       </div>
       <p class="ecr-portada__intro">
-        Carga el <strong>PDF o DOCX</strong> del artículo (o escribe el nombre). Se lee el texto,
-        se sugiere el título y se arma el prompt con la
+        El prompt es <strong>solo para la imagen de fondo</strong> de la portada (no tipografía ni logo).
+        Después se monta el título en Canva. Carga el <strong>PDF o DOCX</strong> (o escribe el nombre):
+        se sugiere título/mundo y se arma el prompt con la
         <a href="newsletter/BASE-ESTILO-PORTADAS.md" target="_blank" rel="noopener">base de estilo guardada</a>.
       </p>
 
@@ -312,7 +315,7 @@
       </form>
       <div class="ecr-portada__resultado" data-ecr-portada-resultado hidden>
         <div class="ecr-portada__resultado-head">
-          <h3 class="ecr-portada__resultado-titulo">Prompt listo</h3>
+          <h3 class="ecr-portada__resultado-titulo">Prompt listo (solo fondo)</h3>
           <button type="button" class="portal-btn" data-ecr-portada-copiar>Copiar</button>
         </div>
         <p class="ecr-portada__meta" data-ecr-portada-meta></p>
