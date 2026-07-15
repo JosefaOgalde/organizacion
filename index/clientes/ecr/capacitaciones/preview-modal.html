@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ECR — Preview modal sectores</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #f2f2f2; padding: 1rem; }
+    h1 { font-size: 1.1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; max-width: 720px; }
+    .ecr-sector-card {
+      min-height: 160px;
+      border-radius: 12px;
+      background: #333 center/cover no-repeat;
+      color: #fff;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0.75rem;
+      font-weight: 700;
+    }
+    .ecr-sector-card[data-ecr-sector="retail"] { background-image: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.55)), linear-gradient(135deg,#555,#222); }
+    .ecr-sector-card[data-ecr-sector="financiero"] { background-image: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.55)), linear-gradient(135deg,#1a3a5c,#0d1f33); }
+    .ecr-sector-card[data-ecr-sector="salud"] { background-image: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.55)), linear-gradient(135deg,#3d5a3d,#1a2e1a); }
+    .ecr-sector-card[data-ecr-sector="tecnologia"] { background-image: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.55)), linear-gradient(135deg,#2a2a5c,#12122e); }
+    .ecr-sector-card[data-ecr-sector="gestion"] { background-image: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.55)), linear-gradient(135deg,#5c3a1a,#2e1a0d); }
+    .ecr-sector-card[data-ecr-sector="logistica"] { background-image: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.55)), linear-gradient(135deg,#3a3a3a,#1a1a1a); }
+    .ecr-sector-card[data-ecr-sector="datos"] { background-image: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.55)), linear-gradient(135deg,#1a4a5c,#0d2533); }
+  </style>
+</head>
+<body>
+  <h1>Preview ECR — clic en una sección</h1>
+  <div class="grid">
+    <div class="ecr-sector-card" data-ecr-sector="retail">Retail</div>
+    <div class="ecr-sector-card" data-ecr-sector="financiero">Financiero</div>
+    <div class="ecr-sector-card" data-ecr-sector="salud">Salud</div>
+    <div class="ecr-sector-card" data-ecr-sector="tecnologia">Tecnología</div>
+    <div class="ecr-sector-card" data-ecr-sector="gestion">Gestión</div>
+    <div class="ecr-sector-card" data-ecr-sector="logistica">Logística</div>
+    <div class="ecr-sector-card" data-ecr-sector="datos">Datos</div>
+  </div>
+  <!--#include no; se inyecta debajo -->
+  <iframe id="src" style="display:none" src="modal-ruta-sectores.html"></iframe>
+  <script>
+    // Cargar CSS/JS del modal sin iframe: fetch e inyectar
+    fetch('modal-ruta-sectores.html')
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        Array.prototype.forEach.call(tmp.querySelectorAll('style'), function (s) {
+          document.head.appendChild(s.cloneNode(true));
+        });
+        Array.prototype.forEach.call(tmp.querySelectorAll('script'), function (s) {
+          var n = document.createElement('script');
+          n.textContent = s.textContent;
+          document.body.appendChild(n);
+        });
+      });
+  </script>
+</body>
+</html>
