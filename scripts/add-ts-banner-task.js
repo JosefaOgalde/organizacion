@@ -4,6 +4,7 @@
  * - [TS] Cambiar banner
  * - [TS] Crear contenido
  * - [ECR] Crear copys
+ * - [ECR] Portada newsletter
  *
  *   node scripts/add-ts-banner-task.js
  *
@@ -50,6 +51,19 @@ const TAREAS = [
     horaInicio: '14:00',
     horaFin: '16:00',
     notas: 'Crear copys para ECR (newsletter / feed / carrusel según necesidad del día).',
+    prioridad: 'media',
+    completada: false,
+    pendiente: false,
+  },
+  {
+    id: 'tarea-ecr-portada-nl-2026-07-15',
+    titulo: '[ECR] Portada newsletter',
+    clienteId: 'cli-ecr',
+    rolId: 'rol-ecr-cm',
+    fecha: FECHA,
+    horaInicio: '16:00',
+    horaFin: '17:00',
+    notas: 'Crear / preparar portada del newsletter ECR.',
     prioridad: 'media',
     completada: false,
     pendiente: false,
