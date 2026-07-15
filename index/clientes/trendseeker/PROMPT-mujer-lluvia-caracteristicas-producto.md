@@ -1,73 +1,76 @@
-# Prompt — Mujer · mucha lluvia · foco en características del producto
+# Prompt — Mujer · mucha lluvia · Botas de Agua Bajas Rojo Militar (Hunter)
 
 **Cliente:** TrendSeeker  
-**Uso:** Gemini / Veo · video corto 9:16  
-**Objetivo:** Mostrar con claridad las **características del producto** (según tus fotos de referencia) bajo **mucha lluvia**, con fidelidad máxima al modelo.  
-**Diferencia vs prompt mujer anterior (trench + paraguas editorial):** aquí el video es un **spot de producto**: planos detalle, características, impermeabilidad. El paraguas es opcional; lo importante son las botas.
+**Producto:** [Botas de Agua Bajas para Mujer Rojo Militar](https://trendseeker.cl/producto/botas-de-agua-bajas-para-mujer-rojo-militar/)  
+**Marca:** Hunter  
+**SKU:** WFS1000RMA-MLR  
+**Formato:** video 8s · 9:16 · 1080p  
 
 ---
 
-## Cómo adjuntar (obligatorio)
+## Características oficiales (mostrar en el video)
 
-Sube **todas** las fotos de características / ángulos del producto:
+De la ficha TrendSeeker:
 
-- A: lateral completo  
-- B: ¾ o frontal  
-- C: detalle suela / agarre  
-- D: detalle cuello, forro, neopreno, cordones, logo o lo que muestren tus imágenes  
+- Completamente impermeables  
+- Elaboradas a mano a partir de 28 piezas  
+- Ajuste normal  
+- Forro de poliéster  
+- Suela de goma con dibujo de Hunter Original  
+- Confeccionadas en caucho vulcanizado natural con acabado mate  
+- Versión **baja** de la clásica bota alta Hunter Original  
+- Color de producto: **Rojo Militar** (según título/ficha; respetar el color exacto de las fotos del producto)  
 
-El generador debe **copiar exactamente** lo que ve en esas fotos.
+> Tip: adjunta fotos reales de la ficha (lateral, ¾, suela, detalle de borde/forro) para que el generador no invente el tono.
 
 ---
 
 ## Prompt principal (copiar)
 
 ```
-Crea un video publicitario hiperrealista de 8 segundos en formato 9:16 (vertical Reels/TikTok), 1080p, 24 fps. Estilo comercial premium de botas de agua / botas impermeables para mujer, con MUCHA LLUVIA.
+Crea un video publicitario hiperrealista de 8 segundos en formato 9:16 (vertical Reels/TikTok), 1080p, 24 fps. Estilo comercial premium Hunter: botas de agua bajas para mujer, color Rojo Militar, bajo MUCHA lluvia.
 
-OBJETIVO DEL SPOT:
-Demostrar en cámara las características del producto que aparecen en las imágenes de referencia adjuntas. El producto es el protagonista absoluto (mínimo 75% del tiempo en pantalla). La lluvia intensa refuerza la prueba de impermeabilidad y agarre.
+PRODUCTO EXACTO:
+Botas de Agua Bajas para Mujer Rojo Militar — Hunter (TrendSeeker).
+SKU de referencia: WFS1000RMA-MLR.
+Usa las imágenes adjuntas del producto como ÚNICA verdad visual. Copia con exactitud silueta BAJA (no bota alta), color Rojo Militar, acabado MATE de caucho vulcanizado natural, costuras/piezas, suela con dibujo Hunter Original, y cualquier logo o detalle visible en las fotos. NO inventes otra bota. NO la hagas alta. NO cambies el color a verde oliva clásico si las fotos muestran Rojo Militar. NO uses brillo plástico exagerado: acabado mate.
 
-IMPORTANTE — FIDELIDAD TOTAL AL PRODUCTO (CRÍTICO):
-Usa las imágenes adjuntas como ÚNICA verdad del diseño. Debes clonar con exactitud:
-- silueta, altura y proporción de la bota
-- color(es) exactos (no “parecidos”)
-- materiales visibles (goma, cuero, textil, neopreno, costuras, etc.)
-- cordones / cierre / ojales / hebillas según las fotos
-- suela y dibujo de la banda de rodadura
-- logo, parches, etiquetas o detalles de marca si se ven en las fotos
-- cualquier característica destacada en tus imágenes (cuello acolchado, foxing, refuerzos, reflejos del material, etc.)
-NO inventes otra bota. NO cambies el color. NO modernices. NO uses un modelo genérico de marketplace. Si algo no se ve claro en las fotos, no lo inventes: repite lo visible.
+CARACTERÍSTICAS QUE DEBES MOSTRAR EN CÁMARA (en este orden):
+1) Acabado mate del caucho vulcanizado natural + silueta baja fiel a las fotos.
+2) Completamente impermeables: ella camina dentro de una gran posa / charco profundo; el agua salpica AFUERA; pies secos.
+3) Suela de goma con dibujo Hunter Original: close-up al apoyar en piso mojado (agarre).
+4) Detalle superior / borde: sugerir confort y forro de poliéster (sin inventar texturas que no se vean en las fotos).
+5) Sensación artesanal/calidad (botas elaboradas a mano, 28 piezas): costuras y ensamblaje nítidos en close-up lateral.
 
 SUJETO:
-Mujer adulta 25–38 años, look práctico y abrigado para lluvia fuerte (impermeable/trench oscuro o verde oliva, pantalón oscuro un poco arremangado para dejar ver toda la bota). Cabello recogido o húmedo natural. Expresión segura. Lleva las botas EXACTAS de las imágenes.
+Mujer adulta 25–38 años, abrigada para temporal (impermeable/trench, pantalón oscuro arremangado para mostrar toda la bota baja). Cabello recogido o húmedo natural. Expresión segura. Lleva las botas EXACTAS de las imágenes.
 
-CONTEXTO — MUCHA LLUVIA (Santiago / ciudad húmeda):
-Lluvia intensa y densa (gotas visibles, casi temporal). Calle o vereda urbana completamente mojada, grandes charcos/posas. Cielo gris oscuro. PROHIBIDO nieve, hielo, copos.
+CONTEXTO — MUCHA LLUVIA:
+Lluvia intensa y densa (gotas visibles). Calle/vereda urbana inundada con grandes posas. Sensación de temporal en ciudad (Santiago). Cielo gris oscuro. PROHIBIDO nieve, hielo, copos.
 
-ACCIÓN Y SECUENCIA — MOSTRAR CARACTERÍSTICAS (en este orden):
-1. 0–1.5s — Plano detalle macro/lateral de la bota en reposo bajo lluvia: se leen material, color, costuras y logo exactamente como en las fotos.
-2. 1.5–3.5s — Plano bajo: la mujer camina y entra a una posa; el agua salpica AFUERA. Enfoca impermeabilidad: el interior/tobillo se mantiene seco; la lluvia escurre por la superficie del producto.
-3. 3.5–5.5s — Close-up de la SUELA al apoyar en el piso mojado (si hay foto de suela, cópiala): agarre, dibujo de la planta, estabilidad en charco.
-4. 5.5–7s — Detalle de la parte superior (cuello / neopreno / cordones / cierre — lo que muestren tus imágenes): comodidad y acabado fiel a la referencia, con gotas sobre el material.
-5. 7–8s — Plano bajo corto de ella avanzando bajo lluvia fuerte; ambas botas nítidas, producto dominante. Cierre sin texto.
+ACCIÓN Y SECUENCIA (producto ≥75% del tiempo):
+0–1.5s — Macro/lateral: bota baja Rojo Militar mate bajo la lluvia; se lee material y forma exacta.
+1.5–3.5s — Plano bajo: entra a una gran posa; impermeabilidad; agua fuera de la bota.
+3.5–5.5s — Close-up de suela Hunter Original al pisar mojado.
+5.5–7s — Detalle del borde superior / perfil de la bota baja (ajuste y acabado mate).
+7–8s — Ella avanza bajo lluvia fuerte; ambas botas nítidas; cierre sin texto.
 
 CINEMATOGRAFÍA:
-Muchos planos bajos y close-ups de producto. Movimiento suave. Producto siempre nítido. Lluvia visible sin tapar el diseño. Paleta fría húmeda (grises, verdes/negros según el color real de las fotos). Hiperrealismo comercial.
+Planos bajos y close-ups de producto. Movimiento suave. Producto siempre nítido. Lluvia visible sin tapar el diseño. Hiperrealismo comercial.
 
 AUDIO (si aplica):
 Lluvia intensa, chapoteo, pasos. Música mínima o ausente.
 
 PROHIBIDO:
 - Nieve / hielo / copos
-- Cambiar el diseño respecto a las imágenes adjuntas
-- Que el producto ocupe poco tiempo
-- Enfoque solo en la cara o en moda sin mostrar características
+- Convertirlas en botas altas Hunter Original
+- Cambiar color o acabado mate
+- Botas genéricas
+- Poco tiempo de producto en pantalla
 - Texto, logos inventados, watermark
-- Botas genéricas “tipo Hunter” si no coinciden pixel a pixel con tus fotos
 
 RESTRICCIONES FINALES:
-FIDELIDAD TOTAL a las imágenes del producto. MUCHA lluvia. Mujer abrigada. Características visibles: material, impermeabilidad en posa, suela/agarre, detalle superior. Producto en pantalla la mayor parte del tiempo.
+FIDELIDAD TOTAL al producto Rojo Militar de las fotos y a la ficha. MUCHA lluvia. Características visibles: impermeable, caucho mate vulcanizado, suela Hunter Original, silueta baja.
 ```
 
 ---
@@ -75,34 +78,31 @@ FIDELIDAD TOTAL a las imágenes del producto. MUCHA lluvia. Mujer abrigada. Cara
 ## Variante rápida
 
 ```
-Video 8s vertical. Mujer abrigada bajo MUCHA lluvia en ciudad. Botas = copia exacta de las fotos adjuntas (color, forma, suela, detalles). Secuencia: close-up producto → camina en gran posa sin mojarse → detalle suela/agarre → detalle cuello/cordones → cierre con botas nítidas. Sin nieve. Producto ≥75% del tiempo en pantalla.
+Video 8s 9:16. Mujer abrigada bajo MUCHA lluvia. Botas = Hunter de agua BAJAS Rojo Militar (exactas a las fotos): caucho vulcanizado mate, impermeables, suela Hunter Original. Secuencia: close-up mate → camina en gran posa sin mojarse → suela/agarre → detalle borde → cierre con producto dominante. Sin nieve. Sin convertirlas en botas altas.
 ```
 
 ---
 
 ## Frases de refuerzo
 
-**Fidelidad:**
 ```
-LAS BOTAS DEBEN SER IDÉNTICAS A LAS FOTOS ADJUNTAS. MISMA FORMA, COLOR, SUELA Y DETALLES. NO GENÉRICAS.
-```
-
-**Mucho lluvia:**
-```
-LLUVIA INTENSA, GOTAS DENSAS, CALLE INUNDADA. PROHIBIDO NIEVE.
+BOTAS BAJAS HUNTER ROJO MILITAR. CAUCHO VULCANIZADO ACABADO MATE. IDÉNTICAS A LAS FOTOS. NO BOTAS ALTAS.
 ```
 
-**Características:**
 ```
-MOSTRAR EN CLOSE-UP: MATERIAL, IMPERMEABILIDAD EN EL AGUA, SUELA CON AGARRE Y DETALLE SUPERIOR TAL COMO EN LAS IMÁGENES.
+LLUVIA INTENSA. GRAN POSA. COMPLETAMENTE IMPERMEABLES. PROHIBIDO NIEVE.
+```
+
+```
+CLOSE-UP DE SUELA CON DIBUJO HUNTER ORIGINAL Y AGARRE EN PISO MOJADO.
 ```
 
 ---
 
 ## Checklist
 
-- [ ] Adjuntar todas las fotos de características del producto  
-- [ ] 9:16 / 8 s  
-- [ ] Revisar que botas del video = fotos  
-- [ ] Revisar mucha lluvia + posa  
-- [ ] Revisar close-ups de características (no solo plano general)  
+- [ ] Adjuntar fotos reales del producto Rojo Militar (ficha TrendSeeker)  
+- [ ] Verificar silueta **baja** (no alta)  
+- [ ] Verificar color y acabado **mate**  
+- [ ] Verificar suela Hunter Original en close-up  
+- [ ] Mucha lluvia + posa (impermeabilidad)  
