@@ -9,7 +9,8 @@ Instrucciones para quien revise:
   2) Revisar nombre de cada curso y que el link corresponda a ese curso.
   3) Marcar correcciones (texto o URL) y devolver este archivo anotado.
 
-Fecha de exportación: 2026-07-14
+Fecha de actualización textos: 2026-07-15
+Fuente textos: Texto nuevo Rutas de Aprendizaje.docx
 Fuente técnica: index/clientes/ecr/capacitaciones/modal-ruta-sectores.html
 
 
@@ -25,9 +26,10 @@ Subtítulo:
   Comercio y ventas
 
 Descripción:
-  Formación orientada al desarrollo progresivo de competencias en atención al
-  cliente, operación de punto de venta y herramientas digitales para equipos de
-  retail. Modalidad asíncrona con acompañamiento.
+  Contamos con un programa de formación diseñado para fortalecer, paso a paso,
+  las competencias en atención al cliente, operación en punto de venta y manejo
+  de herramientas digitales en equipos de retail. Estas rutas de aprendizaje se
+  imparten en modalidad asincrónica con acompañamiento continuo.
 
 Competencias SENCE:
   Competencias SENCE: atención al cliente, ventas, operación comercial.
@@ -62,9 +64,9 @@ Subtítulo:
   Financiera y bancaria
 
 Descripción:
-  Formación orientada al desarrollo progresivo de herramientas digitales para
-  equipos financieros y bancarios. Modalidad asíncrona con acompañamiento y
-  evaluación continua.
+  Son capacitaciones diseñadas para que los equipos financieros y bancarios
+  incorporen herramientas digitales de forma progresiva. Elige una modalidad
+  asíncrona, con acompañamiento y evaluación constante durante todo el proceso.
 
 Competencias SENCE:
   Competencias SENCE: herramientas computacionales, análisis de datos, gestión
@@ -109,8 +111,9 @@ Subtítulo:
   Sector salud y bienestar
 
 Descripción:
-  Capacitaciones para equipos en ambientes laborales saludables, bienestar
-  emocional y competencias de convivencia en el trabajo.
+  Nuestros programas de capacitación están centrados en construir ambientes
+  laborales saludables, promover el bienestar emocional y fortalecer las
+  competencias de convivencia dentro de los equipos.
 
 Competencias SENCE:
   Competencias SENCE: prevención, bienestar, comunicación y trabajo en equipo.
@@ -145,8 +148,9 @@ Subtítulo:
   Transformación digital
 
 Descripción:
-  Rutas de aprendizaje en herramientas digitales, inteligencia artificial y
-  metodologías ágiles para equipos de tecnología.
+  Estas rutas de aprendizaje están enfocadas en procesos tecnológicos con
+  herramientas digitales, inteligencia artificial y metodologías ágiles para
+  potenciar a los equipos especializados.
 
 Competencias SENCE:
   Competencias SENCE: herramientas digitales, IA aplicada, metodologías ágiles.
@@ -182,8 +186,9 @@ Subtítulo:
   Liderazgo y administración
 
 Descripción:
-  Desarrollo de competencias directivas, planificación y gestión de equipos
-  para mandos medios y gerencias.
+  Conoce un programa ideal para el fortalecimiento de competencias directivas,
+  planificación estratégica y gestión de equipos, orientado a mandos medios y
+  gerencias.
 
 Competencias SENCE:
   Competencias SENCE: liderazgo, planificación, comunicación gerencial.
@@ -218,8 +223,8 @@ Subtítulo:
   Cadena de suministro
 
 Descripción:
-  Formación en operaciones logísticas, metodología 5S y competencias de equipo
-  para supply chain.
+  Capacitación en operaciones logísticas, metodología 5S y desarrollo de
+  competencias de equipo, enfocada en supply chain.
 
 Competencias SENCE:
   Competencias SENCE: logística, productividad, liderazgo operativo.
@@ -251,8 +256,9 @@ Subtítulo:
   Analítica e inteligencia artificial
 
 Descripción:
-  Rutas en análisis de datos, visualización e inteligencia artificial aplicada
-  a la toma de decisiones.
+  Descubre aprendizajes innovadores que integran análisis de datos,
+  visualización e inteligencia artificial para potenciar decisiones más
+  estratégicas para tu organización y basadas en evidencia.
 
 Competencias SENCE:
   Competencias SENCE: análisis de datos, Power BI, pensamiento analítico.
@@ -299,8 +305,9 @@ Subtítulo:
   Programas a medida
 
 Descripción:
-  Diseñamos rutas de aprendizaje personalizadas según las necesidades de tu
-  organización, con diagnóstico previo y seguimiento de resultados.
+  Creamos rutas de aprendizaje a la medida de tu organización, partiendo de un
+  diagnóstico inicial para conocer diversas competencias formativas,
+  acompañando cada etapa con seguimiento y resultados.
 
 Competencias SENCE:
   Competencias SENCE: según diagnóstico y plan formativo acordado.
@@ -324,13 +331,3 @@ Ruta de aprendizaje (cursos + links):
 ================================================================================
 FIN DEL DOCUMENTO DE REVISIÓN
 ================================================================================
-Espacio para comentarios del revisor:
-
-Nombre: _______________________________
-Fecha: ________________________________
-OK general: Sí / No (con observaciones)
-
-Observaciones:
-_______________________________________________________________________________
-_______________________________________________________________________________
-_______________________________________________________________________________
