@@ -11,11 +11,39 @@
   const BASE =
     'ONLY a LinkedIn newsletter cover BACKGROUND image (not a finished cover): Editorial illustration background for ECR Capacitacion brand system, empty reserved space for later text overlay in Canva, NO text, NO logos, NO letters, NO watermarks, NO typography layout, modern corporate flat vector illustration with depth, stylized faceless characters, clean geometric shapes, high-contrast complementary palette of warm orange/amber (#E85D04 family) and deep teal/navy blue, generous negative space for later headline overlay, professional Chilean corporate learning mood, polished editorial composition, wide landscape';
 
-  const FLAGS = '--ar 1.91:1 --style raw --v 6.1 --no text, typography, letters, logo, watermark, signage, UI words, brand marks';
-
+  /** No pegar flags de Midjourney en el prompt: en este flujo Midjourney no los lee. */
   const PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs';
   const PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
   const MAMMOTH_CDN = 'https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js';
+
+  /** Alternativas cercanas por mundo (para armar siempre 3 opciones distintas). */
+  const ALTERNAS = {
+    A: ['G', 'J'],
+    B: ['D', 'C'],
+    C: ['M', 'I'],
+    D: ['O', 'P'],
+    E: ['N', 'G'],
+    F: ['L', 'H'],
+    G: ['A', 'E'],
+    H: ['F', 'E'],
+    I: ['C', 'M'],
+    J: ['A', 'L'],
+    K: ['M', 'C'],
+    L: ['F', 'J'],
+    M: ['C', 'K'],
+    N: ['E', 'G'],
+    O: ['D', 'P'],
+    P: ['D', 'O']
+  };
+
+  const CONCEPTOS = [
+    (titulo) =>
+      `visual metaphor for the newsletter theme "${titulo}": coordinated field teams, timely operational adjustment, people data and decisions connecting without any readable text`,
+    (titulo) =>
+      `visual metaphor for the newsletter theme "${titulo}": real-time coordination across locations, clarity replacing delayed reports, calm productive energy without any readable text`,
+    (titulo) =>
+      `visual metaphor for the newsletter theme "${titulo}": human teams guided by simple digital signals, agile operations, open composition for later headline without any readable text`
+  ];
 
   const MUNDOS = [
     { id: 'A', nombre: 'Retail / supermercado bajo presión', escena: 'long supermarket aisle with stylized faceless shoppers and carts, reflective floor, warm orange backlight at the far end, cool teal shelves, calm negative space in the upper third' },
@@ -121,14 +149,16 @@
   }
 
   async function persistirResultado(payload) {
+    const opciones = Array.isArray(payload.opciones) ? payload.opciones : null;
     const item = {
       id: payload.id || `portada-${slugSafe(payload.titulo)}-${Date.now().toString(36)}`,
       fecha: payload.fecha || new Date().toISOString().slice(0, 10),
       titulo: String(payload.titulo || '').trim(),
-      mundoId: payload.mundoId || '',
-      mundoNombre: payload.mundoNombre || '',
-      prompt: String(payload.prompt || '').trim(),
-      notas: payload.notas || 'Solo fondo de portada.',
+      mundoId: payload.mundoId || (opciones && opciones[0] && opciones[0].mundoId) || '',
+      mundoNombre: payload.mundoNombre || (opciones && opciones[0] && opciones[0].mundoNombre) || '',
+      prompt: String(payload.prompt || (opciones && opciones[0] && opciones[0].prompt) || '').trim(),
+      opciones: opciones || undefined,
+      notas: payload.notas || 'Solo fondo de portada. Sin flags Midjourney.',
       origen: payload.origen || 'ui',
     };
     upsertLocal(item);
@@ -173,16 +203,46 @@
     return 'F';
   }
 
-  function conceptoDesdeTitulo(titulo) {
-    const limpio = String(titulo || '').trim().replace(/\s+/g, ' ');
-    if (!limpio) return 'field operations adjusting decisions in real time';
-    return `visual metaphor for the newsletter theme "${limpio}": coordinated field teams, timely operational adjustment, people data and decisions connecting without any readable text`;
+  function elegirTresMundos(preferido) {
+    const primero = preferido || 'F';
+    const alts = ALTERNAS[primero] || ['F', 'L'];
+    const ids = [primero];
+    for (const a of alts) {
+      if (!ids.includes(a)) ids.push(a);
+      if (ids.length === 3) break;
+    }
+    // Relleno si falta
+    for (const m of MUNDOS) {
+      if (ids.length === 3) break;
+      if (!ids.includes(m.id)) ids.push(m.id);
+    }
+    return ids.slice(0, 3);
   }
 
-  function armarPrompt(titulo, mundoId) {
+  function conceptoDesdeTitulo(titulo, variante) {
+    const limpio = String(titulo || '').trim().replace(/\s+/g, ' ') || 'field operations adjusting decisions in real time';
+    const fn = CONCEPTOS[variante % CONCEPTOS.length];
+    return fn(limpio);
+  }
+
+  function armarPrompt(titulo, mundoId, variante) {
     const mundo = mundoPorId(mundoId || sugerirMundo(titulo));
-    const concepto = conceptoDesdeTitulo(titulo);
-    return `${BASE}, scene: ${mundo.escena}, thematic concept: ${concepto} ${FLAGS}`;
+    const concepto = conceptoDesdeTitulo(titulo, variante || 0);
+    return `${BASE}, scene: ${mundo.escena}, thematic concept: ${concepto}`;
+  }
+
+  /** Siempre 3 opciones de prompt (solo fondo, sin flags Midjourney). */
+  function armarTresOpciones(titulo, mundoPreferido) {
+    const ids = elegirTresMundos(mundoPreferido || sugerirMundo(titulo));
+    return ids.map((id, i) => {
+      const mundo = mundoPorId(id);
+      return {
+        opcion: i + 1,
+        mundoId: mundo.id,
+        mundoNombre: mundo.nombre,
+        prompt: armarPrompt(titulo, mundo.id, i),
+      };
+    });
   }
 
   function limpiarLinea(raw) {
@@ -336,10 +396,10 @@
 
   window.ECR_PORTADA_PROMPT = {
     BASE,
-    FLAGS,
     MUNDOS,
     sugerirMundo,
     armarPrompt,
+    armarTresOpciones,
     mundoPorId,
     inferirTitulo,
     leerArchivoArticulo
@@ -353,12 +413,13 @@
     return `<section class="ecr-portada ficha-seccion ficha-seccion--portal" data-ecr-portada-prompt>
       <div class="ficha-seccion__headline">
         <h2 class="ficha-seccion__titulo">Portada Midjourney</h2>
-        <span class="ficha-seccion__estado">Solo fondo · 1.91:1</span>
+        <span class="ficha-seccion__estado">Solo fondo · 3 opciones</span>
       </div>
       <p class="ecr-portada__intro">
         El prompt es <strong>solo para la imagen de fondo</strong> de la portada (no tipografía ni logo).
-        Después se monta el título en Canva. Carga el <strong>PDF o DOCX</strong> (o escribe el nombre):
-        se sugiere título/mundo y se arma el prompt con la
+        Se entregan <strong>3 opciones</strong> listas para pegar en Midjourney
+        <em>(sin flags <code>--ar</code> / <code>--style</code> / <code>--v</code> / <code>--no</code>, porque aquí Midjourney no los lee)</em>.
+        Después se monta el título en Canva. Carga PDF/DOCX o escribe el nombre; se usa la
         <a href="newsletter/BASE-ESTILO-PORTADAS.md" target="_blank" rel="noopener">base de estilo guardada</a>.
       </p>
 
@@ -404,19 +465,16 @@
           <button type="button" class="portal-btn portal-btn--ghost" data-ecr-portada-auto>Auto según texto</button>
         </div>
         <p class="ecr-portada__hint" data-ecr-portada-hint>Sugerencia: mundo F · Mapa / ruta logística (ajústalo si quieres otro).</p>
-        <button type="submit" class="portal-btn ecr-portada__submit">Generar y guardar prompt</button>
+        <button type="submit" class="portal-btn ecr-portada__submit">Generar 3 opciones y guardar</button>
       </form>
       <div class="ecr-portada__resultado" data-ecr-portada-resultado hidden>
         <div class="ecr-portada__resultado-head">
-          <h3 class="ecr-portada__resultado-titulo">Prompt listo (solo fondo)</h3>
-          <div class="ecr-portada__resultado-actions">
-            <button type="button" class="portal-btn portal-btn--ghost" data-ecr-portada-guardar>Guardar de nuevo</button>
-            <button type="button" class="portal-btn" data-ecr-portada-copiar>Copiar</button>
-          </div>
+          <h3 class="ecr-portada__resultado-titulo">3 prompts listos (solo fondo)</h3>
+          <button type="button" class="portal-btn portal-btn--ghost" data-ecr-portada-guardar>Guardar de nuevo</button>
         </div>
         <p class="ecr-portada__meta" data-ecr-portada-meta></p>
         <p class="ecr-portada__save-status" data-ecr-portada-save-status></p>
-        <pre class="ecr-portada__prompt" data-ecr-portada-prompt-text></pre>
+        <div class="ecr-portada__opciones" data-ecr-portada-opciones></div>
       </div>
       <div class="ecr-portada__historial" data-ecr-portada-historial>
         <div class="ecr-portada__historial-head">
@@ -441,9 +499,8 @@
     const hint = sec.querySelector('[data-ecr-portada-hint]');
     const resultado = sec.querySelector('[data-ecr-portada-resultado]');
     const meta = sec.querySelector('[data-ecr-portada-meta]');
-    const promptEl = sec.querySelector('[data-ecr-portada-prompt-text]');
+    const opcionesEl = sec.querySelector('[data-ecr-portada-opciones]');
     const btnAuto = sec.querySelector('[data-ecr-portada-auto]');
-    const btnCopiar = sec.querySelector('[data-ecr-portada-copiar]');
     const btnGuardar = sec.querySelector('[data-ecr-portada-guardar]');
     const saveStatus = sec.querySelector('[data-ecr-portada-save-status]');
     const fileInput = sec.querySelector('[data-ecr-portada-archivo]');
@@ -461,13 +518,41 @@
 
     function refreshHint() {
       const mundo = mundoPorId(select.value);
-      hint.textContent = `Mundo ${mundo.id} · ${mundo.nombre}`;
+      hint.textContent = `Preferido: mundo ${mundo.id} · ${mundo.nombre} (se generan 3 opciones)`;
     }
 
     function aplicarSugerencia() {
       const id = sugerirMundo(textoParaSugerir());
       select.value = id;
       refreshHint();
+    }
+
+    function renderOpciones(opciones) {
+      if (!opcionesEl) return;
+      opcionesEl.innerHTML = (opciones || [])
+        .map(
+          (op) => `<article class="ecr-portada__opcion" data-opcion="${op.opcion}">
+            <div class="ecr-portada__opcion-head">
+              <h4 class="ecr-portada__opcion-titulo">Opción ${op.opcion} · Mundo ${escapeHtml(op.mundoId)} — ${escapeHtml(op.mundoNombre)}</h4>
+              <button type="button" class="portal-btn" data-ecr-copiar-opcion="${op.opcion}">Copiar</button>
+            </div>
+            <pre class="ecr-portada__prompt" data-ecr-prompt-opcion="${op.opcion}">${escapeHtml(op.prompt)}</pre>
+          </article>`
+        )
+        .join('');
+      opcionesEl.querySelectorAll('[data-ecr-copiar-opcion]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const n = btn.getAttribute('data-ecr-copiar-opcion');
+          const pre = opcionesEl.querySelector(`[data-ecr-prompt-opcion="${n}"]`);
+          const text = pre?.textContent || '';
+          try {
+            await navigator.clipboard.writeText(text);
+            if (typeof opts.onCopy === 'function') opts.onCopy(true);
+          } catch {
+            if (typeof opts.onCopy === 'function') opts.onCopy(false);
+          }
+        });
+      });
     }
 
     function renderHistorial(items) {
@@ -481,10 +566,11 @@
         const link = md
           ? `<a href="${escapeHtml(md)}" target="_blank" rel="noopener">abrir</a>`
           : '';
+        const nOps = Array.isArray(it.opciones) ? it.opciones.length : 1;
         return `<li class="ecr-portada__historial-item">
           <div>
             <strong>${escapeHtml(it.titulo || 'Sin título')}</strong>
-            <span>${escapeHtml(it.fecha || '')} · Mundo ${escapeHtml(it.mundoId || '?')}</span>
+            <span>${escapeHtml(it.fecha || '')} · ${nOps} opción(es) · Mundo ${escapeHtml(it.mundoId || '?')}</span>
           </div>
           <div class="ecr-portada__historial-item-actions">
             ${link}
@@ -499,10 +585,14 @@
           input.value = it.titulo || '';
           if (it.mundoId) select.value = it.mundoId;
           refreshHint();
-          meta.textContent = `Artículo: ${it.titulo} · Mundo ${it.mundoId} (${it.mundoNombre || ''}) · cargado del historial`;
-          promptEl.textContent = it.prompt || '';
+          const ops =
+            Array.isArray(it.opciones) && it.opciones.length
+              ? it.opciones
+              : [{ opcion: 1, mundoId: it.mundoId, mundoNombre: it.mundoNombre, prompt: it.prompt }];
+          meta.textContent = `Artículo: ${it.titulo} · ${ops.length} opciones · cargado del historial`;
+          renderOpciones(ops);
           resultado.hidden = false;
-          ultimoPayload = it;
+          ultimoPayload = { ...it, opciones: ops, prompt: ops[0]?.prompt || it.prompt };
           if (saveStatus) saveStatus.textContent = 'Cargado desde historial guardado.';
         });
       });
@@ -521,7 +611,7 @@
     }
 
     async function guardarActual(origen) {
-      if (!ultimoPayload || !ultimoPayload.prompt) return;
+      if (!ultimoPayload || !(ultimoPayload.prompt || (ultimoPayload.opciones && ultimoPayload.opciones[0]))) return;
       if (saveStatus) saveStatus.textContent = 'Guardando…';
       const res = await persistirResultado({ ...ultimoPayload, origen: origen || 'ui' });
       if (saveStatus) {
@@ -544,22 +634,23 @@
       }
       aplicarSugerencia();
       const mundo = mundoPorId(select.value);
-      const prompt = armarPrompt(titulo, mundo.id);
+      const opciones = armarTresOpciones(titulo, mundo.id);
       const desdeArchivo = ultimoTextoArticulo ? ' · leído desde archivo' : '';
-      meta.textContent = `Artículo: ${titulo} · Mundo ${mundo.id} (${mundo.nombre}) · base ECR sin textos/logos${desdeArchivo}`;
-      promptEl.textContent = prompt;
+      meta.textContent = `Artículo: ${titulo} · 3 opciones · preferido ${mundo.id} (${mundo.nombre}) · sin flags Midjourney${desdeArchivo}`;
+      renderOpciones(opciones);
       resultado.hidden = false;
       ultimoPayload = {
         id: `portada-${slugSafe(titulo)}`,
         titulo,
-        mundoId: mundo.id,
-        mundoNombre: mundo.nombre,
-        prompt,
-        notas: 'Solo fondo de portada.',
+        mundoId: opciones[0].mundoId,
+        mundoNombre: opciones[0].mundoNombre,
+        prompt: opciones[0].prompt,
+        opciones,
+        notas: 'Solo fondo de portada. 3 opciones. Sin flags --ar/--style/--v/--no.',
         origen: 'ui',
       };
       if (typeof opts.onGenerate === 'function') {
-        opts.onGenerate({ titulo, mundoId: mundo.id, prompt, texto: ultimoTextoArticulo });
+        opts.onGenerate({ titulo, mundoId: mundo.id, opciones, prompt: opciones[0].prompt, texto: ultimoTextoArticulo });
       }
       await guardarActual('ui');
     }
@@ -603,15 +694,6 @@
     btnAuto?.addEventListener('click', aplicarSugerencia);
     form?.addEventListener('submit', generar);
     btnGuardar?.addEventListener('click', () => guardarActual('ui-manual'));
-    btnCopiar?.addEventListener('click', async () => {
-      const text = promptEl.textContent || '';
-      try {
-        await navigator.clipboard.writeText(text);
-        if (typeof opts.onCopy === 'function') opts.onCopy(true);
-      } catch {
-        if (typeof opts.onCopy === 'function') opts.onCopy(false);
-      }
-    });
 
     fileInput?.addEventListener('change', () => {
       const file = fileInput.files && fileInput.files[0];

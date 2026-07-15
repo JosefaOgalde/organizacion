@@ -3,10 +3,13 @@
 **Alcance fijo:** el prompt genera **solo la imagen de fondo** de la portada.  
 No genera tipografía, logo, ni la portada terminada. El título/logo se montan después en Canva.
 
+**Siempre 3 opciones** de prompt por artículo.  
+**No incluir flags** `--ar` / `--style` / `--v` / `--no …` en el texto del prompt: en este flujo Midjourney **no los lee**.
+
 Ver siempre primero: [`BASE-ESTILO-PORTADAS.md`](./BASE-ESTILO-PORTADAS.md)  
 (ADN visual de referencia: solo fondos, sin textos ni logos).
 
-**Tamaño LinkedIn:** `--ar 1.91:1` · export ~1200×627  
+**Referencia de tamaño LinkedIn (fuera del prompt):** ~1200×627  
 **Ignorar siempre en refs:** logo ECR GROUP + tipografías.
 
 ---

@@ -206,6 +206,34 @@
   line-height: 1.4;
 }
 
+.ecr-portada__opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ecr-portada__opcion {
+  border: 1px solid rgba(74, 122, 158, 0.2);
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.65rem 0.75rem 0.75rem;
+}
+
+.ecr-portada__opcion-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.ecr-portada__opcion-titulo {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--card-text, #4a7a9e);
+}
+
 .ecr-portada__prompt {
   margin: 0;
   padding: 0.85rem;
@@ -216,9 +244,14 @@
   line-height: 1.45;
   white-space: pre-wrap;
   word-break: break-word;
-  max-height: 280px;
+  max-height: 220px;
   overflow: auto;
   color: #243040;
+}
+
+.ecr-portada__opcion .ecr-portada__prompt {
+  background: #f7fbfe;
+  border-color: rgba(74, 122, 158, 0.12);
 }
 
 .ecr-portada__resultado-actions {

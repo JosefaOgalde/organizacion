@@ -5,7 +5,8 @@ No se pide tipografía ni logo en el prompt; eso se agrega después en Canva.
 
 **Uso:** base fija para prompts Midjourney (fondo).  
 **Ignorar siempre:** logos ECR GROUP, títulos, subtítulos, cajas de texto, watermarks.  
-**Export LinkedIn:** `--ar 1.91:1` · objetivo final ~1200×627 px.
+**Export LinkedIn (referencia, no va en el prompt):** ~1200×627 px.  
+**No pegar en Midjourney:** `--ar`, `--style raw`, `--v`, `--no …` (en este flujo no los lee).
 
 Esta base se armó a partir del set de portadas de referencia (retail, industria, logística, data/cyber, warehouse, oficina, conceptual).
 

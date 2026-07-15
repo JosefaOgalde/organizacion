@@ -243,7 +243,8 @@ function guardarItemPortada(item) {
     mundoId: item.mundoId || '',
     mundoNombre: item.mundoNombre || '',
     prompt: String(item.prompt || '').trim(),
-    notas: item.notas || 'Solo fondo de portada.',
+    opciones: Array.isArray(item.opciones) ? item.opciones : undefined,
+    notas: item.notas || 'Solo fondo de portada. Sin flags Midjourney.',
     origen: item.origen || 'ui',
     archivoMarkdown: mdRel,
   };
@@ -255,21 +256,30 @@ function guardarItemPortada(item) {
   data.updatedAt = new Date().toISOString();
 
   fs.mkdirSync(ECR_PORTADA_DIR, { recursive: true });
+  const ops = Array.isArray(entry.opciones) && entry.opciones.length
+    ? entry.opciones
+    : [{ opcion: 1, mundoId: entry.mundoId, mundoNombre: entry.mundoNombre, prompt: entry.prompt }];
+  const mdOps = ops.map((op) => [
+    `### Opción ${op.opcion || ''} · Mundo ${op.mundoId || ''} — ${op.mundoNombre || ''}`,
+    '',
+    '```',
+    op.prompt || '',
+    '```',
+    '',
+  ].join('\n')).join('\n');
   const mdBody = [
     `# Portada guardada — ${entry.titulo}`,
     '',
     '**Alcance:** solo imagen de **fondo** (sin tipografía ni logo).',
+    '**Formato:** 3 opciones de prompt. **Sin flags** `--ar` / `--style` / `--v` / `--no` (Midjourney no los lee en este flujo).',
     `**Artículo:** ${entry.titulo}`,
     `**Fecha:** ${entry.fecha}`,
-    `**Mundo visual:** ${entry.mundoId} — ${entry.mundoNombre}`,
+    `**Mundo preferido:** ${entry.mundoId} — ${entry.mundoNombre}`,
     `**Origen:** ${entry.origen}`,
     '',
-    '## Prompt Midjourney',
+    '## Prompts Midjourney',
     '',
-    '```',
-    entry.prompt,
-    '```',
-    '',
+    mdOps,
     '## Notas',
     '',
     entry.notas,

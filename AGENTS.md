@@ -4,6 +4,8 @@
 
 ### ECR — Prompt Midjourney de portada
 - Los prompts Midjourney de ECR son **solo para la imagen de fondo** de la portada del newsletter LinkedIn.
+- Siempre entregar **3 opciones** de prompt por artículo.
+- **No incluir** al final del prompt: `--ar 1.91:1 --style raw --v 6.1 --no text, typography, letters, logo, watermark, signage, UI words, brand marks` (Midjourney no los lee en este flujo).
 - No generan tipografía, logo ni la portada terminada; el título/branding se monta después en Canva.
 - Base y UI: `index/clientes/ecr/newsletter/` (`BASE-ESTILO-PORTADAS.md`, `PROMPT-MIDJOURNEY-PORTADA.md`, `ecr-portada-prompt.js`).
 - Landing: `http://localhost:3000/index/clientes/ecr/` → sección **Portada Midjourney**.
