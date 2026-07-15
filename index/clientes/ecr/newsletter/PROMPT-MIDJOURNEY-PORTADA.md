@@ -28,7 +28,7 @@ No se elige el mundo visual a mano antes de generar.
 
 Formatos: **PDF** (recomendado), **DOCX**, **TXT**. El `.doc` antiguo no se lee: convertir a PDF/DOCX.
 
-Archivo de la UI: [`ecr-portada-prompt.js`](./ecr-portada-prompt.js) (`?v=8` o superior).
+Archivo de la UI: [`ecr-portada-prompt.js`](./ecr-portada-prompt.js) (`?v=10` o superior).
 
 ## Persistencia (obligatorio)
 

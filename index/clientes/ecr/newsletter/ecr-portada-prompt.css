@@ -234,8 +234,34 @@
 
 .ecr-portada__opcion-titulo {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--card-text, #4a7a9e);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ecr-portada__mundo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  padding: 0 0.35rem;
+  border-radius: 6px;
+  background: var(--card-text, #4a7a9e);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.ecr-portada__opcion-escena {
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--muted, #5a6a78);
 }
 
 .ecr-portada__prompt {

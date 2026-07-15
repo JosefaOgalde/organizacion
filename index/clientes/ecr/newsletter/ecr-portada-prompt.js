@@ -104,7 +104,8 @@
     { re: /pallets?|cajas apiladas|racking|estanter/gi, id: 'N', w: 3 }
   ];
 
-  const LS_KEY = 'ecr-portada-historial-v1';
+  const LS_KEY = 'ecr-portada-historial-v2';
+  const UI_VERSION = 'v10';
   const HISTORIAL_API = '/api/ecr-portada-historial';
   const HISTORIAL_JSON = 'newsletter/historial-portadas.json';
 
@@ -474,7 +475,7 @@
     return `<section class="ecr-portada ficha-seccion ficha-seccion--portal" data-ecr-portada-prompt>
       <div class="ficha-seccion__headline">
         <h2 class="ficha-seccion__titulo">Portada Midjourney</h2>
-        <span class="ficha-seccion__estado">Solo fondo · 3 opciones</span>
+        <span class="ficha-seccion__estado">Solo fondo · mundos por tema · ${UI_VERSION}</span>
       </div>
       <p class="ecr-portada__intro">
         1) Entrega el <strong>PDF/DOCX</strong> del artículo (o el nombre).<br>
@@ -577,15 +578,21 @@
     function renderOpciones(opciones) {
       if (!opcionesEl) return;
       opcionesEl.innerHTML = (opciones || [])
-        .map(
-          (op) => `<article class="ecr-portada__opcion" data-opcion="${op.opcion}">
+        .map((op) => {
+          const mundo = mundoPorId(op.mundoId);
+          const preview = (mundo.escena || '').slice(0, 120) + ((mundo.escena || '').length > 120 ? '…' : '');
+          return `<article class="ecr-portada__opcion" data-opcion="${op.opcion}" data-mundo="${escapeHtml(op.mundoId)}">
             <div class="ecr-portada__opcion-head">
-              <h4 class="ecr-portada__opcion-titulo">Opción ${op.opcion} · Mundo visual ${escapeHtml(op.mundoId)} — ${escapeHtml(op.mundoNombre)}</h4>
+              <h4 class="ecr-portada__opcion-titulo">
+                <span class="ecr-portada__mundo-badge" title="Mundo visual">${escapeHtml(op.mundoId)}</span>
+                Opción ${op.opcion} — ${escapeHtml(op.mundoNombre)}
+              </h4>
               <button type="button" class="portal-btn" data-ecr-copiar-opcion="${op.opcion}">Copiar</button>
             </div>
+            <p class="ecr-portada__opcion-escena">${escapeHtml(preview)}</p>
             <pre class="ecr-portada__prompt" data-ecr-prompt-opcion="${op.opcion}">${escapeHtml(op.prompt)}</pre>
-          </article>`
-        )
+          </article>`;
+        })
         .join('');
       opcionesEl.querySelectorAll('[data-ecr-copiar-opcion]').forEach((btn) => {
         btn.addEventListener('click', async () => {
