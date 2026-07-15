@@ -1,6 +1,6 @@
 REVISION TEXTOS Y LINKS — Modal Rutas de aprendizaje ECR
-Fuente nombres de cursos: unificados (sin punto final; niveles con " - ").
-Fuente descripciones: Texto nuevo Rutas de Aprendizaje.docx
+Fuente textos: indicaciones editoriales + DOCX.
+Nombres de cursos: originales del DOCX; solo Excel y Power BI unificados (Excel - Nivel / Power BI - Nivel).
 
 ============================================================
 SECTOR: Retail (Comercio y ventas)
@@ -8,15 +8,15 @@ SECTOR: Retail (Comercio y ventas)
 Descripción: Contamos con un programa de formación diseñado para fortalecer, paso a paso, las competencias en atención al cliente, operación en punto de venta y manejo de herramientas digitales en equipos de retail. Estas rutas de aprendizaje se imparten en modalidad asincrónica con acompañamiento continuo.
 Competencias: Competencias SENCE: atención al cliente, ventas, operación comercial.
 Cursos:
-  1. Estrategias de servicio al cliente
+  1. Estrategias de servicio al cliente.
      https://ecrcapacitacion.cl/cursos/atencion-al-cliente-digital-experiencia-que-fideliza
-  2. Ventas consultivas - B2C
+  2. Técnicas de venta consultiva B2C.
      https://ecrcapacitacion.cl/cursos/ventas-consultivas-b2c-como-convertir-mas-clientes
-  3. Ventas consultivas - B2B
+  3. Ventas consultivas B2B.
      https://ecrcapacitacion.cl/cursos/ventas-consultivas-b2b
-  4. Ventas remotas
+  4. Técnicas de ventas remotas.
      https://ecrcapacitacion.cl/cursos/ventas-remotas-efectivas-cierre-y-conversion-online
-  5. Gestión de negocios
+  5. Técnicas y estrategias para la gestión de negocios.
      https://ecrcapacitacion.cl/cursos/gestion-de-negocios-estrategia-y-crecimiento
 
 ============================================================
@@ -25,7 +25,7 @@ SECTOR: Financiero (Financiera y bancaria)
 Descripción: Son capacitaciones diseñadas para que los equipos financieros y bancarios incorporen herramientas digitales de forma progresiva. Elige una modalidad asíncrona, con acompañamiento y evaluación constante durante todo el proceso.
 Competencias: Competencias SENCE: herramientas computacionales, análisis de datos, gestión del tiempo.
 Cursos:
-  1. Office - Básico
+  1. Herramientas computacionales básicas de Office.
      https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo
   2. Excel - Básico
      https://ecrcapacitacion.cl/cursos/excel-basico
@@ -39,7 +39,7 @@ Cursos:
      https://ecrcapacitacion.cl/cursos/power-bi-basico-2
   7. Power BI - Avanzado
      https://ecrcapacitacion.cl/cursos/power-bi-avanzado-2
-  8. Gestión del tiempo
+  8. Gestión del tiempo.
      https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal
 
 ============================================================
@@ -48,15 +48,15 @@ SECTOR: Salud (Sector salud y bienestar)
 Descripción: Nuestros programas de capacitación están centrados en construir ambientes laborales saludables, promover el bienestar emocional y fortalecer las competencias de convivencia dentro de los equipos.
 Competencias: Competencias SENCE: prevención, bienestar, comunicación y trabajo en equipo.
 Cursos:
-  1. Ley Karín - Ambientes laborales saludables
+  1. Ambientes laborales saludables y respetuosos de Ley Karín.
      https://ecrcapacitacion.cl/cursos/ley-karin-en-la-empresa-prevencion-y-gestion-del-acoso-laboral
-  2. Gestión del tiempo
+  2. Gestión del tiempo.
      https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal
-  3. Gestión del estrés
+  3. Técnicas de gestión del estrés para el bienestar emocional.
      https://ecrcapacitacion.cl/cursos/gestion-del-estres-laboral-bienestar-y-productividad
-  4. Resolución de conflictos y negociación
+  4. Resolución de conflictos y negociación.
      https://ecrcapacitacion.cl/cursos/gestion-de-conflictos-y-negociacion-liderazgo-en-accion
-  5. Equipos de alto rendimiento
+  5. Trabajo en equipos de alto rendimiento.
      https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados
 
 ============================================================
@@ -65,15 +65,15 @@ SECTOR: Tecnología (Transformación digital)
 Descripción: Estas rutas de aprendizaje están enfocadas en procesos tecnológicos con herramientas digitales, inteligencia artificial y metodologías ágiles para potenciar a los equipos especializados.
 Competencias: Competencias SENCE: herramientas digitales, IA aplicada, metodologías ágiles.
 Cursos:
-  1. Office - Básico
+  1. Herramientas computacionales básicas de Office.
      https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo
-  2. ChatGPT - Productividad laboral
+  2. ChatGPT: Herramienta de inteligencia artificial, integrada al entorno laboral.
      https://ecrcapacitacion.cl/cursos/productividad-con-chatgpt-aplicaciones-reales-en-el-trabajo
-  3. Inteligencia artificial - Productividad
+  3. Inteligencia artificial para la productividad
      https://ecrcapacitacion.cl/cursos/inteligencia-artificial-aplicada
-  4. Scrum
+  4. Scrum.
      https://ecrcapacitacion.cl/cursos/scrum-en-accion-gestion-agil-de-equipos-y-proyectos
-  5. Metodologías ágiles
+  5. Metodologías Ágiles.
      https://ecrcapacitacion.cl/cursos/scrum-en-accion-gestion-agil-de-equipos-y-proyectos
 
 ============================================================
@@ -82,15 +82,15 @@ SECTOR: Gestión (Liderazgo y administración)
 Descripción: Conoce un programa ideal para el fortalecimiento de competencias directivas, planificación estratégica y gestión de equipos, orientado a mandos medios y gerencias.
 Competencias: Competencias SENCE: liderazgo, planificación, comunicación gerencial.
 Cursos:
-  1. Contabilidad - Básica
+  1. Contabilidad básica.
      https://ecrcapacitacion.cl/cursos/contabilidad-basica-control-financiero-para-el-trabajo
-  2. Gestión de negocios
+  2. Técnicas y estrategias para la gestión de un negocio
      https://ecrcapacitacion.cl/cursos/gestion-de-negocios-estrategia-y-crecimiento
-  3. Liderazgo efectivo
+  3. Liderazgo efectivo.
      https://ecrcapacitacion.cl/cursos/liderazgo-colaborativo-gestion-de-equipos-efectivos
-  4. Comunicación efectiva
+  4. Comunicación efectiva.
      https://ecrcapacitacion.cl/cursos/comunicacion-efectiva-en-el-trabajo
-  5. Equipos de alto rendimiento
+  5. Trabajo en equipos de alto rendimiento.
      https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados
 
 ============================================================
@@ -99,13 +99,13 @@ SECTOR: Logística (Cadena de suministro)
 Descripción: Capacitación en operaciones logísticas, metodología 5S y desarrollo de competencias de equipo, enfocada en supply chain.
 Competencias: Competencias SENCE: logística, productividad, liderazgo operativo.
 Cursos:
-  1. Logística - Metodología 5S
+  1. Logística y distribución en almacenes y bodegas con método 5S.
      https://ecrcapacitacion.cl/cursos/logistica-eficiente-implementacion-de-metodologia-5s
-  2. Gestión del tiempo
+  2. Gestión del tiempo.
      https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal
-  3. Equipos de alto rendimiento
+  3. Trabajo en equipos de alto rendimiento.
      https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados
-  4. Liderazgo efectivo
+  4. Liderazgo efectivo.
      https://ecrcapacitacion.cl/cursos/liderazgo-colaborativo-gestion-de-equipos-efectivos
 
 ============================================================
@@ -114,7 +114,7 @@ SECTOR: Datos (Analítica e inteligencia artificial)
 Descripción: Descubre aprendizajes innovadores que integran análisis de datos, visualización e inteligencia artificial para potenciar decisiones más estratégicas para tu organización y basadas en evidencia.
 Competencias: Competencias SENCE: análisis de datos, Power BI, pensamiento analítico.
 Cursos:
-  1. Office - Básico
+  1. Herramientas computacionales básicas de Office.
      https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo
   2. Excel - Básico
      https://ecrcapacitacion.cl/cursos/excel-basico
@@ -128,9 +128,9 @@ Cursos:
      https://ecrcapacitacion.cl/cursos/power-bi-basico-2
   7. Power BI - Avanzado
      https://ecrcapacitacion.cl/cursos/power-bi-avanzado-2
-  8. Inteligencia artificial - Productividad
+  8. Inteligencia artificial para la productividad.
      https://ecrcapacitacion.cl/cursos/inteligencia-artificial-aplicada
-  9. ChatGPT - Productividad laboral
+  9. ChatGPT: Herramienta de Inteligencia Artificial, integrada al entorno laboral.
      https://ecrcapacitacion.cl/cursos/productividad-con-chatgpt-aplicaciones-reales-en-el-trabajo
 
 ============================================================
@@ -139,12 +139,12 @@ SECTOR: Soluciones In Company (Programas a medida)
 Descripción: Creamos rutas de aprendizaje a la medida de tu organización, partiendo de un diagnóstico inicial para conocer diversas competencias formativas, acompañando cada etapa con seguimiento y resultados.
 Competencias: Competencias SENCE: según diagnóstico y plan formativo acordado.
 Cursos:
-  1. Diagnóstico de brechas de competencias
+  1. Diagnóstico de brechas de competencias.
      https://ecrcapacitacion.cl/contacto/
-  2. Diseño de programa formativo a medida
+  2. Diseño de programa formativo a medida.
      https://ecrcapacitacion.cl/contacto/
-  3. Implementación y seguimiento
+  3. Implementación y seguimiento.
      https://ecrcapacitacion.cl/contacto/
-  4. Evaluación de impacto
+  4. Evaluación de impacto.
      https://ecrcapacitacion.cl/contacto/
 
