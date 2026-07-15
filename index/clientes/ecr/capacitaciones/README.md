@@ -19,10 +19,11 @@ Información **guardada** en este repositorio (rama `cursor/ecr-6a09`).
 
 ## Estado
 
+- **FINALIZADO** 2026-07-15: textos y links del modal validados; UI ajustada (sin truncar descripción, espacio competencias → ruta).
+- Solo Excel y Power BI unificados (`Excel - Nivel` / `Power BI - Nivel`); resto de nombres literales del DOCX.
+- Archivo a pegar en Elementor: `modal-ruta-sectores.html`.
 - Links de cursos verificados (HTTP 200) el 2026-07-13.
-- **Descripciones actualizadas** 2026-07-15 con `Texto nuevo Rutas de Aprendizaje.docx`.
-- Textos en `REVISION-TEXTOS-Y-LINKS-MODALES.txt` + `ECR_SECTORES` en `modal-ruta-sectores.html`.
-- Ajustes UI: modal centrado en mobile, botones celeste + hover, espacio bajo título.
+- Descripciones según especificación editorial + `Texto nuevo Rutas de Aprendizaje.docx`.
 
 ## Pegar en Elementor
 

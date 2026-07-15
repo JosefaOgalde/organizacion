@@ -35,7 +35,7 @@ window.CLIENTES_PORTAL = [
       secciones: [
         { titulo: 'Newsletter LinkedIn', texto: 'Invitación, carrusel y video del artículo cada ciclo.' },
         { titulo: 'Portada Midjourney', texto: 'Carga el PDF/DOCX del artículo (o escribe el título) y genera el prompt con la base de estilo ECR.' },
-        { titulo: 'Rutas de aprendizaje', texto: 'Modal por sector (Retail, Financiero, Salud, Tecnología, Gestión, Logística, Datos) — revisar textos y links.' },
+        { titulo: 'Rutas de aprendizaje', texto: 'Finalizado — modal por sector con textos y links validados (HTML Elementor listo).' },
         { titulo: 'Blog', texto: 'Propuestas, maquetación y publicación en WordPress.' }
       ]
     }

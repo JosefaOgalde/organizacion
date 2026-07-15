@@ -1,4 +1,5 @@
 REVISION TEXTOS Y LINKS — Modal Rutas de aprendizaje ECR
+ESTADO: FINALIZADO (2026-07-15)
 Fuente textos: indicaciones editoriales + DOCX.
 Nombres de cursos: originales del DOCX; solo Excel y Power BI unificados (Excel - Nivel / Power BI - Nivel).
 
