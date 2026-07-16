@@ -8,6 +8,9 @@
   --radius: 10px;
   --shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
   --font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Mismo ancho que el organizador (.app) */
+  --layout-max: 1200px;
+  --layout-pad: 1.5rem;
 }
 
 * { box-sizing: border-box; }
@@ -21,9 +24,9 @@ body {
 }
 
 .portal-header {
-  max-width: 960px;
+  max-width: var(--layout-max);
   margin: 0 auto;
-  padding: 1.5rem 1.25rem 0.5rem;
+  padding: var(--layout-pad) var(--layout-pad) 0.5rem;
   color: var(--text);
 }
 
@@ -76,9 +79,9 @@ body {
 }
 
 .portal-nav {
-  max-width: 960px;
+  max-width: var(--layout-max);
   margin: 0 auto;
-  padding: 0.5rem 1.25rem 1rem;
+  padding: 0.5rem var(--layout-pad) 1rem;
 }
 
 .portal-nav a {
@@ -96,11 +99,11 @@ body {
 .portal-main > p,
 body > .portal-nav ~ h1,
 body > .portal-nav ~ p {
-  max-width: 960px;
+  max-width: var(--layout-max);
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  padding-left: var(--layout-pad);
+  padding-right: var(--layout-pad);
 }
 
 .portal-nav ~ h1,
@@ -121,9 +124,9 @@ body > .portal-nav ~ p {
 }
 
 .portal-main {
-  max-width: 960px;
+  max-width: var(--layout-max);
   margin: 0 auto;
-  padding: 0 1.25rem 2rem;
+  padding: 0 var(--layout-pad) 2rem;
 }
 
 .portal-grid {

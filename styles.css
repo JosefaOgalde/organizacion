@@ -13,6 +13,9 @@
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   --radius: 10px;
   --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  /* Mismo ancho de columna en Mes / Semana / Día / tarea / portal */
+  --layout-max: 1200px;
+  --layout-pad: 1.5rem;
 }
 
 * {
@@ -30,14 +33,9 @@ body {
 }
 
 .app {
-  max-width: 1200px;
+  max-width: var(--layout-max);
   margin: 0 auto;
-  padding: 1.5rem;
-}
-
-/* Vista tarea: bloque más ancho para leer/editar copys y prompts */
-body:has(#view-tarea.view--active) .app {
-  max-width: min(1680px, 100%);
+  padding: var(--layout-pad);
 }
 
 /* Header */

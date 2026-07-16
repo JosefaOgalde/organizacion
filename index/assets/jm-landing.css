@@ -31,7 +31,7 @@
 }
 
 .portal-main--ficha {
-  max-width: 980px;
+  max-width: var(--layout-max, 1200px);
   padding-top: 0.75rem;
 }
 
