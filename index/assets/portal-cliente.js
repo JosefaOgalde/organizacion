@@ -471,7 +471,7 @@
     </section>`;
   }
 
-  /** Registro de todo lo cargado/obtenido del cliente: tareas + entregables + links. */
+  /** Registro compacto: solo título tipo “#08 · C7/12 — Programar”; acordeón + ir a la tarea. */
   function htmlRegistroCliente() {
     if (!datos?.tareas) return '';
     const lista = datos.tareas
@@ -485,9 +485,11 @@
     const rows = lista
       .map((t) => {
         const titulo = String(t.titulo || 'Tarea').replace(/^\[[^\]]+\]\s*/, '');
+        const num = t.numeroHistorico || '?';
+        const label = `#${num} · ${titulo}`;
+        const estado = t.completada ? 'Hecha' : t.pendiente ? 'Pendiente' : 'Activa';
         const imgs = imagenesDeTarea(t);
         const videos = videosDeTarea(t);
-        const estado = t.completada ? 'Hecha' : t.pendiente ? 'Pendiente' : 'Activa';
         const archLinks = (() => {
           const map =
             (t.entregableArchivosCopy && typeof t.entregableArchivosCopy === 'object' && t.entregableArchivosCopy) ||
@@ -507,49 +509,37 @@
           }
           return '';
         })();
-        const hist = Array.isArray(t.historialEntregables) ? t.historialEntregables : [];
-        const histHtml = '';
-        const thumbs = imgs
-          .slice(0, 3)
-          .map((img) => {
-            const src = img.url || img.dataUrl || '';
-            return `<a class="portal-reg__thumb" href="${escapeHtml(src)}" target="_blank" rel="noopener"><img src="${escapeHtml(src)}" alt="" loading="lazy"></a>`;
-          })
-          .join('');
-        const vids = videos
-          .slice(0, 2)
-          .map((v) => {
-            return `<div class="portal-reg__video">
-              <video src="${escapeHtml(v.url)}" controls preload="metadata" playsinline></video>
-              <a class="portal-btn portal-btn--ghost" href="${escapeHtml(v.url)}" target="_blank" rel="noopener" download>Descargar video</a>
-            </div>`;
-          })
-          .join('');
-        const metaExtra = [
-          imgs.length ? imgs.length + ' img' : '',
-          videos.length ? videos.length + ' video' : '',
-        ]
-          .filter(Boolean)
-          .join(' · ');
-        return `<article class="portal-reg__card" data-tarea-id="${escapeHtml(t.id)}">
-          <div class="portal-reg__main">
-            <h3 class="portal-reg__titulo">#${escapeHtml(t.numeroHistorico || '?')} · ${escapeHtml(titulo)}</h3>
-            <p class="portal-reg__meta">${escapeHtml(t.fecha || '')} · ${escapeHtml(estado)}${t.tipoEntregable ? ' · ' + escapeHtml(t.tipoEntregable) : ''}${metaExtra ? ' · ' + metaExtra : ''}</p>
-            ${t.notas ? `<p class="portal-reg__notas">${escapeHtml(String(t.notas).slice(0, 160))}${t.notas.length > 160 ? '…' : ''}</p>` : ''}
+        const metaBits = [
+          t.fecha || '',
+          estado,
+          t.tipoEntregable || '',
+          imgs.length ? `${imgs.length} img` : '',
+          videos.length ? `${videos.length} video` : '',
+        ].filter(Boolean);
+        const notas =
+          t.notas
+            ? `<p class="portal-reg__notas">${escapeHtml(String(t.notas).slice(0, 220))}${t.notas.length > 220 ? '…' : ''}</p>`
+            : '';
+
+        return `<details class="portal-reg__item" data-tarea-id="${escapeHtml(t.id)}">
+          <summary class="portal-reg__summary">
+            <span class="portal-reg__summary-text">${escapeHtml(label)}</span>
+            <span class="portal-reg__chev" aria-hidden="true"></span>
+          </summary>
+          <div class="portal-reg__panel">
+            <p class="portal-reg__meta">${escapeHtml(metaBits.join(' · '))}</p>
+            ${notas}
             <div class="portal-reg__actions">
-              <a class="portal-btn" href="${hrefTareaOrganizador(t)}">Abrir en organizador</a>
+              <a class="portal-btn" href="${hrefTareaOrganizador(t)}">Ir a la tarea</a>
               ${archLinks}
             </div>
-            ${histHtml}
-            ${vids}
           </div>
-          ${thumbs ? `<div class="portal-reg__thumbs">${thumbs}</div>` : ''}
-        </article>`;
+        </details>`;
       })
       .join('');
 
     const vacio = !lista.length
-      ? '<p class="portal-reg__vacio">Aún no hay tareas registradas para este cliente. Crea una con «Nueva tarea» o desde el organizador.</p>'
+      ? '<p class="portal-reg__vacio">Aún no hay tareas registradas para este cliente.</p>'
       : '';
 
     const tituloSec =
@@ -560,7 +550,7 @@
         <h2 class="ficha-seccion__titulo">${escapeHtml(tituloSec)}</h2>
         <span class="ficha-seccion__estado">${lista.length} tarea${lista.length === 1 ? '' : 's'}</span>
       </div>
-      <p class="portal-reg__intro">Todo lo cargado u obtenido de este cliente queda aquí: tareas, entregables (TXT/prompts), imágenes y videos, con enlace al organizador.</p>
+      <p class="portal-reg__intro">Clic en una fila para ver el detalle. Usa «Ir a la tarea» para abrirla en el organizador.</p>
       <div class="portal-reg__lista" data-portal-registro-lista>${rows}</div>
       ${vacio}
       <div class="portal-reg__biblioteca" data-portal-biblioteca-prompts hidden></div>
