@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Impresoreando · Panel socios</title>
+  <link rel="stylesheet" href="../../../assets/portal.css" />
+  <link rel="stylesheet" href="./panel.css" />
+</head>
+<body class="imp-body" data-cliente-slug="impresoreando">
+  <header class="imp-top">
+    <div>
+      <a class="imp-back" href="../">← Landing</a>
+      <h1>Impresoreando</h1>
+      <p class="imp-sub">Panel socios 50/50 · Instagram @impresoreando · datos en vivo</p>
+    </div>
+    <div class="imp-top-actions">
+      <span id="imp-status" class="imp-status">Cargando…</span>
+      <button type="button" id="btn-guardar" class="imp-btn imp-btn--primary">Guardar online</button>
+      <button type="button" id="btn-recargar" class="imp-btn">Recargar</button>
+    </div>
+  </header>
+
+  <nav class="imp-tabs" id="imp-tabs">
+    <button type="button" data-tab="resumen" class="is-active">Resumen 50/50</button>
+    <button type="button" data-tab="gastos">Gastos</button>
+    <button type="button" data-tab="ventas">Ventas</button>
+    <button type="button" data-tab="operacion">Operación / luz</button>
+    <button type="button" data-tab="costos">Costos producto</button>
+    <button type="button" data-tab="ads">Plan paid</button>
+    <button type="button" data-tab="bitacora">Bitácora</button>
+  </nav>
+
+  <main class="imp-main">
+    <section class="imp-panel is-active" id="tab-resumen"></section>
+    <section class="imp-panel" id="tab-gastos"></section>
+    <section class="imp-panel" id="tab-ventas"></section>
+    <section class="imp-panel" id="tab-operacion"></section>
+    <section class="imp-panel" id="tab-costos"></section>
+    <section class="imp-panel" id="tab-ads"></section>
+    <section class="imp-panel" id="tab-bitacora"></section>
+  </main>
+
+  <script src="./panel.js"></script>
+</body>
+</html>

@@ -15,6 +15,8 @@ const COLORES = {
   agua: { border: '#a8d8dc', bg: '#e8f6f8', text: '#4a7a80' },
   rosa: { border: '#e8b8c8', bg: '#fdf0f4', text: '#9a5a6e' },
   grafito: { border: '#b8c0c8', bg: '#eef0f4', text: '#5a6a7a' },
+  /** Impresoreando — ámbar / mostaza suave (único; no reutilizar con otros clientes) */
+  ambar: { border: '#d4b06a', bg: '#faf6eb', text: '#7a5c28' },
   /** Salud — verde más definido, aún claro pero distinto de clientes menta/celeste */
   salud: { border: '#2f9d72', bg: '#c5e8d8', text: '#1a5c42' },
   /** Reuniones — azul pizarra, no usa el color del cliente */
@@ -108,6 +110,12 @@ const AGENTES_CLIENTE = {
     emoji: '🎨',
     especialidad: 'Diseño freelance',
     instrucciones: 'Eres el asistente de Desafío Latam. Ayudas con diseño freelance: piezas gráficas, presentaciones, identidad visual, banners, materiales para redes y entregables visuales según cada encargo esporádico.'
+  },
+  'cli-impresoreando': {
+    nombre: 'Agente Impresoreando',
+    emoji: '🖨️',
+    especialidad: 'Impresión, identidad y piezas gráficas',
+    instrucciones: 'Eres el asistente de Impresoreando. Ayudas con briefs de impresión, piezas gráficas, identidad visual, mockups, formatos de impresión y entregables para el cliente.'
   }
 };
 
@@ -183,6 +191,13 @@ const SKILLS_CLIENTE = {
     usaManualMarca: true,
     checklist: ['Manual de marca cargado', 'Brief y formatos de entrega', 'Colores y tipografías oficiales', 'Márgenes de logo'],
     ejemploSolicitud: 'Diseña [pieza: banner / presentación / key visual] para [campaña]. Formato: [dimensiones]. Mensaje: …'
+  },
+  'cli-impresoreando': {
+    nombre: 'Impresión y piezas gráficas',
+    descripcion: 'Briefs de impresión, mockups, identidad y formatos listos para producción.',
+    usaManualMarca: true,
+    checklist: ['Brief y medidas', 'Colores de marca / CMYK si aplica', 'Sangrado y márgenes', 'Archivo listo para impresión'],
+    ejemploSolicitud: 'Necesito [flyer / tarjeta / banner / packaging] para Impresoreando. Formato: [mm o px]. Mensaje: …'
   }
 };
 
@@ -292,7 +307,8 @@ const PERFILES_CLIENTE = {
   'cli-hotspring': { nombre: 'Hotspring - Talk (full time)', tipo: 'full-time' },
   'cli-mkof': { nombre: 'MKOF - Talk (full time)', tipo: 'full-time' },
   'cli-sie': { tipo: 'oportunidad' },
-  'cli-desafio-latam': { abrev: 'ADL' }
+  'cli-desafio-latam': { abrev: 'ADL' },
+  'cli-impresoreando': { nombre: 'Impresoreando', tipo: 'freelance' }
 };
 let datos = null;
 
@@ -416,6 +432,7 @@ function datosIniciales() {
   const cliJM = 'cli-joyas-mercury';
   const cliSIE = 'cli-sie';
   const cliDLAT = 'cli-desafio-latam';
+  const cliIMP = 'cli-impresoreando';
   const hoyStr = toISO(hoy());
 
   return {
@@ -575,6 +592,23 @@ function datosIniciales() {
             nombre: 'Diseño',
             abrev: 'DIS',
             funciones: 'Piezas gráficas y visuales\nPresentaciones y materiales\nBanners y piezas para redes\nEncargos esporádicos según proyecto',
+            tareasAlMes: 'Según encargos del momento',
+            plazosEntregables: 'Agregar cada tarea en + Nueva tarea cuando llegue un encargo'
+          }
+        ]
+      },
+      {
+        id: cliIMP,
+        nombre: 'Impresoreando',
+        abrev: 'IMP',
+        tipo: 'freelance',
+        color: 'ambar',
+        roles: [
+          {
+            id: 'rol-imp-dis',
+            nombre: 'Diseño e impresión',
+            abrev: 'DIS',
+            funciones: 'Briefs de impresión\nPiezas gráficas\nMockups y formatos de producción\nIdentidad visual según encargo',
             tareasAlMes: 'Según encargos del momento',
             plazosEntregables: 'Agregar cada tarea en + Nueva tarea cuando llegue un encargo'
           }
@@ -1756,6 +1790,25 @@ function asegurarClienteDesafioLatam(data) {
   return data;
 }
 
+const IMP_CLI_ID = 'cli-impresoreando';
+
+function asegurarClienteImpresoreando(data) {
+  const cliId = IMP_CLI_ID;
+  let cli = data.clientes.find(c => c.id === cliId);
+  if (!cli) {
+    const seed = datosIniciales().clientes.find(c => c.id === cliId);
+    if (seed) data.clientes.push(seed);
+    cli = data.clientes.find(c => c.id === cliId);
+  }
+  if (cli) {
+    cli.abrev = 'IMP';
+    cli.color = 'ambar';
+    cli.nombre = cli.nombre || 'Impresoreando';
+    cli.tipo = cli.tipo || 'freelance';
+  }
+  return data;
+}
+
 function asegurarPerfilClientes(data) {
   data.clientes.forEach(cli => {
     const perfil = PERFILES_CLIENTE[cli.id];
@@ -1797,6 +1850,7 @@ function normalizarDatos(data) {
   asegurarClienteJoyasMercury(data);
   asegurarClienteSIE(data);
   asegurarClienteDesafioLatam(data);
+  asegurarClienteImpresoreando(data);
   asegurarPerfilClientes(data);
   asegurarAgentesClientes(data);
   asignarRolesATareas(data);
