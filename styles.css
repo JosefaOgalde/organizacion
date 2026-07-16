@@ -479,6 +479,29 @@ body {
   gap: 1rem;
 }
 
+.cliente-card-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cliente-card-wrap .cliente-card--clic {
+  border-left: 4px solid var(--cliente-border, var(--celeste));
+}
+
+.cliente-card__landing {
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--celeste-dark);
+  text-decoration: none;
+  padding: 0 0.15rem 0.35rem;
+}
+
+.cliente-card__landing:hover {
+  text-decoration: underline;
+}
+
 .cliente-card {
   background: var(--bg-card);
   border-radius: var(--radius);

@@ -2838,11 +2838,6 @@ function renderListaArchivosPerfil(cli) {
 }
 
 function abrirPerfilCliente(cliId) {
-  const portal = urlPortalCliente(cliId);
-  if (portal) {
-    window.location.href = portal;
-    return;
-  }
   if (window.abrirFichaCliente) {
     window.abrirFichaCliente(cliId);
     return;
@@ -6183,27 +6178,29 @@ function renderClientes() {
     const ag = agenteDe(c);
     const perfilOk = contextoClienteCargado(c);
     const badge = c.id === 'cli-joyas-mercury'
-      ? '<span class="cliente-card__badge cliente-card__badge--wireframes">Landing del cliente</span>'
+      ? '<span class="cliente-card__badge cliente-card__badge--wireframes">Ficha + landing JM</span>'
       : perfilOk
         ? '<span class="cliente-card__badge cliente-card__badge--ok">Ficha con datos</span>'
         : '<span class="cliente-card__badge cliente-card__badge--pending">Ver ficha · sin datos</span>';
-    return `<button type="button" class="cliente-card cliente-card--clic" data-cliente-id="${c.id}" style="background:${col.bg};border-color:${col.border};--cliente-text:${col.text}">
+    const landingUrl = urlPortalCliente(c.id);
+    const landingLink = landingUrl
+      ? `<a class="cliente-card__landing" href="${escapeHtml(landingUrl)}">Ver landing →</a>`
+      : '';
+    return `<div class="cliente-card-wrap" style="--cliente-border:${col.border};--cliente-bg:${col.bg};--cliente-text:${col.text}">
+      <button type="button" class="cliente-card cliente-card--clic" data-cliente-id="${c.id}" style="background:${col.bg};border-color:${col.border};--cliente-text:${col.text}">
       <div class="cliente-card__nombre">${escapeHtml(c.nombre)} <span class="cliente-card__abrev">(${escapeHtml(c.abrev || abrevDe(c))})</span></div>
       <span class="cliente-card__tipo ${claseTipoCliente(c.tipo)}" style="background:${col.border};color:#fff">${escapeHtml(etiquetaTipoCliente(c.tipo))}</span>
       <div class="cliente-card__agente">${ag.emoji} ${escapeHtml(ag.nombre)}</div>
       <div class="cliente-card__skill-tag">Skill: ${escapeHtml(skill.nombre)}</div>
       <div class="cliente-card__roles">${roles}</div>
       ${badge}
-    </button>`;
+    </button>
+    ${landingLink}
+    </div>`;
   }).join('');
 
   grid.querySelectorAll('[data-cliente-id]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const url = urlPortalCliente(btn.dataset.clienteId);
-      if (url) {
-        window.location.href = url;
-        return;
-      }
       (window.abrirFichaCliente || abrirPerfilCliente)(btn.dataset.clienteId);
     });
   });

@@ -859,11 +859,6 @@
   }
 
   window.abrirFichaCliente = function (cliId) {
-    const landing = urlLandingCliente(cliId);
-    if (landing) {
-      window.location.href = landing;
-      return;
-    }
     const cli = clienteDe(cliId);
     if (!cli) return;
     const modal = document.getElementById('modal-cliente-perfil');
