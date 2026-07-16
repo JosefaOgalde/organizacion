@@ -4667,8 +4667,13 @@ function renderCalendarioMes() {
     const esMesActual = dia.getMonth() === m;
     const esHoy = diaStr === hoyStr;
 
-    // Conservar orden de itemsDiaOrdenados (madre + subtareas, luego otra madre…)
-    const ordenados = itemsDiaOrdenados(diaStr);
+    // Vista mes: solo madres y tareas únicas (sin subtareas; esas van en Semana)
+    const ordenados = itemsDiaOrdenados(diaStr).filter((it) => {
+      if (it.tipo !== 'tarea') return true;
+      const t = it.data;
+      if (it.indiceHijo != null || t.parentId) return false;
+      return true;
+    });
     const itemsHtml = ordenados
       .map((it) => {
         if (it.tipo === 'cita') {
@@ -4684,16 +4689,10 @@ function renderCalendarioMes() {
         const t = it.data;
         const col = colorMiniTarea(t);
         const madre = esTareaMadreCalendario(t);
-        const hija = it.indiceHijo != null || !!t.parentId;
         const cls =
           (t.completada ? ' mes-item--completada' : '') +
-          (madre ? ' mes-item--madre' : '') +
-          (hija ? ' mes-item--hija' : '');
-        const texto =
-          it.indiceHijo != null
-            ? `${it.indiceHijo}. ${tituloMes(t, 0)}`
-            : tituloMes(t, 0);
-        return `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(texto)}</span>`;
+          (madre ? ' mes-item--madre' : '');
+        return `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(tituloMes(t, 0))}</span>`;
       })
       .join('');
     const alturaMin = ordenados.length === 0 ? 108 : 40 + ordenados.length * 34;
