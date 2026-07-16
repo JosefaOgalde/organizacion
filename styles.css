@@ -2426,6 +2426,14 @@ body.modal-abierto {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
+.tarea-detalle__txt--prompt {
+  max-height: min(70vh, 640px);
+  min-height: 220px;
+  background: #fff;
+  border: 1px solid rgba(106, 90, 158, 0.25);
+  font-size: 0.8rem;
+}
+
 .tarea-detalle__txt--extracto {
   max-height: 280px;
 }

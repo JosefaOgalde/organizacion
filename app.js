@@ -3442,12 +3442,46 @@ function htmlVinculosEcosistema(tarea) {
   return html;
 }
 
+function archivoPromptGeminiDeTarea(tarea) {
+  if (!tarea) return '';
+  if (tarea.entregableArchivo) return String(tarea.entregableArchivo).replace(/^\/+/, '');
+
+  const MAPA = {
+    7: 'PROMPT-c07-travel-trainer-black-hombre.txt',
+    8: 'PROMPT-c08-chelsea-commando-negras-mujer.txt',
+    9: 'PROMPT-c09-play-bajas-rojo-mujer.txt',
+    10: 'PROMPT-c10-original-ninos.txt',
+    11: 'PROMPT-c11-play-altas-shearling-white-mujer.txt',
+    12: 'PROMPT-c12-original-ninos-rosado-brillante.txt',
+  };
+
+  let n = Number(tarea.contenidoSerie) || 0;
+  if (!n) {
+    const madre = madreDeTarea(tarea);
+    n = Number(madre?.contenidoSerie) || 0;
+  }
+  if (!n) {
+    const mId = String(tarea.id || '').match(/contenido-(\d+)-de-12/i);
+    if (mId) n = Number(mId[1]);
+  }
+  if (!n) {
+    const mTit = String(tarea.titulo || '').match(/C\s*(\d+)\s*\/\s*12/i);
+    if (mTit) n = Number(mTit[1]);
+  }
+  if (!MAPA[n]) return '';
+  return `index/clientes/trendseeker/prompts/${MAPA[n]}`;
+}
+
 function htmlEntregableTarea(tarea) {
   const tipo = tarea.tipoEntregable;
   if (!tipo || tipo === 'ecosistema') return '';
 
-  const archivo = tarea.entregableArchivo || '';
-  const hrefArchivo = archivo ? `/${archivo.replace(/^\/+/, '')}` : '';
+  let archivo = tarea.entregableArchivo || '';
+  if (tipo === 'prompt-gemini' && !archivo) {
+    archivo = archivoPromptGeminiDeTarea(tarea);
+    if (archivo) tarea.entregableArchivo = archivo; // enlaza para próximas cargas
+  }
+  const hrefArchivo = archivo ? `/${String(archivo).replace(/^\/+/, '')}` : '';
 
   if (tipo === 'copys-txt') {
     return `
@@ -3501,13 +3535,11 @@ function htmlEntregableTarea(tarea) {
           </div>
         </div>
         <p class="tarea-detalle__entregable-hint">
-          Ya viene generado según la ficha y si es hombre / mujer / niños. Pega en Gemini VIDEO con fotos de producto.
+          Texto completo abajo (según ficha hombre / mujer / niños). Copia y pega en Gemini VIDEO con fotos de producto.
           ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
-          · «Mejorar prompt» abre el chat para que escribas ideas y se ajuste el texto.
+          · «Mejorar prompt» abre el chat para ajustar con tus ideas.
         </p>
-        ${hrefArchivo
-          ? `<pre class="tarea-detalle__txt" data-entregable-txt>Cargando prompt…</pre>`
-          : '<p class="tarea-detalle__imgs-vacio">Aún no hay TXT. Corre <code>node scripts/generar-ts-prompts-contenidos-7-12.js</code>.</p>'}
+        <pre class="tarea-detalle__txt tarea-detalle__txt--prompt" data-entregable-txt data-prompt-archivo="${escapeHtml(archivo || '')}">Cargando prompt…</pre>
       </div>`;
   }
 
@@ -3527,8 +3559,29 @@ function htmlEntregableTarea(tarea) {
 
 async function cargarEntregableTxtEnVista(tarea) {
   const pre = document.querySelector('[data-entregable-txt]');
-  if (!pre || !tarea.entregableArchivo) return;
-  const href = '/' + String(tarea.entregableArchivo).replace(/^\/+/, '');
+  if (!pre) return;
+
+  let archivo = tarea.entregableArchivo || '';
+  if (tarea.tipoEntregable === 'prompt-gemini') {
+    archivo = archivoPromptGeminiDeTarea(tarea) || archivo || pre.getAttribute('data-prompt-archivo') || '';
+    if (archivo && !tarea.entregableArchivo) {
+      const tLive = tareaDe(tarea.id);
+      if (tLive) {
+        tLive.entregableArchivo = archivo;
+        tarea.entregableArchivo = archivo;
+        try { guardar(); } catch (_) { /* ignore */ }
+      }
+    }
+  }
+  if (!archivo) {
+    if (tarea.tipoEntregable === 'prompt-gemini') {
+      pre.textContent =
+        'No se encontró el TXT del prompt. Haz git pull y corre:\nnode scripts/generar-ts-prompts-contenidos-7-12.js';
+    }
+    return;
+  }
+
+  const href = '/' + String(archivo).replace(/^\/+/, '');
   try {
     const res = await fetch(href + '?t=' + Date.now(), { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -3544,7 +3597,9 @@ async function cargarEntregableTxtEnVista(tarea) {
     pre.textContent = text;
     pre.dataset.fullText = text;
   } catch (e) {
-    pre.textContent = 'No se pudo cargar el TXT. Abre: ' + href;
+    pre.textContent =
+      'No se pudo cargar el TXT desde ' + href + '\n' +
+      'Confirma que el server está en marcha (node scripts/organizacion-server.js) y que hiciste git pull.';
   }
 
   document.querySelector('[data-copiar-entregable-txt]')?.addEventListener('click', async () => {
