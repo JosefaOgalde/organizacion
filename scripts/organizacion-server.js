@@ -406,6 +406,68 @@ function ensureImpresoreandoLive() {
 function handleApiImpresoreando(req, res) {
   if (!checkApiAuth(req, res)) return;
 
+  const urlPath = String(req.url || '').split('?')[0];
+
+  /** Append de una venta (link compartido Josefa/Nicolás) — evita pisar datos concurrentes. */
+  if (urlPath === '/api/impresoreando/venta' && req.method === 'POST') {
+    return readBody(req).then((raw) => {
+      let item;
+      try {
+        item = JSON.parse(raw);
+      } catch {
+        return send(res, 400, JSON.stringify({ error: 'JSON inválido' }), 'application/json');
+      }
+      if (!item || typeof item !== 'object' || !item.descripcion || item.montoNeto == null) {
+        return send(res, 400, JSON.stringify({ error: 'faltan descripcion / montoNeto' }), 'application/json');
+      }
+      try {
+        ensureImpresoreandoLive();
+      } catch (e) {
+        return send(res, 500, JSON.stringify({ error: String(e.message || e) }), 'application/json');
+      }
+      let obj;
+      try {
+        obj = JSON.parse(fs.readFileSync(IMP_LIVE_FILE, 'utf8'));
+      } catch (e) {
+        return send(res, 500, JSON.stringify({ error: String(e.message || e) }), 'application/json');
+      }
+      obj.ventas = Array.isArray(obj.ventas) ? obj.ventas : [];
+      const venta = {
+        id: String(item.id || `ven-${Date.now().toString(36)}`),
+        fecha: String(item.fecha || new Date().toISOString().slice(0, 10)),
+        descripcion: String(item.descripcion),
+        cantidad: Number(item.cantidad || 1),
+        montoNeto: Number(item.montoNeto),
+        canal: String(item.canal || ''),
+        notas: String(item.notas || ''),
+        socioRegistro: String(item.socioRegistro || 'Ambos'),
+      };
+      obj.ventas.push(venta);
+      obj.meta = obj.meta || {};
+      obj.meta.actualizado = new Date().toISOString();
+      fs.writeFileSync(IMP_LIVE_FILE, JSON.stringify(obj, null, 2), 'utf8');
+      const totalVentas = obj.ventas.reduce((a, v) => a + Number(v.montoNeto || 0), 0);
+      const totalGastos = (obj.gastos || []).reduce((a, g) => a + Number(g.montoNeto || 0), 0);
+      console.log('[api] Venta Impresoreando', venta.id, venta.montoNeto);
+      return send(
+        res,
+        200,
+        JSON.stringify({
+          ok: true,
+          venta,
+          totales: { ventas: totalVentas, gastos: totalGastos, saldo: Math.max(0, totalGastos - totalVentas) },
+          actualizado: obj.meta.actualizado,
+        }),
+        'application/json'
+      );
+    }).catch((e) => {
+      if (e && e.message === 'BODY_TOO_LARGE') {
+        return send(res, 413, JSON.stringify({ error: 'cuerpo demasiado grande' }), 'application/json');
+      }
+      return send(res, 500, String(e), 'text/plain');
+    });
+  }
+
   if (req.method === 'GET') {
     try {
       ensureImpresoreandoLive();

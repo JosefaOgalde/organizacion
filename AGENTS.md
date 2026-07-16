@@ -49,3 +49,11 @@
 - Al guardar se escribe en `localStorage` (`organizacion_v2`) y se publica a `data/organizacion-live.json` vía `POST /api/organizacion`.
 - Ver en organizador: `http://localhost:3000/index.html?disco=1` (o `?disco=1&tarea=ecr/04`).
 - **Imágenes en tareas:** en el detalle de la tarea, bloque **Imágenes de la tarea** → `+ Guardar imágenes`. Se comprimen y suben a disco vía `POST /api/tarea-imagen` (`index/uploads/tarea-imagenes/…`); en `localStorage` solo queda la **URL** (evita “almacenamiento lleno”). Landing del cliente: sección **Tareas con imágenes**. Requiere `node scripts/organizacion-server.js` corriendo.
+
+### Impresoreando — Panel socios 50/50
+- Landing: `http://localhost:3000/index/clientes/impresoreando/` — CTA **Resumen 50/50** abre el panel.
+- Panel: `…/impresoreando/panel/` · Registrador de ventas (link compartido): `…/panel/venta/`.
+- Persistencia: `GET/POST /api/impresoreando` → `data/impresoreando-live.json`. Append de venta: `POST /api/impresoreando/venta`.
+- Lógica: **saldo por recuperar = gastos − ventas** (cada venta baja el saldo). Gastos de **ambos**; capital aportado por **Nicolás**; Josefa debe 50%.
+- Layout: franja blanca superior full-bleed; contenido interno limitado a `--imp-max: 1200px`.
+- Para que Nicolás/Josefa entren desde otro dispositivo: en `.env` poner `HOST=0.0.0.0` (o túnel) y compartir la URL del registrador.

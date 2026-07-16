@@ -23,8 +23,8 @@
       "aportadoPor": "Nicolás",
       "deudaPctJosefa": 50,
       "nota": "Nicolás puso el capital. Josefa debe el 50% de ese capital a Nicolás. Los gastos de la sociedad son de ambos.",
-      "montoNetoClp": 732290,
-      "deudaJosefaClp": 366145
+      "montoNetoClp": 797040,
+      "deudaJosefaClp": 398520
     }
   },
   "parametros": {
@@ -191,6 +191,66 @@
       "notas": "Gasto operativo inicial",
       "ordenId": "",
       "socioRegistro": "Ambos"
+    },
+    {
+      "id": "gas-ml-pla-rojo",
+      "fecha": "2026-07-14",
+      "categoria": "filamento",
+      "descripcion": "Filamento PLA Rojo 1.75mm × 1kg",
+      "proveedor": "Mercado Libre",
+      "cantidad": 1,
+      "montoNeto": 13690,
+      "notas": "Compra ML — pagó Nicolás (Visa Banco de Chile). Total carrito 5 filamentos $64.750",
+      "ordenId": "ml-pla-2026-07-14",
+      "socioRegistro": "Ambos"
+    },
+    {
+      "id": "gas-ml-pla-esun",
+      "fecha": "2026-07-14",
+      "categoria": "filamento",
+      "descripcion": "Filamento impresión 3D eSun PLA 1kg",
+      "proveedor": "Mercado Libre",
+      "cantidad": 1,
+      "montoNeto": 12990,
+      "notas": "Compra ML — pagó Nicolás. Parte de carrito $64.750",
+      "ordenId": "ml-pla-2026-07-14",
+      "socioRegistro": "Ambos"
+    },
+    {
+      "id": "gas-ml-pla-elegoo-amarillo",
+      "fecha": "2026-07-14",
+      "categoria": "filamento",
+      "descripcion": "Filamento Elegoo PLA 1kg (amarillo)",
+      "proveedor": "Mercado Libre",
+      "cantidad": 1,
+      "montoNeto": 12690,
+      "notas": "Compra ML — pagó Nicolás. Parte de carrito $64.750",
+      "ordenId": "ml-pla-2026-07-14",
+      "socioRegistro": "Ambos"
+    },
+    {
+      "id": "gas-ml-pla-elegoo-azul",
+      "fecha": "2026-07-14",
+      "categoria": "filamento",
+      "descripcion": "Filamento Elegoo PLA 1.75mm 1kg (azul)",
+      "proveedor": "Mercado Libre",
+      "cantidad": 1,
+      "montoNeto": 12690,
+      "notas": "Compra ML — pagó Nicolás. Parte de carrito $64.750",
+      "ordenId": "ml-pla-2026-07-14",
+      "socioRegistro": "Ambos"
+    },
+    {
+      "id": "gas-ml-pla-elegoo-blanco",
+      "fecha": "2026-07-14",
+      "categoria": "filamento",
+      "descripcion": "Filamento Elegoo PLA 1kg (blanco)",
+      "proveedor": "Mercado Libre",
+      "cantidad": 1,
+      "montoNeto": 12690,
+      "notas": "Compra ML — pagó Nicolás. Parte de carrito $64.750. Envío gratis. Total pagado $64.750",
+      "ordenId": "ml-pla-2026-07-14",
+      "socioRegistro": "Ambos"
     }
   ],
   "ventas": [],
@@ -266,7 +326,7 @@
       "id": "bit-1",
       "fecha": "2026-07-14",
       "autor": "Josefa",
-      "texto": "Carga inicial: orden #312435 (PAGADO $652.290) + AliExpress placa/torno + cajas Líder. Sociedad 50/50 Josefa + Nicolás. Gastos de ambos. Nicolás aportó capital; Josefa debe 50%."
+      "texto": "Carga inicial: orden #312435 (PAGADO $652.290) + AliExpress placa/torno + cajas Líder + 5 filamentos PLA Mercado Libre ($64.750). Sociedad 50/50 Josefa + Nicolás. Gastos de ambos. Nicolás aportó capital; Josefa debe 50%."
     }
   ]
 }

@@ -271,49 +271,28 @@ body.portal-body--themed .portal-cliente {
   text-decoration: underline;
 }
 
-/* Impresoreando: CTA panel socios — primer elemento visible */
+/* Impresoreando: CTA Resumen 50/50 — primer elemento visible */
 .portal-imp-panel-cta {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin: 0 0 1.15rem;
-  padding: 1.15rem 1.25rem;
-  border-radius: var(--radius);
+  padding: 0.55rem 1.15rem;
+  border-radius: 999px;
   text-decoration: none !important;
-  color: #fff !important;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--card-text) 92%, #000) 0%,
-    color-mix(in srgb, var(--card-border) 55%, var(--card-text)) 100%
-  );
-  border: 1px solid color-mix(in srgb, var(--card-text) 40%, transparent);
-  box-shadow: 0 8px 22px color-mix(in srgb, var(--card-text) 18%, transparent);
-  transition: transform 0.15s ease, filter 0.15s ease;
+  color: var(--card-text, #7a5c28) !important;
+  background: #fff;
+  border: 1px solid var(--card-border, #d4b06a);
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--card-text) 10%, transparent);
+  transition: transform 0.15s ease, background 0.15s ease;
 }
 
 .portal-imp-panel-cta:hover {
-  filter: brightness(1.06);
+  background: color-mix(in srgb, var(--card-border) 22%, white);
   transform: translateY(-1px);
   text-decoration: none !important;
-}
-
-.portal-imp-panel-cta__kicker {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  opacity: 0.82;
-}
-
-.portal-imp-panel-cta__title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  line-height: 1.25;
-}
-
-.portal-imp-panel-cta__sub {
-  font-size: 0.88rem;
-  opacity: 0.9;
 }
 
 .portal-btn--imp-panel {

@@ -4,32 +4,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Impresoreando · Panel socios</title>
-  <link rel="stylesheet" href="../../../assets/portal.css?v=layout-w1" />
-  <link rel="stylesheet" href="./panel.css?v=imp-ambos1" />
+  <link rel="stylesheet" href="../../../assets/portal.css?v=imp-cta2" />
+  <link rel="stylesheet" href="./panel.css?v=imp-dash3" />
 </head>
 <body class="imp-body" data-cliente-slug="impresoreando">
-  <header class="imp-top imp-shell">
-    <div>
-      <a class="imp-back" href="../">← Landing</a>
-      <h1>Impresoreando</h1>
-      <p class="imp-sub">Panel socios 50/50 · Josefa + Nicolás · Instagram @impresoreando</p>
-    </div>
-    <div class="imp-top-actions">
-      <span id="imp-status" class="imp-status">Cargando…</span>
-      <button type="button" id="btn-guardar" class="imp-btn imp-btn--primary">Guardar online</button>
-      <button type="button" id="btn-recargar" class="imp-btn">Recargar</button>
-    </div>
-  </header>
+  <div class="imp-top-bleed">
+    <header class="imp-top imp-shell">
+      <div>
+        <a class="imp-back" href="../">← Landing</a>
+        <h1>Impresoreando</h1>
+        <p class="imp-sub">Panel socios 50/50 · Josefa + Nicolás · Instagram @impresoreando</p>
+      </div>
+      <div class="imp-top-actions">
+        <span id="imp-status" class="imp-status">Cargando…</span>
+        <a class="imp-btn" href="./venta/">Registrar venta</a>
+        <button type="button" id="btn-guardar" class="imp-btn imp-btn--primary">Guardar online</button>
+        <button type="button" id="btn-recargar" class="imp-btn">Recargar</button>
+      </div>
+    </header>
+  </div>
 
-  <nav class="imp-tabs imp-shell" id="imp-tabs">
-    <button type="button" data-tab="resumen" class="is-active">Resumen 50/50</button>
-    <button type="button" data-tab="gastos">Gastos</button>
-    <button type="button" data-tab="ventas">Ventas</button>
-    <button type="button" data-tab="operacion">Operación / luz</button>
-    <button type="button" data-tab="costos">Costos producto</button>
-    <button type="button" data-tab="ads">Plan paid</button>
-    <button type="button" data-tab="bitacora">Bitácora</button>
-  </nav>
+  <div class="imp-tabs-bleed">
+    <nav class="imp-tabs imp-shell" id="imp-tabs">
+      <button type="button" data-tab="resumen" class="is-active">Resumen 50/50</button>
+      <button type="button" data-tab="gastos">Gastos</button>
+      <button type="button" data-tab="ventas">Ventas</button>
+      <button type="button" data-tab="operacion">Operación / luz</button>
+      <button type="button" data-tab="costos">Costos producto</button>
+      <button type="button" data-tab="ads">Plan paid</button>
+      <button type="button" data-tab="bitacora">Bitácora</button>
+    </nav>
+  </div>
 
   <main class="imp-main imp-shell">
     <section class="imp-panel is-active" id="tab-resumen"></section>
@@ -41,6 +46,6 @@
     <section class="imp-panel" id="tab-bitacora"></section>
   </main>
 
-  <script src="./panel.js?v=imp-ambos2"></script>
+  <script src="./panel.js?v=imp-dash3"></script>
 </body>
 </html>

@@ -580,14 +580,10 @@
     }
   }
 
-  /** CTA principal Impresoreando: panel socios primero en la landing. */
+  /** CTA principal Impresoreando: Resumen 50/50 primero en la landing. */
   function impPanelCtaHtml() {
     if (c.slug !== 'impresoreando') return '';
-    return `<a href="./panel/" class="portal-imp-panel-cta" id="portal-imp-panel-cta">
-      <span class="portal-imp-panel-cta__kicker">Acceso principal</span>
-      <span class="portal-imp-panel-cta__title">Abrir panel socios 50/50</span>
-      <span class="portal-imp-panel-cta__sub">Gastos, ventas, operación y bitácora compartida</span>
-    </a>`;
+    return `<a href="./panel/" class="portal-imp-panel-cta" id="portal-imp-panel-cta">Resumen 50/50</a>`;
   }
 
   function heroHtml(cfg, stats) {
@@ -639,7 +635,7 @@
         return `<section${esPanelImp ? ' class="portal-imp-panel-sec"' : ''}>
       <h2>${escapeHtml(s.titulo)}</h2>
       <p>${escapeHtml(s.texto)}</p>
-      ${esPanelImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./panel/">Abrir panel socios →</a></p>` : ''}
+      ${esPanelImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./panel/">Resumen 50/50 →</a></p>` : ''}
     </section>`;
       })
       .join('');
@@ -768,7 +764,7 @@
 
     const toolbarPanelBtn =
       c.slug === 'impresoreando'
-        ? `<a href="./panel/" class="portal-btn portal-btn--imp-panel">Panel socios</a>`
+        ? `<a href="./panel/" class="portal-btn portal-btn--imp-panel">Resumen 50/50</a>`
         : '';
 
     root.innerHTML = `

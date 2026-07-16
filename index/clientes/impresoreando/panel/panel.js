@@ -25,14 +25,22 @@
     const res = await fetch(API, { cache: 'no-store' });
     if (!res.ok) throw new Error(`GET ${res.status}`);
     data = await res.json();
-    if (normalizarSociedad(data)) dirty = true;
-    else dirty = false;
-    const when = data.meta?.actualizado ? new Date(data.meta.actualizado).toLocaleString('es-CL') : '—';
-    setStatus(dirty ? 'Datos actualizados (guardar para fijar)' : `Actualizado: ${when}`, dirty ? 'warn' : 'ok');
+    if (normalizarSociedad(data)) {
+      dirty = true;
+      try {
+        await save();
+      } catch (e) {
+        setStatus(`Datos migrados — guarda manual: ${e.message || e}`, 'warn');
+      }
+    } else {
+      dirty = false;
+      const when = data.meta?.actualizado ? new Date(data.meta.actualizado).toLocaleString('es-CL') : '—';
+      setStatus(`Actualizado: ${when}`, 'ok');
+    }
     renderAll();
   }
 
-  /** Gastos de ambos; socios Josefa + Nicolás; capital aportado por Nicolás. */
+  /** Gastos de ambos; socios Josefa + Nicolás; capital aportado por Nicolás; filamentos ML. */
   function normalizarSociedad(d) {
     if (!d || typeof d !== 'object') return false;
     let changed = false;
@@ -48,7 +56,9 @@
       ];
       changed = true;
     }
-    const gastos = Array.isArray(d.gastos) ? d.gastos : [];
+    d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
+    if (asegurarGastosFilamentoML(d)) changed = true;
+    const gastos = d.gastos;
     for (const g of gastos) {
       const quien = String(g.socioRegistro || '').trim();
       if (!quien || /^josefa$/i.test(quien) || /^socio$/i.test(quien)) {
@@ -78,6 +88,82 @@
       d.meta.notas =
         'Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital; Josefa le debe el 50%.';
       changed = true;
+    }
+    return changed;
+  }
+
+  /** Compra ML 14-jul: 5 filamentos PLA — total $64.750 (pagó Nicolás, gasto de ambos). */
+  function asegurarGastosFilamentoML(d) {
+    const items = [
+      {
+        id: 'gas-ml-pla-rojo',
+        fecha: '2026-07-14',
+        categoria: 'filamento',
+        descripcion: 'Filamento PLA Rojo 1.75mm × 1kg',
+        proveedor: 'Mercado Libre',
+        cantidad: 1,
+        montoNeto: 13690,
+        notas: 'Compra ML — pagó Nicolás (Visa Banco de Chile). Total carrito 5 filamentos $64.750',
+        ordenId: 'ml-pla-2026-07-14',
+        socioRegistro: 'Ambos',
+      },
+      {
+        id: 'gas-ml-pla-esun',
+        fecha: '2026-07-14',
+        categoria: 'filamento',
+        descripcion: 'Filamento impresión 3D eSun PLA 1kg',
+        proveedor: 'Mercado Libre',
+        cantidad: 1,
+        montoNeto: 12990,
+        notas: 'Compra ML — pagó Nicolás. Parte de carrito $64.750',
+        ordenId: 'ml-pla-2026-07-14',
+        socioRegistro: 'Ambos',
+      },
+      {
+        id: 'gas-ml-pla-elegoo-amarillo',
+        fecha: '2026-07-14',
+        categoria: 'filamento',
+        descripcion: 'Filamento Elegoo PLA 1kg (amarillo)',
+        proveedor: 'Mercado Libre',
+        cantidad: 1,
+        montoNeto: 12690,
+        notas: 'Compra ML — pagó Nicolás. Parte de carrito $64.750',
+        ordenId: 'ml-pla-2026-07-14',
+        socioRegistro: 'Ambos',
+      },
+      {
+        id: 'gas-ml-pla-elegoo-azul',
+        fecha: '2026-07-14',
+        categoria: 'filamento',
+        descripcion: 'Filamento Elegoo PLA 1.75mm 1kg (azul)',
+        proveedor: 'Mercado Libre',
+        cantidad: 1,
+        montoNeto: 12690,
+        notas: 'Compra ML — pagó Nicolás. Parte de carrito $64.750',
+        ordenId: 'ml-pla-2026-07-14',
+        socioRegistro: 'Ambos',
+      },
+      {
+        id: 'gas-ml-pla-elegoo-blanco',
+        fecha: '2026-07-14',
+        categoria: 'filamento',
+        descripcion: 'Filamento Elegoo PLA 1kg (blanco)',
+        proveedor: 'Mercado Libre',
+        cantidad: 1,
+        montoNeto: 12690,
+        notas: 'Compra ML — pagó Nicolás. Parte de carrito $64.750. Envío gratis. Total pagado $64.750',
+        ordenId: 'ml-pla-2026-07-14',
+        socioRegistro: 'Ambos',
+      },
+    ];
+    let changed = false;
+    const ids = new Set((d.gastos || []).map((g) => g.id));
+    for (const item of items) {
+      if (!ids.has(item.id)) {
+        d.gastos.push(item);
+        ids.add(item.id);
+        changed = true;
+      }
     }
     return changed;
   }
@@ -122,47 +208,172 @@
     return { filamento, luz, pintado, metal, bolsa, total };
   }
 
+  function gastosPorCategoria() {
+    const map = {};
+    for (const g of data.gastos || []) {
+      const cat = g.categoria || 'otro';
+      const m = Number(g.montoNeto || 0);
+      if (m <= 0) continue;
+      map[cat] = (map[cat] || 0) + m;
+    }
+    return Object.entries(map)
+      .map(([cat, monto]) => ({ cat, monto }))
+      .sort((a, b) => b.monto - a.monto);
+  }
+
+  const CHART_COLORS = ['#c47a3a', '#3d8b6e', '#7a6bb0', '#b85c6e', '#5a8fb8', '#9a7a3a', '#6b8f5a', '#8a6a9a'];
+
+  function svgBarrasComparativa(gastos, ventas, operacion) {
+    const max = Math.max(gastos, ventas, operacion, 1);
+    const h = 140;
+    const bar = (x, val, color, label) => {
+      const bh = Math.max(4, Math.round((val / max) * 100));
+      const y = 120 - bh;
+      return `
+        <rect x="${x}" y="${y}" width="48" height="${bh}" rx="6" fill="${color}" />
+        <text x="${x + 24}" y="134" text-anchor="middle" font-size="11" fill="#8a7350">${label}</text>
+        <text x="${x + 24}" y="${y - 6}" text-anchor="middle" font-size="10" fill="#7a5c28" font-weight="700">${Math.round(val / 1000)}k</text>`;
+    };
+    return `<svg class="imp-chart-svg" viewBox="0 0 220 150" role="img" aria-label="Comparativa gastos ventas operación">
+      ${bar(20, gastos, '#c47a3a', 'Gastos')}
+      ${bar(86, ventas, '#3d8b6e', 'Ventas')}
+      ${bar(152, operacion, '#7a6bb0', 'Operac.')}
+    </svg>`;
+  }
+
+  function svgDonutCategorias(cats) {
+    const total = cats.reduce((a, c) => a + c.monto, 0) || 1;
+    const r = 54;
+    const cx = 70;
+    const cy = 70;
+    let ang = -Math.PI / 2;
+    const parts = cats.slice(0, 7).map((c, i) => {
+      const slice = (c.monto / total) * Math.PI * 2;
+      const a0 = ang;
+      const a1 = ang + slice;
+      ang = a1;
+      const x0 = cx + r * Math.cos(a0);
+      const y0 = cy + r * Math.sin(a0);
+      const x1 = cx + r * Math.cos(a1);
+      const y1 = cy + r * Math.sin(a1);
+      const large = slice > Math.PI ? 1 : 0;
+      const color = CHART_COLORS[i % CHART_COLORS.length];
+      return `<path d="M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 ${large} 1 ${x1} ${y1} Z" fill="${color}" stroke="#fffdf7" stroke-width="2" />`;
+    });
+    return `<svg class="imp-chart-svg" viewBox="0 0 140 140" role="img" aria-label="Gastos por categoría">
+      ${parts.join('')}
+      <circle cx="${cx}" cy="${cy}" r="28" fill="#fffdf7" />
+      <text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="11" fill="#7a5c28" font-weight="700">100%</text>
+    </svg>`;
+  }
+
+  function htmlBarrasCategorias(cats) {
+    const max = cats[0]?.monto || 1;
+    return `<div class="imp-cat-bars">
+      ${cats
+        .map(
+          (c) => `
+        <div class="imp-cat-row">
+          <span>${escapeHtml(c.cat)}</span>
+          <div class="imp-cat-row__bar"><div class="imp-cat-row__fill" style="width:${Math.max(3, (c.monto / max) * 100)}%"></div></div>
+          <span class="imp-cat-row__amt">${money(c.monto)}</span>
+        </div>`
+        )
+        .join('')}
+    </div>`;
+  }
+
   function renderResumen() {
     const gastos = sum(data.gastos);
     const ventas = sum(data.ventas);
     const operacion = sum((data.operacion || []).filter((x) => Number(x.montoNeto) !== 0));
     const ads = Number(data.planAds?.presupuestoMensualClp || 0);
+    /** Resultado = ventas − gastos − operación (sube al vender; más negativo si solo hay gastos). */
     const resultado = ventas - gastos - operacion;
+    /** Saldo por recuperar = gastos + operación − ventas (baja cada vez que venden). */
+    const saldoPendiente = Math.max(0, gastos + operacion - ventas);
     const cadaUnoGastos = gastos / 2;
     const cadaUnoResultado = resultado / 2;
     const cap = data.meta?.capital || {};
     const deuda = Number(cap.deudaJosefaClp != null ? cap.deudaJosefaClp : cadaUnoGastos);
-
     const orden = (data.gastos || []).filter((g) => g.ordenId === '312435');
     const totalOrden = sum(orden);
+    const ml = (data.gastos || []).filter((g) => g.ordenId === 'ml-pla-2026-07-14');
+    const totalMl = sum(ml);
+    const cats = gastosPorCategoria();
+    const denom = Math.max(gastos + operacion, ventas, 1);
+    const pctGastos = Math.min(100, ((gastos + operacion) / denom) * 100);
+    const pctVentas = Math.min(100, (ventas / denom) * 100);
+    const linkVenta = `${location.origin}/index/clientes/impresoreando/panel/venta/`;
 
     $('#tab-resumen').innerHTML = `
+      <div class="imp-balance">
+        <div class="imp-balance__label">Saldo por recuperar (gastos − ventas)</div>
+        <div class="imp-balance__valor">${money(saldoPendiente)}</div>
+        <div class="imp-balance__bar" title="Al vender, este saldo baja">
+          <div class="imp-balance__fill--gastos" style="width:${pctGastos}%"></div>
+          <div class="imp-balance__fill--ventas" style="width:${pctVentas}%"></div>
+        </div>
+        <div class="imp-balance__legend">
+          <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(gastos + operacion)}</span>
+          <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)} · cada venta baja el saldo</span>
+        </div>
+      </div>
       <div class="imp-grid">
         <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
-        <div class="imp-kpi"><span>Ventas</span><strong>${money(ventas)}</strong></div>
+        <div class="imp-kpi imp-kpi--ok"><span>Ventas</span><strong>${money(ventas)}</strong></div>
         <div class="imp-kpi"><span>Operación (luz etc.)</span><strong>${money(operacion)}</strong></div>
-        <div class="imp-kpi"><span>Resultado aprox.</span><strong>${money(resultado)}</strong></div>
+        <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
         <div class="imp-kpi"><span>50% cada socio (gastos)</span><strong>${money(cadaUnoGastos)}</strong></div>
         <div class="imp-kpi"><span>50% cada socio (resultado)</span><strong>${money(cadaUnoResultado)}</strong></div>
+      </div>
+      <div class="imp-charts">
+        <div class="imp-card imp-chart-card">
+          <h3>Comparativa</h3>
+          ${svgBarrasComparativa(gastos, ventas, operacion)}
+          <p class="imp-muted">Cada venta suma al verde y baja el saldo por recuperar.</p>
+        </div>
+        <div class="imp-card imp-chart-card">
+          <h3>Gastos por categoría</h3>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start;flex-wrap:wrap">
+            <div style="flex:0 0 140px">${svgDonutCategorias(cats)}</div>
+            <div style="flex:1;min-width:160px">${htmlBarrasCategorias(cats)}</div>
+          </div>
+        </div>
       </div>
       <div class="imp-card">
         <h2>Sociedad</h2>
         <p class="imp-muted">${(data.meta?.socios || []).map((s) => `${s.nombre} ${s.pct}%`).join(' · ') || 'Josefa 50% · Nicolás 50%'}</p>
         <p>Instagram: <strong>${data.meta?.instagram || '@impresoreando'}</strong></p>
-        <p class="imp-muted">Orden #312435 (PAGADO): <strong>${money(totalOrden)}</strong> — coincide con total boleta $652.290 si los ítems están completos.</p>
+        <p class="imp-muted">Orden #312435 (PAGADO): <strong>${money(totalOrden)}</strong></p>
+        <p class="imp-muted">Filamentos Mercado Libre (5 PLA): <strong>${money(totalMl)}</strong> — pagó Nicolás, gasto de ambos.</p>
         <p class="imp-deuda"><strong>Capital:</strong> lo aportó <strong>Nicolás</strong>. Todos los gastos son de <strong>ambos</strong>. Josefa le debe a Nicolás el <strong>50%</strong> del capital (${money(deuda)}).</p>
       </div>
       <div class="imp-card">
-        <h2>Cómo usar con tu socio</h2>
-        <ol class="imp-list">
-          <li>Abrir este panel en el navegador (misma red o túnel público).</li>
-          <li>Agregar gastos/ventas/notas en las pestañas (quien = Ambos).</li>
-          <li>Pulsar <strong>Guardar online</strong> — queda en <code>data/impresoreando-live.json</code>.</li>
-          <li>El otro socio recarga o entra al mismo link y ve lo actualizado.</li>
+        <h2>Link compartido — registrar ventas online</h2>
+        <p class="imp-muted">Josefa y Nicolás pueden abrir este link desde el celular y cargar ventas. Se guardan online al instante.</p>
+        <div class="imp-share">
+          <code id="imp-link-venta">${escapeHtml(linkVenta)}</code>
+          <button type="button" class="imp-btn imp-btn--primary" id="btn-copiar-link-venta">Copiar link</button>
+          <a class="imp-btn" href="./venta/">Abrir registrador</a>
+        </div>
+        <ol class="imp-list" style="margin-top:0.75rem">
+          <li>Compartir el link (misma red, o túnel / hosting público).</li>
+          <li>Cada venta se guarda en <code>data/impresoreando-live.json</code>.</li>
+          <li>Recargar este panel para ver el saldo actualizado.</li>
         </ol>
         <p class="imp-muted">Presupuesto ads mes (plan): ${money(ads)}</p>
       </div>
     `;
+
+    $('#btn-copiar-link-venta')?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(linkVenta);
+        setStatus('Link de ventas copiado', 'ok');
+      } catch {
+        setStatus('No se pudo copiar — selecciónalo a mano', 'warn');
+      }
+    });
   }
 
   function renderGastos() {
@@ -273,9 +484,13 @@
       .join('');
 
     $('#tab-ventas').innerHTML = `
+      <div class="imp-card imp-kpi--accent" style="padding:0.9rem 1rem">
+        <p style="margin:0"><strong>Link rápido para socios:</strong> <a href="./venta/">Abrir registrador de ventas</a>
+        — cada venta baja el saldo por recuperar en Resumen.</p>
+      </div>
       <div class="imp-card">
         <h2>Ventas (${money(sum(data.ventas))})</h2>
-        <p class="imp-muted">Aún no hay ecommerce vivo — registra aquí pedidos IG / WhatsApp / ferias.</p>
+        <p class="imp-muted">Las ventas se restan de los gastos en el dashboard: <strong>saldo = gastos − ventas</strong>.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>Fecha</th><th>Detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
@@ -431,10 +646,22 @@
 
   function renderCostos() {
     const margen = Number(data.parametros?.margenObjetivoPct || 40) / 100;
+    const p = data.parametros || {};
+    const avgFilKg =
+      (() => {
+        const fils = (data.gastos || []).filter((g) => g.categoria === 'filamento' && Number(g.montoNeto) > 0);
+        if (!fils.length) return 17986;
+        return Math.round(sum(fils) / fils.length);
+      })();
+
     const blocks = (data.productos || [])
       .map((prod) => {
         const c = costoProducto(prod);
         const sugeridoCosto = c.total / (1 - margen);
+        const margenReal =
+          Number(prod.precioVentaSugeridoClp) > 0
+            ? ((Number(prod.precioVentaSugeridoClp) - c.total) / Number(prod.precioVentaSugeridoClp)) * 100
+            : 0;
         return `
         <div class="imp-card">
           <h3>${escapeHtml(prod.nombre)}</h3>
@@ -444,27 +671,41 @@
             <div class="imp-kpi"><span>Pintado / MO</span><strong>${money(c.pintado)}</strong></div>
             <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
             <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
-            <div class="imp-kpi"><span>Costo unitario</span><strong>${money(c.total)}</strong></div>
-            <div class="imp-kpi"><span>Precio lista actual</span><strong>${money(prod.precioVentaSugeridoClp)}</strong></div>
+            <div class="imp-kpi imp-kpi--accent"><span>Costo unitario</span><strong>${money(c.total)}</strong></div>
+            <div class="imp-kpi"><span>Precio lista</span><strong>${money(prod.precioVentaSugeridoClp)}</strong></div>
+            <div class="imp-kpi ${margenReal >= Number(data.parametros?.margenObjetivoPct || 40) ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Margen real</span><strong>${margenReal.toFixed(0)}%</strong></div>
             <div class="imp-kpi"><span>Precio c/ margen ${Math.round(margen * 100)}%</span><strong>${money(sugeridoCosto)}</strong></div>
           </div>
-          <p class="imp-muted">${prod.filamentoGramos || 0}g · ${prod.horasImpresion || 0}h impresión · ${prod.minutosPintado || 0} min pintado · metal×${prod.unidadesMetal || 0} · bolsa×${prod.unidadesBolsa || 0}</p>
+          <p class="imp-muted">${prod.filamentoGramos || 0}g · ${prod.horasImpresion || 0}h impresión · ${prod.minutosPintado || 0} min pintado · metal×${prod.unidadesMetal || 0} · bolsa×${prod.unidadesBolsa || 0} · luz/h ≈ ${money(costoHoraImpresora())}</p>
         </div>`;
       })
       .join('');
 
     $('#tab-costos').innerHTML = `
       <div class="imp-card">
-        <h2>Costos por producto</h2>
-        <p class="imp-muted">Incluye filamento, luz por horas de impresión, tiempo de pintado, metal (llaveros) y bolsa de entrega.</p>
+        <h2>Costos por pieza (luz + materiales)</h2>
+        <p class="imp-muted">Cada pieza = filamento + luz (kWh × horas) + pintado + metal + bolsa. Ajusta parámetros en <strong>Operación / luz</strong>.</p>
+        <p class="imp-muted">Promedio reciente $/kg filamento (desde gastos): <strong>${money(avgFilKg)}</strong> · luz/hora impresora ≈ <strong>${money(costoHoraImpresora())}</strong></p>
       </div>
       ${blocks || '<div class="imp-card">Sin productos</div>'}
       <div class="imp-card">
-        <h3>Agregar / ajustar producto</h3>
+        <h3>Calculadora rápida de pieza</h3>
+        <form class="imp-form" id="form-calc-pieza">
+          <label>Gramos filamento<input name="g" type="number" step="0.1" value="12" /></label>
+          <label>$ / kg filamento<input name="kg" type="number" value="${avgFilKg}" /></label>
+          <label>Horas impresión<input name="h" type="number" step="0.1" value="1.2" /></label>
+          <label>Minutos pintado<input name="m" type="number" value="15" /></label>
+          <label>Unidades metal<input name="metal" type="number" value="1" /></label>
+          <label>Bolsas<input name="bolsa" type="number" value="1" /></label>
+        </form>
+        <div class="imp-calc-live" id="calc-pieza-live">Calculando…</div>
+      </div>
+      <div class="imp-card">
+        <h3>Agregar producto al catálogo</h3>
         <form class="imp-form" id="form-prod">
           <label>Nombre<input name="nombre" required placeholder="Llavero perro" /></label>
           <label>Gramos filamento<input name="filamentoGramos" type="number" step="0.1" value="12" /></label>
-          <label>$ / kg filamento<input name="costoFilamentoKgClp" type="number" value="17986" /></label>
+          <label>$ / kg filamento<input name="costoFilamentoKgClp" type="number" value="${avgFilKg}" /></label>
           <label>Horas impresión<input name="horasImpresion" type="number" step="0.1" value="1.2" /></label>
           <label>Minutos pintado<input name="minutosPintado" type="number" value="15" /></label>
           <label>Unidades metal<input name="unidadesMetal" type="number" value="1" /></label>
@@ -474,6 +715,31 @@
         </form>
       </div>
     `;
+
+    const updateCalc = () => {
+      const form = $('#form-calc-pieza');
+      if (!form) return;
+      const fd = new FormData(form);
+      const fake = {
+        filamentoGramos: Number(fd.get('g')),
+        costoFilamentoKgClp: Number(fd.get('kg')),
+        horasImpresion: Number(fd.get('h')),
+        minutosPintado: Number(fd.get('m')),
+        unidadesMetal: Number(fd.get('metal')),
+        unidadesBolsa: Number(fd.get('bolsa')),
+      };
+      const c = costoProducto(fake);
+      const sug = c.total / (1 - margen);
+      const el = $('#calc-pieza-live');
+      if (el) {
+        el.innerHTML = `
+          Filamento ${money(c.filamento)} · Luz ${money(c.luz)} · Pintado ${money(c.pintado)} · Metal ${money(c.metal)} · Bolsa ${money(c.bolsa)}
+          <br><strong>Costo unitario: ${money(c.total)}</strong> · precio sugerido c/ margen ${Math.round(margen * 100)}%: <strong>${money(sug)}</strong>
+          <div class="imp-muted" style="margin-top:0.35rem">Tarifa ${p.tarifaKwhClp || 180} $/kWh · consumo ${p.consumoImpresoraKw || 0.22} kW</div>`;
+      }
+    };
+    $('#form-calc-pieza')?.addEventListener('input', updateCalc);
+    updateCalc();
 
     $('#form-prod').addEventListener('submit', (e) => {
       e.preventDefault();
