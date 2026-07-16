@@ -219,6 +219,13 @@ body.portal-body--themed .portal-cliente {
   box-shadow: var(--shadow);
 }
 
+.portal-cliente__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 1.15rem;
+}
+
 .portal-cliente h1 {
   margin: 0 0 0.25rem;
   color: var(--card-text, var(--text));
