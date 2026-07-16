@@ -185,12 +185,13 @@
       "filamentoGramos": 12,
       "costoFilamentoKgClp": 17986,
       "horasImpresion": 1.2,
-      "minutosPintado": 15,
+      "minutosPintado": 0,
       "unidadesMetal": 1,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 4990,
       "notas": "Ajustar gramos/tiempo según modelo real",
-      "costoDisenoClp": 0
+      "costoDisenoClp": 0,
+      "acabado": "pintado"
     },
     {
       "id": "prod-figura-chica",
@@ -199,12 +200,13 @@
       "filamentoGramos": 35,
       "costoFilamentoKgClp": 17986,
       "horasImpresion": 3.5,
-      "minutosPintado": 45,
+      "minutosPintado": 0,
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 12990,
       "notas": "",
-      "costoDisenoClp": 0
+      "costoDisenoClp": 0,
+      "acabado": "pintado"
     },
     {
       "id": "prod-portacompletos-gato",
@@ -213,12 +215,13 @@
       "filamentoGramos": 110,
       "costoFilamentoKgClp": 12950,
       "horasImpresion": 5,
-      "minutosPintado": 20,
+      "minutosPintado": 0,
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 0,
       "notas": "5 h de impresión. Precio de venta a público se carga a mano.",
-      "costoDisenoClp": 0
+      "costoDisenoClp": 0,
+      "acabado": "pintado"
     },
     {
       "id": "prod-portacompletos-perro",
@@ -227,12 +230,13 @@
       "filamentoGramos": 132,
       "costoFilamentoKgClp": 12950,
       "horasImpresion": 6,
-      "minutosPintado": 20,
+      "minutosPintado": 0,
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 0,
       "notas": "6 h de impresión. Precio de venta a público se carga a mano.",
-      "costoDisenoClp": 0
+      "costoDisenoClp": 0,
+      "acabado": "pintado"
     }
   ],
   "planAds": {

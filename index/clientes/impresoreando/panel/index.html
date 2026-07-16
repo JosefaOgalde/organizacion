@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Impresoreando · Panel socios</title>
   <link rel="stylesheet" href="../../../assets/portal.css?v=imp-cta2" />
-  <link rel="stylesheet" href="./panel.css?v=imp-sku2" />
+  <link rel="stylesheet" href="./panel.css?v=imp-acab1" />
 </head>
 <body class="imp-body" data-cliente-slug="impresoreando">
   <div class="imp-top-bleed">
@@ -63,7 +63,14 @@
         <label>Gramos filamento<input name="filamentoGramos" type="number" step="0.1" min="0" required /></label>
         <label>$ / kg filamento<input name="costoFilamentoKgClp" type="number" min="0" required /></label>
         <label>Horas impresión<input name="horasImpresion" type="number" step="0.1" min="0" required /></label>
-        <label>Minutos pintado<input name="minutosPintado" type="number" min="0" required /></label>
+        <label>Acabado
+          <select name="acabado">
+            <option value="ninguno">Sin acabado</option>
+            <option value="sellante">Solo sellante (+$1.000)</option>
+            <option value="pintado" selected>Pintado (+$2.000)</option>
+            <option value="pintado_colores">Pintado colores (+$3.000)</option>
+          </select>
+        </label>
         <label>Unidades metal<input name="unidadesMetal" type="number" min="0" required /></label>
         <label>Bolsas<input name="unidadesBolsa" type="number" min="0" required /></label>
         <label>Costo diseño comprado (CLP)
@@ -86,6 +93,6 @@
     </div>
   </div>
 
-  <script src="./panel.js?v=imp-sku2"></script>
+  <script src="./panel.js?v=imp-acab1"></script>
 </body>
 </html>

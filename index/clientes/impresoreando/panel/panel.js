@@ -222,7 +222,8 @@
         filamentoGramos: 110,
         costoFilamentoKgClp: avgFilKg,
         horasImpresion: 5,
-        minutosPintado: 20,
+        acabado: 'pintado',
+        minutosPintado: 0,
         unidadesMetal: 0,
         unidadesBolsa: 1,
         precioVentaSugeridoClp: 0,
@@ -255,7 +256,8 @@
         filamentoGramos: 132,
         costoFilamentoKgClp: avgFilKg,
         horasImpresion: 6,
-        minutosPintado: 20,
+        acabado: 'pintado',
+        minutosPintado: 0,
         unidadesMetal: 0,
         unidadesBolsa: 1,
         precioVentaSugeridoClp: 0,
@@ -371,18 +373,53 @@
     return Number(p.tarifaKwhClp || 0) * Number(p.consumoImpresoraKw || 0);
   }
 
+  /** Acabados fijos (emprendimiento): precios de lista, no por minuto. */
+  const ACABADOS = {
+    ninguno: { label: 'Sin acabado', costo: 0 },
+    sellante: { label: 'Solo sellante', costo: 1000 },
+    pintado: { label: 'Pintado', costo: 2000 },
+    pintado_colores: { label: 'Pintado colores', costo: 3000 },
+  };
+
+  function opcionesAcabadoHtml(selected) {
+    const sel = selected || 'ninguno';
+    return Object.entries(ACABADOS)
+      .map(([id, a]) => {
+        const mark = id === sel ? ' selected' : '';
+        const precio = a.costo > 0 ? ` (+$${a.costo.toLocaleString('es-CL')})` : '';
+        return `<option value="${id}"${mark}>${a.label}${precio}</option>`;
+      })
+      .join('');
+  }
+
+  function costoAcabadoClp(prod) {
+    const key = String(prod.acabado || '').trim();
+    if (key && ACABADOS[key]) return ACABADOS[key].costo;
+    // Compat: productos viejos con minutos de pintado
+    if (Number(prod.minutosPintado || 0) > 0) {
+      const p = data.parametros || {};
+      return (Number(prod.minutosPintado) / 60) * Number(p.valorHoraManoObraClp || 0);
+    }
+    return 0;
+  }
+
+  function etiquetaAcabado(prod) {
+    const key = String(prod.acabado || '').trim();
+    if (key && ACABADOS[key]) return ACABADOS[key].label;
+    if (Number(prod.minutosPintado || 0) > 0) return `${prod.minutosPintado} min pintado (legado)`;
+    return ACABADOS.ninguno.label;
+  }
+
   function costoProducto(prod) {
-    const p = data.parametros || {};
     const filamento =
       (Number(prod.filamentoGramos || 0) / 1000) * Number(prod.costoFilamentoKgClp || 0);
     const luz = Number(prod.horasImpresion || 0) * costoHoraImpresora();
-    const pintado =
-      (Number(prod.minutosPintado || 0) / 60) * Number(p.valorHoraManoObraClp || 0);
-    const metal = Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0);
-    const bolsa = Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 0);
+    const pintado = costoAcabadoClp(prod);
+    const metal = Number(prod.unidadesMetal || 0) * Number((data.parametros || {}).costoAnilloMetalLlaveroClp || 0);
+    const bolsa = Number(prod.unidadesBolsa || 0) * Number((data.parametros || {}).costoBolsaEntregaClp || 0);
     const diseno = Math.max(0, Number(prod.costoDisenoClp || 0));
     const total = filamento + luz + pintado + metal + bolsa + diseno;
-    return { filamento, luz, pintado, metal, bolsa, diseno, total };
+    return { filamento, luz, pintado, metal, bolsa, diseno, total, acabado: prod.acabado || 'ninguno' };
   }
 
   /** Opcional: registrar la compra del diseño también en Gastos (categoría diseño). */
@@ -951,7 +988,8 @@
       filamentoGramos: Number(fd.get('g')),
       costoFilamentoKgClp: Number(fd.get('kg')),
       horasImpresion: Number(fd.get('h')),
-      minutosPintado: Number(fd.get('m')),
+      acabado: String(fd.get('acabado') || 'ninguno'),
+      minutosPintado: 0,
       unidadesMetal: Number(fd.get('metal')),
       unidadesBolsa: Number(fd.get('bolsa')),
       costoDisenoClp: Number(fd.get('diseno') || 0),
@@ -970,7 +1008,8 @@
       filamentoGramos: Number(fd.get('filamentoGramos')),
       costoFilamentoKgClp: Number(fd.get('costoFilamentoKgClp')),
       horasImpresion: Number(fd.get('horasImpresion')),
-      minutosPintado: Number(fd.get('minutosPintado')),
+      acabado: String(fd.get('acabado') || 'ninguno'),
+      minutosPintado: 0,
       unidadesMetal: Number(fd.get('unidadesMetal')),
       unidadesBolsa: Number(fd.get('unidadesBolsa')),
       costoDisenoClp: Number(fd.get('costoDisenoClp') || 0),
@@ -983,7 +1022,7 @@
     const leido = leerProductoDesdeModal();
     if (!est || !leido) return;
     est.innerHTML = `Costo estimado: <strong>${money(leido.c.total)}</strong>
-      · Filamento ${money(leido.c.filamento)} · Luz ${money(leido.c.luz)} · Pintado ${money(leido.c.pintado)}
+      · Filamento ${money(leido.c.filamento)} · Luz ${money(leido.c.luz)} · Acabado ${money(leido.c.pintado)}
       · Metal ${money(leido.c.metal)} · Bolsa ${money(leido.c.bolsa)} · Diseño ${money(leido.c.diseno)}`;
   }
 
@@ -1010,7 +1049,8 @@
     modal.querySelector('[name=filamentoGramos]').value = calc.prod.filamentoGramos;
     modal.querySelector('[name=costoFilamentoKgClp]').value = calc.prod.costoFilamentoKgClp;
     modal.querySelector('[name=horasImpresion]').value = calc.prod.horasImpresion;
-    modal.querySelector('[name=minutosPintado]').value = calc.prod.minutosPintado;
+    const acabadoSel = modal.querySelector('[name=acabado]');
+    if (acabadoSel) acabadoSel.value = calc.prod.acabado || 'ninguno';
     modal.querySelector('[name=unidadesMetal]').value = calc.prod.unidadesMetal;
     modal.querySelector('[name=unidadesBolsa]').value = calc.prod.unidadesBolsa;
     const disenoEl = modal.querySelector('[name=costoDisenoClp]');
@@ -1056,7 +1096,7 @@
           <div class="imp-grid">
             <div class="imp-kpi"><span>Filamento</span><strong>${money(c.filamento)}</strong></div>
             <div class="imp-kpi"><span>Luz (impresión)</span><strong>${money(c.luz)}</strong></div>
-            <div class="imp-kpi"><span>Pintado / MO</span><strong>${money(c.pintado)}</strong></div>
+            <div class="imp-kpi"><span>Acabado</span><strong>${money(c.pintado)}</strong></div>
             <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
             <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
             <div class="imp-kpi"><span>Diseño</span><strong>${money(c.diseno)}</strong></div>
@@ -1080,7 +1120,13 @@
               <span class="imp-muted">Costo ${money(c.total)} · diseño opcional</span>
             </div>
           </form>
-          <p class="imp-muted">${prod.filamentoGramos || 0}g · ${prod.horasImpresion || 0}h impresión · ${prod.minutosPintado || 0} min pintado · metal×${prod.unidadesMetal || 0} · bolsa×${prod.unidadesBolsa || 0} · diseño ${money(prod.costoDisenoClp || 0)} · luz/h ≈ ${money(costoHoraImpresora())}${prod.notas ? ` · ${escapeHtml(prod.notas)}` : ''}</p>
+          <p class="imp-muted">${prod.filamentoGramos || 0}g · ${prod.horasImpresion || 0}h impresión · ${escapeHtml(etiquetaAcabado(prod))} · metal×${prod.unidadesMetal || 0} · bolsa×${prod.unidadesBolsa || 0} · diseño ${money(prod.costoDisenoClp || 0)} · luz/h ≈ ${money(costoHoraImpresora())}${prod.notas ? ` · ${escapeHtml(prod.notas)}` : ''}</p>
+          <form class="imp-form" data-acabado-prod="${pid}">
+            <label>Acabado
+              <select name="acabado">${opcionesAcabadoHtml(prod.acabado || (Number(prod.minutosPintado) > 0 ? 'pintado' : 'ninguno'))}</select>
+            </label>
+            <div class="imp-form-actions"><button type="submit" class="imp-btn">Actualizar acabado</button></div>
+          </form>
         </div>`;
       })
       .join('');
@@ -1098,7 +1144,9 @@
           <label>Gramos filamento<input name="g" type="number" step="0.1" value="110" /></label>
           <label>$ / kg filamento<input name="kg" type="number" value="${avgFilKg}" /></label>
           <label>Horas impresión<input name="h" type="number" step="0.1" value="5" /></label>
-          <label>Minutos pintado<input name="m" type="number" value="20" /></label>
+          <label>Acabado
+            <select name="acabado">${opcionesAcabadoHtml('pintado')}</select>
+          </label>
           <label>Unidades metal<input name="metal" type="number" value="0" /></label>
           <label>Bolsas<input name="bolsa" type="number" value="1" /></label>
           <label>Costo diseño $<input name="diseno" type="number" min="0" step="10" value="0" placeholder="Opcional" /></label>
@@ -1116,13 +1164,29 @@
       const el = $('#calc-pieza-live');
       if (!calc || !el) return;
       el.innerHTML = `
-          Filamento ${money(calc.c.filamento)} · Luz ${money(calc.c.luz)} · Pintado ${money(calc.c.pintado)} · Metal ${money(calc.c.metal)} · Bolsa ${money(calc.c.bolsa)} · Diseño ${money(calc.c.diseno)}
+          Filamento ${money(calc.c.filamento)} · Luz ${money(calc.c.luz)} · Acabado ${money(calc.c.pintado)} · Metal ${money(calc.c.metal)} · Bolsa ${money(calc.c.bolsa)} · Diseño ${money(calc.c.diseno)}
           <br><strong>Costo unitario: ${money(calc.c.total)}</strong> · precio sugerido c/ margen ${Math.round(margen * 100)}%: <strong>${money(calc.sugerido)}</strong>
           <div class="imp-muted" style="margin-top:0.35rem">Tarifa ${p.tarifaKwhClp || 180} $/kWh · consumo ${p.consumoImpresoraKw || 0.22} kW</div>`;
     };
     $('#form-calc-pieza')?.addEventListener('input', updateCalc);
+    $('#form-calc-pieza')?.addEventListener('change', updateCalc);
     updateCalc();
     $('#btn-calc-guardar')?.addEventListener('click', abrirModalDesdeCalculadora);
+
+    $('#tab-costos').querySelectorAll('[data-acabado-prod]').forEach((form) => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = form.getAttribute('data-acabado-prod');
+        const fd = new FormData(form);
+        const prod = (data.productos || []).find((x) => x.id === id);
+        if (!prod) return;
+        prod.acabado = String(fd.get('acabado') || 'ninguno');
+        prod.minutosPintado = 0;
+        markDirty();
+        renderAll();
+        setStatus(`Acabado: ${etiquetaAcabado(prod)} — guarda online`, 'warn');
+      });
+    });
 
     $('#tab-costos').querySelectorAll('[data-precio-prod]').forEach((form) => {
       form.addEventListener('submit', (e) => {
@@ -1297,7 +1361,8 @@
       filamentoGramos: Number(fd.get('filamentoGramos')),
       costoFilamentoKgClp: Number(fd.get('costoFilamentoKgClp')),
       horasImpresion: Number(fd.get('horasImpresion')),
-      minutosPintado: Number(fd.get('minutosPintado')),
+      acabado: String(fd.get('acabado') || 'ninguno'),
+      minutosPintado: 0,
       unidadesMetal: Number(fd.get('unidadesMetal')),
       unidadesBolsa: Number(fd.get('unidadesBolsa')),
       costoDisenoClp,
@@ -1335,6 +1400,7 @@
       skuInput.value = siguienteSkuProducto(nombreInput.value);
     }
   });
+  $('#form-producto-modal')?.addEventListener('change', actualizarCostoModal);
   $('#btn-modal-producto-cerrar')?.addEventListener('click', cerrarModalProducto);
   $('#btn-modal-producto-cancelar')?.addEventListener('click', cerrarModalProducto);
   $('#imp-modal-producto')?.addEventListener('click', (e) => {
