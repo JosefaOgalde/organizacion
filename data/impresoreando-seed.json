@@ -1,0 +1,257 @@
+{
+  "meta": {
+    "negocio": "Impresoreando",
+    "instagram": "@impresoreando",
+    "moneda": "CLP",
+    "splitPct": 50,
+    "socios": [
+      { "id": "socio-a", "nombre": "Josefa", "pct": 50 },
+      { "id": "socio-b", "nombre": "Socio", "pct": 50 }
+    ],
+    "notas": "Emprendimiento 3D · todo 50/50. Instagram: impresoreando.",
+    "actualizado": "2026-07-14T20:40:00.000Z",
+    "version": 1
+  },
+  "parametros": {
+    "tarifaKwhClp": 180,
+    "consumoImpresoraKw": 0.22,
+    "valorHoraManoObraClp": 5000,
+    "costoAnilloMetalLlaveroClp": 150,
+    "costoBolsaEntregaClp": 50,
+    "margenObjetivoPct": 40
+  },
+  "gastos": [
+    {
+      "id": "gas-312435-1",
+      "fecha": "2026-07-14",
+      "categoria": "equipo",
+      "descripcion": "Centauri Carbon 2 Combo Multicolor Elegoo | Impresora 3D",
+      "proveedor": "Orden #312435",
+      "cantidad": 1,
+      "montoNeto": 699988,
+      "notas": "Ítem en orden pagada (precio lista antes de prorratear descuento)",
+      "ordenId": "312435",
+      "socioRegistro": "Josefa"
+    },
+    {
+      "id": "gas-312435-2",
+      "fecha": "2026-07-14",
+      "categoria": "filamento",
+      "descripcion": "Filamento ABS Blanco 1kg Elegoo",
+      "proveedor": "Orden #312435",
+      "cantidad": 1,
+      "montoNeto": 14271,
+      "notas": "",
+      "ordenId": "312435",
+      "socioRegistro": "Josefa"
+    },
+    {
+      "id": "gas-312435-3",
+      "fecha": "2026-07-14",
+      "categoria": "filamento",
+      "descripcion": "Filamento PLA+ Negro 1kg Elegoo",
+      "proveedor": "Orden #312435",
+      "cantidad": 1,
+      "montoNeto": 17986,
+      "notas": "",
+      "ordenId": "312435",
+      "socioRegistro": "Josefa"
+    },
+    {
+      "id": "gas-312435-4",
+      "fecha": "2026-07-14",
+      "categoria": "filamento",
+      "descripcion": "Filamento PLA+ Rojo 1kg Elegoo",
+      "proveedor": "Orden #312435",
+      "cantidad": 1,
+      "montoNeto": 17986,
+      "notas": "",
+      "ordenId": "312435",
+      "socioRegistro": "Josefa"
+    },
+    {
+      "id": "gas-312435-5",
+      "fecha": "2026-07-14",
+      "categoria": "repuesto",
+      "descripcion": "Centauri Carbon 2 Kit Boquillas Elegoo",
+      "proveedor": "Orden #312435",
+      "cantidad": 1,
+      "montoNeto": 18738,
+      "notas": "",
+      "ordenId": "312435",
+      "socioRegistro": "Josefa"
+    },
+    {
+      "id": "gas-312435-6",
+      "fecha": "2026-07-14",
+      "categoria": "filamento",
+      "descripcion": "Filamento PLA Amarillo 1kg Elegoo",
+      "proveedor": "Orden #312435",
+      "cantidad": 1,
+      "montoNeto": 16829,
+      "notas": "",
+      "ordenId": "312435",
+      "socioRegistro": "Josefa"
+    },
+    {
+      "id": "gas-312435-7",
+      "fecha": "2026-07-14",
+      "categoria": "filamento",
+      "descripcion": "Filamento PLA+ Azul Oscuro 1kg Elegoo",
+      "proveedor": "Orden #312435",
+      "cantidad": 1,
+      "montoNeto": 17986,
+      "notas": "",
+      "ordenId": "312435",
+      "socioRegistro": "Josefa"
+    },
+    {
+      "id": "gas-312435-8",
+      "fecha": "2026-07-14",
+      "categoria": "filamento",
+      "descripcion": "Filamento PLA Café 1kg Elegoo",
+      "proveedor": "Orden #312435",
+      "cantidad": 1,
+      "montoNeto": 16829,
+      "notas": "",
+      "ordenId": "312435",
+      "socioRegistro": "Josefa"
+    },
+    {
+      "id": "gas-312435-envio",
+      "fecha": "2026-07-14",
+      "categoria": "envio",
+      "descripcion": "Envío orden #312435",
+      "proveedor": "Orden #312435",
+      "cantidad": 1,
+      "montoNeto": 5990,
+      "notas": "",
+      "ordenId": "312435",
+      "socioRegistro": "Josefa"
+    },
+    {
+      "id": "gas-312435-desc",
+      "fecha": "2026-07-14",
+      "categoria": "descuento",
+      "descripcion": "Descuento orden #312435",
+      "proveedor": "Orden #312435",
+      "cantidad": 1,
+      "montoNeto": -174313,
+      "notas": "Descuento aplicado a la orden (estado PAGADO). Total orden = $652.290",
+      "ordenId": "312435",
+      "socioRegistro": "Josefa"
+    },
+    {
+      "id": "gas-ali-placa",
+      "fecha": "2026-07-14",
+      "categoria": "equipo",
+      "descripcion": "Placa cama",
+      "proveedor": "AliExpress",
+      "cantidad": 1,
+      "montoNeto": 30000,
+      "notas": "Gasto operativo inicial",
+      "ordenId": "",
+      "socioRegistro": "Josefa"
+    },
+    {
+      "id": "gas-ali-torno",
+      "fecha": "2026-07-14",
+      "categoria": "herramienta",
+      "descripcion": "Torno y cortador",
+      "proveedor": "AliExpress",
+      "cantidad": 1,
+      "montoNeto": 30000,
+      "notas": "Gasto operativo inicial",
+      "ordenId": "",
+      "socioRegistro": "Josefa"
+    },
+    {
+      "id": "gas-lider-cajas",
+      "fecha": "2026-07-14",
+      "categoria": "empaque",
+      "descripcion": "Cajas de plástico",
+      "proveedor": "Líder",
+      "cantidad": 1,
+      "montoNeto": 20000,
+      "notas": "Gasto operativo inicial",
+      "ordenId": "",
+      "socioRegistro": "Josefa"
+    }
+  ],
+  "ventas": [],
+  "operacion": [
+    {
+      "id": "op-luz-plantilla",
+      "fecha": "2026-07-01",
+      "categoria": "luz",
+      "descripcion": "Estimación luz impresora (plantilla — editar con boleta real)",
+      "montoNeto": 0,
+      "notas": "Registrar boleta mensual de luz atribuible a impresión",
+      "socioRegistro": "sistema"
+    }
+  ],
+  "productos": [
+    {
+      "id": "prod-llavero",
+      "nombre": "Llavero 3D",
+      "activo": true,
+      "filamentoGramos": 12,
+      "costoFilamentoKgClp": 17986,
+      "horasImpresion": 1.2,
+      "minutosPintado": 15,
+      "unidadesMetal": 1,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 4990,
+      "notas": "Ajustar gramos/tiempo según modelo real"
+    },
+    {
+      "id": "prod-figura-chica",
+      "nombre": "Figura chica / souvenir",
+      "activo": true,
+      "filamentoGramos": 35,
+      "costoFilamentoKgClp": 17986,
+      "horasImpresion": 3.5,
+      "minutosPintado": 45,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 12990,
+      "notas": ""
+    }
+  ],
+  "planAds": {
+    "fase": "arranque-bajo-presupuesto",
+    "presupuestoMensualClp": 30000,
+    "canales": [
+      {
+        "canal": "Instagram Ads (boost / Meta)",
+        "presupuestoClp": 20000,
+        "objetivo": "Alcance + clics al IG / link WhatsApp",
+        "notas": "Boost de 3–5 posts/carruseles del producto estrella (llaveros / modelos bestsellers)"
+      },
+      {
+        "canal": "Meta lead / mensajes",
+        "presupuestoClp": 10000,
+        "objetivo": "Conversaciones WhatsApp / DM",
+        "notas": "Audiencia: Chile, intereses impresión 3D, regalos, DIY, emprendedores"
+      }
+    ],
+    "hitos": [
+      "Semana 1–2: 100% orgánico + 1 boost semanal de $5.000",
+      "Mes 1: tope $30.000 paid — medir costo por mensaje",
+      "Mes 2+: subir presupuesto solo si costo por venta/contacto es rentable"
+    ],
+    "kpi": [
+      "Costo por mensaje DM / WhatsApp",
+      "Costo por pedido",
+      "ROAS estimado (ingresos ads / gasto ads)"
+    ]
+  },
+  "bitacora": [
+    {
+      "id": "bit-1",
+      "fecha": "2026-07-14",
+      "autor": "Josefa",
+      "texto": "Carga inicial: orden #312435 (PAGADO $652.290) + AliExpress placa/torno + cajas Líder. Sociedad 50/50."
+    }
+  ]
+}
