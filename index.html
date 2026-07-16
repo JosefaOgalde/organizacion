@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Organización</title>
-  <link rel="stylesheet" href="styles.css?v=perfil-lado1">
+  <link rel="stylesheet" href="styles.css?v=dia-acord1">
 </head>
 <body>
   <div class="app">
@@ -71,11 +71,19 @@
           <div id="calendario-semana-mini" class="calendario calendario--mini" aria-label="Semana en miniatura"></div>
           <p class="vista-hint vista-hint--mini">Clic en un día de la semana para ver su detalle</p>
         </div>
-        <div class="panel panel--dia">
-          <h2 id="dia-titulo">Día</h2>
-          <p id="dia-subtitulo" class="panel__desc"></p>
-          <p class="vista-hint">Clic en una tarea o en <strong>Realizar tarea</strong> → agente del cliente y descarga de contexto para resolver</p>
-          <div id="dia-contenido" class="dia-detalle"></div>
+        <div class="panel panel--dia panel--dia-reducido" id="panel-dia">
+          <button type="button" class="dia-acordeon" id="dia-acordeon-btn" aria-expanded="false" aria-controls="dia-contenido" title="Clic para desplegar o reducir el detalle del día">
+            <div class="dia-acordeon__fecha">
+              <span id="dia-acordeon-nombre" class="dia-acordeon__nombre">DÍA</span>
+              <span id="dia-acordeon-numero" class="dia-acordeon__numero">—</span>
+            </div>
+            <div class="dia-acordeon__meta">
+              <p id="dia-subtitulo" class="panel__desc">Vista reducida</p>
+              <span class="dia-acordeon__hint">Clic en la fecha para desplegar / reducir</span>
+            </div>
+            <span class="dia-acordeon__chevron" aria-hidden="true">▾</span>
+          </button>
+          <div id="dia-contenido" class="dia-detalle dia-detalle--reducida"></div>
         </div>
       </section>
 
@@ -338,7 +346,7 @@
   <script src="index/assets/cliente-landing-imagenes.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="app.js?v=perfil-pers1"></script>
+  <script src="app.js?v=dia-acord1"></script>
   <script src="ficha-extractores.js"></script>
   <script src="ficha-cliente.js?v=portal-only1"></script>
 </body>

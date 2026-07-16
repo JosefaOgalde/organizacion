@@ -297,6 +297,8 @@ const TOOLTIPS = {
 let semanaOffset = 0;
 let mesOffset = 0;
 let diaSeleccionado = null;
+/** Vista día: false = reducida (pills como semana); true = detalle completo. */
+let diaVistaExpandida = false;
 let tareaSeleccionada = null;
 let clientePerfilAbierto = null;
 
@@ -2295,7 +2297,9 @@ function resaltarTareaEnDia(tareaId) {
   if (!tareaId) return;
   requestAnimationFrame(() => {
     const esc = typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(tareaId) : String(tareaId).replace(/"/g, '');
-    const el = document.querySelector(`#dia-contenido [data-id="${esc}"]`);
+    const el =
+      document.querySelector(`#dia-contenido [data-id="${esc}"]`) ||
+      document.querySelector(`#dia-contenido [data-tarea-id="${esc}"]`);
     if (!el) return;
     el.classList.add('dia-item--resaltada');
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -4586,6 +4590,7 @@ function irASemanaDe(fechaISO) {
 
 function irADia(fechaISO) {
   diaSeleccionado = fechaISO;
+  diaVistaExpandida = false;
   const fecha = parseISO(fechaISO);
   semanaOffset = semanaOffsetPara(fecha);
   const hoyRef = hoy();
@@ -5171,6 +5176,111 @@ function htmlTareaDia(t, opts = {}) {
   </article>`;
 }
 
+/** Pill compacto estilo semana, para vista día reducida. */
+function htmlItemDiaReducido(item) {
+  if (item.tipo === 'cita' || item.tipo === 'reunion') {
+    return htmlItemCalendarioSemana(item);
+  }
+  const t = item.data;
+  const col = colorMiniTarea(t);
+  const textoBase = tituloMes(t, MAX_TITULO_SEMANA);
+  const texto =
+    item.indiceHijo != null ? `${item.indiceHijo}. ${textoBase}` : textoBase;
+  const completo = tituloMes(t, 200);
+  const madre = esTareaMadreCalendario(t);
+  const hija = item.indiceHijo != null || !!t.parentId;
+  const cls =
+    (t.completada ? ' tarea-mini--completada' : '') +
+    (madre ? ' tarea-mini--madre' : '') +
+    (hija ? ' tarea-mini--hija' : '');
+  const hora = etiquetaHoraTarea(t);
+  return `<div class="tarea-mini tarea-mini--clic tarea-mini--dia${cls}" data-tarea-id="${t.id}" data-id="${t.id}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(hora + ' · ' + completo)} — Clic para abrir">${escapeHtml(texto)}</div>`;
+}
+
+/** Agrupa items del día en bloques madre→subtareas (como columna de semana). */
+function htmlDiaReducido(items) {
+  if (!items.length) {
+    return '<p class="task-list--empty">No hay tareas, reuniones ni citas este día.</p>';
+  }
+  const partes = [];
+  let bloqueAbierto = false;
+  const cerrarBloque = () => {
+    if (bloqueAbierto) {
+      partes.push('</div>');
+      bloqueAbierto = false;
+    }
+  };
+
+  items.forEach((item) => {
+    if (item.tipo !== 'tarea') {
+      cerrarBloque();
+      partes.push(htmlItemDiaReducido(item));
+      return;
+    }
+    const esMadre = item.ordenGrupo === 0 && esTareaMadreCalendario(item.data);
+    const esHija = item.indiceHijo != null || !!item.data?.parentId;
+    if (esMadre) {
+      cerrarBloque();
+      partes.push('<div class="dia-bloque">');
+      bloqueAbierto = true;
+      partes.push(htmlItemDiaReducido(item));
+      return;
+    }
+    if (esHija && bloqueAbierto) {
+      partes.push(htmlItemDiaReducido(item));
+      return;
+    }
+    cerrarBloque();
+    partes.push(htmlItemDiaReducido(item));
+  });
+  cerrarBloque();
+  return `<div class="dia-columna">${partes.join('')}</div>`;
+}
+
+function htmlDiaExpandido(items) {
+  if (!items.length) {
+    return '<p class="task-list--empty">No hay tareas, reuniones ni citas este día.</p>';
+  }
+  const partes = [];
+  let bloqueAbierto = false;
+  const cerrarBloque = () => {
+    if (bloqueAbierto) {
+      partes.push('</div>');
+      bloqueAbierto = false;
+    }
+  };
+
+  items.forEach((item) => {
+    if (item.tipo === 'cita') {
+      cerrarBloque();
+      partes.push(htmlCitaDia(item.data));
+      return;
+    }
+    if (item.tipo === 'reunion') {
+      cerrarBloque();
+      partes.push(htmlReunionDia(item.data));
+      return;
+    }
+    const esMadre = item.ordenGrupo === 0 && esTareaMadreCalendario(item.data);
+    const esHija = item.indiceHijo != null || !!item.data?.parentId;
+    if (esMadre) {
+      cerrarBloque();
+      partes.push('<div class="dia-bloque dia-bloque--detalle">');
+      bloqueAbierto = true;
+      partes.push(htmlTareaDia(item.data, { indiceHijo: item.indiceHijo }));
+      return;
+    }
+    if (esHija && bloqueAbierto) {
+      partes.push(htmlTareaDia(item.data, { indiceHijo: item.indiceHijo }));
+      return;
+    }
+    cerrarBloque();
+    partes.push(htmlTareaDia(item.data, { indiceHijo: item.indiceHijo }));
+  });
+  cerrarBloque();
+  return `<div class="dia-timeline">${partes.join('')}</div>`;
+}
+
 function tituloConCliente(clienteId, tituloRaw) {
   const limpio = (tituloRaw || '').replace(/^\[[^\]]+\]\s*/, '').trim();
   const cli = clienteDe(clienteId);
@@ -5566,31 +5676,55 @@ function renderSemanaMini() {
 function renderDia() {
   if (!diaSeleccionado) return;
   const fecha = parseISO(diaSeleccionado);
-  const titulo = document.getElementById('dia-titulo');
-  const subtitulo = document.getElementById('dia-subtitulo');
   const cont = document.getElementById('dia-contenido');
-  if (!titulo || !cont) return;
+  const panel = document.getElementById('panel-dia');
+  const btnAcordeon = document.getElementById('dia-acordeon-btn');
+  const nombreEl = document.getElementById('dia-acordeon-nombre');
+  const numeroEl = document.getElementById('dia-acordeon-numero');
+  const subtitulo = document.getElementById('dia-subtitulo');
+  if (!cont || !fecha) return;
 
   const items = itemsDiaOrdenados(diaSeleccionado);
-  const numTareas = items.filter(i => i.tipo === 'tarea').length;
-  const numCitas = items.filter(i => i.tipo === 'cita').length;
-  const numReuniones = items.filter(i => i.tipo === 'reunion').length;
+  const numTareas = items.filter((i) => i.tipo === 'tarea').length;
+  const numMadres = items.filter(
+    (i) => i.tipo === 'tarea' && i.ordenGrupo === 0 && esTareaMadreCalendario(i.data)
+  ).length;
+  const numCitas = items.filter((i) => i.tipo === 'cita').length;
+  const numReuniones = items.filter((i) => i.tipo === 'reunion').length;
+  const diaSemana = DIAS[(fecha.getDay() + 6) % 7] || '';
 
-  titulo.textContent = formatFecha(fecha);
-  subtitulo.textContent = `${numTareas} tarea(s) · ${numReuniones} reunión(es) · ${numCitas} cita(s) · ordenado por hora`;
-
-  if (!items.length) {
-    cont.innerHTML = '<p class="task-list--empty">No hay tareas, reuniones ni citas este día.</p>';
-  } else {
-    cont.innerHTML = `<div class="dia-timeline">${items.map(item => {
-      if (item.tipo === 'cita') return htmlCitaDia(item.data);
-      if (item.tipo === 'reunion') return htmlReunionDia(item.data);
-      return htmlTareaDia(item.data, { indiceHijo: item.indiceHijo });
-    }).join('')}</div>`;
-    bindAccionesTarea(cont);
+  if (nombreEl) nombreEl.textContent = String(diaSemana).toUpperCase();
+  if (numeroEl) numeroEl.textContent = String(fecha.getDate());
+  if (subtitulo) {
+    subtitulo.textContent = diaVistaExpandida
+      ? `${numTareas} tarea(s) · ${numMadres} madre(s) · ${numReuniones} reunión(es) · ${numCitas} cita(s) · detalle completo`
+      : `${numTareas} tarea(s) · ${numMadres} madre(s) · vista reducida · clic en la fecha para desplegar`;
   }
-  bindAccionesCita(cont);
-  bindAccionesReunion(cont);
+  if (btnAcordeon) {
+    btnAcordeon.setAttribute('aria-expanded', diaVistaExpandida ? 'true' : 'false');
+    btnAcordeon.classList.toggle('is-open', diaVistaExpandida);
+  }
+  if (panel) {
+    panel.classList.toggle('panel--dia-expandido', diaVistaExpandida);
+    panel.classList.toggle('panel--dia-reducido', !diaVistaExpandida);
+  }
+
+  cont.className = `dia-detalle dia-detalle--${diaVistaExpandida ? 'expandida' : 'reducida'}`;
+  cont.innerHTML = diaVistaExpandida ? htmlDiaExpandido(items) : htmlDiaReducido(items);
+
+  if (diaVistaExpandida) {
+    bindAccionesTarea(cont);
+    bindAccionesCita(cont);
+    bindAccionesReunion(cont);
+  } else {
+    cont.querySelectorAll('.tarea-mini--dia[data-tarea-id]').forEach((el) => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const tid = el.dataset.tareaId;
+        if (tid) irATarea(tid);
+      });
+    });
+  }
   renderSemanaMini();
 }
 
@@ -6412,6 +6546,11 @@ function setupUI() {
     volverAMes({ irAHoy: true });
     render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('dia-acordeon-btn')?.addEventListener('click', () => {
+    diaVistaExpandida = !diaVistaExpandida;
+    renderDia();
   });
 
   document.querySelectorAll('.tab').forEach(tab => {
