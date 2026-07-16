@@ -3557,35 +3557,35 @@ function htmlEntregableTarea(tarea) {
       tarea.entregableArchivo = archivos.A;
     }
     const titulos = {
-      A: 'Versión A · producto héroe',
-      B: 'Versión B · cualidades en movimiento',
-      C: 'Versión C · close-up',
+      A: 'A · Producto héroe',
+      B: 'B · Cualidades en movimiento',
+      C: 'C · Close-up',
     };
-    const bloques = ['A', 'B', 'C']
+    const secciones = ['A', 'B', 'C']
       .map(
         (v) => `
-        <div class="prompt-version" data-prompt-version="${v}" data-prompt-archivo="${escapeHtml(archivos[v] || '')}">
-          <div class="prompt-version__head">
-            <strong>${titulos[v]}</strong>
-            <div class="prompt-version__acciones">
+        <section class="prompt-seccion" data-prompt-version="${v}" data-prompt-archivo="${escapeHtml(archivos[v] || '')}">
+          <div class="prompt-seccion__barra">
+            <h4 class="prompt-seccion__titulo">${titulos[v]}</h4>
+            <div class="prompt-seccion__acciones">
               <button type="button" class="btn btn--small" data-copiar-prompt-version="${v}">Copiar</button>
               <button type="button" class="btn btn--small btn--ghost" data-guardar-prompt-version="${v}">Guardar</button>
             </div>
           </div>
-          <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-prompt-texto rows="10" spellcheck="false" placeholder="Cargando prompt ${v}…">${escapeHtml('Cargando…')}</textarea>
-        </div>`
+          <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-prompt-texto rows="8" spellcheck="false" placeholder="Cargando prompt ${v}…"></textarea>
+        </section>`
       )
       .join('');
     return `
-      <div class="tarea-detalle__entregable" data-entregable="prompt-gemini">
+      <div class="tarea-detalle__entregable tarea-detalle__entregable--prompt" data-entregable="prompt-gemini">
         <div class="tarea-detalle__entregable-head">
           <strong>Prompt Gemini (video)</strong>
         </div>
         <p class="tarea-detalle__entregable-hint">
-          Cada versión es un TXT aparte: edita, guarda y copia de forma independiente.
+          Un bloque · tres secciones (TXT A / B / C). Edita, guarda y copia cada una.
           ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
         </p>
-        <div class="prompt-versiones">${bloques}</div>
+        <div class="prompt-bloque">${secciones}</div>
       </div>`;
   }
 
