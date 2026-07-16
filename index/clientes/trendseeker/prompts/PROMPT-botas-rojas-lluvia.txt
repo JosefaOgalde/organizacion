@@ -1,0 +1,60 @@
+PROMPTS TRENDSEEKER — Botas rojas bajo la lluvia
+Enfoque: el PRODUCTO es el héroe. La lluvia/escena apoyan las cualidades (impermeabilidad, agarre, presencia).
+Respetar al máximo las fotos de producto (silueta, color, costuras, suela, herrajes, caña).
+
+============================================================
+CÓMO USAR EN MIDJOURNEY (importante)
+============================================================
+1) Sube primero las FOTOS DE PRODUCTO reales (1 a 4).
+2) Úsalas como referencia de imagen / Omni Reference / Image Prompt
+   (arrástralas al prompt o pégalas antes del texto).
+3) Peso alto en el producto: el modelo/lluvia son secundarios.
+4) No inventar hebillas, logos, caña ni suela distinta a las fotos.
+5) Genera 2–4 variaciones; elige la que más respete el calzado real.
+
+Placeholder: [PEGAR AQUÍ LAS FOTOS DE PRODUCTO]
+
+============================================================
+VERSIÓN A — Producto héroe (recomendado)
+============================================================
+
+[PEGAR AQUÍ LAS FOTOS DE PRODUCTO]
+
+exact red boots as in the product reference photos, identical silhouette shape color stitching sole hardware and shaft height, photorealistic commercial product advertising, low camera angle focused on the boots, a woman walking forward through heavy rain on a wet city street, rain droplets beading on the leather showing waterproof quality, water splashing lightly around the soles showing grip and durability, dramatic wet asphalt reflections, boots sharp and highly detailed in the foreground, face and outfit secondary and soft, cinematic natural lighting, shallow depth of field, no logo invention, no design changes to the footwear
+
+============================================================
+VERSIÓN B — Cualidades en movimiento
+============================================================
+
+[PEGAR AQUÍ LAS FOTOS DE PRODUCTO]
+
+keep the exact same red boots from the reference images without redesigning them, hero product shot of women’s red boots in torrential rain, woman mid-stride walking confidently, emphasize waterproof leather surface with rain beading, sturdy sole with wet traction on flooded pavement, rich true red color matching references, precise stitching and hardware as in product photos, cinematic rain streaks, misty urban background bokeh, boots crisp and dominant in frame, lifestyle but product-accurate, commercial fashion photography
+
+============================================================
+VERSIÓN C — Close-up de cualidades (detalle)
+============================================================
+
+[PEGAR AQUÍ LAS FOTOS DE PRODUCTO]
+
+macro-leaning commercial photo of the exact red boots from product references, woman walking in heavy rain, extreme focus on boot material texture waterproof finish raindrops on leather and robust sole contact with wet ground, identical product geometry color and details, atmospheric downpour, soft background figure, product-first advertising still, photoreal, no altered design
+
+============================================================
+NOTAS DE DIRECCIÓN CREATIVA
+============================================================
+- Escena: mujer caminando + mucha lluvia = clima / prueba real del producto.
+- Énfasis de cualidades a “vender” visualmente:
+  · impermeabilidad (gotas que perlan, no se empapan)
+  · agarre / suela en piso mojado
+  · color rojo fiel al producto
+  · construcción (costuras, caña, herrajes) idéntica a las fotos
+- Evitar: botas genéricas rojas, cambiar tacón/caña, inventar logos,
+  que la cara o el look robe protagonismo al calzado.
+
+============================================================
+CHECKLIST ANTES DE GENERAR
+============================================================
+[ ] Fotos de producto adjuntas como referencia
+[ ] Prompt empieza/prioriza “exact … as in the product reference”
+[ ] Cámara baja / botas en primer plano
+[ ] Lluvia fuerte pero secundaria
+[ ] Revisar que suela, caña y rojo coincidan con las fotos reales
