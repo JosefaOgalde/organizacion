@@ -2526,7 +2526,7 @@ body.modal-abierto {
   width: 100%;
   max-width: none;
   box-sizing: border-box;
-  border: 1px solid rgba(74, 122, 158, 0.28);
+  border: 1px solid color-mix(in srgb, var(--cli-border, #cdc4f9) 55%, transparent);
   border-radius: 10px;
   background: #fff;
   overflow: visible;
@@ -2539,7 +2539,7 @@ body.modal-abierto {
 }
 
 .prompt-seccion + .prompt-seccion {
-  border-top: 1px solid rgba(74, 122, 158, 0.18);
+  border-top: 1px solid color-mix(in srgb, var(--cli-border, #cdc4f9) 40%, transparent);
 }
 
 .prompt-seccion__barra {
@@ -2555,7 +2555,7 @@ body.modal-abierto {
   margin: 0;
   font-size: 0.92rem;
   font-weight: 650;
-  color: var(--text, #2a3a4a);
+  color: var(--cli-text, #4e4b84);
 }
 
 .prompt-seccion__acciones {
@@ -2578,9 +2578,9 @@ body.modal-abierto {
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-word;
-  border: 1px solid rgba(74, 122, 158, 0.28);
+  border: 1px solid color-mix(in srgb, var(--cli-border, #cdc4f9) 55%, transparent);
   border-radius: 8px;
-  background: #f7fafc;
+  background: color-mix(in srgb, var(--cli-bg, #f4f2ff) 55%, #fff);
   color: inherit;
   padding: 1rem 1.1rem;
   field-sizing: fixed;
@@ -2590,8 +2590,8 @@ body.modal-abierto {
   margin-top: 0.65rem;
   padding: 0.75rem 0.85rem;
   border-radius: 8px;
-  border: 1px solid rgba(74, 122, 158, 0.28);
-  background: #f0f6fb;
+  border: 1px solid color-mix(in srgb, var(--cli-border, #cdc4f9) 55%, transparent);
+  background: var(--cli-bg, #f4f2ff);
 }
 
 .prompt-mejora__label {
