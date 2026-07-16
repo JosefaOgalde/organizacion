@@ -1,43 +1,52 @@
-PROMPTS MIDJOURNEY — Trendseeker · Botas rojas bajo la lluvia
-Herramienta: Midjourney (pegar el bloque de texto en el prompt).
-Enfoque: el PRODUCTO es el héroe. La lluvia/escena apoyan las cualidades.
+PROMPTS GEMINI — Trendseeker · Botas rojas bajo la lluvia
+Herramienta: Google Gemini (generación de imagen / editar con referencias).
+Enfoque: el PRODUCTO es el héroe. La lluvia y la escena apoyan las cualidades.
 Respetar al máximo las fotos de producto (silueta, color, costuras, suela, herrajes, caña).
 
 VESTUARIO OBLIGATORIO:
 - Jeans (denim)
-- Los jeans VAN DENTRO de las botas (tucked in)
-- NO se debe ver piel de piernas / tobillos / pantorrillas
+- Los jeans VAN DENTRO de las botas (metidos / tucked in)
+- NO se debe ver piel de piernas, tobillos ni pantorrillas
 
 ============================================================
-CÓMO USAR EN MIDJOURNEY
+CÓMO USAR EN GEMINI
 ============================================================
-1) En Discord/web de Midjourney, sube primero las FOTOS DE PRODUCTO (1–4).
-2) Úsalas como Image Prompt / Omni Reference (arrástralas o pégalas ANTES del texto).
-3) Copia UNA versión (A, B o C) y pégala después de las imágenes.
-4) No pegues flags (--ar / --style / --v / --no): en este flujo Midjourney no los usa.
-5) Genera y elige la que más respete el calzado real.
+1) Abre Gemini y sube primero las FOTOS DE PRODUCTO reales (1–4).
+2) Pega UNA versión del prompt (A, B o C) en el mismo mensaje.
+3) Indica que debe basarse en las imágenes adjuntas y no rediseñar el calzado.
+4) Si Gemini propone variantes, elige la que más respete las botas reales.
+5) Si cambia la suela/caña/color, reitera: “mantén el diseño exacto de las fotos de producto”.
 
 ============================================================
-VERSIÓN A — Producto héroe (recomendado) · pegar en Midjourney
+VERSIÓN A — Producto héroe (recomendado) · pegar en Gemini
 ============================================================
 
-exact red boots as in the product reference photos, identical silhouette shape color stitching sole hardware and shaft height, photorealistic commercial product advertising for Midjourney, low camera angle focused on the boots, a woman walking forward through heavy rain on a wet city street, wearing blue denim jeans tucked into the boots, jeans inside the boot shafts, no bare skin visible on legs ankles or calves, fully covered legs, rain droplets beading on the leather showing waterproof quality, water splashing lightly around the soles showing grip and durability, dramatic wet asphalt reflections, boots sharp and highly detailed in the foreground, face and upper outfit secondary and soft, cinematic natural lighting, shallow depth of field, no logo invention, no design changes to the footwear
+Usa las fotos de producto adjuntas como referencia obligatoria. Genera una imagen publicitaria fotorrealista donde el protagonismo absoluto sean esas mismas botas rojas: misma silueta, mismo color rojo, mismas costuras, misma suela, mismos herrajes y misma altura de caña. No rediseñes el calzado.
+
+Escena: una mujer caminando hacia adelante bajo lluvia muy intensa en una calle urbana mojada. Lleva jeans azules de denim metidos DENTRO de las botas (los pantalones van dentro de la caña). No debe verse piel en piernas, tobillos ni pantorrillas; las piernas quedan totalmente cubiertas.
+
+Cámara baja enfocada en las botas en primer plano, nítidas y con mucho detalle. Gotas de lluvia perlándose sobre el cuero (impermeabilidad). Ligero chapoteo en la suela (agarre). Reflejos en el asfalto mojado. Cara y torso secundarios y más suaves. Sin logos inventados ni tipografía.
 
 ============================================================
-VERSIÓN B — Cualidades en movimiento · pegar en Midjourney
+VERSIÓN B — Cualidades en movimiento · pegar en Gemini
 ============================================================
 
-keep the exact same red boots from the reference images without redesigning them, hero product shot of women’s red boots in torrential rain, woman mid-stride walking confidently, blue jeans tucked into the boots, denim pant legs inside the boot shafts, no exposed skin on legs or ankles, emphasize waterproof leather surface with rain beading, sturdy sole with wet traction on flooded pavement, rich true red color matching references, precise stitching and hardware as in product photos, cinematic rain streaks, misty urban background bokeh, boots crisp and dominant in frame, lifestyle but product-accurate, commercial fashion photography
+Basándote estrictamente en las fotos de producto que adjunto, crea una foto comercial de lifestyle donde se vean las botas rojas exactas (sin cambiar diseño). Mujer a mitad de zancada caminando con seguridad bajo lluvia torrencial.
+
+Obligatorio: jeans azules metidos dentro de las botas; nada de piel expuesta en piernas o tobillos. Destaca cualidades del producto: cuero impermeable con gotas, suela con tracción en piso inundado, rojo fiel a las referencias, costuras y herrajes idénticos. Botas nítidas y dominantes; fondo urbano con bokeh y lluvia cinematográfica.
 
 ============================================================
-VERSIÓN C — Close-up de cualidades · pegar en Midjourney
+VERSIÓN C — Close-up de cualidades · pegar en Gemini
 ============================================================
 
-macro-leaning commercial photo of the exact red boots from product references, woman walking in heavy rain, blue denim jeans tucked into the boots with no bare skin showing at the shaft opening, extreme focus on boot material texture waterproof finish raindrops on leather and robust sole contact with wet ground, identical product geometry color and details, atmospheric downpour, soft background figure, product-first advertising still, photoreal, no altered design
+Con las fotos de producto como referencia exacta, genera un close-up comercial de las botas rojas mientras una mujer camina bajo lluvia fuerte. Los jeans van metidos dentro de las botas; no se ve piel en la abertura de la caña.
+
+Enfoque extremo en textura del material, acabado impermeable, gotas sobre el cuero y contacto de la suela con el piso mojado. Geometría, color y detalles idénticos a las fotos. Figura de fondo suave. Publicidad product-first, fotorrealista, sin alterar el diseño.
 
 ============================================================
 NOTAS
 ============================================================
-- Midjourney = solo imagen. No tipografía ni logos inventados.
-- Jeans metidos DENTRO de las botas; cero piel visible en piernas/tobillos.
-- Primero las fotos de producto, después el texto del prompt.
+- Gemini = generación/edición con imágenes de referencia del producto.
+- Jeans DENTRO de las botas; cero piel visible en piernas/tobillos.
+- Primero adjuntar fotos de producto, después el texto del prompt.
+- Si el resultado cambia el calzado, vuelve a pedir: “replica exactamente las botas de las fotos”.
