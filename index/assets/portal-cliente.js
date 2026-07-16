@@ -324,6 +324,66 @@
     </section>`;
   }
 
+  function htmlEcosistemaNewsletter() {
+    if (c.slug !== 'ecr' || !datos?.tareas) return '';
+    const madre =
+      datos.tareas.find((t) => t.tipoEntregable === 'ecosistema' && t.clienteId === c.id) ||
+      datos.tareas.find((t) => /ecosistema newsletter/i.test(t.titulo || '') && t.clienteId === c.id);
+    if (!madre) return '';
+    const hijos = datos.tareas
+      .filter((t) => t.parentId === madre.id)
+      .sort((a, b) => String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || '')));
+
+    const icono = (tipo) =>
+      ({
+        'copys-txt': '📝',
+        'portada-imgs': '🖼️',
+        carrusel: '🎠',
+        video: '🎬',
+      }[tipo] || '•');
+
+    const cards = hijos
+      .map((h) => {
+        const titulo = String(h.titulo || '').replace(/^\[[^\]]+\]\s*/, '');
+        const imgs = imagenesDeTarea(h);
+        const thumb =
+          imgs[0] && (imgs[0].url || imgs[0].dataUrl)
+            ? `<img class="portal-eco__thumb" src="${escapeHtml(imgs[0].url || imgs[0].dataUrl)}" alt="" loading="lazy">`
+            : `<span class="portal-eco__emoji">${icono(h.tipoEntregable)}</span>`;
+        const extra =
+          h.tipoEntregable === 'copys-txt' && h.entregableArchivo
+            ? `<a class="portal-btn portal-btn--ghost" href="/${escapeHtml(String(h.entregableArchivo).replace(/^\/+/, ''))}" target="_blank" rel="noopener">Ver TXT</a>`
+            : '';
+        return `<article class="portal-eco__card">
+          <div class="portal-eco__visual">${thumb}</div>
+          <div class="portal-eco__body">
+            <h3 class="portal-eco__titulo">${escapeHtml(titulo)}</h3>
+            <p class="portal-eco__meta">#${escapeHtml(h.numeroHistorico || '?')} · ${escapeHtml(h.tipoEntregable || 'subtarea')}${h.completada ? ' · hecha' : ''}</p>
+            <div class="portal-eco__actions">
+              <a class="portal-btn" href="${hrefTareaOrganizador(h)}">Abrir subtarea</a>
+              ${extra}
+            </div>
+          </div>
+        </article>`;
+      })
+      .join('');
+
+    return `<section class="portal-eco ficha-seccion ficha-seccion--portal" data-portal-ecosistema-nl>
+      <div class="ficha-seccion__headline">
+        <h2 class="ficha-seccion__titulo">Ecosistema NL 1 agosto</h2>
+        <span class="ficha-seccion__estado">${hijos.length} subtareas</span>
+      </div>
+      <p class="portal-eco__intro">
+        Tarea madre del newsletter LinkedIn (copys TXT, portada, carrusel y video).
+        Entra a cada subtarea desde aquí o desde el organizador.
+      </p>
+      <p class="portal-eco__madre">
+        <a class="portal-btn portal-btn--ghost" href="${hrefTareaOrganizador(madre)}">Abrir tarea madre #${escapeHtml(madre.numeroHistorico || '04')}</a>
+      </p>
+      <div class="portal-eco__grid">${cards}</div>
+    </section>`;
+  }
+
   function imagenesSeccionHtml(landing) {
     if (typeof window.htmlLandingImagenesSeccion !== 'function') return '';
     return window.htmlLandingImagenesSeccion(landing, { claseExtra: 'ficha-seccion--portal' });
@@ -532,6 +592,7 @@
         ${seccionesHtml(landingCfg)}
         ${ecrPortadaHtml}
         ${ecrRutasHtml}
+        ${htmlEcosistemaNewsletter()}
         ${htmlTareasConImagenes()}
         ${imagenesHtml}
         ${mkofLandingHtml}

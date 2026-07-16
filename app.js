@@ -3235,6 +3235,118 @@ function htmlGaleriaImagenesTarea(tarea) {
     </div>`;
 }
 
+function hijosDeTarea(tarea) {
+  if (!tarea?.id) return [];
+  return (datos.tareas || [])
+    .filter((t) => t.parentId === tarea.id)
+    .sort((a, b) => String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || '')));
+}
+
+function madreDeTarea(tarea) {
+  if (!tarea?.parentId) return null;
+  return tareaDe(tarea.parentId) || null;
+}
+
+function htmlVinculosEcosistema(tarea) {
+  const madre = madreDeTarea(tarea);
+  const hijos = hijosDeTarea(tarea);
+  if (!madre && !hijos.length) return '';
+
+  let html = '<div class="tarea-detalle__ecosistema">';
+  if (madre) {
+    const href = urlTareaAbsoluta(madre);
+    html += `<p class="tarea-detalle__eco-madre">Parte de: <a href="${escapeHtml(href)}"><strong>${escapeHtml(nombreBaseTarea(madre) || madre.titulo)}</strong></a>${madre.numeroHistorico ? ` · #${escapeHtml(madre.numeroHistorico)}` : ''}</p>`;
+  }
+  if (hijos.length) {
+    html += `<div class="tarea-detalle__eco-hijos"><strong>Subtareas</strong><ul class="tarea-detalle__eco-lista">`;
+    for (const h of hijos) {
+      const href = urlTareaAbsoluta(h);
+      const done = h.completada ? ' ✓' : '';
+      const tipo = h.tipoEntregable ? ` <span class="tarea-detalle__eco-tipo">${escapeHtml(h.tipoEntregable)}</span>` : '';
+      html += `<li><a href="${escapeHtml(href)}">#${escapeHtml(h.numeroHistorico || '?')} ${escapeHtml(nombreBaseTarea(h) || h.titulo)}</a>${tipo}${done}</li>`;
+    }
+    html += '</ul></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function htmlEntregableTarea(tarea) {
+  const tipo = tarea.tipoEntregable;
+  if (!tipo || tipo === 'ecosistema') return '';
+
+  const archivo = tarea.entregableArchivo || '';
+  const hrefArchivo = archivo ? `/${archivo.replace(/^\/+/, '')}` : '';
+
+  if (tipo === 'copys-txt') {
+    return `
+      <div class="tarea-detalle__entregable" data-entregable="copys-txt">
+        <div class="tarea-detalle__entregable-head">
+          <strong>Copys (TXT)</strong>
+          <div class="tarea-detalle__entregable-acciones">
+            ${hrefArchivo ? `<a class="btn btn--small btn--ghost" href="${escapeHtml(hrefArchivo)}" target="_blank" rel="noopener" download>Descargar .txt</a>` : ''}
+            <button type="button" class="btn btn--small" data-copiar-entregable-txt>Copiar todo</button>
+          </div>
+        </div>
+        <p class="tarea-detalle__entregable-hint">Texto plano con emojis/hashtags — listo para pegar en LinkedIn.</p>
+        <pre class="tarea-detalle__txt" data-entregable-txt>Cargando copys…</pre>
+      </div>`;
+  }
+
+  if (tipo === 'portada-imgs') {
+    return `
+      <div class="tarea-detalle__entregable" data-entregable="portada-imgs">
+        <strong>Portada · fondos</strong>
+        <p class="tarea-detalle__entregable-hint">Guarda aquí los 4 fondos Midjourney. ${hrefArchivo ? `<a href="${escapeHtml(hrefArchivo)}" target="_blank" rel="noopener">Ver ficha de fondos</a>` : ''}</p>
+      </div>`;
+  }
+
+  if (tipo === 'carrusel' || tipo === 'video') {
+    const seccion = tipo === 'carrusel' ? 'sección 2 (carrusel)' : 'sección 3 (video)';
+    return `
+      <div class="tarea-detalle__entregable" data-entregable="${escapeHtml(tipo)}">
+        <strong>${tipo === 'carrusel' ? 'Carrusel' : 'Video'}</strong>
+        <p class="tarea-detalle__entregable-hint">
+          Copys de acompañamiento: ${seccion} del TXT.
+          ${hrefArchivo ? `<a href="${escapeHtml(hrefArchivo)}" target="_blank" rel="noopener">Abrir TXT</a> ·` : ''}
+          Guarda exports/capturas en Imágenes de la tarea.
+        </p>
+        ${hrefArchivo ? `<pre class="tarea-detalle__txt tarea-detalle__txt--extracto" data-entregable-txt data-extracto="${tipo}">Cargando extracto…</pre>` : ''}
+      </div>`;
+  }
+
+  return '';
+}
+
+async function cargarEntregableTxtEnVista(tarea) {
+  const pre = document.querySelector('[data-entregable-txt]');
+  if (!pre || !tarea.entregableArchivo) return;
+  const href = '/' + String(tarea.entregableArchivo).replace(/^\/+/, '');
+  try {
+    const res = await fetch(href + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    let text = await res.text();
+    const extracto = pre.getAttribute('data-extracto');
+    if (extracto === 'carrusel') {
+      const m = text.match(/2\) CARRUSEL[\s\S]*?(?=\n={10,}|\n3\) VIDEO|$)/i);
+      if (m) text = m[0].trim();
+    } else if (extracto === 'video') {
+      const m = text.match(/3\) VIDEO[\s\S]*?(?=\n={10,}|\nNOTAS RÁPIDAS|$)/i);
+      if (m) text = m[0].trim();
+    }
+    pre.textContent = text;
+    pre.dataset.fullText = text;
+  } catch (e) {
+    pre.textContent = 'No se pudo cargar el TXT. Abre: ' + href;
+  }
+
+  document.querySelector('[data-copiar-entregable-txt]')?.addEventListener('click', async () => {
+    const raw = pre.dataset.fullText || pre.textContent || '';
+    const ok = await copiarTexto(raw);
+    mostrarToast(ok ? 'Copys copiados' : 'No se pudo copiar');
+  });
+}
+
 function guardarGraficoEnFichaCliente(cli, tarea, svgHtml, etiqueta = 'entregable') {
   if (!cli || !svgHtml) return null;
   if (!cli.ficha || typeof cli.ficha !== 'object') {
@@ -4483,6 +4595,8 @@ function renderTarea() {
       ${tarea.prioridad ? `<p class="tarea-detalle__meta"><strong>Prioridad:</strong> ${escapeHtml(tarea.prioridad)}</p>` : ''}
       ${tarea.pendiente ? '<p class="tarea-detalle__meta tarea-detalle__meta--pendiente"><strong>Estado:</strong> En pendientes (no visible en calendario)</p>' : ''}
       ${tarea.notas ? `<div class="tarea-detalle__notas"><strong>Notas</strong><p>${escapeHtml(tarea.notas)}</p></div>` : ''}
+      ${htmlVinculosEcosistema(tarea)}
+      ${htmlEntregableTarea(tarea)}
       ${htmlGaleriaImagenesTarea(tarea)}
       ${cli ? htmlSkillResumen(cli, col) : ''}
       <div class="tarea-detalle__acciones">
@@ -4542,6 +4656,7 @@ function renderTarea() {
   });
   bindImagenesTareaDetalle(tarea);
   bindAgenteTarea(tarea);
+  cargarEntregableTxtEnVista(tarea);
   ajustarAlturaTextarea(document.getElementById('agente-input'));
   requestAnimationFrame(() => {
     syncAlturaPanelesTarea();

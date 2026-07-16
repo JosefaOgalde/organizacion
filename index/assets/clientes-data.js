@@ -33,7 +33,7 @@ window.CLIENTES_PORTAL = [
       tagline: 'Contenido que posiciona',
       entregables: ['2 newsletters al mes', 'Copys feed y carrusel', 'Artículos de blog', 'Secciones Elementor'],
       secciones: [
-        { titulo: 'Newsletter LinkedIn', texto: 'Invitación, carrusel y video del artículo cada ciclo.' },
+        { titulo: 'Newsletter LinkedIn', texto: 'Ecosistema NL 1 ago: madre + subtareas Copys (TXT), Portada, Carrusel y Video — visibles en landing y organizador (viernes).' },
         { titulo: 'Portada Midjourney', texto: 'Desde este perfil: PDF/título → 3 prompts por tema → Midjourney (solo fondo) → Canva (título/logo). Historial en newsletter/portadas-guardadas/. NL 1 ago: 4 fondos elegidos (NL-2026-08-01-fondos-elegidos.md).' },
         { titulo: 'Rutas de aprendizaje', texto: 'Finalizado — modal por sector con textos y links validados (HTML Elementor listo).' },
         { titulo: 'Blog', texto: 'Propuestas, maquetación y publicación en WordPress.' }
