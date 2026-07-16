@@ -5738,19 +5738,9 @@ function ajustarAlturaTextarea(ta) {
 let _observerAlturaTarea = null;
 
 function syncAlturaPanelesTarea() {
-  const vista = document.getElementById('view-tarea');
-  if (!vista?.classList.contains('view--active')) return;
-
-  const left = document.querySelector('#view-tarea .panel--tarea-detalle');
+  // Layout apilado (un solo bloque ancho): no igualar alturas izquierda/derecha
   const right = document.querySelector('#view-tarea .panel--agente');
-  if (!left || !right) return;
-
-  if (window.matchMedia('(max-width: 900px)').matches) {
-    right.style.height = '';
-    return;
-  }
-
-  right.style.height = `${left.offsetHeight}px`;
+  if (right) right.style.height = '';
 }
 
 function observarAlturaPanelTarea() {
@@ -5759,8 +5749,10 @@ function observarAlturaPanelTarea() {
 
   if (_observerAlturaTarea) _observerAlturaTarea.disconnect();
 
+  // Por si queda altura residual de la vista en 2 columnas
   _observerAlturaTarea = new ResizeObserver(() => syncAlturaPanelesTarea());
   _observerAlturaTarea.observe(left);
+  syncAlturaPanelesTarea();
 }
 
 function bindAgenteTarea(tarea) {

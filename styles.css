@@ -2174,42 +2174,46 @@ body.modal-abierto {
 }
 
 .tarea-layout {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 1rem;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  width: 100%;
+  max-width: none;
+  align-items: stretch;
 }
 
 #view-tarea .panel--tarea-detalle {
   display: block;
+  width: 100%;
   margin-bottom: 0;
   overflow: visible;
-  padding: 1.25rem 1.5rem;
+  padding: 1.35rem 1.6rem 1.5rem;
   height: auto;
+  max-width: none;
 }
 
 #tarea-detalle-contenido {
   overflow: visible;
   height: auto;
+  width: 100%;
 }
 
 #view-tarea .panel--agente {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
+  display: block;
+  width: 100%;
   margin-bottom: 0;
-  overflow: hidden;
-  padding: 1.25rem 1.5rem;
+  overflow: visible;
+  padding: 1.35rem 1.6rem 1.5rem;
   box-sizing: border-box;
+  height: auto;
+  min-height: 0;
+  max-width: none;
 }
 
 #agente-contenido {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 0.35rem;
-  scrollbar-gutter: stable;
+  width: 100%;
+  overflow: visible;
+  padding-right: 0;
 }
 
 .panel--tarea-detalle,
@@ -3103,18 +3107,15 @@ body.modal-abierto {
 
 @media (max-width: 900px) {
   .tarea-layout {
-    grid-template-columns: 1fr;
+    gap: 0.9rem;
   }
 
-  #view-tarea .panel--tarea-detalle {
-    height: auto;
-    max-height: none;
-  }
-
+  #view-tarea .panel--tarea-detalle,
   #view-tarea .panel--agente {
     height: auto;
-    min-height: 360px;
-    max-height: 65vh;
+    max-height: none;
+    min-height: 0;
+    padding: 1.1rem 1.15rem;
   }
 }
 
