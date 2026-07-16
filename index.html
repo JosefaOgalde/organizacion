@@ -4,17 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Organización</title>
-  <link rel="stylesheet" href="styles.css?v=sin-pend2">
+  <link rel="stylesheet" href="styles.css?v=perfil-alin1">
 </head>
 <body>
   <div class="app">
     <header class="header">
       <div class="header__left">
-        <button type="button" class="header__brand" id="btn-ir-vista-mes" title="Ir al calendario mensual" aria-label="Organización — ir al calendario del mes">
-          <h1>Organización</h1>
+        <div class="header__titles">
+          <div class="header__title-row">
+            <button type="button" class="header__brand" id="btn-ir-vista-mes" title="Ir al calendario mensual" aria-label="Organización — ir al calendario del mes">
+              <h1>Organización</h1>
+            </button>
+            <button type="button" class="tab tab--perfil header__perfil" data-view="perfil" title="Tu perfil personal — independiente de clientes">Mi perfil</button>
+          </div>
           <p id="header-frase-motivacional" class="header__subtitle" aria-live="polite"></p>
-        </button>
-        <button type="button" class="tab tab--perfil header__perfil" data-view="perfil" title="Tu perfil personal — independiente de clientes">Mi perfil</button>
+        </div>
       </div>
       <div class="header__date">
         <span class="header__today-label">Hoy</span>
@@ -341,7 +345,7 @@
   <script src="index/assets/cliente-landing-imagenes.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="app.js?v=sin-pend2"></script>
+  <script src="app.js?v=perfil-alin1"></script>
   <script src="ficha-extractores.js"></script>
   <script src="ficha-cliente.js?v=portal-only1"></script>
 </body>

@@ -52,10 +52,24 @@ body {
 
 .header__left {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 0.75rem 1rem;
   min-width: 0;
+}
+
+.header__titles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.header__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem 0.85rem;
 }
 
 .header__brand {
@@ -67,11 +81,16 @@ body {
   cursor: pointer;
   font: inherit;
   color: inherit;
+  line-height: 1.15;
 }
 
 .header__perfil {
-  align-self: center;
   flex-shrink: 0;
+  align-self: center;
+  margin: 0;
+  /* Óptica: alinear con la caja del h1 bold */
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
 }
 
 .header__brand:hover h1,
