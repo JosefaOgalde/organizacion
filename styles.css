@@ -3174,6 +3174,11 @@ body.modal-abierto {
   text-decoration: line-through;
 }
 
+.mes-item--madre {
+  font-weight: 700;
+  border-left-width: 4px;
+}
+
 .mes-item--mas {
   font-size: 0.55rem;
   color: var(--text-muted);

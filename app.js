@@ -4,7 +4,7 @@ const RESPALDO_DEFECTO_URL = 'data/organizacion-respaldo-2026-07-01.json';
 const AGENTES_RAMAS_URL = 'data/agentes-ramas.json';
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const DIAS_CORTOS = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'];
-const MAX_TITULO_SEMANA = 72;
+const MAX_TITULO_SEMANA = 96;
 
 const COLORES = {
   lavanda: { border: '#c4b8e8', bg: '#f0ecfa', text: '#6a5a9e' },
