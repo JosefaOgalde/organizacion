@@ -3442,17 +3442,24 @@ function htmlVinculosEcosistema(tarea) {
   return html;
 }
 
-function archivoPromptGeminiDeTarea(tarea) {
-  if (!tarea) return '';
-  if (tarea.entregableArchivo) return String(tarea.entregableArchivo).replace(/^\/+/, '');
+function archivosPromptGeminiDeTarea(tarea) {
+  if (!tarea) return { A: '', B: '', C: '' };
+  if (tarea.entregableArchivosPrompt && typeof tarea.entregableArchivosPrompt === 'object') {
+    const p = tarea.entregableArchivosPrompt;
+    return {
+      A: String(p.A || '').replace(/^\/+/, ''),
+      B: String(p.B || '').replace(/^\/+/, ''),
+      C: String(p.C || '').replace(/^\/+/, ''),
+    };
+  }
 
   const MAPA = {
-    7: 'PROMPT-c07-travel-trainer-black-hombre.txt',
-    8: 'PROMPT-c08-chelsea-commando-negras-mujer.txt',
-    9: 'PROMPT-c09-play-bajas-rojo-mujer.txt',
-    10: 'PROMPT-c10-original-ninos.txt',
-    11: 'PROMPT-c11-play-altas-shearling-white-mujer.txt',
-    12: 'PROMPT-c12-original-ninos-rosado-brillante.txt',
+    7: 'PROMPT-c07-travel-trainer-black-hombre',
+    8: 'PROMPT-c08-chelsea-commando-negras-mujer',
+    9: 'PROMPT-c09-play-bajas-rojo-mujer',
+    10: 'PROMPT-c10-original-ninos',
+    11: 'PROMPT-c11-play-altas-shearling-white-mujer',
+    12: 'PROMPT-c12-original-ninos-rosado-brillante',
   };
 
   let n = Number(tarea.contenidoSerie) || 0;
@@ -3468,8 +3475,31 @@ function archivoPromptGeminiDeTarea(tarea) {
     const mTit = String(tarea.titulo || '').match(/C\s*(\d+)\s*\/\s*12/i);
     if (mTit) n = Number(mTit[1]);
   }
-  if (!MAPA[n]) return '';
-  return `index/clientes/trendseeker/prompts/${MAPA[n]}`;
+  const base = MAPA[n];
+  if (!base) {
+    // Legacy: un solo archivo → intentar derivar -A/-B/-C
+    const uno = String(tarea.entregableArchivo || '').replace(/^\/+/, '');
+    if (uno && /\.txt$/i.test(uno)) {
+      const stem = uno.replace(/\.txt$/i, '').replace(/-[ABC]$/i, '');
+      return {
+        A: `${stem}-A.txt`,
+        B: `${stem}-B.txt`,
+        C: `${stem}-C.txt`,
+      };
+    }
+    return { A: '', B: '', C: '' };
+  }
+  const dir = 'index/clientes/trendseeker/prompts';
+  return {
+    A: `${dir}/${base}-A.txt`,
+    B: `${dir}/${base}-B.txt`,
+    C: `${dir}/${base}-C.txt`,
+  };
+}
+
+function archivoPromptGeminiDeTarea(tarea) {
+  const archivos = archivosPromptGeminiDeTarea(tarea);
+  return archivos.A || String(tarea?.entregableArchivo || '').replace(/^\/+/, '');
 }
 
 function htmlEntregableTarea(tarea) {
@@ -3521,25 +3551,41 @@ function htmlEntregableTarea(tarea) {
   }
 
   if (tipo === 'prompt-gemini') {
+    const archivos = archivosPromptGeminiDeTarea(tarea);
+    if (archivos.A) {
+      tarea.entregableArchivosPrompt = archivos;
+      tarea.entregableArchivo = archivos.A;
+    }
+    const titulos = {
+      A: 'Versión A · producto héroe',
+      B: 'Versión B · cualidades en movimiento',
+      C: 'Versión C · close-up',
+    };
+    const bloques = ['A', 'B', 'C']
+      .map(
+        (v) => `
+        <div class="prompt-version" data-prompt-version="${v}" data-prompt-archivo="${escapeHtml(archivos[v] || '')}">
+          <div class="prompt-version__head">
+            <strong>${titulos[v]}</strong>
+            <div class="prompt-version__acciones">
+              <button type="button" class="btn btn--small" data-copiar-prompt-version="${v}">Copiar</button>
+              <button type="button" class="btn btn--small btn--ghost" data-guardar-prompt-version="${v}">Guardar</button>
+            </div>
+          </div>
+          <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-prompt-texto rows="10" spellcheck="false" placeholder="Cargando prompt ${v}…">${escapeHtml('Cargando…')}</textarea>
+        </div>`
+      )
+      .join('');
     return `
       <div class="tarea-detalle__entregable" data-entregable="prompt-gemini">
         <div class="tarea-detalle__entregable-head">
-          <strong>Prompt Gemini (video) · listo para pegar</strong>
-          <div class="tarea-detalle__entregable-acciones">
-            ${hrefArchivo ? `<a class="btn btn--small btn--ghost" href="${escapeHtml(hrefArchivo)}" target="_blank" rel="noopener" download>Descargar .txt</a>` : ''}
-            <button type="button" class="btn btn--small" data-copiar-entregable-txt>Copiar todo</button>
-            <button type="button" class="btn btn--small btn--ghost" data-copiar-prompt-version="A">Copiar A</button>
-            <button type="button" class="btn btn--small btn--ghost" data-copiar-prompt-version="B">Copiar B</button>
-            <button type="button" class="btn btn--small btn--ghost" data-copiar-prompt-version="C">Copiar C</button>
-            <button type="button" class="btn btn--accent btn--small" data-mejorar-prompt>Mejorar prompt</button>
-          </div>
+          <strong>Prompt Gemini (video)</strong>
         </div>
         <p class="tarea-detalle__entregable-hint">
-          Texto completo abajo (según ficha hombre / mujer / niños). Copia y pega en Gemini VIDEO con fotos de producto.
+          Cada versión es un TXT aparte: edita, guarda y copia de forma independiente.
           ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
-          · «Mejorar prompt» abre el chat para ajustar con tus ideas.
         </p>
-        <pre class="tarea-detalle__txt tarea-detalle__txt--prompt" data-entregable-txt data-prompt-archivo="${escapeHtml(archivo || '')}">Cargando prompt…</pre>
+        <div class="prompt-versiones">${bloques}</div>
       </div>`;
   }
 
@@ -3558,28 +3604,16 @@ function htmlEntregableTarea(tarea) {
 }
 
 async function cargarEntregableTxtEnVista(tarea) {
+  if (tarea.tipoEntregable === 'prompt-gemini') {
+    await cargarPromptsGeminiEnVista(tarea);
+    return;
+  }
+
   const pre = document.querySelector('[data-entregable-txt]');
   if (!pre) return;
 
   let archivo = tarea.entregableArchivo || '';
-  if (tarea.tipoEntregable === 'prompt-gemini') {
-    archivo = archivoPromptGeminiDeTarea(tarea) || archivo || pre.getAttribute('data-prompt-archivo') || '';
-    if (archivo && !tarea.entregableArchivo) {
-      const tLive = tareaDe(tarea.id);
-      if (tLive) {
-        tLive.entregableArchivo = archivo;
-        tarea.entregableArchivo = archivo;
-        try { guardar(); } catch (_) { /* ignore */ }
-      }
-    }
-  }
-  if (!archivo) {
-    if (tarea.tipoEntregable === 'prompt-gemini') {
-      pre.textContent =
-        'No se encontró el TXT del prompt. Haz git pull y corre:\nnode scripts/generar-ts-prompts-contenidos-7-12.js';
-    }
-    return;
-  }
+  if (!archivo) return;
 
   const href = '/' + String(archivo).replace(/^\/+/, '');
   try {
@@ -3605,22 +3639,108 @@ async function cargarEntregableTxtEnVista(tarea) {
   document.querySelector('[data-copiar-entregable-txt]')?.addEventListener('click', async () => {
     const raw = pre.dataset.fullText || pre.textContent || '';
     const ok = await copiarTexto(raw);
-    mostrarToast(ok ? (tarea.tipoEntregable === 'prompt-gemini' ? 'Prompt copiado' : 'Copys copiados') : 'No se pudo copiar');
+    mostrarToast(ok ? 'Copys copiados' : 'No se pudo copiar');
   });
+}
 
-  document.querySelectorAll('[data-copiar-prompt-version]').forEach((btn) => {
+async function cargarPromptsGeminiEnVista(tarea) {
+  const root = document.querySelector('[data-entregable="prompt-gemini"]');
+  if (!root) return;
+
+  const archivos = archivosPromptGeminiDeTarea(tarea);
+  if (archivos.A) {
+    const tLive = tareaDe(tarea.id);
+    if (tLive) {
+      tLive.entregableArchivosPrompt = archivos;
+      tLive.entregableArchivo = archivos.A;
+      tarea.entregableArchivosPrompt = archivos;
+      tarea.entregableArchivo = archivos.A;
+      try { guardar(); } catch (_) { /* ignore */ }
+    }
+  }
+
+  const bloques = root.querySelectorAll('[data-prompt-version]');
+  await Promise.all(
+    [...bloques].map(async (bloque) => {
+      const ver = bloque.getAttribute('data-prompt-version') || 'A';
+      const archivo =
+        bloque.getAttribute('data-prompt-archivo') || archivos[ver] || '';
+      const ta = bloque.querySelector('[data-prompt-texto]');
+      if (!ta) return;
+      if (!archivo) {
+        ta.value =
+          'No se encontró el TXT. Corre:\nnode scripts/generar-ts-prompts-contenidos-7-12.js';
+        return;
+      }
+      bloque.setAttribute('data-prompt-archivo', archivo);
+      const href = '/' + String(archivo).replace(/^\/+/, '');
+      try {
+        const res = await fetch(href + '?t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        ta.value = await res.text();
+      } catch (_) {
+        ta.value =
+          'No se pudo cargar ' + href + '\n' +
+          '¿Server en marcha? ¿git pull? ¿corriste generar-ts-prompts-contenidos-7-12.js?';
+      }
+    })
+  );
+
+  root.querySelectorAll('[data-copiar-prompt-version]').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const ver = btn.getAttribute('data-copiar-prompt-version') || 'A';
-      const full = pre.dataset.fullText || pre.textContent || '';
-      const extracto = extraerVersionPromptGemini(full, ver);
-      const ok = await copiarTexto(extracto || full);
+      const bloque = root.querySelector(`[data-prompt-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-prompt-texto]');
+      const texto = (ta?.value || '').trim();
+      const ok = await copiarTexto(texto);
       mostrarToast(ok ? `Versión ${ver} copiada` : 'No se pudo copiar');
     });
   });
 
-  document.querySelector('[data-mejorar-prompt]')?.addEventListener('click', () => {
-    iniciarMejoraPromptGemini(tarea, pre.dataset.fullText || pre.textContent || '');
+  root.querySelectorAll('[data-guardar-prompt-version]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const ver = btn.getAttribute('data-guardar-prompt-version') || 'A';
+      const bloque = root.querySelector(`[data-prompt-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-prompt-texto]');
+      const archivo = bloque?.getAttribute('data-prompt-archivo') || archivos[ver] || '';
+      const texto = ta?.value ?? '';
+      if (!archivo) {
+        mostrarToast('Sin archivo para guardar');
+        return;
+      }
+      btn.disabled = true;
+      try {
+        const ok = await guardarPromptTxtEnDisco(archivo, texto);
+        mostrarToast(ok ? `Versión ${ver} guardada` : 'No se pudo guardar');
+      } finally {
+        btn.disabled = false;
+      }
+    });
   });
+}
+
+async function guardarPromptTxtEnDisco(archivoRel, texto) {
+  const headers = { 'Content-Type': 'application/json' };
+  const token = sessionStorage.getItem('organizacion_api_token');
+  if (token) headers['X-Organizacion-Token'] = token;
+  try {
+    const res = await fetch('/api/prompt-txt', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        archivo: String(archivoRel || '').replace(/^\/+/, ''),
+        texto: String(texto ?? ''),
+      }),
+    });
+    if (!res.ok) {
+      console.warn('guardar prompt', await res.text());
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.warn('guardar prompt', e);
+    return false;
+  }
 }
 
 function extraerVersionPromptGemini(texto, version) {

@@ -174,7 +174,7 @@ for (const c of CONTENIDOS) {
     contenidoTotal: 12,
   });
 
-  const promptArchivo = `index/clientes/trendseeker/prompts/PROMPT-c${String(c.n).padStart(2, '0')}-${
+  const promptStem = `index/clientes/trendseeker/prompts/PROMPT-c${String(c.n).padStart(2, '0')}-${
     {
       7: 'travel-trainer-black-hombre',
       8: 'chelsea-commando-negras-mujer',
@@ -183,7 +183,13 @@ for (const c of CONTENIDOS) {
       11: 'play-altas-shearling-white-mujer',
       12: 'original-ninos-rosado-brillante',
     }[c.n]
-  }.txt`;
+  }`;
+  const promptArchivos = {
+    A: `${promptStem}-A.txt`,
+    B: `${promptStem}-B.txt`,
+    C: `${promptStem}-C.txt`,
+  };
+  const promptArchivo = promptArchivos.A;
 
   const promptNum = pad(num++);
   upsert({
@@ -195,15 +201,16 @@ for (const c of CONTENIDOS) {
     horaInicio: h.prompt[0],
     horaFin: h.prompt[1],
     notas:
-      `Prompt Gemini VIDEO listo para copiar/pegar (según ficha y género del producto). ` +
-      `Producto: ${c.producto}. Link: ${c.url}. Archivo: ${promptArchivo}. ` +
-      `Usa «Copiar todo» o «Mejorar prompt» para ajustar con tus ideas.`,
+      `Prompt Gemini VIDEO · tres TXT independientes (A/B/C). ` +
+      `Producto: ${c.producto}. Link: ${c.url}. ` +
+      `Edita y copia cada versión por separado en la tarea.`,
     prioridad: 'alta',
     completada: false,
     pendiente: false,
     numeroHistorico: promptNum,
     tipoEntregable: 'prompt-gemini',
     entregableArchivo: promptArchivo,
+    entregableArchivosPrompt: promptArchivos,
     parentId: madreId,
     productoUrl: c.url,
   });

@@ -182,80 +182,112 @@ function vestuario(g) {
 - Sin tipografía ni logos inventados fuera de los del producto real`;
 }
 
-function buildPrompt(c) {
-  const specs = c.specs.map((s) => `- ${s}`).join('\n');
-  return `PROMPTS GEMINI VIDEO — Trendseeker · Contenido ${c.n}/12
-Herramienta fija Trendseeker: Google Gemini en modo VIDEO (no imagen fija; no Midjourney).
-Enfoque: el PRODUCTO es el héroe. Respetar al máximo las fotos de producto adjuntas.
+function baseArchivo(c) {
+  return String(c.archivo || '').replace(/\.txt$/i, '');
+}
 
-PRODUCTO: ${c.producto}
+function archivosVersion(c) {
+  const base = baseArchivo(c);
+  return {
+    A: `${base}-A.txt`,
+    B: `${base}-B.txt`,
+    C: `${base}-C.txt`,
+  };
+}
+
+function encabezadoProducto(c) {
+  const specs = c.specs.map((s) => `- ${s}`).join('\n');
+  return `PRODUCTO: ${c.producto}
 SKU: ${c.sku}
 Link: ${c.url}
-Público / género del producto: ${etiquetaGenero(c.genero)}
+Público: ${etiquetaGenero(c.genero)}
+Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
 
-CARACTERÍSTICAS (ficha — usar en el prompt, no inventar otras):
+CARACTERÍSTICAS (no inventar otras):
 ${specs}
 
 VESTUARIO / MODELO:
-${vestuario(c.genero)}
+${vestuario(c.genero)}`;
+}
 
-============================================================
-CÓMO USAR EN GEMINI (VIDEO)
-============================================================
-1) Abre Gemini en generación de VIDEO.
-2) Sube primero las FOTOS DE PRODUCTO reales (referencia obligatoria).
-3) Pega UNA versión (A, B o C) en el mismo mensaje.
-4) Si cambia el diseño, reitera: “replica exactamente el calzado de las fotos”.
+function buildVersionA(c) {
+  return `${encabezadoProducto(c)}
 
-============================================================
+---
 VERSIÓN A — Video producto héroe (recomendado)
-============================================================
+---
 
 Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria del calzado Hunter (${c.producto}). No rediseñes el producto: misma silueta, mismo color, mismos detalles.
 
 Acción: ${c.escenaA}.
 
 Cámara: ángulo que priorice el calzado (a menudo bajo o a la altura del pie), nítido, product-first. Muestra cualidades reales de la ficha (impermeabilidad, agarre, textura, detalles reflectantes o forro si aplica). Sin tipografía ni logos inventados. Ritmo cinematográfico comercial corto.
+`;
+}
 
-============================================================
+function buildVersionB(c) {
+  return `${encabezadoProducto(c)}
+
+---
 VERSIÓN B — Video cualidades en movimiento
-============================================================
+---
 
 Crea un VIDEO comercial basándote estrictamente en las fotos de producto. ${c.escenaB}.
 
 Destaca en movimiento las características reales: ${c.specs.slice(0, 4).join('; ')}. El calzado domina el cuadro; fondo coherente y secundario. No alterar el diseño.
+`;
+}
 
-============================================================
+function buildVersionC(c) {
+  return `${encabezadoProducto(c)}
+
+---
 VERSIÓN C — Video close-up de detalle
-============================================================
+---
 
 Genera un VIDEO corto tipo close-up publicitario. ${c.escenaC}.
 
 Enfoque en textura, color fiel a las refs, detalles de ficha y contacto con el piso. Cámara lenta, product-first. Sin rediseñar el calzado.
-
-============================================================
-NOTAS
-============================================================
-- Trendseeker = Gemini VIDEO. ECR portadas = Midjourney.
-- Primero fotos de producto, después el texto.
-- Copiar/pegar una sola versión por generación.
 `;
+}
+
+/** @deprecated mantener por compat; preferir buildVersionA/B/C */
+function buildPrompt(c) {
+  return [buildVersionA(c), buildVersionB(c), buildVersionC(c)].join('\n\n');
 }
 
 function escribirPrompts() {
   fs.mkdirSync(PROMPTS_DIR, { recursive: true });
   const items = [];
   for (const c of CONTENIDOS) {
-    const abs = path.join(PROMPTS_DIR, c.archivo);
-    fs.writeFileSync(abs, buildPrompt(c), 'utf8');
-    const rel = `index/clientes/trendseeker/prompts/${c.archivo}`;
-    console.log('TXT:', rel);
+    const vers = archivosVersion(c);
+    const builders = { A: buildVersionA, B: buildVersionB, C: buildVersionC };
+    const rels = {};
+    for (const v of ['A', 'B', 'C']) {
+      const name = vers[v];
+      const abs = path.join(PROMPTS_DIR, name);
+      const force = process.env.FORCE === '1';
+      if (!force && fs.existsSync(abs)) {
+        console.log('TXT (conservado):', `index/clientes/trendseeker/prompts/${name}`);
+      } else {
+        fs.writeFileSync(abs, builders[v](c), 'utf8');
+        console.log('TXT:', `index/clientes/trendseeker/prompts/${name}`);
+      }
+      const rel = `index/clientes/trendseeker/prompts/${name}`;
+      rels[v] = rel;
+    }
+    // Índice legado: apunta a A como archivo principal
     items.push({
       id: `contenido-${c.n}-prompt`,
       titulo: `C${c.n}/12 · ${c.producto}`,
-      archivo: `prompts/${c.archivo}`,
-      descripcion: `VIDEO Gemini · ${etiquetaGenero(c.genero)} · listo para pegar (A/B/C).`,
-      tareaNumero: null, // se rellena si hay live
+      archivo: `prompts/${vers.A}`,
+      archivos: {
+        A: `prompts/${vers.A}`,
+        B: `prompts/${vers.B}`,
+        C: `prompts/${vers.C}`,
+      },
+      descripcion: `VIDEO Gemini · ${etiquetaGenero(c.genero)} · TXT separados A/B/C editables.`,
+      tareaNumero: null,
       productoUrl: c.url,
       contenidoSerie: c.n,
     });
@@ -272,21 +304,27 @@ function actualizarTareasYIndice(items) {
   data.tareas = Array.isArray(data.tareas) ? data.tareas : [];
 
   for (const c of CONTENIDOS) {
-    const rel = `index/clientes/trendseeker/prompts/${c.archivo}`;
+    const vers = archivosVersion(c);
+    const rels = {
+      A: `index/clientes/trendseeker/prompts/${vers.A}`,
+      B: `index/clientes/trendseeker/prompts/${vers.B}`,
+      C: `index/clientes/trendseeker/prompts/${vers.C}`,
+    };
     const promptTask = data.tareas.find(
       (t) => t.id === `tarea-ts-contenido-${c.n}-de-12-prompt`
     );
     if (promptTask) {
-      promptTask.entregableArchivo = rel;
+      promptTask.entregableArchivo = rels.A;
+      promptTask.entregableArchivosPrompt = rels;
       promptTask.tipoEntregable = 'prompt-gemini';
       promptTask.productoUrl = c.url;
       promptTask.notas =
-        `Prompt Gemini VIDEO listo para copiar/pegar (${etiquetaGenero(c.genero)}). ` +
-        `Producto: ${c.producto}. Link: ${c.url}. ` +
-        `Archivo: ${rel}. Usa «Copiar todo» o «Mejorar prompt» si quieres ajustar ideas.`;
+        `Prompt Gemini VIDEO · ${etiquetaGenero(c.genero)}. ` +
+        `Producto: ${c.producto}. ` +
+        `Tres TXT independientes (A/B/C): edita y copia cada uno por separado.`;
       const item = items.find((i) => i.contenidoSerie === c.n);
       if (item) item.tareaNumero = promptTask.numeroHistorico || null;
-      console.log('Tarea prompt actualizada:', promptTask.titulo, '→', rel);
+      console.log('Tarea prompt actualizada:', promptTask.titulo, '→ A/B/C');
     } else {
       console.warn('No existe subtarea prompt C' + c.n + ' — corre antes add-ts-contenidos-7-12.js');
     }
@@ -304,7 +342,7 @@ function actualizarTareasYIndice(items) {
   if (!Array.isArray(indice.items)) indice.items = [];
   indice.herramienta = 'Gemini';
   indice.nota =
-    'Prompts de producto/video Trendseeker — siempre Gemini (no Midjourney). Contenidos 7–12 con TXT listo al crear la tarea.';
+    'Prompts Trendseeker Gemini VIDEO — cada contenido tiene TXT A/B/C editables por separado.';
 
   for (const it of items) {
     const i = indice.items.findIndex((x) => x.id === it.id);
@@ -318,7 +356,16 @@ function actualizarTareasYIndice(items) {
 if (require.main === module) {
   const items = escribirPrompts();
   actualizarTareasYIndice(items);
-  console.log('Listo. Abre una subtarea Prompt (ej. trendseeker/06) y usa Copiar / Mejorar prompt.');
+  console.log('Listo. Cada versión A/B/C es un TXT editable con botón Copiar.');
 }
 
-module.exports = { CONTENIDOS, escribirPrompts, actualizarTareasYIndice, buildPrompt };
+module.exports = {
+  CONTENIDOS,
+  escribirPrompts,
+  actualizarTareasYIndice,
+  buildPrompt,
+  buildVersionA,
+  buildVersionB,
+  buildVersionC,
+  archivosVersion,
+};

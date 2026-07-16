@@ -543,6 +543,60 @@ function handleApiTareaArchivo(req, res) {
   });
 }
 
+/**
+ * Guarda un TXT de prompt (solo bajo index/clientes/<cliente>/prompts/*.txt).
+ * POST /api/prompt-txt  JSON { archivo, texto }
+ */
+function handleApiPromptTxt(req, res) {
+  if (!checkApiAuth(req, res)) return;
+  if (req.method !== 'POST') return send(res, 405, 'Método no permitido');
+
+  return readBody(req)
+    .then((raw) => {
+      let obj;
+      try {
+        obj = JSON.parse(raw);
+      } catch {
+        return send(res, 400, JSON.stringify({ error: 'JSON inválido' }), 'application/json');
+      }
+      const archivo = String(obj.archivo || '')
+        .replace(/^\/+/, '')
+        .replace(/\\/g, '/');
+      const texto = String(obj.texto ?? '');
+      if (!archivo || !/\.txt$/i.test(archivo)) {
+        return send(res, 400, JSON.stringify({ error: 'archivo .txt requerido' }), 'application/json');
+      }
+      if (!/^index\/clientes\/[a-z0-9_-]+\/prompts\/[A-Za-z0-9._-]+\.txt$/i.test(archivo)) {
+        return send(res, 403, JSON.stringify({ error: 'ruta no permitida' }), 'application/json');
+      }
+      if (archivo.includes('..')) {
+        return send(res, 403, JSON.stringify({ error: 'ruta inválida' }), 'application/json');
+      }
+      if (Buffer.byteLength(texto, 'utf8') > 400 * 1024) {
+        return send(res, 413, JSON.stringify({ error: 'texto demasiado grande' }), 'application/json');
+      }
+      const abs = path.normalize(path.join(ROOT, archivo));
+      if (!abs.startsWith(ROOT)) {
+        return send(res, 403, JSON.stringify({ error: 'ruta inválida' }), 'application/json');
+      }
+      fs.mkdirSync(path.dirname(abs), { recursive: true });
+      fs.writeFileSync(abs, texto, 'utf8');
+      console.log('[api] Prompt TXT guardado', archivo, `(${Buffer.byteLength(texto, 'utf8')} B)`);
+      return send(
+        res,
+        200,
+        JSON.stringify({ ok: true, archivo, bytes: Buffer.byteLength(texto, 'utf8') }),
+        'application/json'
+      );
+    })
+    .catch((e) => {
+      if (e && e.message === 'BODY_TOO_LARGE') {
+        return send(res, 413, JSON.stringify({ error: 'cuerpo demasiado grande' }), 'application/json');
+      }
+      return send(res, 500, String(e), 'text/plain');
+    });
+}
+
 const server = http.createServer((req, res) => {
   const url = req.url || '/';
 
@@ -556,6 +610,10 @@ const server = http.createServer((req, res) => {
 
   if (url.startsWith('/api/tarea-archivo')) {
     return handleApiTareaArchivo(req, res);
+  }
+
+  if (url.startsWith('/api/prompt-txt')) {
+    return handleApiPromptTxt(req, res);
   }
 
   if (url.startsWith('/api/ecr-portada-historial')) {
