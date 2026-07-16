@@ -3586,7 +3586,7 @@ function htmlEntregableTarea(tarea) {
               <button type="button" class="btn btn--accent btn--small" data-mejorar-copy-version="${v}">Mejorar</button>
             </div>
           </div>
-          <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-copy-texto rows="8" spellcheck="false" placeholder="Cargando copy ${v}…"></textarea>
+          <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-copy-texto rows="12" cols="80" spellcheck="false" placeholder="Cargando copy ${v}…" style="width:100%;min-width:100%;max-width:100%;box-sizing:border-box;display:block"></textarea>
         </section>`
         )
         .join('');
@@ -3596,11 +3596,10 @@ function htmlEntregableTarea(tarea) {
           <strong>Copys (TXT)</strong>
         </div>
         <p class="tarea-detalle__entregable-hint">
-          Un bloque · tres secciones (A / B / C). Copiar · Guardar · Mejorar (queda en historial del cliente).
+          Un bloque · tres secciones (A / B / C). Copiar · Guardar · Mejorar (reemplaza con la última versión).
           ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
         </p>
         <div class="prompt-bloque">${secciones}</div>
-        ${htmlHistorialEntregableTarea(tarea)}
       </div>`;
     }
     return `
@@ -3662,7 +3661,7 @@ function htmlEntregableTarea(tarea) {
               <button type="button" class="btn btn--accent btn--small" data-mejorar-prompt-version="${v}">Mejorar</button>
             </div>
           </div>
-          <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-prompt-texto rows="8" spellcheck="false" placeholder="Cargando prompt ${v}…"></textarea>
+          <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-prompt-texto rows="12" cols="80" spellcheck="false" placeholder="Cargando prompt ${v}…" style="width:100%;min-width:100%;max-width:100%;box-sizing:border-box;display:block"></textarea>
         </section>`
       )
       .join('');
@@ -3672,11 +3671,10 @@ function htmlEntregableTarea(tarea) {
           <strong>Prompt Gemini (video)</strong>
         </div>
         <p class="tarea-detalle__entregable-hint">
-          Un bloque · tres secciones (TXT A / B / C). Copiar · Guardar · Mejorar (historial del cliente / landing).
+          Un bloque · tres secciones (TXT A / B / C). Copiar · Guardar · Mejorar (última versión).
           ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
         </p>
         <div class="prompt-bloque">${secciones}</div>
-        ${htmlHistorialEntregableTarea(tarea)}
       </div>`;
   }
 
@@ -3820,11 +3818,6 @@ async function cargarCopysAbcEnVista(tarea) {
             archivo,
             texto,
           });
-          // refrescar bloque historial en la vista
-          const hist = root.querySelector('.entregable-hist');
-          const nuevo = htmlHistorialEntregableTarea(tareaDe(tarea.id) || tarea);
-          if (hist && nuevo) hist.outerHTML = nuevo;
-          else if (!hist && nuevo) root.insertAdjacentHTML('beforeend', nuevo);
         }
         mostrarToast(ok ? `Copy ${ver} guardado` : 'No se pudo guardar');
       } finally {
@@ -3926,10 +3919,6 @@ async function cargarPromptsGeminiEnVista(tarea) {
             archivo,
             texto,
           });
-          const hist = root.querySelector('.entregable-hist');
-          const nuevo = htmlHistorialEntregableTarea(tareaDe(tarea.id) || tarea);
-          if (hist && nuevo) hist.outerHTML = nuevo;
-          else if (!hist && nuevo) root.insertAdjacentHTML('beforeend', nuevo);
         }
         mostrarToast(ok ? `Versión ${ver} guardada` : 'No se pudo guardar');
       } finally {
@@ -3966,46 +3955,35 @@ function registrarHistorialEntregable(tarea, opts = {}) {
   if (!tLive) return null;
   const lista = asegurarHistorialEntregables(tLive);
   const texto = String(opts.texto || '');
+  const version = String(opts.version || '').toUpperCase() || 'A';
+  const tipo = opts.tipo || tLive.tipoEntregable || '';
+  // Solo la última versión por A/B/C (sin acumular historial)
+  const filtrada = lista.filter(
+    (h) => !(String(h.version || '').toUpperCase() === version && (h.tipo || '') === tipo)
+  );
   const entry = {
     id: typeof id === 'function' ? id() : `hist-${Date.now()}`,
     ts: Date.now(),
     fecha: typeof toISO === 'function' ? toISO(hoy()) : new Date().toISOString().slice(0, 10),
-    tipo: opts.tipo || tLive.tipoEntregable || '',
-    version: String(opts.version || '').toUpperCase() || 'A',
+    tipo,
+    version,
     accion: opts.accion || 'guardar',
     archivo: String(opts.archivo || '').replace(/^\/+/, ''),
     preview: texto.slice(0, 320),
   };
-  lista.unshift(entry);
-  // Mantener historial razonable
-  if (lista.length > 40) lista.length = 40;
+  filtrada.unshift(entry);
+  tLive.historialEntregables = filtrada;
   if (tarea !== tLive) {
     asegurarHistorialEntregables(tarea);
-    tarea.historialEntregables = lista;
+    tarea.historialEntregables = filtrada;
   }
   try { guardar(); } catch (_) { /* ignore */ }
   return entry;
 }
 
-function htmlHistorialEntregableTarea(tarea) {
-  const lista = Array.isArray(tarea?.historialEntregables) ? tarea.historialEntregables : [];
-  if (!lista.length) return '';
-  const items = lista
-    .slice(0, 8)
-    .map((h) => {
-      const when = h.fecha || '';
-      const acc = h.accion === 'mejora' ? 'Mejora' : 'Guardado';
-      const ver = h.version || '?';
-      const href = h.archivo
-        ? `<a href="/${escapeHtml(String(h.archivo).replace(/^\/+/, ''))}" target="_blank" rel="noopener">TXT ${escapeHtml(ver)}</a>`
-        : `v${escapeHtml(ver)}`;
-      return `<li><strong>${escapeHtml(acc)} ${escapeHtml(ver)}</strong> · ${escapeHtml(when)} · ${href}<br><span class="entregable-hist__preview">${escapeHtml(h.preview || '')}</span></li>`;
-    })
-    .join('');
-  return `<div class="entregable-hist">
-    <h4 class="entregable-hist__titulo">Historial (también en landing del cliente)</h4>
-    <ul class="entregable-hist__lista">${items}</ul>
-  </div>`;
+function htmlHistorialEntregableTarea() {
+  // Ya no mostramos listado de versiones: solo queda la última en el TXT
+  return '';
 }
 
 async function guardarPromptTxtEnDisco(archivoRel, texto) {
@@ -4084,36 +4062,22 @@ function iniciarMejoraEntregable(tarea, opts = {}) {
     const mejorado = mejorarTextoConIdeas(base, ideas, { tipo, version, tarea });
     if (ta) ta.value = mejorado;
 
-    registrarHistorialEntregable(tarea, {
-      tipo,
-      version,
-      accion: 'mejora',
-      archivo,
-      texto: mejorado,
-    });
-
-    // Guardar automáticamente en disco
+    // Solo la última versión: sobrescribe el TXT (sin acumular historial visible)
     if (archivo) {
       const ok = await guardarPromptTxtEnDisco(archivo, mejorado);
       if (ok) {
         registrarHistorialEntregable(tarea, {
           tipo,
           version,
-          accion: 'guardar',
+          accion: 'mejora',
           archivo,
           texto: mejorado,
         });
       }
-      mostrarToast(ok ? `Versión ${version} mejorada y guardada` : `Mejorada en pantalla (no se pudo guardar disco)`);
+      mostrarToast(ok ? `Versión ${version} actualizada` : 'Mejorada en pantalla (no se pudo guardar)');
     } else {
-      mostrarToast(`Versión ${version} mejorada — pulsa Guardar`);
+      mostrarToast(`Versión ${version} actualizada — pulsa Guardar`);
     }
-
-    const root = bloque.closest('[data-entregable]');
-    const hist = root?.querySelector('.entregable-hist');
-    const nuevo = htmlHistorialEntregableTarea(tareaDe(tarea.id) || tarea);
-    if (hist && nuevo) hist.outerHTML = nuevo;
-    else if (root && !hist && nuevo) root.insertAdjacentHTML('beforeend', nuevo);
 
     panel.remove();
   });
@@ -4572,6 +4536,34 @@ function irATarea(tareaId, { actualizarHistorial = true } = {}) {
   if (actualizarHistorial) escribirRutaTarea(tarea);
   mostrarVista('tarea');
   renderTarea();
+  scrollVistaTareaAlTope();
+}
+
+/** Al abrir una subtarea/tarea siempre partir desde arriba (nunca a mitad o abajo). */
+function scrollVistaTareaAlTope() {
+  const irArriba = () => {
+    try {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    } catch (_) {
+      window.scrollTo(0, 0);
+    }
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    const vista = document.getElementById('view-tarea');
+    if (vista) vista.scrollTop = 0;
+    const main = document.querySelector('main');
+    if (main) main.scrollTop = 0;
+    // Ancla al inicio del detalle (título / URL), no al agente
+    document.getElementById('tarea-detalle-contenido')?.scrollIntoView({
+      behavior: 'auto',
+      block: 'start',
+    });
+    window.scrollTo(0, 0);
+  };
+  irArriba();
+  requestAnimationFrame(irArriba);
+  setTimeout(irArriba, 50);
+  setTimeout(irArriba, 200);
 }
 
 function volverADiaDesdeTarea() {
@@ -5755,6 +5747,7 @@ function renderTarea() {
     syncAlturaPanelesTarea();
     observarAlturaPanelTarea();
     renderDiagramasAgente(agentePanel);
+    scrollVistaTareaAlTope();
   });
 }
 

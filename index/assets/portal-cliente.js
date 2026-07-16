@@ -508,18 +508,7 @@
           return '';
         })();
         const hist = Array.isArray(t.historialEntregables) ? t.historialEntregables : [];
-        const histHtml = hist.length
-          ? `<details class="portal-reg__hist"><summary>Historial (${hist.length})</summary><ul>${hist
-              .slice(0, 6)
-              .map((h) => {
-                const acc = h.accion === 'mejora' ? 'Mejora' : 'Guardado';
-                const link = h.archivo
-                  ? `<a href="/${escapeHtml(String(h.archivo).replace(/^\/+/, ''))}" target="_blank" rel="noopener">${escapeHtml(acc)} ${escapeHtml(h.version || '')}</a>`
-                  : `${escapeHtml(acc)} ${escapeHtml(h.version || '')}`;
-                return `<li>${link} · ${escapeHtml(h.fecha || '')}<br><span class="portal-reg__hist-prev">${escapeHtml(h.preview || '')}</span></li>`;
-              })
-              .join('')}</ul></details>`
-          : '';
+        const histHtml = '';
         const thumbs = imgs
           .slice(0, 3)
           .map((img) => {
@@ -539,7 +528,6 @@
         const metaExtra = [
           imgs.length ? imgs.length + ' img' : '',
           videos.length ? videos.length + ' video' : '',
-          hist.length ? hist.length + ' hist' : '',
         ]
           .filter(Boolean)
           .join(' · ');

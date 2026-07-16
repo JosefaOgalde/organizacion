@@ -33,6 +33,11 @@ body {
   padding: 1.5rem;
 }
 
+/* Vista tarea: bloque más ancho para leer/editar copys y prompts */
+body:has(#view-tarea.view--active) .app {
+  max-width: min(1680px, 100%);
+}
+
 /* Header */
 .header {
   display: flex;
@@ -2490,24 +2495,25 @@ body.modal-abierto {
 }
 
 .tarea-detalle__txt--prompt-edit {
-  display: block;
-  width: 100%;
-  min-width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  min-height: 14rem;
-  max-height: 36rem;
+  display: block !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  min-height: 16rem;
+  max-height: 42rem;
   resize: vertical;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.82rem;
-  line-height: 1.45;
+  font-size: 0.88rem;
+  line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-word;
   border: 1px solid rgba(74, 122, 158, 0.28);
   border-radius: 8px;
   background: #f7fafc;
   color: inherit;
-  padding: 0.95rem 1rem;
+  padding: 1rem 1.1rem;
+  field-sizing: fixed;
 }
 
 .prompt-mejora {
