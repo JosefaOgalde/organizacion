@@ -6356,21 +6356,77 @@ function renderTarjetaPerfilPersonal() {
   const p = perfilPersonalActual();
   const nombre = (p.nombre || '').trim() || 'Josefa Ogalde';
   const titulo = (p.titulo || '').trim() || 'Desarrolladora Fullstack · Web · E-commerce · WordPress';
+  const v = 'tarjeta3';
+  const horiz = `index/assets/perfil/josefa-ogalde-tarjeta.png?v=${v}`;
+  const horizThumb = `index/assets/perfil/josefa-ogalde-tarjeta-thumb.png?v=${v}`;
+  const vert = `index/assets/perfil/josefa-ogalde-tarjeta-vertical.png?v=${v}`;
+  const vertThumb = `index/assets/perfil/josefa-ogalde-tarjeta-vertical-thumb.png?v=${v}`;
   slot.innerHTML = `
     <article class="perfil-tarjeta perfil-tarjeta--presentacion">
       <p class="perfil-tarjeta__eyebrow">Tarjeta de presentación</p>
-      <figure class="perfil-tarjeta__figura">
-        <img class="perfil-tarjeta__img" src="index/assets/perfil/josefa-ogalde-tarjeta.png?v=turquesa2" alt="Tarjeta de presentación de ${escapeHtml(nombre)}" width="1600" height="1001" loading="eager">
-      </figure>
+      <div class="perfil-tarjeta__versiones">
+        <button type="button" class="perfil-thumb" data-lightbox-src="${horiz}" data-lightbox-alt="Tarjeta horizontal de ${escapeHtml(nombre)}" title="Ver horizontal completa">
+          <span class="perfil-thumb__label">Horizontal</span>
+          <img class="perfil-thumb__img" src="${horizThumb}" alt="Miniatura horizontal" width="480" height="300" loading="lazy">
+          <span class="perfil-thumb__hint">Clic para ampliar</span>
+        </button>
+        <button type="button" class="perfil-thumb perfil-thumb--vertical" data-lightbox-src="${vert}" data-lightbox-alt="Tarjeta vertical de ${escapeHtml(nombre)}" title="Ver vertical completa (ideal celular)">
+          <span class="perfil-thumb__label">Vertical · celular</span>
+          <img class="perfil-thumb__img" src="${vertThumb}" alt="Miniatura vertical" width="340" height="560" loading="lazy">
+          <span class="perfil-thumb__hint">Clic para ampliar</span>
+        </button>
+      </div>
       <div class="perfil-tarjeta__resumen">
         <h3 class="perfil-tarjeta__nombre">${escapeHtml(nombre)}</h3>
         ${titulo ? `<p class="perfil-tarjeta__titulo">${escapeHtml(titulo)}</p>` : ''}
         <p class="perfil-tarjeta__links">
           <a class="btn btn--ghost btn--small" href="index/assets/perfil/Josefa-Ogalde-Desarrollo-y-Diseno-Web.pdf" target="_blank" rel="noopener">Abrir PDF</a>
-          <a class="btn btn--ghost btn--small" href="index/assets/perfil/josefa-ogalde-tarjeta.png?v=turquesa2" target="_blank" rel="noopener">Ver imagen</a>
+          <a class="btn btn--ghost btn--small" href="${horiz}" target="_blank" rel="noopener">Descargar horizontal</a>
+          <a class="btn btn--ghost btn--small" href="${vert}" target="_blank" rel="noopener">Descargar vertical</a>
         </p>
       </div>
     </article>`;
+
+  slot.querySelectorAll('[data-lightbox-src]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      abrirLightboxPerfil(btn.getAttribute('data-lightbox-src'), btn.getAttribute('data-lightbox-alt') || '');
+    });
+  });
+}
+
+function abrirLightboxPerfil(src, alt) {
+  let lb = document.getElementById('perfil-lightbox');
+  if (!lb) {
+    lb = document.createElement('div');
+    lb.id = 'perfil-lightbox';
+    lb.className = 'perfil-lightbox';
+    lb.hidden = true;
+    lb.innerHTML = `
+      <div class="perfil-lightbox__backdrop" data-cerrar-lightbox></div>
+      <div class="perfil-lightbox__dialog" role="dialog" aria-modal="true" aria-label="Vista ampliada de la tarjeta">
+        <button type="button" class="perfil-lightbox__cerrar" data-cerrar-lightbox aria-label="Cerrar">×</button>
+        <img class="perfil-lightbox__img" alt="">
+      </div>`;
+    document.body.appendChild(lb);
+    lb.addEventListener('click', (e) => {
+      if (e.target.closest('[data-cerrar-lightbox]')) cerrarLightboxPerfil();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !lb.hidden) cerrarLightboxPerfil();
+    });
+  }
+  const img = lb.querySelector('.perfil-lightbox__img');
+  img.src = src;
+  img.alt = alt;
+  lb.hidden = false;
+  document.body.classList.add('perfil-lightbox-open');
+}
+
+function cerrarLightboxPerfil() {
+  const lb = document.getElementById('perfil-lightbox');
+  if (!lb) return;
+  lb.hidden = true;
+  document.body.classList.remove('perfil-lightbox-open');
 }
 
 function renderPerfilPersonal() {

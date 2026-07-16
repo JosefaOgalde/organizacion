@@ -228,6 +228,64 @@ button.tab.tab--perfil.tab--active {
   gap: 0.85rem;
 }
 
+.perfil-tarjeta__versiones {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.7fr);
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.perfil-thumb {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.65rem;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--celeste) 35%, #fff);
+  background: #fff;
+  cursor: zoom-in;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.perfil-thumb:hover,
+.perfil-thumb:focus-visible {
+  border-color: var(--celeste-dark);
+  box-shadow: 0 4px 16px rgba(15, 118, 110, 0.14);
+  outline: none;
+}
+
+.perfil-thumb__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #2a8f84;
+}
+
+.perfil-thumb__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #f7f7f7;
+}
+
+.perfil-thumb--vertical .perfil-thumb__img {
+  max-height: 280px;
+  margin: 0 auto;
+}
+
+.perfil-thumb__hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
 .perfil-tarjeta__figura {
   margin: 0;
   border-radius: 12px;
@@ -241,6 +299,85 @@ button.tab.tab--perfil.tab--active {
   width: 100%;
   height: auto;
   max-width: 100%;
+}
+
+.perfil-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.perfil-lightbox[hidden] {
+  display: none !important;
+}
+
+.perfil-lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 28, 30, 0.72);
+}
+
+.perfil-lightbox__dialog {
+  position: relative;
+  z-index: 1;
+  max-width: min(960px, 100%);
+  max-height: min(92vh, 100%);
+  overflow: auto;
+  background: #fff;
+  border-radius: 14px;
+  padding: 0.75rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.perfil-lightbox__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(92vh - 2rem);
+  object-fit: contain;
+}
+
+.perfil-lightbox__cerrar {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.45rem;
+  z-index: 2;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #222;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+body.perfil-lightbox-open {
+  overflow: hidden;
+}
+
+@media (max-width: 700px) {
+  .perfil-tarjeta__versiones {
+    grid-template-columns: 1fr;
+  }
+
+  .perfil-thumb--vertical {
+    order: -1; /* en celular, la vertical primero */
+  }
+
+  .perfil-thumb__img {
+    max-height: 260px;
+  }
+
+  .perfil-thumb--vertical .perfil-thumb__img {
+    max-height: 420px;
+  }
 }
 
 .perfil-tarjeta__resumen {
