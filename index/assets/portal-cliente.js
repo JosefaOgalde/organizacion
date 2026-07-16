@@ -411,6 +411,66 @@
     </section>`;
   }
 
+  /** Serie mensual TS: Contenidos 7/12 … 12/12 (madre + Prompt / Copys / Programar). */
+  function htmlContenidosTsSerie() {
+    if (c.slug !== 'trendseeker' || !datos?.tareas) return '';
+    const madres = datos.tareas
+      .filter(
+        (t) =>
+          t.clienteId === c.id &&
+          t.tipoEntregable === 'ecosistema' &&
+          !t.parentId &&
+          (t.contenidoSerie || /Contenido \d+\/12/i.test(t.titulo || ''))
+      )
+      .sort((a, b) => Number(a.contenidoSerie || 0) - Number(b.contenidoSerie || 0));
+    if (!madres.length) return '';
+
+    const bloques = madres
+      .map((madre) => {
+        const hijos = datos.tareas
+          .filter((t) => t.parentId === madre.id)
+          .sort((a, b) => String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || '')));
+        const hechas = hijos.filter((h) => h.completada).length;
+        const titulo = String(madre.titulo || '').replace(/^\[[^\]]+\]\s*/, '');
+        const linkProd = madre.productoUrl
+          ? `<a class="portal-btn portal-btn--ghost" href="${escapeHtml(madre.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>`
+          : '';
+        const sub = hijos
+          .map((h) => {
+            const t = String(h.titulo || '').replace(/^\[[^\]]+\]\s*/, '');
+            return `<li class="portal-ts-cont__sub${h.completada ? ' portal-ts-cont__sub--hecha' : ''}">
+              <a href="${hrefTareaOrganizador(h)}">#${escapeHtml(h.numeroHistorico || '?')} · ${escapeHtml(t)}</a>
+              ${h.completada ? '<span>hecha</span>' : ''}
+            </li>`;
+          })
+          .join('');
+        return `<article class="portal-ts-cont__card">
+          <div class="portal-ts-cont__head">
+            <h3 class="portal-ts-cont__titulo">${escapeHtml(titulo)}</h3>
+            <p class="portal-ts-cont__meta">${escapeHtml(madre.fecha || '')} · ${hechas}/${hijos.length || 3} subtareas${madre.completada ? ' · madre hecha' : ''}</p>
+          </div>
+          <div class="portal-ts-cont__actions">
+            <a class="portal-btn" href="${hrefTareaOrganizador(madre)}">Abrir madre #${escapeHtml(madre.numeroHistorico || '?')}</a>
+            ${linkProd}
+          </div>
+          <ul class="portal-ts-cont__subs">${sub}</ul>
+        </article>`;
+      })
+      .join('');
+
+    return `<section class="portal-ts-cont ficha-seccion ficha-seccion--portal" data-portal-ts-contenidos>
+      <div class="ficha-seccion__headline">
+        <h2 class="ficha-seccion__titulo">Contenidos 7–12</h2>
+        <span class="ficha-seccion__estado">${madres.length} madres</span>
+      </div>
+      <p class="portal-ts-cont__intro">
+        Cada contenido = Prompt Gemini (video) + Copys del video + Programar.
+        Con las 3 subtareas hechas se puede finalizar la madre.
+      </p>
+      <div class="portal-ts-cont__lista">${bloques}</div>
+    </section>`;
+  }
+
   /** Registro de todo lo cargado/obtenido del cliente: tareas + entregables + links. */
   function htmlRegistroCliente() {
     if (!datos?.tareas) return '';
@@ -732,6 +792,7 @@
         ${ecrPortadaHtml}
         ${ecrRutasHtml}
         ${htmlEcosistemaNewsletter()}
+        ${htmlContenidosTsSerie()}
         ${htmlRegistroCliente()}
         ${htmlTareasConImagenes()}
         ${imagenesHtml}

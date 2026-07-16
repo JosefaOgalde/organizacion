@@ -3486,6 +3486,30 @@ function htmlEntregableTarea(tarea) {
       </div>`;
   }
 
+  if (tipo === 'prompt-gemini') {
+    return `
+      <div class="tarea-detalle__entregable" data-entregable="prompt-gemini">
+        <strong>Prompt Gemini (video)</strong>
+        <p class="tarea-detalle__entregable-hint">
+          Escribe el prompt en Gemini VIDEO con fotos de producto. Guarda el TXT en trendseeker/prompts/ y asígnalo como entregable.
+          ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
+          ${hrefArchivo ? ` · <a href="${escapeHtml(hrefArchivo)}" target="_blank" rel="noopener">Abrir prompt</a>` : ''}
+        </p>
+        ${hrefArchivo ? `<pre class="tarea-detalle__txt" data-entregable-txt>Cargando…</pre>` : ''}
+      </div>`;
+  }
+
+  if (tipo === 'programar') {
+    return `
+      <div class="tarea-detalle__entregable" data-entregable="programar">
+        <strong>Programar</strong>
+        <p class="tarea-detalle__entregable-hint">
+          Dejar copy + video listos/programados para publicar. Al terminar las 3 subtareas, marca hecha la tarea madre.
+          ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Link producto</a>` : ''}
+        </p>
+      </div>`;
+  }
+
   return '';
 }
 
