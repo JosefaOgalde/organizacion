@@ -282,16 +282,66 @@
   function asegurarSkusProductos(d) {
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     let changed = false;
-    d.productos.forEach((p, i) => {
-      if (!p.sku) {
-        const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-        const n = String(i + 1).padStart(3, '0');
-        const rand = Math.random().toString(36).slice(2, 5).toUpperCase();
-        p.sku = `IMP-${stamp}-${n}${rand}`;
+    const usados = new Set();
+    d.productos.forEach((p) => {
+      const actual = String(p.sku || '').trim();
+      const esLargoViejo = /^IMP-\d{8}-/i.test(actual) || !actual;
+      if (!esLargoViejo) {
+        usados.add(actual.toUpperCase());
+        return;
+      }
+      const nuevo = siguienteSkuProductoPara(d.productos, p.nombre, usados);
+      if (nuevo !== actual) {
+        p.sku = nuevo;
         changed = true;
       }
+      usados.add(nuevo.toUpperCase());
     });
     return changed;
+  }
+
+  /** Prefijo corto desde el nombre: "Portacompletos gato" → PCG */
+  function prefijoSkuDesdeNombre(nombre) {
+    const stop = new Set(['de', 'del', 'la', 'el', 'los', 'las', 'y', 'e', 'o', 'a', 'en', 'para', 'con', 'un', 'una', 'pedido']);
+    const raw = String(nombre || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+    const words = raw.split(/[^a-z0-9]+/).filter((w) => w && !stop.has(w) && !/^\d+$/.test(w));
+    if (!words.length) return 'PRD';
+    let prefix;
+    if (words.length === 1) {
+      prefix = words[0].slice(0, 3);
+    } else {
+      const first = words[0];
+      // Palabra larga: 1ª letra + letra ~40% (Portacompletos → P+C) + iniciales del resto
+      let core = first[0];
+      if (first.length >= 8) {
+        const mid = Math.min(first.length - 1, Math.max(2, Math.floor(first.length * 0.4)));
+        core += first[mid];
+      } else {
+        core += first[1] || '';
+      }
+      prefix = core + words.slice(1).map((w) => w[0]).join('');
+    }
+    prefix = prefix.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 5);
+    return prefix || 'PRD';
+  }
+
+  function siguienteSkuProductoPara(productos, nombre, usadosExtra) {
+    const prefix = prefijoSkuDesdeNombre(nombre);
+    const usados = usadosExtra || new Set((productos || []).map((p) => String(p.sku || '').toUpperCase()));
+    let n = 1;
+    let sku = '';
+    do {
+      sku = `${prefix}${String(n).padStart(3, '0')}`;
+      n += 1;
+    } while (usados.has(sku.toUpperCase()) && n < 1000);
+    return sku;
+  }
+
+  function siguienteSkuProducto(nombre) {
+    return siguienteSkuProductoPara(data.productos || [], nombre);
   }
 
   async function save() {
@@ -893,18 +943,6 @@
     });
   }
 
-  function siguienteSkuProducto() {
-    const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const existentes = new Set((data.productos || []).map((p) => String(p.sku || '')));
-    let sku = '';
-    do {
-      const n = String((data.productos || []).length + 1).padStart(3, '0');
-      const rand = Math.random().toString(36).slice(2, 5).toUpperCase();
-      sku = `IMP-${stamp}-${n}${rand}`;
-    } while (existentes.has(sku));
-    return sku;
-  }
-
   function leerCalcPieza() {
     const form = $('#form-calc-pieza');
     if (!form) return null;
@@ -966,9 +1004,9 @@
     }
     const modal = $('#imp-modal-producto');
     if (!modal) return;
-    const sku = siguienteSkuProducto();
-    modal.querySelector('[name=sku]').value = sku;
     modal.querySelector('[name=nombre]').value = '';
+    modal.querySelector('[name=sku]').value = siguienteSkuProducto('');
+    modal.querySelector('[name=sku]').dataset.manual = '';
     modal.querySelector('[name=filamentoGramos]').value = calc.prod.filamentoGramos;
     modal.querySelector('[name=costoFilamentoKgClp]').value = calc.prod.costoFilamentoKgClp;
     modal.querySelector('[name=horasImpresion]').value = calc.prod.horasImpresion;
@@ -1242,7 +1280,7 @@
     e.preventDefault();
     const fd = new FormData(e.target);
     const nombre = String(fd.get('nombre') || '').trim();
-    const sku = String(fd.get('sku') || '').trim() || siguienteSkuProducto();
+    const sku = String(fd.get('sku') || '').trim() || siguienteSkuProducto(nombre);
     if (!nombre) return;
     if ((data.productos || []).some((p) => p.sku === sku)) {
       setStatus('Ese SKU ya existe — cierra y vuelve a guardar', 'warn');
@@ -1283,7 +1321,20 @@
     document.querySelector('#imp-tabs button[data-tab="costos"]')?.click();
   });
 
-  $('#form-producto-modal')?.addEventListener('input', actualizarCostoModal);
+  $('#form-producto-modal')?.addEventListener('input', (e) => {
+    actualizarCostoModal();
+    const form = e.currentTarget;
+    const skuInput = form.querySelector('[name=sku]');
+    const nombreInput = form.querySelector('[name=nombre]');
+    if (!skuInput || !nombreInput) return;
+    if (e.target === skuInput) {
+      skuInput.dataset.manual = '1';
+      return;
+    }
+    if (e.target === nombreInput && skuInput.dataset.manual !== '1') {
+      skuInput.value = siguienteSkuProducto(nombreInput.value);
+    }
+  });
   $('#btn-modal-producto-cerrar')?.addEventListener('click', cerrarModalProducto);
   $('#btn-modal-producto-cancelar')?.addEventListener('click', cerrarModalProducto);
   $('#imp-modal-producto')?.addEventListener('click', (e) => {
