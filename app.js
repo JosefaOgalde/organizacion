@@ -4562,9 +4562,11 @@ function renderCalendarioMes() {
         };
       }),
       ...tareas.map(t => {
-        const cli = clienteDe(t.clienteId);
-        const col = colorDe(cli);
-        const cls = t.completada ? ' mes-item--completada' : '';
+        const col = colorMiniTarea(t);
+        const madre = esTareaMadreCalendario(t);
+        const cls =
+          (t.completada ? ' mes-item--completada' : '') +
+          (madre ? ' mes-item--madre' : '');
         return {
           minutos: minutosHora(t.horaInicio),
           html: `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(tituloMes(t, 0))}</span>`
@@ -4587,6 +4589,23 @@ function renderCalendarioMes() {
   });
 }
 
+function esTareaMadreCalendario(t) {
+  if (!t || t.parentId) return false;
+  if (t.tipoEntregable === 'ecosistema' || t.contenidoSerie) return true;
+  return (datos.tareas || []).some((h) => h.parentId === t.id);
+}
+
+/** Tonos más oscuros para tareas madre en vista semana/mes. */
+function colorMiniTarea(t) {
+  const base = colorDe(clienteDe(t?.clienteId));
+  if (!esTareaMadreCalendario(t)) return base;
+  return {
+    bg: base.border || '#b8c8d8',
+    border: base.text || '#4a5a6a',
+    text: base.text || '#3a4a5a',
+  };
+}
+
 function htmlItemCalendarioSemana(item) {
   if (item.tipo === 'cita') {
     const c = item.data;
@@ -4601,10 +4620,13 @@ function htmlItemCalendarioSemana(item) {
     return `<div class="cita-cal cita-cal--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border}"><span class="cita-cal__icon">${icon}</span><span class="cita-cal__text" style="color:${col.text}">${escapeHtml(r.titulo || 'Reunión')} · ${escapeHtml(hora)}${etiquetaEstadoReunion(r) ? ' · ' + escapeHtml(etiquetaEstadoReunion(r)) : ''}</span></div>`;
   }
   const t = item.data;
-  const col = colorDe(clienteDe(t.clienteId));
+  const col = colorMiniTarea(t);
   const texto = tituloMes(t, MAX_TITULO_SEMANA);
   const completo = tituloMes(t, 200);
-  const cls = t.completada ? ' tarea-mini--completada' : '';
+  const madre = esTareaMadreCalendario(t);
+  const cls =
+    (t.completada ? ' tarea-mini--completada' : '') +
+    (madre ? ' tarea-mini--madre' : '');
   const hora = etiquetaHoraTarea(t);
   const fecha = t.fecha || '';
   return `<div class="tarea-mini tarea-mini--clic${cls}" data-tarea-id="${t.id}" data-fecha="${escapeHtml(fecha)}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(hora + ' · ' + completo)} — Clic para ver el día">${escapeHtml(texto)}</div>`;
