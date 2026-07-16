@@ -147,7 +147,8 @@ body {
   opacity: 1;
 }
 
-a.tab.tab--perfil {
+a.tab.tab--perfil,
+button.tab.tab--perfil {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -157,10 +158,83 @@ a.tab.tab--perfil {
   font-weight: 700;
 }
 
-a.tab.tab--perfil:hover {
+a.tab.tab--perfil:hover,
+button.tab.tab--perfil:hover {
   background: #cdc4f9;
   border-color: #2a2848;
   color: #2a2848;
+}
+
+button.tab.tab--perfil.tab--active {
+  background: #4e4b84;
+  border-color: #2a2848;
+  color: #fff;
+}
+
+/* —— Perfil personal (independiente de clientes) —— */
+.panel--perfil-personal {
+  max-width: 100%;
+}
+
+.perfil-personal__tarjeta {
+  margin: 0 0 1.25rem;
+}
+
+.perfil-tarjeta {
+  padding: 1.35rem 1.4rem;
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, #f4f2ff 0%, #ebe6f8 55%, #fff 100%);
+  border: 2px solid #4e4b84;
+  box-shadow: var(--shadow);
+}
+
+.perfil-tarjeta__eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6a6788;
+}
+
+.perfil-tarjeta__nombre {
+  margin: 0 0 0.25rem;
+  font-size: 1.55rem;
+  color: #4e4b84;
+  line-height: 1.2;
+}
+
+.perfil-tarjeta__titulo {
+  margin: 0 0 0.55rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d2d2d;
+}
+
+.perfil-tarjeta__tagline {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  color: #4e4b84;
+  line-height: 1.4;
+}
+
+.perfil-tarjeta__tagline--vacio {
+  color: #8a8a8a;
+  font-style: italic;
+}
+
+.perfil-tarjeta__contacto {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  color: #5a5a5a;
+  line-height: 1.45;
+}
+
+#perfil-personal-carta {
+  min-height: 14rem;
+  line-height: 1.5;
 }
 
 /* Views */

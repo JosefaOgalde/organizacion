@@ -633,6 +633,15 @@ function datosIniciales() {
       }
     ],
     tareasEliminadas: [],
+    perfilPersonal: {
+      nombre: 'Josefa Ogalde',
+      titulo: '',
+      tagline: '',
+      contacto: '',
+      cartaPresentacion: '',
+      notas: '',
+      actualizado: ''
+    },
     meta: { autoGenerarTareas: false, modoTrabajo: 'manual' }
   };
 }
@@ -646,6 +655,30 @@ function initMetaDatos(data) {
   if (!Array.isArray(data.reunionesClientes)) data.reunionesClientes = [];
   if (!data.meta || typeof data.meta !== 'object') data.meta = {};
   if (data.meta.autoGenerarTareas == null) data.meta.autoGenerarTareas = false;
+  asegurarPerfilPersonal(data);
+  return data;
+}
+
+function asegurarPerfilPersonal(data) {
+  if (!data.perfilPersonal || typeof data.perfilPersonal !== 'object') {
+    data.perfilPersonal = {
+      nombre: 'Josefa Ogalde',
+      titulo: '',
+      tagline: '',
+      contacto: '',
+      cartaPresentacion: '',
+      notas: '',
+      actualizado: ''
+    };
+  }
+  const p = data.perfilPersonal;
+  if (typeof p.nombre !== 'string') p.nombre = 'Josefa Ogalde';
+  if (typeof p.titulo !== 'string') p.titulo = '';
+  if (typeof p.tagline !== 'string') p.tagline = '';
+  if (typeof p.contacto !== 'string') p.contacto = '';
+  if (typeof p.cartaPresentacion !== 'string') p.cartaPresentacion = '';
+  if (typeof p.notas !== 'string') p.notas = '';
+  if (typeof p.actualizado !== 'string') p.actualizado = '';
   return data;
 }
 
@@ -6292,6 +6325,9 @@ function render() {
   renderAgentesRamas();
   renderReunionesClientes();
   renderSalud();
+  if (document.getElementById('view-perfil')?.classList.contains('view--active')) {
+    renderPerfilPersonal();
+  }
 }
 
 function mostrarTipoNueva(tipo) {

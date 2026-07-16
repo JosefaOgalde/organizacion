@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Organización</title>
-  <link rel="stylesheet" href="styles.css?v=dia-semana-arriba1">
+  <link rel="stylesheet" href="styles.css?v=perfil-pers1">
 </head>
 <body>
   <div class="app">
@@ -22,7 +22,7 @@
     <nav class="tabs">
       <button type="button" class="tab" data-view="pendientes">Pendientes</button>
       <button type="button" class="tab" data-view="clientes" title="Ver todos los clientes">Clientes</button>
-      <a class="tab tab--perfil" href="index/clientes/trendseeker/" title="Landing Trendseeker — tu perfil / tarjeta">Mi perfil · TS</a>
+      <button type="button" class="tab tab--perfil" data-view="perfil" title="Tu perfil personal — independiente de clientes">Mi perfil</button>
       <button type="button" class="tab" data-view="agentes">Agentes</button>
       <button type="button" class="tab" data-view="salud"><span class="tab-swatch tab-swatch--salud"></span>Salud</button>
       <button type="button" class="tab" data-view="nueva">+ Nueva</button>
@@ -100,6 +100,46 @@
       <section id="view-clientes" class="view" hidden aria-hidden="true">
         <!-- Vista retirada: los clientes se ven solo en el portal de landings -->
         <div id="lista-clientes" class="clientes-grid" hidden></div>
+      </section>
+
+      <section id="view-perfil" class="view">
+        <div class="panel panel--perfil-personal">
+          <h2>Mi perfil</h2>
+          <p class="vista-hint">Espacio personal — independiente de los clientes. Aquí va tu tarjeta y carta de presentación.</p>
+          <form id="form-perfil-personal" class="form perfil-personal">
+            <div class="perfil-personal__tarjeta" id="perfil-personal-tarjeta" aria-live="polite"></div>
+            <div class="form__row form__row--2">
+              <div>
+                <label for="perfil-personal-nombre">Nombre</label>
+                <input type="text" id="perfil-personal-nombre" autocomplete="name" placeholder="Tu nombre">
+              </div>
+              <div>
+                <label for="perfil-personal-titulo">Título / rol</label>
+                <input type="text" id="perfil-personal-titulo" placeholder="Ej. Diseñadora · Community · Producto digital">
+              </div>
+            </div>
+            <div class="form__row">
+              <label for="perfil-personal-tagline">Frase / tarjeta (una línea)</label>
+              <input type="text" id="perfil-personal-tagline" placeholder="Cómo te presentas en una frase">
+            </div>
+            <div class="form__row">
+              <label for="perfil-personal-contacto">Contacto y redes</label>
+              <textarea id="perfil-personal-contacto" rows="3" placeholder="Email, LinkedIn, portfolio, teléfono…"></textarea>
+            </div>
+            <div class="form__row">
+              <label for="perfil-personal-carta">Carta de presentación</label>
+              <textarea id="perfil-personal-carta" rows="12" placeholder="Tu carta de presentación completa…"></textarea>
+            </div>
+            <div class="form__row">
+              <label for="perfil-personal-notas">Notas personales</label>
+              <textarea id="perfil-personal-notas" rows="3" placeholder="Apuntes solo para ti…"></textarea>
+            </div>
+            <div class="form__actions">
+              <button type="submit" class="btn btn--primary">Guardar perfil</button>
+              <button type="button" class="btn btn--ghost" id="btn-copiar-carta-perfil">Copiar carta</button>
+            </div>
+          </form>
+        </div>
       </section>
 
       <section id="view-agentes" class="view">
@@ -296,7 +336,7 @@
   <script src="index/assets/cliente-landing-imagenes.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="app.js?v=mi-perfil1"></script>
+  <script src="app.js?v=perfil-pers1"></script>
   <script src="ficha-extractores.js"></script>
   <script src="ficha-cliente.js?v=portal-only1"></script>
 </body>
