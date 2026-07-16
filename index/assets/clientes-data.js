@@ -223,7 +223,7 @@ window.CLIENTES_PORTAL = [
       tagline: 'Ideas que se imprimen',
       entregables: ['Panel financiero 50/50', 'Costos de producción', 'Plan paid bajo presupuesto', 'Contenido redes'],
       secciones: [
-        { titulo: 'Panel socios', texto: 'Gastos, ventas, operación y bitácora compartida en /panel/.' },
+        { titulo: 'Panel socios', texto: 'Gastos, ventas, operación y bitácora compartida entre Josefa y Nicolás (50/50).' },
         { titulo: 'Producción', texto: 'Filamento, horas de impresión, pintado, metal de llaveros y bolsas.' }
       ]
     }

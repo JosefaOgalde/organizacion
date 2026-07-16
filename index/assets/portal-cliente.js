@@ -580,6 +580,16 @@
     }
   }
 
+  /** CTA principal Impresoreando: panel socios primero en la landing. */
+  function impPanelCtaHtml() {
+    if (c.slug !== 'impresoreando') return '';
+    return `<a href="./panel/" class="portal-imp-panel-cta" id="portal-imp-panel-cta">
+      <span class="portal-imp-panel-cta__kicker">Acceso principal</span>
+      <span class="portal-imp-panel-cta__title">Abrir panel socios 50/50</span>
+      <span class="portal-imp-panel-cta__sub">Gastos, ventas, operación y bitácora compartida</span>
+    </a>`;
+  }
+
   function heroHtml(cfg, stats) {
     const tagline = cfg?.tagline || c.agente;
     return `<header class="portal-landing-hero">
@@ -600,7 +610,16 @@
     return `<section class="portal-landing-entregables">
       <h2>Entregables</h2>
       <ul class="portal-landing-chips">
-        ${items.map((e) => `<li class="portal-landing-chip">${escapeHtml(e)}</li>`).join('')}
+        ${items
+          .map((e) => {
+            if (c.slug === 'impresoreando' && /panel financiero/i.test(e)) {
+              return `<li class="portal-landing-chip portal-landing-chip--link">
+                <a href="./panel/" class="portal-landing-chip__a">${escapeHtml(e)}</a>
+              </li>`;
+            }
+            return `<li class="portal-landing-chip">${escapeHtml(e)}</li>`;
+          })
+          .join('')}
       </ul>
     </section>`;
   }
@@ -613,10 +632,17 @@
         <p>${escapeHtml(c.resumen)}</p>
       </section>`;
     }
-    return secs.map((s) => `<section>
+    return secs
+      .map((s) => {
+        const esPanelImp =
+          c.slug === 'impresoreando' && /panel socios/i.test(String(s.titulo || ''));
+        return `<section${esPanelImp ? ' class="portal-imp-panel-sec"' : ''}>
       <h2>${escapeHtml(s.titulo)}</h2>
       <p>${escapeHtml(s.texto)}</p>
-    </section>`).join('');
+      ${esPanelImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./panel/">Abrir panel socios →</a></p>` : ''}
+    </section>`;
+      })
+      .join('');
   }
 
   function render() {
@@ -740,10 +766,17 @@
         </section>`
       : '';
 
+    const toolbarPanelBtn =
+      c.slug === 'impresoreando'
+        ? `<a href="./panel/" class="portal-btn portal-btn--imp-panel">Panel socios</a>`
+        : '';
+
     root.innerHTML = `
       <article class="portal-cliente portal-cliente--landing${modoEdicion ? ' portal-cliente--edicion' : ''}"
         style="--card-border:${c.color.border};--card-bg:${c.color.bg};--card-text:${c.color.text}">
+        ${impPanelCtaHtml()}
         <div class="portal-cliente__toolbar">
+          ${toolbarPanelBtn}
           <a href="${pathListado}" class="portal-btn portal-btn--ghost">← Clientes</a>
           <a href="${pathOrganizador}?disco=1" class="portal-btn portal-btn--ghost">Organizador</a>
           <button type="button" class="portal-btn portal-btn--nueva-tarea${mostrarNuevaTarea ? ' portal-btn--active' : ''}" id="portal-btn-nueva-tarea">
