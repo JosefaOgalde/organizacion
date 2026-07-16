@@ -817,7 +817,7 @@
     };
     const c = costoProducto(prod);
     const margen = Number(data.parametros?.margenObjetivoPct || 40) / 100;
-    const sugerido = Math.round(c.total / (1 - margen));
+    const sugerido = Math.round(c.total / (1 - margen) / 10) * 10;
     return { prod, c, sugerido };
   }
 
