@@ -3387,8 +3387,12 @@ body.modal-abierto {
 }
 
 .mes-dia--fuera {
-  opacity: 0.45;
-  background: #f0f0f0;
+  opacity: 1;
+  background: #ececec;
+}
+
+.mes-dia--fuera .mes-dia__num {
+  color: #6a6a6a;
 }
 
 .mes-dia--hoy {
