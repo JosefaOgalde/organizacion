@@ -37,220 +37,132 @@
   },
   "gastos": [
     {
-      "id": "gas-312435-1",
+      "id": "gas-reg-312435",
       "fecha": "2026-07-14",
       "categoria": "equipo",
-      "descripcion": "Centauri Carbon 2 Combo Multicolor Elegoo | Impresora 3D",
+      "descripcion": "Orden #312435 — Impresora Centauri + filamentos + boquillas (PAGADO)",
       "proveedor": "Orden #312435",
       "cantidad": 1,
-      "montoNeto": 699988,
-      "notas": "Ítem en orden pagada (precio lista antes de prorratear descuento)",
+      "montoNeto": 652290,
+      "notas": "Registro único. Subtotal $820.613 + envío $5.990 − descuento $174.313 = $652.290",
       "ordenId": "312435",
-      "socioRegistro": "Ambos"
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "descripcion": "Centauri Carbon 2 Combo Multicolor Elegoo | Impresora 3D",
+          "monto": 699988
+        },
+        {
+          "descripcion": "Filamento ABS Blanco 1kg Elegoo",
+          "monto": 14271
+        },
+        {
+          "descripcion": "Filamento PLA+ Negro 1kg Elegoo",
+          "monto": 17986
+        },
+        {
+          "descripcion": "Filamento PLA+ Rojo 1kg Elegoo",
+          "monto": 17986
+        },
+        {
+          "descripcion": "Centauri Carbon 2 Kit Boquillas Elegoo",
+          "monto": 18738
+        },
+        {
+          "descripcion": "Filamento PLA Amarillo 1kg Elegoo",
+          "monto": 16829
+        },
+        {
+          "descripcion": "Filamento PLA+ Azul Oscuro 1kg Elegoo",
+          "monto": 17986
+        },
+        {
+          "descripcion": "Filamento PLA Café 1kg Elegoo",
+          "monto": 16829
+        },
+        {
+          "descripcion": "Envío",
+          "monto": 5990
+        },
+        {
+          "descripcion": "Descuento",
+          "monto": -174313
+        }
+      ]
     },
     {
-      "id": "gas-312435-2",
-      "fecha": "2026-07-14",
-      "categoria": "filamento",
-      "descripcion": "Filamento ABS Blanco 1kg Elegoo",
-      "proveedor": "Orden #312435",
-      "cantidad": 1,
-      "montoNeto": 14271,
-      "notas": "",
-      "ordenId": "312435",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-312435-3",
-      "fecha": "2026-07-14",
-      "categoria": "filamento",
-      "descripcion": "Filamento PLA+ Negro 1kg Elegoo",
-      "proveedor": "Orden #312435",
-      "cantidad": 1,
-      "montoNeto": 17986,
-      "notas": "",
-      "ordenId": "312435",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-312435-4",
-      "fecha": "2026-07-14",
-      "categoria": "filamento",
-      "descripcion": "Filamento PLA+ Rojo 1kg Elegoo",
-      "proveedor": "Orden #312435",
-      "cantidad": 1,
-      "montoNeto": 17986,
-      "notas": "",
-      "ordenId": "312435",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-312435-5",
-      "fecha": "2026-07-14",
-      "categoria": "repuesto",
-      "descripcion": "Centauri Carbon 2 Kit Boquillas Elegoo",
-      "proveedor": "Orden #312435",
-      "cantidad": 1,
-      "montoNeto": 18738,
-      "notas": "",
-      "ordenId": "312435",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-312435-6",
-      "fecha": "2026-07-14",
-      "categoria": "filamento",
-      "descripcion": "Filamento PLA Amarillo 1kg Elegoo",
-      "proveedor": "Orden #312435",
-      "cantidad": 1,
-      "montoNeto": 16829,
-      "notas": "",
-      "ordenId": "312435",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-312435-7",
-      "fecha": "2026-07-14",
-      "categoria": "filamento",
-      "descripcion": "Filamento PLA+ Azul Oscuro 1kg Elegoo",
-      "proveedor": "Orden #312435",
-      "cantidad": 1,
-      "montoNeto": 17986,
-      "notas": "",
-      "ordenId": "312435",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-312435-8",
-      "fecha": "2026-07-14",
-      "categoria": "filamento",
-      "descripcion": "Filamento PLA Café 1kg Elegoo",
-      "proveedor": "Orden #312435",
-      "cantidad": 1,
-      "montoNeto": 16829,
-      "notas": "",
-      "ordenId": "312435",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-312435-envio",
-      "fecha": "2026-07-14",
-      "categoria": "envio",
-      "descripcion": "Envío orden #312435",
-      "proveedor": "Orden #312435",
-      "cantidad": 1,
-      "montoNeto": 5990,
-      "notas": "",
-      "ordenId": "312435",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-312435-desc",
-      "fecha": "2026-07-14",
-      "categoria": "descuento",
-      "descripcion": "Descuento orden #312435",
-      "proveedor": "Orden #312435",
-      "cantidad": 1,
-      "montoNeto": -174313,
-      "notas": "Descuento aplicado a la orden (estado PAGADO). Total orden = $652.290",
-      "ordenId": "312435",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-ali-placa",
+      "id": "gas-reg-aliexpress",
       "fecha": "2026-07-14",
       "categoria": "equipo",
-      "descripcion": "Placa cama",
+      "descripcion": "AliExpress — placa cama + torno y cortador",
       "proveedor": "AliExpress",
       "cantidad": 1,
-      "montoNeto": 30000,
-      "notas": "Gasto operativo inicial",
-      "ordenId": "",
-      "socioRegistro": "Ambos"
+      "montoNeto": 60000,
+      "notas": "Registro único AliExpress: placa cama $30.000 + torno y cortador $30.000",
+      "ordenId": "aliexpress-inicial",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "descripcion": "Placa cama",
+          "monto": 30000
+        },
+        {
+          "descripcion": "Torno y cortador",
+          "monto": 30000
+        }
+      ]
     },
     {
-      "id": "gas-ali-torno",
-      "fecha": "2026-07-14",
-      "categoria": "herramienta",
-      "descripcion": "Torno y cortador",
-      "proveedor": "AliExpress",
-      "cantidad": 1,
-      "montoNeto": 30000,
-      "notas": "Gasto operativo inicial",
-      "ordenId": "",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-lider-cajas",
+      "id": "gas-reg-lider",
       "fecha": "2026-07-14",
       "categoria": "empaque",
-      "descripcion": "Cajas de plástico",
+      "descripcion": "Líder — cajas de plástico",
       "proveedor": "Líder",
       "cantidad": 1,
       "montoNeto": 20000,
-      "notas": "Gasto operativo inicial",
-      "ordenId": "",
-      "socioRegistro": "Ambos"
+      "notas": "Registro único Líder",
+      "ordenId": "lider-cajas",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "descripcion": "Cajas de plástico",
+          "monto": 20000
+        }
+      ]
     },
     {
-      "id": "gas-ml-pla-rojo",
+      "id": "gas-reg-mercadolibre",
       "fecha": "2026-07-14",
       "categoria": "filamento",
-      "descripcion": "Filamento PLA Rojo 1.75mm × 1kg",
+      "descripcion": "Mercado Libre — 5 filamentos PLA 1kg (PAGADO)",
       "proveedor": "Mercado Libre",
-      "cantidad": 1,
-      "montoNeto": 13690,
-      "notas": "Compra ML — pagó Nicolás (Visa Banco de Chile). Total carrito 5 filamentos $64.750",
+      "cantidad": 5,
+      "montoNeto": 64750,
+      "notas": "Registro único ML. Pagó Nicolás (Visa Banco de Chile + Meli Dólar). Envío gratis. Total $64.750",
       "ordenId": "ml-pla-2026-07-14",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-ml-pla-esun",
-      "fecha": "2026-07-14",
-      "categoria": "filamento",
-      "descripcion": "Filamento impresión 3D eSun PLA 1kg",
-      "proveedor": "Mercado Libre",
-      "cantidad": 1,
-      "montoNeto": 12990,
-      "notas": "Compra ML — pagó Nicolás. Parte de carrito $64.750",
-      "ordenId": "ml-pla-2026-07-14",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-ml-pla-elegoo-amarillo",
-      "fecha": "2026-07-14",
-      "categoria": "filamento",
-      "descripcion": "Filamento Elegoo PLA 1kg (amarillo)",
-      "proveedor": "Mercado Libre",
-      "cantidad": 1,
-      "montoNeto": 12690,
-      "notas": "Compra ML — pagó Nicolás. Parte de carrito $64.750",
-      "ordenId": "ml-pla-2026-07-14",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-ml-pla-elegoo-azul",
-      "fecha": "2026-07-14",
-      "categoria": "filamento",
-      "descripcion": "Filamento Elegoo PLA 1.75mm 1kg (azul)",
-      "proveedor": "Mercado Libre",
-      "cantidad": 1,
-      "montoNeto": 12690,
-      "notas": "Compra ML — pagó Nicolás. Parte de carrito $64.750",
-      "ordenId": "ml-pla-2026-07-14",
-      "socioRegistro": "Ambos"
-    },
-    {
-      "id": "gas-ml-pla-elegoo-blanco",
-      "fecha": "2026-07-14",
-      "categoria": "filamento",
-      "descripcion": "Filamento Elegoo PLA 1kg (blanco)",
-      "proveedor": "Mercado Libre",
-      "cantidad": 1,
-      "montoNeto": 12690,
-      "notas": "Compra ML — pagó Nicolás. Parte de carrito $64.750. Envío gratis. Total pagado $64.750",
-      "ordenId": "ml-pla-2026-07-14",
-      "socioRegistro": "Ambos"
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "descripcion": "Filamento PLA Rojo 1.75mm × 1kg",
+          "monto": 13690
+        },
+        {
+          "descripcion": "Filamento eSun PLA 1kg",
+          "monto": 12990
+        },
+        {
+          "descripcion": "Filamento Elegoo PLA 1kg (amarillo)",
+          "monto": 12690
+        },
+        {
+          "descripcion": "Filamento Elegoo PLA 1.75mm 1kg (azul)",
+          "monto": 12690
+        },
+        {
+          "descripcion": "Filamento Elegoo PLA 1kg (blanco)",
+          "monto": 12690
+        }
+      ]
     }
   ],
   "ventas": [],
@@ -326,7 +238,7 @@
       "id": "bit-1",
       "fecha": "2026-07-14",
       "autor": "Josefa",
-      "texto": "Carga inicial: orden #312435 (PAGADO $652.290) + AliExpress placa/torno + cajas Líder + 5 filamentos PLA Mercado Libre ($64.750). Sociedad 50/50 Josefa + Nicolás. Gastos de ambos. Nicolás aportó capital; Josefa debe 50%."
+      "texto": "Carga inicial agrupada por registro: Orden #312435 ($652.290) + AliExpress ($60.000) + Líder ($20.000) + Mercado Libre 5 PLA ($64.750). Sociedad 50/50. Gastos de ambos. Nicolás aportó capital; Josefa debe 50%."
     }
   ]
 }

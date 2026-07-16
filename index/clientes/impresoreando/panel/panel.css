@@ -331,6 +331,18 @@ table.imp-table {
 }
 .imp-cat-row__amt { text-align: right; font-variant-numeric: tabular-nums; color: var(--imp-text); font-weight: 600; }
 
+.imp-gasto-items {
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--imp-muted);
+}
+.imp-gasto-items summary {
+  cursor: pointer;
+  color: var(--imp-text);
+  font-weight: 600;
+}
+.imp-gasto-items .imp-list { margin-top: 0.35rem; }
+
 .imp-calc-live {
   margin-top: 0.75rem;
   padding: 0.85rem;

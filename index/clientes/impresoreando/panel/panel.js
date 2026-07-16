@@ -57,7 +57,7 @@
       changed = true;
     }
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
-    if (asegurarGastosFilamentoML(d)) changed = true;
+    if (agruparGastosPorRegistro(d)) changed = true;
     const gastos = d.gastos;
     for (const g of gastos) {
       const quien = String(g.socioRegistro || '').trim();
@@ -92,76 +92,108 @@
     return changed;
   }
 
-  /** Compra ML 14-jul: 5 filamentos PLA — total $64.750 (pagó Nicolás, gasto de ambos). */
-  function asegurarGastosFilamentoML(d) {
-    const items = [
+  /**
+   * Gastos agrupados por registro de compra (no ítem a ítem):
+   * 1) Orden #312435 $652.290 · 2) AliExpress $60.000 · 3) Líder $20.000 · 4) Mercado Libre $64.750
+   */
+  function agruparGastosPorRegistro(d) {
+    const REGISTROS = [
       {
-        id: 'gas-ml-pla-rojo',
+        id: 'gas-reg-312435',
         fecha: '2026-07-14',
-        categoria: 'filamento',
-        descripcion: 'Filamento PLA Rojo 1.75mm × 1kg',
-        proveedor: 'Mercado Libre',
+        categoria: 'equipo',
+        descripcion: 'Orden #312435 — Impresora Centauri + filamentos + boquillas (PAGADO)',
+        proveedor: 'Orden #312435',
         cantidad: 1,
-        montoNeto: 13690,
-        notas: 'Compra ML — pagó Nicolás (Visa Banco de Chile). Total carrito 5 filamentos $64.750',
-        ordenId: 'ml-pla-2026-07-14',
+        montoNeto: 652290,
+        notas: 'Registro único. Subtotal $820.613 + envío $5.990 − descuento $174.313 = $652.290',
+        ordenId: '312435',
         socioRegistro: 'Ambos',
+        items: [
+          { descripcion: 'Centauri Carbon 2 Combo Multicolor Elegoo | Impresora 3D', monto: 699988 },
+          { descripcion: 'Filamento ABS Blanco 1kg Elegoo', monto: 14271 },
+          { descripcion: 'Filamento PLA+ Negro 1kg Elegoo', monto: 17986 },
+          { descripcion: 'Filamento PLA+ Rojo 1kg Elegoo', monto: 17986 },
+          { descripcion: 'Centauri Carbon 2 Kit Boquillas Elegoo', monto: 18738 },
+          { descripcion: 'Filamento PLA Amarillo 1kg Elegoo', monto: 16829 },
+          { descripcion: 'Filamento PLA+ Azul Oscuro 1kg Elegoo', monto: 17986 },
+          { descripcion: 'Filamento PLA Café 1kg Elegoo', monto: 16829 },
+          { descripcion: 'Envío', monto: 5990 },
+          { descripcion: 'Descuento', monto: -174313 },
+        ],
       },
       {
-        id: 'gas-ml-pla-esun',
+        id: 'gas-reg-aliexpress',
         fecha: '2026-07-14',
-        categoria: 'filamento',
-        descripcion: 'Filamento impresión 3D eSun PLA 1kg',
-        proveedor: 'Mercado Libre',
+        categoria: 'equipo',
+        descripcion: 'AliExpress — placa cama + torno y cortador',
+        proveedor: 'AliExpress',
         cantidad: 1,
-        montoNeto: 12990,
-        notas: 'Compra ML — pagó Nicolás. Parte de carrito $64.750',
-        ordenId: 'ml-pla-2026-07-14',
+        montoNeto: 60000,
+        notas: 'Registro único AliExpress: placa cama $30.000 + torno y cortador $30.000',
+        ordenId: 'aliexpress-inicial',
         socioRegistro: 'Ambos',
+        items: [
+          { descripcion: 'Placa cama', monto: 30000 },
+          { descripcion: 'Torno y cortador', monto: 30000 },
+        ],
       },
       {
-        id: 'gas-ml-pla-elegoo-amarillo',
+        id: 'gas-reg-lider',
         fecha: '2026-07-14',
-        categoria: 'filamento',
-        descripcion: 'Filamento Elegoo PLA 1kg (amarillo)',
-        proveedor: 'Mercado Libre',
+        categoria: 'empaque',
+        descripcion: 'Líder — cajas de plástico',
+        proveedor: 'Líder',
         cantidad: 1,
-        montoNeto: 12690,
-        notas: 'Compra ML — pagó Nicolás. Parte de carrito $64.750',
-        ordenId: 'ml-pla-2026-07-14',
+        montoNeto: 20000,
+        notas: 'Registro único Líder',
+        ordenId: 'lider-cajas',
         socioRegistro: 'Ambos',
+        items: [{ descripcion: 'Cajas de plástico', monto: 20000 }],
       },
       {
-        id: 'gas-ml-pla-elegoo-azul',
+        id: 'gas-reg-mercadolibre',
         fecha: '2026-07-14',
         categoria: 'filamento',
-        descripcion: 'Filamento Elegoo PLA 1.75mm 1kg (azul)',
+        descripcion: 'Mercado Libre — 5 filamentos PLA 1kg (PAGADO)',
         proveedor: 'Mercado Libre',
-        cantidad: 1,
-        montoNeto: 12690,
-        notas: 'Compra ML — pagó Nicolás. Parte de carrito $64.750',
+        cantidad: 5,
+        montoNeto: 64750,
+        notas: 'Registro único ML. Pagó Nicolás (Visa Banco de Chile + Meli Dólar). Envío gratis. Total $64.750',
         ordenId: 'ml-pla-2026-07-14',
         socioRegistro: 'Ambos',
-      },
-      {
-        id: 'gas-ml-pla-elegoo-blanco',
-        fecha: '2026-07-14',
-        categoria: 'filamento',
-        descripcion: 'Filamento Elegoo PLA 1kg (blanco)',
-        proveedor: 'Mercado Libre',
-        cantidad: 1,
-        montoNeto: 12690,
-        notas: 'Compra ML — pagó Nicolás. Parte de carrito $64.750. Envío gratis. Total pagado $64.750',
-        ordenId: 'ml-pla-2026-07-14',
-        socioRegistro: 'Ambos',
+        items: [
+          { descripcion: 'Filamento PLA Rojo 1.75mm × 1kg', monto: 13690 },
+          { descripcion: 'Filamento eSun PLA 1kg', monto: 12990 },
+          { descripcion: 'Filamento Elegoo PLA 1kg (amarillo)', monto: 12690 },
+          { descripcion: 'Filamento Elegoo PLA 1.75mm 1kg (azul)', monto: 12690 },
+          { descripcion: 'Filamento Elegoo PLA 1kg (blanco)', monto: 12690 },
+        ],
       },
     ];
+
+    const OLD_LINE_IDS = new Set([
+      'gas-312435-1', 'gas-312435-2', 'gas-312435-3', 'gas-312435-4', 'gas-312435-5',
+      'gas-312435-6', 'gas-312435-7', 'gas-312435-8', 'gas-312435-envio', 'gas-312435-desc',
+      'gas-ali-placa', 'gas-ali-torno', 'gas-lider-cajas',
+      'gas-ml-pla-rojo', 'gas-ml-pla-esun', 'gas-ml-pla-elegoo-amarillo',
+      'gas-ml-pla-elegoo-azul', 'gas-ml-pla-elegoo-blanco',
+    ]);
+
     let changed = false;
-    const ids = new Set((d.gastos || []).map((g) => g.id));
-    for (const item of items) {
-      if (!ids.has(item.id)) {
-        d.gastos.push(item);
-        ids.add(item.id);
+    const before = d.gastos.length;
+    d.gastos = d.gastos.filter((g) => !OLD_LINE_IDS.has(g.id));
+    if (d.gastos.length !== before) changed = true;
+
+    const byId = new Map(d.gastos.map((g) => [g.id, g]));
+    for (const reg of REGISTROS) {
+      const existing = byId.get(reg.id);
+      if (!existing) {
+        d.gastos.push({ ...reg });
+        byId.set(reg.id, reg);
+        changed = true;
+      } else if (Number(existing.montoNeto) !== reg.montoNeto || !Array.isArray(existing.items)) {
+        Object.assign(existing, reg);
         changed = true;
       }
     }
@@ -296,10 +328,12 @@
     const cadaUnoResultado = resultado / 2;
     const cap = data.meta?.capital || {};
     const deuda = Number(cap.deudaJosefaClp != null ? cap.deudaJosefaClp : cadaUnoGastos);
-    const orden = (data.gastos || []).filter((g) => g.ordenId === '312435');
-    const totalOrden = sum(orden);
-    const ml = (data.gastos || []).filter((g) => g.ordenId === 'ml-pla-2026-07-14');
-    const totalMl = sum(ml);
+    const orden = (data.gastos || []).find((g) => g.id === 'gas-reg-312435' || g.ordenId === '312435');
+    const ali = (data.gastos || []).find((g) => g.id === 'gas-reg-aliexpress');
+    const lider = (data.gastos || []).find((g) => g.id === 'gas-reg-lider');
+    const ml = (data.gastos || []).find((g) => g.id === 'gas-reg-mercadolibre' || g.ordenId === 'ml-pla-2026-07-14');
+    const totalOrden = Number(orden?.montoNeto || 0);
+    const totalMl = Number(ml?.montoNeto || 0);
     const cats = gastosPorCategoria();
     const denom = Math.max(gastos + operacion, ventas, 1);
     const pctGastos = Math.min(100, ((gastos + operacion) / denom) * 100);
@@ -345,8 +379,13 @@
         <h2>Sociedad</h2>
         <p class="imp-muted">${(data.meta?.socios || []).map((s) => `${s.nombre} ${s.pct}%`).join(' · ') || 'Josefa 50% · Nicolás 50%'}</p>
         <p>Instagram: <strong>${data.meta?.instagram || '@impresoreando'}</strong></p>
-        <p class="imp-muted">Orden #312435 (PAGADO): <strong>${money(totalOrden)}</strong></p>
-        <p class="imp-muted">Filamentos Mercado Libre (5 PLA): <strong>${money(totalMl)}</strong> — pagó Nicolás, gasto de ambos.</p>
+        <p class="imp-muted">Registros de compra (agrupados):</p>
+        <ul class="imp-list">
+          <li>Orden #312435: <strong>${money(totalOrden)}</strong></li>
+          <li>AliExpress: <strong>${money(ali?.montoNeto || 0)}</strong></li>
+          <li>Líder: <strong>${money(lider?.montoNeto || 0)}</strong></li>
+          <li>Mercado Libre (5 PLA): <strong>${money(totalMl)}</strong></li>
+        </ul>
         <p class="imp-deuda"><strong>Capital:</strong> lo aportó <strong>Nicolás</strong>. Todos los gastos son de <strong>ambos</strong>. Josefa le debe a Nicolás el <strong>50%</strong> del capital (${money(deuda)}).</p>
       </div>
       <div class="imp-card">
@@ -380,32 +419,46 @@
     const rows = (data.gastos || [])
       .slice()
       .sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)))
-      .map(
-        (g) => `
+      .map((g) => {
+        const detalle =
+          Array.isArray(g.items) && g.items.length
+            ? `<details class="imp-gasto-items"><summary>${g.items.length} ítems en este registro</summary><ul class="imp-list">${g.items
+                .map(
+                  (it) =>
+                    `<li>${escapeHtml(it.descripcion || '')} · <strong>${money(it.monto)}</strong></li>`
+                )
+                .join('')}</ul></details>`
+            : '';
+        return `
       <tr>
         <td>${escapeHtml(g.fecha || '')}</td>
         <td>${escapeHtml(g.categoria || '')}</td>
-        <td>${escapeHtml(g.descripcion || '')}<div class="imp-muted">${escapeHtml(g.proveedor || '')}</div></td>
+        <td>
+          <strong>${escapeHtml(g.proveedor || 'Sin proveedor')}</strong>
+          <div>${escapeHtml(g.descripcion || '')}</div>
+          <div class="imp-muted">${escapeHtml(g.notas || '')}</div>
+          ${detalle}
+        </td>
         <td class="num ${Number(g.montoNeto) < 0 ? 'imp-neg' : 'imp-pos'}">${money(g.montoNeto)}</td>
         <td>${escapeHtml(g.socioRegistro || '')}</td>
         <td><button type="button" class="imp-btn imp-btn--danger" data-del-gasto="${g.id}">✕</button></td>
-      </tr>`
-      )
+      </tr>`;
+      })
       .join('');
 
     $('#tab-gastos').innerHTML = `
       <div class="imp-card">
-        <h2>Gastos registrados (${money(sum(data.gastos))})</h2>
-        <p class="imp-muted">Todos los gastos de la sociedad son de <strong>ambos</strong> (Josefa + Nicolás).</p>
+        <h2>Gastos por registro (${money(sum(data.gastos))})</h2>
+        <p class="imp-muted">Cada compra se guarda como <strong>un solo registro</strong> (orden / AliExpress / Líder / Mercado Libre…). El detalle de ítems queda desplegable.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
-            <thead><tr><th>Fecha</th><th>Cat.</th><th>Descripción</th><th>Monto</th><th>Quién</th><th></th></tr></thead>
+            <thead><tr><th>Fecha</th><th>Cat.</th><th>Registro</th><th>Monto</th><th>Quién</th><th></th></tr></thead>
             <tbody>${rows || '<tr><td colspan="6">Sin gastos</td></tr>'}</tbody>
           </table>
         </div>
       </div>
       <div class="imp-card">
-        <h3>Agregar gasto</h3>
+        <h3>Agregar gasto (registro)</h3>
         <form class="imp-form" id="form-gasto">
           <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
           <label>Categoría
@@ -421,9 +474,9 @@
               <option value="otro">otro</option>
             </select>
           </label>
-          <label>Descripción<input name="descripcion" required placeholder="Ej. anillos metal llaveros" /></label>
-          <label>Proveedor<input name="proveedor" placeholder="AliExpress / Líder / …" /></label>
-          <label>Monto CLP<input name="montoNeto" type="number" required step="1" /></label>
+          <label>Proveedor / registro<input name="proveedor" required placeholder="Ej. Mercado Libre / AliExpress" /></label>
+          <label>Descripción<input name="descripcion" required placeholder="Resumen de la compra" /></label>
+          <label>Monto total CLP<input name="montoNeto" type="number" required step="1" /></label>
           <label>Quién
             <select name="socioRegistro">
               <option value="Ambos" selected>Ambos</option>
@@ -431,9 +484,9 @@
               <option value="Nicolás">Nicolás</option>
             </select>
           </label>
-          <label>Notas<textarea name="notas" placeholder="Opcional"></textarea></label>
+          <label>Notas / ítems<textarea name="notas" placeholder="Opcional: listar productos del ticket"></textarea></label>
           <div class="imp-form-actions">
-            <button class="imp-btn imp-btn--primary" type="submit">Agregar gasto</button>
+            <button class="imp-btn imp-btn--primary" type="submit">Agregar registro de gasto</button>
           </div>
         </form>
       </div>
@@ -453,6 +506,7 @@
         notas: fd.get('notas') || '',
         ordenId: '',
         socioRegistro: fd.get('socioRegistro') || '',
+        items: [],
       });
       markDirty();
       renderAll();
