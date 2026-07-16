@@ -74,7 +74,7 @@ body {
 
 .header__brand:hover h1,
 .header__brand:focus-visible h1 {
-  color: var(--celeste-light);
+  color: var(--celeste-dark);
 }
 
 .header__brand:focus-visible {
