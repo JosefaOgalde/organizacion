@@ -189,7 +189,8 @@
       "unidadesMetal": 1,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 4990,
-      "notas": "Ajustar gramos/tiempo según modelo real"
+      "notas": "Ajustar gramos/tiempo según modelo real",
+      "costoDisenoClp": 0
     },
     {
       "id": "prod-figura-chica",
@@ -202,7 +203,8 @@
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 12990,
-      "notas": ""
+      "notas": "",
+      "costoDisenoClp": 0
     },
     {
       "id": "prod-portacompletos-gato",
@@ -215,7 +217,8 @@
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 0,
-      "notas": "5 h de impresión. Precio de venta a público se carga a mano."
+      "notas": "5 h de impresión. Precio de venta a público se carga a mano.",
+      "costoDisenoClp": 0
     },
     {
       "id": "prod-portacompletos-perro",
@@ -228,7 +231,8 @@
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 0,
-      "notas": "6 h de impresión. Precio de venta a público se carga a mano."
+      "notas": "6 h de impresión. Precio de venta a público se carga a mano.",
+      "costoDisenoClp": 0
     }
   ],
   "planAds": {

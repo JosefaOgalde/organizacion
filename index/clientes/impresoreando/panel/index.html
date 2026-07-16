@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Impresoreando · Panel socios</title>
   <link rel="stylesheet" href="../../../assets/portal.css?v=imp-cta2" />
-  <link rel="stylesheet" href="./panel.css?v=imp-pub1" />
+  <link rel="stylesheet" href="./panel.css?v=imp-diseno1" />
 </head>
 <body class="imp-body" data-cliente-slug="impresoreando">
   <div class="imp-top-bleed">
@@ -66,6 +66,13 @@
         <label>Minutos pintado<input name="minutosPintado" type="number" min="0" required /></label>
         <label>Unidades metal<input name="unidadesMetal" type="number" min="0" required /></label>
         <label>Bolsas<input name="unidadesBolsa" type="number" min="0" required /></label>
+        <label>Costo diseño comprado (CLP)
+          <input name="costoDisenoClp" type="number" min="0" step="10" value="0" placeholder="0 si no compraste diseño" />
+        </label>
+        <label class="imp-check">
+          <input name="registrarDisenoGasto" type="checkbox" />
+          También registrar este diseño como <strong>gasto</strong> (aparece en Gastos)
+        </label>
         <label>Precio venta a público (CLP)
           <input name="precioVentaSugeridoClp" type="number" min="0" step="10" required />
         </label>
@@ -79,6 +86,6 @@
     </div>
   </div>
 
-  <script src="./panel.js?v=imp-pub1"></script>
+  <script src="./panel.js?v=imp-diseno1"></script>
 </body>
 </html>

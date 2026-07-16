@@ -330,8 +330,32 @@
       (Number(prod.minutosPintado || 0) / 60) * Number(p.valorHoraManoObraClp || 0);
     const metal = Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0);
     const bolsa = Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 0);
-    const total = filamento + luz + pintado + metal + bolsa;
-    return { filamento, luz, pintado, metal, bolsa, total };
+    const diseno = Math.max(0, Number(prod.costoDisenoClp || 0));
+    const total = filamento + luz + pintado + metal + bolsa + diseno;
+    return { filamento, luz, pintado, metal, bolsa, diseno, total };
+  }
+
+  /** Opcional: registrar la compra del diseño también en Gastos (categoría diseño). */
+  function agregarGastoDiseno({ monto, descripcion, productoId, notas }) {
+    const m = Math.round(Number(monto) || 0);
+    if (m <= 0) return null;
+    data.gastos = Array.isArray(data.gastos) ? data.gastos : [];
+    const gasto = {
+      id: uid('gas'),
+      fecha: today(),
+      categoria: 'diseno',
+      descripcion: descripcion || 'Diseño comprado',
+      proveedor: 'Diseño',
+      cantidad: 1,
+      montoNeto: m,
+      notas: notas || (productoId ? `Producto ${productoId}` : ''),
+      ordenId: '',
+      socioRegistro: 'Ambos',
+      items: [],
+      productoId: productoId || '',
+    };
+    data.gastos.push(gasto);
+    return gasto;
   }
 
   function gastosPorCategoria() {
@@ -640,6 +664,7 @@
               <option value="empaque">empaque</option>
               <option value="metal">metal / herrajes</option>
               <option value="envio">envío</option>
+              <option value="diseno">diseño</option>
               <option value="marketing">marketing</option>
               <option value="otro">otro</option>
             </select>
@@ -891,6 +916,7 @@
       minutosPintado: Number(fd.get('m')),
       unidadesMetal: Number(fd.get('metal')),
       unidadesBolsa: Number(fd.get('bolsa')),
+      costoDisenoClp: Number(fd.get('diseno') || 0),
     };
     const c = costoProducto(prod);
     const margen = Number(data.parametros?.margenObjetivoPct || 40) / 100;
@@ -909,6 +935,7 @@
       minutosPintado: Number(fd.get('minutosPintado')),
       unidadesMetal: Number(fd.get('unidadesMetal')),
       unidadesBolsa: Number(fd.get('unidadesBolsa')),
+      costoDisenoClp: Number(fd.get('costoDisenoClp') || 0),
     };
     return { prod, c: costoProducto(prod) };
   }
@@ -919,7 +946,7 @@
     if (!est || !leido) return;
     est.innerHTML = `Costo estimado: <strong>${money(leido.c.total)}</strong>
       · Filamento ${money(leido.c.filamento)} · Luz ${money(leido.c.luz)} · Pintado ${money(leido.c.pintado)}
-      · Metal ${money(leido.c.metal)} · Bolsa ${money(leido.c.bolsa)}`;
+      · Metal ${money(leido.c.metal)} · Bolsa ${money(leido.c.bolsa)} · Diseño ${money(leido.c.diseno)}`;
   }
 
   function cerrarModalProducto() {
@@ -948,6 +975,10 @@
     modal.querySelector('[name=minutosPintado]').value = calc.prod.minutosPintado;
     modal.querySelector('[name=unidadesMetal]').value = calc.prod.unidadesMetal;
     modal.querySelector('[name=unidadesBolsa]').value = calc.prod.unidadesBolsa;
+    const disenoEl = modal.querySelector('[name=costoDisenoClp]');
+    if (disenoEl) disenoEl.value = calc.prod.costoDisenoClp || 0;
+    const chk = modal.querySelector('[name=registrarDisenoGasto]');
+    if (chk) chk.checked = Number(calc.prod.costoDisenoClp || 0) > 0;
     modal.querySelector('[name=precioVentaSugeridoClp]').value = calc.sugerido;
     modal.querySelector('[name=notas]').value = `Desde calculadora · costo est. ${Math.round(calc.c.total)} CLP`;
     actualizarCostoModal();
@@ -990,6 +1021,7 @@
             <div class="imp-kpi"><span>Pintado / MO</span><strong>${money(c.pintado)}</strong></div>
             <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
             <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
+            <div class="imp-kpi"><span>Diseño</span><strong>${money(c.diseno)}</strong></div>
             <div class="imp-kpi imp-kpi--accent"><span>Costo unitario</span><strong>${money(c.total)}</strong></div>
             <div class="imp-kpi"><span>Precio sugerido c/ margen ${Math.round(margen * 100)}%</span><strong>${money(sugeridoCosto)}</strong></div>
             <div class="imp-kpi ${Number(prod.precioVentaSugeridoClp) > 0 && margenReal >= Number(data.parametros?.margenObjetivoPct || 40) ? 'imp-kpi--ok' : Number(prod.precioVentaSugeridoClp) > 0 ? 'imp-kpi--warn' : ''}"><span>Margen real</span><strong>${Number(prod.precioVentaSugeridoClp) > 0 ? `${margenReal.toFixed(0)}%` : '—'}</strong></div>
@@ -998,12 +1030,19 @@
             <label>Precio venta a público (CLP)
               <input name="precioVenta" type="number" min="0" step="10" value="${Number(prod.precioVentaSugeridoClp) || ''}" placeholder="Ej. 8990 — editable a mano" />
             </label>
+            <label>Costo diseño comprado (CLP)
+              <input name="costoDiseno" type="number" min="0" step="10" value="${Number(prod.costoDisenoClp) || 0}" placeholder="0 si no compraste diseño" />
+            </label>
+            <label class="imp-check">
+              <input name="registrarDisenoGasto" type="checkbox" ${Number(prod.costoDisenoClp) > 0 ? '' : ''} />
+              También agregar este diseño como <strong>gasto</strong> (categoría diseño)
+            </label>
             <div class="imp-form-actions">
-              <button type="submit" class="imp-btn imp-btn--primary">Guardar precio</button>
-              <span class="imp-muted">Costo ${money(c.total)} · si dejas 0, solo ves el costo</span>
+              <button type="submit" class="imp-btn imp-btn--primary">Guardar precio / diseño</button>
+              <span class="imp-muted">Costo ${money(c.total)} · diseño opcional</span>
             </div>
           </form>
-          <p class="imp-muted">${prod.filamentoGramos || 0}g · ${prod.horasImpresion || 0}h impresión · ${prod.minutosPintado || 0} min pintado · metal×${prod.unidadesMetal || 0} · bolsa×${prod.unidadesBolsa || 0} · luz/h ≈ ${money(costoHoraImpresora())}${prod.notas ? ` · ${escapeHtml(prod.notas)}` : ''}</p>
+          <p class="imp-muted">${prod.filamentoGramos || 0}g · ${prod.horasImpresion || 0}h impresión · ${prod.minutosPintado || 0} min pintado · metal×${prod.unidadesMetal || 0} · bolsa×${prod.unidadesBolsa || 0} · diseño ${money(prod.costoDisenoClp || 0)} · luz/h ≈ ${money(costoHoraImpresora())}${prod.notas ? ` · ${escapeHtml(prod.notas)}` : ''}</p>
         </div>`;
       })
       .join('');
@@ -1011,7 +1050,7 @@
     $('#tab-costos').innerHTML = `
       <div class="imp-card">
         <h2>Costos por pieza (luz + materiales)</h2>
-        <p class="imp-muted">Cada pieza impresa es <strong>única</strong> (SKU propio). Calcula tiempo/material y guárdala como producto.</p>
+        <p class="imp-muted">Cada pieza impresa es <strong>única</strong> (SKU propio). Puedes sumar <strong>costo de diseño</strong> (si lo compraste) y, si quieres, registrarlo también como gasto.</p>
         <p class="imp-muted">Promedio reciente $/kg filamento: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong></p>
       </div>
       ${blocks || '<div class="imp-card">Sin productos aún — usa la calculadora y Guarda como producto</div>'}
@@ -1024,6 +1063,7 @@
           <label>Minutos pintado<input name="m" type="number" value="20" /></label>
           <label>Unidades metal<input name="metal" type="number" value="0" /></label>
           <label>Bolsas<input name="bolsa" type="number" value="1" /></label>
+          <label>Costo diseño $<input name="diseno" type="number" min="0" step="10" value="0" placeholder="Opcional" /></label>
         </form>
         <div class="imp-calc-live" id="calc-pieza-live">Calculando…</div>
         <div class="imp-form-actions" style="margin-top:0.75rem">
@@ -1038,7 +1078,7 @@
       const el = $('#calc-pieza-live');
       if (!calc || !el) return;
       el.innerHTML = `
-          Filamento ${money(calc.c.filamento)} · Luz ${money(calc.c.luz)} · Pintado ${money(calc.c.pintado)} · Metal ${money(calc.c.metal)} · Bolsa ${money(calc.c.bolsa)}
+          Filamento ${money(calc.c.filamento)} · Luz ${money(calc.c.luz)} · Pintado ${money(calc.c.pintado)} · Metal ${money(calc.c.metal)} · Bolsa ${money(calc.c.bolsa)} · Diseño ${money(calc.c.diseno)}
           <br><strong>Costo unitario: ${money(calc.c.total)}</strong> · precio sugerido c/ margen ${Math.round(margen * 100)}%: <strong>${money(calc.sugerido)}</strong>
           <div class="imp-muted" style="margin-top:0.35rem">Tarifa ${p.tarifaKwhClp || 180} $/kWh · consumo ${p.consumoImpresoraKw || 0.22} kW</div>`;
     };
@@ -1053,10 +1093,24 @@
         const fd = new FormData(form);
         const prod = (data.productos || []).find((x) => x.id === id);
         if (!prod) return;
+        const prevDiseno = Number(prod.costoDisenoClp || 0);
         prod.precioVentaSugeridoClp = Number(fd.get('precioVenta') || 0);
+        prod.costoDisenoClp = Math.max(0, Number(fd.get('costoDiseno') || 0));
+        let msg = 'Precio / diseño actualizados — guarda online';
+        if (fd.get('registrarDisenoGasto') === 'on' && prod.costoDisenoClp > 0) {
+          agregarGastoDiseno({
+            monto: prod.costoDisenoClp,
+            descripcion: `Diseño — ${prod.nombre}`,
+            productoId: prod.id,
+            notas: `Desde costos producto · SKU ${prod.sku || prod.id}`,
+          });
+          msg = `Diseño ${money(prod.costoDisenoClp)} sumado al producto y registrado como gasto — guarda online`;
+        } else if (prod.costoDisenoClp !== prevDiseno) {
+          msg = 'Costo de diseño actualizado en el producto — guarda online';
+        }
         markDirty();
         renderAll();
-        setStatus('Precio de venta actualizado — guarda online', 'warn');
+        setStatus(msg, 'warn');
       });
     });
   }
@@ -1195,8 +1249,10 @@
       return;
     }
     data.productos = data.productos || [];
+    const costoDisenoClp = Math.max(0, Number(fd.get('costoDisenoClp') || 0));
+    const prodId = uid('prod');
     data.productos.push({
-      id: uid('prod'),
+      id: prodId,
       sku,
       nombre,
       activo: true,
@@ -1206,13 +1262,24 @@
       minutosPintado: Number(fd.get('minutosPintado')),
       unidadesMetal: Number(fd.get('unidadesMetal')),
       unidadesBolsa: Number(fd.get('unidadesBolsa')),
+      costoDisenoClp,
       precioVentaSugeridoClp: Number(fd.get('precioVentaSugeridoClp') || 0),
       notas: String(fd.get('notas') || '').trim(),
     });
+    let msg = `Producto «${nombre}» agregado (${sku}) — guarda online`;
+    if (fd.get('registrarDisenoGasto') === 'on' && costoDisenoClp > 0) {
+      agregarGastoDiseno({
+        monto: costoDisenoClp,
+        descripcion: `Diseño — ${nombre}`,
+        productoId: prodId,
+        notas: `Desde calculadora · SKU ${sku}`,
+      });
+      msg = `Producto «${nombre}» + gasto diseño ${money(costoDisenoClp)} — guarda online`;
+    }
     cerrarModalProducto();
     markDirty();
     renderAll();
-    setStatus(`Producto «${nombre}» agregado (${sku}) — guarda online`, 'warn');
+    setStatus(msg, 'warn');
     document.querySelector('#imp-tabs button[data-tab="costos"]')?.click();
   });
 

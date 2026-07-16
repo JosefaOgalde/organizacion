@@ -459,3 +459,17 @@ body.imp-modal-open { overflow: hidden; }
   .imp-grid { grid-template-columns: 1fr; }
   .imp-grid--2 { grid-template-columns: 1fr; }
 }
+
+.imp-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  grid-column: 1 / -1;
+  font-size: 0.88rem;
+  color: var(--imp-muted);
+  cursor: pointer;
+}
+.imp-check input {
+  margin-top: 0.2rem;
+  width: auto;
+}
