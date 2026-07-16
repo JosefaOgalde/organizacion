@@ -2449,14 +2449,18 @@ body.modal-abierto {
 
 .prompt-bloque {
   width: 100%;
+  max-width: none;
+  box-sizing: border-box;
   border: 1px solid rgba(74, 122, 158, 0.28);
   border-radius: 10px;
   background: #fff;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .prompt-seccion {
-  padding: 0.85rem 1rem 1rem;
+  padding: 0.85rem 1rem 1.05rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .prompt-seccion + .prompt-seccion {
@@ -2480,6 +2484,62 @@ body.modal-abierto {
 }
 
 .prompt-seccion__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.tarea-detalle__txt--prompt-edit {
+  display: block;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-height: 14rem;
+  max-height: 36rem;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border: 1px solid rgba(74, 122, 158, 0.28);
+  border-radius: 8px;
+  background: #f7fafc;
+  color: inherit;
+  padding: 0.95rem 1rem;
+}
+
+.prompt-mejora {
+  margin-top: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid rgba(74, 122, 158, 0.28);
+  background: #f0f6fb;
+}
+
+.prompt-mejora__label {
+  display: block;
+  margin: 0 0 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.prompt-mejora__ideas {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 4.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(74, 122, 158, 0.3);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.prompt-mejora__acciones {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;

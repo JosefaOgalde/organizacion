@@ -3844,11 +3844,8 @@ async function cargarCopysAbcEnVista(tarea) {
         version: ver,
         texto: ta?.value || '',
         archivo,
+        bloque,
       });
-      const hist = root.querySelector('.entregable-hist');
-      const nuevo = htmlHistorialEntregableTarea(tareaDe(tarea.id) || tarea);
-      if (hist && nuevo) hist.outerHTML = nuevo;
-      else if (!hist && nuevo) root.insertAdjacentHTML('beforeend', nuevo);
     });
   });
 }
@@ -3952,11 +3949,8 @@ async function cargarPromptsGeminiEnVista(tarea) {
         version: ver,
         texto: ta?.value || '',
         archivo,
+        bloque,
       });
-      const hist = root.querySelector('.entregable-hist');
-      const nuevo = htmlHistorialEntregableTarea(tareaDe(tarea.id) || tarea);
-      if (hist && nuevo) hist.outerHTML = nuevo;
-      else if (!hist && nuevo) root.insertAdjacentHTML('beforeend', nuevo);
     });
   });
 }
@@ -4048,60 +4042,209 @@ function extraerVersionPromptGemini(texto, version) {
   return m ? m[0].trim() : '';
 }
 
-/** Abre el chat del agente para mejorar un TXT (prompt o copy) de una versión A/B/C. */
+/** Abre panel de ideas bajo la sección y aplica la mejora al textarea. */
 function iniciarMejoraEntregable(tarea, opts = {}) {
   const version = String(opts.version || 'A').toUpperCase();
   const tipo = opts.tipo || tarea.tipoEntregable || 'prompt-gemini';
   const textoActual = String(opts.texto || '');
   const archivo = String(opts.archivo || '').replace(/^\/+/, '');
-  const esCopy = tipo === 'copys-txt';
-
-  registrarHistorialEntregable(tarea, {
-    tipo,
-    version,
-    accion: 'mejora',
-    archivo,
-    texto: textoActual,
-  });
-
-  const input = document.getElementById('agente-input');
-  const panel = document.getElementById('agente-contenido');
-  const plantilla = esCopy
-    ? `Quiero MEJORAR este COPY (versión ${version}) para el video.\n` +
-      `Producto: ${tarea.productoUrl || ''}\n` +
-      `Mis ideas / cambios (completo esto):\n` +
-      `- \n` +
-      `- \n\n` +
-      `Copy actual:\n` +
-      `---\n` +
-      `${textoActual.slice(0, 6000)}\n` +
-      `---\n` +
-      `Devuélveme 1 copy mejorado listo para pegar (emojis/hashtags OK) y una alternativa corta.`
-    : `Quiero MEJORAR este prompt de Gemini VIDEO (versión ${version}) para pegarlo tal cual.\n` +
-      `Producto: ${tarea.productoUrl || ''}\n` +
-      `Mis ideas / cambios (completo esto):\n` +
-      `- \n` +
-      `- \n\n` +
-      `Prompt actual:\n` +
-      `---\n` +
-      `${textoActual.slice(0, 6000)}\n` +
-      `---\n` +
-      `Devuélveme 1 versión mejorada lista para pegar en Gemini VIDEO (y si puedes, una alternativa B corta).`;
-
-  if (input) {
-    input.value = plantilla;
-    ajustarAlturaTextarea(input);
-    input.focus();
-    const idx = plantilla.indexOf('Mis ideas');
-    if (idx >= 0 && typeof input.setSelectionRange === 'function') {
-      const start = plantilla.indexOf('- ', idx);
-      input.setSelectionRange(start >= 0 ? start + 2 : idx, start >= 0 ? start + 2 : idx);
-    }
+  const bloque = opts.bloque;
+  if (!bloque) {
+    mostrarToast('No se encontró la sección a mejorar');
+    return;
   }
-  panel?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  mostrarToast(
-    `Mejora ${version} abierta en el chat · al Guardar queda en historial / landing`
-  );
+
+  // Quitar otros paneles de mejora abiertos
+  document.querySelectorAll('.prompt-mejora').forEach((el) => el.remove());
+
+  const panel = document.createElement('div');
+  panel.className = 'prompt-mejora';
+  panel.innerHTML = `
+    <label class="prompt-mejora__label" for="mejora-ideas-${version}">Tus ideas para mejorar la versión ${version}</label>
+    <textarea id="mejora-ideas-${version}" class="prompt-mejora__ideas" rows="3" placeholder="Ej: más emotivo, mencionar impermeabilidad, tono festival, menos hashtags…"></textarea>
+    <div class="prompt-mejora__acciones">
+      <button type="button" class="btn btn--accent btn--small" data-aplicar-mejora>Aplicar mejora</button>
+      <button type="button" class="btn btn--ghost btn--small" data-cancelar-mejora>Cancelar</button>
+    </div>`;
+  const ta = bloque.querySelector('[data-copy-texto], [data-prompt-texto]');
+  (ta || bloque).insertAdjacentElement('afterend', panel);
+  const ideasTa = panel.querySelector('.prompt-mejora__ideas');
+  ideasTa?.focus();
+
+  panel.querySelector('[data-cancelar-mejora]')?.addEventListener('click', () => panel.remove());
+
+  panel.querySelector('[data-aplicar-mejora]')?.addEventListener('click', async () => {
+    const ideas = (ideasTa?.value || '').trim();
+    if (!ideas) {
+      mostrarToast('Escribe al menos una idea');
+      ideasTa?.focus();
+      return;
+    }
+    const base = ta?.value || textoActual;
+    const mejorado = mejorarTextoConIdeas(base, ideas, { tipo, version, tarea });
+    if (ta) ta.value = mejorado;
+
+    registrarHistorialEntregable(tarea, {
+      tipo,
+      version,
+      accion: 'mejora',
+      archivo,
+      texto: mejorado,
+    });
+
+    // Guardar automáticamente en disco
+    if (archivo) {
+      const ok = await guardarPromptTxtEnDisco(archivo, mejorado);
+      if (ok) {
+        registrarHistorialEntregable(tarea, {
+          tipo,
+          version,
+          accion: 'guardar',
+          archivo,
+          texto: mejorado,
+        });
+      }
+      mostrarToast(ok ? `Versión ${version} mejorada y guardada` : `Mejorada en pantalla (no se pudo guardar disco)`);
+    } else {
+      mostrarToast(`Versión ${version} mejorada — pulsa Guardar`);
+    }
+
+    const root = bloque.closest('[data-entregable]');
+    const hist = root?.querySelector('.entregable-hist');
+    const nuevo = htmlHistorialEntregableTarea(tareaDe(tarea.id) || tarea);
+    if (hist && nuevo) hist.outerHTML = nuevo;
+    else if (root && !hist && nuevo) root.insertAdjacentHTML('beforeend', nuevo);
+
+    panel.remove();
+  });
+}
+
+/**
+ * Reescribe el TXT incorporando las ideas de la usuaria.
+ * Conserva metadatos de producto (PRODUCTO/SKU/Link) cuando existen.
+ */
+function mejorarTextoConIdeas(texto, ideas, opts = {}) {
+  const version = String(opts.version || 'A').toUpperCase();
+  const tipo = opts.tipo || 'copys-txt';
+  const ideasLimpias = String(ideas || '').trim();
+  const original = String(texto || '');
+  if (!ideasLimpias) return original;
+
+  const lineas = original.split(/\r?\n/);
+  const meta = [];
+  let i = 0;
+  while (i < lineas.length) {
+    const L = lineas[i];
+    if (
+      /^(COPY VIDEO|PROMPTS? GEMINI|PRODUCTO:|SKU:|Link:|Público|Herramienta:|CARACTERÍSTICAS)/i.test(L) ||
+      (meta.length && L.trim() === '') ||
+      (meta.length && /^(VESTUARIO|---)/i.test(L))
+    ) {
+      meta.push(L);
+      i++;
+      // Cortar meta tras bloque vacío posterior a Link/características cortas
+      if (meta.length > 3 && L.trim() === '' && i > 4) break;
+      continue;
+    }
+    if (!meta.length && L.trim()) {
+      // primera línea no-meta → no hay encabezado clásico
+      break;
+    }
+    if (meta.length && !/^(COPY|PROMPT|PRODUCTO|SKU|Link|Público|Herramienta|CARACTER|VESTUARIO|- |• |✓ |---)/i.test(L) && L.trim()) {
+      break;
+    }
+    meta.push(L);
+    i++;
+  }
+
+  // Extraer bullets / checklist del original
+  const resto = lineas.slice(i).join('\n');
+  const bullets = [...resto.matchAll(/^[•✓\-]\s+.+$/gm)].map((m) => m[0]);
+  const link =
+    (original.match(/https?:\/\/trendseeker\.cl\/[^\s]+/i) || [])[0] ||
+    opts.tarea?.productoUrl ||
+    '';
+  const producto =
+    (original.match(/^PRODUCTO:\s*(.+)$/im) || [])[1] ||
+    '';
+
+  if (tipo === 'copys-txt') {
+    const hook = ideasLimpias.split(/\n/).map((s) => s.trim()).filter(Boolean)[0] || ideasLimpias;
+    const extras = ideasLimpias
+      .split(/\n/)
+      .map((s) => s.trim())
+      .filter((s) => s && s !== hook);
+    const checklist =
+      bullets.length > 0
+        ? bullets.slice(0, 6).join('\n')
+        : [
+            '✓ Características reales de ficha (sin inventar)',
+            '✓ CTA con link de producto',
+            '✓ Tono Trendseeker / Hunter',
+          ].join('\n');
+
+    const cuerpoExtra = extras.length
+      ? extras.map((e) => e.replace(/^[-•]\s*/, '')).join(' ')
+      : 'Copy afinado con tus ideas, listo para pegar bajo el video.';
+
+    return [
+      meta.length ? meta.join('\n').trimEnd() : `COPY VIDEO · Trendseeker · Versión ${version}${producto ? `\nProducto: ${producto}` : ''}${link ? `\nLink: ${link}` : ''}`,
+      '',
+      hook,
+      '',
+      cuerpoExtra,
+      '',
+      checklist,
+      '',
+      'Shop:',
+      link || 'https://trendseeker.cl/',
+      '',
+      '#Hunter #TrendSeeker #TrendSeekerChile',
+      '',
+      `— Mejorado con tus ideas (${new Date().toLocaleDateString('es-CL')}) —`,
+      ideasLimpias
+        .split(/\n/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((s) => `· ${s.replace(/^[-•]\s*/, '')}`)
+        .join('\n'),
+      '',
+    ]
+      .join('\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim() + '\n';
+  }
+
+  // prompt-gemini
+  const ajustes = ideasLimpias
+    .split(/\n/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((s) => `- ${s.replace(/^[-•]\s*/, '')}`)
+    .join('\n');
+
+  const cuerpoPrompt =
+    resto.trim() ||
+    `Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria. No rediseñes el producto.`;
+
+  return [
+    meta.length ? meta.join('\n').trimEnd() : `PROMPT GEMINI VIDEO · Versión ${version}`,
+    '',
+    `---`,
+    `VERSIÓN ${version} · mejorada con ideas de la usuaria`,
+    `---`,
+    '',
+    cuerpoPrompt.replace(/\n— Mejorado[\s\S]*$/i, '').trim(),
+    '',
+    'AJUSTES OBLIGATORIOS SEGÚN IDEAS:',
+    ajustes,
+    '',
+    'Integra esos ajustes en la acción, cámara y atmósfera sin inventar specs del producto.',
+    '',
+  ]
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim() + '\n';
 }
 
 /** @deprecated alias */
