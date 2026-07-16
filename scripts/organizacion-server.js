@@ -99,6 +99,7 @@ function lanAddresses() {
 
 function accesoInfo() {
   const lan = lanAddresses();
+  const tunnel = readTunnelState();
   return {
     port: PORT,
     host: RUNTIME_HOST,
@@ -106,9 +107,91 @@ function accesoInfo() {
     localhost: `http://localhost:${PORT}${VENTA_PATH}`,
     lan: lan.map((ip) => `http://${ip}:${PORT}${VENTA_PATH}`),
     panelLan: lan.map((ip) => `http://${ip}:${PORT}/index/clientes/impresoreando/panel/`),
+    public: tunnel
+      ? {
+          base: tunnel.base,
+          venta: tunnel.venta,
+          actualizado: tunnel.actualizado,
+        }
+      : null,
     hint:
-      'localhost solo funciona en esta PC. En el celular usa la IP de la WiFi o ABRIR-VENTA-PUBLICA.bat para un link de cualquier lugar.',
+      'localhost solo funciona en esta PC. Misma WiFi → IP LAN. Otra red / 4G → ABRIR-VENTA-PUBLICA.bat (túnel) y comparte el link público.',
   };
+}
+
+const TUNNEL_FILE = path.join(ROOT, 'data', 'impresoreando-tunnel.json');
+
+function readTunnelState() {
+  try {
+    if (!fs.existsSync(TUNNEL_FILE)) return null;
+    const raw = JSON.parse(fs.readFileSync(TUNNEL_FILE, 'utf8'));
+    if (!raw || !raw.base || !raw.venta) return null;
+    return raw;
+  } catch {
+    return null;
+  }
+}
+
+function writeTunnelState(state) {
+  fs.mkdirSync(path.dirname(TUNNEL_FILE), { recursive: true });
+  if (!state) {
+    try {
+      fs.unlinkSync(TUNNEL_FILE);
+    } catch {
+      /* ignore */
+    }
+    return;
+  }
+  fs.writeFileSync(TUNNEL_FILE, JSON.stringify(state, null, 2), 'utf8');
+}
+
+function handleApiAccesoTunnel(req, res) {
+  const urlPath = (req.url || '').split('?')[0];
+  if (urlPath !== '/api/acceso/tunnel') return false;
+
+  if (req.method === 'POST') {
+    readBody(req)
+      .then((raw) => {
+        let body = {};
+        try {
+          body = JSON.parse(raw || '{}');
+        } catch {
+          return send(res, 400, JSON.stringify({ error: 'JSON inválido' }), 'application/json');
+        }
+        if (body.clear === true) {
+          writeTunnelState(null);
+          console.log('[acceso] Túnel público limpiado');
+          return send(res, 200, JSON.stringify({ ok: true, public: null }), 'application/json');
+        }
+        const base = String(body.base || body.publicBase || '')
+          .trim()
+          .replace(/\/$/, '');
+        if (!/^https?:\/\//i.test(base)) {
+          return send(res, 400, JSON.stringify({ error: 'base inválida' }), 'application/json');
+        }
+        const venta = String(body.venta || `${base}${VENTA_PATH}`).trim();
+        const state = {
+          base,
+          venta,
+          actualizado: new Date().toISOString(),
+        };
+        writeTunnelState(state);
+        console.log('[acceso] Túnel público registrado:', state.venta);
+        return send(res, 200, JSON.stringify({ ok: true, public: state }), 'application/json');
+      })
+      .catch((e) => send(res, 500, String(e), 'text/plain'));
+    return true;
+  }
+
+  if (req.method === 'DELETE') {
+    writeTunnelState(null);
+    console.log('[acceso] Túnel público limpiado');
+    send(res, 200, JSON.stringify({ ok: true, public: null }), 'application/json');
+    return true;
+  }
+
+  send(res, 405, JSON.stringify({ error: 'método no permitido' }), 'application/json');
+  return true;
 }
 
 function securityHeaders() {
@@ -744,6 +827,10 @@ function handleApiPromptTxt(req, res) {
 
 const server = http.createServer((req, res) => {
   const url = req.url || '/';
+
+  if (url.startsWith('/api/acceso/tunnel')) {
+    if (handleApiAccesoTunnel(req, res)) return;
+  }
 
   if (url.startsWith('/api/acceso')) {
     return send(res, 200, JSON.stringify(accesoInfo()), 'application/json');

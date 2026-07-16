@@ -58,4 +58,4 @@
 - Layout: franja blanca superior full-bleed; contenido interno limitado a `--imp-max: 1200px`.
 - **Acceso desde celular:** `localhost` en el teléfono **no funciona** (ERR_CONNECTION_FAILED). El servidor por defecto usa `HOST=0.0.0.0`.
   - Misma WiFi: usar la IP que imprime el server al arrancar (también en `GET /api/acceso` → `lan[]`).
-  - Cualquier lugar / 4G: con `SERVIR.bat` abierto, ejecutar `ABRIR-VENTA-PUBLICA.bat` y compartir el link `https://….loca.lt/…/venta/`.
+  - Otra WiFi / 4G: con `SERVIR.bat` abierto, ejecutar `ABRIR-VENTA-PUBLICA.bat`. El túnel registra el link en `POST /api/acceso/tunnel` y aparece en el panel (Resumen → Copiar link público). Las ventas se guardan igual en `data/impresoreando-live.json` vía `POST /api/impresoreando/venta`. Dejar ambas ventanas abiertas.

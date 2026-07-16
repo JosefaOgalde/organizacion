@@ -491,12 +491,18 @@
         </p>
         <p class="imp-muted">Misma WiFi — abre en el celular (no localhost):</p>
         <div class="imp-share" id="imp-links-lan"><span class="imp-muted">Cargando IPs…</span></div>
-        <p class="imp-muted" style="margin-top:0.75rem">Cualquier lugar / datos móviles:</p>
+        <p class="imp-muted" style="margin-top:0.75rem">Cualquier lugar / datos móviles (otra WiFi o 4G):</p>
         <ol class="imp-list">
-          <li>En la PC deja <strong>SERVIR.bat</strong> corriendo.</li>
-          <li>Abre <strong>ABRIR-VENTA-PUBLICA.bat</strong> (segunda ventana).</li>
-          <li>Copia el link <code>https://….loca.lt/…/venta/</code> y envíalo por WhatsApp.</li>
+          <li>En la PC deja <strong>SERVIR.bat</strong> corriendo (guarda las ventas en el disco).</li>
+          <li>Abre <strong>ABRIR-VENTA-PUBLICA.bat</strong> (segunda ventana) — crea el link público.</li>
+          <li>Copia el link de abajo (o el de la consola) y envíalo por WhatsApp.</li>
         </ol>
+        <div class="imp-share" id="imp-links-public">
+          <span class="imp-muted">Sin túnel activo aún — abre ABRIR-VENTA-PUBLICA.bat y pulsa Actualizar</span>
+        </div>
+        <div class="imp-form-actions" style="margin-top:0.5rem">
+          <button type="button" class="imp-btn" id="btn-refresh-acceso">Actualizar links</button>
+        </div>
         <div class="imp-share">
           <code id="imp-link-venta">${escapeHtml(linkVenta)}</code>
           <button type="button" class="imp-btn imp-btn--primary" id="btn-copiar-link-venta">Copiar link de esta ventana</button>
@@ -506,6 +512,64 @@
       </div>
     `;
 
+    const pintarAcceso = (info) => {
+      const boxLan = $('#imp-links-lan');
+      if (boxLan) {
+        const urls = info.lan || [];
+        if (!urls.length) {
+          boxLan.innerHTML = '<span class="imp-muted">No se detectó IP de red — usa ABRIR-VENTA-PUBLICA.bat</span>';
+        } else {
+          boxLan.innerHTML = urls
+            .map(
+              (u) =>
+                `<code class="imp-lan-url">${escapeHtml(u)}</code><button type="button" class="imp-btn" data-copy="${escapeHtml(u)}">Copiar</button>`
+            )
+            .join('');
+          boxLan.querySelectorAll('[data-copy]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              try {
+                await navigator.clipboard.writeText(btn.getAttribute('data-copy'));
+                setStatus('Link WiFi copiado', 'ok');
+              } catch {
+                setStatus('Copia manual del link', 'warn');
+              }
+            });
+          });
+        }
+      }
+      const boxPub = $('#imp-links-public');
+      if (boxPub) {
+        const pub = info.public?.venta;
+        if (pub) {
+          boxPub.innerHTML = `
+            <code class="imp-lan-url">${escapeHtml(pub)}</code>
+            <button type="button" class="imp-btn imp-btn--primary" data-copy-public="${escapeHtml(pub)}">Copiar link público</button>
+            <a class="imp-btn" href="${escapeHtml(pub)}" target="_blank" rel="noopener">Abrir</a>
+            <span class="imp-muted">Activo · las ventas se guardan en el panel</span>`;
+          boxPub.querySelector('[data-copy-public]')?.addEventListener('click', async () => {
+            try {
+              await navigator.clipboard.writeText(pub);
+              setStatus('Link público copiado — funciona en cualquier red', 'ok');
+            } catch {
+              setStatus('Copia manual del link público', 'warn');
+            }
+          });
+        } else {
+          boxPub.innerHTML =
+            '<span class="imp-muted">Sin túnel activo — abre <strong>ABRIR-VENTA-PUBLICA.bat</strong> y pulsa Actualizar</span>';
+        }
+      }
+    };
+
+    const cargarAcceso = () =>
+      fetch('/api/acceso', { cache: 'no-store' })
+        .then((r) => r.json())
+        .then(pintarAcceso)
+        .catch(() => {
+          const box = $('#imp-links-lan');
+          if (box) box.innerHTML = '<span class="imp-muted">No se pudo leer /api/acceso</span>';
+        });
+
     $('#btn-copiar-link-venta')?.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(linkVenta);
@@ -514,38 +578,11 @@
         setStatus('No se pudo copiar — selecciónalo a mano', 'warn');
       }
     });
-
-    fetch('/api/acceso', { cache: 'no-store' })
-      .then((r) => r.json())
-      .then((info) => {
-        const box = $('#imp-links-lan');
-        if (!box) return;
-        const urls = info.lan || [];
-        if (!urls.length) {
-          box.innerHTML = '<span class="imp-muted">No se detectó IP de red — usa ABRIR-VENTA-PUBLICA.bat</span>';
-          return;
-        }
-        box.innerHTML = urls
-          .map(
-            (u) =>
-              `<code class="imp-lan-url">${escapeHtml(u)}</code><button type="button" class="imp-btn" data-copy="${escapeHtml(u)}">Copiar</button>`
-          )
-          .join('');
-        box.querySelectorAll('[data-copy]').forEach((btn) => {
-          btn.addEventListener('click', async () => {
-            try {
-              await navigator.clipboard.writeText(btn.getAttribute('data-copy'));
-              setStatus('Link WiFi copiado', 'ok');
-            } catch {
-              setStatus('Copia manual del link', 'warn');
-            }
-          });
-        });
-      })
-      .catch(() => {
-        const box = $('#imp-links-lan');
-        if (box) box.innerHTML = '<span class="imp-muted">No se pudo leer /api/acceso</span>';
-      });
+    $('#btn-refresh-acceso')?.addEventListener('click', () => {
+      setStatus('Actualizando links…');
+      cargarAcceso().then(() => setStatus('Links actualizados', 'ok'));
+    });
+    cargarAcceso();
   }
 
   function renderGastos() {

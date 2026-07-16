@@ -16,6 +16,7 @@ backend/
 data/organizacion-live.json
 data/organizacion-respaldo-*.json
 data/impresoreando-live.json
+data/impresoreando-tunnel.json
 
 # Imágenes de tareas ( Midjourney / referencias) — se sirven en local, no van al repo
 index/uploads/
