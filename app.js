@@ -4667,26 +4667,19 @@ function renderCalendarioMes() {
     const esMesActual = dia.getMonth() === m;
     const esHoy = diaStr === hoyStr;
 
+    // Conservar orden de itemsDiaOrdenados (madre + subtareas, luego otra madre…)
     const ordenados = itemsDiaOrdenados(diaStr);
-    const items = [
-      ...ordenados.map((it) => {
+    const itemsHtml = ordenados
+      .map((it) => {
         if (it.tipo === 'cita') {
           const c = it.data;
-          return {
-            minutos: it.minutos,
-            ordenGrupo: it.ordenGrupo,
-            html: `<span class="mes-item mes-item--salud${claseCitaEstado(c)}" style="background:${COLORES.salud.bg};border-left-color:${COLORES.salud.border};color:${COLORES.salud.text}" title="${escapeHtml(c.especialidad + ' ' + c.hora + (etiquetaEstadoCita(c) ? ' · ' + etiquetaEstadoCita(c) : ''))}">${escapeHtml(textoCitaCompacto(c, 0))}</span>`,
-          };
+          return `<span class="mes-item mes-item--salud${claseCitaEstado(c)}" style="background:${COLORES.salud.bg};border-left-color:${COLORES.salud.border};color:${COLORES.salud.text}" title="${escapeHtml(c.especialidad + ' ' + c.hora + (etiquetaEstadoCita(c) ? ' · ' + etiquetaEstadoCita(c) : ''))}">${escapeHtml(textoCitaCompacto(c, 0))}</span>`;
         }
         if (it.tipo === 'reunion') {
           const r = it.data;
           const col = colorReunion();
           const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
-          return {
-            minutos: it.minutos,
-            ordenGrupo: it.ordenGrupo,
-            html: `<span class="mes-item mes-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 0))}</span>`,
-          };
+          return `<span class="mes-item mes-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 0))}</span>`;
         }
         const t = it.data;
         const col = colorMiniTarea(t);
@@ -4700,18 +4693,12 @@ function renderCalendarioMes() {
           it.indiceHijo != null
             ? `${it.indiceHijo}. ${tituloMes(t, 0)}`
             : tituloMes(t, 0);
-        return {
-          minutos: it.minutos,
-          ordenGrupo: it.ordenGrupo,
-          html: `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(texto)}</span>`,
-        };
-      }),
-    ].sort(compararItemsDia);
+        return `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(texto)}</span>`;
+      })
+      .join('');
+    const alturaMin = ordenados.length === 0 ? 108 : 40 + ordenados.length * 34;
 
-    const itemsHtml = items.map(x => x.html).join('');
-    const alturaMin = items.length === 0 ? 108 : 40 + items.length * 34;
-
-    html += `<div class="mes-dia${esHoy ? ' mes-dia--hoy' : ''}${!esMesActual ? ' mes-dia--fuera' : ''}" data-fecha="${diaStr}" data-items="${items.length}" style="min-height:${alturaMin}px" title="Ver semana del ${dia.toLocaleDateString('es-CL')}">
+    html += `<div class="mes-dia${esHoy ? ' mes-dia--hoy' : ''}${!esMesActual ? ' mes-dia--fuera' : ''}" data-fecha="${diaStr}" data-items="${ordenados.length}" style="min-height:${alturaMin}px" title="Ver semana del ${dia.toLocaleDateString('es-CL')}">
       <div class="mes-dia__num">${dia.getDate()}</div>
       <div class="mes-dia__items">${itemsHtml}</div>
     </div>`;
