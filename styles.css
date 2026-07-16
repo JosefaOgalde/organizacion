@@ -10,6 +10,8 @@
   --text: #2d2d2d;
   --text-muted: #5a5a5a;
   --border: #d0d0d0;
+  --border-strong: #8a8a8a;
+  --border-strong-hover: #6e6e6e;
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   --radius: 10px;
   --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -129,7 +131,7 @@ body {
 
 .tab {
   background: #e2e2e2;
-  border: 2px solid #5a5a5a;
+  border: 2px solid var(--border-strong);
   padding: 0.6rem 1.1rem;
   border-radius: var(--radius);
   cursor: pointer;
@@ -140,7 +142,7 @@ body {
 
 .tab:hover {
   background: #d4d4d4;
-  border-color: #2d2d2d;
+  border-color: var(--border-strong-hover);
 }
 
 .tab--active {
@@ -351,7 +353,7 @@ button.tab.tab--perfil.tab--active {
 .week-nav .btn--ghost {
   background: #fff;
   color: #2d2d2d;
-  border: 2px solid #5a5a5a;
+  border: 2px solid var(--border-strong);
 }
 
 .week-nav .btn--ghost:hover {
@@ -974,7 +976,7 @@ button.tab.tab--perfil.tab--active {
 .btn--ghost {
   background: #fff;
   color: #2d2d2d;
-  border: 2px solid #5a5a5a;
+  border: 2px solid var(--border-strong);
 }
 
 .btn--ghost:hover {
