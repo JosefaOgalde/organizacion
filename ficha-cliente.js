@@ -860,16 +860,23 @@
 
   window.abrirFichaCliente = function (cliId) {
     const cli = clienteDe(cliId);
-    if (!cli) return;
+    if (!cli) {
+      if (typeof mostrarToast === 'function') mostrarToast('No encontré ese cliente — recarga con Ctrl+F5');
+      return;
+    }
     const modal = document.getElementById('modal-cliente-perfil');
-    if (modal && !modal.querySelector('.ficha-shell')) upgradeModalFicha();
+    if (!modal) {
+      if (typeof mostrarToast === 'function') mostrarToast('Falta el modal de ficha — recarga la página');
+      return;
+    }
+    if (!modal.querySelector('.ficha-shell')) upgradeModalFicha();
     if (window.initFichaClienteUI) window.initFichaClienteUI();
     clientePerfilAbierto = cliId;
     initContextoCliente(datos);
-    if (!modal) return;
     modal.hidden = false;
     modal.removeAttribute('hidden');
     modal.setAttribute('aria-hidden', 'false');
+    modal.style.display = 'flex';
     document.body.classList.add('modal-abierto');
     const idInput = document.getElementById('perfil-cliente-id');
     if (idInput) idInput.value = cliId;
@@ -905,6 +912,7 @@
     modal.hidden = true;
     modal.setAttribute('hidden', '');
     modal.setAttribute('aria-hidden', 'true');
+    modal.style.display = '';
     document.body.classList.remove('modal-abierto');
     const doc = document.getElementById('ficha-doc');
     if (doc) doc.innerHTML = '';
@@ -1011,7 +1019,11 @@
       const cliId = btn.dataset.clienteId;
       const nuevo = btn.cloneNode(true);
       btn.replaceWith(nuevo);
-      nuevo.addEventListener('click', () => window.abrirFichaCliente(cliId));
+      nuevo.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.abrirFichaCliente(cliId);
+      });
     });
   }
 

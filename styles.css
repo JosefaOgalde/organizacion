@@ -116,22 +116,24 @@ body {
 
 .tab {
   background: #e2e2e2;
-  border: none;
+  border: 1.5px solid #9a9a9a;
   padding: 0.6rem 1.1rem;
   border-radius: var(--radius);
   cursor: pointer;
   font-size: 0.9rem;
   color: var(--text);
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .tab:hover {
   background: #d4d4d4;
+  border-color: #6e6e6e;
 }
 
 .tab--active {
   background: var(--celeste-dark);
   color: var(--bg-panel);
+  border-color: var(--celeste-dark);
   font-weight: 600;
 }
 
@@ -182,7 +184,7 @@ body {
   min-height: 2.5rem;
   padding: 0.5rem 0.75rem;
   border-radius: var(--radius);
-  border: 2px solid rgba(255, 255, 255, 0.55);
+  border: 2px solid #6a6788;
   background: var(--bg-panel);
   color: var(--celeste-dark);
   font-size: 0.88rem;
@@ -195,6 +197,7 @@ body {
 
 .vista-switch__btn:hover {
   background: var(--celeste-light);
+  border-color: var(--celeste-dark);
 }
 
 .vista-switch__btn--active {
@@ -500,6 +503,14 @@ body {
 
 .cliente-card__landing:hover {
   text-decoration: underline;
+}
+
+.cliente-card__cta {
+  display: inline-block;
+  margin-top: 0.55rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--cliente-text, var(--celeste-dark));
 }
 
 .cliente-card {
@@ -2092,7 +2103,8 @@ body {
 }
 
 #modal-cliente-perfil:not([hidden]) {
-  display: flex;
+  display: flex !important;
+  z-index: 10050;
 }
 
 #modal-skill-recomendacion:not([hidden]) {

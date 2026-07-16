@@ -6187,22 +6187,33 @@ function renderClientes() {
       ? `<a class="cliente-card__landing" href="${escapeHtml(landingUrl)}">Ver landing →</a>`
       : '';
     return `<div class="cliente-card-wrap" style="--cliente-border:${col.border};--cliente-bg:${col.bg};--cliente-text:${col.text}">
-      <button type="button" class="cliente-card cliente-card--clic" data-cliente-id="${c.id}" style="background:${col.bg};border-color:${col.border};--cliente-text:${col.text}">
+      <button type="button" class="cliente-card cliente-card--clic" data-cliente-id="${c.id}" style="background:${col.bg};border-color:${col.border};--cliente-text:${col.text}" title="Abrir ficha / perfil del cliente">
       <div class="cliente-card__nombre">${escapeHtml(c.nombre)} <span class="cliente-card__abrev">(${escapeHtml(c.abrev || abrevDe(c))})</span></div>
       <span class="cliente-card__tipo ${claseTipoCliente(c.tipo)}" style="background:${col.border};color:#fff">${escapeHtml(etiquetaTipoCliente(c.tipo))}</span>
       <div class="cliente-card__agente">${ag.emoji} ${escapeHtml(ag.nombre)}</div>
       <div class="cliente-card__skill-tag">Skill: ${escapeHtml(skill.nombre)}</div>
       <div class="cliente-card__roles">${roles}</div>
       ${badge}
+      <span class="cliente-card__cta">Abrir ficha →</span>
     </button>
     ${landingLink}
     </div>`;
   }).join('');
 
   grid.querySelectorAll('[data-cliente-id]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      (window.abrirFichaCliente || abrirPerfilCliente)(btn.dataset.clienteId);
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = btn.dataset.clienteId;
+      if (typeof window.abrirFichaCliente === 'function') {
+        window.abrirFichaCliente(id);
+      } else {
+        abrirPerfilCliente(id);
+      }
     });
+  });
+  grid.querySelectorAll('.cliente-card__landing').forEach((a) => {
+    a.addEventListener('click', (e) => e.stopPropagation());
   });
 
   if (select) {
@@ -6678,7 +6689,8 @@ async function iniciarApp() {
   setupUI();
   if (!aplicarRutaDesdeUrl()) {
     if (location.hash.replace(/^#/, '') === 'clientes') {
-      window.location.href = 'index/clientes/';
+      mostrarVista('clientes', { activarTab: true });
+      render();
     } else {
       mostrarVista('mes');
       render();
