@@ -4,7 +4,7 @@ const RESPALDO_DEFECTO_URL = 'data/organizacion-respaldo-2026-07-01.json';
 const AGENTES_RAMAS_URL = 'data/agentes-ramas.json';
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const DIAS_CORTOS = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'];
-const MAX_TITULO_SEMANA = 40;
+const MAX_TITULO_SEMANA = 72;
 
 const COLORES = {
   lavanda: { border: '#c4b8e8', bg: '#f0ecfa', text: '#6a5a9e' },
@@ -4506,9 +4506,9 @@ function renderCalendarioMes() {
     ].sort(compararItemsDia);
 
     const itemsHtml = items.map(x => x.html).join('');
-    const alturaMin = items.length === 0 ? 108 : 36 + items.length * 26;
+    const alturaMin = items.length === 0 ? 108 : 40 + items.length * 34;
 
-    html += `<div class="mes-dia${esHoy ? ' mes-dia--hoy' : ''}${!esMesActual ? ' mes-dia--fuera' : ''}" data-fecha="${diaStr}" data-items="${items.length}" style="min-height:${alturaMin}px" title="Ver semana del ${dia.toLocaleDateString('es-CL')}">
+    html += `<div class="mes-dia${esHoy ? ' mes-dia--hoy' : ''}${!esMesActual ? ' mes-dia--fuera' : ''}" data-fecha="${diaStr}" data-items="${items.length}" style="min-height:${alturaMin}px" title="Ver detalle del ${dia.toLocaleDateString('es-CL')}">
       <div class="mes-dia__num">${dia.getDate()}</div>
       <div class="mes-dia__items">${itemsHtml}</div>
     </div>`;
@@ -4516,7 +4516,7 @@ function renderCalendarioMes() {
 
   cont.innerHTML = html;
   cont.querySelectorAll('.mes-dia').forEach(celda => {
-    celda.addEventListener('click', () => irASemanaDe(celda.dataset.fecha));
+    celda.addEventListener('click', () => irADia(celda.dataset.fecha));
   });
 }
 
