@@ -4,10 +4,10 @@ cd /d "%~dp0"
 echo.
 echo  === Organizador — inicio del dia ===
 echo.
+echo  (No cambia de rama git: conserva Impresoreando y tu trabajo local)
+echo.
 
-git fetch origin 2>nul
-git checkout main 2>nul
-git pull origin main --no-rebase 2>nul
+set PATH=C:\laragon\bin\nodejs\node-v22;%PATH%
 
 echo  Sincronizando respaldo mas reciente ^(Descargas / data^)...
 node scripts/sync-respaldo-auto.js --force
@@ -17,5 +17,8 @@ if errorlevel 1 (
   echo    IMPORTAR-RESPALDO.bat
   echo.
 )
+
+echo  Asegurando cliente Impresoreando en el live...
+node scripts/asegurar-impresoreando-live.js
 
 call "%~dp0ABRIR-ORGANIZADOR.bat"

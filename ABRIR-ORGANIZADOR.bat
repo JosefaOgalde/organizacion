@@ -14,6 +14,8 @@ if errorlevel 1 (
   exit /b 1
 )
 
+node scripts/asegurar-impresoreando-live.js
+
 echo.
 echo  Iniciando servidor...
 start "Organizacion servidor" cmd /k "cd /d "%~dp0" && node scripts/organizacion-server.js"

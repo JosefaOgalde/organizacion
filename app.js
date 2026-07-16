@@ -108,6 +108,12 @@ const AGENTES_CLIENTE = {
     emoji: '🎨',
     especialidad: 'Diseño freelance',
     instrucciones: 'Eres el asistente de Desafío Latam. Ayudas con diseño freelance: piezas gráficas, presentaciones, identidad visual, banners, materiales para redes y entregables visuales según cada encargo esporádico.'
+  },
+  'cli-impresoreando': {
+    nombre: 'Agente Impresoreando',
+    emoji: '🖨️',
+    especialidad: 'Impresión, identidad y piezas gráficas',
+    instrucciones: 'Eres el asistente de Impresoreando. Ayudas con briefs de impresión, piezas gráficas, identidad visual, mockups, formatos de impresión y entregables para el cliente. Para finanzas socios usa el panel en index/clientes/impresoreando/panel/.'
   }
 };
 
@@ -183,6 +189,13 @@ const SKILLS_CLIENTE = {
     usaManualMarca: true,
     checklist: ['Manual de marca cargado', 'Brief y formatos de entrega', 'Colores y tipografías oficiales', 'Márgenes de logo'],
     ejemploSolicitud: 'Diseña [pieza: banner / presentación / key visual] para [campaña]. Formato: [dimensiones]. Mensaje: …'
+  },
+  'cli-impresoreando': {
+    nombre: 'Impresión 3D + ecommerce',
+    descripcion: 'Briefs, piezas gráficas, costos de producción y panel socios 50/50.',
+    usaManualMarca: false,
+    checklist: ['Brief del encargo', 'Formato de impresión / mockup', 'Costos (filamento, horas, acabado)', 'Entrega o publicación'],
+    ejemploSolicitud: 'Arma el brief / mockup / costo de [pieza] para Impresoreando.'
   }
 };
 
@@ -292,7 +305,8 @@ const PERFILES_CLIENTE = {
   'cli-hotspring': { nombre: 'Hotspring - Talk (full time)', tipo: 'full-time' },
   'cli-mkof': { nombre: 'MKOF - Talk (full time)', tipo: 'full-time' },
   'cli-sie': { tipo: 'oportunidad' },
-  'cli-desafio-latam': { abrev: 'ADL' }
+  'cli-desafio-latam': { abrev: 'ADL' },
+  'cli-impresoreando': { nombre: 'Impresoreando', abrev: 'IMP', tipo: 'freelance' }
 };
 let datos = null;
 
@@ -416,6 +430,7 @@ function datosIniciales() {
   const cliJM = 'cli-joyas-mercury';
   const cliSIE = 'cli-sie';
   const cliDLAT = 'cli-desafio-latam';
+  const cliIMP = 'cli-impresoreando';
   const hoyStr = toISO(hoy());
 
   return {
@@ -575,6 +590,23 @@ function datosIniciales() {
             nombre: 'Diseño',
             abrev: 'DIS',
             funciones: 'Piezas gráficas y visuales\nPresentaciones y materiales\nBanners y piezas para redes\nEncargos esporádicos según proyecto',
+            tareasAlMes: 'Según encargos del momento',
+            plazosEntregables: 'Agregar cada tarea en + Nueva tarea cuando llegue un encargo'
+          }
+        ]
+      },
+      {
+        id: cliIMP,
+        nombre: 'Impresoreando',
+        abrev: 'IMP',
+        tipo: 'freelance',
+        color: 'ambar',
+        roles: [
+          {
+            id: 'rol-imp-dis',
+            nombre: 'Diseño e impresión',
+            abrev: 'DIS',
+            funciones: 'Briefs de impresión\nPiezas gráficas\nMockups y formatos de producción\nIdentidad visual según encargo',
             tareasAlMes: 'Según encargos del momento',
             plazosEntregables: 'Agregar cada tarea en + Nueva tarea cuando llegue un encargo'
           }
@@ -1755,6 +1787,29 @@ function asegurarClienteDesafioLatam(data) {
   return data;
 }
 
+const IMP_CLI_ID = 'cli-impresoreando';
+
+/** Si el respaldo de Descargas no trae Impresoreando, lo reinyecta sin tocar tareas. */
+function asegurarClienteImpresoreando(data) {
+  if (!Array.isArray(data.clientes)) data.clientes = [];
+  let cli = data.clientes.find(c => c.id === IMP_CLI_ID);
+  if (!cli) {
+    const seed = datosIniciales().clientes.find(c => c.id === IMP_CLI_ID);
+    if (seed) data.clientes.push(structuredClone ? structuredClone(seed) : JSON.parse(JSON.stringify(seed)));
+    cli = data.clientes.find(c => c.id === IMP_CLI_ID);
+  }
+  if (cli) {
+    cli.nombre = 'Impresoreando';
+    cli.abrev = 'IMP';
+    cli.tipo = 'freelance';
+    if (!cli.color) cli.color = 'ambar';
+    if (!cli.ficha || typeof cli.ficha !== 'object') {
+      cli.ficha = { contacto: '', links: '', notas: '', seccionesExtra: [], documentos: [] };
+    }
+  }
+  return data;
+}
+
 function asegurarPerfilClientes(data) {
   data.clientes.forEach(cli => {
     const perfil = PERFILES_CLIENTE[cli.id];
@@ -1796,6 +1851,7 @@ function normalizarDatos(data) {
   asegurarClienteJoyasMercury(data);
   asegurarClienteSIE(data);
   asegurarClienteDesafioLatam(data);
+  asegurarClienteImpresoreando(data);
   asegurarPerfilClientes(data);
   asegurarAgentesClientes(data);
   asignarRolesATareas(data);

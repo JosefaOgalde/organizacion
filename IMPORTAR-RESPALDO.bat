@@ -38,6 +38,15 @@ echo  === Respaldo importado ===
 echo  Origen:  %ORIGEN%
 echo  Live:    %LIVE%
 echo.
+
+node scripts\asegurar-impresoreando-live.js 2>nul
+if errorlevel 1 (
+  echo  Aviso: no se pudo asegurar Impresoreando automaticamente.
+) else (
+  echo  Impresoreando asegurado en el live ^(si faltaba^).
+)
+
+echo.
 echo  Siguiente: ABRIR-ORGANIZADOR.bat
 echo.
 pause
