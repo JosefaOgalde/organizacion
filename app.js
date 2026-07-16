@@ -5692,6 +5692,13 @@ function renderDia() {
   const numCitas = items.filter((i) => i.tipo === 'cita').length;
   const numReuniones = items.filter((i) => i.tipo === 'reunion').length;
   const diaSemana = DIAS[(fecha.getDay() + 6) % 7] || '';
+  const rangoDia = document.getElementById('rango-dia');
+  if (rangoDia) {
+    const esHoy = diaSeleccionado === toISO(hoy());
+    rangoDia.textContent = esHoy
+      ? 'Hoy'
+      : fecha.toLocaleDateString('es-CL', { weekday: 'short', day: 'numeric', month: 'short' });
+  }
 
   if (nombreEl) nombreEl.textContent = String(diaSemana).toUpperCase();
   if (numeroEl) numeroEl.textContent = String(fecha.getDate());
@@ -6589,7 +6596,6 @@ function setupUI() {
 
   document.getElementById('btn-dia-anterior')?.addEventListener('click', () => cambiarDia(-1));
   document.getElementById('btn-dia-siguiente')?.addEventListener('click', () => cambiarDia(1));
-  document.getElementById('btn-dia-hoy')?.addEventListener('click', () => irADia(toISO(hoy())));
 
   document.getElementById('btn-vaciar-tareas')?.addEventListener('click', vaciarTareasLocales);
 
