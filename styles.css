@@ -2263,6 +2263,15 @@ body.modal-abierto {
 
 .tarea-detalle__imgs-acciones {
   margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.tarea-detalle__imgs-acciones .agente-imgs-form__hint {
+  flex: 1 1 100%;
+  margin: 0.15rem 0 0;
 }
 
 .tarea-detalle__imgs--video {

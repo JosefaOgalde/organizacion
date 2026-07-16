@@ -3219,39 +3219,36 @@ function imagenesGuardadasTarea(tarea) {
 function htmlGaleriaImagenesTarea(tarea) {
   const imgs = imagenesGuardadasTarea(tarea);
   const videos = archivosVideoTarea(tarea);
+  const total = imgs.length + videos.length;
   const thumbs = imgs.length
     ? htmlMiniaturasImagenes(imgs, { quitar: true, prefix: 'tarearef' })
-    : '<p class="tarea-detalle__imgs-vacio">Aún no hay imágenes. Sube fondos o referencias aquí.</p>';
+    : '';
   const videoBlock = videos.length
     ? `<div class="tarea-detalle__videos" id="tarea-videos-guardados">${htmlVideosTarea(videos, { quitar: true })}</div>`
-    : '<p class="tarea-detalle__imgs-vacio" id="tarea-videos-guardados">Aún no hay video. Sube el MP4 del entregable aquí.</p>';
+    : '<div id="tarea-videos-guardados"></div>';
+  const vacio =
+    !imgs.length && !videos.length
+      ? '<p class="tarea-detalle__imgs-vacio">Aún no hay archivos. Sube imágenes o el video del entregable aquí; se ven en la landing del cliente.</p>'
+      : '';
   return `
-    <div class="tarea-detalle__imgs" data-tarea-imgs>
+    <div class="tarea-detalle__imgs" data-tarea-imgs data-tarea-videos>
       <div class="tarea-detalle__imgs-head">
-        <strong>Imágenes de la tarea</strong>
-        <span class="tarea-detalle__imgs-count">${imgs.length}</span>
+        <strong>Imágenes y video de la tarea</strong>
+        <span class="tarea-detalle__imgs-count">${total}</span>
       </div>
       <div id="tarea-imgs-guardadas">${thumbs}</div>
+      ${videoBlock}
+      ${vacio}
       <div class="tarea-detalle__imgs-acciones">
         <label class="agente-imgs-form__label">
           <input type="file" id="tarea-imagenes-input" accept="image/*" multiple hidden />
           <span class="btn btn--ghost btn--small">+ Guardar imágenes</span>
         </label>
-        <p class="agente-imgs-form__hint">Se comprimen y guardan en disco del proyecto (no llenan el navegador). Visible en la landing del cliente.</p>
-      </div>
-    </div>
-    <div class="tarea-detalle__imgs tarea-detalle__imgs--video" data-tarea-videos>
-      <div class="tarea-detalle__imgs-head">
-        <strong>Video de la tarea</strong>
-        <span class="tarea-detalle__imgs-count">${videos.length}</span>
-      </div>
-      ${videoBlock}
-      <div class="tarea-detalle__imgs-acciones">
         <label class="agente-imgs-form__label">
           <input type="file" id="tarea-video-input" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" hidden />
           <span class="btn btn--ghost btn--small">+ Subir video</span>
         </label>
-        <p class="agente-imgs-form__hint">MP4/WebM hasta ~120 MB. Queda en disco y se ve en el Registro del cliente (landing).</p>
+        <p class="agente-imgs-form__hint">Imágenes comprimidas · video MP4/WebM hasta ~120 MB · en disco del proyecto (no llenan el navegador). Visible en la landing del cliente.</p>
       </div>
     </div>`;
 }
