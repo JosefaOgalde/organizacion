@@ -291,7 +291,13 @@
           <label>Cantidad<input name="cantidad" type="number" min="1" value="1" /></label>
           <label>Total cobrado CLP<input name="montoNeto" type="number" required /></label>
           <label>Canal<input name="canal" placeholder="Instagram / WhatsApp / feria" /></label>
-          <label>Quién registra<input name="socioRegistro" value="Socio" /></label>
+          <label>Quién
+            <select name="socioRegistro">
+              <option value="Ambos" selected>Ambos</option>
+              <option value="Josefa">Josefa</option>
+              <option value="Nicolás">Nicolás</option>
+            </select>
+          </label>
           <label>Notas<textarea name="notas"></textarea></label>
           <div class="imp-form-actions"><button class="imp-btn imp-btn--primary" type="submit">Agregar venta</button></div>
         </form>
