@@ -4,15 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Organización</title>
-  <link rel="stylesheet" href="styles.css?v=perfil-pers1">
+  <link rel="stylesheet" href="styles.css?v=perfil-lado1">
 </head>
 <body>
   <div class="app">
     <header class="header">
-      <button type="button" class="header__brand" id="btn-ir-vista-mes" title="Ir al calendario mensual" aria-label="Organización — ir al calendario del mes">
-        <h1>Organización</h1>
-        <p id="header-frase-motivacional" class="header__subtitle" aria-live="polite"></p>
-      </button>
+      <div class="header__left">
+        <button type="button" class="header__brand" id="btn-ir-vista-mes" title="Ir al calendario mensual" aria-label="Organización — ir al calendario del mes">
+          <h1>Organización</h1>
+          <p id="header-frase-motivacional" class="header__subtitle" aria-live="polite"></p>
+        </button>
+        <button type="button" class="tab tab--perfil header__perfil" data-view="perfil" title="Tu perfil personal — independiente de clientes">Mi perfil</button>
+      </div>
       <div class="header__date">
         <span class="header__today-label">Hoy</span>
         <span id="fecha-actual" class="header__today-value"></span>
@@ -22,7 +25,6 @@
     <nav class="tabs">
       <button type="button" class="tab" data-view="pendientes">Pendientes</button>
       <button type="button" class="tab" data-view="clientes" title="Ver todos los clientes">Clientes</button>
-      <button type="button" class="tab tab--perfil" data-view="perfil" title="Tu perfil personal — independiente de clientes">Mi perfil</button>
       <button type="button" class="tab" data-view="agentes">Agentes</button>
       <button type="button" class="tab" data-view="salud"><span class="tab-swatch tab-swatch--salud"></span>Salud</button>
       <button type="button" class="tab" data-view="nueva">+ Nueva</button>
