@@ -1,6 +1,6 @@
 :root {
-  --bg: #8a8a8a;
-  --bg-panel: #fbfbfb;
+  --bg: #f9f9f9;
+  --bg-panel: #ffffff;
   --bg-card: #f5f5f5;
   --celeste: #7ec8e3;
   --celeste-light: #b8e4f2;
@@ -73,11 +73,11 @@ body:has(#view-tarea.view--active) .app {
 .header h1 {
   font-size: 1.75rem;
   font-weight: 600;
-  color: var(--bg-panel);
+  color: var(--text);
 }
 
 .header__subtitle {
-  color: var(--celeste-light);
+  color: var(--text-muted);
   font-size: 0.95rem;
   margin-top: 0.25rem;
   font-weight: 500;
