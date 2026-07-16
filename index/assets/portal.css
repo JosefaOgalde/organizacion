@@ -267,66 +267,34 @@ body.portal-body--themed .portal-cliente {
   font-weight: 600;
 }
 
-.portal-cliente a:not(.portal-btn):not(.portal-app-link):not(.portal-card):not(.portal-imp-panel-cta):not(.portal-landing-chip__a):hover {
+.portal-cliente a:not(.portal-btn):not(.portal-app-link):not(.portal-card):not(.portal-imp-panel-cta):hover {
   text-decoration: underline;
 }
 
-/* Impresoreando: CTA Resumen 50/50 — primer elemento visible */
+/* Impresoreando: único CTA al panel 50/50 — color distintivo */
 .portal-imp-panel-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin: 0 0 1.15rem;
-  padding: 0.55rem 1.15rem;
+  padding: 0.65rem 1.35rem;
   border-radius: 999px;
   text-decoration: none !important;
-  color: var(--card-text, #7a5c28) !important;
-  background: #fff;
-  border: 1px solid var(--card-border, #d4b06a);
+  color: #fff !important;
+  background: #14b8a4;
+  border: 1px solid #0f9a89;
   font-weight: 700;
-  font-size: 0.95rem;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--card-text) 10%, transparent);
-  transition: transform 0.15s ease, background 0.15s ease;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  box-shadow: 0 3px 12px color-mix(in srgb, #14b8a4 35%, transparent);
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 
 .portal-imp-panel-cta:hover {
-  background: color-mix(in srgb, var(--card-border) 22%, white);
+  background: #0f9a89;
   transform: translateY(-1px);
+  box-shadow: 0 4px 16px color-mix(in srgb, #14b8a4 45%, transparent);
   text-decoration: none !important;
-}
-
-.portal-btn--imp-panel {
-  background: var(--card-text, #7a5c28);
-  color: #fff;
-  border-color: transparent;
-  font-weight: 700;
-}
-
-.portal-btn--imp-panel:hover {
-  filter: brightness(1.08);
-  text-decoration: none;
-}
-
-.portal-landing-chip--link {
-  padding: 0;
-  overflow: hidden;
-}
-
-.portal-landing-chip__a {
-  display: block;
-  padding: 0.35rem 0.7rem;
-  color: inherit !important;
-  text-decoration: none !important;
-  font-weight: 700;
-}
-
-.portal-landing-chip__a:hover {
-  background: color-mix(in srgb, var(--card-border) 28%, white);
-  text-decoration: none !important;
-}
-
-.portal-imp-panel-sec__action {
-  margin-top: 0.65rem;
 }
 
 .portal-cliente ul {
