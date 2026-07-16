@@ -821,6 +821,16 @@ body.portal-body--themed .portal-cliente {
   background: #fff;
 }
 
+/* Alternar fondos para distinguir cada contenido (blanco / lavanda suave) */
+.portal-ts-cont__card:nth-child(even) {
+  background: #ebe6f8;
+  border-color: rgba(78, 75, 132, 0.28);
+}
+
+.portal-ts-cont__card:nth-child(odd) {
+  background: #fff;
+}
+
 .portal-ts-cont__titulo {
   margin: 0 0 0.25rem;
   font-size: 0.95rem;
