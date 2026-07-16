@@ -16,5 +16,8 @@ backend/
 data/organizacion-live.json
 data/organizacion-respaldo-*.json
 
+# Imágenes de tareas ( Midjourney / referencias) — se sirven en local, no van al repo
+index/uploads/
+
 # Excepción: plantilla vacía sin PII (sí puede ir al repo)
 !data/organizacion-respaldo-ejemplo.json

@@ -60,10 +60,11 @@
     const claseExtra = opts.claseExtra || '';
     const cards = imgs.map((img) => {
       const titulo = img.titulo || 'Sin título';
+      const src = img.url || img.dataUrl || '';
       const notas = img.notas ? `<p class="landing-img__notas">${escapeHtml(img.notas)}</p>` : '';
       return `<figure class="landing-img__card" data-landing-img-id="${escapeHtml(img.id)}">
-        <a href="${escapeHtml(img.dataUrl)}" target="_blank" rel="noopener" title="${escapeHtml(titulo)}">
-          <img src="${escapeHtml(img.dataUrl)}" alt="${escapeHtml(titulo)}" loading="lazy">
+        <a href="${escapeHtml(src)}" target="_blank" rel="noopener" title="${escapeHtml(titulo)}">
+          <img src="${escapeHtml(src)}" alt="${escapeHtml(titulo)}" loading="lazy">
         </a>
         <figcaption class="landing-img__caption">
           <strong class="landing-img__titulo">${escapeHtml(titulo)}</strong>

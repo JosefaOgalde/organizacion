@@ -243,9 +243,10 @@
     const out = [];
     const seen = new Set();
     const push = (img) => {
-      if (!img?.dataUrl || seen.has(img.dataUrl)) return;
-      seen.add(img.dataUrl);
-      out.push(img);
+      const src = img?.url || img?.dataUrl;
+      if (!src || seen.has(src)) return;
+      seen.add(src);
+      out.push({ nombre: img.nombre || img.titulo || 'Imagen', url: img.url, dataUrl: img.dataUrl });
     };
     for (const img of t?.sesionAgente?.imagenesReferencia || []) push(img);
     for (const m of t?.sesionAgente?.mensajes || []) {
@@ -253,13 +254,13 @@
     }
     const cli = (datos.clientes || []).find((x) => x.id === c.id);
     for (const d of cli?.ficha?.documentos || []) {
-      if (d.tareaId === t.id && d.categoria === 'imagen' && d.dataUrl) {
-        push({ nombre: d.nombre, dataUrl: d.dataUrl });
+      if (d.tareaId === t.id && d.categoria === 'imagen' && (d.url || d.dataUrl)) {
+        push({ nombre: d.nombre, url: d.url, dataUrl: d.dataUrl });
       }
     }
     for (const img of cli?.ficha?.landing?.imagenes || []) {
-      if (img.tareaId === t.id && img.dataUrl) {
-        push({ nombre: img.titulo, dataUrl: img.dataUrl });
+      if (img.tareaId === t.id && (img.url || img.dataUrl)) {
+        push({ nombre: img.titulo, url: img.url, dataUrl: img.dataUrl });
       }
     }
     return out;
@@ -288,12 +289,12 @@
         const imgs = imagenesDeTarea(t);
         const thumbs = imgs
           .slice(0, 4)
-          .map(
-            (img) =>
-              `<a class="portal-tarea-img__thumb" href="${escapeHtml(img.dataUrl)}" target="_blank" rel="noopener" title="${escapeHtml(img.nombre || 'Ver')}">
-                <img src="${escapeHtml(img.dataUrl)}" alt="${escapeHtml(img.nombre || 'Imagen')}" loading="lazy">
-              </a>`
-          )
+          .map((img) => {
+            const src = img.url || img.dataUrl || '';
+            return `<a class="portal-tarea-img__thumb" href="${escapeHtml(src)}" target="_blank" rel="noopener" title="${escapeHtml(img.nombre || 'Ver')}">
+                <img src="${escapeHtml(src)}" alt="${escapeHtml(img.nombre || 'Imagen')}" loading="lazy">
+              </a>`;
+          })
           .join('');
         const extra = imgs.length > 4 ? `<span class="portal-tarea-img__extra">+${imgs.length - 4}</span>` : '';
         const titulo = String(t.titulo || 'Tarea').replace(/^\[[^\]]+\]\s*/, '');

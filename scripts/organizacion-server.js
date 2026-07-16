@@ -367,11 +367,84 @@ function handleApiConfig(res) {
   }), 'application/json');
 }
 
+function slugSeguro(s) {
+  return String(s || 'x')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80) || 'x';
+}
+
+/** Guarda imagen de tarea en disco (evita saturar localStorage con data URLs). */
+function handleApiTareaImagen(req, res) {
+  if (!checkApiAuth(req, res)) return;
+  if (req.method !== 'POST') return send(res, 405, 'Método no permitido');
+
+  return readBody(req).then((raw) => {
+    let obj;
+    try {
+      obj = JSON.parse(raw);
+    } catch {
+      return send(res, 400, JSON.stringify({ error: 'JSON inválido' }), 'application/json');
+    }
+    const tareaId = String(obj.tareaId || '').trim();
+    const clienteId = String(obj.clienteId || '').trim() || 'sin-cliente';
+    const dataUrl = String(obj.dataUrl || '');
+    if (!tareaId || !dataUrl.startsWith('data:image/')) {
+      return send(res, 400, JSON.stringify({ error: 'faltan tareaId o dataUrl de imagen' }), 'application/json');
+    }
+    const m = dataUrl.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+    if (!m) {
+      return send(res, 400, JSON.stringify({ error: 'dataUrl no válida' }), 'application/json');
+    }
+    const mime = m[1].toLowerCase();
+    const ext =
+      mime.includes('png') ? 'png' :
+      mime.includes('webp') ? 'webp' :
+      mime.includes('gif') ? 'gif' : 'jpg';
+    let buf;
+    try {
+      buf = Buffer.from(m[2], 'base64');
+    } catch {
+      return send(res, 400, JSON.stringify({ error: 'base64 inválido' }), 'application/json');
+    }
+    if (!buf.length || buf.length > 8 * 1024 * 1024) {
+      return send(res, 413, JSON.stringify({ error: 'imagen demasiado grande (máx 8 MB)' }), 'application/json');
+    }
+
+    const baseName = slugSeguro(String(obj.nombre || '').replace(/\.[^.]+$/, '')) || 'imagen';
+    const fileName = `${Date.now()}-${baseName}.${ext}`;
+    const relDir = path.join('index', 'uploads', 'tarea-imagenes', slugSeguro(clienteId), slugSeguro(tareaId));
+    const absDir = path.join(ROOT, relDir);
+    fs.mkdirSync(absDir, { recursive: true });
+    const absFile = path.join(absDir, fileName);
+    fs.writeFileSync(absFile, buf);
+    const url = `/${relDir.replace(/\\/g, '/')}/${fileName}`;
+    console.log('[api] Imagen tarea', url, `(${Math.round(buf.length / 1024)} KB)`);
+    return send(
+      res,
+      200,
+      JSON.stringify({ ok: true, url, nombre: obj.nombre || fileName, bytes: buf.length }),
+      'application/json'
+    );
+  }).catch((e) => {
+    if (e && e.message === 'BODY_TOO_LARGE') {
+      return send(res, 413, JSON.stringify({ error: 'cuerpo demasiado grande' }), 'application/json');
+    }
+    return send(res, 500, String(e), 'text/plain');
+  });
+}
+
 const server = http.createServer((req, res) => {
   const url = req.url || '/';
 
   if (url.startsWith('/api/organizacion-config')) {
     return handleApiConfig(res);
+  }
+
+  if (url.startsWith('/api/tarea-imagen')) {
+    return handleApiTareaImagen(req, res);
   }
 
   if (url.startsWith('/api/ecr-portada-historial')) {

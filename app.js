@@ -1844,8 +1844,49 @@ function guardar() {
     return true;
   } catch (e) {
     console.error('Error al guardar en localStorage', e);
-    mostrarToast('No se pudo guardar — el almacenamiento del navegador puede estar lleno');
-    return false;
+    // Reintento: quitar data URLs pesadas (las de disco quedan por url)
+    try {
+      aligerarDatosImagenes(datos);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+      if (typeof window.persistOrganizacionToDisk === 'function') {
+        window.persistOrganizacionToDisk(datos);
+      }
+      mostrarToast('Guardado aligerado (imágenes en disco por URL)');
+      return true;
+    } catch (e2) {
+      console.error(e2);
+      mostrarToast('No se pudo guardar — el almacenamiento del navegador puede estar lleno. Reinicia el server y vuelve a subir (se guardan en disco).');
+      return false;
+    }
+  }
+}
+
+/** Quita data URLs grandes si ya hay url de archivo en disco. */
+function aligerarDatosImagenes(data) {
+  const limpiaLista = (arr) => {
+    if (!Array.isArray(arr)) return;
+    for (const img of arr) {
+      if (img && img.url && img.dataUrl) delete img.dataUrl;
+      if (img && img.dataUrl && String(img.dataUrl).length > 80000 && !img.url) {
+        // sin url en disco: descartar blob enorme para poder guardar el resto
+        delete img.dataUrl;
+        img.nombre = (img.nombre || 'imagen') + ' (pendiente de re-subir)';
+      }
+    }
+  };
+  for (const t of data.tareas || []) {
+    limpiaLista(t.sesionAgente?.imagenesReferencia);
+    limpiaLista(t.sesionAgente?.imagenesPendientes);
+    for (const m of t.sesionAgente?.mensajes || []) limpiaLista(m.imagenes);
+  }
+  for (const cli of data.clientes || []) {
+    limpiaLista(cli.ficha?.landing?.imagenes);
+    if (Array.isArray(cli.ficha?.documentos)) {
+      for (const d of cli.ficha.documentos) {
+        if (d?.url && d.dataUrl) delete d.dataUrl;
+        if (d?.dataUrl && String(d.dataUrl).length > 80000 && !d.url) delete d.dataUrl;
+      }
+    }
   }
 }
 
@@ -2944,15 +2985,95 @@ function leerImagenComoDataUrl(file) {
   });
 }
 
+/** Comprime a JPEG para no saturar localStorage ni el body de la API. */
+function comprimirImagenDataUrl(dataUrl, { maxW = 1400, quality = 0.78 } = {}) {
+  return new Promise((resolve) => {
+    if (!dataUrl || !String(dataUrl).startsWith('data:image/')) {
+      resolve(dataUrl);
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      try {
+        let w = img.naturalWidth || img.width;
+        let h = img.naturalHeight || img.height;
+        if (!w || !h) {
+          resolve(dataUrl);
+          return;
+        }
+        if (w > maxW) {
+          h = Math.round((h * maxW) / w);
+          w = maxW;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      } catch {
+        resolve(dataUrl);
+      }
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+function srcImagenRef(img) {
+  return (img && (img.url || img.dataUrl)) || '';
+}
+
+async function subirImagenTareaAlDisco(tarea, img) {
+  const nombre = img.nombre || `imagen-${Date.now()}.jpg`;
+  const dataUrl = await comprimirImagenDataUrl(img.dataUrl || '');
+  if (!dataUrl) throw new Error('sin imagen');
+
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    const token = sessionStorage.getItem('organizacion_api_token');
+    if (token) headers['X-Organizacion-Token'] = token;
+    const res = await fetch('/api/tarea-imagen', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        tareaId: tarea.id,
+        clienteId: tarea.clienteId || '',
+        nombre,
+        dataUrl,
+      }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.url) {
+        return { nombre: data.nombre || nombre, url: data.url };
+      }
+    }
+  } catch (e) {
+    console.warn('API imagen no disponible, se usará preview comprimida local', e);
+  }
+  // Fallback local (solo si el server no responde): miniatura muy chica
+  const tiny = await comprimirImagenDataUrl(dataUrl, { maxW: 480, quality: 0.55 });
+  return { nombre, dataUrl: tiny };
+}
+
 function htmlMiniaturasImagenes(imagenes, { quitar = false, prefix = 'ref' } = {}) {
   if (!imagenes?.length) return '';
-  const items = imagenes.map((img, i) => `
+  const items = imagenes.map((img, i) => {
+    const src = srcImagenRef(img);
+    if (!src) return '';
+    return `
     <figure class="agente-ref-img">
-      <img src="${img.dataUrl}" alt="${escapeHtml(img.nombre || 'Referencia')}" loading="lazy" />
+      <a href="${escapeHtml(src)}" target="_blank" rel="noopener">
+        <img src="${escapeHtml(src)}" alt="${escapeHtml(img.nombre || 'Referencia')}" loading="lazy" />
+      </a>
       ${quitar ? `<button type="button" class="agente-ref-img__quitar" data-quitar-img="${prefix}-${i}" title="Quitar">×</button>` : ''}
       ${img.nombre ? `<figcaption>${escapeHtml(img.nombre)}</figcaption>` : ''}
     </figure>
-  `).join('');
+  `;
+  }).join('');
   return `<div class="agente-ref-imgs">${items}</div>`;
 }
 
@@ -2992,84 +3113,99 @@ function guardarImagenesEnFichaCliente(cli, imagenes, tarea) {
   const tituloTarea = nombreBaseTarea(tarea) || tarea?.titulo || 'tarea';
 
   imagenes.forEach(img => {
-    if (!img?.dataUrl) return;
+    const src = srcImagenRef(img);
+    if (!src) return;
     const nombre = img.nombre || `referencia-${Date.now()}.png`;
     const ya = cli.ficha.documentos.some(d =>
-      d.origen === 'agente-ref' && d.tareaId === tarea?.id && d.nombre === nombre && d.dataUrl === img.dataUrl
+      d.origen === 'agente-ref' && d.tareaId === tarea?.id && (d.url === src || d.dataUrl === src || d.nombre === nombre)
     );
     if (ya) return;
-    cli.ficha.documentos.push({
+    const doc = {
       id: id(),
       clienteId: cli.id,
       origen: 'agente-ref',
       tareaId: tarea?.id,
       nombre,
-      mime: img.dataUrl.match(/^data:([^;]+)/)?.[1] || 'image/png',
+      mime: img.url ? 'image/jpeg' : (src.match(/^data:([^;]+)/)?.[1] || 'image/jpeg'),
       categoria: 'imagen',
-      tamano: img.dataUrl.length,
+      tamano: src.length,
       subido: toISO(hoy()),
-      dataUrl: img.dataUrl,
       notasAnalisis: `Referencia agente · ${tituloTarea}`,
       extraccionEstado: 'ok',
       extraccionMetodo: 'agente-ref'
-    });
+    };
+    if (img.url) doc.url = img.url;
+    else doc.dataUrl = src;
+    cli.ficha.documentos.push(doc);
   });
   cli.ficha.actualizado = toISO(hoy());
 }
 
 /** Guarda imágenes ya en la tarea (sin enviar chat) y las deja visibles en el perfil del cliente. */
-function guardarImagenesEnTarea(tarea, imagenes, { vaciarPendientes = false } = {}) {
+async function guardarImagenesEnTarea(tarea, imagenes, { vaciarPendientes = false } = {}) {
   if (!tarea || !imagenes?.length) return 0;
   asegurarSesionAgente(tarea);
   asegurarImagenesAgente(tarea.sesionAgente);
   const cli = clienteDe(tarea.clienteId);
-  const limpias = imagenes
-    .filter((img) => img?.dataUrl)
-    .map((img) => ({
-      nombre: img.nombre || `fondo-${Date.now()}.png`,
-      dataUrl: img.dataUrl,
-    }));
-  if (!limpias.length) return 0;
+  const subidas = [];
+  for (const img of imagenes) {
+    if (!img?.dataUrl && !img?.url) continue;
+    try {
+      const ref = img.url
+        ? { nombre: img.nombre || 'imagen.jpg', url: img.url }
+        : await subirImagenTareaAlDisco(tarea, img);
+      subidas.push(ref);
+    } catch (e) {
+      console.warn(e);
+      mostrarToast('No se pudo subir una imagen');
+    }
+  }
+  if (!subidas.length) return 0;
 
-  for (const img of limpias) {
-    const dup = tarea.sesionAgente.imagenesReferencia.some((r) => r.dataUrl === img.dataUrl);
+  for (const img of subidas) {
+    const key = srcImagenRef(img);
+    const dup = tarea.sesionAgente.imagenesReferencia.some((r) => srcImagenRef(r) === key);
     if (!dup) tarea.sesionAgente.imagenesReferencia.push(img);
   }
-  guardarImagenesEnFichaCliente(cli, limpias, tarea);
+  guardarImagenesEnFichaCliente(cli, subidas, tarea);
 
   if (cli) {
     if (!cli.ficha.landing || typeof cli.ficha.landing !== 'object') cli.ficha.landing = {};
     if (!Array.isArray(cli.ficha.landing.imagenes)) cli.ficha.landing.imagenes = [];
     const tituloTarea = nombreBaseTarea(tarea) || tarea.titulo || 'Tarea';
-    for (const img of limpias) {
+    for (const img of subidas) {
+      const key = srcImagenRef(img);
       const yaLanding = cli.ficha.landing.imagenes.some(
-        (x) => x.tareaId === tarea.id && x.dataUrl === img.dataUrl
+        (x) => x.tareaId === tarea.id && (x.url === key || x.dataUrl === key)
       );
       if (yaLanding) continue;
-      cli.ficha.landing.imagenes.push({
+      const entry = {
         id: id(),
-        titulo: img.nombre.replace(/\.[^.]+$/, '') || 'Imagen de tarea',
+        titulo: String(img.nombre || 'Imagen').replace(/\.[^.]+$/, '') || 'Imagen de tarea',
         notas: `Desde tarea · ${tituloTarea}`,
-        dataUrl: img.dataUrl,
         creado: toISO(hoy()),
         tareaId: tarea.id,
-      });
+      };
+      if (img.url) entry.url = img.url;
+      else entry.dataUrl = img.dataUrl;
+      cli.ficha.landing.imagenes.push(entry);
     }
   }
 
   if (vaciarPendientes) tarea.sesionAgente.imagenesPendientes = [];
-  return limpias.length;
+  return subidas.length;
 }
 
 function imagenesGuardadasTarea(tarea) {
   asegurarSesionAgente(tarea);
   asegurarImagenesAgente(tarea.sesionAgente);
   const refs = [...(tarea.sesionAgente.imagenesReferencia || [])];
-  const vistos = new Set(refs.map((r) => r.dataUrl));
+  const vistos = new Set(refs.map((r) => srcImagenRef(r)).filter(Boolean));
   for (const m of tarea.sesionAgente.mensajes || []) {
     for (const img of m.imagenes || []) {
-      if (img?.dataUrl && !vistos.has(img.dataUrl)) {
-        vistos.add(img.dataUrl);
+      const key = srcImagenRef(img);
+      if (key && !vistos.has(key)) {
+        vistos.add(key);
         refs.push(img);
       }
     }
@@ -3094,7 +3230,7 @@ function htmlGaleriaImagenesTarea(tarea) {
           <input type="file" id="tarea-imagenes-input" accept="image/*" multiple hidden />
           <span class="btn btn--ghost btn--small">+ Guardar imágenes</span>
         </label>
-        <p class="agente-imgs-form__hint">Quedan en esta tarea y aparecen en la landing del cliente (enlace a tareas con imágenes).</p>
+        <p class="agente-imgs-form__hint">Se comprimen y guardan en disco del proyecto (no llenan el navegador). Visible en la landing del cliente.</p>
       </div>
     </div>`;
 }
@@ -4422,6 +4558,7 @@ function bindImagenesTareaDetalle(tarea) {
       if (!t) return;
       const files = [...(e.target.files || [])].filter((f) => f.type.startsWith('image/'));
       const cargadas = [];
+      mostrarToast('Subiendo imágenes…');
       for (const file of files) {
         try {
           const dataUrl = await leerImagenComoDataUrl(file);
@@ -4432,9 +4569,9 @@ function bindImagenesTareaDetalle(tarea) {
       }
       input.value = '';
       if (!cargadas.length) return;
-      const n = guardarImagenesEnTarea(t, cargadas);
-      guardar();
-      mostrarToast(n ? `${n} imagen${n === 1 ? '' : 'es'} guardada${n === 1 ? '' : 's'} en la tarea` : 'Sin cambios');
+      const n = await guardarImagenesEnTarea(t, cargadas);
+      if (!guardar()) return;
+      mostrarToast(n ? `${n} imagen${n === 1 ? '' : 'es'} guardada${n === 1 ? '' : 's'} en disco` : 'Sin cambios');
       renderTarea();
     };
   }
@@ -4447,24 +4584,25 @@ function bindImagenesTareaDetalle(tarea) {
       if (Number.isNaN(idx)) return;
       const lista = imagenesGuardadasTarea(t);
       const quitada = lista[idx];
-      if (!quitada?.dataUrl) return;
+      const key = srcImagenRef(quitada);
+      if (!key) return;
       t.sesionAgente.imagenesReferencia = (t.sesionAgente.imagenesReferencia || []).filter(
-        (r) => r.dataUrl !== quitada.dataUrl
+        (r) => srcImagenRef(r) !== key
       );
       for (const m of t.sesionAgente.mensajes || []) {
         if (m.imagenes?.length) {
-          m.imagenes = m.imagenes.filter((i) => i.dataUrl !== quitada.dataUrl);
+          m.imagenes = m.imagenes.filter((i) => srcImagenRef(i) !== key);
         }
       }
       const cli = clienteDe(t.clienteId);
       if (cli?.ficha?.documentos) {
         cli.ficha.documentos = cli.ficha.documentos.filter(
-          (d) => !(d.tareaId === t.id && d.dataUrl === quitada.dataUrl)
+          (d) => !(d.tareaId === t.id && (d.url === key || d.dataUrl === key))
         );
       }
       if (cli?.ficha?.landing?.imagenes) {
         cli.ficha.landing.imagenes = cli.ficha.landing.imagenes.filter(
-          (x) => !(x.tareaId === t.id && x.dataUrl === quitada.dataUrl)
+          (x) => !(x.tareaId === t.id && (x.url === key || x.dataUrl === key))
         );
       }
       guardar();
@@ -4529,7 +4667,7 @@ function bindAgenteTarea(tarea) {
     };
   }
 
-  const procesarSolicitud = (texto) => {
+  const procesarSolicitud = async (texto) => {
     const t = tareaDe(tarea.id);
     if (!t || !texto) return;
     asegurarSesionAgente(t);
@@ -4537,8 +4675,10 @@ function bindAgenteTarea(tarea) {
     const imgs = [...(t.sesionAgente.imagenesPendientes || [])];
     const msgUsuario = { rol: 'usuario', texto, ts: Date.now() };
     if (imgs.length) {
-      msgUsuario.imagenes = imgs.map(({ nombre, dataUrl }) => ({ nombre, dataUrl }));
-      guardarImagenesEnTarea(t, msgUsuario.imagenes, { vaciarPendientes: true });
+      const n = await guardarImagenesEnTarea(t, imgs, { vaciarPendientes: true });
+      if (n) {
+        msgUsuario.imagenes = imagenesGuardadasTarea(t).slice(-n);
+      }
     }
     t.sesionAgente.mensajes.push(msgUsuario);
     const respuesta = generarRespuestaAgente(t, texto);
@@ -4585,14 +4725,15 @@ function bindAgenteTarea(tarea) {
     });
   });
 
-  document.getElementById('btn-guardar-imgs-tarea')?.addEventListener('click', () => {
+  document.getElementById('btn-guardar-imgs-tarea')?.addEventListener('click', async () => {
     const t = tareaDe(tarea.id);
     if (!t) return;
     asegurarSesionAgente(t);
     asegurarImagenesAgente(t.sesionAgente);
-    const n = guardarImagenesEnTarea(t, t.sesionAgente.imagenesPendientes || [], { vaciarPendientes: true });
-    guardar();
-    mostrarToast(n ? `${n} imagen${n === 1 ? '' : 'es'} guardada${n === 1 ? '' : 's'} en la tarea` : 'No hay pendientes');
+    mostrarToast('Subiendo imágenes…');
+    const n = await guardarImagenesEnTarea(t, t.sesionAgente.imagenesPendientes || [], { vaciarPendientes: true });
+    if (!guardar()) return;
+    mostrarToast(n ? `${n} imagen${n === 1 ? '' : 'es'} guardada${n === 1 ? '' : 's'} en disco` : 'No hay pendientes');
     renderTarea();
   });
 
