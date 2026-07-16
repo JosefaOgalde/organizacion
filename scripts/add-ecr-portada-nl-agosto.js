@@ -23,8 +23,9 @@ const TAREA = {
     'Armar portada del newsletter LinkedIn del 1 de agosto en Canva. ' +
     'Fondos ya elegidos (4) según prompts Midjourney del generador en perfil ECR → Portada Midjourney ' +
     '(artículo equipos en terreno / ajustar a tiempo). Ver: index/clientes/ecr/newsletter/portadas-guardadas/NL-2026-08-01-fondos-elegidos.md. ' +
+    'En la tarea: panel «Imágenes de la tarea» → + Guardar imágenes (los 4 fondos). ' +
     'En Canva: título + logo encima; el MJ es solo fondo. ' +
-    'Este mismo flujo (PDF → generar 3 mundos por tema → MJ → elegir fondo → Canva) se puede repetir en otras ocasiones desde el perfil del cliente ECR.',
+    'Este mismo flujo (PDF → generar 3 mundos por tema → MJ → elegir fondo → guardar en tarea → Canva) se puede repetir desde el perfil del cliente ECR; la landing muestra «Tareas con imágenes».',
   prioridad: 'alta',
   completada: false,
   pendiente: false,

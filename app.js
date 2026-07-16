@@ -2959,13 +2959,15 @@ function htmlMiniaturasImagenes(imagenes, { quitar = false, prefix = 'ref' } = {
 function htmlInputImagenesAgente(tarea) {
   asegurarImagenesAgente(tarea.sesionAgente);
   const pendientes = tarea.sesionAgente.imagenesPendientes;
+  const nPend = pendientes?.length || 0;
   return `
     <div class="agente-imgs-form">
       <label class="agente-imgs-form__label">
         <input type="file" id="agente-imagenes-input" accept="image/*" multiple hidden />
         <span class="btn btn--ghost btn--small">+ Imágenes de referencia</span>
       </label>
-      <p class="agente-imgs-form__hint">Capturas del sitio actual, mockups o referencias visuales para el entregable.</p>
+      ${nPend ? `<button type="button" class="btn btn--small" id="btn-guardar-imgs-tarea">Guardar ${nPend} en la tarea</button>` : ''}
+      <p class="agente-imgs-form__hint">Capturas, fondos Midjourney o referencias. Puedes guardarlas en la tarea sin enviar el chat.</p>
       <div id="agente-imgs-pendientes">${htmlMiniaturasImagenes(pendientes, { quitar: true, prefix: 'pend' })}</div>
     </div>`;
 }
@@ -3013,6 +3015,88 @@ function guardarImagenesEnFichaCliente(cli, imagenes, tarea) {
     });
   });
   cli.ficha.actualizado = toISO(hoy());
+}
+
+/** Guarda imágenes ya en la tarea (sin enviar chat) y las deja visibles en el perfil del cliente. */
+function guardarImagenesEnTarea(tarea, imagenes, { vaciarPendientes = false } = {}) {
+  if (!tarea || !imagenes?.length) return 0;
+  asegurarSesionAgente(tarea);
+  asegurarImagenesAgente(tarea.sesionAgente);
+  const cli = clienteDe(tarea.clienteId);
+  const limpias = imagenes
+    .filter((img) => img?.dataUrl)
+    .map((img) => ({
+      nombre: img.nombre || `fondo-${Date.now()}.png`,
+      dataUrl: img.dataUrl,
+    }));
+  if (!limpias.length) return 0;
+
+  for (const img of limpias) {
+    const dup = tarea.sesionAgente.imagenesReferencia.some((r) => r.dataUrl === img.dataUrl);
+    if (!dup) tarea.sesionAgente.imagenesReferencia.push(img);
+  }
+  guardarImagenesEnFichaCliente(cli, limpias, tarea);
+
+  if (cli) {
+    if (!cli.ficha.landing || typeof cli.ficha.landing !== 'object') cli.ficha.landing = {};
+    if (!Array.isArray(cli.ficha.landing.imagenes)) cli.ficha.landing.imagenes = [];
+    const tituloTarea = nombreBaseTarea(tarea) || tarea.titulo || 'Tarea';
+    for (const img of limpias) {
+      const yaLanding = cli.ficha.landing.imagenes.some(
+        (x) => x.tareaId === tarea.id && x.dataUrl === img.dataUrl
+      );
+      if (yaLanding) continue;
+      cli.ficha.landing.imagenes.push({
+        id: id(),
+        titulo: img.nombre.replace(/\.[^.]+$/, '') || 'Imagen de tarea',
+        notas: `Desde tarea · ${tituloTarea}`,
+        dataUrl: img.dataUrl,
+        creado: toISO(hoy()),
+        tareaId: tarea.id,
+      });
+    }
+  }
+
+  if (vaciarPendientes) tarea.sesionAgente.imagenesPendientes = [];
+  return limpias.length;
+}
+
+function imagenesGuardadasTarea(tarea) {
+  asegurarSesionAgente(tarea);
+  asegurarImagenesAgente(tarea.sesionAgente);
+  const refs = [...(tarea.sesionAgente.imagenesReferencia || [])];
+  const vistos = new Set(refs.map((r) => r.dataUrl));
+  for (const m of tarea.sesionAgente.mensajes || []) {
+    for (const img of m.imagenes || []) {
+      if (img?.dataUrl && !vistos.has(img.dataUrl)) {
+        vistos.add(img.dataUrl);
+        refs.push(img);
+      }
+    }
+  }
+  return refs;
+}
+
+function htmlGaleriaImagenesTarea(tarea) {
+  const imgs = imagenesGuardadasTarea(tarea);
+  const thumbs = imgs.length
+    ? htmlMiniaturasImagenes(imgs, { quitar: true, prefix: 'tarearef' })
+    : '<p class="tarea-detalle__imgs-vacio">Aún no hay imágenes. Sube los fondos Midjourney aquí para guardarlos en la tarea y verlos en el perfil del cliente.</p>';
+  return `
+    <div class="tarea-detalle__imgs" data-tarea-imgs>
+      <div class="tarea-detalle__imgs-head">
+        <strong>Imágenes de la tarea</strong>
+        <span class="tarea-detalle__imgs-count">${imgs.length}</span>
+      </div>
+      <div id="tarea-imgs-guardadas">${thumbs}</div>
+      <div class="tarea-detalle__imgs-acciones">
+        <label class="agente-imgs-form__label">
+          <input type="file" id="tarea-imagenes-input" accept="image/*" multiple hidden />
+          <span class="btn btn--ghost btn--small">+ Guardar imágenes</span>
+        </label>
+        <p class="agente-imgs-form__hint">Quedan en esta tarea y aparecen en la landing del cliente (enlace a tareas con imágenes).</p>
+      </div>
+    </div>`;
 }
 
 function guardarGraficoEnFichaCliente(cli, tarea, svgHtml, etiqueta = 'entregable') {
@@ -4263,6 +4347,7 @@ function renderTarea() {
       ${tarea.prioridad ? `<p class="tarea-detalle__meta"><strong>Prioridad:</strong> ${escapeHtml(tarea.prioridad)}</p>` : ''}
       ${tarea.pendiente ? '<p class="tarea-detalle__meta tarea-detalle__meta--pendiente"><strong>Estado:</strong> En pendientes (no visible en calendario)</p>' : ''}
       ${tarea.notas ? `<div class="tarea-detalle__notas"><strong>Notas</strong><p>${escapeHtml(tarea.notas)}</p></div>` : ''}
+      ${htmlGaleriaImagenesTarea(tarea)}
       ${cli ? htmlSkillResumen(cli, col) : ''}
       <div class="tarea-detalle__acciones">
         ${htmlBotonesTarea(tarea, { modo: 'detalle' })}
@@ -4319,12 +4404,72 @@ function renderTarea() {
   detalle.querySelectorAll('[data-abrir-ficha-cliente]').forEach(btn => {
     btn.addEventListener('click', () => (window.abrirFichaCliente || abrirPerfilCliente)(btn.dataset.abrirFichaCliente));
   });
+  bindImagenesTareaDetalle(tarea);
   bindAgenteTarea(tarea);
   ajustarAlturaTextarea(document.getElementById('agente-input'));
   requestAnimationFrame(() => {
     syncAlturaPanelesTarea();
     observarAlturaPanelTarea();
     renderDiagramasAgente(agentePanel);
+  });
+}
+
+function bindImagenesTareaDetalle(tarea) {
+  const input = document.getElementById('tarea-imagenes-input');
+  if (input) {
+    input.onchange = async (e) => {
+      const t = tareaDe(tarea.id);
+      if (!t) return;
+      const files = [...(e.target.files || [])].filter((f) => f.type.startsWith('image/'));
+      const cargadas = [];
+      for (const file of files) {
+        try {
+          const dataUrl = await leerImagenComoDataUrl(file);
+          cargadas.push({ nombre: file.name, dataUrl });
+        } catch {
+          mostrarToast('No se pudo cargar una imagen');
+        }
+      }
+      input.value = '';
+      if (!cargadas.length) return;
+      const n = guardarImagenesEnTarea(t, cargadas);
+      guardar();
+      mostrarToast(n ? `${n} imagen${n === 1 ? '' : 'es'} guardada${n === 1 ? '' : 's'} en la tarea` : 'Sin cambios');
+      renderTarea();
+    };
+  }
+
+  document.getElementById('tarea-imgs-guardadas')?.querySelectorAll('[data-quitar-img]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const t = tareaDe(tarea.id);
+      if (!t?.sesionAgente) return;
+      const idx = Number(btn.dataset.quitarImg?.replace('tarearef-', ''));
+      if (Number.isNaN(idx)) return;
+      const lista = imagenesGuardadasTarea(t);
+      const quitada = lista[idx];
+      if (!quitada?.dataUrl) return;
+      t.sesionAgente.imagenesReferencia = (t.sesionAgente.imagenesReferencia || []).filter(
+        (r) => r.dataUrl !== quitada.dataUrl
+      );
+      for (const m of t.sesionAgente.mensajes || []) {
+        if (m.imagenes?.length) {
+          m.imagenes = m.imagenes.filter((i) => i.dataUrl !== quitada.dataUrl);
+        }
+      }
+      const cli = clienteDe(t.clienteId);
+      if (cli?.ficha?.documentos) {
+        cli.ficha.documentos = cli.ficha.documentos.filter(
+          (d) => !(d.tareaId === t.id && d.dataUrl === quitada.dataUrl)
+        );
+      }
+      if (cli?.ficha?.landing?.imagenes) {
+        cli.ficha.landing.imagenes = cli.ficha.landing.imagenes.filter(
+          (x) => !(x.tareaId === t.id && x.dataUrl === quitada.dataUrl)
+        );
+      }
+      guardar();
+      renderTarea();
+    });
   });
 }
 
@@ -4393,9 +4538,7 @@ function bindAgenteTarea(tarea) {
     const msgUsuario = { rol: 'usuario', texto, ts: Date.now() };
     if (imgs.length) {
       msgUsuario.imagenes = imgs.map(({ nombre, dataUrl }) => ({ nombre, dataUrl }));
-      t.sesionAgente.imagenesReferencia.push(...msgUsuario.imagenes);
-      t.sesionAgente.imagenesPendientes = [];
-      guardarImagenesEnFichaCliente(cli, msgUsuario.imagenes, t);
+      guardarImagenesEnTarea(t, msgUsuario.imagenes, { vaciarPendientes: true });
     }
     t.sesionAgente.mensajes.push(msgUsuario);
     const respuesta = generarRespuestaAgente(t, texto);
@@ -4440,6 +4583,17 @@ function bindAgenteTarea(tarea) {
       guardar();
       renderTarea();
     });
+  });
+
+  document.getElementById('btn-guardar-imgs-tarea')?.addEventListener('click', () => {
+    const t = tareaDe(tarea.id);
+    if (!t) return;
+    asegurarSesionAgente(t);
+    asegurarImagenesAgente(t.sesionAgente);
+    const n = guardarImagenesEnTarea(t, t.sesionAgente.imagenesPendientes || [], { vaciarPendientes: true });
+    guardar();
+    mostrarToast(n ? `${n} imagen${n === 1 ? '' : 'es'} guardada${n === 1 ? '' : 's'} en la tarea` : 'No hay pendientes');
+    renderTarea();
   });
 
   form.onsubmit = e => {

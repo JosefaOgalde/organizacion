@@ -27,3 +27,5 @@
 
 - **Viernes 2026-07-17:** `[ECR] Portada NL 1 agosto — fondos + Canva`  
   Script: `node scripts/add-ecr-portada-nl-agosto.js` → `http://localhost:3000/index.html?disco=1`
+- En la tarea: **+ Guardar imágenes** (panel izquierdo) para subir los 4 fondos.
+- En landing ECR: sección **Tareas con imágenes** para verlas / abrir la tarea.

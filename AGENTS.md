@@ -31,3 +31,4 @@
 - La tarea hereda `clienteId`, abreviatura en el título (`[ECR] …`), color del organizador y el siguiente `numeroHistorico` del cliente.
 - Al guardar se escribe en `localStorage` (`organizacion_v2`) y se publica a `data/organizacion-live.json` vía `POST /api/organizacion`.
 - Ver en organizador: `http://localhost:3000/index.html?disco=1` (o `?disco=1&tarea=ecr/04`).
+- **Imágenes en tareas:** en el detalle de la tarea, bloque **Imágenes de la tarea** → `+ Guardar imágenes` (queda en `sesionAgente.imagenesReferencia` + ficha/landing). En la landing del cliente, sección **Tareas con imágenes** lista esas tareas con miniaturas y enlace al organizador.

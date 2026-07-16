@@ -239,6 +239,90 @@
     };
   }
 
+  function imagenesDeTarea(t) {
+    const out = [];
+    const seen = new Set();
+    const push = (img) => {
+      if (!img?.dataUrl || seen.has(img.dataUrl)) return;
+      seen.add(img.dataUrl);
+      out.push(img);
+    };
+    for (const img of t?.sesionAgente?.imagenesReferencia || []) push(img);
+    for (const m of t?.sesionAgente?.mensajes || []) {
+      for (const img of m.imagenes || []) push(img);
+    }
+    const cli = (datos.clientes || []).find((x) => x.id === c.id);
+    for (const d of cli?.ficha?.documentos || []) {
+      if (d.tareaId === t.id && d.categoria === 'imagen' && d.dataUrl) {
+        push({ nombre: d.nombre, dataUrl: d.dataUrl });
+      }
+    }
+    for (const img of cli?.ficha?.landing?.imagenes || []) {
+      if (img.tareaId === t.id && img.dataUrl) {
+        push({ nombre: img.titulo, dataUrl: img.dataUrl });
+      }
+    }
+    return out;
+  }
+
+  function tareasConImagenes() {
+    if (!datos?.tareas) return [];
+    return datos.tareas
+      .filter((t) => t.clienteId === c.id && imagenesDeTarea(t).length > 0)
+      .sort((a, b) => String(b.fecha || '').localeCompare(String(a.fecha || '')));
+  }
+
+  function hrefTareaOrganizador(t) {
+    const num = t.numeroHistorico || '';
+    const slug = slugClienteUrl();
+    if (num) {
+      return `${pathOrganizador}?disco=1&tarea=${encodeURIComponent(slug + '/' + num)}`;
+    }
+    return `${pathOrganizador}?disco=1&tarea=${encodeURIComponent(t.id)}`;
+  }
+
+  function htmlTareasConImagenes() {
+    const lista = tareasConImagenes();
+    const cards = lista
+      .map((t) => {
+        const imgs = imagenesDeTarea(t);
+        const thumbs = imgs
+          .slice(0, 4)
+          .map(
+            (img) =>
+              `<a class="portal-tarea-img__thumb" href="${escapeHtml(img.dataUrl)}" target="_blank" rel="noopener" title="${escapeHtml(img.nombre || 'Ver')}">
+                <img src="${escapeHtml(img.dataUrl)}" alt="${escapeHtml(img.nombre || 'Imagen')}" loading="lazy">
+              </a>`
+          )
+          .join('');
+        const extra = imgs.length > 4 ? `<span class="portal-tarea-img__extra">+${imgs.length - 4}</span>` : '';
+        const titulo = String(t.titulo || 'Tarea').replace(/^\[[^\]]+\]\s*/, '');
+        return `<article class="portal-tarea-img__card">
+          <div class="portal-tarea-img__meta">
+            <h3 class="portal-tarea-img__titulo">${escapeHtml(titulo)}</h3>
+            <p class="portal-tarea-img__fecha">${escapeHtml(t.fecha || '')} · ${imgs.length} imagen${imgs.length === 1 ? '' : 'es'}</p>
+            <a class="portal-btn portal-btn--ghost" href="${hrefTareaOrganizador(t)}">Abrir tarea${t.numeroHistorico ? ' #' + escapeHtml(t.numeroHistorico) : ''}</a>
+          </div>
+          <div class="portal-tarea-img__thumbs">${thumbs}${extra}</div>
+        </article>`;
+      })
+      .join('');
+
+    const vacio = !lista.length
+      ? '<p class="portal-tarea-img__vacio">Cuando guardes imágenes en una tarea del organizador (+ Guardar imágenes), aparecen aquí con enlace para abrirlas.</p>'
+      : '';
+
+    return `<section class="portal-tarea-img ficha-seccion ficha-seccion--portal" data-portal-tareas-imagenes>
+      <div class="ficha-seccion__headline">
+        <h2 class="ficha-seccion__titulo">Tareas con imágenes</h2>
+        <span class="ficha-seccion__estado">${lista.length} tarea${lista.length === 1 ? '' : 's'}</span>
+      </div>
+      <p class="portal-tarea-img__intro">Fondos y referencias guardados en tareas de este cliente. Haz clic en una miniatura para verla o abre la tarea.</p>
+      <div class="portal-tarea-img__lista">${cards}</div>
+      ${vacio}
+    </section>`;
+  }
+
   function imagenesSeccionHtml(landing) {
     if (typeof window.htmlLandingImagenesSeccion !== 'function') return '';
     return window.htmlLandingImagenesSeccion(landing, { claseExtra: 'ficha-seccion--portal' });
@@ -447,6 +531,7 @@
         ${seccionesHtml(landingCfg)}
         ${ecrPortadaHtml}
         ${ecrRutasHtml}
+        ${htmlTareasConImagenes()}
         ${imagenesHtml}
         ${mkofLandingHtml}
         ${wireframesHtml}
