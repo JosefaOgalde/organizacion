@@ -9,9 +9,9 @@
 
 ### Trendseeker — Prompts Gemini (producto / video)
 - Carpeta: `index/clientes/trendseeker/prompts/` (ver `README.md`).
-- Flujo: fotos de producto primero → prompt en español orientado a Gemini → priorizar fidelidad al producto.
-- Videos TS: el prompt debe pensarse para Gemini desde el inicio (escena + cualidades del producto + referencias).
-- Ejemplo vigente: `PROMPT-botas-rojas-lluvia.txt` (botas rojas, lluvia, jeans dentro de la bota, sin piel visible).
+- Flujo: fotos de producto primero → prompt en español orientado a **Gemini VIDEO** → priorizar fidelidad al producto.
+- Videos TS: el prompt debe pensarse para Gemini **video** desde el inicio (si Gemini dice que solo genera videos, usar brief de video, no de imagen fija).
+- Ejemplo vigente: `PROMPT-botas-rojas-lluvia.txt` (Hunter rojas, lluvia, jeans dentro, sin piel; detalle parche HUNTER / hebilla / suela zigzag).
 - Landing: `http://localhost:3000/index/clientes/trendseeker/` muestra **Registro Trendseeker** (todas las tareas + entregables) y biblioteca `prompts/indice.json` (Gemini).
 - Al crear prompts/entregables TS: registrar en la tarea (`entregableArchivo`) y en `prompts/indice.json` para que aparezcan en el link del cliente.
 
