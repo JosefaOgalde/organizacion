@@ -7,7 +7,7 @@ const DIAS_CORTOS = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'];
 const MAX_TITULO_SEMANA = 96;
 
 const COLORES = {
-  lavanda: { border: '#c4b8e8', bg: '#f0ecfa', text: '#6a5a9e' },
+  lavanda: { border: '#cdc4f9', bg: '#f4f2ff', text: '#4e4b84' },
   celeste: { border: '#98c8e0', bg: '#e8f4fc', text: '#4a7a9e' },
   menta: { border: '#a8dcc8', bg: '#eaf8f2', text: '#4a8a6e' },
   mentaSuave: { border: '#a4d4c8', bg: '#e8f4ef', text: '#4a8670' },
@@ -5661,15 +5661,23 @@ function renderTarea() {
   if (!detalle || !agentePanel) return;
 
   const rutaRef = urlTareaAbsoluta(tarea);
+  const cliVars = `--cli-border:${col.border};--cli-bg:${col.bg};--cli-text:${col.text}`;
+
+  const layout = document.querySelector('#view-tarea .tarea-layout');
+  if (layout) layout.setAttribute('style', cliVars);
+  const panelAgente = document.querySelector('#view-tarea .panel--agente');
+  if (panelAgente) {
+    panelAgente.style.borderTopColor = col.border;
+  }
 
   detalle.innerHTML = `
-    <div class="tarea-detalle" style="border-left-color:${col.border}">
+    <div class="tarea-detalle" style="border-left-color:${col.border};${cliVars}">
       <p class="tarea-detalle__ref" title="Abre o comparte este enlace para ir directo a la tarea">
         <a href="${escapeHtml(rutaRef)}" class="tarea-detalle__ref-link">${escapeHtml(rutaRef)}</a>
         <button type="button" class="btn btn--small btn--ghost tarea-detalle__ref-copiar" data-copiar-ruta-tarea title="Copiar enlace">Copiar</button>
       </p>
       <p class="tarea-detalle__fecha">${escapeHtml(fecha)} · ${escapeHtml(etiquetaHoraTarea(tarea))}</p>
-      <h2 class="tarea-detalle__titulo">${escapeHtml(titulo)}</h2>
+      <h2 class="tarea-detalle__titulo" style="color:${col.text}">${escapeHtml(titulo)}</h2>
       ${cli ? `<p class="tarea-detalle__cliente"><strong>Cliente:</strong> ${escapeHtml(cli.nombre)}</p>` : ''}
       ${rol ? `<p class="tarea-detalle__rol"><strong>Rol:</strong> ${escapeHtml(rol.nombre)}</p>` : ''}
       ${tarea.prioridad ? `<p class="tarea-detalle__meta"><strong>Prioridad:</strong> ${escapeHtml(tarea.prioridad)}</p>` : ''}

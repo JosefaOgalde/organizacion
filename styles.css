@@ -2227,8 +2227,78 @@ body.modal-abierto {
 }
 
 .tarea-detalle {
-  border-left: 4px solid var(--border);
+  border-left: 4px solid var(--cli-border, #cdc4f9);
   padding-left: 1rem;
+}
+
+.tarea-detalle__ref-link {
+  color: var(--cli-text, #4e4b84);
+  text-decoration: none;
+}
+
+.tarea-detalle a {
+  color: var(--cli-text, #4e4b84);
+}
+
+/* Botones Copiar / Guardar / Mejorar con color del cliente (TS = lavanda) */
+.tarea-detalle .btn--small,
+.tarea-detalle .prompt-seccion__acciones .btn,
+.tarea-detalle .prompt-mejora__acciones .btn {
+  background: var(--cli-bg, #f4f2ff);
+  color: var(--cli-text, #4e4b84);
+  border: 1px solid var(--cli-border, #cdc4f9);
+  margin-top: 0;
+}
+
+.tarea-detalle .btn--small:hover,
+.tarea-detalle .prompt-seccion__acciones .btn:hover,
+.tarea-detalle .prompt-mejora__acciones .btn:hover {
+  background: var(--cli-border, #cdc4f9);
+  color: #fff;
+}
+
+.tarea-detalle .btn--accent,
+.tarea-detalle .prompt-seccion__acciones .btn--accent {
+  background: var(--cli-text, #4e4b84);
+  color: #fff;
+  border-color: var(--cli-text, #4e4b84);
+}
+
+.tarea-detalle .btn--accent:hover,
+.tarea-detalle .prompt-seccion__acciones .btn--accent:hover {
+  filter: brightness(1.08);
+  background: var(--cli-text, #4e4b84);
+  color: #fff;
+}
+
+#view-tarea .panel--agente {
+  border-top: 4px solid var(--cli-border, var(--celeste-dark));
+}
+
+#view-tarea .tarea-layout {
+  --cli-border: #cdc4f9;
+  --cli-bg: #f4f2ff;
+  --cli-text: #4e4b84;
+}
+
+#view-tarea .agente-form .btn--primary {
+  background: var(--cli-text, #4e4b84);
+  color: #fff;
+}
+
+#view-tarea .agente-form .btn--primary:hover {
+  filter: brightness(1.08);
+}
+
+#view-tarea .agente-form .btn--accent {
+  background: var(--cli-bg, #f4f2ff);
+  color: var(--cli-text, #4e4b84);
+  border: 2px solid var(--cli-border, #cdc4f9);
+}
+
+#view-tarea .agente-form .btn--accent:hover {
+  background: var(--cli-border, #cdc4f9);
+  color: #fff;
 }
 
 .tarea-detalle__ref {
@@ -2366,8 +2436,8 @@ body.modal-abierto {
   margin: 1rem 0;
   padding: 0.75rem;
   border-radius: 10px;
-  border: 1px solid rgba(74, 122, 158, 0.25);
-  background: #f7fbfe;
+  border: 1px solid color-mix(in srgb, var(--cli-border, #cdc4f9) 70%, transparent);
+  background: var(--cli-bg, #f4f2ff);
 }
 
 .tarea-detalle__eco-madre {
@@ -2384,7 +2454,7 @@ body.modal-abierto {
 .tarea-detalle__eco-lista li {
   padding: 0.3rem 0;
   font-size: 0.88rem;
-  border-top: 1px solid rgba(74, 122, 158, 0.12);
+  border-top: 1px solid color-mix(in srgb, var(--cli-border, #cdc4f9) 35%, transparent);
 }
 
 .tarea-detalle__eco-tipo {
@@ -2398,7 +2468,7 @@ body.modal-abierto {
   margin: 1rem 0;
   padding: 0.75rem;
   border-radius: 10px;
-  border: 1px dashed rgba(74, 122, 158, 0.35);
+  border: 1px dashed color-mix(in srgb, var(--cli-border, #cdc4f9) 65%, transparent);
   background: #fff;
 }
 
