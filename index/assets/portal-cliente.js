@@ -311,6 +311,7 @@
 
   function htmlTareasConImagenes() {
     const lista = tareasConImagenes();
+    if (!lista.length) return '';
     const cards = lista
       .map((t) => {
         const imgs = imagenesDeTarea(t);
@@ -336,10 +337,6 @@
       })
       .join('');
 
-    const vacio = !lista.length
-      ? '<p class="portal-tarea-img__vacio">Cuando guardes imágenes en una tarea del organizador (+ Guardar imágenes), aparecen aquí con enlace para abrirlas.</p>'
-      : '';
-
     return `<section class="portal-tarea-img ficha-seccion ficha-seccion--portal" data-portal-tareas-imagenes>
       <div class="ficha-seccion__headline">
         <h2 class="ficha-seccion__titulo">Tareas con imágenes</h2>
@@ -347,7 +344,6 @@
       </div>
       <p class="portal-tarea-img__intro">Fondos y referencias guardados en tareas de este cliente. Haz clic en una miniatura para verla o abre la tarea.</p>
       <div class="portal-tarea-img__lista">${cards}</div>
-      ${vacio}
     </section>`;
   }
 
@@ -553,53 +549,7 @@
       <p class="portal-reg__intro">Clic en una fila para ver el detalle. Usa «Ir a la tarea» para abrirla en el organizador.</p>
       <div class="portal-reg__lista" data-portal-registro-lista>${rows}</div>
       ${vacio}
-      <div class="portal-reg__biblioteca" data-portal-biblioteca-prompts hidden></div>
     </section>`;
-  }
-
-  async function cargarBibliotecaPromptsTs(rootEl) {
-    if (c.slug !== 'trendseeker') return;
-    const slot = rootEl.querySelector('[data-portal-biblioteca-prompts]');
-    if (!slot) return;
-    try {
-      const res = await fetch('prompts/indice.json?t=' + Date.now(), { cache: 'no-store' });
-      if (!res.ok) return;
-      const idx = await res.json();
-      const items = Array.isArray(idx.items) ? idx.items : [];
-      if (!items.length) return;
-      slot.hidden = false;
-      slot.innerHTML = `
-        <h3 class="portal-reg__bib-titulo">Prompts Gemini (producto / video)</h3>
-        <p class="portal-reg__bib-nota">${escapeHtml(idx.nota || 'Siempre Gemini para TS.')}</p>
-        <ul class="portal-reg__bib-lista">
-          ${items
-            .map((it) => {
-              const href = String(it.archivo || '').replace(/^\//, '');
-              const tareaLink = it.tareaNumero
-                ? ` · <a href="${pathOrganizador}?disco=1&tarea=${encodeURIComponent(slugClienteUrl() + '/' + it.tareaNumero)}">tarea #${escapeHtml(it.tareaNumero)}</a>`
-                : '';
-              return `<li>
-                <strong>${escapeHtml(it.titulo || it.id)}</strong>
-                — ${escapeHtml(it.descripcion || '')}
-                <br>
-                ${
-                  it.archivos && typeof it.archivos === 'object'
-                    ? ['A', 'B', 'C']
-                        .filter((v) => it.archivos[v])
-                        .map(
-                          (v) =>
-                            `<a class="portal-btn portal-btn--ghost" href="${escapeHtml(String(it.archivos[v]).replace(/^\//, ''))}" target="_blank" rel="noopener">TXT ${v}</a>`
-                        )
-                        .join(' ')
-                    : `<a class="portal-btn portal-btn--ghost" href="${escapeHtml(href)}" target="_blank" rel="noopener">Abrir TXT</a>`
-                }${tareaLink}
-              </li>`;
-            })
-            .join('')}
-        </ul>`;
-    } catch (e) {
-      console.warn('No se pudo cargar prompts/indice.json', e);
-    }
   }
 
   function imagenesSeccionHtml(landing) {
@@ -897,7 +847,6 @@
       });
     }
     initImagenes(root, cli);
-    cargarBibliotecaPromptsTs(root);
   }
 
   async function boot() {
