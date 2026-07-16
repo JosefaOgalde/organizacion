@@ -586,6 +586,7 @@ function datosIniciales() {
       { id: 'cita-psiq', fecha: '2026-06-25', hora: '18:00', especialidad: 'Psiquiatra', notas: 'Consulta online' },
       { id: 'cita-cesfam', fecha: '2026-06-26', hora: '08:30', especialidad: 'Exámenes Cesfam', notas: 'Cesfam Vitacura' }
     ],
+    especialistasSalud: ['Exámenes Cesfam', 'Psiquiatra'],
     reunionesClientes: [
       {
         id: 'reunion-ecr-25jun',
@@ -4005,10 +4006,92 @@ function itemsDiaOrdenados(fechaISO) {
 }
 
 function normalizarCitasSalud(data) {
+  if (!Array.isArray(data.citasSalud)) data.citasSalud = [];
   data.citasSalud.forEach(c => {
     if (c.estado && !ESTADOS_CITA[c.estado]) delete c.estado;
   });
+  asegurarEspecialistasSalud(data);
   return data;
+}
+
+/** Lista persistente de especialistas para el desplegable de Salud. */
+function asegurarEspecialistasSalud(data) {
+  if (!Array.isArray(data.especialistasSalud)) data.especialistasSalud = [];
+  const set = new Set(
+    data.especialistasSalud
+      .map(n => String(n || '').trim())
+      .filter(Boolean)
+  );
+  (data.citasSalud || []).forEach(c => {
+    const nom = String(c.especialidad || '').trim();
+    if (nom) set.add(nom);
+  });
+  data.especialistasSalud = [...set].sort((a, b) =>
+    a.localeCompare(b, 'es', { sensitivity: 'base' })
+  );
+  return data;
+}
+
+function registrarEspecialistaSalud(nombre) {
+  const nom = String(nombre || '').trim();
+  if (!nom) return '';
+  asegurarEspecialistasSalud(datos);
+  const existe = datos.especialistasSalud.some(
+    n => n.localeCompare(nom, 'es', { sensitivity: 'base' }) === 0
+  );
+  if (!existe) {
+    datos.especialistasSalud.push(nom);
+    datos.especialistasSalud.sort((a, b) =>
+      a.localeCompare(b, 'es', { sensitivity: 'base' })
+    );
+  }
+  return nom;
+}
+
+function renderSelectEspecialistasSalud(seleccionado) {
+  const sel = document.getElementById('cita-especialista');
+  if (!sel) return;
+  asegurarEspecialistasSalud(datos);
+  const valor = seleccionado != null ? seleccionado : sel.value;
+  const opts = [
+    '<option value="">Seleccionar…</option>',
+    ...datos.especialistasSalud.map(
+      n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`
+    ),
+    '<option value="__nuevo__">+ Agregar otro…</option>'
+  ];
+  sel.innerHTML = opts.join('');
+  if (valor && [...sel.options].some(o => o.value === valor)) {
+    sel.value = valor;
+  } else {
+    sel.value = '';
+  }
+  actualizarUIEspecialistaNuevo();
+}
+
+function actualizarUIEspecialistaNuevo() {
+  const sel = document.getElementById('cita-especialista');
+  const wrap = document.getElementById('cita-especialista-nuevo-wrap');
+  const input = document.getElementById('cita-especialista-nuevo');
+  if (!sel || !wrap || !input) return;
+  const esNuevo = sel.value === '__nuevo__';
+  wrap.hidden = !esNuevo;
+  input.required = esNuevo;
+  if (!esNuevo) {
+    input.value = '';
+  } else {
+    input.focus();
+  }
+}
+
+function valorEspecialistaSaludDesdeForm() {
+  const sel = document.getElementById('cita-especialista');
+  const input = document.getElementById('cita-especialista-nuevo');
+  if (!sel) return '';
+  if (sel.value === '__nuevo__') {
+    return String(input?.value || '').trim();
+  }
+  return String(sel.value || '').trim();
 }
 
 function normalizarReunionesClientes(data) {
@@ -5318,6 +5401,7 @@ function vaciarTareasLocales() {
 }
 
 function renderSalud() {
+  renderSelectEspecialistasSalud();
   const lista = document.getElementById('lista-citas-salud');
   if (!lista) return;
   const hoyStr = toISO(hoy());
@@ -5416,18 +5500,34 @@ function setupUI() {
 
   document.getElementById('btn-vaciar-tareas')?.addEventListener('click', vaciarTareasLocales);
 
+  document.getElementById('cita-especialista')?.addEventListener('change', actualizarUIEspecialistaNuevo);
+
   document.getElementById('form-salud').addEventListener('submit', e => {
     e.preventDefault();
+    const especialista = valorEspecialistaSaludDesdeForm();
+    if (!especialista) {
+      mostrarToast('Elige o agrega un especialista');
+      const sel = document.getElementById('cita-especialista');
+      if (sel?.value === '__nuevo__') {
+        document.getElementById('cita-especialista-nuevo')?.focus();
+      } else {
+        sel?.focus();
+      }
+      return;
+    }
+    registrarEspecialistaSalud(especialista);
     datos.citasSalud.push({
       id: id(),
       fecha: document.getElementById('cita-fecha').value,
       hora: document.getElementById('cita-hora').value,
-      especialidad: document.getElementById('cita-especialidad').value.trim(),
+      especialidad: especialista,
       notas: document.getElementById('cita-notas').value.trim()
     });
     e.target.reset();
+    actualizarUIEspecialistaNuevo();
     guardar();
     render();
+    mostrarToast('Cita guardada');
   });
 
   document.querySelectorAll('[data-nueva-tipo]').forEach(btn => {

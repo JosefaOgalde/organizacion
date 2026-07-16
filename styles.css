@@ -1320,6 +1320,18 @@ body {
   border-top: 4px solid #2f9d72;
 }
 
+.form__row--especialista-nuevo {
+  margin-top: -0.35rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px dashed #2f9d72;
+  border-radius: 8px;
+  background: #f3faf7;
+}
+
+.form__row--especialista-nuevo[hidden] {
+  display: none !important;
+}
+
 .color-picker {
   display: flex;
   flex-wrap: wrap;
