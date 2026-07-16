@@ -2,6 +2,18 @@
 
 ## Cursor Cloud specific instructions
 
+### Separación de herramientas por cliente (obligatorio)
+- **Trendseeker (TS)** — cualquier marca o producto que manejen, y en especial **prompts de videos / piezas de producto**: siempre **Gemini** (con fotos de producto como referencia). Nunca Midjourney para TS.
+- **ECR** — prompts de **portada newsletter** (solo fondo): siempre **Midjourney** (flujo en `index/clientes/ecr/newsletter/`). No mezclar con Gemini ni con el estilo de prompts de TS.
+- Si hay duda: TS → Gemini · ECR portadas → Midjourney.
+
+### Trendseeker — Prompts Gemini (producto / video)
+- Carpeta: `index/clientes/trendseeker/prompts/` (ver `README.md`).
+- Flujo: fotos de producto primero → prompt en español orientado a Gemini → priorizar fidelidad al producto.
+- Videos TS: el prompt debe pensarse para Gemini desde el inicio (escena + cualidades del producto + referencias).
+- Ejemplo vigente: `PROMPT-botas-rojas-lluvia.txt` (botas rojas, lluvia, jeans dentro de la bota, sin piel visible).
+- Tarea ejemplo: `node scripts/add-ts-prompt-botas-rojas.js` → `?disco=1&tarea=trendseeker/03`.
+
 ### ECR — Prompt Midjourney de portada
 - Los prompts Midjourney de ECR son **solo para la imagen de fondo** de la portada del newsletter LinkedIn.
 - Flujo: la usuaria entrega PDF/DOCX (o título) → se pulsa generar → se eligen **3 mundos** con ranking temático del texto (keywords con peso; no terna fija F·L·H).

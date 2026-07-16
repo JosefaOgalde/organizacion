@@ -1,5 +1,5 @@
 PROMPTS GEMINI — Trendseeker · Botas rojas bajo la lluvia
-Herramienta: Google Gemini (generación de imagen / editar con referencias).
+Herramienta fija Trendseeker: Google Gemini (NO Midjourney; Midjourney es solo para portadas ECR).
 Enfoque: el PRODUCTO es el héroe. La lluvia y la escena apoyan las cualidades.
 Respetar al máximo las fotos de producto (silueta, color, costuras, suela, herrajes, caña).
 

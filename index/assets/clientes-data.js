@@ -15,6 +15,7 @@ window.CLIENTES_PORTAL = [
       entregables: ['12 publicaciones al mes', 'Informe Metricool', 'Historias en redes', 'Banners y WordPress'],
       secciones: [
         { titulo: 'Community Manager', texto: 'Publicaciones, historias y reportes mensuales en redes sociales.' },
+        { titulo: 'Prompts Gemini (producto / video)', texto: 'Siempre Gemini para marcas/productos TS (nunca Midjourney; eso es ECR). Ver trendseeker/prompts/.' },
         { titulo: 'WordPress', texto: 'Banners, productos, precios y cargas masivas en el sitio.' }
       ]
     }
