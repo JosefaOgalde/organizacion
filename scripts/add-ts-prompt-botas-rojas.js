@@ -20,7 +20,7 @@ const TAREA = {
   horaInicio: '11:00',
   horaFin: '12:30',
   notas:
-    'Prompt Midjourney: mujer caminando bajo mucha lluvia; ÉNFASIS en el producto (botas rojas) y fidelidad máxima a fotos de producto. ' +
+    'Prompt Gemini: mujer caminando bajo mucha lluvia; ÉNFASIS en el producto (botas rojas) y fidelidad máxima a fotos de producto; jeans metidos dentro de las botas, sin piel visible. ' +
     'Archivo: ' +
     ARCHIVO +
     ' (3 versiones A/B/C + instrucciones de referencia de imagen).',
