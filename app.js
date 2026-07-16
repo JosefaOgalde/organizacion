@@ -6371,22 +6371,18 @@ function renderTarjetaPerfilPersonal() {
   const p = perfilPersonalActual();
   const nombre = (p.nombre || '').trim() || 'Josefa Ogalde';
   const titulo = (p.titulo || '').trim() || 'Desarrolladora Fullstack · Web · E-commerce · WordPress';
-  const tagline = (p.tagline || '').trim();
-  const contacto = (p.contacto || '').trim();
   slot.innerHTML = `
     <article class="perfil-tarjeta perfil-tarjeta--presentacion">
       <p class="perfil-tarjeta__eyebrow">Tarjeta de presentación</p>
       <figure class="perfil-tarjeta__figura">
-        <img class="perfil-tarjeta__img" src="index/assets/perfil/josefa-ogalde-tarjeta.png" alt="Tarjeta de presentación de ${escapeHtml(nombre)}" width="1500" height="939" loading="lazy">
+        <img class="perfil-tarjeta__img" src="index/assets/perfil/josefa-ogalde-tarjeta.png?v=turquesa2" alt="Tarjeta de presentación de ${escapeHtml(nombre)}" width="1600" height="1001" loading="eager">
       </figure>
       <div class="perfil-tarjeta__resumen">
         <h3 class="perfil-tarjeta__nombre">${escapeHtml(nombre)}</h3>
         ${titulo ? `<p class="perfil-tarjeta__titulo">${escapeHtml(titulo)}</p>` : ''}
-        ${tagline ? `<p class="perfil-tarjeta__tagline">${escapeHtml(tagline)}</p>` : ''}
-        ${contacto ? `<pre class="perfil-tarjeta__contacto">${escapeHtml(contacto)}</pre>` : ''}
         <p class="perfil-tarjeta__links">
           <a class="btn btn--ghost btn--small" href="index/assets/perfil/Josefa-Ogalde-Desarrollo-y-Diseno-Web.pdf" target="_blank" rel="noopener">Abrir PDF</a>
-          <a class="btn btn--ghost btn--small" href="index/assets/perfil/josefa-ogalde-tarjeta.png" target="_blank" rel="noopener">Ver imagen</a>
+          <a class="btn btn--ghost btn--small" href="index/assets/perfil/josefa-ogalde-tarjeta.png?v=turquesa2" target="_blank" rel="noopener">Ver imagen</a>
         </p>
       </div>
     </article>`;
