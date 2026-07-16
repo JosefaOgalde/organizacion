@@ -6167,54 +6167,8 @@ function urlPortalCliente(cliId) {
 function renderClientes() {
   const grid = document.getElementById('lista-clientes');
   const select = document.getElementById('tarea-cliente');
-  if (!grid) return;
-
-  grid.innerHTML = datos.clientes.map(c => {
-    const col = colorDe(c);
-    const skill = skillDe(c);
-    const roles = (c.roles || []).map(r =>
-      `<div class="cliente-card__rol"><strong>${escapeHtml(r.abrev || '')} · ${escapeHtml(r.nombre)}</strong></div>`
-    ).join('');
-    const ag = agenteDe(c);
-    const perfilOk = contextoClienteCargado(c);
-    const badge = c.id === 'cli-joyas-mercury'
-      ? '<span class="cliente-card__badge cliente-card__badge--wireframes">Ficha + landing JM</span>'
-      : perfilOk
-        ? '<span class="cliente-card__badge cliente-card__badge--ok">Ficha con datos</span>'
-        : '<span class="cliente-card__badge cliente-card__badge--pending">Ver ficha · sin datos</span>';
-    const landingUrl = urlPortalCliente(c.id);
-    const landingLink = landingUrl
-      ? `<a class="cliente-card__landing" href="${escapeHtml(landingUrl)}">Ver landing →</a>`
-      : '';
-    return `<div class="cliente-card-wrap" style="--cliente-border:${col.border};--cliente-bg:${col.bg};--cliente-text:${col.text}">
-      <button type="button" class="cliente-card cliente-card--clic" data-cliente-id="${c.id}" style="background:${col.bg};border-color:${col.border};--cliente-text:${col.text}" title="Abrir ficha / perfil del cliente">
-      <div class="cliente-card__nombre">${escapeHtml(c.nombre)} <span class="cliente-card__abrev">(${escapeHtml(c.abrev || abrevDe(c))})</span></div>
-      <span class="cliente-card__tipo ${claseTipoCliente(c.tipo)}" style="background:${col.border};color:#fff">${escapeHtml(etiquetaTipoCliente(c.tipo))}</span>
-      <div class="cliente-card__agente">${ag.emoji} ${escapeHtml(ag.nombre)}</div>
-      <div class="cliente-card__skill-tag">Skill: ${escapeHtml(skill.nombre)}</div>
-      <div class="cliente-card__roles">${roles}</div>
-      ${badge}
-      <span class="cliente-card__cta">Abrir ficha →</span>
-    </button>
-    ${landingLink}
-    </div>`;
-  }).join('');
-
-  grid.querySelectorAll('[data-cliente-id]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const id = btn.dataset.clienteId;
-      if (typeof window.abrirFichaCliente === 'function') {
-        window.abrirFichaCliente(id);
-      } else {
-        abrirPerfilCliente(id);
-      }
-    });
-  });
-  grid.querySelectorAll('.cliente-card__landing').forEach((a) => {
-    a.addEventListener('click', (e) => e.stopPropagation());
-  });
+  // La UI de clientes es solo el portal (index/clientes/). Aquí solo alimentamos selects.
+  if (grid) grid.innerHTML = '';
 
   if (select) {
     select.innerHTML = '<option value="">Sin cliente</option>' +
@@ -6361,6 +6315,11 @@ function setupUI() {
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       if (!tab.dataset.view) return;
+      // Única vista de clientes: portal de landings (no «Mis clientes» del organizador)
+      if (tab.dataset.view === 'clientes') {
+        window.location.href = 'index/clientes/';
+        return;
+      }
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
       tab.classList.add('tab--active');
       mostrarVista(tab.dataset.view, { activarTab: true });
@@ -6689,8 +6648,7 @@ async function iniciarApp() {
   setupUI();
   if (!aplicarRutaDesdeUrl()) {
     if (location.hash.replace(/^#/, '') === 'clientes') {
-      mostrarVista('clientes', { activarTab: true });
-      render();
+      window.location.href = 'index/clientes/';
     } else {
       mostrarVista('mes');
       render();

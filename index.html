@@ -96,16 +96,9 @@
         </div>
       </section>
 
-      <section id="view-clientes" class="view">
-        <div class="panel">
-          <h2>Mis clientes</h2>
-          <p class="vista-hint">
-            <a href="index/clientes/">Abrir portal de clientes →</a>
-            · ficha JM: <a href="index/clientes/joyasmercury/">joyasmercury</a>
-          </p>
-          <p class="vista-hint">Clic en la tarjeta abre la <strong>ficha</strong> (metas, contexto, manual). Usa <strong>Ver landing →</strong> para el portal público del cliente.</p>
-          <div id="lista-clientes" class="clientes-grid"></div>
-        </div>
+      <section id="view-clientes" class="view" hidden aria-hidden="true">
+        <!-- Vista retirada: los clientes se ven solo en el portal de landings -->
+        <div id="lista-clientes" class="clientes-grid" hidden></div>
       </section>
 
       <section id="view-agentes" class="view">
@@ -302,8 +295,8 @@
   <script src="index/assets/cliente-landing-imagenes.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="app.js?v=bordes-ficha3"></script>
+  <script src="app.js?v=portal-only1"></script>
   <script src="ficha-extractores.js"></script>
-  <script src="ficha-cliente.js?v=bordes-ficha3"></script>
+  <script src="ficha-cliente.js?v=portal-only1"></script>
 </body>
 </html>
