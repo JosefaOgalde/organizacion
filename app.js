@@ -4123,6 +4123,10 @@ function tareasOrdenadasPorHorario(lista) {
 
 function compararItemsDia(a, b) {
   if (a.minutos !== b.minutos) return a.minutos - b.minutos;
+  // Mantener cada madre + sus subtareas como bloque (sin mezclar clientes)
+  const ba = a.ordenBloque != null ? a.ordenBloque : (a.tipo === 'tarea' ? 900 : -1);
+  const bb = b.ordenBloque != null ? b.ordenBloque : (b.tipo === 'tarea' ? 900 : -1);
+  if (ba !== bb) return ba - bb;
   const ga = a.ordenGrupo != null ? a.ordenGrupo : 40;
   const gb = b.ordenGrupo != null ? b.ordenGrupo : 40;
   if (ga !== gb) return ga - gb;
@@ -4153,16 +4157,26 @@ function itemsDiaOrdenados(fechaISO) {
   const usadas = new Set();
   const madres = tareas
     .filter((t) => esTareaMadreCalendario(t))
-    .sort(
-      (a, b) =>
-        minutosHora(a.horaInicio) - minutosHora(b.horaInicio) ||
-        String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || ''))
-    );
+    .sort((a, b) => {
+      const dh = minutosHora(a.horaInicio) - minutosHora(b.horaInicio);
+      if (dh) return dh;
+      const ca = clienteDe(a.clienteId)?.nombre || a.clienteId || '';
+      const cb = clienteDe(b.clienteId)?.nombre || b.clienteId || '';
+      const dc = ca.localeCompare(cb, 'es');
+      if (dc) return dc;
+      return String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || ''));
+    });
 
-  // Madre arriba · subtareas indexadas (1, 2, 3…) debajo
-  for (const m of madres) {
+  // Un bloque por madre: madre arriba, subtareas 1. 2. 3. debajo; luego la madre del otro cliente
+  madres.forEach((m, bloqueIdx) => {
     const base = minutosHora(m.horaInicio);
-    items.push({ tipo: 'tarea', minutos: base, ordenGrupo: 0, data: m });
+    items.push({
+      tipo: 'tarea',
+      minutos: base,
+      ordenBloque: bloqueIdx,
+      ordenGrupo: 0,
+      data: m,
+    });
     usadas.add(m.id);
     const hijos = tareas
       .filter((t) => t.parentId === m.id)
@@ -4175,21 +4189,23 @@ function itemsDiaOrdenados(fechaISO) {
       items.push({
         tipo: 'tarea',
         minutos: base,
+        ordenBloque: bloqueIdx,
         ordenGrupo: i + 1,
         indiceHijo: i + 1,
         data: h,
       });
       usadas.add(h.id);
     });
-  }
+  });
 
   tareas
     .filter((t) => !usadas.has(t.id))
-    .forEach((t) => {
+    .forEach((t, i) => {
       items.push({
         tipo: 'tarea',
         minutos: minutosHora(t.horaInicio),
-        ordenGrupo: 50,
+        ordenBloque: 1000 + i,
+        ordenGrupo: 0,
         data: t,
       });
     });
