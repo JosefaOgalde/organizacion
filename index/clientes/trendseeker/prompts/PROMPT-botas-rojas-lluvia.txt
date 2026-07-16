@@ -1,5 +1,6 @@
-PROMPTS TRENDSEEKER — Botas rojas bajo la lluvia
-Enfoque: el PRODUCTO es el héroe. La lluvia/escena apoyan las cualidades (impermeabilidad, agarre, presencia).
+PROMPTS MIDJOURNEY — Trendseeker · Botas rojas bajo la lluvia
+Herramienta: Midjourney (pegar el bloque de texto en el prompt).
+Enfoque: el PRODUCTO es el héroe. La lluvia/escena apoyan las cualidades.
 Respetar al máximo las fotos de producto (silueta, color, costuras, suela, herrajes, caña).
 
 VESTUARIO OBLIGATORIO:
@@ -8,61 +9,35 @@ VESTUARIO OBLIGATORIO:
 - NO se debe ver piel de piernas / tobillos / pantorrillas
 
 ============================================================
-CÓMO USAR EN MIDJOURNEY (importante)
+CÓMO USAR EN MIDJOURNEY
 ============================================================
-1) Sube primero las FOTOS DE PRODUCTO reales (1 a 4).
-2) Úsalas como referencia de imagen / Omni Reference / Image Prompt
-   (arrástralas al prompt o pégalas antes del texto).
-3) Peso alto en el producto: el modelo/lluvia son secundarios.
-4) No inventar hebillas, logos, caña ni suela distinta a las fotos.
-5) Genera 2–4 variaciones; elige la que más respete el calzado real.
-
-Placeholder: [PEGAR AQUÍ LAS FOTOS DE PRODUCTO]
+1) En Discord/web de Midjourney, sube primero las FOTOS DE PRODUCTO (1–4).
+2) Úsalas como Image Prompt / Omni Reference (arrástralas o pégalas ANTES del texto).
+3) Copia UNA versión (A, B o C) y pégala después de las imágenes.
+4) No pegues flags (--ar / --style / --v / --no): en este flujo Midjourney no los usa.
+5) Genera y elige la que más respete el calzado real.
 
 ============================================================
-VERSIÓN A — Producto héroe (recomendado)
+VERSIÓN A — Producto héroe (recomendado) · pegar en Midjourney
 ============================================================
 
-[PEGAR AQUÍ LAS FOTOS DE PRODUCTO]
-
-exact red boots as in the product reference photos, identical silhouette shape color stitching sole hardware and shaft height, photorealistic commercial product advertising, low camera angle focused on the boots, a woman walking forward through heavy rain on a wet city street, wearing blue denim jeans tucked into the boots, jeans inside the boot shafts, no bare skin visible on legs ankles or calves, fully covered legs, rain droplets beading on the leather showing waterproof quality, water splashing lightly around the soles showing grip and durability, dramatic wet asphalt reflections, boots sharp and highly detailed in the foreground, face and upper outfit secondary and soft, cinematic natural lighting, shallow depth of field, no logo invention, no design changes to the footwear
+exact red boots as in the product reference photos, identical silhouette shape color stitching sole hardware and shaft height, photorealistic commercial product advertising for Midjourney, low camera angle focused on the boots, a woman walking forward through heavy rain on a wet city street, wearing blue denim jeans tucked into the boots, jeans inside the boot shafts, no bare skin visible on legs ankles or calves, fully covered legs, rain droplets beading on the leather showing waterproof quality, water splashing lightly around the soles showing grip and durability, dramatic wet asphalt reflections, boots sharp and highly detailed in the foreground, face and upper outfit secondary and soft, cinematic natural lighting, shallow depth of field, no logo invention, no design changes to the footwear
 
 ============================================================
-VERSIÓN B — Cualidades en movimiento
+VERSIÓN B — Cualidades en movimiento · pegar en Midjourney
 ============================================================
-
-[PEGAR AQUÍ LAS FOTOS DE PRODUCTO]
 
 keep the exact same red boots from the reference images without redesigning them, hero product shot of women’s red boots in torrential rain, woman mid-stride walking confidently, blue jeans tucked into the boots, denim pant legs inside the boot shafts, no exposed skin on legs or ankles, emphasize waterproof leather surface with rain beading, sturdy sole with wet traction on flooded pavement, rich true red color matching references, precise stitching and hardware as in product photos, cinematic rain streaks, misty urban background bokeh, boots crisp and dominant in frame, lifestyle but product-accurate, commercial fashion photography
 
 ============================================================
-VERSIÓN C — Close-up de cualidades (detalle)
+VERSIÓN C — Close-up de cualidades · pegar en Midjourney
 ============================================================
-
-[PEGAR AQUÍ LAS FOTOS DE PRODUCTO]
 
 macro-leaning commercial photo of the exact red boots from product references, woman walking in heavy rain, blue denim jeans tucked into the boots with no bare skin showing at the shaft opening, extreme focus on boot material texture waterproof finish raindrops on leather and robust sole contact with wet ground, identical product geometry color and details, atmospheric downpour, soft background figure, product-first advertising still, photoreal, no altered design
 
 ============================================================
-NOTAS DE DIRECCIÓN CREATIVA
+NOTAS
 ============================================================
-- Escena: mujer caminando + mucha lluvia = clima / prueba real del producto.
+- Midjourney = solo imagen. No tipografía ni logos inventados.
 - Jeans metidos DENTRO de las botas; cero piel visible en piernas/tobillos.
-- Énfasis de cualidades a “vender” visualmente:
-  · impermeabilidad (gotas que perlan, no se empapan)
-  · agarre / suela en piso mojado
-  · color rojo fiel al producto
-  · construcción (costuras, caña, herrajes) idéntica a las fotos
-- Evitar: botas genéricas rojas, cambiar tacón/caña, inventar logos,
-  jeans por fuera de la bota, piernas descubiertas,
-  que la cara o el look robe protagonismo al calzado.
-
-============================================================
-CHECKLIST ANTES DE GENERAR
-============================================================
-[ ] Fotos de producto adjuntas como referencia
-[ ] Prompt empieza/prioriza “exact … as in the product reference”
-[ ] Jeans tucked into boots / no bare skin on legs
-[ ] Cámara baja / botas en primer plano
-[ ] Lluvia fuerte pero secundaria
-[ ] Revisar que suela, caña y rojo coincidan con las fotos reales
+- Primero las fotos de producto, después el texto del prompt.
