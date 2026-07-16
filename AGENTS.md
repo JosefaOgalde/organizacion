@@ -52,8 +52,10 @@
 
 ### Impresoreando — Panel socios 50/50
 - Landing: `http://localhost:3000/index/clientes/impresoreando/` — CTA **Resumen 50/50** abre el panel.
-- Panel: `…/impresoreando/panel/` · Registrador de ventas (link compartido): `…/panel/venta/`.
+- Panel: `…/impresoreando/panel/` · Registrador de ventas: `…/panel/venta/`.
 - Persistencia: `GET/POST /api/impresoreando` → `data/impresoreando-live.json`. Append de venta: `POST /api/impresoreando/venta`.
 - Lógica: **saldo por recuperar = gastos − ventas** (cada venta baja el saldo). Gastos de **ambos**; capital aportado por **Nicolás**; Josefa debe 50%.
 - Layout: franja blanca superior full-bleed; contenido interno limitado a `--imp-max: 1200px`.
-- Para que Nicolás/Josefa entren desde otro dispositivo: en `.env` poner `HOST=0.0.0.0` (o túnel) y compartir la URL del registrador.
+- **Acceso desde celular:** `localhost` en el teléfono **no funciona** (ERR_CONNECTION_FAILED). El servidor por defecto usa `HOST=0.0.0.0`.
+  - Misma WiFi: usar la IP que imprime el server al arrancar (también en `GET /api/acceso` → `lan[]`).
+  - Cualquier lugar / 4G: con `SERVIR.bat` abierto, ejecutar `ABRIR-VENTA-PUBLICA.bat` y compartir el link `https://….loca.lt/…/venta/`.

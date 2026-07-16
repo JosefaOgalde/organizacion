@@ -377,6 +377,7 @@
     const pctGastos = Math.min(100, ((gastos + operacion) / denom) * 100);
     const pctVentas = Math.min(100, (ventas / denom) * 100);
     const linkVenta = `${location.origin}/index/clientes/impresoreando/panel/venta/`;
+    const esLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
 
     $('#tab-resumen').innerHTML = `
       <div class="imp-balance">
@@ -427,18 +428,24 @@
         <p class="imp-deuda"><strong>Capital:</strong> lo aportó <strong>Nicolás</strong>. Todos los gastos son de <strong>ambos</strong>. Josefa le debe a Nicolás el <strong>50%</strong> del capital (${money(deuda)}).</p>
       </div>
       <div class="imp-card">
-        <h2>Link compartido — registrar ventas online</h2>
-        <p class="imp-muted">Josefa y Nicolás pueden abrir este link desde el celular y cargar ventas. Se guardan online al instante.</p>
+        <h2>Link para registrar ventas (celular)</h2>
+        <p class="imp-aviso-local"${esLocalhost ? '' : ' hidden'}>
+          <strong>Importante:</strong> <code>localhost</code> solo funciona en esta PC.
+          En el celular falla con ERR_CONNECTION_FAILED. Usa la IP WiFi o el túnel público.
+        </p>
+        <p class="imp-muted">Misma WiFi — abre en el celular (no localhost):</p>
+        <div class="imp-share" id="imp-links-lan"><span class="imp-muted">Cargando IPs…</span></div>
+        <p class="imp-muted" style="margin-top:0.75rem">Cualquier lugar / datos móviles:</p>
+        <ol class="imp-list">
+          <li>En la PC deja <strong>SERVIR.bat</strong> corriendo.</li>
+          <li>Abre <strong>ABRIR-VENTA-PUBLICA.bat</strong> (segunda ventana).</li>
+          <li>Copia el link <code>https://….loca.lt/…/venta/</code> y envíalo por WhatsApp.</li>
+        </ol>
         <div class="imp-share">
           <code id="imp-link-venta">${escapeHtml(linkVenta)}</code>
-          <button type="button" class="imp-btn imp-btn--primary" id="btn-copiar-link-venta">Copiar link</button>
+          <button type="button" class="imp-btn imp-btn--primary" id="btn-copiar-link-venta">Copiar link de esta ventana</button>
           <a class="imp-btn" href="./venta/">Abrir registrador</a>
         </div>
-        <ol class="imp-list" style="margin-top:0.75rem">
-          <li>Compartir el link (misma red, o túnel / hosting público).</li>
-          <li>Cada venta se guarda en <code>data/impresoreando-live.json</code>.</li>
-          <li>Recargar este panel para ver el saldo actualizado.</li>
-        </ol>
         <p class="imp-muted">Presupuesto ads mes (plan): ${money(ads)}</p>
       </div>
     `;
@@ -451,6 +458,38 @@
         setStatus('No se pudo copiar — selecciónalo a mano', 'warn');
       }
     });
+
+    fetch('/api/acceso', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((info) => {
+        const box = $('#imp-links-lan');
+        if (!box) return;
+        const urls = info.lan || [];
+        if (!urls.length) {
+          box.innerHTML = '<span class="imp-muted">No se detectó IP de red — usa ABRIR-VENTA-PUBLICA.bat</span>';
+          return;
+        }
+        box.innerHTML = urls
+          .map(
+            (u) =>
+              `<code class="imp-lan-url">${escapeHtml(u)}</code><button type="button" class="imp-btn" data-copy="${escapeHtml(u)}">Copiar</button>`
+          )
+          .join('');
+        box.querySelectorAll('[data-copy]').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            try {
+              await navigator.clipboard.writeText(btn.getAttribute('data-copy'));
+              setStatus('Link WiFi copiado', 'ok');
+            } catch {
+              setStatus('Copia manual del link', 'warn');
+            }
+          });
+        });
+      })
+      .catch(() => {
+        const box = $('#imp-links-lan');
+        if (box) box.innerHTML = '<span class="imp-muted">No se pudo leer /api/acceso</span>';
+      });
   }
 
   function renderGastos() {

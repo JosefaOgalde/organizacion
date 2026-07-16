@@ -14,7 +14,8 @@ const crypto = require('crypto');
 
 const ROOT = path.join(__dirname, '..');
 const PORT = Number(process.env.PORT) || 3000;
-const HOST = process.env.HOST || '127.0.0.1';
+/** Por defecto abierto a la LAN (celular en misma WiFi). Usar HOST=127.0.0.1 para solo esta PC. */
+const HOST = process.env.HOST || '0.0.0.0';
 const LIVE_FILE = path.join(ROOT, 'data', 'organizacion-live.json');
 const IMP_LIVE_FILE = path.join(ROOT, 'data', 'impresoreando-live.json');
 const IMP_SEED_FILE = path.join(ROOT, 'data', 'impresoreando-seed.json');
@@ -23,6 +24,7 @@ const ECR_PORTADA_MD = path.join(ROOT, 'index', 'clientes', 'ecr', 'newsletter',
 const ECR_PORTADA_DIR = path.join(ROOT, 'index', 'clientes', 'ecr', 'newsletter', 'portadas-guardadas');
 const MAX_BODY_BYTES = Number(process.env.MAX_BODY_BYTES) || 12 * 1024 * 1024;
 const API_TOKEN = (process.env.ORGANIZACION_TOKEN || '').trim();
+const VENTA_PATH = '/index/clientes/impresoreando/panel/venta/';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -81,6 +83,33 @@ loadEnvFile();
 const RUNTIME_TOKEN = (process.env.ORGANIZACION_TOKEN || API_TOKEN || '').trim();
 const RUNTIME_HOST = process.env.HOST || HOST;
 const RUNTIME_MAX_BODY = Number(process.env.MAX_BODY_BYTES) || MAX_BODY_BYTES;
+
+function lanAddresses() {
+  const os = require('os');
+  const out = [];
+  const ifaces = os.networkInterfaces();
+  for (const list of Object.values(ifaces)) {
+    for (const info of list || []) {
+      if (info.family !== 'IPv4' || info.internal) continue;
+      out.push(info.address);
+    }
+  }
+  return out;
+}
+
+function accesoInfo() {
+  const lan = lanAddresses();
+  return {
+    port: PORT,
+    host: RUNTIME_HOST,
+    ventaPath: VENTA_PATH,
+    localhost: `http://localhost:${PORT}${VENTA_PATH}`,
+    lan: lan.map((ip) => `http://${ip}:${PORT}${VENTA_PATH}`),
+    panelLan: lan.map((ip) => `http://${ip}:${PORT}/index/clientes/impresoreando/panel/`),
+    hint:
+      'localhost solo funciona en esta PC. En el celular usa la IP de la WiFi o ABRIR-VENTA-PUBLICA.bat para un link de cualquier lugar.',
+  };
+}
 
 function securityHeaders() {
   return {
@@ -716,6 +745,10 @@ function handleApiPromptTxt(req, res) {
 const server = http.createServer((req, res) => {
   const url = req.url || '/';
 
+  if (url.startsWith('/api/acceso')) {
+    return send(res, 200, JSON.stringify(accesoInfo()), 'application/json');
+  }
+
   if (url.startsWith('/api/organizacion-config')) {
     return handleApiConfig(res);
   }
@@ -760,12 +793,20 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, RUNTIME_HOST, () => {
-  console.log(`Organización · http://${RUNTIME_HOST}:${PORT}`);
-  console.log(`  Solo accesible desde esta PC (${RUNTIME_HOST})`);
+  const acceso = accesoInfo();
+  console.log(`Organización · http://${RUNTIME_HOST === '0.0.0.0' ? 'localhost' : RUNTIME_HOST}:${PORT}`);
+  console.log(`  Host: ${RUNTIME_HOST}`);
   console.log(`  Organizador: http://localhost:${PORT}/index.html`);
   console.log(`  Portal clientes: http://localhost:${PORT}/index/clientes/`);
-  console.log(`  Impresoreando: http://localhost:${PORT}/index/clientes/impresoreando/panel/`);
-  console.log(`  API Impresoreando: /api/impresoreando (GET/POST)`);
+  console.log(`  Impresoreando panel: http://localhost:${PORT}/index/clientes/impresoreando/panel/`);
+  if (acceso.lan.length) {
+    console.log('  Misma WiFi (celular) — NO uses localhost en el teléfono:');
+    acceso.lan.forEach((u) => console.log(`    ${u}`));
+  } else {
+    console.log('  (sin IP LAN detectada)');
+  }
+  console.log('  Cualquier lugar / 4G: ejecuta ABRIR-VENTA-PUBLICA.bat (túnel) y comparte ese link');
+  console.log(`  API Impresoreando: /api/impresoreando · /api/acceso`);
   console.log(`  Guardado live: data/organizacion-live.json (solo vía API)`);
   if (RUNTIME_TOKEN) {
     console.log('  API protegida con ORGANIZACION_TOKEN (.env)');
