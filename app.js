@@ -4086,13 +4086,20 @@ function iniciarMejoraEntregable(tarea, opts = {}) {
 /**
  * Reescribe el TXT incorporando las ideas de la usuaria.
  * Conserva metadatos de producto (PRODUCTO/SKU/Link) cuando existen.
+ * Devuelve SOLO la versión actual (sin acumular historial en el texto).
  */
 function mejorarTextoConIdeas(texto, ideas, opts = {}) {
   const version = String(opts.version || 'A').toUpperCase();
   const tipo = opts.tipo || 'copys-txt';
   const ideasLimpias = String(ideas || '').trim();
-  const original = String(texto || '');
+  let original = String(texto || '');
   if (!ideasLimpias) return original;
+
+  // Quitar pies de mejoras anteriores para no apilar versiones
+  original = original
+    .replace(/\n*— Mejorado con tus ideas[\s\S]*$/i, '')
+    .replace(/\n*AJUSTES OBLIGATORIOS SEGÚN IDEAS:[\s\S]*$/i, '')
+    .trim();
 
   const lineas = original.split(/\r?\n/);
   const meta = [];
@@ -4106,38 +4113,36 @@ function mejorarTextoConIdeas(texto, ideas, opts = {}) {
     ) {
       meta.push(L);
       i++;
-      // Cortar meta tras bloque vacío posterior a Link/características cortas
       if (meta.length > 3 && L.trim() === '' && i > 4) break;
       continue;
     }
-    if (!meta.length && L.trim()) {
-      // primera línea no-meta → no hay encabezado clásico
-      break;
-    }
-    if (meta.length && !/^(COPY|PROMPT|PRODUCTO|SKU|Link|Público|Herramienta|CARACTER|VESTUARIO|- |• |✓ |---)/i.test(L) && L.trim()) {
+    if (!meta.length && L.trim()) break;
+    if (
+      meta.length &&
+      !/^(COPY|PROMPT|PRODUCTO|SKU|Link|Público|Herramienta|CARACTER|VESTUARIO|- |• |✓ |---)/i.test(L) &&
+      L.trim()
+    ) {
       break;
     }
     meta.push(L);
     i++;
   }
 
-  // Extraer bullets / checklist del original
   const resto = lineas.slice(i).join('\n');
   const bullets = [...resto.matchAll(/^[•✓\-]\s+.+$/gm)].map((m) => m[0]);
   const link =
     (original.match(/https?:\/\/trendseeker\.cl\/[^\s]+/i) || [])[0] ||
     opts.tarea?.productoUrl ||
     '';
-  const producto =
-    (original.match(/^PRODUCTO:\s*(.+)$/im) || [])[1] ||
-    '';
+  const producto = (original.match(/^PRODUCTO:\s*(.+)$/im) || [])[1] || '';
+  const ideaLines = ideasLimpias
+    .split(/\n/)
+    .map((s) => s.trim().replace(/^[-•*]\s*/, ''))
+    .filter(Boolean);
+  const hook = ideaLines[0] || ideasLimpias;
+  const extras = ideaLines.slice(1);
 
   if (tipo === 'copys-txt') {
-    const hook = ideasLimpias.split(/\n/).map((s) => s.trim()).filter(Boolean)[0] || ideasLimpias;
-    const extras = ideasLimpias
-      .split(/\n/)
-      .map((s) => s.trim())
-      .filter((s) => s && s !== hook);
     const checklist =
       bullets.length > 0
         ? bullets.slice(0, 6).join('\n')
@@ -4147,16 +4152,20 @@ function mejorarTextoConIdeas(texto, ideas, opts = {}) {
             '✓ Tono Trendseeker / Hunter',
           ].join('\n');
 
-    const cuerpoExtra = extras.length
-      ? extras.map((e) => e.replace(/^[-•]\s*/, '')).join(' ')
-      : 'Copy afinado con tus ideas, listo para pegar bajo el video.';
+    const cuerpo = [
+      hook,
+      extras.length ? extras.join(' ') : '',
+      'Copy listo para pegar bajo el video, alineado a tus ideas y a la ficha del producto.',
+    ]
+      .filter(Boolean)
+      .join('\n\n');
 
     return [
-      meta.length ? meta.join('\n').trimEnd() : `COPY VIDEO · Trendseeker · Versión ${version}${producto ? `\nProducto: ${producto}` : ''}${link ? `\nLink: ${link}` : ''}`,
+      meta.length
+        ? meta.join('\n').trimEnd()
+        : `COPY VIDEO · Trendseeker · Versión ${version}${producto ? `\nProducto: ${producto}` : ''}${link ? `\nLink: ${link}` : ''}`,
       '',
-      hook,
-      '',
-      cuerpoExtra,
+      cuerpo,
       '',
       checklist,
       '',
@@ -4165,45 +4174,31 @@ function mejorarTextoConIdeas(texto, ideas, opts = {}) {
       '',
       '#Hunter #TrendSeeker #TrendSeekerChile',
       '',
-      `— Mejorado con tus ideas (${new Date().toLocaleDateString('es-CL')}) —`,
-      ideasLimpias
-        .split(/\n/)
-        .map((s) => s.trim())
-        .filter(Boolean)
-        .map((s) => `· ${s.replace(/^[-•]\s*/, '')}`)
-        .join('\n'),
-      '',
     ]
       .join('\n')
       .replace(/\n{3,}/g, '\n\n')
       .trim() + '\n';
   }
 
-  // prompt-gemini
-  const ajustes = ideasLimpias
-    .split(/\n/)
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .map((s) => `- ${s.replace(/^[-•]\s*/, '')}`)
-    .join('\n');
-
-  const cuerpoPrompt =
-    resto.trim() ||
-    `Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria. No rediseñes el producto.`;
+  // prompt-gemini: integra ideas en el cuerpo (reemplazo limpio)
+  const ajustes = ideaLines.map((s) => `- ${s}`).join('\n');
+  const cuerpoBase = (resto || original)
+    .replace(/\n*AJUSTES OBLIGATORIOS SEGÚN IDEAS:[\s\S]*$/i, '')
+    .replace(/\n*— Mejorado[\s\S]*$/i, '')
+    .trim();
 
   return [
     meta.length ? meta.join('\n').trimEnd() : `PROMPT GEMINI VIDEO · Versión ${version}`,
     '',
     `---`,
-    `VERSIÓN ${version} · mejorada con ideas de la usuaria`,
+    `VERSIÓN ${version}`,
     `---`,
     '',
-    cuerpoPrompt.replace(/\n— Mejorado[\s\S]*$/i, '').trim(),
+    cuerpoBase ||
+      'Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria. No rediseñes el producto.',
     '',
-    'AJUSTES OBLIGATORIOS SEGÚN IDEAS:',
+    'Integra sí o sí estas ideas en acción, cámara y atmósfera (sin inventar specs):',
     ajustes,
-    '',
-    'Integra esos ajustes en la acción, cámara y atmósfera sin inventar specs del producto.',
     '',
   ]
     .join('\n')
