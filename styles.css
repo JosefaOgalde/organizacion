@@ -1991,86 +1991,44 @@ button.tab.tab--perfil.tab--active {
   box-shadow: var(--shadow);
 }
 
-.dia-acordeon {
+.dia-detalle-head {
   display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  width: 100%;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
   margin: 0 0 0.85rem;
-  padding: 0.75rem 0.9rem;
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  background: linear-gradient(180deg, #e8faf6 0%, #d5f3ed 100%);
-  cursor: pointer;
-  text-align: left;
-  font: inherit;
-  color: inherit;
-  box-sizing: border-box;
+  padding-bottom: 0.65rem;
+  border-bottom: 2px solid color-mix(in srgb, var(--celeste) 35%, var(--border));
 }
 
-.dia-acordeon:hover {
-  filter: brightness(0.98);
-}
-
-.dia-acordeon.is-open {
-  background: #0a6f60;
-  border-color: #064840;
-  color: #fff;
-}
-
-.dia-acordeon.is-open .dia-acordeon__nombre,
-.dia-acordeon.is-open .dia-acordeon__numero,
-.dia-acordeon.is-open .panel__desc,
-.dia-acordeon.is-open .dia-acordeon__hint {
-  color: #fff;
-}
-
-.dia-acordeon__fecha {
+.dia-detalle-head__titulo {
+  margin: 0;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 3.5rem;
-  line-height: 1.1;
-}
-
-.dia-acordeon__nombre {
-  font-size: 0.72rem;
+  align-items: baseline;
+  gap: 0.45rem;
+  font-size: 1.15rem;
   font-weight: 700;
+  color: var(--celeste-dark);
+}
+
+.dia-detalle-head__titulo #dia-detalle-nombre {
+  font-size: 0.78rem;
   letter-spacing: 0.06em;
-  color: #3d7a72;
   text-transform: uppercase;
+  color: #2a8f84;
 }
 
-.dia-acordeon__numero {
-  font-size: 1.75rem;
+.dia-detalle-head__titulo #dia-detalle-numero {
+  font-size: 1.55rem;
   font-weight: 800;
-  color: #064840;
+  color: var(--celeste-dark);
 }
 
-.dia-acordeon__meta {
-  flex: 1;
-  min-width: 0;
-}
-
-.dia-acordeon__meta .panel__desc {
-  margin: 0 0 0.15rem;
+.dia-detalle-head__meta {
+  margin: 0;
   font-size: 0.88rem;
-}
-
-.dia-acordeon__hint {
-  display: block;
-  font-size: 0.75rem;
-  color: #6e6e6e;
-}
-
-.dia-acordeon__chevron {
-  font-size: 1.1rem;
-  transition: transform 0.2s ease;
-  opacity: 0.75;
-}
-
-.dia-acordeon.is-open .dia-acordeon__chevron {
-  transform: rotate(180deg);
+  color: var(--text-muted);
 }
 
 .dia-columna {
@@ -2207,11 +2165,25 @@ button.tab.tab--perfil.tab--active {
 .dia--seleccionado {
   outline: 3px solid var(--celeste-dark);
   outline-offset: 1px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--celeste) 40%, transparent);
+}
+
+.dia--mini.dia--seleccionado {
+  background: color-mix(in srgb, var(--celeste-light) 70%, #fff);
 }
 
 .dia--mini.dia--seleccionado .dia__header {
   background: var(--celeste-dark);
   color: var(--bg-panel);
+}
+
+.calendario--mini .dia--mini {
+  cursor: pointer;
+}
+
+.calendario--mini .dia--mini:hover:not(.dia--seleccionado) {
+  outline: 2px solid color-mix(in srgb, var(--celeste) 55%, transparent);
+  outline-offset: 0;
 }
 
 .semana-mini-item {
