@@ -2242,11 +2242,25 @@ button.tab.tab--perfil.tab--active {
 .dia--seleccionado {
   outline: 3px solid var(--celeste-dark);
   outline-offset: 1px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--celeste) 40%, transparent);
+}
+
+.dia--mini.dia--seleccionado {
+  background: color-mix(in srgb, var(--celeste-light) 70%, #fff);
 }
 
 .dia--mini.dia--seleccionado .dia__header {
   background: var(--celeste-dark);
   color: var(--bg-panel);
+}
+
+.calendario--mini .dia--mini {
+  cursor: pointer;
+}
+
+.calendario--mini .dia--mini:hover:not(.dia--seleccionado) {
+  outline: 2px solid color-mix(in srgb, var(--celeste) 55%, transparent);
+  outline-offset: 0;
 }
 
 .semana-mini-item {
