@@ -1,0 +1,115 @@
+{
+  "origen": "organizacion-live.json / organizacion-respaldo-2026-07-16.json",
+  "respaldoActualizado": "2026-07-16",
+  "notas": "Seed para Laravel (sin tareas ni salud).",
+  "clientes": [
+    {
+      "slug": "trendseeker",
+      "nombre": "Trendseeker - Talk",
+      "abrev": "TS",
+      "tipo": "full-time",
+      "color_border": "#c4b8e8",
+      "color_bg": "#f0ecfa",
+      "color_text": "#6a5a9e",
+      "agente": "Community Manager + WordPress",
+      "resumen": "Redes, Metricool, historias, banners y mantenimiento WordPress.",
+      "id_local": "cli-trendseeker"
+    },
+    {
+      "slug": "ecr",
+      "nombre": "ECR - Talk",
+      "abrev": "ECR",
+      "tipo": "full-time",
+      "color_border": "#98c8e0",
+      "color_bg": "#e8f4fc",
+      "color_text": "#4a7a9e",
+      "agente": "Newsletter LinkedIn + Blog",
+      "resumen": "Newsletters, copys, carruseles y secciones blog en Elementor.",
+      "id_local": "cli-ecr"
+    },
+    {
+      "slug": "piscineria",
+      "nombre": "Piscinería - Talk",
+      "abrev": "PISC",
+      "tipo": "full-time",
+      "color_border": "#a8dcc8",
+      "color_bg": "#eaf8f2",
+      "color_text": "#4a8a6e",
+      "agente": "Publicación de contenidos",
+      "resumen": "8 contenidos al mes en feed e historias (días hábiles).",
+      "id_local": "cli-piscineria"
+    },
+    {
+      "slug": "hotspring",
+      "nombre": "Hotspring - Talk",
+      "abrev": "HS",
+      "tipo": "full-time",
+      "color_border": "#a4d4c8",
+      "color_bg": "#e8f4ef",
+      "color_text": "#4a8670",
+      "agente": "Publicación de contenidos",
+      "resumen": "8 contenidos al mes en feed e historias (días hábiles).",
+      "id_local": "cli-hotspring"
+    },
+    {
+      "slug": "mkof",
+      "nombre": "MKOF - Talk",
+      "abrev": "MKOF",
+      "tipo": "full-time",
+      "color_border": "#a8d8dc",
+      "color_bg": "#e8f6f8",
+      "color_text": "#4a7a80",
+      "agente": "Planificación de proyectos",
+      "resumen": "Gantt, cronogramas y entregables post auditoría.",
+      "id_local": "cli-mkof"
+    },
+    {
+      "slug": "joyas-mercury",
+      "nombre": "Joyas Mercury",
+      "abrev": "JM",
+      "tipo": "freelance",
+      "color_border": "#e8b8c8",
+      "color_bg": "#fdf0f4",
+      "color_text": "#9a5a6e",
+      "agente": "Dev WooCommerce Fase 2",
+      "resumen": "Rediseño joyasmercury.cl — menú, filtros, carrito, entrega.",
+      "id_local": "cli-joyas-mercury"
+    },
+    {
+      "slug": "sie",
+      "nombre": "SIE",
+      "abrev": "SIE",
+      "tipo": "oportunidad",
+      "color_border": "#b8c0c8",
+      "color_bg": "#eef0f4",
+      "color_text": "#5a6a7a",
+      "agente": "Buscador de sentencias",
+      "resumen": "Ingesta, API, UI de búsqueda — avance fines de semana.",
+      "id_local": "cli-sie"
+    },
+    {
+      "slug": "desafio-latam",
+      "nombre": "Desafío Latam",
+      "abrev": "ADL",
+      "tipo": "freelance",
+      "color_border": "#e8c4a8",
+      "color_bg": "#fdf4ec",
+      "color_text": "#9a6a4a",
+      "agente": "Diseño freelance",
+      "resumen": "Encargos esporádicos. Cada proyecto tiene su propia identidad y manual de marca.",
+      "id_local": "cli-desafio-latam"
+    },
+    {
+      "slug": "impresoreando",
+      "nombre": "Impresoreando",
+      "abrev": "IMP",
+      "tipo": "freelance",
+      "color_border": "#c9a227",
+      "color_bg": "#faf6eb",
+      "color_text": "#7a5c10",
+      "agente": "Impresión, identidad y piezas gráficas",
+      "resumen": "Panel socios 50/50 · Instagram @impresoreando",
+      "id_local": "cli-impresoreando"
+    }
+  ]
+}

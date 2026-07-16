@@ -3,7 +3,7 @@ chcp 65001 >nul
 cd /d "%~dp0"
 echo.
 echo  === Abrir Impresoreando — panel socios ===
-echo  Rama: cursor/ts-prompt-botas-rojas-6a09
+echo  Rama: cursor/impresoreando-6a09
 echo.
 
 call "%~dp0CERRAR-SERVIDOR.bat"
