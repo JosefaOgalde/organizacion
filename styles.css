@@ -116,7 +116,7 @@ body {
 
 .tab {
   background: #e2e2e2;
-  border: 1.5px solid #9a9a9a;
+  border: 2px solid #5a5a5a;
   padding: 0.6rem 1.1rem;
   border-radius: var(--radius);
   cursor: pointer;
@@ -127,13 +127,13 @@ body {
 
 .tab:hover {
   background: #d4d4d4;
-  border-color: #6e6e6e;
+  border-color: #2d2d2d;
 }
 
 .tab--active {
   background: var(--celeste-dark);
   color: var(--bg-panel);
-  border-color: var(--celeste-dark);
+  border-color: #2a2848;
   font-weight: 600;
 }
 
@@ -822,7 +822,7 @@ body {
 .btn--accent {
   background: var(--bg-panel);
   color: var(--celeste-dark);
-  border: 2px solid var(--celeste);
+  border: 2px solid #4e4b84;
 }
 
 .btn--accent:hover {
