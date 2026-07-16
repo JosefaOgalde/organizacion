@@ -58,6 +58,7 @@
     }
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
     if (agruparGastosPorRegistro(d)) changed = true;
+    if (asegurarProductoPortacompletosGato(d)) changed = true;
     const gastos = d.gastos;
     for (const g of gastos) {
       const quien = String(g.socioRegistro || '').trim();
@@ -196,6 +197,43 @@
         Object.assign(existing, reg);
         changed = true;
       }
+    }
+    return changed;
+  }
+
+  function asegurarProductoPortacompletosGato(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-portacompletos-gato';
+    const existing = d.productos.find((p) => p.id === id || /portacompletos?\s*gato/i.test(p.nombre || ''));
+    const avgFilKg = (() => {
+      const fils = d.productos.map((p) => Number(p.costoFilamentoKgClp || 0)).filter((n) => n > 0);
+      if (fils.length) return Math.round(fils.reduce((a, b) => a + b, 0) / fils.length);
+      return 12950;
+    })();
+    if (!existing) {
+      d.productos.push({
+        id,
+        nombre: 'Portacompletos gato',
+        activo: true,
+        filamentoGramos: 110,
+        costoFilamentoKgClp: avgFilKg,
+        horasImpresion: 5,
+        minutosPintado: 20,
+        unidadesMetal: 0,
+        unidadesBolsa: 1,
+        precioVentaSugeridoClp: 0,
+        notas: '5 h de impresión. Precio de venta a público se carga a mano.',
+      });
+      return true;
+    }
+    let changed = false;
+    if (Number(existing.horasImpresion) !== 5) {
+      existing.horasImpresion = 5;
+      changed = true;
+    }
+    if (!existing.id) {
+      existing.id = id;
+      changed = true;
     }
     return changed;
   }
@@ -716,8 +754,9 @@
           Number(prod.precioVentaSugeridoClp) > 0
             ? ((Number(prod.precioVentaSugeridoClp) - c.total) / Number(prod.precioVentaSugeridoClp)) * 100
             : 0;
+        const pid = escapeHtml(prod.id || '');
         return `
-        <div class="imp-card">
+        <div class="imp-card" data-prod-id="${pid}">
           <h3>${escapeHtml(prod.nombre)}</h3>
           <div class="imp-grid">
             <div class="imp-kpi"><span>Filamento</span><strong>${money(c.filamento)}</strong></div>
@@ -726,11 +765,19 @@
             <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
             <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
             <div class="imp-kpi imp-kpi--accent"><span>Costo unitario</span><strong>${money(c.total)}</strong></div>
-            <div class="imp-kpi"><span>Precio lista</span><strong>${money(prod.precioVentaSugeridoClp)}</strong></div>
-            <div class="imp-kpi ${margenReal >= Number(data.parametros?.margenObjetivoPct || 40) ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Margen real</span><strong>${margenReal.toFixed(0)}%</strong></div>
-            <div class="imp-kpi"><span>Precio c/ margen ${Math.round(margen * 100)}%</span><strong>${money(sugeridoCosto)}</strong></div>
+            <div class="imp-kpi"><span>Precio sugerido c/ margen ${Math.round(margen * 100)}%</span><strong>${money(sugeridoCosto)}</strong></div>
+            <div class="imp-kpi ${Number(prod.precioVentaSugeridoClp) > 0 && margenReal >= Number(data.parametros?.margenObjetivoPct || 40) ? 'imp-kpi--ok' : Number(prod.precioVentaSugeridoClp) > 0 ? 'imp-kpi--warn' : ''}"><span>Margen real</span><strong>${Number(prod.precioVentaSugeridoClp) > 0 ? `${margenReal.toFixed(0)}%` : '—'}</strong></div>
           </div>
-          <p class="imp-muted">${prod.filamentoGramos || 0}g · ${prod.horasImpresion || 0}h impresión · ${prod.minutosPintado || 0} min pintado · metal×${prod.unidadesMetal || 0} · bolsa×${prod.unidadesBolsa || 0} · luz/h ≈ ${money(costoHoraImpresora())}</p>
+          <form class="imp-form imp-form--precio" data-precio-prod="${pid}">
+            <label>Precio venta a público (CLP)
+              <input name="precioVenta" type="number" min="0" step="10" value="${Number(prod.precioVentaSugeridoClp) || ''}" placeholder="Ej. 8990 — editable a mano" />
+            </label>
+            <div class="imp-form-actions">
+              <button type="submit" class="imp-btn imp-btn--primary">Guardar precio</button>
+              <span class="imp-muted">Costo ${money(c.total)} · si dejas 0, solo ves el costo</span>
+            </div>
+          </form>
+          <p class="imp-muted">${prod.filamentoGramos || 0}g · ${prod.horasImpresion || 0}h impresión · ${prod.minutosPintado || 0} min pintado · metal×${prod.unidadesMetal || 0} · bolsa×${prod.unidadesBolsa || 0} · luz/h ≈ ${money(costoHoraImpresora())}${prod.notas ? ` · ${escapeHtml(prod.notas)}` : ''}</p>
         </div>`;
       })
       .join('');
@@ -738,18 +785,18 @@
     $('#tab-costos').innerHTML = `
       <div class="imp-card">
         <h2>Costos por pieza (luz + materiales)</h2>
-        <p class="imp-muted">Cada pieza = filamento + luz (kWh × horas) + pintado + metal + bolsa. Ajusta parámetros en <strong>Operación / luz</strong>.</p>
+        <p class="imp-muted">Cada pieza = filamento + luz (kWh × horas) + pintado + metal + bolsa. El <strong>precio a público</strong> se carga a mano en cada producto.</p>
         <p class="imp-muted">Promedio reciente $/kg filamento (desde gastos): <strong>${money(avgFilKg)}</strong> · luz/hora impresora ≈ <strong>${money(costoHoraImpresora())}</strong></p>
       </div>
       ${blocks || '<div class="imp-card">Sin productos</div>'}
       <div class="imp-card">
         <h3>Calculadora rápida de pieza</h3>
         <form class="imp-form" id="form-calc-pieza">
-          <label>Gramos filamento<input name="g" type="number" step="0.1" value="12" /></label>
+          <label>Gramos filamento<input name="g" type="number" step="0.1" value="110" /></label>
           <label>$ / kg filamento<input name="kg" type="number" value="${avgFilKg}" /></label>
-          <label>Horas impresión<input name="h" type="number" step="0.1" value="1.2" /></label>
-          <label>Minutos pintado<input name="m" type="number" value="15" /></label>
-          <label>Unidades metal<input name="metal" type="number" value="1" /></label>
+          <label>Horas impresión<input name="h" type="number" step="0.1" value="5" /></label>
+          <label>Minutos pintado<input name="m" type="number" value="20" /></label>
+          <label>Unidades metal<input name="metal" type="number" value="0" /></label>
           <label>Bolsas<input name="bolsa" type="number" value="1" /></label>
         </form>
         <div class="imp-calc-live" id="calc-pieza-live">Calculando…</div>
@@ -764,7 +811,7 @@
           <label>Minutos pintado<input name="minutosPintado" type="number" value="15" /></label>
           <label>Unidades metal<input name="unidadesMetal" type="number" value="1" /></label>
           <label>Bolsas<input name="unidadesBolsa" type="number" value="1" /></label>
-          <label>Precio venta $<input name="precioVentaSugeridoClp" type="number" value="4990" /></label>
+          <label>Precio venta a público $<input name="precioVentaSugeridoClp" type="number" value="" placeholder="Opcional — editable después" /></label>
           <div class="imp-form-actions"><button class="imp-btn imp-btn--primary" type="submit">Agregar producto</button></div>
         </form>
       </div>
@@ -795,6 +842,20 @@
     $('#form-calc-pieza')?.addEventListener('input', updateCalc);
     updateCalc();
 
+    $('#tab-costos').querySelectorAll('[data-precio-prod]').forEach((form) => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = form.getAttribute('data-precio-prod');
+        const fd = new FormData(form);
+        const prod = (data.productos || []).find((x) => x.id === id);
+        if (!prod) return;
+        prod.precioVentaSugeridoClp = Number(fd.get('precioVenta') || 0);
+        markDirty();
+        renderAll();
+        setStatus('Precio de venta actualizado — guarda online', 'warn');
+      });
+    });
+
     $('#form-prod').addEventListener('submit', (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
@@ -809,7 +870,7 @@
         minutosPintado: Number(fd.get('minutosPintado')),
         unidadesMetal: Number(fd.get('unidadesMetal')),
         unidadesBolsa: Number(fd.get('unidadesBolsa')),
-        precioVentaSugeridoClp: Number(fd.get('precioVentaSugeridoClp')),
+        precioVentaSugeridoClp: Number(fd.get('precioVentaSugeridoClp') || 0),
         notas: '',
       });
       markDirty();

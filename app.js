@@ -637,10 +637,12 @@ function datosIniciales() {
     tareasEliminadas: [],
     perfilPersonal: {
       nombre: 'Josefa Ogalde',
-      titulo: '',
-      tagline: '',
-      contacto: '',
-      cartaPresentacion: '',
+      titulo: 'Desarrolladora Fullstack · Web · E-commerce · WordPress',
+      tagline:
+        'Desarrolladora Fullstack especializada en sitios web, tiendas online y proyectos WordPress/WooCommerce.',
+      contacto: 'Email: josefaogalde@gmail.com\nWhatsApp: +56 9 6604 7614\nGitHub: github.com/JosefaOgalde',
+      cartaPresentacion:
+        'Hola,\n\nSoy Josefa Ogalde, desarrolladora fullstack especializada en sitios web, tiendas online y proyectos WordPress/WooCommerce.\n\nTengo experiencia en e-commerce, landings y acompañamiento post-entrega para que cada cliente gestione su sitio con confianza.\n\nContacto:\njosefaogalde@gmail.com\n+56 9 6604 7614\ngithub.com/JosefaOgalde\n',
       notas: '',
       actualizado: ''
     },
@@ -662,25 +664,33 @@ function initMetaDatos(data) {
 }
 
 function asegurarPerfilPersonal(data) {
+  const defaults = {
+    nombre: 'Josefa Ogalde',
+    titulo: 'Desarrolladora Fullstack · Web · E-commerce · WordPress',
+    tagline:
+      'Desarrolladora Fullstack especializada en sitios web, tiendas online y proyectos WordPress/WooCommerce.',
+    contacto: 'Email: josefaogalde@gmail.com\nWhatsApp: +56 9 6604 7614\nGitHub: github.com/JosefaOgalde',
+    cartaPresentacion:
+      'Hola,\n\nSoy Josefa Ogalde, desarrolladora fullstack especializada en sitios web, tiendas online y proyectos WordPress/WooCommerce.\n\nTengo experiencia en e-commerce, landings y acompañamiento post-entrega para que cada cliente gestione su sitio con confianza.\n\nContacto:\njosefaogalde@gmail.com\n+56 9 6604 7614\ngithub.com/JosefaOgalde\n',
+    notas: '',
+    actualizado: '',
+  };
   if (!data.perfilPersonal || typeof data.perfilPersonal !== 'object') {
-    data.perfilPersonal = {
-      nombre: 'Josefa Ogalde',
-      titulo: '',
-      tagline: '',
-      contacto: '',
-      cartaPresentacion: '',
-      notas: '',
-      actualizado: ''
-    };
+    data.perfilPersonal = { ...defaults };
   }
   const p = data.perfilPersonal;
-  if (typeof p.nombre !== 'string') p.nombre = 'Josefa Ogalde';
+  if (typeof p.nombre !== 'string' || !p.nombre.trim()) p.nombre = defaults.nombre;
   if (typeof p.titulo !== 'string') p.titulo = '';
   if (typeof p.tagline !== 'string') p.tagline = '';
   if (typeof p.contacto !== 'string') p.contacto = '';
   if (typeof p.cartaPresentacion !== 'string') p.cartaPresentacion = '';
   if (typeof p.notas !== 'string') p.notas = '';
   if (typeof p.actualizado !== 'string') p.actualizado = '';
+  // Rellenar vacíos con la tarjeta oficial (sin pisar ediciones del usuario)
+  if (!String(p.titulo || '').trim()) p.titulo = defaults.titulo;
+  if (!String(p.tagline || '').trim()) p.tagline = defaults.tagline;
+  if (!String(p.contacto || '').trim()) p.contacto = defaults.contacto;
+  if (!String(p.cartaPresentacion || '').trim()) p.cartaPresentacion = defaults.cartaPresentacion;
   return data;
 }
 
@@ -6359,17 +6369,26 @@ function renderTarjetaPerfilPersonal() {
   const slot = document.getElementById('perfil-personal-tarjeta');
   if (!slot) return;
   const p = perfilPersonalActual();
-  const nombre = (p.nombre || '').trim() || 'Tu nombre';
-  const titulo = (p.titulo || '').trim();
+  const nombre = (p.nombre || '').trim() || 'Josefa Ogalde';
+  const titulo = (p.titulo || '').trim() || 'Desarrolladora Fullstack · Web · E-commerce · WordPress';
   const tagline = (p.tagline || '').trim();
   const contacto = (p.contacto || '').trim();
   slot.innerHTML = `
-    <article class="perfil-tarjeta">
+    <article class="perfil-tarjeta perfil-tarjeta--presentacion">
       <p class="perfil-tarjeta__eyebrow">Tarjeta de presentación</p>
-      <h3 class="perfil-tarjeta__nombre">${escapeHtml(nombre)}</h3>
-      ${titulo ? `<p class="perfil-tarjeta__titulo">${escapeHtml(titulo)}</p>` : ''}
-      ${tagline ? `<p class="perfil-tarjeta__tagline">${escapeHtml(tagline)}</p>` : '<p class="perfil-tarjeta__tagline perfil-tarjeta__tagline--vacio">Agrega una frase para tu tarjeta</p>'}
-      ${contacto ? `<pre class="perfil-tarjeta__contacto">${escapeHtml(contacto)}</pre>` : ''}
+      <figure class="perfil-tarjeta__figura">
+        <img class="perfil-tarjeta__img" src="index/assets/perfil/josefa-ogalde-tarjeta.png" alt="Tarjeta de presentación de ${escapeHtml(nombre)}" width="1500" height="939" loading="lazy">
+      </figure>
+      <div class="perfil-tarjeta__resumen">
+        <h3 class="perfil-tarjeta__nombre">${escapeHtml(nombre)}</h3>
+        ${titulo ? `<p class="perfil-tarjeta__titulo">${escapeHtml(titulo)}</p>` : ''}
+        ${tagline ? `<p class="perfil-tarjeta__tagline">${escapeHtml(tagline)}</p>` : ''}
+        ${contacto ? `<pre class="perfil-tarjeta__contacto">${escapeHtml(contacto)}</pre>` : ''}
+        <p class="perfil-tarjeta__links">
+          <a class="btn btn--ghost btn--small" href="index/assets/perfil/Josefa-Ogalde-Desarrollo-y-Diseno-Web.pdf" target="_blank" rel="noopener">Abrir PDF</a>
+          <a class="btn btn--ghost btn--small" href="index/assets/perfil/josefa-ogalde-tarjeta.png" target="_blank" rel="noopener">Ver imagen</a>
+        </p>
+      </div>
     </article>`;
 }
 

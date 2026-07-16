@@ -203,6 +203,19 @@
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 12990,
       "notas": ""
+    },
+    {
+      "id": "prod-portacompletos-gato",
+      "nombre": "Portacompletos gato",
+      "activo": true,
+      "filamentoGramos": 110,
+      "costoFilamentoKgClp": 12950,
+      "horasImpresion": 5,
+      "minutosPintado": 20,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 0,
+      "notas": "5 h de impresión. Precio de venta a público se carga a mano."
     }
   ],
   "planAds": {
