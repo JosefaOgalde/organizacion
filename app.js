@@ -4068,6 +4068,9 @@ function tareasOrdenadasPorHorario(lista) {
 
 function compararItemsDia(a, b) {
   if (a.minutos !== b.minutos) return a.minutos - b.minutos;
+  const ga = a.ordenGrupo != null ? a.ordenGrupo : 40;
+  const gb = b.ordenGrupo != null ? b.ordenGrupo : 40;
+  if (ga !== gb) return ga - gb;
   const ordenTipo = { cita: 0, reunion: 1, tarea: 2 };
   const ta = ordenTipo[a.tipo] ?? 9;
   const tb = ordenTipo[b.tipo] ?? 9;
@@ -4090,9 +4093,52 @@ function itemsDiaOrdenados(fechaISO) {
   (datos.reunionesClientes || []).filter(r => r.fecha === fechaISO).forEach(r => {
     items.push({ tipo: 'reunion', minutos: minutosHora(r.horaInicio), data: r });
   });
-  datos.tareas.filter(t => t.fecha === fechaISO && !t.pendiente).forEach(t => {
-    items.push({ tipo: 'tarea', minutos: minutosHora(t.horaInicio), data: t });
-  });
+
+  const tareas = datos.tareas.filter(t => t.fecha === fechaISO && !t.pendiente);
+  const usadas = new Set();
+  const madres = tareas
+    .filter((t) => esTareaMadreCalendario(t))
+    .sort(
+      (a, b) =>
+        minutosHora(a.horaInicio) - minutosHora(b.horaInicio) ||
+        String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || ''))
+    );
+
+  // Madre arriba · subtareas indexadas (1, 2, 3…) debajo
+  for (const m of madres) {
+    const base = minutosHora(m.horaInicio);
+    items.push({ tipo: 'tarea', minutos: base, ordenGrupo: 0, data: m });
+    usadas.add(m.id);
+    const hijos = tareas
+      .filter((t) => t.parentId === m.id)
+      .sort(
+        (a, b) =>
+          String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || '')) ||
+          minutosHora(a.horaInicio) - minutosHora(b.horaInicio)
+      );
+    hijos.forEach((h, i) => {
+      items.push({
+        tipo: 'tarea',
+        minutos: base,
+        ordenGrupo: i + 1,
+        indiceHijo: i + 1,
+        data: h,
+      });
+      usadas.add(h.id);
+    });
+  }
+
+  tareas
+    .filter((t) => !usadas.has(t.id))
+    .forEach((t) => {
+      items.push({
+        tipo: 'tarea',
+        minutos: minutosHora(t.horaInicio),
+        ordenGrupo: 50,
+        data: t,
+      });
+    });
+
   return items.sort(compararItemsDia);
 }
 
@@ -4367,16 +4413,22 @@ function htmlReunionDia(r) {
   </article>`;
 }
 
-function htmlTareaDia(t) {
+function htmlTareaDia(t, opts = {}) {
   const cli = clienteDe(t.clienteId);
-  const col = colorDe(cli);
+  const baseCol = colorDe(cli);
+  const col = esTareaMadreCalendario(t) ? colorMiniTarea(t) : baseCol;
   const rol = rolDe(t);
-  const titulo = nombreBaseTarea(t) || t.titulo;
+  const tituloBase = nombreBaseTarea(t) || t.titulo;
+  const titulo =
+    opts.indiceHijo != null ? `${opts.indiceHijo}. ${tituloBase}` : tituloBase;
+  const madre = esTareaMadreCalendario(t);
+  const hija = opts.indiceHijo != null || !!t.parentId;
+  const tipoLabel = madre ? 'Tarea madre' : hija ? 'Subtarea' : 'Tarea';
 
-  return `<article class="dia-item dia-item--tarea dia-item--clic tarea--${t.prioridad}${t.completada ? ' tarea--completada' : ''}" data-id="${t.id}" style="border-left-color:${col.border};background:${col.bg}" title="Clic para ver detalle y realizar tarea">
+  return `<article class="dia-item dia-item--tarea dia-item--clic tarea--${t.prioridad}${t.completada ? ' tarea--completada' : ''}${madre ? ' dia-item--madre' : ''}${hija ? ' dia-item--hija' : ''}" data-id="${t.id}" style="border-left-color:${col.border};background:${col.bg}" title="Clic para ver detalle y realizar tarea">
     <div class="dia-item__hora" style="color:${col.text}">${escapeHtml(etiquetaHoraTarea(t))}</div>
     <div class="dia-item__cuerpo">
-      <div class="dia-item__tipo" style="color:${col.text}">Tarea${cli ? ` · ${escapeHtml(cli.nombre)}` : ''}</div>
+      <div class="dia-item__tipo" style="color:${col.text}">${tipoLabel}${cli ? ` · ${escapeHtml(cli.nombre)}` : ''}</div>
       <h3 class="dia-item__titulo">${escapeHtml(titulo)}</h3>
       ${rol ? `<p class="dia-item__rol">${escapeHtml(rol.nombre)}</p>` : ''}
       ${t.prioridad ? `<p class="dia-item__meta">Prioridad: ${escapeHtml(t.prioridad)}</p>` : ''}
@@ -4544,34 +4596,45 @@ function renderCalendarioMes() {
     const esMesActual = dia.getMonth() === m;
     const esHoy = diaStr === hoyStr;
 
-    const citas = datos.citasSalud.filter(c => c.fecha === diaStr);
-    const reuniones = (datos.reunionesClientes || []).filter(r => r.fecha === diaStr);
-    const tareas = datos.tareas.filter(t => t.fecha === diaStr && !t.pendiente);
-
+    const ordenados = itemsDiaOrdenados(diaStr);
     const items = [
-      ...citas.map(c => ({
-        minutos: minutosHora(c.hora),
-        html: `<span class="mes-item mes-item--salud${claseCitaEstado(c)}" style="background:${COLORES.salud.bg};border-left-color:${COLORES.salud.border};color:${COLORES.salud.text}" title="${escapeHtml(c.especialidad + ' ' + c.hora + (etiquetaEstadoCita(c) ? ' · ' + etiquetaEstadoCita(c) : ''))}">${escapeHtml(textoCitaCompacto(c, 0))}</span>`
-      })),
-      ...reuniones.map(r => {
-        const col = colorReunion();
-        const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
-        return {
-          minutos: minutosHora(r.horaInicio),
-          html: `<span class="mes-item mes-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 0))}</span>`
-        };
-      }),
-      ...tareas.map(t => {
+      ...ordenados.map((it) => {
+        if (it.tipo === 'cita') {
+          const c = it.data;
+          return {
+            minutos: it.minutos,
+            ordenGrupo: it.ordenGrupo,
+            html: `<span class="mes-item mes-item--salud${claseCitaEstado(c)}" style="background:${COLORES.salud.bg};border-left-color:${COLORES.salud.border};color:${COLORES.salud.text}" title="${escapeHtml(c.especialidad + ' ' + c.hora + (etiquetaEstadoCita(c) ? ' · ' + etiquetaEstadoCita(c) : ''))}">${escapeHtml(textoCitaCompacto(c, 0))}</span>`,
+          };
+        }
+        if (it.tipo === 'reunion') {
+          const r = it.data;
+          const col = colorReunion();
+          const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
+          return {
+            minutos: it.minutos,
+            ordenGrupo: it.ordenGrupo,
+            html: `<span class="mes-item mes-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 0))}</span>`,
+          };
+        }
+        const t = it.data;
         const col = colorMiniTarea(t);
         const madre = esTareaMadreCalendario(t);
+        const hija = it.indiceHijo != null || !!t.parentId;
         const cls =
           (t.completada ? ' mes-item--completada' : '') +
-          (madre ? ' mes-item--madre' : '');
+          (madre ? ' mes-item--madre' : '') +
+          (hija ? ' mes-item--hija' : '');
+        const texto =
+          it.indiceHijo != null
+            ? `${it.indiceHijo}. ${tituloMes(t, 0)}`
+            : tituloMes(t, 0);
         return {
-          minutos: minutosHora(t.horaInicio),
-          html: `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(tituloMes(t, 0))}</span>`
+          minutos: it.minutos,
+          ordenGrupo: it.ordenGrupo,
+          html: `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(texto)}</span>`,
         };
-      })
+      }),
     ].sort(compararItemsDia);
 
     const itemsHtml = items.map(x => x.html).join('');
@@ -4621,12 +4684,16 @@ function htmlItemCalendarioSemana(item) {
   }
   const t = item.data;
   const col = colorMiniTarea(t);
-  const texto = tituloMes(t, MAX_TITULO_SEMANA);
+  const textoBase = tituloMes(t, MAX_TITULO_SEMANA);
+  const texto =
+    item.indiceHijo != null ? `${item.indiceHijo}. ${textoBase}` : textoBase;
   const completo = tituloMes(t, 200);
   const madre = esTareaMadreCalendario(t);
+  const hija = item.indiceHijo != null || !!t.parentId;
   const cls =
     (t.completada ? ' tarea-mini--completada' : '') +
-    (madre ? ' tarea-mini--madre' : '');
+    (madre ? ' tarea-mini--madre' : '') +
+    (hija ? ' tarea-mini--hija' : '');
   const hora = etiquetaHoraTarea(t);
   const fecha = t.fecha || '';
   return `<div class="tarea-mini tarea-mini--clic${cls}" data-tarea-id="${t.id}" data-fecha="${escapeHtml(fecha)}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(hora + ' · ' + completo)} — Clic para ver el día">${escapeHtml(texto)}</div>`;
@@ -4799,7 +4866,7 @@ function renderDia() {
     cont.innerHTML = `<div class="dia-timeline">${items.map(item => {
       if (item.tipo === 'cita') return htmlCitaDia(item.data);
       if (item.tipo === 'reunion') return htmlReunionDia(item.data);
-      return htmlTareaDia(item.data);
+      return htmlTareaDia(item.data, { indiceHijo: item.indiceHijo });
     }).join('')}</div>`;
     bindAccionesTarea(cont);
   }
