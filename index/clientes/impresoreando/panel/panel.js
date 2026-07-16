@@ -698,7 +698,7 @@
         <form class="imp-form" id="form-params">
           <label>Tarifa luz $/kWh<input name="tarifaKwhClp" type="number" value="${p.tarifaKwhClp || 180}" /></label>
           <label>Consumo impresora kW<input name="consumoImpresoraKw" type="number" step="0.01" value="${p.consumoImpresoraKw || 0.22}" /></label>
-          <label>Valor hora pintado/mano obra<input name="valorHoraManoObraClp" type="number" value="${p.valorHoraManoObraClp || 5000}" /></label>
+          <label>Mano de obra $/h<input name="valorHoraManoObraClp" type="number" value="${p.valorHoraManoObraClp || 5000}" /></label>
           <label>Anillo metal llavero $<input name="costoAnilloMetalLlaveroClp" type="number" value="${p.costoAnilloMetalLlaveroClp || 150}" /></label>
           <label>Bolsa entrega $<input name="costoBolsaEntregaClp" type="number" value="${p.costoBolsaEntregaClp || 50}" /></label>
           <label>Margen objetivo %<input name="margenObjetivoPct" type="number" value="${p.margenObjetivoPct || 40}" /></label>

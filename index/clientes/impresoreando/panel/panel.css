@@ -183,8 +183,22 @@ table.imp-table {
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 0.55rem;
   margin-top: 0.75rem;
+  align-items: end;
 }
-.imp-form label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.78rem; color: var(--imp-muted); font-weight: 600; }
+.imp-form label {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  color: var(--imp-muted);
+  font-weight: 600;
+  min-height: 0;
+}
+.imp-form label > span,
+.imp-form label {
+  line-height: 1.25;
+}
 .imp-form input, .imp-form select, .imp-form textarea {
   border: 1px solid #e0d2b0;
   border-radius: 8px;
