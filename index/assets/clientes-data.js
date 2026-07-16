@@ -7,7 +7,7 @@ window.CLIENTES_PORTAL = [
     nombre: 'Trendseeker - Talk',
     abrev: 'TS',
     tipo: 'Full time',
-    color: { border: '#c4b8e8', bg: '#f0ecfa', text: '#6a5a9e' },
+    color: { border: '#cdc4f9', bg: '#f4f2ff', text: '#4e4b84' },
     agente: 'Community Manager + WordPress',
     resumen: 'Redes, Metricool, historias, banners y mantenimiento WordPress.',
     landing: {

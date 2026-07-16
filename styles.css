@@ -2,9 +2,11 @@
   --bg: #f9f9f9;
   --bg-panel: #ffffff;
   --bg-card: #f5f5f5;
-  --celeste: #7ec8e3;
-  --celeste-light: #b8e4f2;
-  --celeste-dark: #5ab4d4;
+  /* Acento global = lavanda del perfil TS / COLORES.lavanda */
+  --celeste: #cdc4f9;
+  --celeste-light: #f4f2ff;
+  --celeste-dark: #4e4b84;
+  --accent: #cdc4f9;
   --text: #2d2d2d;
   --text-muted: #5a5a5a;
   --border: #d0d0d0;
@@ -130,7 +132,7 @@ body:has(#view-tarea.view--active) .app {
 }
 
 .tab--active {
-  background: var(--celeste);
+  background: var(--celeste-dark);
   color: var(--bg-panel);
   font-weight: 600;
 }
@@ -204,8 +206,8 @@ body:has(#view-tarea.view--active) .app {
 }
 
 .vista-switch__btn--active:hover {
-  background: var(--celeste);
-  border-color: var(--celeste);
+  background: #3f3c6c;
+  border-color: #3f3c6c;
 }
 
 .week-nav .btn {
@@ -276,7 +278,7 @@ body:has(#view-tarea.view--active) .app {
 }
 
 .dia--hoy .dia__header {
-  background: var(--celeste);
+  background: var(--celeste-dark);
   color: var(--bg-panel);
 }
 
@@ -454,8 +456,8 @@ body:has(#view-tarea.view--active) .app {
 }
 
 .nueva-switch__btn--active {
-  background: var(--celeste);
-  color: #1a3d4d;
+  background: var(--celeste-dark);
+  color: #fff;
 }
 
 .nueva-switch__btn:hover:not(.nueva-switch__btn--active) {
@@ -776,13 +778,13 @@ body:has(#view-tarea.view--active) .app {
 }
 
 .btn--primary {
-  background: var(--celeste);
+  background: var(--celeste-dark);
   color: var(--bg-panel);
   font-weight: 600;
 }
 
 .btn--primary:hover {
-  background: var(--celeste-dark);
+  background: #3f3c6c;
 }
 
 .btn--accent {
@@ -898,7 +900,7 @@ body:has(#view-tarea.view--active) .app {
 }
 
 .btn--small:hover {
-  background: var(--celeste);
+  background: var(--celeste-dark);
   color: var(--bg-panel);
 }
 
@@ -1875,7 +1877,7 @@ body:has(#view-tarea.view--active) .app {
 }
 
 .dia--mini.dia--seleccionado .dia__header {
-  background: var(--celeste);
+  background: var(--celeste-dark);
   color: var(--bg-panel);
 }
 
@@ -2029,9 +2031,9 @@ body:has(#view-tarea.view--active) .app {
 }
 
 .tarea-accion--realizar {
-  background: #e8f4fc;
-  border-color: #5ab4d4;
-  color: #2a6a82;
+  background: #f4f2ff;
+  border-color: #cdc4f9;
+  color: #4e4b84;
 }
 
 .tarea-accion--hecha {
