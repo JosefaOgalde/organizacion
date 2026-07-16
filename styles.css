@@ -147,6 +147,22 @@ body {
   opacity: 1;
 }
 
+a.tab.tab--perfil {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  background: #f4f2ff;
+  border-color: #4e4b84;
+  color: #4e4b84;
+  font-weight: 700;
+}
+
+a.tab.tab--perfil:hover {
+  background: #cdc4f9;
+  border-color: #2a2848;
+  color: #2a2848;
+}
+
 /* Views */
 .view {
   display: none;
