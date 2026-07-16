@@ -3583,6 +3583,7 @@ function htmlEntregableTarea(tarea) {
             <div class="prompt-seccion__acciones">
               <button type="button" class="btn btn--small" data-copiar-copy-version="${v}">Copiar</button>
               <button type="button" class="btn btn--small btn--ghost" data-guardar-copy-version="${v}">Guardar</button>
+              <button type="button" class="btn btn--accent btn--small" data-mejorar-copy-version="${v}">Mejorar</button>
             </div>
           </div>
           <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-copy-texto rows="8" spellcheck="false" placeholder="Cargando copy ${v}…"></textarea>
@@ -3595,10 +3596,11 @@ function htmlEntregableTarea(tarea) {
           <strong>Copys (TXT)</strong>
         </div>
         <p class="tarea-detalle__entregable-hint">
-          Un bloque · tres secciones (A / B / C). Edita, guarda y copia cada una.
+          Un bloque · tres secciones (A / B / C). Copiar · Guardar · Mejorar (queda en historial del cliente).
           ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
         </p>
         <div class="prompt-bloque">${secciones}</div>
+        ${htmlHistorialEntregableTarea(tarea)}
       </div>`;
     }
     return `
@@ -3657,6 +3659,7 @@ function htmlEntregableTarea(tarea) {
             <div class="prompt-seccion__acciones">
               <button type="button" class="btn btn--small" data-copiar-prompt-version="${v}">Copiar</button>
               <button type="button" class="btn btn--small btn--ghost" data-guardar-prompt-version="${v}">Guardar</button>
+              <button type="button" class="btn btn--accent btn--small" data-mejorar-prompt-version="${v}">Mejorar</button>
             </div>
           </div>
           <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-prompt-texto rows="8" spellcheck="false" placeholder="Cargando prompt ${v}…"></textarea>
@@ -3669,10 +3672,11 @@ function htmlEntregableTarea(tarea) {
           <strong>Prompt Gemini (video)</strong>
         </div>
         <p class="tarea-detalle__entregable-hint">
-          Un bloque · tres secciones (TXT A / B / C). Edita, guarda y copia cada una.
+          Un bloque · tres secciones (TXT A / B / C). Copiar · Guardar · Mejorar (historial del cliente / landing).
           ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
         </p>
         <div class="prompt-bloque">${secciones}</div>
+        ${htmlHistorialEntregableTarea(tarea)}
       </div>`;
   }
 
@@ -3806,11 +3810,45 @@ async function cargarCopysAbcEnVista(tarea) {
       }
       btn.disabled = true;
       try {
-        const ok = await guardarPromptTxtEnDisco(archivo, ta?.value ?? '');
+        const texto = ta?.value ?? '';
+        const ok = await guardarPromptTxtEnDisco(archivo, texto);
+        if (ok) {
+          registrarHistorialEntregable(tarea, {
+            tipo: 'copys-txt',
+            version: ver,
+            accion: 'guardar',
+            archivo,
+            texto,
+          });
+          // refrescar bloque historial en la vista
+          const hist = root.querySelector('.entregable-hist');
+          const nuevo = htmlHistorialEntregableTarea(tareaDe(tarea.id) || tarea);
+          if (hist && nuevo) hist.outerHTML = nuevo;
+          else if (!hist && nuevo) root.insertAdjacentHTML('beforeend', nuevo);
+        }
         mostrarToast(ok ? `Copy ${ver} guardado` : 'No se pudo guardar');
       } finally {
         btn.disabled = false;
       }
+    });
+  });
+
+  root.querySelectorAll('[data-mejorar-copy-version]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const ver = btn.getAttribute('data-mejorar-copy-version') || 'A';
+      const bloque = root.querySelector(`[data-copy-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-copy-texto]');
+      const archivo = bloque?.getAttribute('data-copy-archivo') || archivos[ver] || '';
+      iniciarMejoraEntregable(tarea, {
+        tipo: 'copys-txt',
+        version: ver,
+        texto: ta?.value || '',
+        archivo,
+      });
+      const hist = root.querySelector('.entregable-hist');
+      const nuevo = htmlHistorialEntregableTarea(tareaDe(tarea.id) || tarea);
+      if (hist && nuevo) hist.outerHTML = nuevo;
+      else if (!hist && nuevo) root.insertAdjacentHTML('beforeend', nuevo);
     });
   });
 }
@@ -3883,12 +3921,97 @@ async function cargarPromptsGeminiEnVista(tarea) {
       btn.disabled = true;
       try {
         const ok = await guardarPromptTxtEnDisco(archivo, texto);
+        if (ok) {
+          registrarHistorialEntregable(tarea, {
+            tipo: 'prompt-gemini',
+            version: ver,
+            accion: 'guardar',
+            archivo,
+            texto,
+          });
+          const hist = root.querySelector('.entregable-hist');
+          const nuevo = htmlHistorialEntregableTarea(tareaDe(tarea.id) || tarea);
+          if (hist && nuevo) hist.outerHTML = nuevo;
+          else if (!hist && nuevo) root.insertAdjacentHTML('beforeend', nuevo);
+        }
         mostrarToast(ok ? `Versión ${ver} guardada` : 'No se pudo guardar');
       } finally {
         btn.disabled = false;
       }
     });
   });
+
+  root.querySelectorAll('[data-mejorar-prompt-version]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const ver = btn.getAttribute('data-mejorar-prompt-version') || 'A';
+      const bloque = root.querySelector(`[data-prompt-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-prompt-texto]');
+      const archivo = bloque?.getAttribute('data-prompt-archivo') || archivos[ver] || '';
+      iniciarMejoraEntregable(tarea, {
+        tipo: 'prompt-gemini',
+        version: ver,
+        texto: ta?.value || '',
+        archivo,
+      });
+      const hist = root.querySelector('.entregable-hist');
+      const nuevo = htmlHistorialEntregableTarea(tareaDe(tarea.id) || tarea);
+      if (hist && nuevo) hist.outerHTML = nuevo;
+      else if (!hist && nuevo) root.insertAdjacentHTML('beforeend', nuevo);
+    });
+  });
+}
+
+function asegurarHistorialEntregables(tarea) {
+  if (!tarea) return [];
+  if (!Array.isArray(tarea.historialEntregables)) tarea.historialEntregables = [];
+  return tarea.historialEntregables;
+}
+
+function registrarHistorialEntregable(tarea, opts = {}) {
+  const tLive = tareaDe(tarea?.id) || tarea;
+  if (!tLive) return null;
+  const lista = asegurarHistorialEntregables(tLive);
+  const texto = String(opts.texto || '');
+  const entry = {
+    id: typeof id === 'function' ? id() : `hist-${Date.now()}`,
+    ts: Date.now(),
+    fecha: typeof toISO === 'function' ? toISO(hoy()) : new Date().toISOString().slice(0, 10),
+    tipo: opts.tipo || tLive.tipoEntregable || '',
+    version: String(opts.version || '').toUpperCase() || 'A',
+    accion: opts.accion || 'guardar',
+    archivo: String(opts.archivo || '').replace(/^\/+/, ''),
+    preview: texto.slice(0, 320),
+  };
+  lista.unshift(entry);
+  // Mantener historial razonable
+  if (lista.length > 40) lista.length = 40;
+  if (tarea !== tLive) {
+    asegurarHistorialEntregables(tarea);
+    tarea.historialEntregables = lista;
+  }
+  try { guardar(); } catch (_) { /* ignore */ }
+  return entry;
+}
+
+function htmlHistorialEntregableTarea(tarea) {
+  const lista = Array.isArray(tarea?.historialEntregables) ? tarea.historialEntregables : [];
+  if (!lista.length) return '';
+  const items = lista
+    .slice(0, 8)
+    .map((h) => {
+      const when = h.fecha || '';
+      const acc = h.accion === 'mejora' ? 'Mejora' : 'Guardado';
+      const ver = h.version || '?';
+      const href = h.archivo
+        ? `<a href="/${escapeHtml(String(h.archivo).replace(/^\/+/, ''))}" target="_blank" rel="noopener">TXT ${escapeHtml(ver)}</a>`
+        : `v${escapeHtml(ver)}`;
+      return `<li><strong>${escapeHtml(acc)} ${escapeHtml(ver)}</strong> · ${escapeHtml(when)} · ${href}<br><span class="entregable-hist__preview">${escapeHtml(h.preview || '')}</span></li>`;
+    })
+    .join('');
+  return `<div class="entregable-hist">
+    <h4 class="entregable-hist__titulo">Historial (también en landing del cliente)</h4>
+    <ul class="entregable-hist__lista">${items}</ul>
+  </div>`;
 }
 
 async function guardarPromptTxtEnDisco(archivoRel, texto) {
@@ -3925,27 +4048,50 @@ function extraerVersionPromptGemini(texto, version) {
   return m ? m[0].trim() : '';
 }
 
-/** Abre el chat del agente con el prompt actual para que la usuaria aporte ideas y se mejore. */
-function iniciarMejoraPromptGemini(tarea, promptActual) {
+/** Abre el chat del agente para mejorar un TXT (prompt o copy) de una versión A/B/C. */
+function iniciarMejoraEntregable(tarea, opts = {}) {
+  const version = String(opts.version || 'A').toUpperCase();
+  const tipo = opts.tipo || tarea.tipoEntregable || 'prompt-gemini';
+  const textoActual = String(opts.texto || '');
+  const archivo = String(opts.archivo || '').replace(/^\/+/, '');
+  const esCopy = tipo === 'copys-txt';
+
+  registrarHistorialEntregable(tarea, {
+    tipo,
+    version,
+    accion: 'mejora',
+    archivo,
+    texto: textoActual,
+  });
+
   const input = document.getElementById('agente-input');
   const panel = document.getElementById('agente-contenido');
-  const plantilla =
-    `Quiero MEJORAR este prompt de Gemini VIDEO para pegarlo tal cual.\n` +
-    `Producto: ${tarea.productoUrl || ''}\n` +
-    `Mis ideas / cambios (completo esto):\n` +
-    `- \n` +
-    `- \n\n` +
-    `Prompt actual:\n` +
-    `---\n` +
-    `${String(promptActual || '').slice(0, 6000)}\n` +
-    `---\n` +
-    `Devuélveme 1 versión mejorada lista para pegar en Gemini VIDEO (y si puedes, una alternativa B corta).`;
+  const plantilla = esCopy
+    ? `Quiero MEJORAR este COPY (versión ${version}) para el video.\n` +
+      `Producto: ${tarea.productoUrl || ''}\n` +
+      `Mis ideas / cambios (completo esto):\n` +
+      `- \n` +
+      `- \n\n` +
+      `Copy actual:\n` +
+      `---\n` +
+      `${textoActual.slice(0, 6000)}\n` +
+      `---\n` +
+      `Devuélveme 1 copy mejorado listo para pegar (emojis/hashtags OK) y una alternativa corta.`
+    : `Quiero MEJORAR este prompt de Gemini VIDEO (versión ${version}) para pegarlo tal cual.\n` +
+      `Producto: ${tarea.productoUrl || ''}\n` +
+      `Mis ideas / cambios (completo esto):\n` +
+      `- \n` +
+      `- \n\n` +
+      `Prompt actual:\n` +
+      `---\n` +
+      `${textoActual.slice(0, 6000)}\n` +
+      `---\n` +
+      `Devuélveme 1 versión mejorada lista para pegar en Gemini VIDEO (y si puedes, una alternativa B corta).`;
 
   if (input) {
     input.value = plantilla;
     ajustarAlturaTextarea(input);
     input.focus();
-    // Cursor al bloque de ideas
     const idx = plantilla.indexOf('Mis ideas');
     if (idx >= 0 && typeof input.setSelectionRange === 'function') {
       const start = plantilla.indexOf('- ', idx);
@@ -3953,7 +4099,19 @@ function iniciarMejoraPromptGemini(tarea, promptActual) {
     }
   }
   panel?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  mostrarToast('Escribe tus ideas arriba del prompt y pulsa Enviar solicitud');
+  mostrarToast(
+    `Mejora ${version} abierta en el chat · al Guardar queda en historial / landing`
+  );
+}
+
+/** @deprecated alias */
+function iniciarMejoraPromptGemini(tarea, promptActual) {
+  iniciarMejoraEntregable(tarea, {
+    tipo: 'prompt-gemini',
+    version: 'A',
+    texto: promptActual,
+    archivo: archivosPromptGeminiDeTarea(tarea).A,
+  });
 }
 
 function guardarGraficoEnFichaCliente(cli, tarea, svgHtml, etiqueta = 'entregable') {

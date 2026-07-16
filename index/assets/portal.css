@@ -899,6 +899,31 @@ body.portal-body--themed .portal-cliente {
   gap: 0.35rem;
 }
 
+.portal-reg__hist {
+  margin-top: 0.55rem;
+  font-size: 0.78rem;
+  color: var(--text-muted, #5a6a78);
+}
+
+.portal-reg__hist summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text, #333);
+}
+
+.portal-reg__hist ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.portal-reg__hist-prev {
+  display: block;
+  margin-top: 0.1rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  opacity: 0.9;
+}
+
 .portal-reg__thumbs {
   display: flex;
   flex-wrap: wrap;

@@ -2481,23 +2481,35 @@ body.modal-abierto {
   gap: 0.35rem;
 }
 
-.tarea-detalle__txt--prompt-edit {
-  display: block;
-  width: 100%;
-  min-height: 9.5rem;
-  max-height: 28rem;
-  resize: vertical;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+.entregable-hist {
+  margin-top: 0.85rem;
+  padding-top: 0.65rem;
+  border-top: 1px dashed rgba(74, 122, 158, 0.28);
+}
+
+.entregable-hist__titulo {
+  margin: 0 0 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.entregable-hist__lista {
+  margin: 0;
+  padding-left: 1.1rem;
   font-size: 0.78rem;
-  line-height: 1.45;
+  color: var(--text-muted, #5a6a78);
+}
+
+.entregable-hist__lista li + li {
+  margin-top: 0.35rem;
+}
+
+.entregable-hist__preview {
+  display: block;
+  margin-top: 0.15rem;
   white-space: pre-wrap;
   word-break: break-word;
-  box-sizing: border-box;
-  border: 1px solid rgba(74, 122, 158, 0.28);
-  border-radius: 8px;
-  background: #f7fafc;
-  color: inherit;
-  padding: 0.85rem;
+  opacity: 0.9;
 }
 
 .tarea-detalle__txt--extracto {

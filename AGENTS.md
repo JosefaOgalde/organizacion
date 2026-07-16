@@ -14,8 +14,8 @@
 - Ejemplo vigente: `PROMPT-botas-rojas-lluvia.txt` (Hunter rojas, lluvia, jeans dentro, sin piel; detalle parche HUNTER / hebilla / suela zigzag).
 - Landing: `http://localhost:3000/index/clientes/trendseeker/` muestra **Registro Trendseeker**, **Contenidos 7–12** (madres + subtareas) y biblioteca `prompts/indice.json` (Gemini).
 - Serie mensual TS: cada contenido = madre + Prompt Gemini video + Copys + Programar. Script: `node scripts/add-ts-contenidos-7-12.js` (C7 vie AM · C8 vie PM · C9 lun · C10 mié · C11 vie · C12 lun).
-- Prompts C7–C12: tres TXT independientes por contenido (`…-A.txt`, `…-B.txt`, `…-C.txt`). En la UI de la subtarea Prompt: editar + **Copiar** / **Guardar** por versión (sin “Copiar todo” ni “Mejorar prompt”). Regenerar sin pisar ediciones: `node scripts/generar-ts-prompts-contenidos-7-12.js` (usar `FORCE=1` para sobrescribir).
-- Copys C7–C12: igual, tres TXT en `index/clientes/trendseeker/copys/` (`COPY-c0N-…-A/B/C.txt`). Script: `node scripts/generar-ts-copys-contenidos-7-12.js`. La subtarea **Copys video** muestra un bloque con secciones A/B/C (no confundir con la subtarea **Prompt Gemini**).
+- Prompts C7–C12: tres TXT independientes por contenido (`…-A.txt`, `…-B.txt`, `…-C.txt`). En la UI: **Copiar · Guardar · Mejorar** por versión. Mejorar abre el chat y deja entrada en `historialEntregables` (visible en la tarea y en la landing TS). Regenerar: `node scripts/generar-ts-prompts-contenidos-7-12.js` (`FORCE=1` sobrescribe).
+- Copys C7–C12: igual en `copys/` con los mismos botones. Script: `node scripts/generar-ts-copys-contenidos-7-12.js` o `node scripts/refresh-ts-entregables-7-12.js`.
 - Al crear prompts/entregables TS: registrar en la tarea (`entregableArchivo`) y en `prompts/indice.json` para que aparezcan en el link del cliente.
 - **Videos en tareas:** en el detalle de la tarea → **+ Subir video** (MP4/WebM, hasta ~120 MB). API `POST /api/tarea-archivo` guarda en `index/uploads/tarea-videos/…` (gitignored). Copys de video: `index/clientes/trendseeker/copys/` (ej. botas Hunter Rojo Militar, tarea #04).
 

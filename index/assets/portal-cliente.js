@@ -488,8 +488,37 @@
         const imgs = imagenesDeTarea(t);
         const videos = videosDeTarea(t);
         const estado = t.completada ? 'Hecha' : t.pendiente ? 'Pendiente' : 'Activa';
-        const arch = t.entregableArchivo
-          ? `<a class="portal-btn portal-btn--ghost" href="/${escapeHtml(String(t.entregableArchivo).replace(/^\/+/, ''))}" target="_blank" rel="noopener">Ver entregable</a>`
+        const archLinks = (() => {
+          const map =
+            (t.entregableArchivosCopy && typeof t.entregableArchivosCopy === 'object' && t.entregableArchivosCopy) ||
+            (t.entregableArchivosPrompt && typeof t.entregableArchivosPrompt === 'object' && t.entregableArchivosPrompt) ||
+            null;
+          if (map && (map.A || map.B || map.C)) {
+            return ['A', 'B', 'C']
+              .filter((v) => map[v])
+              .map(
+                (v) =>
+                  `<a class="portal-btn portal-btn--ghost" href="/${escapeHtml(String(map[v]).replace(/^\/+/, ''))}" target="_blank" rel="noopener">TXT ${v}</a>`
+              )
+              .join(' ');
+          }
+          if (t.entregableArchivo) {
+            return `<a class="portal-btn portal-btn--ghost" href="/${escapeHtml(String(t.entregableArchivo).replace(/^\/+/, ''))}" target="_blank" rel="noopener">Ver entregable</a>`;
+          }
+          return '';
+        })();
+        const hist = Array.isArray(t.historialEntregables) ? t.historialEntregables : [];
+        const histHtml = hist.length
+          ? `<details class="portal-reg__hist"><summary>Historial (${hist.length})</summary><ul>${hist
+              .slice(0, 6)
+              .map((h) => {
+                const acc = h.accion === 'mejora' ? 'Mejora' : 'Guardado';
+                const link = h.archivo
+                  ? `<a href="/${escapeHtml(String(h.archivo).replace(/^\/+/, ''))}" target="_blank" rel="noopener">${escapeHtml(acc)} ${escapeHtml(h.version || '')}</a>`
+                  : `${escapeHtml(acc)} ${escapeHtml(h.version || '')}`;
+                return `<li>${link} · ${escapeHtml(h.fecha || '')}<br><span class="portal-reg__hist-prev">${escapeHtml(h.preview || '')}</span></li>`;
+              })
+              .join('')}</ul></details>`
           : '';
         const thumbs = imgs
           .slice(0, 3)
@@ -510,6 +539,7 @@
         const metaExtra = [
           imgs.length ? imgs.length + ' img' : '',
           videos.length ? videos.length + ' video' : '',
+          hist.length ? hist.length + ' hist' : '',
         ]
           .filter(Boolean)
           .join(' · ');
@@ -520,8 +550,9 @@
             ${t.notas ? `<p class="portal-reg__notas">${escapeHtml(String(t.notas).slice(0, 160))}${t.notas.length > 160 ? '…' : ''}</p>` : ''}
             <div class="portal-reg__actions">
               <a class="portal-btn" href="${hrefTareaOrganizador(t)}">Abrir en organizador</a>
-              ${arch}
+              ${archLinks}
             </div>
+            ${histHtml}
             ${vids}
           </div>
           ${thumbs ? `<div class="portal-reg__thumbs">${thumbs}</div>` : ''}
@@ -573,7 +604,17 @@
                 <strong>${escapeHtml(it.titulo || it.id)}</strong>
                 — ${escapeHtml(it.descripcion || '')}
                 <br>
-                <a class="portal-btn portal-btn--ghost" href="${escapeHtml(href)}" target="_blank" rel="noopener">Abrir TXT</a>${tareaLink}
+                ${
+                  it.archivos && typeof it.archivos === 'object'
+                    ? ['A', 'B', 'C']
+                        .filter((v) => it.archivos[v])
+                        .map(
+                          (v) =>
+                            `<a class="portal-btn portal-btn--ghost" href="${escapeHtml(String(it.archivos[v]).replace(/^\//, ''))}" target="_blank" rel="noopener">TXT ${v}</a>`
+                        )
+                        .join(' ')
+                    : `<a class="portal-btn portal-btn--ghost" href="${escapeHtml(href)}" target="_blank" rel="noopener">Abrir TXT</a>`
+                }${tareaLink}
               </li>`;
             })
             .join('')}
