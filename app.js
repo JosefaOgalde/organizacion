@@ -6350,10 +6350,6 @@ function setupUI() {
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       if (!tab.dataset.view) return;
-      if (tab.dataset.view === 'clientes') {
-        window.location.href = 'index/clientes/';
-        return;
-      }
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
       tab.classList.add('tab--active');
       mostrarVista(tab.dataset.view, { activarTab: true });
