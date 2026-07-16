@@ -14,6 +14,7 @@
 - Ejemplo vigente: `PROMPT-botas-rojas-lluvia.txt` (Hunter rojas, lluvia, jeans dentro, sin piel; detalle parche HUNTER / hebilla / suela zigzag).
 - Landing: `http://localhost:3000/index/clientes/trendseeker/` muestra **Registro Trendseeker**, **Contenidos 7–12** (madres + subtareas) y biblioteca `prompts/indice.json` (Gemini).
 - Serie mensual TS: cada contenido = madre + Prompt Gemini video + Copys + Programar. Script: `node scripts/add-ts-contenidos-7-12.js` (C7 vie AM · C8 vie PM · C9 lun · C10 mié · C11 vie · C12 lun).
+- Prompts C7–C12 se generan al crear la serie (`scripts/generar-ts-prompts-contenidos-7-12.js`): TXT listo en la subtarea Prompt (hombre/mujer/niños según ficha). En la UI: Copiar todo / A·B·C y **Mejorar prompt** (abre el chat con el texto actual).
 - Al crear prompts/entregables TS: registrar en la tarea (`entregableArchivo`) y en `prompts/indice.json` para que aparezcan en el link del cliente.
 - **Videos en tareas:** en el detalle de la tarea → **+ Subir video** (MP4/WebM, hasta ~120 MB). API `POST /api/tarea-archivo` guarda en `index/uploads/tarea-videos/…` (gitignored). Copys de video: `index/clientes/trendseeker/copys/` (ej. botas Hunter Rojo Militar, tarea #04).
 

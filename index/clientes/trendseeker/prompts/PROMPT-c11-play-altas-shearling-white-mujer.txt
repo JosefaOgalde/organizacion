@@ -1,0 +1,65 @@
+PROMPTS GEMINI VIDEO — Trendseeker · Contenido 11/12
+Herramienta fija Trendseeker: Google Gemini en modo VIDEO (no imagen fija; no Midjourney).
+Enfoque: el PRODUCTO es el héroe. Respetar al máximo las fotos de producto adjuntas.
+
+PRODUCTO: Botas Play Altas Shearling White Mujer
+SKU: WFT2235RMA-WHW
+Link: https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/
+Público / género del producto: MUJER (adulta)
+
+CARACTERÍSTICAS (ficha — usar en el prompt, no inventar otras):
+- Hunter Play altas aislantes Shearling White para mujer
+- Vegano certificado e impermeables
+- Hechas a mano en caucho natural
+- Forro tipo borrego vegano (piel sintética de poliéster)
+- Plantilla de aislamiento térmico
+- Suela más plana para comodidad
+- Aisladas hasta -5°C
+- Lengüeta para facilitar la entrada del pie
+
+VESTUARIO / MODELO:
+- Mujer adulta
+- Outfit coherente (jeans, falda con medias o pantalón) que deje ver el calzado Hunter
+- Si son botas de agua: preferible que pantalón/jeans vayan metidos o no oculten la caña
+- Sin tipografía ni logos inventados fuera de los del producto real
+
+============================================================
+CÓMO USAR EN GEMINI (VIDEO)
+============================================================
+1) Abre Gemini en generación de VIDEO.
+2) Sube primero las FOTOS DE PRODUCTO reales (referencia obligatoria).
+3) Pega UNA versión (A, B o C) en el mismo mensaje.
+4) Si cambia el diseño, reitera: “replica exactamente el calzado de las fotos”.
+
+============================================================
+VERSIÓN A — Video producto héroe (recomendado)
+============================================================
+
+Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria del calzado Hunter (Botas Play Altas Shearling White Mujer). No rediseñes el producto: misma silueta, mismo color, mismos detalles.
+
+Acción: una mujer en clima frío / mañana fresca con botas Play altas blancas shearling Hunter; se intuye el forro cozy sin inventar logos.
+
+Cámara: ángulo que priorice el calzado (a menudo bajo o a la altura del pie), nítido, product-first. Muestra cualidades reales de la ficha (impermeabilidad, agarre, textura, detalles reflectantes o forro si aplica). Sin tipografía ni logos inventados. Ritmo cinematográfico comercial corto.
+
+============================================================
+VERSIÓN B — Video cualidades en movimiento
+============================================================
+
+Crea un VIDEO comercial basándote estrictamente en las fotos de producto. mujer caminando en entorno invernal urbano; destaca impermeabilidad, forro shearling vegano y suela plana.
+
+Destaca en movimiento las características reales: Hunter Play altas aislantes Shearling White para mujer; Vegano certificado e impermeables; Hechas a mano en caucho natural; Forro tipo borrego vegano (piel sintética de poliéster). El calzado domina el cuadro; fondo coherente y secundario. No alterar el diseño.
+
+============================================================
+VERSIÓN C — Video close-up de detalle
+============================================================
+
+Genera un VIDEO corto tipo close-up publicitario. close-up del blanco, textura del forro shearling, lengüeta de entrada y suela plana.
+
+Enfoque en textura, color fiel a las refs, detalles de ficha y contacto con el piso. Cámara lenta, product-first. Sin rediseñar el calzado.
+
+============================================================
+NOTAS
+============================================================
+- Trendseeker = Gemini VIDEO. ECR portadas = Midjourney.
+- Primero fotos de producto, después el texto.
+- Copiar/pegar una sola versión por generación.

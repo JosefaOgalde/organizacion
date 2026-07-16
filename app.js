@@ -3489,13 +3489,25 @@ function htmlEntregableTarea(tarea) {
   if (tipo === 'prompt-gemini') {
     return `
       <div class="tarea-detalle__entregable" data-entregable="prompt-gemini">
-        <strong>Prompt Gemini (video)</strong>
+        <div class="tarea-detalle__entregable-head">
+          <strong>Prompt Gemini (video) · listo para pegar</strong>
+          <div class="tarea-detalle__entregable-acciones">
+            ${hrefArchivo ? `<a class="btn btn--small btn--ghost" href="${escapeHtml(hrefArchivo)}" target="_blank" rel="noopener" download>Descargar .txt</a>` : ''}
+            <button type="button" class="btn btn--small" data-copiar-entregable-txt>Copiar todo</button>
+            <button type="button" class="btn btn--small btn--ghost" data-copiar-prompt-version="A">Copiar A</button>
+            <button type="button" class="btn btn--small btn--ghost" data-copiar-prompt-version="B">Copiar B</button>
+            <button type="button" class="btn btn--small btn--ghost" data-copiar-prompt-version="C">Copiar C</button>
+            <button type="button" class="btn btn--accent btn--small" data-mejorar-prompt>Mejorar prompt</button>
+          </div>
+        </div>
         <p class="tarea-detalle__entregable-hint">
-          Escribe el prompt en Gemini VIDEO con fotos de producto. Guarda el TXT en trendseeker/prompts/ y asígnalo como entregable.
+          Ya viene generado según la ficha y si es hombre / mujer / niños. Pega en Gemini VIDEO con fotos de producto.
           ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
-          ${hrefArchivo ? ` · <a href="${escapeHtml(hrefArchivo)}" target="_blank" rel="noopener">Abrir prompt</a>` : ''}
+          · «Mejorar prompt» abre el chat para que escribas ideas y se ajuste el texto.
         </p>
-        ${hrefArchivo ? `<pre class="tarea-detalle__txt" data-entregable-txt>Cargando…</pre>` : ''}
+        ${hrefArchivo
+          ? `<pre class="tarea-detalle__txt" data-entregable-txt>Cargando prompt…</pre>`
+          : '<p class="tarea-detalle__imgs-vacio">Aún no hay TXT. Corre <code>node scripts/generar-ts-prompts-contenidos-7-12.js</code>.</p>'}
       </div>`;
   }
 
@@ -3538,8 +3550,63 @@ async function cargarEntregableTxtEnVista(tarea) {
   document.querySelector('[data-copiar-entregable-txt]')?.addEventListener('click', async () => {
     const raw = pre.dataset.fullText || pre.textContent || '';
     const ok = await copiarTexto(raw);
-    mostrarToast(ok ? 'Copys copiados' : 'No se pudo copiar');
+    mostrarToast(ok ? (tarea.tipoEntregable === 'prompt-gemini' ? 'Prompt copiado' : 'Copys copiados') : 'No se pudo copiar');
   });
+
+  document.querySelectorAll('[data-copiar-prompt-version]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const ver = btn.getAttribute('data-copiar-prompt-version') || 'A';
+      const full = pre.dataset.fullText || pre.textContent || '';
+      const extracto = extraerVersionPromptGemini(full, ver);
+      const ok = await copiarTexto(extracto || full);
+      mostrarToast(ok ? `Versión ${ver} copiada` : 'No se pudo copiar');
+    });
+  });
+
+  document.querySelector('[data-mejorar-prompt]')?.addEventListener('click', () => {
+    iniciarMejoraPromptGemini(tarea, pre.dataset.fullText || pre.textContent || '');
+  });
+}
+
+function extraerVersionPromptGemini(texto, version) {
+  const v = String(version || 'A').toUpperCase();
+  const re = new RegExp(
+    `VERSI[OÓ]N\\s+${v}[\\s\\S]*?(?=\\n={10,}|\\nVERSI[OÓ]N\\s+[ABC]|\\nNOTAS\\b|$)`,
+    'i'
+  );
+  const m = String(texto || '').match(re);
+  return m ? m[0].trim() : '';
+}
+
+/** Abre el chat del agente con el prompt actual para que la usuaria aporte ideas y se mejore. */
+function iniciarMejoraPromptGemini(tarea, promptActual) {
+  const input = document.getElementById('agente-input');
+  const panel = document.getElementById('agente-contenido');
+  const plantilla =
+    `Quiero MEJORAR este prompt de Gemini VIDEO para pegarlo tal cual.\n` +
+    `Producto: ${tarea.productoUrl || ''}\n` +
+    `Mis ideas / cambios (completo esto):\n` +
+    `- \n` +
+    `- \n\n` +
+    `Prompt actual:\n` +
+    `---\n` +
+    `${String(promptActual || '').slice(0, 6000)}\n` +
+    `---\n` +
+    `Devuélveme 1 versión mejorada lista para pegar en Gemini VIDEO (y si puedes, una alternativa B corta).`;
+
+  if (input) {
+    input.value = plantilla;
+    ajustarAlturaTextarea(input);
+    input.focus();
+    // Cursor al bloque de ideas
+    const idx = plantilla.indexOf('Mis ideas');
+    if (idx >= 0 && typeof input.setSelectionRange === 'function') {
+      const start = plantilla.indexOf('- ', idx);
+      input.setSelectionRange(start >= 0 ? start + 2 : idx, start >= 0 ? start + 2 : idx);
+    }
+  }
+  panel?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  mostrarToast('Escribe tus ideas arriba del prompt y pulsa Enviar solicitud');
 }
 
 function guardarGraficoEnFichaCliente(cli, tarea, svgHtml, etiqueta = 'entregable') {

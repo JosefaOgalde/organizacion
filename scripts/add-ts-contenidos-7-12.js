@@ -174,6 +174,17 @@ for (const c of CONTENIDOS) {
     contenidoTotal: 12,
   });
 
+  const promptArchivo = `index/clientes/trendseeker/prompts/PROMPT-c${String(c.n).padStart(2, '0')}-${
+    {
+      7: 'travel-trainer-black-hombre',
+      8: 'chelsea-commando-negras-mujer',
+      9: 'play-bajas-rojo-mujer',
+      10: 'original-ninos',
+      11: 'play-altas-shearling-white-mujer',
+      12: 'original-ninos-rosado-brillante',
+    }[c.n]
+  }.txt`;
+
   const promptNum = pad(num++);
   upsert({
     id: `${madreId}-prompt`,
@@ -184,14 +195,15 @@ for (const c of CONTENIDOS) {
     horaInicio: h.prompt[0],
     horaFin: h.prompt[1],
     notas:
-      `Prompt Gemini VIDEO (nunca Midjourney) para ${c.producto}. ` +
-      `Adjuntar fotos de producto como referencia. Link: ${c.url}. ` +
-      `Guardar TXT en trendseeker/prompts/ y registrar en prompts/indice.json.`,
+      `Prompt Gemini VIDEO listo para copiar/pegar (según ficha y género del producto). ` +
+      `Producto: ${c.producto}. Link: ${c.url}. Archivo: ${promptArchivo}. ` +
+      `Usa «Copiar todo» o «Mejorar prompt» para ajustar con tus ideas.`,
     prioridad: 'alta',
     completada: false,
     pendiente: false,
     numeroHistorico: promptNum,
     tipoEntregable: 'prompt-gemini',
+    entregableArchivo: promptArchivo,
     parentId: madreId,
     productoUrl: c.url,
   });
@@ -251,6 +263,15 @@ if (crear) {
 
 data.respaldoActualizado = new Date().toISOString().slice(0, 10);
 fs.writeFileSync(LIVE, JSON.stringify(data, null, 2) + '\n', 'utf8');
+
+// Genera TXT de prompts A/B/C y refresca índice
+try {
+  const gen = require('./generar-ts-prompts-contenidos-7-12.js');
+  const items = gen.escribirPrompts();
+  gen.actualizarTareasYIndice(items);
+} catch (e) {
+  console.warn('No se pudieron generar prompts TXT:', e.message);
+}
 
 console.log('\nListo: contenidos 7/12 … 12/12 (madres + subtareas).');
 console.log('Vie 17 AM → C7 · Vie 17 PM → C8 · Lun 20 → C9 · Mié 22 → C10 · Vie 24 → C11 · Lun 27 → C12');

@@ -2388,6 +2388,11 @@ body.modal-abierto {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
+  align-items: center;
+}
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
 }
 
 .tarea-detalle__entregable-hint {
