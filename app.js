@@ -297,8 +297,8 @@ const TOOLTIPS = {
 let semanaOffset = 0;
 let mesOffset = 0;
 let diaSeleccionado = null;
-/** Vista día: false = reducida (pills como semana); true = detalle completo. */
-let diaVistaExpandida = false;
+/** Vista día: el detalle abajo siempre va desplegado; la fila lun–dom selecciona el día. */
+let diaVistaExpandida = true;
 let tareaSeleccionada = null;
 let clientePerfilAbierto = null;
 
@@ -4600,7 +4600,7 @@ function irASemanaDe(fechaISO) {
 
 function irADia(fechaISO) {
   diaSeleccionado = fechaISO;
-  diaVistaExpandida = false;
+  diaVistaExpandida = true;
   const fecha = parseISO(fechaISO);
   semanaOffset = semanaOffsetPara(fecha);
   const hoyRef = hoy();
@@ -5688,11 +5688,13 @@ function renderDia() {
   const fecha = parseISO(diaSeleccionado);
   const cont = document.getElementById('dia-contenido');
   const panel = document.getElementById('panel-dia');
-  const btnAcordeon = document.getElementById('dia-acordeon-btn');
-  const nombreEl = document.getElementById('dia-acordeon-nombre');
-  const numeroEl = document.getElementById('dia-acordeon-numero');
+  const nombreEl = document.getElementById('dia-detalle-nombre');
+  const numeroEl = document.getElementById('dia-detalle-numero');
   const subtitulo = document.getElementById('dia-subtitulo');
   if (!cont || !fecha) return;
+
+  // Siempre desplegado: la fila lun–dom es el selector del día
+  diaVistaExpandida = true;
 
   const items = itemsDiaOrdenados(diaSeleccionado);
   const numTareas = items.filter((i) => i.tipo === 'tarea').length;
@@ -5713,35 +5715,18 @@ function renderDia() {
   if (nombreEl) nombreEl.textContent = String(diaSemana).toUpperCase();
   if (numeroEl) numeroEl.textContent = String(fecha.getDate());
   if (subtitulo) {
-    subtitulo.textContent = diaVistaExpandida
-      ? `${numTareas} tarea(s) · ${numMadres} madre(s) · ${numReuniones} reunión(es) · ${numCitas} cita(s) · detalle completo`
-      : `${numTareas} tarea(s) · ${numMadres} madre(s) · vista reducida · clic en la fecha para desplegar`;
-  }
-  if (btnAcordeon) {
-    btnAcordeon.setAttribute('aria-expanded', diaVistaExpandida ? 'true' : 'false');
-    btnAcordeon.classList.toggle('is-open', diaVistaExpandida);
+    subtitulo.textContent = `${numTareas} tarea(s) · ${numMadres} madre(s) · ${numReuniones} reunión(es) · ${numCitas} cita(s)`;
   }
   if (panel) {
-    panel.classList.toggle('panel--dia-expandido', diaVistaExpandida);
-    panel.classList.toggle('panel--dia-reducido', !diaVistaExpandida);
+    panel.classList.add('panel--dia-expandido');
+    panel.classList.remove('panel--dia-reducido');
   }
 
-  cont.className = `dia-detalle dia-detalle--${diaVistaExpandida ? 'expandida' : 'reducida'}`;
-  cont.innerHTML = diaVistaExpandida ? htmlDiaExpandido(items) : htmlDiaReducido(items);
-
-  if (diaVistaExpandida) {
-    bindAccionesTarea(cont);
-    bindAccionesCita(cont);
-    bindAccionesReunion(cont);
-  } else {
-    cont.querySelectorAll('.tarea-mini--dia[data-tarea-id]').forEach((el) => {
-      el.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const tid = el.dataset.tareaId;
-        if (tid) irATarea(tid);
-      });
-    });
-  }
+  cont.className = 'dia-detalle dia-detalle--expandida';
+  cont.innerHTML = htmlDiaExpandido(items);
+  bindAccionesTarea(cont);
+  bindAccionesCita(cont);
+  bindAccionesReunion(cont);
   renderSemanaMini();
 }
 
@@ -6568,11 +6553,6 @@ function setupUI() {
     volverAMes({ irAHoy: true });
     render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  document.getElementById('dia-acordeon-btn')?.addEventListener('click', () => {
-    diaVistaExpandida = !diaVistaExpandida;
-    renderDia();
   });
 
   document.querySelectorAll('.tab').forEach(tab => {

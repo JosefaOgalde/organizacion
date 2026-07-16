@@ -1986,7 +1986,47 @@ button.tab.tab--perfil.tab--active {
   box-shadow: var(--shadow);
 }
 
-.dia-acordeon {
+.dia-detalle-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  margin: 0 0 0.85rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 2px solid color-mix(in srgb, var(--celeste) 35%, var(--border));
+}
+
+.dia-detalle-head__titulo {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--celeste-dark);
+}
+
+.dia-detalle-head__titulo #dia-detalle-nombre {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #2a8f84;
+}
+
+.dia-detalle-head__titulo #dia-detalle-numero {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--celeste-dark);
+}
+
+.dia-detalle-head__meta {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+/* Acordeón antiguo (ya no se usa): se deja neutro por si queda en cache */
   display: flex;
   align-items: center;
   gap: 0.85rem;

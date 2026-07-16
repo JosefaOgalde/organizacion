@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Organización</title>
-  <link rel="stylesheet" href="styles.css?v=turquesa2">
+  <link rel="stylesheet" href="styles.css?v=dia-sel1">
 </head>
 <body>
   <div class="app">
@@ -68,22 +68,18 @@
         </div>
         <div class="panel panel--semana-mini">
           <p id="rango-semana-mini" class="semana-mini__rango"></p>
-          <div id="calendario-semana-mini" class="calendario calendario--mini" aria-label="Semana en miniatura"></div>
-          <p class="vista-hint vista-hint--mini">Clic en un día de la semana para ver su detalle</p>
+          <div id="calendario-semana-mini" class="calendario calendario--mini" role="tablist" aria-label="Días de la semana — elige un día"></div>
+          <p class="vista-hint vista-hint--mini">Clic en un día (lun–dom) para ver sus tareas abajo</p>
         </div>
-        <div class="panel panel--dia panel--dia-reducido" id="panel-dia">
-          <button type="button" class="dia-acordeon" id="dia-acordeon-btn" aria-expanded="false" aria-controls="dia-contenido" title="Clic para desplegar o reducir el detalle del día">
-            <div class="dia-acordeon__fecha">
-              <span id="dia-acordeon-nombre" class="dia-acordeon__nombre">DÍA</span>
-              <span id="dia-acordeon-numero" class="dia-acordeon__numero">—</span>
-            </div>
-            <div class="dia-acordeon__meta">
-              <p id="dia-subtitulo" class="panel__desc">Vista reducida</p>
-              <span class="dia-acordeon__hint">Clic en la fecha para desplegar / reducir</span>
-            </div>
-            <span class="dia-acordeon__chevron" aria-hidden="true">▾</span>
-          </button>
-          <div id="dia-contenido" class="dia-detalle dia-detalle--reducida"></div>
+        <div class="panel panel--dia panel--dia-expandido" id="panel-dia">
+          <header class="dia-detalle-head" id="dia-detalle-head">
+            <h2 class="dia-detalle-head__titulo">
+              <span id="dia-detalle-nombre">DÍA</span>
+              <span id="dia-detalle-numero">—</span>
+            </h2>
+            <p id="dia-subtitulo" class="panel__desc dia-detalle-head__meta">Tareas del día</p>
+          </header>
+          <div id="dia-contenido" class="dia-detalle dia-detalle--expandida"></div>
         </div>
       </section>
 
