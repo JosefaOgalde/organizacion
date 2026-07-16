@@ -24,14 +24,33 @@
     return 'joyasmercury/index.html?v=secciones3';
   }
 
+  function slugDe(c) {
+    if (c.slug) return String(c.slug);
+    if (c.id_local) return String(c.id_local).replace(/^cli-/, '');
+    if (typeof c.id === 'string' && c.id.startsWith('cli-')) return c.id.replace(/^cli-/, '');
+    return '';
+  }
+
+  function estaticoDe(c) {
+    if (typeof CLIENTES_PORTAL === 'undefined') return null;
+    const slug = slugDe(c);
+    return CLIENTES_PORTAL.find(
+      (x) => x.slug === slug
+        || x.slug === c.slug
+        || x.id === c.id
+        || x.id === c.id_local
+        || x.id === `cli-${slug}`
+        || x.abrev === c.abrev
+    ) || null;
+  }
+
   function archivoDe(c) {
-    if (c.id === 'cli-joyas-mercury' || c.slug === 'joyas-mercury' || c.slug === 'joyasmercury') {
+    const slug = slugDe(c);
+    if (c.id === 'cli-joyas-mercury' || slug === 'joyas-mercury' || slug === 'joyasmercury') {
       return landingJoyasMercury();
     }
-    const estatico = typeof CLIENTES_PORTAL !== 'undefined'
-      ? CLIENTES_PORTAL.find((x) => x.slug === c.slug || x.id === c.id || x.id === `cli-${c.slug}`)
-      : null;
-    const archivo = estatico?.archivo || `${c.slug}/index.html`;
+    const estatico = estaticoDe(c);
+    const archivo = estatico?.archivo || (slug ? `${slug}/index.html` : 'index.html');
     return archivo;
   }
 
@@ -50,9 +69,7 @@
   function renderTarjetas(lista, origen) {
     grid.innerHTML = lista
       .map((c) => {
-        const estatico = typeof CLIENTES_PORTAL !== 'undefined'
-          ? CLIENTES_PORTAL.find((x) => x.slug === c.slug)
-          : null;
+        const estatico = estaticoDe(c);
         const col = colorDe(c, estatico);
         const archivo = archivoDe(c);
         const agente = c.agente || estatico?.agente || '';

@@ -13,6 +13,8 @@ class ClienteController extends Controller
     /** GET /api/clientes */
     public function index()
     {
-        return response()->json(Cliente::all());
+        return response()->json(
+            Cliente::query()->orderBy('nombre')->get()
+        );
     }
 }

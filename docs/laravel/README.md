@@ -44,6 +44,7 @@ flowchart LR
 | **④** | [PASO-4-api-rest.md](./PASO-4-api-rest.md) | `GET /api/clientes` devuelve JSON |
 | **⑤** | [PASO-5-conectar-frontend.md](./PASO-5-conectar-frontend.md) | Portal lee datos del servidor |
 | **⑥** | [PASO-6-auth.md](./PASO-6-auth.md) | Login / tokens (después) |
+| **Importar** | [IMPORTAR-CLIENTES.md](./IMPORTAR-CLIENTES.md) | Cargar los 9 clientes del respaldo a MySQL |
 
 ---
 
