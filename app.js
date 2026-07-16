@@ -6209,6 +6209,72 @@ function renderClientes() {
   }
 }
 
+function perfilPersonalActual() {
+  asegurarPerfilPersonal(datos);
+  return datos.perfilPersonal;
+}
+
+function renderTarjetaPerfilPersonal() {
+  const slot = document.getElementById('perfil-personal-tarjeta');
+  if (!slot) return;
+  const p = perfilPersonalActual();
+  const nombre = (p.nombre || '').trim() || 'Tu nombre';
+  const titulo = (p.titulo || '').trim();
+  const tagline = (p.tagline || '').trim();
+  const contacto = (p.contacto || '').trim();
+  slot.innerHTML = `
+    <article class="perfil-tarjeta">
+      <p class="perfil-tarjeta__eyebrow">Tarjeta de presentación</p>
+      <h3 class="perfil-tarjeta__nombre">${escapeHtml(nombre)}</h3>
+      ${titulo ? `<p class="perfil-tarjeta__titulo">${escapeHtml(titulo)}</p>` : ''}
+      ${tagline ? `<p class="perfil-tarjeta__tagline">${escapeHtml(tagline)}</p>` : '<p class="perfil-tarjeta__tagline perfil-tarjeta__tagline--vacio">Agrega una frase para tu tarjeta</p>'}
+      ${contacto ? `<pre class="perfil-tarjeta__contacto">${escapeHtml(contacto)}</pre>` : ''}
+    </article>`;
+}
+
+function renderPerfilPersonal() {
+  const form = document.getElementById('form-perfil-personal');
+  if (!form) return;
+  const p = perfilPersonalActual();
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val || '';
+  };
+  set('perfil-personal-nombre', p.nombre);
+  set('perfil-personal-titulo', p.titulo);
+  set('perfil-personal-tagline', p.tagline);
+  set('perfil-personal-contacto', p.contacto);
+  set('perfil-personal-carta', p.cartaPresentacion);
+  set('perfil-personal-notas', p.notas);
+  renderTarjetaPerfilPersonal();
+}
+
+function guardarPerfilPersonal(e) {
+  if (e) e.preventDefault();
+  const p = perfilPersonalActual();
+  p.nombre = document.getElementById('perfil-personal-nombre')?.value.trim() || '';
+  p.titulo = document.getElementById('perfil-personal-titulo')?.value.trim() || '';
+  p.tagline = document.getElementById('perfil-personal-tagline')?.value.trim() || '';
+  p.contacto = document.getElementById('perfil-personal-contacto')?.value.trim() || '';
+  p.cartaPresentacion = document.getElementById('perfil-personal-carta')?.value.trim() || '';
+  p.notas = document.getElementById('perfil-personal-notas')?.value.trim() || '';
+  p.actualizado = toISO(hoy());
+  if (guardar() === false) return;
+  renderTarjetaPerfilPersonal();
+  mostrarToast('Perfil personal guardado');
+}
+
+async function copiarCartaPerfilPersonal() {
+  const p = perfilPersonalActual();
+  const texto = (document.getElementById('perfil-personal-carta')?.value || p.cartaPresentacion || '').trim();
+  if (!texto) {
+    mostrarToast('No hay carta para copiar — escríbela primero');
+    return;
+  }
+  const ok = await copiarTexto(texto);
+  mostrarToast(ok ? 'Carta copiada' : 'No se pudo copiar');
+}
+
 let cacheAgentesRamas = null;
 
 async function fetchAgentesRamas() {
@@ -6359,8 +6425,15 @@ function setupUI() {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
       tab.classList.add('tab--active');
       mostrarVista(tab.dataset.view, { activarTab: true });
+      if (tab.dataset.view === 'perfil') renderPerfilPersonal();
       render();
     });
+  });
+
+  document.getElementById('form-perfil-personal')?.addEventListener('submit', guardarPerfilPersonal);
+  document.getElementById('btn-copiar-carta-perfil')?.addEventListener('click', copiarCartaPerfilPersonal);
+  ['perfil-personal-nombre', 'perfil-personal-titulo', 'perfil-personal-tagline', 'perfil-personal-contacto'].forEach((id) => {
+    document.getElementById(id)?.addEventListener('input', renderTarjetaPerfilPersonal);
   });
 
   document.querySelectorAll('[data-vista-nav]').forEach(btn => {
