@@ -65,13 +65,13 @@ const AGENTES_CLIENTE = {
     nombre: 'Agente Trendseeker',
     emoji: '📊',
     especialidad: 'Community Manager, Metricool y WordPress',
-    instrucciones: 'Eres el asistente de Trendseeker - Talk. Ayudas con publicaciones en redes, informes Metricool, historias, banners del sitio y tareas de WordPress (productos, precios, carga masiva).'
+    instrucciones: 'Eres el asistente de Trendseeker - Talk. Ayudas con publicaciones en redes, informes Metricool, historias, banners del sitio y tareas de WordPress (productos, precios, carga masiva). REGLA: cualquier prompt de imagen/video de marcas o productos Trendseeker se escribe para Google Gemini (con fotos de producto como referencia), NUNCA Midjourney. Midjourney es solo para portadas newsletter ECR.'
   },
   'cli-ecr': {
     nombre: 'Agente ECR',
     emoji: '📝',
     especialidad: 'Newsletter LinkedIn y desarrollo de blog',
-    instrucciones: 'Eres el asistente de ECR. Ayudas con newsletters de LinkedIn, copys, carruseles, videos y propuestas o secciones del blog en Elementor / WordPress.'
+    instrucciones: 'Eres el asistente de ECR. Ayudas con newsletters de LinkedIn, copys, carruseles, videos y propuestas o secciones del blog en Elementor / WordPress. REGLA: prompts de portada newsletter (solo fondo) van en Midjourney; no uses el flujo Gemini de Trendseeker para ECR.'
   },
   'cli-piscineria': {
     nombre: 'Agente Piscineria',
@@ -133,7 +133,7 @@ const SKILLS_CLIENTE = {
     descripcion: 'Redes, Metricool, historias, banners y mantenimiento WordPress.',
     usaManualMarca: true,
     checklist: ['Copies y gráficas del cliente', 'Horario de publicación', 'Manual de marca en banners', 'Repost en historias con link'],
-    ejemploSolicitud: 'Necesito el copy y checklist para publicar [pieza] en redes / actualizar [banner o producto] en WP.'
+    ejemploSolicitud: 'Necesito prompt Gemini (con refs de producto) para video/pieza de [producto] / copy para redes / actualizar [banner] en WP.'
   },
   'cli-ecr': {
     nombre: 'Newsletter + Blog ECR',
