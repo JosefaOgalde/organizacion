@@ -3442,6 +3442,56 @@ function htmlVinculosEcosistema(tarea) {
   return html;
 }
 
+function archivosCopyDeTarea(tarea) {
+  if (!tarea) return { A: '', B: '', C: '' };
+  if (tarea.entregableArchivosCopy && typeof tarea.entregableArchivosCopy === 'object') {
+    const p = tarea.entregableArchivosCopy;
+    return {
+      A: String(p.A || '').replace(/^\/+/, ''),
+      B: String(p.B || '').replace(/^\/+/, ''),
+      C: String(p.C || '').replace(/^\/+/, ''),
+    };
+  }
+
+  const MAPA = {
+    7: 'COPY-c07-travel-trainer-black-hombre',
+    8: 'COPY-c08-chelsea-commando-negras-mujer',
+    9: 'COPY-c09-play-bajas-rojo-mujer',
+    10: 'COPY-c10-original-ninos',
+    11: 'COPY-c11-play-altas-shearling-white-mujer',
+    12: 'COPY-c12-original-ninos-rosado-brillante',
+  };
+
+  let n = Number(tarea.contenidoSerie) || 0;
+  if (!n) {
+    const madre = madreDeTarea(tarea);
+    n = Number(madre?.contenidoSerie) || 0;
+  }
+  if (!n) {
+    const mId = String(tarea.id || '').match(/contenido-(\d+)-de-12/i);
+    if (mId) n = Number(mId[1]);
+  }
+  if (!n) {
+    const mTit = String(tarea.titulo || '').match(/C\s*(\d+)\s*\/\s*12/i);
+    if (mTit) n = Number(mTit[1]);
+  }
+  const base = MAPA[n];
+  if (!base) {
+    const uno = String(tarea.entregableArchivo || '').replace(/^\/+/, '');
+    if (uno && /\.txt$/i.test(uno)) {
+      const stem = uno.replace(/\.txt$/i, '').replace(/-[ABC]$/i, '');
+      return { A: `${stem}-A.txt`, B: `${stem}-B.txt`, C: `${stem}-C.txt` };
+    }
+    return { A: '', B: '', C: '' };
+  }
+  const dir = 'index/clientes/trendseeker/copys';
+  return {
+    A: `${dir}/${base}-A.txt`,
+    B: `${dir}/${base}-B.txt`,
+    C: `${dir}/${base}-C.txt`,
+  };
+}
+
 function archivosPromptGeminiDeTarea(tarea) {
   if (!tarea) return { A: '', B: '', C: '' };
   if (tarea.entregableArchivosPrompt && typeof tarea.entregableArchivosPrompt === 'object') {
@@ -3514,6 +3564,43 @@ function htmlEntregableTarea(tarea) {
   const hrefArchivo = archivo ? `/${String(archivo).replace(/^\/+/, '')}` : '';
 
   if (tipo === 'copys-txt') {
+    const archivos = archivosCopyDeTarea(tarea);
+    const tieneABC = !!(archivos.A && archivos.B && archivos.C);
+    if (tieneABC) {
+      tarea.entregableArchivosCopy = archivos;
+      tarea.entregableArchivo = archivos.A;
+      const titulos = {
+        A: 'A · Corta (feed / Reels)',
+        B: 'B · Historia (IG / TikTok)',
+        C: 'C · Beneficio + CTA',
+      };
+      const secciones = ['A', 'B', 'C']
+        .map(
+          (v) => `
+        <section class="prompt-seccion" data-copy-version="${v}" data-copy-archivo="${escapeHtml(archivos[v] || '')}">
+          <div class="prompt-seccion__barra">
+            <h4 class="prompt-seccion__titulo">${titulos[v]}</h4>
+            <div class="prompt-seccion__acciones">
+              <button type="button" class="btn btn--small" data-copiar-copy-version="${v}">Copiar</button>
+              <button type="button" class="btn btn--small btn--ghost" data-guardar-copy-version="${v}">Guardar</button>
+            </div>
+          </div>
+          <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-copy-texto rows="8" spellcheck="false" placeholder="Cargando copy ${v}…"></textarea>
+        </section>`
+        )
+        .join('');
+      return `
+      <div class="tarea-detalle__entregable tarea-detalle__entregable--prompt" data-entregable="copys-txt">
+        <div class="tarea-detalle__entregable-head">
+          <strong>Copys (TXT)</strong>
+        </div>
+        <p class="tarea-detalle__entregable-hint">
+          Un bloque · tres secciones (A / B / C). Edita, guarda y copia cada una.
+          ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
+        </p>
+        <div class="prompt-bloque">${secciones}</div>
+      </div>`;
+    }
     return `
       <div class="tarea-detalle__entregable" data-entregable="copys-txt">
         <div class="tarea-detalle__entregable-head">
@@ -3524,7 +3611,7 @@ function htmlEntregableTarea(tarea) {
           </div>
         </div>
         <p class="tarea-detalle__entregable-hint">Texto plano con emojis/hashtags — listo para pegar en LinkedIn.</p>
-        <pre class="tarea-detalle__txt" data-entregable-txt>Cargando copys…</pre>
+        <pre class="tarea-detalle__txt" data-entregable-txt>${hrefArchivo ? 'Cargando copys…' : 'Sin TXT aún. Corre: node scripts/generar-ts-copys-contenidos-7-12.js'}</pre>
       </div>`;
   }
 
@@ -3608,12 +3695,25 @@ async function cargarEntregableTxtEnVista(tarea) {
     await cargarPromptsGeminiEnVista(tarea);
     return;
   }
+  if (tarea.tipoEntregable === 'copys-txt') {
+    const archivos = archivosCopyDeTarea(tarea);
+    if (archivos.A && document.querySelector('[data-copy-version]')) {
+      await cargarCopysAbcEnVista(tarea);
+      return;
+    }
+  }
 
   const pre = document.querySelector('[data-entregable-txt]');
   if (!pre) return;
 
   let archivo = tarea.entregableArchivo || '';
-  if (!archivo) return;
+  if (!archivo) {
+    pre.textContent =
+      'Sin archivo TXT enlazado.\n' +
+      'Para contenidos 7–12 corre:\nnode scripts/generar-ts-copys-contenidos-7-12.js\n' +
+      'Luego recarga con ?disco=1';
+    return;
+  }
 
   const href = '/' + String(archivo).replace(/^\/+/, '');
   try {
@@ -3640,6 +3740,78 @@ async function cargarEntregableTxtEnVista(tarea) {
     const raw = pre.dataset.fullText || pre.textContent || '';
     const ok = await copiarTexto(raw);
     mostrarToast(ok ? 'Copys copiados' : 'No se pudo copiar');
+  });
+}
+
+async function cargarCopysAbcEnVista(tarea) {
+  const root = document.querySelector('[data-entregable="copys-txt"]');
+  if (!root) return;
+
+  const archivos = archivosCopyDeTarea(tarea);
+  if (archivos.A) {
+    const tLive = tareaDe(tarea.id);
+    if (tLive) {
+      tLive.entregableArchivosCopy = archivos;
+      tLive.entregableArchivo = archivos.A;
+      tarea.entregableArchivosCopy = archivos;
+      tarea.entregableArchivo = archivos.A;
+      try { guardar(); } catch (_) { /* ignore */ }
+    }
+  }
+
+  const bloques = root.querySelectorAll('[data-copy-version]');
+  await Promise.all(
+    [...bloques].map(async (bloque) => {
+      const ver = bloque.getAttribute('data-copy-version') || 'A';
+      const archivo = bloque.getAttribute('data-copy-archivo') || archivos[ver] || '';
+      const ta = bloque.querySelector('[data-copy-texto]');
+      if (!ta) return;
+      if (!archivo) {
+        ta.value = 'No se encontró el TXT. Corre:\nnode scripts/generar-ts-copys-contenidos-7-12.js';
+        return;
+      }
+      bloque.setAttribute('data-copy-archivo', archivo);
+      const href = '/' + String(archivo).replace(/^\/+/, '');
+      try {
+        const res = await fetch(href + '?t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        ta.value = await res.text();
+      } catch (_) {
+        ta.value =
+          'No se pudo cargar ' + href + '\n' +
+          '¿Server en marcha? ¿git pull? ¿corriste generar-ts-copys-contenidos-7-12.js?';
+      }
+    })
+  );
+
+  root.querySelectorAll('[data-copiar-copy-version]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const ver = btn.getAttribute('data-copiar-copy-version') || 'A';
+      const bloque = root.querySelector(`[data-copy-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-copy-texto]');
+      const ok = await copiarTexto((ta?.value || '').trim());
+      mostrarToast(ok ? `Copy ${ver} copiado` : 'No se pudo copiar');
+    });
+  });
+
+  root.querySelectorAll('[data-guardar-copy-version]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const ver = btn.getAttribute('data-guardar-copy-version') || 'A';
+      const bloque = root.querySelector(`[data-copy-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-copy-texto]');
+      const archivo = bloque?.getAttribute('data-copy-archivo') || archivos[ver] || '';
+      if (!archivo) {
+        mostrarToast('Sin archivo para guardar');
+        return;
+      }
+      btn.disabled = true;
+      try {
+        const ok = await guardarPromptTxtEnDisco(archivo, ta?.value ?? '');
+        mostrarToast(ok ? `Copy ${ver} guardado` : 'No se pudo guardar');
+      } finally {
+        btn.disabled = false;
+      }
+    });
   });
 }
 

@@ -215,6 +215,22 @@ for (const c of CONTENIDOS) {
     productoUrl: c.url,
   });
 
+  const copyStem = `index/clientes/trendseeker/copys/COPY-c${String(c.n).padStart(2, '0')}-${
+    {
+      7: 'travel-trainer-black-hombre',
+      8: 'chelsea-commando-negras-mujer',
+      9: 'play-bajas-rojo-mujer',
+      10: 'original-ninos',
+      11: 'play-altas-shearling-white-mujer',
+      12: 'original-ninos-rosado-brillante',
+    }[c.n]
+  }`;
+  const copyArchivos = {
+    A: `${copyStem}-A.txt`,
+    B: `${copyStem}-B.txt`,
+    C: `${copyStem}-C.txt`,
+  };
+
   const copyNum = pad(num++);
   upsert({
     id: `${madreId}-copy`,
@@ -225,14 +241,15 @@ for (const c of CONTENIDOS) {
     horaInicio: h.copy[0],
     horaFin: h.copy[1],
     notas:
-      `2–3 versiones de copy para el video generado con el prompt. ` +
-      `Debe nombrar características de la ficha: ${c.caracteristicas}. ` +
-      `CTA con link ${c.url}. Guardar TXT en trendseeker/copys/ y subir MP4 en la tarea (+ Subir video).`,
+      `Copys video · tres TXT (A/B/C). Características: ${c.caracteristicas}. ` +
+      `CTA con link ${c.url}. Edita/copia en la tarea.`,
     prioridad: 'alta',
     completada: false,
     pendiente: false,
     numeroHistorico: copyNum,
     tipoEntregable: 'copys-txt',
+    entregableArchivo: copyArchivos.A,
+    entregableArchivosCopy: copyArchivos,
     parentId: madreId,
     productoUrl: c.url,
   });
@@ -278,6 +295,15 @@ try {
   gen.actualizarTareasYIndice(items);
 } catch (e) {
   console.warn('No se pudieron generar prompts TXT:', e.message);
+}
+
+// Genera TXT de copys A/B/C
+try {
+  const genCopy = require('./generar-ts-copys-contenidos-7-12.js');
+  const itemsCopy = genCopy.escribirCopys();
+  genCopy.actualizarTareas(itemsCopy);
+} catch (e) {
+  console.warn('No se pudieron generar copys TXT:', e.message);
 }
 
 console.log('\nListo: contenidos 7/12 … 12/12 (madres + subtareas).');

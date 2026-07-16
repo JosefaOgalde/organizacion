@@ -566,7 +566,7 @@ function handleApiPromptTxt(req, res) {
       if (!archivo || !/\.txt$/i.test(archivo)) {
         return send(res, 400, JSON.stringify({ error: 'archivo .txt requerido' }), 'application/json');
       }
-      if (!/^index\/clientes\/[a-z0-9_-]+\/prompts\/[A-Za-z0-9._-]+\.txt$/i.test(archivo)) {
+      if (!/^index\/clientes\/[a-z0-9_-]+\/(prompts|copys)\/[A-Za-z0-9._-]+\.txt$/i.test(archivo)) {
         return send(res, 403, JSON.stringify({ error: 'ruta no permitida' }), 'application/json');
       }
       if (archivo.includes('..')) {
