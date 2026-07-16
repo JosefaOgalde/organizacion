@@ -3823,7 +3823,7 @@ function semanaOffsetPara(fecha) {
 
 function irASemanaDe(fechaISO) {
   semanaOffset = semanaOffsetPara(parseISO(fechaISO));
-  diaSeleccionado = null;
+  diaSeleccionado = fechaISO; // conserva el día clicado desde el mes
   mostrarVista('semana');
   renderCalendario();
 }
@@ -4508,7 +4508,7 @@ function renderCalendarioMes() {
     const itemsHtml = items.map(x => x.html).join('');
     const alturaMin = items.length === 0 ? 108 : 40 + items.length * 34;
 
-    html += `<div class="mes-dia${esHoy ? ' mes-dia--hoy' : ''}${!esMesActual ? ' mes-dia--fuera' : ''}" data-fecha="${diaStr}" data-items="${items.length}" style="min-height:${alturaMin}px" title="Ver detalle del ${dia.toLocaleDateString('es-CL')}">
+    html += `<div class="mes-dia${esHoy ? ' mes-dia--hoy' : ''}${!esMesActual ? ' mes-dia--fuera' : ''}" data-fecha="${diaStr}" data-items="${items.length}" style="min-height:${alturaMin}px" title="Ver semana del ${dia.toLocaleDateString('es-CL')}">
       <div class="mes-dia__num">${dia.getDate()}</div>
       <div class="mes-dia__items">${itemsHtml}</div>
     </div>`;
@@ -4516,7 +4516,7 @@ function renderCalendarioMes() {
 
   cont.innerHTML = html;
   cont.querySelectorAll('.mes-dia').forEach(celda => {
-    celda.addEventListener('click', () => irADia(celda.dataset.fecha));
+    celda.addEventListener('click', () => irASemanaDe(celda.dataset.fecha));
   });
 }
 
@@ -4539,7 +4539,8 @@ function htmlItemCalendarioSemana(item) {
   const completo = tituloMes(t, 200);
   const cls = t.completada ? ' tarea-mini--completada' : '';
   const hora = etiquetaHoraTarea(t);
-  return `<div class="tarea-mini tarea-mini--clic${cls}" data-tarea-id="${t.id}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(hora + ' · ' + completo)} — Clic para resolver">${escapeHtml(texto)}</div>`;
+  const fecha = t.fecha || '';
+  return `<div class="tarea-mini tarea-mini--clic${cls}" data-tarea-id="${t.id}" data-fecha="${escapeHtml(fecha)}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(hora + ' · ' + completo)} — Clic para ver el día">${escapeHtml(texto)}</div>`;
 }
 
 function renderCalendario() {
@@ -4564,7 +4565,8 @@ function renderCalendario() {
       : '<p class="task-list--empty" style="font-size:0.7rem">Sin tareas</p>';
 
     const div = document.createElement('div');
-    div.className = `dia dia--clic${diaStr === hoyStr ? ' dia--hoy' : ''}`;
+    const seleccionado = diaSeleccionado && diaStr === diaSeleccionado;
+    div.className = `dia dia--clic${diaStr === hoyStr ? ' dia--hoy' : ''}${seleccionado ? ' dia--seleccionado' : ''}`;
     div.innerHTML = `
       <div class="dia__header dia__header--clic" data-fecha="${diaStr}" title="Ver detalle del día">
         <div class="dia__nombre">${DIAS[i]}</div>
@@ -4577,10 +4579,18 @@ function renderCalendario() {
   cont.querySelectorAll('.dia__header--clic').forEach(hdr => {
     hdr.addEventListener('click', () => irADia(hdr.dataset.fecha));
   });
+  // Semana → día (no salta directo a la tarea): mes → semana → día → tarea
   cont.querySelectorAll('.tarea-mini--clic').forEach(el => {
     el.addEventListener('click', e => {
       e.stopPropagation();
-      irATarea(el.dataset.tareaId);
+      const fecha =
+        el.dataset.fecha ||
+        el.closest('.dia')?.querySelector('.dia__header--clic')?.dataset.fecha;
+      if (fecha) {
+        const tid = el.dataset.tareaId;
+        irADia(fecha);
+        if (tid) resaltarTareaEnDia(tid);
+      }
     });
   });
   cont.querySelectorAll('.dia__tareas--resumen').forEach(zona => {
