@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Organización</title>
-  <link rel="stylesheet" href="styles.css?v=mi-perfil1">
+  <link rel="stylesheet" href="styles.css?v=dia-semana-arriba1">
 </head>
 <body>
   <div class="app">
@@ -64,16 +64,16 @@
           <button type="button" id="btn-dia-siguiente" class="btn btn--ghost">Día siguiente →</button>
           <button type="button" id="btn-dia-hoy" class="btn btn--accent">Ir a hoy</button>
         </div>
+        <div class="panel panel--semana-mini">
+          <p id="rango-semana-mini" class="semana-mini__rango"></p>
+          <div id="calendario-semana-mini" class="calendario calendario--mini" aria-label="Semana en miniatura"></div>
+          <p class="vista-hint vista-hint--mini">Clic en un día de la semana para ver su detalle</p>
+        </div>
         <div class="panel panel--dia">
           <h2 id="dia-titulo">Día</h2>
           <p id="dia-subtitulo" class="panel__desc"></p>
           <p class="vista-hint">Clic en una tarea o en <strong>Realizar tarea</strong> → agente del cliente y descarga de contexto para resolver</p>
           <div id="dia-contenido" class="dia-detalle"></div>
-        </div>
-        <div class="panel panel--semana-mini">
-          <p id="rango-semana-mini" class="semana-mini__rango"></p>
-          <div id="calendario-semana-mini" class="calendario calendario--mini" aria-label="Semana en miniatura"></div>
-          <p class="vista-hint vista-hint--mini">Clic en un día de la semana para ver su detalle</p>
         </div>
       </section>
 

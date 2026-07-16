@@ -1888,7 +1888,7 @@ a.tab.tab--perfil:hover {
 }
 
 .panel--semana-mini {
-  margin-top: 1rem;
+  margin: 0 0 1rem;
   padding: 1rem 1.1rem;
 }
 
