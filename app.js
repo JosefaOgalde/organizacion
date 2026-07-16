@@ -2802,17 +2802,20 @@ function guardarPerfilCliente(e) {
 }
 
 function asegurarSesionAgente(tarea) {
-  if (!tarea.sesionAgente?.mensajes?.length) {
+  if (!tarea.sesionAgente || typeof tarea.sesionAgente !== 'object') {
+    tarea.sesionAgente = { mensajes: [] };
+  }
+  if (!Array.isArray(tarea.sesionAgente.mensajes)) tarea.sesionAgente.mensajes = [];
+  if (!Array.isArray(tarea.sesionAgente.archivosAdjuntos)) tarea.sesionAgente.archivosAdjuntos = [];
+  if (!tarea.sesionAgente.mensajes.length) {
     const cli = clienteDe(tarea.clienteId);
     const agente = agenteDe(cli);
     const rol = rolDe(tarea);
-    tarea.sesionAgente = {
-      mensajes: [{
-        rol: 'agente',
-        texto: mensajeAperturaAgente(tarea, cli, agente, rol),
-        ts: Date.now()
-      }]
-    };
+    tarea.sesionAgente.mensajes = [{
+      rol: 'agente',
+      texto: mensajeAperturaAgente(tarea, cli, agente, rol),
+      ts: Date.now()
+    }];
   }
   return tarea.sesionAgente;
 }
@@ -3215,9 +3218,13 @@ function imagenesGuardadasTarea(tarea) {
 
 function htmlGaleriaImagenesTarea(tarea) {
   const imgs = imagenesGuardadasTarea(tarea);
+  const videos = archivosVideoTarea(tarea);
   const thumbs = imgs.length
     ? htmlMiniaturasImagenes(imgs, { quitar: true, prefix: 'tarearef' })
-    : '<p class="tarea-detalle__imgs-vacio">Aún no hay imágenes. Sube los fondos Midjourney aquí para guardarlos en la tarea y verlos en el perfil del cliente.</p>';
+    : '<p class="tarea-detalle__imgs-vacio">Aún no hay imágenes. Sube fondos o referencias aquí.</p>';
+  const videoBlock = videos.length
+    ? `<div class="tarea-detalle__videos" id="tarea-videos-guardados">${htmlVideosTarea(videos, { quitar: true })}</div>`
+    : '<p class="tarea-detalle__imgs-vacio" id="tarea-videos-guardados">Aún no hay video. Sube el MP4 del entregable aquí.</p>';
   return `
     <div class="tarea-detalle__imgs" data-tarea-imgs>
       <div class="tarea-detalle__imgs-head">
@@ -3232,7 +3239,118 @@ function htmlGaleriaImagenesTarea(tarea) {
         </label>
         <p class="agente-imgs-form__hint">Se comprimen y guardan en disco del proyecto (no llenan el navegador). Visible en la landing del cliente.</p>
       </div>
+    </div>
+    <div class="tarea-detalle__imgs tarea-detalle__imgs--video" data-tarea-videos>
+      <div class="tarea-detalle__imgs-head">
+        <strong>Video de la tarea</strong>
+        <span class="tarea-detalle__imgs-count">${videos.length}</span>
+      </div>
+      ${videoBlock}
+      <div class="tarea-detalle__imgs-acciones">
+        <label class="agente-imgs-form__label">
+          <input type="file" id="tarea-video-input" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" hidden />
+          <span class="btn btn--ghost btn--small">+ Subir video</span>
+        </label>
+        <p class="agente-imgs-form__hint">MP4/WebM hasta ~120 MB. Queda en disco y se ve en el Registro del cliente (landing).</p>
+      </div>
     </div>`;
+}
+
+function asegurarArchivosAgente(sesion) {
+  if (!sesion || typeof sesion !== 'object') return;
+  if (!Array.isArray(sesion.archivosAdjuntos)) sesion.archivosAdjuntos = [];
+}
+
+function archivosVideoTarea(tarea) {
+  asegurarSesionAgente(tarea);
+  asegurarArchivosAgente(tarea.sesionAgente);
+  return (tarea.sesionAgente.archivosAdjuntos || []).filter(
+    (a) => a && (a.kind === 'video' || String(a.mime || '').startsWith('video/') || /\.(mp4|webm|mov)$/i.test(a.nombre || a.url || ''))
+  );
+}
+
+function htmlVideosTarea(videos, { quitar = false } = {}) {
+  return videos
+    .map((v, i) => {
+      const src = v.url || '';
+      if (!src) return '';
+      return `<figure class="tarea-video-card">
+        <video class="tarea-video-card__player" src="${escapeHtml(src)}" controls preload="metadata" playsinline></video>
+        <figcaption>
+          <a href="${escapeHtml(src)}" target="_blank" rel="noopener" download>${escapeHtml(v.nombre || 'video.mp4')}</a>
+          ${quitar ? `<button type="button" class="agente-ref-img__quitar" data-quitar-video="${i}" title="Quitar">×</button>` : ''}
+        </figcaption>
+      </figure>`;
+    })
+    .join('');
+}
+
+async function subirArchivoTareaAlDisco(tarea, file) {
+  const nombre = file.name || `archivo-${Date.now()}.mp4`;
+  const headers = {
+    'Content-Type': file.type || 'application/octet-stream',
+  };
+  const token = sessionStorage.getItem('organizacion_api_token');
+  if (token) headers['X-Organizacion-Token'] = token;
+  const qs = new URLSearchParams({
+    tareaId: tarea.id,
+    clienteId: tarea.clienteId || '',
+    nombre,
+  });
+  const res = await fetch('/api/tarea-archivo?' + qs.toString(), {
+    method: 'POST',
+    headers,
+    body: file,
+  });
+  if (!res.ok) {
+    let msg = 'HTTP ' + res.status;
+    try {
+      const err = await res.json();
+      if (err?.error) msg = err.error;
+    } catch { /* ignore */ }
+    throw new Error(msg);
+  }
+  const data = await res.json();
+  if (!data?.url) throw new Error('sin URL de archivo');
+  return {
+    nombre: data.nombre || nombre,
+    url: data.url,
+    mime: data.mime || file.type || '',
+    kind: data.kind || 'file',
+    bytes: data.bytes || file.size || 0,
+  };
+}
+
+async function guardarVideoEnTarea(tarea, file) {
+  asegurarSesionAgente(tarea);
+  asegurarArchivosAgente(tarea.sesionAgente);
+  const entry = await subirArchivoTareaAlDisco(tarea, file);
+  const dup = tarea.sesionAgente.archivosAdjuntos.some((a) => a.url === entry.url);
+  if (!dup) tarea.sesionAgente.archivosAdjuntos.push(entry);
+
+  const cli = clienteDe(tarea.clienteId);
+  if (cli) {
+    if (!cli.ficha || typeof cli.ficha !== 'object') {
+      cli.ficha = { contacto: '', links: '', notas: '', seccionesExtra: [], documentos: [] };
+    }
+    if (!Array.isArray(cli.ficha.documentos)) cli.ficha.documentos = [];
+    const ya = cli.ficha.documentos.some((d) => d.url === entry.url && d.tareaId === tarea.id);
+    if (!ya) {
+      cli.ficha.documentos.push({
+        id: id(),
+        clienteId: cli.id,
+        tareaId: tarea.id,
+        nombre: entry.nombre,
+        url: entry.url,
+        mime: entry.mime,
+        kind: entry.kind,
+        origen: 'tarea-video',
+        titulo: `Video · ${nombreBaseTarea(tarea) || tarea.titulo}`,
+        creado: toISO(hoy()),
+      });
+    }
+  }
+  return entry;
 }
 
 function hijosDeTarea(tarea) {
@@ -4691,6 +4809,35 @@ function bindImagenesTareaDetalle(tarea) {
     };
   }
 
+  const inputVideo = document.getElementById('tarea-video-input');
+  if (inputVideo) {
+    inputVideo.onchange = async (e) => {
+      const t = tareaDe(tarea.id);
+      if (!t) return;
+      const file = (e.target.files || [])[0];
+      inputVideo.value = '';
+      if (!file) return;
+      if (!file.type.startsWith('video/') && !/\.(mp4|webm|mov)$/i.test(file.name)) {
+        mostrarToast('Elige un video MP4, WebM o MOV');
+        return;
+      }
+      if (file.size > 120 * 1024 * 1024) {
+        mostrarToast('El video supera ~120 MB — comprímelo un poco e inténtalo de nuevo');
+        return;
+      }
+      mostrarToast('Subiendo video… (puede tardar)');
+      try {
+        await guardarVideoEnTarea(t, file);
+        if (!guardar()) return;
+        mostrarToast('Video guardado en la tarea');
+        renderTarea();
+      } catch (err) {
+        console.warn(err);
+        mostrarToast('No se pudo subir el video: ' + (err.message || 'error'));
+      }
+    };
+  }
+
   document.getElementById('tarea-imgs-guardadas')?.querySelectorAll('[data-quitar-img]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const t = tareaDe(tarea.id);
@@ -4718,6 +4865,30 @@ function bindImagenesTareaDetalle(tarea) {
       if (cli?.ficha?.landing?.imagenes) {
         cli.ficha.landing.imagenes = cli.ficha.landing.imagenes.filter(
           (x) => !(x.tareaId === t.id && (x.url === key || x.dataUrl === key))
+        );
+      }
+      guardar();
+      renderTarea();
+    });
+  });
+
+  document.getElementById('tarea-videos-guardados')?.querySelectorAll('[data-quitar-video]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const t = tareaDe(tarea.id);
+      if (!t?.sesionAgente) return;
+      asegurarArchivosAgente(t.sesionAgente);
+      const idx = Number(btn.dataset.quitarVideo);
+      if (Number.isNaN(idx)) return;
+      const videos = archivosVideoTarea(t);
+      const quitado = videos[idx];
+      if (!quitado?.url) return;
+      t.sesionAgente.archivosAdjuntos = (t.sesionAgente.archivosAdjuntos || []).filter(
+        (a) => a.url !== quitado.url
+      );
+      const cli = clienteDe(t.clienteId);
+      if (cli?.ficha?.documentos) {
+        cli.ficha.documentos = cli.ficha.documentos.filter(
+          (d) => !(d.tareaId === t.id && d.url === quitado.url)
         );
       }
       guardar();

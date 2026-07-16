@@ -16,6 +16,7 @@ window.CLIENTES_PORTAL = [
       secciones: [
         { titulo: 'Community Manager', texto: 'Publicaciones, historias y reportes mensuales en redes sociales.' },
         { titulo: 'Prompts Gemini (producto / video)', texto: 'Siempre Gemini para marcas/productos TS (nunca Midjourney; eso es ECR). Ver trendseeker/prompts/.' },
+        { titulo: 'Copys + video', texto: 'Copys en trendseeker/copys/. El MP4 se sube en la tarea (+ Subir video) y aparece en Registro Trendseeker.' },
         { titulo: 'WordPress', texto: 'Banners, productos, precios y cargas masivas en el sitio.' }
       ]
     }

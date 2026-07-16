@@ -857,6 +857,22 @@ body.portal-body--themed .portal-cliente {
   justify-content: flex-end;
 }
 
+.portal-reg__video {
+  margin-top: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-width: 420px;
+}
+
+.portal-reg__video video {
+  width: 100%;
+  max-height: 240px;
+  border-radius: 8px;
+  background: #111;
+  border: 1px solid rgba(106, 90, 158, 0.2);
+}
+
 .portal-reg__thumb {
   display: block;
   width: 64px;

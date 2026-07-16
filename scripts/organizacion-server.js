@@ -37,6 +37,9 @@ const MIME = {
   '.woff2': 'font/woff2',
   '.txt': 'text/plain; charset=utf-8',
   '.md': 'text/markdown; charset=utf-8',
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
+  '.mov': 'video/quicktime',
 };
 
 /** Rutas que no se sirven por HTTP (aunque existan en disco) */
@@ -173,6 +176,26 @@ function readBody(req) {
       chunks.push(c);
     });
     req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+    req.on('error', reject);
+  });
+}
+
+/** Lectura binaria (videos MP4, etc.) con tope propio. */
+function readBodyBinary(req, maxBytes) {
+  const limit = Number(maxBytes) || RUNTIME_MAX_BODY;
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    let size = 0;
+    req.on('data', (c) => {
+      size += c.length;
+      if (size > limit) {
+        reject(new Error('BODY_TOO_LARGE'));
+        req.destroy();
+        return;
+      }
+      chunks.push(c);
+    });
+    req.on('end', () => resolve(Buffer.concat(chunks)));
     req.on('error', reject);
   });
 }
@@ -436,6 +459,90 @@ function handleApiTareaImagen(req, res) {
   });
 }
 
+const MAX_TAREA_ARCHIVO_BYTES = Number(process.env.MAX_TAREA_ARCHIVO_BYTES) || 120 * 1024 * 1024;
+
+/**
+ * Sube archivo binario de tarea (video MP4/WebM/MOV u otros).
+ * POST /api/tarea-archivo?tareaId=&clienteId=&nombre=
+ * Body: bytes crudos · Content-Type: video/mp4 (etc.)
+ */
+function handleApiTareaArchivo(req, res) {
+  if (!checkApiAuth(req, res)) return;
+  if (req.method !== 'POST') return send(res, 405, 'Método no permitido');
+
+  const u = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+  const tareaId = String(u.searchParams.get('tareaId') || '').trim();
+  const clienteId = String(u.searchParams.get('clienteId') || '').trim() || 'sin-cliente';
+  const nombreParam = String(u.searchParams.get('nombre') || '').trim();
+  if (!tareaId) {
+    return send(res, 400, JSON.stringify({ error: 'falta tareaId' }), 'application/json');
+  }
+
+  const mime = String(req.headers['content-type'] || 'application/octet-stream').split(';')[0].trim().toLowerCase();
+  const allowed =
+    mime.startsWith('video/') ||
+    mime.startsWith('image/') ||
+    mime === 'application/octet-stream' ||
+    mime === 'application/pdf';
+  if (!allowed) {
+    return send(res, 415, JSON.stringify({ error: 'tipo no permitido: ' + mime }), 'application/json');
+  }
+
+  const extFromName = path.extname(nombreParam).toLowerCase().replace(/^\./, '');
+  const extFromMime =
+    mime.includes('webm') ? 'webm' :
+    mime.includes('quicktime') || mime.includes('mov') ? 'mov' :
+    mime.includes('mp4') ? 'mp4' :
+    mime.includes('png') ? 'png' :
+    mime.includes('webp') ? 'webp' :
+    mime.includes('pdf') ? 'pdf' :
+    mime.includes('jpeg') || mime.includes('jpg') ? 'jpg' : '';
+  const ext = extFromName || extFromMime || 'bin';
+  if (/^(mp4|webm|mov)$/i.test(ext) === false && mime.startsWith('video/')) {
+    // aún permitir videos con extensión rara
+  }
+
+  return readBodyBinary(req, MAX_TAREA_ARCHIVO_BYTES).then((buf) => {
+    if (!buf.length) {
+      return send(res, 400, JSON.stringify({ error: 'archivo vacío' }), 'application/json');
+    }
+    const baseName = slugSeguro(nombreParam.replace(/\.[^.]+$/, '')) || 'archivo';
+    const fileName = `${Date.now()}-${baseName}.${ext}`;
+    const sub = mime.startsWith('video/') ? 'tarea-videos' : 'tarea-archivos';
+    const relDir = path.join('index', 'uploads', sub, slugSeguro(clienteId), slugSeguro(tareaId));
+    const absDir = path.join(ROOT, relDir);
+    fs.mkdirSync(absDir, { recursive: true });
+    const absFile = path.join(absDir, fileName);
+    fs.writeFileSync(absFile, buf);
+    const url = `/${relDir.replace(/\\/g, '/')}/${fileName}`;
+    const kind = mime.startsWith('video/') ? 'video' : mime.startsWith('image/') ? 'image' : 'file';
+    console.log('[api] Archivo tarea', kind, url, `(${Math.round(buf.length / 1024)} KB)`);
+    return send(
+      res,
+      200,
+      JSON.stringify({
+        ok: true,
+        url,
+        nombre: nombreParam || fileName,
+        bytes: buf.length,
+        mime,
+        kind,
+      }),
+      'application/json'
+    );
+  }).catch((e) => {
+    if (e && e.message === 'BODY_TOO_LARGE') {
+      return send(
+        res,
+        413,
+        JSON.stringify({ error: 'archivo demasiado grande (máx ~120 MB)' }),
+        'application/json'
+      );
+    }
+    return send(res, 500, String(e), 'text/plain');
+  });
+}
+
 const server = http.createServer((req, res) => {
   const url = req.url || '/';
 
@@ -445,6 +552,10 @@ const server = http.createServer((req, res) => {
 
   if (url.startsWith('/api/tarea-imagen')) {
     return handleApiTareaImagen(req, res);
+  }
+
+  if (url.startsWith('/api/tarea-archivo')) {
+    return handleApiTareaArchivo(req, res);
   }
 
   if (url.startsWith('/api/ecr-portada-historial')) {

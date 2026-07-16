@@ -1,6 +1,6 @@
 {
   "herramienta": "Gemini",
-  "nota": "Prompts de producto/video Trendseeker — siempre Gemini (no Midjourney).",
+  "nota": "Prompts de producto/video Trendseeker — siempre Gemini (no Midjourney). Copys de video en carpeta copys/.",
   "items": [
     {
       "id": "botas-rojas-lluvia",
@@ -8,6 +8,14 @@
       "archivo": "prompts/PROMPT-botas-rojas-lluvia.txt",
       "descripcion": "VIDEO Gemini: Hunter rojas exactas, lluvia, jeans dentro de las botas, sin piel visible; foco en producto.",
       "tareaNumero": "03"
+    },
+    {
+      "id": "botas-hunter-rojo-militar-copy-video",
+      "titulo": "Copy video · Botas Hunter Rojo Militar",
+      "archivo": "copys/COPY-botas-hunter-rojo-militar-video.txt",
+      "descripcion": "Características de ficha + 3 copys para el video (A/B/C). Subir MP4 en tarea #04.",
+      "tareaNumero": "04",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-bajas-para-mujer-rojo-militar/"
     }
   ]
 }

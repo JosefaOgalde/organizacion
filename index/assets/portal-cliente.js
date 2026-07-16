@@ -266,6 +266,29 @@
     return out;
   }
 
+  function videosDeTarea(t) {
+    const out = [];
+    const seen = new Set();
+    const push = (v) => {
+      const src = v?.url;
+      if (!src || seen.has(src)) return;
+      const isVideo =
+        v.kind === 'video' ||
+        String(v.mime || '').startsWith('video/') ||
+        /\.(mp4|webm|mov)(\?|$)/i.test(src) ||
+        v.origen === 'tarea-video';
+      if (!isVideo) return;
+      seen.add(src);
+      out.push({ nombre: v.nombre || v.titulo || 'video.mp4', url: src, mime: v.mime });
+    };
+    for (const a of t?.sesionAgente?.archivosAdjuntos || []) push(a);
+    const cli = (datos.clientes || []).find((x) => x.id === c.id);
+    for (const d of cli?.ficha?.documentos || []) {
+      if (d.tareaId === t.id) push(d);
+    }
+    return out;
+  }
+
   function tareasConImagenes() {
     if (!datos?.tareas) return [];
     return datos.tareas
@@ -399,6 +422,7 @@
       .map((t) => {
         const titulo = String(t.titulo || 'Tarea').replace(/^\[[^\]]+\]\s*/, '');
         const imgs = imagenesDeTarea(t);
+        const videos = videosDeTarea(t);
         const estado = t.completada ? 'Hecha' : t.pendiente ? 'Pendiente' : 'Activa';
         const arch = t.entregableArchivo
           ? `<a class="portal-btn portal-btn--ghost" href="/${escapeHtml(String(t.entregableArchivo).replace(/^\/+/, ''))}" target="_blank" rel="noopener">Ver entregable</a>`
@@ -410,15 +434,31 @@
             return `<a class="portal-reg__thumb" href="${escapeHtml(src)}" target="_blank" rel="noopener"><img src="${escapeHtml(src)}" alt="" loading="lazy"></a>`;
           })
           .join('');
+        const vids = videos
+          .slice(0, 2)
+          .map((v) => {
+            return `<div class="portal-reg__video">
+              <video src="${escapeHtml(v.url)}" controls preload="metadata" playsinline></video>
+              <a class="portal-btn portal-btn--ghost" href="${escapeHtml(v.url)}" target="_blank" rel="noopener" download>Descargar video</a>
+            </div>`;
+          })
+          .join('');
+        const metaExtra = [
+          imgs.length ? imgs.length + ' img' : '',
+          videos.length ? videos.length + ' video' : '',
+        ]
+          .filter(Boolean)
+          .join(' · ');
         return `<article class="portal-reg__card" data-tarea-id="${escapeHtml(t.id)}">
           <div class="portal-reg__main">
             <h3 class="portal-reg__titulo">#${escapeHtml(t.numeroHistorico || '?')} · ${escapeHtml(titulo)}</h3>
-            <p class="portal-reg__meta">${escapeHtml(t.fecha || '')} · ${escapeHtml(estado)}${t.tipoEntregable ? ' · ' + escapeHtml(t.tipoEntregable) : ''}${imgs.length ? ' · ' + imgs.length + ' img' : ''}</p>
+            <p class="portal-reg__meta">${escapeHtml(t.fecha || '')} · ${escapeHtml(estado)}${t.tipoEntregable ? ' · ' + escapeHtml(t.tipoEntregable) : ''}${metaExtra ? ' · ' + metaExtra : ''}</p>
             ${t.notas ? `<p class="portal-reg__notas">${escapeHtml(String(t.notas).slice(0, 160))}${t.notas.length > 160 ? '…' : ''}</p>` : ''}
             <div class="portal-reg__actions">
               <a class="portal-btn" href="${hrefTareaOrganizador(t)}">Abrir en organizador</a>
               ${arch}
             </div>
+            ${vids}
           </div>
           ${thumbs ? `<div class="portal-reg__thumbs">${thumbs}</div>` : ''}
         </article>`;
@@ -437,7 +477,7 @@
         <h2 class="ficha-seccion__titulo">${escapeHtml(tituloSec)}</h2>
         <span class="ficha-seccion__estado">${lista.length} tarea${lista.length === 1 ? '' : 's'}</span>
       </div>
-      <p class="portal-reg__intro">Todo lo cargado u obtenido de este cliente queda aquí: tareas, entregables (TXT/prompts) e imágenes, con enlace al organizador.</p>
+      <p class="portal-reg__intro">Todo lo cargado u obtenido de este cliente queda aquí: tareas, entregables (TXT/prompts), imágenes y videos, con enlace al organizador.</p>
       <div class="portal-reg__lista" data-portal-registro-lista>${rows}</div>
       ${vacio}
       <div class="portal-reg__biblioteca" data-portal-biblioteca-prompts hidden></div>

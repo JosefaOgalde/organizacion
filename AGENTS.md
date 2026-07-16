@@ -12,8 +12,9 @@
 - Flujo: fotos de producto primero → prompt en español orientado a **Gemini VIDEO** → priorizar fidelidad al producto.
 - Videos TS: el prompt debe pensarse para Gemini **video** desde el inicio (si Gemini dice que solo genera videos, usar brief de video, no de imagen fija).
 - Ejemplo vigente: `PROMPT-botas-rojas-lluvia.txt` (Hunter rojas, lluvia, jeans dentro, sin piel; detalle parche HUNTER / hebilla / suela zigzag).
-- Landing: `http://localhost:3000/index/clientes/trendseeker/` muestra **Registro Trendseeker** (todas las tareas + entregables) y biblioteca `prompts/indice.json` (Gemini).
+- Landing: `http://localhost:3000/index/clientes/trendseeker/` muestra **Registro Trendseeker** (todas las tareas + entregables + videos) y biblioteca `prompts/indice.json` (Gemini).
 - Al crear prompts/entregables TS: registrar en la tarea (`entregableArchivo`) y en `prompts/indice.json` para que aparezcan en el link del cliente.
+- **Videos en tareas:** en el detalle de la tarea → **+ Subir video** (MP4/WebM, hasta ~120 MB). API `POST /api/tarea-archivo` guarda en `index/uploads/tarea-videos/…` (gitignored). Copys de video: `index/clientes/trendseeker/copys/` (ej. botas Hunter Rojo Militar, tarea #04).
 
 ### ECR — Prompt Midjourney de portada
 - Los prompts Midjourney de ECR son **solo para la imagen de fondo** de la portada del newsletter LinkedIn.
