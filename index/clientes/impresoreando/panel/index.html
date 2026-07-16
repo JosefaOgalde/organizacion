@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Impresoreando · Panel socios</title>
   <link rel="stylesheet" href="../../../assets/portal.css?v=imp-cta2" />
-  <link rel="stylesheet" href="./panel.css?v=imp-alin1" />
+  <link rel="stylesheet" href="./panel.css?v=imp-sku1" />
 </head>
 <body class="imp-body" data-cliente-slug="impresoreando">
   <div class="imp-top-bleed">
@@ -46,6 +46,39 @@
     <section class="imp-panel" id="tab-bitacora"></section>
   </main>
 
-  <script src="./panel.js?v=imp-alin1"></script>
+  <div id="imp-modal-producto" class="imp-modal" hidden aria-hidden="true">
+    <div class="imp-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="imp-modal-producto-title">
+      <header class="imp-modal__head">
+        <h2 id="imp-modal-producto-title">Agregar producto</h2>
+        <button type="button" class="imp-modal__close" id="btn-modal-producto-cerrar" aria-label="Cerrar">×</button>
+      </header>
+      <form class="imp-form" id="form-producto-modal">
+        <p class="imp-muted">Cada impresión es única: el SKU identifica esta pieza. Puedes ajustar nombre, costo y precio de venta.</p>
+        <label>SKU (único)
+          <input name="sku" required readonly />
+        </label>
+        <label>Nombre del producto
+          <input name="nombre" required placeholder="Ej. Portacompletos gato — pedido Ana" autofocus />
+        </label>
+        <label>Gramos filamento<input name="filamentoGramos" type="number" step="0.1" min="0" required /></label>
+        <label>$ / kg filamento<input name="costoFilamentoKgClp" type="number" min="0" required /></label>
+        <label>Horas impresión<input name="horasImpresion" type="number" step="0.1" min="0" required /></label>
+        <label>Minutos pintado<input name="minutosPintado" type="number" min="0" required /></label>
+        <label>Unidades metal<input name="unidadesMetal" type="number" min="0" required /></label>
+        <label>Bolsas<input name="unidadesBolsa" type="number" min="0" required /></label>
+        <label>Precio venta a público (CLP)
+          <input name="precioVentaSugeridoClp" type="number" min="0" step="10" required />
+        </label>
+        <label>Notas<textarea name="notas" rows="2" placeholder="Opcional"></textarea></label>
+        <div class="imp-calc-live" id="imp-modal-costo-est">Costo estimado…</div>
+        <div class="imp-form-actions">
+          <button type="submit" class="imp-btn imp-btn--primary">Agregar al catálogo</button>
+          <button type="button" class="imp-btn" id="btn-modal-producto-cancelar">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="./panel.js?v=imp-sku1"></script>
 </body>
 </html>

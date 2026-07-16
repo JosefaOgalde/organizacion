@@ -59,6 +59,7 @@
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
     if (agruparGastosPorRegistro(d)) changed = true;
     if (asegurarProductoPortacompletosGato(d)) changed = true;
+    if (asegurarSkusProductos(d)) changed = true;
     const gastos = d.gastos;
     for (const g of gastos) {
       const quien = String(g.socioRegistro || '').trim();
@@ -235,6 +236,21 @@
       existing.id = id;
       changed = true;
     }
+    return changed;
+  }
+
+  function asegurarSkusProductos(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    let changed = false;
+    d.productos.forEach((p, i) => {
+      if (!p.sku) {
+        const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+        const n = String(i + 1).padStart(3, '0');
+        const rand = Math.random().toString(36).slice(2, 5).toUpperCase();
+        p.sku = `IMP-${stamp}-${n}${rand}`;
+        changed = true;
+      }
+    });
     return changed;
   }
 
@@ -775,6 +791,96 @@
     });
   }
 
+  function siguienteSkuProducto() {
+    const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const existentes = new Set((data.productos || []).map((p) => String(p.sku || '')));
+    let sku = '';
+    do {
+      const n = String((data.productos || []).length + 1).padStart(3, '0');
+      const rand = Math.random().toString(36).slice(2, 5).toUpperCase();
+      sku = `IMP-${stamp}-${n}${rand}`;
+    } while (existentes.has(sku));
+    return sku;
+  }
+
+  function leerCalcPieza() {
+    const form = $('#form-calc-pieza');
+    if (!form) return null;
+    const fd = new FormData(form);
+    const prod = {
+      filamentoGramos: Number(fd.get('g')),
+      costoFilamentoKgClp: Number(fd.get('kg')),
+      horasImpresion: Number(fd.get('h')),
+      minutosPintado: Number(fd.get('m')),
+      unidadesMetal: Number(fd.get('metal')),
+      unidadesBolsa: Number(fd.get('bolsa')),
+    };
+    const c = costoProducto(prod);
+    const margen = Number(data.parametros?.margenObjetivoPct || 40) / 100;
+    const sugerido = Math.round(c.total / (1 - margen));
+    return { prod, c, sugerido };
+  }
+
+  function leerProductoDesdeModal() {
+    const form = $('#form-producto-modal');
+    if (!form) return null;
+    const fd = new FormData(form);
+    const prod = {
+      filamentoGramos: Number(fd.get('filamentoGramos')),
+      costoFilamentoKgClp: Number(fd.get('costoFilamentoKgClp')),
+      horasImpresion: Number(fd.get('horasImpresion')),
+      minutosPintado: Number(fd.get('minutosPintado')),
+      unidadesMetal: Number(fd.get('unidadesMetal')),
+      unidadesBolsa: Number(fd.get('unidadesBolsa')),
+    };
+    return { prod, c: costoProducto(prod) };
+  }
+
+  function actualizarCostoModal() {
+    const est = $('#imp-modal-costo-est');
+    const leido = leerProductoDesdeModal();
+    if (!est || !leido) return;
+    est.innerHTML = `Costo estimado: <strong>${money(leido.c.total)}</strong>
+      · Filamento ${money(leido.c.filamento)} · Luz ${money(leido.c.luz)} · Pintado ${money(leido.c.pintado)}
+      · Metal ${money(leido.c.metal)} · Bolsa ${money(leido.c.bolsa)}`;
+  }
+
+  function cerrarModalProducto() {
+    const modal = $('#imp-modal-producto');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('imp-modal-open');
+  }
+
+  function abrirModalDesdeCalculadora() {
+    const calc = leerCalcPieza();
+    if (!calc) {
+      setStatus('Completa la calculadora primero', 'warn');
+      return;
+    }
+    const modal = $('#imp-modal-producto');
+    if (!modal) return;
+    const sku = siguienteSkuProducto();
+    modal.querySelector('[name=sku]').value = sku;
+    modal.querySelector('[name=nombre]').value = '';
+    modal.querySelector('[name=filamentoGramos]').value = calc.prod.filamentoGramos;
+    modal.querySelector('[name=costoFilamentoKgClp]').value = calc.prod.costoFilamentoKgClp;
+    modal.querySelector('[name=horasImpresion]').value = calc.prod.horasImpresion;
+    modal.querySelector('[name=minutosPintado]').value = calc.prod.minutosPintado;
+    modal.querySelector('[name=unidadesMetal]').value = calc.prod.unidadesMetal;
+    modal.querySelector('[name=unidadesBolsa]').value = calc.prod.unidadesBolsa;
+    modal.querySelector('[name=precioVentaSugeridoClp]').value = calc.sugerido;
+    modal.querySelector('[name=notas]').value = `Desde calculadora · costo est. ${Math.round(calc.c.total)} CLP`;
+    actualizarCostoModal();
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    modal.classList.add('is-open');
+    document.body.classList.add('imp-modal-open');
+    modal.querySelector('[name=nombre]')?.focus();
+  }
+
   function renderCostos() {
     const margen = Number(data.parametros?.margenObjetivoPct || 40) / 100;
     const p = data.parametros || {};
@@ -794,9 +900,13 @@
             ? ((Number(prod.precioVentaSugeridoClp) - c.total) / Number(prod.precioVentaSugeridoClp)) * 100
             : 0;
         const pid = escapeHtml(prod.id || '');
+        const sku = escapeHtml(prod.sku || prod.id || '—');
         return `
         <div class="imp-card" data-prod-id="${pid}">
-          <h3>${escapeHtml(prod.nombre)}</h3>
+          <div class="imp-prod-head">
+            <h3>${escapeHtml(prod.nombre)}</h3>
+            <span class="imp-sku" title="SKU único de impresión">SKU ${sku}</span>
+          </div>
           <div class="imp-grid">
             <div class="imp-kpi"><span>Filamento</span><strong>${money(c.filamento)}</strong></div>
             <div class="imp-kpi"><span>Luz (impresión)</span><strong>${money(c.luz)}</strong></div>
@@ -824,10 +934,10 @@
     $('#tab-costos').innerHTML = `
       <div class="imp-card">
         <h2>Costos por pieza (luz + materiales)</h2>
-        <p class="imp-muted">Cada pieza = filamento + luz (kWh × horas) + pintado + metal + bolsa. El <strong>precio a público</strong> se carga a mano en cada producto.</p>
-        <p class="imp-muted">Promedio reciente $/kg filamento (desde gastos): <strong>${money(avgFilKg)}</strong> · luz/hora impresora ≈ <strong>${money(costoHoraImpresora())}</strong></p>
+        <p class="imp-muted">Cada pieza impresa es <strong>única</strong> (SKU propio). Calcula tiempo/material y guárdala como producto.</p>
+        <p class="imp-muted">Promedio reciente $/kg filamento: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong></p>
       </div>
-      ${blocks || '<div class="imp-card">Sin productos</div>'}
+      ${blocks || '<div class="imp-card">Sin productos aún — usa la calculadora y Guarda como producto</div>'}
       <div class="imp-card">
         <h3>Calculadora rápida de pieza</h3>
         <form class="imp-form" id="form-calc-pieza">
@@ -839,47 +949,25 @@
           <label>Bolsas<input name="bolsa" type="number" value="1" /></label>
         </form>
         <div class="imp-calc-live" id="calc-pieza-live">Calculando…</div>
-      </div>
-      <div class="imp-card">
-        <h3>Agregar producto al catálogo</h3>
-        <form class="imp-form" id="form-prod">
-          <label>Nombre<input name="nombre" required placeholder="Llavero perro" /></label>
-          <label>Gramos filamento<input name="filamentoGramos" type="number" step="0.1" value="12" /></label>
-          <label>$ / kg filamento<input name="costoFilamentoKgClp" type="number" value="${avgFilKg}" /></label>
-          <label>Horas impresión<input name="horasImpresion" type="number" step="0.1" value="1.2" /></label>
-          <label>Minutos pintado<input name="minutosPintado" type="number" value="15" /></label>
-          <label>Unidades metal<input name="unidadesMetal" type="number" value="1" /></label>
-          <label>Bolsas<input name="unidadesBolsa" type="number" value="1" /></label>
-          <label>Precio venta a público $<input name="precioVentaSugeridoClp" type="number" value="" placeholder="Opcional — editable después" /></label>
-          <div class="imp-form-actions"><button class="imp-btn imp-btn--primary" type="submit">Agregar producto</button></div>
-        </form>
+        <div class="imp-form-actions" style="margin-top:0.75rem">
+          <button type="button" class="imp-btn imp-btn--primary" id="btn-calc-guardar">Guardar como producto</button>
+          <span class="imp-muted">Abre un modal con SKU, nombre, costo estimado y precio de venta</span>
+        </div>
       </div>
     `;
 
     const updateCalc = () => {
-      const form = $('#form-calc-pieza');
-      if (!form) return;
-      const fd = new FormData(form);
-      const fake = {
-        filamentoGramos: Number(fd.get('g')),
-        costoFilamentoKgClp: Number(fd.get('kg')),
-        horasImpresion: Number(fd.get('h')),
-        minutosPintado: Number(fd.get('m')),
-        unidadesMetal: Number(fd.get('metal')),
-        unidadesBolsa: Number(fd.get('bolsa')),
-      };
-      const c = costoProducto(fake);
-      const sug = c.total / (1 - margen);
+      const calc = leerCalcPieza();
       const el = $('#calc-pieza-live');
-      if (el) {
-        el.innerHTML = `
-          Filamento ${money(c.filamento)} · Luz ${money(c.luz)} · Pintado ${money(c.pintado)} · Metal ${money(c.metal)} · Bolsa ${money(c.bolsa)}
-          <br><strong>Costo unitario: ${money(c.total)}</strong> · precio sugerido c/ margen ${Math.round(margen * 100)}%: <strong>${money(sug)}</strong>
+      if (!calc || !el) return;
+      el.innerHTML = `
+          Filamento ${money(calc.c.filamento)} · Luz ${money(calc.c.luz)} · Pintado ${money(calc.c.pintado)} · Metal ${money(calc.c.metal)} · Bolsa ${money(calc.c.bolsa)}
+          <br><strong>Costo unitario: ${money(calc.c.total)}</strong> · precio sugerido c/ margen ${Math.round(margen * 100)}%: <strong>${money(calc.sugerido)}</strong>
           <div class="imp-muted" style="margin-top:0.35rem">Tarifa ${p.tarifaKwhClp || 180} $/kWh · consumo ${p.consumoImpresoraKw || 0.22} kW</div>`;
-      }
     };
     $('#form-calc-pieza')?.addEventListener('input', updateCalc);
     updateCalc();
+    $('#btn-calc-guardar')?.addEventListener('click', abrirModalDesdeCalculadora);
 
     $('#tab-costos').querySelectorAll('[data-precio-prod]').forEach((form) => {
       form.addEventListener('submit', (e) => {
@@ -893,27 +981,6 @@
         renderAll();
         setStatus('Precio de venta actualizado — guarda online', 'warn');
       });
-    });
-
-    $('#form-prod').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      data.productos = data.productos || [];
-      data.productos.push({
-        id: uid('prod'),
-        nombre: fd.get('nombre'),
-        activo: true,
-        filamentoGramos: Number(fd.get('filamentoGramos')),
-        costoFilamentoKgClp: Number(fd.get('costoFilamentoKgClp')),
-        horasImpresion: Number(fd.get('horasImpresion')),
-        minutosPintado: Number(fd.get('minutosPintado')),
-        unidadesMetal: Number(fd.get('unidadesMetal')),
-        unidadesBolsa: Number(fd.get('unidadesBolsa')),
-        precioVentaSugeridoClp: Number(fd.get('precioVentaSugeridoClp') || 0),
-        notas: '',
-      });
-      markDirty();
-      renderAll();
     });
   }
 
@@ -1038,6 +1105,50 @@
   $('#btn-recargar').addEventListener('click', () => {
     if (dirty && !confirm('Hay cambios sin guardar. ¿Recargar igual?')) return;
     load().catch((e) => setStatus(String(e.message || e), 'err'));
+  });
+
+  $('#form-producto-modal')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const nombre = String(fd.get('nombre') || '').trim();
+    const sku = String(fd.get('sku') || '').trim() || siguienteSkuProducto();
+    if (!nombre) return;
+    if ((data.productos || []).some((p) => p.sku === sku)) {
+      setStatus('Ese SKU ya existe — cierra y vuelve a guardar', 'warn');
+      return;
+    }
+    data.productos = data.productos || [];
+    data.productos.push({
+      id: uid('prod'),
+      sku,
+      nombre,
+      activo: true,
+      filamentoGramos: Number(fd.get('filamentoGramos')),
+      costoFilamentoKgClp: Number(fd.get('costoFilamentoKgClp')),
+      horasImpresion: Number(fd.get('horasImpresion')),
+      minutosPintado: Number(fd.get('minutosPintado')),
+      unidadesMetal: Number(fd.get('unidadesMetal')),
+      unidadesBolsa: Number(fd.get('unidadesBolsa')),
+      precioVentaSugeridoClp: Number(fd.get('precioVentaSugeridoClp') || 0),
+      notas: String(fd.get('notas') || '').trim(),
+    });
+    cerrarModalProducto();
+    markDirty();
+    renderAll();
+    setStatus(`Producto «${nombre}» agregado (${sku}) — guarda online`, 'warn');
+    document.querySelector('#imp-tabs button[data-tab="costos"]')?.click();
+  });
+
+  $('#form-producto-modal')?.addEventListener('input', actualizarCostoModal);
+  $('#btn-modal-producto-cerrar')?.addEventListener('click', cerrarModalProducto);
+  $('#btn-modal-producto-cancelar')?.addEventListener('click', cerrarModalProducto);
+  $('#imp-modal-producto')?.addEventListener('click', (e) => {
+    if (e.target?.id === 'imp-modal-producto') cerrarModalProducto();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && $('#imp-modal-producto')?.classList.contains('is-open')) {
+      cerrarModalProducto();
+    }
   });
 
   window.addEventListener('beforeunload', (e) => {
