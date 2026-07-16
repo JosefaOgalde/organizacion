@@ -4,15 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Impresoreando · Panel socios</title>
-  <link rel="stylesheet" href="../../../assets/portal.css" />
-  <link rel="stylesheet" href="./panel.css" />
+  <link rel="stylesheet" href="../../../assets/portal.css?v=layout-w1" />
+  <link rel="stylesheet" href="./panel.css?v=imp-ambos1" />
 </head>
 <body class="imp-body" data-cliente-slug="impresoreando">
-  <header class="imp-top">
+  <header class="imp-top imp-shell">
     <div>
       <a class="imp-back" href="../">← Landing</a>
       <h1>Impresoreando</h1>
-      <p class="imp-sub">Panel socios 50/50 · Instagram @impresoreando · datos en vivo</p>
+      <p class="imp-sub">Panel socios 50/50 · Josefa + Nicolás · Instagram @impresoreando</p>
     </div>
     <div class="imp-top-actions">
       <span id="imp-status" class="imp-status">Cargando…</span>
@@ -21,7 +21,7 @@
     </div>
   </header>
 
-  <nav class="imp-tabs" id="imp-tabs">
+  <nav class="imp-tabs imp-shell" id="imp-tabs">
     <button type="button" data-tab="resumen" class="is-active">Resumen 50/50</button>
     <button type="button" data-tab="gastos">Gastos</button>
     <button type="button" data-tab="ventas">Ventas</button>
@@ -31,7 +31,7 @@
     <button type="button" data-tab="bitacora">Bitácora</button>
   </nav>
 
-  <main class="imp-main">
+  <main class="imp-main imp-shell">
     <section class="imp-panel is-active" id="tab-resumen"></section>
     <section class="imp-panel" id="tab-gastos"></section>
     <section class="imp-panel" id="tab-ventas"></section>
@@ -41,6 +41,6 @@
     <section class="imp-panel" id="tab-bitacora"></section>
   </main>
 
-  <script src="./panel.js"></script>
+  <script src="./panel.js?v=imp-ambos1"></script>
 </body>
 </html>

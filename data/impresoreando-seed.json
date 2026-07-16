@@ -5,12 +5,27 @@
     "moneda": "CLP",
     "splitPct": 50,
     "socios": [
-      { "id": "socio-a", "nombre": "Josefa", "pct": 50 },
-      { "id": "socio-b", "nombre": "Socio", "pct": 50 }
+      {
+        "id": "socio-a",
+        "nombre": "Josefa",
+        "pct": 50
+      },
+      {
+        "id": "socio-b",
+        "nombre": "Nicolás",
+        "pct": 50
+      }
     ],
-    "notas": "Emprendimiento 3D · todo 50/50. Instagram: impresoreando.",
+    "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
     "actualizado": "2026-07-14T20:40:00.000Z",
-    "version": 1
+    "version": 1,
+    "capital": {
+      "aportadoPor": "Nicolás",
+      "deudaPctJosefa": 50,
+      "nota": "Nicolás puso el capital. Josefa debe el 50% de ese capital a Nicolás. Los gastos de la sociedad son de ambos.",
+      "montoNetoClp": 732290,
+      "deudaJosefaClp": 366145
+    }
   },
   "parametros": {
     "tarifaKwhClp": 180,
@@ -31,7 +46,7 @@
       "montoNeto": 699988,
       "notas": "Ítem en orden pagada (precio lista antes de prorratear descuento)",
       "ordenId": "312435",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     },
     {
       "id": "gas-312435-2",
@@ -43,7 +58,7 @@
       "montoNeto": 14271,
       "notas": "",
       "ordenId": "312435",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     },
     {
       "id": "gas-312435-3",
@@ -55,7 +70,7 @@
       "montoNeto": 17986,
       "notas": "",
       "ordenId": "312435",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     },
     {
       "id": "gas-312435-4",
@@ -67,7 +82,7 @@
       "montoNeto": 17986,
       "notas": "",
       "ordenId": "312435",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     },
     {
       "id": "gas-312435-5",
@@ -79,7 +94,7 @@
       "montoNeto": 18738,
       "notas": "",
       "ordenId": "312435",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     },
     {
       "id": "gas-312435-6",
@@ -91,7 +106,7 @@
       "montoNeto": 16829,
       "notas": "",
       "ordenId": "312435",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     },
     {
       "id": "gas-312435-7",
@@ -103,7 +118,7 @@
       "montoNeto": 17986,
       "notas": "",
       "ordenId": "312435",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     },
     {
       "id": "gas-312435-8",
@@ -115,7 +130,7 @@
       "montoNeto": 16829,
       "notas": "",
       "ordenId": "312435",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     },
     {
       "id": "gas-312435-envio",
@@ -127,7 +142,7 @@
       "montoNeto": 5990,
       "notas": "",
       "ordenId": "312435",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     },
     {
       "id": "gas-312435-desc",
@@ -139,7 +154,7 @@
       "montoNeto": -174313,
       "notas": "Descuento aplicado a la orden (estado PAGADO). Total orden = $652.290",
       "ordenId": "312435",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     },
     {
       "id": "gas-ali-placa",
@@ -151,7 +166,7 @@
       "montoNeto": 30000,
       "notas": "Gasto operativo inicial",
       "ordenId": "",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     },
     {
       "id": "gas-ali-torno",
@@ -163,7 +178,7 @@
       "montoNeto": 30000,
       "notas": "Gasto operativo inicial",
       "ordenId": "",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     },
     {
       "id": "gas-lider-cajas",
@@ -175,7 +190,7 @@
       "montoNeto": 20000,
       "notas": "Gasto operativo inicial",
       "ordenId": "",
-      "socioRegistro": "Josefa"
+      "socioRegistro": "Ambos"
     }
   ],
   "ventas": [],
@@ -251,7 +266,7 @@
       "id": "bit-1",
       "fecha": "2026-07-14",
       "autor": "Josefa",
-      "texto": "Carga inicial: orden #312435 (PAGADO $652.290) + AliExpress placa/torno + cajas Líder. Sociedad 50/50."
+      "texto": "Carga inicial: orden #312435 (PAGADO $652.290) + AliExpress placa/torno + cajas Líder. Sociedad 50/50 Josefa + Nicolás. Gastos de ambos. Nicolás aportó capital; Josefa debe 50%."
     }
   ]
 }

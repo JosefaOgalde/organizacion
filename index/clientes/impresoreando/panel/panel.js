@@ -25,10 +25,61 @@
     const res = await fetch(API, { cache: 'no-store' });
     if (!res.ok) throw new Error(`GET ${res.status}`);
     data = await res.json();
-    dirty = false;
+    if (normalizarSociedad(data)) dirty = true;
+    else dirty = false;
     const when = data.meta?.actualizado ? new Date(data.meta.actualizado).toLocaleString('es-CL') : '—';
-    setStatus(`Actualizado: ${when}`, 'ok');
+    setStatus(dirty ? 'Datos actualizados (guardar para fijar)' : `Actualizado: ${when}`, dirty ? 'warn' : 'ok');
     renderAll();
+  }
+
+  /** Gastos de ambos; socios Josefa + Nicolás; capital aportado por Nicolás. */
+  function normalizarSociedad(d) {
+    if (!d || typeof d !== 'object') return false;
+    let changed = false;
+    d.meta = d.meta || {};
+    const sociosOk =
+      Array.isArray(d.meta.socios) &&
+      d.meta.socios.some((s) => /nicol/i.test(s.nombre || '')) &&
+      d.meta.socios.some((s) => /josefa/i.test(s.nombre || ''));
+    if (!sociosOk) {
+      d.meta.socios = [
+        { id: 'socio-a', nombre: 'Josefa', pct: 50 },
+        { id: 'socio-b', nombre: 'Nicolás', pct: 50 },
+      ];
+      changed = true;
+    }
+    const gastos = Array.isArray(d.gastos) ? d.gastos : [];
+    for (const g of gastos) {
+      const quien = String(g.socioRegistro || '').trim();
+      if (!quien || /^josefa$/i.test(quien) || /^socio$/i.test(quien)) {
+        g.socioRegistro = 'Ambos';
+        changed = true;
+      }
+    }
+    const capitalNeto = gastos.reduce((a, g) => a + Number(g.montoNeto || 0), 0);
+    const cap = d.meta.capital && typeof d.meta.capital === 'object' ? d.meta.capital : {};
+    const nextCap = {
+      aportadoPor: 'Nicolás',
+      deudaPctJosefa: 50,
+      montoNetoClp: capitalNeto,
+      deudaJosefaClp: Math.round(capitalNeto * 0.5),
+      nota:
+        'Nicolás puso el capital. Josefa debe el 50% de ese capital a Nicolás. Todos los gastos de la sociedad son de ambos.',
+    };
+    if (
+      cap.aportadoPor !== nextCap.aportadoPor ||
+      Number(cap.deudaJosefaClp) !== nextCap.deudaJosefaClp ||
+      Number(cap.montoNetoClp) !== nextCap.montoNetoClp
+    ) {
+      d.meta.capital = { ...cap, ...nextCap };
+      changed = true;
+    }
+    if (!/nicol/i.test(String(d.meta.notas || ''))) {
+      d.meta.notas =
+        'Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital; Josefa le debe el 50%.';
+      changed = true;
+    }
+    return changed;
   }
 
   async function save() {
@@ -79,13 +130,15 @@
     const resultado = ventas - gastos - operacion;
     const cadaUnoGastos = gastos / 2;
     const cadaUnoResultado = resultado / 2;
+    const cap = data.meta?.capital || {};
+    const deuda = Number(cap.deudaJosefaClp != null ? cap.deudaJosefaClp : cadaUnoGastos);
 
     const orden = (data.gastos || []).filter((g) => g.ordenId === '312435');
     const totalOrden = sum(orden);
 
     $('#tab-resumen').innerHTML = `
       <div class="imp-grid">
-        <div class="imp-kpi"><span>Gastos totales</span><strong>${money(gastos)}</strong></div>
+        <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
         <div class="imp-kpi"><span>Ventas</span><strong>${money(ventas)}</strong></div>
         <div class="imp-kpi"><span>Operación (luz etc.)</span><strong>${money(operacion)}</strong></div>
         <div class="imp-kpi"><span>Resultado aprox.</span><strong>${money(resultado)}</strong></div>
@@ -94,15 +147,16 @@
       </div>
       <div class="imp-card">
         <h2>Sociedad</h2>
-        <p class="imp-muted">${(data.meta?.socios || []).map((s) => `${s.nombre} ${s.pct}%`).join(' · ') || '50/50'}</p>
+        <p class="imp-muted">${(data.meta?.socios || []).map((s) => `${s.nombre} ${s.pct}%`).join(' · ') || 'Josefa 50% · Nicolás 50%'}</p>
         <p>Instagram: <strong>${data.meta?.instagram || '@impresoreando'}</strong></p>
         <p class="imp-muted">Orden #312435 (PAGADO): <strong>${money(totalOrden)}</strong> — coincide con total boleta $652.290 si los ítems están completos.</p>
+        <p class="imp-deuda"><strong>Capital:</strong> lo aportó <strong>Nicolás</strong>. Todos los gastos son de <strong>ambos</strong>. Josefa le debe a Nicolás el <strong>50%</strong> del capital (${money(deuda)}).</p>
       </div>
       <div class="imp-card">
         <h2>Cómo usar con tu socio</h2>
         <ol class="imp-list">
           <li>Abrir este panel en el navegador (misma red o túnel público).</li>
-          <li>Agregar gastos/ventas/notas en las pestañas.</li>
+          <li>Agregar gastos/ventas/notas en las pestañas (quien = Ambos).</li>
           <li>Pulsar <strong>Guardar online</strong> — queda en <code>data/impresoreando-live.json</code>.</li>
           <li>El otro socio recarga o entra al mismo link y ve lo actualizado.</li>
         </ol>
@@ -131,6 +185,7 @@
     $('#tab-gastos').innerHTML = `
       <div class="imp-card">
         <h2>Gastos registrados (${money(sum(data.gastos))})</h2>
+        <p class="imp-muted">Todos los gastos de la sociedad son de <strong>ambos</strong> (Josefa + Nicolás).</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>Fecha</th><th>Cat.</th><th>Descripción</th><th>Monto</th><th>Quién</th><th></th></tr></thead>
@@ -158,7 +213,13 @@
           <label>Descripción<input name="descripcion" required placeholder="Ej. anillos metal llaveros" /></label>
           <label>Proveedor<input name="proveedor" placeholder="AliExpress / Líder / …" /></label>
           <label>Monto CLP<input name="montoNeto" type="number" required step="1" /></label>
-          <label>Quién registra<input name="socioRegistro" value="Socio" /></label>
+          <label>Quién
+            <select name="socioRegistro">
+              <option value="Ambos" selected>Ambos</option>
+              <option value="Josefa">Josefa</option>
+              <option value="Nicolás">Nicolás</option>
+            </select>
+          </label>
           <label>Notas<textarea name="notas" placeholder="Opcional"></textarea></label>
           <div class="imp-form-actions">
             <button class="imp-btn imp-btn--primary" type="submit">Agregar gasto</button>
