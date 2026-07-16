@@ -297,12 +297,16 @@
   }
 
   function hrefTareaOrganizador(t) {
+    const params = new URLSearchParams({ disco: '1', vista: 'dia' });
+    if (t.fecha) params.set('fecha', t.fecha);
     const num = t.numeroHistorico || '';
     const slug = slugClienteUrl();
     if (num) {
-      return `${pathOrganizador}?disco=1&tarea=${encodeURIComponent(slug + '/' + num)}`;
+      params.set('tarea', `${slug}/${num}`);
+    } else if (t.id) {
+      params.set('tarea', t.id);
     }
-    return `${pathOrganizador}?disco=1&tarea=${encodeURIComponent(t.id)}`;
+    return `${pathOrganizador}?${params.toString()}`;
   }
 
   function htmlTareasConImagenes() {
@@ -778,8 +782,12 @@
       });
       mostrarNuevaTarea = false;
       render();
-      const url =
-        `${pathOrganizador}?disco=1&tarea=${encodeURIComponent(slugClienteUrl() + '/' + tarea.numeroHistorico)}`;
+      const params = new URLSearchParams({ disco: '1', vista: 'dia' });
+      if (tarea.fecha) params.set('fecha', tarea.fecha);
+      if (tarea.numeroHistorico) {
+        params.set('tarea', `${slugClienteUrl()}/${tarea.numeroHistorico}`);
+      }
+      const url = `${pathOrganizador}?${params.toString()}`;
       toast(`Publicada · ver en organizador (#${tarea.numeroHistorico})`);
       // Enlace rápido: no navegar automáticamente; dejar toast. Opcional abrir:
       const link = document.createElement('a');

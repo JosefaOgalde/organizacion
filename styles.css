@@ -2127,6 +2127,12 @@ body.modal-abierto {
   filter: brightness(0.98);
 }
 
+.dia-item--resaltada {
+  outline: 2px solid #4a7a9e;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(74, 122, 158, 0.2);
+}
+
 .tarea__btn-realizar {
   margin-right: 0.35rem;
 }

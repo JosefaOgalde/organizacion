@@ -2192,18 +2192,73 @@ function escribirRutaTarea(tarea, { reemplazar = false } = {}) {
   history[fn]({ vista: 'tarea', tareaId: tarea.id }, '', urlTareaAbsoluta(tarea));
 }
 
+function tareaDesdeParamUrl(raw) {
+  if (!raw) return null;
+  const decoded = decodeURIComponent(String(raw).trim());
+  const parsed = parsearSegmentoTareaUrl(decoded);
+  if (parsed) {
+    const porSlug = tareaPorRutaHistorica(parsed.slug, parsed.numero);
+    if (porSlug) return porSlug;
+  }
+  return tareaDe(decoded) || null;
+}
+
+function resaltarTareaEnDia(tareaId) {
+  if (!tareaId) return;
+  requestAnimationFrame(() => {
+    const esc = typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(tareaId) : String(tareaId).replace(/"/g, '');
+    const el = document.querySelector(`#dia-contenido [data-id="${esc}"]`);
+    if (!el) return;
+    el.classList.add('dia-item--resaltada');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
+
 function aplicarRutaDesdeUrl() {
+  let params;
+  try {
+    params = new URLSearchParams(location.search || '');
+  } catch (_) {
+    params = new URLSearchParams();
+  }
+  const vistaParam = (params.get('vista') || '').toLowerCase();
+  const fechaParam = params.get('fecha') || '';
+  const tareaParam = params.get('tarea') || '';
   const parsed = parsearRutaTareaDesdeUrl();
-  if (!parsed) return false;
-  const tarea = tareaPorRutaHistorica(parsed.slug, parsed.numero);
-  if (!tarea) return false;
-  tareaSeleccionada = tarea.id;
-  if (tarea.fecha) diaSeleccionado = tarea.fecha;
-  asegurarSesionAgente(tarea);
-  if (parsed.legacy || parsed.legacyPath) escribirRutaTarea(tarea, { reemplazar: true });
-  mostrarVista('tarea');
-  render();
-  return true;
+  const tarea =
+    (tareaParam && tareaDesdeParamUrl(tareaParam)) ||
+    (parsed ? tareaPorRutaHistorica(parsed.slug, parsed.numero) : null);
+
+  // Landing «Abrir en organizador»: ir al DÍA (vista=dia o fecha sin forzar detalle de tarea)
+  const abrirDia =
+    vistaParam === 'dia' ||
+    (Boolean(fechaParam) && vistaParam !== 'tarea');
+
+  if (abrirDia) {
+    const fecha = (tarea && tarea.fecha) || fechaParam;
+    if (fecha) {
+      irADia(fecha);
+      if (tarea) resaltarTareaEnDia(tarea.id);
+      return true;
+    }
+  }
+
+  if (tarea) {
+    tareaSeleccionada = tarea.id;
+    if (tarea.fecha) diaSeleccionado = tarea.fecha;
+    asegurarSesionAgente(tarea);
+    if (parsed?.legacy || parsed?.legacyPath) escribirRutaTarea(tarea, { reemplazar: true });
+    mostrarVista('tarea');
+    render();
+    return true;
+  }
+
+  if (fechaParam) {
+    irADia(fechaParam);
+    return true;
+  }
+
+  return false;
 }
 
 function limpiarRutaTarea({ reemplazar = true } = {}) {
@@ -5633,7 +5688,13 @@ async function iniciarApp() {
     const clean = location.pathname + (location.hash || '');
     history.replaceState({}, '', clean);
   } else if (params.get('disco') === '1') {
-    history.replaceState({}, '', location.pathname + (location.hash || ''));
+    // Conservar deep-links (tarea / fecha / vista); solo quitar disco=1
+    const keep = new URLSearchParams();
+    for (const key of ['tarea', 'fecha', 'vista']) {
+      if (params.get(key)) keep.set(key, params.get(key));
+    }
+    const q = keep.toString();
+    history.replaceState({}, '', location.pathname + (q ? `?${q}` : '') + (location.hash || ''));
   }
 
   if (window.mermaid) {
