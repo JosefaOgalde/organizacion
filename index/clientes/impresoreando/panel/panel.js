@@ -59,6 +59,7 @@
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
     if (agruparGastosPorRegistro(d)) changed = true;
     if (asegurarProductoPortacompletosGato(d)) changed = true;
+    if (asegurarProductoPortacompletosPerro(d)) changed = true;
     if (asegurarSkusProductos(d)) changed = true;
     const gastos = d.gastos;
     for (const g of gastos) {
@@ -202,15 +203,17 @@
     return changed;
   }
 
+  function avgCostoFilamentoKg(d) {
+    const fils = (d.productos || []).map((p) => Number(p.costoFilamentoKgClp || 0)).filter((n) => n > 0);
+    if (fils.length) return Math.round(fils.reduce((a, b) => a + b, 0) / fils.length);
+    return 12950;
+  }
+
   function asegurarProductoPortacompletosGato(d) {
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     const id = 'prod-portacompletos-gato';
     const existing = d.productos.find((p) => p.id === id || /portacompletos?\s*gato/i.test(p.nombre || ''));
-    const avgFilKg = (() => {
-      const fils = d.productos.map((p) => Number(p.costoFilamentoKgClp || 0)).filter((n) => n > 0);
-      if (fils.length) return Math.round(fils.reduce((a, b) => a + b, 0) / fils.length);
-      return 12950;
-    })();
+    const avgFilKg = avgCostoFilamentoKg(d);
     if (!existing) {
       d.productos.push({
         id,
@@ -234,6 +237,43 @@
     }
     if (!existing.id) {
       existing.id = id;
+      changed = true;
+    }
+    return changed;
+  }
+
+  function asegurarProductoPortacompletosPerro(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-portacompletos-perro';
+    const existing = d.productos.find((p) => p.id === id || /portacompletos?\s*perro/i.test(p.nombre || ''));
+    const avgFilKg = avgCostoFilamentoKg(d);
+    if (!existing) {
+      d.productos.push({
+        id,
+        nombre: 'Portacompletos perro',
+        activo: true,
+        filamentoGramos: 132,
+        costoFilamentoKgClp: avgFilKg,
+        horasImpresion: 6,
+        minutosPintado: 20,
+        unidadesMetal: 0,
+        unidadesBolsa: 1,
+        precioVentaSugeridoClp: 0,
+        notas: '6 h de impresión. Precio de venta a público se carga a mano.',
+      });
+      return true;
+    }
+    let changed = false;
+    if (Number(existing.horasImpresion) !== 6) {
+      existing.horasImpresion = 6;
+      changed = true;
+    }
+    if (!existing.id) {
+      existing.id = id;
+      changed = true;
+    }
+    if (!/6\s*h/i.test(existing.notas || '')) {
+      existing.notas = '6 h de impresión. Precio de venta a público se carga a mano.';
       changed = true;
     }
     return changed;
