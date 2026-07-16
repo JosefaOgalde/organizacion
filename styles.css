@@ -218,9 +218,22 @@ body {
   justify-content: center;
 }
 
+/* Navegación mes/semana/día sobre fondo claro: texto y borde legibles */
+.week-nav .btn--ghost {
+  background: #fff;
+  color: #2d2d2d;
+  border: 2px solid #5a5a5a;
+}
+
+.week-nav .btn--ghost:hover {
+  background: var(--celeste-light);
+  border-color: var(--celeste-dark);
+  color: var(--celeste-dark);
+}
+
 .week-nav__range {
-  font-weight: 600;
-  color: var(--bg-panel);
+  font-weight: 700;
+  color: #2d2d2d;
   flex: 1;
   text-align: center;
   min-width: 200px;
@@ -830,13 +843,15 @@ body {
 }
 
 .btn--ghost {
-  background: transparent;
-  color: var(--bg-panel);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: #fff;
+  color: #2d2d2d;
+  border: 2px solid #5a5a5a;
 }
 
 .btn--ghost:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--celeste-light);
+  border-color: var(--celeste-dark);
+  color: var(--celeste-dark);
 }
 
 /* Modal (legacy) — no aplicar a modales activos del sistema */
@@ -1818,7 +1833,7 @@ body {
 }
 
 .breadcrumb__sep {
-  color: var(--bg-panel);
+  color: #5a5a5a;
   font-size: 0.85rem;
 }
 
@@ -1828,7 +1843,7 @@ body {
 }
 
 .view > .vista-hint {
-  color: #d8d8d8;
+  color: #5a5a5a;
 }
 
 .panel .vista-hint {
