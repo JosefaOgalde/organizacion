@@ -174,6 +174,32 @@
     </section>`).join('');
   }
 
+  /**
+   * Problema frecuente:
+   * - El organizador guarda cambios en `localStorage (organizacion_v2)`
+   * - También puede existir un archivo disco más reciente (`data/organizacion-live.json`)
+   *
+   * Esta landing de clientes (portal-cliente.js) lee solo `localStorage`.
+   * Para mostrar "últimas tareas" sin depender de recargar el mismo navegador,
+   * intentamos refrescar una vez desde `/api/organizacion` (servidor SERVIR.bat).
+   */
+  let apiRefreshAttempted = false;
+  async function refreshDatosDesdeApi() {
+    if (apiRefreshAttempted) return false;
+    apiRefreshAttempted = true;
+    try {
+      const res = await fetch('/api/organizacion?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) return false;
+      const obj = await res.json();
+      if (!obj || !Array.isArray(obj.clientes) || !Array.isArray(obj.tareas)) return false;
+      datos = obj;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   function render() {
     const cli = cargarDatos();
     const landingCfg = c.landing || {};
@@ -263,6 +289,12 @@
 
     if (typeof window.initJMWireframesUI === 'function') window.initJMWireframesUI(root);
     initImagenes(root, cli);
+
+    // Si el portal muestra tareas antiguas por `localStorage`,
+    // intentamos refrescar una sola vez desde el disco vía /api/organizacion.
+    refreshDatosDesdeApi().then((ok) => {
+      if (ok) render();
+    });
   }
 
   function boot() {
