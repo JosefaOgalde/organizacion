@@ -384,6 +384,101 @@
     </section>`;
   }
 
+  /** Registro de todo lo cargado/obtenido del cliente: tareas + entregables + links. */
+  function htmlRegistroCliente() {
+    if (!datos?.tareas) return '';
+    const lista = datos.tareas
+      .filter((t) => t.clienteId === c.id)
+      .sort((a, b) => {
+        const fd = String(b.fecha || '').localeCompare(String(a.fecha || ''));
+        if (fd) return fd;
+        return String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || ''));
+      });
+
+    const rows = lista
+      .map((t) => {
+        const titulo = String(t.titulo || 'Tarea').replace(/^\[[^\]]+\]\s*/, '');
+        const imgs = imagenesDeTarea(t);
+        const estado = t.completada ? 'Hecha' : t.pendiente ? 'Pendiente' : 'Activa';
+        const arch = t.entregableArchivo
+          ? `<a class="portal-btn portal-btn--ghost" href="/${escapeHtml(String(t.entregableArchivo).replace(/^\/+/, ''))}" target="_blank" rel="noopener">Ver entregable</a>`
+          : '';
+        const thumbs = imgs
+          .slice(0, 3)
+          .map((img) => {
+            const src = img.url || img.dataUrl || '';
+            return `<a class="portal-reg__thumb" href="${escapeHtml(src)}" target="_blank" rel="noopener"><img src="${escapeHtml(src)}" alt="" loading="lazy"></a>`;
+          })
+          .join('');
+        return `<article class="portal-reg__card" data-tarea-id="${escapeHtml(t.id)}">
+          <div class="portal-reg__main">
+            <h3 class="portal-reg__titulo">#${escapeHtml(t.numeroHistorico || '?')} · ${escapeHtml(titulo)}</h3>
+            <p class="portal-reg__meta">${escapeHtml(t.fecha || '')} · ${escapeHtml(estado)}${t.tipoEntregable ? ' · ' + escapeHtml(t.tipoEntregable) : ''}${imgs.length ? ' · ' + imgs.length + ' img' : ''}</p>
+            ${t.notas ? `<p class="portal-reg__notas">${escapeHtml(String(t.notas).slice(0, 160))}${t.notas.length > 160 ? '…' : ''}</p>` : ''}
+            <div class="portal-reg__actions">
+              <a class="portal-btn" href="${hrefTareaOrganizador(t)}">Abrir en organizador</a>
+              ${arch}
+            </div>
+          </div>
+          ${thumbs ? `<div class="portal-reg__thumbs">${thumbs}</div>` : ''}
+        </article>`;
+      })
+      .join('');
+
+    const vacio = !lista.length
+      ? '<p class="portal-reg__vacio">Aún no hay tareas registradas para este cliente. Crea una con «Nueva tarea» o desde el organizador.</p>'
+      : '';
+
+    const tituloSec =
+      c.slug === 'trendseeker' ? 'Registro Trendseeker' : 'Registro de tareas';
+
+    return `<section class="portal-reg ficha-seccion ficha-seccion--portal" data-portal-registro-cliente>
+      <div class="ficha-seccion__headline">
+        <h2 class="ficha-seccion__titulo">${escapeHtml(tituloSec)}</h2>
+        <span class="ficha-seccion__estado">${lista.length} tarea${lista.length === 1 ? '' : 's'}</span>
+      </div>
+      <p class="portal-reg__intro">Todo lo cargado u obtenido de este cliente queda aquí: tareas, entregables (TXT/prompts) e imágenes, con enlace al organizador.</p>
+      <div class="portal-reg__lista" data-portal-registro-lista>${rows}</div>
+      ${vacio}
+      <div class="portal-reg__biblioteca" data-portal-biblioteca-prompts hidden></div>
+    </section>`;
+  }
+
+  async function cargarBibliotecaPromptsTs(rootEl) {
+    if (c.slug !== 'trendseeker') return;
+    const slot = rootEl.querySelector('[data-portal-biblioteca-prompts]');
+    if (!slot) return;
+    try {
+      const res = await fetch('prompts/indice.json?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) return;
+      const idx = await res.json();
+      const items = Array.isArray(idx.items) ? idx.items : [];
+      if (!items.length) return;
+      slot.hidden = false;
+      slot.innerHTML = `
+        <h3 class="portal-reg__bib-titulo">Prompts Gemini (producto / video)</h3>
+        <p class="portal-reg__bib-nota">${escapeHtml(idx.nota || 'Siempre Gemini para TS.')}</p>
+        <ul class="portal-reg__bib-lista">
+          ${items
+            .map((it) => {
+              const href = String(it.archivo || '').replace(/^\//, '');
+              const tareaLink = it.tareaNumero
+                ? ` · <a href="${pathOrganizador}?disco=1&tarea=${encodeURIComponent(slugClienteUrl() + '/' + it.tareaNumero)}">tarea #${escapeHtml(it.tareaNumero)}</a>`
+                : '';
+              return `<li>
+                <strong>${escapeHtml(it.titulo || it.id)}</strong>
+                — ${escapeHtml(it.descripcion || '')}
+                <br>
+                <a class="portal-btn portal-btn--ghost" href="${escapeHtml(href)}" target="_blank" rel="noopener">Abrir TXT</a>${tareaLink}
+              </li>`;
+            })
+            .join('')}
+        </ul>`;
+    } catch (e) {
+      console.warn('No se pudo cargar prompts/indice.json', e);
+    }
+  }
+
   function imagenesSeccionHtml(landing) {
     if (typeof window.htmlLandingImagenesSeccion !== 'function') return '';
     return window.htmlLandingImagenesSeccion(landing, { claseExtra: 'ficha-seccion--portal' });
@@ -593,6 +688,7 @@
         ${ecrPortadaHtml}
         ${ecrRutasHtml}
         ${htmlEcosistemaNewsletter()}
+        ${htmlRegistroCliente()}
         ${htmlTareasConImagenes()}
         ${imagenesHtml}
         ${mkofLandingHtml}
@@ -673,6 +769,7 @@
       });
     }
     initImagenes(root, cli);
+    cargarBibliotecaPromptsTs(root);
   }
 
   async function boot() {

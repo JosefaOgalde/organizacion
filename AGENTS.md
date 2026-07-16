@@ -12,7 +12,8 @@
 - Flujo: fotos de producto primero → prompt en español orientado a Gemini → priorizar fidelidad al producto.
 - Videos TS: el prompt debe pensarse para Gemini desde el inicio (escena + cualidades del producto + referencias).
 - Ejemplo vigente: `PROMPT-botas-rojas-lluvia.txt` (botas rojas, lluvia, jeans dentro de la bota, sin piel visible).
-- Tarea ejemplo: `node scripts/add-ts-prompt-botas-rojas.js` → `?disco=1&tarea=trendseeker/03`.
+- Landing: `http://localhost:3000/index/clientes/trendseeker/` muestra **Registro Trendseeker** (todas las tareas + entregables) y biblioteca `prompts/indice.json` (Gemini).
+- Al crear prompts/entregables TS: registrar en la tarea (`entregableArchivo`) y en `prompts/indice.json` para que aparezcan en el link del cliente.
 
 ### ECR — Prompt Midjourney de portada
 - Los prompts Midjourney de ECR son **solo para la imagen de fondo** de la portada del newsletter LinkedIn.

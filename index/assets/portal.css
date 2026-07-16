@@ -802,11 +802,123 @@ body.portal-body--themed .portal-cliente {
   gap: 0.35rem;
 }
 
+.portal-reg__intro {
+  margin: 0.35rem 0 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.portal-reg__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.portal-reg__card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(106, 90, 158, 0.22);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.portal-reg__titulo {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  color: var(--card-text, #6a5a9e);
+}
+
+.portal-reg__meta {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.portal-reg__notas {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  color: var(--text, #333);
+  line-height: 1.4;
+}
+
+.portal-reg__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.portal-reg__thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-content: flex-start;
+  justify-content: flex-end;
+}
+
+.portal-reg__thumb {
+  display: block;
+  width: 64px;
+  height: 48px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(106, 90, 158, 0.2);
+}
+
+.portal-reg__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.portal-reg__vacio {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.portal-reg__biblioteca {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed rgba(106, 90, 158, 0.25);
+}
+
+.portal-reg__bib-titulo {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  color: var(--card-text, #6a5a9e);
+}
+
+.portal-reg__bib-nota {
+  margin: 0 0 0.65rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.portal-reg__bib-lista {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.portal-reg__bib-lista li {
+  margin-bottom: 0.65rem;
+}
+
 @media (max-width: 640px) {
   .portal-tarea-img__card {
     grid-template-columns: 1fr;
   }
   .portal-tarea-img__thumbs {
+    justify-content: flex-start;
+  }
+  .portal-reg__card {
+    grid-template-columns: 1fr;
+  }
+  .portal-reg__thumbs {
     justify-content: flex-start;
   }
 }
