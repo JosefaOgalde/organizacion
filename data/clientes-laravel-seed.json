@@ -1,0 +1,123 @@
+{
+  "generado": "2026-07-17",
+  "origen": "organizacion-respaldo-2026-07-17.json",
+  "clientes": [
+    {
+      "id": "cli-trendseeker",
+      "slug": "ts",
+      "nombre": "Trendseeker - Talk (full time)",
+      "abrev": "TS",
+      "tipo": "full-time",
+      "color": "lavanda",
+      "color_border": null,
+      "color_bg": null,
+      "color_text": null,
+      "agente": "Agente Trendseeker",
+      "resumen": null
+    },
+    {
+      "id": "cli-ecr",
+      "slug": "ecr",
+      "nombre": "ECR - Talk (full time)",
+      "abrev": "ECR",
+      "tipo": "full-time",
+      "color": "celeste",
+      "color_border": null,
+      "color_bg": null,
+      "color_text": null,
+      "agente": "Agente ECR",
+      "resumen": null
+    },
+    {
+      "id": "cli-piscineria",
+      "slug": "pisc",
+      "nombre": "Piscinería - Talk (full time)",
+      "abrev": "PISC",
+      "tipo": "full-time",
+      "color": "menta",
+      "color_border": null,
+      "color_bg": null,
+      "color_text": null,
+      "agente": "Agente Piscineria",
+      "resumen": null
+    },
+    {
+      "id": "cli-hotspring",
+      "slug": "hs",
+      "nombre": "Hotspring - Talk (full time)",
+      "abrev": "HS",
+      "tipo": "full-time",
+      "color": "mentaSuave",
+      "color_border": null,
+      "color_bg": null,
+      "color_text": null,
+      "agente": "Agente Hotspring",
+      "resumen": null
+    },
+    {
+      "id": "cli-mkof",
+      "slug": "mkof",
+      "nombre": "MKOF - Talk (full time)",
+      "abrev": "MKOF",
+      "tipo": "full-time",
+      "color": "agua",
+      "color_border": null,
+      "color_bg": null,
+      "color_text": null,
+      "agente": "Agente MKOF",
+      "resumen": null
+    },
+    {
+      "id": "cli-joyas-mercury",
+      "slug": "jm",
+      "nombre": "Joyas Mercury",
+      "abrev": "JM",
+      "tipo": "freelance",
+      "color": "rosa",
+      "color_border": null,
+      "color_bg": null,
+      "color_text": null,
+      "agente": "Agente Joyas Mercury",
+      "resumen": "Etapa 2 — Rediseño joyasmercury.cl\n- Navegación limpia y elegante (referencia joyería premium)\n- Filtros visuales Esencial / Gold / Deluxe en la misma vista (sin cambiar de página)\n- Menú simplificado con colecciones como protagonista\n- Productos Destacados dentro de Inicio (no landing aparte)\n- Páginas legales, Nosotros, Contacto y carrito con estética de marca\n- Entrega Fase 2 + guías para que Camila gestione catálogo sola\n- Inversión acordada: $200.000 CLP · plazo 4–5 semanas hábiles"
+    },
+    {
+      "id": "cli-sie",
+      "slug": "sie",
+      "nombre": "SIE",
+      "abrev": "SIE",
+      "tipo": "oportunidad",
+      "color": "grafito",
+      "color_border": null,
+      "color_bg": null,
+      "color_text": null,
+      "agente": "Agente SIE",
+      "resumen": null
+    },
+    {
+      "id": "cli-desafio-latam",
+      "slug": "adl",
+      "nombre": "Desafío Latam",
+      "abrev": "ADL",
+      "tipo": "freelance",
+      "color": "durazno",
+      "color_border": null,
+      "color_bg": null,
+      "color_text": null,
+      "agente": "Agente Desafío Latam",
+      "resumen": null
+    },
+    {
+      "id": "cli-impresoreando",
+      "slug": "imp",
+      "nombre": "Impresoreando",
+      "abrev": "IMP",
+      "tipo": "freelance",
+      "color": "ambar",
+      "color_border": null,
+      "color_bg": null,
+      "color_text": null,
+      "agente": "Agente Impresoreando",
+      "resumen": null
+    }
+  ]
+}

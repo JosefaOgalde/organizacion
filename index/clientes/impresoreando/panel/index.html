@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Impresoreando · Panel socios</title>
+  <link rel="stylesheet" href="../../../assets/portal.css?v=imp-cta2" />
+  <link rel="stylesheet" href="./panel.css?v=imp-perro1" />
+</head>
+<body class="imp-body" data-cliente-slug="impresoreando">
+  <div class="imp-top-bleed">
+    <header class="imp-top imp-shell">
+      <div>
+        <a class="imp-back" href="../">← Landing</a>
+        <h1>Impresoreando</h1>
+        <p class="imp-sub">Panel socios 50/50 · Josefa + Nicolás · Instagram @impresoreando</p>
+      </div>
+      <div class="imp-top-actions">
+        <span id="imp-status" class="imp-status">Cargando…</span>
+        <a class="imp-btn" href="./venta/">Registrar venta</a>
+        <button type="button" id="btn-guardar" class="imp-btn imp-btn--primary">Guardar online</button>
+        <button type="button" id="btn-recargar" class="imp-btn">Recargar</button>
+      </div>
+    </header>
+  </div>
+
+  <div class="imp-tabs-bleed">
+    <nav class="imp-tabs imp-shell" id="imp-tabs">
+      <button type="button" data-tab="resumen" class="is-active">Resumen 50/50</button>
+      <button type="button" data-tab="gastos">Gastos</button>
+      <button type="button" data-tab="ventas">Ventas</button>
+      <button type="button" data-tab="operacion">Operación / luz</button>
+      <button type="button" data-tab="costos">Costos producto</button>
+      <button type="button" data-tab="ads">Plan paid</button>
+      <button type="button" data-tab="bitacora">Bitácora</button>
+    </nav>
+  </div>
+
+  <main class="imp-main imp-shell">
+    <section class="imp-panel is-active" id="tab-resumen"></section>
+    <section class="imp-panel" id="tab-gastos"></section>
+    <section class="imp-panel" id="tab-ventas"></section>
+    <section class="imp-panel" id="tab-operacion"></section>
+    <section class="imp-panel" id="tab-costos"></section>
+    <section class="imp-panel" id="tab-ads"></section>
+    <section class="imp-panel" id="tab-bitacora"></section>
+  </main>
+
+  <div id="imp-modal-producto" class="imp-modal" hidden aria-hidden="true">
+    <div class="imp-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="imp-modal-producto-title">
+      <header class="imp-modal__head">
+        <h2 id="imp-modal-producto-title">Agregar producto</h2>
+        <button type="button" class="imp-modal__close" id="btn-modal-producto-cerrar" aria-label="Cerrar">×</button>
+      </header>
+      <form class="imp-form" id="form-producto-modal">
+        <p class="imp-muted">Cada impresión es única: el SKU identifica esta pieza. Puedes ajustar nombre, costo y precio de venta.</p>
+        <label>SKU (único)
+          <input name="sku" required readonly />
+        </label>
+        <label>Nombre del producto
+          <input name="nombre" required placeholder="Ej. Portacompletos gato — pedido Ana" autofocus />
+        </label>
+        <label>Gramos filamento<input name="filamentoGramos" type="number" step="0.1" min="0" required /></label>
+        <label>$ / kg filamento<input name="costoFilamentoKgClp" type="number" min="0" required /></label>
+        <label>Horas impresión<input name="horasImpresion" type="number" step="0.1" min="0" required /></label>
+        <label>Minutos pintado<input name="minutosPintado" type="number" min="0" required /></label>
+        <label>Unidades metal<input name="unidadesMetal" type="number" min="0" required /></label>
+        <label>Bolsas<input name="unidadesBolsa" type="number" min="0" required /></label>
+        <label>Precio venta a público (CLP)
+          <input name="precioVentaSugeridoClp" type="number" min="0" step="10" required />
+        </label>
+        <label>Notas<textarea name="notas" rows="2" placeholder="Opcional"></textarea></label>
+        <div class="imp-calc-live" id="imp-modal-costo-est">Costo estimado…</div>
+        <div class="imp-form-actions">
+          <button type="submit" class="imp-btn imp-btn--primary">Agregar al catálogo</button>
+          <button type="button" class="imp-btn" id="btn-modal-producto-cancelar">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="./panel.js?v=imp-perro1"></script>
+</body>
+</html>

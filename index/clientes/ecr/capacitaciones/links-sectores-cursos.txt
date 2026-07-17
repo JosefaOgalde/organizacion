@@ -1,0 +1,109 @@
+LINKS CURSOS POR SECTOR
+(Excel/Power BI unificados; resto literal DOCX)
+
+## Retail
+Estrategias de servicio al cliente.
+https://ecrcapacitacion.cl/cursos/atencion-al-cliente-digital-experiencia-que-fideliza
+Técnicas de venta consultiva B2C.
+https://ecrcapacitacion.cl/cursos/ventas-consultivas-b2c-como-convertir-mas-clientes
+Ventas consultivas B2B.
+https://ecrcapacitacion.cl/cursos/ventas-consultivas-b2b
+Técnicas de ventas remotas.
+https://ecrcapacitacion.cl/cursos/ventas-remotas-efectivas-cierre-y-conversion-online
+Técnicas y estrategias para la gestión de negocios.
+https://ecrcapacitacion.cl/cursos/gestion-de-negocios-estrategia-y-crecimiento
+
+## Financiero
+Herramientas computacionales básicas de Office.
+https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo
+Excel - Básico
+https://ecrcapacitacion.cl/cursos/excel-basico
+Excel - Intermedio
+https://ecrcapacitacion.cl/cursos/excel-intermedio
+Excel - Avanzado
+https://ecrcapacitacion.cl/cursos/excel-avanzado
+Excel - Macros
+https://ecrcapacitacion.cl/cursos/excel-avanzado-dominio-y-optimizacion-de-datos
+Power BI - Básico
+https://ecrcapacitacion.cl/cursos/power-bi-basico-2
+Power BI - Avanzado
+https://ecrcapacitacion.cl/cursos/power-bi-avanzado-2
+Gestión del tiempo.
+https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal
+
+## Salud
+Ambientes laborales saludables y respetuosos de Ley Karín.
+https://ecrcapacitacion.cl/cursos/ley-karin-en-la-empresa-prevencion-y-gestion-del-acoso-laboral
+Gestión del tiempo.
+https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal
+Técnicas de gestión del estrés para el bienestar emocional.
+https://ecrcapacitacion.cl/cursos/gestion-del-estres-laboral-bienestar-y-productividad
+Resolución de conflictos y negociación.
+https://ecrcapacitacion.cl/cursos/gestion-de-conflictos-y-negociacion-liderazgo-en-accion
+Trabajo en equipos de alto rendimiento.
+https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados
+
+## Tecnología
+Herramientas computacionales básicas de Office.
+https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo
+ChatGPT: Herramienta de inteligencia artificial, integrada al entorno laboral.
+https://ecrcapacitacion.cl/cursos/productividad-con-chatgpt-aplicaciones-reales-en-el-trabajo
+Inteligencia artificial para la productividad
+https://ecrcapacitacion.cl/cursos/inteligencia-artificial-aplicada
+Scrum.
+https://ecrcapacitacion.cl/cursos/scrum-en-accion-gestion-agil-de-equipos-y-proyectos
+Metodologías Ágiles.
+https://ecrcapacitacion.cl/cursos/scrum-en-accion-gestion-agil-de-equipos-y-proyectos
+
+## Gestión
+Contabilidad básica.
+https://ecrcapacitacion.cl/cursos/contabilidad-basica-control-financiero-para-el-trabajo
+Técnicas y estrategias para la gestión de un negocio
+https://ecrcapacitacion.cl/cursos/gestion-de-negocios-estrategia-y-crecimiento
+Liderazgo efectivo.
+https://ecrcapacitacion.cl/cursos/liderazgo-colaborativo-gestion-de-equipos-efectivos
+Comunicación efectiva.
+https://ecrcapacitacion.cl/cursos/comunicacion-efectiva-en-el-trabajo
+Trabajo en equipos de alto rendimiento.
+https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados
+
+## Logística
+Logística y distribución en almacenes y bodegas con método 5S.
+https://ecrcapacitacion.cl/cursos/logistica-eficiente-implementacion-de-metodologia-5s
+Gestión del tiempo.
+https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal
+Trabajo en equipos de alto rendimiento.
+https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados
+Liderazgo efectivo.
+https://ecrcapacitacion.cl/cursos/liderazgo-colaborativo-gestion-de-equipos-efectivos
+
+## Datos
+Herramientas computacionales básicas de Office.
+https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo
+Excel - Básico
+https://ecrcapacitacion.cl/cursos/excel-basico
+Excel - Intermedio
+https://ecrcapacitacion.cl/cursos/excel-intermedio
+Excel - Avanzado
+https://ecrcapacitacion.cl/cursos/excel-avanzado
+Excel - Macros
+https://ecrcapacitacion.cl/cursos/excel-avanzado-dominio-y-optimizacion-de-datos
+Power BI - Básico
+https://ecrcapacitacion.cl/cursos/power-bi-basico-2
+Power BI - Avanzado
+https://ecrcapacitacion.cl/cursos/power-bi-avanzado-2
+Inteligencia artificial para la productividad.
+https://ecrcapacitacion.cl/cursos/inteligencia-artificial-aplicada
+ChatGPT: Herramienta de Inteligencia Artificial, integrada al entorno laboral.
+https://ecrcapacitacion.cl/cursos/productividad-con-chatgpt-aplicaciones-reales-en-el-trabajo
+
+## Soluciones In Company
+Diagnóstico de brechas de competencias.
+https://ecrcapacitacion.cl/contacto/
+Diseño de programa formativo a medida.
+https://ecrcapacitacion.cl/contacto/
+Implementación y seguimiento.
+https://ecrcapacitacion.cl/contacto/
+Evaluación de impacto.
+https://ecrcapacitacion.cl/contacto/
+

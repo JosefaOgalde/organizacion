@@ -1,0 +1,504 @@
+<!--
+  ECR Capacitaciones — Modal ruta de aprendizaje por sector
+  Pegar este bloque completo en Elementor (HTML personalizado) o en la página.
+
+  Requisitos en las cards:
+  - Contenedor con data-ecr-sector="retail|financiero|salud|tecnologia|gestion|logistica|datos|soluciones-in-company"
+  - Clase opcional .ecr-sector-card en la card
+  - Botón/enlace opcional .ecr-sector-ver-mas
+
+  Links fuente: links-sectores-cursos.txt
+-->
+<style>
+/* ECR Capacitaciones — modal ruta de aprendizaje (compacto, sin scroll) */
+
+.ecr-sector-card {
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, outline 0.2s ease;
+}
+
+.ecr-sector-card:hover,
+.ecr-sector-card.ecr-sector-card--activa {
+    outline: 3px solid #e85d04;
+    outline-offset: -3px;
+}
+
+.ecr-sector-ver-mas {
+    cursor: pointer;
+}
+
+.ecr-ruta-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+
+.ecr-ruta-modal.ecr-ruta-modal--abierto {
+    display: flex !important;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.ecr-ruta-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+}
+
+.ecr-ruta-modal__panel {
+    position: relative;
+    z-index: 1;
+    width: min(640px, 100%);
+    max-height: min(92vh, 100%);
+    overflow: hidden;
+    border-radius: 16px;
+    border: 2px solid #ffffff;
+    background: rgba(232, 93, 4, 0.92);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    padding: 1.25rem 1.35rem 1.1rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+    transform: translateY(12px) scale(0.98);
+    transition: transform 0.28s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.ecr-ruta-modal--abierto .ecr-ruta-modal__panel {
+    transform: translateY(0) scale(1);
+}
+
+.ecr-ruta-modal__cerrar {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.ecr-ruta-modal__cerrar:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.ecr-ruta-modal__contenido {
+    overflow: auto;
+    min-height: 0;
+}
+
+.ecr-ruta-modal__titulo {
+    margin: 0 2rem 0.65rem 0;
+    font-size: clamp(1.35rem, 4vw, 1.85rem);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.ecr-ruta-modal__subtitulo {
+    margin: 0 0 0.45rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.ecr-ruta-modal__descripcion {
+    margin: 0 0 0.35rem;
+    font-size: 0.8rem;
+    line-height: 1.35;
+}
+
+.ecr-ruta-modal__competencias {
+    margin: 0 0 1.1rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
+}
+
+.ecr-ruta-modal__ruta-titulo {
+    margin: 0.35rem 0 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.ecr-ruta-modal__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.ecr-ruta-modal__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.ecr-ruta-modal__item-nombre {
+    flex: 1;
+    font-size: 0.8rem;
+    line-height: 1.25;
+    padding-left: 0.95rem;
+    position: relative;
+}
+
+.ecr-ruta-modal__item-nombre::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+}
+
+.ecr-ruta-modal a.ecr-ruta-modal__curso-btn,
+.ecr-ruta-modal__curso-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.28rem 0.75rem;
+    border-radius: 999px;
+    border: none;
+    background: #ffffff !important;
+    color: #4fc3f7 !important; /* celeste */
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    white-space: nowrap;
+    line-height: 1.2;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ecr-ruta-modal a.ecr-ruta-modal__curso-btn:hover,
+.ecr-ruta-modal a.ecr-ruta-modal__curso-btn:focus,
+.ecr-ruta-modal__curso-btn:hover,
+.ecr-ruta-modal__curso-btn:focus {
+    background: #e1f5fe !important;
+    color: #0288d1 !important; /* celeste más intenso en hover */
+    text-decoration: none !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(2, 136, 209, 0.25);
+}
+
+.ecr-ruta-modal a.ecr-ruta-modal__curso-btn:active,
+.ecr-ruta-modal__curso-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(2, 136, 209, 0.2);
+}
+
+body.ecr-ruta-modal-abierto {
+    overflow: hidden;
+}
+
+@media (max-width: 600px) {
+    .ecr-ruta-modal {
+        padding: 0.5rem;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ecr-ruta-modal__panel {
+        padding: 1rem 0.9rem 0.85rem;
+        max-height: 90vh;
+        border-radius: 14px;
+        margin: auto;
+    }
+
+    .ecr-ruta-modal__titulo {
+        font-size: 1.25rem;
+        margin: 0 1.75rem 0.55rem 0;
+    }
+
+    .ecr-ruta-modal__subtitulo {
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .ecr-ruta-modal__descripcion,
+    .ecr-ruta-modal__competencias {
+        font-size: 0.72rem;
+        line-height: 1.28;
+        margin-bottom: 0.28rem;
+    }
+
+    .ecr-ruta-modal__competencias {
+        margin-bottom: 0.95rem;
+    }
+
+    .ecr-ruta-modal__ruta-titulo {
+        font-size: 0.8rem;
+        margin: 0.25rem 0 0.3rem;
+    }
+
+    .ecr-ruta-modal__lista {
+        gap: 0.28rem;
+    }
+
+    .ecr-ruta-modal__item {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .ecr-ruta-modal__item-nombre {
+        font-size: 0.72rem;
+        line-height: 1.2;
+        padding-left: 0.85rem;
+    }
+
+    .ecr-ruta-modal__curso-btn {
+        padding: 0.22rem 0.55rem;
+        font-size: 0.68rem;
+        align-self: center;
+    }
+}
+
+/* Sectores con muchas filas (financiero / datos): lista un poco más compacta.
+   La descripción y competencias se muestran completas (sin truncar con …). */
+.ecr-ruta-modal__panel--largo .ecr-ruta-modal__lista {
+    gap: 0.22rem;
+}
+
+.ecr-ruta-modal__panel--largo .ecr-ruta-modal__item-nombre {
+    font-size: 0.75rem;
+    line-height: 1.2;
+}
+
+@media (max-width: 600px) {
+    .ecr-ruta-modal__panel--largo .ecr-ruta-modal__item-nombre {
+        font-size: 0.68rem;
+    }
+
+    .ecr-ruta-modal__panel--largo .ecr-ruta-modal__curso-btn {
+        padding: 0.18rem 0.45rem;
+        font-size: 0.64rem;
+    }
+}
+</style>
+
+<script>
+window.ECR_SECTORES = {
+    retail: {
+        titulo: 'Retail',
+        subtitulo: 'Comercio y ventas',
+        descripcion: 'Contamos con un programa de formación diseñado para fortalecer, paso a paso, las competencias en atención al cliente, operación en punto de venta y manejo de herramientas digitales en equipos de retail. Estas rutas de aprendizaje se imparten en modalidad asincrónica con acompañamiento continuo.',
+        competencias: 'Competencias SENCE: atención al cliente, ventas, operación comercial.',
+        cursos: [
+            { nombre: 'Estrategias de servicio al cliente.', url: 'https://ecrcapacitacion.cl/cursos/atencion-al-cliente-digital-experiencia-que-fideliza' },
+            { nombre: 'Técnicas de venta consultiva B2C.', url: 'https://ecrcapacitacion.cl/cursos/ventas-consultivas-b2c-como-convertir-mas-clientes' },
+            { nombre: 'Ventas consultivas B2B.', url: 'https://ecrcapacitacion.cl/cursos/ventas-consultivas-b2b' },
+            { nombre: 'Técnicas de ventas remotas.', url: 'https://ecrcapacitacion.cl/cursos/ventas-remotas-efectivas-cierre-y-conversion-online' },
+            { nombre: 'Técnicas y estrategias para la gestión de negocios.', url: 'https://ecrcapacitacion.cl/cursos/gestion-de-negocios-estrategia-y-crecimiento' }
+        ]
+    },
+    financiero: {
+        titulo: 'Financiero',
+        subtitulo: 'Financiera y bancaria',
+        descripcion: 'Son capacitaciones diseñadas para que los equipos financieros y bancarios incorporen herramientas digitales de forma progresiva. Elige una modalidad asíncrona, con acompañamiento y evaluación constante durante todo el proceso.',
+        competencias: 'Competencias SENCE: herramientas computacionales, análisis de datos, gestión del tiempo.',
+        cursos: [
+            { nombre: 'Herramientas computacionales básicas de Office.', url: 'https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo' },
+            { nombre: 'Excel - Básico', url: 'https://ecrcapacitacion.cl/cursos/excel-basico' },
+            { nombre: 'Excel - Intermedio', url: 'https://ecrcapacitacion.cl/cursos/excel-intermedio' },
+            { nombre: 'Excel - Avanzado', url: 'https://ecrcapacitacion.cl/cursos/excel-avanzado' },
+            { nombre: 'Excel - Macros', url: 'https://ecrcapacitacion.cl/cursos/excel-avanzado-dominio-y-optimizacion-de-datos' },
+            { nombre: 'Power BI - Básico', url: 'https://ecrcapacitacion.cl/cursos/power-bi-basico-2' },
+            { nombre: 'Power BI - Avanzado', url: 'https://ecrcapacitacion.cl/cursos/power-bi-avanzado-2' },
+            { nombre: 'Gestión del tiempo.', url: 'https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal' }
+        ]
+    },
+    salud: {
+        titulo: 'Salud',
+        subtitulo: 'Sector salud y bienestar',
+        descripcion: 'Nuestros programas de capacitación están centrados en construir ambientes laborales saludables, promover el bienestar emocional y fortalecer las competencias de convivencia dentro de los equipos.',
+        competencias: 'Competencias SENCE: prevención, bienestar, comunicación y trabajo en equipo.',
+        cursos: [
+            { nombre: 'Ambientes laborales saludables y respetuosos de Ley Karín.', url: 'https://ecrcapacitacion.cl/cursos/ley-karin-en-la-empresa-prevencion-y-gestion-del-acoso-laboral' },
+            { nombre: 'Gestión del tiempo.', url: 'https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal' },
+            { nombre: 'Técnicas de gestión del estrés para el bienestar emocional.', url: 'https://ecrcapacitacion.cl/cursos/gestion-del-estres-laboral-bienestar-y-productividad' },
+            { nombre: 'Resolución de conflictos y negociación.', url: 'https://ecrcapacitacion.cl/cursos/gestion-de-conflictos-y-negociacion-liderazgo-en-accion' },
+            { nombre: 'Trabajo en equipos de alto rendimiento.', url: 'https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados' }
+        ]
+    },
+    tecnologia: {
+        titulo: 'Tecnología',
+        subtitulo: 'Transformación digital',
+        descripcion: 'Estas rutas de aprendizaje están enfocadas en procesos tecnológicos con herramientas digitales, inteligencia artificial y metodologías ágiles para potenciar a los equipos especializados.',
+        competencias: 'Competencias SENCE: herramientas digitales, IA aplicada, metodologías ágiles.',
+        cursos: [
+            { nombre: 'Herramientas computacionales básicas de Office.', url: 'https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo' },
+            { nombre: 'ChatGPT: Herramienta de inteligencia artificial, integrada al entorno laboral.', url: 'https://ecrcapacitacion.cl/cursos/productividad-con-chatgpt-aplicaciones-reales-en-el-trabajo' },
+            { nombre: 'Inteligencia artificial para la productividad', url: 'https://ecrcapacitacion.cl/cursos/inteligencia-artificial-aplicada' },
+            { nombre: 'Scrum.', url: 'https://ecrcapacitacion.cl/cursos/scrum-en-accion-gestion-agil-de-equipos-y-proyectos' },
+            { nombre: 'Metodologías Ágiles.', url: 'https://ecrcapacitacion.cl/cursos/scrum-en-accion-gestion-agil-de-equipos-y-proyectos' }
+        ]
+    },
+    gestion: {
+        titulo: 'Gestión',
+        subtitulo: 'Liderazgo y administración',
+        descripcion: 'Conoce un programa ideal para el fortalecimiento de competencias directivas, planificación estratégica y gestión de equipos, orientado a mandos medios y gerencias.',
+        competencias: 'Competencias SENCE: liderazgo, planificación, comunicación gerencial.',
+        cursos: [
+            { nombre: 'Contabilidad básica.', url: 'https://ecrcapacitacion.cl/cursos/contabilidad-basica-control-financiero-para-el-trabajo' },
+            { nombre: 'Técnicas y estrategias para la gestión de un negocio', url: 'https://ecrcapacitacion.cl/cursos/gestion-de-negocios-estrategia-y-crecimiento' },
+            { nombre: 'Liderazgo efectivo.', url: 'https://ecrcapacitacion.cl/cursos/liderazgo-colaborativo-gestion-de-equipos-efectivos' },
+            { nombre: 'Comunicación efectiva.', url: 'https://ecrcapacitacion.cl/cursos/comunicacion-efectiva-en-el-trabajo' },
+            { nombre: 'Trabajo en equipos de alto rendimiento.', url: 'https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados' }
+        ]
+    },
+    logistica: {
+        titulo: 'Logística',
+        subtitulo: 'Cadena de suministro',
+        descripcion: 'Capacitación en operaciones logísticas, metodología 5S y desarrollo de competencias de equipo, enfocada en supply chain.',
+        competencias: 'Competencias SENCE: logística, productividad, liderazgo operativo.',
+        cursos: [
+            { nombre: 'Logística y distribución en almacenes y bodegas con método 5S.', url: 'https://ecrcapacitacion.cl/cursos/logistica-eficiente-implementacion-de-metodologia-5s' },
+            { nombre: 'Gestión del tiempo.', url: 'https://ecrcapacitacion.cl/cursos/gestion-del-tiempo-productividad-y-organizacion-personal' },
+            { nombre: 'Trabajo en equipos de alto rendimiento.', url: 'https://ecrcapacitacion.cl/cursos/liderazgo-de-alto-rendimiento-equipos-que-logran-resultados' },
+            { nombre: 'Liderazgo efectivo.', url: 'https://ecrcapacitacion.cl/cursos/liderazgo-colaborativo-gestion-de-equipos-efectivos' }
+        ]
+    },
+    datos: {
+        titulo: 'Datos',
+        subtitulo: 'Analítica e inteligencia artificial',
+        descripcion: 'Descubre aprendizajes innovadores que integran análisis de datos, visualización e inteligencia artificial para potenciar decisiones más estratégicas para tu organización y basadas en evidencia.',
+        competencias: 'Competencias SENCE: análisis de datos, Power BI, pensamiento analítico.',
+        cursos: [
+            { nombre: 'Herramientas computacionales básicas de Office.', url: 'https://ecrcapacitacion.cl/cursos/office-esencial-herramientas-digitales-para-el-trabajo' },
+            { nombre: 'Excel - Básico', url: 'https://ecrcapacitacion.cl/cursos/excel-basico' },
+            { nombre: 'Excel - Intermedio', url: 'https://ecrcapacitacion.cl/cursos/excel-intermedio' },
+            { nombre: 'Excel - Avanzado', url: 'https://ecrcapacitacion.cl/cursos/excel-avanzado' },
+            { nombre: 'Excel - Macros', url: 'https://ecrcapacitacion.cl/cursos/excel-avanzado-dominio-y-optimizacion-de-datos' },
+            { nombre: 'Power BI - Básico', url: 'https://ecrcapacitacion.cl/cursos/power-bi-basico-2' },
+            { nombre: 'Power BI - Avanzado', url: 'https://ecrcapacitacion.cl/cursos/power-bi-avanzado-2' },
+            { nombre: 'Inteligencia artificial para la productividad.', url: 'https://ecrcapacitacion.cl/cursos/inteligencia-artificial-aplicada' },
+            { nombre: 'ChatGPT: Herramienta de Inteligencia Artificial, integrada al entorno laboral.', url: 'https://ecrcapacitacion.cl/cursos/productividad-con-chatgpt-aplicaciones-reales-en-el-trabajo' }
+        ]
+    },
+    'soluciones-in-company': {
+        titulo: 'Soluciones In Company',
+        subtitulo: 'Programas a medida',
+        descripcion: 'Creamos rutas de aprendizaje a la medida de tu organización, partiendo de un diagnóstico inicial para conocer diversas competencias formativas, acompañando cada etapa con seguimiento y resultados.',
+        competencias: 'Competencias SENCE: según diagnóstico y plan formativo acordado.',
+        cursos: [
+            { nombre: 'Diagnóstico de brechas de competencias.', url: 'https://ecrcapacitacion.cl/contacto/' },
+            { nombre: 'Diseño de programa formativo a medida.', url: 'https://ecrcapacitacion.cl/contacto/' },
+            { nombre: 'Implementación y seguimiento.', url: 'https://ecrcapacitacion.cl/contacto/' },
+            { nombre: 'Evaluación de impacto.', url: 'https://ecrcapacitacion.cl/contacto/' }
+        ]
+    }
+};
+</script>
+<script>
+(function () {
+    var modalEl = null;
+    var ultimoFoco = null;
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function crearModal() {
+        if (document.getElementById('ecr-ruta-modal')) {
+            modalEl = document.getElementById('ecr-ruta-modal');
+            return;
+        }
+        modalEl = document.createElement('div');
+        modalEl.id = 'ecr-ruta-modal';
+        modalEl.className = 'ecr-ruta-modal';
+        modalEl.setAttribute('aria-hidden', 'true');
+        modalEl.innerHTML =
+            '<div class="ecr-ruta-modal__backdrop" data-ecr-cerrar-modal></div>' +
+            '<div class="ecr-ruta-modal__panel" role="dialog" aria-modal="true">' +
+            '  <button type="button" class="ecr-ruta-modal__cerrar" data-ecr-cerrar-modal aria-label="Cerrar">&times;</button>' +
+            '  <div class="ecr-ruta-modal__contenido"></div></div>';
+        document.body.appendChild(modalEl);
+        modalEl.addEventListener('click', function (e) {
+            if (e.target.closest('[data-ecr-cerrar-modal]')) cerrarModal();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && modalEl && modalEl.classList.contains('ecr-ruta-modal--abierto')) cerrarModal();
+        });
+    }
+
+    function renderContenido(sector) {
+        var cursosHtml = (sector.cursos || []).map(function (c) {
+            return '<li class="ecr-ruta-modal__item"><span class="ecr-ruta-modal__item-nombre">' + escapeHtml(c.nombre) + '</span>' +
+                '<a class="ecr-ruta-modal__curso-btn" href="' + escapeHtml(c.url || '#') + '" target="_blank" rel="noopener">Ir al curso <span aria-hidden="true">→</span></a></li>';
+        }).join('');
+        return '<h2 class="ecr-ruta-modal__titulo">' + escapeHtml(sector.titulo) + '</h2>' +
+            '<p class="ecr-ruta-modal__subtitulo">' + escapeHtml(sector.subtitulo) + '</p>' +
+            '<p class="ecr-ruta-modal__descripcion">' + escapeHtml(sector.descripcion) + '</p>' +
+            '<p class="ecr-ruta-modal__competencias">' + escapeHtml(sector.competencias) + '</p>' +
+            '<h3 class="ecr-ruta-modal__ruta-titulo">Ruta de aprendizaje:</h3>' +
+            '<ol class="ecr-ruta-modal__lista">' + cursosHtml + '</ol>';
+    }
+
+    function abrirModal(slug) {
+        var data = window.ECR_SECTORES && window.ECR_SECTORES[slug];
+        if (!data) return;
+        crearModal();
+        ultimoFoco = document.activeElement;
+        var panel = modalEl.querySelector('.ecr-ruta-modal__panel');
+        var nCursos = (data.cursos && data.cursos.length) || 0;
+        if (panel) {
+            if (nCursos >= 7) panel.classList.add('ecr-ruta-modal__panel--largo');
+            else panel.classList.remove('ecr-ruta-modal__panel--largo');
+        }
+        modalEl.querySelector('.ecr-ruta-modal__contenido').innerHTML = renderContenido(data);
+        modalEl.setAttribute('aria-hidden', 'false');
+        modalEl.classList.add('ecr-ruta-modal--abierto');
+        document.body.classList.add('ecr-ruta-modal-abierto');
+    }
+
+    function cerrarModal() {
+        if (!modalEl) return;
+        modalEl.classList.remove('ecr-ruta-modal--abierto');
+        modalEl.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('ecr-ruta-modal-abierto');
+        if (ultimoFoco) ultimoFoco.focus();
+    }
+
+    document.addEventListener('click', function (e) {
+        var verMas = e.target.closest('.ecr-sector-ver-mas');
+        var card = e.target.closest('[data-ecr-sector]');
+        if (verMas) {
+            var cont = verMas.closest('[data-ecr-sector]');
+            if (cont) { e.preventDefault(); abrirModal(cont.getAttribute('data-ecr-sector')); }
+            return;
+        }
+        if (card && !e.target.closest('a[href]') && !e.target.closest('.ecr-ruta-modal')) {
+            e.preventDefault();
+            abrirModal(card.getAttribute('data-ecr-sector'));
+        }
+    });
+
+    window.ECR = window.ECR || {};
+    window.ECR.abrirRutaSector = abrirModal;
+    window.ECR.cerrarRutaModal = cerrarModal;
+    crearModal();
+})();
+</script>

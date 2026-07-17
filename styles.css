@@ -182,6 +182,136 @@ body {
   opacity: 1;
 }
 
+/* Barra contextual al abrir una tarea (madre / subtarea) — reemplaza tabs del organizador */
+.tabs--tarea {
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tabs--tarea[hidden] {
+  display: none !important;
+}
+
+#tabs-organizador[hidden] {
+  display: none !important;
+}
+
+.tabs-tarea__contexto {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius);
+  background: var(--cli-bg, var(--celeste-light, #d8f0ec));
+  color: var(--cli-text, var(--celeste-dark, #0a5c54));
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 2px solid var(--cli-border, var(--celeste-dark, #0a5c54));
+  margin-right: 0.15rem;
+}
+
+.tabs-tarea__contexto--hija {
+  background: var(--cli-bg, #e8e4f4);
+  color: var(--cli-text, #4a3f6b);
+  border-color: var(--cli-border, #6b5b95);
+}
+
+.tabs-tarea__contexto--simple {
+  background: #e8e8e8;
+  color: #444;
+  border-color: var(--border-strong);
+}
+
+.tab--accion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #e8e8e8;
+}
+
+.tab--accion .tab__icon {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.tab--accion .tab__label {
+  line-height: 1.1;
+}
+
+.tab--volver {
+  background: #fff;
+  border-color: var(--border-strong);
+  font-weight: 600;
+}
+
+.tab--resolver {
+  background: var(--celeste-light, #d8f0ec);
+  border-color: var(--celeste-dark, #0a5c54);
+  color: var(--celeste-dark, #0a5c54);
+  font-weight: 600;
+}
+
+.tab--resolver:hover {
+  background: var(--celeste, #2a9d8f);
+  color: #fff;
+  border-color: var(--celeste-dark, #0a5c54);
+}
+
+.tab--hecha {
+  background: #e4efe8;
+  border-color: #3d7a55;
+  color: #1f4d32;
+}
+
+.tab--eliminar {
+  margin-left: auto;
+  color: #7a3030;
+  border-color: #c4a0a0;
+  background: #f6ecec;
+}
+
+.tab--eliminar:hover {
+  background: #ecd5d5;
+  border-color: #a06060;
+}
+
+.app--vista-tarea .header__subtitle {
+  opacity: 0.85;
+}
+
+@media (max-width: 720px) {
+  .tabs-tarea__contexto {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0.15rem;
+  }
+
+  .tabs--tarea {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .tabs--tarea .tabs-tarea__contexto {
+    grid-column: 1 / -1;
+  }
+
+  .tabs--tarea .tab--volver,
+  .tabs--tarea .tab--eliminar {
+    margin-left: 0;
+    grid-column: 1 / -1;
+  }
+
+  .tabs--tarea .tab {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    padding: 0.55rem 0.65rem;
+    font-size: 0.82rem;
+  }
+}
+
 a.tab.tab--perfil,
 button.tab.tab--perfil {
   text-decoration: none;
@@ -2090,7 +2220,7 @@ body.perfil-lightbox-open {
   width: calc(100% - 0.85rem);
   box-sizing: border-box;
   border-left-width: 2px;
-  opacity: 0.96;
+  opacity: 1;
   letter-spacing: -0.01em;
   min-height: 0;
   font-weight: 500;
@@ -2226,6 +2356,7 @@ body.perfil-lightbox-open {
 }
 
 /* Acordeón antiguo (ya no se usa): se deja neutro por si queda en cache */
+.dia-acordeon {
   display: flex;
   align-items: center;
   gap: 0.85rem;
@@ -2357,7 +2488,7 @@ body.perfil-lightbox-open {
 
 .dia-detalle--reducida .tarea-mini--hija {
   margin-left: 0.55rem;
-  opacity: 0.72;
+  opacity: 1;
   font-weight: 500;
   border-left-width: 2px;
 }
@@ -2378,7 +2509,7 @@ body.perfil-lightbox-open {
 
 .dia-item--hija {
   margin-left: 1.15rem;
-  opacity: 0.94;
+  opacity: 1;
   border-left-width: 3px;
 }
 
@@ -2448,6 +2579,7 @@ body.perfil-lightbox-open {
   outline: 3px solid var(--celeste-dark);
   outline-offset: 1px;
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--celeste) 40%, transparent);
+  scroll-margin-top: 0.75rem;
 }
 
 .dia--mini.dia--seleccionado {
@@ -2713,6 +2845,7 @@ body.perfil-lightbox-open {
   margin-top: 0.5rem;
 }
 
+.modal__acciones {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -2808,6 +2941,28 @@ body.modal-abierto {
   height: auto;
   min-height: 0;
   max-width: none;
+}
+
+#view-tarea.view-tarea--sin-agente .panel--agente,
+#view-tarea .panel--agente[hidden],
+.app--ecr-sin-agente #view-tarea .panel--agente {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#view-tarea.view-tarea--sin-agente .panel--tarea-detalle {
+  margin-bottom: 0;
+}
+
+#view-tarea.view-tarea--sin-agente .vista-hint--tarea {
+  display: none !important;
 }
 
 #agente-contenido {
@@ -3085,6 +3240,23 @@ body.modal-abierto {
   display: inline-flex;
   cursor: pointer;
   margin-top: 0.25rem;
+}
+
+.tarea-detalle__articulo-preview {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--cli-border, #98c8e0) 70%, transparent);
+}
+
+.tarea-detalle__articulo-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 160px;
+  object-fit: cover;
 }
 
 .tarea-detalle__eco-articulo {
@@ -4134,19 +4306,46 @@ body.modal-abierto {
     font-size: 0.58rem;
     padding: 0.3rem 0;
   }
+
+  .week-nav {
+    gap: 0.5rem;
+  }
+
+  .week-nav__range {
+    min-width: 0;
+    flex: 1 1 100%;
+    order: -1;
+    font-size: 0.95rem;
+  }
+
+  .vista-switch {
+    max-width: none;
+  }
 }
 
 @media (max-width: 600px) {
+  /* Semana completa (Lu–Do) cabida en el ancho del teléfono; solo IDs cortos */
+  #view-mes {
+    overflow-x: hidden;
+  }
+
   .calendario-mes {
     grid-template-columns: repeat(7, minmax(0, 1fr));
+    min-width: 0;
+    width: 100%;
     gap: 2px;
-    min-height: 420px;
+    padding: 3px;
+    min-height: 0;
   }
 
   .mes-cabecera {
-    font-size: 0.5rem;
+    font-size: 0.58rem;
     padding: 0.2rem 0;
     letter-spacing: 0;
+  }
+
+  .mes-dia {
+    min-height: 52px;
   }
 
   .mes-dia__num {
@@ -4155,9 +4354,23 @@ body.modal-abierto {
   }
 
   .mes-item {
-    font-size: 0.5rem;
+    font-size: 0.48rem;
     line-height: 1.15;
+    padding: 1px 2px;
     border-left-width: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    max-height: none;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  .mes-item--madre {
+    font-weight: 800;
   }
 }
 
@@ -5733,4 +5946,362 @@ body.modal-abierto {
 .jm-wireframes-more a {
   color: #9a5a6e;
   font-weight: 600;
+}
+
+/* —— Responsive: móvil / tablet (layout global) —— */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.app {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --layout-pad: 1rem;
+  }
+
+  .header {
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .header h1 {
+    font-size: 1.45rem;
+  }
+
+  .header__subtitle {
+    font-size: 0.85rem;
+  }
+
+  .header__date {
+    padding: 0.55rem 0.85rem;
+  }
+
+  .header__today-value {
+    font-size: 0.95rem;
+  }
+
+  .tabs {
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .tab {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.82rem;
+  }
+
+  .tab--respaldo {
+    margin-left: 0;
+  }
+
+  .dia {
+    min-height: 0;
+  }
+
+  .dia-columna {
+    max-width: none;
+    width: 100%;
+  }
+
+  .panel--dia {
+    padding: 0.85rem 0.9rem 1rem;
+  }
+
+  #view-tarea .panel--tarea-detalle,
+  #view-tarea .panel--agente {
+    padding: 1rem 1.05rem 1.15rem;
+  }
+
+  .tarea-detalle {
+    padding-left: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --layout-pad: 0.75rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .header__left {
+    width: 100%;
+  }
+
+  .header__title-row {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .header h1 {
+    font-size: 1.3rem;
+  }
+
+  .header__perfil {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.78rem;
+  }
+
+  .header__subtitle {
+    font-size: 0.8rem;
+    line-height: 1.35;
+  }
+
+  .header__date {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    box-sizing: border-box;
+  }
+
+  .header__today-label {
+    display: inline;
+    margin: 0;
+  }
+
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .tabs .tab {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    min-height: 2.55rem;
+  }
+
+  .tab--respaldo {
+    grid-column: 1 / -1;
+  }
+
+  .vista-switch {
+    max-width: none;
+    width: 100%;
+    gap: 0.35rem;
+  }
+
+  .vista-switch__btn {
+    min-width: 0;
+    min-height: 2.65rem;
+    padding: 0.45rem 0.4rem;
+    font-size: 0.82rem;
+  }
+
+  .week-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .week-nav__range {
+    grid-column: 1 / -1;
+    order: -1;
+    min-width: 0;
+    padding: 0.15rem 0;
+    font-size: 0.92rem;
+  }
+
+  .week-nav .btn {
+    width: 100%;
+    min-height: 2.65rem;
+    padding: 0.45rem 0.55rem;
+    font-size: 0.8rem;
+  }
+
+  .week-nav .btn--accent {
+    grid-column: 1 / -1;
+  }
+
+  .vista-hint {
+    font-size: 0.78rem;
+    line-height: 1.4;
+    margin-bottom: 0.65rem;
+  }
+
+  .calendario {
+    gap: 0.55rem;
+  }
+
+  .panel {
+    padding: 0.85rem 0.9rem;
+  }
+
+  .panel--semana-mini {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .calendario--mini {
+    min-width: 32rem;
+    gap: 0.35rem;
+  }
+
+  .calendario--mini .dia--mini {
+    min-width: 4.25rem;
+  }
+
+  .dia-detalle-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .dia-detalle-head__titulo #dia-detalle-numero {
+    font-size: 1.35rem;
+  }
+
+  .dia-detalle-head__meta {
+    font-size: 0.8rem;
+  }
+
+  .dia-item {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+    padding: 0.85rem 0.75rem;
+  }
+
+  .tarea__acciones--dia,
+  .tarea-detalle__acciones .tarea__acciones--dia {
+    width: 100%;
+  }
+
+  .tarea-accion {
+    flex: 1 1 calc(50% - 0.25rem);
+    justify-content: center;
+    min-height: 2.4rem;
+    padding: 0.45rem 0.5rem;
+  }
+
+  .modal {
+    padding: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .modal__panel {
+    width: 100%;
+    max-height: min(92vh, calc(100vh - 0.75rem));
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .modal__acciones {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .modal__acciones .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form__acciones {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form__acciones .btn {
+    width: 100%;
+  }
+
+  .agente-form__acciones {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .agente-form__acciones .btn {
+    width: 100%;
+  }
+
+  .tarea-detalle__entregable-acciones,
+  .prompt-seccion__acciones,
+  .prompt-mejora__acciones {
+    width: 100%;
+  }
+
+  .tarea-detalle__entregable-acciones .btn,
+  .prompt-seccion__acciones .btn,
+  .prompt-mejora__acciones .btn,
+  .tarea-detalle .btn--small {
+    flex: 1 1 auto;
+    min-height: 2.4rem;
+  }
+
+  #view-tarea .panel--tarea-detalle,
+  #view-tarea .panel--agente {
+    padding: 0.9rem 0.85rem 1rem;
+  }
+
+  .agente-header {
+    flex-wrap: wrap;
+    padding: 0.7rem 0.75rem;
+  }
+
+  .agente-msg {
+    max-width: 100%;
+  }
+
+  .toast-app {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    max-width: none;
+    text-align: center;
+  }
+}
+
+@media (max-width: 400px) {
+  :root {
+    --layout-pad: 0.55rem;
+  }
+
+  .header h1 {
+    font-size: 1.15rem;
+  }
+
+  .tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .vista-switch__btn {
+    font-size: 0.75rem;
+  }
+
+  .week-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .week-nav .btn--accent {
+    grid-column: auto;
+  }
+}
+
+/* Evitar zoom involuntario en iOS al enfocar inputs */
+@media (max-width: 640px) {
+  .form input,
+  .form select,
+  .form textarea,
+  .agente-form textarea {
+    font-size: 16px;
+  }
 }

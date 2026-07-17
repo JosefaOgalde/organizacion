@@ -7,7 +7,7 @@ window.CLIENTES_PORTAL = [
     nombre: 'Trendseeker - Talk',
     abrev: 'TS',
     tipo: 'Full time',
-    color: { border: '#c4b8e8', bg: '#f0ecfa', text: '#6a5a9e' },
+    color: { border: '#cdc4f9', bg: '#f4f2ff', text: '#4e4b84' },
     agente: 'Community Manager + WordPress',
     resumen: 'Redes, Metricool, historias, banners y mantenimiento WordPress.',
     landing: {
@@ -15,6 +15,9 @@ window.CLIENTES_PORTAL = [
       entregables: ['12 publicaciones al mes', 'Informe Metricool', 'Historias en redes', 'Banners y WordPress'],
       secciones: [
         { titulo: 'Community Manager', texto: 'Publicaciones, historias y reportes mensuales en redes sociales.' },
+        { titulo: 'Contenidos 7–12', texto: 'Cada pieza = Prompt Gemini video + Copys + Programar. Serie visible en la landing y en el organizador (vie AM/PM → lun → mié → vie → lun).' },
+        { titulo: 'Prompts Gemini (producto / video)', texto: 'Siempre Gemini para marcas/productos TS (nunca Midjourney; eso es ECR). Ver trendseeker/prompts/.' },
+        { titulo: 'Copys + video', texto: 'Copys en trendseeker/copys/. El MP4 se sube en la tarea (+ Subir video) y aparece en Registro Trendseeker.' },
         { titulo: 'WordPress', texto: 'Banners, productos, precios y cargas masivas en el sitio.' }
       ]
     }
@@ -33,7 +36,9 @@ window.CLIENTES_PORTAL = [
       tagline: 'Contenido que posiciona',
       entregables: ['2 newsletters al mes', 'Copys feed y carrusel', 'Artículos de blog', 'Secciones Elementor'],
       secciones: [
-        { titulo: 'Newsletter LinkedIn', texto: 'Invitación, carrusel y video del artículo cada ciclo.' },
+        { titulo: 'Newsletter LinkedIn', texto: 'Ecosistema NL 1 ago: madre + subtareas Copys (TXT), Portada, Carrusel y Video — visibles en landing y organizador (viernes).' },
+        { titulo: 'Portada Midjourney', texto: 'Desde este perfil: PDF/título → 3 prompts por tema → Midjourney (solo fondo) → Canva (título/logo). Historial en newsletter/portadas-guardadas/. NL 1 ago: 4 fondos elegidos (NL-2026-08-01-fondos-elegidos.md).' },
+        { titulo: 'Rutas de aprendizaje', texto: 'Finalizado — modal por sector con textos y links validados (HTML Elementor listo).' },
         { titulo: 'Blog', texto: 'Propuestas, maquetación y publicación en WordPress.' }
       ]
     }
@@ -203,6 +208,25 @@ window.CLIENTES_PORTAL = [
         ]
       }
     ]
+  },
+  {
+    archivo: 'impresoreando/index.html',
+    id: 'cli-impresoreando',
+    slug: 'impresoreando',
+    nombre: 'Impresoreando',
+    abrev: 'IMP',
+    tipo: 'Freelance',
+    color: { border: '#d4b06a', bg: '#faf6eb', text: '#7a5c28' },
+    agente: 'Impresión 3D + ecommerce',
+    resumen: 'Emprendimiento 3D (@impresoreando). Panel socios 50/50: gastos, ventas, luz, costos de producto y plan paid.',
+    landing: {
+      tagline: 'Ideas que se imprimen',
+      entregables: ['Panel financiero 50/50', 'Costos de producción', 'Plan paid bajo presupuesto', 'Contenido redes'],
+      secciones: [
+        { titulo: 'Panel socios', texto: 'Gastos, ventas, operación y bitácora compartida entre Josefa y Nicolás (50/50).' },
+        { titulo: 'Producción', texto: 'Filamento, horas de impresión, pintado, metal de llaveros y bolsas.' }
+      ]
+    }
   },
   {
     archivo: 'herramientas/index.html',

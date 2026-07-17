@@ -1050,6 +1050,17 @@ function tituloMes(tarea, max = 24) {
   return texto.length > max ? texto.slice(0, max - 1) + '…' : texto;
 }
 
+/** Etiqueta corta para mes en móvil: solo id (antes de = o :) p.ej. "DEV JM D5". */
+function idMesTarea(tarea) {
+  const full = tituloMes(tarea, 0);
+  const id = full.split(/\s*[=:]\s*/)[0].trim() || full;
+  return id.length > 14 ? id.slice(0, 13) + '…' : id;
+}
+
+function esViewportMesCompacto() {
+  return typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches;
+}
+
 function asignarRolesATareas(data) {
   data.clientes.forEach(cli => {
     (cli.roles || []).forEach(r => {
@@ -2274,9 +2285,12 @@ function guardar() {
       window.jmSyncLandingDesdeTareas(datos);
     }
     datos.respaldoActualizado = toISO(hoy());
+    // Caché local (no es fuente de verdad). La verdad es /api/organizacion + SQLite.
     localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
     if (typeof window.persistOrganizacionToDisk === 'function') {
       window.persistOrganizacionToDisk(datos);
+    } else {
+      console.warn('Sin /api/organizacion — abre con ABRIR-LARAVEL.bat (127.0.0.1:8000)');
     }
     return true;
   } catch (e) {
@@ -2364,6 +2378,40 @@ function completarTarea(t) {
 function agenteDe(cliente) {
   if (!cliente) return AGENTE_GENERICO;
   return cliente.agente || AGENTES_CLIENTE[cliente.id] || AGENTE_GENERICO;
+}
+
+/** ECR: sin panel/chat de agente (se trabaja por consola). */
+function esTareaSinAgenteUi(tarea) {
+  if (!tarea) return false;
+  if (tarea.clienteId === 'cli-ecr') return true;
+  const cli = clienteDe(tarea.clienteId);
+  if (!cli) return false;
+  if (cli.id === 'cli-ecr') return true;
+  if (String(cli.abrev || '').toUpperCase() === 'ECR') return true;
+  if (/\bECR\b/i.test(cli.nombre || '')) return true;
+  return false;
+}
+
+function aplicarVisibilidadPanelAgente(ocultar) {
+  const vistaTarea = document.getElementById('view-tarea');
+  const panelAgente = document.querySelector('#view-tarea .panel--agente');
+  const app = document.querySelector('.app');
+  if (vistaTarea) vistaTarea.classList.toggle('view-tarea--sin-agente', !!ocultar);
+  if (app) app.classList.toggle('app--ecr-sin-agente', !!ocultar);
+  if (!panelAgente) return;
+  if (ocultar) {
+    panelAgente.hidden = true;
+    panelAgente.setAttribute('hidden', '');
+    panelAgente.setAttribute('aria-hidden', 'true');
+    panelAgente.style.setProperty('display', 'none', 'important');
+    const cont = document.getElementById('agente-contenido');
+    if (cont) cont.innerHTML = '';
+  } else {
+    panelAgente.hidden = false;
+    panelAgente.removeAttribute('hidden');
+    panelAgente.removeAttribute('aria-hidden');
+    panelAgente.style.removeProperty('display');
+  }
 }
 
 function skillDe(cliente) {
@@ -3775,7 +3823,7 @@ function htmlVideosTarea(videos, { quitar = false } = {}) {
     .join('');
 }
 
-async function subirArchivoTareaAlDisco(tarea, file) {
+async function subirArchivoTareaAlDisco(tarea, file, opts = {}) {
   const nombre = file.name || `archivo-${Date.now()}.mp4`;
   const headers = {
     'Content-Type': file.type || 'application/octet-stream',
@@ -3787,6 +3835,7 @@ async function subirArchivoTareaAlDisco(tarea, file) {
     clienteId: tarea.clienteId || '',
     nombre,
   });
+  if (opts.rol) qs.set('rol', opts.rol);
   const res = await fetch('/api/tarea-archivo?' + qs.toString(), {
     method: 'POST',
     headers,
@@ -3845,13 +3894,13 @@ async function guardarVideoEnTarea(tarea, file) {
 }
 
 async function guardarArticuloEnMadre(tarea, file) {
-  const entry = await subirArchivoTareaAlDisco(tarea, file);
+  const entry = await subirArchivoTareaAlDisco(tarea, file, { rol: 'articulo' });
   tarea.articuloArchivo = {
     nombre: entry.nombre,
     url: entry.url,
     txtUrl: entry.txtUrl || null,
     mime: entry.mime,
-    kind: entry.kind || 'articulo',
+    kind: 'articulo',
     bytes: entry.bytes,
     subido: toISO(hoy()),
   };
@@ -3859,6 +3908,8 @@ async function guardarArticuloEnMadre(tarea, file) {
   tarea.entregableArchivo = String(entry.url || '').replace(/^\//, '');
   return entry;
 }
+
+const ARTICULO_ECO_EXT = /\.(pdf|txt|docx?|odt|png|jpe?g|webp|gif|bmp|heic|md|rtf)$/i;
 
 function bindArticuloEcosistema(contenedor, tarea) {
   if (!contenedor || !tarea || tarea.parentId || tarea.tipoEntregable !== 'ecosistema') return;
@@ -3869,23 +3920,23 @@ function bindArticuloEcosistema(contenedor, tarea) {
       const file = e.target.files?.[0];
       input.value = '';
       if (!file) return;
-      const okExt = /\.(pdf|txt|docx?|odt)$/i.test(file.name || '');
+      const okExt = ARTICULO_ECO_EXT.test(file.name || '') || String(file.type || '').startsWith('image/');
       if (!okExt) {
-        mostrarToast('Usa un archivo .doc, .docx, .pdf o .txt');
+        mostrarToast('Usa texto, doc, pdf o imagen');
         return;
       }
       const t = tareaDe(tarea.id);
       if (!t) return;
       try {
-        mostrarToast('Subiendo artículo…');
+        mostrarToast('Subiendo archivo…');
         await guardarArticuloEnMadre(t, file);
         registrarPlantillaDesdeMadre(t);
         guardar();
         renderTarea();
-        mostrarToast('Artículo cargado en la tarea madre');
+        mostrarToast('Archivo cargado en la tarea madre · las subtareas lo usan');
       } catch (err) {
         console.warn(err);
-        mostrarToast('No se pudo subir el artículo: ' + (err.message || 'error'));
+        mostrarToast('No se pudo subir el archivo: ' + (err.message || 'error'));
       }
     };
   }
@@ -3893,14 +3944,14 @@ function bindArticuloEcosistema(contenedor, tarea) {
   contenedor.querySelector('[data-quitar-articulo-eco]')?.addEventListener('click', () => {
     const t = tareaDe(tarea.id);
     if (!t) return;
-    if (!confirm('¿Quitar el artículo de esta madre?')) return;
+    if (!confirm('¿Quitar el archivo de esta madre?')) return;
     delete t.articuloArchivo;
-    if (t.entregableArchivo && /\.(pdf|txt|docx?|odt)$/i.test(t.entregableArchivo)) {
+    if (t.entregableArchivo && (ARTICULO_ECO_EXT.test(t.entregableArchivo) || /\.(png|jpe?g|webp|gif)$/i.test(t.entregableArchivo))) {
       delete t.entregableArchivo;
     }
     guardar();
     renderTarea();
-    mostrarToast('Artículo quitado');
+    mostrarToast('Archivo quitado');
   });
 }
 
@@ -3928,9 +3979,9 @@ function htmlVinculosEcosistema(tarea) {
     const art = articuloDeTarea(madre);
     if (art?.url) {
       const aHref = art.url.startsWith('/') ? art.url : '/' + String(art.url).replace(/^\/+/, '');
-      html += `<p class="tarea-detalle__eco-articulo">Artículo: <a href="${escapeHtml(aHref)}" target="_blank" rel="noopener">${escapeHtml(art.nombre || madre.articuloTitulo || 'Ver archivo')}</a></p>`;
+      html += `<p class="tarea-detalle__eco-articulo">Archivo de la madre: <a href="${escapeHtml(aHref)}" target="_blank" rel="noopener">${escapeHtml(art.nombre || madre.articuloTitulo || 'Ver archivo')}</a></p>`;
     } else {
-      html += `<p class="tarea-detalle__eco-articulo tarea-detalle__eco-articulo--faltante">Falta cargar el artículo en la tarea madre.</p>`;
+      html += `<p class="tarea-detalle__eco-articulo tarea-detalle__eco-articulo--faltante">Falta cargar el archivo en la tarea madre.</p>`;
     }
   }
   if (hijos.length) {
@@ -4081,15 +4132,17 @@ function htmlArticuloEcosistema(tarea) {
   let estado = '';
   if (art) {
     const href = art.url.startsWith('/') ? art.url : '/' + String(art.url).replace(/^\/+/, '');
+    const esImg = String(art.mime || '').startsWith('image/') || /\.(png|jpe?g|webp|gif|bmp|heic)$/i.test(art.nombre || art.url || '');
     estado = `
       <div class="tarea-detalle__articulo-actual">
+        ${esImg ? `<a class="tarea-detalle__articulo-preview" href="${escapeHtml(href)}" target="_blank" rel="noopener"><img src="${escapeHtml(href)}" alt="${escapeHtml(art.nombre || 'Artículo')}"></a>` : ''}
         <a class="btn btn--small btn--ghost" href="${escapeHtml(href)}" target="_blank" rel="noopener" download>
-          ${escapeHtml(art.nombre || 'Descargar artículo')}
+          ${escapeHtml(art.nombre || 'Descargar archivo')}
         </a>
-        <button type="button" class="btn btn--small btn--ghost" data-quitar-articulo-eco title="Quitar artículo">Quitar</button>
+        <button type="button" class="btn btn--small btn--ghost" data-quitar-articulo-eco title="Quitar archivo">Quitar</button>
       </div>`;
   } else {
-    estado = `<p class="tarea-detalle__entregable-hint">Aún no hay artículo. Sube .doc, .docx, .pdf o .txt para ejecutar el ecosistema (copys, portada, carrusel, video).</p>`;
+    estado = `<p class="tarea-detalle__entregable-hint">Aún no hay archivo. Cárgalo aquí (texto, doc, pdf o imagen): todas las subtareas se alimentan de esta madre.</p>`;
   }
   return `
     <div class="tarea-detalle__entregable tarea-detalle__entregable--articulo" data-entregable="ecosistema-articulo">
@@ -4099,8 +4152,8 @@ function htmlArticuloEcosistema(tarea) {
       <p class="tarea-detalle__entregable-hint">${escapeHtml(tituloArt)}</p>
       ${estado}
       <label class="btn btn--small btn--primary tarea-detalle__articulo-upload">
-        ${art ? 'Reemplazar artículo' : '+ Cargar artículo (doc / pdf / txt)'}
-        <input type="file" accept=".doc,.docx,.pdf,.txt,.odt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" hidden data-input-articulo-eco>
+        ${art ? 'Reemplazar archivo' : '+ Cargar archivo'}
+        <input type="file" accept=".doc,.docx,.pdf,.txt,.odt,.md,.rtf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.heic,image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" hidden data-input-articulo-eco>
       </label>
     </div>`;
 }
@@ -5675,17 +5728,22 @@ function colorReunion() {
   return COLORES.reunion;
 }
 
+function tabsOrganizador() {
+  return document.querySelectorAll('#tabs-organizador .tab, .header__perfil[data-view]');
+}
+
 function mostrarVista(vista, { activarTab = false } = {}) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('view--active'));
   document.getElementById('view-' + vista)?.classList.add('view--active');
   if (activarTab) {
-    document.querySelectorAll('.tab').forEach(t => {
+    tabsOrganizador().forEach(t => {
       t.classList.toggle('tab--active', t.dataset.view === vista);
     });
   } else if (VISTAS_CALENDARIO.has(vista)) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
+    tabsOrganizador().forEach(t => t.classList.remove('tab--active'));
   }
   actualizarVistaCalendarioNav(vista);
+  actualizarBarraContexto(vista);
   if (vista === 'nueva') renderPlantillasMadre();
 }
 
@@ -5694,14 +5752,267 @@ const VISTAS_CALENDARIO = new Set(['mes', 'semana', 'dia', 'tarea']);
 function actualizarVistaCalendarioNav(vista) {
   const nav = document.getElementById('vista-calendario-nav');
   if (!nav) return;
-  const visible = VISTAS_CALENDARIO.has(vista);
+  // En vista tarea: solo acciones de la tarea — sin Mes/Semana/Día del organizador
+  const visible = VISTAS_CALENDARIO.has(vista) && vista !== 'tarea';
   nav.hidden = !visible;
   nav.setAttribute('aria-hidden', visible ? 'false' : 'true');
-  const activa = vista === 'tarea' ? 'dia' : vista;
   nav.querySelectorAll('[data-vista-nav]').forEach(btn => {
-    const on = btn.dataset.vistaNav === activa;
+    const on = btn.dataset.vistaNav === vista;
     btn.classList.toggle('vista-switch__btn--active', on);
     btn.setAttribute('aria-current', on ? 'page' : 'false');
+  });
+}
+
+/** Organizer tabs ↔ task-context tabs when a task (esp. madre) is open. */
+function actualizarBarraContexto(vista) {
+  const tabsOrg = document.getElementById('tabs-organizador');
+  const tabsTarea = document.getElementById('tabs-tarea');
+  const enTarea = vista === 'tarea' && !!tareaSeleccionada;
+  document.body.classList.toggle('app--vista-tarea', enTarea);
+  if (tabsOrg) {
+    tabsOrg.hidden = enTarea;
+    tabsOrg.setAttribute('aria-hidden', enTarea ? 'true' : 'false');
+  }
+  if (tabsTarea) {
+    tabsTarea.hidden = !enTarea;
+    tabsTarea.setAttribute('aria-hidden', enTarea ? 'false' : 'true');
+    if (enTarea) renderTabsTarea();
+    else tabsTarea.innerHTML = '';
+  }
+}
+
+function htmlTabAccion({ act, id, icon, label, title, extraClass = '', attrs = '' }) {
+  return `<button type="button" class="tab tab--accion ${extraClass}" data-tarea-act="${act}" data-id="${id}" title="${escapeHtml(title || label)}" ${attrs}>
+    <span class="tab__icon" aria-hidden="true">${icon}</span>
+    <span class="tab__label">${escapeHtml(label)}</span>
+  </button>`;
+}
+
+function renderTabsTarea() {
+  const nav = document.getElementById('tabs-tarea');
+  const t = tareaDe(tareaSeleccionada);
+  if (!nav || !t) return;
+
+  const esMadre = esTareaMadreCalendario(t);
+  const esHija = !!t.parentId;
+  const hechaLabel = t.completada ? 'Deshacer' : 'Marcar hecha';
+  const hechaIcon = t.completada ? '↩' : '✓';
+  const pendienteLabel = t.pendiente ? 'Al calendario' : 'Pendiente';
+  const pendienteAct = t.pendiente ? 'agendar' : 'pendiente';
+  const pendienteIcon = t.pendiente ? '📅' : '→';
+  const pendienteTitle = t.pendiente ? TOOLTIPS.agendar : TOOLTIPS.pendiente;
+  const tieneArticulo = !!(t.articuloArchivo && t.articuloArchivo.url);
+  const articuloLabel = tieneArticulo ? 'Reemplazar archivo' : 'Cargar archivo';
+  const col = colorDe(clienteDe(t.clienteId));
+  const cliVars = `--cli-border:${col.border};--cli-bg:${col.bg};--cli-text:${col.text}`;
+  nav.setAttribute('style', cliVars);
+
+  const estiloCtx = `style="background:${col.bg};color:${col.text};border-color:${col.border}"`;
+  const contexto = esMadre
+    ? `<span class="tabs-tarea__contexto" ${estiloCtx} title="Estás dentro de una tarea madre">Tarea madre</span>`
+    : esHija
+      ? `<span class="tabs-tarea__contexto tabs-tarea__contexto--hija" ${estiloCtx} title="Estás dentro de una subtarea">Subtarea</span>`
+      : `<span class="tabs-tarea__contexto tabs-tarea__contexto--simple">Tarea</span>`;
+
+  let html = contexto;
+  html += htmlTabAccion({
+    act: 'volver',
+    id: t.id,
+    icon: '←',
+    label: 'Volver al día',
+    title: 'Salir de la tarea y volver al día',
+    extraClass: 'tab--volver'
+  });
+
+  if (esHija) {
+    html += htmlTabAccion({
+      act: 'ir-madre',
+      id: t.id,
+      icon: '↑',
+      label: 'Ir a madre',
+      title: 'Abrir la tarea madre de esta subtarea'
+    });
+  }
+
+  html += htmlTabAccion({
+    act: 'editar',
+    id: t.id,
+    icon: '✎',
+    label: 'Editar',
+    title: TOOLTIPS.editar
+  });
+
+  html += htmlTabAccion({
+    act: 'toggle',
+    id: t.id,
+    icon: hechaIcon,
+    label: hechaLabel,
+    title: TOOLTIPS.toggle,
+    extraClass: t.completada ? 'tab--hecha' : ''
+  });
+
+  html += htmlTabAccion({
+    act: pendienteAct,
+    id: t.id,
+    icon: pendienteIcon,
+    label: pendienteLabel,
+    title: pendienteTitle
+  });
+
+  if (esMadre && t.tipoEntregable === 'ecosistema') {
+    html += htmlTabAccion({
+      act: 'articulo',
+      id: t.id,
+      icon: '📄',
+      label: articuloLabel,
+      title: tieneArticulo
+        ? 'Reemplazar el archivo de esta madre (las subtareas lo usan)'
+        : 'Cargar archivo (texto, doc, pdf o imagen) en esta madre'
+    });
+  }
+
+  if (esMadre && !t.completada) {
+    html += htmlTabAccion({
+      act: 'resolver',
+      id: t.id,
+      icon: '✓',
+      label: 'Resolver madre',
+      title: 'Finalizar la madre y tacharla en el calendario',
+      extraClass: 'tab--resolver'
+    });
+  } else if (!esMadre) {
+    html += htmlTabAccion({
+      act: 'agente',
+      id: t.id,
+      icon: '▶',
+      label: 'Ir al agente',
+      title: 'Ir al agente para trabajar la tarea',
+      extraClass: 'tab--resolver'
+    });
+  }
+
+  html += htmlTabAccion({
+    act: 'eliminar',
+    id: t.id,
+    icon: '✕',
+    label: 'Eliminar',
+    title: TOOLTIPS.eliminar,
+    extraClass: 'tab--eliminar'
+  });
+
+  nav.innerHTML = html;
+  bindTabsTarea(nav);
+}
+
+function bindTabsTarea(nav) {
+  if (!nav) return;
+  nav.querySelectorAll('[data-tarea-act]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const act = btn.dataset.tareaAct;
+      const t = tareaDe(btn.dataset.id);
+      if (!t && act !== 'volver') return;
+
+      if (act === 'volver') {
+        volverADiaDesdeTarea();
+        return;
+      }
+      if (act === 'ir-madre') {
+        const madre = madreDeSubtarea(t);
+        if (madre) irATarea(madre.id);
+        else mostrarToast('No se encontró la tarea madre');
+        return;
+      }
+      if (act === 'editar') {
+        abrirEditarTarea(t.id);
+        return;
+      }
+      if (act === 'agente') {
+        enfocarAgenteTarea();
+        return;
+      }
+      if (act === 'resolver') {
+        // Resolver madre = finalizar y tachar (no solo ir al agente)
+        if (!esTareaMadreCalendario(t)) {
+          enfocarAgenteTarea();
+          return;
+        }
+        const hijos = hijosDeMadre(t.id);
+        const pendientes = hijos.filter((h) => !h.completada);
+        if (pendientes.length) {
+          const ok = confirm(
+            `Hay ${pendientes.length} subtarea(s) sin terminar.\n¿Finalizar la madre de todos modos?`
+          );
+          if (!ok) return;
+        }
+        finalizarMadreYAjustarFechas(t);
+        mostrarToast('Tarea madre resuelta · queda tachada en el calendario');
+        guardar();
+        volverADiaDesdeTarea();
+        render();
+        return;
+      }
+      if (act === 'articulo') {
+        const input = document.querySelector('#tarea-detalle-contenido [data-input-articulo-eco]');
+        if (input) {
+          document.querySelector('#tarea-detalle-contenido .tarea-detalle__entregable--articulo')
+            ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          input.click();
+        } else {
+          mostrarToast('Abre el detalle para cargar el artículo');
+        }
+        return;
+      }
+      if (act === 'toggle') {
+        if (esTareaMadreCalendario(t) && !t.completada) {
+          // Marcar hecha en madre = mismo cierre que Resolver madre
+          const hijos = hijosDeMadre(t.id);
+          const pendientes = hijos.filter((h) => !h.completada);
+          if (pendientes.length) {
+            const ok = confirm(
+              `Hay ${pendientes.length} subtarea(s) sin terminar.\n¿Finalizar la madre de todos modos?`
+            );
+            if (!ok) return;
+          }
+          finalizarMadreYAjustarFechas(t);
+          mostrarToast('Tarea madre finalizada · queda tachada');
+        } else {
+          t.completada = !t.completada;
+          if (t.completada) t.pendiente = false;
+          fijarAgendaUsuario(t);
+          fijarEstadoUsuario(t);
+          if (t.parentId) trasCambiarCompletadaSubtarea(t);
+          else sincronizarMadresConSubtareas(datos);
+        }
+        guardar();
+        render();
+        if (document.getElementById('view-tarea')?.classList.contains('view--active')) {
+          renderTabsTarea();
+        }
+        return;
+      }
+      if (act === 'pendiente') {
+        marcarTareaPendiente(t);
+        mostrarToast('Tarea en Pendientes — es la misma tarea, sin duplicar');
+        guardar();
+        render();
+        renderTabsTarea();
+        return;
+      }
+      if (act === 'agendar') {
+        quitarTareaPendiente(t);
+        mostrarToast('Tarea de vuelta en el calendario');
+        guardar();
+        render();
+        renderTabsTarea();
+        return;
+      }
+      if (act === 'eliminar' && confirm('¿Eliminar tarea?')) {
+        eliminarTarea(t.id);
+        guardar();
+        volverADiaDesdeTarea();
+        render();
+      }
+    });
   });
 }
 
@@ -5726,6 +6037,23 @@ function irASemanaDe(fechaISO) {
   diaSeleccionado = fechaISO; // conserva el día clicado desde el mes
   mostrarVista('semana');
   renderCalendario();
+  scrollSemanaAlDiaSeleccionado();
+}
+
+/** Al abrir la semana desde el mes, alinear el scroll con el día elegido. */
+function scrollSemanaAlDiaSeleccionado() {
+  const ir = () => {
+    const el = document.querySelector('#calendario-semana .dia--seleccionado');
+    if (!el) return;
+    try {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+    } catch (_) {
+      el.scrollIntoView(true);
+    }
+  };
+  requestAnimationFrame(ir);
+  setTimeout(ir, 50);
+  setTimeout(ir, 200);
 }
 
 function irADia(fechaISO) {
@@ -6574,17 +6902,20 @@ function renderCalendarioMes() {
       if (it.indiceHijo != null || t.parentId) return false;
       return true;
     });
-    const itemsHtml = ordenados
+    const mesCompacto = esViewportMesCompacto();
+  const itemsHtml = ordenados
       .map((it) => {
         if (it.tipo === 'cita') {
           const c = it.data;
-          return `<span class="mes-item mes-item--salud${claseCitaEstado(c)}" style="background:${COLORES.salud.bg};border-left-color:${COLORES.salud.border};color:${COLORES.salud.text}" title="${escapeHtml(c.especialidad + ' ' + c.hora + (etiquetaEstadoCita(c) ? ' · ' + etiquetaEstadoCita(c) : ''))}">${escapeHtml(textoCitaCompacto(c, 0))}</span>`;
+          const label = mesCompacto ? textoCitaCompacto(c, 6) : textoCitaCompacto(c, 0);
+          return `<span class="mes-item mes-item--salud${claseCitaEstado(c)}" style="background:${COLORES.salud.bg};border-left-color:${COLORES.salud.border};color:${COLORES.salud.text}" title="${escapeHtml(c.especialidad + ' ' + c.hora + (etiquetaEstadoCita(c) ? ' · ' + etiquetaEstadoCita(c) : ''))}">${escapeHtml(label)}</span>`;
         }
         if (it.tipo === 'reunion') {
           const r = it.data;
           const col = colorReunion();
           const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
-          return `<span class="mes-item mes-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 0))}</span>`;
+          const label = mesCompacto ? textoReunionCompacto(r, 7) : textoReunionCompacto(r, 0);
+          return `<span class="mes-item mes-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(label)}</span>`;
         }
         const t = it.data;
         const col = colorMiniTarea(t);
@@ -6592,10 +6923,13 @@ function renderCalendarioMes() {
         const cls =
           (t.completada ? ' mes-item--completada' : '') +
           (madre ? ' mes-item--madre' : '');
-        return `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(tituloMes(t, 0))}</span>`;
+        const label = mesCompacto ? idMesTarea(t) : tituloMes(t, 0);
+        return `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(label)}</span>`;
       })
       .join('');
-    const alturaMin = ordenados.length === 0 ? 108 : 40 + ordenados.length * 34;
+    const alturaMin = mesCompacto
+      ? (ordenados.length === 0 ? 52 : 22 + ordenados.length * 15)
+      : (ordenados.length === 0 ? 108 : 40 + ordenados.length * 34);
 
     html += `<div class="mes-dia${esHoy ? ' mes-dia--hoy' : ''}${!esMesActual ? ' mes-dia--fuera' : ''}" data-fecha="${diaStr}" data-items="${ordenados.length}" style="min-height:${alturaMin}px" title="Ver semana del ${dia.toLocaleDateString('es-CL')}">
       <div class="mes-dia__num">${dia.getDate()}</div>
@@ -6604,6 +6938,7 @@ function renderCalendarioMes() {
   }
 
   cont.innerHTML = html;
+  cont.classList.toggle('calendario-mes--compacto', mesCompacto);
   cont.querySelectorAll('.mes-dia').forEach(celda => {
     celda.addEventListener('click', () => irASemanaDe(celda.dataset.fecha));
   });
@@ -6615,7 +6950,7 @@ function esTareaMadreCalendario(t) {
   return (datos.tareas || []).some((h) => h.parentId === t.id);
 }
 
-/** Tonos más oscuros para tareas madre en vista semana/mes. */
+/** Tonos del cliente: madre más marcada; subtarea = mismos colores del perfil/organizador. */
 function colorMiniTarea(t) {
   const base = colorDe(clienteDe(t?.clienteId));
   if (!esTareaMadreCalendario(t)) return base;
@@ -6681,6 +7016,7 @@ function renderCalendario() {
     const div = document.createElement('div');
     const seleccionado = diaSeleccionado && diaStr === diaSeleccionado;
     div.className = `dia dia--clic${diaStr === hoyStr ? ' dia--hoy' : ''}${seleccionado ? ' dia--seleccionado' : ''}`;
+    div.dataset.fecha = diaStr;
     div.innerHTML = `
       <div class="dia__header dia__header--clic" data-fecha="${diaStr}" title="Ver detalle del día">
         <div class="dia__nombre">${DIAS[i]}</div>
@@ -7012,8 +7348,15 @@ function renderTarea() {
   const layout = document.querySelector('#view-tarea .tarea-layout');
   if (layout) layout.setAttribute('style', cliVars);
   const panelAgente = document.querySelector('#view-tarea .panel--agente');
-  if (panelAgente) {
+  const sinAgenteEcr = esTareaSinAgenteUi(tarea);
+  aplicarVisibilidadPanelAgente(sinAgenteEcr);
+  if (panelAgente && !sinAgenteEcr) {
     panelAgente.style.borderTopColor = col.border;
+  }
+
+  const hintTarea = document.querySelector('#view-tarea .vista-hint--tarea');
+  if (hintTarea) {
+    hintTarea.hidden = sinAgenteEcr;
   }
 
   detalle.innerHTML = `
@@ -7032,11 +7375,35 @@ function renderTarea() {
       ${htmlVinculosEcosistema(tarea)}
       ${htmlEntregableTarea(tarea)}
       ${htmlGaleriaImagenesTarea(tarea)}
-      ${cli ? htmlSkillResumen(cli, col) : ''}
-      <div class="tarea-detalle__acciones">
-        ${htmlBotonesTarea(tarea, { modo: 'detalle' })}
-      </div>
+      ${cli && !sinAgenteEcr ? htmlSkillResumen(cli, col) : ''}
+      <!-- Acciones principales viven en #tabs-tarea (barra contextual) -->
     </div>`;
+
+  if (sinAgenteEcr) {
+    const agentePanelEl = document.getElementById('agente-contenido');
+    if (agentePanelEl) agentePanelEl.innerHTML = '';
+    bindAccionesTarea(detalle);
+    bindArticuloEcosistema(detalle, tarea);
+    detalle.querySelector('[data-copiar-ruta-tarea]')?.addEventListener('click', async () => {
+      const ok = await copiarTexto(urlTareaAbsoluta(tarea));
+      mostrarToast(ok ? 'Enlace copiado' : 'No se pudo copiar — selecciona el enlace manualmente');
+    });
+    detalle.querySelectorAll('[data-abrir-ficha-cliente]').forEach(btn => {
+      btn.addEventListener('click', () => (window.abrirFichaCliente || abrirPerfilCliente)(btn.dataset.abrirFichaCliente));
+    });
+    bindImagenesTareaDetalle(tarea);
+    cargarEntregableTxtEnVista(tarea);
+    if (document.getElementById('view-tarea')?.classList.contains('view--active')) {
+      actualizarBarraContexto('tarea');
+    }
+    requestAnimationFrame(() => {
+      aplicarVisibilidadPanelAgente(true);
+      syncAlturaPanelesTarea();
+      observarAlturaPanelTarea();
+      scrollVistaTareaAlTope();
+    });
+    return;
+  }
 
   const skill = skillDe(cli);
   const mensajes = tarea.sesionAgente.mensajes.map(m => `
@@ -7092,6 +7459,9 @@ function renderTarea() {
   bindImagenesTareaDetalle(tarea);
   bindAgenteTarea(tarea);
   cargarEntregableTxtEnVista(tarea);
+  if (document.getElementById('view-tarea')?.classList.contains('view--active')) {
+    actualizarBarraContexto('tarea');
+  }
   ajustarAlturaTextarea(document.getElementById('agente-input'));
   requestAnimationFrame(() => {
     syncAlturaPanelesTarea();
@@ -7740,7 +8110,7 @@ function setupUI() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  document.querySelectorAll('.tab').forEach(tab => {
+  document.querySelectorAll('#tabs-organizador .tab, .header__perfil[data-view]').forEach(tab => {
     tab.addEventListener('click', () => {
       if (!tab.dataset.view) return;
       // Única vista de clientes: portal de landings (no «Mis clientes» del organizador)
@@ -7748,7 +8118,7 @@ function setupUI() {
         window.location.href = 'index/clientes/';
         return;
       }
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
+      document.querySelectorAll('#tabs-organizador .tab, .header__perfil[data-view]').forEach(t => t.classList.remove('tab--active'));
       tab.classList.add('tab--active');
       mostrarVista(tab.dataset.view, { activarTab: true });
       if (tab.dataset.view === 'perfil') renderPerfilPersonal();
@@ -8045,6 +8415,17 @@ function setupUI() {
 
   window.addEventListener('resize', syncAlturaPanelesTarea);
 
+  let mesCompactoPrev = esViewportMesCompacto();
+  window.addEventListener('resize', () => {
+    const ahora = esViewportMesCompacto();
+    if (ahora === mesCompactoPrev) return;
+    mesCompactoPrev = ahora;
+    const vistaMes = document.getElementById('view-mes');
+    if (vistaMes && vistaMes.classList.contains('view--active')) {
+      renderCalendarioMes();
+    }
+  });
+
   window.addEventListener('popstate', () => {
     if (aplicarRutaDesdeUrl()) return;
     if (tareaSeleccionada) {
@@ -8081,24 +8462,18 @@ async function cargarDatosInicio() {
     ? await window.fetchOrganizacionLive()
     : null;
 
-  // Forzar datos del disco — ignora caché del navegador (ABRIR-ORGANIZADOR.bat)
+  // Forzar datos del disco — ignora caché del navegador
   if ((forzarDisco || forzarRespaldo) && live) {
     console.info('Datos cargados desde disco (forzado)');
     return { datos: normalizarDatos(live), origen: forzarDisco ? 'disco' : 'respaldo' };
   }
 
-  // Con servidor Node: priorizar disco (live) — evita caché vieja del navegador
+  // Con API Laravel (/api/organizacion): por defecto usar disco.
+  // Así http://127.0.0.1:8000/index.html ya carga bien sin ?disco=1
+  // Usa ?local=1 solo si quieres forzar la caché del navegador.
   if (!forzarRespaldo && live && !params.get('local')) {
-    const local = tieneDatosLocales() ? cargar() : null;
-    const liveMasReciente = !local
-      || (typeof window.organizacionLiveEsMasReciente === 'function'
-        && window.organizacionLiveEsMasReciente(local, live));
-    if (liveMasReciente) {
-      console.info('Datos cargados desde data/organizacion-live.json');
-      return { datos: normalizarDatos(live), origen: 'live' };
-    }
-    console.info('Datos cargados desde localStorage (más reciente que disco)');
-    return { datos: local, origen: 'local' };
+    console.info('Datos cargados desde /api/organizacion (live)');
+    return { datos: normalizarDatos(live), origen: 'live' };
   }
 
   // Sin servidor live: conservar navegador
@@ -8135,6 +8510,12 @@ async function iniciarApp() {
     const res = await cargarDatosInicio();
     datos = res.datos;
     origenCarga = res.origen;
+    // Si vinimos del servidor, pisar caché del navegador para no divergir entre PCs
+    if (origenCarga === 'live' || origenCarga === 'disco' || origenCarga === 'respaldo') {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+      } catch (_) { /* ignore */ }
+    }
   } catch (e) {
     console.error('Error al cargar datos', e);
     datos = normalizarDatos(datosIniciales());

@@ -2,9 +2,26 @@
 
 Organizador semanal (lunes a domingo) para gestionar trabajo full-time, clientes freelance y tareas personales.
 
-## Uso
+## Uso diario (oficial — cualquier PC)
 
-Abre `index.html` en el navegador. Los datos se guardan en `localStorage` del navegador.
+```bat
+cd "C:\Users\Josefa Ogalde\organizacion"
+git pull
+ABRIR-LARAVEL.bat
+```
+
+Solo estas URLs:
+
+| Qué | URL |
+|-----|-----|
+| Organizador | http://127.0.0.1:8000/index.html |
+| API | http://127.0.0.1:8000/api/clientes |
+
+Detalle: [`docs/laravel/EN-CUALQUIER-PC.md`](docs/laravel/EN-CUALQUIER-PC.md).
+
+## Backend Laravel + API
+
+Guía visual en [`docs/laravel/README.md`](docs/laravel/README.md).
 
 **Joyas Mercury (landing cliente):** [`index/clientes/joyasmercury/`](index/clientes/joyasmercury/) — wireframes desktop e identidad. Atajos raíz: [`wireframes-joyas-mercury.html`](wireframes-joyas-mercury.html) · [`prototipo-joyas-mercury.html`](prototipo-joyas-mercury.html) (redirigen a wireframes desktop).
 

@@ -1,6 +1,6 @@
 /**
- * Persistencia en disco vía /api/organizacion (scripts/organizacion-server.js).
- * Sin costo · archivo local en data/organizacion-live.json
+ * Persistencia vía Laravel /api/organizacion → data/organizacion-live.json
+ * Fuente de verdad del calendario (localStorage solo es caché del navegador).
  */
 (function () {
   const API = '/api/organizacion';

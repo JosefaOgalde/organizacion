@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registrar venta · Impresoreando</title>
+  <link rel="stylesheet" href="../panel.css?v=imp-dash3" />
+  <style>
+    .venta-hero { margin: 1rem 0 1.25rem; }
+    .venta-hero h1 { margin: 0.25rem 0; color: var(--imp-text); font-size: 1.45rem; }
+    .venta-ok {
+      display: none;
+      margin: 0.75rem 0;
+      padding: 0.75rem 0.9rem;
+      border-radius: 12px;
+      background: #dcefdc;
+      color: var(--imp-ok);
+      font-weight: 600;
+    }
+    .venta-ok.is-on { display: block; }
+  </style>
+</head>
+<body class="imp-body">
+  <div class="imp-top-bleed">
+    <header class="imp-top imp-shell">
+      <div>
+        <a class="imp-back" href="../">← Resumen 50/50</a>
+        <h1>Registrar venta</h1>
+        <p class="imp-sub">Impresoreando · Josefa + Nicolás · se guarda online al instante</p>
+      </div>
+      <div class="imp-top-actions">
+        <span id="venta-status" class="imp-status">Cargando…</span>
+      </div>
+    </header>
+  </div>
+
+  <main class="imp-main imp-shell">
+    <div class="imp-balance" id="venta-balance">
+      <div class="imp-balance__label">Saldo por recuperar ahora</div>
+      <div class="imp-balance__valor" id="venta-saldo">—</div>
+      <div class="imp-balance__legend">
+        <span><i class="imp-dot imp-dot--gastos"></i>Gastos <strong id="venta-gastos">—</strong></span>
+        <span><i class="imp-dot imp-dot--ventas"></i>Ventas <strong id="venta-ventas">—</strong></span>
+      </div>
+    </div>
+
+    <div class="imp-card">
+      <h2>Nueva venta</h2>
+      <p class="imp-muted">Al guardar, el monto entra a ventas y <strong>baja el saldo</strong> del panel.</p>
+      <div id="venta-ok" class="venta-ok">Venta guardada online ✓</div>
+      <form class="imp-form" id="form-venta-rapida">
+        <label>Quién registra
+          <select name="socioRegistro" required>
+            <option value="Josefa">Josefa</option>
+            <option value="Nicolás">Nicolás</option>
+            <option value="Ambos">Ambos</option>
+          </select>
+        </label>
+        <label>Fecha<input name="fecha" type="date" required /></label>
+        <label>Qué se vendió<input name="descripcion" required placeholder="Ej. Llavero perro ×2" /></label>
+        <label>Cantidad<input name="cantidad" type="number" min="1" value="1" required /></label>
+        <label>Total cobrado CLP<input name="montoNeto" type="number" min="1" required placeholder="4990" /></label>
+        <label>Canal
+          <select name="canal">
+            <option value="Instagram">Instagram</option>
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="Feria">Feria</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </label>
+        <label>Notas<textarea name="notas" placeholder="Opcional"></textarea></label>
+        <div class="imp-form-actions">
+          <button class="imp-btn imp-btn--primary" type="submit">Guardar venta online</button>
+          <a class="imp-btn" href="../">Ver panel completo</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="imp-card">
+      <h3>Últimas ventas</h3>
+      <div class="imp-table-wrap">
+        <table class="imp-table">
+          <thead><tr><th>Fecha</th><th>Detalle</th><th>Total</th><th>Quién</th></tr></thead>
+          <tbody id="venta-lista"><tr><td colspan="4">Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="./venta.js?v=imp-dash3"></script>
+</body>
+</html>

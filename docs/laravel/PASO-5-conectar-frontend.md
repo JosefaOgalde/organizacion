@@ -16,12 +16,18 @@ flowchart LR
 
 ---
 
-## Dos terminales abiertas
+## Un solo proceso (Laravel :8000)
 
-| Terminal | Comando | Puerto |
-|----------|---------|--------|
-| **1** | `php artisan serve` | 8000 |
-| **2** | `npx serve .` (en `organizacion\`) | 3000 |
+```bat
+ABRIR-LARAVEL.bat
+```
+
+| Qué | URL |
+|-----|-----|
+| Organizador + portal | http://127.0.0.1:8000/… |
+| API | http://127.0.0.1:8000/api/clientes |
+
+Ver [`UNIFICADO.md`](./UNIFICADO.md). Ya no hace falta un segundo servidor en el puerto 3000.
 
 ---
 
@@ -53,9 +59,9 @@ El archivo `index\assets\portal-landing.js` ya hace `fetch` a la API y, si falla
 
 ## Tarea 5.3 — Probar
 
-1. Terminal 1: `php artisan serve` (backend)
-2. Terminal 2: `npx serve .` (raíz organizacion)
-3. Chrome: `http://localhost:3000/index/clientes.html`
+1. Doble clic en **`ABRIR-LARAVEL.bat`**
+2. Chrome: `http://127.0.0.1:8000/index/clientes/`
+3. API: `http://127.0.0.1:8000/api/clientes`
 
 ✅ Tarjeta Trendseeker con **· API** en el tipo.
 
