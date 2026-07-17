@@ -606,16 +606,7 @@
     return `<section class="portal-landing-entregables">
       <h2>Entregables</h2>
       <ul class="portal-landing-chips">
-        ${items
-          .map((e) => {
-            if (c.slug === 'impresoreando' && /panel financiero/i.test(e)) {
-              return `<li class="portal-landing-chip portal-landing-chip--link">
-                <a href="./panel/" class="portal-landing-chip__a">${escapeHtml(e)}</a>
-              </li>`;
-            }
-            return `<li class="portal-landing-chip">${escapeHtml(e)}</li>`;
-          })
-          .join('')}
+        ${items.map((e) => `<li class="portal-landing-chip">${escapeHtml(e)}</li>`).join('')}
       </ul>
     </section>`;
   }
@@ -629,15 +620,12 @@
       </section>`;
     }
     return secs
-      .map((s) => {
-        const esPanelImp =
-          c.slug === 'impresoreando' && /panel socios/i.test(String(s.titulo || ''));
-        return `<section${esPanelImp ? ' class="portal-imp-panel-sec"' : ''}>
+      .map(
+        (s) => `<section>
       <h2>${escapeHtml(s.titulo)}</h2>
       <p>${escapeHtml(s.texto)}</p>
-      ${esPanelImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./panel/">Resumen 50/50 →</a></p>` : ''}
-    </section>`;
-      })
+    </section>`
+      )
       .join('');
   }
 
@@ -762,17 +750,11 @@
         </section>`
       : '';
 
-    const toolbarPanelBtn =
-      c.slug === 'impresoreando'
-        ? `<a href="./panel/" class="portal-btn portal-btn--imp-panel">Resumen 50/50</a>`
-        : '';
-
     root.innerHTML = `
       <article class="portal-cliente portal-cliente--landing${modoEdicion ? ' portal-cliente--edicion' : ''}"
         style="--card-border:${c.color.border};--card-bg:${c.color.bg};--card-text:${c.color.text}">
         ${impPanelCtaHtml()}
         <div class="portal-cliente__toolbar">
-          ${toolbarPanelBtn}
           <a href="${pathListado}" class="portal-btn portal-btn--ghost">← Clientes</a>
           <a href="${pathOrganizador}?disco=1" class="portal-btn portal-btn--ghost">Organizador</a>
           <button type="button" class="portal-btn portal-btn--nueva-tarea${mostrarNuevaTarea ? ' portal-btn--active' : ''}" id="portal-btn-nueva-tarea">
