@@ -3,11 +3,14 @@
 ## Cursor Cloud specific instructions
 
 ### Flujo diario unificado (obligatorio en instrucciones a la usuaria)
-- **Stack oficial:** Laravel + PHP (`ABRIR-LARAVEL.bat`). No indicar `node scripts/organizacion-server.js` ni `SERVIR.bat` como flujo diario.
-- Organizador web: `php -S localhost:3000 scripts/servir-organizacion.php`
-- API clientes: `php artisan serve` → `http://127.0.0.1:8000/api/clientes`
+- **Stack oficial:** un solo Laravel en `http://127.0.0.1:8000` (`ABRIR-LARAVEL.bat`).
+- No indicar Node, `SERVIR.bat` ni puerto 3000 para el día a día.
+- Organizador: `http://127.0.0.1:8000/index.html?disco=1`
+- API clientes: `http://127.0.0.1:8000/api/clientes`
+- API calendario: `http://127.0.0.1:8000/api/organizacion`
+- Setup: `CONFIGURAR-LARAVEL-UNIFICADO.bat` / `scripts/configurar-laravel-unificado.php`
 - Guía: `docs/laravel/UNIFICADO.md`
-- Respaldo de trabajo vigente: `data/organizacion-respaldo-2026-07-17.json` → también como `organizacion-live.json`
+- Respaldo vigente: `data/organizacion-respaldo-2026-07-17.json` → `organizacion-live.json`
 
 ### Separación de herramientas por cliente (obligatorio)
 - **Trendseeker (TS)** — cualquier marca o producto que manejen, y en especial **prompts de videos / piezas de producto**: siempre **Gemini** (con fotos de producto como referencia). Nunca Midjourney para TS.

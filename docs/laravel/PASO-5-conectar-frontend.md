@@ -57,8 +57,8 @@ El archivo `index\assets\portal-landing.js` ya hace `fetch` a la API y, si falla
 
 ## Tarea 5.3 — Probar
 
-1. Doble clic en **`ABRIR-LARAVEL.bat`** (o las dos terminales PHP de arriba)
-2. Chrome: `http://localhost:3000/index/clientes/`
+1. Doble clic en **`ABRIR-LARAVEL.bat`**
+2. Chrome: `http://127.0.0.1:8000/index/clientes/`
 3. API: `http://127.0.0.1:8000/api/clientes`
 
 ✅ Tarjeta Trendseeker con **· API** en el tipo.

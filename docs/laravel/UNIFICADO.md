@@ -1,60 +1,60 @@
-# Flujo unificado — solo Laravel / PHP
+# Flujo unificado — solo Laravel en :8000
 
-**De ahora en adelante usa un solo arranque:** `ABRIR-LARAVEL.bat`
-
-No uses `node scripts/organizacion-server.js` ni `SERVIR.bat` para el día a día.
-
----
-
-## Qué abre el bat
-
-| Pieza | URL | Rol |
-|-------|-----|-----|
-| **Laravel** | http://127.0.0.1:8000/api/clientes | Clientes en MySQL (fuente de verdad del portal) |
-| **Organizador (PHP)** | http://localhost:3000/index.html | Calendario, madres, subtareas |
-| **Portal** | http://localhost:3000/index/clientes/ | Landings; leen clientes desde Laravel |
-
-Ambos corren con **PHP de Laragon**. Cero Node.
-
----
-
-## En la terminal (si no usas el bat)
+**Un solo servidor. Un solo origen.**
 
 ```bat
 cd "C:\Users\Josefa Ogalde\organizacion"
-
-REM Terminal 1 — API Laravel
-cd backend
-php artisan serve
-
-REM Terminal 2 — Organizador (misma carpeta raíz)
-cd "C:\Users\Josefa Ogalde\organizacion"
-php -S localhost:3000 scripts\servir-organizacion.php
+ABRIR-LARAVEL.bat
 ```
 
-Abre: http://localhost:3000/index.html?disco=1
+(Laragon → **Start All**, MySQL verde.)
 
 ---
 
-## Datos
+## URLs (todas en 8000)
 
-| Dónde | Qué |
-|-------|-----|
-| MySQL vía Laravel | Clientes del portal (`/api/clientes`) |
-| `data/organizacion-live.json` | Calendario / madres / tareas (respaldo 2026-07-17) |
-| `data/clientes-laravel-seed.json` | Seed para importar clientes a MySQL |
+| Qué | URL |
+|-----|-----|
+| Organizador | http://127.0.0.1:8000/index.html?disco=1 |
+| Portal clientes | http://127.0.0.1:8000/index/clientes/ |
+| API clientes | http://127.0.0.1:8000/api/clientes |
+| API calendario | http://127.0.0.1:8000/api/organizacion |
 
-Importar clientes a Laravel:
+No uses puerto 3000 ni Node ni `SERVIR.bat`.
+
+---
+
+## Primera vez / si falta configuración
+
+```bat
+CONFIGURAR-LARAVEL-UNIFICADO.bat
+```
+
+Eso copia a `backend/`:
+
+- `OrganizacionController` → `/api/organizacion`
+- `FrontendStaticController` → sirve `index.html`, portal, CSS, JS
+- Rutas en `routes/api.php` y `routes/web.php`
+
+Luego `ABRIR-LARAVEL.bat`.
+
+---
+
+## Seguir trabajando en la API
+
+```bat
+cd backend
+php artisan serve
+```
+
+Editas controladores en `backend/app/Http/Controllers/Api/`.  
+MySQL = clientes.  
+JSON `data/organizacion-live.json` = calendario/madres (vía `/api/organizacion`).
+
+Importar clientes:
 
 ```bat
 IMPORTAR-CLIENTES-LARAVEL.bat
 cd backend
 php artisan db:seed --class=ClienteSeeder
 ```
-
----
-
-## Por qué existía Node
-
-El agente en la nube levantaba `organizacion-server.js` porque es el servidor viejo del calendario.  
-Eso **ya no es el flujo oficial** en tu PC: usa `ABRIR-LARAVEL.bat`.

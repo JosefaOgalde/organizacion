@@ -2,7 +2,7 @@
   const grid = document.getElementById('clientes-grid');
   if (!grid) return;
 
-  const API_URL = 'http://127.0.0.1:8000/api/clientes';
+  const API_URL = '/api/clientes';
 
   function escapeHtml(s) {
     return String(s ?? '')

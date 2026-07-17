@@ -4,17 +4,20 @@ Organizador semanal (lunes a domingo) para gestionar trabajo full-time, clientes
 
 ## Uso diario (unificado)
 
-**Un solo arranque en Windows:** doble clic en [`ABRIR-LARAVEL.bat`](ABRIR-LARAVEL.bat).
-
-Eso levanta Laravel (clientes en MySQL) + el organizador en PHP. Guía: [`docs/laravel/UNIFICADO.md`](docs/laravel/UNIFICADO.md).
+**Un solo puerto — Laravel:**
 
 ```bat
 cd "C:\Users\Josefa Ogalde\organizacion"
 ABRIR-LARAVEL.bat
 ```
 
-Organizador: http://localhost:3000/index.html?disco=1  
-Clientes API: http://127.0.0.1:8000/api/clientes
+| Qué | URL |
+|-----|-----|
+| Organizador | http://127.0.0.1:8000/index.html?disco=1 |
+| Portal | http://127.0.0.1:8000/index/clientes/ |
+| API | http://127.0.0.1:8000/api/clientes |
+
+Guía: [`docs/laravel/UNIFICADO.md`](docs/laravel/UNIFICADO.md).
 
 ## Backend Laravel + API
 
