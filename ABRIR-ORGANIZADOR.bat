@@ -16,6 +16,9 @@ if errorlevel 1 (
 
 node scripts/asegurar-impresoreando-live.js
 
+echo  Renombrando madres ECR ^(TI + Equipos en terreno^)...
+node scripts/renombrar-ecr-madres-articulos.js
+
 echo.
 echo  Iniciando servidor...
 start "Organizacion servidor" cmd /k "cd /d "%~dp0" && node scripts/organizacion-server.js"
