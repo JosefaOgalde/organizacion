@@ -2274,9 +2274,12 @@ function guardar() {
       window.jmSyncLandingDesdeTareas(datos);
     }
     datos.respaldoActualizado = toISO(hoy());
+    // Caché local (no es fuente de verdad). La verdad es /api/organizacion + SQLite.
     localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
     if (typeof window.persistOrganizacionToDisk === 'function') {
       window.persistOrganizacionToDisk(datos);
+    } else {
+      console.warn('Sin /api/organizacion — abre con ABRIR-LARAVEL.bat (127.0.0.1:8000)');
     }
     return true;
   } catch (e) {
@@ -8160,6 +8163,12 @@ async function iniciarApp() {
     const res = await cargarDatosInicio();
     datos = res.datos;
     origenCarga = res.origen;
+    // Si vinimos del servidor, pisar caché del navegador para no divergir entre PCs
+    if (origenCarga === 'live' || origenCarga === 'disco' || origenCarga === 'respaldo') {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+      } catch (_) { /* ignore */ }
+    }
   } catch (e) {
     console.error('Error al cargar datos', e);
     datos = normalizarDatos(datosIniciales());

@@ -2,22 +2,22 @@
 
 Organizador semanal (lunes a domingo) para gestionar trabajo full-time, clientes freelance y tareas personales.
 
-## Uso diario (oficial)
-
-**Laravel + SQLite — sin Laragon, sin MySQL, sin Node:**
+## Uso diario (oficial — cualquier PC)
 
 ```bat
 cd "C:\Users\Josefa Ogalde\organizacion"
+git pull
 ABRIR-LARAVEL.bat
 ```
+
+Solo estas URLs:
 
 | Qué | URL |
 |-----|-----|
 | Organizador | http://127.0.0.1:8000/index.html |
-| Portal | http://127.0.0.1:8000/index/clientes/ |
 | API | http://127.0.0.1:8000/api/clientes |
 
-Guía: [`docs/laravel/UNIFICADO.md`](docs/laravel/UNIFICADO.md).
+Detalle: [`docs/laravel/EN-CUALQUIER-PC.md`](docs/laravel/EN-CUALQUIER-PC.md).
 
 ## Backend Laravel + API
 

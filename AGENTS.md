@@ -3,15 +3,15 @@
 ## Cursor Cloud specific instructions
 
 ### Flujo diario unificado (obligatorio)
-- **Stack oficial permanente:** Laravel + **SQLite** en `http://127.0.0.1:8000` vía `ABRIR-LARAVEL.bat`.
-- **Prohibido indicar** como flujo diario: Laragon Start All, MySQL, Node, `SERVIR.bat`, puerto 3000.
-- Se puede usar `php.exe` de la carpeta Laragon sin abrir la app (por licencia).
+- **Mismos pasos en cualquier PC:** `git pull` → `ABRIR-LARAVEL.bat` → solo `http://127.0.0.1:8000/…`
+- Guía: `docs/laravel/EN-CUALQUIER-PC.md` y `docs/laravel/UNIFICADO.md`
+- **Stack:** Laravel + SQLite. Sin Laragon app, MySQL, Node, puerto 3000, `file://`.
 - Organizador: `http://127.0.0.1:8000/index.html`
 - API clientes: `http://127.0.0.1:8000/api/clientes`
 - API calendario: `http://127.0.0.1:8000/api/organizacion`
-- DB: `backend/database/database.sqlite`
-- Guía: `docs/laravel/UNIFICADO.md`
-- Respaldo: `data/organizacion-respaldo-2026-07-17.json` → `organizacion-live.json`
+- **Fuentes de verdad:** `data/organizacion-live.json` + `backend/database/database.sqlite` (localStorage solo caché).
+- PHP: se puede usar `php.exe` de Laragon sin abrir la app.
+- Respaldo base: `data/organizacion-respaldo-2026-07-17.json` → live al arrancar si falta.
 
 ### Separación de herramientas por cliente (obligatorio)
 - **Trendseeker (TS)** — cualquier marca o producto que manejen, y en especial **prompts de videos / piezas de producto**: siempre **Gemini** (con fotos de producto como referencia). Nunca Midjourney para TS.
