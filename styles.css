@@ -2488,7 +2488,7 @@ body.perfil-lightbox-open {
 
 .dia-detalle--reducida .tarea-mini--hija {
   margin-left: 0.55rem;
-  opacity: 0.72;
+  opacity: 1;
   font-weight: 500;
   border-left-width: 2px;
 }
@@ -2579,6 +2579,7 @@ body.perfil-lightbox-open {
   outline: 3px solid var(--celeste-dark);
   outline-offset: 1px;
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--celeste) 40%, transparent);
+  scroll-margin-top: 0.75rem;
 }
 
 .dia--mini.dia--seleccionado {
