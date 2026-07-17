@@ -7090,7 +7090,11 @@ function renderTarea() {
   const layout = document.querySelector('#view-tarea .tarea-layout');
   if (layout) layout.setAttribute('style', cliVars);
   const panelAgente = document.querySelector('#view-tarea .panel--agente');
+  const vistaTarea = document.getElementById('view-tarea');
+  const sinAgenteEcr = tarea.clienteId === 'cli-ecr';
+  if (vistaTarea) vistaTarea.classList.toggle('view-tarea--sin-agente', sinAgenteEcr);
   if (panelAgente) {
+    panelAgente.hidden = sinAgenteEcr;
     panelAgente.style.borderTopColor = col.border;
   }
 
@@ -7110,9 +7114,33 @@ function renderTarea() {
       ${htmlVinculosEcosistema(tarea)}
       ${htmlEntregableTarea(tarea)}
       ${htmlGaleriaImagenesTarea(tarea)}
-      ${cli ? htmlSkillResumen(cli, col) : ''}
+      ${cli && !sinAgenteEcr ? htmlSkillResumen(cli, col) : ''}
       <!-- Acciones principales viven en #tabs-tarea (barra contextual) -->
     </div>`;
+
+  if (sinAgenteEcr) {
+    agentePanel.innerHTML = '';
+    bindAccionesTarea(detalle);
+    bindArticuloEcosistema(detalle, tarea);
+    detalle.querySelector('[data-copiar-ruta-tarea]')?.addEventListener('click', async () => {
+      const ok = await copiarTexto(urlTareaAbsoluta(tarea));
+      mostrarToast(ok ? 'Enlace copiado' : 'No se pudo copiar — selecciona el enlace manualmente');
+    });
+    detalle.querySelectorAll('[data-abrir-ficha-cliente]').forEach(btn => {
+      btn.addEventListener('click', () => (window.abrirFichaCliente || abrirPerfilCliente)(btn.dataset.abrirFichaCliente));
+    });
+    bindImagenesTareaDetalle(tarea);
+    cargarEntregableTxtEnVista(tarea);
+    if (document.getElementById('view-tarea')?.classList.contains('view--active')) {
+      actualizarBarraContexto('tarea');
+    }
+    requestAnimationFrame(() => {
+      syncAlturaPanelesTarea();
+      observarAlturaPanelTarea();
+      scrollVistaTareaAlTope();
+    });
+    return;
+  }
 
   const skill = skillDe(cli);
   const mensajes = tarea.sesionAgente.mensajes.map(m => `

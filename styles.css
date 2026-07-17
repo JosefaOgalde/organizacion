@@ -2943,6 +2943,14 @@ body.modal-abierto {
   max-width: none;
 }
 
+#view-tarea.view-tarea--sin-agente .panel--agente {
+  display: none !important;
+}
+
+#view-tarea.view-tarea--sin-agente .panel--tarea-detalle {
+  margin-bottom: 0;
+}
+
 #agente-contenido {
   width: 100%;
   overflow: visible;
