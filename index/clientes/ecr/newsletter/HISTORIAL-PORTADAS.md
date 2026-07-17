@@ -10,8 +10,9 @@ Actualizado: 2026-07-17
 - Archivo: [portadas-guardadas/NL-2026-08-01-fondos-elegidos.md](./portadas-guardadas/NL-2026-08-01-fondos-elegidos.md)
 - Flujo repetible desde perfil ECR → Portada Midjourney
 
-## Equipos en terreno: la ventaja de ajustar a tiempo (segundo artículo)
+## Equipos en terreno: la ventaja de ajustar a tiempo (NL 2 ago · ART 23)
 
-- Madre ECR aparte (24-jul) — no es el NL del 1 ago
+- Madre ECR **24-jul**: `[ECR] NL 2 ago · Equipos en terreno`
+- Artículo: [articulos/ART23-equipos-en-terreno.docx](./articulos/ART23-equipos-en-terreno.docx)
 - Mundos: F · C · M
-- Archivo: [portadas-guardadas/ART23-equipos-en-terreno.md](./portadas-guardadas/ART23-equipos-en-terreno.md)
+- Archivo prompts: [portadas-guardadas/ART23-equipos-en-terreno.md](./portadas-guardadas/ART23-equipos-en-terreno.md)

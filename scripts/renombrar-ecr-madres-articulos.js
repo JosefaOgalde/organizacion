@@ -2,7 +2,7 @@
 /**
  * ECR — nombres de tareas madre según artículo:
  *   1) «Tecnología sin integración…» → NL 1 de agosto
- *   2) Equipos en terreno → segundo NL
+ *   2) «Equipos en terreno…» (ART 23) → NL 2 de agosto
  *
  * Renombra la madre de hoy (17 jul) + subtareas, y crea/actualiza
  * la madre Equipos en terreno (próximo viernes 24 jul) con 4 subtareas.
@@ -140,29 +140,38 @@ for (const h of hijosTI) {
     completada: false,
     pendiente: false,
     parentId: MADRE_TI_ID,
-    articuloSlug: 'tecnologias-de-la-informacion',
+    articuloSlug: 'tecnologia-sin-integracion',
   });
 }
 
-/** —— 2) Equipos en terreno (segundo artículo) —— */
+/** —— 2) NL 2 agosto · Equipos en terreno (ART 23) —— */
+const ART_ET_TITULO = 'Equipos en terreno: la ventaja de ajustar a tiempo';
+const ART_ET_DOC = 'index/clientes/ecr/newsletter/articulos/ART23-equipos-en-terreno.docx';
+const ART_ET_TXT = 'index/clientes/ecr/newsletter/articulos/ART23-equipos-en-terreno.txt';
+const ART_ET_COPY = 'index/clientes/ecr/newsletter/COPY-ART23-equipos-en-terreno.txt';
+
 upsert({
   id: MADRE_ET_ID,
-  titulo: '[ECR] NL · Equipos en terreno',
+  titulo: '[ECR] NL 2 ago · Equipos en terreno',
   clienteId: CLIENTE,
   rolId: ROL,
   fecha: FECHA_ET,
   horaInicio: '09:00',
   horaFin: '18:00',
   notas:
-    'Tarea madre · segundo artículo: «Equipos en terreno: la ventaja de ajustar a tiempo». ' +
-    'Subtareas indexadas: 1 Copys · 2 Portada · 3 Carrusel · 4 Video. ' +
-    'Copys ART23 listos en newsletter/COPY-ART23-equipos-en-terreno.txt.',
+    `Tarea madre · ART 23 · artículo «${ART_ET_TITULO}» (NL LinkedIn 2 de agosto). ` +
+    `Word/TXT: articulos/ART23-equipos-en-terreno.* · Copys: COPY-ART23-equipos-en-terreno.txt. ` +
+    'Subtareas indexadas: 1 Copys · 2 Portada · 3 Carrusel · 4 Video.',
   prioridad: 'alta',
   completada: false,
   pendiente: false,
   numeroHistorico: '09',
   tipoEntregable: 'ecosistema',
   articuloSlug: 'equipos-en-terreno',
+  articuloTitulo: ART_ET_TITULO,
+  articuloPublicacion: '2026-08-02',
+  articuloCodigo: 'ART23',
+  entregableArchivo: ART_ET_TXT,
   parentId: null,
 });
 
@@ -175,8 +184,8 @@ const hijosET = [
     numeroHistorico: '10',
     tipoEntregable: 'copys-txt',
     ordenHijo: 1,
-    entregableArchivo: 'index/clientes/ecr/newsletter/COPY-ART23-equipos-en-terreno.txt',
-    notas: 'Usar COPY-ART23-equipos-en-terreno.txt (feed / carrusel / video).',
+    entregableArchivo: ART_ET_COPY,
+    notas: `Copys feed / carrusel / video · «${ART_ET_TITULO}» (NL 2 ago). Usar COPY-ART23 + artículo ART23-equipos-en-terreno.txt`,
   },
   {
     id: 'tarea-ecr-et-portada-2026-07-24',
@@ -187,7 +196,7 @@ const hijosET = [
     tipoEntregable: 'portada-imgs',
     ordenHijo: 2,
     entregableArchivo: 'index/clientes/ecr/newsletter/portadas-guardadas/ART23-equipos-en-terreno.md',
-    notas: 'Prompts/fondos ART23 · Equipos en terreno.',
+    notas: `Prompts/fondos ART23 · «${ART_ET_TITULO}» (NL 2 ago). Artículo: ART23-equipos-en-terreno.docx`,
   },
   {
     id: 'tarea-ecr-et-carrusel-2026-07-24',
@@ -197,8 +206,8 @@ const hijosET = [
     numeroHistorico: '12',
     tipoEntregable: 'carrusel',
     ordenHijo: 3,
-    entregableArchivo: 'index/clientes/ecr/newsletter/COPY-ART23-equipos-en-terreno.txt',
-    notas: 'Carrusel con slides del artículo Equipos en terreno.',
+    entregableArchivo: ART_ET_TXT,
+    notas: `Carrusel con slides del artículo «${ART_ET_TITULO}».`,
   },
   {
     id: 'tarea-ecr-et-video-2026-07-24',
@@ -208,8 +217,8 @@ const hijosET = [
     numeroHistorico: '13',
     tipoEntregable: 'video',
     ordenHijo: 4,
-    entregableArchivo: 'index/clientes/ecr/newsletter/COPY-ART23-equipos-en-terreno.txt',
-    notas: 'Video = carrusel animado · Equipos en terreno.',
+    entregableArchivo: ART_ET_TXT,
+    notas: `Video = carrusel animado · «${ART_ET_TITULO}».`,
   },
 ];
 
