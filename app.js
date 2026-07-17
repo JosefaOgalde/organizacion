@@ -8112,24 +8112,18 @@ async function cargarDatosInicio() {
     ? await window.fetchOrganizacionLive()
     : null;
 
-  // Forzar datos del disco — ignora caché del navegador (ABRIR-ORGANIZADOR.bat)
+  // Forzar datos del disco — ignora caché del navegador
   if ((forzarDisco || forzarRespaldo) && live) {
     console.info('Datos cargados desde disco (forzado)');
     return { datos: normalizarDatos(live), origen: forzarDisco ? 'disco' : 'respaldo' };
   }
 
-  // Con servidor Node: priorizar disco (live) — evita caché vieja del navegador
+  // Con API Laravel (/api/organizacion): por defecto usar disco.
+  // Así http://127.0.0.1:8000/index.html ya carga bien sin ?disco=1
+  // Usa ?local=1 solo si quieres forzar la caché del navegador.
   if (!forzarRespaldo && live && !params.get('local')) {
-    const local = tieneDatosLocales() ? cargar() : null;
-    const liveMasReciente = !local
-      || (typeof window.organizacionLiveEsMasReciente === 'function'
-        && window.organizacionLiveEsMasReciente(local, live));
-    if (liveMasReciente) {
-      console.info('Datos cargados desde data/organizacion-live.json');
-      return { datos: normalizarDatos(live), origen: 'live' };
-    }
-    console.info('Datos cargados desde localStorage (más reciente que disco)');
-    return { datos: local, origen: 'local' };
+    console.info('Datos cargados desde /api/organizacion (live)');
+    return { datos: normalizarDatos(live), origen: 'live' };
   }
 
   // Sin servidor live: conservar navegador

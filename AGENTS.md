@@ -6,7 +6,7 @@
 - **Stack oficial permanente:** Laravel + **SQLite** en `http://127.0.0.1:8000` vía `ABRIR-LARAVEL.bat`.
 - **Prohibido indicar** como flujo diario: Laragon Start All, MySQL, Node, `SERVIR.bat`, puerto 3000.
 - Se puede usar `php.exe` de la carpeta Laragon sin abrir la app (por licencia).
-- Organizador: `http://127.0.0.1:8000/index.html?disco=1`
+- Organizador: `http://127.0.0.1:8000/index.html`
 - API clientes: `http://127.0.0.1:8000/api/clientes`
 - API calendario: `http://127.0.0.1:8000/api/organizacion`
 - DB: `backend/database/database.sqlite`

@@ -13,7 +13,7 @@ ABRIR-LARAVEL.bat
 
 | Qué | URL |
 |-----|-----|
-| Organizador | http://127.0.0.1:8000/index.html?disco=1 |
+| Organizador | http://127.0.0.1:8000/index.html |
 | Portal | http://127.0.0.1:8000/index/clientes/ |
 | API clientes | http://127.0.0.1:8000/api/clientes |
 | API calendario | http://127.0.0.1:8000/api/organizacion |

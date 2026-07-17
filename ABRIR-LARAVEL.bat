@@ -58,12 +58,12 @@ echo.
 echo  Arrancando http://127.0.0.1:8000 ...
 start "Laravel · 8000" cmd /k "cd /d "%~dp0backend" && "%PHP_EXE%" artisan serve --host=127.0.0.1 --port=8000"
 timeout /t 2 >nul
-start "" "http://127.0.0.1:8000/index.html?disco=1"
+start "" "http://127.0.0.1:8000/index.html"
 start "" "http://127.0.0.1:8000/api/clientes"
 
 echo.
 echo  Stack oficial ^(sin Laragon, sin MySQL, sin Node^):
-echo    Organizador:    http://127.0.0.1:8000/index.html?disco=1
+echo    Organizador:    http://127.0.0.1:8000/index.html
 echo    Portal:         http://127.0.0.1:8000/index/clientes/
 echo    API clientes:   http://127.0.0.1:8000/api/clientes
 echo    API calendario: http://127.0.0.1:8000/api/organizacion
