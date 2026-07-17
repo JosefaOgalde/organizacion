@@ -1907,20 +1907,152 @@ function normalizarDatos(data) {
   return data;
 }
 
-/** Madre: fechaFin = última subtarea; completada cuando todas las hijas lo están. */
+/** Madre: solo recalcula fechaFin. No cierra sola (eso va por modal). */
 function sincronizarMadresConSubtareas(data) {
   if (!Array.isArray(data?.tareas)) return data;
   data.tareas.forEach((m) => {
     if (!m || m.parentId) return;
     const hijos = data.tareas.filter((h) => h && h.parentId === m.id);
-    if (!hijos.length) return;
+    if (!hijos.length) {
+      delete m.fechaFin;
+      return;
+    }
     const fechas = hijos.map((h) => h.fecha).filter(Boolean).sort();
     if (fechas.length) m.fechaFin = fechas[fechas.length - 1];
-    const todosHechos = hijos.every((h) => h.completada === true);
-    m.completada = todosHechos;
-    if (todosHechos) m.pendiente = false;
   });
   return data;
+}
+
+function hijosDeMadre(madreId, data = datos) {
+  return (data?.tareas || []).filter((h) => h && h.parentId === madreId);
+}
+
+function madreDeSubtarea(t, data = datos) {
+  if (!t?.parentId) return null;
+  return (data?.tareas || []).find((m) => m.id === t.parentId) || null;
+}
+
+function todosHijosCompletados(madre, data = datos) {
+  const hijos = hijosDeMadre(madre.id, data);
+  return hijos.length > 0 && hijos.every((h) => h.completada === true);
+}
+
+function sumarDiasISO(fechaISO, dias) {
+  const d = parseISO(fechaISO);
+  if (Number.isNaN(d.getTime())) return fechaISO;
+  d.setDate(d.getDate() + dias);
+  return toISO(d);
+}
+
+function diasEntreISO(desde, hasta) {
+  const a = parseISO(desde);
+  const b = parseISO(hasta);
+  if (Number.isNaN(a.getTime()) || Number.isNaN(b.getTime())) return 0;
+  return Math.round((b - a) / 86400000);
+}
+
+/** Al mover la fecha de la madre, desplaza todas las subtareas el mismo delta. */
+function ajustarFechasSubtareasPorMadre(madre, fechaAnterior, fechaNueva) {
+  if (!madre || madre.parentId || !fechaAnterior || !fechaNueva || fechaAnterior === fechaNueva) return 0;
+  const delta = diasEntreISO(fechaAnterior, fechaNueva);
+  if (!delta) return 0;
+  const hijos = hijosDeMadre(madre.id);
+  hijos.forEach((h) => {
+    if (h.fecha) h.fecha = sumarDiasISO(h.fecha, delta);
+  });
+  sincronizarMadresConSubtareas(datos);
+  return hijos.length;
+}
+
+function finalizarMadreYAjustarFechas(madre) {
+  if (!madre) return;
+  const hijos = hijosDeMadre(madre.id);
+  const fechas = hijos.map((h) => h.fecha).filter(Boolean).sort();
+  if (fechas.length) {
+    madre.fechaFin = fechas[fechas.length - 1];
+    // Si la madre empezó después del fin (caso raro), alinear inicio
+    if (madre.fecha && madre.fecha > madre.fechaFin) madre.fecha = madre.fechaFin;
+  }
+  madre.completada = true;
+  madre.pendiente = false;
+  delete madre.madreCierrePospuesto;
+  fijarEstadoUsuario(madre);
+  sincronizarMadresConSubtareas(datos);
+}
+
+function dejarMadreAbiertaTrasSubtareas(madre) {
+  if (!madre) return;
+  madre.completada = false;
+  madre.madreCierrePospuesto = true;
+  fijarEstadoUsuario(madre);
+  sincronizarMadresConSubtareas(datos);
+}
+
+let madreCierrePendienteId = null;
+
+function abrirModalCerrarMadre(madre) {
+  if (!madre) return;
+  madreCierrePendienteId = madre.id;
+  const modal = document.getElementById('modal-cerrar-madre');
+  const body = document.getElementById('modal-cerrar-madre-body');
+  if (body) {
+    const n = hijosDeMadre(madre.id).length;
+    body.innerHTML =
+      `<p>Todas las subtareas de <strong>${escapeHtml(madre.titulo || 'esta madre')}</strong> están realizadas (${n}).</p>` +
+      `<p>¿Finalizar la tarea madre y ajustar las fechas del bloque?</p>` +
+      `<p class="texto-suave">Si anulas, las subtareas siguen hechas y la madre queda abierta.</p>`;
+  }
+  if (!modal) {
+    if (confirm('¿Finalizar la tarea madre y ajustar fechas?')) {
+      finalizarMadreYAjustarFechas(madre);
+    } else {
+      dejarMadreAbiertaTrasSubtareas(madre);
+    }
+    madreCierrePendienteId = null;
+    return;
+  }
+  modal.hidden = false;
+  modal.removeAttribute('hidden');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-abierto');
+}
+
+function cerrarModalCerrarMadre() {
+  const modal = document.getElementById('modal-cerrar-madre');
+  if (modal) {
+    modal.hidden = true;
+    modal.setAttribute('hidden', '');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+  document.body.classList.remove('modal-abierto');
+  madreCierrePendienteId = null;
+}
+
+/** Tras marcar una subtarea hecha: si es la última, pedir confirmación para cerrar la madre. */
+function trasCambiarCompletadaSubtarea(t) {
+  if (!t?.parentId) {
+    sincronizarMadresConSubtareas(datos);
+    return;
+  }
+  const madre = madreDeSubtarea(t);
+  if (!madre) {
+    sincronizarMadresConSubtareas(datos);
+    return;
+  }
+  if (!t.completada) {
+    delete madre.madreCierrePospuesto;
+    if (madre.completada) {
+      madre.completada = false;
+      fijarEstadoUsuario(madre);
+    }
+    sincronizarMadresConSubtareas(datos);
+    return;
+  }
+  sincronizarMadresConSubtareas(datos);
+  if (!todosHijosCompletados(madre)) return;
+  if (madre.completada) return;
+  if (madre.madreCierrePospuesto) return;
+  abrirModalCerrarMadre(madre);
 }
 
 /** Subtarea: solo su día. Madre: desde fecha hasta fechaFin (inclusive). */
@@ -2049,6 +2181,7 @@ function completarTarea(t) {
   t.pendiente = false;
   fijarAgendaUsuario(t);
   fijarEstadoUsuario(t);
+  trasCambiarCompletadaSubtarea(t);
 }
 
 function agenteDe(cliente) {
@@ -5406,7 +5539,7 @@ function bindAccionesTarea(contenedor) {
         if (t.completada) t.pendiente = false;
         fijarAgendaUsuario(t);
         fijarEstadoUsuario(t);
-        sincronizarMadresConSubtareas(datos);
+        trasCambiarCompletadaSubtarea(t);
       } else if (btn.dataset.act === 'pendiente') {
         marcarTareaPendiente(t);
         mostrarToast('Tarea en Pendientes — es la misma tarea, sin duplicar');
@@ -6789,9 +6922,12 @@ function setupUI() {
     if (!tituloRaw) return;
 
     const eraPendiente = !!t.pendiente;
+    const fechaAnterior = t.fecha;
+    const fechaNueva = document.getElementById('edit-tarea-fecha').value;
+    const eraCompletada = !!t.completada;
     t.titulo = tituloConCliente(clienteId, tituloRaw);
     t.clienteId = clienteId;
-    t.fecha = document.getElementById('edit-tarea-fecha').value;
+    t.fecha = fechaNueva;
     t.horaInicio = document.getElementById('edit-tarea-hora-inicio').value;
     t.horaFin = document.getElementById('edit-tarea-hora-fin').value;
     t.notas = document.getElementById('edit-tarea-notas').value.trim() || undefined;
@@ -6805,6 +6941,33 @@ function setupUI() {
     fijarEstadoUsuario(t);
     t.rolId = null;
 
+    // Madre: al cambiar fecha, mover subtareas el mismo desfase
+    if (!t.parentId && esTareaMadreCalendario(t) && fechaAnterior && fechaNueva && fechaAnterior !== fechaNueva) {
+      const n = ajustarFechasSubtareasPorMadre(t, fechaAnterior, fechaNueva);
+      if (n) mostrarToast(`Madre movida: ${n} subtarea(s) reajustada(s) de fecha`);
+    }
+
+    // Subtarea: al marcar hecha la última, modal de cierre de madre
+    if (t.parentId && t.completada && !eraCompletada) {
+      asignarRolesATareas(datos);
+      if (document.getElementById('view-dia')?.classList.contains('view--active')) {
+        diaSeleccionado = t.fecha;
+      }
+      if (tareaSeleccionada === t.id && t.fecha) diaSeleccionado = t.fecha;
+      guardar();
+      cerrarEditarTarea();
+      render();
+      if (tareaSeleccionada === t.id) renderTarea();
+      trasCambiarCompletadaSubtarea(t);
+      guardar();
+      render();
+      return;
+    }
+    if (t.parentId && !t.completada && eraCompletada) {
+      trasCambiarCompletadaSubtarea(t);
+    }
+
+    sincronizarMadresConSubtareas(datos);
     asignarRolesATareas(datos);
     if (document.getElementById('view-dia')?.classList.contains('view--active')) {
       diaSeleccionado = t.fecha;

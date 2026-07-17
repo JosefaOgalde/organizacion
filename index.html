@@ -327,6 +327,17 @@
       </form>
     </div>
   </div>
+  <div id="modal-cerrar-madre" class="modal" hidden aria-hidden="true">
+    <div class="modal__backdrop" data-anular-cerrar-madre></div>
+    <div class="modal__panel panel panel--form" role="dialog" aria-labelledby="modal-cerrar-madre-titulo">
+      <h2 id="modal-cerrar-madre-titulo">Finalizar tarea madre</h2>
+      <div id="modal-cerrar-madre-body" class="skill-rec-body"></div>
+      <div class="modal__acciones">
+        <button type="button" class="btn btn--ghost" data-anular-cerrar-madre>Anular</button>
+        <button type="button" class="btn btn--primary" data-confirmar-cerrar-madre>Sí, finalizar y ajustar fechas</button>
+      </div>
+    </div>
+  </div>
   <div id="modal-skill-recomendacion" class="modal" hidden aria-hidden="true">
     <div class="modal__backdrop" data-cerrar-skill-rec></div>
     <div class="modal__panel modal__panel--skill-rec">
@@ -345,7 +356,7 @@
   <script src="index/assets/cliente-landing-imagenes.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="app.js?v=ecr-madres-hoy1"></script>
+  <script src="app.js?v=ecr-madre-modal1"></script>
   <script src="ficha-extractores.js"></script>
   <script src="ficha-cliente.js?v=portal-only1"></script>
 </body>
