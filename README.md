@@ -2,9 +2,23 @@
 
 Organizador semanal (lunes a domingo) para gestionar trabajo full-time, clientes freelance y tareas personales.
 
-## Uso
+## Uso diario (unificado)
 
-Abre `index.html` en el navegador. Los datos se guardan en `localStorage` del navegador.
+**Un solo arranque en Windows:** doble clic en [`ABRIR-LARAVEL.bat`](ABRIR-LARAVEL.bat).
+
+Eso levanta Laravel (clientes en MySQL) + el organizador en PHP. Guía: [`docs/laravel/UNIFICADO.md`](docs/laravel/UNIFICADO.md).
+
+```bat
+cd "C:\Users\Josefa Ogalde\organizacion"
+ABRIR-LARAVEL.bat
+```
+
+Organizador: http://localhost:3000/index.html?disco=1  
+Clientes API: http://127.0.0.1:8000/api/clientes
+
+## Backend Laravel + API
+
+Guía visual en [`docs/laravel/README.md`](docs/laravel/README.md).
 
 **Joyas Mercury (landing cliente):** [`index/clientes/joyasmercury/`](index/clientes/joyasmercury/) — wireframes desktop e identidad. Atajos raíz: [`wireframes-joyas-mercury.html`](wireframes-joyas-mercury.html) · [`prototipo-joyas-mercury.html`](prototipo-joyas-mercury.html) (redirigen a wireframes desktop).
 

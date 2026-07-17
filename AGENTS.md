@@ -2,6 +2,13 @@
 
 ## Cursor Cloud specific instructions
 
+### Flujo diario unificado (obligatorio en instrucciones a la usuaria)
+- **Stack oficial:** Laravel + PHP (`ABRIR-LARAVEL.bat`). No indicar `node scripts/organizacion-server.js` ni `SERVIR.bat` como flujo diario.
+- Organizador web: `php -S localhost:3000 scripts/servir-organizacion.php`
+- API clientes: `php artisan serve` → `http://127.0.0.1:8000/api/clientes`
+- Guía: `docs/laravel/UNIFICADO.md`
+- Respaldo de trabajo vigente: `data/organizacion-respaldo-2026-07-17.json` → también como `organizacion-live.json`
+
 ### Separación de herramientas por cliente (obligatorio)
 - **Trendseeker (TS)** — cualquier marca o producto que manejen, y en especial **prompts de videos / piezas de producto**: siempre **Gemini** (con fotos de producto como referencia). Nunca Midjourney para TS.
 - **ECR** — prompts de **portada newsletter** (solo fondo): siempre **Midjourney** (flujo en `index/clientes/ecr/newsletter/`). No mezclar con Gemini ni con el estilo de prompts de TS.
