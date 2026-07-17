@@ -3707,6 +3707,9 @@ function imagenesGuardadasTarea(tarea) {
 }
 
 function htmlGaleriaImagenesTarea(tarea) {
+  // Copys = solo TXT; no mostrar subida de imágenes/video en esa subtarea
+  if (tarea?.tipoEntregable === 'copys-txt') return '';
+
   const imgs = imagenesGuardadasTarea(tarea);
   const videos = archivosVideoTarea(tarea);
   const total = imgs.length + videos.length;
