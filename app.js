@@ -2055,15 +2055,10 @@ function trasCambiarCompletadaSubtarea(t) {
   abrirModalCerrarMadre(madre);
 }
 
-/** Subtarea: solo su día. Madre: desde fecha hasta fechaFin (inclusive). */
+/** Subtarea: solo su día. Madre: solo su fecha de inicio (fechaFin es para cierre, no para pintar el mes). */
 function tareaAplicaEnFecha(t, fechaISO) {
   if (!t || t.pendiente) return false;
-  if (t.parentId) return t.fecha === fechaISO;
-  if (t.fecha === fechaISO) return true;
-  if (t.fecha && t.fechaFin && fechaISO >= t.fecha && fechaISO <= t.fechaFin) {
-    return esTareaMadreCalendario(t) || (datos?.tareas || []).some((h) => h.parentId === t.id);
-  }
-  return false;
+  return t.fecha === fechaISO;
 }
 
 function cargar() {
