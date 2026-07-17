@@ -5451,17 +5451,22 @@ function colorReunion() {
   return COLORES.reunion;
 }
 
+function tabsOrganizador() {
+  return document.querySelectorAll('#tabs-organizador .tab, .header__perfil[data-view]');
+}
+
 function mostrarVista(vista, { activarTab = false } = {}) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('view--active'));
   document.getElementById('view-' + vista)?.classList.add('view--active');
   if (activarTab) {
-    document.querySelectorAll('.tab').forEach(t => {
+    tabsOrganizador().forEach(t => {
       t.classList.toggle('tab--active', t.dataset.view === vista);
     });
   } else if (VISTAS_CALENDARIO.has(vista)) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
+    tabsOrganizador().forEach(t => t.classList.remove('tab--active'));
   }
   actualizarVistaCalendarioNav(vista);
+  actualizarBarraContexto(vista);
   if (vista === 'nueva') renderPlantillasMadre();
 }
 
@@ -5470,14 +5475,215 @@ const VISTAS_CALENDARIO = new Set(['mes', 'semana', 'dia', 'tarea']);
 function actualizarVistaCalendarioNav(vista) {
   const nav = document.getElementById('vista-calendario-nav');
   if (!nav) return;
-  const visible = VISTAS_CALENDARIO.has(vista);
+  // En vista tarea: solo acciones de la tarea — sin Mes/Semana/Día del organizador
+  const visible = VISTAS_CALENDARIO.has(vista) && vista !== 'tarea';
   nav.hidden = !visible;
   nav.setAttribute('aria-hidden', visible ? 'false' : 'true');
-  const activa = vista === 'tarea' ? 'dia' : vista;
   nav.querySelectorAll('[data-vista-nav]').forEach(btn => {
-    const on = btn.dataset.vistaNav === activa;
+    const on = btn.dataset.vistaNav === vista;
     btn.classList.toggle('vista-switch__btn--active', on);
     btn.setAttribute('aria-current', on ? 'page' : 'false');
+  });
+}
+
+/** Organizer tabs ↔ task-context tabs when a task (esp. madre) is open. */
+function actualizarBarraContexto(vista) {
+  const tabsOrg = document.getElementById('tabs-organizador');
+  const tabsTarea = document.getElementById('tabs-tarea');
+  const enTarea = vista === 'tarea' && !!tareaSeleccionada;
+  document.body.classList.toggle('app--vista-tarea', enTarea);
+  if (tabsOrg) {
+    tabsOrg.hidden = enTarea;
+    tabsOrg.setAttribute('aria-hidden', enTarea ? 'true' : 'false');
+  }
+  if (tabsTarea) {
+    tabsTarea.hidden = !enTarea;
+    tabsTarea.setAttribute('aria-hidden', enTarea ? 'false' : 'true');
+    if (enTarea) renderTabsTarea();
+    else tabsTarea.innerHTML = '';
+  }
+}
+
+function htmlTabAccion({ act, id, icon, label, title, extraClass = '', attrs = '' }) {
+  return `<button type="button" class="tab tab--accion ${extraClass}" data-tarea-act="${act}" data-id="${id}" title="${escapeHtml(title || label)}" ${attrs}>
+    <span class="tab__icon" aria-hidden="true">${icon}</span>
+    <span class="tab__label">${escapeHtml(label)}</span>
+  </button>`;
+}
+
+function renderTabsTarea() {
+  const nav = document.getElementById('tabs-tarea');
+  const t = tareaDe(tareaSeleccionada);
+  if (!nav || !t) return;
+
+  const esMadre = esTareaMadreCalendario(t);
+  const esHija = !!t.parentId;
+  const hechaLabel = t.completada ? 'Deshacer' : 'Marcar hecha';
+  const hechaIcon = t.completada ? '↩' : '✓';
+  const pendienteLabel = t.pendiente ? 'Al calendario' : 'Pendiente';
+  const pendienteAct = t.pendiente ? 'agendar' : 'pendiente';
+  const pendienteIcon = t.pendiente ? '📅' : '→';
+  const pendienteTitle = t.pendiente ? TOOLTIPS.agendar : TOOLTIPS.pendiente;
+  const tieneArticulo = !!(t.articuloArchivo && t.articuloArchivo.url);
+  const articuloLabel = tieneArticulo ? 'Reemplazar artículo' : 'Cargar artículo';
+
+  const contexto = esMadre
+    ? '<span class="tabs-tarea__contexto" title="Estás dentro de una tarea madre">Tarea madre</span>'
+    : esHija
+      ? '<span class="tabs-tarea__contexto tabs-tarea__contexto--hija" title="Estás dentro de una subtarea">Subtarea</span>'
+      : '<span class="tabs-tarea__contexto tabs-tarea__contexto--simple">Tarea</span>';
+
+  let html = contexto;
+  html += htmlTabAccion({
+    act: 'volver',
+    id: t.id,
+    icon: '←',
+    label: 'Volver al día',
+    title: 'Salir de la tarea y volver al día',
+    extraClass: 'tab--volver'
+  });
+
+  if (esHija) {
+    html += htmlTabAccion({
+      act: 'ir-madre',
+      id: t.id,
+      icon: '↑',
+      label: 'Ir a madre',
+      title: 'Abrir la tarea madre de esta subtarea'
+    });
+  }
+
+  html += htmlTabAccion({
+    act: 'editar',
+    id: t.id,
+    icon: '✎',
+    label: 'Editar',
+    title: TOOLTIPS.editar
+  });
+
+  html += htmlTabAccion({
+    act: 'toggle',
+    id: t.id,
+    icon: hechaIcon,
+    label: hechaLabel,
+    title: TOOLTIPS.toggle,
+    extraClass: t.completada ? 'tab--hecha' : ''
+  });
+
+  html += htmlTabAccion({
+    act: pendienteAct,
+    id: t.id,
+    icon: pendienteIcon,
+    label: pendienteLabel,
+    title: pendienteTitle
+  });
+
+  if (esMadre && t.tipoEntregable === 'ecosistema') {
+    html += htmlTabAccion({
+      act: 'articulo',
+      id: t.id,
+      icon: '📄',
+      label: articuloLabel,
+      title: tieneArticulo
+        ? 'Reemplazar el artículo de esta madre'
+        : 'Cargar artículo (doc / pdf / txt) en esta madre'
+    });
+  }
+
+  html += htmlTabAccion({
+    act: 'resolver',
+    id: t.id,
+    icon: '▶',
+    label: esMadre ? 'Resolver madre' : 'Resolver',
+    title: 'Ir al agente para resolver la tarea',
+    extraClass: 'tab--resolver'
+  });
+
+  html += htmlTabAccion({
+    act: 'eliminar',
+    id: t.id,
+    icon: '✕',
+    label: 'Eliminar',
+    title: TOOLTIPS.eliminar,
+    extraClass: 'tab--eliminar'
+  });
+
+  nav.innerHTML = html;
+  bindTabsTarea(nav);
+}
+
+function bindTabsTarea(nav) {
+  if (!nav) return;
+  nav.querySelectorAll('[data-tarea-act]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const act = btn.dataset.tareaAct;
+      const t = tareaDe(btn.dataset.id);
+      if (!t && act !== 'volver') return;
+
+      if (act === 'volver') {
+        volverADiaDesdeTarea();
+        return;
+      }
+      if (act === 'ir-madre') {
+        const madre = madreDeSubtarea(t);
+        if (madre) irATarea(madre.id);
+        else mostrarToast('No se encontró la tarea madre');
+        return;
+      }
+      if (act === 'editar') {
+        abrirEditarTarea(t.id);
+        return;
+      }
+      if (act === 'resolver') {
+        enfocarAgenteTarea();
+        return;
+      }
+      if (act === 'articulo') {
+        const input = document.querySelector('#tarea-detalle-contenido [data-input-articulo-eco]');
+        if (input) {
+          document.querySelector('#tarea-detalle-contenido .tarea-detalle__entregable--articulo')
+            ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          input.click();
+        } else {
+          mostrarToast('Abre el detalle para cargar el artículo');
+        }
+        return;
+      }
+      if (act === 'toggle') {
+        t.completada = !t.completada;
+        if (t.completada) t.pendiente = false;
+        fijarAgendaUsuario(t);
+        fijarEstadoUsuario(t);
+        if (t.parentId) trasCambiarCompletadaSubtarea(t);
+        else sincronizarMadresConSubtareas(datos);
+        guardar();
+        render();
+        renderTabsTarea();
+        return;
+      }
+      if (act === 'pendiente') {
+        marcarTareaPendiente(t);
+        mostrarToast('Tarea en Pendientes — es la misma tarea, sin duplicar');
+        guardar();
+        render();
+        renderTabsTarea();
+        return;
+      }
+      if (act === 'agendar') {
+        quitarTareaPendiente(t);
+        mostrarToast('Tarea de vuelta en el calendario');
+        guardar();
+        render();
+        renderTabsTarea();
+        return;
+      }
+      if (act === 'eliminar' && confirm('¿Eliminar tarea?')) {
+        eliminarTarea(t.id);
+        guardar();
+        volverADiaDesdeTarea();
+        render();
+      }
+    });
   });
 }
 
@@ -6809,9 +7015,7 @@ function renderTarea() {
       ${htmlEntregableTarea(tarea)}
       ${htmlGaleriaImagenesTarea(tarea)}
       ${cli ? htmlSkillResumen(cli, col) : ''}
-      <div class="tarea-detalle__acciones">
-        ${htmlBotonesTarea(tarea, { modo: 'detalle' })}
-      </div>
+      <!-- Acciones principales viven en #tabs-tarea (barra contextual) -->
     </div>`;
 
   const skill = skillDe(cli);
@@ -6868,6 +7072,9 @@ function renderTarea() {
   bindImagenesTareaDetalle(tarea);
   bindAgenteTarea(tarea);
   cargarEntregableTxtEnVista(tarea);
+  if (document.getElementById('view-tarea')?.classList.contains('view--active')) {
+    actualizarBarraContexto('tarea');
+  }
   ajustarAlturaTextarea(document.getElementById('agente-input'));
   requestAnimationFrame(() => {
     syncAlturaPanelesTarea();
@@ -7516,7 +7723,7 @@ function setupUI() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  document.querySelectorAll('.tab').forEach(tab => {
+  document.querySelectorAll('#tabs-organizador .tab, .header__perfil[data-view]').forEach(tab => {
     tab.addEventListener('click', () => {
       if (!tab.dataset.view) return;
       // Única vista de clientes: portal de landings (no «Mis clientes» del organizador)
@@ -7524,7 +7731,7 @@ function setupUI() {
         window.location.href = 'index/clientes/';
         return;
       }
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
+      document.querySelectorAll('#tabs-organizador .tab, .header__perfil[data-view]').forEach(t => t.classList.remove('tab--active'));
       tab.classList.add('tab--active');
       mostrarVista(tab.dataset.view, { activarTab: true });
       if (tab.dataset.view === 'perfil') renderPerfilPersonal();

@@ -182,6 +182,116 @@ body {
   opacity: 1;
 }
 
+/* Barra contextual al abrir una tarea (madre / subtarea) — reemplaza tabs del organizador */
+.tabs--tarea {
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tabs--tarea[hidden] {
+  display: none !important;
+}
+
+#tabs-organizador[hidden] {
+  display: none !important;
+}
+
+.tabs-tarea__contexto {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius);
+  background: var(--celeste-light, #d8f0ec);
+  color: var(--celeste-dark, #0a5c54);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 2px solid var(--celeste-dark, #0a5c54);
+  margin-right: 0.15rem;
+}
+
+.tabs-tarea__contexto--hija {
+  background: #e8e4f4;
+  color: #4a3f6b;
+  border-color: #6b5b95;
+}
+
+.tabs-tarea__contexto--simple {
+  background: #e8e8e8;
+  color: #444;
+  border-color: var(--border-strong);
+}
+
+.tab--accion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #e8e8e8;
+}
+
+.tab--accion .tab__icon {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.tab--accion .tab__label {
+  line-height: 1.1;
+}
+
+.tab--volver {
+  background: #fff;
+  border-color: var(--border-strong);
+  font-weight: 600;
+}
+
+.tab--resolver {
+  background: var(--celeste-light, #d8f0ec);
+  border-color: var(--celeste-dark, #0a5c54);
+  color: var(--celeste-dark, #0a5c54);
+  font-weight: 600;
+}
+
+.tab--resolver:hover {
+  background: var(--celeste, #2a9d8f);
+  color: #fff;
+  border-color: var(--celeste-dark, #0a5c54);
+}
+
+.tab--hecha {
+  background: #e4efe8;
+  border-color: #3d7a55;
+  color: #1f4d32;
+}
+
+.tab--eliminar {
+  margin-left: auto;
+  color: #7a3030;
+  border-color: #c4a0a0;
+  background: #f6ecec;
+}
+
+.tab--eliminar:hover {
+  background: #ecd5d5;
+  border-color: #a06060;
+}
+
+.app--vista-tarea .header__subtitle {
+  opacity: 0.85;
+}
+
+@media (max-width: 720px) {
+  .tabs--tarea .tab__label {
+    /* En móvil priorizar icono + label corto ya presente */
+  }
+
+  .tabs-tarea__contexto {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0.15rem;
+  }
+}
+
 a.tab.tab--perfil,
 button.tab.tab--perfil {
   text-decoration: none;
