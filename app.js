@@ -4669,12 +4669,19 @@ async function cargarYBindCopysEcr(tarea) {
     const res = await fetch('/' + archivo.replace(/^\/+/, '') + '?t=' + Date.now(), { cache: 'no-store' });
     if (res.ok) {
       ta.value = await res.text();
-    } else if (!ta.value) {
-      ta.value = '';
-      ta.placeholder = 'Pulsa Crear para generar el borrador desde el artículo de la madre…';
+    } else {
+      const curados = await cargarCopysEcrCurados(madreDeTarea(tarea));
+      if (curados?.texto) {
+        ta.value = curados.texto;
+      } else if (!ta.value) {
+        ta.value = '';
+        ta.placeholder = 'Pulsa Crear para generar los copys ECR (feed · carrusel · video)…';
+      }
     }
   } catch {
-    if (!ta.value) ta.placeholder = 'Pulsa Crear para generar el borrador…';
+    const curados = await cargarCopysEcrCurados(madreDeTarea(tarea));
+    if (curados?.texto) ta.value = curados.texto;
+    else if (!ta.value) ta.placeholder = 'Pulsa Crear para generar los copys ECR…';
   }
 
   root.querySelector('[data-crear-copy-ecr]')?.addEventListener('click', async () => {
