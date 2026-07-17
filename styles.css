@@ -4284,41 +4284,53 @@ body.modal-abierto {
 }
 
 @media (max-width: 600px) {
-  /* En móvil el mes se desplaza horizontalmente para no aplastar las celdas */
+  /* Semana completa (Lu–Do) cabida en el ancho del teléfono; solo IDs cortos */
   #view-mes {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
+    overflow-x: hidden;
   }
 
   .calendario-mes {
-    grid-template-columns: repeat(7, minmax(4.5rem, 1fr));
-    min-width: 36rem;
-    gap: 3px;
-    min-height: 420px;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    min-width: 0;
+    width: 100%;
+    gap: 2px;
+    padding: 3px;
+    min-height: 0;
   }
 
   .mes-cabecera {
-    font-size: 0.55rem;
-    padding: 0.25rem 0;
-    letter-spacing: 0.02em;
+    font-size: 0.58rem;
+    padding: 0.2rem 0;
+    letter-spacing: 0;
   }
 
   .mes-dia {
-    min-height: 88px;
+    min-height: 52px;
   }
 
   .mes-dia__num {
-    font-size: 0.68rem;
-    padding: 2px 3px;
+    font-size: 0.62rem;
+    padding: 1px 2px;
   }
 
   .mes-item {
-    font-size: 0.55rem;
-    line-height: 1.2;
+    font-size: 0.48rem;
+    line-height: 1.15;
+    padding: 1px 2px;
     border-left-width: 2px;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    max-height: none;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  .mes-item--madre {
+    font-weight: 800;
   }
 }
 
@@ -6241,10 +6253,6 @@ body {
 
   .week-nav .btn--accent {
     grid-column: auto;
-  }
-
-  .calendario-mes {
-    min-width: 32rem;
   }
 }
 

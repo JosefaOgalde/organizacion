@@ -1050,6 +1050,17 @@ function tituloMes(tarea, max = 24) {
   return texto.length > max ? texto.slice(0, max - 1) + '…' : texto;
 }
 
+/** Etiqueta corta para mes en móvil: solo id (antes de = o :) p.ej. "DEV JM D5". */
+function idMesTarea(tarea) {
+  const full = tituloMes(tarea, 0);
+  const id = full.split(/\s*[=:]\s*/)[0].trim() || full;
+  return id.length > 14 ? id.slice(0, 13) + '…' : id;
+}
+
+function esViewportMesCompacto() {
+  return typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches;
+}
+
 function asignarRolesATareas(data) {
   data.clientes.forEach(cli => {
     (cli.roles || []).forEach(r => {
@@ -6607,17 +6618,20 @@ function renderCalendarioMes() {
       if (it.indiceHijo != null || t.parentId) return false;
       return true;
     });
-    const itemsHtml = ordenados
+    const mesCompacto = esViewportMesCompacto();
+  const itemsHtml = ordenados
       .map((it) => {
         if (it.tipo === 'cita') {
           const c = it.data;
-          return `<span class="mes-item mes-item--salud${claseCitaEstado(c)}" style="background:${COLORES.salud.bg};border-left-color:${COLORES.salud.border};color:${COLORES.salud.text}" title="${escapeHtml(c.especialidad + ' ' + c.hora + (etiquetaEstadoCita(c) ? ' · ' + etiquetaEstadoCita(c) : ''))}">${escapeHtml(textoCitaCompacto(c, 0))}</span>`;
+          const label = mesCompacto ? textoCitaCompacto(c, 6) : textoCitaCompacto(c, 0);
+          return `<span class="mes-item mes-item--salud${claseCitaEstado(c)}" style="background:${COLORES.salud.bg};border-left-color:${COLORES.salud.border};color:${COLORES.salud.text}" title="${escapeHtml(c.especialidad + ' ' + c.hora + (etiquetaEstadoCita(c) ? ' · ' + etiquetaEstadoCita(c) : ''))}">${escapeHtml(label)}</span>`;
         }
         if (it.tipo === 'reunion') {
           const r = it.data;
           const col = colorReunion();
           const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
-          return `<span class="mes-item mes-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 0))}</span>`;
+          const label = mesCompacto ? textoReunionCompacto(r, 7) : textoReunionCompacto(r, 0);
+          return `<span class="mes-item mes-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(label)}</span>`;
         }
         const t = it.data;
         const col = colorMiniTarea(t);
@@ -6625,10 +6639,13 @@ function renderCalendarioMes() {
         const cls =
           (t.completada ? ' mes-item--completada' : '') +
           (madre ? ' mes-item--madre' : '');
-        return `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(tituloMes(t, 0))}</span>`;
+        const label = mesCompacto ? idMesTarea(t) : tituloMes(t, 0);
+        return `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(label)}</span>`;
       })
       .join('');
-    const alturaMin = ordenados.length === 0 ? 108 : 40 + ordenados.length * 34;
+    const alturaMin = mesCompacto
+      ? (ordenados.length === 0 ? 52 : 22 + ordenados.length * 15)
+      : (ordenados.length === 0 ? 108 : 40 + ordenados.length * 34);
 
     html += `<div class="mes-dia${esHoy ? ' mes-dia--hoy' : ''}${!esMesActual ? ' mes-dia--fuera' : ''}" data-fecha="${diaStr}" data-items="${ordenados.length}" style="min-height:${alturaMin}px" title="Ver semana del ${dia.toLocaleDateString('es-CL')}">
       <div class="mes-dia__num">${dia.getDate()}</div>
@@ -6637,6 +6654,7 @@ function renderCalendarioMes() {
   }
 
   cont.innerHTML = html;
+  cont.classList.toggle('calendario-mes--compacto', mesCompacto);
   cont.querySelectorAll('.mes-dia').forEach(celda => {
     celda.addEventListener('click', () => irASemanaDe(celda.dataset.fecha));
   });
@@ -8078,6 +8096,17 @@ function setupUI() {
   }
 
   window.addEventListener('resize', syncAlturaPanelesTarea);
+
+  let mesCompactoPrev = esViewportMesCompacto();
+  window.addEventListener('resize', () => {
+    const ahora = esViewportMesCompacto();
+    if (ahora === mesCompactoPrev) return;
+    mesCompactoPrev = ahora;
+    const vistaMes = document.getElementById('view-mes');
+    if (vistaMes && vistaMes.classList.contains('view--active')) {
+      renderCalendarioMes();
+    }
+  });
 
   window.addEventListener('popstate', () => {
     if (aplicarRutaDesdeUrl()) return;
