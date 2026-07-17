@@ -67,3 +67,4 @@ pregunta cierre
 - Versión A = narrativa / editorial · Versión B = punch / directa.
 - Marca: `ECR GROUP®️` / hashtag `#ECRGroup`.
 - 2–4 hashtags por copy.
+- **Emojis distintos por newsletter:** no repetir el set del NL anterior. Cada artículo lleva su propia paleta alineada al tema (ej. NL 1 integración ≠ NL 2 terreno/tiempo).
