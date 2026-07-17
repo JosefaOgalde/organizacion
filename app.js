@@ -4110,8 +4110,12 @@ function esCopyEcrNl(tarea) {
 
 function rutaCopyEcrDeTarea(tarea) {
   if (!tarea) return '';
-  if (tarea.entregableArchivo && /\.txt$/i.test(tarea.entregableArchivo) && /\/copys\//i.test(tarea.entregableArchivo)) {
-    return String(tarea.entregableArchivo).replace(/^\/+/, '');
+  if (tarea.entregableArchivo && /\.txt$/i.test(tarea.entregableArchivo)) {
+    const e = String(tarea.entregableArchivo).replace(/^\/+/, '');
+    // Preferir rutas de copys (no el TXT del artículo)
+    if (/\/copys\//i.test(e) || /^index\/clientes\/ecr\/newsletter\/COPY-/i.test(e)) {
+      return e;
+    }
   }
   const madre = madreDeTarea(tarea);
   const slug = madre?.articuloSlug || tarea.articuloSlug || 'nl-ecr';
@@ -4173,14 +4177,85 @@ async function textoArticuloMadre(madre) {
     : '';
 }
 
-function borradorCopysDesdeArticulo(tituloArt, textoArt) {
-  const titulo = tituloArt || 'Artículo ECR';
-  const extracto = String(textoArt || '')
+function limpiarTextoArticuloEcr(textoArt) {
+  let t = String(textoArt || '').replace(/\r\n/g, '\n').trim();
+  if (!t) return '';
+  // Quitar encabezados de sidecar interno
+  t = t.replace(/^ARTÍCULO ECR[\s\S]*?={10,}\s*/i, '');
+  t = t.replace(/^Artículo:\s*.+\n+\(No se pudo leer[\s\S]*$/i, '');
+  return t.trim();
+}
+
+function frasesUtilesArticulo(texto, max = 8) {
+  const limpio = limpiarTextoArticuloEcr(texto)
     .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 420);
+    .trim();
+  if (!limpio) return [];
+  const partes = limpio
+    .split(/(?<=[.!?¿?])\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length >= 40 && s.length <= 220 && !/^artículo ecr/i.test(s));
+  const unicos = [];
+  for (const p of partes) {
+    if (unicos.some((u) => u.slice(0, 48) === p.slice(0, 48))) continue;
+    unicos.push(p);
+    if (unicos.length >= max) break;
+  }
+  return unicos;
+}
+
+function titulosSeccionArticulo(texto) {
+  const lineas = limpiarTextoArticuloEcr(texto).split(/\n+/).map((l) => l.trim()).filter(Boolean);
+  const secs = [];
+  for (const l of lineas) {
+    if (l.length < 18 || l.length > 110) continue;
+    if (/[.!?]$/.test(l) && l.length > 70) continue;
+    if (/^ARTÍCULO|^Título:|^Asociado|^Archivo|^Placeholder/i.test(l)) continue;
+    // Títulos de sección típicos (sin punto final o pregunta corta)
+    if (!/[.]$/.test(l) || /\?$/.test(l)) {
+      if (!secs.includes(l)) secs.push(l);
+    }
+    if (secs.length >= 6) break;
+  }
+  return secs;
+}
+
+/**
+ * Borrador en el formato acordado ECR (como COPY-ART23):
+ * Feed A/B · Carrusel (slides + A/B) · Video A/B.
+ */
+function borradorCopysDesdeArticulo(tituloArt, textoArt) {
+  const titulo = (tituloArt || 'Artículo ECR').trim();
+  const frases = frasesUtilesArticulo(textoArt, 8);
+  const secciones = titulosSeccionArticulo(textoArt);
+  const f = (i, fallback) => frases[i] || fallback;
+
+  const slide2 = secciones[1] || f(0, 'El problema de fondo en la operación').replace(/\.$/, '');
+  const slide3 = secciones[2] || f(1, 'La causa real detrás de la brecha').replace(/\.$/, '');
+  const slide4 = secciones[3] || 'Dato sin acción = tecnología que no cambia el resultado';
+  const slide5 = secciones[4] || 'Integrar personas, procesos y tecnología';
+  const slide6 = secciones[5] || 'Decidir mejor, no solo digitalizar más';
+
+  const ganchoA = f(
+    0,
+    'Muchas empresas sumaron herramientas digitales… pero la operación no necesariamente mejoró.'
+  );
+  const insightA = f(
+    1,
+    'Cuando la tecnología no conversa con el terreno, deja de ser ventaja y se vuelve otra capa de complejidad.'
+  );
+  const ganchoB = f(
+    2,
+    'El freno no siempre es la herramienta: muchas veces es la desconexión con la operación real.'
+  );
+  const retail = f(
+    3,
+    'Si la ejecución en sala falla, el impacto comercial se diluye aunque el plan se vea impecable.'
+  );
+
   return `COPYS ECR — ${titulo}
 Newsletter LinkedIn
+Artículo base del ecosistema ECR
 Placeholder: reemplaza [LINK AL ARTÍCULO] por la URL publicada
 
 ============================================================
@@ -4189,40 +4264,162 @@ Placeholder: reemplaza [LINK AL ARTÍCULO] por la URL publicada
 
 --- VERSIÓN A ---
 
-${extracto ? extracto + '…' : 'Escribe aquí el gancho del feed a partir del artículo.'}
+${ganchoA} 👀
+
+${insightA}
+
+En nuestro nuevo artículo te contamos qué cambia cuando la tecnología sí se integra a la operación —y por qué eso define la eficiencia.
 
 👇 Léelo completo aquí:
 [LINK AL ARTÍCULO]
 
-#ECRGroup #TransformacionDigital
+💬 Si te pasó algo parecido en tu operación, cuéntanos en comentarios. Nos sirve aprender entre todos.
+
+#ECRGroup #TransformacionDigital #Operaciones #Eficiencia
+
 
 --- VERSIÓN B ---
+
+${ganchoB} ⚡
+
+${retail}
 
 Nuevo artículo ECR GROUP®:
 👉 ${titulo}
 
+Léelo y mira qué tanto se parece a tu día a día:
 [LINK AL ARTÍCULO]
 
-============================================================
-2) CARRUSEL
-============================================================
+¿Tu operación integra… o solo acumula herramientas? 💬
 
-Slide 1 — Portada: ${titulo}
-Slide 2 — Problema / contexto
-Slide 3 — Insight clave
-Slide 4 — Qué cambia en la operación
-Slide 5 — CTA + link al artículo
+#ECRGroup #GestionOperativa #Productividad #Liderazgo
+
 
 ============================================================
-3) VIDEO
+2) CARRUSEL — POST QUE ACOMPAÑA LAS SLIDES
 ============================================================
 
-Hook (3 s): ${titulo}
-Desarrollo: 2–3 frases del artículo
-Cierre: CTA al link
+Textos sugeridos para las slides (mismo para A y B):
+1 · Portada → ${titulo}
+2 → ${slide2.slice(0, 120)}
+3 → ${slide3.slice(0, 120)}
+4 → ${String(slide4).slice(0, 120)}
+5 → ${String(slide5).slice(0, 120)}
+6 → ${String(slide6).slice(0, 120)}
+7 · Cierre → La ventaja está en integrar para decidir mejor · ECR GROUP®
+
+
+--- VERSIÓN A ---
+
+¿Tu empresa digitalizó el reporte… pero sigue decidiendo tarde? 🧩
+
+Ese es el punto ciego: más sistemas no garantizan mejor resultado si no conversan con la operación.
+
+En este carrusel dejamos lo esencial 👇
+del artículo «${titulo}».
+
+Desliza → y después profundiza en el artículo completo:
+[LINK AL ARTÍCULO]
+
+¿Cuál slide te pegó más? Márcala en comentarios 💬
+
+#Carrusel #ECRGroup #Operaciones #DecisionesATiempo
+
+
+--- VERSIÓN B ---
+
+Más herramientas no garantizan mejor resultado.
+Mejor integración, sí. 🤝
+
+Cuando el dato se transforma en acción a tiempo, el equipo deja de apagar incendios… y empieza a moverse con ventaja.
+
+Carrusel rapidito con lo clave de nuestro nuevo artículo 📲
+Desliza y quédate con la idea.
+
+Después lee el artículo completo aquí:
+[LINK AL ARTÍCULO]
+
+Guárdalo si te sirve para la próxima reunión de operaciones 🔖
+
+#ECRGroup #Integracion #EficienciaOperativa #Staffing
+
 
 ============================================================
+3) VIDEO — MISMO CONTENIDO DEL CARRUSEL ANIMADO
+============================================================
+
+--- VERSIÓN A ---
+
+${retail} ⚠️
+
+Eso pasa cuando la tecnología registra lo que ocurre, pero no está integrada a un modelo de gestión.
+
+En este video te dejamos la idea central (carrusel animado) de nuestro artículo:
+${titulo}. 🚀
+
+Míralo y sigue en el artículo completo:
+[LINK AL ARTÍCULO]
+
+Si te resonó, compártelo con tu equipo de operaciones 🙌
+
+#Video #ECRGroup #TecnologiaAplicada #Operaciones
+
+
+--- VERSIÓN B ---
+
+Sumar plataformas sin conectarlas a la operación… ya no da el ancho. 🚫
+
+El nuevo estándar no es “tener más sistemas”.
+Es conectar personas, procesos y tecnología para decidir a tiempo. 📊
+
+Mira el video (el carrusel, pero en movimiento) y después mete el diente al artículo:
+${titulo}.
+
+👉 [LINK AL ARTÍCULO]
+
+¿Hoy digitalizas… o realmente integras? Déjanos tu take 👇
+
+#Operaciones #ECRGroup #Integracion #EficienciaReal
+
+
+============================================================
+NOTAS RÁPIDAS
+============================================================
+- Reemplaza [LINK AL ARTÍCULO] por la URL final en ecrgroup.cl
+- Versión A = más narrativa / editorial | Versión B = más directa / punch
+- Carrusel: si Canva pide menos slides, prioriza 1–2–4–5–7
+- El video asume clip corto con las mismas ideas del carrusel animado
+- Hashtags: 2 a 4 por copy (puedes dejar solo 2 si el post se siente cargado)
 `;
+}
+
+/** Si ya existe un TXT de copys curado (formato ECR completo), lo usa. */
+async function cargarCopysEcrCurados(madre) {
+  const slug = madre?.articuloSlug || '';
+  const titulo = madre?.articuloTitulo || nombreBaseTarea(madre) || '';
+  const candidatos = [];
+  if (slug) {
+    candidatos.push(`index/clientes/ecr/newsletter/copys/COPY-${slug}.txt`);
+    candidatos.push(`index/clientes/ecr/newsletter/COPY-${slug}.txt`);
+  }
+  if (/equipos\s*en\s*terreno/i.test(titulo) || slug.includes('equipos')) {
+    candidatos.unshift('index/clientes/ecr/newsletter/COPY-ART23-equipos-en-terreno.txt');
+  }
+  if (/tecnolog[ií]a\s*sin\s*integraci[oó]n/i.test(titulo) || slug.includes('tecnologia')) {
+    candidatos.unshift('index/clientes/ecr/newsletter/copys/COPY-tecnologia-sin-integracion.txt');
+    candidatos.unshift('index/clientes/ecr/newsletter/COPY-tecnologia-sin-integracion.txt');
+  }
+  for (const rel of [...new Set(candidatos)]) {
+    try {
+      const res = await fetch('/' + rel + '?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) continue;
+      const t = await res.text();
+      if (/1\)\s*FEED/i.test(t) && /2\)\s*CARRUSEL/i.test(t) && /3\)\s*VIDEO/i.test(t) && /VERSIÓN A/i.test(t)) {
+        return { texto: t, archivo: rel };
+      }
+    } catch { /* next */ }
+  }
+  return null;
 }
 
 function htmlCopysEcrNl(tarea) {
@@ -4483,20 +4680,42 @@ async function cargarYBindCopysEcr(tarea) {
   root.querySelector('[data-crear-copy-ecr]')?.addEventListener('click', async () => {
     const t = tareaDe(tarea.id);
     if (!t) return;
-    if ((ta.value || '').trim() && !confirm('¿Reemplazar el texto actual con un borrador nuevo desde el artículo?')) {
+    if ((ta.value || '').trim() && !confirm('¿Reemplazar el texto actual con los copys del artículo (formato ECR: feed / carrusel / video)?')) {
       return;
     }
     const madre = madreDeTarea(t);
-    mostrarToast('Creando borrador desde el artículo…');
-    const textoArt = await textoArticuloMadre(madre);
-    const titulo = madre?.articuloTitulo || nombreBaseTarea(madre) || 'Artículo ECR';
-    const sinContenido = /No se pudo leer el artículo/i.test(textoArt || '');
-    ta.value = borradorCopysDesdeArticulo(titulo, textoArt);
+    mostrarToast('Armando copys ECR (feed · carrusel · video)…');
+    const curados = await cargarCopysEcrCurados(madre);
+    let textoFinal = '';
+    let origen = 'generado';
+    if (curados?.texto) {
+      textoFinal = curados.texto;
+      origen = 'curado';
+    } else {
+      const textoArt = await textoArticuloMadre(madre);
+      const titulo = madre?.articuloTitulo || nombreBaseTarea(madre) || 'Artículo ECR';
+      const sinContenido = /No se pudo leer el artículo/i.test(textoArt || '') || !limpiarTextoArticuloEcr(textoArt);
+      if (sinContenido) {
+        mostrarToast('No hay texto del artículo — sube .docx/.txt en la madre y vuelve a Crear');
+        return;
+      }
+      textoFinal = borradorCopysDesdeArticulo(titulo, textoArt);
+    }
+    ta.value = textoFinal;
     ta.focus();
+    // Guardar de una en la ruta estándar para que quede listo
+    const dest = rutaCopyEcrDeTarea(t);
+    try {
+      const ok = await guardarPromptTxtEnDisco(dest, textoFinal);
+      if (ok) {
+        t.entregableArchivo = dest;
+        try { guardar(); } catch { /* ignore */ }
+      }
+    } catch { /* ignore */ }
     mostrarToast(
-      sinContenido
-        ? 'Borrador creado sin texto del archivo — vuelve a subir .docx/.txt en la madre'
-        : 'Borrador creado desde el artículo — revisa y pulsa Guardar'
+      origen === 'curado'
+        ? 'Copys ECR listos (feed A/B · carrusel · video) — ya puedes Copiar o ajustar'
+        : 'Copys generados desde el artículo — revisa, Copiar o Guardar'
     );
   });
 

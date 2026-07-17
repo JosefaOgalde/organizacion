@@ -63,6 +63,7 @@ function upsert(tarea) {
 const ART_TI_TITULO = 'Tecnología sin integración: el principal freno de la eficiencia';
 const ART_TI_DOC = 'index/clientes/ecr/newsletter/articulos/ART-tecnologia-sin-integracion.docx';
 const ART_TI_TXT = 'index/clientes/ecr/newsletter/articulos/ART-tecnologia-sin-integracion.txt';
+const COPY_TI = 'index/clientes/ecr/newsletter/copys/COPY-tecnologia-sin-integracion.txt';
 
 upsert({
   id: MADRE_TI_ID,
@@ -106,8 +107,9 @@ const hijosTI = [
     numeroHistorico: '05',
     tipoEntregable: 'copys-txt',
     ordenHijo: 1,
-    entregableArchivo: ART_TI_TXT,
-    notas: `Copys feed / carrusel / video del artículo «${ART_TI_TITULO}» (NL 1 ago). Base: ART-tecnologia-sin-integracion.txt`,
+    entregableArchivo: COPY_TI,
+    articuloSlug: 'tecnologia-sin-integracion',
+    notas: `Copys feed / carrusel / video del artículo «${ART_TI_TITULO}» (NL 1 ago). Archivo: ${COPY_TI}`,
   },
   {
     id: 'tarea-ecr-nl-agosto-portada-2026-07-17',
