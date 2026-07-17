@@ -2,8 +2,8 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 echo.
-echo  === Organizacion · UN solo servidor Laravel :8000 ===
-echo  API + organizador + portal en el mismo origen.
+echo  === Organizacion · Laravel + SQLite ^(sin Laragon / sin MySQL^) ===
+echo  Un solo servidor en :8000 — API + organizador + portal
 echo.
 
 set "PHP_EXE="
@@ -14,7 +14,9 @@ if not defined PHP_EXE (
 )
 if not defined PHP_EXE where php >nul 2>&1 && set "PHP_EXE=php"
 if not defined PHP_EXE (
-  echo  [ERROR] No se encontro PHP. Abre Laragon → Start All.
+  echo  [ERROR] No se encontro php.exe
+  echo  Opciones: instalar PHP en PATH, o usar el php.exe de la carpeta
+  echo  C:\laragon\bin\php\... ^(solo el ejecutable; no hace falta abrir Laragon^)
   pause
   exit /b 1
 )
@@ -25,30 +27,25 @@ if not exist "backend\artisan" (
   exit /b 1
 )
 
-echo  Configurando rutas API + frontend en Laravel...
+echo  1^) SQLite + seed clientes...
+"%PHP_EXE%" scripts\usar-sqlite-laravel.php
+if errorlevel 1 (
+  pause
+  exit /b 1
+)
+
+echo  2^) Rutas API + frontend unificado...
 "%PHP_EXE%" scripts\configurar-laravel-unificado.php
 if errorlevel 1 (
   pause
   exit /b 1
 )
 
-REM Si no hay MySQL (Laragon con licencia), usar SQLite automaticamente
-findstr /B /C:"DB_CONNECTION=sqlite" "backend\.env" >nul 2>&1
-if errorlevel 1 (
-  echo  MySQL no disponible / prefieres sin Laragon → configurando SQLite...
-  "%PHP_EXE%" scripts\usar-sqlite-laravel.php
-  pushd backend
-  "%PHP_EXE%" artisan config:clear >nul 2>&1
-  "%PHP_EXE%" artisan migrate --force
-  "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
-  popd
-) else (
-  echo  · Ya usas SQLite
-)
-
-echo  Limpiando cache de config Laravel...
+echo  3^) migrate + seed...
 pushd backend
 "%PHP_EXE%" artisan config:clear >nul 2>&1
+"%PHP_EXE%" artisan migrate --force
+"%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
 popd
 
 if not exist "data\organizacion-live.json" (
@@ -58,22 +55,18 @@ if not exist "data\organizacion-live.json" (
 )
 
 echo.
-echo  Sin Laragon MySQL: todo corre con SQLite + php artisan serve
-echo  Arrancando Laravel en http://127.0.0.1:8000 ...
-echo.
-
+echo  Arrancando http://127.0.0.1:8000 ...
 start "Laravel · 8000" cmd /k "cd /d "%~dp0backend" && "%PHP_EXE%" artisan serve --host=127.0.0.1 --port=8000"
 timeout /t 2 >nul
 start "" "http://127.0.0.1:8000/index.html?disco=1"
 start "" "http://127.0.0.1:8000/api/clientes"
 
 echo.
-echo  Todo en un solo puerto:
-echo    Organizador:  http://127.0.0.1:8000/index.html?disco=1
-echo    Portal:       http://127.0.0.1:8000/index/clientes/
-echo    API clientes: http://127.0.0.1:8000/api/clientes
+echo  Stack oficial ^(sin Laragon, sin MySQL, sin Node^):
+echo    Organizador:    http://127.0.0.1:8000/index.html?disco=1
+echo    Portal:         http://127.0.0.1:8000/index/clientes/
+echo    API clientes:   http://127.0.0.1:8000/api/clientes
 echo    API calendario: http://127.0.0.1:8000/api/organizacion
-echo.
-echo  Ya no uses el puerto 3000 ni Node.
+echo    Base de datos:  backend\database\database.sqlite
 echo.
 pause

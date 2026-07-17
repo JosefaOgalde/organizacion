@@ -2,15 +2,16 @@
 
 ## Cursor Cloud specific instructions
 
-### Flujo diario unificado (obligatorio en instrucciones a la usuaria)
-- **Stack oficial:** un solo Laravel en `http://127.0.0.1:8000` (`ABRIR-LARAVEL.bat`).
-- No indicar Node, `SERVIR.bat` ni puerto 3000 para el día a día.
+### Flujo diario unificado (obligatorio)
+- **Stack oficial permanente:** Laravel + **SQLite** en `http://127.0.0.1:8000` vía `ABRIR-LARAVEL.bat`.
+- **Prohibido indicar** como flujo diario: Laragon Start All, MySQL, Node, `SERVIR.bat`, puerto 3000.
+- Se puede usar `php.exe` de la carpeta Laragon sin abrir la app (por licencia).
 - Organizador: `http://127.0.0.1:8000/index.html?disco=1`
 - API clientes: `http://127.0.0.1:8000/api/clientes`
 - API calendario: `http://127.0.0.1:8000/api/organizacion`
-- Setup: `CONFIGURAR-LARAVEL-UNIFICADO.bat` / `scripts/configurar-laravel-unificado.php`
+- DB: `backend/database/database.sqlite`
 - Guía: `docs/laravel/UNIFICADO.md`
-- Respaldo vigente: `data/organizacion-respaldo-2026-07-17.json` → `organizacion-live.json`
+- Respaldo: `data/organizacion-respaldo-2026-07-17.json` → `organizacion-live.json`
 
 ### Separación de herramientas por cliente (obligatorio)
 - **Trendseeker (TS)** — cualquier marca o producto que manejen, y en especial **prompts de videos / piezas de producto**: siempre **Gemini** (con fotos de producto como referencia). Nunca Midjourney para TS.

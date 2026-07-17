@@ -2,9 +2,9 @@
 
 Organizador semanal (lunes a domingo) para gestionar trabajo full-time, clientes freelance y tareas personales.
 
-## Uso diario (unificado)
+## Uso diario (oficial)
 
-**Un solo puerto — Laravel:**
+**Laravel + SQLite — sin Laragon, sin MySQL, sin Node:**
 
 ```bat
 cd "C:\Users\Josefa Ogalde\organizacion"
