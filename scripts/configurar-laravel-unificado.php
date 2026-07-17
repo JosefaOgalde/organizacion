@@ -76,16 +76,45 @@ if ($apiAdd) {
 }
 
 $web = $backend . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'web.php';
-$webSrc = file_get_contents($web);
-if (!str_contains($webSrc, 'FrontendStaticController')) {
-    $block = <<<'PHP'
+$webSrc = file_get_contents($web) ?: '';
+$webBlock = <<<'PHP'
 
 use App\Http\Controllers\FrontendStaticController;
-Route::get('/', [FrontendStaticController::class, 'home']);
-Route::get('/{path}', [FrontendStaticController::class, 'serve'])->where('path', '^(?!api).*$');
+
+Route::get('/', [FrontendStaticController::class, 'home'])
+    ->withoutMiddleware([
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+    ]);
+Route::get('/{path}', [FrontendStaticController::class, 'serve'])
+    ->where('path', '^(?!api).*$')
+    ->withoutMiddleware([
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+    ]);
 PHP;
-    file_put_contents($web, rtrim($webSrc) . "\n" . $block . "\n");
+
+if (!str_contains($webSrc, 'FrontendStaticController')) {
+    file_put_contents($web, rtrim($webSrc) . "\n" . $webBlock . "\n");
     echo "  · Actualizado routes/web.php\n";
+} elseif (!str_contains($webSrc, 'withoutMiddleware')) {
+    // Reemplazar bloque viejo sin withoutMiddleware
+    $webSrc2 = preg_replace(
+        '/\nuse App\\\\Http\\\\Controllers\\\\FrontendStaticController;[\s\S]*?where\(\'path\',\s*\'\^\(\?!api\)\.\*\$\'\);/m',
+        $webBlock,
+        $webSrc,
+        1,
+        $count
+    );
+    if ($count) {
+        file_put_contents($web, $webSrc2);
+        echo "  · routes/web.php: frontend sin sesión/MySQL\n";
+    } else {
+        file_put_contents($web, rtrim($webSrc) . "\n" . $webBlock . "\n");
+        echo "  · routes/web.php: añadido bloque sin sesión\n";
+    }
 } else {
     echo "  · routes/web.php ya OK\n";
 }
@@ -97,7 +126,25 @@ if (!is_file($live) && is_file($respaldo)) {
     echo "  · data/organizacion-live.json desde respaldo 2026-07-17\n";
 }
 
+// Sesiones en archivo: el organizador HTML no exige MySQL para abrir
+$envPath = $backend . DIRECTORY_SEPARATOR . '.env';
+if (is_file($envPath)) {
+    $env = file_get_contents($envPath);
+    $orig = $env;
+    if (preg_match('/^SESSION_DRIVER=.*/m', $env)) {
+        $env = preg_replace('/^SESSION_DRIVER=.*/m', 'SESSION_DRIVER=file', $env);
+    } else {
+        $env .= "\nSESSION_DRIVER=file\n";
+    }
+    if ($env !== $orig) {
+        file_put_contents($envPath, $env);
+        echo "  · SESSION_DRIVER=file en backend/.env (HTML sin MySQL)\n";
+    } else {
+        echo "  · SESSION_DRIVER ya es file\n";
+    }
+}
+
 echo "\nListo. Un solo servidor:\n";
 echo "  php artisan serve\n";
 echo "  http://127.0.0.1:8000/index.html?disco=1\n";
-echo "  http://127.0.0.1:8000/api/clientes\n";
+echo "  http://127.0.0.1:8000/api/clientes  (requiere MySQL verde en Laragon)\n";
