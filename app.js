@@ -3802,6 +3802,7 @@ async function subirArchivoTareaAlDisco(tarea, file) {
   return {
     nombre: data.nombre || nombre,
     url: data.url,
+    txtUrl: data.txtUrl || null,
     mime: data.mime || file.type || '',
     kind: data.kind || 'file',
     bytes: data.bytes || file.size || 0,
@@ -3845,6 +3846,7 @@ async function guardarArticuloEnMadre(tarea, file) {
   tarea.articuloArchivo = {
     nombre: entry.nombre,
     url: entry.url,
+    txtUrl: entry.txtUrl || null,
     mime: entry.mime,
     kind: entry.kind || 'articulo',
     bytes: entry.bytes,
@@ -4120,6 +4122,9 @@ async function textoArticuloMadre(madre) {
   if (!madre) return '';
   const candidatos = [];
   const art = articuloDeTarea(madre);
+  if (art?.txtUrl) {
+    candidatos.push(String(art.txtUrl).replace(/^\//, ''));
+  }
   if (art?.url) {
     const u = String(art.url).replace(/^\//, '');
     candidatos.push(u);
@@ -4130,15 +4135,41 @@ async function textoArticuloMadre(madre) {
     candidatos.push(e);
     if (/\.docx?$/i.test(e)) candidatos.push(e.replace(/\.docx?$/i, '.txt'));
   }
-  for (const rel of [...new Set(candidatos)]) {
+
+  const unicos = [...new Set(candidatos.filter(Boolean))];
+
+  // 1) TXT directos (sidecar o archivo .txt)
+  for (const rel of unicos) {
     if (!/\.txt$/i.test(rel)) continue;
     try {
       const res = await fetch('/' + rel + '?t=' + Date.now(), { cache: 'no-store' });
-      if (res.ok) return await res.text();
+      if (res.ok) {
+        const t = await res.text();
+        if (t && t.trim()) return t;
+      }
     } catch { /* next */ }
   }
+
+  // 2) Extraer texto de .docx vía API del server
+  for (const rel of unicos) {
+    if (!/\.docx$/i.test(rel)) continue;
+    try {
+      const headers = {};
+      const token = sessionStorage.getItem('organizacion_api_token');
+      if (token) headers['X-Organizacion-Token'] = token;
+      const res = await fetch('/api/articulo-texto?path=' + encodeURIComponent(rel), {
+        cache: 'no-store',
+        headers,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.texto && String(data.texto).trim()) return String(data.texto);
+      }
+    } catch { /* next */ }
+  }
+
   return madre.articuloTitulo
-    ? `Artículo: ${madre.articuloTitulo}\n\n(No se pudo leer el TXT del artículo. Usa el .docx enlazado en la madre.)\n`
+    ? `Artículo: ${madre.articuloTitulo}\n\n(No se pudo leer el artículo. Sube un .docx o .txt en la madre y vuelve a pulsar Crear.)\n`
     : '';
 }
 
@@ -4205,12 +4236,13 @@ function htmlCopysEcrNl(tarea) {
         <div class="tarea-detalle__entregable-acciones">
           <button type="button" class="btn btn--small btn--accent" data-crear-copy-ecr>Crear</button>
           <button type="button" class="btn btn--small" data-modificar-copy-ecr>Modificar</button>
+          <button type="button" class="btn btn--small" data-copiar-copy-ecr>Copiar</button>
           <button type="button" class="btn btn--small btn--ghost" data-guardar-copy-ecr>Guardar</button>
         </div>
       </div>
       <p class="tarea-detalle__entregable-hint">
         Basado en el artículo de la madre: <em>${escapeHtml(tituloArt)}</em>.
-        <strong>Crear</strong> arma el borrador · <strong>Modificar</strong> edita con ideas · <strong>Guardar</strong> deja el TXT.
+        <strong>Crear</strong> arma el borrador · <strong>Modificar</strong> edita con ideas · <strong>Copiar</strong> al portapapeles · <strong>Guardar</strong> deja el TXT.
         ${archivo ? `Archivo: <code>${escapeHtml(archivo)}</code>` : ''}
       </p>
       <section class="prompt-seccion" data-copy-ecr-bloque data-copy-archivo="${escapeHtml(archivo)}">
@@ -4458,9 +4490,14 @@ async function cargarYBindCopysEcr(tarea) {
     mostrarToast('Creando borrador desde el artículo…');
     const textoArt = await textoArticuloMadre(madre);
     const titulo = madre?.articuloTitulo || nombreBaseTarea(madre) || 'Artículo ECR';
+    const sinContenido = /No se pudo leer el artículo/i.test(textoArt || '');
     ta.value = borradorCopysDesdeArticulo(titulo, textoArt);
     ta.focus();
-    mostrarToast('Borrador creado — revisa y pulsa Guardar');
+    mostrarToast(
+      sinContenido
+        ? 'Borrador creado sin texto del archivo — vuelve a subir .docx/.txt en la madre'
+        : 'Borrador creado desde el artículo — revisa y pulsa Guardar'
+    );
   });
 
   root.querySelector('[data-modificar-copy-ecr]')?.addEventListener('click', () => {
@@ -4474,6 +4511,16 @@ async function cargarYBindCopysEcr(tarea) {
       archivo: archivo,
       bloque,
     });
+  });
+
+  root.querySelector('[data-copiar-copy-ecr]')?.addEventListener('click', async () => {
+    const raw = ta.value || '';
+    if (!raw.trim()) {
+      mostrarToast('No hay texto para copiar — pulsa Crear primero');
+      return;
+    }
+    const ok = await copiarTexto(raw);
+    mostrarToast(ok ? 'Copys copiados' : 'No se pudo copiar');
   });
 
   root.querySelector('[data-guardar-copy-ecr]')?.addEventListener('click', async () => {

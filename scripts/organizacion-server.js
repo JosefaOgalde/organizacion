@@ -606,6 +606,150 @@ function handleApiTareaImagen(req, res) {
 
 const MAX_TAREA_ARCHIVO_BYTES = Number(process.env.MAX_TAREA_ARCHIVO_BYTES) || 120 * 1024 * 1024;
 
+const zlib = require('zlib');
+
+/** Extrae texto plano de un .docx (ZIP con word/document.xml). */
+function textoDesdeDocxBuffer(buf) {
+  if (!Buffer.isBuffer(buf) || buf.length < 30) return '';
+  const nameWanted = 'word/document.xml';
+
+  // Preferir directorio central: Office suele poner tamaños 0 en el local header (data descriptor).
+  let end = -1;
+  const searchFrom = Math.max(0, buf.length - 65557);
+  for (let i = buf.length - 22; i >= searchFrom; i--) {
+    if (buf.readUInt32LE(i) === 0x06054b50) {
+      end = i;
+      break;
+    }
+  }
+  if (end >= 0) {
+    const cdOffset = buf.readUInt32LE(end + 16);
+    const cdEntries = buf.readUInt16LE(end + 10);
+    let o = cdOffset;
+    for (let i = 0; i < cdEntries; i++) {
+      if (o + 46 > buf.length || buf.readUInt32LE(o) !== 0x02014b50) break;
+      const method = buf.readUInt16LE(o + 10);
+      const compSize = buf.readUInt32LE(o + 20);
+      const nameLen = buf.readUInt16LE(o + 28);
+      const extraLen = buf.readUInt16LE(o + 30);
+      const commentLen = buf.readUInt16LE(o + 32);
+      const localOff = buf.readUInt32LE(o + 42);
+      const name = buf.slice(o + 46, o + 46 + nameLen).toString('utf8');
+      if (name === nameWanted && localOff + 30 <= buf.length && buf.readUInt32LE(localOff) === 0x04034b50) {
+        const lNameLen = buf.readUInt16LE(localOff + 26);
+        const lExtra = buf.readUInt16LE(localOff + 28);
+        const dataStart = localOff + 30 + lNameLen + lExtra;
+        const dataEnd = dataStart + compSize;
+        if (dataEnd > buf.length) break;
+        let xmlBuf;
+        try {
+          if (method === 0) xmlBuf = buf.slice(dataStart, dataEnd);
+          else if (method === 8) xmlBuf = zlib.inflateRawSync(buf.slice(dataStart, dataEnd));
+          else return '';
+        } catch {
+          return '';
+        }
+        let xml = xmlBuf.toString('utf8');
+        xml = xml.replace(/<\/w:p>/g, '\n');
+        xml = xml.replace(/<[^>]+>/g, '');
+        xml = xml
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&quot;/g, '"')
+          .replace(/&#xa0;/gi, ' ')
+          .replace(/\n{3,}/g, '\n\n')
+          .trim();
+        return xml;
+      }
+      o += 46 + nameLen + extraLen + commentLen;
+    }
+  }
+
+  // Fallback: recorrer local headers (útil en ZIP sin data descriptor).
+  let offset = 0;
+  while (offset + 30 < buf.length) {
+    if (buf.readUInt32LE(offset) !== 0x04034b50) break;
+    const method = buf.readUInt16LE(offset + 8);
+    const compSize = buf.readUInt32LE(offset + 18);
+    const uncompSize = buf.readUInt32LE(offset + 22);
+    const nameLen = buf.readUInt16LE(offset + 26);
+    const extraLen = buf.readUInt16LE(offset + 28);
+    const name = buf.slice(offset + 30, offset + 30 + nameLen).toString('utf8');
+    const dataStart = offset + 30 + nameLen + extraLen;
+    const dataEnd = dataStart + compSize;
+    if (name === nameWanted && compSize > 0) {
+      let xmlBuf;
+      try {
+        if (method === 0) xmlBuf = buf.slice(dataStart, dataEnd);
+        else if (method === 8) xmlBuf = zlib.inflateRawSync(buf.slice(dataStart, dataEnd));
+        else return '';
+      } catch {
+        return '';
+      }
+      let xml = xmlBuf.toString('utf8');
+      xml = xml.replace(/<\/w:p>/g, '\n');
+      xml = xml.replace(/<[^>]+>/g, '');
+      xml = xml
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#xa0;/gi, ' ')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
+      return xml;
+    }
+    if (compSize === 0) break;
+    offset = dataEnd;
+    if (compSize === 0 && uncompSize === 0 && nameLen === 0) break;
+  }
+  return '';
+}
+
+function textoDesdeArticuloAbs(absPath) {
+  if (!absPath || !fs.existsSync(absPath)) return '';
+  const ext = path.extname(absPath).toLowerCase();
+  try {
+    if (ext === '.txt') return fs.readFileSync(absPath, 'utf8');
+    if (ext === '.docx') return textoDesdeDocxBuffer(fs.readFileSync(absPath));
+  } catch {
+    return '';
+  }
+  return '';
+}
+
+/**
+ * Lee texto de un artículo en disco (txt/docx bajo index/).
+ * GET /api/articulo-texto?path=index/...
+ */
+function handleApiArticuloTexto(req, res) {
+  if (!checkApiAuth(req, res)) return;
+  if (req.method !== 'GET') return send(res, 405, 'Método no permitido');
+  const u = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+  let rel = String(u.searchParams.get('path') || '')
+    .replace(/^\/+/, '')
+    .replace(/\\/g, '/');
+  if (!rel || rel.includes('..')) {
+    return send(res, 400, JSON.stringify({ error: 'path inválido' }), 'application/json');
+  }
+  if (!/^(index\/(clientes|uploads)\/)/i.test(rel)) {
+    return send(res, 403, JSON.stringify({ error: 'ruta no permitida' }), 'application/json');
+  }
+  if (!/\.(txt|docx)$/i.test(rel)) {
+    return send(res, 415, JSON.stringify({ error: 'solo .txt o .docx' }), 'application/json');
+  }
+  const abs = path.join(ROOT, rel);
+  if (!abs.startsWith(ROOT) || !fs.existsSync(abs)) {
+    return send(res, 404, JSON.stringify({ error: 'archivo no encontrado' }), 'application/json');
+  }
+  const texto = textoDesdeArticuloAbs(abs);
+  if (!texto) {
+    return send(res, 422, JSON.stringify({ error: 'no se pudo extraer texto' }), 'application/json');
+  }
+  return send(res, 200, JSON.stringify({ ok: true, path: rel, texto, chars: texto.length }), 'application/json');
+}
+
 /**
  * Sube archivo binario de tarea (video MP4/WebM/MOV u otros).
  * POST /api/tarea-archivo?tareaId=&clienteId=&nombre=
@@ -682,6 +826,27 @@ function handleApiTareaArchivo(req, res) {
         : esArticulo
           ? 'articulo'
           : 'file';
+    let txtUrl = null;
+    let textoPreview = null;
+    if (kind === 'articulo' && /\.(txt|docx)$/i.test(fileName)) {
+      try {
+        const texto = textoDesdeArticuloAbs(absFile);
+        if (texto && String(texto).trim()) {
+          const txtName = fileName.replace(/\.[^.]+$/, '') + '.txt';
+          const absTxt = path.join(absDir, txtName);
+          // Si ya subieron un .txt, no pisar con otro nombre; el propio archivo es el texto.
+          if (/\.txt$/i.test(fileName)) {
+            txtUrl = url;
+          } else {
+            fs.writeFileSync(absTxt, texto, 'utf8');
+            txtUrl = `/${relDir.replace(/\\/g, '/')}/${txtName}`;
+          }
+          textoPreview = String(texto).slice(0, 400);
+        }
+      } catch (e) {
+        console.warn('[api] No se pudo extraer texto del artículo:', e && e.message);
+      }
+    }
     console.log('[api] Archivo tarea', kind, url, `(${Math.round(buf.length / 1024)} KB)`);
     return send(
       res,
@@ -689,6 +854,8 @@ function handleApiTareaArchivo(req, res) {
       JSON.stringify({
         ok: true,
         url,
+        txtUrl,
+        textoPreview,
         nombre: nombreParam || fileName,
         bytes: buf.length,
         mime,
@@ -784,6 +951,10 @@ const server = http.createServer((req, res) => {
 
   if (url.startsWith('/api/tarea-archivo')) {
     return handleApiTareaArchivo(req, res);
+  }
+
+  if (url.startsWith('/api/articulo-texto')) {
+    return handleApiArticuloTexto(req, res);
   }
 
   if (url.startsWith('/api/prompt-txt')) {
