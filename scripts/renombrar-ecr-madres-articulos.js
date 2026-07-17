@@ -4,9 +4,7 @@
  *   1) «Tecnología sin integración…» → NL 1 de agosto
  *   2) «Equipos en terreno…» (ART 23) → NL 2 de agosto
  *
- * Renombra la madre de hoy (17 jul) + subtareas, y crea/actualiza
- * la madre Equipos en terreno (próximo viernes 24 jul) con 4 subtareas.
- *
+ * Renombra/actualiza madres NL 1 y NL 2 (17 jul) con subtareas indexadas el mismo día.
  *   node scripts/renombrar-ecr-madres-articulos.js
  * Luego: http://localhost:3000/index.html?disco=1 → vista Semana o Día
  */
@@ -22,8 +20,9 @@ const FECHA_HOY = '2026-07-17'; // ambas madres parten hoy
 const FECHA_TI = FECHA_HOY;
 
 const MADRE_ET_ID = 'tarea-ecr-ecosistema-equipos-terreno-2026-07-24';
-const FECHA_ET_HIJOS = '2026-07-24'; // subtareas ET en su propio día
 const FECHA_ET = FECHA_HOY;
+/** Subtareas ET el mismo día que la madre (como NL 1), para verlas indexadas 1–4 debajo. */
+const FECHA_ET_HIJOS = FECHA_ET;
 
 if (!fs.existsSync(LIVE)) {
   console.error('No existe data/organizacion-live.json');
@@ -178,7 +177,7 @@ upsert({
   horaFin: '18:00',
   notas:
     `Tarea madre · ART 23 · artículo «${ART_ET_TITULO}» (NL LinkedIn 2 de agosto). ` +
-    `Parte hoy (${FECHA_ET}); subtareas ET en ${FECHA_ET_HIJOS}. ` +
+    `Madre + subtareas indexadas el ${FECHA_ET} (Copys · Portada · Carrusel · Video). ` +
     `Word/TXT: articulos/ART23-equipos-en-terreno.* · Copys: copys/COPY-equipos-en-terreno.txt. ` +
     'La madre se completa cuando termine la última subtarea.',
   prioridad: 'alta',
