@@ -166,7 +166,7 @@ for (const h of hijosTI) {
 const ART_ET_TITULO = 'Equipos en terreno: la ventaja de ajustar a tiempo';
 const ART_ET_DOC = 'index/clientes/ecr/newsletter/articulos/ART23-equipos-en-terreno.docx';
 const ART_ET_TXT = 'index/clientes/ecr/newsletter/articulos/ART23-equipos-en-terreno.txt';
-const ART_ET_COPY = 'index/clientes/ecr/newsletter/COPY-ART23-equipos-en-terreno.txt';
+const ART_ET_COPY = 'index/clientes/ecr/newsletter/copys/COPY-equipos-en-terreno.txt';
 
 upsert({
   id: MADRE_ET_ID,
@@ -179,7 +179,7 @@ upsert({
   notas:
     `Tarea madre · ART 23 · artículo «${ART_ET_TITULO}» (NL LinkedIn 2 de agosto). ` +
     `Parte hoy (${FECHA_ET}); subtareas ET en ${FECHA_ET_HIJOS}. ` +
-    `Word/TXT: articulos/ART23-equipos-en-terreno.* · Copys: COPY-ART23-equipos-en-terreno.txt. ` +
+    `Word/TXT: articulos/ART23-equipos-en-terreno.* · Copys: copys/COPY-equipos-en-terreno.txt. ` +
     'La madre se completa cuando termine la última subtarea.',
   prioridad: 'alta',
   completada: false,
@@ -212,7 +212,7 @@ const hijosET = [
     tipoEntregable: 'copys-txt',
     ordenHijo: 1,
     entregableArchivo: ART_ET_COPY,
-    notas: `Copys feed / carrusel / video · «${ART_ET_TITULO}» (NL 2 ago). Usar COPY-ART23 + artículo ART23-equipos-en-terreno.txt`,
+    notas: `Copys feed / carrusel / video · «${ART_ET_TITULO}» (NL 2 ago). Archivo: ${ART_ET_COPY}`,
   },
   {
     id: 'tarea-ecr-et-portada-2026-07-24',

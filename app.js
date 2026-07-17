@@ -4372,6 +4372,7 @@ async function cargarCopysEcrCurados(madre) {
     candidatos.push(`index/clientes/ecr/newsletter/COPY-${slug}.txt`);
   }
   if (/equipos\s*en\s*terreno/i.test(titulo) || slug.includes('equipos')) {
+    candidatos.unshift('index/clientes/ecr/newsletter/copys/COPY-equipos-en-terreno.txt');
     candidatos.unshift('index/clientes/ecr/newsletter/COPY-ART23-equipos-en-terreno.txt');
   }
   if (/tecnolog[ií]a\s*sin\s*integraci[oó]n/i.test(titulo) || slug.includes('tecnologia')) {
