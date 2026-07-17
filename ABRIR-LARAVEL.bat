@@ -32,6 +32,20 @@ if errorlevel 1 (
   exit /b 1
 )
 
+REM Si no hay MySQL (Laragon con licencia), usar SQLite automaticamente
+findstr /B /C:"DB_CONNECTION=sqlite" "backend\.env" >nul 2>&1
+if errorlevel 1 (
+  echo  MySQL no disponible / prefieres sin Laragon → configurando SQLite...
+  "%PHP_EXE%" scripts\usar-sqlite-laravel.php
+  pushd backend
+  "%PHP_EXE%" artisan config:clear >nul 2>&1
+  "%PHP_EXE%" artisan migrate --force
+  "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
+  popd
+) else (
+  echo  · Ya usas SQLite
+)
+
 echo  Limpiando cache de config Laravel...
 pushd backend
 "%PHP_EXE%" artisan config:clear >nul 2>&1
@@ -44,9 +58,7 @@ if not exist "data\organizacion-live.json" (
 )
 
 echo.
-echo  IMPORTANTE: Laragon → Start All → MySQL en VERDE
-echo  ^(sin MySQL, /api/clientes falla; el organizador si deberia abrir^)
-echo.
+echo  Sin Laragon MySQL: todo corre con SQLite + php artisan serve
 echo  Arrancando Laravel en http://127.0.0.1:8000 ...
 echo.
 
