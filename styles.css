@@ -2086,11 +2086,51 @@ body.perfil-lightbox-open {
 }
 
 .tarea-mini--hija {
-  margin-left: 0.45rem;
+  margin-left: 0.85rem;
+  width: calc(100% - 0.85rem);
+  box-sizing: border-box;
   border-left-width: 2px;
-  opacity: 0.95;
+  opacity: 0.96;
   letter-spacing: -0.01em;
   min-height: 0;
+  font-weight: 500;
+}
+
+.dia__tareas .dia-bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  margin: 0.1rem 0 0.4rem;
+  padding: 0.15rem 0 0.2rem;
+}
+
+.dia__tareas .dia-bloque + .dia-bloque {
+  border-top: 1px dashed rgba(15, 118, 110, 0.28);
+  padding-top: 0.35rem;
+  margin-top: 0.2rem;
+}
+
+.dia-timeline .dia-bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.35rem;
+}
+
+.dia-timeline .dia-bloque + .dia-bloque {
+  border-top: 1px dashed #c5e4de;
+  padding-top: 0.55rem;
+}
+
+.semana-mini-item--madre {
+  font-weight: 700;
+}
+
+.semana-mini-item--hija {
+  margin-left: 0.35rem;
+  opacity: 0.9;
+  font-weight: 500;
 }
 
 .tarea-mini--completada {
@@ -2337,14 +2377,20 @@ body.perfil-lightbox-open {
 }
 
 .dia-item--hija {
-  margin-left: 0.85rem;
-  opacity: 0.92;
+  margin-left: 1.15rem;
+  opacity: 0.94;
   border-left-width: 3px;
 }
 
 .dia-item--hija .dia-item__titulo {
   font-size: 0.95rem;
   font-weight: 550;
+}
+
+.dia-item--hija .dia-item__tipo {
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .dia-nav {

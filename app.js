@@ -6532,9 +6532,18 @@ function renderSemanaMini() {
         return `<span class="semana-mini-item semana-mini-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 14))}</span>`;
       }
       const t = item.data;
-      const col = colorDe(clienteDe(t.clienteId));
-      const cls = t.completada ? ' semana-mini-item--completada semana-mini-item--clic' : ' semana-mini-item--clic';
-      return `<span class="semana-mini-item${cls}" data-tarea-id="${t.id}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(tituloMes(t, 200))} — Clic para resolver">${escapeHtml(tituloMes(t, 22))}</span>`;
+      const col = colorMiniTarea(t);
+      const idx = indiceHijoVisible(item);
+      const base = tituloMes(t, idx != null ? 18 : 22);
+      const label = idx != null ? `${idx}.${base}` : base;
+      const madre = esTareaMadreCalendario(t);
+      const hija = idx != null || !!t.parentId;
+      const cls =
+        (t.completada ? ' semana-mini-item--completada' : '') +
+        ' semana-mini-item--clic' +
+        (madre ? ' semana-mini-item--madre' : '') +
+        (hija ? ' semana-mini-item--hija' : '');
+      return `<span class="semana-mini-item${cls}" data-tarea-id="${t.id}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(tituloMes(t, 200))} — Clic para resolver">${escapeHtml(label)}</span>`;
     }).join('');
 
     if (!itemsHtml) {
