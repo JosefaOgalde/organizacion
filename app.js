@@ -231,10 +231,10 @@ function crearEcosistemaNlEcrDesdePlantilla({
   };
 
   const hijosDef = [
-    { suf: 'copys', titulo: `[ECR] ${slugArt.toUpperCase().slice(0, 8)} — Copys (TXT)`, tipo: 'copys-txt', hi: '09:00', hf: '11:00', orden: 1 },
-    { suf: 'portada', titulo: `[ECR] ${slugArt.toUpperCase().slice(0, 8)} — Portada (fondos)`, tipo: 'portada-imgs', hi: '11:00', hf: '13:00', orden: 2 },
-    { suf: 'carrusel', titulo: `[ECR] ${slugArt.toUpperCase().slice(0, 8)} — Carrusel`, tipo: 'carrusel', hi: '13:00', hf: '15:30', orden: 3 },
-    { suf: 'video', titulo: `[ECR] ${slugArt.toUpperCase().slice(0, 8)} — Video`, tipo: 'video', hi: '15:30', hf: '18:00', orden: 4 },
+    { suf: 'copys', titulo: `[ECR] Copys (TXT)`, tipo: 'copys-txt', hi: '09:00', hf: '11:00', orden: 1 },
+    { suf: 'portada', titulo: `[ECR] Portada (fondos)`, tipo: 'portada-imgs', hi: '11:00', hf: '13:00', orden: 2 },
+    { suf: 'carrusel', titulo: `[ECR] Carrusel`, tipo: 'carrusel', hi: '13:00', hf: '15:30', orden: 3 },
+    { suf: 'video', titulo: `[ECR] Video`, tipo: 'video', hi: '15:30', hf: '18:00', orden: 4 },
   ];
 
   const hijos = hijosDef.map((h) => ({
