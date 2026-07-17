@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * ECR — nombres de tareas madre según artículo:
- *   1) Tecnologías de la información → NL 1 de agosto
+ *   1) «Tecnología sin integración…» → NL 1 de agosto
  *   2) Equipos en terreno → segundo NL
  *
  * Renombra la madre de hoy (17 jul) + subtareas, y crea/actualiza
@@ -52,17 +52,22 @@ function upsert(tarea) {
   }
 }
 
-/** —— 1) NL 1 agosto · Tecnologías de la información —— */
+/** —— 1) NL 1 agosto · Tecnología sin integración —— */
+const ART_TI_TITULO = 'Tecnología sin integración: el principal freno de la eficiencia';
+const ART_TI_DOC = 'index/clientes/ecr/newsletter/articulos/ART-tecnologia-sin-integracion.docx';
+const ART_TI_TXT = 'index/clientes/ecr/newsletter/articulos/ART-tecnologia-sin-integracion.txt';
+
 upsert({
   id: MADRE_TI_ID,
-  titulo: '[ECR] NL 1 ago · Tecnologías de la información',
+  titulo: '[ECR] NL 1 ago · Tecnología sin integración',
   clienteId: CLIENTE,
   rolId: ROL,
   fecha: FECHA_TI,
   horaInicio: '09:00',
   horaFin: '18:00',
   notas:
-    'Tarea madre · artículo «Tecnologías de la información» (publicación NL LinkedIn 1 de agosto). ' +
+    `Tarea madre · artículo «${ART_TI_TITULO}» (publicación NL LinkedIn 1 de agosto). ` +
+    `Word/TXT: articulos/ART-tecnologia-sin-integracion.* ` +
     'Subtareas indexadas: 1 Copys · 2 Portada · 3 Carrusel · 4 Video. ' +
     'Vista Semana o Día para ver el bloque madre + hijas con colores.',
   prioridad: 'alta',
@@ -70,8 +75,10 @@ upsert({
   pendiente: false,
   numeroHistorico: '04',
   tipoEntregable: 'ecosistema',
-  articuloSlug: 'tecnologias-de-la-informacion',
+  articuloSlug: 'tecnologia-sin-integracion',
+  articuloTitulo: ART_TI_TITULO,
   articuloPublicacion: '2026-08-01',
+  entregableArchivo: ART_TI_TXT,
   parentId: null,
 });
 
@@ -84,7 +91,8 @@ const hijosTI = [
     numeroHistorico: '05',
     tipoEntregable: 'copys-txt',
     ordenHijo: 1,
-    notas: 'Copys feed / carrusel / video del artículo Tecnologías de la información (NL 1 ago).',
+    entregableArchivo: ART_TI_TXT,
+    notas: `Copys feed / carrusel / video del artículo «${ART_TI_TITULO}» (NL 1 ago). Base: ART-tecnologia-sin-integracion.txt`,
   },
   {
     id: 'tarea-ecr-nl-agosto-portada-2026-07-17',
@@ -96,7 +104,7 @@ const hijosTI = [
     ordenHijo: 2,
     entregableArchivo: 'index/clientes/ecr/newsletter/portadas-guardadas/NL-2026-08-01-fondos-elegidos.md',
     notas:
-      'Fondos Midjourney NL 1 ago · Tecnologías de la información. Armar portada en Canva (título + logo).',
+      `Fondos Midjourney NL 1 ago · «${ART_TI_TITULO}». Armar portada en Canva (título + logo). Artículo: ART-tecnologia-sin-integracion.docx`,
   },
   {
     id: 'tarea-ecr-nl-agosto-carrusel-2026-07-17',
@@ -106,7 +114,8 @@ const hijosTI = [
     numeroHistorico: '07',
     tipoEntregable: 'carrusel',
     ordenHijo: 3,
-    notas: 'Carrusel Canva del artículo Tecnologías de la información.',
+    entregableArchivo: ART_TI_TXT,
+    notas: `Carrusel Canva del artículo «${ART_TI_TITULO}».`,
   },
   {
     id: 'tarea-ecr-nl-agosto-video-2026-07-17',
@@ -116,7 +125,8 @@ const hijosTI = [
     numeroHistorico: '08',
     tipoEntregable: 'video',
     ordenHijo: 4,
-    notas: 'Video = carrusel animado · Tecnologías de la información.',
+    entregableArchivo: ART_TI_TXT,
+    notas: `Video = carrusel animado · «${ART_TI_TITULO}».`,
   },
 ];
 

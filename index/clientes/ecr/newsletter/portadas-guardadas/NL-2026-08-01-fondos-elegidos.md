@@ -2,9 +2,10 @@
 # Artículo: Tecnologías de la información
 # (El segundo artículo / otra madre es «Equipos en terreno»)
 
-**Artículo:** Tecnologías de la información (NL 1 agosto)  
+**Artículo:** Tecnología sin integración: el principal freno de la eficiencia (NL 1 agosto)  
 **Cliente:** ECR · Perfil → sección **Portada Midjourney**  
 **Estado:** 4 fondos Midjourney seleccionados (solo background). Título/logo se montan en Canva el **viernes 17-07**.
+**Texto del artículo:** [`../articulos/ART-tecnologia-sin-integracion.txt`](../articulos/ART-tecnologia-sin-integracion.txt) · [`.docx`](../articulos/ART-tecnologia-sin-integracion.docx)
 
 > Flujo repetible desde el perfil del cliente: PDF/título → Generar prompt (3 mundos por tema) → Midjourney → elegir fondo → Canva.
 

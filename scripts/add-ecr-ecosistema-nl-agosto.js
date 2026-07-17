@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Ecosistema Newsletter 1 agosto — Tecnologías de la información
+ * Ecosistema Newsletter 1 agosto — Tecnología sin integración
  * (madre + 4 subtareas). El segundo artículo es Equipos en terreno
  * → scripts/renombrar-ecr-madres-articulos.js
  *
@@ -17,14 +17,14 @@ const MADRE_ID = 'tarea-ecr-ecosistema-nl-agosto-2026-07-17';
 
 const MADRE = {
   id: MADRE_ID,
-  titulo: '[ECR] NL 1 ago · Tecnologías de la información',
+  titulo: '[ECR] NL 1 ago · Tecnología sin integración',
   clienteId: CLIENTE,
   rolId: ROL,
   fecha: FECHA,
   horaInicio: '09:00',
   horaFin: '18:00',
   notas:
-    'Tarea madre · artículo «Tecnologías de la información» (NL LinkedIn 1 de agosto). ' +
+    'Tarea madre · artículo «Tecnología sin integración» (NL LinkedIn 1 de agosto). ' +
     'Subtareas: Copys · Portada · Carrusel · Video. ' +
     'Segundo artículo (otra madre): Equipos en terreno.',
   prioridad: 'alta',
@@ -32,7 +32,7 @@ const MADRE = {
   pendiente: false,
   numeroHistorico: '04',
   tipoEntregable: 'ecosistema',
-  articuloSlug: 'tecnologias-de-la-informacion',
+  articuloSlug: 'tecnologia-sin-integracion',
   articuloPublicacion: '2026-08-01',
   parentId: null,
 };
@@ -46,7 +46,7 @@ const HIJOS = [
     numeroHistorico: '05',
     tipoEntregable: 'copys-txt',
     ordenHijo: 1,
-    notas: 'Copys feed / carrusel / video · Tecnologías de la información.',
+    notas: 'Copys feed / carrusel / video · Tecnología sin integración.',
   },
   {
     id: 'tarea-ecr-nl-agosto-portada-2026-07-17',
@@ -57,7 +57,7 @@ const HIJOS = [
     tipoEntregable: 'portada-imgs',
     ordenHijo: 2,
     entregableArchivo: 'index/clientes/ecr/newsletter/portadas-guardadas/NL-2026-08-01-fondos-elegidos.md',
-    notas: 'Fondos Midjourney NL 1 ago · Tecnologías de la información. Armar en Canva.',
+    notas: 'Fondos Midjourney NL 1 ago · Tecnología sin integración. Armar en Canva.',
   },
   {
     id: 'tarea-ecr-nl-agosto-carrusel-2026-07-17',
@@ -67,7 +67,7 @@ const HIJOS = [
     numeroHistorico: '07',
     tipoEntregable: 'carrusel',
     ordenHijo: 3,
-    notas: 'Carrusel Canva · Tecnologías de la información.',
+    notas: 'Carrusel Canva · Tecnología sin integración.',
   },
   {
     id: 'tarea-ecr-nl-agosto-video-2026-07-17',
@@ -77,7 +77,7 @@ const HIJOS = [
     numeroHistorico: '08',
     tipoEntregable: 'video',
     ordenHijo: 4,
-    notas: 'Video = carrusel animado · Tecnologías de la información.',
+    notas: 'Video = carrusel animado · Tecnología sin integración.',
   },
 ];
 
@@ -117,7 +117,7 @@ for (const h of HIJOS) {
     completada: false,
     pendiente: false,
     parentId: MADRE_ID,
-    articuloSlug: 'tecnologias-de-la-informacion',
+    articuloSlug: 'tecnologia-sin-integracion',
   });
 }
 
