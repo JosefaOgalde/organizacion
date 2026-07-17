@@ -6983,8 +6983,41 @@ function setupUI() {
     btn.addEventListener('click', cerrarEditarTarea);
   });
 
+  document.querySelectorAll('[data-confirmar-cerrar-madre]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const madre = tareaDe(madreCierrePendienteId);
+      if (madre) {
+        finalizarMadreYAjustarFechas(madre);
+        mostrarToast('Tarea madre finalizada · fechas del bloque ajustadas');
+      }
+      cerrarModalCerrarMadre();
+      guardar();
+      render();
+    });
+  });
+  document.querySelectorAll('[data-anular-cerrar-madre]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const madre = tareaDe(madreCierrePendienteId);
+      if (madre) {
+        dejarMadreAbiertaTrasSubtareas(madre);
+        mostrarToast('Subtareas siguen hechas · madre queda abierta');
+      }
+      cerrarModalCerrarMadre();
+      guardar();
+      render();
+    });
+  });
+
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
+    if (!document.getElementById('modal-cerrar-madre')?.hidden) {
+      const madre = tareaDe(madreCierrePendienteId);
+      if (madre) dejarMadreAbiertaTrasSubtareas(madre);
+      cerrarModalCerrarMadre();
+      guardar();
+      render();
+      return;
+    }
     if (!document.getElementById('modal-editar-tarea')?.hidden) {
       cerrarEditarTarea();
       return;

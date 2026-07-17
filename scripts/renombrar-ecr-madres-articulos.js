@@ -243,14 +243,13 @@ for (const h of hijosET) {
 
 data.respaldoActualizado = new Date().toISOString().slice(0, 10);
 
-// Madre: fechaFin = última subtarea; completada si todas las hijas lo están
+// Madre: solo fechaFin (cierre con modal en la UI)
 data.tareas.forEach((m) => {
   if (!m || m.parentId) return;
   const hijos = data.tareas.filter((h) => h && h.parentId === m.id);
   if (!hijos.length) return;
   const fechas = hijos.map((h) => h.fecha).filter(Boolean).sort();
   if (fechas.length) m.fechaFin = fechas[fechas.length - 1];
-  m.completada = hijos.every((h) => h.completada === true);
 });
 
 fs.writeFileSync(LIVE, JSON.stringify(data, null, 2) + '\n', 'utf8');
