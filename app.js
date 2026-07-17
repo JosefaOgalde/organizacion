@@ -6074,13 +6074,18 @@ function htmlTareaDia(t, opts = {}) {
   const col = esTareaMadreCalendario(t) ? colorMiniTarea(t) : baseCol;
   const rol = rolDe(t);
   const tituloBase = nombreBaseTarea(t) || t.titulo;
-  const titulo =
-    opts.indiceHijo != null ? `${opts.indiceHijo}. ${tituloBase}` : tituloBase;
+  const idx =
+    opts.indiceHijo != null
+      ? Number(opts.indiceHijo)
+      : Number(t.ordenHijo) > 0
+        ? Number(t.ordenHijo)
+        : null;
+  const titulo = idx != null ? `${idx}. ${tituloBase}` : tituloBase;
   const madre = esTareaMadreCalendario(t);
-  const hija = opts.indiceHijo != null || !!t.parentId;
-  const tipoLabel = madre ? 'Tarea madre' : hija ? 'Subtarea' : 'Tarea';
+  const hija = idx != null || !!t.parentId;
+  const tipoLabel = madre ? 'Tarea madre' : hija ? `Subtarea ${idx != null ? idx : ''}`.trim() : 'Tarea';
 
-  return `<article class="dia-item dia-item--tarea dia-item--clic tarea--${t.prioridad}${t.completada ? ' tarea--completada' : ''}${madre ? ' dia-item--madre' : ''}${hija ? ' dia-item--hija' : ''}" data-id="${t.id}" style="border-left-color:${col.border};background:${col.bg}" title="Clic para ver detalle y realizar tarea">
+  return `<article class="dia-item dia-item--tarea dia-item--clic tarea--${t.prioridad}${t.completada ? ' tarea--completada' : ''}${madre ? ' dia-item--madre' : ''}${hija ? ' dia-item--hija' : ''}" data-id="${t.id}"${idx != null ? ` data-indice-hijo="${idx}"` : ''} style="border-left-color:${col.border};background:${col.bg}" title="Clic para ver detalle y realizar tarea">
     <div class="dia-item__hora" style="color:${col.text}">${escapeHtml(etiquetaHoraTarea(t))}</div>
     <div class="dia-item__cuerpo">
       <div class="dia-item__tipo" style="color:${col.text}">${tipoLabel}${cli ? ` · ${escapeHtml(cli.nombre)}` : ''}</div>
@@ -6093,32 +6098,9 @@ function htmlTareaDia(t, opts = {}) {
   </article>`;
 }
 
-/** Pill compacto estilo semana, para vista día reducida. */
-function htmlItemDiaReducido(item) {
-  if (item.tipo === 'cita' || item.tipo === 'reunion') {
-    return htmlItemCalendarioSemana(item);
-  }
-  const t = item.data;
-  const col = colorMiniTarea(t);
-  const textoBase = tituloMes(t, MAX_TITULO_SEMANA);
-  const texto =
-    item.indiceHijo != null ? `${item.indiceHijo}. ${textoBase}` : textoBase;
-  const completo = tituloMes(t, 200);
-  const madre = esTareaMadreCalendario(t);
-  const hija = item.indiceHijo != null || !!t.parentId;
-  const cls =
-    (t.completada ? ' tarea-mini--completada' : '') +
-    (madre ? ' tarea-mini--madre' : '') +
-    (hija ? ' tarea-mini--hija' : '');
-  const hora = etiquetaHoraTarea(t);
-  return `<div class="tarea-mini tarea-mini--clic tarea-mini--dia${cls}" data-tarea-id="${t.id}" data-id="${t.id}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(hora + ' · ' + completo)} — Clic para abrir">${escapeHtml(texto)}</div>`;
-}
-
-/** Agrupa items del día en bloques madre→subtareas (como columna de semana). */
-function htmlDiaReducido(items) {
-  if (!items.length) {
-    return '<p class="task-list--empty">No hay tareas, reuniones ni citas este día.</p>';
-  }
+/** Agrupa madre → subtareas 1. 2. 3. (semana y día). */
+function htmlItemsAgrupadosMadreHijos(items, renderItem) {
+  if (!items.length) return '';
   const partes = [];
   let bloqueAbierto = false;
   const cerrarBloque = () => {
@@ -6131,71 +6113,75 @@ function htmlDiaReducido(items) {
   items.forEach((item) => {
     if (item.tipo !== 'tarea') {
       cerrarBloque();
-      partes.push(htmlItemDiaReducido(item));
+      partes.push(renderItem(item));
       return;
     }
     const esMadre = item.ordenGrupo === 0 && esTareaMadreCalendario(item.data);
     const esHija = item.indiceHijo != null || !!item.data?.parentId;
     if (esMadre) {
       cerrarBloque();
-      partes.push('<div class="dia-bloque">');
+      partes.push('<div class="dia-bloque" data-bloque-madre="' + escapeHtml(item.data.id) + '">');
       bloqueAbierto = true;
-      partes.push(htmlItemDiaReducido(item));
+      partes.push(renderItem(item));
       return;
     }
     if (esHija && bloqueAbierto) {
-      partes.push(htmlItemDiaReducido(item));
+      partes.push(renderItem(item));
       return;
     }
     cerrarBloque();
-    partes.push(htmlItemDiaReducido(item));
+    partes.push(renderItem(item));
   });
   cerrarBloque();
-  return `<div class="dia-columna">${partes.join('')}</div>`;
+  return partes.join('');
+}
+
+function indiceHijoVisible(item) {
+  if (!item || item.tipo !== 'tarea') return null;
+  if (item.indiceHijo != null) return Number(item.indiceHijo);
+  const n = Number(item.data?.ordenHijo);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+/** Pill compacto estilo semana, para vista día reducida. */
+function htmlItemDiaReducido(item) {
+  if (item.tipo === 'cita' || item.tipo === 'reunion') {
+    return htmlItemCalendarioSemana(item);
+  }
+  const t = item.data;
+  const col = colorMiniTarea(t);
+  const idx = indiceHijoVisible(item);
+  const textoBase = tituloMes(t, MAX_TITULO_SEMANA);
+  const texto = idx != null ? `${idx}. ${textoBase}` : textoBase;
+  const completo = tituloMes(t, 200);
+  const madre = esTareaMadreCalendario(t);
+  const hija = idx != null || !!t.parentId;
+  const cls =
+    (t.completada ? ' tarea-mini--completada' : '') +
+    (madre ? ' tarea-mini--madre' : '') +
+    (hija ? ' tarea-mini--hija' : '');
+  const hora = etiquetaHoraTarea(t);
+  const idxAttr = idx != null ? ` data-indice-hijo="${idx}"` : '';
+  return `<div class="tarea-mini tarea-mini--clic tarea-mini--dia${cls}" data-tarea-id="${t.id}" data-id="${t.id}"${idxAttr} style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(hora + ' · ' + completo)} — Clic para abrir">${escapeHtml(texto)}</div>`;
+}
+
+/** Agrupa items del día en bloques madre→subtareas (como columna de semana). */
+function htmlDiaReducido(items) {
+  if (!items.length) {
+    return '<p class="task-list--empty">No hay tareas, reuniones ni citas este día.</p>';
+  }
+  return `<div class="dia-columna">${htmlItemsAgrupadosMadreHijos(items, htmlItemDiaReducido)}</div>`;
 }
 
 function htmlDiaExpandido(items) {
   if (!items.length) {
     return '<p class="task-list--empty">No hay tareas, reuniones ni citas este día.</p>';
   }
-  const partes = [];
-  let bloqueAbierto = false;
-  const cerrarBloque = () => {
-    if (bloqueAbierto) {
-      partes.push('</div>');
-      bloqueAbierto = false;
-    }
-  };
-
-  items.forEach((item) => {
-    if (item.tipo === 'cita') {
-      cerrarBloque();
-      partes.push(htmlCitaDia(item.data));
-      return;
-    }
-    if (item.tipo === 'reunion') {
-      cerrarBloque();
-      partes.push(htmlReunionDia(item.data));
-      return;
-    }
-    const esMadre = item.ordenGrupo === 0 && esTareaMadreCalendario(item.data);
-    const esHija = item.indiceHijo != null || !!item.data?.parentId;
-    if (esMadre) {
-      cerrarBloque();
-      partes.push('<div class="dia-bloque dia-bloque--detalle">');
-      bloqueAbierto = true;
-      partes.push(htmlTareaDia(item.data, { indiceHijo: item.indiceHijo }));
-      return;
-    }
-    if (esHija && bloqueAbierto) {
-      partes.push(htmlTareaDia(item.data, { indiceHijo: item.indiceHijo }));
-      return;
-    }
-    cerrarBloque();
-    partes.push(htmlTareaDia(item.data, { indiceHijo: item.indiceHijo }));
-  });
-  cerrarBloque();
-  return `<div class="dia-timeline">${partes.join('')}</div>`;
+  return `<div class="dia-timeline">${htmlItemsAgrupadosMadreHijos(items, (item) => {
+    if (item.tipo === 'cita') return htmlCitaDia(item.data);
+    if (item.tipo === 'reunion') return htmlReunionDia(item.data);
+    return htmlTareaDia(item.data, { indiceHijo: indiceHijoVisible(item) });
+  })}</div>`;
 }
 
 function tituloConCliente(clienteId, tituloRaw) {
@@ -6431,19 +6417,20 @@ function htmlItemCalendarioSemana(item) {
   }
   const t = item.data;
   const col = colorMiniTarea(t);
+  const idx = indiceHijoVisible(item);
   const textoBase = tituloMes(t, MAX_TITULO_SEMANA);
-  const texto =
-    item.indiceHijo != null ? `${item.indiceHijo}. ${textoBase}` : textoBase;
+  const texto = idx != null ? `${idx}. ${textoBase}` : textoBase;
   const completo = tituloMes(t, 200);
   const madre = esTareaMadreCalendario(t);
-  const hija = item.indiceHijo != null || !!t.parentId;
+  const hija = idx != null || !!t.parentId;
   const cls =
     (t.completada ? ' tarea-mini--completada' : '') +
     (madre ? ' tarea-mini--madre' : '') +
     (hija ? ' tarea-mini--hija' : '');
   const hora = etiquetaHoraTarea(t);
   const fecha = t.fecha || '';
-  return `<div class="tarea-mini tarea-mini--clic${cls}" data-tarea-id="${t.id}" data-fecha="${escapeHtml(fecha)}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(hora + ' · ' + completo)} — Clic para ver el día">${escapeHtml(texto)}</div>`;
+  const idxAttr = idx != null ? ` data-indice-hijo="${idx}"` : '';
+  return `<div class="tarea-mini tarea-mini--clic${cls}" data-tarea-id="${t.id}" data-fecha="${escapeHtml(fecha)}"${idxAttr} style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(hora + ' · ' + completo)} — Clic para ver el día">${escapeHtml(texto)}</div>`;
 }
 
 function renderCalendario() {
@@ -6464,7 +6451,7 @@ function renderCalendario() {
 
     const items = itemsDiaOrdenados(diaStr);
     const resumen = items.length
-      ? items.map(htmlItemCalendarioSemana).join('')
+      ? htmlItemsAgrupadosMadreHijos(items, htmlItemCalendarioSemana)
       : '<p class="task-list--empty" style="font-size:0.7rem">Sin tareas</p>';
 
     const div = document.createElement('div');
