@@ -2380,6 +2380,40 @@ function agenteDe(cliente) {
   return cliente.agente || AGENTES_CLIENTE[cliente.id] || AGENTE_GENERICO;
 }
 
+/** ECR: sin panel/chat de agente (se trabaja por consola). */
+function esTareaSinAgenteUi(tarea) {
+  if (!tarea) return false;
+  if (tarea.clienteId === 'cli-ecr') return true;
+  const cli = clienteDe(tarea.clienteId);
+  if (!cli) return false;
+  if (cli.id === 'cli-ecr') return true;
+  if (String(cli.abrev || '').toUpperCase() === 'ECR') return true;
+  if (/\bECR\b/i.test(cli.nombre || '')) return true;
+  return false;
+}
+
+function aplicarVisibilidadPanelAgente(ocultar) {
+  const vistaTarea = document.getElementById('view-tarea');
+  const panelAgente = document.querySelector('#view-tarea .panel--agente');
+  const app = document.querySelector('.app');
+  if (vistaTarea) vistaTarea.classList.toggle('view-tarea--sin-agente', !!ocultar);
+  if (app) app.classList.toggle('app--ecr-sin-agente', !!ocultar);
+  if (!panelAgente) return;
+  if (ocultar) {
+    panelAgente.hidden = true;
+    panelAgente.setAttribute('hidden', '');
+    panelAgente.setAttribute('aria-hidden', 'true');
+    panelAgente.style.setProperty('display', 'none', 'important');
+    const cont = document.getElementById('agente-contenido');
+    if (cont) cont.innerHTML = '';
+  } else {
+    panelAgente.hidden = false;
+    panelAgente.removeAttribute('hidden');
+    panelAgente.removeAttribute('aria-hidden');
+    panelAgente.style.removeProperty('display');
+  }
+}
+
 function skillDe(cliente) {
   if (!cliente) return SKILL_GENERICO;
   return SKILLS_CLIENTE[cliente.id] || SKILL_GENERICO;
@@ -7090,12 +7124,15 @@ function renderTarea() {
   const layout = document.querySelector('#view-tarea .tarea-layout');
   if (layout) layout.setAttribute('style', cliVars);
   const panelAgente = document.querySelector('#view-tarea .panel--agente');
-  const vistaTarea = document.getElementById('view-tarea');
-  const sinAgenteEcr = tarea.clienteId === 'cli-ecr';
-  if (vistaTarea) vistaTarea.classList.toggle('view-tarea--sin-agente', sinAgenteEcr);
-  if (panelAgente) {
-    panelAgente.hidden = sinAgenteEcr;
+  const sinAgenteEcr = esTareaSinAgenteUi(tarea);
+  aplicarVisibilidadPanelAgente(sinAgenteEcr);
+  if (panelAgente && !sinAgenteEcr) {
     panelAgente.style.borderTopColor = col.border;
+  }
+
+  const hintTarea = document.querySelector('#view-tarea .vista-hint--tarea');
+  if (hintTarea) {
+    hintTarea.hidden = sinAgenteEcr;
   }
 
   detalle.innerHTML = `
@@ -7119,7 +7156,8 @@ function renderTarea() {
     </div>`;
 
   if (sinAgenteEcr) {
-    agentePanel.innerHTML = '';
+    const agentePanelEl = document.getElementById('agente-contenido');
+    if (agentePanelEl) agentePanelEl.innerHTML = '';
     bindAccionesTarea(detalle);
     bindArticuloEcosistema(detalle, tarea);
     detalle.querySelector('[data-copiar-ruta-tarea]')?.addEventListener('click', async () => {
@@ -7135,6 +7173,7 @@ function renderTarea() {
       actualizarBarraContexto('tarea');
     }
     requestAnimationFrame(() => {
+      aplicarVisibilidadPanelAgente(true);
       syncAlturaPanelesTarea();
       observarAlturaPanelTarea();
       scrollVistaTareaAlTope();
