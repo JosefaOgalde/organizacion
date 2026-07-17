@@ -5590,14 +5590,25 @@ function renderTabsTarea() {
     });
   }
 
-  html += htmlTabAccion({
-    act: 'resolver',
-    id: t.id,
-    icon: '▶',
-    label: esMadre ? 'Resolver madre' : 'Resolver',
-    title: 'Ir al agente para resolver la tarea',
-    extraClass: 'tab--resolver'
-  });
+  if (esMadre && !t.completada) {
+    html += htmlTabAccion({
+      act: 'resolver',
+      id: t.id,
+      icon: '✓',
+      label: 'Resolver madre',
+      title: 'Finalizar la madre y tacharla en el calendario',
+      extraClass: 'tab--resolver'
+    });
+  } else if (!esMadre) {
+    html += htmlTabAccion({
+      act: 'agente',
+      id: t.id,
+      icon: '▶',
+      label: 'Ir al agente',
+      title: 'Ir al agente para trabajar la tarea',
+      extraClass: 'tab--resolver'
+    });
+  }
 
   html += htmlTabAccion({
     act: 'eliminar',
@@ -5634,8 +5645,29 @@ function bindTabsTarea(nav) {
         abrirEditarTarea(t.id);
         return;
       }
-      if (act === 'resolver') {
+      if (act === 'agente') {
         enfocarAgenteTarea();
+        return;
+      }
+      if (act === 'resolver') {
+        // Resolver madre = finalizar y tachar (no solo ir al agente)
+        if (!esTareaMadreCalendario(t)) {
+          enfocarAgenteTarea();
+          return;
+        }
+        const hijos = hijosDeMadre(t.id);
+        const pendientes = hijos.filter((h) => !h.completada);
+        if (pendientes.length) {
+          const ok = confirm(
+            `Hay ${pendientes.length} subtarea(s) sin terminar.\n¿Finalizar la madre de todos modos?`
+          );
+          if (!ok) return;
+        }
+        finalizarMadreYAjustarFechas(t);
+        mostrarToast('Tarea madre resuelta · queda tachada en el calendario');
+        guardar();
+        volverADiaDesdeTarea();
+        render();
         return;
       }
       if (act === 'articulo') {
@@ -5650,15 +5682,31 @@ function bindTabsTarea(nav) {
         return;
       }
       if (act === 'toggle') {
-        t.completada = !t.completada;
-        if (t.completada) t.pendiente = false;
-        fijarAgendaUsuario(t);
-        fijarEstadoUsuario(t);
-        if (t.parentId) trasCambiarCompletadaSubtarea(t);
-        else sincronizarMadresConSubtareas(datos);
+        if (esTareaMadreCalendario(t) && !t.completada) {
+          // Marcar hecha en madre = mismo cierre que Resolver madre
+          const hijos = hijosDeMadre(t.id);
+          const pendientes = hijos.filter((h) => !h.completada);
+          if (pendientes.length) {
+            const ok = confirm(
+              `Hay ${pendientes.length} subtarea(s) sin terminar.\n¿Finalizar la madre de todos modos?`
+            );
+            if (!ok) return;
+          }
+          finalizarMadreYAjustarFechas(t);
+          mostrarToast('Tarea madre finalizada · queda tachada');
+        } else {
+          t.completada = !t.completada;
+          if (t.completada) t.pendiente = false;
+          fijarAgendaUsuario(t);
+          fijarEstadoUsuario(t);
+          if (t.parentId) trasCambiarCompletadaSubtarea(t);
+          else sincronizarMadresConSubtareas(datos);
+        }
         guardar();
         render();
-        renderTabsTarea();
+        if (document.getElementById('view-tarea')?.classList.contains('view--active')) {
+          renderTabsTarea();
+        }
         return;
       }
       if (act === 'pendiente') {
