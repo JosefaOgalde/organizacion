@@ -281,10 +281,6 @@ body {
 }
 
 @media (max-width: 720px) {
-  .tabs--tarea .tab__label {
-    /* En móvil priorizar icono + label corto ya presente */
-  }
-
   .tabs-tarea__contexto {
     width: 100%;
     justify-content: center;
