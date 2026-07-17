@@ -4,15 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Organización</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=dia-index1">
 </head>
 <body>
   <div class="app">
     <header class="header">
-      <button type="button" class="header__brand" id="btn-ir-vista-mes" title="Ir al calendario mensual" aria-label="Organización — ir al calendario del mes">
-        <h1>Organización</h1>
-        <p id="header-frase-motivacional" class="header__subtitle" aria-live="polite"></p>
-      </button>
+      <div class="header__left">
+        <div class="header__titles">
+          <div class="header__title-row">
+            <button type="button" class="header__brand" id="btn-ir-vista-mes" title="Ir al calendario mensual" aria-label="Organización — ir al calendario del mes">
+              <h1>Organización</h1>
+            </button>
+            <button type="button" class="tab tab--perfil header__perfil" data-view="perfil" title="Tu perfil personal — independiente de clientes">Mi perfil</button>
+          </div>
+          <p id="header-frase-motivacional" class="header__subtitle" aria-live="polite"></p>
+        </div>
+      </div>
       <div class="header__date">
         <span class="header__today-label">Hoy</span>
         <span id="fecha-actual" class="header__today-value"></span>
@@ -20,8 +27,7 @@
     </header>
 
     <nav class="tabs">
-      <button type="button" class="tab" data-view="pendientes">Pendientes</button>
-      <button type="button" class="tab" data-view="clientes">Clientes</button>
+      <button type="button" class="tab" data-view="clientes" title="Ver todos los clientes">Clientes</button>
       <button type="button" class="tab" data-view="agentes">Agentes</button>
       <button type="button" class="tab" data-view="salud"><span class="tab-swatch tab-swatch--salud"></span>Salud</button>
       <button type="button" class="tab" data-view="nueva">+ Nueva</button>
@@ -42,7 +48,7 @@
           <button type="button" id="btn-mes-siguiente" class="btn btn--ghost">Mes siguiente →</button>
           <button type="button" id="btn-mes-hoy" class="btn btn--accent">Ir a hoy</button>
         </div>
-        <p class="vista-hint">Clic en un día → ver semana · Clic en día de la semana → ver detalle</p>
+        <p class="vista-hint">Mes: madres y tareas únicas · Semana: subtareas · Clic en un día → ver semana</p>
         <div id="calendario-mes" class="calendario-mes" aria-label="Calendario mensual"></div>
       </section>
 
@@ -60,24 +66,28 @@
       <section id="view-dia" class="view">
         <div class="week-nav dia-nav">
           <button type="button" id="btn-dia-anterior" class="btn btn--ghost">← Día anterior</button>
+          <span id="rango-dia" class="week-nav__range">Hoy</span>
           <button type="button" id="btn-dia-siguiente" class="btn btn--ghost">Día siguiente →</button>
-          <button type="button" id="btn-dia-hoy" class="btn btn--accent">Ir a hoy</button>
-        </div>
-        <div class="panel panel--dia">
-          <h2 id="dia-titulo">Día</h2>
-          <p id="dia-subtitulo" class="panel__desc"></p>
-          <p class="vista-hint">Clic en una tarea o en <strong>Realizar tarea</strong> → agente del cliente y descarga de contexto para resolver</p>
-          <div id="dia-contenido" class="dia-detalle"></div>
         </div>
         <div class="panel panel--semana-mini">
           <p id="rango-semana-mini" class="semana-mini__rango"></p>
-          <div id="calendario-semana-mini" class="calendario calendario--mini" aria-label="Semana en miniatura"></div>
-          <p class="vista-hint vista-hint--mini">Clic en un día de la semana para ver su detalle</p>
+          <div id="calendario-semana-mini" class="calendario calendario--mini" role="tablist" aria-label="Días de la semana — elige un día"></div>
+          <p class="vista-hint vista-hint--mini">Clic en un día (lun–dom) para ver sus tareas abajo</p>
+        </div>
+        <div class="panel panel--dia panel--dia-expandido" id="panel-dia">
+          <header class="dia-detalle-head" id="dia-detalle-head">
+            <h2 class="dia-detalle-head__titulo">
+              <span id="dia-detalle-nombre">DÍA</span>
+              <span id="dia-detalle-numero">—</span>
+            </h2>
+            <p id="dia-subtitulo" class="panel__desc dia-detalle-head__meta">Tareas del día</p>
+          </header>
+          <div id="dia-contenido" class="dia-detalle dia-detalle--expandida"></div>
         </div>
       </section>
 
       <section id="view-tarea" class="view">
-        <p class="vista-hint vista-hint--tarea">Cada tarea tiene URL única · Pide el entregable y <strong>se arma en el chat</strong></p>
+        <p class="vista-hint vista-hint--tarea">Bloque ancho · secciones hacia abajo · pide el entregable y <strong>se arma en el chat</strong></p>
         <div class="tarea-layout">
           <div class="panel panel--tarea-detalle">
             <div id="tarea-detalle-contenido"></div>
@@ -96,15 +106,48 @@
         </div>
       </section>
 
-      <section id="view-clientes" class="view">
-        <div class="panel">
-          <h2>Mis clientes</h2>
-          <p class="vista-hint">
-            <a href="index/clientes/">Abrir portal de clientes →</a>
-            · ficha JM: <a href="index/clientes/joyasmercury/">joyasmercury</a>
-          </p>
-          <p class="vista-hint">Clic en un cliente para abrir su ficha. Cada cliente tiene su propia información — nada se mezcla en esta vista.</p>
-          <div id="lista-clientes" class="clientes-grid"></div>
+      <section id="view-clientes" class="view" hidden aria-hidden="true">
+        <!-- Vista retirada: los clientes se ven solo en el portal de landings -->
+        <div id="lista-clientes" class="clientes-grid" hidden></div>
+      </section>
+
+      <section id="view-perfil" class="view">
+        <div class="panel panel--perfil-personal">
+          <h2>Mi perfil</h2>
+          <p class="vista-hint">Espacio personal — independiente de los clientes. Aquí va tu tarjeta y carta de presentación.</p>
+          <form id="form-perfil-personal" class="form perfil-personal">
+            <div class="perfil-personal__tarjeta" id="perfil-personal-tarjeta" aria-live="polite"></div>
+            <div class="form__row form__row--2">
+              <div>
+                <label for="perfil-personal-nombre">Nombre</label>
+                <input type="text" id="perfil-personal-nombre" autocomplete="name" placeholder="Tu nombre">
+              </div>
+              <div>
+                <label for="perfil-personal-titulo">Título / rol</label>
+                <input type="text" id="perfil-personal-titulo" placeholder="Ej. Diseñadora · Community · Producto digital">
+              </div>
+            </div>
+            <div class="form__row">
+              <label for="perfil-personal-tagline">Frase / tarjeta (una línea)</label>
+              <input type="text" id="perfil-personal-tagline" placeholder="Cómo te presentas en una frase">
+            </div>
+            <div class="form__row">
+              <label for="perfil-personal-contacto">Contacto y redes</label>
+              <textarea id="perfil-personal-contacto" rows="3" placeholder="Email, LinkedIn, portfolio, teléfono…"></textarea>
+            </div>
+            <div class="form__row">
+              <label for="perfil-personal-carta">Carta de presentación</label>
+              <textarea id="perfil-personal-carta" rows="12" placeholder="Tu carta de presentación completa…"></textarea>
+            </div>
+            <div class="form__row">
+              <label for="perfil-personal-notas">Notas personales</label>
+              <textarea id="perfil-personal-notas" rows="3" placeholder="Apuntes solo para ti…"></textarea>
+            </div>
+            <div class="form__actions">
+              <button type="submit" class="btn btn--primary">Guardar perfil</button>
+              <button type="button" class="btn btn--ghost" id="btn-copiar-carta-perfil">Copiar carta</button>
+            </div>
+          </form>
         </div>
       </section>
 
@@ -123,7 +166,8 @@
 
       <section id="view-salud" class="view">
         <div class="panel">
-          <h2>Citas médicas</h2>
+          <h2>Mi salud · Citas médicas</h2>
+          <p class="vista-hint">Tu agenda personal (especialistas, citas y notas). Los nombres quedan en el desplegable para reutilizarlos.</p>
           <div id="lista-citas-salud" class="citas-lista"></div>
         </div>
         <div class="panel panel--form panel--salud">
@@ -134,8 +178,15 @@
               <div><label for="cita-hora">Hora *</label><input type="time" id="cita-hora" required></div>
             </div>
             <div class="form__row">
-              <label for="cita-especialidad">Especialidad *</label>
-              <input type="text" id="cita-especialidad" required>
+              <label for="cita-especialista">Especialista *</label>
+              <select id="cita-especialista" required>
+                <option value="">Seleccionar…</option>
+                <option value="__nuevo__">+ Agregar otro…</option>
+              </select>
+            </div>
+            <div class="form__row form__row--especialista-nuevo" id="cita-especialista-nuevo-wrap" hidden>
+              <label for="cita-especialista-nuevo">Nombre del especialista *</label>
+              <input type="text" id="cita-especialista-nuevo" placeholder="Ej: Dra Pauli Sandoval" autocomplete="off">
             </div>
             <div class="form__row">
               <label for="cita-notas">Notas</label>
@@ -180,6 +231,43 @@
             </div>
             <button type="submit" class="btn btn--primary">Crear tarea</button>
           </form>
+
+          <div class="plantillas-madre" id="plantillas-madre-ecr">
+            <h3 class="nueva-subtitulo">Plantillas · madres ECR (newsletter)</h3>
+            <p class="vista-hint">Formatos recurrentes (madre + Copys · Portada · Carrusel · Video). Las nuevas instancias nacen <strong>sin finalizar</strong>.</p>
+            <div id="lista-plantillas-madre" class="plantillas-madre__lista"></div>
+            <form id="form-plantilla-madre-ecr" class="form plantillas-madre__form" hidden>
+              <input type="hidden" id="plantilla-madre-id" value="ecr-nl-ecosistema">
+              <div class="form__row">
+                <label for="plantilla-madre-titulo">Título del artículo *</label>
+                <input type="text" id="plantilla-madre-titulo" required placeholder="Ej. Tecnología sin integración: …">
+              </div>
+              <div class="form__row form__row--2">
+                <div>
+                  <label for="plantilla-madre-etiqueta">Etiqueta NL</label>
+                  <input type="text" id="plantilla-madre-etiqueta" placeholder="Ej. NL 1 sep · o NL 2 sep">
+                </div>
+                <div>
+                  <label for="plantilla-madre-fecha">Fecha de la madre *</label>
+                  <input type="date" id="plantilla-madre-fecha" required>
+                </div>
+              </div>
+              <div class="form__row form__row--2">
+                <div>
+                  <label for="plantilla-madre-fecha-hijos">Fecha subtareas</label>
+                  <input type="date" id="plantilla-madre-fecha-hijos" title="Si vacío, usa la misma fecha de la madre">
+                </div>
+                <div>
+                  <label for="plantilla-madre-slug">Slug (archivo)</label>
+                  <input type="text" id="plantilla-madre-slug" placeholder="auto desde el título">
+                </div>
+              </div>
+              <div class="form__acciones">
+                <button type="button" class="btn btn--ghost" data-cancelar-plantilla-madre>Cancelar</button>
+                <button type="submit" class="btn btn--primary">Crear ecosistema NL</button>
+              </div>
+            </form>
+          </div>
         </div>
 
         <div id="nueva-panel-reunion" class="panel panel--form nueva-panel" role="tabpanel" hidden>
@@ -276,6 +364,17 @@
       </form>
     </div>
   </div>
+  <div id="modal-cerrar-madre" class="modal" hidden aria-hidden="true">
+    <div class="modal__backdrop" data-anular-cerrar-madre></div>
+    <div class="modal__panel panel panel--form" role="dialog" aria-labelledby="modal-cerrar-madre-titulo">
+      <h2 id="modal-cerrar-madre-titulo">Finalizar tarea madre</h2>
+      <div id="modal-cerrar-madre-body" class="skill-rec-body"></div>
+      <div class="modal__acciones">
+        <button type="button" class="btn btn--ghost" data-anular-cerrar-madre>Anular</button>
+        <button type="button" class="btn btn--primary" data-confirmar-cerrar-madre>Sí, finalizar y ajustar fechas</button>
+      </div>
+    </div>
+  </div>
   <div id="modal-skill-recomendacion" class="modal" hidden aria-hidden="true">
     <div class="modal__backdrop" data-cerrar-skill-rec></div>
     <div class="modal__panel modal__panel--skill-rec">
@@ -294,8 +393,8 @@
   <script src="index/assets/cliente-landing-imagenes.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=ts-copys-crear-campana1"></script>
   <script src="ficha-extractores.js"></script>
-  <script src="ficha-cliente.js"></script>
+  <script src="ficha-cliente.js?v=portal-only1"></script>
 </body>
 </html>

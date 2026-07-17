@@ -27,9 +27,12 @@ const CONTENIDOS = [
       'Suela caucho FSC + Ortholite',
       'Detalles reflectantes · logo tricolor Hunter',
     ],
-    hookA: 'Negro que rinde bajo la lluvia ☔',
-    hookB: 'Travel Trainer Black: el día sigue aunque caiga agua.',
-    hookC: 'Impermeable · aislada · lista para la ciudad.',
+    hookA: 'Cuando la calle se moja… ellas siguen. 🖤☔',
+    hookB: 'No es “otra zapatilla negra”. Es la que aguanta lluvia, frío y ciudad.',
+    hookC: 'Checklist rápido ⚡ lluvia · frío · Ortholite · negro que no falla',
+    ctaA: '👉 Elige tu talla antes de que se agoten:',
+    ctaB: '🛒 Entra y reserva la tuya ahora:',
+    ctaC: '🔥 CTA: haz clic, elige talla y llévatelas hoy',
   },
   {
     n: 8,
@@ -118,8 +121,9 @@ const CONTENIDOS = [
   },
 ];
 
-function buildVersion(c, ver, hook, cuerpoExtra) {
+function buildVersion(c, ver, hook, cuerpoExtra, cta) {
   const bullets = c.bullets.map((b) => `✓ ${b}`).join('\n');
+  const ctaLine = cta || 'Shop:';
   return `COPY VIDEO · Trendseeker · C${c.n}/12 · Versión ${ver}
 Producto: ${c.producto}
 SKU: ${c.sku}
@@ -131,7 +135,7 @@ ${cuerpoExtra}
 
 ${bullets}
 
-Shop:
+${ctaLine}
 ${c.url}
 
 #Hunter #TrendSeeker #TrendSeekerChile
@@ -143,7 +147,8 @@ function buildA(c) {
     c,
     'A',
     c.hookA,
-    'Copy corta para feed / Reels — pega debajo del video o en el primer comentario.'
+    'Copy corta para feed / Reels — pega debajo del video o en el primer comentario.',
+    c.ctaA || '👉 Elige tu talla:'
   );
 }
 
@@ -152,7 +157,8 @@ function buildB(c) {
     c,
     'B',
     c.hookB,
-    'Copy con más historia para IG / TikTok. Nombra solo características reales de ficha.'
+    'Copy con más historia para IG / TikTok. Nombra solo características reales de ficha.',
+    c.ctaB || '🛒 Entra y reserva la tuya:'
   );
 }
 
@@ -161,7 +167,8 @@ function buildC(c) {
     c,
     'C',
     c.hookC,
-    'Copy beneficio + CTA directo. Ideal stories o caption corto con checklist.'
+    'Copy beneficio + CTA directo. Ideal stories o caption corto con checklist.',
+    c.ctaC || '🔥 CTA: elige talla y llévatelas hoy'
   );
 }
 

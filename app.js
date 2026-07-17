@@ -1,13 +1,13 @@
 /* Organización v2 */
 const STORAGE_KEY = 'organizacion_v2';
-const RESPALDO_DEFECTO_URL = 'data/organizacion-respaldo-2026-07-01.json';
+const RESPALDO_DEFECTO_URL = 'data/organizacion-respaldo-2026-07-17.json';
 const AGENTES_RAMAS_URL = 'data/agentes-ramas.json';
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const DIAS_CORTOS = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'];
-const MAX_TITULO_SEMANA = 40;
+const MAX_TITULO_SEMANA = 96;
 
 const COLORES = {
-  lavanda: { border: '#c4b8e8', bg: '#f0ecfa', text: '#6a5a9e' },
+  lavanda: { border: '#cdc4f9', bg: '#f4f2ff', text: '#4e4b84' },
   celeste: { border: '#98c8e0', bg: '#e8f4fc', text: '#4a7a9e' },
   menta: { border: '#a8dcc8', bg: '#eaf8f2', text: '#4a8a6e' },
   mentaSuave: { border: '#a4d4c8', bg: '#e8f4ef', text: '#4a8670' },
@@ -15,6 +15,8 @@ const COLORES = {
   agua: { border: '#a8d8dc', bg: '#e8f6f8', text: '#4a7a80' },
   rosa: { border: '#e8b8c8', bg: '#fdf0f4', text: '#9a5a6e' },
   grafito: { border: '#b8c0c8', bg: '#eef0f4', text: '#5a6a7a' },
+  /** Impresoreando — ámbar / mostaza suave (único; no reutilizar con otros clientes) */
+  ambar: { border: '#d4b06a', bg: '#faf6eb', text: '#7a5c28' },
   /** Salud — verde más definido, aún claro pero distinto de clientes menta/celeste */
   salud: { border: '#2f9d72', bg: '#c5e8d8', text: '#1a5c42' },
   /** Reuniones — azul pizarra, no usa el color del cliente */
@@ -65,13 +67,13 @@ const AGENTES_CLIENTE = {
     nombre: 'Agente Trendseeker',
     emoji: '📊',
     especialidad: 'Community Manager, Metricool y WordPress',
-    instrucciones: 'Eres el asistente de Trendseeker - Talk. Ayudas con publicaciones en redes, informes Metricool, historias, banners del sitio y tareas de WordPress (productos, precios, carga masiva).'
+    instrucciones: 'Eres el asistente de Trendseeker - Talk. Ayudas con publicaciones en redes, informes Metricool, historias, banners del sitio y tareas de WordPress (productos, precios, carga masiva). REGLA: cualquier prompt de imagen/video de marcas o productos Trendseeker se escribe para Google Gemini (con fotos de producto como referencia), NUNCA Midjourney. Midjourney es solo para portadas newsletter ECR.'
   },
   'cli-ecr': {
     nombre: 'Agente ECR',
     emoji: '📝',
     especialidad: 'Newsletter LinkedIn y desarrollo de blog',
-    instrucciones: 'Eres el asistente de ECR. Ayudas con newsletters de LinkedIn, copys, carruseles, videos y propuestas o secciones del blog en Elementor / WordPress.'
+    instrucciones: 'Eres el asistente de ECR. Ayudas con newsletters de LinkedIn, copys, carruseles, videos y propuestas o secciones del blog en Elementor / WordPress. REGLA: prompts de portada newsletter (solo fondo) van en Midjourney; no uses el flujo Gemini de Trendseeker para ECR.'
   },
   'cli-piscineria': {
     nombre: 'Agente Piscineria',
@@ -108,8 +110,195 @@ const AGENTES_CLIENTE = {
     emoji: '🎨',
     especialidad: 'Diseño freelance',
     instrucciones: 'Eres el asistente de Desafío Latam. Ayudas con diseño freelance: piezas gráficas, presentaciones, identidad visual, banners, materiales para redes y entregables visuales según cada encargo esporádico.'
+  },
+  'cli-impresoreando': {
+    nombre: 'Agente Impresoreando',
+    emoji: '🖨️',
+    especialidad: 'Impresión, identidad y piezas gráficas',
+    instrucciones: 'Eres el asistente de Impresoreando. Ayudas con briefs de impresión, piezas gráficas, identidad visual, mockups, formatos de impresión y entregables para el cliente.'
   }
 };
+
+const PLANTILLA_ECR_NL_ECOSISTEMA = {
+  id: 'ecr-nl-ecosistema',
+  nombre: 'ECR · Ecosistema newsletter',
+  descripcion: 'Madre + Copys · Portada · Carrusel · Video (mensual)',
+  clienteId: 'cli-ecr',
+  rolId: 'rol-ecr-cm',
+};
+
+function slugDesdeTitulo(texto) {
+  return String(texto || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 48) || 'nl-ecr';
+}
+
+function asegurarPlantillasMadre(data) {
+  if (!data.meta || typeof data.meta !== 'object') data.meta = {};
+  if (!Array.isArray(data.meta.plantillasMadre)) data.meta.plantillasMadre = [];
+  const builtIn = data.meta.plantillasMadre.find((p) => p.id === PLANTILLA_ECR_NL_ECOSISTEMA.id);
+  if (!builtIn) {
+    data.meta.plantillasMadre.unshift({ ...PLANTILLA_ECR_NL_ECOSISTEMA, registrada: toISO(hoy()) });
+  }
+  // Registrar madres ecosistema ECR existentes como historial de formatos usados
+  (data.tareas || []).forEach((t) => {
+    if (t.parentId || t.clienteId !== 'cli-ecr' || t.tipoEntregable !== 'ecosistema') return;
+    const key = t.articuloSlug || slugDesdeTitulo(t.articuloTitulo || t.titulo);
+    if (!key) return;
+    const idHist = 'hist-ecr-' + key;
+    if (data.meta.plantillasMadre.some((p) => p.id === idHist || p.articuloSlug === key)) return;
+    data.meta.plantillasMadre.push({
+      id: idHist,
+      nombre: t.articuloTitulo || nombreBaseTarea(t) || t.titulo,
+      descripcion: 'Formato usado · ' + (t.titulo || ''),
+      clienteId: 'cli-ecr',
+      rolId: 'rol-ecr-cm',
+      articuloSlug: key,
+      articuloTitulo: t.articuloTitulo || '',
+      plantillaBase: PLANTILLA_ECR_NL_ECOSISTEMA.id,
+      registrada: t.fecha || toISO(hoy()),
+      origenTareaId: t.id,
+    });
+  });
+  return data;
+}
+
+function registrarPlantillaDesdeMadre(madre) {
+  if (!madre || !datos) return;
+  asegurarPlantillasMadre(datos);
+  const key = madre.articuloSlug || slugDesdeTitulo(madre.articuloTitulo || madre.titulo);
+  const idHist = 'hist-ecr-' + key;
+  const lista = datos.meta.plantillasMadre;
+  const i = lista.findIndex((p) => p.id === idHist || p.articuloSlug === key);
+  const entry = {
+    id: idHist,
+    nombre: madre.articuloTitulo || nombreBaseTarea(madre) || madre.titulo,
+    descripcion: 'Formato usado · ' + (madre.titulo || ''),
+    clienteId: 'cli-ecr',
+    rolId: 'rol-ecr-cm',
+    articuloSlug: key,
+    articuloTitulo: madre.articuloTitulo || '',
+    plantillaBase: PLANTILLA_ECR_NL_ECOSISTEMA.id,
+    registrada: toISO(hoy()),
+    origenTareaId: madre.id,
+  };
+  if (i >= 0) lista[i] = { ...lista[i], ...entry };
+  else lista.push(entry);
+}
+
+function crearEcosistemaNlEcrDesdePlantilla({
+  tituloArticulo,
+  etiquetaNl,
+  fechaMadre,
+  fechaHijos,
+  slug,
+} = {}) {
+  const tituloArt = String(tituloArticulo || '').trim();
+  if (!tituloArt) throw new Error('Falta el título del artículo');
+  const fecha = fechaMadre || toISO(hoy());
+  const fechaSub = fechaHijos || fecha;
+  const slugArt = slugDesdeTitulo(slug || tituloArt);
+  const etiqueta = String(etiquetaNl || '').trim() || `NL · ${tituloArt.slice(0, 40)}`;
+  const stamp = fecha.replace(/-/g, '');
+  const madreId = `tarea-ecr-ecosistema-${slugArt}-${stamp}`;
+
+  if ((datos.tareas || []).some((t) => t.id === madreId)) {
+    throw new Error('Ya existe un ecosistema con ese id/fecha. Cambia la fecha o el slug.');
+  }
+
+  const madre = {
+    id: madreId,
+    titulo: `[ECR] ${etiqueta}`,
+    clienteId: 'cli-ecr',
+    rolId: 'rol-ecr-cm',
+    fecha,
+    horaInicio: '09:00',
+    horaFin: '18:00',
+    notas:
+      `Tarea madre · artículo «${tituloArt}». Subtareas: Copys · Portada · Carrusel · Video. ` +
+      'Carga el artículo (doc/pdf/txt) en esta madre para ejecutar el ecosistema.',
+    prioridad: 'alta',
+    completada: false,
+    pendiente: false,
+    tipoEntregable: 'ecosistema',
+    articuloSlug: slugArt,
+    articuloTitulo: tituloArt,
+    parentId: null,
+  };
+
+  const hijosDef = [
+    { suf: 'copys', titulo: `[ECR] Copys (TXT)`, tipo: 'copys-txt', hi: '09:00', hf: '11:00', orden: 1 },
+    { suf: 'portada', titulo: `[ECR] Portada (fondos)`, tipo: 'portada-imgs', hi: '11:00', hf: '13:00', orden: 2 },
+    { suf: 'carrusel', titulo: `[ECR] Carrusel`, tipo: 'carrusel', hi: '13:00', hf: '15:30', orden: 3 },
+    { suf: 'video', titulo: `[ECR] Video`, tipo: 'video', hi: '15:30', hf: '18:00', orden: 4 },
+  ];
+
+  const hijos = hijosDef.map((h) => ({
+    id: `tarea-ecr-${h.suf}-${slugArt}-${stamp}`,
+    titulo: h.titulo,
+    clienteId: 'cli-ecr',
+    rolId: 'rol-ecr-cm',
+    fecha: fechaSub,
+    horaInicio: h.hi,
+    horaFin: h.hf,
+    notas: `Subtarea del ecosistema «${tituloArt}».`,
+    prioridad: 'alta',
+    completada: false,
+    pendiente: false,
+    tipoEntregable: h.tipo,
+    ordenHijo: h.orden,
+    parentId: madreId,
+    articuloSlug: slugArt,
+  }));
+
+  datos.tareas.push(madre, ...hijos);
+  sincronizarMadresConSubtareas(datos);
+  registrarPlantillaDesdeMadre(madre);
+  return { madre, hijos };
+}
+
+function renderPlantillasMadre() {
+  const cont = document.getElementById('lista-plantillas-madre');
+  if (!cont || !datos) return;
+  asegurarPlantillasMadre(datos);
+  const lista = datos.meta.plantillasMadre || [];
+  cont.innerHTML = lista
+    .map((p) => {
+      const esBase = p.id === PLANTILLA_ECR_NL_ECOSISTEMA.id;
+      return `
+      <article class="plantilla-madre-card">
+        <div class="plantilla-madre-card__texto">
+          <strong>${escapeHtml(p.nombre)}</strong>
+          <p>${escapeHtml(p.descripcion || '')}</p>
+          ${p.registrada ? `<span class="plantilla-madre-card__meta">Registrada: ${escapeHtml(p.registrada)}</span>` : ''}
+        </div>
+        <button type="button" class="btn btn--small btn--primary" data-usar-plantilla-madre="${escapeHtml(p.id)}" data-plantilla-base="${esBase ? '1' : '0'}" data-articulo-titulo="${escapeHtml(p.articuloTitulo || '')}" data-articulo-slug="${escapeHtml(p.articuloSlug || '')}">
+          Usar formato
+        </button>
+      </article>`;
+    })
+    .join('');
+
+  cont.querySelectorAll('[data-usar-plantilla-madre]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const form = document.getElementById('form-plantilla-madre-ecr');
+      if (!form) return;
+      form.hidden = false;
+      document.getElementById('plantilla-madre-id').value = btn.dataset.usarPlantillaMadre || 'ecr-nl-ecosistema';
+      document.getElementById('plantilla-madre-titulo').value = btn.dataset.articuloTitulo || '';
+      document.getElementById('plantilla-madre-slug').value = btn.dataset.articuloSlug || '';
+      document.getElementById('plantilla-madre-etiqueta').value = '';
+      const f = toISO(hoy());
+      document.getElementById('plantilla-madre-fecha').value = f;
+      document.getElementById('plantilla-madre-fecha-hijos').value = f;
+      form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  });
+}
 
 const AGENTE_GENERICO = {
   nombre: 'Agente general',
@@ -133,7 +322,7 @@ const SKILLS_CLIENTE = {
     descripcion: 'Redes, Metricool, historias, banners y mantenimiento WordPress.',
     usaManualMarca: true,
     checklist: ['Copies y gráficas del cliente', 'Horario de publicación', 'Manual de marca en banners', 'Repost en historias con link'],
-    ejemploSolicitud: 'Necesito el copy y checklist para publicar [pieza] en redes / actualizar [banner o producto] en WP.'
+    ejemploSolicitud: 'Necesito prompt Gemini (con refs de producto) para video/pieza de [producto] / copy para redes / actualizar [banner] en WP.'
   },
   'cli-ecr': {
     nombre: 'Newsletter + Blog ECR',
@@ -183,6 +372,13 @@ const SKILLS_CLIENTE = {
     usaManualMarca: true,
     checklist: ['Manual de marca cargado', 'Brief y formatos de entrega', 'Colores y tipografías oficiales', 'Márgenes de logo'],
     ejemploSolicitud: 'Diseña [pieza: banner / presentación / key visual] para [campaña]. Formato: [dimensiones]. Mensaje: …'
+  },
+  'cli-impresoreando': {
+    nombre: 'Impresión y piezas gráficas',
+    descripcion: 'Briefs de impresión, mockups, identidad y formatos listos para producción.',
+    usaManualMarca: true,
+    checklist: ['Brief y medidas', 'Colores de marca / CMYK si aplica', 'Sangrado y márgenes', 'Archivo listo para impresión'],
+    ejemploSolicitud: 'Necesito [flyer / tarjeta / banner / packaging] para Impresoreando. Formato: [mm o px]. Mensaje: …'
   }
 };
 
@@ -282,6 +478,8 @@ const TOOLTIPS = {
 let semanaOffset = 0;
 let mesOffset = 0;
 let diaSeleccionado = null;
+/** Vista día: el detalle abajo siempre va desplegado; la fila lun–dom selecciona el día. */
+let diaVistaExpandida = true;
 let tareaSeleccionada = null;
 let clientePerfilAbierto = null;
 
@@ -292,7 +490,8 @@ const PERFILES_CLIENTE = {
   'cli-hotspring': { nombre: 'Hotspring - Talk (full time)', tipo: 'full-time' },
   'cli-mkof': { nombre: 'MKOF - Talk (full time)', tipo: 'full-time' },
   'cli-sie': { tipo: 'oportunidad' },
-  'cli-desafio-latam': { abrev: 'ADL' }
+  'cli-desafio-latam': { abrev: 'ADL' },
+  'cli-impresoreando': { nombre: 'Impresoreando', tipo: 'freelance' }
 };
 let datos = null;
 
@@ -416,6 +615,7 @@ function datosIniciales() {
   const cliJM = 'cli-joyas-mercury';
   const cliSIE = 'cli-sie';
   const cliDLAT = 'cli-desafio-latam';
+  const cliIMP = 'cli-impresoreando';
   const hoyStr = toISO(hoy());
 
   return {
@@ -579,6 +779,23 @@ function datosIniciales() {
             plazosEntregables: 'Agregar cada tarea en + Nueva tarea cuando llegue un encargo'
           }
         ]
+      },
+      {
+        id: cliIMP,
+        nombre: 'Impresoreando',
+        abrev: 'IMP',
+        tipo: 'freelance',
+        color: 'ambar',
+        roles: [
+          {
+            id: 'rol-imp-dis',
+            nombre: 'Diseño e impresión',
+            abrev: 'DIS',
+            funciones: 'Briefs de impresión\nPiezas gráficas\nMockups y formatos de producción\nIdentidad visual según encargo',
+            tareasAlMes: 'Según encargos del momento',
+            plazosEntregables: 'Agregar cada tarea en + Nueva tarea cuando llegue un encargo'
+          }
+        ]
       }
     ],
     tareas: [],
@@ -586,6 +803,7 @@ function datosIniciales() {
       { id: 'cita-psiq', fecha: '2026-06-25', hora: '18:00', especialidad: 'Psiquiatra', notas: 'Consulta online' },
       { id: 'cita-cesfam', fecha: '2026-06-26', hora: '08:30', especialidad: 'Exámenes Cesfam', notas: 'Cesfam Vitacura' }
     ],
+    especialistasSalud: ['Exámenes Cesfam', 'Psiquiatra'],
     reunionesClientes: [
       {
         id: 'reunion-ecr-25jun',
@@ -598,6 +816,17 @@ function datosIniciales() {
       }
     ],
     tareasEliminadas: [],
+    perfilPersonal: {
+      nombre: 'Josefa Ogalde',
+      titulo: 'Desarrolladora Fullstack · Web · E-commerce · WordPress',
+      tagline:
+        'Desarrolladora Fullstack especializada en sitios web, tiendas online y proyectos WordPress/WooCommerce.',
+      contacto: 'Email: josefaogalde@gmail.com\nWhatsApp: +56 9 6604 7614\nGitHub: github.com/JosefaOgalde',
+      cartaPresentacion:
+        'Hola,\n\nSoy Josefa Ogalde, desarrolladora fullstack especializada en sitios web, tiendas online y proyectos WordPress/WooCommerce.\n\nTengo experiencia en e-commerce, landings y acompañamiento post-entrega para que cada cliente gestione su sitio con confianza.\n\nContacto:\njosefaogalde@gmail.com\n+56 9 6604 7614\ngithub.com/JosefaOgalde\n',
+      notas: '',
+      actualizado: ''
+    },
     meta: { autoGenerarTareas: false, modoTrabajo: 'manual' }
   };
 }
@@ -611,6 +840,38 @@ function initMetaDatos(data) {
   if (!Array.isArray(data.reunionesClientes)) data.reunionesClientes = [];
   if (!data.meta || typeof data.meta !== 'object') data.meta = {};
   if (data.meta.autoGenerarTareas == null) data.meta.autoGenerarTareas = false;
+  asegurarPerfilPersonal(data);
+  return data;
+}
+
+function asegurarPerfilPersonal(data) {
+  const defaults = {
+    nombre: 'Josefa Ogalde',
+    titulo: 'Desarrolladora Fullstack · Web · E-commerce · WordPress',
+    tagline:
+      'Desarrolladora Fullstack especializada en sitios web, tiendas online y proyectos WordPress/WooCommerce.',
+    contacto: 'Email: josefaogalde@gmail.com\nWhatsApp: +56 9 6604 7614\nGitHub: github.com/JosefaOgalde',
+    cartaPresentacion:
+      'Hola,\n\nSoy Josefa Ogalde, desarrolladora fullstack especializada en sitios web, tiendas online y proyectos WordPress/WooCommerce.\n\nTengo experiencia en e-commerce, landings y acompañamiento post-entrega para que cada cliente gestione su sitio con confianza.\n\nContacto:\njosefaogalde@gmail.com\n+56 9 6604 7614\ngithub.com/JosefaOgalde\n',
+    notas: '',
+    actualizado: '',
+  };
+  if (!data.perfilPersonal || typeof data.perfilPersonal !== 'object') {
+    data.perfilPersonal = { ...defaults };
+  }
+  const p = data.perfilPersonal;
+  if (typeof p.nombre !== 'string' || !p.nombre.trim()) p.nombre = defaults.nombre;
+  if (typeof p.titulo !== 'string') p.titulo = '';
+  if (typeof p.tagline !== 'string') p.tagline = '';
+  if (typeof p.contacto !== 'string') p.contacto = '';
+  if (typeof p.cartaPresentacion !== 'string') p.cartaPresentacion = '';
+  if (typeof p.notas !== 'string') p.notas = '';
+  if (typeof p.actualizado !== 'string') p.actualizado = '';
+  // Rellenar vacíos con la tarjeta oficial (sin pisar ediciones del usuario)
+  if (!String(p.titulo || '').trim()) p.titulo = defaults.titulo;
+  if (!String(p.tagline || '').trim()) p.tagline = defaults.tagline;
+  if (!String(p.contacto || '').trim()) p.contacto = defaults.contacto;
+  if (!String(p.cartaPresentacion || '').trim()) p.cartaPresentacion = defaults.cartaPresentacion;
   return data;
 }
 
@@ -1755,6 +2016,25 @@ function asegurarClienteDesafioLatam(data) {
   return data;
 }
 
+const IMP_CLI_ID = 'cli-impresoreando';
+
+function asegurarClienteImpresoreando(data) {
+  const cliId = IMP_CLI_ID;
+  let cli = data.clientes.find(c => c.id === cliId);
+  if (!cli) {
+    const seed = datosIniciales().clientes.find(c => c.id === cliId);
+    if (seed) data.clientes.push(seed);
+    cli = data.clientes.find(c => c.id === cliId);
+  }
+  if (cli) {
+    cli.abrev = 'IMP';
+    cli.color = 'ambar';
+    cli.nombre = cli.nombre || 'Impresoreando';
+    cli.tipo = cli.tipo || 'freelance';
+  }
+  return data;
+}
+
 function asegurarPerfilClientes(data) {
   data.clientes.forEach(cli => {
     const perfil = PERFILES_CLIENTE[cli.id];
@@ -1796,14 +2076,171 @@ function normalizarDatos(data) {
   asegurarClienteJoyasMercury(data);
   asegurarClienteSIE(data);
   asegurarClienteDesafioLatam(data);
+  asegurarClienteImpresoreando(data);
   asegurarPerfilClientes(data);
   asegurarAgentesClientes(data);
   asignarRolesATareas(data);
   asegurarReportesMensuales(data);
+  asegurarPlantillasMadre(data);
+  sincronizarMadresConSubtareas(data);
   reajustarTareasConflictosAgenda(data);
   aplicarTareasEliminadas(data);
   asegurarNumerosHistoricosTareas(data);
   return data;
+}
+
+/** Madre: solo recalcula fechaFin. No cierra sola (eso va por modal). */
+function sincronizarMadresConSubtareas(data) {
+  if (!Array.isArray(data?.tareas)) return data;
+  data.tareas.forEach((m) => {
+    if (!m || m.parentId) return;
+    const hijos = data.tareas.filter((h) => h && h.parentId === m.id);
+    if (!hijos.length) {
+      delete m.fechaFin;
+      return;
+    }
+    const fechas = hijos.map((h) => h.fecha).filter(Boolean).sort();
+    if (fechas.length) m.fechaFin = fechas[fechas.length - 1];
+  });
+  return data;
+}
+
+function hijosDeMadre(madreId, data = datos) {
+  return (data?.tareas || []).filter((h) => h && h.parentId === madreId);
+}
+
+function madreDeSubtarea(t, data = datos) {
+  if (!t?.parentId) return null;
+  return (data?.tareas || []).find((m) => m.id === t.parentId) || null;
+}
+
+function todosHijosCompletados(madre, data = datos) {
+  const hijos = hijosDeMadre(madre.id, data);
+  return hijos.length > 0 && hijos.every((h) => h.completada === true);
+}
+
+function sumarDiasISO(fechaISO, dias) {
+  const d = parseISO(fechaISO);
+  if (Number.isNaN(d.getTime())) return fechaISO;
+  d.setDate(d.getDate() + dias);
+  return toISO(d);
+}
+
+function diasEntreISO(desde, hasta) {
+  const a = parseISO(desde);
+  const b = parseISO(hasta);
+  if (Number.isNaN(a.getTime()) || Number.isNaN(b.getTime())) return 0;
+  return Math.round((b - a) / 86400000);
+}
+
+/** Al mover la fecha de la madre, desplaza todas las subtareas el mismo delta. */
+function ajustarFechasSubtareasPorMadre(madre, fechaAnterior, fechaNueva) {
+  if (!madre || madre.parentId || !fechaAnterior || !fechaNueva || fechaAnterior === fechaNueva) return 0;
+  const delta = diasEntreISO(fechaAnterior, fechaNueva);
+  if (!delta) return 0;
+  const hijos = hijosDeMadre(madre.id);
+  hijos.forEach((h) => {
+    if (h.fecha) h.fecha = sumarDiasISO(h.fecha, delta);
+  });
+  sincronizarMadresConSubtareas(datos);
+  return hijos.length;
+}
+
+function finalizarMadreYAjustarFechas(madre) {
+  if (!madre) return;
+  const hijos = hijosDeMadre(madre.id);
+  const fechas = hijos.map((h) => h.fecha).filter(Boolean).sort();
+  if (fechas.length) {
+    madre.fechaFin = fechas[fechas.length - 1];
+    // Si la madre empezó después del fin (caso raro), alinear inicio
+    if (madre.fecha && madre.fecha > madre.fechaFin) madre.fecha = madre.fechaFin;
+  }
+  madre.completada = true;
+  madre.pendiente = false;
+  delete madre.madreCierrePospuesto;
+  fijarEstadoUsuario(madre);
+  sincronizarMadresConSubtareas(datos);
+}
+
+function dejarMadreAbiertaTrasSubtareas(madre) {
+  if (!madre) return;
+  madre.completada = false;
+  madre.madreCierrePospuesto = true;
+  fijarEstadoUsuario(madre);
+  sincronizarMadresConSubtareas(datos);
+}
+
+let madreCierrePendienteId = null;
+
+function abrirModalCerrarMadre(madre) {
+  if (!madre) return;
+  madreCierrePendienteId = madre.id;
+  const modal = document.getElementById('modal-cerrar-madre');
+  const body = document.getElementById('modal-cerrar-madre-body');
+  if (body) {
+    const n = hijosDeMadre(madre.id).length;
+    body.innerHTML =
+      `<p>Todas las subtareas de <strong>${escapeHtml(madre.titulo || 'esta madre')}</strong> están realizadas (${n}).</p>` +
+      `<p>¿Finalizar la tarea madre y ajustar las fechas del bloque?</p>` +
+      `<p class="texto-suave">Si anulas, las subtareas siguen hechas y la madre queda abierta.</p>`;
+  }
+  if (!modal) {
+    if (confirm('¿Finalizar la tarea madre y ajustar fechas?')) {
+      finalizarMadreYAjustarFechas(madre);
+    } else {
+      dejarMadreAbiertaTrasSubtareas(madre);
+    }
+    madreCierrePendienteId = null;
+    return;
+  }
+  modal.hidden = false;
+  modal.removeAttribute('hidden');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-abierto');
+}
+
+function cerrarModalCerrarMadre() {
+  const modal = document.getElementById('modal-cerrar-madre');
+  if (modal) {
+    modal.hidden = true;
+    modal.setAttribute('hidden', '');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+  document.body.classList.remove('modal-abierto');
+  madreCierrePendienteId = null;
+}
+
+/** Tras marcar una subtarea hecha: si es la última, pedir confirmación para cerrar la madre. */
+function trasCambiarCompletadaSubtarea(t) {
+  if (!t?.parentId) {
+    sincronizarMadresConSubtareas(datos);
+    return;
+  }
+  const madre = madreDeSubtarea(t);
+  if (!madre) {
+    sincronizarMadresConSubtareas(datos);
+    return;
+  }
+  if (!t.completada) {
+    delete madre.madreCierrePospuesto;
+    if (madre.completada) {
+      madre.completada = false;
+      fijarEstadoUsuario(madre);
+    }
+    sincronizarMadresConSubtareas(datos);
+    return;
+  }
+  sincronizarMadresConSubtareas(datos);
+  if (!todosHijosCompletados(madre)) return;
+  if (madre.completada) return;
+  if (madre.madreCierrePospuesto) return;
+  abrirModalCerrarMadre(madre);
+}
+
+/** Subtarea: solo su día. Madre: solo su fecha de inicio (fechaFin es para cierre, no para pintar el mes). */
+function tareaAplicaEnFecha(t, fechaISO) {
+  if (!t || t.pendiente) return false;
+  return t.fecha === fechaISO;
 }
 
 function cargar() {
@@ -1844,8 +2281,49 @@ function guardar() {
     return true;
   } catch (e) {
     console.error('Error al guardar en localStorage', e);
-    mostrarToast('No se pudo guardar — el almacenamiento del navegador puede estar lleno');
-    return false;
+    // Reintento: quitar data URLs pesadas (las de disco quedan por url)
+    try {
+      aligerarDatosImagenes(datos);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+      if (typeof window.persistOrganizacionToDisk === 'function') {
+        window.persistOrganizacionToDisk(datos);
+      }
+      mostrarToast('Guardado aligerado (imágenes en disco por URL)');
+      return true;
+    } catch (e2) {
+      console.error(e2);
+      mostrarToast('No se pudo guardar — el almacenamiento del navegador puede estar lleno. Reinicia el server y vuelve a subir (se guardan en disco).');
+      return false;
+    }
+  }
+}
+
+/** Quita data URLs grandes si ya hay url de archivo en disco. */
+function aligerarDatosImagenes(data) {
+  const limpiaLista = (arr) => {
+    if (!Array.isArray(arr)) return;
+    for (const img of arr) {
+      if (img && img.url && img.dataUrl) delete img.dataUrl;
+      if (img && img.dataUrl && String(img.dataUrl).length > 80000 && !img.url) {
+        // sin url en disco: descartar blob enorme para poder guardar el resto
+        delete img.dataUrl;
+        img.nombre = (img.nombre || 'imagen') + ' (pendiente de re-subir)';
+      }
+    }
+  };
+  for (const t of data.tareas || []) {
+    limpiaLista(t.sesionAgente?.imagenesReferencia);
+    limpiaLista(t.sesionAgente?.imagenesPendientes);
+    for (const m of t.sesionAgente?.mensajes || []) limpiaLista(m.imagenes);
+  }
+  for (const cli of data.clientes || []) {
+    limpiaLista(cli.ficha?.landing?.imagenes);
+    if (Array.isArray(cli.ficha?.documentos)) {
+      for (const d of cli.ficha.documentos) {
+        if (d?.url && d.dataUrl) delete d.dataUrl;
+        if (d?.dataUrl && String(d.dataUrl).length > 80000 && !d.url) delete d.dataUrl;
+      }
+    }
   }
 }
 
@@ -1880,6 +2358,7 @@ function completarTarea(t) {
   t.pendiente = false;
   fijarAgendaUsuario(t);
   fijarEstadoUsuario(t);
+  trasCambiarCompletadaSubtarea(t);
 }
 
 function agenteDe(cliente) {
@@ -2151,18 +2630,75 @@ function escribirRutaTarea(tarea, { reemplazar = false } = {}) {
   history[fn]({ vista: 'tarea', tareaId: tarea.id }, '', urlTareaAbsoluta(tarea));
 }
 
+function tareaDesdeParamUrl(raw) {
+  if (!raw) return null;
+  const decoded = decodeURIComponent(String(raw).trim());
+  const parsed = parsearSegmentoTareaUrl(decoded);
+  if (parsed) {
+    const porSlug = tareaPorRutaHistorica(parsed.slug, parsed.numero);
+    if (porSlug) return porSlug;
+  }
+  return tareaDe(decoded) || null;
+}
+
+function resaltarTareaEnDia(tareaId) {
+  if (!tareaId) return;
+  requestAnimationFrame(() => {
+    const esc = typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(tareaId) : String(tareaId).replace(/"/g, '');
+    const el =
+      document.querySelector(`#dia-contenido [data-id="${esc}"]`) ||
+      document.querySelector(`#dia-contenido [data-tarea-id="${esc}"]`);
+    if (!el) return;
+    el.classList.add('dia-item--resaltada');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
+
 function aplicarRutaDesdeUrl() {
+  let params;
+  try {
+    params = new URLSearchParams(location.search || '');
+  } catch (_) {
+    params = new URLSearchParams();
+  }
+  const vistaParam = (params.get('vista') || '').toLowerCase();
+  const fechaParam = params.get('fecha') || '';
+  const tareaParam = params.get('tarea') || '';
   const parsed = parsearRutaTareaDesdeUrl();
-  if (!parsed) return false;
-  const tarea = tareaPorRutaHistorica(parsed.slug, parsed.numero);
-  if (!tarea) return false;
-  tareaSeleccionada = tarea.id;
-  if (tarea.fecha) diaSeleccionado = tarea.fecha;
-  asegurarSesionAgente(tarea);
-  if (parsed.legacy || parsed.legacyPath) escribirRutaTarea(tarea, { reemplazar: true });
-  mostrarVista('tarea');
-  render();
-  return true;
+  const tarea =
+    (tareaParam && tareaDesdeParamUrl(tareaParam)) ||
+    (parsed ? tareaPorRutaHistorica(parsed.slug, parsed.numero) : null);
+
+  // Landing «Abrir en organizador»: ir al DÍA (vista=dia o fecha sin forzar detalle de tarea)
+  const abrirDia =
+    vistaParam === 'dia' ||
+    (Boolean(fechaParam) && vistaParam !== 'tarea');
+
+  if (abrirDia) {
+    const fecha = (tarea && tarea.fecha) || fechaParam;
+    if (fecha) {
+      irADia(fecha);
+      if (tarea) resaltarTareaEnDia(tarea.id);
+      return true;
+    }
+  }
+
+  if (tarea) {
+    tareaSeleccionada = tarea.id;
+    if (tarea.fecha) diaSeleccionado = tarea.fecha;
+    asegurarSesionAgente(tarea);
+    if (parsed?.legacy || parsed?.legacyPath) escribirRutaTarea(tarea, { reemplazar: true });
+    mostrarVista('tarea');
+    render();
+    return true;
+  }
+
+  if (fechaParam) {
+    irADia(fechaParam);
+    return true;
+  }
+
+  return false;
 }
 
 function limpiarRutaTarea({ reemplazar = true } = {}) {
@@ -2687,11 +3223,6 @@ function renderListaArchivosPerfil(cli) {
 }
 
 function abrirPerfilCliente(cliId) {
-  const portal = urlPortalCliente(cliId);
-  if (portal) {
-    window.location.href = portal;
-    return;
-  }
   if (window.abrirFichaCliente) {
     window.abrirFichaCliente(cliId);
     return;
@@ -2761,17 +3292,20 @@ function guardarPerfilCliente(e) {
 }
 
 function asegurarSesionAgente(tarea) {
-  if (!tarea.sesionAgente?.mensajes?.length) {
+  if (!tarea.sesionAgente || typeof tarea.sesionAgente !== 'object') {
+    tarea.sesionAgente = { mensajes: [] };
+  }
+  if (!Array.isArray(tarea.sesionAgente.mensajes)) tarea.sesionAgente.mensajes = [];
+  if (!Array.isArray(tarea.sesionAgente.archivosAdjuntos)) tarea.sesionAgente.archivosAdjuntos = [];
+  if (!tarea.sesionAgente.mensajes.length) {
     const cli = clienteDe(tarea.clienteId);
     const agente = agenteDe(cli);
     const rol = rolDe(tarea);
-    tarea.sesionAgente = {
-      mensajes: [{
-        rol: 'agente',
-        texto: mensajeAperturaAgente(tarea, cli, agente, rol),
-        ts: Date.now()
-      }]
-    };
+    tarea.sesionAgente.mensajes = [{
+      rol: 'agente',
+      texto: mensajeAperturaAgente(tarea, cli, agente, rol),
+      ts: Date.now()
+    }];
   }
   return tarea.sesionAgente;
 }
@@ -2944,28 +3478,110 @@ function leerImagenComoDataUrl(file) {
   });
 }
 
+/** Comprime a JPEG para no saturar localStorage ni el body de la API. */
+function comprimirImagenDataUrl(dataUrl, { maxW = 1400, quality = 0.78 } = {}) {
+  return new Promise((resolve) => {
+    if (!dataUrl || !String(dataUrl).startsWith('data:image/')) {
+      resolve(dataUrl);
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      try {
+        let w = img.naturalWidth || img.width;
+        let h = img.naturalHeight || img.height;
+        if (!w || !h) {
+          resolve(dataUrl);
+          return;
+        }
+        if (w > maxW) {
+          h = Math.round((h * maxW) / w);
+          w = maxW;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      } catch {
+        resolve(dataUrl);
+      }
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+function srcImagenRef(img) {
+  return (img && (img.url || img.dataUrl)) || '';
+}
+
+async function subirImagenTareaAlDisco(tarea, img) {
+  const nombre = img.nombre || `imagen-${Date.now()}.jpg`;
+  const dataUrl = await comprimirImagenDataUrl(img.dataUrl || '');
+  if (!dataUrl) throw new Error('sin imagen');
+
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    const token = sessionStorage.getItem('organizacion_api_token');
+    if (token) headers['X-Organizacion-Token'] = token;
+    const res = await fetch('/api/tarea-imagen', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        tareaId: tarea.id,
+        clienteId: tarea.clienteId || '',
+        nombre,
+        dataUrl,
+      }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.url) {
+        return { nombre: data.nombre || nombre, url: data.url };
+      }
+    }
+  } catch (e) {
+    console.warn('API imagen no disponible, se usará preview comprimida local', e);
+  }
+  // Fallback local (solo si el server no responde): miniatura muy chica
+  const tiny = await comprimirImagenDataUrl(dataUrl, { maxW: 480, quality: 0.55 });
+  return { nombre, dataUrl: tiny };
+}
+
 function htmlMiniaturasImagenes(imagenes, { quitar = false, prefix = 'ref' } = {}) {
   if (!imagenes?.length) return '';
-  const items = imagenes.map((img, i) => `
+  const items = imagenes.map((img, i) => {
+    const src = srcImagenRef(img);
+    if (!src) return '';
+    return `
     <figure class="agente-ref-img">
-      <img src="${img.dataUrl}" alt="${escapeHtml(img.nombre || 'Referencia')}" loading="lazy" />
+      <a href="${escapeHtml(src)}" target="_blank" rel="noopener">
+        <img src="${escapeHtml(src)}" alt="${escapeHtml(img.nombre || 'Referencia')}" loading="lazy" />
+      </a>
       ${quitar ? `<button type="button" class="agente-ref-img__quitar" data-quitar-img="${prefix}-${i}" title="Quitar">×</button>` : ''}
       ${img.nombre ? `<figcaption>${escapeHtml(img.nombre)}</figcaption>` : ''}
     </figure>
-  `).join('');
+  `;
+  }).join('');
   return `<div class="agente-ref-imgs">${items}</div>`;
 }
 
 function htmlInputImagenesAgente(tarea) {
   asegurarImagenesAgente(tarea.sesionAgente);
   const pendientes = tarea.sesionAgente.imagenesPendientes;
+  const nPend = pendientes?.length || 0;
   return `
     <div class="agente-imgs-form">
       <label class="agente-imgs-form__label">
         <input type="file" id="agente-imagenes-input" accept="image/*" multiple hidden />
         <span class="btn btn--ghost btn--small">+ Imágenes de referencia</span>
       </label>
-      <p class="agente-imgs-form__hint">Capturas del sitio actual, mockups o referencias visuales para el entregable.</p>
+      ${nPend ? `<button type="button" class="btn btn--small" id="btn-guardar-imgs-tarea">Guardar ${nPend} en la tarea</button>` : ''}
+      <p class="agente-imgs-form__hint">Capturas, fondos Midjourney o referencias. Puedes guardarlas en la tarea sin enviar el chat.</p>
       <div id="agente-imgs-pendientes">${htmlMiniaturasImagenes(pendientes, { quitar: true, prefix: 'pend' })}</div>
     </div>`;
 }
@@ -2990,29 +3606,1798 @@ function guardarImagenesEnFichaCliente(cli, imagenes, tarea) {
   const tituloTarea = nombreBaseTarea(tarea) || tarea?.titulo || 'tarea';
 
   imagenes.forEach(img => {
-    if (!img?.dataUrl) return;
+    const src = srcImagenRef(img);
+    if (!src) return;
     const nombre = img.nombre || `referencia-${Date.now()}.png`;
     const ya = cli.ficha.documentos.some(d =>
-      d.origen === 'agente-ref' && d.tareaId === tarea?.id && d.nombre === nombre && d.dataUrl === img.dataUrl
+      d.origen === 'agente-ref' && d.tareaId === tarea?.id && (d.url === src || d.dataUrl === src || d.nombre === nombre)
     );
     if (ya) return;
-    cli.ficha.documentos.push({
+    const doc = {
       id: id(),
       clienteId: cli.id,
       origen: 'agente-ref',
       tareaId: tarea?.id,
       nombre,
-      mime: img.dataUrl.match(/^data:([^;]+)/)?.[1] || 'image/png',
+      mime: img.url ? 'image/jpeg' : (src.match(/^data:([^;]+)/)?.[1] || 'image/jpeg'),
       categoria: 'imagen',
-      tamano: img.dataUrl.length,
+      tamano: src.length,
       subido: toISO(hoy()),
-      dataUrl: img.dataUrl,
       notasAnalisis: `Referencia agente · ${tituloTarea}`,
       extraccionEstado: 'ok',
       extraccionMetodo: 'agente-ref'
-    });
+    };
+    if (img.url) doc.url = img.url;
+    else doc.dataUrl = src;
+    cli.ficha.documentos.push(doc);
   });
   cli.ficha.actualizado = toISO(hoy());
+}
+
+/** Guarda imágenes ya en la tarea (sin enviar chat) y las deja visibles en el perfil del cliente. */
+async function guardarImagenesEnTarea(tarea, imagenes, { vaciarPendientes = false } = {}) {
+  if (!tarea || !imagenes?.length) return 0;
+  asegurarSesionAgente(tarea);
+  asegurarImagenesAgente(tarea.sesionAgente);
+  const cli = clienteDe(tarea.clienteId);
+  const subidas = [];
+  for (const img of imagenes) {
+    if (!img?.dataUrl && !img?.url) continue;
+    try {
+      const ref = img.url
+        ? { nombre: img.nombre || 'imagen.jpg', url: img.url }
+        : await subirImagenTareaAlDisco(tarea, img);
+      subidas.push(ref);
+    } catch (e) {
+      console.warn(e);
+      mostrarToast('No se pudo subir una imagen');
+    }
+  }
+  if (!subidas.length) return 0;
+
+  for (const img of subidas) {
+    const key = srcImagenRef(img);
+    const dup = tarea.sesionAgente.imagenesReferencia.some((r) => srcImagenRef(r) === key);
+    if (!dup) tarea.sesionAgente.imagenesReferencia.push(img);
+  }
+  guardarImagenesEnFichaCliente(cli, subidas, tarea);
+
+  if (cli) {
+    if (!cli.ficha.landing || typeof cli.ficha.landing !== 'object') cli.ficha.landing = {};
+    if (!Array.isArray(cli.ficha.landing.imagenes)) cli.ficha.landing.imagenes = [];
+    const tituloTarea = nombreBaseTarea(tarea) || tarea.titulo || 'Tarea';
+    for (const img of subidas) {
+      const key = srcImagenRef(img);
+      const yaLanding = cli.ficha.landing.imagenes.some(
+        (x) => x.tareaId === tarea.id && (x.url === key || x.dataUrl === key)
+      );
+      if (yaLanding) continue;
+      const entry = {
+        id: id(),
+        titulo: String(img.nombre || 'Imagen').replace(/\.[^.]+$/, '') || 'Imagen de tarea',
+        notas: `Desde tarea · ${tituloTarea}`,
+        creado: toISO(hoy()),
+        tareaId: tarea.id,
+      };
+      if (img.url) entry.url = img.url;
+      else entry.dataUrl = img.dataUrl;
+      cli.ficha.landing.imagenes.push(entry);
+    }
+  }
+
+  if (vaciarPendientes) tarea.sesionAgente.imagenesPendientes = [];
+  return subidas.length;
+}
+
+function imagenesGuardadasTarea(tarea) {
+  asegurarSesionAgente(tarea);
+  asegurarImagenesAgente(tarea.sesionAgente);
+  const refs = [...(tarea.sesionAgente.imagenesReferencia || [])];
+  const vistos = new Set(refs.map((r) => srcImagenRef(r)).filter(Boolean));
+  for (const m of tarea.sesionAgente.mensajes || []) {
+    for (const img of m.imagenes || []) {
+      const key = srcImagenRef(img);
+      if (key && !vistos.has(key)) {
+        vistos.add(key);
+        refs.push(img);
+      }
+    }
+  }
+  return refs;
+}
+
+function htmlGaleriaImagenesTarea(tarea) {
+  // Copys = solo TXT; no mostrar subida de imágenes/video en esa subtarea
+  if (tarea?.tipoEntregable === 'copys-txt') return '';
+
+  const imgs = imagenesGuardadasTarea(tarea);
+  const videos = archivosVideoTarea(tarea);
+  const total = imgs.length + videos.length;
+  const thumbs = imgs.length
+    ? htmlMiniaturasImagenes(imgs, { quitar: true, prefix: 'tarearef' })
+    : '';
+  const videoBlock = videos.length
+    ? `<div class="tarea-detalle__videos" id="tarea-videos-guardados">${htmlVideosTarea(videos, { quitar: true })}</div>`
+    : '<div id="tarea-videos-guardados"></div>';
+  const vacio =
+    !imgs.length && !videos.length
+      ? '<p class="tarea-detalle__imgs-vacio">Aún no hay archivos. Sube imágenes o el video del entregable aquí; se ven en la landing del cliente.</p>'
+      : '';
+  return `
+    <div class="tarea-detalle__imgs" data-tarea-imgs data-tarea-videos>
+      <div class="tarea-detalle__imgs-head">
+        <strong>Imágenes y video de la tarea</strong>
+        <span class="tarea-detalle__imgs-count">${total}</span>
+      </div>
+      <div id="tarea-imgs-guardadas">${thumbs}</div>
+      ${videoBlock}
+      ${vacio}
+      <div class="tarea-detalle__imgs-acciones">
+        <label class="agente-imgs-form__label">
+          <input type="file" id="tarea-imagenes-input" accept="image/*" multiple hidden />
+          <span class="btn btn--ghost btn--small">+ Guardar imágenes</span>
+        </label>
+        <label class="agente-imgs-form__label">
+          <input type="file" id="tarea-video-input" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" hidden />
+          <span class="btn btn--ghost btn--small">+ Subir video</span>
+        </label>
+        <p class="agente-imgs-form__hint">Imágenes comprimidas · video MP4/WebM hasta ~120 MB · en disco del proyecto (no llenan el navegador). Visible en la landing del cliente.</p>
+      </div>
+    </div>`;
+}
+
+function asegurarArchivosAgente(sesion) {
+  if (!sesion || typeof sesion !== 'object') return;
+  if (!Array.isArray(sesion.archivosAdjuntos)) sesion.archivosAdjuntos = [];
+}
+
+function archivosVideoTarea(tarea) {
+  asegurarSesionAgente(tarea);
+  asegurarArchivosAgente(tarea.sesionAgente);
+  return (tarea.sesionAgente.archivosAdjuntos || []).filter(
+    (a) => a && (a.kind === 'video' || String(a.mime || '').startsWith('video/') || /\.(mp4|webm|mov)$/i.test(a.nombre || a.url || ''))
+  );
+}
+
+function htmlVideosTarea(videos, { quitar = false } = {}) {
+  return videos
+    .map((v, i) => {
+      const src = v.url || '';
+      if (!src) return '';
+      return `<figure class="tarea-video-card">
+        <video class="tarea-video-card__player" src="${escapeHtml(src)}" controls preload="metadata" playsinline></video>
+        <figcaption>
+          <a href="${escapeHtml(src)}" target="_blank" rel="noopener" download>${escapeHtml(v.nombre || 'video.mp4')}</a>
+          ${quitar ? `<button type="button" class="agente-ref-img__quitar" data-quitar-video="${i}" title="Quitar">×</button>` : ''}
+        </figcaption>
+      </figure>`;
+    })
+    .join('');
+}
+
+async function subirArchivoTareaAlDisco(tarea, file) {
+  const nombre = file.name || `archivo-${Date.now()}.mp4`;
+  const headers = {
+    'Content-Type': file.type || 'application/octet-stream',
+  };
+  const token = sessionStorage.getItem('organizacion_api_token');
+  if (token) headers['X-Organizacion-Token'] = token;
+  const qs = new URLSearchParams({
+    tareaId: tarea.id,
+    clienteId: tarea.clienteId || '',
+    nombre,
+  });
+  const res = await fetch('/api/tarea-archivo?' + qs.toString(), {
+    method: 'POST',
+    headers,
+    body: file,
+  });
+  if (!res.ok) {
+    let msg = 'HTTP ' + res.status;
+    try {
+      const err = await res.json();
+      if (err?.error) msg = err.error;
+    } catch { /* ignore */ }
+    throw new Error(msg);
+  }
+  const data = await res.json();
+  if (!data?.url) throw new Error('sin URL de archivo');
+  return {
+    nombre: data.nombre || nombre,
+    url: data.url,
+    txtUrl: data.txtUrl || null,
+    mime: data.mime || file.type || '',
+    kind: data.kind || 'file',
+    bytes: data.bytes || file.size || 0,
+  };
+}
+
+async function guardarVideoEnTarea(tarea, file) {
+  asegurarSesionAgente(tarea);
+  asegurarArchivosAgente(tarea.sesionAgente);
+  const entry = await subirArchivoTareaAlDisco(tarea, file);
+  const dup = tarea.sesionAgente.archivosAdjuntos.some((a) => a.url === entry.url);
+  if (!dup) tarea.sesionAgente.archivosAdjuntos.push(entry);
+
+  const cli = clienteDe(tarea.clienteId);
+  if (cli) {
+    if (!cli.ficha || typeof cli.ficha !== 'object') {
+      cli.ficha = { contacto: '', links: '', notas: '', seccionesExtra: [], documentos: [] };
+    }
+    if (!Array.isArray(cli.ficha.documentos)) cli.ficha.documentos = [];
+    const ya = cli.ficha.documentos.some((d) => d.url === entry.url && d.tareaId === tarea.id);
+    if (!ya) {
+      cli.ficha.documentos.push({
+        id: id(),
+        clienteId: cli.id,
+        tareaId: tarea.id,
+        nombre: entry.nombre,
+        url: entry.url,
+        mime: entry.mime,
+        kind: entry.kind,
+        origen: 'tarea-video',
+        titulo: `Video · ${nombreBaseTarea(tarea) || tarea.titulo}`,
+        creado: toISO(hoy()),
+      });
+    }
+  }
+  return entry;
+}
+
+async function guardarArticuloEnMadre(tarea, file) {
+  const entry = await subirArchivoTareaAlDisco(tarea, file);
+  tarea.articuloArchivo = {
+    nombre: entry.nombre,
+    url: entry.url,
+    txtUrl: entry.txtUrl || null,
+    mime: entry.mime,
+    kind: entry.kind || 'articulo',
+    bytes: entry.bytes,
+    subido: toISO(hoy()),
+  };
+  // ruta relativa sin slash inicial para entregableArchivo
+  tarea.entregableArchivo = String(entry.url || '').replace(/^\//, '');
+  return entry;
+}
+
+function bindArticuloEcosistema(contenedor, tarea) {
+  if (!contenedor || !tarea || tarea.parentId || tarea.tipoEntregable !== 'ecosistema') return;
+
+  const input = contenedor.querySelector('[data-input-articulo-eco]');
+  if (input) {
+    input.onchange = async (e) => {
+      const file = e.target.files?.[0];
+      input.value = '';
+      if (!file) return;
+      const okExt = /\.(pdf|txt|docx?|odt)$/i.test(file.name || '');
+      if (!okExt) {
+        mostrarToast('Usa un archivo .doc, .docx, .pdf o .txt');
+        return;
+      }
+      const t = tareaDe(tarea.id);
+      if (!t) return;
+      try {
+        mostrarToast('Subiendo artículo…');
+        await guardarArticuloEnMadre(t, file);
+        registrarPlantillaDesdeMadre(t);
+        guardar();
+        renderTarea();
+        mostrarToast('Artículo cargado en la tarea madre');
+      } catch (err) {
+        console.warn(err);
+        mostrarToast('No se pudo subir el artículo: ' + (err.message || 'error'));
+      }
+    };
+  }
+
+  contenedor.querySelector('[data-quitar-articulo-eco]')?.addEventListener('click', () => {
+    const t = tareaDe(tarea.id);
+    if (!t) return;
+    if (!confirm('¿Quitar el artículo de esta madre?')) return;
+    delete t.articuloArchivo;
+    if (t.entregableArchivo && /\.(pdf|txt|docx?|odt)$/i.test(t.entregableArchivo)) {
+      delete t.entregableArchivo;
+    }
+    guardar();
+    renderTarea();
+    mostrarToast('Artículo quitado');
+  });
+}
+
+function hijosDeTarea(tarea) {
+  if (!tarea?.id) return [];
+  return (datos.tareas || [])
+    .filter((t) => t.parentId === tarea.id)
+    .sort((a, b) => String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || '')));
+}
+
+function madreDeTarea(tarea) {
+  if (!tarea?.parentId) return null;
+  return tareaDe(tarea.parentId) || null;
+}
+
+function htmlVinculosEcosistema(tarea) {
+  const madre = madreDeTarea(tarea);
+  const hijos = hijosDeTarea(tarea);
+  if (!madre && !hijos.length) return '';
+
+  let html = '<div class="tarea-detalle__ecosistema">';
+  if (madre) {
+    const href = urlTareaAbsoluta(madre);
+    html += `<p class="tarea-detalle__eco-madre">Parte de: <a href="${escapeHtml(href)}"><strong>${escapeHtml(nombreBaseTarea(madre) || madre.titulo)}</strong></a>${madre.numeroHistorico ? ` · #${escapeHtml(madre.numeroHistorico)}` : ''}</p>`;
+    const art = articuloDeTarea(madre);
+    if (art?.url) {
+      const aHref = art.url.startsWith('/') ? art.url : '/' + String(art.url).replace(/^\/+/, '');
+      html += `<p class="tarea-detalle__eco-articulo">Artículo: <a href="${escapeHtml(aHref)}" target="_blank" rel="noopener">${escapeHtml(art.nombre || madre.articuloTitulo || 'Ver archivo')}</a></p>`;
+    } else {
+      html += `<p class="tarea-detalle__eco-articulo tarea-detalle__eco-articulo--faltante">Falta cargar el artículo en la tarea madre.</p>`;
+    }
+  }
+  if (hijos.length) {
+    html += `<div class="tarea-detalle__eco-hijos"><strong>Subtareas</strong><ul class="tarea-detalle__eco-lista">`;
+    for (const h of hijos) {
+      const href = urlTareaAbsoluta(h);
+      const done = h.completada ? ' ✓' : '';
+      const tipo = h.tipoEntregable ? ` <span class="tarea-detalle__eco-tipo">${escapeHtml(h.tipoEntregable)}</span>` : '';
+      html += `<li><a href="${escapeHtml(href)}">#${escapeHtml(h.numeroHistorico || '?')} ${escapeHtml(nombreBaseTarea(h) || h.titulo)}</a>${tipo}${done}</li>`;
+    }
+    html += '</ul></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function archivosCopyDeTarea(tarea) {
+  if (!tarea) return { A: '', B: '', C: '' };
+  if (tarea.entregableArchivosCopy && typeof tarea.entregableArchivosCopy === 'object') {
+    const p = tarea.entregableArchivosCopy;
+    return {
+      A: String(p.A || '').replace(/^\/+/, ''),
+      B: String(p.B || '').replace(/^\/+/, ''),
+      C: String(p.C || '').replace(/^\/+/, ''),
+    };
+  }
+
+  const MAPA = {
+    7: 'COPY-c07-travel-trainer-black-hombre',
+    8: 'COPY-c08-chelsea-commando-negras-mujer',
+    9: 'COPY-c09-play-bajas-rojo-mujer',
+    10: 'COPY-c10-original-ninos',
+    11: 'COPY-c11-play-altas-shearling-white-mujer',
+    12: 'COPY-c12-original-ninos-rosado-brillante',
+  };
+
+  let n = Number(tarea.contenidoSerie) || 0;
+  if (!n) {
+    const madre = madreDeTarea(tarea);
+    n = Number(madre?.contenidoSerie) || 0;
+  }
+  if (!n) {
+    const mId = String(tarea.id || '').match(/contenido-(\d+)-de-12/i);
+    if (mId) n = Number(mId[1]);
+  }
+  if (!n) {
+    const mTit = String(tarea.titulo || '').match(/C\s*(\d+)\s*\/\s*12/i);
+    if (mTit) n = Number(mTit[1]);
+  }
+  const base = MAPA[n];
+  if (!base) {
+    const uno = String(tarea.entregableArchivo || '').replace(/^\/+/, '');
+    if (uno && /\.txt$/i.test(uno)) {
+      const stem = uno.replace(/\.txt$/i, '').replace(/-[ABC]$/i, '');
+      return { A: `${stem}-A.txt`, B: `${stem}-B.txt`, C: `${stem}-C.txt` };
+    }
+    return { A: '', B: '', C: '' };
+  }
+  const dir = 'index/clientes/trendseeker/copys';
+  return {
+    A: `${dir}/${base}-A.txt`,
+    B: `${dir}/${base}-B.txt`,
+    C: `${dir}/${base}-C.txt`,
+  };
+}
+
+function archivosPromptGeminiDeTarea(tarea) {
+  if (!tarea) return { A: '', B: '', C: '' };
+  if (tarea.entregableArchivosPrompt && typeof tarea.entregableArchivosPrompt === 'object') {
+    const p = tarea.entregableArchivosPrompt;
+    return {
+      A: String(p.A || '').replace(/^\/+/, ''),
+      B: String(p.B || '').replace(/^\/+/, ''),
+      C: String(p.C || '').replace(/^\/+/, ''),
+    };
+  }
+
+  const MAPA = {
+    7: 'PROMPT-c07-travel-trainer-black-hombre',
+    8: 'PROMPT-c08-chelsea-commando-negras-mujer',
+    9: 'PROMPT-c09-play-bajas-rojo-mujer',
+    10: 'PROMPT-c10-original-ninos',
+    11: 'PROMPT-c11-play-altas-shearling-white-mujer',
+    12: 'PROMPT-c12-original-ninos-rosado-brillante',
+  };
+
+  let n = Number(tarea.contenidoSerie) || 0;
+  if (!n) {
+    const madre = madreDeTarea(tarea);
+    n = Number(madre?.contenidoSerie) || 0;
+  }
+  if (!n) {
+    const mId = String(tarea.id || '').match(/contenido-(\d+)-de-12/i);
+    if (mId) n = Number(mId[1]);
+  }
+  if (!n) {
+    const mTit = String(tarea.titulo || '').match(/C\s*(\d+)\s*\/\s*12/i);
+    if (mTit) n = Number(mTit[1]);
+  }
+  const base = MAPA[n];
+  if (!base) {
+    // Legacy: un solo archivo → intentar derivar -A/-B/-C
+    const uno = String(tarea.entregableArchivo || '').replace(/^\/+/, '');
+    if (uno && /\.txt$/i.test(uno)) {
+      const stem = uno.replace(/\.txt$/i, '').replace(/-[ABC]$/i, '');
+      return {
+        A: `${stem}-A.txt`,
+        B: `${stem}-B.txt`,
+        C: `${stem}-C.txt`,
+      };
+    }
+    return { A: '', B: '', C: '' };
+  }
+  const dir = 'index/clientes/trendseeker/prompts';
+  return {
+    A: `${dir}/${base}-A.txt`,
+    B: `${dir}/${base}-B.txt`,
+    C: `${dir}/${base}-C.txt`,
+  };
+}
+
+function archivoPromptGeminiDeTarea(tarea) {
+  const archivos = archivosPromptGeminiDeTarea(tarea);
+  return archivos.A || String(tarea?.entregableArchivo || '').replace(/^\/+/, '');
+}
+
+function articuloDeTarea(tarea) {
+  if (!tarea) return null;
+  if (tarea.articuloArchivo && typeof tarea.articuloArchivo === 'object' && tarea.articuloArchivo.url) {
+    return tarea.articuloArchivo;
+  }
+  const ruta = String(tarea.entregableArchivo || '').replace(/^\/+/, '');
+  if (ruta && /\.(pdf|txt|docx?|odt)$/i.test(ruta)) {
+    return {
+      url: '/' + ruta,
+      nombre: ruta.split('/').pop(),
+      mime: '',
+      kind: 'articulo',
+    };
+  }
+  return null;
+}
+
+function htmlArticuloEcosistema(tarea) {
+  if (!tarea || tarea.parentId || tarea.tipoEntregable !== 'ecosistema') return '';
+  const art = articuloDeTarea(tarea);
+  const tituloArt = tarea.articuloTitulo || nombreBaseTarea(tarea) || 'Artículo del newsletter';
+  let estado = '';
+  if (art) {
+    const href = art.url.startsWith('/') ? art.url : '/' + String(art.url).replace(/^\/+/, '');
+    estado = `
+      <div class="tarea-detalle__articulo-actual">
+        <a class="btn btn--small btn--ghost" href="${escapeHtml(href)}" target="_blank" rel="noopener" download>
+          ${escapeHtml(art.nombre || 'Descargar artículo')}
+        </a>
+        <button type="button" class="btn btn--small btn--ghost" data-quitar-articulo-eco title="Quitar artículo">Quitar</button>
+      </div>`;
+  } else {
+    estado = `<p class="tarea-detalle__entregable-hint">Aún no hay artículo. Sube .doc, .docx, .pdf o .txt para ejecutar el ecosistema (copys, portada, carrusel, video).</p>`;
+  }
+  return `
+    <div class="tarea-detalle__entregable tarea-detalle__entregable--articulo" data-entregable="ecosistema-articulo">
+      <div class="tarea-detalle__entregable-head">
+        <strong>Artículo del newsletter</strong>
+      </div>
+      <p class="tarea-detalle__entregable-hint">${escapeHtml(tituloArt)}</p>
+      ${estado}
+      <label class="btn btn--small btn--primary tarea-detalle__articulo-upload">
+        ${art ? 'Reemplazar artículo' : '+ Cargar artículo (doc / pdf / txt)'}
+        <input type="file" accept=".doc,.docx,.pdf,.txt,.odt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" hidden data-input-articulo-eco>
+      </label>
+    </div>`;
+}
+
+function esCopyEcrNl(tarea) {
+  if (!tarea || tarea.clienteId !== 'cli-ecr' || tarea.tipoEntregable !== 'copys-txt') return false;
+  const madre = madreDeTarea(tarea);
+  return !!(madre && madre.tipoEntregable === 'ecosistema');
+}
+
+function rutaCopyEcrDeTarea(tarea) {
+  if (!tarea) return '';
+  if (tarea.entregableArchivo && /\.txt$/i.test(tarea.entregableArchivo)) {
+    const e = String(tarea.entregableArchivo).replace(/^\/+/, '');
+    // Preferir rutas de copys (no el TXT del artículo)
+    if (/\/copys\//i.test(e) || /^index\/clientes\/ecr\/newsletter\/COPY-/i.test(e)) {
+      return e;
+    }
+  }
+  const madre = madreDeTarea(tarea);
+  const slug = madre?.articuloSlug || tarea.articuloSlug || 'nl-ecr';
+  return `index/clientes/ecr/newsletter/copys/COPY-${slug}.txt`;
+}
+
+async function textoArticuloMadre(madre) {
+  if (!madre) return '';
+  const candidatos = [];
+  const art = articuloDeTarea(madre);
+  if (art?.txtUrl) {
+    candidatos.push(String(art.txtUrl).replace(/^\//, ''));
+  }
+  if (art?.url) {
+    const u = String(art.url).replace(/^\//, '');
+    candidatos.push(u);
+    if (/\.docx?$/i.test(u)) candidatos.push(u.replace(/\.docx?$/i, '.txt'));
+  }
+  if (madre.entregableArchivo) {
+    const e = String(madre.entregableArchivo).replace(/^\/+/, '');
+    candidatos.push(e);
+    if (/\.docx?$/i.test(e)) candidatos.push(e.replace(/\.docx?$/i, '.txt'));
+  }
+
+  const unicos = [...new Set(candidatos.filter(Boolean))];
+
+  // 1) TXT directos (sidecar o archivo .txt)
+  for (const rel of unicos) {
+    if (!/\.txt$/i.test(rel)) continue;
+    try {
+      const res = await fetch('/' + rel + '?t=' + Date.now(), { cache: 'no-store' });
+      if (res.ok) {
+        const t = await res.text();
+        if (t && t.trim()) return t;
+      }
+    } catch { /* next */ }
+  }
+
+  // 2) Extraer texto de .docx vía API del server
+  for (const rel of unicos) {
+    if (!/\.docx$/i.test(rel)) continue;
+    try {
+      const headers = {};
+      const token = sessionStorage.getItem('organizacion_api_token');
+      if (token) headers['X-Organizacion-Token'] = token;
+      const res = await fetch('/api/articulo-texto?path=' + encodeURIComponent(rel), {
+        cache: 'no-store',
+        headers,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.texto && String(data.texto).trim()) return String(data.texto);
+      }
+    } catch { /* next */ }
+  }
+
+  return madre.articuloTitulo
+    ? `Artículo: ${madre.articuloTitulo}\n\n(No se pudo leer el artículo. Sube un .docx o .txt en la madre y vuelve a pulsar Crear.)\n`
+    : '';
+}
+
+function limpiarTextoArticuloEcr(textoArt) {
+  let t = String(textoArt || '').replace(/\r\n/g, '\n').trim();
+  if (!t) return '';
+  // Quitar encabezados de sidecar interno
+  t = t.replace(/^ARTÍCULO ECR[\s\S]*?={10,}\s*/i, '');
+  t = t.replace(/^Artículo:\s*.+\n+\(No se pudo leer[\s\S]*$/i, '');
+  return t.trim();
+}
+
+function frasesUtilesArticulo(texto, max = 8) {
+  const limpio = limpiarTextoArticuloEcr(texto)
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!limpio) return [];
+  const partes = limpio
+    .split(/(?<=[.!?¿?])\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length >= 40 && s.length <= 220 && !/^artículo ecr/i.test(s));
+  const unicos = [];
+  for (const p of partes) {
+    if (unicos.some((u) => u.slice(0, 48) === p.slice(0, 48))) continue;
+    unicos.push(p);
+    if (unicos.length >= max) break;
+  }
+  return unicos;
+}
+
+function titulosSeccionArticulo(texto) {
+  const lineas = limpiarTextoArticuloEcr(texto).split(/\n+/).map((l) => l.trim()).filter(Boolean);
+  const secs = [];
+  for (const l of lineas) {
+    if (l.length < 18 || l.length > 110) continue;
+    if (/[.!?]$/.test(l) && l.length > 70) continue;
+    if (/^ARTÍCULO|^Título:|^Asociado|^Archivo|^Placeholder/i.test(l)) continue;
+    // Títulos de sección típicos (sin punto final o pregunta corta)
+    if (!/[.]$/.test(l) || /\?$/.test(l)) {
+      if (!secs.includes(l)) secs.push(l);
+    }
+    if (secs.length >= 6) break;
+  }
+  return secs;
+}
+
+/**
+ * Borrador en el formato enviado al cliente ECR:
+ * Feed A/B · Carrusel COPY A/B · Video A/B
+ * (sin listado de slides ni [LINK AL ARTÍCULO]; línea vacía para el link)
+ * Ver: index/clientes/ecr/newsletter/copys/FORMATO-COPYS-ECR.md
+ */
+function borradorCopysDesdeArticulo(tituloArt, textoArt) {
+  const titulo = (tituloArt || 'Artículo ECR').trim();
+  const tituloCorto = titulo.split(':')[0].trim() || titulo;
+  const frases = frasesUtilesArticulo(textoArt, 8);
+  const f = (i, fallback) => frases[i] || fallback;
+
+  const ganchoA = f(
+    0,
+    'Muchas empresas sumaron plataformas, dashboards y reportes digitales.'
+  );
+  const insightA = f(
+    1,
+    'Cuando las herramientas no conversan con el terreno, la tecnología deja de ser ventaja y se vuelve una capa más dentro de una gestión fragmentada.'
+  );
+  const ganchoB = f(
+    2,
+    'El problema no es la herramienta. Es la desconexión.'
+  );
+  const retail = f(
+    3,
+    'Si el equipo no llega al punto de venta, si la reposición falla o la alerta no se gestiona a tiempo… el impacto comercial se diluye.'
+  );
+
+  return `COPYS ECR — ${tituloCorto}
+${titulo}
+Newsletter LinkedIn
+
+1) FEED — INVITACIÓN A LEER EL ARTÍCULO
+--- VERSIÓN A ---
+
+¿Más tecnología… o mejores resultados? 👀
+
+${ganchoA}
+Pero la pregunta sigue siendo incómoda: ¿la operación funciona mejor o solo se volvió más digital?
+
+${insightA}
+
+En nuestro nuevo artículo te contamos por qué el freno de la eficiencia no es la herramienta… sino la desconexión.
+
+👇 Léelo completo aquí:
+
+
+💬 ¿Te ha pasado invertir en sistemas y seguir apagando incendios a mano? Cuéntanos en comentarios.
+
+#ECRGroup #TransformacionDigital #Operaciones #Eficiencia
+
+
+--- VERSIÓN B ---
+
+${ganchoB} ⚡
+
+Información que llega tarde.
+Reportes que no permiten actuar.
+Equipos que siguen coordinando por WhatsApp… mientras el sistema “está implementado”.
+
+${retail}
+
+Nuevo artículo ECR GROUP®️:
+👉 ${titulo}
+Léelo y mira cuánto se parece a tu operación:
+
+
+¿Tus sistemas conversan con el terreno o viven en otra isla? 💬
+
+#Operaciones #ECRGroup #IntegracionOperativa #Productividad
+
+
+============================================================
+2) CARRUSEL — COPY
+--- VERSIÓN A ---
+
+¿Tu empresa tiene más herramientas… pero la operación sigue igual de reactiva? 🧩
+
+Ese es el punto ciego de muchas organizaciones: digitalizaron el reporte, no la decisión.
+
+👇Desliza → y después profundiza en el artículo completo:
+
+
+Coméntanos 💬
+
+#Carrusel #Eficiencia #ECRGroup #GestionIntegrada
+
+
+--- VERSIÓN B ---
+
+Tener dashboards no garantiza mejores resultados.
+Tener integración, sí. 🔗
+
+Cuando el dato llega tarde, la alerta no tiene dueño y el indicador se revisa después del impacto… la tecnología solo registra el problema.
+No lo evita.
+
+Carrusel rapidito con lo clave de nuestro nuevo artículo 📲
+Lee el artículo completo aquí:
+
+
+Guárdalo si te sirve para la próxima reunión de operaciones 🔖
+
+#Operaciones #DecisionesATiempo #ECRGroup #Outsourcing
+
+
+============================================================
+3) VIDEO
+--- VERSIÓN A ---
+
+${retail} ⚠️
+
+Eso pasa cuando la tecnología registra lo que ocurre, pero no está integrada a un modelo de gestión.
+
+En este video te dejamos nuestro artículo:
+${tituloCorto.toLowerCase()} = eficiencia frenada. 🚀
+
+Compártelo con tu equipo 🙌
+
+#Video #TecnologiaAplicada #ECRGroup #Operaciones
+
+
+--- VERSIÓN B ---
+
+Sumar plataformas sin conectarlas a la operación… ya no da el ancho. 🚫
+
+El nuevo estándar no es “tener más sistemas”.
+Es conectar personas, procesos y tecnología para decidir a tiempo. 📊
+
+Mira el artículo:
+${tituloCorto}
+👉
+
+¿Hoy digitalizas… o realmente integras? Déjanos tu take 👇
+
+#Operaciones #Integracion #ECRGroup #EficienciaReal
+`;
+}
+
+/** Si ya existe un TXT de copys curado (formato ECR completo), lo usa. */
+async function cargarCopysEcrCurados(madre) {
+  const slug = madre?.articuloSlug || '';
+  const titulo = madre?.articuloTitulo || nombreBaseTarea(madre) || '';
+  const candidatos = [];
+  if (slug) {
+    candidatos.push(`index/clientes/ecr/newsletter/copys/COPY-${slug}.txt`);
+    candidatos.push(`index/clientes/ecr/newsletter/COPY-${slug}.txt`);
+  }
+  if (/equipos\s*en\s*terreno/i.test(titulo) || slug.includes('equipos')) {
+    candidatos.unshift('index/clientes/ecr/newsletter/copys/COPY-equipos-en-terreno.txt');
+    candidatos.unshift('index/clientes/ecr/newsletter/COPY-ART23-equipos-en-terreno.txt');
+  }
+  if (/tecnolog[ií]a\s*sin\s*integraci[oó]n/i.test(titulo) || slug.includes('tecnologia')) {
+    candidatos.unshift('index/clientes/ecr/newsletter/copys/COPY-tecnologia-sin-integracion.txt');
+    candidatos.unshift('index/clientes/ecr/newsletter/COPY-tecnologia-sin-integracion.txt');
+  }
+  for (const rel of [...new Set(candidatos)]) {
+    try {
+      const res = await fetch('/' + rel + '?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) continue;
+      const t = await res.text();
+      if (/1\)\s*FEED/i.test(t) && /2\)\s*CARRUSEL/i.test(t) && /3\)\s*VIDEO/i.test(t) && /VERSIÓN A/i.test(t)) {
+        return { texto: t, archivo: rel };
+      }
+    } catch { /* next */ }
+  }
+  return null;
+}
+
+function htmlCopysEcrNl(tarea) {
+  const madre = madreDeTarea(tarea);
+  const tituloArt = madre?.articuloTitulo || nombreBaseTarea(madre) || 'Artículo del newsletter';
+  const archivo = rutaCopyEcrDeTarea(tarea);
+  return `
+    <div class="tarea-detalle__entregable tarea-detalle__entregable--prompt" data-entregable="copys-ecr">
+      <div class="tarea-detalle__entregable-head">
+        <strong>Copys (TXT)</strong>
+        <div class="tarea-detalle__entregable-acciones">
+          <button type="button" class="btn btn--small btn--accent" data-crear-copy-ecr>Crear</button>
+          <button type="button" class="btn btn--small" data-modificar-copy-ecr>Modificar</button>
+          <button type="button" class="btn btn--small" data-copiar-copy-ecr>Copiar</button>
+          <button type="button" class="btn btn--small btn--ghost" data-guardar-copy-ecr>Guardar</button>
+        </div>
+      </div>
+      <p class="tarea-detalle__entregable-hint">
+        Basado en el artículo de la madre: <em>${escapeHtml(tituloArt)}</em>.
+        <strong>Crear</strong> arma feed / carrusel / video · <strong>Modificar</strong> edita con ideas · <strong>Copiar</strong> al portapapeles · <strong>Guardar</strong> deja el TXT (formato cliente ECR).
+        ${archivo ? `Archivo: <code>${escapeHtml(archivo)}</code>` : ''}
+      </p>
+      <section class="prompt-seccion" data-copy-ecr-bloque data-copy-archivo="${escapeHtml(archivo)}">
+        <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-copy-ecr-texto rows="18" cols="80" spellcheck="true" placeholder="Pulsa Crear para generar el borrador desde el artículo…" style="width:100%;min-width:100%;max-width:100%;box-sizing:border-box;display:block"></textarea>
+      </section>
+    </div>`;
+}
+
+function htmlEntregableTarea(tarea) {
+  const tipo = tarea.tipoEntregable;
+  if (tipo === 'ecosistema') return htmlArticuloEcosistema(tarea);
+  if (!tipo) return '';
+
+  if (tipo === 'copys-txt' && esCopyEcrNl(tarea)) {
+    return htmlCopysEcrNl(tarea);
+  }
+
+  let archivo = tarea.entregableArchivo || '';
+  if (tipo === 'prompt-gemini' && !archivo) {
+    archivo = archivoPromptGeminiDeTarea(tarea);
+    if (archivo) tarea.entregableArchivo = archivo; // enlaza para próximas cargas
+  }
+  const hrefArchivo = archivo ? `/${String(archivo).replace(/^\/+/, '')}` : '';
+
+  if (tipo === 'copys-txt') {
+    const archivos = archivosCopyDeTarea(tarea);
+    const tieneABC = !!(archivos.A && archivos.B && archivos.C);
+    if (tieneABC) {
+      tarea.entregableArchivosCopy = archivos;
+      tarea.entregableArchivo = archivos.A;
+      const titulos = {
+        A: 'A · Corta (feed / Reels)',
+        B: 'B · Historia (IG / TikTok)',
+        C: 'C · Beneficio + CTA',
+      };
+      const secciones = ['A', 'B', 'C']
+        .map(
+          (v) => `
+        <section class="prompt-seccion" data-copy-version="${v}" data-copy-archivo="${escapeHtml(archivos[v] || '')}">
+          <div class="prompt-seccion__barra">
+            <h4 class="prompt-seccion__titulo">${titulos[v]}</h4>
+            <div class="prompt-seccion__acciones">
+              <button type="button" class="btn btn--small" data-copiar-copy-version="${v}">Copiar</button>
+              <button type="button" class="btn btn--small btn--ghost" data-guardar-copy-version="${v}">Guardar</button>
+              <button type="button" class="btn btn--accent btn--small" data-mejorar-copy-version="${v}">Mejorar</button>
+            </div>
+          </div>
+          <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-copy-texto rows="12" cols="80" spellcheck="false" placeholder="Cargando copy ${v}…" style="width:100%;min-width:100%;max-width:100%;box-sizing:border-box;display:block"></textarea>
+        </section>`
+        )
+        .join('');
+      return `
+      <div class="tarea-detalle__entregable tarea-detalle__entregable--prompt" data-entregable="copys-txt">
+        <div class="tarea-detalle__entregable-head">
+          <strong>Copys (TXT)</strong>
+          <div class="tarea-detalle__entregable-acciones">
+            <button type="button" class="btn btn--small btn--accent" data-crear-copys-ts>Crear copy</button>
+          </div>
+        </div>
+        <p class="tarea-detalle__entregable-hint">
+          <strong>Crear copy</strong> pregunta si hay campaña/promo y arma 3 versiones (A/B/C) con CTA distinto.
+          Luego: Copiar · Guardar · Mejorar.
+          ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
+          ${tarea.campanaCopy?.activa && tarea.campanaCopy?.texto ? ` · Campaña: <em>${escapeHtml(tarea.campanaCopy.texto)}</em>` : ''}
+        </p>
+        <div class="prompt-bloque">${secciones}</div>
+      </div>`;
+    }
+    return `
+      <div class="tarea-detalle__entregable" data-entregable="copys-txt">
+        <div class="tarea-detalle__entregable-head">
+          <strong>Copys (TXT)</strong>
+          <div class="tarea-detalle__entregable-acciones">
+            ${hrefArchivo ? `<a class="btn btn--small btn--ghost" href="${escapeHtml(hrefArchivo)}" target="_blank" rel="noopener" download>Descargar .txt</a>` : ''}
+            <button type="button" class="btn btn--small" data-copiar-entregable-txt>Copiar todo</button>
+          </div>
+        </div>
+        <p class="tarea-detalle__entregable-hint">Texto plano con emojis/hashtags — listo para pegar en LinkedIn.</p>
+        <pre class="tarea-detalle__txt" data-entregable-txt>${hrefArchivo ? 'Cargando copys…' : 'Sin TXT aún. Corre: node scripts/generar-ts-copys-contenidos-7-12.js'}</pre>
+      </div>`;
+  }
+
+  if (tipo === 'portada-imgs') {
+    return `
+      <div class="tarea-detalle__entregable" data-entregable="portada-imgs">
+        <strong>Portada · fondos</strong>
+        <p class="tarea-detalle__entregable-hint">Guarda aquí los 4 fondos Midjourney. ${hrefArchivo ? `<a href="${escapeHtml(hrefArchivo)}" target="_blank" rel="noopener">Ver ficha de fondos</a>` : ''}</p>
+      </div>`;
+  }
+
+  if (tipo === 'carrusel' || tipo === 'video') {
+    const seccion = tipo === 'carrusel' ? 'sección 2 (carrusel)' : 'sección 3 (video)';
+    return `
+      <div class="tarea-detalle__entregable" data-entregable="${escapeHtml(tipo)}">
+        <strong>${tipo === 'carrusel' ? 'Carrusel' : 'Video'}</strong>
+        <p class="tarea-detalle__entregable-hint">
+          Copys de acompañamiento: ${seccion} del TXT.
+          ${hrefArchivo ? `<a href="${escapeHtml(hrefArchivo)}" target="_blank" rel="noopener">Abrir TXT</a> ·` : ''}
+          Guarda exports/capturas en Imágenes de la tarea.
+        </p>
+        ${hrefArchivo ? `<pre class="tarea-detalle__txt tarea-detalle__txt--extracto" data-entregable-txt data-extracto="${tipo}">Cargando extracto…</pre>` : ''}
+      </div>`;
+  }
+
+  if (tipo === 'prompt-gemini') {
+    const archivos = archivosPromptGeminiDeTarea(tarea);
+    if (archivos.A) {
+      tarea.entregableArchivosPrompt = archivos;
+      tarea.entregableArchivo = archivos.A;
+    }
+    const titulos = {
+      A: 'A · Producto héroe',
+      B: 'B · Cualidades en movimiento',
+      C: 'C · Close-up',
+    };
+    const secciones = ['A', 'B', 'C']
+      .map(
+        (v) => `
+        <section class="prompt-seccion" data-prompt-version="${v}" data-prompt-archivo="${escapeHtml(archivos[v] || '')}">
+          <div class="prompt-seccion__barra">
+            <h4 class="prompt-seccion__titulo">${titulos[v]}</h4>
+            <div class="prompt-seccion__acciones">
+              <button type="button" class="btn btn--small" data-copiar-prompt-version="${v}">Copiar</button>
+              <button type="button" class="btn btn--small btn--ghost" data-guardar-prompt-version="${v}">Guardar</button>
+              <button type="button" class="btn btn--accent btn--small" data-mejorar-prompt-version="${v}">Mejorar</button>
+            </div>
+          </div>
+          <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-prompt-texto rows="12" cols="80" spellcheck="false" placeholder="Cargando prompt ${v}…" style="width:100%;min-width:100%;max-width:100%;box-sizing:border-box;display:block"></textarea>
+        </section>`
+      )
+      .join('');
+    return `
+      <div class="tarea-detalle__entregable tarea-detalle__entregable--prompt" data-entregable="prompt-gemini">
+        <div class="tarea-detalle__entregable-head">
+          <strong>Prompt Gemini (video)</strong>
+        </div>
+        <p class="tarea-detalle__entregable-hint">
+          Un bloque · tres secciones (TXT A / B / C). Copiar · Guardar · Mejorar (última versión).
+          ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
+        </p>
+        <div class="prompt-bloque">${secciones}</div>
+      </div>`;
+  }
+
+  if (tipo === 'programar') {
+    return `
+      <div class="tarea-detalle__entregable" data-entregable="programar">
+        <strong>Programar</strong>
+        <p class="tarea-detalle__entregable-hint">
+          Dejar copy + video listos/programados para publicar. Al terminar las 3 subtareas, marca hecha la tarea madre.
+          ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Link producto</a>` : ''}
+        </p>
+      </div>`;
+  }
+
+  return '';
+}
+
+async function cargarEntregableTxtEnVista(tarea) {
+  if (tarea.tipoEntregable === 'prompt-gemini') {
+    await cargarPromptsGeminiEnVista(tarea);
+    return;
+  }
+  if (esCopyEcrNl(tarea)) {
+    await cargarYBindCopysEcr(tarea);
+    return;
+  }
+  if (tarea.tipoEntregable === 'copys-txt') {
+    const archivos = archivosCopyDeTarea(tarea);
+    if (archivos.A && document.querySelector('[data-copy-version]')) {
+      await cargarCopysAbcEnVista(tarea);
+      return;
+    }
+  }
+
+  const pre = document.querySelector('[data-entregable-txt]');
+  if (!pre) return;
+
+  let archivo = tarea.entregableArchivo || '';
+  if (!archivo) {
+    pre.textContent =
+      'Sin archivo TXT enlazado.\n' +
+      'Para contenidos 7–12 corre:\nnode scripts/generar-ts-copys-contenidos-7-12.js\n' +
+      'Luego recarga con ?disco=1';
+    return;
+  }
+
+  const href = '/' + String(archivo).replace(/^\/+/, '');
+  try {
+    const res = await fetch(href + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    let text = await res.text();
+    const extracto = pre.getAttribute('data-extracto');
+    if (extracto === 'carrusel') {
+      const m = text.match(/2\) CARRUSEL[\s\S]*?(?=\n={10,}|\n3\) VIDEO|$)/i);
+      if (m) text = m[0].trim();
+    } else if (extracto === 'video') {
+      const m = text.match(/3\) VIDEO[\s\S]*?(?=\n={10,}|\nNOTAS RÁPIDAS|$)/i);
+      if (m) text = m[0].trim();
+    }
+    pre.textContent = text;
+    pre.dataset.fullText = text;
+  } catch (e) {
+    pre.textContent =
+      'No se pudo cargar el TXT desde ' + href + '\n' +
+      'Confirma que el server está en marcha (node scripts/organizacion-server.js) y que hiciste git pull.';
+  }
+
+  document.querySelector('[data-copiar-entregable-txt]')?.addEventListener('click', async () => {
+    const raw = pre.dataset.fullText || pre.textContent || '';
+    const ok = await copiarTexto(raw);
+    mostrarToast(ok ? 'Copys copiados' : 'No se pudo copiar');
+  });
+}
+
+async function cargarYBindCopysEcr(tarea) {
+  const root = document.querySelector('[data-entregable="copys-ecr"]');
+  if (!root) return;
+  const ta = root.querySelector('[data-copy-ecr-texto]');
+  const bloque = root.querySelector('[data-copy-ecr-bloque]');
+  if (!ta) return;
+
+  const archivo = rutaCopyEcrDeTarea(tarea);
+  if (bloque) bloque.setAttribute('data-copy-archivo', archivo);
+  const tLive = tareaDe(tarea.id);
+  if (tLive) {
+    tLive.entregableArchivo = archivo;
+    tarea.entregableArchivo = archivo;
+  }
+
+  try {
+    const res = await fetch('/' + archivo.replace(/^\/+/, '') + '?t=' + Date.now(), { cache: 'no-store' });
+    if (res.ok) {
+      ta.value = await res.text();
+    } else {
+      const curados = await cargarCopysEcrCurados(madreDeTarea(tarea));
+      if (curados?.texto) {
+        ta.value = curados.texto;
+      } else if (!ta.value) {
+        ta.value = '';
+        ta.placeholder = 'Pulsa Crear para generar los copys ECR (feed · carrusel · video)…';
+      }
+    }
+  } catch {
+    const curados = await cargarCopysEcrCurados(madreDeTarea(tarea));
+    if (curados?.texto) ta.value = curados.texto;
+    else if (!ta.value) ta.placeholder = 'Pulsa Crear para generar los copys ECR…';
+  }
+
+  root.querySelector('[data-crear-copy-ecr]')?.addEventListener('click', async () => {
+    const t = tareaDe(tarea.id);
+    if (!t) return;
+    if ((ta.value || '').trim() && !confirm('¿Reemplazar el texto actual con los copys del artículo (formato ECR: feed / carrusel / video)?')) {
+      return;
+    }
+    const madre = madreDeTarea(t);
+    mostrarToast('Armando copys ECR (feed · carrusel · video)…');
+    const curados = await cargarCopysEcrCurados(madre);
+    let textoFinal = '';
+    let origen = 'generado';
+    if (curados?.texto) {
+      textoFinal = curados.texto;
+      origen = 'curado';
+    } else {
+      const textoArt = await textoArticuloMadre(madre);
+      const titulo = madre?.articuloTitulo || nombreBaseTarea(madre) || 'Artículo ECR';
+      const sinContenido = /No se pudo leer el artículo/i.test(textoArt || '') || !limpiarTextoArticuloEcr(textoArt);
+      if (sinContenido) {
+        mostrarToast('No hay texto del artículo — sube .docx/.txt en la madre y vuelve a Crear');
+        return;
+      }
+      textoFinal = borradorCopysDesdeArticulo(titulo, textoArt);
+    }
+    ta.value = textoFinal;
+    ta.focus();
+    // Guardar de una en la ruta estándar para que quede listo
+    const dest = rutaCopyEcrDeTarea(t);
+    try {
+      const ok = await guardarPromptTxtEnDisco(dest, textoFinal);
+      if (ok) {
+        t.entregableArchivo = dest;
+        try { guardar(); } catch { /* ignore */ }
+      }
+    } catch { /* ignore */ }
+    mostrarToast(
+      origen === 'curado'
+        ? 'Copys ECR listos (feed A/B · carrusel · video) — ya puedes Copiar o ajustar'
+        : 'Copys generados desde el artículo — revisa, Copiar o Guardar'
+    );
+  });
+
+  root.querySelector('[data-modificar-copy-ecr]')?.addEventListener('click', () => {
+    const t = tareaDe(tarea.id);
+    if (!t) return;
+    ta.focus();
+    iniciarMejoraEntregable(t, {
+      tipo: 'copys-txt',
+      version: 'ECR',
+      texto: ta.value || '',
+      archivo: archivo,
+      bloque,
+    });
+  });
+
+  root.querySelector('[data-copiar-copy-ecr]')?.addEventListener('click', async () => {
+    const raw = ta.value || '';
+    if (!raw.trim()) {
+      mostrarToast('No hay texto para copiar — pulsa Crear primero');
+      return;
+    }
+    const ok = await copiarTexto(raw);
+    mostrarToast(ok ? 'Copys copiados' : 'No se pudo copiar');
+  });
+
+  root.querySelector('[data-guardar-copy-ecr]')?.addEventListener('click', async () => {
+    const t = tareaDe(tarea.id);
+    if (!t) return;
+    const dest = rutaCopyEcrDeTarea(t);
+    const btn = root.querySelector('[data-guardar-copy-ecr]');
+    if (btn) btn.disabled = true;
+    try {
+      const texto = ta.value ?? '';
+      const ok = await guardarPromptTxtEnDisco(dest, texto);
+      if (ok) {
+        t.entregableArchivo = dest;
+        registrarHistorialEntregable(t, {
+          tipo: 'copys-txt',
+          version: 'ECR',
+          accion: 'guardar',
+          archivo: dest,
+          texto,
+        });
+        try { guardar(); } catch { /* ignore */ }
+      }
+      mostrarToast(ok ? 'Copys guardados' : 'No se pudo guardar (¿server Node en marcha?)');
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  });
+}
+
+function metaProductoTsDeTarea(tarea) {
+  const madre = madreDeTarea(tarea) || tarea;
+  const url = madre?.productoUrl || tarea?.productoUrl || '';
+  const titulo = nombreBaseTarea(madre) || madre?.titulo || 'Producto Trendseeker';
+  const producto = String(titulo)
+    .replace(/^Contenido\s*\d+\s*\/\s*12\s*·\s*/i, '')
+    .replace(/^C\d+\s*\/\s*12\s*—\s*/i, '')
+    .trim();
+  let n = Number(tarea?.contenidoSerie || madre?.contenidoSerie) || 0;
+  if (!n) {
+    const m = String(tarea?.titulo || madre?.titulo || '').match(/C?\s*(\d+)\s*\/\s*12/i);
+    if (m) n = Number(m[1]);
+  }
+  const skuMatch = String(madre?.notas || '').match(/SKU[:\s]+([A-Z0-9\-]+)/i);
+  const sku = skuMatch ? skuMatch[1] : '';
+  const bullets = [];
+  const notas = String(madre?.notas || '');
+  const car = notas.match(/Características:\s*([^.]+)/i);
+  if (car) {
+    car[1].split(/[·•|]/).map((s) => s.trim()).filter(Boolean).slice(0, 5).forEach((b) => bullets.push(b));
+  }
+  if (!bullets.length) {
+    bullets.push('Hunter · calidad TrendSeeker', 'Detalles fieles a la ficha del producto');
+  }
+  return { n, producto, url, sku, bullets };
+}
+
+/** Pregunta campaña/promo antes de Crear copy (TS). */
+function pedirContextoCampanaCopy(tarea) {
+  const prev = tarea.campanaCopy && typeof tarea.campanaCopy === 'object' ? tarea.campanaCopy : {};
+  const quiere = window.confirm(
+    '¿Hay campaña o promoción asociada a este video?\n\n' +
+      'Aceptar = sí (te pediré el detalle)\n' +
+      'Cancelar = sin campaña (copy normal del producto)'
+  );
+  if (!quiere) {
+    tarea.campanaCopy = { activa: false, texto: '', actualizado: toISO(hoy()) };
+    return tarea.campanaCopy;
+  }
+  const texto = window.prompt(
+    'Escribe la campaña o promoción (ej: 20% OFF Hunter solo este finde · código LLUVIA20 · 2x1 en Travel Trainer):',
+    prev.texto || ''
+  );
+  const limpio = String(texto || '').trim();
+  tarea.campanaCopy = {
+    activa: !!limpio,
+    texto: limpio,
+    actualizado: toISO(hoy()),
+  };
+  return tarea.campanaCopy;
+}
+
+/**
+ * Genera 3 copys TS (A corta · B historia · C checklist) con CTAs distintos.
+ * Si hay campaña, la integra sin copiar la misma fórmula en las 3.
+ */
+function generarCopysTsVideoAbc(tarea, campana) {
+  const meta = metaProductoTsDeTarea(tarea);
+  const camp = campana && campana.activa && campana.texto ? String(campana.texto).trim() : '';
+  const bullets = (meta.bullets || []).slice(0, 5).map((b) => `✓ ${b}`).join('\n');
+  const link = meta.url || 'https://trendseeker.cl/';
+  const prod = meta.producto || 'Producto Hunter';
+  const serie = meta.n ? `C${meta.n}/12` : 'TS';
+  const skuLine = meta.sku ? `SKU: ${meta.sku}\n` : '';
+  const bloqueCampanaA = camp
+    ? `\n🔥 Ahora con campaña: ${camp}\n`
+    : '';
+  const bloqueCampanaB = camp
+    ? `\nEsta semana corre: ${camp}.\nSi te late el video, aprovecha la promo antes de que cierre.\n`
+    : '';
+  const bloqueCampanaC = camp
+    ? `\nPromo activa → ${camp}\n`
+    : '';
+
+  const ctaA = camp
+    ? `👉 Aprovecha la promo y elige tu talla ahora:\n${link}`
+    : `👉 Elige tu talla antes de que se agoten:\n${link}`;
+  const ctaB = camp
+    ? `🛒 Entra con la promo y reserva la tuya:\n${link}\n\n¿Vas por el primer par o el segundo? Comenta 👇`
+    : `🛒 Entra y reserva la tuya ahora:\n${link}\n\n¿Ya las tienes o vas por el primer par? Cuéntanos abajo 👇`;
+  const ctaC = camp
+    ? `🔥 CTA: usa la promo, elige talla y llévatelas hoy\n${link}\n\nGuarda este video si estás armando tu outfit 📌`
+    : `🔥 CTA: haz clic, elige talla y llévatelas hoy\n${link}\n\nGuarda este video si estás armando tu outfit 📌`;
+
+  const A = `COPY VIDEO · Trendseeker · ${serie} · Versión A
+Producto: ${prod}
+${skuLine}Link: ${link}
+
+Cuando el producto habla solo… el video cierra la venta. 🖤
+${bloqueCampanaA}
+${prod}:
+${bullets || '✓ Ver ficha del producto'}
+
+${ctaA}
+
+#Hunter #TrendSeeker #TrendSeekerChile
+`;
+
+  const B = `COPY VIDEO · Trendseeker · ${serie} · Versión B
+Producto: ${prod}
+${skuLine}Link: ${link}
+
+No es solo “otro post”.
+Es el calzado que viste en el video —y que rinde en la calle de verdad. 🌧️🏙️
+${bloqueCampanaB}
+${prod}: características reales de ficha, sin inventar.
+Si buscas algo que se vea bien y aguante el día a día, este clip es para ti.
+
+${ctaB}
+
+#Hunter #TrendSeeker #StreetReady
+`;
+
+  const C = `COPY VIDEO · Trendseeker · ${serie} · Versión C
+Producto: ${prod}
+${skuLine}Link: ${link}
+
+Checklist rápido ⚡
+□ ¿Te gustó el video?
+□ ¿Encaja con tu estilo?
+□ ¿Listo para elegir talla?
+${bloqueCampanaC}
+${bullets || '✓ Ficha del producto en el link'}
+
+${ctaC}
+
+#HunterBoots #TrendSeekerChile #ShopNow
+`;
+
+  return { A, B, C };
+}
+
+async function cargarCopysAbcEnVista(tarea) {
+  const root = document.querySelector('[data-entregable="copys-txt"]');
+  if (!root) return;
+
+  const archivos = archivosCopyDeTarea(tarea);
+  if (archivos.A) {
+    const tLive = tareaDe(tarea.id);
+    if (tLive) {
+      tLive.entregableArchivosCopy = archivos;
+      tLive.entregableArchivo = archivos.A;
+      tarea.entregableArchivosCopy = archivos;
+      tarea.entregableArchivo = archivos.A;
+      try { guardar(); } catch (_) { /* ignore */ }
+    }
+  }
+
+  const bloques = root.querySelectorAll('[data-copy-version]');
+  await Promise.all(
+    [...bloques].map(async (bloque) => {
+      const ver = bloque.getAttribute('data-copy-version') || 'A';
+      const archivo = bloque.getAttribute('data-copy-archivo') || archivos[ver] || '';
+      const ta = bloque.querySelector('[data-copy-texto]');
+      if (!ta) return;
+      if (!archivo) {
+        ta.value = 'No se encontró el TXT. Corre:\nnode scripts/generar-ts-copys-contenidos-7-12.js';
+        return;
+      }
+      bloque.setAttribute('data-copy-archivo', archivo);
+      const href = '/' + String(archivo).replace(/^\/+/, '');
+      try {
+        const res = await fetch(href + '?t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        ta.value = await res.text();
+      } catch (_) {
+        ta.value =
+          'No se pudo cargar ' + href + '\n' +
+          '¿Server en marcha? ¿git pull? ¿corriste generar-ts-copys-contenidos-7-12.js?';
+      }
+    })
+  );
+
+  root.querySelector('[data-crear-copys-ts]')?.addEventListener('click', async () => {
+    const t = tareaDe(tarea.id);
+    if (!t) return;
+    const hayTexto = [...root.querySelectorAll('[data-copy-texto]')].some((ta) => (ta.value || '').trim());
+    if (hayTexto && !confirm('¿Reemplazar las 3 versiones A/B/C con copys nuevos?')) return;
+
+    const campana = pedirContextoCampanaCopy(t);
+    mostrarToast(
+      campana.activa
+        ? 'Creando 3 copys con la campaña…'
+        : 'Creando 3 copys del producto (sin campaña)…'
+    );
+    const generados = generarCopysTsVideoAbc(t, campana);
+    const archivosNow = archivosCopyDeTarea(t);
+    let guardados = 0;
+    for (const ver of ['A', 'B', 'C']) {
+      const bloque = root.querySelector(`[data-copy-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-copy-texto]');
+      const archivo = bloque?.getAttribute('data-copy-archivo') || archivosNow[ver] || '';
+      if (ta) ta.value = generados[ver];
+      if (archivo) {
+        const ok = await guardarPromptTxtEnDisco(archivo, generados[ver]);
+        if (ok) {
+          guardados += 1;
+          registrarHistorialEntregable(t, {
+            tipo: 'copys-txt',
+            version: ver,
+            accion: 'crear',
+            archivo,
+            texto: generados[ver],
+          });
+        }
+      }
+    }
+    t.entregableArchivosCopy = archivosNow;
+    t.entregableArchivo = archivosNow.A;
+    try { guardar(); } catch { /* ignore */ }
+    mostrarToast(
+      guardados === 3
+        ? (campana.activa
+            ? '3 copys listos con campaña — revisa A/B/C'
+            : '3 copys listos — revisa A/B/C y Copiar')
+        : 'Copys armados en pantalla (guarda si el server no respondió)'
+    );
+  });
+
+  root.querySelectorAll('[data-copiar-copy-version]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const ver = btn.getAttribute('data-copiar-copy-version') || 'A';
+      const bloque = root.querySelector(`[data-copy-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-copy-texto]');
+      const ok = await copiarTexto((ta?.value || '').trim());
+      mostrarToast(ok ? `Copy ${ver} copiado` : 'No se pudo copiar');
+    });
+  });
+
+  root.querySelectorAll('[data-guardar-copy-version]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const ver = btn.getAttribute('data-guardar-copy-version') || 'A';
+      const bloque = root.querySelector(`[data-copy-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-copy-texto]');
+      const archivo = bloque?.getAttribute('data-copy-archivo') || archivos[ver] || '';
+      if (!archivo) {
+        mostrarToast('Sin archivo para guardar');
+        return;
+      }
+      btn.disabled = true;
+      try {
+        const texto = ta?.value ?? '';
+        const ok = await guardarPromptTxtEnDisco(archivo, texto);
+        if (ok) {
+          registrarHistorialEntregable(tarea, {
+            tipo: 'copys-txt',
+            version: ver,
+            accion: 'guardar',
+            archivo,
+            texto,
+          });
+        }
+        mostrarToast(ok ? `Copy ${ver} guardado` : 'No se pudo guardar');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  });
+
+  root.querySelectorAll('[data-mejorar-copy-version]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const ver = btn.getAttribute('data-mejorar-copy-version') || 'A';
+      const bloque = root.querySelector(`[data-copy-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-copy-texto]');
+      const archivo = bloque?.getAttribute('data-copy-archivo') || archivos[ver] || '';
+      iniciarMejoraEntregable(tarea, {
+        tipo: 'copys-txt',
+        version: ver,
+        texto: ta?.value || '',
+        archivo,
+        bloque,
+      });
+    });
+  });
+}
+
+async function cargarPromptsGeminiEnVista(tarea) {
+  const root = document.querySelector('[data-entregable="prompt-gemini"]');
+  if (!root) return;
+
+  const archivos = archivosPromptGeminiDeTarea(tarea);
+  if (archivos.A) {
+    const tLive = tareaDe(tarea.id);
+    if (tLive) {
+      tLive.entregableArchivosPrompt = archivos;
+      tLive.entregableArchivo = archivos.A;
+      tarea.entregableArchivosPrompt = archivos;
+      tarea.entregableArchivo = archivos.A;
+      try { guardar(); } catch (_) { /* ignore */ }
+    }
+  }
+
+  const bloques = root.querySelectorAll('[data-prompt-version]');
+  await Promise.all(
+    [...bloques].map(async (bloque) => {
+      const ver = bloque.getAttribute('data-prompt-version') || 'A';
+      const archivo =
+        bloque.getAttribute('data-prompt-archivo') || archivos[ver] || '';
+      const ta = bloque.querySelector('[data-prompt-texto]');
+      if (!ta) return;
+      if (!archivo) {
+        ta.value =
+          'No se encontró el TXT. Corre:\nnode scripts/generar-ts-prompts-contenidos-7-12.js';
+        return;
+      }
+      bloque.setAttribute('data-prompt-archivo', archivo);
+      const href = '/' + String(archivo).replace(/^\/+/, '');
+      try {
+        const res = await fetch(href + '?t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        ta.value = await res.text();
+      } catch (_) {
+        ta.value =
+          'No se pudo cargar ' + href + '\n' +
+          '¿Server en marcha? ¿git pull? ¿corriste generar-ts-prompts-contenidos-7-12.js?';
+      }
+    })
+  );
+
+  root.querySelectorAll('[data-copiar-prompt-version]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const ver = btn.getAttribute('data-copiar-prompt-version') || 'A';
+      const bloque = root.querySelector(`[data-prompt-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-prompt-texto]');
+      const texto = (ta?.value || '').trim();
+      const ok = await copiarTexto(texto);
+      mostrarToast(ok ? `Versión ${ver} copiada` : 'No se pudo copiar');
+    });
+  });
+
+  root.querySelectorAll('[data-guardar-prompt-version]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const ver = btn.getAttribute('data-guardar-prompt-version') || 'A';
+      const bloque = root.querySelector(`[data-prompt-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-prompt-texto]');
+      const archivo = bloque?.getAttribute('data-prompt-archivo') || archivos[ver] || '';
+      const texto = ta?.value ?? '';
+      if (!archivo) {
+        mostrarToast('Sin archivo para guardar');
+        return;
+      }
+      btn.disabled = true;
+      try {
+        const ok = await guardarPromptTxtEnDisco(archivo, texto);
+        if (ok) {
+          registrarHistorialEntregable(tarea, {
+            tipo: 'prompt-gemini',
+            version: ver,
+            accion: 'guardar',
+            archivo,
+            texto,
+          });
+        }
+        mostrarToast(ok ? `Versión ${ver} guardada` : 'No se pudo guardar');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  });
+
+  root.querySelectorAll('[data-mejorar-prompt-version]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const ver = btn.getAttribute('data-mejorar-prompt-version') || 'A';
+      const bloque = root.querySelector(`[data-prompt-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-prompt-texto]');
+      const archivo = bloque?.getAttribute('data-prompt-archivo') || archivos[ver] || '';
+      iniciarMejoraEntregable(tarea, {
+        tipo: 'prompt-gemini',
+        version: ver,
+        texto: ta?.value || '',
+        archivo,
+        bloque,
+      });
+    });
+  });
+}
+
+function asegurarHistorialEntregables(tarea) {
+  if (!tarea) return [];
+  if (!Array.isArray(tarea.historialEntregables)) tarea.historialEntregables = [];
+  return tarea.historialEntregables;
+}
+
+function registrarHistorialEntregable(tarea, opts = {}) {
+  const tLive = tareaDe(tarea?.id) || tarea;
+  if (!tLive) return null;
+  const lista = asegurarHistorialEntregables(tLive);
+  const texto = String(opts.texto || '');
+  const version = String(opts.version || '').toUpperCase() || 'A';
+  const tipo = opts.tipo || tLive.tipoEntregable || '';
+  // Solo la última versión por A/B/C (sin acumular historial)
+  const filtrada = lista.filter(
+    (h) => !(String(h.version || '').toUpperCase() === version && (h.tipo || '') === tipo)
+  );
+  const entry = {
+    id: typeof id === 'function' ? id() : `hist-${Date.now()}`,
+    ts: Date.now(),
+    fecha: typeof toISO === 'function' ? toISO(hoy()) : new Date().toISOString().slice(0, 10),
+    tipo,
+    version,
+    accion: opts.accion || 'guardar',
+    archivo: String(opts.archivo || '').replace(/^\/+/, ''),
+    preview: texto.slice(0, 320),
+  };
+  filtrada.unshift(entry);
+  tLive.historialEntregables = filtrada;
+  if (tarea !== tLive) {
+    asegurarHistorialEntregables(tarea);
+    tarea.historialEntregables = filtrada;
+  }
+  try { guardar(); } catch (_) { /* ignore */ }
+  return entry;
+}
+
+function htmlHistorialEntregableTarea() {
+  // Ya no mostramos listado de versiones: solo queda la última en el TXT
+  return '';
+}
+
+async function guardarPromptTxtEnDisco(archivoRel, texto) {
+  const headers = { 'Content-Type': 'application/json' };
+  const token = sessionStorage.getItem('organizacion_api_token');
+  if (token) headers['X-Organizacion-Token'] = token;
+  try {
+    const res = await fetch('/api/prompt-txt', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        archivo: String(archivoRel || '').replace(/^\/+/, ''),
+        texto: String(texto ?? ''),
+      }),
+    });
+    if (!res.ok) {
+      console.warn('guardar prompt', await res.text());
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.warn('guardar prompt', e);
+    return false;
+  }
+}
+
+function extraerVersionPromptGemini(texto, version) {
+  const v = String(version || 'A').toUpperCase();
+  const re = new RegExp(
+    `VERSI[OÓ]N\\s+${v}[\\s\\S]*?(?=\\n={10,}|\\nVERSI[OÓ]N\\s+[ABC]|\\nNOTAS\\b|$)`,
+    'i'
+  );
+  const m = String(texto || '').match(re);
+  return m ? m[0].trim() : '';
+}
+
+/** Abre panel de ideas bajo la sección y aplica la mejora al textarea. */
+function iniciarMejoraEntregable(tarea, opts = {}) {
+  const version = String(opts.version || 'A').toUpperCase();
+  const tipo = opts.tipo || tarea.tipoEntregable || 'prompt-gemini';
+  const textoActual = String(opts.texto || '');
+  const archivo = String(opts.archivo || '').replace(/^\/+/, '');
+  const bloque = opts.bloque;
+  if (!bloque) {
+    mostrarToast('No se encontró la sección a mejorar');
+    return;
+  }
+
+  // Quitar otros paneles de mejora abiertos
+  document.querySelectorAll('.prompt-mejora').forEach((el) => el.remove());
+
+  const panel = document.createElement('div');
+  panel.className = 'prompt-mejora';
+  panel.innerHTML = `
+    <label class="prompt-mejora__label" for="mejora-ideas-${version}">Tus ideas para mejorar la versión ${version}</label>
+    <textarea id="mejora-ideas-${version}" class="prompt-mejora__ideas" rows="3" placeholder="Ej: más emotivo, mencionar impermeabilidad, tono festival, menos hashtags…"></textarea>
+    <div class="prompt-mejora__acciones">
+      <button type="button" class="btn btn--accent btn--small" data-aplicar-mejora>Aplicar mejora</button>
+      <button type="button" class="btn btn--ghost btn--small" data-cancelar-mejora>Cancelar</button>
+    </div>`;
+  const ta = bloque.querySelector('[data-copy-texto], [data-prompt-texto]');
+  (ta || bloque).insertAdjacentElement('afterend', panel);
+  const ideasTa = panel.querySelector('.prompt-mejora__ideas');
+  ideasTa?.focus();
+
+  panel.querySelector('[data-cancelar-mejora]')?.addEventListener('click', () => panel.remove());
+
+  panel.querySelector('[data-aplicar-mejora]')?.addEventListener('click', async () => {
+    const ideas = (ideasTa?.value || '').trim();
+    if (!ideas) {
+      mostrarToast('Escribe al menos una idea');
+      ideasTa?.focus();
+      return;
+    }
+    const base = ta?.value || textoActual;
+    const mejorado = mejorarTextoConIdeas(base, ideas, { tipo, version, tarea });
+    if (ta) ta.value = mejorado;
+
+    // Solo la última versión: sobrescribe el TXT (sin acumular historial visible)
+    if (archivo) {
+      const ok = await guardarPromptTxtEnDisco(archivo, mejorado);
+      if (ok) {
+        registrarHistorialEntregable(tarea, {
+          tipo,
+          version,
+          accion: 'mejora',
+          archivo,
+          texto: mejorado,
+        });
+      }
+      mostrarToast(ok ? `Versión ${version} actualizada` : 'Mejorada en pantalla (no se pudo guardar)');
+    } else {
+      mostrarToast(`Versión ${version} actualizada — pulsa Guardar`);
+    }
+
+    panel.remove();
+  });
+}
+
+/**
+ * Reescribe el TXT incorporando las ideas de la usuaria.
+ * Conserva metadatos de producto (PRODUCTO/SKU/Link) cuando existen.
+ * Devuelve SOLO la versión actual (sin acumular historial en el texto).
+ */
+function mejorarTextoConIdeas(texto, ideas, opts = {}) {
+  const version = String(opts.version || 'A').toUpperCase();
+  const tipo = opts.tipo || 'copys-txt';
+  const ideasLimpias = String(ideas || '').trim();
+  let original = String(texto || '');
+  if (!ideasLimpias) return original;
+
+  // Quitar pies de mejoras anteriores para no apilar versiones
+  original = original
+    .replace(/\n*— Mejorado con tus ideas[\s\S]*$/i, '')
+    .replace(/\n*AJUSTES OBLIGATORIOS SEGÚN IDEAS:[\s\S]*$/i, '')
+    .trim();
+
+  const lineas = original.split(/\r?\n/);
+  const meta = [];
+  let i = 0;
+  while (i < lineas.length) {
+    const L = lineas[i];
+    if (
+      /^(COPY VIDEO|PROMPTS? GEMINI|PRODUCTO:|SKU:|Link:|Público|Herramienta:|CARACTERÍSTICAS)/i.test(L) ||
+      (meta.length && L.trim() === '') ||
+      (meta.length && /^(VESTUARIO|---)/i.test(L))
+    ) {
+      meta.push(L);
+      i++;
+      if (meta.length > 3 && L.trim() === '' && i > 4) break;
+      continue;
+    }
+    if (!meta.length && L.trim()) break;
+    if (
+      meta.length &&
+      !/^(COPY|PROMPT|PRODUCTO|SKU|Link|Público|Herramienta|CARACTER|VESTUARIO|- |• |✓ |---)/i.test(L) &&
+      L.trim()
+    ) {
+      break;
+    }
+    meta.push(L);
+    i++;
+  }
+
+  const resto = lineas.slice(i).join('\n');
+  const bullets = [...resto.matchAll(/^[•✓\-]\s+.+$/gm)].map((m) => m[0]);
+  const link =
+    (original.match(/https?:\/\/trendseeker\.cl\/[^\s]+/i) || [])[0] ||
+    opts.tarea?.productoUrl ||
+    '';
+  const producto = (original.match(/^PRODUCTO:\s*(.+)$/im) || [])[1] || '';
+  const ideaLines = ideasLimpias
+    .split(/\n/)
+    .map((s) => s.trim().replace(/^[-•*]\s*/, ''))
+    .filter(Boolean);
+  const hook = ideaLines[0] || ideasLimpias;
+  const extras = ideaLines.slice(1);
+
+  if (tipo === 'copys-txt') {
+    const checklist =
+      bullets.length > 0
+        ? bullets.slice(0, 6).join('\n')
+        : [
+            '✓ Características reales de ficha (sin inventar)',
+            '✓ CTA con link de producto',
+            '✓ Tono Trendseeker / Hunter',
+          ].join('\n');
+
+    const cuerpo = [
+      hook,
+      extras.length ? extras.join(' ') : '',
+      'Copy listo para pegar bajo el video, alineado a tus ideas y a la ficha del producto.',
+    ]
+      .filter(Boolean)
+      .join('\n\n');
+
+    return [
+      meta.length
+        ? meta.join('\n').trimEnd()
+        : `COPY VIDEO · Trendseeker · Versión ${version}${producto ? `\nProducto: ${producto}` : ''}${link ? `\nLink: ${link}` : ''}`,
+      '',
+      cuerpo,
+      '',
+      checklist,
+      '',
+      'Shop:',
+      link || 'https://trendseeker.cl/',
+      '',
+      '#Hunter #TrendSeeker #TrendSeekerChile',
+      '',
+    ]
+      .join('\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim() + '\n';
+  }
+
+  // prompt-gemini: integra ideas en el cuerpo (reemplazo limpio)
+  const ajustes = ideaLines.map((s) => `- ${s}`).join('\n');
+  const cuerpoBase = (resto || original)
+    .replace(/\n*AJUSTES OBLIGATORIOS SEGÚN IDEAS:[\s\S]*$/i, '')
+    .replace(/\n*— Mejorado[\s\S]*$/i, '')
+    .trim();
+
+  return [
+    meta.length ? meta.join('\n').trimEnd() : `PROMPT GEMINI VIDEO · Versión ${version}`,
+    '',
+    `---`,
+    `VERSIÓN ${version}`,
+    `---`,
+    '',
+    cuerpoBase ||
+      'Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria. No rediseñes el producto.',
+    '',
+    'Integra sí o sí estas ideas en acción, cámara y atmósfera (sin inventar specs):',
+    ajustes,
+    '',
+  ]
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim() + '\n';
+}
+
+/** @deprecated alias */
+function iniciarMejoraPromptGemini(tarea, promptActual) {
+  iniciarMejoraEntregable(tarea, {
+    tipo: 'prompt-gemini',
+    version: 'A',
+    texto: promptActual,
+    archivo: archivosPromptGeminiDeTarea(tarea).A,
+  });
 }
 
 function guardarGraficoEnFichaCliente(cli, tarea, svgHtml, etiqueta = 'entregable') {
@@ -3260,6 +5645,7 @@ function mostrarVista(vista, { activarTab = false } = {}) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
   }
   actualizarVistaCalendarioNav(vista);
+  if (vista === 'nueva') renderPlantillasMadre();
 }
 
 const VISTAS_CALENDARIO = new Set(['mes', 'semana', 'dia', 'tarea']);
@@ -3296,13 +5682,14 @@ function semanaOffsetPara(fecha) {
 
 function irASemanaDe(fechaISO) {
   semanaOffset = semanaOffsetPara(parseISO(fechaISO));
-  diaSeleccionado = null;
+  diaSeleccionado = fechaISO; // conserva el día clicado desde el mes
   mostrarVista('semana');
   renderCalendario();
 }
 
 function irADia(fechaISO) {
   diaSeleccionado = fechaISO;
+  diaVistaExpandida = true;
   const fecha = parseISO(fechaISO);
   semanaOffset = semanaOffsetPara(fecha);
   const hoyRef = hoy();
@@ -3330,6 +5717,34 @@ function irATarea(tareaId, { actualizarHistorial = true } = {}) {
   if (actualizarHistorial) escribirRutaTarea(tarea);
   mostrarVista('tarea');
   renderTarea();
+  scrollVistaTareaAlTope();
+}
+
+/** Al abrir una subtarea/tarea siempre partir desde arriba (nunca a mitad o abajo). */
+function scrollVistaTareaAlTope() {
+  const irArriba = () => {
+    try {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    } catch (_) {
+      window.scrollTo(0, 0);
+    }
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    const vista = document.getElementById('view-tarea');
+    if (vista) vista.scrollTop = 0;
+    const main = document.querySelector('main');
+    if (main) main.scrollTop = 0;
+    // Ancla al inicio del detalle (título / URL), no al agente
+    document.getElementById('tarea-detalle-contenido')?.scrollIntoView({
+      behavior: 'auto',
+      block: 'start',
+    });
+    window.scrollTo(0, 0);
+  };
+  irArriba();
+  requestAnimationFrame(irArriba);
+  setTimeout(irArriba, 50);
+  setTimeout(irArriba, 200);
 }
 
 function volverADiaDesdeTarea() {
@@ -3474,6 +5889,13 @@ function tareasOrdenadasPorHorario(lista) {
 
 function compararItemsDia(a, b) {
   if (a.minutos !== b.minutos) return a.minutos - b.minutos;
+  // Mantener cada madre + sus subtareas como bloque (sin mezclar clientes)
+  const ba = a.ordenBloque != null ? a.ordenBloque : (a.tipo === 'tarea' ? 900 : -1);
+  const bb = b.ordenBloque != null ? b.ordenBloque : (b.tipo === 'tarea' ? 900 : -1);
+  if (ba !== bb) return ba - bb;
+  const ga = a.ordenGrupo != null ? a.ordenGrupo : 40;
+  const gb = b.ordenGrupo != null ? b.ordenGrupo : 40;
+  if (ga !== gb) return ga - gb;
   const ordenTipo = { cita: 0, reunion: 1, tarea: 2 };
   const ta = ordenTipo[a.tipo] ?? 9;
   const tb = ordenTipo[b.tipo] ?? 9;
@@ -3496,17 +5918,155 @@ function itemsDiaOrdenados(fechaISO) {
   (datos.reunionesClientes || []).filter(r => r.fecha === fechaISO).forEach(r => {
     items.push({ tipo: 'reunion', minutos: minutosHora(r.horaInicio), data: r });
   });
-  datos.tareas.filter(t => t.fecha === fechaISO && !t.pendiente).forEach(t => {
-    items.push({ tipo: 'tarea', minutos: minutosHora(t.horaInicio), data: t });
+
+  const tareas = datos.tareas.filter((t) => tareaAplicaEnFecha(t, fechaISO));
+  const usadas = new Set();
+  const madres = tareas
+    .filter((t) => esTareaMadreCalendario(t) && !t.parentId)
+    .sort((a, b) => {
+      const dh = minutosHora(a.horaInicio) - minutosHora(b.horaInicio);
+      if (dh) return dh;
+      const ca = clienteDe(a.clienteId)?.nombre || a.clienteId || '';
+      const cb = clienteDe(b.clienteId)?.nombre || b.clienteId || '';
+      const dc = ca.localeCompare(cb, 'es');
+      if (dc) return dc;
+      return String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || ''));
+    });
+
+  // Un bloque por madre: madre arriba, subtareas del día 1. 2. 3. debajo
+  madres.forEach((m, bloqueIdx) => {
+    const base = minutosHora(m.horaInicio);
+    items.push({
+      tipo: 'tarea',
+      minutos: base,
+      ordenBloque: bloqueIdx,
+      ordenGrupo: 0,
+      data: m,
+    });
+    usadas.add(m.id);
+    const hijos = (datos.tareas || [])
+      .filter((t) => t.parentId === m.id && t.fecha === fechaISO && !t.pendiente)
+      .sort(
+        (a, b) =>
+          (Number(a.ordenHijo) || 0) - (Number(b.ordenHijo) || 0) ||
+          String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || '')) ||
+          minutosHora(a.horaInicio) - minutosHora(b.horaInicio)
+      );
+    hijos.forEach((h, i) => {
+      items.push({
+        tipo: 'tarea',
+        minutos: base,
+        ordenBloque: bloqueIdx,
+        ordenGrupo: i + 1,
+        indiceHijo: i + 1,
+        data: h,
+      });
+      usadas.add(h.id);
+    });
   });
+
+  tareas
+    .filter((t) => !usadas.has(t.id))
+    .forEach((t, i) => {
+      items.push({
+        tipo: 'tarea',
+        minutos: minutosHora(t.horaInicio),
+        ordenBloque: 1000 + i,
+        ordenGrupo: 0,
+        data: t,
+      });
+    });
+
   return items.sort(compararItemsDia);
 }
 
 function normalizarCitasSalud(data) {
+  if (!Array.isArray(data.citasSalud)) data.citasSalud = [];
   data.citasSalud.forEach(c => {
     if (c.estado && !ESTADOS_CITA[c.estado]) delete c.estado;
   });
+  asegurarEspecialistasSalud(data);
   return data;
+}
+
+/** Lista persistente de especialistas para el desplegable de Salud. */
+function asegurarEspecialistasSalud(data) {
+  if (!Array.isArray(data.especialistasSalud)) data.especialistasSalud = [];
+  const set = new Set(
+    data.especialistasSalud
+      .map(n => String(n || '').trim())
+      .filter(Boolean)
+  );
+  (data.citasSalud || []).forEach(c => {
+    const nom = String(c.especialidad || '').trim();
+    if (nom) set.add(nom);
+  });
+  data.especialistasSalud = [...set].sort((a, b) =>
+    a.localeCompare(b, 'es', { sensitivity: 'base' })
+  );
+  return data;
+}
+
+function registrarEspecialistaSalud(nombre) {
+  const nom = String(nombre || '').trim();
+  if (!nom) return '';
+  asegurarEspecialistasSalud(datos);
+  const existe = datos.especialistasSalud.some(
+    n => n.localeCompare(nom, 'es', { sensitivity: 'base' }) === 0
+  );
+  if (!existe) {
+    datos.especialistasSalud.push(nom);
+    datos.especialistasSalud.sort((a, b) =>
+      a.localeCompare(b, 'es', { sensitivity: 'base' })
+    );
+  }
+  return nom;
+}
+
+function renderSelectEspecialistasSalud(seleccionado) {
+  const sel = document.getElementById('cita-especialista');
+  if (!sel) return;
+  asegurarEspecialistasSalud(datos);
+  const valor = seleccionado != null ? seleccionado : sel.value;
+  const opts = [
+    '<option value="">Seleccionar…</option>',
+    ...datos.especialistasSalud.map(
+      n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`
+    ),
+    '<option value="__nuevo__">+ Agregar otro…</option>'
+  ];
+  sel.innerHTML = opts.join('');
+  if (valor && [...sel.options].some(o => o.value === valor)) {
+    sel.value = valor;
+  } else {
+    sel.value = '';
+  }
+  actualizarUIEspecialistaNuevo();
+}
+
+function actualizarUIEspecialistaNuevo() {
+  const sel = document.getElementById('cita-especialista');
+  const wrap = document.getElementById('cita-especialista-nuevo-wrap');
+  const input = document.getElementById('cita-especialista-nuevo');
+  if (!sel || !wrap || !input) return;
+  const esNuevo = sel.value === '__nuevo__';
+  wrap.hidden = !esNuevo;
+  input.required = esNuevo;
+  if (!esNuevo) {
+    input.value = '';
+  } else {
+    input.focus();
+  }
+}
+
+function valorEspecialistaSaludDesdeForm() {
+  const sel = document.getElementById('cita-especialista');
+  const input = document.getElementById('cita-especialista-nuevo');
+  if (!sel) return '';
+  if (sel.value === '__nuevo__') {
+    return String(input?.value || '').trim();
+  }
+  return String(sel.value || '').trim();
 }
 
 function normalizarReunionesClientes(data) {
@@ -3691,16 +6251,27 @@ function htmlReunionDia(r) {
   </article>`;
 }
 
-function htmlTareaDia(t) {
+function htmlTareaDia(t, opts = {}) {
   const cli = clienteDe(t.clienteId);
-  const col = colorDe(cli);
+  const baseCol = colorDe(cli);
+  const col = esTareaMadreCalendario(t) ? colorMiniTarea(t) : baseCol;
   const rol = rolDe(t);
-  const titulo = nombreBaseTarea(t) || t.titulo;
+  const tituloBase = nombreBaseTarea(t) || t.titulo;
+  const idx =
+    opts.indiceHijo != null
+      ? Number(opts.indiceHijo)
+      : Number(t.ordenHijo) > 0
+        ? Number(t.ordenHijo)
+        : null;
+  const titulo = idx != null ? `${idx}. ${tituloBase}` : tituloBase;
+  const madre = esTareaMadreCalendario(t);
+  const hija = idx != null || !!t.parentId;
+  const tipoLabel = madre ? 'Tarea madre' : hija ? `Subtarea ${idx != null ? idx : ''}`.trim() : 'Tarea';
 
-  return `<article class="dia-item dia-item--tarea dia-item--clic tarea--${t.prioridad}${t.completada ? ' tarea--completada' : ''}" data-id="${t.id}" style="border-left-color:${col.border};background:${col.bg}" title="Clic para ver detalle y realizar tarea">
+  return `<article class="dia-item dia-item--tarea dia-item--clic tarea--${t.prioridad}${t.completada ? ' tarea--completada' : ''}${madre ? ' dia-item--madre' : ''}${hija ? ' dia-item--hija' : ''}" data-id="${t.id}"${idx != null ? ` data-indice-hijo="${idx}"` : ''} style="border-left-color:${col.border};background:${col.bg}" title="Clic para ver detalle y realizar tarea">
     <div class="dia-item__hora" style="color:${col.text}">${escapeHtml(etiquetaHoraTarea(t))}</div>
     <div class="dia-item__cuerpo">
-      <div class="dia-item__tipo" style="color:${col.text}">Tarea${cli ? ` · ${escapeHtml(cli.nombre)}` : ''}</div>
+      <div class="dia-item__tipo" style="color:${col.text}">${tipoLabel}${cli ? ` · ${escapeHtml(cli.nombre)}` : ''}</div>
       <h3 class="dia-item__titulo">${escapeHtml(titulo)}</h3>
       ${rol ? `<p class="dia-item__rol">${escapeHtml(rol.nombre)}</p>` : ''}
       ${t.prioridad ? `<p class="dia-item__meta">Prioridad: ${escapeHtml(t.prioridad)}</p>` : ''}
@@ -3708,6 +6279,92 @@ function htmlTareaDia(t) {
       ${htmlBotonesTarea(t, { modo: 'dia' })}
     </div>
   </article>`;
+}
+
+/** Agrupa madre → subtareas 1. 2. 3. (semana y día). */
+function htmlItemsAgrupadosMadreHijos(items, renderItem) {
+  if (!items.length) return '';
+  const partes = [];
+  let bloqueAbierto = false;
+  const cerrarBloque = () => {
+    if (bloqueAbierto) {
+      partes.push('</div>');
+      bloqueAbierto = false;
+    }
+  };
+
+  items.forEach((item) => {
+    if (item.tipo !== 'tarea') {
+      cerrarBloque();
+      partes.push(renderItem(item));
+      return;
+    }
+    const esMadre = item.ordenGrupo === 0 && esTareaMadreCalendario(item.data);
+    const esHija = item.indiceHijo != null || !!item.data?.parentId;
+    if (esMadre) {
+      cerrarBloque();
+      partes.push('<div class="dia-bloque" data-bloque-madre="' + escapeHtml(item.data.id) + '">');
+      bloqueAbierto = true;
+      partes.push(renderItem(item));
+      return;
+    }
+    if (esHija && bloqueAbierto) {
+      partes.push(renderItem(item));
+      return;
+    }
+    cerrarBloque();
+    partes.push(renderItem(item));
+  });
+  cerrarBloque();
+  return partes.join('');
+}
+
+function indiceHijoVisible(item) {
+  if (!item || item.tipo !== 'tarea') return null;
+  if (item.indiceHijo != null) return Number(item.indiceHijo);
+  const n = Number(item.data?.ordenHijo);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+/** Pill compacto estilo semana, para vista día reducida. */
+function htmlItemDiaReducido(item) {
+  if (item.tipo === 'cita' || item.tipo === 'reunion') {
+    return htmlItemCalendarioSemana(item);
+  }
+  const t = item.data;
+  const col = colorMiniTarea(t);
+  const idx = indiceHijoVisible(item);
+  const textoBase = tituloMes(t, MAX_TITULO_SEMANA);
+  const texto = idx != null ? `${idx}. ${textoBase}` : textoBase;
+  const completo = tituloMes(t, 200);
+  const madre = esTareaMadreCalendario(t);
+  const hija = idx != null || !!t.parentId;
+  const cls =
+    (t.completada ? ' tarea-mini--completada' : '') +
+    (madre ? ' tarea-mini--madre' : '') +
+    (hija ? ' tarea-mini--hija' : '');
+  const hora = etiquetaHoraTarea(t);
+  const idxAttr = idx != null ? ` data-indice-hijo="${idx}"` : '';
+  return `<div class="tarea-mini tarea-mini--clic tarea-mini--dia${cls}" data-tarea-id="${t.id}" data-id="${t.id}"${idxAttr} style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(hora + ' · ' + completo)} — Clic para abrir">${escapeHtml(texto)}</div>`;
+}
+
+/** Agrupa items del día en bloques madre→subtareas (como columna de semana). */
+function htmlDiaReducido(items) {
+  if (!items.length) {
+    return '<p class="task-list--empty">No hay tareas, reuniones ni citas este día.</p>';
+  }
+  return `<div class="dia-columna">${htmlItemsAgrupadosMadreHijos(items, htmlItemDiaReducido)}</div>`;
+}
+
+function htmlDiaExpandido(items) {
+  if (!items.length) {
+    return '<p class="task-list--empty">No hay tareas, reuniones ni citas este día.</p>';
+  }
+  return `<div class="dia-timeline">${htmlItemsAgrupadosMadreHijos(items, (item) => {
+    if (item.tipo === 'cita') return htmlCitaDia(item.data);
+    if (item.tipo === 'reunion') return htmlReunionDia(item.data);
+    return htmlTareaDia(item.data, { indiceHijo: indiceHijoVisible(item) });
+  })}</div>`;
 }
 
 function tituloConCliente(clienteId, tituloRaw) {
@@ -3796,6 +6453,7 @@ function bindAccionesTarea(contenedor) {
         if (t.completada) t.pendiente = false;
         fijarAgendaUsuario(t);
         fijarEstadoUsuario(t);
+        trasCambiarCompletadaSubtarea(t);
       } else if (btn.dataset.act === 'pendiente') {
         marcarTareaPendiente(t);
         mostrarToast('Tarea en Pendientes — es la misma tarea, sin duplicar');
@@ -3868,38 +6526,37 @@ function renderCalendarioMes() {
     const esMesActual = dia.getMonth() === m;
     const esHoy = diaStr === hoyStr;
 
-    const citas = datos.citasSalud.filter(c => c.fecha === diaStr);
-    const reuniones = (datos.reunionesClientes || []).filter(r => r.fecha === diaStr);
-    const tareas = datos.tareas.filter(t => t.fecha === diaStr && !t.pendiente);
-
-    const items = [
-      ...citas.map(c => ({
-        minutos: minutosHora(c.hora),
-        html: `<span class="mes-item mes-item--salud${claseCitaEstado(c)}" style="background:${COLORES.salud.bg};border-left-color:${COLORES.salud.border};color:${COLORES.salud.text}" title="${escapeHtml(c.especialidad + ' ' + c.hora + (etiquetaEstadoCita(c) ? ' · ' + etiquetaEstadoCita(c) : ''))}">${escapeHtml(textoCitaCompacto(c, 0))}</span>`
-      })),
-      ...reuniones.map(r => {
-        const col = colorReunion();
-        const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
-        return {
-          minutos: minutosHora(r.horaInicio),
-          html: `<span class="mes-item mes-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 0))}</span>`
-        };
-      }),
-      ...tareas.map(t => {
-        const cli = clienteDe(t.clienteId);
-        const col = colorDe(cli);
-        const cls = t.completada ? ' mes-item--completada' : '';
-        return {
-          minutos: minutosHora(t.horaInicio),
-          html: `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(tituloMes(t, 0))}</span>`
-        };
+    // Vista mes: solo madres y tareas únicas (sin subtareas; esas van en Semana)
+    const ordenados = itemsDiaOrdenados(diaStr).filter((it) => {
+      if (it.tipo !== 'tarea') return true;
+      const t = it.data;
+      if (it.indiceHijo != null || t.parentId) return false;
+      return true;
+    });
+    const itemsHtml = ordenados
+      .map((it) => {
+        if (it.tipo === 'cita') {
+          const c = it.data;
+          return `<span class="mes-item mes-item--salud${claseCitaEstado(c)}" style="background:${COLORES.salud.bg};border-left-color:${COLORES.salud.border};color:${COLORES.salud.text}" title="${escapeHtml(c.especialidad + ' ' + c.hora + (etiquetaEstadoCita(c) ? ' · ' + etiquetaEstadoCita(c) : ''))}">${escapeHtml(textoCitaCompacto(c, 0))}</span>`;
+        }
+        if (it.tipo === 'reunion') {
+          const r = it.data;
+          const col = colorReunion();
+          const hora = r.horaFin ? `${r.horaInicio}–${r.horaFin}` : r.horaInicio;
+          return `<span class="mes-item mes-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 0))}</span>`;
+        }
+        const t = it.data;
+        const col = colorMiniTarea(t);
+        const madre = esTareaMadreCalendario(t);
+        const cls =
+          (t.completada ? ' mes-item--completada' : '') +
+          (madre ? ' mes-item--madre' : '');
+        return `<span class="mes-item${cls}" style="background:${col.bg};border-left-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(tituloMes(t, 0))}</span>`;
       })
-    ].sort(compararItemsDia);
+      .join('');
+    const alturaMin = ordenados.length === 0 ? 108 : 40 + ordenados.length * 34;
 
-    const itemsHtml = items.map(x => x.html).join('');
-    const alturaMin = items.length === 0 ? 108 : 36 + items.length * 26;
-
-    html += `<div class="mes-dia${esHoy ? ' mes-dia--hoy' : ''}${!esMesActual ? ' mes-dia--fuera' : ''}" data-fecha="${diaStr}" data-items="${items.length}" style="min-height:${alturaMin}px" title="Ver semana del ${dia.toLocaleDateString('es-CL')}">
+    html += `<div class="mes-dia${esHoy ? ' mes-dia--hoy' : ''}${!esMesActual ? ' mes-dia--fuera' : ''}" data-fecha="${diaStr}" data-items="${ordenados.length}" style="min-height:${alturaMin}px" title="Ver semana del ${dia.toLocaleDateString('es-CL')}">
       <div class="mes-dia__num">${dia.getDate()}</div>
       <div class="mes-dia__items">${itemsHtml}</div>
     </div>`;
@@ -3909,6 +6566,23 @@ function renderCalendarioMes() {
   cont.querySelectorAll('.mes-dia').forEach(celda => {
     celda.addEventListener('click', () => irASemanaDe(celda.dataset.fecha));
   });
+}
+
+function esTareaMadreCalendario(t) {
+  if (!t || t.parentId) return false;
+  if (t.tipoEntregable === 'ecosistema' || t.contenidoSerie) return true;
+  return (datos.tareas || []).some((h) => h.parentId === t.id);
+}
+
+/** Tonos más oscuros para tareas madre en vista semana/mes. */
+function colorMiniTarea(t) {
+  const base = colorDe(clienteDe(t?.clienteId));
+  if (!esTareaMadreCalendario(t)) return base;
+  return {
+    bg: base.border || '#b8c8d8',
+    border: base.text || '#4a5a6a',
+    text: base.text || '#3a4a5a',
+  };
 }
 
 function htmlItemCalendarioSemana(item) {
@@ -3925,12 +6599,21 @@ function htmlItemCalendarioSemana(item) {
     return `<div class="cita-cal cita-cal--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-left-color:${col.border}"><span class="cita-cal__icon">${icon}</span><span class="cita-cal__text" style="color:${col.text}">${escapeHtml(r.titulo || 'Reunión')} · ${escapeHtml(hora)}${etiquetaEstadoReunion(r) ? ' · ' + escapeHtml(etiquetaEstadoReunion(r)) : ''}</span></div>`;
   }
   const t = item.data;
-  const col = colorDe(clienteDe(t.clienteId));
-  const texto = tituloMes(t, MAX_TITULO_SEMANA);
+  const col = colorMiniTarea(t);
+  const idx = indiceHijoVisible(item);
+  const textoBase = tituloMes(t, MAX_TITULO_SEMANA);
+  const texto = idx != null ? `${idx}. ${textoBase}` : textoBase;
   const completo = tituloMes(t, 200);
-  const cls = t.completada ? ' tarea-mini--completada' : '';
+  const madre = esTareaMadreCalendario(t);
+  const hija = idx != null || !!t.parentId;
+  const cls =
+    (t.completada ? ' tarea-mini--completada' : '') +
+    (madre ? ' tarea-mini--madre' : '') +
+    (hija ? ' tarea-mini--hija' : '');
   const hora = etiquetaHoraTarea(t);
-  return `<div class="tarea-mini tarea-mini--clic${cls}" data-tarea-id="${t.id}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(hora + ' · ' + completo)} — Clic para resolver">${escapeHtml(texto)}</div>`;
+  const fecha = t.fecha || '';
+  const idxAttr = idx != null ? ` data-indice-hijo="${idx}"` : '';
+  return `<div class="tarea-mini tarea-mini--clic${cls}" data-tarea-id="${t.id}" data-fecha="${escapeHtml(fecha)}"${idxAttr} style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(hora + ' · ' + completo)} — Clic para ver el día">${escapeHtml(texto)}</div>`;
 }
 
 function renderCalendario() {
@@ -3951,11 +6634,12 @@ function renderCalendario() {
 
     const items = itemsDiaOrdenados(diaStr);
     const resumen = items.length
-      ? items.map(htmlItemCalendarioSemana).join('')
+      ? htmlItemsAgrupadosMadreHijos(items, htmlItemCalendarioSemana)
       : '<p class="task-list--empty" style="font-size:0.7rem">Sin tareas</p>';
 
     const div = document.createElement('div');
-    div.className = `dia dia--clic${diaStr === hoyStr ? ' dia--hoy' : ''}`;
+    const seleccionado = diaSeleccionado && diaStr === diaSeleccionado;
+    div.className = `dia dia--clic${diaStr === hoyStr ? ' dia--hoy' : ''}${seleccionado ? ' dia--seleccionado' : ''}`;
     div.innerHTML = `
       <div class="dia__header dia__header--clic" data-fecha="${diaStr}" title="Ver detalle del día">
         <div class="dia__nombre">${DIAS[i]}</div>
@@ -3968,10 +6652,18 @@ function renderCalendario() {
   cont.querySelectorAll('.dia__header--clic').forEach(hdr => {
     hdr.addEventListener('click', () => irADia(hdr.dataset.fecha));
   });
+  // Semana → día (no salta directo a la tarea): mes → semana → día → tarea
   cont.querySelectorAll('.tarea-mini--clic').forEach(el => {
     el.addEventListener('click', e => {
       e.stopPropagation();
-      irATarea(el.dataset.tareaId);
+      const fecha =
+        el.dataset.fecha ||
+        el.closest('.dia')?.querySelector('.dia__header--clic')?.dataset.fecha;
+      if (fecha) {
+        const tid = el.dataset.tareaId;
+        irADia(fecha);
+        if (tid) resaltarTareaEnDia(tid);
+      }
     });
   });
   cont.querySelectorAll('.dia__tareas--resumen').forEach(zona => {
@@ -4023,9 +6715,18 @@ function renderSemanaMini() {
         return `<span class="semana-mini-item semana-mini-item--reunion${claseReunionEstado(r)}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml((r.titulo || 'Reunión') + ' ' + hora + (etiquetaEstadoReunion(r) ? ' · ' + etiquetaEstadoReunion(r) : ''))}">${escapeHtml(textoReunionCompacto(r, 14))}</span>`;
       }
       const t = item.data;
-      const col = colorDe(clienteDe(t.clienteId));
-      const cls = t.completada ? ' semana-mini-item--completada semana-mini-item--clic' : ' semana-mini-item--clic';
-      return `<span class="semana-mini-item${cls}" data-tarea-id="${t.id}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(tituloMes(t, 200))} — Clic para resolver">${escapeHtml(tituloMes(t, 22))}</span>`;
+      const col = colorMiniTarea(t);
+      const idx = indiceHijoVisible(item);
+      const base = tituloMes(t, idx != null ? 18 : 22);
+      const label = idx != null ? `${idx}.${base}` : base;
+      const madre = esTareaMadreCalendario(t);
+      const hija = idx != null || !!t.parentId;
+      const cls =
+        (t.completada ? ' semana-mini-item--completada' : '') +
+        ' semana-mini-item--clic' +
+        (madre ? ' semana-mini-item--madre' : '') +
+        (hija ? ' semana-mini-item--hija' : '');
+      return `<span class="semana-mini-item${cls}" data-tarea-id="${t.id}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(tituloMes(t, 200))} — Clic para resolver">${escapeHtml(label)}</span>`;
     }).join('');
 
     if (!itemsHtml) {
@@ -4072,29 +6773,45 @@ function renderSemanaMini() {
 function renderDia() {
   if (!diaSeleccionado) return;
   const fecha = parseISO(diaSeleccionado);
-  const titulo = document.getElementById('dia-titulo');
-  const subtitulo = document.getElementById('dia-subtitulo');
   const cont = document.getElementById('dia-contenido');
-  if (!titulo || !cont) return;
+  const panel = document.getElementById('panel-dia');
+  const nombreEl = document.getElementById('dia-detalle-nombre');
+  const numeroEl = document.getElementById('dia-detalle-numero');
+  const subtitulo = document.getElementById('dia-subtitulo');
+  if (!cont || !fecha) return;
+
+  // Siempre desplegado: la fila lun–dom es el selector del día
+  diaVistaExpandida = true;
 
   const items = itemsDiaOrdenados(diaSeleccionado);
-  const numTareas = items.filter(i => i.tipo === 'tarea').length;
-  const numCitas = items.filter(i => i.tipo === 'cita').length;
-  const numReuniones = items.filter(i => i.tipo === 'reunion').length;
-
-  titulo.textContent = formatFecha(fecha);
-  subtitulo.textContent = `${numTareas} tarea(s) · ${numReuniones} reunión(es) · ${numCitas} cita(s) · ordenado por hora`;
-
-  if (!items.length) {
-    cont.innerHTML = '<p class="task-list--empty">No hay tareas, reuniones ni citas este día.</p>';
-  } else {
-    cont.innerHTML = `<div class="dia-timeline">${items.map(item => {
-      if (item.tipo === 'cita') return htmlCitaDia(item.data);
-      if (item.tipo === 'reunion') return htmlReunionDia(item.data);
-      return htmlTareaDia(item.data);
-    }).join('')}</div>`;
-    bindAccionesTarea(cont);
+  const numTareas = items.filter((i) => i.tipo === 'tarea').length;
+  const numMadres = items.filter(
+    (i) => i.tipo === 'tarea' && i.ordenGrupo === 0 && esTareaMadreCalendario(i.data)
+  ).length;
+  const numCitas = items.filter((i) => i.tipo === 'cita').length;
+  const numReuniones = items.filter((i) => i.tipo === 'reunion').length;
+  const diaSemana = DIAS[(fecha.getDay() + 6) % 7] || '';
+  const rangoDia = document.getElementById('rango-dia');
+  if (rangoDia) {
+    const esHoy = diaSeleccionado === toISO(hoy());
+    rangoDia.textContent = esHoy
+      ? 'Hoy'
+      : fecha.toLocaleDateString('es-CL', { weekday: 'short', day: 'numeric', month: 'short' });
   }
+
+  if (nombreEl) nombreEl.textContent = String(diaSemana).toUpperCase();
+  if (numeroEl) numeroEl.textContent = String(fecha.getDate());
+  if (subtitulo) {
+    subtitulo.textContent = `${numTareas} tarea(s) · ${numMadres} madre(s) · ${numReuniones} reunión(es) · ${numCitas} cita(s)`;
+  }
+  if (panel) {
+    panel.classList.add('panel--dia-expandido');
+    panel.classList.remove('panel--dia-reducido');
+  }
+
+  cont.className = 'dia-detalle dia-detalle--expandida';
+  cont.innerHTML = htmlDiaExpandido(items);
+  bindAccionesTarea(cont);
   bindAccionesCita(cont);
   bindAccionesReunion(cont);
   renderSemanaMini();
@@ -4249,20 +6966,31 @@ function renderTarea() {
   if (!detalle || !agentePanel) return;
 
   const rutaRef = urlTareaAbsoluta(tarea);
+  const cliVars = `--cli-border:${col.border};--cli-bg:${col.bg};--cli-text:${col.text}`;
+
+  const layout = document.querySelector('#view-tarea .tarea-layout');
+  if (layout) layout.setAttribute('style', cliVars);
+  const panelAgente = document.querySelector('#view-tarea .panel--agente');
+  if (panelAgente) {
+    panelAgente.style.borderTopColor = col.border;
+  }
 
   detalle.innerHTML = `
-    <div class="tarea-detalle" style="border-left-color:${col.border}">
+    <div class="tarea-detalle" style="border-left-color:${col.border};${cliVars}">
       <p class="tarea-detalle__ref" title="Abre o comparte este enlace para ir directo a la tarea">
         <a href="${escapeHtml(rutaRef)}" class="tarea-detalle__ref-link">${escapeHtml(rutaRef)}</a>
         <button type="button" class="btn btn--small btn--ghost tarea-detalle__ref-copiar" data-copiar-ruta-tarea title="Copiar enlace">Copiar</button>
       </p>
       <p class="tarea-detalle__fecha">${escapeHtml(fecha)} · ${escapeHtml(etiquetaHoraTarea(tarea))}</p>
-      <h2 class="tarea-detalle__titulo">${escapeHtml(titulo)}</h2>
+      <h2 class="tarea-detalle__titulo" style="color:${col.text}">${escapeHtml(titulo)}</h2>
       ${cli ? `<p class="tarea-detalle__cliente"><strong>Cliente:</strong> ${escapeHtml(cli.nombre)}</p>` : ''}
       ${rol ? `<p class="tarea-detalle__rol"><strong>Rol:</strong> ${escapeHtml(rol.nombre)}</p>` : ''}
       ${tarea.prioridad ? `<p class="tarea-detalle__meta"><strong>Prioridad:</strong> ${escapeHtml(tarea.prioridad)}</p>` : ''}
       ${tarea.pendiente ? '<p class="tarea-detalle__meta tarea-detalle__meta--pendiente"><strong>Estado:</strong> En pendientes (no visible en calendario)</p>' : ''}
       ${tarea.notas ? `<div class="tarea-detalle__notas"><strong>Notas</strong><p>${escapeHtml(tarea.notas)}</p></div>` : ''}
+      ${htmlVinculosEcosistema(tarea)}
+      ${htmlEntregableTarea(tarea)}
+      ${htmlGaleriaImagenesTarea(tarea)}
       ${cli ? htmlSkillResumen(cli, col) : ''}
       <div class="tarea-detalle__acciones">
         ${htmlBotonesTarea(tarea, { modo: 'detalle' })}
@@ -4312,6 +7040,7 @@ function renderTarea() {
     </form>`;
 
   bindAccionesTarea(detalle);
+  bindArticuloEcosistema(detalle, tarea);
   detalle.querySelector('[data-copiar-ruta-tarea]')?.addEventListener('click', async () => {
     const ok = await copiarTexto(urlTareaAbsoluta(tarea));
     mostrarToast(ok ? 'Enlace copiado' : 'No se pudo copiar — selecciona el enlace manualmente');
@@ -4319,12 +7048,129 @@ function renderTarea() {
   detalle.querySelectorAll('[data-abrir-ficha-cliente]').forEach(btn => {
     btn.addEventListener('click', () => (window.abrirFichaCliente || abrirPerfilCliente)(btn.dataset.abrirFichaCliente));
   });
+  bindImagenesTareaDetalle(tarea);
   bindAgenteTarea(tarea);
+  cargarEntregableTxtEnVista(tarea);
   ajustarAlturaTextarea(document.getElementById('agente-input'));
   requestAnimationFrame(() => {
     syncAlturaPanelesTarea();
     observarAlturaPanelTarea();
     renderDiagramasAgente(agentePanel);
+    scrollVistaTareaAlTope();
+  });
+}
+
+function bindImagenesTareaDetalle(tarea) {
+  const input = document.getElementById('tarea-imagenes-input');
+  if (input) {
+    input.onchange = async (e) => {
+      const t = tareaDe(tarea.id);
+      if (!t) return;
+      const files = [...(e.target.files || [])].filter((f) => f.type.startsWith('image/'));
+      const cargadas = [];
+      mostrarToast('Subiendo imágenes…');
+      for (const file of files) {
+        try {
+          const dataUrl = await leerImagenComoDataUrl(file);
+          cargadas.push({ nombre: file.name, dataUrl });
+        } catch {
+          mostrarToast('No se pudo cargar una imagen');
+        }
+      }
+      input.value = '';
+      if (!cargadas.length) return;
+      const n = await guardarImagenesEnTarea(t, cargadas);
+      if (!guardar()) return;
+      mostrarToast(n ? `${n} imagen${n === 1 ? '' : 'es'} guardada${n === 1 ? '' : 's'} en disco` : 'Sin cambios');
+      renderTarea();
+    };
+  }
+
+  const inputVideo = document.getElementById('tarea-video-input');
+  if (inputVideo) {
+    inputVideo.onchange = async (e) => {
+      const t = tareaDe(tarea.id);
+      if (!t) return;
+      const file = (e.target.files || [])[0];
+      inputVideo.value = '';
+      if (!file) return;
+      if (!file.type.startsWith('video/') && !/\.(mp4|webm|mov)$/i.test(file.name)) {
+        mostrarToast('Elige un video MP4, WebM o MOV');
+        return;
+      }
+      if (file.size > 120 * 1024 * 1024) {
+        mostrarToast('El video supera ~120 MB — comprímelo un poco e inténtalo de nuevo');
+        return;
+      }
+      mostrarToast('Subiendo video… (puede tardar)');
+      try {
+        await guardarVideoEnTarea(t, file);
+        if (!guardar()) return;
+        mostrarToast('Video guardado en la tarea');
+        renderTarea();
+      } catch (err) {
+        console.warn(err);
+        mostrarToast('No se pudo subir el video: ' + (err.message || 'error'));
+      }
+    };
+  }
+
+  document.getElementById('tarea-imgs-guardadas')?.querySelectorAll('[data-quitar-img]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const t = tareaDe(tarea.id);
+      if (!t?.sesionAgente) return;
+      const idx = Number(btn.dataset.quitarImg?.replace('tarearef-', ''));
+      if (Number.isNaN(idx)) return;
+      const lista = imagenesGuardadasTarea(t);
+      const quitada = lista[idx];
+      const key = srcImagenRef(quitada);
+      if (!key) return;
+      t.sesionAgente.imagenesReferencia = (t.sesionAgente.imagenesReferencia || []).filter(
+        (r) => srcImagenRef(r) !== key
+      );
+      for (const m of t.sesionAgente.mensajes || []) {
+        if (m.imagenes?.length) {
+          m.imagenes = m.imagenes.filter((i) => srcImagenRef(i) !== key);
+        }
+      }
+      const cli = clienteDe(t.clienteId);
+      if (cli?.ficha?.documentos) {
+        cli.ficha.documentos = cli.ficha.documentos.filter(
+          (d) => !(d.tareaId === t.id && (d.url === key || d.dataUrl === key))
+        );
+      }
+      if (cli?.ficha?.landing?.imagenes) {
+        cli.ficha.landing.imagenes = cli.ficha.landing.imagenes.filter(
+          (x) => !(x.tareaId === t.id && (x.url === key || x.dataUrl === key))
+        );
+      }
+      guardar();
+      renderTarea();
+    });
+  });
+
+  document.getElementById('tarea-videos-guardados')?.querySelectorAll('[data-quitar-video]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const t = tareaDe(tarea.id);
+      if (!t?.sesionAgente) return;
+      asegurarArchivosAgente(t.sesionAgente);
+      const idx = Number(btn.dataset.quitarVideo);
+      if (Number.isNaN(idx)) return;
+      const videos = archivosVideoTarea(t);
+      const quitado = videos[idx];
+      if (!quitado?.url) return;
+      t.sesionAgente.archivosAdjuntos = (t.sesionAgente.archivosAdjuntos || []).filter(
+        (a) => a.url !== quitado.url
+      );
+      const cli = clienteDe(t.clienteId);
+      if (cli?.ficha?.documentos) {
+        cli.ficha.documentos = cli.ficha.documentos.filter(
+          (d) => !(d.tareaId === t.id && d.url === quitado.url)
+        );
+      }
+      guardar();
+      renderTarea();
+    });
   });
 }
 
@@ -4337,19 +7183,9 @@ function ajustarAlturaTextarea(ta) {
 let _observerAlturaTarea = null;
 
 function syncAlturaPanelesTarea() {
-  const vista = document.getElementById('view-tarea');
-  if (!vista?.classList.contains('view--active')) return;
-
-  const left = document.querySelector('#view-tarea .panel--tarea-detalle');
+  // Layout apilado (un solo bloque ancho): no igualar alturas izquierda/derecha
   const right = document.querySelector('#view-tarea .panel--agente');
-  if (!left || !right) return;
-
-  if (window.matchMedia('(max-width: 900px)').matches) {
-    right.style.height = '';
-    return;
-  }
-
-  right.style.height = `${left.offsetHeight}px`;
+  if (right) right.style.height = '';
 }
 
 function observarAlturaPanelTarea() {
@@ -4358,8 +7194,10 @@ function observarAlturaPanelTarea() {
 
   if (_observerAlturaTarea) _observerAlturaTarea.disconnect();
 
+  // Por si queda altura residual de la vista en 2 columnas
   _observerAlturaTarea = new ResizeObserver(() => syncAlturaPanelesTarea());
   _observerAlturaTarea.observe(left);
+  syncAlturaPanelesTarea();
 }
 
 function bindAgenteTarea(tarea) {
@@ -4384,7 +7222,7 @@ function bindAgenteTarea(tarea) {
     };
   }
 
-  const procesarSolicitud = (texto) => {
+  const procesarSolicitud = async (texto) => {
     const t = tareaDe(tarea.id);
     if (!t || !texto) return;
     asegurarSesionAgente(t);
@@ -4392,10 +7230,10 @@ function bindAgenteTarea(tarea) {
     const imgs = [...(t.sesionAgente.imagenesPendientes || [])];
     const msgUsuario = { rol: 'usuario', texto, ts: Date.now() };
     if (imgs.length) {
-      msgUsuario.imagenes = imgs.map(({ nombre, dataUrl }) => ({ nombre, dataUrl }));
-      t.sesionAgente.imagenesReferencia.push(...msgUsuario.imagenes);
-      t.sesionAgente.imagenesPendientes = [];
-      guardarImagenesEnFichaCliente(cli, msgUsuario.imagenes, t);
+      const n = await guardarImagenesEnTarea(t, imgs, { vaciarPendientes: true });
+      if (n) {
+        msgUsuario.imagenes = imagenesGuardadasTarea(t).slice(-n);
+      }
     }
     t.sesionAgente.mensajes.push(msgUsuario);
     const respuesta = generarRespuestaAgente(t, texto);
@@ -4440,6 +7278,18 @@ function bindAgenteTarea(tarea) {
       guardar();
       renderTarea();
     });
+  });
+
+  document.getElementById('btn-guardar-imgs-tarea')?.addEventListener('click', async () => {
+    const t = tareaDe(tarea.id);
+    if (!t) return;
+    asegurarSesionAgente(t);
+    asegurarImagenesAgente(t.sesionAgente);
+    mostrarToast('Subiendo imágenes…');
+    const n = await guardarImagenesEnTarea(t, t.sesionAgente.imagenesPendientes || [], { vaciarPendientes: true });
+    if (!guardar()) return;
+    mostrarToast(n ? `${n} imagen${n === 1 ? '' : 'es'} guardada${n === 1 ? '' : 's'} en disco` : 'No hay pendientes');
+    renderTarea();
   });
 
   form.onsubmit = e => {
@@ -4574,46 +7424,140 @@ function urlPortalCliente(cliId) {
 function renderClientes() {
   const grid = document.getElementById('lista-clientes');
   const select = document.getElementById('tarea-cliente');
-  if (!grid) return;
-
-  grid.innerHTML = datos.clientes.map(c => {
-    const col = colorDe(c);
-    const skill = skillDe(c);
-    const roles = (c.roles || []).map(r =>
-      `<div class="cliente-card__rol"><strong>${escapeHtml(r.abrev || '')} · ${escapeHtml(r.nombre)}</strong></div>`
-    ).join('');
-    const ag = agenteDe(c);
-    const perfilOk = contextoClienteCargado(c);
-    const badge = c.id === 'cli-joyas-mercury'
-      ? '<span class="cliente-card__badge cliente-card__badge--wireframes">Landing del cliente</span>'
-      : perfilOk
-        ? '<span class="cliente-card__badge cliente-card__badge--ok">Ficha con datos</span>'
-        : '<span class="cliente-card__badge cliente-card__badge--pending">Ver ficha · sin datos</span>';
-    return `<button type="button" class="cliente-card cliente-card--clic" data-cliente-id="${c.id}" style="background:${col.bg};border-color:${col.border};--cliente-text:${col.text}">
-      <div class="cliente-card__nombre">${escapeHtml(c.nombre)} <span class="cliente-card__abrev">(${escapeHtml(c.abrev || abrevDe(c))})</span></div>
-      <span class="cliente-card__tipo ${claseTipoCliente(c.tipo)}" style="background:${col.border};color:#fff">${escapeHtml(etiquetaTipoCliente(c.tipo))}</span>
-      <div class="cliente-card__agente">${ag.emoji} ${escapeHtml(ag.nombre)}</div>
-      <div class="cliente-card__skill-tag">Skill: ${escapeHtml(skill.nombre)}</div>
-      <div class="cliente-card__roles">${roles}</div>
-      ${badge}
-    </button>`;
-  }).join('');
-
-  grid.querySelectorAll('[data-cliente-id]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const url = urlPortalCliente(btn.dataset.clienteId);
-      if (url) {
-        window.location.href = url;
-        return;
-      }
-      (window.abrirFichaCliente || abrirPerfilCliente)(btn.dataset.clienteId);
-    });
-  });
+  // La UI de clientes es solo el portal (index/clientes/). Aquí solo alimentamos selects.
+  if (grid) grid.innerHTML = '';
 
   if (select) {
     select.innerHTML = '<option value="">Sin cliente</option>' +
       datos.clientes.map(c => `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`).join('');
   }
+}
+
+function perfilPersonalActual() {
+  asegurarPerfilPersonal(datos);
+  return datos.perfilPersonal;
+}
+
+function renderTarjetaPerfilPersonal() {
+  const slot = document.getElementById('perfil-personal-tarjeta');
+  if (!slot) return;
+  const p = perfilPersonalActual();
+  const nombre = (p.nombre || '').trim() || 'Josefa Ogalde';
+  const titulo = (p.titulo || '').trim() || 'Desarrolladora Fullstack · Web · E-commerce · WordPress';
+  const v = 'tarjeta3';
+  const horiz = `index/assets/perfil/josefa-ogalde-tarjeta.png?v=${v}`;
+  const horizThumb = `index/assets/perfil/josefa-ogalde-tarjeta-thumb.png?v=${v}`;
+  const vert = `index/assets/perfil/josefa-ogalde-tarjeta-vertical.png?v=${v}`;
+  const vertThumb = `index/assets/perfil/josefa-ogalde-tarjeta-vertical-thumb.png?v=${v}`;
+  slot.innerHTML = `
+    <article class="perfil-tarjeta perfil-tarjeta--presentacion">
+      <p class="perfil-tarjeta__eyebrow">Tarjeta de presentación</p>
+      <div class="perfil-tarjeta__versiones">
+        <button type="button" class="perfil-thumb" data-lightbox-src="${horiz}" data-lightbox-alt="Tarjeta horizontal de ${escapeHtml(nombre)}" title="Ver horizontal completa">
+          <span class="perfil-thumb__label">Horizontal</span>
+          <img class="perfil-thumb__img" src="${horizThumb}" alt="Miniatura horizontal" width="480" height="300" loading="lazy">
+          <span class="perfil-thumb__hint">Clic para ampliar</span>
+        </button>
+        <button type="button" class="perfil-thumb perfil-thumb--vertical" data-lightbox-src="${vert}" data-lightbox-alt="Tarjeta vertical de ${escapeHtml(nombre)}" title="Ver vertical completa (ideal celular)">
+          <span class="perfil-thumb__label">Vertical · celular</span>
+          <img class="perfil-thumb__img" src="${vertThumb}" alt="Miniatura vertical" width="340" height="560" loading="lazy">
+          <span class="perfil-thumb__hint">Clic para ampliar</span>
+        </button>
+      </div>
+      <div class="perfil-tarjeta__resumen">
+        <h3 class="perfil-tarjeta__nombre">${escapeHtml(nombre)}</h3>
+        ${titulo ? `<p class="perfil-tarjeta__titulo">${escapeHtml(titulo)}</p>` : ''}
+        <p class="perfil-tarjeta__links">
+          <a class="btn btn--ghost btn--small" href="index/assets/perfil/Josefa-Ogalde-Desarrollo-y-Diseno-Web.pdf" target="_blank" rel="noopener">Abrir PDF</a>
+          <a class="btn btn--ghost btn--small" href="${horiz}" target="_blank" rel="noopener">Descargar horizontal</a>
+          <a class="btn btn--ghost btn--small" href="${vert}" target="_blank" rel="noopener">Descargar vertical</a>
+        </p>
+      </div>
+    </article>`;
+
+  slot.querySelectorAll('[data-lightbox-src]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      abrirLightboxPerfil(btn.getAttribute('data-lightbox-src'), btn.getAttribute('data-lightbox-alt') || '');
+    });
+  });
+}
+
+function abrirLightboxPerfil(src, alt) {
+  let lb = document.getElementById('perfil-lightbox');
+  if (!lb) {
+    lb = document.createElement('div');
+    lb.id = 'perfil-lightbox';
+    lb.className = 'perfil-lightbox';
+    lb.hidden = true;
+    lb.innerHTML = `
+      <div class="perfil-lightbox__backdrop" data-cerrar-lightbox></div>
+      <div class="perfil-lightbox__dialog" role="dialog" aria-modal="true" aria-label="Vista ampliada de la tarjeta">
+        <button type="button" class="perfil-lightbox__cerrar" data-cerrar-lightbox aria-label="Cerrar">×</button>
+        <img class="perfil-lightbox__img" alt="">
+      </div>`;
+    document.body.appendChild(lb);
+    lb.addEventListener('click', (e) => {
+      if (e.target.closest('[data-cerrar-lightbox]')) cerrarLightboxPerfil();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !lb.hidden) cerrarLightboxPerfil();
+    });
+  }
+  const img = lb.querySelector('.perfil-lightbox__img');
+  img.src = src;
+  img.alt = alt;
+  lb.hidden = false;
+  document.body.classList.add('perfil-lightbox-open');
+}
+
+function cerrarLightboxPerfil() {
+  const lb = document.getElementById('perfil-lightbox');
+  if (!lb) return;
+  lb.hidden = true;
+  document.body.classList.remove('perfil-lightbox-open');
+}
+
+function renderPerfilPersonal() {
+  const form = document.getElementById('form-perfil-personal');
+  if (!form) return;
+  const p = perfilPersonalActual();
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val || '';
+  };
+  set('perfil-personal-nombre', p.nombre);
+  set('perfil-personal-titulo', p.titulo);
+  set('perfil-personal-tagline', p.tagline);
+  set('perfil-personal-contacto', p.contacto);
+  set('perfil-personal-carta', p.cartaPresentacion);
+  set('perfil-personal-notas', p.notas);
+  renderTarjetaPerfilPersonal();
+}
+
+function guardarPerfilPersonal(e) {
+  if (e) e.preventDefault();
+  const p = perfilPersonalActual();
+  p.nombre = document.getElementById('perfil-personal-nombre')?.value.trim() || '';
+  p.titulo = document.getElementById('perfil-personal-titulo')?.value.trim() || '';
+  p.tagline = document.getElementById('perfil-personal-tagline')?.value.trim() || '';
+  p.contacto = document.getElementById('perfil-personal-contacto')?.value.trim() || '';
+  p.cartaPresentacion = document.getElementById('perfil-personal-carta')?.value.trim() || '';
+  p.notas = document.getElementById('perfil-personal-notas')?.value.trim() || '';
+  p.actualizado = toISO(hoy());
+  if (guardar() === false) return;
+  renderTarjetaPerfilPersonal();
+  mostrarToast('Perfil personal guardado');
+}
+
+async function copiarCartaPerfilPersonal() {
+  const p = perfilPersonalActual();
+  const texto = (document.getElementById('perfil-personal-carta')?.value || p.cartaPresentacion || '').trim();
+  if (!texto) {
+    mostrarToast('No hay carta para copiar — escríbela primero');
+    return;
+  }
+  const ok = await copiarTexto(texto);
+  mostrarToast(ok ? 'Carta copiada' : 'No se pudo copiar');
 }
 
 let cacheAgentesRamas = null;
@@ -4685,6 +7629,7 @@ function vaciarTareasLocales() {
 }
 
 function renderSalud() {
+  renderSelectEspecialistasSalud();
   const lista = document.getElementById('lista-citas-salud');
   if (!lista) return;
   const hoyStr = toISO(hoy());
@@ -4731,6 +7676,9 @@ function render() {
   renderAgentesRamas();
   renderReunionesClientes();
   renderSalud();
+  if (document.getElementById('view-perfil')?.classList.contains('view--active')) {
+    renderPerfilPersonal();
+  }
 }
 
 function mostrarTipoNueva(tipo) {
@@ -4754,6 +7702,7 @@ function setupUI() {
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       if (!tab.dataset.view) return;
+      // Única vista de clientes: portal de landings (no «Mis clientes» del organizador)
       if (tab.dataset.view === 'clientes') {
         window.location.href = 'index/clientes/';
         return;
@@ -4761,8 +7710,15 @@ function setupUI() {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
       tab.classList.add('tab--active');
       mostrarVista(tab.dataset.view, { activarTab: true });
+      if (tab.dataset.view === 'perfil') renderPerfilPersonal();
       render();
     });
+  });
+
+  document.getElementById('form-perfil-personal')?.addEventListener('submit', guardarPerfilPersonal);
+  document.getElementById('btn-copiar-carta-perfil')?.addEventListener('click', copiarCartaPerfilPersonal);
+  ['perfil-personal-nombre', 'perfil-personal-titulo', 'perfil-personal-tagline', 'perfil-personal-contacto'].forEach((id) => {
+    document.getElementById(id)?.addEventListener('input', renderTarjetaPerfilPersonal);
   });
 
   document.querySelectorAll('[data-vista-nav]').forEach(btn => {
@@ -4779,22 +7735,37 @@ function setupUI() {
 
   document.getElementById('btn-dia-anterior')?.addEventListener('click', () => cambiarDia(-1));
   document.getElementById('btn-dia-siguiente')?.addEventListener('click', () => cambiarDia(1));
-  document.getElementById('btn-dia-hoy')?.addEventListener('click', () => irADia(toISO(hoy())));
 
   document.getElementById('btn-vaciar-tareas')?.addEventListener('click', vaciarTareasLocales);
 
+  document.getElementById('cita-especialista')?.addEventListener('change', actualizarUIEspecialistaNuevo);
+
   document.getElementById('form-salud').addEventListener('submit', e => {
     e.preventDefault();
+    const especialista = valorEspecialistaSaludDesdeForm();
+    if (!especialista) {
+      mostrarToast('Elige o agrega un especialista');
+      const sel = document.getElementById('cita-especialista');
+      if (sel?.value === '__nuevo__') {
+        document.getElementById('cita-especialista-nuevo')?.focus();
+      } else {
+        sel?.focus();
+      }
+      return;
+    }
+    registrarEspecialistaSalud(especialista);
     datos.citasSalud.push({
       id: id(),
       fecha: document.getElementById('cita-fecha').value,
       hora: document.getElementById('cita-hora').value,
-      especialidad: document.getElementById('cita-especialidad').value.trim(),
+      especialidad: especialista,
       notas: document.getElementById('cita-notas').value.trim()
     });
     e.target.reset();
+    actualizarUIEspecialistaNuevo();
     guardar();
     render();
+    mostrarToast('Cita guardada');
   });
 
   document.querySelectorAll('[data-nueva-tipo]').forEach(btn => {
@@ -4857,6 +7828,38 @@ function setupUI() {
     mostrarToast('Tarea creada');
   });
 
+  document.getElementById('form-plantilla-madre-ecr')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    try {
+      const { madre, hijos } = crearEcosistemaNlEcrDesdePlantilla({
+        tituloArticulo: document.getElementById('plantilla-madre-titulo')?.value,
+        etiquetaNl: document.getElementById('plantilla-madre-etiqueta')?.value,
+        fechaMadre: document.getElementById('plantilla-madre-fecha')?.value,
+        fechaHijos: document.getElementById('plantilla-madre-fecha-hijos')?.value,
+        slug: document.getElementById('plantilla-madre-slug')?.value,
+      });
+      asignarRolesATareas(datos);
+      guardar();
+      e.target.hidden = true;
+      e.target.reset();
+      renderPlantillasMadre();
+      render();
+      mostrarToast(`Ecosistema creado: ${madre.titulo} (+${hijos.length} subtareas, sin finalizar)`);
+      irADia(madre.fecha);
+    } catch (err) {
+      mostrarToast(err.message || 'No se pudo crear el ecosistema');
+    }
+  });
+  document.querySelectorAll('[data-cancelar-plantilla-madre]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const form = document.getElementById('form-plantilla-madre-ecr');
+      if (form) {
+        form.hidden = true;
+        form.reset();
+      }
+    });
+  });
+
   const tareaFecha = document.getElementById('tarea-fecha');
   if (tareaFecha) tareaFecha.value = toISO(hoy());
   const reunionFecha = document.getElementById('reunion-fecha');
@@ -4876,9 +7879,12 @@ function setupUI() {
     if (!tituloRaw) return;
 
     const eraPendiente = !!t.pendiente;
+    const fechaAnterior = t.fecha;
+    const fechaNueva = document.getElementById('edit-tarea-fecha').value;
+    const eraCompletada = !!t.completada;
     t.titulo = tituloConCliente(clienteId, tituloRaw);
     t.clienteId = clienteId;
-    t.fecha = document.getElementById('edit-tarea-fecha').value;
+    t.fecha = fechaNueva;
     t.horaInicio = document.getElementById('edit-tarea-hora-inicio').value;
     t.horaFin = document.getElementById('edit-tarea-hora-fin').value;
     t.notas = document.getElementById('edit-tarea-notas').value.trim() || undefined;
@@ -4892,6 +7898,33 @@ function setupUI() {
     fijarEstadoUsuario(t);
     t.rolId = null;
 
+    // Madre: al cambiar fecha, mover subtareas el mismo desfase
+    if (!t.parentId && esTareaMadreCalendario(t) && fechaAnterior && fechaNueva && fechaAnterior !== fechaNueva) {
+      const n = ajustarFechasSubtareasPorMadre(t, fechaAnterior, fechaNueva);
+      if (n) mostrarToast(`Madre movida: ${n} subtarea(s) reajustada(s) de fecha`);
+    }
+
+    // Subtarea: al marcar hecha la última, modal de cierre de madre
+    if (t.parentId && t.completada && !eraCompletada) {
+      asignarRolesATareas(datos);
+      if (document.getElementById('view-dia')?.classList.contains('view--active')) {
+        diaSeleccionado = t.fecha;
+      }
+      if (tareaSeleccionada === t.id && t.fecha) diaSeleccionado = t.fecha;
+      guardar();
+      cerrarEditarTarea();
+      render();
+      if (tareaSeleccionada === t.id) renderTarea();
+      trasCambiarCompletadaSubtarea(t);
+      guardar();
+      render();
+      return;
+    }
+    if (t.parentId && !t.completada && eraCompletada) {
+      trasCambiarCompletadaSubtarea(t);
+    }
+
+    sincronizarMadresConSubtareas(datos);
     asignarRolesATareas(datos);
     if (document.getElementById('view-dia')?.classList.contains('view--active')) {
       diaSeleccionado = t.fecha;
@@ -4907,8 +7940,41 @@ function setupUI() {
     btn.addEventListener('click', cerrarEditarTarea);
   });
 
+  document.querySelectorAll('[data-confirmar-cerrar-madre]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const madre = tareaDe(madreCierrePendienteId);
+      if (madre) {
+        finalizarMadreYAjustarFechas(madre);
+        mostrarToast('Tarea madre finalizada · fechas del bloque ajustadas');
+      }
+      cerrarModalCerrarMadre();
+      guardar();
+      render();
+    });
+  });
+  document.querySelectorAll('[data-anular-cerrar-madre]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const madre = tareaDe(madreCierrePendienteId);
+      if (madre) {
+        dejarMadreAbiertaTrasSubtareas(madre);
+        mostrarToast('Subtareas siguen hechas · madre queda abierta');
+      }
+      cerrarModalCerrarMadre();
+      guardar();
+      render();
+    });
+  });
+
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
+    if (!document.getElementById('modal-cerrar-madre')?.hidden) {
+      const madre = tareaDe(madreCierrePendienteId);
+      if (madre) dejarMadreAbiertaTrasSubtareas(madre);
+      cerrarModalCerrarMadre();
+      guardar();
+      render();
+      return;
+    }
     if (!document.getElementById('modal-editar-tarea')?.hidden) {
       cerrarEditarTarea();
       return;
@@ -5055,7 +8121,13 @@ async function iniciarApp() {
     const clean = location.pathname + (location.hash || '');
     history.replaceState({}, '', clean);
   } else if (params.get('disco') === '1') {
-    history.replaceState({}, '', location.pathname + (location.hash || ''));
+    // Conservar deep-links (tarea / fecha / vista); solo quitar disco=1
+    const keep = new URLSearchParams();
+    for (const key of ['tarea', 'fecha', 'vista']) {
+      if (params.get(key)) keep.set(key, params.get(key));
+    }
+    const q = keep.toString();
+    history.replaceState({}, '', location.pathname + (q ? `?${q}` : '') + (location.hash || ''));
   }
 
   if (window.mermaid) {
