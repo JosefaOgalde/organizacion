@@ -4224,59 +4224,54 @@ function titulosSeccionArticulo(texto) {
 }
 
 /**
- * Borrador en el formato acordado ECR (como COPY-ART23):
- * Feed A/B · Carrusel (slides + A/B) · Video A/B.
+ * Borrador en el formato enviado al cliente ECR:
+ * Feed A/B · Carrusel COPY A/B · Video A/B
+ * (sin listado de slides ni [LINK AL ARTÍCULO]; línea vacía para el link)
+ * Ver: index/clientes/ecr/newsletter/copys/FORMATO-COPYS-ECR.md
  */
 function borradorCopysDesdeArticulo(tituloArt, textoArt) {
   const titulo = (tituloArt || 'Artículo ECR').trim();
+  const tituloCorto = titulo.split(':')[0].trim() || titulo;
   const frases = frasesUtilesArticulo(textoArt, 8);
-  const secciones = titulosSeccionArticulo(textoArt);
   const f = (i, fallback) => frases[i] || fallback;
-
-  const slide2 = secciones[1] || f(0, 'El problema de fondo en la operación').replace(/\.$/, '');
-  const slide3 = secciones[2] || f(1, 'La causa real detrás de la brecha').replace(/\.$/, '');
-  const slide4 = secciones[3] || 'Dato sin acción = tecnología que no cambia el resultado';
-  const slide5 = secciones[4] || 'Integrar personas, procesos y tecnología';
-  const slide6 = secciones[5] || 'Decidir mejor, no solo digitalizar más';
 
   const ganchoA = f(
     0,
-    'Muchas empresas sumaron herramientas digitales… pero la operación no necesariamente mejoró.'
+    'Muchas empresas sumaron plataformas, dashboards y reportes digitales.'
   );
   const insightA = f(
     1,
-    'Cuando la tecnología no conversa con el terreno, deja de ser ventaja y se vuelve otra capa de complejidad.'
+    'Cuando las herramientas no conversan con el terreno, la tecnología deja de ser ventaja y se vuelve una capa más dentro de una gestión fragmentada.'
   );
   const ganchoB = f(
     2,
-    'El freno no siempre es la herramienta: muchas veces es la desconexión con la operación real.'
+    'El problema no es la herramienta. Es la desconexión.'
   );
   const retail = f(
     3,
-    'Si la ejecución en sala falla, el impacto comercial se diluye aunque el plan se vea impecable.'
+    'Si el equipo no llega al punto de venta, si la reposición falla o la alerta no se gestiona a tiempo… el impacto comercial se diluye.'
   );
 
-  return `COPYS ECR — ${titulo}
+  return `COPYS ECR — ${tituloCorto}
+${titulo}
 Newsletter LinkedIn
-Artículo base del ecosistema ECR
-Placeholder: reemplaza [LINK AL ARTÍCULO] por la URL publicada
 
-============================================================
 1) FEED — INVITACIÓN A LEER EL ARTÍCULO
-============================================================
-
 --- VERSIÓN A ---
 
-${ganchoA} 👀
+¿Más tecnología… o mejores resultados? 👀
+
+${ganchoA}
+Pero la pregunta sigue siendo incómoda: ¿la operación funciona mejor o solo se volvió más digital?
 
 ${insightA}
 
-En nuestro nuevo artículo te contamos qué cambia cuando la tecnología sí se integra a la operación —y por qué eso define la eficiencia.
+En nuestro nuevo artículo te contamos por qué el freno de la eficiencia no es la herramienta… sino la desconexión.
 
 👇 Léelo completo aquí:
-[LINK AL ARTÍCULO]
 
-💬 Si te pasó algo parecido en tu operación, cuéntanos en comentarios. Nos sirve aprender entre todos.
+
+💬 ¿Te ha pasado invertir en sistemas y seguir apagando incendios a mano? Cuéntanos en comentarios.
 
 #ECRGroup #TransformacionDigital #Operaciones #Eficiencia
 
@@ -4285,87 +4280,69 @@ En nuestro nuevo artículo te contamos qué cambia cuando la tecnología sí se 
 
 ${ganchoB} ⚡
 
+Información que llega tarde.
+Reportes que no permiten actuar.
+Equipos que siguen coordinando por WhatsApp… mientras el sistema “está implementado”.
+
 ${retail}
 
-Nuevo artículo ECR GROUP®:
+Nuevo artículo ECR GROUP®️:
 👉 ${titulo}
+Léelo y mira cuánto se parece a tu operación:
 
-Léelo y mira qué tanto se parece a tu día a día:
-[LINK AL ARTÍCULO]
 
-¿Tu operación integra… o solo acumula herramientas? 💬
+¿Tus sistemas conversan con el terreno o viven en otra isla? 💬
 
-#ECRGroup #GestionOperativa #Productividad #Liderazgo
+#Operaciones #ECRGroup #IntegracionOperativa #Productividad
 
 
 ============================================================
-2) CARRUSEL — POST QUE ACOMPAÑA LAS SLIDES
-============================================================
-
-Textos sugeridos para las slides (mismo para A y B):
-1 · Portada → ${titulo}
-2 → ${slide2.slice(0, 120)}
-3 → ${slide3.slice(0, 120)}
-4 → ${String(slide4).slice(0, 120)}
-5 → ${String(slide5).slice(0, 120)}
-6 → ${String(slide6).slice(0, 120)}
-7 · Cierre → La ventaja está en integrar para decidir mejor · ECR GROUP®
-
-
+2) CARRUSEL — COPY
 --- VERSIÓN A ---
 
-¿Tu empresa digitalizó el reporte… pero sigue decidiendo tarde? 🧩
+¿Tu empresa tiene más herramientas… pero la operación sigue igual de reactiva? 🧩
 
-Ese es el punto ciego: más sistemas no garantizan mejor resultado si no conversan con la operación.
+Ese es el punto ciego de muchas organizaciones: digitalizaron el reporte, no la decisión.
 
-En este carrusel dejamos lo esencial 👇
-del artículo «${titulo}».
+👇Desliza → y después profundiza en el artículo completo:
 
-Desliza → y después profundiza en el artículo completo:
-[LINK AL ARTÍCULO]
 
-¿Cuál slide te pegó más? Márcala en comentarios 💬
+Coméntanos 💬
 
-#Carrusel #ECRGroup #Operaciones #DecisionesATiempo
+#Carrusel #Eficiencia #ECRGroup #GestionIntegrada
 
 
 --- VERSIÓN B ---
 
-Más herramientas no garantizan mejor resultado.
-Mejor integración, sí. 🤝
+Tener dashboards no garantiza mejores resultados.
+Tener integración, sí. 🔗
 
-Cuando el dato se transforma en acción a tiempo, el equipo deja de apagar incendios… y empieza a moverse con ventaja.
+Cuando el dato llega tarde, la alerta no tiene dueño y el indicador se revisa después del impacto… la tecnología solo registra el problema.
+No lo evita.
 
 Carrusel rapidito con lo clave de nuestro nuevo artículo 📲
-Desliza y quédate con la idea.
+Lee el artículo completo aquí:
 
-Después lee el artículo completo aquí:
-[LINK AL ARTÍCULO]
 
 Guárdalo si te sirve para la próxima reunión de operaciones 🔖
 
-#ECRGroup #Integracion #EficienciaOperativa #Staffing
+#Operaciones #DecisionesATiempo #ECRGroup #Outsourcing
 
 
 ============================================================
-3) VIDEO — MISMO CONTENIDO DEL CARRUSEL ANIMADO
-============================================================
-
+3) VIDEO
 --- VERSIÓN A ---
 
 ${retail} ⚠️
 
 Eso pasa cuando la tecnología registra lo que ocurre, pero no está integrada a un modelo de gestión.
 
-En este video te dejamos la idea central (carrusel animado) de nuestro artículo:
-${titulo}. 🚀
+En este video te dejamos nuestro artículo:
+${tituloCorto.toLowerCase()} = eficiencia frenada. 🚀
 
-Míralo y sigue en el artículo completo:
-[LINK AL ARTÍCULO]
+Compártelo con tu equipo 🙌
 
-Si te resonó, compártelo con tu equipo de operaciones 🙌
-
-#Video #ECRGroup #TecnologiaAplicada #Operaciones
+#Video #TecnologiaAplicada #ECRGroup #Operaciones
 
 
 --- VERSIÓN B ---
@@ -4375,24 +4352,13 @@ Sumar plataformas sin conectarlas a la operación… ya no da el ancho. 🚫
 El nuevo estándar no es “tener más sistemas”.
 Es conectar personas, procesos y tecnología para decidir a tiempo. 📊
 
-Mira el video (el carrusel, pero en movimiento) y después mete el diente al artículo:
-${titulo}.
-
-👉 [LINK AL ARTÍCULO]
+Mira el artículo:
+${tituloCorto}
+👉
 
 ¿Hoy digitalizas… o realmente integras? Déjanos tu take 👇
 
-#Operaciones #ECRGroup #Integracion #EficienciaReal
-
-
-============================================================
-NOTAS RÁPIDAS
-============================================================
-- Reemplaza [LINK AL ARTÍCULO] por la URL final en ecrgroup.cl
-- Versión A = más narrativa / editorial | Versión B = más directa / punch
-- Carrusel: si Canva pide menos slides, prioriza 1–2–4–5–7
-- El video asume clip corto con las mismas ideas del carrusel animado
-- Hashtags: 2 a 4 por copy (puedes dejar solo 2 si el post se siente cargado)
+#Operaciones #Integracion #ECRGroup #EficienciaReal
 `;
 }
 
@@ -4442,7 +4408,7 @@ function htmlCopysEcrNl(tarea) {
       </div>
       <p class="tarea-detalle__entregable-hint">
         Basado en el artículo de la madre: <em>${escapeHtml(tituloArt)}</em>.
-        <strong>Crear</strong> arma el borrador · <strong>Modificar</strong> edita con ideas · <strong>Copiar</strong> al portapapeles · <strong>Guardar</strong> deja el TXT.
+        <strong>Crear</strong> arma feed / carrusel / video · <strong>Modificar</strong> edita con ideas · <strong>Copiar</strong> al portapapeles · <strong>Guardar</strong> deja el TXT (formato cliente ECR).
         ${archivo ? `Archivo: <code>${escapeHtml(archivo)}</code>` : ''}
       </p>
       <section class="prompt-seccion" data-copy-ecr-bloque data-copy-archivo="${escapeHtml(archivo)}">
