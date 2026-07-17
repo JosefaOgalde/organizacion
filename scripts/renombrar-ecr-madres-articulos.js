@@ -18,10 +18,12 @@ const CLIENTE = 'cli-ecr';
 const ROL = 'rol-ecr-cm';
 
 const MADRE_TI_ID = 'tarea-ecr-ecosistema-nl-agosto-2026-07-17';
-const FECHA_TI = '2026-07-17';
+const FECHA_HOY = '2026-07-17'; // ambas madres parten hoy
+const FECHA_TI = FECHA_HOY;
 
 const MADRE_ET_ID = 'tarea-ecr-ecosistema-equipos-terreno-2026-07-24';
-const FECHA_ET = '2026-07-24';
+const FECHA_ET_HIJOS = '2026-07-24'; // subtareas ET en su propio día
+const FECHA_ET = FECHA_HOY;
 
 if (!fs.existsSync(LIVE)) {
   console.error('No existe data/organizacion-live.json');
@@ -69,7 +71,7 @@ upsert({
     `Tarea madre · artículo «${ART_TI_TITULO}» (publicación NL LinkedIn 1 de agosto). ` +
     `Word/TXT: articulos/ART-tecnologia-sin-integracion.* ` +
     'Subtareas indexadas: 1 Copys · 2 Portada · 3 Carrusel · 4 Video. ' +
-    'Vista Semana o Día para ver el bloque madre + hijas con colores.',
+    'La madre queda para hoy y se completa cuando termine la última subtarea.',
   prioridad: 'alta',
   completada: false,
   pendiente: false,
@@ -79,6 +81,7 @@ upsert({
   articuloTitulo: ART_TI_TITULO,
   articuloPublicacion: '2026-08-01',
   entregableArchivo: ART_TI_TXT,
+  fechaFin: FECHA_TI,
   parentId: null,
 });
 
@@ -160,8 +163,9 @@ upsert({
   horaFin: '18:00',
   notas:
     `Tarea madre · ART 23 · artículo «${ART_ET_TITULO}» (NL LinkedIn 2 de agosto). ` +
+    `Parte hoy (${FECHA_ET}); subtareas ET en ${FECHA_ET_HIJOS}. ` +
     `Word/TXT: articulos/ART23-equipos-en-terreno.* · Copys: COPY-ART23-equipos-en-terreno.txt. ` +
-    'Subtareas indexadas: 1 Copys · 2 Portada · 3 Carrusel · 4 Video.',
+    'La madre se completa cuando termine la última subtarea.',
   prioridad: 'alta',
   completada: false,
   pendiente: false,
@@ -172,6 +176,7 @@ upsert({
   articuloPublicacion: '2026-08-02',
   articuloCodigo: 'ART23',
   entregableArchivo: ART_ET_TXT,
+  fechaFin: FECHA_ET_HIJOS,
   parentId: null,
 });
 
@@ -227,7 +232,7 @@ for (const h of hijosET) {
     ...h,
     clienteId: CLIENTE,
     rolId: ROL,
-    fecha: FECHA_ET,
+    fecha: FECHA_ET_HIJOS,
     prioridad: 'alta',
     completada: false,
     pendiente: false,
@@ -237,6 +242,17 @@ for (const h of hijosET) {
 }
 
 data.respaldoActualizado = new Date().toISOString().slice(0, 10);
+
+// Madre: fechaFin = última subtarea; completada si todas las hijas lo están
+data.tareas.forEach((m) => {
+  if (!m || m.parentId) return;
+  const hijos = data.tareas.filter((h) => h && h.parentId === m.id);
+  if (!hijos.length) return;
+  const fechas = hijos.map((h) => h.fecha).filter(Boolean).sort();
+  if (fechas.length) m.fechaFin = fechas[fechas.length - 1];
+  m.completada = hijos.every((h) => h.completada === true);
+});
+
 fs.writeFileSync(LIVE, JSON.stringify(data, null, 2) + '\n', 'utf8');
 
 const madres = data.tareas.filter((t) => t.clienteId === CLIENTE && !t.parentId && t.tipoEntregable === 'ecosistema');

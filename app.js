@@ -1900,10 +1900,38 @@ function normalizarDatos(data) {
   asegurarAgentesClientes(data);
   asignarRolesATareas(data);
   asegurarReportesMensuales(data);
+  sincronizarMadresConSubtareas(data);
   reajustarTareasConflictosAgenda(data);
   aplicarTareasEliminadas(data);
   asegurarNumerosHistoricosTareas(data);
   return data;
+}
+
+/** Madre: fechaFin = última subtarea; completada cuando todas las hijas lo están. */
+function sincronizarMadresConSubtareas(data) {
+  if (!Array.isArray(data?.tareas)) return data;
+  data.tareas.forEach((m) => {
+    if (!m || m.parentId) return;
+    const hijos = data.tareas.filter((h) => h && h.parentId === m.id);
+    if (!hijos.length) return;
+    const fechas = hijos.map((h) => h.fecha).filter(Boolean).sort();
+    if (fechas.length) m.fechaFin = fechas[fechas.length - 1];
+    const todosHechos = hijos.every((h) => h.completada === true);
+    m.completada = todosHechos;
+    if (todosHechos) m.pendiente = false;
+  });
+  return data;
+}
+
+/** Subtarea: solo su día. Madre: desde fecha hasta fechaFin (inclusive). */
+function tareaAplicaEnFecha(t, fechaISO) {
+  if (!t || t.pendiente) return false;
+  if (t.parentId) return t.fecha === fechaISO;
+  if (t.fecha === fechaISO) return true;
+  if (t.fecha && t.fechaFin && fechaISO >= t.fecha && fechaISO <= t.fechaFin) {
+    return esTareaMadreCalendario(t) || (datos?.tareas || []).some((h) => h.parentId === t.id);
+  }
+  return false;
 }
 
 function cargar() {
@@ -4830,10 +4858,10 @@ function itemsDiaOrdenados(fechaISO) {
     items.push({ tipo: 'reunion', minutos: minutosHora(r.horaInicio), data: r });
   });
 
-  const tareas = datos.tareas.filter(t => t.fecha === fechaISO && !t.pendiente);
+  const tareas = datos.tareas.filter((t) => tareaAplicaEnFecha(t, fechaISO));
   const usadas = new Set();
   const madres = tareas
-    .filter((t) => esTareaMadreCalendario(t))
+    .filter((t) => esTareaMadreCalendario(t) && !t.parentId)
     .sort((a, b) => {
       const dh = minutosHora(a.horaInicio) - minutosHora(b.horaInicio);
       if (dh) return dh;
@@ -4844,7 +4872,7 @@ function itemsDiaOrdenados(fechaISO) {
       return String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || ''));
     });
 
-  // Un bloque por madre: madre arriba, subtareas 1. 2. 3. debajo; luego la madre del otro cliente
+  // Un bloque por madre: madre arriba, subtareas del día 1. 2. 3. debajo
   madres.forEach((m, bloqueIdx) => {
     const base = minutosHora(m.horaInicio);
     items.push({
@@ -4855,8 +4883,8 @@ function itemsDiaOrdenados(fechaISO) {
       data: m,
     });
     usadas.add(m.id);
-    const hijos = tareas
-      .filter((t) => t.parentId === m.id)
+    const hijos = (datos.tareas || [])
+      .filter((t) => t.parentId === m.id && t.fecha === fechaISO && !t.pendiente)
       .sort(
         (a, b) =>
           (Number(a.ordenHijo) || 0) - (Number(b.ordenHijo) || 0) ||
@@ -5378,6 +5406,7 @@ function bindAccionesTarea(contenedor) {
         if (t.completada) t.pendiente = false;
         fijarAgendaUsuario(t);
         fijarEstadoUsuario(t);
+        sincronizarMadresConSubtareas(datos);
       } else if (btn.dataset.act === 'pendiente') {
         marcarTareaPendiente(t);
         mostrarToast('Tarea en Pendientes — es la misma tarea, sin duplicar');
