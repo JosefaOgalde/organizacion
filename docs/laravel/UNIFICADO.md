@@ -1,19 +1,15 @@
-# Flujo unificado — solo Laravel en :8000 (sin MySQL)
+# Stack oficial — Laravel + SQLite (sin Laragon)
 
-**No necesitas Laragon ni MySQL.** Si Laragon tira error de licencia, usa **SQLite**.
+**De ahora en adelante:** un solo servidor. Sin Laragon, sin MySQL, sin Node, sin puerto 3000.
 
 ```bat
 cd "C:\Users\Josefa Ogalde\organizacion"
-git pull origin cursor/botones-tarea-madre-d478
-USAR-SQLITE.bat
 ABRIR-LARAVEL.bat
 ```
 
-(Usa el `php.exe` de Laragon aunque la app Laragon no abra; solo hace falta PHP.)
-
 ---
 
-## URLs (todas en 8000)
+## URLs
 
 | Qué | URL |
 |-----|-----|
@@ -22,21 +18,28 @@ ABRIR-LARAVEL.bat
 | API clientes | http://127.0.0.1:8000/api/clientes |
 | API calendario | http://127.0.0.1:8000/api/organizacion |
 
----
-
-## Qué hace SQLite
-
-- Base en `backend/database/database.sqlite` (archivo local)
-- Sin puerto 3306, sin servicio MySQL
-- Misma API Laravel (`/api/clientes`, etc.)
+Base de datos: `backend/database/database.sqlite`
 
 ---
 
-## Seguir trabajando en la API
+## Requisitos
+
+- Carpeta `backend/` con Laravel
+- `php.exe` en PATH **o** el de `C:\laragon\bin\php\...` (solo el ejecutable; **no** abras la app Laragon)
+
+---
+
+## Trabajar en la API
 
 ```bat
 cd backend
 php artisan serve
 ```
 
-Editas `backend/app/Http/Controllers/Api/`.
+Controladores: `backend/app/Http/Controllers/Api/`
+
+---
+
+## Respaldo del calendario
+
+`data/organizacion-respaldo-2026-07-17.json` → se copia a `organizacion-live.json` al arrancar.
