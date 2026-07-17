@@ -47,15 +47,11 @@ foreach (['DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD'] as 
     $env = preg_replace('/^' . $key . '=/m', '# ' . $key . '=', $env);
 }
 
-// Laravel 11+ usa DB_DATABASE opcional con sqlite; a veces hace falta la ruta absoluta
-if (!preg_match('/^#?\s*DB_DATABASE=.*database\.sqlite/m', $env)) {
-    $env .= "\nDB_DATABASE=" . str_replace('\\', '/', $dbFile) . "\n";
+// Laravel sqlite: ruta relativa (sin espacios) — evita romper .env con "Josefa Ogalde"
+if (preg_match('/^#?\s*DB_DATABASE=.*/m', $env)) {
+    $env = preg_replace('/^#?\s*DB_DATABASE=.*/m', 'DB_DATABASE=database/database.sqlite', $env);
 } else {
-    $env = preg_replace(
-        '/^#?\s*DB_DATABASE=.*/m',
-        'DB_DATABASE=' . str_replace('\\', '/', $dbFile),
-        $env
-    );
+    $env .= "\nDB_DATABASE=database/database.sqlite\n";
 }
 
 if (preg_match('/^CACHE_STORE=.*/m', $env)) {

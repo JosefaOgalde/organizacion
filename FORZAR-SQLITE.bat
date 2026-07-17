@@ -22,15 +22,14 @@ if not exist "backend\database\database.sqlite" (
   echo  · Creado database.sqlite
 )
 
-REM Forzar DB_CONNECTION=sqlite en .env (PowerShell)
+REM Forzar DB_CONNECTION=sqlite en .env (ruta relativa, sin espacios)
 powershell -NoProfile -Command ^
   "$p='backend\.env'; $c=Get-Content $p -Raw; " ^
-  "if ($c -match 'DB_CONNECTION=') { $c=$c -replace 'DB_CONNECTION=.*','DB_CONNECTION=sqlite' } else { $c += \"`nDB_CONNECTION=sqlite`n\" }; " ^
-  "if ($c -match 'SESSION_DRIVER=') { $c=$c -replace 'SESSION_DRIVER=.*','SESSION_DRIVER=file' } else { $c += \"`nSESSION_DRIVER=file`n\" }; " ^
-  "$abs=(Resolve-Path 'backend\database\database.sqlite').Path -replace '\\','/'; " ^
-  "if ($c -match 'DB_DATABASE=') { $c=$c -replace 'DB_DATABASE=.*',(\"DB_DATABASE=$abs\") } else { $c += \"`nDB_DATABASE=$abs`n\" }; " ^
+  "if ($c -match 'DB_CONNECTION=') { $c=$c -replace '(?m)^DB_CONNECTION=.*','DB_CONNECTION=sqlite' } else { $c += \"`nDB_CONNECTION=sqlite`n\" }; " ^
+  "if ($c -match 'SESSION_DRIVER=') { $c=$c -replace '(?m)^SESSION_DRIVER=.*','SESSION_DRIVER=file' } else { $c += \"`nSESSION_DRIVER=file`n\" }; " ^
+  "if ($c -match '(?m)^#?\s*DB_DATABASE=') { $c=$c -replace '(?m)^#?\s*DB_DATABASE=.*','DB_DATABASE=database/database.sqlite' } else { $c += \"`nDB_DATABASE=database/database.sqlite`n\" }; " ^
   "foreach ($k in @('DB_HOST','DB_PORT','DB_USERNAME','DB_PASSWORD')) { $c=$c -replace \"(?m)^$k=\",\"# $k=\" }; " ^
-  "Set-Content -Path $p -Value $c -NoNewline; Write-Host '  · backend\.env → sqlite'"
+  "Set-Content -Path $p -Value $c -Encoding utf8; Write-Host '  · backend\.env → sqlite (ruta relativa)'"
 
 "%PHP%" scripts\usar-sqlite-laravel.php
 "%PHP%" scripts\configurar-laravel-unificado.php
