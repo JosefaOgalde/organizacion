@@ -1,4 +1,6 @@
 # Fondos elegidos — NL LinkedIn 1 de agosto 2026
+# Artículo: Tecnologías de la información
+# (El segundo artículo / otra madre es «Equipos en terreno»)
 
 **Artículo:** Equipos en terreno: la ventaja de ajustar a tiempo  
 **Cliente:** ECR · Perfil → sección **Portada Midjourney**  

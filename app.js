@@ -4859,6 +4859,7 @@ function itemsDiaOrdenados(fechaISO) {
       .filter((t) => t.parentId === m.id)
       .sort(
         (a, b) =>
+          (Number(a.ordenHijo) || 0) - (Number(b.ordenHijo) || 0) ||
           String(a.numeroHistorico || '').localeCompare(String(b.numeroHistorico || '')) ||
           minutosHora(a.horaInicio) - minutosHora(b.horaInicio)
       );
