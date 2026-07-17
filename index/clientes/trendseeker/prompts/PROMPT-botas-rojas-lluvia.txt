@@ -1,0 +1,57 @@
+PROMPTS GEMINI VIDEO — Trendseeker · Botas Hunter rojas bajo la lluvia
+Herramienta fija Trendseeker: Google Gemini en modo VIDEO (no imagen fija; no Midjourney).
+Enfoque: el PRODUCTO es el héroe. La lluvia y la caminata demuestran cualidades.
+Respetar al máximo las fotos de producto adjuntas.
+
+PRODUCTO (según fotos de referencia):
+- Botas de lluvia Hunter, caña media, goma mate rojo intenso
+- Parche blanco frontal con borde rojo y texto HUNTER (no inventar otro logo)
+- Correa lateral con hebilla plateada + remache
+- Suela negra con dibujo profundo en zigzag / herringbone (agarre)
+- Costuras/molduras visibles en caña y empeine
+
+VESTUARIO OBLIGATORIO:
+- Jeans azules de denim metidos DENTRO de las botas
+- NO se ve piel en piernas, tobillos ni pantorrillas
+
+============================================================
+CÓMO USAR EN GEMINI (VIDEO)
+============================================================
+1) Abre Gemini y asegúrate de estar en generación de VIDEO.
+2) Sube primero las FOTOS DE PRODUCTO (las 5 refs Hunter).
+3) Pega UNA versión del prompt (A, B o C) en el mismo mensaje.
+4) Si dice “solo puedo generar videos”, está bien: este prompt ES para video.
+5) Si cambia el diseño de la bota, reitera: “replica exactamente las botas de las fotos, incluido el parche HUNTER y la hebilla”.
+
+============================================================
+VERSIÓN A — Video producto héroe (recomendado)
+============================================================
+
+Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria: son botas de lluvia Hunter rojas mate de caña media, con parche blanco frontal que dice HUNTER, correa lateral con hebilla plateada y suela negra con dibujo zigzag. No rediseñes el calzado; misma silueta, mismo rojo, mismos detalles.
+
+Acción: una mujer camina hacia la cámara bajo lluvia muy intensa en una calle urbana mojada. Lleva jeans azules metidos DENTRO de las botas; no se ve piel en piernas ni tobillos.
+
+Cámara: ángulo bajo, protagonismo absoluto de las botas en primer plano, nítidas. Muestra impermeabilidad (gotas que perlan en la goma) y agarre (chapoteo suave en el asfalto mojado, reflejos). Cara y torso secundarios. Sin tipografía ni logos inventados fuera del parche HUNTER real. Ritmo cinematográfico, lluvia continua, plano estable siguiendo el paso.
+
+============================================================
+VERSIÓN B — Video cualidades en movimiento
+============================================================
+
+Crea un VIDEO comercial basándote estrictamente en las fotos de producto adjuntas (Hunter rojas exactas: parche HUNTER, hebilla plateada, suela zigzag). Mujer a mitad de zancada caminando con seguridad bajo lluvia torrencial.
+
+Obligatorio: jeans metidos dentro de las botas; cero piel expuesta en piernas/tobillos. Destaca en movimiento: goma impermeable con gotas, tracción de la suela en piso inundado, rojo fiel a las referencias. Botas dominantes en cuadro; fondo urbano con lluvia y bokeh. No alterar el diseño del producto.
+
+============================================================
+VERSIÓN C — Video close-up de detalle
+============================================================
+
+Genera un VIDEO corto tipo close-up publicitario de las botas Hunter rojas de las fotos de referencia. La mujer camina bajo lluvia fuerte; jeans dentro de las botas, sin piel visible en la caña.
+
+Enfoque en textura mate, gotas sobre la goma, parche HUNTER legible un instante, hebilla plateada, contacto de la suela zigzag con el piso mojado. Cámara baja, lenta, product-first. Sin rediseñar el calzado.
+
+============================================================
+NOTAS
+============================================================
+- Trendseeker = Gemini VIDEO (producto/marcas). ECR portadas = Midjourney.
+- Si Gemini insiste en video: usar estos prompts tal cual (ya están pensados para video).
+- Primero fotos de producto, después el texto.

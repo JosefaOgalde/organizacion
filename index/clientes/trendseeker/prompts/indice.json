@@ -1,0 +1,105 @@
+{
+  "herramienta": "Gemini",
+  "nota": "Prompts Trendseeker Gemini VIDEO — cada contenido tiene TXT A/B/C editables por separado.",
+  "items": [
+    {
+      "id": "botas-rojas-lluvia",
+      "titulo": "Botas rojas · lluvia",
+      "archivo": "prompts/PROMPT-botas-rojas-lluvia.txt",
+      "descripcion": "VIDEO Gemini: Hunter rojas exactas, lluvia, jeans dentro de las botas, sin piel visible; foco en producto.",
+      "tareaNumero": "03"
+    },
+    {
+      "id": "botas-hunter-rojo-militar-copy-video",
+      "titulo": "Copy video · Botas Hunter Rojo Militar",
+      "archivo": "copys/COPY-botas-hunter-rojo-militar-video.txt",
+      "descripcion": "Características de ficha + 3 copys para el video (A/B/C). Subir MP4 en tarea #04.",
+      "tareaNumero": "04",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-bajas-para-mujer-rojo-militar/"
+    },
+    {
+      "id": "contenido-7-prompt",
+      "titulo": "C7/12 · Zapatilla Travel Trainer Black Hombre",
+      "archivo": "prompts/PROMPT-c07-travel-trainer-black-hombre-A.txt",
+      "descripcion": "VIDEO Gemini · HOMBRE (adulto) · TXT separados A/B/C editables.",
+      "tareaNumero": "06",
+      "productoUrl": "https://trendseeker.cl/producto/zapatilla-travel-trainer-black-hombre/",
+      "contenidoSerie": 7,
+      "archivos": {
+        "A": "prompts/PROMPT-c07-travel-trainer-black-hombre-A.txt",
+        "B": "prompts/PROMPT-c07-travel-trainer-black-hombre-B.txt",
+        "C": "prompts/PROMPT-c07-travel-trainer-black-hombre-C.txt"
+      }
+    },
+    {
+      "id": "contenido-8-prompt",
+      "titulo": "C8/12 · Botas Chelsea Commando Negras Brillantes Mujer",
+      "archivo": "prompts/PROMPT-c08-chelsea-commando-negras-mujer-A.txt",
+      "descripcion": "VIDEO Gemini · MUJER (adulta) · TXT separados A/B/C editables.",
+      "tareaNumero": "10",
+      "productoUrl": "https://trendseeker.cl/producto/botas-chelsea-commando-negras-brillantes-para-mujer/",
+      "contenidoSerie": 8,
+      "archivos": {
+        "A": "prompts/PROMPT-c08-chelsea-commando-negras-mujer-A.txt",
+        "B": "prompts/PROMPT-c08-chelsea-commando-negras-mujer-B.txt",
+        "C": "prompts/PROMPT-c08-chelsea-commando-negras-mujer-C.txt"
+      }
+    },
+    {
+      "id": "contenido-9-prompt",
+      "titulo": "C9/12 · Botas de Agua Bajas Play Mujer Rojo",
+      "archivo": "prompts/PROMPT-c09-play-bajas-rojo-mujer-A.txt",
+      "descripcion": "VIDEO Gemini · MUJER (adulta) · TXT separados A/B/C editables.",
+      "tareaNumero": "14",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/",
+      "contenidoSerie": 9,
+      "archivos": {
+        "A": "prompts/PROMPT-c09-play-bajas-rojo-mujer-A.txt",
+        "B": "prompts/PROMPT-c09-play-bajas-rojo-mujer-B.txt",
+        "C": "prompts/PROMPT-c09-play-bajas-rojo-mujer-C.txt"
+      }
+    },
+    {
+      "id": "contenido-10-prompt",
+      "titulo": "C10/12 · Botas de Agua Original para Niños",
+      "archivo": "prompts/PROMPT-c10-original-ninos-A.txt",
+      "descripcion": "VIDEO Gemini · NIÑOS / NIÑAS (aprox. 5–11 años) · TXT separados A/B/C editables.",
+      "tareaNumero": "18",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
+      "contenidoSerie": 10,
+      "archivos": {
+        "A": "prompts/PROMPT-c10-original-ninos-A.txt",
+        "B": "prompts/PROMPT-c10-original-ninos-B.txt",
+        "C": "prompts/PROMPT-c10-original-ninos-C.txt"
+      }
+    },
+    {
+      "id": "contenido-11-prompt",
+      "titulo": "C11/12 · Botas Play Altas Shearling White Mujer",
+      "archivo": "prompts/PROMPT-c11-play-altas-shearling-white-mujer-A.txt",
+      "descripcion": "VIDEO Gemini · MUJER (adulta) · TXT separados A/B/C editables.",
+      "tareaNumero": "22",
+      "productoUrl": "https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/",
+      "contenidoSerie": 11,
+      "archivos": {
+        "A": "prompts/PROMPT-c11-play-altas-shearling-white-mujer-A.txt",
+        "B": "prompts/PROMPT-c11-play-altas-shearling-white-mujer-B.txt",
+        "C": "prompts/PROMPT-c11-play-altas-shearling-white-mujer-C.txt"
+      }
+    },
+    {
+      "id": "contenido-12-prompt",
+      "titulo": "C12/12 · Botas de Agua Original Niños Rosado Brillante",
+      "archivo": "prompts/PROMPT-c12-original-ninos-rosado-brillante-A.txt",
+      "descripcion": "VIDEO Gemini · NIÑOS / NIÑAS (aprox. 5–11 años) · TXT separados A/B/C editables.",
+      "tareaNumero": "26",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
+      "contenidoSerie": 12,
+      "archivos": {
+        "A": "prompts/PROMPT-c12-original-ninos-rosado-brillante-A.txt",
+        "B": "prompts/PROMPT-c12-original-ninos-rosado-brillante-B.txt",
+        "C": "prompts/PROMPT-c12-original-ninos-rosado-brillante-C.txt"
+      }
+    }
+  ]
+}
