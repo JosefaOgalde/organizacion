@@ -80,7 +80,14 @@ upsert({
   articuloSlug: 'tecnologia-sin-integracion',
   articuloTitulo: ART_TI_TITULO,
   articuloPublicacion: '2026-08-01',
-  entregableArchivo: ART_TI_TXT,
+  entregableArchivo: ART_TI_DOC,
+  articuloArchivo: {
+    nombre: 'ART-tecnologia-sin-integracion.docx',
+    url: '/' + ART_TI_DOC,
+    mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    kind: 'articulo',
+    subido: FECHA_TI,
+  },
   fechaFin: FECHA_TI,
   parentId: null,
 });
@@ -175,7 +182,14 @@ upsert({
   articuloTitulo: ART_ET_TITULO,
   articuloPublicacion: '2026-08-02',
   articuloCodigo: 'ART23',
-  entregableArchivo: ART_ET_TXT,
+  entregableArchivo: ART_ET_DOC,
+  articuloArchivo: {
+    nombre: 'ART23-equipos-en-terreno.docx',
+    url: '/' + ART_ET_DOC,
+    mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    kind: 'articulo',
+    subido: FECHA_ET,
+  },
   fechaFin: FECHA_ET_HIJOS,
   parentId: null,
 });

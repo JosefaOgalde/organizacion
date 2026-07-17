@@ -3658,6 +3658,64 @@ async function guardarVideoEnTarea(tarea, file) {
   return entry;
 }
 
+async function guardarArticuloEnMadre(tarea, file) {
+  const entry = await subirArchivoTareaAlDisco(tarea, file);
+  tarea.articuloArchivo = {
+    nombre: entry.nombre,
+    url: entry.url,
+    mime: entry.mime,
+    kind: entry.kind || 'articulo',
+    bytes: entry.bytes,
+    subido: toISO(hoy()),
+  };
+  // ruta relativa sin slash inicial para entregableArchivo
+  tarea.entregableArchivo = String(entry.url || '').replace(/^\//, '');
+  return entry;
+}
+
+function bindArticuloEcosistema(contenedor, tarea) {
+  if (!contenedor || !tarea || tarea.parentId || tarea.tipoEntregable !== 'ecosistema') return;
+
+  const input = contenedor.querySelector('[data-input-articulo-eco]');
+  if (input) {
+    input.onchange = async (e) => {
+      const file = e.target.files?.[0];
+      input.value = '';
+      if (!file) return;
+      const okExt = /\.(pdf|txt|docx?|odt)$/i.test(file.name || '');
+      if (!okExt) {
+        mostrarToast('Usa un archivo .doc, .docx, .pdf o .txt');
+        return;
+      }
+      const t = tareaDe(tarea.id);
+      if (!t) return;
+      try {
+        mostrarToast('Subiendo artículo…');
+        await guardarArticuloEnMadre(t, file);
+        guardar();
+        renderTarea();
+        mostrarToast('Artículo cargado en la tarea madre');
+      } catch (err) {
+        console.warn(err);
+        mostrarToast('No se pudo subir el artículo: ' + (err.message || 'error'));
+      }
+    };
+  }
+
+  contenedor.querySelector('[data-quitar-articulo-eco]')?.addEventListener('click', () => {
+    const t = tareaDe(tarea.id);
+    if (!t) return;
+    if (!confirm('¿Quitar el artículo de esta madre?')) return;
+    delete t.articuloArchivo;
+    if (t.entregableArchivo && /\.(pdf|txt|docx?|odt)$/i.test(t.entregableArchivo)) {
+      delete t.entregableArchivo;
+    }
+    guardar();
+    renderTarea();
+    mostrarToast('Artículo quitado');
+  });
+}
+
 function hijosDeTarea(tarea) {
   if (!tarea?.id) return [];
   return (datos.tareas || [])
@@ -3679,6 +3737,13 @@ function htmlVinculosEcosistema(tarea) {
   if (madre) {
     const href = urlTareaAbsoluta(madre);
     html += `<p class="tarea-detalle__eco-madre">Parte de: <a href="${escapeHtml(href)}"><strong>${escapeHtml(nombreBaseTarea(madre) || madre.titulo)}</strong></a>${madre.numeroHistorico ? ` · #${escapeHtml(madre.numeroHistorico)}` : ''}</p>`;
+    const art = articuloDeTarea(madre);
+    if (art?.url) {
+      const aHref = art.url.startsWith('/') ? art.url : '/' + String(art.url).replace(/^\/+/, '');
+      html += `<p class="tarea-detalle__eco-articulo">Artículo: <a href="${escapeHtml(aHref)}" target="_blank" rel="noopener">${escapeHtml(art.nombre || madre.articuloTitulo || 'Ver archivo')}</a></p>`;
+    } else {
+      html += `<p class="tarea-detalle__eco-articulo tarea-detalle__eco-articulo--faltante">Falta cargar el artículo en la tarea madre.</p>`;
+    }
   }
   if (hijos.length) {
     html += `<div class="tarea-detalle__eco-hijos"><strong>Subtareas</strong><ul class="tarea-detalle__eco-lista">`;
@@ -3804,9 +3869,58 @@ function archivoPromptGeminiDeTarea(tarea) {
   return archivos.A || String(tarea?.entregableArchivo || '').replace(/^\/+/, '');
 }
 
+function articuloDeTarea(tarea) {
+  if (!tarea) return null;
+  if (tarea.articuloArchivo && typeof tarea.articuloArchivo === 'object' && tarea.articuloArchivo.url) {
+    return tarea.articuloArchivo;
+  }
+  const ruta = String(tarea.entregableArchivo || '').replace(/^\/+/, '');
+  if (ruta && /\.(pdf|txt|docx?|odt)$/i.test(ruta)) {
+    return {
+      url: '/' + ruta,
+      nombre: ruta.split('/').pop(),
+      mime: '',
+      kind: 'articulo',
+    };
+  }
+  return null;
+}
+
+function htmlArticuloEcosistema(tarea) {
+  if (!tarea || tarea.parentId || tarea.tipoEntregable !== 'ecosistema') return '';
+  const art = articuloDeTarea(tarea);
+  const tituloArt = tarea.articuloTitulo || nombreBaseTarea(tarea) || 'Artículo del newsletter';
+  let estado = '';
+  if (art) {
+    const href = art.url.startsWith('/') ? art.url : '/' + String(art.url).replace(/^\/+/, '');
+    estado = `
+      <div class="tarea-detalle__articulo-actual">
+        <a class="btn btn--small btn--ghost" href="${escapeHtml(href)}" target="_blank" rel="noopener" download>
+          ${escapeHtml(art.nombre || 'Descargar artículo')}
+        </a>
+        <button type="button" class="btn btn--small btn--ghost" data-quitar-articulo-eco title="Quitar artículo">Quitar</button>
+      </div>`;
+  } else {
+    estado = `<p class="tarea-detalle__entregable-hint">Aún no hay artículo. Sube .doc, .docx, .pdf o .txt para ejecutar el ecosistema (copys, portada, carrusel, video).</p>`;
+  }
+  return `
+    <div class="tarea-detalle__entregable tarea-detalle__entregable--articulo" data-entregable="ecosistema-articulo">
+      <div class="tarea-detalle__entregable-head">
+        <strong>Artículo del newsletter</strong>
+      </div>
+      <p class="tarea-detalle__entregable-hint">${escapeHtml(tituloArt)}</p>
+      ${estado}
+      <label class="btn btn--small btn--primary tarea-detalle__articulo-upload">
+        ${art ? 'Reemplazar artículo' : '+ Cargar artículo (doc / pdf / txt)'}
+        <input type="file" accept=".doc,.docx,.pdf,.txt,.odt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" hidden data-input-articulo-eco>
+      </label>
+    </div>`;
+}
+
 function htmlEntregableTarea(tarea) {
   const tipo = tarea.tipoEntregable;
-  if (!tipo || tipo === 'ecosistema') return '';
+  if (tipo === 'ecosistema') return htmlArticuloEcosistema(tarea);
+  if (!tipo) return '';
 
   let archivo = tarea.entregableArchivo || '';
   if (tipo === 'prompt-gemini' && !archivo) {
@@ -6111,6 +6225,7 @@ function renderTarea() {
     </form>`;
 
   bindAccionesTarea(detalle);
+  bindArticuloEcosistema(detalle, tarea);
   detalle.querySelector('[data-copiar-ruta-tarea]')?.addEventListener('click', async () => {
     const ok = await copiarTexto(urlTareaAbsoluta(tarea));
     mostrarToast(ok ? 'Enlace copiado' : 'No se pudo copiar — selecciona el enlace manualmente');

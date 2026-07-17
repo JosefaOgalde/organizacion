@@ -624,11 +624,18 @@ function handleApiTareaArchivo(req, res) {
   }
 
   const mime = String(req.headers['content-type'] || 'application/octet-stream').split(';')[0].trim().toLowerCase();
+  const nombreLower = nombreParam.toLowerCase();
+  const esArticuloExt = /\.(pdf|txt|docx?|odt)$/i.test(nombreLower);
   const allowed =
     mime.startsWith('video/') ||
     mime.startsWith('image/') ||
+    mime.startsWith('text/') ||
     mime === 'application/octet-stream' ||
-    mime === 'application/pdf';
+    mime === 'application/pdf' ||
+    mime === 'application/msword' ||
+    mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+    mime === 'application/vnd.oasis.opendocument.text' ||
+    esArticuloExt;
   if (!allowed) {
     return send(res, 415, JSON.stringify({ error: 'tipo no permitido: ' + mime }), 'application/json');
   }
@@ -641,6 +648,9 @@ function handleApiTareaArchivo(req, res) {
     mime.includes('png') ? 'png' :
     mime.includes('webp') ? 'webp' :
     mime.includes('pdf') ? 'pdf' :
+    mime.includes('wordprocessingml') || mime.includes('msword') ? (mime.includes('wordprocessingml') ? 'docx' : 'doc') :
+    mime.includes('opendocument.text') ? 'odt' :
+    mime.includes('text/plain') ? 'txt' :
     mime.includes('jpeg') || mime.includes('jpg') ? 'jpg' : '';
   const ext = extFromName || extFromMime || 'bin';
   if (/^(mp4|webm|mov)$/i.test(ext) === false && mime.startsWith('video/')) {
@@ -653,14 +663,25 @@ function handleApiTareaArchivo(req, res) {
     }
     const baseName = slugSeguro(nombreParam.replace(/\.[^.]+$/, '')) || 'archivo';
     const fileName = `${Date.now()}-${baseName}.${ext}`;
-    const sub = mime.startsWith('video/') ? 'tarea-videos' : 'tarea-archivos';
+    const esArticulo = /^(pdf|txt|docx?|odt)$/i.test(ext);
+    const sub = mime.startsWith('video/')
+      ? 'tarea-videos'
+      : esArticulo
+        ? 'tarea-articulos'
+        : 'tarea-archivos';
     const relDir = path.join('index', 'uploads', sub, slugSeguro(clienteId), slugSeguro(tareaId));
     const absDir = path.join(ROOT, relDir);
     fs.mkdirSync(absDir, { recursive: true });
     const absFile = path.join(absDir, fileName);
     fs.writeFileSync(absFile, buf);
     const url = `/${relDir.replace(/\\/g, '/')}/${fileName}`;
-    const kind = mime.startsWith('video/') ? 'video' : mime.startsWith('image/') ? 'image' : 'file';
+    const kind = mime.startsWith('video/')
+      ? 'video'
+      : mime.startsWith('image/')
+        ? 'image'
+        : esArticulo
+          ? 'articulo'
+          : 'file';
     console.log('[api] Archivo tarea', kind, url, `(${Math.round(buf.length / 1024)} KB)`);
     return send(
       res,
