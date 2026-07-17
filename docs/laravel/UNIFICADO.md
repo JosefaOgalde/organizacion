@@ -1,15 +1,14 @@
-# Stack oficial — Laravel + SQLite (sin Laragon)
+# Stack oficial — Laravel + SQLite (cualquier PC)
 
-**De ahora en adelante:** un solo servidor. Sin Laragon, sin MySQL, sin Node, sin puerto 3000.
+Guía corta: [`EN-CUALQUIER-PC.md`](./EN-CUALQUIER-PC.md)
+
+## Siempre igual
 
 ```bat
 cd "C:\Users\Josefa Ogalde\organizacion"
+git pull
 ABRIR-LARAVEL.bat
 ```
-
----
-
-## URLs
 
 | Qué | URL |
 |-----|-----|
@@ -18,28 +17,22 @@ ABRIR-LARAVEL.bat
 | API clientes | http://127.0.0.1:8000/api/clientes |
 | API calendario | http://127.0.0.1:8000/api/organizacion |
 
-Base de datos: `backend/database/database.sqlite`
+**Sin** Laragon, MySQL, Node ni puerto 3000.
 
----
+## Dónde vive la info (no duplicar)
 
-## Requisitos
+| Dato | Archivo |
+|------|---------|
+| Calendario / madres | `data/organizacion-live.json` |
+| Clientes API | `backend/database/database.sqlite` |
 
-- Carpeta `backend/` con Laravel
-- `php.exe` en PATH **o** el de `C:\laragon\bin\php\...` (solo el ejecutable; **no** abras la app Laragon)
+Al cambiar de PC, lleva esos dos archivos con la carpeta del proyecto (OneDrive) o cópialos a mano.
 
----
-
-## Trabajar en la API
+## API
 
 ```bat
 cd backend
-php artisan serve
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
 Controladores: `backend/app/Http/Controllers/Api/`
-
----
-
-## Respaldo del calendario
-
-`data/organizacion-respaldo-2026-07-17.json` → se copia a `organizacion-live.json` al arrancar.
