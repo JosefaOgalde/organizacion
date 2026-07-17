@@ -4764,6 +4764,11 @@ function metaProductoTsDeTarea(tarea) {
     const m = String(tarea?.titulo || madre?.titulo || '').match(/C?\s*(\d+)\s*\/\s*12/i);
     if (m) n = Number(m[1]);
   }
+  const blob = `${producto} ${url} ${madre?.notas || ''} ${tarea?.notas || ''}`;
+  let publico = 'unisex';
+  if (/niñ[oa]|ninos|kids|infantil/i.test(blob)) publico = 'ninos';
+  else if (/hombre|men\b|masculino/i.test(blob)) publico = 'hombre';
+  else if (/mujer|women|femenin/i.test(blob)) publico = 'mujer';
   const skuMatch = String(madre?.notas || '').match(/SKU[:\s]+([A-Z0-9\-]+)/i);
   const sku = skuMatch ? skuMatch[1] : '';
   const bullets = [];
@@ -4775,7 +4780,7 @@ function metaProductoTsDeTarea(tarea) {
   if (!bullets.length) {
     bullets.push('Hunter · calidad TrendSeeker', 'Detalles fieles a la ficha del producto');
   }
-  return { n, producto, url, sku, bullets };
+  return { n, producto, url, sku, bullets, publico };
 }
 
 /** Pregunta campaña/promo antes de Crear copy (TS). */
@@ -4805,7 +4810,7 @@ function pedirContextoCampanaCopy(tarea) {
 
 /**
  * Genera 3 copys TS (A corta · B historia · C checklist) con CTAs distintos.
- * Si hay campaña, la integra sin copiar la misma fórmula en las 3.
+ * Respeta el público del producto (hombre / mujer / niños).
  */
 function generarCopysTsVideoAbc(tarea, campana) {
   const meta = metaProductoTsDeTarea(tarea);
@@ -4815,70 +4820,106 @@ function generarCopysTsVideoAbc(tarea, campana) {
   const prod = meta.producto || 'Producto Hunter';
   const serie = meta.n ? `C${meta.n}/12` : 'TS';
   const skuLine = meta.sku ? `SKU: ${meta.sku}\n` : '';
-  const bloqueCampanaA = camp
-    ? `\n🔥 Ahora con campaña: ${camp}\n`
-    : '';
+  const publico = meta.publico || 'unisex';
+  const publicoLabel =
+    publico === 'hombre' ? 'HOMBRE' : publico === 'mujer' ? 'MUJER' : publico === 'ninos' ? 'NIÑOS' : 'UNISEX';
+  const tagPublico =
+    publico === 'hombre' ? '#Hombre' : publico === 'mujer' ? '#Mujer' : publico === 'ninos' ? '#Kids' : '';
+
+  const hookA =
+    publico === 'hombre'
+      ? 'Cuando la calle se moja… él sigue igual. 🖤☔'
+      : publico === 'mujer'
+        ? 'Cuando la calle se moja… ella sigue con estilo. 🖤☔'
+        : publico === 'ninos'
+          ? 'Cuando hay charcos… ellos también salen. 🖤☔'
+          : 'Cuando la calle se moja… el calzado sigue. 🖤☔';
+
+  const tallaTxt =
+    publico === 'hombre'
+      ? 'tu talla de hombre'
+      : publico === 'mujer'
+        ? 'tu talla de mujer'
+        : publico === 'ninos'
+          ? 'la talla de tus kids'
+          : 'tu talla';
+
+  const publicoLinea =
+    publico === 'hombre'
+      ? `${prod} — para hombre.`
+      : publico === 'mujer'
+        ? `${prod} — para mujer.`
+        : publico === 'ninos'
+          ? `${prod} — para niños.`
+          : `${prod}.`;
+
+  const checklistTitulo =
+    publico === 'hombre' ? 'Checklist para él ⚡' : publico === 'mujer' ? 'Checklist para ella ⚡' : 'Checklist rápido ⚡';
+
+  const bloqueCampanaA = camp ? `\n🔥 Ahora con campaña: ${camp}\n` : '';
   const bloqueCampanaB = camp
     ? `\nEsta semana corre: ${camp}.\nSi te late el video, aprovecha la promo antes de que cierre.\n`
     : '';
-  const bloqueCampanaC = camp
-    ? `\nPromo activa → ${camp}\n`
-    : '';
+  const bloqueCampanaC = camp ? `\nPromo activa → ${camp}\n` : '';
 
   const ctaA = camp
-    ? `👉 Aprovecha la promo y elige tu talla ahora:\n${link}`
-    : `👉 Elige tu talla antes de que se agoten:\n${link}`;
+    ? `👉 Aprovecha la promo y elige ${tallaTxt} ahora:\n${link}`
+    : `👉 Elige ${tallaTxt} y llévatelas:\n${link}`;
   const ctaB = camp
-    ? `🛒 Entra con la promo y reserva la tuya:\n${link}\n\n¿Vas por el primer par o el segundo? Comenta 👇`
-    : `🛒 Entra y reserva la tuya ahora:\n${link}\n\n¿Ya las tienes o vas por el primer par? Cuéntanos abajo 👇`;
+    ? `🛒 Entra con la promo y reserva ${tallaTxt}:\n${link}\n\n¿Primer par Hunter o ya eres fan? Comenta 👇`
+    : `🛒 Entra y reserva ${tallaTxt} ahora:\n${link}\n\n¿Primer par Hunter o ya eres fan? Comenta 👇`;
   const ctaC = camp
-    ? `🔥 CTA: usa la promo, elige talla y llévatelas hoy\n${link}\n\nGuarda este video si estás armando tu outfit 📌`
-    : `🔥 CTA: haz clic, elige talla y llévatelas hoy\n${link}\n\nGuarda este video si estás armando tu outfit 📌`;
+    ? `🔥 CTA: usa la promo, elige ${tallaTxt} y llévatelas hoy\n${link}\n\nGuarda este video si estás armando tu look 📌`
+    : `🔥 CTA: haz clic, elige ${tallaTxt} y llévatelas hoy\n${link}\n\nGuarda este video si estás armando tu look 📌`;
 
   const A = `COPY VIDEO · Trendseeker · ${serie} · Versión A
 Producto: ${prod}
 ${skuLine}Link: ${link}
+Público: ${publicoLabel}
 
-Cuando el producto habla solo… el video cierra la venta. 🖤
+${hookA}
 ${bloqueCampanaA}
-${prod}:
+${publicoLinea}
 ${bullets || '✓ Ver ficha del producto'}
 
 ${ctaA}
 
-#Hunter #TrendSeeker #TrendSeekerChile
-`;
+#Hunter #TrendSeeker #TrendSeekerChile ${tagPublico}
+`.replace(/\s+\n/g, '\n');
 
   const B = `COPY VIDEO · Trendseeker · ${serie} · Versión B
 Producto: ${prod}
 ${skuLine}Link: ${link}
+Público: ${publicoLabel}
 
 No es solo “otro post”.
-Es el calzado que viste en el video —y que rinde en la calle de verdad. 🌧️🏙️
+Es el calzado del video —y rinde en la calle de verdad. 🌧️🏙️
 ${bloqueCampanaB}
-${prod}: características reales de ficha, sin inventar.
-Si buscas algo que se vea bien y aguante el día a día, este clip es para ti.
+${publicoLinea}
+Características reales de ficha, sin inventar.
+Si buscas un par que se vea bien y aguante el día a día, este clip es para ti.
 
 ${ctaB}
 
-#Hunter #TrendSeeker #StreetReady
-`;
+#Hunter #TrendSeeker #StreetReady ${tagPublico}
+`.replace(/\s+\n/g, '\n');
 
   const C = `COPY VIDEO · Trendseeker · ${serie} · Versión C
 Producto: ${prod}
 ${skuLine}Link: ${link}
+Público: ${publicoLabel}
 
-Checklist rápido ⚡
+${checklistTitulo}
 □ ¿Te gustó el video?
 □ ¿Encaja con tu estilo?
-□ ¿Listo para elegir talla?
+□ ¿Listo para elegir ${tallaTxt}?
 ${bloqueCampanaC}
 ${bullets || '✓ Ficha del producto en el link'}
 
 ${ctaC}
 
-#HunterBoots #TrendSeekerChile #ShopNow
-`;
+#HunterBoots #TrendSeekerChile #ShopNow ${tagPublico}
+`.replace(/\s+\n/g, '\n');
 
   return { A, B, C };
 }
