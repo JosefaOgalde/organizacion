@@ -763,13 +763,15 @@ function handleApiTareaArchivo(req, res) {
   const tareaId = String(u.searchParams.get('tareaId') || '').trim();
   const clienteId = String(u.searchParams.get('clienteId') || '').trim() || 'sin-cliente';
   const nombreParam = String(u.searchParams.get('nombre') || '').trim();
+  const rolParam = String(u.searchParams.get('rol') || '').trim().toLowerCase();
   if (!tareaId) {
     return send(res, 400, JSON.stringify({ error: 'falta tareaId' }), 'application/json');
   }
 
   const mime = String(req.headers['content-type'] || 'application/octet-stream').split(';')[0].trim().toLowerCase();
   const nombreLower = nombreParam.toLowerCase();
-  const esArticuloExt = /\.(pdf|txt|docx?|odt)$/i.test(nombreLower);
+  const esArticuloExt = /\.(pdf|txt|docx?|odt|md|rtf|png|jpe?g|webp|gif|bmp|heic)$/i.test(nombreLower);
+  const forzarArticulo = rolParam === 'articulo';
   const allowed =
     mime.startsWith('video/') ||
     mime.startsWith('image/') ||
@@ -791,10 +793,11 @@ function handleApiTareaArchivo(req, res) {
     mime.includes('mp4') ? 'mp4' :
     mime.includes('png') ? 'png' :
     mime.includes('webp') ? 'webp' :
+    mime.includes('gif') ? 'gif' :
     mime.includes('pdf') ? 'pdf' :
     mime.includes('wordprocessingml') || mime.includes('msword') ? (mime.includes('wordprocessingml') ? 'docx' : 'doc') :
     mime.includes('opendocument.text') ? 'odt' :
-    mime.includes('text/plain') ? 'txt' :
+    mime.includes('text/plain') || mime.includes('text/markdown') ? (mime.includes('markdown') ? 'md' : 'txt') :
     mime.includes('jpeg') || mime.includes('jpg') ? 'jpg' : '';
   const ext = extFromName || extFromMime || 'bin';
   if (/^(mp4|webm|mov)$/i.test(ext) === false && mime.startsWith('video/')) {
@@ -807,8 +810,9 @@ function handleApiTareaArchivo(req, res) {
     }
     const baseName = slugSeguro(nombreParam.replace(/\.[^.]+$/, '')) || 'archivo';
     const fileName = `${Date.now()}-${baseName}.${ext}`;
-    const esArticulo = /^(pdf|txt|docx?|odt)$/i.test(ext);
-    const sub = mime.startsWith('video/')
+    const esArticuloDoc = /^(pdf|txt|docx?|odt|md|rtf)$/i.test(ext);
+    const esArticulo = forzarArticulo || esArticuloDoc;
+    const sub = mime.startsWith('video/') && !forzarArticulo
       ? 'tarea-videos'
       : esArticulo
         ? 'tarea-articulos'
@@ -819,16 +823,16 @@ function handleApiTareaArchivo(req, res) {
     const absFile = path.join(absDir, fileName);
     fs.writeFileSync(absFile, buf);
     const url = `/${relDir.replace(/\\/g, '/')}/${fileName}`;
-    const kind = mime.startsWith('video/')
+    const kind = mime.startsWith('video/') && !forzarArticulo
       ? 'video'
-      : mime.startsWith('image/')
-        ? 'image'
-        : esArticulo
-          ? 'articulo'
+      : esArticulo
+        ? 'articulo'
+        : mime.startsWith('image/')
+          ? 'image'
           : 'file';
     let txtUrl = null;
     let textoPreview = null;
-    if (kind === 'articulo' && /\.(txt|docx)$/i.test(fileName)) {
+    if (kind === 'articulo' && /\.(txt|docx|md)$/i.test(fileName)) {
       try {
         const texto = textoDesdeArticuloAbs(absFile);
         if (texto && String(texto).trim()) {

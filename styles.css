@@ -201,20 +201,20 @@ body {
   align-items: center;
   padding: 0.45rem 0.85rem;
   border-radius: var(--radius);
-  background: var(--celeste-light, #d8f0ec);
-  color: var(--celeste-dark, #0a5c54);
+  background: var(--cli-bg, var(--celeste-light, #d8f0ec));
+  color: var(--cli-text, var(--celeste-dark, #0a5c54));
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  border: 2px solid var(--celeste-dark, #0a5c54);
+  border: 2px solid var(--cli-border, var(--celeste-dark, #0a5c54));
   margin-right: 0.15rem;
 }
 
 .tabs-tarea__contexto--hija {
-  background: #e8e4f4;
-  color: #4a3f6b;
-  border-color: #6b5b95;
+  background: var(--cli-bg, #e8e4f4);
+  color: var(--cli-text, #4a3f6b);
+  border-color: var(--cli-border, #6b5b95);
 }
 
 .tabs-tarea__contexto--simple {
@@ -2220,7 +2220,7 @@ body.perfil-lightbox-open {
   width: calc(100% - 0.85rem);
   box-sizing: border-box;
   border-left-width: 2px;
-  opacity: 0.96;
+  opacity: 1;
   letter-spacing: -0.01em;
   min-height: 0;
   font-weight: 500;
@@ -2509,7 +2509,7 @@ body.perfil-lightbox-open {
 
 .dia-item--hija {
   margin-left: 1.15rem;
-  opacity: 0.94;
+  opacity: 1;
   border-left-width: 3px;
 }
 
@@ -3217,6 +3217,23 @@ body.modal-abierto {
   display: inline-flex;
   cursor: pointer;
   margin-top: 0.25rem;
+}
+
+.tarea-detalle__articulo-preview {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--cli-border, #98c8e0) 70%, transparent);
+}
+
+.tarea-detalle__articulo-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 160px;
+  object-fit: cover;
 }
 
 .tarea-detalle__eco-articulo {

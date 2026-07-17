@@ -3789,7 +3789,7 @@ function htmlVideosTarea(videos, { quitar = false } = {}) {
     .join('');
 }
 
-async function subirArchivoTareaAlDisco(tarea, file) {
+async function subirArchivoTareaAlDisco(tarea, file, opts = {}) {
   const nombre = file.name || `archivo-${Date.now()}.mp4`;
   const headers = {
     'Content-Type': file.type || 'application/octet-stream',
@@ -3801,6 +3801,7 @@ async function subirArchivoTareaAlDisco(tarea, file) {
     clienteId: tarea.clienteId || '',
     nombre,
   });
+  if (opts.rol) qs.set('rol', opts.rol);
   const res = await fetch('/api/tarea-archivo?' + qs.toString(), {
     method: 'POST',
     headers,
@@ -3859,13 +3860,13 @@ async function guardarVideoEnTarea(tarea, file) {
 }
 
 async function guardarArticuloEnMadre(tarea, file) {
-  const entry = await subirArchivoTareaAlDisco(tarea, file);
+  const entry = await subirArchivoTareaAlDisco(tarea, file, { rol: 'articulo' });
   tarea.articuloArchivo = {
     nombre: entry.nombre,
     url: entry.url,
     txtUrl: entry.txtUrl || null,
     mime: entry.mime,
-    kind: entry.kind || 'articulo',
+    kind: 'articulo',
     bytes: entry.bytes,
     subido: toISO(hoy()),
   };
@@ -3873,6 +3874,8 @@ async function guardarArticuloEnMadre(tarea, file) {
   tarea.entregableArchivo = String(entry.url || '').replace(/^\//, '');
   return entry;
 }
+
+const ARTICULO_ECO_EXT = /\.(pdf|txt|docx?|odt|png|jpe?g|webp|gif|bmp|heic|md|rtf)$/i;
 
 function bindArticuloEcosistema(contenedor, tarea) {
   if (!contenedor || !tarea || tarea.parentId || tarea.tipoEntregable !== 'ecosistema') return;
@@ -3883,23 +3886,23 @@ function bindArticuloEcosistema(contenedor, tarea) {
       const file = e.target.files?.[0];
       input.value = '';
       if (!file) return;
-      const okExt = /\.(pdf|txt|docx?|odt)$/i.test(file.name || '');
+      const okExt = ARTICULO_ECO_EXT.test(file.name || '') || String(file.type || '').startsWith('image/');
       if (!okExt) {
-        mostrarToast('Usa un archivo .doc, .docx, .pdf o .txt');
+        mostrarToast('Usa texto, doc, pdf o imagen');
         return;
       }
       const t = tareaDe(tarea.id);
       if (!t) return;
       try {
-        mostrarToast('Subiendo artículo…');
+        mostrarToast('Subiendo archivo…');
         await guardarArticuloEnMadre(t, file);
         registrarPlantillaDesdeMadre(t);
         guardar();
         renderTarea();
-        mostrarToast('Artículo cargado en la tarea madre');
+        mostrarToast('Archivo cargado en la tarea madre · las subtareas lo usan');
       } catch (err) {
         console.warn(err);
-        mostrarToast('No se pudo subir el artículo: ' + (err.message || 'error'));
+        mostrarToast('No se pudo subir el archivo: ' + (err.message || 'error'));
       }
     };
   }
@@ -3907,14 +3910,14 @@ function bindArticuloEcosistema(contenedor, tarea) {
   contenedor.querySelector('[data-quitar-articulo-eco]')?.addEventListener('click', () => {
     const t = tareaDe(tarea.id);
     if (!t) return;
-    if (!confirm('¿Quitar el artículo de esta madre?')) return;
+    if (!confirm('¿Quitar el archivo de esta madre?')) return;
     delete t.articuloArchivo;
-    if (t.entregableArchivo && /\.(pdf|txt|docx?|odt)$/i.test(t.entregableArchivo)) {
+    if (t.entregableArchivo && (ARTICULO_ECO_EXT.test(t.entregableArchivo) || /\.(png|jpe?g|webp|gif)$/i.test(t.entregableArchivo))) {
       delete t.entregableArchivo;
     }
     guardar();
     renderTarea();
-    mostrarToast('Artículo quitado');
+    mostrarToast('Archivo quitado');
   });
 }
 
@@ -3942,9 +3945,9 @@ function htmlVinculosEcosistema(tarea) {
     const art = articuloDeTarea(madre);
     if (art?.url) {
       const aHref = art.url.startsWith('/') ? art.url : '/' + String(art.url).replace(/^\/+/, '');
-      html += `<p class="tarea-detalle__eco-articulo">Artículo: <a href="${escapeHtml(aHref)}" target="_blank" rel="noopener">${escapeHtml(art.nombre || madre.articuloTitulo || 'Ver archivo')}</a></p>`;
+      html += `<p class="tarea-detalle__eco-articulo">Archivo de la madre: <a href="${escapeHtml(aHref)}" target="_blank" rel="noopener">${escapeHtml(art.nombre || madre.articuloTitulo || 'Ver archivo')}</a></p>`;
     } else {
-      html += `<p class="tarea-detalle__eco-articulo tarea-detalle__eco-articulo--faltante">Falta cargar el artículo en la tarea madre.</p>`;
+      html += `<p class="tarea-detalle__eco-articulo tarea-detalle__eco-articulo--faltante">Falta cargar el archivo en la tarea madre.</p>`;
     }
   }
   if (hijos.length) {
@@ -4095,15 +4098,17 @@ function htmlArticuloEcosistema(tarea) {
   let estado = '';
   if (art) {
     const href = art.url.startsWith('/') ? art.url : '/' + String(art.url).replace(/^\/+/, '');
+    const esImg = String(art.mime || '').startsWith('image/') || /\.(png|jpe?g|webp|gif|bmp|heic)$/i.test(art.nombre || art.url || '');
     estado = `
       <div class="tarea-detalle__articulo-actual">
+        ${esImg ? `<a class="tarea-detalle__articulo-preview" href="${escapeHtml(href)}" target="_blank" rel="noopener"><img src="${escapeHtml(href)}" alt="${escapeHtml(art.nombre || 'Artículo')}"></a>` : ''}
         <a class="btn btn--small btn--ghost" href="${escapeHtml(href)}" target="_blank" rel="noopener" download>
-          ${escapeHtml(art.nombre || 'Descargar artículo')}
+          ${escapeHtml(art.nombre || 'Descargar archivo')}
         </a>
-        <button type="button" class="btn btn--small btn--ghost" data-quitar-articulo-eco title="Quitar artículo">Quitar</button>
+        <button type="button" class="btn btn--small btn--ghost" data-quitar-articulo-eco title="Quitar archivo">Quitar</button>
       </div>`;
   } else {
-    estado = `<p class="tarea-detalle__entregable-hint">Aún no hay artículo. Sube .doc, .docx, .pdf o .txt para ejecutar el ecosistema (copys, portada, carrusel, video).</p>`;
+    estado = `<p class="tarea-detalle__entregable-hint">Aún no hay archivo. Cárgalo aquí (texto, doc, pdf o imagen): todas las subtareas se alimentan de esta madre.</p>`;
   }
   return `
     <div class="tarea-detalle__entregable tarea-detalle__entregable--articulo" data-entregable="ecosistema-articulo">
@@ -4113,8 +4118,8 @@ function htmlArticuloEcosistema(tarea) {
       <p class="tarea-detalle__entregable-hint">${escapeHtml(tituloArt)}</p>
       ${estado}
       <label class="btn btn--small btn--primary tarea-detalle__articulo-upload">
-        ${art ? 'Reemplazar artículo' : '+ Cargar artículo (doc / pdf / txt)'}
-        <input type="file" accept=".doc,.docx,.pdf,.txt,.odt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" hidden data-input-articulo-eco>
+        ${art ? 'Reemplazar archivo' : '+ Cargar archivo'}
+        <input type="file" accept=".doc,.docx,.pdf,.txt,.odt,.md,.rtf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.heic,image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" hidden data-input-articulo-eco>
       </label>
     </div>`;
 }
@@ -5539,13 +5544,17 @@ function renderTabsTarea() {
   const pendienteIcon = t.pendiente ? '📅' : '→';
   const pendienteTitle = t.pendiente ? TOOLTIPS.agendar : TOOLTIPS.pendiente;
   const tieneArticulo = !!(t.articuloArchivo && t.articuloArchivo.url);
-  const articuloLabel = tieneArticulo ? 'Reemplazar artículo' : 'Cargar artículo';
+  const articuloLabel = tieneArticulo ? 'Reemplazar archivo' : 'Cargar archivo';
+  const col = colorDe(clienteDe(t.clienteId));
+  const cliVars = `--cli-border:${col.border};--cli-bg:${col.bg};--cli-text:${col.text}`;
+  nav.setAttribute('style', cliVars);
 
+  const estiloCtx = `style="background:${col.bg};color:${col.text};border-color:${col.border}"`;
   const contexto = esMadre
-    ? '<span class="tabs-tarea__contexto" title="Estás dentro de una tarea madre">Tarea madre</span>'
+    ? `<span class="tabs-tarea__contexto" ${estiloCtx} title="Estás dentro de una tarea madre">Tarea madre</span>`
     : esHija
-      ? '<span class="tabs-tarea__contexto tabs-tarea__contexto--hija" title="Estás dentro de una subtarea">Subtarea</span>'
-      : '<span class="tabs-tarea__contexto tabs-tarea__contexto--simple">Tarea</span>';
+      ? `<span class="tabs-tarea__contexto tabs-tarea__contexto--hija" ${estiloCtx} title="Estás dentro de una subtarea">Subtarea</span>`
+      : `<span class="tabs-tarea__contexto tabs-tarea__contexto--simple">Tarea</span>`;
 
   let html = contexto;
   html += htmlTabAccion({
@@ -5599,8 +5608,8 @@ function renderTabsTarea() {
       icon: '📄',
       label: articuloLabel,
       title: tieneArticulo
-        ? 'Reemplazar el artículo de esta madre'
-        : 'Cargar artículo (doc / pdf / txt) en esta madre'
+        ? 'Reemplazar el archivo de esta madre (las subtareas lo usan)'
+        : 'Cargar archivo (texto, doc, pdf o imagen) en esta madre'
     });
   }
 
@@ -5770,6 +5779,23 @@ function irASemanaDe(fechaISO) {
   diaSeleccionado = fechaISO; // conserva el día clicado desde el mes
   mostrarVista('semana');
   renderCalendario();
+  scrollSemanaAlDiaSeleccionado();
+}
+
+/** Al abrir la semana desde el mes, alinear el scroll con el día elegido. */
+function scrollSemanaAlDiaSeleccionado() {
+  const ir = () => {
+    const el = document.querySelector('#calendario-semana .dia--seleccionado');
+    if (!el) return;
+    try {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+    } catch (_) {
+      el.scrollIntoView(true);
+    }
+  };
+  requestAnimationFrame(ir);
+  setTimeout(ir, 50);
+  setTimeout(ir, 200);
 }
 
 function irADia(fechaISO) {
@@ -6666,7 +6692,7 @@ function esTareaMadreCalendario(t) {
   return (datos.tareas || []).some((h) => h.parentId === t.id);
 }
 
-/** Tonos más oscuros para tareas madre en vista semana/mes. */
+/** Tonos del cliente: madre más marcada; subtarea = mismos colores del perfil/organizador. */
 function colorMiniTarea(t) {
   const base = colorDe(clienteDe(t?.clienteId));
   if (!esTareaMadreCalendario(t)) return base;
@@ -6732,6 +6758,7 @@ function renderCalendario() {
     const div = document.createElement('div');
     const seleccionado = diaSeleccionado && diaStr === diaSeleccionado;
     div.className = `dia dia--clic${diaStr === hoyStr ? ' dia--hoy' : ''}${seleccionado ? ' dia--seleccionado' : ''}`;
+    div.dataset.fecha = diaStr;
     div.innerHTML = `
       <div class="dia__header dia__header--clic" data-fecha="${diaStr}" title="Ver detalle del día">
         <div class="dia__nombre">${DIAS[i]}</div>
