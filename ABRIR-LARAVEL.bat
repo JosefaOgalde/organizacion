@@ -32,6 +32,11 @@ if errorlevel 1 (
   exit /b 1
 )
 
+echo  Limpiando cache de config Laravel...
+pushd backend
+"%PHP_EXE%" artisan config:clear >nul 2>&1
+popd
+
 if not exist "data\organizacion-live.json" (
   if exist "data\organizacion-respaldo-2026-07-17.json" (
     copy /Y "data\organizacion-respaldo-2026-07-17.json" "data\organizacion-live.json" >nul
@@ -39,7 +44,9 @@ if not exist "data\organizacion-live.json" (
 )
 
 echo.
-echo  Laragon debe tener MySQL en verde ^(Start All^).
+echo  IMPORTANTE: Laragon → Start All → MySQL en VERDE
+echo  ^(sin MySQL, /api/clientes falla; el organizador si deberia abrir^)
+echo.
 echo  Arrancando Laravel en http://127.0.0.1:8000 ...
 echo.
 
