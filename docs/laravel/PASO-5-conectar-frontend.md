@@ -16,12 +16,16 @@ flowchart LR
 
 ---
 
-## Dos terminales abiertas
+## Dos procesos, un stack (PHP / Laravel)
 
 | Terminal | Comando | Puerto |
 |----------|---------|--------|
-| **1** | `php artisan serve` | 8000 |
-| **2** | `npx serve .` (en `organizacion\`) | 3000 |
+| **1** | `php artisan serve` (en `backend\`) | 8000 |
+| **2** | `php -S localhost:3000 scripts\servir-organizacion.php` | 3000 |
+
+**Recomendado:** doble clic en **`ABRIR-LARAVEL.bat`** (abre ambos). Ver [`UNIFICADO.md`](./UNIFICADO.md).
+
+> No uses Node / `SERVIR.bat` para el día a día.
 
 ---
 
