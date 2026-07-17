@@ -119,6 +119,187 @@ const AGENTES_CLIENTE = {
   }
 };
 
+const PLANTILLA_ECR_NL_ECOSISTEMA = {
+  id: 'ecr-nl-ecosistema',
+  nombre: 'ECR · Ecosistema newsletter',
+  descripcion: 'Madre + Copys · Portada · Carrusel · Video (mensual)',
+  clienteId: 'cli-ecr',
+  rolId: 'rol-ecr-cm',
+};
+
+function slugDesdeTitulo(texto) {
+  return String(texto || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 48) || 'nl-ecr';
+}
+
+function asegurarPlantillasMadre(data) {
+  if (!data.meta || typeof data.meta !== 'object') data.meta = {};
+  if (!Array.isArray(data.meta.plantillasMadre)) data.meta.plantillasMadre = [];
+  const builtIn = data.meta.plantillasMadre.find((p) => p.id === PLANTILLA_ECR_NL_ECOSISTEMA.id);
+  if (!builtIn) {
+    data.meta.plantillasMadre.unshift({ ...PLANTILLA_ECR_NL_ECOSISTEMA, registrada: toISO(hoy()) });
+  }
+  // Registrar madres ecosistema ECR existentes como historial de formatos usados
+  (data.tareas || []).forEach((t) => {
+    if (t.parentId || t.clienteId !== 'cli-ecr' || t.tipoEntregable !== 'ecosistema') return;
+    const key = t.articuloSlug || slugDesdeTitulo(t.articuloTitulo || t.titulo);
+    if (!key) return;
+    const idHist = 'hist-ecr-' + key;
+    if (data.meta.plantillasMadre.some((p) => p.id === idHist || p.articuloSlug === key)) return;
+    data.meta.plantillasMadre.push({
+      id: idHist,
+      nombre: t.articuloTitulo || nombreBaseTarea(t) || t.titulo,
+      descripcion: 'Formato usado · ' + (t.titulo || ''),
+      clienteId: 'cli-ecr',
+      rolId: 'rol-ecr-cm',
+      articuloSlug: key,
+      articuloTitulo: t.articuloTitulo || '',
+      plantillaBase: PLANTILLA_ECR_NL_ECOSISTEMA.id,
+      registrada: t.fecha || toISO(hoy()),
+      origenTareaId: t.id,
+    });
+  });
+  return data;
+}
+
+function registrarPlantillaDesdeMadre(madre) {
+  if (!madre || !datos) return;
+  asegurarPlantillasMadre(datos);
+  const key = madre.articuloSlug || slugDesdeTitulo(madre.articuloTitulo || madre.titulo);
+  const idHist = 'hist-ecr-' + key;
+  const lista = datos.meta.plantillasMadre;
+  const i = lista.findIndex((p) => p.id === idHist || p.articuloSlug === key);
+  const entry = {
+    id: idHist,
+    nombre: madre.articuloTitulo || nombreBaseTarea(madre) || madre.titulo,
+    descripcion: 'Formato usado · ' + (madre.titulo || ''),
+    clienteId: 'cli-ecr',
+    rolId: 'rol-ecr-cm',
+    articuloSlug: key,
+    articuloTitulo: madre.articuloTitulo || '',
+    plantillaBase: PLANTILLA_ECR_NL_ECOSISTEMA.id,
+    registrada: toISO(hoy()),
+    origenTareaId: madre.id,
+  };
+  if (i >= 0) lista[i] = { ...lista[i], ...entry };
+  else lista.push(entry);
+}
+
+function crearEcosistemaNlEcrDesdePlantilla({
+  tituloArticulo,
+  etiquetaNl,
+  fechaMadre,
+  fechaHijos,
+  slug,
+} = {}) {
+  const tituloArt = String(tituloArticulo || '').trim();
+  if (!tituloArt) throw new Error('Falta el título del artículo');
+  const fecha = fechaMadre || toISO(hoy());
+  const fechaSub = fechaHijos || fecha;
+  const slugArt = slugDesdeTitulo(slug || tituloArt);
+  const etiqueta = String(etiquetaNl || '').trim() || `NL · ${tituloArt.slice(0, 40)}`;
+  const stamp = fecha.replace(/-/g, '');
+  const madreId = `tarea-ecr-ecosistema-${slugArt}-${stamp}`;
+
+  if ((datos.tareas || []).some((t) => t.id === madreId)) {
+    throw new Error('Ya existe un ecosistema con ese id/fecha. Cambia la fecha o el slug.');
+  }
+
+  const madre = {
+    id: madreId,
+    titulo: `[ECR] ${etiqueta}`,
+    clienteId: 'cli-ecr',
+    rolId: 'rol-ecr-cm',
+    fecha,
+    horaInicio: '09:00',
+    horaFin: '18:00',
+    notas:
+      `Tarea madre · artículo «${tituloArt}». Subtareas: Copys · Portada · Carrusel · Video. ` +
+      'Carga el artículo (doc/pdf/txt) en esta madre para ejecutar el ecosistema.',
+    prioridad: 'alta',
+    completada: false,
+    pendiente: false,
+    tipoEntregable: 'ecosistema',
+    articuloSlug: slugArt,
+    articuloTitulo: tituloArt,
+    parentId: null,
+  };
+
+  const hijosDef = [
+    { suf: 'copys', titulo: `[ECR] ${slugArt.toUpperCase().slice(0, 8)} — Copys (TXT)`, tipo: 'copys-txt', hi: '09:00', hf: '11:00', orden: 1 },
+    { suf: 'portada', titulo: `[ECR] ${slugArt.toUpperCase().slice(0, 8)} — Portada (fondos)`, tipo: 'portada-imgs', hi: '11:00', hf: '13:00', orden: 2 },
+    { suf: 'carrusel', titulo: `[ECR] ${slugArt.toUpperCase().slice(0, 8)} — Carrusel`, tipo: 'carrusel', hi: '13:00', hf: '15:30', orden: 3 },
+    { suf: 'video', titulo: `[ECR] ${slugArt.toUpperCase().slice(0, 8)} — Video`, tipo: 'video', hi: '15:30', hf: '18:00', orden: 4 },
+  ];
+
+  const hijos = hijosDef.map((h) => ({
+    id: `tarea-ecr-${h.suf}-${slugArt}-${stamp}`,
+    titulo: h.titulo,
+    clienteId: 'cli-ecr',
+    rolId: 'rol-ecr-cm',
+    fecha: fechaSub,
+    horaInicio: h.hi,
+    horaFin: h.hf,
+    notas: `Subtarea del ecosistema «${tituloArt}».`,
+    prioridad: 'alta',
+    completada: false,
+    pendiente: false,
+    tipoEntregable: h.tipo,
+    ordenHijo: h.orden,
+    parentId: madreId,
+    articuloSlug: slugArt,
+  }));
+
+  datos.tareas.push(madre, ...hijos);
+  sincronizarMadresConSubtareas(datos);
+  registrarPlantillaDesdeMadre(madre);
+  return { madre, hijos };
+}
+
+function renderPlantillasMadre() {
+  const cont = document.getElementById('lista-plantillas-madre');
+  if (!cont || !datos) return;
+  asegurarPlantillasMadre(datos);
+  const lista = datos.meta.plantillasMadre || [];
+  cont.innerHTML = lista
+    .map((p) => {
+      const esBase = p.id === PLANTILLA_ECR_NL_ECOSISTEMA.id;
+      return `
+      <article class="plantilla-madre-card">
+        <div class="plantilla-madre-card__texto">
+          <strong>${escapeHtml(p.nombre)}</strong>
+          <p>${escapeHtml(p.descripcion || '')}</p>
+          ${p.registrada ? `<span class="plantilla-madre-card__meta">Registrada: ${escapeHtml(p.registrada)}</span>` : ''}
+        </div>
+        <button type="button" class="btn btn--small btn--primary" data-usar-plantilla-madre="${escapeHtml(p.id)}" data-plantilla-base="${esBase ? '1' : '0'}" data-articulo-titulo="${escapeHtml(p.articuloTitulo || '')}" data-articulo-slug="${escapeHtml(p.articuloSlug || '')}">
+          Usar formato
+        </button>
+      </article>`;
+    })
+    .join('');
+
+  cont.querySelectorAll('[data-usar-plantilla-madre]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const form = document.getElementById('form-plantilla-madre-ecr');
+      if (!form) return;
+      form.hidden = false;
+      document.getElementById('plantilla-madre-id').value = btn.dataset.usarPlantillaMadre || 'ecr-nl-ecosistema';
+      document.getElementById('plantilla-madre-titulo').value = btn.dataset.articuloTitulo || '';
+      document.getElementById('plantilla-madre-slug').value = btn.dataset.articuloSlug || '';
+      document.getElementById('plantilla-madre-etiqueta').value = '';
+      const f = toISO(hoy());
+      document.getElementById('plantilla-madre-fecha').value = f;
+      document.getElementById('plantilla-madre-fecha-hijos').value = f;
+      form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  });
+}
+
 const AGENTE_GENERICO = {
   nombre: 'Agente general',
   emoji: '🤖',
@@ -1900,6 +2081,7 @@ function normalizarDatos(data) {
   asegurarAgentesClientes(data);
   asignarRolesATareas(data);
   asegurarReportesMensuales(data);
+  asegurarPlantillasMadre(data);
   sincronizarMadresConSubtareas(data);
   reajustarTareasConflictosAgenda(data);
   aplicarTareasEliminadas(data);
@@ -3692,6 +3874,7 @@ function bindArticuloEcosistema(contenedor, tarea) {
       try {
         mostrarToast('Subiendo artículo…');
         await guardarArticuloEnMadre(t, file);
+        registrarPlantillaDesdeMadre(t);
         guardar();
         renderTarea();
         mostrarToast('Artículo cargado en la tarea madre');
@@ -3917,10 +4100,133 @@ function htmlArticuloEcosistema(tarea) {
     </div>`;
 }
 
+function esCopyEcrNl(tarea) {
+  if (!tarea || tarea.clienteId !== 'cli-ecr' || tarea.tipoEntregable !== 'copys-txt') return false;
+  const madre = madreDeTarea(tarea);
+  return !!(madre && madre.tipoEntregable === 'ecosistema');
+}
+
+function rutaCopyEcrDeTarea(tarea) {
+  if (!tarea) return '';
+  if (tarea.entregableArchivo && /\.txt$/i.test(tarea.entregableArchivo) && /\/copys\//i.test(tarea.entregableArchivo)) {
+    return String(tarea.entregableArchivo).replace(/^\/+/, '');
+  }
+  const madre = madreDeTarea(tarea);
+  const slug = madre?.articuloSlug || tarea.articuloSlug || 'nl-ecr';
+  return `index/clientes/ecr/newsletter/copys/COPY-${slug}.txt`;
+}
+
+async function textoArticuloMadre(madre) {
+  if (!madre) return '';
+  const candidatos = [];
+  const art = articuloDeTarea(madre);
+  if (art?.url) {
+    const u = String(art.url).replace(/^\//, '');
+    candidatos.push(u);
+    if (/\.docx?$/i.test(u)) candidatos.push(u.replace(/\.docx?$/i, '.txt'));
+  }
+  if (madre.entregableArchivo) {
+    const e = String(madre.entregableArchivo).replace(/^\/+/, '');
+    candidatos.push(e);
+    if (/\.docx?$/i.test(e)) candidatos.push(e.replace(/\.docx?$/i, '.txt'));
+  }
+  for (const rel of [...new Set(candidatos)]) {
+    if (!/\.txt$/i.test(rel)) continue;
+    try {
+      const res = await fetch('/' + rel + '?t=' + Date.now(), { cache: 'no-store' });
+      if (res.ok) return await res.text();
+    } catch { /* next */ }
+  }
+  return madre.articuloTitulo
+    ? `Artículo: ${madre.articuloTitulo}\n\n(No se pudo leer el TXT del artículo. Usa el .docx enlazado en la madre.)\n`
+    : '';
+}
+
+function borradorCopysDesdeArticulo(tituloArt, textoArt) {
+  const titulo = tituloArt || 'Artículo ECR';
+  const extracto = String(textoArt || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 420);
+  return `COPYS ECR — ${titulo}
+Newsletter LinkedIn
+Placeholder: reemplaza [LINK AL ARTÍCULO] por la URL publicada
+
+============================================================
+1) FEED — INVITACIÓN A LEER EL ARTÍCULO
+============================================================
+
+--- VERSIÓN A ---
+
+${extracto ? extracto + '…' : 'Escribe aquí el gancho del feed a partir del artículo.'}
+
+👇 Léelo completo aquí:
+[LINK AL ARTÍCULO]
+
+#ECRGroup #TransformacionDigital
+
+--- VERSIÓN B ---
+
+Nuevo artículo ECR GROUP®:
+👉 ${titulo}
+
+[LINK AL ARTÍCULO]
+
+============================================================
+2) CARRUSEL
+============================================================
+
+Slide 1 — Portada: ${titulo}
+Slide 2 — Problema / contexto
+Slide 3 — Insight clave
+Slide 4 — Qué cambia en la operación
+Slide 5 — CTA + link al artículo
+
+============================================================
+3) VIDEO
+============================================================
+
+Hook (3 s): ${titulo}
+Desarrollo: 2–3 frases del artículo
+Cierre: CTA al link
+
+============================================================
+`;
+}
+
+function htmlCopysEcrNl(tarea) {
+  const madre = madreDeTarea(tarea);
+  const tituloArt = madre?.articuloTitulo || nombreBaseTarea(madre) || 'Artículo del newsletter';
+  const archivo = rutaCopyEcrDeTarea(tarea);
+  return `
+    <div class="tarea-detalle__entregable tarea-detalle__entregable--prompt" data-entregable="copys-ecr">
+      <div class="tarea-detalle__entregable-head">
+        <strong>Copys (TXT)</strong>
+        <div class="tarea-detalle__entregable-acciones">
+          <button type="button" class="btn btn--small btn--accent" data-crear-copy-ecr>Crear</button>
+          <button type="button" class="btn btn--small" data-modificar-copy-ecr>Modificar</button>
+          <button type="button" class="btn btn--small btn--ghost" data-guardar-copy-ecr>Guardar</button>
+        </div>
+      </div>
+      <p class="tarea-detalle__entregable-hint">
+        Basado en el artículo de la madre: <em>${escapeHtml(tituloArt)}</em>.
+        <strong>Crear</strong> arma el borrador · <strong>Modificar</strong> edita con ideas · <strong>Guardar</strong> deja el TXT.
+        ${archivo ? `Archivo: <code>${escapeHtml(archivo)}</code>` : ''}
+      </p>
+      <section class="prompt-seccion" data-copy-ecr-bloque data-copy-archivo="${escapeHtml(archivo)}">
+        <textarea class="tarea-detalle__txt tarea-detalle__txt--prompt-edit" data-copy-ecr-texto rows="18" cols="80" spellcheck="true" placeholder="Pulsa Crear para generar el borrador desde el artículo…" style="width:100%;min-width:100%;max-width:100%;box-sizing:border-box;display:block"></textarea>
+      </section>
+    </div>`;
+}
+
 function htmlEntregableTarea(tarea) {
   const tipo = tarea.tipoEntregable;
   if (tipo === 'ecosistema') return htmlArticuloEcosistema(tarea);
   if (!tipo) return '';
+
+  if (tipo === 'copys-txt' && esCopyEcrNl(tarea)) {
+    return htmlCopysEcrNl(tarea);
+  }
 
   let archivo = tarea.entregableArchivo || '';
   if (tipo === 'prompt-gemini' && !archivo) {
@@ -4063,6 +4369,10 @@ async function cargarEntregableTxtEnVista(tarea) {
     await cargarPromptsGeminiEnVista(tarea);
     return;
   }
+  if (esCopyEcrNl(tarea)) {
+    await cargarYBindCopysEcr(tarea);
+    return;
+  }
   if (tarea.tipoEntregable === 'copys-txt') {
     const archivos = archivosCopyDeTarea(tarea);
     if (archivos.A && document.querySelector('[data-copy-version]')) {
@@ -4108,6 +4418,88 @@ async function cargarEntregableTxtEnVista(tarea) {
     const raw = pre.dataset.fullText || pre.textContent || '';
     const ok = await copiarTexto(raw);
     mostrarToast(ok ? 'Copys copiados' : 'No se pudo copiar');
+  });
+}
+
+async function cargarYBindCopysEcr(tarea) {
+  const root = document.querySelector('[data-entregable="copys-ecr"]');
+  if (!root) return;
+  const ta = root.querySelector('[data-copy-ecr-texto]');
+  const bloque = root.querySelector('[data-copy-ecr-bloque]');
+  if (!ta) return;
+
+  const archivo = rutaCopyEcrDeTarea(tarea);
+  if (bloque) bloque.setAttribute('data-copy-archivo', archivo);
+  const tLive = tareaDe(tarea.id);
+  if (tLive) {
+    tLive.entregableArchivo = archivo;
+    tarea.entregableArchivo = archivo;
+  }
+
+  try {
+    const res = await fetch('/' + archivo.replace(/^\/+/, '') + '?t=' + Date.now(), { cache: 'no-store' });
+    if (res.ok) {
+      ta.value = await res.text();
+    } else if (!ta.value) {
+      ta.value = '';
+      ta.placeholder = 'Pulsa Crear para generar el borrador desde el artículo de la madre…';
+    }
+  } catch {
+    if (!ta.value) ta.placeholder = 'Pulsa Crear para generar el borrador…';
+  }
+
+  root.querySelector('[data-crear-copy-ecr]')?.addEventListener('click', async () => {
+    const t = tareaDe(tarea.id);
+    if (!t) return;
+    if ((ta.value || '').trim() && !confirm('¿Reemplazar el texto actual con un borrador nuevo desde el artículo?')) {
+      return;
+    }
+    const madre = madreDeTarea(t);
+    mostrarToast('Creando borrador desde el artículo…');
+    const textoArt = await textoArticuloMadre(madre);
+    const titulo = madre?.articuloTitulo || nombreBaseTarea(madre) || 'Artículo ECR';
+    ta.value = borradorCopysDesdeArticulo(titulo, textoArt);
+    ta.focus();
+    mostrarToast('Borrador creado — revisa y pulsa Guardar');
+  });
+
+  root.querySelector('[data-modificar-copy-ecr]')?.addEventListener('click', () => {
+    const t = tareaDe(tarea.id);
+    if (!t) return;
+    ta.focus();
+    iniciarMejoraEntregable(t, {
+      tipo: 'copys-txt',
+      version: 'ECR',
+      texto: ta.value || '',
+      archivo: archivo,
+      bloque,
+    });
+  });
+
+  root.querySelector('[data-guardar-copy-ecr]')?.addEventListener('click', async () => {
+    const t = tareaDe(tarea.id);
+    if (!t) return;
+    const dest = rutaCopyEcrDeTarea(t);
+    const btn = root.querySelector('[data-guardar-copy-ecr]');
+    if (btn) btn.disabled = true;
+    try {
+      const texto = ta.value ?? '';
+      const ok = await guardarPromptTxtEnDisco(dest, texto);
+      if (ok) {
+        t.entregableArchivo = dest;
+        registrarHistorialEntregable(t, {
+          tipo: 'copys-txt',
+          version: 'ECR',
+          accion: 'guardar',
+          archivo: dest,
+          texto,
+        });
+        try { guardar(); } catch { /* ignore */ }
+      }
+      mostrarToast(ok ? 'Copys guardados' : 'No se pudo guardar (¿server Node en marcha?)');
+    } finally {
+      if (btn) btn.disabled = false;
+    }
   });
 }
 
@@ -4827,6 +5219,7 @@ function mostrarVista(vista, { activarTab = false } = {}) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
   }
   actualizarVistaCalendarioNav(vista);
+  if (vista === 'nueva') renderPlantillasMadre();
 }
 
 const VISTAS_CALENDARIO = new Set(['mes', 'semana', 'dia', 'tarea']);
@@ -7011,6 +7404,38 @@ function setupUI() {
     guardar();
     render();
     mostrarToast('Tarea creada');
+  });
+
+  document.getElementById('form-plantilla-madre-ecr')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    try {
+      const { madre, hijos } = crearEcosistemaNlEcrDesdePlantilla({
+        tituloArticulo: document.getElementById('plantilla-madre-titulo')?.value,
+        etiquetaNl: document.getElementById('plantilla-madre-etiqueta')?.value,
+        fechaMadre: document.getElementById('plantilla-madre-fecha')?.value,
+        fechaHijos: document.getElementById('plantilla-madre-fecha-hijos')?.value,
+        slug: document.getElementById('plantilla-madre-slug')?.value,
+      });
+      asignarRolesATareas(datos);
+      guardar();
+      e.target.hidden = true;
+      e.target.reset();
+      renderPlantillasMadre();
+      render();
+      mostrarToast(`Ecosistema creado: ${madre.titulo} (+${hijos.length} subtareas, sin finalizar)`);
+      irADia(madre.fecha);
+    } catch (err) {
+      mostrarToast(err.message || 'No se pudo crear el ecosistema');
+    }
+  });
+  document.querySelectorAll('[data-cancelar-plantilla-madre]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const form = document.getElementById('form-plantilla-madre-ecr');
+      if (form) {
+        form.hidden = true;
+        form.reset();
+      }
+    });
   });
 
   const tareaFecha = document.getElementById('tarea-fecha');

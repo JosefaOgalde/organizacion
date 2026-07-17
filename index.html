@@ -231,6 +231,43 @@
             </div>
             <button type="submit" class="btn btn--primary">Crear tarea</button>
           </form>
+
+          <div class="plantillas-madre" id="plantillas-madre-ecr">
+            <h3 class="nueva-subtitulo">Plantillas · madres ECR (newsletter)</h3>
+            <p class="vista-hint">Formatos recurrentes (madre + Copys · Portada · Carrusel · Video). Las nuevas instancias nacen <strong>sin finalizar</strong>.</p>
+            <div id="lista-plantillas-madre" class="plantillas-madre__lista"></div>
+            <form id="form-plantilla-madre-ecr" class="form plantillas-madre__form" hidden>
+              <input type="hidden" id="plantilla-madre-id" value="ecr-nl-ecosistema">
+              <div class="form__row">
+                <label for="plantilla-madre-titulo">Título del artículo *</label>
+                <input type="text" id="plantilla-madre-titulo" required placeholder="Ej. Tecnología sin integración: …">
+              </div>
+              <div class="form__row form__row--2">
+                <div>
+                  <label for="plantilla-madre-etiqueta">Etiqueta NL</label>
+                  <input type="text" id="plantilla-madre-etiqueta" placeholder="Ej. NL 1 sep · o NL 2 sep">
+                </div>
+                <div>
+                  <label for="plantilla-madre-fecha">Fecha de la madre *</label>
+                  <input type="date" id="plantilla-madre-fecha" required>
+                </div>
+              </div>
+              <div class="form__row form__row--2">
+                <div>
+                  <label for="plantilla-madre-fecha-hijos">Fecha subtareas</label>
+                  <input type="date" id="plantilla-madre-fecha-hijos" title="Si vacío, usa la misma fecha de la madre">
+                </div>
+                <div>
+                  <label for="plantilla-madre-slug">Slug (archivo)</label>
+                  <input type="text" id="plantilla-madre-slug" placeholder="auto desde el título">
+                </div>
+              </div>
+              <div class="form__acciones">
+                <button type="button" class="btn btn--ghost" data-cancelar-plantilla-madre>Cancelar</button>
+                <button type="submit" class="btn btn--primary">Crear ecosistema NL</button>
+              </div>
+            </form>
+          </div>
         </div>
 
         <div id="nueva-panel-reunion" class="panel panel--form nueva-panel" role="tabpanel" hidden>

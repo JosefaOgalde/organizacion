@@ -37,20 +37,25 @@ function upsert(tarea) {
   const i = data.tareas.findIndex((t) => t.id === tarea.id);
   if (i >= 0) {
     const prev = data.tareas[i];
+    const { resetEstado, ...campos } = tarea;
     data.tareas[i] = {
       ...prev,
-      ...tarea,
-      // no pisar progreso local
-      completada: prev.completada === true || tarea.completada === true,
-      pendiente: prev.pendiente,
+      ...campos,
+      // resetEstado: respeta completada de la plantilla (nuevas = false)
+      completada: resetEstado
+        ? !!tarea.completada
+        : prev.completada === true || tarea.completada === true,
+      pendiente: resetEstado ? !!tarea.pendiente : prev.pendiente,
       sesionAgente: prev.sesionAgente || tarea.sesionAgente,
       agendaFijada: prev.agendaFijada,
-      estadoFijado: prev.estadoFijado,
+      estadoFijado: resetEstado ? false : prev.estadoFijado,
+      articuloArchivo: tarea.articuloArchivo || prev.articuloArchivo,
     };
-    console.log('Actualizada:', data.tareas[i].titulo);
+    console.log('Actualizada:', data.tareas[i].titulo, data.tareas[i].completada ? '[x]' : '[ ]');
   } else {
-    data.tareas.push(tarea);
-    console.log('Agregada:', tarea.titulo);
+    const { resetEstado, ...campos } = tarea;
+    data.tareas.push({ ...campos, completada: !!campos.completada });
+    console.log('Agregada:', campos.titulo);
   }
 }
 
@@ -149,6 +154,7 @@ for (const h of hijosTI) {
     prioridad: 'alta',
     completada: false,
     pendiente: false,
+    resetEstado: true,
     parentId: MADRE_TI_ID,
     articuloSlug: 'tecnologia-sin-integracion',
   });
@@ -250,6 +256,7 @@ for (const h of hijosET) {
     prioridad: 'alta',
     completada: false,
     pendiente: false,
+    resetEstado: true,
     parentId: MADRE_ET_ID,
     articuloSlug: 'equipos-en-terreno',
   });
