@@ -16,16 +16,18 @@ flowchart LR
 
 ---
 
-## Dos procesos, un stack (PHP / Laravel)
+## Un solo proceso (Laravel :8000)
 
-| Terminal | Comando | Puerto |
-|----------|---------|--------|
-| **1** | `php artisan serve` (en `backend\`) | 8000 |
-| **2** | `php -S localhost:3000 scripts\servir-organizacion.php` | 3000 |
+```bat
+ABRIR-LARAVEL.bat
+```
 
-**Recomendado:** doble clic en **`ABRIR-LARAVEL.bat`** (abre ambos). Ver [`UNIFICADO.md`](./UNIFICADO.md).
+| Qué | URL |
+|-----|-----|
+| Organizador + portal | http://127.0.0.1:8000/… |
+| API | http://127.0.0.1:8000/api/clientes |
 
-> No uses Node / `SERVIR.bat` para el día a día.
+Ver [`UNIFICADO.md`](./UNIFICADO.md). Ya no hace falta un segundo servidor en el puerto 3000.
 
 ---
 
