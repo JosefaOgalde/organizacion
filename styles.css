@@ -3046,9 +3046,64 @@ body.modal-abierto {
   font-size: 0.92em;
 }
 
-.tarea-detalle__eco-articulo--faltante {
-  color: #9a5a2e;
+.plantillas-madre {
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid color-mix(in srgb, #98c8e0 50%, transparent);
 }
+
+.plantillas-madre__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.plantilla-madre-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, #e8f4fc 70%, #fff);
+  border: 1px solid #98c8e0;
+}
+
+.plantilla-madre-card__texto {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.plantilla-madre-card__texto p {
+  margin: 0.2rem 0 0;
+  font-size: 0.9em;
+  opacity: 0.85;
+}
+
+.plantilla-madre-card__meta {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.78em;
+  opacity: 0.7;
+}
+
+.plantillas-madre__form {
+  margin-top: 0.75rem;
+  padding: 0.85rem;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px dashed #98c8e0;
+}
+
+.form__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
 
 .tarea-detalle__entregable-head {
   display: flex;
