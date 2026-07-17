@@ -78,14 +78,14 @@ if ($apiAdd) {
 $web = $backend . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'web.php';
 $webSrc = file_get_contents($web) ?: '';
 
-// Quitar bloques previos del frontend (con o sin withoutMiddleware) para evitar duplicados rotos
+// Quitar TODOS los bloques previos del frontend (duplicados rompen el use)
 $webSrc = preg_replace(
-    '/\n\/\/ --- Frontend organizacion[\s\S]*?(?=\n(?:\/\/|$)|$)/',
-    "\n",
+    '/\R\/\/ --- Frontend organizacion[\s\S]*?where\(\'path\',\s*\'\^\(\?!api\)\.\*\$\'\);/',
+    '',
     $webSrc
 );
 $webSrc = preg_replace(
-    '/\nuse App\\\\Http\\\\Controllers\\\\FrontendStaticController;[\s\S]*?where\(\'path\',\s*\'\^\(\?!api\)\.\*\$\'\)[^\n]*;/m',
+    '/\Ruse App\\\\Http\\\\Controllers\\\\FrontendStaticController;[\s\S]*?where\(\'path\',\s*\'\^\(\?!api\)\.\*\$\'\);/',
     '',
     $webSrc
 );
@@ -99,7 +99,7 @@ Route::get('/{path}', [FrontendStaticController::class, 'serve'])->where('path',
 PHP;
 
 file_put_contents($web, rtrim($webSrc) . "\n" . $webBlock . "\n");
-echo "  · routes/web.php: frontend unificado\n";
+echo "  · routes/web.php: un solo bloque frontend\n";
 
 $live = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-live.json';
 $respaldo = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-respaldo-2026-07-17.json';
