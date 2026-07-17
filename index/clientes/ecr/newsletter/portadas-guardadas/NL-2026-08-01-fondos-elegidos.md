@@ -2,7 +2,7 @@
 # Artículo: Tecnologías de la información
 # (El segundo artículo / otra madre es «Equipos en terreno»)
 
-**Artículo:** Equipos en terreno: la ventaja de ajustar a tiempo  
+**Artículo:** Tecnologías de la información (NL 1 agosto)  
 **Cliente:** ECR · Perfil → sección **Portada Midjourney**  
 **Estado:** 4 fondos Midjourney seleccionados (solo background). Título/logo se montan en Canva el **viernes 17-07**.
 
@@ -22,12 +22,12 @@
 ## Referencias de prompts
 
 - Generador UI: `index/clientes/ecr/` → Portada Midjourney (`ecr-portada-prompt.js` v10+)
-- Prompts ART23: [`ART23-equipos-en-terreno.md`](./ART23-equipos-en-terreno.md)
 - Base estilo: [`../BASE-ESTILO-PORTADAS.md`](../BASE-ESTILO-PORTADAS.md)
+- Segundo artículo (otra madre): [`ART23-equipos-en-terreno.md`](./ART23-equipos-en-terreno.md)
 
 ## Tarea organizador
 
-- **Viernes 2026-07-17:** `[ECR] Portada NL 1 agosto — fondos + Canva`  
-  Script: `node scripts/add-ecr-portada-nl-agosto.js` → `http://localhost:3000/index.html?disco=1`
+- **Viernes 2026-07-17:** madre `[ECR] NL 1 ago · Tecnologías de la información` + subtarea TI — Portada  
+  Script: `RENOMBRAR-ECR-MADRES.bat` → `http://localhost:3000/index.html?disco=1` (vista Semana/Día)
 - En la tarea: **+ Guardar imágenes** (panel izquierdo) para subir los 4 fondos.
 - En landing ECR: sección **Tareas con imágenes** para verlas / abrir la tarea.
