@@ -235,7 +235,7 @@ window.CLIENTES_PORTAL = [
     nombre: 'Tronwell',
     abrev: 'TW',
     tipo: 'Freelance',
-    color: { border: '#2f6bc4', bg: '#d9e6f7', text: '#6b93c9' },
+    color: { border: '#2f6bc4', bg: '#d9e6f7', text: '#1e4578' },
     agente: 'Ajuste de textos',
     resumen: 'Revisión y ajuste de documentos (Word) por encargo.',
     landing: {

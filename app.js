@@ -17,8 +17,8 @@ const COLORES = {
   grafito: { border: '#b8c0c8', bg: '#eef0f4', text: '#5a6a7a' },
   /** Impresoreando — ámbar / mostaza suave (único; no reutilizar con otros clientes) */
   ambar: { border: '#d4b06a', bg: '#faf6eb', text: '#7a5c28' },
-  /** Tronwell — azul cobalto (distinto de celeste ECR y agua MKOF); texto más claro */
-  azul: { border: '#2f6bc4', bg: '#d9e6f7', text: '#6b93c9' },
+  /** Tronwell — azul cobalto (distinto de celeste ECR y agua MKOF) */
+  azul: { border: '#2f6bc4', bg: '#d9e6f7', text: '#1e4578' },
   /** Salud — verde más definido, aún claro pero distinto de clientes menta/celeste */
   salud: { border: '#2f9d72', bg: '#c5e8d8', text: '#1a5c42' },
   /** Reuniones — azul pizarra, no usa el color del cliente */
@@ -6777,10 +6777,11 @@ function esTareaMadreCalendario(t) {
 function colorMiniTarea(t) {
   const base = colorDe(clienteDe(t?.clienteId));
   if (!esTareaMadreCalendario(t)) return base;
+  // Madre = fondo sólido con el border del cliente → tipografía blanca (legible).
   return {
     bg: base.border || '#b8c8d8',
     border: base.text || '#4a5a6a',
-    text: base.text || '#3a4a5a',
+    text: '#ffffff',
   };
 }
 
