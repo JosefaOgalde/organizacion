@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-18T04:26:53.000Z",
+    "actualizado": "2026-07-18T04:27:21.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -254,13 +254,13 @@
       "nombre": "Porta lata Monster",
       "activo": true,
       "filamentoGramos": 144.45,
-      "costoFilamentoKgClp": 12690,
+      "costoFilamentoKgClp": 17986,
       "horasImpresion": 3.4167,
       "minutosPintado": 0,
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 0,
-      "notas": "Slicer: modelo 135,55 g + soportes 8,43 g + purge 0,47 g = 144,45 g · 48,04 m · 3 h 25 m · coste slicer 2,89 (ref). PLA amarillo. Logo en relieve.",
+      "notas": "Slicer: modelo 135,55 g + soportes 8,43 g + purge 0,47 g = 144,45 g · 48,04 m · 3 h 25 m · coste slicer 2,89 (ref). PLA+ negro $17.986/kg. Logo en relieve.",
       "filamentoModeloGramos": 135.55,
       "filamentoSoportesGramos": 8.43,
       "filamentoPurgeGramos": 0.47,
@@ -277,14 +277,14 @@
       "filamentoPurgeGramos": 0.47,
       "filamentoMetros": 32.24,
       "filamentoGramos": 96.95,
-      "costoFilamentoKgClp": 12690,
+      "costoFilamentoKgClp": 17986,
       "horasImpresion": 3.35,
       "minutosPintado": 0,
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 0,
       "costoSlicerRef": 1.94,
-      "notas": "Slicer: modelo 95,36 g + soportes 1,12 g + purge 0,47 g = 96,95 g · 32,24 m · 3 h 21 m · coste slicer 1,94 (ref). PLA amarillo."
+      "notas": "Slicer: modelo 95,36 g + soportes 1,12 g + purge 0,47 g = 96,95 g · 32,24 m · 3 h 21 m · coste slicer 1,94 (ref). PLA+ negro $17.986/kg."
     },
     {
       "id": "prod-portacompleto-perro-bulldog",
