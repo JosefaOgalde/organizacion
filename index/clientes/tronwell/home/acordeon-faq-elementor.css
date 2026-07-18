@@ -1,0 +1,61 @@
+/**
+ * Tronwell · Home — restyle del Acordeón nativo de Elementor (estilo píldora).
+ *
+ * Opción B si preferís NO reemplazar el widget:
+ * 1. Dejá el widget Accordion / Nested Accordion de Elementor.
+ * 2. En el contenedor o en Sitio → CSS personalizado, pegá este archivo.
+ * 3. Envolvé el acordeón en un contenedor con clase: tw-faq-el
+ *
+ * Limitación: el círculo celeste se simula con ::after; no queda idéntico
+ * al HTML custom (acordeon-faq-pill.html). Para el match exacto usá el HTML.
+ */
+
+.tw-faq-el .elementor-accordion-item,
+.tw-faq-el .e-n-accordion-item {
+  margin-bottom: 0.85rem;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.tw-faq-el .elementor-tab-title,
+.tw-faq-el .e-n-accordion-item-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  min-height: 56px !important;
+  padding: 0.65rem 0.45rem 0.65rem 1.35rem !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: linear-gradient(180deg, #2f7fd4 0%, #2568b8 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 22px rgba(30, 70, 120, 0.22) !important;
+  font-weight: 700 !important;
+}
+
+.tw-faq-el .elementor-tab-title .elementor-accordion-icon,
+.tw-faq-el .e-n-accordion-item-title-icon {
+  order: 2;
+  margin: 0 0 0 auto !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background: #5eb4e8 !important;
+  display: grid !important;
+  place-items: center !important;
+  color: #fff !important;
+}
+
+.tw-faq-el .elementor-tab-title .elementor-accordion-title,
+.tw-faq-el .e-n-accordion-item-title-text {
+  flex: 1;
+  color: #fff !important;
+}
+
+.tw-faq-el .elementor-tab-content,
+.tw-faq-el .e-n-accordion-item > .e-con {
+  margin-top: 0.55rem !important;
+  padding: 1rem 1.25rem !important;
+  border: 0 !important;
+  border-radius: 18px !important;
+  background: #f3f5f7 !important;
+}

@@ -1,0 +1,344 @@
+<!--
+  ═══════════════════════════════════════════════════════════════════
+  RESPALDO BLOQUEADO · Tronwell · Home · FAQ acordeón estilo píldora
+  ═══════════════════════════════════════════════════════════════════
+  NO MODIFICAR sin autorización explícita de la usuaria.
+  Uso: pegar en Elementor → widget HTML si hay que volver a esta versión.
+
+  - Sin título «¿Aún tienes dudas?»
+  - 8 preguntas/respuestas literales (signos, mayúsculas, negritas)
+  - Tipografía: preguntas peso 500, sin text-transform; tamaño ≤ 2rem
+  - Congelado: 2026-07-18
+  ═══════════════════════════════════════════════════════════════════
+-->
+<style>
+  .tw-faq {
+    --tw-blue: #2f7fd4;
+    --tw-blue-deep: #2568b8;
+    --tw-cyan: #5eb4e8;
+    --tw-ink: #1e2a3a;
+    --tw-muted: #4a5568;
+    --tw-panel: #f3f5f7;
+    --tw-shadow: 0 8px 22px rgba(30, 70, 120, 0.22);
+    width: 100%;
+    max-width: 920px;
+    margin: 0 auto;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+
+  .tw-faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tw-faq__item {
+    margin: 0;
+  }
+
+  .tw-faq__trigger {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.75rem;
+    min-height: 56px;
+    padding: 0.65rem 0.45rem 0.65rem 1.35rem;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--tw-blue) 0%, var(--tw-blue-deep) 100%);
+    color: #fff;
+    box-shadow: var(--tw-shadow);
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  }
+
+  .tw-faq__trigger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 26px rgba(30, 70, 120, 0.28);
+  }
+
+  .tw-faq__trigger:focus-visible {
+    outline: 3px solid var(--tw-cyan);
+    outline-offset: 3px;
+  }
+
+  .tw-faq__q {
+    flex: 1;
+    margin: 0;
+    padding-right: 0.25rem;
+    font-size: min(1.05rem, 2rem) !important;
+    font-weight: 500 !important;
+    line-height: 1.35;
+    color: inherit !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    text-decoration: none !important;
+  }
+
+  .tw-faq__icon {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--tw-cyan);
+    display: grid;
+    place-items: center;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.15);
+  }
+
+  .tw-faq__icon svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    transition: transform 0.22s ease;
+  }
+
+  .tw-faq__item.is-open .tw-faq__icon svg {
+    transform: rotate(90deg);
+  }
+
+  .tw-faq__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.28s ease;
+  }
+
+  .tw-faq__item.is-open .tw-faq__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .tw-faq__panel-inner {
+    overflow: hidden;
+  }
+
+  .tw-faq__answer {
+    margin: 0.55rem 0.35rem 0;
+    padding: 1rem 1.25rem;
+    border-radius: 18px;
+    background: var(--tw-panel);
+    color: var(--tw-muted);
+    font-size: min(0.98rem, 2rem) !important;
+    line-height: 1.55;
+  }
+
+  .tw-faq__answer,
+  .tw-faq__answer p,
+  .tw-faq__answer li,
+  .tw-faq__answer strong {
+    font-size: min(0.98rem, 2rem) !important;
+  }
+
+  .tw-faq__answer p {
+    margin: 0 0 0.75rem;
+  }
+
+  .tw-faq__answer p:last-child {
+    margin-bottom: 0;
+  }
+
+  .tw-faq__answer strong {
+    font-weight: 700;
+    color: var(--tw-ink);
+  }
+
+  .tw-faq__answer ul {
+    margin: 0.5rem 0 0;
+    padding-left: 1.2rem;
+  }
+
+  .tw-faq__answer li {
+    margin: 0.25rem 0;
+  }
+
+  .tw-faq__answer a {
+    color: var(--tw-blue);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  @media (max-width: 640px) {
+    .tw-faq__trigger {
+      min-height: 52px;
+      padding: 0.55rem 0.4rem 0.55rem 1rem;
+    }
+
+    .tw-faq__icon {
+      flex-basis: 40px;
+      width: 40px;
+      height: 40px;
+    }
+
+    .tw-faq__q {
+      font-size: min(0.9rem, 2rem) !important;
+    }
+  }
+</style>
+
+<section class="tw-faq" aria-label="Preguntas frecuentes">
+  <ul class="tw-faq__list">
+    <li class="tw-faq__item is-open">
+      <button type="button" class="tw-faq__trigger" aria-expanded="true">
+        <span class="tw-faq__q">¿Cuánto tiempo toma aprender inglés con Tronwell?</span>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <p>El tiempo depende de tu nivel de entrada y tus objetivos. En Tronwell contamos con cursos desde nivel principiante hasta avanzado. Antes de comenzar realizamos una <strong>evaluación de nivel gratuita</strong> para ubicarte en el programa que mejor se adapte a ti y estimar tu progresión.</p>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <span class="tw-faq__q">¿Cómo sé en qué nivel de inglés estoy?</span>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <p>Debes realizar una <strong>prueba de diagnóstico de nivel</strong> con nosotros antes de comenzar cualquier curso. Este test determina el programa más adecuado según tus conocimientos actuales y tus necesidades.</p>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <span class="tw-faq__q">¿Qué modalidades de inglés ofrece Tronwell?</span>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <p>Ofrecemos tres modalidades: clases online con profesores en vivo, presenciales e híbridas (presencial + online). Tú eliges si quieres asistir a nuestra sede en Providencia o si quieres tomar tus clases desde tus dispositivos.</p>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <span class="tw-faq__q">¿Qué es el Tutor IA de Tronwell?</span>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <p>El <strong>Tutor IA</strong> es una herramienta de práctica ilimitada que extiende tu experiencia Tronwell. Puedes practicar conversación real, recibir retroalimentación inmediata sobre gramática, vocabulario y pronunciación, además de usarlo cuando quieras y donde quieras. Por eso, esta herramienta inteligente complementa al profesor en sala, no lo reemplaza.</p>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <span class="tw-faq__q">¿Tronwell tiene cursos de inglés para empresas con SENCE?</span>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <p>Sí. Tronwell ofrece <strong>cursos de inglés para empresas vía franquicia SENCE</strong>. La ley 19.518 permite a las empresas descontar el costo de las capacitaciones del impuesto a la renta. Te asesoramos en toda la gestión administrativa del SENCE sin costo adicional.</p>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <span class="tw-faq__q">¿Tronwell me prepara para el examen TOEFL?</span>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <p>Sí. Contamos con un programa específico de <strong>preparación TOEFL</strong> disponible en modalidad virtual, online y presencial, con estrategias, materiales y simulacros para que alcances el puntaje que necesitas.</p>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <span class="tw-faq__q">¿Tienen cursos de inglés para niños?</span>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <p>Sí. Contamos con <strong>cursos de inglés para niños</strong> de 7 a 15 años, organizados por rango etario y nivel con clases lúdicas, interactivas y profesores especializados en didáctica infantil. Estos los puedes encontrar en modalidad online y presencial.</p>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <span class="tw-faq__q">¿Cuáles son los canales de contacto para resolver mis dudas?</span>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <p>En nuestra página de contacto, puedes llenar un formulario simple con tus datos para que uno de nuestros ejecutivos te contacte lo antes posible. También puedes comunicarte con nosotros en canales oficiales.</p>
+            <ul>
+              <li><strong>Whatsapp:</strong> +56 9 56442400</li>
+              <li><strong>Correo:</strong> ventas@tronwell.cl</li>
+              <li><strong>Teléfono fijo:</strong> +56 9 50233405</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<script>
+(function () {
+  var root = document.currentScript && document.currentScript.previousElementSibling;
+  if (!root || !root.classList.contains("tw-faq")) {
+    root = document.querySelector(".tw-faq");
+  }
+  if (!root) return;
+
+  root.querySelectorAll(".tw-faq__trigger").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var item = btn.closest(".tw-faq__item");
+      var open = item.classList.contains("is-open");
+
+      root.querySelectorAll(".tw-faq__item.is-open").forEach(function (el) {
+        el.classList.remove("is-open");
+        var b = el.querySelector(".tw-faq__trigger");
+        if (b) b.setAttribute("aria-expanded", "false");
+      });
+
+      if (!open) {
+        item.classList.add("is-open");
+        btn.setAttribute("aria-expanded", "true");
+      }
+    });
+  });
+})();
+</script>

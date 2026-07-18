@@ -244,7 +244,7 @@ window.CLIENTES_PORTAL = [
       secciones: [
         {
           titulo: 'Ajustar textos (19 jul)',
-          texto: 'Madre + subtareas: Contacto.docx · curso adultos.docx · Home.docx · tutor ia.docx.'
+          texto: 'Madre + subtareas: Contacto.docx (✓) · curso adultos.docx (✓) · Home.docx (✓) · tutor ia.docx.'
         }
       ]
     }
