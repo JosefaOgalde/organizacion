@@ -293,7 +293,7 @@
       activo: true,
       filamentoGramos: 144.45,
       costoFilamentoKgClp: costoKgAmarillo,
-      horasImpresion: 3.42,
+      horasImpresion: 3.4167,
       minutosPintado: 0,
       unidadesMetal: 0,
       unidadesBolsa: 1,
