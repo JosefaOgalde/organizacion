@@ -1,0 +1,11 @@
+Tronwell · Home · FAQ acordeón
+================================
+Archivos bloqueados (no modificar sin autorización explícita):
+  - acordeon-faq-pill.html
+  - acordeon-faq-pill-RESPALDO.html
+  - acordeon-faq-pill-preview.html
+  - acordeon-faq-elementor.css
+
+Plan vigente: maquetador Elementor en el sitio.
+Estos HTML/CSS son respaldo por si hay que volver.
+Congelado: 2026-07-18
