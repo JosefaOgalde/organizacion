@@ -587,17 +587,19 @@
         </div>
       </div>
       ${
-        costoPortaLata
+        costoPortaLata && portaLata
           ? `<div class="imp-card imp-card--costo-destacado">
         <h2>Último costo de pieza · Porta lata Monster</h2>
-        <p class="imp-muted">Datos del slicer: 144,45 g · 3 h 25 m · PLA amarillo</p>
+        <p class="imp-muted">Slicer: modelo ${portaLata.filamentoModeloGramos ?? '—'} g + soportes ${portaLata.filamentoSoportesGramos ?? '—'} g + purge ${portaLata.filamentoPurgeGramos ?? '—'} g = <strong>${Number(costoPortaLata.gramos || portaLata.filamentoGramos || 0).toFixed(2)} g</strong>
+          · ${portaLata.filamentoMetros ? `${portaLata.filamentoMetros} m · ` : ''}${partesHoras(portaLata.horasImpresion).horas} h ${partesHoras(portaLata.horasImpresion).minutos} m
+          ${portaLata.costoSlicerRef ? ` · coste slicer ref. ${portaLata.costoSlicerRef}` : ''}</p>
         <div class="imp-grid">
           <div class="imp-kpi"><span>Filamento</span><strong>${money(costoPortaLata.filamento)}</strong></div>
           <div class="imp-kpi"><span>Luz</span><strong>${money(costoPortaLata.luz)}</strong></div>
           <div class="imp-kpi"><span>Bolsa</span><strong>${money(costoPortaLata.bolsa)}</strong></div>
           <div class="imp-kpi imp-kpi--accent"><span>Costo de hacer el vaso</span><strong>${money(costoPortaLata.total)}</strong></div>
         </div>
-        <p class="imp-muted">Sin pintado (logo en relieve). Detalle en pestaña <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>.</p>
+        <p class="imp-muted">Editable en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button> — al cambiar parámetros se recalcula.</p>
       </div>`
           : ''
       }
