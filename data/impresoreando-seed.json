@@ -34,7 +34,7 @@
     "valorHoraManoObraClp": 5000,
     "costoAnilloMetalLlaveroClp": 150,
     "costoBolsaEntregaClp": 50,
-    "margenObjetivoPct": 40,
+    "margenObjetivoPct": 100,
     "impresoraModelo": "Elegoo Centauri Carbon 2",
     "impresoraNotas": "Pico nominal 1100 W @ 220 V. Promedio estimado en impresión PLA con cama caliente: 0,28 kW. Tarifa ~$200/kWh (precio efectivo boleta residencial Chile 2026; ajústala a tu cuenta)."
   },
