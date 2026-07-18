@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-14T20:40:00.000Z",
+    "actualizado": "2026-07-18T02:20:17.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -165,7 +165,18 @@
       ]
     }
   ],
-  "ventas": [],
+  "ventas": [
+    {
+      "id": "ven-mrpqov4c",
+      "fecha": "2026-07-18",
+      "descripcion": "Portacompletos ×6 (4 perros + 2 gatos)",
+      "cantidad": 6,
+      "montoNeto": 15000,
+      "canal": "WhatsApp",
+      "notas": "4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000",
+      "socioRegistro": "Ambos"
+    }
+  ],
   "operacion": [
     {
       "id": "op-luz-plantilla",
