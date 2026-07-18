@@ -280,42 +280,54 @@
     return changed;
   }
 
-  /** Porta lata Monster — datos Bambu/Orca: 144,45 g · 3 h 25 m · PLA amarillo. */
+  /** Porta lata Monster — seed inicial desde slicer; no pisa ediciones posteriores. */
   function asegurarProductoPortaLataMonster(d) {
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     const id = 'prod-porta-lata-monster';
     const existing = d.productos.find(
       (p) => p.id === id || /porta\s*lata.*monster|monster.*porta\s*lata/i.test(p.nombre || '')
     );
-    const costoKgAmarillo = 12690; // Elegoo PLA amarillo (Mercado Libre)
-    const campos = {
+    const seed = {
+      id,
       nombre: 'Porta lata Monster',
       activo: true,
+      filamentoModeloGramos: 135.55,
+      filamentoSoportesGramos: 8.43,
+      filamentoPurgeGramos: 0.47,
+      filamentoMetros: 48.04,
       filamentoGramos: 144.45,
-      costoFilamentoKgClp: costoKgAmarillo,
+      costoFilamentoKgClp: 12690,
       horasImpresion: 3.4167,
       minutosPintado: 0,
       unidadesMetal: 0,
       unidadesBolsa: 1,
-      precioVentaSugeridoClp: existing ? Number(existing.precioVentaSugeridoClp || 0) : 0,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: 2.89,
       notas:
-        'Slicer: 144,45 g total (modelo 135,55 + soportes 8,43 + purge 0,47) · 3 h 25 m · PLA amarillo $12.690/kg. Logo en relieve, sin pintado.',
+        'Slicer: modelo 135,55 g + soportes 8,43 g + purge 0,47 g = 144,45 g · 48,04 m · 3 h 25 m · coste slicer 2,89 (ref). PLA amarillo. Logo en relieve.',
     };
     if (!existing) {
-      d.productos.push({ id, ...campos });
+      d.productos.push(seed);
       return true;
     }
     let changed = false;
-    for (const [k, v] of Object.entries(campos)) {
-      if (k === 'precioVentaSugeridoClp') continue;
-      if (existing[k] !== v) {
-        existing[k] = v;
-        changed = true;
-      }
-    }
     if (!existing.id) {
       existing.id = id;
       changed = true;
+    }
+    // Solo rellena campos slicer si aún no existen (respetar ediciones de la usuaria).
+    const backfill = [
+      'filamentoModeloGramos',
+      'filamentoSoportesGramos',
+      'filamentoPurgeGramos',
+      'filamentoMetros',
+      'costoSlicerRef',
+    ];
+    for (const k of backfill) {
+      if (existing[k] == null && seed[k] != null) {
+        existing[k] = seed[k];
+        changed = true;
+      }
     }
     return changed;
   }
@@ -362,17 +374,87 @@
     return Number(p.tarifaKwhClp || 0) * Number(p.consumoImpresoraKw || 0);
   }
 
+  function partesHoras(horas) {
+    const totalMin = Math.max(0, Math.round(Number(horas || 0) * 60));
+    return { horas: Math.floor(totalMin / 60), minutos: totalMin % 60 };
+  }
+
+  function horasDesdePartes(horas, minutos) {
+    return Number(horas || 0) + Number(minutos || 0) / 60;
+  }
+
+  function gramosDesdeDesglose(prod) {
+    const modelo = Number(prod.filamentoModeloGramos);
+    const soportes = Number(prod.filamentoSoportesGramos);
+    const purge = Number(prod.filamentoPurgeGramos);
+    const tieneDesglose =
+      prod.filamentoModeloGramos != null ||
+      prod.filamentoSoportesGramos != null ||
+      prod.filamentoPurgeGramos != null;
+    if (!tieneDesglose) return Number(prod.filamentoGramos || 0);
+    return (Number.isFinite(modelo) ? modelo : 0) +
+      (Number.isFinite(soportes) ? soportes : 0) +
+      (Number.isFinite(purge) ? purge : 0);
+  }
+
   function costoProducto(prod) {
     const p = data.parametros || {};
-    const filamento =
-      (Number(prod.filamentoGramos || 0) / 1000) * Number(prod.costoFilamentoKgClp || 0);
+    const gramos = gramosDesdeDesglose(prod) || Number(prod.filamentoGramos || 0);
+    const filamento = (gramos / 1000) * Number(prod.costoFilamentoKgClp || 0);
     const luz = Number(prod.horasImpresion || 0) * costoHoraImpresora();
     const pintado =
       (Number(prod.minutosPintado || 0) / 60) * Number(p.valorHoraManoObraClp || 0);
     const metal = Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0);
     const bolsa = Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 0);
     const total = filamento + luz + pintado + metal + bolsa;
-    return { filamento, luz, pintado, metal, bolsa, total };
+    return { filamento, luz, pintado, metal, bolsa, total, gramos };
+  }
+
+  function leerProductoDesdeForm(form) {
+    if (!form) return null;
+    const fd = new FormData(form);
+    const modelo = Number(fd.get('filamentoModeloGramos') || 0);
+    const soportes = Number(fd.get('filamentoSoportesGramos') || 0);
+    const purge = Number(fd.get('filamentoPurgeGramos') || 0);
+    const totalDesglose = modelo + soportes + purge;
+    const gramosManual = Number(fd.get('filamentoGramos') || 0);
+    const usarDesglose = fd.get('usarDesglose') === '1';
+    const filamentoGramos = usarDesglose ? totalDesglose : gramosManual;
+    const horasImpresion = horasDesdePartes(fd.get('horasPart'), fd.get('minutosPart'));
+    return {
+      nombre: String(fd.get('nombre') || '').trim(),
+      filamentoModeloGramos: modelo,
+      filamentoSoportesGramos: soportes,
+      filamentoPurgeGramos: purge,
+      filamentoMetros: Number(fd.get('filamentoMetros') || 0),
+      filamentoGramos,
+      costoFilamentoKgClp: Number(fd.get('costoFilamentoKgClp') || 0),
+      horasImpresion,
+      minutosPintado: Number(fd.get('minutosPintado') || 0),
+      unidadesMetal: Number(fd.get('unidadesMetal') || 0),
+      unidadesBolsa: Number(fd.get('unidadesBolsa') || 0),
+      precioVentaSugeridoClp: Number(fd.get('precioVentaSugeridoClp') || 0),
+      costoSlicerRef: Number(fd.get('costoSlicerRef') || 0),
+      notas: String(fd.get('notas') || '').trim(),
+      usarDesglose,
+    };
+  }
+
+  function htmlCostoLive(c, margen, precioVenta) {
+    const sugerido = c.total / (1 - margen);
+    const margenReal =
+      Number(precioVenta) > 0 ? ((Number(precioVenta) - c.total) / Number(precioVenta)) * 100 : null;
+    return `
+      <div class="imp-grid imp-grid--costo-live">
+        <div class="imp-kpi"><span>Filamento (${Number(c.gramos || 0).toFixed(2)} g)</span><strong>${money(c.filamento)}</strong></div>
+        <div class="imp-kpi"><span>Luz (impresión)</span><strong>${money(c.luz)}</strong></div>
+        <div class="imp-kpi"><span>Pintado / MO</span><strong>${money(c.pintado)}</strong></div>
+        <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
+        <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
+        <div class="imp-kpi imp-kpi--accent"><span>Costo unitario</span><strong>${money(c.total)}</strong></div>
+        <div class="imp-kpi"><span>Precio sugerido c/ margen ${Math.round(margen * 100)}%</span><strong>${money(sugerido)}</strong></div>
+        <div class="imp-kpi ${margenReal == null ? '' : margenReal >= Number(data.parametros?.margenObjetivoPct || 40) ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Margen real</span><strong>${margenReal == null ? '—' : `${margenReal.toFixed(0)}%`}</strong></div>
+      </div>`;
   }
 
   function gastosPorCategoria() {
@@ -952,10 +1034,16 @@
     const form = $('#form-calc-pieza');
     if (!form) return null;
     const fd = new FormData(form);
+    const modelo = Number(fd.get('modelo') || 0);
+    const soportes = Number(fd.get('soportes') || 0);
+    const purge = Number(fd.get('purge') || 0);
     const prod = {
-      filamentoGramos: Number(fd.get('g')),
+      filamentoModeloGramos: modelo,
+      filamentoSoportesGramos: soportes,
+      filamentoPurgeGramos: purge,
+      filamentoGramos: modelo + soportes + purge,
       costoFilamentoKgClp: Number(fd.get('kg')),
-      horasImpresion: Number(fd.get('h')),
+      horasImpresion: horasDesdePartes(fd.get('horasPart'), fd.get('minutosPart')),
       minutosPintado: Number(fd.get('m')),
       unidadesMetal: Number(fd.get('metal')),
       unidadesBolsa: Number(fd.get('bolsa')),
@@ -999,6 +1087,8 @@
     document.body.classList.remove('imp-modal-open');
   }
 
+  let calcDraft = null;
+
   function abrirModalDesdeCalculadora() {
     const calc = leerCalcPieza();
     if (!calc) {
@@ -1007,17 +1097,19 @@
     }
     const modal = $('#imp-modal-producto');
     if (!modal) return;
+    calcDraft = { ...calc.prod };
     const sku = siguienteSkuProducto();
     modal.querySelector('[name=sku]').value = sku;
     modal.querySelector('[name=nombre]').value = '';
     modal.querySelector('[name=filamentoGramos]').value = calc.prod.filamentoGramos;
     modal.querySelector('[name=costoFilamentoKgClp]').value = calc.prod.costoFilamentoKgClp;
-    modal.querySelector('[name=horasImpresion]').value = calc.prod.horasImpresion;
+    modal.querySelector('[name=horasImpresion]').value = Number(calc.prod.horasImpresion || 0).toFixed(4);
     modal.querySelector('[name=minutosPintado]').value = calc.prod.minutosPintado;
     modal.querySelector('[name=unidadesMetal]').value = calc.prod.unidadesMetal;
     modal.querySelector('[name=unidadesBolsa]').value = calc.prod.unidadesBolsa;
     modal.querySelector('[name=precioVentaSugeridoClp]').value = calc.sugerido;
-    modal.querySelector('[name=notas]').value = `Desde calculadora · costo est. ${Math.round(calc.c.total)} CLP`;
+    modal.querySelector('[name=notas]').value =
+      `Desde calculadora · modelo ${calc.prod.filamentoModeloGramos}g + soportes ${calc.prod.filamentoSoportesGramos}g + purge ${calc.prod.filamentoPurgeGramos}g · costo est. ${Math.round(calc.c.total)} CLP`;
     actualizarCostoModal();
     modal.hidden = false;
     modal.setAttribute('aria-hidden', 'false');
@@ -1029,49 +1121,53 @@
   function renderCostos() {
     const margen = Number(data.parametros?.margenObjetivoPct || 40) / 100;
     const p = data.parametros || {};
-    const avgFilKg =
-      (() => {
-        const fils = (data.gastos || []).filter((g) => g.categoria === 'filamento' && Number(g.montoNeto) > 0);
-        if (!fils.length) return 17986;
-        return Math.round(sum(fils) / fils.length);
-      })();
+    const avgFilKg = avgCostoFilamentoKg(data) || 12950;
 
     const blocks = (data.productos || [])
       .map((prod) => {
         const c = costoProducto(prod);
-        const sugeridoCosto = c.total / (1 - margen);
-        const margenReal =
-          Number(prod.precioVentaSugeridoClp) > 0
-            ? ((Number(prod.precioVentaSugeridoClp) - c.total) / Number(prod.precioVentaSugeridoClp)) * 100
-            : 0;
         const pid = escapeHtml(prod.id || '');
         const sku = escapeHtml(prod.sku || prod.id || '—');
+        const th = partesHoras(prod.horasImpresion);
+        const tieneDesglose =
+          prod.filamentoModeloGramos != null ||
+          prod.filamentoSoportesGramos != null ||
+          prod.filamentoPurgeGramos != null;
+        const usarDesglose = tieneDesglose ? '1' : '0';
         return `
-        <div class="imp-card" data-prod-id="${pid}">
+        <div class="imp-card imp-card--prod" data-prod-id="${pid}">
           <div class="imp-prod-head">
             <h3>${escapeHtml(prod.nombre)}</h3>
             <span class="imp-sku" title="SKU único de impresión">SKU ${sku}</span>
           </div>
-          <div class="imp-grid">
-            <div class="imp-kpi"><span>Filamento</span><strong>${money(c.filamento)}</strong></div>
-            <div class="imp-kpi"><span>Luz (impresión)</span><strong>${money(c.luz)}</strong></div>
-            <div class="imp-kpi"><span>Pintado / MO</span><strong>${money(c.pintado)}</strong></div>
-            <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
-            <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
-            <div class="imp-kpi imp-kpi--accent"><span>Costo unitario</span><strong>${money(c.total)}</strong></div>
-            <div class="imp-kpi"><span>Precio sugerido c/ margen ${Math.round(margen * 100)}%</span><strong>${money(sugeridoCosto)}</strong></div>
-            <div class="imp-kpi ${Number(prod.precioVentaSugeridoClp) > 0 && margenReal >= Number(data.parametros?.margenObjetivoPct || 40) ? 'imp-kpi--ok' : Number(prod.precioVentaSugeridoClp) > 0 ? 'imp-kpi--warn' : ''}"><span>Margen real</span><strong>${Number(prod.precioVentaSugeridoClp) > 0 ? `${margenReal.toFixed(0)}%` : '—'}</strong></div>
-          </div>
-          <form class="imp-form imp-form--precio" data-precio-prod="${pid}">
-            <label>Precio venta a público (CLP)
-              <input name="precioVenta" type="number" min="0" step="10" value="${Number(prod.precioVentaSugeridoClp) || ''}" placeholder="Ej. 8990 — editable a mano" />
+          <div class="imp-costo-live" data-costo-live="${pid}">${htmlCostoLive(c, margen, prod.precioVentaSugeridoClp)}</div>
+          <form class="imp-form imp-form--prod" data-editar-prod="${pid}">
+            <label>Nombre<input name="nombre" required value="${escapeHtml(prod.nombre || '')}" /></label>
+            <label>$ / kg filamento (CLP)<input name="costoFilamentoKgClp" type="number" min="0" step="1" value="${Number(prod.costoFilamentoKgClp) || 0}" /></label>
+            <label class="imp-form-span">Desglose slicer (como en la foto)
+              <select name="usarDesglose">
+                <option value="1"${usarDesglose === '1' ? ' selected' : ''}>Usar modelo + soportes + purge</option>
+                <option value="0"${usarDesglose === '0' ? ' selected' : ''}>Usar solo total de gramos</option>
+              </select>
             </label>
+            <label>Modelo (g)<input name="filamentoModeloGramos" type="number" min="0" step="0.01" value="${Number(prod.filamentoModeloGramos || 0)}" /></label>
+            <label>Soportes (g)<input name="filamentoSoportesGramos" type="number" min="0" step="0.01" value="${Number(prod.filamentoSoportesGramos || 0)}" /></label>
+            <label>Purge / descargado (g)<input name="filamentoPurgeGramos" type="number" min="0" step="0.01" value="${Number(prod.filamentoPurgeGramos || 0)}" /></label>
+            <label>Total filamento (g)<input name="filamentoGramos" type="number" min="0" step="0.01" value="${Number(prod.filamentoGramos || c.gramos || 0)}" /></label>
+            <label>Metros filamento<input name="filamentoMetros" type="number" min="0" step="0.01" value="${Number(prod.filamentoMetros || 0)}" /></label>
+            <label>Horas impresión<input name="horasPart" type="number" min="0" step="1" value="${th.horas}" /></label>
+            <label>Minutos impresión<input name="minutosPart" type="number" min="0" max="59" step="1" value="${th.minutos}" /></label>
+            <label>Minutos pintado / MO<input name="minutosPintado" type="number" min="0" step="1" value="${Number(prod.minutosPintado || 0)}" /></label>
+            <label>Unidades metal<input name="unidadesMetal" type="number" min="0" step="1" value="${Number(prod.unidadesMetal || 0)}" /></label>
+            <label>Bolsas<input name="unidadesBolsa" type="number" min="0" step="1" value="${Number(prod.unidadesBolsa || 0)}" /></label>
+            <label>Precio venta público (CLP)<input name="precioVentaSugeridoClp" type="number" min="0" step="10" value="${Number(prod.precioVentaSugeridoClp) || ''}" placeholder="Ej. 8990" /></label>
+            <label>Coste slicer (ref.)<input name="costoSlicerRef" type="number" min="0" step="0.01" value="${Number(prod.costoSlicerRef || 0)}" title="Valor que muestra el slicer; no es CLP" /></label>
+            <label class="imp-form-span">Notas<textarea name="notas" rows="2">${escapeHtml(prod.notas || '')}</textarea></label>
             <div class="imp-form-actions">
-              <button type="submit" class="imp-btn imp-btn--primary">Guardar precio</button>
-              <span class="imp-muted">Costo ${money(c.total)} · si dejas 0, solo ves el costo</span>
+              <button type="submit" class="imp-btn imp-btn--primary">Guardar parámetros</button>
+              <span class="imp-muted">Al editar se recalcula el costo · luz/h ≈ ${money(costoHoraImpresora())} · MO ${money(p.valorHoraManoObraClp || 0)}/h</span>
             </div>
           </form>
-          <p class="imp-muted">${prod.filamentoGramos || 0}g · ${prod.horasImpresion || 0}h impresión · ${prod.minutosPintado || 0} min pintado · metal×${prod.unidadesMetal || 0} · bolsa×${prod.unidadesBolsa || 0} · luz/h ≈ ${money(costoHoraImpresora())}${prod.notas ? ` · ${escapeHtml(prod.notas)}` : ''}</p>
         </div>`;
       })
       .join('');
@@ -1079,53 +1175,109 @@
     $('#tab-costos').innerHTML = `
       <div class="imp-card">
         <h2>Costos por pieza (luz + materiales)</h2>
-        <p class="imp-muted">Cada pieza impresa es <strong>única</strong> (SKU propio). Calcula tiempo/material y guárdala como producto.</p>
-        <p class="imp-muted">Promedio reciente $/kg filamento: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong></p>
+        <p class="imp-muted">Edita los parámetros del slicer (modelo, soportes, purge, tiempo) y el costo se recalcula al instante. Luego <strong>Guardar parámetros</strong> y <strong>Guardar online</strong>.</p>
+        <p class="imp-muted">$/kg filamento ref.: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> · tarifa ${p.tarifaKwhClp || 180} $/kWh · ${p.consumoImpresoraKw || 0.22} kW</p>
       </div>
       ${blocks || '<div class="imp-card">Sin productos aún — usa la calculadora y Guarda como producto</div>'}
       <div class="imp-card">
         <h3>Calculadora rápida de pieza</h3>
         <form class="imp-form" id="form-calc-pieza">
-          <label>Gramos filamento<input name="g" type="number" step="0.1" value="110" /></label>
+          <label>Modelo (g)<input name="modelo" type="number" step="0.01" value="135.55" /></label>
+          <label>Soportes (g)<input name="soportes" type="number" step="0.01" value="8.43" /></label>
+          <label>Purge (g)<input name="purge" type="number" step="0.01" value="0.47" /></label>
           <label>$ / kg filamento<input name="kg" type="number" value="${avgFilKg}" /></label>
-          <label>Horas impresión<input name="h" type="number" step="0.1" value="5" /></label>
-          <label>Minutos pintado<input name="m" type="number" value="20" /></label>
+          <label>Horas<input name="horasPart" type="number" min="0" step="1" value="3" /></label>
+          <label>Minutos<input name="minutosPart" type="number" min="0" max="59" step="1" value="25" /></label>
+          <label>Minutos pintado<input name="m" type="number" value="0" /></label>
           <label>Unidades metal<input name="metal" type="number" value="0" /></label>
           <label>Bolsas<input name="bolsa" type="number" value="1" /></label>
         </form>
         <div class="imp-calc-live" id="calc-pieza-live">Calculando…</div>
         <div class="imp-form-actions" style="margin-top:0.75rem">
           <button type="button" class="imp-btn imp-btn--primary" id="btn-calc-guardar">Guardar como producto</button>
-          <span class="imp-muted">Abre un modal con SKU, nombre, costo estimado y precio de venta</span>
+          <span class="imp-muted">Total g = modelo + soportes + purge · abre modal con SKU y nombre</span>
         </div>
       </div>
     `;
 
     const updateCalc = () => {
-      const calc = leerCalcPieza();
+      const form = $('#form-calc-pieza');
       const el = $('#calc-pieza-live');
-      if (!calc || !el) return;
+      if (!form || !el) return;
+      const fd = new FormData(form);
+      const g =
+        Number(fd.get('modelo') || 0) + Number(fd.get('soportes') || 0) + Number(fd.get('purge') || 0);
+      const prod = {
+        filamentoGramos: g,
+        costoFilamentoKgClp: Number(fd.get('kg')),
+        horasImpresion: horasDesdePartes(fd.get('horasPart'), fd.get('minutosPart')),
+        minutosPintado: Number(fd.get('m')),
+        unidadesMetal: Number(fd.get('metal')),
+        unidadesBolsa: Number(fd.get('bolsa')),
+      };
+      const c = costoProducto(prod);
+      const sugerido = c.total / (1 - margen);
       el.innerHTML = `
-          Filamento ${money(calc.c.filamento)} · Luz ${money(calc.c.luz)} · Pintado ${money(calc.c.pintado)} · Metal ${money(calc.c.metal)} · Bolsa ${money(calc.c.bolsa)}
-          <br><strong>Costo unitario: ${money(calc.c.total)}</strong> · precio sugerido c/ margen ${Math.round(margen * 100)}%: <strong>${money(calc.sugerido)}</strong>
+          Total filamento <strong>${g.toFixed(2)} g</strong>
+          · Filamento ${money(c.filamento)} · Luz ${money(c.luz)} · Pintado ${money(c.pintado)} · Metal ${money(c.metal)} · Bolsa ${money(c.bolsa)}
+          <br><strong>Costo unitario: ${money(c.total)}</strong> · precio sugerido c/ margen ${Math.round(margen * 100)}%: <strong>${money(sugerido)}</strong>
           <div class="imp-muted" style="margin-top:0.35rem">Tarifa ${p.tarifaKwhClp || 180} $/kWh · consumo ${p.consumoImpresoraKw || 0.22} kW</div>`;
+      form.dataset.calcSnapshot = JSON.stringify({ ...prod, sugerido, c });
     };
     $('#form-calc-pieza')?.addEventListener('input', updateCalc);
     updateCalc();
     $('#btn-calc-guardar')?.addEventListener('click', abrirModalDesdeCalculadora);
 
-    $('#tab-costos').querySelectorAll('[data-precio-prod]').forEach((form) => {
+    $('#tab-costos').querySelectorAll('[data-editar-prod]').forEach((form) => {
+      const id = form.getAttribute('data-editar-prod');
+      const live = form.closest('.imp-card')?.querySelector('[data-costo-live]');
+      const syncTotalFromDesglose = () => {
+        const usar = form.querySelector('[name=usarDesglose]')?.value === '1';
+        const totalInput = form.querySelector('[name=filamentoGramos]');
+        if (!usar || !totalInput) return;
+        const modelo = Number(form.querySelector('[name=filamentoModeloGramos]')?.value || 0);
+        const soportes = Number(form.querySelector('[name=filamentoSoportesGramos]')?.value || 0);
+        const purge = Number(form.querySelector('[name=filamentoPurgeGramos]')?.value || 0);
+        totalInput.value = String(Math.round((modelo + soportes + purge) * 100) / 100);
+      };
+      const refreshLive = () => {
+        syncTotalFromDesglose();
+        const leido = leerProductoDesdeForm(form);
+        if (!leido || !live) return;
+        const c = costoProducto(leido);
+        live.innerHTML = htmlCostoLive(c, margen, leido.precioVentaSugeridoClp);
+      };
+      form.addEventListener('input', refreshLive);
+      form.addEventListener('change', refreshLive);
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const id = form.getAttribute('data-precio-prod');
-        const fd = new FormData(form);
+        const leido = leerProductoDesdeForm(form);
         const prod = (data.productos || []).find((x) => x.id === id);
-        if (!prod) return;
-        prod.precioVentaSugeridoClp = Number(fd.get('precioVenta') || 0);
+        if (!prod || !leido || !leido.nombre) return;
+        Object.assign(prod, {
+          nombre: leido.nombre,
+          filamentoModeloGramos: leido.filamentoModeloGramos,
+          filamentoSoportesGramos: leido.filamentoSoportesGramos,
+          filamentoPurgeGramos: leido.filamentoPurgeGramos,
+          filamentoMetros: leido.filamentoMetros,
+          filamentoGramos: leido.filamentoGramos,
+          costoFilamentoKgClp: leido.costoFilamentoKgClp,
+          horasImpresion: leido.horasImpresion,
+          minutosPintado: leido.minutosPintado,
+          unidadesMetal: leido.unidadesMetal,
+          unidadesBolsa: leido.unidadesBolsa,
+          precioVentaSugeridoClp: leido.precioVentaSugeridoClp,
+          costoSlicerRef: leido.costoSlicerRef,
+          notas: leido.notas,
+        });
         markDirty();
-        renderAll();
-        setStatus('Precio de venta actualizado — guarda online', 'warn');
+        refreshLive();
+        // Actualiza título sin re-render completo (evita perder foco / scroll).
+        const head = form.closest('.imp-card')?.querySelector('.imp-prod-head h3');
+        if (head) head.textContent = leido.nombre;
+        setStatus(`«${leido.nombre}» actualizado — costo ${money(costoProducto(prod).total)} · guarda online`, 'warn');
       });
+      refreshLive();
     });
   }
 
@@ -1268,6 +1420,10 @@
       sku,
       nombre,
       activo: true,
+      filamentoModeloGramos: Number(calcDraft?.filamentoModeloGramos ?? 0),
+      filamentoSoportesGramos: Number(calcDraft?.filamentoSoportesGramos ?? 0),
+      filamentoPurgeGramos: Number(calcDraft?.filamentoPurgeGramos ?? 0),
+      filamentoMetros: Number(calcDraft?.filamentoMetros ?? 0),
       filamentoGramos: Number(fd.get('filamentoGramos')),
       costoFilamentoKgClp: Number(fd.get('costoFilamentoKgClp')),
       horasImpresion: Number(fd.get('horasImpresion')),
@@ -1275,8 +1431,10 @@
       unidadesMetal: Number(fd.get('unidadesMetal')),
       unidadesBolsa: Number(fd.get('unidadesBolsa')),
       precioVentaSugeridoClp: Number(fd.get('precioVentaSugeridoClp') || 0),
+      costoSlicerRef: Number(calcDraft?.costoSlicerRef ?? 0),
       notas: String(fd.get('notas') || '').trim(),
     });
+    calcDraft = null;
     cerrarModalProducto();
     markDirty();
     renderAll();

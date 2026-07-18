@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-18T02:35:00.000Z",
+    "actualizado": "2026-07-18T03:21:36.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -253,7 +253,12 @@
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 0,
-      "notas": "Slicer: 144,45 g total (modelo 135,55 + soportes 8,43 + purge 0,47) · 3 h 25 m · PLA amarillo $12.690/kg. Logo en relieve, sin pintado."
+      "notas": "Slicer: modelo 135,55 g + soportes 8,43 g + purge 0,47 g = 144,45 g · 48,04 m · 3 h 25 m · coste slicer 2,89 (ref). PLA amarillo. Logo en relieve.",
+      "filamentoModeloGramos": 135.55,
+      "filamentoSoportesGramos": 8.43,
+      "filamentoPurgeGramos": 0.47,
+      "filamentoMetros": 48.04,
+      "costoSlicerRef": 2.89
     }
   ],
   "planAds": {

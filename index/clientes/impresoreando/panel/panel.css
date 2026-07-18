@@ -517,6 +517,9 @@ table.imp-table {
 }
 .imp-calc-live strong { color: var(--imp-text); }
 
+.imp-form-span { grid-column: 1 / -1; }
+.imp-card--prod .imp-costo-live { margin-bottom: 0.85rem; }
+.imp-grid--costo-live { margin: 0 0 0.25rem; }
 .imp-prod-head {
   display: flex;
   flex-wrap: wrap;
