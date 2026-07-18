@@ -44,10 +44,13 @@ const CONTENIDOS = [
       'Fuelles elásticos · suela Original',
       'Perfil +15 mm vs Chelsea clásica',
     ],
-    hookA: 'Brillo militar. Paso seguro. ✨',
-    hookB: 'Chelsea Commando: waterproof con actitud.',
-    hookC: 'Gloss negro · hechas a mano · 100% waterproof.',
+    hookA: 'Gloss negro. Invierno con lluvia. Sin miedo al charco.',
+    hookB: 'Brillo que se nota. Caucho que no se rinde. Invierno lluvioso, paso firme.',
+    hookC: 'Día de lluvia ≠ día en pausa.',
+    /** C8: formatos visualmente distintos (no plantilla única A=B=C) */
+    formatosDistintos: true,
   },
+
   {
     n: 9,
     stem: 'COPY-c09-play-bajas-rojo-mujer',
@@ -138,7 +141,68 @@ ${c.url}
 `;
 }
 
+function buildADistinto(c) {
+  return `COPY VIDEO · Trendseeker · C${c.n}/12 · Versión A
+Producto: ${c.producto}
+SKU: ${c.sku}
+Formato: CORTA · feed / Reels (1–3 líneas + link)
+Link: ${c.url}
+
+${c.hookA}
+
+Hunter Chelsea Commando · 100% waterproof · hechas a mano.
+
+👉 ${c.url}
+
+#Hunter #TrendSeeker #TrendSeekerChile #ChelseaCommando
+`;
+}
+
+function buildBDistinto(c) {
+  return `COPY VIDEO · Trendseeker · C${c.n}/12 · Versión B
+Producto: ${c.producto}
+SKU: ${c.sku}
+Formato: HISTORIA · caption IG / TikTok (párrafo + CTA comentario)
+Link: ${c.url}
+
+${c.hookB}
+
+Las Chelsea Commando negras brillantes para mujer son 100% waterproof,
+en caucho natural FSC (vegano certificado), hechas a mano, con fuelles
+elásticos, suela Hunter Original y un perfil +15 mm más alto que la
+Chelsea brillante clásica — para que el gloss mande y el agua no.
+
+Disponibles en TrendSeeker 👇
+${c.url}
+
+¿Talla? Comenta y te ayudamos 💬
+
+#HunterBoots #BotasImpermeables #TrendSeekerChile #ModaLluvia #ChelseaCommando
+`;
+}
+
+function buildCDistinto(c) {
+  const bullets = c.bullets.map((b) => `✓ ${b}`).join('\n');
+  return `COPY VIDEO · Trendseeker · C${c.n}/12 · Versión C
+Producto: ${c.producto}
+SKU: ${c.sku}
+Formato: CHECKLIST · stories / caption con bullets + CTA
+Link: ${c.url}
+
+${c.hookC}
+
+Hunter Chelsea Commando · gloss negro · mujer
+${bullets}
+
+Shop ahora:
+${c.url}
+
+#Hunter #Waterproof #TrendSeeker #BotasMujer
+`;
+}
+
 function buildA(c) {
+  if (c.formatosDistintos) return buildADistinto(c);
   return buildVersion(
     c,
     'A',
@@ -148,6 +212,7 @@ function buildA(c) {
 }
 
 function buildB(c) {
+  if (c.formatosDistintos) return buildBDistinto(c);
   return buildVersion(
     c,
     'B',
@@ -157,6 +222,7 @@ function buildB(c) {
 }
 
 function buildC(c) {
+  if (c.formatosDistintos) return buildCDistinto(c);
   return buildVersion(
     c,
     'C',
