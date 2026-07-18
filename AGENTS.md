@@ -52,7 +52,7 @@
 - Modal finalizado. HTML para Elementor: `index/clientes/ecr/capacitaciones/modal-ruta-sectores.html`.
 - Solo Excel/Power BI unificados (`Excel - Nivel` / `Power BI - Nivel`); resto de nombres literales.
 - Organizador: `node scripts/add-ecr-rutas-viernes.js` y abrir `http://localhost:3000/index.html?disco=1`.
-- Ecosistema NL 1 ago (viernes): madre + subtareas Copys/Portada/Carrusel/Video. Script: `node scripts/add-ecr-ecosistema-nl-agosto.js` → `?disco=1`. Copys TXT: `newsletter/COPY-ART23-equipos-en-terreno.txt`. Landing ECR muestra sección **Ecosistema NL 1 agosto**.
+- Ecosistema NL agosto: calendario **NL 1 = 20 jul** · **NL 2 = 22 jul** (pub LinkedIn 1/2 ago). Crear/fechas: `ASEGURAR-ECR-NL-CALENDARIO.bat`. Portada NL 1 hecha. Copys: `newsletter/copys/`. Landing ECR: sección ecosistema NL.
 
 ### Portal clientes — Nueva tarea
 - En cada landing de cliente (`portal-cliente.js`) hay un botón **Nueva tarea** arriba en la toolbar.
@@ -64,3 +64,4 @@
 ### Impresoreando — Panel socios 50/50
 **Antes de tocar nada:** leer `docs/impresoreando/CONTEXTO.md` (fuente única: rutas, deuda, pedidos, SKUs, status correo, checklist). **No reexplorar** `panel.js` ni el seed salvo bug concreto.
 Resumen 1 línea: panel `index/clientes/impresoreando/panel/` · live `data/impresoreando-live.json` · API `/api/impresoreando` · pedidos `PED-00n` con estado select · solo ventas bajan deuda · PLA+ negro `$17986/kg`.
+**Calendario:** los pedidos no aparecen solos en el organizador — correr `SYNC-IMPRESOREANDO-ORGANIZADOR.bat` (o `node scripts/sync-impresoreando-organizador.js`) para madre `[IMP] Pedidos activos` + PED-00n en la fecha del pedido. No borra otras tareas.

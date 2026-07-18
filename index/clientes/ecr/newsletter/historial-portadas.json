@@ -1,8 +1,44 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-17T21:06:10.000Z",
-  "nota": "Incluye fondos elegidos NL 1 ago + prompts ART23.",
+  "updatedAt": "2026-07-18T00:23:06Z",
+  "nota": "Incluye portadas Canva finales NL 1 ago + fondos + prompts ART23.",
   "items": [
+    {
+      "id": "nl1-ago-portadas-canva-finales-2026-07-18",
+      "fecha": "2026-07-18",
+      "titulo": "NL 1 ago — portadas Canva finales (con textos ECR)",
+      "mundoId": "mix",
+      "mundoNombre": "3 finales Canva (skyline / bodega / mapa-ruta)",
+      "prompt": "(portada terminada en Canva; fondo MJ + logo + tipografía)",
+      "opciones": [
+        {
+          "opcion": 1,
+          "mundoId": "C",
+          "mundoNombre": "Equipo + skyline",
+          "prompt": "final Canva 01-equipo-skyline"
+        },
+        {
+          "opcion": 2,
+          "mundoId": "H",
+          "mundoNombre": "Bodega AGV (hex en holos)",
+          "prompt": "final Canva 02-bodega-agv"
+        },
+        {
+          "opcion": 3,
+          "mundoId": "F",
+          "mundoNombre": "Mapa / ruta",
+          "prompt": "final Canva 03-mapa-ruta"
+        }
+      ],
+      "notas": "Textos: «Tecnología sin integración:» + «el principal freno de la eficiencia» + logo ECR GROUP. Subtarea Portada completada.",
+      "origen": "usuaria",
+      "archivoMarkdown": "portadas-guardadas/NL1-ago-portadas-canva-finales.md",
+      "imagenes": [
+        "portadas-guardadas/nl1-ago-finales/01-equipo-skyline.png",
+        "portadas-guardadas/nl1-ago-finales/02-bodega-agv.png",
+        "portadas-guardadas/nl1-ago-finales/03-mapa-ruta.png"
+      ]
+    },
     {
       "id": "nl1-ago-tecnologia-sin-integracion-prompts-2026-07-17",
       "fecha": "2026-07-17",

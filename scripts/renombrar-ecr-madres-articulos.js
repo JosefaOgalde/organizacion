@@ -4,9 +4,10 @@
  *   1) «Tecnología sin integración…» → NL 1 de agosto
  *   2) «Equipos en terreno…» (ART 23) → NL 2 de agosto
  *
- * Renombra/actualiza madres NL 1 y NL 2 (17 jul) con subtareas indexadas el mismo día.
+ * Renombra/actualiza madres NL 1 y NL 2 con subtareas indexadas el mismo día.
+ * Fechas calendario: NL 1 = 20 jul · NL 2 = 22 jul (pub LinkedIn 1/2 ago).
  *   node scripts/renombrar-ecr-madres-articulos.js
- * Luego: http://localhost:3000/index.html?disco=1 → vista Semana o Día
+ * Luego: http://127.0.0.1:8000/index.html?disco=1 → vista Semana o Día
  */
 const fs = require('fs');
 const path = require('path');
@@ -16,11 +17,12 @@ const CLIENTE = 'cli-ecr';
 const ROL = 'rol-ecr-cm';
 
 const MADRE_TI_ID = 'tarea-ecr-ecosistema-nl-agosto-2026-07-17';
-const FECHA_HOY = '2026-07-17'; // ambas madres parten hoy
-const FECHA_TI = FECHA_HOY;
+const FECHA_TI = '2026-07-20';
+const PUB_TI = '2026-08-01';
 
 const MADRE_ET_ID = 'tarea-ecr-ecosistema-equipos-terreno-2026-07-24';
-const FECHA_ET = FECHA_HOY;
+const FECHA_ET = '2026-07-22';
+const PUB_ET = '2026-08-02';
 /** Subtareas ET el mismo día que la madre (como NL 1), para verlas indexadas 1–4 debajo. */
 const FECHA_ET_HIJOS = FECHA_ET;
 
@@ -73,10 +75,10 @@ upsert({
   horaInicio: '09:00',
   horaFin: '18:00',
   notas:
-    `Tarea madre · artículo «${ART_TI_TITULO}» (publicación NL LinkedIn 1 de agosto). ` +
+    `Tarea madre · artículo «${ART_TI_TITULO}» (NL LinkedIn · calendario ${FECHA_TI}). ` +
     `Word/TXT: articulos/ART-tecnologia-sin-integracion.* ` +
     'Subtareas indexadas: 1 Copys · 2 Portada · 3 Carrusel · 4 Video. ' +
-    'La madre queda para hoy y se completa cuando termine la última subtarea.',
+    'La madre se completa cuando termine la última subtarea.',
   prioridad: 'alta',
   completada: false,
   pendiente: false,
@@ -84,7 +86,7 @@ upsert({
   tipoEntregable: 'ecosistema',
   articuloSlug: 'tecnologia-sin-integracion',
   articuloTitulo: ART_TI_TITULO,
-  articuloPublicacion: '2026-08-01',
+  articuloPublicacion: PUB_TI,
   entregableArchivo: ART_TI_DOC,
   articuloArchivo: {
     nombre: 'ART-tecnologia-sin-integracion.docx',
@@ -118,9 +120,10 @@ const hijosTI = [
     numeroHistorico: '06',
     tipoEntregable: 'portada-imgs',
     ordenHijo: 2,
-    entregableArchivo: 'index/clientes/ecr/newsletter/portadas-guardadas/NL-2026-08-01-fondos-elegidos.md',
+    entregableArchivo:
+      'index/clientes/ecr/newsletter/portadas-guardadas/NL1-ago-portadas-canva-finales.md',
     notas:
-      `Fondos Midjourney NL 1 ago · «${ART_TI_TITULO}». Armar portada en Canva (título + logo). Artículo: ART-tecnologia-sin-integracion.docx`,
+      `Portadas Canva finales NL 1 · «${ART_TI_TITULO}». Carpeta nl1-ago-finales/ + NL1-ago-portadas-canva-finales.md.`,
   },
   {
     id: 'tarea-ecr-nl-agosto-carrusel-2026-07-17',
@@ -176,7 +179,7 @@ upsert({
   horaInicio: '09:00',
   horaFin: '18:00',
   notas:
-    `Tarea madre · ART 23 · artículo «${ART_ET_TITULO}» (NL LinkedIn 2 de agosto). ` +
+    `Tarea madre · ART 23 · artículo «${ART_ET_TITULO}» (calendario ${FECHA_ET}). ` +
     `Madre + subtareas indexadas el ${FECHA_ET} (Copys · Portada · Carrusel · Video). ` +
     `Word/TXT: articulos/ART23-equipos-en-terreno.* · Copys: copys/COPY-equipos-en-terreno.txt. ` +
     'La madre se completa cuando termine la última subtarea.',
@@ -187,7 +190,7 @@ upsert({
   tipoEntregable: 'ecosistema',
   articuloSlug: 'equipos-en-terreno',
   articuloTitulo: ART_ET_TITULO,
-  articuloPublicacion: '2026-08-02',
+  articuloPublicacion: PUB_ET,
   articuloCodigo: 'ART23',
   entregableArchivo: ART_ET_DOC,
   articuloArchivo: {

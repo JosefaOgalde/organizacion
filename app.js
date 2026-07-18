@@ -1,5 +1,6 @@
 /* Organización v2 */
 const STORAGE_KEY = 'organizacion_v2';
+const STORAGE_OCULTAR_HECHAS = 'organizacion_ocultar_hechas_v2';
 const RESPALDO_DEFECTO_URL = 'data/organizacion-respaldo-2026-07-17.json';
 const AGENTES_RAMAS_URL = 'data/agentes-ramas.json';
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
@@ -1841,6 +1842,8 @@ function limpiarTareasJMLegacy(data) {
 function asegurarTareasJoyasMercuryFase2(data) {
   const seeds = window.JM_TODO_SEED;
   if (!Array.isArray(seeds) || !seeds.length) return data;
+  // Serie F2 archivada del calendario (trabajo actual ya no es D1–D20)
+  if (data.meta?.jmFase2ArchivadaCalendario === true) return data;
 
   limpiarTareasJMLegacy(data);
   const rolId = 'rol-jm-dev';
@@ -6055,8 +6058,30 @@ function etiquetaHoraTarea(t) {
   return t.horaFin ? `${t.horaInicio} – ${t.horaFin}` : t.horaInicio;
 }
 
+function ocultarHechasActivo() {
+  try {
+    const v = localStorage.getItem(STORAGE_OCULTAR_HECHAS);
+    if (v == null) return false; // por defecto: ver todas (incl. hechas)
+    return v === '1';
+  } catch {
+    return false;
+  }
+}
+
+function setOcultarHechas(activo) {
+  try {
+    localStorage.setItem(STORAGE_OCULTAR_HECHAS, activo ? '1' : '0');
+  } catch {
+    /* ignore */
+  }
+  document.querySelectorAll('#chk-ocultar-hechas, #chk-ocultar-hechas-semana').forEach((el) => {
+    if (el) el.checked = !!activo;
+  });
+}
+
 function itemsDiaOrdenados(fechaISO) {
   const items = [];
+  const skipHechas = ocultarHechasActivo();
   datos.citasSalud.filter(c => c.fecha === fechaISO).forEach(c => {
     items.push({ tipo: 'cita', minutos: minutosHora(c.hora), data: c });
   });
@@ -6064,7 +6089,11 @@ function itemsDiaOrdenados(fechaISO) {
     items.push({ tipo: 'reunion', minutos: minutosHora(r.horaInicio), data: r });
   });
 
-  const tareas = datos.tareas.filter((t) => tareaAplicaEnFecha(t, fechaISO));
+  const tareas = datos.tareas.filter((t) => {
+    if (!tareaAplicaEnFecha(t, fechaISO)) return false;
+    if (skipHechas && t.completada) return false;
+    return true;
+  });
   const usadas = new Set();
   const madres = tareas
     .filter((t) => esTareaMadreCalendario(t) && !t.parentId)
@@ -6090,7 +6119,13 @@ function itemsDiaOrdenados(fechaISO) {
     });
     usadas.add(m.id);
     const hijos = (datos.tareas || [])
-      .filter((t) => t.parentId === m.id && t.fecha === fechaISO && !t.pendiente)
+      .filter(
+        (t) =>
+          t.parentId === m.id &&
+          t.fecha === fechaISO &&
+          !t.pendiente &&
+          !(skipHechas && t.completada)
+      )
       .sort(
         (a, b) =>
           (Number(a.ordenHijo) || 0) - (Number(b.ordenHijo) || 0) ||
@@ -6636,13 +6671,14 @@ function htmlTareaPendiente(t) {
   const fechaRef = t.fechaOriginal || t.fecha;
   const fechaLabel = fechaRef ? formatFecha(parseISO(fechaRef)) : 'Sin fecha';
   const horaLabel = t.horaInicio ? ` · ${etiquetaHoraTarea(t)}` : '';
+  const sub = t.parentId ? ' · subtarea' : esTareaMadreCalendario(t) ? ' · madre' : '';
+  const pospuesta = t.pendiente ? ' · pospuesta' : '';
   return `<article class="tarea tarea--pendiente tarea--${t.prioridad} dia-item--clic" data-id="${t.id}" style="border-left-color:${col.border};background:${col.bg}" title="Clic para abrir la misma tarea">
     <div class="tarea-pendiente__meta">
-      ${cli ? `<span class="tarea-pendiente__cliente">${escapeHtml(cli.nombre)}</span>` : ''}
-      <span class="tarea-pendiente__fecha">Fecha prevista: ${escapeHtml(fechaLabel)}${escapeHtml(horaLabel)}</span>
+      <span class="tarea-pendiente__fecha">${escapeHtml(fechaLabel)}${escapeHtml(horaLabel)}${escapeHtml(sub)}${escapeHtml(pospuesta)}</span>
     </div>
     <div class="tarea__titulo">${escapeHtml(titulo)}</div>
-    ${t.notas ? `<p class="tarea__notas">${escapeHtml(t.notas)}</p>` : ''}
+    ${t.notas ? `<p class="tarea__notas">${escapeHtml(String(t.notas).slice(0, 160))}${String(t.notas).length > 160 ? '…' : ''}</p>` : ''}
     ${htmlBotonesTarea(t, { modo: 'pend' })}
   </article>`;
 }
@@ -7541,14 +7577,63 @@ function bindAgenteTarea(tarea) {
 function renderPendientes() {
   const lista = document.getElementById('lista-pendientes');
   if (!lista) return;
-  const items = tareasOrdenadasPorHorario(datos.tareas.filter(t => t.pendiente && !t.completada));
-  if (!items.length) {
+
+  // Todas las no hechas de todos los clientes (madres + subtareas + pospuestas)
+  const abiertas = (datos.tareas || []).filter((t) => t && !t.completada);
+  if (!abiertas.length) {
     lista.innerHTML = '<p class="task-list--empty">No hay tareas pendientes</p>';
     return;
   }
-  lista.innerHTML = items.map(t => htmlTareaPendiente(t)).join('');
+
+  const porCliente = new Map();
+  for (const t of abiertas) {
+    const key = t.clienteId || '__sin__';
+    if (!porCliente.has(key)) porCliente.set(key, []);
+    porCliente.get(key).push(t);
+  }
+
+  // Orden: clientes con más pendientes primero; dentro, fecha + hora
+  const grupos = [...porCliente.entries()].sort((a, b) => {
+    if (b[1].length !== a[1].length) return b[1].length - a[1].length;
+    const na = clienteDe(a[0])?.nombre || a[0] || 'Sin cliente';
+    const nb = clienteDe(b[0])?.nombre || b[0] || 'Sin cliente';
+    return na.localeCompare(nb, 'es');
+  });
+
+  const html = grupos
+    .map(([cliId, tareas]) => {
+      const cli = clienteDe(cliId);
+      const col = colorDe(cli);
+      const nombre = cli?.nombre || 'Sin cliente';
+      const abrev = cli?.abrev || '—';
+      const ordenadas = [...tareas].sort(
+        (a, b) =>
+          String(a.fecha || '').localeCompare(String(b.fecha || '')) ||
+          minutosHora(a.horaInicio) - minutosHora(b.horaInicio) ||
+          String(a.titulo || '').localeCompare(String(b.titulo || ''), 'es')
+      );
+      const cards = ordenadas.map((t) => htmlTareaPendiente(t)).join('');
+      return `<section class="pend-cli" style="border-color:${col.border}">
+        <header class="pend-cli__head" style="background:${col.bg};color:${col.text}">
+          <span class="pend-cli__abrev">${escapeHtml(abrev)}</span>
+          <h3 class="pend-cli__nombre">${escapeHtml(nombre)}</h3>
+          <span class="pend-cli__count">${ordenadas.length}</span>
+        </header>
+        <div class="pend-cli__lista task-list">${cards}</div>
+      </section>`;
+    })
+    .join('');
+
+  lista.innerHTML = `<p class="pendientes-resumen">${abiertas.length} pendientes · ${grupos.length} cliente${grupos.length === 1 ? '' : 's'}</p>${html}`;
   bindAccionesTarea(lista);
   bindAccionesPendiente(lista);
+  lista.querySelectorAll('.tarea--pendiente[data-id]').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('button, a, input, select, label')) return;
+      const id = el.dataset.id;
+      if (id) irATarea(id);
+    });
+  });
 }
 
 function renderReunionesClientes() {
@@ -7919,6 +8004,16 @@ function setupUI() {
   document.getElementById('btn-mes-anterior').addEventListener('click', () => { mesOffset--; renderCalendarioMes(); });
   document.getElementById('btn-mes-siguiente').addEventListener('click', () => { mesOffset++; renderCalendarioMes(); });
   document.getElementById('btn-mes-hoy').addEventListener('click', () => { mesOffset = 0; renderCalendarioMes(); });
+
+  const ocultarIni = ocultarHechasActivo();
+  document.querySelectorAll('#chk-ocultar-hechas, #chk-ocultar-hechas-semana').forEach((el) => {
+    if (!el) return;
+    el.checked = ocultarIni;
+    el.addEventListener('change', () => {
+      setOcultarHechas(!!el.checked);
+      render();
+    });
+  });
 
   document.getElementById('btn-dia-anterior')?.addEventListener('click', () => cambiarDia(-1));
   document.getElementById('btn-dia-siguiente')?.addEventListener('click', () => cambiarDia(1));

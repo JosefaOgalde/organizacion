@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Organización</title>
-  <link rel="stylesheet" href="styles.css?v=sin-agente-ecr2">
+  <link rel="stylesheet" href="styles.css?v=cal-agenda-vigente1">
 </head>
 <body>
   <div class="app">
@@ -48,6 +48,10 @@
           <span id="rango-mes" class="week-nav__range"></span>
           <button type="button" id="btn-mes-siguiente" class="btn btn--ghost">Mes siguiente →</button>
           <button type="button" id="btn-mes-hoy" class="btn btn--accent">Ir a hoy</button>
+          <label class="cal-filtro" title="Oculta tareas ya marcadas como hechas">
+            <input type="checkbox" id="chk-ocultar-hechas" />
+            Ocultar hechas
+          </label>
         </div>
         <p class="vista-hint">Mes: madres y tareas únicas · Semana: subtareas · Clic en un día → ver semana</p>
         <div id="calendario-mes" class="calendario-mes" aria-label="Calendario mensual"></div>
@@ -59,6 +63,10 @@
           <span id="rango-semana" class="week-nav__range"></span>
           <button type="button" id="btn-semana-siguiente" class="btn btn--ghost">Semana siguiente →</button>
           <button type="button" id="btn-semana-hoy" class="btn btn--accent">Ir a hoy</button>
+          <label class="cal-filtro" title="Oculta tareas ya marcadas como hechas">
+            <input type="checkbox" id="chk-ocultar-hechas-semana" />
+            Ocultar hechas
+          </label>
         </div>
         <p class="vista-hint">Clic en el encabezado de un día para ver sus tareas en detalle</p>
         <div id="calendario-semana" class="calendario"></div>
@@ -100,10 +108,10 @@
       </section>
 
       <section id="view-pendientes" class="view">
-        <div class="panel">
-          <h2>Tareas pendientes</h2>
-          <p class="vista-hint">Acceso directo a tareas pospuestas. Editar o realizar aquí modifica la <strong>misma tarea</strong> del calendario — no se duplica.</p>
-          <div id="lista-pendientes" class="task-list"></div>
+        <div class="panel panel--pendientes-todas">
+          <h2>Pendientes de todos los clientes</h2>
+          <p class="vista-hint">Todas las tareas <strong>sin marcar hechas</strong>, agrupadas por cliente (misma tarea del calendario — no se duplica).</p>
+          <div id="lista-pendientes" class="pendientes-por-cliente"></div>
         </div>
       </section>
 
@@ -394,7 +402,7 @@
   <script src="index/assets/cliente-landing-imagenes.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="app.js?v=sin-agente-ecr2"></script>
+  <script src="app.js?v=cal-agenda-vigente2"></script>
   <script src="ficha-extractores.js"></script>
   <script src="ficha-cliente.js?v=portal-only1"></script>
 </body>
