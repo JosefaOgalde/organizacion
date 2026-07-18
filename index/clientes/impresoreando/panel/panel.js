@@ -8,6 +8,13 @@
   const money = (n) =>
     Number(n || 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
   const uid = (p) => `${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+  /** Productos: todos los dígitos se trabajan con máx. 2 decimales. */
+  const round2 = (n) => {
+    const x = Number(n);
+    if (!Number.isFinite(x)) return 0;
+    return Math.round(x * 100) / 100;
+  };
+  const num2 = (n) => round2(n).toFixed(2);
 
   function setStatus(msg, kind) {
     const el = $('#imp-status');
@@ -66,6 +73,7 @@
     if (asegurarProductoPortacompletoPerroBulldog(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
     if (asegurarSkusProductos(d)) changed = true;
+    if (asegurarDecimalesProductos(d)) changed = true;
     const gastos = d.gastos;
     for (const g of gastos) {
       const quien = String(g.socioRegistro || '').trim();
@@ -253,7 +261,7 @@
   function precioSugeridoDesdeCosto(costoTotal) {
     const pct = Number(data?.parametros?.margenObjetivoPct ?? 100);
     const markup = Number.isFinite(pct) ? pct / 100 : 1;
-    return Number(costoTotal || 0) * (1 + markup);
+    return round2(Number(costoTotal || 0) * (1 + markup));
   }
 
   function markupRealPct(precioVenta, costoTotal) {
@@ -400,13 +408,13 @@
       sku: 'PCPERROBU001',
       nombre: 'Portacompleto perro bulldog',
       activo: true,
-      filamentoModeloGramos: 59.875,
-      filamentoSoportesGramos: 1.245,
-      filamentoPurgeGramos: 0.235,
-      filamentoMetros: 20.405,
+      filamentoModeloGramos: 59.88,
+      filamentoSoportesGramos: 1.25,
+      filamentoPurgeGramos: 0.24,
+      filamentoMetros: 20.41,
       filamentoGramos: 61.35,
       costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
-      horasImpresion: 2.0167,
+      horasImpresion: 2.02,
       minutosPintado: 0,
       unidadesMetal: 0,
       unidadesBolsa: 1,
@@ -474,7 +482,7 @@
       filamentoMetros: 48.04,
       filamentoGramos: 144.45,
       costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
-      horasImpresion: 3.4167,
+      horasImpresion: 3.42,
       minutosPintado: 0,
       unidadesMetal: 0,
       unidadesBolsa: 1,
@@ -611,12 +619,12 @@
   }
 
   function partesHoras(horas) {
-    const totalMin = Math.max(0, Math.round(Number(horas || 0) * 60));
+    const totalMin = Math.max(0, Math.round(round2(horas) * 60));
     return { horas: Math.floor(totalMin / 60), minutos: totalMin % 60 };
   }
 
   function horasDesdePartes(horas, minutos) {
-    return Number(horas || 0) + Number(minutos || 0) / 60;
+    return round2(Number(horas || 0) + Number(minutos || 0) / 60);
   }
 
   function gramosDesdeDesglose(prod) {
@@ -627,33 +635,76 @@
       prod.filamentoModeloGramos != null ||
       prod.filamentoSoportesGramos != null ||
       prod.filamentoPurgeGramos != null;
-    if (!tieneDesglose) return Number(prod.filamentoGramos || 0);
-    return (Number.isFinite(modelo) ? modelo : 0) +
-      (Number.isFinite(soportes) ? soportes : 0) +
-      (Number.isFinite(purge) ? purge : 0);
+    if (!tieneDesglose) return round2(prod.filamentoGramos || 0);
+    return round2(
+      (Number.isFinite(modelo) ? modelo : 0) +
+        (Number.isFinite(soportes) ? soportes : 0) +
+        (Number.isFinite(purge) ? purge : 0)
+    );
+  }
+
+  const CAMPOS_NUM_PRODUCTO = [
+    'filamentoModeloGramos',
+    'filamentoSoportesGramos',
+    'filamentoPurgeGramos',
+    'filamentoMetros',
+    'filamentoGramos',
+    'costoFilamentoKgClp',
+    'horasImpresion',
+    'minutosPintado',
+    'unidadesMetal',
+    'unidadesBolsa',
+    'precioVentaSugeridoClp',
+    'costoSlicerRef',
+  ];
+
+  function normalizarDecimalesProducto(prod) {
+    if (!prod || typeof prod !== 'object') return false;
+    let changed = false;
+    for (const k of CAMPOS_NUM_PRODUCTO) {
+      if (prod[k] == null || prod[k] === '') continue;
+      const next = round2(prod[k]);
+      if (Number(prod[k]) !== next) {
+        prod[k] = next;
+        changed = true;
+      } else {
+        prod[k] = next;
+      }
+    }
+    return changed;
+  }
+
+  function asegurarDecimalesProductos(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    let changed = false;
+    for (const p of d.productos) {
+      if (normalizarDecimalesProducto(p)) changed = true;
+    }
+    return changed;
   }
 
   function costoProducto(prod) {
     const p = data.parametros || {};
-    const gramos = gramosDesdeDesglose(prod) || Number(prod.filamentoGramos || 0);
-    const filamento = (gramos / 1000) * Number(prod.costoFilamentoKgClp || 0);
-    const luz = Number(prod.horasImpresion || 0) * costoHoraImpresora();
-    const pintado =
-      (Number(prod.minutosPintado || 0) / 60) * Number(p.valorHoraManoObraClp || 0);
-    const metal = Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0);
-    const bolsa = Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 0);
-    const total = filamento + luz + pintado + metal + bolsa;
-    return { filamento, luz, pintado, metal, bolsa, total, gramos };
+    const gramos = gramosDesdeDesglose(prod) || round2(prod.filamentoGramos || 0);
+    const filamento = round2((gramos / 1000) * Number(prod.costoFilamentoKgClp || 0));
+    const luz = round2(Number(prod.horasImpresion || 0) * costoHoraImpresora());
+    const pintado = round2(
+      (Number(prod.minutosPintado || 0) / 60) * Number(p.valorHoraManoObraClp || 0)
+    );
+    const metal = round2(Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0));
+    const bolsa = round2(Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 0));
+    const total = round2(filamento + luz + pintado + metal + bolsa);
+    return { filamento, luz, pintado, metal, bolsa, total, gramos: round2(gramos) };
   }
 
   function leerProductoDesdeForm(form) {
     if (!form) return null;
     const fd = new FormData(form);
-    const modelo = Number(fd.get('filamentoModeloGramos') || 0);
-    const soportes = Number(fd.get('filamentoSoportesGramos') || 0);
-    const purge = Number(fd.get('filamentoPurgeGramos') || 0);
-    const totalDesglose = modelo + soportes + purge;
-    const gramosManual = Number(fd.get('filamentoGramos') || 0);
+    const modelo = round2(fd.get('filamentoModeloGramos') || 0);
+    const soportes = round2(fd.get('filamentoSoportesGramos') || 0);
+    const purge = round2(fd.get('filamentoPurgeGramos') || 0);
+    const totalDesglose = round2(modelo + soportes + purge);
+    const gramosManual = round2(fd.get('filamentoGramos') || 0);
     const usarDesglose = fd.get('usarDesglose') === '1';
     const filamentoGramos = usarDesglose ? totalDesglose : gramosManual;
     const horasImpresion = horasDesdePartes(fd.get('horasPart'), fd.get('minutosPart'));
@@ -662,15 +713,15 @@
       filamentoModeloGramos: modelo,
       filamentoSoportesGramos: soportes,
       filamentoPurgeGramos: purge,
-      filamentoMetros: Number(fd.get('filamentoMetros') || 0),
+      filamentoMetros: round2(fd.get('filamentoMetros') || 0),
       filamentoGramos,
-      costoFilamentoKgClp: Number(fd.get('costoFilamentoKgClp') || 0),
+      costoFilamentoKgClp: round2(fd.get('costoFilamentoKgClp') || 0),
       horasImpresion,
-      minutosPintado: Number(fd.get('minutosPintado') || 0),
-      unidadesMetal: Number(fd.get('unidadesMetal') || 0),
-      unidadesBolsa: Number(fd.get('unidadesBolsa') || 0),
-      precioVentaSugeridoClp: Number(fd.get('precioVentaSugeridoClp') || 0),
-      costoSlicerRef: Number(fd.get('costoSlicerRef') || 0),
+      minutosPintado: round2(fd.get('minutosPintado') || 0),
+      unidadesMetal: round2(fd.get('unidadesMetal') || 0),
+      unidadesBolsa: round2(fd.get('unidadesBolsa') || 0),
+      precioVentaSugeridoClp: round2(fd.get('precioVentaSugeridoClp') || 0),
+      costoSlicerRef: round2(fd.get('costoSlicerRef') || 0),
       notas: String(fd.get('notas') || '').trim(),
       usarDesglose,
     };
@@ -1523,7 +1574,7 @@
     modal.querySelector('[name=nombre]').value = '';
     modal.querySelector('[name=filamentoGramos]').value = calc.prod.filamentoGramos;
     modal.querySelector('[name=costoFilamentoKgClp]').value = calc.prod.costoFilamentoKgClp;
-    modal.querySelector('[name=horasImpresion]').value = Number(calc.prod.horasImpresion || 0).toFixed(4);
+    modal.querySelector('[name=horasImpresion]').value = num2(calc.prod.horasImpresion || 0);
     modal.querySelector('[name=minutosPintado]').value = calc.prod.minutosPintado;
     modal.querySelector('[name=unidadesMetal]').value = calc.prod.unidadesMetal;
     modal.querySelector('[name=unidadesBolsa]').value = calc.prod.unidadesBolsa;
@@ -1569,25 +1620,25 @@
             <label>SKU
               <input name="sku" required pattern="[A-Za-z]{2,10}[0-9]{3}" title="Ej. PCGATO001, PLMONS001" value="${sku}" />
             </label>
-            <label>$ / kg filamento (CLP)<input name="costoFilamentoKgClp" type="number" min="0" step="1" value="${Number(prod.costoFilamentoKgClp) || 0}" /></label>
+            <label>$ / kg filamento (CLP)<input name="costoFilamentoKgClp" type="number" min="0" step="0.01" value="${num2(prod.costoFilamentoKgClp || 0)}" /></label>
             <label class="imp-form-span">Desglose slicer (como en la foto)
               <select name="usarDesglose">
                 <option value="1"${usarDesglose === '1' ? ' selected' : ''}>Usar modelo + soportes + purge</option>
                 <option value="0"${usarDesglose === '0' ? ' selected' : ''}>Usar solo total de gramos</option>
               </select>
             </label>
-            <label>Modelo (g)<input name="filamentoModeloGramos" type="number" min="0" step="0.01" value="${Number(prod.filamentoModeloGramos || 0)}" /></label>
-            <label>Soportes (g)<input name="filamentoSoportesGramos" type="number" min="0" step="0.01" value="${Number(prod.filamentoSoportesGramos || 0)}" /></label>
-            <label>Purge / descargado (g)<input name="filamentoPurgeGramos" type="number" min="0" step="0.01" value="${Number(prod.filamentoPurgeGramos || 0)}" /></label>
-            <label>Total filamento (g)<input name="filamentoGramos" type="number" min="0" step="0.01" value="${Number(prod.filamentoGramos || c.gramos || 0)}" /></label>
-            <label>Metros filamento<input name="filamentoMetros" type="number" min="0" step="0.01" value="${Number(prod.filamentoMetros || 0)}" /></label>
+            <label>Modelo (g)<input name="filamentoModeloGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoModeloGramos || 0)}" /></label>
+            <label>Soportes (g)<input name="filamentoSoportesGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoSoportesGramos || 0)}" /></label>
+            <label>Purge / descargado (g)<input name="filamentoPurgeGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoPurgeGramos || 0)}" /></label>
+            <label>Total filamento (g)<input name="filamentoGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoGramos || c.gramos || 0)}" /></label>
+            <label>Metros filamento<input name="filamentoMetros" type="number" min="0" step="0.01" value="${num2(prod.filamentoMetros || 0)}" /></label>
             <label>Horas impresión<input name="horasPart" type="number" min="0" step="1" value="${th.horas}" /></label>
             <label>Minutos impresión<input name="minutosPart" type="number" min="0" max="59" step="1" value="${th.minutos}" /></label>
-            <label>Minutos pintado / MO<input name="minutosPintado" type="number" min="0" step="1" value="${Number(prod.minutosPintado || 0)}" /></label>
-            <label>Unidades metal<input name="unidadesMetal" type="number" min="0" step="1" value="${Number(prod.unidadesMetal || 0)}" /></label>
-            <label>Bolsas<input name="unidadesBolsa" type="number" min="0" step="1" value="${Number(prod.unidadesBolsa || 0)}" /></label>
-            <label>Precio venta público (CLP)<input name="precioVentaSugeridoClp" type="number" min="0" step="10" value="${Number(prod.precioVentaSugeridoClp) || ''}" placeholder="Ej. 8990" /></label>
-            <label>Coste slicer (ref.)<input name="costoSlicerRef" type="number" min="0" step="0.01" value="${Number(prod.costoSlicerRef || 0)}" title="Valor que muestra el slicer; no es CLP" /></label>
+            <label>Minutos pintado / MO<input name="minutosPintado" type="number" min="0" step="0.01" value="${num2(prod.minutosPintado || 0)}" /></label>
+            <label>Unidades metal<input name="unidadesMetal" type="number" min="0" step="0.01" value="${num2(prod.unidadesMetal || 0)}" /></label>
+            <label>Bolsas<input name="unidadesBolsa" type="number" min="0" step="0.01" value="${num2(prod.unidadesBolsa || 0)}" /></label>
+            <label>Precio venta público (CLP)<input name="precioVentaSugeridoClp" type="number" min="0" step="0.01" value="${prod.precioVentaSugeridoClp ? num2(prod.precioVentaSugeridoClp) : ''}" placeholder="Ej. 8990.00" /></label>
+            <label>Coste slicer (ref.)<input name="costoSlicerRef" type="number" min="0" step="0.01" value="${num2(prod.costoSlicerRef || 0)}" title="Valor que muestra el slicer; no es CLP" /></label>
             <label class="imp-form-span">Notas<textarea name="notas" rows="2">${escapeHtml(prod.notas || '')}</textarea></label>
             <div class="imp-form-actions">
               <button type="submit" class="imp-btn imp-btn--primary">Guardar parámetros</button>
@@ -1681,7 +1732,7 @@
         const modelo = Number(form.querySelector('[name=filamentoModeloGramos]')?.value || 0);
         const soportes = Number(form.querySelector('[name=filamentoSoportesGramos]')?.value || 0);
         const purge = Number(form.querySelector('[name=filamentoPurgeGramos]')?.value || 0);
-        totalInput.value = String(Math.round((modelo + soportes + purge) * 100) / 100);
+        totalInput.value = num2(modelo + soportes + purge);
       };
       const refreshLive = () => {
         syncTotalFromDesglose();
