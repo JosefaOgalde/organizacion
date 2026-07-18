@@ -154,6 +154,14 @@ El script lee `data/impresoreando-live.json` (el mismo del panel). Conviene habe
 | **Total gastos seed** | **$732.290** |
 | **50% cada socio** | **$366.145** |
 
+## RFID handheld (tarjetas)
+
+El adaptador a pila es un **escritor RFID de mano**, no ESP32. Guía: [`docs/impresoreando/RFID-HANDHELD.md`](../../../docs/impresoreando/RFID-HANDHELD.md).
+
+## ESP32-CAM (cámara Wi‑Fi del taller)
+
+Solo si hay módulo CAM + base USB. Guía: [`docs/impresoreando/ESP32-CAM.md`](../../../docs/impresoreando/ESP32-CAM.md) · sketch en `esp32-cam/CameraImpresoreando/`.
+
 ## Imágenes para redes
 
 Cuando envíes fotos de productos, se editan aquí en `index/clientes/impresoreando/redes/` (próximo paso).

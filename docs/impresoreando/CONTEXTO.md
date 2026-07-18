@@ -81,6 +81,16 @@ ENVIAR-STATUS-IMPRESOREANDO.bat
 
 `localhost` en el teléfono **no** funciona. Server `HOST=0.0.0.0`. Misma WiFi → IP de `GET /api/acceso` → `lan[]`. Fuera → `ABRIR-VENTA-PUBLICA.bat` (loca.lt) con `SERVIR.bat` abierto.
 
+## RFID handheld (tarjetas) — vigente
+
+Adaptador del taller = **escritor RFID de mano a pila**, no programador ESP32. No usa COM/Arduino.  
+Detalle y flujo Read/Write: `docs/impresoreando/RFID-HANDHELD.md`.  
+Link pedido: https://a.aliexpress.com/_mKBSVtD
+
+## ESP32-CAM (cámara taller) — aparte
+
+Solo si hay módulo CAM + base USB/CH340. Guía: `docs/impresoreando/ESP32-CAM.md`. Sketch: `index/clientes/impresoreando/esp32-cam/CameraImpresoreando/`. **No** es el handheld RFID.
+
 ## Cómo atender un pedido nuevo (checklist agente)
 
 1. Leer **este archivo** (no explorar panel.js salvo bug concreto).

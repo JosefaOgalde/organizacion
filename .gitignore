@@ -8,6 +8,7 @@ shell-test.txt
 # Secretos y tokens locales
 .env
 .organizacion-token
+index/clientes/impresoreando/esp32-cam/**/secrets.h
 
 # Laravel — generado localmente con composer (no subir vendor)
 backend/
