@@ -53,6 +53,7 @@ Abre:
 | Qué | URL |
 |-----|-----|
 | Panel socios | http://localhost:3000/index/clientes/impresoreando/panel/ |
+| Calculadora de productos | http://localhost:3000/index/clientes/impresoreando/panel/?tab=costos |
 | Landing | http://localhost:3000/index/clientes/impresoreando/ |
 | Portal | http://localhost:3000/index/clientes/ |
 
