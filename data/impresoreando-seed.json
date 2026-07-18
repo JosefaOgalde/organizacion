@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-18T02:20:17.000Z",
+    "actualizado": "2026-07-18T05:25:00.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -25,15 +25,18 @@
       "nota": "Nicolás puso el capital. Josefa debe el 50% de ese capital a Nicolás. Los gastos de la sociedad son de ambos.",
       "montoNetoClp": 797040,
       "deudaJosefaClp": 398520
-    }
+    },
+    "pedidoSeq": 2
   },
   "parametros": {
-    "tarifaKwhClp": 180,
-    "consumoImpresoraKw": 0.22,
+    "tarifaKwhClp": 200,
+    "consumoImpresoraKw": 0.28,
     "valorHoraManoObraClp": 5000,
     "costoAnilloMetalLlaveroClp": 150,
     "costoBolsaEntregaClp": 50,
-    "margenObjetivoPct": 40
+    "margenObjetivoPct": 100,
+    "impresoraModelo": "Elegoo Centauri Carbon 2",
+    "impresoraNotas": "Pico nominal 1100 W @ 220 V. Promedio estimado en impresión PLA con cama caliente: 0,28 kW. Tarifa ~$200/kWh (precio efectivo boleta residencial Chile 2026; ajústala a tu cuenta)."
   },
   "gastos": [
     {
@@ -193,53 +196,114 @@
       "id": "prod-llavero",
       "nombre": "Llavero 3D",
       "activo": true,
-      "filamentoGramos": 12,
-      "costoFilamentoKgClp": 17986,
+      "filamentoGramos": 12.0,
+      "costoFilamentoKgClp": 17986.0,
       "horasImpresion": 1.2,
-      "minutosPintado": 15,
-      "unidadesMetal": 1,
-      "unidadesBolsa": 1,
-      "precioVentaSugeridoClp": 4990,
-      "notas": "Ajustar gramos/tiempo según modelo real"
+      "minutosPintado": 15.0,
+      "unidadesMetal": 1.0,
+      "unidadesBolsa": 1.0,
+      "precioVentaSugeridoClp": 4990.0,
+      "notas": "Ajustar gramos/tiempo según modelo real",
+      "sku": "LLAV001"
     },
     {
       "id": "prod-figura-chica",
       "nombre": "Figura chica / souvenir",
       "activo": true,
-      "filamentoGramos": 35,
-      "costoFilamentoKgClp": 17986,
+      "filamentoGramos": 35.0,
+      "costoFilamentoKgClp": 17986.0,
       "horasImpresion": 3.5,
-      "minutosPintado": 45,
-      "unidadesMetal": 0,
-      "unidadesBolsa": 1,
-      "precioVentaSugeridoClp": 12990,
-      "notas": ""
+      "minutosPintado": 45.0,
+      "unidadesMetal": 0.0,
+      "unidadesBolsa": 1.0,
+      "precioVentaSugeridoClp": 12990.0,
+      "notas": "",
+      "sku": "FIG001"
     },
     {
       "id": "prod-portacompletos-gato",
       "nombre": "Portacompletos gato",
       "activo": true,
-      "filamentoGramos": 110,
-      "costoFilamentoKgClp": 12950,
-      "horasImpresion": 5,
-      "minutosPintado": 20,
-      "unidadesMetal": 0,
-      "unidadesBolsa": 1,
-      "precioVentaSugeridoClp": 0,
-      "notas": "5 h de impresión. Precio de venta a público se carga a mano."
+      "filamentoGramos": 110.0,
+      "costoFilamentoKgClp": 12950.0,
+      "horasImpresion": 5.0,
+      "minutosPintado": 20.0,
+      "unidadesMetal": 0.0,
+      "unidadesBolsa": 1.0,
+      "precioVentaSugeridoClp": 0.0,
+      "notas": "5 h de impresión. Precio de venta a público se carga a mano.",
+      "sku": "PCGATO001"
     },
     {
       "id": "prod-portacompletos-perro",
       "nombre": "Portacompletos perro",
       "activo": true,
-      "filamentoGramos": 132,
-      "costoFilamentoKgClp": 12950,
-      "horasImpresion": 6,
-      "minutosPintado": 20,
-      "unidadesMetal": 0,
-      "unidadesBolsa": 1,
-      "precioVentaSugeridoClp": 0,
-      "notas": "6 h de impresión. Precio de venta a público se carga a mano."
+      "filamentoGramos": 132.0,
+      "costoFilamentoKgClp": 12950.0,
+      "horasImpresion": 6.0,
+      "minutosPintado": 20.0,
+      "unidadesMetal": 0.0,
+      "unidadesBolsa": 1.0,
+      "precioVentaSugeridoClp": 0.0,
+      "notas": "6 h de impresión. Precio de venta a público se carga a mano.",
+      "sku": "PCPERRO001"
+    },
+    {
+      "id": "prod-porta-lata-monster",
+      "sku": "PLMONS001",
+      "nombre": "Porta lata Monster",
+      "activo": true,
+      "filamentoGramos": 144.45,
+      "costoFilamentoKgClp": 17986.0,
+      "horasImpresion": 3.42,
+      "minutosPintado": 0.0,
+      "unidadesMetal": 0.0,
+      "unidadesBolsa": 1.0,
+      "precioVentaSugeridoClp": 0.0,
+      "notas": "Slicer: modelo 135,55 g + soportes 8,43 g + purge 0,47 g = 144,45 g · 48,04 m · 3 h 25 m · coste slicer 2,89 (ref). PLA+ negro $17.986/kg. Logo en relieve.",
+      "filamentoModeloGramos": 135.55,
+      "filamentoSoportesGramos": 8.43,
+      "filamentoPurgeGramos": 0.47,
+      "filamentoMetros": 48.04,
+      "costoSlicerRef": 2.89
+    },
+    {
+      "id": "prod-macetero-perro-bulldog",
+      "sku": "MCPERROBU001",
+      "nombre": "Macetero perro bulldog",
+      "activo": true,
+      "filamentoModeloGramos": 95.36,
+      "filamentoSoportesGramos": 1.12,
+      "filamentoPurgeGramos": 0.47,
+      "filamentoMetros": 32.24,
+      "filamentoGramos": 96.95,
+      "costoFilamentoKgClp": 17986.0,
+      "horasImpresion": 3.35,
+      "minutosPintado": 0.0,
+      "unidadesMetal": 0.0,
+      "unidadesBolsa": 1.0,
+      "precioVentaSugeridoClp": 0.0,
+      "costoSlicerRef": 1.94,
+      "notas": "Slicer: modelo 95,36 g + soportes 1,12 g + purge 0,47 g = 96,95 g · 32,24 m · 3 h 21 m · coste slicer 1,94 (ref). PLA+ negro $17.986/kg."
+    },
+    {
+      "id": "prod-portacompleto-perro-bulldog",
+      "sku": "PCPERROBU001",
+      "nombre": "Portacompleto perro bulldog",
+      "activo": true,
+      "filamentoModeloGramos": 59.85,
+      "filamentoSoportesGramos": 4.26,
+      "filamentoPurgeGramos": 0.47,
+      "filamentoMetros": 21.48,
+      "filamentoGramos": 64.58,
+      "costoFilamentoKgClp": 17986.0,
+      "horasImpresion": 2.22,
+      "minutosPintado": 0.0,
+      "unidadesMetal": 0.0,
+      "unidadesBolsa": 1.0,
+      "precioVentaSugeridoClp": 0.0,
+      "costoSlicerRef": 1.29,
+      "notas": "Slicer 1 ud: modelo 59,85 g + soportes 4,26 g + purge 0,47 g = 64,58 g · 21,48 m · 2 h 13 m · coste slicer 1,29 (ref). PLA+ negro $17.986/kg. Sin pintado (editable). Se eligió frente al cálculo anterior (61,35 g / 2 h 1 m) por mayor costo."
     }
   ],
   "planAds": {
@@ -276,6 +340,73 @@
       "fecha": "2026-07-14",
       "autor": "Josefa",
       "texto": "Carga inicial agrupada por registro: Orden #312435 ($652.290) + AliExpress ($60.000) + Líder ($20.000) + Mercado Libre 5 PLA ($64.750). Sociedad 50/50. Gastos de ambos. Nicolás aportó capital; Josefa debe 50%."
+    }
+  ],
+  "pedidos": [
+    {
+      "id": "ped-rebe-plmons-001",
+      "numero": "PED-001",
+      "fecha": "2026-07-18",
+      "cliente": "Rebe",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "PLMONS001",
+          "nombre": "Porta lata Monster",
+          "cantidad": 1,
+          "precioUnitarioClp": 5679.2,
+          "costoUnitarioClp": 2839.6,
+          "filamento": "PLA+ negro",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ],
+      "montoNeto": 5679.2,
+      "estado": "listo",
+      "ventaId": null,
+      "notas": "1× Porta lata Monster · PLA+ negro · listo para entregar",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-18T04:29:00.000Z",
+      "costoTotal": 2839.6
+    },
+    {
+      "id": "ped-gianni-bulldog-002",
+      "numero": "PED-002",
+      "fecha": "2026-07-18",
+      "cliente": "Gianni",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "MCPERROBU001",
+          "nombre": "Macetero perro bulldog",
+          "cantidad": 1,
+          "precioUnitarioClp": 3962.69,
+          "costoUnitarioClp": 1981.34,
+          "filamento": "PLA+ negro",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        },
+        {
+          "sku": "PCPERROBU001",
+          "nombre": "Portacompleto perro bulldog",
+          "cantidad": 4,
+          "precioUnitarioClp": 2671.72,
+          "costoUnitarioClp": 1335.86,
+          "filamento": "PLA+ negro",
+          "estado": "en_impresion",
+          "listos": 0,
+          "enImpresion": 2
+        }
+      ],
+      "montoNeto": 14649.57,
+      "estado": "en_impresion",
+      "ventaId": null,
+      "notas": "Macetero listo · portacompletos 2/4 en impresión · PLA+ negro",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-18T04:40:00.000Z",
+      "costoTotal": 7324.78
     }
   ]
 }

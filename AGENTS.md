@@ -62,11 +62,5 @@
 - **Imágenes en tareas:** en el detalle de la tarea, bloque **Imágenes de la tarea** → `+ Guardar imágenes`. Se comprimen y suben a disco vía `POST /api/tarea-imagen` (`index/uploads/tarea-imagenes/…`); en `localStorage` solo queda la **URL** (evita “almacenamiento lleno”). Landing del cliente: sección **Tareas con imágenes**. Requiere `node scripts/organizacion-server.js` corriendo.
 
 ### Impresoreando — Panel socios 50/50
-- Landing: `http://localhost:3000/index/clientes/impresoreando/` — CTA **Resumen 50/50** abre el panel.
-- Panel: `…/impresoreando/panel/` · Registrador de ventas: `…/panel/venta/`.
-- Persistencia: `GET/POST /api/impresoreando` → `data/impresoreando-live.json`. Append de venta: `POST /api/impresoreando/venta`.
-- Lógica: **saldo por recuperar = gastos − ventas** (cada venta baja el saldo). Gastos de **ambos**; capital aportado por **Nicolás**; Josefa debe 50%.
-- Layout: franja blanca superior full-bleed; contenido interno limitado a `--imp-max: 1200px`.
-- **Acceso desde celular:** `localhost` en el teléfono **no funciona** (ERR_CONNECTION_FAILED). El servidor por defecto usa `HOST=0.0.0.0`.
-  - Misma WiFi: usar la IP que imprime el server al arrancar (también en `GET /api/acceso` → `lan[]`).
-  - Cualquier lugar / 4G: con `SERVIR.bat` abierto, ejecutar `ABRIR-VENTA-PUBLICA.bat` y compartir el link `https://….loca.lt/…/venta/`.
+**Antes de tocar nada:** leer `docs/impresoreando/CONTEXTO.md` (fuente única: rutas, deuda, pedidos, SKUs, status correo, checklist). **No reexplorar** `panel.js` ni el seed salvo bug concreto.
+Resumen 1 línea: panel `index/clientes/impresoreando/panel/` · live `data/impresoreando-live.json` · API `/api/impresoreando` · pedidos `PED-00n` con estado select · solo ventas bajan deuda · PLA+ negro `$17986/kg`.

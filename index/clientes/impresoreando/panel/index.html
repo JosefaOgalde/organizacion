@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Impresoreando · Panel socios</title>
-  <link rel="stylesheet" href="../../../assets/portal.css?v=imp-calc1" />
-  <link rel="stylesheet" href="./panel.css?v=imp-calc1" />
+  <link rel="stylesheet" href="../../../assets/portal.css?v=imp-cta2" />
+  <link rel="stylesheet" href="./panel.css?v=imp-bar-ped1" />
 </head>
 <body class="imp-body" data-cliente-slug="impresoreando">
   <div class="imp-top-bleed">
@@ -28,6 +28,7 @@
     <nav class="imp-tabs imp-shell" id="imp-tabs">
       <button type="button" data-tab="resumen" class="is-active">Resumen 50/50</button>
       <button type="button" data-tab="gastos">Gastos</button>
+      <button type="button" data-tab="pedidos">Pedidos</button>
       <button type="button" data-tab="ventas">Ventas</button>
       <button type="button" data-tab="operacion">Operación / luz</button>
       <button type="button" data-tab="costos">Costos producto</button>
@@ -39,6 +40,7 @@
   <main class="imp-main imp-shell">
     <section class="imp-panel is-active" id="tab-resumen"></section>
     <section class="imp-panel" id="tab-gastos"></section>
+    <section class="imp-panel" id="tab-pedidos"></section>
     <section class="imp-panel" id="tab-ventas"></section>
     <section class="imp-panel" id="tab-operacion"></section>
     <section class="imp-panel" id="tab-costos"></section>
@@ -53,21 +55,21 @@
         <button type="button" class="imp-modal__close" id="btn-modal-producto-cerrar" aria-label="Cerrar">×</button>
       </header>
       <form class="imp-form" id="form-producto-modal">
-        <p class="imp-muted">Cada impresión es única: el SKU identifica esta pieza. Puedes ajustar nombre, costo y precio de venta.</p>
-        <label>SKU (único)
-          <input name="sku" required readonly />
-        </label>
+        <p class="imp-muted">El SKU se arma solo según el nombre (ej. PCGATO001, PCPERRO001, PLMONS001). Puedes editarlo.</p>
         <label>Nombre del producto
-          <input name="nombre" required placeholder="Ej. Portacompletos gato — pedido Ana" autofocus />
+          <input name="nombre" required placeholder="Ej. Portacompletos gato / Porta lata Monster" autofocus />
         </label>
-        <label>Gramos filamento<input name="filamentoGramos" type="number" step="0.1" min="0" required /></label>
-        <label>$ / kg filamento<input name="costoFilamentoKgClp" type="number" min="0" required /></label>
-        <label>Horas impresión<input name="horasImpresion" type="number" step="0.1" min="0" required /></label>
-        <label>Minutos pintado<input name="minutosPintado" type="number" min="0" required /></label>
-        <label>Unidades metal<input name="unidadesMetal" type="number" min="0" required /></label>
-        <label>Bolsas<input name="unidadesBolsa" type="number" min="0" required /></label>
+        <label>SKU (único)
+          <input name="sku" required pattern="[A-Za-z]{2,10}[0-9]{3}" title="Ej. PCGATO001" placeholder="PCGATO001" />
+        </label>
+        <label>Gramos filamento<input name="filamentoGramos" type="number" step="0.01" min="0" required /></label>
+        <label>$ / kg filamento<input name="costoFilamentoKgClp" type="number" step="0.01" min="0" required /></label>
+        <label>Horas impresión<input name="horasImpresion" type="number" step="0.01" min="0" required /></label>
+        <label>Minutos pintado<input name="minutosPintado" type="number" step="0.01" min="0" required /></label>
+        <label>Unidades metal<input name="unidadesMetal" type="number" step="0.01" min="0" required /></label>
+        <label>Bolsas<input name="unidadesBolsa" type="number" step="0.01" min="0" required /></label>
         <label>Precio venta a público (CLP)
-          <input name="precioVentaSugeridoClp" type="number" min="0" step="10" required />
+          <input name="precioVentaSugeridoClp" type="number" min="0" step="0.01" required />
         </label>
         <label>Notas<textarea name="notas" rows="2" placeholder="Opcional"></textarea></label>
         <div class="imp-calc-live" id="imp-modal-costo-est">Costo estimado…</div>
@@ -79,6 +81,26 @@
     </div>
   </div>
 
-  <script src="./panel.js?v=imp-calc1"></script>
+  <div id="imp-modal-pedido" class="imp-modal" hidden aria-hidden="true">
+    <div class="imp-modal__dialog imp-modal__dialog--wide" role="dialog" aria-modal="true" aria-labelledby="imp-modal-pedido-title">
+      <header class="imp-modal__head">
+        <h2 id="imp-modal-pedido-title">Editar pedido</h2>
+        <button type="button" class="imp-modal__close" id="btn-modal-pedido-cerrar" aria-label="Cerrar">×</button>
+      </header>
+      <div id="imp-modal-pedido-body"></div>
+    </div>
+  </div>
+
+  <div id="imp-modal-transferir" class="imp-modal" hidden aria-hidden="true">
+    <div class="imp-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="imp-modal-transferir-title">
+      <header class="imp-modal__head">
+        <h2 id="imp-modal-transferir-title">Transferir a venta</h2>
+        <button type="button" class="imp-modal__close" id="btn-modal-transferir-cerrar" aria-label="Cerrar">×</button>
+      </header>
+      <div id="imp-modal-transferir-body"></div>
+    </div>
+  </div>
+
+  <script src="./panel.js?v=imp-bar-ped1"></script>
 </body>
 </html>
