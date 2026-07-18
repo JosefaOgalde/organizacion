@@ -2,7 +2,7 @@
 
 Actualizado: 2026-07-18
 
-## NL 1 ago — portadas Canva finales (2026-07-18)
+## NL 1 ago — portadas Canva finales (2026-07-18) · calendario **20 ago**
 
 - Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
 - 3 portadas con logo ECR + título/subtítulo montados

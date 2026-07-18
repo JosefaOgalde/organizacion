@@ -1,8 +1,9 @@
 # Portadas Canva finales — NL 1 ago · Tecnología sin integración
 
-**Fecha armado:** 2026-07-17 / registro 2026-07-18  
+**Fecha armado / registro:** 2026-07-18  
+**Calendario madre NL 1:** **2026-08-20**  
 **Artículo:** Tecnología sin integración: el principal freno de la eficiencia  
-**Estado:** ✅ Hechas (textos + logo ECR montados en Canva)  
+**Estado:** ✅ Hechas (textos + logo ECR montados en Canva) · subtarea Portada cerrada  
 **Subtarea organizador:** `[ECR] TI — Portada (fondos)` → completada
 
 ## Textos en portada (todas)

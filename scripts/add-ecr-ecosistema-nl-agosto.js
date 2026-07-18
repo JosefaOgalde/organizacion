@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 
 const LIVE = path.join(__dirname, '..', 'data', 'organizacion-live.json');
-const FECHA = '2026-07-17';
+const FECHA = '2026-08-20';
 const CLIENTE = 'cli-ecr';
 const ROL = 'rol-ecr-cm';
 const MADRE_ID = 'tarea-ecr-ecosistema-nl-agosto-2026-07-17';
@@ -24,16 +24,16 @@ const MADRE = {
   horaInicio: '09:00',
   horaFin: '18:00',
   notas:
-    'Tarea madre · artículo «Tecnología sin integración» (NL LinkedIn 1 de agosto). ' +
+    'Tarea madre · artículo «Tecnología sin integración» (calendario 20 ago). ' +
     'Subtareas: Copys · Portada · Carrusel · Video. ' +
-    'Segundo artículo (otra madre): Equipos en terreno.',
+    'Segundo artículo (otra madre): Equipos en terreno (22 ago).',
   prioridad: 'alta',
   completada: false,
   pendiente: false,
   numeroHistorico: '04',
   tipoEntregable: 'ecosistema',
   articuloSlug: 'tecnologia-sin-integracion',
-  articuloPublicacion: '2026-08-01',
+  articuloPublicacion: FECHA,
   parentId: null,
 };
 
@@ -56,8 +56,9 @@ const HIJOS = [
     numeroHistorico: '06',
     tipoEntregable: 'portada-imgs',
     ordenHijo: 2,
-    entregableArchivo: 'index/clientes/ecr/newsletter/portadas-guardadas/NL-2026-08-01-fondos-elegidos.md',
-    notas: 'Fondos Midjourney NL 1 ago · Tecnología sin integración. Armar en Canva.',
+    entregableArchivo:
+      'index/clientes/ecr/newsletter/portadas-guardadas/NL1-ago-portadas-canva-finales.md',
+    notas: 'Portadas Canva finales NL 1 · Tecnología sin integración (calendario 20 ago).',
   },
   {
     id: 'tarea-ecr-nl-agosto-carrusel-2026-07-17',
