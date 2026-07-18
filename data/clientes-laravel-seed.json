@@ -118,6 +118,19 @@
       "color_text": null,
       "agente": "Agente Impresoreando",
       "resumen": null
+    },
+    {
+      "id": "cli-tronwell",
+      "slug": "tw",
+      "nombre": "Tronwell",
+      "abrev": "TW",
+      "tipo": "freelance",
+      "color": "indigo",
+      "color_border": null,
+      "color_bg": null,
+      "color_text": null,
+      "agente": "Agente Tronwell",
+      "resumen": "Ajuste de textos y documentos Word"
     }
   ]
 }
