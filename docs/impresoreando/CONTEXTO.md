@@ -81,6 +81,10 @@ ENVIAR-STATUS-IMPRESOREANDO.bat
 
 `localhost` en el teléfono **no** funciona. Server `HOST=0.0.0.0`. Misma WiFi → IP de `GET /api/acceso` → `lan[]`. Fuera → `ABRIR-VENTA-PUBLICA.bat` (loca.lt) con `SERVIR.bat` abierto.
 
+## ESP32-CAM (cámara taller)
+
+Compra AliExpress `1005011858741994`. Guía de driver CH340 + Arduino + flasheo: `docs/impresoreando/ESP32-CAM.md`. Sketch: `index/clientes/impresoreando/esp32-cam/CameraImpresoreando/`.
+
 ## Cómo atender un pedido nuevo (checklist agente)
 
 1. Leer **este archivo** (no explorar panel.js salvo bug concreto).

@@ -154,6 +154,10 @@ El script lee `data/impresoreando-live.json` (el mismo del panel). Conviene habe
 | **Total gastos seed** | **$732.290** |
 | **50% cada socio** | **$366.145** |
 
+## ESP32-CAM (cámara Wi‑Fi del taller)
+
+Kit AliExpress (CAM + base MB). Guía paso a paso: [`docs/impresoreando/ESP32-CAM.md`](../../../docs/impresoreando/ESP32-CAM.md) · sketch en `esp32-cam/CameraImpresoreando/`.
+
 ## Imágenes para redes
 
 Cuando envíes fotos de productos, se editan aquí en `index/clientes/impresoreando/redes/` (próximo paso).
