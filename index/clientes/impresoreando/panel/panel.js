@@ -2178,47 +2178,60 @@
           prod.filamentoSoportesGramos != null ||
           prod.filamentoPurgeGramos != null;
         const usarDesglose = tieneDesglose ? '1' : '0';
+        const precioVenta =
+          Number(prod.precioVentaSugeridoClp) > 0
+            ? Number(prod.precioVentaSugeridoClp)
+            : precioSugeridoDesdeCosto(c.total);
         return `
         <div class="imp-card imp-card--prod" data-prod-id="${pid}">
-          <div class="imp-prod-head">
-            <h3>${escapeHtml(prod.nombre)}</h3>
-            <div class="imp-prod-head__meta">
-              <span class="imp-sku" title="SKU del producto">SKU ${sku}</span>
+          <div class="imp-prod-summary">
+            <div class="imp-prod-summary__title">
+              <h3 data-prod-nombre>${escapeHtml(prod.nombre)}</h3>
+              <span class="imp-sku" data-prod-sku title="SKU del producto">SKU ${sku}</span>
+            </div>
+            <div class="imp-prod-summary__nums">
+              <span class="imp-prod-kpi">Costo <strong data-prod-costo>${money(c.total)}</strong></span>
+              <span class="imp-prod-kpi">Precio venta <strong data-prod-precio>${money(precioVenta)}</strong></span>
               <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-prod="${pid}">Eliminar</button>
             </div>
           </div>
-          <div class="imp-costo-live" data-costo-live="${pid}">${htmlCostoLive(c, margen, prod.precioVentaSugeridoClp)}</div>
-          <form class="imp-form imp-form--prod" data-editar-prod="${pid}">
-            <label>Nombre<input name="nombre" required value="${escapeHtml(prod.nombre || '')}" /></label>
-            <label>SKU
-              <input name="sku" required pattern="[A-Za-z]{2,10}[0-9]{3}" title="Ej. PCGATO001, PLMONS001" value="${sku}" />
-            </label>
-            <label>$ / kg filamento (CLP)<input name="costoFilamentoKgClp" type="number" min="0" step="0.01" value="${num2(prod.costoFilamentoKgClp || 0)}" /></label>
-            <label class="imp-form-span">Desglose slicer (como en la foto)
-              <select name="usarDesglose">
-                <option value="1"${usarDesglose === '1' ? ' selected' : ''}>Usar modelo + soportes + purge</option>
-                <option value="0"${usarDesglose === '0' ? ' selected' : ''}>Usar solo total de gramos</option>
-              </select>
-            </label>
-            <label>Modelo (g)<input name="filamentoModeloGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoModeloGramos || 0)}" /></label>
-            <label>Soportes (g)<input name="filamentoSoportesGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoSoportesGramos || 0)}" /></label>
-            <label>Purge / descargado (g)<input name="filamentoPurgeGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoPurgeGramos || 0)}" /></label>
-            <label>Total filamento (g)<input name="filamentoGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoGramos || c.gramos || 0)}" /></label>
-            <label>Metros filamento<input name="filamentoMetros" type="number" min="0" step="0.01" value="${num2(prod.filamentoMetros || 0)}" /></label>
-            <label>Horas impresión<input name="horasPart" type="number" min="0" step="1" value="${th.horas}" /></label>
-            <label>Minutos impresión<input name="minutosPart" type="number" min="0" max="59" step="1" value="${th.minutos}" /></label>
-            <label>Minutos pintado / MO<input name="minutosPintado" type="number" min="0" step="0.01" value="${num2(prod.minutosPintado || 0)}" /></label>
-            <label>Unidades metal<input name="unidadesMetal" type="number" min="0" step="0.01" value="${num2(prod.unidadesMetal || 0)}" /></label>
-            <label>Bolsas<input name="unidadesBolsa" type="number" min="0" step="0.01" value="${num2(prod.unidadesBolsa || 0)}" /></label>
-            <label>Precio venta público (CLP)<input name="precioVentaSugeridoClp" type="number" min="0" step="0.01" value="${prod.precioVentaSugeridoClp ? num2(prod.precioVentaSugeridoClp) : ''}" placeholder="Ej. 8990.00" /></label>
-            <label>Coste slicer (ref.)<input name="costoSlicerRef" type="number" min="0" step="0.01" value="${num2(prod.costoSlicerRef || 0)}" title="Valor que muestra el slicer; no es CLP" /></label>
-            <label class="imp-form-span">Notas<textarea name="notas" rows="2">${escapeHtml(prod.notas || '')}</textarea></label>
-            <div class="imp-form-actions">
-              <button type="submit" class="imp-btn imp-btn--primary">Guardar parámetros</button>
-              <button type="button" class="imp-btn" data-regen-sku="${pid}">Regenerar SKU</button>
-              <span class="imp-muted">Al editar se recalcula el costo · luz/h ≈ ${money(costoHoraImpresora())} · MO ${money(p.valorHoraManoObraClp || 0)}/h</span>
+          <details class="imp-prod-details">
+            <summary>Parámetros y desglose</summary>
+            <div class="imp-prod-details__body">
+              <div class="imp-costo-live" data-costo-live="${pid}">${htmlCostoLive(c, margen, prod.precioVentaSugeridoClp)}</div>
+              <form class="imp-form imp-form--prod" data-editar-prod="${pid}">
+                <label>Nombre<input name="nombre" required value="${escapeHtml(prod.nombre || '')}" /></label>
+                <label>SKU
+                  <input name="sku" required pattern="[A-Za-z]{2,10}[0-9]{3}" title="Ej. PCGATO001, PLMONS001" value="${sku}" />
+                </label>
+                <label>$ / kg filamento (CLP)<input name="costoFilamentoKgClp" type="number" min="0" step="0.01" value="${num2(prod.costoFilamentoKgClp || 0)}" /></label>
+                <label class="imp-form-span">Desglose slicer (como en la foto)
+                  <select name="usarDesglose">
+                    <option value="1"${usarDesglose === '1' ? ' selected' : ''}>Usar modelo + soportes + purge</option>
+                    <option value="0"${usarDesglose === '0' ? ' selected' : ''}>Usar solo total de gramos</option>
+                  </select>
+                </label>
+                <label>Modelo (g)<input name="filamentoModeloGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoModeloGramos || 0)}" /></label>
+                <label>Soportes (g)<input name="filamentoSoportesGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoSoportesGramos || 0)}" /></label>
+                <label>Purge / descargado (g)<input name="filamentoPurgeGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoPurgeGramos || 0)}" /></label>
+                <label>Total filamento (g)<input name="filamentoGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoGramos || c.gramos || 0)}" /></label>
+                <label>Metros filamento<input name="filamentoMetros" type="number" min="0" step="0.01" value="${num2(prod.filamentoMetros || 0)}" /></label>
+                <label>Horas impresión<input name="horasPart" type="number" min="0" step="1" value="${th.horas}" /></label>
+                <label>Minutos impresión<input name="minutosPart" type="number" min="0" max="59" step="1" value="${th.minutos}" /></label>
+                <label>Minutos pintado / MO<input name="minutosPintado" type="number" min="0" step="0.01" value="${num2(prod.minutosPintado || 0)}" /></label>
+                <label>Unidades metal<input name="unidadesMetal" type="number" min="0" step="0.01" value="${num2(prod.unidadesMetal || 0)}" /></label>
+                <label>Bolsas<input name="unidadesBolsa" type="number" min="0" step="0.01" value="${num2(prod.unidadesBolsa || 0)}" /></label>
+                <label>Precio venta público (CLP)<input name="precioVentaSugeridoClp" type="number" min="0" step="0.01" value="${prod.precioVentaSugeridoClp ? num2(prod.precioVentaSugeridoClp) : ''}" placeholder="Ej. 8990.00" /></label>
+                <label>Coste slicer (ref.)<input name="costoSlicerRef" type="number" min="0" step="0.01" value="${num2(prod.costoSlicerRef || 0)}" title="Valor que muestra el slicer; no es CLP" /></label>
+                <label class="imp-form-span">Notas<textarea name="notas" rows="2">${escapeHtml(prod.notas || '')}</textarea></label>
+                <div class="imp-form-actions">
+                  <button type="submit" class="imp-btn imp-btn--primary">Guardar parámetros</button>
+                  <button type="button" class="imp-btn" data-regen-sku="${pid}">Regenerar SKU</button>
+                  <span class="imp-muted">Al editar se recalcula el costo · luz/h ≈ ${money(costoHoraImpresora())} · MO ${money(p.valorHoraManoObraClp || 0)}/h</span>
+                </div>
+              </form>
             </div>
-          </form>
+          </details>
         </div>`;
       })
       .join('');
@@ -2226,7 +2239,7 @@
     $('#tab-costos').innerHTML = `
       <div class="imp-card">
         <h2>Costos por pieza (luz + materiales)</h2>
-        <p class="imp-muted">Edita los parámetros del slicer (modelo, soportes, purge, tiempo) y el costo se recalcula al instante. Luego <strong>Guardar parámetros</strong> y <strong>Guardar online</strong>.</p>
+        <p class="imp-muted">Cada producto muestra <strong>nombre, SKU, costo y precio venta</strong>. Abrí <strong>Parámetros y desglose</strong> para editar. Luego <strong>Guardar parámetros</strong> y <strong>Guardar online</strong>.</p>
         <p class="imp-muted">$/kg filamento ref.: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> · tarifa Chile <strong>${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp}</strong> $/kWh · ${p.impresoraModelo || 'Centauri Carbon 2'} <strong>${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw}</strong> kW</p>
       </div>
       ${blocks || '<div class="imp-card">Sin productos aún — usa la calculadora y Guarda como producto</div>'}
@@ -2310,9 +2323,23 @@
       const refreshLive = () => {
         syncTotalFromDesglose();
         const leido = leerProductoDesdeForm(form);
-        if (!leido || !live) return;
+        if (!leido) return;
         const c = costoProducto(leido);
-        live.innerHTML = htmlCostoLive(c, margen, leido.precioVentaSugeridoClp);
+        if (live) live.innerHTML = htmlCostoLive(c, margen, leido.precioVentaSugeridoClp);
+        const card = form.closest('.imp-card');
+        const precioShown =
+          Number(leido.precioVentaSugeridoClp) > 0
+            ? Number(leido.precioVentaSugeridoClp)
+            : precioSugeridoDesdeCosto(c.total);
+        const elCosto = card?.querySelector('[data-prod-costo]');
+        const elPrecio = card?.querySelector('[data-prod-precio]');
+        const elNombre = card?.querySelector('[data-prod-nombre]');
+        const elSku = card?.querySelector('[data-prod-sku]');
+        if (elCosto) elCosto.textContent = money(c.total);
+        if (elPrecio) elPrecio.textContent = money(precioShown);
+        if (elNombre && leido.nombre) elNombre.textContent = leido.nombre;
+        const skuVal = String(form.querySelector('[name=sku]')?.value || '').trim().toUpperCase();
+        if (elSku && skuVal) elSku.textContent = `SKU ${skuVal}`;
       };
       form.querySelector('[data-regen-sku]')?.addEventListener('click', () => {
         const nombre = form.querySelector('[name=nombre]')?.value || '';
@@ -2359,11 +2386,6 @@
         });
         markDirty();
         refreshLive();
-        const card = form.closest('.imp-card');
-        const head = card?.querySelector('.imp-prod-head h3');
-        const skuPill = card?.querySelector('.imp-sku');
-        if (head) head.textContent = leido.nombre;
-        if (skuPill) skuPill.textContent = `SKU ${skuNuevo}`;
         setStatus(`«${leido.nombre}» actualizado (${skuNuevo}) — costo ${money(costoProducto(prod).total)} · guarda online`, 'warn');
       });
       refreshLive();
