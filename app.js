@@ -6754,7 +6754,7 @@ function renderCalendarioMes() {
       ? (ordenados.length === 0 ? 52 : 22 + ordenados.length * 15)
       : (ordenados.length === 0 ? 108 : 40 + ordenados.length * 34);
 
-    html += `<div class="mes-dia${esHoy ? ' mes-dia--hoy' : ''}${!esMesActual ? ' mes-dia--fuera' : ''}" data-fecha="${diaStr}" data-items="${ordenados.length}" style="min-height:${alturaMin}px" title="Ver semana del ${dia.toLocaleDateString('es-CL')}">
+    html += `<div class="mes-dia${esHoy ? ' mes-dia--hoy' : ''}${!esMesActual ? ' mes-dia--fuera' : ''}" data-fecha="${diaStr}" data-items="${ordenados.length}" style="min-height:${alturaMin}px" title="Ver día ${dia.toLocaleDateString('es-CL')}">
       <div class="mes-dia__num">${dia.getDate()}</div>
       <div class="mes-dia__items">${itemsHtml}</div>
     </div>`;
@@ -6763,7 +6763,7 @@ function renderCalendarioMes() {
   cont.innerHTML = html;
   cont.classList.toggle('calendario-mes--compacto', mesCompacto);
   cont.querySelectorAll('.mes-dia').forEach(celda => {
-    celda.addEventListener('click', () => irASemanaDe(celda.dataset.fecha));
+    celda.addEventListener('click', () => irADia(celda.dataset.fecha));
   });
 }
 
