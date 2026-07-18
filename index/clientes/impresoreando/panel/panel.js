@@ -62,6 +62,9 @@
     if (asegurarProductoPortacompletosGato(d)) changed = true;
     if (asegurarProductoPortacompletosPerro(d)) changed = true;
     if (asegurarProductoPortaLataMonster(d)) changed = true;
+    if (asegurarProductoMaceteroPerroBulldog(d)) changed = true;
+    if (asegurarProductoPortacompletoPerroBulldog(d)) changed = true;
+    if (asegurarPedidos(d)) changed = true;
     if (asegurarSkusProductos(d)) changed = true;
     const gastos = d.gastos;
     for (const g of gastos) {
@@ -316,6 +319,105 @@
     return changed;
   }
 
+  function upsertProductoSeed(d, id, seed) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const existing = d.productos.find((p) => p.id === id);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (!existing.id) {
+      existing.id = id;
+      changed = true;
+    }
+    const backfill = [
+      'filamentoModeloGramos',
+      'filamentoSoportesGramos',
+      'filamentoPurgeGramos',
+      'filamentoMetros',
+      'costoSlicerRef',
+      'sku',
+    ];
+    for (const k of backfill) {
+      if (existing[k] == null && seed[k] != null) {
+        existing[k] = seed[k];
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  /** Macetero perro bulldog — slicer: 96,95 g · 3 h 21 m · PLA amarillo. */
+  function asegurarProductoMaceteroPerroBulldog(d) {
+    return upsertProductoSeed(d, 'prod-macetero-perro-bulldog', {
+      sku: 'MCPERROBU001',
+      nombre: 'Macetero perro bulldog',
+      activo: true,
+      filamentoModeloGramos: 95.36,
+      filamentoSoportesGramos: 1.12,
+      filamentoPurgeGramos: 0.47,
+      filamentoMetros: 32.24,
+      filamentoGramos: 96.95,
+      costoFilamentoKgClp: 12690,
+      horasImpresion: 3.35,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: 1.94,
+      notas:
+        'Slicer: modelo 95,36 g + soportes 1,12 g + purge 0,47 g = 96,95 g · 32,24 m · 3 h 21 m · coste slicer 1,94 (ref). PLA amarillo.',
+    });
+  }
+
+  /** Portacompleto perro bulldog — placa 2 uds: 122,70 g / 4 h 2 m → costo por unidad. */
+  function asegurarProductoPortacompletoPerroBulldog(d) {
+    return upsertProductoSeed(d, 'prod-portacompleto-perro-bulldog', {
+      sku: 'PCPERROBU001',
+      nombre: 'Portacompleto perro bulldog',
+      activo: true,
+      filamentoModeloGramos: 59.875,
+      filamentoSoportesGramos: 1.245,
+      filamentoPurgeGramos: 0.235,
+      filamentoMetros: 20.405,
+      filamentoGramos: 61.35,
+      costoFilamentoKgClp: 17986,
+      horasImpresion: 2.0167,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: 1.225,
+      notas:
+        'Slicer placa ×2: 122,70 g / 4 h 2 m → por unidad 61,35 g / 2 h 1 m. PLA+ negro $17.986/kg. Coste slicer placa 2,45 (ref). Sin pintado (editable).',
+    });
+  }
+
+  function asegurarPedidos(d) {
+    let changed = false;
+    if (!Array.isArray(d.pedidos)) {
+      d.pedidos = [];
+      changed = true;
+    }
+    d.meta = d.meta || {};
+    if (d.meta.pedidoSeq == null) {
+      const maxNum = (d.pedidos || []).reduce((m, p) => {
+        const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
+        return Math.max(m, n);
+      }, 0);
+      d.meta.pedidoSeq = maxNum;
+      changed = true;
+    }
+    return changed;
+  }
+
+  function siguienteNumeroPedido() {
+    data.meta = data.meta || {};
+    data.meta.pedidoSeq = Number(data.meta.pedidoSeq || 0) + 1;
+    return `PED-${String(data.meta.pedidoSeq).padStart(3, '0')}`;
+  }
+
   /** Porta lata Monster — seed inicial desde slicer; no pisa ediciones posteriores. */
   function asegurarProductoPortaLataMonster(d) {
     d.productos = Array.isArray(d.productos) ? d.productos : [];
@@ -419,6 +521,8 @@
       'prod-portacompletos-gato': 'PCGATO001',
       'prod-portacompletos-perro': 'PCPERRO001',
       'prod-porta-lata-monster': 'PLMONS001',
+      'prod-macetero-perro-bulldog': 'MCPERROBU001',
+      'prod-portacompleto-perro-bulldog': 'PCPERROBU001',
     };
     for (const p of d.productos) {
       const fijo = CANON[p.id];
@@ -651,8 +755,18 @@
     const pctVentas = Math.min(100, (ventas / denom) * 100);
     const linkVenta = `${location.origin}/index/clientes/impresoreando/panel/venta/`;
     const esLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
-    const portaLata = (data.productos || []).find((p) => p.id === 'prod-porta-lata-monster');
-    const costoPortaLata = portaLata ? costoProducto(portaLata) : null;
+    const pedidosPendientes = (data.pedidos || []).filter((p) => p.estado === 'pendiente');
+    const montoPedidosPend = pedidosPendientes.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
+    const filasCostoProd = (data.productos || [])
+      .map((prod) => {
+        const c = costoProducto(prod);
+        return `<tr>
+          <td><span class="imp-sku">${escapeHtml(prod.sku || '—')}</span></td>
+          <td>${escapeHtml(prod.nombre || '')}</td>
+          <td class="num"><strong>${money(c.total)}</strong></td>
+        </tr>`;
+      })
+      .join('');
 
     $('#tab-resumen').innerHTML = `
       <div class="imp-balance ${sinDeuda ? 'imp-balance--ok' : 'imp-balance--deuda'}">
@@ -674,30 +788,23 @@
         </div>
         <div class="imp-balance__legend">
           <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(metaRecuperar)}</span>
-          <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)} · cada venta baja lo que falta</span>
+          <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)} · solo cuentan al transferir pedido → venta</span>
         </div>
       </div>
-      ${
-        costoPortaLata && portaLata
-          ? `<div class="imp-card imp-card--costo-destacado">
-        <h2>Último costo de pieza · Porta lata Monster</h2>
-        <p class="imp-muted">Slicer: modelo ${portaLata.filamentoModeloGramos ?? '—'} g + soportes ${portaLata.filamentoSoportesGramos ?? '—'} g + purge ${portaLata.filamentoPurgeGramos ?? '—'} g = <strong>${Number(costoPortaLata.gramos || portaLata.filamentoGramos || 0).toFixed(2)} g</strong>
-          · ${portaLata.filamentoMetros ? `${portaLata.filamentoMetros} m · ` : ''}${partesHoras(portaLata.horasImpresion).horas} h ${partesHoras(portaLata.horasImpresion).minutos} m
-          ${portaLata.costoSlicerRef ? ` · coste slicer ref. ${portaLata.costoSlicerRef}` : ''}</p>
-        <div class="imp-grid">
-          <div class="imp-kpi"><span>Filamento</span><strong>${money(costoPortaLata.filamento)}</strong></div>
-          <div class="imp-kpi"><span>Luz</span><strong>${money(costoPortaLata.luz)}</strong></div>
-          <div class="imp-kpi"><span>Bolsa</span><strong>${money(costoPortaLata.bolsa)}</strong></div>
-          <div class="imp-kpi imp-kpi--accent"><span>Costo de hacer el vaso</span><strong>${money(costoPortaLata.total)}</strong></div>
+      <div class="imp-card">
+        <h2>Costos de producto (resumen)</h2>
+        <p class="imp-muted">Producto + costo unitario. El desglose (filamento, luz, etc.) está en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>.</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>SKU</th><th>Producto</th><th>Costo</th></tr></thead>
+            <tbody>${filasCostoProd || '<tr><td colspan="3">Sin productos</td></tr>'}</tbody>
+          </table>
         </div>
-        <p class="imp-muted">Editable en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button> — al cambiar parámetros se recalcula.</p>
-      </div>`
-          : ''
-      }
+      </div>
       <div class="imp-grid">
         <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
-        <div class="imp-kpi imp-kpi--ok"><span>Ventas</span><strong>${money(ventas)}</strong></div>
-        <div class="imp-kpi"><span>Operación (luz etc.)</span><strong>${money(operacion)}</strong></div>
+        <div class="imp-kpi imp-kpi--ok"><span>Ventas (contabilizadas)</span><strong>${money(ventas)}</strong></div>
+        <div class="imp-kpi"><span>Pedidos pendientes</span><strong>${pedidosPendientes.length} · ${money(montoPedidosPend)}</strong></div>
         <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
       </div>
       <div class="imp-socios" aria-label="Detalle por socio">
@@ -935,13 +1042,185 @@
     });
   }
 
+  function renderPedidos() {
+    const productos = data.productos || [];
+    const optsProd = productos
+      .map((p) => `<option value="${escapeHtml(p.sku || '')}">${escapeHtml(p.sku || '')} · ${escapeHtml(p.nombre || '')}</option>`)
+      .join('');
+    const rows = (data.pedidos || [])
+      .slice()
+      .reverse()
+      .map((p) => {
+        const itemsTxt = (p.items || [])
+          .map((it) => `${it.cantidad || 1}× ${it.sku || it.nombre || ''}`)
+          .join(', ');
+        const estado = p.estado || 'pendiente';
+        const badge =
+          estado === 'transferido'
+            ? '<span class="imp-badge imp-badge--ok">Transferido → venta</span>'
+            : estado === 'cancelado'
+              ? '<span class="imp-badge">Cancelado</span>'
+              : '<span class="imp-badge imp-badge--warn">Pendiente</span>';
+        const acciones =
+          estado === 'pendiente'
+            ? `<button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
+               <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`
+            : `<span class="imp-muted">${escapeHtml(p.ventaId || '')}</span>`;
+        return `<tr>
+          <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
+          <td>${escapeHtml(p.cliente || '—')}<div class="imp-muted">${escapeHtml(itemsTxt)}</div></td>
+          <td class="num">${money(p.montoNeto)}</td>
+          <td>${badge}</td>
+          <td class="imp-pedidos-actions">${acciones}</td>
+        </tr>`;
+      })
+      .join('');
+
+    $('#tab-pedidos').innerHTML = `
+      <div class="imp-card">
+        <h2>Pedidos</h2>
+        <p class="imp-muted">Cada pedido tiene un ID correlativo (<strong>PED-001</strong>…). Mientras esté pendiente <strong>no baja la deuda</strong>. Al transferir pasa a <strong>Venta</strong> y recién ahí se contabiliza.</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th><th></th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="5">Sin pedidos aún</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>
+      <div class="imp-card">
+        <h3>Nuevo pedido</h3>
+        <form class="imp-form" id="form-pedido">
+          <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
+          <label>Cliente<input name="cliente" placeholder="Nombre o @instagram" /></label>
+          <label>Producto (SKU)
+            <select name="sku" required>
+              <option value="">Elegir…</option>
+              ${optsProd}
+            </select>
+          </label>
+          <label>Cantidad<input name="cantidad" type="number" min="1" value="1" required /></label>
+          <label>Total cobrado CLP<input name="montoNeto" type="number" min="0" step="10" required placeholder="Lo que paga el cliente" /></label>
+          <label>Canal<input name="canal" placeholder="WhatsApp / Instagram / feria" value="WhatsApp" /></label>
+          <label>Quién
+            <select name="socioRegistro">
+              <option value="Ambos" selected>Ambos</option>
+              <option value="Josefa">Josefa</option>
+              <option value="Nicolás">Nicolás</option>
+            </select>
+          </label>
+          <label class="imp-form-span">Notas<textarea name="notas" rows="2" placeholder="Opcional"></textarea></label>
+          <div class="imp-form-actions">
+            <button class="imp-btn imp-btn--primary" type="submit">Registrar pedido</button>
+            <span class="imp-muted">Se asigna el siguiente PED-xxx automáticamente</span>
+          </div>
+        </form>
+      </div>
+    `;
+
+    $('#form-pedido')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const sku = String(fd.get('sku') || '').trim();
+      const prod = (data.productos || []).find((p) => p.sku === sku);
+      const cantidad = Number(fd.get('cantidad') || 1);
+      const montoNeto = Number(fd.get('montoNeto') || 0);
+      if (!sku || !prod || !(montoNeto > 0)) {
+        setStatus('Elige producto y total cobrado', 'warn');
+        return;
+      }
+      const numero = siguienteNumeroPedido();
+      data.pedidos = data.pedidos || [];
+      data.pedidos.push({
+        id: uid('ped'),
+        numero,
+        fecha: fd.get('fecha'),
+        cliente: String(fd.get('cliente') || '').trim(),
+        canal: String(fd.get('canal') || ''),
+        items: [
+          {
+            sku,
+            nombre: prod.nombre,
+            cantidad,
+            precioUnitarioClp: Math.round(montoNeto / Math.max(1, cantidad)),
+            costoUnitarioClp: Math.round(costoProducto(prod).total),
+          },
+        ],
+        montoNeto,
+        estado: 'pendiente',
+        ventaId: null,
+        notas: String(fd.get('notas') || '').trim(),
+        socioRegistro: fd.get('socioRegistro') || 'Ambos',
+        creado: new Date().toISOString(),
+      });
+      markDirty();
+      renderAll();
+      activarTab('pedidos');
+      setStatus(`Pedido ${numero} creado — aún no contabiliza · guarda online`, 'warn');
+    });
+
+    $('#tab-pedidos')?.querySelectorAll('[data-transferir-pedido]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-transferir-pedido');
+        const ped = (data.pedidos || []).find((p) => p.id === id);
+        if (!ped || ped.estado !== 'pendiente') return;
+        const ok = confirm(
+          `¿Transferir ${ped.numero} a venta?\nSe contabilizará ${money(ped.montoNeto)} en el dashboard.`
+        );
+        if (!ok) return;
+        const itemsTxt = (ped.items || [])
+          .map((it) => `${it.cantidad || 1}× ${it.nombre || it.sku}`)
+          .join(', ');
+        const cant = (ped.items || []).reduce((a, it) => a + Number(it.cantidad || 0), 0) || 1;
+        const venta = {
+          id: uid('ven'),
+          fecha: ped.fecha || today(),
+          descripcion: `${ped.numero} · ${itemsTxt}${ped.cliente ? ` · ${ped.cliente}` : ''}`,
+          cantidad: cant,
+          montoNeto: Number(ped.montoNeto || 0),
+          canal: ped.canal || '',
+          notas: ped.notas || `Desde pedido ${ped.numero}`,
+          socioRegistro: ped.socioRegistro || 'Ambos',
+          pedidoId: ped.id,
+          pedidoNumero: ped.numero,
+        };
+        data.ventas = data.ventas || [];
+        data.ventas.push(venta);
+        ped.estado = 'transferido';
+        ped.ventaId = venta.id;
+        ped.transferidoEn = new Date().toISOString();
+        markDirty();
+        renderAll();
+        activarTab('ventas');
+        setStatus(`${ped.numero} → venta · ${money(venta.montoNeto)} contabilizado · guarda online`, 'warn');
+      });
+    });
+
+    $('#tab-pedidos')?.querySelectorAll('[data-del-pedido]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-del-pedido');
+        const ped = (data.pedidos || []).find((p) => p.id === id);
+        if (!ped || ped.estado !== 'pendiente') return;
+        if (!confirm(`¿Eliminar pedido ${ped.numero}?`)) return;
+        data.pedidos = (data.pedidos || []).filter((p) => p.id !== id);
+        markDirty();
+        renderAll();
+        activarTab('pedidos');
+        setStatus(`Pedido ${ped.numero} eliminado`, 'warn');
+      });
+    });
+  }
+
   function renderVentas() {
     const rows = (data.ventas || [])
       .map(
         (v) => `
       <tr>
         <td>${escapeHtml(v.fecha || '')}</td>
-        <td>${escapeHtml(v.descripcion || '')}</td>
+        <td>${escapeHtml(v.descripcion || '')}${
+          v.pedidoNumero
+            ? `<div class="imp-muted">Desde pedido <strong>${escapeHtml(v.pedidoNumero)}</strong></div>`
+            : ''
+        }</td>
         <td class="num">${v.cantidad || 1}</td>
         <td class="num">${money(v.montoNeto)}</td>
         <td>${escapeHtml(v.canal || '')}</td>
@@ -952,12 +1231,12 @@
 
     $('#tab-ventas').innerHTML = `
       <div class="imp-card imp-kpi--accent" style="padding:0.9rem 1rem">
-        <p style="margin:0"><strong>Link rápido para socios:</strong> <a href="./venta/">Abrir registrador de ventas</a>
-        — cada venta baja el saldo por recuperar en Resumen.</p>
+        <p style="margin:0"><strong>Flujo recomendado:</strong> registra en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>
+        y al cobrar/transferir pasa a venta. Solo las ventas bajan la deuda.</p>
       </div>
       <div class="imp-card">
-        <h2>Ventas (${money(sum(data.ventas))})</h2>
-        <p class="imp-muted">Las ventas se restan de los gastos en el dashboard: <strong>saldo = gastos − ventas</strong>.</p>
+        <h2>Ventas contabilizadas (${money(sum(data.ventas))})</h2>
+        <p class="imp-muted">Estas sí entran al dashboard: <strong>saldo = gastos − ventas</strong>.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>Fecha</th><th>Detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
@@ -966,7 +1245,8 @@
         </div>
       </div>
       <div class="imp-card">
-        <h3>Registrar venta</h3>
+        <h3>Venta directa (sin pedido)</h3>
+        <p class="imp-muted">Úsalo solo si no pasaste por Pedidos. Prefiere Pedidos → Transferir a venta.</p>
         <form class="imp-form" id="form-venta">
           <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
           <label>Descripción<input name="descripcion" required placeholder="Llavero x3" /></label>
@@ -985,6 +1265,10 @@
         </form>
       </div>
     `;
+
+    $('#tab-ventas')?.querySelectorAll('[data-goto-tab]').forEach((btn) => {
+      btn.addEventListener('click', () => activarTab(btn.getAttribute('data-goto-tab')));
+    });
 
     $('#form-venta').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -1515,6 +1799,7 @@
     if (!data) return;
     renderResumen();
     renderGastos();
+    renderPedidos();
     renderVentas();
     renderOperacion();
     renderCostos();
@@ -1522,7 +1807,16 @@
     renderBitacora();
   }
 
-  const TABS_VALIDOS = new Set(['resumen', 'gastos', 'ventas', 'operacion', 'costos', 'ads', 'bitacora']);
+  const TABS_VALIDOS = new Set([
+    'resumen',
+    'gastos',
+    'pedidos',
+    'ventas',
+    'operacion',
+    'costos',
+    'ads',
+    'bitacora',
+  ]);
 
   function activarTab(tab) {
     const name = TABS_VALIDOS.has(tab) ? tab : 'resumen';

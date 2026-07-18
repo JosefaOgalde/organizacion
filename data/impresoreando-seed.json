@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-18T04:11:30.000Z",
+    "actualizado": "2026-07-18T04:19:35.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -25,7 +25,8 @@
       "nota": "Nicolás puso el capital. Josefa debe el 50% de ese capital a Nicolás. Los gastos de la sociedad son de ambos.",
       "montoNetoClp": 797040,
       "deudaJosefaClp": 398520
-    }
+    },
+    "pedidoSeq": 0
   },
   "parametros": {
     "tarifaKwhClp": 200,
@@ -265,6 +266,44 @@
       "filamentoPurgeGramos": 0.47,
       "filamentoMetros": 48.04,
       "costoSlicerRef": 2.89
+    },
+    {
+      "id": "prod-macetero-perro-bulldog",
+      "sku": "MCPERROBU001",
+      "nombre": "Macetero perro bulldog",
+      "activo": true,
+      "filamentoModeloGramos": 95.36,
+      "filamentoSoportesGramos": 1.12,
+      "filamentoPurgeGramos": 0.47,
+      "filamentoMetros": 32.24,
+      "filamentoGramos": 96.95,
+      "costoFilamentoKgClp": 12690,
+      "horasImpresion": 3.35,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 0,
+      "costoSlicerRef": 1.94,
+      "notas": "Slicer: modelo 95,36 g + soportes 1,12 g + purge 0,47 g = 96,95 g · 32,24 m · 3 h 21 m · coste slicer 1,94 (ref). PLA amarillo."
+    },
+    {
+      "id": "prod-portacompleto-perro-bulldog",
+      "sku": "PCPERROBU001",
+      "nombre": "Portacompleto perro bulldog",
+      "activo": true,
+      "filamentoModeloGramos": 59.875,
+      "filamentoSoportesGramos": 1.245,
+      "filamentoPurgeGramos": 0.235,
+      "filamentoMetros": 20.405,
+      "filamentoGramos": 61.35,
+      "costoFilamentoKgClp": 17986,
+      "horasImpresion": 2.0167,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 0,
+      "costoSlicerRef": 1.225,
+      "notas": "Slicer placa ×2: 122,70 g / 4 h 2 m → por unidad 61,35 g / 2 h 1 m. PLA+ negro $17.986/kg. Coste slicer placa 2,45 (ref). Sin pintado (editable)."
     }
   ],
   "planAds": {
@@ -302,5 +341,6 @@
       "autor": "Josefa",
       "texto": "Carga inicial agrupada por registro: Orden #312435 ($652.290) + AliExpress ($60.000) + Líder ($20.000) + Mercado Libre 5 PLA ($64.750). Sociedad 50/50. Gastos de ambos. Nicolás aportó capital; Josefa debe 50%."
     }
-  ]
+  ],
+  "pedidos": []
 }

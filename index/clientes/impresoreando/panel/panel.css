@@ -549,6 +549,35 @@ table.imp-table {
   padding: 0.28rem 0.65rem;
   font-size: 0.8rem;
 }
+.imp-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--imp-border);
+  color: var(--imp-muted);
+  background: #f7efe0;
+}
+.imp-badge--ok {
+  color: var(--imp-ok, #3d8b6e);
+  border-color: color-mix(in srgb, var(--imp-ok, #3d8b6e) 40%, var(--imp-border));
+  background: #eef7f2;
+}
+.imp-badge--warn {
+  color: #9a6a20;
+  border-color: #e0c48a;
+  background: #fff6e6;
+}
+
+.imp-pedidos-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
 
 .imp-modal {
   position: fixed;
