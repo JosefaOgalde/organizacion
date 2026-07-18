@@ -368,9 +368,11 @@
     return changed;
   }
 
-  /** Macetero perro bulldog — slicer: 96,95 g · 3 h 21 m · PLA amarillo. */
+  const COSTO_PLA_NEGRO_KG = 17986; // PLA+ Negro Elegoo (orden #312435)
+
+  /** Macetero perro bulldog — slicer: 96,95 g · 3 h 21 m · PLA+ negro. */
   function asegurarProductoMaceteroPerroBulldog(d) {
-    return upsertProductoSeed(d, 'prod-macetero-perro-bulldog', {
+    const changed = upsertProductoSeed(d, 'prod-macetero-perro-bulldog', {
       sku: 'MCPERROBU001',
       nombre: 'Macetero perro bulldog',
       activo: true,
@@ -379,7 +381,7 @@
       filamentoPurgeGramos: 0.47,
       filamentoMetros: 32.24,
       filamentoGramos: 96.95,
-      costoFilamentoKgClp: 12690,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
       horasImpresion: 3.35,
       minutosPintado: 0,
       unidadesMetal: 0,
@@ -387,13 +389,14 @@
       precioVentaSugeridoClp: 0,
       costoSlicerRef: 1.94,
       notas:
-        'Slicer: modelo 95,36 g + soportes 1,12 g + purge 0,47 g = 96,95 g · 32,24 m · 3 h 21 m · coste slicer 1,94 (ref). PLA amarillo.',
+        'Slicer: modelo 95,36 g + soportes 1,12 g + purge 0,47 g = 96,95 g · 32,24 m · 3 h 21 m · coste slicer 1,94 (ref). PLA+ negro $17.986/kg.',
     });
+    return migrarFilamentoNegroProducto(d, 'prod-macetero-perro-bulldog') || changed;
   }
 
   /** Portacompleto perro bulldog — placa 2 uds: 122,70 g / 4 h 2 m → costo por unidad. */
   function asegurarProductoPortacompletoPerroBulldog(d) {
-    return upsertProductoSeed(d, 'prod-portacompleto-perro-bulldog', {
+    const changed = upsertProductoSeed(d, 'prod-portacompleto-perro-bulldog', {
       sku: 'PCPERROBU001',
       nombre: 'Portacompleto perro bulldog',
       activo: true,
@@ -402,7 +405,7 @@
       filamentoPurgeGramos: 0.235,
       filamentoMetros: 20.405,
       filamentoGramos: 61.35,
-      costoFilamentoKgClp: 17986,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
       horasImpresion: 2.0167,
       minutosPintado: 0,
       unidadesMetal: 0,
@@ -412,6 +415,21 @@
       notas:
         'Slicer placa ×2: 122,70 g / 4 h 2 m → por unidad 61,35 g / 2 h 1 m. PLA+ negro $17.986/kg. Coste slicer placa 2,45 (ref). Sin pintado (editable).',
     });
+    return migrarFilamentoNegroProducto(d, 'prod-portacompleto-perro-bulldog') || changed;
+  }
+
+  /** Si quedó con $/kg amarillo (12.690), pasa a PLA+ negro. */
+  function migrarFilamentoNegroProducto(d, id) {
+    const p = (d.productos || []).find((x) => x.id === id);
+    if (!p) return false;
+    if (Number(p.costoFilamentoKgClp) === 12690) {
+      p.costoFilamentoKgClp = COSTO_PLA_NEGRO_KG;
+      if (p.notas && /amarillo/i.test(p.notas)) {
+        p.notas = String(p.notas).replace(/PLA amarillo[^.]*/i, 'PLA+ negro $17.986/kg');
+      }
+      return true;
+    }
+    return false;
   }
 
   function asegurarPedidos(d) {
@@ -447,6 +465,7 @@
     );
     const seed = {
       id,
+      sku: 'PLMONS001',
       nombre: 'Porta lata Monster',
       activo: true,
       filamentoModeloGramos: 135.55,
@@ -454,7 +473,7 @@
       filamentoPurgeGramos: 0.47,
       filamentoMetros: 48.04,
       filamentoGramos: 144.45,
-      costoFilamentoKgClp: 12690,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
       horasImpresion: 3.4167,
       minutosPintado: 0,
       unidadesMetal: 0,
@@ -462,7 +481,7 @@
       precioVentaSugeridoClp: 0,
       costoSlicerRef: 2.89,
       notas:
-        'Slicer: modelo 135,55 g + soportes 8,43 g + purge 0,47 g = 144,45 g · 48,04 m · 3 h 25 m · coste slicer 2,89 (ref). PLA amarillo. Logo en relieve.',
+        'Slicer: modelo 135,55 g + soportes 8,43 g + purge 0,47 g = 144,45 g · 48,04 m · 3 h 25 m · coste slicer 2,89 (ref). PLA+ negro $17.986/kg. Logo en relieve.',
     };
     if (!existing) {
       d.productos.push(seed);
@@ -480,6 +499,7 @@
       'filamentoPurgeGramos',
       'filamentoMetros',
       'costoSlicerRef',
+      'sku',
     ];
     for (const k of backfill) {
       if (existing[k] == null && seed[k] != null) {
@@ -487,6 +507,7 @@
         changed = true;
       }
     }
+    if (migrarFilamentoNegroProducto(d, id)) changed = true;
     return changed;
   }
 
