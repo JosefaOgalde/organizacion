@@ -1214,22 +1214,66 @@
     return ped.estado;
   }
 
+  function asegurarCostosItem(it) {
+    if (!it) return it;
+    if (!(Number(it.costoUnitarioClp) > 0) && it.sku) {
+      const prod = (data.productos || []).find((p) => p.sku === it.sku);
+      if (prod) it.costoUnitarioClp = round2(costoProducto(prod).total);
+    }
+    if (!(Number(it.precioUnitarioClp) > 0) && Number(it.costoUnitarioClp) > 0) {
+      it.precioUnitarioClp = precioSugeridoDesdeCosto(it.costoUnitarioClp);
+    }
+    return it;
+  }
+
+  function recalcularMontoPedido(ped) {
+    if (!ped) return 0;
+    let venta = 0;
+    let costo = 0;
+    (ped.items || []).forEach((it) => {
+      asegurarCostosItem(it);
+      const cant = Number(it.cantidad || 0);
+      venta += cant * Number(it.precioUnitarioClp || 0);
+      costo += cant * Number(it.costoUnitarioClp || 0);
+    });
+    ped.montoNeto = round2(venta);
+    ped.costoTotal = round2(costo);
+    return ped.montoNeto;
+  }
+
   function renderItemsPedido(p) {
+    const activo = pedidoActivo(p.estado);
     const lines = (p.items || [])
       .map((it, idx) => {
+        asegurarCostosItem(it);
         const cant = it.cantidad || 1;
         const fil = it.filamento ? ` · ${escapeHtml(it.filamento)}` : '';
-        const activo = pedidoActivo(p.estado);
+        const costoU = Number(it.costoUnitarioClp || 0);
+        const precioU = Number(it.precioUnitarioClp || 0);
+        const subtotal = round2(cant * precioU);
         const controls = activo
           ? `<span class="imp-item-actions">
               <button type="button" class="imp-btn imp-btn--sm" data-item-prog="${escapeHtml(p.id)}" data-idx="${idx}" data-accion="print" title="+1 en impresión">+ imp</button>
               <button type="button" class="imp-btn imp-btn--sm" data-item-prog="${escapeHtml(p.id)}" data-idx="${idx}" data-accion="listo" title="+1 listo">+ listo</button>
             </span>`
           : '';
+        const precioField = activo
+          ? `<label class="imp-item-precio">Precio venta/u
+              <input type="number" min="0" step="0.01" value="${num2(precioU)}"
+                data-precio-item="${escapeHtml(p.id)}" data-idx="${idx}" />
+            </label>`
+          : `<span>Precio venta/u <strong>${money(precioU)}</strong></span>`;
         return `<div class="imp-pedido-item">
-          <span>${cant}× ${escapeHtml(it.sku || '')} ${escapeHtml(it.nombre || '')}${fil}</span>
-          ${badgeEstadoItem(it)}
-          ${controls}
+          <div class="imp-pedido-item__head">
+            <span>${cant}× ${escapeHtml(it.sku || '')} ${escapeHtml(it.nombre || '')}${fil}</span>
+            ${badgeEstadoItem(it)}
+            ${controls}
+          </div>
+          <div class="imp-pedido-item__money">
+            <span>Costo/u <strong>${money(costoU)}</strong></span>
+            ${precioField}
+            <span>Subtotal <strong>${money(subtotal)}</strong></span>
+          </div>
         </div>`;
       })
       .join('');
@@ -1246,6 +1290,7 @@
       .slice()
       .reverse()
       .map((p) => {
+        recalcularMontoPedido(p);
         const estado = p.estado || 'pendiente';
         const badge = badgeEstadoPedido(estado);
         let acciones = `<span class="imp-muted">${escapeHtml(p.ventaId || '—')}</span>`;
@@ -1265,7 +1310,11 @@
             <div class="imp-pedido-items">${renderItemsPedido(p)}</div>
             ${p.notas ? `<div class="imp-muted">${escapeHtml(p.notas)}</div>` : ''}
           </td>
-          <td class="num">${money(p.montoNeto)}</td>
+          <td class="num">
+            <strong>${money(p.montoNeto)}</strong>
+            <div class="imp-muted">venta</div>
+            <div class="imp-muted">costo ${money(p.costoTotal || 0)}</div>
+          </td>
           <td>${badge}</td>
           <td class="imp-pedidos-actions">${acciones}</td>
         </tr>`;
@@ -1275,7 +1324,7 @@
     $('#tab-pedidos').innerHTML = `
       <div class="imp-card">
         <h2>Pedidos</h2>
-        <p class="imp-muted">ID correlativo <strong>PED-001</strong>…. Estados por ítem (listo / en impresión) y del pedido. Solo al transferir a venta se contabiliza en la deuda.</p>
+        <p class="imp-muted">Por ítem ves <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable si cobraste más). Al <strong>Transferir a venta</strong> se guarda el registro con ese total y baja la deuda.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th><th></th></tr></thead>
@@ -1289,13 +1338,21 @@
           <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
           <label>Cliente<input name="cliente" placeholder="Nombre o @instagram" /></label>
           <label>Producto (SKU)
-            <select name="sku" required>
+            <select name="sku" required id="pedido-sku">
               <option value="">Elegir…</option>
               ${optsProd}
             </select>
           </label>
-          <label>Cantidad<input name="cantidad" type="number" min="1" step="0.01" value="1" required /></label>
-          <label>Total cobrado CLP<input name="montoNeto" type="number" min="0" step="0.01" required placeholder="Lo que paga el cliente" /></label>
+          <label>Cantidad<input name="cantidad" type="number" min="1" step="0.01" value="1" required id="pedido-cant" /></label>
+          <label>Costo / unidad
+            <input name="costoUnitarioClp" type="number" min="0" step="0.01" id="pedido-costo" readonly />
+          </label>
+          <label>Precio venta / unidad
+            <input name="precioUnitarioClp" type="number" min="0" step="0.01" required id="pedido-precio" placeholder="Editable si cobras más" />
+          </label>
+          <label>Total venta
+            <input name="montoNeto" type="number" min="0" step="0.01" id="pedido-total" readonly />
+          </label>
           <label>Estado
             <select name="estado">
               <option value="pendiente">Pendiente</option>
@@ -1320,16 +1377,54 @@
       </div>
     `;
 
+    const syncFormPedidoPrecios = () => {
+      const sku = String($('#pedido-sku')?.value || '').trim();
+      const prod = (data.productos || []).find((p) => p.sku === sku);
+      const cant = Math.max(0.01, Number($('#pedido-cant')?.value || 1));
+      const costoEl = $('#pedido-costo');
+      const precioEl = $('#pedido-precio');
+      const totalEl = $('#pedido-total');
+      if (!prod) {
+        if (costoEl) costoEl.value = '';
+        if (totalEl) totalEl.value = '';
+        return;
+      }
+      const costo = round2(costoProducto(prod).total);
+      if (costoEl) costoEl.value = num2(costo);
+      let precio = Number(precioEl?.value || 0);
+      if (!(precio > 0) || precioEl?.dataset.auto === '1') {
+        precio = precioSugeridoDesdeCosto(costo);
+        if (precioEl) {
+          precioEl.value = num2(precio);
+          precioEl.dataset.auto = '1';
+        }
+      }
+      if (totalEl) totalEl.value = num2(round2(cant * Number(precioEl?.value || 0)));
+    };
+    $('#pedido-sku')?.addEventListener('change', () => {
+      const precioEl = $('#pedido-precio');
+      if (precioEl) precioEl.dataset.auto = '1';
+      syncFormPedidoPrecios();
+    });
+    $('#pedido-cant')?.addEventListener('input', syncFormPedidoPrecios);
+    $('#pedido-precio')?.addEventListener('input', () => {
+      const precioEl = $('#pedido-precio');
+      if (precioEl) precioEl.dataset.auto = '0';
+      syncFormPedidoPrecios();
+    });
+
     $('#form-pedido')?.addEventListener('submit', (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
       const sku = String(fd.get('sku') || '').trim();
       const prod = (data.productos || []).find((p) => p.sku === sku);
       const cantidad = round2(fd.get('cantidad') || 1);
-      const montoNeto = round2(fd.get('montoNeto') || 0);
+      const costoUnitarioClp = round2(fd.get('costoUnitarioClp') || (prod ? costoProducto(prod).total : 0));
+      const precioUnitarioClp = round2(fd.get('precioUnitarioClp') || 0);
+      const montoNeto = round2(cantidad * precioUnitarioClp);
       const estado = String(fd.get('estado') || 'pendiente');
-      if (!sku || !prod || !(montoNeto > 0)) {
-        setStatus('Elige producto y total cobrado', 'warn');
+      if (!sku || !prod || !(precioUnitarioClp > 0)) {
+        setStatus('Elige producto y precio de venta / unidad', 'warn');
         return;
       }
       const numero = siguienteNumeroPedido();
@@ -1337,7 +1432,7 @@
       const estadoOk = pedidoActivo(estado) ? estado : 'pendiente';
       const listos = estadoOk === 'listo' ? cantidad : 0;
       const enImpresion = estadoOk === 'en_impresion' ? cantidad : 0;
-      data.pedidos.push({
+      const ped = {
         id: uid('ped'),
         numero,
         fecha: fd.get('fecha'),
@@ -1348,8 +1443,8 @@
             sku,
             nombre: prod.nombre,
             cantidad,
-            precioUnitarioClp: round2(montoNeto / Math.max(1, cantidad)),
-            costoUnitarioClp: round2(costoProducto(prod).total),
+            precioUnitarioClp,
+            costoUnitarioClp,
             filamento:
               Number(prod.costoFilamentoKgClp) === COSTO_PLA_NEGRO_KG ? 'PLA+ negro' : '',
             estado: estadoOk,
@@ -1358,16 +1453,40 @@
           },
         ],
         montoNeto,
+        costoTotal: round2(cantidad * costoUnitarioClp),
         estado: estadoOk,
         ventaId: null,
         notas: String(fd.get('notas') || '').trim(),
         socioRegistro: fd.get('socioRegistro') || 'Ambos',
         creado: new Date().toISOString(),
-      });
+      };
+      data.pedidos.push(ped);
       markDirty();
       renderAll();
       activarTab('pedidos');
-      setStatus(`Pedido ${numero} creado (${estadoOk}) — aún no contabiliza · guarda online`, 'warn');
+      setStatus(`Pedido ${numero} creado · venta ${money(montoNeto)} · guarda online`, 'warn');
+      save().catch((err) => setStatus(String(err.message || err), 'err'));
+    });
+
+    $('#tab-pedidos')?.querySelectorAll('[data-precio-item]').forEach((inp) => {
+      inp.addEventListener('change', () => {
+        const id = inp.getAttribute('data-precio-item');
+        const idx = Number(inp.getAttribute('data-idx'));
+        const ped = (data.pedidos || []).find((p) => p.id === id);
+        if (!ped || !pedidoActivo(ped.estado)) return;
+        const it = (ped.items || [])[idx];
+        if (!it) return;
+        it.precioUnitarioClp = round2(inp.value || 0);
+        recalcularMontoPedido(ped);
+        markDirty();
+        renderAll();
+        activarTab('pedidos');
+        setStatus(
+          `${ped.numero}: precio/u ${money(it.precioUnitarioClp)} · total ${money(ped.montoNeto)}`,
+          'warn'
+        );
+        save().catch((err) => setStatus(String(err.message || err), 'err'));
+      });
     });
 
     $('#tab-pedidos')?.querySelectorAll('[data-item-prog]').forEach((btn) => {
@@ -1401,6 +1520,7 @@
         renderAll();
         activarTab('pedidos');
         setStatus(`${ped.numero}: ${textoEstadoItem(it)} · guarda online`, 'warn');
+        save().catch((err) => setStatus(String(err.message || err), 'err'));
       });
     });
 
@@ -1439,35 +1559,56 @@
         const id = btn.getAttribute('data-transferir-pedido');
         const ped = (data.pedidos || []).find((p) => p.id === id);
         if (!ped || !pedidoActivo(ped.estado)) return;
+        recalcularMontoPedido(ped);
         const ok = confirm(
-          `¿Transferir ${ped.numero} a venta?\nSe contabilizará ${money(ped.montoNeto)} en el dashboard.`
+          `¿Transferir ${ped.numero} a venta?\nCliente: ${ped.cliente || '—'}\nVenta: ${money(ped.montoNeto)}\nCosto: ${money(ped.costoTotal || 0)}\nSe guarda el registro y baja la deuda.`
         );
         if (!ok) return;
-        const itemsTxt = (ped.items || [])
-          .map((it) => `${it.cantidad || 1}× ${it.nombre || it.sku}`)
+        const itemsSnap = (ped.items || []).map((it) => ({
+          sku: it.sku,
+          nombre: it.nombre,
+          cantidad: Number(it.cantidad || 0),
+          precioUnitarioClp: round2(it.precioUnitarioClp || 0),
+          costoUnitarioClp: round2(it.costoUnitarioClp || 0),
+          filamento: it.filamento || '',
+        }));
+        const itemsTxt = itemsSnap
+          .map(
+            (it) =>
+              `${it.cantidad}× ${it.nombre || it.sku} @ ${money(it.precioUnitarioClp)} (costo ${money(it.costoUnitarioClp)})`
+          )
           .join(', ');
-        const cant = (ped.items || []).reduce((a, it) => a + Number(it.cantidad || 0), 0) || 1;
+        const cant = itemsSnap.reduce((a, it) => a + Number(it.cantidad || 0), 0) || 1;
         const venta = {
           id: uid('ven'),
           fecha: ped.fecha || today(),
           descripcion: `${ped.numero} · ${itemsTxt}${ped.cliente ? ` · ${ped.cliente}` : ''}`,
           cantidad: cant,
           montoNeto: Number(ped.montoNeto || 0),
+          costoTotal: Number(ped.costoTotal || 0),
           canal: ped.canal || '',
+          cliente: ped.cliente || '',
           notas: ped.notas || `Desde pedido ${ped.numero}`,
           socioRegistro: ped.socioRegistro || 'Ambos',
           pedidoId: ped.id,
           pedidoNumero: ped.numero,
+          items: itemsSnap,
+          creado: new Date().toISOString(),
         };
         data.ventas = data.ventas || [];
         data.ventas.push(venta);
         ped.estado = 'transferido';
         ped.ventaId = venta.id;
         ped.transferidoEn = new Date().toISOString();
+        ped.montoNeto = venta.montoNeto;
+        ped.costoTotal = venta.costoTotal;
         markDirty();
         renderAll();
         activarTab('ventas');
-        setStatus(`${ped.numero} → venta · ${money(venta.montoNeto)} contabilizado · guarda online`, 'warn');
+        setStatus(`${ped.numero} → venta · ${money(venta.montoNeto)} · guardando…`, 'warn');
+        save()
+          .then(() => setStatus(`${ped.numero} → venta · ${money(venta.montoNeto)} contabilizado y guardado ✓`, 'ok'))
+          .catch((err) => setStatus(String(err.message || err), 'err'));
       });
     });
 
@@ -1488,34 +1629,42 @@
 
   function renderVentas() {
     const rows = (data.ventas || [])
-      .map(
-        (v) => `
+      .map((v) => {
+        const itemsHtml = (v.items || [])
+          .map(
+            (it) =>
+              `<div class="imp-muted">${it.cantidad || 1}× ${escapeHtml(it.nombre || it.sku || '')} · venta/u ${money(it.precioUnitarioClp)} · costo/u ${money(it.costoUnitarioClp)}</div>`
+          )
+          .join('');
+        return `
       <tr>
         <td>${escapeHtml(v.fecha || '')}</td>
-        <td>${escapeHtml(v.descripcion || '')}${
+        <td>${escapeHtml(v.cliente || v.descripcion || '')}${
           v.pedidoNumero
             ? `<div class="imp-muted">Desde pedido <strong>${escapeHtml(v.pedidoNumero)}</strong></div>`
             : ''
-        }</td>
+        }${itemsHtml || (v.descripcion && v.cliente ? `<div class="imp-muted">${escapeHtml(v.descripcion)}</div>` : '')}</td>
         <td class="num">${v.cantidad || 1}</td>
-        <td class="num">${money(v.montoNeto)}</td>
+        <td class="num"><strong>${money(v.montoNeto)}</strong>${
+          v.costoTotal != null ? `<div class="imp-muted">costo ${money(v.costoTotal)}</div>` : ''
+        }</td>
         <td>${escapeHtml(v.canal || '')}</td>
         <td><button type="button" class="imp-btn imp-btn--danger" data-del-venta="${v.id}">✕</button></td>
-      </tr>`
-      )
+      </tr>`;
+      })
       .join('');
 
     $('#tab-ventas').innerHTML = `
       <div class="imp-card imp-kpi--accent" style="padding:0.9rem 1rem">
         <p style="margin:0"><strong>Flujo recomendado:</strong> registra en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>
-        y al cobrar/transferir pasa a venta. Solo las ventas bajan la deuda.</p>
+        (ajustá el precio venta/u si cobraste más) y al transferir se guarda la venta. Solo las ventas bajan la deuda.</p>
       </div>
       <div class="imp-card">
         <h2>Ventas contabilizadas (${money(sum(data.ventas))})</h2>
         <p class="imp-muted">Estas sí entran al dashboard: <strong>saldo = gastos − ventas</strong>.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
-            <thead><tr><th>Fecha</th><th>Detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
+            <thead><tr><th>Fecha</th><th>Cliente / detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
             <tbody>${rows || '<tr><td colspan="6">Sin ventas aún</td></tr>'}</tbody>
           </table>
         </div>

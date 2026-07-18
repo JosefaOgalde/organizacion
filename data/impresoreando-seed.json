@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-18T04:40:00.000Z",
+    "actualizado": "2026-07-18T04:50:00.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -367,7 +367,8 @@
       "ventaId": null,
       "notas": "1× Porta lata Monster · PLA+ negro · listo para entregar",
       "socioRegistro": "Ambos",
-      "creado": "2026-07-18T04:29:00.000Z"
+      "creado": "2026-07-18T04:29:00.000Z",
+      "costoTotal": 2839.6
     },
     {
       "id": "ped-gianni-bulldog-002",
@@ -404,7 +405,8 @@
       "ventaId": null,
       "notas": "Macetero listo · portacompletos 2/4 en impresión · PLA+ negro",
       "socioRegistro": "Ambos",
-      "creado": "2026-07-18T04:40:00.000Z"
+      "creado": "2026-07-18T04:40:00.000Z",
+      "costoTotal": 7047.58
     }
   ]
 }
