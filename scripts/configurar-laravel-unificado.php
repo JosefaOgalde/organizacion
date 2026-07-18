@@ -43,6 +43,10 @@ copyEjemplo(
     $ej . DIRECTORY_SEPARATOR . 'ClienteController.php',
     $backend . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR . 'Api' . DIRECTORY_SEPARATOR . 'ClienteController.php'
 );
+copyEjemplo(
+    $ej . DIRECTORY_SEPARATOR . 'ImpresoreandoController.php',
+    $backend . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR . 'Api' . DIRECTORY_SEPARATOR . 'ImpresoreandoController.php'
+);
 
 $api = $backend . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'api.php';
 if (!is_file($api)) {
@@ -66,6 +70,15 @@ if (!str_contains($apiSrc, "/clientes") && !str_contains($apiSrc, "'/clientes'")
 
 use App\Http\Controllers\Api\ClienteController;
 Route::get('/clientes', [ClienteController::class, 'index']);
+PHP;
+}
+if (!str_contains($apiSrc, 'ImpresoreandoController')) {
+    $apiAdd[] = <<<'PHP'
+
+use App\Http\Controllers\Api\ImpresoreandoController;
+Route::get('/impresoreando', [ImpresoreandoController::class, 'show']);
+Route::post('/impresoreando', [ImpresoreandoController::class, 'store']);
+Route::post('/impresoreando/venta', [ImpresoreandoController::class, 'venta']);
 PHP;
 }
 if ($apiAdd) {
@@ -102,10 +115,23 @@ file_put_contents($web, rtrim($webSrc) . "\n" . $webBlock . "\n");
 echo "  · routes/web.php: un solo bloque frontend\n";
 
 $live = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-live.json';
-$respaldo = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-respaldo-2026-07-17.json';
-if (!is_file($live) && is_file($respaldo)) {
-    copy($respaldo, $live);
-    echo "  · data/organizacion-live.json desde respaldo 2026-07-17\n";
+$respaldo18 = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-respaldo-2026-07-18.json';
+$respaldo17 = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-respaldo-2026-07-17.json';
+if (!is_file($live)) {
+    if (is_file($respaldo18)) {
+        copy($respaldo18, $live);
+        echo "  · data/organizacion-live.json desde respaldo 2026-07-18\n";
+    } elseif (is_file($respaldo17)) {
+        copy($respaldo17, $live);
+        echo "  · data/organizacion-live.json desde respaldo 2026-07-17\n";
+    }
+}
+
+$impLive = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'impresoreando-live.json';
+$impSeed = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'impresoreando-seed.json';
+if (!is_file($impLive) && is_file($impSeed)) {
+    copy($impSeed, $impLive);
+    echo "  · data/impresoreando-live.json desde seed (PED-001 + PED-002)\n";
 }
 
 // Sesión en archivo = el HTML no necesita MySQL

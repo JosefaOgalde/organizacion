@@ -56,6 +56,13 @@ if not exist "data\organizacion-live.json" (
   )
 )
 
+if not exist "data\impresoreando-live.json" (
+  if exist "data\impresoreando-seed.json" (
+    copy /Y "data\impresoreando-seed.json" "data\impresoreando-live.json" >nul
+    echo  Creado data\impresoreando-live.json desde seed ^(PED-001 + PED-002^)
+  )
+)
+
 echo.
 echo  Arrancando http://127.0.0.1:8000 ...
 start "Laravel · 8000" cmd /k "cd /d "%~dp0backend" && "%PHP_EXE%" artisan serve --host=127.0.0.1 --port=8000"

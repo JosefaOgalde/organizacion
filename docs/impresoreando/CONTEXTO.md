@@ -10,8 +10,10 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Venta rápida | `…/panel/venta/` |
 | Seed (repo) | `data/impresoreando-seed.json` |
 | Live (gitignored) | `data/impresoreando-live.json` |
-| API | `GET/POST /api/impresoreando` · `POST /api/impresoreando/venta` en `scripts/organizacion-server.js` |
-| Arranque | `ABRIR-IMPRESOREANDO.bat` / `SERVIR.bat` → `http://localhost:3000/index/clientes/impresoreando/panel/` |
+| API | `GET/POST /api/impresoreando` · `POST /api/impresoreando/venta` — **Laravel** (`ImpresoreandoController`) en `:8000`; también Node `organizacion-server.js` si se usa ese stack |
+| Arranque oficial | `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/index/clientes/impresoreando/panel/` |
+| Restaurar PED-001/002 | `RESTAURAR-PEDIDOS-IMPRESOREANDO.bat` → `php scripts/restaurar-impresoreando-pedidos.php` |
+| Arranque Node (legado) | `ABRIR-IMPRESOREANDO.bat` → `http://localhost:3000/…/panel/` |
 | Landing | `…/impresoreando/` CTA **Resumen 50/50** |
 | Status correo | `scripts/impresoreando-status-diario.js` · `ENVIAR-STATUS-IMPRESOREANDO.bat` · lib `scripts/lib/smtp-send.js` |
 
