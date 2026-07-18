@@ -902,7 +902,7 @@
       <div class="imp-grid">
         <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
         <div class="imp-kpi imp-kpi--ok"><span>Ventas (contabilizadas)</span><strong>${money(ventas)}</strong></div>
-        <div class="imp-kpi"><span>Pedidos pendientes</span><strong>${pedidosPendientes.length} · ${money(montoPedidosPend)}</strong></div>
+        <div class="imp-kpi"><span>Pedidos activos</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
         <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
       </div>
       <div class="imp-socios" aria-label="Detalle por socio">
@@ -1140,6 +1140,17 @@
     });
   }
 
+  function badgeEstadoPedido(estado) {
+    if (estado === 'transferido') return '<span class="imp-badge imp-badge--ok">Transferido → venta</span>';
+    if (estado === 'listo') return '<span class="imp-badge imp-badge--listo">Listo para entregar</span>';
+    if (estado === 'cancelado') return '<span class="imp-badge">Cancelado</span>';
+    return '<span class="imp-badge imp-badge--warn">Pendiente</span>';
+  }
+
+  function pedidoActivo(estado) {
+    return ['pendiente', 'listo'].includes(estado || 'pendiente');
+  }
+
   function renderPedidos() {
     const productos = data.productos || [];
     const optsProd = productos
@@ -1153,20 +1164,20 @@
           .map((it) => `${it.cantidad || 1}× ${it.sku || it.nombre || ''}`)
           .join(', ');
         const estado = p.estado || 'pendiente';
-        const badge =
-          estado === 'transferido'
-            ? '<span class="imp-badge imp-badge--ok">Transferido → venta</span>'
-            : estado === 'cancelado'
-              ? '<span class="imp-badge">Cancelado</span>'
-              : '<span class="imp-badge imp-badge--warn">Pendiente</span>';
-        const acciones =
-          estado === 'pendiente'
-            ? `<button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
-               <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`
-            : `<span class="imp-muted">${escapeHtml(p.ventaId || '')}</span>`;
+        const badge = badgeEstadoPedido(estado);
+        let acciones = `<span class="imp-muted">${escapeHtml(p.ventaId || '—')}</span>`;
+        if (pedidoActivo(estado)) {
+          const btnListo =
+            estado === 'pendiente'
+              ? `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="listo">Marcar listo</button>`
+              : `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="pendiente">Volver a pendiente</button>`;
+          acciones = `${btnListo}
+            <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
+            <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
+        }
         return `<tr>
           <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
-          <td>${escapeHtml(p.cliente || '—')}<div class="imp-muted">${escapeHtml(itemsTxt)}</div></td>
+          <td>${escapeHtml(p.cliente || '—')}<div class="imp-muted">${escapeHtml(itemsTxt)}${p.notas ? ` · ${escapeHtml(p.notas)}` : ''}</div></td>
           <td class="num">${money(p.montoNeto)}</td>
           <td>${badge}</td>
           <td class="imp-pedidos-actions">${acciones}</td>
@@ -1177,7 +1188,7 @@
     $('#tab-pedidos').innerHTML = `
       <div class="imp-card">
         <h2>Pedidos</h2>
-        <p class="imp-muted">Cada pedido tiene un ID correlativo (<strong>PED-001</strong>…). Mientras esté pendiente <strong>no baja la deuda</strong>. Al transferir pasa a <strong>Venta</strong> y recién ahí se contabiliza.</p>
+        <p class="imp-muted">ID correlativo <strong>PED-001</strong>…. Estados: pendiente → listo para entregar → transferir a venta. Solo al transferir se contabiliza en la deuda.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th><th></th></tr></thead>
@@ -1196,8 +1207,14 @@
               ${optsProd}
             </select>
           </label>
-          <label>Cantidad<input name="cantidad" type="number" min="1" value="1" required /></label>
-          <label>Total cobrado CLP<input name="montoNeto" type="number" min="0" step="10" required placeholder="Lo que paga el cliente" /></label>
+          <label>Cantidad<input name="cantidad" type="number" min="1" step="0.01" value="1" required /></label>
+          <label>Total cobrado CLP<input name="montoNeto" type="number" min="0" step="0.01" required placeholder="Lo que paga el cliente" /></label>
+          <label>Estado
+            <select name="estado">
+              <option value="pendiente">Pendiente</option>
+              <option value="listo" selected>Listo para entregar</option>
+            </select>
+          </label>
           <label>Canal<input name="canal" placeholder="WhatsApp / Instagram / feria" value="WhatsApp" /></label>
           <label>Quién
             <select name="socioRegistro">
@@ -1206,7 +1223,7 @@
               <option value="Nicolás">Nicolás</option>
             </select>
           </label>
-          <label class="imp-form-span">Notas<textarea name="notas" rows="2" placeholder="Opcional"></textarea></label>
+          <label class="imp-form-span">Notas<textarea name="notas" rows="2" placeholder="Ej. PLA negro"></textarea></label>
           <div class="imp-form-actions">
             <button class="imp-btn imp-btn--primary" type="submit">Registrar pedido</button>
             <span class="imp-muted">Se asigna el siguiente PED-xxx automáticamente</span>
@@ -1220,8 +1237,9 @@
       const fd = new FormData(e.target);
       const sku = String(fd.get('sku') || '').trim();
       const prod = (data.productos || []).find((p) => p.sku === sku);
-      const cantidad = Number(fd.get('cantidad') || 1);
-      const montoNeto = Number(fd.get('montoNeto') || 0);
+      const cantidad = round2(fd.get('cantidad') || 1);
+      const montoNeto = round2(fd.get('montoNeto') || 0);
+      const estado = String(fd.get('estado') || 'pendiente');
       if (!sku || !prod || !(montoNeto > 0)) {
         setStatus('Elige producto y total cobrado', 'warn');
         return;
@@ -1239,12 +1257,14 @@
             sku,
             nombre: prod.nombre,
             cantidad,
-            precioUnitarioClp: Math.round(montoNeto / Math.max(1, cantidad)),
-            costoUnitarioClp: Math.round(costoProducto(prod).total),
+            precioUnitarioClp: round2(montoNeto / Math.max(1, cantidad)),
+            costoUnitarioClp: round2(costoProducto(prod).total),
+            filamento:
+              Number(prod.costoFilamentoKgClp) === COSTO_PLA_NEGRO_KG ? 'PLA+ negro' : '',
           },
         ],
         montoNeto,
-        estado: 'pendiente',
+        estado: pedidoActivo(estado) ? estado : 'pendiente',
         ventaId: null,
         notas: String(fd.get('notas') || '').trim(),
         socioRegistro: fd.get('socioRegistro') || 'Ambos',
@@ -1253,14 +1273,31 @@
       markDirty();
       renderAll();
       activarTab('pedidos');
-      setStatus(`Pedido ${numero} creado — aún no contabiliza · guarda online`, 'warn');
+      setStatus(`Pedido ${numero} creado (${estado}) — aún no contabiliza · guarda online`, 'warn');
+    });
+
+    $('#tab-pedidos')?.querySelectorAll('[data-estado-pedido]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-estado-pedido');
+        const next = btn.getAttribute('data-estado');
+        const ped = (data.pedidos || []).find((p) => p.id === id);
+        if (!ped || !pedidoActivo(ped.estado)) return;
+        ped.estado = next;
+        markDirty();
+        renderAll();
+        activarTab('pedidos');
+        setStatus(
+          `${ped.numero}: ${next === 'listo' ? 'listo para entregar' : 'pendiente'} · guarda online`,
+          'warn'
+        );
+      });
     });
 
     $('#tab-pedidos')?.querySelectorAll('[data-transferir-pedido]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-transferir-pedido');
         const ped = (data.pedidos || []).find((p) => p.id === id);
-        if (!ped || ped.estado !== 'pendiente') return;
+        if (!ped || !pedidoActivo(ped.estado)) return;
         const ok = confirm(
           `¿Transferir ${ped.numero} a venta?\nSe contabilizará ${money(ped.montoNeto)} en el dashboard.`
         );
@@ -1297,7 +1334,7 @@
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-del-pedido');
         const ped = (data.pedidos || []).find((p) => p.id === id);
-        if (!ped || ped.estado !== 'pendiente') return;
+        if (!ped || !pedidoActivo(ped.estado)) return;
         if (!confirm(`¿Eliminar pedido ${ped.numero}?`)) return;
         data.pedidos = (data.pedidos || []).filter((p) => p.id !== id);
         markDirty();
