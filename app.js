@@ -6708,6 +6708,7 @@ function renderCalendarioMes() {
 
   const primerDia = new Date(y, m, 1);
   const inicioGrid = inicioSemana(primerDia);
+  const mesCompacto = esViewportMesCompacto();
 
   let html = DIAS_CORTOS.map(d => `<div class="mes-cabecera">${d}</div>`).join('');
 
@@ -6725,8 +6726,7 @@ function renderCalendarioMes() {
       if (it.indiceHijo != null || t.parentId) return false;
       return true;
     });
-    const mesCompacto = esViewportMesCompacto();
-  const itemsHtml = ordenados
+    const itemsHtml = ordenados
       .map((it) => {
         if (it.tipo === 'cita') {
           const c = it.data;
