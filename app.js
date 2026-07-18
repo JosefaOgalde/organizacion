@@ -1,5 +1,6 @@
 /* Organización v2 */
 const STORAGE_KEY = 'organizacion_v2';
+const STORAGE_OCULTAR_HECHAS = 'organizacion_ocultar_hechas';
 const RESPALDO_DEFECTO_URL = 'data/organizacion-respaldo-2026-07-17.json';
 const AGENTES_RAMAS_URL = 'data/agentes-ramas.json';
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
@@ -6055,8 +6056,30 @@ function etiquetaHoraTarea(t) {
   return t.horaFin ? `${t.horaInicio} – ${t.horaFin}` : t.horaInicio;
 }
 
+function ocultarHechasActivo() {
+  try {
+    const v = localStorage.getItem(STORAGE_OCULTAR_HECHAS);
+    if (v == null) return true; // por defecto: no saturar con hechas
+    return v === '1';
+  } catch {
+    return true;
+  }
+}
+
+function setOcultarHechas(activo) {
+  try {
+    localStorage.setItem(STORAGE_OCULTAR_HECHAS, activo ? '1' : '0');
+  } catch {
+    /* ignore */
+  }
+  document.querySelectorAll('#chk-ocultar-hechas, #chk-ocultar-hechas-semana').forEach((el) => {
+    if (el) el.checked = !!activo;
+  });
+}
+
 function itemsDiaOrdenados(fechaISO) {
   const items = [];
+  const skipHechas = ocultarHechasActivo();
   datos.citasSalud.filter(c => c.fecha === fechaISO).forEach(c => {
     items.push({ tipo: 'cita', minutos: minutosHora(c.hora), data: c });
   });
@@ -6064,7 +6087,11 @@ function itemsDiaOrdenados(fechaISO) {
     items.push({ tipo: 'reunion', minutos: minutosHora(r.horaInicio), data: r });
   });
 
-  const tareas = datos.tareas.filter((t) => tareaAplicaEnFecha(t, fechaISO));
+  const tareas = datos.tareas.filter((t) => {
+    if (!tareaAplicaEnFecha(t, fechaISO)) return false;
+    if (skipHechas && t.completada) return false;
+    return true;
+  });
   const usadas = new Set();
   const madres = tareas
     .filter((t) => esTareaMadreCalendario(t) && !t.parentId)
@@ -6090,7 +6117,13 @@ function itemsDiaOrdenados(fechaISO) {
     });
     usadas.add(m.id);
     const hijos = (datos.tareas || [])
-      .filter((t) => t.parentId === m.id && t.fecha === fechaISO && !t.pendiente)
+      .filter(
+        (t) =>
+          t.parentId === m.id &&
+          t.fecha === fechaISO &&
+          !t.pendiente &&
+          !(skipHechas && t.completada)
+      )
       .sort(
         (a, b) =>
           (Number(a.ordenHijo) || 0) - (Number(b.ordenHijo) || 0) ||
@@ -7919,6 +7952,16 @@ function setupUI() {
   document.getElementById('btn-mes-anterior').addEventListener('click', () => { mesOffset--; renderCalendarioMes(); });
   document.getElementById('btn-mes-siguiente').addEventListener('click', () => { mesOffset++; renderCalendarioMes(); });
   document.getElementById('btn-mes-hoy').addEventListener('click', () => { mesOffset = 0; renderCalendarioMes(); });
+
+  const ocultarIni = ocultarHechasActivo();
+  document.querySelectorAll('#chk-ocultar-hechas, #chk-ocultar-hechas-semana').forEach((el) => {
+    if (!el) return;
+    el.checked = ocultarIni;
+    el.addEventListener('change', () => {
+      setOcultarHechas(!!el.checked);
+      render();
+    });
+  });
 
   document.getElementById('btn-dia-anterior')?.addEventListener('click', () => cambiarDia(-1));
   document.getElementById('btn-dia-siguiente')?.addEventListener('click', () => cambiarDia(1));
