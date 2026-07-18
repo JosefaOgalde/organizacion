@@ -880,7 +880,6 @@
     const denom = Math.max(metaRecuperar, ventas, gastosMasPedidos, 1);
     const pctGastos = Math.min(100, (metaRecuperar / denom) * 100);
     const pctVentas = Math.min(100, (ventas / denom) * 100);
-    const pctPedidosBar = Math.min(100, (montoPedidosPend / denom) * 100);
     const pctGastosEnPipeline = Math.min(100, (metaRecuperar / denom) * 100);
     const pctPedidosEnPipeline = Math.min(
       Math.max(0, 100 - pctGastosEnPipeline),
