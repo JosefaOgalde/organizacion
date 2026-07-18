@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-18T03:49:06.000Z",
+    "actualizado": "2026-07-18T04:11:30.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -202,7 +202,8 @@
       "unidadesMetal": 1,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 4990,
-      "notas": "Ajustar gramos/tiempo según modelo real"
+      "notas": "Ajustar gramos/tiempo según modelo real",
+      "sku": "LLAV001"
     },
     {
       "id": "prod-figura-chica",
@@ -215,7 +216,8 @@
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 12990,
-      "notas": ""
+      "notas": "",
+      "sku": "FIG001"
     },
     {
       "id": "prod-portacompletos-gato",
@@ -228,7 +230,8 @@
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 0,
-      "notas": "5 h de impresión. Precio de venta a público se carga a mano."
+      "notas": "5 h de impresión. Precio de venta a público se carga a mano.",
+      "sku": "PCGATO001"
     },
     {
       "id": "prod-portacompletos-perro",
@@ -241,11 +244,12 @@
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 0,
-      "notas": "6 h de impresión. Precio de venta a público se carga a mano."
+      "notas": "6 h de impresión. Precio de venta a público se carga a mano.",
+      "sku": "PCPERRO001"
     },
     {
       "id": "prod-porta-lata-monster",
-      "sku": "IMP-20260718-005MON",
+      "sku": "PLMONS001",
       "nombre": "Porta lata Monster",
       "activo": true,
       "filamentoGramos": 144.45,

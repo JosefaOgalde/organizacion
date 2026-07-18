@@ -368,18 +368,73 @@
     return changed;
   }
 
+  /** Prefijos SKU legibles: PCGATO, PCPERRO, PCPERROBU, MCPERROBU, PLMONS… */
+  function skuPrefijoDesdeTexto(nombre, id) {
+    const t = `${nombre || ''} ${id || ''}`
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+    if (/macetero/.test(t) && /bull/.test(t)) return 'MCPERROBU';
+    if (/(porta\s*completos?|portacompleto)/.test(t) && /bull/.test(t)) return 'PCPERROBU';
+    if (/(porta\s*completos?|portacompleto)/.test(t) && /gato/.test(t)) return 'PCGATO';
+    if (/(porta\s*completos?|portacompleto)/.test(t) && /perro/.test(t)) return 'PCPERRO';
+    if (/porta\s*lata/.test(t) && /monster|mons/.test(t)) return 'PLMONS';
+    if (/porta\s*lata/.test(t)) return 'PLATA';
+    if (/llavero/.test(t)) return 'LLAV';
+    if (/figura|souvenir/.test(t)) return 'FIG';
+    const words = t
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    if (!words.length) return 'PROD';
+    return words
+      .map((w) => w.slice(0, 3))
+      .join('')
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, '')
+      .slice(0, 8) || 'PROD';
+  }
+
+  function esSkuSimple(sku) {
+    return /^[A-Z]{2,10}\d{3}$/i.test(String(sku || ''));
+  }
+
+  function siguienteSkuProducto(nombre, id, listaBase) {
+    const pref = skuPrefijoDesdeTexto(nombre, id);
+    const list = listaBase || data?.productos || [];
+    const re = new RegExp(`^${pref}(\\d{3})$`, 'i');
+    let max = 0;
+    for (const p of list) {
+      const m = String(p.sku || '').match(re);
+      if (m) max = Math.max(max, Number(m[1]));
+    }
+    return `${pref}${String(max + 1).padStart(3, '0')}`;
+  }
+
   function asegurarSkusProductos(d) {
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     let changed = false;
-    d.productos.forEach((p, i) => {
-      if (!p.sku) {
-        const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-        const n = String(i + 1).padStart(3, '0');
-        const rand = Math.random().toString(36).slice(2, 5).toUpperCase();
-        p.sku = `IMP-${stamp}-${n}${rand}`;
+    const CANON = {
+      'prod-portacompletos-gato': 'PCGATO001',
+      'prod-portacompletos-perro': 'PCPERRO001',
+      'prod-porta-lata-monster': 'PLMONS001',
+    };
+    for (const p of d.productos) {
+      const fijo = CANON[p.id];
+      if (fijo && p.sku !== fijo) {
+        p.sku = fijo;
         changed = true;
       }
-    });
+    }
+    for (const p of d.productos) {
+      if (CANON[p.id]) continue;
+      if (!p.sku || !esSkuSimple(p.sku) || /^IMP-/i.test(p.sku)) {
+        const otros = d.productos.filter((x) => x !== p && esSkuSimple(x.sku) && !/^IMP-/i.test(x.sku));
+        p.sku = siguienteSkuProducto(p.nombre, p.id, otros);
+        changed = true;
+      }
+    }
     return changed;
   }
 
@@ -1067,18 +1122,6 @@
     });
   }
 
-  function siguienteSkuProducto() {
-    const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const existentes = new Set((data.productos || []).map((p) => String(p.sku || '')));
-    let sku = '';
-    do {
-      const n = String((data.productos || []).length + 1).padStart(3, '0');
-      const rand = Math.random().toString(36).slice(2, 5).toUpperCase();
-      sku = `IMP-${stamp}-${n}${rand}`;
-    } while (existentes.has(sku));
-    return sku;
-  }
-
   function leerCalcPieza() {
     const form = $('#form-calc-pieza');
     if (!form) return null;
@@ -1147,8 +1190,7 @@
     const modal = $('#imp-modal-producto');
     if (!modal) return;
     calcDraft = { ...calc.prod };
-    const sku = siguienteSkuProducto();
-    modal.querySelector('[name=sku]').value = sku;
+    modal.querySelector('[name=sku]').value = siguienteSkuProducto('Producto');
     modal.querySelector('[name=nombre]').value = '';
     modal.querySelector('[name=filamentoGramos]').value = calc.prod.filamentoGramos;
     modal.querySelector('[name=costoFilamentoKgClp]').value = calc.prod.costoFilamentoKgClp;
@@ -1187,11 +1229,17 @@
         <div class="imp-card imp-card--prod" data-prod-id="${pid}">
           <div class="imp-prod-head">
             <h3>${escapeHtml(prod.nombre)}</h3>
-            <span class="imp-sku" title="SKU único de impresión">SKU ${sku}</span>
+            <div class="imp-prod-head__meta">
+              <span class="imp-sku" title="SKU del producto">SKU ${sku}</span>
+              <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-prod="${pid}">Eliminar</button>
+            </div>
           </div>
           <div class="imp-costo-live" data-costo-live="${pid}">${htmlCostoLive(c, margen, prod.precioVentaSugeridoClp)}</div>
           <form class="imp-form imp-form--prod" data-editar-prod="${pid}">
             <label>Nombre<input name="nombre" required value="${escapeHtml(prod.nombre || '')}" /></label>
+            <label>SKU
+              <input name="sku" required pattern="[A-Za-z]{2,10}[0-9]{3}" title="Ej. PCGATO001, PLMONS001" value="${sku}" />
+            </label>
             <label>$ / kg filamento (CLP)<input name="costoFilamentoKgClp" type="number" min="0" step="1" value="${Number(prod.costoFilamentoKgClp) || 0}" /></label>
             <label class="imp-form-span">Desglose slicer (como en la foto)
               <select name="usarDesglose">
@@ -1214,6 +1262,7 @@
             <label class="imp-form-span">Notas<textarea name="notas" rows="2">${escapeHtml(prod.notas || '')}</textarea></label>
             <div class="imp-form-actions">
               <button type="submit" class="imp-btn imp-btn--primary">Guardar parámetros</button>
+              <button type="button" class="imp-btn" data-regen-sku="${pid}">Regenerar SKU</button>
               <span class="imp-muted">Al editar se recalcula el costo · luz/h ≈ ${money(costoHoraImpresora())} · MO ${money(p.valorHoraManoObraClp || 0)}/h</span>
             </div>
           </form>
@@ -1277,6 +1326,21 @@
     updateCalc();
     $('#btn-calc-guardar')?.addEventListener('click', abrirModalDesdeCalculadora);
 
+    $('#tab-costos').querySelectorAll('[data-del-prod]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-del-prod');
+        const prod = (data.productos || []).find((x) => x.id === id);
+        if (!prod) return;
+        const ok = confirm(`¿Eliminar «${prod.nombre}» (${prod.sku || id})?\nEsta acción no se puede deshacer (guarda online después).`);
+        if (!ok) return;
+        data.productos = (data.productos || []).filter((x) => x.id !== id);
+        markDirty();
+        renderAll();
+        activarTab('costos');
+        setStatus(`Producto «${prod.nombre}» eliminado — guarda online`, 'warn');
+      });
+    });
+
     $('#tab-costos').querySelectorAll('[data-editar-prod]').forEach((form) => {
       const id = form.getAttribute('data-editar-prod');
       const live = form.closest('.imp-card')?.querySelector('[data-costo-live]');
@@ -1296,6 +1360,14 @@
         const c = costoProducto(leido);
         live.innerHTML = htmlCostoLive(c, margen, leido.precioVentaSugeridoClp);
       };
+      form.querySelector('[data-regen-sku]')?.addEventListener('click', () => {
+        const nombre = form.querySelector('[name=nombre]')?.value || '';
+        const skuInput = form.querySelector('[name=sku]');
+        if (!skuInput) return;
+        const otros = (data.productos || []).filter((x) => x.id !== id);
+        skuInput.value = siguienteSkuProducto(nombre, id, otros);
+        setStatus(`SKU sugerido: ${skuInput.value}`, 'ok');
+      });
       form.addEventListener('input', refreshLive);
       form.addEventListener('change', refreshLive);
       form.addEventListener('submit', (e) => {
@@ -1303,8 +1375,20 @@
         const leido = leerProductoDesdeForm(form);
         const prod = (data.productos || []).find((x) => x.id === id);
         if (!prod || !leido || !leido.nombre) return;
+        const skuNuevo = String(form.querySelector('[name=sku]')?.value || '')
+          .trim()
+          .toUpperCase();
+        if (!esSkuSimple(skuNuevo)) {
+          setStatus('SKU inválido — usa formato tipo PCGATO001 / PLMONS001', 'warn');
+          return;
+        }
+        if ((data.productos || []).some((x) => x.id !== id && String(x.sku || '').toUpperCase() === skuNuevo)) {
+          setStatus(`El SKU ${skuNuevo} ya existe en otro producto`, 'warn');
+          return;
+        }
         Object.assign(prod, {
           nombre: leido.nombre,
+          sku: skuNuevo,
           filamentoModeloGramos: leido.filamentoModeloGramos,
           filamentoSoportesGramos: leido.filamentoSoportesGramos,
           filamentoPurgeGramos: leido.filamentoPurgeGramos,
@@ -1321,10 +1405,12 @@
         });
         markDirty();
         refreshLive();
-        // Actualiza título sin re-render completo (evita perder foco / scroll).
-        const head = form.closest('.imp-card')?.querySelector('.imp-prod-head h3');
+        const card = form.closest('.imp-card');
+        const head = card?.querySelector('.imp-prod-head h3');
+        const skuPill = card?.querySelector('.imp-sku');
         if (head) head.textContent = leido.nombre;
-        setStatus(`«${leido.nombre}» actualizado — costo ${money(costoProducto(prod).total)} · guarda online`, 'warn');
+        if (skuPill) skuPill.textContent = `SKU ${skuNuevo}`;
+        setStatus(`«${leido.nombre}» actualizado (${skuNuevo}) — costo ${money(costoProducto(prod).total)} · guarda online`, 'warn');
       });
       refreshLive();
     });
@@ -1478,15 +1564,26 @@
     load().catch((e) => setStatus(String(e.message || e), 'err'));
   });
 
+  $('#form-producto-modal')?.querySelector('[name=nombre]')?.addEventListener('input', (e) => {
+    const modal = $('#imp-modal-producto');
+    const skuInput = modal?.querySelector('[name=sku]');
+    if (!skuInput) return;
+    const nombre = String(e.target.value || '').trim();
+    if (!nombre) return;
+    skuInput.value = siguienteSkuProducto(nombre);
+  });
+
   $('#form-producto-modal')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
     const nombre = String(fd.get('nombre') || '').trim();
-    const sku = String(fd.get('sku') || '').trim() || siguienteSkuProducto();
     if (!nombre) return;
-    if ((data.productos || []).some((p) => p.sku === sku)) {
-      setStatus('Ese SKU ya existe — cierra y vuelve a guardar', 'warn');
-      return;
+    let sku = String(fd.get('sku') || '')
+      .trim()
+      .toUpperCase();
+    if (!esSkuSimple(sku)) sku = siguienteSkuProducto(nombre);
+    if ((data.productos || []).some((p) => String(p.sku || '').toUpperCase() === sku)) {
+      sku = siguienteSkuProducto(nombre);
     }
     data.productos = data.productos || [];
     data.productos.push({

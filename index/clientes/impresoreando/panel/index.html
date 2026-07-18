@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Impresoreando · Panel socios</title>
   <link rel="stylesheet" href="../../../assets/portal.css?v=imp-cta2" />
-  <link rel="stylesheet" href="./panel.css?v=imp-edit-costo1" />
+  <link rel="stylesheet" href="./panel.css?v=imp-sku1" />
 </head>
 <body class="imp-body" data-cliente-slug="impresoreando">
   <div class="imp-top-bleed">
@@ -53,12 +53,12 @@
         <button type="button" class="imp-modal__close" id="btn-modal-producto-cerrar" aria-label="Cerrar">×</button>
       </header>
       <form class="imp-form" id="form-producto-modal">
-        <p class="imp-muted">Cada impresión es única: el SKU identifica esta pieza. Puedes ajustar nombre, costo y precio de venta.</p>
-        <label>SKU (único)
-          <input name="sku" required readonly />
-        </label>
+        <p class="imp-muted">El SKU se arma solo según el nombre (ej. PCGATO001, PCPERRO001, PLMONS001). Puedes editarlo.</p>
         <label>Nombre del producto
-          <input name="nombre" required placeholder="Ej. Portacompletos gato — pedido Ana" autofocus />
+          <input name="nombre" required placeholder="Ej. Portacompletos gato / Porta lata Monster" autofocus />
+        </label>
+        <label>SKU (único)
+          <input name="sku" required pattern="[A-Za-z]{2,10}[0-9]{3}" title="Ej. PCGATO001" placeholder="PCGATO001" />
         </label>
         <label>Gramos filamento<input name="filamentoGramos" type="number" step="0.1" min="0" required /></label>
         <label>$ / kg filamento<input name="costoFilamentoKgClp" type="number" min="0" required /></label>
@@ -79,6 +79,6 @@
     </div>
   </div>
 
-  <script src="./panel.js?v=imp-luz-chile1"></script>
+  <script src="./panel.js?v=imp-sku1"></script>
 </body>
 </html>

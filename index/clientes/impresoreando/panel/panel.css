@@ -529,6 +529,12 @@ table.imp-table {
   margin-bottom: 0.65rem;
 }
 .imp-prod-head h3 { margin: 0; }
+.imp-prod-head__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
 .imp-sku {
   font-size: 0.78rem;
   font-variant-numeric: tabular-nums;
@@ -538,6 +544,10 @@ table.imp-table {
   border: 1px solid var(--imp-border);
   border-radius: 999px;
   padding: 0.2rem 0.65rem;
+}
+.imp-btn--sm {
+  padding: 0.28rem 0.65rem;
+  font-size: 0.8rem;
 }
 
 .imp-modal {
