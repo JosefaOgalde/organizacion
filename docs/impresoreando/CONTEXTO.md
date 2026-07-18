@@ -81,14 +81,25 @@ ENVIAR-STATUS-IMPRESOREANDO.bat
 
 `localhost` en el teléfono **no** funciona. Server `HOST=0.0.0.0`. Misma WiFi → IP de `GET /api/acceso` → `lan[]`. Fuera → `ABRIR-VENTA-PUBLICA.bat` (loca.lt) con `SERVIR.bat` abierto.
 
+## Organizer ↔ panel
+
+Los pedidos viven en el **panel** (`impresoreando-live.json`). Para verlos también en el calendario:
+
+```bat
+SYNC-IMPRESOREANDO-ORGANIZADOR.bat
+```
+
+o `node scripts/sync-impresoreando-organizador.js` → madre `[IMP] Pedidos activos` + subtareas PED-00n en la fecha del pedido. **No borra** tareas de otros clientes.
+
 ## Cómo atender un pedido nuevo (checklist agente)
 
 1. Leer **este archivo** (no explorar panel.js salvo bug concreto).
 2. Si el producto no existe: crear/actualizar vía seed en `asegurarProducto*` + parámetros slicer (g, h, $/kg) · preferir **costo más alto** si hay dos mediciones.
 3. Añadir/editar pedido en live (API) o seed si debe quedar en repo: cliente, ítems SKU×cant, costo/u, precio venta/u, estado pedido.
-4. No inventar tipografía Midjourney/Gemini: esto es panel ops, no prompts creativos.
-5. Commit en rama `cursor/…-d733`, bump `?v=` si tocó UI, push + actualizar PR.
-6. Responder en español, corto: qué PED, qué SKUs, montos, estado.
+4. Correr `SYNC-IMPRESOREANDO-ORGANIZADOR.bat` si debe verse en el calendario del día.
+5. No inventar tipografía Midjourney/Gemini: esto es panel ops, no prompts creativos.
+6. Commit en rama `cursor/…-d733`, bump `?v=` si tocó UI, push + actualizar PR.
+7. Responder en español, corto: qué PED, qué SKUs, montos, estado.
 
 ## Layout UI (no rediseñar sin pedido)
 

@@ -64,3 +64,4 @@
 ### Impresoreando — Panel socios 50/50
 **Antes de tocar nada:** leer `docs/impresoreando/CONTEXTO.md` (fuente única: rutas, deuda, pedidos, SKUs, status correo, checklist). **No reexplorar** `panel.js` ni el seed salvo bug concreto.
 Resumen 1 línea: panel `index/clientes/impresoreando/panel/` · live `data/impresoreando-live.json` · API `/api/impresoreando` · pedidos `PED-00n` con estado select · solo ventas bajan deuda · PLA+ negro `$17986/kg`.
+**Calendario:** los pedidos no aparecen solos en el organizador — correr `SYNC-IMPRESOREANDO-ORGANIZADOR.bat` (o `node scripts/sync-impresoreando-organizador.js`) para madre `[IMP] Pedidos activos` + PED-00n en la fecha del pedido. No borra otras tareas.
