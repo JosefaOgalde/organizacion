@@ -36,6 +36,7 @@
     'cli-desafio-latam': 'durazno',
     'cli-impresoreando': 'ambar',
     'cli-herramientas': 'grafito',
+    'cli-tronwell': 'azul',
   };
 
   const pathUp = depth ? '../'.repeat(depth) : './';

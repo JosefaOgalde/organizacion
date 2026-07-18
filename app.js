@@ -17,6 +17,8 @@ const COLORES = {
   grafito: { border: '#b8c0c8', bg: '#eef0f4', text: '#5a6a7a' },
   /** Impresoreando — ámbar / mostaza suave (único; no reutilizar con otros clientes) */
   ambar: { border: '#d4b06a', bg: '#faf6eb', text: '#7a5c28' },
+  /** Tronwell — azul cobalto (distinto de celeste ECR y agua MKOF); texto más claro */
+  azul: { border: '#2f6bc4', bg: '#d9e6f7', text: '#6b93c9' },
   /** Salud — verde más definido, aún claro pero distinto de clientes menta/celeste */
   salud: { border: '#2f9d72', bg: '#c5e8d8', text: '#1a5c42' },
   /** Reuniones — azul pizarra, no usa el color del cliente */
@@ -116,6 +118,12 @@ const AGENTES_CLIENTE = {
     emoji: '🖨️',
     especialidad: 'Impresión, identidad y piezas gráficas',
     instrucciones: 'Eres el asistente de Impresoreando. Ayudas con briefs de impresión, piezas gráficas, identidad visual, mockups, formatos de impresión y entregables para el cliente.'
+  },
+  'cli-tronwell': {
+    nombre: 'Agente Tronwell',
+    emoji: '📄',
+    especialidad: 'Ajuste de textos y documentos',
+    instrucciones: 'Eres el asistente de Tronwell. Ayudas a revisar y ajustar textos de documentos (Word), mantener tono claro y entregar versiones listas.'
   }
 };
 
@@ -491,7 +499,8 @@ const PERFILES_CLIENTE = {
   'cli-mkof': { nombre: 'MKOF - Talk (full time)', tipo: 'full-time' },
   'cli-sie': { tipo: 'oportunidad' },
   'cli-desafio-latam': { abrev: 'ADL' },
-  'cli-impresoreando': { nombre: 'Impresoreando', tipo: 'freelance' }
+  'cli-impresoreando': { nombre: 'Impresoreando', tipo: 'freelance' },
+  'cli-tronwell': { nombre: 'Tronwell', tipo: 'freelance', abrev: 'TW' }
 };
 let datos = null;
 
@@ -616,6 +625,7 @@ function datosIniciales() {
   const cliSIE = 'cli-sie';
   const cliDLAT = 'cli-desafio-latam';
   const cliIMP = 'cli-impresoreando';
+  const cliTW = 'cli-tronwell';
   const hoyStr = toISO(hoy());
 
   return {
@@ -794,6 +804,23 @@ function datosIniciales() {
             funciones: 'Briefs de impresión\nPiezas gráficas\nMockups y formatos de producción\nIdentidad visual según encargo',
             tareasAlMes: 'Según encargos del momento',
             plazosEntregables: 'Agregar cada tarea en + Nueva tarea cuando llegue un encargo'
+          }
+        ]
+      },
+      {
+        id: cliTW,
+        nombre: 'Tronwell',
+        abrev: 'TW',
+        tipo: 'freelance',
+        color: 'azul',
+        roles: [
+          {
+            id: 'rol-tw-textos',
+            nombre: 'Textos / contenidos',
+            abrev: 'TXT',
+            funciones: 'Ajuste de textos\nRevisión de documentos\nEntrega de copys',
+            tareasAlMes: 'Según encargos',
+            plazosEntregables: 'Por tarea en el calendario'
           }
         ]
       }
@@ -2046,6 +2073,25 @@ function asegurarClienteImpresoreando(data) {
   return data;
 }
 
+const TW_CLI_ID = 'cli-tronwell';
+
+function asegurarClienteTronwell(data) {
+  const cliId = TW_CLI_ID;
+  let cli = data.clientes.find(c => c.id === cliId);
+  if (!cli) {
+    const seed = datosIniciales().clientes.find(c => c.id === cliId);
+    if (seed) data.clientes.push(seed);
+    cli = data.clientes.find(c => c.id === cliId);
+  }
+  if (cli) {
+    cli.abrev = 'TW';
+    cli.color = 'azul';
+    cli.nombre = cli.nombre || 'Tronwell';
+    cli.tipo = cli.tipo || 'freelance';
+  }
+  return data;
+}
+
 function asegurarPerfilClientes(data) {
   data.clientes.forEach(cli => {
     const perfil = PERFILES_CLIENTE[cli.id];
@@ -2088,6 +2134,7 @@ function normalizarDatos(data) {
   asegurarClienteSIE(data);
   asegurarClienteDesafioLatam(data);
   asegurarClienteImpresoreando(data);
+  asegurarClienteTronwell(data);
   asegurarPerfilClientes(data);
   asegurarAgentesClientes(data);
   asignarRolesATareas(data);
