@@ -229,6 +229,27 @@ window.CLIENTES_PORTAL = [
     }
   },
   {
+    archivo: 'tronwell/index.html',
+    id: 'cli-tronwell',
+    slug: 'tronwell',
+    nombre: 'Tronwell',
+    abrev: 'TW',
+    tipo: 'Freelance',
+    color: { border: '#9aa8d4', bg: '#eef0f8', text: '#3d4a72' },
+    agente: 'Ajuste de textos',
+    resumen: 'Revisión y ajuste de documentos (Word) por encargo.',
+    landing: {
+      tagline: 'Textos claros, listos para publicar',
+      entregables: ['Ajuste de textos', 'Revisión por documento', 'Entrega Word'],
+      secciones: [
+        {
+          titulo: 'Ajustar textos (19 jul)',
+          texto: 'Madre + subtareas: Contacto.docx · curso adultos.docx · Home.docx · tutor ia.docx.'
+        }
+      ]
+    }
+  },
+  {
     archivo: 'herramientas/index.html',
     id: 'cli-herramientas',
     slug: 'herramientas',
