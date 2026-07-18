@@ -58,6 +58,7 @@
     }
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
     if (agruparGastosPorRegistro(d)) changed = true;
+    if (asegurarParametrosLuzChileCentauri(d)) changed = true;
     if (asegurarProductoPortacompletosGato(d)) changed = true;
     if (asegurarProductoPortacompletosPerro(d)) changed = true;
     if (asegurarProductoPortaLataMonster(d)) changed = true;
@@ -200,6 +201,41 @@
         Object.assign(existing, reg);
         changed = true;
       }
+    }
+    return changed;
+  }
+
+  /** Defaults luz Chile 2026 + Elegoo Centauri Carbon 2 (220 V). */
+  const LUZ_CHILE = {
+    tarifaKwhClp: 200,
+    consumoImpresoraKw: 0.28,
+    impresoraModelo: 'Elegoo Centauri Carbon 2',
+    impresoraNotas:
+      'Pico nominal 1100 W @ 220 V. Promedio estimado en impresión PLA con cama caliente: 0,28 kW. Tarifa ~$200/kWh (precio efectivo boleta residencial Chile 2026; ajústala a tu cuenta).',
+  };
+
+  function asegurarParametrosLuzChileCentauri(d) {
+    d.parametros = d.parametros && typeof d.parametros === 'object' ? d.parametros : {};
+    const p = d.parametros;
+    let changed = false;
+    const tarifa = Number(p.tarifaKwhClp);
+    const consumo = Number(p.consumoImpresoraKw);
+    // Migra defaults antiguos (180 / 0,22) o vacíos → Chile + Centauri Carbon 2.
+    if (!Number.isFinite(tarifa) || tarifa === 180) {
+      p.tarifaKwhClp = LUZ_CHILE.tarifaKwhClp;
+      changed = true;
+    }
+    if (!Number.isFinite(consumo) || consumo === 0.22) {
+      p.consumoImpresoraKw = LUZ_CHILE.consumoImpresoraKw;
+      changed = true;
+    }
+    if (p.impresoraModelo !== LUZ_CHILE.impresoraModelo) {
+      p.impresoraModelo = LUZ_CHILE.impresoraModelo;
+      changed = true;
+    }
+    if (p.impresoraNotas !== LUZ_CHILE.impresoraNotas) {
+      p.impresoraNotas = LUZ_CHILE.impresoraNotas;
+      changed = true;
     }
     return changed;
   }
@@ -940,16 +976,22 @@
     $('#tab-operacion').innerHTML = `
       <div class="imp-card">
         <h2>Parámetros (luz / mano de obra / empaque)</h2>
+        <p class="imp-muted"><strong>${escapeHtml(p.impresoraModelo || LUZ_CHILE.impresoraModelo)}</strong> · Chile 220 V</p>
+        <p class="imp-muted">${escapeHtml(p.impresoraNotas || LUZ_CHILE.impresoraNotas)}</p>
         <form class="imp-form" id="form-params">
-          <label>Tarifa luz $/kWh<input name="tarifaKwhClp" type="number" value="${p.tarifaKwhClp || 180}" /></label>
-          <label>Consumo impresora kW<input name="consumoImpresoraKw" type="number" step="0.01" value="${p.consumoImpresoraKw || 0.22}" /></label>
+          <label>Tarifa luz Chile $/kWh
+            <input name="tarifaKwhClp" type="number" min="0" step="1" value="${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp}" />
+          </label>
+          <label>Consumo Centauri Carbon 2 (kW promedio)
+            <input name="consumoImpresoraKw" type="number" min="0" step="0.01" value="${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw}" />
+          </label>
           <label>Mano de obra $/h<input name="valorHoraManoObraClp" type="number" value="${p.valorHoraManoObraClp || 5000}" /></label>
           <label>Anillo metal llavero $<input name="costoAnilloMetalLlaveroClp" type="number" value="${p.costoAnilloMetalLlaveroClp || 150}" /></label>
           <label>Bolsa entrega $<input name="costoBolsaEntregaClp" type="number" value="${p.costoBolsaEntregaClp || 50}" /></label>
           <label>Margen objetivo %<input name="margenObjetivoPct" type="number" value="${p.margenObjetivoPct || 40}" /></label>
           <div class="imp-form-actions">
             <button class="imp-btn imp-btn--primary" type="submit">Guardar parámetros</button>
-            <span class="imp-muted">Costo luz/hora impresora ≈ ${money(costoHoraImpresora())}</span>
+            <span class="imp-muted">Luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> (= ${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp} × ${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw} kW)</span>
           </div>
         </form>
       </div>
@@ -982,16 +1024,21 @@
     $('#form-params').addEventListener('submit', (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
+      const prev = data.parametros || {};
       data.parametros = {
+        ...prev,
         tarifaKwhClp: Number(fd.get('tarifaKwhClp')),
         consumoImpresoraKw: Number(fd.get('consumoImpresoraKw')),
         valorHoraManoObraClp: Number(fd.get('valorHoraManoObraClp')),
         costoAnilloMetalLlaveroClp: Number(fd.get('costoAnilloMetalLlaveroClp')),
         costoBolsaEntregaClp: Number(fd.get('costoBolsaEntregaClp')),
         margenObjetivoPct: Number(fd.get('margenObjetivoPct')),
+        impresoraModelo: prev.impresoraModelo || LUZ_CHILE.impresoraModelo,
+        impresoraNotas: prev.impresoraNotas || LUZ_CHILE.impresoraNotas,
       };
       markDirty();
       renderAll();
+      setStatus(`Parámetros luz actualizados — ${money(costoHoraImpresora())}/h · guarda online`, 'warn');
     });
 
     $('#form-op').addEventListener('submit', (e) => {
@@ -1178,7 +1225,7 @@
       <div class="imp-card">
         <h2>Costos por pieza (luz + materiales)</h2>
         <p class="imp-muted">Edita los parámetros del slicer (modelo, soportes, purge, tiempo) y el costo se recalcula al instante. Luego <strong>Guardar parámetros</strong> y <strong>Guardar online</strong>.</p>
-        <p class="imp-muted">$/kg filamento ref.: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> · tarifa ${p.tarifaKwhClp || 180} $/kWh · ${p.consumoImpresoraKw || 0.22} kW</p>
+        <p class="imp-muted">$/kg filamento ref.: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> · tarifa Chile <strong>${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp}</strong> $/kWh · ${p.impresoraModelo || 'Centauri Carbon 2'} <strong>${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw}</strong> kW</p>
       </div>
       ${blocks || '<div class="imp-card">Sin productos aún — usa la calculadora y Guarda como producto</div>'}
       <div class="imp-card">
