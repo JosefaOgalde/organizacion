@@ -1,11 +1,12 @@
-# ESP32-CAM — configurar las tarjetas (Impresoreando)
+# ESP32-CAM — cámara Wi‑Fi del taller (Impresoreando)
 
-Compra AliExpress: [producto](https://a.aliexpress.com/_mKBSVtD) · ítem `1005011858741994`  
+> **Ojo:** el adaptador a pila del taller es un **escritor RFID handheld**, no esta base. Ver `docs/impresoreando/RFID-HANDHELD.md`. Esta guía es solo si tenés módulo **ESP32-CAM** + programador USB (MB/CH340 o USB‑TTL).
+
 Kit típico: **ESP32-CAM** (cámara OV2640) + base **ESP32-CAM-MB** (micro-USB, chip **CH340**).
 
-Uso en el taller: cámara Wi‑Fi para mirar la impresora (Centauri Carbon 2) desde el celular/PC en la misma red.
+Uso: cámara Wi‑Fi para mirar la impresora (Centauri Carbon 2) desde el celular/PC en la misma red.
 
-Sketch listo en el repo: `index/clientes/impresoreando/esp32-cam/CameraImpresoreando/`.
+Sketch: `index/clientes/impresoreando/esp32-cam/CameraImpresoreando/`.
 
 ---
 
