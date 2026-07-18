@@ -3,6 +3,7 @@ SKU: WFS1018RGL-BLK
 Link: https://trendseeker.cl/producto/botas-chelsea-commando-negras-brillantes-para-mujer/
 Público: MUJER (adulta)
 Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
+Escena fija: DÍA DE INVIERNO CON LLUVIA. El producto es el héroe; la lluvia demuestra waterproof.
 
 CARACTERÍSTICAS (no inventar otras):
 - Hunter Chelsea Commando / militar negras brillantes para mujer
@@ -13,19 +14,26 @@ CARACTERÍSTICAS (no inventar otras):
 - Suela moldeada con patrón Hunter Original
 - Fuelles laterales elásticos y lengüeta de nylon
 - Perfil más alto (+15 mm) que la Chelsea brillante clásica
+- Acabado gloss negro fiel a las fotos de producto
 
 VESTUARIO / MODELO:
-- Mujer adulta
-- Outfit coherente (jeans, falda con medias o pantalón) que deje ver el calzado Hunter
-- Si son botas de agua: preferible que pantalón/jeans vayan metidos o no oculten la caña
+- Mujer adulta, look de invierno urbano (abrigo o chaqueta de invierno, opcional)
+- Jeans o pantalón metidos DENTRO de las botas para que se vea la caña Commando
+- Sin piel expuesta en tobillos/pantorrillas
 - Sin tipografía ni logos inventados fuera de los del producto real
 
+CÓMO USAR EN GEMINI (VIDEO):
+1) Modo VIDEO (no imagen fija).
+2) Sube primero las FOTOS DE PRODUCTO reales.
+3) Pega este prompt en el mismo mensaje.
+4) Si Gemini cambia el diseño: reitera fidelidad exacta a las fotos (brillo negro, fuelles, suela Original, perfil alto).
+
 ---
-VERSIÓN A — Video producto héroe (recomendado)
+VERSIÓN A — Video producto héroe · invierno con lluvia (recomendado)
 ---
 
-Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria del calzado Hunter (Botas Chelsea Commando Negras Brillantes Mujer). No rediseñes el producto: misma silueta, mismo color, mismos detalles.
+Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria: Botas Chelsea Commando Negras Brillantes Mujer Hunter (caucho gloss negro, fuelles laterales elásticos, lengüeta de nylon, suela con patrón Hunter Original, perfil más alto que la Chelsea clásica). No rediseñes el producto: misma silueta, mismo negro brillante, mismos detalles.
 
-Acción: una mujer camina con estilo por calle urbana; botas Chelsea negras brillantes Hunter en primer plano, acabado gloss fiel a las fotos.
+Acción: un día de invierno con lluvia continua. Una mujer camina con estilo por una calle urbana mojada, chapoteo suave en el asfalto; las botas Chelsea Commando negras brillantes son el héroe absoluto del plano. Gotas perladas sobre el caucho gloss demuestran impermeabilidad. Jeans metidos dentro de las botas; no se ve piel en tobillos.
 
-Cámara: ángulo que priorice el calzado (a menudo bajo o a la altura del pie), nítido, product-first. Muestra cualidades reales de la ficha (impermeabilidad, agarre, textura, detalles reflectantes o forro si aplica). Sin tipografía ni logos inventados. Ritmo cinematográfico comercial corto.
+Cámara: ángulo bajo a la altura del pie, nítido, product-first. Cara y torso secundarios. Reflejos de lluvia en el piso y en el acabado brillante. Sin tipografía ni logos inventados. Ritmo cinematográfico comercial corto, lluvia presente de principio a fin.

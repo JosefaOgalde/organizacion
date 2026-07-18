@@ -57,12 +57,13 @@ const CONTENIDOS = [
       'Perfil más alto (+15 mm) que la Chelsea brillante clásica',
     ],
     escenaA:
-      'una mujer camina con estilo por calle urbana; botas Chelsea negras brillantes Hunter en primer plano, acabado gloss fiel a las fotos',
+      'un día de invierno con lluvia continua; una mujer camina por calle urbana mojada; botas Chelsea Commando negras brillantes Hunter héroe del plano, gotas sobre el gloss, jeans metidos dentro de las botas',
     escenaB:
-      'mujer a mitad de zancada; se destaca el brillo del caucho, fuelles elásticos y suela Original en piso mojado',
+      'día de invierno con lluvia intensa; mujer a mitad de zancada cruzando charco; brillo waterproof, fuelles elásticos y suela Original con tracción en piso mojado',
     escenaC:
-      'close-up del brillo, fuelle lateral, plantilla/forro y suela Hunter; sin rediseñar la silueta Commando',
+      'close-up bajo lluvia invernal: gotas en gloss negro, fuelle lateral, lengüeta de nylon y suela Hunter Original en piso mojado; sin rediseñar la silueta Commando',
   },
+
   {
     n: 9,
     genero: 'mujer',

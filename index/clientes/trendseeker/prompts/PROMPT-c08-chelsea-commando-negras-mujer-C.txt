@@ -3,6 +3,7 @@ SKU: WFS1018RGL-BLK
 Link: https://trendseeker.cl/producto/botas-chelsea-commando-negras-brillantes-para-mujer/
 Público: MUJER (adulta)
 Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
+Escena fija: DÍA DE INVIERNO CON LLUVIA. El producto es el héroe; la lluvia demuestra waterproof.
 
 CARACTERÍSTICAS (no inventar otras):
 - Hunter Chelsea Commando / militar negras brillantes para mujer
@@ -13,17 +14,24 @@ CARACTERÍSTICAS (no inventar otras):
 - Suela moldeada con patrón Hunter Original
 - Fuelles laterales elásticos y lengüeta de nylon
 - Perfil más alto (+15 mm) que la Chelsea brillante clásica
+- Acabado gloss negro fiel a las fotos de producto
 
 VESTUARIO / MODELO:
-- Mujer adulta
-- Outfit coherente (jeans, falda con medias o pantalón) que deje ver el calzado Hunter
-- Si son botas de agua: preferible que pantalón/jeans vayan metidos o no oculten la caña
+- Mujer adulta, look de invierno urbano
+- Jeans o pantalón metidos DENTRO de las botas para que se vea la caña Commando
+- Sin piel expuesta en tobillos/pantorrillas
 - Sin tipografía ni logos inventados fuera de los del producto real
 
+CÓMO USAR EN GEMINI (VIDEO):
+1) Modo VIDEO (no imagen fija).
+2) Sube primero las FOTOS DE PRODUCTO reales.
+3) Pega este prompt en el mismo mensaje.
+4) Si Gemini cambia el diseño: reitera fidelidad exacta a las fotos.
+
 ---
-VERSIÓN C — Video close-up de detalle
+VERSIÓN C — Video close-up de detalle · invierno con lluvia
 ---
 
-Genera un VIDEO corto tipo close-up publicitario. close-up del brillo, fuelle lateral, plantilla/forro y suela Hunter; sin rediseñar la silueta Commando.
+Genera un VIDEO corto tipo close-up publicitario de las Botas Chelsea Commando Negras Brillantes de las fotos de referencia. Día de invierno con lluvia: gotas sobre el gloss negro mientras la mujer camina; jeans dentro de las botas, sin piel visible.
 
-Enfoque en textura, color fiel a las refs, detalles de ficha y contacto con el piso. Cámara lenta, product-first. Sin rediseñar el calzado.
+Enfoque en textura brillante, gotas que perlan en el caucho waterproof, fuelle lateral elástico, lengüeta de nylon, contacto de la suela Hunter Original con el piso mojado. Cámara baja, lenta, product-first. Sin rediseñar la silueta Commando ni inventar logos.
