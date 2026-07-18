@@ -224,13 +224,21 @@ table.imp-table {
   line-height: 1.45;
 }
 
-/* Balance visual: gastos − ventas */
+/* Balance visual: cuánto falta para salir de deuda */
 .imp-balance {
   margin: 0.5rem 0 1rem;
-  padding: 1rem 1.1rem;
+  padding: 1.1rem 1.2rem;
   border-radius: 14px;
   background: #fff;
   border: 1px solid var(--imp-border);
+}
+.imp-balance--deuda {
+  border-color: color-mix(in srgb, var(--imp-danger, #b85c6e) 35%, var(--imp-border));
+  background: linear-gradient(180deg, #fff8f4 0%, #fff 55%);
+}
+.imp-balance--ok {
+  border-color: color-mix(in srgb, var(--imp-ok, #3d8b6e) 40%, var(--imp-border));
+  background: linear-gradient(180deg, #f3faf6 0%, #fff 55%);
 }
 .imp-balance__label {
   font-size: 0.78rem;
@@ -240,11 +248,32 @@ table.imp-table {
   font-weight: 700;
 }
 .imp-balance__valor {
-  margin: 0.2rem 0 0.55rem;
-  font-size: 1.55rem;
+  margin: 0.2rem 0 0.35rem;
+  font-size: 1.85rem;
   font-weight: 800;
   color: var(--imp-text);
   font-variant-numeric: tabular-nums;
+}
+.imp-balance--deuda .imp-balance__valor { color: var(--imp-danger, #b85c6e); }
+.imp-balance--ok .imp-balance__valor { color: var(--imp-ok, #3d8b6e); }
+.imp-balance__meta {
+  margin: 0 0 0.65rem;
+  font-size: 0.9rem;
+  color: var(--imp-muted);
+  line-height: 1.4;
+}
+.imp-balance__progress {
+  height: 10px;
+  border-radius: 999px;
+  background: #efe4cc;
+  overflow: hidden;
+  margin-bottom: 0.65rem;
+}
+.imp-balance__progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--imp-ok, #3d8b6e);
+  transition: width 0.4s ease;
 }
 .imp-balance__bar {
   height: 12px;
@@ -270,6 +299,22 @@ table.imp-table {
   margin-top: 0.55rem;
   font-size: 0.82rem;
   color: var(--imp-muted);
+}
+.imp-card--costo-destacado {
+  border-color: color-mix(in srgb, var(--imp-border) 70%, #c47a3a);
+  background: linear-gradient(180deg, #fffaf2 0%, #fff 60%);
+}
+.imp-linkish {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  color: var(--imp-text);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
 }
 .imp-dot {
   display: inline-block;

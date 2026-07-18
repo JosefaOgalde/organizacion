@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-18T02:20:17.000Z",
+    "actualizado": "2026-07-18T02:35:00.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -240,6 +240,20 @@
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 0,
       "notas": "6 h de impresión. Precio de venta a público se carga a mano."
+    },
+    {
+      "id": "prod-porta-lata-monster",
+      "sku": "IMP-20260718-005MON",
+      "nombre": "Porta lata Monster",
+      "activo": true,
+      "filamentoGramos": 144.45,
+      "costoFilamentoKgClp": 12690,
+      "horasImpresion": 3.42,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 0,
+      "notas": "Slicer: 144,45 g total (modelo 135,55 + soportes 8,43 + purge 0,47) · 3 h 25 m · PLA amarillo $12.690/kg. Logo en relieve, sin pintado."
     }
   ],
   "planAds": {

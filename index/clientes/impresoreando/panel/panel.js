@@ -60,6 +60,7 @@
     if (agruparGastosPorRegistro(d)) changed = true;
     if (asegurarProductoPortacompletosGato(d)) changed = true;
     if (asegurarProductoPortacompletosPerro(d)) changed = true;
+    if (asegurarProductoPortaLataMonster(d)) changed = true;
     if (asegurarSkusProductos(d)) changed = true;
     const gastos = d.gastos;
     for (const g of gastos) {
@@ -279,6 +280,46 @@
     return changed;
   }
 
+  /** Porta lata Monster — datos Bambu/Orca: 144,45 g · 3 h 25 m · PLA amarillo. */
+  function asegurarProductoPortaLataMonster(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-porta-lata-monster';
+    const existing = d.productos.find(
+      (p) => p.id === id || /porta\s*lata.*monster|monster.*porta\s*lata/i.test(p.nombre || '')
+    );
+    const costoKgAmarillo = 12690; // Elegoo PLA amarillo (Mercado Libre)
+    const campos = {
+      nombre: 'Porta lata Monster',
+      activo: true,
+      filamentoGramos: 144.45,
+      costoFilamentoKgClp: costoKgAmarillo,
+      horasImpresion: 3.42,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: existing ? Number(existing.precioVentaSugeridoClp || 0) : 0,
+      notas:
+        'Slicer: 144,45 g total (modelo 135,55 + soportes 8,43 + purge 0,47) · 3 h 25 m · PLA amarillo $12.690/kg. Logo en relieve, sin pintado.',
+    };
+    if (!existing) {
+      d.productos.push({ id, ...campos });
+      return true;
+    }
+    let changed = false;
+    for (const [k, v] of Object.entries(campos)) {
+      if (k === 'precioVentaSugeridoClp') continue;
+      if (existing[k] !== v) {
+        existing[k] = v;
+        changed = true;
+      }
+    }
+    if (!existing.id) {
+      existing.id = id;
+      changed = true;
+    }
+    return changed;
+  }
+
   function asegurarSkusProductos(d) {
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     let changed = false;
@@ -416,8 +457,11 @@
     const ads = Number(data.planAds?.presupuestoMensualClp || 0);
     /** Resultado = ventas − gastos − operación (sube al vender; más negativo si solo hay gastos). */
     const resultado = ventas - gastos - operacion;
+    const metaRecuperar = gastos + operacion;
     /** Saldo por recuperar = gastos + operación − ventas (baja cada vez que venden). */
-    const saldoPendiente = Math.max(0, gastos + operacion - ventas);
+    const saldoPendiente = Math.max(0, metaRecuperar - ventas);
+    const pctRecuperado = metaRecuperar > 0 ? Math.min(100, (ventas / metaRecuperar) * 100) : 100;
+    const sinDeuda = saldoPendiente <= 0;
     const cadaUnoGastos = gastos / 2;
     const cadaUnoResultado = resultado / 2;
     const cap = data.meta?.capital || {};
@@ -429,25 +473,52 @@
     const totalOrden = Number(orden?.montoNeto || 0);
     const totalMl = Number(ml?.montoNeto || 0);
     const cats = gastosPorCategoria();
-    const denom = Math.max(gastos + operacion, ventas, 1);
-    const pctGastos = Math.min(100, ((gastos + operacion) / denom) * 100);
+    const denom = Math.max(metaRecuperar, ventas, 1);
+    const pctGastos = Math.min(100, (metaRecuperar / denom) * 100);
     const pctVentas = Math.min(100, (ventas / denom) * 100);
     const linkVenta = `${location.origin}/index/clientes/impresoreando/panel/venta/`;
     const esLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
+    const portaLata = (data.productos || []).find((p) => p.id === 'prod-porta-lata-monster');
+    const costoPortaLata = portaLata ? costoProducto(portaLata) : null;
 
     $('#tab-resumen').innerHTML = `
-      <div class="imp-balance">
-        <div class="imp-balance__label">Saldo por recuperar (gastos − ventas)</div>
+      <div class="imp-balance ${sinDeuda ? 'imp-balance--ok' : 'imp-balance--deuda'}">
+        <div class="imp-balance__label">${sinDeuda ? 'Sin deuda de sociedad' : 'Para salir de deuda falta recuperar'}</div>
         <div class="imp-balance__valor">${money(saldoPendiente)}</div>
+        <p class="imp-balance__meta">
+          ${sinDeuda
+            ? `Ya recuperaron ${money(ventas)} — las ventas cubren gastos + operación.`
+            : `Ya recuperaron <strong>${money(ventas)}</strong> de <strong>${money(metaRecuperar)}</strong>
+               · progreso <strong>${pctRecuperado.toFixed(1)}%</strong>
+               · meta: llegar a ${money(metaRecuperar)} en ventas.`}
+        </p>
+        <div class="imp-balance__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pctRecuperado.toFixed(0)}" aria-label="Progreso hacia salir de deuda">
+          <div class="imp-balance__progress-fill" style="width:${pctRecuperado}%"></div>
+        </div>
         <div class="imp-balance__bar" title="Al vender, este saldo baja">
           <div class="imp-balance__fill--gastos" style="width:${pctGastos}%"></div>
           <div class="imp-balance__fill--ventas" style="width:${pctVentas}%"></div>
         </div>
         <div class="imp-balance__legend">
-          <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(gastos + operacion)}</span>
-          <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)} · cada venta baja el saldo</span>
+          <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(metaRecuperar)}</span>
+          <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)} · cada venta baja lo que falta</span>
         </div>
       </div>
+      ${
+        costoPortaLata
+          ? `<div class="imp-card imp-card--costo-destacado">
+        <h2>Último costo de pieza · Porta lata Monster</h2>
+        <p class="imp-muted">Datos del slicer: 144,45 g · 3 h 25 m · PLA amarillo</p>
+        <div class="imp-grid">
+          <div class="imp-kpi"><span>Filamento</span><strong>${money(costoPortaLata.filamento)}</strong></div>
+          <div class="imp-kpi"><span>Luz</span><strong>${money(costoPortaLata.luz)}</strong></div>
+          <div class="imp-kpi"><span>Bolsa</span><strong>${money(costoPortaLata.bolsa)}</strong></div>
+          <div class="imp-kpi imp-kpi--accent"><span>Costo de hacer el vaso</span><strong>${money(costoPortaLata.total)}</strong></div>
+        </div>
+        <p class="imp-muted">Sin pintado (logo en relieve). Detalle en pestaña <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>.</p>
+      </div>`
+          : ''
+      }
       <div class="imp-grid">
         <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
         <div class="imp-kpi imp-kpi--ok"><span>Ventas</span><strong>${money(ventas)}</strong></div>
@@ -482,6 +553,7 @@
           <li>Mercado Libre (5 PLA): <strong>${money(totalMl)}</strong></li>
         </ul>
         <p class="imp-deuda"><strong>Capital:</strong> lo aportó <strong>Nicolás</strong>. Todos los gastos son de <strong>ambos</strong>. Josefa le debe a Nicolás el <strong>50%</strong> del capital (${money(deuda)}).</p>
+        <p class="imp-muted">Esa deuda entre socios es distinta del saldo de arriba: el saldo baja con cada venta del negocio; la deuda 50% de Josefa se actualiza con el capital aportado.</p>
       </div>
       <div class="imp-card">
         <h2>Link para registrar ventas (celular)</h2>
@@ -513,6 +585,13 @@
       } catch {
         setStatus('No se pudo copiar — selecciónalo a mano', 'warn');
       }
+    });
+
+    $('#tab-resumen')?.querySelectorAll('[data-goto-tab]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const tab = btn.getAttribute('data-goto-tab');
+        document.querySelector(`#imp-tabs button[data-tab="${tab}"]`)?.click();
+      });
     });
 
     fetch('/api/acceso', { cache: 'no-store' })
