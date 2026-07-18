@@ -54,7 +54,7 @@ if not exist "data\organizacion-live.json" (
   )
 )
 
-echo  4^) ECR NL: fechas 21/23 jul + Portada NL1 hecha...
+echo  4^) ECR NL: fechas 20/22 jul + Portada NL1 hecha...
 if exist "data\organizacion-live.json" (
   "%PHP_EXE%" scripts\actualizar-fechas-ecr-nl-agosto.php
   if errorlevel 1 (

@@ -14,8 +14,8 @@ declare(strict_types=1);
 $root = dirname(__DIR__);
 $live = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-live.json';
 
-const FECHA_NL1 = '2026-07-21';
-const FECHA_NL2 = '2026-07-23';
+const FECHA_NL1 = '2026-07-20';
+const FECHA_NL2 = '2026-07-22';
 const PUB_NL1 = '2026-08-01';
 const PUB_NL2 = '2026-08-02';
 const ENTREGABLE_PORTADA =

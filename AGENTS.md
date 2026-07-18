@@ -52,7 +52,7 @@
 - Modal finalizado. HTML para Elementor: `index/clientes/ecr/capacitaciones/modal-ruta-sectores.html`.
 - Solo Excel/Power BI unificados (`Excel - Nivel` / `Power BI - Nivel`); resto de nombres literales.
 - Organizador: `node scripts/add-ecr-rutas-viernes.js` y abrir `http://localhost:3000/index.html?disco=1`.
-- Ecosistema NL agosto: calendario **NL 1 = 21 jul** · **NL 2 = 23 jul** (pub LinkedIn 1/2 ago). Crear/fechas: `ASEGURAR-ECR-NL-CALENDARIO.bat`. Portada NL 1 hecha. Copys: `newsletter/copys/`. Landing ECR: sección ecosistema NL.
+- Ecosistema NL agosto: calendario **NL 1 = 20 jul** · **NL 2 = 22 jul** (pub LinkedIn 1/2 ago). Crear/fechas: `ASEGURAR-ECR-NL-CALENDARIO.bat`. Portada NL 1 hecha. Copys: `newsletter/copys/`. Landing ECR: sección ecosistema NL.
 
 ### Portal clientes — Nueva tarea
 - En cada landing de cliente (`portal-cliente.js`) hay un botón **Nueva tarea** arriba en la toolbar.

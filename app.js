@@ -1842,6 +1842,8 @@ function limpiarTareasJMLegacy(data) {
 function asegurarTareasJoyasMercuryFase2(data) {
   const seeds = window.JM_TODO_SEED;
   if (!Array.isArray(seeds) || !seeds.length) return data;
+  // Serie F2 archivada del calendario (trabajo actual ya no es D1–D20)
+  if (data.meta?.jmFase2ArchivadaCalendario === true) return data;
 
   limpiarTareasJMLegacy(data);
   const rolId = 'rol-jm-dev';

@@ -3,7 +3,7 @@ chcp 65001 >nul
 cd /d "%~dp0"
 echo.
 echo  === ECR NL 1 y NL 2 → calendario julio ===
-echo  NL 1 = martes 21 jul · NL 2 = jueves 23 jul
+echo  NL 1 = lunes 20 jul · NL 2 = miercoles 22 jul
 echo.
 
 set PATH=C:\laragon\bin\nodejs\node-v22;%PATH%
@@ -30,8 +30,8 @@ if %ERR% neq 0 (
   exit /b %ERR%
 )
 
-echo Abriendo julio — mira el 21 y el 23...
-start "" "http://localhost:3000/index.html?disco=1&fecha=2026-07-21&vista=mes"
+echo Abriendo julio — mira el 20 y el 22...
+start "" "http://localhost:3000/index.html?disco=1&fecha=2026-07-20&vista=mes"
 echo.
 echo Ctrl+F5 si no ves las tareas celestes ECR.
 pause

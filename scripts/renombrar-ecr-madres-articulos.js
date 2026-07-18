@@ -5,7 +5,7 @@
  *   2) «Equipos en terreno…» (ART 23) → NL 2 de agosto
  *
  * Renombra/actualiza madres NL 1 y NL 2 con subtareas indexadas el mismo día.
- * Fechas calendario: NL 1 = 21 jul · NL 2 = 23 jul (pub LinkedIn 1/2 ago).
+ * Fechas calendario: NL 1 = 20 jul · NL 2 = 22 jul (pub LinkedIn 1/2 ago).
  *   node scripts/renombrar-ecr-madres-articulos.js
  * Luego: http://127.0.0.1:8000/index.html?disco=1 → vista Semana o Día
  */
@@ -17,11 +17,11 @@ const CLIENTE = 'cli-ecr';
 const ROL = 'rol-ecr-cm';
 
 const MADRE_TI_ID = 'tarea-ecr-ecosistema-nl-agosto-2026-07-17';
-const FECHA_TI = '2026-07-21';
+const FECHA_TI = '2026-07-20';
 const PUB_TI = '2026-08-01';
 
 const MADRE_ET_ID = 'tarea-ecr-ecosistema-equipos-terreno-2026-07-24';
-const FECHA_ET = '2026-07-23';
+const FECHA_ET = '2026-07-22';
 const PUB_ET = '2026-08-02';
 /** Subtareas ET el mismo día que la madre (como NL 1), para verlas indexadas 1–4 debajo. */
 const FECHA_ET_HIJOS = FECHA_ET;

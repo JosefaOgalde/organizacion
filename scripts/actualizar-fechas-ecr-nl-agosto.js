@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
  * ECR — fechas calendario NL (visibles en julio):
- *   NL 1 (TI) → 2026-07-21
- *   NL 2 (ET) → 2026-07-23
+ *   NL 1 (TI) → 2026-07-20
+ *   NL 2 (ET) → 2026-07-22
  * Publicación LinkedIn: 1 ago / 2 ago.
  * Marca Portada NL 1 como hecha (Canva finales).
  *
@@ -13,8 +13,8 @@ const fs = require('fs');
 const path = require('path');
 
 const LIVE = path.join(__dirname, '..', 'data', 'organizacion-live.json');
-const FECHA_NL1 = '2026-07-21';
-const FECHA_NL2 = '2026-07-23';
+const FECHA_NL1 = '2026-07-20';
+const FECHA_NL2 = '2026-07-22';
 const PUB_NL1 = '2026-08-01';
 const PUB_NL2 = '2026-08-02';
 const PORTADA_NL1 = 'tarea-ecr-nl-agosto-portada-2026-07-17';

@@ -4,7 +4,7 @@ cd /d "%~dp0"
 echo.
 echo  === ECR · fechas NL agosto ^(PHP / Laravel, sin Node^) ===
 echo  Edita data\organizacion-live.json EN ESTA PC ^(no viene por git^)
-echo  NL 1 → 21 jul · NL 2 → 23 jul · Portada NL 1 hecha
+echo  NL 1 → 20 jul · NL 2 → 22 jul · Portada NL 1 hecha
 echo.
 
 set "PHP_EXE="
