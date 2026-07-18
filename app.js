@@ -6669,61 +6669,16 @@ function htmlTareaPendiente(t) {
   const fechaRef = t.fechaOriginal || t.fecha;
   const fechaLabel = fechaRef ? formatFecha(parseISO(fechaRef)) : 'Sin fecha';
   const horaLabel = t.horaInicio ? ` · ${etiquetaHoraTarea(t)}` : '';
+  const sub = t.parentId ? ' · subtarea' : esTareaMadreCalendario(t) ? ' · madre' : '';
+  const pospuesta = t.pendiente ? ' · pospuesta' : '';
   return `<article class="tarea tarea--pendiente tarea--${t.prioridad} dia-item--clic" data-id="${t.id}" style="border-left-color:${col.border};background:${col.bg}" title="Clic para abrir la misma tarea">
     <div class="tarea-pendiente__meta">
-      ${cli ? `<span class="tarea-pendiente__cliente">${escapeHtml(cli.nombre)}</span>` : ''}
-      <span class="tarea-pendiente__fecha">Fecha prevista: ${escapeHtml(fechaLabel)}${escapeHtml(horaLabel)}</span>
+      <span class="tarea-pendiente__fecha">${escapeHtml(fechaLabel)}${escapeHtml(horaLabel)}${escapeHtml(sub)}${escapeHtml(pospuesta)}</span>
     </div>
     <div class="tarea__titulo">${escapeHtml(titulo)}</div>
-    ${t.notas ? `<p class="tarea__notas">${escapeHtml(t.notas)}</p>` : ''}
+    ${t.notas ? `<p class="tarea__notas">${escapeHtml(String(t.notas).slice(0, 160))}${String(t.notas).length > 160 ? '…' : ''}</p>` : ''}
     ${htmlBotonesTarea(t, { modo: 'pend' })}
   </article>`;
-}
-
-function renderMesOtrasTareas(y, m) {
-  const box = document.getElementById('mes-otras');
-  if (!box) return;
-  const skipHechas = ocultarHechasActivo();
-  const fuera = (datos.tareas || [])
-    .filter((t) => {
-      if (!t?.fecha || t.parentId || t.pendiente) return false;
-      if (skipHechas && t.completada) return false;
-      const d = parseISO(t.fecha);
-      return d.getFullYear() !== y || d.getMonth() !== m;
-    })
-    .sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
-  // Una pastilla por madre / tarea única (agrupar por fecha+cliente título corto)
-  const vistos = new Set();
-  const pills = [];
-  for (const t of fuera) {
-    const key = `${t.fecha}|${t.clienteId}|${t.id}`;
-    if (vistos.has(key)) continue;
-    vistos.add(key);
-    const cli = clienteDe(t.clienteId);
-    const col = colorDe(cli);
-    const mesLabel = parseISO(t.fecha).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
-    const abrev = cli?.abrev || '—';
-    pills.push(
-      `<button type="button" class="mes-otras__pill" data-fecha="${escapeHtml(t.fecha)}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(abrev)} · ${escapeHtml(mesLabel)} · ${escapeHtml(tituloMes(t, 36))}</button>`
-    );
-    if (pills.length >= 12) break;
-  }
-  if (!pills.length) {
-    box.hidden = true;
-    box.innerHTML = '';
-    return;
-  }
-  const extra = fuera.length > pills.length ? ` · +${fuera.length - pills.length} más` : '';
-  box.hidden = false;
-  box.innerHTML =
-    `<span class="mes-otras__label">Otras fechas (no están en este mes)${extra}:</span>` +
-    `<div class="mes-otras__pills">${pills.join('')}</div>`;
-  box.querySelectorAll('.mes-otras__pill').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const f = btn.dataset.fecha;
-      if (f) irASemanaDe(f);
-    });
-  });
 }
 
 function renderCalendarioMes() {
@@ -6737,7 +6692,6 @@ function renderCalendarioMes() {
   const hoyStr = toISO(hoy());
 
   rango.textContent = ref.toLocaleDateString('es-CL', { month: 'long', year: 'numeric' });
-  renderMesOtrasTareas(y, m);
 
   const primerDia = new Date(y, m, 1);
   const inicioGrid = inicioSemana(primerDia);
@@ -7621,14 +7575,63 @@ function bindAgenteTarea(tarea) {
 function renderPendientes() {
   const lista = document.getElementById('lista-pendientes');
   if (!lista) return;
-  const items = tareasOrdenadasPorHorario(datos.tareas.filter(t => t.pendiente && !t.completada));
-  if (!items.length) {
+
+  // Todas las no hechas de todos los clientes (madres + subtareas + pospuestas)
+  const abiertas = (datos.tareas || []).filter((t) => t && !t.completada);
+  if (!abiertas.length) {
     lista.innerHTML = '<p class="task-list--empty">No hay tareas pendientes</p>';
     return;
   }
-  lista.innerHTML = items.map(t => htmlTareaPendiente(t)).join('');
+
+  const porCliente = new Map();
+  for (const t of abiertas) {
+    const key = t.clienteId || '__sin__';
+    if (!porCliente.has(key)) porCliente.set(key, []);
+    porCliente.get(key).push(t);
+  }
+
+  // Orden: clientes con más pendientes primero; dentro, fecha + hora
+  const grupos = [...porCliente.entries()].sort((a, b) => {
+    if (b[1].length !== a[1].length) return b[1].length - a[1].length;
+    const na = clienteDe(a[0])?.nombre || a[0] || 'Sin cliente';
+    const nb = clienteDe(b[0])?.nombre || b[0] || 'Sin cliente';
+    return na.localeCompare(nb, 'es');
+  });
+
+  const html = grupos
+    .map(([cliId, tareas]) => {
+      const cli = clienteDe(cliId);
+      const col = colorDe(cli);
+      const nombre = cli?.nombre || 'Sin cliente';
+      const abrev = cli?.abrev || '—';
+      const ordenadas = [...tareas].sort(
+        (a, b) =>
+          String(a.fecha || '').localeCompare(String(b.fecha || '')) ||
+          minutosHora(a.horaInicio) - minutosHora(b.horaInicio) ||
+          String(a.titulo || '').localeCompare(String(b.titulo || ''), 'es')
+      );
+      const cards = ordenadas.map((t) => htmlTareaPendiente(t)).join('');
+      return `<section class="pend-cli" style="border-color:${col.border}">
+        <header class="pend-cli__head" style="background:${col.bg};color:${col.text}">
+          <span class="pend-cli__abrev">${escapeHtml(abrev)}</span>
+          <h3 class="pend-cli__nombre">${escapeHtml(nombre)}</h3>
+          <span class="pend-cli__count">${ordenadas.length}</span>
+        </header>
+        <div class="pend-cli__lista task-list">${cards}</div>
+      </section>`;
+    })
+    .join('');
+
+  lista.innerHTML = `<p class="pendientes-resumen">${abiertas.length} pendientes · ${grupos.length} cliente${grupos.length === 1 ? '' : 's'}</p>${html}`;
   bindAccionesTarea(lista);
   bindAccionesPendiente(lista);
+  lista.querySelectorAll('.tarea--pendiente[data-id]').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('button, a, input, select, label')) return;
+      const id = el.dataset.id;
+      if (id) irATarea(id);
+    });
+  });
 }
 
 function renderReunionesClientes() {
