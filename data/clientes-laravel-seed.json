@@ -125,10 +125,10 @@
       "nombre": "Tronwell",
       "abrev": "TW",
       "tipo": "freelance",
-      "color": "indigo",
-      "color_border": null,
-      "color_bg": null,
-      "color_text": null,
+      "color": "azul",
+      "color_border": "#2f6bc4",
+      "color_bg": "#d9e6f7",
+      "color_text": "#163a6b",
       "agente": "Agente Tronwell",
       "resumen": "Ajuste de textos y documentos Word"
     }

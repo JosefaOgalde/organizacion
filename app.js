@@ -17,8 +17,8 @@ const COLORES = {
   grafito: { border: '#b8c0c8', bg: '#eef0f4', text: '#5a6a7a' },
   /** Impresoreando — ámbar / mostaza suave (único; no reutilizar con otros clientes) */
   ambar: { border: '#d4b06a', bg: '#faf6eb', text: '#7a5c28' },
-  /** Tronwell — índigo suave */
-  indigo: { border: '#9aa8d4', bg: '#eef0f8', text: '#3d4a72' },
+  /** Tronwell — azul cobalto (distinto de celeste ECR y agua MKOF) */
+  azul: { border: '#2f6bc4', bg: '#d9e6f7', text: '#163a6b' },
   /** Salud — verde más definido, aún claro pero distinto de clientes menta/celeste */
   salud: { border: '#2f9d72', bg: '#c5e8d8', text: '#1a5c42' },
   /** Reuniones — azul pizarra, no usa el color del cliente */
@@ -812,7 +812,7 @@ function datosIniciales() {
         nombre: 'Tronwell',
         abrev: 'TW',
         tipo: 'freelance',
-        color: 'indigo',
+        color: 'azul',
         roles: [
           {
             id: 'rol-tw-textos',
@@ -2085,7 +2085,7 @@ function asegurarClienteTronwell(data) {
   }
   if (cli) {
     cli.abrev = 'TW';
-    cli.color = 'indigo';
+    cli.color = 'azul';
     cli.nombre = cli.nombre || 'Tronwell';
     cli.tipo = cli.tipo || 'freelance';
   }

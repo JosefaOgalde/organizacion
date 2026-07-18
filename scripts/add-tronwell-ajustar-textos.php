@@ -22,7 +22,7 @@ $cliente = [
     'nombre' => 'Tronwell',
     'abrev' => 'TW',
     'tipo' => 'freelance',
-    'color' => 'indigo',
+    'color' => 'azul',
     'roles' => [
         [
             'id' => $rolId,
