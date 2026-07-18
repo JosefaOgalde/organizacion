@@ -12,6 +12,7 @@
   --imp-chart-gastos: #c47a3a;
   --imp-chart-ventas: #3d8b6e;
   --imp-chart-ops: #7a6bb0;
+  --imp-chart-pedidos: #2f6f9f;
 }
 
 .imp-body {
@@ -373,6 +374,9 @@ table.imp-table {
   overflow: hidden;
   display: flex;
 }
+.imp-balance__bar--pipeline {
+  margin-top: 0.75rem;
+}
 .imp-balance__fill--gastos {
   background: var(--imp-chart-gastos);
   height: 100%;
@@ -380,6 +384,11 @@ table.imp-table {
 }
 .imp-balance__fill--ventas {
   background: var(--imp-chart-ventas);
+  height: 100%;
+  transition: width 0.35s ease;
+}
+.imp-balance__fill--pedidos {
+  background: var(--imp-chart-pedidos);
   height: 100%;
   transition: width 0.35s ease;
 }
@@ -417,6 +426,7 @@ table.imp-table {
 }
 .imp-dot--gastos { background: var(--imp-chart-gastos); }
 .imp-dot--ventas { background: var(--imp-chart-ventas); }
+.imp-dot--pedidos { background: var(--imp-chart-pedidos); }
 
 .imp-charts {
   display: grid;

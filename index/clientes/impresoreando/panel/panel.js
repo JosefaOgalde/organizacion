@@ -871,16 +871,23 @@
     const totalOrden = Number(orden?.montoNeto || 0);
     const totalMl = Number(ml?.montoNeto || 0);
     const cats = gastosPorCategoria();
-    const denom = Math.max(metaRecuperar, ventas, 1);
-    const pctGastos = Math.min(100, (metaRecuperar / denom) * 100);
-    const pctVentas = Math.min(100, (ventas / denom) * 100);
-    const linkVenta = `${location.origin}/index/clientes/impresoreando/panel/venta/`;
-    const esLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
     const pedidosActivos = (data.pedidos || []).filter((p) =>
       pedidoActivo(p.estado || 'pendiente')
     );
     const pedidosPendientes = pedidosActivos;
     const montoPedidosPend = pedidosActivos.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
+    const gastosMasPedidos = metaRecuperar + montoPedidosPend;
+    const denom = Math.max(metaRecuperar, ventas, gastosMasPedidos, 1);
+    const pctGastos = Math.min(100, (metaRecuperar / denom) * 100);
+    const pctVentas = Math.min(100, (ventas / denom) * 100);
+    const pctPedidosBar = Math.min(100, (montoPedidosPend / denom) * 100);
+    const pctGastosEnPipeline = Math.min(100, (metaRecuperar / denom) * 100);
+    const pctPedidosEnPipeline = Math.min(
+      Math.max(0, 100 - pctGastosEnPipeline),
+      (montoPedidosPend / denom) * 100
+    );
+    const linkVenta = `${location.origin}/index/clientes/impresoreando/panel/venta/`;
+    const esLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
     const pctMarkup = Number(data.parametros?.margenObjetivoPct ?? 100);
     const filasCostoProd = (data.productos || [])
       .map((prod) => {
@@ -909,13 +916,22 @@
         <div class="imp-balance__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pctRecuperado.toFixed(0)}" aria-label="Progreso hacia salir de deuda">
           <div class="imp-balance__progress-fill" style="width:${pctRecuperado}%"></div>
         </div>
-        <div class="imp-balance__bar" title="Al vender, este saldo baja">
+        <div class="imp-balance__bar" title="Gastos + operación vs ventas contabilizadas">
           <div class="imp-balance__fill--gastos" style="width:${pctGastos}%"></div>
           <div class="imp-balance__fill--ventas" style="width:${pctVentas}%"></div>
         </div>
         <div class="imp-balance__legend">
           <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(metaRecuperar)}</span>
           <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)} · solo cuentan al transferir pedido → venta</span>
+        </div>
+        <div class="imp-balance__bar imp-balance__bar--pipeline" title="Gastos + pedidos activos (aún no bajan la deuda)" aria-label="Gastos más pedidos activos">
+          <div class="imp-balance__fill--gastos" style="width:${pctGastosEnPipeline}%"></div>
+          <div class="imp-balance__fill--pedidos" style="width:${pctPedidosEnPipeline}%"></div>
+        </div>
+        <div class="imp-balance__legend">
+          <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(metaRecuperar)}</span>
+          <span><i class="imp-dot imp-dot--pedidos"></i>Pedidos activos ${money(montoPedidosPend)} (${pedidosActivos.length})</span>
+          <span><strong>Total ${money(gastosMasPedidos)}</strong></span>
         </div>
       </div>
       <div class="imp-card">
