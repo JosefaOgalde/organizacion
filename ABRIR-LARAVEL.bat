@@ -54,6 +54,16 @@ if not exist "data\organizacion-live.json" (
   )
 )
 
+echo  4^) ECR NL agosto: fechas 20/22 ago + Portada NL1 hecha...
+if exist "data\organizacion-live.json" (
+  "%PHP_EXE%" scripts\actualizar-fechas-ecr-nl-agosto.php
+  if errorlevel 1 (
+    echo  ^(aviso^) No se pudieron actualizar fechas ECR — puedes correr ACTUALIZAR-ECR-NL-AGOSTO.bat
+  )
+) else (
+  echo  ^(aviso^) Sin organizacion-live.json — salta paso ECR
+)
+
 echo.
 echo  Arrancando http://127.0.0.1:8000 ...
 start "Laravel · 8000" cmd /k "cd /d "%~dp0backend" && "%PHP_EXE%" artisan serve --host=127.0.0.1 --port=8000"

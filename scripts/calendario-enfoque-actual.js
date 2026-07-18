@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 /**
- * Quita del calendario las series antiguas JM F2 / MOVA auth
- * y restaura el trabajo actual (TS Contenidos 7–12 + ECR NL agosto).
+ * Alinea el live al trabajo vigente:
+ *   - Quita solo MOVA auth (auditoría vieja)
+ *   - TS Contenidos 7–12
+ *   - ECR NL: NL 1 → 20 ago · NL 2 → 22 ago · Portada NL 1 hecha
+ *   - JM Fase 2: se conserva (no archivar); el progreso va en JM_TODO_PROGRESO
  *
  *   node scripts/calendario-enfoque-actual.js
  * Luego: http://localhost:3000/index.html?disco=1
+ *   o Laravel: http://127.0.0.1:8000/index.html
  */
 const fs = require('fs');
 const path = require('path');
@@ -13,7 +17,8 @@ const { spawnSync } = require('child_process');
 const ROOT = path.join(__dirname, '..');
 const LIVE = path.join(ROOT, 'data', 'organizacion-live.json');
 
-const PREFIJOS_ARCHIVAR = [/^tarea-jm-f2-/, /^tarea-mova-auth-/];
+/** Solo series descartadas; JM y ECR/TS se actualizan, no se borran. */
+const PREFIJOS_ARCHIVAR = [/^tarea-mova-auth-/];
 
 function main() {
   if (!fs.existsSync(LIVE)) {
@@ -37,17 +42,18 @@ function main() {
   data.meta.modoTrabajo = 'manual';
   data.meta.autoGenerarTareas = false;
   data.meta.nota =
-    'Enfoque actual: TS Contenidos 7–12 + ECR NL agosto. Series JM F2 / MOVA auth archivadas del calendario.';
+    'Vigente: TS 7–12 · ECR NL1=20 ago / NL2=22 ago · JM Fase 2 (progreso en jm-backup).';
   data.respaldoActualizado = new Date().toISOString().slice(0, 10);
 
   fs.writeFileSync(LIVE, JSON.stringify(data, null, 2) + '\n', 'utf8');
-  console.log(`Archivadas ${quitadas.length} tareas antiguas (de ${antes}).`);
+  console.log(`Archivadas ${quitadas.length} tareas MOVA (de ${antes}). JM se conserva.`);
   quitadas.forEach((l) => console.log('  -', l));
 
   const scripts = [
     'add-ts-contenidos-7-12.js',
     'add-ecr-ecosistema-nl-agosto.js',
     'renombrar-ecr-madres-articulos.js',
+    'actualizar-fechas-ecr-nl-agosto.js',
   ];
   for (const name of scripts) {
     const abs = path.join(__dirname, name);
@@ -62,14 +68,44 @@ function main() {
     }
   }
 
+  // Refrescar progreso JM desde JM_TODO_PROGRESO (sin pisar fechas agendaFijada)
+  try {
+    const live = JSON.parse(fs.readFileSync(LIVE, 'utf8'));
+    // Cargar progreso vía eval del archivo browser (solo la parte PROGRESO)
+    const jmSrc = fs.readFileSync(path.join(ROOT, 'data', 'jm-backup-contenido.js'), 'utf8');
+    const m = jmSrc.match(/window\.JM_TODO_PROGRESO\s*=\s*(\{[\s\S]*?\});/);
+    if (m) {
+      const prog = Function(`return (${m[1]})`)();
+      let n = 0;
+      for (const [todoId, patch] of Object.entries(prog)) {
+        if (!patch?.completada) continue;
+        const tarea = (live.tareas || []).find((t) => t.jmTodoId === todoId);
+        if (tarea && !tarea.completada) {
+          tarea.completada = true;
+          n++;
+        }
+      }
+      fs.writeFileSync(LIVE, JSON.stringify(live, null, 2) + '\n', 'utf8');
+      console.log(`\nJM: aplicadas ${n} completadas desde JM_TODO_PROGRESO`);
+    }
+  } catch (e) {
+    console.warn('No se pudo aplicar progreso JM:', e.message);
+  }
+
   const after = JSON.parse(fs.readFileSync(LIVE, 'utf8'));
   const porCli = {};
+  const ecr = [];
   for (const t of after.tareas || []) {
     porCli[t.clienteId || '(sin)'] = (porCli[t.clienteId || '(sin)'] || 0) + 1;
+    if (t.clienteId === 'cli-ecr' && !t.parentId) {
+      ecr.push(`${t.fecha}  ${t.titulo}${t.completada ? ' [x]' : ''}`);
+    }
   }
   console.log('\nTareas en live:', (after.tareas || []).length, porCli);
-  console.log('Abre: http://localhost:3000/index.html?disco=1');
-  console.log('(En Windows también: CALENDARIO-ENFOQUE-ACTUAL.bat)');
+  console.log('Madres ECR:');
+  ecr.forEach((l) => console.log(' ', l));
+  console.log('\nAbre: http://localhost:3000/index.html?disco=1');
+  console.log('  o Laravel: http://127.0.0.1:8000/index.html');
 }
 
 main();

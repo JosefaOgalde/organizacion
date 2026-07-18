@@ -672,8 +672,12 @@ window.JM_TODO_SEED = [
 /** Progreso confirmado en repo → se fusiona al cargar (checklist + calendario) */
 window.JM_TODO_PROGRESO = {
   'jm-todo-01': { completada: true },
+  'jm-todo-02': { completada: true },
   'jm-todo-03': { completada: true },
-  'jm-todo-04': { completada: true }
+  'jm-todo-04': { completada: true },
+  'jm-todo-05': { completada: true },
+  'jm-todo-06': { completada: true },
+  'jm-todo-14': { completada: true }
 };
 
 /** Ítems de sesión en checklist landing (sin tarea en calendario) */

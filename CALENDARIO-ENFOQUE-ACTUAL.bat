@@ -2,8 +2,8 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 echo.
-echo  === Calendario · solo trabajo actual ===
-echo  Quita JM F2 / MOVA auth y restaura TS 7–12 + ECR NL agosto
+echo  === Calendario · trabajo vigente ===
+echo  TS 7-12 · ECR NL1=20 ago / NL2=22 ago · JM se conserva · quita MOVA auth
 echo.
 
 set PATH=C:\laragon\bin\nodejs\node-v22;%PATH%
