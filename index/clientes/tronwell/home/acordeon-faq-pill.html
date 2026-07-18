@@ -63,11 +63,14 @@
   .tw-faq__q {
     flex: 1;
     margin: 0;
-    font-size: clamp(0.92rem, 1.6vw, 1.05rem);
-    font-weight: 700;
-    line-height: 1.35;
     padding-right: 0.25rem;
-    color: inherit;
+    font-size: min(1.05rem, 2rem) !important;
+    font-weight: 700 !important;
+    line-height: 1.35;
+    color: inherit !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    text-decoration: none !important;
   }
 
   .tw-faq__icon {
@@ -157,7 +160,7 @@
     }
 
     .tw-faq__q {
-      font-size: 0.9rem;
+      font-size: min(0.9rem, 2rem) !important;
     }
   }
 </style>
@@ -166,7 +169,7 @@
   <ul class="tw-faq__list">
     <li class="tw-faq__item is-open">
       <button type="button" class="tw-faq__trigger" aria-expanded="true">
-        <h3 class="tw-faq__q">¿Cuánto tiempo toma aprender inglés con Tronwell?</h3>
+        <span class="tw-faq__q">¿Cuánto tiempo toma aprender inglés con Tronwell?</span>
         <span class="tw-faq__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </span>
@@ -182,7 +185,7 @@
 
     <li class="tw-faq__item">
       <button type="button" class="tw-faq__trigger" aria-expanded="false">
-        <h3 class="tw-faq__q">¿Cómo sé en qué nivel de inglés estoy?</h3>
+        <span class="tw-faq__q">¿Cómo sé en qué nivel de inglés estoy?</span>
         <span class="tw-faq__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </span>
@@ -198,7 +201,7 @@
 
     <li class="tw-faq__item">
       <button type="button" class="tw-faq__trigger" aria-expanded="false">
-        <h3 class="tw-faq__q">¿Qué modalidades de inglés ofrece Tronwell?</h3>
+        <span class="tw-faq__q">¿Qué modalidades de inglés ofrece Tronwell?</span>
         <span class="tw-faq__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </span>
@@ -214,7 +217,7 @@
 
     <li class="tw-faq__item">
       <button type="button" class="tw-faq__trigger" aria-expanded="false">
-        <h3 class="tw-faq__q">¿Qué es el Tutor IA de Tronwell?</h3>
+        <span class="tw-faq__q">¿Qué es el Tutor IA de Tronwell?</span>
         <span class="tw-faq__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </span>
@@ -230,7 +233,7 @@
 
     <li class="tw-faq__item">
       <button type="button" class="tw-faq__trigger" aria-expanded="false">
-        <h3 class="tw-faq__q">¿Tronwell tiene cursos de inglés para empresas con SENCE?</h3>
+        <span class="tw-faq__q">¿Tronwell tiene cursos de inglés para empresas con SENCE?</span>
         <span class="tw-faq__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </span>
@@ -246,7 +249,7 @@
 
     <li class="tw-faq__item">
       <button type="button" class="tw-faq__trigger" aria-expanded="false">
-        <h3 class="tw-faq__q">¿Tronwell me prepara para el examen TOEFL?</h3>
+        <span class="tw-faq__q">¿Tronwell me prepara para el examen TOEFL?</span>
         <span class="tw-faq__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </span>
@@ -262,7 +265,7 @@
 
     <li class="tw-faq__item">
       <button type="button" class="tw-faq__trigger" aria-expanded="false">
-        <h3 class="tw-faq__q">¿Tienen cursos de inglés para niños?</h3>
+        <span class="tw-faq__q">¿Tienen cursos de inglés para niños?</span>
         <span class="tw-faq__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </span>
@@ -278,7 +281,7 @@
 
     <li class="tw-faq__item">
       <button type="button" class="tw-faq__trigger" aria-expanded="false">
-        <h3 class="tw-faq__q">¿Cuáles son los canales de contacto para resolver mis dudas?</h3>
+        <span class="tw-faq__q">¿Cuáles son los canales de contacto para resolver mis dudas?</span>
         <span class="tw-faq__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </span>
