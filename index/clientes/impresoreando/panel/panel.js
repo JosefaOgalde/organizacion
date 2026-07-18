@@ -1130,13 +1130,45 @@
     renderBitacora();
   }
 
+  const TABS_VALIDOS = new Set(['resumen', 'gastos', 'ventas', 'operacion', 'costos', 'ads', 'bitacora']);
+
+  function activarTab(tab) {
+    const name = TABS_VALIDOS.has(tab) ? tab : 'resumen';
+    document.querySelectorAll('#imp-tabs button').forEach((b) => b.classList.remove('is-active'));
+    document.querySelectorAll('.imp-panel').forEach((p) => p.classList.remove('is-active'));
+    const btn = $(`#imp-tabs button[data-tab="${name}"]`);
+    const panel = $(`#tab-${name}`);
+    if (btn) btn.classList.add('is-active');
+    if (panel) panel.classList.add('is-active');
+    try {
+      const url = new URL(window.location.href);
+      if (name === 'resumen') url.searchParams.delete('tab');
+      else url.searchParams.set('tab', name);
+      history.replaceState(null, '', url.pathname + url.search + url.hash);
+    } catch (_) {
+      /* ignore */
+    }
+    if (name === 'costos') {
+      requestAnimationFrame(() => {
+        $('#form-calc-pieza')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+  }
+
+  function tabDesdeUrl() {
+    try {
+      const q = new URLSearchParams(window.location.search).get('tab');
+      if (q && TABS_VALIDOS.has(q)) return q;
+      const hash = String(window.location.hash || '').replace(/^#/, '');
+      if (hash && TABS_VALIDOS.has(hash)) return hash;
+    } catch (_) {
+      /* ignore */
+    }
+    return 'resumen';
+  }
+
   document.querySelectorAll('#imp-tabs button').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#imp-tabs button').forEach((b) => b.classList.remove('is-active'));
-      document.querySelectorAll('.imp-panel').forEach((p) => p.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      $(`#tab-${btn.dataset.tab}`).classList.add('is-active');
-    });
+    btn.addEventListener('click', () => activarTab(btn.dataset.tab));
   });
 
   $('#btn-guardar').addEventListener('click', () => {
@@ -1176,7 +1208,7 @@
     markDirty();
     renderAll();
     setStatus(`Producto «${nombre}» agregado (${sku}) — guarda online`, 'warn');
-    document.querySelector('#imp-tabs button[data-tab="costos"]')?.click();
+    activarTab('costos');
   });
 
   $('#form-producto-modal')?.addEventListener('input', actualizarCostoModal);
@@ -1198,5 +1230,7 @@
     }
   });
 
-  load().catch((e) => setStatus(String(e.message || e), 'err'));
+  load()
+    .then(() => activarTab(tabDesdeUrl()))
+    .catch((e) => setStatus(String(e.message || e), 'err'));
 })();
