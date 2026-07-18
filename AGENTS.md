@@ -51,15 +51,14 @@
 ### ECR — Rutas de aprendizaje
 - Modal finalizado. HTML para Elementor: `index/clientes/ecr/capacitaciones/modal-ruta-sectores.html`.
 - Solo Excel/Power BI unificados (`Excel - Nivel` / `Power BI - Nivel`); resto de nombres literales.
-- Organizador: `node scripts/add-ecr-rutas-viernes.js` y abrir `http://localhost:3000/index.html?disco=1`.
-- Ecosistema NL agosto: NL 1 = **20 ago** · NL 2 = **22 ago**. Fechas + Portada NL 1 hecha: `ACTUALIZAR-ECR-NL-AGOSTO.bat` (PHP, sin Node) → `http://127.0.0.1:8000/index.html?disco=1`. Copys: `newsletter/copys/`. Landing ECR: sección ecosistema NL.
+- Ecosistema NL agosto: NL 1 = **20 ago** · NL 2 = **22 ago**. Fechas + Portada NL 1 hecha: `ACTUALIZAR-ECR-NL-AGOSTO.bat` (PHP, sin Node) → `http://127.0.0.1:8000/index.html`. Copys: `newsletter/copys/`. Landing ECR: sección ecosistema NL.
 
 ### Portal clientes — Nueva tarea
 - En cada landing de cliente (`portal-cliente.js`) hay un botón **Nueva tarea** arriba en la toolbar.
 - La tarea hereda `clienteId`, abreviatura en el título (`[ECR] …`), color del organizador y el siguiente `numeroHistorico` del cliente.
 - Al guardar se escribe en `localStorage` (`organizacion_v2`) y se publica a `data/organizacion-live.json` vía `POST /api/organizacion`.
-- Ver en organizador: `http://localhost:3000/index.html?disco=1` (o `?disco=1&tarea=ecr/04`).
-- **Imágenes en tareas:** en el detalle de la tarea, bloque **Imágenes de la tarea** → `+ Guardar imágenes`. Se comprimen y suben a disco vía `POST /api/tarea-imagen` (`index/uploads/tarea-imagenes/…`); en `localStorage` solo queda la **URL** (evita “almacenamiento lleno”). Landing del cliente: sección **Tareas con imágenes**. Requiere `node scripts/organizacion-server.js` corriendo.
+- Ver en organizador: `http://127.0.0.1:8000/index.html` (o `?tarea=ecr/04`).
+- **Imágenes en tareas:** en el detalle de la tarea, bloque **Imágenes de la tarea** → `+ Guardar imágenes`. Se comprimen y suben a disco vía `POST /api/tarea-imagen` (`index/uploads/tarea-imagenes/…`); en `localStorage` solo queda la **URL** (evita “almacenamiento lleno”). Landing del cliente: sección **Tareas con imágenes**. Con `ABRIR-LARAVEL.bat` en `:8000`.
 
 ### Impresoreando — Panel socios 50/50
 - Landing: `http://localhost:3000/index/clientes/impresoreando/` — CTA **Resumen 50/50** abre el panel.

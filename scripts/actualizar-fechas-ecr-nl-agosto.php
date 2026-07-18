@@ -6,7 +6,7 @@
  * Marca Portada NL 1 como hecha (Canva finales).
  *
  *   php scripts/actualizar-fechas-ecr-nl-agosto.php
- * Luego: http://127.0.0.1:8000/index.html?disco=1
+ * Luego: http://127.0.0.1:8000/index.html
  */
 declare(strict_types=1);
 
@@ -112,4 +112,4 @@ if ($json === false) {
 file_put_contents($live, $json . "\n");
 
 echo "\nOK · live actualizado (PHP, sin Node).\n";
-echo "Abre: http://127.0.0.1:8000/index.html?disco=1\n";
+echo "Abre: http://127.0.0.1:8000/index.html\n";

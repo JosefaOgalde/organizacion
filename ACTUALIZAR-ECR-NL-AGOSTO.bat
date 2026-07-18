@@ -27,7 +27,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo  Organizador: http://127.0.0.1:8000/index.html?disco=1
+echo  Organizador: http://127.0.0.1:8000/index.html
 echo  ^(con ABRIR-LARAVEL.bat corriendo^)
 echo.
 pause
