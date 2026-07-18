@@ -271,12 +271,19 @@ body.portal-body--themed .portal-cliente {
   text-decoration: underline;
 }
 
-/* Impresoreando: CTA Resumen 50/50 — primer elemento visible */
+/* Impresoreando: CTAs Resumen + Calculadora — primer elemento visible */
+.portal-imp-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 0 0 1.15rem;
+}
+
 .portal-imp-panel-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 0 0 1.15rem;
+  margin: 0;
   padding: 0.55rem 1.15rem;
   border-radius: 999px;
   text-decoration: none !important;
@@ -295,6 +302,17 @@ body.portal-body--themed .portal-cliente {
   text-decoration: none !important;
 }
 
+.portal-imp-panel-cta--calc {
+  background: var(--card-text, #7a5c28);
+  color: #fff !important;
+  border-color: transparent;
+}
+
+.portal-imp-panel-cta--calc:hover {
+  background: color-mix(in srgb, var(--card-text) 88%, black);
+  filter: none;
+}
+
 .portal-btn--imp-panel {
   background: var(--card-text, #7a5c28);
   color: #fff;
@@ -304,6 +322,18 @@ body.portal-body--themed .portal-cliente {
 
 .portal-btn--imp-panel:hover {
   filter: brightness(1.08);
+  text-decoration: none;
+}
+
+.portal-btn--imp-calc {
+  background: #fff;
+  color: var(--card-text, #7a5c28);
+  border: 1px solid var(--card-border, #d4b06a);
+  font-weight: 700;
+}
+
+.portal-btn--imp-calc:hover {
+  background: color-mix(in srgb, var(--card-border) 22%, white);
   text-decoration: none;
 }
 

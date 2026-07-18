@@ -580,10 +580,13 @@
     }
   }
 
-  /** CTA principal Impresoreando: Resumen 50/50 primero en la landing. */
+  /** CTAs Impresoreando: Resumen 50/50 + Calculadora de productos. */
   function impPanelCtaHtml() {
     if (c.slug !== 'impresoreando') return '';
-    return `<a href="./panel/" class="portal-imp-panel-cta" id="portal-imp-panel-cta">Resumen 50/50</a>`;
+    return `<div class="portal-imp-cta-row" id="portal-imp-panel-cta">
+      <a href="./panel/" class="portal-imp-panel-cta">Resumen 50/50</a>
+      <a href="./panel/?tab=costos" class="portal-imp-panel-cta portal-imp-panel-cta--calc">Calculadora de productos</a>
+    </div>`;
   }
 
   function heroHtml(cfg, stats) {
@@ -613,6 +616,11 @@
                 <a href="./panel/" class="portal-landing-chip__a">${escapeHtml(e)}</a>
               </li>`;
             }
+            if (c.slug === 'impresoreando' && /costos de producci/i.test(e)) {
+              return `<li class="portal-landing-chip portal-landing-chip--link">
+                <a href="./panel/?tab=costos" class="portal-landing-chip__a">${escapeHtml(e)}</a>
+              </li>`;
+            }
             return `<li class="portal-landing-chip">${escapeHtml(e)}</li>`;
           })
           .join('')}
@@ -632,10 +640,13 @@
       .map((s) => {
         const esPanelImp =
           c.slug === 'impresoreando' && /panel socios/i.test(String(s.titulo || ''));
-        return `<section${esPanelImp ? ' class="portal-imp-panel-sec"' : ''}>
+        const esCalcImp =
+          c.slug === 'impresoreando' && /producci[oó]n/i.test(String(s.titulo || ''));
+        return `<section${esPanelImp || esCalcImp ? ' class="portal-imp-panel-sec"' : ''}>
       <h2>${escapeHtml(s.titulo)}</h2>
       <p>${escapeHtml(s.texto)}</p>
       ${esPanelImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./panel/">Resumen 50/50 →</a></p>` : ''}
+      ${esCalcImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./panel/?tab=costos">Calculadora de productos →</a></p>` : ''}
     </section>`;
       })
       .join('');
@@ -764,7 +775,8 @@
 
     const toolbarPanelBtn =
       c.slug === 'impresoreando'
-        ? `<a href="./panel/" class="portal-btn portal-btn--imp-panel">Resumen 50/50</a>`
+        ? `<a href="./panel/" class="portal-btn portal-btn--imp-panel">Resumen 50/50</a>
+           <a href="./panel/?tab=costos" class="portal-btn portal-btn--imp-calc">Calculadora</a>`
         : '';
 
     root.innerHTML = `

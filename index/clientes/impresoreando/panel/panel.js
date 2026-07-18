@@ -2567,12 +2567,19 @@
     } catch (_) {
       /* ignore */
     }
+    if (name === 'costos') {
+      requestAnimationFrame(() => {
+        $('#form-calc-pieza')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
   }
 
   function tabDesdeUrl() {
     try {
       const q = new URLSearchParams(window.location.search).get('tab');
       if (q && TABS_VALIDOS.has(q)) return q;
+      const hash = String(window.location.hash || '').replace(/^#/, '');
+      if (hash && TABS_VALIDOS.has(hash)) return hash;
     } catch (_) {
       /* ignore */
     }
