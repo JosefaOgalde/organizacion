@@ -1596,7 +1596,7 @@
             estado === 'listo'
               ? `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="pendiente">Volver a pendiente</button>`
               : `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="listo">Marcar listo</button>`;
-          acciones = `<button type="button" class="imp-btn imp-btn--sm" data-edit-pedido="${escapeHtml(p.id)}" onclick="window.abrirModalEditarPedido && window.abrirModalEditarPedido('${escapeHtml(p.id)}')">Editar</button>
+          acciones = `<button type="button" class="imp-btn imp-btn--sm" data-edit-pedido="${escapeHtml(p.id)}">Editar</button>
             ${btnListo}
             <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
             <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
@@ -1764,6 +1764,14 @@
       activarTab('pedidos');
       setStatus(`Pedido ${numero} creado · venta ${money(montoNeto)} · guarda online`, 'warn');
       save().catch((err) => setStatus(String(err.message || err), 'err'));
+    });
+
+    $('#tab-pedidos')?.querySelectorAll('[data-edit-pedido]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        abrirModalEditarPedido(btn.getAttribute('data-edit-pedido'));
+      });
     });
 
     $('#tab-pedidos')?.querySelectorAll('[data-precio-item]').forEach((inp) => {
@@ -2642,13 +2650,17 @@
   $('#imp-modal-pedido')?.addEventListener('click', (e) => {
     if (e.target?.id === 'imp-modal-pedido') cerrarModalPedido();
   });
-  // Delegación: sobrevive a re-renders del tab Pedidos
-  document.addEventListener('click', (e) => {
-    const btn = e.target?.closest?.('[data-edit-pedido]');
-    if (!btn) return;
-    e.preventDefault();
-    abrirModalEditarPedido(btn.getAttribute('data-edit-pedido'));
-  });
+  // Delegación en captura: respaldo si el listener del re-render no corre
+  document.addEventListener(
+    'click',
+    (e) => {
+      const btn = e.target?.closest?.('[data-edit-pedido]');
+      if (!btn) return;
+      e.preventDefault();
+      abrirModalEditarPedido(btn.getAttribute('data-edit-pedido'));
+    },
+    true
+  );
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     if ($('#imp-modal-pedido')?.classList.contains('is-open')) {
