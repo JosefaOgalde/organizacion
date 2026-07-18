@@ -8,20 +8,17 @@
 </head>
 <body>
 <!--
-  Tronwell · Home — FAQ acordeón estilo píldora (referencia botón “Más información…”)
+  Tronwell · Home — FAQ acordeón estilo píldora
   Pegar este bloque completo en Elementor → widget HTML.
 
-  Diseño:
-  - Barra cápsula azul + círculo celeste a la derecha con flecha
-  - Sombra suave
-  - Panel de respuesta al expandir
+  - Sin título “¿Aún tienes dudas?”
+  - Preguntas literales (signos, mayúsculas, negritas)
 -->
 <style>
   .tw-faq {
     --tw-blue: #2f7fd4;
     --tw-blue-deep: #2568b8;
     --tw-cyan: #5eb4e8;
-    --tw-orange: #f39200;
     --tw-ink: #1e2a3a;
     --tw-muted: #4a5568;
     --tw-panel: #f3f5f7;
@@ -30,19 +27,6 @@
     max-width: 920px;
     margin: 0 auto;
     font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-  }
-
-  .tw-faq__title {
-    text-align: center;
-    font-size: clamp(1.6rem, 3vw, 2.1rem);
-    font-weight: 800;
-    line-height: 1.2;
-    margin: 0 0 1.5rem;
-    color: #1a3a6e;
-  }
-
-  .tw-faq__title span {
-    color: var(--tw-orange);
   }
 
   .tw-faq__list {
@@ -87,10 +71,12 @@
 
   .tw-faq__q {
     flex: 1;
+    margin: 0;
     font-size: clamp(0.92rem, 1.6vw, 1.05rem);
     font-weight: 700;
     line-height: 1.35;
     padding-right: 0.25rem;
+    color: inherit;
   }
 
   .tw-faq__icon {
@@ -139,6 +125,28 @@
     line-height: 1.55;
   }
 
+  .tw-faq__answer p {
+    margin: 0 0 0.75rem;
+  }
+
+  .tw-faq__answer p:last-child {
+    margin-bottom: 0;
+  }
+
+  .tw-faq__answer strong {
+    font-weight: 700;
+    color: var(--tw-ink);
+  }
+
+  .tw-faq__answer ul {
+    margin: 0.5rem 0 0;
+    padding-left: 1.2rem;
+  }
+
+  .tw-faq__answer li {
+    margin: 0.25rem 0;
+  }
+
   .tw-faq__answer a {
     color: var(--tw-blue);
     text-decoration: underline;
@@ -164,22 +172,18 @@
 </style>
 
 <section class="tw-faq" aria-label="Preguntas frecuentes">
-  <h2 class="tw-faq__title">¿Aún tienes <span>dudas?</span></h2>
-
   <ul class="tw-faq__list">
     <li class="tw-faq__item is-open">
       <button type="button" class="tw-faq__trigger" aria-expanded="true">
-        <span class="tw-faq__q">¿Es necesario realizar todos los tópicos para poder rendir la evaluación oral (OPR)?</span>
+        <h3 class="tw-faq__q">¿Cuánto tiempo toma aprender inglés con Tronwell?</h3>
         <span class="tw-faq__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 6l6 6-6 6"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </span>
       </button>
       <div class="tw-faq__panel">
         <div class="tw-faq__panel-inner">
           <div class="tw-faq__answer">
-            Sí, te recordamos que todas las clases con profesor son instancias de práctica del idioma por lo que no es obligatorio que realices todas las clases distintas, pero sí debes cumplir con la cantidad total de clases con profesor requerida de cada nivel de acuerdo al <a href="#">siguiente cuadro</a>.
+            <p>El tiempo depende de tu nivel de entrada y tus objetivos. En Tronwell contamos con cursos desde nivel principiante hasta avanzado. Antes de comenzar realizamos una <strong>evaluación de nivel gratuita</strong> para ubicarte en el programa que mejor se adapte a ti y estimar tu progresión.</p>
           </div>
         </div>
       </div>
@@ -187,17 +191,15 @@
 
     <li class="tw-faq__item">
       <button type="button" class="tw-faq__trigger" aria-expanded="false">
-        <span class="tw-faq__q">¿Debo solicitar una hora para rendir mi prueba final de nivel (OPR)?</span>
+        <h3 class="tw-faq__q">¿Cómo sé en qué nivel de inglés estoy?</h3>
         <span class="tw-faq__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 6l6 6-6 6"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </span>
       </button>
       <div class="tw-faq__panel">
         <div class="tw-faq__panel-inner">
           <div class="tw-faq__answer">
-            <!-- Pegá aquí la respuesta del Home.docx / contenido actual -->
+            <p>Debes realizar una <strong>prueba de diagnóstico de nivel</strong> con nosotros antes de comenzar cualquier curso. Este test determina el programa más adecuado según tus conocimientos actuales y tus necesidades.</p>
           </div>
         </div>
       </div>
@@ -205,17 +207,15 @@
 
     <li class="tw-faq__item">
       <button type="button" class="tw-faq__trigger" aria-expanded="false">
-        <span class="tw-faq__q">Necesito solicitar un certificado de finalización de nivel o de alumno regular, ¿dónde lo pido?</span>
+        <h3 class="tw-faq__q">¿Qué modalidades de inglés ofrece Tronwell?</h3>
         <span class="tw-faq__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 6l6 6-6 6"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </span>
       </button>
       <div class="tw-faq__panel">
         <div class="tw-faq__panel-inner">
           <div class="tw-faq__answer">
-            <!-- Pegá aquí la respuesta del Home.docx / contenido actual -->
+            <p>Ofrecemos tres modalidades: clases online con profesores en vivo, presenciales e híbridas (presencial + online). Tú eliges si quieres asistir a nuestra sede en Providencia o si quieres tomar tus clases desde tus dispositivos.</p>
           </div>
         </div>
       </div>
@@ -223,17 +223,84 @@
 
     <li class="tw-faq__item">
       <button type="button" class="tw-faq__trigger" aria-expanded="false">
-        <span class="tw-faq__q">¿Cuál es el objetivo de las actividades del programa contratado?</span>
+        <h3 class="tw-faq__q">¿Qué es el Tutor IA de Tronwell?</h3>
         <span class="tw-faq__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 6l6 6-6 6"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </span>
       </button>
       <div class="tw-faq__panel">
         <div class="tw-faq__panel-inner">
           <div class="tw-faq__answer">
-            <!-- Pegá aquí la respuesta del Home.docx / contenido actual -->
+            <p>El <strong>Tutor IA</strong> es una herramienta de práctica ilimitada que extiende tu experiencia Tronwell. Puedes practicar conversación real, recibir retroalimentación inmediata sobre gramática, vocabulario y pronunciación, además de usarlo cuando quieras y donde quieras. Por eso, esta herramienta inteligente complementa al profesor en sala, no lo reemplaza.</p>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <h3 class="tw-faq__q">¿Tronwell tiene cursos de inglés para empresas con SENCE?</h3>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <p>Sí. Tronwell ofrece <strong>cursos de inglés para empresas vía franquicia SENCE</strong>. La ley 19.518 permite a las empresas descontar el costo de las capacitaciones del impuesto a la renta. Te asesoramos en toda la gestión administrativa del SENCE sin costo adicional.</p>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <h3 class="tw-faq__q">¿Tronwell me prepara para el examen TOEFL?</h3>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <p>Sí. Contamos con un programa específico de <strong>preparación TOEFL</strong> disponible en modalidad virtual, online y presencial, con estrategias, materiales y simulacros para que alcances el puntaje que necesitas.</p>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <h3 class="tw-faq__q">¿Tienen cursos de inglés para niños?</h3>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <p>Sí. Contamos con <strong>cursos de inglés para niños</strong> de 7 a 15 años, organizados por rango etario y nivel con clases lúdicas, interactivas y profesores especializados en didáctica infantil. Estos los puedes encontrar en modalidad online y presencial.</p>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <h3 class="tw-faq__q">¿Cuáles son los canales de contacto para resolver mis dudas?</h3>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <p>En nuestra página de contacto, puedes llenar un formulario simple con tus datos para que uno de nuestros ejecutivos te contacte lo antes posible. También puedes comunicarte con nosotros en canales oficiales.</p>
+            <ul>
+              <li><strong>Whatsapp:</strong> +56 9 56442400</li>
+              <li><strong>Correo:</strong> ventas@tronwell.cl</li>
+              <li><strong>Teléfono fijo:</strong> +56 9 50233405</li>
+            </ul>
           </div>
         </div>
       </div>
