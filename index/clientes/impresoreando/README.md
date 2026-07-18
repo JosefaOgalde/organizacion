@@ -1,5 +1,7 @@
 # Impresoreando — Panel socios + ecommerce ops
 
+> **Agentes / pedidos:** leer primero [`docs/impresoreando/CONTEXTO.md`](../../../docs/impresoreando/CONTEXTO.md) (contexto unificado; no reexplorar el repo).
+
 Negocio de **impresiones 3D** (Instagram: **@impresoreando**). Sociedad **50/50**.
 
 ## Color (único)
