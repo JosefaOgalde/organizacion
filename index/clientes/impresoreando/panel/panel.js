@@ -402,28 +402,57 @@
     return migrarFilamentoNegroProducto(d, 'prod-macetero-perro-bulldog') || changed;
   }
 
-  /** Portacompleto perro bulldog — placa 2 uds: 122,70 g / 4 h 2 m → costo por unidad. */
-  function asegurarProductoPortacompletoPerroBulldog(d) {
-    const changed = upsertProductoSeed(d, 'prod-portacompleto-perro-bulldog', {
+  /** Portacompleto perro bulldog — slicer 1 ud: 64,58 g · 2 h 13 m · PLA+ negro (costo alto). */
+  function seedPortacompletoPerroBulldog() {
+    return {
       sku: 'PCPERROBU001',
       nombre: 'Portacompleto perro bulldog',
       activo: true,
-      filamentoModeloGramos: 59.88,
-      filamentoSoportesGramos: 1.25,
-      filamentoPurgeGramos: 0.24,
-      filamentoMetros: 20.41,
-      filamentoGramos: 61.35,
+      filamentoModeloGramos: 59.85,
+      filamentoSoportesGramos: 4.26,
+      filamentoPurgeGramos: 0.47,
+      filamentoMetros: 21.48,
+      filamentoGramos: 64.58,
       costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
-      horasImpresion: 2.02,
+      horasImpresion: 2.22, // 2 h 13 m
       minutosPintado: 0,
       unidadesMetal: 0,
       unidadesBolsa: 1,
       precioVentaSugeridoClp: 0,
-      costoSlicerRef: 1.225,
+      costoSlicerRef: 1.29,
       notas:
-        'Slicer placa ×2: 122,70 g / 4 h 2 m → por unidad 61,35 g / 2 h 1 m. PLA+ negro $17.986/kg. Coste slicer placa 2,45 (ref). Sin pintado (editable).',
-    });
-    return migrarFilamentoNegroProducto(d, 'prod-portacompleto-perro-bulldog') || changed;
+        'Slicer 1 ud: modelo 59,85 g + soportes 4,26 g + purge 0,47 g = 64,58 g · 21,48 m · 2 h 13 m · coste slicer 1,29 (ref). PLA+ negro $17.986/kg. Sin pintado (editable). Se eligió frente al cálculo anterior (61,35 g / 2 h 1 m) por mayor costo.',
+    };
+  }
+
+  function costoProdRough(d, prod) {
+    const p = d.parametros || {};
+    const g = Number(prod.filamentoGramos || 0);
+    const kg = Number(prod.costoFilamentoKgClp || 0);
+    const fil = (g / 1000) * kg;
+    const luz =
+      Number(prod.horasImpresion || 0) *
+      Number(p.tarifaKwhClp || 0) *
+      Number(p.consumoImpresoraKw || 0);
+    const bolsa = Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 50);
+    const metal = Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0);
+    return round2(fil + luz + bolsa + metal);
+  }
+
+  function asegurarProductoPortacompletoPerroBulldog(d) {
+    const seed = seedPortacompletoPerroBulldog();
+    let changed = upsertProductoSeed(d, 'prod-portacompleto-perro-bulldog', seed);
+    changed = migrarFilamentoNegroProducto(d, 'prod-portacompleto-perro-bulldog') || changed;
+    const p = (d.productos || []).find((x) => x.id === 'prod-portacompleto-perro-bulldog');
+    if (!p) return changed;
+    const costoActual = costoProdRough(d, p);
+    const costoSeed = costoProdRough(d, seed);
+    // Conservar el set de parámetros con costo más alto (nuevo slicer 64,58 g / 2 h 13 m).
+    if (costoSeed > costoActual + 0.01 || Number(p.filamentoGramos) === 61.35) {
+      Object.assign(p, seed);
+      return true;
+    }
+    return changed;
   }
 
   /** Si quedó con $/kg amarillo (12.690), pasa a PLA+ negro. */

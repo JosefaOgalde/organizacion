@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-18T04:50:00.000Z",
+    "actualizado": "2026-07-18T05:25:00.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -291,19 +291,19 @@
       "sku": "PCPERROBU001",
       "nombre": "Portacompleto perro bulldog",
       "activo": true,
-      "filamentoModeloGramos": 59.88,
-      "filamentoSoportesGramos": 1.25,
-      "filamentoPurgeGramos": 0.24,
-      "filamentoMetros": 20.41,
-      "filamentoGramos": 61.35,
+      "filamentoModeloGramos": 59.85,
+      "filamentoSoportesGramos": 4.26,
+      "filamentoPurgeGramos": 0.47,
+      "filamentoMetros": 21.48,
+      "filamentoGramos": 64.58,
       "costoFilamentoKgClp": 17986.0,
-      "horasImpresion": 2.02,
+      "horasImpresion": 2.22,
       "minutosPintado": 0.0,
       "unidadesMetal": 0.0,
       "unidadesBolsa": 1.0,
       "precioVentaSugeridoClp": 0.0,
-      "costoSlicerRef": 1.23,
-      "notas": "Slicer placa ×2: 122,70 g / 4 h 2 m → por unidad 61,35 g / 2 h 1 m. PLA+ negro $17.986/kg. Coste slicer placa 2,45 (ref). Sin pintado (editable)."
+      "costoSlicerRef": 1.29,
+      "notas": "Slicer 1 ud: modelo 59,85 g + soportes 4,26 g + purge 0,47 g = 64,58 g · 21,48 m · 2 h 13 m · coste slicer 1,29 (ref). PLA+ negro $17.986/kg. Sin pintado (editable). Se eligió frente al cálculo anterior (61,35 g / 2 h 1 m) por mayor costo."
     }
   ],
   "planAds": {
@@ -392,21 +392,21 @@
           "sku": "PCPERROBU001",
           "nombre": "Portacompleto perro bulldog",
           "cantidad": 4,
-          "precioUnitarioClp": 2533.12,
-          "costoUnitarioClp": 1266.56,
+          "precioUnitarioClp": 2671.72,
+          "costoUnitarioClp": 1335.86,
           "filamento": "PLA+ negro",
           "estado": "en_impresion",
           "listos": 0,
           "enImpresion": 2
         }
       ],
-      "montoNeto": 14095.17,
+      "montoNeto": 14649.57,
       "estado": "en_impresion",
       "ventaId": null,
       "notas": "Macetero listo · portacompletos 2/4 en impresión · PLA+ negro",
       "socioRegistro": "Ambos",
       "creado": "2026-07-18T04:40:00.000Z",
-      "costoTotal": 7047.58
+      "costoTotal": 7324.78
     }
   ]
 }
