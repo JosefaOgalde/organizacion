@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tronwell · FAQ píldora (preview)</title>
+<style>body{margin:24px;background:#fff}</style>
+</head>
+<body>
+<!--
+  Tronwell · Home — FAQ acordeón estilo píldora (referencia botón “Más información…”)
+  Pegar este bloque completo en Elementor → widget HTML.
+
+  Diseño:
+  - Barra cápsula azul + círculo celeste a la derecha con flecha
+  - Sombra suave
+  - Panel de respuesta al expandir
+-->
+<style>
+  .tw-faq {
+    --tw-blue: #2f7fd4;
+    --tw-blue-deep: #2568b8;
+    --tw-cyan: #5eb4e8;
+    --tw-orange: #f39200;
+    --tw-ink: #1e2a3a;
+    --tw-muted: #4a5568;
+    --tw-panel: #f3f5f7;
+    --tw-shadow: 0 8px 22px rgba(30, 70, 120, 0.22);
+    width: 100%;
+    max-width: 920px;
+    margin: 0 auto;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+
+  .tw-faq__title {
+    text-align: center;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0 0 1.5rem;
+    color: #1a3a6e;
+  }
+
+  .tw-faq__title span {
+    color: var(--tw-orange);
+  }
+
+  .tw-faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tw-faq__item {
+    margin: 0;
+  }
+
+  .tw-faq__trigger {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.75rem;
+    min-height: 56px;
+    padding: 0.65rem 0.45rem 0.65rem 1.35rem;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--tw-blue) 0%, var(--tw-blue-deep) 100%);
+    color: #fff;
+    box-shadow: var(--tw-shadow);
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  }
+
+  .tw-faq__trigger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 26px rgba(30, 70, 120, 0.28);
+  }
+
+  .tw-faq__trigger:focus-visible {
+    outline: 3px solid var(--tw-cyan);
+    outline-offset: 3px;
+  }
+
+  .tw-faq__q {
+    flex: 1;
+    font-size: clamp(0.92rem, 1.6vw, 1.05rem);
+    font-weight: 700;
+    line-height: 1.35;
+    padding-right: 0.25rem;
+  }
+
+  .tw-faq__icon {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--tw-cyan);
+    display: grid;
+    place-items: center;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.15);
+  }
+
+  .tw-faq__icon svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    transition: transform 0.22s ease;
+  }
+
+  .tw-faq__item.is-open .tw-faq__icon svg {
+    transform: rotate(90deg);
+  }
+
+  .tw-faq__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.28s ease;
+  }
+
+  .tw-faq__item.is-open .tw-faq__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .tw-faq__panel-inner {
+    overflow: hidden;
+  }
+
+  .tw-faq__answer {
+    margin: 0.55rem 0.35rem 0;
+    padding: 1rem 1.25rem;
+    border-radius: 18px;
+    background: var(--tw-panel);
+    color: var(--tw-muted);
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+
+  .tw-faq__answer a {
+    color: var(--tw-blue);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  @media (max-width: 640px) {
+    .tw-faq__trigger {
+      min-height: 52px;
+      padding: 0.55rem 0.4rem 0.55rem 1rem;
+    }
+
+    .tw-faq__icon {
+      flex-basis: 40px;
+      width: 40px;
+      height: 40px;
+    }
+
+    .tw-faq__q {
+      font-size: 0.9rem;
+    }
+  }
+</style>
+
+<section class="tw-faq" aria-label="Preguntas frecuentes">
+  <h2 class="tw-faq__title">¿Aún tienes <span>dudas?</span></h2>
+
+  <ul class="tw-faq__list">
+    <li class="tw-faq__item is-open">
+      <button type="button" class="tw-faq__trigger" aria-expanded="true">
+        <span class="tw-faq__q">¿Es necesario realizar todos los tópicos para poder rendir la evaluación oral (OPR)?</span>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 6l6 6-6 6"/>
+          </svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            Sí, te recordamos que todas las clases con profesor son instancias de práctica del idioma por lo que no es obligatorio que realices todas las clases distintas, pero sí debes cumplir con la cantidad total de clases con profesor requerida de cada nivel de acuerdo al <a href="#">siguiente cuadro</a>.
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <span class="tw-faq__q">¿Debo solicitar una hora para rendir mi prueba final de nivel (OPR)?</span>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 6l6 6-6 6"/>
+          </svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <!-- Pegá aquí la respuesta del Home.docx / contenido actual -->
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <span class="tw-faq__q">Necesito solicitar un certificado de finalización de nivel o de alumno regular, ¿dónde lo pido?</span>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 6l6 6-6 6"/>
+          </svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <!-- Pegá aquí la respuesta del Home.docx / contenido actual -->
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="tw-faq__item">
+      <button type="button" class="tw-faq__trigger" aria-expanded="false">
+        <span class="tw-faq__q">¿Cuál es el objetivo de las actividades del programa contratado?</span>
+        <span class="tw-faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 6l6 6-6 6"/>
+          </svg>
+        </span>
+      </button>
+      <div class="tw-faq__panel">
+        <div class="tw-faq__panel-inner">
+          <div class="tw-faq__answer">
+            <!-- Pegá aquí la respuesta del Home.docx / contenido actual -->
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<script>
+(function () {
+  var root = document.currentScript && document.currentScript.previousElementSibling;
+  if (!root || !root.classList.contains("tw-faq")) {
+    root = document.querySelector(".tw-faq");
+  }
+  if (!root) return;
+
+  root.querySelectorAll(".tw-faq__trigger").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var item = btn.closest(".tw-faq__item");
+      var open = item.classList.contains("is-open");
+
+      root.querySelectorAll(".tw-faq__item.is-open").forEach(function (el) {
+        el.classList.remove("is-open");
+        var b = el.querySelector(".tw-faq__trigger");
+        if (b) b.setAttribute("aria-expanded", "false");
+      });
+
+      if (!open) {
+        item.classList.add("is-open");
+        btn.setAttribute("aria-expanded", "true");
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
