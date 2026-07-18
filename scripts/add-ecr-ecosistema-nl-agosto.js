@@ -10,7 +10,8 @@ const fs = require('fs');
 const path = require('path');
 
 const LIVE = path.join(__dirname, '..', 'data', 'organizacion-live.json');
-const FECHA = '2026-08-20';
+const FECHA = '2026-07-21';
+const PUB = '2026-08-01';
 const CLIENTE = 'cli-ecr';
 const ROL = 'rol-ecr-cm';
 const MADRE_ID = 'tarea-ecr-ecosistema-nl-agosto-2026-07-17';
@@ -24,16 +25,16 @@ const MADRE = {
   horaInicio: '09:00',
   horaFin: '18:00',
   notas:
-    'Tarea madre · artículo «Tecnología sin integración» (calendario 20 ago). ' +
+    'Tarea madre · artículo «Tecnología sin integración» (calendario 21 jul · pub LinkedIn 1 ago). ' +
     'Subtareas: Copys · Portada · Carrusel · Video. ' +
-    'Segundo artículo (otra madre): Equipos en terreno (22 ago).',
+    'Segundo artículo (otra madre): Equipos en terreno (23 jul).',
   prioridad: 'alta',
   completada: false,
   pendiente: false,
   numeroHistorico: '04',
   tipoEntregable: 'ecosistema',
   articuloSlug: 'tecnologia-sin-integracion',
-  articuloPublicacion: FECHA,
+  articuloPublicacion: PUB,
   parentId: null,
 };
 

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
- * ECR — fechas calendario NL agosto:
- *   NL 1 (TI) → 2026-08-20
- *   NL 2 (ET) → 2026-08-22
+ * ECR — fechas calendario NL (visibles en julio):
+ *   NL 1 (TI) → 2026-07-21
+ *   NL 2 (ET) → 2026-07-23
+ * Publicación LinkedIn: 1 ago / 2 ago.
  * Marca Portada NL 1 como hecha (Canva finales).
  *
  *   node scripts/actualizar-fechas-ecr-nl-agosto.js
@@ -12,8 +13,10 @@ const fs = require('fs');
 const path = require('path');
 
 const LIVE = path.join(__dirname, '..', 'data', 'organizacion-live.json');
-const FECHA_NL1 = '2026-08-20';
-const FECHA_NL2 = '2026-08-22';
+const FECHA_NL1 = '2026-07-21';
+const FECHA_NL2 = '2026-07-23';
+const PUB_NL1 = '2026-08-01';
+const PUB_NL2 = '2026-08-02';
 const PORTADA_NL1 = 'tarea-ecr-nl-agosto-portada-2026-07-17';
 const ENTREGABLE_PORTADA =
   'index/clientes/ecr/newsletter/portadas-guardadas/NL1-ago-portadas-canva-finales.md';
@@ -52,14 +55,15 @@ function setFecha(id, fecha, extra = {}) {
   }
   t.fecha = fecha;
   if (t.parentId == null) t.fechaFin = fecha;
+  t.agendaFijada = true;
   Object.assign(t, extra);
   console.log(`  ${fecha}  ${t.titulo}${t.completada ? ' [x]' : ''}`);
 }
 
-console.log('NL 1 →', FECHA_NL1);
+console.log('NL 1 →', FECHA_NL1, '(pub', PUB_NL1 + ')');
 for (const id of IDS_NL1) {
   const extra = {};
-  if (id === IDS_NL1[0]) extra.articuloPublicacion = FECHA_NL1;
+  if (id === IDS_NL1[0]) extra.articuloPublicacion = PUB_NL1;
   if (id === PORTADA_NL1) {
     extra.completada = true;
     extra.pendiente = false;
@@ -72,10 +76,10 @@ for (const id of IDS_NL1) {
   setFecha(id, FECHA_NL1, extra);
 }
 
-console.log('NL 2 →', FECHA_NL2);
+console.log('NL 2 →', FECHA_NL2, '(pub', PUB_NL2 + ')');
 for (const id of IDS_NL2) {
   const extra = {};
-  if (id === IDS_NL2[0]) extra.articuloPublicacion = FECHA_NL2;
+  if (id === IDS_NL2[0]) extra.articuloPublicacion = PUB_NL2;
   setFecha(id, FECHA_NL2, extra);
 }
 

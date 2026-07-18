@@ -31,9 +31,9 @@ if %ERR% neq 0 (
   exit /b %ERR%
 )
 
-echo Abriendo AGOSTO ^(ECR NL1 el 20 y NL2 el 22^)...
-start "" "http://localhost:3000/index.html?disco=1&fecha=2026-08-20&vista=mes"
+echo Abriendo julio — ECR NL1 el 21 y NL2 el 23...
+start "" "http://localhost:3000/index.html?disco=1&fecha=2026-07-21&vista=mes"
 echo.
-echo Ctrl+F5. NL1/NL2 NO estan en julio: mira el 20 y 22 de agosto.
+echo Ctrl+F5. NL1 = martes 21 · NL2 = jueves 23.
 pause
 exit /b 0

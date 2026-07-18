@@ -5,7 +5,7 @@
  *   2) «Equipos en terreno…» (ART 23) → NL 2 de agosto
  *
  * Renombra/actualiza madres NL 1 y NL 2 con subtareas indexadas el mismo día.
- * Fechas calendario: NL 1 = 20 ago · NL 2 = 22 ago.
+ * Fechas calendario: NL 1 = 21 jul · NL 2 = 23 jul (pub LinkedIn 1/2 ago).
  *   node scripts/renombrar-ecr-madres-articulos.js
  * Luego: http://127.0.0.1:8000/index.html?disco=1 → vista Semana o Día
  */
@@ -17,10 +17,12 @@ const CLIENTE = 'cli-ecr';
 const ROL = 'rol-ecr-cm';
 
 const MADRE_TI_ID = 'tarea-ecr-ecosistema-nl-agosto-2026-07-17';
-const FECHA_TI = '2026-08-20';
+const FECHA_TI = '2026-07-21';
+const PUB_TI = '2026-08-01';
 
 const MADRE_ET_ID = 'tarea-ecr-ecosistema-equipos-terreno-2026-07-24';
-const FECHA_ET = '2026-08-22';
+const FECHA_ET = '2026-07-23';
+const PUB_ET = '2026-08-02';
 /** Subtareas ET el mismo día que la madre (como NL 1), para verlas indexadas 1–4 debajo. */
 const FECHA_ET_HIJOS = FECHA_ET;
 
@@ -84,7 +86,7 @@ upsert({
   tipoEntregable: 'ecosistema',
   articuloSlug: 'tecnologia-sin-integracion',
   articuloTitulo: ART_TI_TITULO,
-  articuloPublicacion: FECHA_TI,
+  articuloPublicacion: PUB_TI,
   entregableArchivo: ART_TI_DOC,
   articuloArchivo: {
     nombre: 'ART-tecnologia-sin-integracion.docx',
@@ -188,7 +190,7 @@ upsert({
   tipoEntregable: 'ecosistema',
   articuloSlug: 'equipos-en-terreno',
   articuloTitulo: ART_ET_TITULO,
-  articuloPublicacion: FECHA_ET,
+  articuloPublicacion: PUB_ET,
   articuloCodigo: 'ART23',
   entregableArchivo: ART_ET_DOC,
   articuloArchivo: {

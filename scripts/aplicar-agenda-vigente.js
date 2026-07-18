@@ -107,8 +107,8 @@ function main() {
   const ecrMadres = data.tareas.filter((t) => t.clienteId === 'cli-ecr' && !t.parentId);
   console.log('\nMadres ECR (ve a agosto en el mes):');
   ecrMadres.forEach((t) => console.log(' ', t.fecha, t.titulo, t.completada ? '[x]' : ''));
-  console.log('\nAbre: http://localhost:3000/index.html?disco=1');
-  console.log('ECR NL1/NL2: http://localhost:3000/index.html?disco=1&fecha=2026-08-20&vista=mes');
+  console.log('\nAbre: http://localhost:3000/index.html?disco=1&fecha=2026-07-21&vista=mes');
+  console.log('ECR NL1 = 21 jul · NL2 = 23 jul (en el mes de julio)');
   console.log('Lunes 27 (TS C12 + nutri): ?disco=1&fecha=2026-07-27&vista=dia');
 }
 

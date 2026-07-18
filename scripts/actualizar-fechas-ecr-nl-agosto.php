@@ -1,7 +1,8 @@
 <?php
 /**
- * ECR — mueve NL 1 → 20 ago y NL 2 → 22 ago en TU data/organizacion-live.json
+ * ECR — mueve NL 1 → 21 jul y NL 2 → 23 jul en TU data/organizacion-live.json
  * (ese archivo no se sube a Git; hay que correr esto en cada PC).
+ * Pub LinkedIn: 1 ago / 2 ago.
  *
  * También cierra la subtarea Portada del NL 1.
  *
@@ -13,8 +14,10 @@ declare(strict_types=1);
 $root = dirname(__DIR__);
 $live = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-live.json';
 
-const FECHA_NL1 = '2026-08-20';
-const FECHA_NL2 = '2026-08-22';
+const FECHA_NL1 = '2026-07-21';
+const FECHA_NL2 = '2026-07-23';
+const PUB_NL1 = '2026-08-01';
+const PUB_NL2 = '2026-08-02';
 const ENTREGABLE_PORTADA =
     'index/clientes/ecr/newsletter/portadas-guardadas/NL1-ago-portadas-canva-finales.md';
 
@@ -65,7 +68,7 @@ foreach ($data['tareas'] as &$t) {
         $t['fecha'] = FECHA_NL1;
         if (empty($t['parentId'])) {
             $t['fechaFin'] = FECHA_NL1;
-            $t['articuloPublicacion'] = FECHA_NL1;
+            $t['articuloPublicacion'] = PUB_NL1;
         }
         $t['agendaFijada'] = true;
         $n1++;
@@ -91,7 +94,7 @@ foreach ($data['tareas'] as &$t) {
         $t['fecha'] = FECHA_NL2;
         if (empty($t['parentId'])) {
             $t['fechaFin'] = FECHA_NL2;
-            $t['articuloPublicacion'] = FECHA_NL2;
+            $t['articuloPublicacion'] = PUB_NL2;
         }
         $t['agendaFijada'] = true;
         $n2++;
