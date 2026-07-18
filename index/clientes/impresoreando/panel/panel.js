@@ -2720,6 +2720,10 @@
   $('#imp-modal-pedido')?.addEventListener('click', (e) => {
     if (e.target?.id === 'imp-modal-pedido') cerrarModalPedido();
   });
+  $('#btn-modal-transferir-cerrar')?.addEventListener('click', cerrarModalTransferir);
+  $('#imp-modal-transferir')?.addEventListener('click', (e) => {
+    if (e.target?.id === 'imp-modal-transferir') cerrarModalTransferir();
+  });
   // Delegación en captura: respaldo si el listener del re-render no corre
   document.addEventListener(
     'click',
@@ -2733,6 +2737,10 @@
   );
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
+    if ($('#imp-modal-transferir')?.classList.contains('is-open')) {
+      cerrarModalTransferir();
+      return;
+    }
     if ($('#imp-modal-pedido')?.classList.contains('is-open')) {
       cerrarModalPedido();
       return;
@@ -2742,6 +2750,7 @@
     }
   });
   window.abrirModalEditarPedido = abrirModalEditarPedido;
+  window.abrirModalTransferir = abrirModalTransferir;
 
   window.addEventListener('beforeunload', (e) => {
     if (dirty) {
