@@ -25,7 +25,7 @@ function main() {
     process.exit(1);
   }
 
-  // 1) ECR NL1/NL2: crear si faltan + fechas 20/22 ago + portada hecha
+  // 1) ECR NL1/NL2: crear si faltan + fechas 21/23 jul + portada hecha
   const ecr = spawnSync(process.execPath, [path.join(__dirname, 'asegurar-ecr-nl-calendario.js')], {
     cwd: ROOT,
     stdio: 'inherit',
