@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Organización</title>
-  <link rel="stylesheet" href="styles.css?v=cal-pendientes-todos1">
+  <link rel="stylesheet" href="styles.css?v=cal-agenda-vigente1">
 </head>
 <body>
   <div class="app">
@@ -27,7 +27,6 @@
     </header>
 
     <nav class="tabs" id="tabs-organizador" aria-label="Organizador">
-      <button type="button" class="tab" data-view="pendientes" title="Todas las tareas sin terminar, por cliente">Pendientes</button>
       <button type="button" class="tab" data-view="clientes" title="Ver todos los clientes">Clientes</button>
       <button type="button" class="tab" data-view="agentes">Agentes</button>
       <button type="button" class="tab" data-view="salud"><span class="tab-swatch tab-swatch--salud"></span>Salud</button>
@@ -54,7 +53,7 @@
             Ocultar hechas
           </label>
         </div>
-        <p class="vista-hint">Mes: madres y tareas únicas · Semana: subtareas · Clic en un día → ver semana · Ver todo lo abierto: pestaña <strong>Pendientes</strong></p>
+        <p class="vista-hint">Mes: madres y tareas únicas · Semana: subtareas · Clic en un día → ver semana</p>
         <div id="calendario-mes" class="calendario-mes" aria-label="Calendario mensual"></div>
       </section>
 
@@ -403,7 +402,7 @@
   <script src="index/assets/cliente-landing-imagenes.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="app.js?v=cal-pendientes-todos1"></script>
+  <script src="app.js?v=cal-agenda-vigente1"></script>
   <script src="ficha-extractores.js"></script>
   <script src="ficha-cliente.js?v=portal-only1"></script>
 </body>
