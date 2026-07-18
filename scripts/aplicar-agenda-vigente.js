@@ -38,6 +38,7 @@ function main() {
   run('asegurar-ecr-nl-calendario.js');
   run('sync-impresoreando-organizador.js');
   run('archivar-jm-fase2-calendario.js');
+  run('add-jm-tarea-actual.js');
 
   const data = JSON.parse(fs.readFileSync(ORG, 'utf8'));
   data.tareas = Array.isArray(data.tareas) ? data.tareas : [];
