@@ -1280,6 +1280,293 @@
     return lines || '<div class="imp-muted">Sin ítems</div>';
   }
 
+  let pedidoEditDraft = null;
+
+  function optsSkuProducto(selected) {
+    return (data.productos || [])
+      .map((p) => {
+        const sel = p.sku === selected ? ' selected' : '';
+        return `<option value="${escapeHtml(p.sku || '')}"${sel}>${escapeHtml(p.sku || '')} · ${escapeHtml(p.nombre || '')}</option>`;
+      })
+      .join('');
+  }
+
+  function cerrarModalPedido() {
+    const modal = $('#imp-modal-pedido');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('imp-modal-open');
+    pedidoEditDraft = null;
+    const body = $('#imp-modal-pedido-body');
+    if (body) body.innerHTML = '';
+  }
+
+  function capturarDraftDesdeModal() {
+    if (!pedidoEditDraft) return null;
+    const form = $('#form-editar-pedido');
+    if (!form) return pedidoEditDraft;
+    const fd = new FormData(form);
+    pedidoEditDraft.fecha = String(fd.get('fecha') || pedidoEditDraft.fecha || '');
+    pedidoEditDraft.cliente = String(fd.get('cliente') || '').trim();
+    pedidoEditDraft.canal = String(fd.get('canal') || '').trim();
+    pedidoEditDraft.notas = String(fd.get('notas') || '').trim();
+    pedidoEditDraft.socioRegistro = String(fd.get('socioRegistro') || 'Ambos');
+    pedidoEditDraft.estado = String(fd.get('estado') || pedidoEditDraft.estado || 'pendiente');
+    const rows = form.querySelectorAll('[data-edit-item]');
+    const items = [];
+    rows.forEach((row) => {
+      const sku = String(row.querySelector('[name="sku"]')?.value || '').trim();
+      const prod = (data.productos || []).find((p) => p.sku === sku);
+      const cantidad = round2(row.querySelector('[name="cantidad"]')?.value || 1);
+      const precioUnitarioClp = round2(row.querySelector('[name="precioUnitarioClp"]')?.value || 0);
+      let costoUnitarioClp = round2(row.querySelector('[name="costoUnitarioClp"]')?.value || 0);
+      if (!(costoUnitarioClp > 0) && prod) costoUnitarioClp = round2(costoProducto(prod).total);
+      const listos = Math.max(0, Math.min(cantidad, Number(row.querySelector('[name="listos"]')?.value || 0)));
+      const enImpresion = Math.max(
+        0,
+        Math.min(cantidad - listos, Number(row.querySelector('[name="enImpresion"]')?.value || 0))
+      );
+      let estadoItem = String(row.querySelector('[name="estadoItem"]')?.value || 'pendiente');
+      if (listos >= cantidad) estadoItem = 'listo';
+      else if (enImpresion > 0) estadoItem = 'en_impresion';
+      items.push({
+        sku,
+        nombre: prod?.nombre || row.querySelector('[name="nombre"]')?.value || sku,
+        cantidad,
+        precioUnitarioClp,
+        costoUnitarioClp,
+        filamento: String(row.querySelector('[name="filamento"]')?.value || '').trim(),
+        estado: estadoItem,
+        listos,
+        enImpresion,
+      });
+    });
+    pedidoEditDraft.items = items;
+    sincronizarEstadoPedido(pedidoEditDraft);
+    recalcularMontoPedido(pedidoEditDraft);
+    return pedidoEditDraft;
+  }
+
+  function renderModalPedido() {
+    const ped = pedidoEditDraft;
+    const body = $('#imp-modal-pedido-body');
+    const title = $('#imp-modal-pedido-title');
+    if (!ped || !body) return;
+    if (title) title.textContent = `Editar ${ped.numero || 'pedido'}`;
+    recalcularMontoPedido(ped);
+    const itemBlocks = (ped.items || [])
+      .map((it, idx) => {
+        asegurarCostosItem(it);
+        const cant = Number(it.cantidad || 1);
+        const listos = Number(it.listos ?? (it.estado === 'listo' ? cant : 0));
+        const enImp = Number(it.enImpresion ?? (it.estado === 'en_impresion' ? cant : 0));
+        const est = it.estado || (listos >= cant ? 'listo' : enImp > 0 ? 'en_impresion' : 'pendiente');
+        return `<div class="imp-pedido-edit-item" data-edit-item="${idx}">
+          <div class="imp-form">
+            <label>Producto (SKU)
+              <select name="sku"><option value="">Elegir…</option>${optsSkuProducto(it.sku)}</select>
+            </label>
+            <input type="hidden" name="nombre" value="${escapeHtml(it.nombre || '')}" />
+            <label>Cantidad<input name="cantidad" type="number" min="0.01" step="0.01" value="${num2(cant)}" /></label>
+            <label>Costo / u<input name="costoUnitarioClp" type="number" min="0" step="0.01" value="${num2(it.costoUnitarioClp || 0)}" readonly /></label>
+            <label>Precio venta / u<input name="precioUnitarioClp" type="number" min="0" step="0.01" value="${num2(it.precioUnitarioClp || 0)}" /></label>
+            <label>Listos<input name="listos" type="number" min="0" step="1" value="${listos}" /></label>
+            <label>En impresión<input name="enImpresion" type="number" min="0" step="1" value="${enImp}" /></label>
+            <label>Estado ítem
+              <select name="estadoItem">
+                <option value="pendiente"${est === 'pendiente' ? ' selected' : ''}>Pendiente</option>
+                <option value="en_impresion"${est === 'en_impresion' ? ' selected' : ''}>En impresión</option>
+                <option value="listo"${est === 'listo' ? ' selected' : ''}>Listo</option>
+              </select>
+            </label>
+            <label>Filamento<input name="filamento" value="${escapeHtml(it.filamento || '')}" placeholder="PLA+ negro" /></label>
+            <div class="imp-form-actions">
+              <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-quitar-item="${idx}">Quitar ítem</button>
+              <span class="imp-muted">Subtotal ${money(round2(cant * Number(it.precioUnitarioClp || 0)))}</span>
+            </div>
+          </div>
+        </div>`;
+      })
+      .join('');
+
+    body.innerHTML = `
+      <form class="imp-form" id="form-editar-pedido">
+        <p class="imp-muted">Podés cambiar cliente, ítems, cantidades, precios y avance. Al guardar se actualiza el pedido online.</p>
+        <label>Fecha<input name="fecha" type="date" required value="${escapeHtml(ped.fecha || today())}" /></label>
+        <label>Cliente<input name="cliente" value="${escapeHtml(ped.cliente || '')}" required /></label>
+        <label>Canal<input name="canal" value="${escapeHtml(ped.canal || '')}" /></label>
+        <label>Quién
+          <select name="socioRegistro">
+            ${['Ambos', 'Josefa', 'Nicolás']
+              .map(
+                (s) =>
+                  `<option value="${s}"${(ped.socioRegistro || 'Ambos') === s ? ' selected' : ''}>${s}</option>`
+              )
+              .join('')}
+          </select>
+        </label>
+        <label>Estado del pedido
+          <select name="estado">
+            <option value="pendiente"${ped.estado === 'pendiente' ? ' selected' : ''}>Pendiente</option>
+            <option value="en_impresion"${ped.estado === 'en_impresion' ? ' selected' : ''}>En impresión</option>
+            <option value="listo"${ped.estado === 'listo' ? ' selected' : ''}>Listo para entregar</option>
+          </select>
+        </label>
+        <label class="imp-form-span">Notas<textarea name="notas" rows="2">${escapeHtml(ped.notas || '')}</textarea></label>
+        <h3 style="margin:0.5rem 0 0">Ítems</h3>
+        <div class="imp-pedido-edit-items">${itemBlocks || '<p class="imp-muted">Sin ítems</p>'}</div>
+        <button type="button" class="imp-btn imp-btn--sm" id="btn-pedido-add-item">+ Agregar ítem</button>
+        <p class="imp-pedido-edit-total"><strong>Total venta ${money(ped.montoNeto)}</strong> · costo ${money(ped.costoTotal || 0)}</p>
+        <div class="imp-form-actions">
+          <button type="submit" class="imp-btn imp-btn--primary">Guardar cambios</button>
+          <button type="button" class="imp-btn" id="btn-modal-pedido-cancelar">Cancelar</button>
+        </div>
+      </form>
+    `;
+
+    const form = $('#form-editar-pedido');
+    const refreshFromForm = () => {
+      capturarDraftDesdeModal();
+      renderModalPedido();
+    };
+
+    form?.querySelectorAll('[name="sku"]').forEach((sel) => {
+      sel.addEventListener('change', () => {
+        const row = sel.closest('[data-edit-item]');
+        const prod = (data.productos || []).find((p) => p.sku === sel.value);
+        if (!prod || !row) return;
+        const costo = round2(costoProducto(prod).total);
+        const costoEl = row.querySelector('[name="costoUnitarioClp"]');
+        const precioEl = row.querySelector('[name="precioUnitarioClp"]');
+        const nombreEl = row.querySelector('[name="nombre"]');
+        if (costoEl) costoEl.value = num2(costo);
+        if (nombreEl) nombreEl.value = prod.nombre || '';
+        if (precioEl && (!(Number(precioEl.value) > 0) || precioEl.dataset.auto === '1')) {
+          precioEl.value = num2(precioSugeridoDesdeCosto(costo));
+          precioEl.dataset.auto = '1';
+        }
+        if (
+          Number(prod.costoFilamentoKgClp) === COSTO_PLA_NEGRO_KG &&
+          row.querySelector('[name="filamento"]') &&
+          !row.querySelector('[name="filamento"]').value
+        ) {
+          row.querySelector('[name="filamento"]').value = 'PLA+ negro';
+        }
+        refreshFromForm();
+      });
+    });
+    form?.querySelectorAll('[name="precioUnitarioClp"]').forEach((inp) => {
+      inp.addEventListener('input', () => {
+        inp.dataset.auto = '0';
+      });
+      inp.addEventListener('change', refreshFromForm);
+    });
+    form?.querySelectorAll('[name="cantidad"], [name="listos"], [name="enImpresion"], [name="estadoItem"]').forEach((inp) => {
+      inp.addEventListener('change', refreshFromForm);
+    });
+    form?.querySelectorAll('[data-quitar-item]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        capturarDraftDesdeModal();
+        const idx = Number(btn.getAttribute('data-quitar-item'));
+        pedidoEditDraft.items = (pedidoEditDraft.items || []).filter((_, i) => i !== idx);
+        renderModalPedido();
+      });
+    });
+    $('#btn-pedido-add-item')?.addEventListener('click', () => {
+      capturarDraftDesdeModal();
+      const prod = (data.productos || [])[0];
+      const costo = prod ? round2(costoProducto(prod).total) : 0;
+      pedidoEditDraft.items = pedidoEditDraft.items || [];
+      pedidoEditDraft.items.push({
+        sku: prod?.sku || '',
+        nombre: prod?.nombre || '',
+        cantidad: 1,
+        costoUnitarioClp: costo,
+        precioUnitarioClp: precioSugeridoDesdeCosto(costo),
+        filamento: Number(prod?.costoFilamentoKgClp) === COSTO_PLA_NEGRO_KG ? 'PLA+ negro' : '',
+        estado: 'pendiente',
+        listos: 0,
+        enImpresion: 0,
+      });
+      renderModalPedido();
+    });
+    $('#btn-modal-pedido-cancelar')?.addEventListener('click', cerrarModalPedido);
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      capturarDraftDesdeModal();
+      if (!pedidoEditDraft?.items?.length) {
+        setStatus('El pedido necesita al menos un ítem', 'warn');
+        return;
+      }
+      if (!(pedidoEditDraft.montoNeto > 0)) {
+        setStatus('Revisa precios de venta / unidad', 'warn');
+        return;
+      }
+      const ped = (data.pedidos || []).find((p) => p.id === pedidoEditDraft.id);
+      if (!ped || !pedidoActivo(ped.estado)) {
+        cerrarModalPedido();
+        return;
+      }
+      const estForm = pedidoActivo(pedidoEditDraft.estado)
+        ? pedidoEditDraft.estado
+        : 'pendiente';
+      ped.fecha = pedidoEditDraft.fecha;
+      ped.cliente = pedidoEditDraft.cliente;
+      ped.canal = pedidoEditDraft.canal;
+      ped.notas = pedidoEditDraft.notas;
+      ped.socioRegistro = pedidoEditDraft.socioRegistro;
+      ped.items = pedidoEditDraft.items;
+      if (estForm === 'listo') {
+        (ped.items || []).forEach((it) => {
+          const cant = Math.max(1, Number(it.cantidad || 1));
+          it.listos = cant;
+          it.enImpresion = 0;
+          it.estado = 'listo';
+        });
+        ped.estado = 'listo';
+      } else {
+        ped.estado = estForm;
+        sincronizarEstadoPedido(ped);
+        // Si eligió en_impresión/pendiente a mano, respetarlo aunque los ítems digan otra cosa.
+        if (estForm === 'en_impresion' || estForm === 'pendiente') ped.estado = estForm;
+      }
+      recalcularMontoPedido(ped);
+      ped.actualizado = new Date().toISOString();
+      cerrarModalPedido();
+      markDirty();
+      renderAll();
+      activarTab('pedidos');
+      setStatus(`${ped.numero} actualizado · venta ${money(ped.montoNeto)} · guardando…`, 'warn');
+      save()
+        .then(() => setStatus(`${ped.numero} guardado ✓`, 'ok'))
+        .catch((err) => setStatus(String(err.message || err), 'err'));
+    });
+  }
+
+  function abrirModalEditarPedido(id) {
+    const ped = (data.pedidos || []).find((p) => p.id === id);
+    if (!ped) {
+      setStatus('Pedido no encontrado', 'warn');
+      return;
+    }
+    if (!pedidoActivo(ped.estado)) {
+      setStatus('Solo se editan pedidos activos (no transferidos)', 'warn');
+      return;
+    }
+    pedidoEditDraft = JSON.parse(JSON.stringify(ped));
+    (pedidoEditDraft.items || []).forEach(asegurarCostosItem);
+    recalcularMontoPedido(pedidoEditDraft);
+    const modal = $('#imp-modal-pedido');
+    if (!modal) return;
+    renderModalPedido();
+    modal.hidden = false;
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('imp-modal-open');
+  }
+
   function renderPedidos() {
     (data.pedidos || []).forEach(sincronizarEstadoPedido);
     const productos = data.productos || [];
@@ -1299,7 +1586,8 @@
             estado === 'listo'
               ? `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="pendiente">Volver a pendiente</button>`
               : `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="listo">Marcar listo</button>`;
-          acciones = `${btnListo}
+          acciones = `<button type="button" class="imp-btn imp-btn--sm" data-edit-pedido="${escapeHtml(p.id)}">Editar</button>
+            ${btnListo}
             <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
             <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
         }
@@ -1466,6 +1754,10 @@
       activarTab('pedidos');
       setStatus(`Pedido ${numero} creado · venta ${money(montoNeto)} · guarda online`, 'warn');
       save().catch((err) => setStatus(String(err.message || err), 'err'));
+    });
+
+    $('#tab-pedidos')?.querySelectorAll('[data-edit-pedido]').forEach((btn) => {
+      btn.addEventListener('click', () => abrirModalEditarPedido(btn.getAttribute('data-edit-pedido')));
     });
 
     $('#tab-pedidos')?.querySelectorAll('[data-precio-item]').forEach((inp) => {
@@ -2340,8 +2632,17 @@
   $('#imp-modal-producto')?.addEventListener('click', (e) => {
     if (e.target?.id === 'imp-modal-producto') cerrarModalProducto();
   });
+  $('#btn-modal-pedido-cerrar')?.addEventListener('click', cerrarModalPedido);
+  $('#imp-modal-pedido')?.addEventListener('click', (e) => {
+    if (e.target?.id === 'imp-modal-pedido') cerrarModalPedido();
+  });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && $('#imp-modal-producto')?.classList.contains('is-open')) {
+    if (e.key !== 'Escape') return;
+    if ($('#imp-modal-pedido')?.classList.contains('is-open')) {
+      cerrarModalPedido();
+      return;
+    }
+    if ($('#imp-modal-producto')?.classList.contains('is-open')) {
       cerrarModalProducto();
     }
   });

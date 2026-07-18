@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Impresoreando · Panel socios</title>
   <link rel="stylesheet" href="../../../assets/portal.css?v=imp-cta2" />
-  <link rel="stylesheet" href="./panel.css?v=imp-ped-precio1" />
+  <link rel="stylesheet" href="./panel.css?v=imp-ped-edit1" />
 </head>
 <body class="imp-body" data-cliente-slug="impresoreando">
   <div class="imp-top-bleed">
@@ -81,6 +81,16 @@
     </div>
   </div>
 
-  <script src="./panel.js?v=imp-ped-precio1"></script>
+  <div id="imp-modal-pedido" class="imp-modal" hidden aria-hidden="true">
+    <div class="imp-modal__dialog imp-modal__dialog--wide" role="dialog" aria-modal="true" aria-labelledby="imp-modal-pedido-title">
+      <header class="imp-modal__head">
+        <h2 id="imp-modal-pedido-title">Editar pedido</h2>
+        <button type="button" class="imp-modal__close" id="btn-modal-pedido-cerrar" aria-label="Cerrar">×</button>
+      </header>
+      <div id="imp-modal-pedido-body"></div>
+    </div>
+  </div>
+
+  <script src="./panel.js?v=imp-ped-edit1"></script>
 </body>
 </html>
