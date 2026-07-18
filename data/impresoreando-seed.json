@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-18T04:29:08.000Z",
+    "actualizado": "2026-07-18T04:30:11.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -26,7 +26,7 @@
       "montoNetoClp": 797040,
       "deudaJosefaClp": 398520
     },
-    "pedidoSeq": 0
+    "pedidoSeq": 1
   },
   "parametros": {
     "tarifaKwhClp": 200,
@@ -342,5 +342,29 @@
       "texto": "Carga inicial agrupada por registro: Orden #312435 ($652.290) + AliExpress ($60.000) + Líder ($20.000) + Mercado Libre 5 PLA ($64.750). Sociedad 50/50. Gastos de ambos. Nicolás aportó capital; Josefa debe 50%."
     }
   ],
-  "pedidos": []
+  "pedidos": [
+    {
+      "id": "ped-rebe-plmons-001",
+      "numero": "PED-001",
+      "fecha": "2026-07-18",
+      "cliente": "Rebe",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "PLMONS001",
+          "nombre": "Porta lata Monster",
+          "cantidad": 1,
+          "precioUnitarioClp": 5679.2,
+          "costoUnitarioClp": 2839.6,
+          "filamento": "PLA+ negro"
+        }
+      ],
+      "montoNeto": 5679.2,
+      "estado": "listo",
+      "ventaId": null,
+      "notas": "1× Porta lata Monster · PLA+ negro · listo para entregar",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-18T04:29:00.000Z"
+    }
+  ]
 }

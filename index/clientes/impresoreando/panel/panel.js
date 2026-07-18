@@ -847,8 +847,11 @@
     const pctVentas = Math.min(100, (ventas / denom) * 100);
     const linkVenta = `${location.origin}/index/clientes/impresoreando/panel/venta/`;
     const esLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
-    const pedidosPendientes = (data.pedidos || []).filter((p) => p.estado === 'pendiente');
-    const montoPedidosPend = pedidosPendientes.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
+    const pedidosActivos = (data.pedidos || []).filter((p) =>
+      ['pendiente', 'listo'].includes(p.estado || 'pendiente')
+    );
+    const pedidosPendientes = pedidosActivos;
+    const montoPedidosPend = pedidosActivos.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
     const pctMarkup = Number(data.parametros?.margenObjetivoPct ?? 100);
     const filasCostoProd = (data.productos || [])
       .map((prod) => {
