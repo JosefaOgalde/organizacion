@@ -93,6 +93,54 @@ Comparte la URL `https://….trycloudflare.com/index/clientes/impresoreando/pane
 
 > Tip: ambos deben pulsar **Guardar online** tras editar. Si no, los cambios quedan solo en el navegador de esa persona.
 
+## Status diario por correo (Josefa + Nicolás)
+
+Cada día se puede enviar un resumen a:
+
+- `romerosilvanicolas@gmail.com`
+- `josefa.ogalde@gmail.com`
+
+Incluye: **pedidos y estados**, **ventas entregadas/contabilizadas**, y **cuánto % falta para salir de números rojos** (saldo = gastos + operación − ventas).
+
+### Configurar una vez
+
+1. Copia `.env.example` → `.env` (si aún no existe).
+2. En Gmail (la cuenta que **envía**): Seguridad → verificación en 2 pasos → **Contraseñas de aplicaciones** → crea una para “Correo”.
+3. Completa en `.env`:
+
+```env
+STATUS_TO=romerosilvanicolas@gmail.com,josefa.ogalde@gmail.com
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=465
+MAIL_USER=tu@gmail.com
+MAIL_PASS=xxxx xxxx xxxx xxxx
+MAIL_FROM=Impresoreando <tu@gmail.com>
+```
+
+4. Probar sin enviar:
+
+```bat
+node scripts\impresoreando-status-diario.js --dry-run
+```
+
+Abre `data\impresoreando-status-ultimo.html` para ver el correo.
+
+5. Enviar de verdad:
+
+```bat
+ENVIAR-STATUS-IMPRESOREANDO.bat
+```
+
+### Programar todos los días (Windows)
+
+1. Abre **Programador de tareas**.
+2. Crear tarea básica → nombre `Impresoreando status diario`.
+3. Desencadenador: **Diariamente** (ej. 09:00).
+4. Acción: Iniciar programa → `ENVIAR-STATUS-IMPRESOREANDO.bat` (ruta completa del repo).
+5. Marca “Ejecutar aunque el usuario no haya iniciado sesión” solo si aplica; si no, deja la PC/usuario con sesión.
+
+El script lee `data/impresoreando-live.json` (el mismo del panel). Conviene haber guardado online el día anterior.
+
 ## Totales iniciales (referencia)
 
 | Concepto | Monto |
