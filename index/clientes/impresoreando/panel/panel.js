@@ -1270,7 +1270,7 @@
           Total filamento <strong>${g.toFixed(2)} g</strong>
           · Filamento ${money(c.filamento)} · Luz ${money(c.luz)} · Pintado ${money(c.pintado)} · Metal ${money(c.metal)} · Bolsa ${money(c.bolsa)}
           <br><strong>Costo unitario: ${money(c.total)}</strong> · precio sugerido c/ margen ${Math.round(margen * 100)}%: <strong>${money(sugerido)}</strong>
-          <div class="imp-muted" style="margin-top:0.35rem">Tarifa ${p.tarifaKwhClp || 180} $/kWh · consumo ${p.consumoImpresoraKw || 0.22} kW</div>`;
+          <div class="imp-muted" style="margin-top:0.35rem">Tarifa Chile ${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp} $/kWh · ${p.impresoraModelo || 'Centauri Carbon 2'} ${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw} kW</div>`;
       form.dataset.calcSnapshot = JSON.stringify({ ...prod, sugerido, c });
     };
     $('#form-calc-pieza')?.addEventListener('input', updateCalc);
