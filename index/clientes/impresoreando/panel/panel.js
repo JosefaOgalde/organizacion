@@ -524,8 +524,34 @@
         <div class="imp-kpi imp-kpi--ok"><span>Ventas</span><strong>${money(ventas)}</strong></div>
         <div class="imp-kpi"><span>Operación (luz etc.)</span><strong>${money(operacion)}</strong></div>
         <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
-        <div class="imp-kpi"><span>50% cada socio (gastos)</span><strong>${money(cadaUnoGastos)}</strong></div>
-        <div class="imp-kpi"><span>50% cada socio (resultado)</span><strong>${money(cadaUnoResultado)}</strong></div>
+      </div>
+      <div class="imp-socios" aria-label="Detalle por socio">
+        <article class="imp-socio imp-socio--josefa">
+          <header class="imp-socio__head">
+            <h3>Josefa</h3>
+            <span class="imp-socio__tag">50%</span>
+          </header>
+          <p class="imp-socio__deuda">Le debe a Nicolás <strong>${money(deuda)}</strong></p>
+          <ul class="imp-socio__detalle">
+            <li><span>Su 50% de los gastos</span><strong>${money(cadaUnoGastos)}</strong></li>
+            <li><span>Su 50% del resultado</span><strong class="${cadaUnoResultado >= 0 ? 'is-ok' : 'is-warn'}">${money(cadaUnoResultado)}</strong></li>
+            <li><span>Capital que aportó</span><strong>$0</strong></li>
+          </ul>
+          <p class="imp-socio__nota">Nicolás puso el capital; a Josefa le corresponde el 50% (${money(deuda)}).</p>
+        </article>
+        <article class="imp-socio imp-socio--nicolas">
+          <header class="imp-socio__head">
+            <h3>Nicolás</h3>
+            <span class="imp-socio__tag">50%</span>
+          </header>
+          <p class="imp-socio__deuda imp-socio__deuda--ok">Josefa le debe <strong>${money(deuda)}</strong></p>
+          <ul class="imp-socio__detalle">
+            <li><span>Su 50% de los gastos</span><strong>${money(cadaUnoGastos)}</strong></li>
+            <li><span>Su 50% del resultado</span><strong class="${cadaUnoResultado >= 0 ? 'is-ok' : 'is-warn'}">${money(cadaUnoResultado)}</strong></li>
+            <li><span>Capital que aportó</span><strong>${money(gastos)}</strong></li>
+          </ul>
+          <p class="imp-socio__nota">Aportó el capital del negocio. Tiene por cobrar de Josefa ${money(deuda)}.</p>
+        </article>
       </div>
       <div class="imp-charts">
         <div class="imp-card imp-chart-card">
