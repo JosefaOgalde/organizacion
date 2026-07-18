@@ -1568,6 +1568,160 @@
     }
   }
 
+  let transferPedidoId = null;
+
+  function cerrarModalTransferir() {
+    const modal = $('#imp-modal-transferir');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('imp-modal-open');
+    transferPedidoId = null;
+    const body = $('#imp-modal-transferir-body');
+    if (body) body.innerHTML = '';
+  }
+
+  function abrirModalTransferir(id) {
+    const ped = (data.pedidos || []).find((p) => p.id === id);
+    if (!ped || !pedidoActivo(ped.estado)) return;
+    recalcularMontoPedido(ped);
+    transferPedidoId = ped.id;
+    const bruto = round2(ped.montoNeto || 0);
+    const body = $('#imp-modal-transferir-body');
+    const title = $('#imp-modal-transferir-title');
+    const modal = $('#imp-modal-transferir');
+    if (!body || !modal) return;
+    if (title) title.textContent = `Transferir ${ped.numero || 'pedido'}`;
+    const itemsTxt = (ped.items || [])
+      .map((it) => `${it.cantidad || 1}× ${it.nombre || it.sku || ''}`)
+      .join(', ');
+    body.innerHTML = `
+      <form class="imp-form" id="form-transferir-venta">
+        <p class="imp-muted">Cliente: <strong>${escapeHtml(ped.cliente || '—')}</strong><br>${escapeHtml(itemsTxt)}</p>
+        <label>Subtotal (sin descuento)
+          <input type="number" id="tr-bruto" value="${num2(bruto)}" readonly />
+        </label>
+        <label>Descuento %
+          <input type="number" name="descuentoPct" id="tr-desc-pct" min="0" max="100" step="0.01" value="0" />
+        </label>
+        <label>Descuento CLP
+          <input type="number" name="descuentoClp" id="tr-desc-clp" min="0" step="0.01" value="0" />
+        </label>
+        <label>Total a cobrar
+          <input type="number" id="tr-total" value="${num2(bruto)}" readonly />
+        </label>
+        <p class="imp-muted">Costo del pedido: <strong>${money(ped.costoTotal || 0)}</strong>. El descuento baja solo el total de venta (la deuda baja con ese monto).</p>
+        <div class="imp-form-actions">
+          <button type="submit" class="imp-btn imp-btn--primary">Confirmar venta</button>
+          <button type="button" class="imp-btn" id="btn-modal-transferir-cancelar">Cancelar</button>
+        </div>
+      </form>
+    `;
+
+    const syncDesc = (from) => {
+      const pctEl = $('#tr-desc-pct');
+      const clpEl = $('#tr-desc-clp');
+      const totEl = $('#tr-total');
+      if (!pctEl || !clpEl || !totEl) return;
+      let desc = 0;
+      if (from === 'pct') {
+        const pct = Math.max(0, Math.min(100, Number(pctEl.value || 0)));
+        desc = round2((bruto * pct) / 100);
+        clpEl.value = num2(desc);
+      } else {
+        desc = Math.max(0, Math.min(bruto, round2(clpEl.value || 0)));
+        clpEl.value = num2(desc);
+        pctEl.value = bruto > 0 ? num2((desc / bruto) * 100) : '0.00';
+      }
+      totEl.value = num2(round2(bruto - desc));
+    };
+    $('#tr-desc-pct')?.addEventListener('input', () => syncDesc('pct'));
+    $('#tr-desc-clp')?.addEventListener('input', () => syncDesc('clp'));
+    $('#btn-modal-transferir-cancelar')?.addEventListener('click', cerrarModalTransferir);
+
+    $('#form-transferir-venta')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const pedNow = (data.pedidos || []).find((p) => p.id === transferPedidoId);
+      if (!pedNow || !pedidoActivo(pedNow.estado)) {
+        cerrarModalTransferir();
+        return;
+      }
+      recalcularMontoPedido(pedNow);
+      const montoBruto = round2(pedNow.montoNeto || 0);
+      let descuentoClp = round2($('#tr-desc-clp')?.value || 0);
+      if (descuentoClp < 0) descuentoClp = 0;
+      if (descuentoClp > montoBruto) descuentoClp = montoBruto;
+      const descuentoPct = montoBruto > 0 ? round2((descuentoClp / montoBruto) * 100) : 0;
+      const montoNeto = round2(montoBruto - descuentoClp);
+
+      const itemsSnap = (pedNow.items || []).map((it) => ({
+        sku: it.sku,
+        nombre: it.nombre,
+        cantidad: Number(it.cantidad || 0),
+        precioUnitarioClp: round2(it.precioUnitarioClp || 0),
+        costoUnitarioClp: round2(it.costoUnitarioClp || 0),
+        filamento: it.filamento || '',
+      }));
+      const itemsTxt = itemsSnap
+        .map(
+          (it) =>
+            `${it.cantidad}× ${it.nombre || it.sku} @ ${money(it.precioUnitarioClp)} (costo ${money(it.costoUnitarioClp)})`
+        )
+        .join(', ');
+      const cant = itemsSnap.reduce((a, it) => a + Number(it.cantidad || 0), 0) || 1;
+      const notaDesc =
+        descuentoClp > 0 ? `Descuento ${money(descuentoClp)} (${descuentoPct}%). ` : '';
+      const venta = {
+        id: uid('ven'),
+        fecha: pedNow.fecha || today(),
+        descripcion: `${pedNow.numero} · ${itemsTxt}${pedNow.cliente ? ` · ${pedNow.cliente}` : ''}`,
+        cantidad: cant,
+        montoBruto,
+        descuentoClp,
+        descuentoPct,
+        montoNeto,
+        costoTotal: Number(pedNow.costoTotal || 0),
+        canal: pedNow.canal || '',
+        cliente: pedNow.cliente || '',
+        notas: `${notaDesc}${pedNow.notas || `Desde pedido ${pedNow.numero}`}`.trim(),
+        socioRegistro: pedNow.socioRegistro || 'Ambos',
+        pedidoId: pedNow.id,
+        pedidoNumero: pedNow.numero,
+        items: itemsSnap,
+        creado: new Date().toISOString(),
+      };
+      data.ventas = data.ventas || [];
+      data.ventas.push(venta);
+      pedNow.estado = 'transferido';
+      pedNow.ventaId = venta.id;
+      pedNow.transferidoEn = new Date().toISOString();
+      pedNow.montoBruto = montoBruto;
+      pedNow.descuentoClp = descuentoClp;
+      pedNow.descuentoPct = descuentoPct;
+      pedNow.montoNeto = montoNeto;
+      pedNow.costoTotal = venta.costoTotal;
+      cerrarModalTransferir();
+      markDirty();
+      renderAll();
+      activarTab('ventas');
+      const msgDesc = descuentoClp > 0 ? ` (desc. ${money(descuentoClp)})` : '';
+      setStatus(`${pedNow.numero} → venta · ${money(montoNeto)}${msgDesc} · guardando…`, 'warn');
+      save()
+        .then(() =>
+          setStatus(`${pedNow.numero} → venta · ${money(montoNeto)}${msgDesc} contabilizado y guardado ✓`, 'ok')
+        )
+        .catch((err) => setStatus(String(err.message || err), 'err'));
+    });
+
+    modal.removeAttribute('hidden');
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    modal.classList.add('is-open');
+    document.body.classList.add('imp-modal-open');
+    $('#tr-desc-clp')?.focus();
+  }
+
   function renderPedidos() {
     const productos = data.productos || [];
     const optsProd = productos
@@ -1606,7 +1760,7 @@
     $('#tab-pedidos').innerHTML = `
       <div class="imp-card">
         <h2>Pedidos</h2>
-        <p class="imp-muted">Por ítem: <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable). El <strong>estado</strong> se elige solo en el menú de la columna Estado. Al <strong>Transferir a venta</strong> se guarda el registro y baja la deuda.</p>
+        <p class="imp-muted">Por ítem: <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable). El <strong>estado</strong> se elige en el menú. Al <strong>Transferir a venta</strong> podés aplicar un <strong>descuento</strong>; el total cobrado es el que baja la deuda.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th><th></th></tr></thead>
@@ -1799,59 +1953,7 @@
 
     $('#tab-pedidos')?.querySelectorAll('[data-transferir-pedido]').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-transferir-pedido');
-        const ped = (data.pedidos || []).find((p) => p.id === id);
-        if (!ped || !pedidoActivo(ped.estado)) return;
-        recalcularMontoPedido(ped);
-        const ok = confirm(
-          `¿Transferir ${ped.numero} a venta?\nCliente: ${ped.cliente || '—'}\nVenta: ${money(ped.montoNeto)}\nCosto: ${money(ped.costoTotal || 0)}\nSe guarda el registro y baja la deuda.`
-        );
-        if (!ok) return;
-        const itemsSnap = (ped.items || []).map((it) => ({
-          sku: it.sku,
-          nombre: it.nombre,
-          cantidad: Number(it.cantidad || 0),
-          precioUnitarioClp: round2(it.precioUnitarioClp || 0),
-          costoUnitarioClp: round2(it.costoUnitarioClp || 0),
-          filamento: it.filamento || '',
-        }));
-        const itemsTxt = itemsSnap
-          .map(
-            (it) =>
-              `${it.cantidad}× ${it.nombre || it.sku} @ ${money(it.precioUnitarioClp)} (costo ${money(it.costoUnitarioClp)})`
-          )
-          .join(', ');
-        const cant = itemsSnap.reduce((a, it) => a + Number(it.cantidad || 0), 0) || 1;
-        const venta = {
-          id: uid('ven'),
-          fecha: ped.fecha || today(),
-          descripcion: `${ped.numero} · ${itemsTxt}${ped.cliente ? ` · ${ped.cliente}` : ''}`,
-          cantidad: cant,
-          montoNeto: Number(ped.montoNeto || 0),
-          costoTotal: Number(ped.costoTotal || 0),
-          canal: ped.canal || '',
-          cliente: ped.cliente || '',
-          notas: ped.notas || `Desde pedido ${ped.numero}`,
-          socioRegistro: ped.socioRegistro || 'Ambos',
-          pedidoId: ped.id,
-          pedidoNumero: ped.numero,
-          items: itemsSnap,
-          creado: new Date().toISOString(),
-        };
-        data.ventas = data.ventas || [];
-        data.ventas.push(venta);
-        ped.estado = 'transferido';
-        ped.ventaId = venta.id;
-        ped.transferidoEn = new Date().toISOString();
-        ped.montoNeto = venta.montoNeto;
-        ped.costoTotal = venta.costoTotal;
-        markDirty();
-        renderAll();
-        activarTab('ventas');
-        setStatus(`${ped.numero} → venta · ${money(venta.montoNeto)} · guardando…`, 'warn');
-        save()
-          .then(() => setStatus(`${ped.numero} → venta · ${money(venta.montoNeto)} contabilizado y guardado ✓`, 'ok'))
-          .catch((err) => setStatus(String(err.message || err), 'err'));
+        abrirModalTransferir(btn.getAttribute('data-transferir-pedido'));
       });
     });
 
@@ -1889,8 +1991,10 @@
         }${itemsHtml || (v.descripcion && v.cliente ? `<div class="imp-muted">${escapeHtml(v.descripcion)}</div>` : '')}</td>
         <td class="num">${v.cantidad || 1}</td>
         <td class="num"><strong>${money(v.montoNeto)}</strong>${
-          v.costoTotal != null ? `<div class="imp-muted">costo ${money(v.costoTotal)}</div>` : ''
-        }</td>
+          Number(v.descuentoClp) > 0
+            ? `<div class="imp-muted">bruto ${money(v.montoBruto ?? Number(v.montoNeto) + Number(v.descuentoClp))} · desc. −${money(v.descuentoClp)}</div>`
+            : ''
+        }${v.costoTotal != null ? `<div class="imp-muted">costo ${money(v.costoTotal)}</div>` : ''}</td>
         <td>${escapeHtml(v.canal || '')}</td>
         <td><button type="button" class="imp-btn imp-btn--danger" data-del-venta="${v.id}">✕</button></td>
       </tr>`;

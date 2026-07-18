@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Impresoreando · Panel socios</title>
   <link rel="stylesheet" href="../../../assets/portal.css?v=imp-cta2" />
-  <link rel="stylesheet" href="./panel.css?v=imp-prod-sum1" />
+  <link rel="stylesheet" href="./panel.css?v=imp-desc1" />
 </head>
 <body class="imp-body" data-cliente-slug="impresoreando">
   <div class="imp-top-bleed">
@@ -91,6 +91,16 @@
     </div>
   </div>
 
-  <script src="./panel.js?v=imp-prod-sum1"></script>
+  <div id="imp-modal-transferir" class="imp-modal" hidden aria-hidden="true">
+    <div class="imp-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="imp-modal-transferir-title">
+      <header class="imp-modal__head">
+        <h2 id="imp-modal-transferir-title">Transferir a venta</h2>
+        <button type="button" class="imp-modal__close" id="btn-modal-transferir-cerrar" aria-label="Cerrar">×</button>
+      </header>
+      <div id="imp-modal-transferir-body"></div>
+    </div>
+  </div>
+
+  <script src="./panel.js?v=imp-desc1"></script>
 </body>
 </html>
