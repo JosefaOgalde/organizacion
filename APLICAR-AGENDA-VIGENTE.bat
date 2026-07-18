@@ -3,7 +3,7 @@ chcp 65001 >nul
 cd /d "%~dp0"
 echo.
 echo  === Aplicar agenda vigente ===
-echo  TS C7/C8 hechas · Nutri 27 jul · ECR 20/22 ago · Impresoreando
+echo  TS C7/C8 hechas · Nutri 27 jul · ECR 21/23 jul · Impresoreando
 echo.
 
 set PATH=C:\laragon\bin\nodejs\node-v22;%PATH%

@@ -3,7 +3,7 @@
  * Ajusta el live a la agenda vigente (sin borrar otros clientes):
  *  - TS Contenidos 7 y 8 → hechas (madre + subtareas)
  *  - Cita Nutriologa lunes 27 jul 2026
- *  - ECR NL1 = 20 ago · NL2 = 22 ago · Portada NL1 hecha
+ *  - ECR NL1 = 21 jul · NL2 = 23 jul · Portada NL1 hecha
  *  - Sync pedidos Impresoreando → calendario
  *  - JM Fase 2 → D1–D20 hechas (como en tu vista actual)
  *
