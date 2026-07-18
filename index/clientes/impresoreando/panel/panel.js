@@ -1507,19 +1507,19 @@
     const form = $('#form-calc-pieza');
     if (!form) return null;
     const fd = new FormData(form);
-    const modelo = Number(fd.get('modelo') || 0);
-    const soportes = Number(fd.get('soportes') || 0);
-    const purge = Number(fd.get('purge') || 0);
+    const modelo = round2(fd.get('modelo') || 0);
+    const soportes = round2(fd.get('soportes') || 0);
+    const purge = round2(fd.get('purge') || 0);
     const prod = {
       filamentoModeloGramos: modelo,
       filamentoSoportesGramos: soportes,
       filamentoPurgeGramos: purge,
-      filamentoGramos: modelo + soportes + purge,
-      costoFilamentoKgClp: Number(fd.get('kg')),
+      filamentoGramos: round2(modelo + soportes + purge),
+      costoFilamentoKgClp: round2(fd.get('kg')),
       horasImpresion: horasDesdePartes(fd.get('horasPart'), fd.get('minutosPart')),
-      minutosPintado: Number(fd.get('m')),
-      unidadesMetal: Number(fd.get('metal')),
-      unidadesBolsa: Number(fd.get('bolsa')),
+      minutosPintado: round2(fd.get('m')),
+      unidadesMetal: round2(fd.get('metal')),
+      unidadesBolsa: round2(fd.get('bolsa')),
     };
     const c = costoProducto(prod);
     const sugerido = Math.round(precioSugeridoDesdeCosto(c.total) / 10) * 10;
@@ -1572,13 +1572,13 @@
     calcDraft = { ...calc.prod };
     modal.querySelector('[name=sku]').value = siguienteSkuProducto('Producto');
     modal.querySelector('[name=nombre]').value = '';
-    modal.querySelector('[name=filamentoGramos]').value = calc.prod.filamentoGramos;
-    modal.querySelector('[name=costoFilamentoKgClp]').value = calc.prod.costoFilamentoKgClp;
+    modal.querySelector('[name=filamentoGramos]').value = num2(calc.prod.filamentoGramos);
+    modal.querySelector('[name=costoFilamentoKgClp]').value = num2(calc.prod.costoFilamentoKgClp);
     modal.querySelector('[name=horasImpresion]').value = num2(calc.prod.horasImpresion || 0);
-    modal.querySelector('[name=minutosPintado]').value = calc.prod.minutosPintado;
-    modal.querySelector('[name=unidadesMetal]').value = calc.prod.unidadesMetal;
-    modal.querySelector('[name=unidadesBolsa]').value = calc.prod.unidadesBolsa;
-    modal.querySelector('[name=precioVentaSugeridoClp]').value = calc.sugerido;
+    modal.querySelector('[name=minutosPintado]').value = num2(calc.prod.minutosPintado);
+    modal.querySelector('[name=unidadesMetal]').value = num2(calc.prod.unidadesMetal);
+    modal.querySelector('[name=unidadesBolsa]').value = num2(calc.prod.unidadesBolsa);
+    modal.querySelector('[name=precioVentaSugeridoClp]').value = num2(calc.sugerido);
     modal.querySelector('[name=notas]').value =
       `Desde calculadora · modelo ${calc.prod.filamentoModeloGramos}g + soportes ${calc.prod.filamentoSoportesGramos}g + purge ${calc.prod.filamentoPurgeGramos}g · costo est. ${Math.round(calc.c.total)} CLP`;
     actualizarCostoModal();
@@ -1982,18 +1982,18 @@
       sku,
       nombre,
       activo: true,
-      filamentoModeloGramos: Number(calcDraft?.filamentoModeloGramos ?? 0),
-      filamentoSoportesGramos: Number(calcDraft?.filamentoSoportesGramos ?? 0),
-      filamentoPurgeGramos: Number(calcDraft?.filamentoPurgeGramos ?? 0),
-      filamentoMetros: Number(calcDraft?.filamentoMetros ?? 0),
-      filamentoGramos: Number(fd.get('filamentoGramos')),
-      costoFilamentoKgClp: Number(fd.get('costoFilamentoKgClp')),
-      horasImpresion: Number(fd.get('horasImpresion')),
-      minutosPintado: Number(fd.get('minutosPintado')),
-      unidadesMetal: Number(fd.get('unidadesMetal')),
-      unidadesBolsa: Number(fd.get('unidadesBolsa')),
-      precioVentaSugeridoClp: Number(fd.get('precioVentaSugeridoClp') || 0),
-      costoSlicerRef: Number(calcDraft?.costoSlicerRef ?? 0),
+      filamentoModeloGramos: round2(calcDraft?.filamentoModeloGramos ?? 0),
+      filamentoSoportesGramos: round2(calcDraft?.filamentoSoportesGramos ?? 0),
+      filamentoPurgeGramos: round2(calcDraft?.filamentoPurgeGramos ?? 0),
+      filamentoMetros: round2(calcDraft?.filamentoMetros ?? 0),
+      filamentoGramos: round2(fd.get('filamentoGramos')),
+      costoFilamentoKgClp: round2(fd.get('costoFilamentoKgClp')),
+      horasImpresion: round2(fd.get('horasImpresion')),
+      minutosPintado: round2(fd.get('minutosPintado')),
+      unidadesMetal: round2(fd.get('unidadesMetal')),
+      unidadesBolsa: round2(fd.get('unidadesBolsa')),
+      precioVentaSugeridoClp: round2(fd.get('precioVentaSugeridoClp') || 0),
+      costoSlicerRef: round2(calcDraft?.costoSlicerRef ?? 0),
       notas: String(fd.get('notas') || '').trim(),
     });
     calcDraft = null;
