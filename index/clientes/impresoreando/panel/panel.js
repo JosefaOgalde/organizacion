@@ -1596,7 +1596,7 @@
             estado === 'listo'
               ? `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="pendiente">Volver a pendiente</button>`
               : `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="listo">Marcar listo</button>`;
-          acciones = `<button type="button" class="imp-btn imp-btn--sm" data-edit-pedido="${escapeHtml(p.id)}">Editar</button>
+          acciones = `<button type="button" class="imp-btn imp-btn--sm" data-edit-pedido="${escapeHtml(p.id)}" onclick="window.abrirModalEditarPedido && window.abrirModalEditarPedido('${escapeHtml(p.id)}')">Editar</button>
             ${btnListo}
             <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
             <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
