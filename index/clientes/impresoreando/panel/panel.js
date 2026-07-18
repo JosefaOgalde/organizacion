@@ -848,7 +848,7 @@
     const linkVenta = `${location.origin}/index/clientes/impresoreando/panel/venta/`;
     const esLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
     const pedidosActivos = (data.pedidos || []).filter((p) =>
-      ['pendiente', 'listo'].includes(p.estado || 'pendiente')
+      pedidoActivo(p.estado || 'pendiente')
     );
     const pedidosPendientes = pedidosActivos;
     const montoPedidosPend = pedidosActivos.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
@@ -1143,15 +1143,101 @@
   function badgeEstadoPedido(estado) {
     if (estado === 'transferido') return '<span class="imp-badge imp-badge--ok">Transferido → venta</span>';
     if (estado === 'listo') return '<span class="imp-badge imp-badge--listo">Listo para entregar</span>';
+    if (estado === 'en_impresion') return '<span class="imp-badge imp-badge--print">En impresión</span>';
     if (estado === 'cancelado') return '<span class="imp-badge">Cancelado</span>';
     return '<span class="imp-badge imp-badge--warn">Pendiente</span>';
   }
 
   function pedidoActivo(estado) {
-    return ['pendiente', 'listo'].includes(estado || 'pendiente');
+    return ['pendiente', 'listo', 'en_impresion'].includes(estado || 'pendiente');
+  }
+
+  function textoEstadoItem(it) {
+    const cant = Math.max(1, Number(it.cantidad || 1));
+    const listos = Math.min(cant, Math.max(0, Number(it.listos ?? (it.estado === 'listo' ? cant : 0))));
+    const enImp = Math.min(
+      cant - listos,
+      Math.max(0, Number(it.enImpresion ?? (it.estado === 'en_impresion' ? cant : 0)))
+    );
+    if (listos >= cant) return 'Listo';
+    if (enImp > 0) return `${enImp}/${cant} en impresión${listos ? ` · ${listos} listo${listos === 1 ? '' : 's'}` : ''}`;
+    if (listos > 0) return `${listos}/${cant} listo${listos === 1 ? '' : 's'}`;
+    return 'Pendiente';
+  }
+
+  function badgeEstadoItem(it) {
+    const txt = textoEstadoItem(it);
+    const cant = Math.max(1, Number(it.cantidad || 1));
+    const listos = Math.min(cant, Math.max(0, Number(it.listos ?? (it.estado === 'listo' ? cant : 0))));
+    if (listos >= cant) return `<span class="imp-badge imp-badge--listo">${escapeHtml(txt)}</span>`;
+    if (/impresión/i.test(txt)) return `<span class="imp-badge imp-badge--print">${escapeHtml(txt)}</span>`;
+    return `<span class="imp-badge imp-badge--warn">${escapeHtml(txt)}</span>`;
+  }
+
+  /** Recalcula estado del pedido según ítems (no toca transferido/cancelado). */
+  function sincronizarEstadoPedido(ped) {
+    if (!ped || ['transferido', 'cancelado'].includes(ped.estado)) return ped?.estado;
+    const items = ped.items || [];
+    if (!items.length) {
+      ped.estado = ped.estado || 'pendiente';
+      return ped.estado;
+    }
+    // Pedidos viejos sin progreso por ítem: heredar del estado del pedido.
+    items.forEach((it) => {
+      const cant = Math.max(1, Number(it.cantidad || 1));
+      if (it.listos == null && it.enImpresion == null && !it.estado) {
+        if (ped.estado === 'listo') {
+          it.listos = cant;
+          it.enImpresion = 0;
+          it.estado = 'listo';
+        } else if (ped.estado === 'en_impresion') {
+          it.listos = 0;
+          it.enImpresion = cant;
+          it.estado = 'en_impresion';
+        }
+      }
+    });
+    const todosListos = items.every((it) => {
+      const cant = Math.max(1, Number(it.cantidad || 1));
+      const listos = Number(it.listos ?? (it.estado === 'listo' ? cant : 0));
+      return listos >= cant || it.estado === 'listo';
+    });
+    if (todosListos) {
+      ped.estado = 'listo';
+      return ped.estado;
+    }
+    const algoImp = items.some((it) => {
+      const enImp = Number(it.enImpresion ?? 0);
+      return enImp > 0 || it.estado === 'en_impresion';
+    });
+    ped.estado = algoImp ? 'en_impresion' : ped.estado === 'listo' ? 'pendiente' : ped.estado || 'pendiente';
+    return ped.estado;
+  }
+
+  function renderItemsPedido(p) {
+    const lines = (p.items || [])
+      .map((it, idx) => {
+        const cant = it.cantidad || 1;
+        const fil = it.filamento ? ` · ${escapeHtml(it.filamento)}` : '';
+        const activo = pedidoActivo(p.estado);
+        const controls = activo
+          ? `<span class="imp-item-actions">
+              <button type="button" class="imp-btn imp-btn--sm" data-item-prog="${escapeHtml(p.id)}" data-idx="${idx}" data-accion="print" title="+1 en impresión">+ imp</button>
+              <button type="button" class="imp-btn imp-btn--sm" data-item-prog="${escapeHtml(p.id)}" data-idx="${idx}" data-accion="listo" title="+1 listo">+ listo</button>
+            </span>`
+          : '';
+        return `<div class="imp-pedido-item">
+          <span>${cant}× ${escapeHtml(it.sku || '')} ${escapeHtml(it.nombre || '')}${fil}</span>
+          ${badgeEstadoItem(it)}
+          ${controls}
+        </div>`;
+      })
+      .join('');
+    return lines || '<div class="imp-muted">Sin ítems</div>';
   }
 
   function renderPedidos() {
+    (data.pedidos || []).forEach(sincronizarEstadoPedido);
     const productos = data.productos || [];
     const optsProd = productos
       .map((p) => `<option value="${escapeHtml(p.sku || '')}">${escapeHtml(p.sku || '')} · ${escapeHtml(p.nombre || '')}</option>`)
@@ -1160,24 +1246,25 @@
       .slice()
       .reverse()
       .map((p) => {
-        const itemsTxt = (p.items || [])
-          .map((it) => `${it.cantidad || 1}× ${it.sku || it.nombre || ''}`)
-          .join(', ');
         const estado = p.estado || 'pendiente';
         const badge = badgeEstadoPedido(estado);
         let acciones = `<span class="imp-muted">${escapeHtml(p.ventaId || '—')}</span>`;
         if (pedidoActivo(estado)) {
           const btnListo =
-            estado === 'pendiente'
-              ? `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="listo">Marcar listo</button>`
-              : `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="pendiente">Volver a pendiente</button>`;
+            estado === 'listo'
+              ? `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="pendiente">Volver a pendiente</button>`
+              : `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="listo">Marcar listo</button>`;
           acciones = `${btnListo}
             <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
             <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
         }
         return `<tr>
           <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
-          <td>${escapeHtml(p.cliente || '—')}<div class="imp-muted">${escapeHtml(itemsTxt)}${p.notas ? ` · ${escapeHtml(p.notas)}` : ''}</div></td>
+          <td>
+            <strong>${escapeHtml(p.cliente || '—')}</strong>
+            <div class="imp-pedido-items">${renderItemsPedido(p)}</div>
+            ${p.notas ? `<div class="imp-muted">${escapeHtml(p.notas)}</div>` : ''}
+          </td>
           <td class="num">${money(p.montoNeto)}</td>
           <td>${badge}</td>
           <td class="imp-pedidos-actions">${acciones}</td>
@@ -1188,7 +1275,7 @@
     $('#tab-pedidos').innerHTML = `
       <div class="imp-card">
         <h2>Pedidos</h2>
-        <p class="imp-muted">ID correlativo <strong>PED-001</strong>…. Estados: pendiente → listo para entregar → transferir a venta. Solo al transferir se contabiliza en la deuda.</p>
+        <p class="imp-muted">ID correlativo <strong>PED-001</strong>…. Estados por ítem (listo / en impresión) y del pedido. Solo al transferir a venta se contabiliza en la deuda.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th><th></th></tr></thead>
@@ -1212,6 +1299,7 @@
           <label>Estado
             <select name="estado">
               <option value="pendiente">Pendiente</option>
+              <option value="en_impresion">En impresión</option>
               <option value="listo" selected>Listo para entregar</option>
             </select>
           </label>
@@ -1246,6 +1334,9 @@
       }
       const numero = siguienteNumeroPedido();
       data.pedidos = data.pedidos || [];
+      const estadoOk = pedidoActivo(estado) ? estado : 'pendiente';
+      const listos = estadoOk === 'listo' ? cantidad : 0;
+      const enImpresion = estadoOk === 'en_impresion' ? cantidad : 0;
       data.pedidos.push({
         id: uid('ped'),
         numero,
@@ -1261,10 +1352,13 @@
             costoUnitarioClp: round2(costoProducto(prod).total),
             filamento:
               Number(prod.costoFilamentoKgClp) === COSTO_PLA_NEGRO_KG ? 'PLA+ negro' : '',
+            estado: estadoOk,
+            listos,
+            enImpresion,
           },
         ],
         montoNeto,
-        estado: pedidoActivo(estado) ? estado : 'pendiente',
+        estado: estadoOk,
         ventaId: null,
         notas: String(fd.get('notas') || '').trim(),
         socioRegistro: fd.get('socioRegistro') || 'Ambos',
@@ -1273,7 +1367,41 @@
       markDirty();
       renderAll();
       activarTab('pedidos');
-      setStatus(`Pedido ${numero} creado (${estado}) — aún no contabiliza · guarda online`, 'warn');
+      setStatus(`Pedido ${numero} creado (${estadoOk}) — aún no contabiliza · guarda online`, 'warn');
+    });
+
+    $('#tab-pedidos')?.querySelectorAll('[data-item-prog]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-item-prog');
+        const idx = Number(btn.getAttribute('data-idx'));
+        const accion = btn.getAttribute('data-accion');
+        const ped = (data.pedidos || []).find((p) => p.id === id);
+        if (!ped || !pedidoActivo(ped.estado)) return;
+        const it = (ped.items || [])[idx];
+        if (!it) return;
+        const cant = Math.max(1, Number(it.cantidad || 1));
+        let listos = Math.min(cant, Math.max(0, Number(it.listos ?? (it.estado === 'listo' ? cant : 0))));
+        let enImp = Math.min(
+          cant - listos,
+          Math.max(0, Number(it.enImpresion ?? (it.estado === 'en_impresion' ? 1 : 0)))
+        );
+        if (accion === 'listo') {
+          if (listos >= cant) return;
+          if (enImp > 0) enImp -= 1;
+          listos += 1;
+        } else if (accion === 'print') {
+          if (listos + enImp >= cant) return;
+          enImp += 1;
+        }
+        it.listos = listos;
+        it.enImpresion = enImp;
+        it.estado = listos >= cant ? 'listo' : enImp > 0 ? 'en_impresion' : 'pendiente';
+        sincronizarEstadoPedido(ped);
+        markDirty();
+        renderAll();
+        activarTab('pedidos');
+        setStatus(`${ped.numero}: ${textoEstadoItem(it)} · guarda online`, 'warn');
+      });
     });
 
     $('#tab-pedidos')?.querySelectorAll('[data-estado-pedido]').forEach((btn) => {
@@ -1283,6 +1411,19 @@
         const ped = (data.pedidos || []).find((p) => p.id === id);
         if (!ped || !pedidoActivo(ped.estado)) return;
         ped.estado = next;
+        (ped.items || []).forEach((it) => {
+          const cant = Math.max(1, Number(it.cantidad || 1));
+          if (next === 'listo') {
+            it.listos = cant;
+            it.enImpresion = 0;
+            it.estado = 'listo';
+          } else if (next === 'pendiente') {
+            it.listos = 0;
+            it.enImpresion = 0;
+            it.estado = 'pendiente';
+          }
+        });
+        sincronizarEstadoPedido(ped);
         markDirty();
         renderAll();
         activarTab('pedidos');

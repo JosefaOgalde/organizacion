@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-18T04:30:11.000Z",
+    "actualizado": "2026-07-18T04:40:00.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -26,7 +26,7 @@
       "montoNetoClp": 797040,
       "deudaJosefaClp": 398520
     },
-    "pedidoSeq": 1
+    "pedidoSeq": 2
   },
   "parametros": {
     "tarifaKwhClp": 200,
@@ -356,7 +356,10 @@
           "cantidad": 1,
           "precioUnitarioClp": 5679.2,
           "costoUnitarioClp": 2839.6,
-          "filamento": "PLA+ negro"
+          "filamento": "PLA+ negro",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
         }
       ],
       "montoNeto": 5679.2,
@@ -365,6 +368,43 @@
       "notas": "1× Porta lata Monster · PLA+ negro · listo para entregar",
       "socioRegistro": "Ambos",
       "creado": "2026-07-18T04:29:00.000Z"
+    },
+    {
+      "id": "ped-gianni-bulldog-002",
+      "numero": "PED-002",
+      "fecha": "2026-07-18",
+      "cliente": "Gianni",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "MCPERROBU001",
+          "nombre": "Macetero perro bulldog",
+          "cantidad": 1,
+          "precioUnitarioClp": 3962.69,
+          "costoUnitarioClp": 1981.34,
+          "filamento": "PLA+ negro",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        },
+        {
+          "sku": "PCPERROBU001",
+          "nombre": "Portacompleto perro bulldog",
+          "cantidad": 4,
+          "precioUnitarioClp": 2533.12,
+          "costoUnitarioClp": 1266.56,
+          "filamento": "PLA+ negro",
+          "estado": "en_impresion",
+          "listos": 0,
+          "enImpresion": 2
+        }
+      ],
+      "montoNeto": 14095.17,
+      "estado": "en_impresion",
+      "ventaId": null,
+      "notas": "Macetero listo · portacompletos 2/4 en impresión · PLA+ negro",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-18T04:40:00.000Z"
     }
   ]
 }
