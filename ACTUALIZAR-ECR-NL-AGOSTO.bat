@@ -3,6 +3,7 @@ chcp 65001 >nul
 cd /d "%~dp0"
 echo.
 echo  === ECR · fechas NL agosto ^(PHP / Laravel, sin Node^) ===
+echo  Edita data\organizacion-live.json EN ESTA PC ^(no viene por git^)
 echo  NL 1 → 20 ago · NL 2 → 22 ago · Portada NL 1 hecha
 echo.
 
