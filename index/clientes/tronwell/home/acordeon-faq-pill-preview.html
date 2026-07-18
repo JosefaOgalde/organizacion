@@ -74,7 +74,7 @@
     margin: 0;
     padding-right: 0.25rem;
     font-size: min(1.05rem, 2rem) !important;
-    font-weight: 700 !important;
+    font-weight: 500 !important;
     line-height: 1.35;
     color: inherit !important;
     text-transform: none !important;
@@ -124,8 +124,15 @@
     border-radius: 18px;
     background: var(--tw-panel);
     color: var(--tw-muted);
-    font-size: 0.98rem;
+    font-size: min(0.98rem, 2rem) !important;
     line-height: 1.55;
+  }
+
+  .tw-faq__answer,
+  .tw-faq__answer p,
+  .tw-faq__answer li,
+  .tw-faq__answer strong {
+    font-size: min(0.98rem, 2rem) !important;
   }
 
   .tw-faq__answer p {
