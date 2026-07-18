@@ -6059,10 +6059,10 @@ function etiquetaHoraTarea(t) {
 function ocultarHechasActivo() {
   try {
     const v = localStorage.getItem(STORAGE_OCULTAR_HECHAS);
-    if (v == null) return true; // por defecto: no saturar con hechas
+    if (v == null) return false; // por defecto: ver todas (incl. hechas)
     return v === '1';
   } catch {
-    return true;
+    return false;
   }
 }
 
@@ -6680,6 +6680,52 @@ function htmlTareaPendiente(t) {
   </article>`;
 }
 
+function renderMesOtrasTareas(y, m) {
+  const box = document.getElementById('mes-otras');
+  if (!box) return;
+  const skipHechas = ocultarHechasActivo();
+  const fuera = (datos.tareas || [])
+    .filter((t) => {
+      if (!t?.fecha || t.parentId || t.pendiente) return false;
+      if (skipHechas && t.completada) return false;
+      const d = parseISO(t.fecha);
+      return d.getFullYear() !== y || d.getMonth() !== m;
+    })
+    .sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
+  // Una pastilla por madre / tarea única (agrupar por fecha+cliente título corto)
+  const vistos = new Set();
+  const pills = [];
+  for (const t of fuera) {
+    const key = `${t.fecha}|${t.clienteId}|${t.id}`;
+    if (vistos.has(key)) continue;
+    vistos.add(key);
+    const cli = clienteDe(t.clienteId);
+    const col = colorDe(cli);
+    const mesLabel = parseISO(t.fecha).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+    const abrev = cli?.abrev || '—';
+    pills.push(
+      `<button type="button" class="mes-otras__pill" data-fecha="${escapeHtml(t.fecha)}" style="background:${col.bg};border-color:${col.border};color:${col.text}" title="${escapeHtml(t.titulo)}">${escapeHtml(abrev)} · ${escapeHtml(mesLabel)} · ${escapeHtml(tituloMes(t, 36))}</button>`
+    );
+    if (pills.length >= 12) break;
+  }
+  if (!pills.length) {
+    box.hidden = true;
+    box.innerHTML = '';
+    return;
+  }
+  const extra = fuera.length > pills.length ? ` · +${fuera.length - pills.length} más` : '';
+  box.hidden = false;
+  box.innerHTML =
+    `<span class="mes-otras__label">Otras fechas (no están en este mes)${extra}:</span>` +
+    `<div class="mes-otras__pills">${pills.join('')}</div>`;
+  box.querySelectorAll('.mes-otras__pill').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const f = btn.dataset.fecha;
+      if (f) irASemanaDe(f);
+    });
+  });
+}
+
 function renderCalendarioMes() {
   const cont = document.getElementById('calendario-mes');
   const rango = document.getElementById('rango-mes');
@@ -6691,6 +6737,7 @@ function renderCalendarioMes() {
   const hoyStr = toISO(hoy());
 
   rango.textContent = ref.toLocaleDateString('es-CL', { month: 'long', year: 'numeric' });
+  renderMesOtrasTareas(y, m);
 
   const primerDia = new Date(y, m, 1);
   const inicioGrid = inicioSemana(primerDia);

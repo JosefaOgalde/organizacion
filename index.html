@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Organización</title>
-  <link rel="stylesheet" href="styles.css?v=cal-ocultar-hechas1">
+  <link rel="stylesheet" href="styles.css?v=cal-ver-todas1">
 </head>
 <body>
   <div class="app">
@@ -49,11 +49,12 @@
           <button type="button" id="btn-mes-siguiente" class="btn btn--ghost">Mes siguiente →</button>
           <button type="button" id="btn-mes-hoy" class="btn btn--accent">Ir a hoy</button>
           <label class="cal-filtro" title="Oculta tareas ya marcadas como hechas">
-            <input type="checkbox" id="chk-ocultar-hechas" checked />
+            <input type="checkbox" id="chk-ocultar-hechas" />
             Ocultar hechas
           </label>
         </div>
-        <p class="vista-hint">Mes: madres y tareas únicas · Semana: subtareas · Clic en un día → ver semana</p>
+        <p class="vista-hint">Mes: madres y tareas únicas · Semana: subtareas · Clic en un día → ver semana · ECR NL1/NL2 están en <strong>agosto</strong> (20 y 22)</p>
+        <div id="mes-otras" class="mes-otras" hidden></div>
         <div id="calendario-mes" class="calendario-mes" aria-label="Calendario mensual"></div>
       </section>
 
@@ -402,7 +403,7 @@
   <script src="index/assets/cliente-landing-imagenes.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="app.js?v=cal-ocultar-hechas1"></script>
+  <script src="app.js?v=cal-ver-todas1"></script>
   <script src="ficha-extractores.js"></script>
   <script src="ficha-cliente.js?v=portal-only1"></script>
 </body>

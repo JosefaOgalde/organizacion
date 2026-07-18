@@ -677,6 +677,44 @@ body.perfil-lightbox-open {
   cursor: pointer;
 }
 
+.mes-otras {
+  margin: 0 0 0.85rem;
+  padding: 0.65rem 0.85rem;
+  background: #f3f7f5;
+  border: 1px solid #c5d6ce;
+  border-radius: var(--radius);
+}
+
+.mes-otras__label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #3d5a4e;
+  margin-bottom: 0.45rem;
+}
+
+.mes-otras__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.mes-otras__pill {
+  border: 1px solid;
+  border-radius: 6px;
+  padding: 0.28rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  max-width: 100%;
+}
+
+.mes-otras__pill:hover {
+  filter: brightness(0.97);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
 .semana-aviso {
   margin: -0.5rem 0 1rem;
   padding: 0.6rem 0.85rem;
