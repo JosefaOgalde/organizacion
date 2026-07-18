@@ -1270,6 +1270,16 @@
     return ped.montoNeto;
   }
 
+  function selectEstadoPedido(p) {
+    const estado = p.estado || 'pendiente';
+    if (!pedidoActivo(estado)) return badgeEstadoPedido(estado);
+    return `<select class="imp-select-estado" data-estado-select="${escapeHtml(p.id)}" aria-label="Estado ${escapeHtml(p.numero || '')}">
+      <option value="pendiente"${estado === 'pendiente' ? ' selected' : ''}>Pendiente</option>
+      <option value="en_impresion"${estado === 'en_impresion' ? ' selected' : ''}>En impresión</option>
+      <option value="listo"${estado === 'listo' ? ' selected' : ''}>Listo para entregar</option>
+    </select>`;
+  }
+
   function renderItemsPedido(p) {
     const activo = pedidoActivo(p.estado);
     const lines = (p.items || [])
@@ -1280,12 +1290,6 @@
         const costoU = Number(it.costoUnitarioClp || 0);
         const precioU = Number(it.precioUnitarioClp || 0);
         const subtotal = round2(cant * precioU);
-        const controls = activo
-          ? `<span class="imp-item-actions">
-              <button type="button" class="imp-btn imp-btn--sm" data-item-prog="${escapeHtml(p.id)}" data-idx="${idx}" data-accion="print" title="+1 en impresión">+ imp</button>
-              <button type="button" class="imp-btn imp-btn--sm" data-item-prog="${escapeHtml(p.id)}" data-idx="${idx}" data-accion="listo" title="+1 listo">+ listo</button>
-            </span>`
-          : '';
         const precioField = activo
           ? `<label class="imp-item-precio">Precio venta/u
               <input type="number" min="0" step="0.01" value="${num2(precioU)}"
@@ -1295,8 +1299,6 @@
         return `<div class="imp-pedido-item">
           <div class="imp-pedido-item__head">
             <span>${cant}× ${escapeHtml(it.sku || '')} ${escapeHtml(it.nombre || '')}${fil}</span>
-            ${badgeEstadoItem(it)}
-            ${controls}
           </div>
           <div class="imp-pedido-item__money">
             <span>Costo/u <strong>${money(costoU)}</strong></span>
@@ -1352,14 +1354,6 @@
       const precioUnitarioClp = round2(row.querySelector('[name="precioUnitarioClp"]')?.value || 0);
       let costoUnitarioClp = round2(row.querySelector('[name="costoUnitarioClp"]')?.value || 0);
       if (!(costoUnitarioClp > 0) && prod) costoUnitarioClp = round2(costoProducto(prod).total);
-      const listos = Math.max(0, Math.min(cantidad, Number(row.querySelector('[name="listos"]')?.value || 0)));
-      const enImpresion = Math.max(
-        0,
-        Math.min(cantidad - listos, Number(row.querySelector('[name="enImpresion"]')?.value || 0))
-      );
-      let estadoItem = String(row.querySelector('[name="estadoItem"]')?.value || 'pendiente');
-      if (listos >= cantidad) estadoItem = 'listo';
-      else if (enImpresion > 0) estadoItem = 'en_impresion';
       items.push({
         sku,
         nombre: prod?.nombre || row.querySelector('[name="nombre"]')?.value || sku,
@@ -1367,13 +1361,9 @@
         precioUnitarioClp,
         costoUnitarioClp,
         filamento: String(row.querySelector('[name="filamento"]')?.value || '').trim(),
-        estado: estadoItem,
-        listos,
-        enImpresion,
       });
     });
     pedidoEditDraft.items = items;
-    sincronizarEstadoPedido(pedidoEditDraft);
     recalcularMontoPedido(pedidoEditDraft);
     return pedidoEditDraft;
   }
@@ -1389,9 +1379,6 @@
       .map((it, idx) => {
         asegurarCostosItem(it);
         const cant = Number(it.cantidad || 1);
-        const listos = Number(it.listos ?? (it.estado === 'listo' ? cant : 0));
-        const enImp = Number(it.enImpresion ?? (it.estado === 'en_impresion' ? cant : 0));
-        const est = it.estado || (listos >= cant ? 'listo' : enImp > 0 ? 'en_impresion' : 'pendiente');
         return `<div class="imp-pedido-edit-item" data-edit-item="${idx}">
           <div class="imp-form">
             <label>Producto (SKU)
@@ -1401,15 +1388,6 @@
             <label>Cantidad<input name="cantidad" type="number" min="0.01" step="0.01" value="${num2(cant)}" /></label>
             <label>Costo / u<input name="costoUnitarioClp" type="number" min="0" step="0.01" value="${num2(it.costoUnitarioClp || 0)}" readonly /></label>
             <label>Precio venta / u<input name="precioUnitarioClp" type="number" min="0" step="0.01" value="${num2(it.precioUnitarioClp || 0)}" /></label>
-            <label>Listos<input name="listos" type="number" min="0" step="1" value="${listos}" /></label>
-            <label>En impresión<input name="enImpresion" type="number" min="0" step="1" value="${enImp}" /></label>
-            <label>Estado ítem
-              <select name="estadoItem">
-                <option value="pendiente"${est === 'pendiente' ? ' selected' : ''}>Pendiente</option>
-                <option value="en_impresion"${est === 'en_impresion' ? ' selected' : ''}>En impresión</option>
-                <option value="listo"${est === 'listo' ? ' selected' : ''}>Listo</option>
-              </select>
-            </label>
             <label>Filamento<input name="filamento" value="${escapeHtml(it.filamento || '')}" placeholder="PLA+ negro" /></label>
             <div class="imp-form-actions">
               <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-quitar-item="${idx}">Quitar ítem</button>
@@ -1422,7 +1400,7 @@
 
     body.innerHTML = `
       <form class="imp-form" id="form-editar-pedido">
-        <p class="imp-muted">Podés cambiar cliente, ítems, cantidades, precios y avance. Al guardar se actualiza el pedido online.</p>
+        <p class="imp-muted">Podés cambiar cliente, ítems, cantidades y precios. El estado se elige en la columna Estado del listado (o acá abajo).</p>
         <label>Fecha<input name="fecha" type="date" required value="${escapeHtml(ped.fecha || today())}" /></label>
         <label>Cliente<input name="cliente" value="${escapeHtml(ped.cliente || '')}" required /></label>
         <label>Canal<input name="canal" value="${escapeHtml(ped.canal || '')}" /></label>
@@ -1492,7 +1470,7 @@
       });
       inp.addEventListener('change', refreshFromForm);
     });
-    form?.querySelectorAll('[name="cantidad"], [name="listos"], [name="enImpresion"], [name="estadoItem"]').forEach((inp) => {
+    form?.querySelectorAll('[name="cantidad"]').forEach((inp) => {
       inp.addEventListener('change', refreshFromForm);
     });
     form?.querySelectorAll('[data-quitar-item]').forEach((btn) => {
@@ -1515,9 +1493,6 @@
         costoUnitarioClp: costo,
         precioUnitarioClp: precioSugeridoDesdeCosto(costo),
         filamento: Number(prod?.costoFilamentoKgClp) === COSTO_PLA_NEGRO_KG ? 'PLA+ negro' : '',
-        estado: 'pendiente',
-        listos: 0,
-        enImpresion: 0,
       });
       renderModalPedido();
     });
@@ -1547,20 +1522,7 @@
       ped.notas = pedidoEditDraft.notas;
       ped.socioRegistro = pedidoEditDraft.socioRegistro;
       ped.items = pedidoEditDraft.items;
-      if (estForm === 'listo') {
-        (ped.items || []).forEach((it) => {
-          const cant = Math.max(1, Number(it.cantidad || 1));
-          it.listos = cant;
-          it.enImpresion = 0;
-          it.estado = 'listo';
-        });
-        ped.estado = 'listo';
-      } else {
-        ped.estado = estForm;
-        sincronizarEstadoPedido(ped);
-        // Si eligió en_impresión/pendiente a mano, respetarlo aunque los ítems digan otra cosa.
-        if (estForm === 'en_impresion' || estForm === 'pendiente') ped.estado = estForm;
-      }
+      ped.estado = estForm;
       recalcularMontoPedido(ped);
       ped.actualizado = new Date().toISOString();
       cerrarModalPedido();
@@ -1607,7 +1569,6 @@
   }
 
   function renderPedidos() {
-    (data.pedidos || []).forEach(sincronizarEstadoPedido);
     const productos = data.productos || [];
     const optsProd = productos
       .map((p) => `<option value="${escapeHtml(p.sku || '')}">${escapeHtml(p.sku || '')} · ${escapeHtml(p.nombre || '')}</option>`)
@@ -1618,15 +1579,9 @@
       .map((p) => {
         recalcularMontoPedido(p);
         const estado = p.estado || 'pendiente';
-        const badge = badgeEstadoPedido(estado);
         let acciones = `<span class="imp-muted">${escapeHtml(p.ventaId || '—')}</span>`;
         if (pedidoActivo(estado)) {
-          const btnListo =
-            estado === 'listo'
-              ? `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="pendiente">Volver a pendiente</button>`
-              : `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="listo">Marcar listo</button>`;
           acciones = `<button type="button" class="imp-btn imp-btn--sm" data-edit-pedido="${escapeHtml(p.id)}">Editar</button>
-            ${btnListo}
             <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
             <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
         }
@@ -1642,7 +1597,7 @@
             <div class="imp-muted">venta</div>
             <div class="imp-muted">costo ${money(p.costoTotal || 0)}</div>
           </td>
-          <td>${badge}</td>
+          <td>${selectEstadoPedido(p)}</td>
           <td class="imp-pedidos-actions">${acciones}</td>
         </tr>`;
       })
@@ -1651,7 +1606,7 @@
     $('#tab-pedidos').innerHTML = `
       <div class="imp-card">
         <h2>Pedidos</h2>
-        <p class="imp-muted">Por ítem: <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable). Usa <strong>Editar</strong> para cambiar cliente, ítems, cantidades o estado. Al <strong>Transferir a venta</strong> se guarda el registro y baja la deuda.</p>
+        <p class="imp-muted">Por ítem: <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable). El <strong>estado</strong> se elige solo en el menú de la columna Estado. Al <strong>Transferir a venta</strong> se guarda el registro y baja la deuda.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th><th></th></tr></thead>
@@ -1757,8 +1712,6 @@
       const numero = siguienteNumeroPedido();
       data.pedidos = data.pedidos || [];
       const estadoOk = pedidoActivo(estado) ? estado : 'pendiente';
-      const listos = estadoOk === 'listo' ? cantidad : 0;
-      const enImpresion = estadoOk === 'en_impresion' ? cantidad : 0;
       const ped = {
         id: uid('ped'),
         numero,
@@ -1774,9 +1727,6 @@
             costoUnitarioClp,
             filamento:
               Number(prod.costoFilamentoKgClp) === COSTO_PLA_NEGRO_KG ? 'PLA+ negro' : '',
-            estado: estadoOk,
-            listos,
-            enImpresion,
           },
         ],
         montoNeto,
@@ -1824,68 +1774,26 @@
       });
     });
 
-    $('#tab-pedidos')?.querySelectorAll('[data-item-prog]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-item-prog');
-        const idx = Number(btn.getAttribute('data-idx'));
-        const accion = btn.getAttribute('data-accion');
+    $('#tab-pedidos')?.querySelectorAll('[data-estado-select]').forEach((sel) => {
+      sel.addEventListener('change', () => {
+        const id = sel.getAttribute('data-estado-select');
+        const next = String(sel.value || 'pendiente');
         const ped = (data.pedidos || []).find((p) => p.id === id);
         if (!ped || !pedidoActivo(ped.estado)) return;
-        const it = (ped.items || [])[idx];
-        if (!it) return;
-        const cant = Math.max(1, Number(it.cantidad || 1));
-        let listos = Math.min(cant, Math.max(0, Number(it.listos ?? (it.estado === 'listo' ? cant : 0))));
-        let enImp = Math.min(
-          cant - listos,
-          Math.max(0, Number(it.enImpresion ?? (it.estado === 'en_impresion' ? 1 : 0)))
-        );
-        if (accion === 'listo') {
-          if (listos >= cant) return;
-          if (enImp > 0) enImp -= 1;
-          listos += 1;
-        } else if (accion === 'print') {
-          if (listos + enImp >= cant) return;
-          enImp += 1;
+        if (!pedidoActivo(next)) {
+          sel.value = ped.estado || 'pendiente';
+          return;
         }
-        it.listos = listos;
-        it.enImpresion = enImp;
-        it.estado = listos >= cant ? 'listo' : enImp > 0 ? 'en_impresion' : 'pendiente';
-        sincronizarEstadoPedido(ped);
-        markDirty();
-        renderAll();
-        activarTab('pedidos');
-        setStatus(`${ped.numero}: ${textoEstadoItem(it)} · guarda online`, 'warn');
-        save().catch((err) => setStatus(String(err.message || err), 'err'));
-      });
-    });
-
-    $('#tab-pedidos')?.querySelectorAll('[data-estado-pedido]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-estado-pedido');
-        const next = btn.getAttribute('data-estado');
-        const ped = (data.pedidos || []).find((p) => p.id === id);
-        if (!ped || !pedidoActivo(ped.estado)) return;
         ped.estado = next;
-        (ped.items || []).forEach((it) => {
-          const cant = Math.max(1, Number(it.cantidad || 1));
-          if (next === 'listo') {
-            it.listos = cant;
-            it.enImpresion = 0;
-            it.estado = 'listo';
-          } else if (next === 'pendiente') {
-            it.listos = 0;
-            it.enImpresion = 0;
-            it.estado = 'pendiente';
-          }
-        });
-        sincronizarEstadoPedido(ped);
         markDirty();
         renderAll();
         activarTab('pedidos');
-        setStatus(
-          `${ped.numero}: ${next === 'listo' ? 'listo para entregar' : 'pendiente'} · guarda online`,
-          'warn'
-        );
+        const label =
+          next === 'listo' ? 'listo para entregar' : next === 'en_impresion' ? 'en impresión' : 'pendiente';
+        setStatus(`${ped.numero}: ${label} · guardando…`, 'warn');
+        save()
+          .then(() => setStatus(`${ped.numero}: ${label} ✓`, 'ok'))
+          .catch((err) => setStatus(String(err.message || err), 'err'));
       });
     });
 

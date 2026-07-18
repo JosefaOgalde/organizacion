@@ -636,6 +636,22 @@ table.imp-table {
   gap: 0.25rem;
 }
 
+.imp-select-estado {
+  font: inherit;
+  font-size: 0.9em;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--imp-border);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--imp-ink, inherit);
+  max-width: 11.5rem;
+  cursor: pointer;
+}
+.imp-select-estado:focus {
+  outline: 2px solid color-mix(in srgb, var(--imp-accent, #c45c26) 45%, transparent);
+  outline-offset: 1px;
+}
+
 .imp-pedidos-actions {
   display: flex;
   flex-wrap: wrap;
