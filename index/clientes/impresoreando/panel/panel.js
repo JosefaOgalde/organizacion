@@ -240,7 +240,27 @@
       p.impresoraNotas = LUZ_CHILE.impresoraNotas;
       changed = true;
     }
+    // Precio sugerido = costo × (1 + %/100). Default 100% sobre el costo (×2).
+    const margen = Number(p.margenObjetivoPct);
+    if (!Number.isFinite(margen) || margen === 40) {
+      p.margenObjetivoPct = 100;
+      changed = true;
+    }
     return changed;
+  }
+
+  /** Precio sugerido: +margen% sobre el costo (100% ⇒ precio = costo × 2). */
+  function precioSugeridoDesdeCosto(costoTotal) {
+    const pct = Number(data?.parametros?.margenObjetivoPct ?? 100);
+    const markup = Number.isFinite(pct) ? pct / 100 : 1;
+    return Number(costoTotal || 0) * (1 + markup);
+  }
+
+  function markupRealPct(precioVenta, costoTotal) {
+    const costo = Number(costoTotal || 0);
+    const precio = Number(precioVenta || 0);
+    if (!(precio > 0) || !(costo > 0)) return null;
+    return ((precio - costo) / costo) * 100;
   }
 
   function avgCostoFilamentoKg(d) {
@@ -635,10 +655,10 @@
     };
   }
 
-  function htmlCostoLive(c, margen, precioVenta) {
-    const sugerido = c.total / (1 - margen);
-    const margenReal =
-      Number(precioVenta) > 0 ? ((Number(precioVenta) - c.total) / Number(precioVenta)) * 100 : null;
+  function htmlCostoLive(c, _margenUnused, precioVenta) {
+    const pctObj = Number(data?.parametros?.margenObjetivoPct ?? 100);
+    const sugerido = precioSugeridoDesdeCosto(c.total);
+    const markupReal = markupRealPct(precioVenta, c.total);
     return `
       <div class="imp-grid imp-grid--costo-live">
         <div class="imp-kpi"><span>Filamento (${Number(c.gramos || 0).toFixed(2)} g)</span><strong>${money(c.filamento)}</strong></div>
@@ -646,9 +666,9 @@
         <div class="imp-kpi"><span>Pintado / MO</span><strong>${money(c.pintado)}</strong></div>
         <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
         <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
-        <div class="imp-kpi imp-kpi--accent"><span>Costo unitario</span><strong>${money(c.total)}</strong></div>
-        <div class="imp-kpi"><span>Precio sugerido c/ margen ${Math.round(margen * 100)}%</span><strong>${money(sugerido)}</strong></div>
-        <div class="imp-kpi ${margenReal == null ? '' : margenReal >= Number(data.parametros?.margenObjetivoPct || 40) ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Margen real</span><strong>${margenReal == null ? '—' : `${margenReal.toFixed(0)}%`}</strong></div>
+        <div class="imp-kpi"><span>Costo unitario</span><strong>${money(c.total)}</strong></div>
+        <div class="imp-kpi imp-kpi--accent"><span>Precio sugerido (+${pctObj}% sobre costo)</span><strong>${money(sugerido)}</strong></div>
+        <div class="imp-kpi ${markupReal == null ? '' : markupReal >= pctObj ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Markup real sobre costo</span><strong>${markupReal == null ? '—' : `${markupReal.toFixed(0)}%`}</strong></div>
       </div>`;
   }
 
@@ -757,13 +777,16 @@
     const esLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
     const pedidosPendientes = (data.pedidos || []).filter((p) => p.estado === 'pendiente');
     const montoPedidosPend = pedidosPendientes.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
+    const pctMarkup = Number(data.parametros?.margenObjetivoPct ?? 100);
     const filasCostoProd = (data.productos || [])
       .map((prod) => {
         const c = costoProducto(prod);
+        const sugerido = precioSugeridoDesdeCosto(c.total);
         return `<tr>
           <td><span class="imp-sku">${escapeHtml(prod.sku || '—')}</span></td>
           <td>${escapeHtml(prod.nombre || '')}</td>
-          <td class="num"><strong>${money(c.total)}</strong></td>
+          <td class="num">${money(c.total)}</td>
+          <td class="num"><strong>${money(sugerido)}</strong></td>
         </tr>`;
       })
       .join('');
@@ -793,11 +816,11 @@
       </div>
       <div class="imp-card">
         <h2>Costos de producto (resumen)</h2>
-        <p class="imp-muted">Producto + costo unitario. El desglose (filamento, luz, etc.) está en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>.</p>
+        <p class="imp-muted">Costo y precio sugerido con <strong>+${pctMarkup}% sobre el costo</strong> (×${(1 + pctMarkup / 100).toFixed(0)}). Detalle en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
-            <thead><tr><th>SKU</th><th>Producto</th><th>Costo</th></tr></thead>
-            <tbody>${filasCostoProd || '<tr><td colspan="3">Sin productos</td></tr>'}</tbody>
+            <thead><tr><th>SKU</th><th>Producto</th><th>Costo</th><th>Precio sugerido (+${pctMarkup}%)</th></tr></thead>
+            <tbody>${filasCostoProd || '<tr><td colspan="4">Sin productos</td></tr>'}</tbody>
           </table>
         </div>
       </div>
@@ -1327,7 +1350,9 @@
           <label>Mano de obra $/h<input name="valorHoraManoObraClp" type="number" value="${p.valorHoraManoObraClp || 5000}" /></label>
           <label>Anillo metal llavero $<input name="costoAnilloMetalLlaveroClp" type="number" value="${p.costoAnilloMetalLlaveroClp || 150}" /></label>
           <label>Bolsa entrega $<input name="costoBolsaEntregaClp" type="number" value="${p.costoBolsaEntregaClp || 50}" /></label>
-          <label>Margen objetivo %<input name="margenObjetivoPct" type="number" value="${p.margenObjetivoPct || 40}" /></label>
+          <label>Markup sobre costo %
+            <input name="margenObjetivoPct" type="number" min="0" step="1" value="${p.margenObjetivoPct ?? 100}" />
+          </label>
           <div class="imp-form-actions">
             <button class="imp-btn imp-btn--primary" type="submit">Guardar parámetros</button>
             <span class="imp-muted">Luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> (= ${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp} × ${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw} kW)</span>
@@ -1493,7 +1518,7 @@
   }
 
   function renderCostos() {
-    const margen = Number(data.parametros?.margenObjetivoPct || 40) / 100;
+    const margen = Number(data.parametros?.margenObjetivoPct ?? 100) / 100;
     const p = data.parametros || {};
     const avgFilKg = avgCostoFilamentoKg(data) || 12950;
 
@@ -1597,11 +1622,12 @@
         unidadesBolsa: Number(fd.get('bolsa')),
       };
       const c = costoProducto(prod);
-      const sugerido = c.total / (1 - margen);
+      const sugerido = precioSugeridoDesdeCosto(c.total);
+      const pctObj = Number(p.margenObjetivoPct ?? 100);
       el.innerHTML = `
           Total filamento <strong>${g.toFixed(2)} g</strong>
           · Filamento ${money(c.filamento)} · Luz ${money(c.luz)} · Pintado ${money(c.pintado)} · Metal ${money(c.metal)} · Bolsa ${money(c.bolsa)}
-          <br><strong>Costo unitario: ${money(c.total)}</strong> · precio sugerido c/ margen ${Math.round(margen * 100)}%: <strong>${money(sugerido)}</strong>
+          <br><strong>Costo unitario: ${money(c.total)}</strong> · precio sugerido (+${pctObj}% sobre costo): <strong>${money(sugerido)}</strong>
           <div class="imp-muted" style="margin-top:0.35rem">Tarifa Chile ${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp} $/kWh · ${p.impresoraModelo || 'Centauri Carbon 2'} ${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw} kW</div>`;
       form.dataset.calcSnapshot = JSON.stringify({ ...prod, sugerido, c });
     };
