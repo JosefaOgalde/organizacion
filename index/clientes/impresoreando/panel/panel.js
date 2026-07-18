@@ -1546,25 +1546,35 @@
   }
 
   function abrirModalEditarPedido(id) {
-    const ped = (data.pedidos || []).find((p) => p.id === id);
-    if (!ped) {
-      setStatus('Pedido no encontrado', 'warn');
-      return;
+    try {
+      const ped = (data.pedidos || []).find((p) => p.id === id);
+      if (!ped) {
+        setStatus('Pedido no encontrado', 'warn');
+        return;
+      }
+      if (!pedidoActivo(ped.estado)) {
+        setStatus('Solo se editan pedidos activos (no transferidos)', 'warn');
+        return;
+      }
+      pedidoEditDraft = JSON.parse(JSON.stringify(ped));
+      (pedidoEditDraft.items || []).forEach(asegurarCostosItem);
+      recalcularMontoPedido(pedidoEditDraft);
+      const modal = $('#imp-modal-pedido');
+      if (!modal) {
+        setStatus('No se encontró el modal de edición', 'err');
+        return;
+      }
+      renderModalPedido();
+      modal.removeAttribute('hidden');
+      modal.hidden = false;
+      modal.setAttribute('aria-hidden', 'false');
+      modal.classList.add('is-open');
+      document.body.classList.add('imp-modal-open');
+      setStatus(`Editando ${ped.numero}…`, 'ok');
+    } catch (err) {
+      console.error(err);
+      setStatus(`Error al abrir editor: ${err.message || err}`, 'err');
     }
-    if (!pedidoActivo(ped.estado)) {
-      setStatus('Solo se editan pedidos activos (no transferidos)', 'warn');
-      return;
-    }
-    pedidoEditDraft = JSON.parse(JSON.stringify(ped));
-    (pedidoEditDraft.items || []).forEach(asegurarCostosItem);
-    recalcularMontoPedido(pedidoEditDraft);
-    const modal = $('#imp-modal-pedido');
-    if (!modal) return;
-    renderModalPedido();
-    modal.hidden = false;
-    modal.classList.add('is-open');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('imp-modal-open');
   }
 
   function renderPedidos() {
@@ -1612,7 +1622,7 @@
     $('#tab-pedidos').innerHTML = `
       <div class="imp-card">
         <h2>Pedidos</h2>
-        <p class="imp-muted">Por ítem ves <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable si cobraste más). Al <strong>Transferir a venta</strong> se guarda el registro con ese total y baja la deuda.</p>
+        <p class="imp-muted">Por ítem: <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable). Usa <strong>Editar</strong> para cambiar cliente, ítems, cantidades o estado. Al <strong>Transferir a venta</strong> se guarda el registro y baja la deuda.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th><th></th></tr></thead>
@@ -1754,10 +1764,6 @@
       activarTab('pedidos');
       setStatus(`Pedido ${numero} creado · venta ${money(montoNeto)} · guarda online`, 'warn');
       save().catch((err) => setStatus(String(err.message || err), 'err'));
-    });
-
-    $('#tab-pedidos')?.querySelectorAll('[data-edit-pedido]').forEach((btn) => {
-      btn.addEventListener('click', () => abrirModalEditarPedido(btn.getAttribute('data-edit-pedido')));
     });
 
     $('#tab-pedidos')?.querySelectorAll('[data-precio-item]').forEach((inp) => {
@@ -2636,6 +2642,13 @@
   $('#imp-modal-pedido')?.addEventListener('click', (e) => {
     if (e.target?.id === 'imp-modal-pedido') cerrarModalPedido();
   });
+  // Delegación: sobrevive a re-renders del tab Pedidos
+  document.addEventListener('click', (e) => {
+    const btn = e.target?.closest?.('[data-edit-pedido]');
+    if (!btn) return;
+    e.preventDefault();
+    abrirModalEditarPedido(btn.getAttribute('data-edit-pedido'));
+  });
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     if ($('#imp-modal-pedido')?.classList.contains('is-open')) {
@@ -2646,6 +2659,7 @@
       cerrarModalProducto();
     }
   });
+  window.abrirModalEditarPedido = abrirModalEditarPedido;
 
   window.addEventListener('beforeunload', (e) => {
     if (dirty) {
