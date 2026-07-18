@@ -25,13 +25,14 @@ function main() {
     process.exit(1);
   }
 
-  // 1) ECR fechas vigentes + portada hecha
-  const ecr = spawnSync(process.execPath, [path.join(__dirname, 'actualizar-fechas-ecr-nl-agosto.js')], {
+  // 1) ECR NL1/NL2: crear si faltan + fechas 20/22 ago + portada hecha
+  const ecr = spawnSync(process.execPath, [path.join(__dirname, 'asegurar-ecr-nl-calendario.js')], {
     cwd: ROOT,
     stdio: 'inherit',
   });
   if (ecr.status !== 0) {
-    console.warn('ECR fechas: corre antes add-ecr + renombrar si faltan tareas');
+    console.error('ECR NL: no se pudieron asegurar las tareas');
+    process.exit(ecr.status || 1);
   }
 
   // 2) Impresoreando → calendario

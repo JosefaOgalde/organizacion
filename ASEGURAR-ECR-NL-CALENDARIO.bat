@@ -2,8 +2,8 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 echo.
-echo  === Aplicar agenda vigente ===
-echo  TS C7/C8 hechas · Nutri 27 jul · ECR 20/22 ago · Impresoreando
+echo  === ECR NL 1 y NL 2 → calendario ===
+echo  NL 1 = 20 agosto · NL 2 = 22 agosto
 echo.
 
 set PATH=C:\laragon\bin\nodejs\node-v22;%PATH%
@@ -17,12 +17,11 @@ if errorlevel 1 (
 
 if not exist "data\organizacion-live.json" (
   echo Falta data\organizacion-live.json
-  echo Corre ABRIR-ORGANIZADOR-HOY.bat o IMPORTAR-RESPALDO.bat primero
   pause
   exit /b 1
 )
 
-node scripts\aplicar-agenda-vigente.js
+node scripts\asegurar-ecr-nl-calendario.js
 set ERR=%ERRORLEVEL%
 echo.
 if %ERR% neq 0 (
@@ -31,9 +30,9 @@ if %ERR% neq 0 (
   exit /b %ERR%
 )
 
-echo Abriendo AGOSTO ^(ECR NL1 el 20 y NL2 el 22^)...
+echo Abriendo AGOSTO en el organizador ^(ahi estan NL1 y NL2^)...
 start "" "http://localhost:3000/index.html?disco=1&fecha=2026-08-20&vista=mes"
 echo.
-echo Ctrl+F5. NL1/NL2 NO estan en julio: mira el 20 y 22 de agosto.
+echo Ctrl+F5 si no ves las tareas. Estan el 20 y 22 de AGOSTO, no en julio.
 pause
 exit /b 0
