@@ -20,8 +20,9 @@ Incluye:
 
 - Gastos cargados: orden **#312435** (total pagado **$652.290**) + AliExpress placa/torno (**$30.000** c/u) + cajas Líder (**$20.000**)
 - Resumen **50/50**
-- Ventas
-- Operación / luz / parámetros
+- Pedidos (ID correlativo PED-001…; no contabilizan hasta transferir a venta)
+- Ventas (solo estas bajan la deuda)
+- Operación / luz / parámetros (Elegoo Centauri Carbon 2 · tarifa Chile ~$200/kWh · 0,28 kW promedio)
 - Costos de producto (filamento, horas impresión, pintado, metal llavero, bolsa)
 - Plan paid de bajo presupuesto (~$30.000/mes)
 - Bitácora compartida

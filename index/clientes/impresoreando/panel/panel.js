@@ -8,6 +8,13 @@
   const money = (n) =>
     Number(n || 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
   const uid = (p) => `${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+  /** Productos: todos los dígitos se trabajan con máx. 2 decimales. */
+  const round2 = (n) => {
+    const x = Number(n);
+    if (!Number.isFinite(x)) return 0;
+    return Math.round(x * 100) / 100;
+  };
+  const num2 = (n) => round2(n).toFixed(2);
 
   function setStatus(msg, kind) {
     const el = $('#imp-status');
@@ -58,9 +65,15 @@
     }
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
     if (agruparGastosPorRegistro(d)) changed = true;
+    if (asegurarParametrosLuzChileCentauri(d)) changed = true;
     if (asegurarProductoPortacompletosGato(d)) changed = true;
     if (asegurarProductoPortacompletosPerro(d)) changed = true;
+    if (asegurarProductoPortaLataMonster(d)) changed = true;
+    if (asegurarProductoMaceteroPerroBulldog(d)) changed = true;
+    if (asegurarProductoPortacompletoPerroBulldog(d)) changed = true;
+    if (asegurarPedidos(d)) changed = true;
     if (asegurarSkusProductos(d)) changed = true;
+    if (asegurarDecimalesProductos(d)) changed = true;
     const gastos = d.gastos;
     for (const g of gastos) {
       const quien = String(g.socioRegistro || '').trim();
@@ -203,6 +216,61 @@
     return changed;
   }
 
+  /** Defaults luz Chile 2026 + Elegoo Centauri Carbon 2 (220 V). */
+  const LUZ_CHILE = {
+    tarifaKwhClp: 200,
+    consumoImpresoraKw: 0.28,
+    impresoraModelo: 'Elegoo Centauri Carbon 2',
+    impresoraNotas:
+      'Pico nominal 1100 W @ 220 V. Promedio estimado en impresión PLA con cama caliente: 0,28 kW. Tarifa ~$200/kWh (precio efectivo boleta residencial Chile 2026; ajústala a tu cuenta).',
+  };
+
+  function asegurarParametrosLuzChileCentauri(d) {
+    d.parametros = d.parametros && typeof d.parametros === 'object' ? d.parametros : {};
+    const p = d.parametros;
+    let changed = false;
+    const tarifa = Number(p.tarifaKwhClp);
+    const consumo = Number(p.consumoImpresoraKw);
+    // Migra defaults antiguos (180 / 0,22) o vacíos → Chile + Centauri Carbon 2.
+    if (!Number.isFinite(tarifa) || tarifa === 180) {
+      p.tarifaKwhClp = LUZ_CHILE.tarifaKwhClp;
+      changed = true;
+    }
+    if (!Number.isFinite(consumo) || consumo === 0.22) {
+      p.consumoImpresoraKw = LUZ_CHILE.consumoImpresoraKw;
+      changed = true;
+    }
+    if (p.impresoraModelo !== LUZ_CHILE.impresoraModelo) {
+      p.impresoraModelo = LUZ_CHILE.impresoraModelo;
+      changed = true;
+    }
+    if (p.impresoraNotas !== LUZ_CHILE.impresoraNotas) {
+      p.impresoraNotas = LUZ_CHILE.impresoraNotas;
+      changed = true;
+    }
+    // Precio sugerido = costo × (1 + %/100). Default 100% sobre el costo (×2).
+    const margen = Number(p.margenObjetivoPct);
+    if (!Number.isFinite(margen) || margen === 40) {
+      p.margenObjetivoPct = 100;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /** Precio sugerido: +margen% sobre el costo (100% ⇒ precio = costo × 2). */
+  function precioSugeridoDesdeCosto(costoTotal) {
+    const pct = Number(data?.parametros?.margenObjetivoPct ?? 100);
+    const markup = Number.isFinite(pct) ? pct / 100 : 1;
+    return round2(Number(costoTotal || 0) * (1 + markup));
+  }
+
+  function markupRealPct(precioVenta, costoTotal) {
+    const costo = Number(costoTotal || 0);
+    const precio = Number(precioVenta || 0);
+    if (!(precio > 0) || !(costo > 0)) return null;
+    return ((precio - costo) / costo) * 100;
+  }
+
   function avgCostoFilamentoKg(d) {
     const fils = (d.productos || []).map((p) => Number(p.costoFilamentoKgClp || 0)).filter((n) => n > 0);
     if (fils.length) return Math.round(fils.reduce((a, b) => a + b, 0) / fils.length);
@@ -279,18 +347,247 @@
     return changed;
   }
 
+  function upsertProductoSeed(d, id, seed) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const existing = d.productos.find((p) => p.id === id);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (!existing.id) {
+      existing.id = id;
+      changed = true;
+    }
+    const backfill = [
+      'filamentoModeloGramos',
+      'filamentoSoportesGramos',
+      'filamentoPurgeGramos',
+      'filamentoMetros',
+      'costoSlicerRef',
+      'sku',
+    ];
+    for (const k of backfill) {
+      if (existing[k] == null && seed[k] != null) {
+        existing[k] = seed[k];
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  const COSTO_PLA_NEGRO_KG = 17986; // PLA+ Negro Elegoo (orden #312435)
+
+  /** Macetero perro bulldog — slicer: 96,95 g · 3 h 21 m · PLA+ negro. */
+  function asegurarProductoMaceteroPerroBulldog(d) {
+    const changed = upsertProductoSeed(d, 'prod-macetero-perro-bulldog', {
+      sku: 'MCPERROBU001',
+      nombre: 'Macetero perro bulldog',
+      activo: true,
+      filamentoModeloGramos: 95.36,
+      filamentoSoportesGramos: 1.12,
+      filamentoPurgeGramos: 0.47,
+      filamentoMetros: 32.24,
+      filamentoGramos: 96.95,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
+      horasImpresion: 3.35,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: 1.94,
+      notas:
+        'Slicer: modelo 95,36 g + soportes 1,12 g + purge 0,47 g = 96,95 g · 32,24 m · 3 h 21 m · coste slicer 1,94 (ref). PLA+ negro $17.986/kg.',
+    });
+    return migrarFilamentoNegroProducto(d, 'prod-macetero-perro-bulldog') || changed;
+  }
+
+  /** Portacompleto perro bulldog — placa 2 uds: 122,70 g / 4 h 2 m → costo por unidad. */
+  function asegurarProductoPortacompletoPerroBulldog(d) {
+    const changed = upsertProductoSeed(d, 'prod-portacompleto-perro-bulldog', {
+      sku: 'PCPERROBU001',
+      nombre: 'Portacompleto perro bulldog',
+      activo: true,
+      filamentoModeloGramos: 59.88,
+      filamentoSoportesGramos: 1.25,
+      filamentoPurgeGramos: 0.24,
+      filamentoMetros: 20.41,
+      filamentoGramos: 61.35,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
+      horasImpresion: 2.02,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: 1.225,
+      notas:
+        'Slicer placa ×2: 122,70 g / 4 h 2 m → por unidad 61,35 g / 2 h 1 m. PLA+ negro $17.986/kg. Coste slicer placa 2,45 (ref). Sin pintado (editable).',
+    });
+    return migrarFilamentoNegroProducto(d, 'prod-portacompleto-perro-bulldog') || changed;
+  }
+
+  /** Si quedó con $/kg amarillo (12.690), pasa a PLA+ negro. */
+  function migrarFilamentoNegroProducto(d, id) {
+    const p = (d.productos || []).find((x) => x.id === id);
+    if (!p) return false;
+    if (Number(p.costoFilamentoKgClp) === 12690) {
+      p.costoFilamentoKgClp = COSTO_PLA_NEGRO_KG;
+      if (p.notas && /amarillo/i.test(p.notas)) {
+        p.notas = String(p.notas).replace(/PLA amarillo[^.]*/i, 'PLA+ negro $17.986/kg');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  function asegurarPedidos(d) {
+    let changed = false;
+    if (!Array.isArray(d.pedidos)) {
+      d.pedidos = [];
+      changed = true;
+    }
+    d.meta = d.meta || {};
+    if (d.meta.pedidoSeq == null) {
+      const maxNum = (d.pedidos || []).reduce((m, p) => {
+        const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
+        return Math.max(m, n);
+      }, 0);
+      d.meta.pedidoSeq = maxNum;
+      changed = true;
+    }
+    return changed;
+  }
+
+  function siguienteNumeroPedido() {
+    data.meta = data.meta || {};
+    data.meta.pedidoSeq = Number(data.meta.pedidoSeq || 0) + 1;
+    return `PED-${String(data.meta.pedidoSeq).padStart(3, '0')}`;
+  }
+
+  /** Porta lata Monster — seed inicial desde slicer; no pisa ediciones posteriores. */
+  function asegurarProductoPortaLataMonster(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-porta-lata-monster';
+    const existing = d.productos.find(
+      (p) => p.id === id || /porta\s*lata.*monster|monster.*porta\s*lata/i.test(p.nombre || '')
+    );
+    const seed = {
+      id,
+      sku: 'PLMONS001',
+      nombre: 'Porta lata Monster',
+      activo: true,
+      filamentoModeloGramos: 135.55,
+      filamentoSoportesGramos: 8.43,
+      filamentoPurgeGramos: 0.47,
+      filamentoMetros: 48.04,
+      filamentoGramos: 144.45,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
+      horasImpresion: 3.42,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: 2.89,
+      notas:
+        'Slicer: modelo 135,55 g + soportes 8,43 g + purge 0,47 g = 144,45 g · 48,04 m · 3 h 25 m · coste slicer 2,89 (ref). PLA+ negro $17.986/kg. Logo en relieve.',
+    };
+    if (!existing) {
+      d.productos.push(seed);
+      return true;
+    }
+    let changed = false;
+    if (!existing.id) {
+      existing.id = id;
+      changed = true;
+    }
+    // Solo rellena campos slicer si aún no existen (respetar ediciones de la usuaria).
+    const backfill = [
+      'filamentoModeloGramos',
+      'filamentoSoportesGramos',
+      'filamentoPurgeGramos',
+      'filamentoMetros',
+      'costoSlicerRef',
+      'sku',
+    ];
+    for (const k of backfill) {
+      if (existing[k] == null && seed[k] != null) {
+        existing[k] = seed[k];
+        changed = true;
+      }
+    }
+    if (migrarFilamentoNegroProducto(d, id)) changed = true;
+    return changed;
+  }
+
+  /** Prefijos SKU legibles: PCGATO, PCPERRO, PCPERROBU, MCPERROBU, PLMONS… */
+  function skuPrefijoDesdeTexto(nombre, id) {
+    const t = `${nombre || ''} ${id || ''}`
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+    if (/macetero/.test(t) && /bull/.test(t)) return 'MCPERROBU';
+    if (/(porta\s*completos?|portacompleto)/.test(t) && /bull/.test(t)) return 'PCPERROBU';
+    if (/(porta\s*completos?|portacompleto)/.test(t) && /gato/.test(t)) return 'PCGATO';
+    if (/(porta\s*completos?|portacompleto)/.test(t) && /perro/.test(t)) return 'PCPERRO';
+    if (/porta\s*lata/.test(t) && /monster|mons/.test(t)) return 'PLMONS';
+    if (/porta\s*lata/.test(t)) return 'PLATA';
+    if (/llavero/.test(t)) return 'LLAV';
+    if (/figura|souvenir/.test(t)) return 'FIG';
+    const words = t
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    if (!words.length) return 'PROD';
+    return words
+      .map((w) => w.slice(0, 3))
+      .join('')
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, '')
+      .slice(0, 8) || 'PROD';
+  }
+
+  function esSkuSimple(sku) {
+    return /^[A-Z]{2,10}\d{3}$/i.test(String(sku || ''));
+  }
+
+  function siguienteSkuProducto(nombre, id, listaBase) {
+    const pref = skuPrefijoDesdeTexto(nombre, id);
+    const list = listaBase || data?.productos || [];
+    const re = new RegExp(`^${pref}(\\d{3})$`, 'i');
+    let max = 0;
+    for (const p of list) {
+      const m = String(p.sku || '').match(re);
+      if (m) max = Math.max(max, Number(m[1]));
+    }
+    return `${pref}${String(max + 1).padStart(3, '0')}`;
+  }
+
   function asegurarSkusProductos(d) {
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     let changed = false;
-    d.productos.forEach((p, i) => {
-      if (!p.sku) {
-        const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-        const n = String(i + 1).padStart(3, '0');
-        const rand = Math.random().toString(36).slice(2, 5).toUpperCase();
-        p.sku = `IMP-${stamp}-${n}${rand}`;
+    const CANON = {
+      'prod-portacompletos-gato': 'PCGATO001',
+      'prod-portacompletos-perro': 'PCPERRO001',
+      'prod-porta-lata-monster': 'PLMONS001',
+      'prod-macetero-perro-bulldog': 'MCPERROBU001',
+      'prod-portacompleto-perro-bulldog': 'PCPERROBU001',
+    };
+    for (const p of d.productos) {
+      const fijo = CANON[p.id];
+      if (fijo && p.sku !== fijo) {
+        p.sku = fijo;
         changed = true;
       }
-    });
+    }
+    for (const p of d.productos) {
+      if (CANON[p.id]) continue;
+      if (!p.sku || !esSkuSimple(p.sku) || /^IMP-/i.test(p.sku)) {
+        const otros = d.productos.filter((x) => x !== p && esSkuSimple(x.sku) && !/^IMP-/i.test(x.sku));
+        p.sku = siguienteSkuProducto(p.nombre, p.id, otros);
+        changed = true;
+      }
+    }
     return changed;
   }
 
@@ -321,17 +618,130 @@
     return Number(p.tarifaKwhClp || 0) * Number(p.consumoImpresoraKw || 0);
   }
 
+  function partesHoras(horas) {
+    const totalMin = Math.max(0, Math.round(round2(horas) * 60));
+    return { horas: Math.floor(totalMin / 60), minutos: totalMin % 60 };
+  }
+
+  function horasDesdePartes(horas, minutos) {
+    return round2(Number(horas || 0) + Number(minutos || 0) / 60);
+  }
+
+  function gramosDesdeDesglose(prod) {
+    const modelo = Number(prod.filamentoModeloGramos);
+    const soportes = Number(prod.filamentoSoportesGramos);
+    const purge = Number(prod.filamentoPurgeGramos);
+    const tieneDesglose =
+      prod.filamentoModeloGramos != null ||
+      prod.filamentoSoportesGramos != null ||
+      prod.filamentoPurgeGramos != null;
+    if (!tieneDesglose) return round2(prod.filamentoGramos || 0);
+    return round2(
+      (Number.isFinite(modelo) ? modelo : 0) +
+        (Number.isFinite(soportes) ? soportes : 0) +
+        (Number.isFinite(purge) ? purge : 0)
+    );
+  }
+
+  const CAMPOS_NUM_PRODUCTO = [
+    'filamentoModeloGramos',
+    'filamentoSoportesGramos',
+    'filamentoPurgeGramos',
+    'filamentoMetros',
+    'filamentoGramos',
+    'costoFilamentoKgClp',
+    'horasImpresion',
+    'minutosPintado',
+    'unidadesMetal',
+    'unidadesBolsa',
+    'precioVentaSugeridoClp',
+    'costoSlicerRef',
+  ];
+
+  function normalizarDecimalesProducto(prod) {
+    if (!prod || typeof prod !== 'object') return false;
+    let changed = false;
+    for (const k of CAMPOS_NUM_PRODUCTO) {
+      if (prod[k] == null || prod[k] === '') continue;
+      const next = round2(prod[k]);
+      if (Number(prod[k]) !== next) {
+        prod[k] = next;
+        changed = true;
+      } else {
+        prod[k] = next;
+      }
+    }
+    return changed;
+  }
+
+  function asegurarDecimalesProductos(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    let changed = false;
+    for (const p of d.productos) {
+      if (normalizarDecimalesProducto(p)) changed = true;
+    }
+    return changed;
+  }
+
   function costoProducto(prod) {
     const p = data.parametros || {};
-    const filamento =
-      (Number(prod.filamentoGramos || 0) / 1000) * Number(prod.costoFilamentoKgClp || 0);
-    const luz = Number(prod.horasImpresion || 0) * costoHoraImpresora();
-    const pintado =
-      (Number(prod.minutosPintado || 0) / 60) * Number(p.valorHoraManoObraClp || 0);
-    const metal = Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0);
-    const bolsa = Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 0);
-    const total = filamento + luz + pintado + metal + bolsa;
-    return { filamento, luz, pintado, metal, bolsa, total };
+    const gramos = gramosDesdeDesglose(prod) || round2(prod.filamentoGramos || 0);
+    const filamento = round2((gramos / 1000) * Number(prod.costoFilamentoKgClp || 0));
+    const luz = round2(Number(prod.horasImpresion || 0) * costoHoraImpresora());
+    const pintado = round2(
+      (Number(prod.minutosPintado || 0) / 60) * Number(p.valorHoraManoObraClp || 0)
+    );
+    const metal = round2(Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0));
+    const bolsa = round2(Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 0));
+    const total = round2(filamento + luz + pintado + metal + bolsa);
+    return { filamento, luz, pintado, metal, bolsa, total, gramos: round2(gramos) };
+  }
+
+  function leerProductoDesdeForm(form) {
+    if (!form) return null;
+    const fd = new FormData(form);
+    const modelo = round2(fd.get('filamentoModeloGramos') || 0);
+    const soportes = round2(fd.get('filamentoSoportesGramos') || 0);
+    const purge = round2(fd.get('filamentoPurgeGramos') || 0);
+    const totalDesglose = round2(modelo + soportes + purge);
+    const gramosManual = round2(fd.get('filamentoGramos') || 0);
+    const usarDesglose = fd.get('usarDesglose') === '1';
+    const filamentoGramos = usarDesglose ? totalDesglose : gramosManual;
+    const horasImpresion = horasDesdePartes(fd.get('horasPart'), fd.get('minutosPart'));
+    return {
+      nombre: String(fd.get('nombre') || '').trim(),
+      filamentoModeloGramos: modelo,
+      filamentoSoportesGramos: soportes,
+      filamentoPurgeGramos: purge,
+      filamentoMetros: round2(fd.get('filamentoMetros') || 0),
+      filamentoGramos,
+      costoFilamentoKgClp: round2(fd.get('costoFilamentoKgClp') || 0),
+      horasImpresion,
+      minutosPintado: round2(fd.get('minutosPintado') || 0),
+      unidadesMetal: round2(fd.get('unidadesMetal') || 0),
+      unidadesBolsa: round2(fd.get('unidadesBolsa') || 0),
+      precioVentaSugeridoClp: round2(fd.get('precioVentaSugeridoClp') || 0),
+      costoSlicerRef: round2(fd.get('costoSlicerRef') || 0),
+      notas: String(fd.get('notas') || '').trim(),
+      usarDesglose,
+    };
+  }
+
+  function htmlCostoLive(c, _margenUnused, precioVenta) {
+    const pctObj = Number(data?.parametros?.margenObjetivoPct ?? 100);
+    const sugerido = precioSugeridoDesdeCosto(c.total);
+    const markupReal = markupRealPct(precioVenta, c.total);
+    return `
+      <div class="imp-grid imp-grid--costo-live">
+        <div class="imp-kpi"><span>Filamento (${Number(c.gramos || 0).toFixed(2)} g)</span><strong>${money(c.filamento)}</strong></div>
+        <div class="imp-kpi"><span>Luz (impresión)</span><strong>${money(c.luz)}</strong></div>
+        <div class="imp-kpi"><span>Pintado / MO</span><strong>${money(c.pintado)}</strong></div>
+        <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
+        <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
+        <div class="imp-kpi"><span>Costo unitario</span><strong>${money(c.total)}</strong></div>
+        <div class="imp-kpi imp-kpi--accent"><span>Precio sugerido (+${pctObj}% sobre costo)</span><strong>${money(sugerido)}</strong></div>
+        <div class="imp-kpi ${markupReal == null ? '' : markupReal >= pctObj ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Markup real sobre costo</span><strong>${markupReal == null ? '—' : `${markupReal.toFixed(0)}%`}</strong></div>
+      </div>`;
   }
 
   function gastosPorCategoria() {
@@ -416,8 +826,11 @@
     const ads = Number(data.planAds?.presupuestoMensualClp || 0);
     /** Resultado = ventas − gastos − operación (sube al vender; más negativo si solo hay gastos). */
     const resultado = ventas - gastos - operacion;
+    const metaRecuperar = gastos + operacion;
     /** Saldo por recuperar = gastos + operación − ventas (baja cada vez que venden). */
-    const saldoPendiente = Math.max(0, gastos + operacion - ventas);
+    const saldoPendiente = Math.max(0, metaRecuperar - ventas);
+    const pctRecuperado = metaRecuperar > 0 ? Math.min(100, (ventas / metaRecuperar) * 100) : 100;
+    const sinDeuda = saldoPendiente <= 0;
     const cadaUnoGastos = gastos / 2;
     const cadaUnoResultado = resultado / 2;
     const cap = data.meta?.capital || {};
@@ -429,32 +842,96 @@
     const totalOrden = Number(orden?.montoNeto || 0);
     const totalMl = Number(ml?.montoNeto || 0);
     const cats = gastosPorCategoria();
-    const denom = Math.max(gastos + operacion, ventas, 1);
-    const pctGastos = Math.min(100, ((gastos + operacion) / denom) * 100);
+    const denom = Math.max(metaRecuperar, ventas, 1);
+    const pctGastos = Math.min(100, (metaRecuperar / denom) * 100);
     const pctVentas = Math.min(100, (ventas / denom) * 100);
     const linkVenta = `${location.origin}/index/clientes/impresoreando/panel/venta/`;
     const esLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
+    const pedidosActivos = (data.pedidos || []).filter((p) =>
+      ['pendiente', 'listo'].includes(p.estado || 'pendiente')
+    );
+    const pedidosPendientes = pedidosActivos;
+    const montoPedidosPend = pedidosActivos.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
+    const pctMarkup = Number(data.parametros?.margenObjetivoPct ?? 100);
+    const filasCostoProd = (data.productos || [])
+      .map((prod) => {
+        const c = costoProducto(prod);
+        const sugerido = precioSugeridoDesdeCosto(c.total);
+        return `<tr>
+          <td><span class="imp-sku">${escapeHtml(prod.sku || '—')}</span></td>
+          <td>${escapeHtml(prod.nombre || '')}</td>
+          <td class="num">${money(c.total)}</td>
+          <td class="num"><strong>${money(sugerido)}</strong></td>
+        </tr>`;
+      })
+      .join('');
 
     $('#tab-resumen').innerHTML = `
-      <div class="imp-balance">
-        <div class="imp-balance__label">Saldo por recuperar (gastos − ventas)</div>
+      <div class="imp-balance ${sinDeuda ? 'imp-balance--ok' : 'imp-balance--deuda'}">
+        <div class="imp-balance__label">${sinDeuda ? 'Sin deuda de sociedad' : 'Para salir de deuda falta recuperar'}</div>
         <div class="imp-balance__valor">${money(saldoPendiente)}</div>
+        <p class="imp-balance__meta">
+          ${sinDeuda
+            ? `Ya recuperaron ${money(ventas)} — las ventas cubren gastos + operación.`
+            : `Ya recuperaron <strong>${money(ventas)}</strong> de <strong>${money(metaRecuperar)}</strong>
+               · progreso <strong>${pctRecuperado.toFixed(1)}%</strong>
+               · meta: llegar a ${money(metaRecuperar)} en ventas.`}
+        </p>
+        <div class="imp-balance__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pctRecuperado.toFixed(0)}" aria-label="Progreso hacia salir de deuda">
+          <div class="imp-balance__progress-fill" style="width:${pctRecuperado}%"></div>
+        </div>
         <div class="imp-balance__bar" title="Al vender, este saldo baja">
           <div class="imp-balance__fill--gastos" style="width:${pctGastos}%"></div>
           <div class="imp-balance__fill--ventas" style="width:${pctVentas}%"></div>
         </div>
         <div class="imp-balance__legend">
-          <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(gastos + operacion)}</span>
-          <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)} · cada venta baja el saldo</span>
+          <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(metaRecuperar)}</span>
+          <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)} · solo cuentan al transferir pedido → venta</span>
+        </div>
+      </div>
+      <div class="imp-card">
+        <h2>Costos de producto (resumen)</h2>
+        <p class="imp-muted">Costo y precio sugerido con <strong>+${pctMarkup}% sobre el costo</strong> (×${(1 + pctMarkup / 100).toFixed(0)}). Detalle en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>.</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>SKU</th><th>Producto</th><th>Costo</th><th>Precio sugerido (+${pctMarkup}%)</th></tr></thead>
+            <tbody>${filasCostoProd || '<tr><td colspan="4">Sin productos</td></tr>'}</tbody>
+          </table>
         </div>
       </div>
       <div class="imp-grid">
         <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
-        <div class="imp-kpi imp-kpi--ok"><span>Ventas</span><strong>${money(ventas)}</strong></div>
-        <div class="imp-kpi"><span>Operación (luz etc.)</span><strong>${money(operacion)}</strong></div>
+        <div class="imp-kpi imp-kpi--ok"><span>Ventas (contabilizadas)</span><strong>${money(ventas)}</strong></div>
+        <div class="imp-kpi"><span>Pedidos activos</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
         <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
-        <div class="imp-kpi"><span>50% cada socio (gastos)</span><strong>${money(cadaUnoGastos)}</strong></div>
-        <div class="imp-kpi"><span>50% cada socio (resultado)</span><strong>${money(cadaUnoResultado)}</strong></div>
+      </div>
+      <div class="imp-socios" aria-label="Detalle por socio">
+        <article class="imp-socio imp-socio--josefa">
+          <header class="imp-socio__head">
+            <h3>Josefa</h3>
+            <span class="imp-socio__tag">50%</span>
+          </header>
+          <p class="imp-socio__deuda">Le debe a Nicolás <strong>${money(deuda)}</strong></p>
+          <ul class="imp-socio__detalle">
+            <li><span>Su 50% de los gastos</span><strong>${money(cadaUnoGastos)}</strong></li>
+            <li><span>Su 50% del resultado</span><strong class="${cadaUnoResultado >= 0 ? 'is-ok' : 'is-warn'}">${money(cadaUnoResultado)}</strong></li>
+            <li><span>Capital que aportó</span><strong>$0</strong></li>
+          </ul>
+          <p class="imp-socio__nota">Nicolás puso el capital; a Josefa le corresponde el 50% (${money(deuda)}).</p>
+        </article>
+        <article class="imp-socio imp-socio--nicolas">
+          <header class="imp-socio__head">
+            <h3>Nicolás</h3>
+            <span class="imp-socio__tag">50%</span>
+          </header>
+          <p class="imp-socio__deuda imp-socio__deuda--ok">Josefa le debe <strong>${money(deuda)}</strong></p>
+          <ul class="imp-socio__detalle">
+            <li><span>Su 50% de los gastos</span><strong>${money(cadaUnoGastos)}</strong></li>
+            <li><span>Su 50% del resultado</span><strong class="${cadaUnoResultado >= 0 ? 'is-ok' : 'is-warn'}">${money(cadaUnoResultado)}</strong></li>
+            <li><span>Capital que aportó</span><strong>${money(gastos)}</strong></li>
+          </ul>
+          <p class="imp-socio__nota">Aportó el capital del negocio. Tiene por cobrar de Josefa ${money(deuda)}.</p>
+        </article>
       </div>
       <div class="imp-charts">
         <div class="imp-card imp-chart-card">
@@ -482,6 +959,7 @@
           <li>Mercado Libre (5 PLA): <strong>${money(totalMl)}</strong></li>
         </ul>
         <p class="imp-deuda"><strong>Capital:</strong> lo aportó <strong>Nicolás</strong>. Todos los gastos son de <strong>ambos</strong>. Josefa le debe a Nicolás el <strong>50%</strong> del capital (${money(deuda)}).</p>
+        <p class="imp-muted">Esa deuda entre socios es distinta del saldo de arriba: el saldo baja con cada venta del negocio; la deuda 50% de Josefa se actualiza con el capital aportado.</p>
       </div>
       <div class="imp-card">
         <h2>Link para registrar ventas (celular)</h2>
@@ -513,6 +991,13 @@
       } catch {
         setStatus('No se pudo copiar — selecciónalo a mano', 'warn');
       }
+    });
+
+    $('#tab-resumen')?.querySelectorAll('[data-goto-tab]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const tab = btn.getAttribute('data-goto-tab');
+        document.querySelector(`#imp-tabs button[data-tab="${tab}"]`)?.click();
+      });
     });
 
     fetch('/api/acceso', { cache: 'no-store' })
@@ -655,13 +1140,222 @@
     });
   }
 
+  function badgeEstadoPedido(estado) {
+    if (estado === 'transferido') return '<span class="imp-badge imp-badge--ok">Transferido → venta</span>';
+    if (estado === 'listo') return '<span class="imp-badge imp-badge--listo">Listo para entregar</span>';
+    if (estado === 'cancelado') return '<span class="imp-badge">Cancelado</span>';
+    return '<span class="imp-badge imp-badge--warn">Pendiente</span>';
+  }
+
+  function pedidoActivo(estado) {
+    return ['pendiente', 'listo'].includes(estado || 'pendiente');
+  }
+
+  function renderPedidos() {
+    const productos = data.productos || [];
+    const optsProd = productos
+      .map((p) => `<option value="${escapeHtml(p.sku || '')}">${escapeHtml(p.sku || '')} · ${escapeHtml(p.nombre || '')}</option>`)
+      .join('');
+    const rows = (data.pedidos || [])
+      .slice()
+      .reverse()
+      .map((p) => {
+        const itemsTxt = (p.items || [])
+          .map((it) => `${it.cantidad || 1}× ${it.sku || it.nombre || ''}`)
+          .join(', ');
+        const estado = p.estado || 'pendiente';
+        const badge = badgeEstadoPedido(estado);
+        let acciones = `<span class="imp-muted">${escapeHtml(p.ventaId || '—')}</span>`;
+        if (pedidoActivo(estado)) {
+          const btnListo =
+            estado === 'pendiente'
+              ? `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="listo">Marcar listo</button>`
+              : `<button type="button" class="imp-btn imp-btn--sm" data-estado-pedido="${escapeHtml(p.id)}" data-estado="pendiente">Volver a pendiente</button>`;
+          acciones = `${btnListo}
+            <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
+            <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
+        }
+        return `<tr>
+          <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
+          <td>${escapeHtml(p.cliente || '—')}<div class="imp-muted">${escapeHtml(itemsTxt)}${p.notas ? ` · ${escapeHtml(p.notas)}` : ''}</div></td>
+          <td class="num">${money(p.montoNeto)}</td>
+          <td>${badge}</td>
+          <td class="imp-pedidos-actions">${acciones}</td>
+        </tr>`;
+      })
+      .join('');
+
+    $('#tab-pedidos').innerHTML = `
+      <div class="imp-card">
+        <h2>Pedidos</h2>
+        <p class="imp-muted">ID correlativo <strong>PED-001</strong>…. Estados: pendiente → listo para entregar → transferir a venta. Solo al transferir se contabiliza en la deuda.</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th><th></th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="5">Sin pedidos aún</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>
+      <div class="imp-card">
+        <h3>Nuevo pedido</h3>
+        <form class="imp-form" id="form-pedido">
+          <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
+          <label>Cliente<input name="cliente" placeholder="Nombre o @instagram" /></label>
+          <label>Producto (SKU)
+            <select name="sku" required>
+              <option value="">Elegir…</option>
+              ${optsProd}
+            </select>
+          </label>
+          <label>Cantidad<input name="cantidad" type="number" min="1" step="0.01" value="1" required /></label>
+          <label>Total cobrado CLP<input name="montoNeto" type="number" min="0" step="0.01" required placeholder="Lo que paga el cliente" /></label>
+          <label>Estado
+            <select name="estado">
+              <option value="pendiente">Pendiente</option>
+              <option value="listo" selected>Listo para entregar</option>
+            </select>
+          </label>
+          <label>Canal<input name="canal" placeholder="WhatsApp / Instagram / feria" value="WhatsApp" /></label>
+          <label>Quién
+            <select name="socioRegistro">
+              <option value="Ambos" selected>Ambos</option>
+              <option value="Josefa">Josefa</option>
+              <option value="Nicolás">Nicolás</option>
+            </select>
+          </label>
+          <label class="imp-form-span">Notas<textarea name="notas" rows="2" placeholder="Ej. PLA negro"></textarea></label>
+          <div class="imp-form-actions">
+            <button class="imp-btn imp-btn--primary" type="submit">Registrar pedido</button>
+            <span class="imp-muted">Se asigna el siguiente PED-xxx automáticamente</span>
+          </div>
+        </form>
+      </div>
+    `;
+
+    $('#form-pedido')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const sku = String(fd.get('sku') || '').trim();
+      const prod = (data.productos || []).find((p) => p.sku === sku);
+      const cantidad = round2(fd.get('cantidad') || 1);
+      const montoNeto = round2(fd.get('montoNeto') || 0);
+      const estado = String(fd.get('estado') || 'pendiente');
+      if (!sku || !prod || !(montoNeto > 0)) {
+        setStatus('Elige producto y total cobrado', 'warn');
+        return;
+      }
+      const numero = siguienteNumeroPedido();
+      data.pedidos = data.pedidos || [];
+      data.pedidos.push({
+        id: uid('ped'),
+        numero,
+        fecha: fd.get('fecha'),
+        cliente: String(fd.get('cliente') || '').trim(),
+        canal: String(fd.get('canal') || ''),
+        items: [
+          {
+            sku,
+            nombre: prod.nombre,
+            cantidad,
+            precioUnitarioClp: round2(montoNeto / Math.max(1, cantidad)),
+            costoUnitarioClp: round2(costoProducto(prod).total),
+            filamento:
+              Number(prod.costoFilamentoKgClp) === COSTO_PLA_NEGRO_KG ? 'PLA+ negro' : '',
+          },
+        ],
+        montoNeto,
+        estado: pedidoActivo(estado) ? estado : 'pendiente',
+        ventaId: null,
+        notas: String(fd.get('notas') || '').trim(),
+        socioRegistro: fd.get('socioRegistro') || 'Ambos',
+        creado: new Date().toISOString(),
+      });
+      markDirty();
+      renderAll();
+      activarTab('pedidos');
+      setStatus(`Pedido ${numero} creado (${estado}) — aún no contabiliza · guarda online`, 'warn');
+    });
+
+    $('#tab-pedidos')?.querySelectorAll('[data-estado-pedido]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-estado-pedido');
+        const next = btn.getAttribute('data-estado');
+        const ped = (data.pedidos || []).find((p) => p.id === id);
+        if (!ped || !pedidoActivo(ped.estado)) return;
+        ped.estado = next;
+        markDirty();
+        renderAll();
+        activarTab('pedidos');
+        setStatus(
+          `${ped.numero}: ${next === 'listo' ? 'listo para entregar' : 'pendiente'} · guarda online`,
+          'warn'
+        );
+      });
+    });
+
+    $('#tab-pedidos')?.querySelectorAll('[data-transferir-pedido]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-transferir-pedido');
+        const ped = (data.pedidos || []).find((p) => p.id === id);
+        if (!ped || !pedidoActivo(ped.estado)) return;
+        const ok = confirm(
+          `¿Transferir ${ped.numero} a venta?\nSe contabilizará ${money(ped.montoNeto)} en el dashboard.`
+        );
+        if (!ok) return;
+        const itemsTxt = (ped.items || [])
+          .map((it) => `${it.cantidad || 1}× ${it.nombre || it.sku}`)
+          .join(', ');
+        const cant = (ped.items || []).reduce((a, it) => a + Number(it.cantidad || 0), 0) || 1;
+        const venta = {
+          id: uid('ven'),
+          fecha: ped.fecha || today(),
+          descripcion: `${ped.numero} · ${itemsTxt}${ped.cliente ? ` · ${ped.cliente}` : ''}`,
+          cantidad: cant,
+          montoNeto: Number(ped.montoNeto || 0),
+          canal: ped.canal || '',
+          notas: ped.notas || `Desde pedido ${ped.numero}`,
+          socioRegistro: ped.socioRegistro || 'Ambos',
+          pedidoId: ped.id,
+          pedidoNumero: ped.numero,
+        };
+        data.ventas = data.ventas || [];
+        data.ventas.push(venta);
+        ped.estado = 'transferido';
+        ped.ventaId = venta.id;
+        ped.transferidoEn = new Date().toISOString();
+        markDirty();
+        renderAll();
+        activarTab('ventas');
+        setStatus(`${ped.numero} → venta · ${money(venta.montoNeto)} contabilizado · guarda online`, 'warn');
+      });
+    });
+
+    $('#tab-pedidos')?.querySelectorAll('[data-del-pedido]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-del-pedido');
+        const ped = (data.pedidos || []).find((p) => p.id === id);
+        if (!ped || !pedidoActivo(ped.estado)) return;
+        if (!confirm(`¿Eliminar pedido ${ped.numero}?`)) return;
+        data.pedidos = (data.pedidos || []).filter((p) => p.id !== id);
+        markDirty();
+        renderAll();
+        activarTab('pedidos');
+        setStatus(`Pedido ${ped.numero} eliminado`, 'warn');
+      });
+    });
+  }
+
   function renderVentas() {
     const rows = (data.ventas || [])
       .map(
         (v) => `
       <tr>
         <td>${escapeHtml(v.fecha || '')}</td>
-        <td>${escapeHtml(v.descripcion || '')}</td>
+        <td>${escapeHtml(v.descripcion || '')}${
+          v.pedidoNumero
+            ? `<div class="imp-muted">Desde pedido <strong>${escapeHtml(v.pedidoNumero)}</strong></div>`
+            : ''
+        }</td>
         <td class="num">${v.cantidad || 1}</td>
         <td class="num">${money(v.montoNeto)}</td>
         <td>${escapeHtml(v.canal || '')}</td>
@@ -672,12 +1366,12 @@
 
     $('#tab-ventas').innerHTML = `
       <div class="imp-card imp-kpi--accent" style="padding:0.9rem 1rem">
-        <p style="margin:0"><strong>Link rápido para socios:</strong> <a href="./venta/">Abrir registrador de ventas</a>
-        — cada venta baja el saldo por recuperar en Resumen.</p>
+        <p style="margin:0"><strong>Flujo recomendado:</strong> registra en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>
+        y al cobrar/transferir pasa a venta. Solo las ventas bajan la deuda.</p>
       </div>
       <div class="imp-card">
-        <h2>Ventas (${money(sum(data.ventas))})</h2>
-        <p class="imp-muted">Las ventas se restan de los gastos en el dashboard: <strong>saldo = gastos − ventas</strong>.</p>
+        <h2>Ventas contabilizadas (${money(sum(data.ventas))})</h2>
+        <p class="imp-muted">Estas sí entran al dashboard: <strong>saldo = gastos − ventas</strong>.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>Fecha</th><th>Detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
@@ -686,7 +1380,8 @@
         </div>
       </div>
       <div class="imp-card">
-        <h3>Registrar venta</h3>
+        <h3>Venta directa (sin pedido)</h3>
+        <p class="imp-muted">Úsalo solo si no pasaste por Pedidos. Prefiere Pedidos → Transferir a venta.</p>
         <form class="imp-form" id="form-venta">
           <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
           <label>Descripción<input name="descripcion" required placeholder="Llavero x3" /></label>
@@ -705,6 +1400,10 @@
         </form>
       </div>
     `;
+
+    $('#tab-ventas')?.querySelectorAll('[data-goto-tab]').forEach((btn) => {
+      btn.addEventListener('click', () => activarTab(btn.getAttribute('data-goto-tab')));
+    });
 
     $('#form-venta').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -751,16 +1450,24 @@
     $('#tab-operacion').innerHTML = `
       <div class="imp-card">
         <h2>Parámetros (luz / mano de obra / empaque)</h2>
+        <p class="imp-muted"><strong>${escapeHtml(p.impresoraModelo || LUZ_CHILE.impresoraModelo)}</strong> · Chile 220 V</p>
+        <p class="imp-muted">${escapeHtml(p.impresoraNotas || LUZ_CHILE.impresoraNotas)}</p>
         <form class="imp-form" id="form-params">
-          <label>Tarifa luz $/kWh<input name="tarifaKwhClp" type="number" value="${p.tarifaKwhClp || 180}" /></label>
-          <label>Consumo impresora kW<input name="consumoImpresoraKw" type="number" step="0.01" value="${p.consumoImpresoraKw || 0.22}" /></label>
+          <label>Tarifa luz Chile $/kWh
+            <input name="tarifaKwhClp" type="number" min="0" step="1" value="${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp}" />
+          </label>
+          <label>Consumo Centauri Carbon 2 (kW promedio)
+            <input name="consumoImpresoraKw" type="number" min="0" step="0.01" value="${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw}" />
+          </label>
           <label>Mano de obra $/h<input name="valorHoraManoObraClp" type="number" value="${p.valorHoraManoObraClp || 5000}" /></label>
           <label>Anillo metal llavero $<input name="costoAnilloMetalLlaveroClp" type="number" value="${p.costoAnilloMetalLlaveroClp || 150}" /></label>
           <label>Bolsa entrega $<input name="costoBolsaEntregaClp" type="number" value="${p.costoBolsaEntregaClp || 50}" /></label>
-          <label>Margen objetivo %<input name="margenObjetivoPct" type="number" value="${p.margenObjetivoPct || 40}" /></label>
+          <label>Markup sobre costo %
+            <input name="margenObjetivoPct" type="number" min="0" step="1" value="${p.margenObjetivoPct ?? 100}" />
+          </label>
           <div class="imp-form-actions">
             <button class="imp-btn imp-btn--primary" type="submit">Guardar parámetros</button>
-            <span class="imp-muted">Costo luz/hora impresora ≈ ${money(costoHoraImpresora())}</span>
+            <span class="imp-muted">Luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> (= ${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp} × ${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw} kW)</span>
           </div>
         </form>
       </div>
@@ -793,16 +1500,21 @@
     $('#form-params').addEventListener('submit', (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
+      const prev = data.parametros || {};
       data.parametros = {
+        ...prev,
         tarifaKwhClp: Number(fd.get('tarifaKwhClp')),
         consumoImpresoraKw: Number(fd.get('consumoImpresoraKw')),
         valorHoraManoObraClp: Number(fd.get('valorHoraManoObraClp')),
         costoAnilloMetalLlaveroClp: Number(fd.get('costoAnilloMetalLlaveroClp')),
         costoBolsaEntregaClp: Number(fd.get('costoBolsaEntregaClp')),
         margenObjetivoPct: Number(fd.get('margenObjetivoPct')),
+        impresoraModelo: prev.impresoraModelo || LUZ_CHILE.impresoraModelo,
+        impresoraNotas: prev.impresoraNotas || LUZ_CHILE.impresoraNotas,
       };
       markDirty();
       renderAll();
+      setStatus(`Parámetros luz actualizados — ${money(costoHoraImpresora())}/h · guarda online`, 'warn');
     });
 
     $('#form-op').addEventListener('submit', (e) => {
@@ -831,33 +1543,26 @@
     });
   }
 
-  function siguienteSkuProducto() {
-    const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const existentes = new Set((data.productos || []).map((p) => String(p.sku || '')));
-    let sku = '';
-    do {
-      const n = String((data.productos || []).length + 1).padStart(3, '0');
-      const rand = Math.random().toString(36).slice(2, 5).toUpperCase();
-      sku = `IMP-${stamp}-${n}${rand}`;
-    } while (existentes.has(sku));
-    return sku;
-  }
-
   function leerCalcPieza() {
     const form = $('#form-calc-pieza');
     if (!form) return null;
     const fd = new FormData(form);
+    const modelo = round2(fd.get('modelo') || 0);
+    const soportes = round2(fd.get('soportes') || 0);
+    const purge = round2(fd.get('purge') || 0);
     const prod = {
-      filamentoGramos: Number(fd.get('g')),
-      costoFilamentoKgClp: Number(fd.get('kg')),
-      horasImpresion: Number(fd.get('h')),
-      minutosPintado: Number(fd.get('m')),
-      unidadesMetal: Number(fd.get('metal')),
-      unidadesBolsa: Number(fd.get('bolsa')),
+      filamentoModeloGramos: modelo,
+      filamentoSoportesGramos: soportes,
+      filamentoPurgeGramos: purge,
+      filamentoGramos: round2(modelo + soportes + purge),
+      costoFilamentoKgClp: round2(fd.get('kg')),
+      horasImpresion: horasDesdePartes(fd.get('horasPart'), fd.get('minutosPart')),
+      minutosPintado: round2(fd.get('m')),
+      unidadesMetal: round2(fd.get('metal')),
+      unidadesBolsa: round2(fd.get('bolsa')),
     };
     const c = costoProducto(prod);
-    const margen = Number(data.parametros?.margenObjetivoPct || 40) / 100;
-    const sugerido = Math.round(c.total / (1 - margen) / 10) * 10;
+    const sugerido = Math.round(precioSugeridoDesdeCosto(c.total) / 10) * 10;
     return { prod, c, sugerido };
   }
 
@@ -894,6 +1599,8 @@
     document.body.classList.remove('imp-modal-open');
   }
 
+  let calcDraft = null;
+
   function abrirModalDesdeCalculadora() {
     const calc = leerCalcPieza();
     if (!calc) {
@@ -902,17 +1609,18 @@
     }
     const modal = $('#imp-modal-producto');
     if (!modal) return;
-    const sku = siguienteSkuProducto();
-    modal.querySelector('[name=sku]').value = sku;
+    calcDraft = { ...calc.prod };
+    modal.querySelector('[name=sku]').value = siguienteSkuProducto('Producto');
     modal.querySelector('[name=nombre]').value = '';
-    modal.querySelector('[name=filamentoGramos]').value = calc.prod.filamentoGramos;
-    modal.querySelector('[name=costoFilamentoKgClp]').value = calc.prod.costoFilamentoKgClp;
-    modal.querySelector('[name=horasImpresion]').value = calc.prod.horasImpresion;
-    modal.querySelector('[name=minutosPintado]').value = calc.prod.minutosPintado;
-    modal.querySelector('[name=unidadesMetal]').value = calc.prod.unidadesMetal;
-    modal.querySelector('[name=unidadesBolsa]').value = calc.prod.unidadesBolsa;
-    modal.querySelector('[name=precioVentaSugeridoClp]').value = calc.sugerido;
-    modal.querySelector('[name=notas]').value = `Desde calculadora · costo est. ${Math.round(calc.c.total)} CLP`;
+    modal.querySelector('[name=filamentoGramos]').value = num2(calc.prod.filamentoGramos);
+    modal.querySelector('[name=costoFilamentoKgClp]').value = num2(calc.prod.costoFilamentoKgClp);
+    modal.querySelector('[name=horasImpresion]').value = num2(calc.prod.horasImpresion || 0);
+    modal.querySelector('[name=minutosPintado]').value = num2(calc.prod.minutosPintado);
+    modal.querySelector('[name=unidadesMetal]').value = num2(calc.prod.unidadesMetal);
+    modal.querySelector('[name=unidadesBolsa]').value = num2(calc.prod.unidadesBolsa);
+    modal.querySelector('[name=precioVentaSugeridoClp]').value = num2(calc.sugerido);
+    modal.querySelector('[name=notas]').value =
+      `Desde calculadora · modelo ${calc.prod.filamentoModeloGramos}g + soportes ${calc.prod.filamentoSoportesGramos}g + purge ${calc.prod.filamentoPurgeGramos}g · costo est. ${Math.round(calc.c.total)} CLP`;
     actualizarCostoModal();
     modal.hidden = false;
     modal.setAttribute('aria-hidden', 'false');
@@ -922,51 +1630,62 @@
   }
 
   function renderCostos() {
-    const margen = Number(data.parametros?.margenObjetivoPct || 40) / 100;
+    const margen = Number(data.parametros?.margenObjetivoPct ?? 100) / 100;
     const p = data.parametros || {};
-    const avgFilKg =
-      (() => {
-        const fils = (data.gastos || []).filter((g) => g.categoria === 'filamento' && Number(g.montoNeto) > 0);
-        if (!fils.length) return 17986;
-        return Math.round(sum(fils) / fils.length);
-      })();
+    const avgFilKg = avgCostoFilamentoKg(data) || 12950;
 
     const blocks = (data.productos || [])
       .map((prod) => {
         const c = costoProducto(prod);
-        const sugeridoCosto = c.total / (1 - margen);
-        const margenReal =
-          Number(prod.precioVentaSugeridoClp) > 0
-            ? ((Number(prod.precioVentaSugeridoClp) - c.total) / Number(prod.precioVentaSugeridoClp)) * 100
-            : 0;
         const pid = escapeHtml(prod.id || '');
         const sku = escapeHtml(prod.sku || prod.id || '—');
+        const th = partesHoras(prod.horasImpresion);
+        const tieneDesglose =
+          prod.filamentoModeloGramos != null ||
+          prod.filamentoSoportesGramos != null ||
+          prod.filamentoPurgeGramos != null;
+        const usarDesglose = tieneDesglose ? '1' : '0';
         return `
-        <div class="imp-card" data-prod-id="${pid}">
+        <div class="imp-card imp-card--prod" data-prod-id="${pid}">
           <div class="imp-prod-head">
             <h3>${escapeHtml(prod.nombre)}</h3>
-            <span class="imp-sku" title="SKU único de impresión">SKU ${sku}</span>
+            <div class="imp-prod-head__meta">
+              <span class="imp-sku" title="SKU del producto">SKU ${sku}</span>
+              <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-prod="${pid}">Eliminar</button>
+            </div>
           </div>
-          <div class="imp-grid">
-            <div class="imp-kpi"><span>Filamento</span><strong>${money(c.filamento)}</strong></div>
-            <div class="imp-kpi"><span>Luz (impresión)</span><strong>${money(c.luz)}</strong></div>
-            <div class="imp-kpi"><span>Pintado / MO</span><strong>${money(c.pintado)}</strong></div>
-            <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
-            <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
-            <div class="imp-kpi imp-kpi--accent"><span>Costo unitario</span><strong>${money(c.total)}</strong></div>
-            <div class="imp-kpi"><span>Precio sugerido c/ margen ${Math.round(margen * 100)}%</span><strong>${money(sugeridoCosto)}</strong></div>
-            <div class="imp-kpi ${Number(prod.precioVentaSugeridoClp) > 0 && margenReal >= Number(data.parametros?.margenObjetivoPct || 40) ? 'imp-kpi--ok' : Number(prod.precioVentaSugeridoClp) > 0 ? 'imp-kpi--warn' : ''}"><span>Margen real</span><strong>${Number(prod.precioVentaSugeridoClp) > 0 ? `${margenReal.toFixed(0)}%` : '—'}</strong></div>
-          </div>
-          <form class="imp-form imp-form--precio" data-precio-prod="${pid}">
-            <label>Precio venta a público (CLP)
-              <input name="precioVenta" type="number" min="0" step="10" value="${Number(prod.precioVentaSugeridoClp) || ''}" placeholder="Ej. 8990 — editable a mano" />
+          <div class="imp-costo-live" data-costo-live="${pid}">${htmlCostoLive(c, margen, prod.precioVentaSugeridoClp)}</div>
+          <form class="imp-form imp-form--prod" data-editar-prod="${pid}">
+            <label>Nombre<input name="nombre" required value="${escapeHtml(prod.nombre || '')}" /></label>
+            <label>SKU
+              <input name="sku" required pattern="[A-Za-z]{2,10}[0-9]{3}" title="Ej. PCGATO001, PLMONS001" value="${sku}" />
             </label>
+            <label>$ / kg filamento (CLP)<input name="costoFilamentoKgClp" type="number" min="0" step="0.01" value="${num2(prod.costoFilamentoKgClp || 0)}" /></label>
+            <label class="imp-form-span">Desglose slicer (como en la foto)
+              <select name="usarDesglose">
+                <option value="1"${usarDesglose === '1' ? ' selected' : ''}>Usar modelo + soportes + purge</option>
+                <option value="0"${usarDesglose === '0' ? ' selected' : ''}>Usar solo total de gramos</option>
+              </select>
+            </label>
+            <label>Modelo (g)<input name="filamentoModeloGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoModeloGramos || 0)}" /></label>
+            <label>Soportes (g)<input name="filamentoSoportesGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoSoportesGramos || 0)}" /></label>
+            <label>Purge / descargado (g)<input name="filamentoPurgeGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoPurgeGramos || 0)}" /></label>
+            <label>Total filamento (g)<input name="filamentoGramos" type="number" min="0" step="0.01" value="${num2(prod.filamentoGramos || c.gramos || 0)}" /></label>
+            <label>Metros filamento<input name="filamentoMetros" type="number" min="0" step="0.01" value="${num2(prod.filamentoMetros || 0)}" /></label>
+            <label>Horas impresión<input name="horasPart" type="number" min="0" step="1" value="${th.horas}" /></label>
+            <label>Minutos impresión<input name="minutosPart" type="number" min="0" max="59" step="1" value="${th.minutos}" /></label>
+            <label>Minutos pintado / MO<input name="minutosPintado" type="number" min="0" step="0.01" value="${num2(prod.minutosPintado || 0)}" /></label>
+            <label>Unidades metal<input name="unidadesMetal" type="number" min="0" step="0.01" value="${num2(prod.unidadesMetal || 0)}" /></label>
+            <label>Bolsas<input name="unidadesBolsa" type="number" min="0" step="0.01" value="${num2(prod.unidadesBolsa || 0)}" /></label>
+            <label>Precio venta público (CLP)<input name="precioVentaSugeridoClp" type="number" min="0" step="0.01" value="${prod.precioVentaSugeridoClp ? num2(prod.precioVentaSugeridoClp) : ''}" placeholder="Ej. 8990.00" /></label>
+            <label>Coste slicer (ref.)<input name="costoSlicerRef" type="number" min="0" step="0.01" value="${num2(prod.costoSlicerRef || 0)}" title="Valor que muestra el slicer; no es CLP" /></label>
+            <label class="imp-form-span">Notas<textarea name="notas" rows="2">${escapeHtml(prod.notas || '')}</textarea></label>
             <div class="imp-form-actions">
-              <button type="submit" class="imp-btn imp-btn--primary">Guardar precio</button>
-              <span class="imp-muted">Costo ${money(c.total)} · si dejas 0, solo ves el costo</span>
+              <button type="submit" class="imp-btn imp-btn--primary">Guardar parámetros</button>
+              <button type="button" class="imp-btn" data-regen-sku="${pid}">Regenerar SKU</button>
+              <span class="imp-muted">Al editar se recalcula el costo · luz/h ≈ ${money(costoHoraImpresora())} · MO ${money(p.valorHoraManoObraClp || 0)}/h</span>
             </div>
           </form>
-          <p class="imp-muted">${prod.filamentoGramos || 0}g · ${prod.horasImpresion || 0}h impresión · ${prod.minutosPintado || 0} min pintado · metal×${prod.unidadesMetal || 0} · bolsa×${prod.unidadesBolsa || 0} · luz/h ≈ ${money(costoHoraImpresora())}${prod.notas ? ` · ${escapeHtml(prod.notas)}` : ''}</p>
         </div>`;
       })
       .join('');
@@ -974,53 +1693,147 @@
     $('#tab-costos').innerHTML = `
       <div class="imp-card">
         <h2>Costos por pieza (luz + materiales)</h2>
-        <p class="imp-muted">Cada pieza impresa es <strong>única</strong> (SKU propio). Calcula tiempo/material y guárdala como producto.</p>
-        <p class="imp-muted">Promedio reciente $/kg filamento: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong></p>
+        <p class="imp-muted">Edita los parámetros del slicer (modelo, soportes, purge, tiempo) y el costo se recalcula al instante. Luego <strong>Guardar parámetros</strong> y <strong>Guardar online</strong>.</p>
+        <p class="imp-muted">$/kg filamento ref.: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> · tarifa Chile <strong>${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp}</strong> $/kWh · ${p.impresoraModelo || 'Centauri Carbon 2'} <strong>${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw}</strong> kW</p>
       </div>
       ${blocks || '<div class="imp-card">Sin productos aún — usa la calculadora y Guarda como producto</div>'}
       <div class="imp-card">
         <h3>Calculadora rápida de pieza</h3>
         <form class="imp-form" id="form-calc-pieza">
-          <label>Gramos filamento<input name="g" type="number" step="0.1" value="110" /></label>
+          <label>Modelo (g)<input name="modelo" type="number" step="0.01" value="135.55" /></label>
+          <label>Soportes (g)<input name="soportes" type="number" step="0.01" value="8.43" /></label>
+          <label>Purge (g)<input name="purge" type="number" step="0.01" value="0.47" /></label>
           <label>$ / kg filamento<input name="kg" type="number" value="${avgFilKg}" /></label>
-          <label>Horas impresión<input name="h" type="number" step="0.1" value="5" /></label>
-          <label>Minutos pintado<input name="m" type="number" value="20" /></label>
+          <label>Horas<input name="horasPart" type="number" min="0" step="1" value="3" /></label>
+          <label>Minutos<input name="minutosPart" type="number" min="0" max="59" step="1" value="25" /></label>
+          <label>Minutos pintado<input name="m" type="number" value="0" /></label>
           <label>Unidades metal<input name="metal" type="number" value="0" /></label>
           <label>Bolsas<input name="bolsa" type="number" value="1" /></label>
         </form>
         <div class="imp-calc-live" id="calc-pieza-live">Calculando…</div>
         <div class="imp-form-actions" style="margin-top:0.75rem">
           <button type="button" class="imp-btn imp-btn--primary" id="btn-calc-guardar">Guardar como producto</button>
-          <span class="imp-muted">Abre un modal con SKU, nombre, costo estimado y precio de venta</span>
+          <span class="imp-muted">Total g = modelo + soportes + purge · abre modal con SKU y nombre</span>
         </div>
       </div>
     `;
 
     const updateCalc = () => {
-      const calc = leerCalcPieza();
+      const form = $('#form-calc-pieza');
       const el = $('#calc-pieza-live');
-      if (!calc || !el) return;
+      if (!form || !el) return;
+      const fd = new FormData(form);
+      const g =
+        Number(fd.get('modelo') || 0) + Number(fd.get('soportes') || 0) + Number(fd.get('purge') || 0);
+      const prod = {
+        filamentoGramos: g,
+        costoFilamentoKgClp: Number(fd.get('kg')),
+        horasImpresion: horasDesdePartes(fd.get('horasPart'), fd.get('minutosPart')),
+        minutosPintado: Number(fd.get('m')),
+        unidadesMetal: Number(fd.get('metal')),
+        unidadesBolsa: Number(fd.get('bolsa')),
+      };
+      const c = costoProducto(prod);
+      const sugerido = precioSugeridoDesdeCosto(c.total);
+      const pctObj = Number(p.margenObjetivoPct ?? 100);
       el.innerHTML = `
-          Filamento ${money(calc.c.filamento)} · Luz ${money(calc.c.luz)} · Pintado ${money(calc.c.pintado)} · Metal ${money(calc.c.metal)} · Bolsa ${money(calc.c.bolsa)}
-          <br><strong>Costo unitario: ${money(calc.c.total)}</strong> · precio sugerido c/ margen ${Math.round(margen * 100)}%: <strong>${money(calc.sugerido)}</strong>
-          <div class="imp-muted" style="margin-top:0.35rem">Tarifa ${p.tarifaKwhClp || 180} $/kWh · consumo ${p.consumoImpresoraKw || 0.22} kW</div>`;
+          Total filamento <strong>${g.toFixed(2)} g</strong>
+          · Filamento ${money(c.filamento)} · Luz ${money(c.luz)} · Pintado ${money(c.pintado)} · Metal ${money(c.metal)} · Bolsa ${money(c.bolsa)}
+          <br><strong>Costo unitario: ${money(c.total)}</strong> · precio sugerido (+${pctObj}% sobre costo): <strong>${money(sugerido)}</strong>
+          <div class="imp-muted" style="margin-top:0.35rem">Tarifa Chile ${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp} $/kWh · ${p.impresoraModelo || 'Centauri Carbon 2'} ${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw} kW</div>`;
+      form.dataset.calcSnapshot = JSON.stringify({ ...prod, sugerido, c });
     };
     $('#form-calc-pieza')?.addEventListener('input', updateCalc);
     updateCalc();
     $('#btn-calc-guardar')?.addEventListener('click', abrirModalDesdeCalculadora);
 
-    $('#tab-costos').querySelectorAll('[data-precio-prod]').forEach((form) => {
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const id = form.getAttribute('data-precio-prod');
-        const fd = new FormData(form);
+    $('#tab-costos').querySelectorAll('[data-del-prod]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-del-prod');
         const prod = (data.productos || []).find((x) => x.id === id);
         if (!prod) return;
-        prod.precioVentaSugeridoClp = Number(fd.get('precioVenta') || 0);
+        const ok = confirm(`¿Eliminar «${prod.nombre}» (${prod.sku || id})?\nEsta acción no se puede deshacer (guarda online después).`);
+        if (!ok) return;
+        data.productos = (data.productos || []).filter((x) => x.id !== id);
         markDirty();
         renderAll();
-        setStatus('Precio de venta actualizado — guarda online', 'warn');
+        activarTab('costos');
+        setStatus(`Producto «${prod.nombre}» eliminado — guarda online`, 'warn');
       });
+    });
+
+    $('#tab-costos').querySelectorAll('[data-editar-prod]').forEach((form) => {
+      const id = form.getAttribute('data-editar-prod');
+      const live = form.closest('.imp-card')?.querySelector('[data-costo-live]');
+      const syncTotalFromDesglose = () => {
+        const usar = form.querySelector('[name=usarDesglose]')?.value === '1';
+        const totalInput = form.querySelector('[name=filamentoGramos]');
+        if (!usar || !totalInput) return;
+        const modelo = Number(form.querySelector('[name=filamentoModeloGramos]')?.value || 0);
+        const soportes = Number(form.querySelector('[name=filamentoSoportesGramos]')?.value || 0);
+        const purge = Number(form.querySelector('[name=filamentoPurgeGramos]')?.value || 0);
+        totalInput.value = num2(modelo + soportes + purge);
+      };
+      const refreshLive = () => {
+        syncTotalFromDesglose();
+        const leido = leerProductoDesdeForm(form);
+        if (!leido || !live) return;
+        const c = costoProducto(leido);
+        live.innerHTML = htmlCostoLive(c, margen, leido.precioVentaSugeridoClp);
+      };
+      form.querySelector('[data-regen-sku]')?.addEventListener('click', () => {
+        const nombre = form.querySelector('[name=nombre]')?.value || '';
+        const skuInput = form.querySelector('[name=sku]');
+        if (!skuInput) return;
+        const otros = (data.productos || []).filter((x) => x.id !== id);
+        skuInput.value = siguienteSkuProducto(nombre, id, otros);
+        setStatus(`SKU sugerido: ${skuInput.value}`, 'ok');
+      });
+      form.addEventListener('input', refreshLive);
+      form.addEventListener('change', refreshLive);
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const leido = leerProductoDesdeForm(form);
+        const prod = (data.productos || []).find((x) => x.id === id);
+        if (!prod || !leido || !leido.nombre) return;
+        const skuNuevo = String(form.querySelector('[name=sku]')?.value || '')
+          .trim()
+          .toUpperCase();
+        if (!esSkuSimple(skuNuevo)) {
+          setStatus('SKU inválido — usa formato tipo PCGATO001 / PLMONS001', 'warn');
+          return;
+        }
+        if ((data.productos || []).some((x) => x.id !== id && String(x.sku || '').toUpperCase() === skuNuevo)) {
+          setStatus(`El SKU ${skuNuevo} ya existe en otro producto`, 'warn');
+          return;
+        }
+        Object.assign(prod, {
+          nombre: leido.nombre,
+          sku: skuNuevo,
+          filamentoModeloGramos: leido.filamentoModeloGramos,
+          filamentoSoportesGramos: leido.filamentoSoportesGramos,
+          filamentoPurgeGramos: leido.filamentoPurgeGramos,
+          filamentoMetros: leido.filamentoMetros,
+          filamentoGramos: leido.filamentoGramos,
+          costoFilamentoKgClp: leido.costoFilamentoKgClp,
+          horasImpresion: leido.horasImpresion,
+          minutosPintado: leido.minutosPintado,
+          unidadesMetal: leido.unidadesMetal,
+          unidadesBolsa: leido.unidadesBolsa,
+          precioVentaSugeridoClp: leido.precioVentaSugeridoClp,
+          costoSlicerRef: leido.costoSlicerRef,
+          notas: leido.notas,
+        });
+        markDirty();
+        refreshLive();
+        const card = form.closest('.imp-card');
+        const head = card?.querySelector('.imp-prod-head h3');
+        const skuPill = card?.querySelector('.imp-sku');
+        if (head) head.textContent = leido.nombre;
+        if (skuPill) skuPill.textContent = `SKU ${skuNuevo}`;
+        setStatus(`«${leido.nombre}» actualizado (${skuNuevo}) — costo ${money(costoProducto(prod).total)} · guarda online`, 'warn');
+      });
+      refreshLive();
     });
   }
 
@@ -1123,6 +1936,7 @@
     if (!data) return;
     renderResumen();
     renderGastos();
+    renderPedidos();
     renderVentas();
     renderOperacion();
     renderCostos();
@@ -1130,13 +1944,47 @@
     renderBitacora();
   }
 
+  const TABS_VALIDOS = new Set([
+    'resumen',
+    'gastos',
+    'pedidos',
+    'ventas',
+    'operacion',
+    'costos',
+    'ads',
+    'bitacora',
+  ]);
+
+  function activarTab(tab) {
+    const name = TABS_VALIDOS.has(tab) ? tab : 'resumen';
+    document.querySelectorAll('#imp-tabs button').forEach((b) => b.classList.remove('is-active'));
+    document.querySelectorAll('.imp-panel').forEach((p) => p.classList.remove('is-active'));
+    const btn = $(`#imp-tabs button[data-tab="${name}"]`);
+    const panel = $(`#tab-${name}`);
+    if (btn) btn.classList.add('is-active');
+    if (panel) panel.classList.add('is-active');
+    try {
+      const url = new URL(window.location.href);
+      if (name === 'resumen') url.searchParams.delete('tab');
+      else url.searchParams.set('tab', name);
+      history.replaceState(null, '', url.pathname + url.search + url.hash);
+    } catch (_) {
+      /* ignore */
+    }
+  }
+
+  function tabDesdeUrl() {
+    try {
+      const q = new URLSearchParams(window.location.search).get('tab');
+      if (q && TABS_VALIDOS.has(q)) return q;
+    } catch (_) {
+      /* ignore */
+    }
+    return 'resumen';
+  }
+
   document.querySelectorAll('#imp-tabs button').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#imp-tabs button').forEach((b) => b.classList.remove('is-active'));
-      document.querySelectorAll('.imp-panel').forEach((p) => p.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      $(`#tab-${btn.dataset.tab}`).classList.add('is-active');
-    });
+    btn.addEventListener('click', () => activarTab(btn.dataset.tab));
   });
 
   $('#btn-guardar').addEventListener('click', () => {
@@ -1147,15 +1995,26 @@
     load().catch((e) => setStatus(String(e.message || e), 'err'));
   });
 
+  $('#form-producto-modal')?.querySelector('[name=nombre]')?.addEventListener('input', (e) => {
+    const modal = $('#imp-modal-producto');
+    const skuInput = modal?.querySelector('[name=sku]');
+    if (!skuInput) return;
+    const nombre = String(e.target.value || '').trim();
+    if (!nombre) return;
+    skuInput.value = siguienteSkuProducto(nombre);
+  });
+
   $('#form-producto-modal')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
     const nombre = String(fd.get('nombre') || '').trim();
-    const sku = String(fd.get('sku') || '').trim() || siguienteSkuProducto();
     if (!nombre) return;
-    if ((data.productos || []).some((p) => p.sku === sku)) {
-      setStatus('Ese SKU ya existe — cierra y vuelve a guardar', 'warn');
-      return;
+    let sku = String(fd.get('sku') || '')
+      .trim()
+      .toUpperCase();
+    if (!esSkuSimple(sku)) sku = siguienteSkuProducto(nombre);
+    if ((data.productos || []).some((p) => String(p.sku || '').toUpperCase() === sku)) {
+      sku = siguienteSkuProducto(nombre);
     }
     data.productos = data.productos || [];
     data.productos.push({
@@ -1163,20 +2022,26 @@
       sku,
       nombre,
       activo: true,
-      filamentoGramos: Number(fd.get('filamentoGramos')),
-      costoFilamentoKgClp: Number(fd.get('costoFilamentoKgClp')),
-      horasImpresion: Number(fd.get('horasImpresion')),
-      minutosPintado: Number(fd.get('minutosPintado')),
-      unidadesMetal: Number(fd.get('unidadesMetal')),
-      unidadesBolsa: Number(fd.get('unidadesBolsa')),
-      precioVentaSugeridoClp: Number(fd.get('precioVentaSugeridoClp') || 0),
+      filamentoModeloGramos: round2(calcDraft?.filamentoModeloGramos ?? 0),
+      filamentoSoportesGramos: round2(calcDraft?.filamentoSoportesGramos ?? 0),
+      filamentoPurgeGramos: round2(calcDraft?.filamentoPurgeGramos ?? 0),
+      filamentoMetros: round2(calcDraft?.filamentoMetros ?? 0),
+      filamentoGramos: round2(fd.get('filamentoGramos')),
+      costoFilamentoKgClp: round2(fd.get('costoFilamentoKgClp')),
+      horasImpresion: round2(fd.get('horasImpresion')),
+      minutosPintado: round2(fd.get('minutosPintado')),
+      unidadesMetal: round2(fd.get('unidadesMetal')),
+      unidadesBolsa: round2(fd.get('unidadesBolsa')),
+      precioVentaSugeridoClp: round2(fd.get('precioVentaSugeridoClp') || 0),
+      costoSlicerRef: round2(calcDraft?.costoSlicerRef ?? 0),
       notas: String(fd.get('notas') || '').trim(),
     });
+    calcDraft = null;
     cerrarModalProducto();
     markDirty();
     renderAll();
     setStatus(`Producto «${nombre}» agregado (${sku}) — guarda online`, 'warn');
-    document.querySelector('#imp-tabs button[data-tab="costos"]')?.click();
+    activarTab('costos');
   });
 
   $('#form-producto-modal')?.addEventListener('input', actualizarCostoModal);
@@ -1198,5 +2063,7 @@
     }
   });
 
-  load().catch((e) => setStatus(String(e.message || e), 'err'));
+  load()
+    .then(() => activarTab(tabDesdeUrl()))
+    .catch((e) => setStatus(String(e.message || e), 'err'));
 })();
