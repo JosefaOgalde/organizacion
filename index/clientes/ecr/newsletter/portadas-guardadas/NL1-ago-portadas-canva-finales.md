@@ -29,3 +29,11 @@
 ## Pendiente de binarios
 
 Si faltan los PNG en `nl1-ago-finales/`, pegar aquí las 3 exportaciones Canva con esos nombres.
+
+## Aplicar en el organizador (sin Node)
+
+```bat
+ACTUALIZAR-ECR-NL-AGOSTO.bat
+```
+
+O: `php scripts/actualizar-fechas-ecr-nl-agosto.php` → abrir `http://127.0.0.1:8000/index.html?disco=1`.
