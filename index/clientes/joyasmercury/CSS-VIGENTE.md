@@ -22,7 +22,7 @@ https://raw.githubusercontent.com/JosefaOgalde/organizacion/cursor/jm-css-circul
 
 | Orden | Archivo | Qué arregla |
 |------|---------|-------------|
-| 1 | `CSS-CIRCULOS-COLECCIONES.css` | Círculos + flechas visibles (`2026-07-19-v8`) |
+| 1 | `CSS-CIRCULOS-COLECCIONES.css` | Círculos + carrusel productos visibles (`2026-07-19-v9`) |
 | 2 | `CSS-FOOTER-JM.css` | Solo footer (`2026-07-19-footer`) |
 
 ## No mezclar
