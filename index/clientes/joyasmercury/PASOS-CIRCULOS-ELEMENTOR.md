@@ -56,6 +56,6 @@ El CSS muestra flechas doradas clicables a izquierda/derecha; no anula el `trans
 |----------|--------|-----------|
 | Fotos cuadradas en Colecciones | Elementor + CSS | Clase `jm-circulos-categoria` + CSS pegado |
 | Faltan productos en móvil | Elementor widget | ID `jm-ultimas-unidades` + clase `jm-home-ultimas` + no ocultar en móvil |
-| Novedades sin scroll lateral | CSS + Elementor | Clase `jm-home-novedades` + CSS `novedades-scroll`; slider UAEL ON |
+| Novedades sin flechas ←→ | CSS + Elementor | Clase `jm-home-novedades` + CSS `novedades-flechas`; Arrows ON en UAEL |
 
 Tras guardar: Ctrl+Shift+R en el celular / DevTools móvil.
