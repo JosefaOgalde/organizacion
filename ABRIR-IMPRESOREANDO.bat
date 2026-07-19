@@ -42,7 +42,7 @@ if errorlevel 1 (
 )
 
 REM Solo la landing del cliente (panel/catalogo se abren desde ahi).
-start "" "http://localhost:3000/index/clientes/impresoreando/?v=imp-logo3"
+start "" "http://localhost:3000/index/clientes/impresoreando/?v=imp-logo-oficial"
 
 echo.
 echo  LANDING: http://localhost:3000/index/clientes/impresoreando/

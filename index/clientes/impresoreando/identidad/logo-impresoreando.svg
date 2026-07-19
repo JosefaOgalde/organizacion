@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 160" role="img" aria-label="impresoreando">
   <title>impresoreando</title>
+  <!-- Marca oficial: navy #163a6b · naranja #f07a28 · bobina en la p · gato al final -->
   <defs>
     <style>
       .imp-word {
@@ -17,10 +18,8 @@
   <!-- Punto naranja de la i -->
   <circle cx="46.5" cy="48" r="9.5" fill="#f07a28"/>
 
-  <!-- Cubrir bowl de la p y dibujar bobina -->
+  <!-- Cubrir bowl de la p y dibujar bobina (como el PNG oficial) -->
   <rect x="78" y="58" width="62" height="66" fill="#ffffff"/>
-
-  <!-- Bobina: flancos navy con huecos blancos + filamento naranja -->
   <circle cx="107" cy="92" r="30" fill="#163a6b"/>
   <circle cx="96" cy="78" r="5.5" fill="#ffffff"/>
   <circle cx="118" cy="78" r="5.5" fill="#ffffff"/>
@@ -28,14 +27,12 @@
   <circle cx="118" cy="106" r="5.5" fill="#ffffff"/>
   <circle cx="107" cy="92" r="16" fill="#f07a28"/>
   <circle cx="107" cy="92" r="6" fill="#163a6b"/>
-
-  <!-- Palo de la p -->
   <rect x="84" y="56" width="12" height="66" rx="6" fill="#163a6b"/>
 
-  <!-- Filamento / underline -->
+  <!-- Filamento underline -->
   <path d="M120 128 H655" fill="none" stroke="#f07a28" stroke-width="5" stroke-linecap="round"/>
 
-  <!-- Gato al final -->
+  <!-- Gato al final del wordmark (marca oficial) -->
   <g transform="translate(668 72)" fill="none" stroke="#163a6b" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M10 22c0-14 10-24 24-24s24 10 24 24c0 16-10 28-24 28S10 38 10 22z"/>
     <path d="M16 10 L22 -4 L30 8"/>

@@ -4,9 +4,11 @@
 
 | Archivo | Uso |
 |---------|-----|
-| `logo-impresoreando.png` | Wordmark completo (panel, venta, landing) |
-| `logo-impresoreando.svg` | Misma marca en vector |
+| `logo-impresoreando.png` | **Marca oficial** (no recortar ni regenerar). Panel, venta, landing, catálogo |
+| `logo-impresoreando.svg` | Aproximación vectorial de apoyo |
 | `icono-gato-impresoreando.svg` | Ícono corto (gato + bobina) |
+
+**Regla:** el PNG oficial no se edita con crop/ffmpeg. Si hace falta otro archivo, pedirlo a la usuaria.
 
 ## Colores
 
