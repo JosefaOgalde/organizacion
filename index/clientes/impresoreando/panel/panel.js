@@ -77,6 +77,7 @@
     if (asegurarProductoLlaveroEscudoRanger(d)) changed = true;
     if (asegurarProductoLlaveroPortaLipstickStanley(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
+    if (asegurarVentasSeed(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
     if (asegurarPedidosImpresosYNaves(d)) changed = true;
     if (asegurarSkusProductos(d)) changed = true;
@@ -578,6 +579,33 @@
       notas:
         'Slicer placa 2 uds: 52,65 g · 17,51 m · 1 h 34 m · coste 1,05 → 1 ud = 26,33 g · 0,78 h. PLA blanco $12.690/kg. +$50 argolla/metales.',
     });
+  }
+
+  /** Ventas base del seed: si el live quedó vacío (o sin ese id), las reinyecta. No pisa ventas nuevas. */
+  function asegurarVentasSeed(d) {
+    d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
+    const SEED_VENTAS = [
+      {
+        id: 'ven-mrpqov4c',
+        fecha: '2026-07-18',
+        descripcion: 'Portacompletos ×6 (4 perros + 2 gatos)',
+        cantidad: 6,
+        montoNeto: 15000,
+        canal: 'WhatsApp',
+        notas: '4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000',
+        socioRegistro: 'Ambos',
+      },
+    ];
+    let changed = false;
+    const byId = new Set(d.ventas.map((v) => v && v.id).filter(Boolean));
+    for (const v of SEED_VENTAS) {
+      if (!byId.has(v.id)) {
+        d.ventas.push({ ...v });
+        byId.add(v.id);
+        changed = true;
+      }
+    }
+    return changed;
   }
 
   /** Diseños Cults / digitales — gastos socios (no entran al costo de producto). Pagó Nicolás · 50/50. */
@@ -2401,19 +2429,30 @@
     $('#form-venta').addEventListener('submit', (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
+      const monto = Number(fd.get('montoNeto'));
+      const desc = String(fd.get('descripcion') || '').trim();
+      if (!desc) {
+        setStatus('Escribe qué se vendió', 'warn');
+        return;
+      }
+      if (!(monto > 0)) {
+        setStatus('Falta el Total cobrado CLP (debe ser mayor a 0)', 'warn');
+        return;
+      }
       data.ventas = data.ventas || [];
       data.ventas.push({
         id: uid('ven'),
         fecha: fd.get('fecha'),
-        descripcion: fd.get('descripcion'),
+        descripcion: desc,
         cantidad: Number(fd.get('cantidad') || 1),
-        montoNeto: Number(fd.get('montoNeto')),
+        montoNeto: monto,
         canal: fd.get('canal') || '',
         notas: fd.get('notas') || '',
         socioRegistro: fd.get('socioRegistro') || '',
       });
       markDirty();
       renderAll();
+      setStatus('Venta agregada — pulsa «Guardar online» para fijarla', 'warn');
     });
 
     $('#tab-ventas').querySelectorAll('[data-del-venta]').forEach((btn) => {
