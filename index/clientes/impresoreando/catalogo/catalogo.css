@@ -336,3 +336,42 @@ body.export-mode .slide.is-export-target { display: block !important; }
 @media (max-width: 1100px) {
   .cat-stage { transform-origin: top center; }
 }
+
+/* ——— PDF / imprimir: una slide = una página ——— */
+@media print {
+  @page {
+    size: 1080px 1350px;
+    margin: 0;
+  }
+  html, body {
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 1080px;
+  }
+  body.cat-body {
+    display: block;
+    padding: 0 !important;
+  }
+  .cat-toolbar,
+  .cat-hint {
+    display: none !important;
+  }
+  .cat-stage {
+    gap: 0 !important;
+    width: 1080px;
+    align-items: stretch;
+  }
+  .slide {
+    box-shadow: none !important;
+    margin: 0 !important;
+    page-break-after: always;
+    break-after: page;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .slide:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+}

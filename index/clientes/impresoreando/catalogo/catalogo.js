@@ -87,4 +87,9 @@
       if (idx === i) el.classList.add('is-export-target');
     });
   }
+
+  // Imprimir → Guardar como PDF (fallback del archivo .pdf)
+  document.getElementById('btn-imprimir-pdf')?.addEventListener('click', () => {
+    window.print();
+  });
 })();

@@ -227,7 +227,7 @@ window.CLIENTES_PORTAL = [
         { titulo: 'Producción', texto: 'Filamento, horas de impresión, pintado, metal de llaveros y bolsas.' },
         {
           titulo: 'Catálogo Instagram',
-          texto: 'Carrusel 1080×1350: portada con logo, 10 productos (nombre + SKU + imagen referencial) y cierre “pide los tuyos” con @impresoreando. Todo es a pedido. Ver catalogo/ y PNGs en catalogo/export/.',
+          texto: 'Carrusel 1080×1350: portada con logo, 10 productos (nombre + SKU + imagen referencial) y cierre “pide los tuyos” con @impresoreando. Todo es a pedido. Descargar PDF: catalogo/export/catalogo-impresoreando.pdf · ver catalogo/.',
         },
       ]
     }
