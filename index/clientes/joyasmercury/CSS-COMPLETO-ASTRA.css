@@ -1,6 +1,6 @@
 /**
  * Joyas Mercury — CSS COMPLETO Astra (todo en uno)
- * VERSIÓN: 2026-07-19-completo  ·  ~3587 líneas
+ * VERSIÓN: 2026-07-19-novedades-scroll  ·  Novedades = scroll lateral (no grilla 2×2)
  * Origen: rama cursor/jm-css-hero-contain-6a09 (recuperado a esta rama)
  *
  * Incluye: catálogo/filtros · home/círculos · footer dorado · menú móvil · producto single · etc.
@@ -1273,16 +1273,14 @@
   max-width: 100% !important;
 }
 
-/* Sin flechas ni puntos de carrusel (evita 2 filas de puntos) */
+/* Sin flechas/puntos solo en Últimas (Novedades SÍ navega) */
 #jm-ultimas-unidades .slick-prev,
 #jm-ultimas-unidades .slick-next,
 #jm-ultimas-unidades .slick-dots,
 .elementor-element.jm-home-ultimas .slick-prev,
 .elementor-element.jm-home-ultimas .slick-next,
 .elementor-element.jm-home-ultimas .slick-dots,
-.elementor-element[class*="jm-home-ult"] .slick-dots,
-.jm-home-productos .slick-dots,
-.elementor-widget-uael-woo-products .slick-dots {
+.elementor-element[class*="jm-home-ult"] .slick-dots {
   display: none !important;
   visibility: hidden !important;
   height: 0 !important;
@@ -1355,164 +1353,117 @@
   }
 }
 
-/* Novedades móvil: grilla 2×2 (2 arriba, 2 abajo) */
+/* Novedades móvil: scroll lateral / carrusel (NO grilla 2×2) */
 @media (max-width: 921px) {
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]),
   .jm-home-novedades,
-  .elementor-element.jm-home-novedades,
-  .elementor-element.jm-home-productos:not([class*="jm-home-ult"]) {
-    padding: 0 12px !important;
+  .elementor-element.jm-home-novedades {
+    padding: 0 8px 28px !important;
     overflow: visible !important;
-    min-height: 0 !important;
-    margin-top: 0 !important;
     max-width: 100% !important;
     width: 100% !important;
+    position: relative !important;
   }
 
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .uael-woo-products,
   .jm-home-novedades .uael-woo-products,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .uael-woocommerce,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .elementor-widget-container {
+  .jm-home-novedades .uael-woocommerce,
+  .jm-home-novedades .elementor-widget-container,
+  .jm-home-novedades .slick-slider {
     width: 100% !important;
     max-width: 100% !important;
     overflow: visible !important;
   }
 
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .slick-list,
+  /* Lista con scroll horizontal (swipe) */
   .jm-home-novedades .slick-list {
     display: block !important;
     width: 100% !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     margin: 0 !important;
-    padding: 0 !important;
-    transform: none !important;
+    padding: 0 4px !important;
   }
 
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .slick-track,
-  .jm-home-novedades .slick-track,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) ul.products,
+  .jm-home-novedades .slick-track {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    /* no forzar width: slick calcula el track */
+  }
+
   .jm-home-novedades ul.products,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) ul.products[class*="columns-"],
   .jm-home-novedades ul.products[class*="columns-"] {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    grid-auto-flow: row !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
     gap: 12px !important;
-    width: 100% !important;
-    max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     list-style: none !important;
-    transform: none !important;
-    left: 0 !important;
-    float: none !important;
   }
 
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) ul.products::before,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) ul.products::after,
+  /* Fallback sin slick: scroll nativo */
+  .jm-home-novedades ul.products:not(.slick-track) {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-bottom: 8px !important;
+  }
+
   .jm-home-novedades ul.products::before,
   .jm-home-novedades ul.products::after {
     display: none !important;
     content: none !important;
   }
 
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) ul.products > li.product,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) ul.products > .slick-slide,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .slick-slide,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) ul.products.columns-1 > li.product,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) ul.products.columns-2 > li.product,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) ul.products.columns-3 > li.product,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) ul.products.columns-4 > li.product,
   .jm-home-novedades ul.products > li.product,
   .jm-home-novedades .slick-slide {
     display: block !important;
-    grid-column: auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    height: auto !important;
+    flex: 0 0 72% !important;
+    width: 72% !important;
+    max-width: 280px !important;
+    min-width: 200px !important;
     float: none !important;
-    clear: none !important;
     margin: 0 !important;
-    padding: 0 !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
-    position: relative !important;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
     box-sizing: border-box !important;
+    scroll-snap-align: start;
   }
 
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .slick-slide > div,
   .jm-home-novedades .slick-slide > div,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) li.product,
-  .jm-home-novedades li.product {
+  .jm-home-novedades li.product,
+  .jm-home-novedades .uael-woo-product-wrapper {
     width: 100% !important;
-    max-width: 100% !important;
     height: auto !important;
   }
 
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .uael-woo-product-wrapper,
-  .jm-home-novedades .uael-woo-product-wrapper {
-    display: flex !important;
-    flex-direction: column !important;
-    width: 100% !important;
-    height: 100% !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-  }
-
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .uael-woo-products-thumbnail,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .woocommerce-loop-product__link img,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) img.attachment-woocommerce_thumbnail,
   .jm-home-novedades img.attachment-woocommerce_thumbnail {
-    max-height: 140px !important;
+    max-height: 160px !important;
     width: 100% !important;
     object-fit: contain !important;
   }
 
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .uael-woo-products-title,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .woocommerce-loop-product__title,
-  .jm-home-novedades .woocommerce-loop-product__title {
-    font-size: 11px !important;
-    min-height: 2.6em !important;
-    max-height: 2.6em !important;
-    margin-bottom: 4px !important;
-    word-break: break-word !important;
-  }
-
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .price,
-  .jm-home-novedades .price {
-    font-size: 12px !important;
-    margin-bottom: 8px !important;
-    white-space: nowrap !important;
-  }
-
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .add_to_cart_button,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .button,
-  .jm-home-novedades .add_to_cart_button {
-    min-height: 40px !important;
-    max-height: 40px !important;
-    font-size: 9px !important;
-    padding: 6px 8px !important;
-  }
-
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .slick-prev,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .slick-next,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .slick-dots,
+  /* Flechas visibles para navegar */
   .jm-home-novedades .slick-prev,
-  .jm-home-novedades .slick-next,
+  .jm-home-novedades .slick-next {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 5 !important;
+    width: 36px !important;
+    height: 36px !important;
+    top: 40% !important;
+  }
+
   .jm-home-novedades .slick-dots {
-    display: none !important;
-    visibility: hidden !important;
-    height: 0 !important;
-    width: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    margin-top: 10px !important;
+    pointer-events: auto !important;
   }
 }
 
@@ -2084,9 +2035,8 @@
     overflow: visible !important;
   }
 
-  /* Ya cubierto arriba: novedades = grilla 2 cols sin slick */
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .slick-dots,
-  .jm-home-novedades .slick-dots {
+  /* Solo ocultar dots en bloques que NO son novedades (novedades = scroll/carrusel) */
+  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]):not(.jm-home-novedades) .slick-dots {
     display: none !important;
   }
 
@@ -3489,113 +3439,95 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
 }
 
 
-/* === JM NOVEDADES MOBILE 2x2 FORCE === */
-@media (max-width: 921px) {
-  /* Clase en el widget UAE — Obligatoria: jm-home-novedades */
-  .jm-home-novedades.elementor-widget-uael-woo-products,
-  .elementor-widget-uael-woo-products.jm-home-novedades,
-  .elementor-element.jm-home-novedades,
-  .jm-home-novedades {
+/* === JM NOVEDADES MOBILE: SCROLL LATERAL (override final) === */
+@media (max-width: 767px) {
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woocommerce,
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-inner,
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel {
+    display: block !important;
+    grid-template-columns: none !important;
     width: 100% !important;
     max-width: 100% !important;
   }
 
-  .jm-home-novedades .uael-woo-products,
-  .jm-home-novedades .uael-woocommerce,
-  .jm-home-novedades .elementor-widget-container,
-  .jm-home-novedades .slick-slider,
-  .jm-home-novedades .slick-list {
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woocommerce .products,
+  .jm-home-novedades .elementor-widget-uael-woo-products ul.products,
+  .jm-home-novedades .elementor-widget-uael-woo-products .products.uael-woo-product__column-1,
+  .jm-home-novedades .elementor-widget-uael-woo-products .products.uael-woo-product__column-2,
+  .jm-home-novedades .elementor-widget-uael-woo-products .products.uael-woo-product__column-3,
+  .jm-home-novedades .elementor-widget-uael-woo-products .products.uael-woo-product__column-4 {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    grid-template-columns: none !important;
+  }
+
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-list {
+    display: block !important;
+    overflow: hidden !important;
+    touch-action: pan-x pan-y !important;
     width: 100% !important;
     max-width: 100% !important;
-    overflow: visible !important;
-    height: auto !important;
-    transform: none !important;
   }
 
-  /* Ocultar clones Slick (rompe la grilla) */
-  .jm-home-novedades .slick-cloned {
-    display: none !important;
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-track {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
   }
 
-  .jm-home-novedades .slick-track,
-  .jm-home-novedades ul.products,
-  .jm-home-novedades ul.products.columns-1,
-  .jm-home-novedades ul.products.columns-2,
-  .jm-home-novedades ul.products.columns-3,
-  .jm-home-novedades ul.products.columns-4 {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 12px !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    transform: none !important;
-    left: 0 !important;
-    right: auto !important;
-  }
-
-  .jm-home-novedades ul.products::before,
-  .jm-home-novedades ul.products::after {
-    display: none !important;
-    content: none !important;
-  }
-
-  .jm-home-novedades .slick-slide,
-  .jm-home-novedades ul.products > li.product,
-  .jm-home-novedades ul.products > li,
-  .jm-home-novedades .slick-slide.slick-active,
-  .jm-home-novedades .slick-slide.slick-current {
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-slide,
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-slide > div,
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-slide li.product,
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-slide .product {
     display: block !important;
     float: none !important;
-    clear: none !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 72% !important;
+    max-width: 72% !important;
     min-width: 0 !important;
-    height: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    position: relative !important;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
-    transform: none !important;
-    opacity: 1 !important;
+    margin: 0 8px 0 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-arrow {
+    display: flex !important;
     visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 20 !important;
   }
 
-  .jm-home-novedades .slick-slide > div {
-    width: 100% !important;
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel ul.slick-dots {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    margin: 14px 0 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+    position: relative !important;
+    z-index: 5 !important;
+  }
+
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel ul.slick-dots li {
+    display: list-item !important;
+    width: auto !important;
     height: auto !important;
-  }
-
-  .jm-home-novedades .slick-prev,
-  .jm-home-novedades .slick-next,
-  .jm-home-novedades .slick-dots {
-    display: none !important;
-  }
-
-  /* Fallback si la clase está en jm-home-productos (sin ultimas) */
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]):not(.jm-home-novedades) .slick-cloned {
-    display: none !important;
-  }
-
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .slick-track,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) ul.products {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 12px !important;
-    width: 100% !important;
-    transform: none !important;
-    left: 0 !important;
-  }
-
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) .slick-slide,
-  .jm-home-productos:not(.jm-home-ultimas):not(.jm-producto-ultimas):not([class*="jm-home-ult"]) li.product {
-    width: 100% !important;
-    max-width: 100% !important;
-    float: none !important;
     margin: 0 !important;
+  }
+
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel ul.slick-dots li button {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: rgba(46, 46, 46, 0.28) !important;
+    border: 0 !important;
+    font-size: 0 !important;
+    padding: 0 !important;
+  }
+
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel ul.slick-dots li.slick-active button {
+    background: #2e2e2e !important;
   }
 }
 

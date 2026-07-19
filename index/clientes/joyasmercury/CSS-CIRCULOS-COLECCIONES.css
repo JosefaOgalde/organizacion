@@ -1,9 +1,9 @@
 /**
  * Joyas Mercury — círculos categorías + Últimas unidades (móvil)
- * VERSIÓN: 2026-07-19-v2  ← si no ves esta línea, es CSS antiguo
+ * VERSIÓN: 2026-07-19-v3  ← si no ves esta línea, es CSS antiguo
  *
  * Archivo correcto: index/clientes/joyasmercury/CSS-CIRCULOS-COLECCIONES.css
- * NO uses: CSS-COMPLETO-ASTRA.css ni CSS-HERO-CARRUSEL-FIJO.css (esas ramas son viejas)
+ * Preferible: CSS-COMPLETO-ASTRA.css (paquete completo en la misma rama)
  *
  * Pegar en: Apariencia → Personalizar → CSS adicional → Publicar
  * Antes: BORRA el CSS JM anterior del cuadro (no lo dejes abajo).
@@ -310,41 +310,78 @@
   }
 }
 
-/* Novedades móvil 2×2 */
+/* Novedades móvil: scroll lateral / carrusel (NO grilla 2×2) */
 @media (max-width: 921px) {
+  .jm-home-novedades,
+  .elementor-element.jm-home-novedades {
+    overflow: visible !important;
+    max-width: 100% !important;
+    position: relative !important;
+  }
+
+  .jm-home-novedades .slick-list,
+  .elementor-element.jm-home-novedades .slick-list {
+    overflow: hidden !important;
+    touch-action: pan-x pan-y !important;
+  }
+
+  .jm-home-novedades .slick-track,
   .jm-home-novedades ul.products,
+  .elementor-element.jm-home-novedades .slick-track,
   .elementor-element.jm-home-novedades ul.products {
     display: flex !important;
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important;
     gap: 12px !important;
-    justify-content: space-between !important;
+    align-items: stretch !important;
+  }
+
+  /* Fallback sin slick: scroll nativo */
+  .jm-home-novedades ul.products:not(.slick-track),
+  .elementor-element.jm-home-novedades ul.products:not(.slick-track) {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-bottom: 8px !important;
   }
 
   .jm-home-novedades ul.products > li.product,
   .elementor-element.jm-home-novedades ul.products > li.product,
   .jm-home-novedades .slick-slide,
   .elementor-element.jm-home-novedades .slick-slide {
-    flex: 0 0 calc(50% - 6px) !important;
-    width: calc(50% - 6px) !important;
-    max-width: calc(50% - 6px) !important;
+    flex: 0 0 72% !important;
+    width: 72% !important;
+    max-width: 280px !important;
+    min-width: 200px !important;
     display: block !important;
+    float: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    scroll-snap-align: start;
     text-align: center !important;
-  }
-
-  .jm-home-novedades .slick-list,
-  .jm-home-novedades .slick-track,
-  .elementor-element.jm-home-novedades .slick-list,
-  .elementor-element.jm-home-novedades .slick-track {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    transform: none !important;
-    overflow: visible !important;
   }
 
   .jm-home-novedades .slick-prev,
   .jm-home-novedades .slick-next,
+  .elementor-element.jm-home-novedades .slick-prev,
+  .elementor-element.jm-home-novedades .slick-next {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 5 !important;
+  }
+
   .jm-home-novedades .slick-dots,
   .elementor-element.jm-home-novedades .slick-dots {
-    display: none !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    margin-top: 10px !important;
+    pointer-events: auto !important;
   }
 }
