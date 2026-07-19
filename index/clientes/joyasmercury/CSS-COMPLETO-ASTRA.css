@@ -1,6 +1,6 @@
 /**
  * Joyas Mercury — CSS COMPLETO Astra (todo en uno)
- * VERSIÓN: 2026-07-19-ultimas-visibles  ·  Productos visibles + flechas carrusel
+ * VERSIÓN: 2026-07-19-scroll-lateral  ·  Scroll lateral móvil (Grid o Carousel)
  * Origen: rama cursor/jm-css-hero-contain-6a09 (recuperado a esta rama)
  *
  * Incluye: catálogo/filtros · home/círculos · footer dorado · menú móvil · producto single · etc.
@@ -3646,5 +3646,63 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
   opacity: 1 !important;
   justify-content: center !important;
   height: auto !important;
+}
+
+
+/* === JM SCROLL LATERAL MÓVIL (fallback si Layout=Grid; no toca Slick) === */
+@media (max-width: 921px) {
+  /* Si NO hay carrusel Slick activo → fila horizontal con swipe */
+  #jm-ultimas-unidades:not(:has(.slick-initialized)) ul.products,
+  .elementor-element.jm-home-ultimas:not(:has(.slick-initialized)) ul.products,
+  .elementor-element[class*="jm-home-ult"]:not(:has(.slick-initialized)) ul.products,
+  .jm-home-novedades:not(:has(.slick-initialized)) ul.products,
+  .elementor-element.jm-home-novedades:not(:has(.slick-initialized)) ul.products {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 8px 12px !important;
+    list-style: none !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
+    overscroll-behavior-x: contain !important;
+    touch-action: pan-x pan-y !important;
+    grid-template-columns: none !important;
+  }
+
+  #jm-ultimas-unidades:not(:has(.slick-initialized)) ul.products::before,
+  #jm-ultimas-unidades:not(:has(.slick-initialized)) ul.products::after,
+  .jm-home-novedades:not(:has(.slick-initialized)) ul.products::before,
+  .jm-home-novedades:not(:has(.slick-initialized)) ul.products::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  #jm-ultimas-unidades:not(:has(.slick-initialized)) ul.products > li.product,
+  .elementor-element.jm-home-ultimas:not(:has(.slick-initialized)) ul.products > li.product,
+  .jm-home-novedades:not(:has(.slick-initialized)) ul.products > li.product,
+  .elementor-element.jm-home-novedades:not(:has(.slick-initialized)) ul.products > li.product {
+    flex: 0 0 78% !important;
+    width: 78% !important;
+    max-width: 300px !important;
+    min-width: 220px !important;
+    float: none !important;
+    clear: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    scroll-snap-align: start !important;
+  }
+
+  /* Si SÍ hay Slick: permitir swipe del carrusel */
+  #jm-ultimas-unidades .slick-list,
+  .jm-home-novedades .slick-list {
+    touch-action: pan-x pan-y !important;
+  }
 }
 

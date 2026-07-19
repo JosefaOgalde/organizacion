@@ -8,7 +8,7 @@ Por eso en agentes/PRs nuevos solo veías el CSS corto de círculos, no el foote
 
 ## Opción A — CSS completo (~3587 líneas) ← lo que pediste
 
-Archivo: **`CSS-COMPLETO-ASTRA.css`** (`VERSIÓN: 2026-07-19-ultimas-visibles`)
+Archivo: **`CSS-COMPLETO-ASTRA.css`** (`VERSIÓN: 2026-07-19-scroll-lateral`)
 
 Incluye catálogo, círculos, home, **footer dorado**, menú móvil, producto single, etc.
 
