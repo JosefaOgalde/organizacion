@@ -1,6 +1,6 @@
 /**
  * Joyas Mercury — CSS COMPLETO Astra (todo en uno)
- * VERSIÓN: 2026-07-19-ultimas-legible  ·  Últimas 2 cols sin textos cortados
+ * VERSIÓN: 2026-07-19-novedades-swipe  ·  Novedades scroll lateral nativo
  * Origen: rama cursor/jm-css-hero-contain-6a09 (recuperado a esta rama)
  *
  * Incluye: catálogo/filtros · home/círculos · footer dorado · menú móvil · producto single · etc.
@@ -1448,11 +1448,11 @@
   }
 }
 
-/* Novedades móvil: scroll lateral / carrusel (NO grilla 2×2) */
+/* Novedades móvil: scroll lateral NATIVO (swipe) — ver más productos */
 @media (max-width: 921px) {
   .jm-home-novedades,
   .elementor-element.jm-home-novedades {
-    padding: 0 8px 28px !important;
+    padding: 0 8px 24px !important;
     overflow: visible !important;
     max-width: 100% !important;
     width: 100% !important;
@@ -1461,48 +1461,58 @@
 
   .jm-home-novedades .uael-woo-products,
   .jm-home-novedades .uael-woocommerce,
+  .jm-home-novedades .uael-woo-products-inner,
   .jm-home-novedades .elementor-widget-container,
-  .jm-home-novedades .slick-slider {
+  .jm-home-novedades .slick-slider,
+  .jm-home-novedades .uael-woo-products-carousel {
     width: 100% !important;
     max-width: 100% !important;
     overflow: visible !important;
   }
 
-  /* Lista con scroll horizontal (swipe) */
+  /* Viewport scrolleable (con slick) */
   .jm-home-novedades .slick-list {
     display: block !important;
     width: 100% !important;
-    overflow: hidden !important;
+    max-width: 100% !important;
     margin: 0 !important;
-    padding: 0 4px !important;
+    padding: 0 4px 10px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
+    overscroll-behavior-x: contain !important;
+    touch-action: pan-x pan-y !important;
   }
 
-  .jm-home-novedades .slick-track {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-    /* no forzar width: slick calcula el track */
-  }
-
+  /* Fila ancha de productos (track o lista) */
+  .jm-home-novedades .slick-track,
   .jm-home-novedades ul.products,
   .jm-home-novedades ul.products[class*="columns-"] {
     display: flex !important;
     flex-wrap: nowrap !important;
+    align-items: stretch !important;
     gap: 12px !important;
+    width: max-content !important;
+    max-width: none !important;
     margin: 0 !important;
     padding: 0 !important;
     list-style: none !important;
+    transform: none !important;
+    grid-template-columns: none !important;
   }
 
-  /* Fallback sin slick: scroll nativo */
+  /* Sin slick: la propia ul hace de viewport scroll */
   .jm-home-novedades ul.products:not(.slick-track) {
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
     width: 100% !important;
     max-width: 100% !important;
-    padding-bottom: 8px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
+    overscroll-behavior-x: contain !important;
+    touch-action: pan-x pan-y !important;
+    padding: 0 4px 10px !important;
   }
 
   .jm-home-novedades ul.products::before,
@@ -1511,43 +1521,53 @@
     content: none !important;
   }
 
+  /* Cada card ~70%: se ve el borde del siguiente (invito a swipe) */
   .jm-home-novedades ul.products > li.product,
   .jm-home-novedades .slick-slide {
     display: block !important;
-    flex: 0 0 72% !important;
-    width: 72% !important;
+    flex: 0 0 70vw !important;
+    width: 70vw !important;
     max-width: 280px !important;
-    min-width: 200px !important;
+    min-width: 220px !important;
     float: none !important;
+    clear: none !important;
     margin: 0 !important;
     box-sizing: border-box !important;
-    scroll-snap-align: start;
+    scroll-snap-align: start !important;
   }
 
   .jm-home-novedades .slick-slide > div,
+  .jm-home-novedades .slick-slide li.product {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
   .jm-home-novedades li.product,
   .jm-home-novedades .uael-woo-product-wrapper {
     width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
   }
 
-  .jm-home-novedades img.attachment-woocommerce_thumbnail {
-    max-height: 160px !important;
+  .jm-home-novedades img.attachment-woocommerce_thumbnail,
+  .jm-home-novedades .uael-woo-products-thumbnail img {
+    max-height: 170px !important;
     width: 100% !important;
     object-fit: contain !important;
   }
 
-  /* Flechas visibles para navegar */
+  /* Flechas / dots si existen (extra); el swipe es lo principal */
   .jm-home-novedades .slick-prev,
   .jm-home-novedades .slick-next {
-    display: block !important;
+    display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
-    z-index: 5 !important;
+    z-index: 20 !important;
     width: 36px !important;
     height: 36px !important;
-    top: 40% !important;
+    top: 38% !important;
   }
 
   .jm-home-novedades .slick-dots {
@@ -1557,7 +1577,7 @@
     height: auto !important;
     justify-content: center !important;
     gap: 6px !important;
-    margin-top: 10px !important;
+    margin-top: 8px !important;
     pointer-events: auto !important;
   }
 }
@@ -3534,56 +3554,81 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
 }
 
 
-/* === JM NOVEDADES MOBILE: SCROLL LATERAL (override final) === */
-@media (max-width: 767px) {
+/* === JM NOVEDADES MOBILE: SCROLL LATERAL NATIVO (override final) === */
+@media (max-width: 921px) {
   .jm-home-novedades .elementor-widget-uael-woo-products .uael-woocommerce,
   .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-inner,
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel {
+  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel,
+  .elementor-element.jm-home-novedades .uael-woocommerce,
+  .elementor-element.jm-home-novedades .uael-woo-products-carousel {
     display: block !important;
     grid-template-columns: none !important;
     width: 100% !important;
     max-width: 100% !important;
+    overflow: visible !important;
   }
 
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woocommerce .products,
-  .jm-home-novedades .elementor-widget-uael-woo-products ul.products,
-  .jm-home-novedades .elementor-widget-uael-woo-products .products.uael-woo-product__column-1,
-  .jm-home-novedades .elementor-widget-uael-woo-products .products.uael-woo-product__column-2,
-  .jm-home-novedades .elementor-widget-uael-woo-products .products.uael-woo-product__column-3,
-  .jm-home-novedades .elementor-widget-uael-woo-products .products.uael-woo-product__column-4 {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    grid-template-columns: none !important;
-  }
-
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-list {
+  .jm-home-novedades .slick-list,
+  .elementor-element.jm-home-novedades .slick-list {
     display: block !important;
-    overflow: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
+    overscroll-behavior-x: contain !important;
     touch-action: pan-x pan-y !important;
-    width: 100% !important;
-    max-width: 100% !important;
   }
 
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-track {
+  .jm-home-novedades .slick-track,
+  .jm-home-novedades ul.products,
+  .jm-home-novedades .products.uael-woo-product__column-1,
+  .jm-home-novedades .products.uael-woo-product__column-2,
+  .jm-home-novedades .products.uael-woo-product__column-3,
+  .jm-home-novedades .products.uael-woo-product__column-4,
+  .elementor-element.jm-home-novedades .slick-track,
+  .elementor-element.jm-home-novedades ul.products {
     display: flex !important;
     flex-wrap: nowrap !important;
     align-items: stretch !important;
+    gap: 12px !important;
+    width: max-content !important;
+    max-width: none !important;
+    transform: none !important;
+    grid-template-columns: none !important;
   }
 
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-slide,
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-slide > div,
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-slide li.product,
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-slide .product {
-    display: block !important;
+  .jm-home-novedades ul.products:not(.slick-track),
+  .elementor-element.jm-home-novedades ul.products:not(.slick-track) {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
+    touch-action: pan-x pan-y !important;
+    padding-bottom: 10px !important;
+  }
+
+  .jm-home-novedades ul.products > li.product,
+  .jm-home-novedades .slick-slide,
+  .elementor-element.jm-home-novedades ul.products > li.product,
+  .elementor-element.jm-home-novedades .slick-slide {
+    flex: 0 0 70vw !important;
+    width: 70vw !important;
+    max-width: 280px !important;
+    min-width: 220px !important;
     float: none !important;
-    width: 72% !important;
-    max-width: 72% !important;
-    min-width: 0 !important;
-    margin: 0 8px 0 0 !important;
+    margin: 0 !important;
     box-sizing: border-box !important;
+    scroll-snap-align: start !important;
   }
 
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel .slick-arrow {
+  .jm-home-novedades .slick-arrow,
+  .jm-home-novedades .slick-prev,
+  .jm-home-novedades .slick-next,
+  .elementor-element.jm-home-novedades .slick-arrow {
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -3591,41 +3636,17 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
     z-index: 20 !important;
   }
 
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel ul.slick-dots {
+  .jm-home-novedades ul.slick-dots,
+  .elementor-element.jm-home-novedades ul.slick-dots {
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
     justify-content: center !important;
     gap: 8px !important;
-    margin: 14px 0 0 !important;
-    padding: 0 !important;
-    list-style: none !important;
-    position: relative !important;
-    z-index: 5 !important;
-  }
-
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel ul.slick-dots li {
-    display: list-item !important;
-    width: auto !important;
-    height: auto !important;
-    margin: 0 !important;
-  }
-
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel ul.slick-dots li button {
-    width: 8px !important;
-    height: 8px !important;
-    border-radius: 50% !important;
-    background: rgba(46, 46, 46, 0.28) !important;
-    border: 0 !important;
-    font-size: 0 !important;
-    padding: 0 !important;
-  }
-
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel ul.slick-dots li.slick-active button {
-    background: #2e2e2e !important;
+    margin: 12px 0 0 !important;
+    pointer-events: auto !important;
   }
 }
-
 
 /* === JM ÚLTIMAS MOBILE: 2 cols legibles (override final) === */
 @media (max-width: 921px) {

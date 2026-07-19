@@ -1,6 +1,6 @@
 /**
  * Joyas Mercury — círculos categorías + Últimas unidades (móvil)
- * VERSIÓN: 2026-07-19-v4  ← si no ves esta línea, es CSS antiguo
+ * VERSIÓN: 2026-07-19-v5  ← si no ves esta línea, es CSS antiguo
  *
  * Archivo correcto: index/clientes/joyasmercury/CSS-CIRCULOS-COLECCIONES.css
  * Preferible: CSS-COMPLETO-ASTRA.css (paquete completo en la misma rama)
@@ -346,7 +346,7 @@
   }
 }
 
-/* Novedades móvil: scroll lateral / carrusel (NO grilla 2×2) */
+/* Novedades móvil: scroll lateral NATIVO (swipe) */
 @media (max-width: 921px) {
   .jm-home-novedades,
   .elementor-element.jm-home-novedades {
@@ -357,7 +357,11 @@
 
   .jm-home-novedades .slick-list,
   .elementor-element.jm-home-novedades .slick-list {
-    overflow: hidden !important;
+    display: block !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
     touch-action: pan-x pan-y !important;
   }
 
@@ -369,55 +373,49 @@
     flex-wrap: nowrap !important;
     gap: 12px !important;
     align-items: stretch !important;
+    width: max-content !important;
+    max-width: none !important;
+    transform: none !important;
   }
 
-  /* Fallback sin slick: scroll nativo */
   .jm-home-novedades ul.products:not(.slick-track),
   .elementor-element.jm-home-novedades ul.products:not(.slick-track) {
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
     width: 100% !important;
     max-width: 100% !important;
-    padding-bottom: 8px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
+    touch-action: pan-x pan-y !important;
+    padding-bottom: 10px !important;
   }
 
   .jm-home-novedades ul.products > li.product,
   .elementor-element.jm-home-novedades ul.products > li.product,
   .jm-home-novedades .slick-slide,
   .elementor-element.jm-home-novedades .slick-slide {
-    flex: 0 0 72% !important;
-    width: 72% !important;
+    flex: 0 0 70vw !important;
+    width: 70vw !important;
     max-width: 280px !important;
-    min-width: 200px !important;
+    min-width: 220px !important;
     display: block !important;
     float: none !important;
     margin: 0 !important;
     box-sizing: border-box !important;
-    scroll-snap-align: start;
+    scroll-snap-align: start !important;
     text-align: center !important;
   }
 
   .jm-home-novedades .slick-prev,
   .jm-home-novedades .slick-next,
-  .elementor-element.jm-home-novedades .slick-prev,
-  .elementor-element.jm-home-novedades .slick-next {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    z-index: 5 !important;
-  }
-
   .jm-home-novedades .slick-dots,
+  .elementor-element.jm-home-novedades .slick-prev,
+  .elementor-element.jm-home-novedades .slick-next,
   .elementor-element.jm-home-novedades .slick-dots {
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
-    justify-content: center !important;
-    gap: 6px !important;
-    margin-top: 10px !important;
     pointer-events: auto !important;
+    z-index: 5 !important;
   }
 }

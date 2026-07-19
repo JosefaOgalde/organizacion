@@ -8,7 +8,7 @@ Por eso en agentes/PRs nuevos solo veías el CSS corto de círculos, no el foote
 
 ## Opción A — CSS completo (~3587 líneas) ← lo que pediste
 
-Archivo: **`CSS-COMPLETO-ASTRA.css`** (`VERSIÓN: 2026-07-19-ultimas-legible`)
+Archivo: **`CSS-COMPLETO-ASTRA.css`** (`VERSIÓN: 2026-07-19-novedades-swipe`)
 
 Incluye catálogo, círculos, home, **footer dorado**, menú móvil, producto single, etc.
 
@@ -22,7 +22,7 @@ https://raw.githubusercontent.com/JosefaOgalde/organizacion/cursor/jm-css-circul
 
 | Orden | Archivo | Qué arregla |
 |------|---------|-------------|
-| 1 | `CSS-CIRCULOS-COLECCIONES.css` | Círculos + Últimas legible + Novedades scroll (`2026-07-19-v4`) |
+| 1 | `CSS-CIRCULOS-COLECCIONES.css` | Círculos + Últimas + Novedades swipe (`2026-07-19-v5`) |
 | 2 | `CSS-FOOTER-JM.css` | Solo footer (`2026-07-19-footer`) |
 
 ## No mezclar
