@@ -3,6 +3,7 @@
   const API = '/api/impresoreando';
   let data = null;
   let dirty = false;
+  let ventasBaseIds = new Set();
 
   const $ = (sel) => document.querySelector(sel);
   const money = (n) =>
@@ -32,6 +33,7 @@
     const res = await fetch(API, { cache: 'no-store' });
     if (!res.ok) throw new Error(`GET ${res.status}`);
     data = await res.json();
+    ventasBaseIds = new Set((data.ventas || []).map((venta) => String(venta.id || '')).filter(Boolean));
     if (normalizarSociedad(data)) {
       dirty = true;
       try {
@@ -625,15 +627,21 @@
     setStatus('Guardando…');
     data.meta = data.meta || {};
     data.meta.actualizado = new Date().toISOString();
+    const payload = {
+      ...data,
+      _sync: { ventasBaseIds: Array.from(ventasBaseIds) },
+    };
     const res = await fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     });
+    const respuesta = await res.json().catch(() => null);
     if (!res.ok) {
-      const t = await res.text();
-      throw new Error(t || `POST ${res.status}`);
+      throw new Error(respuesta?.error || `POST ${res.status}`);
     }
+    if (Array.isArray(respuesta?.ventas)) data.ventas = respuesta.ventas;
+    ventasBaseIds = new Set((data.ventas || []).map((venta) => String(venta.id || '')).filter(Boolean));
     dirty = false;
     setStatus('Guardado online ✓', 'ok');
   }
