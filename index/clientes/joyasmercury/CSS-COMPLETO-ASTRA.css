@@ -1,6 +1,6 @@
 /**
  * Joyas Mercury — CSS COMPLETO Astra (todo en uno)
- * VERSIÓN: 2026-07-19-scroll-lateral  ·  Scroll lateral móvil (Grid o Carousel)
+ * VERSIÓN: 2026-07-19-ultimas-responsive  ·  Últimas 2 cols legibles + swipe
  * Origen: rama cursor/jm-css-hero-contain-6a09 (recuperado a esta rama)
  *
  * Incluye: catálogo/filtros · home/círculos · footer dorado · menú móvil · producto single · etc.
@@ -3533,12 +3533,20 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
   visibility: visible !important;
   opacity: 1 !important;
   color: #333333 !important;
+  font-family: "Montserrat", system-ui, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.3 !important;
+  letter-spacing: 0 !important;
   max-height: none !important;
+  min-height: 0 !important;
   overflow: hidden !important;
   -webkit-line-clamp: 3 !important;
   -webkit-box-orient: vertical !important;
   word-break: normal !important;
   overflow-wrap: break-word !important;
+  hyphens: none !important;
+  white-space: normal !important;
 }
 
 .jm-home-novedades .price,
@@ -3552,6 +3560,23 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
   color: #A97E23 !important;
 }
 
+.jm-home-novedades li.product,
+#jm-ultimas-unidades li.product,
+.jm-home-novedades .uael-woo-product-wrapper,
+#jm-ultimas-unidades .uael-woo-product-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  height: 100% !important;
+}
+
+.jm-home-novedades .uael-woo-products-summary-wrap,
+#jm-ultimas-unidades .uael-woo-products-summary-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+}
+
 .jm-home-novedades li.product .button,
 .jm-home-novedades .add_to_cart_button,
 #jm-ultimas-unidades li.product .button,
@@ -3563,6 +3588,7 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
   max-width: 100% !important;
   max-height: none !important;
   min-height: 40px !important;
+  margin-top: auto !important;
   box-sizing: border-box !important;
 }
 
@@ -3649,23 +3675,21 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
 }
 
 
-/* === JM SCROLL LATERAL MÓVIL (fallback si Layout=Grid; no toca Slick) === */
+/* === JM ÚLTIMAS/NOVEDADES MÓVIL: 2 cols responsivas + swipe === */
 @media (max-width: 921px) {
-  /* Si NO hay carrusel Slick activo → fila horizontal con swipe */
+  /* Últimas sin Slick: 2 columnas iguales, swipe si hay más */
   #jm-ultimas-unidades:not(:has(.slick-initialized)) ul.products,
   .elementor-element.jm-home-ultimas:not(:has(.slick-initialized)) ul.products,
-  .elementor-element[class*="jm-home-ult"]:not(:has(.slick-initialized)) ul.products,
-  .jm-home-novedades:not(:has(.slick-initialized)) ul.products,
-  .elementor-element.jm-home-novedades:not(:has(.slick-initialized)) ul.products {
+  .elementor-element[class*="jm-home-ult"]:not(:has(.slick-initialized)) ul.products {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: stretch !important;
-    gap: 12px !important;
+    gap: 10px !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
-    padding: 0 8px 12px !important;
+    padding: 0 10px 12px !important;
     list-style: none !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
@@ -3674,32 +3698,90 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
     overscroll-behavior-x: contain !important;
     touch-action: pan-x pan-y !important;
     grid-template-columns: none !important;
+    box-sizing: border-box !important;
   }
 
   #jm-ultimas-unidades:not(:has(.slick-initialized)) ul.products::before,
-  #jm-ultimas-unidades:not(:has(.slick-initialized)) ul.products::after,
-  .jm-home-novedades:not(:has(.slick-initialized)) ul.products::before,
-  .jm-home-novedades:not(:has(.slick-initialized)) ul.products::after {
+  #jm-ultimas-unidades:not(:has(.slick-initialized)) ul.products::after {
     display: none !important;
     content: none !important;
   }
 
+  /* Cada card = ~50% del viewport → 2 visibles, legibles */
   #jm-ultimas-unidades:not(:has(.slick-initialized)) ul.products > li.product,
   .elementor-element.jm-home-ultimas:not(:has(.slick-initialized)) ul.products > li.product,
-  .jm-home-novedades:not(:has(.slick-initialized)) ul.products > li.product,
-  .elementor-element.jm-home-novedades:not(:has(.slick-initialized)) ul.products > li.product {
-    flex: 0 0 78% !important;
-    width: 78% !important;
-    max-width: 300px !important;
-    min-width: 220px !important;
+  .elementor-element[class*="jm-home-ult"]:not(:has(.slick-initialized)) ul.products > li.product {
+    flex: 0 0 calc(50% - 5px) !important;
+    width: calc(50% - 5px) !important;
+    max-width: calc(50% - 5px) !important;
+    min-width: 0 !important;
     float: none !important;
     clear: none !important;
     margin: 0 !important;
+    padding: 0 2px !important;
     box-sizing: border-box !important;
     scroll-snap-align: start !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
-  /* Si SÍ hay Slick: permitir swipe del carrusel */
+  #jm-ultimas-unidades .woocommerce-loop-product__title,
+  #jm-ultimas-unidades .uael-woo-products-title,
+  #jm-ultimas-unidades .uael-woo-products-title a,
+  .elementor-element.jm-home-ultimas .uael-woo-products-title a {
+    font-family: "Montserrat", system-ui, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    line-height: 1.25 !important;
+    letter-spacing: 0 !important;
+    color: #333333 !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+    white-space: normal !important;
+    -webkit-line-clamp: 3 !important;
+  }
+
+  #jm-ultimas-unidades .price,
+  #jm-ultimas-unidades .amount {
+    white-space: nowrap !important;
+    font-size: 12px !important;
+  }
+
+  #jm-ultimas-unidades li.product .button,
+  #jm-ultimas-unidades .add_to_cart_button {
+    width: 100% !important;
+    margin-top: auto !important;
+    font-size: 10px !important;
+    padding: 8px 4px !important;
+    min-height: 38px !important;
+    max-height: none !important;
+  }
+
+  /* Novedades sin Slick: card un poco más ancha + peek */
+  .jm-home-novedades:not(:has(.slick-initialized)) ul.products,
+  .elementor-element.jm-home-novedades:not(:has(.slick-initialized)) ul.products {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 12px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
+    padding: 0 8px 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .jm-home-novedades:not(:has(.slick-initialized)) ul.products > li.product,
+  .elementor-element.jm-home-novedades:not(:has(.slick-initialized)) ul.products > li.product {
+    flex: 0 0 70% !important;
+    width: 70% !important;
+    max-width: 280px !important;
+    min-width: 0 !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+  }
+
   #jm-ultimas-unidades .slick-list,
   .jm-home-novedades .slick-list {
     touch-action: pan-x pan-y !important;
