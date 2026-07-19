@@ -8,21 +8,21 @@ Esto se arregla en **WordPress (Elementor + CSS adicional)**, no en la maqueta l
 2. Copia TODO el contenido.
 3. WP Admin → **Apariencia → Personalizar → CSS adicional** → pegar → Publicar.
 
-## 2) Elementor — círculos de Colecciones
+## 2) Elementor — círculos de categorías
 
-En la página **Inicio** (y/o **Colecciones**), selecciona el **contenedor** que agrupa las 3 fotos (Esencial / Gold / Deluxe):
+Aplica la clase en **ambos** sitios:
 
-1. Pestaña **Avanzado → Clases CSS**
-2. Escribe: `jm-circulos-categoria`
+- Inicio: 3 círculos Esencial / Gold / Deluxe  
+- Página de colección (Esencial, Gold, Deluxe): 5 círculos Pulseras / Conjuntos / Cadenas / Anillos / Aros  
+
+1. Selecciona el **contenedor** que agrupa esos círculos  
+2. **Avanzado → Clases CSS:** `jm-circulos-categoria`  
 3. En cada imagen hija:
-   - Tamaño de imagen: **Completo** o **Miniatura**
-   - **No** uses “Personalizado 350px” (eso las deja cuadradas)
+   - Tamaño: **Completo** o **Miniatura**
+   - **No** “Personalizado 350px”
+4. En el contenedor: **Overflow = Visible** (si Elementor lo tiene en Oculto, corta los círculos)
 
-Opcional en el mismo contenedor (borde de color):
-
-- `jm-circulos-esencial`
-- `jm-circulos-gold`
-- `jm-circulos-deluxe`
+Opcional (borde de color): `jm-circulos-esencial` · `jm-circulos-gold` · `jm-circulos-deluxe`
 
 ## 3) Elementor — Últimas unidades (que se vean todos en móvil)
 
