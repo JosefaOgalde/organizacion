@@ -2,12 +2,15 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 echo.
-echo  === Abrir Impresoreando — solo landing del cliente ===
-echo  Rama: cursor/impresoreando-bob-productos-459d
+echo  === Abrir Impresoreando (PR #89) ===
+echo  Landing + Catalogo + PDF
 echo.
 
-echo  Actualizando rama...
-git fetch origin cursor/impresoreando-bob-productos-459d 2>nul
+REM Si quedaste trabada en un merge de main (error de vim), lo cancelamos.
+git merge --abort 2>nul
+
+echo  Actualizando rama PR #89...
+git fetch origin cursor/impresoreando-bob-productos-459d
 git checkout cursor/impresoreando-bob-productos-459d 2>nul
 if errorlevel 1 (
   git checkout -b cursor/impresoreando-bob-productos-459d origin/cursor/impresoreando-bob-productos-459d
@@ -15,8 +18,17 @@ if errorlevel 1 (
 git pull origin cursor/impresoreando-bob-productos-459d
 if errorlevel 1 (
   echo.
-  echo  AVISO: no se pudo actualizar la rama. Sigue con lo que haya en disco.
+  echo  AVISO: no se pudo actualizar. Sigue con lo que haya en disco.
   echo.
+)
+
+if not exist "index\clientes\impresoreando\catalogo\export\catalogo-impresoreando.pdf" (
+  echo.
+  echo  ERROR: no esta el PDF del catalogo en esta carpeta.
+  echo  Rama incorrecta o falta git pull.
+  echo.
+  pause
+  exit /b 1
 )
 
 call "%~dp0CERRAR-SERVIDOR.bat"
@@ -41,17 +53,20 @@ if errorlevel 1 (
   exit /b 1
 )
 
-REM Solo la landing del cliente (panel/catalogo se abren desde ahi).
+REM Abrir lo esencial para que se vea
 start "" "http://localhost:3000/index/clientes/impresoreando/?v=imp-logo-oficial"
+timeout /t 1 /nobreak >nul
+start "" "http://localhost:3000/index/clientes/impresoreando/catalogo/"
+timeout /t 1 /nobreak >nul
+start "" "http://localhost:3000/index/clientes/impresoreando/catalogo/export/catalogo-impresoreando.pdf"
 
 echo.
-echo  LANDING: http://localhost:3000/index/clientes/impresoreando/
+echo  === Si el navegador no abrio, pega estos links ===
+echo  Landing:  http://localhost:3000/index/clientes/impresoreando/
+echo  Catalogo: http://localhost:3000/index/clientes/impresoreando/catalogo/
+echo  PDF:      http://localhost:3000/index/clientes/impresoreando/catalogo/export/catalogo-impresoreando.pdf
+echo  PR #89:   https://github.com/JosefaOgalde/organizacion/pull/89
 echo.
-echo  Desde la landing:
-echo    Resumen 50/50  -^> panel/
-echo    Calculadora    -^> panel/?tab=costos
-echo    Catalogo IG    -^> catalogo/
-echo.
-echo  Si no ves el logo nuevo: Ctrl+F5 (hard refresh).
+echo  Logo: Ctrl+F5 en la landing si se ve viejo.
 echo.
 pause
