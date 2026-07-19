@@ -1,0 +1,312 @@
+/**
+ * Joyas Mercury — círculos Colecciones + grid Últimas/Novedades (móvil)
+ *
+ * Pegar en: WP Admin → Apariencia → Personalizar → CSS adicional
+ * (o al final del CSS adicional de Astra)
+ *
+ * En Elementor debes poner estas CLASES CSS (Avanzado → Clases CSS):
+ *
+ * 1) Contenedor de los 3 círculos Esencial / Gold / Deluxe (Inicio o Colecciones):
+ *    jm-circulos-categoria
+ *    (opcional color borde: jm-circulos-esencial | jm-circulos-gold | jm-circulos-deluxe)
+ *
+ * 2) Sección home Colecciones (contenedor padre del título + círculos):
+ *    jm-home-colecciones
+ *
+ * 3) Widget Woo / UAEL de Últimas unidades:
+ *    ID del widget: jm-ultimas-unidades
+ *    Clase CSS: jm-home-ultimas
+ *
+ * 4) Widget Novedades (si también faltan en móvil):
+ *    Clase CSS: jm-home-novedades
+ *
+ * En cada imagen de círculo (Elementor → Imagen):
+ *    - Tamaño: Completo o Miniatura (NO “Personalizado 350px”)
+ *    - Border radius del widget: puedes dejarlo en 0; el CSS hace el círculo
+ */
+
+/* ========== CÍRCULOS COLECCIONES / CATEGORÍAS ========== */
+.elementor-element.jm-circulos-categoria.e-con,
+.jm-circulos-categoria.e-con {
+  --width: 100% !important;
+  max-width: 1200px !important;
+  width: min(100%, 1200px) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 20px 20px 8px !important;
+  box-sizing: border-box;
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  gap: 16px !important;
+  overflow: hidden !important;
+}
+
+.jm-circulos-categoria > .e-con.e-child {
+  flex: 0 1 18% !important;
+  min-width: 0 !important;
+  max-width: 18% !important;
+  width: auto !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+.jm-circulos-categoria .elementor-widget-image {
+  width: 160px !important;
+  max-width: 160px !important;
+  min-width: 0;
+  margin: 0 auto;
+}
+
+.jm-circulos-categoria .elementor-widget-image .elementor-widget-container {
+  width: 160px !important;
+  height: 160px !important;
+  max-width: 160px !important;
+  max-height: 160px !important;
+  margin: 0 auto !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  box-sizing: border-box;
+  box-shadow: none !important;
+}
+
+.jm-circulos-categoria.jm-circulos-esencial .elementor-widget-image .elementor-widget-container {
+  border: 2px solid #f0d4dc;
+  background: #fdf5f7;
+}
+
+.jm-circulos-categoria.jm-circulos-gold .elementor-widget-image .elementor-widget-container {
+  border: 2px solid #f5e6b8;
+  background: #fffdf5;
+}
+
+.jm-circulos-categoria.jm-circulos-deluxe .elementor-widget-image .elementor-widget-container {
+  border: 2px solid #e8c4d0;
+  background: #fdf8fa;
+}
+
+.jm-circulos-categoria .elementor-widget-image a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.jm-circulos-categoria .elementor-widget-image img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  border-radius: 0 !important;
+  border: none !important;
+  display: block;
+  margin: 0 !important;
+}
+
+/* Anula tamaño Personalizado 350px de Elementor */
+.jm-circulos-categoria .elementor-widget-image img[width],
+.jm-circulos-categoria .elementor-widget-image img[height] {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.jm-circulos-categoria .elementor-widget-text-editor {
+  width: 100%;
+  max-width: 160px;
+  margin: 0 auto;
+}
+
+.jm-circulos-categoria .elementor-widget-text-editor p {
+  text-align: center !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+  color: #A97E23 !important;
+  margin: 8px 0 0 !important;
+  line-height: 1.15 !important;
+}
+
+.jm-home-colecciones,
+.jm-circulos-categoria,
+.jm-circulos-categoria .e-con,
+.jm-circulos-categoria .elementor-container {
+  max-width: 1100px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.jm-circulos-categoria,
+.jm-circulos-categoria *,
+.jm-home-colecciones,
+.jm-home-colecciones * {
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+@media (max-width: 767px) {
+  .jm-circulos-categoria.e-con {
+    padding: 12px 8px 4px !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .jm-circulos-categoria > .e-con.e-child {
+    flex: 0 1 30% !important;
+    max-width: 30% !important;
+  }
+
+  .jm-circulos-categoria .elementor-widget-image,
+  .jm-circulos-categoria .elementor-widget-image .elementor-widget-container {
+    width: 96px !important;
+    height: 96px !important;
+    max-width: 96px !important;
+  }
+
+  .jm-circulos-categoria .elementor-widget-text-editor {
+    max-width: 96px;
+  }
+
+  .jm-circulos-categoria .elementor-widget-text-editor p {
+    font-size: 10px !important;
+  }
+}
+
+/* ========== ÚLTIMAS UNIDADES — todos visibles en móvil (2×2) ========== */
+#jm-ultimas-unidades,
+.elementor-element.jm-home-ultimas,
+.elementor-element.jm-producto-ultimas,
+.elementor-element[class*="jm-home-ult"] {
+  width: 100% !important;
+  max-width: 1140px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+#jm-ultimas-unidades ul.products,
+.elementor-element.jm-home-ultimas ul.products,
+.elementor-element.jm-producto-ultimas ul.products,
+.elementor-element[class*="jm-home-ult"] ul.products {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+#jm-ultimas-unidades .slick-list,
+#jm-ultimas-unidades .slick-track,
+.elementor-element.jm-home-ultimas .slick-list,
+.elementor-element.jm-home-ultimas .slick-track,
+.elementor-element[class*="jm-home-ult"] .slick-list,
+.elementor-element[class*="jm-home-ult"] .slick-track {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
+  transform: none !important;
+  overflow: visible !important;
+  gap: 12px !important;
+}
+
+#jm-ultimas-unidades ul.products > li.product,
+#jm-ultimas-unidades .slick-slide,
+.elementor-element.jm-home-ultimas ul.products > li.product,
+.elementor-element.jm-home-ultimas .slick-slide,
+.elementor-element[class*="jm-home-ult"] ul.products > li.product,
+.elementor-element[class*="jm-home-ult"] .slick-slide {
+  flex: 0 0 calc(25% - 9px) !important;
+  width: calc(25% - 9px) !important;
+  max-width: calc(25% - 9px) !important;
+  float: none !important;
+  margin: 0 !important;
+  display: block !important;
+}
+
+/* Sin flechas/puntos de carrusel (ocultan productos en móvil) */
+#jm-ultimas-unidades .slick-prev,
+#jm-ultimas-unidades .slick-next,
+#jm-ultimas-unidades .slick-dots,
+.elementor-element.jm-home-ultimas .slick-prev,
+.elementor-element.jm-home-ultimas .slick-next,
+.elementor-element.jm-home-ultimas .slick-dots,
+.elementor-element[class*="jm-home-ult"] .slick-dots {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 921px) {
+  #jm-ultimas-unidades,
+  .elementor-element.jm-home-ultimas,
+  .elementor-element[class*="jm-home-ult"] {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  #jm-ultimas-unidades ul.products,
+  .elementor-element.jm-home-ultimas ul.products,
+  .elementor-element[class*="jm-home-ult"] ul.products,
+  #jm-ultimas-unidades .slick-track,
+  .elementor-element[class*="jm-home-ult"] .slick-track {
+    flex-wrap: wrap !important;
+    transform: none !important;
+  }
+
+  #jm-ultimas-unidades ul.products > li.product,
+  #jm-ultimas-unidades .slick-slide,
+  .elementor-element.jm-home-ultimas ul.products > li.product,
+  .elementor-element.jm-home-ultimas .slick-slide,
+  .elementor-element[class*="jm-home-ult"] ul.products > li.product,
+  .elementor-element[class*="jm-home-ult"] .slick-slide {
+    flex: 0 0 calc(50% - 6px) !important;
+    width: calc(50% - 6px) !important;
+    max-width: calc(50% - 6px) !important;
+  }
+}
+
+/* Novedades móvil 2×2 */
+@media (max-width: 921px) {
+  .jm-home-novedades ul.products,
+  .elementor-element.jm-home-novedades ul.products {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+  }
+
+  .jm-home-novedades ul.products > li.product,
+  .elementor-element.jm-home-novedades ul.products > li.product,
+  .jm-home-novedades .slick-slide,
+  .elementor-element.jm-home-novedades .slick-slide {
+    flex: 0 0 calc(50% - 6px) !important;
+    width: calc(50% - 6px) !important;
+    max-width: calc(50% - 6px) !important;
+    display: block !important;
+  }
+
+  .jm-home-novedades .slick-list,
+  .jm-home-novedades .slick-track,
+  .elementor-element.jm-home-novedades .slick-list,
+  .elementor-element.jm-home-novedades .slick-track {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    transform: none !important;
+    overflow: visible !important;
+  }
+
+  .jm-home-novedades .slick-prev,
+  .jm-home-novedades .slick-next,
+  .jm-home-novedades .slick-dots,
+  .elementor-element.jm-home-novedades .slick-dots {
+    display: none !important;
+  }
+}
