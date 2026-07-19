@@ -4,10 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Registrar venta · Impresoreando</title>
-  <link rel="stylesheet" href="../panel.css?v=imp-dash3" />
+  <link rel="stylesheet" href="../panel.css?v=imp-logo1" />
   <style>
-    .venta-hero { margin: 1rem 0 1.25rem; }
-    .venta-hero h1 { margin: 0.25rem 0; color: var(--imp-text); font-size: 1.45rem; }
+    .imp-venta-titulo {
+      margin: 0.35rem 0 0;
+      color: var(--imp-text);
+      font-size: 1.2rem;
+    }
     .venta-ok {
       display: none;
       margin: 0.75rem 0;
@@ -23,10 +26,13 @@
 <body class="imp-body">
   <div class="imp-top-bleed">
     <header class="imp-top imp-shell">
-      <div>
+      <div class="imp-brand">
         <a class="imp-back" href="../">← Resumen 50/50</a>
-        <h1>Registrar venta</h1>
-        <p class="imp-sub">Impresoreando · Josefa + Nicolás · se guarda online al instante</p>
+        <a class="imp-logo-link" href="../../" aria-label="Impresoreando">
+          <img class="imp-logo" src="../../identidad/logo-impresoreando.png" width="280" height="84" alt="impresoreando" />
+        </a>
+        <h1 class="imp-venta-titulo">Registrar venta</h1>
+        <p class="imp-sub">Josefa + Nicolás · se guarda online al instante</p>
       </div>
       <div class="imp-top-actions">
         <span id="venta-status" class="imp-status">Cargando…</span>

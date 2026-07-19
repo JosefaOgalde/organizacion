@@ -49,16 +49,33 @@
   padding-bottom: 0.85rem;
 }
 
+.imp-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.imp-logo-link {
+  display: inline-flex;
+  line-height: 0;
+  text-decoration: none;
+}
+
+.imp-logo {
+  display: block;
+  height: clamp(40px, 7vw, 56px);
+  width: auto;
+  max-width: min(420px, 72vw);
+  object-fit: contain;
+  object-position: left center;
+}
+
 .imp-tabs-bleed {
   width: 100%;
   background: #fffdf7;
   border-bottom: 1px solid #eee3c8;
-}
-
-.imp-top h1 {
-  margin: 0.15rem 0;
-  color: var(--imp-text);
-  font-size: 1.65rem;
 }
 
 .imp-sub { margin: 0; color: var(--imp-muted); font-size: 0.9rem; }
