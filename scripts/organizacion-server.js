@@ -432,6 +432,24 @@ function ensureImpresoreandoLive() {
   console.log('[api] Seed Impresoreando → data/impresoreando-live.json');
 }
 
+function preservarVentasConcurrentes(obj) {
+  const sync = obj._sync;
+  delete obj._sync;
+  if (!sync || !Array.isArray(sync.ventasBaseIds)) return 0;
+
+  ensureImpresoreandoLive();
+  const actual = JSON.parse(fs.readFileSync(IMP_LIVE_FILE, 'utf8'));
+  const idsBase = new Set(sync.ventasBaseIds.map((id) => String(id || '')).filter(Boolean));
+  const ventasEntrantes = Array.isArray(obj.ventas) ? obj.ventas : [];
+  const idsEntrantes = new Set(ventasEntrantes.map((venta) => String(venta?.id || '')).filter(Boolean));
+  const ventasConcurrentes = (Array.isArray(actual.ventas) ? actual.ventas : []).filter((venta) => {
+    const id = String(venta?.id || '');
+    return id && !idsBase.has(id) && !idsEntrantes.has(id);
+  });
+  obj.ventas = ventasEntrantes.concat(ventasConcurrentes);
+  return ventasConcurrentes.length;
+}
+
 function handleApiImpresoreando(req, res) {
   if (!checkApiAuth(req, res)) return;
 
@@ -518,12 +536,29 @@ function handleApiImpresoreando(req, res) {
       if (!obj || typeof obj !== 'object' || !Array.isArray(obj.gastos)) {
         return send(res, 400, JSON.stringify({ error: 'faltan gastos[] (estructura Impresoreando)' }), 'application/json');
       }
+      let ventasPreservadas;
+      try {
+        ventasPreservadas = preservarVentasConcurrentes(obj);
+      } catch (e) {
+        return send(res, 500, JSON.stringify({ error: String(e.message || e) }), 'application/json');
+      }
       if (!obj.meta) obj.meta = {};
       obj.meta.actualizado = new Date().toISOString();
       fs.mkdirSync(path.dirname(IMP_LIVE_FILE), { recursive: true });
       fs.writeFileSync(IMP_LIVE_FILE, JSON.stringify(obj, null, 2), 'utf8');
       console.log('[api] Guardado Impresoreando', IMP_LIVE_FILE, `(${obj.gastos.length} gastos, ${(obj.ventas || []).length} ventas)`);
-      return send(res, 200, JSON.stringify({ ok: true, path: 'data/impresoreando-live.json', actualizado: obj.meta.actualizado }), 'application/json');
+      return send(
+        res,
+        200,
+        JSON.stringify({
+          ok: true,
+          path: 'data/impresoreando-live.json',
+          actualizado: obj.meta.actualizado,
+          ventasPreservadas,
+          ventas: obj.ventas || [],
+        }),
+        'application/json'
+      );
     }).catch((e) => {
       if (e && e.message === 'BODY_TOO_LARGE') {
         return send(res, 413, JSON.stringify({ error: 'cuerpo demasiado grande' }), 'application/json');
