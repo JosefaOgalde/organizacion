@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOVA · Día 5 — Validación por módulo</title>
+  <link rel="stylesheet" href="../../assets/portal.css">
+  <link rel="stylesheet" href="../../assets/mkof-mova-auditoria.css">
+  <script src="../../assets/embed-chrome.js"></script>
+  <link rel="stylesheet" href="../../assets/embed-chrome.css">
+</head>
+<body class="mova-aud">
+  <header class="mova-aud__hero">
+    <nav class="mova-aud__nav">
+      <a href="../MKOF/MOVA/documentos/">← Documentos MOVA</a>
+      <a href="mova-d4-login-cookie.html">← D4 Cookie</a>
+      <a href="../MKOF/MOVA.html">Hub MOVA</a>
+    </nav>
+    <p class="mova-aud__eyebrow">GRUPO MAKING OF · MOVA · AUDITORÍA</p>
+    <h1>Día 5 — Validación por módulo</h1>
+    <p class="mova-aud__sub">acme-chile.cl · Tarea <code>mkof/05</code> · 19 jul 2026</p>
+    <p class="mova-aud__badge mova-aud__badge--ok">Cierre auditoría D1–D5 · solo documentación</p>
+  </header>
+
+  <main class="mova-aud__main">
+    <section>
+      <h2>Contratos validate.php y guard.php</h2>
+      <div class="mova-aud__grid2">
+        <article class="mova-aud__card mova-aud__card--ok">
+          <h3>validate.php (JSON)</h3>
+          <p><strong>200</strong> → <code>{ ok: true, usuario, permisos }</code><br>
+          <strong>401</strong> → <code>{ ok: false }</code><br>
+          Fetch con <code>credentials: 'include'</code></p>
+        </article>
+        <article class="mova-aud__card mova-aud__card--ok">
+          <h3>guard.php (HTML)</h3>
+          <p>Include al inicio del módulo.<br>
+          Sin sesión → redirect a <code>login.php?redirect=</code>.<br>
+          Con sesión → continúa.</p>
+        </article>
+      </div>
+    </section>
+
+    <div class="mova-aud__puente">
+      <strong>PUENTE</strong>
+      D4 definió la sesión. D5 dice, módulo por módulo del inventario, quién valida hoy y quién debería.
+      <pre class="mova-aud__mapa">Cookie + login → matriz por M → sandbox ERP → criterios cierre auditoría</pre>
+    </div>
+
+    <section>
+      <h2>Matriz hoy vs debería</h2>
+      <table class="mova-aud__tabla">
+        <thead>
+          <tr>
+            <th>Módulo</th>
+            <th>Hoy</th>
+            <th>Debería</th>
+            <th>Prioridad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Portal <code>/mova/</code></td><td>Google OAuth</td><td class="si">mova_auth</td><td>Alta</td></tr>
+          <tr><td>mova_auth</td><td>PHP correo+clave</td><td class="parcial">Es el gate</td><td>—</td></tr>
+          <tr><td>ERP <code>/mova/erp/</code></td><td>Contraseña local</td><td class="si">mova_auth</td><td>Alta · sandbox</td></tr>
+          <tr><td>Submódulos <code>/mova/*</code></td><td>Hereda / ?</td><td class="si">mova_auth</td><td>Media</td></tr>
+          <tr><td>AXON <code>/axon/</code></td><td>Sin login visible</td><td class="si">mova_auth</td><td>Alta</td></tr>
+          <tr><td>Admin</td><td>?</td><td class="si">mova_auth</td><td>Media</td></tr>
+          <tr><td>RRHH</td><td>403</td><td class="si">mova_auth al habilitar</td><td>Baja</td></tr>
+          <tr><td>Documentos</td><td>Público</td><td class="na">Excepción</td><td>n/a</td></tr>
+          <tr><td><code>/pruebas/</code></td><td>Obsoleto</td><td class="na">Fuera de alcance</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p><code>axon_chats</code> en localStorage es historial de chat — <strong>no</strong> es sesión. No usarla como auth.</p>
+    </section>
+
+    <section>
+      <h2>Sandbox de primera migración</h2>
+      <blockquote class="mova-aud__oro">
+        Sandbox: <code>https://acme-chile.cl/mova/erp/</code>
+        <small>Tiene login propio hoy → demuestra unificación. Menos riesgo que abrir AXON primero. Orden futuro: ERP → portal /mova/ → AXON → resto.</small>
+      </blockquote>
+    </section>
+
+    <section>
+      <h2>Criterios de cierre — auditoría D1–D5</h2>
+      <table class="mova-aud__tabla">
+        <thead>
+          <tr><th>#</th><th>Criterio</th><th>Estado</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>D1 inventario + cPanel</td><td class="si">Hecho</td></tr>
+          <tr><td>2</td><td>D2 reglas + excepciones</td><td class="si">Hecho</td></tr>
+          <tr><td>3</td><td>D3 núcleo 6 archivos + gap</td><td class="si">Hecho 19 jul</td></tr>
+          <tr><td>4</td><td>D4 login + cookie + pruebas</td><td class="si">Hecho 19 jul</td></tr>
+          <tr><td>5</td><td>D5 matriz + sandbox + cierre</td><td class="si">Hecho 19 jul</td></tr>
+          <tr><td>6</td><td>Docs en portal MOVA</td><td class="si">Hecho</td></tr>
+          <tr><td>7</td><td>Acuerdo formal equipo (correo/acta)</td><td class="parcial">Pendiente firma humana</td></tr>
+          <tr><td>8</td><td>Tareas mkof/03–05 en organizador</td><td class="parcial">Marcar en PC local</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Fuera de esta auditoría (implementación)</h2>
+      <ul>
+        <li>Subir <code>session.php</code> / <code>validate.php</code> / <code>guard.php</code></li>
+        <li>Migrar módulos uno a uno (empezando por ERP)</li>
+        <li>Gantt post-auditoría: n8n→Git, Cloudflare, MySQL, rutinas</li>
+      </ul>
+      <p>Playbook: <a href="https://acme-chile.cl/documentos/auditoria_mova.html" target="_blank" rel="noopener">auditoria_mova.html</a></p>
+    </section>
+
+    <section>
+      <h2>Checklist cierre Día 5</h2>
+      <ul class="mova-aud__check">
+        <li>Matriz hoy vs debería por módulo prioritario</li>
+        <li>Especificación validate.php (200/401)</li>
+        <li>Especificación guard.php (redirect)</li>
+        <li>Sandbox ERP documentado</li>
+        <li>Criterios de cierre auditoría documentados</li>
+        <li>Entregable en portal documentos MOVA</li>
+      </ul>
+      <p>Marcar <code>mkof/05</code> completada en el organizador (PC local). Pedir firma/correo del equipo técnico.</p>
+    </section>
+  </main>
+
+  <footer class="mova-aud__foot">MOVA · Día 5 · Validación + cierre auditoría · GRUPO MAKING OF · 19 jul 2026</footer>
+</body>
+</html>

@@ -1,0 +1,300 @@
+/* MOVA · Auditoría D1–D5 — estilo compartido (teal MKOF) */
+.mova-aud {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #1f2328;
+  background: #f4fafb;
+  margin: 0;
+  line-height: 1.55;
+}
+
+.mova-aud__hero {
+  background: linear-gradient(135deg, #2a4a4e, #4a7a80);
+  color: #fff;
+  padding: 2rem 2.5rem 2.25rem;
+}
+
+.mova-aud__eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+}
+
+.mova-aud h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.85rem;
+}
+
+.mova-aud__sub {
+  margin: 0;
+  opacity: 0.92;
+  font-size: 0.95rem;
+}
+
+.mova-aud__badge {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.35rem 0.85rem;
+  background: #fff8c5;
+  color: #2a4a4e;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.mova-aud__badge--ok {
+  background: #d4edda;
+  color: #0d4d1f;
+}
+
+.mova-aud__main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 2rem;
+}
+
+.mova-aud__main section {
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.mova-aud h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  color: #2a4a4e;
+}
+
+.mova-aud h3 {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.98rem;
+  color: #2a4a4e;
+}
+
+.mova-aud__puente {
+  background: linear-gradient(135deg, #e8f6f8, #f4fafb);
+  border: 1px dashed #4a7a80;
+  border-radius: 10px;
+  padding: 0.85rem 1.15rem;
+  margin: -0.5rem 0 1.25rem;
+  font-size: 0.9rem;
+}
+
+.mova-aud__puente strong {
+  display: inline-block;
+  margin-right: 0.35rem;
+  padding: 0.15rem 0.5rem;
+  background: #2a4a4e;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+}
+
+.mova-aud__mapa {
+  margin: 0.55rem 0 0;
+  padding: 0.65rem 0.85rem;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #b8d4d8;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #2a4a4e;
+}
+
+.mova-aud__oro {
+  margin: 0;
+  padding: 1rem 1.15rem;
+  background: #fff8c5;
+  border-left: 4px solid #bf3f00;
+  border-radius: 0 8px 8px 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #2a4a4e;
+}
+
+.mova-aud__oro small {
+  display: block;
+  margin-top: 0.5rem;
+  font-weight: 400;
+  font-size: 0.88rem;
+  color: #444;
+}
+
+.mova-aud__tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+
+.mova-aud__tabla th,
+.mova-aud__tabla td {
+  border: 1px solid #e6eaef;
+  padding: 0.45rem 0.55rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.mova-aud__tabla th {
+  background: #e8f6f8;
+  color: #2a4a4e;
+}
+
+.mova-aud .si { color: #1a7f37; font-weight: 700; }
+.mova-aud .no { color: #cf222e; font-weight: 700; }
+.mova-aud .parcial { color: #9a6700; font-weight: 700; }
+.mova-aud .nuevo { color: #0969da; font-weight: 700; }
+.mova-aud .na { color: #656d76; }
+
+.mova-aud ol,
+.mova-aud ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.mova-aud li { margin-bottom: 0.35rem; }
+
+.mova-aud__check {
+  list-style: none;
+  padding: 0;
+}
+
+.mova-aud__check li {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.mova-aud__check li::before {
+  content: "✓ ";
+  color: #1a7f37;
+  font-weight: bold;
+}
+
+.mova-aud__check--pend li::before {
+  content: "○ ";
+  color: #bf3f00;
+}
+
+.mova-aud__tree {
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1rem 1.15rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.mova-aud__tree .dir { color: #4ec9b0; }
+.mova-aud__tree .file { color: #9cdcfe; }
+.mova-aud__tree .new { color: #b5cea8; }
+.mova-aud__tree .gap { color: #f48771; }
+.mova-aud__tree .keep { color: #ce9178; }
+
+.mova-aud__flujo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.85rem;
+  background: #f6f8fa;
+  border-radius: 8px;
+  margin: 0.65rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.mova-aud__flujo span {
+  padding: 0.35rem 0.65rem;
+  background: #fff;
+  border: 1px solid #4a7a80;
+  border-radius: 6px;
+}
+
+.mova-aud__flujo .auth {
+  background: #d4edda;
+  border-color: #1a7f37;
+}
+
+.mova-aud__flujo .warn {
+  background: #ffe8d6;
+  border-color: #bf3f00;
+}
+
+.mova-aud__grid2 {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .mova-aud__grid2 { grid-template-columns: 1fr 1fr; }
+}
+
+.mova-aud__card {
+  padding: 0.85rem;
+  border-radius: 8px;
+  border: 2px solid #d0e8ec;
+  background: #f8fcfd;
+}
+
+.mova-aud__card h3 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+.mova-aud__card p { margin: 0; font-size: 0.84rem; }
+
+.mova-aud__card--gap {
+  background: #fff5f5;
+  border-color: #cf222e;
+}
+
+.mova-aud__card--ok {
+  background: #f0faf4;
+  border-color: #1a7f37;
+}
+
+.mova-aud__card--new {
+  background: #ddf4ff;
+  border-color: #0969da;
+}
+
+.mova-aud__code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.78rem;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  overflow-x: auto;
+  white-space: pre;
+  margin: 0.5rem 0 0;
+}
+
+.mova-aud__foot {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.8rem;
+  color: #656d76;
+}
+
+.mova-aud__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mova-aud__nav a {
+  font-size: 0.82rem;
+  color: #fff;
+  opacity: 0.9;
+  text-decoration: underline;
+}
+
+@media print {
+  .mova-aud { background: #fff; }
+  .mova-aud__main section { break-inside: avoid; }
+}

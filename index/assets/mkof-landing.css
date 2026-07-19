@@ -247,7 +247,7 @@
 }
 
 @media (min-width: 520px) {
-  .mkof-guias-grid { grid-template-columns: 1fr 1fr; }
+  .mkof-guias-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 .mkof-guia-card {

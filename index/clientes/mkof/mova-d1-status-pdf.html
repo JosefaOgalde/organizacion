@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>MOVA · Día 1 — Status inventario (PDF)</title>
+  <link rel="stylesheet" href="../../assets/mkof-mova-d1-status-pdf.css">
+</head>
+<body>
+
+  <!-- Slide 1 — Portada (texto y estilos = PPT slide_title) -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--title">
+    <p class="eyebrow">MOVA · Día 1 — Status</p>
+    <h1>Inventario módulos M</h1>
+    <p class="sub">acme-chile.cl · public_html/acme-chile.cl/</p>
+    <p class="task">Tarea organizador: index.html?tarea=mkof/01</p>
+    <p class="meta">Actualizado: 8 jul 2026 · GRUPO MAKING OF</p>
+    <p class="badge">Estado: EN PROGRESO — listo para cierre formal</p>
+  </section>
+
+  <!-- Slide 2 — Resumen ejecutivo -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Resumen ejecutivo</h2>
+      <p>Día 1 · solo inventario — sin tocar código</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ul class="mova-d1-pdf__bullets">
+        <li>Ruta real del sitio: public_html/acme-chile.cl/ (no en raíz de public_html).</li>
+        <li>Problema confirmado: login FRAGMENTADO (Google + mova_auth PHP + contraseña ERP).</li>
+        <li>Panel MOVA (/mova/) usa Google OAuth — NO pasa por mova_auth.</li>
+        <li>localStorage en acme-chile.cl: clave axon_chats (widget AXON). Sin jwt/token visible.</li>
+        <li>n8n: pendiente del equipo que lo administra (no bloquea este status).</li>
+        <li>/pruebas/ queda fuera de alcance — era etapa 1, producción es /mova/.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Slide 3 — Checklist -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Checklist Día 1</h2>
+      <p>Criterio de cierre</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ul class="mova-d1-pdf__check">
+        <li><span class="mark ok">✓</span> Acceso cPanel GoDaddy</li>
+        <li><span class="mark ok">✓</span> Árbol public_html/acme-chile.cl/</li>
+        <li><span class="mark ok">✓</span> Auth documentada (módulos revisados)</li>
+        <li><span class="mark ok">✓</span> localStorage en /mova/ (axon_chats)</li>
+        <li><span class="mark ok">✓</span> n8n — delegado equipo n8n</li>
+        <li><span class="mark pend">○</span> Compartir status con equipo técnico</li>
+        <li><span class="mark pend">○</span> Marcar tarea mkof/01 completada</li>
+      </ul>
+      <p class="mova-d1-pdf__footer-note">Avance: 5/7 ítems · Faltan: compartir + marcar tarea</p>
+    </div>
+  </section>
+
+  <!-- Slide 4 — Tabla módulos -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Módulos revisados en navegador</h2>
+      <p>https://acme-chile.cl/</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <table class="mova-d1-pdf__tabla">
+        <thead>
+          <tr>
+            <th>Módulo</th><th>URL</th><th>Auth</th><th>localStorage</th><th>mova_auth</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Portal MOVA</strong></td><td>/mova/</td><td>Google OAuth</td><td>sí · axon_chats</td><td class="no">no</td></tr>
+          <tr><td><strong>mova_auth</strong></td><td>/mova_auth/login.php</td><td>PHP correo+clave</td><td>pendiente</td><td class="parcial">parcial</td></tr>
+          <tr><td><strong>MOVA ERP</strong></td><td>/mova/erp/</td><td>Contraseña local</td><td>pendiente</td><td class="no">no</td></tr>
+          <tr><td><strong>AXON</strong></td><td>/axon/</td><td>Sin login visible</td><td>pendiente</td><td class="no">no</td></tr>
+          <tr><td><strong>RRHH</strong></td><td>/rrhh/</td><td>403 Forbidden</td><td>n/a</td><td class="no">no</td></tr>
+          <tr><td><strong>Documentos</strong></td><td>/documentos/</td><td>Público</td><td>no</td><td>n/a</td></tr>
+        </tbody>
+      </table>
+      <p class="mova-d1-pdf__footer-note mova-d1-pdf__warn">Conclusión: ningún módulo M revisado usa mova_auth como único validador.</p>
+    </div>
+  </section>
+
+  <!-- Slide 5 — Inventario explicado -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Inventario explicado</h2>
+      <p>Para quienes no trabajan con código</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <div class="mova-d1-pdf__cards4">
+        <article class="mova-d1-pdf__card"><h3>Módulo</h3><p>Cada app o sección del sitio (portal, ERP, AXON…).</p></article>
+        <article class="mova-d1-pdf__card"><h3>Auth</h3><p>Cómo entra el usuario: Google, clave, o sin login.</p></article>
+        <article class="mova-d1-pdf__card"><h3>localStorage</h3><p>Datos guardados en el navegador del usuario.</p></article>
+        <article class="mova-d1-pdf__card"><h3>mova_auth</h3><p>¿Pasa por el login unificado? sí · no · parcial</p></article>
+      </div>
+      <div class="mova-d1-pdf__flow">
+        <div>
+          <h4 class="warn">Hoy: varias puertas de entrada</h4>
+          <div class="mova-d1-pdf__chips mova-d1-pdf__chips--warn">
+            <span>Google</span><span>PHP clave</span><span>Contraseña ERP</span><span>Sin login</span>
+          </div>
+        </div>
+        <div style="font-size:18pt;color:#4a7a80;font-weight:bold;">→</div>
+        <div>
+          <h4 class="ok">Objetivo MOVA: una sola puerta</h4>
+          <div class="mova-d1-pdf__gate">mova_auth → todos los módulos M</div>
+        </div>
+      </div>
+      <div class="mova-d1-pdf__highlight">Hallazgo Día 1: ningún módulo revisado usa solo mova_auth. El login está repartido — unificar en días 2–7.</div>
+      <div class="mova-d1-pdf__chip-row">
+        <strong>Lectura rápida:</strong>
+        <span class="chip chip--ok">sí</span><span class="chip chip--no">no</span><span class="chip chip--no">parcial</span>
+        <span class="chip chip--muted">pendiente</span><span class="chip chip--muted">n/a</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 6 — Estructura cPanel -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Estructura cPanel</h2>
+      <p>public_html/acme-chile.cl/ — mapa visual del hosting</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <div class="mova-d1-pdf__root">public_html / acme-chile.cl /</div>
+      <p style="font-size:8pt;color:#656d76;margin:0 0 0.1in;">Otros en raíz: admin · axon · documentos · rrhh · crm · skill · operaciones · multimedia</p>
+      <div class="mova-d1-pdf__cpanel-grid">
+        <article class="mova-d1-pdf__folder mova-d1-pdf__folder--mova">
+          <h3>mova/ · Portal y apps MOVA</h3>
+          <div class="chips">
+            <span>agencia</span><span>brief</span><span>cotizador</span><span>cuentas</span><span>doc</span>
+            <span class="hl">erp</span><span>estudios</span><span>facturas</span><span>oc</span><span>operacion</span><span>seo</span>
+          </div>
+          <p class="mova-d1-pdf__warn" style="font-size:8pt;margin:0.08in 0 0;">ERP bajo mova/erp/ — no en raíz</p>
+        </article>
+        <article class="mova-d1-pdf__folder mova-d1-pdf__folder--auth">
+          <h3>mova_auth/ · Login unificado</h3>
+          <div class="chips">
+            <span>login.php</span><span>auth.php</span><span>config.php</span><span>google_login.php</span>
+            <span>logout.php</span><span>panel.php</span><span>setup.sql</span>
+          </div>
+          <p style="font-size:8pt;margin:0.08in 0 0;color:#5a4080;">Único login para todos los módulos M</p>
+        </article>
+      </div>
+      <p class="mova-d1-pdf__footer-note" style="font-size:9pt;">teal = MOVA · violeta = login · amarillo = ERP</p>
+    </div>
+  </section>
+
+  <!-- Slide 7 — Local Storage -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>DevTools · Local Storage</h2>
+      <p>Sesión en https://acme-chile.cl/mova/</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <div class="mova-d1-pdf__block">
+        <h3>Origen acme-chile.cl</h3>
+        <p>Clave: <strong>axon_chats</strong> → historial chats widget AXON</p>
+      </div>
+      <div class="mova-d1-pdf__block">
+        <h3>Origen accounts.google.com (terceros)</h3>
+        <p>Sesión Google OAuth — fuera del top-level site</p>
+      </div>
+      <div class="mova-d1-pdf__block">
+        <p style="font-size:12pt;padding-left:0;">No se detectó clave <strong>jwt</strong> / <strong>token</strong> / <strong>access_token</strong> en acme-chile.cl.<br>Sesión principal: Google OAuth + cookies.</p>
+      </div>
+      <div class="mova-d1-pdf__highlight" style="position:absolute;left:0.45in;right:0.45in;bottom:0.45in;">
+        Objetivo Día 2–7: unificar en mova_auth con cookie HttpOnly — sin JWT en cliente.
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 8 — Próximo paso -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Próximo paso — Día 2</h2>
+      <p>mkof/02 · Acuerdo + diseño mova_auth</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ul class="mova-d1-pdf__bullets">
+        <li>Documento «Reglas-mova_auth» — regla: si no pasó por mova_auth, no entra.</li>
+        <li>Lista de 6 archivos PHP: config, session, login, validate, guard, logout.</li>
+        <li>Elegir módulo sandbox para migración (Día 5) — módulo simple bajo /mova/.</li>
+        <li>Solicitar al equipo n8n listado de webhooks por módulo (complemento inventario).</li>
+        <li>Marcar Día 1 completado en organizador tras compartir este PPT/PDF.</li>
+      </ul>
+      <p class="mova-d1-pdf__footer-note" style="color:#656d76;font-weight:400;">Entregables: MOVA-D1-Inventario-Status.pptx · MOVA-D1-Inventario-Status.pdf</p>
+    </div>
+  </section>
+
+  <!-- Slide 9 — n8n -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Qué necesitamos de n8n</h2>
+      <p>Para el equipo que administra n8n · complemento al inventario <span class="mova-d1-pdf__badge-n8n">No bloquea Día 1</span></p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <div class="mova-d1-pdf__n8n-grid">
+        <ol class="mova-d1-pdf__n8n-steps">
+          <li><span class="num">1</span><div><strong>Listar workflows activos</strong>Todos los que sirven a acme-chile.cl o módulos M.</div></li>
+          <li><span class="num">2</span><div><strong>URL de cada webhook</strong>Endpoint completo en producción.</div></li>
+          <li><span class="num">3</span><div><strong>Módulo que lo usa</strong>Portal MOVA, ERP, AXON, RRHH…</div></li>
+          <li><span class="num">4</span><div><strong>¿Requiere auth?</strong>Token, API key, whitelist o ninguna.</div></li>
+          <li><span class="num">5</span><div><strong>Enviar tabla a MOVA</strong>Correo o carpeta compartida.</div></li>
+        </ol>
+        <div class="mova-d1-pdf__n8n-panel">
+          <h4>Flujo visual</h4>
+          <div class="mova-d1-pdf__n8n-flow">
+            <div class="mods"><span>Portal</span><span>ERP</span><span>AXON</span></div>
+            <div class="mova-d1-pdf__n8n-core">n8n · webhooks</div>
+            <div style="font-size:7.5pt;color:#6f42c1;font-weight:600;">Respuesta al módulo</div>
+          </div>
+          <table class="mova-d1-pdf__mini-tabla">
+            <thead><tr><th>Webhook</th><th>Módulo</th><th>Auth</th><th>Notas</th></tr></thead>
+            <tbody><tr><td>…</td><td>…</td><td>…</td><td>…</td></tr><tr><td>…</td><td>…</td><td>…</td><td>…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="mova-d1-pdf__highlight" style="margin-top:0.12in;font-size:9pt;">
+        Hito paralelo: backup workflows → repo mova-n8n-workflows. Puedes seguir con mova_auth sin entrar a n8n.
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

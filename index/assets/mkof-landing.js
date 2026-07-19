@@ -121,21 +121,64 @@
     return `<section class="ficha-seccion ficha-seccion--portal">
         <h2>Guías en curso · MOVA</h2>
         <p style="margin:0 0 0.85rem;font-size:0.9rem">
-          <a href="MOVA-GitHub-Paso1-Crear-Cuenta.pdf" target="_blank" rel="noopener">⬇ PDF con capturas reales</a>
-          ·
-          <a href="MOVA-GitHub-Paso1-Crear-Cuenta.pptx" download>PPT</a>
+          <a href="../MKOF/MOVA/documentos/">📁 Todos los documentos MOVA</a>
         </p>
         <div class="mkof-guias-grid">
-          <a href="github-cuenta.html" class="mkof-guia-card mkof-guia-card--activa">
-            <span class="mkof-guia-card__paso">Paso 1 · En curso</span>
+          <a href="../MKOF/MOVA/documentos/ver.html?id=d1-inventario-status" class="mkof-guia-card">
+            <span class="mkof-guia-card__paso">Día 1 · Entregable</span>
+            <strong>Status inventario módulos</strong>
+            <span class="mkof-guia-card__desc">Ver · PDF · PPT · mkof/01</span>
+          </a>
+          <a href="../MKOF/MOVA/documentos/ver.html?id=d2-reglas-mova-auth" class="mkof-guia-card">
+            <span class="mkof-guia-card__paso">Día 2 · Entregable</span>
+            <strong>Reglas mova_auth</strong>
+            <span class="mkof-guia-card__desc">Ver · PDF · PPT · mkof/02</span>
+          </a>
+          <a href="../MKOF/MOVA/documentos/ver.html?id=d3-nucleo-mova-auth" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Día 3 · Entregable</span>
+            <strong>Núcleo mova_auth (6 archivos)</strong>
+            <span class="mkof-guia-card__desc">Gap cPanel · mkof/03 · 19 jul</span>
+          </a>
+          <a href="../MKOF/MOVA/documentos/ver.html?id=d4-login-cookie" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Día 4 · Entregable</span>
+            <strong>Login único + cookie</strong>
+            <span class="mkof-guia-card__desc">HttpOnly · casos de prueba · mkof/04</span>
+          </a>
+          <a href="../MKOF/MOVA/documentos/ver.html?id=d5-validacion-modulos" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Día 5 · Cierre auditoría</span>
+            <strong>Matriz validación por módulo</strong>
+            <span class="mkof-guia-card__desc">Sandbox ERP · mkof/05 · 19 jul</span>
+          </a>
+          <a href="github-cuenta.html" class="mkof-guia-card">
+            <span class="mkof-guia-card__paso">Paso 1 · GitHub</span>
             <strong>Crear cuenta GitHub</strong>
             <span class="mkof-guia-card__desc">Capturas reales de github.com</span>
           </a>
-          <div class="mkof-guia-card mkof-guia-card--pendiente">
-            <span class="mkof-guia-card__paso">Paso 2 · Próximo</span>
+          <a href="github-repo.html" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Paso 2 · GitHub</span>
             <strong>Repo privado mova-n8n-workflows</strong>
-            <span class="mkof-guia-card__desc">Se publicará después de crear la cuenta</span>
-          </div>
+            <span class="mkof-guia-card__desc">10 pasos · PPT y PDF</span>
+          </a>
+          <a href="MOVA-GitHub-N8n-Checklist.pdf" target="_blank" rel="noopener" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Hoy · Checklist</span>
+            <strong>GitHub + solicitud n8n</strong>
+            <span class="mkof-guia-card__desc">PPT/PDF · Pasos 1–3 con checklist</span>
+          </a>
+          <a href="github-n8n.html" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Paso 3 · n8n</span>
+            <strong>Solicitud capturas + tabla + JSON</strong>
+            <span class="mkof-guia-card__desc">10 pasos · mockup por captura</span>
+          </a>
+          <a href="mova-auth-guia.html" class="mkof-guia-card">
+            <span class="mkof-guia-card__paso">Fase 1 · En curso</span>
+            <strong>Login unificado mova_auth</strong>
+            <span class="mkof-guia-card__desc">12 pasos · diagramas · PDF</span>
+          </a>
+          <a href="MOVA-Auth-Login-Unificado.pdf" target="_blank" rel="noopener" class="mkof-guia-card">
+            <span class="mkof-guia-card__paso">PDF directo</span>
+            <strong>mova_auth paso a paso</strong>
+            <span class="mkof-guia-card__desc">Para entregar al encargado</span>
+          </a>
         </div>
       </section>`;
   }

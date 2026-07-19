@@ -1,99 +1,78 @@
-# Resumen — MOVA Auditoría Charlas
+# Resumen — MOVA · Auditoría técnica mova_auth
 
-**Última actualización:** 29 jun 2026  
+**Última actualización:** 19 jul 2026  
 **Cliente:** MKOF · **Proyecto:** MOVA  
-**Documento completo (handoff):** [`docs/MKOF-MOVA-HANDOFF.md`](../../../../docs/MKOF-MOVA-HANDOFF.md)
+**Rama:** `cursor/mova-auditoria-etapa2-d3-d5-459d`  
+**Handoff portal:** [`docs/MKOF-MOVA-HANDOFF.md`](../../../../docs/MKOF-MOVA-HANDOFF.md)
 
 ---
 
-## Objetivo del proyecto
+## Objetivo (fase actual)
 
-Auditar charlas (capacitaciones, webinars o sesiones): revisar contenido, calidad, criterios y documentar hallazgos con informe. MOVA es un **subproyecto de MKOF**, no un cliente aparte.
-
----
-
-## Qué se hizo en esta conversación (organizador + portal)
-
-### Integración en el repo `organizacion`
-
-- MOVA integrado como subproyecto bajo **MKOF** (modelo CLA / ADL).
-- Eliminado cliente standalone `Mova.html` / `cli-mova`.
-- Tarjeta **MOVA** en `MKOF.html` → sección Proyectos.
-- Agente Cursor **`@mova`** en `.cursor/rules/mova.mdc`.
-- Rama Git: `cursor/mova-cliente-portal-agente-7749` · PR #18.
-
-### Rutas creadas
-
-| Qué | Ruta |
-|-----|------|
-| Hub MOVA | `index/clientes/MKOF/MOVA.html` |
-| Resumen (este archivo) | `index/clientes/MKOF/MOVA/RESUMEN.md` |
-| Código del proyecto | `index/clientes/MKOF/MOVA/auditoria-charlas/` |
-| Handoff completo | `docs/MKOF-MOVA-HANDOFF.md` |
-
-### Ajustes de UX
-
-- Fondo claro y tarjeta blanca en páginas MOVA (texto legible).
-- Sección **Resumen del agente** en portal (lee este `RESUMEN.md`).
-
-### Pendiente del workspace original
-
-- Copiar el contenido real de **`MOVA-Auditoria-Charlas`** (Windows) a `auditoria-charlas/`.
-- Completar abajo lo que hizo el **otro agente** en ese workspace (código, análisis, informes).
+Documentar el login unificado `mova_auth` en **acme-chile.cl** — inventario, reglas, núcleo, cookie y validación por módulo — **sin tocar código en servidor**.  
+Siguiente etapa (después de firmar): implementar archivos faltantes y migrar módulos (sandbox ERP primero).
 
 ---
 
-## Qué se hizo con el agente anterior (MOVA-Auditoria-Charlas)
+## Auditoría D1–D5 — estado 19 jul 2026
 
-<!-- Pega aquí el resumen del otro workspace / chat -->
+| Día | Tarea | Entregable | Estado |
+|-----|-------|------------|--------|
+| D1 | Inventario módulos M | PPT/PDF + `Inventario-MOVA-modulos.md` | Hecho |
+| D2 | Reglas mova_auth | PPT/PDF + `Reglas-mova_auth.md` | Hecho |
+| D3 | Carpetas y archivos núcleo | `Mapa-mova_auth-nucleo.md` + HTML | **Hecho hoy** |
+| D4 | Login único + cookie | `Flujo-login-cookie-mova_auth.md` + HTML | **Hecho hoy** |
+| D5 | Validación por módulo + cierre | `Matriz-validacion-modulos-mova_auth.md` + HTML | **Hecho hoy** |
 
-- _Pendiente:_ el agente anterior trabajó en carpeta `MOVA-Auditoria-Charlas` fuera del repo.
-- _Acción:_ copiar archivos a `auditoria-charlas/` y pedir a `@mova`: *«Actualiza RESUMEN.md con lo hecho»*.
-
----
-
-## Entregables
-
-| Entregable | Estado | Notas |
-|------------|--------|-------|
-| Integración portal MKOF/MOVA | Hecho | Ver PR #18 |
-| Agente @mova en repo | Hecho | `.cursor/rules/mova.mdc` |
-| Handoff online (Git) | Hecho | `docs/MKOF-MOVA-HANDOFF.md` |
-| Código MOVA-Auditoria-Charlas | Pendiente | Copiar a `auditoria-charlas/` |
-| Criterios / rúbrica | Pendiente | |
-| Charlas auditadas | Pendiente | |
-| Informe de hallazgos | Pendiente | |
+Portal documentos: `index/clientes/MKOF/MOVA/documentos/`  
+Landing MKOF: sección «Guías en curso · MOVA».
 
 ---
 
-## Comandos rápidos (otro PC)
+## Hallazgos clave
 
-```bat
-cd /d "C:\Users\Josefa Ogalde\organizacion"
-git fetch origin
-git checkout cursor/mova-trabajo-d6a1
-git pull origin cursor/mova-trabajo-d6a1
-ACTUALIZAR-RAMA-MOVA.bat
-ABRIR-MOVA.bat
-```
-
-URL: http://localhost:3000/index/clientes/MKOF/MOVA.html
+1. Login **fragmentado**: Google en `/mova/`, correo+clave en `/mova_auth/`, clave local en `/mova/erp/`, AXON sin gate visible.
+2. Gap núcleo: faltan `session.php`, `validate.php`, `guard.php` en cPanel.
+3. Diseño acordado: cookie **HttpOnly + Secure**, sin JWT en localStorage.
+4. Sandbox primera migración: **`/mova/erp/`**.
 
 ---
 
-## Próximos pasos
+## Pendiente humano (no bloquea docs)
 
-1. `git checkout cursor/mova-trabajo-d6a1` → `ACTUALIZAR-RAMA-MOVA.bat` → `ABRIR-MOVA.bat`
-2. Copiar `MOVA-Auditoria-Charlas` → `index/clientes/MKOF/MOVA/auditoria-charlas/`.
-3. Completar sección «agente anterior» arriba.
-4. Cursor: abrir carpeta `organizacion` → `@mova` para continuar trabajo.
-5. Crear tarea en organizador: `?tarea=mkof/01` (rol MOVA).
+- [ ] Marcar `mkof/03`, `mkof/04`, `mkof/05` completadas en organizador (PC local / `organizacion-live.json`)
+- [ ] Acuerdo formal del equipo técnico (correo o acta sobre reglas D2)
+- [ ] Equipo n8n: enviar JSON + capturas para primer push a `mova-n8n-workflows`
+
+---
+
+## Próxima etapa (implementación — no es esta PR)
+
+1. Crear `session.php` / `validate.php` / `guard.php` en servidor.
+2. Migrar sandbox ERP → portal `/mova/` → AXON.
+3. Seguir Gantt post-auditoría (Cloudflare, MySQL, rutinas).
+
+Playbook: https://acme-chile.cl/documentos/auditoria_mova.html
+
+---
+
+## URLs (Laravel :8000 o SERVIR :3000)
+
+| Página | Path |
+|--------|------|
+| Hub MOVA | `/index/clientes/MKOF/MOVA.html` |
+| Documentos | `/index/clientes/MKOF/MOVA/documentos/` |
+| D3 | `…/documentos/ver.html?id=d3-nucleo-mova-auth` |
+| D4 | `…/documentos/ver.html?id=d4-login-cookie` |
+| D5 | `…/documentos/ver.html?id=d5-validacion-modulos` |
+| Landing MKOF | `/index/clientes/mkof/` |
 
 ---
 
 ## Archivos clave
 
-- `docs/MKOF-MOVA-HANDOFF.md` — **toda la conversación y setup**
-- `docs/cursor/INVOCAR-AGENTE-MOVA.md` — cómo invocar @mova
-- `index/clientes/MKOF/MOVA/README.md` — URLs del portal
-- `RESUMEN.md` — este resumen (visible en el navegador)
+- `data/mkof-mova-auth-plan.js` — plan D1–D5
+- `data/mova-documentos.js` — catálogo portal
+- `index/clientes/mkof/Mapa-mova_auth-nucleo.md`
+- `index/clientes/mkof/Flujo-login-cookie-mova_auth.md`
+- `index/clientes/mkof/Matriz-validacion-modulos-mova_auth.md`

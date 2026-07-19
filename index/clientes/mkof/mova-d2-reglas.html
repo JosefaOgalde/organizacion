@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOVA · Día 2 — Reglas mova_auth</title>
+  <link rel="stylesheet" href="../../assets/portal.css">
+  <link rel="stylesheet" href="../../assets/mkof-mova-d2-reglas.css">
+  <script src="../../assets/embed-chrome.js"></script>
+  <link rel="stylesheet" href="../../assets/embed-chrome.css">
+</head>
+<body class="mova-d2-reglas">
+  <header class="mova-d2-reglas__hero">
+    <p class="mova-d2-reglas__eyebrow">GRUPO MAKING OF · MOVA · AUDITORÍA</p>
+    <h1>Día 2 — Reglas mova_auth</h1>
+    <p class="mova-d2-reglas__sub">acme-chile.cl · Tarea <code>mkof/02</code> · 8 jul 2026</p>
+    <p class="mova-d2-reglas__badge">Solo documentar y acordar — no tocar código en servidor</p>
+  </header>
+
+  <main class="mova-d2-reglas__main">
+    <section>
+      <h2>Contexto (hallazgo Día 1)</h2>
+      <p>El login está <strong>fragmentado</strong>: Google OAuth en <code>/mova/</code>, correo+clave en <code>/mova_auth/</code>, contraseña en <code>/mova/erp/</code>. Ningún módulo revisado usa solo <code>mova_auth</code> como validador.</p>
+      <ul>
+        <li>Portal <code>/mova/</code> → Google OAuth (no pasa por mova_auth).</li>
+        <li><code>mova_auth/login.php</code> → correo+clave (parcial, no gate del panel).</li>
+        <li><code>mova/erp/</code> → contraseña local independiente.</li>
+        <li>Ningún módulo M usa mova_auth como único validador.</li>
+      </ul>
+    </section>
+
+    <div class="mova-d2-reglas__puente">
+      <strong>PUENTE</strong>
+      El inventario D1 listó cuatro formas de «entrar». Antes de proponer reglas, visualizamos el problema en un mapa.
+      <pre class="mova-d2-reglas__puente-mapa">Inventario D1 → login fragmentado → 4 puertas
+  /mova/ (Google)   mova_auth/login.php   /mova/erp/ (clave)   /axon/ (¿?)
+Sin portero único = sin sesión compartida ni experiencia coherente</pre>
+    </div>
+
+    <section>
+      <h2>Mapa conceptual — situación HOY</h2>
+      <p class="mova-d2-reglas__explica-intro">Cada módulo tiene su propia «puerta». El usuario no sabe por dónde entrar.</p>
+      <div class="mova-d2-reglas__mapa-hoy">
+        <div class="mova-d2-reglas__puerta mova-d2-reglas__puerta--warn">
+          <strong>Google OAuth</strong><span>/mova/</span>
+          <p>Entra con cuenta Google al panel. <em>No pasa por mova_auth.</em></p>
+        </div>
+        <div class="mova-d2-reglas__puerta mova-d2-reglas__puerta--accent">
+          <strong>correo + clave</strong><span>mova_auth/login.php</span>
+          <p>Login PHP aparte. <em>Parcial — no es el gate del panel.</em></p>
+        </div>
+        <div class="mova-d2-reglas__puerta mova-d2-reglas__puerta--warn">
+          <strong>contraseña local</strong><span>/mova/erp/</span>
+          <p>Solo campo clave en ERP. <em>Login independiente.</em></p>
+        </div>
+        <div class="mova-d2-reglas__puerta mova-d2-reglas__puerta--muted">
+          <strong>sin login visible</strong><span>/axon/</span>
+          <p>Abre directo. Hay que definir quién valida (D5).</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="mova-d2-reglas__puente">
+      <strong>PUENTE</strong>
+      Vimos el caos actual. Ahora definimos el vocabulario del acuerdo para que todos hablen lo mismo.
+      <pre class="mova-d2-reglas__puente-mapa">Problema (varias puertas) → Solución: UN recepcionista (mova_auth)
+mova_auth = portero  |  guard.php = guardia en cada módulo  |  Módulo M = app interna MOVA</pre>
+    </div>
+
+    <section>
+      <h2>¿Qué es mova_auth? (glosario)</h2>
+      <div class="mova-d2-reglas__glosario">
+        <article><h3>mova_auth</h3><p>Carpeta en el servidor. El «portero» que debería validar a todos antes de entrar a apps MOVA.</p></article>
+        <article><h3>login.php</h3><p>Pantalla de entrada. Hoy existe pero NO controla el acceso al panel <code>/mova/</code>.</p></article>
+        <article><h3>guard.php</h3><p>Archivo que cada módulo privado incluirá al inicio. Pregunta: «¿hay sesión?» — si no, manda al login.</p></article>
+        <article><h3>Módulo M</h3><p>App interna MOVA: portal, ERP, AXON, RRHH, facturas bajo <code>/mova/</code>, etc.</p></article>
+      </div>
+      <p class="mova-d2-reglas__analogia"><strong>Analogía:</strong> hoy cada oficina tiene su cerradura. Objetivo: un solo recepcionista (mova_auth) en la entrada.</p>
+    </section>
+
+    <div class="mova-d2-reglas__puente">
+      <strong>PUENTE</strong>
+      Con los términos claros, pasamos a la regla que el equipo debe acordar por escrito — la «constitución» del acceso.
+      <pre class="mova-d2-reglas__puente-mapa">Analogía edificio → Regla escrita → 5 reglas operativas
+Si no pasaste por mova_auth con sesión válida → ningún módulo M te abre</pre>
+    </div>
+
+    <section>
+      <h2>Regla de oro</h2>
+      <blockquote class="mova-d2-reglas__oro">
+        Si el usuario no pasó por mova_auth con sesión válida, no entra a ningún módulo M.
+        <small>Operación: guard.php al inicio · sesión PHP server-side · redirect a login.php?redirect= · sin JWT en localStorage.</small>
+      </blockquote>
+      <div class="mova-d2-reglas__diagrama">
+        <span>Usuario</span> →
+        <span class="mova-d2-reglas__puerta">mova_auth</span> →
+        <div class="mova-d2-reglas__mods">
+          <span>/mova/</span><span>/mova/erp/</span><span>/axon/</span><span>/rrhh/</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Regla de oro — paso a paso</h2>
+      <ol class="mova-d2-reglas__pasos">
+        <li><strong>guard.php</strong> — Guardia en la puerta de cada módulo. Verifica sesión antes de mostrar contenido.</li>
+        <li><strong>Sesión en servidor</strong> — La credencial vive en PHP, no en localStorage del navegador.</li>
+        <li><strong>Redirect al login</strong> — Sin sesión → <code>login.php?redirect=</code> con la URL que el usuario quería.</li>
+        <li><strong>Vuelta al módulo</strong> — Tras login, regresa donde iba (no pierde el destino).</li>
+        <li><strong>Sin logins paralelos</strong> — Se acaban Google suelto, clave ERP aparte, etc. Solo mova_auth.</li>
+      </ol>
+    </section>
+
+    <div class="mova-d2-reglas__puente">
+      <strong>PUENTE</strong>
+      La regla en papel se traduce en un recorrido concreto cuando el usuario pide un módulo.
+      <pre class="mova-d2-reglas__puente-mapa">Usuario → módulo → guard.php → ¿sesión?
+  Sí → entra al módulo
+  No → login.php?redirect= → tras login vuelve al destino</pre>
+    </div>
+
+    <section>
+      <h2>Flujo objetivo (mapa)</h2>
+      <div class="mova-d2-reglas__flujo">
+        <span>1. Pide módulo</span> →
+        <span>2. guard.php</span> →
+        <span>3. ¿sesión?</span> →
+        <span class="no">No → login</span> /
+        <span class="si">Sí → entra</span>
+      </div>
+      <p>El módulo nunca decide solo quién entra — solo pregunta a mova_auth vía <code>guard.php</code>.</p>
+    </section>
+
+    <div class="mova-d2-reglas__puente">
+      <strong>PUENTE</strong>
+      El flujo genérico aplica a apps concretas. La tabla del inventario D1 dice, módulo por módulo, quién debe pasar por mova_auth.
+      <pre class="mova-d2-reglas__puente-mapa">Diseño (guard + login) → Inventario real: Portal, ERP, AXON, RRHH, Documentos…</pre>
+    </div>
+
+    <section>
+      <h2>Clasificación por módulo</h2>
+      <table class="mova-d2-reglas__tabla">
+        <thead>
+          <tr><th>Módulo</th><th>URL</th><th>Auth hoy</th><th>¿Debe pasar por mova_auth?</th><th>Notas</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Portal MOVA</td><td>/mova/</td><td>Google OAuth</td><td class="si">Sí</td><td>Hoy no pasa</td></tr>
+          <tr><td>mova_auth</td><td>/mova_auth/login.php</td><td>PHP correo+clave</td><td class="gate">Es el gate</td><td>Parcial hoy</td></tr>
+          <tr><td>MOVA ERP</td><td>/mova/erp/</td><td>Contraseña local</td><td class="si">Sí</td><td>Login aparte</td></tr>
+          <tr><td>AXON</td><td>/axon/</td><td>Sin login visible</td><td class="si">Sí</td><td>Validar en D5</td></tr>
+          <tr><td>RRHH</td><td>/rrhh/</td><td>403 Forbidden</td><td class="si">Sí</td><td>Sin acceso público</td></tr>
+          <tr><td>Documentos</td><td>/documentos/</td><td>Público</td><td class="na">No (excepción)</td><td>Playbooks</td></tr>
+          <tr><td>/pruebas/</td><td>—</td><td>—</td><td class="na">Fuera de alcance</td><td>Etapa 1 obsoleta</td></tr>
+        </tbody>
+      </table>
+      <p class="mova-d2-reglas__nota-tabla">Submódulos bajo <code>/mova/</code> (facturas, oc, agencia…) heredan la misma regla.</p>
+    </section>
+
+    <section>
+      <h2>Tabla explicada — fila por fila</h2>
+      <ul>
+        <li><strong>Portal MOVA</strong> — Hoy entra con Google. En el diseño nuevo debe pasar por mova_auth primero.</li>
+        <li><strong>mova_auth</strong> — Es el portero. Hoy es «parcial» porque existe pero no controla todo.</li>
+        <li><strong>MOVA ERP</strong> — Hoy tiene clave propia. Debe unificarse: misma sesión que el resto.</li>
+        <li><strong>AXON</strong> — Abre sin login visible. Hay que definir validación (tarea D5).</li>
+        <li><strong>RRHH</strong> — 403 en servidor. Privado — debe pasar por mova_auth cuando se habilite.</li>
+        <li><strong>Documentos</strong> — Público a propósito. EXCEPCIÓN — no necesita mova_auth.</li>
+      </ul>
+    </section>
+
+    <div class="mova-d2-reglas__puente">
+      <strong>PUENTE</strong>
+      No todo el sitio es privado. Hay rutas abiertas (playbooks, assets, login mismo) y prácticas prohibidas después del acuerdo.
+      <pre class="mova-d2-reglas__puente-mapa">DENTRO (módulos M) ← mova_auth → AFUERA (público / validate API)
+Prohibido: Google suelto · JWT en localStorage · logins duplicados por módulo</pre>
+    </div>
+
+    <section>
+      <h2>Dentro vs afuera del edificio</h2>
+      <div class="mova-d2-reglas__dentro-fuera">
+        <div class="mova-d2-reglas__dentro">
+          <h3>Dentro — requiere mova_auth</h3>
+          <ul><li>/mova/ y submódulos</li><li>/mova/erp/</li><li>/axon/</li><li>/rrhh/</li></ul>
+        </div>
+        <div class="mova-d2-reglas__portero">mova_auth</div>
+        <div class="mova-d2-reglas__fuera">
+          <h3>Afuera — público</h3>
+          <ul><li>/documentos/</li><li>CSS · JS · imágenes</li><li>login · logout · validate</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="mova-d2-reglas__puente">
+      <strong>PUENTE</strong>
+      Resumen visual del cambio acordado. Hoy solo documentamos; la implementación en servidor empieza en Día 3+.
+      <pre class="mova-d2-reglas__puente-mapa">ANTES: 4 logins · sesiones sueltas  →  DESPUÉS: 1 login · guard.php · cookie HttpOnly</pre>
+    </div>
+
+    <section>
+      <h2>Antes vs después</h2>
+      <div class="mova-d2-reglas__antes-despues">
+        <div class="mova-d2-reglas__antes">
+          <h3>Antes (D1)</h3>
+          <ul><li>Google en /mova/</li><li>Clave suelta en ERP</li><li>mova_auth aislado</li><li>Sin portero único</li></ul>
+        </div>
+        <div class="mova-d2-reglas__despues">
+          <h3>Después (acuerdo D2)</h3>
+          <ul><li>Un login en mova_auth</li><li>Sesión PHP + cookie HttpOnly</li><li>guard.php en cada módulo</li><li>Sin JWT en navegador</li></ul>
+        </div>
+      </div>
+      <p class="mova-d2-reglas__aviso-impl">«Después» es el diseño acordado. Implementación en servidor desde Día 3+. Hoy solo firmamos reglas.</p>
+    </section>
+
+    <section>
+      <h2>Excepciones públicas</h2>
+      <ul>
+        <li><strong>/documentos/</strong> — playbooks HTML sin login</li>
+        <li><strong>Assets estáticos</strong> — CSS, JS, imágenes públicas</li>
+        <li><strong>login.php / logout.php</strong> — entrada y salida del sistema</li>
+        <li><strong>validate.php</strong> — API JSON 200/401 (sin redirect HTML)</li>
+      </ul>
+      <p>Toda nueva excepción debe documentarse aquí con responsable y fecha.</p>
+    </section>
+
+    <section>
+      <h2>Lo que no se permite (post-acuerdo)</h2>
+      <ul>
+        <li>Google OAuth directo en el módulo sin pasar por mova_auth</li>
+        <li>JWT o access_token en localStorage del cliente</li>
+        <li>Pantallas de login duplicadas por módulo</li>
+        <li>Asumir sesión de accounts.google.com como sesión MOVA</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Checklist cierre Día 2</h2>
+      <ul class="mova-d2-reglas__check">
+        <li>Regla de oro acordada con el equipo técnico</li>
+        <li>Tabla de módulos revisada (sin objeciones o comentarios anotados)</li>
+        <li>Excepciones públicas confirmadas</li>
+        <li>Documento compartido (PDF/PPT o enlace portal)</li>
+        <li>Tarea <code>mkof/02</code> marcada completada</li>
+      </ul>
+      <p><strong>Pendiente acuerdo formal:</strong> correo o acta · Responsable: _______________ · Fecha: _______</p>
+    </section>
+
+    <section>
+      <h2>Próximo paso — Día 3 → cerrado 19 jul</h2>
+      <p>Documentar carpetas y archivos núcleo de <code>mova_auth/</code> (sin subirlos aún).</p>
+      <p><a href="mova-d3-nucleo.html">Entregable D3 →</a> · <a href="mova-d4-login-cookie.html">D4</a> · <a href="mova-d5-validacion.html">D5 cierre</a></p>
+    </section>
+  </main>
+
+  <footer class="mova-d2-reglas__foot">
+    MOVA · Reglas Día 2 · GRUPO MAKING OF · acme-chile.cl
+  </footer>
+</body>
+</html>

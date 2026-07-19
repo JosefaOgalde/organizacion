@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f0f4f5; padding: 24px; }
+    .dia { width: 900px; background: #fff; border-radius: 12px; padding: 28px 32px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+    .dia h2 { font-size: 18px; color: #2a4a4e; margin-bottom: 16px; border-bottom: 3px solid #a8d8dc; padding-bottom: 8px; }
+    .dia--antes h2 { border-color: #e8a0a0; }
+    .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; margin: 12px 0; }
+    .box { padding: 12px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; text-align: center; min-width: 120px; }
+    .box--user { background: #e8f6f8; border: 2px solid #4a7a80; color: #2a4a4e; }
+    .box--mod { background: #fff3cd; border: 2px solid #d4a72c; color: #664d03; }
+    .box--google { background: #fce8e6; border: 2px solid #ea4335; color: #c5221f; }
+    .box--auth { background: #d4edda; border: 2px solid #1a7f37; color: #0d4d1f; }
+    .box--n8n { background: #e8e0f8; border: 2px solid #6f42c1; color: #4a2c8a; }
+    .box--bad { background: #f8d7da; border: 2px solid #dc3545; color: #842029; opacity: .9; }
+    .arrow { font-size: 22px; color: #4a7a80; font-weight: bold; }
+    .arrow--bad { color: #dc3545; }
+    .note { font-size: 11px; color: #666; margin-top: 12px; text-align: center; line-height: 1.5; }
+    .legend { display: flex; gap: 16px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+    .legend span { font-size: 11px; display: flex; align-items: center; gap: 6px; }
+    .dot { width: 12px; height: 12px; border-radius: 3px; }
+    .flow-v { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .cols .col { padding: 16px; border-radius: 8px; }
+    .cols .col--old { background: #fff5f5; border: 1px dashed #dc3545; }
+    .cols .col--new { background: #f0fff4; border: 1px dashed #1a7f37; }
+    .cols h3 { font-size: 13px; margin-bottom: 10px; }
+    ul { font-size: 12px; line-height: 1.6; padding-left: 18px; color: #444; }
+    .tree { font-family: ui-monospace, monospace; font-size: 12px; line-height: 1.7; background: #1e1e1e; color: #d4d4d4; padding: 16px 20px; border-radius: 8px; }
+    .tree .dir { color: #4ec9b0; }
+    .tree .file { color: #9cdcfe; }
+    .tree .new { color: #b5cea8; }
+  </style>
+</head>
+<body>
+
+  <div class="dia dia--antes" id="d1">
+    <h2>❌ HOY — Login fragmentado (problema)</h2>
+    <div class="row">
+      <div class="box box--user">Usuario</div>
+      <span class="arrow">→</span>
+      <div class="box box--google">Google OAuth</div>
+      <span class="arrow arrow--bad">+</span>
+      <div class="box box--mod">mova_auth parcial</div>
+    </div>
+    <div class="row">
+      <div class="box box--mod">Módulo A<br><small>valida solo</small></div>
+      <div class="box box--mod">Módulo B<br><small>Google token</small></div>
+      <div class="box box--mod">Módulo C<br><small>whitelist n8n</small></div>
+    </div>
+    <div class="row">
+      <div class="box box--bad">JWT en localStorage</div>
+      <span class="arrow arrow--bad">⚠</span>
+      <div class="box box--bad">Permisos distintos por módulo</div>
+    </div>
+    <p class="note">Cada módulo resuelve permisos por su cuenta → sesiones inconsistentes y riesgo de seguridad</p>
+  </div>
+
+  <div class="dia" id="d2">
+    <h2>✅ OBJETIVO — mova_auth centralizado</h2>
+    <div class="flow-v">
+      <div class="box box--user">Usuario</div>
+      <span class="arrow">↓</span>
+      <div class="box box--auth">mova_auth<br><small>único login + validador</small></div>
+      <span class="arrow">↓</span>
+      <div class="row">
+        <div class="box box--mod">Módulo A</div>
+        <div class="box box--mod">Módulo B</div>
+        <div class="box box--mod">Módulo C</div>
+      </div>
+      <span class="arrow">↓</span>
+      <div class="box box--auth">Cookie httpOnly + Secure<br><small>PHP en GoDaddy</small></div>
+    </div>
+    <p class="note">Un solo login → un token de sesión → cada módulo solo consulta mova_auth</p>
+  </div>
+
+  <div class="dia" id="d3">
+    <h2>Flujo de login (paso a paso)</h2>
+    <div class="row">
+      <div class="box box--user">1. Usuario</div>
+      <span class="arrow">→</span>
+      <div class="box box--auth">2. /mova_auth/login.php</div>
+      <span class="arrow">→</span>
+      <div class="box box--google">3. Google (opcional)</div>
+      <span class="arrow">→</span>
+      <div class="box box--auth">4. Sesión PHP</div>
+      <span class="arrow">→</span>
+      <div class="box box--mod">5. Módulo M</div>
+    </div>
+    <div class="legend">
+      <span><i class="dot" style="background:#4a7a80"></i> Usuario</span>
+      <span><i class="dot" style="background:#1a7f37"></i> mova_auth</span>
+      <span><i class="dot" style="background:#ea4335"></i> Google tokeninfo</span>
+      <span><i class="dot" style="background:#d4a72c"></i> Módulos MOVA</span>
+    </div>
+  </div>
+
+  <div class="dia" id="d4">
+    <h2>Cómo valida cada módulo</h2>
+    <div class="row">
+      <div class="box box--mod">Módulo entra</div>
+      <span class="arrow">→</span>
+      <div class="box box--auth">include guard.php</div>
+      <span class="arrow">→</span>
+      <div class="box box--auth">validate.php<br><small>¿cookie válida?</small></div>
+    </div>
+    <div class="row" style="margin-top:16px">
+      <div class="box box--bad">NO → redirect login</div>
+      <span style="margin:0 20px">|</span>
+      <div class="box box--auth">SÍ → permisos + continuar</div>
+    </div>
+  </div>
+
+  <div class="dia" id="d5">
+    <h2>Estructura de carpetas en GoDaddy (cPanel)</h2>
+    <pre class="tree"><span class="dir">public_html/</span>
+├── <span class="dir">mova_auth/</span>          <span class="new">← NUEVO (núcleo)</span>
+│   ├── <span class="file">config.php</span>
+│   ├── <span class="file">login.php</span>
+│   ├── <span class="file">logout.php</span>
+│   ├── <span class="file">validate.php</span>      <span class="new">← API validación</span>
+│   ├── <span class="file">guard.php</span>         <span class="new">← include en módulos</span>
+│   └── <span class="file">session.php</span>
+├── <span class="dir">modulo_maestro/</span>
+│   └── <span class="file">index.php</span>         <span class="new">← require guard.php arriba</span>
+├── <span class="dir">modulo_ingresos/</span>
+└── <span class="dir">modulo_egresos/</span></pre>
+  </div>
+
+  <div class="dia" id="d6">
+    <h2>Antes vs después — resumen</h2>
+    <div class="cols">
+      <div class="col col--old">
+        <h3>❌ Antes</h3>
+        <ul>
+          <li>Google + mova_auth mezclados</li>
+          <li>JWT en localStorage</li>
+          <li>Cada M valida distinto</li>
+          <li>Sesiones no compartidas</li>
+        </ul>
+      </div>
+      <div class="col col--new">
+        <h3>✅ Después</h3>
+        <ul>
+          <li>mova_auth = único validador</li>
+          <li>Cookie httpOnly + Secure</li>
+          <li>guard.php en cada módulo</li>
+          <li>Login único para todos los M</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
