@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 720" role="img" aria-label="Referencia Porta Completos Perro">
+  <rect width="640" height="720" fill="#f7f1e6"/>
+  <ellipse cx="320" cy="560" rx="180" ry="28" fill="#163a6b" opacity="0.08"/>
+  <path d="M150 430 h340 v70 a36 36 0 0 1-36 36 H186 a36 36 0 0 1-36-36z" fill="#163a6b"/>
+  <rect x="185" y="390" width="270" height="48" rx="16" fill="#f07a28"/>
+  <ellipse cx="320" cy="350" rx="125" ry="34" fill="#e8c39a"/>
+  <rect x="235" y="290" width="170" height="68" rx="18" fill="#e8c39a"/>
+  <ellipse cx="320" cy="290" rx="72" ry="20" fill="#c45c26"/>
+  <!-- Dog head -->
+  <g fill="#163a6b" transform="translate(430 175)">
+    <ellipse cx="0" cy="50" rx="52" ry="48"/>
+    <ellipse cx="-48" cy="10" rx="18" ry="28"/>
+    <ellipse cx="48" cy="10" rx="18" ry="28"/>
+    <ellipse cx="0" cy="70" rx="28" ry="20" fill="#2a5088"/>
+    <circle cx="-16" cy="42" r="5" fill="#f7f1e6"/>
+    <circle cx="16" cy="42" r="5" fill="#f7f1e6"/>
+  </g>
+  <text x="320" y="680" text-anchor="middle" fill="#7a5c28" font-family="Segoe UI, sans-serif" font-size="22" opacity="0.55">imagen referencial</text>
+</svg>

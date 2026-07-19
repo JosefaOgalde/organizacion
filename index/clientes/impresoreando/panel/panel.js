@@ -71,9 +71,18 @@
     if (asegurarProductoPortaLataMonster(d)) changed = true;
     if (asegurarProductoMaceteroPerroBulldog(d)) changed = true;
     if (asegurarProductoPortacompletoPerroBulldog(d)) changed = true;
+    if (asegurarProductoPortaBobEsponja(d)) changed = true;
+    if (asegurarProductoNaveEspacialHorizontal(d)) changed = true;
+    if (asegurarProductoNaveEspacialVertical(d)) changed = true;
+    if (asegurarProductoLlaveroEscudoRanger(d)) changed = true;
+    if (asegurarProductoLlaveroPortaLipstickStanley(d)) changed = true;
+    if (asegurarGastosDisenosCults(d)) changed = true;
+    if (asegurarVentasSeed(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
+    if (asegurarPedidosImpresosYNaves(d)) changed = true;
     if (asegurarSkusProductos(d)) changed = true;
     if (asegurarDecimalesProductos(d)) changed = true;
+    if (asegurarCostoAnilloLlavero50(d)) changed = true;
     const gastos = d.gastos;
     for (const g of gastos) {
       const quien = String(g.socioRegistro || '').trim();
@@ -257,6 +266,17 @@
     return changed;
   }
 
+  /** Argolla + metales llavero: $50 (antes $150 plantilla). */
+  function asegurarCostoAnilloLlavero50(d) {
+    d.parametros = d.parametros || {};
+    const cur = Number(d.parametros.costoAnilloMetalLlaveroClp);
+    if (!Number.isFinite(cur) || cur === 150) {
+      d.parametros.costoAnilloMetalLlaveroClp = 50;
+      return true;
+    }
+    return false;
+  }
+
   /** Precio sugerido: +margen% sobre el costo (100% ⇒ precio = costo × 2). */
   function precioSugeridoDesdeCosto(costoTotal) {
     const pct = Number(data?.parametros?.margenObjetivoPct ?? 100);
@@ -285,7 +305,7 @@
     if (!existing) {
       d.productos.push({
         id,
-        nombre: 'Portacompletos gato',
+        nombre: 'Porta Completos Gato',
         activo: true,
         filamentoGramos: 110,
         costoFilamentoKgClp: avgFilKg,
@@ -318,7 +338,7 @@
     if (!existing) {
       d.productos.push({
         id,
-        nombre: 'Portacompletos perro',
+        nombre: 'Porta Completos Perro',
         activo: true,
         filamentoGramos: 132,
         costoFilamentoKgClp: avgFilKg,
@@ -377,12 +397,388 @@
   }
 
   const COSTO_PLA_NEGRO_KG = 17986; // PLA+ Negro Elegoo (orden #312435)
+  const COSTO_PLA_AMARILLO_KG = 16829; // PLA Amarillo Elegoo (#312435)
+  const COSTO_PLA_CAFE_KG = 16829; // PLA Café Elegoo (#312435)
+  const COSTO_PLA_BLANCO_KG = 12690; // PLA blanco Elegoo (ML)
+  const COSTO_PLA_ROJO_KG = 17986; // PLA+ Rojo Elegoo (#312435)
+
+  /**
+   * Upsert que pisa parámetros slicer del seed (respeta precioVenta si ya > 0).
+   * Si el producto tiene editadoLocal, solo alinea sku/nombre canónicos (no pisa g/h/$).
+   */
+  function forzarProductoSeed(d, id, seed) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const existing = d.productos.find((p) => p.id === id);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (!existing.id) {
+      existing.id = id;
+      changed = true;
+    }
+    if (existing.editadoLocal) {
+      for (const k of ['sku', 'nombre']) {
+        if (seed[k] != null && existing[k] !== seed[k]) {
+          existing[k] = seed[k];
+          changed = true;
+        }
+      }
+      return changed;
+    }
+    for (const [k, v] of Object.entries(seed)) {
+      if (v == null) continue;
+      if (k === 'precioVentaSugeridoClp' && Number(existing[k]) > 0) continue;
+      if (JSON.stringify(existing[k]) !== JSON.stringify(v)) {
+        existing[k] = v;
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  /** Precio a mostrar: venta pública si está definida; si no, sugerido (+margen). */
+  function precioVentaProducto(prod, costoTotal) {
+    if (Number(prod?.precioVentaSugeridoClp) > 0) return Number(prod.precioVentaSugeridoClp);
+    return precioSugeridoDesdeCosto(costoTotal != null ? costoTotal : costoProducto(prod).total);
+  }
+
+  /**
+   * Porta Bob Esponja (unidad armada) — prorrateo slicer:
+   * brazos+piernas 31,50 g / 20 pzas → 4 pzas (2+2); zapatos 55,09 g /20 → 2;
+   * corbata 12,44 g /20 → 1; pantalones 80,43 g /3 → 1; camisa 15,06 g → 1.
+   * $/kg ponderado amarillo·negro·café·blanco.
+   */
+  function seedPortaBobEsponja() {
+    const partes = [
+      { pieza: 'brazos+piernas', color: 'amarillo', batchG: 31.5, batchN: 20, usa: 4, batchMin: 83, kgKg: COSTO_PLA_AMARILLO_KG },
+      { pieza: 'zapatos', color: 'negro', batchG: 55.09, batchN: 20, usa: 2, batchMin: 119, kgKg: COSTO_PLA_NEGRO_KG },
+      { pieza: 'corbata', color: 'negro', batchG: 12.44, batchN: 20, usa: 1, batchMin: 33 + 20 / 60, kgKg: COSTO_PLA_NEGRO_KG },
+      { pieza: 'pantalones', color: 'café', batchG: 80.43, batchN: 3, usa: 1, batchMin: 112, kgKg: COSTO_PLA_CAFE_KG },
+      { pieza: 'camisa', color: 'blanco', batchG: 15.06, batchN: 1, usa: 1, batchMin: 28 + 18 / 60, kgKg: COSTO_PLA_BLANCO_KG },
+    ];
+    const detalle = partes.map((p) => {
+      const g = round2((p.batchG * p.usa) / p.batchN);
+      const min = round2((p.batchMin * p.usa) / p.batchN);
+      return { ...p, g, min, filClp: round2((g / 1000) * p.precioKg) };
+    });
+    const filamentoGramos = round2(detalle.reduce((a, p) => a + p.g, 0));
+    const minutos = detalle.reduce((a, p) => a + p.min, 0);
+    const horasImpresion = round2(minutos / 60);
+    const filCosto = detalle.reduce((a, p) => a + p.filClp, 0);
+    const costoFilamentoKgClp = filamentoGramos > 0 ? round2((filCosto / filamentoGramos) * 1000) : COSTO_PLA_AMARILLO_KG;
+    return {
+      sku: 'PTBOBES001',
+      nombre: 'Porta Bob Esponja',
+      activo: true,
+      filamentoGramos,
+      costoFilamentoKgClp,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      partesSlicer: detalle.map((p) => ({
+        pieza: p.pieza,
+        color: p.color,
+        gramos: p.g,
+        minutos: p.min,
+        precioKg: p.precioKg,
+      })),
+      notas:
+        `Unidad armada 19 jul 2026. Prorrateo: brazos+piernas ${detalle[0].g} g amarillo (4/20 de 31,50 g) · zapatos ${detalle[1].g} g negro (2/20 de 55,09 g) · corbata ${detalle[2].g} g negro (1/20 de 12,44 g) · pantalones ${detalle[3].g} g café (1/3 de 80,43 g) · camisa ${detalle[4].g} g blanco. Total ${filamentoGramos} g · ${horasImpresion} h · $/kg ponderado $${costoFilamentoKgClp}. Diseño Cults en gastos socios (no en costo producto).`,
+    };
+  }
+
+  function asegurarProductoPortaBobEsponja(d) {
+    // Soft upsert: respeta g/h/$ si la usuaria bajó el costo en Costos producto.
+    const seed = seedPortaBobEsponja();
+    let changed = upsertProductoSeed(d, 'prod-porta-bob-esponja', seed);
+    const p = (d.productos || []).find((x) => x.id === 'prod-porta-bob-esponja');
+    if (p) {
+      if (p.sku !== seed.sku) {
+        p.sku = seed.sku;
+        changed = true;
+      }
+      if (!p.nombre) {
+        p.nombre = seed.nombre;
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  /** Nave espacial horizontal — 40,91 g blanco · 1 h 24 m. */
+  function asegurarProductoNaveEspacialHorizontal(d) {
+    return forzarProductoSeed(d, 'prod-nave-espacial-horizontal', {
+      sku: 'NAVEHOR001',
+      nombre: 'Nave Espacial Horizontal',
+      activo: true,
+      filamentoModeloGramos: 40.45,
+      filamentoPurgeGramos: 0.47,
+      filamentoMetros: 13.61,
+      filamentoGramos: 40.91,
+      costoFilamentoKgClp: COSTO_PLA_BLANCO_KG,
+      horasImpresion: 1.4, // 1 h 24 m
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: 0.82,
+      notas:
+        'Slicer 1 ud: modelo 40,45 g + purge 0,47 g = 40,91 g · 13,61 m · 1 h 24 m · coste slicer 0,82 (ref). PLA blanco $12.690/kg. Diseño en gastos socios.',
+    });
+  }
+
+  /** Nave espacial vertical — 59,79 g blanco · 1 h 54 m. */
+  function asegurarProductoNaveEspacialVertical(d) {
+    return forzarProductoSeed(d, 'prod-nave-espacial-vertical', {
+      sku: 'NAVEVERT001',
+      nombre: 'Nave Espacial Vertical',
+      activo: true,
+      filamentoModeloGramos: 56.54,
+      filamentoSoportesGramos: 2.77,
+      filamentoPurgeGramos: 0.47,
+      filamentoMetros: 19.88,
+      filamentoGramos: 59.79,
+      costoFilamentoKgClp: COSTO_PLA_BLANCO_KG,
+      horasImpresion: 1.9, // 1 h 54 m
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: 1.2,
+      notas:
+        'Slicer 1 ud: modelo 56,54 g + soportes 2,77 g + purge 0,47 g = 59,79 g · 19,88 m · 1 h 54 m · coste slicer 1,20 (ref). PLA blanco $12.690/kg.',
+    });
+  }
+
+  /**
+   * Llavero Escudo Ranger — multicolor 10,06 g · 43 m 52 s + $50 argolla.
+   * Slicer color1→amarillo, color2→rojo, color3+4→negro.
+   */
+  function seedLlaveroEscudoRanger() {
+    const colores = [
+      { color: 'amarillo', g: 6.27, precioKg: COSTO_PLA_AMARILLO_KG },
+      { color: 'rojo', g: 2.4, precioKg: COSTO_PLA_ROJO_KG },
+      { color: 'negro', g: 0.77, precioKg: COSTO_PLA_NEGRO_KG },
+      { color: 'negro', g: 0.62, precioKg: COSTO_PLA_NEGRO_KG },
+    ];
+    const filamentoGramos = round2(colores.reduce((a, c) => a + c.g, 0));
+    const filCosto = colores.reduce((a, c) => a + (c.g / 1000) * c.precioKg, 0);
+    const costoFilamentoKgClp = round2((filCosto / filamentoGramos) * 1000);
+    return {
+      sku: 'LLRANGER001',
+      nombre: 'Llavero Escudo Ranger',
+      activo: true,
+      filamentoGramos,
+      costoFilamentoKgClp,
+      horasImpresion: round2((43 + 52 / 60) / 60), // 43 m 52 s
+      minutosPintado: 0,
+      unidadesMetal: 1,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: 0.2,
+      partesSlicer: colores,
+      notas:
+        `Multicolor 1 impresión: amarillo 6,27 g · rojo 2,40 g · negro 0,77+0,62 g = ${filamentoGramos} g · 43 m 52 s · $/kg ponderado $${costoFilamentoKgClp}. +$50 argolla/metales.`,
+    };
+  }
+
+  function asegurarProductoLlaveroEscudoRanger(d) {
+    return forzarProductoSeed(d, 'prod-llavero-escudo-ranger', seedLlaveroEscudoRanger());
+  }
+
+  /** Llavero Porta Lipstick Stanley — placa 2 uds (52,65 g / 1 h 34 m) → 1 ud = mitad + $50 argolla. */
+  function asegurarProductoLlaveroPortaLipstickStanley(d) {
+    return forzarProductoSeed(d, 'prod-llavero-porta-lipstick-stanley', {
+      sku: 'LLSTANDL001',
+      nombre: 'Llavero Porta Lipstick Stanley',
+      activo: true,
+      filamentoModeloGramos: round2(47.32 / 2),
+      filamentoSoportesGramos: round2(4.87 / 2),
+      filamentoPurgeGramos: round2(0.47 / 2),
+      filamentoMetros: round2(17.51 / 2),
+      filamentoGramos: round2(52.65 / 2),
+      costoFilamentoKgClp: COSTO_PLA_BLANCO_KG,
+      horasImpresion: round2(94 / 60 / 2), // (1 h 34 m) / 2
+      minutosPintado: 0,
+      unidadesMetal: 1,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: round2(1.05 / 2),
+      notas:
+        'Slicer placa 2 uds: 52,65 g · 17,51 m · 1 h 34 m · coste 1,05 → 1 ud = 26,33 g · 0,78 h. PLA blanco $12.690/kg. +$50 argolla/metales.',
+    });
+  }
+
+  /** Ventas base del seed: si el live quedó vacío (o sin ese id), las reinyecta. No pisa ventas nuevas. */
+  function asegurarVentasSeed(d) {
+    d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
+    const SEED_VENTAS = [
+      {
+        id: 'ven-mrpqov4c',
+        fecha: '2026-07-18',
+        descripcion: 'Portacompletos ×6 (4 perros + 2 gatos)',
+        cantidad: 6,
+        montoNeto: 15000,
+        canal: 'WhatsApp',
+        notas: '4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000',
+        socioRegistro: 'Ambos',
+      },
+    ];
+    let changed = false;
+    const byId = new Set(d.ventas.map((v) => v && v.id).filter(Boolean));
+    for (const v of SEED_VENTAS) {
+      if (!byId.has(v.id)) {
+        d.ventas.push({ ...v });
+        byId.add(v.id);
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  /** Diseños Cults / digitales — gastos socios (no entran al costo de producto). Pagó Nicolás · 50/50. */
+  function asegurarGastosDisenosCults(d) {
+    d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
+    const regs = [
+      {
+        id: 'gas-diseno-porta-bob-esponja',
+        fecha: '2026-07-19',
+        categoria: 'diseño',
+        descripcion: 'Cults3D — Bob esponja porta esponja (diseño)',
+        proveedor: 'Cults3D',
+        cantidad: 1,
+        montoNeto: 1402,
+        notas: 'Diseño digital. No se suma al costo unitario del producto. Pagó Nicolás · sociedad 50/50.',
+        socioRegistro: 'Nicolás',
+        items: [{ descripcion: 'Bob esponja porta esponja — SpongeBob SquarePants — Sponge Holder', monto: 1402 }],
+      },
+      {
+        id: 'gas-diseno-porta-bulldog',
+        fecha: '2026-07-19',
+        categoria: 'diseño',
+        descripcion: 'Diseño Porta completo bulldog',
+        proveedor: 'Diseño digital',
+        cantidad: 1,
+        montoNeto: 1000,
+        notas: 'Diseño digital. No se suma al costo unitario. Pagó Nicolás · sociedad 50/50.',
+        socioRegistro: 'Nicolás',
+        items: [{ descripcion: 'Porta completo bulldog (diseño)', monto: 1000 }],
+      },
+      {
+        id: 'gas-diseno-nave-espacial-horizontal',
+        fecha: '2026-07-19',
+        categoria: 'diseño',
+        descripcion: 'Diseño Nave espacial horizontal',
+        proveedor: 'Diseño digital',
+        cantidad: 1,
+        montoNeto: 1000,
+        notas: 'Diseño digital. No se suma al costo unitario. Pagó Nicolás · sociedad 50/50.',
+        socioRegistro: 'Nicolás',
+        items: [{ descripcion: 'Nave espacial horizontal (diseño)', monto: 1000 }],
+      },
+    ];
+    let changed = false;
+    const byId = new Map(d.gastos.map((g) => [g.id, g]));
+    for (const reg of regs) {
+      const existing = byId.get(reg.id);
+      if (!existing) {
+        d.gastos.push({ ...reg });
+        changed = true;
+      } else if (Number(existing.montoNeto) !== reg.montoNeto) {
+        Object.assign(existing, reg);
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  /** PED-002 → listo (ya impresos) · PED-003 naves horizontal+vertical. */
+  function asegurarPedidosImpresosYNaves(d) {
+    d.pedidos = Array.isArray(d.pedidos) ? d.pedidos : [];
+    d.meta = d.meta || {};
+    let changed = false;
+
+    const ped002 = d.pedidos.find((p) => p.numero === 'PED-002' || p.id === 'ped-gianni-bulldog-002');
+    if (ped002 && ped002.estado !== 'listo' && ped002.estado !== 'transferido') {
+      ped002.estado = 'listo';
+      ped002.notas = 'Macetero + 4× portacompleto bulldog · PLA+ negro · impresos / listos';
+      for (const it of ped002.items || []) {
+        it.estado = 'listo';
+        it.listos = Number(it.cantidad || 0);
+        it.enImpresion = 0;
+      }
+      changed = true;
+    }
+
+    const id003 = 'ped-naves-espaciales-003';
+    if (!d.pedidos.some((p) => p.id === id003 || p.numero === 'PED-003')) {
+      const prodH = (d.productos || []).find((p) => p.id === 'prod-nave-espacial-horizontal');
+      const prodV = (d.productos || []).find((p) => p.id === 'prod-nave-espacial-vertical');
+      const costoH = prodH ? costoProdRough(d, prodH) : 647.55;
+      const costoV = prodV ? costoProdRough(d, prodV) : 915.14;
+      const precioH = round2(costoH * 2);
+      const precioV = round2(costoV * 2);
+      d.pedidos.push({
+        id: id003,
+        numero: 'PED-003',
+        fecha: '2026-07-19',
+        cliente: 'Por confirmar',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'NAVEHOR001',
+            nombre: 'Nave Espacial Horizontal',
+            cantidad: 1,
+            precioUnitarioClp: precioH,
+            costoUnitarioClp: round2(costoH),
+            filamento: 'PLA blanco',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+          {
+            sku: 'NAVEVERT001',
+            nombre: 'Nave Espacial Vertical',
+            cantidad: 1,
+            precioUnitarioClp: precioV,
+            costoUnitarioClp: round2(costoV),
+            filamento: 'PLA blanco',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoNeto: round2(precioH + precioV),
+        estado: 'listo',
+        ventaId: null,
+        notas: '1× nave horizontal + 1× nave vertical · PLA blanco · impresos',
+        socioRegistro: 'Ambos',
+        creado: '2026-07-19T19:40:00.000Z',
+        costoTotal: round2(costoH + costoV),
+      });
+      changed = true;
+    }
+
+    const maxNum = d.pedidos.reduce((m, p) => {
+      const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
+      return Math.max(m, n);
+    }, 0);
+    if (Number(d.meta.pedidoSeq || 0) < maxNum) {
+      d.meta.pedidoSeq = maxNum;
+      changed = true;
+    }
+    return changed;
+  }
 
   /** Macetero perro bulldog — slicer: 96,95 g · 3 h 21 m · PLA+ negro. */
   function asegurarProductoMaceteroPerroBulldog(d) {
     const changed = upsertProductoSeed(d, 'prod-macetero-perro-bulldog', {
-      sku: 'MCPERROBU001',
-      nombre: 'Macetero perro bulldog',
+      sku: 'MCPEBUL001',
+      nombre: 'Macetero Perro Bulldog',
       activo: true,
       filamentoModeloGramos: 95.36,
       filamentoSoportesGramos: 1.12,
@@ -405,8 +801,8 @@
   /** Portacompleto perro bulldog — slicer 1 ud: 64,58 g · 2 h 13 m · PLA+ negro (costo alto). */
   function seedPortacompletoPerroBulldog() {
     return {
-      sku: 'PCPERROBU001',
-      nombre: 'Portacompleto perro bulldog',
+      sku: 'PCPEBUL001',
+      nombre: 'Porta Completo Perro Bulldog',
       activo: true,
       filamentoModeloGramos: 59.85,
       filamentoSoportesGramos: 4.26,
@@ -503,7 +899,7 @@
     const seed = {
       id,
       sku: 'PLMONS001',
-      nombre: 'Porta lata Monster',
+      nombre: 'Porta Lata Monster',
       activo: true,
       filamentoModeloGramos: 135.55,
       filamentoSoportesGramos: 8.43,
@@ -548,17 +944,22 @@
     return changed;
   }
 
-  /** Prefijos SKU legibles: PCGATO, PCPERRO, PCPERROBU, MCPERROBU, PLMONS… */
+  /** Prefijos SKU legibles: PCGATO, PCPERRO, PCPEBUL, MCPEBUL, PLMONS… */
   function skuPrefijoDesdeTexto(nombre, id) {
     const t = `${nombre || ''} ${id || ''}`
       .toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
-    if (/macetero/.test(t) && /bull/.test(t)) return 'MCPERROBU';
-    if (/(porta\s*completos?|portacompleto)/.test(t) && /bull/.test(t)) return 'PCPERROBU';
+    if (/macetero/.test(t) && /bull/.test(t)) return 'MCPEBUL';
+    if (/(porta\s*completos?|portacompleto)/.test(t) && /bull/.test(t)) return 'PCPEBUL';
     if (/(porta\s*completos?|portacompleto)/.test(t) && /gato/.test(t)) return 'PCGATO';
     if (/(porta\s*completos?|portacompleto)/.test(t) && /perro/.test(t)) return 'PCPERRO';
     if (/porta\s*lata/.test(t) && /monster|mons/.test(t)) return 'PLMONS';
+    if (/bob|esponja/.test(t)) return 'PTBOBES';
+    if (/nave/.test(t) && /horiz/.test(t)) return 'NAVEHOR';
+    if (/nave/.test(t) && /vert/.test(t)) return 'NAVEVERT';
+    if (/llavero/.test(t) && /ranger|escudo/.test(t)) return 'LLRANGER';
+    if (/llavero/.test(t) && /lipstick|stanley|standley/.test(t)) return 'LLSTANDL';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -596,25 +997,59 @@
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     let changed = false;
     const CANON = {
-      'prod-portacompletos-gato': 'PCGATO001',
-      'prod-portacompletos-perro': 'PCPERRO001',
-      'prod-porta-lata-monster': 'PLMONS001',
-      'prod-macetero-perro-bulldog': 'MCPERROBU001',
-      'prod-portacompleto-perro-bulldog': 'PCPERROBU001',
+      'prod-portacompletos-gato': { sku: 'PCGATO001', nombre: 'Porta Completos Gato' },
+      'prod-portacompletos-perro': { sku: 'PCPERRO001', nombre: 'Porta Completos Perro' },
+      'prod-porta-lata-monster': { sku: 'PLMONS001', nombre: 'Porta Lata Monster' },
+      'prod-macetero-perro-bulldog': { sku: 'MCPEBUL001', nombre: 'Macetero Perro Bulldog' },
+      'prod-portacompleto-perro-bulldog': { sku: 'PCPEBUL001', nombre: 'Porta Completo Perro Bulldog' },
+      'prod-porta-bob-esponja': { sku: 'PTBOBES001', nombre: 'Porta Bob Esponja' },
+      'prod-nave-espacial-horizontal': { sku: 'NAVEHOR001', nombre: 'Nave Espacial Horizontal' },
+      'prod-nave-espacial-vertical': { sku: 'NAVEVERT001', nombre: 'Nave Espacial Vertical' },
+      'prod-llavero-escudo-ranger': { sku: 'LLRANGER001', nombre: 'Llavero Escudo Ranger' },
+      'prod-llavero-porta-lipstick-stanley': { sku: 'LLSTANDL001', nombre: 'Llavero Porta Lipstick Stanley' },
+    };
+    const SKU_ALIAS = {
+      MCPERROBU001: 'MCPEBUL001',
+      PCPERROBU001: 'PCPEBUL001',
+      PTBOBESP001: 'PTBOBES001',
+      NVESPHOR001: 'NAVEHOR001',
+      NVESPVER001: 'NAVEVERT001',
+      LLAVRANGER001: 'LLRANGER001',
+      LLAVSTAN001: 'LLSTANDL001',
     };
     for (const p of d.productos) {
       const fijo = CANON[p.id];
-      if (fijo && p.sku !== fijo) {
-        p.sku = fijo;
+      if (!fijo) continue;
+      if (p.sku !== fijo.sku) {
+        p.sku = fijo.sku;
+        changed = true;
+      }
+      if (p.nombre !== fijo.nombre) {
+        p.nombre = fijo.nombre;
         changed = true;
       }
     }
     for (const p of d.productos) {
       if (CANON[p.id]) continue;
+      const alias = SKU_ALIAS[String(p.sku || '').toUpperCase()];
+      if (alias) {
+        p.sku = alias;
+        changed = true;
+      }
       if (!p.sku || !esSkuSimple(p.sku) || /^IMP-/i.test(p.sku)) {
         const otros = d.productos.filter((x) => x !== p && esSkuSimple(x.sku) && !/^IMP-/i.test(x.sku));
         p.sku = siguienteSkuProducto(p.nombre, p.id, otros);
         changed = true;
+      }
+    }
+    // Pedidos: alinear SKU antiguos → canónicos
+    for (const ped of d.pedidos || []) {
+      for (const it of ped.items || []) {
+        const next = SKU_ALIAS[String(it.sku || '').toUpperCase()];
+        if (next && it.sku !== next) {
+          it.sku = next;
+          changed = true;
+        }
       }
     }
     return changed;
@@ -891,12 +1326,13 @@
     const filasCostoProd = (data.productos || [])
       .map((prod) => {
         const c = costoProducto(prod);
-        const sugerido = precioSugeridoDesdeCosto(c.total);
+        const precio = precioVentaProducto(prod, c.total);
+        const precioEsManual = Number(prod.precioVentaSugeridoClp) > 0;
         return `<tr>
           <td><span class="imp-sku">${escapeHtml(prod.sku || '—')}</span></td>
           <td>${escapeHtml(prod.nombre || '')}</td>
           <td class="num">${money(c.total)}</td>
-          <td class="num"><strong>${money(sugerido)}</strong></td>
+          <td class="num"><strong>${money(precio)}</strong>${precioEsManual ? ' <span class="imp-muted">manual</span>' : ''}</td>
         </tr>`;
       })
       .join('');
@@ -935,10 +1371,10 @@
       </div>
       <div class="imp-card">
         <h2>Costos de producto (resumen)</h2>
-        <p class="imp-muted">Costo y precio sugerido con <strong>+${pctMarkup}% sobre el costo</strong> (×${(1 + pctMarkup / 100).toFixed(0)}). Detalle en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>.</p>
+        <p class="imp-muted">Mismos costo y precio que en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>. Si no hay precio manual, se sugiere <strong>+${pctMarkup}%</strong> sobre el costo.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
-            <thead><tr><th>SKU</th><th>Producto</th><th>Costo</th><th>Precio sugerido (+${pctMarkup}%)</th></tr></thead>
+            <thead><tr><th>SKU</th><th>Producto</th><th>Costo</th><th>Precio venta</th></tr></thead>
             <tbody>${filasCostoProd || '<tr><td colspan="4">Sin productos</td></tr>'}</tbody>
           </table>
         </div>
@@ -2060,19 +2496,30 @@
     $('#form-venta').addEventListener('submit', (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
+      const monto = Number(fd.get('montoNeto'));
+      const desc = String(fd.get('descripcion') || '').trim();
+      if (!desc) {
+        setStatus('Escribe qué se vendió', 'warn');
+        return;
+      }
+      if (!(monto > 0)) {
+        setStatus('Falta el Total cobrado CLP (debe ser mayor a 0)', 'warn');
+        return;
+      }
       data.ventas = data.ventas || [];
       data.ventas.push({
         id: uid('ven'),
         fecha: fd.get('fecha'),
-        descripcion: fd.get('descripcion'),
+        descripcion: desc,
         cantidad: Number(fd.get('cantidad') || 1),
-        montoNeto: Number(fd.get('montoNeto')),
+        montoNeto: monto,
         canal: fd.get('canal') || '',
         notas: fd.get('notas') || '',
         socioRegistro: fd.get('socioRegistro') || '',
       });
       markDirty();
       renderAll();
+      setStatus('Venta agregada — pulsa «Guardar online» para fijarla', 'warn');
     });
 
     $('#tab-ventas').querySelectorAll('[data-del-venta]').forEach((btn) => {
@@ -2297,10 +2744,7 @@
           prod.filamentoSoportesGramos != null ||
           prod.filamentoPurgeGramos != null;
         const usarDesglose = tieneDesglose ? '1' : '0';
-        const precioVenta =
-          Number(prod.precioVentaSugeridoClp) > 0
-            ? Number(prod.precioVentaSugeridoClp)
-            : precioSugeridoDesdeCosto(c.total);
+        const precioVenta = precioVentaProducto(prod, c.total);
         return `
         <div class="imp-card imp-card--prod" data-prod-id="${pid}">
           <div class="imp-prod-summary">
@@ -2423,7 +2867,7 @@
         markDirty();
         renderAll();
         activarTab('costos');
-        setStatus(`Producto «${prod.nombre}» eliminado — guarda online`, 'warn');
+        setStatus(`Producto «${prod.nombre}» eliminado — resumen actualizado · guarda online`, 'warn');
       });
     });
 
@@ -2502,10 +2946,12 @@
           precioVentaSugeridoClp: leido.precioVentaSugeridoClp,
           costoSlicerRef: leido.costoSlicerRef,
           notas: leido.notas,
+          editadoLocal: true,
         });
         markDirty();
         refreshLive();
-        setStatus(`«${leido.nombre}» actualizado (${skuNuevo}) — costo ${money(costoProducto(prod).total)} · guarda online`, 'warn');
+        renderResumen();
+        setStatus(`«${leido.nombre}» actualizado (${skuNuevo}) — costo ${money(costoProducto(prod).total)} · resumen sincronizado · guarda online`, 'warn');
       });
       refreshLive();
     });
@@ -2645,7 +3091,10 @@
     } catch (_) {
       /* ignore */
     }
+    // Releer datos vivos al entrar al tab (p. ej. costos → resumen).
+    if (name === 'resumen') renderResumen();
     if (name === 'costos') {
+      renderCostos();
       requestAnimationFrame(() => {
         $('#form-calc-pieza')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });

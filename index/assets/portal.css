@@ -426,11 +426,17 @@ body.portal-body--themed .portal-cliente {
 
 .portal-landing-hero__logo {
   display: block;
-  height: clamp(48px, 9vw, 72px);
+  height: clamp(56px, 12vw, 96px);
   width: auto;
-  max-width: min(480px, 92%);
+  max-width: min(560px, 96%);
   object-fit: contain;
   object-position: left center;
+}
+
+/* Impresoreando: wordmark navy/naranja (sin tipografía genérica) */
+body[data-cliente-slug="impresoreando"] .portal-landing-hero__logo {
+  height: clamp(64px, 14vw, 110px);
+  max-width: min(640px, 98%);
 }
 
 .portal-landing-hero__tagline {

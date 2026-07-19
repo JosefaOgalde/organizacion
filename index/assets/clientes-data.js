@@ -221,10 +221,14 @@ window.CLIENTES_PORTAL = [
     resumen: 'Emprendimiento 3D (@impresoreando). Panel socios 50/50: gastos, ventas, luz, costos de producto y plan paid.',
     landing: {
       tagline: 'Ideas que se imprimen',
-      entregables: ['Panel financiero 50/50', 'Costos de producción', 'Plan paid bajo presupuesto', 'Contenido redes'],
+      entregables: ['Panel financiero 50/50', 'Costos de producción', 'Catálogo IG 1080×1350', 'Plan paid bajo presupuesto'],
       secciones: [
         { titulo: 'Panel socios', texto: 'Gastos, ventas, operación y bitácora compartida entre Josefa y Nicolás (50/50).' },
-        { titulo: 'Producción', texto: 'Filamento, horas de impresión, pintado, metal de llaveros y bolsas.' }
+        { titulo: 'Producción', texto: 'Filamento, horas de impresión, pintado, metal de llaveros y bolsas.' },
+        {
+          titulo: 'Catálogo Instagram',
+          texto: 'Carrusel 1080×1350: portada con logo, 10 productos (nombre + SKU + imagen referencial) y cierre “pide los tuyos” con @impresoreando. Todo es a pedido. Descargar PDF: catalogo/export/catalogo-impresoreando.pdf · ver catalogo/.',
+        },
       ]
     }
   },

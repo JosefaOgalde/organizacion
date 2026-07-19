@@ -587,6 +587,7 @@
     return `<div class="portal-imp-cta-row" id="portal-imp-panel-cta">
       <a href="./panel/" class="portal-imp-panel-cta">Resumen 50/50</a>
       <a href="./panel/?tab=costos" class="portal-imp-panel-cta portal-imp-panel-cta--calc">Calculadora de productos</a>
+      <a href="./catalogo/" class="portal-imp-panel-cta">Catálogo IG</a>
     </div>`;
   }
 
@@ -594,7 +595,7 @@
     const tagline = cfg?.tagline || c.agente;
     const logoImp =
       c.slug === 'impresoreando'
-        ? `<img class="portal-landing-hero__logo" src="./identidad/logo-impresoreando.png" width="480" height="140" alt="impresoreando" />`
+        ? `<img class="portal-landing-hero__logo" src="./identidad/logo-impresoreando.png?v=imp-logo-oficial" width="640" height="136" alt="impresoreando" />`
         : '';
     const titulo = logoImp
       ? `<h1 class="portal-landing-hero__titulo portal-landing-hero__titulo--logo">${logoImp}</h1>`
@@ -629,6 +630,11 @@
                 <a href="./panel/?tab=costos" class="portal-landing-chip__a">${escapeHtml(e)}</a>
               </li>`;
             }
+            if (c.slug === 'impresoreando' && /cat[aá]logo/i.test(e)) {
+              return `<li class="portal-landing-chip portal-landing-chip--link">
+                <a href="./catalogo/" class="portal-landing-chip__a">${escapeHtml(e)}</a>
+              </li>`;
+            }
             return `<li class="portal-landing-chip">${escapeHtml(e)}</li>`;
           })
           .join('')}
@@ -650,11 +656,14 @@
           c.slug === 'impresoreando' && /panel socios/i.test(String(s.titulo || ''));
         const esCalcImp =
           c.slug === 'impresoreando' && /producci[oó]n/i.test(String(s.titulo || ''));
-        return `<section${esPanelImp || esCalcImp ? ' class="portal-imp-panel-sec"' : ''}>
+        const esCatImp =
+          c.slug === 'impresoreando' && /cat[aá]logo/i.test(String(s.titulo || ''));
+        return `<section${esPanelImp || esCalcImp || esCatImp ? ' class="portal-imp-panel-sec"' : ''}>
       <h2>${escapeHtml(s.titulo)}</h2>
       <p>${escapeHtml(s.texto)}</p>
       ${esPanelImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./panel/">Resumen 50/50 →</a></p>` : ''}
       ${esCalcImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./panel/?tab=costos">Calculadora de productos →</a></p>` : ''}
+      ${esCatImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./catalogo/">Ver catálogo 1080×1350 →</a></p>` : ''}
     </section>`;
       })
       .join('');
@@ -784,7 +793,8 @@
     const toolbarPanelBtn =
       c.slug === 'impresoreando'
         ? `<a href="./panel/" class="portal-btn portal-btn--imp-panel">Resumen 50/50</a>
-           <a href="./panel/?tab=costos" class="portal-btn portal-btn--imp-calc">Calculadora</a>`
+           <a href="./panel/?tab=costos" class="portal-btn portal-btn--imp-calc">Calculadora</a>
+           <a href="./catalogo/" class="portal-btn">Catálogo IG</a>`
         : '';
 
     root.innerHTML = `
