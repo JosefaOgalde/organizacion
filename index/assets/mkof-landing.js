@@ -149,25 +149,25 @@
             <strong>Matriz validación por módulo</strong>
             <span class="mkof-guia-card__desc">Sandbox ERP · mkof/05 · 19 jul</span>
           </a>
-          <a href="github-cuenta.html" class="mkof-guia-card">
-            <span class="mkof-guia-card__paso">Paso 1 · GitHub</span>
-            <strong>Crear cuenta GitHub</strong>
-            <span class="mkof-guia-card__desc">Capturas reales de github.com</span>
+          <a href="../MKOF/MOVA/documentos/ver.html?id=etapa2-presentacion" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Hoy · Presentación</span>
+            <strong>Deck etapa 2 · 20 min</strong>
+            <span class="mkof-guia-card__desc">19 slides · guion incluido</span>
           </a>
-          <a href="github-repo.html" class="mkof-guia-card mkof-guia-card--activa">
-            <span class="mkof-guia-card__paso">Paso 2 · GitHub</span>
-            <strong>Repo privado mova-n8n-workflows</strong>
-            <span class="mkof-guia-card__desc">10 pasos · PPT y PDF</span>
+          <a href="../MKOF/MOVA/documentos/ver.html?id=cloudflare-facil" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Hito 1.2 · Cloudflare</span>
+            <strong>¿Para qué y es necesario?</strong>
+            <span class="mkof-guia-card__desc">Explicación fácil + conclusión</span>
           </a>
-          <a href="MOVA-GitHub-N8n-Checklist.pdf" target="_blank" rel="noopener" class="mkof-guia-card mkof-guia-card--activa">
-            <span class="mkof-guia-card__paso">Hoy · Checklist</span>
-            <strong>GitHub + solicitud n8n</strong>
-            <span class="mkof-guia-card__desc">PPT/PDF · Pasos 1–3 con checklist</span>
+          <a href="../MKOF/MOVA/documentos/ver.html?id=cpanel-espejo" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Ops · cPanel</span>
+            <strong>Descargar al repo (espejo)</strong>
+            <span class="mkof-guia-card__desc">ZIP → espejo-cpanel/ · sin secretos</span>
           </a>
-          <a href="github-n8n.html" class="mkof-guia-card mkof-guia-card--activa">
-            <span class="mkof-guia-card__paso">Paso 3 · n8n</span>
-            <strong>Solicitud capturas + tabla + JSON</strong>
-            <span class="mkof-guia-card__desc">10 pasos · mockup por captura</span>
+          <a href="github-repo.html" class="mkof-guia-card">
+            <span class="mkof-guia-card__paso">Hito 1.1 · HECHO</span>
+            <strong>n8n en GitHub</strong>
+            <span class="mkof-guia-card__desc">Flujos respaldados en repo</span>
           </a>
           <a href="mova-auth-guia.html" class="mkof-guia-card">
             <span class="mkof-guia-card__paso">Fase 1 · En curso</span>

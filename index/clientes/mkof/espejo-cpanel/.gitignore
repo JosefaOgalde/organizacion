@@ -1,0 +1,22 @@
+# Secretos — nunca versionar
+**/config.php
+**/.env
+**/.env.*
+**/*.pem
+**/*secret*
+**/*password*
+**/*.sql
+**/credentials*
+**/google_client*.json
+
+# Basura de compresión / SO
+*.zip
+*.tar.gz
+.DS_Store
+Thumbs.db
+__MACOSX/
+
+# Caché / temporales del hosting
+**/cache/
+**/tmp/
+**/*.log

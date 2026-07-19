@@ -2,7 +2,7 @@
  * Catálogo MOVA — ver en HTML (editable en repo); PDF/PPT solo para exportar.
  */
 window.MOVA_DOCUMENTOS = {
-  version: '3.0',
+  version: '4.0',
   baseMkof: '../../../mkof/',
   baseData: '../../../../../data/',
   categorias: [
@@ -129,7 +129,7 @@ window.MOVA_DOCUMENTOS = {
         {
           id: 'github-repo',
           titulo: 'GitHub Paso 2 — Repo privado',
-          descripcion: 'Crear mova-n8n-workflows · visibilidad Private',
+          descripcion: 'Repo mova-n8n-workflows · flujos ya respaldados',
           hito: '1.1',
           fecha: 'Jul 2026',
           verHtml: 'github-repo.html',
@@ -139,23 +139,62 @@ window.MOVA_DOCUMENTOS = {
         },
         {
           id: 'github-n8n-checklist',
-          titulo: 'GitHub + n8n — Checklist paso a paso',
-          descripcion: 'Cuenta · repo privado · 3 pedidos n8n · texto correo · checklists',
+          titulo: 'GitHub + n8n — Checklist (cerrado)',
+          descripcion: 'HECHO: flujos n8n versionados en GitHub',
           hito: '1.1',
-          fecha: '10 jul 2026',
+          fecha: '19 jul 2026',
           pdf: 'MOVA-GitHub-N8n-Checklist.pdf',
           pptx: 'MOVA-GitHub-N8n-Checklist.pptx'
         },
         {
           id: 'github-n8n',
           titulo: 'Paso 3 — Solicitud n8n',
-          descripcion: 'Tabla + JSON + capturas por workflow · mockup por paso',
+          descripcion: 'Guía histórica · flujos ya en repo',
           hito: '1.1',
           fecha: '10 jul 2026',
           verHtml: 'github-n8n.html',
           pdf: 'MOVA-GitHub-N8n-Checklist.pdf',
           pptx: 'MOVA-GitHub-N8n-Checklist.pptx',
           editar: 'mkof-github-n8n-guia.js'
+        }
+      ]
+    },
+    {
+      id: 'infra',
+      titulo: 'Infra · Cloudflare + espejo cPanel',
+      items: [
+        {
+          id: 'cloudflare-facil',
+          titulo: 'Cloudflare — ¿para qué y es necesario?',
+          descripcion: 'Escudo delante de GoDaddy · conclusión fácil · checklist activación',
+          hito: '1.2',
+          fecha: '19 jul 2026',
+          verHtml: 'cloudflare-mova.html',
+          editar: 'Cloudflare-MOVA-facil.md'
+        },
+        {
+          id: 'cpanel-espejo',
+          titulo: 'Descargar cPanel → repo (espejo)',
+          descripcion: 'ZIP File Manager → espejo-cpanel/ · sin secretos',
+          hito: 'Ops',
+          fecha: '19 jul 2026',
+          verHtml: 'cpanel-espejo.html',
+          editar: 'Guia-descargar-cpanel-al-repo.md'
+        }
+      ]
+    },
+    {
+      id: 'presentacion',
+      titulo: 'Presentación etapa 2',
+      items: [
+        {
+          id: 'etapa2-presentacion',
+          titulo: 'Deck etapa 2 (~20 min · 19 slides)',
+          descripcion: 'Etapa 1 · Cloudflare · D1–D5 · n8n · cPanel · siguientes pasos',
+          hito: 'Etapa 2',
+          fecha: '19 jul 2026',
+          verHtml: 'mova-etapa2-presentacion.html',
+          editar: 'docs/mova/GUION-PRESENTACION-ETAPA2.md'
         }
       ]
     },
