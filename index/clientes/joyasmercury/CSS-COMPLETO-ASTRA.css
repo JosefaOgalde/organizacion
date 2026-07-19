@@ -1,6 +1,6 @@
 /**
  * Joyas Mercury — CSS COMPLETO Astra (todo en uno)
- * VERSIÓN: 2026-07-19-carruseles-home  ·  Novedades+Últimas con flechas ←→
+ * VERSIÓN: 2026-07-19-flechas-visibles  ·  Flechas dentro + sin desborde
  * Origen: rama cursor/jm-css-hero-contain-6a09 (recuperado a esta rama)
  *
  * Incluye: catálogo/filtros · home/círculos · footer dorado · menú móvil · producto single · etc.
@@ -3469,56 +3469,251 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
 }
 
 
-/* === JM HOME CARRUSELES: flechas Slick Novedades + Últimas (override final) === */
+/* === JM HOME CARRUSELES: flechas visibles + sin desborde (override final) === */
+/* Padres Elementor: no recortar flechas; el clip solo en .slick-list */
+.e-con:has(.jm-home-novedades),
+.e-con:has(.jm-home-ultimas),
+.e-con:has(#jm-ultimas-unidades),
+.e-parent:has(.jm-home-novedades),
+.e-parent:has(.jm-home-ultimas),
+.e-parent:has(#jm-ultimas-unidades),
+.elementor-widget:has(.jm-home-novedades),
+.elementor-widget:has(.jm-home-ultimas),
+.elementor-widget:has(#jm-ultimas-unidades),
+.elementor-element.jm-home-novedades,
+.elementor-element.jm-home-ultimas,
+.elementor-element[class*="jm-home-ult"],
+#jm-ultimas-unidades,
+.jm-home-novedades {
+  overflow: visible !important;
+  max-width: 100% !important;
+}
+
+.jm-home-novedades .elementor-widget-container,
+.jm-home-novedades .uael-woo-products,
+.jm-home-novedades .uael-woocommerce,
+.jm-home-novedades .uael-woo-products-carousel,
+.jm-home-novedades .slick-slider,
+#jm-ultimas-unidades .elementor-widget-container,
+#jm-ultimas-unidades .uael-woo-products,
+#jm-ultimas-unidades .uael-woo-products-carousel,
+#jm-ultimas-unidades .slick-slider,
+.elementor-element.jm-home-ultimas .slick-slider,
+.elementor-element.jm-home-novedades .slick-slider {
+  position: relative !important;
+  overflow: visible !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Solo la lista recorta productos (evita desborde horizontal) */
 .jm-home-novedades .slick-list,
-.elementor-element.jm-home-novedades .slick-list,
 #jm-ultimas-unidades .slick-list,
+.elementor-element.jm-home-novedades .slick-list,
 .elementor-element.jm-home-ultimas .slick-list,
 .elementor-element[class*="jm-home-ult"] .slick-list {
   overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
 }
 
+/* No pelear con el layout de Slick (flex forzado desborda) */
 .jm-home-novedades .slick-track,
-.elementor-element.jm-home-novedades .slick-track,
 #jm-ultimas-unidades .slick-track,
+.elementor-element.jm-home-novedades .slick-track,
 .elementor-element.jm-home-ultimas .slick-track,
 .elementor-element[class*="jm-home-ult"] .slick-track {
-  display: flex !important;
-  align-items: stretch !important;
-  /* NO transform: none */
+  display: block !important; /* slick default */
 }
 
+.jm-home-novedades .slick-slide,
+#jm-ultimas-unidades .slick-slide,
+.elementor-element.jm-home-novedades .slick-slide,
+.elementor-element.jm-home-ultimas .slick-slide {
+  box-sizing: border-box !important;
+  float: left !important; /* slick espera float */
+}
+
+.jm-home-novedades .slick-slide > div,
+#jm-ultimas-unidades .slick-slide > div,
+.jm-home-novedades li.product,
+#jm-ultimas-unidades li.product,
+.jm-home-novedades .uael-woo-product-wrapper,
+#jm-ultimas-unidades .uael-woo-product-wrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Flechas DENTRO del carrusel (no se cortan) + chevrón dibujado */
 .jm-home-novedades .slick-prev,
 .jm-home-novedades .slick-next,
+.jm-home-novedades button.slick-arrow,
 .jm-home-novedades .slick-arrow,
-.elementor-element.jm-home-novedades .slick-prev,
-.elementor-element.jm-home-novedades .slick-next,
 #jm-ultimas-unidades .slick-prev,
 #jm-ultimas-unidades .slick-next,
+#jm-ultimas-unidades button.slick-arrow,
 #jm-ultimas-unidades .slick-arrow,
+.elementor-element.jm-home-novedades .slick-prev,
+.elementor-element.jm-home-novedades .slick-next,
 .elementor-element.jm-home-ultimas .slick-prev,
 .elementor-element.jm-home-ultimas .slick-next,
 .elementor-element[class*="jm-home-ult"] .slick-prev,
 .elementor-element[class*="jm-home-ult"] .slick-next {
+  position: absolute !important;
+  top: 32% !important;
+  z-index: 50 !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  border: 1.5px solid #A97E23 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12) !important;
   display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
-  z-index: 30 !important;
   cursor: pointer !important;
-  height: 40px !important;
+  transform: none !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
   overflow: visible !important;
 }
 
-.jm-home-novedades ul.slick-dots,
-.elementor-element.jm-home-novedades ul.slick-dots,
-#jm-ultimas-unidades ul.slick-dots,
-.elementor-element.jm-home-ultimas ul.slick-dots,
-.elementor-element[class*="jm-home-ult"] ul.slick-dots {
+.jm-home-novedades .slick-prev.slick-hidden,
+.jm-home-novedades .slick-next.slick-hidden,
+#jm-ultimas-unidades .slick-prev.slick-hidden,
+#jm-ultimas-unidades .slick-next.slick-hidden,
+.elementor-element.jm-home-novedades .slick-arrow.slick-hidden,
+.elementor-element.jm-home-ultimas .slick-arrow.slick-hidden {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 0.45 !important;
+  pointer-events: auto !important;
+}
+
+.jm-home-novedades .slick-prev,
+#jm-ultimas-unidades .slick-prev,
+.elementor-element.jm-home-novedades .slick-prev,
+.elementor-element.jm-home-ultimas .slick-prev,
+.elementor-element[class*="jm-home-ult"] .slick-prev {
+  left: 8px !important;
+  right: auto !important;
+}
+
+.jm-home-novedades .slick-next,
+#jm-ultimas-unidades .slick-next,
+.elementor-element.jm-home-novedades .slick-next,
+.elementor-element.jm-home-ultimas .slick-next,
+.elementor-element[class*="jm-home-ult"] .slick-next {
+  right: 8px !important;
+  left: auto !important;
+}
+
+/* Chevron CSS (no depende de fuente slick) */
+.jm-home-novedades .slick-prev::before,
+.jm-home-novedades .slick-next::before,
+#jm-ultimas-unidades .slick-prev::before,
+#jm-ultimas-unidades .slick-next::before,
+.elementor-element.jm-home-novedades .slick-prev::before,
+.elementor-element.jm-home-novedades .slick-next::before,
+.elementor-element.jm-home-ultimas .slick-prev::before,
+.elementor-element.jm-home-ultimas .slick-next::before,
+.elementor-element[class*="jm-home-ult"] .slick-prev::before,
+.elementor-element[class*="jm-home-ult"] .slick-next::before {
+  content: "" !important;
+  display: block !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-style: solid !important;
+  border-color: #A97E23 !important;
+  border-width: 0 0 2.5px 2.5px !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  font-size: 0 !important;
+  color: transparent !important;
+  position: static !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.jm-home-novedades .slick-prev::before,
+#jm-ultimas-unidades .slick-prev::before,
+.elementor-element.jm-home-novedades .slick-prev::before,
+.elementor-element.jm-home-ultimas .slick-prev::before,
+.elementor-element[class*="jm-home-ult"] .slick-prev::before {
+  transform: rotate(45deg) !important;
+  margin-left: 4px !important;
+}
+
+.jm-home-novedades .slick-next::before,
+#jm-ultimas-unidades .slick-next::before,
+.elementor-element.jm-home-novedades .slick-next::before,
+.elementor-element.jm-home-ultimas .slick-next::before,
+.elementor-element[class*="jm-home-ult"] .slick-next::before {
+  transform: rotate(225deg) !important;
+  margin-right: 4px !important;
+}
+
+.jm-home-novedades .slick-dots,
+#jm-ultimas-unidades .slick-dots,
+.elementor-element.jm-home-novedades .slick-dots,
+.elementor-element.jm-home-ultimas .slick-dots {
   display: flex !important;
   visibility: visible !important;
   opacity: 1 !important;
+  justify-content: center !important;
   pointer-events: auto !important;
   height: auto !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+@media (max-width: 921px) {
+  .jm-home-novedades,
+  .elementor-element.jm-home-novedades,
+  #jm-ultimas-unidades,
+  .elementor-element.jm-home-ultimas,
+  .elementor-element[class*="jm-home-ult"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .jm-home-novedades .slick-prev,
+  .jm-home-novedades .slick-next,
+  #jm-ultimas-unidades .slick-prev,
+  #jm-ultimas-unidades .slick-next,
+  .elementor-element.jm-home-novedades .slick-prev,
+  .elementor-element.jm-home-novedades .slick-next,
+  .elementor-element.jm-home-ultimas .slick-prev,
+  .elementor-element.jm-home-ultimas .slick-next {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    top: 28% !important;
+  }
+
+  .jm-home-novedades .slick-prev,
+  #jm-ultimas-unidades .slick-prev {
+    left: 6px !important;
+  }
+
+  .jm-home-novedades .slick-next,
+  #jm-ultimas-unidades .slick-next {
+    right: 6px !important;
+  }
 }
 

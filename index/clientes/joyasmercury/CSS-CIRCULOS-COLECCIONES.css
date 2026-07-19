@@ -1,6 +1,6 @@
 /**
  * Joyas Mercury — círculos categorías + Últimas unidades (móvil)
- * VERSIÓN: 2026-07-19-v7  ← si no ves esta línea, es CSS antiguo
+ * VERSIÓN: 2026-07-19-v8  ← si no ves esta línea, es CSS antiguo
  *
  * Archivo correcto: index/clientes/joyasmercury/CSS-CIRCULOS-COLECCIONES.css
  * Preferible: CSS-COMPLETO-ASTRA.css (paquete completo en la misma rama)
@@ -178,21 +178,20 @@
   }
 }
 
-/* ========== ÚLTIMAS + NOVEDADES: carrusel Slick con flechas ←→ ========== */
+/* ========== ÚLTIMAS + NOVEDADES: flechas visibles dentro, sin desborde ========== */
 #jm-ultimas-unidades,
 .elementor-element.jm-home-ultimas,
 .elementor-element[class*="jm-home-ult"],
 .jm-home-novedades,
-.elementor-element.jm-home-novedades {
+.elementor-element.jm-home-novedades,
+.e-con:has(.jm-home-novedades),
+.e-con:has(.jm-home-ultimas),
+.e-con:has(#jm-ultimas-unidades) {
   position: relative !important;
-  width: 100% !important;
-  max-width: 1140px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  box-sizing: border-box !important;
   overflow: visible !important;
-  padding-left: 40px !important;
-  padding-right: 40px !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 #jm-ultimas-unidades .slick-list,
@@ -201,35 +200,31 @@
 .elementor-element.jm-home-novedades .slick-list {
   overflow: hidden !important;
   width: 100% !important;
+  max-width: 100% !important;
 }
 
 #jm-ultimas-unidades .slick-track,
-.elementor-element.jm-home-ultimas .slick-track,
-.jm-home-novedades .slick-track,
-.elementor-element.jm-home-novedades .slick-track {
-  display: flex !important;
-  align-items: stretch !important;
-  /* NO transform: none — Slick navega con translateX */
+.jm-home-novedades .slick-track {
+  display: block !important;
 }
 
 #jm-ultimas-unidades .slick-prev,
 #jm-ultimas-unidades .slick-next,
 .elementor-element.jm-home-ultimas .slick-prev,
 .elementor-element.jm-home-ultimas .slick-next,
-.elementor-element[class*="jm-home-ult"] .slick-prev,
-.elementor-element[class*="jm-home-ult"] .slick-next,
 .jm-home-novedades .slick-prev,
 .jm-home-novedades .slick-next,
 .elementor-element.jm-home-novedades .slick-prev,
 .elementor-element.jm-home-novedades .slick-next {
   position: absolute !important;
-  top: 36% !important;
-  z-index: 30 !important;
-  width: 40px !important;
-  height: 40px !important;
+  top: 32% !important;
+  z-index: 50 !important;
+  width: 42px !important;
+  height: 42px !important;
   border-radius: 50% !important;
   background: #ffffff !important;
   border: 1.5px solid #A97E23 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -237,69 +232,67 @@
   opacity: 1 !important;
   pointer-events: auto !important;
   cursor: pointer !important;
-  transform: translateY(-50%) !important;
+  font-size: 0 !important;
+  transform: none !important;
 }
 
 #jm-ultimas-unidades .slick-prev,
-.elementor-element.jm-home-ultimas .slick-prev,
-.elementor-element[class*="jm-home-ult"] .slick-prev,
-.jm-home-novedades .slick-prev,
-.elementor-element.jm-home-novedades .slick-prev {
-  left: 4px !important;
+.jm-home-novedades .slick-prev {
+  left: 8px !important;
 }
 
 #jm-ultimas-unidades .slick-next,
-.elementor-element.jm-home-ultimas .slick-next,
-.elementor-element[class*="jm-home-ult"] .slick-next,
-.jm-home-novedades .slick-next,
-.elementor-element.jm-home-novedades .slick-next {
-  right: 4px !important;
+.jm-home-novedades .slick-next {
+  right: 8px !important;
 }
 
 #jm-ultimas-unidades .slick-prev::before,
 #jm-ultimas-unidades .slick-next::before,
 .jm-home-novedades .slick-prev::before,
 .jm-home-novedades .slick-next::before {
-  color: #A97E23 !important;
+  content: "" !important;
+  display: block !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-style: solid !important;
+  border-color: #A97E23 !important;
+  border-width: 0 0 2.5px 2.5px !important;
   opacity: 1 !important;
-  font-size: 20px !important;
+  background: none !important;
+  font-size: 0 !important;
+}
+
+#jm-ultimas-unidades .slick-prev::before,
+.jm-home-novedades .slick-prev::before {
+  transform: rotate(45deg) !important;
+  margin-left: 4px !important;
+}
+
+#jm-ultimas-unidades .slick-next::before,
+.jm-home-novedades .slick-next::before {
+  transform: rotate(225deg) !important;
+  margin-right: 4px !important;
 }
 
 #jm-ultimas-unidades .slick-dots,
-.elementor-element.jm-home-ultimas .slick-dots,
-.jm-home-novedades .slick-dots,
-.elementor-element.jm-home-novedades .slick-dots {
+.jm-home-novedades .slick-dots {
   display: flex !important;
   visibility: visible !important;
   opacity: 1 !important;
   justify-content: center !important;
-  pointer-events: auto !important;
-  height: auto !important;
 }
 
 @media (max-width: 921px) {
-  #jm-ultimas-unidades,
-  .elementor-element.jm-home-ultimas,
-  .elementor-element[class*="jm-home-ult"],
-  .jm-home-novedades,
-  .elementor-element.jm-home-novedades {
-    padding-left: 36px !important;
-    padding-right: 36px !important;
-  }
-
   #jm-ultimas-unidades .woocommerce-loop-product__title,
-  #jm-ultimas-unidades .uael-woo-products-title a,
-  .elementor-element[class*="jm-home-ult"] .uael-woo-products-title a {
+  #jm-ultimas-unidades .uael-woo-products-title a {
     font-size: 12px !important;
-    line-height: 1.3 !important;
     -webkit-line-clamp: 3 !important;
     word-break: normal !important;
     overflow-wrap: break-word !important;
   }
 
   #jm-ultimas-unidades .price,
-  #jm-ultimas-unidades .amount,
-  .elementor-element[class*="jm-home-ult"] .amount {
+  #jm-ultimas-unidades .amount {
     white-space: nowrap !important;
     font-size: 13px !important;
   }
@@ -312,3 +305,4 @@
     min-height: 40px !important;
   }
 }
+

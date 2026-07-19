@@ -57,7 +57,7 @@ Si solo hay 4 productos y se muestran 4, las flechas no tienen a dónde ir: sub�
 | Problema | Dónde | Qué hacer |
 |----------|--------|-----------|
 | Fotos cuadradas en Colecciones | Elementor + CSS | Clase `jm-circulos-categoria` + CSS pegado |
-| Sin flechas / no navega | Elementor + CSS | Arrows ON + CSS `carruseles-home` + más productos que slides |
-| Textos cortados en Últimas | CSS | Versión `carruseles-home` / `v7` |
+| Sin flechas / no navega | Elementor + CSS | Arrows ON + CSS `flechas-visibles` + más productos que slides |
+| Flechas cortadas / desborde | CSS | Versión `flechas-visibles` (flechas dentro del carrusel) |
 
 Tras guardar: Ctrl+Shift+R en el celular / DevTools móvil.
