@@ -1,6 +1,6 @@
 /**
  * Joyas Mercury — CSS COMPLETO Astra (todo en uno)
- * VERSIÓN: 2026-07-19-novedades-flechas  ·  Novedades flechas ←→ desktop+móvil
+ * VERSIÓN: 2026-07-19-carruseles-home  ·  Novedades+Últimas con flechas ←→
  * Origen: rama cursor/jm-css-hero-contain-6a09 (recuperado a esta rama)
  *
  * Incluye: catálogo/filtros · home/círculos · footer dorado · menú móvil · producto single · etc.
@@ -1147,53 +1147,52 @@
   margin: 0 auto !important;
 }
 
-/* Últimas unidades — grid 4 en una línea (desktop) / 2×2 móvil
-   ID widget Elementor: jm-ultimas-unidades (obligatorio)
-   Clase completa: jm-home-ultimas (no jm-home-ult) */
-/* Sin padding extra 44px en Últimas (deja espacio para 4 columnas) */
+/* ========== ÚLTIMAS UNIDADES: carrusel Slick con flechas ←→ ==========
+   ID: jm-ultimas-unidades · clase: jm-home-ultimas
+   Elementor: Slider UAEL ON · Arrows ON · más productos que slides visibles
+   NO anular transform del .slick-track (rompe navegación). */
 #jm-ultimas-unidades,
 .elementor-element.jm-home-ultimas,
 .elementor-element.jm-producto-ultimas,
 .elementor-element[class*="jm-home-ult"] {
+  position: relative !important;
   width: 100% !important;
   max-width: 1140px !important;
   margin-left: auto !important;
   margin-right: auto !important;
   box-sizing: border-box !important;
+  overflow: visible !important;
+  padding-left: 40px !important;
+  padding-right: 40px !important;
 }
-
-#jm-ultimas-unidades.jm-home-productos,
-.elementor-element#jm-ultimas-unidades.jm-home-productos {
-  padding-left: 12px !important;
-  padding-right: 12px !important;
-}
-
 
 #jm-ultimas-unidades .elementor-widget-container,
 #jm-ultimas-unidades .uael-woo-products,
+#jm-ultimas-unidades .uael-woo-products-carousel,
+#jm-ultimas-unidades .slick-slider,
 .elementor-element.jm-home-ultimas .uael-woo-products,
-.elementor-element.jm-producto-ultimas .uael-woo-products,
+.elementor-element.jm-home-ultimas .slick-slider,
 .elementor-element[class*="jm-home-ult"] .uael-woo-products {
+  position: relative !important;
   width: 100% !important;
   max-width: 100% !important;
+  overflow: visible !important;
 }
 
-#jm-ultimas-unidades ul.products,
-.elementor-element.jm-home-ultimas ul.products,
-.elementor-element.jm-producto-ultimas ul.products,
-.elementor-element[class*="jm-home-ult"] ul.products,
-#jm-ultimas-unidades ul.products[class*="columns-"],
-.elementor-element[class*="jm-home-ult"] ul.products[class*="columns-"] {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  align-items: stretch !important;
-  justify-content: flex-start !important;
-  gap: 12px !important;
+#jm-ultimas-unidades .slick-list,
+.elementor-element.jm-home-ultimas .slick-list,
+.elementor-element[class*="jm-home-ult"] .slick-list {
+  overflow: hidden !important;
   width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 auto !important;
-  padding: 0 !important;
-  list-style: none !important;
+  margin: 0 !important;
+}
+
+/* Dejar que Slick controle el track */
+#jm-ultimas-unidades .slick-track,
+.elementor-element.jm-home-ultimas .slick-track,
+.elementor-element[class*="jm-home-ult"] .slick-track {
+  display: flex !important;
+  align-items: stretch !important;
 }
 
 #jm-ultimas-unidades ul.products::before,
@@ -1204,59 +1203,16 @@
   content: none !important;
 }
 
-#jm-ultimas-unidades .slick-list,
-#jm-ultimas-unidades .slick-track,
-.elementor-element.jm-home-ultimas .slick-list,
-.elementor-element.jm-home-ultimas .slick-track,
-.elementor-element.jm-producto-ultimas .slick-list,
-.elementor-element.jm-producto-ultimas .slick-track,
-.elementor-element[class*="jm-home-ult"] .slick-list,
-.elementor-element[class*="jm-home-ult"] .slick-track {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  transform: none !important;
-  overflow: visible !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  gap: 12px !important;
-}
-
-#jm-ultimas-unidades ul.products > li.product,
-#jm-ultimas-unidades ul.products > .slick-slide,
-#jm-ultimas-unidades .slick-slide,
-.elementor-element.jm-home-ultimas ul.products > li.product,
-.elementor-element.jm-home-ultimas .slick-slide,
-.elementor-element[class*="jm-home-ult"] ul.products > li.product,
-.elementor-element[class*="jm-home-ult"] .slick-slide,
-#jm-ultimas-unidades ul.products.columns-3 > li.product,
-#jm-ultimas-unidades ul.products.columns-4 > li.product {
-  flex: 0 0 calc(25% - 9px) !important;
-  width: calc(25% - 9px) !important;
-  max-width: calc(25% - 9px) !important;
-  min-width: 0 !important;
-  float: none !important;
-  clear: none !important;
-  height: auto !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  box-sizing: border-box !important;
-  display: block !important;
-}
-
 #jm-ultimas-unidades .slick-slide > div,
-.elementor-element.jm-home-ultimas .slick-slide > div,
-.elementor-element.jm-producto-ultimas .slick-slide > div,
 #jm-ultimas-unidades li.product,
-.elementor-element.jm-home-ultimas li.product,
-.elementor-element.jm-producto-ultimas li.product,
 #jm-ultimas-unidades .uael-woo-product-wrapper,
-.elementor-element.jm-home-ultimas .uael-woo-product-wrapper,
+.elementor-element.jm-home-ultimas li.product,
 .elementor-element[class*="jm-home-ult"] li.product {
   width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
 }
 
 #jm-ultimas-unidades .woocommerce-loop-product__title,
@@ -1268,46 +1224,79 @@
   word-break: normal !important;
   overflow-wrap: break-word !important;
   white-space: normal !important;
-  min-height: 0 !important;
-  width: 100% !important;
-  max-width: 100% !important;
+  hyphens: none !important;
 }
 
-/* Sin flechas/puntos solo en Últimas (Novedades SÍ navega) */
+/* Flechas Últimas — mismas reglas que Novedades */
 #jm-ultimas-unidades .slick-prev,
 #jm-ultimas-unidades .slick-next,
-#jm-ultimas-unidades .slick-dots,
+#jm-ultimas-unidades .slick-arrow,
 .elementor-element.jm-home-ultimas .slick-prev,
 .elementor-element.jm-home-ultimas .slick-next,
-.elementor-element.jm-home-ultimas .slick-dots,
-.elementor-element[class*="jm-home-ult"] .slick-dots {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
+.elementor-element.jm-home-ultimas .slick-arrow,
+.elementor-element[class*="jm-home-ult"] .slick-prev,
+.elementor-element[class*="jm-home-ult"] .slick-next {
+  position: absolute !important;
+  top: 36% !important;
+  z-index: 30 !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  border: 1.5px solid #A97E23 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  transform: translateY(-50%) !important;
+  height: 40px !important;
   margin: 0 !important;
   padding: 0 !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
+  overflow: visible !important;
 }
 
-@media (min-width: 922px) {
-  #jm-ultimas-unidades ul.products,
-  .elementor-element.jm-home-ultimas ul.products,
-  .elementor-element[class*="jm-home-ult"] ul.products,
-  #jm-ultimas-unidades .slick-track,
-  .elementor-element[class*="jm-home-ult"] .slick-track {
-    flex-wrap: nowrap !important;
-  }
+#jm-ultimas-unidades .slick-prev,
+.elementor-element.jm-home-ultimas .slick-prev,
+.elementor-element[class*="jm-home-ult"] .slick-prev {
+  left: 4px !important;
+  right: auto !important;
+}
 
-  #jm-ultimas-unidades ul.products > li.product,
-  #jm-ultimas-unidades ul.products > .slick-slide,
-  #jm-ultimas-unidades .slick-slide,
-  .elementor-element[class*="jm-home-ult"] ul.products > li.product,
-  .elementor-element[class*="jm-home-ult"] .slick-slide {
-    flex: 0 0 calc(25% - 9px) !important;
-    width: calc(25% - 9px) !important;
-    max-width: calc(25% - 9px) !important;
-  }
+#jm-ultimas-unidades .slick-next,
+.elementor-element.jm-home-ultimas .slick-next,
+.elementor-element[class*="jm-home-ult"] .slick-next {
+  right: 4px !important;
+  left: auto !important;
+}
+
+#jm-ultimas-unidades .slick-prev::before,
+#jm-ultimas-unidades .slick-next::before,
+.elementor-element.jm-home-ultimas .slick-prev::before,
+.elementor-element.jm-home-ultimas .slick-next::before,
+.elementor-element[class*="jm-home-ult"] .slick-prev::before,
+.elementor-element[class*="jm-home-ult"] .slick-next::before {
+  color: #A97E23 !important;
+  font-size: 20px !important;
+  opacity: 1 !important;
+  line-height: 1 !important;
+}
+
+#jm-ultimas-unidades .slick-dots,
+.elementor-element.jm-home-ultimas .slick-dots,
+.elementor-element[class*="jm-home-ult"] .slick-dots {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  margin: 12px 0 0 !important;
+  height: auto !important;
+  pointer-events: auto !important;
+  overflow: visible !important;
 }
 
 @media (max-width: 921px) {
@@ -1316,135 +1305,67 @@
   .elementor-element.jm-producto-ultimas,
   .elementor-element[class*="jm-home-ult"] {
     max-width: 100% !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
+    padding-left: 36px !important;
+    padding-right: 36px !important;
   }
 
-  #jm-ultimas-unidades ul.products,
-  .elementor-element.jm-home-ultimas ul.products,
-  .elementor-element[class*="jm-home-ult"] ul.products,
-  #jm-ultimas-unidades .slick-track,
-  .elementor-element[class*="jm-home-ult"] .slick-track {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: space-between !important;
-    gap: 10px !important;
-    transform: none !important;
-    width: 100% !important;
-  }
-
-  /* 2 columnas legibles (no 4 estrechas) */
-  #jm-ultimas-unidades ul.products > li.product,
-  #jm-ultimas-unidades ul.products > .slick-slide,
-  #jm-ultimas-unidades .slick-slide,
-  .elementor-element.jm-home-ultimas ul.products > li.product,
-  .elementor-element.jm-home-ultimas .slick-slide,
-  .elementor-element.jm-producto-ultimas ul.products > li.product,
-  .elementor-element[class*="jm-home-ult"] ul.products > li.product,
-  .elementor-element[class*="jm-home-ult"] .slick-slide {
-    flex: 0 0 calc(50% - 5px) !important;
-    width: calc(50% - 5px) !important;
-    max-width: calc(50% - 5px) !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  #jm-ultimas-unidades .slick-slide > div,
-  #jm-ultimas-unidades .uael-woo-product-wrapper,
-  #jm-ultimas-unidades li.product,
-  .elementor-element[class*="jm-home-ult"] .uael-woo-product-wrapper,
-  .elementor-element[class*="jm-home-ult"] li.product {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Título: hasta 3 líneas, sin partir sílabas */
-  #jm-ultimas-unidades .woocommerce-loop-product__title,
-  #jm-ultimas-unidades .uael-woo-products-title,
-  #jm-ultimas-unidades .uael-woo-products-title a,
-  .elementor-element.jm-home-ultimas .woocommerce-loop-product__title,
-  .elementor-element.jm-home-ultimas .uael-woo-products-title,
-  .elementor-element.jm-home-ultimas .uael-woo-products-title a,
-  .elementor-element[class*="jm-home-ult"] .woocommerce-loop-product__title,
-  .elementor-element[class*="jm-home-ult"] .uael-woo-products-title,
-  .elementor-element[class*="jm-home-ult"] .uael-woo-products-title a {
-    font-size: 12px !important;
-    line-height: 1.3 !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    -webkit-line-clamp: 3 !important;
-    display: -webkit-box !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
-    hyphens: none !important;
-    white-space: normal !important;
-  }
-
-  /* Precio en una sola línea ($7.990) */
-  #jm-ultimas-unidades .price,
-  #jm-ultimas-unidades .uael-woo-products-price,
-  #jm-ultimas-unidades .woocommerce-Price-amount,
-  #jm-ultimas-unidades .amount,
-  #jm-ultimas-unidades .price bdi,
-  .elementor-element[class*="jm-home-ult"] .price,
-  .elementor-element[class*="jm-home-ult"] .uael-woo-products-price,
-  .elementor-element[class*="jm-home-ult"] .woocommerce-Price-amount,
-  .elementor-element[class*="jm-home-ult"] .amount {
-    white-space: nowrap !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    font-size: 13px !important;
-    display: inline-block !important;
-    max-width: 100% !important;
-  }
-
-  /* Botón completo, ancho de la tarjeta */
-  #jm-ultimas-unidades li.product .button,
-  #jm-ultimas-unidades li.product a.button,
-  #jm-ultimas-unidades li.product .add_to_cart_button,
-  #jm-ultimas-unidades .add_to_cart_button,
-  .elementor-element.jm-home-ultimas li.product .button,
-  .elementor-element.jm-home-ultimas .add_to_cart_button,
-  .elementor-element[class*="jm-home-ult"] li.product .button,
-  .elementor-element[class*="jm-home-ult"] .add_to_cart_button {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 40px !important;
-    max-height: none !important;
-    height: auto !important;
-    padding: 8px 6px !important;
-    font-size: 10px !important;
-    line-height: 1.25 !important;
-    white-space: normal !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    overflow: visible !important;
-    flex-wrap: nowrap !important;
-    gap: 4px !important;
-    box-sizing: border-box !important;
-  }
-
-  #jm-ultimas-unidades .add_to_cart_button::before,
-  #jm-ultimas-unidades li.product a.button::before,
-  .elementor-element[class*="jm-home-ult"] .add_to_cart_button::before,
-  .elementor-element[class*="jm-home-ult"] li.product a.button::before {
-    flex: 0 0 14px !important;
-    width: 14px !important;
-    height: 14px !important;
-  }
-
-  /* Últimas: ocultar flechas — grid 2 cols, sin carrusel */
   #jm-ultimas-unidades .slick-prev,
   #jm-ultimas-unidades .slick-next,
   .elementor-element.jm-home-ultimas .slick-prev,
   .elementor-element.jm-home-ultimas .slick-next,
   .elementor-element[class*="jm-home-ult"] .slick-prev,
   .elementor-element[class*="jm-home-ult"] .slick-next {
-    display: none !important;
+    width: 36px !important;
+    height: 36px !important;
+    top: 34% !important;
+  }
+
+  #jm-ultimas-unidades .woocommerce-loop-product__title,
+  #jm-ultimas-unidades .uael-woo-products-title,
+  #jm-ultimas-unidades .uael-woo-products-title a,
+  .elementor-element[class*="jm-home-ult"] .woocommerce-loop-product__title,
+  .elementor-element[class*="jm-home-ult"] .uael-woo-products-title a {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+    -webkit-line-clamp: 3 !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+  }
+
+  #jm-ultimas-unidades .price,
+  #jm-ultimas-unidades .woocommerce-Price-amount,
+  #jm-ultimas-unidades .amount,
+  .elementor-element[class*="jm-home-ult"] .price,
+  .elementor-element[class*="jm-home-ult"] .amount {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    font-size: 13px !important;
+    display: inline-block !important;
+  }
+
+  #jm-ultimas-unidades li.product .button,
+  #jm-ultimas-unidades .add_to_cart_button,
+  .elementor-element[class*="jm-home-ult"] li.product .button,
+  .elementor-element[class*="jm-home-ult"] .add_to_cart_button {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 40px !important;
+    max-height: none !important;
+    font-size: 10px !important;
+    padding: 8px 6px !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  #jm-ultimas-unidades .uael-woo-products-thumbnail img,
+  #jm-ultimas-unidades img.attachment-woocommerce_thumbnail {
+    max-height: 140px !important;
+    object-fit: contain !important;
   }
 }
 
@@ -1590,21 +1511,7 @@
   }
 }
 
-/* Legacy */
-.jm-home-productos.jm-home-ultimas ul.products,
-.jm-home-productos.jm-producto-ultimas ul.products {
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 16px !important;
-  width: 100% !important;
-}
-
-@media (max-width: 921px) {
-  .jm-home-productos.jm-home-ultimas ul.products,
-  .jm-home-productos.jm-producto-ultimas ul.products {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
+/* Legacy grid Últimas eliminado: ahora es carrusel con flechas */
 
 /* Flechas carrusel UAE (Slick) */
 .jm-home-productos .slick-prev,
@@ -3562,17 +3469,23 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
 }
 
 
-/* === JM NOVEDADES: FLECHAS SLICK (override final, desktop+móvil) === */
-.jm-home-novedades .slick-track,
-.elementor-element.jm-home-novedades .slick-track {
-  /* no forzar transform: none — slick navega con translateX */
-  display: flex !important;
-  align-items: stretch !important;
+/* === JM HOME CARRUSELES: flechas Slick Novedades + Últimas (override final) === */
+.jm-home-novedades .slick-list,
+.elementor-element.jm-home-novedades .slick-list,
+#jm-ultimas-unidades .slick-list,
+.elementor-element.jm-home-ultimas .slick-list,
+.elementor-element[class*="jm-home-ult"] .slick-list {
+  overflow: hidden !important;
 }
 
-.jm-home-novedades .slick-list,
-.elementor-element.jm-home-novedades .slick-list {
-  overflow: hidden !important;
+.jm-home-novedades .slick-track,
+.elementor-element.jm-home-novedades .slick-track,
+#jm-ultimas-unidades .slick-track,
+.elementor-element.jm-home-ultimas .slick-track,
+.elementor-element[class*="jm-home-ult"] .slick-track {
+  display: flex !important;
+  align-items: stretch !important;
+  /* NO transform: none */
 }
 
 .jm-home-novedades .slick-prev,
@@ -3580,74 +3493,32 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
 .jm-home-novedades .slick-arrow,
 .elementor-element.jm-home-novedades .slick-prev,
 .elementor-element.jm-home-novedades .slick-next,
-.elementor-element.jm-home-novedades .slick-arrow {
+#jm-ultimas-unidades .slick-prev,
+#jm-ultimas-unidades .slick-next,
+#jm-ultimas-unidades .slick-arrow,
+.elementor-element.jm-home-ultimas .slick-prev,
+.elementor-element.jm-home-ultimas .slick-next,
+.elementor-element[class*="jm-home-ult"] .slick-prev,
+.elementor-element[class*="jm-home-ult"] .slick-next {
   display: flex !important;
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
   z-index: 30 !important;
   cursor: pointer !important;
+  height: 40px !important;
+  overflow: visible !important;
 }
 
 .jm-home-novedades ul.slick-dots,
-.elementor-element.jm-home-novedades ul.slick-dots {
+.elementor-element.jm-home-novedades ul.slick-dots,
+#jm-ultimas-unidades ul.slick-dots,
+.elementor-element.jm-home-ultimas ul.slick-dots,
+.elementor-element[class*="jm-home-ult"] ul.slick-dots {
   display: flex !important;
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
+  height: auto !important;
 }
 
-/* === JM ÚLTIMAS MOBILE: 2 cols legibles (override final) === */
-@media (max-width: 921px) {
-  #jm-ultimas-unidades ul.products > li.product,
-  #jm-ultimas-unidades .slick-slide,
-  .elementor-element.jm-home-ultimas ul.products > li.product,
-  .elementor-element.jm-home-ultimas .slick-slide,
-  .elementor-element[class*="jm-home-ult"] ul.products > li.product,
-  .elementor-element[class*="jm-home-ult"] .slick-slide {
-    flex: 0 0 calc(50% - 5px) !important;
-    width: calc(50% - 5px) !important;
-    max-width: calc(50% - 5px) !important;
-    min-width: 0 !important;
-  }
-
-  #jm-ultimas-unidades .woocommerce-loop-product__title,
-  #jm-ultimas-unidades .uael-woo-products-title,
-  #jm-ultimas-unidades .uael-woo-products-title a,
-  .elementor-element[class*="jm-home-ult"] .woocommerce-loop-product__title,
-  .elementor-element[class*="jm-home-ult"] .uael-woo-products-title a {
-    font-size: 12px !important;
-    line-height: 1.3 !important;
-    -webkit-line-clamp: 3 !important;
-    max-height: none !important;
-    min-height: 0 !important;
-    overflow-wrap: break-word !important;
-    word-break: normal !important;
-    hyphens: none !important;
-  }
-
-  #jm-ultimas-unidades .price,
-  #jm-ultimas-unidades .woocommerce-Price-amount,
-  #jm-ultimas-unidades .amount,
-  #jm-ultimas-unidades .price bdi,
-  .elementor-element[class*="jm-home-ult"] .price,
-  .elementor-element[class*="jm-home-ult"] .amount {
-    white-space: nowrap !important;
-    word-break: keep-all !important;
-    font-size: 13px !important;
-  }
-
-  #jm-ultimas-unidades li.product .button,
-  #jm-ultimas-unidades .add_to_cart_button,
-  .elementor-element[class*="jm-home-ult"] li.product .button,
-  .elementor-element[class*="jm-home-ult"] .add_to_cart_button {
-    width: 100% !important;
-    max-height: none !important;
-    min-height: 40px !important;
-    font-size: 10px !important;
-    padding: 8px 6px !important;
-    white-space: normal !important;
-    word-break: keep-all !important;
-    overflow: visible !important;
-  }
-}
