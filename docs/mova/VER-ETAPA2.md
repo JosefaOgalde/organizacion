@@ -21,6 +21,8 @@ Se abren: hub MOVA · documentos · presentación etapa 2 · landing MKOF.
 | Hub MOVA | http://localhost:3000/index/clientes/MKOF/MOVA.html |
 | Todos los documentos | http://localhost:3000/index/clientes/MKOF/MOVA/documentos/ |
 | Deck 19 slides | http://localhost:3000/index/clientes/mkof/mova-etapa2-presentacion.html |
+| Audio charla (~12 min) | http://localhost:3000/index/clientes/mkof/audio/ |
+| MP3 directo | http://localhost:3000/index/clientes/mkof/audio/mova-etapa2-charla.mp3 |
 | D3 Núcleo | http://localhost:3000/index/clientes/MKOF/MOVA/documentos/ver.html?id=d3-nucleo-mova-auth |
 | D4 Login + cookie | http://localhost:3000/index/clientes/MKOF/MOVA/documentos/ver.html?id=d4-login-cookie |
 | D5 Validación | http://localhost:3000/index/clientes/MKOF/MOVA/documentos/ver.html?id=d5-validacion-modulos |

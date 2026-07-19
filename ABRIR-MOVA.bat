@@ -64,6 +64,8 @@ start "" "http://localhost:3000/index/clientes/MKOF/MOVA/documentos/"
 timeout /t 1 /nobreak >nul
 start "" "http://localhost:3000/index/clientes/mkof/mova-etapa2-presentacion.html"
 timeout /t 1 /nobreak >nul
+start "" "http://localhost:3000/index/clientes/mkof/audio/"
+timeout /t 1 /nobreak >nul
 start "" "http://localhost:3000/index/clientes/mkof/"
 
 echo.
@@ -71,6 +73,8 @@ echo  === MOVA etapa 2 — pega si el navegador no abrio ===
 echo  Hub:          http://localhost:3000/index/clientes/MKOF/MOVA.html
 echo  Documentos:   http://localhost:3000/index/clientes/MKOF/MOVA/documentos/
 echo  Presentacion: http://localhost:3000/index/clientes/mkof/mova-etapa2-presentacion.html
+echo  AUDIO charla: http://localhost:3000/index/clientes/mkof/audio/
+echo  MP3:          http://localhost:3000/index/clientes/mkof/audio/mova-etapa2-charla.mp3
 echo  D3:           http://localhost:3000/index/clientes/MKOF/MOVA/documentos/ver.html?id=d3-nucleo-mova-auth
 echo  D4:           http://localhost:3000/index/clientes/MKOF/MOVA/documentos/ver.html?id=d4-login-cookie
 echo  D5:           http://localhost:3000/index/clientes/MKOF/MOVA/documentos/ver.html?id=d5-validacion-modulos

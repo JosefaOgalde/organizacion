@@ -195,6 +195,15 @@ window.MOVA_DOCUMENTOS = {
           fecha: '19 jul 2026',
           verHtml: 'mova-etapa2-presentacion.html',
           editar: 'docs/mova/GUION-PRESENTACION-ETAPA2.md'
+        },
+        {
+          id: 'etapa2-audio',
+          titulo: 'Audio · Charla etapa 2 (MP3)',
+          descripcion: 'Guion hablado ~12 min · voz es-CL Catalina · para ensayar o escuchar sin deck',
+          hito: 'Etapa 2',
+          fecha: '19 jul 2026',
+          verHtml: 'audio/',
+          editar: 'docs/mova/GUION-HABLADO-ETAPA2.txt'
         }
       ]
     },
