@@ -1,14 +1,18 @@
 /**
  * Joyas Mercury — círculos categorías + Últimas unidades (móvil)
+ * VERSIÓN: 2026-07-19-v2  ← si no ves esta línea, es CSS antiguo
+ *
+ * Archivo correcto: index/clientes/joyasmercury/CSS-CIRCULOS-COLECCIONES.css
+ * NO uses: CSS-COMPLETO-ASTRA.css ni CSS-HERO-CARRUSEL-FIJO.css (esas ramas son viejas)
+ *
  * Pegar en: Apariencia → Personalizar → CSS adicional → Publicar
+ * Antes: BORRA el CSS JM anterior del cuadro (no lo dejes abajo).
  *
  * Elementor (obligatorio):
- * - Contenedor de círculos (Pulseras, Conjuntos, Cadenas, Anillos, Aros
- *   O Esencial/Gold/Deluxe): clase  jm-circulos-categoria
- * - Widget Últimas unidades: ID  jm-ultimas-unidades  + clase  jm-home-ultimas
- * - Widget Novedades: clase  jm-home-novedades
- *
- * Imágenes de círculo: tamaño Completo/Miniatura (NO Personalizado 350px)
+ * - Contenedor de círculos: clase  jm-circulos-categoria  · Overflow = Visible
+ * - Últimas unidades: ID  jm-ultimas-unidades  + clase  jm-home-ultimas
+ * - Novedades: clase  jm-home-novedades
+ * Imágenes círculo: Completo/Miniatura (NO Personalizado 350px)
  */
 
 /* ========== CÍRCULOS DE CATEGORÍAS (5 en fila + 3 en home) ========== */

@@ -2,11 +2,16 @@
 
 Esto se arregla en **WordPress (Elementor + CSS adicional)**, no en la maqueta local.
 
-## 1) Pegar el CSS
+**CSS vigente:** `CSS-CIRCULOS-COLECCIONES.css` (debe decir `VERSIÓN: 2026-07-19-v2` al inicio).  
+**No uses** `CSS-COMPLETO-ASTRA.css` ni `CSS-HERO-CARRUSEL-FIJO.css` (versiones antiguas de otras ramas).
 
-1. Abre `CSS-CIRCULOS-COLECCIONES.css` (esta carpeta).
-2. Copia TODO el contenido.
-3. WP Admin → **Apariencia → Personalizar → CSS adicional** → pegar → Publicar.
+## 1) Pegar el CSS (reemplazar, no acumular)
+
+1. Abre `CSS-CIRCULOS-COLECCIONES.css` (esta carpeta) o la rama `cursor/jm-css-circulos-elementor-fb61`.
+2. En WP: **Apariencia → Personalizar → CSS adicional**.
+3. **Borra** el CSS JM viejo que ya esté ahí (si dejas los dos, gana el antiguo).
+4. Pega TODO el archivo nuevo → **Publicar**.
+5. En el celular: Ctrl+Shift+R (o ventana privada).
 
 ## 2) Elementor — círculos de categorías
 
