@@ -2,8 +2,9 @@
 
 **Última actualización:** 19 jul 2026  
 **Cliente:** MKOF · **Proyecto:** MOVA  
-**Rama:** `cursor/mova-auditoria-etapa2-d3-d5-459d`  
-**Presentación:** [`mova-etapa2-presentacion.html`](../../mkof/mova-etapa2-presentacion.html) · Guion [`docs/mova/GUION-PRESENTACION-ETAPA2.md`](../../../../docs/mova/GUION-PRESENTACION-ETAPA2.md)
+**Rama:** `main` (PRs #88 + #90) · ver [`docs/mova/VER-ETAPA2.md`](../../../../docs/mova/VER-ETAPA2.md)  
+**Presentación:** [`mova-etapa2-presentacion.html`](../../mkof/mova-etapa2-presentacion.html) · Guion [`docs/mova/GUION-PRESENTACION-ETAPA2.md`](../../../../docs/mova/GUION-PRESENTACION-ETAPA2.md)  
+**Abrir todo:** `ABRIR-MOVA.bat` (hub + documentos + deck)
 
 ---
 
