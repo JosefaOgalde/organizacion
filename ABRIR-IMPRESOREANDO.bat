@@ -2,12 +2,11 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 echo.
-echo  === Abrir Impresoreando — panel socios ===
+echo  === Abrir Impresoreando — solo landing del cliente ===
 echo  Rama: cursor/impresoreando-bob-productos-459d
-echo  (Porta Bob · naves · llaveros · gastos diseño)
 echo.
 
-echo  Cambiando a la rama con productos nuevos...
+echo  Actualizando rama...
 git fetch origin cursor/impresoreando-bob-productos-459d 2>nul
 git checkout cursor/impresoreando-bob-productos-459d 2>nul
 if errorlevel 1 (
@@ -42,23 +41,17 @@ if errorlevel 1 (
   exit /b 1
 )
 
-start "" "http://localhost:3000/index/clientes/impresoreando/panel/?tab=costos"
-timeout /t 1 /nobreak >nul
-start "" "http://localhost:3000/index/clientes/impresoreando/"
-timeout /t 1 /nobreak >nul
-start "" "http://localhost:3000/index/clientes/"
+REM Solo la landing del cliente (panel/catalogo se abren desde ahi).
+start "" "http://localhost:3000/index/clientes/impresoreando/?v=imp-logo3"
 
 echo.
-echo  PANEL SOCIOS: http://localhost:3000/index/clientes/impresoreando/panel/?tab=costos
-echo  Landing:      http://localhost:3000/index/clientes/impresoreando/
-echo  Portal:       http://localhost:3000/index/clientes/
+echo  LANDING: http://localhost:3000/index/clientes/impresoreando/
 echo.
-echo  Pestaña Costos producto: Porta Bob · Naves · Llaveros Ranger/Stanley
-echo  Pestaña Gastos: diseños Cults (Bob + bulldog + nave)
-echo  Pestaña Pedidos: PED-002 listo · PED-003 naves
+echo  Desde la landing:
+echo    Resumen 50/50  -^> panel/
+echo    Calculadora    -^> panel/?tab=costos
+echo    Catalogo IG    -^> catalogo/
 echo.
-echo  Color unico: ambar (#d4b06a)
-echo  Para compartir en WiFi con tu socio:
-echo    set HOST=0.0.0.0 ^&^& node scripts\organizacion-server.js
+echo  Si no ves el logo nuevo: Ctrl+F5 (hard refresh).
 echo.
 pause
