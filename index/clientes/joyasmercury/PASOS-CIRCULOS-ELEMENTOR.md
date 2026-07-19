@@ -43,19 +43,21 @@ En el widget de productos **Últimas unidades**:
 3. En el widget UAEL/Woo: desactiva carrusel/flechas si puedes (el CSS también las oculta)
 4. Revisa **Responsive** (ícono móvil): que ningún producto/columna esté en “Ocultar en móvil”
 
-## 4) Novedades (scroll lateral en móvil)
+## 4) Novedades y Últimas (flechas ←→ desktop y móvil)
 
-Clase CSS del widget: `jm-home-novedades`
+| Bloque | Clase / ID | Elementor |
+|--------|------------|-----------|
+| Novedades | `jm-home-novedades` | Slider ON · **Arrows ON** · p.ej. 8–12 productos, 4 visibles desktop / 2 móvil |
+| Últimas | `#jm-ultimas-unidades` + `jm-home-ultimas` | Igual: Slider ON · **Arrows ON** · más productos que slides visibles |
 
-En móvil debe poder deslizarse de lado (carrusel / swipe). No es grilla 2×2.
-Dejá el slider UAEL activo (flechas/dots visibles). Si no hay slick, el CSS habilita scroll nativo.
+Si solo hay 4 productos y se muestran 4, las flechas no tienen a dónde ir: subí la cantidad del query.
 
 ## Checklist rápido
 
 | Problema | Dónde | Qué hacer |
 |----------|--------|-----------|
 | Fotos cuadradas en Colecciones | Elementor + CSS | Clase `jm-circulos-categoria` + CSS pegado |
-| Faltan productos en móvil | Elementor widget | ID `jm-ultimas-unidades` + clase `jm-home-ultimas` + no ocultar en móvil |
-| Novedades sin scroll lateral | CSS + Elementor | Clase `jm-home-novedades` + CSS `novedades-scroll`; slider UAEL ON |
+| Sin flechas / no navega | Elementor + CSS | Arrows ON + CSS `flechas-visibles` + más productos que slides |
+| Flechas cortadas / desborde | CSS | Versión `flechas-visibles` (flechas dentro del carrusel) |
 
 Tras guardar: Ctrl+Shift+R en el celular / DevTools móvil.

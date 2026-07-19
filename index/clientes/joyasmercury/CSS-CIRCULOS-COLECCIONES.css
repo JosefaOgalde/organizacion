@@ -1,6 +1,6 @@
 /**
  * Joyas Mercury — círculos categorías + Últimas unidades (móvil)
- * VERSIÓN: 2026-07-19-v3  ← si no ves esta línea, es CSS antiguo
+ * VERSIÓN: 2026-07-19-v9  ← si no ves esta línea, es CSS antiguo
  *
  * Archivo correcto: index/clientes/joyasmercury/CSS-CIRCULOS-COLECCIONES.css
  * Preferible: CSS-COMPLETO-ASTRA.css (paquete completo en la misma rama)
@@ -10,8 +10,8 @@
  *
  * Elementor (obligatorio):
  * - Contenedor de círculos: clase  jm-circulos-categoria  · Overflow = Visible
- * - Últimas unidades: ID  jm-ultimas-unidades  + clase  jm-home-ultimas
- * - Novedades: clase  jm-home-novedades
+ * - Últimas: ID jm-ultimas-unidades + jm-home-ultimas · Slider+Arrows ON
+ * - Novedades: jm-home-novedades · Slider+Arrows ON
  * Imágenes círculo: Completo/Miniatura (NO Personalizado 350px)
  */
 
@@ -178,210 +178,145 @@
   }
 }
 
-/* ========== ÚLTIMAS UNIDADES — grid 2×2 centrado en móvil ========== */
+/* ========== ÚLTIMAS + NOVEDADES: flechas visibles dentro, sin desborde ========== */
 #jm-ultimas-unidades,
 .elementor-element.jm-home-ultimas,
-.elementor-element.jm-producto-ultimas,
-.elementor-element[class*="jm-home-ult"] {
+.elementor-element[class*="jm-home-ult"],
+.jm-home-novedades,
+.elementor-element.jm-home-novedades,
+.e-con:has(.jm-home-novedades),
+.e-con:has(.jm-home-ultimas),
+.e-con:has(#jm-ultimas-unidades) {
+  position: relative !important;
+  overflow: visible !important;
+  max-width: 100% !important;
   width: 100% !important;
-  max-width: 1140px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
   box-sizing: border-box !important;
-  padding-left: 12px !important;
-  padding-right: 12px !important;
-}
-
-#jm-ultimas-unidades ul.products,
-.elementor-element.jm-home-ultimas ul.products,
-.elementor-element.jm-producto-ultimas ul.products,
-.elementor-element[class*="jm-home-ult"] ul.products,
-#jm-ultimas-unidades ul.products[class*="columns-"],
-.elementor-element[class*="jm-home-ult"] ul.products[class*="columns-"] {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
-  align-items: stretch !important;
-  gap: 12px !important;
-  width: 100% !important;
-  margin: 0 auto !important;
-  padding: 0 !important;
-  list-style: none !important;
 }
 
 #jm-ultimas-unidades .slick-list,
-#jm-ultimas-unidades .slick-track,
 .elementor-element.jm-home-ultimas .slick-list,
-.elementor-element.jm-home-ultimas .slick-track,
-.elementor-element[class*="jm-home-ult"] .slick-list,
-.elementor-element[class*="jm-home-ult"] .slick-track {
-  display: flex !important;
-  flex-wrap: wrap !important;
+.jm-home-novedades .slick-list,
+.elementor-element.jm-home-novedades .slick-list {
+  overflow: hidden !important;
   width: 100% !important;
-  transform: none !important;
-  overflow: visible !important;
-  gap: 12px !important;
-  margin: 0 !important;
-}
-
-#jm-ultimas-unidades ul.products > li.product,
-#jm-ultimas-unidades .slick-slide,
-.elementor-element.jm-home-ultimas ul.products > li.product,
-.elementor-element.jm-home-ultimas .slick-slide,
-.elementor-element[class*="jm-home-ult"] ul.products > li.product,
-.elementor-element[class*="jm-home-ult"] .slick-slide {
-  flex: 0 0 calc(25% - 9px) !important;
-  width: calc(25% - 9px) !important;
-  max-width: calc(25% - 9px) !important;
-  float: none !important;
-  margin: 0 !important;
-  display: block !important;
-  text-align: center !important;
-}
-
-/* Centrar imagen, título, precio y botón */
-#jm-ultimas-unidades li.product .woocommerce-loop-product__link,
-#jm-ultimas-unidades li.product img,
-#jm-ultimas-unidades li.product .woocommerce-loop-product__title,
-#jm-ultimas-unidades li.product .price,
-#jm-ultimas-unidades li.product .button,
-#jm-ultimas-unidades li.product .add_to_cart_button,
-#jm-ultimas-unidades .uael-woo-product-wrapper,
-.elementor-element.jm-home-ultimas li.product,
-.elementor-element[class*="jm-home-ult"] li.product {
-  text-align: center !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-
-#jm-ultimas-unidades li.product .button,
-#jm-ultimas-unidades li.product .add_to_cart_button,
-.elementor-element.jm-home-ultimas li.product .button,
-.elementor-element[class*="jm-home-ult"] li.product .button {
-  display: inline-block !important;
-  width: auto !important;
   max-width: 100% !important;
-  float: none !important;
-  margin: 8px auto 0 !important;
 }
+
+/* No forzar display/float del track: rompe productos en carrusel UAEL */
 
 #jm-ultimas-unidades .slick-prev,
 #jm-ultimas-unidades .slick-next,
-#jm-ultimas-unidades .slick-dots,
 .elementor-element.jm-home-ultimas .slick-prev,
 .elementor-element.jm-home-ultimas .slick-next,
-.elementor-element.jm-home-ultimas .slick-dots,
-.elementor-element[class*="jm-home-ult"] .slick-dots {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  pointer-events: none !important;
+.jm-home-novedades .slick-prev,
+.jm-home-novedades .slick-next,
+.elementor-element.jm-home-novedades .slick-prev,
+.elementor-element.jm-home-novedades .slick-next {
+  position: absolute !important;
+  top: 32% !important;
+  z-index: 50 !important;
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  border: 1.5px solid #A97E23 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  font-size: 0 !important;
+  transform: none !important;
+}
+
+#jm-ultimas-unidades .slick-prev,
+.jm-home-novedades .slick-prev {
+  left: 8px !important;
+}
+
+#jm-ultimas-unidades .slick-next,
+.jm-home-novedades .slick-next {
+  right: 8px !important;
+}
+
+#jm-ultimas-unidades .slick-prev::before,
+#jm-ultimas-unidades .slick-next::before,
+.jm-home-novedades .slick-prev::before,
+.jm-home-novedades .slick-next::before {
+  content: "" !important;
+  display: block !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-style: solid !important;
+  border-color: #A97E23 !important;
+  border-width: 0 0 2.5px 2.5px !important;
+  opacity: 1 !important;
+  background: none !important;
+  font-size: 0 !important;
+}
+
+#jm-ultimas-unidades .slick-prev::before,
+.jm-home-novedades .slick-prev::before {
+  transform: rotate(45deg) !important;
+  margin-left: 4px !important;
+}
+
+#jm-ultimas-unidades .slick-next::before,
+.jm-home-novedades .slick-next::before {
+  transform: rotate(225deg) !important;
+  margin-right: 4px !important;
+}
+
+#jm-ultimas-unidades .slick-dots,
+.jm-home-novedades .slick-dots {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  justify-content: center !important;
+}
+
+#jm-ultimas-unidades img,
+#jm-ultimas-unidades .uael-woo-product-wrapper img,
+.jm-home-novedades img {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: 180px !important;
+  margin: 0 auto !important;
+  object-fit: contain !important;
 }
 
 @media (max-width: 921px) {
-  #jm-ultimas-unidades ul.products,
-  .elementor-element.jm-home-ultimas ul.products,
-  .elementor-element[class*="jm-home-ult"] ul.products,
-  #jm-ultimas-unidades .slick-track,
-  .elementor-element[class*="jm-home-ult"] .slick-track {
-    flex-wrap: wrap !important;
-    transform: none !important;
-    justify-content: space-between !important;
+  #jm-ultimas-unidades .woocommerce-loop-product__title,
+  #jm-ultimas-unidades .uael-woo-products-title a {
+    font-size: 12px !important;
+    -webkit-line-clamp: 3 !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
-  #jm-ultimas-unidades ul.products > li.product,
-  #jm-ultimas-unidades .slick-slide,
-  .elementor-element.jm-home-ultimas ul.products > li.product,
-  .elementor-element.jm-home-ultimas .slick-slide,
-  .elementor-element[class*="jm-home-ult"] ul.products > li.product,
-  .elementor-element[class*="jm-home-ult"] .slick-slide {
-    flex: 0 0 calc(50% - 6px) !important;
-    width: calc(50% - 6px) !important;
-    max-width: calc(50% - 6px) !important;
+  #jm-ultimas-unidades .price,
+  #jm-ultimas-unidades .amount {
+    white-space: nowrap !important;
+    font-size: 13px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
   #jm-ultimas-unidades li.product .button,
-  #jm-ultimas-unidades li.product .add_to_cart_button,
-  .elementor-element[class*="jm-home-ult"] li.product .button {
-    font-size: 11px !important;
-    padding: 8px 10px !important;
-    line-height: 1.2 !important;
-    white-space: normal !important;
-  }
-}
-
-/* Novedades móvil: scroll lateral / carrusel (NO grilla 2×2) */
-@media (max-width: 921px) {
-  .jm-home-novedades,
-  .elementor-element.jm-home-novedades {
-    overflow: visible !important;
-    max-width: 100% !important;
-    position: relative !important;
-  }
-
-  .jm-home-novedades .slick-list,
-  .elementor-element.jm-home-novedades .slick-list {
-    overflow: hidden !important;
-    touch-action: pan-x pan-y !important;
-  }
-
-  .jm-home-novedades .slick-track,
-  .jm-home-novedades ul.products,
-  .elementor-element.jm-home-novedades .slick-track,
-  .elementor-element.jm-home-novedades ul.products {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    gap: 12px !important;
-    align-items: stretch !important;
-  }
-
-  /* Fallback sin slick: scroll nativo */
-  .jm-home-novedades ul.products:not(.slick-track),
-  .elementor-element.jm-home-novedades ul.products:not(.slick-track) {
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
+  #jm-ultimas-unidades .add_to_cart_button {
     width: 100% !important;
-    max-width: 100% !important;
-    padding-bottom: 8px !important;
-  }
-
-  .jm-home-novedades ul.products > li.product,
-  .elementor-element.jm-home-novedades ul.products > li.product,
-  .jm-home-novedades .slick-slide,
-  .elementor-element.jm-home-novedades .slick-slide {
-    flex: 0 0 72% !important;
-    width: 72% !important;
-    max-width: 280px !important;
-    min-width: 200px !important;
-    display: block !important;
-    float: none !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    scroll-snap-align: start;
-    text-align: center !important;
-  }
-
-  .jm-home-novedades .slick-prev,
-  .jm-home-novedades .slick-next,
-  .elementor-element.jm-home-novedades .slick-prev,
-  .elementor-element.jm-home-novedades .slick-next {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    z-index: 5 !important;
-  }
-
-  .jm-home-novedades .slick-dots,
-  .elementor-element.jm-home-novedades .slick-dots {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    justify-content: center !important;
-    gap: 6px !important;
-    margin-top: 10px !important;
-    pointer-events: auto !important;
+    font-size: 10px !important;
+    max-height: none !important;
+    min-height: 40px !important;
   }
 }
+
