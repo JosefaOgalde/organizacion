@@ -592,9 +592,16 @@
 
   function heroHtml(cfg, stats) {
     const tagline = cfg?.tagline || c.agente;
+    const logoImp =
+      c.slug === 'impresoreando'
+        ? `<img class="portal-landing-hero__logo" src="./identidad/logo-impresoreando.png" width="480" height="140" alt="impresoreando" />`
+        : '';
+    const titulo = logoImp
+      ? `<h1 class="portal-landing-hero__titulo portal-landing-hero__titulo--logo">${logoImp}</h1>`
+      : `<h1 class="portal-landing-hero__titulo">${escapeHtml(c.nombre)}</h1>`;
     return `<header class="portal-landing-hero">
       <span class="portal-badge">${escapeHtml(c.tipo)}</span>
-      <h1 class="portal-landing-hero__titulo">${escapeHtml(c.nombre)}</h1>
+      ${titulo}
       <p class="portal-landing-hero__tagline">${escapeHtml(tagline)}</p>
       <p class="portal-landing-hero__meta">${escapeHtml(c.abrev)} · ${escapeHtml(c.agente)}</p>
       ${stats.total ? `<div class="portal-landing-stats">

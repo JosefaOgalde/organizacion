@@ -419,6 +419,20 @@ body.portal-body--themed .portal-cliente {
   color: var(--card-text);
 }
 
+.portal-landing-hero__titulo--logo {
+  margin: 0.55rem 0 0.4rem;
+  line-height: 0;
+}
+
+.portal-landing-hero__logo {
+  display: block;
+  height: clamp(48px, 9vw, 72px);
+  width: auto;
+  max-width: min(480px, 92%);
+  object-fit: contain;
+  object-position: left center;
+}
+
 .portal-landing-hero__tagline {
   margin: 0 0 0.35rem;
   font-size: 1rem;
