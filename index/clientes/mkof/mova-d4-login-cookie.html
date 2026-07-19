@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOVA · Día 4 — Login único + cookie</title>
+  <link rel="stylesheet" href="../../assets/portal.css">
+  <link rel="stylesheet" href="../../assets/mkof-mova-auditoria.css">
+  <script src="../../assets/embed-chrome.js"></script>
+  <link rel="stylesheet" href="../../assets/embed-chrome.css">
+</head>
+<body class="mova-aud">
+  <header class="mova-aud__hero">
+    <nav class="mova-aud__nav">
+      <a href="../MKOF/MOVA/documentos/">← Documentos MOVA</a>
+      <a href="mova-d3-nucleo.html">← D3 Núcleo</a>
+      <a href="mova-d5-validacion.html">D5 Validación →</a>
+    </nav>
+    <p class="mova-aud__eyebrow">GRUPO MAKING OF · MOVA · AUDITORÍA</p>
+    <h1>Día 4 — Login único + cookie</h1>
+    <p class="mova-aud__sub">acme-chile.cl · Tarea <code>mkof/04</code> · 19 jul 2026</p>
+    <p class="mova-aud__badge">Solo diseñar — no implementar en servidor</p>
+  </header>
+
+  <main class="mova-aud__main">
+    <section>
+      <h2>Flujo objetivo</h2>
+      <div class="mova-aud__flujo">
+        <span>1. Pide módulo</span> →
+        <span class="auth">2. guard.php</span> →
+        <span>3. ¿sesión?</span> →
+        <span class="warn">No → login?redirect=</span> /
+        <span class="auth">Sí → entra</span>
+      </div>
+      <pre class="mova-aud__mapa">Usuario → /mova/erp/
+  → guard.php
+  → sin sesión → login.php?redirect=/mova/erp/
+  → login OK → cookie HttpOnly+Secure
+  → vuelve a /mova/erp/</pre>
+    </section>
+
+    <div class="mova-aud__puente">
+      <strong>PUENTE</strong>
+      El núcleo D3 define los archivos. D4 define cómo viaja la sesión: cookie en servidor, nunca JWT en el navegador.
+      <pre class="mova-aud__mapa">Archivos núcleo → cookie PHP · HttpOnly+Secure · Google alimenta sesión (no localStorage)</pre>
+    </div>
+
+    <section>
+      <h2>Especificación de cookie</h2>
+      <table class="mova-aud__tabla">
+        <thead>
+          <tr><th>Parámetro</th><th>Valor</th><th>Motivo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Nombre</td><td><code>PHPSESSID</code> o <code>MOVASESSID</code></td><td>Un solo nombre en todo el sitio</td></tr>
+          <tr><td>HttpOnly</td><td class="si">true</td><td>JS no puede leerla</td></tr>
+          <tr><td>Secure</td><td class="si">true</td><td>Solo HTTPS</td></tr>
+          <tr><td>SameSite</td><td>Lax</td><td>CSRF básico + redirect post-login</td></tr>
+          <tr><td>Path</td><td><code>/</code></td><td>Compartida entre módulos</td></tr>
+          <tr><td>Lifetime</td><td>0 (sesión) o 8–12 h máx.</td><td>Evitar sesión eterna</td></tr>
+        </tbody>
+      </table>
+      <blockquote class="mova-aud__oro">
+        Prohibido: JWT / access_token / token Google en localStorage o sessionStorage.
+        <small>Google OAuth puede usarse, pero el resultado vive en sesión PHP emitida por mova_auth.</small>
+      </blockquote>
+    </section>
+
+    <section>
+      <h2>Correo+clave y Google sin fragmentar</h2>
+      <div class="mova-aud__grid2">
+        <article class="mova-aud__card">
+          <h3>Correo + clave</h3>
+          <p>Form en <code>login.php</code> → valida → crea sesión PHP.</p>
+        </article>
+        <article class="mova-aud__card">
+          <h3>Google OAuth</h3>
+          <p>tokeninfo + whitelist → misma sesión PHP. El panel <code>/mova/</code> deja de ser puerta directa.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Redirect seguro</h2>
+      <ul>
+        <li>Solo paths que empiecen con <code>/</code> del mismo sitio.</li>
+        <li>Rechazar <code>http://</code>, <code>//evil.com</code>.</li>
+        <li>Whitelist opcional: <code>/mova/</code>, <code>/axon/</code>, <code>/rrhh/</code>, <code>/admin/</code>.</li>
+        <li>Default si inválido: <code>/mova/</code>.</li>
+        <li>Excluir del guard: login, logout, validate, <code>/documentos/</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Casos de prueba (para implementación)</h2>
+      <table class="mova-aud__tabla">
+        <thead>
+          <tr><th>#</th><th>Caso</th><th>Esperado</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Sin cookie → ERP</td><td>Redirect a login?redirect=</td></tr>
+          <tr><td>2</td><td>Login OK</td><td>Cookie HttpOnly+Secure · vuelve a ERP</td></tr>
+          <tr><td>3</td><td>Recargar</td><td>Entra sin re-login</td></tr>
+          <tr><td>4</td><td>Logout</td><td>ERP pide login otra vez</td></tr>
+          <tr><td>5</td><td>Incógnito</td><td>Pide login</td></tr>
+          <tr><td>6</td><td>Local Storage</td><td>Sin jwt/token de sesión</td></tr>
+          <tr><td>7</td><td>validate con sesión</td><td>HTTP 200</td></tr>
+          <tr><td>8</td><td>validate sin sesión</td><td>HTTP 401</td></tr>
+          <tr><td>9</td><td>Google fuera de whitelist</td><td>Sin sesión</td></tr>
+          <tr><td>10</td><td>redirect malicioso</td><td>Ignorado → /mova/</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Checklist cierre Día 4</h2>
+      <ul class="mova-aud__check">
+        <li>Flujo usuario → mova_auth → módulo dibujado</li>
+        <li>Cookie HttpOnly + Secure documentada</li>
+        <li>Sin JWT en localStorage (diseño)</li>
+        <li>Google integrado sin fragmentar</li>
+        <li>10 casos de prueba escritos</li>
+        <li>Entregable en portal documentos MOVA</li>
+      </ul>
+      <p>Marcar <code>mkof/04</code> completada en el organizador (PC local).</p>
+    </section>
+
+    <section>
+      <h2>Próximo — Día 5</h2>
+      <p>Matriz de validación por módulo + sandbox + cierre de la auditoría.</p>
+      <p><a href="mova-d5-validacion.html">Abrir entregable D5 →</a></p>
+    </section>
+  </main>
+
+  <footer class="mova-aud__foot">MOVA · Día 4 · Login + cookie · GRUPO MAKING OF · 19 jul 2026</footer>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOVA · Día 3 — Carpetas y archivos núcleo</title>
+  <link rel="stylesheet" href="../../assets/portal.css">
+  <link rel="stylesheet" href="../../assets/mkof-mova-auditoria.css">
+  <script src="../../assets/embed-chrome.js"></script>
+  <link rel="stylesheet" href="../../assets/embed-chrome.css">
+</head>
+<body class="mova-aud">
+  <header class="mova-aud__hero">
+    <nav class="mova-aud__nav">
+      <a href="../MKOF/MOVA/documentos/">← Documentos MOVA</a>
+      <a href="mova-d2-reglas.html">D2 Reglas</a>
+      <a href="mova-d4-login-cookie.html">D4 Cookie →</a>
+    </nav>
+    <p class="mova-aud__eyebrow">GRUPO MAKING OF · MOVA · AUDITORÍA</p>
+    <h1>Día 3 — Carpetas y archivos núcleo</h1>
+    <p class="mova-aud__sub">acme-chile.cl · Tarea <code>mkof/03</code> · 19 jul 2026</p>
+    <p class="mova-aud__badge">Solo documentar — no subir archivos al servidor</p>
+  </header>
+
+  <main class="mova-aud__main">
+    <section>
+      <h2>Ruta base acordada</h2>
+      <table class="mova-aud__tabla">
+        <tbody>
+          <tr><th>Disco</th><td><code>public_html/acme-chile.cl/mova_auth/</code></td></tr>
+          <tr><th>URL</th><td><code>https://acme-chile.cl/mova_auth/</code></td></tr>
+          <tr><th>Permisos carpeta</th><td><code>755</code></td></tr>
+          <tr><th>Secretos</th><td>Solo en <code>config.php</code> — nunca en Git público ni en front</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="mova-aud__puente">
+      <strong>PUENTE</strong>
+      D2 fijó la regla «un solo portero». D3 define qué archivos debe tener ese portero antes de tocar el servidor.
+      <pre class="mova-aud__mapa">Reglas D2 → 6 archivos núcleo en /mova_auth/ → gap vs cPanel actual (D1)</pre>
+    </div>
+
+    <section>
+      <h2>Los 6 archivos núcleo</h2>
+      <table class="mova-aud__tabla">
+        <thead>
+          <tr><th>Archivo</th><th>Público</th><th>Responsabilidad</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>config.php</code></td><td class="no">No (include)</td><td>Secretos, whitelist, duración sesión, dominio cookie</td></tr>
+          <tr><td><code>session.php</code></td><td class="no">No (include)</td><td>session_start con cookie HttpOnly+Secure+SameSite</td></tr>
+          <tr><td><code>login.php</code></td><td class="si">Sí</td><td>Pantalla de entrada · Google opcional · ?redirect=</td></tr>
+          <tr><td><code>validate.php</code></td><td class="si">Sí (API)</td><td>JSON ok/usuario/permisos · HTTP 200 / 401</td></tr>
+          <tr><td><code>guard.php</code></td><td class="no">Include módulos</td><td>Sin sesión → redirect a login.php?redirect=</td></tr>
+          <tr><td><code>logout.php</code></td><td class="si">Sí</td><td>Destruye sesión + cookie · vuelve a login</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Árbol objetivo</h2>
+      <pre class="mova-aud__tree"><span class="dir">public_html/acme-chile.cl/</span>
+├── <span class="dir">mova_auth/</span>
+│   ├── <span class="file">config.php</span>          <span class="keep">← secretos</span>
+│   ├── <span class="file">session.php</span>         <span class="new">← NUEVO</span>
+│   ├── <span class="file">login.php</span>
+│   ├── <span class="file">logout.php</span>
+│   ├── <span class="file">validate.php</span>        <span class="new">← NUEVO</span>
+│   └── <span class="file">guard.php</span>           <span class="new">← NUEVO</span>
+├── <span class="dir">mova/</span>                   <span class="new">← include guard.php</span>
+└── <span class="dir">axon/</span> …</pre>
+    </section>
+
+    <div class="mova-aud__puente">
+      <strong>PUENTE</strong>
+      Contrastamos el diseño con lo que el inventario D1 ya vio en cPanel.
+      <pre class="mova-aud__mapa">Objetivo (6 núcleo) − Actual cPanel = gap (session, validate, guard)</pre>
+    </div>
+
+    <section>
+      <h2>Gap analysis vs cPanel (D1)</h2>
+      <p>Hoy en servidor: <code>auth.php</code>, <code>config.php</code>, <code>google_login.php</code>, <code>login.php</code>, <code>logout.php</code>, <code>panel.php</code>, <code>setup.sql</code>.</p>
+      <div class="mova-aud__grid2">
+        <article class="mova-aud__card mova-aud__card--ok">
+          <h3>Ya existen</h3>
+          <p><code>config.php</code> · <code>login.php</code> · <code>logout.php</code></p>
+        </article>
+        <article class="mova-aud__card mova-aud__card--gap">
+          <h3>Faltan (gap)</h3>
+          <p><code>session.php</code> · <code>validate.php</code> · <code>guard.php</code></p>
+        </article>
+        <article class="mova-aud__card mova-aud__card--new">
+          <h3>Extras a evaluar</h3>
+          <p><code>auth.php</code> · <code>google_login.php</code> · <code>panel.php</code> · <code>setup.sql</code></p>
+        </article>
+        <article class="mova-aud__card">
+          <h3>Permisos</h3>
+          <p>Carpeta <code>755</code> · PHP <code>644</code> · sin escritura vía HTTP</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Secretos vs públicos</h2>
+      <ul>
+        <li><strong>Secretos:</strong> <code>config.php</code> — solo include PHP.</li>
+        <li><strong>Públicos web:</strong> <code>login.php</code>, <code>logout.php</code>, <code>validate.php</code>.</li>
+        <li><strong>Solo include:</strong> <code>session.php</code>, <code>guard.php</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Checklist cierre Día 3</h2>
+      <ul class="mova-aud__check">
+        <li>Ruta base <code>/mova_auth/</code> acordada</li>
+        <li>6 archivos núcleo listados y descritos</li>
+        <li>Secretos vs públicos documentados</li>
+        <li>Permisos esperados documentados</li>
+        <li>Gap vs cPanel documentado</li>
+        <li>Entregable en portal documentos MOVA</li>
+      </ul>
+      <p>Marcar <code>mkof/03</code> completada en el organizador (PC local).</p>
+    </section>
+
+    <section>
+      <h2>Próximo — Día 4</h2>
+      <p>Diseñar flujo de login único + especificación de cookie HttpOnly+Secure.</p>
+      <p><a href="mova-d4-login-cookie.html">Abrir entregable D4 →</a></p>
+    </section>
+  </main>
+
+  <footer class="mova-aud__foot">MOVA · Día 3 · Núcleo mova_auth · GRUPO MAKING OF · 19 jul 2026</footer>
+</body>
+</html>

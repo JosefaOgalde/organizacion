@@ -1,0 +1,98 @@
+================================================================================
+INVENTARIO MOVA — MÓDULOS EN acme-chile.cl
+================================================================================
+
+Cliente:    MKOF
+Proyecto:   MOVA (login unificado mova_auth)
+Tarea:      Día 1 — [MOVA] D1 — Inventario módulos M
+Fecha:      6 jul 2026
+Regla:      SOLO INVENTARIO — NO TOCAR CÓDIGO
+
+--------------------------------------------------------------------------------
+CÓMO COMPLETAR ESTE DOCUMENTO
+--------------------------------------------------------------------------------
+
+1. Entra a cPanel → Administrador de archivos → public_html (GoDaddy).
+2. Lista todas las carpetas bajo public_html (sección "Carpetas en servidor").
+3. Por cada módulo M, abre la URL en el navegador (logueado y en incógnito).
+4. DevTools → Application: revisa localStorage / sessionStorage (¿hay JWT?).
+5. DevTools → Network: busca llamadas a webhooks n8n al cargar o validar sesión.
+6. Marca lo que NO pase por mova_auth (columna "¿Pasa mova_auth?" = no).
+7. Comparte este archivo con el equipo técnico.
+
+ENLACES ÚTILES
+  Sitio:        https://acme-chile.cl/
+  Panel MOVA:   https://acme-chile.cl/mova/
+  Playbook:     https://acme-chile.cl/documentos/auditoria_mova.html
+  Guía auth:    mova-auth-guia.html (en este mismo proyecto)
+  Tarea:        index.html?tarea=mkof/01
+
+--------------------------------------------------------------------------------
+TABLA DE MÓDULOS
+--------------------------------------------------------------------------------
+
+Valores auth:     Google OAuth | mova_auth | JWT local | sesión PHP | ninguno | otro
+¿Pasa mova_auth?: sí | parcial | no | n/a
+
+#  Módulo                  Carpeta cPanel      URL                              Auth  JWT  n8n  mova_auth  Resp.  Notas
+-- ----------------------- ------------------- -------------------------------- ---- ---- ---- ---------- ------ ---------------------------
+1  Landing corporativa     /                   https://acme-chile.cl/           ?     ?    ?    ?                 Página pública
+2  Portal MOVA (panel)     mova/               https://acme-chile.cl/mova/      ?     ?    ?    ?                 Menú lateral interno
+3  MOVA (memoria operac.)  ?                   https://acme-chile.cl/mova/      ?     ?    ?    ?                 Vista dentro del panel
+4  AXON                    ?                   ?                                ?     ?    ?    ?                 Administrador GMO
+5  Brújula                 ?                   ?                                ?     ?    ?    ?
+6  Evaluador               ?                   ?                                ?     ?    ?    ?
+7  Pulso                   ?                   ?                                ?     ?    ?    ?
+8  Stack                   ?                   ?                                ?     ?    ?    ?
+9  Biblioteca              ?                   ?                                ?     ?    ?    ?
+10 News                    ?                   ?                                ?     ?    ?    ?
+11 Talent                  ?                   ?                                ?     ?    ?    ?
+12 ERP y Finanzas (área)   ?                   ?                                ?     ?    ?    ?                 Ver MAESTRO abajo
+13 MOVA MAESTRO            MAESTRO/ (confirmar) ?                                ?     ?    ?    ?                 Módulo M — playbook
+14 INGRESOS                INGRESOS/ (confirmar) ?                             ?     ?    ?    ?                 Submódulo ERP
+15 EGRESOS                 EGRESOS/ (confirmar) ?                              ?     ?    ?    ?                 Submódulo ERP
+16 Estrategia (área)       ?                   ?                                ?     ?    ?    ?
+17 RRHH (área)             ?                   ?                                ?     ?    ?    ?
+18 mova_auth (actual)      mova_auth/ (confirmar) https://acme-chile.cl/mova_auth/ ?  ?    ?    parcial           Meta: único validador
+19 Playbook auditoría      documentos/         https://acme-chile.cl/documentos/auditoria_mova.html  público  no  no  n/a    Solo documentación
+
+--------------------------------------------------------------------------------
+CARPETAS EN SERVIDOR (completar desde cPanel)
+--------------------------------------------------------------------------------
+
+public_html/
+├── (pegar aquí el listado real de carpetas)
+
+
+--------------------------------------------------------------------------------
+ENDPOINTS n8n DETECTADOS
+--------------------------------------------------------------------------------
+
+Webhook / URL          | Módulo que lo usa | ¿Auth? | Notas
+-----------------------|-------------------|--------|------
+                       |                   |        |
+
+
+--------------------------------------------------------------------------------
+CHECKLIST DE CIERRE — DÍA 1
+--------------------------------------------------------------------------------
+
+[ ] Acceso cPanel / FTP GoDaddy confirmado
+[ ] Listado de carpetas en public_html pegado arriba
+[ ] URL completa de cada módulo M anotada
+[ ] Flujo actual documentado (Google / mova_auth / otro)
+[ ] JWT o localStorage identificados donde existan
+[ ] Endpoints n8n listados
+[ ] Tabla compartida con el equipo técnico
+
+CRITERIO DE CIERRE:
+  Inventario 100% con columnas sin "?" en módulos M (excepto playbook público).
+  Listo para Día 2 (acuerdo + diseño mova_auth).
+
+--------------------------------------------------------------------------------
+HISTORIAL
+--------------------------------------------------------------------------------
+
+6 jul 2026  —  Plantilla creada en repo. Completar desde cPanel.
+
+================================================================================
