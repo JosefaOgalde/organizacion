@@ -1,6 +1,6 @@
 /**
  * Joyas Mercury — CSS COMPLETO Astra (todo en uno)
- * VERSIÓN: 2026-07-19-novedades-swipe  ·  Novedades scroll lateral nativo
+ * VERSIÓN: 2026-07-19-novedades-flechas  ·  Novedades flechas ←→ desktop+móvil
  * Origen: rama cursor/jm-css-hero-contain-6a09 (recuperado a esta rama)
  *
  * Incluye: catálogo/filtros · home/círculos · footer dorado · menú móvil · producto single · etc.
@@ -1448,137 +1448,145 @@
   }
 }
 
-/* Novedades móvil: scroll lateral NATIVO (swipe) — ver más productos */
+/* ========== NOVEDADES: carrusel Slick con flechas ←→ (desktop + móvil) ==========
+   Importante: NO anular transform del .slick-track (rompe clic en flechas).
+   Clase Elementor: jm-home-novedades · Slider UAEL ON · Arrows ON */
+.jm-home-novedades,
+.elementor-element.jm-home-novedades {
+  position: relative !important;
+  overflow: visible !important;
+  max-width: 100% !important;
+}
+
+.jm-home-novedades .uael-woo-products,
+.jm-home-novedades .uael-woocommerce,
+.jm-home-novedades .uael-woo-products-carousel,
+.jm-home-novedades .slick-slider,
+.elementor-element.jm-home-novedades .slick-slider {
+  position: relative !important;
+  overflow: visible !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.jm-home-novedades .slick-list,
+.elementor-element.jm-home-novedades .slick-list {
+  overflow: hidden !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+/* Dejar que Slick mueva el track (NO transform: none) */
+.jm-home-novedades .slick-track,
+.elementor-element.jm-home-novedades .slick-track {
+  display: flex !important;
+  align-items: stretch !important;
+}
+
+.jm-home-novedades ul.products::before,
+.jm-home-novedades ul.products::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Flechas visibles y clicables en desktop y móvil */
+.jm-home-novedades .slick-prev,
+.jm-home-novedades .slick-next,
+.jm-home-novedades .slick-arrow,
+.elementor-element.jm-home-novedades .slick-prev,
+.elementor-element.jm-home-novedades .slick-next,
+.elementor-element.jm-home-novedades .slick-arrow {
+  position: absolute !important;
+  top: 36% !important;
+  z-index: 30 !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  border: 1.5px solid #A97E23 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  transform: translateY(-50%) !important;
+}
+
+.jm-home-novedades .slick-prev,
+.elementor-element.jm-home-novedades .slick-prev {
+  left: 4px !important;
+  right: auto !important;
+}
+
+.jm-home-novedades .slick-next,
+.elementor-element.jm-home-novedades .slick-next {
+  right: 4px !important;
+  left: auto !important;
+}
+
+.jm-home-novedades .slick-prev::before,
+.jm-home-novedades .slick-next::before,
+.elementor-element.jm-home-novedades .slick-prev::before,
+.elementor-element.jm-home-novedades .slick-next::before {
+  color: #A97E23 !important;
+  font-size: 20px !important;
+  opacity: 1 !important;
+  line-height: 1 !important;
+}
+
+.jm-home-novedades .slick-prev:hover,
+.jm-home-novedades .slick-next:hover,
+.elementor-element.jm-home-novedades .slick-prev:hover,
+.elementor-element.jm-home-novedades .slick-next:hover {
+  background: #faf5f7 !important;
+  border-color: #C88F9C !important;
+}
+
+.jm-home-novedades .slick-dots,
+.elementor-element.jm-home-novedades .slick-dots {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  margin: 12px 0 0 !important;
+  position: relative !important;
+  pointer-events: auto !important;
+  height: auto !important;
+}
+
 @media (max-width: 921px) {
   .jm-home-novedades,
   .elementor-element.jm-home-novedades {
-    padding: 0 8px 24px !important;
-    overflow: visible !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    position: relative !important;
+    padding: 0 36px 20px !important; /* espacio para flechas */
   }
 
-  .jm-home-novedades .uael-woo-products,
-  .jm-home-novedades .uael-woocommerce,
-  .jm-home-novedades .uael-woo-products-inner,
-  .jm-home-novedades .elementor-widget-container,
-  .jm-home-novedades .slick-slider,
-  .jm-home-novedades .uael-woo-products-carousel {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: visible !important;
+  .jm-home-novedades .slick-prev,
+  .jm-home-novedades .slick-next,
+  .elementor-element.jm-home-novedades .slick-prev,
+  .elementor-element.jm-home-novedades .slick-next {
+    width: 36px !important;
+    height: 36px !important;
+    top: 34% !important;
   }
 
-  /* Viewport scrolleable (con slick) */
-  .jm-home-novedades .slick-list {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 4px 10px !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    scroll-snap-type: x mandatory !important;
-    overscroll-behavior-x: contain !important;
-    touch-action: pan-x pan-y !important;
+  .jm-home-novedades .slick-prev,
+  .elementor-element.jm-home-novedades .slick-prev {
+    left: 0 !important;
   }
 
-  /* Fila ancha de productos (track o lista) */
-  .jm-home-novedades .slick-track,
-  .jm-home-novedades ul.products,
-  .jm-home-novedades ul.products[class*="columns-"] {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-    gap: 12px !important;
-    width: max-content !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    list-style: none !important;
-    transform: none !important;
-    grid-template-columns: none !important;
-  }
-
-  /* Sin slick: la propia ul hace de viewport scroll */
-  .jm-home-novedades ul.products:not(.slick-track) {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    scroll-snap-type: x mandatory !important;
-    overscroll-behavior-x: contain !important;
-    touch-action: pan-x pan-y !important;
-    padding: 0 4px 10px !important;
-  }
-
-  .jm-home-novedades ul.products::before,
-  .jm-home-novedades ul.products::after {
-    display: none !important;
-    content: none !important;
-  }
-
-  /* Cada card ~70%: se ve el borde del siguiente (invito a swipe) */
-  .jm-home-novedades ul.products > li.product,
-  .jm-home-novedades .slick-slide {
-    display: block !important;
-    flex: 0 0 70vw !important;
-    width: 70vw !important;
-    max-width: 280px !important;
-    min-width: 220px !important;
-    float: none !important;
-    clear: none !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    scroll-snap-align: start !important;
-  }
-
-  .jm-home-novedades .slick-slide > div,
-  .jm-home-novedades .slick-slide li.product {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-  }
-
-  .jm-home-novedades li.product,
-  .jm-home-novedades .uael-woo-product-wrapper {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
+  .jm-home-novedades .slick-next,
+  .elementor-element.jm-home-novedades .slick-next {
+    right: 0 !important;
   }
 
   .jm-home-novedades img.attachment-woocommerce_thumbnail,
   .jm-home-novedades .uael-woo-products-thumbnail img {
-    max-height: 170px !important;
-    width: 100% !important;
+    max-height: 160px !important;
     object-fit: contain !important;
-  }
-
-  /* Flechas / dots si existen (extra); el swipe es lo principal */
-  .jm-home-novedades .slick-prev,
-  .jm-home-novedades .slick-next {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    z-index: 20 !important;
-    width: 36px !important;
-    height: 36px !important;
-    top: 38% !important;
-  }
-
-  .jm-home-novedades .slick-dots {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    height: auto !important;
-    justify-content: center !important;
-    gap: 6px !important;
-    margin-top: 8px !important;
-    pointer-events: auto !important;
   }
 }
 
@@ -3554,98 +3562,39 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
 }
 
 
-/* === JM NOVEDADES MOBILE: SCROLL LATERAL NATIVO (override final) === */
-@media (max-width: 921px) {
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woocommerce,
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-inner,
-  .jm-home-novedades .elementor-widget-uael-woo-products .uael-woo-products-carousel,
-  .elementor-element.jm-home-novedades .uael-woocommerce,
-  .elementor-element.jm-home-novedades .uael-woo-products-carousel {
-    display: block !important;
-    grid-template-columns: none !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: visible !important;
-  }
+/* === JM NOVEDADES: FLECHAS SLICK (override final, desktop+móvil) === */
+.jm-home-novedades .slick-track,
+.elementor-element.jm-home-novedades .slick-track {
+  /* no forzar transform: none — slick navega con translateX */
+  display: flex !important;
+  align-items: stretch !important;
+}
 
-  .jm-home-novedades .slick-list,
-  .elementor-element.jm-home-novedades .slick-list {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    scroll-snap-type: x mandatory !important;
-    overscroll-behavior-x: contain !important;
-    touch-action: pan-x pan-y !important;
-  }
+.jm-home-novedades .slick-list,
+.elementor-element.jm-home-novedades .slick-list {
+  overflow: hidden !important;
+}
 
-  .jm-home-novedades .slick-track,
-  .jm-home-novedades ul.products,
-  .jm-home-novedades .products.uael-woo-product__column-1,
-  .jm-home-novedades .products.uael-woo-product__column-2,
-  .jm-home-novedades .products.uael-woo-product__column-3,
-  .jm-home-novedades .products.uael-woo-product__column-4,
-  .elementor-element.jm-home-novedades .slick-track,
-  .elementor-element.jm-home-novedades ul.products {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-    gap: 12px !important;
-    width: max-content !important;
-    max-width: none !important;
-    transform: none !important;
-    grid-template-columns: none !important;
-  }
+.jm-home-novedades .slick-prev,
+.jm-home-novedades .slick-next,
+.jm-home-novedades .slick-arrow,
+.elementor-element.jm-home-novedades .slick-prev,
+.elementor-element.jm-home-novedades .slick-next,
+.elementor-element.jm-home-novedades .slick-arrow {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  z-index: 30 !important;
+  cursor: pointer !important;
+}
 
-  .jm-home-novedades ul.products:not(.slick-track),
-  .elementor-element.jm-home-novedades ul.products:not(.slick-track) {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    scroll-snap-type: x mandatory !important;
-    touch-action: pan-x pan-y !important;
-    padding-bottom: 10px !important;
-  }
-
-  .jm-home-novedades ul.products > li.product,
-  .jm-home-novedades .slick-slide,
-  .elementor-element.jm-home-novedades ul.products > li.product,
-  .elementor-element.jm-home-novedades .slick-slide {
-    flex: 0 0 70vw !important;
-    width: 70vw !important;
-    max-width: 280px !important;
-    min-width: 220px !important;
-    float: none !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    scroll-snap-align: start !important;
-  }
-
-  .jm-home-novedades .slick-arrow,
-  .jm-home-novedades .slick-prev,
-  .jm-home-novedades .slick-next,
-  .elementor-element.jm-home-novedades .slick-arrow {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    z-index: 20 !important;
-  }
-
-  .jm-home-novedades ul.slick-dots,
-  .elementor-element.jm-home-novedades ul.slick-dots {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    justify-content: center !important;
-    gap: 8px !important;
-    margin: 12px 0 0 !important;
-    pointer-events: auto !important;
-  }
+.jm-home-novedades ul.slick-dots,
+.elementor-element.jm-home-novedades ul.slick-dots {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 /* === JM ÚLTIMAS MOBILE: 2 cols legibles (override final) === */
