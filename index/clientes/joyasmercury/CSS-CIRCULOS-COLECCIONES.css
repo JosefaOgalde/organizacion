@@ -1,6 +1,6 @@
 /**
  * Joyas Mercury — círculos categorías + Últimas unidades (móvil)
- * VERSIÓN: 2026-07-19-v3  ← si no ves esta línea, es CSS antiguo
+ * VERSIÓN: 2026-07-19-v4  ← si no ves esta línea, es CSS antiguo
  *
  * Archivo correcto: index/clientes/joyasmercury/CSS-CIRCULOS-COLECCIONES.css
  * Preferible: CSS-COMPLETO-ASTRA.css (paquete completo en la misma rama)
@@ -284,9 +284,11 @@
   .elementor-element[class*="jm-home-ult"] ul.products,
   #jm-ultimas-unidades .slick-track,
   .elementor-element[class*="jm-home-ult"] .slick-track {
+    display: flex !important;
     flex-wrap: wrap !important;
     transform: none !important;
     justify-content: space-between !important;
+    gap: 10px !important;
   }
 
   #jm-ultimas-unidades ul.products > li.product,
@@ -295,18 +297,52 @@
   .elementor-element.jm-home-ultimas .slick-slide,
   .elementor-element[class*="jm-home-ult"] ul.products > li.product,
   .elementor-element[class*="jm-home-ult"] .slick-slide {
-    flex: 0 0 calc(50% - 6px) !important;
-    width: calc(50% - 6px) !important;
-    max-width: calc(50% - 6px) !important;
+    flex: 0 0 calc(50% - 5px) !important;
+    width: calc(50% - 5px) !important;
+    max-width: calc(50% - 5px) !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  #jm-ultimas-unidades .woocommerce-loop-product__title,
+  #jm-ultimas-unidades .uael-woo-products-title,
+  #jm-ultimas-unidades .uael-woo-products-title a,
+  .elementor-element[class*="jm-home-ult"] .woocommerce-loop-product__title,
+  .elementor-element[class*="jm-home-ult"] .uael-woo-products-title a {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+    -webkit-line-clamp: 3 !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+  }
+
+  #jm-ultimas-unidades .price,
+  #jm-ultimas-unidades .woocommerce-Price-amount,
+  #jm-ultimas-unidades .amount,
+  .elementor-element[class*="jm-home-ult"] .price,
+  .elementor-element[class*="jm-home-ult"] .amount {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    font-size: 13px !important;
+    display: inline-block !important;
   }
 
   #jm-ultimas-unidades li.product .button,
   #jm-ultimas-unidades li.product .add_to_cart_button,
   .elementor-element[class*="jm-home-ult"] li.product .button {
-    font-size: 11px !important;
-    padding: 8px 10px !important;
-    line-height: 1.2 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 10px !important;
+    padding: 8px 6px !important;
+    line-height: 1.25 !important;
     white-space: normal !important;
+    word-break: keep-all !important;
+    max-height: none !important;
+    min-height: 40px !important;
+    box-sizing: border-box !important;
   }
 }
 
