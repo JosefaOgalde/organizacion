@@ -2,8 +2,13 @@
 
 Esto se arregla en **WordPress (Elementor + CSS adicional)**, no en la maqueta local.
 
-**CSS vigente:** `CSS-CIRCULOS-COLECCIONES.css` (debe decir `VERSIÓN: 2026-07-19-v2` al inicio).  
-**No uses** `CSS-COMPLETO-ASTRA.css` ni `CSS-HERO-CARRUSEL-FIJO.css` (versiones antiguas de otras ramas).
+Ver lista completa: **`CSS-VIGENTE.md`**.
+
+**CSS vigente (pegar en este orden):**
+1. `CSS-CIRCULOS-COLECCIONES.css` → `VERSIÓN: 2026-07-19-v2`
+2. `CSS-FOOTER-JM.css` → `VERSIÓN: 2026-07-19-footer` (footer dorado que ya habíamos hecho)
+
+El footer vivía solo en la rama `jm-css-hero-contain` y no estaba en `main`; por eso “faltaba”. Ya está recuperado en `CSS-FOOTER-JM.css`.
 
 ## 1) Pegar el CSS (reemplazar, no acumular)
 
