@@ -203,10 +203,7 @@
   max-width: 100% !important;
 }
 
-#jm-ultimas-unidades .slick-track,
-.jm-home-novedades .slick-track {
-  display: block !important;
-}
+/* No forzar display/float del track: rompe productos en carrusel UAEL */
 
 #jm-ultimas-unidades .slick-prev,
 #jm-ultimas-unidades .slick-next,
@@ -282,6 +279,19 @@
   justify-content: center !important;
 }
 
+#jm-ultimas-unidades img,
+#jm-ultimas-unidades .uael-woo-product-wrapper img,
+.jm-home-novedades img {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: 180px !important;
+  margin: 0 auto !important;
+  object-fit: contain !important;
+}
+
 @media (max-width: 921px) {
   #jm-ultimas-unidades .woocommerce-loop-product__title,
   #jm-ultimas-unidades .uael-woo-products-title a {
@@ -289,12 +299,16 @@
     -webkit-line-clamp: 3 !important;
     word-break: normal !important;
     overflow-wrap: break-word !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
   #jm-ultimas-unidades .price,
   #jm-ultimas-unidades .amount {
     white-space: nowrap !important;
     font-size: 13px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
   #jm-ultimas-unidades li.product .button,
