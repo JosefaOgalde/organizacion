@@ -43,9 +43,12 @@ En el widget de productos **Últimas unidades**:
 3. En el widget UAEL/Woo: desactiva carrusel/flechas si puedes (el CSS también las oculta)
 4. Revisa **Responsive** (ícono móvil): que ningún producto/columna esté en “Ocultar en móvil”
 
-## 4) Novedades (si también faltan en móvil)
+## 4) Novedades (scroll lateral en móvil)
 
 Clase CSS del widget: `jm-home-novedades`
+
+En móvil debe poder deslizarse de lado (carrusel / swipe). No es grilla 2×2.
+Dejá el slider UAEL activo (flechas/dots visibles). Si no hay slick, el CSS habilita scroll nativo.
 
 ## Checklist rápido
 
@@ -53,6 +56,6 @@ Clase CSS del widget: `jm-home-novedades`
 |----------|--------|-----------|
 | Fotos cuadradas en Colecciones | Elementor + CSS | Clase `jm-circulos-categoria` + CSS pegado |
 | Faltan productos en móvil | Elementor widget | ID `jm-ultimas-unidades` + clase `jm-home-ultimas` + no ocultar en móvil |
-| Solo se ve 1 producto (carrusel) | Elementor UAEL | Apagar slider o dejar el CSS (fuerza grid 2×2) |
+| Novedades sin scroll lateral | CSS + Elementor | Clase `jm-home-novedades` + CSS `novedades-scroll`; slider UAEL ON |
 
 Tras guardar: Ctrl+Shift+R en el celular / DevTools móvil.
