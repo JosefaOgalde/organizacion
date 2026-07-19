@@ -305,7 +305,7 @@
     if (!existing) {
       d.productos.push({
         id,
-        nombre: 'Portacompletos gato',
+        nombre: 'Porta Completos Gato',
         activo: true,
         filamentoGramos: 110,
         costoFilamentoKgClp: avgFilKg,
@@ -338,7 +338,7 @@
     if (!existing) {
       d.productos.push({
         id,
-        nombre: 'Portacompletos perro',
+        nombre: 'Porta Completos Perro',
         activo: true,
         filamentoGramos: 132,
         costoFilamentoKgClp: avgFilKg,
@@ -402,7 +402,10 @@
   const COSTO_PLA_BLANCO_KG = 12690; // PLA blanco Elegoo (ML)
   const COSTO_PLA_ROJO_KG = 17986; // PLA+ Rojo Elegoo (#312435)
 
-  /** Upsert que pisa parámetros slicer del seed (respeta precioVenta si ya > 0). */
+  /**
+   * Upsert que pisa parámetros slicer del seed (respeta precioVenta si ya > 0).
+   * Si el producto tiene editadoLocal, solo alinea sku/nombre canónicos (no pisa g/h/$).
+   */
   function forzarProductoSeed(d, id, seed) {
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     const existing = d.productos.find((p) => p.id === id);
@@ -415,6 +418,15 @@
       existing.id = id;
       changed = true;
     }
+    if (existing.editadoLocal) {
+      for (const k of ['sku', 'nombre']) {
+        if (seed[k] != null && existing[k] !== seed[k]) {
+          existing[k] = seed[k];
+          changed = true;
+        }
+      }
+      return changed;
+    }
     for (const [k, v] of Object.entries(seed)) {
       if (v == null) continue;
       if (k === 'precioVentaSugeridoClp' && Number(existing[k]) > 0) continue;
@@ -424,6 +436,12 @@
       }
     }
     return changed;
+  }
+
+  /** Precio a mostrar: venta pública si está definida; si no, sugerido (+margen). */
+  function precioVentaProducto(prod, costoTotal) {
+    if (Number(prod?.precioVentaSugeridoClp) > 0) return Number(prod.precioVentaSugeridoClp);
+    return precioSugeridoDesdeCosto(costoTotal != null ? costoTotal : costoProducto(prod).total);
   }
 
   /**
@@ -451,7 +469,7 @@
     const filCosto = detalle.reduce((a, p) => a + p.filClp, 0);
     const costoFilamentoKgClp = filamentoGramos > 0 ? round2((filCosto / filamentoGramos) * 1000) : COSTO_PLA_AMARILLO_KG;
     return {
-      sku: 'PTBOBESP001',
+      sku: 'PTBOBES001',
       nombre: 'Porta Bob Esponja',
       activo: true,
       filamentoGramos,
@@ -474,14 +492,28 @@
   }
 
   function asegurarProductoPortaBobEsponja(d) {
-    return forzarProductoSeed(d, 'prod-porta-bob-esponja', seedPortaBobEsponja());
+    // Soft upsert: respeta g/h/$ si la usuaria bajó el costo en Costos producto.
+    const seed = seedPortaBobEsponja();
+    let changed = upsertProductoSeed(d, 'prod-porta-bob-esponja', seed);
+    const p = (d.productos || []).find((x) => x.id === 'prod-porta-bob-esponja');
+    if (p) {
+      if (p.sku !== seed.sku) {
+        p.sku = seed.sku;
+        changed = true;
+      }
+      if (!p.nombre) {
+        p.nombre = seed.nombre;
+        changed = true;
+      }
+    }
+    return changed;
   }
 
   /** Nave espacial horizontal — 40,91 g blanco · 1 h 24 m. */
   function asegurarProductoNaveEspacialHorizontal(d) {
     return forzarProductoSeed(d, 'prod-nave-espacial-horizontal', {
-      sku: 'NVESPHOR001',
-      nombre: 'Nave espacial horizontal',
+      sku: 'NAVEHOR001',
+      nombre: 'Nave Espacial Horizontal',
       activo: true,
       filamentoModeloGramos: 40.45,
       filamentoPurgeGramos: 0.47,
@@ -502,8 +534,8 @@
   /** Nave espacial vertical — 59,79 g blanco · 1 h 54 m. */
   function asegurarProductoNaveEspacialVertical(d) {
     return forzarProductoSeed(d, 'prod-nave-espacial-vertical', {
-      sku: 'NVESPVER001',
-      nombre: 'Nave espacial vertical',
+      sku: 'NAVEVERT001',
+      nombre: 'Nave Espacial Vertical',
       activo: true,
       filamentoModeloGramos: 56.54,
       filamentoSoportesGramos: 2.77,
@@ -537,7 +569,7 @@
     const filCosto = colores.reduce((a, c) => a + (c.g / 1000) * c.precioKg, 0);
     const costoFilamentoKgClp = round2((filCosto / filamentoGramos) * 1000);
     return {
-      sku: 'LLAVRANGER001',
+      sku: 'LLRANGER001',
       nombre: 'Llavero Escudo Ranger',
       activo: true,
       filamentoGramos,
@@ -561,7 +593,7 @@
   /** Llavero Porta Lipstick Stanley — placa 2 uds (52,65 g / 1 h 34 m) → 1 ud = mitad + $50 argolla. */
   function asegurarProductoLlaveroPortaLipstickStanley(d) {
     return forzarProductoSeed(d, 'prod-llavero-porta-lipstick-stanley', {
-      sku: 'LLAVSTAN001',
+      sku: 'LLSTANDL001',
       nombre: 'Llavero Porta Lipstick Stanley',
       activo: true,
       filamentoModeloGramos: round2(47.32 / 2),
@@ -698,8 +730,8 @@
         canal: 'WhatsApp',
         items: [
           {
-            sku: 'NVESPHOR001',
-            nombre: 'Nave espacial horizontal',
+            sku: 'NAVEHOR001',
+            nombre: 'Nave Espacial Horizontal',
             cantidad: 1,
             precioUnitarioClp: precioH,
             costoUnitarioClp: round2(costoH),
@@ -709,8 +741,8 @@
             enImpresion: 0,
           },
           {
-            sku: 'NVESPVER001',
-            nombre: 'Nave espacial vertical',
+            sku: 'NAVEVERT001',
+            nombre: 'Nave Espacial Vertical',
             cantidad: 1,
             precioUnitarioClp: precioV,
             costoUnitarioClp: round2(costoV),
@@ -745,8 +777,8 @@
   /** Macetero perro bulldog — slicer: 96,95 g · 3 h 21 m · PLA+ negro. */
   function asegurarProductoMaceteroPerroBulldog(d) {
     const changed = upsertProductoSeed(d, 'prod-macetero-perro-bulldog', {
-      sku: 'MCPERROBU001',
-      nombre: 'Macetero perro bulldog',
+      sku: 'MCPEBUL001',
+      nombre: 'Macetero Perro Bulldog',
       activo: true,
       filamentoModeloGramos: 95.36,
       filamentoSoportesGramos: 1.12,
@@ -769,8 +801,8 @@
   /** Portacompleto perro bulldog — slicer 1 ud: 64,58 g · 2 h 13 m · PLA+ negro (costo alto). */
   function seedPortacompletoPerroBulldog() {
     return {
-      sku: 'PCPERROBU001',
-      nombre: 'Portacompleto perro bulldog',
+      sku: 'PCPEBUL001',
+      nombre: 'Porta Completo Perro Bulldog',
       activo: true,
       filamentoModeloGramos: 59.85,
       filamentoSoportesGramos: 4.26,
@@ -867,7 +899,7 @@
     const seed = {
       id,
       sku: 'PLMONS001',
-      nombre: 'Porta lata Monster',
+      nombre: 'Porta Lata Monster',
       activo: true,
       filamentoModeloGramos: 135.55,
       filamentoSoportesGramos: 8.43,
@@ -912,22 +944,22 @@
     return changed;
   }
 
-  /** Prefijos SKU legibles: PCGATO, PCPERRO, PCPERROBU, MCPERROBU, PLMONS… */
+  /** Prefijos SKU legibles: PCGATO, PCPERRO, PCPEBUL, MCPEBUL, PLMONS… */
   function skuPrefijoDesdeTexto(nombre, id) {
     const t = `${nombre || ''} ${id || ''}`
       .toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
-    if (/macetero/.test(t) && /bull/.test(t)) return 'MCPERROBU';
-    if (/(porta\s*completos?|portacompleto)/.test(t) && /bull/.test(t)) return 'PCPERROBU';
+    if (/macetero/.test(t) && /bull/.test(t)) return 'MCPEBUL';
+    if (/(porta\s*completos?|portacompleto)/.test(t) && /bull/.test(t)) return 'PCPEBUL';
     if (/(porta\s*completos?|portacompleto)/.test(t) && /gato/.test(t)) return 'PCGATO';
     if (/(porta\s*completos?|portacompleto)/.test(t) && /perro/.test(t)) return 'PCPERRO';
     if (/porta\s*lata/.test(t) && /monster|mons/.test(t)) return 'PLMONS';
-    if (/bob|esponja/.test(t)) return 'PTBOBESP';
-    if (/nave/.test(t) && /horiz/.test(t)) return 'NVESPHOR';
-    if (/nave/.test(t) && /vert/.test(t)) return 'NVESPVER';
-    if (/llavero/.test(t) && /ranger|escudo/.test(t)) return 'LLAVRANGER';
-    if (/llavero/.test(t) && /lipstick|stanley|standley/.test(t)) return 'LLAVSTAN';
+    if (/bob|esponja/.test(t)) return 'PTBOBES';
+    if (/nave/.test(t) && /horiz/.test(t)) return 'NAVEHOR';
+    if (/nave/.test(t) && /vert/.test(t)) return 'NAVEVERT';
+    if (/llavero/.test(t) && /ranger|escudo/.test(t)) return 'LLRANGER';
+    if (/llavero/.test(t) && /lipstick|stanley|standley/.test(t)) return 'LLSTANDL';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -965,25 +997,59 @@
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     let changed = false;
     const CANON = {
-      'prod-portacompletos-gato': 'PCGATO001',
-      'prod-portacompletos-perro': 'PCPERRO001',
-      'prod-porta-lata-monster': 'PLMONS001',
-      'prod-macetero-perro-bulldog': 'MCPERROBU001',
-      'prod-portacompleto-perro-bulldog': 'PCPERROBU001',
+      'prod-portacompletos-gato': { sku: 'PCGATO001', nombre: 'Porta Completos Gato' },
+      'prod-portacompletos-perro': { sku: 'PCPERRO001', nombre: 'Porta Completos Perro' },
+      'prod-porta-lata-monster': { sku: 'PLMONS001', nombre: 'Porta Lata Monster' },
+      'prod-macetero-perro-bulldog': { sku: 'MCPEBUL001', nombre: 'Macetero Perro Bulldog' },
+      'prod-portacompleto-perro-bulldog': { sku: 'PCPEBUL001', nombre: 'Porta Completo Perro Bulldog' },
+      'prod-porta-bob-esponja': { sku: 'PTBOBES001', nombre: 'Porta Bob Esponja' },
+      'prod-nave-espacial-horizontal': { sku: 'NAVEHOR001', nombre: 'Nave Espacial Horizontal' },
+      'prod-nave-espacial-vertical': { sku: 'NAVEVERT001', nombre: 'Nave Espacial Vertical' },
+      'prod-llavero-escudo-ranger': { sku: 'LLRANGER001', nombre: 'Llavero Escudo Ranger' },
+      'prod-llavero-porta-lipstick-stanley': { sku: 'LLSTANDL001', nombre: 'Llavero Porta Lipstick Stanley' },
+    };
+    const SKU_ALIAS = {
+      MCPERROBU001: 'MCPEBUL001',
+      PCPERROBU001: 'PCPEBUL001',
+      PTBOBESP001: 'PTBOBES001',
+      NVESPHOR001: 'NAVEHOR001',
+      NVESPVER001: 'NAVEVERT001',
+      LLAVRANGER001: 'LLRANGER001',
+      LLAVSTAN001: 'LLSTANDL001',
     };
     for (const p of d.productos) {
       const fijo = CANON[p.id];
-      if (fijo && p.sku !== fijo) {
-        p.sku = fijo;
+      if (!fijo) continue;
+      if (p.sku !== fijo.sku) {
+        p.sku = fijo.sku;
+        changed = true;
+      }
+      if (p.nombre !== fijo.nombre) {
+        p.nombre = fijo.nombre;
         changed = true;
       }
     }
     for (const p of d.productos) {
       if (CANON[p.id]) continue;
+      const alias = SKU_ALIAS[String(p.sku || '').toUpperCase()];
+      if (alias) {
+        p.sku = alias;
+        changed = true;
+      }
       if (!p.sku || !esSkuSimple(p.sku) || /^IMP-/i.test(p.sku)) {
         const otros = d.productos.filter((x) => x !== p && esSkuSimple(x.sku) && !/^IMP-/i.test(x.sku));
         p.sku = siguienteSkuProducto(p.nombre, p.id, otros);
         changed = true;
+      }
+    }
+    // Pedidos: alinear SKU antiguos → canónicos
+    for (const ped of d.pedidos || []) {
+      for (const it of ped.items || []) {
+        const next = SKU_ALIAS[String(it.sku || '').toUpperCase()];
+        if (next && it.sku !== next) {
+          it.sku = next;
+          changed = true;
+        }
       }
     }
     return changed;
@@ -1260,12 +1326,13 @@
     const filasCostoProd = (data.productos || [])
       .map((prod) => {
         const c = costoProducto(prod);
-        const sugerido = precioSugeridoDesdeCosto(c.total);
+        const precio = precioVentaProducto(prod, c.total);
+        const precioEsManual = Number(prod.precioVentaSugeridoClp) > 0;
         return `<tr>
           <td><span class="imp-sku">${escapeHtml(prod.sku || '—')}</span></td>
           <td>${escapeHtml(prod.nombre || '')}</td>
           <td class="num">${money(c.total)}</td>
-          <td class="num"><strong>${money(sugerido)}</strong></td>
+          <td class="num"><strong>${money(precio)}</strong>${precioEsManual ? ' <span class="imp-muted">manual</span>' : ''}</td>
         </tr>`;
       })
       .join('');
@@ -1304,10 +1371,10 @@
       </div>
       <div class="imp-card">
         <h2>Costos de producto (resumen)</h2>
-        <p class="imp-muted">Costo y precio sugerido con <strong>+${pctMarkup}% sobre el costo</strong> (×${(1 + pctMarkup / 100).toFixed(0)}). Detalle en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>.</p>
+        <p class="imp-muted">Mismos costo y precio que en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>. Si no hay precio manual, se sugiere <strong>+${pctMarkup}%</strong> sobre el costo.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
-            <thead><tr><th>SKU</th><th>Producto</th><th>Costo</th><th>Precio sugerido (+${pctMarkup}%)</th></tr></thead>
+            <thead><tr><th>SKU</th><th>Producto</th><th>Costo</th><th>Precio venta</th></tr></thead>
             <tbody>${filasCostoProd || '<tr><td colspan="4">Sin productos</td></tr>'}</tbody>
           </table>
         </div>
@@ -2677,10 +2744,7 @@
           prod.filamentoSoportesGramos != null ||
           prod.filamentoPurgeGramos != null;
         const usarDesglose = tieneDesglose ? '1' : '0';
-        const precioVenta =
-          Number(prod.precioVentaSugeridoClp) > 0
-            ? Number(prod.precioVentaSugeridoClp)
-            : precioSugeridoDesdeCosto(c.total);
+        const precioVenta = precioVentaProducto(prod, c.total);
         return `
         <div class="imp-card imp-card--prod" data-prod-id="${pid}">
           <div class="imp-prod-summary">
@@ -2803,7 +2867,7 @@
         markDirty();
         renderAll();
         activarTab('costos');
-        setStatus(`Producto «${prod.nombre}» eliminado — guarda online`, 'warn');
+        setStatus(`Producto «${prod.nombre}» eliminado — resumen actualizado · guarda online`, 'warn');
       });
     });
 
@@ -2882,10 +2946,12 @@
           precioVentaSugeridoClp: leido.precioVentaSugeridoClp,
           costoSlicerRef: leido.costoSlicerRef,
           notas: leido.notas,
+          editadoLocal: true,
         });
         markDirty();
         refreshLive();
-        setStatus(`«${leido.nombre}» actualizado (${skuNuevo}) — costo ${money(costoProducto(prod).total)} · guarda online`, 'warn');
+        renderResumen();
+        setStatus(`«${leido.nombre}» actualizado (${skuNuevo}) — costo ${money(costoProducto(prod).total)} · resumen sincronizado · guarda online`, 'warn');
       });
       refreshLive();
     });
@@ -3025,7 +3091,10 @@
     } catch (_) {
       /* ignore */
     }
+    // Releer datos vivos al entrar al tab (p. ej. costos → resumen).
+    if (name === 'resumen') renderResumen();
     if (name === 'costos') {
+      renderCostos();
       requestAnimationFrame(() => {
         $('#form-calc-pieza')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });

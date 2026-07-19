@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Impresoreando  ícono gato">
+  <title>Impresoreando ícono</title>
+  <!-- Marca corta: contorno gato + bobina (ojo) · navy #163a6b · naranja #f07a28 -->
+  <g fill="none" stroke="#163a6b" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Contorno superior / oreja / nuca -->
+    <path d="M48 78 C48 42, 78 28, 108 36 C132 44, 142 70, 138 98 C132 128, 104 142, 78 136"/>
+    <!-- Mandíbula / nariz -->
+    <path d="M52 96 L52 118 L78 128"/>
+  </g>
+  <!-- Bobina = ojo -->
+  <circle cx="72" cy="78" r="26" fill="#ffffff" stroke="#163a6b" stroke-width="5"/>
+  <circle cx="72" cy="78" r="18" fill="none" stroke="#f07a28" stroke-width="8"/>
+  <circle cx="72" cy="78" r="7" fill="#163a6b"/>
+  <g stroke="#163a6b" stroke-width="2.8" stroke-linecap="round">
+    <line x1="72" y1="58" x2="72" y2="71"/>
+    <line x1="72" y1="85" x2="72" y2="98"/>
+    <line x1="52" y1="78" x2="65" y2="78"/>
+    <line x1="79" y1="78" x2="92" y2="78"/>
+  </g>
+  <!-- Bigotes naranja -->
+  <g stroke="#f07a28" stroke-width="4" stroke-linecap="round">
+    <line x1="118" y1="86" x2="148" y2="78"/>
+    <line x1="118" y1="96" x2="150" y2="96"/>
+    <line x1="118" y1="106" x2="148" y2="114"/>
+  </g>
+</svg>

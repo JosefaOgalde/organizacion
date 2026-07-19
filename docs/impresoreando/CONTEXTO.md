@@ -7,7 +7,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Qué | Dónde |
 |-----|--------|
 | UI panel | `index/clientes/impresoreando/panel/` → `panel.js` · `panel.css` · `index.html` |
-| Logo | `index/clientes/impresoreando/identidad/logo-impresoreando.png` (+ `.svg`) |
+| Logo | `index/clientes/impresoreando/identidad/logo-impresoreando.png` (+ `.svg`) · ícono `icono-gato-impresoreando.svg` · ver `IDENTIDAD.md` |
 | Venta rápida | `…/panel/venta/` |
 | Seed (repo) | `data/impresoreando-seed.json` |
 | Live (gitignored) | `data/impresoreando-live.json` |
@@ -42,8 +42,8 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | ID | Cliente | Ítems | Estado |
 |----|---------|-------|--------|
 | PED-001 | Rebe | 1× Porta lata Monster `PLMONS001` | listo |
-| PED-002 | Gianni | 1× Macetero bulldog `MCPERROBU001` + 4× Portacompleto bulldog `PCPERROBU001` | listo |
-| PED-003 | Por confirmar | 1× Nave horizontal `NVESPHOR001` + 1× Nave vertical `NVESPVER001` | listo |
+| PED-002 | Gianni | 1× Macetero bulldog `MCPEBUL001` + 4× Portacompleto bulldog `PCPEBUL001` | listo |
+| PED-003 | Por confirmar | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | listo |
 
 ## Productos / costos
 
@@ -62,13 +62,15 @@ Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio
 | `PCGATO001` | Portacompletos gato | ~110 | — | |
 | `PCPERRO001` | Portacompletos perro | ~132 | — | |
 | `PLMONS001` | Porta lata Monster PLA negro | 144,45 | 3,42 | modelo 135,55 + sop 8,43 + purge 0,47 |
-| `MCPERROBU001` | Macetero perro bulldog | 96,95 | 3,35 (3 h 21 m) | |
-| `PCPERROBU001` | Portacompleto perro bulldog | **64,58** | **2,22 (2 h 13 m)** | Vigente = costo **más alto** vs anterior 61,35 g / 2 h 1 m. Costo ~$1.336/u · PVP sugerido ~$2.672 |
-| `PTBOBESP001` | Porta Bob Esponja (armado) | **54,30** | **1,60** | Prorrateo brazos/piernas·zapatos·corbata·pantalones·camisa · $/kg ponderado · costo ~$998 · PVP ~$1.996 |
-| `NVESPHOR001` | Nave espacial horizontal | 40,91 | 1,40 (1 h 24 m) | PLA blanco · ~$648 · PVP ~$1.295 |
-| `NVESPVER001` | Nave espacial vertical | 59,79 | 1,90 (1 h 54 m) | PLA blanco · ~$915 · PVP ~$1.830 |
-| `LLAVRANGER001` | Llavero Escudo Ranger | 10,06 | 0,73 | Multicolor + $50 argolla · ~$315 · PVP ~$629 |
-| `LLAVSTAN001` | Llavero Porta Lipstick Stanley | 26,32 | 0,78 | Placa÷2 + $50 argolla · ~$478 · PVP ~$955 |
+| `MCPEBUL001` | Macetero Perro Bulldog | 96,95 | 3,35 (3 h 21 m) | alias viejo `MCPERROBU001` |
+| `PCPEBUL001` | Porta Completo Perro Bulldog | **64,58** | **2,22 (2 h 13 m)** | Vigente = costo **más alto** vs anterior 61,35 g / 2 h 1 m. Costo ~$1.336/u · PVP sugerido ~$2.672 · alias `PCPERROBU001` |
+| `PTBOBES001` | Porta Bob Esponja (armado) | **54,30** | **1,60** | Soft seed: ediciones locales de g/h/$ no se pisan. Alias `PTBOBESP001`. Cults en gastos. |
+| `NAVEHOR001` | Nave Espacial Horizontal | 40,91 | 1,40 (1 h 24 m) | PLA blanco · ~$648 · PVP ~$1.295 · alias `NVESPHOR001` |
+| `NAVEVERT001` | Nave Espacial Vertical | 59,79 | 1,90 (1 h 54 m) | PLA blanco · ~$915 · PVP ~$1.830 · alias `NVESPVER001` |
+| `LLRANGER001` | Llavero Escudo Ranger | 10,06 | 0,73 | Multicolor + $50 argolla · ~$315 · PVP ~$629 · alias `LLAVRANGER001` |
+| `LLSTANDL001` | Llavero Porta Lipstick Stanley | 26,32 | 0,78 | Placa÷2 + $50 argolla · ~$478 · PVP ~$955 · alias `LLAVSTAN001` |
+
+**Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
 
 Funciones seed en `panel.js`: `asegurarProductoPortacompletosGato|Perro|PortaLataMonster|MaceteroPerroBulldog|PortacompletoPerroBulldog|PortaBobEsponja|NaveEspacialHorizontal|NaveEspacialVertical|LlaveroEscudoRanger|LlaveroPortaLipstickStanley` + `asegurarGastosDisenosCults` + `asegurarPedidosImpresosYNaves`.
 
