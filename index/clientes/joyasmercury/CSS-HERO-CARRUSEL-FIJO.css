@@ -1,0 +1,105 @@
+/* ----- Hero carrusel (Smart Slider 3) ----- */
+.jm-hero-carrusel {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.jm-hero-carrusel .n2-ss-slider,
+.jm-hero-carrusel .n2-section-smartslider {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+}
+
+/* Desktop */
+.jm-hero-carrusel .n2-ss-slider-wrapper,
+.jm-hero-carrusel .n2-ss-slide,
+.jm-hero-carrusel .n2-ss-layers-container {
+  height: 600px !important;
+  max-height: 600px !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.jm-hero-carrusel .n2-ss-slide-background,
+.jm-hero-carrusel .n2-ss-slide-background-image,
+.jm-hero-carrusel .n2-ss-slide-background img {
+  object-fit: cover !important;
+  object-position: center center !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Móvil: alto = ratio 1920×600 (sin franjas arriba/abajo) */
+@media (max-width: 921px) {
+  .elementor-element.jm-hero-carrusel,
+  .e-con:has(.jm-hero-carrusel),
+  .e-parent:has(.jm-hero-carrusel) {
+    --content-width: 100% !important;
+    --width: 100% !important;
+    --min-height: 0px !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .jm-hero-carrusel {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    background: transparent !important;
+  }
+
+  /* 600/1920 = 31.25% del ancho → sin bandas crema */
+  .jm-hero-carrusel .n2-ss-slider,
+  .jm-hero-carrusel .n2-section-smartslider,
+  .jm-hero-carrusel .n2-ss-slider-wrapper-outer,
+  .jm-hero-carrusel .n2-ss-slider-wrapper,
+  .jm-hero-carrusel .n2-ss-slide,
+  .jm-hero-carrusel .n2-ss-layers-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: calc(100vw * 600 / 1920) !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 1920 / 600;
+    overflow: hidden !important;
+  }
+
+  .jm-hero-carrusel .n2-ss-slide-background,
+  .jm-hero-carrusel .n2-ss-slide-background-image,
+  .jm-hero-carrusel .n2-ss-slide-background img {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+  }
+
+  .jm-hero-carrusel .n2-ss-layers-container > .n2-ss-layer {
+    max-width: 92% !important;
+  }
+
+  .jm-hero-carrusel .n2-ss-layers-container > .n2-ss-layer img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+.jm-hero-carrusel .nextend-arrow-previous,
+.jm-hero-carrusel .nextend-arrow-next {
+  color: #A97E23 !important;
+}
+
+.jm-hero-carrusel .n2-bullet-active {
+  background: #A97E23 !important;
+}
+

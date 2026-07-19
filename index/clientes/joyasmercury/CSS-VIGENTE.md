@@ -6,21 +6,28 @@ El paquete grande `CSS-COMPLETO-ASTRA.css` (footer, menú móvil, catálogo, cí
 `cursor/jm-css-hero-contain-6a09` y **nunca se fusionó a `main`**.  
 Por eso en agentes/PRs nuevos solo veías el CSS corto de círculos, no el footer que ya habíamos hecho.
 
-## Archivos vigentes (copiar a WP → CSS adicional)
+## Opción A — CSS completo (~3587 líneas) ← lo que pediste
 
-Pégalos **en este orden**, borrando antes el CSS JM viejo del cuadro:
+Archivo: **`CSS-COMPLETO-ASTRA.css`** (`VERSIÓN: 2026-07-19-completo`)
+
+Incluye catálogo, círculos, home, **footer dorado**, menú móvil, producto single, etc.
+
+1. Abre ese archivo en la rama `cursor/jm-css-circulos-elementor-fb61`
+2. WP → CSS adicional → **borra** lo JM viejo → pega **todo** → Publicar
+
+Raw GitHub (copiar desde el navegador):  
+https://raw.githubusercontent.com/JosefaOgalde/organizacion/cursor/jm-css-circulos-elementor-fb61/index/clientes/joyasmercury/CSS-COMPLETO-ASTRA.css
+
+## Opción B — piezas sueltas
 
 | Orden | Archivo | Qué arregla |
 |------|---------|-------------|
-| 1 | `CSS-CIRCULOS-COLECCIONES.css` | Círculos categorías + Últimas/Novedades móvil (`VERSIÓN: 2026-07-19-v2`) |
-| 2 | `CSS-FOOTER-JM.css` | Footer dorado completo (`VERSIÓN: 2026-07-19-footer`) |
+| 1 | `CSS-CIRCULOS-COLECCIONES.css` | Círculos + Últimas/Novedades (`2026-07-19-v2`) |
+| 2 | `CSS-FOOTER-JM.css` | Solo footer (`2026-07-19-footer`) |
 
-Opcional (solo si lo necesitas y no choca): en la rama antigua está el menú móvil dentro de `CSS-COMPLETO-ASTRA.css` (sección `CSS-HOME-MENU-MOVIL`).
+## No mezclar
 
-## No uses como “fuente única”
-
-- `CSS-COMPLETO-ASTRA.css` de ramas viejas **mezclado** con el CSS nuevo (se pisan).
-- Solo el footer mínimo negro de Astra por defecto (el de la captura con corona + JOYAS MERCURY sin columnas/WA).
+No pegues el completo **y** las piezas sueltas a la vez (se pisan). Elige A **o** B.
 
 ## Elementor (clases)
 
