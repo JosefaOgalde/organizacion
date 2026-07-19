@@ -42,7 +42,8 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | ID | Cliente | Ítems | Estado |
 |----|---------|-------|--------|
 | PED-001 | Rebe | 1× Porta lata Monster `PLMONS001` | listo |
-| PED-002 | Gianni | 1× Macetero bulldog `MCPERROBU001` + 4× Portacompleto bulldog `PCPERROBU001` | en_impresion |
+| PED-002 | Gianni | 1× Macetero bulldog `MCPERROBU001` + 4× Portacompleto bulldog `PCPERROBU001` | listo |
+| PED-003 | Por confirmar | 1× Nave horizontal `NVESPHOR001` + 1× Nave vertical `NVESPVER001` | listo |
 
 ## Productos / costos
 
@@ -50,8 +51,9 @@ Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio
 
 **Fórmula:** `filamento = g/1000 × $/kg` + `luz = horas × tarifaKwh × consumoKw` + pintado + metal + bolsa.  
 **Markup sugerido:** `precio = costo × (1 + margenObjetivoPct/100)` (default +100%).  
-**Params default:** `tarifaKwhClp: 200`, `consumoImpresoraKw: 0.28`, impresora Centauri Carbon 2.  
-**PLA+ negro:** `$17.986/kg` constante `COSTO_PLA_NEGRO_KG` (migrar si quedó `$12.690` amarillo).
+**Params default:** `tarifaKwhClp: 200`, `consumoImpresoraKw: 0.28`, impresora Centauri Carbon 2, `costoAnilloMetalLlaveroClp: 50`.  
+**$/kg:** PLA+ negro/rojo `$17.986` · PLA amarillo/café `$16.829` · PLA blanco `$12.690`.  
+**Diseños Cults/digitales** → gastos socios (categoría `diseño`); **no** van al costo unitario del producto.
 
 ### SKUs clave (seed / `asegurarProducto*`)
 
@@ -62,8 +64,13 @@ Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio
 | `PLMONS001` | Porta lata Monster PLA negro | 144,45 | 3,42 | modelo 135,55 + sop 8,43 + purge 0,47 |
 | `MCPERROBU001` | Macetero perro bulldog | 96,95 | 3,35 (3 h 21 m) | |
 | `PCPERROBU001` | Portacompleto perro bulldog | **64,58** | **2,22 (2 h 13 m)** | Vigente = costo **más alto** vs anterior 61,35 g / 2 h 1 m. Costo ~$1.336/u · PVP sugerido ~$2.672 |
+| `PTBOBESP001` | Porta Bob Esponja (armado) | **54,30** | **1,60** | Prorrateo brazos/piernas·zapatos·corbata·pantalones·camisa · $/kg ponderado · costo ~$998 · PVP ~$1.996 |
+| `NVESPHOR001` | Nave espacial horizontal | 40,91 | 1,40 (1 h 24 m) | PLA blanco · ~$648 · PVP ~$1.295 |
+| `NVESPVER001` | Nave espacial vertical | 59,79 | 1,90 (1 h 54 m) | PLA blanco · ~$915 · PVP ~$1.830 |
+| `LLAVRANGER001` | Llavero Escudo Ranger | 10,06 | 0,73 | Multicolor + $50 argolla · ~$315 · PVP ~$629 |
+| `LLAVSTAN001` | Llavero Porta Lipstick Stanley | 26,32 | 0,78 | Placa÷2 + $50 argolla · ~$478 · PVP ~$955 |
 
-Funciones seed en `panel.js`: `asegurarProductoPortacompletosGato|Perro|PortaLataMonster|MaceteroPerroBulldog|PortacompletoPerroBulldog`.
+Funciones seed en `panel.js`: `asegurarProductoPortacompletosGato|Perro|PortaLataMonster|MaceteroPerroBulldog|PortacompletoPerroBulldog|PortaBobEsponja|NaveEspacialHorizontal|NaveEspacialVertical|LlaveroEscudoRanger|LlaveroPortaLipstickStanley` + `asegurarGastosDisenosCults` + `asegurarPedidosImpresosYNaves`.
 
 ## Status diario por correo
 

@@ -71,9 +71,17 @@
     if (asegurarProductoPortaLataMonster(d)) changed = true;
     if (asegurarProductoMaceteroPerroBulldog(d)) changed = true;
     if (asegurarProductoPortacompletoPerroBulldog(d)) changed = true;
+    if (asegurarProductoPortaBobEsponja(d)) changed = true;
+    if (asegurarProductoNaveEspacialHorizontal(d)) changed = true;
+    if (asegurarProductoNaveEspacialVertical(d)) changed = true;
+    if (asegurarProductoLlaveroEscudoRanger(d)) changed = true;
+    if (asegurarProductoLlaveroPortaLipstickStanley(d)) changed = true;
+    if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
+    if (asegurarPedidosImpresosYNaves(d)) changed = true;
     if (asegurarSkusProductos(d)) changed = true;
     if (asegurarDecimalesProductos(d)) changed = true;
+    if (asegurarCostoAnilloLlavero50(d)) changed = true;
     const gastos = d.gastos;
     for (const g of gastos) {
       const quien = String(g.socioRegistro || '').trim();
@@ -257,6 +265,17 @@
     return changed;
   }
 
+  /** Argolla + metales llavero: $50 (antes $150 plantilla). */
+  function asegurarCostoAnilloLlavero50(d) {
+    d.parametros = d.parametros || {};
+    const cur = Number(d.parametros.costoAnilloMetalLlaveroClp);
+    if (!Number.isFinite(cur) || cur === 150) {
+      d.parametros.costoAnilloMetalLlaveroClp = 50;
+      return true;
+    }
+    return false;
+  }
+
   /** Precio sugerido: +margen% sobre el costo (100% ⇒ precio = costo × 2). */
   function precioSugeridoDesdeCosto(costoTotal) {
     const pct = Number(data?.parametros?.margenObjetivoPct ?? 100);
@@ -377,6 +396,323 @@
   }
 
   const COSTO_PLA_NEGRO_KG = 17986; // PLA+ Negro Elegoo (orden #312435)
+  const COSTO_PLA_AMARILLO_KG = 16829; // PLA Amarillo Elegoo (#312435)
+  const COSTO_PLA_CAFE_KG = 16829; // PLA Café Elegoo (#312435)
+  const COSTO_PLA_BLANCO_KG = 12690; // PLA blanco Elegoo (ML)
+  const COSTO_PLA_ROJO_KG = 17986; // PLA+ Rojo Elegoo (#312435)
+
+  /** Upsert que pisa parámetros slicer del seed (respeta precioVenta si ya > 0). */
+  function forzarProductoSeed(d, id, seed) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const existing = d.productos.find((p) => p.id === id);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (!existing.id) {
+      existing.id = id;
+      changed = true;
+    }
+    for (const [k, v] of Object.entries(seed)) {
+      if (v == null) continue;
+      if (k === 'precioVentaSugeridoClp' && Number(existing[k]) > 0) continue;
+      if (JSON.stringify(existing[k]) !== JSON.stringify(v)) {
+        existing[k] = v;
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  /**
+   * Porta Bob Esponja (unidad armada) — prorrateo slicer:
+   * brazos+piernas 31,50 g / 20 pzas → 4 pzas (2+2); zapatos 55,09 g /20 → 2;
+   * corbata 12,44 g /20 → 1; pantalones 80,43 g /3 → 1; camisa 15,06 g → 1.
+   * $/kg ponderado amarillo·negro·café·blanco.
+   */
+  function seedPortaBobEsponja() {
+    const partes = [
+      { pieza: 'brazos+piernas', color: 'amarillo', batchG: 31.5, batchN: 20, usa: 4, batchMin: 83, kgKg: COSTO_PLA_AMARILLO_KG },
+      { pieza: 'zapatos', color: 'negro', batchG: 55.09, batchN: 20, usa: 2, batchMin: 119, kgKg: COSTO_PLA_NEGRO_KG },
+      { pieza: 'corbata', color: 'negro', batchG: 12.44, batchN: 20, usa: 1, batchMin: 33 + 20 / 60, kgKg: COSTO_PLA_NEGRO_KG },
+      { pieza: 'pantalones', color: 'café', batchG: 80.43, batchN: 3, usa: 1, batchMin: 112, kgKg: COSTO_PLA_CAFE_KG },
+      { pieza: 'camisa', color: 'blanco', batchG: 15.06, batchN: 1, usa: 1, batchMin: 28 + 18 / 60, kgKg: COSTO_PLA_BLANCO_KG },
+    ];
+    const detalle = partes.map((p) => {
+      const g = round2((p.batchG * p.usa) / p.batchN);
+      const min = round2((p.batchMin * p.usa) / p.batchN);
+      return { ...p, g, min, filClp: round2((g / 1000) * p.precioKg) };
+    });
+    const filamentoGramos = round2(detalle.reduce((a, p) => a + p.g, 0));
+    const minutos = detalle.reduce((a, p) => a + p.min, 0);
+    const horasImpresion = round2(minutos / 60);
+    const filCosto = detalle.reduce((a, p) => a + p.filClp, 0);
+    const costoFilamentoKgClp = filamentoGramos > 0 ? round2((filCosto / filamentoGramos) * 1000) : COSTO_PLA_AMARILLO_KG;
+    return {
+      sku: 'PTBOBESP001',
+      nombre: 'Porta Bob Esponja',
+      activo: true,
+      filamentoGramos,
+      costoFilamentoKgClp,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      partesSlicer: detalle.map((p) => ({
+        pieza: p.pieza,
+        color: p.color,
+        gramos: p.g,
+        minutos: p.min,
+        precioKg: p.precioKg,
+      })),
+      notas:
+        `Unidad armada 19 jul 2026. Prorrateo: brazos+piernas ${detalle[0].g} g amarillo (4/20 de 31,50 g) · zapatos ${detalle[1].g} g negro (2/20 de 55,09 g) · corbata ${detalle[2].g} g negro (1/20 de 12,44 g) · pantalones ${detalle[3].g} g café (1/3 de 80,43 g) · camisa ${detalle[4].g} g blanco. Total ${filamentoGramos} g · ${horasImpresion} h · $/kg ponderado $${costoFilamentoKgClp}. Diseño Cults en gastos socios (no en costo producto).`,
+    };
+  }
+
+  function asegurarProductoPortaBobEsponja(d) {
+    return forzarProductoSeed(d, 'prod-porta-bob-esponja', seedPortaBobEsponja());
+  }
+
+  /** Nave espacial horizontal — 40,91 g blanco · 1 h 24 m. */
+  function asegurarProductoNaveEspacialHorizontal(d) {
+    return forzarProductoSeed(d, 'prod-nave-espacial-horizontal', {
+      sku: 'NVESPHOR001',
+      nombre: 'Nave espacial horizontal',
+      activo: true,
+      filamentoModeloGramos: 40.45,
+      filamentoPurgeGramos: 0.47,
+      filamentoMetros: 13.61,
+      filamentoGramos: 40.91,
+      costoFilamentoKgClp: COSTO_PLA_BLANCO_KG,
+      horasImpresion: 1.4, // 1 h 24 m
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: 0.82,
+      notas:
+        'Slicer 1 ud: modelo 40,45 g + purge 0,47 g = 40,91 g · 13,61 m · 1 h 24 m · coste slicer 0,82 (ref). PLA blanco $12.690/kg. Diseño en gastos socios.',
+    });
+  }
+
+  /** Nave espacial vertical — 59,79 g blanco · 1 h 54 m. */
+  function asegurarProductoNaveEspacialVertical(d) {
+    return forzarProductoSeed(d, 'prod-nave-espacial-vertical', {
+      sku: 'NVESPVER001',
+      nombre: 'Nave espacial vertical',
+      activo: true,
+      filamentoModeloGramos: 56.54,
+      filamentoSoportesGramos: 2.77,
+      filamentoPurgeGramos: 0.47,
+      filamentoMetros: 19.88,
+      filamentoGramos: 59.79,
+      costoFilamentoKgClp: COSTO_PLA_BLANCO_KG,
+      horasImpresion: 1.9, // 1 h 54 m
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: 1.2,
+      notas:
+        'Slicer 1 ud: modelo 56,54 g + soportes 2,77 g + purge 0,47 g = 59,79 g · 19,88 m · 1 h 54 m · coste slicer 1,20 (ref). PLA blanco $12.690/kg.',
+    });
+  }
+
+  /**
+   * Llavero Escudo Ranger — multicolor 10,06 g · 43 m 52 s + $50 argolla.
+   * Slicer color1→amarillo, color2→rojo, color3+4→negro.
+   */
+  function seedLlaveroEscudoRanger() {
+    const colores = [
+      { color: 'amarillo', g: 6.27, precioKg: COSTO_PLA_AMARILLO_KG },
+      { color: 'rojo', g: 2.4, precioKg: COSTO_PLA_ROJO_KG },
+      { color: 'negro', g: 0.77, precioKg: COSTO_PLA_NEGRO_KG },
+      { color: 'negro', g: 0.62, precioKg: COSTO_PLA_NEGRO_KG },
+    ];
+    const filamentoGramos = round2(colores.reduce((a, c) => a + c.g, 0));
+    const filCosto = colores.reduce((a, c) => a + (c.g / 1000) * c.precioKg, 0);
+    const costoFilamentoKgClp = round2((filCosto / filamentoGramos) * 1000);
+    return {
+      sku: 'LLAVRANGER001',
+      nombre: 'Llavero Escudo Ranger',
+      activo: true,
+      filamentoGramos,
+      costoFilamentoKgClp,
+      horasImpresion: round2((43 + 52 / 60) / 60), // 43 m 52 s
+      minutosPintado: 0,
+      unidadesMetal: 1,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: 0.2,
+      partesSlicer: colores,
+      notas:
+        `Multicolor 1 impresión: amarillo 6,27 g · rojo 2,40 g · negro 0,77+0,62 g = ${filamentoGramos} g · 43 m 52 s · $/kg ponderado $${costoFilamentoKgClp}. +$50 argolla/metales.`,
+    };
+  }
+
+  function asegurarProductoLlaveroEscudoRanger(d) {
+    return forzarProductoSeed(d, 'prod-llavero-escudo-ranger', seedLlaveroEscudoRanger());
+  }
+
+  /** Llavero Porta Lipstick Stanley — placa 2 uds (52,65 g / 1 h 34 m) → 1 ud = mitad + $50 argolla. */
+  function asegurarProductoLlaveroPortaLipstickStanley(d) {
+    return forzarProductoSeed(d, 'prod-llavero-porta-lipstick-stanley', {
+      sku: 'LLAVSTAN001',
+      nombre: 'Llavero Porta Lipstick Stanley',
+      activo: true,
+      filamentoModeloGramos: round2(47.32 / 2),
+      filamentoSoportesGramos: round2(4.87 / 2),
+      filamentoPurgeGramos: round2(0.47 / 2),
+      filamentoMetros: round2(17.51 / 2),
+      filamentoGramos: round2(52.65 / 2),
+      costoFilamentoKgClp: COSTO_PLA_BLANCO_KG,
+      horasImpresion: round2(94 / 60 / 2), // (1 h 34 m) / 2
+      minutosPintado: 0,
+      unidadesMetal: 1,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      costoSlicerRef: round2(1.05 / 2),
+      notas:
+        'Slicer placa 2 uds: 52,65 g · 17,51 m · 1 h 34 m · coste 1,05 → 1 ud = 26,33 g · 0,78 h. PLA blanco $12.690/kg. +$50 argolla/metales.',
+    });
+  }
+
+  /** Diseños Cults / digitales — gastos socios (no entran al costo de producto). Pagó Nicolás · 50/50. */
+  function asegurarGastosDisenosCults(d) {
+    d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
+    const regs = [
+      {
+        id: 'gas-diseno-porta-bob-esponja',
+        fecha: '2026-07-19',
+        categoria: 'diseño',
+        descripcion: 'Cults3D — Bob esponja porta esponja (diseño)',
+        proveedor: 'Cults3D',
+        cantidad: 1,
+        montoNeto: 1402,
+        notas: 'Diseño digital. No se suma al costo unitario del producto. Pagó Nicolás · sociedad 50/50.',
+        socioRegistro: 'Nicolás',
+        items: [{ descripcion: 'Bob esponja porta esponja — SpongeBob SquarePants — Sponge Holder', monto: 1402 }],
+      },
+      {
+        id: 'gas-diseno-porta-bulldog',
+        fecha: '2026-07-19',
+        categoria: 'diseño',
+        descripcion: 'Diseño Porta completo bulldog',
+        proveedor: 'Diseño digital',
+        cantidad: 1,
+        montoNeto: 1000,
+        notas: 'Diseño digital. No se suma al costo unitario. Pagó Nicolás · sociedad 50/50.',
+        socioRegistro: 'Nicolás',
+        items: [{ descripcion: 'Porta completo bulldog (diseño)', monto: 1000 }],
+      },
+      {
+        id: 'gas-diseno-nave-espacial-horizontal',
+        fecha: '2026-07-19',
+        categoria: 'diseño',
+        descripcion: 'Diseño Nave espacial horizontal',
+        proveedor: 'Diseño digital',
+        cantidad: 1,
+        montoNeto: 1000,
+        notas: 'Diseño digital. No se suma al costo unitario. Pagó Nicolás · sociedad 50/50.',
+        socioRegistro: 'Nicolás',
+        items: [{ descripcion: 'Nave espacial horizontal (diseño)', monto: 1000 }],
+      },
+    ];
+    let changed = false;
+    const byId = new Map(d.gastos.map((g) => [g.id, g]));
+    for (const reg of regs) {
+      const existing = byId.get(reg.id);
+      if (!existing) {
+        d.gastos.push({ ...reg });
+        changed = true;
+      } else if (Number(existing.montoNeto) !== reg.montoNeto) {
+        Object.assign(existing, reg);
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  /** PED-002 → listo (ya impresos) · PED-003 naves horizontal+vertical. */
+  function asegurarPedidosImpresosYNaves(d) {
+    d.pedidos = Array.isArray(d.pedidos) ? d.pedidos : [];
+    d.meta = d.meta || {};
+    let changed = false;
+
+    const ped002 = d.pedidos.find((p) => p.numero === 'PED-002' || p.id === 'ped-gianni-bulldog-002');
+    if (ped002 && ped002.estado !== 'listo' && ped002.estado !== 'transferido') {
+      ped002.estado = 'listo';
+      ped002.notas = 'Macetero + 4× portacompleto bulldog · PLA+ negro · impresos / listos';
+      for (const it of ped002.items || []) {
+        it.estado = 'listo';
+        it.listos = Number(it.cantidad || 0);
+        it.enImpresion = 0;
+      }
+      changed = true;
+    }
+
+    const id003 = 'ped-naves-espaciales-003';
+    if (!d.pedidos.some((p) => p.id === id003 || p.numero === 'PED-003')) {
+      const prodH = (d.productos || []).find((p) => p.id === 'prod-nave-espacial-horizontal');
+      const prodV = (d.productos || []).find((p) => p.id === 'prod-nave-espacial-vertical');
+      const costoH = prodH ? costoProdRough(d, prodH) : 647.55;
+      const costoV = prodV ? costoProdRough(d, prodV) : 915.14;
+      const precioH = round2(costoH * 2);
+      const precioV = round2(costoV * 2);
+      d.pedidos.push({
+        id: id003,
+        numero: 'PED-003',
+        fecha: '2026-07-19',
+        cliente: 'Por confirmar',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'NVESPHOR001',
+            nombre: 'Nave espacial horizontal',
+            cantidad: 1,
+            precioUnitarioClp: precioH,
+            costoUnitarioClp: round2(costoH),
+            filamento: 'PLA blanco',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+          {
+            sku: 'NVESPVER001',
+            nombre: 'Nave espacial vertical',
+            cantidad: 1,
+            precioUnitarioClp: precioV,
+            costoUnitarioClp: round2(costoV),
+            filamento: 'PLA blanco',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoNeto: round2(precioH + precioV),
+        estado: 'listo',
+        ventaId: null,
+        notas: '1× nave horizontal + 1× nave vertical · PLA blanco · impresos',
+        socioRegistro: 'Ambos',
+        creado: '2026-07-19T19:40:00.000Z',
+        costoTotal: round2(costoH + costoV),
+      });
+      changed = true;
+    }
+
+    const maxNum = d.pedidos.reduce((m, p) => {
+      const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
+      return Math.max(m, n);
+    }, 0);
+    if (Number(d.meta.pedidoSeq || 0) < maxNum) {
+      d.meta.pedidoSeq = maxNum;
+      changed = true;
+    }
+    return changed;
+  }
 
   /** Macetero perro bulldog — slicer: 96,95 g · 3 h 21 m · PLA+ negro. */
   function asegurarProductoMaceteroPerroBulldog(d) {
@@ -559,6 +895,11 @@
     if (/(porta\s*completos?|portacompleto)/.test(t) && /gato/.test(t)) return 'PCGATO';
     if (/(porta\s*completos?|portacompleto)/.test(t) && /perro/.test(t)) return 'PCPERRO';
     if (/porta\s*lata/.test(t) && /monster|mons/.test(t)) return 'PLMONS';
+    if (/bob|esponja/.test(t)) return 'PTBOBESP';
+    if (/nave/.test(t) && /horiz/.test(t)) return 'NVESPHOR';
+    if (/nave/.test(t) && /vert/.test(t)) return 'NVESPVER';
+    if (/llavero/.test(t) && /ranger|escudo/.test(t)) return 'LLAVRANGER';
+    if (/llavero/.test(t) && /lipstick|stanley|standley/.test(t)) return 'LLAVSTAN';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';

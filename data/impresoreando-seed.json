@@ -17,22 +17,22 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-18T05:25:00.000Z",
+    "actualizado": "2026-07-19T19:45:00.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
       "deudaPctJosefa": 50,
       "nota": "Nicolás puso el capital. Josefa debe el 50% de ese capital a Nicolás. Los gastos de la sociedad son de ambos.",
-      "montoNetoClp": 797040,
-      "deudaJosefaClp": 398520
+      "montoNetoClp": 800442,
+      "deudaJosefaClp": 400221
     },
-    "pedidoSeq": 2
+    "pedidoSeq": 3
   },
   "parametros": {
     "tarifaKwhClp": 200,
     "consumoImpresoraKw": 0.28,
     "valorHoraManoObraClp": 5000,
-    "costoAnilloMetalLlaveroClp": 150,
+    "costoAnilloMetalLlaveroClp": 50,
     "costoBolsaEntregaClp": 50,
     "margenObjetivoPct": 100,
     "impresoraModelo": "Elegoo Centauri Carbon 2",
@@ -164,6 +164,57 @@
         {
           "descripcion": "Filamento Elegoo PLA 1kg (blanco)",
           "monto": 12690
+        }
+      ]
+    },
+    {
+      "id": "gas-diseno-porta-bob-esponja",
+      "fecha": "2026-07-19",
+      "categoria": "diseño",
+      "descripcion": "Cults3D — Bob esponja porta esponja (diseño)",
+      "proveedor": "Cults3D",
+      "cantidad": 1,
+      "montoNeto": 1402,
+      "notas": "Diseño digital. No se suma al costo unitario. Pagó Nicolás · 50/50.",
+      "socioRegistro": "Nicolás",
+      "items": [
+        {
+          "descripcion": "Bob esponja porta esponja",
+          "monto": 1402
+        }
+      ]
+    },
+    {
+      "id": "gas-diseno-porta-bulldog",
+      "fecha": "2026-07-19",
+      "categoria": "diseño",
+      "descripcion": "Diseño Porta completo bulldog",
+      "proveedor": "Diseño digital",
+      "cantidad": 1,
+      "montoNeto": 1000,
+      "notas": "Diseño digital. Pagó Nicolás · 50/50.",
+      "socioRegistro": "Nicolás",
+      "items": [
+        {
+          "descripcion": "Porta completo bulldog (diseño)",
+          "monto": 1000
+        }
+      ]
+    },
+    {
+      "id": "gas-diseno-nave-espacial-horizontal",
+      "fecha": "2026-07-19",
+      "categoria": "diseño",
+      "descripcion": "Diseño Nave espacial horizontal",
+      "proveedor": "Diseño digital",
+      "cantidad": 1,
+      "montoNeto": 1000,
+      "notas": "Diseño digital. Pagó Nicolás · 50/50.",
+      "socioRegistro": "Nicolás",
+      "items": [
+        {
+          "descripcion": "Nave espacial horizontal (diseño)",
+          "monto": 1000
         }
       ]
     }
@@ -304,6 +355,150 @@
       "precioVentaSugeridoClp": 0.0,
       "costoSlicerRef": 1.29,
       "notas": "Slicer 1 ud: modelo 59,85 g + soportes 4,26 g + purge 0,47 g = 64,58 g · 21,48 m · 2 h 13 m · coste slicer 1,29 (ref). PLA+ negro $17.986/kg. Sin pintado (editable). Se eligió frente al cálculo anterior (61,35 g / 2 h 1 m) por mayor costo."
+    },
+    {
+      "id": "prod-porta-bob-esponja",
+      "sku": "PTBOBESP001",
+      "nombre": "Porta Bob Esponja",
+      "activo": true,
+      "filamentoGramos": 54.3,
+      "costoFilamentoKgClp": 15811.6,
+      "horasImpresion": 1.6,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 0,
+      "partesSlicer": [
+        {
+          "pieza": "brazos+piernas",
+          "color": "amarillo",
+          "gramos": 6.3,
+          "minutos": 16.6,
+          "precioKg": 16829
+        },
+        {
+          "pieza": "zapatos",
+          "color": "negro",
+          "gramos": 5.51,
+          "minutos": 11.9,
+          "precioKg": 17986
+        },
+        {
+          "pieza": "corbata",
+          "color": "negro",
+          "gramos": 0.62,
+          "minutos": 1.67,
+          "precioKg": 17986
+        },
+        {
+          "pieza": "pantalones",
+          "color": "café",
+          "gramos": 26.81,
+          "minutos": 37.33,
+          "precioKg": 16829
+        },
+        {
+          "pieza": "camisa",
+          "color": "blanco",
+          "gramos": 15.06,
+          "minutos": 28.3,
+          "precioKg": 12690
+        }
+      ],
+      "notas": "Unidad armada 19 jul 2026. Total 54.3 g · 1.6 h · $/kg ponderado $15811.6. Diseño Cults en gastos socios."
+    },
+    {
+      "id": "prod-nave-espacial-horizontal",
+      "sku": "NVESPHOR001",
+      "nombre": "Nave espacial horizontal",
+      "activo": true,
+      "filamentoModeloGramos": 40.45,
+      "filamentoPurgeGramos": 0.47,
+      "filamentoMetros": 13.61,
+      "filamentoGramos": 40.91,
+      "costoFilamentoKgClp": 12690,
+      "horasImpresion": 1.4,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 0,
+      "costoSlicerRef": 0.82,
+      "notas": "Slicer 1 ud: 40,91 g · 1 h 24 m · PLA blanco $12.690/kg. Diseño en gastos socios."
+    },
+    {
+      "id": "prod-nave-espacial-vertical",
+      "sku": "NVESPVER001",
+      "nombre": "Nave espacial vertical",
+      "activo": true,
+      "filamentoModeloGramos": 56.54,
+      "filamentoSoportesGramos": 2.77,
+      "filamentoPurgeGramos": 0.47,
+      "filamentoMetros": 19.88,
+      "filamentoGramos": 59.79,
+      "costoFilamentoKgClp": 12690,
+      "horasImpresion": 1.9,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 0,
+      "costoSlicerRef": 1.2,
+      "notas": "Slicer 1 ud: 59,79 g · 1 h 54 m · PLA blanco $12.690/kg."
+    },
+    {
+      "id": "prod-llavero-escudo-ranger",
+      "sku": "LLAVRANGER001",
+      "nombre": "Llavero Escudo Ranger",
+      "activo": true,
+      "filamentoGramos": 10.06,
+      "costoFilamentoKgClp": 17265.41,
+      "horasImpresion": 0.73,
+      "minutosPintado": 0,
+      "unidadesMetal": 1,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 0,
+      "costoSlicerRef": 0.2,
+      "partesSlicer": [
+        {
+          "color": "amarillo",
+          "g": 6.27,
+          "precioKg": 16829
+        },
+        {
+          "color": "rojo",
+          "g": 2.4,
+          "precioKg": 17986
+        },
+        {
+          "color": "negro",
+          "g": 0.77,
+          "precioKg": 17986
+        },
+        {
+          "color": "negro",
+          "g": 0.62,
+          "precioKg": 17986
+        }
+      ],
+      "notas": "Multicolor 10.06 g · 43 m 52 s · $/kg ponderado $17265.41. +$50 argolla."
+    },
+    {
+      "id": "prod-llavero-porta-lipstick-stanley",
+      "sku": "LLAVSTAN001",
+      "nombre": "Llavero Porta Lipstick Stanley",
+      "activo": true,
+      "filamentoModeloGramos": 23.66,
+      "filamentoSoportesGramos": 2.44,
+      "filamentoPurgeGramos": 0.24,
+      "filamentoMetros": 8.76,
+      "filamentoGramos": 26.32,
+      "costoFilamentoKgClp": 12690,
+      "horasImpresion": 0.78,
+      "minutosPintado": 0,
+      "unidadesMetal": 1,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 0,
+      "costoSlicerRef": 0.52,
+      "notas": "Placa 2 uds → 1 ud 26,33 g · 0,78 h · PLA blanco. +$50 argolla."
     }
   ],
   "planAds": {
@@ -340,6 +535,12 @@
       "fecha": "2026-07-14",
       "autor": "Josefa",
       "texto": "Carga inicial agrupada por registro: Orden #312435 ($652.290) + AliExpress ($60.000) + Líder ($20.000) + Mercado Libre 5 PLA ($64.750). Sociedad 50/50. Gastos de ambos. Nicolás aportó capital; Josefa debe 50%."
+    },
+    {
+      "id": "bit-2",
+      "fecha": "2026-07-19",
+      "autor": "Josefa",
+      "texto": "Productos: Porta Bob Esponja (costo armado ~$998), naves H/V, llaveros Ranger y Stanley (+$50 argolla). Gastos diseño Cults Bob $1.402 + bulldog $1.000 + nave H $1.000 (pagó Nicolás, 50/50). PED-002 listo · PED-003 naves listo."
     }
   ],
   "pedidos": [
@@ -395,18 +596,56 @@
           "precioUnitarioClp": 2671.72,
           "costoUnitarioClp": 1335.86,
           "filamento": "PLA+ negro",
-          "estado": "en_impresion",
-          "listos": 0,
-          "enImpresion": 2
+          "estado": "listo",
+          "listos": 4,
+          "enImpresion": 0
         }
       ],
       "montoNeto": 14649.57,
-      "estado": "en_impresion",
+      "estado": "listo",
       "ventaId": null,
-      "notas": "Macetero listo · portacompletos 2/4 en impresión · PLA+ negro",
+      "notas": "Macetero + 4× portacompleto bulldog · PLA+ negro · impresos / listos",
       "socioRegistro": "Ambos",
       "creado": "2026-07-18T04:40:00.000Z",
       "costoTotal": 7324.78
+    },
+    {
+      "id": "ped-naves-espaciales-003",
+      "numero": "PED-003",
+      "fecha": "2026-07-19",
+      "cliente": "Por confirmar",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "NVESPHOR001",
+          "nombre": "Nave espacial horizontal",
+          "cantidad": 1,
+          "precioUnitarioClp": 1295.1,
+          "costoUnitarioClp": 647.55,
+          "filamento": "PLA blanco",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        },
+        {
+          "sku": "NVESPVER001",
+          "nombre": "Nave espacial vertical",
+          "cantidad": 1,
+          "precioUnitarioClp": 1830.28,
+          "costoUnitarioClp": 915.14,
+          "filamento": "PLA blanco",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ],
+      "montoNeto": 3125.38,
+      "estado": "listo",
+      "ventaId": null,
+      "notas": "1× nave horizontal + 1× nave vertical · PLA blanco · impresos",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-19T19:40:00.000Z",
+      "costoTotal": 1562.69
     }
   ]
 }
