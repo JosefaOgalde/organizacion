@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 720" role="img" aria-label="Referencia Porta Completos Gato">
+  <rect width="640" height="720" fill="#f7f1e6"/>
+  <ellipse cx="320" cy="560" rx="180" ry="28" fill="#163a6b" opacity="0.08"/>
+  <!-- Base / porta -->
+  <path d="M160 420 h320 v80 a40 40 0 0 1-40 40 H200 a40 40 0 0 1-40-40z" fill="#163a6b"/>
+  <rect x="190" y="380" width="260" height="50" rx="18" fill="#f07a28"/>
+  <!-- Completo stylized -->
+  <ellipse cx="320" cy="340" rx="120" ry="36" fill="#e8c39a"/>
+  <rect x="240" y="280" width="160" height="70" rx="20" fill="#e8c39a"/>
+  <ellipse cx="320" cy="280" rx="70" ry="22" fill="#c45c26"/>
+  <!-- Cat silhouette -->
+  <g fill="#163a6b" transform="translate(420 180)">
+    <circle cx="0" cy="40" r="48"/>
+    <path d="M-38 10 L-48 -30 L-10 8"/>
+    <path d="M38 10 L48 -30 L10 8"/>
+    <circle cx="-16" cy="36" r="5" fill="#f7f1e6"/>
+    <circle cx="16" cy="36" r="5" fill="#f7f1e6"/>
+  </g>
+  <text x="320" y="680" text-anchor="middle" fill="#7a5c28" font-family="Segoe UI, sans-serif" font-size="22" opacity="0.55">imagen referencial</text>
+</svg>

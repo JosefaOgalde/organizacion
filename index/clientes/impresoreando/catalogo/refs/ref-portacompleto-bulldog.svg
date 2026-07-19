@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 720" role="img" aria-label="Referencia Porta Completo Bulldog">
+  <rect width="640" height="720" fill="#f7f1e6"/>
+  <ellipse cx="320" cy="560" rx="170" ry="26" fill="#163a6b" opacity="0.08"/>
+  <path d="M170 450 h300 v60 a30 30 0 0 1-30 30 H200 a30 30 0 0 1-30-30z" fill="#163a6b"/>
+  <ellipse cx="320" cy="380" rx="110" ry="30" fill="#e8c39a"/>
+  <rect x="250" y="330" width="140" height="55" rx="14" fill="#e8c39a"/>
+  <!-- Compact bulldog -->
+  <g transform="translate(320 220)">
+    <ellipse cx="0" cy="40" rx="70" ry="55" fill="#163a6b"/>
+    <ellipse cx="-55" cy="5" rx="20" ry="30" fill="#163a6b"/>
+    <ellipse cx="55" cy="5" rx="20" ry="30" fill="#163a6b"/>
+    <ellipse cx="0" cy="55" rx="32" ry="22" fill="#2a5088"/>
+    <circle cx="-22" cy="30" r="6" fill="#f7f1e6"/>
+    <circle cx="22" cy="30" r="6" fill="#f7f1e6"/>
+  </g>
+  <text x="320" y="680" text-anchor="middle" fill="#7a5c28" font-family="Segoe UI, sans-serif" font-size="22" opacity="0.55">imagen referencial</text>
+</svg>

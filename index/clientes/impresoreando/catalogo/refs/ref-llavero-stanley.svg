@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 720" role="img" aria-label="Referencia Llavero Porta Lipstick Stanley">
+  <rect width="640" height="720" fill="#f3efe8"/>
+  <ellipse cx="320" cy="560" rx="120" ry="20" fill="#163a6b" opacity="0.08"/>
+  <circle cx="320" cy="150" r="34" fill="none" stroke="#8a8a8a" stroke-width="12"/>
+  <circle cx="320" cy="150" r="16" fill="#f3efe8"/>
+  <!-- Tube / holder -->
+  <rect x="270" y="200" width="100" height="280" rx="28" fill="#c4a574" stroke="#163a6b" stroke-width="6"/>
+  <rect x="285" y="220" width="70" height="160" rx="16" fill="#e8d4b0"/>
+  <ellipse cx="320" cy="220" rx="35" ry="14" fill="#a88455"/>
+  <rect x="300" y="400" width="40" height="50" rx="10" fill="#d4789c"/>
+  <text x="320" y="680" text-anchor="middle" fill="#7a5c28" font-family="Segoe UI, sans-serif" font-size="22" opacity="0.55">imagen referencial</text>
+</svg>

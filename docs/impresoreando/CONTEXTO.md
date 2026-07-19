@@ -14,6 +14,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | API | `GET/POST /api/impresoreando` · `POST /api/impresoreando/venta` en `scripts/organizacion-server.js` |
 | Arranque | `ABRIR-IMPRESOREANDO.bat` / `SERVIR.bat` → `http://localhost:3000/index/clientes/impresoreando/panel/` |
 | Landing | `…/impresoreando/` CTA **Resumen 50/50** |
+| Catálogo IG | `…/impresoreando/catalogo/` · 1080×1350 · export `catalogo/export/` · `node …/exportar-pngs.js` |
 | Status correo | `scripts/impresoreando-status-diario.js` · `ENVIAR-STATUS-IMPRESOREANDO.bat` · lib `scripts/lib/smtp-send.js` |
 
 Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. Persistencia siempre vía API (live), no solo localStorage.
