@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>MOVA · Etapa 2 — Presentación auditoría</title>
+  <link rel="stylesheet" href="../../assets/mkof-mova-d1-status-pdf.css">
+  <style>
+    .mova-e2__min { font-size: 9pt; opacity: .75; margin: 0; }
+    .mova-e2__grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.18in; }
+    .mova-e2__big { font-size: 16pt; font-weight: 700; color: #2a4a4e; margin: 0.1in 0; }
+    .mova-d1-pdf__slide--etapa2 .mova-d1-pdf__bar { background: #1a5c63; }
+    .mova-e2__timebox { display: inline-block; background: #fff8c5; color: #2a4a4e; padding: 0.04in 0.12in; border-radius: 4px; font-size: 10pt; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+  <!-- 1 Portada -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--title">
+    <p class="eyebrow">MOVA · Segunda etapa de la auditoría</p>
+    <h1>De acuerdo a diseño<br>listo para implementar</h1>
+    <p class="sub">acme-chile.cl · GRUPO MAKING OF · julio 2026</p>
+    <p class="task">Presentación ~20 min · Guion en GUION-PRESENTACION-ETAPA2.md</p>
+    <p class="meta">n8n en GitHub ✓ · Cloudflare explicado · D1–D5 cerrados en docs</p>
+    <p class="badge">Etapa 2 = documentar y acordar · sin tocar código en servidor</p>
+  </section>
+
+  <!-- 2 Agenda -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Agenda · 20 minutos</h2>
+      <p>> mitad del tiempo = lo realizado en etapa 2</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <table class="mova-d1-pdf__tabla">
+        <thead><tr><th>Bloque</th><th>Min</th><th>Qué contamos</th></tr></thead>
+        <tbody>
+          <tr><td>1. Lo acordado en etapa 1</td><td class="mova-e2__timebox">0–3</td><td>Veredicto playbook · qué sí / qué no</td></tr>
+          <tr><td>2. Cloudflare</td><td class="mova-e2__timebox">3–6</td><td>Para qué sirve · ¿es necesario?</td></tr>
+          <tr><td><strong>3. Etapa 2 — lo hecho este mes</strong></td><td class="mova-e2__timebox">6–17</td><td>D1–D5 · n8n Git · espejo cPanel</td></tr>
+          <tr><td>4. Siguientes pasos</td><td class="mova-e2__timebox">17–20</td><td>Implementación · sandbox ERP</td></tr>
+        </tbody>
+      </table>
+      <p class="mova-d1-pdf__footer-note">~11 min del bloque 3 = más de la mitad de la presentación.</p>
+    </div>
+  </section>
+
+  <!-- 3 Etapa 1 veredicto -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Etapa 1 — Qué se acordó</h2>
+      <p>Playbook Post-Auditoría MOVA · veredicto del cliente</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <table class="mova-d1-pdf__tabla">
+        <thead><tr><th>Propuesta</th><th>Veredicto</th><th>Prioridad</th></tr></thead>
+        <tbody>
+          <tr><td>Respaldo n8n → Git</td><td>Correcto</td><td class="si">Inmediato</td></tr>
+          <tr><td>Login unificado mova_auth</td><td>Lo más valioso</td><td class="si">Alta</td></tr>
+          <tr><td>MySQL como fuente</td><td>Válido</td><td>Media (después)</td></tr>
+          <tr><td>Migrar de GoDaddy ya</td><td>Sobredimensionado</td><td class="no">Diferir</td></tr>
+          <tr><td>VPS / cloud</td><td>Salto real</td><td class="no">~12 meses</td></tr>
+        </tbody>
+      </table>
+      <p class="mova-d1-pdf__footer-note">Regla de oro etapa 1: no migrar dos veces. Cloudflare + GoDaddy hasta el servidor real.</p>
+    </div>
+  </section>
+
+  <!-- 4 Orden playbook -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Etapa 1 — Orden de ejecución acordado</h2>
+      <p>Sin ambigüedad</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ol class="mova-d1-pdf__bullets">
+        <li><strong>Respaldo n8n → GitHub</strong> — <span class="si">HECHO</span> (flujos en repo GitHub)</li>
+        <li><strong>Cloudflare delante de GoDaddy</strong> — explicación lista · activación pendiente equipo</li>
+        <li><strong>Centralizar login en mova_auth</strong> — diseño etapa 2 listo · implementar después</li>
+        <li><strong>Sesión server-side (cookies)</strong> — diseño etapa 2 listo</li>
+        <li>MySQL · Sheets · rutinas · VPS — más adelante</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 5 Cloudflare qué es -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Cloudflare — ¿qué es?</h2>
+      <p>En lenguaje de reunión (no técnico)</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <p class="mova-e2__big">Un escudo en la puerta de internet.</p>
+      <div class="mova-d1-pdf__flow" style="margin:0.25in 0">
+        <div>
+          <h4>Con Cloudflare</h4>
+          <p>Usuario → <strong>escudo</strong> → GoDaddy</p>
+        </div>
+        <div>
+          <h4 class="warn">Sin Cloudflare</h4>
+          <p>Usuario → GoDaddy directo</p>
+        </div>
+      </div>
+      <div class="mova-d1-pdf__cards4">
+        <article class="mova-d1-pdf__card"><h3>HTTPS</h3><p>Candado / tráfico encriptado</p></article>
+        <article class="mova-d1-pdf__card"><h3>WAF</h3><p>Filtro de ataques y bots</p></article>
+        <article class="mova-d1-pdf__card"><h3>Sin mudar</h3><p>Archivos siguen en GoDaddy</p></article>
+        <article class="mova-d1-pdf__card"><h3>Barato</h3><p>Plan Free alcanza para empezar</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 Cloudflare conclusión -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Cloudflare — ¿es necesario?</h2>
+      <p>Conclusión para decidir</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ul class="mova-d1-pdf__bullets">
+        <li><strong>Sí como quick win de seguridad</strong> — tapa el hueco sin migrar dos veces.</li>
+        <li><strong>No es un proyecto enorme</strong> — nameservers + SSL Full + WAF básico.</li>
+        <li><strong>No arregla el login</strong> — eso es mova_auth (etapa 2 diseño / etapa 3 código).</li>
+        <li><strong>No reemplaza el VPS</strong> — el servidor nuevo sigue a ~12 meses.</li>
+        <li><strong>Mejor que irse a IONOS ahora</strong> — eso sería movimiento lateral.</li>
+      </ul>
+      <p class="mova-d1-pdf__footer-note mova-d1-pdf__warn">Frase: “Escudo delante de GoDaddy. HTTPS + filtro. Sin tocar código ni mudar hosting.”</p>
+    </div>
+  </section>
+
+  <!-- 7 Puente etapa 2 -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--etapa2">
+    <header class="mova-d1-pdf__bar">
+      <h2>Entramos a la etapa 2</h2>
+      <p>Lo que ocupamos la mayor parte de esta reunión</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <p class="mova-e2__big">Etapa 2 = auditar y diseñar el login unificado · sin tocar el servidor.</p>
+      <ul class="mova-d1-pdf__bullets">
+        <li>Inventario real en cPanel y navegador (D1)</li>
+        <li>Reglas acordadas: un solo portero (D2)</li>
+        <li>Mapa de archivos que deben existir (D3)</li>
+        <li>Diseño de cookie y login (D4)</li>
+        <li>Matriz módulo por módulo + sandbox (D5)</li>
+        <li>Plus: n8n respaldado en GitHub · camino espejo cPanel</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8 Resumen mes -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--etapa2">
+    <header class="mova-d1-pdf__bar">
+      <h2>Etapa 2 — Mapa del mes</h2>
+      <p>Cinco días de auditoría + quick wins</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <table class="mova-d1-pdf__tabla">
+        <thead><tr><th>Día</th><th>Entregable</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td>D1</td><td>Inventario módulos M + cPanel</td><td class="si">Hecho · PPT/PDF</td></tr>
+          <tr><td>D2</td><td>Reglas mova_auth</td><td class="si">Hecho · PPT/PDF</td></tr>
+          <tr><td>D3</td><td>6 archivos núcleo + gap</td><td class="si">Hecho · HTML/MD</td></tr>
+          <tr><td>D4</td><td>Login + cookie HttpOnly</td><td class="si">Hecho · HTML/MD</td></tr>
+          <tr><td>D5</td><td>Matriz validación + sandbox ERP</td><td class="si">Hecho · HTML/MD</td></tr>
+          <tr><td>—</td><td>n8n → GitHub</td><td class="si">Hecho (repo con flujos)</td></tr>
+          <tr><td>—</td><td>Guía espejo cPanel</td><td class="si">Lista para bajar ZIPs</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 9 D1 -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--etapa2">
+    <header class="mova-d1-pdf__bar">
+      <h2>D1 — Hallazgo: login fragmentado</h2>
+      <p>Varias puertas · ninguna es el portero único</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <div class="mova-d1-pdf__cards4">
+        <article class="mova-d1-pdf__card"><h3>/mova/</h3><p>Google OAuth · no pasa por mova_auth</p></article>
+        <article class="mova-d1-pdf__card"><h3>mova_auth</h3><p>Correo+clave · parcial · no controla el panel</p></article>
+        <article class="mova-d1-pdf__card"><h3>/mova/erp/</h3><p>Contraseña local aparte</p></article>
+        <article class="mova-d1-pdf__card"><h3>/axon/</h3><p>Sin login visible</p></article>
+      </div>
+      <p class="mova-d1-pdf__footer-note mova-d1-pdf__warn">Problema real (cliente): no falta “validación backend” — falta unificar la entrada.</p>
+    </div>
+  </section>
+
+  <!-- 10 D2 -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--etapa2">
+    <header class="mova-d1-pdf__bar">
+      <h2>D2 — Regla de oro acordada</h2>
+      <p>Si no pasó por mova_auth, no entra</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ul class="mova-d1-pdf__bullets">
+        <li><strong>mova_auth</strong> = único validador de sesión para módulos M.</li>
+        <li>Cada módulo incluye <strong>guard.php</strong> — no decide permisos solo.</li>
+        <li>Sesión en servidor (PHP) — <strong>sin JWT en localStorage</strong>.</li>
+        <li>Excepción pública: <code>/documentos/</code> (playbooks).</li>
+        <li>Prohibido: Google suelto, clave ERP aparte, logins duplicados.</li>
+      </ul>
+      <p class="mova-d1-pdf__footer-note">Pendiente humano: firma/correo formal del equipo técnico.</p>
+    </div>
+  </section>
+
+  <!-- 11 D3 -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--etapa2">
+    <header class="mova-d1-pdf__bar">
+      <h2>D3 — Núcleo: qué debe existir</h2>
+      <p>Gap vs cPanel (sin subir archivos aún)</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <table class="mova-d1-pdf__tabla">
+        <thead><tr><th>Archivo</th><th>¿Existe hoy?</th><th>Rol</th></tr></thead>
+        <tbody>
+          <tr><td>config.php</td><td class="si">Sí</td><td>Secretos</td></tr>
+          <tr><td>login.php / logout.php</td><td class="si">Sí</td><td>Entrada / salida</td></tr>
+          <tr><td>session.php</td><td class="no">No</td><td>Cookie HttpOnly+Secure</td></tr>
+          <tr><td>validate.php</td><td class="no">No</td><td>API JSON 200/401</td></tr>
+          <tr><td>guard.php</td><td class="no">No</td><td>Include en cada módulo</td></tr>
+        </tbody>
+      </table>
+      <p class="mova-d1-pdf__footer-note">Hoy hay extras (auth.php, google_login.php, panel.php) — se evalúan en implementación.</p>
+    </div>
+  </section>
+
+  <!-- 12 D4 -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--etapa2">
+    <header class="mova-d1-pdf__bar">
+      <h2>D4 — Login único + cookie</h2>
+      <p>Diseño listo · 10 casos de prueba escritos</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <div class="mova-d1-pdf__flow">
+        <div><h4>1. Pide módulo</h4></div>
+        <div><h4>2. guard.php</h4></div>
+        <div><h4>3. ¿sesión?</h4></div>
+        <div><h4 class="warn">No → login?redirect=</h4></div>
+        <div><h4>Sí → entra</h4></div>
+      </div>
+      <ul class="mova-d1-pdf__bullets">
+        <li>Cookie: <strong>HttpOnly + Secure + SameSite=Lax</strong> · path <code>/</code></li>
+        <li>Google puede existir, pero alimenta la <strong>misma</strong> sesión PHP (no localStorage).</li>
+        <li>Redirect seguro: solo paths del sitio · rechaza URLs maliciosas.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 13 D5 -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--etapa2">
+    <header class="mova-d1-pdf__bar">
+      <h2>D5 — Validación por módulo + sandbox</h2>
+      <p>Orden de migración futura</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ol class="mova-d1-pdf__bullets">
+        <li><strong>Sandbox:</strong> <code>/mova/erp/</code> (hoy tiene clave propia → demuestra unificación)</li>
+        <li>Portal <code>/mova/</code> (sacar Google como puerta directa)</li>
+        <li>AXON <code>/axon/</code></li>
+        <li>Resto de submódulos / Admin</li>
+        <li>RRHH cuando deje de estar en 403</li>
+      </ol>
+      <p class="mova-d1-pdf__footer-note">validate.php → JSON 200/401 · guard.php → redirect si no hay sesión.</p>
+    </div>
+  </section>
+
+  <!-- 14 n8n -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--etapa2">
+    <header class="mova-d1-pdf__bar">
+      <h2>Quick win — n8n en GitHub</h2>
+      <p>Hito 1.1 del playbook</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ul class="mova-d1-pdf__check">
+        <li><span class="mark ok">✓</span> Repo privado con los flujos de n8n</li>
+        <li><span class="mark ok">✓</span> Respaldo versionado (ya no viven solo en n8n Cloud)</li>
+        <li><span class="mark ok">✓</span> Guías Paso 1–3 en el portal MKOF</li>
+      </ul>
+      <p class="mova-d1-pdf__footer-note">Siguiente mejora opcional: backup semanal automatizado (API n8n → commit).</p>
+    </div>
+  </section>
+
+  <!-- 15 cPanel espejo -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--etapa2">
+    <header class="mova-d1-pdf__bar">
+      <h2>Cómo bajar cPanel al repo</h2>
+      <p>Espejo sin secretos · listo para empezar por mova_auth/</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ol class="mova-d1-pdf__bullets">
+        <li>File Manager → comprimir carpeta → ZIP</li>
+        <li>Descargar al PC</li>
+        <li>Pegar en <code>espejo-cpanel/</code></li>
+        <li><strong>No</strong> subir <code>config.php</code> (gitignore)</li>
+        <li>git commit + push</li>
+      </ol>
+      <p class="mova-d1-pdf__footer-note">No cambia producción. Empieza por mova_auth/, luego erp/.</p>
+    </div>
+  </section>
+
+  <!-- 16 Qué no hicimos -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--etapa2">
+    <header class="mova-d1-pdf__bar">
+      <h2>Qué NO hicimos (a propósito)</h2>
+      <p>Límite de la etapa 2</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ul class="mova-d1-pdf__bullets">
+        <li>No subimos PHP nuevo al servidor.</li>
+        <li>No migrarmos módulos todavía.</li>
+        <li>No tocamos MySQL / Sheets.</li>
+        <li>No mudamos de hosting.</li>
+      </ul>
+      <p class="mova-e2__big">Etapa 2 = plano de obra firmable. Etapa siguiente = construir.</p>
+    </div>
+  </section>
+
+  <!-- 17 Entregables -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Dónde ver todo</h2>
+      <p>Portal MKOF / MOVA / documentos</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <div class="mova-e2__grid3">
+        <article class="mova-d1-pdf__card"><h3>D1–D5</h3><p>documentos/ver.html?id=d1…d5</p></article>
+        <article class="mova-d1-pdf__card"><h3>Cloudflare</h3><p>cloudflare-mova.html</p></article>
+        <article class="mova-d1-pdf__card"><h3>cPanel espejo</h3><p>cpanel-espejo.html</p></article>
+        <article class="mova-d1-pdf__card"><h3>GitHub n8n</h3><p>github-*.html + repo</p></article>
+        <article class="mova-d1-pdf__card"><h3>Gantt</h3><p>Landing MKOF</p></article>
+        <article class="mova-d1-pdf__card"><h3>Guion</h3><p>GUION-PRESENTACION-ETAPA2.md</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18 Siguientes pasos -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Siguientes pasos</h2>
+      <p>Después de esta reunión</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ol class="mova-d1-pdf__bullets">
+        <li><strong>Humano:</strong> firma/correo reglas D2 · marcar tareas mkof/03–05</li>
+        <li><strong>Operación:</strong> bajar espejo <code>mova_auth/</code> al repo</li>
+        <li><strong>Quick win:</strong> activar Cloudflare (checklist de la guía)</li>
+        <li><strong>Implementación:</strong> crear session / validate / guard</li>
+        <li><strong>Sandbox:</strong> migrar primero <code>/mova/erp/</code></li>
+        <li>Luego portal → AXON → resto</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 19 Cierre -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--title">
+    <p class="eyebrow">MOVA · Etapa 2</p>
+    <h1>Diseño cerrado.<br>Listos para construir.</h1>
+    <p class="sub">Preguntas · acuerdos · dueños de cada siguiente paso</p>
+    <p class="meta">GRUPO MAKING OF · julio 2026</p>
+    <p class="badge">Imprimir / Guardar PDF desde el navegador (Ctrl+P)</p>
+  </section>
+
+</body>
+</html>

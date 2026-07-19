@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOVA · Descargar cPanel al repo</title>
+  <link rel="stylesheet" href="../../assets/portal.css">
+  <link rel="stylesheet" href="../../assets/mkof-mova-auditoria.css">
+</head>
+<body class="mova-aud">
+  <header class="mova-aud__hero">
+    <nav class="mova-aud__nav">
+      <a href="../MKOF/MOVA/documentos/">← Documentos MOVA</a>
+      <a href="cloudflare-mova.html">Cloudflare →</a>
+    </nav>
+    <p class="mova-aud__eyebrow">GRUPO MAKING OF · MOVA · RESPALDO</p>
+    <h1>Descargar cPanel → repo</h1>
+    <p class="mova-aud__sub">Copia espejo sin secretos · carpeta <code>espejo-cpanel/</code></p>
+    <p class="mova-aud__badge">No cambia producción — solo descarga</p>
+  </header>
+
+  <main class="mova-aud__main">
+    <section>
+      <h2>Idea en 20 segundos</h2>
+      <p>Comprimes una carpeta en cPanel → la bajas al PC → la pegas en el repo → Git la guarda. El sitio en internet <strong>no se toca</strong>.</p>
+      <pre class="mova-aud__mapa">cPanel (GoDaddy) → ZIP → PC → espejo-cpanel/ → git commit
+n8n NO va aquí — ya está en GitHub mova-n8n-workflows</pre>
+    </section>
+
+    <section>
+      <h2>6 pasos</h2>
+      <ol>
+        <li><strong>File Manager</strong> → <code>public_html/acme-chile.cl/</code></li>
+        <li>Selecciona carpeta (empieza por <code>mova_auth/</code>)</li>
+        <li><strong>Comprimir</strong> → ZIP</li>
+        <li><strong>Descargar</strong> el ZIP</li>
+        <li>Descomprimir en <code>index/clientes/mkof/espejo-cpanel/</code></li>
+        <li>Revisar secretos → <code>git add</code> · commit · push</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Orden recomendado</h2>
+      <table class="mova-aud__tabla">
+        <thead><tr><th>#</th><th>Carpeta</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>mova_auth/</code></td><td>Núcleo login (prioridad auditoría)</td></tr>
+          <tr><td>2</td><td><code>mova/erp/</code></td><td>Sandbox de migración</td></tr>
+          <tr><td>3</td><td><code>mova/</code></td><td>Portal y submódulos</td></tr>
+          <tr><td>4</td><td>Otras</td><td>Solo si hacen falta (evitar multimedia pesada)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Nunca subir a Git</h2>
+      <ul class="mova-aud__check mova-aud__check--pend">
+        <li><code>config.php</code> con claves (bloqueado por .gitignore)</li>
+        <li>Archivos <code>.env</code>, contraseñas, <code>.sql</code> con datos reales</li>
+        <li>ZIPs sueltos (borra después de descomprimir)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Checklist</h2>
+      <ul class="mova-aud__check">
+        <li>ZIP descargado desde cPanel</li>
+        <li>Archivos en <code>espejo-cpanel/</code></li>
+        <li>Secretos fuera de Git</li>
+        <li>Commit + push</li>
+      </ul>
+      <p><a href="espejo-cpanel/">Abrir carpeta espejo →</a> · <a href="Guia-descargar-cpanel-al-repo.md">Guía MD completa</a></p>
+    </section>
+  </main>
+  <footer class="mova-aud__foot">MOVA · Espejo cPanel · 19 jul 2026</footer>
+</body>
+</html>

@@ -3,76 +3,65 @@
 **Última actualización:** 19 jul 2026  
 **Cliente:** MKOF · **Proyecto:** MOVA  
 **Rama:** `cursor/mova-auditoria-etapa2-d3-d5-459d`  
-**Handoff portal:** [`docs/MKOF-MOVA-HANDOFF.md`](../../../../docs/MKOF-MOVA-HANDOFF.md)
+**Presentación:** [`mova-etapa2-presentacion.html`](../../mkof/mova-etapa2-presentacion.html) · Guion [`docs/mova/GUION-PRESENTACION-ETAPA2.md`](../../../../docs/mova/GUION-PRESENTACION-ETAPA2.md)
 
 ---
 
 ## Objetivo (fase actual)
 
-Documentar el login unificado `mova_auth` en **acme-chile.cl** — inventario, reglas, núcleo, cookie y validación por módulo — **sin tocar código en servidor**.  
-Siguiente etapa (después de firmar): implementar archivos faltantes y migrar módulos (sandbox ERP primero).
+Documentar el login unificado `mova_auth` — inventario, reglas, núcleo, cookie y validación — **sin tocar código en servidor**.  
+Quick wins: n8n en GitHub (**hecho**) · Cloudflare explicado · espejo cPanel listo para bajar ZIPs.
 
 ---
 
-## Auditoría D1–D5 — estado 19 jul 2026
+## Auditoría D1–D5 — estado
 
-| Día | Tarea | Entregable | Estado |
-|-----|-------|------------|--------|
-| D1 | Inventario módulos M | PPT/PDF + `Inventario-MOVA-modulos.md` | Hecho |
-| D2 | Reglas mova_auth | PPT/PDF + `Reglas-mova_auth.md` | Hecho |
-| D3 | Carpetas y archivos núcleo | `Mapa-mova_auth-nucleo.md` + HTML | **Hecho hoy** |
-| D4 | Login único + cookie | `Flujo-login-cookie-mova_auth.md` + HTML | **Hecho hoy** |
-| D5 | Validación por módulo + cierre | `Matriz-validacion-modulos-mova_auth.md` + HTML | **Hecho hoy** |
-
-Portal documentos: `index/clientes/MKOF/MOVA/documentos/`  
-Landing MKOF: sección «Guías en curso · MOVA».
+| Día | Entregable | Estado |
+|-----|------------|--------|
+| D1 | Inventario módulos M | Hecho |
+| D2 | Reglas mova_auth | Hecho |
+| D3 | 6 archivos núcleo + gap | Hecho |
+| D4 | Login + cookie HttpOnly | Hecho |
+| D5 | Matriz + sandbox ERP + cierre | Hecho |
 
 ---
 
-## Hallazgos clave
+## Quick wins playbook
 
-1. Login **fragmentado**: Google en `/mova/`, correo+clave en `/mova_auth/`, clave local en `/mova/erp/`, AXON sin gate visible.
-2. Gap núcleo: faltan `session.php`, `validate.php`, `guard.php` en cPanel.
-3. Diseño acordado: cookie **HttpOnly + Secure**, sin JWT en localStorage.
-4. Sandbox primera migración: **`/mova/erp/`**.
-
----
-
-## Pendiente humano (no bloquea docs)
-
-- [ ] Marcar `mkof/03`, `mkof/04`, `mkof/05` completadas en organizador (PC local / `organizacion-live.json`)
-- [ ] Acuerdo formal del equipo técnico (correo o acta sobre reglas D2)
-- [ ] Equipo n8n: enviar JSON + capturas para primer push a `mova-n8n-workflows`
+| Hito | Estado |
+|------|--------|
+| 1.1 Respaldo n8n → GitHub | **Hecho** — flujos en repo GitHub |
+| 1.2 Cloudflare delante de GoDaddy | **Explicación + conclusión listas** · activación pendiente equipo |
+| Espejo cPanel → repo | **Guía + carpeta `espejo-cpanel/`** · falta pegar ZIPs desde cPanel |
 
 ---
 
-## Próxima etapa (implementación — no es esta PR)
+## Cloudflare — conclusión en una línea
 
-1. Crear `session.php` / `validate.php` / `guard.php` en servidor.
-2. Migrar sandbox ERP → portal `/mova/` → AXON.
-3. Seguir Gantt post-auditoría (Cloudflare, MySQL, rutinas).
-
-Playbook: https://acme-chile.cl/documentos/auditoria_mova.html
+Sí como **escudo rápido** (HTTPS + WAF) sin mudar hosting; no es el VPS del año ni arregla el login. Ver `cloudflare-mova.html`.
 
 ---
 
-## URLs (Laravel :8000 o SERVIR :3000)
+## Pendiente humano
 
-| Página | Path |
-|--------|------|
-| Hub MOVA | `/index/clientes/MKOF/MOVA.html` |
+- [ ] Pegar ZIP `mova_auth/` (y opc. `mova/erp/`) en `espejo-cpanel/`
+- [ ] Marcar `mkof/03`–`mkof/05` en organizador
+- [ ] Firma/correo reglas D2
+- [ ] Activar Cloudflare cuando el equipo decida
+- [ ] Presentar deck etapa 2 (~20 min)
+
+## Siguiente etapa (implementación)
+
+1. Crear `session.php` / `validate.php` / `guard.php`
+2. Sandbox `/mova/erp/` → portal → AXON
+
+---
+
+## URLs
+
+| Qué | Path |
+|-----|------|
+| Presentación | `/index/clientes/mkof/mova-etapa2-presentacion.html` |
+| Cloudflare | `/index/clientes/mkof/cloudflare-mova.html` |
+| cPanel espejo | `/index/clientes/mkof/cpanel-espejo.html` |
 | Documentos | `/index/clientes/MKOF/MOVA/documentos/` |
-| D3 | `…/documentos/ver.html?id=d3-nucleo-mova-auth` |
-| D4 | `…/documentos/ver.html?id=d4-login-cookie` |
-| D5 | `…/documentos/ver.html?id=d5-validacion-modulos` |
-| Landing MKOF | `/index/clientes/mkof/` |
-
----
-
-## Archivos clave
-
-- `data/mkof-mova-auth-plan.js` — plan D1–D5
-- `data/mova-documentos.js` — catálogo portal
-- `index/clientes/mkof/Mapa-mova_auth-nucleo.md`
-- `index/clientes/mkof/Flujo-login-cookie-mova_auth.md`
-- `index/clientes/mkof/Matriz-validacion-modulos-mova_auth.md`

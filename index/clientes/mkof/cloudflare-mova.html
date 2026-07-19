@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOVA · Cloudflare — explicación fácil</title>
+  <link rel="stylesheet" href="../../assets/portal.css">
+  <link rel="stylesheet" href="../../assets/mkof-mova-auditoria.css">
+</head>
+<body class="mova-aud">
+  <header class="mova-aud__hero">
+    <nav class="mova-aud__nav">
+      <a href="../MKOF/MOVA/documentos/">← Documentos MOVA</a>
+      <a href="cpanel-espejo.html">← cPanel espejo</a>
+      <a href="mova-etapa2-presentacion.html">Presentación etapa 2 →</a>
+    </nav>
+    <p class="mova-aud__eyebrow">GRUPO MAKING OF · MOVA · HITO 1.2</p>
+    <h1>Cloudflare — ¿para qué y es necesario?</h1>
+    <p class="mova-aud__sub">Explicación en lenguaje claro · sin mudarse de hosting</p>
+    <p class="mova-aud__badge mova-aud__badge--ok">Conclusión: sí como escudo rápido · no como proyecto enorme</p>
+  </header>
+
+  <main class="mova-aud__main">
+    <section>
+      <h2>En una frase</h2>
+      <blockquote class="mova-aud__oro">
+        Cloudflare es un escudo en la puerta de internet: el visitante llega primero ahí, y Cloudflare habla con GoDaddy.
+        <small>El sitio sigue en el mismo servidor. No migras nada.</small>
+      </blockquote>
+      <pre class="mova-aud__mapa">CON Cloudflare:   Usuario → Cloudflare (escudo) → GoDaddy
+SIN Cloudflare:   Usuario → GoDaddy (directo, más expuesto)</pre>
+    </section>
+
+    <section>
+      <h2>¿Para qué sirve?</h2>
+      <div class="mova-aud__grid2">
+        <article class="mova-aud__card mova-aud__card--ok">
+          <h3>1. Candado HTTPS</h3>
+          <p>Tráfico encriptado. Sirve para cookies <code>Secure</code> del login unificado.</p>
+        </article>
+        <article class="mova-aud__card mova-aud__card--ok">
+          <h3>2. Filtro de ataques</h3>
+          <p>WAF + anti-bot: tapa golpes antes de que lleguen a cPanel.</p>
+        </article>
+        <article class="mova-aud__card mova-aud__card--ok">
+          <h3>3. Menos carga al hosting</h3>
+          <p>GoDaddy deja de ser la primera línea contra bots.</p>
+        </article>
+        <article class="mova-aud__card mova-aud__card--gap">
+          <h3>No hace esto</h3>
+          <p>No arregla el login fragmentado. No es el VPS del año. No toca n8n.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>¿Es necesario? — Conclusión para el equipo</h2>
+      <table class="mova-aud__tabla">
+        <thead><tr><th>Pregunta</th><th>Respuesta</th></tr></thead>
+        <tbody>
+          <tr><td>¿Lo pide el playbook?</td><td class="si">Sí — prioridad Inmediato / Correcto</td></tr>
+          <tr><td>¿Hay que mudarse de GoDaddy?</td><td class="no">No</td></tr>
+          <tr><td>¿Reemplaza el servidor nuevo (~12 meses)?</td><td class="no">No — es el parche hasta entonces</td></tr>
+          <tr><td>¿Mejor que irse a IONOS ahora?</td><td class="si">Sí — mudarse ahora es movimiento lateral</td></tr>
+          <tr><td>¿El sitio “rompe” sin Cloudflare?</td><td class="na">No — pero queda más expuesto</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Frase reunión:</strong> “No es un proyecto grande: es poner un escudo delante de GoDaddy. HTTPS + filtro de ataques sin tocar código ni mudar hosting.”</p>
+    </section>
+
+    <section>
+      <h2>Checklist cuando lo activen</h2>
+      <ol>
+        <li>Cuenta Cloudflare (Free ok para empezar)</li>
+        <li>Agregar <code>acme-chile.cl</code></li>
+        <li>Cambiar nameservers en GoDaddy</li>
+        <li>SSL → <strong>Full (strict)</strong> cuando el origen esté bien</li>
+        <li>WAF básico / anti-bot</li>
+        <li>Probar sitio + login</li>
+      </ol>
+      <p>Tiempo: unas horas de calendario (DNS puede demorar en propagar).</p>
+    </section>
+
+    <section>
+      <h2>Orden del playbook</h2>
+      <div class="mova-aud__flujo">
+        <span class="auth">1. n8n → Git ✓</span> →
+        <span class="warn">2. Cloudflare</span> →
+        <span>3. Implementar mova_auth</span>
+      </div>
+      <p>Respaldo n8n en GitHub: <strong>ya está</strong>. Siguiente quick win operativo: Cloudflare.</p>
+    </section>
+  </main>
+  <footer class="mova-aud__foot">MOVA · Cloudflare fácil · 19 jul 2026</footer>
+</body>
+</html>
