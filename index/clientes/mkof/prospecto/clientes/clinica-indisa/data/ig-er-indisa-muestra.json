@@ -4,19 +4,19 @@
   "seguidores": 43700,
   "seguidoresDisplay": "43,7 mil",
   "formula": "ER% = ((Σ likes + Σ comentarios visibles) / N) / seguidores × 100",
-  "metodologia": "Primeras 10 capturas/URLs entregadas por la usuaria (N=10 fijo).",
-  "nPosts": 10,
-  "nPostsEnCalculo": 10,
-  "sumaLikes": 805,
-  "sumaComentariosVisibles": 9,
-  "sumaInteracciones": 814,
-  "promedioInteracciones": 81.4,
-  "engagementRate": 0.1863,
-  "engagementRateDisplay": "0,19%",
+  "metodologia": "N=9 fijo: primeras 9 capturas/URLs entregadas por la usuaria por cuenta. Si entrega más, solo se consideran las primeras 9.",
+  "nPosts": 9,
+  "nPostsEnCalculo": 9,
+  "sumaLikes": 444,
+  "sumaComentariosVisibles": 6,
+  "sumaInteracciones": 450,
+  "promedioInteracciones": 50.0,
+  "engagementRate": 0.1144,
+  "engagementRateDisplay": "0,11%",
   "limitaciones": [
-    "Comentarios contados desde los visibles en screenshot (pueden ser subconteo si hay más).",
-    "No incluye guardados ni shares (no públicos en UI).",
-    "Post más reciente (~9h) aún puede crecer; el ER puede subir levemente."
+    "Comentarios = visibles en screenshot (mínimo), salvo donde se indica og:description.",
+    "Sin guardados/shares públicos.",
+    "N=9 primeras entregadas (paridad en todo el quinteto)."
   ],
   "posts": [
     {
@@ -90,14 +90,13 @@
       "comments": 0,
       "interacciones": 25,
       "tema": "Prepárate temporada de invierno"
-    },
-    {
-      "n": 10,
-      "url": "https://www.instagram.com/p/DaNzWZ8hirC/",
-      "likes": 361,
-      "comments": 3,
-      "interacciones": 364,
-      "tema": "Nuevo resonador IA / Cardio-Resonancia Maipú"
     }
-  ]
+  ],
+  "omitidoPorTopeN": {
+    "nOriginal": 10,
+    "url": "https://www.instagram.com/p/DaNzWZ8hirC/",
+    "tema": "Nuevo resonador IA / Cardio-Resonancia Maipú",
+    "interacciones": 364,
+    "motivo": "Fuera del tope N=9 (primeras 9 entregadas)."
+  }
 }

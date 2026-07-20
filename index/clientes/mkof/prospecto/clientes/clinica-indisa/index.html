@@ -225,7 +225,7 @@
     }
 
     // Cache-bust: evita ver JSON viejo (PENDIENTE) tras git pull
-    const v = '20260720-iger10';
+    const v = '20260720-iger9';
     const j = (path) => fetch(base + path + '?v=' + v, { cache: 'no-store' }).then((r) => {
       if (!r.ok) throw new Error(path + ' ' + r.status);
       return r.json();
@@ -263,7 +263,7 @@
         const isEr = /er\b|engagement/i.test(p);
         const erNote = /tiktok er/i.test(p)
           ? '% · likes+com.+guardados · n=5'
-          : (/instagram er/i.test(p) ? '% · likes+comentarios · N=10 primeras' : '');
+          : (/instagram er/i.test(p) ? '% · likes+comentarios · N=9 primeras' : '');
         return `<tr class="${isEr ? 'fila-er' : ''}"><th class="platform">${p}${
           erNote ? `<span class="er-note">${erNote}</span>` : ''
         }</th>${eco.columnas.map((c) => {
