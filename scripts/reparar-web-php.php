@@ -13,14 +13,20 @@ if (!is_file($web)) {
 
 $src = file_get_contents($web);
 
-// Quitar todos los bloques del frontend unificado
+// Quitar todos los bloques del frontend unificado (where antiguo o nuevo)
 $src = preg_replace(
-    '/\R\/\/ --- Frontend organizacion[\s\S]*?where\(\'path\',\s*\'\^\(\?!api\)\.\*\$\'\);/u',
+    '/\R\/\/ --- Frontend organizacion[\s\S]*?->where\(\'path\',\s*\'[^\']+\'\);/u',
     '',
     $src
 );
 $src = preg_replace(
-    '/\Ruse App\\\\Http\\\\Controllers\\\\FrontendStaticController;[\s\S]*?where\(\'path\',\s*\'\^\(\?!api\)\.\*\$\'\);/u',
+    '/\Ruse App\\\\Http\\\\Controllers\\\\FrontendStaticController;[\s\S]*?->where\(\'path\',\s*\'[^\']+\'\);/u',
+    '',
+    $src
+);
+// Variante one-liner where(...)
+$src = preg_replace(
+    '/\R\/\/ --- Frontend organizacion[\s\S]*?where\(\'path\',\s*\'[^\']+\'\);/u',
     '',
     $src
 );
@@ -37,7 +43,8 @@ $block = <<<'PHP'
 // --- Frontend organizacion (mismo origen que la API) ---
 use App\Http\Controllers\FrontendStaticController;
 Route::get('/', [FrontendStaticController::class, 'home']);
-Route::get('/{path}', [FrontendStaticController::class, 'serve'])->where('path', '^(?!api).*$');
+Route::get('/{path}', [FrontendStaticController::class, 'serve'])
+    ->where('path', '^(?!api(?:/|$)).*');
 PHP;
 
 $out = rtrim($src) . "\n" . $block . "\n";

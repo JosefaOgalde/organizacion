@@ -80,12 +80,22 @@ $webSrc = file_get_contents($web) ?: '';
 
 // Quitar TODOS los bloques previos del frontend (duplicados rompen el use)
 $webSrc = preg_replace(
-    '/\R\/\/ --- Frontend organizacion[\s\S]*?where\(\'path\',\s*\'\^\(\?!api\)\.\*\$\'\);/',
+    '/\R\/\/ --- Frontend organizacion[\s\S]*?->where\(\'path\',\s*\'[^\']+\'\);/',
     '',
     $webSrc
 );
 $webSrc = preg_replace(
-    '/\Ruse App\\\\Http\\\\Controllers\\\\FrontendStaticController;[\s\S]*?where\(\'path\',\s*\'\^\(\?!api\)\.\*\$\'\);/',
+    '/\R\/\/ --- Frontend organizacion[\s\S]*?where\(\'path\',\s*\'[^\']+\'\);/',
+    '',
+    $webSrc
+);
+$webSrc = preg_replace(
+    '/\Ruse App\\\\Http\\\\Controllers\\\\FrontendStaticController;[\s\S]*?->where\(\'path\',\s*\'[^\']+\'\);/',
+    '',
+    $webSrc
+);
+$webSrc = preg_replace(
+    '/\Ruse App\\\\Http\\\\Controllers\\\\FrontendStaticController;[\s\S]*?where\(\'path\',\s*\'[^\']+\'\);/',
     '',
     $webSrc
 );
@@ -95,7 +105,9 @@ $webBlock = <<<'PHP'
 // --- Frontend organizacion (mismo origen que la API) ---
 use App\Http\Controllers\FrontendStaticController;
 Route::get('/', [FrontendStaticController::class, 'home']);
-Route::get('/{path}', [FrontendStaticController::class, 'serve'])->where('path', '^(?!api).*$');
+// path con barras (index/clientes/...) — excluye api/*
+Route::get('/{path}', [FrontendStaticController::class, 'serve'])
+    ->where('path', '^(?!api(?:/|$)).*');
 PHP;
 
 file_put_contents($web, rtrim($webSrc) . "\n" . $webBlock . "\n");
@@ -132,8 +144,9 @@ if (is_file($envPath)) {
     }
 }
 
-echo "\nListo. Un solo servidor:\n";
+echo "\nListo. Un solo servidor (Laravel + SQLite):\n";
 echo "  php artisan serve\n";
 echo "  http://127.0.0.1:8000/index.html?disco=1\n";
-echo "  http://127.0.0.1:8000/api/clientes  ← requiere MySQL VERDE en Laragon\n";
+echo "  http://127.0.0.1:8000/index/clientes/?disco=1\n";
+echo "  http://127.0.0.1:8000/api/clientes\n";
 echo "\nSi cambiaste .env, en backend ejecuta: php artisan config:clear\n";
