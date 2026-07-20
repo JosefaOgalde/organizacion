@@ -9,7 +9,8 @@
     "LinkedIn",
     "YouTube",
     "TikTok",
-    "X (Twitter)"
+    "X (Twitter)",
+    "Spotify"
   ],
   "columnas": [
     {
@@ -52,13 +53,15 @@
         "display": "111 mil",
         "fuenteId": "fb-clc",
         "exacto": "111K followers (Facebook UI)",
-        "url": "https://www.facebook.com/clinicalascondes",
-        "highlight": true
+        "url": "https://www.facebook.com/clinicalascondes"
       },
       "alemana": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null
+        "valor": 177000,
+        "display": "177 mil",
+        "fuenteId": "fb-alemana",
+        "exacto": "177.382 likes (Facebook UI)",
+        "url": "https://www.facebook.com/Clinicaalemanadesantiago/",
+        "highlight": true
       },
       "davila": {
         "valor": null,
@@ -90,8 +93,9 @@
       "alemana": {
         "valor": null,
         "display": "PENDIENTE",
-        "handle": "@clinicaalemana",
-        "fuenteId": "ig-handles"
+        "handle": "@clinicaalemanadesantiago",
+        "fuenteId": "ig-alemana",
+        "url": "https://www.instagram.com/clinicaalemanadesantiago/"
       },
       "davila": {
         "valor": null,
@@ -122,9 +126,11 @@
         "url": "https://www.linkedin.com/company/clinica-las-condes-s.a/"
       },
       "alemana": {
-        "valor": 158240,
-        "display": "158 mil",
+        "valor": 160243,
+        "display": "160 mil",
         "fuenteId": "li-alemana",
+        "exacto": "160.243 seguidores",
+        "url": "https://www.linkedin.com/company/clinica-alemana-de-santiago/",
         "highlight": true
       },
       "davila": {
@@ -152,9 +158,11 @@
         "url": "https://www.youtube.com/user/clctelevision"
       },
       "alemana": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null
+        "valor": 2580,
+        "display": "2,6 mil",
+        "fuenteId": "yt-alemana",
+        "exacto": "2.58K subscribers",
+        "url": "https://www.youtube.com/channel/UCVTx7AHcRM8auQ68PLDwrjA"
       },
       "davila": {
         "valor": null,
@@ -245,7 +253,9 @@
       "alemana": {
         "valor": null,
         "display": "PENDIENTE",
-        "fuenteId": null
+        "handle": "@clinicaalemana",
+        "url": "https://x.com/clinicaalemana",
+        "fuenteId": "x-alemana"
       },
       "davila": {
         "valor": null,
@@ -264,12 +274,43 @@
         "url": "https://x.com/ClinicaIndisa",
         "fuenteId": "x-indisa"
       }
+    },
+    "Spotify": {
+      "las_condes": {
+        "valor": null,
+        "display": "Sin evid. / PEND.",
+        "fuenteId": null
+      },
+      "alemana": {
+        "valor": null,
+        "display": "Activo / PEND.",
+        "fuenteId": "spotify-alemana",
+        "url": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg",
+        "nota": "Perfil oficial Spotify; capturar seguidores / shows"
+      },
+      "davila": {
+        "valor": null,
+        "display": "Sin evid. / PEND.",
+        "fuenteId": null
+      },
+      "santa_maria": {
+        "valor": null,
+        "display": "Sin evid. / PEND.",
+        "fuenteId": null
+      },
+      "indisa": {
+        "valor": null,
+        "display": "Sin evid. / PEND.",
+        "fuenteId": null,
+        "nota": "Alemana sí tiene Spotify institucional; oportunidad de formato audio para Indisa"
+      }
     }
   },
   "lecturaRapida": [
-    "En LinkedIn (B2B/employer brand), Indisa (~60 mil) está por debajo de Alemana (~158 mil), Dávila (~111 mil), CLC (~106 mil) y Santa María (~80 mil).",
-    "En Facebook, CLC lidera el benchmark medido (~111 mil) frente a Indisa (~49 mil) — gap grande en alcance paciente/familia.",
-    "YouTube: CLC (canal clctelevision) ya tiene ~20 mil suscriptores; Indisa (IndisaCL) pendiente de captura.",
+    "En LinkedIn, Alemana lidera (~160 mil); Indisa (~60 mil) queda última del quinteto medido.",
+    "En Facebook, Alemana (~177 mil) > CLC (~111 mil) > Indisa (~49 mil) — gap grande en alcance paciente/familia.",
+    "YouTube: CLC (~20 mil) lidera vs Alemana (~2,6 mil); Indisa pendiente de captura.",
+    "Spotify: Alemana tiene perfil oficial; Indisa y el resto sin evidencia aún — formato audio como diferencial.",
     "Instagram: fila de seguidores + fila Engagement Rate (%). Ambos PENDIENTE hasta captura en app/Metricool (no inventar %).",
     "La columna Prospecto (azul) es Indisa; el resto son competidores de benchmark."
   ]

@@ -5,7 +5,7 @@
   "ambito": "RRSS orgánicas",
   "etapa": 1,
   "creado": "2026-07-20T21:33:46Z",
-  "updatedAt": "2026-07-20T21:55:00Z",
+  "updatedAt": "2026-07-20T21:58:00Z",
   "competidores": [
     "Clínica Las Condes",
     "Clínica Alemana",
@@ -21,6 +21,16 @@
       "x": "https://x.com/cliniclascondes",
       "youtube": "https://www.youtube.com/user/clctelevision",
       "linkedin": "https://www.linkedin.com/company/clinica-las-condes-s.a/"
+    },
+    "alemana": {
+      "nombre": "Clínica Alemana",
+      "web": "https://www.clinicaalemana.cl/",
+      "facebook": "https://www.facebook.com/Clinicaalemanadesantiago/",
+      "instagram": "https://www.instagram.com/clinicaalemanadesantiago/",
+      "x": "https://x.com/clinicaalemana",
+      "youtube": "https://www.youtube.com/channel/UCVTx7AHcRM8auQ68PLDwrjA",
+      "linkedin": "https://www.linkedin.com/company/clinica-alemana-de-santiago/",
+      "spotify": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg"
     }
   },
   "objetivo": "Evaluar si la comunicación orgánica está alineada entre canales, con objetivos claros y uso adecuado; benchmark vs 4 clínicas privadas de Santiago.",
@@ -32,12 +42,13 @@
     "conclusiones": "data/conclusiones.json"
   },
   "pendientes": [
-    "Instagram: seguidores + Engagement Rate (12 posts) Indisa, CLC y resto de competidores",
-    "Facebook: seguidores Alemana, Dávila, Santa María (CLC ya: ~111 mil)",
-    "YouTube: suscriptores IndisaCL + Alemana/Dávila/Santa María (CLC ya: ~20 mil)",
-    "X: seguidores @ClinicaIndisa, @cliniclascondes y resto",
+    "Instagram: seguidores + Engagement Rate (12 posts) Indisa, CLC, Alemana y resto",
+    "Facebook: seguidores Dávila y Santa María (Alemana ~177 mil · CLC ~111 mil)",
+    "YouTube: suscriptores IndisaCL + Dávila/Santa María (CLC ~20 mil · Alemana ~2,6 mil)",
+    "X: seguidores @ClinicaIndisa, @cliniclascondes, @clinicaalemana y resto",
+    "Spotify: capturar seguidores/shows Alemana; confirmar si Indisa/otros tienen perfil",
     "Muestreo 7–14 días: posts/semana y mix de formatos",
-    "Canales oficiales pendientes: Alemana, Dávila, Santa María"
+    "Canales oficiales pendientes: Dávila, Santa María"
   ],
   "canalesOficiales": {
     "web": "https://www.indisa.cl/",

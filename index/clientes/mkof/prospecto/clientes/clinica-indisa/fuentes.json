@@ -74,10 +74,66 @@
       "id": "li-alemana",
       "tipo": "linkedin_company",
       "entidad": "Clínica Alemana de Santiago",
-      "url": "https://cl.linkedin.com/company/clinica-alemana-de-santiago",
-      "dato": "158240 seguidores",
+      "url": "https://www.linkedin.com/company/clinica-alemana-de-santiago/",
+      "dato": "160243 seguidores",
       "fecha": "2026-07-20",
-      "metodo": "Agregador LinkedIn company (mismo día); validar en UI LinkedIn al presentar."
+      "metodo": "curl página pública company LinkedIn; URL oficial entregada por usuaria."
+    },
+    {
+      "id": "web-alemana",
+      "tipo": "sitio_web",
+      "entidad": "Clínica Alemana",
+      "url": "https://www.clinicaalemana.cl/",
+      "dato": "Sitio oficial",
+      "fecha": "2026-07-20",
+      "metodo": "URL entregada por usuaria."
+    },
+    {
+      "id": "fb-alemana",
+      "tipo": "facebook_page",
+      "entidad": "Clínica Alemana",
+      "url": "https://www.facebook.com/Clinicaalemanadesantiago/",
+      "dato": "177.382 likes (página oficial)",
+      "fecha": "2026-07-20",
+      "metodo": "curl página pública Facebook; URL entregada por usuaria."
+    },
+    {
+      "id": "ig-alemana",
+      "tipo": "instagram",
+      "entidad": "Clínica Alemana",
+      "url": "https://www.instagram.com/clinicaalemanadesantiago/",
+      "handle": "@clinicaalemanadesantiago",
+      "dato": "Perfil oficial; seguidores + ER pendientes de captura en app/Metricool",
+      "fecha": "2026-07-20",
+      "metodo": "URL entregada por usuaria (handle correcto: clinicaalemanadesantiago)."
+    },
+    {
+      "id": "x-alemana",
+      "tipo": "x_twitter",
+      "entidad": "Clínica Alemana",
+      "url": "https://x.com/clinicaalemana",
+      "handle": "@clinicaalemana",
+      "dato": "Perfil oficial X; conteo pendiente captura",
+      "fecha": "2026-07-20",
+      "metodo": "URL entregada por usuaria."
+    },
+    {
+      "id": "yt-alemana",
+      "tipo": "youtube",
+      "entidad": "Clínica Alemana",
+      "url": "https://www.youtube.com/channel/UCVTx7AHcRM8auQ68PLDwrjA",
+      "dato": "2.58K subscribers",
+      "fecha": "2026-07-20",
+      "metodo": "curl página pública YouTube channel; URL entregada por usuaria."
+    },
+    {
+      "id": "spotify-alemana",
+      "tipo": "spotify",
+      "entidad": "Clínica Alemana",
+      "url": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg",
+      "dato": "Perfil Spotify oficial; seguidores/shows pendientes captura",
+      "fecha": "2026-07-20",
+      "metodo": "URL entregada por usuaria."
     },
     {
       "id": "li-davila",
@@ -122,7 +178,7 @@
       "handles": {
         "indisa": "@clinicaindisacl",
         "las_condes": "@clinicalascondes",
-        "alemana": "@clinicaalemana",
+        "alemana": "@clinicaalemanadesantiago",
         "davila": "@clinicadavilaoficial",
         "santa_maria": "@clinicasantamariacl"
       },
@@ -185,6 +241,16 @@
       "x": "https://x.com/cliniclascondes",
       "youtube": "https://www.youtube.com/user/clctelevision",
       "linkedin": "https://www.linkedin.com/company/clinica-las-condes-s.a/"
+    },
+    "alemana": {
+      "nombre": "Clínica Alemana",
+      "web": "https://www.clinicaalemana.cl/",
+      "facebook": "https://www.facebook.com/Clinicaalemanadesantiago/",
+      "instagram": "https://www.instagram.com/clinicaalemanadesantiago/",
+      "x": "https://x.com/clinicaalemana",
+      "youtube": "https://www.youtube.com/channel/UCVTx7AHcRM8auQ68PLDwrjA",
+      "linkedin": "https://www.linkedin.com/company/clinica-alemana-de-santiago/",
+      "spotify": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg"
     }
   }
 }
