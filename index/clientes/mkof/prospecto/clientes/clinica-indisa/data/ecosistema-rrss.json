@@ -1,0 +1,193 @@
+{
+  "titulo": "ECOSISTEMA RRSS",
+  "fecha": "2026-07-20",
+  "notaPresentacion": "En lámina usar 'XX mil' solo donde falte captura. LinkedIn y FB Indisa ya tienen número.",
+  "plataformas": [
+    "Facebook",
+    "Instagram",
+    "LinkedIn",
+    "YouTube",
+    "TikTok"
+  ],
+  "columnas": [
+    {
+      "id": "las_condes",
+      "nombre": "Clínica Las Condes",
+      "rol": "competidor"
+    },
+    {
+      "id": "alemana",
+      "nombre": "Clínica Alemana",
+      "rol": "competidor"
+    },
+    {
+      "id": "davila",
+      "nombre": "Clínica Dávila",
+      "rol": "competidor"
+    },
+    {
+      "id": "santa_maria",
+      "nombre": "Clínica Santa María",
+      "rol": "competidor"
+    },
+    {
+      "id": "indisa",
+      "nombre": "Clínica Indisa",
+      "rol": "prospecto"
+    }
+  ],
+  "celdas": {
+    "Facebook": {
+      "las_condes": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null,
+        "nota": "Capturar likes/seguidores página oficial CLC"
+      },
+      "alemana": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      },
+      "davila": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null,
+        "nota": "FB referenciado en topdoctors: facebook.com/clinicadavila"
+      },
+      "santa_maria": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      },
+      "indisa": {
+        "valor": 49000,
+        "display": "49 mil",
+        "fuenteId": "fb-indisa",
+        "exacto": "49K (Facebook UI)"
+      }
+    },
+    "Instagram": {
+      "las_condes": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "handle": "@clinicalascondes",
+        "fuenteId": "ig-handles"
+      },
+      "alemana": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "handle": "@clinicaalemana",
+        "fuenteId": "ig-handles"
+      },
+      "davila": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "handle": "@clinicadavilaoficial",
+        "fuenteId": "ig-handles"
+      },
+      "santa_maria": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "handle": "@clinicasantamariacl",
+        "fuenteId": "ig-handles"
+      },
+      "indisa": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "handle": "@clinicaindisacl",
+        "fuenteId": "ig-handles",
+        "nota": "Perfil activo (educación salud, tipografías de especialidad); contar en app"
+      }
+    },
+    "LinkedIn": {
+      "las_condes": {
+        "valor": 106200,
+        "display": "106 mil",
+        "fuenteId": "li-clc"
+      },
+      "alemana": {
+        "valor": 158240,
+        "display": "158 mil",
+        "fuenteId": "li-alemana",
+        "highlight": true
+      },
+      "davila": {
+        "valor": 111335,
+        "display": "111 mil",
+        "fuenteId": "li-davila"
+      },
+      "santa_maria": {
+        "valor": 79673,
+        "display": "80 mil",
+        "fuenteId": "li-santamaria"
+      },
+      "indisa": {
+        "valor": 59868,
+        "display": "60 mil",
+        "fuenteId": "li-indisa"
+      }
+    },
+    "YouTube": {
+      "las_condes": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      },
+      "alemana": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      },
+      "davila": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null,
+        "nota": "Canal referenciado en topdoctors"
+      },
+      "santa_maria": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      },
+      "indisa": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      }
+    },
+    "TikTok": {
+      "las_condes": {
+        "valor": null,
+        "display": "Sin evid. / PEND.",
+        "fuenteId": null
+      },
+      "alemana": {
+        "valor": null,
+        "display": "Sin evid. / PEND.",
+        "fuenteId": null
+      },
+      "davila": {
+        "valor": null,
+        "display": "Sin evid. / PEND.",
+        "fuenteId": null
+      },
+      "santa_maria": {
+        "valor": null,
+        "display": "Sin evid. / PEND.",
+        "fuenteId": null
+      },
+      "indisa": {
+        "valor": null,
+        "display": "Sin evid. / PEND.",
+        "fuenteId": null,
+        "nota": "No se encontró perfil institucional claro en búsqueda inicial"
+      }
+    }
+  },
+  "lecturaRapida": [
+    "En LinkedIn (B2B/employer brand), Indisa (~60 mil) está por debajo de Alemana (~158 mil), Dávila (~111 mil), CLC (~106 mil) y Santa María (~80 mil).",
+    "En Facebook, Indisa ya muestra escala masiva (~49 mil) — canal paciente/familia activo.",
+    "Instagram es el canal crítico para comparar alineación de mensajes; falta captura de seguidores para cerrar la matriz visual."
+  ]
+}

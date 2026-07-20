@@ -1,0 +1,86 @@
+{
+  "prospecto": "Clínica Indisa",
+  "slug": "clinica-indisa",
+  "objetivoAnalisis": "Evaluar si la comunicación orgánica está alineada entre canales, con objetivos claros y uso adecuado; benchmark vs 4 clínicas privadas de Santiago.",
+  "consultaFecha": "2026-07-20",
+  "metodoGeneral": "Lectura de páginas oficiales de empresa en LinkedIn (seguidores públicos), Facebook page (seguidores públicos), observación cualitativa de perfiles IG/web. Instagram/YouTube/TikTok: handles verificados; conteos IG/YT/TikTok marcados PENDIENTE_CAPTURA hasta screenshot en app (APIs bloquean scrape).",
+  "fuentes": [
+    {
+      "id": "li-indisa",
+      "tipo": "linkedin_company",
+      "entidad": "Clínica Indisa",
+      "url": "https://cl.linkedin.com/company/cl-nica-indisa",
+      "dato": "59868 seguidores",
+      "fecha": "2026-07-20",
+      "metodo": "WebFetch página pública company LinkedIn; número mostrado en header."
+    },
+    {
+      "id": "li-clc",
+      "tipo": "linkedin_company",
+      "entidad": "Clínica Las Condes",
+      "url": "https://cl.linkedin.com/company/clinica-las-condes-s.a",
+      "dato": "106200 seguidores",
+      "fecha": "2026-07-20",
+      "metodo": "WebFetch página pública company LinkedIn."
+    },
+    {
+      "id": "li-alemana",
+      "tipo": "linkedin_company",
+      "entidad": "Clínica Alemana de Santiago",
+      "url": "https://cl.linkedin.com/company/clinica-alemana-de-santiago",
+      "dato": "158240 seguidores",
+      "fecha": "2026-07-20",
+      "metodo": "Agregador LinkedIn company (mismo día); validar en UI LinkedIn al presentar."
+    },
+    {
+      "id": "li-davila",
+      "tipo": "linkedin_company",
+      "entidad": "Clínica Dávila",
+      "url": "https://cl.linkedin.com/company/clinica-davila",
+      "dato": "111335 seguidores",
+      "fecha": "2026-07-20",
+      "metodo": "Agregador LinkedIn company (mismo día); validar en UI LinkedIn al presentar."
+    },
+    {
+      "id": "li-santamaria",
+      "tipo": "linkedin_company",
+      "entidad": "Clínica Santa María",
+      "url": "https://cl.linkedin.com/company/clinica-santa-maria",
+      "dato": "79673 seguidores",
+      "fecha": "2026-07-20",
+      "metodo": "Agregador LinkedIn company (mismo día); validar en UI LinkedIn al presentar."
+    },
+    {
+      "id": "fb-indisa",
+      "tipo": "facebook_page",
+      "entidad": "Clínica Indisa",
+      "url": "https://www.facebook.com/clinicaindisa",
+      "dato": "49K followers (página verificada)",
+      "fecha": "2026-07-20",
+      "metodo": "WebFetch página pública Facebook; texto '49K followers'."
+    },
+    {
+      "id": "web-indisa",
+      "tipo": "sitio_web",
+      "entidad": "Clínica Indisa",
+      "url": "https://indisa.cl/",
+      "dato": "Sitio institucional; sedes Providencia y Maipú; tagline 'Estamos Para Tu Cuidado'",
+      "fecha": "2026-07-20",
+      "metodo": "Revisión homepage."
+    },
+    {
+      "id": "ig-handles",
+      "tipo": "instagram_handles",
+      "dato": "Handles oficiales observados/referenciados",
+      "handles": {
+        "indisa": "@clinicaindisacl",
+        "las_condes": "@clinicalascondes",
+        "alemana": "@clinicaalemana",
+        "davila": "@clinicadavilaoficial",
+        "santa_maria": "@clinicasantamariacl"
+      },
+      "fecha": "2026-07-20",
+      "metodo": "Referencias en sitios oficiales / perfiles públicos; conteos IG pendientes de captura en app."
+    }
+  ]
+}

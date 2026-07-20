@@ -1,0 +1,46 @@
+{
+  "titulo": "CONCLUSIONES",
+  "fecha": "2026-07-20",
+  "cuadrantes": [
+    {
+      "id": "tl",
+      "titulo": "Fortalezas Indisa",
+      "bullets": [
+        "Marca con mensaje claro en web (cuidado + 2 sedes)",
+        "Facebook con escala (~49 mil) y página verificada",
+        "LinkedIn activo en prestigio médico / formación"
+      ]
+    },
+    {
+      "id": "tr",
+      "titulo": "Gaps vs competencia",
+      "bullets": [
+        "LinkedIn: menor audiencia que Alemana, Dávila y CLC",
+        "Matriz IG/YT incompleta hasta captura",
+        "TikTok sin evidencia institucional clara"
+      ]
+    },
+    {
+      "id": "bl",
+      "titulo": "Riesgos de comunicación",
+      "bullets": [
+        "Canales con lógicas distintas sin marco de objetivos → percepción de falta de alineación",
+        "Dependencia de CTAs de agenda sin narrativa de diferenciación clínica"
+      ]
+    },
+    {
+      "id": "br",
+      "titulo": "Apuesta orgánica sugerida",
+      "bullets": [
+        "Framework de objetivos por canal + KPI",
+        "Serie educativa IG/Reels + línea LinkedIn de liderazgo",
+        "Completar métricas IG/YT con capturas fechadas"
+      ]
+    }
+  ],
+  "sintesisCentral": [
+    "Indisa comunica, pero el uso 'adecuado' depende de explicitar objetivos por canal.",
+    "En LinkedIn ya hay benchmark duro: Indisa no lidera; hay espacio de crecimiento editorial.",
+    "Siguiente paso: capturas IG (5 perfiles) + muestreo 14 días de formatos/frecuencia."
+  ]
+}

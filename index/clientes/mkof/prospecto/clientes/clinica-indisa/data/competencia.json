@@ -1,0 +1,33 @@
+{
+  "titulo": "ECOSISTEMA DE RRSS COMPETENCIA — foco Indisa",
+  "fecha": "2026-07-20",
+  "sujeto": "Clínica Indisa",
+  "formatosObservados": [
+    "Carruseles educativos (procedimientos, tipologías clínicas)",
+    "Reels / clips cortos de especialistas",
+    "Posts de agenda (reservar hora / link in bio)",
+    "Contenido de alianzas y hitos institucionales (más fuerte en LinkedIn)",
+    "IG Live histórico (educación COVID / especialidades) — formato disponible pero a confirmar frecuencia actual"
+  ],
+  "tematicas": [
+    "Educación en salud (procedimientos, síntomas, especialidades)",
+    "Convocatoria a agendar / acceso (Providencia y Maipú)",
+    "Cuerpo médico y prestigio profesional",
+    "Seguros / acceso financiero (contenido puntual observado en Threads/IG)",
+    "Employer brand y liderazgo clínico (LinkedIn: enfermería, reconocimientos médicos)"
+  ],
+  "periodicidad": {
+    "estimacion": "Presencia continua en IG/FB con piezas educativas + CTAs de agenda; LinkedIn con posts institucionales varias veces al mes",
+    "nivel": "Activa — a cuantificar posts/semana con captura 7–14 días",
+    "nota": "No inventar 'x a x posts/semana' hasta muestreo fechado en Metricool/capturas."
+  },
+  "alineacionPreliminar": {
+    "mensajeParaguas": "Tagline web 'Estamos Para Tu Cuidado' + sedes Maipú/Providencia",
+    "hipotesis": "Canal paciente (IG/FB) privilegia educación + agenda; LinkedIn privilegia prestigio médico/employer. Hay coherencia de marca pero posible gap de objetivos explícitos entre B2C y B2B.",
+    "preguntasParaCliente": [
+      "¿Existe un documento de objetivos por canal (awareness, agenda, reputación, atracción de talento)?",
+      "¿Quién aprueba el calendario y con qué KPIs?",
+      "¿TikTok/YouTube están deliberadamente fuera de alcance o son deuda pendiente?"
+    ]
+  }
+}

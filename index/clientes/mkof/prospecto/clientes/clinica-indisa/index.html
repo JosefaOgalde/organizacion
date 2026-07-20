@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clínica Indisa · Prospecto RRSS · MKOF</title>
+  <style>
+    :root {
+      --bg: #f4f7f5;
+      --ink: #1e3d32;
+      --muted: #5a7368;
+      --card: #fff;
+      --line: #d5e3d9;
+      --accent: #2f7a5c;
+      --beige: #e8f0eb;
+      --warn: #8a5a00;
+      --ok: #1a6b4a;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; }
+    header {
+      padding: 1.25rem 1.5rem; background: #fff; border-bottom: 1px solid var(--line);
+      display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; justify-content: space-between; align-items: baseline;
+    }
+    header h1 { margin: 0; font-size: 1.35rem; }
+    header p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    nav a { color: var(--accent); font-weight: 600; text-decoration: none; margin-right: 1rem; }
+    main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+    .aviso {
+      background: var(--beige); border-left: 4px solid var(--accent);
+      padding: 0.9rem 1rem; border-radius: 0 10px 10px 0; margin-bottom: 1.25rem;
+    }
+    h2 { font-size: 1.1rem; margin: 1.75rem 0 0.75rem; }
+    .table-wrap { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td { padding: 0.65rem 0.75rem; border-bottom: 1px solid var(--line); text-align: left; }
+    th { background: #eef5f1; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    td.num { font-weight: 700; }
+    td.pend { color: var(--warn); font-weight: 600; }
+    td.hi { background: #dff3ea; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1rem; }
+    .card h3 { margin: 0 0 0.5rem; font-size: 0.95rem; }
+    .card ol, .card ul { margin: 0; padding-left: 1.1rem; font-size: 0.88rem; color: var(--muted); }
+    .pill { display: inline-block; background: var(--beige); color: var(--ok); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; }
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+    code { font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Clínica Indisa</h1>
+      <p>Prospecto · RRSS orgánicas · MKOF · etapa 1</p>
+    </div>
+    <nav>
+      <a href="../../?disco=1">← Hub prospectos</a>
+      <a href="../../../?disco=1">Landing MKOF</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="aviso" id="objetivo"></div>
+
+    <h2>Ecosistema RRSS <span class="pill">LinkedIn + FB medidos</span></h2>
+    <div class="table-wrap">
+      <table id="tabla-eco">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <ul id="lectura"></ul>
+
+    <h2>Competencia — Indisa</h2>
+    <div class="grid" id="comp-grid"></div>
+
+    <h2>Oportunidades</h2>
+    <div class="grid" id="ops"></div>
+
+    <h2>Conclusiones</h2>
+    <div class="grid" id="conc"></div>
+    <div class="card" style="margin-top:1rem" id="sintesis"></div>
+
+    <h2>Pendientes de captura</h2>
+    <ul id="pendientes"></ul>
+  </main>
+
+  <footer>Data con fundamentos · ver <code>fuentes.json</code></footer>
+
+  <script>
+    const base = './';
+    Promise.all([
+      fetch(base + 'meta.json').then((r) => r.json()),
+      fetch(base + 'data/ecosistema-rrss.json').then((r) => r.json()),
+      fetch(base + 'data/competencia.json').then((r) => r.json()),
+      fetch(base + 'data/oportunidades.json').then((r) => r.json()),
+      fetch(base + 'data/conclusiones.json').then((r) => r.json()),
+    ]).then(([meta, eco, comp, ops, conc]) => {
+      document.getElementById('objetivo').innerHTML =
+        `<strong>Objetivo</strong><br>${meta.objetivo}<br><small>Competidores: ${meta.competidores.join(' · ')}</small>`;
+
+      const thead = document.querySelector('#tabla-eco thead');
+      const tbody = document.querySelector('#tabla-eco tbody');
+      thead.innerHTML = `<tr><th>Plataforma</th>${eco.columnas.map((c) => `<th>${c.nombre}</th>`).join('')}</tr>`;
+      tbody.innerHTML = eco.plataformas.map((p) => {
+        const row = eco.celdas[p];
+        return `<tr><th>${p}</th>${eco.columnas.map((c) => {
+          const cell = row[c.id];
+          const cls = cell.display === 'PENDIENTE' || String(cell.display).includes('PEND')
+            ? 'pend'
+            : (cell.highlight ? 'num hi' : 'num');
+          const tip = cell.handle ? ` title="${cell.handle}"` : '';
+          return `<td class="${cls}"${tip}>${cell.display}</td>`;
+        }).join('')}</tr>`;
+      }).join('');
+
+      document.getElementById('lectura').innerHTML = (eco.lecturaRapida || [])
+        .map((t) => `<li>${t}</li>`).join('');
+
+      document.getElementById('comp-grid').innerHTML = `
+        <article class="card"><h3>Formatos</h3><ul>${comp.formatosObservados.map((x) => `<li>${x}</li>`).join('')}</ul></article>
+        <article class="card"><h3>Temáticas</h3><ul>${comp.tematicas.map((x) => `<li>${x}</li>`).join('')}</ul></article>
+        <article class="card"><h3>Periodicidad</h3><p style="margin:0;font-size:0.88rem;color:var(--muted)">${comp.periodicidad.estimacion}<br><em>${comp.periodicidad.nota}</em></p></article>
+        <article class="card"><h3>Alineación (hipótesis)</h3><p style="margin:0 0 0.5rem;font-size:0.88rem;color:var(--muted)">${comp.alineacionPreliminar.hipotesis}</p>
+          <ul>${comp.alineacionPreliminar.preguntasParaCliente.map((x) => `<li>${x}</li>`).join('')}</ul></article>`;
+
+      document.getElementById('ops').innerHTML = ops.items.map((o) =>
+        `<article class="card"><h3>${o.n} · ${o.titulo}</h3><p style="margin:0;font-size:0.88rem;color:var(--muted)">${o.fundamento}</p></article>`
+      ).join('');
+
+      document.getElementById('conc').innerHTML = conc.cuadrantes.map((q) =>
+        `<article class="card"><h3>${q.titulo}</h3><ul>${q.bullets.map((b) => `<li>${b}</li>`).join('')}</ul></article>`
+      ).join('');
+
+      document.getElementById('sintesis').innerHTML =
+        `<h3>Síntesis</h3><ul>${conc.sintesisCentral.map((s) => `<li>${s}</li>`).join('')}</ul>`;
+
+      document.getElementById('pendientes').innerHTML = (meta.pendientes || [])
+        .map((p) => `<li>${p}</li>`).join('');
+    }).catch((e) => {
+      document.querySelector('main').innerHTML = `<p class="aviso">No se pudo cargar data (${e.message}). ¿Servidor unificado activo?</p>`;
+    });
+  </script>
+</body>
+</html>

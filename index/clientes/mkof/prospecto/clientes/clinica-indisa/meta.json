@@ -1,0 +1,29 @@
+{
+  "nombre": "Clínica Indisa",
+  "slug": "clinica-indisa",
+  "clienteAgencia": "MKOF",
+  "ambito": "RRSS orgánicas",
+  "etapa": 1,
+  "creado": "2026-07-20T21:33:46Z",
+  "updatedAt": "2026-07-20T21:33:46Z",
+  "competidores": [
+    "Clínica Las Condes",
+    "Clínica Alemana",
+    "Clínica Dávila",
+    "Clínica Santa María"
+  ],
+  "objetivo": "Evaluar si la comunicación orgánica está alineada entre canales, con objetivos claros y uso adecuado; benchmark vs 4 clínicas privadas de Santiago.",
+  "archivos": {
+    "fuentes": "fuentes.json",
+    "ecosistema": "data/ecosistema-rrss.json",
+    "competencia": "data/competencia.json",
+    "oportunidades": "data/oportunidades.json",
+    "conclusiones": "data/conclusiones.json"
+  },
+  "pendientes": [
+    "Captura seguidores Instagram (5 perfiles)",
+    "Captura Facebook competidores",
+    "Captura YouTube (suscriptores) si hay canal oficial",
+    "Muestreo 7–14 días: posts/semana y mix de formatos"
+  ]
+}

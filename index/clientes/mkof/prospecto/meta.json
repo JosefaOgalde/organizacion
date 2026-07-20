@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-20T20:35:00.000Z",
+  "updatedAt": "2026-07-20T21:34:21Z",
   "ambito": "Redes sociales orgánicas",
   "clienteAgencia": "MKOF",
   "etapaActual": 1,
   "etapaNombre": "Análisis patrón (ecosistema + competencia + oportunidades + conclusiones)",
-  "esperandoNombreProspecto": true,
+  "esperandoNombreProspecto": false,
   "patrones": [
     {
       "id": "01-ecosistema-rrss",
@@ -36,6 +36,20 @@
       "descripcion": "Cuatro cuadrantes + centro CONCLUSIONES."
     }
   ],
-  "prospectos": [],
-  "reglaData": "Todo número debe citar fuente, fecha y método en clientes/<slug>/fuentes.json"
+  "prospectos": [
+    {
+      "nombre": "Clínica Indisa",
+      "slug": "clinica-indisa",
+      "estado": "Etapa 1 · LinkedIn+FB medidos · IG pendiente captura",
+      "href": "clientes/clinica-indisa/?disco=1",
+      "competidores": [
+        "Clínica Las Condes",
+        "Clínica Alemana",
+        "Clínica Dávila",
+        "Clínica Santa María"
+      ]
+    }
+  ],
+  "reglaData": "Todo número debe citar fuente, fecha y método en clientes/<slug>/fuentes.json",
+  "nota": "Prospecto activo: Clínica Indisa (etapa 1)."
 }
