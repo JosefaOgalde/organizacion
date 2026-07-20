@@ -1,8 +1,8 @@
 # Resumen — MOVA · Auditoría técnica mova_auth
 
-**Última actualización:** 19 jul 2026  
+**Última actualización:** 20 jul 2026  
 **Cliente:** MKOF · **Proyecto:** MOVA  
-**Rama:** `cursor/mova-auditoria-etapa2-d3-d5-459d`  
+**Rama:** `cursor/mova-nodo-mysql-ppt-4e97`  
 **Presentación:** [`mova-etapa2-presentacion.html`](../../mkof/mova-etapa2-presentacion.html) · Guion [`docs/mova/GUION-PRESENTACION-ETAPA2.md`](../../../../docs/mova/GUION-PRESENTACION-ETAPA2.md)
 
 ---
@@ -19,7 +19,7 @@ Quick wins: n8n en GitHub (**hecho**) · Cloudflare explicado · espejo cPanel l
 | Día | Entregable | Estado |
 |-----|------------|--------|
 | D1 | Inventario módulos M | Hecho |
-| D2 | Reglas mova_auth | Hecho |
+| D2 | Reglas mova_auth | Hecho (docs) · falta firma equipo |
 | D3 | 6 archivos núcleo + gap | Hecho |
 | D4 | Login + cookie HttpOnly | Hecho |
 | D5 | Matriz + sandbox ERP + cierre | Hecho |
@@ -32,7 +32,16 @@ Quick wins: n8n en GitHub (**hecho**) · Cloudflare explicado · espejo cPanel l
 |------|--------|
 | 1.1 Respaldo n8n → GitHub | **Hecho** — flujos en repo GitHub |
 | 1.2 Cloudflare delante de GoDaddy | **Explicación + conclusión listas** · activación pendiente equipo |
-| Espejo cPanel → repo | **Guía + carpeta `espejo-cpanel/`** · falta pegar ZIPs desde cPanel |
+| Espejo cPanel → repo | **Guía entregada** · esperando ZIP `mova_auth/` |
+| 3.2 Nodo MySQL en n8n | **PPT/guía entregada** · esperando implementación |
+
+---
+
+## Hoy (20 jul) — cierre administrativo
+
+- [x] PPT nodo MySQL entregada a encargado n8n
+- [x] Indicaciones respaldo cPanel dadas a encargado ZIP
+- [x] Hoja de seguimiento + textos para pegar: [`seguimiento-admin.html`](../../mkof/seguimiento-admin.html)
 
 ---
 
@@ -44,11 +53,11 @@ Sí como **escudo rápido** (HTTPS + WAF) sin mudar hosting; no es el VPS del a�
 
 ## Pendiente humano
 
-- [ ] Pegar ZIP `mova_auth/` (y opc. `mova/erp/`) en `espejo-cpanel/`
-- [ ] Marcar `mkof/03`–`mkof/05` en organizador
+- [ ] ZIP `mova_auth/` en `espejo-cpanel/` (encargado respaldo)
+- [ ] Nodo MySQL con Test OK (encargado n8n)
+- [ ] Marcar `mkof/03`–`mkof/05` en organizador (PC local)
 - [ ] Firma/correo reglas D2
 - [ ] Activar Cloudflare cuando el equipo decida
-- [ ] Presentar deck etapa 2 (~20 min)
 
 ## Siguiente etapa (implementación)
 
@@ -61,6 +70,8 @@ Sí como **escudo rápido** (HTTPS + WAF) sin mudar hosting; no es el VPS del a�
 
 | Qué | Path |
 |-----|------|
+| Seguimiento admin | `/index/clientes/mkof/seguimiento-admin.html` |
+| Nodo MySQL | `/index/clientes/mkof/mysql-nodo-n8n.html` |
 | Presentación | `/index/clientes/mkof/mova-etapa2-presentacion.html` |
 | Cloudflare | `/index/clientes/mkof/cloudflare-mova.html` |
 | cPanel espejo | `/index/clientes/mkof/cpanel-espejo.html` |

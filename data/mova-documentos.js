@@ -164,6 +164,15 @@ window.MOVA_DOCUMENTOS = {
       titulo: 'Infra · Cloudflare + espejo cPanel',
       items: [
         {
+          id: 'seguimiento-admin',
+          titulo: 'Seguimiento administrativo (20 jul)',
+          descripcion: 'Hecho hoy · esperando n8n/ZIP/firma D2 · textos listos para pegar',
+          hito: 'Ops',
+          fecha: '20 jul 2026',
+          verHtml: 'seguimiento-admin.html',
+          editar: 'index/clientes/mkof/seguimiento-admin.html'
+        },
+        {
           id: 'cloudflare-facil',
           titulo: 'Cloudflare — ¿para qué y es necesario?',
           descripcion: 'Escudo delante de GoDaddy · conclusión fácil · checklist activación',
