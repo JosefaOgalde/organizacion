@@ -443,6 +443,17 @@
       "metodo": "Screenshots video-a-video; n=5 indicativo."
     },
     {
+      "id": "tt-er-davila-5",
+      "tipo": "tiktok_engagement",
+      "entidad": "Red Dávila",
+      "handle": "@reddavilaoficial",
+      "dato": "ER 6,00% — 5 videos · promedio 4.107 interacciones · base 68.400 seguidores",
+      "fecha": "2026-07-20",
+      "detalle": "data/tt-er-davila-muestra.json",
+      "formula": "((likes+comentarios+guardados)/N)/seguidores×100",
+      "metodo": "Screenshots video-a-video; n=5; incluye 3 piezas virales."
+    },
+    {
       "id": "x-indisa",
       "tipo": "x_twitter",
       "entidad": "Clínica Indisa",

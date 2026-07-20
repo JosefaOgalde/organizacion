@@ -1,7 +1,7 @@
 {
   "titulo": "ECOSISTEMA RRSS",
   "fecha": "2026-07-20",
-  "notaPresentacion": "Columna Clínica Indisa = PROSPECTO (fondo distinto). Instagram incluye fila de Engagement Rate.",
+  "notaPresentacion": "Columna Clínica Indisa = PROSPECTO (fondo distinto). Filas ER: Instagram y TikTok (muestra de videos).",
   "plataformas": [
     "Facebook",
     "Instagram",
@@ -9,6 +9,7 @@
     "LinkedIn",
     "YouTube",
     "TikTok",
+    "TikTok ER",
     "X (Twitter)",
     "Spotify"
   ],
@@ -46,7 +47,7 @@
       "etiqueta": "Competidor"
     }
   ],
-  "engagementRateNota": "Instagram ER = promedio ((likes+comentarios+guardados)÷seguidores×100) sobre 12 posts recientes. Celdas PENDIENTE hasta captura Metricool o muestreo manual.",
+  "engagementRateNota": "IG ER = (likes+comentarios)/seguidores (muestra posts). TikTok ER = (likes+comentarios+guardados)/seguidores (muestra videos; sin shares/views públicos en captura).",
   "celdas": {
     "Facebook": {
       "las_condes": {
@@ -256,6 +257,50 @@
         "nota": "Screenshot 2026-07-20: cuenta creada pero sin contenido/seguidores (candado en perfil)."
       }
     },
+    "TikTok ER": {
+      "las_condes": {
+        "valor": null,
+        "display": "Sin cuenta",
+        "fuenteId": "tt-clc"
+      },
+      "alemana": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null,
+        "nota": "Muestra de 3–5 videos"
+      },
+      "davila": {
+        "valor": 6.0047,
+        "display": "6,00%",
+        "fuenteId": "tt-er-davila-5",
+        "formula": "((Σ likes+comentarios+guardados)/N)/seguidores×100",
+        "nPosts": 5,
+        "seguidoresBase": 68400,
+        "interaccionesPromedio": 4107.2,
+        "sumaInteracciones": 20536,
+        "detalleArchivo": "data/tt-er-davila-muestra.json",
+        "nota": "5 videos. 3 virales (2.3k–8.1k likes) disparan el %. Sin ellos ~0,13%. Incluye guardados.",
+        "highlight": true
+      },
+      "santa_maria": {
+        "valor": 0.6371,
+        "display": "0,64%",
+        "fuenteId": "tt-er-santamaria-5",
+        "formula": "((Σ likes+comentarios+guardados)/N)/seguidores×100",
+        "nPosts": 5,
+        "seguidoresBase": 7534,
+        "interaccionesPromedio": 48,
+        "sumaInteracciones": 240,
+        "detalleArchivo": "data/tt-er-santamaria-muestra.json",
+        "nota": "5 videos. Incluye guardados (visibles en web). Sin shares ni views en captura. Muestra indicativa (n<10)."
+      },
+      "indisa": {
+        "valor": null,
+        "display": "N/A",
+        "fuenteId": "tt-indisa",
+        "nota": "Cuenta vacía — no aplica ER"
+      }
+    },
     "Instagram ER": {
       "las_condes": {
         "valor": 0.9879,
@@ -400,7 +445,7 @@
     "YouTube: Indisa (~25 mil) lidera el quinteto > CLC (~20) > Santa María (~7) > Alemana (~2,6) > Dávila (~1,9).",
     "X: Alemana ~16 mil > Indisa ~12 mil ≈ Santa María ~12 mil > Dávila ~4 mil; CLC sin cuenta.",
     "TikTok: Dávila ~68 mil > Alemana ~50 mil > Santa María ~7,5 mil > Indisa vacía (0); CLC sin cuenta.",
-    "TikTok ER (indicativo n=5): Santa María 0,64% — faltan muestras Alemana/Dávila.",
+    "TikTok ER (n=5): Dávila 6,00% (sesgado por virales) >> Santa María 0,64%. Falta muestra Alemana.",
     "En IG el prospecto Indisa está en el pelotón medio-bajo; el gap crítico es vs Alemana (~3×).",
     "Instagram ER completo: CLC 0,99% > Santa María 0,73% > Dávila 0,50% > Indisa 0,19% > Alemana 0,14%. Indisa 4.ª en engagement relativo.",
     "Columna Prospecto (azul) = Indisa; el resto = benchmark."
