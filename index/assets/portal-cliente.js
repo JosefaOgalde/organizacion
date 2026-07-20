@@ -147,6 +147,8 @@
   }
 
   async function cargarDatos() {
+    const forzarDisco = new URLSearchParams(location.search || '').get('disco') === '1';
+
     let live = null;
     if (typeof window.fetchOrganizacionLive === 'function') {
       try {
@@ -164,11 +166,21 @@
     }
 
     if (live && Array.isArray(live.clientes) && Array.isArray(live.tareas)) {
-      const preferLive =
-        typeof window.organizacionLiveEsMasReciente === 'function'
-          ? window.organizacionLiveEsMasReciente(local, live)
-          : !local;
-      datos = preferLive || !local ? live : local;
+      // ?disco=1 → siempre datos del disco (ignora caché del navegador)
+      if (forzarDisco) {
+        datos = live;
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(live));
+        } catch {
+          /* ignore quota */
+        }
+      } else {
+        const preferLive =
+          typeof window.organizacionLiveEsMasReciente === 'function'
+            ? window.organizacionLiveEsMasReciente(local, live)
+            : !local;
+        datos = preferLive || !local ? live : local;
+      }
     } else if (local && Array.isArray(local.clientes)) {
       datos = local;
     } else {

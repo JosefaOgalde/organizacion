@@ -21,4 +21,4 @@ if errorlevel 1 (
 echo  Asegurando cliente Impresoreando en el live...
 node scripts/asegurar-impresoreando-live.js
 
-call "%~dp0ABRIR-ORGANIZADOR.bat"
+call "%~dp0ABRIR-LARAVEL.bat"
