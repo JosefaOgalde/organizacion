@@ -201,6 +201,16 @@
             <strong>Descargar al repo (espejo)</strong>
             <span class="mkof-guia-card__desc">ZIP → espejo-cpanel/ · sin secretos</span>
           </a>
+          <a href="../MKOF/MOVA/documentos/ver.html?id=repos-externos" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Git · Externo</span>
+            <strong>mova-repo (Juan) registrado</strong>
+            <span class="mkof-guia-card__desc">Respaldos PHP/n8n · colaboradora</span>
+          </a>
+          <a href="../MKOF/MOVA/documentos/ver.html?id=seguimiento-admin" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Hoy · Admin</span>
+            <strong>Seguimiento + textos para pegar</strong>
+            <span class="mkof-guia-card__desc">MySQL · ZIP cPanel · firma D2</span>
+          </a>
           <a href="../MKOF/MOVA/documentos/ver.html?id=mysql-nodo-n8n" class="mkof-guia-card mkof-guia-card--activa">
             <span class="mkof-guia-card__paso">Hito 3.2 · Nodo SQL</span>
             <strong>Agregar nodo MySQL en n8n</strong>
