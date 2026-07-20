@@ -1,0 +1,50 @@
+Hola a todos. Bienvenidos a la presentación de la segunda etapa de la auditoría MOVA, del proyecto MKOF, en acme chile punto cl. Esta charla dura unos veinte minutos. Vamos a recorrer cuatro bloques: lo que acordamos en la etapa uno, Cloudflare, todo lo que hicimos en la etapa dos — que es la mayor parte del tiempo —, y los siguientes pasos.
+
+Empezamos. Slide de portada. Hoy cerramos el diseño del login unificado. Dejamos claro qué es Cloudflare y para qué sirve. Y dejamos el camino del respaldo y del espejo de cPanel. La etapa dos significa documentar y acordar, sin tocar código en el servidor.
+
+Agenda. Veinte minutos en total. Los primeros tres minutos: lo acordado en etapa uno. Del minuto tres al seis: Cloudflare. Del minuto seis al diecisiete: lo realizado en etapa dos — eso son once minutos, más de la mitad de la presentación. Y del diecisiete al veinte: siguientes pasos y cierre. Quiero que quede claro: la mayor parte del tiempo es lo que hicimos este mes.
+
+Etapa uno. Qué se acordó. En el playbook post auditoría, el cliente dejó un veredicto. Respaldo de n ocho n hacia Git: correcto, prioridad inmediata. Login unificado en mova underscore auth: lo más valioso, prioridad alta. MySQL como fuente: válido, pero después. Migrar de GoDaddy ya: sobredimensionado, se difiere. VPS o cloud: es el salto real, pero en unos doce meses. La regla de oro de la etapa uno fue: no migrar dos veces. Cloudflare puede ir delante de GoDaddy hasta que exista el servidor real.
+
+Orden de ejecución acordado, sin ambigüedad. Uno: respaldo de n ocho n a GitHub. Estado: hecho. Los flujos ya están en el repositorio. Dos: Cloudflare delante de GoDaddy. La explicación está lista; la activación queda pendiente del equipo. Tres: centralizar el login en mova underscore auth. El diseño de etapa dos está listo; implementar viene después. Cuatro: sesión del lado del servidor con cookies. También diseñado en etapa dos. El resto — MySQL, Sheets, rutinas, VPS — más adelante.
+
+Pasamos a Cloudflare. ¿Qué es, en lenguaje de reunión? Un escudo en la puerta de internet. Con Cloudflare, el usuario llega al escudo y después a GoDaddy. Sin Cloudflare, el usuario llega directo a GoDaddy. Beneficios concretos. Primero, HTTPS: candado y tráfico encriptado. Segundo, WAF: filtro de ataques y bots. Tercero, no hay que mudar: los archivos siguen en GoDaddy. Cuarto, es barato: el plan free alcanza para empezar. Lo que Cloudflare no hace: no arregla el login, no es el VPS del año, y no reemplaza el trabajo de implementación de mova underscore auth.
+
+¿Es necesario Cloudflare? La conclusión del equipo es sí, como quick win. No es un proyecto enorme. Es mejor que mudarse ahora a otro hosting solo por seguridad. La frase para llevarse: escudo delante de GoDaddy, HTTPS más filtro, sin tocar código ni mudar hosting. Cuando decidan activarlo, hay una guía fácil en cloudflare guion mova, en el portal.
+
+Entramos a la etapa dos. Definición: auditar y diseñar el login unificado, sin tocar el servidor. Los días de trabajo fueron D1 a D5. D1 inventario. D2 reglas. D3 núcleo. D4 login y cookie. D5 validación por módulo, sandbox y cierre. Además, quick wins: n ocho n en GitHub, y la guía para bajar cPanel al repositorio.
+
+Mapa del mes. D1 a D5: hechos. N ocho n en GitHub: hecho. Guía espejo cPanel: lista; falta que el equipo pegue los ZIPs. Cloudflare: explicado; activación pendiente. Este conjunto es el entregable de la etapa dos. No es código en producción. Es el plano de obra firmable.
+
+D1. El hallazgo principal: el login está fragmentado. Hay al menos cuatro puertas. Una: rutas bajo mova con Google OAuth, que no pasan por mova underscore auth. Dos: mova underscore auth con correo y clave, pero parcial, y no controla todo el panel. Tres: el ERP, con una contraseña local aparte. Cuatro: AXON, sin login visible en el recorrido. El problema real, en palabras del cliente, no es que falte validación de backend. El problema es unificar la entrada. Demasiadas puertas distintas.
+
+D2. La regla de oro acordada. Si no pasó por mova underscore auth, no entra. Analogía: un solo recepcionista para el edificio, y un guardia en cada oficina. El guardia es guard punto php. Toda app protegida debe consultar esa validación. Hay una excepción controlada en la ruta de documentos. Pendiente humano: firma o correo formal del equipo técnico, si aún no está.
+
+D3. El núcleo: qué debe existir. Mapeamos los archivos del corazón de mova underscore auth. Sabemos qué hay hoy y qué falta. De forma clara, faltan session, validate y guard. Eso no es un reproche: es el gap que hay que cerrar en implementación. Ya no hay misterio. La siguiente etapa crea exactamente esas piezas. También hay extras como auth, google login y panel; se evalúan al implementar, sin improvisar.
+
+D4. Login único y cookie. El flujo en cinco pasos. El usuario se autentica. El servidor crea la sesión. Se entrega una cookie HttpOnly y Secure. Las aplicaciones validan contra mova underscore auth. Y el acceso queda unificado. Sin JWT suelto en el navegador. Google puede seguir existiendo como forma de entrar, pero termina en la misma sesión PHP. Eso evita que cada módulo invente su propia memoria de quién eres.
+
+D5. Validación por módulo y sandbox. No migramos todo el mismo día. El orden propuesto empieza por el ERP como sandbox, porque es un perímetro claro para probar. Validate punto php responde JSON, doscientos o cuatrocientos uno. Guard punto php redirige si no hay sesión. Criterios de cierre de D1 a D5 quedan documentados en el portal. Cuando el sandbox del ERP funciona, se avanza al resto con menos riesgo.
+
+Quick win: n ocho n en GitHub. Confirmamos que los flujos ya están en el repositorio. El riesgo de perder automatizaciones bajó fuerte. Antes, si se rompía el servidor o la instancia, el conocimiento vivía en un solo lugar frágil. Ahora está versionado. Mejora opcional después: backup semanal automatizado, de la API de n ocho n hacia un commit. No es bloqueante para cerrar etapa dos.
+
+Cómo bajar cPanel al repositorio. La idea es un espejo de lectura para el equipo. Se bajan ZIPs desde cPanel, se descomprimen en la carpeta espejo guion cPanel, empezando por mova underscore auth, y después el ERP. No se sube config punto php ni secretos. No cambia producción. Con eso, quien implemente trabaja sobre código versionado, no sobre sorpresas del servidor en caliente.
+
+Qué no hicimos, a propósito. No tocamos el servidor. No reescribimos módulos en vivo. No migrarnos de hosting en esta etapa. Etapa dos es el plano de obra firmable. La etapa siguiente es construir.
+
+Dónde ver todo. En el portal de documentos MOVA. Ahí están D1 a D5, cada uno con su página. Cloudflare tiene su guía fácil. El espejo de cPanel tiene su guía. GitHub y n ocho n tienen checklists. El Gantt está en la landing de MKOF. Y el guion escrito está en el archivo GUION PRESENTACION ETAPA DOS.
+
+Siguientes pasos, para asignar dueños en la sala. Uno: firma o correo de las reglas D2. Dos: bajar el espejo de mova underscore auth al repositorio. Tres: activar Cloudflare cuando el equipo lo decida. Cuatro: implementar los tres PHP que faltan — session, validate y guard. Cinco: sandbox del ERP, y solo después el resto de módulos.
+
+Cierre. Diseño cerrado. Listos para construir. Segunda etapa de la auditoría MOVA: documentada, acordada, y visible en el portal. Gracias por el tiempo. Abrimos preguntas. Si preguntan cuándo se sube al servidor: eso es la siguiente etapa; hoy cerramos el plano. Si piden detalle de cookie, abrimos el documento D4 después, sin improvisar código en vivo. Gracias.
+
+
+Recapitulemos una vez más, para quien se sume tarde o quiera el mensaje en una sola pasada.
+
+Etapa uno: no migrar dos veces. N ocho n a GitHub ya. Login unificado es lo más valioso. VPS en un año. Cloudflare como escudo, no como mudanza.
+
+Etapa dos: documentar sin tocar servidor. D1 fragmentación de puertas. D2 regla de oro: si no pasó por mova underscore auth, no entra. D3 gap de tres archivos. D4 cookie HttpOnly Secure y una sola sesión. D5 sandbox ERP primero. Espejo cPanel sin secretos. Todo visible en el portal de documentos.
+
+Lo que pedimos al equipo humano ahora: firmar D2, bajar el espejo, decidir Cloudflare, y preparar la implementación de session, validate y guard. Con eso empieza la construcción.
+
+Cierro otra vez. Plano listo. Gracias. Preguntas.
