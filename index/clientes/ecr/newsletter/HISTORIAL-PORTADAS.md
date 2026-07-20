@@ -2,6 +2,12 @@
 
 Actualizado: 2026-07-20
 
+## NL 1 ago — prompts Midjourney v4 (2026-07-20)
+
+- Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
+- Mundos: **O** · **A** · **F**
+- Archivo: [portadas-guardadas/NL1-ago-tecnologia-sin-integracion-prompts-v4.md](./portadas-guardadas/NL1-ago-tecnologia-sin-integracion-prompts-v4.md)
+
 ## NL 1 ago — prompts Midjourney v3 (2026-07-20)
 
 - Artículo: **Tecnología sin integración: el principal freno de la eficiencia**

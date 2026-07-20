@@ -1,8 +1,39 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-20T18:42:43.000Z",
+  "updatedAt": "2026-07-20T18:48:01.000Z",
   "nota": "Incluye prompts v2 NL1 ago (tech + continuidad operativa) 20 jul.",
   "items": [
+    {
+      "id": "nl1-ago-tecnologia-sin-integracion-prompts-v4-2026-07-20",
+      "fecha": "2026-07-20",
+      "titulo": "Tecnología sin integración: el principal freno de la eficiencia",
+      "mundoId": "O",
+      "mundoNombre": "Red neural operativa (+ A + F)",
+      "prompt": "Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: soft peach-and-teal abstract neural network of glowing orange nodes spreading across a cream field, each node linked by unbroken amber traces to mini operational vignettes below — unlabeled screens, faceless field staff, blank tablets, and blank-panel service vans — forming one continuous living system, large blank unmarked upper sky, thematic mood: intelligent technology woven into unbroken operational continuity, anticipation and response as one pulse, critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only",
+      "opciones": [
+        {
+          "opcion": 1,
+          "mundoId": "O",
+          "mundoNombre": "Red neural operativa",
+          "prompt": "Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: soft peach-and-teal abstract neural network of glowing orange nodes spreading across a cream field, each node linked by unbroken amber traces to mini operational vignettes below — unlabeled screens, faceless field staff, blank tablets, and blank-panel service vans — forming one continuous living system, large blank unmarked upper sky, thematic mood: intelligent technology woven into unbroken operational continuity, anticipation and response as one pulse, critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only"
+        },
+        {
+          "opcion": 2,
+          "mundoId": "A",
+          "mundoNombre": "Retail + alertas al piso",
+          "prompt": "Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: long supermarket aisle in deep teal with stylized faceless staff restocking and guiding carts, overhead a chain of unlabeled glowing orange alert panels linked by a continuous amber ribbon that drops to each worker's blank device in real time, reflective floor, strong orange backlight at aisle end, wide blank unmarked sky block above, thematic mood: technology that reaches the floor instantly and keeps service continuous, alerts becoming timely coordinated action, critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only"
+        },
+        {
+          "opcion": 3,
+          "mundoId": "F",
+          "mundoNombre": "Ruta logística como sistema vivo",
+          "prompt": "Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: elevated editorial view of a continuous warm orange operational path cutting through deep teal terrain, along the path unlabeled abstract sensor towers and glowing dashboard discs feed light into blank-panel vans and faceless crews that never stop moving, the path loops back on itself as a closed continuity circuit, soft amber horizon glow, large blank unmarked sky above, thematic mood: logistics as a living connected technology system sustaining uninterrupted coverage, critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only"
+        }
+      ],
+      "notas": "v4 20 jul: más versiones tech + continuidad.",
+      "origen": "consola",
+      "archivoMarkdown": "portadas-guardadas/NL1-ago-tecnologia-sin-integracion-prompts-v4.md"
+    },
     {
       "id": "nl1-ago-tecnologia-sin-integracion-prompts-v3-2026-07-20",
       "fecha": "2026-07-20",
