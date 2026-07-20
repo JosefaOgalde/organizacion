@@ -126,6 +126,7 @@ start "" "http://127.0.0.1:8000/index/clientes/?disco=1"
 start "" "http://127.0.0.1:8000/index/clientes/ecr/?disco=1"
 start "" "http://127.0.0.1:8000/index/clientes/mkof/?disco=1"
 start "" "http://127.0.0.1:8000/index/clientes/MKOF/MOVA?disco=1"
+start "" "http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1"
 
 :fin_urls
 echo.
@@ -134,6 +135,7 @@ echo    Organizador:  http://127.0.0.1:8000/index.html?disco=1
 echo    Portal:       http://127.0.0.1:8000/index/clientes/?disco=1
 echo    ECR:          http://127.0.0.1:8000/index/clientes/ecr/?disco=1
 echo    MKOF / MOVA:  http://127.0.0.1:8000/index/clientes/mkof/?disco=1
+echo    MKOF prospecto: http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1
 echo    Impresoreando: http://127.0.0.1:8000/index/clientes/impresoreando/panel/?disco=1
 echo.
 echo  Recarga rapida: RECARGAR.bat

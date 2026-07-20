@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-20T20:35:00.000Z",
+  "ambito": "Redes sociales orgánicas",
+  "clienteAgencia": "MKOF",
+  "etapaActual": 1,
+  "etapaNombre": "Análisis patrón (ecosistema + competencia + oportunidades + conclusiones)",
+  "esperandoNombreProspecto": true,
+  "patrones": [
+    {
+      "id": "01-ecosistema-rrss",
+      "titulo": "ECOSISTEMA RRSS",
+      "archivo": "patrones/01-ecosistema-rrss.png",
+      "slide": "slides/01-ecosistema-rrss.html",
+      "descripcion": "Matriz plataformas × competidores + columna Prospecto (placeholders XX mill)."
+    },
+    {
+      "id": "02-ecosistema-competencia",
+      "titulo": "ECOSISTEMA DE RRSS COMPETENCIA",
+      "archivo": "patrones/02-ecosistema-competencia.png",
+      "slide": "slides/02-ecosistema-competencia.html",
+      "descripcion": "Formatos, temáticas, periodicidad + mockup de perfil."
+    },
+    {
+      "id": "03-oportunidades",
+      "titulo": "OPORTUNIDADES EN XXXX",
+      "archivo": "patrones/03-oportunidades.png",
+      "slide": "slides/03-oportunidades.html",
+      "descripcion": "Tres oportunidades en orgánico (título + fundamento)."
+    },
+    {
+      "id": "04-conclusiones",
+      "titulo": "CONCLUSIONES",
+      "archivo": "patrones/04-conclusiones.png",
+      "slide": "slides/04-conclusiones.html",
+      "descripcion": "Cuatro cuadrantes + centro CONCLUSIONES."
+    }
+  ],
+  "prospectos": [],
+  "reglaData": "Todo número debe citar fuente, fecha y método en clientes/<slug>/fuentes.json"
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MKOF · Prospectos RRSS orgánicas</title>
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --ink: #235a46;
+      --muted: #5a7a6c;
+      --card: #fff;
+      --line: #d5e3d8;
+      --accent: #5f9e82;
+      --beige: #ece4d2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    header h1 { margin: 0; font-size: 1.35rem; letter-spacing: 0.02em; }
+    header p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    nav a { color: var(--accent); font-weight: 600; text-decoration: none; margin-right: 1rem; }
+    nav a:hover { text-decoration: underline; }
+    main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+    .aviso {
+      background: var(--beige);
+      border-left: 4px solid var(--accent);
+      padding: 0.9rem 1rem;
+      border-radius: 0 10px 10px 0;
+      margin-bottom: 1.5rem;
+    }
+    .aviso strong { display: block; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.1rem; margin: 1.75rem 0 0.75rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      background: #eee;
+      display: block;
+    }
+    .card .body { padding: 0.85rem 1rem 1rem; flex: 1; display: flex; flex-direction: column; gap: 0.4rem; }
+    .card h3 { margin: 0; font-size: 0.95rem; }
+    .card p { margin: 0; font-size: 0.82rem; color: var(--muted); flex: 1; }
+    .card .links { display: flex; gap: 0.75rem; font-size: 0.85rem; }
+    .card .links a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .empty {
+      border: 2px dashed var(--line);
+      border-radius: 14px;
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--muted);
+      background: #fff;
+    }
+    footer { padding: 2rem 1.5rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Prospectos · RRSS orgánicas</h1>
+      <p>MKOF · etapa 1 de análisis (patrones de presentación)</p>
+    </div>
+    <nav>
+      <a href="../?disco=1">← Landing MKOF</a>
+      <a href="../../?disco=1">Portal clientes</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="aviso">
+      <strong>Listo para el nombre del prospecto</strong>
+      Carpeta y patrones cargados. Cuando entregues el nombre, creamos <code>clientes/&lt;slug&gt;/</code> y rellenamos data con fuentes reales (fecha + método).
+    </div>
+
+    <h2>Patrones etapa 1</h2>
+    <div class="grid" id="patrones"></div>
+
+    <h2>Prospectos</h2>
+    <div id="lista-prospectos" class="empty">Todavía no hay prospectos. Entrega el nombre y arrancamos.</div>
+  </main>
+
+  <footer>
+    Data con fundamentos · cada número cita fuente, fecha y método en <code>fuentes.json</code>
+  </footer>
+
+  <script>
+    fetch('./meta.json?v=' + Date.now())
+      .then((r) => r.json())
+      .then((meta) => {
+        const root = document.getElementById('patrones');
+        root.innerHTML = (meta.patrones || [])
+          .map(
+            (p) => `<article class="card">
+              <a href="${p.archivo}" target="_blank" rel="noopener"><img src="${p.archivo}" alt="${p.titulo}"></a>
+              <div class="body">
+                <h3>${p.titulo}</h3>
+                <p>${p.descripcion}</p>
+                <div class="links">
+                  <a href="${p.archivo}" target="_blank" rel="noopener">PNG</a>
+                  <a href="${p.slide}">Slide HTML</a>
+                </div>
+              </div>
+            </article>`
+          )
+          .join('');
+
+        const lista = document.getElementById('lista-prospectos');
+        if (meta.prospectos && meta.prospectos.length) {
+          lista.className = 'grid';
+          lista.innerHTML = meta.prospectos
+            .map(
+              (pr) => `<article class="card"><div class="body">
+                <h3>${pr.nombre}</h3>
+                <p>${pr.estado || ''}</p>
+                <div class="links"><a href="${pr.href}">Abrir</a></div>
+              </div></article>`
+            )
+            .join('');
+        }
+      })
+      .catch(() => {
+        document.getElementById('patrones').innerHTML =
+          '<p class="empty">No se pudo cargar meta.json (¿servidor Laravel activo?).</p>';
+      });
+  </script>
+</body>
+</html>

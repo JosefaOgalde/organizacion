@@ -117,6 +117,43 @@
       .join('')}</div>`;
   }
 
+  function prospectoHtml() {
+    return `<section class="ficha-seccion ficha-seccion--portal">
+        <h2>Prospectos · RRSS orgánicas</h2>
+        <p style="margin:0 0 0.85rem;font-size:0.9rem">
+          Análisis de posibles clientes (etapa 1: ecosistema, competencia, oportunidades, conclusiones).
+          Data con fuentes reales. Carpeta lista; falta el nombre del prospecto.
+        </p>
+        <div class="mkof-guias-grid">
+          <a href="./prospecto/?disco=1" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Nuevo · Prospectos</span>
+            <strong>Hub prospectos RRSS</strong>
+            <span class="mkof-guia-card__desc">Patrones etapa 1 · esperar nombre</span>
+          </a>
+          <a href="./prospecto/patrones/01-ecosistema-rrss.png" class="mkof-guia-card" target="_blank" rel="noopener">
+            <span class="mkof-guia-card__paso">Patrón 01</span>
+            <strong>Ecosistema RRSS</strong>
+            <span class="mkof-guia-card__desc">Competidores + prospecto</span>
+          </a>
+          <a href="./prospecto/patrones/02-ecosistema-competencia.png" class="mkof-guia-card" target="_blank" rel="noopener">
+            <span class="mkof-guia-card__paso">Patrón 02</span>
+            <strong>Ecosistema competencia</strong>
+            <span class="mkof-guia-card__desc">Formatos · temáticas · ritmo</span>
+          </a>
+          <a href="./prospecto/patrones/03-oportunidades.png" class="mkof-guia-card" target="_blank" rel="noopener">
+            <span class="mkof-guia-card__paso">Patrón 03</span>
+            <strong>Oportunidades</strong>
+            <span class="mkof-guia-card__desc">3 oportunidades en orgánico</span>
+          </a>
+          <a href="./prospecto/patrones/04-conclusiones.png" class="mkof-guia-card" target="_blank" rel="noopener">
+            <span class="mkof-guia-card__paso">Patrón 04</span>
+            <strong>Conclusiones</strong>
+            <span class="mkof-guia-card__desc">4 cuadrantes + síntesis</span>
+          </a>
+        </div>
+      </section>`;
+  }
+
   function guiasHtml() {
     return `<section class="ficha-seccion ficha-seccion--portal">
         <h2>Guías en curso · MOVA</h2>
@@ -189,8 +226,9 @@
   }
 
   function mkofLandingSectionsHtml() {
-    if (!G()) return '';
+    if (!G()) return prospectoHtml();
     return `
+      ${prospectoHtml()}
       ${guiasHtml()}
       <section class="ficha-seccion ficha-seccion--portal">
         <h2>MOVA · Post-auditoría</h2>
