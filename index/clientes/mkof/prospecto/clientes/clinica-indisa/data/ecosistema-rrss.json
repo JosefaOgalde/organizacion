@@ -261,9 +261,16 @@
         "nota": "10 posts. Más likes absolutos que Indisa, pero base 139 mil diluye el %. Post #1 ~1h."
       },
       "davila": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null
+        "valor": 0.4968,
+        "display": "0,50%",
+        "fuenteId": "ig-er-davila-9",
+        "formula": "((Σ likes+comentarios)/N)/seguidores×100",
+        "nPosts": 9,
+        "seguidoresBase": 42200,
+        "interaccionesPromedio": 209.67,
+        "sumaInteracciones": 1887,
+        "detalleArchivo": "data/ig-er-davila-muestra.json",
+        "nota": "9 posts propios. Excluido 1 de @municipalidadrecoleta. Incluye outlier Gaspar Lara (705 likes)."
       },
       "santa_maria": {
         "valor": null,
@@ -356,7 +363,7 @@
     "Facebook: Alemana (~177) > Dávila (~125) > CLC (~111) > Santa María (~59) > Indisa (~49).",
     "YouTube: CLC (~20) > Santa María (~7) > Alemana (~2,6) > Dávila (~1,9); Indisa pendiente.",
     "En IG el prospecto Indisa está en el pelotón medio-bajo; el gap crítico es vs Alemana (~3×).",
-    "Instagram ER: CLC 0,99% > Indisa 0,19% > Alemana 0,14%. Alemana tiene más likes absolutos pero la base de 139 mil diluye el %.",
+    "Instagram ER: CLC 0,99% > Dávila 0,50% > Indisa 0,19% > Alemana 0,14%. Indisa queda 3.ª del benchmark medido.",
     "Columna Prospecto (azul) = Indisa; el resto = benchmark."
   ]
 }

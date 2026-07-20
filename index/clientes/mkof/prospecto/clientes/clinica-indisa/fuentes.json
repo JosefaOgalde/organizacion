@@ -355,6 +355,17 @@
       "metodo": "Screenshots post-a-post entregados por usuaria."
     },
     {
+      "id": "ig-er-davila-9",
+      "tipo": "instagram_engagement",
+      "entidad": "Red Dávila",
+      "handle": "@reddavilaoficial",
+      "dato": "ER 0,50% — 9 posts propios · promedio 210 interacciones · base 42.200 seguidores",
+      "fecha": "2026-07-20",
+      "detalle": "data/ig-er-davila-muestra.json",
+      "excluido": "https://www.instagram.com/p/Da0cdx6BH9g/ (@municipalidadrecoleta)",
+      "metodo": "Screenshots post-a-post; se excluyó 1 URL de cuenta ajena (Municipalidad Recoleta)."
+    },
+    {
       "id": "x-indisa",
       "tipo": "x_twitter",
       "entidad": "Clínica Indisa",
