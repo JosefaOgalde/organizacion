@@ -88,40 +88,51 @@
     },
     "Instagram": {
       "las_condes": {
-        "valor": null,
-        "display": "PENDIENTE",
+        "valor": 45800,
+        "display": "45,8 mil",
+        "posts": 2226,
         "handle": "@clinicalascondes",
         "fuenteId": "ig-clc",
+        "exacto": "45,8 mil seguidores · 2.226 posts (screenshot app 2026-07-20)",
         "url": "https://www.instagram.com/clinicalascondes/"
       },
       "alemana": {
-        "valor": null,
-        "display": "PENDIENTE",
+        "valor": 139000,
+        "display": "139 mil",
+        "posts": 1515,
         "handle": "@clinicaalemanadesantiago",
         "fuenteId": "ig-alemana",
-        "url": "https://www.instagram.com/clinicaalemanadesantiago/"
+        "exacto": "139 mil seguidores · 1.515 posts (screenshot app 2026-07-20)",
+        "url": "https://www.instagram.com/clinicaalemanadesantiago/",
+        "highlight": true
       },
       "davila": {
-        "valor": null,
-        "display": "PENDIENTE",
+        "valor": 42200,
+        "display": "42,2 mil",
+        "posts": 1357,
         "handle": "@reddavilaoficial",
         "fuenteId": "ig-davila",
+        "exacto": "42,2 mil seguidores · 1.357 posts (screenshot app 2026-07-20)",
         "url": "https://www.instagram.com/reddavilaoficial/"
       },
       "santa_maria": {
-        "valor": null,
-        "display": "PENDIENTE",
+        "valor": 38800,
+        "display": "38,8 mil",
+        "posts": 1217,
         "handle": "@clinicasantamariacl",
         "fuenteId": "ig-santamaria",
+        "exacto": "38,8 mil seguidores · 1.217 posts (screenshot app 2026-07-20)",
         "url": "https://www.instagram.com/clinicasantamariacl/"
       },
       "indisa": {
-        "valor": null,
-        "display": "PENDIENTE",
+        "valor": 43700,
+        "display": "43,7 mil",
+        "posts": 1449,
         "handle": "@clinicaindisacl",
         "fuenteId": "ig-indisa",
-        "nota": "Perfil activo (educación salud, tipografías de especialidad); contar en app",
-        "url": "https://www.instagram.com/clinicaindisacl/"
+        "exacto": "43,7 mil seguidores · 1.449 posts (screenshot app 2026-07-20)",
+        "url": "https://www.instagram.com/clinicaindisacl/",
+        "nota": "También Threads @clinicaindisacl · linktr.ee/clinicaindisacl"
       }
     },
     "LinkedIn": {
@@ -323,12 +334,12 @@
     }
   },
   "lecturaRapida": [
+    "Instagram: Alemana (139 mil) lidera con holgura; CLC (45,8) ≈ Indisa (43,7) ≈ Dávila (42,2) > Santa María (38,8).",
     "LinkedIn: Alemana (~160) > Dávila (~114) > CLC (~106) > Santa María (~81) > Indisa (~60).",
     "Facebook: Alemana (~177) > Dávila (~125) > CLC (~111) > Santa María (~59) > Indisa (~49).",
     "YouTube: CLC (~20) > Santa María (~7) > Alemana (~2,6) > Dávila (~1,9); Indisa pendiente.",
-    "Canales oficiales de los 4 competidores ya cargados; falta X de Santa María e IG/ER de todos.",
-    "Spotify: solo Alemana con perfil oficial — formato audio como diferencial potencial.",
-    "Instagram + Engagement Rate: PENDIENTE hasta captura Metricool / app (no inventar %).",
+    "En IG el prospecto Indisa está en el pelotón medio-bajo; el gap crítico es vs Alemana (~3×).",
+    "Instagram ER: aún PENDIENTE (hace falta muestra de 12 posts / Metricool).",
     "Columna Prospecto (azul) = Indisa; el resto = benchmark."
   ]
 }

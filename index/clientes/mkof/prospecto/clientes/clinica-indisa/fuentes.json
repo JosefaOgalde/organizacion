@@ -47,9 +47,9 @@
       "entidad": "Clínica Las Condes",
       "url": "https://www.instagram.com/clinicalascondes/",
       "handle": "@clinicalascondes",
-      "dato": "Perfil oficial; seguidores + ER pendientes de captura en app/Metricool",
+      "dato": "45,8 mil seguidores · 2.226 publicaciones",
       "fecha": "2026-07-20",
-      "metodo": "URL entregada por usuaria."
+      "metodo": "Screenshot app Instagram entregado por usuaria."
     },
     {
       "id": "x-clc",
@@ -103,9 +103,9 @@
       "entidad": "Clínica Alemana",
       "url": "https://www.instagram.com/clinicaalemanadesantiago/",
       "handle": "@clinicaalemanadesantiago",
-      "dato": "Perfil oficial; seguidores + ER pendientes de captura en app/Metricool",
+      "dato": "139 mil seguidores · 1.515 publicaciones",
       "fecha": "2026-07-20",
-      "metodo": "URL entregada por usuaria (handle correcto: clinicaalemanadesantiago)."
+      "metodo": "Screenshot app Instagram entregado por usuaria."
     },
     {
       "id": "x-alemana",
@@ -168,9 +168,9 @@
       "entidad": "Red Dávila",
       "url": "https://www.instagram.com/reddavilaoficial/",
       "handle": "@reddavilaoficial",
-      "dato": "Perfil oficial; seguidores + ER pendientes de captura en app/Metricool",
+      "dato": "42,2 mil seguidores · 1.357 publicaciones",
       "fecha": "2026-07-20",
-      "metodo": "URL entregada por usuaria."
+      "metodo": "Screenshot app Instagram entregado por usuaria."
     },
     {
       "id": "x-davila",
@@ -224,9 +224,9 @@
       "entidad": "Clínica Santa María",
       "url": "https://www.instagram.com/clinicasantamariacl/",
       "handle": "@clinicasantamariacl",
-      "dato": "Perfil oficial; seguidores + ER pendientes de captura en app/Metricool",
+      "dato": "38,8 mil seguidores · 1.217 publicaciones",
       "fecha": "2026-07-20",
-      "metodo": "URL entregada por usuaria."
+      "metodo": "Screenshot app Instagram entregado por usuaria."
     },
     {
       "id": "yt-santamaria",
@@ -275,9 +275,49 @@
       "entidad": "Clínica Indisa",
       "url": "https://www.instagram.com/clinicaindisacl/",
       "handle": "@clinicaindisacl",
-      "dato": "Perfil oficial; seguidores + ER pendientes de captura en app/Metricool",
+      "dato": "43,7 mil seguidores · 1.449 publicaciones",
       "fecha": "2026-07-20",
-      "metodo": "URL oficial. Instagram bloquea scrape automatizado."
+      "metodo": "Screenshot app Instagram entregado por usuaria."
+    },
+    {
+      "id": "ig-clc-capture",
+      "tipo": "instagram",
+      "entidad": "Clínica Las Condes",
+      "url": "https://www.instagram.com/clinicalascondes/",
+      "handle": "@clinicalascondes",
+      "dato": "45,8 mil seguidores · 2.226 publicaciones",
+      "fecha": "2026-07-20",
+      "metodo": "Screenshot app Instagram entregado por usuaria."
+    },
+    {
+      "id": "ig-alemana-capture",
+      "tipo": "instagram",
+      "entidad": "Clínica Alemana",
+      "url": "https://www.instagram.com/clinicaalemanadesantiago/",
+      "handle": "@clinicaalemanadesantiago",
+      "dato": "139 mil seguidores · 1.515 publicaciones",
+      "fecha": "2026-07-20",
+      "metodo": "Screenshot app Instagram entregado por usuaria."
+    },
+    {
+      "id": "ig-davila-capture",
+      "tipo": "instagram",
+      "entidad": "Red Dávila",
+      "url": "https://www.instagram.com/reddavilaoficial/",
+      "handle": "@reddavilaoficial",
+      "dato": "42,2 mil seguidores · 1.357 publicaciones",
+      "fecha": "2026-07-20",
+      "metodo": "Screenshot app Instagram entregado por usuaria."
+    },
+    {
+      "id": "ig-santamaria-capture",
+      "tipo": "instagram",
+      "entidad": "Clínica Santa María",
+      "url": "https://www.instagram.com/clinicasantamariacl/",
+      "handle": "@clinicasantamariacl",
+      "dato": "38,8 mil seguidores · 1.217 publicaciones",
+      "fecha": "2026-07-20",
+      "metodo": "Screenshot app Instagram entregado por usuaria."
     },
     {
       "id": "ig-er-metodo",

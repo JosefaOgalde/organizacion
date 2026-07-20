@@ -5,7 +5,7 @@
   "ambito": "RRSS orgánicas",
   "etapa": 1,
   "creado": "2026-07-20T21:33:46Z",
-  "updatedAt": "2026-07-20T22:05:00Z",
+  "updatedAt": "2026-07-20T22:10:00Z",
   "competidores": [
     "Clínica Las Condes",
     "Clínica Alemana",
@@ -58,13 +58,11 @@
     "conclusiones": "data/conclusiones.json"
   },
   "pendientes": [
-    "Instagram: seguidores + Engagement Rate (12 posts) Indisa y 4 competidores",
-    "Facebook: seguidores Santa María (Alemana ~177 · Dávila ~125 · CLC ~111 · Indisa ~49)",
-    "YouTube: suscriptores IndisaCL + Santa María (CLC ~20 · Alemana ~2,6 · Dávila ~1,9)",
-    "X: seguidores Indisa, CLC, Alemana, @Red_Davila, Santa María",
+    "Instagram ER: calcular % con 12 posts (Metricool o muestreo manual) Indisa + 4 competidores",
+    "YouTube: suscriptores IndisaCL (competidores ya medidos)",
+    "X: seguidores de perfiles ya linkeados + confirmar si Santa María tiene X",
     "Spotify: capturar seguidores/shows Alemana; confirmar si Indisa/otros tienen perfil",
-    "Muestreo 7–14 días: posts/semana y mix de formatos",
-    "Canales oficiales pendientes: Santa María"
+    "Muestreo 7–14 días: posts/semana y mix de formatos"
   ],
   "canalesOficiales": {
     "web": "https://www.indisa.cl/",
