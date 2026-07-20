@@ -69,16 +69,19 @@ SIN Cloudflare:   Usuario → GoDaddy (directo, más expuesto)</pre>
     </section>
 
     <section>
-      <h2>Checklist cuando lo activen</h2>
+      <h2>Paso a paso cuando lo activen</h2>
+      <p><strong>No se hace desde cPanel.</strong> Se hace en Cloudflare + GoDaddy (dominio).</p>
       <ol>
-        <li>Cuenta Cloudflare (Free ok para empezar)</li>
-        <li>Agregar <code>acme-chile.cl</code></li>
-        <li>Cambiar nameservers en GoDaddy</li>
-        <li>SSL → <strong>Full (strict)</strong> cuando el origen esté bien</li>
-        <li>WAF básico / anti-bot</li>
-        <li>Probar sitio + login</li>
+        <li><strong>dash.cloudflare.com</strong> → cuenta Free</li>
+        <li><strong>Add a site</strong> → <code>acme-chile.cl</code> → Free</li>
+        <li>Revisar DNS escaneado (A/CNAME/MX) → anotar los <strong>2 nameservers</strong></li>
+        <li>En <strong>GoDaddy</strong> → dominio → Nameservers → Custom → pegar los 2 de Cloudflare → Guardar</li>
+        <li>Esperar estado <strong>Active</strong> en Cloudflare</li>
+        <li><strong>SSL/TLS</strong> → Full, luego <strong>Full (strict)</strong> · Always Use HTTPS = On</li>
+        <li>Security básico (Medium) · sin reglas agresivas el día 1</li>
+        <li>Probar: sitio abre · HTTPS · login · correo (MX)</li>
       </ol>
-      <p>Tiempo: unas horas de calendario (DNS puede demorar en propagar).</p>
+      <p>Tiempo: 30–45 min de trabajo + propagación DNS. Guía larga: <a href="../../../docs/mova/PASO-A-PASO-CLOUDFLARE.md"><code>docs/mova/PASO-A-PASO-CLOUDFLARE.md</code></a></p>
     </section>
 
     <section>

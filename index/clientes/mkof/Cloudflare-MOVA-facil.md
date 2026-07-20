@@ -53,18 +53,22 @@ Lo que **no** hace:
 
 ---
 
-## Qué hay que hacer (checklist corto)
+## Qué hay que hacer (paso a paso)
+
+**No se hace desde cPanel.** Guía completa: [`docs/mova/PASO-A-PASO-CLOUDFLARE.md`](../../../docs/mova/PASO-A-PASO-CLOUDFLARE.md)
 
 Cuando el equipo decida activarlo:
 
-1. Crear cuenta en Cloudflare (plan Free alcanza para empezar).
-2. Agregar el dominio `acme-chile.cl`.
-3. Cambiar **nameservers** en GoDaddy a los que da Cloudflare.
-4. SSL: modo **Full (strict)** cuando el certificado del origen esté OK.
-5. Activar WAF básico / reglas anti-bot recomendadas.
-6. Probar: sitio abre, HTTPS OK, login sigue funcionando.
+1. Cuenta en https://dash.cloudflare.com (plan **Free**).
+2. **Add a site** → `acme-chile.cl` → Free → revisar DNS escaneado.
+3. Copiar los **2 nameservers** que da Cloudflare.
+4. En **GoDaddy** → dominio → Nameservers → Custom → pegar esos 2 → Guardar.
+5. Esperar dominio **Active** en Cloudflare.
+6. **SSL/TLS** → Full, luego **Full (strict)** · Always Use HTTPS = On.
+7. Security básico (Medium) · sin reglas agresivas el día 1.
+8. Probar: sitio abre, HTTPS OK, login OK, correo (MX) OK.
 
-**Tiempo estimado:** unas horas de calendario (propagación DNS puede tardar).
+**Tiempo estimado:** 30–45 min de trabajo + propagación DNS (minutos a unas horas).
 
 ---
 

@@ -42,13 +42,16 @@ Sí como **escudo rápido** (HTTPS + WAF) sin mudar hosting; no es el VPS del a�
 
 ---
 
-## Pendiente humano
+## Pendiente humano / artefactos que faltan
 
-- [ ] Pegar ZIP `mova_auth/` (y opc. `mova/erp/`) en `espejo-cpanel/`
-- [ ] Marcar `mkof/03`–`mkof/05` en organizador
-- [ ] Firma/correo reglas D2
-- [ ] Activar Cloudflare cuando el equipo decida
-- [ ] Presentar deck etapa 2 (~20 min)
+Lista completa: [`docs/mova/ARTEFACTOS-PENDIENTES.md`](../../../../docs/mova/ARTEFACTOS-PENDIENTES.md)
+
+- [ ] **#1** Pegar ZIP `mova_auth/` (y opc. `mova/erp/`) en `espejo-cpanel/`
+- [ ] **#2** Activar Cloudflare — [`PASO-A-PASO-CLOUDFLARE.md`](../../../../docs/mova/PASO-A-PASO-CLOUDFLARE.md)
+- [ ] **#3** Firma/correo reglas D2
+- [ ] **#4** Presentar deck etapa 2 (~20 min)
+- [ ] **#5** Marcar `mkof/03`–`mkof/05` en organizador
+- [ ] **#6–#9** (siguiente etapa) `session` / `validate` / `guard` + sandbox ERP
 
 ## Siguiente etapa (implementación)
 

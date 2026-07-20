@@ -2,7 +2,7 @@
  * Catálogo MOVA — ver en HTML (editable en repo); PDF/PPT solo para exportar.
  */
 window.MOVA_DOCUMENTOS = {
-  version: '4.0',
+  version: '4.2',
   baseMkof: '../../../mkof/',
   baseData: '../../../../../data/',
   categorias: [
@@ -166,11 +166,20 @@ window.MOVA_DOCUMENTOS = {
         {
           id: 'cloudflare-facil',
           titulo: 'Cloudflare — ¿para qué y es necesario?',
-          descripcion: 'Escudo delante de GoDaddy · conclusión fácil · checklist activación',
+          descripcion: 'Escudo delante de GoDaddy · conclusión fácil · paso a paso activación',
           hito: '1.2',
           fecha: '19 jul 2026',
           verHtml: 'cloudflare-mova.html',
           editar: 'Cloudflare-MOVA-facil.md'
+        },
+        {
+          id: 'artefactos-pendientes',
+          titulo: 'Artefactos que aún faltan',
+          descripcion: 'Espejo cPanel · Cloudflare · firma D2 · PHP núcleo · checklist',
+          hito: 'Ops',
+          fecha: '20 jul 2026',
+          verHtml: 'artefactos-pendientes.html',
+          editar: 'docs/mova/ARTEFACTOS-PENDIENTES.md'
         },
         {
           id: 'cpanel-espejo',

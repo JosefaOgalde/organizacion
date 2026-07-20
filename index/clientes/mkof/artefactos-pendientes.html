@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOVA · Artefactos que aún faltan</title>
+  <link rel="stylesheet" href="../../assets/portal.css">
+  <link rel="stylesheet" href="../../assets/mkof-mova-auditoria.css">
+</head>
+<body class="mova-aud">
+  <header class="mova-aud__hero">
+    <nav class="mova-aud__nav">
+      <a href="../MKOF/MOVA/documentos/">← Documentos MOVA</a>
+      <a href="cloudflare-mova.html">Cloudflare →</a>
+      <a href="cpanel-espejo.html">cPanel espejo →</a>
+    </nav>
+    <p class="mova-aud__eyebrow">GRUPO MAKING OF · MOVA · CHECKLIST</p>
+    <h1>Artefactos que aún faltan</h1>
+    <p class="mova-aud__sub">Lo documentado ya está · esto es lo que falta hacer / entregar</p>
+    <p class="mova-aud__badge">20 jul 2026</p>
+  </header>
+
+  <main class="mova-aud__main">
+    <section>
+      <h2>A) Acciones humanas (pendientes)</h2>
+      <table class="mova-aud__tabla">
+        <thead><tr><th>#</th><th>Artefacto</th><th>Qué hacer</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><strong>Espejo cPanel</strong></td><td>Bajar <code>mova_auth/</code> (opc. <code>mova/erp/</code>) → pegar en <code>espejo-cpanel/</code></td></tr>
+          <tr><td>2</td><td><strong>Cloudflare activo</strong></td><td>Cuenta → dominio → nameservers en GoDaddy → SSL. <a href="../../../docs/mova/PASO-A-PASO-CLOUDFLARE.md">Paso a paso</a></td></tr>
+          <tr><td>3</td><td><strong>Firma / correo D2</strong></td><td>Acuerdo escrito: si no pasó por mova_auth, no entra</td></tr>
+          <tr><td>4</td><td><strong>Presentación etapa 2</strong></td><td>Entregar / presentar el deck ~20 min</td></tr>
+          <tr><td>5</td><td><strong>Organizador</strong></td><td>Marcar <code>mkof/03</code>–<code>mkof/05</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>B) Código (siguiente etapa — aún no en servidor)</h2>
+      <table class="mova-aud__tabla">
+        <thead><tr><th>#</th><th>Pieza</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td>6</td><td><code>session.php</code></td><td class="na">Diseñado · falta crear</td></tr>
+          <tr><td>7</td><td><code>validate.php</code></td><td class="na">Diseñado · falta crear</td></tr>
+          <tr><td>8</td><td><code>guard.php</code></td><td class="na">Diseñado · falta crear</td></tr>
+          <tr><td>9</td><td>Login unificado en módulos (sandbox ERP → portal → AXON)</td><td class="na">Pendiente</td></tr>
+          <tr><td>10</td><td>MySQL antes de Sheets en n8n</td><td class="na">Guía lista · no aplicado</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>C) Ya no te faltan</h2>
+      <ul class="mova-aud__check">
+        <li>Repo GitHub con flujos n8n</li>
+        <li>Documentos D1–D5</li>
+        <li>Deck presentación etapa 2</li>
+        <li>Explicación + paso a paso Cloudflare</li>
+        <li>Guía espejo cPanel</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Orden práctico</h2>
+      <ol>
+        <li>Mañana → <strong>#1</strong> espejo cPanel</li>
+        <li>Cuando el equipo diga sí → <strong>#2</strong> Cloudflare</li>
+        <li>Pedir <strong>#3</strong> firma D2</li>
+        <li><strong>#4</strong> presentar deck</li>
+        <li>Después → <strong>#6–#9</strong> implementación</li>
+      </ol>
+      <p>Texto completo: <a href="../../../docs/mova/ARTEFACTOS-PENDIENTES.md"><code>docs/mova/ARTEFACTOS-PENDIENTES.md</code></a></p>
+    </section>
+  </main>
+  <footer class="mova-aud__foot">MOVA · Artefactos pendientes · 20 jul 2026</footer>
+</body>
+</html>
