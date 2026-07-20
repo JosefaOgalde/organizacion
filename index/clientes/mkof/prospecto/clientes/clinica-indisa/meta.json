@@ -5,7 +5,7 @@
   "ambito": "RRSS orgánicas",
   "etapa": 1,
   "creado": "2026-07-20T21:33:46Z",
-  "updatedAt": "2026-07-20T22:50:00Z",
+  "updatedAt": "2026-07-20T22:55:00Z",
   "competidores": [
     "Clínica Las Condes",
     "Clínica Alemana",
@@ -58,7 +58,7 @@
     "conclusiones": "data/conclusiones.json"
   },
   "pendientes": [
-    "X: seguidores de perfiles ya linkeados + confirmar si Santa María tiene X",
+    "X: Indisa ya 12,2 mil; falta CLC, Alemana, Dávila + confirmar si Santa María tiene X",
     "Spotify: capturar seguidores/shows Alemana; confirmar si Indisa/otros tienen perfil",
     "Muestreo 7–14 días: posts/semana y mix de formatos"
   ],
