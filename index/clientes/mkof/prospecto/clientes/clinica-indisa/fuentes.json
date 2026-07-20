@@ -412,6 +412,16 @@
       "metodo": "Screenshot perfil TikTok entregado por usuaria."
     },
     {
+      "id": "tt-davila",
+      "tipo": "tiktok",
+      "entidad": "Red Dávila",
+      "url": "https://www.tiktok.com/@reddavilaoficial",
+      "handle": "@reddavilaoficial",
+      "dato": "68.4K seguidores · 0 siguiendo · 849K me gusta",
+      "fecha": "2026-07-20",
+      "metodo": "Screenshot perfil TikTok entregado por usuaria."
+    },
+    {
       "id": "x-indisa",
       "tipo": "x_twitter",
       "entidad": "Clínica Indisa",
