@@ -402,6 +402,16 @@
       "metodo": "Confirmado por usuaria."
     },
     {
+      "id": "tt-alemana",
+      "tipo": "tiktok",
+      "entidad": "Clínica Alemana",
+      "url": "https://www.tiktok.com/@clinica.alemana",
+      "handle": "@clinica.alemana",
+      "dato": "49.6K seguidores · 19 siguiendo · 330K me gusta",
+      "fecha": "2026-07-20",
+      "metodo": "Screenshot perfil TikTok entregado por usuaria."
+    },
+    {
       "id": "x-indisa",
       "tipo": "x_twitter",
       "entidad": "Clínica Indisa",
@@ -449,7 +459,8 @@
       "x": "https://x.com/clinicaalemana",
       "youtube": "https://www.youtube.com/channel/UCVTx7AHcRM8auQ68PLDwrjA",
       "linkedin": "https://www.linkedin.com/company/clinica-alemana-de-santiago/",
-      "spotify": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg"
+      "spotify": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg",
+      "tiktok": "https://www.tiktok.com/@clinica.alemana"
     },
     "davila": {
       "nombre": "Dávila / Red Dávila",
