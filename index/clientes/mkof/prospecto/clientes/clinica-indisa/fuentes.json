@@ -333,6 +333,28 @@
       "metodo": "Screenshots post-a-post; se excluyó 1 URL de cuenta ajena (UNAB)."
     },
     {
+      "id": "ig-er-alemana-10",
+      "tipo": "instagram_engagement",
+      "entidad": "Clínica Alemana",
+      "handle": "@clinicaalemanadesantiago",
+      "dato": "ER 0,14% — 10 posts · promedio 193 interacciones · base 139.000 seguidores",
+      "fecha": "2026-07-20",
+      "detalle": "data/ig-er-alemana-muestra.json",
+      "urls": [
+        "https://www.instagram.com/p/DbB2y3IiFHj/",
+        "https://www.instagram.com/p/Da5moOPlf_f/",
+        "https://www.instagram.com/p/Da0qd_5Edgr/",
+        "https://www.instagram.com/p/Daylf8cDZCO/",
+        "https://www.instagram.com/p/Dav1OgqjO23/",
+        "https://www.instagram.com/p/DasZfrPCKUT/",
+        "https://www.instagram.com/p/DanuqnCjrxw/",
+        "https://www.instagram.com/p/DalkkWkyhWk/",
+        "https://www.instagram.com/p/DaiSoCllPOs/",
+        "https://www.instagram.com/p/DagXJz9GWhD/"
+      ],
+      "metodo": "Screenshots post-a-post entregados por usuaria."
+    },
+    {
       "id": "x-indisa",
       "tipo": "x_twitter",
       "entidad": "Clínica Indisa",

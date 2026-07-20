@@ -1,0 +1,32 @@
+{
+  "cuenta": "@clinicaalemanadesantiago",
+  "fechaCaptura": "2026-07-20",
+  "seguidores": 139000,
+  "seguidoresDisplay": "139 mil",
+  "formula": "ER% = ((Σ likes + Σ comentarios visibles) / N) / seguidores × 100",
+  "nPosts": 10,
+  "sumaLikes": 1930,
+  "sumaComentariosVisibles": 3,
+  "sumaInteracciones": 1933,
+  "promedioInteracciones": 193.3,
+  "engagementRate": 0.1391,
+  "engagementRateDisplay": "0,14%",
+  "lectura": "ER bajo vs Indisa/CLC pese a más likes absolutos: la base de 139 mil seguidores diluye el % (efecto cuenta grande).",
+  "limitaciones": [
+    "Comentarios = visibles en screenshot (mínimo).",
+    "Sin guardados/shares públicos.",
+    "Post #1 (~1h) aún puede crecer."
+  ],
+  "posts": [
+    {"n": 1, "url": "https://www.instagram.com/p/DbB2y3IiFHj/", "likes": 74, "comments": 0, "interacciones": 74, "tema": "5 acciones salud sostenible"},
+    {"n": 2, "url": "https://www.instagram.com/p/Da5moOPlf_f/", "likes": 195, "comments": 0, "interacciones": 195, "tema": "MDprostate IA resonancia próstata"},
+    {"n": 3, "url": "https://www.instagram.com/p/Da0qd_5Edgr/", "likes": 79, "comments": 0, "interacciones": 79, "tema": "Exámenes laboratorio a domicilio"},
+    {"n": 4, "url": "https://www.instagram.com/p/Daylf8cDZCO/", "likes": 343, "comments": 0, "interacciones": 343, "tema": "Vesícula / Dr. Rencoret"},
+    {"n": 5, "url": "https://www.instagram.com/p/Dav1OgqjO23/", "likes": 102, "comments": 0, "interacciones": 102, "tema": "5 avances que cambian la medicina"},
+    {"n": 6, "url": "https://www.instagram.com/p/DasZfrPCKUT/", "likes": 53, "comments": 0, "interacciones": 53, "tema": "100 años / transformando la salud"},
+    {"n": 7, "url": "https://www.instagram.com/p/DanuqnCjrxw/", "likes": 423, "comments": 0, "interacciones": 423, "tema": "Transformando la salud — médico/brain"},
+    {"n": 8, "url": "https://www.instagram.com/p/DalkkWkyhWk/", "likes": 78, "comments": 2, "interacciones": 80, "tema": "Exámenes a domicilio Clinic Go"},
+    {"n": 9, "url": "https://www.instagram.com/p/DaiSoCllPOs/", "likes": 320, "comments": 0, "interacciones": 320, "tema": "Equipo helipuerto — juntos transformando"},
+    {"n": 10, "url": "https://www.instagram.com/p/DagXJz9GWhD/", "likes": 263, "comments": 1, "interacciones": 264, "tema": "Charlas julio"}
+  ]
+}

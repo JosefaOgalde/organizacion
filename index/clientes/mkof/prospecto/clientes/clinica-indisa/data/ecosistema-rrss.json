@@ -249,9 +249,16 @@
         "nota": "9 posts propios CLC. Excluido 1 URL de @uandresbello. Incluye outlier Día del Padre (3.149 likes); sin ese post ~0,25%."
       },
       "alemana": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null
+        "valor": 0.1391,
+        "display": "0,14%",
+        "fuenteId": "ig-er-alemana-10",
+        "formula": "((Σ likes+comentarios)/N)/seguidores×100",
+        "nPosts": 10,
+        "seguidoresBase": 139000,
+        "interaccionesPromedio": 193.3,
+        "sumaInteracciones": 1933,
+        "detalleArchivo": "data/ig-er-alemana-muestra.json",
+        "nota": "10 posts. Más likes absolutos que Indisa, pero base 139 mil diluye el %. Post #1 ~1h."
       },
       "davila": {
         "valor": null,
@@ -349,7 +356,7 @@
     "Facebook: Alemana (~177) > Dávila (~125) > CLC (~111) > Santa María (~59) > Indisa (~49).",
     "YouTube: CLC (~20) > Santa María (~7) > Alemana (~2,6) > Dávila (~1,9); Indisa pendiente.",
     "En IG el prospecto Indisa está en el pelotón medio-bajo; el gap crítico es vs Alemana (~3×).",
-    "Instagram ER: CLC 0,99% (9 posts; sesgado por Día del Padre) vs Indisa 0,19% (10 posts) — CLC ~5× en esta muestra.",
+    "Instagram ER: CLC 0,99% > Indisa 0,19% > Alemana 0,14%. Alemana tiene más likes absolutos pero la base de 139 mil diluye el %.",
     "Columna Prospecto (azul) = Indisa; el resto = benchmark."
   ]
 }
