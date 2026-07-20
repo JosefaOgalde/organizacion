@@ -156,6 +156,15 @@ window.MOVA_DOCUMENTOS = {
           pdf: 'MOVA-GitHub-N8n-Checklist.pdf',
           pptx: 'MOVA-GitHub-N8n-Checklist.pptx',
           editar: 'mkof-github-n8n-guia.js'
+        },
+        {
+          id: 'n8n-mysql-antes-sheets',
+          titulo: 'n8n — MySQL antes de Google Sheets',
+          descripcion: 'Guía tipo PPT · 6 pasos · cómo crear el nodo MySQL y ponerlo antes de Sheets',
+          hito: 'Ops n8n',
+          fecha: '20 jul 2026',
+          verHtml: 'n8n-mysql-antes-sheets.html',
+          editar: 'docs/mova/GUIA-N8N-MYSQL-ANTES-SHEETS.md'
         }
       ]
     },
