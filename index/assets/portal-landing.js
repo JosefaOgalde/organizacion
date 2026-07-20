@@ -12,12 +12,28 @@
       .replace(/"/g, '&quot;');
   }
 
+  /** Une slugs cortos de la API (ts, ecr, tw…) con CLIENTES_PORTAL. */
+  function findEstatico(c) {
+    if (typeof CLIENTES_PORTAL === 'undefined') return null;
+    const slug = String(c.slug || '').toLowerCase();
+    const id = String(c.id || '');
+    const abrev = String(c.abrev || '').toLowerCase();
+    return (
+      CLIENTES_PORTAL.find((x) => x.id === id) ||
+      CLIENTES_PORTAL.find((x) => x.slug === slug) ||
+      CLIENTES_PORTAL.find((x) => (x.slugAliases || []).includes(slug)) ||
+      CLIENTES_PORTAL.find((x) => String(x.abrev || '').toLowerCase() === abrev) ||
+      CLIENTES_PORTAL.find((x) => x.id === `cli-${slug}`) ||
+      null
+    );
+  }
+
   function colorDe(c, estatico) {
     if (c.color_border && c.color_bg && c.color_text) {
       return { border: c.color_border, bg: c.color_bg, text: c.color_text };
     }
     if (estatico?.color) return estatico.color;
-    return { border: '#98c8e0', bg: '#e8f4fc', text: '#4a7a9e' };
+    return { border: '#0285E2', bg: '#E5F3FC', text: '#0A4A7A' };
   }
 
   function landingJoyasMercury() {
@@ -25,14 +41,11 @@
   }
 
   function archivoDe(c) {
-    if (c.id === 'cli-joyas-mercury' || c.slug === 'joyas-mercury' || c.slug === 'joyasmercury') {
+    if (c.id === 'cli-joyas-mercury' || c.slug === 'joyas-mercury' || c.slug === 'joyasmercury' || c.slug === 'jm') {
       return landingJoyasMercury();
     }
-    const estatico = typeof CLIENTES_PORTAL !== 'undefined'
-      ? CLIENTES_PORTAL.find((x) => x.slug === c.slug || x.id === c.id || x.id === `cli-${c.slug}`)
-      : null;
-    const archivo = estatico?.archivo || `${c.slug}/index.html`;
-    return archivo;
+    const estatico = findEstatico(c);
+    return estatico?.archivo || `${c.slug}/index.html`;
   }
 
   function tipoLabel(tipo) {
@@ -50,9 +63,7 @@
   function renderTarjetas(lista, origen) {
     grid.innerHTML = lista
       .map((c) => {
-        const estatico = typeof CLIENTES_PORTAL !== 'undefined'
-          ? CLIENTES_PORTAL.find((x) => x.slug === c.slug)
-          : null;
+        const estatico = findEstatico(c);
         const col = colorDe(c, estatico);
         const archivo = archivoDe(c);
         const agente = c.agente || estatico?.agente || '';
@@ -77,7 +88,7 @@
       console.info('Portal: clientes desde API Laravel', API_URL);
     } catch (e) {
       if (typeof CLIENTES_PORTAL === 'undefined') {
-        grid.innerHTML = '<p class="portal-paso">Sin API ni datos estáticos. Arranca php artisan serve.</p>';
+        grid.innerHTML = '<p class="portal-paso">Sin API ni datos estáticos. Arranca ABRIR-LARAVEL.bat.</p>';
         return;
       }
       renderTarjetas(CLIENTES_PORTAL, 'static');
