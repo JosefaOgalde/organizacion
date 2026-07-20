@@ -422,6 +422,27 @@
       "metodo": "Screenshot perfil TikTok entregado por usuaria."
     },
     {
+      "id": "tt-santamaria",
+      "tipo": "tiktok",
+      "entidad": "Clínica Santa María",
+      "url": "https://www.tiktok.com/@clinicasantamariacl",
+      "handle": "@clinicasantamariacl",
+      "dato": "7.534 seguidores · 0 siguiendo · 74.4K me gusta",
+      "fecha": "2026-07-20",
+      "metodo": "Screenshot perfil TikTok entregado por usuaria."
+    },
+    {
+      "id": "tt-er-santamaria-5",
+      "tipo": "tiktok_engagement",
+      "entidad": "Clínica Santa María",
+      "handle": "@clinicasantamariacl",
+      "dato": "ER 0,64% — 5 videos · promedio 48 interacciones · base 7.534 seguidores",
+      "fecha": "2026-07-20",
+      "detalle": "data/tt-er-santamaria-muestra.json",
+      "formula": "((likes+comentarios+guardados)/N)/seguidores×100",
+      "metodo": "Screenshots video-a-video; n=5 indicativo."
+    },
+    {
       "id": "x-indisa",
       "tipo": "x_twitter",
       "entidad": "Clínica Indisa",
