@@ -122,13 +122,18 @@
         <h2>Prospectos · RRSS orgánicas</h2>
         <p style="margin:0 0 0.85rem;font-size:0.9rem">
           Análisis de posibles clientes (etapa 1: ecosistema, competencia, oportunidades, conclusiones).
-          Data con fuentes reales. Carpeta lista; falta el nombre del prospecto.
+          Prospecto activo: <strong>Clínica Indisa</strong> vs CLC · Alemana · Dávila · Santa María.
         </p>
         <div class="mkof-guias-grid">
           <a href="./prospecto/?disco=1" class="mkof-guia-card mkof-guia-card--activa">
-            <span class="mkof-guia-card__paso">Nuevo · Prospectos</span>
+            <span class="mkof-guia-card__paso">Prospectos</span>
             <strong>Hub prospectos RRSS</strong>
-            <span class="mkof-guia-card__desc">Patrones etapa 1 · esperar nombre</span>
+            <span class="mkof-guia-card__desc">Patrones + lista</span>
+          </a>
+          <a href="./prospecto/clientes/clinica-indisa/?disco=1" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Activo</span>
+            <strong>Clínica Indisa</strong>
+            <span class="mkof-guia-card__desc">Etapa 1 · data con fuentes</span>
           </a>
           <a href="./prospecto/patrones/01-ecosistema-rrss.png" class="mkof-guia-card" target="_blank" rel="noopener">
             <span class="mkof-guia-card__paso">Patrón 01</span>
