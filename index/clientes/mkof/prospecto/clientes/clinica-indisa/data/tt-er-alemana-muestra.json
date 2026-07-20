@@ -1,0 +1,68 @@
+{
+  "cuenta": "@clinica.alemana",
+  "fechaCaptura": "2026-07-20",
+  "seguidores": 49600,
+  "seguidoresDisplay": "49,6 mil",
+  "formula": "ER% = ((Σ likes + Σ comentarios + Σ guardados) / N) / seguidores × 100",
+  "nVideos": 5,
+  "sumaLikes": 140,
+  "sumaComentarios": 4,
+  "sumaGuardados": 19,
+  "sumaInteracciones": 163,
+  "promedioInteracciones": 32.6,
+  "engagementRate": 0.0657,
+  "engagementRateDisplay": "0,07%",
+  "lectura": "ER muy bajo vs Dávila/Santa María: base grande (~50 mil) + piezas con pocas interacciones absolutas (17–44 likes).",
+  "limitaciones": [
+    "Muestra indicativa (n=5).",
+    "Sin shares ni views en captura desktop.",
+    "Guardados incluidos."
+  ],
+  "videos": [
+    {
+      "n": 1,
+      "url": "https://www.tiktok.com/@clinica.alemana/video/7662843023897693458",
+      "likes": 40,
+      "comments": 0,
+      "saves": 7,
+      "interacciones": 47,
+      "tema": "100 años / desafías un límite"
+    },
+    {
+      "n": 2,
+      "url": "https://www.tiktok.com/@clinica.alemana/video/7662099675645824264",
+      "likes": 21,
+      "comments": 1,
+      "saves": 1,
+      "interacciones": 23,
+      "tema": "Vesícula — Dr. Rencoret"
+    },
+    {
+      "n": 3,
+      "url": "https://www.tiktok.com/@clinica.alemana/video/7660622130454809874",
+      "likes": 18,
+      "comments": 2,
+      "saves": 3,
+      "interacciones": 23,
+      "tema": "Alemana Talks — quimioterapia / pelo"
+    },
+    {
+      "n": 4,
+      "url": "https://www.tiktok.com/@clinica.alemana/video/7660621661078703378",
+      "likes": 17,
+      "comments": 0,
+      "saves": 2,
+      "interacciones": 19,
+      "tema": "Alemana Talks — cáncer de mama"
+    },
+    {
+      "n": 5,
+      "url": "https://www.tiktok.com/@clinica.alemana/video/7655460367346240776",
+      "likes": 44,
+      "comments": 1,
+      "saves": 6,
+      "interacciones": 51,
+      "tema": "Congelar pan/arroz y glucosa"
+    }
+  ]
+}
