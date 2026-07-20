@@ -5,7 +5,7 @@
   "ambito": "RRSS orgánicas",
   "etapa": 1,
   "creado": "2026-07-20T21:33:46Z",
-  "updatedAt": "2026-07-20T22:45:00Z",
+  "updatedAt": "2026-07-20T22:50:00Z",
   "competidores": [
     "Clínica Las Condes",
     "Clínica Alemana",
@@ -58,8 +58,6 @@
     "conclusiones": "data/conclusiones.json"
   },
   "pendientes": [
-    "Instagram ER cerrado: CLC 0,99% · Santa María 0,73% · Dávila 0,50% · Indisa 0,19% · Alemana 0,14%",
-    "YouTube: suscriptores IndisaCL (competidores ya medidos)",
     "X: seguidores de perfiles ya linkeados + confirmar si Santa María tiene X",
     "Spotify: capturar seguidores/shows Alemana; confirmar si Indisa/otros tienen perfil",
     "Muestreo 7–14 días: posts/semana y mix de formatos"
@@ -69,7 +67,7 @@
     "facebook": "https://www.facebook.com/clinicaindisa",
     "instagram": "https://www.instagram.com/clinicaindisacl/",
     "x": "https://x.com/ClinicaIndisa",
-    "youtube": "https://www.youtube.com/user/IndisaCL",
+    "youtube": "https://www.youtube.com/@ClínicaINDISA-v5v",
     "linkedin": "https://www.linkedin.com/company/cl-nica-indisa/posts/?feedView=all"
   }
 }

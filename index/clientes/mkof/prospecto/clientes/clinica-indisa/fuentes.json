@@ -389,10 +389,12 @@
       "id": "yt-indisa",
       "tipo": "youtube",
       "entidad": "Clínica Indisa",
-      "url": "https://www.youtube.com/user/IndisaCL",
-      "dato": "Canal IndisaCL; suscriptores pendientes captura",
+      "url": "https://www.youtube.com/@ClínicaINDISA-v5v",
+      "urlLegacy": "https://www.youtube.com/user/IndisaCL",
+      "handle": "@ClínicaINDISA-v5v",
+      "dato": "25,2 K suscriptores · 476 vídeos",
       "fecha": "2026-07-20",
-      "metodo": "URL entregada por usuaria."
+      "metodo": "Screenshot canal YouTube entregado por usuaria."
     }
   ],
   "canalesOficialesProspecto": {
@@ -400,7 +402,7 @@
     "facebook": "https://www.facebook.com/clinicaindisa",
     "instagram": "https://www.instagram.com/clinicaindisacl/",
     "x": "https://x.com/ClinicaIndisa",
-    "youtube": "https://www.youtube.com/user/IndisaCL",
+    "youtube": "https://www.youtube.com/@ClínicaINDISA-v5v",
     "linkedin": "https://www.linkedin.com/company/cl-nica-indisa/posts/?feedView=all"
   },
   "canalesOficialesCompetidores": {

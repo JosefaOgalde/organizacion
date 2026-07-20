@@ -200,11 +200,15 @@
         "url": "https://www.youtube.com/@clinicasantamariachile"
       },
       "indisa": {
-        "valor": null,
-        "display": "PENDIENTE",
+        "valor": 25200,
+        "display": "25 mil",
         "fuenteId": "yt-indisa",
-        "url": "https://www.youtube.com/user/IndisaCL",
-        "nota": "Canal youtube.com/user/IndisaCL — capturar suscriptores"
+        "exacto": "25,2 K suscriptores · 476 vídeos",
+        "handle": "@ClínicaINDISA-v5v",
+        "url": "https://www.youtube.com/@ClínicaINDISA-v5v",
+        "urlAlternativa": "https://www.youtube.com/user/IndisaCL",
+        "nota": "Screenshot canal oficial 2026-07-20. Lidera el benchmark YT del quinteto.",
+        "highlight": true
       }
     },
     "TikTok": {
@@ -368,7 +372,7 @@
     "Instagram: Alemana (139 mil) lidera con holgura; CLC (45,8) ≈ Indisa (43,7) ≈ Dávila (42,2) > Santa María (38,8).",
     "LinkedIn: Alemana (~160) > Dávila (~114) > CLC (~106) > Santa María (~81) > Indisa (~60).",
     "Facebook: Alemana (~177) > Dávila (~125) > CLC (~111) > Santa María (~59) > Indisa (~49).",
-    "YouTube: CLC (~20) > Santa María (~7) > Alemana (~2,6) > Dávila (~1,9); Indisa pendiente.",
+    "YouTube: Indisa (~25 mil) lidera el quinteto > CLC (~20) > Santa María (~7) > Alemana (~2,6) > Dávila (~1,9).",
     "En IG el prospecto Indisa está en el pelotón medio-bajo; el gap crítico es vs Alemana (~3×).",
     "Instagram ER completo: CLC 0,99% > Santa María 0,73% > Dávila 0,50% > Indisa 0,19% > Alemana 0,14%. Indisa 4.ª en engagement relativo.",
     "Columna Prospecto (azul) = Indisa; el resto = benchmark."
