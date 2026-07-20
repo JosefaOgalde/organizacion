@@ -110,8 +110,9 @@ if not errorlevel 1 (
 )
 
 echo.
-echo  Arrancando http://127.0.0.1:8000 ...
-start "Laravel · 8000" cmd /k "cd /d "%~dp0backend" && "%PHP_EXE%" artisan serve --host=127.0.0.1 --port=8000"
+echo  Arrancando servidor unificado http://127.0.0.1:8000 ...
+echo  ^(estaticos del repo + API Laravel /api/*^)
+start "Organizacion · 8000" cmd /k "cd /d "%~dp0" && "%PHP_EXE%" -S 127.0.0.1:8000 scripts\servidor-unificado-8000.php"
 timeout /t 2 >nul
 set "YA_CORRE=0"
 
