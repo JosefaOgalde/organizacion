@@ -366,6 +366,16 @@
       "metodo": "Screenshots post-a-post; se excluyó 1 URL de cuenta ajena (Municipalidad Recoleta)."
     },
     {
+      "id": "ig-er-santamaria-9",
+      "tipo": "instagram_engagement",
+      "entidad": "Clínica Santa María",
+      "handle": "@clinicasantamariacl",
+      "dato": "ER 0,73% — 9 posts · promedio 282 interacciones · base 38.800 seguidores",
+      "fecha": "2026-07-20",
+      "detalle": "data/ig-er-santamaria-muestra.json",
+      "metodo": "Screenshots post-a-post; muestra de 9 URLs (sin 10.º link)."
+    },
+    {
       "id": "x-indisa",
       "tipo": "x_twitter",
       "entidad": "Clínica Indisa",

@@ -273,9 +273,16 @@
         "nota": "9 posts propios. Excluido 1 de @municipalidadrecoleta. Incluye outlier Gaspar Lara (705 likes)."
       },
       "santa_maria": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null
+        "valor": 0.7277,
+        "display": "0,73%",
+        "fuenteId": "ig-er-santamaria-9",
+        "formula": "((Σ likes+comentarios)/N)/seguidores×100",
+        "nPosts": 9,
+        "seguidoresBase": 38800,
+        "interaccionesPromedio": 282.33,
+        "sumaInteracciones": 2541,
+        "detalleArchivo": "data/ig-er-santamaria-muestra.json",
+        "nota": "9 posts (no se entregó 10.º link). Incluye outlier prótesis pulgar (956 likes)."
       },
       "indisa": {
         "valor": 0.1863,
@@ -363,7 +370,7 @@
     "Facebook: Alemana (~177) > Dávila (~125) > CLC (~111) > Santa María (~59) > Indisa (~49).",
     "YouTube: CLC (~20) > Santa María (~7) > Alemana (~2,6) > Dávila (~1,9); Indisa pendiente.",
     "En IG el prospecto Indisa está en el pelotón medio-bajo; el gap crítico es vs Alemana (~3×).",
-    "Instagram ER: CLC 0,99% > Dávila 0,50% > Indisa 0,19% > Alemana 0,14%. Indisa queda 3.ª del benchmark medido.",
+    "Instagram ER completo: CLC 0,99% > Santa María 0,73% > Dávila 0,50% > Indisa 0,19% > Alemana 0,14%. Indisa 4.ª en engagement relativo.",
     "Columna Prospecto (azul) = Indisa; el resto = benchmark."
   ]
 }
