@@ -58,7 +58,7 @@
       "etiqueta": "Competidor"
     }
   ],
-  "engagementRateNota": "IG ER = (likes+comentarios)/seguidores (muestra posts). TikTok ER = (likes+comentarios+guardados)/seguidores (muestra videos; sin shares/views públicos en captura).",
+  "engagementRateNota": "IG ER = (likes+comentarios)/seguidores con N=10 (primeras 10 capturas entregadas por cuenta; si hay más, se cortan). TikTok ER = (likes+comentarios+guardados)/seguidores (muestra videos; sin shares/views públicos).",
   "celdas": {
     "Facebook": {
       "las_condes": {
@@ -326,16 +326,16 @@
     },
     "Instagram ER": {
       "las_condes": {
-        "valor": 0.9879,
-        "display": "0,99%",
-        "fuenteId": "ig-er-clc-9",
+        "valor": 0.9483,
+        "display": "0,95%",
+        "fuenteId": "ig-er-clc-10",
         "formula": "((Σ likes+comentarios)/N)/seguidores×100",
-        "nPosts": 9,
+        "nPosts": 10,
         "seguidoresBase": 45800,
-        "interaccionesPromedio": 452.44,
-        "sumaInteracciones": 4072,
+        "interaccionesPromedio": 434.3,
+        "sumaInteracciones": 4343,
         "detalleArchivo": "data/ig-er-clc-muestra.json",
-        "nota": "9 posts propios CLC. Excluido 1 URL de @uandresbello. Incluye outlier Día del Padre (3.149 likes); sin ese post ~0,25%.",
+        "nota": "N=10 primeras entregadas (incluye @uandresbello). Outlier Día del Padre (3.149 likes).",
         "highlight": true,
         "mejorMetrica": true
       },
@@ -349,23 +349,23 @@
         "interaccionesPromedio": 193.3,
         "sumaInteracciones": 1933,
         "detalleArchivo": "data/ig-er-alemana-muestra.json",
-        "nota": "10 posts. Más likes absolutos que Indisa, pero base 139 mil diluye el %. Post #1 ~1h."
+        "nota": "N=10. Más likes absolutos que Indisa, pero base 139 mil diluye el %."
       },
       "davila": {
-        "valor": 0.4968,
-        "display": "0,50%",
-        "fuenteId": "ig-er-davila-9",
+        "valor": 0.4818,
+        "display": "0,48%",
+        "fuenteId": "ig-er-davila-10",
         "formula": "((Σ likes+comentarios)/N)/seguidores×100",
-        "nPosts": 9,
+        "nPosts": 10,
         "seguidoresBase": 42200,
-        "interaccionesPromedio": 209.67,
-        "sumaInteracciones": 1887,
+        "interaccionesPromedio": 203.3,
+        "sumaInteracciones": 2033,
         "detalleArchivo": "data/ig-er-davila-muestra.json",
-        "nota": "9 posts propios. Excluido 1 de @municipalidadrecoleta. Incluye outlier Gaspar Lara (705 likes)."
+        "nota": "N=10 primeras entregadas (incluye @municipalidadrecoleta). Outlier Gaspar Lara (705 likes)."
       },
       "santa_maria": {
         "valor": 0.7277,
-        "display": "0,73%",
+        "display": "0,73%*",
         "fuenteId": "ig-er-santamaria-9",
         "formula": "((Σ likes+comentarios)/N)/seguidores×100",
         "nPosts": 9,
@@ -373,7 +373,7 @@
         "interaccionesPromedio": 282.33,
         "sumaInteracciones": 2541,
         "detalleArchivo": "data/ig-er-santamaria-muestra.json",
-        "nota": "9 posts (no se entregó 10.º link). Incluye outlier prótesis pulgar (956 likes)."
+        "nota": "N=9 (falta 10.º). *No comparable 1:1 con el resto. Outlier prótesis pulgar (956 likes)."
       },
       "indisa": {
         "valor": 0.1863,
@@ -385,7 +385,7 @@
         "interaccionesPromedio": 81.4,
         "sumaInteracciones": 814,
         "detalleArchivo": "data/ig-er-indisa-muestra.json",
-        "nota": "Muestra 10 posts (screenshots 2026-07-20). Comentarios = visibles en captura (mínimo). Sin guardados/shares públicos. Post #1 solo 9h — puede subir."
+        "nota": "N=10. Comentarios = visibles en captura (mínimo). Sin guardados/shares públicos."
       }
     },
     "X (Twitter)": {
@@ -476,7 +476,7 @@
     "TikTok: Dávila ~68 mil > Alemana ~50 mil > Santa María ~7,5 mil > Indisa vacía (0); CLC sin cuenta.",
     "TikTok ER (n=5): Dávila 6,00% (virales) >> Santa María 0,64% >> Alemana 0,07%. Indisa N/A · CLC sin cuenta.",
     "En IG el prospecto Indisa está en el pelotón medio-bajo; el gap crítico es vs Alemana (~3×).",
-    "Instagram ER completo: CLC 0,99% > Santa María 0,73% > Dávila 0,50% > Indisa 0,19% > Alemana 0,14%. Indisa 4.ª en engagement relativo.",
+    "Instagram ER (N=10 primeras entregadas): CLC 0,95% > Santa María 0,73%* (N=9) > Dávila 0,48% > Indisa 0,19% > Alemana 0,14%. Indisa 4.ª en engagement relativo.",
     "Columna Prospecto (azul) = Indisa; el resto = benchmark."
   ]
 }

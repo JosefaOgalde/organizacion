@@ -4,9 +4,11 @@
   "seguidores": 38800,
   "seguidoresDisplay": "38,8 mil",
   "formula": "ER% = ((Σ likes + Σ comentarios visibles) / N) / seguidores × 100",
-  "nPostsSolicitados": 9,
+  "metodologia": "Primeras 10 capturas/URLs entregadas (N=10 fijo). Aquí solo se entregaron 9 URLs con métricas; el ER se reporta con N=9 hasta recibir el 10.º.",
+  "nPostsSolicitados": 10,
   "nPostsEnCalculo": 9,
-  "notaMuestra": "Se entregaron 9 URLs (no 10). Hubo captura extra de hidratación (1 jul) sin link — no incluida.",
+  "pendienteDecimo": true,
+  "notaMuestra": "Falta 1 de 10. Hubo captura extra de hidratación (1 jul) sin link — no incluida. Al llegar el 10.º link se recalcula.",
   "sumaInteracciones": 2541,
   "promedioInteracciones": 282.33,
   "engagementRate": 0.7277,
@@ -15,7 +17,7 @@
   "limitaciones": [
     "Comentarios = visibles en screenshot (mínimo).",
     "Post #1 (~24 min) aún puede crecer.",
-    "Muestra de 9 posts (no 10)."
+    "N=9 (pendiente 10.º post) — no comparable 1:1 con el resto del quinteto en N."
   ],
   "posts": [
     {"n": 1, "url": "https://www.instagram.com/p/DbB-xzby_yt/", "likes": 7, "comments": 0, "interacciones": 7, "tema": "Vacunas invierno"},

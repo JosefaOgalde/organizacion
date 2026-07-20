@@ -5,7 +5,7 @@
   "ambito": "RRSS orgánicas",
   "etapa": 1,
   "creado": "2026-07-20T21:33:46Z",
-  "updatedAt": "2026-07-20T22:55:00Z",
+  "updatedAt": "2026-07-20T23:50:00Z",
   "competidores": [
     "Clínica Las Condes",
     "Clínica Alemana",
@@ -61,6 +61,7 @@
     "conclusiones": "data/conclusiones.json"
   },
   "pendientes": [
+    "Instagram ER Santa María: entregar 10.º post (hoy N=9 → 0,73%*)",
     "Spotify: capturar seguidores/shows Alemana; confirmar si Indisa/otros tienen perfil",
     "Muestreo 7–14 días: posts/semana y mix de formatos"
   ],

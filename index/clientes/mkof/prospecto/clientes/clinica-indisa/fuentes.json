@@ -309,14 +309,13 @@
       "metodo": "Screenshots post-a-post entregados por usuaria; likes leídos de UI; comentarios = cantidad visible en captura."
     },
     {
-      "id": "ig-er-clc-9",
+      "id": "ig-er-clc-10",
       "tipo": "instagram_engagement",
       "entidad": "Clínica Las Condes",
       "handle": "@clinicalascondes",
-      "dato": "ER 0,99% — 9 posts propios · promedio 452 interacciones · base 45.800 seguidores",
+      "dato": "ER 0,95% — 10 posts (primeras 10 entregadas) · promedio 434 interacciones · base 45.800 seguidores",
       "fecha": "2026-07-20",
       "detalle": "data/ig-er-clc-muestra.json",
-      "excluido": "https://www.instagram.com/p/DZtGzUvmC3A/ (@uandresbello, no CLC)",
       "urls": [
         "https://www.instagram.com/p/DbB9V8Yp330/",
         "https://www.instagram.com/p/Da1EBOqCZkU/",
@@ -326,9 +325,10 @@
         "https://www.instagram.com/p/DaEaa65lCY5/",
         "https://www.instagram.com/p/DaAv_BEjgAN/",
         "https://www.instagram.com/p/DZ2U3mZBWuD/",
-        "https://www.instagram.com/p/DZsvyaKJ0tj/"
+        "https://www.instagram.com/p/DZsvyaKJ0tj/",
+        "https://www.instagram.com/p/DZtGzUvmC3A/"
       ],
-      "metodo": "Screenshots post-a-post; se excluyó 1 URL de cuenta ajena (UNAB)."
+      "metodo": "N=10 primeras entregadas. Incluye @uandresbello (alianza UNAB–CLC) porque estaba en las 10."
     },
     {
       "id": "ig-er-alemana-10",
@@ -353,25 +353,36 @@
       "metodo": "Screenshots post-a-post entregados por usuaria."
     },
     {
-      "id": "ig-er-davila-9",
+      "id": "ig-er-davila-10",
       "tipo": "instagram_engagement",
       "entidad": "Red Dávila",
       "handle": "@reddavilaoficial",
-      "dato": "ER 0,50% — 9 posts propios · promedio 210 interacciones · base 42.200 seguidores",
+      "dato": "ER 0,48% — 10 posts (primeras 10 entregadas) · promedio 203 interacciones · base 42.200 seguidores",
       "fecha": "2026-07-20",
       "detalle": "data/ig-er-davila-muestra.json",
-      "excluido": "https://www.instagram.com/p/Da0cdx6BH9g/ (@municipalidadrecoleta)",
-      "metodo": "Screenshots post-a-post; se excluyó 1 URL de cuenta ajena (Municipalidad Recoleta)."
+      "urls": [
+        "https://www.instagram.com/p/DbB9fCkERHp/",
+        "https://www.instagram.com/p/Da5OA_omnY4/",
+        "https://www.instagram.com/p/Da1G7F6ja72/",
+        "https://www.instagram.com/p/Da0lUknFOvu/",
+        "https://www.instagram.com/p/Da0cdx6BH9g/",
+        "https://www.instagram.com/p/DayrEsfoHOG/",
+        "https://www.instagram.com/p/Dav_uiwjTOM/",
+        "https://www.instagram.com/p/Danr6HWHzAJ/",
+        "https://www.instagram.com/p/Dalk_kPAvUW/",
+        "https://www.instagram.com/p/DajEPSgExuZ/"
+      ],
+      "metodo": "N=10 primeras entregadas. Incluye @municipalidadrecoleta porque estaba en las 10."
     },
     {
       "id": "ig-er-santamaria-9",
       "tipo": "instagram_engagement",
       "entidad": "Clínica Santa María",
       "handle": "@clinicasantamariacl",
-      "dato": "ER 0,73% — 9 posts · promedio 282 interacciones · base 38.800 seguidores",
+      "dato": "ER 0,73%* — 9 posts (falta 10.º) · promedio 282 interacciones · base 38.800 seguidores",
       "fecha": "2026-07-20",
       "detalle": "data/ig-er-santamaria-muestra.json",
-      "metodo": "Screenshots post-a-post; muestra de 9 URLs (sin 10.º link)."
+      "metodo": "Metodología pide N=10; solo se entregaron 9 URLs. Pendiente 10.º para paridad."
     },
     {
       "id": "x-santamaria",

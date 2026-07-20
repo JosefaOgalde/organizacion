@@ -4,31 +4,29 @@
   "seguidores": 42200,
   "seguidoresDisplay": "42,2 mil",
   "formula": "ER% = ((Σ likes + Σ comentarios visibles) / N) / seguidores × 100",
-  "nPostsSolicitados": 10,
-  "nPostsEnCalculo": 9,
-  "excluido": {
-    "url": "https://www.instagram.com/p/Da0cdx6BH9g/",
-    "motivo": "Post de @municipalidadrecoleta (collab/tag), no del feed propio de Red Dávila"
-  },
-  "sumaInteracciones": 1887,
-  "promedioInteracciones": 209.67,
-  "engagementRate": 0.4968,
-  "engagementRateDisplay": "0,50%",
+  "metodologia": "Primeras 10 capturas/URLs entregadas por la usuaria (N=10 fijo). Si entrega más, solo las primeras 10. No se excluyen collabs/cuentas etiquetadas si estaban en esas 10.",
+  "nPosts": 10,
+  "nPostsEnCalculo": 10,
+  "sumaInteracciones": 2033,
+  "promedioInteracciones": 203.3,
+  "engagementRate": 0.4818,
+  "engagementRateDisplay": "0,48%",
   "limitaciones": [
     "Comentarios = visibles en screenshot (mínimo), salvo donde se indica.",
     "Post Kinevo: likes tomados de og:description (no visibles en captura).",
-    "Post #1 (~26 min) aún puede crecer.",
-    "Muestra de 9 posts propios."
+    "Post #5 (@municipalidadrecoleta): likes desde og:description; se incluye por estar en las 10 entregadas.",
+    "Post #1 (~26 min al capturar) aún puede crecer."
   ],
   "posts": [
     {"n": 1, "url": "https://www.instagram.com/p/DbB9fCkERHp/", "likes": 3, "comments": 0, "interacciones": 3, "tema": "Salud Extendida"},
     {"n": 2, "url": "https://www.instagram.com/p/Da5OA_omnY4/", "likes": 56, "comments": 0, "interacciones": 56, "tema": "Sistema frontal / recomendaciones"},
     {"n": 3, "url": "https://www.instagram.com/p/Da1G7F6ja72/", "likes": 705, "comments": 1, "interacciones": 706, "tema": "Gaspar Lara — rehab LCA (outlier alto)"},
     {"n": 4, "url": "https://www.instagram.com/p/Da0lUknFOvu/", "likes": 39, "comments": 1, "interacciones": 40, "tema": "Atención en lluvias"},
-    {"n": 5, "url": "https://www.instagram.com/p/DayrEsfoHOG/", "likes": 167, "comments": 2, "interacciones": 169, "tema": "Dra. Asenjo — operativo mastología"},
-    {"n": 6, "url": "https://www.instagram.com/p/Dav_uiwjTOM/", "likes": 161, "comments": 1, "interacciones": 162, "tema": "TVN — operativo cáncer de mama"},
-    {"n": 7, "url": "https://www.instagram.com/p/Danr6HWHzAJ/", "likes": 11, "comments": 1, "interacciones": 12, "tema": "Implante dental cuotas"},
-    {"n": 8, "url": "https://www.instagram.com/p/Dalk_kPAvUW/", "likes": 403, "comments": 2, "interacciones": 405, "tema": "Pediatría — mitos resfrío"},
-    {"n": 9, "url": "https://www.instagram.com/p/DajEPSgExuZ/", "likes": 330, "comments": 4, "interacciones": 334, "tema": "Kinevo 900 neurocirugía"}
+    {"n": 5, "url": "https://www.instagram.com/p/Da0cdx6BH9g/", "likes": 143, "comments": 3, "interacciones": 146, "tema": "Liceo Valentín Letelier (@municipalidadrecoleta)", "cuentaPublicacion": "@municipalidadrecoleta", "fuenteLikes": "og:description 2026-07-20"},
+    {"n": 6, "url": "https://www.instagram.com/p/DayrEsfoHOG/", "likes": 167, "comments": 2, "interacciones": 169, "tema": "Dra. Asenjo — operativo mastología"},
+    {"n": 7, "url": "https://www.instagram.com/p/Dav_uiwjTOM/", "likes": 161, "comments": 1, "interacciones": 162, "tema": "TVN — operativo cáncer de mama"},
+    {"n": 8, "url": "https://www.instagram.com/p/Danr6HWHzAJ/", "likes": 11, "comments": 1, "interacciones": 12, "tema": "Implante dental cuotas"},
+    {"n": 9, "url": "https://www.instagram.com/p/Dalk_kPAvUW/", "likes": 403, "comments": 2, "interacciones": 405, "tema": "Pediatría — mitos resfrío"},
+    {"n": 10, "url": "https://www.instagram.com/p/DajEPSgExuZ/", "likes": 330, "comments": 4, "interacciones": 334, "tema": "Kinevo 900 neurocirugía"}
   ]
 }
