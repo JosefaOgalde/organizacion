@@ -374,6 +374,16 @@
       "metodo": "Screenshots post-a-post; muestra de 9 URLs (sin 10.º link)."
     },
     {
+      "id": "x-santamaria",
+      "tipo": "x_twitter",
+      "entidad": "Clínica Santa María",
+      "url": "https://x.com/cl_santamaria",
+      "handle": "@cl_santamaria",
+      "dato": "11.7K followers · 1.722 following · cuenta desde mayo 2009",
+      "fecha": "2026-07-20",
+      "metodo": "Screenshot perfil X entregado por usuaria."
+    },
+    {
       "id": "x-indisa",
       "tipo": "x_twitter",
       "entidad": "Clínica Indisa",
@@ -401,7 +411,8 @@
     "instagram": "https://www.instagram.com/clinicaindisacl/",
     "x": "https://x.com/ClinicaIndisa",
     "youtube": "https://www.youtube.com/@ClínicaINDISA-v5v",
-    "linkedin": "https://www.linkedin.com/company/cl-nica-indisa/posts/?feedView=all"
+    "linkedin": "https://www.linkedin.com/company/cl-nica-indisa/posts/?feedView=all",
+    "tiktok": "https://www.tiktok.com/@clinicaindisacl"
   },
   "canalesOficialesCompetidores": {
     "las_condes": {

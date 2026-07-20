@@ -233,10 +233,13 @@
         "fuenteId": null
       },
       "indisa": {
-        "valor": null,
-        "display": "Sin evid. / PEND.",
-        "fuenteId": null,
-        "nota": "No se encontró perfil institucional claro en búsqueda inicial"
+        "valor": 0,
+        "display": "0 (vacía)",
+        "exacto": "0 seguidores · 0 siguiendo · 4 me gusta",
+        "handle": "@clinicaindisacl",
+        "url": "https://www.tiktok.com/@clinicaindisacl",
+        "fuenteId": "tt-indisa",
+        "nota": "Screenshot 2026-07-20: cuenta creada pero sin contenido/seguidores (candado en perfil)."
       }
     },
     "Instagram ER": {
