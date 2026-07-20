@@ -237,10 +237,16 @@
     },
     "Instagram ER": {
       "las_condes": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null,
-        "nota": "Calcular con 12 posts recientes"
+        "valor": 0.9879,
+        "display": "0,99%",
+        "fuenteId": "ig-er-clc-9",
+        "formula": "((Σ likes+comentarios)/N)/seguidores×100",
+        "nPosts": 9,
+        "seguidoresBase": 45800,
+        "interaccionesPromedio": 452.44,
+        "sumaInteracciones": 4072,
+        "detalleArchivo": "data/ig-er-clc-muestra.json",
+        "nota": "9 posts propios CLC. Excluido 1 URL de @uandresbello. Incluye outlier Día del Padre (3.149 likes); sin ese post ~0,25%."
       },
       "alemana": {
         "valor": null,
@@ -343,7 +349,7 @@
     "Facebook: Alemana (~177) > Dávila (~125) > CLC (~111) > Santa María (~59) > Indisa (~49).",
     "YouTube: CLC (~20) > Santa María (~7) > Alemana (~2,6) > Dávila (~1,9); Indisa pendiente.",
     "En IG el prospecto Indisa está en el pelotón medio-bajo; el gap crítico es vs Alemana (~3×).",
-    "Instagram ER Indisa: 0,19% (10 posts; promedio 81 interacciones / 43,7 mil seguidores). Benchmark ER competidores aún PENDIENTE.",
+    "Instagram ER: CLC 0,99% (9 posts; sesgado por Día del Padre) vs Indisa 0,19% (10 posts) — CLC ~5× en esta muestra.",
     "Columna Prospecto (azul) = Indisa; el resto = benchmark."
   ]
 }

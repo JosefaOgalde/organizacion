@@ -311,6 +311,28 @@
       "metodo": "Screenshots post-a-post entregados por usuaria; likes leídos de UI; comentarios = cantidad visible en captura."
     },
     {
+      "id": "ig-er-clc-9",
+      "tipo": "instagram_engagement",
+      "entidad": "Clínica Las Condes",
+      "handle": "@clinicalascondes",
+      "dato": "ER 0,99% — 9 posts propios · promedio 452 interacciones · base 45.800 seguidores",
+      "fecha": "2026-07-20",
+      "detalle": "data/ig-er-clc-muestra.json",
+      "excluido": "https://www.instagram.com/p/DZtGzUvmC3A/ (@uandresbello, no CLC)",
+      "urls": [
+        "https://www.instagram.com/p/DbB9V8Yp330/",
+        "https://www.instagram.com/p/Da1EBOqCZkU/",
+        "https://www.instagram.com/p/DanJC3pNIQx/",
+        "https://www.instagram.com/p/DaV4YsMs2Q4/",
+        "https://www.instagram.com/p/DaOx06aJleM/",
+        "https://www.instagram.com/p/DaEaa65lCY5/",
+        "https://www.instagram.com/p/DaAv_BEjgAN/",
+        "https://www.instagram.com/p/DZ2U3mZBWuD/",
+        "https://www.instagram.com/p/DZsvyaKJ0tj/"
+      ],
+      "metodo": "Screenshots post-a-post; se excluyó 1 URL de cuenta ajena (UNAB)."
+    },
+    {
       "id": "x-indisa",
       "tipo": "x_twitter",
       "entidad": "Clínica Indisa",
