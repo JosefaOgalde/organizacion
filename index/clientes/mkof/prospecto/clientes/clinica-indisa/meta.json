@@ -44,6 +44,7 @@
       "web": "https://www.clinicasantamaria.cl/",
       "facebook": "https://www.facebook.com/clinicasantamaria",
       "instagram": "https://www.instagram.com/clinicasantamariacl/",
+      "x": "https://x.com/cl_santamaria",
       "youtube": "https://www.youtube.com/@clinicasantamariachile",
       "linkedin": "https://www.linkedin.com/company/clinica-santa-maria/"
     }
@@ -57,7 +58,6 @@
     "conclusiones": "data/conclusiones.json"
   },
   "pendientes": [
-    "X: Alemana 15,8 · Indisa 12,2 · Dávila 4.004 · CLC sin cuenta; confirmar Santa María",
     "Spotify: capturar seguidores/shows Alemana; confirmar si Indisa/otros tienen perfil",
     "Muestreo 7–14 días: posts/semana y mix de formatos"
   ],
