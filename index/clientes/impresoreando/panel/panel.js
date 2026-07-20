@@ -452,11 +452,11 @@
    */
   function seedPortaBobEsponja() {
     const partes = [
-      { pieza: 'brazos+piernas', color: 'amarillo', batchG: 31.5, batchN: 20, usa: 4, batchMin: 83, kgKg: COSTO_PLA_AMARILLO_KG },
-      { pieza: 'zapatos', color: 'negro', batchG: 55.09, batchN: 20, usa: 2, batchMin: 119, kgKg: COSTO_PLA_NEGRO_KG },
-      { pieza: 'corbata', color: 'negro', batchG: 12.44, batchN: 20, usa: 1, batchMin: 33 + 20 / 60, kgKg: COSTO_PLA_NEGRO_KG },
-      { pieza: 'pantalones', color: 'café', batchG: 80.43, batchN: 3, usa: 1, batchMin: 112, kgKg: COSTO_PLA_CAFE_KG },
-      { pieza: 'camisa', color: 'blanco', batchG: 15.06, batchN: 1, usa: 1, batchMin: 28 + 18 / 60, kgKg: COSTO_PLA_BLANCO_KG },
+      { pieza: 'brazos+piernas', color: 'amarillo', batchG: 31.5, batchN: 20, usa: 4, batchMin: 83, precioKg: COSTO_PLA_AMARILLO_KG },
+      { pieza: 'zapatos', color: 'negro', batchG: 55.09, batchN: 20, usa: 2, batchMin: 119, precioKg: COSTO_PLA_NEGRO_KG },
+      { pieza: 'corbata', color: 'negro', batchG: 12.44, batchN: 20, usa: 1, batchMin: 33 + 20 / 60, precioKg: COSTO_PLA_NEGRO_KG },
+      { pieza: 'pantalones', color: 'café', batchG: 80.43, batchN: 3, usa: 1, batchMin: 112, precioKg: COSTO_PLA_CAFE_KG },
+      { pieza: 'camisa', color: 'blanco', batchG: 15.06, batchN: 1, usa: 1, batchMin: 28 + 18 / 60, precioKg: COSTO_PLA_BLANCO_KG },
     ];
     const detalle = partes.map((p) => {
       const g = round2((p.batchG * p.usa) / p.batchN);
@@ -497,6 +497,20 @@
     let changed = upsertProductoSeed(d, 'prod-porta-bob-esponja', seed);
     const p = (d.productos || []).find((x) => x.id === 'prod-porta-bob-esponja');
     if (p) {
+      // Repara el seed defectuoso publicado el 19 jul: el typo kgKg dejó $/kg en 0
+      // y omitió precioKg en todas las partes. No pisa productos editados a mano.
+      const seedCorrupto =
+        !p.editadoLocal &&
+        Number(p.costoFilamentoKgClp) === 0 &&
+        Array.isArray(p.partesSlicer) &&
+        p.partesSlicer.length === seed.partesSlicer.length &&
+        p.partesSlicer.every((parte) => parte.precioKg == null);
+      if (seedCorrupto) {
+        p.costoFilamentoKgClp = seed.costoFilamentoKgClp;
+        p.partesSlicer = seed.partesSlicer;
+        p.notas = seed.notas;
+        changed = true;
+      }
       if (p.sku !== seed.sku) {
         p.sku = seed.sku;
         changed = true;
