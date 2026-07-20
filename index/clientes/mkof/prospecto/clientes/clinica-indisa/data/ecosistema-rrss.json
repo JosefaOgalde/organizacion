@@ -48,10 +48,12 @@
   "celdas": {
     "Facebook": {
       "las_condes": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null,
-        "nota": "Capturar likes/seguidores página oficial CLC"
+        "valor": 111000,
+        "display": "111 mil",
+        "fuenteId": "fb-clc",
+        "exacto": "111K followers (Facebook UI)",
+        "url": "https://www.facebook.com/clinicalascondes",
+        "highlight": true
       },
       "alemana": {
         "valor": null,
@@ -82,7 +84,8 @@
         "valor": null,
         "display": "PENDIENTE",
         "handle": "@clinicalascondes",
-        "fuenteId": "ig-handles"
+        "fuenteId": "ig-clc",
+        "url": "https://www.instagram.com/clinicalascondes/"
       },
       "alemana": {
         "valor": null,
@@ -115,7 +118,8 @@
       "las_condes": {
         "valor": 106200,
         "display": "106 mil",
-        "fuenteId": "li-clc"
+        "fuenteId": "li-clc",
+        "url": "https://www.linkedin.com/company/clinica-las-condes-s.a/"
       },
       "alemana": {
         "valor": 158240,
@@ -141,9 +145,11 @@
     },
     "YouTube": {
       "las_condes": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null
+        "valor": 20200,
+        "display": "20 mil",
+        "fuenteId": "yt-clc",
+        "exacto": "20.2K subscribers",
+        "url": "https://www.youtube.com/user/clctelevision"
       },
       "alemana": {
         "valor": null,
@@ -232,7 +238,9 @@
       "las_condes": {
         "valor": null,
         "display": "PENDIENTE",
-        "fuenteId": null
+        "handle": "@cliniclascondes",
+        "url": "https://x.com/cliniclascondes",
+        "fuenteId": "x-clc"
       },
       "alemana": {
         "valor": null,
@@ -260,7 +268,8 @@
   },
   "lecturaRapida": [
     "En LinkedIn (B2B/employer brand), Indisa (~60 mil) está por debajo de Alemana (~158 mil), Dávila (~111 mil), CLC (~106 mil) y Santa María (~80 mil).",
-    "En Facebook, Indisa ya muestra escala masiva (~49 mil) — canal paciente/familia activo.",
+    "En Facebook, CLC lidera el benchmark medido (~111 mil) frente a Indisa (~49 mil) — gap grande en alcance paciente/familia.",
+    "YouTube: CLC (canal clctelevision) ya tiene ~20 mil suscriptores; Indisa (IndisaCL) pendiente de captura.",
     "Instagram: fila de seguidores + fila Engagement Rate (%). Ambos PENDIENTE hasta captura en app/Metricool (no inventar %).",
     "La columna Prospecto (azul) es Indisa; el resto son competidores de benchmark."
   ]

@@ -18,10 +18,57 @@
       "id": "li-clc",
       "tipo": "linkedin_company",
       "entidad": "Clínica Las Condes",
-      "url": "https://cl.linkedin.com/company/clinica-las-condes-s.a",
+      "url": "https://www.linkedin.com/company/clinica-las-condes-s.a/",
       "dato": "106200 seguidores",
       "fecha": "2026-07-20",
-      "metodo": "WebFetch página pública company LinkedIn."
+      "metodo": "WebFetch página pública company LinkedIn; URL oficial entregada por usuaria."
+    },
+    {
+      "id": "web-clc",
+      "tipo": "sitio_web",
+      "entidad": "Clínica Las Condes",
+      "url": "https://www.clinicalascondes.cl/HOME",
+      "dato": "Sitio oficial",
+      "fecha": "2026-07-20",
+      "metodo": "URL entregada por usuaria."
+    },
+    {
+      "id": "fb-clc",
+      "tipo": "facebook_page",
+      "entidad": "Clínica Las Condes",
+      "url": "https://www.facebook.com/clinicalascondes",
+      "dato": "111K followers (página oficial)",
+      "fecha": "2026-07-20",
+      "metodo": "WebFetch página pública Facebook; URL entregada por usuaria."
+    },
+    {
+      "id": "ig-clc",
+      "tipo": "instagram",
+      "entidad": "Clínica Las Condes",
+      "url": "https://www.instagram.com/clinicalascondes/",
+      "handle": "@clinicalascondes",
+      "dato": "Perfil oficial; seguidores + ER pendientes de captura en app/Metricool",
+      "fecha": "2026-07-20",
+      "metodo": "URL entregada por usuaria."
+    },
+    {
+      "id": "x-clc",
+      "tipo": "x_twitter",
+      "entidad": "Clínica Las Condes",
+      "url": "https://x.com/cliniclascondes",
+      "handle": "@cliniclascondes",
+      "dato": "Perfil oficial X; conteo pendiente captura",
+      "fecha": "2026-07-20",
+      "metodo": "URL entregada por usuaria."
+    },
+    {
+      "id": "yt-clc",
+      "tipo": "youtube",
+      "entidad": "Clínica Las Condes",
+      "url": "https://www.youtube.com/user/clctelevision",
+      "dato": "20.2K subscribers (canal clctelevision)",
+      "fecha": "2026-07-20",
+      "metodo": "curl página pública YouTube; URL entregada por usuaria."
     },
     {
       "id": "li-alemana",
@@ -128,5 +175,16 @@
     "x": "https://x.com/ClinicaIndisa",
     "youtube": "https://www.youtube.com/user/IndisaCL",
     "linkedin": "https://www.linkedin.com/company/cl-nica-indisa/posts/?feedView=all"
+  },
+  "canalesOficialesCompetidores": {
+    "las_condes": {
+      "nombre": "Clínica Las Condes",
+      "web": "https://www.clinicalascondes.cl/HOME",
+      "facebook": "https://www.facebook.com/clinicalascondes",
+      "instagram": "https://www.instagram.com/clinicalascondes/",
+      "x": "https://x.com/cliniclascondes",
+      "youtube": "https://www.youtube.com/user/clctelevision",
+      "linkedin": "https://www.linkedin.com/company/clinica-las-condes-s.a/"
+    }
   }
 }

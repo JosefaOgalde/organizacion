@@ -53,22 +53,29 @@
     .swatch.competidor { background: #fff; }
     .canales-oficiales {
       display: flex; flex-wrap: wrap; gap: 0.45rem 0.65rem;
-      margin: 0 0 1rem; padding: 0.85rem 1rem;
+      margin: 0 0 0.65rem; padding: 0.85rem 1rem;
       border-radius: 12px;
       background: linear-gradient(135deg, var(--prospecto-bg), #f7f3ee);
       border: 1px solid #b8d4e8;
+    }
+    .canales-oficiales.competidor {
+      background: #f7faf8;
+      border: 1px solid var(--line);
     }
     .canales-oficiales .co-label {
       width: 100%; font-size: 0.72rem; font-weight: 800;
       letter-spacing: 0.06em; text-transform: uppercase;
       color: var(--prospecto-mid); margin-bottom: 0.1rem;
     }
+    .canales-oficiales.competidor .co-label { color: var(--muted); }
     .canales-oficiales a {
       font-size: 0.82rem; font-weight: 700; color: var(--prospecto);
       text-decoration: none; padding: 0.28rem 0.55rem; border-radius: 8px;
       background: #fff; border: 1px solid #c5dceb;
     }
+    .canales-oficiales.competidor a { color: var(--ink); border-color: var(--line); }
     .canales-oficiales a:hover { border-color: var(--prospecto); background: #f0f7fb; }
+    .canales-oficiales.competidor a:hover { border-color: var(--accent); background: var(--beige); }
     .table-wrap { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
     table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
     th, td { padding: 0.65rem 0.75rem; border-bottom: 1px solid var(--line); text-align: left; }
@@ -144,6 +151,7 @@
       <span><i class="swatch competidor" aria-hidden="true"></i> Competidores — columnas neutras</span>
     </div>
     <div class="canales-oficiales" id="canales-oficiales" aria-label="Canales oficiales Indisa"></div>
+    <div id="canales-competidores"></div>
     <div class="table-wrap">
       <table id="tabla-eco">
         <thead></thead>
@@ -172,20 +180,22 @@
   <script>
     const base = './';
 
-    function canalLinks(canales) {
+    const CANAL_MAP = [
+      ['web', 'Web'],
+      ['facebook', 'Facebook'],
+      ['instagram', 'Instagram'],
+      ['x', 'X'],
+      ['youtube', 'YouTube'],
+      ['linkedin', 'LinkedIn'],
+    ];
+
+    function canalLinks(canales, label, competidor) {
       if (!canales) return '';
-      const map = [
-        ['web', 'Web'],
-        ['facebook', 'Facebook'],
-        ['instagram', 'Instagram'],
-        ['x', 'X'],
-        ['youtube', 'YouTube'],
-        ['linkedin', 'LinkedIn'],
-      ];
-      return '<span class="co-label">Canales oficiales · Clínica Indisa (prospecto)</span>' +
-        map.filter(([k]) => canales[k]).map(([k, label]) =>
-          `<a href="${canales[k]}" target="_blank" rel="noopener">${label}</a>`
-        ).join('');
+      const cls = competidor ? 'canales-oficiales competidor' : 'canales-oficiales';
+      return `<div class="${cls}"><span class="co-label">${label}</span>` +
+        CANAL_MAP.filter(([k]) => canales[k]).map(([k, name]) =>
+          `<a href="${canales[k]}" target="_blank" rel="noopener">${name}</a>`
+        ).join('') + '</div>';
     }
 
     Promise.all([
@@ -198,7 +208,13 @@
       document.getElementById('objetivo').innerHTML =
         `<strong>Objetivo</strong><br>${meta.objetivo}<br><small>Competidores: ${meta.competidores.join(' · ')}</small>`;
 
-      document.getElementById('canales-oficiales').innerHTML = canalLinks(meta.canalesOficiales);
+      document.getElementById('canales-oficiales').outerHTML =
+        canalLinks(meta.canalesOficiales, 'Canales oficiales · Clínica Indisa (prospecto)', false);
+
+      const compCanales = meta.canalesOficialesCompetidores || {};
+      document.getElementById('canales-competidores').innerHTML = Object.values(compCanales)
+        .map((c) => canalLinks(c, `Canales oficiales · ${c.nombre} (competidor)`, true))
+        .join('');
 
       const thead = document.querySelector('#tabla-eco thead');
       const tbody = document.querySelector('#tabla-eco tbody');

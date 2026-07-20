@@ -5,13 +5,24 @@
   "ambito": "RRSS orgánicas",
   "etapa": 1,
   "creado": "2026-07-20T21:33:46Z",
-  "updatedAt": "2026-07-20T21:50:00Z",
+  "updatedAt": "2026-07-20T21:55:00Z",
   "competidores": [
     "Clínica Las Condes",
     "Clínica Alemana",
     "Clínica Dávila",
     "Clínica Santa María"
   ],
+  "canalesOficialesCompetidores": {
+    "las_condes": {
+      "nombre": "Clínica Las Condes",
+      "web": "https://www.clinicalascondes.cl/HOME",
+      "facebook": "https://www.facebook.com/clinicalascondes",
+      "instagram": "https://www.instagram.com/clinicalascondes/",
+      "x": "https://x.com/cliniclascondes",
+      "youtube": "https://www.youtube.com/user/clctelevision",
+      "linkedin": "https://www.linkedin.com/company/clinica-las-condes-s.a/"
+    }
+  },
   "objetivo": "Evaluar si la comunicación orgánica está alineada entre canales, con objetivos claros y uso adecuado; benchmark vs 4 clínicas privadas de Santiago.",
   "archivos": {
     "fuentes": "fuentes.json",
@@ -21,11 +32,12 @@
     "conclusiones": "data/conclusiones.json"
   },
   "pendientes": [
-    "Instagram: seguidores + Engagement Rate (12 posts) Indisa y 4 competidores",
-    "Facebook: seguidores competidores",
-    "YouTube: suscriptores IndisaCL + competidores",
-    "X: seguidores @ClinicaIndisa + competidores",
-    "Muestreo 7–14 días: posts/semana y mix de formatos"
+    "Instagram: seguidores + Engagement Rate (12 posts) Indisa, CLC y resto de competidores",
+    "Facebook: seguidores Alemana, Dávila, Santa María (CLC ya: ~111 mil)",
+    "YouTube: suscriptores IndisaCL + Alemana/Dávila/Santa María (CLC ya: ~20 mil)",
+    "X: seguidores @ClinicaIndisa, @cliniclascondes y resto",
+    "Muestreo 7–14 días: posts/semana y mix de formatos",
+    "Canales oficiales pendientes: Alemana, Dávila, Santa María"
   ],
   "canalesOficiales": {
     "web": "https://www.indisa.cl/",
