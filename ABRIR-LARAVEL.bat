@@ -6,8 +6,8 @@ echo  === Organizacion · Laravel + SQLite ^(flujo unificado^) ===
 echo  Un solo servidor en :8000 — API + organizador + portal + ECR + MOVA + Impresoreando
 echo.
 echo  Uso:
-echo    ABRIR-LARAVEL.bat           → arranque ^(si ya corre: solo recarga organizador^)
-echo    ABRIR-LARAVEL.bat todo      → abre todas las URLs aunque el server ya este up
+echo    ABRIR-LARAVEL.bat           → sync + reinicia :8000 + abre URLs
+echo    ABRIR-LARAVEL.bat todo      → igual ^(abre todas las URLs^)
 echo    ABRIR-LARAVEL.bat sin-nav   → solo servidor / sync, sin abrir navegador
 echo    RECARGAR.bat                → solo recarga organizador ?disco=1
 echo.
@@ -79,9 +79,10 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo  3^) migrate + seed...
+echo  3^) migrate + seed + limpiar cache rutas...
 pushd backend
 "%PHP_EXE%" artisan config:clear >nul 2>&1
+"%PHP_EXE%" artisan route:clear >nul 2>&1
 "%PHP_EXE%" artisan migrate --force
 "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
 popd
@@ -94,31 +95,28 @@ if not exist "data\organizacion-live.json" (
   )
 )
 
+REM Tras actualizar FrontendStaticController / web.php, reiniciar :8000
+REM (si ya corria, el proceso viejo puede servir 404 en carpetas como /index/clientes/)
 set "YA_CORRE=0"
 netstat -ano 2>nul | findstr ":8000" | findstr "LISTENING" >nul
-if not errorlevel 1 set "YA_CORRE=1"
-
-if "%YA_CORRE%"=="1" (
-  echo.
-  echo  Laravel ya esta en :8000 — no se reinicia el servidor.
-) else (
-  echo.
-  echo  Arrancando http://127.0.0.1:8000 ...
-  start "Laravel · 8000" cmd /k "cd /d "%~dp0backend" && "%PHP_EXE%" artisan serve --host=127.0.0.1 --port=8000"
-  timeout /t 2 >nul
+if not errorlevel 1 (
+  echo  Reiniciando Laravel en :8000 ^(rutas/frontend actualizados^)...
+  if exist "%~dp0CERRAR-SERVIDOR.bat" (
+    call "%~dp0CERRAR-SERVIDOR.bat"
+  ) else (
+    for /f "tokens=5" %%P in ('netstat -ano ^| findstr ":8000" ^| findstr "LISTENING"') do taskkill /F /PID %%P >nul 2>&1
+  )
+  timeout /t 1 >nul
 )
+
+echo.
+echo  Arrancando http://127.0.0.1:8000 ...
+start "Laravel · 8000" cmd /k "cd /d "%~dp0backend" && "%PHP_EXE%" artisan serve --host=127.0.0.1 --port=8000"
+timeout /t 2 >nul
+set "YA_CORRE=0"
 
 if /I "%MODO%"=="sin-nav" goto :fin_urls
 if /I "%MODO%"=="sin-navegador" goto :fin_urls
-
-if /I "%MODO%"=="todo" goto :abrir_todo
-
-REM auto: si ya corria → solo recargar organizador; si arranco ahora → abrir todo
-if "%YA_CORRE%"=="1" (
-  echo  Recargando solo el organizador...
-  start "" "http://127.0.0.1:8000/index.html?disco=1"
-  goto :fin_urls
-)
 
 :abrir_todo
 start "" "http://127.0.0.1:8000/index.html?disco=1"

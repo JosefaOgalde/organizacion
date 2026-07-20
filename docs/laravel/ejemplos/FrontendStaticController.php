@@ -8,8 +8,6 @@
 
 namespace App\Http\Controllers;
 
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
 class FrontendStaticController extends Controller
 {
     private function rootPath(): string
@@ -24,10 +22,8 @@ class FrontendStaticController extends Controller
 
     public function serve(string $path = 'index.html')
     {
-        $path = ltrim(str_replace('\\', '/', $path), '/');
-        if ($path === '' || str_ends_with($path, '/')) {
-            $path .= 'index.html';
-        }
+        $path = rawurldecode(str_replace('\\', '/', $path));
+        $path = ltrim($path, '/');
 
         $deny = [
             '.git', 'backend', 'node_modules', '.env',
@@ -40,9 +36,12 @@ class FrontendStaticController extends Controller
         }
 
         $root = realpath($this->rootPath());
-        $full = realpath($root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $path));
+        if ($root === false) {
+            abort(404);
+        }
 
-        if ($full === false || $root === false || !str_starts_with($full, $root) || !is_file($full)) {
+        $full = $this->resolveFile($root, $path);
+        if ($full === null) {
             abort(404);
         }
 
@@ -71,5 +70,50 @@ class FrontendStaticController extends Controller
             'Content-Type' => $mime,
             'Cache-Control' => 'no-cache',
         ]);
+    }
+
+    /**
+     * Resuelve archivo bajo $root. Si el path es carpeta (con o sin / final),
+     * sirve index.html. Comparación de root case-insensitive (Windows).
+     */
+    private function resolveFile(string $root, string $path): ?string
+    {
+        $candidates = [];
+
+        if ($path === '' || str_ends_with($path, '/')) {
+            $candidates[] = trim($path, '/') === ''
+                ? 'index.html'
+                : trim($path, '/') . '/index.html';
+        } else {
+            $candidates[] = $path;
+            // /index/clientes  →  /index/clientes/index.html
+            $candidates[] = $path . '/index.html';
+        }
+
+        $rootNorm = strtolower(str_replace('\\', '/', $root));
+
+        foreach ($candidates as $rel) {
+            $rel = ltrim(str_replace('\\', '/', $rel), '/');
+            $absolute = $root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $rel);
+
+            // Si es directorio, probar index.html dentro
+            if (is_dir($absolute)) {
+                $absolute = rtrim($absolute, '\\/') . DIRECTORY_SEPARATOR . 'index.html';
+            }
+
+            $full = realpath($absolute);
+            if ($full === false || !is_file($full)) {
+                continue;
+            }
+
+            $fullNorm = strtolower(str_replace('\\', '/', $full));
+            if (!str_starts_with($fullNorm, $rootNorm)) {
+                continue;
+            }
+
+            return $full;
+        }
+
+        return null;
     }
 }
