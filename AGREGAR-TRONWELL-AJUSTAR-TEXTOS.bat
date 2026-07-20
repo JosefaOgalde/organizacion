@@ -25,6 +25,8 @@ if errorlevel 1 (
 )
 
 echo.
-echo  Luego: ABRIR-LARAVEL.bat  →  http://127.0.0.1:8000/index.html?disco=1
+echo  Listo. Si Laravel ya esta abierto:
+echo    RECARGAR.bat
+echo  o F5 en http://127.0.0.1:8000/index.html?disco=1
 echo.
 pause
