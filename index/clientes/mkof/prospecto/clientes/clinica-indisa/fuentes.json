@@ -140,9 +140,56 @@
       "tipo": "linkedin_company",
       "entidad": "Clínica Dávila",
       "url": "https://cl.linkedin.com/company/clinica-davila",
-      "dato": "111335 seguidores",
+      "dato": "114161 seguidores",
       "fecha": "2026-07-20",
-      "metodo": "Agregador LinkedIn company (mismo día); validar en UI LinkedIn al presentar."
+      "metodo": "curl página pública company LinkedIn."
+    },
+    {
+      "id": "web-davila",
+      "tipo": "sitio_web",
+      "entidad": "Clínica Dávila / Red Dávila",
+      "url": "https://www.davila.cl/",
+      "dato": "Sitio oficial",
+      "fecha": "2026-07-20",
+      "metodo": "URL entregada por usuaria."
+    },
+    {
+      "id": "fb-davila",
+      "tipo": "facebook_page",
+      "entidad": "Red Dávila",
+      "url": "https://www.facebook.com/reddavilaoficial/",
+      "dato": "125.104 likes (página oficial reddavilaoficial)",
+      "fecha": "2026-07-20",
+      "metodo": "curl página pública Facebook; URL entregada por usuaria."
+    },
+    {
+      "id": "ig-davila",
+      "tipo": "instagram",
+      "entidad": "Red Dávila",
+      "url": "https://www.instagram.com/reddavilaoficial/",
+      "handle": "@reddavilaoficial",
+      "dato": "Perfil oficial; seguidores + ER pendientes de captura en app/Metricool",
+      "fecha": "2026-07-20",
+      "metodo": "URL entregada por usuaria."
+    },
+    {
+      "id": "x-davila",
+      "tipo": "x_twitter",
+      "entidad": "Red Dávila",
+      "url": "https://x.com/Red_Davila",
+      "handle": "@Red_Davila",
+      "dato": "Perfil oficial X; conteo pendiente captura",
+      "fecha": "2026-07-20",
+      "metodo": "URL entregada por usuaria."
+    },
+    {
+      "id": "yt-davila",
+      "tipo": "youtube",
+      "entidad": "Red Dávila",
+      "url": "https://www.youtube.com/@RedDávilacl",
+      "dato": "1.85K subscribers",
+      "fecha": "2026-07-20",
+      "metodo": "curl página pública YouTube @RedDávilacl; URL entregada por usuaria."
     },
     {
       "id": "li-santamaria",
@@ -179,7 +226,7 @@
         "indisa": "@clinicaindisacl",
         "las_condes": "@clinicalascondes",
         "alemana": "@clinicaalemanadesantiago",
-        "davila": "@clinicadavilaoficial",
+        "davila": "@reddavilaoficial",
         "santa_maria": "@clinicasantamariacl"
       },
       "fecha": "2026-07-20",
@@ -251,6 +298,14 @@
       "youtube": "https://www.youtube.com/channel/UCVTx7AHcRM8auQ68PLDwrjA",
       "linkedin": "https://www.linkedin.com/company/clinica-alemana-de-santiago/",
       "spotify": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg"
+    },
+    "davila": {
+      "nombre": "Dávila / Red Dávila",
+      "web": "https://www.davila.cl/",
+      "facebook": "https://www.facebook.com/reddavilaoficial/",
+      "instagram": "https://www.instagram.com/reddavilaoficial/",
+      "x": "https://x.com/Red_Davila",
+      "youtube": "https://www.youtube.com/@RedDávilacl"
     }
   }
 }

@@ -5,7 +5,7 @@
   "ambito": "RRSS orgánicas",
   "etapa": 1,
   "creado": "2026-07-20T21:33:46Z",
-  "updatedAt": "2026-07-20T21:58:00Z",
+  "updatedAt": "2026-07-20T22:00:00Z",
   "competidores": [
     "Clínica Las Condes",
     "Clínica Alemana",
@@ -31,6 +31,14 @@
       "youtube": "https://www.youtube.com/channel/UCVTx7AHcRM8auQ68PLDwrjA",
       "linkedin": "https://www.linkedin.com/company/clinica-alemana-de-santiago/",
       "spotify": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg"
+    },
+    "davila": {
+      "nombre": "Dávila / Red Dávila",
+      "web": "https://www.davila.cl/",
+      "facebook": "https://www.facebook.com/reddavilaoficial/",
+      "instagram": "https://www.instagram.com/reddavilaoficial/",
+      "x": "https://x.com/Red_Davila",
+      "youtube": "https://www.youtube.com/@RedDávilacl"
     }
   },
   "objetivo": "Evaluar si la comunicación orgánica está alineada entre canales, con objetivos claros y uso adecuado; benchmark vs 4 clínicas privadas de Santiago.",
@@ -42,13 +50,13 @@
     "conclusiones": "data/conclusiones.json"
   },
   "pendientes": [
-    "Instagram: seguidores + Engagement Rate (12 posts) Indisa, CLC, Alemana y resto",
-    "Facebook: seguidores Dávila y Santa María (Alemana ~177 mil · CLC ~111 mil)",
-    "YouTube: suscriptores IndisaCL + Dávila/Santa María (CLC ~20 mil · Alemana ~2,6 mil)",
-    "X: seguidores @ClinicaIndisa, @cliniclascondes, @clinicaalemana y resto",
+    "Instagram: seguidores + Engagement Rate (12 posts) Indisa y 4 competidores",
+    "Facebook: seguidores Santa María (Alemana ~177 · Dávila ~125 · CLC ~111 · Indisa ~49)",
+    "YouTube: suscriptores IndisaCL + Santa María (CLC ~20 · Alemana ~2,6 · Dávila ~1,9)",
+    "X: seguidores Indisa, CLC, Alemana, @Red_Davila, Santa María",
     "Spotify: capturar seguidores/shows Alemana; confirmar si Indisa/otros tienen perfil",
     "Muestreo 7–14 días: posts/semana y mix de formatos",
-    "Canales oficiales pendientes: Dávila, Santa María"
+    "Canales oficiales pendientes: Santa María"
   ],
   "canalesOficiales": {
     "web": "https://www.indisa.cl/",

@@ -34,7 +34,8 @@
     },
     {
       "id": "davila",
-      "nombre": "Clínica Dávila",
+      "nombre": "Dávila / Red Dávila",
+      "nombreCorto": "Red Dávila",
       "rol": "competidor",
       "etiqueta": "Competidor"
     },
@@ -64,10 +65,11 @@
         "highlight": true
       },
       "davila": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null,
-        "nota": "FB referenciado en topdoctors: facebook.com/clinicadavila"
+        "valor": 125000,
+        "display": "125 mil",
+        "fuenteId": "fb-davila",
+        "exacto": "125.104 likes (Facebook UI)",
+        "url": "https://www.facebook.com/reddavilaoficial/"
       },
       "santa_maria": {
         "valor": null,
@@ -100,8 +102,9 @@
       "davila": {
         "valor": null,
         "display": "PENDIENTE",
-        "handle": "@clinicadavilaoficial",
-        "fuenteId": "ig-handles"
+        "handle": "@reddavilaoficial",
+        "fuenteId": "ig-davila",
+        "url": "https://www.instagram.com/reddavilaoficial/"
       },
       "santa_maria": {
         "valor": null,
@@ -134,9 +137,11 @@
         "highlight": true
       },
       "davila": {
-        "valor": 111335,
-        "display": "111 mil",
-        "fuenteId": "li-davila"
+        "valor": 114161,
+        "display": "114 mil",
+        "fuenteId": "li-davila",
+        "exacto": "114.161 seguidores",
+        "url": "https://www.linkedin.com/company/clinica-davila"
       },
       "santa_maria": {
         "valor": 79673,
@@ -165,10 +170,11 @@
         "url": "https://www.youtube.com/channel/UCVTx7AHcRM8auQ68PLDwrjA"
       },
       "davila": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null,
-        "nota": "Canal referenciado en topdoctors"
+        "valor": 1850,
+        "display": "1,9 mil",
+        "fuenteId": "yt-davila",
+        "exacto": "1.85K subscribers",
+        "url": "https://www.youtube.com/@RedDávilacl"
       },
       "santa_maria": {
         "valor": null,
@@ -260,7 +266,9 @@
       "davila": {
         "valor": null,
         "display": "PENDIENTE",
-        "fuenteId": null
+        "handle": "@Red_Davila",
+        "url": "https://x.com/Red_Davila",
+        "fuenteId": "x-davila"
       },
       "santa_maria": {
         "valor": null,
@@ -307,9 +315,10 @@
     }
   },
   "lecturaRapida": [
-    "En LinkedIn, Alemana lidera (~160 mil); Indisa (~60 mil) queda última del quinteto medido.",
-    "En Facebook, Alemana (~177 mil) > CLC (~111 mil) > Indisa (~49 mil) — gap grande en alcance paciente/familia.",
-    "YouTube: CLC (~20 mil) lidera vs Alemana (~2,6 mil); Indisa pendiente de captura.",
+    "En LinkedIn, Alemana lidera (~160 mil); Dávila (~114 mil) y CLC (~106 mil) siguen; Indisa (~60 mil) última del quinteto.",
+    "En Facebook: Alemana (~177 mil) > Dávila/Red Dávila (~125 mil) > CLC (~111 mil) > Indisa (~49 mil).",
+    "YouTube: CLC (~20 mil) >> Alemana (~2,6 mil) ≈ Dávila (~1,9 mil); Indisa pendiente.",
+    "Marca Dávila opera como Red Dávila en RRSS (@reddavilaoficial) — coherencia de naming a considerar vs Indisa.",
     "Spotify: Alemana tiene perfil oficial; Indisa y el resto sin evidencia aún — formato audio como diferencial.",
     "Instagram: fila de seguidores + fila Engagement Rate (%). Ambos PENDIENTE hasta captura en app/Metricool (no inventar %).",
     "La columna Prospecto (azul) es Indisa; el resto son competidores de benchmark."
