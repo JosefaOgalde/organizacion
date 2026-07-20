@@ -214,8 +214,9 @@
     "TikTok": {
       "las_condes": {
         "valor": null,
-        "display": "Sin evid. / PEND.",
-        "fuenteId": null
+        "display": "Sin cuenta",
+        "fuenteId": "tt-clc",
+        "nota": "Confirmado por usuaria: Clínica Las Condes no tiene TikTok."
       },
       "alemana": {
         "valor": null,
@@ -385,6 +386,7 @@
     "Facebook: Alemana (~177) > Dávila (~125) > CLC (~111) > Santa María (~59) > Indisa (~49).",
     "YouTube: Indisa (~25 mil) lidera el quinteto > CLC (~20) > Santa María (~7) > Alemana (~2,6) > Dávila (~1,9).",
     "X: Alemana ~16 mil > Indisa ~12 mil ≈ Santa María ~12 mil > Dávila ~4 mil; CLC sin cuenta.",
+    "TikTok: Indisa tiene @clinicaindisacl pero está vacía (0 seguidores) — oportunidad o deuda de canal.",
     "En IG el prospecto Indisa está en el pelotón medio-bajo; el gap crítico es vs Alemana (~3×).",
     "Instagram ER completo: CLC 0,99% > Santa María 0,73% > Dávila 0,50% > Indisa 0,19% > Alemana 0,14%. Indisa 4.ª en engagement relativo.",
     "Columna Prospecto (azul) = Indisa; el resto = benchmark."

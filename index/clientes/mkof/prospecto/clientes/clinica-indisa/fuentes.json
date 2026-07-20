@@ -384,6 +384,24 @@
       "metodo": "Screenshot perfil X entregado por usuaria."
     },
     {
+      "id": "tt-indisa",
+      "tipo": "tiktok",
+      "entidad": "Clínica Indisa",
+      "url": "https://www.tiktok.com/@clinicaindisacl",
+      "handle": "@clinicaindisacl",
+      "dato": "0 seguidores · 0 siguiendo · 4 me gusta · sin bio — cuenta vacía",
+      "fecha": "2026-07-20",
+      "metodo": "Screenshot perfil TikTok entregado por usuaria."
+    },
+    {
+      "id": "tt-clc",
+      "tipo": "tiktok",
+      "entidad": "Clínica Las Condes",
+      "dato": "Sin cuenta en TikTok",
+      "fecha": "2026-07-20",
+      "metodo": "Confirmado por usuaria."
+    },
+    {
       "id": "x-indisa",
       "tipo": "x_twitter",
       "entidad": "Clínica Indisa",
