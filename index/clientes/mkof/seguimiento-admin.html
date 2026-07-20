@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOVA · Seguimiento administrativo (20 jul)</title>
+  <link rel="stylesheet" href="../../assets/portal.css">
+  <link rel="stylesheet" href="../../assets/mkof-mova-auditoria.css">
+</head>
+<body class="mova-aud">
+  <header class="mova-aud__hero">
+    <nav class="mova-aud__nav">
+      <a href="../MKOF/MOVA/documentos/">← Documentos MOVA</a>
+      <a href="cloudflare-mova.html">Cloudflare →</a>
+    </nav>
+    <p class="mova-aud__eyebrow">GRUPO MAKING OF · MOVA · CIERRE FÁCIL</p>
+    <h1>Seguimiento administrativo</h1>
+    <p class="mova-aud__sub">20 jul 2026 · lo entregado hoy + textos listos para pegar</p>
+    <p class="mova-aud__badge">Sin tocar servidor · solo coordinación</p>
+  </header>
+
+  <main class="mova-aud__main">
+    <section>
+      <h2>Hecho hoy</h2>
+      <ul class="mova-aud__check">
+        <li>PPT / guía nodo MySQL entregada a la persona encargada de n8n</li>
+        <li>Indicaciones de respaldo cPanel dadas a la persona del ZIP</li>
+        <li>Auditoría D1–D5 documentada · n8n en GitHub hecho</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Esperando respuesta</h2>
+      <table class="mova-aud__tabla">
+        <thead>
+          <tr><th>Qué</th><th>Quién</th><th>Señal de “ok”</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Nodo MySQL en n8n</td>
+            <td>Encargado n8n</td>
+            <td>Test OK + MySQL antes de Sheets</td>
+          </tr>
+          <tr>
+            <td>ZIP espejo cPanel</td>
+            <td>Encargado respaldo</td>
+            <td>Archivos en <code>espejo-cpanel/mova_auth/</code></td>
+          </tr>
+          <tr>
+            <td>Firma reglas D2</td>
+            <td>Equipo técnico</td>
+            <td>Correo/acta de acuerdo</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Repo externo registrado</h2>
+      <p>Respaldos grandes PHP/n8n viven en el Git de Juan (no en <code>organizacion</code>):</p>
+      <pre class="mova-aud__mapa">https://github.com/juanemedinar/mova-repo
+Local: C:\Users\Josefa Ogalde\Downloads\mova-repo
+Guía: repos-externos.html</pre>
+      <p><a href="repos-externos.html">Abrir ficha repos externos →</a></p>
+    </section>
+
+    <section>
+      <h2>Textos listos para pegar</h2>
+
+      <h3>1 · Recordatorio nodo MySQL</h3>
+      <pre class="mova-aud__mapa">Asunto: MOVA — confirmación nodo MySQL en n8n
+
+Hola,
+
+Te dejé la guía paso a paso para agregar el nodo MySQL
+(fuente primaria → después Sheets).
+
+¿Puedes confirmar cuando tengas:
+1) Credencial con Test OK
+2) Orden en el canvas: MySQL → Google Sheets
+3) Una ejecución Success de prueba
+
+Gracias
+</pre>
+
+      <h3>2 · Recordatorio ZIP cPanel</h3>
+      <pre class="mova-aud__mapa">Asunto: MOVA — ZIP mova_auth desde cPanel
+
+Hola,
+
+Para el espejo en el repo necesitamos:
+1) File Manager → public_html/acme-chile.cl/
+2) Comprimir carpeta mova_auth → ZIP
+3) Descargar y avisar (sin subir config.php a chats)
+
+Guía: cpanel-espejo.html
+
+Plazo sugerido: [FECHA]
+Gracias
+</pre>
+
+      <h3>3 · Firma reglas D2 (mova_auth)</h3>
+      <pre class="mova-aud__mapa">Asunto: MOVA — acuerdo reglas mova_auth (D2)
+
+Hola equipo,
+
+Para cerrar la auditoría pedimos confirmación por escrito:
+
+«mova_auth es el único validador de sesión.
+Si no pasó por mova_auth, no entra.
+Excepción documentada: /documentos/.»
+
+Documento: Reglas-mova_auth.md / portal MOVA D2
+
+¿Pueden responder este correo con “De acuerdo” o comentarios?
+
+Gracias
+</pre>
+    </section>
+
+    <section>
+      <h2>En el organizador (1 min)</h2>
+      <ol>
+        <li>Abrir <code>ABRIR-LARAVEL.bat</code> → organizador</li>
+        <li>Tarea MKOF: anotar “20 jul — PPT MySQL entregado · ZIP cPanel encargado”</li>
+        <li>Si tienes <code>mkof/03</code>–<code>mkof/05</code>: marcar completadas (auditoría ya cerrada en docs)</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Cuando contesten (siguiente fácil)</h2>
+      <ul class="mova-aud__check mova-aud__check--pend">
+        <li>Si llega el ZIP → pegar en <code>espejo-cpanel/</code> · commit</li>
+        <li>Si nodo MySQL OK → anotar en ficha y seguir checklist operación</li>
+        <li>Si firman D2 → activar Cloudflare (<a href="cloudflare-mova.html">guía</a>)</li>
+      </ul>
+    </section>
+  </main>
+  <footer class="mova-aud__foot">MOVA · Seguimiento admin · 20 jul 2026</footer>
+</body>
+</html>
