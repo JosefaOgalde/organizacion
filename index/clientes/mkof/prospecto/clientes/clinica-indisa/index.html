@@ -110,9 +110,32 @@
     td.num { font-weight: 700; }
     td.pend { color: var(--warn); font-weight: 600; }
     td.col-prospecto.pend { color: #9a4e00; }
-    td.hi { background: #dff3ea; }
+    td.hi {
+      background: linear-gradient(180deg, #c8f0d8 0%, #a8e4c0 100%);
+      color: #0d5c38;
+      font-weight: 800;
+      box-shadow: inset 0 0 0 2px #1a9a5c;
+      position: relative;
+    }
     td.col-prospecto.hi {
-      background: linear-gradient(180deg, #d4efe4 0%, var(--prospecto-bg2) 100%);
+      background: linear-gradient(180deg, #b8ebd0 0%, #9ad9b8 100%);
+      box-shadow: inset 0 0 0 2px #1a9a5c;
+      border-left: 3px solid var(--prospecto);
+      border-right: 3px solid var(--prospecto);
+    }
+    td.hi .badge-mejor {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #0d5c38;
+      margin-top: 0.2rem;
+    }
+    .swatch.mejor {
+      background: linear-gradient(180deg, #c8f0d8, #a8e4c0);
+      border-color: #1a9a5c;
+      box-shadow: inset 0 0 0 1px #1a9a5c;
     }
     tr.fila-er th.platform { background: #f7f3ee; }
     .er-note {
@@ -149,6 +172,7 @@
     <div class="leyenda">
       <span><i class="swatch prospecto" aria-hidden="true"></i> Prospecto (Indisa) — fondo azul propio</span>
       <span><i class="swatch competidor" aria-hidden="true"></i> Competidores — columnas neutras</span>
+      <span><i class="swatch mejor" aria-hidden="true"></i> Mejor métrica de la fila</span>
     </div>
     <div class="canales-oficiales" id="canales-oficiales" aria-label="Canales oficiales Indisa"></div>
     <div id="canales-competidores"></div>
@@ -229,18 +253,22 @@
 
       tbody.innerHTML = eco.plataformas.map((p) => {
         const row = eco.celdas[p];
-        const isEr = /engagement|instagram er/i.test(p);
+        const isEr = /er\b|engagement/i.test(p);
+        const erNote = /tiktok er/i.test(p)
+          ? '% · likes+com.+guardados · n=5'
+          : (/instagram er/i.test(p) ? '% · likes+comentarios · muestra posts' : '');
         return `<tr class="${isEr ? 'fila-er' : ''}"><th class="platform">${p}${
-          isEr ? '<span class="er-note">% engagement · media 12 posts</span>' : ''
+          erNote ? `<span class="er-note">${erNote}</span>` : ''
         }</th>${eco.columnas.map((c) => {
           const cell = row[c.id] || { display: 'PENDIENTE' };
           const isP = c.rol === 'prospecto';
-          const baseCls = cell.display === 'PENDIENTE' || String(cell.display).includes('PEND')
-            ? 'pend'
-            : (cell.highlight ? 'num hi' : 'num');
+          const isBest = !!(cell.highlight || cell.mejorMetrica);
+          const isPend = cell.display === 'PENDIENTE' || String(cell.display).includes('PEND');
+          const baseCls = isPend ? 'pend' : (isBest ? 'num hi' : 'num');
           const cls = isP ? `${baseCls} col-prospecto` : baseCls;
-          const tip = cell.handle ? ` title="${cell.handle}"` : '';
-          return `<td class="${cls}"${tip}>${cell.display}</td>`;
+          const tip = cell.handle ? ` title="${cell.handle}"` : (isBest ? ' title="Mejor métrica de la fila"' : '');
+          const badge = isBest && !isPend ? '<span class="badge-mejor">Mejor</span>' : '';
+          return `<td class="${cls}"${tip}>${cell.display}${badge}</td>`;
         }).join('')}</tr>`;
       }).join('');
 

@@ -1,7 +1,18 @@
 {
   "titulo": "ECOSISTEMA RRSS",
   "fecha": "2026-07-20",
-  "notaPresentacion": "Columna Clínica Indisa = PROSPECTO (fondo distinto). Filas ER: Instagram y TikTok (muestra de videos).",
+  "notaPresentacion": "Columna Clínica Indisa = PROSPECTO (fondo distinto). Recuadros verdes = mejor métrica de cada fila.",
+  "mejoresPorFila": {
+    "Facebook": "alemana",
+    "Instagram": "alemana",
+    "Instagram ER": "las_condes",
+    "LinkedIn": "alemana",
+    "YouTube": "indisa",
+    "TikTok": "davila",
+    "TikTok ER": "davila",
+    "X (Twitter)": "alemana",
+    "Spotify": "alemana"
+  },
   "plataformas": [
     "Facebook",
     "Instagram",
@@ -63,7 +74,8 @@
         "fuenteId": "fb-alemana",
         "exacto": "177.382 likes (Facebook UI)",
         "url": "https://www.facebook.com/Clinicaalemanadesantiago/",
-        "highlight": true
+        "highlight": true,
+        "mejorMetrica": true
       },
       "davila": {
         "valor": 125000,
@@ -105,7 +117,8 @@
         "fuenteId": "ig-alemana",
         "exacto": "139 mil seguidores · 1.515 posts (screenshot app 2026-07-20)",
         "url": "https://www.instagram.com/clinicaalemanadesantiago/",
-        "highlight": true
+        "highlight": true,
+        "mejorMetrica": true
       },
       "davila": {
         "valor": 42200,
@@ -149,7 +162,8 @@
         "fuenteId": "li-alemana",
         "exacto": "160.243 seguidores",
         "url": "https://www.linkedin.com/company/clinica-alemana-de-santiago/",
-        "highlight": true
+        "highlight": true,
+        "mejorMetrica": true
       },
       "davila": {
         "valor": 114161,
@@ -209,7 +223,8 @@
         "url": "https://www.youtube.com/@ClínicaINDISA-v5v",
         "urlAlternativa": "https://www.youtube.com/user/IndisaCL",
         "nota": "Screenshot canal oficial 2026-07-20. Lidera el benchmark YT del quinteto.",
-        "highlight": true
+        "highlight": true,
+        "mejorMetrica": true
       }
     },
     "TikTok": {
@@ -236,7 +251,8 @@
         "url": "https://www.tiktok.com/@reddavilaoficial",
         "fuenteId": "tt-davila",
         "nota": "Screenshot 2026-07-20. Lidera TikTok del quinteto medido.",
-        "highlight": true
+        "highlight": true,
+        "mejorMetrica": true
       },
       "santa_maria": {
         "valor": 7534,
@@ -264,10 +280,16 @@
         "fuenteId": "tt-clc"
       },
       "alemana": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null,
-        "nota": "Muestra de 3–5 videos"
+        "valor": 0.0657,
+        "display": "0,07%",
+        "fuenteId": "tt-er-alemana-5",
+        "formula": "((Σ likes+comentarios+guardados)/N)/seguidores×100",
+        "nPosts": 5,
+        "seguidoresBase": 49600,
+        "interaccionesPromedio": 32.6,
+        "sumaInteracciones": 163,
+        "detalleArchivo": "data/tt-er-alemana-muestra.json",
+        "nota": "5 videos. Interacciones bajas (17–44 likes) + base ~50 mil → ER muy bajo."
       },
       "davila": {
         "valor": 6.0047,
@@ -280,7 +302,8 @@
         "sumaInteracciones": 20536,
         "detalleArchivo": "data/tt-er-davila-muestra.json",
         "nota": "5 videos. 3 virales (2.3k–8.1k likes) disparan el %. Sin ellos ~0,13%. Incluye guardados.",
-        "highlight": true
+        "highlight": true,
+        "mejorMetrica": true
       },
       "santa_maria": {
         "valor": 0.6371,
@@ -312,7 +335,9 @@
         "interaccionesPromedio": 452.44,
         "sumaInteracciones": 4072,
         "detalleArchivo": "data/ig-er-clc-muestra.json",
-        "nota": "9 posts propios CLC. Excluido 1 URL de @uandresbello. Incluye outlier Día del Padre (3.149 likes); sin ese post ~0,25%."
+        "nota": "9 posts propios CLC. Excluido 1 URL de @uandresbello. Incluye outlier Día del Padre (3.149 likes); sin ese post ~0,25%.",
+        "highlight": true,
+        "mejorMetrica": true
       },
       "alemana": {
         "valor": 0.1391,
@@ -377,7 +402,9 @@
         "handle": "@Clinicaalemana",
         "url": "https://x.com/clinicaalemana",
         "fuenteId": "x-alemana",
-        "nota": "Screenshot perfil X 2026-07-20. Cuenta desde octubre 2010."
+        "nota": "Screenshot perfil X 2026-07-20. Cuenta desde octubre 2010.",
+        "highlight": true,
+        "mejorMetrica": true
       },
       "davila": {
         "valor": 4004,
@@ -418,7 +445,9 @@
         "display": "Activo / PEND.",
         "fuenteId": "spotify-alemana",
         "url": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg",
-        "nota": "Perfil oficial Spotify; capturar seguidores / shows"
+        "nota": "Perfil oficial Spotify; capturar seguidores / shows",
+        "highlight": true,
+        "mejorMetrica": true
       },
       "davila": {
         "valor": null,
