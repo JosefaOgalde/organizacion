@@ -96,20 +96,21 @@ start "Laravel · 8000" cmd /k "cd /d "%~dp0backend" && "%PHP_EXE%" artisan serv
 timeout /t 2 >nul
 
 start "" "http://127.0.0.1:8000/index.html?disco=1"
-start "" "http://127.0.0.1:8000/index/clientes/"
-start "" "http://127.0.0.1:8000/index/clientes/ecr/"
-start "" "http://127.0.0.1:8000/index/clientes/mkof/"
-start "" "http://127.0.0.1:8000/index/clientes/MKOF/MOVA"
+start "" "http://127.0.0.1:8000/index/clientes/?disco=1"
+start "" "http://127.0.0.1:8000/index/clientes/ecr/?disco=1"
+start "" "http://127.0.0.1:8000/index/clientes/mkof/?disco=1"
+start "" "http://127.0.0.1:8000/index/clientes/MKOF/MOVA?disco=1"
+start "" "http://127.0.0.1:8000/index/clientes/mkof/repos-externos.html?disco=1"
 
 echo.
-echo  === URLs ^(Laravel :8000 — stack oficial^) ===
+echo  === URLs ^(todas con ?disco=1 — datos desde disco^) ===
 echo    Organizador:       http://127.0.0.1:8000/index.html?disco=1
-echo    Portal clientes:   http://127.0.0.1:8000/index/clientes/
-echo    ECR:               http://127.0.0.1:8000/index/clientes/ecr/
-echo    MKOF:              http://127.0.0.1:8000/index/clientes/mkof/
-echo    MOVA:              http://127.0.0.1:8000/index/clientes/MKOF/MOVA
-echo    Repos MOVA:        http://127.0.0.1:8000/index/clientes/mkof/repos-externos.html
-echo    Impresoreando:     http://127.0.0.1:8000/index/clientes/impresoreando/panel/
+echo    Portal clientes:   http://127.0.0.1:8000/index/clientes/?disco=1
+echo    ECR:               http://127.0.0.1:8000/index/clientes/ecr/?disco=1
+echo    MKOF:              http://127.0.0.1:8000/index/clientes/mkof/?disco=1
+echo    MOVA:              http://127.0.0.1:8000/index/clientes/MKOF/MOVA?disco=1
+echo    Repos MOVA:        http://127.0.0.1:8000/index/clientes/mkof/repos-externos.html?disco=1
+echo    Impresoreando:     http://127.0.0.1:8000/index/clientes/impresoreando/panel/?disco=1
 echo    API clientes:      http://127.0.0.1:8000/api/clientes
 echo    API calendario:    http://127.0.0.1:8000/api/organizacion
 echo    API Impresoreando: http://127.0.0.1:8000/api/impresoreando
