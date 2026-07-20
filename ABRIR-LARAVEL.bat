@@ -72,6 +72,8 @@ timeout /t 2 >nul
 start "" "http://127.0.0.1:8000/index.html?disco=1"
 start "" "http://127.0.0.1:8000/index/clientes/"
 start "" "http://127.0.0.1:8000/index/clientes/ecr/"
+start "" "http://127.0.0.1:8000/index/clientes/mkof/"
+start "" "http://127.0.0.1:8000/index/clientes/MKOF/MOVA"
 
 echo.
 echo  Stack oficial ^(sin Laragon, sin MySQL, sin Node obligatorio^):
