@@ -224,12 +224,19 @@
         ).join('') + '</div>';
     }
 
+    // Cache-bust: evita ver JSON viejo (PENDIENTE) tras git pull
+    const v = '20260720-rrss3';
+    const j = (path) => fetch(base + path + '?v=' + v, { cache: 'no-store' }).then((r) => {
+      if (!r.ok) throw new Error(path + ' ' + r.status);
+      return r.json();
+    });
+
     Promise.all([
-      fetch(base + 'meta.json').then((r) => r.json()),
-      fetch(base + 'data/ecosistema-rrss.json').then((r) => r.json()),
-      fetch(base + 'data/competencia.json').then((r) => r.json()),
-      fetch(base + 'data/oportunidades.json').then((r) => r.json()),
-      fetch(base + 'data/conclusiones.json').then((r) => r.json()),
+      j('meta.json'),
+      j('data/ecosistema-rrss.json'),
+      j('data/competencia.json'),
+      j('data/oportunidades.json'),
+      j('data/conclusiones.json'),
     ]).then(([meta, eco, comp, ops, conc]) => {
       document.getElementById('objetivo').innerHTML =
         `<strong>Objetivo</strong><br>${meta.objetivo}<br><small>Competidores: ${meta.competidores.join(' · ')}</small>`;
