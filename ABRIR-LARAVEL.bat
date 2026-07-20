@@ -2,8 +2,8 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 echo.
-echo  === Organizacion · Laravel + SQLite ^(sin Laragon / sin MySQL^) ===
-echo  Un solo servidor en :8000 — API + organizador + portal
+echo  === Organizacion · Laravel + SQLite ^(sin Laragon / sin MySQL / sin Node^) ===
+echo  Un solo servidor en :8000 — API + organizador + portal + ECR + MOVA
 echo.
 
 set "PHP_EXE="
@@ -25,6 +25,15 @@ if not exist "backend\artisan" (
   echo  [ERROR] Falta backend\artisan
   pause
   exit /b 1
+)
+
+REM Sync opcional de respaldo si hay Node ^(no obligatorio^)
+where node >nul 2>&1
+if not errorlevel 1 (
+  if exist "scripts\sync-respaldo-auto.js" (
+    echo  0^) Sync respaldo local ^(si hay JSON en Descargas^)...
+    node scripts\sync-respaldo-auto.js 2>nul
+  )
 )
 
 echo  1^) SQLite + seed clientes...
@@ -60,15 +69,21 @@ echo.
 echo  Arrancando http://127.0.0.1:8000 ...
 start "Laravel · 8000" cmd /k "cd /d "%~dp0backend" && "%PHP_EXE%" artisan serve --host=127.0.0.1 --port=8000"
 timeout /t 2 >nul
-start "" "http://127.0.0.1:8000/index.html"
-start "" "http://127.0.0.1:8000/api/clientes"
+start "" "http://127.0.0.1:8000/index.html?disco=1"
+start "" "http://127.0.0.1:8000/index/clientes/"
+start "" "http://127.0.0.1:8000/index/clientes/ecr/"
 
 echo.
-echo  Stack oficial ^(sin Laragon, sin MySQL, sin Node^):
-echo    Organizador:    http://127.0.0.1:8000/index.html
+echo  Stack oficial ^(sin Laragon, sin MySQL, sin Node obligatorio^):
+echo    Organizador:    http://127.0.0.1:8000/index.html?disco=1
 echo    Portal:         http://127.0.0.1:8000/index/clientes/
+echo    ECR:            http://127.0.0.1:8000/index/clientes/ecr/
+echo    MKOF / MOVA:    http://127.0.0.1:8000/index/clientes/mkof/
+echo    Repos MOVA:     http://127.0.0.1:8000/index/clientes/mkof/repos-externos.html
 echo    API clientes:   http://127.0.0.1:8000/api/clientes
 echo    API calendario: http://127.0.0.1:8000/api/organizacion
 echo    Base de datos:  backend\database\database.sqlite
+echo.
+echo  Deja abierta la ventana "Laravel · 8000". No uses puerto 3000.
 echo.
 pause
