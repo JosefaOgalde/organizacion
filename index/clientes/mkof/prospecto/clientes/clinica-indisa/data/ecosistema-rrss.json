@@ -309,18 +309,22 @@
         "nota": "Confirmado por usuaria: Clínica Las Condes no tiene perfil en X."
       },
       "alemana": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "handle": "@clinicaalemana",
+        "valor": 15800,
+        "display": "16 mil",
+        "exacto": "15.8K followers · following 3.042",
+        "handle": "@Clinicaalemana",
         "url": "https://x.com/clinicaalemana",
-        "fuenteId": "x-alemana"
+        "fuenteId": "x-alemana",
+        "nota": "Screenshot perfil X 2026-07-20. Cuenta desde octubre 2010."
       },
       "davila": {
-        "valor": null,
-        "display": "PENDIENTE",
+        "valor": 4004,
+        "display": "4 mil",
+        "exacto": "4.004 followers · following 116",
         "handle": "@Red_Davila",
         "url": "https://x.com/Red_Davila",
-        "fuenteId": "x-davila"
+        "fuenteId": "x-davila",
+        "nota": "Screenshot perfil X 2026-07-20. Cuenta desde noviembre 2010."
       },
       "santa_maria": {
         "valor": null,
