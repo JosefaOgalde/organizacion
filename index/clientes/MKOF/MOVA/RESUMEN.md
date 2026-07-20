@@ -42,6 +42,7 @@ Quick wins: n8n en GitHub (**hecho**) · Cloudflare explicado · espejo cPanel l
 - [x] PPT nodo MySQL entregada a encargado n8n
 - [x] Indicaciones respaldo cPanel dadas a encargado ZIP
 - [x] Hoja de seguimiento + textos para pegar: [`seguimiento-admin.html`](../../mkof/seguimiento-admin.html)
+- [x] Repo externo registrado: [`juanemedinar/mova-repo`](https://github.com/juanemedinar/mova-repo) · ficha [`repos-externos.html`](../../mkof/repos-externos.html)
 
 ---
 
@@ -71,6 +72,7 @@ Sí como **escudo rápido** (HTTPS + WAF) sin mudar hosting; no es el VPS del a�
 | Qué | Path |
 |-----|------|
 | Seguimiento admin | `/index/clientes/mkof/seguimiento-admin.html` |
+| Repos externos | `/index/clientes/mkof/repos-externos.html` |
 | Nodo MySQL | `/index/clientes/mkof/mysql-nodo-n8n.html` |
 | Presentación | `/index/clientes/mkof/mova-etapa2-presentacion.html` |
 | Cloudflare | `/index/clientes/mkof/cloudflare-mova.html` |

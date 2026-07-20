@@ -2,7 +2,7 @@
  * Catálogo MOVA — ver en HTML (editable en repo); PDF/PPT solo para exportar.
  */
 window.MOVA_DOCUMENTOS = {
-  version: '4.1',
+  version: '4.2',
   baseMkof: '../../../mkof/',
   baseData: '../../../../../data/',
   categorias: [
@@ -163,6 +163,15 @@ window.MOVA_DOCUMENTOS = {
       id: 'infra',
       titulo: 'Infra · Cloudflare + espejo cPanel',
       items: [
+        {
+          id: 'repos-externos',
+          titulo: 'Repos externos registrados',
+          descripcion: 'juanemedinar/mova-repo · n8n workflows · copia local Downloads',
+          hito: 'Ops',
+          fecha: '20 jul 2026',
+          verHtml: 'repos-externos.html',
+          editar: 'docs/mova/REPOS-EXTERNOS.md'
+        },
         {
           id: 'seguimiento-admin',
           titulo: 'Seguimiento administrativo (20 jul)',
