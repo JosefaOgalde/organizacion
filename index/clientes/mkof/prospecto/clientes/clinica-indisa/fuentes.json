@@ -284,9 +284,31 @@
       "tipo": "metodologia",
       "dato": "Engagement Rate Instagram",
       "formula": "ER% = ((Σ likes + Σ comments de últimos N posts) / N) / seguidores × 100",
-      "nRecomendado": 12,
+      "nRecomendado": 10,
       "fecha": "2026-07-20",
-      "metodo": "Estándar industry (likes+comments por post promedio / followers). Completar con Metricool o captura de 12 posts recientes. No inventar % sin muestra."
+      "metodo": "Estándar industry (likes+comments por post promedio / followers)."
+    },
+    {
+      "id": "ig-er-indisa-10",
+      "tipo": "instagram_engagement",
+      "entidad": "Clínica Indisa",
+      "handle": "@clinicaindisacl",
+      "dato": "ER 0,19% — 10 posts · promedio 81,4 interacciones · base 43.700 seguidores",
+      "fecha": "2026-07-20",
+      "detalle": "data/ig-er-indisa-muestra.json",
+      "urls": [
+        "https://www.instagram.com/p/DbA_20oimPh/",
+        "https://www.instagram.com/p/Da0Ik7WAUaT/",
+        "https://www.instagram.com/p/Dau-SCpD4kY/",
+        "https://www.instagram.com/p/DanZyUxlrF-/",
+        "https://www.instagram.com/p/DalpOjdjUFs/",
+        "https://www.instagram.com/p/Dai2blnAZNd/",
+        "https://www.instagram.com/p/DagpOE8EaiK/",
+        "https://www.instagram.com/p/DadcCZKj97-/",
+        "https://www.instagram.com/p/DaVfg41lbS4/",
+        "https://www.instagram.com/p/DaNzWZ8hirC/"
+      ],
+      "metodo": "Screenshots post-a-post entregados por usuaria; likes leídos de UI; comentarios = cantidad visible en captura."
     },
     {
       "id": "x-indisa",

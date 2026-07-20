@@ -1,0 +1,101 @@
+{
+  "cuenta": "@clinicaindisacl",
+  "fechaCaptura": "2026-07-20",
+  "seguidores": 43700,
+  "seguidoresDisplay": "43,7 mil",
+  "formula": "ER% = ((Σ likes + Σ comentarios visibles) / N) / seguidores × 100",
+  "nPosts": 10,
+  "sumaLikes": 805,
+  "sumaComentariosVisibles": 9,
+  "sumaInteracciones": 814,
+  "promedioInteracciones": 81.4,
+  "engagementRate": 0.1863,
+  "engagementRateDisplay": "0,19%",
+  "limitaciones": [
+    "Comentarios contados desde los visibles en screenshot (pueden ser subconteo si hay más).",
+    "No incluye guardados ni shares (no públicos en UI).",
+    "Post más reciente (~9h) aún puede crecer; el ER puede subir levemente."
+  ],
+  "posts": [
+    {
+      "n": 1,
+      "url": "https://www.instagram.com/p/DbA_20oimPh/",
+      "likes": 3,
+      "comments": 0,
+      "interacciones": 3,
+      "tema": "Cirugía vascular/articular — confío en Indisa"
+    },
+    {
+      "n": 2,
+      "url": "https://www.instagram.com/p/Da0Ik7WAUaT/",
+      "likes": 33,
+      "comments": 2,
+      "interacciones": 35,
+      "tema": "Luxación de hombro — collab Dr. Pablo Canales"
+    },
+    {
+      "n": 3,
+      "url": "https://www.instagram.com/p/Dau-SCpD4kY/",
+      "likes": 98,
+      "comments": 0,
+      "interacciones": 98,
+      "tema": "Día Mundial del TDAH"
+    },
+    {
+      "n": 4,
+      "url": "https://www.instagram.com/p/DanZyUxlrF-/",
+      "likes": 18,
+      "comments": 0,
+      "interacciones": 18,
+      "tema": "Cardiología — chequeo médico"
+    },
+    {
+      "n": 5,
+      "url": "https://www.instagram.com/p/DalpOjdjUFs/",
+      "likes": 15,
+      "comments": 0,
+      "interacciones": 15,
+      "tema": "Consejo otitis / ORL"
+    },
+    {
+      "n": 6,
+      "url": "https://www.instagram.com/p/Dai2blnAZNd/",
+      "likes": 21,
+      "comments": 1,
+      "interacciones": 22,
+      "tema": "Alergias en invierno"
+    },
+    {
+      "n": 7,
+      "url": "https://www.instagram.com/p/DagpOE8EaiK/",
+      "likes": 218,
+      "comments": 3,
+      "interacciones": 221,
+      "tema": "Manguito rotador — collab Dr. Nicolás Morán"
+    },
+    {
+      "n": 8,
+      "url": "https://www.instagram.com/p/DadcCZKj97-/",
+      "likes": 13,
+      "comments": 0,
+      "interacciones": 13,
+      "tema": "Vacunas / virus respiratorios"
+    },
+    {
+      "n": 9,
+      "url": "https://www.instagram.com/p/DaVfg41lbS4/",
+      "likes": 25,
+      "comments": 0,
+      "interacciones": 25,
+      "tema": "Prepárate temporada de invierno"
+    },
+    {
+      "n": 10,
+      "url": "https://www.instagram.com/p/DaNzWZ8hirC/",
+      "likes": 361,
+      "comments": 3,
+      "interacciones": 364,
+      "tema": "Nuevo resonador IA / Cardio-Resonancia Maipú"
+    }
+  ]
+}

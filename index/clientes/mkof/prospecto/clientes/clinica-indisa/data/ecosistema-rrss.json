@@ -258,12 +258,16 @@
         "fuenteId": null
       },
       "indisa": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": "ig-er-metodo",
-        "formula": "((likes+comments)/N)/followers×100",
-        "nPosts": 12,
-        "nota": "Pegar % desde Metricool o calcular con 12 posts @clinicaindisacl"
+        "valor": 0.1863,
+        "display": "0,19%",
+        "fuenteId": "ig-er-indisa-10",
+        "formula": "((Σ likes+comentarios)/N)/seguidores×100",
+        "nPosts": 10,
+        "seguidoresBase": 43700,
+        "interaccionesPromedio": 81.4,
+        "sumaInteracciones": 814,
+        "detalleArchivo": "data/ig-er-indisa-muestra.json",
+        "nota": "Muestra 10 posts (screenshots 2026-07-20). Comentarios = visibles en captura (mínimo). Sin guardados/shares públicos. Post #1 solo 9h — puede subir."
       }
     },
     "X (Twitter)": {
@@ -339,7 +343,7 @@
     "Facebook: Alemana (~177) > Dávila (~125) > CLC (~111) > Santa María (~59) > Indisa (~49).",
     "YouTube: CLC (~20) > Santa María (~7) > Alemana (~2,6) > Dávila (~1,9); Indisa pendiente.",
     "En IG el prospecto Indisa está en el pelotón medio-bajo; el gap crítico es vs Alemana (~3×).",
-    "Instagram ER: aún PENDIENTE (hace falta muestra de 12 posts / Metricool).",
+    "Instagram ER Indisa: 0,19% (10 posts; promedio 81 interacciones / 43,7 mil seguidores). Benchmark ER competidores aún PENDIENTE.",
     "Columna Prospecto (azul) = Indisa; el resto = benchmark."
   ]
 }
