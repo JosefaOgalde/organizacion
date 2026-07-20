@@ -225,18 +225,26 @@
         "handle": "@clinica.alemana",
         "url": "https://www.tiktok.com/@clinica.alemana",
         "fuenteId": "tt-alemana",
-        "nota": "Screenshot 2026-07-20. Única con escala TikTok en el benchmark medido.",
-        "highlight": true
+        "nota": "Screenshot 2026-07-20."
       },
       "davila": {
-        "valor": null,
-        "display": "Sin evid. / PEND.",
-        "fuenteId": null
+        "valor": 68400,
+        "display": "68 mil",
+        "exacto": "68.4K seguidores · 0 siguiendo · 849K me gusta",
+        "handle": "@reddavilaoficial",
+        "url": "https://www.tiktok.com/@reddavilaoficial",
+        "fuenteId": "tt-davila",
+        "nota": "Screenshot 2026-07-20. Lidera TikTok del quinteto medido.",
+        "highlight": true
       },
       "santa_maria": {
-        "valor": null,
-        "display": "Sin evid. / PEND.",
-        "fuenteId": null
+        "valor": 7534,
+        "display": "7,5 mil",
+        "exacto": "7.534 seguidores · 0 siguiendo · 74.4K me gusta",
+        "handle": "@clinicasantamariacl",
+        "url": "https://www.tiktok.com/@clinicasantamariacl",
+        "fuenteId": "tt-santamaria",
+        "nota": "Screenshot 2026-07-20."
       },
       "indisa": {
         "valor": 0,
