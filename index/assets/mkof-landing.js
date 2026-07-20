@@ -164,6 +164,11 @@
             <strong>Descargar al repo (espejo)</strong>
             <span class="mkof-guia-card__desc">ZIP → espejo-cpanel/ · sin secretos</span>
           </a>
+          <a href="../MKOF/MOVA/documentos/ver.html?id=mysql-nodo-n8n" class="mkof-guia-card mkof-guia-card--activa">
+            <span class="mkof-guia-card__paso">Hito 3.2 · Nodo SQL</span>
+            <strong>Agregar nodo MySQL en n8n</strong>
+            <span class="mkof-guia-card__desc">Ver · PPT · 11 pasos</span>
+          </a>
           <a href="github-repo.html" class="mkof-guia-card">
             <span class="mkof-guia-card__paso">Hito 1.1 · HECHO</span>
             <strong>n8n en GitHub</strong>

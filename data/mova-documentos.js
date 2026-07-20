@@ -2,7 +2,7 @@
  * Catálogo MOVA — ver en HTML (editable en repo); PDF/PPT solo para exportar.
  */
 window.MOVA_DOCUMENTOS = {
-  version: '4.0',
+  version: '4.1',
   baseMkof: '../../../mkof/',
   baseData: '../../../../../data/',
   categorias: [
@@ -195,6 +195,22 @@ window.MOVA_DOCUMENTOS = {
           fecha: '19 jul 2026',
           verHtml: 'mova-etapa2-presentacion.html',
           editar: 'docs/mova/GUION-PRESENTACION-ETAPA2.md'
+        }
+      ]
+    },
+    {
+      id: 'datos',
+      titulo: 'Capa de datos · MySQL + n8n',
+      items: [
+        {
+          id: 'mysql-nodo-n8n',
+          titulo: 'Nodo MySQL en n8n — paso a paso',
+          descripcion: 'Hito 3.2 · agregar nodo MySQL · credencial · fuente primaria → Sheets vista',
+          hito: '3.2',
+          fecha: '20 jul 2026',
+          verHtml: 'mysql-nodo-n8n.html',
+          pptx: 'MOVA-Nodo-MySQL-n8n.pptx',
+          editar: 'mkof-mysql-nodo-guia.js'
         }
       ]
     },
