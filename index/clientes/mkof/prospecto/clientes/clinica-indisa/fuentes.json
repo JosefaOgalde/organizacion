@@ -57,16 +57,16 @@
       "url": "https://www.facebook.com/clinicaindisa",
       "dato": "49K followers (página verificada)",
       "fecha": "2026-07-20",
-      "metodo": "WebFetch página pública Facebook; texto '49K followers'."
+      "metodo": "WebFetch página pública Facebook."
     },
     {
       "id": "web-indisa",
       "tipo": "sitio_web",
       "entidad": "Clínica Indisa",
-      "url": "https://indisa.cl/",
-      "dato": "Sitio institucional; sedes Providencia y Maipú; tagline 'Estamos Para Tu Cuidado'",
+      "url": "https://www.indisa.cl/",
+      "dato": "Sitio oficial",
       "fecha": "2026-07-20",
-      "metodo": "Revisión homepage."
+      "metodo": "URL entregada por usuaria / confirmada."
     },
     {
       "id": "ig-handles",
@@ -81,6 +81,52 @@
       },
       "fecha": "2026-07-20",
       "metodo": "Referencias en sitios oficiales / perfiles públicos; conteos IG pendientes de captura en app."
+    },
+    {
+      "id": "ig-indisa",
+      "tipo": "instagram",
+      "entidad": "Clínica Indisa",
+      "url": "https://www.instagram.com/clinicaindisacl/",
+      "handle": "@clinicaindisacl",
+      "dato": "Perfil oficial; seguidores + ER pendientes de captura en app/Metricool",
+      "fecha": "2026-07-20",
+      "metodo": "URL oficial. Instagram bloquea scrape automatizado."
+    },
+    {
+      "id": "ig-er-metodo",
+      "tipo": "metodologia",
+      "dato": "Engagement Rate Instagram",
+      "formula": "ER% = ((Σ likes + Σ comments de últimos N posts) / N) / seguidores × 100",
+      "nRecomendado": 12,
+      "fecha": "2026-07-20",
+      "metodo": "Estándar industry (likes+comments por post promedio / followers). Completar con Metricool o captura de 12 posts recientes. No inventar % sin muestra."
+    },
+    {
+      "id": "x-indisa",
+      "tipo": "x_twitter",
+      "entidad": "Clínica Indisa",
+      "url": "https://x.com/ClinicaIndisa",
+      "handle": "@ClinicaIndisa",
+      "dato": "Perfil oficial X; conteo pendiente captura",
+      "fecha": "2026-07-20",
+      "metodo": "URL entregada por usuaria."
+    },
+    {
+      "id": "yt-indisa",
+      "tipo": "youtube",
+      "entidad": "Clínica Indisa",
+      "url": "https://www.youtube.com/user/IndisaCL",
+      "dato": "Canal IndisaCL; suscriptores pendientes captura",
+      "fecha": "2026-07-20",
+      "metodo": "URL entregada por usuaria."
     }
-  ]
+  ],
+  "canalesOficialesProspecto": {
+    "web": "https://www.indisa.cl/",
+    "facebook": "https://www.facebook.com/clinicaindisa",
+    "instagram": "https://www.instagram.com/clinicaindisacl/",
+    "x": "https://x.com/ClinicaIndisa",
+    "youtube": "https://www.youtube.com/user/IndisaCL",
+    "linkedin": "https://www.linkedin.com/company/cl-nica-indisa/posts/?feedView=all"
+  }
 }

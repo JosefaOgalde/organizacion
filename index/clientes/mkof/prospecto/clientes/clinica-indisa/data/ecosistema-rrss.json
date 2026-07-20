@@ -1,41 +1,50 @@
 {
   "titulo": "ECOSISTEMA RRSS",
   "fecha": "2026-07-20",
-  "notaPresentacion": "En lámina usar 'XX mil' solo donde falte captura. LinkedIn y FB Indisa ya tienen número.",
+  "notaPresentacion": "Columna Clínica Indisa = PROSPECTO (fondo distinto). Instagram incluye fila de Engagement Rate.",
   "plataformas": [
     "Facebook",
     "Instagram",
+    "Instagram ER",
     "LinkedIn",
     "YouTube",
-    "TikTok"
+    "TikTok",
+    "X (Twitter)"
   ],
   "columnas": [
     {
+      "id": "indisa",
+      "nombre": "Clínica Indisa",
+      "rol": "prospecto",
+      "nombreCorto": "Indisa",
+      "etiqueta": "Prospecto"
+    },
+    {
       "id": "las_condes",
       "nombre": "Clínica Las Condes",
-      "rol": "competidor"
+      "rol": "competidor",
+      "etiqueta": "Competidor"
     },
     {
       "id": "alemana",
       "nombre": "Clínica Alemana",
-      "rol": "competidor"
+      "rol": "competidor",
+      "etiqueta": "Competidor"
     },
     {
       "id": "davila",
       "nombre": "Clínica Dávila",
-      "rol": "competidor"
+      "rol": "competidor",
+      "etiqueta": "Competidor"
     },
     {
       "id": "santa_maria",
       "nombre": "Clínica Santa María",
-      "rol": "competidor"
-    },
-    {
-      "id": "indisa",
-      "nombre": "Clínica Indisa",
-      "rol": "prospecto"
+      "rol": "competidor",
+      "etiqueta": "Competidor"
     }
   ],
+  "engagementRateNota": "Instagram ER = promedio ((likes+comentarios+guardados)÷seguidores×100) sobre 12 posts recientes. Celdas PENDIENTE hasta captura Metricool o muestreo manual.",
   "celdas": {
     "Facebook": {
       "las_condes": {
@@ -64,7 +73,8 @@
         "valor": 49000,
         "display": "49 mil",
         "fuenteId": "fb-indisa",
-        "exacto": "49K (Facebook UI)"
+        "exacto": "49K (Facebook UI)",
+        "url": "https://www.facebook.com/clinicaindisa"
       }
     },
     "Instagram": {
@@ -96,8 +106,9 @@
         "valor": null,
         "display": "PENDIENTE",
         "handle": "@clinicaindisacl",
-        "fuenteId": "ig-handles",
-        "nota": "Perfil activo (educación salud, tipografías de especialidad); contar en app"
+        "fuenteId": "ig-indisa",
+        "nota": "Perfil activo (educación salud, tipografías de especialidad); contar en app",
+        "url": "https://www.instagram.com/clinicaindisacl/"
       }
     },
     "LinkedIn": {
@@ -153,7 +164,9 @@
       "indisa": {
         "valor": null,
         "display": "PENDIENTE",
-        "fuenteId": null
+        "fuenteId": "yt-indisa",
+        "url": "https://www.youtube.com/user/IndisaCL",
+        "nota": "Canal youtube.com/user/IndisaCL — capturar suscriptores"
       }
     },
     "TikTok": {
@@ -183,11 +196,72 @@
         "fuenteId": null,
         "nota": "No se encontró perfil institucional claro en búsqueda inicial"
       }
+    },
+    "Instagram ER": {
+      "las_condes": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null,
+        "nota": "Calcular con 12 posts recientes"
+      },
+      "alemana": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      },
+      "davila": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      },
+      "santa_maria": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      },
+      "indisa": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": "ig-er-metodo",
+        "formula": "((likes+comments)/N)/followers×100",
+        "nPosts": 12,
+        "nota": "Pegar % desde Metricool o calcular con 12 posts @clinicaindisacl"
+      }
+    },
+    "X (Twitter)": {
+      "las_condes": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      },
+      "alemana": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      },
+      "davila": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      },
+      "santa_maria": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "fuenteId": null
+      },
+      "indisa": {
+        "valor": null,
+        "display": "PENDIENTE",
+        "handle": "@ClinicaIndisa",
+        "url": "https://x.com/ClinicaIndisa",
+        "fuenteId": "x-indisa"
+      }
     }
   },
   "lecturaRapida": [
     "En LinkedIn (B2B/employer brand), Indisa (~60 mil) está por debajo de Alemana (~158 mil), Dávila (~111 mil), CLC (~106 mil) y Santa María (~80 mil).",
     "En Facebook, Indisa ya muestra escala masiva (~49 mil) — canal paciente/familia activo.",
-    "Instagram es el canal crítico para comparar alineación de mensajes; falta captura de seguidores para cerrar la matriz visual."
+    "Instagram: fila de seguidores + fila Engagement Rate (%). Ambos PENDIENTE hasta captura en app/Metricool (no inventar %).",
+    "La columna Prospecto (azul) es Indisa; el resto son competidores de benchmark."
   ]
 }

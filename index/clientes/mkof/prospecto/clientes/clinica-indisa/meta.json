@@ -5,7 +5,7 @@
   "ambito": "RRSS orgánicas",
   "etapa": 1,
   "creado": "2026-07-20T21:33:46Z",
-  "updatedAt": "2026-07-20T21:33:46Z",
+  "updatedAt": "2026-07-20T21:50:00Z",
   "competidores": [
     "Clínica Las Condes",
     "Clínica Alemana",
@@ -21,9 +21,18 @@
     "conclusiones": "data/conclusiones.json"
   },
   "pendientes": [
-    "Captura seguidores Instagram (5 perfiles)",
-    "Captura Facebook competidores",
-    "Captura YouTube (suscriptores) si hay canal oficial",
+    "Instagram: seguidores + Engagement Rate (12 posts) Indisa y 4 competidores",
+    "Facebook: seguidores competidores",
+    "YouTube: suscriptores IndisaCL + competidores",
+    "X: seguidores @ClinicaIndisa + competidores",
     "Muestreo 7–14 días: posts/semana y mix de formatos"
-  ]
+  ],
+  "canalesOficiales": {
+    "web": "https://www.indisa.cl/",
+    "facebook": "https://www.facebook.com/clinicaindisa",
+    "instagram": "https://www.instagram.com/clinicaindisacl/",
+    "x": "https://x.com/ClinicaIndisa",
+    "youtube": "https://www.youtube.com/user/IndisaCL",
+    "linkedin": "https://www.linkedin.com/company/cl-nica-indisa/posts/?feedView=all"
+  }
 }
