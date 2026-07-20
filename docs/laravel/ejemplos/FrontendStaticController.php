@@ -8,6 +8,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 class FrontendStaticController extends Controller
 {
     private function rootPath(): string
@@ -20,19 +22,40 @@ class FrontendStaticController extends Controller
         return $this->serve('index.html');
     }
 
+    /** Usado por Route::fallback — toma el path real del request (soporta varias barras). */
+    public function fallback(Request $request)
+    {
+        $path = $request->path(); // ej. index/clientes
+        if ($path === '/' || $path === '') {
+            return $this->home();
+        }
+        // Si la URL pedía carpeta con / final, path() no la trae; resolveFile prueba index.html
+        return $this->serve($path);
+    }
+
     public function serve(string $path = 'index.html')
     {
         $path = rawurldecode(str_replace('\\', '/', $path));
         $path = ltrim($path, '/');
 
+        if (str_starts_with($path, 'api/') || $path === 'api') {
+            abort(404);
+        }
+
         $deny = [
-            '.git', 'backend', 'node_modules', '.env',
-            'organizacion-live.json', 'impresoreando-live.json',
+            '.git',
+            'node_modules',
+            '.env',
+            'organizacion-live.json',
+            'impresoreando-live.json',
         ];
         foreach ($deny as $d) {
             if (stripos($path, $d) !== false) {
                 abort(403);
             }
+        }
+        if (preg_match('#(^|/)backend(/|$)#i', $path)) {
+            abort(403);
         }
 
         $root = realpath($this->rootPath());
@@ -86,7 +109,6 @@ class FrontendStaticController extends Controller
                 : trim($path, '/') . '/index.html';
         } else {
             $candidates[] = $path;
-            // /index/clientes  →  /index/clientes/index.html
             $candidates[] = $path . '/index.html';
         }
 
@@ -96,7 +118,6 @@ class FrontendStaticController extends Controller
             $rel = ltrim(str_replace('\\', '/', $rel), '/');
             $absolute = $root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $rel);
 
-            // Si es directorio, probar index.html dentro
             if (is_dir($absolute)) {
                 $absolute = rtrim($absolute, '\\/') . DIRECTORY_SEPARATOR . 'index.html';
             }

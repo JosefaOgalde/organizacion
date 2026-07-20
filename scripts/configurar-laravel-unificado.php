@@ -80,22 +80,12 @@ $webSrc = file_get_contents($web) ?: '';
 
 // Quitar TODOS los bloques previos del frontend (duplicados rompen el use)
 $webSrc = preg_replace(
-    '/\R\/\/ --- Frontend organizacion[\s\S]*?->where\(\'path\',\s*\'[^\']+\'\);/',
+    '/\R\/\/ --- Frontend organizacion[\s\S]*?(?:Route::fallback\([^;]+;|->where\(\'path\',\s*\'[^\']+\'\);|where\(\'path\',\s*\'[^\']+\'\);)/',
     '',
     $webSrc
 );
 $webSrc = preg_replace(
-    '/\R\/\/ --- Frontend organizacion[\s\S]*?where\(\'path\',\s*\'[^\']+\'\);/',
-    '',
-    $webSrc
-);
-$webSrc = preg_replace(
-    '/\Ruse App\\\\Http\\\\Controllers\\\\FrontendStaticController;[\s\S]*?->where\(\'path\',\s*\'[^\']+\'\);/',
-    '',
-    $webSrc
-);
-$webSrc = preg_replace(
-    '/\Ruse App\\\\Http\\\\Controllers\\\\FrontendStaticController;[\s\S]*?where\(\'path\',\s*\'[^\']+\'\);/',
+    '/\Ruse App\\\\Http\\\\Controllers\\\\FrontendStaticController;[\s\S]*?(?:Route::fallback\([^;]+;|->where\(\'path\',\s*\'[^\']+\'\);|where\(\'path\',\s*\'[^\']+\'\);)/',
     '',
     $webSrc
 );
@@ -105,13 +95,45 @@ $webBlock = <<<'PHP'
 // --- Frontend organizacion (mismo origen que la API) ---
 use App\Http\Controllers\FrontendStaticController;
 Route::get('/', [FrontendStaticController::class, 'home']);
-// path con barras (index/clientes/...) — excluye api/*
-Route::get('/{path}', [FrontendStaticController::class, 'serve'])
-    ->where('path', '^(?!api(?:/|$)).*');
+// fallback captura /index/clientes/... (varias barras); /{path} a veces no matchea en Laravel
+Route::fallback([FrontendStaticController::class, 'fallback']);
 PHP;
 
 file_put_contents($web, rtrim($webSrc) . "\n" . $webBlock . "\n");
-echo "  · routes/web.php: un solo bloque frontend\n";
+echo "  · routes/web.php: home + fallback frontend\n";
+
+// Junctions Windows / symlinks: artisan serve entrega estáticos desde public/ sin pasar por PHP
+$public = $backend . DIRECTORY_SEPARATOR . 'public';
+$links = [
+    'index' => $root . DIRECTORY_SEPARATOR . 'index',
+    'index.html' => $root . DIRECTORY_SEPARATOR . 'index.html',
+    'app.js' => $root . DIRECTORY_SEPARATOR . 'app.js',
+    'styles.css' => $root . DIRECTORY_SEPARATOR . 'styles.css',
+];
+foreach ($links as $name => $target) {
+    $link = $public . DIRECTORY_SEPARATOR . $name;
+    if (!file_exists($target) && !is_dir($target)) {
+        continue;
+    }
+    if (file_exists($link) || is_link($link) || is_dir($link)) {
+        echo "  · public/$name ya existe\n";
+        continue;
+    }
+    if (PHP_OS_FAMILY === 'Windows') {
+        // mklink no quiere escapeshellarg con comillas raras — comillas dobles literales
+        $linkQ = '"' . $link . '"';
+        $targetQ = '"' . $target . '"';
+        $cmd = is_dir($target)
+            ? 'cmd /c mklink /J ' . $linkQ . ' ' . $targetQ
+            : 'cmd /c mklink ' . $linkQ . ' ' . $targetQ;
+        exec($cmd, $out, $code);
+        echo $code === 0 ? "  · Junction public/$name\n" : "  · (aviso) no se pudo crear public/$name\n";
+    } else {
+        @symlink($target, $link);
+        echo is_link($link) ? "  · Symlink public/$name\n" : "  · (aviso) no se pudo crear public/$name\n";
+    }
+}
+
 
 $live = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-live.json';
 $respaldo = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-respaldo-2026-07-17.json';

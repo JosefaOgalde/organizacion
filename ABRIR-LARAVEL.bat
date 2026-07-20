@@ -119,12 +119,13 @@ if /I "%MODO%"=="sin-nav" goto :fin_urls
 if /I "%MODO%"=="sin-navegador" goto :fin_urls
 
 :abrir_todo
-start "" "http://127.0.0.1:8000/index.html?disco=1"
-start "" "http://127.0.0.1:8000/index/clientes/?disco=1"
-start "" "http://127.0.0.1:8000/index/clientes/ecr/?disco=1"
-start "" "http://127.0.0.1:8000/index/clientes/mkof/?disco=1"
-start "" "http://127.0.0.1:8000/index/clientes/MKOF/MOVA?disco=1"
-start "" "http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1"
+REM powershell conserva el "=" de ?disco=1 (start de cmd lo convierte en %3D)
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/ecr/?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/mkof/?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/MKOF/MOVA?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1'"
 
 :fin_urls
 echo.
