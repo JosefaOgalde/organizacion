@@ -280,46 +280,6 @@
       "metodo": "Screenshot app Instagram entregado por usuaria."
     },
     {
-      "id": "ig-clc-capture",
-      "tipo": "instagram",
-      "entidad": "Clínica Las Condes",
-      "url": "https://www.instagram.com/clinicalascondes/",
-      "handle": "@clinicalascondes",
-      "dato": "45,8 mil seguidores · 2.226 publicaciones",
-      "fecha": "2026-07-20",
-      "metodo": "Screenshot app Instagram entregado por usuaria."
-    },
-    {
-      "id": "ig-alemana-capture",
-      "tipo": "instagram",
-      "entidad": "Clínica Alemana",
-      "url": "https://www.instagram.com/clinicaalemanadesantiago/",
-      "handle": "@clinicaalemanadesantiago",
-      "dato": "139 mil seguidores · 1.515 publicaciones",
-      "fecha": "2026-07-20",
-      "metodo": "Screenshot app Instagram entregado por usuaria."
-    },
-    {
-      "id": "ig-davila-capture",
-      "tipo": "instagram",
-      "entidad": "Red Dávila",
-      "url": "https://www.instagram.com/reddavilaoficial/",
-      "handle": "@reddavilaoficial",
-      "dato": "42,2 mil seguidores · 1.357 publicaciones",
-      "fecha": "2026-07-20",
-      "metodo": "Screenshot app Instagram entregado por usuaria."
-    },
-    {
-      "id": "ig-santamaria-capture",
-      "tipo": "instagram",
-      "entidad": "Clínica Santa María",
-      "url": "https://www.instagram.com/clinicasantamariacl/",
-      "handle": "@clinicasantamariacl",
-      "dato": "38,8 mil seguidores · 1.217 publicaciones",
-      "fecha": "2026-07-20",
-      "metodo": "Screenshot app Instagram entregado por usuaria."
-    },
-    {
       "id": "ig-er-metodo",
       "tipo": "metodologia",
       "dato": "Engagement Rate Instagram",
