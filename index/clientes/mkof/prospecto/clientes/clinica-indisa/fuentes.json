@@ -55,11 +55,9 @@
       "id": "x-clc",
       "tipo": "x_twitter",
       "entidad": "Clínica Las Condes",
-      "url": "https://x.com/cliniclascondes",
-      "handle": "@cliniclascondes",
-      "dato": "Perfil oficial X; conteo pendiente captura",
+      "dato": "Sin cuenta en X",
       "fecha": "2026-07-20",
-      "metodo": "URL entregada por usuaria."
+      "metodo": "Confirmado por usuaria: CLC no tiene perfil en X. URL previa @cliniclascondes descartada."
     },
     {
       "id": "yt-clc",
@@ -112,10 +110,10 @@
       "tipo": "x_twitter",
       "entidad": "Clínica Alemana",
       "url": "https://x.com/clinicaalemana",
-      "handle": "@clinicaalemana",
-      "dato": "Perfil oficial X; conteo pendiente captura",
+      "handle": "@Clinicaalemana",
+      "dato": "15.8K followers · 3.042 following · cuenta desde octubre 2010",
       "fecha": "2026-07-20",
-      "metodo": "URL entregada por usuaria."
+      "metodo": "Screenshot perfil X entregado por usuaria."
     },
     {
       "id": "yt-alemana",
