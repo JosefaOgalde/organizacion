@@ -2,9 +2,13 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 echo.
-echo  === Organizacion · Laravel + SQLite ^(sin Laragon / sin MySQL / sin Node^) ===
-echo  Un solo servidor en :8000 — API + organizador + portal + ECR + MOVA
+echo  === Organizacion · Laravel + SQLite ^(flujo unificado^) ===
+echo  Un solo servidor en :8000 — API + organizador + portal + ECR + MOVA + Impresoreando
+echo  ^(Reemplaza SERVIR.bat / SERVIR-CON-NODE / USAR-SQLITE / ABRIR-MOVA^)
 echo.
+
+REM Cerrar servidor Node viejo si quedo abierto (de ABRIR-MOVA)
+if exist "%~dp0CERRAR-SERVIDOR.bat" call "%~dp0CERRAR-SERVIDOR.bat"
 
 set "PHP_EXE="
 if exist "C:\laragon\bin\php\php-8.3.30-Win32-vs16-x64\php.exe" set "PHP_EXE=C:\laragon\bin\php\php-8.3.30-Win32-vs16-x64\php.exe"
@@ -15,8 +19,9 @@ if not defined PHP_EXE (
 if not defined PHP_EXE where php >nul 2>&1 && set "PHP_EXE=php"
 if not defined PHP_EXE (
   echo  [ERROR] No se encontro php.exe
-  echo  Opciones: instalar PHP en PATH, o usar el php.exe de la carpeta
-  echo  C:\laragon\bin\php\... ^(solo el ejecutable; no hace falta abrir Laragon^)
+  echo  Opciones: instalar PHP en PATH, o usar el php.exe de Laragon
+  echo  ^(solo el ejecutable; no hace falta abrir la app Laragon^):
+  echo  C:\laragon\bin\php\php-8.3.30-Win32-vs16-x64\php.exe
   pause
   exit /b 1
 )
@@ -27,12 +32,32 @@ if not exist "backend\artisan" (
   exit /b 1
 )
 
-REM Sync opcional de respaldo si hay Node ^(no obligatorio^)
+REM .env raiz ^(de SERVIR.bat^) — opcional para scripts Node auxiliares
+if not exist ".env" if exist ".env.example" (
+  echo  Creando .env desde .env.example...
+  copy /y .env.example .env >nul
+)
+
+REM Impresoreando live desde seed ^(de SERVIR-CON-NODE.bat^)
+if not exist "data\impresoreando-live.json" (
+  if exist "data\impresoreando-seed.json" (
+    copy /Y "data\impresoreando-seed.json" "data\impresoreando-live.json" >nul
+    echo  Creado data\impresoreando-live.json desde seed
+  )
+)
+
+REM Sync respaldo ^(de SERVIR / ABRIR-MOVA / ABRIR-ORGANIZADOR-HOY^) — Node opcional
 where node >nul 2>&1
 if not errorlevel 1 (
   if exist "scripts\sync-respaldo-auto.js" (
-    echo  0^) Sync respaldo local ^(si hay JSON en Descargas^)...
-    node scripts\sync-respaldo-auto.js 2>nul
+    echo  0^) Sync respaldo local ^(Descargas / data^)...
+    node scripts\sync-respaldo-auto.js --force 2>nul
+    if errorlevel 1 (
+      echo  Sin respaldo nuevo en disco. Si tienes JSON en Descargas: IMPORTAR-RESPALDO.bat
+    )
+  )
+  if exist "scripts\asegurar-impresoreando-live.js" (
+    node scripts\asegurar-impresoreando-live.js 2>nul
   )
 )
 
@@ -69,6 +94,7 @@ echo.
 echo  Arrancando http://127.0.0.1:8000 ...
 start "Laravel · 8000" cmd /k "cd /d "%~dp0backend" && "%PHP_EXE%" artisan serve --host=127.0.0.1 --port=8000"
 timeout /t 2 >nul
+
 start "" "http://127.0.0.1:8000/index.html?disco=1"
 start "" "http://127.0.0.1:8000/index/clientes/"
 start "" "http://127.0.0.1:8000/index/clientes/ecr/"
@@ -76,16 +102,21 @@ start "" "http://127.0.0.1:8000/index/clientes/mkof/"
 start "" "http://127.0.0.1:8000/index/clientes/MKOF/MOVA"
 
 echo.
-echo  Stack oficial ^(sin Laragon, sin MySQL, sin Node obligatorio^):
-echo    Organizador:    http://127.0.0.1:8000/index.html?disco=1
-echo    Portal:         http://127.0.0.1:8000/index/clientes/
-echo    ECR:            http://127.0.0.1:8000/index/clientes/ecr/
-echo    MKOF / MOVA:    http://127.0.0.1:8000/index/clientes/mkof/
-echo    Repos MOVA:     http://127.0.0.1:8000/index/clientes/mkof/repos-externos.html
-echo    API clientes:   http://127.0.0.1:8000/api/clientes
-echo    API calendario: http://127.0.0.1:8000/api/organizacion
-echo    Base de datos:  backend\database\database.sqlite
+echo  === URLs ^(Laravel :8000 — stack oficial^) ===
+echo    Organizador:       http://127.0.0.1:8000/index.html?disco=1
+echo    Portal clientes:   http://127.0.0.1:8000/index/clientes/
+echo    ECR:               http://127.0.0.1:8000/index/clientes/ecr/
+echo    MKOF:              http://127.0.0.1:8000/index/clientes/mkof/
+echo    MOVA:              http://127.0.0.1:8000/index/clientes/MKOF/MOVA
+echo    Repos MOVA:        http://127.0.0.1:8000/index/clientes/mkof/repos-externos.html
+echo    Impresoreando:     http://127.0.0.1:8000/index/clientes/impresoreando/panel/
+echo    API clientes:      http://127.0.0.1:8000/api/clientes
+echo    API calendario:    http://127.0.0.1:8000/api/organizacion
+echo    API Impresoreando: http://127.0.0.1:8000/api/impresoreando
+echo    Base de datos:     backend\database\database.sqlite
 echo.
+echo  Ventas publicas ^(fuera de esta PC^): ABRIR-VENTA-PUBLICA.bat
 echo  Deja abierta la ventana "Laravel · 8000". No uses puerto 3000.
+echo  En Cursor MOVA: @mova + tu tarea
 echo.
 pause
