@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MOVA · n8n — MySQL antes de Google Sheets</title>
+  <link rel="stylesheet" href="../../assets/mkof-mova-d1-status-pdf.css">
+  <style>
+    .n8n-g__paso {
+      display: inline-block;
+      background: #fff8c5;
+      color: #2a4a4e;
+      font-weight: 800;
+      font-size: 11pt;
+      padding: 0.04in 0.12in;
+      border-radius: 4px;
+      margin-right: 0.1in;
+    }
+    .n8n-g__big {
+      font-size: 15pt;
+      font-weight: 700;
+      color: #2a4a4e;
+      margin: 0.08in 0 0.18in;
+    }
+    .n8n-g__flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.12in;
+      flex-wrap: wrap;
+      margin: 0.2in 0;
+    }
+    .n8n-g__node {
+      min-width: 1.55in;
+      max-width: 2.1in;
+      background: #fff;
+      border: 2px solid #4a7a80;
+      border-radius: 10px;
+      padding: 0.12in 0.14in;
+      text-align: center;
+      box-shadow: 0 2px 0 rgba(42, 74, 78, 0.12);
+    }
+    .n8n-g__node strong {
+      display: block;
+      font-size: 11pt;
+      color: #2a4a4e;
+      margin-bottom: 0.04in;
+    }
+    .n8n-g__node span {
+      display: block;
+      font-size: 8.5pt;
+      color: #445;
+      line-height: 1.3;
+    }
+    .n8n-g__node--mysql {
+      border-color: #00758f;
+      background: #e8f7fb;
+    }
+    .n8n-g__node--sheets {
+      border-color: #0f9d58;
+      background: #eaf7ef;
+    }
+    .n8n-g__node--trigger {
+      border-color: #ff6d5a;
+      background: #fff1ef;
+    }
+    .n8n-g__node--muted {
+      opacity: 0.55;
+      border-style: dashed;
+    }
+    .n8n-g__node--nuevo {
+      outline: 3px solid #e6a800;
+      outline-offset: 2px;
+    }
+    .n8n-g__arrow {
+      font-size: 22pt;
+      font-weight: 800;
+      color: #2a4a4e;
+      line-height: 1;
+    }
+    .n8n-g__arrow--bad { color: #cf222e; }
+    .n8n-g__arrow--good { color: #1a7f37; }
+    .n8n-g__label {
+      text-align: center;
+      font-size: 10pt;
+      font-weight: 700;
+      margin: 0.06in 0 0.16in;
+    }
+    .n8n-g__label--bad { color: #cf222e; }
+    .n8n-g__label--good { color: #1a7f37; }
+    .n8n-g__compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.22in;
+    }
+    .n8n-g__panel {
+      background: #fff;
+      border: 1px solid #4a7a80;
+      border-radius: 10px;
+      padding: 0.14in 0.16in;
+      min-height: 3.2in;
+    }
+    .n8n-g__panel h3 {
+      margin: 0 0 0.1in;
+      font-size: 12pt;
+      color: #2a4a4e;
+    }
+    .n8n-g__mock {
+      background: #2a2a2a;
+      border-radius: 10px;
+      padding: 0.14in;
+      color: #eee;
+      font-size: 9pt;
+      min-height: 2.6in;
+    }
+    .n8n-g__mock-top {
+      display: flex;
+      gap: 0.08in;
+      margin-bottom: 0.14in;
+      flex-wrap: wrap;
+    }
+    .n8n-g__chip {
+      background: #3d3d3d;
+      border: 1px solid #666;
+      border-radius: 6px;
+      padding: 0.05in 0.1in;
+      font-size: 8.5pt;
+    }
+    .n8n-g__chip--hi {
+      background: #00758f;
+      border-color: #00a3c4;
+      font-weight: 700;
+    }
+    .n8n-g__canvas {
+      background: #1e1e1e;
+      border: 1px dashed #666;
+      border-radius: 8px;
+      padding: 0.18in 0.12in;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.08in;
+      flex-wrap: wrap;
+      min-height: 1.6in;
+    }
+    .n8n-g__mini {
+      background: #fff;
+      color: #222;
+      border-radius: 8px;
+      padding: 0.08in 0.1in;
+      min-width: 0.95in;
+      text-align: center;
+      font-size: 8pt;
+      font-weight: 700;
+    }
+    .n8n-g__mini--mysql { background: #b8e6f0; }
+    .n8n-g__mini--sheets { background: #b8e6c8; }
+    .n8n-g__mini--new {
+      box-shadow: 0 0 0 2px #e6a800;
+    }
+    .n8n-g__steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.14in 0.22in;
+    }
+    .n8n-g__step {
+      background: #fff;
+      border: 1px solid #4a7a80;
+      border-radius: 8px;
+      padding: 0.12in 0.14in;
+    }
+    .n8n-g__step h3 {
+      margin: 0 0 0.06in;
+      font-size: 11pt;
+      color: #2a4a4e;
+    }
+    .n8n-g__step p, .n8n-g__step li {
+      margin: 0;
+      font-size: 10pt;
+      line-height: 1.35;
+    }
+    .n8n-g__step ol {
+      margin: 0.06in 0 0;
+      padding-left: 0.2in;
+    }
+    .n8n-g__form {
+      background: #fff;
+      border: 1px solid #4a7a80;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .n8n-g__form row, .n8n-g__form .row {
+      display: grid;
+      grid-template-columns: 1.4in 1fr;
+      border-top: 1px solid #d0e8ec;
+      font-size: 10pt;
+    }
+    .n8n-g__form .row:first-child { border-top: 0; }
+    .n8n-g__form .k {
+      background: #f0f7f8;
+      padding: 0.08in 0.1in;
+      font-weight: 700;
+      color: #2a4a4e;
+    }
+    .n8n-g__form .v {
+      padding: 0.08in 0.1in;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 9.5pt;
+    }
+    .n8n-g__num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 0.28in;
+      height: 0.28in;
+      background: #1a5c63;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 11pt;
+      font-weight: 800;
+      margin-right: 0.08in;
+    }
+    .n8n-g__warnbox {
+      background: #fff8c5;
+      border-left: 4px solid #e6a800;
+      padding: 0.1in 0.14in;
+      font-size: 11pt;
+      margin: 0.12in 0;
+    }
+    .n8n-g__okbox {
+      background: #eaf7ef;
+      border-left: 4px solid #1a7f37;
+      padding: 0.1in 0.14in;
+      font-size: 11pt;
+      margin: 0.12in 0;
+    }
+    .n8n-g__screen-note {
+      font-size: 9pt;
+      opacity: 0.8;
+      margin: 0.08in 0 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1 Portada -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--title">
+    <p class="eyebrow">MOVA · n8n · Guía operativa</p>
+    <h1>Agregar nodo MySQL<br>antes de Google Sheets</h1>
+    <p class="sub">Paso a paso para entregar / hacer en n8n</p>
+    <p class="task">Simple · con apoyo gráfico · sin asumir que “ya está”</p>
+    <p class="badge">Objetivo: MySQL guarda primero · Sheets solo después</p>
+  </section>
+
+  <!-- 2 Idea en una frase -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>La idea en una frase</h2>
+      <p>Para qué hacemos este cambio</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <p class="n8n-g__big">MySQL es la fuente de verdad. Google Sheets es una copia / vista.</p>
+      <div class="n8n-g__compare">
+        <div class="n8n-g__panel">
+          <h3 class="n8n-g__label n8n-g__label--bad">Hoy (mal para datos)</h3>
+          <div class="n8n-g__flow">
+            <div class="n8n-g__node n8n-g__node--trigger"><strong>Trigger</strong><span>Webhook / Schedule</span></div>
+            <div class="n8n-g__arrow n8n-g__arrow--bad">→</div>
+            <div class="n8n-g__node n8n-g__node--sheets"><strong>Google Sheets</strong><span>Escribe directo</span></div>
+          </div>
+          <p style="font-size:10pt;margin:0.15in 0 0">Los datos viven solo en la planilla. Difícil de auditar y respaldar.</p>
+        </div>
+        <div class="n8n-g__panel">
+          <h3 class="n8n-g__label n8n-g__label--good">Meta (correcto)</h3>
+          <div class="n8n-g__flow">
+            <div class="n8n-g__node n8n-g__node--trigger"><strong>Trigger</strong><span>Webhook / Schedule</span></div>
+            <div class="n8n-g__arrow n8n-g__arrow--good">→</div>
+            <div class="n8n-g__node n8n-g__node--mysql n8n-g__node--nuevo"><strong>MySQL</strong><span>Guarda primero</span></div>
+            <div class="n8n-g__arrow n8n-g__arrow--good">→</div>
+            <div class="n8n-g__node n8n-g__node--sheets"><strong>Google Sheets</strong><span>Copia / reporte</span></div>
+          </div>
+          <p style="font-size:10pt;margin:0.15in 0 0">La base queda primero. Sheets se alimenta después.</p>
+        </div>
+      </div>
+      <p class="mova-d1-pdf__footer-note">Regla: el nodo MySQL siempre va a la izquierda de Google Sheets en el canvas.</p>
+    </div>
+  </section>
+
+  <!-- 3 Qué vas a hacer -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Qué vas a hacer (mapa de 6 pasos)</h2>
+      <p>Checklist de la entrega</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <div class="n8n-g__steps">
+        <div class="n8n-g__step">
+          <h3><span class="n8n-g__num">1</span>Abrir el flujo</h3>
+          <p>En n8n, abrir el workflow que hoy termina en Google Sheets.</p>
+        </div>
+        <div class="n8n-g__step">
+          <h3><span class="n8n-g__num">2</span>Crear credencial MySQL</h3>
+          <p>Una sola vez: host, puerto, usuario, clave, base de datos.</p>
+        </div>
+        <div class="n8n-g__step">
+          <h3><span class="n8n-g__num">3</span>Agregar nodo MySQL</h3>
+          <p>Buscar “MySQL” en el panel de nodos y soltarlo en el canvas.</p>
+        </div>
+        <div class="n8n-g__step">
+          <h3><span class="n8n-g__num">4</span>Ponerlo ANTES de Sheets</h3>
+          <p>Mover el nodo a la izquierda de Google Sheets y reconectar cables.</p>
+        </div>
+        <div class="n8n-g__step">
+          <h3><span class="n8n-g__num">5</span>Configurar INSERT / UPDATE</h3>
+          <p>Elegir tabla + mapear campos desde el nodo anterior.</p>
+        </div>
+        <div class="n8n-g__step">
+          <h3><span class="n8n-g__num">6</span>Probar y guardar</h3>
+          <p>Execute step → revisar fila en MySQL → luego Sheets → Save.</p>
+        </div>
+      </div>
+      <p class="mova-d1-pdf__footer-note">No borres el nodo Google Sheets. Solo lo dejas después de MySQL.</p>
+    </div>
+  </section>
+
+  <!-- 4 Paso 1 -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2><span class="n8n-g__paso">Paso 1</span> Abrir el workflow en n8n</h2>
+      <p>Encontrar el flujo que hoy escribe en Sheets</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ol class="mova-d1-pdf__bullets">
+        <li>Entra a tu instancia n8n (Cloud o self-hosted).</li>
+        <li>Ve a <strong>Workflows</strong>.</li>
+        <li>Abre el flujo que ya tiene un nodo <strong>Google Sheets</strong>.</li>
+        <li>Activa el modo edición (si está en solo lectura).</li>
+      </ol>
+      <div class="n8n-g__mock" style="margin-top:0.2in">
+        <div class="n8n-g__mock-top">
+          <span class="n8n-g__chip">Workflows</span>
+          <span class="n8n-g__chip n8n-g__chip--hi">← Abre este</span>
+          <span class="n8n-g__chip">Nombre del flujo…</span>
+        </div>
+        <div class="n8n-g__canvas">
+          <div class="n8n-g__mini">Trigger</div>
+          <span class="n8n-g__arrow">→</span>
+          <div class="n8n-g__mini">… datos …</div>
+          <span class="n8n-g__arrow">→</span>
+          <div class="n8n-g__mini n8n-g__mini--sheets">Google Sheets</div>
+        </div>
+        <p class="n8n-g__screen-note">Así se ve hoy: Sheets al final, sin MySQL.</p>
+      </div>
+      <p class="mova-d1-pdf__footer-note">Si hay varios flujos con Sheets, haz uno primero y repite el mismo patrón.</p>
+    </div>
+  </section>
+
+  <!-- 5 Paso 2 credencial -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2><span class="n8n-g__paso">Paso 2</span> Crear la credencial MySQL</h2>
+      <p>Solo una vez por entorno · pedí estos datos al admin de la base</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ol class="mova-d1-pdf__bullets">
+        <li>En n8n: menú → <strong>Credentials</strong> → <strong>Add credential</strong>.</li>
+        <li>Busca <strong>MySQL</strong> y créala.</li>
+        <li>Completa estos campos (ejemplo de nombres):</li>
+      </ol>
+      <div class="n8n-g__form" style="margin-top:0.14in">
+        <div class="row"><div class="k">Host</div><div class="v">ej. 123.45.67.89  ó  mysql.tudominio.cl</div></div>
+        <div class="row"><div class="k">Database</div><div class="v">nombre_de_la_base</div></div>
+        <div class="row"><div class="k">User</div><div class="v">usuario_n8n</div></div>
+        <div class="row"><div class="k">Password</div><div class="v">••••••••</div></div>
+        <div class="row"><div class="k">Port</div><div class="v">3306  (casi siempre)</div></div>
+        <div class="row"><div class="k">SSL</div><div class="v">según indique el hosting (activar si lo piden)</div></div>
+      </div>
+      <div class="n8n-g__warnbox">No pegues la clave en Slack/WhatsApp. Guárdala solo en n8n Credentials.</div>
+      <p class="mova-d1-pdf__footer-note">Pulsa “Test” / “Save”. Si falla, el host o el firewall bloquea a n8n — avisa a infra.</p>
+    </div>
+  </section>
+
+  <!-- 6 Paso 3 agregar nodo -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2><span class="n8n-g__paso">Paso 3</span> Agregar el nodo MySQL al canvas</h2>
+      <p>Todavía no lo conectes · primero créalo</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ol class="mova-d1-pdf__bullets">
+        <li>En el canvas, clic en el <strong>+</strong> (Add node).</li>
+        <li>Escribe <strong>MySQL</strong> en el buscador.</li>
+        <li>Elige el nodo <strong>MySQL</strong> (oficial).</li>
+        <li>En Credential, selecciona la credencial del Paso 2.</li>
+      </ol>
+      <div class="n8n-g__mock" style="margin-top:0.16in">
+        <div class="n8n-g__mock-top">
+          <span class="n8n-g__chip">Add node</span>
+          <span class="n8n-g__chip n8n-g__chip--hi">Search: MySQL</span>
+        </div>
+        <div class="n8n-g__canvas">
+          <div class="n8n-g__mini">Trigger</div>
+          <span class="n8n-g__arrow">→</span>
+          <div class="n8n-g__mini">…</div>
+          <span class="n8n-g__arrow">→</span>
+          <div class="n8n-g__mini n8n-g__mini--sheets">Sheets</div>
+          <span style="margin:0 0.1in;color:#e6a800;font-weight:800">+</span>
+          <div class="n8n-g__mini n8n-g__mini--mysql n8n-g__mini--new">MySQL ★ nuevo</div>
+        </div>
+        <p class="n8n-g__screen-note">El nodo nuevo aparece suelto. En el siguiente paso lo ordenamos.</p>
+      </div>
+      <p class="mova-d1-pdf__footer-note">Operación típica: Insert o Insert or Update (upsert) sobre la tabla acordada.</p>
+    </div>
+  </section>
+
+  <!-- 7 Paso 4 posición -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2><span class="n8n-g__paso">Paso 4</span> Poner MySQL ANTES de Google Sheets</h2>
+      <p>Esto es lo más importante · orden del cableado</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <div class="n8n-g__compare">
+        <div class="n8n-g__panel">
+          <h3 class="n8n-g__label n8n-g__label--bad">Incorrecto</h3>
+          <div class="n8n-g__flow">
+            <div class="n8n-g__node n8n-g__node--trigger"><strong>…</strong><span>datos</span></div>
+            <div class="n8n-g__arrow n8n-g__arrow--bad">→</div>
+            <div class="n8n-g__node n8n-g__node--sheets"><strong>Sheets</strong><span>primero</span></div>
+            <div class="n8n-g__arrow n8n-g__arrow--bad">→</div>
+            <div class="n8n-g__node n8n-g__node--mysql n8n-g__node--muted"><strong>MySQL</strong><span>tarde</span></div>
+          </div>
+          <p style="font-size:10pt;margin-top:0.12in">Sheets queda como fuente. No.</p>
+        </div>
+        <div class="n8n-g__panel">
+          <h3 class="n8n-g__label n8n-g__label--good">Correcto</h3>
+          <div class="n8n-g__flow">
+            <div class="n8n-g__node n8n-g__node--trigger"><strong>…</strong><span>datos</span></div>
+            <div class="n8n-g__arrow n8n-g__arrow--good">→</div>
+            <div class="n8n-g__node n8n-g__node--mysql n8n-g__node--nuevo"><strong>MySQL</strong><span>primero</span></div>
+            <div class="n8n-g__arrow n8n-g__arrow--good">→</div>
+            <div class="n8n-g__node n8n-g__node--sheets"><strong>Sheets</strong><span>después</span></div>
+          </div>
+          <p style="font-size:10pt;margin-top:0.12in">MySQL a la izquierda · Sheets a la derecha.</p>
+        </div>
+      </div>
+      <ol class="mova-d1-pdf__bullets" style="margin-top:0.18in">
+        <li>Arrastra el nodo <strong>MySQL</strong> a la izquierda de <strong>Google Sheets</strong>.</li>
+        <li>Borra el cable viejo que iba directo a Sheets (clic en el cable → Delete).</li>
+        <li>Conecta: <strong>nodo anterior → MySQL → Google Sheets</strong>.</li>
+      </ol>
+      <p class="mova-d1-pdf__footer-note">Lee el canvas de izquierda a derecha: MySQL siempre antes que Sheets.</p>
+    </div>
+  </section>
+
+  <!-- 8 Paso 5 configurar -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2><span class="n8n-g__paso">Paso 5</span> Configurar qué guarda MySQL</h2>
+      <p>Tabla + columnas · con datos del nodo anterior</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <div class="n8n-g__steps">
+        <div class="n8n-g__step">
+          <h3>En el nodo MySQL</h3>
+          <ol>
+            <li>Operation: <strong>Insert</strong> (o Insert or Update).</li>
+            <li>Table: elige la tabla (ej. <code>leads</code>, <code>registros</code>).</li>
+            <li>Columns / Values: mapea cada campo.</li>
+          </ol>
+        </div>
+        <div class="n8n-g__step">
+          <h3>Cómo mapear</h3>
+          <ol>
+            <li>En cada valor, usa la expresión del nodo anterior.</li>
+            <li>Ejemplo: <code>{{ $json.email }}</code></li>
+            <li>Incluye fecha: <code>{{ $now }}</code> si aplica.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="n8n-g__form" style="margin-top:0.16in">
+        <div class="row"><div class="k">Columna</div><div class="v">Valor desde n8n (ejemplo)</div></div>
+        <div class="row"><div class="k">email</div><div class="v">{{ $json.email }}</div></div>
+        <div class="row"><div class="k">nombre</div><div class="v">{{ $json.nombre }}</div></div>
+        <div class="row"><div class="k">origen</div><div class="v">{{ $json.origen }}</div></div>
+        <div class="row"><div class="k">created_at</div><div class="v">{{ $now.toISO() }}</div></div>
+      </div>
+      <div class="n8n-g__okbox">Tip: primero haz Insert simple. Upsert (actualizar si existe) viene después, cuando la clave única esté clara.</div>
+      <p class="mova-d1-pdf__footer-note">Las columnas deben existir en MySQL. Si falta una, créala en la base antes (phpMyAdmin / DBA).</p>
+    </div>
+  </section>
+
+  <!-- 9 Paso 5b Sheets -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2><span class="n8n-g__paso">Paso 5b</span> Dejar Google Sheets alimentado después</h2>
+      <p>Sheets no se elimina · solo cambia de posición</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ol class="mova-d1-pdf__bullets">
+        <li>Abre el nodo <strong>Google Sheets</strong> (sigue al final).</li>
+        <li>Revisa que la operación sea Append / Update como antes.</li>
+        <li>Si los campos vienen del nodo anterior a MySQL, puedes seguir mapeando desde ahí <em>o</em> desde la salida de MySQL.</li>
+        <li>Lo importante: el <strong>cable</strong> llega a Sheets <strong>después</strong> de MySQL.</li>
+      </ol>
+      <div class="n8n-g__mock" style="margin-top:0.18in">
+        <div class="n8n-g__canvas">
+          <div class="n8n-g__mini">Trigger</div>
+          <span class="n8n-g__arrow n8n-g__arrow--good">→</span>
+          <div class="n8n-g__mini">Datos</div>
+          <span class="n8n-g__arrow n8n-g__arrow--good">→</span>
+          <div class="n8n-g__mini n8n-g__mini--mysql n8n-g__mini--new">1º MySQL</div>
+          <span class="n8n-g__arrow n8n-g__arrow--good">→</span>
+          <div class="n8n-g__mini n8n-g__mini--sheets">2º Sheets</div>
+        </div>
+        <p class="n8n-g__screen-note">Orden final del flujo.</p>
+      </div>
+      <div class="n8n-g__warnbox">Si MySQL falla, Sheets no debería escribir “como si nada”. Deja el cable en serie (no en paralelo) para eso.</div>
+      <p class="mova-d1-pdf__footer-note">Serie = un cable detrás del otro. Paralelo = dos cables desde el mismo nodo (evitar aquí).</p>
+    </div>
+  </section>
+
+  <!-- 10 Paso 6 probar -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2><span class="n8n-g__paso">Paso 6</span> Probar, verificar y guardar</h2>
+      <p>Cómo saber que quedó bien</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <div class="n8n-g__steps">
+        <div class="n8n-g__step">
+          <h3>En n8n</h3>
+          <ol>
+            <li>Clic en el nodo MySQL → <strong>Execute step</strong>.</li>
+            <li>Debe salir verde / success.</li>
+            <li>Luego Execute del flujo completo (o Test workflow).</li>
+            <li><strong>Save</strong> el workflow.</li>
+          </ol>
+        </div>
+        <div class="n8n-g__step">
+          <h3>Verificación fuera de n8n</h3>
+          <ol>
+            <li>MySQL: mira la tabla (phpMyAdmin / cliente SQL) — debe haber fila nueva.</li>
+            <li>Sheets: debe aparecer la fila después.</li>
+            <li>Si MySQL no tiene fila pero Sheets sí → el orden está mal.</li>
+          </ol>
+        </div>
+      </div>
+      <table class="mova-d1-pdf__tabla" style="margin-top:0.2in;font-size:11pt">
+        <thead><tr><th>Señal</th><th>Qué significa</th><th>Qué hacer</th></tr></thead>
+        <tbody>
+          <tr><td>MySQL OK · Sheets OK</td><td class="si">Listo</td><td>Guardar y documentar</td></tr>
+          <tr><td>MySQL falla · Sheets vacío</td><td>Credencial / tabla / columnas</td><td>Revisar Paso 2 y 5</td></tr>
+          <tr><td>Sheets OK · MySQL vacío</td><td class="no">Orden incorrecto</td><td>Volver al Paso 4</td></tr>
+        </tbody>
+      </table>
+      <p class="mova-d1-pdf__footer-note">Entregable: captura del canvas con MySQL a la izquierda de Sheets + fila en MySQL.</p>
+    </div>
+  </section>
+
+  <!-- 11 Errores comunes -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Errores comunes (y cómo evitarlos)</h2>
+      <p>Léelo antes de entregar</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <table class="mova-d1-pdf__tabla" style="font-size:11pt">
+        <thead><tr><th>Error</th><th>Por qué pasa</th><th>Fix rápido</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>MySQL a la derecha de Sheets</td>
+            <td>Se agregó el nodo pero no se reordenó</td>
+            <td>Paso 4: mover + reconectar</td>
+          </tr>
+          <tr>
+            <td>Access denied / ECONNREFUSED</td>
+            <td>Host, clave o firewall</td>
+            <td>Probar credencial; pedir IP allowlist de n8n</td>
+          </tr>
+          <tr>
+            <td>Unknown column</td>
+            <td>El mapeo usa un campo que no existe en la tabla</td>
+            <td>Alinear nombres con phpMyAdmin</td>
+          </tr>
+          <tr>
+            <td>Sheets escribe aunque MySQL falle</td>
+            <td>Nodos en paralelo</td>
+            <td>Un solo cable en serie</td>
+          </tr>
+          <tr>
+            <td>Duplicados en MySQL</td>
+            <td>Insert sin clave única</td>
+            <td>Usar Insert or Update + unique key</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="mova-d1-pdf__footer-note">Si dudas: captura el canvas y el error rojo del nodo MySQL — con eso se diagnostica en 1 minuto.</p>
+    </div>
+  </section>
+
+  <!-- 12 Checklist entrega -->
+  <section class="mova-d1-pdf__slide">
+    <header class="mova-d1-pdf__bar">
+      <h2>Checklist de entrega</h2>
+      <p>Marca todo antes de decir “listo”</p>
+    </header>
+    <div class="mova-d1-pdf__body">
+      <ul class="mova-d1-pdf__check">
+        <li><span class="mark pend">□</span> Credencial MySQL creada y con Test OK</li>
+        <li><span class="mark pend">□</span> Nodo MySQL en el workflow</li>
+        <li><span class="mark pend">□</span> Canvas: Trigger → … → <strong>MySQL</strong> → <strong>Google Sheets</strong></li>
+        <li><span class="mark pend">□</span> Columnas mapeadas (email / nombre / etc.)</li>
+        <li><span class="mark pend">□</span> Execute: MySQL success</li>
+        <li><span class="mark pend">□</span> Fila visible en la tabla MySQL</li>
+        <li><span class="mark pend">□</span> Fila visible en Google Sheets (después)</li>
+        <li><span class="mark pend">□</span> Workflow guardado (Save)</li>
+        <li><span class="mark pend">□</span> Captura del canvas adjunta a la entrega</li>
+      </ul>
+      <div class="n8n-g__okbox" style="margin-top:0.2in">
+        Frase para el cliente: <strong>“MySQL queda como fuente; Google Sheets se actualiza después, no al revés.”</strong>
+      </div>
+      <p class="mova-d1-pdf__footer-note">Guía HTML: index/clientes/mkof/n8n-mysql-antes-sheets.html · imprimir / PDF desde el navegador.</p>
+    </div>
+  </section>
+
+  <!-- 13 Cierre -->
+  <section class="mova-d1-pdf__slide mova-d1-pdf__slide--title">
+    <p class="eyebrow">Resumen visual</p>
+    <h1 style="font-size:36pt;margin-bottom:0.25in">MySQL primero<br>Sheets después</h1>
+    <div class="n8n-g__flow">
+      <div class="n8n-g__node n8n-g__node--trigger" style="color:#222"><strong>Datos</strong><span>entran al flujo</span></div>
+      <div class="n8n-g__arrow n8n-g__arrow--good">→</div>
+      <div class="n8n-g__node n8n-g__node--mysql n8n-g__node--nuevo" style="color:#222"><strong>MySQL</strong><span>fuente de verdad</span></div>
+      <div class="n8n-g__arrow n8n-g__arrow--good">→</div>
+      <div class="n8n-g__node n8n-g__node--sheets" style="color:#222"><strong>Sheets</strong><span>copia / reporte</span></div>
+    </div>
+    <p class="badge" style="margin-top:0.5in">6 pasos · mismo patrón en cada workflow</p>
+  </section>
+
+</body>
+</html>
