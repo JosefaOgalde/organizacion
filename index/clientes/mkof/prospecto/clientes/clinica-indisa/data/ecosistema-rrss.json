@@ -72,9 +72,11 @@
         "url": "https://www.facebook.com/reddavilaoficial/"
       },
       "santa_maria": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null
+        "valor": 59000,
+        "display": "59 mil",
+        "fuenteId": "fb-santamaria",
+        "exacto": "58.789 likes (Facebook UI)",
+        "url": "https://www.facebook.com/clinicasantamaria"
       },
       "indisa": {
         "valor": 49000,
@@ -110,7 +112,8 @@
         "valor": null,
         "display": "PENDIENTE",
         "handle": "@clinicasantamariacl",
-        "fuenteId": "ig-handles"
+        "fuenteId": "ig-santamaria",
+        "url": "https://www.instagram.com/clinicasantamariacl/"
       },
       "indisa": {
         "valor": null,
@@ -144,9 +147,11 @@
         "url": "https://www.linkedin.com/company/clinica-davila"
       },
       "santa_maria": {
-        "valor": 79673,
-        "display": "80 mil",
-        "fuenteId": "li-santamaria"
+        "valor": 80557,
+        "display": "81 mil",
+        "fuenteId": "li-santamaria",
+        "exacto": "80.557 followers",
+        "url": "https://www.linkedin.com/company/clinica-santa-maria/"
       },
       "indisa": {
         "valor": 59868,
@@ -177,9 +182,11 @@
         "url": "https://www.youtube.com/@RedDávilacl"
       },
       "santa_maria": {
-        "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null
+        "valor": 7160,
+        "display": "7 mil",
+        "fuenteId": "yt-santamaria",
+        "exacto": "7.16K subscribers",
+        "url": "https://www.youtube.com/@clinicasantamariachile"
       },
       "indisa": {
         "valor": null,
@@ -272,8 +279,9 @@
       },
       "santa_maria": {
         "valor": null,
-        "display": "PENDIENTE",
-        "fuenteId": null
+        "display": "Sin URL / PEND.",
+        "fuenteId": null,
+        "nota": "No se entregó perfil X oficial en el set de links"
       },
       "indisa": {
         "valor": null,
@@ -315,12 +323,12 @@
     }
   },
   "lecturaRapida": [
-    "En LinkedIn, Alemana lidera (~160 mil); Dávila (~114 mil) y CLC (~106 mil) siguen; Indisa (~60 mil) última del quinteto.",
-    "En Facebook: Alemana (~177 mil) > Dávila/Red Dávila (~125 mil) > CLC (~111 mil) > Indisa (~49 mil).",
-    "YouTube: CLC (~20 mil) >> Alemana (~2,6 mil) ≈ Dávila (~1,9 mil); Indisa pendiente.",
-    "Marca Dávila opera como Red Dávila en RRSS (@reddavilaoficial) — coherencia de naming a considerar vs Indisa.",
-    "Spotify: Alemana tiene perfil oficial; Indisa y el resto sin evidencia aún — formato audio como diferencial.",
-    "Instagram: fila de seguidores + fila Engagement Rate (%). Ambos PENDIENTE hasta captura en app/Metricool (no inventar %).",
-    "La columna Prospecto (azul) es Indisa; el resto son competidores de benchmark."
+    "LinkedIn: Alemana (~160) > Dávila (~114) > CLC (~106) > Santa María (~81) > Indisa (~60).",
+    "Facebook: Alemana (~177) > Dávila (~125) > CLC (~111) > Santa María (~59) > Indisa (~49).",
+    "YouTube: CLC (~20) > Santa María (~7) > Alemana (~2,6) > Dávila (~1,9); Indisa pendiente.",
+    "Canales oficiales de los 4 competidores ya cargados; falta X de Santa María e IG/ER de todos.",
+    "Spotify: solo Alemana con perfil oficial — formato audio como diferencial potencial.",
+    "Instagram + Engagement Rate: PENDIENTE hasta captura Metricool / app (no inventar %).",
+    "Columna Prospecto (azul) = Indisa; el resto = benchmark."
   ]
 }

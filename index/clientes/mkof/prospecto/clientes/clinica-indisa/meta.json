@@ -5,7 +5,7 @@
   "ambito": "RRSS orgánicas",
   "etapa": 1,
   "creado": "2026-07-20T21:33:46Z",
-  "updatedAt": "2026-07-20T22:00:00Z",
+  "updatedAt": "2026-07-20T22:05:00Z",
   "competidores": [
     "Clínica Las Condes",
     "Clínica Alemana",
@@ -39,6 +39,14 @@
       "instagram": "https://www.instagram.com/reddavilaoficial/",
       "x": "https://x.com/Red_Davila",
       "youtube": "https://www.youtube.com/@RedDávilacl"
+    },
+    "santa_maria": {
+      "nombre": "Clínica Santa María",
+      "web": "https://www.clinicasantamaria.cl/",
+      "facebook": "https://www.facebook.com/clinicasantamaria",
+      "instagram": "https://www.instagram.com/clinicasantamariacl/",
+      "youtube": "https://www.youtube.com/@clinicasantamariachile",
+      "linkedin": "https://www.linkedin.com/company/clinica-santa-maria/"
     }
   },
   "objetivo": "Evaluar si la comunicación orgánica está alineada entre canales, con objetivos claros y uso adecuado; benchmark vs 4 clínicas privadas de Santiago.",
