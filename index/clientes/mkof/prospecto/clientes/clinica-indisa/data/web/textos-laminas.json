@@ -106,13 +106,15 @@
   },
   "esteticoVsFuncional": {
     "titulo": "DIAGNÓSTICO UX / UI",
-    "subtitulo": "WWW.INDISA.CL · HOY",
-    "cajaTitulo": "Diseño estético vs funcional",
+    "subtitulo": "HOY · WWW.INDISA.CL",
+    "cajaTitulo": "Se ve bien… pero no sirve",
     "bullets": [
-      "HOY la página de mantención se ve limpia y con marca, pero no cumple ninguna función clínica.",
-      "La estética está sobrepuesta a la función: sin urgencia, sin reserva, sin sedes, sin menú.",
-      "Falta degradación útil: aunque el CMS esté caído, deben quedar teléfonos y WhatsApp visibles."
-    ]
+      "La página de mantención está ordenada y con el logo de Indisa.",
+      "El problema: un paciente que necesita atención no puede hacer nada desde ahí.",
+      "Aunque el sitio esté en mantención, deberían quedar visibles: teléfono de urgencia, teléfono para reservar, WhatsApp y dirección de las sedes."
+    ],
+    "ladoOk": "Se ve limpia — marca + mensaje de “estamos trabajando”",
+    "ladoBad": "No se puede usar — sin pedir hora, sin llamar, sin ver sedes"
   },
   "recomendaciones": {
     "titulo": "DIAGNÓSTICO UX / UI",

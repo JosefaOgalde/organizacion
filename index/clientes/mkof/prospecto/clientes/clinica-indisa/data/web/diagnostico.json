@@ -70,7 +70,7 @@
     },
     "arquitectura": {
       "indisa": "HOY: arquitectura plana de un solo nodo (mantención). Home, /agenda, /centros y /especialidades sirven el mismo aviso sin menú.",
-      "gap": "Mantención global sin degradación graceful (teléfonos, mapa, WhatsApp)."
+      "gap": "Si el sitio cae, igual deben quedar teléfonos, mapa y WhatsApp a la vista."
     },
     "referencias": {
       "tomar": [

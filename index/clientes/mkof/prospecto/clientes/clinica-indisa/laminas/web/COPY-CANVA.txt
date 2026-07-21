@@ -116,16 +116,24 @@ El hero vende el seguro, no la hora.
 → Para Indisa: lo primero debe ser «Reservar hora», no una campaña comercial.
 
 ================================================================================
-06 · ESTÉTICO VS FUNCIONAL (HOY)
+06 · SE VE BIEN… PERO NO SIRVE (HOY · sin tecnicismos)
 ================================================================================
 Título: DIAGNÓSTICO UX / UI
-Sub: DISEÑO ESTÉTICO VS FUNCIONAL · HOY · WWW.INDISA.CL
+Sub: HOY · WWW.INDISA.CL
 
-• La página de mantención se ve limpia y con marca Indisa.
-• Pero no cumple ninguna función clínica: no hay urgencia, reserva, sedes ni menú.
-• La estética está sobrepuesta a la función: el paciente sale sin poder actuar.
+Se ve bien… pero no sirve.
 
-✓ Se ve bien (marca + mensaje)   ✗ No sirve (cero tareas clínicas)
+La página de mantención está ordenada y con el logo de Indisa.
+El problema: un paciente que necesita atención no puede hacer nada desde ahí.
+
+LO QUE SÍ HAY → Se ve limpia (marca + mensaje)
+LO QUE FALTA → No se puede usar (sin pedir hora, sin llamar, sin ver sedes)
+
+Aunque el sitio esté en mantención, debería quedar visible:
+· Teléfono de urgencia
+· Teléfono para reservar
+· WhatsApp
+· Dirección de las sedes
 
 ================================================================================
 07 · RECOMENDACIONES (7 cajas)

@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Estético vs funcional · Hoy · Indisa</title>
+  <title>Se ve bien pero no sirve · Indisa hoy</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -15,62 +15,95 @@
     .sub { font-size: 20px; font-weight: 600; color: #6a8f7a; margin-top: 6px; letter-spacing: 0.06em; }
     .foot { position: absolute; bottom: 22px; left: 0; right: 0; text-align: center; font-size: 12px; color: #b0b8b2; }
     .fuente { position: absolute; bottom: 48px; left: 56px; font-size: 13px; color: #7a8f82; font-weight: 600; }
-    .wrap { display: flex; gap: 40px; margin-top: 36px; align-items: stretch; }
+    .wrap { display: flex; gap: 40px; margin-top: 32px; align-items: stretch; }
+    .left { flex: 1; max-width: 780px; display: flex; flex-direction: column; gap: 18px; }
     .box {
       background: #1a4d3e; color: #e8f5d0; border-radius: 22px;
-      padding: 32px 34px; flex: 1; max-width: 700px;
+      padding: 28px 32px;
     }
     .box .badge {
       display: inline-block; background: #c45c26; color: #fff;
       font-size: 13px; font-weight: 800; letter-spacing: 0.08em;
-      padding: 7px 14px; border-radius: 999px; margin-bottom: 16px;
+      padding: 7px 14px; border-radius: 999px; margin-bottom: 14px;
     }
-    .box h2 { font-size: 26px; font-weight: 800; color: #c6e86a; margin-bottom: 20px; }
-    .box li {
-      font-size: 19px; font-weight: 600; line-height: 1.45;
-      margin-bottom: 16px; margin-left: 22px;
+    .box h2 { font-size: 28px; font-weight: 800; color: #c6e86a; margin-bottom: 18px; line-height: 1.2; }
+    .box p { font-size: 20px; font-weight: 600; line-height: 1.45; margin-bottom: 14px; }
+    .dos {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
     }
-    .vs {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px;
+    .dos > div {
+      border-radius: 18px; padding: 22px 20px; text-align: center;
     }
-    .vs div {
-      border-radius: 14px; padding: 16px; text-align: center;
-      font-size: 15px; font-weight: 700; line-height: 1.35;
+    .dos .ok { background: #2f6b52; color: #fff; }
+    .dos .bad { background: #fff5eb; border: 3px solid #c45c26; color: #8a3a12; }
+    .dos .tit { font-size: 15px; font-weight: 800; letter-spacing: 0.06em; margin-bottom: 10px; }
+    .dos .ok .tit { color: #c6e86a; }
+    .dos .big { font-size: 26px; font-weight: 800; line-height: 1.25; margin-bottom: 10px; }
+    .dos .det { font-size: 16px; font-weight: 600; line-height: 1.35; opacity: 0.95; }
+    .necesita {
+      background: #fff; border: 2px solid #d5e3d9; border-radius: 18px;
+      padding: 20px 24px;
     }
-    .vs .ok { background: #2f6b52; color: #c6e86a; }
-    .vs .bad { background: #5a2a1a; color: #ffb090; }
+    .necesita h3 { font-size: 16px; font-weight: 800; color: #1a4d3e; margin-bottom: 12px; }
+    .necesita ul { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .necesita li {
+      font-size: 16px; font-weight: 700; color: #3d5c4e;
+      background: #eef5f1; border-radius: 10px; padding: 12px 14px;
+    }
+    .necesita li::before { content: "→ "; color: #2f6b52; }
     .shot {
       width: 520px; background: #fff; border-radius: 14px;
       border: 1px solid #d5e3d9; overflow: hidden;
       box-shadow: 0 12px 32px rgba(0,0,0,.1); flex-shrink: 0;
     }
-    .shot img { width: 100%; display: block; object-fit: cover; object-position: top; max-height: 700px; }
+    .shot img { width: 100%; display: block; object-fit: cover; object-position: top; max-height: 720px; }
     .shot .cap { padding: 14px; font-size: 13px; font-weight: 700; color: #5a7368; }
   </style>
 </head>
 <body>
   <h1>DIAGNÓSTICO UX / UI</h1>
-  <div class="sub">DISEÑO ESTÉTICO VS FUNCIONAL · HOY · WWW.INDISA.CL</div>
+  <div class="sub">HOY · WWW.INDISA.CL</div>
+
   <div class="wrap">
-    <div class="box">
-      <div class="badge">HOY · 21 JUL 2026</div>
-      <h2>Diseño estético vs funcional</h2>
-      <ul>
-        <li>La página de mantención se ve limpia y con marca Indisa.</li>
-        <li>Pero <b style="color:#fff">no cumple ninguna función clínica</b>: no hay urgencia, reserva, sedes ni menú.</li>
-        <li>La estética está sobrepuesta a la función: el paciente sale sin poder actuar.</li>
-      </ul>
-      <div class="vs">
-        <div class="ok">✓ Se ve bien<br>(marca + mensaje)</div>
-        <div class="bad">✗ No sirve<br>(cero tareas clínicas)</div>
+    <div class="left">
+      <div class="box">
+        <div class="badge">EN SIMPLE</div>
+        <h2>Se ve bien… pero no sirve</h2>
+        <p>La página de mantención está ordenada y con el logo de Indisa.</p>
+        <p>El problema: un paciente que necesita atención <b style="color:#fff">no puede hacer nada</b> desde ahí.</p>
+      </div>
+
+      <div class="dos">
+        <div class="ok">
+          <div class="tit">LO QUE SÍ HAY</div>
+          <div class="big">Se ve limpia</div>
+          <div class="det">Marca + mensaje de “estamos trabajando”</div>
+        </div>
+        <div class="bad">
+          <div class="tit">LO QUE FALTA</div>
+          <div class="big">No se puede usar</div>
+          <div class="det">Sin pedir hora, sin llamar, sin ver sedes</div>
+        </div>
+      </div>
+
+      <div class="necesita">
+        <h3>Aunque el sitio esté en mantención, debería quedar visible:</h3>
+        <ul>
+          <li>Teléfono de urgencia</li>
+          <li>Teléfono para reservar</li>
+          <li>WhatsApp</li>
+          <li>Dirección de las sedes</li>
+        </ul>
       </div>
     </div>
+
     <div class="shot">
-      <img src="capturas/web-indisa-home.png" alt="Indisa hoy mantención" />
-      <div class="cap">Captura home · hoy · mantención (sin navegación)</div>
+      <img src="capturas/web-indisa-home.png" alt="Indisa hoy" />
+      <div class="cap">Así se ve hoy indisa.cl</div>
     </div>
   </div>
-  <div class="fuente">Captura viva indisa.cl · 2026-07-21</div>
+
+  <div class="fuente">Captura viva · 2026-07-21</div>
   <div class="foot">Created & Proprietary MKOF 2025 / All rights reserved</div>
 </body>
 </html>
