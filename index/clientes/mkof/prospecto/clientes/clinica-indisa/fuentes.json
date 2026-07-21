@@ -576,6 +576,15 @@
       "dato": "Campo móvil CWV reprobado (LCP 2.8s · CLS 0.17 · TTFB 1.6s) · Lab móvil score 54 LCP 6.2s · Lab desktop score 59 LCP 1.0s",
       "fecha": "2026-07-21",
       "metodo": "URL oficial entregada por usuaria · reporte PSI ms57lriy5j"
+    },
+    {
+      "id": "web-psi-santamaria-cghji67u37",
+      "tipo": "pagespeed",
+      "entidad": "Clínica Santa María",
+      "url": "https://pagespeed.web.dev/analysis/https-www-clinicasantamaria-cl/cghji67u37?form_factor=mobile",
+      "dato": "Campo móvil CWV reprobado (INP 261ms · LCP 2.2s) · Lab móvil score 64 LCP 6.8s · Desktop CWV aprobado · Lab desktop score 68 LCP 2.7s",
+      "fecha": "2026-07-21",
+      "metodo": "URL oficial entregada por usuaria · reporte PSI cghji67u37"
     }
   ],
   "canalesOficialesProspecto": {

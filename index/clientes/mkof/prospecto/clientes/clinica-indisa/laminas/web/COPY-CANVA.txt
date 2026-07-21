@@ -33,22 +33,23 @@ Logos / nombres:
 Clínica Las Condes · Clínica Alemana · Clínica Dávila · Clínica Santa María
 
 ================================================================================
-03 · RENDIMIENTO (Indisa · CLC · Alemana · Dávila · PSI oficial)
+03 · RENDIMIENTO (5 clínicas · PSI oficial móvil)
 ================================================================================
 Título: DIAGNÓSTICO UX / UI
-Sub: RENDIMIENTO · 4 CLÍNICAS · PAGESPEED OFICIAL (MÓVIL)
+Sub: RENDIMIENTO · 5 CLÍNICAS · PAGESPEED OFICIAL (MÓVIL)
 
-INDISA — nota lab 38 · usuarios 1,6 s (CWV OK) · lab 32,3 s
-LAS CONDES — nota lab 64 · CWV reprobado (CLS 0,44) · lab 5,4 s
-ALEMANA — nota lab 53 · CWV reprobado (LCP 3,1 s · CLS 0,92) · lab 5,5 s
-DÁVILA — nota lab 54 · CWV reprobado (LCP 2,8 s · CLS 0,17 · TTFB 1,6 s) · lab 6,2 s
+INDISA — nota 38 · usuarios 1,6 s (CWV OK) · lab 32,3 s
+LAS CONDES — nota 64 · CWV reprobado (CLS 0,44) · lab 5,4 s
+ALEMANA — nota 53 · CWV reprobado (LCP 3,1 s · CLS 0,92) · lab 5,5 s
+DÁVILA — nota 54 · CWV reprobado (LCP 2,8 s · CLS 0,17 · TTFB 1,6 s) · lab 6,2 s
+SANTA MARÍA — nota 64 · CWV reprobado (INP 261 ms) · lab 6,8 s · desktop CWV OK
 
-Lab móvil (contenido grande): Indisa 32,3 · Dávila 6,2 · Alemana 5,5 · CLC 5,4
+Lab móvil: Indisa 32,3 · SM 6,8 · Dávila 6,2 · Alemana 5,5 · CLC 5,4
 
 → Indisa: mejor experiencia real; peor lab. Aligerar home móvil.
-→ Competencia: fallan CWV (saltos/lentitud). No copiar eso.
+→ Competencia: fallan CWV (saltos / lentitud / demora al tocar).
 
-Fuentes PSI: ouu45jo4vc · s73sqtgrj5 · hirdgw5bs5 · ms57lriy5j
+Fuentes: ouu45jo4vc · s73sqtgrj5 · hirdgw5bs5 · ms57lriy5j · cghji67u37
 
 ================================================================================
 04 · ESTRUCTURA DE NAVEGACIÓN (HOY)

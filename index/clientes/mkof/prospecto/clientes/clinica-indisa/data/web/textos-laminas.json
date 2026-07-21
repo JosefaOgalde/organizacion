@@ -30,7 +30,7 @@
   },
   "rendimiento": {
     "titulo": "DIAGNÓSTICO UX / UI",
-    "subtitulo": "RENDIMIENTO · 4 CLÍNICAS · PAGESPEED OFICIAL (MÓVIL)",
+    "subtitulo": "RENDIMIENTO · 5 CLÍNICAS · PAGESPEED OFICIAL (MÓVIL)",
     "indisa": {
       "notaLab": 38,
       "usuariosLcp": "1,6 s",
@@ -54,13 +54,21 @@
       "ouu45jo4vc",
       "s73sqtgrj5",
       "hirdgw5bs5",
-      "ms57lriy5j"
+      "ms57lriy5j",
+      "cghji67u37"
     ],
     "davila": {
       "notaLab": 54,
       "usuariosLcp": "2,8 s",
       "usuariosCls": "0,17",
       "labLcp": "6,2 s",
+      "cwv": "reprobado"
+    },
+    "santamaria": {
+      "notaLab": 64,
+      "usuariosLcp": "2,2 s",
+      "usuariosInp": "261 ms",
+      "labLcp": "6,8 s",
       "cwv": "reprobado"
     }
   },
