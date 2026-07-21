@@ -720,6 +720,9 @@
   }
 
   function renderFeed(feed) {
+    // Siempre marcar el feed con la fecha del día en que se usa (no la del JSON estático)
+    const hoy = hoyIsoLocal();
+    feed = { ...feed, actualizado: `${hoy}T12:00:00` };
     feedActual = feed;
     const filtrado = feedFiltrado(feed);
     const total = filtrado.tendencias.length;
@@ -736,7 +739,7 @@
           <p class="tend-dashboard__meta">
             <span class="tend-dashboard__estado" id="tend-estado">Listo</span>
             <span id="tend-contador">${total} tendencia${total === 1 ? '' : 's'} · ${escapeHtml(etiquetaFiltroFecha())}</span>
-            <time datetime="${escapeHtml(feed.actualizado)}">Feed: ${escapeHtml(formatoFecha(feed.actualizado?.slice(0, 10)))}</time>
+            <time id="tend-feed-fecha" datetime="${escapeHtml(hoy)}">Feed: ${escapeHtml(formatoFecha(hoy))}</time>
           </p>
         </div>
 
