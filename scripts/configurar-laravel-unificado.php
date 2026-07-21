@@ -136,10 +136,20 @@ foreach ($links as $name => $target) {
 
 
 $live = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-live.json';
-$respaldo = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-respaldo-2026-07-17.json';
-if (!is_file($live) && is_file($respaldo)) {
-    copy($respaldo, $live);
-    echo "  · data/organizacion-live.json desde respaldo 2026-07-17\n";
+$respaldoCandidates = [
+    'organizacion-respaldo-2026-07-21.json',
+    'organizacion-respaldo-2026-07-18.json',
+    'organizacion-respaldo-2026-07-17.json',
+];
+if (!is_file($live)) {
+    foreach ($respaldoCandidates as $name) {
+        $respaldo = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . $name;
+        if (is_file($respaldo)) {
+            copy($respaldo, $live);
+            echo "  · data/organizacion-live.json desde $name\n";
+            break;
+        }
+    }
 }
 
 // Sesión en archivo = el HTML no necesita MySQL
