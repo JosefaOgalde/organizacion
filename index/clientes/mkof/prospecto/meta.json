@@ -40,8 +40,12 @@
     {
       "nombre": "Clínica Indisa",
       "slug": "clinica-indisa",
-      "estado": "Etapa 1 · LinkedIn+FB medidos · IG pendiente captura",
+      "estado": "Hub · RRSS/ + UX-UI/ (plantillas, data, láminas)",
       "href": "clientes/clinica-indisa/?disco=1",
+      "modulos": {
+        "RRSS": "clientes/clinica-indisa/RRSS/?disco=1",
+        "UX-UI": "clientes/clinica-indisa/UX-UI/?disco=1"
+      },
       "competidores": [
         "Clínica Las Condes",
         "Clínica Alemana",
@@ -50,6 +54,6 @@
       ]
     }
   ],
-  "reglaData": "Todo número debe citar fuente, fecha y método en clientes/<slug>/fuentes.json",
-  "nota": "Prospecto activo: Clínica Indisa (etapa 1)."
+  "reglaData": "Todo número debe citar fuente, fecha y método en clientes/<slug>/RRSS/fuentes.json o UX-UI/fuentes.json",
+  "nota": "Prospecto activo: Clínica Indisa. Documentos/plantillas en RRSS/ y UX-UI/."
 }
