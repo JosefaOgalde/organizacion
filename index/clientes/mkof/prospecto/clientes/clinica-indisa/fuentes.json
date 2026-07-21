@@ -1,0 +1,18 @@
+{
+  "prospecto": "Clínica Indisa",
+  "slug": "clinica-indisa",
+  "nota": "Las fuentes detalladas viven en cada módulo. Este archivo solo apunta a ellos.",
+  "modulos": {
+    "RRSS": "RRSS/fuentes.json",
+    "UX-UI": "UX-UI/fuentes.json"
+  },
+  "canalesOficialesProspecto": {
+    "web": "https://www.indisa.cl/",
+    "facebook": "https://www.facebook.com/clinicaindisa",
+    "instagram": "https://www.instagram.com/clinicaindisacl/",
+    "x": "https://x.com/ClinicaIndisa",
+    "youtube": "https://www.youtube.com/@ClínicaINDISA-v5v",
+    "linkedin": "https://www.linkedin.com/company/cl-nica-indisa/posts/?feedView=all",
+    "tiktok": "https://www.tiktok.com/@clinicaindisacl"
+  }
+}

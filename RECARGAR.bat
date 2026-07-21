@@ -17,6 +17,6 @@ if errorlevel 1 (
 )
 
 echo  Recargando http://127.0.0.1:8000/index.html?disco=1
-start "" "http://127.0.0.1:8000/index.html?disco=1"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1'"
 echo  Listo. Si la pestana ya estaba abierta, usa F5 o esta pestana nueva.
 echo.

@@ -1,0 +1,485 @@
+{
+  "titulo": "ECOSISTEMA RRSS",
+  "fecha": "2026-07-20",
+  "notaPresentacion": "Columna Clínica Indisa = PROSPECTO (fondo distinto). Recuadros verdes = mejor métrica de cada fila.",
+  "mejoresPorFila": {
+    "Facebook": "alemana",
+    "Instagram": "alemana",
+    "Instagram ER": "las_condes",
+    "LinkedIn": "alemana",
+    "YouTube": "indisa",
+    "TikTok": "davila",
+    "TikTok ER": "davila",
+    "X (Twitter)": "alemana",
+    "Spotify": "alemana"
+  },
+  "plataformas": [
+    "Facebook",
+    "Instagram",
+    "Instagram ER",
+    "LinkedIn",
+    "YouTube",
+    "TikTok",
+    "TikTok ER",
+    "X (Twitter)",
+    "Spotify"
+  ],
+  "columnas": [
+    {
+      "id": "indisa",
+      "nombre": "Clínica Indisa",
+      "rol": "prospecto",
+      "nombreCorto": "Indisa",
+      "etiqueta": "Prospecto"
+    },
+    {
+      "id": "las_condes",
+      "nombre": "Clínica Las Condes",
+      "rol": "competidor",
+      "etiqueta": "Competidor"
+    },
+    {
+      "id": "alemana",
+      "nombre": "Clínica Alemana",
+      "rol": "competidor",
+      "etiqueta": "Competidor"
+    },
+    {
+      "id": "davila",
+      "nombre": "Dávila / Red Dávila",
+      "nombreCorto": "Red Dávila",
+      "rol": "competidor",
+      "etiqueta": "Competidor"
+    },
+    {
+      "id": "santa_maria",
+      "nombre": "Clínica Santa María",
+      "rol": "competidor",
+      "etiqueta": "Competidor"
+    }
+  ],
+  "engagementRateNota": "IG ER = (likes+comentarios)/seguidores con N=9 (primeras 9 capturas entregadas por cuenta; si hay más, se cortan). TikTok ER = (likes+comentarios+guardados)/seguidores (muestra videos; sin shares/views públicos).",
+  "celdas": {
+    "Facebook": {
+      "las_condes": {
+        "valor": 111000,
+        "display": "111 mil",
+        "fuenteId": "fb-clc",
+        "exacto": "111K followers (Facebook UI)",
+        "url": "https://www.facebook.com/clinicalascondes"
+      },
+      "alemana": {
+        "valor": 177000,
+        "display": "177 mil",
+        "fuenteId": "fb-alemana",
+        "exacto": "177.382 likes (Facebook UI)",
+        "url": "https://www.facebook.com/Clinicaalemanadesantiago/",
+        "highlight": true,
+        "mejorMetrica": true
+      },
+      "davila": {
+        "valor": 125000,
+        "display": "125 mil",
+        "fuenteId": "fb-davila",
+        "exacto": "125.104 likes (Facebook UI)",
+        "url": "https://www.facebook.com/reddavilaoficial/"
+      },
+      "santa_maria": {
+        "valor": 59000,
+        "display": "59 mil",
+        "fuenteId": "fb-santamaria",
+        "exacto": "58.789 likes (Facebook UI)",
+        "url": "https://www.facebook.com/clinicasantamaria"
+      },
+      "indisa": {
+        "valor": 49000,
+        "display": "49 mil",
+        "fuenteId": "fb-indisa",
+        "exacto": "49K (Facebook UI)",
+        "url": "https://www.facebook.com/clinicaindisa"
+      }
+    },
+    "Instagram": {
+      "las_condes": {
+        "valor": 45800,
+        "display": "45,8 mil",
+        "posts": 2226,
+        "handle": "@clinicalascondes",
+        "fuenteId": "ig-clc",
+        "exacto": "45,8 mil seguidores · 2.226 posts (screenshot app 2026-07-20)",
+        "url": "https://www.instagram.com/clinicalascondes/"
+      },
+      "alemana": {
+        "valor": 139000,
+        "display": "139 mil",
+        "posts": 1515,
+        "handle": "@clinicaalemanadesantiago",
+        "fuenteId": "ig-alemana",
+        "exacto": "139 mil seguidores · 1.515 posts (screenshot app 2026-07-20)",
+        "url": "https://www.instagram.com/clinicaalemanadesantiago/",
+        "highlight": true,
+        "mejorMetrica": true
+      },
+      "davila": {
+        "valor": 42200,
+        "display": "42,2 mil",
+        "posts": 1357,
+        "handle": "@reddavilaoficial",
+        "fuenteId": "ig-davila",
+        "exacto": "42,2 mil seguidores · 1.357 posts (screenshot app 2026-07-20)",
+        "url": "https://www.instagram.com/reddavilaoficial/"
+      },
+      "santa_maria": {
+        "valor": 38800,
+        "display": "38,8 mil",
+        "posts": 1217,
+        "handle": "@clinicasantamariacl",
+        "fuenteId": "ig-santamaria",
+        "exacto": "38,8 mil seguidores · 1.217 posts (screenshot app 2026-07-20)",
+        "url": "https://www.instagram.com/clinicasantamariacl/"
+      },
+      "indisa": {
+        "valor": 43700,
+        "display": "43,7 mil",
+        "posts": 1449,
+        "handle": "@clinicaindisacl",
+        "fuenteId": "ig-indisa",
+        "exacto": "43,7 mil seguidores · 1.449 posts (screenshot app 2026-07-20)",
+        "url": "https://www.instagram.com/clinicaindisacl/",
+        "nota": "También Threads @clinicaindisacl · linktr.ee/clinicaindisacl"
+      }
+    },
+    "LinkedIn": {
+      "las_condes": {
+        "valor": 106200,
+        "display": "106 mil",
+        "fuenteId": "li-clc",
+        "url": "https://www.linkedin.com/company/clinica-las-condes-s.a/"
+      },
+      "alemana": {
+        "valor": 160243,
+        "display": "160 mil",
+        "fuenteId": "li-alemana",
+        "exacto": "160.243 seguidores",
+        "url": "https://www.linkedin.com/company/clinica-alemana-de-santiago/",
+        "highlight": true,
+        "mejorMetrica": true
+      },
+      "davila": {
+        "valor": 114161,
+        "display": "114 mil",
+        "fuenteId": "li-davila",
+        "exacto": "114.161 seguidores",
+        "url": "https://www.linkedin.com/company/clinica-davila"
+      },
+      "santa_maria": {
+        "valor": 80557,
+        "display": "81 mil",
+        "fuenteId": "li-santamaria",
+        "exacto": "80.557 followers",
+        "url": "https://www.linkedin.com/company/clinica-santa-maria/"
+      },
+      "indisa": {
+        "valor": 59868,
+        "display": "60 mil",
+        "fuenteId": "li-indisa"
+      }
+    },
+    "YouTube": {
+      "las_condes": {
+        "valor": 20200,
+        "display": "20 mil",
+        "fuenteId": "yt-clc",
+        "exacto": "20.2K subscribers",
+        "url": "https://www.youtube.com/user/clctelevision"
+      },
+      "alemana": {
+        "valor": 2580,
+        "display": "2,6 mil",
+        "fuenteId": "yt-alemana",
+        "exacto": "2.58K subscribers",
+        "url": "https://www.youtube.com/channel/UCVTx7AHcRM8auQ68PLDwrjA"
+      },
+      "davila": {
+        "valor": 1850,
+        "display": "1,9 mil",
+        "fuenteId": "yt-davila",
+        "exacto": "1.85K subscribers",
+        "url": "https://www.youtube.com/@RedDávilacl"
+      },
+      "santa_maria": {
+        "valor": 7160,
+        "display": "7 mil",
+        "fuenteId": "yt-santamaria",
+        "exacto": "7.16K subscribers",
+        "url": "https://www.youtube.com/@clinicasantamariachile"
+      },
+      "indisa": {
+        "valor": 25200,
+        "display": "25 mil",
+        "fuenteId": "yt-indisa",
+        "exacto": "25,2 K suscriptores · 476 vídeos",
+        "handle": "@ClínicaINDISA-v5v",
+        "url": "https://www.youtube.com/@ClínicaINDISA-v5v",
+        "urlAlternativa": "https://www.youtube.com/user/IndisaCL",
+        "nota": "Screenshot canal oficial 2026-07-20. Lidera el benchmark YT del quinteto.",
+        "highlight": true,
+        "mejorMetrica": true
+      }
+    },
+    "TikTok": {
+      "las_condes": {
+        "valor": null,
+        "display": "Sin cuenta",
+        "fuenteId": "tt-clc",
+        "nota": "Confirmado por usuaria: Clínica Las Condes no tiene TikTok."
+      },
+      "alemana": {
+        "valor": 49600,
+        "display": "50 mil",
+        "exacto": "49.6K seguidores · 19 siguiendo · 330K me gusta",
+        "handle": "@clinica.alemana",
+        "url": "https://www.tiktok.com/@clinica.alemana",
+        "fuenteId": "tt-alemana",
+        "nota": "Screenshot 2026-07-20."
+      },
+      "davila": {
+        "valor": 68400,
+        "display": "68 mil",
+        "exacto": "68.4K seguidores · 0 siguiendo · 849K me gusta",
+        "handle": "@reddavilaoficial",
+        "url": "https://www.tiktok.com/@reddavilaoficial",
+        "fuenteId": "tt-davila",
+        "nota": "Screenshot 2026-07-20. Lidera TikTok del quinteto medido.",
+        "highlight": true,
+        "mejorMetrica": true
+      },
+      "santa_maria": {
+        "valor": 7534,
+        "display": "7,5 mil",
+        "exacto": "7.534 seguidores · 0 siguiendo · 74.4K me gusta",
+        "handle": "@clinicasantamariacl",
+        "url": "https://www.tiktok.com/@clinicasantamariacl",
+        "fuenteId": "tt-santamaria",
+        "nota": "Screenshot 2026-07-20."
+      },
+      "indisa": {
+        "valor": 0,
+        "display": "0 (vacía)",
+        "exacto": "0 seguidores · 0 siguiendo · 4 me gusta",
+        "handle": "@clinicaindisacl",
+        "url": "https://www.tiktok.com/@clinicaindisacl",
+        "fuenteId": "tt-indisa",
+        "nota": "Screenshot 2026-07-20: cuenta creada pero sin contenido/seguidores (candado en perfil)."
+      }
+    },
+    "TikTok ER": {
+      "las_condes": {
+        "valor": null,
+        "display": "Sin cuenta",
+        "fuenteId": "tt-clc"
+      },
+      "alemana": {
+        "valor": 0.0657,
+        "display": "0,07%",
+        "fuenteId": "tt-er-alemana-5",
+        "formula": "((Σ likes+comentarios+guardados)/N)/seguidores×100",
+        "nPosts": 5,
+        "seguidoresBase": 49600,
+        "interaccionesPromedio": 32.6,
+        "sumaInteracciones": 163,
+        "detalleArchivo": "data/tt-er-alemana-muestra.json",
+        "nota": "5 videos. Interacciones bajas (17–44 likes) + base ~50 mil → ER muy bajo."
+      },
+      "davila": {
+        "valor": 6.0047,
+        "display": "6,00%",
+        "fuenteId": "tt-er-davila-5",
+        "formula": "((Σ likes+comentarios+guardados)/N)/seguidores×100",
+        "nPosts": 5,
+        "seguidoresBase": 68400,
+        "interaccionesPromedio": 4107.2,
+        "sumaInteracciones": 20536,
+        "detalleArchivo": "data/tt-er-davila-muestra.json",
+        "nota": "5 videos. 3 virales (2.3k–8.1k likes) disparan el %. Sin ellos ~0,13%. Incluye guardados.",
+        "highlight": true,
+        "mejorMetrica": true
+      },
+      "santa_maria": {
+        "valor": 0.6371,
+        "display": "0,64%",
+        "fuenteId": "tt-er-santamaria-5",
+        "formula": "((Σ likes+comentarios+guardados)/N)/seguidores×100",
+        "nPosts": 5,
+        "seguidoresBase": 7534,
+        "interaccionesPromedio": 48,
+        "sumaInteracciones": 240,
+        "detalleArchivo": "data/tt-er-santamaria-muestra.json",
+        "nota": "5 videos. Incluye guardados (visibles en web). Sin shares ni views en captura. Muestra indicativa (n<10)."
+      },
+      "indisa": {
+        "valor": null,
+        "display": "N/A",
+        "fuenteId": "tt-indisa",
+        "nota": "Cuenta vacía — no aplica ER"
+      }
+    },
+    "Instagram ER": {
+      "indisa": {
+        "valor": 0.1144,
+        "display": "0,11%",
+        "fuenteId": "ig-er-indisa-9",
+        "formula": "((Σ likes+comentarios)/N)/seguidores×100",
+        "nPosts": 9,
+        "seguidoresBase": 43700,
+        "interaccionesPromedio": 50.0,
+        "sumaInteracciones": 450,
+        "detalleArchivo": "data/ig-er-indisa-muestra.json",
+        "nota": "N=9 primeras capturas entregadas."
+      },
+      "las_condes": {
+        "valor": 0.9879,
+        "display": "0,99%",
+        "fuenteId": "ig-er-clc-9",
+        "formula": "((Σ likes+comentarios)/N)/seguidores×100",
+        "nPosts": 9,
+        "seguidoresBase": 45800,
+        "interaccionesPromedio": 452.44,
+        "sumaInteracciones": 4072,
+        "detalleArchivo": "data/ig-er-clc-muestra.json",
+        "nota": "N=9 primeras capturas entregadas.",
+        "highlight": true,
+        "mejorMetrica": true
+      },
+      "alemana": {
+        "valor": 0.1334,
+        "display": "0,13%",
+        "fuenteId": "ig-er-alemana-9",
+        "formula": "((Σ likes+comentarios)/N)/seguidores×100",
+        "nPosts": 9,
+        "seguidoresBase": 139000,
+        "interaccionesPromedio": 185.44,
+        "sumaInteracciones": 1669,
+        "detalleArchivo": "data/ig-er-alemana-muestra.json",
+        "nota": "N=9 primeras capturas entregadas."
+      },
+      "davila": {
+        "valor": 0.4473,
+        "display": "0,45%",
+        "fuenteId": "ig-er-davila-9",
+        "formula": "((Σ likes+comentarios)/N)/seguidores×100",
+        "nPosts": 9,
+        "seguidoresBase": 42200,
+        "interaccionesPromedio": 188.78,
+        "sumaInteracciones": 1699,
+        "detalleArchivo": "data/ig-er-davila-muestra.json",
+        "nota": "N=9 primeras capturas entregadas."
+      },
+      "santa_maria": {
+        "valor": 0.7277,
+        "display": "0,73%",
+        "fuenteId": "ig-er-santamaria-9",
+        "formula": "((Σ likes+comentarios)/N)/seguidores×100",
+        "nPosts": 9,
+        "seguidoresBase": 38800,
+        "interaccionesPromedio": 282.33,
+        "sumaInteracciones": 2541,
+        "detalleArchivo": "data/ig-er-santamaria-muestra.json",
+        "nota": "N=9 primeras capturas entregadas."
+      }
+    },
+    "X (Twitter)": {
+      "las_condes": {
+        "valor": null,
+        "display": "Sin cuenta",
+        "fuenteId": "x-clc",
+        "nota": "Confirmado por usuaria: Clínica Las Condes no tiene perfil en X."
+      },
+      "alemana": {
+        "valor": 15800,
+        "display": "16 mil",
+        "exacto": "15.8K followers · following 3.042",
+        "handle": "@Clinicaalemana",
+        "url": "https://x.com/clinicaalemana",
+        "fuenteId": "x-alemana",
+        "nota": "Screenshot perfil X 2026-07-20. Cuenta desde octubre 2010.",
+        "highlight": true,
+        "mejorMetrica": true
+      },
+      "davila": {
+        "valor": 4004,
+        "display": "4 mil",
+        "exacto": "4.004 followers · following 116",
+        "handle": "@Red_Davila",
+        "url": "https://x.com/Red_Davila",
+        "fuenteId": "x-davila",
+        "nota": "Screenshot perfil X 2026-07-20. Cuenta desde noviembre 2010."
+      },
+      "santa_maria": {
+        "valor": 11700,
+        "display": "12 mil",
+        "exacto": "11.7K followers · following 1.722",
+        "handle": "@cl_santamaria",
+        "url": "https://x.com/cl_santamaria",
+        "fuenteId": "x-santamaria",
+        "nota": "Screenshot perfil X 2026-07-20. Cuenta desde mayo 2009."
+      },
+      "indisa": {
+        "valor": 12200,
+        "display": "12 mil",
+        "exacto": "12.2K followers · following 2.638",
+        "handle": "@ClinicaIndisa",
+        "url": "https://x.com/ClinicaIndisa",
+        "fuenteId": "x-indisa",
+        "nota": "Screenshot perfil X 2026-07-20. Cuenta desde julio 2011."
+      }
+    },
+    "Spotify": {
+      "las_condes": {
+        "valor": null,
+        "display": "Sin evid.",
+        "fuenteId": null
+      },
+      "alemana": {
+        "valor": 476,
+        "display": "476 · 11 listas",
+        "exacto": "476 seguidores · 11 listas públicas",
+        "fuenteId": "spotify-alemana",
+        "url": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg",
+        "detalleArchivo": "data/spotify-alemana.json",
+        "nota": "Screenshot perfil Spotify 2026-07-21. Podcasts + playlists temáticas (embarazo, salud mental, prevención).",
+        "highlight": true,
+        "mejorMetrica": true
+      },
+      "davila": {
+        "valor": null,
+        "display": "Sin evid.",
+        "fuenteId": null
+      },
+      "santa_maria": {
+        "valor": null,
+        "display": "Sin evid.",
+        "fuenteId": null
+      },
+      "indisa": {
+        "valor": null,
+        "display": "Sin evid.",
+        "fuenteId": null,
+        "nota": "Oportunidad orgánico: abrir Spotify institucional (modelo Alemana)."
+      }
+    }
+  },
+  "lecturaRapida": [
+    "Instagram: Alemana (139 mil) lidera con holgura; CLC (45,8) ≈ Indisa (43,7) ≈ Dávila (42,2) > Santa María (38,8).",
+    "LinkedIn: Alemana (~160) > Dávila (~114) > CLC (~106) > Santa María (~81) > Indisa (~60).",
+    "Facebook: Alemana (~177) > Dávila (~125) > CLC (~111) > Santa María (~59) > Indisa (~49).",
+    "YouTube: Indisa (~25 mil) lidera el quinteto > CLC (~20) > Santa María (~7) > Alemana (~2,6) > Dávila (~1,9).",
+    "X: Alemana ~16 mil > Indisa ~12 mil ≈ Santa María ~12 mil > Dávila ~4 mil; CLC sin cuenta.",
+    "TikTok: Dávila ~68 mil > Alemana ~50 mil > Santa María ~7,5 mil > Indisa vacía (0); CLC sin cuenta.",
+    "TikTok ER (n=5): Dávila 6,00% (virales) >> Santa María 0,64% >> Alemana 0,07%. Indisa N/A · CLC sin cuenta.",
+    "En IG el prospecto Indisa está en el pelotón medio-bajo; el gap crítico es vs Alemana (~3×).",
+    "Instagram ER (N=9 primeras entregadas): CLC 0,99% > Santa María 0,73% > Dávila 0,45% > Alemana 0,13% > Indisa 0,11%. Indisa 5.ª en engagement relativo.",
+    "Spotify: solo Alemana con perfil institucional (476 seguidores · 11 listas). Oportunidad de audio orgánico para Indisa.",
+    "Columna Prospecto (azul) = Indisa; el resto = benchmark."
+  ]
+}

@@ -1,0 +1,206 @@
+/* Plantilla MKOF · Diagnóstico WEB UX/UI · 1920×1080 */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
+
+:root {
+  --bg: #f4f1ea;
+  --ink: #1a4d3e;
+  --muted: #6a8f7a;
+  --green: #1a4d3e;
+  --green-mid: #2f6b52;
+  --green-soft: #3d6b4f;
+  --lime: #c6e86a;
+  --lime-soft: #d8f0a8;
+  --cream-text: #e8f5d0;
+  --foot: #b0b8b2;
+  --warn: #c45c26;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body.slide {
+  width: 1920px;
+  height: 1080px;
+  background: var(--bg);
+  font-family: Montserrat, system-ui, sans-serif;
+  color: var(--ink);
+  padding: 52px 64px;
+  position: relative;
+  overflow: hidden;
+}
+
+h1 {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+.sub {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 8px;
+  letter-spacing: 0.06em;
+}
+
+.foot {
+  position: absolute;
+  bottom: 28px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--foot);
+}
+
+.fuente {
+  position: absolute;
+  bottom: 56px;
+  left: 64px;
+  right: 64px;
+  font-size: 14px;
+  color: #7a8f82;
+  font-weight: 600;
+}
+
+.box {
+  background: var(--green);
+  color: var(--lime-soft);
+  border-radius: 22px;
+  padding: 28px 32px;
+}
+.box h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--lime);
+  margin-bottom: 14px;
+}
+.box p, .box li {
+  font-size: 20px;
+  line-height: 1.45;
+  color: var(--cream-text);
+  font-weight: 600;
+}
+
+.pill {
+  background: var(--green-mid);
+  color: #fff;
+  border-radius: 999px;
+  padding: 14px 28px;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  display: inline-block;
+}
+
+.cap {
+  background: var(--green-mid);
+  color: var(--lime);
+  border-radius: 999px;
+  padding: 16px 36px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  display: inline-block;
+}
+
+.rec {
+  background: var(--green-soft);
+  color: #fff;
+  border-radius: 18px;
+  padding: 22px 20px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.rec b { font-weight: 800; }
+
+.num {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.wedge {
+  height: 28px;
+  background: linear-gradient(90deg, var(--lime) 0%, var(--green-mid) 100%);
+  border-radius: 0 14px 14px 0;
+  position: relative;
+  width: 420px;
+}
+.pin {
+  position: absolute;
+  top: -10px;
+  width: 18px;
+  height: 48px;
+  background: var(--ink);
+  border-radius: 4px;
+  transform: translateX(-50%);
+}
+.metric-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 14px 0;
+}
+.icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #d8ecd8;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.logo-row {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  width: 100%;
+}
+.logo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 220px;
+}
+.logo-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 28px;
+  box-shadow: 0 8px 18px rgba(26, 77, 62, 0.12);
+}
+.logo-item span {
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.mock-frame {
+  width: 520px;
+  height: 340px;
+  background: linear-gradient(160deg, #c5d9ce, #e8f0eb);
+  border-radius: 16px;
+  border: 8px solid #2a3a34;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+.mock-inner {
+  position: absolute;
+  inset: 12px;
+  background: #fff;
+  border-radius: 4px;
+  padding: 16px;
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clínica Indisa · Prospecto MKOF</title>
+  <style>
+    :root {
+      --bg: #f4f7f5; --ink: #1e3d32; --muted: #5a7368; --card: #fff;
+      --line: #d5e3d9; --accent: #2f7a5c; --beige: #e8f0eb;
+      --prospecto: #0b3d5c; --prospecto-mid: #15658f;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; }
+    header {
+      padding: 1.25rem 1.5rem; background: #fff; border-bottom: 1px solid var(--line);
+      display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; justify-content: space-between; align-items: baseline;
+    }
+    header h1 { margin: 0; font-size: 1.35rem; }
+    header p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    nav a { color: var(--accent); font-weight: 600; text-decoration: none; margin-right: 1rem; }
+    main { max-width: 900px; margin: 0 auto; padding: 1.75rem 1.5rem; }
+    .aviso {
+      background: var(--beige); border-left: 4px solid var(--accent);
+      padding: 0.9rem 1rem; border-radius: 0 10px 10px 0; margin-bottom: 1.5rem;
+    }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+      padding: 1.35rem 1.25rem; text-decoration: none; color: inherit;
+      display: block; transition: border-color .15s, box-shadow .15s;
+    }
+    .card:hover { border-color: var(--prospecto); box-shadow: 0 6px 20px rgba(11,61,92,.08); }
+    .card .tag {
+      display: inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 0.25rem 0.55rem; border-radius: 999px; margin-bottom: 0.65rem;
+    }
+    .card.rrss .tag { background: #e4f1f8; color: var(--prospecto); }
+    .card.ux .tag { background: #e8f0eb; color: var(--accent); }
+    .card h2 { margin: 0 0 0.45rem; font-size: 1.2rem; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+    .card .path {
+      margin-top: 0.85rem; font-size: 0.78rem; font-weight: 700; color: var(--prospecto-mid);
+      word-break: break-all;
+    }
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Clínica Indisa</h1>
+      <p>Prospecto MKOF · documentos y plantillas</p>
+    </div>
+    <nav>
+      <a href="../../?disco=1">← Hub prospectos</a>
+      <a href="../../../?disco=1">Landing MKOF</a>
+    </nav>
+  </header>
+  <main>
+    <div class="aviso">
+      Dentro de este prospecto hay <strong>dos carpetas</strong>:
+      <strong>RRSS</strong> (redes orgánicas) y <strong>UX-UI</strong> (diagnóstico web).
+      Cada una tiene su data, láminas/plantillas y textos Canva.
+    </div>
+    <div class="grid">
+      <a class="card rrss" href="RRSS/?disco=1">
+        <span class="tag">Etapa 1</span>
+        <h2>RRSS</h2>
+        <p>Ecosistema de redes, engagement, oportunidades y conclusiones orgánicas vs competencia.</p>
+        <div class="path">…/clinica-indisa/RRSS/</div>
+      </a>
+      <a class="card ux" href="UX-UI/?disco=1">
+        <span class="tag">Etapa 2</span>
+        <h2>UX / UI</h2>
+        <p>Diagnóstico web desktop/mobile, PageSpeed, referentes, recomendaciones y plantillas Canva.</p>
+        <div class="path">…/clinica-indisa/UX-UI/</div>
+      </a>
+    </div>
+  </main>
+  <footer>MKOF · Prospecto Clínica Indisa</footer>
+</body>
+</html>

@@ -1,0 +1,68 @@
+{
+  "cuenta": "@reddavilaoficial",
+  "fechaCaptura": "2026-07-20",
+  "seguidores": 68400,
+  "seguidoresDisplay": "68,4 mil",
+  "formula": "ER% = ((Σ likes + Σ comentarios + Σ guardados) / N) / seguidores × 100",
+  "nVideos": 5,
+  "sumaLikes": 16890,
+  "sumaComentarios": 282,
+  "sumaGuardados": 3364,
+  "sumaInteracciones": 20536,
+  "promedioInteracciones": 4107.2,
+  "engagementRate": 6.0047,
+  "engagementRateDisplay": "6,00%",
+  "notaOutlier": "3 de 5 videos son altamente virales (2.3k–8.1k likes). Sin esos 3, con solo los 2 orgánicos bajos (~63 y ~84 likes) el ER cae a ~0,13%. Se mantiene n=5 para paridad con Santa María.",
+  "limitaciones": [
+    "Muestra indicativa (n=5).",
+    "Sin shares ni views en captura desktop.",
+    "Guardados incluidos."
+  ],
+  "videos": [
+    {
+      "n": 1,
+      "url": "https://www.tiktok.com/@reddavilaoficial/video/7662891056630877460",
+      "likes": 63,
+      "comments": 2,
+      "saves": 4,
+      "interacciones": 69,
+      "tema": "Lluvia Santiago / sucursales"
+    },
+    {
+      "n": 2,
+      "url": "https://www.tiktok.com/@reddavilaoficial/video/7662511458588069128",
+      "likes": 2327,
+      "comments": 109,
+      "saves": 340,
+      "interacciones": 2776,
+      "tema": "Multitasking cirugía robótica Da Vinci"
+    },
+    {
+      "n": 3,
+      "url": "https://www.tiktok.com/@reddavilaoficial/video/7660662972112473362",
+      "likes": 8142,
+      "comments": 76,
+      "saves": 2370,
+      "interacciones": 10588,
+      "tema": "Pediatra — reconocen estos sonidos (viral)"
+    },
+    {
+      "n": 4,
+      "url": "https://www.tiktok.com/@reddavilaoficial/video/7659912632891133192",
+      "likes": 6274,
+      "comments": 88,
+      "saves": 637,
+      "interacciones": 6999,
+      "tema": "Da Vinci Xi — cirujano en redes"
+    },
+    {
+      "n": 5,
+      "url": "https://www.tiktok.com/@reddavilaoficial/video/7658053986234436871",
+      "likes": 84,
+      "comments": 7,
+      "saves": 13,
+      "interacciones": 104,
+      "tema": "Neurólogo — cara de sueño"
+    }
+  ]
+}

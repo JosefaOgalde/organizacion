@@ -1,0 +1,259 @@
+{
+  "portada": {
+    "titulo": "DIAGNÓSTICO WEB",
+    "subtitulo": "DESKTOP / MOBILE",
+    "prospectoLinea": "Clínica Indisa · www.indisa.cl",
+    "ejes": [
+      "RENDIMIENTO / ACCESIBILIDAD",
+      "USABILIDAD",
+      "JERARQUÍA DE CONTENIDOS",
+      "GENERACIÓN DE CONTENIDOS",
+      "ARQUITECTURA",
+      "REFERENCIAS",
+      "RECOMENDACIONES"
+    ]
+  },
+  "portadaCompetencia": {
+    "titulo": "DIAGNÓSTICO WEB",
+    "subtitulo": "DESKTOP / MOBILE",
+    "texto": [
+      "Benchmark UX/UI del sitio de Clínica Indisa",
+      "frente a cuatro clínicas privadas de Santiago.",
+      "Foco: reserva, urgencia, jerarquía y mobile."
+    ],
+    "competidores": [
+      "Clínica Las Condes",
+      "Clínica Alemana",
+      "Clínica Dávila",
+      "Clínica Santa María"
+    ]
+  },
+  "rendimiento": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "RENDIMIENTO · 5 CLÍNICAS · PAGESPEED OFICIAL (MÓVIL)",
+    "indisa": {
+      "notaLab": 38,
+      "usuariosLcp": "1,6 s",
+      "labLcp": "32,3 s",
+      "cwv": "aprobado"
+    },
+    "clc": {
+      "notaLab": 64,
+      "usuariosCls": "0,44",
+      "labLcp": "5,4 s",
+      "cwv": "reprobado"
+    },
+    "alemana": {
+      "notaLab": 53,
+      "usuariosLcp": "3,1 s",
+      "usuariosCls": "0,92",
+      "labLcp": "5,5 s",
+      "cwv": "reprobado"
+    },
+    "fuentes": [
+      "ouu45jo4vc",
+      "s73sqtgrj5",
+      "hirdgw5bs5",
+      "ms57lriy5j",
+      "cghji67u37"
+    ],
+    "davila": {
+      "notaLab": 54,
+      "usuariosLcp": "2,8 s",
+      "usuariosCls": "0,17",
+      "labLcp": "6,2 s",
+      "cwv": "reprobado"
+    },
+    "santamaria": {
+      "notaLab": 64,
+      "usuariosLcp": "2,2 s",
+      "usuariosInp": "261 ms",
+      "labLcp": "6,8 s",
+      "cwv": "reprobado"
+    }
+  },
+  "navegacion": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "MENÚ PRINCIPAL · WWW.INDISA.CL",
+    "hallazgo": "Menú limpio con 5 categorías en acordeón. Reservar hora no está dentro del menú (vive en CTA/modal). Teléfonos y RRSS sí están en el footer.",
+    "mapaHoy": [
+      "Información paciente",
+      "Especialidades y Centros",
+      "Servicios y Hospitalización",
+      "Convenios y Alianzas",
+      "Nuestra Clínica",
+      "Header: Logo · Mi portal · Cerrar",
+      "Footer: RRSS + Mesa central 2 2362 5555 + Reserva 2 2362 5400"
+    ],
+    "pacienteNoEncuentra": [
+      "Reservar hora (dentro del menú)",
+      "Teléfonos en el primer pantallazo / menú (están en footer)"
+    ],
+    "fuente": "Capturas vivas menú + footer indisa.cl · 2026-07-21"
+  },
+  "footer": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "FOOTER · REDES Y DATOS DE CONTACTO",
+    "redes": ["Facebook", "Instagram", "X", "YouTube", "LinkedIn"],
+    "contacto": [
+      "Mesa central · 2 2362 5555",
+      "Reserva de hora · 2 2362 5400",
+      "Contacto · Formulario de contacto"
+    ],
+    "nota": "Entregados también en el análisis RRSS. Están abajo; oportunidad de repetir arriba."
+  },
+  "referentes": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "REFERENTES · LO QUE HACEN HOY LAS OTRAS CLÍNICAS",
+    "intro": "Tres aprendizajes claros: qué copiar y qué no repetir.",
+    "copiar": [
+      {
+        "clinica": "Clínica Alemana",
+        "titulo": "Reservar hora se ve 3 veces",
+        "detalle": "En el menú, en el banner y en el centro. Sin ventanas que bloqueen.",
+        "paraIndisa": "El botón de agendar debe saltar a la vista apenas se abre el sitio."
+      },
+      {
+        "clinica": "Clínica Santa María",
+        "titulo": "Un solo bloque para agendar",
+        "detalle": "Pestañas: Consultas · Dental · Telemedicina · Exámenes. Menú corto.",
+        "paraIndisa": "Un formulario de reserva grande en el centro, no esconderlo en el menú."
+      }
+    ],
+    "evitar": [
+      {
+        "clinica": "Clínica Las Condes",
+        "titulo": "Una ventana de seguro tapa todo",
+        "detalle": "Destacan urgencia arriba, pero el pop-up comercial frena la reserva.",
+        "paraIndisa": "No poner pop-ups de seguros al cargar. Primero que el paciente pueda agendar."
+      },
+      {
+        "clinica": "Clínica Dávila",
+        "titulo": "El hero vende el seguro, no la hora",
+        "detalle": "Lo primero es contratar seguro. Agendar queda abajo o por WhatsApp.",
+        "paraIndisa": "Lo primero debe ser «Reservar hora», no una campaña comercial."
+      }
+    ]
+  },
+  "esteticoVsFuncional": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "HOY · WWW.INDISA.CL",
+    "cajaTitulo": "Se ve bien… pero no sirve",
+    "bullets": [
+      "La página de mantención está ordenada y con el logo de Indisa.",
+      "El problema: un paciente que necesita atención no puede hacer nada desde ahí.",
+      "Aunque el sitio esté en mantención, deberían quedar visibles: teléfono de urgencia, teléfono para reservar, WhatsApp y dirección de las sedes."
+    ],
+    "ladoOk": "Se ve limpia — marca + mensaje de “estamos trabajando”",
+    "ladoBad": "No se puede usar — sin pedir hora, sin llamar, sin ver sedes"
+  },
+  "recomendaciones": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "RECOMENDACIONES · 3 POR LÁMINA CON CAPTURA + FLECHAS",
+    "slides": [
+      {
+        "id": "07a",
+        "titulo": "Contacto",
+        "captura": "footer indisa.cl · redes + datos de contacto",
+        "items": [
+          {
+            "n": 1,
+            "titulo": "Mantener el footer de contacto",
+            "texto": "Mesa central 2 2362 5555, reserva 2 2362 5400 y formulario ya están abajo. No sacarlos."
+          },
+          {
+            "n": 2,
+            "titulo": "Repetir números arriba",
+            "texto": "Mesa y reserva también en el header o en el menú, para no obligar a bajar al footer."
+          },
+          {
+            "n": 3,
+            "titulo": "Redes + Reservar a la vista",
+            "texto": "RRSS (FB, IG, X, YouTube, LinkedIn) en footer. CTA naranja Reservar hora fijo y visible."
+          }
+        ]
+      },
+      {
+        "id": "07b",
+        "titulo": "Reserva visible",
+        "captura": "referente Alemana",
+        "items": [
+          {
+            "n": 1,
+            "titulo": "«Reservar hora» arriba",
+            "texto": "Botón claro en el menú, PC y celular."
+          },
+          {
+            "n": 2,
+            "titulo": "Formulario grande al centro",
+            "texto": "Lo primero al abrir: poder pedir hora."
+          },
+          {
+            "n": 3,
+            "titulo": "Sin ventanas que tapen",
+            "texto": "No pop-ups de seguros al entrar."
+          }
+        ]
+      },
+      {
+        "id": "07c",
+        "titulo": "Orden del home",
+        "captura": "referente Santa María",
+        "items": [
+          {
+            "n": 1,
+            "titulo": "Primero lo que el paciente necesita",
+            "texto": "Agendar al centro; seguros después."
+          },
+          {
+            "n": 2,
+            "titulo": "Menú corto y claro",
+            "texto": "Separar agendar de blog/marca."
+          },
+          {
+            "n": 3,
+            "titulo": "Cuando Indisa vuelva: medir de nuevo",
+            "texto": "Revisar velocidad del home y la reserva en celular."
+          }
+        ]
+      }
+    ]
+  },
+  "proteccionDatos": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "RECOMENDACIÓN · MARCO NORMATIVO · ANTES DE CONCLUSIÓN",
+    "ley": "Ley 21.719",
+    "vigencia": "1 de diciembre de 2026",
+    "enfoque": "Recomendación: empezar a implementar con anticipación",
+    "cuerpo": [
+      "En Chile se implementa la Ley 21.719 de protección y tratamiento de datos personales (vigencia plena desde el 1 de diciembre de 2026). Crea la Agencia de Protección de Datos y eleva el estándar de consentimiento, información y seguridad.",
+      "En clínica, el sitio y la agenda tratan datos sensibles (RUT, salud, contacto): hay que revisar bases de tratamiento, avisos y consentimiento en formularios de reserva.",
+      "Cookies, pixels y formularios web deben transparentar el uso de datos y facilitar derechos del titular (acceso, rectificación, eliminación, oposición).",
+      "Recomendación: no esperar a diciembre. Empezar ya en el rediseño UX/UI —avisos, consentimientos y reserva— para llegar con anticipación, confianza y cumplimiento."
+    ]
+  },
+  "oportunidades": {
+    "titulo": "OPORTUNIDADES EN UX/UI",
+    "intro": "Tres focos concretos para Indisa a partir de lo que vimos hoy en su sitio y en las clínicas de referencia.",
+    "items": [
+      {
+        "num": "01",
+        "titulo": "SIEMPRE PODER CONTACTAR",
+        "texto": "Hoy, si indisa.cl está en mantención, el paciente no encuentra teléfono de urgencia, mesa central ni forma de reservar. Queda solo con redes sociales, que no sirven cuando alguien necesita atención ahora.",
+        "oportunidad": "Aunque el sitio falle o esté en mantención, siempre deben quedar a la vista el teléfono de urgencia, el de reserva y un WhatsApp para escribir."
+      },
+      {
+        "num": "02",
+        "titulo": "PEDIR HORA SIN COMPLICARSE",
+        "texto": "En Alemana y Santa María, al abrir el sitio ya se puede agendar: hay un bloque grande para pedir hora y el botón se repite arriba. Nadie tiene que pelear con menús ni cerrar ventanas de seguros para llegar a la agenda.",
+        "oportunidad": "Cuando Indisa vuelva online, poner «Reservar hora» bien visible apenas se abre la página (arriba y al centro), sin avisos que tapen la pantalla."
+      },
+      {
+        "num": "03",
+        "titulo": "PRIMERO LO QUE EL PACIENTE NECESITA",
+        "texto": "Algunas clínicas muestran primero seguros o campañas. Eso distrae: la persona entra a pedir hora, ver sedes o urgencia, no a comprar un producto. Además, al volver el sitio habrá que revisar que cargue rápido en el celular.",
+        "oportunidad": "Ordenar el home por tareas del paciente (agendar, exámenes, sedes) y dejar seguros/campañas más abajo; al restaurar, medir de nuevo la velocidad en móvil."
+      }
+    ]
+  }
+}

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mockup IG · @clinicaindisacl</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh; display: grid; place-items: center;
+      background: #2a2a2a; font-family: Inter, system-ui, sans-serif;
+      padding: 24px;
+    }
+    .phone {
+      width: 390px; height: 780px; background: #000; border-radius: 40px;
+      padding: 12px; box-shadow: 0 24px 60px rgba(0,0,0,.45);
+      position: relative;
+    }
+    .screen {
+      width: 100%; height: 100%; background: #fff; border-radius: 30px;
+      overflow: hidden; display: flex; flex-direction: column;
+    }
+    .status {
+      height: 44px; display: flex; align-items: flex-end; justify-content: space-between;
+      padding: 0 20px 6px; font-size: 14px; font-weight: 600;
+    }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 14px 10px; border-bottom: 1px solid #efefef;
+    }
+    .nav .handle { font-size: 16px; font-weight: 700; }
+    .nav .dots { font-size: 20px; letter-spacing: 2px; }
+    .profile {
+      padding: 14px 16px 10px; display: grid;
+      grid-template-columns: 86px 1fr; gap: 14px; align-items: center;
+    }
+    .avatar {
+      width: 86px; height: 86px; border-radius: 50%;
+      background: linear-gradient(145deg, #0b3d5c, #2f7a5c);
+      color: #fff; display: grid; place-items: center;
+      font-weight: 800; font-size: 13px; text-align: center; line-height: 1.1;
+      border: 3px solid #f0f0f0;
+    }
+    .stats { display: flex; justify-content: space-around; text-align: center; }
+    .stats strong { display: block; font-size: 16px; font-weight: 700; }
+    .stats span { font-size: 12px; color: #555; }
+    .bio { padding: 0 16px 12px; }
+    .bio .name { font-weight: 700; font-size: 14px; }
+    .bio .cat { color: #737373; font-size: 13px; margin: 2px 0 6px; }
+    .bio p { font-size: 13px; line-height: 1.35; color: #262626; }
+    .bio a { color: #00376b; font-size: 13px; text-decoration: none; font-weight: 600; }
+    .actions { display: flex; gap: 6px; padding: 0 16px 12px; }
+    .actions button {
+      flex: 1; border: 1px solid #dbdbdb; background: #efefef;
+      border-radius: 8px; padding: 7px; font-weight: 600; font-size: 13px;
+    }
+    .highlights {
+      display: flex; gap: 12px; padding: 4px 16px 14px; overflow: hidden;
+    }
+    .hl {
+      width: 64px; text-align: center; font-size: 11px; color: #262626;
+    }
+    .hl .ring {
+      width: 64px; height: 64px; border-radius: 50%;
+      border: 1.5px solid #dbdbdb; margin-bottom: 4px;
+      background: #f5f5f5; display: grid; place-items: center;
+      font-size: 10px; font-weight: 700; color: #2f7a5c;
+    }
+    .tabs {
+      display: flex; border-top: 1px solid #efefef;
+    }
+    .tabs div {
+      flex: 1; text-align: center; padding: 10px 0; font-size: 12px; color: #8e8e8e;
+      border-top: 1px solid transparent;
+    }
+    .tabs .on { color: #262626; border-top-color: #262626; font-weight: 600; }
+    .grid {
+      flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+      background: #fff; overflow: hidden;
+    }
+    .tile {
+      aspect-ratio: 1; background: #dfe8e3;
+      display: grid; place-items: end start; padding: 6px;
+      font-size: 10px; font-weight: 600; color: #1e3d32;
+    }
+    .tile:nth-child(1) { background: linear-gradient(160deg,#c5ddd2,#e8f0eb); }
+    .tile:nth-child(2) { background: linear-gradient(160deg,#b8d0e8,#e4f1f8); }
+    .tile:nth-child(3) { background: linear-gradient(160deg,#d5c9b8,#f4f1ea); }
+    .tile:nth-child(4) { background: linear-gradient(160deg,#c8e4dc,#f0f7f4); }
+    .tile:nth-child(5) { background: linear-gradient(160deg,#d4dce8,#eef2f7); }
+    .tile:nth-child(6) { background: linear-gradient(160deg,#e0d4c4,#f7f3ee); }
+    .tile:nth-child(7) { background: linear-gradient(160deg,#b9d4c8,#e8f0eb); }
+    .tile:nth-child(8) { background: linear-gradient(160deg,#c9d8e8,#eef4f8); }
+    .tile:nth-child(9) { background: linear-gradient(160deg,#d8cfc0,#f4f1ea); }
+    .caption {
+      margin-top: 18px; color: #ccc; font-size: 13px; text-align: center;
+      max-width: 390px;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="phone">
+      <div class="screen">
+        <div class="status"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="nav">
+          <span></span>
+          <span class="handle">clinicaindisacl ▾</span>
+          <span class="dots">•••</span>
+        </div>
+        <div class="profile">
+          <div class="avatar">Clínica<br>INDISA</div>
+          <div class="stats">
+            <div><strong>1.449</strong><span>publicaciones</span></div>
+            <div><strong>43,7 mil</strong><span>seguidores</span></div>
+            <div><strong>318</strong><span>seguidos</span></div>
+          </div>
+        </div>
+        <div class="bio">
+          <div class="name">Clínica INDISA</div>
+          <div class="cat">Hospitales y clínicas</div>
+          <p>Estamos Para Tu Cuidado<br>Providencia · Maipú</p>
+          <a href="#">linktr.ee/clinicaindisacl</a>
+        </div>
+        <div class="actions">
+          <button>Seguir</button>
+          <button>Mensaje</button>
+          <button>Contacto</button>
+        </div>
+        <div class="highlights">
+          <div class="hl"><div class="ring">Salud</div>Tips</div>
+          <div class="hl"><div class="ring">Esp.</div>Especialidades</div>
+          <div class="hl"><div class="ring">Sedes</div>Sedes</div>
+          <div class="hl"><div class="ring">+</div>Nuevo</div>
+        </div>
+        <div class="tabs">
+          <div class="on">Publicaciones</div>
+          <div>Reels</div>
+          <div>Etiquetadas</div>
+        </div>
+        <div class="grid">
+          <div class="tile">cirugía</div>
+          <div class="tile">hombro</div>
+          <div class="tile">TDAH</div>
+          <div class="tile">cardio</div>
+          <div class="tile">ORL</div>
+          <div class="tile">alergias</div>
+          <div class="tile">manguito</div>
+          <div class="tile">vacunas</div>
+          <div class="tile">invierno</div>
+        </div>
+      </div>
+    </div>
+    <p class="caption">Mockup perfil Instagram · @clinicaindisacl · data 2026-07-20 · para lámina competencia</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>ECOSISTEMA RRSS · Clínica Indisa</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1920px; height: 1080px; background: #f4f1ea;
+      font-family: Montserrat, system-ui, sans-serif; color: #1e3d32;
+      padding: 48px 56px; display: flex; flex-direction: column;
+    }
+    h1 {
+      font-size: 42px; font-weight: 800; letter-spacing: 0.04em;
+      color: #1a4d3e; margin-bottom: 36px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 72px repeat(4, 1fr) 18px 1.05fr;
+      gap: 0 10px; align-items: stretch; flex: 1;
+    }
+    .comp-wrap {
+      grid-column: 2 / 6; grid-row: 1 / 8;
+      background: #fff; border: 2px solid #7a9e8c; border-radius: 28px;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto repeat(6, 1fr);
+      padding: 18px 14px 22px; gap: 8px 6px;
+    }
+    .pros-wrap {
+      grid-column: 7; grid-row: 1 / 8;
+      background: #ebe4d6; border: 2px solid #c4b8a4; border-radius: 28px;
+      display: grid; grid-template-rows: auto repeat(6, 1fr);
+      padding: 18px 14px 22px; gap: 8px;
+    }
+    .icons {
+      grid-column: 1; grid-row: 2 / 8;
+      display: grid; grid-template-rows: repeat(6, 1fr); gap: 8px;
+      align-items: center; justify-items: center; padding-top: 8px;
+    }
+    .icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 18px;
+    }
+    .icon.fb { background: #1877f2; }
+    .icon.ig { background: linear-gradient(135deg,#f58529,#dd2a7b,#8134af); font-size: 15px; }
+    .icon.li { background: #0a66c2; }
+    .icon.yt { background: #ff0000; }
+    .icon.tt { background: #010101; }
+    .icon.x  { background: #111; font-size: 20px; }
+    .head {
+      text-align: center; padding: 6px 4px 14px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .logo {
+      width: 54px; height: 54px; border-radius: 50%;
+      background: #fff; border: 2px solid #d5e3d9;
+      display: grid; place-items: center; font-size: 11px; font-weight: 800;
+      color: #2f7a5c; text-align: center; line-height: 1.05; padding: 4px;
+    }
+    .logo.indisa { background: #0b3d5c; color: #fff; border-color: #0b3d5c; font-size: 10px; }
+    .name { font-size: 13px; font-weight: 700; color: #2a4a3c; line-height: 1.2; }
+    .cell {
+      display: grid; place-items: center; text-align: center;
+      font-size: 22px; font-weight: 700; color: #1e3d32;
+      border-radius: 12px; min-height: 72px; padding: 6px 4px;
+    }
+    .cell.hi { background: #c8e4dc; }
+    .cell .er { font-size: 15px; font-weight: 600; color: #3d5c4e; margin-top: 2px; }
+    .cell.muted { color: #6a7f74; font-size: 18px; font-weight: 600; }
+    .pros-wrap .cell { background: transparent; }
+    .pros-wrap .cell.hi { background: #c8e4dc; }
+  </style>
+</head>
+<body>
+  <h1>ECOSISTEMA RRSS</h1>
+  <div class="grid">
+    <div class="icons">
+      <div class="icon fb">f</div>
+      <div class="icon ig">IG</div>
+      <div class="icon li">in</div>
+      <div class="icon yt">▶</div>
+      <div class="icon tt">♪</div>
+      <div class="icon x">𝕏</div>
+    </div>
+
+    <div class="comp-wrap">
+      <div class="head"><div class="logo">CLC</div><div class="name">Clínica<br>Las Condes</div></div>
+      <div class="head"><div class="logo">CA</div><div class="name">Clínica<br>Alemana</div></div>
+      <div class="head"><div class="logo">RD</div><div class="name">Clínica<br>Dávila</div></div>
+      <div class="head"><div class="logo">SM</div><div class="name">Clínica<br>Santa María</div></div>
+
+      <!-- FB -->
+      <div class="cell">111 mil</div>
+      <div class="cell hi">177 mil</div>
+      <div class="cell">125 mil</div>
+      <div class="cell">59 mil</div>
+      <!-- IG: verde = mejor alcance (Alemana) + mejor ER (CLC). ER N=9 -->
+      <div class="cell hi">45,8 mil<div class="er">0,99%</div></div>
+      <div class="cell hi">139 mil<div class="er">0,13%</div></div>
+      <div class="cell">42,2 mil<div class="er">0,45%</div></div>
+      <div class="cell">38,8 mil<div class="er">0,73%</div></div>
+      <!-- LI -->
+      <div class="cell">106 mil</div>
+      <div class="cell hi">160 mil</div>
+      <div class="cell">114 mil</div>
+      <div class="cell">81 mil</div>
+      <!-- YT -->
+      <div class="cell">20 mil</div>
+      <div class="cell">2,6 mil</div>
+      <div class="cell">1,9 mil</div>
+      <div class="cell">7 mil</div>
+      <!-- TT -->
+      <div class="cell muted">no tiene</div>
+      <div class="cell">50 mil<div class="er">0,07%</div></div>
+      <div class="cell hi">68 mil<div class="er">6,00%</div></div>
+      <div class="cell">7,5 mil<div class="er">0,64%</div></div>
+      <!-- X -->
+      <div class="cell muted">—</div>
+      <div class="cell hi">16 mil</div>
+      <div class="cell">4 mil</div>
+      <div class="cell">12 mil</div>
+    </div>
+
+    <div class="pros-wrap">
+      <div class="head"><div class="logo indisa">INDISA</div><div class="name">Clínica<br>Indisa</div></div>
+      <div class="cell">49 mil</div>
+      <div class="cell">43,7 mil<div class="er">0,11%</div></div>
+      <div class="cell">60 mil</div>
+      <div class="cell hi">25 mil</div>
+      <div class="cell muted">no publica</div>
+      <div class="cell">12 mil</div>
+    </div>
+  </div>
+</body>
+</html>

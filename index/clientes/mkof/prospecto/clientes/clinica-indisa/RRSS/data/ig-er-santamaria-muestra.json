@@ -1,0 +1,95 @@
+{
+  "cuenta": "@clinicasantamariacl",
+  "fechaCaptura": "2026-07-20",
+  "seguidores": 38800,
+  "seguidoresDisplay": "38,8 mil",
+  "formula": "ER% = ((Σ likes + Σ comentarios visibles) / N) / seguidores × 100",
+  "metodologia": "N=9 fijo: primeras 9 capturas/URLs entregadas por la usuaria por cuenta. Si entrega más, solo se consideran las primeras 9.",
+  "nPosts": 9,
+  "nPostsEnCalculo": 9,
+  "sumaLikes": 2521,
+  "sumaComentariosVisibles": 20,
+  "sumaInteracciones": 2541,
+  "promedioInteracciones": 282.33,
+  "engagementRate": 0.7277,
+  "engagementRateDisplay": "0,73%",
+  "limitaciones": [
+    "Comentarios = visibles en screenshot (mínimo), salvo donde se indica og:description.",
+    "Sin guardados/shares públicos.",
+    "N=9 primeras entregadas (paridad en todo el quinteto)."
+  ],
+  "posts": [
+    {
+      "n": 1,
+      "url": "https://www.instagram.com/p/DbB-xzby_yt/",
+      "likes": 7,
+      "comments": 0,
+      "interacciones": 7,
+      "tema": "Vacunas invierno"
+    },
+    {
+      "n": 2,
+      "url": "https://www.instagram.com/p/DbBNCECuS9K/",
+      "likes": 78,
+      "comments": 0,
+      "interacciones": 78,
+      "tema": "Trasplante de páncreas"
+    },
+    {
+      "n": 3,
+      "url": "https://www.instagram.com/p/Da6Roe1p_hW/",
+      "likes": 254,
+      "comments": 3,
+      "interacciones": 257,
+      "tema": "Hígado graso"
+    },
+    {
+      "n": 4,
+      "url": "https://www.instagram.com/p/DawEiXjq40B/",
+      "likes": 107,
+      "comments": 4,
+      "interacciones": 111,
+      "tema": "Hábitos resfrío / no tocarse la cara"
+    },
+    {
+      "n": 5,
+      "url": "https://www.instagram.com/p/DaqJVDrm8lU/",
+      "likes": 469,
+      "comments": 1,
+      "interacciones": 470,
+      "tema": "Traumatología de rodilla"
+    },
+    {
+      "n": 6,
+      "url": "https://www.instagram.com/p/DajLDA5pSK0/",
+      "likes": 59,
+      "comments": 4,
+      "interacciones": 63,
+      "tema": "Centro oncológico Vitacura"
+    },
+    {
+      "n": 7,
+      "url": "https://www.instagram.com/p/DagmQyqRYTF/",
+      "likes": 113,
+      "comments": 2,
+      "interacciones": 115,
+      "tema": "Centro del sueño"
+    },
+    {
+      "n": 8,
+      "url": "https://www.instagram.com/p/DaX-gcFq3B2/",
+      "likes": 478,
+      "comments": 3,
+      "interacciones": 481,
+      "tema": "Insuficiencia cardíaca"
+    },
+    {
+      "n": 9,
+      "url": "https://www.instagram.com/p/DaTscxtqQhq/",
+      "likes": 956,
+      "comments": 3,
+      "interacciones": 959,
+      "tema": "Prótesis base del pulgar (outlier alto)"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+# Diagnóstico UX/UI — COPY CANVA (estilo plantilla MKOF)
+
+Textos propios Indisa. Flujo **Reservar hora** auditado 2026-07-21 (modal vivo).
+
+## 01 Portada
+DIAGNÓSTICO WEB · DESKTOP / MOBILE · CLÍNICA INDISA · www.indisa.cl
+Ejes: Rendimiento · Usabilidad · Jerarquía · Contenidos · Arquitectura · Referencias · Recomendaciones
+
+## 02 Competencia
+Benchmark vs CLC · Alemana · Dávila · Santa María. Foco: reserva, urgencia, jerarquía y mobile.
+
+## 03 Rendimiento
+Usuarios reales 1,6 s (ok) · Lab 32,3 s (nota 38). Competencia lab 5–7 s.
+
+## 04 Menú principal
+5 categorías en acordeón: Información paciente · Especialidades y Centros · Servicios y Hospitalización · Convenios y Alianzas · Nuestra Clínica.
+Header: Logo · Mi portal · Cerrar.
+Falta en el menú: Reservar hora.
+Teléfonos y RRSS: sí están en el footer (ver 04d).
+
+## 04b Reservar hora (flujo)
+CTA naranja → tipo prestación → sede → RUT+previsión+captcha → especialidad → médico → convenio → agenda → formulario.
+
+## 04c Especialidades · Buscador
+Hero con buscador («Escribe nombre de la especialidad…» + lupa). Listado A–Z debajo. CTA fijos: Reservar hora + Pedir presupuesto.
+Acierto: buscador visible. Oportunidad: sugerencias al tipear + atajo a agendar desde el resultado.
+
+## 04d Footer · Contacto y RRSS
+Redes: Facebook · Instagram · X · YouTube · LinkedIn.
+Contacto: Mesa central 2 2362 5555 · Reserva de hora 2 2362 5400 · Formulario.
+(Entregados también en módulo RRSS.) Oportunidad: repetir números arriba / en menú.
+
+## 05 Referentes
+COPIAR: Alemana (reservar 3×) · Santa María (bloque agenda)
+EVITAR: CLC (pop-up seguros) · Dávila (hero comercial)
+
+## 06 Se puede / cuesta
+Sí hay reserva. Frena: muchos pasos, captcha pronto, convenio a mitad, ficha final densa.
+
+## 07 Recomendaciones (resumen)
+Bloque en home · horas antes · RUT/captcha tarde · convenio suave · formulario corto · CTA visible · re-medir mobile
+
+## 07a Contacto (capturas footer)
+01 Mantener footer: Mesa central 2 2362 5555 · Reserva 2 2362 5400 · Formulario.
+02 Repetir números arriba (header o menú).
+03 RRSS en footer (FB, IG, X, YouTube, LinkedIn) + CTA naranja Reservar hora fijo.
+
+## 07b Frenos del flujo (2/3)
+01 RUT + captcha más tarde — primero disponibilidad; después identifica.
+02 Aviso NO POSEE CONVENIO — seguir o cambiar, sin cortar la reserva.
+03 Menos pantallas hasta la hora — tipo → sede → médico → hora.
+
+## 07c Cierre y formulario (3/3)
+01 Conservar calendario y slots — agenda y RESERVAR funcionan bien.
+02 Acortar «Ya estamos casi listos» — sin reingresar email; solo lo necesario.
+03 Avisos Ley 21.719 — consentimiento claro en datos de salud.
+
+## 08 Ley 21.719 · Recomendación
+Empezar a implementar con anticipación (vigencia 1 dic 2026).
+→ Revisar avisos y consentimiento en reserva (datos sensibles).
+→ Transparentar cookies/pixels y derechos del titular.
+→ No esperar a diciembre: incluirlo ya en el rediseño UX/UI.
+
+## 09 Oportunidades
+01 Reserva más corta · 02 Reserva a la vista · 03 Cierre sin fricción

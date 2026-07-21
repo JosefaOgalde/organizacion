@@ -1,0 +1,43 @@
+{
+  "titulo": "ECOSISTEMA DE RRSS COMPETENCIA — foco Instagram Indisa",
+  "fecha": "2026-07-20",
+  "sujeto": "Clínica Indisa",
+  "canalFoco": "Instagram",
+  "handle": "@clinicaindisacl",
+  "mockup": "laminas/instagram/mockup-perfil-indisa.png",
+  "formatosObservados": [
+    "Reels / clips con especialistas",
+    "Carruseles y posts estáticos educativos",
+    "Collabs con médicos",
+    "CTAs de agenda / Linktree"
+  ],
+  "tematicas": [
+    "Educación en salud (procedimientos, síntomas, especialidades)",
+    "Cuerpo médico y confianza clínica",
+    "Campañas estacionales (invierno, vacunas, alergias)",
+    "Hitos / tecnología y sedes Providencia·Maipú"
+  ],
+  "periodicidad": {
+    "estimacion": "3 a 4 posts por semana",
+    "nivel": "Frecuente — Consistente",
+    "exacto": 3.3,
+    "ventana": "9 posts · 3–20 jul 2026 (17 días)",
+    "detalleArchivo": "data/ig-periodicidad-indisa.json",
+    "nota": "Calculado con la misma muestra ER N=9. Fechas: #1 ~9h antes de captura 20 jul; #3 Día TDAH 13 jul; resto por orden del feed."
+  },
+  "metricasActuales": {
+    "seguidores": "43,7 mil",
+    "publicaciones": 1449,
+    "engagementRate": "0,11%",
+    "engagementRateNota": "N=9 primeras capturas entregadas"
+  },
+  "alineacionPreliminar": {
+    "mensajeParaguas": "Tagline web 'Estamos Para Tu Cuidado' + sedes Maipú/Providencia",
+    "hipotesis": "IG Indisa privilegia educación + agenda; el gap vs competencia es engagement (no tamaño de comunidad).",
+    "preguntasParaCliente": [
+      "¿Existe KPI de ER / saves / clics a agenda en Instagram?",
+      "¿Los collabs con médicos tienen calendario fijo o son ad hoc?",
+      "¿Reels se reutilizan desde YouTube o se producen aparte?"
+    ]
+  }
+}

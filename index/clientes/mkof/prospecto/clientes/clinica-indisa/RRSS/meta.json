@@ -1,0 +1,79 @@
+{
+  "nombre": "Clínica Indisa",
+  "slug": "clinica-indisa",
+  "clienteAgencia": "MKOF",
+  "ambito": "RRSS orgánicas",
+  "etapa": 1,
+  "creado": "2026-07-20T21:33:46Z",
+  "updatedAt": "2026-07-21T04:05:00Z",
+  "competidores": [
+    "Clínica Las Condes",
+    "Clínica Alemana",
+    "Clínica Dávila",
+    "Clínica Santa María"
+  ],
+  "canalesOficialesCompetidores": {
+    "las_condes": {
+      "nombre": "Clínica Las Condes",
+      "web": "https://www.clinicalascondes.cl/HOME",
+      "facebook": "https://www.facebook.com/clinicalascondes",
+      "instagram": "https://www.instagram.com/clinicalascondes/",
+      "youtube": "https://www.youtube.com/user/clctelevision",
+      "linkedin": "https://www.linkedin.com/company/clinica-las-condes-s.a/"
+    },
+    "alemana": {
+      "nombre": "Clínica Alemana",
+      "web": "https://www.clinicaalemana.cl/",
+      "facebook": "https://www.facebook.com/Clinicaalemanadesantiago/",
+      "instagram": "https://www.instagram.com/clinicaalemanadesantiago/",
+      "x": "https://x.com/clinicaalemana",
+      "youtube": "https://www.youtube.com/channel/UCVTx7AHcRM8auQ68PLDwrjA",
+      "linkedin": "https://www.linkedin.com/company/clinica-alemana-de-santiago/",
+      "spotify": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg",
+      "tiktok": "https://www.tiktok.com/@clinica.alemana"
+    },
+    "davila": {
+      "nombre": "Dávila / Red Dávila",
+      "web": "https://www.davila.cl/",
+      "facebook": "https://www.facebook.com/reddavilaoficial/",
+      "instagram": "https://www.instagram.com/reddavilaoficial/",
+      "x": "https://x.com/Red_Davila",
+      "youtube": "https://www.youtube.com/@RedDávilacl",
+      "tiktok": "https://www.tiktok.com/@reddavilaoficial"
+    },
+    "santa_maria": {
+      "nombre": "Clínica Santa María",
+      "web": "https://www.clinicasantamaria.cl/",
+      "facebook": "https://www.facebook.com/clinicasantamaria",
+      "instagram": "https://www.instagram.com/clinicasantamariacl/",
+      "x": "https://x.com/cl_santamaria",
+      "youtube": "https://www.youtube.com/@clinicasantamariachile",
+      "linkedin": "https://www.linkedin.com/company/clinica-santa-maria/",
+      "tiktok": "https://www.tiktok.com/@clinicasantamariacl"
+    }
+  },
+  "objetivo": "RRSS orgánicas alineadas entre canales + benchmark vs CLC, Alemana, Dávila, Santa María.",
+  "archivos": {
+    "fuentes": "fuentes.json",
+    "plantillas": "plantillas/",
+    "ecosistema": "data/ecosistema-rrss.json",
+    "competencia": "data/competencia.json",
+    "oportunidades": "data/oportunidades.json",
+    "conclusiones": "data/conclusiones.json",
+    "laminas": "laminas/"
+  },
+  "pendientes": [
+    "Confirmar que Indisa/CLC/Dávila/Santa María no tienen Spotify institucional",
+    "Opcional: reenviar capturas Indisa IG para fijar fechas exactas de UI (hoy: 3–4 posts/sem estimados)"
+  ],
+  "canalesOficiales": {
+    "web": "https://www.indisa.cl/",
+    "facebook": "https://www.facebook.com/clinicaindisa",
+    "instagram": "https://www.instagram.com/clinicaindisacl/",
+    "x": "https://x.com/ClinicaIndisa",
+    "youtube": "https://www.youtube.com/@ClínicaINDISA-v5v",
+    "linkedin": "https://www.linkedin.com/company/cl-nica-indisa/posts/?feedView=all",
+    "tiktok": "https://www.tiktok.com/@clinicaindisacl"
+  },
+  "modulo": "RRSS"
+}

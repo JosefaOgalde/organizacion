@@ -1,0 +1,97 @@
+{
+  "actualizado": "2026-07-21",
+  "prospecto": "Clínica Indisa",
+  "url": "https://www.indisa.cl/",
+  "estadoSitio": "operativo · flujo Reservar hora en modal",
+  "competidores": ["Clínica Las Condes", "Clínica Alemana", "Clínica Dávila", "Clínica Santa María"],
+  "ejes": {
+    "reserva": {
+      "hallazgo": "El paciente puede agendar, pero el flujo es largo, en modal heredado y con varios frenos (RUT+captcha temprano, aviso de convenio, formulario final extenso).",
+      "pasosObservados": [
+        "CTA naranja «Reservar hora» en home",
+        "Modal: ¿Qué necesitas agendar? (Consulta, Imagen, Lab, Telemedicina, Vacunatorio, Banco de sangre, Dental)",
+        "Elige Centro Médico (Providencia / Maipú)",
+        "Bienvenido · RUT + previsión + reCAPTCHA + Siguiente",
+        "Lista de especialidades (buscador)",
+        "Lista de profesionales (con/sin convenio) + «Más horas»",
+        "Aviso modal si NO POSEE CONVENIO → Volver / Seguir como particular",
+        "Agenda (calendario) → slots de hora → RESERVAR",
+        "Formulario contacto largo (nombres, sexo, nacimiento, email×2, teléfono, comuna, check IA)"
+      ],
+      "fricciones": [
+        "Muchos pasos antes de ver una hora concreta",
+        "Pide RUT y captcha antes de mostrar disponibilidad",
+        "Interrupción de convenio a mitad del flujo",
+        "Formulario final denso (reingresar email, muchos campos)",
+        "UI de modal con aspecto legacy vs. referentes Alemana/Santa María"
+      ],
+      "fortalezas": [
+        "Hay CTA visible de reservar",
+        "Primer paso claro: tipo de prestación con íconos",
+        "Elección de sede explícita (Providencia / Maipú)",
+        "Calendario y slots comprensibles al final"
+      ]
+    },
+    "rendimiento": {
+      "indisa": "PageSpeed oficial móvil: usuarios 1,6 s (CWV ok) · lab 32,3 s (nota 38)",
+      "nota": "Aligerar home/mobile; el widget de reserva también debe medirse"
+    },
+    "navegacion": {
+      "hallazgo": "Menú hamburguesa con 5 categorías en acordeón. Limpio. Reservar hora NO está en el menú (CTA naranja / modal). Teléfonos y RRSS SÍ están en el footer.",
+      "itemsMenu": [
+        "Información paciente",
+        "Especialidades y Centros",
+        "Servicios y Hospitalización",
+        "Convenios y Alianzas",
+        "Nuestra Clínica"
+      ],
+      "headerMenu": ["Logo INDISA", "Mi portal", "Cerrar"],
+      "faltanEnMenu": ["Reservar hora"],
+      "enFooter": true
+    },
+    "footer": {
+      "hallazgo": "Footer con Redes sociales (Facebook, Instagram, X, YouTube, LinkedIn) y Datos de contacto visibles.",
+      "redes": ["Facebook", "Instagram", "X", "YouTube", "LinkedIn"],
+      "contacto": [
+        { "label": "Mesa central", "valor": "2 2362 5555" },
+        { "label": "Reserva de hora", "valor": "2 2362 5400" },
+        { "label": "Contacto", "valor": "Formulario de contacto" }
+      ],
+      "nota": "Coincide con canales oficiales ya registrados en el módulo RRSS. Oportunidad: repetir mesa/reserva también arriba o en menú."
+    },
+    "especialidades": {
+      "url": "https://www.indisa.cl/especialidades",
+      "hallazgo": "Hero con buscador prominente («Escribe nombre de la especialidad…» + lupa). Debajo, directorio A–Z. CTA fijos: Reservar hora + Pedir presupuesto. El buscador es el acierto; el listado sigue viéndose plano.",
+      "fortalezas": [
+        "Buscador visible en el primer pantallazo del listado",
+        "Placeholder claro orientado a especialidad",
+        "Orden alfabético como respaldo",
+        "CTA Reservar hora y Pedir presupuesto fijos"
+      ],
+      "fricciones": [
+        "Listado A–Z con poca jerarquía visual (aspecto de índice)",
+        "No se evidencia sugerencia/autocomplete en la captura",
+        "Resultado del buscador no muestra atajo directo a Reservar hora en la misma vista"
+      ],
+      "recomendacion": "Mantener el buscador como puerta principal; sumar sugerencias al tipear y enlace directo a agendar desde cada resultado."
+    },
+    "referentes": {
+      "copiar": ["Alemana: reservar visible 3 veces sin bloquear", "Santa María: un bloque grande de agenda"],
+      "evitar": ["CLC: pop-ups comerciales", "Dávila: hero de seguros antes que agenda"]
+    },
+    "datos": {
+      "ley": "21.719",
+      "nota": "Formulario de reserva trata RUT/salud/contacto: avisos y consentimiento deben ir alineados a la ley."
+    }
+  },
+  "recomendacionesPrioridad": [
+    "Acortar el funnel: mostrar horas antes o con menos fricción previa",
+    "Mover captcha/RUT más tarde (después de elegir hora o especialidad)",
+    "Integrar reserva en el home (no solo modal legacy)",
+    "Incluir «Reservar hora» también en el menú principal (teléfonos ya están en footer)",
+    "Repetir mesa central / reserva también arriba para no obligar a bajar al footer",
+    "Mejorar Especialidades: sugerencias en el buscador + atajo a Reservar desde el resultado",
+    "Suavizar aviso de convenio sin romper el flujo",
+    "Acortar formulario final (evitar reingresar email; menos campos de una vez)"
+  ]
+}

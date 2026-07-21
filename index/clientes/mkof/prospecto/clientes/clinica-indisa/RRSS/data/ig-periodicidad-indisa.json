@@ -1,0 +1,88 @@
+{
+  "cuenta": "@clinicaindisacl",
+  "fechaCaptura": "2026-07-20",
+  "metodo": "Últimas 9 piezas del feed (misma muestra ER). Fechas: post#1 ~9h antes de captura; post#3 anclado a Día Internacional del TDAH (13 jul 2026); resto por interpolación de shortcode Instagram (orden temporal del feed).",
+  "notaLimitacion": "Las capturas originales no quedaron en disco en este entorno; al leerlas para ER solo se persistió el relativo '9h' del post #1. Si se reenvían screenshots se pueden reemplazar fechas estimadas por fechas leídas en UI.",
+  "nPosts": 9,
+  "fechaMasReciente": "2026-07-20",
+  "fechaMasAntigua": "2026-07-03",
+  "ventanaDias": 17,
+  "piezasPorSemana": 3.3,
+  "piezasPorSemanaDisplay": "3 a 4",
+  "piezasPorSemanaExacto": 3.29,
+  "formula": "(N-1) / días_entre_primera_y_última × 7",
+  "posts": [
+    {
+      "n": 1,
+      "url": "https://www.instagram.com/p/DbA_20oimPh/",
+      "codigo": "DbA_20oimPh",
+      "tema": "Cirugía vascular/articular",
+      "fechaEstimada": "2026-07-20",
+      "fuenteFecha": "relativo_captura_9h + fechaCaptura 2026-07-20"
+    },
+    {
+      "n": 2,
+      "url": "https://www.instagram.com/p/Da0Ik7WAUaT/",
+      "codigo": "Da0Ik7WAUaT",
+      "tema": "Luxación de hombro",
+      "fechaEstimada": "2026-07-15",
+      "fuenteFecha": "interpolacion_shortcode"
+    },
+    {
+      "n": 3,
+      "url": "https://www.instagram.com/p/Dau-SCpD4kY/",
+      "codigo": "Dau-SCpD4kY",
+      "tema": "Día Mundial del TDAH",
+      "fechaEstimada": "2026-07-13",
+      "fuenteFecha": "Día Internacional del TDAH (13 jul)"
+    },
+    {
+      "n": 4,
+      "url": "https://www.instagram.com/p/DanZyUxlrF-/",
+      "codigo": "DanZyUxlrF-",
+      "tema": "Cardiología",
+      "fechaEstimada": "2026-07-10",
+      "fuenteFecha": "interpolacion_shortcode"
+    },
+    {
+      "n": 5,
+      "url": "https://www.instagram.com/p/DalpOjdjUFs/",
+      "codigo": "DalpOjdjUFs",
+      "tema": "Otitis / ORL",
+      "fechaEstimada": "2026-07-09",
+      "fuenteFecha": "interpolacion_shortcode"
+    },
+    {
+      "n": 6,
+      "url": "https://www.instagram.com/p/Dai2blnAZNd/",
+      "codigo": "Dai2blnAZNd",
+      "tema": "Alergias en invierno",
+      "fechaEstimada": "2026-07-08",
+      "fuenteFecha": "interpolacion_shortcode"
+    },
+    {
+      "n": 7,
+      "url": "https://www.instagram.com/p/DagpOE8EaiK/",
+      "codigo": "DagpOE8EaiK",
+      "tema": "Manguito rotador",
+      "fechaEstimada": "2026-07-07",
+      "fuenteFecha": "interpolacion_shortcode"
+    },
+    {
+      "n": 8,
+      "url": "https://www.instagram.com/p/DadcCZKj97-/",
+      "codigo": "DadcCZKj97-",
+      "tema": "Vacunas",
+      "fechaEstimada": "2026-07-06",
+      "fuenteFecha": "interpolacion_shortcode"
+    },
+    {
+      "n": 9,
+      "url": "https://www.instagram.com/p/DaVfg41lbS4/",
+      "codigo": "DaVfg41lbS4",
+      "tema": "Temporada de invierno",
+      "fechaEstimada": "2026-07-03",
+      "fuenteFecha": "interpolacion_shortcode"
+    }
+  ]
+}

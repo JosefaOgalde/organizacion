@@ -1,0 +1,104 @@
+{
+  "cuenta": "@reddavilaoficial",
+  "fechaCaptura": "2026-07-20",
+  "seguidores": 42200,
+  "seguidoresDisplay": "42,2 mil",
+  "formula": "ER% = ((Σ likes + Σ comentarios visibles) / N) / seguidores × 100",
+  "metodologia": "N=9 fijo: primeras 9 capturas/URLs entregadas por la usuaria por cuenta. Si entrega más, solo se consideran las primeras 9.",
+  "nPosts": 9,
+  "nPostsEnCalculo": 9,
+  "sumaLikes": 1688,
+  "sumaComentariosVisibles": 11,
+  "sumaInteracciones": 1699,
+  "promedioInteracciones": 188.78,
+  "engagementRate": 0.4473,
+  "engagementRateDisplay": "0,45%",
+  "limitaciones": [
+    "Comentarios = visibles en screenshot (mínimo), salvo donde se indica og:description.",
+    "Sin guardados/shares públicos.",
+    "N=9 primeras entregadas (paridad en todo el quinteto)."
+  ],
+  "posts": [
+    {
+      "n": 1,
+      "url": "https://www.instagram.com/p/DbB9fCkERHp/",
+      "likes": 3,
+      "comments": 0,
+      "interacciones": 3,
+      "tema": "Salud Extendida"
+    },
+    {
+      "n": 2,
+      "url": "https://www.instagram.com/p/Da5OA_omnY4/",
+      "likes": 56,
+      "comments": 0,
+      "interacciones": 56,
+      "tema": "Sistema frontal / recomendaciones"
+    },
+    {
+      "n": 3,
+      "url": "https://www.instagram.com/p/Da1G7F6ja72/",
+      "likes": 705,
+      "comments": 1,
+      "interacciones": 706,
+      "tema": "Gaspar Lara — rehab LCA (outlier alto)"
+    },
+    {
+      "n": 4,
+      "url": "https://www.instagram.com/p/Da0lUknFOvu/",
+      "likes": 39,
+      "comments": 1,
+      "interacciones": 40,
+      "tema": "Atención en lluvias"
+    },
+    {
+      "n": 5,
+      "url": "https://www.instagram.com/p/Da0cdx6BH9g/",
+      "likes": 143,
+      "comments": 3,
+      "interacciones": 146,
+      "tema": "Liceo Valentín Letelier (@municipalidadrecoleta)",
+      "cuentaPublicacion": "@municipalidadrecoleta",
+      "fuenteLikes": "og:description 2026-07-20"
+    },
+    {
+      "n": 6,
+      "url": "https://www.instagram.com/p/DayrEsfoHOG/",
+      "likes": 167,
+      "comments": 2,
+      "interacciones": 169,
+      "tema": "Dra. Asenjo — operativo mastología"
+    },
+    {
+      "n": 7,
+      "url": "https://www.instagram.com/p/Dav_uiwjTOM/",
+      "likes": 161,
+      "comments": 1,
+      "interacciones": 162,
+      "tema": "TVN — operativo cáncer de mama"
+    },
+    {
+      "n": 8,
+      "url": "https://www.instagram.com/p/Danr6HWHzAJ/",
+      "likes": 11,
+      "comments": 1,
+      "interacciones": 12,
+      "tema": "Implante dental cuotas"
+    },
+    {
+      "n": 9,
+      "url": "https://www.instagram.com/p/Dalk_kPAvUW/",
+      "likes": 403,
+      "comments": 2,
+      "interacciones": 405,
+      "tema": "Pediatría — mitos resfrío"
+    }
+  ],
+  "omitidoPorTopeN": {
+    "nOriginal": 10,
+    "url": "https://www.instagram.com/p/DajEPSgExuZ/",
+    "tema": "Kinevo 900 neurocirugía",
+    "interacciones": 334,
+    "motivo": "Fuera del tope N=9 (primeras 9 entregadas)."
+  }
+}

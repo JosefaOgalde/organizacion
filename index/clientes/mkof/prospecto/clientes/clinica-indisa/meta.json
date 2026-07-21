@@ -1,0 +1,89 @@
+{
+  "nombre": "Clínica Indisa",
+  "slug": "clinica-indisa",
+  "clienteAgencia": "MKOF",
+  "ambito": "Prospecto Clínica Indisa · RRSS + UX/UI",
+  "etapa": 2,
+  "creado": "2026-07-20T21:33:46Z",
+  "updatedAt": "2026-07-21T04:05:00Z",
+  "competidores": [
+    "Clínica Las Condes",
+    "Clínica Alemana",
+    "Clínica Dávila",
+    "Clínica Santa María"
+  ],
+  "canalesOficialesCompetidores": {
+    "las_condes": {
+      "nombre": "Clínica Las Condes",
+      "web": "https://www.clinicalascondes.cl/HOME",
+      "facebook": "https://www.facebook.com/clinicalascondes",
+      "instagram": "https://www.instagram.com/clinicalascondes/",
+      "youtube": "https://www.youtube.com/user/clctelevision",
+      "linkedin": "https://www.linkedin.com/company/clinica-las-condes-s.a/"
+    },
+    "alemana": {
+      "nombre": "Clínica Alemana",
+      "web": "https://www.clinicaalemana.cl/",
+      "facebook": "https://www.facebook.com/Clinicaalemanadesantiago/",
+      "instagram": "https://www.instagram.com/clinicaalemanadesantiago/",
+      "x": "https://x.com/clinicaalemana",
+      "youtube": "https://www.youtube.com/channel/UCVTx7AHcRM8auQ68PLDwrjA",
+      "linkedin": "https://www.linkedin.com/company/clinica-alemana-de-santiago/",
+      "spotify": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg",
+      "tiktok": "https://www.tiktok.com/@clinica.alemana"
+    },
+    "davila": {
+      "nombre": "Dávila / Red Dávila",
+      "web": "https://www.davila.cl/",
+      "facebook": "https://www.facebook.com/reddavilaoficial/",
+      "instagram": "https://www.instagram.com/reddavilaoficial/",
+      "x": "https://x.com/Red_Davila",
+      "youtube": "https://www.youtube.com/@RedDávilacl",
+      "tiktok": "https://www.tiktok.com/@reddavilaoficial"
+    },
+    "santa_maria": {
+      "nombre": "Clínica Santa María",
+      "web": "https://www.clinicasantamaria.cl/",
+      "facebook": "https://www.facebook.com/clinicasantamaria",
+      "instagram": "https://www.instagram.com/clinicasantamariacl/",
+      "x": "https://x.com/cl_santamaria",
+      "youtube": "https://www.youtube.com/@clinicasantamariachile",
+      "linkedin": "https://www.linkedin.com/company/clinica-santa-maria/",
+      "tiktok": "https://www.tiktok.com/@clinicasantamariacl"
+    }
+  },
+  "objetivo": "Hub del prospecto. Documentos y plantillas en RRSS/ (etapa 1) y UX-UI/ (etapa 2).",
+  "archivos": {
+    "rrss": "RRSS/",
+    "uxUi": "UX-UI/",
+    "rrssHub": "RRSS/?disco=1",
+    "uxUiHub": "UX-UI/?disco=1"
+  },
+  "pendientes": [
+    "Confirmar Spotify institucional Indisa/CLC/Dávila/Santa María",
+    "Opcional: reenviar capturas Indisa IG para fechas exactas de UI"
+  ],
+  "canalesOficiales": {
+    "web": "https://www.indisa.cl/",
+    "facebook": "https://www.facebook.com/clinicaindisa",
+    "instagram": "https://www.instagram.com/clinicaindisacl/",
+    "x": "https://x.com/ClinicaIndisa",
+    "youtube": "https://www.youtube.com/@ClínicaINDISA-v5v",
+    "linkedin": "https://www.linkedin.com/company/cl-nica-indisa/posts/?feedView=all",
+    "tiktok": "https://www.tiktok.com/@clinicaindisacl"
+  },
+  "modulos": {
+    "RRSS": {
+      "ruta": "RRSS/",
+      "plantillas": "RRSS/plantillas/",
+      "data": "RRSS/data/",
+      "laminas": "RRSS/laminas/"
+    },
+    "UX-UI": {
+      "ruta": "UX-UI/",
+      "plantillas": "UX-UI/plantillas/",
+      "data": "UX-UI/data/",
+      "laminas": "UX-UI/laminas/"
+    }
+  }
+}

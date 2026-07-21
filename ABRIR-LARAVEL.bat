@@ -110,8 +110,9 @@ if not errorlevel 1 (
 )
 
 echo.
-echo  Arrancando http://127.0.0.1:8000 ...
-start "Laravel · 8000" cmd /k "cd /d "%~dp0backend" && "%PHP_EXE%" artisan serve --host=127.0.0.1 --port=8000"
+echo  Arrancando servidor unificado http://127.0.0.1:8000 ...
+echo  ^(estaticos del repo + API Laravel /api/*^)
+start "Organizacion · 8000" cmd /k "cd /d "%~dp0" && "%PHP_EXE%" -S 127.0.0.1:8000 scripts\servidor-unificado-8000.php"
 timeout /t 2 >nul
 set "YA_CORRE=0"
 
@@ -119,12 +120,13 @@ if /I "%MODO%"=="sin-nav" goto :fin_urls
 if /I "%MODO%"=="sin-navegador" goto :fin_urls
 
 :abrir_todo
-start "" "http://127.0.0.1:8000/index.html?disco=1"
-start "" "http://127.0.0.1:8000/index/clientes/?disco=1"
-start "" "http://127.0.0.1:8000/index/clientes/ecr/?disco=1"
-start "" "http://127.0.0.1:8000/index/clientes/mkof/?disco=1"
-start "" "http://127.0.0.1:8000/index/clientes/MKOF/MOVA?disco=1"
-start "" "http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1"
+REM powershell conserva el "=" de ?disco=1 (start de cmd lo convierte en %3D)
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/ecr/?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/mkof/?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/MKOF/MOVA?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1'"
 
 :fin_urls
 echo.

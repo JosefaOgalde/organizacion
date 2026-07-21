@@ -1,0 +1,76 @@
+{
+  "canal": "Instagram",
+  "handle": "@clinicaindisacl",
+  "fecha": "2026-07-20",
+  "mockupImagen": "laminas/instagram/mockup-perfil-indisa.png",
+  "mockupHtml": "laminas/instagram/mockup-perfil.html",
+  "textosMd": "laminas/instagram/TEXTOS-LAMINA.md",
+  "estadoActual": {
+    "titulo": "ECOSISTEMA DE RRSS COMPETENCIA",
+    "sujeto": "Clínica Indisa",
+    "seguidores": "43,7 mil",
+    "publicaciones": 1449,
+    "er": "0,11%",
+    "erNota": "N=9 primeras capturas entregadas",
+    "formatos": [
+      "Reels / clips con especialistas",
+      "Carruseles y posts estáticos educativos",
+      "Collabs con médicos",
+      "CTAs de agenda / Linktree"
+    ],
+    "tematicas": [
+      "Educación en salud (procedimientos, síntomas, especialidades)",
+      "Cuerpo médico y confianza clínica",
+      "Campañas estacionales (invierno, vacunas, alergias)",
+      "Hitos / tecnología y sedes Providencia·Maipú"
+    ],
+    "periodicidad": {
+      "linea1": "3 a 4 posts por semana",
+      "linea2": "9 piezas · 3–20 jul 2026 · frecuente y consistente"
+    }
+  },
+  "oportunidades": [
+    {
+      "n": "01",
+      "titulo": "Subir engagement en Instagram (ruta CLC)",
+      "bullet": "Las Condes logra 0,99% ER vs 0,11% de Indisa con bases casi iguales. Activar audiencia actual sin esperar crecer seguidores primero."
+    },
+    {
+      "n": "02",
+      "titulo": "Abrir Spotify como canal de acompañamiento (modelo Alemana)",
+      "bullet": "Alemana: 476 seguidores · 11 listas (podcasts + playlists embarazo, salud mental, prevención). Indisa sin perfil → oportunidad de audio orgánico."
+    },
+    {
+      "n": "03",
+      "titulo": "Sistematizar formatos que sí engagan (SM / Dávila)",
+      "bullet": "SM 0,73% y Dávila 0,45% con reels de casos/especialidad. Empaquetar collabs médicos Indisa como serie medible."
+    }
+  ],
+  "conclusiones": {
+    "fortalezas": [
+      "Base IG sólida: 43,7 mil en el pelotón medio",
+      "Feed activo y tono de marca claro",
+      "Liderazgo YouTube (25 mil) transferable a Reels"
+    ],
+    "gaps": [
+      "ER 0,11%: último del quinteto",
+      "Misma escala que CLC pero ~9× menos ER",
+      "Sin TikTok; Dávila lidera 68 mil / 6% ER"
+    ],
+    "riesgos": [
+      "Publicar mucho sin KPI de engagement",
+      "Collabs sin sistema de serie → picos aislados",
+      "Perseguir solo seguidores puede bajar el ER"
+    ],
+    "apuesta": [
+      "Meta 90 días: ER hacia 0,4–0,7%",
+      "Serie semanal Reels + carrusel + CTA agenda",
+      "Medir N=9 posts/mes con misma fórmula"
+    ],
+    "sintesis": [
+      "Indisa está presente en IG; el problema es activación, no audiencia.",
+      "Competencia: CLC (conversión), SM/Dávila (formatos), Alemana (escala sin obsesionarse).",
+      "Priorizar engagement rate y sistema de contenidos; YouTube como cantera de video corto."
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "titulo": "CONCLUSIONES",
+  "fecha": "2026-07-21",
+  "foco": "Redes orgánicas · estado Indisa + lo que hace bien la competencia",
+  "tono": "Lenguaje claro, sin siglas. Números solo cuando aportan.",
+  "antesDeConclusion": {
+    "titulo": "Marco normativo · Protección de datos (Chile)",
+    "texto": "En Chile se implementa la Ley 21.719 de protección y tratamiento de datos personales (vigencia plena desde el 1 de diciembre de 2026). Para Indisa, cualquier plan de contenidos, formularios, cookies o agenda online debe contemplar consentimiento, avisos claros y seguridad de datos de pacientes —antes de cerrar el diagnóstico con las conclusiones.",
+    "fuente": "Ley N° 21.719 · BCN / vigencia diferida 01-DIC-2026"
+  },
+  "cuadrantes": [
+    {
+      "id": "tl",
+      "titulo": "Lo que Indisa ya tiene a favor",
+      "bullets": [
+        "Casi 44 mil seguidores en Instagram: está en el grupo medio de las clínicas comparadas",
+        "Publica con constancia y un tono de marca claro (“Estamos Para Tu Cuidado”)",
+        "Lidera en YouTube (25 mil suscriptores): buen material para reutilizar en videos cortos"
+      ]
+    },
+    {
+      "id": "tr",
+      "titulo": "Dónde la competencia va más adelante",
+      "bullets": [
+        "En Instagram, Indisa genera poca conversación (0,11%) frente a Las Condes (casi 1%)",
+        "No aparece en Spotify; Clínica Alemana ya acompaña con podcasts y listas de audio",
+        "No publica en TikTok; Red Dávila sí y concentra mucha atención ahí"
+      ]
+    },
+    {
+      "id": "bl",
+      "titulo": "Riesgos si no se ajusta el rumbo",
+      "bullets": [
+        "Seguir publicando mucho sin mirar si la gente responde",
+        "Quedarse solo en posts sueltos y no armar series con los médicos (cada pieza se olvida rápido)",
+        "No aprovechar YouTube —donde Indisa lidera— para alimentar videos cortos en Instagram"
+      ]
+    },
+    {
+      "id": "br",
+      "titulo": "Qué conviene hacer",
+      "bullets": [
+        "Priorizar contenidos que generen conversación, no solo publicar por publicar",
+        "Definir un objetivo claro por canal (informar, agendar o acompañar) y alinear el calendario a eso",
+        "Cada mes repetir los formatos que sí funcionaron y soltar los que no"
+      ]
+    }
+  ],
+  "sintesisCentral": [
+    "Indisa ya está en Instagram; el desafío no es llegar a más gente, sino lograr que responda más.",
+    "Clínica Alemana muestra un camino que Indisa aún no usa: el acompañamiento en audio con Spotify.",
+    "Prioridad: más conversación en Instagram + audio orgánico; YouTube como reserva de contenidos."
+  ]
+}

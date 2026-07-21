@@ -1,0 +1,67 @@
+{
+  "cuenta": "@clinicasantamariacl",
+  "fechaCaptura": "2026-07-20",
+  "seguidores": 7534,
+  "seguidoresDisplay": "7,5 mil",
+  "formula": "ER% = ((Σ likes + Σ comentarios + Σ guardados) / N) / seguidores × 100",
+  "nVideos": 5,
+  "sumaLikes": 207,
+  "sumaComentarios": 15,
+  "sumaGuardados": 18,
+  "sumaInteracciones": 240,
+  "promedioInteracciones": 48,
+  "engagementRate": 0.6371,
+  "engagementRateDisplay": "0,64%",
+  "limitaciones": [
+    "Muestra indicativa (n=5), no 10.",
+    "Sin shares ni views en captura desktop.",
+    "Guardados incluidos (visibles en UI TikTok web)."
+  ],
+  "videos": [
+    {
+      "n": 1,
+      "url": "https://www.tiktok.com/@clinicasantamariacl/video/7663598458456018196",
+      "likes": 22,
+      "comments": 0,
+      "saves": 2,
+      "interacciones": 24,
+      "tema": "Vacunas invierno — Dra. Riquelme"
+    },
+    {
+      "n": 2,
+      "url": "https://www.tiktok.com/@clinicasantamariacl/video/7662482628779543829",
+      "likes": 37,
+      "comments": 2,
+      "saves": 3,
+      "interacciones": 42,
+      "tema": "Nutrición invierno"
+    },
+    {
+      "n": 3,
+      "url": "https://www.tiktok.com/@clinicasantamariacl/video/7660969895596772628",
+      "likes": 54,
+      "comments": 8,
+      "saves": 3,
+      "interacciones": 65,
+      "tema": "Dominadas / vibra mundial"
+    },
+    {
+      "n": 4,
+      "url": "https://www.tiktok.com/@clinicasantamariacl/video/7654710448415345940",
+      "likes": 54,
+      "comments": 4,
+      "saves": 6,
+      "interacciones": 64,
+      "tema": "Gol de la salud"
+    },
+    {
+      "n": 5,
+      "url": "https://www.tiktok.com/@clinicasantamariacl/video/7653105851863026964",
+      "likes": 40,
+      "comments": 1,
+      "saves": 4,
+      "interacciones": 45,
+      "tema": "Lesiones mundial parte 2"
+    }
+  ]
+}
