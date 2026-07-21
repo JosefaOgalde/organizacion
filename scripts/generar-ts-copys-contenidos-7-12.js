@@ -3,6 +3,11 @@
  * Genera copys A/B/C (TXT separados) para contenidos TS 7–12
  * y los enlaza a las subtareas «Copys video».
  *
+ * Regla obligatoria TS (copys video):
+ * 1) Primera línea = contexto de la escena/video CON emoji(s).
+ * 2) Después: producto / características (sin inventar specs).
+ * 3) Emojis obligatorios en el cuerpo (no solo hashtags).
+ *
  *   node scripts/generar-ts-copys-contenidos-7-12.js
  *   FORCE=1 node scripts/generar-ts-copys-contenidos-7-12.js   # sobrescribe
  */
@@ -49,6 +54,14 @@ const CONTENIDOS = [
     hookC: 'Día de lluvia ≠ día en pausa.',
     /** C8: formatos visualmente distintos (no plantilla única A=B=C) */
     formatosDistintos: true,
+    cortoLinea: 'Hunter Chelsea Commando · 100% waterproof · hechas a mano.',
+    historiaParrafo:
+      'Las Chelsea Commando negras brillantes para mujer son 100% waterproof,\nen caucho natural FSC (vegano certificado), hechas a mano, con fuelles\nelásticos, suela Hunter Original y un perfil +15 mm más alto que la\nChelsea brillante clásica — para que el gloss mande y el agua no.',
+    checklistTitulo: 'Hunter Chelsea Commando · gloss negro · mujer',
+    hashtagsA: '#Hunter #TrendSeeker #TrendSeekerChile #ChelseaCommando',
+    hashtagsB:
+      '#HunterBoots #BotasImpermeables #TrendSeekerChile #ModaLluvia #ChelseaCommando',
+    hashtagsC: '#Hunter #Waterproof #TrendSeeker #BotasMujer',
   },
 
   {
@@ -59,14 +72,23 @@ const CONTENIDOS = [
     sku: 'WFS2020RMA-LRD',
     bullets: [
       '100% impermeables',
-      'Caucho natural',
-      'Suela plataforma plana',
-      'Caña corta (tobillo)',
+      'Caucho natural de alta calidad',
+      'Suela plataforma plana (confort)',
+      'Caña corta al tobillo',
       'Estilo urbano / festival',
     ],
-    hookA: 'Rojo Play. Caña baja. Sin miedo al charco 🔴',
-    hookB: 'Hunter Play bajas: impermeable con vibe festival.',
-    hookC: 'Rojo · caña corta · plataforma plana · 100% waterproof.',
+    hookA: 'Cielo gris, paso firme y las Play rojas mandando ☁️🔴☔',
+    hookB: 'Primero las ves puestas… después el close-up: lateral, frontal y el detalle 👀🔴☔',
+    hookC: 'Día nublado ≠ día en pausa: Play rojas en acción ☁️🔴✨',
+    formatosDistintos: true,
+    cortoLinea: 'Hunter Play bajas · caña corta · 100% impermeables · suela plataforma plana.',
+    historiaParrafo:
+      'Hunter Play bajas: silueta dinámica de caña corta (al tobillo), suela de\nplataforma más plana para confort, caucho natural de alta calidad y\n100% impermeables — ciudad, festival o el charco del camino ✨',
+    checklistTitulo: 'Hunter Play bajas · mujer',
+    hashtagsA: '#Hunter #TrendSeeker #TrendSeekerChile #HunterPlay',
+    hashtagsB:
+      '#HunterBoots #BotasImpermeables #TrendSeekerChile #ModaFestival #HunterPlay',
+    hashtagsC: '#Hunter #Waterproof #TrendSeeker #BotasMujer #HunterPlay',
   },
   {
     n: 10,
@@ -142,6 +164,10 @@ ${c.url}
 }
 
 function buildADistinto(c) {
+  const linea =
+    c.cortoLinea || 'Hunter · 100% waterproof · características de ficha.';
+  const tags =
+    c.hashtagsA || '#Hunter #TrendSeeker #TrendSeekerChile';
   return `COPY VIDEO · Trendseeker · C${c.n}/12 · Versión A
 Producto: ${c.producto}
 SKU: ${c.sku}
@@ -150,15 +176,21 @@ Link: ${c.url}
 
 ${c.hookA}
 
-Hunter Chelsea Commando · 100% waterproof · hechas a mano.
+${linea}
 
 👉 ${c.url}
 
-#Hunter #TrendSeeker #TrendSeekerChile #ChelseaCommando
+${tags}
 `;
 }
 
 function buildBDistinto(c) {
+  const parrafo =
+    c.historiaParrafo ||
+    `${c.producto}: solo características reales de ficha. Disponibles en TrendSeeker.`;
+  const tags =
+    c.hashtagsB ||
+    '#HunterBoots #BotasImpermeables #TrendSeekerChile';
   return `COPY VIDEO · Trendseeker · C${c.n}/12 · Versión B
 Producto: ${c.producto}
 SKU: ${c.sku}
@@ -167,22 +199,21 @@ Link: ${c.url}
 
 ${c.hookB}
 
-Las Chelsea Commando negras brillantes para mujer son 100% waterproof,
-en caucho natural FSC (vegano certificado), hechas a mano, con fuelles
-elásticos, suela Hunter Original y un perfil +15 mm más alto que la
-Chelsea brillante clásica — para que el gloss mande y el agua no.
+${parrafo}
 
 Disponibles en TrendSeeker 👇
 ${c.url}
 
 ¿Talla? Comenta y te ayudamos 💬
 
-#HunterBoots #BotasImpermeables #TrendSeekerChile #ModaLluvia #ChelseaCommando
+${tags}
 `;
 }
 
 function buildCDistinto(c) {
   const bullets = c.bullets.map((b) => `✓ ${b}`).join('\n');
+  const titulo = c.checklistTitulo || c.producto;
+  const tags = c.hashtagsC || '#Hunter #Waterproof #TrendSeeker';
   return `COPY VIDEO · Trendseeker · C${c.n}/12 · Versión C
 Producto: ${c.producto}
 SKU: ${c.sku}
@@ -191,13 +222,13 @@ Link: ${c.url}
 
 ${c.hookC}
 
-Hunter Chelsea Commando · gloss negro · mujer
+${titulo}
 ${bullets}
 
 Shop ahora:
 ${c.url}
 
-#Hunter #Waterproof #TrendSeeker #BotasMujer
+${tags}
 `;
 }
 

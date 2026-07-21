@@ -3,27 +3,43 @@ SKU: WFS2020RMA-LRD
 Link: https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/
 Público: MUJER (adulta)
 Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
+Diferenciador: MONTAJE MULTI-TOMA (no un solo plano continuo). 1) modelo usándolas → 2) laterales → 3) frontales → 4) zoom a detalle. Cielo gris / overcast.
 
 CARACTERÍSTICAS (no inventar otras):
-- Hunter Play bajas para mujer en rojo
+- Hunter Play bajas para mujer en rojo (silueta dinámica, versión corta del ícono Original)
 - 100% impermeables
 - Caucho natural de alta calidad
-- Suela de plataforma más plana (confort)
-- Caña corta que roza la parte superior del tobillo
-- Silueta dinámica estilo urbano / festival
+- Suela de plataforma más plana (confort y versatilidad)
+- Caña corta que apenas roza la parte superior del tobillo
+- Estilo urbano / festival
+- Color rojo y acabado fieles a las fotos de producto adjuntas
 
 VESTUARIO / MODELO:
-- Mujer adulta
-- Outfit coherente (jeans, falda con medias o pantalón) que deje ver el calzado Hunter
-- Si son botas de agua: preferible que pantalón/jeans vayan metidos o no oculten la caña
+- Mujer adulta visible al inicio (cara puede verse breve; el protagonismo pasa al calzado)
+- Jeans o pantalón metidos DENTRO de las botas para que se vea la caña corta Play
 - Sin tipografía ni logos inventados fuera de los del producto real
 
+CÓMO USAR EN GEMINI (VIDEO):
+1) Modo VIDEO. 2) Fotos de producto primero. 3) Pega solo ESTE prompt.
+4) Si rediseña: “replica exacto las Play bajas rojo de las fotos”.
+5) Si sale una sola toma continua: reitera “montaje de varias tomas / cuts, no un solo plano”.
+
 ---
-VERSIÓN A — Video producto héroe (recomendado)
+VERSIÓN A — Multi-toma · modelo + ángulos de producto · cielo gris
 ---
 
-Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria del calzado Hunter (Botas de Agua Bajas Play Mujer Rojo). No rediseñes el producto: misma silueta, mismo color, mismos detalles.
+Genera un VIDEO publicitario fotorrealista CORTO en MONTAJE DE VARIAS TOMAS (cuts), no un único traveling continuo. Usa las fotos de producto adjuntas como referencia obligatoria: Botas Play bajas rojo Hunter (caña corta al tobillo, suela plataforma plana, rojo exacto). No rediseñes.
 
-Acción: una mujer camina en ciudad o ambiente festival con botas Play bajas rojas Hunter; caña corta y suela plana visibles.
+Atmósfera: día nublado, CIELO GRIS / overcast suave, luz difusa (sin sol fuerte ni cielo azul brillante). Calle urbana con piso ligeramente húmedo o charcos bajos.
 
-Cámara: ángulo que priorice el calzado (a menudo bajo o a la altura del pie), nítido, product-first. Muestra cualidades reales de la ficha (impermeabilidad, agarre, textura, detalles reflectantes o forro si aplica). Sin tipografía ni logos inventados. Ritmo cinematográfico comercial corto.
+SECUENCIA OBLIGATORIA (en este orden, con cortes claros entre tomas):
+
+1) MODELO USÁNDOLAS — Plano medio o tres cuartos: se ve a la mujer caminando o avanzando con las Play rojas puestas; outfit coherente; jeans metidos; se entiende que las lleva puestas en contexto real (2–3 segundos).
+
+2) TOMA LATERAL del calzado — Corte a ángulo lateral a la altura del tobillo: perfil de la caña corta y la suela plataforma plana mientras camina; product-first (2 segundos).
+
+3) TOMA FRONTAL del calzado — Corte a ángulo frontal bajo: ambas botas (o la delantera) avanzando hacia cámara; rojo fiel a las refs; piso húmedo (2 segundos).
+
+4) ZOOM / CLOSE-UP DE DETALLE — Corte a macro lento: textura del caucho rojo, borde de la caña al tobillo, o contacto de la suela plataforma plana con el piso; gotas o brillo húmedo que sugieren impermeabilidad (2 segundos).
+
+Reglas: cada toma distinta (lateral ≠ frontal ≠ detalle ≠ plano de modelo). Ritmo comercial con cortes limpios. Sin tipografía. Sin logos inventados. Sin un solo plano continuo de principio a fin.

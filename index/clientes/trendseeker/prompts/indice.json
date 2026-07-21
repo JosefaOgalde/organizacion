@@ -49,14 +49,15 @@
       "id": "contenido-9-prompt",
       "titulo": "C9/12 · Botas de Agua Bajas Play Mujer Rojo",
       "archivo": "prompts/PROMPT-c09-play-bajas-rojo-mujer-A.txt",
-      "descripcion": "VIDEO Gemini · MUJER (adulta) · TXT separados A/B/C editables.",
+      "descripcion": "VIDEO Gemini · MUJER · A multi-toma (modelo→lateral→frontal→zoom) cielo gris · B umbral · C splash · D cenital.",
       "tareaNumero": "14",
       "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/",
       "contenidoSerie": 9,
       "archivos": {
         "A": "prompts/PROMPT-c09-play-bajas-rojo-mujer-A.txt",
         "B": "prompts/PROMPT-c09-play-bajas-rojo-mujer-B.txt",
-        "C": "prompts/PROMPT-c09-play-bajas-rojo-mujer-C.txt"
+        "C": "prompts/PROMPT-c09-play-bajas-rojo-mujer-C.txt",
+        "D": "prompts/PROMPT-c09-play-bajas-rojo-mujer-D.txt"
       }
     },
     {
