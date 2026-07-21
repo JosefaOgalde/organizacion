@@ -57,3 +57,12 @@ joyasmercury/
 ## Guías Fase 2
 
 Ver [GUIAS-FASE2.md](GUIAS-FASE2.md) y [interfaces/README.md](interfaces/README.md).
+
+**Home · 3 círculos colecciones (Elementor Free, sin CSS):**  
+[HOME-CIRCULOS-ELEMENTOR-FREE.md](HOME-CIRCULOS-ELEMENTOR-FREE.md)  
+Tarea #22 en el organizador (la crea `ABRIR-LARAVEL.bat` vía PHP).  
+http://127.0.0.1:8000/index.html?disco=1&tarea=joyas-mercury/22
+
+**Landings · productos no visibles (3 colecciones):**  
+[CHECKLIST-PRODUCTOS-3-COLECCIONES.md](CHECKLIST-PRODUCTOS-3-COLECCIONES.md)  
+Tarea #23 · http://127.0.0.1:8000/index.html?disco=1&tarea=joyas-mercury/23

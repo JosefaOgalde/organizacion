@@ -239,8 +239,12 @@
   function hrefProyecto(archivo) {
     if (!archivo) return '#';
     if (/^https?:\/\//i.test(archivo) || archivo.startsWith('/')) return archivo;
-    const limpio = archivo.replace(/\.html$/i, '');
-    return depth ? `${pathUp}${limpio}` : limpio;
+    let path = String(archivo);
+    const sinQuery = path.split('?')[0];
+    if (!/\.[a-z0-9]+$/i.test(sinQuery)) {
+      path = sinQuery.replace(/\/$/, '') + '.html' + (path.includes('?') ? '?' + path.split('?').slice(1).join('?') : '');
+    }
+    return depth ? `${pathUp}${path}` : path;
   }
 
   function contarTareasCliente() {

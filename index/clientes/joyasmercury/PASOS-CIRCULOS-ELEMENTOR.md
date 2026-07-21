@@ -1,6 +1,10 @@
 # Joyas Mercury — círculos Colecciones + productos en móvil
 
-Esto se arregla en **WordPress (Elementor + CSS adicional)**, no en la maqueta local.
+> **Home (3 círculos Esencial / Gold / Deluxe):** usar **Elementor Free nativo**, sin CSS adicional.  
+> Guía: [`HOME-CIRCULOS-ELEMENTOR-FREE.md`](./HOME-CIRCULOS-ELEMENTOR-FREE.md)  
+> Motivo: el CSS en Apariencia → Personalizar se desconfigura a los 1–2 días.
+
+Esto (CSS + clases) aplica sobre todo a **páginas de colección** u otros bloques que aún usen `jm-circulos-categoria`.
 
 Ver lista completa: **`CSS-VIGENTE.md`**.
 

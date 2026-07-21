@@ -135,14 +135,6 @@ ANTITEXT: keep all vehicle body panels, doors, and surfaces completely blank and
 
 ---
 
-Actualizado: 2026-07-21
-
-## NL 1 ago — prompts Midjourney v5 (2026-07-21)
-
-- Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
-- Mundos: **K+B** · **H** · **B+H** (digital + línea de producción, sin flota)
-- Archivo: [portadas-guardadas/NL1-ago-tecnologia-sin-integracion-prompts-v5.md](./portadas-guardadas/NL1-ago-tecnologia-sin-integracion-prompts-v5.md)
-
 ## NL 1 ago — prompts Midjourney v4 (2026-07-20)
 
 - Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
@@ -183,3 +175,11 @@ Actualizado: 2026-07-21
 - Artículo: [articulos/ART23-equipos-en-terreno.docx](./articulos/ART23-equipos-en-terreno.docx)
 - Mundos: F · C · M
 - Archivo prompts: [portadas-guardadas/ART23-equipos-en-terreno.md](./portadas-guardadas/ART23-equipos-en-terreno.md)
+
+## NL 1 ago — fondos carrusel cuadrados (Midjourney)
+
+- Fecha: 2026-07-21
+- Archivo: `carruseles/PROMPTS-FONDOS-CUADRADOS-NL1-ago.md`
+- 8 prompts square · estilo flat vector orange/teal · cielo vacío arriba para texto Canva
+- Tema: Tecnología sin integración (carrusel LinkedIn)
+

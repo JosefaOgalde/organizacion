@@ -6,8 +6,8 @@ echo  === Organizacion · Laravel + SQLite ^(flujo unificado^) ===
 echo  Un solo servidor en :8000 — API + organizador + portal + ECR + MOVA + Impresoreando
 echo.
 echo  Uso:
-echo    ABRIR-LARAVEL.bat           → sync + reinicia :8000 + abre URLs
-echo    ABRIR-LARAVEL.bat todo      → igual ^(abre todas las URLs^)
+echo    ABRIR-LARAVEL.bat           → sync + reinicia :8000 + abre Organizador + Portal
+echo    ABRIR-LARAVEL.bat todo      → tambien abre ECR, MKOF, MOVA y prospecto
 echo    ABRIR-LARAVEL.bat sin-nav   → solo servidor / sync, sin abrir navegador
 echo    RECARGAR.bat                → solo recarga organizador ?disco=1
 echo.
@@ -95,6 +95,36 @@ if not exist "data\organizacion-live.json" (
   )
 )
 
+REM Tareas fijas en live (PHP, sin Node)
+if exist "data\organizacion-live.json" if exist "scripts\asegurar-jm-home-circulos.php" (
+  echo  3b^) Asegurar tarea JM círculos Elementor Free...
+  "%PHP_EXE%" scripts\asegurar-jm-home-circulos.php
+)
+if exist "data\organizacion-live.json" if exist "scripts\finalizar-jm-home-circulos.php" (
+  echo  3c^) Cerrar tarea JM #22 ^(finalizada^)...
+  "%PHP_EXE%" scripts\finalizar-jm-home-circulos.php
+)
+if exist "data\organizacion-live.json" if exist "scripts\asegurar-ecr-ti-carrusel.php" (
+  echo  3d^) Asegurar ECR TI Carrusel #07...
+  "%PHP_EXE%" scripts\asegurar-ecr-ti-carrusel.php
+)
+if exist "data\organizacion-live.json" if exist "scripts\finalizar-ts-c09.php" (
+  echo  3e^) Cerrar TS Contenido 9/12 ^(finalizado^)...
+  "%PHP_EXE%" scripts\finalizar-ts-c09.php
+)
+if exist "data\organizacion-live.json" if exist "scripts\finalizar-ts-c08.php" (
+  echo  3f^) Asegurar TS Contenido 8/12 cerrado...
+  "%PHP_EXE%" scripts\finalizar-ts-c08.php
+)
+if exist "data\organizacion-live.json" if exist "scripts\asegurar-jm-productos-3-colecciones.php" (
+  echo  3g^) Asegurar JM #23 productos 3 colecciones...
+  "%PHP_EXE%" scripts\asegurar-jm-productos-3-colecciones.php
+)
+if exist "data\organizacion-live.json" if exist "scripts\asegurar-cliente-herramientas.php" (
+  echo  3h^) Asegurar cliente Herramientas...
+  "%PHP_EXE%" scripts\asegurar-cliente-herramientas.php
+)
+
 REM Tras actualizar FrontendStaticController / web.php, reiniciar :8000
 REM (si ya corria, el proceso viejo puede servir 404 en carpetas como /index/clientes/)
 set "YA_CORRE=0"
@@ -119,10 +149,14 @@ set "YA_CORRE=0"
 if /I "%MODO%"=="sin-nav" goto :fin_urls
 if /I "%MODO%"=="sin-navegador" goto :fin_urls
 
-:abrir_todo
 REM powershell conserva el "=" de ?disco=1 (start de cmd lo convierte en %3D)
+REM Por defecto: solo Organizador + Portal clientes
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1'"
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/?disco=1'"
+
+if /I not "%MODO%"=="todo" goto :fin_urls
+
+REM Modo "todo": tambien ECR, MKOF, MOVA y prospecto
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/ecr/?disco=1'"
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/mkof/?disco=1'"
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/MKOF/MOVA?disco=1'"
@@ -131,9 +165,10 @@ powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clien
 
 :fin_urls
 echo.
-echo  === URLs ^(todas con ?disco=1^) ===
+echo  === URLs ^(con ?disco=1^) ===
 echo    Organizador:  http://127.0.0.1:8000/index.html?disco=1
 echo    Portal:       http://127.0.0.1:8000/index/clientes/?disco=1
+echo    ^(opcionales con "todo"^)
 echo    ECR:          http://127.0.0.1:8000/index/clientes/ecr/?disco=1
 echo    MKOF / MOVA:  http://127.0.0.1:8000/index/clientes/mkof/?disco=1
 echo    MKOF prospecto: http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1

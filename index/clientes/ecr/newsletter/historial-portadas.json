@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-21T15:25:00Z",
-  "nota": "NL1 ago v5: digital + línea de producción; 1–3 con mucho cielo plano.",
+  "updatedAt": "2026-07-21T21:10:00Z",
+  "nota": "NL1 ago: portada Midjourney v5 (digital + línea) + prompts fondos carrusel cuadrados (21 jul).",
   "items": [
     {
       "id": "nl1-ago-tecnologia-sin-integracion-prompts-v5-2026-07-21",
@@ -34,6 +34,13 @@
       "origen": "consola",
       "archivoMarkdown": "portadas-guardadas/NL1-ago-tecnologia-sin-integracion-prompts-v5.md",
       "updatedAt": "2026-07-21T15:25:00Z"
+    },
+    {
+      "fecha": "2026-07-21",
+      "titulo": "NL1 ago · prompts fondos carrusel cuadrados (8)",
+      "archivo": "carruseles/PROMPTS-FONDOS-CUADRADOS-NL1-ago.md",
+      "tipo": "carrusel-fondos-mj",
+      "notas": "Flat vector orange/teal · square · cielo vacío para texto"
     },
     {
       "id": "nl1-ago-memphis-logistica-cielo-azure",

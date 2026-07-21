@@ -131,6 +131,19 @@
       "color_text": "#143A6B",
       "agente": "Agente Tronwell",
       "resumen": "Ajuste de textos y documentos Word"
+    },
+    {
+      "id": "cli-herramientas",
+      "slug": "herramientas",
+      "nombre": "Herramientas",
+      "abrev": "HER",
+      "tipo": "freelance",
+      "color": "grafito",
+      "color_border": "#3D4A6B",
+      "color_bg": "#E2E6F0",
+      "color_text": "#1E2638",
+      "agente": "Herramientas internas",
+      "resumen": "Proyectos de herramientas y utilidades (Tendencias, etc.)"
     }
   ]
 }
