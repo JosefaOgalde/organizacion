@@ -26,10 +26,10 @@ Mockup celular: `mockup-perfil.html` → exportar PNG `mockup-perfil-indisa.png`
 - Hitos / tecnología (resonador, sedes Providencia·Maipú)
 
 **PERIODICIDAD**
-- Activa y continua (feed denso: ~1.449 publicaciones)
-- Ritmo reciente: varias piezas por semana (educación + CTA)
-- Consistente en tono “Estamos Para Tu Cuidado”
-- A cuantificar posts/semana exactos con muestreo 7–14 días
+- **3 a 4 posts por semana** (muestra ER: 9 piezas entre 3 y 20 jul 2026)
+- Frecuente — Consistente
+- Tono “Estamos Para Tu Cuidado”
+- Detalle: `data/ig-periodicidad-indisa.json`
 
 ### Imagen derecha (mockup celular)
 
