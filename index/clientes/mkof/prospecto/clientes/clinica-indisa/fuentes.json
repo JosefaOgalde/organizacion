@@ -549,6 +549,15 @@
       "dato": "Campo móvil FCP 1.2s LCP 1.6s (CWV OK) · Lab móvil score 38 LCP 32.3s · Lab desktop score 72 LCP 1.9s",
       "fecha": "2026-07-20",
       "metodo": "URL oficial entregada por usuaria · reporte PSI ouu45jo4vc"
+    },
+    {
+      "id": "web-psi-clc-s73sqtgrj5",
+      "tipo": "pagespeed",
+      "entidad": "Clínica Las Condes",
+      "url": "https://pagespeed.web.dev/analysis/https-www-clinicalascondes-cl-HOME/s73sqtgrj5?form_factor=mobile",
+      "dato": "Campo móvil CWV reprobado (CLS 0.44) LCP 1.8s · Lab móvil score 64 LCP 5.4s · Lab desktop score 40 LCP 6.4s",
+      "fecha": "2026-07-20",
+      "metodo": "URL oficial entregada por usuaria · reporte PSI s73sqtgrj5"
     }
   ],
   "canalesOficialesProspecto": {

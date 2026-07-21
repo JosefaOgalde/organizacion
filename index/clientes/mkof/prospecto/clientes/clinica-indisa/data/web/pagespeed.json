@@ -1,25 +1,32 @@
 {
   "fecha": "2026-07-21",
-  "analisisOficial": {
-    "url": "https://pagespeed.web.dev/analysis/https-www-indisa-cl/ouu45jo4vc?form_factor=mobile",
-    "id": "ouu45jo4vc",
-    "reporte": "2026-07-20T22:44:35-04:00",
-    "sitioMedido": "https://www.indisa.cl/",
-    "nota": "Análisis oficial compartido. Datos de campo (usuarios reales Chile, 28 días) + laboratorio Lighthouse. El sitio aparece operativo en CrUX; en este entorno de auditoría a veces respondió mantención."
+  "analisisOficiales": {
+    "indisa": {
+      "url": "https://pagespeed.web.dev/analysis/https-www-indisa-cl/ouu45jo4vc?form_factor=mobile",
+      "id": "ouu45jo4vc",
+      "reporte": "2026-07-20T22:44:35",
+      "sitioMedido": "https://www.indisa.cl/"
+    },
+    "clc": {
+      "url": "https://pagespeed.web.dev/analysis/https-www-clinicalascondes-cl-HOME/s73sqtgrj5?form_factor=mobile",
+      "id": "s73sqtgrj5",
+      "reporte": "2026-07-20T22:45:19",
+      "sitioMedido": "https://www.clinicalascondes.cl/HOME"
+    }
   },
   "fuentePrincipal": "https://pagespeed.web.dev/analysis/https-www-indisa-cl/ouu45jo4vc",
   "prospecto": {
     "url": "https://www.indisa.cl/",
-    "estadoObservadoAuditoria": "A veces mantención/403 desde este entorno; PSI/CrUX muestra tráfico real al home operativo.",
+    "nombre": "Clínica Indisa",
     "mobile": {
       "campoCrUX": {
+        "scope": "This URL",
         "coreWebVitals": "aprobado",
         "fcp": "1.2 s",
         "lcp": "1.6 s",
         "inp": "180 ms",
         "cls": "0",
-        "ttfb": "0.4 s",
-        "periodo": "últimos 28 días"
+        "ttfb": "0.4 s"
       },
       "laboratorio": {
         "performanceScore": 38,
@@ -27,8 +34,7 @@
         "lcp": "32.3 s",
         "tbt": "850 ms",
         "si": "7.9 s",
-        "cls": "0.003",
-        "entorno": "Moto G Power · Slow 4G · Lighthouse 13.4.0"
+        "cls": "0.003"
       }
     },
     "desktop": {
@@ -50,29 +56,63 @@
       }
     }
   },
-  "lecturaEnSimple": [
-    "Lo que viven los usuarios reales en el celular está bien (contenido grande en 1,6 s).",
-    "La prueba de laboratorio en móvil sale muy mala: el contenido grande tarda 32,3 s (nota 38/100).",
-    "En computador la prueba da 72/100 y el contenido grande en 1,9 s.",
-    "Prioridad: arreglar la carga móvil del home (laboratorio), no solo confiar en que el promedio de usuarios se vea bien."
-  ],
-  "competenciaLighthouse": {
-    "metodo": "npx lighthouse · Chrome headless · 2026-07-21 (benchmark aparte)",
+  "competenciaOficial": {
     "clc": {
-      "mobile": { "score": 32, "fcp": "3.2 s", "lcp": "28.7 s" },
-      "desktop": { "score": 55, "fcp": "0.9 s", "lcp": "7.8 s" }
-    },
-    "alemana": {
-      "mobile": { "score": 14, "fcp": "4.5 s", "lcp": "7.7 s" },
-      "desktop": { "score": 57, "fcp": "1.0 s", "lcp": "2.0 s" }
-    },
-    "davila": {
-      "mobile": { "score": 53, "fcp": "3.0 s", "lcp": "3.0 s" },
-      "desktop": { "score": 51, "fcp": "2.3 s", "lcp": "2.3 s" }
-    },
-    "santamaria": {
-      "mobile": { "score": 44, "fcp": "1.9 s", "lcp": "7.8 s" },
-      "desktop": { "score": 84, "fcp": "0.6 s", "lcp": "1.8 s" }
+      "nombre": "Clínica Las Condes",
+      "url": "https://www.clinicalascondes.cl/HOME",
+      "analisis": "https://pagespeed.web.dev/analysis/https-www-clinicalascondes-cl-HOME/s73sqtgrj5?form_factor=mobile",
+      "mobile": {
+        "campoCrUX": {
+          "scope": "This URL",
+          "coreWebVitals": "reprobado",
+          "motivoPrincipal": "La página se mueve mucho al cargar (CLS 0,44)",
+          "fcp": "1.1 s",
+          "lcp": "1.8 s",
+          "inp": "94 ms",
+          "cls": "0.44",
+          "ttfb": "0.6 s"
+        },
+        "laboratorio": {
+          "performanceScore": 64,
+          "fcp": "1.5 s",
+          "lcp": "5.4 s",
+          "tbt": "1,220 ms",
+          "si": "6.1 s",
+          "cls": "0.003"
+        }
+      },
+      "desktop": {
+        "campoCrUX": {
+          "coreWebVitals": "reprobado",
+          "motivoPrincipal": "La página se mueve al cargar (CLS 0,20)",
+          "fcp": "1.0 s",
+          "lcp": "1.9 s",
+          "inp": "54 ms",
+          "cls": "0.20",
+          "ttfb": "0.6 s"
+        },
+        "laboratorio": {
+          "performanceScore": 40,
+          "fcp": "0.7 s",
+          "lcp": "6.4 s",
+          "tbt": "380 ms",
+          "si": "4.9 s",
+          "cls": "0.203"
+        }
+      }
     }
+  },
+  "lecturaEnSimple": [
+    "Indisa (usuarios reales móvil): carga bien — contenido grande 1,6 s · Core Web Vitals aprobado.",
+    "Indisa (prueba laboratorio móvil): muy lenta — contenido grande 32,3 s · nota 38/100.",
+    "Las Condes (usuarios reales móvil): Core Web Vitals reprobado porque la página 'salta' al cargar (CLS 0,44).",
+    "Las Condes (prueba laboratorio móvil): contenido grande 5,4 s · nota 64/100 — mejor que Indisa en laboratorio, peor en estabilidad visual.",
+    "Para Indisa: prioridad aligerar el home móvil (bajar esos 32 s). No copiar el problema de CLC (página que se mueve / pop-ups)."
+  ],
+  "competenciaLighthouseLocal": {
+    "metodo": "npx lighthouse · benchmark local 2026-07-21 (secundario; preferir análisis oficiales PSI)",
+    "alemana": { "mobile": { "score": 14, "lcp": "7.7 s" }, "desktop": { "score": 57, "lcp": "2.0 s" } },
+    "davila": { "mobile": { "score": 53, "lcp": "3.0 s" }, "desktop": { "score": 51, "lcp": "2.3 s" } },
+    "santamaria": { "mobile": { "score": 44, "lcp": "7.8 s" }, "desktop": { "score": 84, "lcp": "1.8 s" } }
   }
 }

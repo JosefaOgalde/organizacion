@@ -33,30 +33,28 @@ Logos / nombres:
 Clínica Las Condes · Clínica Alemana · Clínica Dávila · Clínica Santa María
 
 ================================================================================
-03 · RENDIMIENTO (PageSpeed oficial ouu45jo4vc)
+03 · RENDIMIENTO (Indisa vs Las Condes · PSI oficial)
 ================================================================================
 Título: DIAGNÓSTICO UX / UI
-Sub: RENDIMIENTO · WWW.INDISA.CL · PAGESPEED OFICIAL
+Sub: RENDIMIENTO · INDISA VS LAS CONDES · PAGESPEED OFICIAL (MÓVIL)
 
-EN SIMPLE
-En el celular la prueba sale muy lenta.
-Los usuarios reales, en promedio, ven el sitio bastante rápido.
-Pero la prueba de laboratorio en móvil muestra que el contenido grande
-tarda más de 30 segundos.
+INDISA (prospecto)
+· Nota laboratorio móvil: 38/100
+· Usuarios reales: contenido grande 1,6 s · CWV aprobado
+· Prueba lab: contenido grande 32,3 s · muy lento
+→ Aligerar el home móvil.
 
-Usuarios reales (móvil): 1,6 s · Core Web Vitals aprobado
-Prueba laboratorio (móvil): 32,3 s · Nota 38/100
-Nota escritorio (laboratorio): 72/100 · contenido grande 1,9 s
+LAS CONDES (competidor)
+· Nota laboratorio móvil: 64/100
+· Usuarios reales: CWV reprobado por CLS 0,44 (la página “salta”)
+· Prueba lab: contenido grande 5,4 s
+→ Mejor en lab que Indisa, peor en estabilidad visual.
 
-Gráfico laboratorio:
-· Indisa móvil …… 32,3 s (muy lento)
-· Indisa PC ………  1,9 s (aceptable)
-· Usuarios reales móvil · 1,6 s (bien)
+Comparación lab móvil: Indisa 32,3 s · Las Condes 5,4 s
 
-Qué hacer: aligerar el home en móvil (imágenes, avisos/pop-ups, scripts)
-para bajar esos 32 segundos en la prueba.
-
-Fuente: https://pagespeed.web.dev/analysis/https-www-indisa-cl/ouu45jo4vc
+Fuentes:
+https://pagespeed.web.dev/analysis/https-www-indisa-cl/ouu45jo4vc
+https://pagespeed.web.dev/analysis/https-www-clinicalascondes-cl-HOME/s73sqtgrj5
 
 ================================================================================
 04 · ESTRUCTURA DE NAVEGACIÓN (HOY)

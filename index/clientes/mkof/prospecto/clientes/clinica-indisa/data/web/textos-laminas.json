@@ -30,12 +30,23 @@
   },
   "rendimiento": {
     "titulo": "DIAGNÓSTICO UX / UI",
-    "subtitulo": "RENDIMIENTO · WWW.INDISA.CL · PAGESPEED OFICIAL",
-    "hallazgoPrincipal": "En el celular la prueba de laboratorio sale muy lenta (32,3 s el contenido grande), aunque los usuarios reales promedian 1,6 s.",
-    "usuariosRealesMovil": "1,6 s · CWV aprobado",
-    "labMovil": "32,3 s · nota 38/100",
-    "labDesktop": "1,9 s · nota 72/100",
-    "fuente": "https://pagespeed.web.dev/analysis/https-www-indisa-cl/ouu45jo4vc"
+    "subtitulo": "RENDIMIENTO · INDISA VS LAS CONDES · PAGESPEED OFICIAL",
+    "indisa": {
+      "notaLab": 38,
+      "usuariosLcp": "1,6 s",
+      "labLcp": "32,3 s",
+      "cwv": "aprobado"
+    },
+    "clc": {
+      "notaLab": 64,
+      "usuariosCls": "0,44",
+      "labLcp": "5,4 s",
+      "cwv": "reprobado"
+    },
+    "fuentes": [
+      "ouu45jo4vc",
+      "s73sqtgrj5"
+    ]
   },
   "navegacion": {
     "titulo": "DIAGNÓSTICO UX / UI",
