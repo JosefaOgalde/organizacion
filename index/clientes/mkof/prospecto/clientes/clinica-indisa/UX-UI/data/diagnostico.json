@@ -50,19 +50,19 @@
     },
     "especialidades": {
       "url": "https://www.indisa.cl/especialidades",
-      "hallazgo": "Directorio alfabético mínimo (letras B, C…). Legible pero con aspecto de índice antiguo: sin buscador visible, sin íconos, mucho vacío. CTA fijos abajo: Reservar hora + Pedir presupuesto.",
+      "hallazgo": "Hero con buscador prominente («Escribe nombre de la especialidad…» + lupa). Debajo, directorio A–Z. CTA fijos: Reservar hora + Pedir presupuesto. El buscador es el acierto; el listado sigue viéndose plano.",
       "fortalezas": [
-        "Orden alfabético predecible",
-        "CTA Reservar hora y Pedir presupuesto fijos",
-        "Enlaces claros a cada especialidad"
+        "Buscador visible en el primer pantallazo del listado",
+        "Placeholder claro orientado a especialidad",
+        "Orden alfabético como respaldo",
+        "CTA Reservar hora y Pedir presupuesto fijos"
       ],
       "fricciones": [
-        "Sin buscador ni filtro en la vista",
-        "Poca jerarquía visual (lista plana)",
-        "Muchas variantes Adulto/Infantil/Cirugía sin agrupación visual fuerte",
-        "Aspecto legacy frente a directorios modernos de competencia"
+        "Listado A–Z con poca jerarquía visual (aspecto de índice)",
+        "No se evidencia sugerencia/autocomplete en la captura",
+        "Resultado del buscador no muestra atajo directo a Reservar hora en la misma vista"
       ],
-      "recomendacion": "Agregar buscador + agrupación por tipo (adulto/infantil/cirugía) y mantener los CTA fijos."
+      "recomendacion": "Mantener el buscador como puerta principal; sumar sugerencias al tipear y enlace directo a agendar desde cada resultado."
     },
     "referentes": {
       "copiar": ["Alemana: reservar visible 3 veces sin bloquear", "Santa María: un bloque grande de agenda"],
@@ -78,7 +78,7 @@
     "Mover captcha/RUT más tarde (después de elegir hora o especialidad)",
     "Integrar reserva en el home (no solo modal legacy)",
     "Incluir «Reservar hora» (y urgencia) también en el menú principal",
-    "Mejorar Especialidades: buscador + agrupación (no solo lista A–Z)",
+    "Mejorar Especialidades: sugerencias en el buscador + atajo a Reservar desde el resultado",
     "Suavizar aviso de convenio sin romper el flujo",
     "Acortar formulario final (evitar reingresar email; menos campos de una vez)"
   ]

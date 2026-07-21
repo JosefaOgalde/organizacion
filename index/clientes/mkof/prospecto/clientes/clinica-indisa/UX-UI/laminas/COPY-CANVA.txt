@@ -20,6 +20,10 @@ Falta en el menú: Reservar hora · urgencia / teléfonos.
 ## 04b Reservar hora (flujo)
 CTA naranja → tipo prestación → sede → RUT+previsión+captcha → especialidad → médico → convenio → agenda → formulario.
 
+## 04c Especialidades · Buscador
+Hero con buscador («Escribe nombre de la especialidad…» + lupa). Listado A–Z debajo. CTA fijos: Reservar hora + Pedir presupuesto.
+Acierto: buscador visible. Oportunidad: sugerencias al tipear + atajo a agendar desde el resultado.
+
 ## 05 Referentes
 COPIAR: Alemana (reservar 3×) · Santa María (bloque agenda)
 EVITAR: CLC (pop-up seguros) · Dávila (hero comercial)
