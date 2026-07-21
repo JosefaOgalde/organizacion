@@ -1,66 +1,177 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Referentes</title><style>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
-body{width:1920px;height:1080px;background:#f4f1ea;font-family:Montserrat,system-ui,sans-serif;color:#1a4d3e;padding:52px 64px;position:relative;overflow:hidden}
-h1{font-size:44px;font-weight:800;letter-spacing:.04em;color:#1a4d3e}
-.sub{font-size:22px;font-weight:600;color:#6a8f7a;margin-top:8px;letter-spacing:.06em}
-.foot{position:absolute;bottom:28px;left:0;right:0;text-align:center;font-size:12px;color:#b0b8b2}
-.box{background:#1a4d3e;color:#d8f0a8;border-radius:22px;padding:28px 32px}
-.box h2{font-size:26px;font-weight:800;color:#c6e86a;margin-bottom:14px}
-.box p,.box li{font-size:20px;line-height:1.45;color:#e8f5d0;font-weight:600}
-.pill{background:#2f6b52;color:#fff;border-radius:999px;padding:14px 28px;font-weight:700;font-size:16px;letter-spacing:.04em}
-.rec{background:#3d6b4f;color:#fff;border-radius:18px;padding:22px 20px;font-size:17px;font-weight:600;line-height:1.4}
-.rec b{font-weight:800}
-.cap{background:#2f6b52;color:#c6e86a;border-radius:999px;padding:16px 36px;font-size:22px;font-weight:800;letter-spacing:.04em;display:inline-block}
-.num{font-size:48px;font-weight:800;color:#1a4d3e}
-.wedge{height:28px;background:linear-gradient(90deg,#c6e86a 0%,#2f6b52 100%);border-radius:0 14px 14px 0;position:relative;width:420px}
-.pin{position:absolute;top:-10px;width:18px;height:48px;background:#1a4d3e;border-radius:4px;transform:translateX(-50%)}
-.metric-row{display:flex;align-items:center;gap:18px;margin:14px 0}
-.icon-circle{width:64px;height:64px;border-radius:50%;background:#d8ecd8;display:grid;place-items:center;font-size:28px;flex-shrink:0}
-</style></head><body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Referentes · Hoy · competencia</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1920px; height: 1080px; background: #f4f1ea;
+      font-family: Montserrat, system-ui, sans-serif; color: #1a4d3e;
+      padding: 40px 48px 32px; position: relative; overflow: hidden;
+    }
+    h1 { font-size: 36px; font-weight: 800; letter-spacing: 0.04em; }
+    .sub { font-size: 18px; font-weight: 600; color: #6a8f7a; margin-top: 4px; letter-spacing: 0.05em; }
+    .foot { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; font-size: 11px; color: #b0b8b2; }
+    .fuente { position: absolute; bottom: 40px; left: 48px; font-size: 12px; color: #7a8f82; font-weight: 600; }
+
+    .intro {
+      margin-top: 16px; margin-bottom: 18px;
+      font-size: 18px; font-weight: 700; color: #1a4d3e; max-width: 1100px; line-height: 1.35;
+    }
+    .intro span { color: #c45c26; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      border: 2px solid #d5e3d9;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      min-height: 340px;
+    }
+    .card.evitar { border-color: #e0b8a8; }
+    .shot {
+      background: #e8eee9;
+      overflow: hidden;
+      position: relative;
+    }
+    .shot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+    .tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      padding: 6px 12px;
+      border-radius: 999px;
+      color: #fff;
+    }
+    .tag.ok { background: #2f6b52; }
+    .tag.bad { background: #c45c26; }
+    .info {
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+    }
+    .info .clinica {
+      font-size: 13px;
+      font-weight: 800;
+      color: #6a8f7a;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .info h3 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a4d3e;
+      line-height: 1.2;
+    }
+    .info p {
+      font-size: 16px;
+      font-weight: 600;
+      color: #3d5c4e;
+      line-height: 1.4;
+    }
+    .info .para-indisa {
+      margin-top: 6px;
+      background: #eef5f1;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a4d3e;
+      line-height: 1.35;
+    }
+    .card.evitar .para-indisa {
+      background: #fff5eb;
+      color: #8a3a12;
+    }
+    .para-indisa b { font-weight: 800; }
+  </style>
+</head>
+<body>
   <h1>DIAGNÓSTICO UX / UI</h1>
-  <div class="sub">REFERENTES · ALEMANA / SANTA MARÍA / CLC / DÁVILA</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:48px">
-    <div style="display:flex;flex-direction:column;gap:22px">
-      <div style="background:#fff;border:2px solid #c5d9ce;border-radius:16px;padding:22px 24px">
-        <div style="font-size:18px;font-weight:800;color:#1a4d3e;margin-bottom:8px">Reserva repetida en el primer pantallazo</div>
-        <div style="font-size:16px;font-weight:600;color:#3d5c4e;line-height:1.4">Alemana muestra «Reservar hora» en header, hero y widget central sin modal de entrada.</div>
+  <div class="sub">REFERENTES · LO QUE HACEN HOY LAS OTRAS CLÍNICAS</div>
+  <div class="intro">
+    Tres aprendizajes claros para Indisa cuando vuelva el sitio:
+    <span>qué copiar</span> y <span>qué no repetir</span>.
+  </div>
+
+  <div class="grid">
+    <!-- 1 Alemana - COPIAR -->
+    <div class="card">
+      <div class="shot">
+        <div class="tag ok">COPIAR</div>
+        <img src="capturas/web-alemana-home.png" alt="Clínica Alemana" />
       </div>
-      <div style="background:#fff;border:2px solid #c5d9ce;border-radius:16px;padding:22px 24px">
-        <div style="font-size:18px;font-weight:800;color:#1a4d3e;margin-bottom:8px">Menú corto con niveles de agenda</div>
-        <div style="font-size:16px;font-weight:600;color:#3d5c4e;line-height:1.4">Santa María concentra la conversión en un widget con pestañas Consultas · Dental · Telemedicina · Exámenes.</div>
-      </div>
-      <div style="background:#fff;border:2px solid #c5d9ce;border-radius:16px;padding:22px 24px">
-        <div style="font-size:18px;font-weight:800;color:#1a4d3e;margin-bottom:8px">Urgencia visible vs. producto que tapa</div>
-        <div style="font-size:16px;font-weight:600;color:#3d5c4e;line-height:1.4">CLC destaca Rescate en barra superior, pero el modal de seguro al cargar frena la reserva. Dávila prioriza seguro en el hero.</div>
+      <div class="info">
+        <div class="clinica">Clínica Alemana</div>
+        <h3>Reservar hora se ve 3 veces</h3>
+        <p>En el menú, en el banner y en el centro de la página. Sin ventanas que bloqueen.</p>
+        <div class="para-indisa"><b>Para Indisa:</b> el botón de agendar debe saltar a la vista apenas se abre el sitio.</div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-      
-        <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #d5e3d9">
-          <div style="height:200px;background:#e8eee9;overflow:hidden">
-            <img src="capturas/web-alemana-home.png" style="width:100%;height:100%;object-fit:cover;object-position:top" />
-          </div>
-          <div style="padding:10px;font-size:13px;font-weight:800;text-align:center">Alemana</div>
-        </div>
-        <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #d5e3d9">
-          <div style="height:200px;background:#e8eee9;overflow:hidden">
-            <img src="capturas/web-santamaria-home.png" style="width:100%;height:100%;object-fit:cover;object-position:top" />
-          </div>
-          <div style="padding:10px;font-size:13px;font-weight:800;text-align:center">Santa María</div>
-        </div>
-        <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #d5e3d9">
-          <div style="height:200px;background:#e8eee9;overflow:hidden">
-            <img src="capturas/web-clc-home.png" style="width:100%;height:100%;object-fit:cover;object-position:top" />
-          </div>
-          <div style="padding:10px;font-size:13px;font-weight:800;text-align:center">Las Condes</div>
-        </div>
-        <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #d5e3d9">
-          <div style="height:200px;background:#e8eee9;overflow:hidden">
-            <img src="capturas/web-davila-home.png" style="width:100%;height:100%;object-fit:cover;object-position:top" />
-          </div>
-          <div style="padding:10px;font-size:13px;font-weight:800;text-align:center">Dávila</div>
-        </div>
+
+    <!-- 2 Santa María - COPIAR -->
+    <div class="card">
+      <div class="shot">
+        <div class="tag ok">COPIAR</div>
+        <img src="capturas/web-santamaria-home.png" alt="Clínica Santa María" />
+      </div>
+      <div class="info">
+        <div class="clinica">Clínica Santa María</div>
+        <h3>Un solo bloque para agendar</h3>
+        <p>Pestañas simples: Consultas · Dental · Telemedicina · Exámenes. Menú corto arriba.</p>
+        <div class="para-indisa"><b>Para Indisa:</b> un formulario de reserva grande en el centro, no esconderlo en el menú.</div>
+      </div>
+    </div>
+
+    <!-- 3 CLC - EVITAR -->
+    <div class="card evitar">
+      <div class="shot">
+        <div class="tag bad">EVITAR</div>
+        <img src="capturas/web-clc-home.png" alt="Clínica Las Condes" />
+      </div>
+      <div class="info">
+        <div class="clinica">Clínica Las Condes</div>
+        <h3>Una ventana de seguro tapa todo</h3>
+        <p>Sí destacan urgencia/rescate arriba, pero al entrar aparece un aviso comercial que frena la reserva.</p>
+        <div class="para-indisa"><b>Para Indisa:</b> no poner pop-ups de seguros al cargar. Primero que el paciente pueda agendar.</div>
+      </div>
+    </div>
+
+    <!-- 4 Dávila - EVITAR -->
+    <div class="card evitar">
+      <div class="shot">
+        <div class="tag bad">EVITAR</div>
+        <img src="capturas/web-davila-home.png" alt="Clínica Dávila" />
+      </div>
+      <div class="info">
+        <div class="clinica">Clínica Dávila</div>
+        <h3>El hero vende el seguro, no la hora</h3>
+        <p>Lo primero que se ve es contratar un seguro. Agendar queda más abajo o por WhatsApp.</p>
+        <div class="para-indisa"><b>Para Indisa:</b> lo primero debe ser “Reservar hora”, no una campaña comercial.</div>
+      </div>
     </div>
   </div>
-<div class="foot">Created & Proprietary MKOF 2025 / All rights reserved</div></body></html>
+
+  <div class="fuente">Capturas vivas · 2026-07-21 · referentes del diagnóstico web Indisa</div>
+  <div class="foot">Created & Proprietary MKOF 2025 / All rights reserved</div>
+</body>
+</html>
