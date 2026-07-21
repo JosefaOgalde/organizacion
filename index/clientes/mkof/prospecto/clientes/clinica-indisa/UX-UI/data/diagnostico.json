@@ -48,6 +48,22 @@
       "headerMenu": ["Logo INDISA", "Mi portal", "Cerrar"],
       "faltanEnMenu": ["Reservar hora", "Urgencia / teléfonos", "WhatsApp"]
     },
+    "especialidades": {
+      "url": "https://www.indisa.cl/especialidades",
+      "hallazgo": "Directorio alfabético mínimo (letras B, C…). Legible pero con aspecto de índice antiguo: sin buscador visible, sin íconos, mucho vacío. CTA fijos abajo: Reservar hora + Pedir presupuesto.",
+      "fortalezas": [
+        "Orden alfabético predecible",
+        "CTA Reservar hora y Pedir presupuesto fijos",
+        "Enlaces claros a cada especialidad"
+      ],
+      "fricciones": [
+        "Sin buscador ni filtro en la vista",
+        "Poca jerarquía visual (lista plana)",
+        "Muchas variantes Adulto/Infantil/Cirugía sin agrupación visual fuerte",
+        "Aspecto legacy frente a directorios modernos de competencia"
+      ],
+      "recomendacion": "Agregar buscador + agrupación por tipo (adulto/infantil/cirugía) y mantener los CTA fijos."
+    },
     "referentes": {
       "copiar": ["Alemana: reservar visible 3 veces sin bloquear", "Santa María: un bloque grande de agenda"],
       "evitar": ["CLC: pop-ups comerciales", "Dávila: hero de seguros antes que agenda"]
@@ -62,6 +78,7 @@
     "Mover captcha/RUT más tarde (después de elegir hora o especialidad)",
     "Integrar reserva en el home (no solo modal legacy)",
     "Incluir «Reservar hora» (y urgencia) también en el menú principal",
+    "Mejorar Especialidades: buscador + agrupación (no solo lista A–Z)",
     "Suavizar aviso de convenio sin romper el flujo",
     "Acortar formulario final (evitar reingresar email; menos campos de una vez)"
   ]
