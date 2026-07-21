@@ -34,9 +34,10 @@ La campaña puede estar impecable en el PowerPoint,
 pero si el equipo no llega o la alerta no se gestiona a tiempo, el impacto se diluye.
 
 ### Slide 5 — Causa real
-**Título:** No es falta de digitalización  
-**Cuerpo:** Es falta de integración.  
-Sistemas que no conversan con la operación real: turnos, supervisión, reposición, asistencia.
+**Texto (2–3 líneas, sin viñetas):**  
+No es falta de digitalización: es falta de integración.  
+Los sistemas no conversan con la operación real —  
+turnos, supervisión, reposición y asistencia.
 
 ### Slide 6 — Qué hacen los líderes
 **Título:** Las empresas más eficientes…  
