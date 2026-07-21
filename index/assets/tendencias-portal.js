@@ -8,8 +8,8 @@
   const col = proyecto.colores;
   const feedCfg = proyecto.feed || {};
   const FEED_URL = feedCfg.url || '../../../data/tendencias-comida-chile.json';
-  const CACHE_KEY = 'tendencias-comida-chile-cache-v5';
-  const UI_MIGRATE_KEY = 'tendencias-ui-migrate-v2';
+  const CACHE_KEY = 'tendencias-comida-chile-cache-v6';
+  const UI_MIGRATE_KEY = 'tendencias-ui-migrate-v3';
   const FEED_SCHEMA = 2;
   const PANEL_KEY = 'tendencias-panel';
   const VISTA_KEY = 'tendencias-vista';
@@ -84,31 +84,46 @@
   function leerPeriodo() {
     try {
       const p = localStorage.getItem(PERIODO_KEY);
-      // «Hoy» ya no es el default: si quedó guardado de antes, pasamos a «Todas»
-      if (!p || p === 'hoy') {
+      // Default útil: último mes (así se ven las nuevas, no el archivo eterno)
+      if (!p || p === 'hoy' || p === 'todas') {
         try {
-          localStorage.setItem(PERIODO_KEY, 'todas');
+          localStorage.setItem(PERIODO_KEY, 'mes');
         } catch {
           /* ignore */
         }
-        return 'todas';
+        return 'mes';
       }
-      return PERIODOS.some((x) => x.id === p) ? p : 'todas';
+      return PERIODOS.some((x) => x.id === p) ? p : 'mes';
     } catch {
-      return 'todas';
+      return 'mes';
     }
   }
 
-  /** Una vez: limpia cachés viejas del feed para no pegar fecha 01-07-2026 */
+  /** Una vez: limpia cachés viejas y pasa a período Mes (contenido reciente) */
   function migrarUiUnaVez() {
     try {
       if (localStorage.getItem(UI_MIGRATE_KEY) === '1') return;
+      localStorage.removeItem('tendencias-comida-chile-cache-v5');
       localStorage.removeItem('tendencias-comida-chile-cache-v4');
       localStorage.removeItem('tendencias-comida-chile-cache-v3');
+      // Quienes tenían Tres meses / Hoy veían siempre el mismo bloque viejo
+      const p = localStorage.getItem(PERIODO_KEY);
+      if (!p || p === 'hoy' || p === 'todas' || p === 'tres-meses') {
+        localStorage.setItem(PERIODO_KEY, 'mes');
+        periodoActual = 'mes';
+      }
       localStorage.setItem(UI_MIGRATE_KEY, '1');
     } catch {
       /* ignore */
     }
+  }
+
+  function esTendenciaNueva(fechaStr) {
+    const f = parseFecha(fechaStr);
+    if (!f) return false;
+    const limite = hoyLocal();
+    limite.setDate(limite.getDate() - 30);
+    return f >= limite;
   }
 
   function guardarPeriodo(p) {
@@ -557,11 +572,14 @@
   function renderCard(t) {
     const senal = (t.kpis?.senal || 'medio').replace(/\s+/g, '-');
     const fecha = fechaFuenteDe(t);
+    const nueva = esTendenciaNueva(fecha)
+      ? '<span class="tend-card__nueva">Nueva</span>'
+      : '';
 
     return `
-      <article class="tend-card">
+      <article class="tend-card${esTendenciaNueva(fecha) ? ' tend-card--nueva' : ''}">
         <div class="tend-card__top">
-          <h3>${escapeHtml(t.titulo)}</h3>
+          <h3>${escapeHtml(t.titulo)} ${nueva}</h3>
           <span class="tend-card__senal tend-card__senal--${escapeHtml(senal)}">${escapeHtml((t.kpis?.senal || 'medio').replace('-', ' '))}</span>
         </div>
         <p class="tend-card__formato">${escapeHtml(t.formato)} · <time datetime="${escapeHtml(fecha)}">${escapeHtml(formatoFecha(fecha))}</time></p>
@@ -764,8 +782,9 @@
         </div>
 
         <div class="tend-resumen-box">
-          No hay fecha predeterminada. Elige una <strong>fecha</strong> arriba para ver esos contenidos, o un período.
-          Al abrir se muestran <strong>todas</strong> las del feed. Sin fechas inventadas.
+          El listado viene de un <strong>feed curado</strong> (noticias con fecha real).
+          Por defecto ves el <strong>último mes</strong> — arriba aparecen las <strong>nuevas</strong> (julio).
+          «Actualizar» recarga el JSON; no inventa recetas. Para ampliar el feed: <code>python3 scripts/actualizar-tendencias-comida.py</code>
         </div>
 
         <div class="tend-toolbar tend-toolbar--wrap">
@@ -835,8 +854,10 @@
     if (forzar) {
       try {
         localStorage.removeItem(CACHE_KEY);
+        localStorage.removeItem('tendencias-comida-chile-cache-v5');
         localStorage.removeItem('tendencias-comida-chile-cache-v4');
         localStorage.removeItem('tendencias-comida-chile-cache-v3');
+        localStorage.removeItem('tendencias-ui-migrate-v2');
       } catch {
         /* ignore */
       }

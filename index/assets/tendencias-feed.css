@@ -462,13 +462,22 @@
   margin-bottom: 0.65rem;
 }
 
-.tend-vacio {
-  padding: 1.5rem;
-  text-align: center;
-  color: var(--muted);
-  background: #fff;
-  border-radius: var(--radius);
-  border: 1px dashed #ccc;
+.tend-card--nueva {
+  border-color: color-mix(in srgb, var(--tend-primario) 55%, #c4a35a);
+}
+
+.tend-card__nueva {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.12rem 0.45rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  color: #5c4810;
+  background: #f3e6b8;
+  border-radius: 4px;
 }
 
 .tend-vista-toggle {
