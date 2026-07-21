@@ -57,3 +57,6 @@ joyasmercury/
 ## Guías Fase 2
 
 Ver [GUIAS-FASE2.md](GUIAS-FASE2.md) y [interfaces/README.md](interfaces/README.md).
+
+**Home · 3 círculos colecciones (Elementor Free, sin CSS):**  
+[HOME-CIRCULOS-ELEMENTOR-FREE.md](HOME-CIRCULOS-ELEMENTOR-FREE.md)
