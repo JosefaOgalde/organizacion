@@ -33,30 +33,22 @@ Logos / nombres:
 Clínica Las Condes · Clínica Alemana · Clínica Dávila · Clínica Santa María
 
 ================================================================================
-03 · RENDIMIENTO (Indisa · Las Condes · Alemana · PSI oficial)
+03 · RENDIMIENTO (Indisa · CLC · Alemana · Dávila · PSI oficial)
 ================================================================================
 Título: DIAGNÓSTICO UX / UI
-Sub: RENDIMIENTO · PAGESPEED OFICIAL (MÓVIL)
+Sub: RENDIMIENTO · 4 CLÍNICAS · PAGESPEED OFICIAL (MÓVIL)
 
-INDISA — nota lab 38
-· Usuarios reales: 1,6 s · CWV aprobado
-· Lab: 32,3 s · muy lento
+INDISA — nota lab 38 · usuarios 1,6 s (CWV OK) · lab 32,3 s
+LAS CONDES — nota lab 64 · CWV reprobado (CLS 0,44) · lab 5,4 s
+ALEMANA — nota lab 53 · CWV reprobado (LCP 3,1 s · CLS 0,92) · lab 5,5 s
+DÁVILA — nota lab 54 · CWV reprobado (LCP 2,8 s · CLS 0,17 · TTFB 1,6 s) · lab 6,2 s
 
-LAS CONDES — nota lab 64
-· Usuarios reales: CWV reprobado (CLS 0,44 · página salta)
-· Lab: 5,4 s
+Lab móvil (contenido grande): Indisa 32,3 · Dávila 6,2 · Alemana 5,5 · CLC 5,4
 
-ALEMANA — nota lab 53
-· Usuarios reales: CWV reprobado (LCP 3,1 s · CLS 0,92 · salta mucho)
-· Lab: 5,5 s
+→ Indisa: mejor experiencia real; peor lab. Aligerar home móvil.
+→ Competencia: fallan CWV (saltos/lentitud). No copiar eso.
 
-Comparación lab móvil: Indisa 32,3 s · Alemana 5,5 s · Las Condes 5,4 s
-→ Indisa: aligerar home móvil. Alemana: buen UX reserva, no copiar velocidad/inestabilidad.
-
-Fuentes:
-https://pagespeed.web.dev/analysis/https-www-indisa-cl/ouu45jo4vc
-https://pagespeed.web.dev/analysis/https-www-clinicalascondes-cl-HOME/s73sqtgrj5
-https://pagespeed.web.dev/analysis/https-www-clinicaalemana-cl/hirdgw5bs5
+Fuentes PSI: ouu45jo4vc · s73sqtgrj5 · hirdgw5bs5 · ms57lriy5j
 
 ================================================================================
 04 · ESTRUCTURA DE NAVEGACIÓN (HOY)

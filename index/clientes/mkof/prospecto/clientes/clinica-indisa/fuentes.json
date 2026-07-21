@@ -567,6 +567,15 @@
       "dato": "Campo móvil CWV reprobado (LCP 3.1s · CLS 0.92) · Lab móvil score 53 LCP 5.5s · Lab desktop score 58 LCP 1.8s",
       "fecha": "2026-07-21",
       "metodo": "URL oficial entregada por usuaria · reporte PSI hirdgw5bs5"
+    },
+    {
+      "id": "web-psi-davila-ms57lriy5j",
+      "tipo": "pagespeed",
+      "entidad": "Clínica Dávila",
+      "url": "https://pagespeed.web.dev/analysis/https-www-davila-cl/ms57lriy5j?form_factor=mobile",
+      "dato": "Campo móvil CWV reprobado (LCP 2.8s · CLS 0.17 · TTFB 1.6s) · Lab móvil score 54 LCP 6.2s · Lab desktop score 59 LCP 1.0s",
+      "fecha": "2026-07-21",
+      "metodo": "URL oficial entregada por usuaria · reporte PSI ms57lriy5j"
     }
   ],
   "canalesOficialesProspecto": {

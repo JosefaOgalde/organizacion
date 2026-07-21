@@ -18,6 +18,12 @@
       "id": "hirdgw5bs5",
       "reporte": "2026-07-21T03:45:44",
       "sitioMedido": "https://www.clinicaalemana.cl/"
+    },
+    "davila": {
+      "url": "https://pagespeed.web.dev/analysis/https-www-davila-cl/ms57lriy5j?form_factor=mobile",
+      "id": "ms57lriy5j",
+      "reporte": "2026-07-21T08:16:16",
+      "sitioMedido": "https://www.davila.cl/"
     }
   },
   "fuentePrincipal": "https://pagespeed.web.dev/analysis/https-www-indisa-cl/ouu45jo4vc",
@@ -150,14 +156,59 @@
           "cls": "0.133"
         }
       }
+    },
+    "davila": {
+      "nombre": "Clínica Dávila",
+      "url": "https://www.davila.cl/",
+      "analisis": "https://pagespeed.web.dev/analysis/https-www-davila-cl/ms57lriy5j?form_factor=mobile",
+      "mobile": {
+        "campoCrUX": {
+          "scope": "This URL",
+          "coreWebVitals": "reprobado",
+          "motivoPrincipal": "Contenido grande 2,8 s, primer pintado 2,6 s y página que se mueve (CLS 0,17); servidor lento (TTFB 1,6 s)",
+          "fcp": "2.6 s",
+          "lcp": "2.8 s",
+          "inp": "186 ms",
+          "cls": "0.17",
+          "ttfb": "1.6 s"
+        },
+        "laboratorio": {
+          "performanceScore": 54,
+          "fcp": "6.2 s",
+          "lcp": "6.2 s",
+          "tbt": "370 ms",
+          "si": "6.2 s",
+          "cls": "0.001"
+        }
+      },
+      "desktop": {
+        "campoCrUX": {
+          "coreWebVitals": "reprobado",
+          "motivoPrincipal": "Contenido grande muy lento para usuarios (4,4 s)",
+          "fcp": "2.4 s",
+          "lcp": "4.4 s",
+          "inp": "106 ms",
+          "cls": "0.09",
+          "ttfb": "1.6 s"
+        },
+        "laboratorio": {
+          "performanceScore": 59,
+          "fcp": "0.8 s",
+          "lcp": "1.0 s",
+          "tbt": "1,090 ms",
+          "si": "6.7 s",
+          "cls": "0.007"
+        }
+      }
     }
   },
   "lecturaEnSimple": [
-    "Indisa (usuarios reales móvil): carga bien — 1,6 s · Core Web Vitals aprobado.",
-    "Indisa (lab móvil): muy lenta — 32,3 s · nota 38/100.",
-    "Las Condes (usuarios reales móvil): CWV reprobado por página que salta (CLS 0,44) · lab 5,4 s · nota 64.",
-    "Alemana (usuarios reales móvil): CWV reprobado — contenido grande 3,1 s y CLS 0,92 (salta mucho) · lab 5,5 s · nota 53.",
-    "Alemana es buen referente de UX de reserva, pero no de velocidad: Indisa gana en experiencia real; Alemana/CLC fallan por inestabilidad visual."
+    "Indisa (usuarios reales móvil): 1,6 s · CWV aprobado — mejor experiencia real del grupo medido.",
+    "Indisa (lab móvil): 32,3 s · nota 38 — peor prueba de laboratorio.",
+    "Las Condes: CWV reprobado (CLS 0,44) · lab 5,4 s · nota 64.",
+    "Alemana: CWV reprobado (LCP 3,1 s · CLS 0,92) · lab 5,5 s · nota 53.",
+    "Dávila: CWV reprobado (LCP 2,8 s · CLS 0,17 · TTFB 1,6 s) · lab 6,2 s · nota 54.",
+    "Resumen: Indisa gana en usuarios reales; pierde en laboratorio móvil. Competencia falla CWV por salto de página o lentitud."
   ],
   "competenciaLighthouseLocal": {
     "metodo": "npx lighthouse · benchmark local 2026-07-21 (secundario; preferir análisis oficiales PSI)",
