@@ -127,6 +127,7 @@ powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clien
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/mkof/?disco=1'"
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/MKOF/MOVA?disco=1'"
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/Herramientas/Tendencias.html?disco=1&vista=buscador&v=20260721b'"
 
 :fin_urls
 echo.
