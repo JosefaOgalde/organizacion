@@ -72,19 +72,20 @@ const CONTENIDOS = [
     sku: 'WFS2020RMA-LRD',
     archivo: 'PROMPT-c09-play-bajas-rojo-mujer.txt',
     specs: [
-      'Hunter Play bajas para mujer en rojo',
+      'Hunter Play bajas para mujer en rojo (silueta dinámica, versión corta del ícono Original)',
       '100% impermeables',
       'Caucho natural de alta calidad',
-      'Suela de plataforma más plana (confort)',
-      'Caña corta que roza la parte superior del tobillo',
-      'Silueta dinámica estilo urbano / festival',
+      'Suela de plataforma más plana (confort y versatilidad)',
+      'Caña corta que apenas roza la parte superior del tobillo',
+      'Estilo urbano / festival',
+      'Color rojo y acabado (mate o gloss) fieles a las fotos de producto adjuntas',
     ],
     escenaA:
-      'una mujer camina en ciudad o ambiente festival con botas Play bajas rojas Hunter; caña corta y suela plana visibles',
+      'ambiente urbano o festival con calle mojada o lluvia ligera; mujer camina con estilo; Play bajas rojas héroe del plano, gotas/chapoteo demuestran impermeabilidad, jeans metidos, caña corta y suela plataforma plana visibles',
     escenaB:
-      'mujer cruzando un charco con seguridad; rojo fiel a las fotos, impermeabilidad y confort de la plataforma plana',
+      'calle urbana o festival con piso mojado; mujer a mitad de zancada cruzando un charco; rojo fiel, gotas en caucho impermeable, confort de plataforma plana, caña corta al tobillo',
     escenaC:
-      'close-up de las Play bajas rojas: textura del caucho, tobillo, suela plana Hunter',
+      'close-up calle mojada/lluvia ligera: textura del caucho rojo, caña corta al tobillo, suela plataforma plana en piso mojado; sin rediseñar la silueta Play',
   },
   {
     n: 10,

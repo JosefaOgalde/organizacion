@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Tendencias · Comida Chile · Herramientas</title>
   <link rel="stylesheet" href="../../assets/portal.css">
-  <link rel="stylesheet" href="../../assets/tendencias-feed.css">
+  <link rel="stylesheet" href="../../assets/tendencias-feed.css?v=20260721c">
 </head>
 <body class="portal-page--light" data-cliente-slug="herramientas" data-proyecto-codigo="TEND">
   <header class="portal-header portal-header--themed">
@@ -18,11 +21,54 @@
     <p>Brief del proyecto y buscador de tendencias virales en Chile</p>
   </header>
   <main class="portal-main" id="tendencias-root" aria-live="polite"></main>
+  <script>
+    /* Parche anti-caché: fecha Feed = hoy + limpiar período Hoy / cache viejo */
+    (function () {
+      function hoyIso() {
+        var d = new Date();
+        var m = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        return d.getFullYear() + '-' + m + '-' + day;
+      }
+      function hoyLabel() {
+        try {
+          return new Date(hoyIso() + 'T12:00:00').toLocaleDateString('es-CL', { dateStyle: 'medium' });
+        } catch (e) {
+          return hoyIso();
+        }
+      }
+      try {
+        localStorage.removeItem('tendencias-comida-chile-cache-v4');
+        localStorage.removeItem('tendencias-comida-chile-cache-v3');
+        var p = localStorage.getItem('tendencias-periodo');
+        if (!p || p === 'hoy') localStorage.setItem('tendencias-periodo', 'todas');
+      } catch (e) { /* ignore */ }
+
+      function stampFeed() {
+        var label = 'Feed: ' + hoyLabel();
+        var iso = hoyIso();
+        document.querySelectorAll('#tend-feed-fecha, time').forEach(function (el) {
+          var t = (el.textContent || '').trim();
+          if (el.id === 'tend-feed-fecha' || t.indexOf('Feed:') === 0) {
+            el.setAttribute('datetime', iso);
+            if (t !== label) el.textContent = label;
+          }
+        });
+      }
+      var obs = new MutationObserver(stampFeed);
+      if (document.documentElement) {
+        obs.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+      }
+      setInterval(stampFeed, 400);
+      document.addEventListener('DOMContentLoaded', stampFeed);
+    })();
+  </script>
   <script src="../../assets/file-protocol-banner.js"></script>
   <script src="../../assets/clientes-data.js"></script>
   <script src="../../assets/portal-theme.js"></script>
   <script src="../../assets/portal-theme-auto.js"></script>
   <script src="../../assets/herramientas-proyectos-data.js"></script>
-  <script src="../../assets/tendencias-portal.js?v=feed13"></script>
+  <!-- Nombre nuevo = rompe caché del navegador (ya no tendencias-portal.js) -->
+  <script src="../../assets/tendencias-buscador.js?v=20260721c"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "actualizado": "2026-07-01T16:52:49-0400",
+  "actualizado": "2026-07-21T17:04:41-0400",
   "nicho": "recetas-comida-chile",
   "region": "Chile",
   "plataformas": [
@@ -11,6 +11,207 @@
   ],
   "resumen": "Una fila por tendencia; publicadoEn indica redes y, si la nota lo enlaza, url de la publicación.",
   "tendencias": [
+    {
+      "id": "completo-reaccion-mexicano",
+      "titulo": "Completo italiano bajo fuego (reacción viral)",
+      "formato": "Debate · street food Chile",
+      "fechaFuente": "2026-07-15",
+      "publicadoEn": [
+        {
+          "red": "instagram",
+          "detalle": "Reel de @Soyelarturito (BioBio)"
+        },
+        {
+          "red": "tiktok",
+          "detalle": "Reacciones y duelos en TikTok"
+        }
+      ],
+      "kpis": {
+        "vistas": "Debate masivo en redes (BioBio)",
+        "engagement": "9.0%",
+        "crecimiento": "+250%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#completo",
+        "#completoitiano",
+        "#chilefood",
+        "#debate",
+        "#foodtok",
+        "#mayonesa"
+      ],
+      "ingredientes": [
+        "Pan de completo",
+        "Vienesa",
+        "Palta",
+        "Tomate",
+        "Mayonesa",
+        "Chucrut (clásico)"
+      ],
+      "resumenReceta": "Influencer mexicano @Soyelarturito prueba completo italiano y tradicional en Santiago; critica la mayonesa y dispara ola de reacciones en Instagram/TikTok.",
+      "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2026/07/15/influencer-mexicano-tilda-de-grotesco-al-completo-me-dieron-ganas-de-vomitar.shtml",
+      "prioridad": 4
+    },
+    {
+      "id": "cuchupleto-completo-invierno",
+      "titulo": "Cuchupleto / completo de invierno",
+      "formato": "Dulce viral · cuchuflí + chocolate",
+      "fechaFuente": "2026-07-10",
+      "publicadoEn": [
+        {
+          "red": "tiktok",
+          "detalle": "Video de @vanjo.ss (TVN)"
+        },
+        {
+          "red": "instagram",
+          "detalle": "Circulación en Instagram (TVN)"
+        }
+      ],
+      "kpis": {
+        "vistas": "Alta circulación en redes (TVN)",
+        "engagement": "Alto share",
+        "crecimiento": "+220%",
+        "senal": "muy-alto"
+      },
+      "hashtags": [
+        "#cuchupleto",
+        "#completodinvierno",
+        "#foodtok",
+        "#recetaviral",
+        "#chile",
+        "#cuchufli"
+      ],
+      "ingredientes": [
+        "Chocolate para cubrir",
+        "Cuchuflí",
+        "Relleno tipo helado de invierno",
+        "Decoración a gusto"
+      ],
+      "resumenReceta": "Versión dulce del completo: cubierta de chocolate (estilo helado de invierno) y cuchuflí crujiente adentro. Viral de @vanjo.ss; la gente lo bautizó cuchupleto.",
+      "fuente": "https://www.tvn.cl/noticias/tendencias/completo-de-invierno-o-cuchupleto-el-creativo-dulce-redes-sociales",
+      "prioridad": 1
+    },
+    {
+      "id": "sopaipilla-dia-nacional-2026",
+      "titulo": "Sopaipillas del Día Nacional (con zapallo)",
+      "formato": "Clásico invierno · 10 julio",
+      "fechaFuente": "2026-07-10",
+      "publicadoEn": [
+        {
+          "red": "tiktok",
+          "detalle": "Tutoriales del día (ADN)"
+        },
+        {
+          "red": "instagram",
+          "detalle": "Reels de sopaipillas (ADN)"
+        }
+      ],
+      "kpis": {
+        "vistas": "Cobertura masiva 10 julio",
+        "engagement": "7.5%",
+        "crecimiento": "+180%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#sopaipilla",
+        "#diadelasopaipilla",
+        "#invierno",
+        "#recetachilena",
+        "#pebre",
+        "#foodtok"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Zapallo cocido molido",
+        "Manteca o margarina",
+        "Sal",
+        "Agua tibia",
+        "Aceite para freír"
+      ],
+      "resumenReceta": "Ola de recetas por el Día de la Sopaipilla: masa con zapallo, reposo, freír doradas; servir con pebre, mostaza o pasadas en chancaca.",
+      "fuente": "https://www.adnradio.cl/2026/07/10/dia-de-la-sopaipilla-en-chile-por-que-se-celebra-hoy-y-como-preparar-la-receta-tradicional/",
+      "prioridad": 2
+    },
+    {
+      "id": "sopaipilla-con-sin-zapallo",
+      "titulo": "Sopaipilla con vs sin zapallo (debate)",
+      "formato": "Comparativa · centro vs sur",
+      "fechaFuente": "2026-07-10",
+      "publicadoEn": [
+        {
+          "red": "instagram",
+          "detalle": "Comparativa en Reels / notas"
+        },
+        {
+          "red": "tiktok",
+          "detalle": "Debate centro vs sur"
+        }
+      ],
+      "kpis": {
+        "vistas": "Debate regional en redes",
+        "engagement": "8.0%",
+        "crecimiento": "+160%",
+        "senal": "alto"
+      },
+      "hashtags": [
+        "#sopaipilla",
+        "#conzapallo",
+        "#sinzapallo",
+        "#debate",
+        "#recetachilena",
+        "#foodtok"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Zapallo camote (versión centro)",
+        "Manteca",
+        "Polvos de hornear",
+        "Aceite"
+      ],
+      "resumenReceta": "Publimetro enfrenta la versión central (con zapallo, redonda) y la sureña (sin zapallo, rectangular). Ideal para contenido de debate en redes.",
+      "fuente": "https://www.publimetro.cl/estilo-vida/2026/07/10/feliz-dia-de-la-sopaipilla-te-dejamos-dos-recetas-con-y-sin-zapallo-cual-prefieres/",
+      "prioridad": 3
+    },
+    {
+      "id": "sopaipilla-secretos-ia",
+      "titulo": "Sopaipillas crujientes: tip temperatura aceite",
+      "formato": "Tip técnico · invierno",
+      "fechaFuente": "2026-07-10",
+      "publicadoEn": [
+        {
+          "red": "instagram",
+          "detalle": "Tips compartidos en Stories/Reels"
+        },
+        {
+          "red": "tiktok",
+          "detalle": "Clips de fritura y temperatura"
+        }
+      ],
+      "kpis": {
+        "vistas": "Nota + share en redes",
+        "engagement": "6.8%",
+        "crecimiento": "+120%",
+        "senal": "medio-alto"
+      },
+      "hashtags": [
+        "#sopaipilla",
+        "#tipsdecocina",
+        "#invierno",
+        "#recetachilena",
+        "#foodtok"
+      ],
+      "ingredientes": [
+        "Harina",
+        "Zapallo cocido",
+        "Sal",
+        "Polvos de hornear",
+        "Manteca",
+        "Aceite 170–180 °C"
+      ],
+      "resumenReceta": "Guía viral del Día de la Sopaipilla: reposo 15–20 min y aceite a 170–180 °C para que queden doradas por fuera y esponjosas por dentro.",
+      "fuente": "https://www.radioagricultura.cl/tendencias/dia-de-la-sopaipilla-la-ia-revela-los-secretos-para-que-queden-crujientes-por-fuera-y-esponjosas-por-dentro_20260710/",
+      "prioridad": 5
+    },
     {
       "id": "churrascas-sarten",
       "titulo": "Churrascas chilenas al sartén",
@@ -49,7 +250,7 @@
       ],
       "resumenReceta": "Pan chileno sin leudar en sartén; receta de Camila (Canal 13) replicada en TikTok e Instagram.",
       "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/27/receta-de-churrascas-chilenas-asi-de-facil-rapido-y-economico-puedes-preparar-este-pan-al-sarten/",
-      "prioridad": 22
+      "prioridad": 27
     },
     {
       "id": "recetario-caro-rocco-invierno",
@@ -85,7 +286,7 @@
       ],
       "resumenReceta": "Calzones rotos y picarones reinterpretados con Daily; campaña en Reels de Caro Rocco.",
       "fuente": "https://reportediario.cl/2026/06/26/chef-caro-rocco-y-noni-lanzan-recetario-de-invierno-recetas-tradicionales-para-disfrutar-sin-culpa/",
-      "prioridad": 21
+      "prioridad": 26
     },
     {
       "id": "cordero-miel-pastelera",
@@ -121,7 +322,7 @@
       ],
       "resumenReceta": "Cordero macerado y glaseado con miel al horno; segmento Yo Invito.",
       "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-cordero-a-la-miel-con-pastelera.shtml",
-      "prioridad": 19
+      "prioridad": 24
     },
     {
       "id": "suprema-rellena-papas",
@@ -157,7 +358,7 @@
       ],
       "resumenReceta": "Pollo relleno con papas gratinadas; segmento Yo Invito del chef Enrique Araya.",
       "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/25/yo-invito-una-suprema-de-ave-rellena-con-papas-gratinadas.shtml",
-      "prioridad": 20
+      "prioridad": 25
     },
     {
       "id": "ceviche-camarones-cochayuyo",
@@ -193,7 +394,7 @@
       ],
       "resumenReceta": "Ceviche con algas chilenas y camarones; segmento Yo Invito de BioBioTV.",
       "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-entretenido-ceviche-de-camarones-y-cochayuyo.shtml",
-      "prioridad": 17
+      "prioridad": 22
     },
     {
       "id": "espagueti-mariscos-merken",
@@ -229,7 +430,7 @@
       ],
       "resumenReceta": "Pasta con mariscos salteados y merkén; segmento Yo Invito del chef Enrique Araya.",
       "fuente": "https://www.biobiochile.cl/biobiotv/programas/yo-invito/2026/06/16/yo-invito-un-rico-espagueti-de-colores-con-mariscos-al-ajillo.shtml",
-      "prioridad": 18
+      "prioridad": 23
     },
     {
       "id": "pan-amasado-barrientos",
@@ -260,7 +461,7 @@
       ],
       "resumenReceta": "Pan amasado dorado por fuera y blando por dentro; receta del chef publicada en En Cancha.",
       "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/13/receta-facil-de-pan-amasado-por-el-chef-alvaro-barrientos-rapido-y-para-el-mejor-desayuno/",
-      "prioridad": 16
+      "prioridad": 21
     },
     {
       "id": "queque-vainilla-barrientos",
@@ -292,7 +493,7 @@
       ],
       "resumenReceta": "Bizcocho húmedo con medición en gramos; receta del chef Álvaro Barrientos publicada en En Cancha.",
       "fuente": "https://www.encancha.cl/enlahora/bienestar/2026/06/09/receta-de-queque-casero-de-vainilla-al-estilo-del-chef-alvaro-barrientos-facil-muy-rapido-y-economico/",
-      "prioridad": 15
+      "prioridad": 20
     },
     {
       "id": "duelo-sanguches-barrientos",
@@ -333,7 +534,7 @@
       ],
       "resumenReceta": "Chef peruano enfrentó completo italiano con lomo saltado en Instagram; Álvaro Barrientos respondió desde YouTube.",
       "fuente": "https://reportediario.cl/2026/06/03/alvaro-barrientos-responde-a-chef-peruano-por-viral-duelo-de-sanguches/",
-      "prioridad": 13
+      "prioridad": 18
     },
     {
       "id": "torta-arroz-huevo",
@@ -343,8 +544,7 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Video en TikTok — 157K+ likes (BioBio)",
-          "url": "https://www.tiktok.com/@gabogutierrezefe/video/7645365838530284821"
+          "detalle": "Video en TikTok — 157K+ likes (BioBio)"
         },
         {
           "red": "instagram",
@@ -375,7 +575,7 @@
       ],
       "resumenReceta": "Capas de arroz, mayonesa, tomate y vienesa terminadas con huevos fritos; viral tras la torta de completos del mismo influencer.",
       "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2026/06/03/de-la-torta-de-completo-a-la-de-arroz-con-huevo-y-tomate-influencer-la-rompe-con-preparacion.shtml",
-      "prioridad": 14
+      "prioridad": 19
     },
     {
       "id": "completo-italiano-fit",
@@ -416,7 +616,7 @@
       ],
       "resumenReceta": "Versión baja en calorías del completo italiano con vienesa de pollo y mayonesa fit sin aceite; viral de Sweet Fran.",
       "fuente": "https://reportediario.cl/2026/05/22/completo-italiano-fit-la-receta-viral-de-apenas-342-calorias/",
-      "prioridad": 11
+      "prioridad": 16
     },
     {
       "id": "torta-completo-gabo",
@@ -430,8 +630,7 @@
         },
         {
           "red": "instagram",
-          "detalle": "Publicación en Instagram (TVN)",
-          "url": "https://www.instagram.com/p/DYicoomGk4U"
+          "detalle": "Publicación en Instagram (TVN)"
         }
       ],
       "kpis": {
@@ -458,7 +657,7 @@
       ],
       "resumenReceta": "Capas de pan, vienesa, palta y tomate en forma de torta; viral en redes del influencer Gabo Gutiérrez.",
       "fuente": "https://www.tvn.cl/noticias/tendencias/influencer-crea-torta-de-completo-y-desata-polemica-en-redes-sociales",
-      "prioridad": 12
+      "prioridad": 17
     },
     {
       "id": "sopaipleto-osorno",
@@ -488,7 +687,7 @@
       ],
       "resumenReceta": "Fusión completo y sopaipilla del local El Pato en Barrio Lynch; nota de Radio Bío Bío sin video viral en redes.",
       "fuente": "https://www.biobiochile.cl/noticias/sociedad/historia/2026/04/14/sopaipleto-la-innovacion-culinaria-que-revoluciona-osorno-lo-hice-para-la-juventud.shtml",
-      "prioridad": 10
+      "prioridad": 15
     },
     {
       "id": "pebre-origen-debate",
@@ -498,8 +697,7 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Debate viral en TikTok (BioBio)",
-          "url": "https://www.tiktok.com/@nutri.rixi.25/video/7584864842205367574"
+          "detalle": "Debate viral en TikTok (BioBio)"
         }
       ],
       "kpis": {
@@ -526,7 +724,7 @@
       ],
       "resumenReceta": "Influencer español atribuye raíz catalana al pebre; estallido de comentarios en TikTok.",
       "fuente": "https://www.biobiochile.cl/noticias/sociedad/debate/2026/01/07/origen-del-pebre-influencer-asegura-que-es-una-mezcla-de-chile-y-espana-y-redes-estallan.shtml",
-      "prioridad": 24
+      "prioridad": 29
     },
     {
       "id": "pastel-choclo-merengue",
@@ -536,8 +734,7 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Viral @gallardo_martin en TikTok (24 Horas)",
-          "url": "https://www.tiktok.com/@gallardoo_martin/video/7550497757115518214"
+          "detalle": "Viral @gallardo_martin en TikTok (24 Horas)"
         }
       ],
       "kpis": {
@@ -563,7 +760,7 @@
       ],
       "resumenReceta": "Tiktoker de Osorno viraliza pastel de choclo dulce con merengue; debate sur vs. centro en comentarios.",
       "fuente": "https://www.24horas.cl/tendencias/redes-sociales/tiktoker-pastel-choclo-merengue-debate",
-      "prioridad": 9
+      "prioridad": 14
     },
     {
       "id": "empanada-chilezolana",
@@ -573,8 +770,7 @@
       "publicadoEn": [
         {
           "red": "instagram",
-          "detalle": "Serie viral en Instagram (24 Horas)",
-          "url": "https://www.instagram.com/reel/DOMRFUCjpe7"
+          "detalle": "Serie viral en Instagram (24 Horas)"
         }
       ],
       "kpis": {
@@ -599,7 +795,7 @@
       ],
       "resumenReceta": "Masa venezolana con pino chileno lanzada para Fiestas Patrias; más de 100 mil views en Instagram del local Rincón Venezolano.",
       "fuente": "https://www.24horas.cl/tendencias/redes-sociales/empanada-chilezolana-fusion-gastronomica-debate-redes-sociales",
-      "prioridad": 6
+      "prioridad": 11
     },
     {
       "id": "empanada-airfryer",
@@ -640,7 +836,7 @@
       ],
       "resumenReceta": "Empanadas crujientes en freidora de aire; receta compartida en redes de cocina chilena.",
       "fuente": "https://reportediario.cl/2025/09/08/empanadas-de-pino-crujientes-en-freidora-de-aire-un-clasico-chileno-reinventado/",
-      "prioridad": 8
+      "prioridad": 13
     },
     {
       "id": "marraqueta-palta-mundial",
@@ -683,7 +879,7 @@
       ],
       "resumenReceta": "Desayuno chileno impulsado por el Mundial de Ibai; votaciones en Instagram, YouTube y TikTok.",
       "fuente": "https://reportediario.cl/2025/09/03/marraqueta-y-palta-el-desayuno-campeon-de-chile-en-el-mundial-de-ibai/",
-      "prioridad": 7
+      "prioridad": 12
     },
     {
       "id": "arepa-pino-fusion",
@@ -723,7 +919,7 @@
       ],
       "resumenReceta": "Arepa venezolana rellena con pino chileno; viral previo al 18 con opiniones divididas en TikTok e Instagram.",
       "fuente": "https://www.biobiochile.cl/noticias/sociedad/curiosidades/2025/08/22/fusion-venezolana-chilena-de-cara-al-18-arepas-con-pino-desatan-opiniones-mixtas-en-redes-sociales.shtml",
-      "prioridad": 5
+      "prioridad": 10
     },
     {
       "id": "pistacho-cultivo-chile",
@@ -753,7 +949,7 @@
       ],
       "resumenReceta": "Demanda por pistacho tras el viral del chocolate Dubai; noticia de ingrediente, sin video en redes.",
       "fuente": "https://www.sancarlosonline.cl/2025/07/fiebre-por-el-chocolate-de-dubai.html",
-      "prioridad": 25
+      "prioridad": 30
     },
     {
       "id": "chocolate-dubai-suk-ohzom",
@@ -793,7 +989,7 @@
       ],
       "resumenReceta": "Barra de chocolate rellena con masa knafe crujiente y crema de pistacho; SUK reportó alza de ventas de masa filo tras el viral en TikTok e Instagram.",
       "fuente": "https://ohzom.cl/2025/05/23/de-tiktok-al-supermercado-la-extrana-receta-que-esta-agotando-al-chocolate-dubai-en-tiempo-record/",
-      "prioridad": 1
+      "prioridad": 6
     },
     {
       "id": "carbonada-invierno",
@@ -825,7 +1021,7 @@
       ],
       "resumenReceta": "Caldo con carne y verduras de estación; receta de invierno publicada en En Cancha.",
       "fuente": "https://www.encancha.cl/enlahora/bienestar/2025/05/18/receta-de-carbonada-chilena-este-plato-es-ideal-para-dias-de-bajas-temperaturas/",
-      "prioridad": 23
+      "prioridad": 28
     },
     {
       "id": "golden-cheese-burger",
@@ -866,7 +1062,7 @@
       ],
       "resumenReceta": "Smash burger con carne molida, longaniza y doble capa de queso fundido; viral por textura crujiente en redes.",
       "fuente": "https://www.24horas.cl/tendencias/recetas/dia-de-la-hamburguesa-como-hacer-en-casa-la-viralizada-golden-cheese-burger",
-      "prioridad": 4
+      "prioridad": 9
     },
     {
       "id": "chocolate-dubai-sabes",
@@ -902,7 +1098,7 @@
       ],
       "resumenReceta": "Guía chilena para replicar el viral con pistacho, fideos de arroz dorados y chocolate; alternativa comprar en Delart.",
       "fuente": "https://sabes.cl/2025/04/11/comprar-revisa-conseguir-chile-chocolate-dubai-hizo-viral-tik-tok/",
-      "prioridad": 2
+      "prioridad": 7
     },
     {
       "id": "chocolate-dubai-biobio",
@@ -912,8 +1108,7 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Video referencia Maria Vehera (BioBio)",
-          "url": "https://www.tiktok.com/@mariavehera257/video/7313986849104481538"
+          "detalle": "Video referencia Maria Vehera (BioBio)"
         }
       ],
       "kpis": {
@@ -939,7 +1134,7 @@
       ],
       "resumenReceta": "Noticia que introduce el dulce viral; cita video de Maria Vehera en TikTok (120M+ vistas).",
       "fuente": "https://www.biobiochile.cl/noticias/sociedad/viral/2025/03/21/que-es-el-chocolate-de-dubai-el-dulce-mas-extravagante-y-viral-del-momento-en-redes-sociales.shtml",
-      "prioridad": 26
+      "prioridad": 31
     },
     {
       "id": "cheesecake-yogur-japones",
@@ -949,13 +1144,11 @@
       "publicadoEn": [
         {
           "red": "tiktok",
-          "detalle": "Viral en TikTok (24 Horas)",
-          "url": "https://www.tiktok.com/@fevalenzuela__/video/7600127874846215445"
+          "detalle": "Viral en TikTok (24 Horas)"
         },
         {
           "red": "instagram",
-          "detalle": "Reels en Instagram (24 Horas)",
-          "url": "https://www.instagram.com/reel/DT761nmiAqZ"
+          "detalle": "Reels en Instagram (24 Horas)"
         }
       ],
       "kpis": {
@@ -979,7 +1172,7 @@
       ],
       "resumenReceta": "Yogur y galletas reposadas en frío; versión chilena del viral japonés adaptada en TikTok con galletas locales.",
       "fuente": "https://www.24horas.cl/tendencias/redes-sociales/la-receta-japonesa-que-se-tomo-las-redes-sociales-rapida-y-sencilla",
-      "prioridad": 3
+      "prioridad": 8
     }
   ]
 }

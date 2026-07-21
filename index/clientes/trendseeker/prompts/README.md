@@ -17,6 +17,7 @@ No confundir con ECR: las portadas de newsletter ECR van en Midjourney (`index/c
 ## Archivos
 - `PROMPT-botas-rojas-lluvia.txt` — Hunter rojas, lluvia, jeans dentro, sin piel visible (video).
 - `PROMPT-c08-chelsea-commando-negras-mujer-{A,B,C}.txt` — C8/12 Chelsea Commando negras: día de invierno con lluvia, producto héroe (video Gemini).
+- `PROMPT-c09-play-bajas-rojo-mujer-{A,B,C,D}.txt` — C9/12 Play bajas rojo: A tracking día · B umbral · C splash slow-mo · D cenital (escenas bien distintas).
 - `indice.json` — índice visible en la landing del cliente.
 
 ## Copys de video
