@@ -221,15 +221,15 @@
   },
   "proteccionDatos": {
     "titulo": "DIAGNÓSTICO UX / UI",
-    "subtitulo": "MARCO NORMATIVO · ANTES DE CONCLUSIÓN",
+    "subtitulo": "RECOMENDACIÓN · MARCO NORMATIVO · ANTES DE CONCLUSIÓN",
     "ley": "Ley 21.719",
     "vigencia": "1 de diciembre de 2026",
+    "enfoque": "Recomendación: empezar a implementar con anticipación",
     "cuerpo": [
-      "En Chile se implementa la Ley 21.719 de protección y tratamiento de datos personales (vigencia plena desde el 1 de diciembre de 2026).",
-      "Crea la Agencia de Protección de Datos y eleva el estándar de consentimiento, información y seguridad.",
+      "En Chile se implementa la Ley 21.719 de protección y tratamiento de datos personales (vigencia plena desde el 1 de diciembre de 2026). Crea la Agencia de Protección de Datos y eleva el estándar de consentimiento, información y seguridad.",
       "En clínica, el sitio y la agenda tratan datos sensibles (RUT, salud, contacto): hay que revisar bases de tratamiento, avisos y consentimiento en formularios de reserva.",
-      "Cookies, pixels y formularios web deben transparentar el uso de datos y facilitar derechos del titular.",
-      "Incluir este marco en el rediseño UX/UI antes de la conclusión del plan digital."
+      "Cookies, pixels y formularios web deben transparentar el uso de datos y facilitar derechos del titular (acceso, rectificación, eliminación, oposición).",
+      "Recomendación: no esperar a diciembre. Empezar ya en el rediseño UX/UI —avisos, consentimientos y reserva— para llegar con anticipación, confianza y cumplimiento."
     ]
   },
   "oportunidades": {

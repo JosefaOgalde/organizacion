@@ -55,8 +55,11 @@ Bloque en home · horas antes · RUT/captcha tarde · convenio suave · formular
 02 Acortar «Ya estamos casi listos» — sin reingresar email; solo lo necesario.
 03 Avisos Ley 21.719 — consentimiento claro en datos de salud.
 
-## 08 Ley 21.719
-Vigencia 1 dic 2026 · datos sensibles en agenda · incluir antes de conclusión
+## 08 Ley 21.719 · Recomendación
+Empezar a implementar con anticipación (vigencia 1 dic 2026).
+→ Revisar avisos y consentimiento en reserva (datos sensibles).
+→ Transparentar cookies/pixels y derechos del titular.
+→ No esperar a diciembre: incluirlo ya en el rediseño UX/UI.
 
 ## 09 Oportunidades
 01 Reserva más corta · 02 Reserva a la vista · 03 Cierre sin fricción
