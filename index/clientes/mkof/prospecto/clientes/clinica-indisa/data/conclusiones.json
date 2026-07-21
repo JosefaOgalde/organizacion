@@ -1,48 +1,49 @@
 {
   "titulo": "CONCLUSIONES",
   "fecha": "2026-07-21",
-  "foco": "RRSS orgánicas · fusión estado Indisa + oportunidades competencia + matriz",
+  "foco": "Redes orgánicas · estado Indisa + lo que hace bien la competencia",
+  "tono": "Lenguaje claro, sin siglas. Números solo cuando aportan.",
   "cuadrantes": [
     {
       "id": "tl",
-      "titulo": "Fortalezas Indisa",
+      "titulo": "Lo que Indisa ya tiene a favor",
       "bullets": [
-        "Base IG sólida: 43,7 mil en el pelotón medio del quinteto",
-        "Feed activo y tono de marca claro (“Estamos Para Tu Cuidado”)",
-        "Liderazgo YouTube del benchmark (25 mil) — cantera de video y audio"
+        "Casi 44 mil seguidores en Instagram: está en el grupo medio de las clínicas comparadas",
+        "Publica con constancia y un tono de marca claro (“Estamos Para Tu Cuidado”)",
+        "Lidera en YouTube (25 mil suscriptores): buen material para reutilizar en videos cortos"
       ]
     },
     {
       "id": "tr",
-      "titulo": "Gaps vs competencia",
+      "titulo": "Dónde la competencia va más adelante",
       "bullets": [
-        "IG ER 0,11%: último del quinteto (CLC 0,99%)",
-        "Sin Spotify institucional; Alemana ya opera audio (476 seg. · 11 listas)",
-        "Sin TikTok (“no publica”) mientras Dávila lidera 68 mil / 6% ER"
+        "En Instagram, Indisa genera poca conversación (0,11%) frente a Las Condes (casi 1%)",
+        "No aparece en Spotify; Clínica Alemana ya acompaña con podcasts y listas de audio",
+        "No publica en TikTok; Red Dávila sí y concentra mucha atención ahí"
       ]
     },
     {
       "id": "bl",
-      "titulo": "Riesgos de comunicación",
+      "titulo": "Riesgos si no se ajusta el rumbo",
       "bullets": [
-        "Publicar mucho en IG sin KPI de engagement",
-        "Dejar audio/Spotify solo en manos de la competencia",
-        "Perseguir solo seguidores puede bajar aún más el ER"
+        "Seguir publicando mucho sin mirar si la gente responde",
+        "Dejar el audio (Spotify) solo en manos de otras clínicas",
+        "Obsesionarse con sumar seguidores y bajar aún más la interacción"
       ]
     },
     {
       "id": "br",
-      "titulo": "Apuesta orgánica sugerida",
+      "titulo": "Qué conviene hacer",
       "bullets": [
-        "IG: meta 90 días ER hacia 0,4–0,7% (serie Reels + CTA)",
-        "Spotify: abrir perfil con 1–2 podcasts + playlists de acompañamiento",
-        "Medir IG N=9/mes; en Spotify, seguidores y plays de listas"
+        "En 90 días, subir la interacción en Instagram hacia 0,4–0,7% (serie de Reels + invitación a agendar)",
+        "Abrir Spotify con 1 o 2 podcasts y listas de acompañamiento (embarazo, salud mental, prevención)",
+        "Revisar cada mes una muestra corta de posts y, en Spotify, seguidores y escuchas"
       ]
     }
   ],
   "sintesisCentral": [
-    "Indisa está presente en Instagram; el problema es activación, no audiencia.",
-    "Alemana abre un frente que Indisa aún no usa: Spotify como acompañamiento en audio.",
-    "Priorizar ER en IG + lanzar audio orgánico; YouTube como cantera de piezas."
+    "Indisa ya está en Instagram; el desafío no es llegar a más gente, sino lograr que responda más.",
+    "Clínica Alemana muestra un camino que Indisa aún no usa: el acompañamiento en audio con Spotify.",
+    "Prioridad: más conversación en Instagram + audio orgánico; YouTube como reserva de contenidos."
   ]
 }

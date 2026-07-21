@@ -1,6 +1,6 @@
 # Instagram · textos para láminas Indisa
 
-Fuente: capturas 2026-07-20 · ER con **N=9** primeras posts entregados.
+Fuente: capturas 2026-07-20 · interacción con las primeras 9 publicaciones entregadas.
 Mockup celular: `mockup-perfil.html` → exportar PNG `mockup-perfil-indisa.png`
 
 ---
@@ -16,17 +16,17 @@ Mockup celular: `mockup-perfil.html` → exportar PNG `mockup-perfil-indisa.png`
 **FORMATOS**
 - Reels / clips con especialistas
 - Carruseles y posts estáticos educativos
-- Collabs con médicos (aparecen en feed)
-- CTAs de agenda / link in bio (Linktree)
+- Collabs con médicos
+- Invitaciones a agendar / link en la bio
 
 **TEMÁTICAS**
 - Educación en salud (procedimientos, síntomas, especialidades)
 - Cuerpo médico y confianza clínica
 - Campañas estacionales (invierno, vacunas, alergias)
-- Hitos / tecnología (resonador, sedes Providencia·Maipú)
+- Hitos / tecnología y sedes Providencia·Maipú
 
 **PERIODICIDAD**
-- **3 a 4 posts por semana** (muestra ER: 9 piezas entre 3 y 20 jul 2026)
+- **3 a 4 posts por semana** (9 piezas entre 3 y 20 jul 2026)
 - Frecuente — Consistente
 - Tono “Estamos Para Tu Cuidado”
 - Detalle: `data/ig-periodicidad-indisa.json`
@@ -37,10 +37,9 @@ Pegar screenshot / mockup de **perfil Instagram Indisa**:
 - Handle: `@clinicaindisacl`
 - 43,7 mil seguidores · 1.449 publicaciones
 - Archivo: `laminas/instagram/mockup-perfil-indisa.png`
-- Si prefieres captura real: abrir IG app → perfil → screenshot (sin barras de sistema si Canva lo pide)
 
 **Pie / nota opcional bajo el mockup:**  
-Estado actual · @clinicaindisacl · jul 2026 · ER 0,11% (N=9)
+Estado actual · @clinicaindisacl · jul 2026 · interacción 0,11%
 
 ---
 
@@ -48,47 +47,47 @@ Estado actual · @clinicaindisacl · jul 2026 · ER 0,11% (N=9)
 
 **Título:** OPORTUNIDADES EN RRSS ORGÁNICAS
 
-> Las oportunidades miran **lo que la competencia hace bien**, no solo el gap de Indisa.
+> Las oportunidades miran **lo que la competencia hace bien**, no solo lo que le falta a Indisa.
 
-### 01 · Subir engagement en Instagram (ruta CLC)
-**Barra:** CLC convierte mejor con ~45 mil seguidores  
-**Bullet:** Clínica Las Condes logra **0,99% ER** vs **0,11%** de Indisa con bases casi iguales. Activar la audiencia actual con Reels, ganchos y CTAs — sin esperar crecer seguidores primero.
+### 01 · Subir la conversación en Instagram (como Las Condes)
+**Barra:** Las Condes convierte mejor con ~45 mil seguidores  
+**Bullet:** Logra casi **1%** de interacción frente al **0,11%** de Indisa, con audiencias parecidas. Activar a quienes ya siguen, sin esperar crecer primero.
 
-### 02 · Abrir Spotify como canal de acompañamiento (modelo Alemana)
-**Barra:** Alemana ya opera audio orgánico  
-**Bullet:** Única del quinteto con Spotify institucional: **476 seguidores · 11 listas** (podcasts de especialistas + playlists embarazo/crianza, salud mental, prevención, deporte). Indisa sin evidencia de perfil → oportunidad de audio reutilizando voz médica de IG/YouTube.
+### 02 · Abrir Spotify como canal de acompañamiento (como Clínica Alemana)
+**Barra:** Clínica Alemana ya opera en audio  
+**Bullet:** Única del grupo con Spotify institucional: **476 seguidores · 11 listas** (podcasts y listas de embarazo, salud mental, prevención, deporte). Indisa no tiene perfil evidente → oportunidad de audio reutilizando la voz médica de Instagram y YouTube.
 
-### 03 · Sistematizar formatos que sí engagan (SM / Dávila)
-**Barra:** Santa María y Dávila demuestran piezas de alto alcance  
-**Bullet:** SM **0,73%** y Dávila **0,45%** con reels de casos/especialidad. Empaquetar collabs médicos Indisa como serie medible, no posts sueltos.
+### 03 · Sistematizar formatos que enganchan (Santa María y Red Dávila)
+**Barra:** Santa María y Red Dávila demuestran piezas de alto alcance  
+**Bullet:** Con **0,73%** y **0,45%** de interacción usando reels de casos y especialidad. Empaquetar los collabs médicos de Indisa como serie medible, no posts sueltos.
 
 ---
 
-## 04 · CONCLUSIONES (fusión estado + oportunidades + matriz)
+## 04 · CONCLUSIONES
 
 **Centro:** CONCLUSIONES
 
-### Fortalezas Indisa (arriba izq.)
-- Base IG sólida: **43,7 mil** en el pelotón medio del quinteto
-- Feed activo y tono de marca claro (“Estamos Para Tu Cuidado”)
-- Liderazgo YouTube del benchmark (**25 mil**) — activo video transferable a Reels
+### Lo que Indisa ya tiene a favor
+- Casi **44 mil** seguidores en Instagram: grupo medio de las clínicas comparadas
+- Publica con constancia y tono claro (“Estamos Para Tu Cuidado”)
+- Lidera en YouTube (**25 mil**): buen material para reutilizar en videos cortos
 
-### Gaps vs competencia (arriba der.)
-- **ER 0,11%**: último del quinteto (CLC 0,99% · SM 0,73% · Dávila 0,45% · Alemana 0,13%)
-- Gap crítico vs CLC: misma escala, ~9× menos engagement relativo
-- Sin juego TikTok (“no publica”) mientras Dávila lidera 68 mil / 6% ER
+### Dónde la competencia va más adelante
+- En Instagram, poca conversación (**0,11%**) frente a Las Condes (casi **1%**)
+- No aparece en Spotify; Clínica Alemana ya acompaña con podcasts y listas
+- No publica en TikTok; Red Dávila sí y concentra mucha atención ahí
 
-### Riesgos de comunicación (abajo izq.)
-- Publicar mucho sin KPI de engagement → presencia sin conversación
-- Collabs médicos sin sistema de serie → picos aislados, no hábito de audiencia
-- Competir por seguidores (modelo Alemana) puede bajar aún más el ER
+### Riesgos si no se ajusta el rumbo
+- Publicar mucho sin mirar si la gente responde
+- Dejar el audio (Spotify) solo en manos de otras clínicas
+- Obsesionarse con sumar seguidores y bajar la interacción
 
-### Apuesta orgánica sugerida (abajo der.)
-- Objetivo IG: subir ER hacia banda **0,4–0,7%** (referencia Dávila/SM) en 90 días
-- Serie semanal Reels especialistas + 1 carrusel educativo + CTA agenda
-- Medir N=9 posts móviles cada mes con la misma fórmula del benchmark
+### Qué conviene hacer
+- En **90 días**, subir la interacción en Instagram hacia **0,4–0,7%** (Reels + invitación a agendar)
+- Abrir Spotify con 1 o 2 podcasts y listas de acompañamiento
+- Revisar cada mes una muestra corta de posts; en Spotify, seguidores y escuchas
 
-### Síntesis central (si Canva pide 2–3 líneas bajo el círculo)
-1. Indisa **está presente** en Instagram; el problema no es audiencia, es **activación**.
-2. La competencia muestra el camino: CLC (conversión), SM/Dávila (formatos que engagan), Alemana (escala sin obsesionarse).
-3. Conclusión: priorizar **engagement rate** y sistema de contenidos; usar YouTube como cantera de video corto.
+### En pocas palabras
+1. Indisa ya está en Instagram; el desafío es que respondan más, no solo llegar a más personas.
+2. Clínica Alemana muestra un camino que Indisa aún no usa: acompañar en audio con Spotify.
+3. Prioridad: más conversación en Instagram + audio orgánico; YouTube como reserva de contenidos.
