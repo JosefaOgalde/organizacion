@@ -83,9 +83,9 @@ Estado actual · @clinicaindisacl · jul 2026 · interacción 0,11%
 - No aprovechar YouTube —donde Indisa lidera— para alimentar videos cortos en Instagram
 
 ### Qué conviene hacer
-- En Instagram, priorizar piezas que generen conversación (Reels, ganchos claros, invitación a agendar), no solo publicar por publicar
-- Convertir los collabs con médicos en series recurrentes, para que el público sepa qué esperar cada semana
-- Cada mes mirar qué publicaciones funcionaron mejor y repetir esos formatos; dejar de insistir en lo que no responde
+- Priorizar contenidos que generen conversación, no solo publicar por publicar
+- Definir un objetivo claro por canal (informar, agendar o acompañar) y alinear el calendario a eso
+- Cada mes repetir los formatos que sí funcionaron y soltar los que no
 
 ### En pocas palabras
 1. Indisa ya está en Instagram; el desafío es que respondan más, no solo llegar a más personas.
