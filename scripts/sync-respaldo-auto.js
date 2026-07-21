@@ -89,7 +89,10 @@ function main() {
     const liveMtime = fs.statSync(LIVE).mtimeMs;
     const liveObj = leerJson(LIVE);
     const liveScore = liveObj ? marcaTiempo(liveObj, liveMtime) : 0;
-    if (mejor.mtime <= liveMtime && mejor.score <= liveScore) {
+    // La fecha del contenido determina cuál copia es más reciente. El mtime de
+    // un respaldo viejo puede cambiar al descargarlo o copiarlo y no debe
+    // permitir que reemplace un live con datos más nuevos.
+    if (mejor.score <= liveScore) {
       console.log('[sync] Live ya al día ←', path.basename(mejor.path));
       return;
     }
