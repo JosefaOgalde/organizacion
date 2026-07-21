@@ -162,6 +162,15 @@
     return d;
   }
 
+  /** YYYY-MM-DD del día actual (hora local) */
+  function hoyIsoLocal() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
   function inicioPeriodo(id) {
     const hoy = hoyLocal();
     if (id === 'hoy') return hoy;
