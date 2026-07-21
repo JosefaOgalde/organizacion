@@ -410,7 +410,18 @@
     const pe = fechaDesdeActual
       ? formatoFecha(fechaDesdeActual)
       : PERIODOS.find((p) => p.id === periodoActual)?.label || periodoActual;
-    return `<p class="tend-vacio">No hay tendencias con fecha de fuente el <strong>${escapeHtml(pe)}</strong>${plataformaActual !== 'todas' ? ` en <strong>${escapeHtml(pl)}</strong>` : ''}. Elige otra fecha, otro período o actualiza el feed.</p>`;
+    const atajos = `
+      <p class="tend-vacio__atajos">
+        <button type="button" class="portal-btn" data-periodo-rapido="quince">Quince días</button>
+        <button type="button" class="portal-btn" data-periodo-rapido="mes">Mes</button>
+        <button type="button" class="portal-btn" data-periodo-rapido="tres-meses">Tres meses</button>
+        <button type="button" class="portal-btn portal-btn--ghost" data-periodo-rapido="todas">Todas</button>
+      </p>`;
+    return `<div class="tend-vacio">
+      <p>No hay tendencias con fecha de fuente el <strong>${escapeHtml(pe)}</strong>${plataformaActual !== 'todas' ? ` en <strong>${escapeHtml(pl)}</strong>` : ''}.</p>
+      <p>Puedes cambiar el <strong>Período</strong> arriba (limpia la fecha manual) o usar un atajo:</p>
+      ${atajos}
+    </div>`;
   }
 
   function listaPlana(feed) {
@@ -680,8 +691,8 @@
           </span>
         </label>
         <label class="tend-filtro-label">
-          <span>Período</span>
-          <select id="tend-select-periodo" class="tend-select"${fechaDesdeActual ? ' disabled' : ''}>${optsPeriodo}</select>
+          <span>Período${fechaDesdeActual ? ' (elige uno y se limpia la fecha)' : ''}</span>
+          <select id="tend-select-periodo" class="tend-select">${optsPeriodo}</select>
         </label>
         <label class="tend-filtro-label">
           <span>Red social</span>
@@ -698,6 +709,12 @@
       </div>`;
   }
 
+  function bindAtajosPeriodo() {
+    root.querySelectorAll('[data-periodo-rapido]').forEach((btn) => {
+      btn.addEventListener('click', () => aplicarPeriodo(btn.getAttribute('data-periodo-rapido')));
+    });
+  }
+
   function actualizarContenido() {
     if (!feedActual) return;
     const filtrado = feedFiltrado(feedActual);
@@ -709,38 +726,42 @@
       const pl = plataformaActual !== 'todas' ? ` · ${PLATAFORMAS[plataformaActual].label}` : '';
       contador.textContent = `${total} tendencia${total === 1 ? '' : 's'} · ${etiquetaFiltroFecha()}${pl}`;
     }
+    bindAtajosPeriodo();
+  }
+
+  function aplicarPeriodo(id) {
+    if (!PERIODOS.some((p) => p.id === id)) return;
+    guardarFechaDesde('');
+    guardarPeriodo(id);
+    const inp = document.getElementById('tend-input-fecha-desde');
+    if (inp) inp.value = '';
+    const sel = document.getElementById('tend-select-periodo');
+    if (sel) {
+      sel.disabled = false;
+      sel.value = id;
+    }
+    // Re-render filtros para quitar el hint de fecha
+    if (feedActual) renderFeed(feedActual);
+    else actualizarContenido();
   }
 
   function bindSelectFiltros() {
     document.getElementById('tend-select-periodo')?.addEventListener('change', (e) => {
-      guardarFechaDesde('');
-      guardarPeriodo(e.target.value);
-      const inp = document.getElementById('tend-input-fecha-desde');
-      if (inp) inp.value = '';
-      e.target.disabled = false;
-      actualizarContenido();
+      aplicarPeriodo(e.target.value);
     });
     document.getElementById('tend-input-fecha-desde')?.addEventListener('change', (e) => {
       guardarFechaDesde(e.target.value || '');
-      const sel = document.getElementById('tend-select-periodo');
-      if (sel) sel.disabled = Boolean(fechaDesdeActual);
+      // Período sigue usable: al cambiarlo se limpia esta fecha
       actualizarContenido();
     });
     document.getElementById('tend-btn-limpiar-fecha')?.addEventListener('click', () => {
-      guardarFechaDesde('');
-      const inp = document.getElementById('tend-input-fecha-desde');
-      if (inp) inp.value = '';
-      const sel = document.getElementById('tend-select-periodo');
-      if (sel) {
-        sel.disabled = false;
-        sel.value = periodoActual || 'todas';
-      }
-      actualizarContenido();
+      aplicarPeriodo(periodoActual || 'mes');
     });
     document.getElementById('tend-select-plataforma')?.addEventListener('change', (e) => {
       guardarPlataforma(e.target.value);
       actualizarContenido();
     });
+    bindAtajosPeriodo();
   }
 
   function bindVistaToggle() {
