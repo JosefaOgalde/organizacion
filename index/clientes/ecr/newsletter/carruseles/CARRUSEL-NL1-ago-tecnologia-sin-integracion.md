@@ -28,9 +28,10 @@ El dato llega tarde, las alertas no tienen dueño
 y los equipos siguen coordinando por WhatsApp.
 
 ### Slide 4 — Retail / terreno
-**Título:** En el punto de venta se nota  
-**Cuerpo:** Campaña impecable en PowerPoint…  
-pero si el equipo no llega, la reposición falla o la alerta no se gestiona a tiempo, el impacto se diluye.
+**Texto (2–3 líneas, sin viñetas):**  
+En el punto de venta se nota.  
+La campaña puede estar impecable en el PowerPoint,  
+pero si el equipo no llega o la alerta no se gestiona a tiempo, el impacto se diluye.
 
 ### Slide 5 — Causa real
 **Título:** No es falta de digitalización  
