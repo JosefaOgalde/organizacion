@@ -108,6 +108,14 @@ if exist "data\organizacion-live.json" if exist "scripts\asegurar-ecr-ti-carruse
   echo  3d^) Asegurar ECR TI Carrusel #07...
   "%PHP_EXE%" scripts\asegurar-ecr-ti-carrusel.php
 )
+if exist "data\organizacion-live.json" if exist "scripts\finalizar-ts-c09.php" (
+  echo  3e^) Cerrar TS Contenido 9/12 ^(finalizado^)...
+  "%PHP_EXE%" scripts\finalizar-ts-c09.php
+)
+if exist "data\organizacion-live.json" if exist "scripts\finalizar-ts-c08.php" (
+  echo  3f^) Asegurar TS Contenido 8/12 cerrado...
+  "%PHP_EXE%" scripts\finalizar-ts-c08.php
+)
 
 REM Tras actualizar FrontendStaticController / web.php, reiniciar :8000
 REM (si ya corria, el proceso viejo puede servir 404 en carpetas como /index/clientes/)
