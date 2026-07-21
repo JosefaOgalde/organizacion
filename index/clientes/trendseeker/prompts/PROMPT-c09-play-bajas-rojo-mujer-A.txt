@@ -3,7 +3,7 @@ SKU: WFS2020RMA-LRD
 Link: https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/
 Público: MUJER (adulta)
 Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
-Diferenciador de esta versión: TRACKING LATERAL DE DÍA · calle post-lluvia · caminata entre charcos (NO festival noche, NO close-up macro, NO entrada a casa).
+Diferenciador: MONTAJE MULTI-TOMA (no un solo plano continuo). 1) modelo usándolas → 2) laterales → 3) frontales → 4) zoom a detalle. Cielo gris / overcast.
 
 CARACTERÍSTICAS (no inventar otras):
 - Hunter Play bajas para mujer en rojo (silueta dinámica, versión corta del ícono Original)
@@ -15,19 +15,31 @@ CARACTERÍSTICAS (no inventar otras):
 - Color rojo y acabado fieles a las fotos de producto adjuntas
 
 VESTUARIO / MODELO:
-- Mujer adulta, jeans claros o denim metidos DENTRO de las botas
+- Mujer adulta visible al inicio (cara puede verse breve; el protagonismo pasa al calzado)
+- Jeans o pantalón metidos DENTRO de las botas para que se vea la caña corta Play
 - Sin tipografía ni logos inventados fuera de los del producto real
 
 CÓMO USAR EN GEMINI (VIDEO):
 1) Modo VIDEO. 2) Fotos de producto primero. 3) Pega solo ESTE prompt.
 4) Si rediseña: “replica exacto las Play bajas rojo de las fotos”.
+5) Si sale una sola toma continua: reitera “montaje de varias tomas / cuts, no un solo plano”.
 
 ---
-VERSIÓN A — Tracking lateral · día post-lluvia (caminata)
+VERSIÓN A — Multi-toma · modelo + ángulos de producto · cielo gris
 ---
 
-Genera un VIDEO publicitario fotorrealista CORTO y DISTINTO. Referencia obligatoria: fotos adjuntas de Botas Play bajas rojo Hunter (caña corta al tobillo, suela plataforma plana). No rediseñes.
+Genera un VIDEO publicitario fotorrealista CORTO en MONTAJE DE VARIAS TOMAS (cuts), no un único traveling continuo. Usa las fotos de producto adjuntas como referencia obligatoria: Botas Play bajas rojo Hunter (caña corta al tobillo, suela plataforma plana, rojo exacto). No rediseñes.
 
-Escena ÚNICA de esta versión: de DÍA, cielo claro después de la lluvia. Calle de ciudad con charcos. Cámara en TRAVELING LATERAL a la altura del tobillo, siguiendo a una mujer que camina de izquierda a derecha rozando charcos (no salta, no baila). Ritmo calmado, luz natural diurna.
+Atmósfera: día nublado, CIELO GRIS / overcast suave, luz difusa (sin sol fuerte ni cielo azul brillante). Calle urbana con piso ligeramente húmedo o charcos bajos.
 
-Obligatorio: jeans metidos; Play rojas héroe del cuadro; reflejos diurnos en el agua; se ve la plataforma plana al pisar. Sin lluvia cayendo (solo piso mojado). Sin tipografía. Sin look de festival nocturno.
+SECUENCIA OBLIGATORIA (en este orden, con cortes claros entre tomas):
+
+1) MODELO USÁNDOLAS — Plano medio o tres cuartos: se ve a la mujer caminando o avanzando con las Play rojas puestas; outfit coherente; jeans metidos; se entiende que las lleva puestas en contexto real (2–3 segundos).
+
+2) TOMA LATERAL del calzado — Corte a ángulo lateral a la altura del tobillo: perfil de la caña corta y la suela plataforma plana mientras camina; product-first (2 segundos).
+
+3) TOMA FRONTAL del calzado — Corte a ángulo frontal bajo: ambas botas (o la delantera) avanzando hacia cámara; rojo fiel a las refs; piso húmedo (2 segundos).
+
+4) ZOOM / CLOSE-UP DE DETALLE — Corte a macro lento: textura del caucho rojo, borde de la caña al tobillo, o contacto de la suela plataforma plana con el piso; gotas o brillo húmedo que sugieren impermeabilidad (2 segundos).
+
+Reglas: cada toma distinta (lateral ≠ frontal ≠ detalle ≠ plano de modelo). Ritmo comercial con cortes limpios. Sin tipografía. Sin logos inventados. Sin un solo plano continuo de principio a fin.
