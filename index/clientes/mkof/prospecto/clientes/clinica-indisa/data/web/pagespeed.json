@@ -12,6 +12,12 @@
       "id": "s73sqtgrj5",
       "reporte": "2026-07-20T22:45:19",
       "sitioMedido": "https://www.clinicalascondes.cl/HOME"
+    },
+    "alemana": {
+      "url": "https://pagespeed.web.dev/analysis/https-www-clinicaalemana-cl/hirdgw5bs5?form_factor=mobile",
+      "id": "hirdgw5bs5",
+      "reporte": "2026-07-21T03:45:44",
+      "sitioMedido": "https://www.clinicaalemana.cl/"
     }
   },
   "fuentePrincipal": "https://pagespeed.web.dev/analysis/https-www-indisa-cl/ouu45jo4vc",
@@ -100,19 +106,90 @@
           "cls": "0.203"
         }
       }
+    },
+    "alemana": {
+      "nombre": "Clínica Alemana",
+      "url": "https://www.clinicaalemana.cl/",
+      "analisis": "https://pagespeed.web.dev/analysis/https-www-clinicaalemana-cl/hirdgw5bs5?form_factor=mobile",
+      "mobile": {
+        "campoCrUX": {
+          "scope": "This URL",
+          "coreWebVitals": "reprobado",
+          "motivoPrincipal": "La página salta mucho al cargar (CLS 0,92) y el contenido grande tarda 3,1 s",
+          "fcp": "2.4 s",
+          "lcp": "3.1 s",
+          "inp": "146 ms",
+          "cls": "0.92",
+          "ttfb": "1.5 s"
+        },
+        "laboratorio": {
+          "performanceScore": 53,
+          "fcp": "2.3 s",
+          "lcp": "5.5 s",
+          "tbt": "1,290 ms",
+          "si": "4.6 s",
+          "cls": "0"
+        }
+      },
+      "desktop": {
+        "campoCrUX": {
+          "coreWebVitals": "reprobado",
+          "motivoPrincipal": "Contenido grande 2,9 s y página que se mueve (CLS 0,17)",
+          "fcp": "2.2 s",
+          "lcp": "2.9 s",
+          "inp": "86 ms",
+          "cls": "0.17",
+          "ttfb": "1.3 s"
+        },
+        "laboratorio": {
+          "performanceScore": 58,
+          "fcp": "1.1 s",
+          "lcp": "1.8 s",
+          "tbt": "440 ms",
+          "si": "2.0 s",
+          "cls": "0.133"
+        }
+      }
     }
   },
   "lecturaEnSimple": [
-    "Indisa (usuarios reales móvil): carga bien — contenido grande 1,6 s · Core Web Vitals aprobado.",
-    "Indisa (prueba laboratorio móvil): muy lenta — contenido grande 32,3 s · nota 38/100.",
-    "Las Condes (usuarios reales móvil): Core Web Vitals reprobado porque la página 'salta' al cargar (CLS 0,44).",
-    "Las Condes (prueba laboratorio móvil): contenido grande 5,4 s · nota 64/100 — mejor que Indisa en laboratorio, peor en estabilidad visual.",
-    "Para Indisa: prioridad aligerar el home móvil (bajar esos 32 s). No copiar el problema de CLC (página que se mueve / pop-ups)."
+    "Indisa (usuarios reales móvil): carga bien — 1,6 s · Core Web Vitals aprobado.",
+    "Indisa (lab móvil): muy lenta — 32,3 s · nota 38/100.",
+    "Las Condes (usuarios reales móvil): CWV reprobado por página que salta (CLS 0,44) · lab 5,4 s · nota 64.",
+    "Alemana (usuarios reales móvil): CWV reprobado — contenido grande 3,1 s y CLS 0,92 (salta mucho) · lab 5,5 s · nota 53.",
+    "Alemana es buen referente de UX de reserva, pero no de velocidad: Indisa gana en experiencia real; Alemana/CLC fallan por inestabilidad visual."
   ],
   "competenciaLighthouseLocal": {
     "metodo": "npx lighthouse · benchmark local 2026-07-21 (secundario; preferir análisis oficiales PSI)",
-    "alemana": { "mobile": { "score": 14, "lcp": "7.7 s" }, "desktop": { "score": 57, "lcp": "2.0 s" } },
-    "davila": { "mobile": { "score": 53, "lcp": "3.0 s" }, "desktop": { "score": 51, "lcp": "2.3 s" } },
-    "santamaria": { "mobile": { "score": 44, "lcp": "7.8 s" }, "desktop": { "score": 84, "lcp": "1.8 s" } }
+    "alemana": {
+      "mobile": {
+        "score": 14,
+        "lcp": "7.7 s"
+      },
+      "desktop": {
+        "score": 57,
+        "lcp": "2.0 s"
+      }
+    },
+    "davila": {
+      "mobile": {
+        "score": 53,
+        "lcp": "3.0 s"
+      },
+      "desktop": {
+        "score": 51,
+        "lcp": "2.3 s"
+      }
+    },
+    "santamaria": {
+      "mobile": {
+        "score": 44,
+        "lcp": "7.8 s"
+      },
+      "desktop": {
+        "score": 84,
+        "lcp": "1.8 s"
+      }
+    }
   }
 }

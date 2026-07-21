@@ -558,6 +558,15 @@
       "dato": "Campo móvil CWV reprobado (CLS 0.44) LCP 1.8s · Lab móvil score 64 LCP 5.4s · Lab desktop score 40 LCP 6.4s",
       "fecha": "2026-07-20",
       "metodo": "URL oficial entregada por usuaria · reporte PSI s73sqtgrj5"
+    },
+    {
+      "id": "web-psi-alemana-hirdgw5bs5",
+      "tipo": "pagespeed",
+      "entidad": "Clínica Alemana",
+      "url": "https://pagespeed.web.dev/analysis/https-www-clinicaalemana-cl/hirdgw5bs5?form_factor=mobile",
+      "dato": "Campo móvil CWV reprobado (LCP 3.1s · CLS 0.92) · Lab móvil score 53 LCP 5.5s · Lab desktop score 58 LCP 1.8s",
+      "fecha": "2026-07-21",
+      "metodo": "URL oficial entregada por usuaria · reporte PSI hirdgw5bs5"
     }
   ],
   "canalesOficialesProspecto": {

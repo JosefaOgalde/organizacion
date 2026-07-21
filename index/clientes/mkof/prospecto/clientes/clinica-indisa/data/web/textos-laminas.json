@@ -30,7 +30,7 @@
   },
   "rendimiento": {
     "titulo": "DIAGNÓSTICO UX / UI",
-    "subtitulo": "RENDIMIENTO · INDISA VS LAS CONDES · PAGESPEED OFICIAL",
+    "subtitulo": "RENDIMIENTO · INDISA VS CLC VS ALEMANA · PAGESPEED OFICIAL",
     "indisa": {
       "notaLab": 38,
       "usuariosLcp": "1,6 s",
@@ -43,9 +43,17 @@
       "labLcp": "5,4 s",
       "cwv": "reprobado"
     },
+    "alemana": {
+      "notaLab": 53,
+      "usuariosLcp": "3,1 s",
+      "usuariosCls": "0,92",
+      "labLcp": "5,5 s",
+      "cwv": "reprobado"
+    },
     "fuentes": [
       "ouu45jo4vc",
-      "s73sqtgrj5"
+      "s73sqtgrj5",
+      "hirdgw5bs5"
     ]
   },
   "navegacion": {
