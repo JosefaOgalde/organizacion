@@ -16,9 +16,10 @@ Copy del post (pegar al publicar): ver `../copys/COPY-tecnologia-sin-integracion
 **Pie:** ¿Más tecnología… o mejores resultados?
 
 ### Slide 2 — El problema
-**Título:** Digitalizaron el reporte.  
-**Cuerpo:** No la decisión.  
-**Pie:** Más plataformas no siempre = mejor operación.
+**Texto (2–3 líneas, sin viñetas):**  
+Digitalizaron el reporte, no la decisión.  
+Más plataformas no siempre significa mejor operación.  
+El dato existe… pero no cambia el resultado.
 
 ### Slide 3 — La desconexión
 **Título:** El problema no es la herramienta  
