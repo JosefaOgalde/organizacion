@@ -153,23 +153,23 @@
     "slides": [
       {
         "id": "07a",
-        "titulo": "Contacto en mantención",
-        "captura": "indisa.cl hoy",
+        "titulo": "Contacto",
+        "captura": "footer indisa.cl · redes + datos de contacto",
         "items": [
           {
             "n": 1,
-            "titulo": "Dejar teléfonos a la vista",
-            "texto": "Urgencia y reservar hora visibles aunque esté en mantención."
+            "titulo": "Mantener el footer de contacto",
+            "texto": "Mesa central 2 2362 5555, reserva 2 2362 5400 y formulario ya están abajo. No sacarlos."
           },
           {
             "n": 2,
-            "titulo": "Agregar WhatsApp",
-            "texto": "Botón en la esquina para pedir hora sin esperar el sitio."
+            "titulo": "Repetir números arriba",
+            "texto": "Mesa y reserva también en el header o en el menú, para no obligar a bajar al footer."
           },
           {
             "n": 3,
-            "titulo": "No dejar solo las redes",
-            "texto": "RRSS no sirven para una urgencia."
+            "titulo": "Redes + Reservar a la vista",
+            "texto": "RRSS (FB, IG, X, YouTube, LinkedIn) en footer. CTA naranja Reservar hora fijo y visible."
           }
         ]
       },

@@ -40,8 +40,10 @@ Sí hay reserva. Frena: muchos pasos, captcha pronto, convenio a mitad, ficha fi
 ## 07 Recomendaciones (resumen)
 Bloque en home · horas antes · RUT/captcha tarde · convenio suave · formulario corto · CTA visible · re-medir mobile
 
-## 07a Inicio
-CTA visible · conservar «¿Qué necesitas agendar?» · sede temprana
+## 07a Contacto (capturas footer)
+01 Mantener footer: Mesa central 2 2362 5555 · Reserva 2 2362 5400 · Formulario.
+02 Repetir números arriba (header o menú).
+03 RRSS en footer (FB, IG, X, YouTube, LinkedIn) + CTA naranja Reservar hora fijo.
 
 ## 07b Frenos
 RUT/captcha más tarde · convenio sin callejón · menos pantallas hasta la hora
