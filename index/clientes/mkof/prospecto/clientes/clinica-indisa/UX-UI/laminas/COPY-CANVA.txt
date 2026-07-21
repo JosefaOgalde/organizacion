@@ -15,7 +15,8 @@ Usuarios reales 1,6 s (ok) · Lab 32,3 s (nota 38). Competencia lab 5–7 s.
 ## 04 Menú principal
 5 categorías en acordeón: Información paciente · Especialidades y Centros · Servicios y Hospitalización · Convenios y Alianzas · Nuestra Clínica.
 Header: Logo · Mi portal · Cerrar.
-Falta en el menú: Reservar hora · urgencia / teléfonos.
+Falta en el menú: Reservar hora.
+Teléfonos y RRSS: sí están en el footer (ver 04d).
 
 ## 04b Reservar hora (flujo)
 CTA naranja → tipo prestación → sede → RUT+previsión+captcha → especialidad → médico → convenio → agenda → formulario.
@@ -23,6 +24,11 @@ CTA naranja → tipo prestación → sede → RUT+previsión+captcha → especia
 ## 04c Especialidades · Buscador
 Hero con buscador («Escribe nombre de la especialidad…» + lupa). Listado A–Z debajo. CTA fijos: Reservar hora + Pedir presupuesto.
 Acierto: buscador visible. Oportunidad: sugerencias al tipear + atajo a agendar desde el resultado.
+
+## 04d Footer · Contacto y RRSS
+Redes: Facebook · Instagram · X · YouTube · LinkedIn.
+Contacto: Mesa central 2 2362 5555 · Reserva de hora 2 2362 5400 · Formulario.
+(Entregados también en módulo RRSS.) Oportunidad: repetir números arriba / en menú.
 
 ## 05 Referentes
 COPIAR: Alemana (reservar 3×) · Santa María (bloque agenda)

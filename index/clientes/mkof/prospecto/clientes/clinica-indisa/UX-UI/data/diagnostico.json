@@ -37,7 +37,7 @@
       "nota": "Aligerar home/mobile; el widget de reserva también debe medirse"
     },
     "navegacion": {
-      "hallazgo": "Menú hamburguesa con 5 categorías en acordeón (Información paciente · Especialidades y Centros · Servicios y Hospitalización · Convenios y Alianzas · Nuestra Clínica). Limpio y legible. Reservar hora NO está en el menú: vive en CTA naranja / modal. Urgencia y teléfonos tampoco aparecen en este panel.",
+      "hallazgo": "Menú hamburguesa con 5 categorías en acordeón. Limpio. Reservar hora NO está en el menú (CTA naranja / modal). Teléfonos y RRSS SÍ están en el footer.",
       "itemsMenu": [
         "Información paciente",
         "Especialidades y Centros",
@@ -46,7 +46,18 @@
         "Nuestra Clínica"
       ],
       "headerMenu": ["Logo INDISA", "Mi portal", "Cerrar"],
-      "faltanEnMenu": ["Reservar hora", "Urgencia / teléfonos", "WhatsApp"]
+      "faltanEnMenu": ["Reservar hora"],
+      "enFooter": true
+    },
+    "footer": {
+      "hallazgo": "Footer con Redes sociales (Facebook, Instagram, X, YouTube, LinkedIn) y Datos de contacto visibles.",
+      "redes": ["Facebook", "Instagram", "X", "YouTube", "LinkedIn"],
+      "contacto": [
+        { "label": "Mesa central", "valor": "2 2362 5555" },
+        { "label": "Reserva de hora", "valor": "2 2362 5400" },
+        { "label": "Contacto", "valor": "Formulario de contacto" }
+      ],
+      "nota": "Coincide con canales oficiales ya registrados en el módulo RRSS. Oportunidad: repetir mesa/reserva también arriba o en menú."
     },
     "especialidades": {
       "url": "https://www.indisa.cl/especialidades",
@@ -77,7 +88,8 @@
     "Acortar el funnel: mostrar horas antes o con menos fricción previa",
     "Mover captcha/RUT más tarde (después de elegir hora o especialidad)",
     "Integrar reserva en el home (no solo modal legacy)",
-    "Incluir «Reservar hora» (y urgencia) también en el menú principal",
+    "Incluir «Reservar hora» también en el menú principal (teléfonos ya están en footer)",
+    "Repetir mesa central / reserva también arriba para no obligar a bajar al footer",
     "Mejorar Especialidades: sugerencias en el buscador + atajo a Reservar desde el resultado",
     "Suavizar aviso de convenio sin romper el flujo",
     "Acortar formulario final (evitar reingresar email; menos campos de una vez)"

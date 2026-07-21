@@ -75,22 +75,32 @@
   "navegacion": {
     "titulo": "DIAGNÓSTICO UX / UI",
     "subtitulo": "MENÚ PRINCIPAL · WWW.INDISA.CL",
-    "hallazgo": "Menú limpio con 5 categorías en acordeón. Reservar hora no está dentro del menú (vive en CTA/modal). Tampoco urgencia ni teléfonos en este panel.",
+    "hallazgo": "Menú limpio con 5 categorías en acordeón. Reservar hora no está dentro del menú (vive en CTA/modal). Teléfonos y RRSS sí están en el footer.",
     "mapaHoy": [
       "Información paciente",
       "Especialidades y Centros",
       "Servicios y Hospitalización",
       "Convenios y Alianzas",
       "Nuestra Clínica",
-      "Header: Logo · Mi portal · Cerrar"
+      "Header: Logo · Mi portal · Cerrar",
+      "Footer: RRSS + Mesa central 2 2362 5555 + Reserva 2 2362 5400"
     ],
     "pacienteNoEncuentra": [
       "Reservar hora (dentro del menú)",
-      "Teléfono urgencia",
-      "WhatsApp",
-      "Atajos de tareas del paciente"
+      "Teléfonos en el primer pantallazo / menú (están en footer)"
     ],
-    "fuente": "Captura viva menú indisa.cl · 2026-07-21"
+    "fuente": "Capturas vivas menú + footer indisa.cl · 2026-07-21"
+  },
+  "footer": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "FOOTER · REDES Y DATOS DE CONTACTO",
+    "redes": ["Facebook", "Instagram", "X", "YouTube", "LinkedIn"],
+    "contacto": [
+      "Mesa central · 2 2362 5555",
+      "Reserva de hora · 2 2362 5400",
+      "Contacto · Formulario de contacto"
+    ],
+    "nota": "Entregados también en el análisis RRSS. Están abajo; oportunidad de repetir arriba."
   },
   "referentes": {
     "titulo": "DIAGNÓSTICO UX / UI",

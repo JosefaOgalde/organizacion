@@ -17,6 +17,7 @@ FILES=(
   04-estructura-navegacion
   04b-reservar-flujo
   04c-especialidades
+  04d-footer-contacto
   05-referentes
   06-estetico-vs-funcional
   07-recomendaciones
