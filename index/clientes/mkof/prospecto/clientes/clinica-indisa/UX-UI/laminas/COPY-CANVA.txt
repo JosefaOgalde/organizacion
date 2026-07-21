@@ -45,11 +45,15 @@ Bloque en home · horas antes · RUT/captcha tarde · convenio suave · formular
 02 Repetir números arriba (header o menú).
 03 RRSS en footer (FB, IG, X, YouTube, LinkedIn) + CTA naranja Reservar hora fijo.
 
-## 07b Frenos
-RUT/captcha más tarde · convenio sin callejón · menos pantallas hasta la hora
+## 07b Frenos del flujo (2/3)
+01 RUT + captcha más tarde — primero disponibilidad; después identifica.
+02 Aviso NO POSEE CONVENIO — seguir o cambiar, sin cortar la reserva.
+03 Menos pantallas hasta la hora — tipo → sede → médico → hora.
 
-## 07c Cierre
-Conservar calendario · acortar formulario · Ley 21.719
+## 07c Cierre y formulario (3/3)
+01 Conservar calendario y slots — agenda y RESERVAR funcionan bien.
+02 Acortar «Ya estamos casi listos» — sin reingresar email; solo lo necesario.
+03 Avisos Ley 21.719 — consentimiento claro en datos de salud.
 
 ## 08 Ley 21.719
 Vigencia 1 dic 2026 · datos sensibles en agenda · incluir antes de conclusión
