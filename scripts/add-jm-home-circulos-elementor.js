@@ -11,7 +11,7 @@ const path = require('path');
 const LIVE = path.join(__dirname, '..', 'data', 'organizacion-live.json');
 const ID = 'tarea-jm-home-circulos-elementor-free';
 const NUM = '22';
-const FECHA = '2026-07-22';
+const FECHA = '2026-07-21';
 
 const GUIA =
   'index/clientes/joyasmercury/HOME-CIRCULOS-ELEMENTOR-FREE.md';
