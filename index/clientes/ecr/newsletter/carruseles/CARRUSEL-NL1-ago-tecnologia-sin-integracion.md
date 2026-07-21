@@ -36,7 +36,7 @@ pero si el equipo no llega o la alerta no se gestiona a tiempo, el impacto se di
 ### Slide 5 — Causa real
 **Texto (2–3 líneas, sin viñetas):**  
 No es falta de digitalización: es falta de integración.  
-Los sistemas no conversan con la operación real —  
+Los sistemas no conversan con la operación real:  
 turnos, supervisión, reposición y asistencia.
 
 ### Slide 6 — Qué hacen los líderes
