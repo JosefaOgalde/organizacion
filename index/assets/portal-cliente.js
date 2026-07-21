@@ -708,7 +708,7 @@
               </a>`).join('')}
           </div>
           ${c.slug === 'herramientas' ? (() => {
-            const tendHref = hrefProyecto('Herramientas/Tendencias');
+            const tendHref = hrefProyecto('Herramientas/Tendencias.html');
             return `<p style="margin-top:1rem">
               <a href="${tendHref}" class="portal-btn portal-btn--ghost" style="display:inline-block;text-decoration:none;margin-right:0.5rem">
                 Ver brief del proyecto
