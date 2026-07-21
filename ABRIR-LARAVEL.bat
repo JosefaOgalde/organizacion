@@ -6,8 +6,8 @@ echo  === Organizacion · Laravel + SQLite ^(flujo unificado^) ===
 echo  Un solo servidor en :8000 — API + organizador + portal + ECR + MOVA + Impresoreando
 echo.
 echo  Uso:
-echo    ABRIR-LARAVEL.bat           → sync + reinicia :8000 + abre URLs
-echo    ABRIR-LARAVEL.bat todo      → igual ^(abre todas las URLs^)
+echo    ABRIR-LARAVEL.bat           → sync + reinicia :8000 + abre Organizador + Portal
+echo    ABRIR-LARAVEL.bat todo      → tambien abre ECR, MKOF, MOVA y prospecto
 echo    ABRIR-LARAVEL.bat sin-nav   → solo servidor / sync, sin abrir navegador
 echo    RECARGAR.bat                → solo recarga organizador ?disco=1
 echo.
@@ -119,10 +119,14 @@ set "YA_CORRE=0"
 if /I "%MODO%"=="sin-nav" goto :fin_urls
 if /I "%MODO%"=="sin-navegador" goto :fin_urls
 
-:abrir_todo
 REM powershell conserva el "=" de ?disco=1 (start de cmd lo convierte en %3D)
+REM Por defecto: solo Organizador + Portal clientes
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1'"
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/?disco=1'"
+
+if /I not "%MODO%"=="todo" goto :fin_urls
+
+REM Modo "todo": tambien ECR, MKOF, MOVA y prospecto
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/ecr/?disco=1'"
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/mkof/?disco=1'"
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/MKOF/MOVA?disco=1'"
@@ -131,9 +135,10 @@ powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clien
 
 :fin_urls
 echo.
-echo  === URLs ^(todas con ?disco=1^) ===
+echo  === URLs ^(con ?disco=1^) ===
 echo    Organizador:  http://127.0.0.1:8000/index.html?disco=1
 echo    Portal:       http://127.0.0.1:8000/index/clientes/?disco=1
+echo    ^(opcionales con "todo"^)
 echo    ECR:          http://127.0.0.1:8000/index/clientes/ecr/?disco=1
 echo    MKOF / MOVA:  http://127.0.0.1:8000/index/clientes/mkof/?disco=1
 echo    MKOF prospecto: http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1
