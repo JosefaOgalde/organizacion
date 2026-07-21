@@ -483,7 +483,7 @@
       "tipo": "pagespeed",
       "entidad": "Clínica Indisa",
       "url": "https://pagespeed.web.dev/",
-      "dato": "Mobile FCP 1.2s · LCP 1.6s (página mantención)",
+      "dato": "Reemplazado por análisis ouu45jo4vc (ver web-psi-indisa-ouu45jo4vc)",
       "fecha": "2026-07-21",
       "metodo": "PageSpeed Insights UI · captura pagespeed-indisa-mobile.png"
     },
@@ -540,6 +540,15 @@
       "dato": "Ley 21.719 protección de datos personales · vigencia plena 1 dic 2026",
       "fecha": "2026-07-21",
       "metodo": "BCN / Ley Chile; punto insertado antes de conclusiones del prospecto Indisa."
+    },
+    {
+      "id": "web-psi-indisa-ouu45jo4vc",
+      "tipo": "pagespeed",
+      "entidad": "Clínica Indisa",
+      "url": "https://pagespeed.web.dev/analysis/https-www-indisa-cl/ouu45jo4vc?form_factor=mobile",
+      "dato": "Campo móvil FCP 1.2s LCP 1.6s (CWV OK) · Lab móvil score 38 LCP 32.3s · Lab desktop score 72 LCP 1.9s",
+      "fecha": "2026-07-20",
+      "metodo": "URL oficial entregada por usuaria · reporte PSI ouu45jo4vc"
     }
   ],
   "canalesOficialesProspecto": {

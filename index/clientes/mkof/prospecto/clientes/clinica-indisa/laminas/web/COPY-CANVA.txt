@@ -33,37 +33,30 @@ Logos / nombres:
 Clínica Las Condes · Clínica Alemana · Clínica Dávila · Clínica Santa María
 
 ================================================================================
-03 · RENDIMIENTO (rediseño: fácil de leer)
+03 · RENDIMIENTO (PageSpeed oficial ouu45jo4vc)
 ================================================================================
 Título: DIAGNÓSTICO UX / UI
-Sub: RENDIMIENTO · WWW.INDISA.CL
+Sub: RENDIMIENTO · WWW.INDISA.CL · PAGESPEED OFICIAL
 
-HALLAZGO PRINCIPAL
-Indisa no tiene sitio usable hoy.
-El 21-jul-2026 la web está en mantención: no se puede agendar, ni ver sedes,
-ni llamar a urgencia desde la página.
-El problema no es “qué tan rápido carga”, sino que el paciente no puede usarla.
+EN SIMPLE
+En el celular la prueba sale muy lenta.
+Los usuarios reales, en promedio, ven el sitio bastante rápido.
+Pero la prueba de laboratorio en móvil muestra que el contenido grande
+tarda más de 30 segundos.
 
-3 pasos:
-1 · ESTADO — Sitio caído / mantención
-2 · MEDICIÓN — Solo se midió la página de aviso (no el home real)
-3 · SIGUIENTE — Volver a medir cuando el sitio vuelva online
+Usuarios reales (móvil): 1,6 s · Core Web Vitals aprobado
+Prueba laboratorio (móvil): 32,3 s · Nota 38/100
+Nota escritorio (laboratorio): 72/100 · contenido grande 1,9 s
 
-Nota: las barras verdes de “carga rápida” engañan: miden una página de
-mantención vacía. No representan la velocidad del home ni de la agenda.
+Gráfico laboratorio:
+· Indisa móvil …… 32,3 s (muy lento)
+· Indisa PC ………  1,9 s (aceptable)
+· Usuarios reales móvil · 1,6 s (bien)
 
-GRÁFICO — ¿Cuánto tarda en verse el contenido principal? (móvil)
-Más bajo = mejor.
-· Las Condes …… 28,7 s  (crítico)
-· Santa María …  7,8 s  (lento)
-· Alemana ………  7,7 s  (lento)
-· Dávila ………  3,0 s  (aceptable)
-· Indisa ………   N/A  (sin home medible · mantención)
+Qué hacer: aligerar el home en móvil (imágenes, avisos/pop-ups, scripts)
+para bajar esos 32 segundos en la prueba.
 
-Para Indisa: prioridad 1 = restaurar el sitio con teléfonos de contacto.
-Prioridad 2 = al volver, medir esta misma barra (móvil) del home y de la reserva.
-
-Fuente: PageSpeed Insights + Lighthouse mobile · 2026-07-21
+Fuente: https://pagespeed.web.dev/analysis/https-www-indisa-cl/ouu45jo4vc
 
 ================================================================================
 04 · ESTRUCTURA DE NAVEGACIÓN (HOY)

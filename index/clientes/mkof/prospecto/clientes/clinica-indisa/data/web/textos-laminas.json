@@ -30,24 +30,12 @@
   },
   "rendimiento": {
     "titulo": "DIAGNÓSTICO UX / UI",
-    "subtitulo": "RENDIMIENTO · WWW.INDISA.CL",
-    "hallazgoPrincipal": "Indisa no tiene sitio usable hoy (mantención). El problema no es velocidad, sino que el paciente no puede usarla.",
-    "pasos": [
-      "1 · ESTADO — Sitio caído / mantención",
-      "2 · MEDICIÓN — Solo se midió la página de aviso (no el home real)",
-      "3 · SIGUIENTE — Volver a medir cuando el sitio vuelva online"
-    ],
-    "graficoTitulo": "¿Cuánto tarda en verse el contenido principal? (móvil)",
-    "graficoSub": "Segundos hasta el bloque grande de la página (LCP). Más bajo = mejor.",
-    "barras": [
-      { "nombre": "Las Condes", "valor": "28,7 s", "nivel": "crítico" },
-      { "nombre": "Santa María", "valor": "7,8 s", "nivel": "lento" },
-      { "nombre": "Alemana", "valor": "7,7 s", "nivel": "lento" },
-      { "nombre": "Dávila", "valor": "3,0 s", "nivel": "aceptable" },
-      { "nombre": "Indisa", "valor": "N/A", "nivel": "sin home medible · mantención" }
-    ],
-    "nota": "Las mediciones rápidas de Indisa engañan: son de la página de mantención. Prioridad 1 = restaurar con teléfonos. Prioridad 2 = re-medir móvil del home y la reserva.",
-    "fuente": "PageSpeed Insights + Lighthouse mobile · 2026-07-21"
+    "subtitulo": "RENDIMIENTO · WWW.INDISA.CL · PAGESPEED OFICIAL",
+    "hallazgoPrincipal": "En el celular la prueba de laboratorio sale muy lenta (32,3 s el contenido grande), aunque los usuarios reales promedian 1,6 s.",
+    "usuariosRealesMovil": "1,6 s · CWV aprobado",
+    "labMovil": "32,3 s · nota 38/100",
+    "labDesktop": "1,9 s · nota 72/100",
+    "fuente": "https://pagespeed.web.dev/analysis/https-www-indisa-cl/ouu45jo4vc"
   },
   "navegacion": {
     "titulo": "DIAGNÓSTICO UX / UI",
@@ -125,9 +113,21 @@
         "titulo": "Contacto en mantención",
         "captura": "indisa.cl hoy",
         "items": [
-          { "n": 1, "titulo": "Dejar teléfonos a la vista", "texto": "Urgencia y reservar hora visibles aunque esté en mantención." },
-          { "n": 2, "titulo": "Agregar WhatsApp", "texto": "Botón en la esquina para pedir hora sin esperar el sitio." },
-          { "n": 3, "titulo": "No dejar solo las redes", "texto": "RRSS no sirven para una urgencia." }
+          {
+            "n": 1,
+            "titulo": "Dejar teléfonos a la vista",
+            "texto": "Urgencia y reservar hora visibles aunque esté en mantención."
+          },
+          {
+            "n": 2,
+            "titulo": "Agregar WhatsApp",
+            "texto": "Botón en la esquina para pedir hora sin esperar el sitio."
+          },
+          {
+            "n": 3,
+            "titulo": "No dejar solo las redes",
+            "texto": "RRSS no sirven para una urgencia."
+          }
         ]
       },
       {
@@ -135,9 +135,21 @@
         "titulo": "Reserva visible",
         "captura": "referente Alemana",
         "items": [
-          { "n": 1, "titulo": "«Reservar hora» arriba", "texto": "Botón claro en el menú, PC y celular." },
-          { "n": 2, "titulo": "Formulario grande al centro", "texto": "Lo primero al abrir: poder pedir hora." },
-          { "n": 3, "titulo": "Sin ventanas que tapen", "texto": "No pop-ups de seguros al entrar." }
+          {
+            "n": 1,
+            "titulo": "«Reservar hora» arriba",
+            "texto": "Botón claro en el menú, PC y celular."
+          },
+          {
+            "n": 2,
+            "titulo": "Formulario grande al centro",
+            "texto": "Lo primero al abrir: poder pedir hora."
+          },
+          {
+            "n": 3,
+            "titulo": "Sin ventanas que tapen",
+            "texto": "No pop-ups de seguros al entrar."
+          }
         ]
       },
       {
@@ -145,9 +157,21 @@
         "titulo": "Orden del home",
         "captura": "referente Santa María",
         "items": [
-          { "n": 1, "titulo": "Primero lo que el paciente necesita", "texto": "Agendar al centro; seguros después." },
-          { "n": 2, "titulo": "Menú corto y claro", "texto": "Separar agendar de blog/marca." },
-          { "n": 3, "titulo": "Cuando Indisa vuelva: medir de nuevo", "texto": "Revisar velocidad del home y la reserva en celular." }
+          {
+            "n": 1,
+            "titulo": "Primero lo que el paciente necesita",
+            "texto": "Agendar al centro; seguros después."
+          },
+          {
+            "n": 2,
+            "titulo": "Menú corto y claro",
+            "texto": "Separar agendar de blog/marca."
+          },
+          {
+            "n": 3,
+            "titulo": "Cuando Indisa vuelva: medir de nuevo",
+            "texto": "Revisar velocidad del home y la reserva en celular."
+          }
         ]
       }
     ]
