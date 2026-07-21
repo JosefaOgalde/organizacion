@@ -33,24 +33,37 @@ Logos / nombres:
 Clínica Las Condes · Clínica Alemana · Clínica Dávila · Clínica Santa María
 
 ================================================================================
-03 · RENDIMIENTO
+03 · RENDIMIENTO (rediseño: fácil de leer)
 ================================================================================
 Título: DIAGNÓSTICO UX / UI
 Sub: RENDIMIENTO · WWW.INDISA.CL
 
-Cuerpo:
-Al 21-jul-2026 el sitio público está en mantención:
-PSI mobile mide esa página estática (FCP 1.2 s · LCP 1.6 s).
-El problema prioritario no es velocidad, sino disponibilidad
-y contacto crítico. Re-medir el home real al volver online.
-En competencia, el LCP mobile supera 7 s en Alemana y Santa María;
-CLC llega a 28.7 s (Lighthouse).
+HALLAZGO PRINCIPAL
+Indisa no tiene sitio usable hoy.
+El 21-jul-2026 la web está en mantención: no se puede agendar, ni ver sedes,
+ni llamar a urgencia desde la página.
+El problema no es “qué tan rápido carga”, sino que el paciente no puede usarla.
 
-Métricas (pins):
-- Primer renderizado (FCP): Desktop ~0.8 s · Mobile 1.2 s
-- Mayor elemento (LCP): Desktop ~1.2 s · Mobile 1.6 s
+3 pasos:
+1 · ESTADO — Sitio caído / mantención
+2 · MEDICIÓN — Solo se midió la página de aviso (no el home real)
+3 · SIGUIENTE — Volver a medir cuando el sitio vuelva online
 
-Fuente: https://pagespeed.web.dev · captura Indisa mobile 2026-07-21 (página mantención)
+Nota: las barras verdes de “carga rápida” engañan: miden una página de
+mantención vacía. No representan la velocidad del home ni de la agenda.
+
+GRÁFICO — ¿Cuánto tarda en verse el contenido principal? (móvil)
+Más bajo = mejor.
+· Las Condes …… 28,7 s  (crítico)
+· Santa María …  7,8 s  (lento)
+· Alemana ………  7,7 s  (lento)
+· Dávila ………  3,0 s  (aceptable)
+· Indisa ………   N/A  (sin home medible · mantención)
+
+Para Indisa: prioridad 1 = restaurar el sitio con teléfonos de contacto.
+Prioridad 2 = al volver, medir esta misma barra (móvil) del home y de la reserva.
+
+Fuente: PageSpeed Insights + Lighthouse mobile · 2026-07-21
 
 ================================================================================
 04 · ESTRUCTURA DE NAVEGACIÓN
@@ -102,7 +115,25 @@ Caja: Diseño estético vs funcional
 7. Al restaurar el sitio, re-medir LCP mobile del home real y del widget.
 
 ================================================================================
-08 · OPORTUNIDADES EN UX/UI
+08 · MARCO NORMATIVO · PROTECCIÓN DE DATOS (antes de conclusión)
+================================================================================
+Título: DIAGNÓSTICO UX / UI
+Sub: MARCO NORMATIVO · ANTES DE CONCLUSIÓN
+
+En Chile se implementa la Ley 21.719 de protección y tratamiento de datos
+personales (vigencia plena desde el 1 de diciembre de 2026).
+Crea la Agencia de Protección de Datos y eleva el estándar de consentimiento,
+información y seguridad.
+
+• En clínica, el sitio y la agenda tratan datos sensibles (RUT, salud, contacto):
+  hay que revisar bases de tratamiento, avisos y consentimiento en formularios
+  de reserva.
+• Cookies, pixels y formularios web deben transparentar el uso de datos y
+  facilitar derechos del titular (acceso, rectificación, eliminación, oposición).
+• Incluir este marco en el rediseño UX/UI antes de la conclusión del plan digital.
+
+================================================================================
+09 · OPORTUNIDADES EN UX/UI
 ================================================================================
 01 · DISPONIBILIDAD CON CONTACTO
 Si el sitio cae, el paciente igual debe encontrar urgencia, mesa central y reserva por teléfono o WhatsApp.

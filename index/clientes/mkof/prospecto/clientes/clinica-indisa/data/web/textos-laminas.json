@@ -31,23 +31,23 @@
   "rendimiento": {
     "titulo": "DIAGNÓSTICO UX / UI",
     "subtitulo": "RENDIMIENTO · WWW.INDISA.CL",
-    "cuerpo": [
-      "Al 21-jul-2026 el sitio público está en mantención:",
-      "PSI mobile mide esa página estática (FCP 1.2 s · LCP 1.6 s).",
-      "El problema prioritario no es velocidad, sino disponibilidad",
-      "y contacto crítico. Re-medir el home real al volver online.",
-      "En competencia, el LCP mobile supera 7 s en Alemana y Santa María;",
-      "CLC llega a 28.7 s (Lighthouse)."
+    "hallazgoPrincipal": "Indisa no tiene sitio usable hoy (mantención). El problema no es velocidad, sino que el paciente no puede usarla.",
+    "pasos": [
+      "1 · ESTADO — Sitio caído / mantención",
+      "2 · MEDICIÓN — Solo se midió la página de aviso (no el home real)",
+      "3 · SIGUIENTE — Volver a medir cuando el sitio vuelva online"
     ],
-    "metricas": {
-      "fcpLabel": "El primer renderizado con contenido",
-      "lcpLabel": "Renderizado del mayor elemento con contenido",
-      "desktopFcp": "~0.8 s",
-      "mobileFcp": "1.2 s",
-      "desktopLcp": "~1.2 s",
-      "mobileLcp": "1.6 s"
-    },
-    "fuente": "Fuente: https://pagespeed.web.dev · captura Indisa mobile 2026-07-21 (página mantención)"
+    "graficoTitulo": "¿Cuánto tarda en verse el contenido principal? (móvil)",
+    "graficoSub": "Segundos hasta el bloque grande de la página (LCP). Más bajo = mejor.",
+    "barras": [
+      { "nombre": "Las Condes", "valor": "28,7 s", "nivel": "crítico" },
+      { "nombre": "Santa María", "valor": "7,8 s", "nivel": "lento" },
+      { "nombre": "Alemana", "valor": "7,7 s", "nivel": "lento" },
+      { "nombre": "Dávila", "valor": "3,0 s", "nivel": "aceptable" },
+      { "nombre": "Indisa", "valor": "N/A", "nivel": "sin home medible · mantención" }
+    ],
+    "nota": "Las mediciones rápidas de Indisa engañan: son de la página de mantención. Prioridad 1 = restaurar con teléfonos. Prioridad 2 = re-medir móvil del home y la reserva.",
+    "fuente": "PageSpeed Insights + Lighthouse mobile · 2026-07-21"
   },
   "navegacion": {
     "titulo": "DIAGNÓSTICO UX / UI",

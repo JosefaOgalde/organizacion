@@ -1,40 +1,275 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Rendimiento</title><style>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
-body{width:1920px;height:1080px;background:#f4f1ea;font-family:Montserrat,system-ui,sans-serif;color:#1a4d3e;padding:52px 64px;position:relative;overflow:hidden}
-h1{font-size:44px;font-weight:800;letter-spacing:.04em;color:#1a4d3e}
-.sub{font-size:22px;font-weight:600;color:#6a8f7a;margin-top:8px;letter-spacing:.06em}
-.foot{position:absolute;bottom:28px;left:0;right:0;text-align:center;font-size:12px;color:#b0b8b2}
-.box{background:#1a4d3e;color:#d8f0a8;border-radius:22px;padding:28px 32px}
-.box h2{font-size:26px;font-weight:800;color:#c6e86a;margin-bottom:14px}
-.box p,.box li{font-size:20px;line-height:1.45;color:#e8f5d0;font-weight:600}
-.pill{background:#2f6b52;color:#fff;border-radius:999px;padding:14px 28px;font-weight:700;font-size:16px;letter-spacing:.04em}
-.rec{background:#3d6b4f;color:#fff;border-radius:18px;padding:22px 20px;font-size:17px;font-weight:600;line-height:1.4}
-.rec b{font-weight:800}
-.cap{background:#2f6b52;color:#c6e86a;border-radius:999px;padding:16px 36px;font-size:22px;font-weight:800;letter-spacing:.04em;display:inline-block}
-.num{font-size:48px;font-weight:800;color:#1a4d3e}
-.wedge{height:28px;background:linear-gradient(90deg,#c6e86a 0%,#2f6b52 100%);border-radius:0 14px 14px 0;position:relative;width:420px}
-.pin{position:absolute;top:-10px;width:18px;height:48px;background:#1a4d3e;border-radius:4px;transform:translateX(-50%)}
-.metric-row{display:flex;align-items:center;gap:18px;margin:14px 0}
-.icon-circle{width:64px;height:64px;border-radius:50%;background:#d8ecd8;display:grid;place-items:center;font-size:28px;flex-shrink:0}
-</style></head><body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Rendimiento · Clínica Indisa</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1920px; height: 1080px; background: #f4f1ea;
+      font-family: Montserrat, system-ui, sans-serif; color: #1a4d3e;
+      padding: 44px 56px 36px; position: relative; overflow: hidden;
+    }
+    h1 { font-size: 40px; font-weight: 800; letter-spacing: 0.04em; color: #1a4d3e; }
+    .sub { font-size: 20px; font-weight: 600; color: #6a8f7a; margin-top: 6px; letter-spacing: 0.06em; }
+    .foot {
+      position: absolute; bottom: 22px; left: 0; right: 0;
+      text-align: center; font-size: 12px; color: #b0b8b2;
+    }
+    .fuente {
+      position: absolute; bottom: 48px; left: 56px; right: 56px;
+      font-size: 13px; color: #7a8f82; font-weight: 600;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 28px;
+      margin-top: 28px;
+      height: 820px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      border: 2px solid #d5e3d9;
+      padding: 28px 30px;
+    }
+    .alerta {
+      background: #fff5eb;
+      border: 3px solid #c45c26;
+      border-radius: 20px;
+      padding: 28px 30px;
+      margin-bottom: 20px;
+    }
+    .alerta .badge {
+      display: inline-block;
+      background: #c45c26;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      padding: 8px 14px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+    .alerta h2 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #8a3a12;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .alerta p {
+      font-size: 18px;
+      font-weight: 600;
+      color: #5a3a28;
+      line-height: 1.45;
+    }
+    .pasos {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .paso {
+      background: #eef5f1;
+      border-radius: 14px;
+      padding: 16px 14px;
+      text-align: center;
+    }
+    .paso .n {
+      font-size: 13px;
+      font-weight: 800;
+      color: #2f6b52;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .paso .t {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a4d3e;
+      line-height: 1.35;
+    }
+    .paso.malo { background: #fde8e0; }
+    .paso.malo .n { color: #c45c26; }
+    .paso.neutro { background: #e8eef0; }
+    .paso.neutro .n { color: #4a6570; }
+    .chart-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a4d3e;
+      margin-bottom: 6px;
+    }
+    .chart-sub {
+      font-size: 15px;
+      font-weight: 600;
+      color: #5a7368;
+      margin-bottom: 22px;
+      line-height: 1.4;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 160px 1fr 90px;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .label {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1a4d3e;
+      text-align: right;
+    }
+    .bar-track {
+      height: 36px;
+      background: #e8eee9;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      min-width: 8px;
+    }
+    .bar-fill.malo { background: #c45c26; }
+    .bar-fill.medio { background: #b8860b; }
+    .bar-fill.ok { background: #2f6b52; }
+    .bar-fill.na {
+      background: repeating-linear-gradient(
+        -45deg, #c5cdd0, #c5cdd0 8px, #aeb8bc 8px, #aeb8bc 16px
+      );
+      color: #2a3a34;
+      width: 100% !important;
+      justify-content: center;
+      padding-left: 0;
+    }
+    .val {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1a4d3e;
+      text-align: right;
+    }
+    .val.na { color: #7a8a84; font-size: 14px; }
+    .leyenda {
+      display: flex;
+      gap: 20px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      font-weight: 700;
+      color: #5a7368;
+    }
+    .leyenda span { display: inline-flex; align-items: center; gap: 8px; }
+    .dot { width: 14px; height: 14px; border-radius: 4px; }
+    .nota-final {
+      margin-top: 20px;
+      background: #1a4d3e;
+      color: #e8f5d0;
+      border-radius: 14px;
+      padding: 16px 18px;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .nota-final b { color: #c6e86a; }
+  </style>
+</head>
+<body>
   <h1>DIAGNÓSTICO UX / UI</h1>
   <div class="sub">RENDIMIENTO · WWW.INDISA.CL</div>
-  <div style="display:flex;gap:48px;margin-top:48px">
-    <div style="flex:1;font-size:20px;font-weight:600;line-height:1.55;color:#1a4d3e;max-width:720px">
-      Al 21-jul-2026 el sitio público está en mantención:<br>
-      PSI mobile mide esa página estática (FCP 1.2 s · LCP 1.6 s).<br><br>
-      El problema prioritario no es velocidad, sino disponibilidad y contacto crítico. Re-medir el home real al volver online.<br><br>
-      En competencia, el LCP mobile supera 7 s en Alemana y Santa María; CLC llega a 28.7 s (Lighthouse).
+
+  <div class="grid">
+    <!-- IZQUIERDA: mensaje claro -->
+    <div>
+      <div class="alerta">
+        <div class="badge">HALLAZGO PRINCIPAL</div>
+        <h2>Indisa no tiene sitio usable hoy</h2>
+        <p>
+          El 21-jul-2026 la web está en <b>mantención</b>:
+          no se puede agendar, ni ver sedes, ni llamar a urgencia desde la página.
+          El problema no es “qué tan rápido carga”, sino que <b>el paciente no puede usarla</b>.
+        </p>
+      </div>
+
+      <div class="pasos">
+        <div class="paso malo">
+          <div class="n">1 · ESTADO</div>
+          <div class="t">Sitio caído / mantención</div>
+        </div>
+        <div class="paso neutro">
+          <div class="n">2 · MEDICIÓN</div>
+          <div class="t">Solo se midió la página de aviso (no el home real)</div>
+        </div>
+        <div class="paso">
+          <div class="n">3 · SIGUIENTE</div>
+          <div class="t">Volver a medir cuando el sitio vuelva online</div>
+        </div>
+      </div>
+
+      <div class="nota-final" style="margin-top:20px">
+        <b>En simple:</b> las barras verdes de “carga rápida” engañan:
+        miden una página de mantención vacía. No representan la velocidad
+        del home ni de la agenda de Indisa.
+      </div>
     </div>
-    <div style="flex:1">
-      <div style="font-size:18px;font-weight:800;margin-bottom:8px">El primer renderizado con contenido</div>
-      <div class="metric-row"><div class="icon-circle">🖥</div><div class="wedge"><div class="pin" style="left:18%"></div></div><div style="font-weight:800;min-width:90px">~0.8 s</div></div>
-      <div class="metric-row"><div class="icon-circle">📱</div><div class="wedge"><div class="pin" style="left:24%"></div></div><div style="font-weight:800;min-width:90px">1.2 s</div></div>
-      <div style="font-size:18px;font-weight:800;margin:28px 0 8px">Renderizado del mayor elemento con contenido</div>
-      <div class="metric-row"><div class="icon-circle">🖥</div><div class="wedge"><div class="pin" style="left:22%"></div></div><div style="font-weight:800;min-width:90px">~1.2 s</div></div>
-      <div class="metric-row"><div class="icon-circle">📱</div><div class="wedge"><div class="pin" style="left:28%"></div></div><div style="font-weight:800;min-width:90px">1.6 s</div></div>
+
+    <!-- DERECHA: gráfico competencia -->
+    <div class="card">
+      <div class="chart-title">¿Cuánto tarda en verse el contenido principal? (móvil)</div>
+      <div class="chart-sub">
+        Comparación de clínicas con sitio funcionando.
+        Número = segundos hasta que aparece el bloque grande de la página (LCP).
+        Más bajo = mejor.
+      </div>
+
+      <!-- Escala max ~30s for CLC; use width % of 30 -->
+      <div class="row">
+        <div class="label">Las Condes</div>
+        <div class="bar-track"><div class="bar-fill malo" style="width:95.7%">muy lento</div></div>
+        <div class="val">28,7 s</div>
+      </div>
+      <div class="row">
+        <div class="label">Santa María</div>
+        <div class="bar-track"><div class="bar-fill medio" style="width:26%">lento</div></div>
+        <div class="val">7,8 s</div>
+      </div>
+      <div class="row">
+        <div class="label">Alemana</div>
+        <div class="bar-track"><div class="bar-fill medio" style="width:25.7%">lento</div></div>
+        <div class="val">7,7 s</div>
+      </div>
+      <div class="row">
+        <div class="label">Dávila</div>
+        <div class="bar-track"><div class="bar-fill ok" style="width:10%">aceptable</div></div>
+        <div class="val">3,0 s</div>
+      </div>
+      <div class="row">
+        <div class="label">Indisa</div>
+        <div class="bar-track"><div class="bar-fill na">sin home medible · en mantención</div></div>
+        <div class="val na">N/A</div>
+      </div>
+
+      <div class="leyenda">
+        <span><i class="dot" style="background:#2f6b52"></i> Ideal bajo ~2,5 s</span>
+        <span><i class="dot" style="background:#b8860b"></i> Lento</span>
+        <span><i class="dot" style="background:#c45c26"></i> Crítico</span>
+        <span><i class="dot" style="background:#aeb8bc"></i> No aplica (mantención)</span>
+      </div>
+
+      <div class="nota-final">
+        <b>Para Indisa:</b> prioridad 1 = restaurar el sitio con teléfonos de contacto.
+        Prioridad 2 = al volver, medir esta misma barra (móvil) del home y de la reserva.
+      </div>
     </div>
   </div>
-  <div style="position:absolute;bottom:56px;left:64px;font-size:14px;color:#7a8f82">Fuente: https://pagespeed.web.dev · captura Indisa mobile 2026-07-21 (página mantención)</div>
-<div class="foot">Created & Proprietary MKOF 2025 / All rights reserved</div></body></html>
+
+  <div class="fuente">Fuentes: PageSpeed Insights (Indisa mantención) · Lighthouse mobile competencia · 2026-07-21</div>
+  <div class="foot">Created & Proprietary MKOF 2025 / All rights reserved</div>
+</body>
+</html>
