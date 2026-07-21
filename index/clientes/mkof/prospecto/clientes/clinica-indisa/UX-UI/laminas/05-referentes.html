@@ -2,176 +2,60 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Referentes · Hoy · competencia</title>
+  <title>Referentes</title>
+  <link rel="stylesheet" href="plantilla-mkof.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      width: 1920px; height: 1080px; background: #f4f1ea;
-      font-family: Montserrat, system-ui, sans-serif; color: #1a4d3e;
-      padding: 40px 48px 32px; position: relative; overflow: hidden;
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+    .col h3 {
+      font-size: 18px; font-weight: 800; letter-spacing: 0.08em;
+      margin-bottom: 18px; color: #1a4d3e;
     }
-    h1 { font-size: 36px; font-weight: 800; letter-spacing: 0.04em; }
-    .sub { font-size: 18px; font-weight: 600; color: #6a8f7a; margin-top: 4px; letter-spacing: 0.05em; }
-    .foot { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; font-size: 11px; color: #b0b8b2; }
-    .fuente { position: absolute; bottom: 40px; left: 48px; font-size: 12px; color: #7a8f82; font-weight: 600; }
-
-    .intro {
-      margin-top: 16px; margin-bottom: 18px;
-      font-size: 18px; font-weight: 700; color: #1a4d3e; max-width: 1100px; line-height: 1.35;
-    }
-    .intro span { color: #c45c26; }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      border: 2px solid #d5e3d9;
-      overflow: hidden;
-      display: grid;
-      grid-template-columns: 1fr 1.05fr;
-      min-height: 340px;
-    }
-    .card.evitar { border-color: #e0b8a8; }
-    .shot {
-      background: #e8eee9;
-      overflow: hidden;
-      position: relative;
-    }
-    .shot img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-      display: block;
-    }
-    .tag {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      padding: 6px 12px;
-      border-radius: 999px;
-      color: #fff;
-    }
-    .tag.ok { background: #2f6b52; }
-    .tag.bad { background: #c45c26; }
-    .info {
-      padding: 20px 22px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 10px;
-    }
-    .info .clinica {
-      font-size: 13px;
-      font-weight: 800;
-      color: #6a8f7a;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-    .info h3 {
-      font-size: 22px;
-      font-weight: 800;
-      color: #1a4d3e;
-      line-height: 1.2;
-    }
-    .info p {
-      font-size: 16px;
-      font-weight: 600;
-      color: #3d5c4e;
-      line-height: 1.4;
-    }
-    .info .para-indisa {
-      margin-top: 6px;
-      background: #eef5f1;
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-size: 15px;
-      font-weight: 700;
-      color: #1a4d3e;
-      line-height: 1.35;
-    }
-    .card.evitar .para-indisa {
-      background: #fff5eb;
-      color: #8a3a12;
-    }
-    .para-indisa b { font-weight: 800; }
+    .col.evitar h3 { color: #c45c26; }
+    .item { margin-bottom: 22px; }
+    .item .who { font-size: 13px; font-weight: 800; color: #6a8f7a; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .item .tit { font-size: 20px; font-weight: 800; margin-bottom: 6px; line-height: 1.25; }
+    .item .det { font-size: 16px; font-weight: 600; color: #3d5c4e; line-height: 1.4; }
   </style>
 </head>
-<body>
+<body class="slide">
   <h1>DIAGNÓSTICO UX / UI</h1>
   <div class="sub">REFERENTES · LO QUE HACEN HOY LAS OTRAS CLÍNICAS</div>
-  <div class="intro">
-    Tres aprendizajes claros para Indisa cuando vuelva el sitio:
-    <span>qué copiar</span> y <span>qué no repetir</span>.
+  <div style="margin-top:14px;font-size:20px;font-weight:600;color:#1a4d3e;max-width:900px">
+    Tres aprendizajes claros para Indisa cuando vuelva el sitio: <b>qué copiar</b> y <b>qué no repetir</b>.
   </div>
 
-  <div class="grid">
-    <!-- 1 Alemana - COPIAR -->
-    <div class="card">
-      <div class="shot">
-        <div class="tag ok">COPIAR</div>
-        <img src="capturas/web-alemana-home.png" alt="Clínica Alemana" />
+  <div class="cols">
+    <div class="col">
+      <h3>→ COPIAR</h3>
+      <div class="item">
+        <div class="who">CLÍNICA ALEMANA</div>
+        <div class="tit">«Reservar hora» se ve 3 veces</div>
+        <div class="det">En el menú, en el banner y en el centro. Sin ventanas que bloqueen.</div>
       </div>
-      <div class="info">
-        <div class="clinica">Clínica Alemana</div>
-        <h3>Reservar hora se ve 3 veces</h3>
-        <p>En el menú, en el banner y en el centro de la página. Sin ventanas que bloqueen.</p>
-        <div class="para-indisa"><b>Para Indisa:</b> el botón de agendar debe saltar a la vista apenas se abre el sitio.</div>
+      <div class="item">
+        <div class="who">CLÍNICA SANTA MARÍA</div>
+        <div class="tit">Un solo bloque para agendar</div>
+        <div class="det">Pestañas claras: Consultas · Dental · Telemedicina · Exámenes. Menú corto.</div>
       </div>
+      <div class="cap" style="margin-top:8px;font-size:16px;padding:12px 22px">Para Indisa: botón de agendar a la vista apenas se abre el sitio</div>
     </div>
 
-    <!-- 2 Santa María - COPIAR -->
-    <div class="card">
-      <div class="shot">
-        <div class="tag ok">COPIAR</div>
-        <img src="capturas/web-santamaria-home.png" alt="Clínica Santa María" />
+    <div class="col evitar">
+      <h3>→ EVITAR</h3>
+      <div class="item">
+        <div class="who">CLÍNICA LAS CONDES</div>
+        <div class="tit">Una ventana de seguro tapa todo</div>
+        <div class="det">Destacan urgencia arriba, pero el pop-up comercial frena la reserva.</div>
       </div>
-      <div class="info">
-        <div class="clinica">Clínica Santa María</div>
-        <h3>Un solo bloque para agendar</h3>
-        <p>Pestañas simples: Consultas · Dental · Telemedicina · Exámenes. Menú corto arriba.</p>
-        <div class="para-indisa"><b>Para Indisa:</b> un formulario de reserva grande en el centro, no esconderlo en el menú.</div>
+      <div class="item">
+        <div class="who">CLÍNICA DÁVILA</div>
+        <div class="tit">El hero vende el seguro, no la hora</div>
+        <div class="det">Lo primero es contratar. Agendar queda abajo o por WhatsApp.</div>
       </div>
-    </div>
-
-    <!-- 3 CLC - EVITAR -->
-    <div class="card evitar">
-      <div class="shot">
-        <div class="tag bad">EVITAR</div>
-        <img src="capturas/web-clc-home.png" alt="Clínica Las Condes" />
-      </div>
-      <div class="info">
-        <div class="clinica">Clínica Las Condes</div>
-        <h3>Una ventana de seguro tapa todo</h3>
-        <p>Sí destacan urgencia/rescate arriba, pero al entrar aparece un aviso comercial que frena la reserva.</p>
-        <div class="para-indisa"><b>Para Indisa:</b> no poner pop-ups de seguros al cargar. Primero que el paciente pueda agendar.</div>
-      </div>
-    </div>
-
-    <!-- 4 Dávila - EVITAR -->
-    <div class="card evitar">
-      <div class="shot">
-        <div class="tag bad">EVITAR</div>
-        <img src="capturas/web-davila-home.png" alt="Clínica Dávila" />
-      </div>
-      <div class="info">
-        <div class="clinica">Clínica Dávila</div>
-        <h3>El hero vende el seguro, no la hora</h3>
-        <p>Lo primero que se ve es contratar un seguro. Agendar queda más abajo o por WhatsApp.</p>
-        <div class="para-indisa"><b>Para Indisa:</b> lo primero debe ser “Reservar hora”, no una campaña comercial.</div>
-      </div>
+      <div class="cap" style="margin-top:8px;font-size:16px;padding:12px 22px;background:#c45c26;color:#fff">Para Indisa: primero poder agendar, no campañas</div>
     </div>
   </div>
 
-  <div class="fuente">Capturas vivas · 2026-07-21 · referentes del diagnóstico web Indisa</div>
   <div class="foot">Created & Proprietary MKOF 2025 / All rights reserved</div>
 </body>
 </html>

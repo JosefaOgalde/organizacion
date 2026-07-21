@@ -2,102 +2,28 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Recomendaciones 3/3 · Orden</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      width: 1920px; height: 1080px; background: #f4f1ea;
-      font-family: Montserrat, system-ui, sans-serif; color: #1a4d3e;
-      padding: 36px 44px 24px; position: relative; overflow: hidden;
-    }
-    h1 { font-size: 34px; font-weight: 800; letter-spacing: 0.04em; }
-    .sub { font-size: 17px; font-weight: 600; color: #6a8f7a; margin-top: 4px; letter-spacing: 0.05em; }
-    .nota { margin-top: 8px; font-size: 14px; font-weight: 700; color: #5a7368; }
-    .foot { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-size: 11px; color: #b0b8b2; }
-    .badge-slide {
-      position: absolute; top: 36px; right: 44px;
-      background: #2f6b52; color: #c6e86a;
-      font-size: 13px; font-weight: 800; letter-spacing: 0.08em;
-      padding: 8px 14px; border-radius: 999px;
-    }
-    .board { position: relative; margin-top: 12px; width: 1832px; height: 880px; }
-    .stage {
-      position: absolute; left: 0; top: 0;
-      width: 1180px; height: 880px;
-      background: #fff; border-radius: 16px; border: 2px solid #d5e3d9; overflow: hidden;
-    }
-    .stage img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-    .pin {
-      position: absolute; width: 40px; height: 40px; border-radius: 50%;
-      background: #2f6b52; color: #fff; font-weight: 800; font-size: 18px;
-      display: grid; place-items: center; border: 3px solid #fff;
-      box-shadow: 0 4px 14px rgba(0,0,0,.3); z-index: 4;
-    }
-    .pin.p1 { left: 540px; top: 360px; }
-    .pin.p2 { left: 400px; top: 100px; }
-    .pin.p3 { left: 1050px; top: 40px; }
-    .rec {
-      position: absolute; right: 0; width: 560px;
-      background: #1a4d3e; color: #e8f5d0; border-radius: 16px;
-      padding: 20px 22px; display: grid; grid-template-columns: 42px 1fr; gap: 12px; z-index: 5;
-    }
-    .rec.r1 { top: 40px; }
-    .rec.r2 { top: 300px; }
-    .rec.r3 { top: 560px; }
-    .rec .num {
-      width: 42px; height: 42px; border-radius: 50%;
-      background: #2f6b52; color: #c6e86a;
-      font-weight: 800; font-size: 18px; display: grid; place-items: center;
-    }
-    .rec h3 { font-size: 18px; font-weight: 800; color: #c6e86a; margin-bottom: 6px; line-height: 1.25; }
-    .rec p { font-size: 15px; font-weight: 600; line-height: 1.4; }
-    .lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; }
-  </style>
+  <title>Recomendaciones · Cierre reserva</title>
+  <link rel="stylesheet" href="plantilla-mkof.css">
 </head>
-<body>
+<body class="slide">
   <h1>DIAGNÓSTICO UX / UI</h1>
-  <div class="sub">RECOMENDACIONES · ORDEN DEL HOME</div>
-  <div class="badge-slide">3 / 3</div>
-  <div class="nota">Ejemplo: home Clínica Santa María (hoy) — primero lo que el paciente necesita.</div>
+  <div class="sub">RECOMENDACIONES · CIERRE Y FORMULARIO · 3/3</div>
 
-  <div class="board">
-    <div class="stage"><img src="capturas/web-santamaria-home.png" alt="Santa María" /></div>
-    <svg class="lines" viewBox="0 0 1832 880">
-      <defs>
-        <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto">
-          <path d="M0,0 L10,4 L0,8 Z" fill="#2f6b52"/>
-        </marker>
-      </defs>
-      <path d="M1270 100 C1100 200, 800 340, 580 380" fill="none" stroke="#2f6b52" stroke-width="4" marker-end="url(#arr)"/>
-      <path d="M1270 360 C1100 300, 700 160, 440 120" fill="none" stroke="#2f6b52" stroke-width="4" marker-end="url(#arr)"/>
-      <path d="M1270 620 C1200 400, 1150 120, 1070 60" fill="none" stroke="#2f6b52" stroke-width="4" marker-end="url(#arr)"/>
-    </svg>
-    <div class="pin p1">1</div>
-    <div class="pin p2">2</div>
-    <div class="pin p3">3</div>
-    <div class="rec r1">
-      <div class="num">1</div>
-      <div>
-        <h3>Primero lo que el paciente necesita</h3>
-        <p>Pedir hora, exámenes o telemedicina al centro. Seguros y campañas más abajo.</p>
-      </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:72px">
+    <div class="rec" style="min-height:220px">
+      <div style="color:#c6e86a;font-size:15px;font-weight:800;margin-bottom:12px">01</div>
+      El calendario y los slots están claros: <b>conservar</b> esa parte del final.
     </div>
-    <div class="rec r2">
-      <div class="num">2</div>
-      <div>
-        <h3>Menú corto y claro</h3>
-        <p>Pocas opciones arriba. Separar “agendar / exámenes” de blog o marca.</p>
-      </div>
+    <div class="rec" style="min-height:220px">
+      <div style="color:#c6e86a;font-size:15px;font-weight:800;margin-bottom:12px">02</div>
+      Acortar «Ya estamos casi listos»: <b>menos campos</b> y sin reingresar el email.
     </div>
-    <div class="rec r3">
-      <div class="num">3</div>
-      <div>
-        <h3>Cuando Indisa vuelva: medir de nuevo</h3>
-        <p>Revisar qué tan rápido carga el home y el bloque de reserva en el celular.</p>
-      </div>
+    <div class="rec" style="min-height:220px">
+      <div style="color:#c6e86a;font-size:15px;font-weight:800;margin-bottom:12px">03</div>
+      Alinear avisos del formulario con la <b>Ley 21.719</b> (datos sensibles de salud).
     </div>
   </div>
-  <div class="foot">Created & Proprietary MKOF 2025 / All rights reserved · Referente Santa María</div>
+
+  <div class="foot">Created & Proprietary MKOF 2025 / All rights reserved</div>
 </body>
 </html>

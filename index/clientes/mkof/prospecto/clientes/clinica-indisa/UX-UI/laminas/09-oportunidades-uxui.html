@@ -2,133 +2,39 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Oportunidades UX/UI · Indisa</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      width: 1920px; height: 1080px; background: #f4f1ea;
-      font-family: Montserrat, system-ui, sans-serif; color: #1a4d3e;
-      padding: 44px 56px 32px; position: relative; overflow: hidden;
-    }
-    h1 { font-size: 40px; font-weight: 800; letter-spacing: 0.04em; }
-    .intro {
-      margin-top: 10px; max-width: 1100px;
-      font-size: 18px; font-weight: 600; color: #5a7368; line-height: 1.4;
-    }
-    .foot {
-      position: absolute; bottom: 22px; left: 0; right: 0;
-      text-align: center; font-size: 12px; color: #b0b8b2;
-    }
-    .list {
-      margin-top: 36px;
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-      max-width: 1600px;
-    }
-    .item {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-    .num {
-      font-size: 48px;
-      font-weight: 800;
-      color: #1a4d3e;
-      line-height: 1;
-      padding-top: 8px;
-    }
-    .card {
-      background: #fff;
-      border: 2px solid #d5e3d9;
-      border-radius: 20px;
-      padding: 22px 28px 24px;
-    }
-    .pill {
-      display: inline-block;
-      background: #2f6b52;
-      color: #c6e86a;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      padding: 10px 22px;
-      border-radius: 999px;
-      margin-bottom: 14px;
-    }
-    .card p {
-      font-size: 19px;
-      font-weight: 600;
-      color: #1a4d3e;
-      line-height: 1.5;
-      margin-bottom: 10px;
-    }
-    .card .para {
-      background: #eef5f1;
-      border-radius: 12px;
-      padding: 14px 16px;
-      font-size: 17px;
-      font-weight: 700;
-      color: #2a4a3c;
-      line-height: 1.4;
-      margin-top: 6px;
-    }
-    .card .para b { color: #1a4d3e; }
-  </style>
+  <title>Oportunidades · Reservar</title>
+  <link rel="stylesheet" href="plantilla-mkof.css">
 </head>
-<body>
+<body class="slide">
   <h1>OPORTUNIDADES EN UX/UI</h1>
-  <div class="intro">
-    Tres focos concretos para Indisa a partir de lo que vimos hoy en su sitio
-    y en las clínicas de referencia.
-  </div>
 
-  <div class="list">
-    <div class="item">
+  <div style="margin-top:64px;display:flex;flex-direction:column;gap:42px;max-width:1200px">
+    <div style="display:flex;gap:28px;align-items:flex-start">
       <div class="num">01</div>
-      <div class="card">
-        <div class="pill">SIEMPRE PODER CONTACTAR</div>
-        <p>
-          Hoy, si indisa.cl está en mantención, el paciente no encuentra teléfono de urgencia,
-          mesa central ni forma de reservar. Queda solo con redes sociales, que no sirven
-          cuando alguien necesita atención ahora.
-        </p>
-        <div class="para">
-          <b>Oportunidad:</b> aunque el sitio falle o esté en mantención, siempre deben quedar
-          a la vista el teléfono de urgencia, el de reserva y un WhatsApp para escribir.
+      <div style="flex:1">
+        <div class="cap">RESERVA MÁS CORTA</div>
+        <div style="margin-top:14px;font-size:20px;font-weight:600;color:#1a4d3e;line-height:1.45;padding-left:8px">
+          • Hoy el modal funciona, pero pide RUT, captcha y varios pasos antes de ver una hora. Acortar hasta la disponibilidad.
         </div>
       </div>
     </div>
 
-    <div class="item">
+    <div style="display:flex;gap:28px;align-items:flex-start">
       <div class="num">02</div>
-      <div class="card">
-        <div class="pill">PEDIR HORA SIN COMPLICARSE</div>
-        <p>
-          En Alemana y Santa María, al abrir el sitio ya se puede agendar: hay un bloque grande
-          para pedir hora y el botón se repite arriba. Nadie tiene que pelear con menús
-          ni cerrar ventanas de seguros para llegar a la agenda.
-        </p>
-        <div class="para">
-          <b>Oportunidad:</b> cuando Indisa vuelva online, poner “Reservar hora” bien visible
-          apenas se abre la página (arriba y al centro), sin avisos que tapen la pantalla.
+      <div style="flex:1">
+        <div class="cap">RESERVA A LA VISTA</div>
+        <div style="margin-top:14px;font-size:20px;font-weight:600;color:#1a4d3e;line-height:1.45;padding-left:8px">
+          • Además del botón naranja, integrar un bloque de agenda en el home (modelo Alemana / Santa María), sin ventanas que tapen.
         </div>
       </div>
     </div>
 
-    <div class="item">
+    <div style="display:flex;gap:28px;align-items:flex-start">
       <div class="num">03</div>
-      <div class="card">
-        <div class="pill">PRIMERO LO QUE EL PACIENTE NECESITA</div>
-        <p>
-          Algunas clínicas muestran primero seguros o campañas. Eso distrae: la persona entra
-          a pedir hora, ver sedes o urgencia, no a comprar un producto. Además, al volver el
-          sitio habrá que revisar que cargue rápido en el celular, porque ahí se pierde más gente.
-        </p>
-        <div class="para">
-          <b>Oportunidad:</b> ordenar el home por tareas del paciente (agendar, exámenes, sedes)
-          y dejar seguros/campañas más abajo; al restaurar, medir de nuevo la velocidad en móvil.
+      <div style="flex:1">
+        <div class="cap">CIERRE SIN FRICCIÓN</div>
+        <div style="margin-top:14px;font-size:20px;font-weight:600;color:#1a4d3e;line-height:1.45;padding-left:8px">
+          • Suavizar el aviso de convenio y acortar el formulario final; medir de nuevo la velocidad en celular al rediseñar.
         </div>
       </div>
     </div>

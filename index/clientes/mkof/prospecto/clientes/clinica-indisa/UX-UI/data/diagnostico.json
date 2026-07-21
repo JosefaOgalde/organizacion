@@ -1,106 +1,58 @@
 {
+  "actualizado": "2026-07-21",
   "prospecto": "Clínica Indisa",
   "url": "https://www.indisa.cl/",
-  "fecha": "2026-07-21",
-  "competidores": [
-    { "id": "clc", "nombre": "Clínica Las Condes", "url": "https://www.clinicalascondes.cl/HOME" },
-    { "id": "alemana", "nombre": "Clínica Alemana", "url": "https://www.clinicaalemana.cl/" },
-    { "id": "davila", "nombre": "Clínica Dávila / Red Dávila", "url": "https://www.davila.cl/" },
-    { "id": "santamaria", "nombre": "Clínica Santa María", "url": "https://www.clinicasantamaria.cl/" }
-  ],
-  "estadoProspecto": {
-    "vivo": "mantencion",
-    "detalle": "Home, /agenda, /centros y /especialidades sirven la misma página de mantención sin menú ni teléfonos de urgencia/reserva.",
-    "estructuraOperativaFuente": "Wayback Machine captura 2026-02-17 + índice público de /agenda y /centros",
-    "estructuraOperativaFecha": "2026-02-17"
-  },
-  "arquitecturaIndisaOperativa": {
-    "stackVisible": "Next.js + contenidos WordPress",
-    "homeHub": {
-      "tituloAgendar": "¿Qué necesitas agendar?",
-      "tiles": [
-        "Consulta médica",
-        "Imagenología",
-        "Laboratorio",
-        "Telemedicina",
-        "Vacunatorio",
-        "Banco de sangre"
+  "estadoSitio": "operativo · flujo Reservar hora en modal",
+  "competidores": ["Clínica Las Condes", "Clínica Alemana", "Clínica Dávila", "Clínica Santa María"],
+  "ejes": {
+    "reserva": {
+      "hallazgo": "El paciente puede agendar, pero el flujo es largo, en modal heredado y con varios frenos (RUT+captcha temprano, aviso de convenio, formulario final extenso).",
+      "pasosObservados": [
+        "CTA naranja «Reservar hora» en home",
+        "Modal: ¿Qué necesitas agendar? (Consulta, Imagen, Lab, Telemedicina, Vacunatorio, Banco de sangre, Dental)",
+        "Elige Centro Médico (Providencia / Maipú)",
+        "Bienvenido · RUT + previsión + reCAPTCHA + Siguiente",
+        "Lista de especialidades (buscador)",
+        "Lista de profesionales (con/sin convenio) + «Más horas»",
+        "Aviso modal si NO POSEE CONVENIO → Volver / Seguir como particular",
+        "Agenda (calendario) → slots de hora → RESERVAR",
+        "Formulario contacto largo (nombres, sexo, nacimiento, email×2, teléfono, comuna, check IA)"
       ],
-      "otrasSecciones": [
-        "¿Qué quieres hacer?",
-        "Nuestras especialidades",
-        "Seguros y convenios",
-        "Guía de hospitalización",
-        "Nuestras ubicaciones",
-        "Blog"
-      ]
-    },
-    "telefonosFooter": {
-      "mesaCentral": "2 2362 5555",
-      "reservaHora": "2 2362 5400"
-    },
-    "centros": [
-      "Clínica INDISA Providencia",
-      "Clínica INDISA Maipú",
-      "Centro Médico Los Españoles",
-      "Centro Médico Los Conquistadores",
-      "Centro de Diálisis"
-    ],
-    "marca": "Clínica de familia · Estamos para tu cuidado"
-  },
-  "hallazgosPorEje": {
-    "rendimientoAccesibilidad": {
-      "indisa": "PSI mobile de la página de mantención: FCP 1.2 s · LCP 1.6 s (Core Web Vitals OK). No mide el home de producto. En mantención no hay teléfono de urgencia ni skip a contacto — falla de accesibilidad de servicio crítico.",
-      "competencia": "LCP mobile alto en CLC (28.7 s), Alemana (7.7 s) y Santa María (7.8 s). Desktop Santa María es el más sólido (LCP 1.8 s)."
-    },
-    "usabilidad": {
-      "indisa": "HOY: callejón sin salida. Solo página de mantención; sin reserva, sin urgencia, sin sedes. Única salida: íconos de RRSS.",
-      "mejorPractica": "Alemana: widget de reserva en el primer viewport + CTA repetido. Santa María: widget multinivel (Consultas / Dental / Telemedicina / Exámenes)."
-    },
-    "jerarquiaContenidos": {
-      "indisa": "HOY no hay jerarquía de contenidos: un solo mensaje de mantención. El paciente no puede priorizar ninguna tarea clínica.",
-      "antiPatrones": [
-        "CLC: modal comercial de seguro al cargar tapa la reserva.",
-        "Dávila: hero prioriza contratar seguro frente a agendar consulta."
-      ]
-    },
-    "generacionContenidos": {
-      "indisa": "HOY: cero contenidos vivos en el sitio (blog, especialidades, novedades inaccesibles).",
-      "competencia": "CLC Blog «Vivir Mejor», Alemana charlas/talleres y prevención, Santa María novedades clínicas con especialistas nominados."
-    },
-    "arquitectura": {
-      "indisa": "HOY: arquitectura plana de un solo nodo (mantención). Home, /agenda, /centros y /especialidades sirven el mismo aviso sin menú.",
-      "gap": "Si el sitio cae, igual deben quedar teléfonos, mapa y WhatsApp a la vista."
-    },
-    "referencias": {
-      "tomar": [
-        "Alemana — reserva visible 3 veces en el primer pantallazo",
-        "Santa María — menú corto + widget con niveles",
-        "CLC — rescate/urgencia visible en barra superior (sin copiar el modal)"
+      "fricciones": [
+        "Muchos pasos antes de ver una hora concreta",
+        "Pide RUT y captcha antes de mostrar disponibilidad",
+        "Interrupción de convenio a mitad del flujo",
+        "Formulario final denso (reingresar email, muchos campos)",
+        "UI de modal con aspecto legacy vs. referentes Alemana/Santa María"
       ],
-      "evitar": [
-        "Modal de producto al ingreso (CLC)",
-        "Hero de seguro como CTA primario (Dávila)",
-        "Mantención sin contacto de emergencia (Indisa hoy)"
+      "fortalezas": [
+        "Hay CTA visible de reservar",
+        "Primer paso claro: tipo de prestación con íconos",
+        "Elección de sede explícita (Providencia / Maipú)",
+        "Calendario y slots comprensibles al final"
       ]
+    },
+    "rendimiento": {
+      "indisa": "PageSpeed oficial móvil: usuarios 1,6 s (CWV ok) · lab 32,3 s (nota 38)",
+      "nota": "Aligerar home/mobile; el widget de reserva también debe medirse"
+    },
+    "navegacion": {
+      "hallazgo": "La reserva vive en un modal encima del home, no como bloque integrado en el primer pantallazo (modelo Alemana/Santa María)."
+    },
+    "referentes": {
+      "copiar": ["Alemana: reservar visible 3 veces sin bloquear", "Santa María: un bloque grande de agenda"],
+      "evitar": ["CLC: pop-ups comerciales", "Dávila: hero de seguros antes que agenda"]
+    },
+    "datos": {
+      "ley": "21.719",
+      "nota": "Formulario de reserva trata RUT/salud/contacto: avisos y consentimiento deben ir alineados a la ley."
     }
   },
-  "antesDeConclusion": {
-    "titulo": "Marco normativo · Protección de datos (Chile)",
-    "ley": "Ley N° 21.719",
-    "vigenciaPlena": "2026-12-01",
-    "texto": "En Chile se implementa la Ley 21.719 de protección y tratamiento de datos personales (vigencia plena desde el 1 de diciembre de 2026). Crea la Agencia de Protección de Datos y exige mayor estándar de consentimiento, información y seguridad. En un sitio clínico (RUT, salud, contacto en agenda) el rediseño UX/UI debe incluir avisos, bases de tratamiento y derechos del titular —no solo conversión de reserva.",
-    "implicanciasUx": [
-      "Revisar formularios de reserva y telemedicina (consentimiento e información)",
-      "Transparentar cookies / pixels y uso de datos en web y RRSS",
-      "Facilitar ejercicio de derechos del titular desde el sitio"
-    ]
-  },
-  "rankingUxVivo": [
-    { "puesto": 1, "nombre": "Clínica Alemana", "motivo": "Reserva sin fricción, sin modal, buscador y grilla de tareas claras." },
-    { "puesto": 2, "nombre": "Clínica Santa María", "motivo": "Widget multinivel limpio; whitespace; telemedicina como pestaña." },
-    { "puesto": 3, "nombre": "Clínica Las Condes", "motivo": "CTA reserva fuerte y rescate visible, penalizado por modal comercial." },
-    { "puesto": 4, "nombre": "Clínica Dávila", "motivo": "Buenos atajos por ícono; reserva menos protagonismo que el seguro." },
-    { "puesto": 5, "nombre": "Clínica Indisa", "motivo": "Sitio en mantención sin contacto crítico al momento del diagnóstico." }
+  "recomendacionesPrioridad": [
+    "Acortar el funnel: mostrar horas antes o con menos fricción previa",
+    "Mover captcha/RUT más tarde (después de elegir hora o especialidad)",
+    "Integrar reserva en el home (no solo modal legacy)",
+    "Suavizar aviso de convenio sin romper el flujo",
+    "Acortar formulario final (evitar reingresar email; menos campos de una vez)"
   ]
 }

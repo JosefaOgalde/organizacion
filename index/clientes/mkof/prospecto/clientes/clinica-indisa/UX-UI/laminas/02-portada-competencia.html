@@ -1,47 +1,36 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Portada competencia</title><style>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
-body{width:1920px;height:1080px;background:#f4f1ea;font-family:Montserrat,system-ui,sans-serif;color:#1a4d3e;padding:52px 64px;position:relative;overflow:hidden}
-h1{font-size:44px;font-weight:800;letter-spacing:.04em;color:#1a4d3e}
-.sub{font-size:22px;font-weight:600;color:#6a8f7a;margin-top:8px;letter-spacing:.06em}
-.foot{position:absolute;bottom:28px;left:0;right:0;text-align:center;font-size:12px;color:#b0b8b2}
-.box{background:#1a4d3e;color:#d8f0a8;border-radius:22px;padding:28px 32px}
-.box h2{font-size:26px;font-weight:800;color:#c6e86a;margin-bottom:14px}
-.box p,.box li{font-size:20px;line-height:1.45;color:#e8f5d0;font-weight:600}
-.pill{background:#2f6b52;color:#fff;border-radius:999px;padding:14px 28px;font-weight:700;font-size:16px;letter-spacing:.04em}
-.rec{background:#3d6b4f;color:#fff;border-radius:18px;padding:22px 20px;font-size:17px;font-weight:600;line-height:1.4}
-.rec b{font-weight:800}
-.cap{background:#2f6b52;color:#c6e86a;border-radius:999px;padding:16px 36px;font-size:22px;font-weight:800;letter-spacing:.04em;display:inline-block}
-.num{font-size:48px;font-weight:800;color:#1a4d3e}
-.wedge{height:28px;background:linear-gradient(90deg,#c6e86a 0%,#2f6b52 100%);border-radius:0 14px 14px 0;position:relative;width:420px}
-.pin{position:absolute;top:-10px;width:18px;height:48px;background:#1a4d3e;border-radius:4px;transform:translateX(-50%)}
-.metric-row{display:flex;align-items:center;gap:18px;margin:14px 0}
-.icon-circle{width:64px;height:64px;border-radius:50%;background:#d8ecd8;display:grid;place-items:center;font-size:28px;flex-shrink:0}
-</style></head><body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Portada competencia</title>
+  <link rel="stylesheet" href="plantilla-mkof.css">
+</head>
+<body class="slide">
   <h1>DIAGNÓSTICO WEB</h1>
   <div class="sub">DESKTOP / MOBILE</div>
-  <div style="margin-top:100px;max-width:780px;font-size:28px;font-weight:700;line-height:1.5;color:#1a4d3e">
-    Benchmark UX/UI del sitio de Clínica Indisa<br>
-    frente a cuatro clínicas privadas de Santiago.<br>
-    Foco: reserva, urgencia, jerarquía y mobile.
+  <div style="margin-top:36px;max-width:780px;font-size:24px;font-weight:700;line-height:1.45;color:#1a4d3e">
+    Benchmark UX/UI del sitio de Clínica Indisa frente a cuatro clínicas privadas de Santiago. Foco: reserva, urgencia, jerarquía y mobile.
   </div>
-  <div style="position:absolute;bottom:100px;left:64px;right:64px;display:flex;justify-content:space-around;align-items:flex-end">
-    
-      <div style="text-align:center">
-        <div style="width:110px;height:110px;border-radius:50%;background:#0a2f6b;color:#fff;display:grid;place-items:center;font-weight:800;font-size:22px;margin:0 auto 12px;border:4px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.12)">CLC</div>
-        <div style="font-size:15px;font-weight:700;color:#1a4d3e;max-width:140px">Clínica Las Condes</div>
-      </div>
-      <div style="text-align:center">
-        <div style="width:110px;height:110px;border-radius:50%;background:#0d7377;color:#fff;display:grid;place-items:center;font-weight:800;font-size:22px;margin:0 auto 12px;border:4px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.12)">CA</div>
-        <div style="font-size:15px;font-weight:700;color:#1a4d3e;max-width:140px">Clínica Alemana</div>
-      </div>
-      <div style="text-align:center">
-        <div style="width:110px;height:110px;border-radius:50%;background:#c45c26;color:#fff;display:grid;place-items:center;font-weight:800;font-size:22px;margin:0 auto 12px;border:4px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.12)">RD</div>
-        <div style="font-size:15px;font-weight:700;color:#1a4d3e;max-width:140px">Clínica Dávila</div>
-      </div>
-      <div style="text-align:center">
-        <div style="width:110px;height:110px;border-radius:50%;background:#1a5c9e;color:#fff;display:grid;place-items:center;font-weight:800;font-size:22px;margin:0 auto 12px;border:4px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.12)">CSM</div>
-        <div style="font-size:15px;font-weight:700;color:#1a4d3e;max-width:140px">Clínica Santa María</div>
-      </div>
+
+  <div class="logo-row" style="position:absolute;bottom:120px;left:64px;right:64px">
+    <div class="logo-item">
+      <div class="logo-circle" style="background:#1a365d">CLC</div>
+      <span>Clínica<br>Las Condes</span>
+    </div>
+    <div class="logo-item">
+      <div class="logo-circle" style="background:#1d6f69">CA</div>
+      <span>Clínica<br>Alemana</span>
+    </div>
+    <div class="logo-item">
+      <div class="logo-circle" style="background:#bd5b2d">RD</div>
+      <span>Clínica<br>Dávila</span>
+    </div>
+    <div class="logo-item">
+      <div class="logo-circle" style="background:#1e5991">CSM</div>
+      <span>Clínica<br>Santa María</span>
+    </div>
   </div>
-<div class="foot">Created & Proprietary MKOF 2025 / All rights reserved</div></body></html>
+
+  <div class="foot">Created & Proprietary MKOF 2025 / All rights reserved</div>
+</body>
+</html>

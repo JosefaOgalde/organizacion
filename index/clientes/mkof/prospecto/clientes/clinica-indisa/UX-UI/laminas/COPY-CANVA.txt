@@ -1,186 +1,41 @@
-# Textos Canva — Diagnóstico WEB · Clínica Indisa
-# Fecha: 2026-07-21 · MKOF
-# Todos los textos fueron escritos para este diagnóstico (no copiar Kitchenit).
+# Diagnóstico UX/UI — COPY CANVA (estilo plantilla MKOF)
 
-================================================================================
-01 · PORTADA DIAGNÓSTICO WEB
-================================================================================
-Título: DIAGNÓSTICO WEB
-Sub: DESKTOP / MOBILE
-Prospecto: Clínica Indisa · www.indisa.cl
+Textos propios Indisa. Flujo **Reservar hora** auditado 2026-07-21 (modal vivo).
 
-Ejes (botones laterales):
-- RENDIMIENTO / ACCESIBILIDAD
-- USABILIDAD
-- JERARQUÍA DE CONTENIDOS
-- GENERACIÓN DE CONTENIDOS
-- ARQUITECTURA
-- REFERENCIAS
-- RECOMENDACIONES
+## 01 Portada
+DIAGNÓSTICO WEB · DESKTOP / MOBILE · CLÍNICA INDISA · www.indisa.cl
+Ejes: Rendimiento · Usabilidad · Jerarquía · Contenidos · Arquitectura · Referencias · Recomendaciones
 
-================================================================================
-02 · PORTADA COMPETENCIA
-================================================================================
-Título: DIAGNÓSTICO WEB
-Sub: DESKTOP / MOBILE
+## 02 Competencia
+Benchmark vs CLC · Alemana · Dávila · Santa María. Foco: reserva, urgencia, jerarquía y mobile.
 
-Texto central:
-Benchmark UX/UI del sitio de Clínica Indisa
-frente a cuatro clínicas privadas de Santiago.
-Foco: reserva, urgencia, jerarquía y mobile.
+## 03 Rendimiento
+Usuarios reales 1,6 s (ok) · Lab 32,3 s (nota 38). Competencia lab 5–7 s.
 
-Logos / nombres:
-Clínica Las Condes · Clínica Alemana · Clínica Dávila · Clínica Santa María
+## 04 Reservar hora (flujo)
+CTA naranja → tipo prestación → sede → RUT+previsión+captcha → especialidad → médico → convenio → agenda → formulario.
 
-================================================================================
-03 · RENDIMIENTO (5 clínicas · PSI oficial móvil)
-================================================================================
-Título: DIAGNÓSTICO UX / UI
-Sub: RENDIMIENTO · 5 CLÍNICAS · PAGESPEED OFICIAL (MÓVIL)
+## 05 Referentes
+COPIAR: Alemana (reservar 3×) · Santa María (bloque agenda)
+EVITAR: CLC (pop-up seguros) · Dávila (hero comercial)
 
-INDISA — nota 38 · usuarios 1,6 s (CWV OK) · lab 32,3 s
-LAS CONDES — nota 64 · CWV reprobado (CLS 0,44) · lab 5,4 s
-ALEMANA — nota 53 · CWV reprobado (LCP 3,1 s · CLS 0,92) · lab 5,5 s
-DÁVILA — nota 54 · CWV reprobado (LCP 2,8 s · CLS 0,17 · TTFB 1,6 s) · lab 6,2 s
-SANTA MARÍA — nota 64 · CWV reprobado (INP 261 ms) · lab 6,8 s · desktop CWV OK
+## 06 Se puede / cuesta
+Sí hay reserva. Frena: muchos pasos, captcha pronto, convenio a mitad, ficha final densa.
 
-Lab móvil: Indisa 32,3 · SM 6,8 · Dávila 6,2 · Alemana 5,5 · CLC 5,4
+## 07 Recomendaciones (resumen)
+Bloque en home · horas antes · RUT/captcha tarde · convenio suave · formulario corto · CTA visible · re-medir mobile
 
-→ Indisa: mejor experiencia real; peor lab. Aligerar home móvil.
-→ Competencia: fallan CWV (saltos / lentitud / demora al tocar).
+## 07a Inicio
+CTA visible · conservar «¿Qué necesitas agendar?» · sede temprana
 
-Fuentes: ouu45jo4vc · s73sqtgrj5 · hirdgw5bs5 · ms57lriy5j · cghji67u37
+## 07b Frenos
+RUT/captcha más tarde · convenio sin callejón · menos pantallas hasta la hora
 
-================================================================================
-04 · ESTRUCTURA DE NAVEGACIÓN (HOY)
-================================================================================
-Título: DIAGNÓSTICO UX / UI
-Sub: ESTRUCTURA DE NAVEGACIÓN · HOY · WWW.INDISA.CL
+## 07c Cierre
+Conservar calendario · acortar formulario · Ley 21.719
 
-HALLAZGO
-No hay navegación.
-El paciente entra a indisa.cl y encuentra solo mantención:
-sin menú, sin reserva, sin urgencia, sin sedes.
-La única salida visible son íconos de redes sociales.
+## 08 Ley 21.719
+Vigencia 1 dic 2026 · datos sensibles en agenda · incluir antes de conclusión
 
-Mapa real del sitio (hoy):
-www.indisa.cl
-  × Menú principal — no existe
-  × Reservar / Agendar — no existe
-  × Urgencia / teléfonos — no visibles
-  × Especialidades / sedes — no accesibles
-  × Buscador — no existe
-  → Solo RRSS (Facebook, X, YouTube, Instagram)
-
-Lo que el paciente no encuentra hoy:
-Reservar hora · Teléfono urgencia · Mesa central · Dirección/sedes · Especialidades · Resultados/portal
-
-Fuente: captura viva indisa.cl · 2026-07-21 (estado actual, no histórico)
-
-================================================================================
-05 · REFERENTES (HOY · fácil de leer)
-================================================================================
-Título: DIAGNÓSTICO UX / UI
-Sub: REFERENTES · LO QUE HACEN HOY LAS OTRAS CLÍNICAS
-
-Intro: qué copiar y qué no repetir.
-
-COPIAR · Clínica Alemana
-Reservar hora se ve 3 veces (menú + banner + centro). Sin ventanas que bloqueen.
-→ Para Indisa: el botón de agendar debe saltar a la vista apenas se abre el sitio.
-
-COPIAR · Clínica Santa María
-Un solo bloque para agendar (Consultas · Dental · Telemedicina · Exámenes).
-→ Para Indisa: formulario de reserva grande en el centro, no esconderlo en el menú.
-
-EVITAR · Clínica Las Condes
-Una ventana de seguro tapa todo al entrar.
-→ Para Indisa: no poner pop-ups de seguros al cargar.
-
-EVITAR · Clínica Dávila
-El hero vende el seguro, no la hora.
-→ Para Indisa: lo primero debe ser «Reservar hora», no una campaña comercial.
-
-================================================================================
-06 · SE VE BIEN… PERO NO SIRVE (HOY · sin tecnicismos)
-================================================================================
-Título: DIAGNÓSTICO UX / UI
-Sub: HOY · WWW.INDISA.CL
-
-Se ve bien… pero no sirve.
-
-La página de mantención está ordenada y con el logo de Indisa.
-El problema: un paciente que necesita atención no puede hacer nada desde ahí.
-
-LO QUE SÍ HAY → Se ve limpia (marca + mensaje)
-LO QUE FALTA → No se puede usar (sin pedir hora, sin llamar, sin ver sedes)
-
-Aunque el sitio esté en mantención, debería quedar visible:
-· Teléfono de urgencia
-· Teléfono para reservar
-· WhatsApp
-· Dirección de las sedes
-
-================================================================================
-07 · RECOMENDACIONES (3 por lámina · captura + flecha)
-================================================================================
-
---- 07a · Contacto (captura Indisa hoy) · 1/3 ---
-1 Dejar teléfonos a la vista → zona superior del home
-2 Agregar WhatsApp → esquina inferior
-3 No dejar solo las redes → zona de íconos RRSS
-
---- 07b · Reserva (captura Alemana) · 2/3 ---
-1 «Reservar hora» arriba → botón del menú
-2 Formulario grande al centro → bloque de agenda
-3 Sin ventanas que tapen → entrada limpia del home
-
---- 07c · Orden (captura Santa María) · 3/3 ---
-1 Primero lo que el paciente necesita → bloque central de reserva
-2 Menú corto y claro → barra de menú
-3 Cuando Indisa vuelva: medir de nuevo → home/reserva en celular
-
-================================================================================
-08 · MARCO NORMATIVO · PROTECCIÓN DE DATOS (antes de conclusión)
-================================================================================
-Título: DIAGNÓSTICO UX / UI
-Sub: MARCO NORMATIVO · ANTES DE CONCLUSIÓN
-
-En Chile se implementa la Ley 21.719 de protección y tratamiento de datos
-personales (vigencia plena desde el 1 de diciembre de 2026).
-Crea la Agencia de Protección de Datos y eleva el estándar de consentimiento,
-información y seguridad.
-
-• En clínica, el sitio y la agenda tratan datos sensibles (RUT, salud, contacto):
-  hay que revisar bases de tratamiento, avisos y consentimiento en formularios
-  de reserva.
-• Cookies, pixels y formularios web deben transparentar el uso de datos y
-  facilitar derechos del titular (acceso, rectificación, eliminación, oposición).
-• Incluir este marco en el rediseño UX/UI antes de la conclusión del plan digital.
-
-================================================================================
-09 · OPORTUNIDADES EN UX/UI (más claras, no tan breves)
-================================================================================
-Título: OPORTUNIDADES EN UX/UI
-Intro: Tres focos concretos para Indisa a partir de lo que vimos hoy.
-
-01 · SIEMPRE PODER CONTACTAR
-Hoy, si indisa.cl está en mantención, el paciente no encuentra teléfono de urgencia,
-mesa central ni forma de reservar. Queda solo con redes sociales, que no sirven
-cuando alguien necesita atención ahora.
-→ Oportunidad: aunque el sitio falle o esté en mantención, siempre deben quedar
-  a la vista el teléfono de urgencia, el de reserva y un WhatsApp para escribir.
-
-02 · PEDIR HORA SIN COMPLICARSE
-En Alemana y Santa María, al abrir el sitio ya se puede agendar: hay un bloque grande
-para pedir hora y el botón se repite arriba. Nadie tiene que pelear con menús
-ni cerrar ventanas de seguros para llegar a la agenda.
-→ Oportunidad: cuando Indisa vuelva online, poner «Reservar hora» bien visible
-  apenas se abre la página (arriba y al centro), sin avisos que tapen la pantalla.
-
-03 · PRIMERO LO QUE EL PACIENTE NECESITA
-Algunas clínicas muestran primero seguros o campañas. Eso distrae: la persona entra
-a pedir hora, ver sedes o urgencia, no a comprar un producto. Además, al volver el
-sitio habrá que revisar que cargue rápido en el celular.
-→ Oportunidad: ordenar el home por tareas del paciente (agendar, exámenes, sedes)
-  y dejar seguros/campañas más abajo; al restaurar, medir de nuevo la velocidad en móvil.
+## 09 Oportunidades
+01 Reserva más corta · 02 Reserva a la vista · 03 Cierre sin fricción

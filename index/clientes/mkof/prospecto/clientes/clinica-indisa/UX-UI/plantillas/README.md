@@ -1,12 +1,8 @@
-# Plantillas UX/UI — referencia de formato
+# Plantillas UX/UI — estilo MKOF
 
-Las plantillas sirven solo como **referencia de formato** (estructura de lámina Canva).
+Referencia de formato (crema `#f4f1ea`, verde `#1a4d3e`, lime `#c6e86a`, pills, cajas `.rec` / `.box` / `.cap`).
 
-El diagnóstico y los textos de este prospecto están en:
+- `plantilla-mkof.css` — tokens compartidos
+- PNG de ejemplo: portada, recomendaciones, oportunidades
 
-| Carpeta | Contenido |
-|---------|-----------|
-| `../data/` | `diagnostico.json`, `pagespeed.json`, `textos-laminas.json` |
-| `../laminas/` | Láminas HTML + PNG + `COPY-CANVA.txt` + `capturas/` |
-
-**No copiar textos de otros clientes** (p. ej. Kitchenit). Textos propios MKOF, lenguaje simple, sitio **hoy**.
+Los entregables con data Indisa (incl. flujo **Reservar hora**) están en `../laminas/`.
