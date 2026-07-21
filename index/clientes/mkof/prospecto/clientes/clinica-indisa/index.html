@@ -191,6 +191,9 @@
     <h2>Oportunidades</h2>
     <div class="grid" id="ops"></div>
 
+    <h2>Marco normativo · antes de conclusión</h2>
+    <div class="aviso" id="marco-datos"></div>
+
     <h2>Conclusiones</h2>
     <div class="grid" id="conc"></div>
     <div class="card" style="margin-top:1rem" id="sintesis"></div>
@@ -232,7 +235,7 @@
     }
 
     // Cache-bust: evita ver JSON viejo (PENDIENTE) tras git pull
-    const v = '20260721-web';
+    const v = '20260721-leydatos';
     const j = (path) => fetch(base + path + '?v=' + v, { cache: 'no-store' }).then((r) => {
       if (!r.ok) throw new Error(path + ' ' + r.status);
       return r.json();
@@ -308,6 +311,12 @@
         `<article class="card"><h3>${o.n} · ${o.titulo}</h3><p style="margin:0;font-size:0.88rem;color:var(--muted)">${o.fundamento}</p></article>`
       ).join('');
 
+      const marco = conc.antesDeConclusion;
+      const marcoEl = document.getElementById('marco-datos');
+      if (marcoEl && marco) {
+        marcoEl.innerHTML = `<strong>${marco.titulo}</strong><br>${marco.texto}<br><small>${marco.fuente || ''}</small>`;
+      }
+
       document.getElementById('conc').innerHTML = conc.cuadrantes.map((q) =>
         `<article class="card"><h3>${q.titulo}</h3><ul>${q.bullets.map((b) => `<li>${b}</li>`).join('')}</ul></article>`
       ).join('');
@@ -337,7 +346,8 @@
         ['05-referentes.png', 'Referentes'],
         ['06-estetico-vs-funcional.png', 'Estético vs funcional'],
         ['07-recomendaciones.png', 'Recomendaciones'],
-        ['08-oportunidades-uxui.png', 'Oportunidades'],
+        ['08-proteccion-datos.png', 'Protección de datos'],
+        ['09-oportunidades-uxui.png', 'Oportunidades'],
       ];
       document.getElementById('web-laminas').innerHTML = laminas.map(([f, n]) =>
         `<article class="card"><h3>${n}</h3><a href="laminas/web/${f}" target="_blank" rel="noopener"><img src="laminas/web/${f}" alt="${n}" style="width:100%;border-radius:8px;border:1px solid var(--line)" loading="lazy" /></a></article>`

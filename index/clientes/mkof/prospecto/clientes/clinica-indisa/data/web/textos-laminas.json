@@ -101,6 +101,19 @@
       "Al restaurar el sitio, **re-medir LCP mobile** del home real y del widget."
     ]
   },
+  "proteccionDatos": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "MARCO NORMATIVO · ANTES DE CONCLUSIÓN",
+    "ley": "Ley 21.719",
+    "vigencia": "1 de diciembre de 2026",
+    "cuerpo": [
+      "En Chile se implementa la Ley 21.719 de protección y tratamiento de datos personales (vigencia plena desde el 1 de diciembre de 2026).",
+      "Crea la Agencia de Protección de Datos y eleva el estándar de consentimiento, información y seguridad.",
+      "En clínica, el sitio y la agenda tratan datos sensibles (RUT, salud, contacto): hay que revisar bases de tratamiento, avisos y consentimiento en formularios de reserva.",
+      "Cookies, pixels y formularios web deben transparentar el uso de datos y facilitar derechos del titular.",
+      "Incluir este marco en el rediseño UX/UI antes de la conclusión del plan digital."
+    ]
+  },
   "oportunidades": {
     "titulo": "OPORTUNIDADES EN UX/UI",
     "items": [
