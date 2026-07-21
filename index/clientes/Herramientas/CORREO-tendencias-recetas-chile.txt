@@ -1,0 +1,30 @@
+Asunto: Tendencias recetas Chile — listo para probar + Apify en SEO MOVA
+
+Hola,
+
+Les comparto la herramienta Tendencias recetas · Chile para que la puedan probar.
+
+Qué es
+Un buscador de tendencias virales de recetas en Chile (brief + filtros por fecha, período y red social). Va en un ZIP portable, sin depender del organizador completo.
+
+Cómo probarla
+1. Descompriman el ZIP.
+2. En esa carpeta abran una terminal y ejecuten:
+python -m http.server 5500
+3. En el navegador abran:
+http://127.0.0.1:5500/Tendencias.html?vista=buscador
+
+Si abren el HTML con doble clic (file://), el feed puede no cargar; mejor con el servidor local de arriba.
+
+Adjunto
+tendencias-recetas-chile.zip
+
+Recordatorio — Apify / SEO MOVA
+Revisen Apify y suban / dejen documentada esa automatización en la sección SEO de MOVA:
+https://acme-chile.cl/mova/seo/
+
+Ahí están todas las automatizaciones; Apify debe quedar registrado en ese espacio para que el equipo lo encuentre y lo mantenga junto al resto.
+
+Cualquier duda o ajuste al probar, avísenme.
+
+Saludos
