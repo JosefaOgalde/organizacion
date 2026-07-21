@@ -78,9 +78,9 @@ Estado actual · @clinicaindisacl · jul 2026 · interacción 0,11%
 - No publica en TikTok; Red Dávila sí y concentra mucha atención ahí
 
 ### Riesgos si no se ajusta el rumbo
-- Publicar mucho sin mirar si la gente responde
-- Dejar el audio (Spotify) solo en manos de otras clínicas
-- Obsesionarse con sumar seguidores y bajar la interacción
+- Seguir publicando mucho sin mirar si la gente responde
+- Quedarse solo en posts sueltos y no armar series con los médicos (cada pieza se olvida rápido)
+- No aprovechar YouTube —donde Indisa lidera— para alimentar videos cortos en Instagram
 
 ### Qué conviene hacer
 - En **90 días**, subir la interacción en Instagram hacia **0,4–0,7%** (Reels + invitación a agendar)
