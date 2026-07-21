@@ -92,19 +92,28 @@ Reservar hora · Teléfono urgencia · Mesa central · Dirección/sedes · Espec
 Fuente: captura viva indisa.cl · 2026-07-21 (estado actual, no histórico)
 
 ================================================================================
-05 · REFERENTES
+05 · REFERENTES (HOY · fácil de leer)
 ================================================================================
 Título: DIAGNÓSTICO UX / UI
-Sub: REFERENTES · ALEMANA / SANTA MARÍA / CLC / DÁVILA
+Sub: REFERENTES · LO QUE HACEN HOY LAS OTRAS CLÍNICAS
 
-1) Reserva repetida en el primer pantallazo
-   Alemana muestra «Reservar hora» en header, hero y widget central sin modal de entrada.
+Intro: qué copiar y qué no repetir.
 
-2) Menú corto con niveles de agenda
-   Santa María concentra la conversión en un widget con pestañas Consultas · Dental · Telemedicina · Exámenes.
+COPIAR · Clínica Alemana
+Reservar hora se ve 3 veces (menú + banner + centro). Sin ventanas que bloqueen.
+→ Para Indisa: el botón de agendar debe saltar a la vista apenas se abre el sitio.
 
-3) Urgencia visible vs. producto que tapa
-   CLC destaca Rescate en barra superior, pero el modal de seguro al cargar frena la reserva. Dávila prioriza seguro en el hero.
+COPIAR · Clínica Santa María
+Un solo bloque para agendar (Consultas · Dental · Telemedicina · Exámenes).
+→ Para Indisa: formulario de reserva grande en el centro, no esconderlo en el menú.
+
+EVITAR · Clínica Las Condes
+Una ventana de seguro tapa todo al entrar.
+→ Para Indisa: no poner pop-ups de seguros al cargar.
+
+EVITAR · Clínica Dávila
+El hero vende el seguro, no la hora.
+→ Para Indisa: lo primero debe ser «Reservar hora», no una campaña comercial.
 
 ================================================================================
 06 · ESTÉTICO VS FUNCIONAL (HOY)

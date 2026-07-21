@@ -73,19 +73,34 @@
   },
   "referentes": {
     "titulo": "DIAGNÓSTICO UX / UI",
-    "subtitulo": "REFERENTES · ALEMANA / SANTA MARÍA / CLC / DÁVILA",
-    "anotaciones": [
+    "subtitulo": "REFERENTES · LO QUE HACEN HOY LAS OTRAS CLÍNICAS",
+    "intro": "Tres aprendizajes claros: qué copiar y qué no repetir.",
+    "copiar": [
       {
-        "titulo": "Reserva repetida en el primer pantallazo",
-        "detalle": "Alemana muestra «Reservar hora» en header, hero y widget central sin modal de entrada."
+        "clinica": "Clínica Alemana",
+        "titulo": "Reservar hora se ve 3 veces",
+        "detalle": "En el menú, en el banner y en el centro. Sin ventanas que bloqueen.",
+        "paraIndisa": "El botón de agendar debe saltar a la vista apenas se abre el sitio."
       },
       {
-        "titulo": "Menú corto con niveles de agenda",
-        "detalle": "Santa María concentra la conversión en un widget con pestañas Consultas · Dental · Telemedicina · Exámenes."
+        "clinica": "Clínica Santa María",
+        "titulo": "Un solo bloque para agendar",
+        "detalle": "Pestañas: Consultas · Dental · Telemedicina · Exámenes. Menú corto.",
+        "paraIndisa": "Un formulario de reserva grande en el centro, no esconderlo en el menú."
+      }
+    ],
+    "evitar": [
+      {
+        "clinica": "Clínica Las Condes",
+        "titulo": "Una ventana de seguro tapa todo",
+        "detalle": "Destacan urgencia arriba, pero el pop-up comercial frena la reserva.",
+        "paraIndisa": "No poner pop-ups de seguros al cargar. Primero que el paciente pueda agendar."
       },
       {
-        "titulo": "Urgencia visible vs. producto que tapa",
-        "detalle": "CLC destaca Rescate en barra superior, pero el modal de seguro al cargar frena la reserva. Dávila prioriza seguro en el hero."
+        "clinica": "Clínica Dávila",
+        "titulo": "El hero vende el seguro, no la hora",
+        "detalle": "Lo primero es contratar seguro. Agendar queda abajo o por WhatsApp.",
+        "paraIndisa": "Lo primero debe ser «Reservar hora», no una campaña comercial."
       }
     ]
   },
