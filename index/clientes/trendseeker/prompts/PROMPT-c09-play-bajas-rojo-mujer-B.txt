@@ -3,25 +3,33 @@ SKU: WFS2020RMA-LRD
 Link: https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/
 Público: MUJER (adulta)
 Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
+Escena fija: URBANO / FESTIVAL CON CALLE MOJADA O LLUVIA LIGERA. El producto es el héroe; el agua demuestra impermeabilidad.
 
 CARACTERÍSTICAS (no inventar otras):
-- Hunter Play bajas para mujer en rojo
+- Hunter Play bajas para mujer en rojo (silueta dinámica, versión corta del ícono Original)
 - 100% impermeables
 - Caucho natural de alta calidad
-- Suela de plataforma más plana (confort)
-- Caña corta que roza la parte superior del tobillo
-- Silueta dinámica estilo urbano / festival
+- Suela de plataforma más plana (confort y versatilidad)
+- Caña corta que apenas roza la parte superior del tobillo
+- Estilo urbano / festival
+- Color rojo y acabado (mate o gloss) fieles a las fotos de producto adjuntas
 
 VESTUARIO / MODELO:
-- Mujer adulta
-- Outfit coherente (jeans, falda con medias o pantalón) que deje ver el calzado Hunter
-- Si son botas de agua: preferible que pantalón/jeans vayan metidos o no oculten la caña
+- Mujer adulta, look urbano o festival
+- Jeans o pantalón metidos DENTRO de las botas para que se vea la caña corta Play
+- Sin piel expuesta en tobillos
 - Sin tipografía ni logos inventados fuera de los del producto real
 
+CÓMO USAR EN GEMINI (VIDEO):
+1) Modo VIDEO (no imagen fija).
+2) Sube primero las FOTOS DE PRODUCTO reales.
+3) Pega este prompt en el mismo mensaje.
+4) Si Gemini cambia el diseño: reitera fidelidad exacta a las fotos.
+
 ---
-VERSIÓN B — Video cualidades en movimiento
+VERSIÓN B — Video cualidades en movimiento · charco / impermeable
 ---
 
-Crea un VIDEO comercial basándote estrictamente en las fotos de producto. mujer cruzando un charco con seguridad; rojo fiel a las fotos, impermeabilidad y confort de la plataforma plana.
+Crea un VIDEO comercial basándote estrictamente en las fotos de producto adjuntas (Play bajas rojo Hunter exactas). Escena: calle urbana o entorno festival con piso mojado. Mujer a mitad de zancada cruzando un charco con seguridad y soltura.
 
-Destaca en movimiento las características reales: Hunter Play bajas para mujer en rojo; 100% impermeables; Caucho natural de alta calidad; Suela de plataforma más plana (confort). El calzado domina el cuadro; fondo coherente y secundario. No alterar el diseño.
+Obligatorio: jeans metidos dentro de las botas; cero piel en tobillos. Destaca en movimiento: rojo fiel a las fotos, gotas que perlan en el caucho 100% impermeable, confort de la suela plataforma plana al aterrizar, caña corta al tobillo. El calzado domina el cuadro; fondo urbano/festival con bokeh, secundario. No alterar el diseño.

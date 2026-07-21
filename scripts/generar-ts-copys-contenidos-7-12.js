@@ -49,6 +49,14 @@ const CONTENIDOS = [
     hookC: 'Día de lluvia ≠ día en pausa.',
     /** C8: formatos visualmente distintos (no plantilla única A=B=C) */
     formatosDistintos: true,
+    cortoLinea: 'Hunter Chelsea Commando · 100% waterproof · hechas a mano.',
+    historiaParrafo:
+      'Las Chelsea Commando negras brillantes para mujer son 100% waterproof,\nen caucho natural FSC (vegano certificado), hechas a mano, con fuelles\nelásticos, suela Hunter Original y un perfil +15 mm más alto que la\nChelsea brillante clásica — para que el gloss mande y el agua no.',
+    checklistTitulo: 'Hunter Chelsea Commando · gloss negro · mujer',
+    hashtagsA: '#Hunter #TrendSeeker #TrendSeekerChile #ChelseaCommando',
+    hashtagsB:
+      '#HunterBoots #BotasImpermeables #TrendSeekerChile #ModaLluvia #ChelseaCommando',
+    hashtagsC: '#Hunter #Waterproof #TrendSeeker #BotasMujer',
   },
 
   {
@@ -59,14 +67,23 @@ const CONTENIDOS = [
     sku: 'WFS2020RMA-LRD',
     bullets: [
       '100% impermeables',
-      'Caucho natural',
-      'Suela plataforma plana',
-      'Caña corta (tobillo)',
+      'Caucho natural de alta calidad',
+      'Suela plataforma plana (confort)',
+      'Caña corta al tobillo',
       'Estilo urbano / festival',
     ],
     hookA: 'Rojo Play. Caña baja. Sin miedo al charco 🔴',
     hookB: 'Hunter Play bajas: impermeable con vibe festival.',
     hookC: 'Rojo · caña corta · plataforma plana · 100% waterproof.',
+    formatosDistintos: true,
+    cortoLinea: 'Hunter Play bajas · 100% impermeables · suela plataforma plana.',
+    historiaParrafo:
+      'Simplifican el ícono Original en una silueta dinámica de caña corta\n(al tobillo), con suela de plataforma más plana para máximo confort\ny versatilidad. Caucho natural de alta calidad, 100% impermeables —\nlistas para la ciudad, el festival o el charco del camino.',
+    checklistTitulo: 'Hunter Play bajas · mujer',
+    hashtagsA: '#Hunter #TrendSeeker #TrendSeekerChile #HunterPlay',
+    hashtagsB:
+      '#HunterBoots #BotasImpermeables #TrendSeekerChile #ModaFestival #HunterPlay',
+    hashtagsC: '#Hunter #Waterproof #TrendSeeker #BotasMujer #HunterPlay',
   },
   {
     n: 10,
@@ -142,6 +159,10 @@ ${c.url}
 }
 
 function buildADistinto(c) {
+  const linea =
+    c.cortoLinea || 'Hunter · 100% waterproof · características de ficha.';
+  const tags =
+    c.hashtagsA || '#Hunter #TrendSeeker #TrendSeekerChile';
   return `COPY VIDEO · Trendseeker · C${c.n}/12 · Versión A
 Producto: ${c.producto}
 SKU: ${c.sku}
@@ -150,15 +171,21 @@ Link: ${c.url}
 
 ${c.hookA}
 
-Hunter Chelsea Commando · 100% waterproof · hechas a mano.
+${linea}
 
 👉 ${c.url}
 
-#Hunter #TrendSeeker #TrendSeekerChile #ChelseaCommando
+${tags}
 `;
 }
 
 function buildBDistinto(c) {
+  const parrafo =
+    c.historiaParrafo ||
+    `${c.producto}: solo características reales de ficha. Disponibles en TrendSeeker.`;
+  const tags =
+    c.hashtagsB ||
+    '#HunterBoots #BotasImpermeables #TrendSeekerChile';
   return `COPY VIDEO · Trendseeker · C${c.n}/12 · Versión B
 Producto: ${c.producto}
 SKU: ${c.sku}
@@ -167,22 +194,21 @@ Link: ${c.url}
 
 ${c.hookB}
 
-Las Chelsea Commando negras brillantes para mujer son 100% waterproof,
-en caucho natural FSC (vegano certificado), hechas a mano, con fuelles
-elásticos, suela Hunter Original y un perfil +15 mm más alto que la
-Chelsea brillante clásica — para que el gloss mande y el agua no.
+${parrafo}
 
 Disponibles en TrendSeeker 👇
 ${c.url}
 
 ¿Talla? Comenta y te ayudamos 💬
 
-#HunterBoots #BotasImpermeables #TrendSeekerChile #ModaLluvia #ChelseaCommando
+${tags}
 `;
 }
 
 function buildCDistinto(c) {
   const bullets = c.bullets.map((b) => `✓ ${b}`).join('\n');
+  const titulo = c.checklistTitulo || c.producto;
+  const tags = c.hashtagsC || '#Hunter #Waterproof #TrendSeeker';
   return `COPY VIDEO · Trendseeker · C${c.n}/12 · Versión C
 Producto: ${c.producto}
 SKU: ${c.sku}
@@ -191,13 +217,13 @@ Link: ${c.url}
 
 ${c.hookC}
 
-Hunter Chelsea Commando · gloss negro · mujer
+${titulo}
 ${bullets}
 
 Shop ahora:
 ${c.url}
 
-#Hunter #Waterproof #TrendSeeker #BotasMujer
+${tags}
 `;
 }
 

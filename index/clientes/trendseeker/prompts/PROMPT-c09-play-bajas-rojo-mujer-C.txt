@@ -3,25 +3,33 @@ SKU: WFS2020RMA-LRD
 Link: https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/
 Público: MUJER (adulta)
 Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
+Escena fija: URBANO / FESTIVAL CON CALLE MOJADA O LLUVIA LIGERA. El producto es el héroe; el agua demuestra impermeabilidad.
 
 CARACTERÍSTICAS (no inventar otras):
-- Hunter Play bajas para mujer en rojo
+- Hunter Play bajas para mujer en rojo (silueta dinámica, versión corta del ícono Original)
 - 100% impermeables
 - Caucho natural de alta calidad
-- Suela de plataforma más plana (confort)
-- Caña corta que roza la parte superior del tobillo
-- Silueta dinámica estilo urbano / festival
+- Suela de plataforma más plana (confort y versatilidad)
+- Caña corta que apenas roza la parte superior del tobillo
+- Estilo urbano / festival
+- Color rojo y acabado (mate o gloss) fieles a las fotos de producto adjuntas
 
 VESTUARIO / MODELO:
-- Mujer adulta
-- Outfit coherente (jeans, falda con medias o pantalón) que deje ver el calzado Hunter
-- Si son botas de agua: preferible que pantalón/jeans vayan metidos o no oculten la caña
+- Mujer adulta, look urbano o festival
+- Jeans o pantalón metidos DENTRO de las botas
+- Sin piel expuesta en tobillos
 - Sin tipografía ni logos inventados fuera de los del producto real
 
+CÓMO USAR EN GEMINI (VIDEO):
+1) Modo VIDEO (no imagen fija).
+2) Sube primero las FOTOS DE PRODUCTO reales.
+3) Pega este prompt en el mismo mensaje.
+4) Si Gemini cambia el diseño: reitera fidelidad exacta a las fotos.
+
 ---
-VERSIÓN C — Video close-up de detalle
+VERSIÓN C — Video close-up de detalle · Play bajas rojo
 ---
 
-Genera un VIDEO corto tipo close-up publicitario. close-up de las Play bajas rojas: textura del caucho, tobillo, suela plana Hunter.
+Genera un VIDEO corto tipo close-up publicitario de las Botas de Agua Bajas Play Mujer Rojo de las fotos de referencia. Calle mojada o lluvia ligera: gotas sobre el caucho rojo mientras la mujer camina; jeans dentro de las botas, sin piel visible.
 
-Enfoque en textura, color fiel a las refs, detalles de ficha y contacto con el piso. Cámara lenta, product-first. Sin rediseñar el calzado.
+Enfoque en textura del caucho natural, rojo exacto a las refs, caña corta al tobillo, contacto de la suela plataforma plana con el piso mojado. Cámara baja, lenta, product-first. Sin rediseñar la silueta Play ni inventar logos.
