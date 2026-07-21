@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-20T21:34:21Z",
-  "ambito": "Redes sociales orgánicas",
+  "updatedAt": "2026-07-21T04:05:00Z",
+  "ambito": "RRSS orgánicas + Diagnóstico WEB UX/UI",
   "clienteAgencia": "MKOF",
-  "etapaActual": 1,
-  "etapaNombre": "Análisis patrón (ecosistema + competencia + oportunidades + conclusiones)",
+  "etapaActual": 2,
+  "etapaNombre": "Prospectos con módulos RRSS/ y UX-UI/ (plantillas + data + láminas)",
   "esperandoNombreProspecto": false,
   "patrones": [
     {

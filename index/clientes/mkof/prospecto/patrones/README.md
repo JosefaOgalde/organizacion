@@ -2,7 +2,7 @@
 
 Láminas de referencia para el análisis de prospectos (RRSS orgánicas).
 
-Recreación fiel del layout de la presentación (cream + verdes). Al trabajar un prospecto concreto, se copian a `../clientes/<slug>/` y se rellenan con data respaldada.
+Recreación fiel del layout de la presentación (cream + verdes). Al trabajar un prospecto concreto, se copian a `../clientes/<slug>/RRSS/plantillas/` y los entregables se rellenan en `../clientes/<slug>/RRSS/laminas/` con data de `RRSS/data/`.
 
 | Archivo | Lámina |
 |---------|--------|

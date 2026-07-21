@@ -2,8 +2,8 @@
   "nombre": "Clínica Indisa",
   "slug": "clinica-indisa",
   "clienteAgencia": "MKOF",
-  "ambito": "Prospecto Clínica Indisa · RRSS + UX/UI",
-  "etapa": 2,
+  "ambito": "RRSS orgánicas",
+  "etapa": 1,
   "creado": "2026-07-20T21:33:46Z",
   "updatedAt": "2026-07-21T04:05:00Z",
   "competidores": [
@@ -52,16 +52,19 @@
       "tiktok": "https://www.tiktok.com/@clinicasantamariacl"
     }
   },
-  "objetivo": "Hub del prospecto. Documentos y plantillas en RRSS/ (etapa 1) y UX-UI/ (etapa 2).",
+  "objetivo": "RRSS orgánicas alineadas entre canales + benchmark vs CLC, Alemana, Dávila, Santa María.",
   "archivos": {
-    "rrss": "RRSS/",
-    "uxUi": "UX-UI/",
-    "rrssHub": "RRSS/?disco=1",
-    "uxUiHub": "UX-UI/?disco=1"
+    "fuentes": "fuentes.json",
+    "plantillas": "plantillas/",
+    "ecosistema": "data/ecosistema-rrss.json",
+    "competencia": "data/competencia.json",
+    "oportunidades": "data/oportunidades.json",
+    "conclusiones": "data/conclusiones.json",
+    "laminas": "laminas/"
   },
   "pendientes": [
-    "Confirmar Spotify institucional Indisa/CLC/Dávila/Santa María",
-    "Opcional: reenviar capturas Indisa IG para fechas exactas de UI"
+    "Confirmar que Indisa/CLC/Dávila/Santa María no tienen Spotify institucional",
+    "Opcional: reenviar capturas Indisa IG para fijar fechas exactas de UI (hoy: 3–4 posts/sem estimados)"
   ],
   "canalesOficiales": {
     "web": "https://www.indisa.cl/",
@@ -72,18 +75,5 @@
     "linkedin": "https://www.linkedin.com/company/cl-nica-indisa/posts/?feedView=all",
     "tiktok": "https://www.tiktok.com/@clinicaindisacl"
   },
-  "modulos": {
-    "RRSS": {
-      "ruta": "RRSS/",
-      "plantillas": "RRSS/plantillas/",
-      "data": "RRSS/data/",
-      "laminas": "RRSS/laminas/"
-    },
-    "UX-UI": {
-      "ruta": "UX-UI/",
-      "plantillas": "UX-UI/plantillas/",
-      "data": "UX-UI/data/",
-      "laminas": "UX-UI/laminas/"
-    }
-  }
+  "modulo": "RRSS"
 }

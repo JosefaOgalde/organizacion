@@ -1,0 +1,26 @@
+{
+  "id": "clinica-indisa-ux-ui",
+  "clienteProspecto": "Clínica Indisa",
+  "clienteMkof": "mkof",
+  "modulo": "UX-UI",
+  "estado": "diagnostico-web",
+  "actualizado": "2026-07-21",
+  "competidores": [
+    "Clínica Las Condes",
+    "Clínica Alemana",
+    "Clínica Dávila",
+    "Clínica Santa María"
+  ],
+  "urls": {
+    "hubClinica": "../",
+    "rrss": "../RRSS/",
+    "plantillas": "plantillas/",
+    "data": "data/",
+    "laminas": "laminas/"
+  },
+  "notas": [
+    "Plantillas = referencia de formato. El diagnóstico evalúa el sitio HOY.",
+    "Textos propios MKOF; no copiar Kitchenit.",
+    "Lenguaje simple en láminas (sin jerga técnica)."
+  ]
+}

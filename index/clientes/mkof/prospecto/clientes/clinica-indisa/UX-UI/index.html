@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clínica Indisa — Diagnóstico WEB UX/UI · Prospecto MKOF</title>
+  <style>
+    :root {
+      --bg: #f4f7f5; --ink: #1e3d32; --muted: #5a7368; --card: #fff;
+      --line: #d5e3d9; --accent: #2f7a5c; --beige: #e8f0eb;
+      --prospecto: #0b3d5c; --prospecto-mid: #15658f; --violet: #5b21b6;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; }
+    header {
+      padding: 1.25rem 1.5rem; background: #fff; border-bottom: 1px solid var(--line);
+      display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; justify-content: space-between; align-items: baseline;
+    }
+    header h1 { margin: 0; font-size: 1.35rem; }
+    header p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    nav a { color: var(--accent); font-weight: 600; text-decoration: none; margin-right: 1rem; }
+    main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+    .aviso {
+      background: #f5f3ff; border-left: 4px solid var(--violet);
+      padding: 0.9rem 1rem; border-radius: 0 10px 10px 0; margin-bottom: 1.25rem;
+      font-size: 0.92rem; color: #4c1d95;
+    }
+    h2 { font-size: 1.1rem; margin: 1.75rem 0 0.75rem; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+    .kpi {
+      background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+      padding: 0.85rem 1rem;
+    }
+    .kpi b { display: block; font-size: 1.35rem; color: var(--prospecto); }
+    .kpi span { font-size: 0.78rem; color: var(--muted); }
+    .ux-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    .ux-card {
+      display: flex; flex-direction: column; gap: 8px; padding: 14px;
+      border-radius: 14px; border: 1px solid var(--line); background: #fff;
+      text-decoration: none; color: inherit; transition: border-color .15s, box-shadow .15s;
+    }
+    .ux-card:hover { border-color: var(--violet); box-shadow: 0 8px 24px rgba(91,33,182,.1); }
+    .ux-card img {
+      width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 10px;
+      background: #f1f5f9; border: 1px solid var(--line);
+    }
+    .ux-card strong { font-size: .88rem; line-height: 1.35; }
+    .ux-card span { font-size: .72rem; color: var(--muted); }
+    .list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .row {
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+      padding: 0.85rem 1rem; background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; text-decoration: none; color: inherit;
+    }
+    .row:hover { border-color: var(--prospecto); }
+    .row strong { display: block; font-size: 0.92rem; }
+    .row .meta { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+    .tag {
+      font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em;
+      background: var(--beige); color: var(--ok, var(--accent)); padding: 0.2rem 0.5rem; border-radius: 999px;
+    }
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+    code { font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Clínica Indisa</h1>
+      <p>Prospecto · Diagnóstico WEB UX/UI · MKOF</p>
+    </div>
+    <nav>
+      <a href="../?disco=1">← Clínica Indisa</a>
+      <a href="../RRSS/?disco=1">RRSS</a>
+      <a href="../../?disco=1">Hub prospectos</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="aviso">
+      Plantillas de formato en <code>plantillas/</code>. Diagnóstico del sitio <strong>hoy</strong> en <code>data/</code>.
+      Láminas listas para Canva en <code>laminas/</code>. Textos propios MKOF (no se copian de otros clientes).
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><b>5</b><span>sitios auditados</span></div>
+      <div class="kpi"><b id="k-cwv">—</b><span>pasan Core Web Vitals (móvil)</span></div>
+      <div class="kpi"><b>1</b><span>Indisa: se ve bien / no sirve</span></div>
+      <div class="kpi"><b>Ley 21.719</b><span>oportunidad vs. competencia</span></div>
+    </div>
+
+    <h2>Láminas Canva — WEB</h2>
+    <p style="margin:0 0 1rem;font-size:0.9rem;color:var(--muted)">
+      Abrí cada lámina → clic derecho → «Guardar imagen» o screenshot.
+      Copy: <a href="laminas/COPY-CANVA.txt" target="_blank" rel="noopener"><code>laminas/COPY-CANVA.txt</code></a>
+      · JSON: <a href="data/textos-laminas.json" target="_blank" rel="noopener"><code>data/textos-laminas.json</code></a>
+    </p>
+    <div class="ux-grid">
+      <a class="ux-card" href="laminas/01-portada-diagnostico.html" target="_blank" rel="noopener">
+        <img src="laminas/01-portada-diagnostico.png" alt="" loading="lazy" />
+        <strong>01 · Portada</strong>
+        <span>Diagnóstico WEB UX/UI</span>
+      </a>
+      <a class="ux-card" href="laminas/02-portada-competencia.html" target="_blank" rel="noopener">
+        <img src="laminas/02-portada-competencia.png" alt="" loading="lazy" />
+        <strong>02 · Competencia</strong>
+        <span>Quiénes entran al banco</span>
+      </a>
+      <a class="ux-card" href="laminas/03-rendimiento.html" target="_blank" rel="noopener">
+        <img src="laminas/03-rendimiento.png" alt="" loading="lazy" />
+        <strong>03 · Rendimiento</strong>
+        <span>5 clínicas · PageSpeed oficiales</span>
+      </a>
+      <a class="ux-card" href="laminas/04-estructura-navegacion.html" target="_blank" rel="noopener">
+        <img src="laminas/04-estructura-navegacion.png" alt="" loading="lazy" />
+        <strong>04 · Navegación HOY</strong>
+        <span>Menú + teléfonos + agenda</span>
+      </a>
+      <a class="ux-card" href="laminas/05-referentes.html" target="_blank" rel="noopener">
+        <img src="laminas/05-referentes.png" alt="" loading="lazy" />
+        <strong>05 · Referentes</strong>
+        <span>Qué copiar / qué evitar</span>
+      </a>
+      <a class="ux-card" href="laminas/06-estetico-vs-funcional.html" target="_blank" rel="noopener">
+        <img src="laminas/06-estetico-vs-funcional.png" alt="" loading="lazy" />
+        <strong>06 · Se ve bien / no sirve</strong>
+        <span>Mensaje central Indisa</span>
+      </a>
+      <a class="ux-card" href="laminas/07a-recomendaciones-contacto.html" target="_blank" rel="noopener">
+        <img src="laminas/07a-recomendaciones-contacto.png" alt="" loading="lazy" />
+        <strong>07a · Recomendaciones</strong>
+        <span>Menú + teléfonos</span>
+      </a>
+      <a class="ux-card" href="laminas/07b-recomendaciones-reserva.html" target="_blank" rel="noopener">
+        <img src="laminas/07b-recomendaciones-reserva.png" alt="" loading="lazy" />
+        <strong>07b · Recomendaciones</strong>
+        <span>Agenda + velocidad</span>
+      </a>
+      <a class="ux-card" href="laminas/07c-recomendaciones-orden.html" target="_blank" rel="noopener">
+        <img src="laminas/07c-recomendaciones-orden.png" alt="" loading="lazy" />
+        <strong>07c · Recomendaciones</strong>
+        <span>Contenido + privacidad</span>
+      </a>
+      <a class="ux-card" href="laminas/08-proteccion-datos.html" target="_blank" rel="noopener">
+        <img src="laminas/08-proteccion-datos.png" alt="" loading="lazy" />
+        <strong>08 · Ley 21.719</strong>
+        <span>Ventana vs. competencia</span>
+      </a>
+      <a class="ux-card" href="laminas/09-oportunidades-uxui.html" target="_blank" rel="noopener">
+        <img src="laminas/09-oportunidades-uxui.png" alt="" loading="lazy" />
+        <strong>09 · Oportunidades</strong>
+        <span>Por qué contratar</span>
+      </a>
+    </div>
+
+    <h2>Datos y capturas</h2>
+    <div class="list">
+      <a class="row" href="data/diagnostico.json" target="_blank" rel="noopener">
+        <div>
+          <strong>diagnostico.json</strong>
+          <div class="meta">Hallazgos por clínica · scorecard · recomendaciones</div>
+        </div>
+        <span class="tag">JSON</span>
+      </a>
+      <a class="row" href="data/pagespeed.json" target="_blank" rel="noopener">
+        <div>
+          <strong>pagespeed.json</strong>
+          <div class="meta">Informes oficiales PageSpeed (IDs de la usuaria)</div>
+        </div>
+        <span class="tag">JSON</span>
+      </a>
+      <a class="row" href="laminas/capturas/" target="_blank" rel="noopener">
+        <div>
+          <strong>Capturas</strong>
+          <div class="meta">Homes + pantallazos PageSpeed Insights</div>
+        </div>
+        <span class="tag">PNG</span>
+      </a>
+      <a class="row" href="plantillas/" target="_blank" rel="noopener">
+        <div>
+          <strong>plantillas/</strong>
+          <div class="meta">Referencia de formato (no es el entregable)</div>
+        </div>
+        <span class="tag">REF</span>
+      </a>
+      <a class="row" href="fuentes.json" target="_blank" rel="noopener">
+        <div>
+          <strong>fuentes.json</strong>
+          <div class="meta">URLs clínicas + informes PageSpeed</div>
+        </div>
+        <span class="tag">JSON</span>
+      </a>
+    </div>
+  </main>
+
+  <footer>Prospecto MKOF · Clínica Indisa · UX/UI · separado de RRSS</footer>
+  <script>
+    fetch("data/pagespeed.json")
+      .then(function (r) { return r.json(); })
+      .then(function (ps) {
+        var n = 0;
+        Object.keys(ps.clinicas || {}).forEach(function (k) {
+          var m = (ps.clinicas[k].mobile || {}).field;
+          if (m && m.overall === true) n++;
+        });
+        var el = document.getElementById("k-cwv");
+        if (el) el.textContent = String(n) + "/5";
+      })
+      .catch(function () {});
+  </script>
+</body>
+</html>
