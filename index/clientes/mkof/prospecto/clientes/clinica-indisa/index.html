@@ -225,7 +225,7 @@
     }
 
     // Cache-bust: evita ver JSON viejo (PENDIENTE) tras git pull
-    const v = '20260720-iger9';
+    const v = '20260721-spotify';
     const j = (path) => fetch(base + path + '?v=' + v, { cache: 'no-store' }).then((r) => {
       if (!r.ok) throw new Error(path + ' ' + r.status);
       return r.json();

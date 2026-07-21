@@ -437,33 +437,35 @@
     "Spotify": {
       "las_condes": {
         "valor": null,
-        "display": "Sin evid. / PEND.",
+        "display": "Sin evid.",
         "fuenteId": null
       },
       "alemana": {
-        "valor": null,
-        "display": "Activo / PEND.",
+        "valor": 476,
+        "display": "476 · 11 listas",
+        "exacto": "476 seguidores · 11 listas públicas",
         "fuenteId": "spotify-alemana",
         "url": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg",
-        "nota": "Perfil oficial Spotify; capturar seguidores / shows",
+        "detalleArchivo": "data/spotify-alemana.json",
+        "nota": "Screenshot perfil Spotify 2026-07-21. Podcasts + playlists temáticas (embarazo, salud mental, prevención).",
         "highlight": true,
         "mejorMetrica": true
       },
       "davila": {
         "valor": null,
-        "display": "Sin evid. / PEND.",
+        "display": "Sin evid.",
         "fuenteId": null
       },
       "santa_maria": {
         "valor": null,
-        "display": "Sin evid. / PEND.",
+        "display": "Sin evid.",
         "fuenteId": null
       },
       "indisa": {
         "valor": null,
-        "display": "Sin evid. / PEND.",
+        "display": "Sin evid.",
         "fuenteId": null,
-        "nota": "Alemana sí tiene Spotify institucional; oportunidad de formato audio para Indisa"
+        "nota": "Oportunidad orgánico: abrir Spotify institucional (modelo Alemana)."
       }
     }
   },
@@ -477,6 +479,7 @@
     "TikTok ER (n=5): Dávila 6,00% (virales) >> Santa María 0,64% >> Alemana 0,07%. Indisa N/A · CLC sin cuenta.",
     "En IG el prospecto Indisa está en el pelotón medio-bajo; el gap crítico es vs Alemana (~3×).",
     "Instagram ER (N=9 primeras entregadas): CLC 0,99% > Santa María 0,73% > Dávila 0,45% > Alemana 0,13% > Indisa 0,11%. Indisa 5.ª en engagement relativo.",
+    "Spotify: solo Alemana con perfil institucional (476 seguidores · 11 listas). Oportunidad de audio orgánico para Indisa.",
     "Columna Prospecto (azul) = Indisa; el resto = benchmark."
   ]
 }

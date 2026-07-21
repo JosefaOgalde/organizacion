@@ -44,23 +44,23 @@ Estado actual · @clinicaindisacl · jul 2026 · ER 0,11% (N=9)
 
 ---
 
-## 03 · OPORTUNIDADES EN INSTAGRAM
+## 03 · OPORTUNIDADES EN RRSS ORGÁNICAS
 
-**Título:** OPORTUNIDADES EN INSTAGRAM
+**Título:** OPORTUNIDADES EN RRSS ORGÁNICAS
 
 > Las oportunidades miran **lo que la competencia hace bien**, no solo el gap de Indisa.
 
-### 01 · Engagement con la misma escala de audiencia
+### 01 · Subir engagement en Instagram (ruta CLC)
 **Barra:** CLC convierte mejor con ~45 mil seguidores  
-**Bullet:** Clínica Las Condes logra **0,99% ER** vs **0,11%** de Indisa con bases casi iguales (45,8 vs 43,7 mil). Hay espacio para subir interacción sin “crecer seguidores primero”: ganchos, Reels con retención y CTAs claros.
+**Bullet:** Clínica Las Condes logra **0,99% ER** vs **0,11%** de Indisa con bases casi iguales. Activar la audiencia actual con Reels, ganchos y CTAs — sin esperar crecer seguidores primero.
 
-### 02 · Formatos que sí mueven likes (aprender del mix ajeno)
+### 02 · Abrir Spotify como canal de acompañamiento (modelo Alemana)
+**Barra:** Alemana ya opera audio orgánico  
+**Bullet:** Única del quinteto con Spotify institucional: **476 seguidores · 11 listas** (podcasts de especialistas + playlists embarazo/crianza, salud mental, prevención, deporte). Indisa sin evidencia de perfil → oportunidad de audio reutilizando voz médica de IG/YouTube.
+
+### 03 · Sistematizar formatos que sí engagan (SM / Dávila)
 **Barra:** Santa María y Dávila demuestran piezas de alto alcance  
-**Bullet:** Santa María llega a **0,73% ER** y Dávila a **0,45%** con reels de casos/especialidad (trauma, pediatría, historias clínicas). Indisa ya collab con médicos; el salto es empaquetar esas piezas como serie medible, no posts sueltos.
-
-### 03 · No perseguir solo “cuenta grande”
-**Barra:** Alemana lidera alcance (139 mil) pero diluye el ER (0,13%)  
-**Bullet:** Alemana muestra el techo de comunidad; su ER bajo confirma que **más seguidores ≠ más engagement**. La apuesta Indisa es calidad de interacción (ruta CLC) más que copiar volumen Alemana.
+**Bullet:** SM **0,73%** y Dávila **0,45%** con reels de casos/especialidad. Empaquetar collabs médicos Indisa como serie medible, no posts sueltos.
 
 ---
 

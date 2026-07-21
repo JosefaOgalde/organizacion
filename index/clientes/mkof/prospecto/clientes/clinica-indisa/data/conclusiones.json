@@ -1,7 +1,7 @@
 {
   "titulo": "CONCLUSIONES",
-  "fecha": "2026-07-20",
-  "foco": "Instagram · fusión estado Indisa + oportunidades competencia + matriz RRSS",
+  "fecha": "2026-07-21",
+  "foco": "RRSS orgánicas · fusión estado Indisa + oportunidades competencia + matriz",
   "cuadrantes": [
     {
       "id": "tl",
@@ -9,15 +9,15 @@
       "bullets": [
         "Base IG sólida: 43,7 mil en el pelotón medio del quinteto",
         "Feed activo y tono de marca claro (“Estamos Para Tu Cuidado”)",
-        "Liderazgo YouTube del benchmark (25 mil) — video transferable a Reels"
+        "Liderazgo YouTube del benchmark (25 mil) — cantera de video y audio"
       ]
     },
     {
       "id": "tr",
       "titulo": "Gaps vs competencia",
       "bullets": [
-        "ER 0,11%: último del quinteto (CLC 0,99% · SM 0,73% · Dávila 0,45%)",
-        "Misma escala que CLC pero ~9× menos engagement relativo",
+        "IG ER 0,11%: último del quinteto (CLC 0,99%)",
+        "Sin Spotify institucional; Alemana ya opera audio (476 seg. · 11 listas)",
         "Sin TikTok (“no publica”) mientras Dávila lidera 68 mil / 6% ER"
       ]
     },
@@ -25,24 +25,24 @@
       "id": "bl",
       "titulo": "Riesgos de comunicación",
       "bullets": [
-        "Publicar mucho sin KPI de engagement → presencia sin conversación",
-        "Collabs médicos sin sistema de serie → picos aislados",
-        "Perseguir solo seguidores (modelo Alemana) puede bajar aún más el ER"
+        "Publicar mucho en IG sin KPI de engagement",
+        "Dejar audio/Spotify solo en manos de la competencia",
+        "Perseguir solo seguidores puede bajar aún más el ER"
       ]
     },
     {
       "id": "br",
       "titulo": "Apuesta orgánica sugerida",
       "bullets": [
-        "Meta 90 días: subir ER hacia banda 0,4–0,7%",
-        "Serie semanal Reels especialistas + carrusel educativo + CTA agenda",
-        "Medir N=9 posts/mes con la misma fórmula del benchmark"
+        "IG: meta 90 días ER hacia 0,4–0,7% (serie Reels + CTA)",
+        "Spotify: abrir perfil con 1–2 podcasts + playlists de acompañamiento",
+        "Medir IG N=9/mes; en Spotify, seguidores y plays de listas"
       ]
     }
   ],
   "sintesisCentral": [
-    "Indisa está presente en Instagram; el problema no es audiencia, es activación.",
-    "La competencia marca el camino: CLC (conversión), SM/Dávila (formatos), Alemana (escala sin obsesionarse).",
-    "Priorizar engagement rate y sistema de contenidos; usar YouTube como cantera de video corto."
+    "Indisa está presente en Instagram; el problema es activación, no audiencia.",
+    "Alemana abre un frente que Indisa aún no usa: Spotify como acompañamiento en audio.",
+    "Priorizar ER en IG + lanzar audio orgánico; YouTube como cantera de piezas."
   ]
 }

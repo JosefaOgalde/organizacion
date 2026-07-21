@@ -21,17 +21,17 @@ IMAGEN CELULAR → mockup-perfil-indisa.png
 (@clinicaindisacl · 43,7 mil · ER 0,11%)
 
 ═══════════════════════════════════════
-03 · OPORTUNIDADES EN INSTAGRAM
+03 · OPORTUNIDADES EN RRSS ORGÁNICAS
 (lo que la competencia hace bien)
 ═══════════════════════════════════════
-01  CLC convierte mejor con ~45 mil seguidores
-• Las Condes logra 0,99% ER vs 0,11% de Indisa con bases casi iguales. Subir interacción sin esperar crecer seguidores primero.
+01  Subir engagement en Instagram (ruta CLC)
+• Las Condes logra 0,99% ER vs 0,11% de Indisa con bases casi iguales. Activar audiencia actual sin esperar crecer seguidores primero.
 
-02  Santa María y Dávila demuestran piezas de alto alcance
+02  Abrir Spotify como canal de acompañamiento (modelo Alemana)
+• Alemana es la única del quinteto con Spotify: 476 seguidores · 11 listas (podcasts de especialistas + playlists embarazo/crianza, salud mental, prevención, deporte). Indisa sin evidencia de perfil → oportunidad de audio orgánico reutilizando voz médica de IG/YouTube.
+
+03  Sistematizar formatos que sí engagan (SM / Dávila)
 • SM 0,73% y Dávila 0,45% con reels de casos/especialidad. Empaquetar collabs médicos Indisa como serie medible.
-
-03  Alemana lidera alcance (139 mil) pero diluye el ER (0,13%)
-• Más seguidores ≠ más engagement. Apuesta Indisa: calidad de interacción (ruta CLC), no solo volumen.
 
 ═══════════════════════════════════════
 04 · CONCLUSIONES (fusión)
@@ -39,24 +39,24 @@ IMAGEN CELULAR → mockup-perfil-indisa.png
 FORTALEZAS INDISA
 • Base IG sólida: 43,7 mil en el pelotón medio
 • Feed activo y tono de marca claro
-• Liderazgo YouTube (25 mil) transferable a Reels
+• Liderazgo YouTube (25 mil) — cantera de video y audio
 
 GAPS VS COMPETENCIA
-• ER 0,11%: último del quinteto
-• Misma escala que CLC pero ~9× menos ER
+• IG ER 0,11%: último del quinteto (CLC 0,99%)
+• Sin Spotify; Alemana ya opera audio (476 · 11 listas)
 • Sin TikTok; Dávila lidera 68 mil / 6% ER
 
 RIESGOS
-• Publicar mucho sin KPI de engagement
-• Collabs sin sistema de serie → picos aislados
+• Publicar mucho en IG sin KPI de engagement
+• Dejar audio/Spotify solo en manos de la competencia
 • Perseguir solo seguidores puede bajar el ER
 
 APUESTA ORGÁNICA
-• Meta 90 días: ER hacia 0,4–0,7%
-• Serie semanal Reels + carrusel + CTA agenda
-• Medir N=9 posts/mes con la misma fórmula
+• IG: meta 90 días ER hacia 0,4–0,7%
+• Spotify: perfil + 1–2 podcasts + playlists de acompañamiento
+• Medir IG N=9/mes; en Spotify, seguidores y plays
 
 SÍNTESIS
 1. Indisa está presente en IG; el problema es activación, no audiencia.
-2. Competencia: CLC (conversión) · SM/Dávila (formatos) · Alemana (escala sin obsesionarse).
-3. Priorizar engagement rate y sistema de contenidos; YouTube como cantera de video corto.
+2. Alemana abre un frente que Indisa aún no usa: Spotify como acompañamiento en audio.
+3. Priorizar ER en IG + lanzar audio orgánico; YouTube como cantera.

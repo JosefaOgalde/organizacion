@@ -129,9 +129,10 @@
       "tipo": "spotify",
       "entidad": "Clínica Alemana",
       "url": "https://open.spotify.com/user/8001v856hnvkpq7ytrik14qlg",
-      "dato": "Perfil Spotify oficial; seguidores/shows pendientes captura",
-      "fecha": "2026-07-20",
-      "metodo": "URL entregada por usuaria."
+      "dato": "476 seguidores · 11 listas públicas (podcasts + playlists temáticas)",
+      "fecha": "2026-07-21",
+      "detalle": "data/spotify-alemana.json",
+      "metodo": "Screenshot perfil Spotify entregado por usuaria."
     },
     {
       "id": "li-davila",

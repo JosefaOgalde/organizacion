@@ -5,7 +5,7 @@
   "ambito": "RRSS orgánicas",
   "etapa": 1,
   "creado": "2026-07-20T21:33:46Z",
-  "updatedAt": "2026-07-20T23:55:00Z",
+  "updatedAt": "2026-07-21T00:20:00Z",
   "competidores": [
     "Clínica Las Condes",
     "Clínica Alemana",
@@ -61,7 +61,7 @@
     "conclusiones": "data/conclusiones.json"
   },
   "pendientes": [
-    "Spotify: capturar seguidores/shows Alemana; confirmar si Indisa/otros tienen perfil",
+    "Confirmar que Indisa/CLC/Dávila/Santa María no tienen Spotify institucional",
     "Muestreo 7–14 días: posts/semana y mix de formatos"
   ],
   "canalesOficiales": {
