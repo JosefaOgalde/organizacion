@@ -70,3 +70,7 @@ Conectan personas, procesos y tecnología para decidir a tiempo.
 - Artículo: `../articulos/ART-tecnologia-sin-integracion.txt`  
 - Copys: `../copys/COPY-tecnologia-sin-integracion.txt`  
 - Portadas: `../portadas-guardadas/NL1-ago-portadas-canva-finales.md`
+
+## Fondos Midjourney (cuadrados)
+Ver: [PROMPTS-FONDOS-CUADRADOS-NL1-ago.md](./PROMPTS-FONDOS-CUADRADOS-NL1-ago.md)
+

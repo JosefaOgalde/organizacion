@@ -4,6 +4,13 @@
   "nota": "Fusión editorial + data hub cielo (20 jul).",
   "items": [
     {
+      "fecha": "2026-07-21",
+      "titulo": "NL1 ago · prompts fondos carrusel cuadrados (8)",
+      "archivo": "carruseles/PROMPTS-FONDOS-CUADRADOS-NL1-ago.md",
+      "tipo": "carrusel-fondos-mj",
+      "notas": "Flat vector orange/teal · square · cielo vacío para texto"
+    },
+    {
       "id": "nl1-ago-memphis-logistica-cielo-azure",
       "fecha": "2026-07-20T19:53:31Z",
       "titulo": "Tecnología sin integración — logística Memphis (cielo azure con contraste)",

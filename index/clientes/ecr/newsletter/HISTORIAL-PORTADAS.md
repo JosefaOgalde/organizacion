@@ -157,3 +157,11 @@ Actualizado: 2026-07-20
 - Artículo: [articulos/ART23-equipos-en-terreno.docx](./articulos/ART23-equipos-en-terreno.docx)
 - Mundos: F · C · M
 - Archivo prompts: [portadas-guardadas/ART23-equipos-en-terreno.md](./portadas-guardadas/ART23-equipos-en-terreno.md)
+
+## NL 1 ago — fondos carrusel cuadrados (Midjourney)
+
+- Fecha: 2026-07-21
+- Archivo: `carruseles/PROMPTS-FONDOS-CUADRADOS-NL1-ago.md`
+- 8 prompts square · estilo flat vector orange/teal · cielo vacío arriba para texto Canva
+- Tema: Tecnología sin integración (carrusel LinkedIn)
+
