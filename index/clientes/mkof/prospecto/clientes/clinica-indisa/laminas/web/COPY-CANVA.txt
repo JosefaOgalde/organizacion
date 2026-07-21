@@ -136,15 +136,23 @@ Aunque el sitio esté en mantención, debería quedar visible:
 · Dirección de las sedes
 
 ================================================================================
-07 · RECOMENDACIONES (7 cajas)
+07 · RECOMENDACIONES (3 por lámina · captura + flecha)
 ================================================================================
-1. Incluir en toda mantención teléfonos de urgencia y reserva (y WhatsApp).
-2. Homologar el home con un widget de reserva visible en el primer viewport.
-3. Trabajar desktop y mobile con el mismo CTA sticky «Reservar hora».
-4. Reordenar contenidos: tareas del paciente primero, seguros y campañas después.
-5. Evitar modales comerciales al ingreso que bloqueen la agenda.
-6. Acortar el menú y separar servicios en línea de contenidos de marca/blog.
-7. Al restaurar el sitio, re-medir LCP mobile del home real y del widget.
+
+--- 07a · Contacto (captura Indisa hoy) · 1/3 ---
+1 Dejar teléfonos a la vista → zona superior del home
+2 Agregar WhatsApp → esquina inferior
+3 No dejar solo las redes → zona de íconos RRSS
+
+--- 07b · Reserva (captura Alemana) · 2/3 ---
+1 «Reservar hora» arriba → botón del menú
+2 Formulario grande al centro → bloque de agenda
+3 Sin ventanas que tapen → entrada limpia del home
+
+--- 07c · Orden (captura Santa María) · 3/3 ---
+1 Primero lo que el paciente necesita → bloque central de reserva
+2 Menú corto y claro → barra de menú
+3 Cuando Indisa vuelva: medir de nuevo → home/reserva en celular
 
 ================================================================================
 08 · MARCO NORMATIVO · PROTECCIÓN DE DATOS (antes de conclusión)

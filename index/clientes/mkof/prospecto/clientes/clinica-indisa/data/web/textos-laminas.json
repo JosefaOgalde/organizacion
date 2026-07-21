@@ -118,15 +118,38 @@
   },
   "recomendaciones": {
     "titulo": "DIAGNÓSTICO UX / UI",
-    "subtitulo": "RECOMENDACIONES",
-    "items": [
-      "Incluir en toda mantención **teléfonos de urgencia y reserva** (y WhatsApp).",
-      "Homologar el home con un **widget de reserva** visible en el primer viewport.",
-      "Trabajar **desktop y mobile** con el mismo CTA sticky «Reservar hora».",
-      "Reordenar contenidos: **tareas del paciente primero**, seguros y campañas después.",
-      "Evitar **modales comerciales** al ingreso que bloqueen la agenda.",
-      "Acortar el menú y separar **servicios en línea** de contenidos de marca/blog.",
-      "Al restaurar el sitio, **re-medir LCP mobile** del home real y del widget."
+    "subtitulo": "RECOMENDACIONES · 3 POR LÁMINA CON CAPTURA + FLECHAS",
+    "slides": [
+      {
+        "id": "07a",
+        "titulo": "Contacto en mantención",
+        "captura": "indisa.cl hoy",
+        "items": [
+          { "n": 1, "titulo": "Dejar teléfonos a la vista", "texto": "Urgencia y reservar hora visibles aunque esté en mantención." },
+          { "n": 2, "titulo": "Agregar WhatsApp", "texto": "Botón en la esquina para pedir hora sin esperar el sitio." },
+          { "n": 3, "titulo": "No dejar solo las redes", "texto": "RRSS no sirven para una urgencia." }
+        ]
+      },
+      {
+        "id": "07b",
+        "titulo": "Reserva visible",
+        "captura": "referente Alemana",
+        "items": [
+          { "n": 1, "titulo": "«Reservar hora» arriba", "texto": "Botón claro en el menú, PC y celular." },
+          { "n": 2, "titulo": "Formulario grande al centro", "texto": "Lo primero al abrir: poder pedir hora." },
+          { "n": 3, "titulo": "Sin ventanas que tapen", "texto": "No pop-ups de seguros al entrar." }
+        ]
+      },
+      {
+        "id": "07c",
+        "titulo": "Orden del home",
+        "captura": "referente Santa María",
+        "items": [
+          { "n": 1, "titulo": "Primero lo que el paciente necesita", "texto": "Agendar al centro; seguros después." },
+          { "n": 2, "titulo": "Menú corto y claro", "texto": "Separar agendar de blog/marca." },
+          { "n": 3, "titulo": "Cuando Indisa vuelva: medir de nuevo", "texto": "Revisar velocidad del home y la reserva en celular." }
+        ]
+      }
     ]
   },
   "proteccionDatos": {
