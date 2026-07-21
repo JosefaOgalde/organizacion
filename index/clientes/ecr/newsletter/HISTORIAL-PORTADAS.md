@@ -4,7 +4,7 @@
 
 - Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
 - Feedback: las imágenes anteriores simbolizaban flota de transporte; pivot a eficiencia operacional digital + línea de producción (sin camiones/vans).
-- Mundos: **K+B** · **H** · **B+H**
+- Mundos: **K+B** · **H** · **B+H** (las tres con ~70% cielo plano vacío para texto)
 - Archivo: [portadas-guardadas/NL1-ago-tecnologia-sin-integracion-prompts-v5.md](./portadas-guardadas/NL1-ago-tecnologia-sin-integracion-prompts-v5.md)
 
 ### Opción 1 · PC + capa digital de control (~70% cielo)
