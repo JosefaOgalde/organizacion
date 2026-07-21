@@ -1,8 +1,8 @@
-COPY VIDEO · Trendseeker · C9/12 · Versión C
+COPY VIDEO · Trendseeker · C9/12 · Versión C · ELEGIDA
 Producto: Botas de Agua Bajas Play Mujer Rojo
 SKU: WFS2020RMA-LRD
 Formato: CHECKLIST · stories / caption con bullets + CTA
-Regla: 1ª línea = contexto con emoji(s) · luego producto/características · emojis obligatorios.
+Regla: 1ª línea = contexto con emoji(s) · luego producto/características · emojis obligatorios · CTA antes de hashtags.
 Link: https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/
 
 Día nublado ≠ día en pausa: Play rojas en acción ☁️🔴✨
@@ -14,7 +14,7 @@ Hunter Play bajas · mujer
 ✓ Caña corta al tobillo
 ✓ Estilo urbano / festival 💃
 
-Shop ahora 👇
+Disponibles en TrendSeeker — elige tu talla y llévatelas hoy 👇
 https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/
 
 #Hunter #Waterproof #TrendSeeker #BotasMujer #HunterPlay
