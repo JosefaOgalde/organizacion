@@ -39,10 +39,11 @@ No es falta de digitalización: es falta de integración.
 Los sistemas no conversan con la operación real:  
 turnos, supervisión, reposición y asistencia.
 
-### Slide 6 — Qué hacen los líderes
-**Título:** Las empresas más eficientes…  
-**Cuerpo:** No suman más plataformas.  
-Conectan personas, procesos y tecnología para decidir a tiempo.
+### Slide 6 — Logo / marca
+**En Canva (sobre fondo solo gradiente teal→naranja):**  
+- Logo ECR GROUP®  
+- Tagline: Para que te dediques a tu negocio  
+*(Sin texto de contenido del artículo; slide de marca.)*
 
 ### Slide 7 — Cadena completa
 **Título:** Eficiencia = cadena completa  

@@ -47,9 +47,10 @@ if (empty($t['completada'])) {
     $t['horaInicio'] = $t['horaInicio'] ?? '13:00';
     $t['horaFin'] = $t['horaFin'] ?? '15:30';
     $t['entregableArchivo'] = $guia;
-    $t['notas'] = 'Carrusel Canva · artículo «Tecnología sin integración…». '
-        . "Slides listos en {$guia}. Copy del post: copys/COPY-tecnologia-sin-integracion.txt (sección 2). "
-        . 'Armar en Canva 1080×1080 (8 slides) → exportar → publicar.';
+    $t['notas'] = 'Carrusel Canva NL1 ago · 8 slides. Textos 2–3 líneas (slides 2–5). '
+        . "Guión: {$guia}. Fondos MJ: index/clientes/ecr/newsletter/carruseles/PROMPTS-FONDOS-CUADRADOS-NL1-ago.md "
+        . '(slide 6 = solo fondo gradiente teal→naranja para logo ECR + tagline). '
+        . 'Slide 6 Canva: logo ECR GROUP® + «Para que te dediques a tu negocio».';
     $t['agendaFijada'] = true;
     $data['tareas'][$idx] = $t;
     echo "  · ECR: actualizada TI — Carrusel #07 → {$guia}\n";
