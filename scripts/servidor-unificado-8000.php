@@ -42,11 +42,16 @@ if (is_dir($candidate)) {
     $candidate = rtrim($candidate, '\\/') . DIRECTORY_SEPARATOR . 'index.html';
 }
 
-// Sin extensión y no existe como archivo → probar como carpeta/index.html
+// Sin extensión y no existe como archivo → probar carpeta/index.html o archivo.html
 if (!is_file($candidate) && !str_contains(basename($rel), '.')) {
     $asIndex = $root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $rel) . DIRECTORY_SEPARATOR . 'index.html';
     if (is_file($asIndex)) {
         $candidate = $asIndex;
+    } else {
+        $asHtml = $root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $rel) . '.html';
+        if (is_file($asHtml)) {
+            $candidate = $asHtml;
+        }
     }
 }
 

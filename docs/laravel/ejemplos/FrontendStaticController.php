@@ -111,6 +111,10 @@ class FrontendStaticController extends Controller
             $candidates[] = $path;
             // /index/clientes  →  /index/clientes/index.html
             $candidates[] = $path . '/index.html';
+            // /index/clientes/Herramientas/Tendencias → Tendencias.html
+            if (!str_contains(basename($path), '.')) {
+                $candidates[] = $path . '.html';
+            }
         }
 
         $rootNorm = strtolower(str_replace('\\', '/', $root));
