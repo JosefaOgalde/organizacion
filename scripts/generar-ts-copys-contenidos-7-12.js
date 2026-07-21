@@ -77,13 +77,13 @@ const CONTENIDOS = [
       'Caña corta al tobillo',
       'Estilo urbano / festival',
     ],
-    hookA: 'Rojo Play. Caña baja. Sin miedo al charco 🔴',
-    hookB: 'Hunter Play bajas: impermeable con vibe festival.',
-    hookC: 'Rojo · caña corta · plataforma plana · 100% waterproof.',
+    hookA: 'Cielo gris, paso firme y las Play rojas mandando ☁️🔴☔',
+    hookB: 'Primero las ves puestas… después el close-up: lateral, frontal y el detalle 👀🔴☔',
+    hookC: 'Día nublado ≠ día en pausa: Play rojas en acción ☁️🔴✨',
     formatosDistintos: true,
-    cortoLinea: 'Hunter Play bajas · 100% impermeables · suela plataforma plana.',
+    cortoLinea: 'Hunter Play bajas · caña corta · 100% impermeables · suela plataforma plana.',
     historiaParrafo:
-      'Simplifican el ícono Original en una silueta dinámica de caña corta\n(al tobillo), con suela de plataforma más plana para máximo confort\ny versatilidad. Caucho natural de alta calidad, 100% impermeables —\nlistas para la ciudad, el festival o el charco del camino.',
+      'Hunter Play bajas: silueta dinámica de caña corta (al tobillo), suela de\nplataforma más plana para confort, caucho natural de alta calidad y\n100% impermeables — ciudad, festival o el charco del camino ✨',
     checklistTitulo: 'Hunter Play bajas · mujer',
     hashtagsA: '#Hunter #TrendSeeker #TrendSeekerChile #HunterPlay',
     hashtagsB:
