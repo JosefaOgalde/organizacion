@@ -1,0 +1,1875 @@
+{
+  "clientes": [
+    {
+      "id": "cli-trendseeker",
+      "nombre": "Trendseeker - Talk (full time)",
+      "abrev": "TS",
+      "tipo": "full-time",
+      "color": "lavanda",
+      "roles": [
+        {
+          "id": "rol-cm",
+          "nombre": "Community Manager",
+          "abrev": "CM",
+          "funciones": "Manejar redes\nPublicar contenido\nHistorias redes\nInforme Metricool",
+          "tareasAlMes": "Pub redes (x12)\nReporte mensual",
+          "plazosEntregables": "25/06 - Pub redes\n26/06 - Pub redes\n30/06 - Pub redes\n01/07 - Reporte junio"
+        },
+        {
+          "id": "rol-wp",
+          "nombre": "Desarrollo Wordpress",
+          "abrev": "DEV",
+          "funciones": "Editar frontend\nGestionar banners\nActualizar productos",
+          "tareasAlMes": "Subir banner\nBajar banner\nCambiar precios\nCarga masiva",
+          "plazosEntregables": "28/06 - Carga masiva\n01/07 - Revisión término descuento"
+        }
+      ],
+      "agente": {
+        "nombre": "Agente Trendseeker",
+        "emoji": "📊",
+        "especialidad": "Community Manager, Metricool y WordPress",
+        "instrucciones": "Eres el asistente de Trendseeker - Talk. Ayudas con publicaciones en redes, informes Metricool, historias, banners del sitio y tareas de WordPress (productos, precios, carga masiva)."
+      },
+      "manualMarca": {
+        "texto": "",
+        "archivos": []
+      },
+      "metas": "",
+      "contextoPrompt": "",
+      "ficha": {
+        "contacto": "",
+        "links": "",
+        "notas": "",
+        "seccionesExtra": [],
+        "documentos": [],
+        "landing": {
+          "imagenes": [],
+          "imagenesOverrides": [],
+          "imagenesOcultas": [],
+          "imagenesMeta": []
+        }
+      }
+    },
+    {
+      "id": "cli-ecr",
+      "nombre": "ECR - Talk (full time)",
+      "abrev": "ECR",
+      "tipo": "full-time",
+      "color": "celeste",
+      "roles": [
+        {
+          "id": "rol-ecr-cm",
+          "nombre": "Community Manager",
+          "abrev": "CM",
+          "funciones": "Newsletter LinkedIn\nArtículo con portada\nArtículo entregado listo",
+          "tareasAlMes": "2 NL al mes\n3 copys por NL",
+          "plazosEntregables": "NL: copy feed invitación\nNL: copy carrusel + link\nNL: copy video artículo"
+        },
+        {
+          "id": "rol-ecr-dev",
+          "nombre": "Desarrollo Blog",
+          "abrev": "DEV",
+          "funciones": "Propuestas blog\nElementor\nWordPress",
+          "tareasAlMes": "Propuestas según solicitud",
+          "plazosEntregables": "Entregas puntuales del blog"
+        }
+      ],
+      "agente": {
+        "nombre": "Agente ECR",
+        "emoji": "📝",
+        "especialidad": "Newsletter LinkedIn y desarrollo de blog",
+        "instrucciones": "Eres el asistente de ECR. Ayudas con newsletters de LinkedIn, copys, carruseles, videos y propuestas o secciones del blog en Elementor / WordPress."
+      },
+      "manualMarca": {
+        "texto": "",
+        "archivos": []
+      },
+      "metas": "",
+      "contextoPrompt": "",
+      "ficha": {
+        "contacto": "",
+        "links": "",
+        "notas": "",
+        "seccionesExtra": [],
+        "documentos": []
+      }
+    },
+    {
+      "id": "cli-piscineria",
+      "nombre": "Piscinería - Talk (full time)",
+      "abrev": "PISC",
+      "tipo": "full-time",
+      "color": "menta",
+      "roles": [
+        {
+          "id": "rol-pisc-cm",
+          "nombre": "Community Manager",
+          "abrev": "CM",
+          "funciones": "Cliente entrega info, copys y gráficas\nPublicar contenidos en feed\nRepostear en historias con link\nAgregar música si no son videos",
+          "tareasAlMes": "8 contenidos al mes\nFeed + historias con link",
+          "plazosEntregables": "8 publicaciones según calendario del mes"
+        }
+      ],
+      "agente": {
+        "nombre": "Agente Piscineria",
+        "emoji": "🏊",
+        "especialidad": "Publicación de contenidos en redes",
+        "instrucciones": "Eres el asistente de Piscineria. Ayudas a publicar los 8 contenidos mensuales solo en días hábiles (lunes a viernes, sin feriados chilenos), en feed, repostear en historias con link y agregar música cuando no son videos."
+      },
+      "manualMarca": {
+        "texto": "",
+        "archivos": []
+      },
+      "metas": "",
+      "contextoPrompt": "",
+      "ficha": {
+        "contacto": "",
+        "links": "",
+        "notas": "",
+        "seccionesExtra": [],
+        "documentos": []
+      }
+    },
+    {
+      "id": "cli-hotspring",
+      "nombre": "Hotspring - Talk (full time)",
+      "abrev": "HS",
+      "tipo": "full-time",
+      "color": "mentaSuave",
+      "roles": [
+        {
+          "id": "rol-hs-cm",
+          "nombre": "Community Manager",
+          "abrev": "CM",
+          "funciones": "Cliente entrega info, copys y gráficas\nPublicar contenidos en feed\nRepostear en historias con link\nAgregar música si no son videos",
+          "tareasAlMes": "8 contenidos al mes\nFeed + historias con link",
+          "plazosEntregables": "8 publicaciones según calendario del mes"
+        }
+      ],
+      "agente": {
+        "nombre": "Agente Hotspring",
+        "emoji": "♨️",
+        "especialidad": "Publicación de contenidos en redes",
+        "instrucciones": "Eres el asistente de Hotspring. Ayudas a publicar los 8 contenidos mensuales solo en días hábiles (lunes a viernes, sin feriados chilenos), en feed, repostear en historias con link y agregar música cuando no son videos."
+      },
+      "manualMarca": {
+        "texto": "",
+        "archivos": []
+      },
+      "metas": "",
+      "contextoPrompt": "",
+      "ficha": {
+        "contacto": "",
+        "links": "",
+        "notas": "",
+        "seccionesExtra": [],
+        "documentos": []
+      }
+    },
+    {
+      "id": "cli-mkof",
+      "nombre": "MKOF - Talk (full time)",
+      "abrev": "MKOF",
+      "tipo": "full-time",
+      "color": "agua",
+      "roles": [
+        {
+          "id": "rol-mkof-dev",
+          "nombre": "Desarrollo",
+          "abrev": "DEV",
+          "funciones": "Planificación de proyectos\nGantt y cronogramas\nDefinición de entregables",
+          "tareasAlMes": "Entregables según etapa del proyecto",
+          "plazosEntregables": "Según acuerdos del proyecto"
+        }
+      ],
+      "agente": {
+        "nombre": "Agente MKOF",
+        "emoji": "📐",
+        "especialidad": "Planificación y entregables de proyecto",
+        "instrucciones": "Eres el asistente de MKOF. Ayudas con Gantt, cronogramas post auditoría, definición de tiempos y entregables del proyecto."
+      },
+      "manualMarca": {
+        "texto": "",
+        "archivos": []
+      },
+      "metas": "",
+      "contextoPrompt": "",
+      "ficha": {
+        "contacto": "",
+        "links": "",
+        "notas": "",
+        "seccionesExtra": [],
+        "documentos": [],
+        "landing": {
+          "imagenes": [],
+          "imagenesOverrides": [],
+          "imagenesOcultas": [],
+          "imagenesMeta": []
+        }
+      }
+    },
+    {
+      "id": "cli-joyas-mercury",
+      "nombre": "Joyas Mercury",
+      "abrev": "JM",
+      "tipo": "freelance",
+      "color": "rosa",
+      "roles": [
+        {
+          "id": "rol-jm-dev",
+          "nombre": "Desarrollo Web",
+          "abrev": "DEV",
+          "funciones": "Rediseño del sitio web\nUX/UI y maquetación\nComponentes y páginas\nContenido y estructura",
+          "tareasAlMes": "Avance según etapas del rediseño",
+          "plazosEntregables": "Entregas según cronograma del proyecto\n19/07 — Entrega sitio web"
+        }
+      ],
+      "agente": {
+        "nombre": "Agente Joyas Mercury",
+        "emoji": "💎",
+        "especialidad": "Rediseño y desarrollo del sitio web",
+        "instrucciones": "Eres el asistente de Joyas Mercury. Ayudas con el rediseño del sitio web: UX/UI, estructura de páginas, componentes, maquetación, contenido y decisiones de desarrollo frontend."
+      },
+      "manualMarca": {
+        "texto": "Manual de marca — Joyas Mercury\nFuente: Manual de marca - Joyas Mercury.pdf\n\n## Propósito\nEste manual reúne las herramientas básicas para el correcto uso y aplicación gráfica de la marca en todas sus posibles expresiones. Pensado para quienes interpretan, articulan, comunican y aplican la marca. El uso consistente refuerza la identidad de Joyas Mercury.\n\n## Logotipo\n- Marca: JOYAS MERCURY\n- Margen obligatorio: la distancia entre el logo y el siguiente elemento debe ser la cuarta parte (¼) del tamaño del logo.\n\n## Isotipo\n- Isotipo: letra «M»\n- Mismo margen obligatorio que el logotipo (¼ del tamaño).\n\n## Paleta de colores\n- #ECC54A — dorado / amarillo\n- #A97E23 — dorado oscuro\n- #C88F9C — rosa\n- #D8BFB1 — beige / nude\n- #C4C4C4 — gris\n\n## Aplicación web (Fase 2 WooCommerce)\n- Líneas de producto en filtros: Esencial · Gold · Deluxe\n- Usar la paleta en chips de filtro, destacados, botones y componentes del rediseño joyasmercury.cl\n- Respetar márgenes del logo e isotipo en headers, favicon y piezas gráficas",
+        "archivos": [],
+        "actualizado": "2026-06-24",
+        "fuente": "Manual de marca - Joyas Mercury.pdf"
+      },
+      "metas": "Etapa 2 — Rediseño joyasmercury.cl\n- Navegación limpia y elegante (referencia joyería premium)\n- Filtros visuales Esencial / Gold / Deluxe en la misma vista (sin cambiar de página)\n- Menú simplificado con colecciones como protagonista\n- Productos Destacados dentro de Inicio (no landing aparte)\n- Páginas legales, Nosotros, Contacto y carrito con estética de marca\n- Entrega Fase 2 + guías para que Camila gestione catálogo sola\n- Inversión acordada: $200.000 CLP · plazo 4–5 semanas hábiles",
+      "contextoPrompt": "Stack: WordPress + WooCommerce + Astra + Elementor Free + Smart Slider. Fase 2 sin Elementor Pro salvo que la clienta contrate licencia (~$58.000/año).\n\nColecciones: Esencial · Gold · Deluxe.\nCategorías por colección: Aros, Cadenas, Anillos, Pulseras, Conjuntos (15 combinaciones).\n\nMenú objetivo: Inicio (con Destacados) · Colecciones → Esencial/Gold/Deluxe · Historias que Brillan · Mi Cuenta · Contacto · Mi Carrito. Navbar: lupa + carrito. WhatsApp canal principal (icono verde oficial).\n\nFiltros: misma landing, AJAX o plugin (Filter Everything / desarrollo custom). Productos deben estar categorizados y etiquetados antes de verse como referencia Pandora.\n\nPáginas legales: Políticas de compra, Cambios y garantías, Despachos, Cuidados de joyas, Contacto — con redes en páginas de ayuda.\n\nBackup técnico local: C:\\Users\\josef\\joyasmercury-backup (wordpress/, database/, exports/, docs/). Repo privado GitHub: JosefaOgalde/joyasmercury-backup.",
+      "ficha": {
+        "contacto": "Cliente: Camila — Joyas Mercury\nCanal principal: WhatsApp (icono verde, no personalizar color)\nCorreo: alternativa secundaria / respaldo WooCommerce en compras\nFormulario contacto: no prioritario si no hay capacidad de revisar correos\n\n--- Backup joyasmercury ---\nCliente: Camila — Joyas Mercury\nCanal principal: WhatsApp (icono verde, no personalizar color)\nCorreo: alternativa secundaria / respaldo WooCommerce en compras\nFormulario contacto: no prioritario si no hay capacidad de revisar correos",
+        "links": "Sitio en producción: https://joyasmercury.cl\nBackup local: C:\\Users\\josef\\joyasmercury-backup\nRepo backup (privado): https://github.com/JosefaOgalde/joyasmercury-backup\nInicio v2 (post trabajo): página Inicio v2 · plantilla Elementor «inicio»\nInventario exportado: exports/site-inventory.json",
+        "notas": "Etapa 1 ya hecha: Inicio v2 Elementor, landings Esencial/Gold/Deluxe base, Smart Slider, CSS círculos móvil, categoría Esencial parcial (~3 productos).\n\nPendiente Etapa 2: quitar bloques categorías con conteo, menú definitivo, 15 combinaciones WC, filtros AJAX, destacados en home, legales, carrito visual, pruebas y entrega.\n\nCabecera Astra: ocultar franja negra móvil (fila «Encima de cabecera»), logo centro, carrito derecha, menú horizontal debajo en desktop.\n\nPreguntas abiertas clienta: cantidad productos a cargar, textos legales, contenido Nosotros, productos destacados iniciales, referencia visual carrito.\n\n--- Backup joyasmercury ---\nEtapa 1 ya hecha: Inicio v2 Elementor, landings Esencial/Gold/Deluxe base, Smart Slider, CSS círculos móvil, categoría Esencial parcial (~3 productos).\n\nPendiente Etapa 2: quitar bloques categorías con conteo, menú definitivo, 15 combinaciones WC, filtros AJAX, destacados en home, legales, carrito visual, pruebas y entrega.\n\nCabecera Astra: ocultar franja negra móvil (fila «Encima de cabecera»), logo centro, carrito derecha, menú horizontal debajo en desktop.\n\nPreguntas abiertas clienta: cantidad productos a cargar, textos legales, contenido Nosotros, productos destacados iniciales, referencia visual carrito.",
+        "seccionesExtra": [
+          {
+            "id": "jm-sec-requerimientos",
+            "titulo": "Requerimientos Etapa 2",
+            "contenido": "Decisiones confirmadas (Camila):\n1. Eliminar bloques de categorías con conteo — el menú es protagonista.\n2. Productos Destacados solo en Inicio; clienta necesita capacitación.\n3. Filtros en misma vista: Esencial/Gold/Deluxe × Aros/Cadenas/Anillos/Pulseras/Conjuntos.\n4. Clienta carga productos primero; luego filtros.\n5. Menú: Inicio, Colecciones (3), Historias que Brillan, Mi Cuenta, Contacto, Mi Carrito.\n6. Carrito: funcionalidad WC intacta; personalizar parte visual superior.\n7. Nosotros + Historias que Brillan (reseñas con el tiempo).\n8. Páginas legales + redes en páginas de ayuda.\n9. WhatsApp principal; correo secundario.\n\nFlujo usuario: Inicio → Destacados + círculos colección → Landing colección → filtros visuales → producto → carrito → checkout."
+          },
+          {
+            "id": "jm-sec-cotizacion",
+            "titulo": "Cotización Fase 2",
+            "contenido": "Total desarrollo: $200.000 CLP · 22–25 días hábiles · 4–5 semanas.\nPago: 50% anticipo ($100.000) / 50% entrega ($100.000).\nHerramientas gratuitas (Elementor Free + WooCommerce + Astra).\n\nFases: 1 Menú $20k · 2 Categorías $30k · 3 Filtros $50k · 4 Destacados $25k · 5 Legales $15k · 6 Carrito $25k · 7 Pruebas/entrega $35k.\n\nOpcional carga productos: hasta 20 = $28.000. Elementor Pro opcional ~$58.000/año.\nIncluye 15 días soporte post-entrega y guías de catálogo/destacados."
+          },
+          {
+            "id": "jm-sec-cambios-v2",
+            "titulo": "Cambios técnicos v2",
+            "contenido": "Páginas: Inicio (respaldo), Inicio v2 (trabajo activo), plantillas Elementor «inicio» y «Backup Inicio - Original».\n\nCambios: sección banners 1920×600 bajo header; quitar metadato Por/fecha; publicar Inicio v2 en Ajustes→Lectura; cabecera Astra 3 filas; categorías GOLD/ESENCIAL/DELUXE círculos (#categorias-destacadas).\n\nPlugins: Elementor, WooCommerce, Astra, WP Bottom Menu, Smart Slider."
+          }
+        ],
+        "documentos": [
+          {
+            "id": "doc-manual-marca-jm",
+            "clienteId": "cli-joyas-mercury",
+            "nombre": "Manual de marca - Joyas Mercury.pdf",
+            "mime": "application/pdf",
+            "categoria": "pdf",
+            "tamano": 0,
+            "subido": "2026-06-24",
+            "contenidoTexto": "Manual de marca — Joyas Mercury\nFuente: Manual de marca - Joyas Mercury.pdf\n\n## Propósito\nEste manual reúne las herramientas básicas para el correcto uso y aplicación gráfica de la marca en todas sus posibles expresiones. Pensado para quienes interpretan, articulan, comunican y aplican la marca. El uso consistente refuerza la identidad de Joyas Mercury.\n\n## Logotipo\n- Marca: JOYAS MERCURY\n- Margen obligatorio: la distancia entre el logo y el siguiente elemento debe ser la cuarta parte (¼) del tamaño del logo.\n\n## Isotipo\n- Isotipo: letra «M»\n- Mismo margen obligatorio que el logotipo (¼ del tamaño).\n\n## Paleta de colores\n- #ECC54A — dorado / amarillo\n- #A97E23 — dorado oscuro\n- #C88F9C — rosa\n- #D8BFB1 — beige / nude\n- #C4C4C4 — gris\n\n## Aplicación web (Fase 2 WooCommerce)\n- Líneas de producto en filtros: Esencial · Gold · Deluxe\n- Usar la paleta en chips de filtro, destacados, botones y componentes del rediseño joyasmercury.cl\n- Respetar márgenes del logo e isotipo en headers, favicon y piezas gráficas",
+            "dataUrl": null,
+            "notasAnalisis": "Texto extraído del PDF (17 pág.) — sin archivo binario para no ocupar espacio",
+            "extraccionMetodo": "pdf-texto",
+            "extraccionEstado": "ok"
+          },
+          {
+            "id": "doc-jm-backup-requerimientos",
+            "nombre": "REQUERIMIENTOS-CLIENTE.md (backup)",
+            "categoria": "texto",
+            "notasAnalisis": "Importado de joyasmercury-backup/docs/",
+            "extraccionEstado": "ok",
+            "extraccionMetodo": "backup",
+            "contenidoTexto": "Requerimientos Etapa 2 — joyasmercury.cl — Camila — jun 2026.\nObjetivo: e-commerce joyería con filtros visuales en colección, menú limpio, páginas de confianza.\nEstructura: 3 colecciones × 5 categorías. Filtros sin recargar página.\nMenú sin landings de categorías sueltas ni Destacados como ítem aparte.\nWhatsApp principal. Páginas legales listadas. Etapa 1 completada parcialmente con Elementor.",
+            "clienteId": "cli-joyas-mercury",
+            "mime": "text/markdown",
+            "tamano": 0,
+            "subido": "2026-06-24",
+            "dataUrl": null
+          },
+          {
+            "id": "doc-jm-backup-inventario",
+            "nombre": "site-inventory.json (backup)",
+            "categoria": "texto",
+            "notasAnalisis": "Inventario del sitio — exports/",
+            "extraccionEstado": "ok",
+            "extraccionMetodo": "backup",
+            "contenidoTexto": "Sitio: joyasmercury.cl · Tema Astra · Elementor · WooCommerce.\nPáginas: Inicio (post 4387), Inicio v2, Blog, Contacto, Mi Carrito, Mi Cuenta, Newsletter, Nosotros, Políticas, Checkout, Tienda.\nPlantillas Elementor: inicio, Backup Inicio - Original.\nPlugins: Elementor, WooCommerce, Astra, WP Bottom Menu.",
+            "clienteId": "cli-joyas-mercury",
+            "mime": "text/markdown",
+            "tamano": 0,
+            "subido": "2026-06-24",
+            "dataUrl": null
+          },
+          {
+            "id": "doc-jm-backup-readme",
+            "nombre": "README backup joyasmercury",
+            "categoria": "texto",
+            "notasAnalisis": "Estructura del respaldo técnico",
+            "extraccionEstado": "ok",
+            "extraccionMetodo": "backup",
+            "contenidoTexto": "Carpeta joyasmercury-backup: wordpress/ (archivos sitio), database/ (SQL), exports/ (Elementor, CSS, inventario), docs/ (cambios, requerimientos, cotización), scripts/ (GitHub).\nRestaurar: subir wordpress, importar SQL, wp-config en servidor, guardar enlaces permanentes.\nNo subir wp-config a git. Repo privado GitHub JosefaOgalde/joyasmercury-backup.",
+            "clienteId": "cli-joyas-mercury",
+            "mime": "text/markdown",
+            "tamano": 0,
+            "subido": "2026-06-24",
+            "dataUrl": null
+          }
+        ],
+        "actualizado": "2026-07-01",
+        "backupJoyasMercuryV": 8,
+        "landing": {
+          "imagenesOverrides": [],
+          "landingSchemaVersion": 8,
+          "imagenesOcultas": [],
+          "imagenesMeta": [],
+          "imagenes": [],
+          "todos": [
+            {
+              "id": "jm-todo-01",
+              "titulo": "Auditoría menú actual + mapa de navegación",
+              "dias": "1",
+              "fase": 1,
+              "completada": true,
+              "notas": "Etapa 1 · Inventario menú desktop/móvil y mapa de navegación propuesto.",
+              "comentario": "Etapa 1 · Inventario menú desktop/móvil y mapa de navegación propuesto."
+            },
+            {
+              "id": "jm-todo-02",
+              "titulo": "Implementar menú limpio (desktop + móvil)",
+              "dias": "2",
+              "fase": 1,
+              "completada": true,
+              "notas": "Etapa 1 · Menú limpio con colecciones como eje principal.",
+              "comentario": "Etapa 1 · Menú limpio con colecciones como eje principal."
+            },
+            {
+              "id": "jm-todo-03",
+              "titulo": "Menú objetivo (paso 4) + mapa de navegación (paso 5)",
+              "dias": "3",
+              "fase": 1,
+              "completada": true,
+              "notas": "Estructura acordada: Inicio, Colecciones, Últimas unidades, Mi Carrito + rutas.",
+              "comentario": "Estructura acordada: Inicio, Colecciones, Últimas unidades, Mi Carrito + rutas."
+            },
+            {
+              "id": "jm-todo-04",
+              "titulo": "3 colecciones × 5 categorías en WooCommerce",
+              "dias": "4",
+              "fase": 2,
+              "completada": true,
+              "notas": "Etapa 2 · Esencial, Gold y Deluxe con Aros, Cadenas, Anillos, Pulseras, Conjuntos.",
+              "comentario": "Etapa 2 · Esencial, Gold y Deluxe con Aros, Cadenas, Anillos, Pulseras, Conjuntos."
+            },
+            {
+              "id": "jm-todo-05",
+              "titulo": "Validar URLs y slugs de colecciones",
+              "dias": "5",
+              "fase": 2,
+              "completada": true,
+              "notas": "Probar las 15 combinaciones colección/categoría.",
+              "comentario": "Probar las 15 combinaciones colección/categoría."
+            },
+            {
+              "id": "jm-todo-06",
+              "titulo": "Diseñar chips filtro Esencial / Gold / Deluxe",
+              "dias": "6",
+              "fase": 3,
+              "completada": true,
+              "notas": "Etapa 3 · Filtros visuales en la misma landing.",
+              "comentario": "Etapa 3 · Filtros visuales en la misma landing."
+            },
+            {
+              "id": "jm-todo-07",
+              "titulo": "Landings colección · layout y estructura",
+              "dias": "7",
+              "fase": 3,
+              "completada": true,
+              "notas": "Maquetación base de las 3 landings de colección.",
+              "comentario": "Maquetación base de las 3 landings de colección."
+            },
+            {
+              "id": "jm-todo-08",
+              "titulo": "Filtrado AJAX sin recargar página",
+              "dias": "8",
+              "fase": 3,
+              "completada": true,
+              "notas": "Filtros activos, estados y UX en misma vista.",
+              "comentario": "Filtros activos, estados y UX en misma vista."
+            },
+            {
+              "id": "jm-todo-09",
+              "titulo": "QA filtros (mobile, UX y rendimiento)",
+              "dias": "9",
+              "fase": 3,
+              "completada": true,
+              "notas": "Pruebas mobile, touch, estados activos y rendimiento.",
+              "comentario": "Pruebas mobile, touch, estados activos y rendimiento."
+            },
+            {
+              "id": "jm-todo-10",
+              "titulo": "Destacados / Novedades en Inicio",
+              "dias": "10",
+              "fase": 4,
+              "completada": true,
+              "notas": "Etapa 4 · Bloque en home para productos destacados.",
+              "comentario": "Etapa 4 · Bloque en home para productos destacados."
+            },
+            {
+              "id": "jm-todo-11",
+              "titulo": "Guía para Camila · gestionar destacados",
+              "dias": "11",
+              "fase": 4,
+              "completada": true,
+              "notas": "Documentar cómo marcar/desmarcar destacados.",
+              "comentario": "Documentar cómo marcar/desmarcar destacados."
+            },
+            {
+              "id": "jm-todo-12",
+              "titulo": "Últimas unidades + páginas legales",
+              "dias": "12",
+              "fase": 5,
+              "completada": true,
+              "notas": "Etapa 5 · Stock limitado, políticas, despachos y garantías.",
+              "comentario": "Etapa 5 · Stock limitado, políticas, despachos y garantías."
+            },
+            {
+              "id": "jm-todo-13",
+              "titulo": "Nosotros + WhatsApp canal principal",
+              "dias": "13",
+              "fase": 5,
+              "completada": true,
+              "notas": "Página Nosotros y botón WhatsApp oficial.",
+              "comentario": "Página Nosotros y botón WhatsApp oficial."
+            },
+            {
+              "id": "jm-todo-14",
+              "titulo": "Maquetación carrito · parte visual superior",
+              "dias": "14",
+              "fase": 6,
+              "completada": true,
+              "notas": "Etapa 6 · Carrito alineado al rediseño de la tienda.",
+              "comentario": "Etapa 6 · Carrito alineado al rediseño de la tienda."
+            },
+            {
+              "id": "jm-todo-15",
+              "titulo": "Carrito · pruebas checkout WooCommerce",
+              "dias": "15",
+              "fase": 6,
+              "completada": true,
+              "notas": "Checkout, totales, envío y flujo de compra.",
+              "comentario": "Checkout, totales, envío y flujo de compra."
+            },
+            {
+              "id": "jm-todo-16",
+              "titulo": "Pruebas integrales del sitio",
+              "dias": "16",
+              "fase": 7,
+              "completada": true,
+              "notas": "Etapa 7 · Recorrido menú → filtros → destacados → legales → carrito.",
+              "comentario": "Etapa 7 · Recorrido menú → filtros → destacados → legales → carrito."
+            },
+            {
+              "id": "jm-todo-17",
+              "titulo": "Corrección de bugs y refinamiento",
+              "dias": "17",
+              "fase": 7,
+              "completada": true,
+              "notas": "Resolver issues detectados en pruebas.",
+              "comentario": "Resolver issues detectados en pruebas."
+            },
+            {
+              "id": "jm-todo-18",
+              "titulo": "Guías de catálogo y documentación",
+              "dias": "18",
+              "fase": 7,
+              "completada": true,
+              "notas": "Guía para que Camila gestione catálogo y colecciones.",
+              "comentario": "Guía para que Camila gestione catálogo y colecciones."
+            },
+            {
+              "id": "jm-todo-19",
+              "titulo": "Revisión con Camila + ajustes finales",
+              "dias": "19",
+              "fase": 7,
+              "completada": true,
+              "notas": "Sesión de revisión y últimos ajustes.",
+              "comentario": "Sesión de revisión y últimos ajustes."
+            },
+            {
+              "id": "jm-todo-20",
+              "titulo": "Entrega Fase 2 + soporte post-entrega",
+              "dias": "20",
+              "fase": 7,
+              "completada": true,
+              "notas": "Entrega oficial joyasmercury.cl · inicio ventana 10 días de soporte.",
+              "comentario": "Entrega oficial joyasmercury.cl · inicio ventana 10 días de soporte."
+            },
+            {
+              "id": "jm-sesion-01-carrusel-desktop",
+              "titulo": "Validar carrusel referencia desktop (7 pantallas)",
+              "dias": "hoy",
+              "fase": 0,
+              "completada": true,
+              "comentario": "OK · Inicio, Esencial, Gold, Deluxe, Carrito, Ayuda, Productos.",
+              "sinCalendario": true
+            }
+          ]
+        },
+        "wireframes": [
+          {
+            "grupo": "Landings referencia · Desktop",
+            "carpeta": "interfaces/referencia-landings",
+            "archivo": "01-inicio-referencia.png",
+            "titulo": "Inicio"
+          },
+          {
+            "grupo": "Landings referencia · Desktop",
+            "carpeta": "interfaces/referencia-landings",
+            "archivo": "02-esencial-referencia.png",
+            "titulo": "Esencial"
+          },
+          {
+            "grupo": "Landings referencia · Desktop",
+            "carpeta": "interfaces/referencia-landings",
+            "archivo": "03-gold-referencia.png",
+            "titulo": "Gold"
+          },
+          {
+            "grupo": "Landings referencia · Desktop",
+            "carpeta": "interfaces/referencia-landings",
+            "archivo": "04-deluxe-referencia.png",
+            "titulo": "Deluxe"
+          },
+          {
+            "grupo": "Landings referencia · Desktop",
+            "carpeta": "interfaces/referencia-landings",
+            "archivo": "05-carrito-referencia.png",
+            "titulo": "Carrito"
+          },
+          {
+            "grupo": "Landings referencia · Desktop",
+            "carpeta": "interfaces/referencia-landings",
+            "archivo": "06-ayuda-referencia.png",
+            "titulo": "Ayuda"
+          },
+          {
+            "grupo": "Landings referencia · Desktop",
+            "carpeta": "interfaces/referencia-landings",
+            "archivo": "07-productos-referencia.png",
+            "titulo": "Productos"
+          }
+        ],
+        "landingVersion": 8
+      }
+    },
+    {
+      "id": "cli-sie",
+      "nombre": "SIE",
+      "abrev": "SIE",
+      "tipo": "oportunidad",
+      "color": "grafito",
+      "roles": [
+        {
+          "id": "rol-sie-dev",
+          "nombre": "Desarrollo",
+          "abrev": "DEV",
+          "funciones": "Buscador de sentencias\nIngesta e indexación\nAPI y frontend de búsqueda",
+          "tareasAlMes": "Avance en sesiones fin de semana y feriados",
+          "plazosEntregables": "Entregas según plan de desarrollo del buscador"
+        }
+      ],
+      "agente": {
+        "nombre": "Agente SIE",
+        "emoji": "⚖️",
+        "especialidad": "Buscador de sentencias judiciales",
+        "instrucciones": "Eres el asistente de SIE. Ayudas a desarrollar el buscador de sentencias: ingesta de datos, indexación full-text, API, filtros (tribunal, fecha, materia), UI de resultados, vista detalle y despliegue. El avance es en sesiones de 1–2 h los sábados, domingos y feriados."
+      },
+      "manualMarca": {
+        "texto": "",
+        "archivos": []
+      },
+      "metas": "",
+      "contextoPrompt": "",
+      "ficha": {
+        "contacto": "",
+        "links": "",
+        "notas": "",
+        "seccionesExtra": [],
+        "documentos": []
+      }
+    },
+    {
+      "id": "cli-desafio-latam",
+      "nombre": "Desafío Latam",
+      "abrev": "ADL",
+      "tipo": "freelance",
+      "color": "durazno",
+      "roles": [
+        {
+          "id": "rol-dlat-dis",
+          "nombre": "Diseño",
+          "abrev": "DIS",
+          "funciones": "Piezas gráficas y visuales\nPresentaciones y materiales\nBanners y piezas para redes\nEncargos esporádicos según proyecto",
+          "tareasAlMes": "Según encargos del momento",
+          "plazosEntregables": "Agregar cada tarea en + Nueva tarea cuando llegue un encargo"
+        }
+      ],
+      "agente": {
+        "nombre": "Agente Desafío Latam",
+        "emoji": "🎨",
+        "especialidad": "Diseño freelance",
+        "instrucciones": "Eres el asistente de Desafío Latam. Ayudas con diseño freelance: piezas gráficas, presentaciones, identidad visual, banners, materiales para redes y entregables visuales según cada encargo esporádico."
+      },
+      "manualMarca": {
+        "texto": "",
+        "archivos": []
+      },
+      "metas": "",
+      "contextoPrompt": "",
+      "ficha": {
+        "contacto": "",
+        "links": "",
+        "notas": "",
+        "seccionesExtra": [],
+        "documentos": []
+      }
+    },
+    {
+      "id": "cli-impresoreando",
+      "nombre": "Impresoreando",
+      "abrev": "IMP",
+      "tipo": "freelance",
+      "color": "ambar",
+      "roles": [
+        {
+          "id": "rol-imp-dis",
+          "nombre": "Diseño e impresión",
+          "abrev": "DIS",
+          "funciones": "Briefs de impresión\nPiezas gráficas\nMockups y formatos de producción\nIdentidad visual según encargo",
+          "tareasAlMes": "Según encargos del momento",
+          "plazosEntregables": "Agregar cada tarea en + Nueva tarea cuando llegue un encargo"
+        }
+      ],
+      "agente": {
+        "nombre": "Agente Impresoreando",
+        "emoji": "🖨️",
+        "especialidad": "Impresión, identidad y piezas gráficas",
+        "instrucciones": "Eres el asistente de Impresoreando. Ayudas con briefs de impresión, piezas gráficas, identidad visual, mockups, formatos de impresión y entregables para el cliente."
+      },
+      "manualMarca": {
+        "texto": "",
+        "archivos": []
+      },
+      "metas": "",
+      "contextoPrompt": "",
+      "ficha": {
+        "contacto": "",
+        "links": "",
+        "notas": "",
+        "seccionesExtra": [],
+        "documentos": [],
+        "landing": {
+          "imagenes": [],
+          "imagenesOverrides": [],
+          "imagenesOcultas": [],
+          "imagenesMeta": []
+        }
+      }
+    },
+    {
+      "id": "cli-tronwell",
+      "nombre": "Tronwell",
+      "abrev": "TW",
+      "tipo": "freelance",
+      "color": "azul",
+      "roles": [
+        {
+          "id": "rol-tw-textos",
+          "nombre": "Textos / contenidos",
+          "abrev": "TXT",
+          "funciones": "Ajuste de textos\nRevisión de documentos\nEntrega de copys",
+          "tareasAlMes": "Según encargos",
+          "plazosEntregables": "Por tarea en el calendario"
+        }
+      ],
+      "agente": {
+        "nombre": "Agente Tronwell",
+        "emoji": "📄",
+        "especialidad": "Ajuste de textos y documentos",
+        "instrucciones": "Eres el asistente de Tronwell. Ayudas a revisar y ajustar textos de documentos (Word), mantener tono claro y entregar versiones listas."
+      },
+      "manualMarca": {
+        "texto": "",
+        "archivos": []
+      },
+      "metas": "",
+      "contextoPrompt": "",
+      "ficha": {
+        "contacto": "",
+        "links": "",
+        "notas": "Docs de trabajo: Contacto, curso adultos, Home, tutor ia.",
+        "seccionesExtra": [],
+        "documentos": []
+      }
+    }
+  ],
+  "tareas": [
+    {
+      "id": "tarea-ts-contenido-7-de-12",
+      "titulo": "[TS] Contenido 7/12 · Zapatilla Travel Trainer Black Hombre",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-17",
+      "horaInicio": "09:00",
+      "horaFin": "12:30",
+      "notas": "Tarea madre Contenido 7/12 (serie mensual 12 pubs). Producto: Zapatilla Travel Trainer Black Hombre · SKU MFK1000PTP-BLK. Link: https://trendseeker.cl/producto/zapatilla-travel-trainer-black-hombre/ · Características: Hunter · impermeable 100% · membrana interna · aislada hasta -5°C · nylon reciclado/neopreno/malla · suela caucho FSC · EVA reciclada · Ortholite · TPU lluvia · detalles reflectantes · logo tricolor. Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. Con las 3 hechas → finalizar esta madre. Bloque: viernes AM.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "05",
+      "tipoEntregable": "ecosistema",
+      "parentId": null,
+      "productoUrl": "https://trendseeker.cl/producto/zapatilla-travel-trainer-black-hombre/",
+      "contenidoSerie": 7,
+      "contenidoTotal": 12,
+      "fechaFin": "2026-07-17"
+    },
+    {
+      "id": "tarea-ts-contenido-7-de-12-prompt",
+      "titulo": "[TS] C7/12 — Prompt Gemini (video)",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-17",
+      "horaInicio": "09:00",
+      "horaFin": "10:15",
+      "notas": "Prompt Gemini VIDEO · HOMBRE (adulto). Producto: Zapatilla Travel Trainer Black Hombre. Tres TXT independientes (A/B/C): edita y copia cada uno por separado.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "06",
+      "tipoEntregable": "prompt-gemini",
+      "entregableArchivo": "index/clientes/trendseeker/prompts/PROMPT-c07-travel-trainer-black-hombre-A.txt",
+      "entregableArchivosPrompt": {
+        "A": "index/clientes/trendseeker/prompts/PROMPT-c07-travel-trainer-black-hombre-A.txt",
+        "B": "index/clientes/trendseeker/prompts/PROMPT-c07-travel-trainer-black-hombre-B.txt",
+        "C": "index/clientes/trendseeker/prompts/PROMPT-c07-travel-trainer-black-hombre-C.txt"
+      },
+      "parentId": "tarea-ts-contenido-7-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/zapatilla-travel-trainer-black-hombre/"
+    },
+    {
+      "id": "tarea-ts-contenido-7-de-12-copy",
+      "titulo": "[TS] C7/12 — Copys video",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-17",
+      "horaInicio": "10:15",
+      "horaFin": "11:30",
+      "notas": "Copys video C7/12 · tres TXT (A/B/C). Producto: Zapatilla Travel Trainer Black Hombre. Edita, guarda y copia cada versión. Link: https://trendseeker.cl/producto/zapatilla-travel-trainer-black-hombre/",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "07",
+      "tipoEntregable": "copys-txt",
+      "entregableArchivo": "index/clientes/trendseeker/copys/COPY-c07-travel-trainer-black-hombre-A.txt",
+      "entregableArchivosCopy": {
+        "A": "index/clientes/trendseeker/copys/COPY-c07-travel-trainer-black-hombre-A.txt",
+        "B": "index/clientes/trendseeker/copys/COPY-c07-travel-trainer-black-hombre-B.txt",
+        "C": "index/clientes/trendseeker/copys/COPY-c07-travel-trainer-black-hombre-C.txt"
+      },
+      "parentId": "tarea-ts-contenido-7-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/zapatilla-travel-trainer-black-hombre/"
+    },
+    {
+      "id": "tarea-ts-contenido-7-de-12-programar",
+      "titulo": "[TS] C7/12 — Programar",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-17",
+      "horaInicio": "11:30",
+      "horaFin": "12:30",
+      "notas": "Dejar el contenido programado/listo para publicar (feed/Reels/historias según plan TS). Verificar copy + video + link producto. Al terminar → marcar hecha y finalizar madre Contenido 7/12.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "08",
+      "tipoEntregable": "programar",
+      "parentId": "tarea-ts-contenido-7-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/zapatilla-travel-trainer-black-hombre/"
+    },
+    {
+      "id": "tarea-ts-contenido-8-de-12",
+      "titulo": "[TS] Contenido 8/12 · Botas Chelsea Commando Negras Brillantes Mujer",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-17",
+      "horaInicio": "14:00",
+      "horaFin": "17:30",
+      "notas": "Tarea madre Contenido 8/12 (serie mensual 12 pubs). Producto: Botas Chelsea Commando Negras Brillantes Mujer · SKU WFS1018RGL-BLK. Link: https://trendseeker.cl/producto/botas-chelsea-commando-negras-brillantes-para-mujer/ · Características: Hunter Chelsea militar · 100% waterproof · caucho natural FSC · vegano certificado · hechas a mano · forro/plantilla poliéster reciclado · suela Original · fuelles elásticos · perfil +15 mm. Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. Con las 3 hechas → finalizar esta madre. Bloque: viernes PM.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "09",
+      "tipoEntregable": "ecosistema",
+      "parentId": null,
+      "productoUrl": "https://trendseeker.cl/producto/botas-chelsea-commando-negras-brillantes-para-mujer/",
+      "contenidoSerie": 8,
+      "contenidoTotal": 12,
+      "fechaFin": "2026-07-17"
+    },
+    {
+      "id": "tarea-ts-contenido-8-de-12-prompt",
+      "titulo": "[TS] C8/12 — Prompt Gemini (video)",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-17",
+      "horaInicio": "14:00",
+      "horaFin": "15:15",
+      "notas": "Prompt Gemini VIDEO · MUJER (adulta). Producto: Botas Chelsea Commando Negras Brillantes Mujer. Tres TXT independientes (A/B/C): edita y copia cada uno por separado.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "10",
+      "tipoEntregable": "prompt-gemini",
+      "entregableArchivo": "index/clientes/trendseeker/prompts/PROMPT-c08-chelsea-commando-negras-mujer-A.txt",
+      "entregableArchivosPrompt": {
+        "A": "index/clientes/trendseeker/prompts/PROMPT-c08-chelsea-commando-negras-mujer-A.txt",
+        "B": "index/clientes/trendseeker/prompts/PROMPT-c08-chelsea-commando-negras-mujer-B.txt",
+        "C": "index/clientes/trendseeker/prompts/PROMPT-c08-chelsea-commando-negras-mujer-C.txt"
+      },
+      "parentId": "tarea-ts-contenido-8-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-chelsea-commando-negras-brillantes-para-mujer/"
+    },
+    {
+      "id": "tarea-ts-contenido-8-de-12-copy",
+      "titulo": "[TS] C8/12 — Copys video",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-17",
+      "horaInicio": "15:15",
+      "horaFin": "16:30",
+      "notas": "Copys video C8/12 · tres TXT (A/B/C). Producto: Botas Chelsea Commando Negras Brillantes Mujer. Edita, guarda y copia cada versión. Link: https://trendseeker.cl/producto/botas-chelsea-commando-negras-brillantes-para-mujer/",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "11",
+      "tipoEntregable": "copys-txt",
+      "entregableArchivo": "index/clientes/trendseeker/copys/COPY-c08-chelsea-commando-negras-mujer-A.txt",
+      "entregableArchivosCopy": {
+        "A": "index/clientes/trendseeker/copys/COPY-c08-chelsea-commando-negras-mujer-A.txt",
+        "B": "index/clientes/trendseeker/copys/COPY-c08-chelsea-commando-negras-mujer-B.txt",
+        "C": "index/clientes/trendseeker/copys/COPY-c08-chelsea-commando-negras-mujer-C.txt"
+      },
+      "parentId": "tarea-ts-contenido-8-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-chelsea-commando-negras-brillantes-para-mujer/"
+    },
+    {
+      "id": "tarea-ts-contenido-8-de-12-programar",
+      "titulo": "[TS] C8/12 — Programar",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-17",
+      "horaInicio": "16:30",
+      "horaFin": "17:30",
+      "notas": "Dejar el contenido programado/listo para publicar (feed/Reels/historias según plan TS). Verificar copy + video + link producto. Al terminar → marcar hecha y finalizar madre Contenido 8/12.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "12",
+      "tipoEntregable": "programar",
+      "parentId": "tarea-ts-contenido-8-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-chelsea-commando-negras-brillantes-para-mujer/"
+    },
+    {
+      "id": "tarea-ts-contenido-9-de-12",
+      "titulo": "[TS] Contenido 9/12 · Botas de Agua Bajas Play Mujer Rojo",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-20",
+      "horaInicio": "09:00",
+      "horaFin": "13:00",
+      "notas": "Tarea madre Contenido 9/12 (serie mensual 12 pubs). Producto: Botas de Agua Bajas Play Mujer Rojo · SKU WFS2020RMA-LRD. Link: https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/ · Características: Hunter Play bajas · rojo · 100% impermeables · caucho natural · suela plataforma plana · caña corta (tobillo) · estilo urbano/festival. Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. Con las 3 hechas → finalizar esta madre. Bloque: 2026-07-20.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "13",
+      "tipoEntregable": "ecosistema",
+      "parentId": null,
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/",
+      "contenidoSerie": 9,
+      "contenidoTotal": 12,
+      "fechaFin": "2026-07-20",
+      "agendaFijada": true,
+      "estadoFijado": true
+    },
+    {
+      "id": "tarea-ts-contenido-9-de-12-prompt",
+      "titulo": "[TS] C9/12 — Prompt Gemini (video)",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-20",
+      "horaInicio": "09:00",
+      "horaFin": "10:30",
+      "notas": "Prompt Gemini VIDEO · MUJER (adulta). Producto: Botas de Agua Bajas Play Mujer Rojo. Tres TXT independientes (A/B/C): edita y copia cada uno por separado.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "14",
+      "tipoEntregable": "prompt-gemini",
+      "entregableArchivo": "index/clientes/trendseeker/prompts/PROMPT-c09-play-bajas-rojo-mujer-A.txt",
+      "entregableArchivosPrompt": {
+        "A": "index/clientes/trendseeker/prompts/PROMPT-c09-play-bajas-rojo-mujer-A.txt",
+        "B": "index/clientes/trendseeker/prompts/PROMPT-c09-play-bajas-rojo-mujer-B.txt",
+        "C": "index/clientes/trendseeker/prompts/PROMPT-c09-play-bajas-rojo-mujer-C.txt"
+      },
+      "parentId": "tarea-ts-contenido-9-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/",
+      "agendaFijada": true,
+      "estadoFijado": true
+    },
+    {
+      "id": "tarea-ts-contenido-9-de-12-copy",
+      "titulo": "[TS] C9/12 — Copys video",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-20",
+      "horaInicio": "10:30",
+      "horaFin": "12:00",
+      "notas": "Copys video C9/12 · tres TXT (A/B/C). Producto: Botas de Agua Bajas Play Mujer Rojo. Edita, guarda y copia cada versión. Link: https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "15",
+      "tipoEntregable": "copys-txt",
+      "entregableArchivo": "index/clientes/trendseeker/copys/COPY-c09-play-bajas-rojo-mujer-A.txt",
+      "entregableArchivosCopy": {
+        "A": "index/clientes/trendseeker/copys/COPY-c09-play-bajas-rojo-mujer-A.txt",
+        "B": "index/clientes/trendseeker/copys/COPY-c09-play-bajas-rojo-mujer-B.txt",
+        "C": "index/clientes/trendseeker/copys/COPY-c09-play-bajas-rojo-mujer-C.txt"
+      },
+      "parentId": "tarea-ts-contenido-9-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/",
+      "sesionAgente": {
+        "mensajes": [
+          {
+            "rol": "agente",
+            "texto": "Hola, soy **Agente Trendseeker** — skill **CM + WordPress TS**.\nVamos a trabajar en: **C9/12 — Copys video**.\nCliente: Trendseeker - Talk (full time).\nRol: Community Manager.\nFecha: lunes, 20 de julio · 10:30 – 12:00.\nNotas: Copys video C9/12 · tres TXT (A/B/C). Producto: Botas de Agua Bajas Play Mujer Rojo. Edita, guarda y copia cada versión. Link: https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/\n**Tip:** haz clic en el cliente en Clientes para cargar metas, contexto y manual de marca.\nEscribe qué necesitas entregar (mapa conceptual, inventario, código, copy…). **Lo armo y lo diseño aquí** en el chat — listo para compartir con tu contraparte.\n**Tip:** adjunta capturas del sitio o mockups con **+ Imágenes de referencia** debajo del prompt (por ejemplo, menú actual vs. propuesta).",
+            "ts": 1784579839485
+          }
+        ],
+        "archivosAdjuntos": [],
+        "imagenesPendientes": [],
+        "imagenesReferencia": []
+      },
+      "agendaFijada": true,
+      "estadoFijado": true
+    },
+    {
+      "id": "tarea-ts-contenido-9-de-12-programar",
+      "titulo": "[TS] C9/12 — Programar",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-20",
+      "horaInicio": "12:00",
+      "horaFin": "13:00",
+      "notas": "Dejar el contenido programado/listo para publicar (feed/Reels/historias según plan TS). Verificar copy + video + link producto. Al terminar → marcar hecha y finalizar madre Contenido 9/12.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "16",
+      "tipoEntregable": "programar",
+      "parentId": "tarea-ts-contenido-9-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/",
+      "agendaFijada": true,
+      "estadoFijado": true
+    },
+    {
+      "id": "tarea-ts-contenido-10-de-12",
+      "titulo": "[TS] Contenido 10/12 · Botas de Agua Original para Niños",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-22",
+      "horaInicio": "09:00",
+      "horaFin": "13:00",
+      "notas": "Tarea madre Contenido 10/12 (serie mensual 12 pubs). Producto: Botas de Agua Original para Niños · SKU JFT6000RMA-BLK. Link: https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/ · Características: Hunter Original kids · 5–11 años (31–37) · 100% impermeables · caucho natural mate · hechas a mano · forro poliéster · suela Original · parches reflectantes. Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. Con las 3 hechas → finalizar esta madre. Bloque: 2026-07-22.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "17",
+      "tipoEntregable": "ecosistema",
+      "parentId": null,
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
+      "contenidoSerie": 10,
+      "contenidoTotal": 12,
+      "fechaFin": "2026-07-22"
+    },
+    {
+      "id": "tarea-ts-contenido-10-de-12-prompt",
+      "titulo": "[TS] C10/12 — Prompt Gemini (video)",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-22",
+      "horaInicio": "09:00",
+      "horaFin": "10:30",
+      "notas": "Prompt Gemini VIDEO · NIÑOS / NIÑAS (aprox. 5–11 años). Producto: Botas de Agua Original para Niños. Tres TXT independientes (A/B/C): edita y copia cada uno por separado.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "18",
+      "tipoEntregable": "prompt-gemini",
+      "entregableArchivo": "index/clientes/trendseeker/prompts/PROMPT-c10-original-ninos-A.txt",
+      "entregableArchivosPrompt": {
+        "A": "index/clientes/trendseeker/prompts/PROMPT-c10-original-ninos-A.txt",
+        "B": "index/clientes/trendseeker/prompts/PROMPT-c10-original-ninos-B.txt",
+        "C": "index/clientes/trendseeker/prompts/PROMPT-c10-original-ninos-C.txt"
+      },
+      "parentId": "tarea-ts-contenido-10-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/"
+    },
+    {
+      "id": "tarea-ts-contenido-10-de-12-copy",
+      "titulo": "[TS] C10/12 — Copys video",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-22",
+      "horaInicio": "10:30",
+      "horaFin": "12:00",
+      "notas": "Copys video C10/12 · tres TXT (A/B/C). Producto: Botas de Agua Original para Niños. Edita, guarda y copia cada versión. Link: https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "19",
+      "tipoEntregable": "copys-txt",
+      "entregableArchivo": "index/clientes/trendseeker/copys/COPY-c10-original-ninos-A.txt",
+      "entregableArchivosCopy": {
+        "A": "index/clientes/trendseeker/copys/COPY-c10-original-ninos-A.txt",
+        "B": "index/clientes/trendseeker/copys/COPY-c10-original-ninos-B.txt",
+        "C": "index/clientes/trendseeker/copys/COPY-c10-original-ninos-C.txt"
+      },
+      "parentId": "tarea-ts-contenido-10-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/"
+    },
+    {
+      "id": "tarea-ts-contenido-10-de-12-programar",
+      "titulo": "[TS] C10/12 — Programar",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-22",
+      "horaInicio": "12:00",
+      "horaFin": "13:00",
+      "notas": "Dejar el contenido programado/listo para publicar (feed/Reels/historias según plan TS). Verificar copy + video + link producto. Al terminar → marcar hecha y finalizar madre Contenido 10/12.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "20",
+      "tipoEntregable": "programar",
+      "parentId": "tarea-ts-contenido-10-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/"
+    },
+    {
+      "id": "tarea-ts-contenido-11-de-12",
+      "titulo": "[TS] Contenido 11/12 · Botas Play Altas Shearling White Mujer",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-24",
+      "horaInicio": "09:00",
+      "horaFin": "13:00",
+      "notas": "Tarea madre Contenido 11/12 (serie mensual 12 pubs). Producto: Botas Play Altas Shearling White Mujer · SKU WFT2235RMA-WHW. Link: https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/ · Características: Hunter Play altas · white/shearling · vegano · impermeable · hechas a mano · forro borrego vegano · aislante hasta -5°C · plantilla térmica · suela plana · lengüeta de entrada. Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. Con las 3 hechas → finalizar esta madre. Bloque: 2026-07-24.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "21",
+      "tipoEntregable": "ecosistema",
+      "parentId": null,
+      "productoUrl": "https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/",
+      "contenidoSerie": 11,
+      "contenidoTotal": 12,
+      "fechaFin": "2026-07-24"
+    },
+    {
+      "id": "tarea-ts-contenido-11-de-12-prompt",
+      "titulo": "[TS] C11/12 — Prompt Gemini (video)",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-24",
+      "horaInicio": "09:00",
+      "horaFin": "10:30",
+      "notas": "Prompt Gemini VIDEO · MUJER (adulta). Producto: Botas Play Altas Shearling White Mujer. Tres TXT independientes (A/B/C): edita y copia cada uno por separado.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "22",
+      "tipoEntregable": "prompt-gemini",
+      "entregableArchivo": "index/clientes/trendseeker/prompts/PROMPT-c11-play-altas-shearling-white-mujer-A.txt",
+      "entregableArchivosPrompt": {
+        "A": "index/clientes/trendseeker/prompts/PROMPT-c11-play-altas-shearling-white-mujer-A.txt",
+        "B": "index/clientes/trendseeker/prompts/PROMPT-c11-play-altas-shearling-white-mujer-B.txt",
+        "C": "index/clientes/trendseeker/prompts/PROMPT-c11-play-altas-shearling-white-mujer-C.txt"
+      },
+      "parentId": "tarea-ts-contenido-11-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/"
+    },
+    {
+      "id": "tarea-ts-contenido-11-de-12-copy",
+      "titulo": "[TS] C11/12 — Copys video",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-24",
+      "horaInicio": "10:30",
+      "horaFin": "12:00",
+      "notas": "Copys video C11/12 · tres TXT (A/B/C). Producto: Botas Play Altas Shearling White Mujer. Edita, guarda y copia cada versión. Link: https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "23",
+      "tipoEntregable": "copys-txt",
+      "entregableArchivo": "index/clientes/trendseeker/copys/COPY-c11-play-altas-shearling-white-mujer-A.txt",
+      "entregableArchivosCopy": {
+        "A": "index/clientes/trendseeker/copys/COPY-c11-play-altas-shearling-white-mujer-A.txt",
+        "B": "index/clientes/trendseeker/copys/COPY-c11-play-altas-shearling-white-mujer-B.txt",
+        "C": "index/clientes/trendseeker/copys/COPY-c11-play-altas-shearling-white-mujer-C.txt"
+      },
+      "parentId": "tarea-ts-contenido-11-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/"
+    },
+    {
+      "id": "tarea-ts-contenido-11-de-12-programar",
+      "titulo": "[TS] C11/12 — Programar",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-24",
+      "horaInicio": "12:00",
+      "horaFin": "13:00",
+      "notas": "Dejar el contenido programado/listo para publicar (feed/Reels/historias según plan TS). Verificar copy + video + link producto. Al terminar → marcar hecha y finalizar madre Contenido 11/12.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "24",
+      "tipoEntregable": "programar",
+      "parentId": "tarea-ts-contenido-11-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/"
+    },
+    {
+      "id": "tarea-ts-contenido-12-de-12",
+      "titulo": "[TS] Contenido 12/12 · Botas de Agua Original Niños Rosado Brillante",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-27",
+      "horaInicio": "09:00",
+      "horaFin": "13:00",
+      "notas": "Tarea madre Contenido 12/12 (serie mensual 12 pubs). Producto: Botas de Agua Original Niños Rosado Brillante · SKU JFT6000RMA-RBP. Link: https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/ · Características: Hunter Original kids · rosado brillante · 5–11 años (31–37) · 100% impermeables · caucho natural · hechas a mano · forro poliéster · suela Original · parches reflectantes. Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. Con las 3 hechas → finalizar esta madre. Bloque: 2026-07-27.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "25",
+      "tipoEntregable": "ecosistema",
+      "parentId": null,
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
+      "contenidoSerie": 12,
+      "contenidoTotal": 12,
+      "fechaFin": "2026-07-27"
+    },
+    {
+      "id": "tarea-ts-contenido-12-de-12-prompt",
+      "titulo": "[TS] C12/12 — Prompt Gemini (video)",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-27",
+      "horaInicio": "09:00",
+      "horaFin": "10:30",
+      "notas": "Prompt Gemini VIDEO · NIÑOS / NIÑAS (aprox. 5–11 años). Producto: Botas de Agua Original Niños Rosado Brillante. Tres TXT independientes (A/B/C): edita y copia cada uno por separado.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "26",
+      "tipoEntregable": "prompt-gemini",
+      "entregableArchivo": "index/clientes/trendseeker/prompts/PROMPT-c12-original-ninos-rosado-brillante-A.txt",
+      "entregableArchivosPrompt": {
+        "A": "index/clientes/trendseeker/prompts/PROMPT-c12-original-ninos-rosado-brillante-A.txt",
+        "B": "index/clientes/trendseeker/prompts/PROMPT-c12-original-ninos-rosado-brillante-B.txt",
+        "C": "index/clientes/trendseeker/prompts/PROMPT-c12-original-ninos-rosado-brillante-C.txt"
+      },
+      "parentId": "tarea-ts-contenido-12-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/"
+    },
+    {
+      "id": "tarea-ts-contenido-12-de-12-copy",
+      "titulo": "[TS] C12/12 — Copys video",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-27",
+      "horaInicio": "10:30",
+      "horaFin": "12:00",
+      "notas": "Copys video C12/12 · tres TXT (A/B/C). Producto: Botas de Agua Original Niños Rosado Brillante. Edita, guarda y copia cada versión. Link: https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "27",
+      "tipoEntregable": "copys-txt",
+      "entregableArchivo": "index/clientes/trendseeker/copys/COPY-c12-original-ninos-rosado-brillante-A.txt",
+      "entregableArchivosCopy": {
+        "A": "index/clientes/trendseeker/copys/COPY-c12-original-ninos-rosado-brillante-A.txt",
+        "B": "index/clientes/trendseeker/copys/COPY-c12-original-ninos-rosado-brillante-B.txt",
+        "C": "index/clientes/trendseeker/copys/COPY-c12-original-ninos-rosado-brillante-C.txt"
+      },
+      "parentId": "tarea-ts-contenido-12-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/"
+    },
+    {
+      "id": "tarea-ts-contenido-12-de-12-programar",
+      "titulo": "[TS] C12/12 — Programar",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-27",
+      "horaInicio": "12:00",
+      "horaFin": "13:00",
+      "notas": "Dejar el contenido programado/listo para publicar (feed/Reels/historias según plan TS). Verificar copy + video + link producto. Al terminar → marcar hecha y finalizar madre Contenido 12/12.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "28",
+      "tipoEntregable": "programar",
+      "parentId": "tarea-ts-contenido-12-de-12",
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/"
+    },
+    {
+      "id": "tarea-ecr-ecosistema-nl-agosto-2026-07-17",
+      "titulo": "[ECR] NL 1 ago · Tecnología sin integración",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-07-20",
+      "horaInicio": "09:00",
+      "horaFin": "18:00",
+      "notas": "Tarea madre · artículo «Tecnología sin integración: el principal freno de la eficiencia» (NL LinkedIn · calendario 2026-07-20). Word/TXT: articulos/ART-tecnologia-sin-integracion.* Subtareas indexadas: 1 Copys · 2 Portada · 3 Carrusel · 4 Video. La madre se completa cuando termine la última subtarea.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "04",
+      "tipoEntregable": "ecosistema",
+      "articuloSlug": "tecnologia-sin-integracion",
+      "articuloPublicacion": "2026-08-01",
+      "parentId": null,
+      "articuloTitulo": "Tecnología sin integración: el principal freno de la eficiencia",
+      "entregableArchivo": "index/clientes/ecr/newsletter/articulos/ART-tecnologia-sin-integracion.docx",
+      "articuloArchivo": {
+        "nombre": "ART-tecnologia-sin-integracion.docx",
+        "url": "/index/clientes/ecr/newsletter/articulos/ART-tecnologia-sin-integracion.docx",
+        "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "kind": "articulo",
+        "subido": "2026-07-20"
+      },
+      "fechaFin": "2026-07-21",
+      "agendaFijada": true,
+      "sesionAgente": {
+        "mensajes": [
+          {
+            "rol": "agente",
+            "texto": "Hola, soy **Agente ECR** — skill **Newsletter + Blog ECR**.\nVamos a trabajar en: **NL 1 ago · Tecnología sin integración**.\nCliente: ECR - Talk (full time).\nRol: Community Manager.\nFecha: lunes, 20 de julio · 09:00 – 18:00.\nNotas: Tarea madre · artículo «Tecnología sin integración: el principal freno de la eficiencia» (NL LinkedIn · calendario 2026-07-20). Word/TXT: articulos/ART-tecnologia-sin-integracion.* Subtareas indexadas: 1 Copys · 2 Portada · 3 Carrusel · 4 Video. La madre se completa cuando termine la última subtarea.\n**Tip:** haz clic en el cliente en Clientes para cargar metas, contexto y manual de marca.\nEscribe qué necesitas entregar (mapa conceptual, inventario, código, copy…). **Lo armo y lo diseño aquí** en el chat — listo para compartir con tu contraparte.\n**Tip:** adjunta capturas del sitio o mockups con **+ Imágenes de referencia** debajo del prompt (por ejemplo, menú actual vs. propuesta).",
+            "ts": 1784561026072
+          }
+        ],
+        "archivosAdjuntos": [],
+        "imagenesPendientes": [],
+        "imagenesReferencia": []
+      }
+    },
+    {
+      "id": "tarea-ecr-nl-agosto-copys-2026-07-17",
+      "titulo": "[ECR] TI — Copys (TXT)",
+      "horaInicio": "09:00",
+      "horaFin": "11:00",
+      "numeroHistorico": "05",
+      "tipoEntregable": "copys-txt",
+      "ordenHijo": 1,
+      "notas": "Copys feed / carrusel / video del artículo «Tecnología sin integración: el principal freno de la eficiencia» (NL 1 ago). Archivo: index/clientes/ecr/newsletter/copys/COPY-tecnologia-sin-integracion.txt",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-07-20",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "parentId": "tarea-ecr-ecosistema-nl-agosto-2026-07-17",
+      "articuloSlug": "tecnologia-sin-integracion",
+      "entregableArchivo": "index/clientes/ecr/newsletter/copys/COPY-tecnologia-sin-integracion.txt",
+      "estadoFijado": true,
+      "agendaFijada": true,
+      "sesionAgente": {
+        "mensajes": [
+          {
+            "rol": "agente",
+            "texto": "Hola, soy **Agente ECR** — skill **Newsletter + Blog ECR**.\nVamos a trabajar en: **TI — Copys (TXT)**.\nCliente: ECR - Talk (full time).\nRol: Community Manager.\nFecha: lunes, 20 de julio · 09:00 – 11:00.\nNotas: Copys feed / carrusel / video del artículo «Tecnología sin integración: el principal freno de la eficiencia» (NL 1 ago). Archivo: index/clientes/ecr/newsletter/copys/COPY-tecnologia-sin-integracion.txt\n**Tip:** haz clic en el cliente en Clientes para cargar metas, contexto y manual de marca.\nEscribe qué necesitas entregar (mapa conceptual, inventario, código, copy…). **Lo armo y lo diseño aquí** en el chat — listo para compartir con tu contraparte.\n**Tip:** adjunta capturas del sitio o mockups con **+ Imágenes de referencia** debajo del prompt (por ejemplo, menú actual vs. propuesta).",
+            "ts": 1784561019707
+          }
+        ],
+        "archivosAdjuntos": []
+      }
+    },
+    {
+      "id": "tarea-ecr-nl-agosto-portada-2026-07-17",
+      "titulo": "[ECR] TI — Portada (fondos)",
+      "horaInicio": "11:00",
+      "horaFin": "13:00",
+      "numeroHistorico": "06",
+      "tipoEntregable": "portada-imgs",
+      "ordenHijo": 2,
+      "entregableArchivo": "index/clientes/ecr/newsletter/portadas-guardadas/NL1-ago-portadas-canva-finales.md",
+      "notas": "Portadas Canva FINALES (3) con logo ECR + título. Archivo: NL1-ago-portadas-canva-finales.md · imágenes en nl1-ago-finales/.",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-07-20",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "parentId": "tarea-ecr-ecosistema-nl-agosto-2026-07-17",
+      "articuloSlug": "tecnologia-sin-integracion",
+      "estadoFijado": false,
+      "completadaEn": "2026-07-18T06:24:47.702Z",
+      "agendaFijada": true,
+      "sesionAgente": {
+        "mensajes": [
+          {
+            "rol": "agente",
+            "texto": "Hola, soy **Agente ECR** — skill **Newsletter + Blog ECR**.\nVamos a trabajar en: **TI — Portada (fondos)**.\nCliente: ECR - Talk (full time).\nRol: Community Manager.\nFecha: lunes, 20 de julio · 11:00 – 13:00.\nNotas: Portadas Canva FINALES (3) con logo ECR + título. Archivo: NL1-ago-portadas-canva-finales.md · imágenes en nl1-ago-finales/.\n**Tip:** haz clic en el cliente en Clientes para cargar metas, contexto y manual de marca.\nEscribe qué necesitas entregar (mapa conceptual, inventario, código, copy…). **Lo armo y lo diseño aquí** en el chat — listo para compartir con tu contraparte.\n**Tip:** adjunta capturas del sitio o mockups con **+ Imágenes de referencia** debajo del prompt (por ejemplo, menú actual vs. propuesta).",
+            "ts": 1784561031425
+          }
+        ],
+        "archivosAdjuntos": [],
+        "imagenesPendientes": [],
+        "imagenesReferencia": []
+      }
+    },
+    {
+      "id": "tarea-ecr-nl-agosto-carrusel-2026-07-17",
+      "titulo": "[ECR] TI — Carrusel",
+      "horaInicio": "13:00",
+      "horaFin": "15:30",
+      "numeroHistorico": "07",
+      "tipoEntregable": "carrusel",
+      "ordenHijo": 3,
+      "notas": "Carrusel Canva del artículo «Tecnología sin integración: el principal freno de la eficiencia».",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-07-21",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "parentId": "tarea-ecr-ecosistema-nl-agosto-2026-07-17",
+      "articuloSlug": "tecnologia-sin-integracion",
+      "entregableArchivo": "index/clientes/ecr/newsletter/articulos/ART-tecnologia-sin-integracion.txt",
+      "estadoFijado": true,
+      "agendaFijada": true,
+      "sesionAgente": {
+        "mensajes": [
+          {
+            "rol": "agente",
+            "texto": "Hola, soy **Agente ECR** — skill **Newsletter + Blog ECR**.\nVamos a trabajar en: **TI — Carrusel**.\nCliente: ECR - Talk (full time).\nRol: Community Manager.\nFecha: lunes, 20 de julio · 13:00 – 15:30.\nNotas: Carrusel Canva del artículo «Tecnología sin integración: el principal freno de la eficiencia».\n**Tip:** haz clic en el cliente en Clientes para cargar metas, contexto y manual de marca.\nEscribe qué necesitas entregar (mapa conceptual, inventario, código, copy…). **Lo armo y lo diseño aquí** en el chat — listo para compartir con tu contraparte.\n**Tip:** adjunta capturas del sitio o mockups con **+ Imágenes de referencia** debajo del prompt (por ejemplo, menú actual vs. propuesta).",
+            "ts": 1784579702133
+          }
+        ],
+        "archivosAdjuntos": [],
+        "imagenesPendientes": [],
+        "imagenesReferencia": []
+      }
+    },
+    {
+      "id": "tarea-ecr-nl-agosto-video-2026-07-17",
+      "titulo": "[ECR] TI — Video",
+      "horaInicio": "15:30",
+      "horaFin": "18:00",
+      "numeroHistorico": "08",
+      "tipoEntregable": "video",
+      "ordenHijo": 4,
+      "notas": "Video = carrusel animado · «Tecnología sin integración: el principal freno de la eficiencia».",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-07-21",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "parentId": "tarea-ecr-ecosistema-nl-agosto-2026-07-17",
+      "articuloSlug": "tecnologia-sin-integracion",
+      "entregableArchivo": "index/clientes/ecr/newsletter/articulos/ART-tecnologia-sin-integracion.txt",
+      "estadoFijado": true,
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-ecr-ecosistema-equipos-terreno-2026-07-24",
+      "titulo": "[ECR] NL 2 ago · Equipos en terreno",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-07-27",
+      "horaInicio": "09:00",
+      "horaFin": "18:00",
+      "notas": "Tarea madre · ART 23 · artículo «Equipos en terreno: la ventaja de ajustar a tiempo» (calendario 2026-07-22). Madre + subtareas indexadas el 2026-07-22 (Copys · Portada · Carrusel · Video). Word/TXT: articulos/ART23-equipos-en-terreno.* · Copys: copys/COPY-equipos-en-terreno.txt. La madre se completa cuando termine la última subtarea.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "09",
+      "tipoEntregable": "ecosistema",
+      "articuloSlug": "equipos-en-terreno",
+      "articuloTitulo": "Equipos en terreno: la ventaja de ajustar a tiempo",
+      "articuloPublicacion": "2026-08-02",
+      "articuloCodigo": "ART23",
+      "entregableArchivo": "index/clientes/ecr/newsletter/articulos/ART23-equipos-en-terreno.docx",
+      "articuloArchivo": {
+        "nombre": "ART23-equipos-en-terreno.docx",
+        "url": "/index/clientes/ecr/newsletter/articulos/ART23-equipos-en-terreno.docx",
+        "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "kind": "articulo",
+        "subido": "2026-07-22"
+      },
+      "fechaFin": "2026-07-27",
+      "parentId": null,
+      "agendaFijada": true,
+      "sesionAgente": {
+        "mensajes": [
+          {
+            "rol": "agente",
+            "texto": "Hola, soy **Agente ECR** — skill **Newsletter + Blog ECR**.\nVamos a trabajar en: **NL 2 ago · Equipos en terreno**.\nCliente: ECR - Talk (full time).\nRol: Community Manager.\nFecha: miércoles, 22 de julio · 09:00 – 18:00.\nNotas: Tarea madre · ART 23 · artículo «Equipos en terreno: la ventaja de ajustar a tiempo» (calendario 2026-07-22). Madre + subtareas indexadas el 2026-07-22 (Copys · Portada · Carrusel · Video). Word/TXT: articulos/ART23-equipos-en-terreno.* · Copys: copys/COPY-equipos-en-terreno.txt. La madre se completa cuando termine la última subtarea.\n**Tip:** haz clic en el cliente en Clientes para cargar metas, contexto y manual de marca.\nEscribe qué necesitas entregar (mapa conceptual, inventario, código, copy…). **Lo armo y lo diseño aquí** en el chat — listo para compartir con tu contraparte.\n**Tip:** adjunta capturas del sitio o mockups con **+ Imágenes de referencia** debajo del prompt (por ejemplo, menú actual vs. propuesta).",
+            "ts": 1784579802081
+          }
+        ],
+        "archivosAdjuntos": [],
+        "imagenesPendientes": [],
+        "imagenesReferencia": []
+      },
+      "estadoFijado": true
+    },
+    {
+      "id": "tarea-ecr-et-copys-2026-07-24",
+      "titulo": "[ECR] ET — Copys (TXT)",
+      "horaInicio": "09:00",
+      "horaFin": "11:00",
+      "numeroHistorico": "10",
+      "tipoEntregable": "copys-txt",
+      "ordenHijo": 1,
+      "entregableArchivo": "index/clientes/ecr/newsletter/copys/COPY-equipos-en-terreno.txt",
+      "notas": "Copys feed / carrusel / video · «Equipos en terreno: la ventaja de ajustar a tiempo» (NL 2 ago). Archivo: index/clientes/ecr/newsletter/copys/COPY-equipos-en-terreno.txt",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-07-27",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "parentId": "tarea-ecr-ecosistema-equipos-terreno-2026-07-24",
+      "articuloSlug": "equipos-en-terreno",
+      "estadoFijado": false,
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-ecr-et-portada-2026-07-24",
+      "titulo": "[ECR] ET — Portada (fondos)",
+      "horaInicio": "11:00",
+      "horaFin": "13:00",
+      "numeroHistorico": "11",
+      "tipoEntregable": "portada-imgs",
+      "ordenHijo": 2,
+      "entregableArchivo": "index/clientes/ecr/newsletter/portadas-guardadas/ART23-equipos-en-terreno.md",
+      "notas": "Prompts/fondos ART23 · «Equipos en terreno: la ventaja de ajustar a tiempo» (NL 2 ago). Artículo: ART23-equipos-en-terreno.docx",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-07-27",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "parentId": "tarea-ecr-ecosistema-equipos-terreno-2026-07-24",
+      "articuloSlug": "equipos-en-terreno",
+      "estadoFijado": false,
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-ecr-et-carrusel-2026-07-24",
+      "titulo": "[ECR] ET — Carrusel",
+      "horaInicio": "13:00",
+      "horaFin": "15:30",
+      "numeroHistorico": "12",
+      "tipoEntregable": "carrusel",
+      "ordenHijo": 3,
+      "entregableArchivo": "index/clientes/ecr/newsletter/articulos/ART23-equipos-en-terreno.txt",
+      "notas": "Carrusel con slides del artículo «Equipos en terreno: la ventaja de ajustar a tiempo».",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-07-27",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "parentId": "tarea-ecr-ecosistema-equipos-terreno-2026-07-24",
+      "articuloSlug": "equipos-en-terreno",
+      "estadoFijado": false,
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-ecr-et-video-2026-07-24",
+      "titulo": "[ECR] ET — Video",
+      "horaInicio": "15:30",
+      "horaFin": "18:00",
+      "numeroHistorico": "13",
+      "tipoEntregable": "video",
+      "ordenHijo": 4,
+      "entregableArchivo": "index/clientes/ecr/newsletter/articulos/ART23-equipos-en-terreno.txt",
+      "notas": "Video = carrusel animado · «Equipos en terreno: la ventaja de ajustar a tiempo».",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-07-27",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "parentId": "tarea-ecr-ecosistema-equipos-terreno-2026-07-24",
+      "articuloSlug": "equipos-en-terreno",
+      "estadoFijado": false,
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-imp-pedidos-hoy",
+      "titulo": "[IMP] Pedidos activos · 2",
+      "clienteId": "cli-impresoreando",
+      "rolId": "rol-imp-dis",
+      "fecha": "2026-07-18",
+      "horaInicio": "10:00",
+      "horaFin": "18:00",
+      "notas": "Panel socios 50/50 · pedidos del live (2026-07-18T05:29:51.131Z). Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. PED-001 Rebe listo · PED-002 Gianni en impresión (macetero + 4× portacompleto bulldog).",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "01",
+      "tipoEntregable": "impresoreando-pedidos",
+      "parentId": null,
+      "linkPanel": "/index/clientes/impresoreando/panel/",
+      "fechaFin": "2026-07-18"
+    },
+    {
+      "id": "tarea-imp-ped-rebe-plmons-001",
+      "titulo": "[IMP] PED-001 Rebe · 1× Porta lata Monster",
+      "clienteId": "cli-impresoreando",
+      "rolId": "rol-imp-dis",
+      "fecha": "2026-07-18",
+      "horaInicio": "10:00",
+      "horaFin": "13:00",
+      "notas": "Estado pedido: listo. Total $10.000. 1× Porta lata Monster · PLA+ negro · listo para entregar · Panel: /index/clientes/impresoreando/panel/ · Listo — falta entregar / transferir a venta.",
+      "prioridad": "media",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "02",
+      "tipoEntregable": "impresoreando-pedido",
+      "parentId": "tarea-imp-pedidos-hoy",
+      "ordenHijo": 1,
+      "pedidoId": "ped-rebe-plmons-001",
+      "pedidoNumero": "PED-001",
+      "pedidoEstado": "listo",
+      "linkPanel": "/index/clientes/impresoreando/panel/",
+      "sesionAgente": {
+        "mensajes": [
+          {
+            "rol": "agente",
+            "texto": "Hola, soy **Agente Impresoreando** — skill **Impresión y piezas gráficas**.\nVamos a trabajar en: **PED-001 Rebe · 1× Porta lata Monster**.\nCliente: Impresoreando.\nRol: Diseño e impresión.\nFecha: sábado, 18 de julio · 10:00 – 13:00.\nNotas: Estado pedido: listo. Total $10.000. 1× Porta lata Monster · PLA+ negro · listo para entregar · Panel: /index/clientes/impresoreando/panel/ · Listo — falta entregar / transferir a venta.\n**Tip:** haz clic en el cliente en Clientes para cargar metas, contexto y manual de marca.\nEscribe qué necesitas entregar (mapa conceptual, inventario, código, copy…). **Lo armo y lo diseño aquí** en el chat — listo para compartir con tu contraparte.\n**Tip:** adjunta capturas del sitio o mockups con **+ Imágenes de referencia** debajo del prompt (por ejemplo, menú actual vs. propuesta).",
+            "ts": 1784560993581
+          }
+        ],
+        "archivosAdjuntos": [],
+        "imagenesPendientes": [],
+        "imagenesReferencia": []
+      }
+    },
+    {
+      "id": "tarea-imp-ped-gianni-bulldog-002",
+      "titulo": "[IMP] PED-002 Gianni · 1× Macetero perro bulldog + 4× Portacompleto perro bulldog",
+      "clienteId": "cli-impresoreando",
+      "rolId": "rol-imp-dis",
+      "fecha": "2026-07-18",
+      "horaInicio": "14:00",
+      "horaFin": "18:00",
+      "notas": "Estado pedido: en impresión. Total $17.000. Macetero listo · portacompletos 2/4 en impresión · PLA+ negro · Panel: /index/clientes/impresoreando/panel/",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "03",
+      "tipoEntregable": "impresoreando-pedido",
+      "parentId": "tarea-imp-pedidos-hoy",
+      "ordenHijo": 2,
+      "pedidoId": "ped-gianni-bulldog-002",
+      "pedidoNumero": "PED-002",
+      "pedidoEstado": "en_impresion",
+      "linkPanel": "/index/clientes/impresoreando/panel/"
+    },
+    {
+      "id": "tarea-jm-novedades-mobile-actual",
+      "titulo": "[JM] Novedades mobile · grilla 2×2 + cierre",
+      "clienteId": "cli-joyas-mercury",
+      "rolId": "rol-jm-dev",
+      "fecha": "2026-07-27",
+      "horaInicio": "11:00",
+      "horaFin": "14:00",
+      "notas": "Última tarea JM vigente (la serie F2 D1–D20 ya no va en el calendario). Cerrar Novedades/Destacados en mobile: grilla 2×2, ocultar clones Slick, validar hero/banner sin recorte MERCURY, paridad con wireframes. CSS: index/clientes/joyasmercury/CSS-COMPLETO-ASTRA.css · landing JM. Al terminar → marcar hecha.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "21",
+      "tipoEntregable": "jm-novedades-mobile",
+      "agendaFijada": true,
+      "parentId": null,
+      "sesionAgente": {
+        "mensajes": [
+          {
+            "rol": "agente",
+            "texto": "Hola, soy **Agente Joyas Mercury** — skill **Dev WooCommerce JM**.\nVamos a trabajar en: **Novedades mobile · grilla 2×2 + cierre**.\nCliente: Joyas Mercury.\nRol: Desarrollo Web.\nFecha: sábado, 18 de julio · 11:00 – 14:00.\nNotas: Última tarea JM vigente (la serie F2 D1–D20 ya no va en el calendario). Cerrar Novedades/Destacados en mobile: grilla 2×2, ocultar clones Slick, validar hero/banner sin recorte MERCURY, paridad con wireframes. CSS: index/clientes/joyasmercury/CSS-COMPLETO-ASTRA.css · landing JM. Al terminar → marcar hecha.\nPerfil del cliente cargado (metas, contexto, manual).\nEscribe qué necesitas entregar (mapa conceptual, inventario, código, copy…). **Lo armo y lo diseño aquí** en el chat — listo para compartir con tu contraparte.\n**Tip:** adjunta capturas del sitio o mockups con **+ Imágenes de referencia** debajo del prompt (por ejemplo, menú actual vs. propuesta).",
+            "ts": 1784356137830
+          }
+        ],
+        "archivosAdjuntos": [],
+        "imagenesPendientes": [],
+        "imagenesReferencia": []
+      },
+      "estadoFijado": true
+    },
+    {
+      "id": "tarea-tw-ajustar-textos-2026-07-19",
+      "titulo": "[TW] Ajustar textos",
+      "clienteId": "cli-tronwell",
+      "rolId": "rol-tw-textos",
+      "fecha": "2026-07-20",
+      "fechaFin": "2026-07-20",
+      "horaInicio": "09:00",
+      "horaFin": "17:00",
+      "notas": "Tarea madre · ajustar textos Tronwell (domingo 19 jul). Subtareas = un documento cada una: Contacto.docx · curso adultos.docx · Home.docx · tutor ia.docx. Completar la madre cuando terminen las 4 subtareas.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "01",
+      "tipoEntregable": "ecosistema",
+      "parentId": null,
+      "agendaFijada": true,
+      "estadoFijado": true
+    },
+    {
+      "id": "tarea-tw-ajustar-textos-contacto-2026-07-19",
+      "titulo": "[TW] Contacto.docx",
+      "clienteId": "cli-tronwell",
+      "rolId": "rol-tw-textos",
+      "fecha": "2026-07-20",
+      "horaInicio": "09:00",
+      "horaFin": "11:00",
+      "notas": "Subtarea de «Ajustar textos» · documento Contacto.docx.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "02",
+      "tipoEntregable": "texto-doc",
+      "parentId": "tarea-tw-ajustar-textos-2026-07-19",
+      "ordenHijo": 1,
+      "documentoNombre": "Contacto.docx",
+      "agendaFijada": true,
+      "estadoFijado": true
+    },
+    {
+      "id": "tarea-tw-ajustar-textos-curso-adultos-2026-07-19",
+      "titulo": "[TW] curso adultos.docx",
+      "clienteId": "cli-tronwell",
+      "rolId": "rol-tw-textos",
+      "fecha": "2026-07-20",
+      "horaInicio": "11:00",
+      "horaFin": "13:00",
+      "notas": "Subtarea de «Ajustar textos» · documento curso adultos.docx.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "03",
+      "tipoEntregable": "texto-doc",
+      "parentId": "tarea-tw-ajustar-textos-2026-07-19",
+      "ordenHijo": 2,
+      "documentoNombre": "curso adultos.docx",
+      "agendaFijada": true,
+      "estadoFijado": true
+    },
+    {
+      "id": "tarea-tw-ajustar-textos-home-2026-07-19",
+      "titulo": "[TW] Home.docx",
+      "clienteId": "cli-tronwell",
+      "rolId": "rol-tw-textos",
+      "fecha": "2026-07-20",
+      "horaInicio": "13:00",
+      "horaFin": "15:00",
+      "notas": "Subtarea de «Ajustar textos» · documento Home.docx.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "04",
+      "tipoEntregable": "texto-doc",
+      "parentId": "tarea-tw-ajustar-textos-2026-07-19",
+      "ordenHijo": 3,
+      "documentoNombre": "Home.docx",
+      "agendaFijada": true,
+      "estadoFijado": true
+    },
+    {
+      "id": "tarea-tw-ajustar-textos-tutor-ia-2026-07-19",
+      "titulo": "[TW] tutor ia.docx",
+      "clienteId": "cli-tronwell",
+      "rolId": "rol-tw-textos",
+      "fecha": "2026-07-20",
+      "horaInicio": "15:00",
+      "horaFin": "17:00",
+      "notas": "Subtarea de «Ajustar textos» · documento tutor ia.docx.",
+      "prioridad": "alta",
+      "completada": true,
+      "pendiente": false,
+      "numeroHistorico": "05",
+      "tipoEntregable": "texto-doc",
+      "parentId": "tarea-tw-ajustar-textos-2026-07-19",
+      "ordenHijo": 4,
+      "documentoNombre": "tutor ia.docx",
+      "agendaFijada": true,
+      "estadoFijado": true
+    }
+  ],
+  "citasSalud": [
+    {
+      "id": "cita-psiq",
+      "fecha": "2026-06-25",
+      "hora": "18:00",
+      "especialidad": "Psiquiatra",
+      "notas": "Consulta online"
+    },
+    {
+      "id": "cita-cesfam",
+      "fecha": "2026-06-26",
+      "hora": "08:30",
+      "especialidad": "Exámenes Cesfam",
+      "notas": "Cesfam Vitacura"
+    },
+    {
+      "id": "cita-nutri-2026-07-27",
+      "fecha": "2026-07-27",
+      "hora": "10:00",
+      "especialidad": "Nutrióloga",
+      "notas": "Cita lunes 27 jul · si la hora no es 10:00, edítala en Salud"
+    }
+  ],
+  "tareasEliminadas": [
+    "tarea-ts-reporte-2026-06-01",
+    "tarea-cli-piscineria-202606-pub-1",
+    "tarea-cli-hotspring-202606-pub-1",
+    "tarea-cli-piscineria-202606-pub-2",
+    "tarea-cli-hotspring-202606-pub-2",
+    "tarea-cli-piscineria-202606-pub-3",
+    "tarea-cli-hotspring-202606-pub-3",
+    "tarea-cli-piscineria-202606-pub-4",
+    "tarea-cli-hotspring-202606-pub-4",
+    "tarea-cli-piscineria-202606-pub-5",
+    "tarea-cli-hotspring-202606-pub-5",
+    "tarea-cli-piscineria-202606-pub-6",
+    "tarea-cli-hotspring-202606-pub-6",
+    "tarea-cli-piscineria-202606-pub-7",
+    "tarea-cli-hotspring-202606-pub-7",
+    "tarea-cli-piscineria-202606-pub-8",
+    "tarea-jm-f2-01",
+    "jm-todo-01",
+    "tarea-jm-f2-02",
+    "jm-todo-02",
+    "tarea-jm-f2-03",
+    "jm-todo-03",
+    "tarea-jm-f2-04",
+    "jm-todo-04",
+    "tarea-jm-f2-05",
+    "jm-todo-05",
+    "tarea-jm-f2-06",
+    "jm-todo-06",
+    "tarea-jm-f2-07",
+    "jm-todo-07",
+    "tarea-jm-f2-08",
+    "jm-todo-08",
+    "tarea-jm-f2-09",
+    "jm-todo-09",
+    "tarea-jm-f2-10",
+    "jm-todo-10",
+    "tarea-jm-f2-11",
+    "jm-todo-11",
+    "tarea-jm-f2-12",
+    "jm-todo-12",
+    "tarea-jm-f2-13",
+    "jm-todo-13",
+    "tarea-jm-f2-14",
+    "jm-todo-14",
+    "tarea-jm-f2-15",
+    "jm-todo-15",
+    "tarea-jm-f2-16",
+    "jm-todo-16",
+    "tarea-jm-f2-17",
+    "jm-todo-17",
+    "tarea-jm-f2-18",
+    "jm-todo-18",
+    "tarea-jm-f2-19",
+    "jm-todo-19",
+    "tarea-jm-f2-20",
+    "jm-todo-20"
+  ],
+  "reunionesClientes": [
+    {
+      "id": "reunion-ecr-25jun",
+      "clienteId": "cli-ecr",
+      "fecha": "2026-06-25",
+      "horaInicio": "12:00",
+      "horaFin": "13:00",
+      "titulo": "Reunión ECR",
+      "notas": "Reunión con cliente"
+    }
+  ],
+  "ultimaVisita": "2026-06-25",
+  "respaldoVersion": 14,
+  "respaldoActualizado": "2026-07-21",
+  "meta": {
+    "autoGenerarTareas": false,
+    "modoTrabajo": "manual",
+    "nota": "Vigente: TS 7–12 · ECR NL1=20 ago / NL2=22 ago · JM Fase 2 (progreso en jm-backup). · Impresoreando pedidos sincronizados 2026-07-18 → madre tarea-imp-pedidos-hoy. · Impresoreando pedidos sincronizados 2026-07-18 → madre tarea-imp-pedidos-hoy. · Impresoreando pedidos sincronizados 2026-07-18 → madre tarea-imp-pedidos-hoy. · Tronwell · madre Ajustar textos 2026-07-19 + 4 docs (Contacto, curso adultos, Home, tutor ia).",
+    "plantillasMadre": [
+      {
+        "id": "ecr-nl-ecosistema",
+        "nombre": "ECR · Ecosistema newsletter",
+        "descripcion": "Madre + Copys · Portada · Carrusel · Video (mensual)",
+        "clienteId": "cli-ecr",
+        "rolId": "rol-ecr-cm",
+        "registrada": "2026-07-18"
+      },
+      {
+        "id": "hist-ecr-tecnologia-sin-integracion",
+        "nombre": "Tecnología sin integración: el principal freno de la eficiencia",
+        "descripcion": "Formato usado · [ECR] NL 1 ago · Tecnología sin integración",
+        "clienteId": "cli-ecr",
+        "rolId": "rol-ecr-cm",
+        "articuloSlug": "tecnologia-sin-integracion",
+        "articuloTitulo": "Tecnología sin integración: el principal freno de la eficiencia",
+        "plantillaBase": "ecr-nl-ecosistema",
+        "registrada": "2026-07-17",
+        "origenTareaId": "tarea-ecr-ecosistema-nl-agosto-2026-07-17"
+      },
+      {
+        "id": "hist-ecr-equipos-en-terreno",
+        "nombre": "Equipos en terreno: la ventaja de ajustar a tiempo",
+        "descripcion": "Formato usado · [ECR] NL 2 ago · Equipos en terreno",
+        "clienteId": "cli-ecr",
+        "rolId": "rol-ecr-cm",
+        "articuloSlug": "equipos-en-terreno",
+        "articuloTitulo": "Equipos en terreno: la ventaja de ajustar a tiempo",
+        "plantillaBase": "ecr-nl-ecosistema",
+        "registrada": "2026-07-17",
+        "origenTareaId": "tarea-ecr-ecosistema-equipos-terreno-2026-07-24"
+      }
+    ],
+    "jmFase2ArchivadaCalendario": true
+  },
+  "perfilPersonal": {
+    "nombre": "Josefa Ogalde",
+    "titulo": "Desarrolladora Fullstack · Web · E-commerce · WordPress",
+    "tagline": "Desarrolladora Fullstack especializada en sitios web, tiendas online y proyectos WordPress/WooCommerce.",
+    "contacto": "Email: josefaogalde@gmail.com\nWhatsApp: +56 9 6604 7614\nGitHub: github.com/JosefaOgalde",
+    "cartaPresentacion": "Hola,\n\nSoy Josefa Ogalde, desarrolladora fullstack especializada en sitios web, tiendas online y proyectos WordPress/WooCommerce.\n\nTengo experiencia en e-commerce, landings y acompañamiento post-entrega para que cada cliente gestione su sitio con confianza.\n\nContacto:\njosefaogalde@gmail.com\n+56 9 6604 7614\ngithub.com/JosefaOgalde",
+    "notas": "",
+    "actualizado": ""
+  },
+  "especialistasSalud": [
+    "Exámenes Cesfam",
+    "Nutrióloga",
+    "Psiquiatra"
+  ]
+}
