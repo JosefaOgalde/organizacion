@@ -2,10 +2,10 @@
   "nombre": "Clínica Indisa",
   "slug": "clinica-indisa",
   "clienteAgencia": "MKOF",
-  "ambito": "RRSS orgánicas",
-  "etapa": 1,
+  "ambito": "RRSS orgánicas + Diagnóstico WEB UX/UI",
+  "etapa": 2,
   "creado": "2026-07-20T21:33:46Z",
-  "updatedAt": "2026-07-21T00:20:00Z",
+  "updatedAt": "2026-07-21T02:35:00Z",
   "competidores": [
     "Clínica Las Condes",
     "Clínica Alemana",
@@ -52,17 +52,22 @@
       "tiktok": "https://www.tiktok.com/@clinicasantamariacl"
     }
   },
-  "objetivo": "Evaluar si la comunicación orgánica está alineada entre canales, con objetivos claros y uso adecuado; benchmark vs 4 clínicas privadas de Santiago.",
+  "objetivo": "Etapa 1: RRSS orgánicas alineadas entre canales. Etapa 2: diagnóstico WEB UX/UI (desktop/mobile) vs mismas 4 clínicas — rendimiento, usabilidad, jerarquía, arquitectura, referentes y recomendaciones.",
   "archivos": {
     "fuentes": "fuentes.json",
     "ecosistema": "data/ecosistema-rrss.json",
     "competencia": "data/competencia.json",
     "oportunidades": "data/oportunidades.json",
-    "conclusiones": "data/conclusiones.json"
+    "conclusiones": "data/conclusiones.json",
+    "webDiagnostico": "data/web/diagnostico.json",
+    "webPagespeed": "data/web/pagespeed.json",
+    "webTextos": "data/web/textos-laminas.json",
+    "webLaminas": "laminas/web/"
   },
   "pendientes": [
+    "Re-medir PageSpeed del home Indisa cuando salga de mantención (FCP/LCP actuales = página estática)",
     "Confirmar que Indisa/CLC/Dávila/Santa María no tienen Spotify institucional",
-    "Opcional: reenviar capturas Indisa para fijar fechas exactas de UI (hoy: 3–4 posts/sem estimados)"
+    "Opcional: reenviar capturas Indisa IG para fijar fechas exactas de UI (hoy: 3–4 posts/sem estimados)"
   ],
   "canalesOficiales": {
     "web": "https://www.indisa.cl/",

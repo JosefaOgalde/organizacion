@@ -1,36 +1,29 @@
-# Clínica Indisa — Prospecto RRSS orgánicas (MKOF)
+# Clínica Indisa — Prospecto MKOF
 
-**Objetivo:** evaluar si la comunicación orgánica está **alineada entre canales**, con **objetivos claros** y **uso adecuado**, más **benchmark** vs:
-
-1. Clínica Las Condes  
-2. Clínica Alemana  
-3. Clínica Dávila  
-4. Clínica Santa María  
+**Etapa 1 — RRSS orgánicas:** alineación entre canales + benchmark vs CLC, Alemana, Dávila, Santa María.  
+**Etapa 2 — Diagnóstico WEB UX/UI:** desktop/mobile del sitio prospecto vs mismas clínicas.
 
 ## Abrir
 
 http://127.0.0.1:8000/index/clientes/mkof/prospecto/clientes/clinica-indisa/?disco=1
 
-Hub: http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1
+## WEB (etapa 2)
 
-## Regla de data
+| Archivo | Contenido |
+|---------|-----------|
+| `data/web/diagnostico.json` | Hallazgos por eje + ranking UX |
+| `data/web/pagespeed.json` | PSI Indisa + Lighthouse competencia |
+| `data/web/textos-laminas.json` | Textos Canva |
+| `laminas/web/` | 8 láminas HTML/PNG + `COPY-CANVA.txt` |
 
-Todo número está en `fuentes.json` con URL, fecha y método.  
-Lo que dice **PENDIENTE** no se inventa: se completa con captura (screenshot) fechada.
+**Nota 2026-07-21:** Indisa en mantención (sin teléfonos de urgencia/reserva). Arquitectura operativa documentada vía Wayback 2026-02-17. Re-medir PSI del home real al volver online.
 
-## Ya medido (2026-07-20)
-
-| Canal | Indisa | Nota |
-|-------|--------|------|
-| LinkedIn | **~60 mil** (59.868) | Debajo de Alemana / Dávila / CLC / Santa María |
-| Facebook | **~49 mil** | Página verificada |
-| Instagram / YT / TikTok | PENDIENTE captura | Handles listados en `fuentes.json` |
-
-## Etapa 1
+## RRSS (etapa 1)
 
 | Archivo | Contenido |
 |---------|-----------|
 | `data/ecosistema-rrss.json` | Matriz plataformas × competencia + prospecto |
-| `data/competencia.json` | Formatos, temáticas, periodicidad (hipótesis + preguntas) |
-| `data/oportunidades.json` | 3 oportunidades con fundamento |
+| `data/competencia.json` | Formatos, temáticas, periodicidad |
+| `data/oportunidades.json` | 3 oportunidades |
 | `data/conclusiones.json` | 4 cuadrantes + síntesis |
+| `laminas/` | Ecosistema + pack Instagram |

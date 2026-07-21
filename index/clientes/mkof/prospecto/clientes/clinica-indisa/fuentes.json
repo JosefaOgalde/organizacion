@@ -459,6 +459,78 @@
       "dato": "25,2 K suscriptores · 476 vídeos",
       "fecha": "2026-07-20",
       "metodo": "Screenshot canal YouTube entregado por usuaria."
+    },
+    {
+      "id": "web-indisa-vivo",
+      "tipo": "sitio_web",
+      "entidad": "Clínica Indisa",
+      "url": "https://www.indisa.cl/",
+      "dato": "Página de mantención (sin menú ni teléfonos de urgencia/reserva)",
+      "fecha": "2026-07-21",
+      "metodo": "Browser visual + Chrome dump-dom; HTTP 403 / mensaje mantención en home, /agenda, /centros, /especialidades."
+    },
+    {
+      "id": "web-indisa-wayback",
+      "tipo": "archivo_web",
+      "entidad": "Clínica Indisa",
+      "url": "https://web.archive.org/web/20260217073516/https://www.indisa.cl/",
+      "dato": "Home operativo: hub agendar (6 tiles), especialidades, sedes, teléfonos footer",
+      "fecha": "2026-02-17",
+      "metodo": "Wayback Machine HTML (estructura operativa de referencia)."
+    },
+    {
+      "id": "web-psi-indisa-mobile",
+      "tipo": "pagespeed",
+      "entidad": "Clínica Indisa",
+      "url": "https://pagespeed.web.dev/",
+      "dato": "Mobile FCP 1.2s · LCP 1.6s (página mantención)",
+      "fecha": "2026-07-21",
+      "metodo": "PageSpeed Insights UI · captura pagespeed-indisa-mobile.png"
+    },
+    {
+      "id": "web-lh-competencia",
+      "tipo": "lighthouse",
+      "entidad": "Competencia 4 clínicas",
+      "url": "local lighthouse CLI",
+      "dato": "Ver data/web/pagespeed.json competenciaLighthouse",
+      "fecha": "2026-07-21",
+      "metodo": "npx lighthouse performance desktop+mobile Chrome headless"
+    },
+    {
+      "id": "web-clc-vivo",
+      "tipo": "sitio_web",
+      "entidad": "Clínica Las Condes",
+      "url": "https://www.clinicalascondes.cl/HOME",
+      "dato": "Modal seguro al cargar; CTA Reserva verde; Rescate en barra",
+      "fecha": "2026-07-21",
+      "metodo": "Browser visual + WebFetch"
+    },
+    {
+      "id": "web-alemana-vivo",
+      "tipo": "sitio_web",
+      "entidad": "Clínica Alemana",
+      "url": "https://www.clinicaalemana.cl/",
+      "dato": "Widget reserva + 3 CTAs Reservar hora; sin modal",
+      "fecha": "2026-07-21",
+      "metodo": "Browser visual + WebFetch"
+    },
+    {
+      "id": "web-davila-vivo",
+      "tipo": "sitio_web",
+      "entidad": "Clínica Dávila",
+      "url": "https://www.davila.cl/",
+      "dato": "Hero seguro; atajos ícono; WhatsApp agendar",
+      "fecha": "2026-07-21",
+      "metodo": "Browser visual (scrape bot bloqueado por Radware)"
+    },
+    {
+      "id": "web-santamaria-vivo",
+      "tipo": "sitio_web",
+      "entidad": "Clínica Santa María",
+      "url": "https://www.clinicasantamaria.cl/",
+      "dato": "Widget multinivel Consultas/Dental/Telemedicina/Exámenes",
+      "fecha": "2026-07-21",
+      "metodo": "Browser visual + WebFetch"
     }
   ],
   "canalesOficialesProspecto": {
@@ -509,5 +581,6 @@
       "linkedin": "https://www.linkedin.com/company/clinica-santa-maria/",
       "tiktok": "https://www.tiktok.com/@clinicasantamariacl"
     }
-  }
+  },
+  "consultaFechaWeb": "2026-07-21"
 }

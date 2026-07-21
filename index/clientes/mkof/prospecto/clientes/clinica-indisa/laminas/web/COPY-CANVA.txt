@@ -1,0 +1,114 @@
+# Textos Canva — Diagnóstico WEB · Clínica Indisa
+# Fecha: 2026-07-21 · MKOF
+# Todos los textos fueron escritos para este diagnóstico (no copiar Kitchenit).
+
+================================================================================
+01 · PORTADA DIAGNÓSTICO WEB
+================================================================================
+Título: DIAGNÓSTICO WEB
+Sub: DESKTOP / MOBILE
+Prospecto: Clínica Indisa · www.indisa.cl
+
+Ejes (botones laterales):
+- RENDIMIENTO / ACCESIBILIDAD
+- USABILIDAD
+- JERARQUÍA DE CONTENIDOS
+- GENERACIÓN DE CONTENIDOS
+- ARQUITECTURA
+- REFERENCIAS
+- RECOMENDACIONES
+
+================================================================================
+02 · PORTADA COMPETENCIA
+================================================================================
+Título: DIAGNÓSTICO WEB
+Sub: DESKTOP / MOBILE
+
+Texto central:
+Benchmark UX/UI del sitio de Clínica Indisa
+frente a cuatro clínicas privadas de Santiago.
+Foco: reserva, urgencia, jerarquía y mobile.
+
+Logos / nombres:
+Clínica Las Condes · Clínica Alemana · Clínica Dávila · Clínica Santa María
+
+================================================================================
+03 · RENDIMIENTO
+================================================================================
+Título: DIAGNÓSTICO UX / UI
+Sub: RENDIMIENTO · WWW.INDISA.CL
+
+Cuerpo:
+Al 21-jul-2026 el sitio público está en mantención:
+PSI mobile mide esa página estática (FCP 1.2 s · LCP 1.6 s).
+El problema prioritario no es velocidad, sino disponibilidad
+y contacto crítico. Re-medir el home real al volver online.
+En competencia, el LCP mobile supera 7 s en Alemana y Santa María;
+CLC llega a 28.7 s (Lighthouse).
+
+Métricas (pins):
+- Primer renderizado (FCP): Desktop ~0.8 s · Mobile 1.2 s
+- Mayor elemento (LCP): Desktop ~1.2 s · Mobile 1.6 s
+
+Fuente: https://pagespeed.web.dev · captura Indisa mobile 2026-07-21 (página mantención)
+
+================================================================================
+04 · ESTRUCTURA DE NAVEGACIÓN
+================================================================================
+Título: DIAGNÓSTICO UX / UI
+Sub: WWW.INDISA.CL
+Caja: Estructura de navegación
+
+Home operativo (feb-2026): hub «¿Qué necesitas agendar?»
+con 6 tiles (consulta, imagen, lab, telemedicina,
+vacunatorio, banco de sangre) + especialidades y sedes.
+Hoy: mantención total sin menú ni teléfonos visibles.
+
+================================================================================
+05 · REFERENTES
+================================================================================
+Título: DIAGNÓSTICO UX / UI
+Sub: REFERENTES · ALEMANA / SANTA MARÍA / CLC / DÁVILA
+
+1) Reserva repetida en el primer pantallazo
+   Alemana muestra «Reservar hora» en header, hero y widget central sin modal de entrada.
+
+2) Menú corto con niveles de agenda
+   Santa María concentra la conversión en un widget con pestañas Consultas · Dental · Telemedicina · Exámenes.
+
+3) Urgencia visible vs. producto que tapa
+   CLC destaca Rescate en barra superior, pero el modal de seguro al cargar frena la reserva. Dávila prioriza seguro en el hero.
+
+================================================================================
+06 · ESTÉTICO VS FUNCIONAL
+================================================================================
+Título: DIAGNÓSTICO UX / UI
+Sub: WWW.INDISA.CL
+Caja: Diseño estético vs funcional
+
+• Cuando opera, el home se ve moderno (Next.js) y orientado a tareas de paciente.
+• Hoy la estética de mantención está sobrepuesta a la función: sin urgencia, sin reserva, sin sedes.
+• Falta una estrategia de degradación: teléfonos y WhatsApp deben sobrevivir aunque caiga el CMS.
+
+================================================================================
+07 · RECOMENDACIONES (7 cajas)
+================================================================================
+1. Incluir en toda mantención teléfonos de urgencia y reserva (y WhatsApp).
+2. Homologar el home con un widget de reserva visible en el primer viewport.
+3. Trabajar desktop y mobile con el mismo CTA sticky «Reservar hora».
+4. Reordenar contenidos: tareas del paciente primero, seguros y campañas después.
+5. Evitar modales comerciales al ingreso que bloqueen la agenda.
+6. Acortar el menú y separar servicios en línea de contenidos de marca/blog.
+7. Al restaurar el sitio, re-medir LCP mobile del home real y del widget.
+
+================================================================================
+08 · OPORTUNIDADES EN UX/UI
+================================================================================
+01 · DISPONIBILIDAD CON CONTACTO
+Si el sitio cae, el paciente igual debe encontrar urgencia, mesa central y reserva por teléfono o WhatsApp.
+
+02 · RESERVA SIN FRICCIÓN
+Traer al primer pantallazo un widget de agenda (modelo Alemana / Santa María) con CTA repetido y sin modal de entrada.
+
+03 · JERARQUÍA TASK-FIRST
+Priorizar «qué necesito hacer» sobre campañas de seguros; medir LCP del bloque de reserva en mobile.

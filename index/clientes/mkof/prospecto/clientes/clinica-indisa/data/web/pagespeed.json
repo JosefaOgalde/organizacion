@@ -1,0 +1,57 @@
+{
+  "fecha": "2026-07-21",
+  "fuentePrincipal": "https://pagespeed.web.dev",
+  "fuenteAlternativa": "Lighthouse CLI local (Chrome headless)",
+  "prospecto": {
+    "url": "https://www.indisa.cl/",
+    "nota": "Al 2026-07-21 el sitio público responde con página de mantención (HTTP 403 / mensaje de mejora). Las métricas PSI de Indisa corresponden a ESA página estática, no al home de producto. Re-medir cuando vuelva el sitio operativo.",
+    "estado": "mantencion",
+    "mobile": {
+      "fuente": "PageSpeed Insights UI (field/lab visible en captura)",
+      "fcp": "1.2 s",
+      "fcpMs": 1200,
+      "lcp": "1.6 s",
+      "lcpMs": 1600,
+      "inp": "180 ms",
+      "cls": "0",
+      "ttfb": "0.4 s",
+      "coreWebVitals": "aprobado"
+    },
+    "desktop": {
+      "fuente": "Estimación relativa a página estática liviana + benchmark competencia; re-medir en vivo",
+      "fcp": "~0.8 s",
+      "lcp": "~1.2 s",
+      "nota": "Página de mantención; no usar como proxy del LCP del home real."
+    }
+  },
+  "competenciaLighthouse": {
+    "metodo": "npx lighthouse --only-categories=performance · Chrome headless · 2026-07-21",
+    "clc": {
+      "url": "https://www.clinicalascondes.cl/HOME",
+      "desktop": { "score": 55, "fcp": "0.9 s", "lcp": "7.8 s", "cls": "0.211", "tbt": "0 ms" },
+      "mobile": { "score": 32, "fcp": "3.2 s", "lcp": "28.7 s", "cls": "0.844", "tbt": "230 ms" }
+    },
+    "alemana": {
+      "url": "https://www.clinicaalemana.cl/",
+      "desktop": { "score": 57, "fcp": "1.0 s", "lcp": "2.0 s", "cls": "0.16", "tbt": "510 ms" },
+      "mobile": { "score": 14, "fcp": "4.5 s", "lcp": "7.7 s", "cls": "0.805", "tbt": "1,010 ms" }
+    },
+    "davila": {
+      "url": "https://www.davila.cl/",
+      "nota": "En scrape automatizado apareció captcha Radware; Lighthouse/browser visual sí cargaron home.",
+      "desktop": { "score": 51, "fcp": "2.3 s", "lcp": "2.3 s", "cls": "0.505", "tbt": "0 ms" },
+      "mobile": { "score": 53, "fcp": "3.0 s", "lcp": "3.0 s", "cls": "0.161", "tbt": "930 ms" }
+    },
+    "santamaria": {
+      "url": "https://www.clinicasantamaria.cl/",
+      "desktop": { "score": 84, "fcp": "0.6 s", "lcp": "1.8 s", "cls": "0.001", "tbt": "90 ms" },
+      "mobile": { "score": 44, "fcp": "1.9 s", "lcp": "7.8 s", "cls": "0", "tbt": "1,520 ms" }
+    }
+  },
+  "lecturaDiagnostica": [
+    "Indisa en mantención carga rápido, pero el problema no es velocidad: es disponibilidad y contacto crítico.",
+    "En competencia, el dolor mobile es LCP alto (CLC extremo; Alemana y Santa María ~7–8 s).",
+    "Santa María lidera desktop (score 84); Alemana equilibra UX de reserva con LCP desktop razonable (2.0 s).",
+    "Al volver el home de Indisa, priorizar LCP mobile del hero/widget de reserva, no solo FCP de una página estática."
+  ]
+}

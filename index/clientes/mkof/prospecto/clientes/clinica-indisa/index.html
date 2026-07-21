@@ -157,7 +157,7 @@
   <header>
     <div>
       <h1>Clínica Indisa</h1>
-      <p>Prospecto · RRSS orgánicas · MKOF · etapa 1</p>
+      <p>Prospecto · RRSS + Diagnóstico WEB · MKOF · etapa 2</p>
     </div>
     <nav>
       <a href="../../?disco=1">← Hub prospectos</a>
@@ -195,6 +195,13 @@
     <div class="grid" id="conc"></div>
     <div class="card" style="margin-top:1rem" id="sintesis"></div>
 
+    <h2>Diagnóstico WEB UX/UI</h2>
+    <div class="aviso" id="web-aviso"></div>
+    <div class="grid" id="web-ejes"></div>
+    <h3 style="margin:1.25rem 0 0.5rem;font-size:1rem">Láminas Canva</h3>
+    <div class="grid" id="web-laminas"></div>
+    <p class="fuente-nota"><a href="laminas/web/COPY-CANVA.txt" target="_blank" rel="noopener">COPY-CANVA.txt</a> · <a href="data/web/diagnostico.json" target="_blank" rel="noopener">diagnostico.json</a> · <a href="data/web/pagespeed.json" target="_blank" rel="noopener">pagespeed.json</a></p>
+
     <h2>Pendientes de captura</h2>
     <ul id="pendientes"></ul>
   </main>
@@ -225,7 +232,7 @@
     }
 
     // Cache-bust: evita ver JSON viejo (PENDIENTE) tras git pull
-    const v = '20260721-spotify';
+    const v = '20260721-web';
     const j = (path) => fetch(base + path + '?v=' + v, { cache: 'no-store' }).then((r) => {
       if (!r.ok) throw new Error(path + ' ' + r.status);
       return r.json();
@@ -237,7 +244,9 @@
       j('data/competencia.json'),
       j('data/oportunidades.json'),
       j('data/conclusiones.json'),
-    ]).then(([meta, eco, comp, ops, conc]) => {
+      j('data/web/diagnostico.json'),
+      j('data/web/textos-laminas.json'),
+    ]).then(([meta, eco, comp, ops, conc, webDx, webTxt]) => {
       document.getElementById('objetivo').innerHTML =
         `<strong>Objetivo</strong><br>${meta.objetivo}<br><small>Competidores: ${meta.competidores.join(' · ')}</small>`;
 
@@ -305,6 +314,34 @@
 
       document.getElementById('sintesis').innerHTML =
         `<h3>Síntesis</h3><ul>${conc.sintesisCentral.map((s) => `<li>${s}</li>`).join('')}</ul>`;
+
+      const webAviso = document.getElementById('web-aviso');
+      if (webAviso && webDx) {
+        webAviso.innerHTML = `<strong>Estado web Indisa (${webDx.fecha})</strong><br>${webDx.estadoProspecto.detalle}<br><small>Arquitectura operativa: ${webDx.estadoProspecto.estructuraOperativaFuente} (${webDx.estadoProspecto.estructuraOperativaFecha})</small>`;
+      }
+      const ejes = webDx?.hallazgosPorEje || {};
+      document.getElementById('web-ejes').innerHTML = Object.entries({
+        'Rendimiento / Accesibilidad': ejes.rendimientoAccesibilidad?.indisa,
+        'Usabilidad': ejes.usabilidad?.indisa,
+        'Jerarquía': ejes.jerarquiaContenidos?.indisa,
+        'Arquitectura': ejes.arquitectura?.indisa,
+      }).filter(([, t]) => t).map(([h, t]) =>
+        `<article class="card"><h3>${h}</h3><p style="margin:0;font-size:0.88rem;color:var(--muted)">${t}</p></article>`
+      ).join('');
+
+      const laminas = [
+        ['01-portada-diagnostico.png', 'Portada'],
+        ['02-portada-competencia.png', 'Competencia'],
+        ['03-rendimiento.png', 'Rendimiento'],
+        ['04-estructura-navegacion.png', 'Navegación'],
+        ['05-referentes.png', 'Referentes'],
+        ['06-estetico-vs-funcional.png', 'Estético vs funcional'],
+        ['07-recomendaciones.png', 'Recomendaciones'],
+        ['08-oportunidades-uxui.png', 'Oportunidades'],
+      ];
+      document.getElementById('web-laminas').innerHTML = laminas.map(([f, n]) =>
+        `<article class="card"><h3>${n}</h3><a href="laminas/web/${f}" target="_blank" rel="noopener"><img src="laminas/web/${f}" alt="${n}" style="width:100%;border-radius:8px;border:1px solid var(--line)" loading="lazy" /></a></article>`
+      ).join('');
 
       document.getElementById('pendientes').innerHTML = (meta.pendientes || [])
         .map((p) => `<li>${p}</li>`).join('');

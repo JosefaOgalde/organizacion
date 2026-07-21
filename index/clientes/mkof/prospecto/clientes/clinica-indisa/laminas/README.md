@@ -17,3 +17,7 @@
 Flujo: estado actual Indisa (02) → oportunidades (03) → conclusiones (04).
 
 > Si tienes el export exacto de Canva, reemplaza el PNG manteniendo el nombre.
+
+## WEB UX/UI
+
+Ver carpeta `web/` (8 láminas + capturas + COPY-CANVA.txt).

@@ -1,0 +1,124 @@
+{
+  "portada": {
+    "titulo": "DIAGNÓSTICO WEB",
+    "subtitulo": "DESKTOP / MOBILE",
+    "prospectoLinea": "Clínica Indisa · www.indisa.cl",
+    "ejes": [
+      "RENDIMIENTO / ACCESIBILIDAD",
+      "USABILIDAD",
+      "JERARQUÍA DE CONTENIDOS",
+      "GENERACIÓN DE CONTENIDOS",
+      "ARQUITECTURA",
+      "REFERENCIAS",
+      "RECOMENDACIONES"
+    ]
+  },
+  "portadaCompetencia": {
+    "titulo": "DIAGNÓSTICO WEB",
+    "subtitulo": "DESKTOP / MOBILE",
+    "texto": [
+      "Benchmark UX/UI del sitio de Clínica Indisa",
+      "frente a cuatro clínicas privadas de Santiago.",
+      "Foco: reserva, urgencia, jerarquía y mobile."
+    ],
+    "competidores": [
+      "Clínica Las Condes",
+      "Clínica Alemana",
+      "Clínica Dávila",
+      "Clínica Santa María"
+    ]
+  },
+  "rendimiento": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "RENDIMIENTO · WWW.INDISA.CL",
+    "cuerpo": [
+      "Al 21-jul-2026 el sitio público está en mantención:",
+      "PSI mobile mide esa página estática (FCP 1.2 s · LCP 1.6 s).",
+      "El problema prioritario no es velocidad, sino disponibilidad",
+      "y contacto crítico. Re-medir el home real al volver online.",
+      "En competencia, el LCP mobile supera 7 s en Alemana y Santa María;",
+      "CLC llega a 28.7 s (Lighthouse)."
+    ],
+    "metricas": {
+      "fcpLabel": "El primer renderizado con contenido",
+      "lcpLabel": "Renderizado del mayor elemento con contenido",
+      "desktopFcp": "~0.8 s",
+      "mobileFcp": "1.2 s",
+      "desktopLcp": "~1.2 s",
+      "mobileLcp": "1.6 s"
+    },
+    "fuente": "Fuente: https://pagespeed.web.dev · captura Indisa mobile 2026-07-21 (página mantención)"
+  },
+  "navegacion": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "WWW.INDISA.CL",
+    "cajaTitulo": "Estructura de navegación",
+    "cajaTexto": [
+      "Home operativo (feb-2026): hub «¿Qué necesitas agendar?»",
+      "con 6 tiles (consulta, imagen, lab, telemedicina,",
+      "vacunatorio, banco de sangre) + especialidades y sedes.",
+      "Hoy: mantención total sin menú ni teléfonos visibles."
+    ]
+  },
+  "referentes": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "REFERENTES · ALEMANA / SANTA MARÍA / CLC / DÁVILA",
+    "anotaciones": [
+      {
+        "titulo": "Reserva repetida en el primer pantallazo",
+        "detalle": "Alemana muestra «Reservar hora» en header, hero y widget central sin modal de entrada."
+      },
+      {
+        "titulo": "Menú corto con niveles de agenda",
+        "detalle": "Santa María concentra la conversión en un widget con pestañas Consultas · Dental · Telemedicina · Exámenes."
+      },
+      {
+        "titulo": "Urgencia visible vs. producto que tapa",
+        "detalle": "CLC destaca Rescate en barra superior, pero el modal de seguro al cargar frena la reserva. Dávila prioriza seguro en el hero."
+      }
+    ]
+  },
+  "esteticoVsFuncional": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "WWW.INDISA.CL",
+    "cajaTitulo": "Diseño estético vs funcional",
+    "bullets": [
+      "Cuando opera, el home se ve moderno (Next.js) y orientado a tareas de paciente.",
+      "Hoy la estética de mantención está sobrepuesta a la función: sin urgencia, sin reserva, sin sedes.",
+      "Falta una estrategia de degradación: teléfonos y WhatsApp deben sobrevivir aunque caiga el CMS."
+    ]
+  },
+  "recomendaciones": {
+    "titulo": "DIAGNÓSTICO UX / UI",
+    "subtitulo": "RECOMENDACIONES",
+    "items": [
+      "Incluir en toda mantención **teléfonos de urgencia y reserva** (y WhatsApp).",
+      "Homologar el home con un **widget de reserva** visible en el primer viewport.",
+      "Trabajar **desktop y mobile** con el mismo CTA sticky «Reservar hora».",
+      "Reordenar contenidos: **tareas del paciente primero**, seguros y campañas después.",
+      "Evitar **modales comerciales** al ingreso que bloqueen la agenda.",
+      "Acortar el menú y separar **servicios en línea** de contenidos de marca/blog.",
+      "Al restaurar el sitio, **re-medir LCP mobile** del home real y del widget."
+    ]
+  },
+  "oportunidades": {
+    "titulo": "OPORTUNIDADES EN UX/UI",
+    "items": [
+      {
+        "num": "01",
+        "titulo": "DISPONIBILIDAD CON CONTACTO",
+        "texto": "Si el sitio cae, el paciente igual debe encontrar urgencia, mesa central y reserva por teléfono o WhatsApp."
+      },
+      {
+        "num": "02",
+        "titulo": "RESERVA SIN FRICCIÓN",
+        "texto": "Traer al primer pantallazo un widget de agenda (modelo Alemana / Santa María) con CTA repetido y sin modal de entrada."
+      },
+      {
+        "num": "03",
+        "titulo": "JERARQUÍA TASK-FIRST",
+        "texto": "Priorizar «qué necesito hacer» sobre campañas de seguros; medir LCP del bloque de reserva en mobile."
+      }
+    ]
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "prospecto": "Clínica Indisa",
+  "url": "https://www.indisa.cl/",
+  "fecha": "2026-07-21",
+  "competidores": [
+    { "id": "clc", "nombre": "Clínica Las Condes", "url": "https://www.clinicalascondes.cl/HOME" },
+    { "id": "alemana", "nombre": "Clínica Alemana", "url": "https://www.clinicaalemana.cl/" },
+    { "id": "davila", "nombre": "Clínica Dávila / Red Dávila", "url": "https://www.davila.cl/" },
+    { "id": "santamaria", "nombre": "Clínica Santa María", "url": "https://www.clinicasantamaria.cl/" }
+  ],
+  "estadoProspecto": {
+    "vivo": "mantencion",
+    "detalle": "Home, /agenda, /centros y /especialidades sirven la misma página de mantención sin menú ni teléfonos de urgencia/reserva.",
+    "estructuraOperativaFuente": "Wayback Machine captura 2026-02-17 + índice público de /agenda y /centros",
+    "estructuraOperativaFecha": "2026-02-17"
+  },
+  "arquitecturaIndisaOperativa": {
+    "stackVisible": "Next.js + contenidos WordPress",
+    "homeHub": {
+      "tituloAgendar": "¿Qué necesitas agendar?",
+      "tiles": [
+        "Consulta médica",
+        "Imagenología",
+        "Laboratorio",
+        "Telemedicina",
+        "Vacunatorio",
+        "Banco de sangre"
+      ],
+      "otrasSecciones": [
+        "¿Qué quieres hacer?",
+        "Nuestras especialidades",
+        "Seguros y convenios",
+        "Guía de hospitalización",
+        "Nuestras ubicaciones",
+        "Blog"
+      ]
+    },
+    "telefonosFooter": {
+      "mesaCentral": "2 2362 5555",
+      "reservaHora": "2 2362 5400"
+    },
+    "centros": [
+      "Clínica INDISA Providencia",
+      "Clínica INDISA Maipú",
+      "Centro Médico Los Españoles",
+      "Centro Médico Los Conquistadores",
+      "Centro de Diálisis"
+    ],
+    "marca": "Clínica de familia · Estamos para tu cuidado"
+  },
+  "hallazgosPorEje": {
+    "rendimientoAccesibilidad": {
+      "indisa": "PSI mobile de la página de mantención: FCP 1.2 s · LCP 1.6 s (Core Web Vitals OK). No mide el home de producto. En mantención no hay teléfono de urgencia ni skip a contacto — falla de accesibilidad de servicio crítico.",
+      "competencia": "LCP mobile alto en CLC (28.7 s), Alemana (7.7 s) y Santa María (7.8 s). Desktop Santa María es el más sólido (LCP 1.8 s)."
+    },
+    "usabilidad": {
+      "indisa": "Cuando opera, el home es task-oriented (tiles de agendar). Hoy el usuario cae en un callejón sin salida: sin reserva, sin urgencia, solo RRSS.",
+      "mejorPractica": "Alemana: widget de reserva en el primer viewport + CTA repetido. Santa María: widget multinivel (Consultas / Dental / Telemedicina / Exámenes)."
+    },
+    "jerarquiaContenidos": {
+      "indisa": "Hub de tareas + especialidades + ubicaciones. Riesgo: muchos tiles compiten sin un CTA sticky único de «Reservar hora».",
+      "antiPatrones": [
+        "CLC: modal comercial de seguro al cargar tapa la reserva.",
+        "Dávila: hero prioriza contratar seguro frente a agendar consulta."
+      ]
+    },
+    "generacionContenidos": {
+      "indisa": "Blog y especialidades existen en la arquitectura operativa; en mantención no hay indexación útil ni contenidos vivos.",
+      "competencia": "CLC Blog «Vivir Mejor», Alemana charlas/talleres y prevención, Santa María novedades clínicas con especialistas nominados."
+    },
+    "arquitectura": {
+      "indisa": "Separación clara: Agenda · Especialidades · Centros · Seguros · Hospitalización · Blog. Agenda externa (Eniax) para consulta.",
+      "gap": "Mantención global sin degradación graceful (teléfonos, mapa, WhatsApp)."
+    },
+    "referencias": {
+      "tomar": [
+        "Alemana — reserva visible 3 veces en el primer pantallazo",
+        "Santa María — menú corto + widget con niveles",
+        "CLC — rescate/urgencia visible en barra superior (sin copiar el modal)"
+      ],
+      "evitar": [
+        "Modal de producto al ingreso (CLC)",
+        "Hero de seguro como CTA primario (Dávila)",
+        "Mantención sin contacto de emergencia (Indisa hoy)"
+      ]
+    }
+  },
+  "rankingUxVivo": [
+    { "puesto": 1, "nombre": "Clínica Alemana", "motivo": "Reserva sin fricción, sin modal, buscador y grilla de tareas claras." },
+    { "puesto": 2, "nombre": "Clínica Santa María", "motivo": "Widget multinivel limpio; whitespace; telemedicina como pestaña." },
+    { "puesto": 3, "nombre": "Clínica Las Condes", "motivo": "CTA reserva fuerte y rescate visible, penalizado por modal comercial." },
+    { "puesto": 4, "nombre": "Clínica Dávila", "motivo": "Buenos atajos por ícono; reserva menos protagonismo que el seguro." },
+    { "puesto": 5, "nombre": "Clínica Indisa", "motivo": "Sitio en mantención sin contacto crítico al momento del diagnóstico." }
+  ]
+}
