@@ -22,11 +22,10 @@ Más plataformas no siempre significa mejor operación.
 El dato existe… pero no cambia el resultado.
 
 ### Slide 3 — La desconexión
-**Título:** El problema no es la herramienta  
-**Cuerpo:** Es la desconexión.  
-- Dato que llega tarde  
-- Alertas sin dueño  
-- Equipos que siguen en WhatsApp
+**Texto (2–3 líneas, sin viñetas):**  
+El problema no es la herramienta: es la desconexión.  
+El dato llega tarde, las alertas no tienen dueño  
+y los equipos siguen coordinando por WhatsApp.
 
 ### Slide 4 — Retail / terreno
 **Título:** En el punto de venta se nota  
