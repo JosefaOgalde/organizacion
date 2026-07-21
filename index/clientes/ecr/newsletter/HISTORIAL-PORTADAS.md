@@ -1,11 +1,31 @@
 # Historial de portadas Midjourney (solo fondo)
 
+## NL 1 ago — prompts Midjourney v5 (2026-07-21)
 
+- Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
+- Feedback: las imágenes anteriores simbolizaban flota de transporte; pivot a eficiencia operacional digital + línea de producción (sin camiones/vans).
+- Mundos: **K+B** · **H** · **B+H**
+- Archivo: [portadas-guardadas/NL1-ago-tecnologia-sin-integracion-prompts-v5.md](./portadas-guardadas/NL1-ago-tecnologia-sin-integracion-prompts-v5.md)
 
+### Opción 1 · PC + capa digital de control
 
+```
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: wide editorial desk in deep teal and navy where a stylized faceless woman works at a blank glowing laptop, around her float unlabeled abstract dashboard panels, assistance-app windows, planning boards, and soft amber report charts, thin warm-orange data threads weave all those tools into one coherent control layer above the desk, soft paper texture, absolutely no vans trucks or fleet vehicles anywhere, large blank unmarked upper sky block, thematic mood: digital systems as the operational brain — control planning and reporting working as one, critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only
+```
 
+### Opción 2 · Línea de producción conectada
 
+```
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: clean isometric factory production line in deep teal with a continuous warm-orange conveyor carrying blank geometric product shapes past faceless operators at stations, each station has an unlabeled glowing screen or blank tablet, thin amber light threads link every station into a single digital control spine running along the line, reflective polished floor, absolutely no vans trucks delivery vehicles or fleet imagery, large blank unmarked cream sky above, thematic mood: operational efficiency through a connected production line and live digital oversight, critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only
+```
 
+### Opción 3 · Control digital → línea de producción
+
+```
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: dual-depth composition — foreground a faceless man at a blank multi-monitor workstation with unlabeled glowing control systems dashboards and soft orange planning interfaces, background a deep teal production floor with conveyors and faceless line workers whose blank devices receive the same continuous amber signal stream from his screens, orange light threads connect desk to production line as one integrated system, absolutely no vans trucks or delivery fleet, wide blank unmarked upper band for later text, thematic mood: technology integrated with the production floor so digital tools drive real operational results not a separate digital layer, critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only
+```
+
+---
 
 ## 2026-07-20 — Tecnología sin integración — logística Memphis (cielo azure con contraste)
 
@@ -115,7 +135,13 @@ ANTITEXT: keep all vehicle body panels, doors, and surfaces completely blank and
 
 ---
 
-Actualizado: 2026-07-20
+Actualizado: 2026-07-21
+
+## NL 1 ago — prompts Midjourney v5 (2026-07-21)
+
+- Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
+- Mundos: **K+B** · **H** · **B+H** (digital + línea de producción, sin flota)
+- Archivo: [portadas-guardadas/NL1-ago-tecnologia-sin-integracion-prompts-v5.md](./portadas-guardadas/NL1-ago-tecnologia-sin-integracion-prompts-v5.md)
 
 ## NL 1 ago — prompts Midjourney v4 (2026-07-20)
 
