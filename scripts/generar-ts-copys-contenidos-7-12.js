@@ -3,6 +3,11 @@
  * Genera copys A/B/C (TXT separados) para contenidos TS 7–12
  * y los enlaza a las subtareas «Copys video».
  *
+ * Regla obligatoria TS (copys video):
+ * 1) Primera línea = contexto de la escena/video CON emoji(s).
+ * 2) Después: producto / características (sin inventar specs).
+ * 3) Emojis obligatorios en el cuerpo (no solo hashtags).
+ *
  *   node scripts/generar-ts-copys-contenidos-7-12.js
  *   FORCE=1 node scripts/generar-ts-copys-contenidos-7-12.js   # sobrescribe
  */
