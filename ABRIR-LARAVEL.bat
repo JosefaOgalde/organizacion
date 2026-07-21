@@ -116,6 +116,10 @@ if exist "data\organizacion-live.json" if exist "scripts\finalizar-ts-c08.php" (
   echo  3f^) Asegurar TS Contenido 8/12 cerrado...
   "%PHP_EXE%" scripts\finalizar-ts-c08.php
 )
+if exist "data\organizacion-live.json" if exist "scripts\asegurar-jm-productos-3-colecciones.php" (
+  echo  3g^) Asegurar JM #23 productos 3 colecciones...
+  "%PHP_EXE%" scripts\asegurar-jm-productos-3-colecciones.php
+)
 
 REM Tras actualizar FrontendStaticController / web.php, reiniciar :8000
 REM (si ya corria, el proceso viejo puede servir 404 en carpetas como /index/clientes/)
