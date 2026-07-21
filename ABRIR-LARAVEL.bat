@@ -95,6 +95,12 @@ if not exist "data\organizacion-live.json" (
   )
 )
 
+REM Tareas fijas en live (PHP, sin Node)
+if exist "data\organizacion-live.json" if exist "scripts\asegurar-jm-home-circulos.php" (
+  echo  3b^) Asegurar tarea JM círculos Elementor Free...
+  "%PHP_EXE%" scripts\asegurar-jm-home-circulos.php
+)
+
 REM Tras actualizar FrontendStaticController / web.php, reiniciar :8000
 REM (si ya corria, el proceso viejo puede servir 404 en carpetas como /index/clientes/)
 set "YA_CORRE=0"
