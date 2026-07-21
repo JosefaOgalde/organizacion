@@ -12,7 +12,8 @@ Data: `../../data/web/`
 | 05 | `05-referentes.png` | Patrones competencia |
 | 06 | `06-estetico-vs-funcional.png` | Estético vs funcional |
 | 07 | `07-recomendaciones.png` | 7 recomendaciones |
-| 08 | `08-oportunidades-uxui.png` | 3 oportunidades |
+| 08 | `08-proteccion-datos.png` | Ley 21.719 · antes de conclusión |
+| 09 | `09-oportunidades-uxui.png` | 3 oportunidades |
 
 Capturas de sitios: `capturas/`
 

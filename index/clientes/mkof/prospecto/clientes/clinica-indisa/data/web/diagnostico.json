@@ -54,22 +54,22 @@
       "competencia": "LCP mobile alto en CLC (28.7 s), Alemana (7.7 s) y Santa María (7.8 s). Desktop Santa María es el más sólido (LCP 1.8 s)."
     },
     "usabilidad": {
-      "indisa": "Cuando opera, el home es task-oriented (tiles de agendar). Hoy el usuario cae en un callejón sin salida: sin reserva, sin urgencia, solo RRSS.",
+      "indisa": "HOY: callejón sin salida. Solo página de mantención; sin reserva, sin urgencia, sin sedes. Única salida: íconos de RRSS.",
       "mejorPractica": "Alemana: widget de reserva en el primer viewport + CTA repetido. Santa María: widget multinivel (Consultas / Dental / Telemedicina / Exámenes)."
     },
     "jerarquiaContenidos": {
-      "indisa": "Hub de tareas + especialidades + ubicaciones. Riesgo: muchos tiles compiten sin un CTA sticky único de «Reservar hora».",
+      "indisa": "HOY no hay jerarquía de contenidos: un solo mensaje de mantención. El paciente no puede priorizar ninguna tarea clínica.",
       "antiPatrones": [
         "CLC: modal comercial de seguro al cargar tapa la reserva.",
         "Dávila: hero prioriza contratar seguro frente a agendar consulta."
       ]
     },
     "generacionContenidos": {
-      "indisa": "Blog y especialidades existen en la arquitectura operativa; en mantención no hay indexación útil ni contenidos vivos.",
+      "indisa": "HOY: cero contenidos vivos en el sitio (blog, especialidades, novedades inaccesibles).",
       "competencia": "CLC Blog «Vivir Mejor», Alemana charlas/talleres y prevención, Santa María novedades clínicas con especialistas nominados."
     },
     "arquitectura": {
-      "indisa": "Separación clara: Agenda · Especialidades · Centros · Seguros · Hospitalización · Blog. Agenda externa (Eniax) para consulta.",
+      "indisa": "HOY: arquitectura plana de un solo nodo (mantención). Home, /agenda, /centros y /especialidades sirven el mismo aviso sin menú.",
       "gap": "Mantención global sin degradación graceful (teléfonos, mapa, WhatsApp)."
     },
     "referencias": {

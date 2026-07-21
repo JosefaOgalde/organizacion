@@ -51,14 +51,25 @@
   },
   "navegacion": {
     "titulo": "DIAGNÓSTICO UX / UI",
-    "subtitulo": "WWW.INDISA.CL",
-    "cajaTitulo": "Estructura de navegación",
-    "cajaTexto": [
-      "Home operativo (feb-2026): hub «¿Qué necesitas agendar?»",
-      "con 6 tiles (consulta, imagen, lab, telemedicina,",
-      "vacunatorio, banco de sangre) + especialidades y sedes.",
-      "Hoy: mantención total sin menú ni teléfonos visibles."
-    ]
+    "subtitulo": "ESTRUCTURA DE NAVEGACIÓN · HOY · WWW.INDISA.CL",
+    "hallazgo": "No hay navegación. El paciente solo ve mantención: sin menú, sin reserva, sin urgencia, sin sedes. Única salida: redes sociales.",
+    "mapaHoy": [
+      "Menú principal — no existe",
+      "Reservar / Agendar — no existe",
+      "Urgencia / teléfonos — no visibles",
+      "Especialidades / sedes — no accesibles",
+      "Buscador — no existe",
+      "Solo RRSS — sí visible"
+    ],
+    "pacienteNoEncuentra": [
+      "Reservar hora",
+      "Teléfono urgencia",
+      "Mesa central",
+      "Dirección / sedes",
+      "Especialidades",
+      "Resultados / portal"
+    ],
+    "fuente": "Captura viva indisa.cl · 2026-07-21 · estado actual"
   },
   "referentes": {
     "titulo": "DIAGNÓSTICO UX / UI",
@@ -80,12 +91,12 @@
   },
   "esteticoVsFuncional": {
     "titulo": "DIAGNÓSTICO UX / UI",
-    "subtitulo": "WWW.INDISA.CL",
+    "subtitulo": "WWW.INDISA.CL · HOY",
     "cajaTitulo": "Diseño estético vs funcional",
     "bullets": [
-      "Cuando opera, el home se ve moderno (Next.js) y orientado a tareas de paciente.",
-      "Hoy la estética de mantención está sobrepuesta a la función: sin urgencia, sin reserva, sin sedes.",
-      "Falta una estrategia de degradación: teléfonos y WhatsApp deben sobrevivir aunque caiga el CMS."
+      "HOY la página de mantención se ve limpia y con marca, pero no cumple ninguna función clínica.",
+      "La estética está sobrepuesta a la función: sin urgencia, sin reserva, sin sedes, sin menú.",
+      "Falta degradación útil: aunque el CMS esté caído, deben quedar teléfonos y WhatsApp visibles."
     ]
   },
   "recomendaciones": {

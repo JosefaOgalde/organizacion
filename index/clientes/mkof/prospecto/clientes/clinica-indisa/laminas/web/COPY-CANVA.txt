@@ -66,16 +66,30 @@ Prioridad 2 = al volver, medir esta misma barra (móvil) del home y de la reserv
 Fuente: PageSpeed Insights + Lighthouse mobile · 2026-07-21
 
 ================================================================================
-04 · ESTRUCTURA DE NAVEGACIÓN
+04 · ESTRUCTURA DE NAVEGACIÓN (HOY)
 ================================================================================
 Título: DIAGNÓSTICO UX / UI
-Sub: WWW.INDISA.CL
-Caja: Estructura de navegación
+Sub: ESTRUCTURA DE NAVEGACIÓN · HOY · WWW.INDISA.CL
 
-Home operativo (feb-2026): hub «¿Qué necesitas agendar?»
-con 6 tiles (consulta, imagen, lab, telemedicina,
-vacunatorio, banco de sangre) + especialidades y sedes.
-Hoy: mantención total sin menú ni teléfonos visibles.
+HALLAZGO
+No hay navegación.
+El paciente entra a indisa.cl y encuentra solo mantención:
+sin menú, sin reserva, sin urgencia, sin sedes.
+La única salida visible son íconos de redes sociales.
+
+Mapa real del sitio (hoy):
+www.indisa.cl
+  × Menú principal — no existe
+  × Reservar / Agendar — no existe
+  × Urgencia / teléfonos — no visibles
+  × Especialidades / sedes — no accesibles
+  × Buscador — no existe
+  → Solo RRSS (Facebook, X, YouTube, Instagram)
+
+Lo que el paciente no encuentra hoy:
+Reservar hora · Teléfono urgencia · Mesa central · Dirección/sedes · Especialidades · Resultados/portal
+
+Fuente: captura viva indisa.cl · 2026-07-21 (estado actual, no histórico)
 
 ================================================================================
 05 · REFERENTES
@@ -93,15 +107,16 @@ Sub: REFERENTES · ALEMANA / SANTA MARÍA / CLC / DÁVILA
    CLC destaca Rescate en barra superior, pero el modal de seguro al cargar frena la reserva. Dávila prioriza seguro en el hero.
 
 ================================================================================
-06 · ESTÉTICO VS FUNCIONAL
+06 · ESTÉTICO VS FUNCIONAL (HOY)
 ================================================================================
 Título: DIAGNÓSTICO UX / UI
-Sub: WWW.INDISA.CL
-Caja: Diseño estético vs funcional
+Sub: DISEÑO ESTÉTICO VS FUNCIONAL · HOY · WWW.INDISA.CL
 
-• Cuando opera, el home se ve moderno (Next.js) y orientado a tareas de paciente.
-• Hoy la estética de mantención está sobrepuesta a la función: sin urgencia, sin reserva, sin sedes.
-• Falta una estrategia de degradación: teléfonos y WhatsApp deben sobrevivir aunque caiga el CMS.
+• La página de mantención se ve limpia y con marca Indisa.
+• Pero no cumple ninguna función clínica: no hay urgencia, reserva, sedes ni menú.
+• La estética está sobrepuesta a la función: el paciente sale sin poder actuar.
+
+✓ Se ve bien (marca + mensaje)   ✗ No sirve (cero tareas clínicas)
 
 ================================================================================
 07 · RECOMENDACIONES (7 cajas)
