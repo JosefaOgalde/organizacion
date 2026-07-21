@@ -398,6 +398,32 @@
   cursor: pointer;
 }
 
+.tend-input-fecha {
+  cursor: text;
+  min-width: 10.5rem;
+}
+
+.tend-filtro-label--fecha {
+  min-width: 14rem;
+}
+
+.tend-fecha-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.tend-btn-limpiar-fecha {
+  align-self: stretch;
+  white-space: nowrap;
+}
+
+.tend-select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .tend-tags--full {
   margin-top: 0.25rem;
 }
