@@ -167,21 +167,25 @@
   },
   "oportunidades": {
     "titulo": "OPORTUNIDADES EN UX/UI",
+    "intro": "Tres focos concretos para Indisa a partir de lo que vimos hoy en su sitio y en las clínicas de referencia.",
     "items": [
       {
         "num": "01",
-        "titulo": "DISPONIBILIDAD CON CONTACTO",
-        "texto": "Si el sitio cae, el paciente igual debe encontrar urgencia, mesa central y reserva por teléfono o WhatsApp."
+        "titulo": "SIEMPRE PODER CONTACTAR",
+        "texto": "Hoy, si indisa.cl está en mantención, el paciente no encuentra teléfono de urgencia, mesa central ni forma de reservar. Queda solo con redes sociales, que no sirven cuando alguien necesita atención ahora.",
+        "oportunidad": "Aunque el sitio falle o esté en mantención, siempre deben quedar a la vista el teléfono de urgencia, el de reserva y un WhatsApp para escribir."
       },
       {
         "num": "02",
-        "titulo": "RESERVA SIN FRICCIÓN",
-        "texto": "Traer al primer pantallazo un widget de agenda (modelo Alemana / Santa María) con CTA repetido y sin modal de entrada."
+        "titulo": "PEDIR HORA SIN COMPLICARSE",
+        "texto": "En Alemana y Santa María, al abrir el sitio ya se puede agendar: hay un bloque grande para pedir hora y el botón se repite arriba. Nadie tiene que pelear con menús ni cerrar ventanas de seguros para llegar a la agenda.",
+        "oportunidad": "Cuando Indisa vuelva online, poner «Reservar hora» bien visible apenas se abre la página (arriba y al centro), sin avisos que tapen la pantalla."
       },
       {
         "num": "03",
-        "titulo": "JERARQUÍA TASK-FIRST",
-        "texto": "Priorizar «qué necesito hacer» sobre campañas de seguros; medir LCP del bloque de reserva en mobile."
+        "titulo": "PRIMERO LO QUE EL PACIENTE NECESITA",
+        "texto": "Algunas clínicas muestran primero seguros o campañas. Eso distrae: la persona entra a pedir hora, ver sedes o urgencia, no a comprar un producto. Además, al volver el sitio habrá que revisar que cargue rápido en el celular.",
+        "oportunidad": "Ordenar el home por tareas del paciente (agendar, exámenes, sedes) y dejar seguros/campañas más abajo; al restaurar, medir de nuevo la velocidad en móvil."
       }
     ]
   }

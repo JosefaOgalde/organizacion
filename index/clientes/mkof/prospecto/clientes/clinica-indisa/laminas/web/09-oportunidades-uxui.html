@@ -1,46 +1,139 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Oportunidades</title><style>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
-body{width:1920px;height:1080px;background:#f4f1ea;font-family:Montserrat,system-ui,sans-serif;color:#1a4d3e;padding:52px 64px;position:relative;overflow:hidden}
-h1{font-size:44px;font-weight:800;letter-spacing:.04em;color:#1a4d3e}
-.sub{font-size:22px;font-weight:600;color:#6a8f7a;margin-top:8px;letter-spacing:.06em}
-.foot{position:absolute;bottom:28px;left:0;right:0;text-align:center;font-size:12px;color:#b0b8b2}
-.box{background:#1a4d3e;color:#d8f0a8;border-radius:22px;padding:28px 32px}
-.box h2{font-size:26px;font-weight:800;color:#c6e86a;margin-bottom:14px}
-.box p,.box li{font-size:20px;line-height:1.45;color:#e8f5d0;font-weight:600}
-.pill{background:#2f6b52;color:#fff;border-radius:999px;padding:14px 28px;font-weight:700;font-size:16px;letter-spacing:.04em}
-.rec{background:#3d6b4f;color:#fff;border-radius:18px;padding:22px 20px;font-size:17px;font-weight:600;line-height:1.4}
-.rec b{font-weight:800}
-.cap{background:#2f6b52;color:#c6e86a;border-radius:999px;padding:16px 36px;font-size:22px;font-weight:800;letter-spacing:.04em;display:inline-block}
-.num{font-size:48px;font-weight:800;color:#1a4d3e}
-.wedge{height:28px;background:linear-gradient(90deg,#c6e86a 0%,#2f6b52 100%);border-radius:0 14px 14px 0;position:relative;width:420px}
-.pin{position:absolute;top:-10px;width:18px;height:48px;background:#1a4d3e;border-radius:4px;transform:translateX(-50%)}
-.metric-row{display:flex;align-items:center;gap:18px;margin:14px 0}
-.icon-circle{width:64px;height:64px;border-radius:50%;background:#d8ecd8;display:grid;place-items:center;font-size:28px;flex-shrink:0}
-</style></head><body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Oportunidades UX/UI · Indisa</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1920px; height: 1080px; background: #f4f1ea;
+      font-family: Montserrat, system-ui, sans-serif; color: #1a4d3e;
+      padding: 44px 56px 32px; position: relative; overflow: hidden;
+    }
+    h1 { font-size: 40px; font-weight: 800; letter-spacing: 0.04em; }
+    .intro {
+      margin-top: 10px; max-width: 1100px;
+      font-size: 18px; font-weight: 600; color: #5a7368; line-height: 1.4;
+    }
+    .foot {
+      position: absolute; bottom: 22px; left: 0; right: 0;
+      text-align: center; font-size: 12px; color: #b0b8b2;
+    }
+    .list {
+      margin-top: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      max-width: 1600px;
+    }
+    .item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .num {
+      font-size: 48px;
+      font-weight: 800;
+      color: #1a4d3e;
+      line-height: 1;
+      padding-top: 8px;
+    }
+    .card {
+      background: #fff;
+      border: 2px solid #d5e3d9;
+      border-radius: 20px;
+      padding: 22px 28px 24px;
+    }
+    .pill {
+      display: inline-block;
+      background: #2f6b52;
+      color: #c6e86a;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      padding: 10px 22px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+    .card p {
+      font-size: 19px;
+      font-weight: 600;
+      color: #1a4d3e;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .card .para {
+      background: #eef5f1;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #2a4a3c;
+      line-height: 1.4;
+      margin-top: 6px;
+    }
+    .card .para b { color: #1a4d3e; }
+  </style>
+</head>
+<body>
   <h1>OPORTUNIDADES EN UX/UI</h1>
-  <div style="margin-top:64px;display:flex;flex-direction:column;gap:42px;max-width:1100px">
-    
-      <div style="display:flex;gap:28px;align-items:flex-start">
-        <div class="num">01</div>
-        <div style="flex:1">
-          <div class="cap">DISPONIBILIDAD CON CONTACTO</div>
-          <div style="margin-top:14px;font-size:20px;font-weight:600;color:#1a4d3e;line-height:1.45;padding-left:8px">• Si el sitio cae, el paciente igual debe encontrar urgencia, mesa central y reserva por teléfono o WhatsApp.</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:28px;align-items:flex-start">
-        <div class="num">02</div>
-        <div style="flex:1">
-          <div class="cap">RESERVA SIN FRICCIÓN</div>
-          <div style="margin-top:14px;font-size:20px;font-weight:600;color:#1a4d3e;line-height:1.45;padding-left:8px">• Traer al primer pantallazo un widget de agenda (modelo Alemana / Santa María) con CTA repetido y sin modal de entrada.</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:28px;align-items:flex-start">
-        <div class="num">03</div>
-        <div style="flex:1">
-          <div class="cap">JERARQUÍA TASK-FIRST</div>
-          <div style="margin-top:14px;font-size:20px;font-weight:600;color:#1a4d3e;line-height:1.45;padding-left:8px">• Priorizar «qué necesito hacer» sobre campañas de seguros; medir LCP del bloque de reserva en mobile.</div>
-        </div>
-      </div>
+  <div class="intro">
+    Tres focos concretos para Indisa a partir de lo que vimos hoy en su sitio
+    y en las clínicas de referencia.
   </div>
-<div class="foot">Created & Proprietary MKOF 2025 / All rights reserved</div></body></html>
+
+  <div class="list">
+    <div class="item">
+      <div class="num">01</div>
+      <div class="card">
+        <div class="pill">SIEMPRE PODER CONTACTAR</div>
+        <p>
+          Hoy, si indisa.cl está en mantención, el paciente no encuentra teléfono de urgencia,
+          mesa central ni forma de reservar. Queda solo con redes sociales, que no sirven
+          cuando alguien necesita atención ahora.
+        </p>
+        <div class="para">
+          <b>Oportunidad:</b> aunque el sitio falle o esté en mantención, siempre deben quedar
+          a la vista el teléfono de urgencia, el de reserva y un WhatsApp para escribir.
+        </div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="num">02</div>
+      <div class="card">
+        <div class="pill">PEDIR HORA SIN COMPLICARSE</div>
+        <p>
+          En Alemana y Santa María, al abrir el sitio ya se puede agendar: hay un bloque grande
+          para pedir hora y el botón se repite arriba. Nadie tiene que pelear con menús
+          ni cerrar ventanas de seguros para llegar a la agenda.
+        </p>
+        <div class="para">
+          <b>Oportunidad:</b> cuando Indisa vuelva online, poner “Reservar hora” bien visible
+          apenas se abre la página (arriba y al centro), sin avisos que tapen la pantalla.
+        </div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="num">03</div>
+      <div class="card">
+        <div class="pill">PRIMERO LO QUE EL PACIENTE NECESITA</div>
+        <p>
+          Algunas clínicas muestran primero seguros o campañas. Eso distrae: la persona entra
+          a pedir hora, ver sedes o urgencia, no a comprar un producto. Además, al volver el
+          sitio habrá que revisar que cargue rápido en el celular, porque ahí se pierde más gente.
+        </p>
+        <div class="para">
+          <b>Oportunidad:</b> ordenar el home por tareas del paciente (agendar, exámenes, sedes)
+          y dejar seguros/campañas más abajo; al restaurar, medir de nuevo la velocidad en móvil.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">Created & Proprietary MKOF 2025 / All rights reserved</div>
+</body>
+</html>
