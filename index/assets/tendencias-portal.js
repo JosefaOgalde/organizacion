@@ -13,10 +13,12 @@
   const PANEL_KEY = 'tendencias-panel';
   const VISTA_KEY = 'tendencias-vista';
   const PERIODO_KEY = 'tendencias-periodo';
+  const FECHA_DESDE_KEY = 'tendencias-fecha-desde';
   const PLATAFORMA_KEY = 'tendencias-plataforma';
   const CACHE_TTL_MS = (feedCfg.cacheMinutos || 30) * 60 * 1000;
 
   const PERIODOS = [
+    { id: 'todas', label: 'Todas (elige fecha o período)' },
     { id: 'hoy', label: 'Hoy' },
     { id: 'semana', label: 'Esta semana (7 días)' },
     { id: 'quince', label: 'Quince días' },
@@ -36,6 +38,7 @@
   let panelActual = leerPanel();
   let vistaActual = leerVista();
   let periodoActual = leerPeriodo();
+  let fechaDesdeActual = leerFechaDesde();
   let plataformaActual = leerPlataforma();
 
   function leerPanel() {
@@ -80,9 +83,11 @@
   function leerPeriodo() {
     try {
       const p = localStorage.getItem(PERIODO_KEY);
-      return PERIODOS.some((x) => x.id === p) ? p : 'tres-meses';
+      // «Hoy» ya no es el default: si quedó guardado de antes, pasamos a «Todas»
+      if (!p || p === 'hoy') return 'todas';
+      return PERIODOS.some((x) => x.id === p) ? p : 'todas';
     } catch {
-      return 'tres-meses';
+      return 'todas';
     }
   }
 
@@ -90,6 +95,25 @@
     periodoActual = p;
     try {
       localStorage.setItem(PERIODO_KEY, p);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function leerFechaDesde() {
+    try {
+      const f = localStorage.getItem(FECHA_DESDE_KEY) || '';
+      return /^\d{4}-\d{2}-\d{2}$/.test(f) ? f : '';
+    } catch {
+      return '';
+    }
+  }
+
+  function guardarFechaDesde(f) {
+    fechaDesdeActual = /^\d{4}-\d{2}-\d{2}$/.test(f || '') ? f : '';
+    try {
+      if (fechaDesdeActual) localStorage.setItem(FECHA_DESDE_KEY, fechaDesdeActual);
+      else localStorage.removeItem(FECHA_DESDE_KEY);
     } catch {
       /* ignore */
     }
@@ -155,9 +179,17 @@
   function enPeriodo(fechaStr, periodoId) {
     const f = parseFecha(fechaStr);
     if (!f) return false;
-    const inicio = inicioPeriodo(periodoId);
     const fin = new Date();
     fin.setHours(23, 59, 59, 999);
+
+    // Fecha manual: filtra por ese día exacto de la fuente (tú eliges; no hay default)
+    if (fechaDesdeActual) {
+      return fechaStr === fechaDesdeActual;
+    }
+
+    if (periodoId === 'todas') return true;
+
+    const inicio = inicioPeriodo(periodoId);
     return f >= inicio && f <= fin;
   }
 
@@ -331,8 +363,10 @@
 
   function feedVacioHtml() {
     const pl = PLATAFORMAS[plataformaActual]?.label || 'Todas';
-    const pe = PERIODOS.find((p) => p.id === periodoActual)?.label || periodoActual;
-    return `<p class="tend-vacio">No hay tendencias con fecha de fuente en <strong>${escapeHtml(pe)}</strong>${plataformaActual !== 'todas' ? ` en <strong>${escapeHtml(pl)}</strong>` : ''}. Prueba otro filtro o actualiza el feed.</p>`;
+    const pe = fechaDesdeActual
+      ? formatoFecha(fechaDesdeActual)
+      : PERIODOS.find((p) => p.id === periodoActual)?.label || periodoActual;
+    return `<p class="tend-vacio">No hay tendencias con fecha de fuente el <strong>${escapeHtml(pe)}</strong>${plataformaActual !== 'todas' ? ` en <strong>${escapeHtml(pl)}</strong>` : ''}. Elige otra fecha, otro período o actualiza el feed.</p>`;
   }
 
   function listaPlana(feed) {
@@ -576,9 +610,14 @@
       : renderTarjetas(filtrado);
   }
 
+  function etiquetaFiltroFecha() {
+    if (fechaDesdeActual) return formatoFecha(fechaDesdeActual);
+    return PERIODOS.find((p) => p.id === periodoActual)?.label || '';
+  }
+
   function renderSelectFiltros() {
     const optsPeriodo = PERIODOS.map(
-      (p) => `<option value="${p.id}"${periodoActual === p.id ? ' selected' : ''}>${escapeHtml(p.label)}</option>`
+      (p) => `<option value="${p.id}"${periodoActual === p.id && !fechaDesdeActual ? ' selected' : ''}>${escapeHtml(p.label)}</option>`
     ).join('');
     const optsPlat = Object.entries(PLATAFORMAS)
       .map(([id, meta]) => `<option value="${id}"${plataformaActual === id ? ' selected' : ''}>${escapeHtml(meta.label)}</option>`)
@@ -586,9 +625,16 @@
 
     return `
       <div class="tend-filtros-select">
+        <label class="tend-filtro-label tend-filtro-label--fecha">
+          <span>Fecha (tú eliges)</span>
+          <span class="tend-fecha-row">
+            <input type="date" id="tend-input-fecha-desde" class="tend-select tend-input-fecha" value="${escapeHtml(fechaDesdeActual)}" />
+            <button type="button" class="portal-btn portal-btn--ghost tend-btn-limpiar-fecha" id="tend-btn-limpiar-fecha" title="Quitar fecha manual">Limpiar</button>
+          </span>
+        </label>
         <label class="tend-filtro-label">
           <span>Período</span>
-          <select id="tend-select-periodo" class="tend-select">${optsPeriodo}</select>
+          <select id="tend-select-periodo" class="tend-select"${fechaDesdeActual ? ' disabled' : ''}>${optsPeriodo}</select>
         </label>
         <label class="tend-filtro-label">
           <span>Red social</span>
@@ -614,13 +660,34 @@
     if (cont) cont.innerHTML = renderContenido(feedActual);
     if (contador) {
       const pl = plataformaActual !== 'todas' ? ` · ${PLATAFORMAS[plataformaActual].label}` : '';
-      contador.textContent = `${total} tendencia${total === 1 ? '' : 's'} · ${PERIODOS.find((p) => p.id === periodoActual)?.label || ''}${pl}`;
+      contador.textContent = `${total} tendencia${total === 1 ? '' : 's'} · ${etiquetaFiltroFecha()}${pl}`;
     }
   }
 
   function bindSelectFiltros() {
     document.getElementById('tend-select-periodo')?.addEventListener('change', (e) => {
+      guardarFechaDesde('');
       guardarPeriodo(e.target.value);
+      const inp = document.getElementById('tend-input-fecha-desde');
+      if (inp) inp.value = '';
+      e.target.disabled = false;
+      actualizarContenido();
+    });
+    document.getElementById('tend-input-fecha-desde')?.addEventListener('change', (e) => {
+      guardarFechaDesde(e.target.value || '');
+      const sel = document.getElementById('tend-select-periodo');
+      if (sel) sel.disabled = Boolean(fechaDesdeActual);
+      actualizarContenido();
+    });
+    document.getElementById('tend-btn-limpiar-fecha')?.addEventListener('click', () => {
+      guardarFechaDesde('');
+      const inp = document.getElementById('tend-input-fecha-desde');
+      if (inp) inp.value = '';
+      const sel = document.getElementById('tend-select-periodo');
+      if (sel) {
+        sel.disabled = false;
+        sel.value = periodoActual || 'todas';
+      }
       actualizarContenido();
     });
     document.getElementById('tend-select-plataforma')?.addEventListener('change', (e) => {
@@ -659,14 +726,14 @@
           <p class="portal-cliente__meta">Fecha según la noticia enlazada · ingredientes y hashtags completos</p>
           <p class="tend-dashboard__meta">
             <span class="tend-dashboard__estado" id="tend-estado">Listo</span>
-            <span id="tend-contador">${total} tendencia${total === 1 ? '' : 's'} · ${escapeHtml(PERIODOS.find((p) => p.id === periodoActual)?.label || '')}</span>
+            <span id="tend-contador">${total} tendencia${total === 1 ? '' : 's'} · ${escapeHtml(etiquetaFiltroFecha())}</span>
             <time datetime="${escapeHtml(feed.actualizado)}">Feed: ${escapeHtml(formatoFecha(feed.actualizado?.slice(0, 10)))}</time>
           </p>
         </div>
 
         <div class="tend-resumen-box">
-          Solo se listan tendencias cuya <strong>fecha de publicación de la fuente</strong> cae en el período elegido.
-          «Esta semana» = últimos 7 días. Sin fechas inventadas ni datos sin enlace fechado.
+          No hay fecha predeterminada. Elige una <strong>fecha</strong> arriba para ver esos contenidos, o un período.
+          Al abrir se muestran <strong>todas</strong> las del feed. Sin fechas inventadas.
         </div>
 
         <div class="tend-toolbar tend-toolbar--wrap">
