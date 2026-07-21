@@ -1,21 +1,22 @@
 {
-  "titulo": "OPORTUNIDADES EN CLÍNICAS PRIVADAS / INDISA",
+  "titulo": "OPORTUNIDADES EN INSTAGRAM",
   "fecha": "2026-07-20",
+  "nota": "Oportunidades basadas en lo que la competencia hace bien (no solo gaps de Indisa).",
   "items": [
     {
       "n": "01",
-      "titulo": "Alinear objetivos por canal (B2C vs LinkedIn)",
-      "fundamento": "LinkedIn muestra a Indisa detrás de Alemana/CLC/Dávila en audiencia profesional; IG/FB apuntan a paciente. Explicitar objetivos evita contenido genérico y mejora uso 'adecuado' de cada red."
+      "titulo": "CLC convierte mejor con ~45 mil seguidores",
+      "fundamento": "Clínica Las Condes logra 0,99% ER vs 0,11% de Indisa con bases casi iguales (45,8 vs 43,7 mil). Hay espacio para subir interacción sin crecer seguidores primero: ganchos, Reels con retención y CTAs claros."
     },
     {
       "n": "02",
-      "titulo": "Cerrar brecha de benchmark en LinkedIn sin copiar tono hospitalario frío",
-      "fundamento": "Alemana lidera LinkedIn (~158 mil). Indisa puede crecer con series de liderazgo clínico y cuidadores (ya hay señales: jornadas de enfermería) empaquetadas como contenido recurrente medible."
+      "titulo": "Santa María y Dávila demuestran piezas de alto alcance",
+      "fundamento": "Santa María llega a 0,73% ER y Dávila a 0,45% con reels de casos/especialidad (trauma, pediatría, historias clínicas). Indisa ya collab con médicos; el salto es empaquetar esas piezas como serie medible."
     },
     {
       "n": "03",
-      "titulo": "Definir política clara IG + video corto (Reels) vs ausencia TikTok",
-      "fundamento": "Competencia opera fuerte en IG; TikTok institucional poco evidente. Decidir: profundizar Reels educativos con CTA agenda, o abrir TikTok con lineamiento de compliance sanitario — evita presencia accidental."
+      "titulo": "Alemana lidera alcance (139 mil) pero diluye el ER (0,13%)",
+      "fundamento": "Alemana muestra el techo de comunidad; su ER bajo confirma que más seguidores ≠ más engagement. La apuesta Indisa es calidad de interacción (ruta CLC), no copiar solo volumen."
     }
   ]
 }

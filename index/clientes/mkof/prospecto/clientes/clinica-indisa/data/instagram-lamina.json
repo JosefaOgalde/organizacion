@@ -1,0 +1,76 @@
+{
+  "canal": "Instagram",
+  "handle": "@clinicaindisacl",
+  "fecha": "2026-07-20",
+  "mockupImagen": "laminas/instagram/mockup-perfil-indisa.png",
+  "mockupHtml": "laminas/instagram/mockup-perfil.html",
+  "textosMd": "laminas/instagram/TEXTOS-LAMINA.md",
+  "estadoActual": {
+    "titulo": "ECOSISTEMA DE RRSS COMPETENCIA",
+    "sujeto": "Clínica Indisa",
+    "seguidores": "43,7 mil",
+    "publicaciones": 1449,
+    "er": "0,11%",
+    "erNota": "N=9 primeras capturas entregadas",
+    "formatos": [
+      "Reels / clips con especialistas",
+      "Carruseles y posts estáticos educativos",
+      "Collabs con médicos",
+      "CTAs de agenda / Linktree"
+    ],
+    "tematicas": [
+      "Educación en salud (procedimientos, síntomas, especialidades)",
+      "Cuerpo médico y confianza clínica",
+      "Campañas estacionales (invierno, vacunas, alergias)",
+      "Hitos / tecnología y sedes Providencia·Maipú"
+    ],
+    "periodicidad": {
+      "linea1": "Activa y continua (~1.449 publicaciones)",
+      "linea2": "Varias piezas por semana · tono consistente"
+    }
+  },
+  "oportunidades": [
+    {
+      "n": "01",
+      "titulo": "CLC convierte mejor con ~45 mil seguidores",
+      "bullet": "Las Condes logra 0,99% ER vs 0,11% de Indisa con bases casi iguales. Subir interacción sin esperar crecer seguidores primero."
+    },
+    {
+      "n": "02",
+      "titulo": "Santa María y Dávila demuestran piezas de alto alcance",
+      "bullet": "SM 0,73% y Dávila 0,45% con reels de casos/especialidad. Empaquetar collabs médicos Indisa como serie medible."
+    },
+    {
+      "n": "03",
+      "titulo": "Alemana lidera alcance (139 mil) pero diluye el ER (0,13%)",
+      "bullet": "Más seguidores ≠ más engagement. Apuesta Indisa: calidad de interacción (ruta CLC), no solo volumen."
+    }
+  ],
+  "conclusiones": {
+    "fortalezas": [
+      "Base IG sólida: 43,7 mil en el pelotón medio",
+      "Feed activo y tono de marca claro",
+      "Liderazgo YouTube (25 mil) transferable a Reels"
+    ],
+    "gaps": [
+      "ER 0,11%: último del quinteto",
+      "Misma escala que CLC pero ~9× menos ER",
+      "Sin TikTok; Dávila lidera 68 mil / 6% ER"
+    ],
+    "riesgos": [
+      "Publicar mucho sin KPI de engagement",
+      "Collabs sin sistema de serie → picos aislados",
+      "Perseguir solo seguidores puede bajar el ER"
+    ],
+    "apuesta": [
+      "Meta 90 días: ER hacia 0,4–0,7%",
+      "Serie semanal Reels + carrusel + CTA agenda",
+      "Medir N=9 posts/mes con misma fórmula"
+    ],
+    "sintesis": [
+      "Indisa está presente en IG; el problema es activación, no audiencia.",
+      "Competencia: CLC (conversión), SM/Dávila (formatos), Alemana (escala sin obsesionarse).",
+      "Priorizar engagement rate y sistema de contenidos; YouTube como cantera de video corto."
+    ]
+  }
+}

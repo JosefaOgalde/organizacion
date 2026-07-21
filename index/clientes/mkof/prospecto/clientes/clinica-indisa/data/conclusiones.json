@@ -1,46 +1,48 @@
 {
   "titulo": "CONCLUSIONES",
   "fecha": "2026-07-20",
+  "foco": "Instagram · fusión estado Indisa + oportunidades competencia + matriz RRSS",
   "cuadrantes": [
     {
       "id": "tl",
       "titulo": "Fortalezas Indisa",
       "bullets": [
-        "Marca con mensaje claro en web (cuidado + 2 sedes)",
-        "Facebook con escala (~49 mil) y página verificada",
-        "LinkedIn activo en prestigio médico / formación"
+        "Base IG sólida: 43,7 mil en el pelotón medio del quinteto",
+        "Feed activo y tono de marca claro (“Estamos Para Tu Cuidado”)",
+        "Liderazgo YouTube del benchmark (25 mil) — video transferable a Reels"
       ]
     },
     {
       "id": "tr",
       "titulo": "Gaps vs competencia",
       "bullets": [
-        "LinkedIn: menor audiencia que Alemana, Dávila y CLC",
-        "Matriz IG/YT incompleta hasta captura",
-        "TikTok sin evidencia institucional clara"
+        "ER 0,11%: último del quinteto (CLC 0,99% · SM 0,73% · Dávila 0,45%)",
+        "Misma escala que CLC pero ~9× menos engagement relativo",
+        "Sin TikTok (“no publica”) mientras Dávila lidera 68 mil / 6% ER"
       ]
     },
     {
       "id": "bl",
       "titulo": "Riesgos de comunicación",
       "bullets": [
-        "Canales con lógicas distintas sin marco de objetivos → percepción de falta de alineación",
-        "Dependencia de CTAs de agenda sin narrativa de diferenciación clínica"
+        "Publicar mucho sin KPI de engagement → presencia sin conversación",
+        "Collabs médicos sin sistema de serie → picos aislados",
+        "Perseguir solo seguidores (modelo Alemana) puede bajar aún más el ER"
       ]
     },
     {
       "id": "br",
       "titulo": "Apuesta orgánica sugerida",
       "bullets": [
-        "Framework de objetivos por canal + KPI",
-        "Serie educativa IG/Reels + línea LinkedIn de liderazgo",
-        "Completar métricas IG/YT con capturas fechadas"
+        "Meta 90 días: subir ER hacia banda 0,4–0,7%",
+        "Serie semanal Reels especialistas + carrusel educativo + CTA agenda",
+        "Medir N=9 posts/mes con la misma fórmula del benchmark"
       ]
     }
   ],
   "sintesisCentral": [
-    "Indisa comunica, pero el uso 'adecuado' depende de explicitar objetivos por canal.",
-    "En LinkedIn ya hay benchmark duro: Indisa no lidera; hay espacio de crecimiento editorial.",
-    "Siguiente paso: capturas IG (5 perfiles) + muestreo 14 días de formatos/frecuencia."
+    "Indisa está presente en Instagram; el problema no es audiencia, es activación.",
+    "La competencia marca el camino: CLC (conversión), SM/Dávila (formatos), Alemana (escala sin obsesionarse).",
+    "Priorizar engagement rate y sistema de contenidos; usar YouTube como cantera de video corto."
   ]
 }
