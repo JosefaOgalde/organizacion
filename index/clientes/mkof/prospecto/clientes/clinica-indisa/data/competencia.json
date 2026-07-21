@@ -18,9 +18,12 @@
     "Hitos / tecnología y sedes Providencia·Maipú"
   ],
   "periodicidad": {
-    "estimacion": "Activa y continua (~1.449 publicaciones); varias piezas por semana",
+    "estimacion": "3 a 4 posts por semana",
     "nivel": "Frecuente — Consistente",
-    "nota": "Posts/semana exactos: muestreo 7–14 días pendiente."
+    "exacto": 3.3,
+    "ventana": "9 posts · 3–20 jul 2026 (17 días)",
+    "detalleArchivo": "data/ig-periodicidad-indisa.json",
+    "nota": "Calculado con la misma muestra ER N=9. Fechas: #1 ~9h antes de captura 20 jul; #3 Día TDAH 13 jul; resto por orden del feed."
   },
   "metricasActuales": {
     "seguidores": "43,7 mil",
