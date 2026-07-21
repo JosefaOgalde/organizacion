@@ -109,6 +109,7 @@ class FrontendStaticController extends Controller
                 : trim($path, '/') . '/index.html';
         } else {
             $candidates[] = $path;
+            // /index/clientes  →  /index/clientes/index.html
             $candidates[] = $path . '/index.html';
         }
 
@@ -118,6 +119,7 @@ class FrontendStaticController extends Controller
             $rel = ltrim(str_replace('\\', '/', $rel), '/');
             $absolute = $root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $rel);
 
+            // Si es directorio, probar index.html dentro
             if (is_dir($absolute)) {
                 $absolute = rtrim($absolute, '\\/') . DIRECTORY_SEPARATOR . 'index.html';
             }

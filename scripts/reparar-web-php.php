@@ -13,7 +13,7 @@ if (!is_file($web)) {
 
 $src = file_get_contents($web);
 
-// Quitar todos los bloques del frontend unificado
+// Quitar todos los bloques del frontend unificado (fallback o where)
 $src = preg_replace(
     '/\R\/\/ --- Frontend organizacion[\s\S]*?(?:Route::fallback\([^;]+;|->where\(\'path\',\s*\'[^\']+\'\);|where\(\'path\',\s*\'[^\']+\'\);)/u',
     '',
