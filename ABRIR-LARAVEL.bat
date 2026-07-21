@@ -100,6 +100,14 @@ if exist "data\organizacion-live.json" if exist "scripts\asegurar-jm-home-circul
   echo  3b^) Asegurar tarea JM círculos Elementor Free...
   "%PHP_EXE%" scripts\asegurar-jm-home-circulos.php
 )
+if exist "data\organizacion-live.json" if exist "scripts\finalizar-jm-home-circulos.php" (
+  echo  3c^) Cerrar tarea JM #22 ^(finalizada^)...
+  "%PHP_EXE%" scripts\finalizar-jm-home-circulos.php
+)
+if exist "data\organizacion-live.json" if exist "scripts\asegurar-ecr-ti-carrusel.php" (
+  echo  3d^) Asegurar ECR TI Carrusel #07...
+  "%PHP_EXE%" scripts\asegurar-ecr-ti-carrusel.php
+)
 
 REM Tras actualizar FrontendStaticController / web.php, reiniciar :8000
 REM (si ya corria, el proceso viejo puede servir 404 en carpetas como /index/clientes/)
