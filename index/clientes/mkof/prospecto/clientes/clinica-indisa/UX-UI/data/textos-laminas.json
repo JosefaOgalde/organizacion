@@ -74,25 +74,23 @@
   },
   "navegacion": {
     "titulo": "DIAGNÓSTICO UX / UI",
-    "subtitulo": "ESTRUCTURA DE NAVEGACIÓN · HOY · WWW.INDISA.CL",
-    "hallazgo": "No hay navegación. El paciente solo ve mantención: sin menú, sin reserva, sin urgencia, sin sedes. Única salida: redes sociales.",
+    "subtitulo": "MENÚ PRINCIPAL · WWW.INDISA.CL",
+    "hallazgo": "Menú limpio con 5 categorías en acordeón. Reservar hora no está dentro del menú (vive en CTA/modal). Tampoco urgencia ni teléfonos en este panel.",
     "mapaHoy": [
-      "Menú principal — no existe",
-      "Reservar / Agendar — no existe",
-      "Urgencia / teléfonos — no visibles",
-      "Especialidades / sedes — no accesibles",
-      "Buscador — no existe",
-      "Solo RRSS — sí visible"
+      "Información paciente",
+      "Especialidades y Centros",
+      "Servicios y Hospitalización",
+      "Convenios y Alianzas",
+      "Nuestra Clínica",
+      "Header: Logo · Mi portal · Cerrar"
     ],
     "pacienteNoEncuentra": [
-      "Reservar hora",
+      "Reservar hora (dentro del menú)",
       "Teléfono urgencia",
-      "Mesa central",
-      "Dirección / sedes",
-      "Especialidades",
-      "Resultados / portal"
+      "WhatsApp",
+      "Atajos de tareas del paciente"
     ],
-    "fuente": "Captura viva indisa.cl · 2026-07-21 · estado actual"
+    "fuente": "Captura viva menú indisa.cl · 2026-07-21"
   },
   "referentes": {
     "titulo": "DIAGNÓSTICO UX / UI",

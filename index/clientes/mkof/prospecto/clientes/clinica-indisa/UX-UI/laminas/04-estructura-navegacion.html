@@ -2,28 +2,38 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Navegación · Reserva</title>
+  <title>Menú principal · Indisa</title>
   <link rel="stylesheet" href="plantilla-mkof.css">
 </head>
 <body class="slide">
   <h1>DIAGNÓSTICO UX / UI</h1>
-  <div class="sub">RESERVAR HORA · FLUJO ACTUAL · WWW.INDISA.CL</div>
+  <div class="sub">MENÚ PRINCIPAL · WWW.INDISA.CL</div>
 
   <div style="display:flex;gap:48px;margin-top:48px;align-items:flex-start">
-    <div class="box" style="flex:1;max-width:700px">
-      <h2>Cómo se agenda hoy</h2>
-      <p>El paciente entra por el botón naranja <b style="color:#fff">Reservar hora</b> y avanza en un <b style="color:#fff">modal</b> encima del sitio.</p>
-      <p style="margin-top:14px">El camino es largo: tipo de atención → sede → RUT + previsión + captcha → especialidad → médico → aviso de convenio → calendario → hora → formulario de contacto.</p>
-      <p style="margin-top:14px">Se puede reservar, pero hay varios frenos antes de confirmar.</p>
+    <div class="box" style="flex:1;max-width:680px">
+      <h2>Estructura de navegación</h2>
+      <p>El menú (hamburguesa) abre un panel limpio con logo, <b style="color:#fff">Mi portal</b> y cinco categorías en acordeón.</p>
+      <p style="margin-top:14px">Está ordenado y es fácil de leer. El punto débil: <b style="color:#fff">Reservar hora</b> no aparece como ítem del menú; la agenda vive fuera (botón naranja / modal).</p>
+      <p style="margin-top:14px">Tampoco se ven aquí urgencia ni teléfonos: el paciente debe ya conocer esos atajos o buscarlos en el home.</p>
     </div>
 
-    <div style="width:560px;display:flex;flex-direction:column;gap:10px">
-      <div class="rec" style="padding:14px 18px;font-size:15px">01 · ¿Qué necesitas agendar?</div>
-      <div class="rec" style="padding:14px 18px;font-size:15px">02 · Elige tu Centro Médico</div>
-      <div class="rec" style="padding:14px 18px;font-size:15px">03 · RUT + previsión + captcha</div>
-      <div class="rec" style="padding:14px 18px;font-size:15px">04 · Especialidad → médico</div>
-      <div class="rec" style="padding:14px 18px;font-size:15px">05 · Aviso si no hay convenio</div>
-      <div class="rec" style="padding:14px 18px;font-size:15px">06 · Agenda / hora → datos de contacto</div>
+    <div style="width:580px;display:flex;flex-direction:column;gap:12px">
+      <div class="cap" style="text-align:center;width:100%">MENÚ · 5 CATEGORÍAS</div>
+      <div class="rec" style="padding:16px 20px;font-size:17px;display:flex;justify-content:space-between;align-items:center">
+        <span>Información paciente</span><span style="color:#c6e86a">▾</span>
+      </div>
+      <div class="rec" style="padding:16px 20px;font-size:17px;display:flex;justify-content:space-between;align-items:center">
+        <span>Especialidades y Centros</span><span style="color:#c6e86a">▾</span>
+      </div>
+      <div class="rec" style="padding:16px 20px;font-size:17px;display:flex;justify-content:space-between;align-items:center">
+        <span>Servicios y Hospitalización</span><span style="color:#c6e86a">▾</span>
+      </div>
+      <div class="rec" style="padding:16px 20px;font-size:17px;display:flex;justify-content:space-between;align-items:center">
+        <span>Convenios y Alianzas</span><span style="color:#c6e86a">▾</span>
+      </div>
+      <div class="rec" style="padding:16px 20px;font-size:17px;display:flex;justify-content:space-between;align-items:center">
+        <span>Nuestra Clínica</span><span style="color:#c6e86a">▾</span>
+      </div>
     </div>
   </div>
 

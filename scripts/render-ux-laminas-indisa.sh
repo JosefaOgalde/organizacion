@@ -15,6 +15,7 @@ FILES=(
   02-portada-competencia
   03-rendimiento
   04-estructura-navegacion
+  04b-reservar-flujo
   05-referentes
   06-estetico-vs-funcional
   07-recomendaciones

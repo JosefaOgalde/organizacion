@@ -12,7 +12,12 @@ Benchmark vs CLC · Alemana · Dávila · Santa María. Foco: reserva, urgencia,
 ## 03 Rendimiento
 Usuarios reales 1,6 s (ok) · Lab 32,3 s (nota 38). Competencia lab 5–7 s.
 
-## 04 Reservar hora (flujo)
+## 04 Menú principal
+5 categorías en acordeón: Información paciente · Especialidades y Centros · Servicios y Hospitalización · Convenios y Alianzas · Nuestra Clínica.
+Header: Logo · Mi portal · Cerrar.
+Falta en el menú: Reservar hora · urgencia / teléfonos.
+
+## 04b Reservar hora (flujo)
 CTA naranja → tipo prestación → sede → RUT+previsión+captcha → especialidad → médico → convenio → agenda → formulario.
 
 ## 05 Referentes
