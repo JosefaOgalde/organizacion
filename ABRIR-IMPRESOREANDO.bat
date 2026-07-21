@@ -33,7 +33,7 @@ if not exist "index\clientes\impresoreando\catalogo\export\catalogo-impresoreand
 
 call "%~dp0CERRAR-SERVIDOR.bat"
 
-node scripts/sync-respaldo-auto.js --force
+node scripts/sync-respaldo-auto.js
 if errorlevel 1 (
   echo Error en sync-respaldo-auto.js
   pause

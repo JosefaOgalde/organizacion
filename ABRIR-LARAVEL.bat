@@ -58,7 +58,7 @@ where node >nul 2>&1
 if not errorlevel 1 (
   if exist "scripts\sync-respaldo-auto.js" (
     echo  0^) Sync respaldo local...
-    node scripts\sync-respaldo-auto.js --force 2>nul
+    node scripts\sync-respaldo-auto.js 2>nul
   )
   if exist "scripts\asegurar-impresoreando-live.js" (
     node scripts\asegurar-impresoreando-live.js 2>nul

@@ -10,7 +10,7 @@ echo.
 set PATH=C:\laragon\bin\nodejs\node-v22;%PATH%
 
 echo  Sincronizando respaldo mas reciente ^(Descargas / data^)...
-node scripts/sync-respaldo-auto.js --force
+node scripts/sync-respaldo-auto.js
 if errorlevel 1 (
   echo.
   echo  Sin respaldo en disco. Si tienes JSON en Descargas:
