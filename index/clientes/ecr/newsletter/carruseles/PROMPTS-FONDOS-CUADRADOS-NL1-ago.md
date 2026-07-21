@@ -46,10 +46,10 @@ Pure editorial flat vector BACKGROUND ILLUSTRATION ONLY, absolutely no typograph
 
 ---
 
-## Slide 6 — Líderes que conectan
+## Slide 6 — Solo fondo (logo encima en Canva)
 
 ```
-Pure editorial flat vector BACKGROUND ILLUSTRATION ONLY, absolutely no typography. Glyphless and anepigraphic. Modern corporate style with depth, stylized faceless characters, clean geometric shapes, warm orange/amber + deep teal/navy palette. Perfect square 1:1 format. TEXT-SAFE LAYOUT (critical): upper 65% vast empty soft cream to pale teal sky with gentle mist - completely clear negative space for text overlay later, nothing in the upper area. All illustration strictly in bottom 35% only. BOTTOM 35%: unified circular hub with faceless people, blank process nodes, blank tech panels; continuous amber light spine; central faceless leader; calm teal architecture; polished reflective floor. No vans, trucks, or fleet vehicles. ANTITEXT: zero text, letters, numbers, words, logos, UI labels, signage, or writing. Image only, no words.
+Pure abstract BACKGROUND ILLUSTRATION ONLY, absolutely no typography, no logos, no icons, no characters, no objects, no UI. Soft atmospheric gradient sky, modern corporate mood. Perfect square 1:1 format. COMPOSITION: Full-frame empty sky for logo and text overlay later. Soft muted dusty teal-blue in the upper third fading smoothly into warm saturated sunset orange and amber across the lower two-thirds. Subtle ethereal wispy cloud or soft smoke texture, light vapor trails floating gently, most visible mid-left and lower-right, never dense. Smooth professional twilight long-exposure look, no sharp lines, no high-contrast patterns, no geometric shapes, no buildings, no people, no screens. Large clean negative space in the center for a logo overlay. ANTITEXT: zero text, letters, numbers, words, logos, wordmarks, watermarks, captions, labels, signage, or writing of any kind. Image only, no words. Background only.
 ```
 
 ---
