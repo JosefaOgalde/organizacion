@@ -22,10 +22,10 @@ Pure editorial flat vector BACKGROUND ILLUSTRATION ONLY, absolutely no typograph
 
 ---
 
-## Slide 3 — Desconexión
+## Slide 3 — Desconexión (predomina naranja)
 
 ```
-Pure editorial flat vector BACKGROUND ILLUSTRATION ONLY, absolutely no typography. Glyphless and anepigraphic. Modern corporate style with depth, stylized faceless characters, clean geometric shapes, warm orange/amber + deep teal/navy palette. Perfect square 1:1 format. TEXT-SAFE LAYOUT (critical): upper 65% vast empty soft cream to pale teal sky with gentle mist - completely clear negative space for text overlay later, nothing in the upper area. All illustration strictly in bottom 35% only. BOTTOM 35%: three disconnected teal workstation islands with empty gaps; broken amber light threads; faceless workers with blank phones; abstract orange blob shapes (no symbols); isolated blank glowing screens; polished floor. No vans, trucks, or fleet vehicles. ANTITEXT: zero text, letters, numbers, words, logos, UI labels, signage, or writing. Image only, no words.
+Pure editorial flat vector BACKGROUND ILLUSTRATION ONLY, absolutely no typography. Glyphless and anepigraphic. Modern corporate style with depth, stylized faceless characters, clean geometric shapes. COLOR: orange-dominant palette - warm orange and amber as the main colors throughout (~70% of the scene), with only small deep teal accents for contrast; cream to soft peach misty sky. Perfect square 1:1 format. TEXT-SAFE LAYOUT (critical): upper 65% vast empty soft cream to pale peach-orange sky with gentle mist - completely clear negative space for text overlay later, nothing in the upper area. All illustration strictly in bottom 35% only. BOTTOM 35%: three disconnected warm orange workstation islands with empty gaps; broken bright amber light threads; faceless workers in orange and amber tones with blank phones; abstract orange blob shapes (no symbols); isolated blank glowing screens with orange rims; polished floor with orange reflections. Minimal teal accents only. No vans, trucks, or fleet vehicles. ANTITEXT: zero text, letters, numbers, words, logos, UI labels, signage, or writing. Image only, no words.
 ```
 
 ---
