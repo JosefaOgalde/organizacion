@@ -3,7 +3,7 @@ window.HERRAMIENTAS_PROYECTOS = {
   TEND: {
     codigo: 'TEND',
     nombre: 'Tendencias',
-    descripcion: 'Tendencias virales de comida y recetas en Chile — carga automática al entrar',
+    descripcion: 'Tendencias virales de recetas en Chile — carga automática al entrar',
     cliente: 'Herramientas',
     identidadPdf: 'tendencias/identidad/manual-marca-tendencias.pdf',
     colores: {
@@ -39,9 +39,9 @@ window.HERRAMIENTAS_PROYECTOS = {
       }
     ],
     brief: {
-      titulo: 'Brief · Tendencias comida Chile',
+      titulo: 'Brief · Tendencias recetas Chile',
       intro:
-        'Herramienta interna de autogestión para detectar y consultar tendencias virales de comida y recetas en Chile. Está pensada como HTML simple sobre las plantillas del portal, con costo mínimo de mantenimiento y sin depender de APIs de redes sociales.',
+        'Herramienta interna de autogestión para detectar y consultar tendencias virales de recetas en Chile. Está pensada como HTML simple sobre las plantillas del portal, con costo mínimo de mantenimiento y sin depender de APIs de redes sociales.',
       cuerpo: [
         {
           titulo: 'Qué hace',

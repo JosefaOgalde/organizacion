@@ -793,7 +793,7 @@
         ${renderNavPanel()}
 
         <div class="tend-dashboard__hero">
-          <h1>Tendencias comida · Chile</h1>
+          <h1>Tendencias recetas · Chile</h1>
           <p class="portal-cliente__meta">Fecha según la noticia enlazada · ingredientes y hashtags completos</p>
           <p class="tend-dashboard__meta">
             <span class="tend-dashboard__estado" id="tend-estado">Listo</span>
@@ -839,7 +839,7 @@
     root.innerHTML = `
       <article class="portal-cliente tend-dashboard" style="--card-border:${col.primario};--card-bg:${col.fondo};--card-text:${col.texto}">
         ${renderNavPanel()}
-        <h1>Tendencias comida · Chile</h1>
+        <h1>Tendencias recetas · Chile</h1>
         <p class="tend-dashboard__meta">
           <span class="tend-dashboard__estado tend-dashboard__estado--cargando">Cargando tendencias…</span>
         </p>
@@ -851,7 +851,7 @@
     root.innerHTML = `
       <article class="portal-cliente tend-dashboard" style="--card-border:${col.primario};--card-bg:${col.fondo};--card-text:${col.texto}">
         ${renderNavPanel()}
-        <h1>Tendencias comida · Chile</h1>
+        <h1>Tendencias recetas · Chile</h1>
         <div class="tend-error" role="alert">
           No se pudieron cargar las tendencias. Abre con <code>npx serve .</code>
           <br><small>${escapeHtml(err.message)}</small>
