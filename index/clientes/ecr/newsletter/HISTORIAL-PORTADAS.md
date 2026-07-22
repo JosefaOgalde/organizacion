@@ -1,5 +1,18 @@
 # Historial de portadas Midjourney (solo fondo)
 
+## NL 1 ago — Prompt 5 (2026-07-22)
+
+- Artículo: **Tecnología sin integración**
+- Texto Canva (no MJ): «Cuando la tecnología impulsa la operación, los resultados cambian.»
+- Pedido: menos elementos; ilustración asociada a ese mensaje
+- Archivo: [portadas-guardadas/NL1-ago-prompt-5-tecnologia-impulsa-operacion.md](./portadas-guardadas/NL1-ago-prompt-5-tecnologia-impulsa-operacion.md)
+
+### Prompt 5 · Tech impulsa operación (escena simple · ~70% cielo)
+
+```
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: extreme low-horizon composition — the upper 70 percent of the frame is only a vast empty unmarked soft cream-to-pale-teal flat sky block with gentle mist, completely clear, reserved for later text overlay. Bottom 30 percent only: one simple scene — a blank glowing tablet or screen on the left sends a single continuous warm-orange light ribbon into a clean teal operational path on the right where one or two stylized faceless workers move forward with purpose; the orange ribbon is the clear force pushing the operation ahead; sparse, uncluttered, generous empty space, no crowd of panels, no racks, no vans, no dashboards floating everywhere, thematic mood: when technology drives the operation, results change — one signal powering real work, critical ANTITEXT: zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero UI labels; screens and devices are blank unlabeled shapes only; upper sky remains completely empty and clear for text
+```
+
 ## NL 1 ago — Imagen 4 actualizada (2026-07-22)
 
 - Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
