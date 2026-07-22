@@ -49,4 +49,6 @@ Logro: Entregué proyectos web de punta a punta (desarrollo, publicación y segu
 
 ## Próximo paso
 
-Pegar aquí el aviso / empresa / rol de la postulación y qué hay que armar (CV, carta, portfolio, LinkedIn, etc.).
+- Filtro de avisos: [`FILTRO-AVISOS-2026-07-22.md`](./FILTRO-AVISOS-2026-07-22.md)
+- Prioridad abierta: FNE 139100 → [`POSTULACION-FNE-139100.md`](./POSTULACION-FNE-139100.md)
+- Pegar aquí nuevos avisos / roles y qué armar (CV, carta, portfolio).
