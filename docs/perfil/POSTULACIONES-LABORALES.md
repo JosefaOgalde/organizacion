@@ -12,7 +12,13 @@
 
 | Fecha | Empresa / aviso | Rol | Estado | Notas / link |
 |-------|-----------------|-----|--------|--------------|
-| 2026-07-22 | _(pendiente)_ | | | Carpeta creada; asociar entregables aquí |
+| 2026-07-22 | Talk Prod (perfil portal) | **Desarrolladora Web y Analista Digital** (antes: Reporting Analyst and Digital CM) | En edición | Descripción enfocada en programación; ver AJUSTES + texto abajo |
+| 2026-07-22 | _(otras postulaciones)_ | | | Asociar entregables aquí |
+
+## Talk Prod · texto cargos / responsabilidades (borrador)
+
+- **Tipo / cargo (≤60):** Desarrolladora Web y Analista Digital
+- **Descripción (opción A):** Desarrollo y mantengo sitios y flujos web (WordPress y stack propio), con HTML, CSS, JavaScript y control de versiones en Git/GitHub. Apoyo revisiones técnicas y QA en plataformas digitales, e integro reportes y datos (Looker Studio / SQL) cuando el producto lo requiere. Logro: Aceleré entregas web al unificar desarrollo, publicación y seguimiento técnico en un solo flujo.
 
 ## Materiales base
 
