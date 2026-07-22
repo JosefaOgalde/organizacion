@@ -15,11 +15,31 @@
 | 2026-07-22 | Talk Prod (perfil portal) | **Desarrolladora Web y Analista Digital** (antes: Reporting Analyst and Digital CM) | En edición | Descripción enfocada en programación; ver AJUSTES + texto abajo |
 | 2026-07-22 | _(otras postulaciones)_ | | | Asociar entregables aquí |
 
-## Talk Prod · texto cargos / responsabilidades (borrador)
+## Experiencia nueva · Desarrolladora Fullstack Freelance (borrador portal)
 
-- **Cargo:** Desarrolladora Web y Analista Digital
-- **Tipo de cargo (≤60):** Analista-desarrolladora
-- **Descripción (opción A):** Desarrollo y mantengo sitios y flujos web (WordPress y stack propio), con HTML, CSS, JavaScript y control de versiones en Git/GitHub. Apoyo revisiones técnicas y QA en plataformas digitales, e integro reportes y datos (Looker Studio / SQL) cuando el producto lo requiere. Logro: Aceleré entregas web al unificar desarrollo, publicación y seguimiento técnico en un solo flujo.
+| Campo | Valor sugerido |
+|-------|----------------|
+| Nombre empresa | Independiente *(o tu marca / “Josefa Ogalde — Desarrollo Web”)* |
+| Área de trabajo | Informática / Sistemas / TI *(o Marketing digital si el portal no tiene TI)* |
+| Tipo de cargo | Analista-desarrolladora |
+| Cargo | Desarrolladora Fullstack Freelance |
+| Breve info (≤100) | Fullstack freelance: WP, Laravel, portales y e-commerce con Git. |
+| N° personas a cargo | 0 |
+| Industria | Servicios profesionales / Consultoría |
+| País | Chile |
+| Ubicación | Región Metropolitana de Santiago |
+| Desde | _(completar, ej. 01/2025 o 06/2024)_ |
+| Hasta | Al presente |
+| Jefatura directa | — / vacío |
+| Funcionario público | No |
+
+**Descripción de responsabilidades:**
+
+Desarrollo soluciones web fullstack para clientes: sitios WordPress/WooCommerce y Elementor, portales y apps con Laravel/SQLite, front en HTML/CSS/JS y versionado en Git/GitHub. Entrego landings, e-commerce y flujos de publicación con QA técnico y apoyo en métricas cuando el proyecto lo requiere.
+
+Logro: Entregué proyectos web de punta a punta (desarrollo, publicación y seguimiento) con stack unificado por cliente.
+
+**Nota:** Si ya tienes Desafío Latam como “Diseñadora Freelance”, esta ficha es **otra** experiencia (más desarrollo). Evita fechas que se contradigan o duplicar el mismo trabajo con dos cargos.
 
 ## Materiales base
 
