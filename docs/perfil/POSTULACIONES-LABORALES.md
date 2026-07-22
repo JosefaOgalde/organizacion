@@ -17,7 +17,8 @@
 
 ## Talk Prod · texto cargos / responsabilidades (borrador)
 
-- **Tipo / cargo (≤60):** Desarrolladora Web y Analista Digital
+- **Cargo:** Desarrolladora Web y Analista Digital
+- **Tipo de cargo (≤60):** Analista-desarrolladora
 - **Descripción (opción A):** Desarrollo y mantengo sitios y flujos web (WordPress y stack propio), con HTML, CSS, JavaScript y control de versiones en Git/GitHub. Apoyo revisiones técnicas y QA en plataformas digitales, e integro reportes y datos (Looker Studio / SQL) cuando el producto lo requiere. Logro: Aceleré entregas web al unificar desarrollo, publicación y seguimiento técnico en un solo flujo.
 
 ## Materiales base
