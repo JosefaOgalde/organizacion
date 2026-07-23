@@ -20,7 +20,7 @@
 </head>
 <body>
   <header>
-    <h1>Catálogo Llaveros · 15 páginas</h1>
+    <h1>Catálogo Llaveros · 14 páginas</h1>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap">
       <a href="./">Vista interactiva</a>
       <a class="primary" href="export/catalogo-llaveros.pdf" download="catalogo-llaveros.pdf">Descargar PDF</a>
@@ -34,12 +34,12 @@
       '01-llaveros.png','02-llaveros.png','03-llaveros.png','04-llaveros.png',
       '05-llaveros.png','06-llaveros.png','07-llaveros.png','08-llaveros.png',
       '09-llaveros.png','10-llaveros.png','11-llaveros.png','12-llaveros.png',
-      '13-llaveros.png','14-cierre.png'
+      '13-cierre.png'
     ];
     const root = document.getElementById('pages');
     names.forEach((name, i) => {
       const fig = document.createElement('figure');
-      fig.innerHTML = `<img src="export/${name}" alt="Página ${i + 1}" loading="lazy" width="1080" height="1350" /><figcaption>Página ${String(i + 1).padStart(2, '0')} / 15 · ${name}</figcaption>`;
+      fig.innerHTML = `<img src="export/${name}" alt="Página ${i + 1}" loading="lazy" width="1080" height="1350" /><figcaption>Página ${String(i + 1).padStart(2, '0')} / 14 · ${name}</figcaption>`;
       root.appendChild(fig);
     });
   </script>

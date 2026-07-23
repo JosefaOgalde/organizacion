@@ -237,7 +237,7 @@ window.CLIENTES_PORTAL = [
         },
         {
           titulo: 'Catálogo Llaveros',
-          texto: '26 llaveros · 2 por página · título Llaveros. PDF: catalogo-llaveros/export/catalogo-llaveros.pdf · ver catalogo-llaveros/. Donde aplica: “(debes seleccionar un diseño)”.',
+          texto: '24 llaveros · 2 por página · título Llaveros. PDF: catalogo-llaveros/export/catalogo-llaveros.pdf · ver catalogo-llaveros/. Donde aplica: “(debes seleccionar un diseño)”.',
         },
       ]
     }

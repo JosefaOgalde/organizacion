@@ -3083,7 +3083,7 @@
           </article>
           <article class="imp-catalogo-card">
             <h3>Catálogo Llaveros</h3>
-            <p>26 llaveros · 2 por página · título Llaveros. Donde aplica: “(debes seleccionar un diseño)”.</p>
+            <p>24 llaveros · 2 por página · título Llaveros. Donde aplica: “(debes seleccionar un diseño)”.</p>
             <div class="imp-catalogo-actions">
               <a class="imp-btn imp-btn--primary" href="../catalogo-llaveros/ver.html">Ver páginas</a>
               <a class="imp-btn" href="../catalogo-llaveros/">Vista interactiva</a>

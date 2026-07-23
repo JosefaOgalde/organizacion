@@ -87,7 +87,7 @@
   stage.innerHTML =
     slidePortada() + pares.map((par, i) => slideDuo(par, i)).join('') + slideCierre();
 
-  if (counter) counter.textContent = `${total} páginas · 26 llaveros · 2 por página · 1080×1350`;
+  if (counter) counter.textContent = `${total} páginas · 24 llaveros · 2 por página · 1080×1350`;
 
   const params = new URLSearchParams(location.search);
   const exp = params.get('export');
