@@ -1,7 +1,9 @@
 <?php
 /**
  * COPIA en: backend/database/seeders/ClienteSeeder.php
- * Fuente: ../data/clientes-laravel-seed.json (respaldo 2026-07-17)
+ * Fuente: ../data/clientes-laravel-seed.json
+ *
+ * Slugs = carpetas reales bajo index/clientes/ (no abreviaturas).
  */
 
 namespace Database\Seeders;
@@ -11,6 +13,19 @@ use Illuminate\Database\Seeder;
 
 class ClienteSeeder extends Seeder
 {
+    /** Slugs cortos viejos → carpeta real (se eliminan tras migrar). */
+    private const LEGACY_SLUGS = [
+        'ts' => 'trendseeker',
+        'pisc' => 'piscineria',
+        'hs' => 'hotspring',
+        'jm' => 'joyasmercury',
+        'joyas-mercury' => 'joyasmercury',
+        'adl' => 'desafio-latam',
+        'imp' => 'impresoreando',
+        'tw' => 'tronwell',
+        'her' => 'herramientas',
+    ];
+
     public function run(): void
     {
         $path = dirname(base_path()) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'clientes-laravel-seed.json';
@@ -44,6 +59,25 @@ class ClienteSeeder extends Seeder
                     'resumen' => $c['resumen'] ?? null,
                 ]
             );
+        }
+
+        foreach (self::LEGACY_SLUGS as $old => $canonical) {
+            if ($old === $canonical) {
+                continue;
+            }
+            $legacy = Cliente::query()->where('slug', $old)->first();
+            if (!$legacy) {
+                continue;
+            }
+            $keep = Cliente::query()->where('slug', $canonical)->first();
+            if ($keep) {
+                $legacy->delete();
+                $this->command?->info("Eliminado slug legacy «{$old}» (queda «{$canonical}»)");
+            } else {
+                $legacy->slug = $canonical;
+                $legacy->save();
+                $this->command?->info("Renombrado slug «{$old}» → «{$canonical}»");
+            }
         }
 
         $this->command?->info('Clientes importados: ' . Cliente::count());
