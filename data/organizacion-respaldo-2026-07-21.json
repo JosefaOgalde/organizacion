@@ -1730,7 +1730,7 @@
       "fecha": "2026-07-23",
       "horaInicio": "10:00",
       "horaFin": "14:00",
-      "notas": "Ajustar landing Ley Karin en Elementor para que quede igual al PDF Desktop. Referencia: 1A-Ley-Karin-ECR-GROUP-Desktop.pdf. Guía de ajustes (solo Elementor, sin código): index/clientes/ecr/ley-karin/AJUSTES-ELEMENTOR.md. PDF: index/clientes/ecr/ley-karin/1A-Ley-Karin-ECR-GROUP-Desktop.pdf",
+      "notas": "Banner/hero ya listo. Ajustar sección de contenido (título política + 2 columnas texto|imagen celular) para igualar PDF Desktop. Guía: index/clientes/ecr/ley-karin/AJUSTES-ELEMENTOR.md · PDF: index/clientes/ecr/ley-karin/1A-Ley-Karin-ECR-GROUP-Desktop.pdf",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
