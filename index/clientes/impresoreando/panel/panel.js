@@ -76,6 +76,7 @@
     if (asegurarProductoNaveEspacialVertical(d)) changed = true;
     if (asegurarProductoLlaveroEscudoRanger(d)) changed = true;
     if (asegurarProductoLlaveroPortaLipstickStanley(d)) changed = true;
+    if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
@@ -611,6 +612,18 @@
       notas:
         'Slicer placa 2 uds: 52,65 g · 17,51 m · 1 h 34 m · coste 1,05 → 1 ud = 26,33 g · 0,78 h. PLA blanco $12.690/kg. +$50 argolla/metales.',
     });
+  }
+
+  /** Plantillas genéricas que ya no se usan (no son productos reales del catálogo). */
+  function eliminarProductosPlantillaObsoletos(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const dropIds = new Set(['prod-llavero', 'prod-figura-chica']);
+    const dropSkus = new Set(['LLAV001', 'FIG001']);
+    const before = d.productos.length;
+    d.productos = d.productos.filter(
+      (p) => !dropIds.has(p.id) && !dropSkus.has(String(p.sku || '').toUpperCase())
+    );
+    return d.productos.length !== before;
   }
 
   /** Ventas base del seed: si el live quedó vacío (o sin ese id), las reinyecta. No pisa ventas nuevas. */
@@ -3052,6 +3065,36 @@
     return new Date().toISOString().slice(0, 10);
   }
 
+  function renderCatalogos() {
+    const el = $('#tab-catalogos');
+    if (!el) return;
+    el.innerHTML = `
+      <div class="imp-card">
+        <h2>Catálogos Impresoreando</h2>
+        <p class="imp-muted">Abrí el catálogo en el navegador o descargá el PDF para Instagram / WhatsApp.</p>
+        <div class="imp-catalogos-grid">
+          <article class="imp-catalogo-card">
+            <h3>Catálogo general</h3>
+            <p>Piezas 3D (portacompletos, naves, llaveros Ranger/Stanley, etc.) · formato 1080×1350.</p>
+            <div class="imp-catalogo-actions">
+              <a class="imp-btn imp-btn--primary" href="../catalogo/">Ver catálogo</a>
+              <a class="imp-btn" href="../catalogo/export/catalogo-impresoreando.pdf" download="catalogo-impresoreando.pdf">Descargar PDF</a>
+            </div>
+          </article>
+          <article class="imp-catalogo-card">
+            <h3>Catálogo Llaveros</h3>
+            <p>26 llaveros · 2 por página · título Llaveros. Donde aplica: “(debes seleccionar un diseño)”.</p>
+            <div class="imp-catalogo-actions">
+              <a class="imp-btn imp-btn--primary" href="../catalogo-llaveros/ver.html">Ver páginas</a>
+              <a class="imp-btn" href="../catalogo-llaveros/">Vista interactiva</a>
+              <a class="imp-btn" href="../catalogo-llaveros/export/catalogo-llaveros.pdf" download="catalogo-llaveros.pdf">Descargar PDF</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    `;
+  }
+
   function renderAll() {
     if (!data) return;
     renderResumen();
@@ -3060,6 +3103,7 @@
     renderVentas();
     renderOperacion();
     renderCostos();
+    renderCatalogos();
     renderAds();
     renderBitacora();
   }
@@ -3071,6 +3115,7 @@
     'ventas',
     'operacion',
     'costos',
+    'catalogos',
     'ads',
     'bitacora',
   ]);
@@ -3093,6 +3138,7 @@
     }
     // Releer datos vivos al entrar al tab (p. ej. costos → resumen).
     if (name === 'resumen') renderResumen();
+    if (name === 'catalogos') renderCatalogos();
     if (name === 'costos') {
       renderCostos();
       requestAnimationFrame(() => {

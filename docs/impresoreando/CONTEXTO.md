@@ -15,6 +15,8 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Arranque | `ABRIR-IMPRESOREANDO.bat` → **solo landing** `…/impresoreando/` (panel/catálogo desde botones). Logo: `identidad/logo-impresoreando.png` |
 | Landing | `…/impresoreando/` CTA **Resumen 50/50** |
 | Catálogo IG | `…/impresoreando/catalogo/` · 1080×1350 · PDF `catalogo/export/catalogo-impresoreando.pdf` · `exportar-pngs.js` + `exportar-pdf.js` |
+| Catálogo Llaveros | `…/impresoreando/catalogo-llaveros/` · 26 ítems · 2/página · PDF `catalogo-llaveros/export/catalogo-llaveros.pdf` · vista `ver.html` |
+| Panel → Catálogos | Tab **Catálogos** en el panel (`?tab=catalogos`) con links a ambos |
 | Status correo | `scripts/impresoreando-status-diario.js` · `ENVIAR-STATUS-IMPRESOREANDO.bat` · lib `scripts/lib/smtp-send.js` |
 
 Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. Persistencia siempre vía API (live), no solo localStorage.
