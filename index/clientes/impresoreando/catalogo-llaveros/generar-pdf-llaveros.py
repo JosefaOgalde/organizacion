@@ -11,7 +11,7 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parent
 REFS = ROOT / "refs"
 EXPORT = ROOT / "export"
-LOGO = ROOT.parent / "identidad" / "logo-impresoreando.png"
+LOGO = ROOT.parent / "identidad" / "logo-impresoreando-marca.png"
 PDF = EXPORT / "catalogo-llaveros.pdf"
 
 W, H = 1080, 1350

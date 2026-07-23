@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
-"""Copia refs/entregadas → refs/ (nombres del catálogo) y regenera el PDF. Sin editar píxeles."""
+"""Copia refs/entregadas → refs/ (nombres del catálogo) y regenera el PDF.
+
+Preserva el archivo tal cual (misma extensión / mismos bytes). No recorta ni filtra.
+"""
 from __future__ import annotations
 
+import json
+import re
 import shutil
 import subprocess
 import sys
@@ -11,21 +16,21 @@ ROOT = Path(__file__).resolve().parent
 SRC = ROOT / "refs" / "entregadas"
 REFS = ROOT / "refs"
 
-# imagen N (carpeta entregadas) → archivo del catálogo
+# imagen N (carpeta entregadas, sin extensión) → stem del catálogo
 MAP = {
-    "01-coffee": "05-coffee.jpg",
-    "02-tamagotchi-gato": "04-tamagotchi-gato.jpg",
-    "03-mac-classic": "07-mac-classic.jpg",
-    "04-frutilla-pastillas": "19-frutilla-pastillas.jpg",
-    "05-tamagotchi-pastillas": "23-tamagotchi-pastillas.jpg",
-    "06-joystick": "06-joystick.jpg",
-    "07-nickelodeon": "08-nickelodeon.jpg",
-    "08-retro-arcade": "12-retro-arcade.jpg",
-    "09-onepiece-sombrero": "13-onepiece-sombrero.jpg",
-    "10-telefono-superpoderosas": "18-telefono-superpoderosas.jpg",
-    "11-huella-porta-foto": "17-huella-porta-foto.jpg",
-    "12-crash-boxes": "09-crash-boxes.jpg",
-    "13-mario-bloques": "03-mario-bloques.jpg",
+    "01-coffee": "05-coffee",
+    "02-tamagotchi-gato": "04-tamagotchi-gato",
+    "03-mac-classic": "07-mac-classic",
+    "04-frutilla-pastillas": "19-frutilla-pastillas",
+    "05-tamagotchi-pastillas": "23-tamagotchi-pastillas",
+    "06-joystick": "06-joystick",
+    "07-nickelodeon": "08-nickelodeon",
+    "08-retro-arcade": "12-retro-arcade",
+    "09-onepiece-sombrero": "13-onepiece-sombrero",
+    "10-telefono-superpoderosas": "18-telefono-superpoderosas",
+    "11-huella-porta-foto": "17-huella-porta-foto",
+    "12-crash-boxes": "09-crash-boxes",
+    "13-mario-bloques": "03-mario-bloques",
 }
 
 
@@ -37,32 +42,54 @@ def find_src(stem: str) -> Path | None:
     return None
 
 
+def update_productos_js(stem_to_file: dict[str, str]) -> None:
+    path = ROOT / "productos.js"
+    text = path.read_text(encoding="utf-8")
+    for stem, filename in stem_to_file.items():
+        text = re.sub(
+            rf"(ref:\s*'refs/){re.escape(stem)}\.(?:jpg|jpeg|png|webp)(')",
+            rf"\g<1>{filename}\2",
+            text,
+            flags=re.I,
+        )
+    path.write_text(text, encoding="utf-8")
+
+
+def update_generator(stem_to_file: dict[str, str]) -> None:
+    path = ROOT / "generar-pdf-llaveros.py"
+    text = path.read_text(encoding="utf-8")
+    for stem, filename in stem_to_file.items():
+        text = re.sub(
+            rf'("file":\s*"){re.escape(stem)}\.(?:jpg|jpeg|png|webp)(")',
+            rf"\g<1>{filename}\2",
+            text,
+            flags=re.I,
+        )
+    path.write_text(text, encoding="utf-8")
+
+
 def main() -> int:
     SRC.mkdir(parents=True, exist_ok=True)
     missing = []
     copied = []
-    for stem, dest_name in MAP.items():
-        src = find_src(stem)
-        if not src:
-            missing.append(stem)
-            continue
-        dest = REFS / dest_name
-        # Copia binaria tal cual (sin reencode) si ya es jpg con el nombre destino;
-        # si viene png/webp, solo renombra extensión a .jpg conservando bytes? Mejor copiar
-        # con extensión real y actualizar productos — pero el catálogo espera .jpg.
-        # Copia bytes intactos al path .jpg (el visor/Pillow aceptan PNG mal-etiquetado a veces).
-        # Para fidelidad: si no es jpeg, convertir SOLO contenedor con quality=95 sin resize.
-        if src.suffix.lower() in (".jpg", ".jpeg"):
-            shutil.copy2(src, dest)
-        else:
-            from PIL import Image
+    stem_to_file: dict[str, str] = {}
 
-            im = Image.open(src)
-            if im.mode in ("RGBA", "P"):
-                im = im.convert("RGB")
-            else:
-                im = im.convert("RGB")
-            im.save(dest, "JPEG", quality=95, optimize=True)
+    for src_stem, dest_stem in MAP.items():
+        src = find_src(src_stem)
+        if not src:
+            missing.append(src_stem)
+            continue
+        ext = src.suffix.lower()
+        if ext == ".jpeg":
+            ext = ".jpg"
+        dest_name = f"{dest_stem}{ext}"
+        dest = REFS / dest_name
+        # borrar otras extensiones viejas del mismo stem
+        for old in REFS.glob(f"{dest_stem}.*"):
+            if old.name != dest_name:
+                old.unlink()
+        shutil.copy2(src, dest)  # bytes tal cual
+        stem_to_file[dest_stem] = dest_name
         copied.append(f"{src.name} → {dest_name}")
 
     print(f"Copiadas: {len(copied)} / {len(MAP)}")
@@ -73,6 +100,10 @@ def main() -> int:
         for m in missing:
             print(f"  {m}.jpg (o .png)")
         return 1
+
+    update_productos_js(stem_to_file)
+    update_generator(stem_to_file)
+    print("productos.js + generar-pdf actualizados")
 
     gen = ROOT / "generar-pdf-llaveros.py"
     print("Regenerando PDF…")

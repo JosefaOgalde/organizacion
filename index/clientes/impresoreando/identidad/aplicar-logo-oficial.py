@@ -8,7 +8,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 SRC_DIR = ROOT / "entregado"
-DEST = ROOT / "logo-impresoreando.png"
+DEST = ROOT / "logo-impresoreando-marca.png"
+DEST_LEGACY = ROOT / "logo-impresoreando.png"
 CLARO = ROOT / "logo-impresoreando-claro.png"
 
 
@@ -38,16 +39,16 @@ def main() -> int:
 
         im = Image.open(src)
         if im.mode in ("RGBA", "P"):
-            # conservar alpha si existe
             if im.mode != "RGBA":
                 im = im.convert("RGBA")
             im.save(DEST, "PNG", optimize=True)
         else:
             im.convert("RGB").save(DEST, "PNG", optimize=True)
 
+    shutil.copy2(DEST, DEST_LEGACY)
     shutil.copy2(DEST, CLARO)
-    print(f"OK: {src.name} → {DEST.name} ({DEST.stat().st_size} bytes)")
-    print("Bump cache: abrí el panel con Ctrl+F5")
+    print(f"OK: {src.name} → {DEST.name} (+ legacy logo-impresoreando.png)")
+    print("Hard refresh: Ctrl+F5 en landing y panel")
     return 0
 
 
