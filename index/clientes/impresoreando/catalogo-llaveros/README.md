@@ -6,7 +6,15 @@ Formato Instagram **1080×1350**. Portada **Llaveros** · **2 productos por pág
 
 Con `ABRIR-LARAVEL.bat`:
 
-http://127.0.0.1:8000/index/clientes/impresoreando/catalogo-llaveros/
+- Vista interactiva: http://127.0.0.1:8000/index/clientes/impresoreando/catalogo-llaveros/
+- **Páginas (si el PDF sale en blanco):** http://127.0.0.1:8000/index/clientes/impresoreando/catalogo-llaveros/ver.html
+- Descargar PDF: http://127.0.0.1:8000/index/clientes/impresoreando/catalogo-llaveros/export/catalogo-llaveros.pdf
+
+En el Explorer (Windows), abrí el archivo directo:
+
+`index\clientes\impresoreando\catalogo-llaveros\export\catalogo-llaveros.pdf`
+
+Si la URL del PDF da pantalla blanca: descargalo (botón derecho → Guardar) o usá `ver.html`. Traé la rama `cursor/catalogo-llaveros-4e97` con `git pull` si el archivo no está en tu PC.
 
 ## PDF
 

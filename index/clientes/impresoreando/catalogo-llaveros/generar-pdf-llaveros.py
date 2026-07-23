@@ -311,17 +311,16 @@ def main():
     pc.save(fc, "PNG", optimize=True)
     pages.append(fc)
 
-    # PDF
-    try:
-        import img2pdf
-
-        with open(PDF, "wb") as f:
-            f.write(img2pdf.convert([str(p) for p in pages]))
-        print("PDF", PDF, f"{PDF.stat().st_size // 1024} KB · {len(pages)} páginas")
-    except Exception as e:
-        print("PNG OK; PDF falló:", e)
-        print("Instalá: pip install img2pdf")
-
+    # PDF (Pillow = mejor compatibilidad en Chrome; img2pdf a veces sale en blanco)
+    imgs = [Image.open(p).convert("RGB") for p in pages]
+    imgs[0].save(
+        PDF,
+        "PDF",
+        save_all=True,
+        append_images=imgs[1:],
+        resolution=72.0,
+    )
+    print("PDF", PDF, f"{PDF.stat().st_size // 1024} KB · {len(pages)} páginas")
     print("Refs:", len(list(REFS.glob("*.jpg"))), "· Export:", len(pages))
 
 

@@ -113,5 +113,10 @@ $mime = [
 
 header('Content-Type: ' . $mime);
 header('Cache-Control: no-cache');
+if ($ext === 'pdf') {
+    $disposition = (isset($_GET['download']) ? 'attachment' : 'inline');
+    header('Content-Disposition: ' . $disposition . '; filename="' . basename($full) . '"');
+    header('Content-Length: ' . (string) filesize($full));
+}
 readfile($full);
 return true;

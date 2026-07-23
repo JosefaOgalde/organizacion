@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ver Catálogo Llaveros (páginas)</title>
+  <style>
+    :root { --navy: #163a6b; --cream: #f6efdc; --orange: #e85d04; }
+    body { margin: 0; font-family: system-ui, sans-serif; background: var(--cream); color: var(--navy); }
+    header { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; justify-content: space-between; padding: .85rem 1.1rem; background: #fff; border-bottom: 1px solid #ddd; }
+    h1 { margin: 0; font-size: 1.1rem; }
+    a, button { color: var(--navy); text-decoration: none; border: 1px solid var(--navy); background: #fff; border-radius: 999px; padding: .4rem .9rem; font: inherit; cursor: pointer; }
+    a.primary { background: var(--navy); color: #fff; }
+    main { max-width: 720px; margin: 0 auto; padding: 1.25rem 1rem 3rem; display: grid; gap: 1.25rem; }
+    figure { margin: 0; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(22,58,107,.08); }
+    figcaption { padding: .65rem 1rem; font-size: .9rem; opacity: .8; }
+    img { display: block; width: 100%; height: auto; background: #eee; }
+    .hint { max-width: 720px; margin: 1rem auto 0; padding: 0 1rem; font-size: .95rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Catálogo Llaveros · 15 páginas</h1>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <a href="./">Vista interactiva</a>
+      <a class="primary" href="export/catalogo-llaveros.pdf" download="catalogo-llaveros.pdf">Descargar PDF</a>
+    </div>
+  </header>
+  <p class="hint">Si el PDF se ve en blanco en el navegador, mirá estas páginas o descargá el archivo y abrilo con Adobe / Edge / el Visor de Windows.</p>
+  <main id="pages"></main>
+  <script>
+    const names = [
+      '00-portada.png',
+      '01-llaveros.png','02-llaveros.png','03-llaveros.png','04-llaveros.png',
+      '05-llaveros.png','06-llaveros.png','07-llaveros.png','08-llaveros.png',
+      '09-llaveros.png','10-llaveros.png','11-llaveros.png','12-llaveros.png',
+      '13-llaveros.png','14-cierre.png'
+    ];
+    const root = document.getElementById('pages');
+    names.forEach((name, i) => {
+      const fig = document.createElement('figure');
+      fig.innerHTML = `<img src="export/${name}" alt="Página ${i + 1}" loading="lazy" width="1080" height="1350" /><figcaption>Página ${String(i + 1).padStart(2, '0')} / 15 · ${name}</figcaption>`;
+      root.appendChild(fig);
+    });
+  </script>
+</body>
+</html>
