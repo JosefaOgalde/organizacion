@@ -120,7 +120,7 @@
   /**
    * Gastos agrupados por registro de compra (no ítem a ítem):
    * 1) Orden #312435 $652.290 · 2) AliExpress $60.000 · 3) Líder $20.000
-   * 4) Mercado Libre $64.750 · 5) Mercado Libre 21-jul $40.970
+   * 4) Mercado Libre $64.750 · 5) Mercado Libre 21-jul $40.970 · 6) ML Creality $50.119
    */
   function agruparGastosPorRegistro(d) {
     const REGISTROS = [
@@ -216,6 +216,30 @@
             monto: 39642,
           },
           { descripcion: 'Pago Meli Dólar (MUSD 1.42461691)', monto: 1328 },
+        ],
+      },
+      {
+        id: 'gas-reg-mercadolibre-creality-50119',
+        fecha: '2026-07-23',
+        categoria: 'filamento',
+        descripcion:
+          'Mercado Libre — 4× PLA Creality 1kg (negro mate · morado · blanco · verde) (PAGADO)',
+        proveedor: 'Mercado Libre',
+        cantidad: 4,
+        montoNeto: 50119,
+        notas:
+          '1× PLA Ultra Mate Alta Velocidad Negro Creality · 1× PLA Ultra Alta Velocidad Morado/Rosa Oscuro Creality · 1× Soleyin Ultra PLA Blanco Creality · 1× PLA Creality Verde 1.75mm. Total $50.119.',
+        ordenId: 'ml-creality-pla-50119',
+        socioRegistro: 'Ambos',
+        items: [
+          { descripcion: 'Filamento PLA Ultra Mate Alta Velocidad Negro 1kg Creality', monto: 0 },
+          {
+            descripcion: 'Filamento PLA Ultra Alta Velocidad Morado/Rosa Oscuro 1kg Creality',
+            monto: 0,
+          },
+          { descripcion: 'Filamento Soleyin Ultra PLA Blanco 1kg Creality 1.75mm', monto: 0 },
+          { descripcion: 'Filamento PLA Creality Verde 1kg 1.75mm', monto: 0 },
+          { descripcion: 'Total compra (sin desglose unitario)', monto: 50119 },
         ],
       },
     ];
@@ -1554,9 +1578,13 @@
     const ml21 = (data.gastos || []).find(
       (g) => g.id === 'gas-reg-mercadolibre-2026-07-21' || g.ordenId === '2000014122225779'
     );
+    const mlCreality = (data.gastos || []).find(
+      (g) => g.id === 'gas-reg-mercadolibre-creality-50119' || g.ordenId === 'ml-creality-pla-50119'
+    );
     const totalOrden = Number(orden?.montoNeto || 0);
     const totalMl = Number(ml?.montoNeto || 0);
     const totalMl21 = Number(ml21?.montoNeto || 0);
+    const totalMlCreality = Number(mlCreality?.montoNeto || 0);
     const cats = gastosPorCategoria();
     const pedidosActivos = (data.pedidos || []).filter((p) =>
       pedidoActivo(p.estado || 'pendiente')
@@ -1690,6 +1718,7 @@
           <li>Líder: <strong>${money(lider?.montoNeto || 0)}</strong></li>
           <li>Mercado Libre (5 PLA): <strong>${money(totalMl)}</strong></li>
           <li>Mercado Libre 21-jul (TPU+PLA PPC): <strong>${money(totalMl21)}</strong></li>
+          <li>Mercado Libre Creality (4 PLA): <strong>${money(totalMlCreality)}</strong></li>
         </ul>
         <p class="imp-deuda"><strong>Capital:</strong> lo aportó <strong>Nicolás</strong>. Todos los gastos son de <strong>ambos</strong>. Josefa le debe a Nicolás el <strong>50%</strong> del capital (${money(deuda)}).</p>
         <p class="imp-muted">Esa deuda entre socios es distinta del saldo de arriba: el saldo baja con cada venta del negocio; la deuda 50% de Josefa se actualiza con el capital aportado.</p>

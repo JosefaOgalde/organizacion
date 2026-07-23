@@ -190,6 +190,40 @@
       ]
     },
     {
+      "id": "gas-reg-mercadolibre-creality-50119",
+      "fecha": "2026-07-23",
+      "categoria": "filamento",
+      "descripcion": "Mercado Libre — 4× PLA Creality 1kg (negro mate · morado · blanco · verde) (PAGADO)",
+      "proveedor": "Mercado Libre",
+      "cantidad": 4,
+      "montoNeto": 50119,
+      "notas": "1× PLA Ultra Mate Alta Velocidad Negro Creality · 1× PLA Ultra Alta Velocidad Morado/Rosa Oscuro Creality · 1× Soleyin Ultra PLA Blanco Creality · 1× PLA Creality Verde 1.75mm. Total $50.119.",
+      "ordenId": "ml-creality-pla-50119",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "descripcion": "Filamento PLA Ultra Mate Alta Velocidad Negro 1kg Creality",
+          "monto": 0
+        },
+        {
+          "descripcion": "Filamento PLA Ultra Alta Velocidad Morado/Rosa Oscuro 1kg Creality",
+          "monto": 0
+        },
+        {
+          "descripcion": "Filamento Soleyin Ultra PLA Blanco 1kg Creality 1.75mm",
+          "monto": 0
+        },
+        {
+          "descripcion": "Filamento PLA Creality Verde 1kg 1.75mm",
+          "monto": 0
+        },
+        {
+          "descripcion": "Total compra (sin desglose unitario)",
+          "monto": 50119
+        }
+      ]
+    },
+    {
       "id": "gas-diseno-porta-bob-esponja",
       "fecha": "2026-07-19",
       "categoria": "diseño",
@@ -718,6 +752,12 @@
       "fecha": "2026-07-21",
       "autor": "Josefa",
       "texto": "Gasto ML orden #2000014122225779: TPU Creality Verde + PLA PPC Naranjo + PLA PPC Piel Claro = $40.970 (Visa $39.642 + Meli Dólar $1.328). Envío gratis."
+    },
+    {
+      "id": "bit-3b",
+      "fecha": "2026-07-23",
+      "autor": "Josefa",
+      "texto": "Gasto ML $50.119: 4× PLA Creality 1kg (negro mate, morado/rosa, blanco Soleyin, verde)."
     },
     {
       "id": "bit-4",
