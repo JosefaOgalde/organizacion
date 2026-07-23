@@ -13,6 +13,135 @@ declare(strict_types=1);
 $root = dirname(__DIR__);
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $uri = rawurldecode($uri);
+$method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+
+/**
+ * API Impresoreando (live JSON) — antes de Laravel, para que el panel no dependa de rutas artisan.
+ */
+if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: no-store');
+
+    $live = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'impresoreando-live.json';
+    $seed = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'impresoreando-seed.json';
+
+    $ensureLive = static function () use ($live, $seed): void {
+        if (is_file($live)) {
+            return;
+        }
+        if (!is_file($seed)) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Falta data/impresoreando-seed.json'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        $dir = dirname($live);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+        copy($seed, $live);
+    };
+
+    $readLive = static function () use ($ensureLive, $live): array {
+        $ensureLive();
+        $raw = file_get_contents($live);
+        $data = json_decode($raw ?: '', true);
+        if (!is_array($data)) {
+            http_response_code(500);
+            echo json_encode(['error' => 'impresoreando-live.json inválido'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        return $data;
+    };
+
+    $writeLive = static function (array $data) use ($live): void {
+        if (!isset($data['meta']) || !is_array($data['meta'])) {
+            $data['meta'] = [];
+        }
+        $data['meta']['actualizado'] = date('c');
+        $dir = dirname($live);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+        file_put_contents(
+            $live,
+            json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n"
+        );
+    };
+
+    $readBody = static function (): array {
+        $raw = file_get_contents('php://input') ?: '';
+        $data = json_decode($raw, true);
+        return is_array($data) ? $data : [];
+    };
+
+    if ($uri === '/api/impresoreando/venta' && $method === 'POST') {
+        $item = $readBody();
+        if ($item === [] || empty($item['descripcion']) || !isset($item['montoNeto'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'faltan descripcion / montoNeto'], JSON_UNESCAPED_UNICODE);
+            return true;
+        }
+        $obj = $readLive();
+        $obj['ventas'] = is_array($obj['ventas'] ?? null) ? $obj['ventas'] : [];
+        $venta = [
+            'id' => (string) ($item['id'] ?? ('ven-' . base_convert((string) time(), 10, 36))),
+            'fecha' => (string) ($item['fecha'] ?? date('Y-m-d')),
+            'descripcion' => (string) $item['descripcion'],
+            'cantidad' => (float) ($item['cantidad'] ?? 1),
+            'montoNeto' => (float) $item['montoNeto'],
+            'canal' => (string) ($item['canal'] ?? ''),
+            'notas' => (string) ($item['notas'] ?? ''),
+            'socioRegistro' => (string) ($item['socioRegistro'] ?? 'Ambos'),
+            'cliente' => (string) ($item['cliente'] ?? ''),
+        ];
+        $obj['ventas'][] = $venta;
+        $writeLive($obj);
+        $totalVentas = 0.0;
+        foreach ($obj['ventas'] as $v) {
+            $totalVentas += (float) ($v['montoNeto'] ?? 0);
+        }
+        $totalGastos = 0.0;
+        foreach ($obj['gastos'] ?? [] as $g) {
+            $totalGastos += (float) ($g['montoNeto'] ?? 0);
+        }
+        echo json_encode([
+            'ok' => true,
+            'venta' => $venta,
+            'totales' => [
+                'ventas' => $totalVentas,
+                'gastos' => $totalGastos,
+                'saldo' => max(0, $totalGastos - $totalVentas),
+            ],
+            'actualizado' => $obj['meta']['actualizado'] ?? null,
+        ], JSON_UNESCAPED_UNICODE);
+        return true;
+    }
+
+    if ($uri === '/api/impresoreando' && $method === 'GET') {
+        echo json_encode($readLive(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return true;
+    }
+
+    if ($uri === '/api/impresoreando' && $method === 'POST') {
+        $data = $readBody();
+        if ($data === [] || !isset($data['gastos']) || !is_array($data['gastos'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'faltan gastos[] (estructura Impresoreando)'], JSON_UNESCAPED_UNICODE);
+            return true;
+        }
+        $writeLive($data);
+        echo json_encode([
+            'ok' => true,
+            'path' => 'data/impresoreando-live.json',
+            'actualizado' => $data['meta']['actualizado'] ?? null,
+        ], JSON_UNESCAPED_UNICODE);
+        return true;
+    }
+
+    http_response_code(405);
+    echo json_encode(['error' => 'método no permitido'], JSON_UNESCAPED_UNICODE);
+    return true;
+}
 
 // --- API Laravel ---
 if ($uri === '/api' || str_starts_with($uri, '/api/')) {
