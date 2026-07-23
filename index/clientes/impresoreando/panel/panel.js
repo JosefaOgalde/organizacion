@@ -638,6 +638,18 @@
     return forzarProductoSeed(d, 'prod-llavero-escudo-ranger', seedLlaveroEscudoRanger());
   }
 
+  /** Plantillas genéricas que ya no se usan (no son productos reales del catálogo). */
+  function eliminarProductosPlantillaObsoletos(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const dropIds = new Set(['prod-llavero', 'prod-figura-chica']);
+    const dropSkus = new Set(['LLAV001', 'FIG001']);
+    const before = d.productos.length;
+    d.productos = d.productos.filter(
+      (p) => !dropIds.has(p.id) && !dropSkus.has(String(p.sku || '').toUpperCase())
+    );
+    return d.productos.length !== before;
+  }
+
   /** Llavero Porta Lipstick Stanley — placa 2 uds (52,65 g / 1 h 34 m) → 1 ud = mitad + $50 argolla. */
   function asegurarProductoLlaveroPortaLipstickStanley(d) {
     return forzarProductoSeed(d, 'prod-llavero-porta-lipstick-stanley', {
