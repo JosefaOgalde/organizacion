@@ -43,8 +43,10 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | ID | Cliente | Ítems | Estado |
 |----|---------|-------|--------|
 | PED-001 | Rebe | 1× Porta lata Monster `PLMONS001` | listo |
-| PED-002 | Gianni | 1× Macetero bulldog `MCPEBUL001` + 4× Portacompleto bulldog `PCPEBUL001` | listo |
-| PED-003 | Por confirmar | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | listo |
+| PED-002 | Gianni | 1× Macetero bulldog `MCPEBUL001` + 4× Portacompleto bulldog `PCPEBUL001` | **transferido** → venta $15.000 |
+| PED-003 | Juan | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | **transferido** → venta $15.000 |
+
+Ventas seed (además Tito $15.000): Cata gatos $10.000 · Marcia Stanley $3.000 · Gianni Bob $7.000.
 
 ## Productos / costos
 
