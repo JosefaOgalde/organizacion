@@ -4,19 +4,19 @@
 
 | Archivo | Uso |
 |---------|-----|
-| `logo-impresoreando.png` | **Marca oficial y principal** (wordmark en fondo negro). Panel, venta, landing, catálogos |
-| `logo-impresoreando-transparente.png` | Wordmark sin fondo (sobre crema / fotos) |
-| `logo-impresoreando-claro.png` | Misma marca sobre fondo blanco (variante clara) |
+| `logo-impresoreando.png` | **Marca oficial y principal** (wordmark con **fondo transparente**). Panel, venta, landing, catálogos |
+| `logo-impresoreando-transparente.png` | Copia de la misma marca (transparente) |
+| `logo-impresoreando-claro.png` | Misma marca sobre fondo blanco |
+| `logo-impresoreando-oscuro.png` | Misma marca sobre fondo negro (solo si hace falta contraste) |
 | `logo-impresoreando.svg` | Aproximación vectorial de apoyo |
 | `icono-gato-impresoreando.svg` | Ícono corto (gato + bobina) |
 
-**Regla:** el PNG oficial no se inventa con Midjourney/Gemini. Si la usuaria entrega un archivo nuevo, reemplaza `logo-impresoreando.png` y bump `?v=` en panel/venta/catálogos.
+**Regla:** si el logo viene con transparencia, se guarda con transparencia (no se le pone fondo negro). No inventar la marca con Midjourney/Gemini. Al reemplazar, bump `?v=` en panel/venta/catálogos.
 
 ## Colores
 
 - Navy: `#163a6b` (aprox. tipografía)
 - Naranja filament: `#f07a28` / `#fd6d03`
-- Fondo marca oficial: negro `#000000`
 - Fondo UI panel: crema `#fffdf7`
 
 ## Regla

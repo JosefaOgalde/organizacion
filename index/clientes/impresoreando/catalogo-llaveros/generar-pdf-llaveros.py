@@ -143,11 +143,16 @@ def page_portada(total: int) -> Image.Image:
 
     logo = load_logo(780)
     if logo:
-        # Marca oficial ya trae fondo negro: sin tarjeta blanca
-        y0 = 260
-        img.paste(logo, ((W - logo.width) // 2, y0), logo if logo.mode == "RGBA" else None)
+        # Logo oficial con transparencia → tarjeta blanca (como catálogo base)
+        card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        cd = ImageDraw.Draw(card)
+        x0 = (W - logo.width) // 2 - 40
+        y0 = 220
+        rounded_rect(cd, (x0, y0, x0 + logo.width + 80, y0 + logo.height + 60), 28, fill=(255, 255, 255, 245))
+        img = Image.alpha_composite(img.convert("RGBA"), card).convert("RGB")
         d = ImageDraw.Draw(img)
-        logo_bottom = y0 + logo.height
+        img.paste(logo, ((W - logo.width) // 2, y0 + 30), logo)
+        logo_bottom = y0 + 30 + logo.height
     else:
         logo_bottom = 400
         d = ImageDraw.Draw(img)

@@ -47,7 +47,7 @@
   function slidePortada() {
     return `
       <article class="slide slide--portada" data-slide="0" aria-label="Portada Llaveros">
-        <img class="slide-logo" src="../identidad/logo-impresoreando.png?v=imp-logo-negro1" alt="impresoreando" width="820" height="280" />
+        <img class="slide-logo" src="../identidad/logo-impresoreando.png?v=imp-logo-trans1" alt="impresoreando" width="820" height="280" />
         <p class="slide-kicker">Catálogo</p>
         <h1 class="slide-title">${escapeHtml(cfg.titulo)}</h1>
         <p class="slide-pedido">${escapeHtml(cfg.taglinePedido)}</p>
@@ -71,7 +71,7 @@
     return `
       <article class="slide slide--cierre" data-slide="${total - 1}" aria-label="Cierre">
         <div class="slide-cierre-logo-wrap">
-          <img class="slide-logo-cierre" src="../identidad/logo-impresoreando.png?v=imp-logo-negro1" alt="impresoreando" width="720" height="240" />
+          <img class="slide-logo-cierre" src="../identidad/logo-impresoreando.png?v=imp-logo-trans1" alt="impresoreando" width="720" height="240" />
         </div>
         <h2 class="slide-cierre-title">Pide tus <span>llaveros</span> en impresoreando</h2>
         <div class="slide-ig-box">
