@@ -119,7 +119,8 @@
 
   /**
    * Gastos agrupados por registro de compra (no ítem a ítem):
-   * 1) Orden #312435 $652.290 · 2) AliExpress $60.000 · 3) Líder $20.000 · 4) Mercado Libre $64.750
+   * 1) Orden #312435 $652.290 · 2) AliExpress $60.000 · 3) Líder $20.000
+   * 4) Mercado Libre $64.750 · 5) Mercado Libre 21-jul $40.970
    */
   function agruparGastosPorRegistro(d) {
     const REGISTROS = [
@@ -193,6 +194,28 @@
           { descripcion: 'Filamento Elegoo PLA 1kg (amarillo)', monto: 12690 },
           { descripcion: 'Filamento Elegoo PLA 1.75mm 1kg (azul)', monto: 12690 },
           { descripcion: 'Filamento Elegoo PLA 1kg (blanco)', monto: 12690 },
+        ],
+      },
+      {
+        id: 'gas-reg-mercadolibre-2026-07-21',
+        fecha: '2026-07-21',
+        categoria: 'filamento',
+        descripcion:
+          'Mercado Libre — TPU Creality verde + PLA PPC naranjo + PLA PPC piel claro (PAGADO)',
+        proveedor: 'Mercado Libre',
+        cantidad: 3,
+        montoNeto: 40970,
+        notas:
+          'Orden #2000014122225779. Productos: 1× TPU Creality 1kg 1.75mm Verde · 1× PLA PPC 1kg 1.75mm Naranjo · 1× PLA PPC 1kg 1.75mm Piel Claro. Envío gratis meli+ (Gluck 3257). Pago: Visa Débito ****5845 $39.642 + Meli Dólar $1.328 (MUSD 1.42461691) = $40.970.',
+        ordenId: '2000014122225779',
+        socioRegistro: 'Ambos',
+        items: [
+          {
+            descripcion:
+              'Pago Visa Débito ****5845 (TPU Creality Verde · PLA PPC Naranjo · PLA PPC Piel Claro)',
+            monto: 39642,
+          },
+          { descripcion: 'Pago Meli Dólar (MUSD 1.42461691)', monto: 1328 },
         ],
       },
     ];
@@ -1303,8 +1326,12 @@
     const ali = (data.gastos || []).find((g) => g.id === 'gas-reg-aliexpress');
     const lider = (data.gastos || []).find((g) => g.id === 'gas-reg-lider');
     const ml = (data.gastos || []).find((g) => g.id === 'gas-reg-mercadolibre' || g.ordenId === 'ml-pla-2026-07-14');
+    const ml21 = (data.gastos || []).find(
+      (g) => g.id === 'gas-reg-mercadolibre-2026-07-21' || g.ordenId === '2000014122225779'
+    );
     const totalOrden = Number(orden?.montoNeto || 0);
     const totalMl = Number(ml?.montoNeto || 0);
+    const totalMl21 = Number(ml21?.montoNeto || 0);
     const cats = gastosPorCategoria();
     const pedidosActivos = (data.pedidos || []).filter((p) =>
       pedidoActivo(p.estado || 'pendiente')
@@ -1437,6 +1464,7 @@
           <li>AliExpress: <strong>${money(ali?.montoNeto || 0)}</strong></li>
           <li>Líder: <strong>${money(lider?.montoNeto || 0)}</strong></li>
           <li>Mercado Libre (5 PLA): <strong>${money(totalMl)}</strong></li>
+          <li>Mercado Libre 21-jul (TPU+PLA PPC): <strong>${money(totalMl21)}</strong></li>
         </ul>
         <p class="imp-deuda"><strong>Capital:</strong> lo aportó <strong>Nicolás</strong>. Todos los gastos son de <strong>ambos</strong>. Josefa le debe a Nicolás el <strong>50%</strong> del capital (${money(deuda)}).</p>
         <p class="imp-muted">Esa deuda entre socios es distinta del saldo de arriba: el saldo baja con cada venta del negocio; la deuda 50% de Josefa se actualiza con el capital aportado.</p>

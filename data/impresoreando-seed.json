@@ -168,6 +168,28 @@
       ]
     },
     {
+      "id": "gas-reg-mercadolibre-2026-07-21",
+      "fecha": "2026-07-21",
+      "categoria": "filamento",
+      "descripcion": "Mercado Libre — TPU Creality verde + PLA PPC naranjo + PLA PPC piel claro (PAGADO)",
+      "proveedor": "Mercado Libre",
+      "cantidad": 3,
+      "montoNeto": 40970,
+      "notas": "Orden #2000014122225779. Productos: 1× TPU Creality 1kg 1.75mm Verde · 1× PLA PPC 1kg 1.75mm Naranjo · 1× PLA PPC 1kg 1.75mm Piel Claro. Envío gratis meli+ (Gluck 3257). Pago: Visa Débito ****5845 $39.642 + Meli Dólar $1.328 (MUSD 1.42461691) = $40.970.",
+      "ordenId": "2000014122225779",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "descripcion": "Pago Visa Débito ****5845 (TPU Creality Verde · PLA PPC Naranjo · PLA PPC Piel Claro)",
+          "monto": 39642
+        },
+        {
+          "descripcion": "Pago Meli Dólar (MUSD 1.42461691)",
+          "monto": 1328
+        }
+      ]
+    },
+    {
       "id": "gas-diseno-porta-bob-esponja",
       "fecha": "2026-07-19",
       "categoria": "diseño",
@@ -541,6 +563,12 @@
       "fecha": "2026-07-19",
       "autor": "Josefa",
       "texto": "Productos: Porta Bob Esponja (costo armado ~$998), naves H/V, llaveros Ranger y Stanley (+$50 argolla). Gastos diseño Cults Bob $1.402 + bulldog $1.000 + nave H $1.000 (pagó Nicolás, 50/50). PED-002 listo · PED-003 naves listo."
+    },
+    {
+      "id": "bit-3",
+      "fecha": "2026-07-21",
+      "autor": "Josefa",
+      "texto": "Gasto ML orden #2000014122225779: TPU Creality Verde + PLA PPC Naranjo + PLA PPC Piel Claro = $40.970 (Visa $39.642 + Meli Dólar $1.328). Envío gratis."
     }
   ],
   "pedidos": [
