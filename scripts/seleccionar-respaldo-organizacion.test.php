@@ -64,14 +64,48 @@ try {
         '{"clientes":[],"tareas":'
     );
     escribirRespaldo($dir, '2026-07-23', ['clientes' => [], 'tareas' => 'no-es-array']);
+    escribirRespaldo($dir, '2026-13-40', ['clientes' => [], 'tareas' => []]);
+    escribirRespaldo($dir, 'zzzz-zz-zz', ['clientes' => [], 'tareas' => []]);
 
     comprobar(
         $reciente,
         seleccionarRespaldoOrganizacion($dir),
-        'Debe omitir respaldos recientes inválidos'
+        'Debe omitir respaldos con contenido o fecha inválidos'
     );
 
-    echo "OK: selección segura del respaldo más reciente\n";
+    $live = $dir . DIRECTORY_SEPARATOR . 'organizacion-live.json';
+    comprobar(
+        true,
+        restaurarRespaldoOrganizacion($reciente, $live),
+        'Debe crear el live desde el respaldo'
+    );
+    comprobar(
+        file_get_contents($reciente),
+        file_get_contents($live),
+        'El live restaurado debe estar completo'
+    );
+
+    file_put_contents($live, '{"clientes":[],"tareas":[{"id":"live-existente"}]}');
+    $liveExistente = file_get_contents($live);
+    comprobar(
+        false,
+        restaurarRespaldoOrganizacion($antiguo, $live),
+        'Nunca debe reemplazar un live existente'
+    );
+    comprobar(
+        $liveExistente,
+        file_get_contents($live),
+        'Debe preservar exactamente el live existente'
+    );
+
+    $bat = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ABRIR-LARAVEL.bat');
+    comprobar(
+        false,
+        str_contains($bat ?: '', 'copy /Y "data\organizacion-respaldo-'),
+        'El lanzador no debe saltarse la selección y validación PHP'
+    );
+
+    echo "OK: selección y restauración segura del respaldo más reciente\n";
 } finally {
     borrarDirectorio($dir);
 }

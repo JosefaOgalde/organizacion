@@ -139,10 +139,7 @@ $dataDir = $root . DIRECTORY_SEPARATOR . 'data';
 $live = $dataDir . DIRECTORY_SEPARATOR . 'organizacion-live.json';
 if (!is_file($live)) {
     $respaldo = seleccionarRespaldoOrganizacion($dataDir);
-    if ($respaldo !== null) {
-        if (!copy($respaldo, $live)) {
-            throw new RuntimeException("No se pudo restaurar " . basename($respaldo));
-        }
+    if ($respaldo !== null && restaurarRespaldoOrganizacion($respaldo, $live)) {
         echo "  · data/organizacion-live.json desde " . basename($respaldo) . "\n";
     }
 }

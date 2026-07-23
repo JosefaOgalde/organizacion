@@ -87,17 +87,6 @@ pushd backend
 "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
 popd
 
-if not exist "data\organizacion-live.json" (
-  if exist "data\organizacion-respaldo-2026-07-21.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-21.json" "data\organizacion-live.json" >nul
-    echo  Live creado desde data\organizacion-respaldo-2026-07-21.json
-  ) else if exist "data\organizacion-respaldo-2026-07-18.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-18.json" "data\organizacion-live.json" >nul
-  ) else if exist "data\organizacion-respaldo-2026-07-17.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-17.json" "data\organizacion-live.json" >nul
-  )
-)
-
 REM Tras actualizar FrontendStaticController / web.php, reiniciar :8000
 REM (si ya corria, el proceso viejo puede servir 404 en carpetas como /index/clientes/)
 set "YA_CORRE=0"
