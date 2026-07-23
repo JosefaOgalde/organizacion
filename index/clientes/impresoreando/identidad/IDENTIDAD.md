@@ -4,18 +4,15 @@
 
 | Archivo | Uso |
 |---------|-----|
-| `logo-impresoreando.png` | **Marca oficial** (no recortar ni regenerar). Panel, venta, landing, catálogo |
+| `logo-impresoreando-marca.png` | **Marca oficial** (landing, panel, catálogos). Usar este. |
+| `logo-impresoreando.png` | Copia legacy del mismo archivo |
 | `logo-impresoreando.svg` | Aproximación vectorial de apoyo |
-| `icono-gato-impresoreando.svg` | Ícono corto (gato + bobina) |
+| `icono-gato-impresoreando.svg` | Ícono corto |
 
-**Regla:** el PNG oficial no se edita con crop/ffmpeg. Si hace falta otro archivo, pedirlo a la usuaria.
+**Regla:** el PNG oficial se usa **tal cual**. Si entregás uno nuevo: guardalo en `entregado/logo-oficial.png` y ejecutá `APLICAR-LOGO-OFICIAL.bat`.
 
 ## Colores
 
 - Navy: `#163a6b`
 - Naranja filament: `#f07a28`
-- Fondo wordmark: blanco
-
-## Regla
-
-No sustituir por tipografía genérica ni por Midjourney/Gemini. Esta es la marca fija del panel socios.
+- Fondo UI panel: crema `#fffdf7`

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Catálogo Llaveros · Impresoreando</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="catalogo.css?v=llav2" />
+</head>
+<body class="cat-body">
+  <header class="cat-toolbar">
+    <div>
+      <div class="cat-toolbar__title">Catálogo Llaveros</div>
+      <div id="cat-counter" style="opacity:0.75;font-size:0.9rem">1080×1350</div>
+    </div>
+    <div class="cat-toolbar__actions">
+      <a class="cat-btn" href="../panel/">← Panel</a>
+      <a class="cat-btn" href="../">Landing</a>
+      <a class="cat-btn" href="../catalogo/">Catálogo general</a>
+      <a class="cat-btn cat-btn--primary" href="ver.html">Ver páginas</a>
+      <a class="cat-btn cat-btn--primary" href="export/catalogo-llaveros.pdf" download="catalogo-llaveros.pdf">Descargar PDF</a>
+      <button type="button" class="cat-btn" id="btn-imprimir-pdf">Imprimir / PDF</button>
+      <a class="cat-btn" href="export/">PNGs</a>
+    </div>
+  </header>
+  <p class="cat-hint">
+    Formato Instagram 1080×1350. Portada <strong>Llaveros</strong> · <strong>2 productos por página</strong> · cierre @impresoreando.
+    Donde aplica, aparece <em>(debes seleccionar un diseño)</em>.
+    Si el PDF sale en blanco en Chrome: usá <a href="ver.html"><strong>Ver páginas</strong></a>
+    o <a href="export/catalogo-llaveros.pdf" download="catalogo-llaveros.pdf">descargá el PDF</a> y abrilo en el PC.
+    Archivo en disco: <code>index\clientes\impresoreando\catalogo-llaveros\export\catalogo-llaveros.pdf</code>
+  </p>
+  <main class="cat-stage" id="cat-stage"></main>
+  <script src="productos.js?v=llav2"></script>
+  <script src="catalogo.js?v=llav2"></script>
+</body>
+</html>
