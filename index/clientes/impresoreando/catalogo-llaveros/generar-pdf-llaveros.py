@@ -145,31 +145,30 @@ def page_portada(total: int) -> Image.Image:
 
     logo = load_logo(780)
     if logo:
-        # white card behind logo
-        card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        cd = ImageDraw.Draw(card)
-        x0 = (W - logo.width) // 2 - 40
-        y0 = 220
-        rounded_rect(cd, (x0, y0, x0 + logo.width + 80, y0 + logo.height + 60), 28, fill=(255, 255, 255, 245))
-        img = Image.alpha_composite(img.convert("RGBA"), card).convert("RGB")
+        # Marca oficial ya trae fondo negro: sin tarjeta blanca
+        y0 = 260
+        img.paste(logo, ((W - logo.width) // 2, y0), logo if logo.mode == "RGBA" else None)
         d = ImageDraw.Draw(img)
-        img.paste(logo, ((W - logo.width) // 2, y0 + 30), logo)
+        logo_bottom = y0 + logo.height
+    else:
+        logo_bottom = 400
+        d = ImageDraw.Draw(img)
 
     f_k = font(28)
     f_t = font(86)
     f_p = font(32)
     f_ig = font(34)
-    d.text(((W - d.textlength("CATÁLOGO", font=f_k)) / 2, 620), "CATÁLOGO", fill=ORANGE, font=f_k)
-    d.text(((W - d.textlength("Llaveros", font=f_t)) / 2, 680), "Llaveros", fill=NAVY, font=f_t)
+    d.text(((W - d.textlength("CATÁLOGO", font=f_k)) / 2, logo_bottom + 48), "CATÁLOGO", fill=ORANGE, font=f_k)
+    d.text(((W - d.textlength("Llaveros", font=f_t)) / 2, logo_bottom + 108), "Llaveros", fill=NAVY, font=f_t)
 
     pill = "Todo es a pedido"
     pw = d.textlength(pill, font=f_p) + 56
     px = (W - pw) / 2
-    rounded_rect(d, (px, 820, px + pw, 890), 999, fill=WHITE, outline=NAVY, width=3)
-    d.text((px + 28, 835), pill, fill=NAVY, font=f_p)
+    rounded_rect(d, (px, logo_bottom + 248, px + pw, logo_bottom + 318), 999, fill=WHITE, outline=NAVY, width=3)
+    d.text((px + 28, logo_bottom + 263), pill, fill=NAVY, font=f_p)
 
     ig = "@impresoreando"
-    d.text(((W - d.textlength(ig, font=f_ig)) / 2, 960), ig, fill=NAVY, font=f_ig)
+    d.text(((W - d.textlength(ig, font=f_ig)) / 2, logo_bottom + 360), ig, fill=NAVY, font=f_ig)
 
     num = f"01 / {total:02d}"
     d.text((W - 140, H - 60), num, fill=(120, 130, 150), font=font(22))

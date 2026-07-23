@@ -65,11 +65,12 @@
 
 .imp-logo {
   display: block;
-  height: clamp(40px, 7vw, 56px);
+  height: clamp(36px, 6.5vw, 52px);
   width: auto;
-  max-width: min(420px, 72vw);
+  max-width: min(480px, 78vw);
   object-fit: contain;
   object-position: left center;
+  border-radius: 8px;
 }
 
 .imp-tabs-bleed {

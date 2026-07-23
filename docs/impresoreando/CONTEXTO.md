@@ -7,7 +7,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Qué | Dónde |
 |-----|--------|
 | UI panel | `index/clientes/impresoreando/panel/` → `panel.js` · `panel.css` · `index.html` |
-| Logo | `index/clientes/impresoreando/identidad/logo-impresoreando.png` (+ `.svg`) · ícono `icono-gato-impresoreando.svg` · ver `IDENTIDAD.md` |
+| Logo | `index/clientes/impresoreando/identidad/logo-impresoreando.png` (+ `.svg`) · variantes `…-transparente.png` · `…-claro.png` · ícono `icono-gato-impresoreando.svg` · ver `IDENTIDAD.md` |
 | Venta rápida | `…/panel/venta/` |
 | Seed (repo) | `data/impresoreando-seed.json` |
 | Live (gitignored) | `data/impresoreando-live.json` |
