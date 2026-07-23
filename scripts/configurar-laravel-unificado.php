@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 $root = dirname(__DIR__);
 $backend = $root . DIRECTORY_SEPARATOR . 'backend';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'seleccionar-respaldo-organizacion.php';
 
 if (!is_file($backend . DIRECTORY_SEPARATOR . 'artisan')) {
     fwrite(STDERR, "ERROR: falta backend/artisan\n");
@@ -134,12 +135,13 @@ foreach ($links as $name => $target) {
     }
 }
 
-
-$live = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-live.json';
-$respaldo = $root . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'organizacion-respaldo-2026-07-17.json';
-if (!is_file($live) && is_file($respaldo)) {
-    copy($respaldo, $live);
-    echo "  · data/organizacion-live.json desde respaldo 2026-07-17\n";
+$dataDir = $root . DIRECTORY_SEPARATOR . 'data';
+$live = $dataDir . DIRECTORY_SEPARATOR . 'organizacion-live.json';
+if (!is_file($live)) {
+    $respaldo = seleccionarRespaldoOrganizacion($dataDir);
+    if ($respaldo !== null && restaurarRespaldoOrganizacion($respaldo, $live)) {
+        echo "  · data/organizacion-live.json desde " . basename($respaldo) . "\n";
+    }
 }
 
 // Sesión en archivo = el HTML no necesita MySQL
