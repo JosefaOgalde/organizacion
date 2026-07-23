@@ -449,34 +449,6 @@
   ],
   "productos": [
     {
-      "id": "prod-llavero",
-      "nombre": "Llavero 3D",
-      "activo": true,
-      "filamentoGramos": 12,
-      "costoFilamentoKgClp": 17986,
-      "horasImpresion": 1.2,
-      "minutosPintado": 15,
-      "unidadesMetal": 1,
-      "unidadesBolsa": 1,
-      "precioVentaSugeridoClp": 4990,
-      "notas": "Ajustar gramos/tiempo según modelo real",
-      "sku": "LLAV001"
-    },
-    {
-      "id": "prod-figura-chica",
-      "nombre": "Figura chica / souvenir",
-      "activo": true,
-      "filamentoGramos": 35,
-      "costoFilamentoKgClp": 17986,
-      "horasImpresion": 3.5,
-      "minutosPintado": 45,
-      "unidadesMetal": 0,
-      "unidadesBolsa": 1,
-      "precioVentaSugeridoClp": 12990,
-      "notas": "",
-      "sku": "FIG001"
-    },
-    {
       "id": "prod-portacompletos-gato",
       "nombre": "Porta Completos Gato",
       "activo": true,
