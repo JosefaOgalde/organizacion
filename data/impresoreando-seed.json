@@ -245,11 +245,12 @@
     {
       "id": "ven-mrpqov4c",
       "fecha": "2026-07-18",
+      "cliente": "Tito",
       "descripcion": "Portacompletos ×6 (4 perros + 2 gatos)",
       "cantidad": 6,
       "montoNeto": 15000,
       "canal": "WhatsApp",
-      "notas": "4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000",
+      "notas": "Cliente Tito · 4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000",
       "socioRegistro": "Ambos"
     }
   ],

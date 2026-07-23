@@ -643,20 +643,28 @@
       {
         id: 'ven-mrpqov4c',
         fecha: '2026-07-18',
+        cliente: 'Tito',
         descripcion: 'Portacompletos ×6 (4 perros + 2 gatos)',
         cantidad: 6,
         montoNeto: 15000,
         canal: 'WhatsApp',
-        notas: '4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000',
+        notas: 'Cliente Tito · 4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000',
         socioRegistro: 'Ambos',
       },
     ];
     let changed = false;
-    const byId = new Set(d.ventas.map((v) => v && v.id).filter(Boolean));
-    for (const v of SEED_VENTAS) {
-      if (!byId.has(v.id)) {
-        d.ventas.push({ ...v });
-        byId.add(v.id);
+    const byId = new Map(d.ventas.map((v) => [v && v.id, v]).filter(([id]) => id));
+    for (const seed of SEED_VENTAS) {
+      const existing = byId.get(seed.id);
+      if (!existing) {
+        d.ventas.push({ ...seed });
+        byId.set(seed.id, seed);
+        changed = true;
+      } else if (String(existing.cliente || '').trim() !== seed.cliente) {
+        existing.cliente = seed.cliente;
+        if (!/tito/i.test(String(existing.notas || ''))) {
+          existing.notas = seed.notas;
+        }
         changed = true;
       }
     }
