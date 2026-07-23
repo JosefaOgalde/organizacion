@@ -4,19 +4,19 @@
 
 | Archivo | Uso |
 |---------|-----|
-| `logo-impresoreando.png` | **Marca oficial y principal** (wordmark con **fondo transparente**). Panel, venta, landing, catálogos |
-| `logo-impresoreando-transparente.png` | Copia de la misma marca (transparente) |
-| `logo-impresoreando-claro.png` | Misma marca sobre fondo blanco |
-| `logo-impresoreando-oscuro.png` | Misma marca sobre fondo negro (solo si hace falta contraste) |
+| `logo-impresoreando.png` | **Marca oficial y principal** — archivo tal cual (sin recortar ni regenerar). Panel, venta, landing, catálogos |
+| `logo-impresoreando-claro.png` | Copia del oficial |
+| `logo-impresoreando-transparente.png` | Variante con alpha (opcional) |
+| `logo-impresoreando-oscuro.png` | Variante fondo negro (opcional) |
 | `logo-impresoreando.svg` | Aproximación vectorial de apoyo |
 | `icono-gato-impresoreando.svg` | Ícono corto (gato + bobina) |
 
-**Regla:** si el logo viene con transparencia, se guarda con transparencia (no se le pone fondo negro). No inventar la marca con Midjourney/Gemini. Al reemplazar, bump `?v=` en panel/venta/catálogos.
+**Regla:** el PNG oficial se usa **tal cual**. No editar con crop/ffmpeg ni Midjourney/Gemini. Si la usuaria entrega un archivo nuevo, reemplazar el PNG y bump `?v=` en panel/venta/catálogos.
 
 ## Colores
 
-- Navy: `#163a6b` (aprox. tipografía)
-- Naranja filament: `#f07a28` / `#fd6d03`
+- Navy: `#163a6b`
+- Naranja filament: `#f07a28`
 - Fondo UI panel: crema `#fffdf7`
 
 ## Regla
