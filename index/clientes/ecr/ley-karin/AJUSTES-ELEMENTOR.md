@@ -97,3 +97,61 @@ Cuando vuelvas a **Desktop**:
 3. Evitá “Ancho personalizado” en px en móvil; preferí **%** o **auto**.
 
 Cuando quede bien en móvil, **Actualizar** / publicar el borrador *Ley Karin*.
+
+---
+
+## Estado / continuar mañana (24 jul 2026)
+
+Trabajo en **WordPress/Elementor** (ecrgroup.cl), no solo en este repo.  
+**Publicar / Actualizar** el borrador en Elementor antes de cerrar.
+
+### Tipografía texto cuerpo (proporción fija)
+| Pantalla | Tamaño | Altura de línea | Color |
+|----------|--------|-----------------|-------|
+| Grande | 30 px | 40 px | `#556880` |
+| Escritorio | 24 px | 35 px | `#556880` |
+| Tablet | 20 px | 30 px | `#556880` |
+| Móvil | 16 px | 25 px | `#556880` |
+
+### Bloque texto + imagen celular
+- Estructura: Contenedor fila → col texto + col imagen (sin contenedor extra).
+- Grande/escritorio: texto 55% izq · imagen 45% der · fila **Estirar** · imagen Alto 100% + Cover.
+- Tablet/móvil: Dirección **Columna** · ambos 100% · imagen abajo · Alto Auto + Contain.
+- Texto de abajo (“Además…”): contenedor 100% debajo de la fila.
+
+### Botones políticas (naranja + azul)
+- Contenedores (no widget Botón si no toma Enter): texto en 2 líneas.
+- Escritorio: padre fila · hijo naranja 50% Justificar **Final** · hijo azul 50% Justificar **Inicio**.
+- Móvil: columna · ambos 100% · misma altura mínima/relleno.
+- Sin subrayado.
+
+### Banner Canal de Denuncias (foto equipo)
+```
+Contenedor 1 (envoltorio)
+  Contenedor 2 (banner 100%, min-height 280, Justificar Final, Overflow Oculto)
+    Imagen — Absoluta, z-index 1, Cover
+    Contenedor 3 — 40%, z-index 2, fondo #111 80%
+      Encabezado (blanco) + Botón HAZ TU DENUNCIA (naranja)
+```
+- Móvil: Imagen **Por defecto** (no absoluta) · Contenedor 3 ancho 100%.
+- Desbordamiento = en **Disposición → Opciones adicionales → Desbordamiento → Oculto**.
+
+### Descargas (filtro + entradas)
+Categorías **nuevas** (no renombrar Artículos/Editorial/Eventos/Prensa):
+| Nombre | Slug |
+|--------|------|
+| Políticas del delito | `politicas-del-delito` |
+| Manual del delito | `manual-del-delito` |
+| Procedimiento MPD | `procedimiento-mpd` |
+| Tipos de delito | `tipos-de-delito` |
+
+Pendiente Elementor:
+1. Cuadrícula de bucle → tipo plantilla **Entradas** → plantilla Loop Post (ej. Loop Post simple).
+2. **Consulta → Incluir** solo las 4 categorías de delito.
+3. Filtro de taxonomía → **Rejilla de bucle seleccionada** → esa cuadrícula.
+4. HTML de íconos: no muestra entradas; solo SVG vía `ecr_get_term_icons`. Pegar SVG en campo **Ícono SVG** de cada categoría.
+
+### Tarea organizador
+`[ECR] Landing Elementor Ley Karin · 1A Desktop` (#14)  
+Ver: `http://127.0.0.1:8000/index.html?disco=1&tarea=ecr/14`  
+Si no aparece: `node scripts/add-ecr-ley-karin-elementor.js`
