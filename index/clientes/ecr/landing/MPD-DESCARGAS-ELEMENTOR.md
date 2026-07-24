@@ -151,6 +151,17 @@ En Elementor: icono de monitor / tablet / móvil junto a cada campo para cambiar
 4. Replica con **Pegar estilo** en los otros botones; ajusta solo Procedimiento MPD (fondo azul + texto blanco).
 5. En cada **Columna**: Ancho % → 25 / 25 / 50 / 100 según dispositivo.
 
+## Ajustes hechos en sesión (2026-07-24)
+
+| Tema | Cómo |
+|------|------|
+| Hover | Botón → Estilo → **Al pasar el cursor** (claros: fondo `#E8F4FC`; MPD: fondo `#026BB5`) |
+| Tablet solapados | Vista Tablet → cada columna **50%** (2×2); tipografía ~14–15 si corta texto |
+| Abrir aparte | Contenido → Enlace → engranaje → **Abrir en una ventana nueva** |
+| Compartir borrador | Sin preview público nativo; publicar o dar usuario WP |
+
+Si el sitio completo se desconfigura (header/logo encima): ver [`INCIDENTE-HEADER-2026-07-24.md`](./INCIDENTE-HEADER-2026-07-24.md).
+
 ## Checklist
 
 - [ ] Caja con borde azul y padding
@@ -160,6 +171,7 @@ En Elementor: icono de monitor / tablet / móvil junto a cada campo para cambiar
 - [ ] Procedimiento MPD estilo oscuro (texto blanco)
 - [ ] Links PDF correctos en cada botón
 - [ ] Responsive: columnas 25 / 50 / 100 según tabla
+- [ ] Enlaces abren en ventana nueva
 - [ ] Publicar + hard refresh / purge caché si aplica
 
 ## Archivos PDF (nombres de botones)

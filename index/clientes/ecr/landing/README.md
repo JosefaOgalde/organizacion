@@ -49,3 +49,10 @@ El texto no queda encima con facilidad. Pasar la imagen a **fondo de la sección
 | Carrusel LinkedIn | Canva + copys en `newsletter/copys/` |
 | **Landing web** | Este doc · Elementor en el sitio |
 | **Landing MPD · Descargas** | [`MPD-DESCARGAS-ELEMENTOR.md`](./MPD-DESCARGAS-ELEMENTOR.md) — botones píldora + destacado Procedimiento MPD |
+| **Incidente Header 24 jul** | [`INCIDENTE-HEADER-2026-07-24.md`](./INCIDENTE-HEADER-2026-07-24.md) — layout roto, revisiones, recuperación |
+
+## Sesión 2026-07-24 (resumen guardado)
+
+- Descargas MPD: responsive tablet **50%** (2×2); hover en Estilo → Al pasar el cursor; links → engranaje → **Abrir en ventana nueva**.
+- Borrador: sin link público para supervisora (publicar o usuario WP).
+- Incidente: sitio/header desconfigurado; Header sin revisión de hace 1 h (solo sesión actual + ~3 semanas). Ver doc incidente.
