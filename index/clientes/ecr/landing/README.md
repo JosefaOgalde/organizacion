@@ -48,3 +48,4 @@ El texto no queda encima con facilidad. Pasar la imagen a **fondo de la sección
 | Portada newsletter MJ | `newsletter/` (solo fondo → Canva título) |
 | Carrusel LinkedIn | Canva + copys en `newsletter/copys/` |
 | **Landing web** | Este doc · Elementor en el sitio |
+| **Landing MPD · Descargas** | [`MPD-DESCARGAS-ELEMENTOR.md`](./MPD-DESCARGAS-ELEMENTOR.md) — botones píldora + destacado Procedimiento MPD |
