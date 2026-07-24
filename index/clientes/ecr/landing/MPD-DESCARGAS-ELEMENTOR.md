@@ -115,6 +115,42 @@ Ima 3: fondo claro + **texto azul**, o fondo oscuro + **texto blanco**.
 
 ---
 
+## Responsive — Botón (tabla por breakpoint)
+
+Valores base Figma desktop: radio **16–20 px**, padding ~**16–20**, color `#0285E2`.  
+En Elementor: icono de monitor / tablet / móvil junto a cada campo para cambiar breakpoint.
+
+### Estilo del botón (los 4)
+
+| Propiedad | Pantalla grande | Escritorio | Tablet | Móvil |
+|-----------|-----------------|------------|--------|-------|
+| Alineación | Centro | Centro | Centro | Centro |
+| Color texto / icono (claros) | `#0285E2` | `#0285E2` | `#0285E2` | `#0285E2` |
+| Fondo (claros) | `#E8F3FC` / blanco | igual | igual | igual |
+| Fondo + texto (Procedimiento MPD) | `#0285E2` + blanco | igual | igual | igual |
+| Borde | 2–3 px `#0285E2` | 2–3 px | 2 px | 2 px |
+| Radio borde | **20 px** | **20 px** | **16 px** | **16 px** |
+| Relleno (Estilo) | 16–20 todos | **20** todos | **14** vert / **16** horiz | **12** vert / **14** horiz |
+| Tipografía tamaño | 15–16 px | **15 px** | **14 px** | **13–14 px** |
+| Icono espaciado | 8–10 px | **8 px** | **8 px** | **6 px** |
+| Ancho botón (Avanzado) | Por defecto / 100% col | Por defecto | **100%** | **100%** |
+
+### Columnas / sección interior
+
+| Propiedad | Pantalla grande | Escritorio | Tablet | Móvil |
+|-----------|-----------------|------------|--------|-------|
+| Ancho cada columna | 25% | 25% | **50%** (2×2) | **100%** (1 col) |
+| Espacio entre columnas | Estrecho / 12–16 px | Estrecho | 10–12 px | 8–10 px |
+| Margen sección interior | izq/der auto | izq/der auto | 0 / padding 16 | 0 / padding 12 |
+| Relleno sección (caja) | 32–40 | **30 / 24** | **24 / 16** | **20 / 12** |
+
+### Cómo aplicarlo en Elementor
+1. Edita el botón → **Estilo** / **Avanzado**.
+2. Clic en el icono de dispositivo junto al campo (escritorio → tablet → móvil → grande si aparece).
+3. Pon el valor de la tabla en **ese** breakpoint (no pises todos con el mismo).
+4. Replica con **Pegar estilo** en los otros botones; ajusta solo Procedimiento MPD (fondo azul + texto blanco).
+5. En cada **Columna**: Ancho % → 25 / 25 / 50 / 100 según dispositivo.
+
 ## Checklist
 
 - [ ] Caja con borde azul y padding
@@ -123,7 +159,7 @@ Ima 3: fondo claro + **texto azul**, o fondo oscuro + **texto blanco**.
 - [ ] 3 botones estilo claro (texto azul)
 - [ ] Procedimiento MPD estilo oscuro (texto blanco)
 - [ ] Links PDF correctos en cada botón
-- [ ] Responsive móvil OK
+- [ ] Responsive: columnas 25 / 50 / 100 según tabla
 - [ ] Publicar + hard refresh / purge caché si aplica
 
 ## Archivos PDF (nombres de botones)
