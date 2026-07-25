@@ -1,12 +1,9 @@
 /**
- * Joyas Mercury — FIX botón carrito (urgente Camila 25-jul)
- * VERSIÓN: 2026-07-25
- *
- * Ya incluido al final de CSS-COMPLETO-ASTRA.css (versión carrito-boton).
- * Si en WP aún tenés el CSS viejo, pegá ESTE archivo al final del CSS adicional.
+ * Joyas Mercury — FIX icono carrito (25-jul)
+ * Pegar al final del CSS adicional SI no reemplazás el completo.
+ * Además: fragmento PHP JM-CARRITO-IR-PAGINA + Astra → Página del carrito.
  */
 
-/* Astra bloquea el clic del <a> en el header móvil */
 #ast-mobile-header .ast-site-header-cart-li a.cart-container,
 #ast-mobile-header .ast-site-header-cart-li a,
 .ast-header-break-point .ast-site-header-cart-li a.cart-container,
@@ -15,36 +12,20 @@
   pointer-events: auto !important;
   cursor: pointer !important;
   position: relative !important;
-  z-index: 30 !important;
+  z-index: 9999 !important;
 }
 
 .ast-site-header-cart,
 .ast-header-woo-cart,
 #ast-mobile-header .ast-header-woo-cart {
   position: relative !important;
-  z-index: 30 !important;
+  z-index: 9999 !important;
   overflow: visible !important;
 }
 
 html,
 body {
   overflow-x: clip;
-}
-
-/* El drawer se abre un segundo y se cierra solo → lo desactivamos.
-   El icono debe ir a la página /mi-carrito/ (no panel emergente). */
-.astra-cart-drawer,
-.astra-cart-drawer.active,
-.astra-mobile-cart-overlay,
-.astra-mobile-cart-overlay.active {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  transform: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  overflow: hidden !important;
 }
 
 .astra-cart-drawer {
@@ -66,11 +47,6 @@ body {
 
 .astra-cart-drawer .astra-cart-drawer-close {
   color: #A97E23 !important;
-}
-
-.astra-mobile-cart-overlay.active,
-.astra-mobile-cart-overlay {
-  z-index: 100040 !important;
 }
 
 .woocommerce-js .astra-cart-drawer .astra-cart-drawer-content .woocommerce-mini-cart__buttons a.checkout,

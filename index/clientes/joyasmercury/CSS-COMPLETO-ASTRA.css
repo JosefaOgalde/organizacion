@@ -1,6 +1,6 @@
 /**
  * Joyas Mercury — CSS COMPLETO Astra (todo en uno)
- * VERSIÓN: 2026-07-25-carrito-sin-drawer
+ * VERSIÓN: 2026-07-25-carrito-icono-click
  *   · Novedades mobile: grilla 2×2 + sin clones Slick
  *   · Hero: object-position para no recortar tipografía MERCURY
  *   · Carrito header: clic usable en móvil + drawer con marca JM
@@ -3873,7 +3873,7 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
   pointer-events: auto !important;
   cursor: pointer !important;
   position: relative !important;
-  z-index: 30 !important;
+  z-index: 9999 !important;
 }
 
 .ast-site-header-cart,
@@ -3885,21 +3885,6 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
 }
 
 /* Drawer lateral — marca JM (no Woo “viejo” genérico) */
-/* Drawer se abre y se esconde solo → desactivado; ir a /mi-carrito/ */
-.astra-cart-drawer,
-.astra-cart-drawer.active,
-.astra-mobile-cart-overlay,
-.astra-mobile-cart-overlay.active {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  transform: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  overflow: hidden !important;
-}
-
 .astra-cart-drawer {
   background: #faf6f2 !important;
   z-index: 100050 !important;
