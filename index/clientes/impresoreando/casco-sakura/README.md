@@ -3,12 +3,17 @@
 ## Problema
 Tinkercad solo acepta STL de hasta **25 MB**. El casco del prototipo pesa más.
 
-## Reducir peso (en tu PC)
-1. Exportá el STL desde Cura (o usá el archivo original).
-2. En la raíz del repo, arrastrá el `.stl` encima de:
-   - `REDUCIR-STL-TINKERCAD.bat`
-3. Se genera un archivo `…-tinkercad.stl` (&lt; 20 MB aprox.).
-4. Importá ese archivo en Tinkercad.
+## Entregar STL al agente / reducir en PC
+1. Copiá el `.stl` a esta carpeta (ver `PONER-STL-AQUI.txt`).
+2. En la raíz del repo:
+
+```bat
+REDUCIR-STL-TINKERCAD.bat index\clientes\impresoreando\casco-sakura\NOMBRE.stl
+```
+
+O arrastrá el `.stl` encima de `REDUCIR-STL-TINKERCAD.bat`.
+
+3. Sale `NOMBRE-tinkercad.stl` (~20 MB) → importar en Tinkercad.
 
 Manual:
 ```bat
@@ -24,3 +29,7 @@ python scripts\reducir-stl-tinkercad.py "C:\ruta\CASCO.stl" --max-mb 20
 
 ## Alternativa sin Tinkercad
 **Meshmixer** (gratis) abre STL grandes sin el límite de 25 MB.
+
+## Organizador
+Respaldo vigente: `data/organizacion-respaldo-2026-07-24.json`  
+`ABRIR-LARAVEL.bat` lo usa si falta `organizacion-live.json`.
