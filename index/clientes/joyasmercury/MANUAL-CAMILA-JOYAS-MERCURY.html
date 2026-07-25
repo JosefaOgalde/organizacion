@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual Camila · Joyas Mercury</title>
+<style>
+  :root { --gold:#A97E23; --pink:#C88F9C; --dark:#333; --bg:#faf6f2; }
+  body { font-family: Georgia, "Times New Roman", serif; margin:0; background:var(--bg); color:var(--dark); }
+  .wrap { max-width:720px; margin:0 auto; padding:28px 20px 48px; background:#fff; }
+  h1 { font-size:1.6rem; color:var(--gold); margin:0 0 6px; letter-spacing:.04em; }
+  h2 { font-size:1.15rem; color:var(--gold); margin:1.6rem 0 .6rem; border-bottom:1px solid #e8dfd4; padding-bottom:4px; }
+  h3 { font-size:1rem; margin:1.1rem 0 .35rem; }
+  p, li { font-family: system-ui, sans-serif; font-size:.95rem; line-height:1.45; }
+  a { color:var(--gold); font-weight:600; }
+  .sub { color:#666; font-family:system-ui,sans-serif; margin:0 0 1rem; }
+  .box { background:#f8e8ee; border-left:4px solid var(--pink); padding:10px 12px; margin:12px 0; font-family:system-ui,sans-serif; font-size:.9rem; }
+  ol { padding-left:1.2rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>JOYAS MERCURY</h1>
+  <p class="sub">Manual rápido para Camila · WordPress / WooCommerce / Elementor<br>
+  Versión web clickeable (también existe PDF en esta carpeta).</p>
+  <div class="box">Tip: en el celular tocá cada link azul. Para imprimir PDF desde el navegador: Compartir → Imprimir → Guardar como PDF.</div>
+
+  <h2>1. Accesos WordPress</h2>
+  <ul>
+    <li><a href="https://joyasmercury.cl/wp-admin/admin.php?page=wc-admin">Panel WooCommerce</a></li>
+    <li><a href="https://joyasmercury.cl/wp-admin/">Escritorio WordPress</a></li>
+    <li><a href="https://joyasmercury.cl/wp-admin/admin.php?page=wc-orders">Pedidos</a></li>
+    <li><a href="https://joyasmercury.cl/wp-admin/edit.php?post_type=product">Productos</a></li>
+    <li><a href="https://joyasmercury.cl/wp-admin/edit.php?post_type=shop_coupon">Cupones</a></li>
+    <li><a href="https://joyasmercury.cl/wp-admin/nav-menus.php">Menús</a></li>
+    <li><a href="https://joyasmercury.cl/wp-admin/edit.php?post_type=page">Páginas</a></li>
+    <li><a href="https://joyasmercury.cl/wp-admin/edit-tags.php?taxonomy=product_cat&amp;post_type=product">Categorías de producto</a></li>
+    <li><a href="https://joyasmercury.cl/">Tienda en vivo</a></li>
+  </ul>
+
+  <h2>2. Enlaces oficiales</h2>
+  <ul>
+    <li><a href="https://woocommerce.com/document/managing-orders/?utm_source=inbox&amp;utm_medium=product">Gestionar pedidos (WooCommerce)</a></li>
+    <li><a href="https://joyasmercury.cl/wp-admin/admin.php?page=wc-admin">Panel admin Joyas Mercury</a></li>
+    <li><a href="https://woocommerce.com/es/blog/payments/?utm_source=inbox_note&amp;utm_medium=product&amp;utm_campaign=optimizing-the-checkout-flow">Pagos / checkout (blog ES)</a></li>
+    <li><a href="https://woocommerce.com/document/gestion-de-cupones/">Gestión de cupones (doc ES)</a></li>
+  </ul>
+
+  <h2>3. Manuales</h2>
+
+  <h3>3.1 Descuentos y cupones</h3>
+  <ol>
+    <li>WooCommerce → Ajustes → General → activar cupones → Guardar.</li>
+    <li>Marketing → Cupones → Añadir cupón.</li>
+    <li>Código (ej. MERCURY10) · tipo · importe · caducidad → Publicar.</li>
+  </ol>
+  <p>Video: <a href="https://www.youtube.com/watch?v=0D65lTnkuug">Tutorial WooCommerce principiantes</a></p>
+
+  <h3>3.2 Menú y categorías</h3>
+  <ol>
+    <li>Productos → Categorías (crear/editar).</li>
+    <li>Apariencia → Menús → añadir categorías/páginas → Guardar menú.</li>
+  </ol>
+  <p>Video: <a href="https://www.youtube.com/watch?v=Y5VvG49QZ_I">Cómo crear un menú en WordPress</a></p>
+
+  <h3>3.3 Subcategorías</h3>
+  <ol>
+    <li>Productos → Categorías → Añadir nueva.</li>
+    <li>Categoría superior = madre (ej. Esencial) → Añadir.</li>
+  </ol>
+  <p>Video: <a href="https://www.youtube.com/watch?v=kEFEKXRw7z8">WooCommerce 2025 (productos/categorías)</a></p>
+
+  <h3>3.4 Que la categoría nueva aparezca en el menú</h3>
+  <ol>
+    <li>Apariencia → Menús.</li>
+    <li>Marcá la categoría → Añadir al menú → ordenar → Guardar.</li>
+  </ol>
+  <p>Crear la categoría no la pone sola en el menú: hay que agregarla.</p>
+
+  <h3>3.5 Editar la página de inicio</h3>
+  <ol>
+    <li>Páginas → Inicio → Editar con Elementor.</li>
+    <li>Cambiar textos/bloques → Actualizar.</li>
+  </ol>
+  <p>No borrar clases <code>jm-home-novedades</code> / <code>jm-circulos-categoria</code>.</p>
+  <p>Video: <a href="https://www.youtube.com/watch?v=3RlfiHhAzOX">Editar con Elementor</a></p>
+
+  <h3>3.6 Fotos de productos y banners</h3>
+  <ol>
+    <li>Producto → Imagen del producto / Galería → Actualizar.</li>
+    <li>Banner: Smart Slider o imagen en Elementor → reemplazar → Actualizar.</li>
+  </ol>
+  <p>Ayuda Smart Slider: <a href="https://smartslider.helpscoutdocs.com/">docs</a></p>
+
+  <h3>3.7 Revisar y gestionar pedidos</h3>
+  <ol>
+    <li>WooCommerce → Pedidos.</li>
+    <li>Abrir pedido → cambiar estado (Procesando → Completado) → Guardar.</li>
+  </ol>
+  <p>Doc: <a href="https://woocommerce.com/document/managing-orders/?utm_source=inbox&amp;utm_medium=product">Managing orders</a> ·
+  Video: <a href="https://www.youtube.com/watch?v=1AUyuF8bik0">Proceso de compra / pedidos</a></p>
+
+  <h2>4. Videos YouTube</h2>
+  <ul>
+    <li><a href="https://www.youtube.com/watch?v=0D65lTnkuug">WooCommerce principiantes 2026</a></li>
+    <li><a href="https://www.youtube.com/watch?v=kEFEKXRw7z8">WooCommerce completo 2025</a></li>
+    <li><a href="https://www.youtube.com/watch?v=1AUyuF8bik0">Proceso de compra</a></li>
+    <li><a href="https://www.youtube.com/watch?v=Y5VvG49QZ_I">Menús WordPress</a></li>
+    <li><a href="https://www.youtube.com/watch?v=3RlfiHhAzOX">Elementor intro</a></li>
+  </ul>
+</div>
+</body>
+</html>
