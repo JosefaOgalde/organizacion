@@ -1721,6 +1721,25 @@
       "documentoNombre": "tutor ia.docx",
       "agendaFijada": true,
       "estadoFijado": true
+    },
+    {
+      "id": "tarea-ecr-ley-karin-elementor-1a-2026-07-23",
+      "titulo": "[ECR] Landing Elementor Ley Karin · 1A Desktop",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-dev",
+      "fecha": "2026-07-23",
+      "horaInicio": "10:00",
+      "horaFin": "14:00",
+      "notas": "Banner/hero ya listo. Ajustar sección de contenido (título política + 2 columnas texto|imagen celular) para igualar PDF Desktop. Guía: index/clientes/ecr/ley-karin/AJUSTES-ELEMENTOR.md · PDF: index/clientes/ecr/ley-karin/1A-Ley-Karin-ECR-GROUP-Desktop.pdf",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "14",
+      "tipoEntregable": "landing-elementor",
+      "entregableArchivo": "index/clientes/ecr/ley-karin/1A-Ley-Karin-ECR-GROUP-Desktop.pdf",
+      "parentId": null,
+      "agendaFijada": true,
+      "estadoFijado": false
     }
   ],
   "citasSalud": [
@@ -1817,7 +1836,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 14,
-  "respaldoActualizado": "2026-07-23T15:01:35.661Z",
+  "respaldoActualizado": "2026-07-23T18:21:47.829Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
