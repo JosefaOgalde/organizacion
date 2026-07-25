@@ -31,6 +31,22 @@ body {
   overflow-x: clip;
 }
 
+/* El drawer se abre un segundo y se cierra solo → lo desactivamos.
+   El icono debe ir a la página /mi-carrito/ (no panel emergente). */
+.astra-cart-drawer,
+.astra-cart-drawer.active,
+.astra-mobile-cart-overlay,
+.astra-mobile-cart-overlay.active {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
 .astra-cart-drawer {
   background: #faf6f2 !important;
   z-index: 100050 !important;
