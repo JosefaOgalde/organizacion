@@ -1022,15 +1022,49 @@ body.jm-modal-abierto {
   padding: 0;
 }
 
-.jm-docs li {
-  padding: 0.55rem 0;
+.jm-docs__intro {
+  margin: 0 0 0.35rem;
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.45;
+}
+
+.jm-docs li,
+.jm-docs__item {
+  padding: 0.65rem 0;
   border-bottom: 1px solid #f0f0f0;
   font-size: 0.9rem;
 }
 
-.jm-docs li:last-child { border-bottom: none; }
+.jm-docs li:last-child,
+.jm-docs__item:last-child { border-bottom: none; }
 
 .jm-docs__nombre { font-weight: 600; color: var(--jm-text); }
+
+.jm-docs__link {
+  font-weight: 600;
+  color: var(--jm-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.jm-docs__link:hover { color: #7a4055; }
+
+.jm-docs__btn {
+  display: inline-block;
+  margin-left: 0.55rem;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--jm-text);
+  border-radius: 4px;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.jm-docs__btn:hover { background: #7a4055; color: #fff; }
+
 .jm-docs__nota { color: #888; font-size: 0.82rem; }
 
 /* Card prototipo (solo enlace) */
