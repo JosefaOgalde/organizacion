@@ -1,10 +1,9 @@
 <?php
 /**
  * WPCode → PHP Snippet → Auto Insert → Run everywhere
- * Hook: Frontend Footer (wp_footer) · Priority 99 · Active
+ * Hook: Frontend Footer · Priority 99 · Active
  *
- * El menú hamburguesa ya va a /mi-carrito/.
- * Este código hace que el ICONO del header haga lo mismo.
+ * Reemplazá el contenido del fragmento JM-CARRITO-IR-PAGINA por este.
  */
 add_action('wp_footer', function () {
 	if (is_admin()) {
@@ -14,44 +13,35 @@ add_action('wp_footer', function () {
 	<script id="jm-carrito-ir-pagina">
 	(function () {
 	  var CART_URL = "https://joyasmercury.cl/mi-carrito/";
+	  var going = false;
 
-	  function findCartAnchor(el) {
-	    if (!el || !el.closest) return null;
-	    // clic en svg / span / i dentro del icono
-	    var wrap = el.closest(
-	      ".ast-site-header-cart, .ast-header-woo-cart, .ast-addon-cart-wrap, .ast-site-header-cart-li"
-	    );
-	    if (!wrap) return null;
-	    return (
-	      wrap.querySelector("a.cart-container") ||
-	      wrap.querySelector("a[href*='mi-carrito']") ||
-	      wrap.querySelector("a[href*='cart']") ||
-	      (wrap.tagName === "A" ? wrap : null)
+	  function isCartTarget(el) {
+	    if (!el || !el.closest) return false;
+	    return !!el.closest(
+	      ".ast-site-header-cart, .ast-header-woo-cart, .ast-addon-cart-wrap, .ast-site-header-cart-li, a.cart-container"
 	    );
 	  }
 
 	  function go(e) {
-	    var a = findCartAnchor(e.target);
-	    if (!a) return;
+	    if (!isCartTarget(e.target)) return;
+	    if (going) return;
+	    going = true;
 	    e.preventDefault();
 	    e.stopImmediatePropagation();
 	    e.stopPropagation();
-	    window.location.href = a.getAttribute("href") || CART_URL;
-	    return false;
+	    // Cerrar drawer si Astra lo abrió
+	    document.documentElement.classList.remove("ast-cart-drawer-open");
+	    document.body.classList.remove("ast-cart-drawer-open");
+	    var drawer = document.querySelector(".astra-cart-drawer");
+	    if (drawer) drawer.classList.remove("active");
+	    var overlay = document.querySelector(".astra-mobile-cart-overlay");
+	    if (overlay) overlay.classList.remove("active");
+	    window.location.replace(CART_URL);
 	  }
 
-	  // capture=true: gana a Astra
 	  document.addEventListener("click", go, true);
+	  document.addEventListener("touchstart", go, true);
 	  document.addEventListener("touchend", go, true);
-
-	  // por si Astra re-renderiza el header
-	  document.addEventListener("DOMContentLoaded", function () {
-	    document.querySelectorAll(
-	      ".ast-site-header-cart a, .ast-header-woo-cart a, a.cart-container"
-	    ).forEach(function (a) {
-	      a.addEventListener("click", go, true);
-	    });
-	  });
 	})();
 	</script>
 	<?php
