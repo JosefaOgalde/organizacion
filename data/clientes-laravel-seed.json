@@ -1,6 +1,6 @@
 {
-  "generado": "2026-07-23",
-  "origen": "portal colores v2 + slugs = carpetas reales (evita 404 /imp/)",
+  "generado": "2026-07-25",
+  "origen": "portal colores v2 + dedupe slugs canónicos (= carpetas reales)",
   "clientes": [
     {
       "id": "cli-trendseeker",

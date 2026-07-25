@@ -90,6 +90,11 @@ pushd backend
 "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
 popd
 
+if exist "scripts\limpiar-clientes-duplicados.php" (
+  echo  3b^) Limpiar clientes duplicados en SQLite...
+  "%PHP_EXE%" scripts\limpiar-clientes-duplicados.php
+)
+
 if not exist "data\organizacion-live.json" (
   if exist "data\organizacion-respaldo-2026-07-24.json" (
     copy /Y "data\organizacion-respaldo-2026-07-24.json" "data\organizacion-live.json" >nul

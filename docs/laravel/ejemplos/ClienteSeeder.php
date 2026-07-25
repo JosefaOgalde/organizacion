@@ -4,6 +4,8 @@
  * Fuente: ../data/clientes-laravel-seed.json
  *
  * Slugs = carpetas reales bajo index/clientes/ (no abreviaturas).
+ * Upsert por slug canónico y elimina duplicados por abreviatura
+ * (p. ej. quedaron "ts" y "trendseeker" del mismo cliente).
  */
 
 namespace Database\Seeders;
@@ -13,8 +15,8 @@ use Illuminate\Database\Seeder;
 
 class ClienteSeeder extends Seeder
 {
-    /** Slugs cortos viejos → carpeta real (se eliminan tras migrar). */
-    private const LEGACY_SLUGS = [
+    /** Slugs viejos / alias → canónicos del portal (= carpeta) */
+    private const ALIASES = [
         'ts' => 'trendseeker',
         'pisc' => 'piscineria',
         'hs' => 'hotspring',
@@ -41,16 +43,32 @@ class ClienteSeeder extends Seeder
             return;
         }
 
+        // Renombrar slugs alias → canónico antes del upsert
+        foreach (self::ALIASES as $old => $nuevo) {
+            $row = Cliente::query()->where('slug', $old)->first();
+            if (!$row) {
+                continue;
+            }
+            if (Cliente::query()->where('slug', $nuevo)->exists()) {
+                $row->delete();
+            } else {
+                $row->slug = $nuevo;
+                $row->save();
+            }
+        }
+
+        $preferidoPorAbrev = [];
         foreach ($lista as $c) {
             $slug = $c['slug'] ?? null;
             if (!$slug) {
                 continue;
             }
+            $abrev = strtoupper((string) ($c['abrev'] ?? substr($slug, 0, 4)));
             Cliente::updateOrCreate(
                 ['slug' => $slug],
                 [
                     'nombre' => $c['nombre'] ?? $slug,
-                    'abrev' => $c['abrev'] ?? strtoupper(substr($slug, 0, 4)),
+                    'abrev' => $abrev,
                     'tipo' => $c['tipo'] ?? 'freelance',
                     'color_border' => $c['color_border'] ?? null,
                     'color_bg' => $c['color_bg'] ?? null,
@@ -59,27 +77,25 @@ class ClienteSeeder extends Seeder
                     'resumen' => $c['resumen'] ?? null,
                 ]
             );
+            $preferidoPorAbrev[$abrev] = $slug;
         }
 
-        foreach (self::LEGACY_SLUGS as $old => $canonical) {
-            if ($old === $canonical) {
+        $borrados = 0;
+        $grupos = Cliente::all()->groupBy(fn ($c) => strtoupper((string) $c->abrev));
+        foreach ($grupos as $abrev => $group) {
+            if ($group->count() <= 1) {
                 continue;
             }
-            $legacy = Cliente::query()->where('slug', $old)->first();
-            if (!$legacy) {
-                continue;
-            }
-            $keep = Cliente::query()->where('slug', $canonical)->first();
-            if ($keep) {
-                $legacy->delete();
-                $this->command?->info("Eliminado slug legacy «{$old}» (queda «{$canonical}»)");
-            } else {
-                $legacy->slug = $canonical;
-                $legacy->save();
-                $this->command?->info("Renombrado slug «{$old}» → «{$canonical}»");
+            $keepSlug = $preferidoPorAbrev[$abrev]
+                ?? $group->sortByDesc(fn ($c) => strlen((string) $c->slug))->first()->slug;
+            foreach ($group as $row) {
+                if ($row->slug !== $keepSlug) {
+                    $row->delete();
+                    $borrados++;
+                }
             }
         }
 
-        $this->command?->info('Clientes importados: ' . Cliente::count());
+        $this->command?->info('Clientes: ' . Cliente::count() . " (duplicados eliminados: $borrados)");
     }
 }

@@ -10,9 +10,21 @@ use App\Models\Cliente;
 
 class ClienteController extends Controller
 {
-    /** GET /api/clientes */
+    /** GET /api/clientes — un cliente por abreviatura (sin duplicados). */
     public function index()
     {
-        return response()->json(Cliente::all());
+        $lista = Cliente::query()->orderBy('nombre')->get();
+        $unicos = [];
+        $visto = [];
+        foreach ($lista as $c) {
+            $key = strtoupper((string) ($c->abrev ?: $c->slug));
+            if (isset($visto[$key])) {
+                continue;
+            }
+            $visto[$key] = true;
+            $unicos[] = $c;
+        }
+
+        return response()->json(array_values($unicos));
     }
 }
