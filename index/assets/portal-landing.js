@@ -60,8 +60,24 @@
     return `clientes/${archivo}`;
   }
 
+  /** Evita tarjetas repetidas (p. ej. slug ts + trendseeker). */
+  function dedupeClientes(lista) {
+    const out = [];
+    const visto = new Set();
+    for (const c of lista || []) {
+      const key = String(c.abrev || c.slug || c.id || c.nombre || '')
+        .trim()
+        .toUpperCase();
+      if (!key || visto.has(key)) continue;
+      visto.add(key);
+      out.push(c);
+    }
+    return out;
+  }
+
   function renderTarjetas(lista, origen) {
-    grid.innerHTML = lista
+    const unica = dedupeClientes(lista);
+    grid.innerHTML = unica
       .map((c) => {
         const estatico = findEstatico(c);
         const col = colorDe(c, estatico);

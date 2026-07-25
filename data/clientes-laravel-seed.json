@@ -1,10 +1,10 @@
 {
-  "generado": "2026-07-20",
-  "origen": "portal colores v2 + organizacion",
+  "generado": "2026-07-25",
+  "origen": "portal colores v2 + dedupe slugs canonicos",
   "clientes": [
     {
       "id": "cli-trendseeker",
-      "slug": "ts",
+      "slug": "trendseeker",
       "nombre": "Trendseeker - Talk (full time)",
       "abrev": "TS",
       "tipo": "full-time",
@@ -30,7 +30,7 @@
     },
     {
       "id": "cli-piscineria",
-      "slug": "pisc",
+      "slug": "piscineria",
       "nombre": "Piscinería - Talk (full time)",
       "abrev": "PISC",
       "tipo": "full-time",
@@ -43,7 +43,7 @@
     },
     {
       "id": "cli-hotspring",
-      "slug": "hs",
+      "slug": "hotspring",
       "nombre": "Hotspring - Talk (full time)",
       "abrev": "HS",
       "tipo": "full-time",
@@ -69,7 +69,7 @@
     },
     {
       "id": "cli-joyas-mercury",
-      "slug": "jm",
+      "slug": "joyas-mercury",
       "nombre": "Joyas Mercury",
       "abrev": "JM",
       "tipo": "freelance",
@@ -95,7 +95,7 @@
     },
     {
       "id": "cli-desafio-latam",
-      "slug": "adl",
+      "slug": "desafio-latam",
       "nombre": "Desafío Latam",
       "abrev": "ADL",
       "tipo": "freelance",
@@ -108,7 +108,7 @@
     },
     {
       "id": "cli-impresoreando",
-      "slug": "imp",
+      "slug": "impresoreando",
       "nombre": "Impresoreando",
       "abrev": "IMP",
       "tipo": "freelance",
@@ -121,7 +121,7 @@
     },
     {
       "id": "cli-tronwell",
-      "slug": "tw",
+      "slug": "tronwell",
       "nombre": "Tronwell",
       "abrev": "TW",
       "tipo": "freelance",
@@ -131,6 +131,19 @@
       "color_text": "#143A6B",
       "agente": "Agente Tronwell",
       "resumen": "Ajuste de textos y documentos Word"
+    },
+    {
+      "id": "cli-herramientas",
+      "slug": "herramientas",
+      "nombre": "Herramientas",
+      "abrev": "HER",
+      "tipo": "freelance",
+      "color": "grafito",
+      "color_border": "#3D4A6B",
+      "color_bg": "#E2E6F0",
+      "color_text": "#1E2638",
+      "agente": "Herramientas internas",
+      "resumen": null
     }
   ]
 }
