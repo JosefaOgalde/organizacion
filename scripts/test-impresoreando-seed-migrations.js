@@ -15,7 +15,8 @@ const panelPath = path.join(
   'panel',
   'panel.js'
 );
-const marker = "  document.querySelectorAll('#imp-tabs button')";
+const marker =
+  "  document.querySelectorAll('#imp-tabs button').forEach((btn) => {";
 const source = fs.readFileSync(panelPath, 'utf8');
 assert(source.includes(marker), 'No se encontró el punto de carga de pruebas en panel.js');
 
