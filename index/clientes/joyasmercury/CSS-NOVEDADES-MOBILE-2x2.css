@@ -1,0 +1,96 @@
+/**
+ * Joyas Mercury — parche Novedades mobile 2×2
+ * VERSIÓN: 2026-07-25
+ *
+ * Ya incluido en CSS-COMPLETO-ASTRA.css (2026-07-25-novedades-mobile-2x2).
+ * Solo pegá este archivo si en WP ya tenés el completo viejo y querés
+ * sumar solo este arreglo (al final del CSS adicional).
+ */
+
+@media (max-width: 921px) {
+  .jm-home-novedades .slick-cloned,
+  .jm-home-destacados .slick-cloned,
+  .elementor-element.jm-home-novedades .slick-cloned,
+  .elementor-element.jm-home-destacados .slick-cloned {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    max-width: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .jm-home-novedades .slick-list,
+  .jm-home-destacados .slick-list,
+  .elementor-element.jm-home-novedades .slick-list,
+  .elementor-element.jm-home-destacados .slick-list {
+    overflow: visible !important;
+    height: auto !important;
+    touch-action: pan-y !important;
+  }
+
+  .jm-home-novedades .slick-track,
+  .jm-home-destacados .slick-track,
+  .elementor-element.jm-home-novedades .slick-track,
+  .elementor-element.jm-home-destacados .slick-track {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    transform: none !important;
+    width: 100% !important;
+    left: 0 !important;
+    margin: 0 !important;
+  }
+
+  .jm-home-novedades .slick-slide,
+  .jm-home-destacados .slick-slide,
+  .elementor-element.jm-home-novedades .slick-slide,
+  .elementor-element.jm-home-destacados .slick-slide {
+    width: auto !important;
+    float: none !important;
+    margin: 0 !important;
+  }
+
+  .jm-home-novedades .slick-arrow,
+  .jm-home-novedades .slick-dots,
+  .jm-home-destacados .slick-arrow,
+  .jm-home-destacados .slick-dots,
+  .elementor-element.jm-home-novedades .slick-arrow,
+  .elementor-element.jm-home-novedades .slick-dots,
+  .elementor-element.jm-home-destacados .slick-arrow,
+  .elementor-element.jm-home-destacados .slick-dots {
+    display: none !important;
+  }
+
+  .jm-home-novedades:not(:has(.slick-initialized)) ul.products,
+  .jm-home-destacados:not(:has(.slick-initialized)) ul.products,
+  .elementor-element.jm-home-novedades:not(:has(.slick-initialized)) ul.products,
+  .elementor-element.jm-home-destacados:not(:has(.slick-initialized)) ul.products {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    overflow: visible !important;
+    flex-wrap: unset !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 8px 12px !important;
+    list-style: none !important;
+  }
+
+  .jm-home-novedades:not(:has(.slick-initialized)) ul.products > li.product,
+  .jm-home-destacados:not(:has(.slick-initialized)) ul.products > li.product,
+  .elementor-element.jm-home-novedades:not(:has(.slick-initialized)) ul.products > li.product,
+  .elementor-element.jm-home-destacados:not(:has(.slick-initialized)) ul.products > li.product {
+    flex: unset !important;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+}

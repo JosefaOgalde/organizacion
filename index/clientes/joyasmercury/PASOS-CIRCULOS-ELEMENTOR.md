@@ -47,8 +47,8 @@ En el widget de productos **Últimas unidades**:
 
 | Bloque | Clase / ID | Elementor |
 |--------|------------|-----------|
-| Novedades | `jm-home-novedades` | Slider ON · **Arrows ON** · p.ej. 8–12 productos, 4 visibles desktop / 2 móvil |
-| Últimas | `#jm-ultimas-unidades` + `jm-home-ultimas` | Igual: Slider ON · **Arrows ON** · más productos que slides visibles |
+| Novedades | `jm-home-novedades` | Desktop: Slider ON · Arrows ON · 4 visibles. **Móvil:** el CSS fuerza **grilla 2×2** (oculta clones Slick). |
+| Últimas | `#jm-ultimas-unidades` + `jm-home-ultimas` | Slider ON · **Arrows ON** · más productos que slides visibles |
 
 Si solo hay 4 productos y se muestran 4, las flechas no tienen a dónde ir: subí la cantidad del query.
 

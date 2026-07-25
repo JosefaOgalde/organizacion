@@ -5,10 +5,12 @@ Todo el trabajo de **joyasmercury.cl** (Fase 2) vive en esta carpeta.
 ## Entrada principal
 
 ```
-http://localhost:3000/index/clientes/joyasmercury/
+http://127.0.0.1:8000/index/clientes/joyasmercury/
 ```
 
 Incluye: **wireframes desktop** (7 pantallas), identidad, menú objetivo, Gantt y checklist.
+
+**Continuar trabajo:** [CONTINUAR-JM.md](CONTINUAR-JM.md) · respaldo `data/organizacion-respaldo-2026-07-24.json`
 
 ## Atajos
 
