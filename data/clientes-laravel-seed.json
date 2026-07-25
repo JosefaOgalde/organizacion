@@ -1,10 +1,10 @@
 {
-  "generado": "2026-07-20",
-  "origen": "portal colores v2 + organizacion",
+  "generado": "2026-07-23",
+  "origen": "portal colores v2 + slugs = carpetas reales (evita 404 /imp/)",
   "clientes": [
     {
       "id": "cli-trendseeker",
-      "slug": "ts",
+      "slug": "trendseeker",
       "nombre": "Trendseeker - Talk (full time)",
       "abrev": "TS",
       "tipo": "full-time",
@@ -30,7 +30,7 @@
     },
     {
       "id": "cli-piscineria",
-      "slug": "pisc",
+      "slug": "piscineria",
       "nombre": "Piscinería - Talk (full time)",
       "abrev": "PISC",
       "tipo": "full-time",
@@ -43,7 +43,7 @@
     },
     {
       "id": "cli-hotspring",
-      "slug": "hs",
+      "slug": "hotspring",
       "nombre": "Hotspring - Talk (full time)",
       "abrev": "HS",
       "tipo": "full-time",
@@ -69,7 +69,7 @@
     },
     {
       "id": "cli-joyas-mercury",
-      "slug": "jm",
+      "slug": "joyasmercury",
       "nombre": "Joyas Mercury",
       "abrev": "JM",
       "tipo": "freelance",
@@ -78,7 +78,7 @@
       "color_bg": "#F8E8EE",
       "color_text": "#6E2A40",
       "agente": "Agente Joyas Mercury",
-      "resumen": "Etapa 2 — Rediseño joyasmercury.cl\n- Navegación limpia y elegante (referencia joyería premium)\n- Filtros visuales Esencial / Gold / Deluxe en la misma vista (sin cambiar de página)\n- Menú simplificado con colecciones como protagonista\n- Productos Destacados dentro de Inicio (no landing aparte)\n- Páginas legales, Nosotros, Contacto y carrito con estética de marca\n- Entrega Fase 2 + guías para que Camila gestione catálogo sola\n- Inversión acordada: $200.000 CLP · plazo 4–5 semanas hábiles"
+      "resumen": "Etapa 2 — Rediseño joyasmercury.cl"
     },
     {
       "id": "cli-sie",
@@ -95,7 +95,7 @@
     },
     {
       "id": "cli-desafio-latam",
-      "slug": "adl",
+      "slug": "desafio-latam",
       "nombre": "Desafío Latam",
       "abrev": "ADL",
       "tipo": "freelance",
@@ -108,7 +108,7 @@
     },
     {
       "id": "cli-impresoreando",
-      "slug": "imp",
+      "slug": "impresoreando",
       "nombre": "Impresoreando",
       "abrev": "IMP",
       "tipo": "freelance",
@@ -117,11 +117,11 @@
       "color_bg": "#F6EFDC",
       "color_text": "#5A4014",
       "agente": "Agente Impresoreando",
-      "resumen": null
+      "resumen": "Panel socios 50/50 · gastos, ventas, pedidos"
     },
     {
       "id": "cli-tronwell",
-      "slug": "tw",
+      "slug": "tronwell",
       "nombre": "Tronwell",
       "abrev": "TW",
       "tipo": "freelance",
@@ -131,6 +131,19 @@
       "color_text": "#143A6B",
       "agente": "Agente Tronwell",
       "resumen": "Ajuste de textos y documentos Word"
+    },
+    {
+      "id": "cli-herramientas",
+      "slug": "herramientas",
+      "nombre": "Herramientas",
+      "abrev": "HER",
+      "tipo": "freelance",
+      "color": "grafitoAzul",
+      "color_border": "#3D4A6B",
+      "color_bg": "#E2E6F0",
+      "color_text": "#1E2638",
+      "agente": "Herramientas internas",
+      "resumen": "Tendencias y utilidades internas"
     }
   ]
 }
