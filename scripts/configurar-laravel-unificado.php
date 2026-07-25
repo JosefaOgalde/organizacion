@@ -36,6 +36,10 @@ copyEjemplo(
     $backend . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR . 'Api' . DIRECTORY_SEPARATOR . 'OrganizacionController.php'
 );
 copyEjemplo(
+    $ej . DIRECTORY_SEPARATOR . 'ImpresoreandoController.php',
+    $backend . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR . 'Api' . DIRECTORY_SEPARATOR . 'ImpresoreandoController.php'
+);
+copyEjemplo(
     $ej . DIRECTORY_SEPARATOR . 'FrontendStaticController.php',
     $backend . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR . 'FrontendStaticController.php'
 );

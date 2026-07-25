@@ -4,6 +4,19 @@
 
   const API_URL = '/api/clientes';
 
+  /** Abreviaturas / slugs cortos → carpeta real (por si la API aún trae legacy). */
+  const SLUG_CARPETA = {
+    ts: 'trendseeker',
+    pisc: 'piscineria',
+    hs: 'hotspring',
+    jm: 'joyasmercury',
+    'joyas-mercury': 'joyasmercury',
+    adl: 'desafio-latam',
+    imp: 'impresoreando',
+    tw: 'tronwell',
+    her: 'herramientas',
+  };
+
   function escapeHtml(s) {
     return String(s ?? '')
       .replace(/&/g, '&amp;')
@@ -12,27 +25,41 @@
       .replace(/"/g, '&quot;');
   }
 
-  /** Une slugs cortos de la API (ts, ecr, tw…) con CLIENTES_PORTAL. */
+  /** Une slugs de la API con CLIENTES_PORTAL (id, slug, aliases, abrev). */
   function findEstatico(c) {
     if (typeof CLIENTES_PORTAL === 'undefined') return null;
     const slug = String(c.slug || '').toLowerCase();
     const id = String(c.id || '');
     const abrev = String(c.abrev || '').toLowerCase();
+    const nombre = String(c.nombre || '')
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+      .trim();
     return (
       CLIENTES_PORTAL.find((x) => x.id === id) ||
       CLIENTES_PORTAL.find((x) => x.slug === slug) ||
       CLIENTES_PORTAL.find((x) => (x.slugAliases || []).includes(slug)) ||
       CLIENTES_PORTAL.find((x) => String(x.abrev || '').toLowerCase() === abrev) ||
       CLIENTES_PORTAL.find((x) => x.id === `cli-${slug}`) ||
+      CLIENTES_PORTAL.find((x) => {
+        const n = String(x.nombre || '')
+          .toLowerCase()
+          .replace(/\s+/g, ' ')
+          .trim();
+        return n && nombre && (n === nombre || nombre.startsWith(n) || n.startsWith(nombre.split(' - ')[0]));
+      }) ||
       null
     );
   }
 
+  /** Colores del portal estático (v2) ganan: no depender de SQLite viejo. */
   function colorDe(c, estatico) {
+    if (estatico?.color?.border && estatico.color.bg && estatico.color.text) {
+      return estatico.color;
+    }
     if (c.color_border && c.color_bg && c.color_text) {
       return { border: c.color_border, bg: c.color_bg, text: c.color_text };
     }
-    if (estatico?.color) return estatico.color;
     return { border: '#0285E2', bg: '#E5F3FC', text: '#0A4A7A' };
   }
 
@@ -41,11 +68,19 @@
   }
 
   function archivoDe(c) {
-    if (c.id === 'cli-joyas-mercury' || c.slug === 'joyas-mercury' || c.slug === 'joyasmercury' || c.slug === 'jm') {
+    if (
+      c.id === 'cli-joyas-mercury' ||
+      c.slug === 'joyas-mercury' ||
+      c.slug === 'joyasmercury' ||
+      c.slug === 'jm'
+    ) {
       return landingJoyasMercury();
     }
     const estatico = findEstatico(c);
-    return estatico?.archivo || `${c.slug}/index.html`;
+    if (estatico?.archivo) return estatico.archivo;
+    const slug = String(c.slug || '').toLowerCase();
+    const carpeta = SLUG_CARPETA[slug] || slug;
+    return `${carpeta}/index.html`;
   }
 
   function tipoLabel(tipo) {

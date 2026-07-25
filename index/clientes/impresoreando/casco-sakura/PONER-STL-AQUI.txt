@@ -8,4 +8,8 @@ Luego, en la raíz del repo, ejecutá:
 
 O arrastrá el .stl encima de REDUCIR-STL-TINKERCAD.bat
 
-Salida: CASCO-MEGAMAN-tinkercad.stl  (< 20 MB) → importar en Tinkercad.
+Salida: CASCO-MEGAMAN-tinkercad.stl
+  → ≤ 20 MB y ≤ 280.000 triángulos (Tinkercad: 25 MB / 300.000)
+
+Si Tinkercad dice "malla demasiado compleja", volvé a correr el bat
+(el script ya baja triángulos, no solo el peso en MB).

@@ -3,6 +3,7 @@
  * COPIA en: backend/database/seeders/ClienteSeeder.php
  * Fuente: ../data/clientes-laravel-seed.json
  *
+ * Slugs = carpetas reales bajo index/clientes/ (no abreviaturas).
  * Upsert por slug canónico y elimina duplicados por abreviatura
  * (p. ej. quedaron "ts" y "trendseeker" del mismo cliente).
  */
@@ -14,17 +15,17 @@ use Illuminate\Database\Seeder;
 
 class ClienteSeeder extends Seeder
 {
-    /** Slugs viejos → canónicos del portal */
+    /** Slugs viejos / alias → canónicos del portal (= carpeta) */
     private const ALIASES = [
         'ts' => 'trendseeker',
         'pisc' => 'piscineria',
         'hs' => 'hotspring',
-        'jm' => 'joyas-mercury',
+        'jm' => 'joyasmercury',
+        'joyas-mercury' => 'joyasmercury',
         'adl' => 'desafio-latam',
         'imp' => 'impresoreando',
         'tw' => 'tronwell',
         'her' => 'herramientas',
-        'joyasmercury' => 'joyas-mercury',
     ];
 
     public function run(): void
