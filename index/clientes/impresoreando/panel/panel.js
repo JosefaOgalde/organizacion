@@ -76,6 +76,7 @@
     if (asegurarProductoNaveEspacialVertical(d)) changed = true;
     if (asegurarProductoLlaveroEscudoRanger(d)) changed = true;
     if (asegurarProductoLlaveroPortaLipstickStanley(d)) changed = true;
+    if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
@@ -119,7 +120,8 @@
 
   /**
    * Gastos agrupados por registro de compra (no ítem a ítem):
-   * 1) Orden #312435 $652.290 · 2) AliExpress $60.000 · 3) Líder $20.000 · 4) Mercado Libre $64.750
+   * 1) Orden #312435 $652.290 · 2) AliExpress $60.000 · 3) Líder $20.000
+   * 4) Mercado Libre $64.750 · 5) Mercado Libre 21-jul $40.970 · 6) ML Creality $50.119
    */
   function agruparGastosPorRegistro(d) {
     const REGISTROS = [
@@ -193,6 +195,52 @@
           { descripcion: 'Filamento Elegoo PLA 1kg (amarillo)', monto: 12690 },
           { descripcion: 'Filamento Elegoo PLA 1.75mm 1kg (azul)', monto: 12690 },
           { descripcion: 'Filamento Elegoo PLA 1kg (blanco)', monto: 12690 },
+        ],
+      },
+      {
+        id: 'gas-reg-mercadolibre-2026-07-21',
+        fecha: '2026-07-21',
+        categoria: 'filamento',
+        descripcion:
+          'Mercado Libre — TPU Creality verde + PLA PPC naranjo + PLA PPC piel claro (PAGADO)',
+        proveedor: 'Mercado Libre',
+        cantidad: 3,
+        montoNeto: 40970,
+        notas:
+          'Orden #2000014122225779. Productos: 1× TPU Creality 1kg 1.75mm Verde · 1× PLA PPC 1kg 1.75mm Naranjo · 1× PLA PPC 1kg 1.75mm Piel Claro. Envío gratis meli+ (Gluck 3257). Pago: Visa Débito ****5845 $39.642 + Meli Dólar $1.328 (MUSD 1.42461691) = $40.970.',
+        ordenId: '2000014122225779',
+        socioRegistro: 'Ambos',
+        items: [
+          {
+            descripcion:
+              'Pago Visa Débito ****5845 (TPU Creality Verde · PLA PPC Naranjo · PLA PPC Piel Claro)',
+            monto: 39642,
+          },
+          { descripcion: 'Pago Meli Dólar (MUSD 1.42461691)', monto: 1328 },
+        ],
+      },
+      {
+        id: 'gas-reg-mercadolibre-creality-50119',
+        fecha: '2026-07-23',
+        categoria: 'filamento',
+        descripcion:
+          'Mercado Libre — 4× PLA Creality 1kg (negro mate · morado · blanco · verde) (PAGADO)',
+        proveedor: 'Mercado Libre',
+        cantidad: 4,
+        montoNeto: 50119,
+        notas:
+          '1× PLA Ultra Mate Alta Velocidad Negro Creality · 1× PLA Ultra Alta Velocidad Morado/Rosa Oscuro Creality · 1× Soleyin Ultra PLA Blanco Creality · 1× PLA Creality Verde 1.75mm. Total $50.119.',
+        ordenId: 'ml-creality-pla-50119',
+        socioRegistro: 'Ambos',
+        items: [
+          { descripcion: 'Filamento PLA Ultra Mate Alta Velocidad Negro 1kg Creality', monto: 0 },
+          {
+            descripcion: 'Filamento PLA Ultra Alta Velocidad Morado/Rosa Oscuro 1kg Creality',
+            monto: 0,
+          },
+          { descripcion: 'Filamento Soleyin Ultra PLA Blanco 1kg Creality 1.75mm', monto: 0 },
+          { descripcion: 'Filamento PLA Creality Verde 1kg 1.75mm', monto: 0 },
+          { descripcion: 'Total compra (sin desglose unitario)', monto: 50119 },
         ],
       },
     ];
@@ -590,6 +638,18 @@
     return forzarProductoSeed(d, 'prod-llavero-escudo-ranger', seedLlaveroEscudoRanger());
   }
 
+  /** Plantillas genéricas que ya no se usan (no son productos reales del catálogo). */
+  function eliminarProductosPlantillaObsoletos(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const dropIds = new Set(['prod-llavero', 'prod-figura-chica']);
+    const dropSkus = new Set(['LLAV001', 'FIG001']);
+    const before = d.productos.length;
+    d.productos = d.productos.filter(
+      (p) => !dropIds.has(p.id) && !dropSkus.has(String(p.sku || '').toUpperCase())
+    );
+    return d.productos.length !== before;
+  }
+
   /** Llavero Porta Lipstick Stanley — placa 2 uds (52,65 g / 1 h 34 m) → 1 ud = mitad + $50 argolla. */
   function asegurarProductoLlaveroPortaLipstickStanley(d) {
     return forzarProductoSeed(d, 'prod-llavero-porta-lipstick-stanley', {
@@ -616,26 +676,249 @@
   /** Ventas base del seed: si el live quedó vacío (o sin ese id), las reinyecta. No pisa ventas nuevas. */
   function asegurarVentasSeed(d) {
     d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
+    d.pedidos = Array.isArray(d.pedidos) ? d.pedidos : [];
     const SEED_VENTAS = [
       {
         id: 'ven-mrpqov4c',
         fecha: '2026-07-18',
+        cliente: 'Tito',
         descripcion: 'Portacompletos ×6 (4 perros + 2 gatos)',
         cantidad: 6,
         montoNeto: 15000,
         canal: 'WhatsApp',
-        notas: '4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000',
+        notas: 'Cliente Tito · 4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000',
         socioRegistro: 'Ambos',
+      },
+      {
+        id: 'ven-cata-gatos-001',
+        fecha: '2026-07-23',
+        cliente: 'Cata',
+        descripcion: '4× Porta Completos Gato (2 negros + 2 naranjos)',
+        cantidad: 4,
+        montoBruto: 10000,
+        descuentoClp: 0,
+        montoNeto: 10000,
+        costoTotal: 13684.68,
+        canal: 'WhatsApp',
+        notas: '2× gatos negros + 2× gatos naranjos (porta completo) · cobrado $10.000',
+        socioRegistro: 'Ambos',
+        items: [
+          {
+            sku: 'PCGATO001',
+            nombre: 'Porta Completos Gato (negro)',
+            cantidad: 2,
+            precioUnitarioClp: 2500,
+            costoUnitarioClp: 3421.17,
+            filamento: 'PLA negro',
+          },
+          {
+            sku: 'PCGATO001',
+            nombre: 'Porta Completos Gato (naranjo)',
+            cantidad: 2,
+            precioUnitarioClp: 2500,
+            costoUnitarioClp: 3421.17,
+            filamento: 'PLA naranjo',
+          },
+        ],
+      },
+      {
+        id: 'ven-gianni-bulldog-002',
+        fecha: '2026-07-18',
+        cliente: 'Gianni',
+        descripcion: 'PED-002 · 1× Macetero + 4× Porta Completo Bulldog · Gianni',
+        cantidad: 5,
+        montoBruto: 15000,
+        descuentoClp: 0,
+        montoNeto: 15000,
+        costoTotal: 7324.78,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-002 · 4 bulldogs porta completo + 1 macetero · cobrado $15.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-gianni-bulldog-002',
+        pedidoNumero: 'PED-002',
+        items: [
+          {
+            sku: 'MCPEBUL001',
+            nombre: 'Macetero Perro Bulldog',
+            cantidad: 1,
+            precioUnitarioClp: 3000,
+            costoUnitarioClp: 1981.34,
+            filamento: 'PLA+ negro',
+          },
+          {
+            sku: 'PCPEBUL001',
+            nombre: 'Porta Completo Perro Bulldog',
+            cantidad: 4,
+            precioUnitarioClp: 3000,
+            costoUnitarioClp: 1335.86,
+            filamento: 'PLA+ negro',
+          },
+        ],
+      },
+      {
+        id: 'ven-juan-naves-003',
+        fecha: '2026-07-19',
+        cliente: 'Juan',
+        descripcion: 'PED-003 · 2× Naves espaciales · Juan',
+        cantidad: 2,
+        montoBruto: 15000,
+        descuentoClp: 0,
+        montoNeto: 15000,
+        costoTotal: 1562.69,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-003 · 1× horizontal + 1× vertical · cobrado $15.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-naves-espaciales-003',
+        pedidoNumero: 'PED-003',
+        items: [
+          {
+            sku: 'NAVEHOR001',
+            nombre: 'Nave Espacial Horizontal',
+            cantidad: 1,
+            precioUnitarioClp: 7500,
+            costoUnitarioClp: 647.55,
+            filamento: 'PLA blanco',
+          },
+          {
+            sku: 'NAVEVERT001',
+            nombre: 'Nave Espacial Vertical',
+            cantidad: 1,
+            precioUnitarioClp: 7500,
+            costoUnitarioClp: 915.14,
+            filamento: 'PLA blanco',
+          },
+        ],
+      },
+      {
+        id: 'ven-marcia-stanley-001',
+        fecha: '2026-07-23',
+        cliente: 'Marcia',
+        descripcion: '1× Llavero Porta Lipstick Stanley',
+        cantidad: 1,
+        montoBruto: 3000,
+        descuentoClp: 0,
+        montoNeto: 3000,
+        costoTotal: 477.93,
+        canal: 'WhatsApp',
+        notas: '1× llavero Stanley · cobrado $3.000',
+        socioRegistro: 'Ambos',
+        items: [
+          {
+            sku: 'LLSTANDL001',
+            nombre: 'Llavero Porta Lipstick Stanley',
+            cantidad: 1,
+            precioUnitarioClp: 3000,
+            costoUnitarioClp: 477.93,
+            filamento: 'PLA blanco',
+          },
+        ],
+      },
+      {
+        id: 'ven-gianni-bob-001',
+        fecha: '2026-07-23',
+        cliente: 'Gianni',
+        descripcion: '1× Porta Bob Esponja',
+        cantidad: 1,
+        montoBruto: 7000,
+        descuentoClp: 0,
+        montoNeto: 7000,
+        costoTotal: 998.17,
+        canal: 'WhatsApp',
+        notas: '1× Porta Bob Esponja · cobrado $7.000',
+        socioRegistro: 'Ambos',
+        items: [
+          {
+            sku: 'PTBOBES001',
+            nombre: 'Porta Bob Esponja',
+            cantidad: 1,
+            precioUnitarioClp: 7000,
+            costoUnitarioClp: 998.17,
+            filamento: 'multicolor',
+          },
+        ],
       },
     ];
     let changed = false;
-    const byId = new Set(d.ventas.map((v) => v && v.id).filter(Boolean));
-    for (const v of SEED_VENTAS) {
-      if (!byId.has(v.id)) {
-        d.ventas.push({ ...v });
-        byId.add(v.id);
+    const byId = new Map(d.ventas.filter((v) => v && v.id).map((v) => [v.id, v]));
+    for (const seed of SEED_VENTAS) {
+      const existing = byId.get(seed.id);
+      if (!existing) {
+        d.ventas.push({ ...seed, items: seed.items ? seed.items.map((it) => ({ ...it })) : undefined });
+        byId.set(seed.id, seed);
         changed = true;
+      } else {
+        if (seed.cliente && String(existing.cliente || '').trim() !== seed.cliente) {
+          existing.cliente = seed.cliente;
+          changed = true;
+        }
+        if (Number(existing.montoNeto) !== Number(seed.montoNeto)) {
+          existing.montoNeto = seed.montoNeto;
+          if (seed.montoBruto != null) existing.montoBruto = seed.montoBruto;
+          changed = true;
+        }
+        if (seed.pedidoId && existing.pedidoId !== seed.pedidoId) {
+          existing.pedidoId = seed.pedidoId;
+          existing.pedidoNumero = seed.pedidoNumero;
+          changed = true;
+        }
+        if (seed.items && !Array.isArray(existing.items)) {
+          existing.items = seed.items.map((it) => ({ ...it }));
+          changed = true;
+        }
       }
+    }
+
+    // PED-002 / PED-003 → transferido + link a venta (live que aún estaba en listo).
+    const transfers = [
+      {
+        pedId: 'ped-gianni-bulldog-002',
+        numero: 'PED-002',
+        ventaId: 'ven-gianni-bulldog-002',
+        cliente: 'Gianni',
+        montoNeto: 15000,
+        notas: 'Macetero + 4× portacompleto bulldog · transferido a venta $15.000',
+      },
+      {
+        pedId: 'ped-naves-espaciales-003',
+        numero: 'PED-003',
+        ventaId: 'ven-juan-naves-003',
+        cliente: 'Juan',
+        montoNeto: 15000,
+        notas: '2× naves espaciales · Juan · transferido a venta $15.000',
+      },
+    ];
+    for (const t of transfers) {
+      const ped = d.pedidos.find((p) => p.id === t.pedId || p.numero === t.numero);
+      if (!ped) continue;
+      let pedChanged = false;
+      if (ped.estado !== 'transferido') {
+        ped.estado = 'transferido';
+        pedChanged = true;
+      }
+      if (ped.ventaId !== t.ventaId) {
+        ped.ventaId = t.ventaId;
+        pedChanged = true;
+      }
+      if (String(ped.cliente || '') !== t.cliente) {
+        ped.cliente = t.cliente;
+        pedChanged = true;
+      }
+      if (Number(ped.montoNeto) !== t.montoNeto) {
+        ped.montoBruto = t.montoNeto;
+        ped.descuentoClp = 0;
+        ped.descuentoPct = 0;
+        ped.montoNeto = t.montoNeto;
+        pedChanged = true;
+      }
+      if (!ped.transferidoEn) {
+        ped.transferidoEn = '2026-07-23T14:50:00.000Z';
+        pedChanged = true;
+      }
+      if (ped.notas !== t.notas) {
+        ped.notas = t.notas;
+        pedChanged = true;
+      }
+      if (pedChanged) changed = true;
     }
     return changed;
   }
@@ -720,20 +1003,18 @@
       const prodV = (d.productos || []).find((p) => p.id === 'prod-nave-espacial-vertical');
       const costoH = prodH ? costoProdRough(d, prodH) : 647.55;
       const costoV = prodV ? costoProdRough(d, prodV) : 915.14;
-      const precioH = round2(costoH * 2);
-      const precioV = round2(costoV * 2);
       d.pedidos.push({
         id: id003,
         numero: 'PED-003',
         fecha: '2026-07-19',
-        cliente: 'Por confirmar',
+        cliente: 'Juan',
         canal: 'WhatsApp',
         items: [
           {
             sku: 'NAVEHOR001',
             nombre: 'Nave Espacial Horizontal',
             cantidad: 1,
-            precioUnitarioClp: precioH,
+            precioUnitarioClp: 7500,
             costoUnitarioClp: round2(costoH),
             filamento: 'PLA blanco',
             estado: 'listo',
@@ -744,7 +1025,7 @@
             sku: 'NAVEVERT001',
             nombre: 'Nave Espacial Vertical',
             cantidad: 1,
-            precioUnitarioClp: precioV,
+            precioUnitarioClp: 7500,
             costoUnitarioClp: round2(costoV),
             filamento: 'PLA blanco',
             estado: 'listo',
@@ -752,10 +1033,14 @@
             enImpresion: 0,
           },
         ],
-        montoNeto: round2(precioH + precioV),
-        estado: 'listo',
-        ventaId: null,
-        notas: '1× nave horizontal + 1× nave vertical · PLA blanco · impresos',
+        montoBruto: 15000,
+        descuentoClp: 0,
+        descuentoPct: 0,
+        montoNeto: 15000,
+        estado: 'transferido',
+        ventaId: 'ven-juan-naves-003',
+        transferidoEn: '2026-07-23T14:50:00.000Z',
+        notas: '2× naves espaciales · Juan · transferido a venta $15.000',
         socioRegistro: 'Ambos',
         creado: '2026-07-19T19:40:00.000Z',
         costoTotal: round2(costoH + costoV),
@@ -1303,8 +1588,16 @@
     const ali = (data.gastos || []).find((g) => g.id === 'gas-reg-aliexpress');
     const lider = (data.gastos || []).find((g) => g.id === 'gas-reg-lider');
     const ml = (data.gastos || []).find((g) => g.id === 'gas-reg-mercadolibre' || g.ordenId === 'ml-pla-2026-07-14');
+    const ml21 = (data.gastos || []).find(
+      (g) => g.id === 'gas-reg-mercadolibre-2026-07-21' || g.ordenId === '2000014122225779'
+    );
+    const mlCreality = (data.gastos || []).find(
+      (g) => g.id === 'gas-reg-mercadolibre-creality-50119' || g.ordenId === 'ml-creality-pla-50119'
+    );
     const totalOrden = Number(orden?.montoNeto || 0);
     const totalMl = Number(ml?.montoNeto || 0);
+    const totalMl21 = Number(ml21?.montoNeto || 0);
+    const totalMlCreality = Number(mlCreality?.montoNeto || 0);
     const cats = gastosPorCategoria();
     const pedidosActivos = (data.pedidos || []).filter((p) =>
       pedidoActivo(p.estado || 'pendiente')
@@ -1437,6 +1730,8 @@
           <li>AliExpress: <strong>${money(ali?.montoNeto || 0)}</strong></li>
           <li>Líder: <strong>${money(lider?.montoNeto || 0)}</strong></li>
           <li>Mercado Libre (5 PLA): <strong>${money(totalMl)}</strong></li>
+          <li>Mercado Libre 21-jul (TPU+PLA PPC): <strong>${money(totalMl21)}</strong></li>
+          <li>Mercado Libre Creality (4 PLA): <strong>${money(totalMlCreality)}</strong></li>
         </ul>
         <p class="imp-deuda"><strong>Capital:</strong> lo aportó <strong>Nicolás</strong>. Todos los gastos son de <strong>ambos</strong>. Josefa le debe a Nicolás el <strong>50%</strong> del capital (${money(deuda)}).</p>
         <p class="imp-muted">Esa deuda entre socios es distinta del saldo de arriba: el saldo baja con cada venta del negocio; la deuda 50% de Josefa se actualiza con el capital aportado.</p>
