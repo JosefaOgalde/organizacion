@@ -214,8 +214,8 @@
         const href = docHref(d);
         const nombre = escapeHtml(d.nombre || 'Archivo');
         const link = href
-          ? `<a class="jm-docs__link" href="${escapeHtml(href)}" download target="_blank" rel="noopener">${nombre}</a>` +
-            ` <a class="jm-docs__btn" href="${escapeHtml(href)}" download target="_blank" rel="noopener">Descargar</a>`
+          ? `<a class="jm-docs__link" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${nombre}</a>` +
+            ` <a class="jm-docs__btn" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" download>Descargar</a>`
           : `<span class="jm-docs__nombre">${nombre}</span>`;
         return (
           `<li class="jm-docs__item${href ? ' jm-docs__item--file' : ''}">` +
