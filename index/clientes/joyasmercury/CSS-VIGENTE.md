@@ -18,6 +18,8 @@ Incluye catálogo, círculos, home, **footer dorado**, menú móvil, producto si
 Si solo faltaba el arreglo mobile y ya tenés el completo viejo: pegá al final  
 `CSS-NOVEDADES-MOBILE-2x2.css`.
 
+**Urgente carrito (Camila):** pegá al final `CSS-CARRITO-BOTON-FIX.css` · guía [FIX-CARRITO-AHORA.md](FIX-CARRITO-AHORA.md).
+
 Ver también: [CONTINUAR-JM.md](CONTINUAR-JM.md).
 
 ## Opción B — piezas sueltas

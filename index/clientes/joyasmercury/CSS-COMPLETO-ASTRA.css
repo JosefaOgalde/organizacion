@@ -1,10 +1,10 @@
 /**
  * Joyas Mercury — CSS COMPLETO Astra (todo en uno)
- * VERSIÓN: 2026-07-25-novedades-mobile-2x2
- *   · Novedades mobile: grilla 2×2 (no carrusel 70%)
- *   · Oculta clones Slick que duplican tarjetas
+ * VERSIÓN: 2026-07-25-carrito-boton
+ *   · Novedades mobile: grilla 2×2 + sin clones Slick
  *   · Hero: object-position para no recortar tipografía MERCURY
- * Origen: rama cursor/jm-css-hero-contain-6a09 (+ cierre Novedades 25-jul)
+ *   · Carrito header: clic usable en móvil + drawer con marca JM
+ * Origen: rama cursor/jm-css-hero-contain-6a09 (+ cierre Novedades/carrito 25-jul)
  *
  * Incluye: catálogo/filtros · home/círculos · footer dorado · menú móvil · producto single · etc.
  *
@@ -12,7 +12,7 @@
  * Antes: BORRA el CSS JM anterior del cuadro (no acumular versiones).
  *
  * Si solo quieres piezas sueltas, ver también:
- *   CSS-CIRCULOS-COLECCIONES.css · CSS-FOOTER-JM.css · CSS-VIGENTE.md
+ *   CSS-CIRCULOS-COLECCIONES.css · CSS-FOOTER-JM.css · CSS-CARRITO-BOTON-FIX.css · CSS-VIGENTE.md
  */
 
 /* Joyas Mercury - CSS COMPLETO Astra */
@@ -2087,8 +2087,10 @@
     object-fit: contain !important;
   }
 
+  /* No usar overflow-x:hidden en body: rompe el drawer del carrito Astra */
+  html,
   body {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 }
 
@@ -3857,5 +3859,93 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
   #jm-ultimas-unidades .slick-list {
     touch-action: pan-x pan-y !important;
   }
+}
+
+
+/* === JM CARRITO HEADER — clic usable + drawer con marca ===
+   Camila (25-jul): el icono se “escondía” / no abría; al abrir parecía página antigua.
+   Causa: Astra pone pointer-events:none en el <a> del carrito móvil (flyout). */
+#ast-mobile-header .ast-site-header-cart-li a.cart-container,
+#ast-mobile-header .ast-site-header-cart-li a,
+.ast-header-break-point .ast-site-header-cart-li a.cart-container,
+.ast-header-break-point .ast-site-header-cart-li a,
+.ast-site-header-cart .cart-container {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  position: relative !important;
+  z-index: 30 !important;
+}
+
+.ast-site-header-cart,
+.ast-header-woo-cart,
+#ast-mobile-header .ast-header-woo-cart {
+  position: relative !important;
+  z-index: 30 !important;
+  overflow: visible !important;
+}
+
+/* Drawer lateral — marca JM (no Woo “viejo” genérico) */
+.astra-cart-drawer {
+  background: #faf6f2 !important;
+  z-index: 100050 !important;
+}
+
+.astra-cart-drawer .astra-cart-drawer-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e8dfd4 !important;
+}
+
+.astra-cart-drawer .astra-cart-drawer-title,
+.astra-cart-drawer .widgettitle {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  color: #A97E23 !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+}
+
+.astra-cart-drawer .astra-cart-drawer-close {
+  color: #A97E23 !important;
+}
+
+.astra-mobile-cart-overlay.active,
+.astra-mobile-cart-overlay {
+  z-index: 100040 !important;
+}
+
+.woocommerce-js .astra-cart-drawer .astra-cart-drawer-content .woocommerce-mini-cart__buttons a.button,
+.astra-cart-drawer .woocommerce-mini-cart__buttons .button {
+  border-radius: 8px !important;
+  font-family: "Montserrat", system-ui, sans-serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+}
+
+.woocommerce-js .astra-cart-drawer .astra-cart-drawer-content .woocommerce-mini-cart__buttons a.checkout,
+.astra-cart-drawer .woocommerce-mini-cart__buttons .checkout {
+  background: #A97E23 !important;
+  border-color: #A97E23 !important;
+  color: #ffffff !important;
+}
+
+.astra-cart-drawer .ast-mini-cart-empty .ast-mini-cart-message,
+.astra-cart-drawer .woocommerce-mini-cart__empty-message {
+  font-family: "Montserrat", system-ui, sans-serif !important;
+  color: #555555 !important;
+}
+
+/* Página /mi-carrito/ — tabla vacía / botones con marca */
+.woocommerce-cart .cart-empty,
+.woocommerce-cart .return-to-shop .button,
+.woocommerce .cart-empty {
+  font-family: "Montserrat", system-ui, sans-serif !important;
+}
+
+.woocommerce-cart .return-to-shop .button,
+.woocommerce-cart a.button.wc-backward {
+  background: #A97E23 !important;
+  border-color: #A97E23 !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 12px 22px !important;
 }
 

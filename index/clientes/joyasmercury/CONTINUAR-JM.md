@@ -13,6 +13,7 @@
 1. Novedades/Destacados en móvil → **grilla 2 columnas** (vista 2×2).
 2. **Clones Slick ocultos** (ya no duplican tarjetas).
 3. Hero/banner: `object-position: center 28%` para no recortar tipografía MERCURY.
+4. **Carrito (Camila 25-jul):** clic del icono usable + drawer con marca · ver `FIX-CARRITO-AHORA.md`
 
 ### Pegar en WordPress
 Opción A (recomendada): reemplazar todo el CSS JM por  

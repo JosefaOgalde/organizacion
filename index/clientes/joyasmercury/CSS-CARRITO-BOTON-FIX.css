@@ -1,0 +1,75 @@
+/**
+ * Joyas Mercury — FIX botón carrito (urgente Camila 25-jul)
+ * VERSIÓN: 2026-07-25
+ *
+ * Ya incluido al final de CSS-COMPLETO-ASTRA.css (versión carrito-boton).
+ * Si en WP aún tenés el CSS viejo, pegá ESTE archivo al final del CSS adicional.
+ */
+
+/* Astra bloquea el clic del <a> en el header móvil */
+#ast-mobile-header .ast-site-header-cart-li a.cart-container,
+#ast-mobile-header .ast-site-header-cart-li a,
+.ast-header-break-point .ast-site-header-cart-li a.cart-container,
+.ast-header-break-point .ast-site-header-cart-li a,
+.ast-site-header-cart .cart-container {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  position: relative !important;
+  z-index: 30 !important;
+}
+
+.ast-site-header-cart,
+.ast-header-woo-cart,
+#ast-mobile-header .ast-header-woo-cart {
+  position: relative !important;
+  z-index: 30 !important;
+  overflow: visible !important;
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+.astra-cart-drawer {
+  background: #faf6f2 !important;
+  z-index: 100050 !important;
+}
+
+.astra-cart-drawer .astra-cart-drawer-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e8dfd4 !important;
+}
+
+.astra-cart-drawer .astra-cart-drawer-title,
+.astra-cart-drawer .widgettitle {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  color: #A97E23 !important;
+  font-weight: 600 !important;
+}
+
+.astra-cart-drawer .astra-cart-drawer-close {
+  color: #A97E23 !important;
+}
+
+.astra-mobile-cart-overlay.active,
+.astra-mobile-cart-overlay {
+  z-index: 100040 !important;
+}
+
+.woocommerce-js .astra-cart-drawer .astra-cart-drawer-content .woocommerce-mini-cart__buttons a.checkout,
+.astra-cart-drawer .woocommerce-mini-cart__buttons .checkout {
+  background: #A97E23 !important;
+  border-color: #A97E23 !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+}
+
+.woocommerce-cart .return-to-shop .button,
+.woocommerce-cart a.button.wc-backward {
+  background: #A97E23 !important;
+  border-color: #A97E23 !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 12px 22px !important;
+}
