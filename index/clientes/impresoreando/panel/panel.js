@@ -260,13 +260,19 @@
 
     const byId = new Map(d.gastos.map((g) => [g.id, g]));
     for (const reg of REGISTROS) {
-      const existing =
-        byId.get(reg.id) ||
-        d.gastos.find(
-          (g) =>
-            reg.ordenId &&
-            String(g.ordenId || '').trim() === String(reg.ordenId).trim()
-        );
+      const canonical = byId.get(reg.id);
+      const sameOrder = d.gastos.find(
+        (g) =>
+          g !== canonical &&
+          reg.ordenId &&
+          String(g.ordenId || '').trim() === String(reg.ordenId).trim()
+      );
+      if (canonical && sameOrder) {
+        d.gastos = d.gastos.filter((g) => g !== canonical);
+        byId.delete(reg.id);
+        changed = true;
+      }
+      const existing = sameOrder || canonical;
       if (!existing) {
         d.gastos.push({ ...reg });
         byId.set(reg.id, reg);
@@ -851,16 +857,22 @@
     const byId = new Map(d.ventas.filter((v) => v && v.id).map((v) => [v.id, v]));
     const ventaIdResuelta = new Map();
     for (const seed of SEED_VENTAS) {
-      const existing =
-        byId.get(seed.id) ||
-        (seed.pedidoId
-          ? d.ventas.find(
-              (v) =>
-                v &&
-                (v.pedidoId === seed.pedidoId ||
-                  (seed.pedidoNumero && v.pedidoNumero === seed.pedidoNumero))
-            )
-          : null);
+      const canonical = byId.get(seed.id);
+      const samePedido = seed.pedidoId
+        ? d.ventas.find(
+            (v) =>
+              v &&
+              v !== canonical &&
+              (v.pedidoId === seed.pedidoId ||
+                (seed.pedidoNumero && v.pedidoNumero === seed.pedidoNumero))
+          )
+        : null;
+      if (canonical && samePedido) {
+        d.ventas = d.ventas.filter((v) => v !== canonical);
+        byId.delete(seed.id);
+        changed = true;
+      }
+      const existing = samePedido || canonical;
       if (!existing) {
         d.ventas.push({ ...seed, items: seed.items ? seed.items.map((it) => ({ ...it })) : undefined });
         byId.set(seed.id, seed);
@@ -912,7 +924,7 @@
         ped.estado = 'transferido';
         pedChanged = true;
       }
-      if (!ped.ventaId) {
+      if (!ped.ventaId || ped.ventaId === t.ventaId) {
         ped.ventaId = ventaId;
         pedChanged = true;
       }

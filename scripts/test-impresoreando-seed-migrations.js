@@ -46,7 +46,15 @@ const { agruparGastosPorRegistro, asegurarVentasSeed } =
     ordenId: '2000014122225779',
     items: [],
   };
-  const data = { gastos: [gastoExistente] };
+  const gastoDuplicadoPorSeed = {
+    id: 'gas-reg-mercadolibre-2026-07-21',
+    fecha: '2026-07-21',
+    proveedor: 'Mercado Libre',
+    montoNeto: 40970,
+    ordenId: '2000014122225779',
+    items: [],
+  };
+  const data = { gastos: [gastoExistente, gastoDuplicadoPorSeed] };
 
   agruparGastosPorRegistro(data);
 
@@ -58,6 +66,11 @@ const { agruparGastosPorRegistro, asegurarVentasSeed } =
     mismaOrden[0].id,
     gastoExistente.id,
     'La migración debe conservar el registro live existente'
+  );
+  assert.equal(
+    data.gastos.some((g) => g.id === gastoDuplicadoPorSeed.id),
+    false,
+    'Debe retirar el duplicado que una migración anterior ya insertó'
   );
 }
 
@@ -76,14 +89,23 @@ const { agruparGastosPorRegistro, asegurarVentasSeed } =
     numero: 'PED-002',
     cliente: 'Gianni corregido',
     estado: 'transferido',
-    ventaId: ventaExistente.id,
+    ventaId: 'ven-gianni-bulldog-002',
     montoBruto: 12000,
     montoNeto: 12000,
     notas: 'Monto corregido en el live',
     transferidoEn: '2026-07-22T12:00:00.000Z',
   };
+  const ventaDuplicadaPorSeed = {
+    id: 'ven-gianni-bulldog-002',
+    fecha: '2026-07-18',
+    cliente: 'Gianni',
+    montoBruto: 15000,
+    montoNeto: 15000,
+    pedidoId: 'ped-gianni-bulldog-002',
+    pedidoNumero: 'PED-002',
+  };
   const data = {
-    ventas: [ventaExistente],
+    ventas: [ventaExistente, ventaDuplicadaPorSeed],
     pedidos: [pedidoExistente],
   };
 
