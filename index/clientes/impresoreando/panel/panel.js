@@ -260,12 +260,21 @@
 
     const byId = new Map(d.gastos.map((g) => [g.id, g]));
     for (const reg of REGISTROS) {
-      const existing = byId.get(reg.id);
+      const existing =
+        byId.get(reg.id) ||
+        d.gastos.find(
+          (g) =>
+            reg.ordenId &&
+            String(g.ordenId || '').trim() === String(reg.ordenId).trim()
+        );
       if (!existing) {
         d.gastos.push({ ...reg });
         byId.set(reg.id, reg);
         changed = true;
-      } else if (Number(existing.montoNeto) !== reg.montoNeto || !Array.isArray(existing.items)) {
+      } else if (
+        existing.id === reg.id &&
+        (Number(existing.montoNeto) !== reg.montoNeto || !Array.isArray(existing.items))
+      ) {
         Object.assign(existing, reg);
         changed = true;
       }
@@ -673,7 +682,7 @@
     });
   }
 
-  /** Ventas base del seed: si el live quedó vacío (o sin ese id), las reinyecta. No pisa ventas nuevas. */
+  /** Ventas base del seed: agrega las ausentes y completa campos vacíos sin pisar correcciones del live. */
   function asegurarVentasSeed(d) {
     d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
     d.pedidos = Array.isArray(d.pedidos) ? d.pedidos : [];
@@ -840,23 +849,30 @@
     ];
     let changed = false;
     const byId = new Map(d.ventas.filter((v) => v && v.id).map((v) => [v.id, v]));
+    const ventaIdResuelta = new Map();
     for (const seed of SEED_VENTAS) {
-      const existing = byId.get(seed.id);
+      const existing =
+        byId.get(seed.id) ||
+        (seed.pedidoId
+          ? d.ventas.find(
+              (v) =>
+                v &&
+                (v.pedidoId === seed.pedidoId ||
+                  (seed.pedidoNumero && v.pedidoNumero === seed.pedidoNumero))
+            )
+          : null);
       if (!existing) {
         d.ventas.push({ ...seed, items: seed.items ? seed.items.map((it) => ({ ...it })) : undefined });
         byId.set(seed.id, seed);
+        ventaIdResuelta.set(seed.id, seed.id);
         changed = true;
       } else {
-        if (seed.cliente && String(existing.cliente || '').trim() !== seed.cliente) {
+        ventaIdResuelta.set(seed.id, existing.id || seed.id);
+        if (seed.cliente && !String(existing.cliente || '').trim()) {
           existing.cliente = seed.cliente;
           changed = true;
         }
-        if (Number(existing.montoNeto) !== Number(seed.montoNeto)) {
-          existing.montoNeto = seed.montoNeto;
-          if (seed.montoBruto != null) existing.montoBruto = seed.montoBruto;
-          changed = true;
-        }
-        if (seed.pedidoId && existing.pedidoId !== seed.pedidoId) {
+        if (seed.pedidoId && !existing.pedidoId) {
           existing.pedidoId = seed.pedidoId;
           existing.pedidoNumero = seed.pedidoNumero;
           changed = true;
@@ -890,20 +906,21 @@
     for (const t of transfers) {
       const ped = d.pedidos.find((p) => p.id === t.pedId || p.numero === t.numero);
       if (!ped) continue;
+      const ventaId = ventaIdResuelta.get(t.ventaId) || t.ventaId;
       let pedChanged = false;
       if (ped.estado !== 'transferido') {
         ped.estado = 'transferido';
         pedChanged = true;
       }
-      if (ped.ventaId !== t.ventaId) {
-        ped.ventaId = t.ventaId;
+      if (!ped.ventaId) {
+        ped.ventaId = ventaId;
         pedChanged = true;
       }
-      if (String(ped.cliente || '') !== t.cliente) {
+      if (!String(ped.cliente || '').trim()) {
         ped.cliente = t.cliente;
         pedChanged = true;
       }
-      if (Number(ped.montoNeto) !== t.montoNeto) {
+      if (!Number.isFinite(Number(ped.montoNeto))) {
         ped.montoBruto = t.montoNeto;
         ped.descuentoClp = 0;
         ped.descuentoPct = 0;
@@ -914,7 +931,7 @@
         ped.transferidoEn = '2026-07-23T14:50:00.000Z';
         pedChanged = true;
       }
-      if (ped.notas !== t.notas) {
+      if (!String(ped.notas || '').trim()) {
         ped.notas = t.notas;
         pedChanged = true;
       }
