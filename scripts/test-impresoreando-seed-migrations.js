@@ -42,8 +42,9 @@ const { agruparGastosPorRegistro, asegurarVentasSeed } =
     id: 'gas-manual-ml-21',
     fecha: '2026-07-21',
     proveedor: 'Mercado Libre',
+    categoria: 'filamento',
     montoNeto: 40970,
-    ordenId: '2000014122225779',
+    ordenId: '',
     items: [],
   };
   const gastoDuplicadoPorSeed = {
@@ -59,7 +60,9 @@ const { agruparGastosPorRegistro, asegurarVentasSeed } =
   agruparGastosPorRegistro(data);
 
   const mismaOrden = data.gastos.filter(
-    (g) => g.ordenId === '2000014122225779'
+    (g) =>
+      g.id === gastoExistente.id ||
+      g.ordenId === '2000014122225779'
   );
   assert.equal(mismaOrden.length, 1, 'Una orden existente no debe duplicarse');
   assert.equal(

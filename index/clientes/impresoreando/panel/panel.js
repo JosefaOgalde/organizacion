@@ -262,10 +262,23 @@
     for (const reg of REGISTROS) {
       const canonical = byId.get(reg.id);
       const sameOrder = d.gastos.find(
-        (g) =>
-          g !== canonical &&
-          reg.ordenId &&
-          String(g.ordenId || '').trim() === String(reg.ordenId).trim()
+        (g) => {
+          if (g === canonical) return false;
+          if (
+            reg.ordenId &&
+            String(g.ordenId || '').trim() === String(reg.ordenId).trim()
+          ) {
+            return true;
+          }
+          return (
+            !String(g.ordenId || '').trim() &&
+            g.fecha === reg.fecha &&
+            g.categoria === reg.categoria &&
+            Number(g.montoNeto) === Number(reg.montoNeto) &&
+            String(g.proveedor || '').trim().toLocaleLowerCase('es') ===
+              String(reg.proveedor || '').trim().toLocaleLowerCase('es')
+          );
+        }
       );
       if (canonical && sameOrder) {
         d.gastos = d.gastos.filter((g) => g !== canonical);
