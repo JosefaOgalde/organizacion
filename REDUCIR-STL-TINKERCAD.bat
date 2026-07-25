@@ -1,0 +1,31 @@
+@echo off
+chcp 65001 >nul
+setlocal
+cd /d "%~dp0"
+
+if "%~1"=="" (
+  echo.
+  echo Arrastra el archivo .STL encima de este .bat
+  echo o ejecutalo asi:
+  echo   REDUCIR-STL-TINKERCAD.bat "C:\ruta\CASCO MEGAMAN.stl"
+  echo.
+  echo Tinkercad exige: max 25 MB Y max 300.000 triangulos.
+  echo Este script apunta a ~20 MB y 280.000 caras.
+  echo.
+  pause
+  exit /b 1
+)
+
+where python >nul 2>&1
+if errorlevel 1 (
+  echo No se encontro python. Instala Python 3 y marca "Add to PATH".
+  pause
+  exit /b 1
+)
+
+python -m pip install --quiet trimesh numpy fast-simplification
+python scripts\reducir-stl-tinkercad.py "%~1" --max-mb 20 --max-faces 280000
+echo.
+echo El archivo nuevo termina en -tinkercad.stl ^(misma carpeta del original^).
+echo Importalo en Tinkercad ^(limites: 25 MB y 300.000 triangulos^).
+pause
