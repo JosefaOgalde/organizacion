@@ -16,6 +16,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Landing | `…/impresoreando/` CTA **Resumen 50/50** |
 | Catálogo IG | `…/impresoreando/catalogo/` · 1080×1350 · PDF `catalogo/export/catalogo-impresoreando.pdf` · `exportar-pngs.js` + `exportar-pdf.js` |
 | Status correo | `scripts/impresoreando-status-diario.js` · `ENVIAR-STATUS-IMPRESOREANDO.bat` · lib `scripts/lib/smtp-send.js` |
+| Sync → organizador | `node scripts/sync-impresoreando-pedidos-organizacion.js --also-respaldo` (también lo corre `ABRIR-LARAVEL.bat`) |
 
 Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. Persistencia siempre vía API (live), no solo localStorage.
 
@@ -43,8 +44,10 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | ID | Cliente | Ítems | Estado |
 |----|---------|-------|--------|
 | PED-001 | Rebe | 1× Porta lata Monster `PLMONS001` | listo |
-| PED-002 | Gianni | 1× Macetero bulldog `MCPEBUL001` + 4× Portacompleto bulldog `PCPEBUL001` | listo |
-| PED-003 | Por confirmar | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | listo |
+| PED-002 | Gianni | 1× Macetero bulldog `MCPEBUL001` + 4× Portacompleto bulldog `PCPEBUL001` | **transferido** → venta $15.000 |
+| PED-003 | Juan | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | **transferido** → venta $15.000 |
+
+Ventas seed (además Tito $15.000): Cata gatos $10.000 · Marcia Stanley $3.000 · Gianni Bob $7.000.
 
 ## Productos / costos
 

@@ -63,6 +63,9 @@ if not errorlevel 1 (
   if exist "scripts\asegurar-impresoreando-live.js" (
     node scripts\asegurar-impresoreando-live.js 2>nul
   )
+  if exist "scripts\sync-impresoreando-pedidos-organizacion.js" (
+    node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo 2>nul
+  )
 )
 
 echo  1^) SQLite + seed clientes...
