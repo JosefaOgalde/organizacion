@@ -113,6 +113,17 @@ Plugins: Elementor, WooCommerce, Astra, WP Bottom Menu, Smart Slider.`
 
   documentos: [
     {
+      id: 'doc-jm-tarjeta-referencia',
+      nombre: 'Tarjeta de referencia — Camila.html',
+      categoria: 'html',
+      mime: 'text/html',
+      url: 'TARJETA-REFERENCIA-CAMILA.html',
+      notasAnalisis: 'Tarjeta corta con botones al PDF y al HTML del manual.',
+      extraccionEstado: 'ok',
+      extraccionMetodo: 'entrega-25-jul',
+      subido: '2026-07-25'
+    },
+    {
       id: 'doc-jm-manual-camila-pdf',
       nombre: 'Manual Camila — Joyas Mercury.pdf',
       categoria: 'pdf',
