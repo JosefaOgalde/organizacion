@@ -1,6 +1,15 @@
 # Casco Sakura (Mega Man) — ranuras para collar
 
-## Problema
+## STL con ranuras (listo)
+Archivo: `Fantastic_Bruticus-Inari-ranuras-collar.stl` (~4.5 MB)
+
+- 2 ranuras en la **nuca** (izquierda/derecha) para pasar el collar
+- Cada ranura: **12 × 6 mm** (atraviesa la pared)
+- Ya entra en Tinkercad (sin reducir)
+
+Si el collar es más grueso/ancho, decime las medidas y las agrando.
+
+## Problema Tinkercad (STL originales pesados)
 Tinkercad rechaza el STL si:
 1. pesa más de **25 MB**, o
 2. la malla tiene más de **300.000 triángulos**  
