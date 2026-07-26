@@ -47,7 +47,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-002 | Gianni SIE | 1× Macetero bulldog `MCPEBUL001` + 4× Portacompleto bulldog `PCPEBUL001` | **transferido** → I000002 $15.000 |
 | PED-003 | Juan SIE | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | **transferido** → I000003 $15.000 |
 | PED-004 | Ele SIE | 1× Llavero Pesa Rusa amarillo `LLPESRU001` | **listo** (impreso) · costo ~$415 · pendiente precio venta |
-| PED-005 | María Paz SIE | 1× Soporte celular rosado pastel `SOPCEL001` | **pendiente** · costo ~$684 · **PVP $4.000** |
+| PED-005 | María Paz SIE | 1× Soporte celular rosado pastel `SOPCEL001` | **listo** (impreso) · costo ~$684 · **PVP $4.000** |
 
 ### Ventas — ID correlativo + historial
 

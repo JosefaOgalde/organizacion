@@ -1345,7 +1345,7 @@
       }
     }
 
-    // PED-005 · María Paz SIE · Soporte celular rosado pastel · pendiente · PVP $4.000
+    // PED-005 · María Paz SIE · Soporte celular rosado pastel · listo (impreso) · PVP $4.000
     const id005 = 'ped-maria-paz-soporte-005';
     const prodSop = (d.productos || []).find(
       (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
@@ -1370,8 +1370,8 @@
             precioUnitarioClp: precioSop,
             costoUnitarioClp: round2(costoSop),
             filamento: 'PLA rosado pastel',
-            estado: 'pendiente',
-            listos: 0,
+            estado: 'listo',
+            listos: 1,
             enImpresion: 0,
           },
         ],
@@ -1379,9 +1379,9 @@
         descuentoClp: 0,
         montoNeto: precioSop,
         costoTotal: round2(costoSop),
-        estado: 'pendiente',
+        estado: 'listo',
         ventaId: null,
-        notas: `1× Soporte celular rosado pastel · pendiente · costo $${round2(costoSop)} · precio venta $${precioSop}`,
+        notas: `1× Soporte celular rosado pastel · listo/impreso · costo $${round2(costoSop)} · precio venta $${precioSop}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T01:43:00.000Z',
       });
@@ -1389,17 +1389,29 @@
     } else {
       const ped005 = d.pedidos.find((p) => p.id === id005 || p.numero === 'PED-005');
       if (ped005 && ped005.estado !== 'transferido') {
-        const it = (ped005.items || [])[0];
-        if (it && Number(it.precioUnitarioClp) !== precioSop) {
-          it.precioUnitarioClp = precioSop;
-          ped005.montoBruto = precioSop;
-          ped005.montoNeto = precioSop;
+        if (ped005.estado !== 'listo') {
+          ped005.estado = 'listo';
           changed = true;
         }
-        if (it && Number(it.costoUnitarioClp) !== round2(costoSop) && costoSop > 0) {
-          it.costoUnitarioClp = round2(costoSop);
-          ped005.costoTotal = round2(costoSop);
-          changed = true;
+        const it = (ped005.items || [])[0];
+        if (it) {
+          if (it.estado !== 'listo' || Number(it.listos) !== Number(it.cantidad || 1)) {
+            it.estado = 'listo';
+            it.listos = Number(it.cantidad || 1);
+            it.enImpresion = 0;
+            changed = true;
+          }
+          if (Number(it.precioUnitarioClp) !== precioSop) {
+            it.precioUnitarioClp = precioSop;
+            ped005.montoBruto = precioSop;
+            ped005.montoNeto = precioSop;
+            changed = true;
+          }
+          if (Number(it.costoUnitarioClp) !== round2(costoSop) && costoSop > 0) {
+            it.costoUnitarioClp = round2(costoSop);
+            ped005.costoTotal = round2(costoSop);
+            changed = true;
+          }
         }
       }
     }
