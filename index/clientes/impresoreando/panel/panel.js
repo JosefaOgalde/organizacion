@@ -2203,7 +2203,6 @@
     const gastos = sum(data.gastos);
     const ventas = sum(data.ventas);
     const operacion = sum((data.operacion || []).filter((x) => Number(x.montoNeto) !== 0));
-    const ads = Number(data.planAds?.presupuestoMensualClp || 0);
     /** Resultado = ventas − gastos − operación (sube al vender; más negativo si solo hay gastos). */
     const resultado = ventas - gastos - operacion;
     const metaRecuperar = gastos + operacion;
@@ -2244,8 +2243,6 @@
       Math.max(0, 100 - pctGastosEnPipeline),
       (montoPedidosPend / denom) * 100
     );
-    const linkVenta = `${location.origin}/index/clientes/impresoreando/panel/venta/`;
-    const esLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
     const pctMarkup = Number(data.parametros?.margenObjetivoPct ?? 100);
     const filasCostoProd = (data.productos || [])
       .map((prod) => {
@@ -2411,37 +2408,7 @@
         <p class="imp-deuda"><strong>Capital:</strong> lo aportó <strong>Nicolás</strong>. Todos los gastos son de <strong>ambos</strong>. Josefa le debe a Nicolás el <strong>50%</strong> del capital (${money(deuda)}).</p>
         <p class="imp-muted">Esa deuda entre socios es distinta del saldo de arriba: el saldo baja con cada venta del negocio; la deuda 50% de Josefa se actualiza con el capital aportado.</p>
       </div>
-      <div class="imp-card">
-        <h2>Link para registrar ventas (celular)</h2>
-        <p class="imp-aviso-local"${esLocalhost ? '' : ' hidden'}>
-          <strong>Importante:</strong> <code>localhost</code> solo funciona en esta PC.
-          En el celular falla con ERR_CONNECTION_FAILED. Usa la IP WiFi o el túnel público.
-        </p>
-        <p class="imp-muted">Misma WiFi — abre en el celular (no localhost):</p>
-        <div class="imp-share" id="imp-links-lan"><span class="imp-muted">Cargando IPs…</span></div>
-        <p class="imp-muted" style="margin-top:0.75rem">Cualquier lugar / datos móviles:</p>
-        <ol class="imp-list">
-          <li>En la PC deja <strong>SERVIR.bat</strong> corriendo.</li>
-          <li>Abre <strong>ABRIR-VENTA-PUBLICA.bat</strong> (segunda ventana).</li>
-          <li>Copia el link <code>https://….loca.lt/…/venta/</code> y envíalo por WhatsApp.</li>
-        </ol>
-        <div class="imp-share">
-          <code id="imp-link-venta">${escapeHtml(linkVenta)}</code>
-          <button type="button" class="imp-btn imp-btn--primary" id="btn-copiar-link-venta">Copiar link de esta ventana</button>
-          <a class="imp-btn" href="./venta/">Abrir registrador</a>
-        </div>
-        <p class="imp-muted">Presupuesto ads mes (plan): ${money(ads)}</p>
-      </div>
     `;
-
-    $('#btn-copiar-link-venta')?.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(linkVenta);
-        setStatus('Link de ventas copiado', 'ok');
-      } catch {
-        setStatus('No se pudo copiar — selecciónalo a mano', 'warn');
-      }
-    });
 
     $('#tab-resumen')?.querySelectorAll('[data-goto-tab]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -2449,38 +2416,6 @@
         document.querySelector(`#imp-tabs button[data-tab="${tab}"]`)?.click();
       });
     });
-
-    fetch('/api/acceso', { cache: 'no-store' })
-      .then((r) => r.json())
-      .then((info) => {
-        const box = $('#imp-links-lan');
-        if (!box) return;
-        const urls = info.lan || [];
-        if (!urls.length) {
-          box.innerHTML = '<span class="imp-muted">No se detectó IP de red — usa ABRIR-VENTA-PUBLICA.bat</span>';
-          return;
-        }
-        box.innerHTML = urls
-          .map(
-            (u) =>
-              `<code class="imp-lan-url">${escapeHtml(u)}</code><button type="button" class="imp-btn" data-copy="${escapeHtml(u)}">Copiar</button>`
-          )
-          .join('');
-        box.querySelectorAll('[data-copy]').forEach((btn) => {
-          btn.addEventListener('click', async () => {
-            try {
-              await navigator.clipboard.writeText(btn.getAttribute('data-copy'));
-              setStatus('Link WiFi copiado', 'ok');
-            } catch {
-              setStatus('Copia manual del link', 'warn');
-            }
-          });
-        });
-      })
-      .catch(() => {
-        const box = $('#imp-links-lan');
-        if (box) box.innerHTML = '<span class="imp-muted">No se pudo leer /api/acceso</span>';
-      });
   }
 
   function renderGastos() {
