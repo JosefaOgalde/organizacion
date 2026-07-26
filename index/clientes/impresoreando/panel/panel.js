@@ -789,6 +789,61 @@
     return changed;
   }
 
+  /** Dragón — slicer alto 275,41 g · 14 h 7 m · PVP $11.000. Soft seed. */
+  function seedDragon() {
+    const filamentoModeloGramos = 192.38;
+    const filamentoGramos = 275.41;
+    const filamentoSoportesGramos = round2(filamentoGramos - filamentoModeloGramos);
+    return {
+      sku: 'DRAGON001',
+      nombre: 'Dragón',
+      activo: true,
+      filamentoModeloGramos,
+      filamentoSoportesGramos,
+      filamentoPurgeGramos: 0,
+      filamentoMetros: 91.6,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG,
+      horasImpresion: round2((14 * 60 + 7) / 60), // 14 h 7 m
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 11000,
+      costoSlicerRef: 5.51,
+      pendienteCosto: false,
+      notas:
+        `Slicer (medición alta): modelo ${filamentoModeloGramos} g + soportes ${filamentoSoportesGramos} g = ${filamentoGramos} g · 91,6 m · 14 h 7 m · coste slicer 5,51. PLA color $16.829/kg. PVP $11.000.`,
+    };
+  }
+
+  function asegurarProductoDragon(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-dragon';
+    const seed = seedDragon();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
+      existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    }
+    return changed;
+  }
 
   function formatearCodigoVenta(n) {
     return `I${String(n).padStart(6, '0')}`;
@@ -1414,6 +1469,53 @@
             changed = true;
           }
         }
+      }
+    }
+
+    // PED-006 · Rebe SIE · Dragón · en impresión · PVP $11.000
+    const id006 = 'ped-rebe-dragon-006';
+    const prodDra = (d.productos || []).find((p) => p.id === 'prod-dragon' || p.sku === 'DRAGON001');
+    const costoDra = prodDra ? costoProdRough(d, prodDra) : 5475.59;
+    const precioDra =
+      Number(prodDra?.precioVentaSugeridoClp) > 0 ? Number(prodDra.precioVentaSugeridoClp) : 11000;
+    if (!d.pedidos.some((p) => p.id === id006 || p.numero === 'PED-006')) {
+      d.pedidos.push({
+        id: id006,
+        numero: 'PED-006',
+        fecha: '2026-07-26',
+        cliente: 'Rebe SIE',
+        clienteNombre: 'Rebe',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'DRAGON001',
+            nombre: 'Dragón',
+            cantidad: 1,
+            precioUnitarioClp: precioDra,
+            costoUnitarioClp: round2(costoDra),
+            filamento: 'PLA color',
+            estado: 'en_impresion',
+            listos: 0,
+            enImpresion: 1,
+          },
+        ],
+        montoBruto: precioDra,
+        descuentoClp: 0,
+        montoNeto: precioDra,
+        costoTotal: round2(costoDra),
+        estado: 'en_impresion',
+        ventaId: null,
+        notas: `1× Dragón · en impresión · costo $${round2(costoDra)} · PVP $${precioDra}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-26T01:49:00.000Z',
+      });
+      changed = true;
+    } else {
+      const ped006 = d.pedidos.find((p) => p.id === id006 || p.numero === 'PED-006');
+      if (ped006 && ped006.estado !== 'transferido' && ped006.estado !== 'en_impresion') {
+        ped006.estado = 'en_impresion';
+        changed = true;
       }
     }
 

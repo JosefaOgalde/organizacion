@@ -48,6 +48,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-003 | Juan SIE | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | **transferido** → I000003 $15.000 |
 | PED-004 | Ele SIE | 1× Llavero Pesa Rusa amarillo `LLPESRU001` | **listo** (impreso) · costo ~$415 · pendiente precio venta |
 | PED-005 | María Paz SIE | 1× Soporte celular rosado pastel `SOPCEL001` | **listo** (impreso) · costo ~$684 · **PVP $4.000** |
+| PED-006 | Rebe SIE | 1× Dragón `DRAGON001` | **en_impresion** · costo ~$5.476 · **PVP $11.000** |
 
 ### Ventas — ID correlativo + historial
 
@@ -137,6 +138,7 @@ Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio
 | `LLSTANDL001` | Llavero Porta Lipstick Stanley | 26,32 | 0,78 | Placa÷2 + $50 argolla · ~$478 · PVP ~$955 · alias `LLAVSTAN001` |
 | `LLPESRU001` | Llavero Pesa Rusa | **16,78** | **0,59 (35 m 31 s)** | PLA amarillo · modelo 16,31 + purge 0,47 · +$50 argolla · costo ~$415 · PVP sug. ~$831 |
 | `SOPCEL001` | Soporte celular | **34,46** | **0,96 (57 m 30 s)** | PLA rosado pastel · costo ~$684 · **PVP $4.000** (manual) |
+| `DRAGON001` | Dragón | **275,41** | **14,12 (14 h 7 m)** | PLA color · modelo+soportes · costo ~$5.476 · **PVP $11.000** |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
 
