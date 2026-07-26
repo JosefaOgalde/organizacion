@@ -1418,6 +1418,19 @@
         socioRegistro: 'Nicolás',
         items: [{ descripcion: 'Nave espacial horizontal (diseño)', monto: 1000 }],
       },
+      {
+        id: 'gas-diseno-dragon',
+        fecha: '2026-07-26',
+        categoria: 'diseño',
+        descripcion: 'Diseño Dragón (comprado)',
+        proveedor: 'Diseño digital',
+        cantidad: 1,
+        montoNeto: 3000,
+        notas:
+          'Diseño digital del Dragón (DRAGON001). No se suma al costo unitario del producto. Gastos socios · sociedad 50/50.',
+        socioRegistro: 'Ambos',
+        items: [{ descripcion: 'Diseño Dragón', monto: 3000 }],
+      },
     ];
     let changed = false;
     const byId = new Map(d.gastos.map((g) => [g.id, g]));

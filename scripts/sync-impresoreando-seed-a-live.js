@@ -40,6 +40,7 @@ function main() {
   live.productos = Array.isArray(live.productos) ? live.productos : [];
   live.pedidos = Array.isArray(live.pedidos) ? live.pedidos : [];
   live.ventas = Array.isArray(live.ventas) ? live.ventas : [];
+  live.gastos = Array.isArray(live.gastos) ? live.gastos : [];
   live.impresoras = Array.isArray(live.impresoras) ? live.impresoras : [];
 
   // Perfiles de impresora (Centauri + Ender): agrega faltantes; no pisa $/kg ni consumo editados.
@@ -132,6 +133,15 @@ function main() {
     if (!sv || !sv.id || venIds.has(sv.id)) continue;
     live.ventas.push(JSON.parse(JSON.stringify(sv)));
     venIds.add(sv.id);
+    changed += 1;
+  }
+
+  // Gastos nuevos del seed (p. ej. diseños Cults) sin pisar montos editados en live.
+  const gasIds = new Set(live.gastos.filter((g) => g && g.id).map((g) => g.id));
+  for (const sg of seed.gastos || []) {
+    if (!sg || !sg.id || gasIds.has(sg.id)) continue;
+    live.gastos.push(JSON.parse(JSON.stringify(sg)));
+    gasIds.add(sg.id);
     changed += 1;
   }
 

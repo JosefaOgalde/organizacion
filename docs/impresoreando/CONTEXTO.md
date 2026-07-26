@@ -124,7 +124,8 @@ Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio
 **Markup sugerido:** `precio = costo × (1 + margenObjetivoPct/100)` (default +100%).  
 **Params default (Centauri):** `tarifaKwhClp: 200`, `consumoImpresoraKw: 0.28`, `costoAnilloMetalLlaveroClp: 50`.  
 **$/kg Centauri:** PLA+ negro/rojo `$17.986` · PLA amarillo/café `$16.829` · PLA blanco `$12.690`.  
-**Diseños Cults/digitales** → gastos socios (categoría `diseño`); **no** van al costo unitario del producto.
+**Diseños Cults/digitales** → gastos socios (categoría `diseño`); **no** van al costo unitario del producto.  
+Vigente: Bob $1.402 · bulldog $1.000 · nave H $1.000 · **Dragón $3.000** (`gas-diseno-dragon`).
 
 ### Impresoras (perfiles de costo) — obligatorio recordar
 

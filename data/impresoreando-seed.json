@@ -378,6 +378,23 @@
           "monto": 1000
         }
       ]
+    },
+    {
+      "id": "gas-diseno-dragon",
+      "fecha": "2026-07-26",
+      "categoria": "diseño",
+      "descripcion": "Diseño Dragón (comprado)",
+      "proveedor": "Diseño digital",
+      "cantidad": 1,
+      "montoNeto": 3000,
+      "notas": "Diseño digital del Dragón (DRAGON001). No se suma al costo unitario. Gastos socios · 50/50.",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "descripcion": "Diseño Dragón",
+          "monto": 3000
+        }
+      ]
     }
   ],
   "ventas": [
