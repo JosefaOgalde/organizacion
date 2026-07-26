@@ -102,10 +102,43 @@ function listOrgTargets(alsoRespaldo) {
   return [...new Set(files)].filter((f) => fs.existsSync(f));
 }
 
+/** Fecha calendario Chile (YYYY-MM-DD). Madre de pedidos = siempre hoy. */
+function hoyChile() {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Santiago',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
+}
+
+/** Día en que se finalizó/transferió el pedido (para congelar la subtarea). */
+function fechaFinalizacionPedido(ped, tareaExistente) {
+  const raw = ped.transferidoEn || ped.actualizado || ped.ventaFecha || '';
+  if (raw) {
+    const d = String(raw).slice(0, 10);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+    const parsed = Date.parse(raw);
+    if (Number.isFinite(parsed)) {
+      return new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Santiago',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).format(new Date(parsed));
+    }
+  }
+  // Si ya estaba completada, no moverla de su día.
+  if (tareaExistente?.completada && tareaExistente.fecha) return tareaExistente.fecha;
+  if (tareaExistente?.fechaFinalizado) return tareaExistente.fechaFinalizado;
+  return hoyChile();
+}
+
 function syncOrgFile(orgPath, pedidos, impActualizado) {
   const org = readJson(orgPath);
   org.tareas = Array.isArray(org.tareas) ? org.tareas : [];
   let changed = false;
+  const hoy = hoyChile();
 
   const activos = pedidos.filter((p) => pedidoActivo(p.estado));
   const nActivos = activos.length;
@@ -119,10 +152,8 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
     nActivos === 0
       ? `Sin pedidos activos. Panel: /index/clientes/impresoreando/panel/ · Imp live ${impActualizado || '—'}`
       : `Panel socios 50/50 · ${resumenActivos}. Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. Imp live ${impActualizado || '—'}`;
-  const fechaMadre =
-    (activos[0] && activos[0].fecha) ||
-    (madre && madre.fecha) ||
-    new Date().toISOString().slice(0, 10);
+  // Madre siempre en HOY (Chile) mientras haya activos; si no hay, queda el día en que se vació.
+  const fechaMadre = nActivos > 0 ? hoy : madre?.fecha || hoy;
 
   if (!madre) {
     if (nActivos > 0) {
@@ -156,6 +187,14 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
       madre.notas = madreNotas;
       changed = true;
     }
+    if (madre.fecha !== fechaMadre) {
+      madre.fecha = fechaMadre;
+      changed = true;
+    }
+    if (madre.fechaFin !== fechaMadre) {
+      madre.fechaFin = fechaMadre;
+      changed = true;
+    }
     const shouldDone = nActivos === 0;
     if (Boolean(madre.completada) !== shouldDone) {
       madre.completada = shouldDone;
@@ -187,6 +226,8 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
       ? `Estado: ${ped.estado}. Total ${money(ped.montoNeto)}. ${ped.notas || ''} · Panel: /index/clientes/impresoreando/panel/`
       : `Transferido a venta (${ped.ventaId || ped.ventaCodigo || 'ok'}). Total cobrado ${money(ped.montoNeto)}. ${ped.notas || ''} · Ya no es pedido activo.`;
     const ordenHijo = activo ? ordenActivo : 900 + ordenHecho;
+    // Activas van con la madre (hoy). Finalizadas se congelan en el día de cierre.
+    const fechaHijo = activo ? hoy : fechaFinalizacionPedido(ped, t);
 
     if (!t) {
       if (!activo) continue; // no crear tarea nueva solo para transferidos
@@ -195,7 +236,7 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
         titulo,
         clienteId: CLI,
         rolId: ROL,
-        fecha: ped.fecha || fechaMadre,
+        fecha: fechaHijo,
         horaInicio: '10:00',
         horaFin: '13:00',
         notas,
@@ -220,6 +261,7 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
       const next = {
         titulo,
         notas,
+        fecha: fechaHijo,
         completada: !activo,
         pedidoEstado: ped.estado || 'pendiente',
         pedidoId: ped.id,
@@ -231,6 +273,9 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
         rolId: ROL,
         tipoEntregable: 'impresoreando-pedido',
       };
+      if (!activo) {
+        next.fechaFinalizado = t.fechaFinalizado || fechaHijo;
+      }
       for (const [k, v] of Object.entries(next)) {
         if (t[k] !== v) {
           t[k] = v;

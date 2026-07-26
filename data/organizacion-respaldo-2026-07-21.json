@@ -1526,7 +1526,7 @@
       "titulo": "[IMP] Pedidos activos · 5",
       "clienteId": "cli-impresoreando",
       "rolId": "rol-imp-dis",
-      "fecha": "2026-07-18",
+      "fecha": "2026-07-25",
       "horaInicio": "10:00",
       "horaFin": "18:00",
       "notas": "Panel socios 50/50 · PED-004 Ele SIE (listo) · PED-005 María Paz SIE (listo) · PED-006 Rebe SIE (en_impresion) · PED-007 Juan SIE (listo) · PED-008 Juan MKOF (listo). Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. Imp live 2026-07-26T02:36:08.468Z",
@@ -1537,7 +1537,7 @@
       "tipoEntregable": "impresoreando-pedidos",
       "parentId": null,
       "linkPanel": "/index/clientes/impresoreando/panel/",
-      "fechaFin": "2026-07-18"
+      "fechaFin": "2026-07-25"
     },
     {
       "id": "tarea-imp-ped-rebe-plmons-001",
@@ -1570,14 +1570,15 @@
         "archivosAdjuntos": [],
         "imagenesPendientes": [],
         "imagenesReferencia": []
-      }
+      },
+      "fechaFinalizado": "2026-07-18"
     },
     {
       "id": "tarea-imp-ped-gianni-bulldog-002",
       "titulo": "[IMP] PED-002 · Gianni SIE · 1× Macetero Perro Bulldog + 4× Porta Completo Perro Bulldog",
       "clienteId": "cli-impresoreando",
       "rolId": "rol-imp-dis",
-      "fecha": "2026-07-18",
+      "fecha": "2026-07-23",
       "horaInicio": "14:00",
       "horaFin": "18:00",
       "notas": "Transferido a venta (ven-gianni-bulldog-002). Total cobrado $15.000. Macetero + 4× portacompleto bulldog · transferido a venta $15.000 · Ya no es pedido activo.",
@@ -1591,7 +1592,8 @@
       "pedidoId": "ped-gianni-bulldog-002",
       "pedidoNumero": "PED-002",
       "pedidoEstado": "transferido",
-      "linkPanel": "/index/clientes/impresoreando/panel/"
+      "linkPanel": "/index/clientes/impresoreando/panel/",
+      "fechaFinalizado": "2026-07-23"
     },
     {
       "id": "tarea-jm-novedades-mobile-actual",
@@ -1746,7 +1748,7 @@
       "titulo": "[IMP] PED-004 · Ele SIE · 1× Llavero Pesa Rusa",
       "clienteId": "cli-impresoreando",
       "rolId": "rol-imp-dis",
-      "fecha": "2026-07-26",
+      "fecha": "2026-07-25",
       "horaInicio": "10:00",
       "horaFin": "13:00",
       "notas": "Estado: listo. Total $1.000. 1× Llavero Pesa Rusa amarillo · listo/impreso · costo $415,43 · PVP $1.000 · Panel: /index/clientes/impresoreando/panel/",
@@ -1767,7 +1769,7 @@
       "titulo": "[IMP] PED-005 · María Paz SIE · 1× Soporte celular",
       "clienteId": "cli-impresoreando",
       "rolId": "rol-imp-dis",
-      "fecha": "2026-07-26",
+      "fecha": "2026-07-25",
       "horaInicio": "10:00",
       "horaFin": "13:00",
       "notas": "Estado: listo. Total $4.000. 1× Soporte celular rosado pastel · listo/impreso · costo $683,69 · precio venta $4.000 · Panel: /index/clientes/impresoreando/panel/",
@@ -1788,7 +1790,7 @@
       "titulo": "[IMP] PED-006 · Rebe SIE · 1× Dragón",
       "clienteId": "cli-impresoreando",
       "rolId": "rol-imp-dis",
-      "fecha": "2026-07-26",
+      "fecha": "2026-07-25",
       "horaInicio": "10:00",
       "horaFin": "13:00",
       "notas": "Estado: en_impresion. Total $11.000. 1× Dragón · en impresión · costo $5.475,59 · PVP $11.000 · Panel: /index/clientes/impresoreando/panel/",
@@ -1809,7 +1811,7 @@
       "titulo": "[IMP] PED-007 · Juan SIE · 1× Torreón",
       "clienteId": "cli-impresoreando",
       "rolId": "rol-imp-dis",
-      "fecha": "2026-07-26",
+      "fecha": "2026-07-25",
       "horaInicio": "10:00",
       "horaFin": "13:00",
       "notas": "Estado: listo. Total $6.500. 1× Torreón · listo · costo estimado $3.293,48 (base ~$2.293,48 + $1.000 impresora antigua) · PVP sugerido $6.500 · Panel: /index/clientes/impresoreando/panel/",
@@ -1830,7 +1832,7 @@
       "titulo": "[IMP] PED-008 · Juan MKOF · 1× Porta Bob Esponja",
       "clienteId": "cli-impresoreando",
       "rolId": "rol-imp-dis",
-      "fecha": "2026-07-26",
+      "fecha": "2026-07-25",
       "horaInicio": "10:00",
       "horaFin": "13:00",
       "notas": "Estado: listo. Total $7.000. 1× Porta Bob Esponja · listo · costo $998,17 (catálogo) · PVP $7.000 · Panel: /index/clientes/impresoreando/panel/",
@@ -1941,7 +1943,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 14,
-  "respaldoActualizado": "2026-07-26T02:55:03.492Z",
+  "respaldoActualizado": "2026-07-26T02:57:52.619Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
