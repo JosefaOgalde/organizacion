@@ -131,9 +131,10 @@ window.CLIENTES_PORTAL = [
     nombre: 'Joyas Mercury',
     abrev: 'JM',
     tipo: 'Freelance',
+    activo: false,
     color: { border: '#C45A7A', bg: '#F8E8EE', text: '#6E2A40' },
     agente: 'Dev WooCommerce Fase 2',
-    resumen: 'Rediseño joyasmercury.cl — menú, filtros, carrito, entrega.',
+    resumen: 'Rediseño joyasmercury.cl — menú, filtros, carrito, entrega. Etapa 2 cerrada.',
     landing: {
       tagline: 'Fase 2 · joyasmercury.cl',
       entregables: ['Menú y colecciones', 'Filtros AJAX', 'Carrito y checkout', 'Entrega 30/07'],
