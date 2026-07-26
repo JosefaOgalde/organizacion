@@ -119,16 +119,57 @@
     return `clientes/${archivo}`;
   }
 
-  /** Activo salvo override localStorage o flag en datos/estático. */
+  function flagActivo(val) {
+    if (val === false || val === 0 || val === '0' || val === 'false') return false;
+    if (val === true || val === 1 || val === '1' || val === 'true') return true;
+    return null;
+  }
+
+  /** Clientes cerrados aunque la API Laravel aún no tenga columna `activo`. */
+  function esClienteCerradoFijo(c, estatico) {
+    const slug = String(c.slug || estatico?.slug || '')
+      .toLowerCase()
+      .replace(/\s+/g, '');
+    const abrev = String(c.abrev || estatico?.abrev || '')
+      .toLowerCase()
+      .trim();
+    const nombre = String(c.nombre || estatico?.nombre || '')
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+      .trim();
+    const id = String(c.id || estatico?.id || '').toLowerCase();
+    if (id === 'cli-joyas-mercury') return true;
+    if (abrev === 'jm') return true;
+    if (slug === 'joyasmercury' || slug === 'joyas-mercury' || slug === 'jm') return true;
+    if (nombre === 'joyas mercury' || nombre.startsWith('joyas mercury')) return true;
+    return false;
+  }
+
+  /**
+   * Activo salvo:
+   * - override localStorage (Reactivar),
+   * - flag `activo: false` en estático (gana sobre API),
+   * - flag en API,
+   * - lista fija de cerrados (Joyas Mercury).
+   */
   function esActivo(c) {
-    const id = String(c.id || '');
-    const overrides = leerOverridesActivo();
-    if (id && Object.prototype.hasOwnProperty.call(overrides, id)) {
-      return !!overrides[id];
-    }
-    if (c.activo === false) return false;
     const estatico = findEstatico(c);
-    if (estatico && estatico.activo === false) return false;
+    const overrides = leerOverridesActivo();
+    const idsOverride = [c.id, estatico?.id].filter(Boolean).map(String);
+    for (const id of idsOverride) {
+      if (Object.prototype.hasOwnProperty.call(overrides, id)) {
+        return !!overrides[id];
+      }
+    }
+
+    const estFlag = estatico ? flagActivo(estatico.activo) : null;
+    if (estFlag === false) return false;
+
+    const apiFlag = flagActivo(c.activo);
+    if (apiFlag === false) return false;
+
+    if (esClienteCerradoFijo(c, estatico)) return false;
+
     return true;
   }
 
@@ -165,7 +206,9 @@
     const estatico = findEstatico(c);
     const archivo = archivoDe(c);
     const agente = c.agente || estatico?.agente || '';
-    const id = escapeHtml(c.id || '');
+    /** Preferir id estático para que Reactivar / overrides coincidan con clientes-data. */
+    const idRaw = String(estatico?.id || c.id || '');
+    const id = escapeHtml(idRaw);
     return `
     <article class="portal-card portal-card--inactivo"
        style="--card-border:${GRIS.border};--card-bg:${GRIS.bg};--card-text:${GRIS.text}">

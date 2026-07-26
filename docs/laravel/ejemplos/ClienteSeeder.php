@@ -70,6 +70,7 @@ class ClienteSeeder extends Seeder
                     'nombre' => $c['nombre'] ?? $slug,
                     'abrev' => $abrev,
                     'tipo' => $c['tipo'] ?? 'freelance',
+                    'activo' => array_key_exists('activo', $c) ? (bool) $c['activo'] : true,
                     'color_border' => $c['color_border'] ?? null,
                     'color_bg' => $c['color_bg'] ?? null,
                     'color_text' => $c['color_text'] ?? null,
