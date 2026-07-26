@@ -865,11 +865,6 @@ window.jmAplicarProgresoChecklist = function jmAplicarProgresoChecklist(data) {
       comentario: t.comentario || ''
     }));
   }
-  const debugTodoAntes = cli.ficha.landing.todos.find((x) => x.id === 'jm-todo-01');
-  const debugTareaAntes = data.tareas?.find((t) => t.jmTodoId === 'jm-todo-01');
-  // #region agent log
-  window.__agentDebugLog?.({ hypothesisId: 'A,B', location: 'data/jm-backup-contenido.js:jmAplicarProgresoChecklist:entry', message: 'Estado JM antes del parche de progreso', data: { todoCompleted: debugTodoAntes?.completada, todoCommentClass: debugTodoAntes?.comentario === 'OK · cerrado 25-jul 2026' ? 'repo-fixed' : (debugTodoAntes?.comentario ? 'custom-present' : 'empty'), taskCompleted: debugTareaAntes?.completada, taskNotesClass: debugTareaAntes?.notas === 'OK · cerrado 25-jul 2026' ? 'repo-fixed' : (debugTareaAntes?.notas ? 'custom-present' : 'empty') }, timestamp: Date.now() });
-  // #endregion
   Object.entries(prog).forEach(([todoId, patch]) => {
     const todo = cli.ficha.landing.todos.find((x) => x.id === todoId);
     if (todo) {
@@ -892,11 +887,6 @@ window.jmAplicarProgresoChecklist = function jmAplicarProgresoChecklist(data) {
       }
     }
   });
-  const debugTodoDespues = cli.ficha.landing.todos.find((x) => x.id === 'jm-todo-01');
-  const debugTareaDespues = data.tareas?.find((t) => t.jmTodoId === 'jm-todo-01');
-  // #region agent log
-  window.__agentDebugLog?.({ hypothesisId: 'A,B', location: 'data/jm-backup-contenido.js:jmAplicarProgresoChecklist:exit', message: 'Estado JM después del parche de progreso', data: { todoCompleted: debugTodoDespues?.completada, todoCommentClass: debugTodoDespues?.comentario === 'OK · cerrado 25-jul 2026' ? 'repo-fixed' : (debugTodoDespues?.comentario ? 'custom-present' : 'empty'), taskCompleted: debugTareaDespues?.completada, taskNotesClass: debugTareaDespues?.notas === 'OK · cerrado 25-jul 2026' ? 'repo-fixed' : (debugTareaDespues?.notas ? 'custom-present' : 'empty') }, timestamp: Date.now() });
-  // #endregion
   return data;
 };
 
@@ -984,11 +974,6 @@ window.jmSyncLandingDesdeTareas = function jmSyncLandingDesdeTareas(data) {
     const notas = (t.notas || '').trim();
     todo.comentario = notas;
   });
-  const debugTodo = todos.find((x) => x.id === 'jm-todo-01');
-  const debugTarea = data.tareas.find((t) => t.jmTodoId === 'jm-todo-01');
-  // #region agent log
-  window.__agentDebugLog?.({ hypothesisId: 'C', location: 'data/jm-backup-contenido.js:jmSyncLandingDesdeTareas:exit', message: 'Resultado de sincronizar calendario hacia checklist', data: { todoCompleted: debugTodo?.completada, todoCommentClass: debugTodo?.comentario === 'OK · cerrado 25-jul 2026' ? 'repo-fixed' : (debugTodo?.comentario ? 'custom-present' : 'empty'), taskCompleted: debugTarea?.completada, taskNotesClass: debugTarea?.notas === 'OK · cerrado 25-jul 2026' ? 'repo-fixed' : (debugTarea?.notas ? 'custom-present' : 'empty') }, timestamp: Date.now() });
-  // #endregion
   return data;
 };
 
@@ -1005,11 +990,6 @@ window.jmSyncTareasDesdeLanding = function jmSyncTareasDesdeLanding(data) {
     const com = (todo.comentario || '').trim();
     t.notas = com || undefined;
   });
-  const debugTodo = todos.find((x) => x.id === 'jm-todo-01');
-  const debugTarea = data.tareas.find((t) => t.jmTodoId === 'jm-todo-01');
-  // #region agent log
-  window.__agentDebugLog?.({ hypothesisId: 'C', location: 'data/jm-backup-contenido.js:jmSyncTareasDesdeLanding:exit', message: 'Resultado de sincronizar checklist hacia calendario', data: { todoCompleted: debugTodo?.completada, todoCommentClass: debugTodo?.comentario === 'OK · cerrado 25-jul 2026' ? 'repo-fixed' : (debugTodo?.comentario ? 'custom-present' : 'empty'), taskCompleted: debugTarea?.completada, taskNotesClass: debugTarea?.notas === 'OK · cerrado 25-jul 2026' ? 'repo-fixed' : (debugTarea?.notas ? 'custom-present' : 'empty') }, timestamp: Date.now() });
-  // #endregion
   return data;
 };
 

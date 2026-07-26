@@ -7,7 +7,6 @@ const vm = require('vm');
 const assert = require('assert/strict');
 
 const ROOT = path.resolve(__dirname, '..');
-const LOG_PATH = '/opt/cursor/logs/debug.log';
 const FIXED = 'OK · cerrado 25-jul 2026';
 const posts = [];
 
@@ -28,12 +27,6 @@ global.fetch = async (url, options = {}) => {
     return { ok: true, status: 200, json: async () => ({ ok: true }) };
   }
   return { ok: false, status: 404, text: async () => '', json: async () => null };
-};
-
-window.__agentDebugLog = (payload) => {
-  // #region agent log
-  fs.appendFileSync(LOG_PATH, JSON.stringify(payload) + '\n');
-  // #endregion
 };
 
 function load(relativePath) {

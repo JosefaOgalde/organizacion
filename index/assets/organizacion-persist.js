@@ -74,18 +74,8 @@
   window.persistOrganizacionToDisk = function persistOrganizacionToDisk(datos) {
     if (!datos || typeof fetch !== 'function') return;
     clearTimeout(debounceTimer);
-    const debugTodoProgramado = datos.clientes?.find((c) => c.id === 'cli-joyas-mercury')?.ficha?.landing?.todos?.find((t) => t.id === 'jm-todo-01');
-    const debugTareaProgramada = datos.tareas?.find((t) => t.jmTodoId === 'jm-todo-01');
-    // #region agent log
-    window.__agentDebugLog?.({ hypothesisId: 'D', location: 'index/assets/organizacion-persist.js:persistOrganizacionToDisk:schedule', message: 'Estado JM al programar persistencia diferida', data: { todoCompleted: debugTodoProgramado?.completada, todoCommentClass: debugTodoProgramado?.comentario === 'OK · cerrado 25-jul 2026' ? 'repo-fixed' : (debugTodoProgramado?.comentario ? 'custom-present' : 'empty'), taskCompleted: debugTareaProgramada?.completada, taskNotesClass: debugTareaProgramada?.notas === 'OK · cerrado 25-jul 2026' ? 'repo-fixed' : (debugTareaProgramada?.notas ? 'custom-present' : 'empty') }, timestamp: Date.now() });
-    // #endregion
     debounceTimer = setTimeout(async () => {
       await ensureApiConfig();
-      const debugTodoEnviado = datos.clientes?.find((c) => c.id === 'cli-joyas-mercury')?.ficha?.landing?.todos?.find((t) => t.id === 'jm-todo-01');
-      const debugTareaEnviada = datos.tareas?.find((t) => t.jmTodoId === 'jm-todo-01');
-      // #region agent log
-      window.__agentDebugLog?.({ hypothesisId: 'D,E', location: 'index/assets/organizacion-persist.js:persistOrganizacionToDisk:send', message: 'Estado JM al serializar POST de persistencia', data: { todoCompleted: debugTodoEnviado?.completada, todoCommentClass: debugTodoEnviado?.comentario === 'OK · cerrado 25-jul 2026' ? 'repo-fixed' : (debugTodoEnviado?.comentario ? 'custom-present' : 'empty'), taskCompleted: debugTareaEnviada?.completada, taskNotesClass: debugTareaEnviada?.notas === 'OK · cerrado 25-jul 2026' ? 'repo-fixed' : (debugTareaEnviada?.notas ? 'custom-present' : 'empty') }, timestamp: Date.now() });
-      // #endregion
       const payload = JSON.stringify(datos);
       fetch(API, {
         method: 'POST',
