@@ -76,6 +76,7 @@
     if (asegurarProductoNaveEspacialVertical(d)) changed = true;
     if (asegurarProductoLlaveroEscudoRanger(d)) changed = true;
     if (asegurarProductoLlaveroPortaLipstickStanley(d)) changed = true;
+    if (asegurarProductoLlaveroPesaRusa(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
@@ -671,6 +672,62 @@
       notas:
         'Slicer placa 2 uds: 52,65 g · 17,51 m · 1 h 34 m · coste 1,05 → 1 ud = 26,33 g · 0,78 h. PLA blanco $12.690/kg. +$50 argolla/metales.',
     });
+  }
+
+  /** Llavero Pesa Rusa — soft seed: no pisa g/h si ya hay costo local. PLA amarillo + argolla. */
+  function seedLlaveroPesaRusa() {
+    return {
+      sku: 'LLPESRU001',
+      nombre: 'Llavero Pesa Rusa',
+      activo: true,
+      filamentoGramos: 0,
+      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG,
+      horasImpresion: 0,
+      minutosPintado: 0,
+      unidadesMetal: 1,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      pendienteCosto: true,
+      notas: 'PLA amarillo $16.829/kg + $50 argolla. Pendiente g/h slicer (pedir imagen).',
+    };
+  }
+
+  function asegurarProductoLlaveroPesaRusa(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-llavero-pesa-rusa';
+    const seed = seedLlaveroPesaRusa();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) && !(Number(existing.horasImpresion) > 0)) {
+      if (existing.costoFilamentoKgClp !== seed.costoFilamentoKgClp) {
+        existing.costoFilamentoKgClp = seed.costoFilamentoKgClp;
+        changed = true;
+      }
+      if (existing.pendienteCosto !== true) {
+        existing.pendienteCosto = true;
+        changed = true;
+      }
+    } else if (existing.pendienteCosto) {
+      existing.pendienteCosto = false;
+      changed = true;
+    }
+    if (existing.unidadesMetal == null) {
+      existing.unidadesMetal = 1;
+      changed = true;
+    }
+    return changed;
   }
 
 
@@ -1366,6 +1423,7 @@
     if (/nave/.test(t) && /vert/.test(t)) return 'NAVEVERT';
     if (/llavero/.test(t) && /ranger|escudo/.test(t)) return 'LLRANGER';
     if (/llavero/.test(t) && /lipstick|stanley|standley/.test(t)) return 'LLSTANDL';
+    if (/llavero/.test(t) && /(pesa|kettlebell|rusa)/.test(t)) return 'LLPESRU';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -1413,6 +1471,7 @@
       'prod-nave-espacial-vertical': { sku: 'NAVEVERT001', nombre: 'Nave Espacial Vertical' },
       'prod-llavero-escudo-ranger': { sku: 'LLRANGER001', nombre: 'Llavero Escudo Ranger' },
       'prod-llavero-porta-lipstick-stanley': { sku: 'LLSTANDL001', nombre: 'Llavero Porta Lipstick Stanley' },
+      'prod-llavero-pesa-rusa': { sku: 'LLPESRU001', nombre: 'Llavero Pesa Rusa' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',
@@ -2451,6 +2510,9 @@
         : 'pendiente';
       ped.fecha = pedidoEditDraft.fecha;
       ped.cliente = pedidoEditDraft.cliente;
+      ped.clienteNombre = pedidoEditDraft.clienteNombre;
+      ped.clienteSegundoNombre = pedidoEditDraft.clienteSegundoNombre;
+      ped.clienteOrigen = pedidoEditDraft.clienteOrigen;
       ped.canal = pedidoEditDraft.canal;
       ped.notas = pedidoEditDraft.notas;
       ped.socioRegistro = pedidoEditDraft.socioRegistro;

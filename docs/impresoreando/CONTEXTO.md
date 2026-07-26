@@ -133,6 +133,7 @@ Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio
 | `NAVEVERT001` | Nave Espacial Vertical | 59,79 | 1,90 (1 h 54 m) | PLA blanco · ~$915 · PVP ~$1.830 · alias `NVESPVER001` |
 | `LLRANGER001` | Llavero Escudo Ranger | 10,06 | 0,73 | Multicolor + $50 argolla · ~$315 · PVP ~$629 · alias `LLAVRANGER001` |
 | `LLSTANDL001` | Llavero Porta Lipstick Stanley | 26,32 | 0,78 | Placa÷2 + $50 argolla · ~$478 · PVP ~$955 · alias `LLAVSTAN001` |
+| `LLPESRU001` | Llavero Pesa Rusa | — | — | PLA amarillo + argolla · **pendiente g/h** (pedir imagen slicer) |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
 
