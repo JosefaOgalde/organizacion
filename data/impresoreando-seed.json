@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-26T01:42:26.129Z",
+    "actualizado": "2026-07-26T01:44:08.009Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -26,7 +26,7 @@
       "montoNetoClp": 800442,
       "deudaJosefaClp": 400221
     },
-    "pedidoSeq": 4,
+    "pedidoSeq": 5,
     "ventaSeq": 10,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
@@ -881,6 +881,21 @@
       "filamentoMetros": 5.58,
       "costoSlicerRef": 0.34,
       "editadoLocal": true
+    },
+    {
+      "id": "prod-soporte-celular",
+      "sku": "SOPCEL001",
+      "nombre": "Soporte celular",
+      "activo": true,
+      "filamentoGramos": 0,
+      "costoFilamentoKgClp": 0,
+      "horasImpresion": 0,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 0,
+      "pendienteCosto": true,
+      "notas": "Pendiente g/h slicer y $/kg del filamento rosado pastel (pedir imagen)."
     }
   ],
   "planAds": {
@@ -1085,6 +1100,38 @@
       "notas": "1× Llavero Pesa Rusa amarillo · impreso/listo · costo $415,43 · pendiente precio venta (sugerido ~$830,86)",
       "socioRegistro": "Ambos",
       "creado": "2026-07-26T01:40:00.000Z"
+    },
+    {
+      "id": "ped-maria-paz-soporte-005",
+      "numero": "PED-005",
+      "fecha": "2026-07-26",
+      "cliente": "María Paz SIE",
+      "clienteNombre": "María",
+      "clienteSegundoNombre": "Paz",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 1,
+          "precioUnitarioClp": 0,
+          "costoUnitarioClp": 0,
+          "filamento": "rosado pastel",
+          "estado": "pendiente",
+          "listos": 0,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 0,
+      "descuentoClp": 0,
+      "montoNeto": 0,
+      "costoTotal": 0,
+      "estado": "pendiente",
+      "ventaId": null,
+      "notas": "1× Soporte celular rosado pastel · pendiente costo (imagen slicer) y precio venta",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-26T01:44:08.009Z"
     }
   ]
 }

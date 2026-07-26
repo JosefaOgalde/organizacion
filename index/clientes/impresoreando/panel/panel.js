@@ -1233,6 +1233,10 @@
 
     // PED-004 · Ele SIE · Llavero Pesa Rusa amarillo · listo (impreso)
     const id004 = 'ped-ele-pesa-rusa-004';
+    const prodPesa = (d.productos || []).find(
+      (p) => p.id === 'prod-llavero-pesa-rusa' || p.sku === 'LLPESRU001'
+    );
+    const costoPesa = prodPesa ? costoProdRough(d, prodPesa) : 415.43;
     if (!d.pedidos.some((p) => p.id === id004 || p.numero === 'PED-004')) {
       d.pedidos.push({
         id: id004,
@@ -1248,7 +1252,7 @@
             nombre: 'Llavero Pesa Rusa',
             cantidad: 1,
             precioUnitarioClp: 0,
-            costoUnitarioClp: 0,
+            costoUnitarioClp: round2(costoPesa),
             filamento: 'PLA amarillo',
             estado: 'listo',
             listos: 1,
@@ -1258,11 +1262,10 @@
         montoBruto: 0,
         descuentoClp: 0,
         montoNeto: 0,
-        costoTotal: 0,
+        costoTotal: round2(costoPesa),
         estado: 'listo',
         ventaId: null,
-        notas:
-          '1× Llavero Pesa Rusa amarillo · impreso/listo · pendiente costo (imagen slicer) y precio venta',
+        notas: `1× Llavero Pesa Rusa amarillo · impreso/listo · costo $${round2(costoPesa)} · pendiente precio venta`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T01:40:00.000Z',
       });
@@ -1278,6 +1281,14 @@
         ped004.clienteNombre = 'Ele';
         ped004.clienteOrigen = 'SIE';
         changed = true;
+      }
+      if (ped004 && ped004.estado !== 'transferido') {
+        const it = (ped004.items || [])[0];
+        if (it && (!(Number(it.costoUnitarioClp) > 0) || Number(it.costoUnitarioClp) !== round2(costoPesa))) {
+          it.costoUnitarioClp = round2(costoPesa);
+          ped004.costoTotal = round2(costoPesa);
+          changed = true;
+        }
       }
     }
 
