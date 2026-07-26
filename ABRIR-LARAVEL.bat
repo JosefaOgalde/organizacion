@@ -67,9 +67,6 @@ if not errorlevel 1 (
     echo  0b^) Sync pedidos Impresoreando seed → live...
     node scripts\sync-impresoreando-seed-a-live.js
   )
-  if exist "scripts\sync-impresoreando-pedidos-organizacion.js" (
-    node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo 2>nul
-  )
 )
 
 echo  1^) SQLite + seed clientes...
@@ -97,6 +94,15 @@ popd
 if exist "scripts\limpiar-clientes-duplicados.php" (
   echo  3b^) Limpiar clientes duplicados en SQLite...
   "%PHP_EXE%" scripts\limpiar-clientes-duplicados.php
+)
+
+REM Pedidos → organizador AL FINAL (madre en fecha de hoy; no lo pise sync-respaldo)
+where node >nul 2>&1
+if not errorlevel 1 (
+  if exist "scripts\sync-impresoreando-pedidos-organizacion.js" (
+    echo  3c^) Sync pedidos Impresoreando → organizador ^(madre = hoy^)...
+    node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo
+  )
 )
 
 if not exist "data\organizacion-live.json" (
