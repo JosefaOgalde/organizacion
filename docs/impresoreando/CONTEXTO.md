@@ -12,8 +12,9 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Seed (repo) | `data/impresoreando-seed.json` |
 | Live (gitignored) | `data/impresoreando-live.json` |
 | API | `GET/POST /api/impresoreando` · `POST /api/impresoreando/venta` en `scripts/organizacion-server.js` |
-| Arranque | `ABRIR-IMPRESOREANDO.bat` → **solo landing** `…/impresoreando/` (panel/catálogo desde botones). Logo: `identidad/logo-impresoreando.png` |
-| Landing | `…/impresoreando/` CTA **Resumen 50/50** |
+| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo) |
+| Landing | `http://127.0.0.1:8000/index/clientes/impresoreando/` · CTA **Resumen 50/50** · logo `identidad/logo-impresoreando.png` |
+| Panel / Resumen | `http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen` |
 | Catálogo IG | `…/impresoreando/catalogo/` · 1080×1350 · PDF `catalogo/export/catalogo-impresoreando.pdf` · `exportar-pngs.js` + `exportar-pdf.js` |
 | Status correo | `scripts/impresoreando-status-diario.js` · `ENVIAR-STATUS-IMPRESOREANDO.bat` · lib `scripts/lib/smtp-send.js` |
 | Sync → organizador | `node scripts/sync-impresoreando-pedidos-organizacion.js --also-respaldo` (también lo corre `ABRIR-LARAVEL.bat`) |
