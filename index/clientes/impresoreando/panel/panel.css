@@ -676,6 +676,12 @@ table.imp-table {
   border-color: #e0b48a;
   background: #fff4e8;
 }
+.imp-pedido-status-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
 
 .imp-pedido-items {
   display: flex;

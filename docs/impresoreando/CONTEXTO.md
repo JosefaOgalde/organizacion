@@ -50,9 +50,9 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 ### Ventas — ID correlativo + historial
 
 - Cada venta tiene `codigo` `I000001…` (`meta.ventaSeq`). **Primera registrada = I000001 · Tito MKOF**.
-- Nombres de cliente: Tito = **Tito MKOF**; todos los demás llevan sufijo **SIE** (Rebe SIE, Marcia SIE, Cata SIE, …).
-- `meta.clientesHistorial[]` agrupa compras repetidas (cliente, códigos, total, #compras). UI: tab Ventas → tabla + bloque Historial por cliente.
-- Al transferir pedido → venta o al crear venta directa: asignar `nextVentaCodigo` + `rebuildClientesHistorial`.
+- Clientes históricos ya migrados (no re-etiquetar): Tito MKOF · Gianni/Juan/Cata/Marcia/Rebe SIE.
+- `meta.clientesHistorial[]` agrupa compras repetidas. UI: tab Ventas + bloque Historial.
+- Al transferir / venta directa: `nextVentaCodigo` + `rebuildClientesHistorial`.
 
 | Código | Cliente | Monto | Notas |
 |--------|---------|-------|-------|
@@ -67,19 +67,38 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000009 | Marcia SIE | 3.000 | Soporte celular PLA blanco |
 | I000010 | Cata SIE | 7.000 | Bob (costo ya calculado) |
 
+### Clientes nuevos — nombre + origen (obligatorio)
+
+**No** auto-agregar SIE a todo el mundo. La usuaria entrega **mínimo 2 parámetros**:
+
+1. **Nombre** (siempre el primero) — puede incluir segundo nombre (ej. «María José»).
+2. **Origen / dónde viene** (segundo parámetro):
+   - **SIE** = trabajo de **Nicolás**
+   - **MKOF** = trabajo de **Josefa**
+
+Display: `Nombre [SegundoNombre] ORIGEN` → ej. `Rebe SIE`, `María José MKOF`.  
+Campos pedido/venta: `clienteNombre`, `clienteSegundoNombre?`, `clienteOrigen` (`SIE`|`MKOF`) + `cliente` (string compuesto para historial).
+
 ## Flujos de chat (agente) — frases gatillo
 
-### «pedidos e impresoreando» / «pedido impresoreando»
+### «pedidos e impresoreando» / «Pedidos - impresoreando»
 
-Responder **pidiendo estos datos** (no crear a ciegas):
+Responder **pidiendo estos datos** (no crear a ciegas). Mínimo nombre + origen:
 
-1. **Cliente** (nombre + sufijo: MKOF solo Tito; resto **SIE**)
-2. **Ítems:** producto/SKU, cantidad, color/filamento
-3. **Precio venta/u** o total cobrado CLP
-4. **Canal** (WhatsApp / Instagram / feria)
-5. **Estado** deseado: `pendiente` · `en_impresion` · `listo` (default `pendiente`)
+1. **Nombre** (y segundo nombre si hay)
+2. **Origen:** SIE (Nico) o MKOF (Josefa)
+3. **Ítems:** producto, cantidad, color/filamento
+4. **Precio venta/u** o total (ajustable; puede ser más caro que el sugerido)
+5. **Canal** (WhatsApp / Instagram / feria) — opcional
+6. **Estado:** `pendiente` · `en_impresion` · `listo` (default `pendiente`)
 
-Con eso: crear pedido `PED-00n` en live/seed + panel (tab Pedidos), con ítems y estado. No transferir a venta hasta que la usuaria lo diga.
+Reglas al crear:
+
+- Si el producto **no tiene SKU** → generar con `siguienteSkuProducto` / prefijo legible (`LLSTANDL001`, etc.).
+- Si el producto **no tiene costo calculado** → **pedir imagen** (slicer/foto) y crear producto en Costos antes de cerrar el pedido (o dejar pendiente de costo).
+- Precio de venta se puede **subir a mano** aunque el markup sugerido sea +100%.
+- Crear `PED-00n` en live/seed; estado visible en tab Pedidos **y en Resumen**.
+- No transferir a venta hasta que la usuaria lo diga.
 
 ### «calcular costo producto impresoreando»
 
@@ -88,7 +107,7 @@ Responder **pidiendo la imagen** (foto del producto / captura slicer) y, si no v
 - gramos de filamento · horas de impresión · tipo/color y $/kg (o usar tabla PLA+ negro/rojo $17.986, amarillo/café $16.829, blanco $12.690)
 - si lleva argolla metal (+$50) o bolsa
 
-Calcular con la fórmula del panel y devolver costo/u + PVP sugerido (+margen 100% si no indican otro). Si piden guardar producto, crear/actualizar en Costos.
+Calcular con la fórmula del panel y devolver costo/u + PVP sugerido (+margen 100% si no indican otro). Si no hay SKU, generarlo. Si piden guardar producto, crear/actualizar en Costos.
 
 ## Productos / costos
 
@@ -149,13 +168,13 @@ Solo si hay módulo CAM + base USB/CH340. Guía: `docs/impresoreando/ESP32-CAM.m
 ## Cómo atender un pedido nuevo (checklist agente)
 
 1. Leer **este archivo** (no explorar panel.js salvo bug concreto).
-2. Si la usuaria solo escribió la frase gatillo («pedidos e impresoreando» / «calcular costo…»), **pedir los datos** listados arriba; no inventar.
-3. Si el producto no existe: crear/actualizar vía seed en `asegurarProducto*` + parámetros slicer (g, h, $/kg) · preferir **costo más alto** si hay dos mediciones.
-4. Añadir/editar pedido en live (API) o seed si debe quedar en repo: cliente (+ SIE/MKOF), ítems SKU×cant, costo/u, precio venta/u, estado pedido.
-5. Al pasar a venta: asignar `I00000n` correlativo y actualizar historial de cliente.
-6. No inventar tipografía Midjourney/Gemini: esto es panel ops, no prompts creativos.
+2. Frase gatillo → **pedir nombre + origen (SIE/MKOF)** y el resto; no inventar ni auto-poner SIE.
+3. Sin SKU → generar. Sin costo → pedir imagen y calcular producto.
+4. Pedido en live/seed: `cliente` compuesto, ítems SKU×cant, costo/u, precio venta/u (ajustable), estado.
+5. Estado del pedido debe verse en **Resumen** (tabla de status) y en Pedidos.
+6. Al pasar a venta: `I00000n` + historial.
 7. Commit en rama `cursor/…`, bump `?v=` si tocó UI, push + actualizar PR.
-8. Responder en español, corto: qué PED/I0…, qué SKUs, montos, estado.
+8. Responder en español, corto: qué PED/I0…, qué SKUs, montos, estado, origen.
 
 ## Layout UI (no rediseñar sin pedido)
 

@@ -678,6 +678,49 @@
     return `I${String(n).padStart(6, '0')}`;
   }
 
+  /** Nombre + origen: SIE = trabajo Nicolás · MKOF = trabajo Josefa. No auto-poner SIE. */
+  function formatearClienteImp(nombre, segundoNombre, origen) {
+    const n = String(nombre || '').trim();
+    const s = String(segundoNombre || '').trim();
+    const o = String(origen || '').trim().toUpperCase();
+    const origenOk = o === 'SIE' || o === 'MKOF' ? o : '';
+    const parts = [n, s, origenOk].filter(Boolean);
+    return parts.join(' ');
+  }
+
+  function labelOrigenCliente(origen) {
+    const o = String(origen || '').toUpperCase();
+    if (o === 'SIE') return 'SIE · trabajo Nicolás';
+    if (o === 'MKOF') return 'MKOF · trabajo Josefa';
+    return '';
+  }
+
+  /** Separa "María José MKOF" → { nombre, segundoNombre, origen } (origen al final si es SIE/MKOF). */
+  function parseClienteImp(cliente, meta) {
+    if (meta && (meta.clienteNombre || meta.clienteOrigen)) {
+      return {
+        nombre: String(meta.clienteNombre || '').trim(),
+        segundoNombre: String(meta.clienteSegundoNombre || '').trim(),
+        origen: String(meta.clienteOrigen || '').trim().toUpperCase(),
+      };
+    }
+    const parts = String(cliente || '')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    if (!parts.length) return { nombre: '', segundoNombre: '', origen: '' };
+    const last = parts[parts.length - 1].toUpperCase();
+    if (last === 'SIE' || last === 'MKOF') {
+      const nameParts = parts.slice(0, -1);
+      return {
+        nombre: nameParts[0] || '',
+        segundoNombre: nameParts.slice(1).join(' '),
+        origen: last,
+      };
+    }
+    return { nombre: parts[0] || '', segundoNombre: parts.slice(1).join(' '), origen: '' };
+  }
+
   function nextVentaCodigo(d) {
     if (!d.meta || typeof d.meta !== 'object') d.meta = {};
     const n = Number(d.meta.ventaSeq || 0) + 1;
@@ -1708,6 +1751,34 @@
       })
       .join('');
 
+    const todosPedidos = (data.pedidos || []).slice().sort((a, b) =>
+      String(b.numero || '').localeCompare(String(a.numero || ''), 'es')
+    );
+    const countEst = { pendiente: 0, en_impresion: 0, listo: 0, transferido: 0 };
+    for (const p of todosPedidos) {
+      const e = p.estado || 'pendiente';
+      if (countEst[e] != null) countEst[e] += 1;
+    }
+    const filasPedidosStatus = todosPedidos
+      .map((p) => {
+        recalcularMontoPedido(p);
+        const itemsTxt = (p.items || [])
+          .map((it) => `${it.cantidad || 1}× ${it.nombre || it.sku || ''}`)
+          .join(', ');
+        const origenLbl = labelOrigenCliente(p.clienteOrigen);
+        return `<tr>
+          <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
+          <td>
+            <strong>${escapeHtml(p.cliente || '—')}</strong>
+            ${origenLbl ? `<div class="imp-muted">${escapeHtml(origenLbl)}</div>` : ''}
+            <div class="imp-muted">${escapeHtml(itemsTxt || '—')}</div>
+          </td>
+          <td class="num"><strong>${money(p.montoNeto)}</strong></td>
+          <td>${badgeEstadoPedido(p.estado || 'pendiente')}</td>
+        </tr>`;
+      })
+      .join('');
+
     $('#tab-resumen').innerHTML = `
       <div class="imp-balance ${sinDeuda ? 'imp-balance--ok' : 'imp-balance--deuda'}">
         <div class="imp-balance__label">${sinDeuda ? 'Sin deuda de sociedad' : 'Para salir de deuda falta recuperar'}</div>
@@ -1755,6 +1826,23 @@
         <div class="imp-kpi imp-kpi--ok"><span>Ventas (contabilizadas)</span><strong>${money(ventas)}</strong></div>
         <div class="imp-kpi"><span>Pedidos activos</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
         <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
+      </div>
+      <div class="imp-card">
+        <h2>Estado de pedidos</h2>
+        <p class="imp-muted">Status en vivo del pipeline. Los activos aún no bajan la deuda (solo al transferir → venta).</p>
+        <div class="imp-pedido-status-counts" aria-label="Conteo por estado">
+          <span class="imp-badge imp-badge--warn">Pendiente ${countEst.pendiente}</span>
+          <span class="imp-badge imp-badge--print">En impresión ${countEst.en_impresion}</span>
+          <span class="imp-badge imp-badge--listo">Listo ${countEst.listo}</span>
+          <span class="imp-badge imp-badge--ok">Transferido ${countEst.transferido}</span>
+        </div>
+        <div class="imp-table-wrap" style="margin-top:0.75rem">
+          <table class="imp-table">
+            <thead><tr><th>Pedido</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th></tr></thead>
+            <tbody>${filasPedidosStatus || '<tr><td colspan="4">Sin pedidos</td></tr>'}</tbody>
+          </table>
+        </div>
+        <p class="imp-muted" style="margin-top:0.5rem">Detalle y edición en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>.</p>
       </div>
       <div class="imp-socios" aria-label="Detalle por socio">
         <article class="imp-socio imp-socio--josefa">
@@ -2164,7 +2252,19 @@
     if (!form) return pedidoEditDraft;
     const fd = new FormData(form);
     pedidoEditDraft.fecha = String(fd.get('fecha') || pedidoEditDraft.fecha || '');
-    pedidoEditDraft.cliente = String(fd.get('cliente') || '').trim();
+    const cn = String(fd.get('clienteNombre') || '').trim();
+    const cs = String(fd.get('clienteSegundoNombre') || '').trim();
+    const co = String(fd.get('clienteOrigen') || '')
+      .trim()
+      .toUpperCase();
+    if (cn || co) {
+      pedidoEditDraft.clienteNombre = cn;
+      pedidoEditDraft.clienteSegundoNombre = cs || undefined;
+      pedidoEditDraft.clienteOrigen = co === 'SIE' || co === 'MKOF' ? co : '';
+      pedidoEditDraft.cliente = formatearClienteImp(cn, cs, pedidoEditDraft.clienteOrigen);
+    } else {
+      pedidoEditDraft.cliente = String(fd.get('cliente') || '').trim();
+    }
     pedidoEditDraft.canal = String(fd.get('canal') || '').trim();
     pedidoEditDraft.notas = String(fd.get('notas') || '').trim();
     pedidoEditDraft.socioRegistro = String(fd.get('socioRegistro') || 'Ambos');
@@ -2222,11 +2322,20 @@
       })
       .join('');
 
+    const cliParsed = parseClienteImp(ped.cliente, ped);
     body.innerHTML = `
       <form class="imp-form" id="form-editar-pedido">
-        <p class="imp-muted">Podés cambiar cliente, ítems, cantidades y precios. El estado se elige en la columna Estado del listado (o acá abajo).</p>
+        <p class="imp-muted">Nombre + origen (SIE = Nico · MKOF = Josefa). Precio venta/u se puede subir. El estado también está en Resumen.</p>
         <label>Fecha<input name="fecha" type="date" required value="${escapeHtml(ped.fecha || today())}" /></label>
-        <label>Cliente<input name="cliente" value="${escapeHtml(ped.cliente || '')}" required /></label>
+        <label>Nombre<input name="clienteNombre" value="${escapeHtml(cliParsed.nombre)}" required /></label>
+        <label>Segundo nombre<input name="clienteSegundoNombre" value="${escapeHtml(cliParsed.segundoNombre)}" placeholder="Opcional" /></label>
+        <label>Origen
+          <select name="clienteOrigen" required>
+            <option value="">Elegir…</option>
+            <option value="SIE"${cliParsed.origen === 'SIE' ? ' selected' : ''}>SIE · trabajo Nicolás</option>
+            <option value="MKOF"${cliParsed.origen === 'MKOF' ? ' selected' : ''}>MKOF · trabajo Josefa</option>
+          </select>
+        </label>
         <label>Canal<input name="canal" value="${escapeHtml(ped.canal || '')}" /></label>
         <label>Quién
           <select name="socioRegistro">
@@ -2597,9 +2706,18 @@
       </div>
       <div class="imp-card">
         <h3>Nuevo pedido</h3>
+        <p class="imp-muted">Mínimo: <strong>nombre</strong> + <strong>origen</strong> (SIE = trabajo Nicolás · MKOF = trabajo Josefa). Segundo nombre opcional. Precio venta se puede subir a mano.</p>
         <form class="imp-form" id="form-pedido">
           <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
-          <label>Cliente<input name="cliente" placeholder="Nombre o @instagram" /></label>
+          <label>Nombre<input name="clienteNombre" required placeholder="Ej. Rebe" /></label>
+          <label>Segundo nombre<input name="clienteSegundoNombre" placeholder="Opcional" /></label>
+          <label>Origen (dónde viene)
+            <select name="clienteOrigen" required>
+              <option value="">Elegir…</option>
+              <option value="SIE">SIE · trabajo Nicolás</option>
+              <option value="MKOF">MKOF · trabajo Josefa</option>
+            </select>
+          </label>
           <label>Producto (SKU)
             <select name="sku" required id="pedido-sku">
               <option value="">Elegir…</option>
@@ -2618,9 +2736,9 @@
           </label>
           <label>Estado
             <select name="estado">
-              <option value="pendiente">Pendiente</option>
+              <option value="pendiente" selected>Pendiente</option>
               <option value="en_impresion">En impresión</option>
-              <option value="listo" selected>Listo para entregar</option>
+              <option value="listo">Listo para entregar</option>
             </select>
           </label>
           <label>Canal<input name="canal" placeholder="WhatsApp / Instagram / feria" value="WhatsApp" /></label>
@@ -2634,7 +2752,7 @@
           <label class="imp-form-span">Notas<textarea name="notas" rows="2" placeholder="Ej. PLA negro"></textarea></label>
           <div class="imp-form-actions">
             <button class="imp-btn imp-btn--primary" type="submit">Registrar pedido</button>
-            <span class="imp-muted">Se asigna el siguiente PED-xxx automáticamente</span>
+            <span class="imp-muted">Se asigna el siguiente PED-xxx automáticamente · status en Resumen</span>
           </div>
         </form>
       </div>
@@ -2679,6 +2797,20 @@
     $('#form-pedido')?.addEventListener('submit', (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
+      const clienteNombre = String(fd.get('clienteNombre') || '').trim();
+      const clienteSegundoNombre = String(fd.get('clienteSegundoNombre') || '').trim();
+      const clienteOrigen = String(fd.get('clienteOrigen') || '')
+        .trim()
+        .toUpperCase();
+      if (!clienteNombre) {
+        setStatus('Falta el nombre del cliente', 'warn');
+        return;
+      }
+      if (clienteOrigen !== 'SIE' && clienteOrigen !== 'MKOF') {
+        setStatus('Elige origen: SIE (Nico) o MKOF (Josefa)', 'warn');
+        return;
+      }
+      const cliente = formatearClienteImp(clienteNombre, clienteSegundoNombre, clienteOrigen);
       const sku = String(fd.get('sku') || '').trim();
       const prod = (data.productos || []).find((p) => p.sku === sku);
       const cantidad = round2(fd.get('cantidad') || 1);
@@ -2690,6 +2822,10 @@
         setStatus('Elige producto y precio de venta / unidad', 'warn');
         return;
       }
+      if (!(costoUnitarioClp > 0)) {
+        setStatus('Ese producto no tiene costo calculado — carga parámetros o imagen en Costos', 'warn');
+        return;
+      }
       const numero = siguienteNumeroPedido();
       data.pedidos = data.pedidos || [];
       const estadoOk = pedidoActivo(estado) ? estado : 'pendiente';
@@ -2697,7 +2833,10 @@
         id: uid('ped'),
         numero,
         fecha: fd.get('fecha'),
-        cliente: String(fd.get('cliente') || '').trim(),
+        cliente,
+        clienteNombre,
+        clienteSegundoNombre: clienteSegundoNombre || undefined,
+        clienteOrigen,
         canal: String(fd.get('canal') || ''),
         items: [
           {
@@ -2722,7 +2861,7 @@
       markDirty();
       renderAll();
       activarTab('pedidos');
-      setStatus(`Pedido ${numero} creado · venta ${money(montoNeto)} · guarda online`, 'warn');
+      setStatus(`${numero} · ${cliente} · ${estadoOk} · ${money(montoNeto)} · visible en Resumen`, 'warn');
       save().catch((err) => setStatus(String(err.message || err), 'err'));
     });
 
@@ -2855,7 +2994,7 @@
       </div>
       <div class="imp-card">
         <h2>Ventas contabilizadas (${money(sum(data.ventas))})</h2>
-        <p class="imp-muted">ID correlativo: primera = <strong>I000001 Tito MKOF</strong>. Clientes siguientes llevan sufijo <strong>SIE</strong> (ej. Rebe SIE).</p>
+        <p class="imp-muted">ID correlativo: primera = <strong>I000001 Tito MKOF</strong>. Clientes nuevos = <strong>nombre + origen</strong> (SIE = Nico · MKOF = Josefa); no se auto-agrega SIE.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID / Fecha</th><th>Cliente / detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
@@ -2878,7 +3017,7 @@
         <p class="imp-muted">Úsalo solo si no pasaste por Pedidos. Prefiere Pedidos → Transferir a venta. Se asigna el siguiente ID I00000n.</p>
         <form class="imp-form" id="form-venta">
           <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
-          <label>Cliente<input name="cliente" required placeholder="Nombre SIE" /></label>
+          <label>Cliente<input name="cliente" required placeholder="Nombre ORIGEN · ej. Ana MKOF" /></label>
           <label>Descripción<input name="descripcion" required placeholder="Llavero x3" /></label>
           <label>Cantidad<input name="cantidad" type="number" min="1" value="1" /></label>
           <label>Total cobrado CLP<input name="montoNeto" type="number" required /></label>
