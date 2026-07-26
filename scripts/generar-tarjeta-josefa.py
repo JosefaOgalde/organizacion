@@ -114,58 +114,148 @@ def wrap_text(draw: ImageDraw.ImageDraw, text: str, font_obj, max_w: int) -> lis
     return lines
 
 
+def paint_atmosphere(canvas: Image.Image, mode: str = "h") -> None:
+    """Fondo con atmósfera turquesa: wash, puntos y acentos geométricos."""
+    W, H = canvas.size
+    base = Image.new("RGBA", (W, H), WHITE + (255,))
+    overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(overlay)
+
+    # wash superior derecha
+    for i in range(420):
+        a = int(28 * (1 - i / 420))
+        if mode == "h":
+            d.ellipse((W - 520 + i // 2, -180 + i // 3, W + 80, 320), fill=(20, 184, 164, a // 3))
+        else:
+            d.ellipse((W - 380, -120, W + 60, 260), fill=(20, 184, 164, max(0, 18 - i // 30)))
+
+    # wash inferior izquierda
+    for i in range(280):
+        a = int(22 * (1 - i / 280))
+        d.ellipse((-160, H - 340 + i // 4, 320, H + 80), fill=(13, 122, 109, a // 3))
+
+    # malla de puntos
+    step = 28
+    for y in range(40, H - 20, step):
+        for x in range(40, W - 20, step):
+            if (x + y) % (step * 2) == 0:
+                d.ellipse((x, y, x + 2, y + 2), fill=(20, 184, 164, 28))
+
+    # arco / curva decorativa
+    if mode == "h":
+        d.arc((40, 40, 520, 520), start=200, end=340, fill=(20, 184, 164, 55), width=2)
+        d.line((560, 120, 560, H - 80), fill=(20, 184, 164, 40), width=1)
+    else:
+        d.arc((W // 2 - 260, 20, W // 2 + 260, 540), start=200, end=340, fill=(20, 184, 164, 50), width=2)
+
+    composed = Image.alpha_composite(base, overlay).convert("RGB")
+    canvas.paste(composed)
+
+
+def draw_code_chip(canvas: Image.Image, x: int, y: int, text: str = 'const jo = "fullstack"') -> Image.Image:
+    """Ventanita tipo editor — acento de marca tech. Devuelve canvas RGB."""
+    f = font(14)
+    tw = int(ImageDraw.Draw(canvas).textlength(text, font=f))
+    w, h = tw + 14 * 2 + 36, 34
+    base = canvas.convert("RGBA")
+    layer = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    d.rounded_rectangle((x + 3, y + 4, x + w + 3, y + h + 4), radius=8, fill=(0, 0, 0, 28))
+    d.rounded_rectangle((x, y, x + w, y + h), radius=8, fill=(15, 40, 44, 235))
+    for i, col in enumerate(((255, 95, 86), (255, 189, 46), (39, 201, 63))):
+        d.ellipse((x + 10 + i * 12, y + 12, x + 18 + i * 12, y + 20), fill=col + (255,))
+    d.text((x + 48, y + 9), text, fill=(180, 245, 230, 255), font=f)
+    return Image.alpha_composite(base, layer).convert("RGB")
+
+
+def draw_contact_row(
+    draw: ImageDraw.ImageDraw,
+    x: int,
+    y: int,
+    lab: str,
+    val: str,
+    center: bool = False,
+    width: int = 900,
+) -> None:
+    f_lab = font(12, bold=True)
+    f_val = font(18, bold=True)
+    # bullet turquesa
+    if center:
+        block_w = max(draw.textlength(lab, font=f_lab), draw.textlength(val, font=f_val))
+        cx = (width - block_w) / 2
+        draw.ellipse((cx - 18, y + 22, cx - 8, y + 32), fill=TEAL)
+        draw.text((cx, y), lab, fill=TEAL_DEEP, font=f_lab)
+        draw.text((cx, y + 18), val, fill=INK, font=f_val)
+    else:
+        draw.ellipse((x, y + 22, x + 10, y + 32), fill=TEAL)
+        draw.text((x + 18, y), lab, fill=TEAL_DEEP, font=f_lab)
+        draw.text((x + 18, y + 18), val, fill=INK, font=f_val)
+
+
 def build_horizontal() -> Image.Image:
     W, H = 1600, 1001
     canvas = Image.new("RGB", (W, H), WHITE)
+    paint_atmosphere(canvas, "h")
     draw = ImageDraw.Draw(canvas)
-    # faint DEVELOPER
-    fbig = font(120, bold=True)
-    draw.text((-10, 220), "DEVELOPER", fill=(232, 246, 244), font=fbig)
+
+    # marco sutil
+    draw.rounded_rectangle((18, 18, W - 19, H - 19), radius=18, outline=(20, 184, 164, 255), width=2)
+    draw.rounded_rectangle((28, 28, W - 29, H - 29), radius=14, outline=(230, 240, 238), width=1)
+
+    # marca de agua tipográfica
+    fbig = font(118, bold=True)
+    draw.text((36, 210), "DEV", fill=(225, 242, 239), font=fbig)
 
     photo = Image.open(PHOTO)
     pol = draw_polaroid(photo, "desarrolladora fullstack", inner_w=360)
     pol = rotate(pol, 3.5)
-    canvas.paste(pol, (90, 160), pol)
+    canvas.paste(pol, (100, 150), pol)
+
+    # chip código flotante
+    canvas = draw_code_chip(canvas, 70, 70, 'stack: "web · woo · ui"')
+    draw = ImageDraw.Draw(canvas)
 
     # right column
-    x0 = 620
-    y = 160
+    x0 = 640
+    y = 150
     f_name = font(52, bold=True)
     draw.text((x0, y), "Josefa Ogalde", fill=INK, font=f_name)
-    y += 78
+    y += 68
+    # acento bajo el nombre
+    draw.rounded_rectangle((x0, y, x0 + 72, y + 5), radius=3, fill=TEAL)
+    y += 28
 
     f_eye = font(16, bold=True)
     f_mi = font_serif(22)
     draw.text((x0, y), "SOBRE ", fill=INK, font=f_eye)
     ow = draw.textlength("SOBRE ", font=f_eye)
     draw.text((x0 + ow, y - 2), "mí", fill=TEAL, font=f_mi)
-    y += 42
+    y += 40
 
     f_title = font(22, bold=True)
     draw.text((x0, y), "DESARROLLADORA FULLSTACK", fill=INK, font=f_title)
-    y += 48
+    y += 44
 
     f_bio = font(20)
     bio = (
         "Especializada en sitios web, tiendas online y proyectos WordPress/"
         "WooCommerce. Acompañamiento post-entrega para que gestiones tu sitio con confianza."
     )
-    for line in wrap_text(draw, bio, f_bio, 820):
+    for line in wrap_text(draw, bio, f_bio, 800):
         draw.text((x0, y), line, fill=MUTED, font=f_bio)
         y += 28
-    y += 22
+    y += 20
 
-    # button contacto
-    bw, bh = 200, 52
-    draw.rounded_rectangle((x0, y, x0 + bw, y + bh), radius=10, fill=TEAL)
+    bw, bh = 210, 54
+    # sombra del botón
+    draw.rounded_rectangle((x0 + 3, y + 4, x0 + bw + 3, y + bh + 4), radius=12, fill=(20, 184, 164))
+    draw.rounded_rectangle((x0, y, x0 + bw, y + bh), radius=12, fill=TEAL)
     f_btn = font(20, bold=True)
     label = "contacto"
     lw = draw.textlength(label, font=f_btn)
-    draw.text((x0 + (bw - lw) / 2, y + 14), label, fill=WHITE, font=f_btn)
-    y += bh + 36
+    draw.text((x0 + (bw - lw) / 2, y + 15), label, fill=WHITE, font=f_btn)
+    y += bh + 40
 
-    f_lab = font(13, bold=True)
-    f_val = font(20, bold=True)
     rows = [
         ("EMAIL", "josefaogalde@gmail.com"),
         ("WHATSAPP", "+56 9 6604 7614"),
@@ -174,17 +264,16 @@ def build_horizontal() -> Image.Image:
     col_w = 360
     for i, (lab, val) in enumerate(rows):
         cx = x0 + (i % 2) * col_w
-        cy = y + (i // 2) * 64
-        draw.text((cx, cy), lab, fill=TEAL_DEEP, font=f_lab)
-        draw.text((cx, cy + 20), val, fill=INK, font=f_val)
+        cy = y + (i // 2) * 66
+        draw_contact_row(draw, cx, cy, lab, val)
 
     # chip WA
     chip = "+56 9 6604 7614"
     f_chip = font(16, bold=True)
     cw = int(draw.textlength(chip, font=f_chip)) + 48
     ch = 36
-    cx, cy = 40, H - 56
-    draw.rounded_rectangle((cx, cy, cx + cw, cy + ch), radius=18, fill=WHITE, outline=(230, 230, 230))
+    cx, cy = 48, H - 64
+    draw.rounded_rectangle((cx, cy, cx + cw, cy + ch), radius=18, fill=WHITE, outline=TEAL)
     draw.ellipse((cx + 10, cy + 12, cx + 22, cy + 24), fill=(37, 211, 102))
     draw.text((cx + 30, cy + 8), chip, fill=INK, font=f_chip)
     return canvas
@@ -193,35 +282,46 @@ def build_horizontal() -> Image.Image:
 def build_vertical() -> Image.Image:
     W, H = 900, 1236
     canvas = Image.new("RGB", (W, H), WHITE)
+    paint_atmosphere(canvas, "v")
     draw = ImageDraw.Draw(canvas)
+
+    draw.rounded_rectangle((16, 16, W - 17, H - 17), radius=18, outline=TEAL, width=2)
+    draw.rounded_rectangle((26, 26, W - 27, H - 27), radius=14, outline=(230, 240, 238), width=1)
+
+    canvas = draw_code_chip(canvas, (W - 280) // 2, 36, 'stack: "web · woo · ui"')
+    draw = ImageDraw.Draw(canvas)
+
     photo = Image.open(PHOTO)
-    pol = draw_polaroid(photo, "desarrolladora fullstack", inner_w=480)
+    pol = draw_polaroid(photo, "desarrolladora fullstack", inner_w=460)
     pol = rotate(pol, 2.8)
     px = (W - pol.width) // 2
-    canvas.paste(pol, (px, 48), pol)
+    canvas.paste(pol, (px, 88), pol)
 
-    y = 48 + pol.height + 8
-    f_name = font(42, bold=True)
+    y = 88 + pol.height + 4
+    f_name = font(40, bold=True)
     name = "Josefa Ogalde"
     nw = draw.textlength(name, font=f_name)
     draw.text(((W - nw) / 2, y), name, fill=INK, font=f_name)
-    y += 62
+    y += 54
+    # acento centrado
+    bar_w = 64
+    draw.rounded_rectangle(((W - bar_w) / 2, y, (W + bar_w) / 2, y + 5), radius=3, fill=TEAL)
+    y += 24
 
     f_eye = font(15, bold=True)
     f_mi = font_serif(20)
     line = "SOBRE "
-    # center sobre mí
     total = draw.textlength(line, font=f_eye) + draw.textlength("mí", font=f_mi)
     sx = (W - total) // 2
     draw.text((sx, y), line, fill=INK, font=f_eye)
     draw.text((sx + draw.textlength(line, font=f_eye), y - 2), "mí", fill=TEAL, font=f_mi)
-    y += 36
+    y += 34
 
     f_title = font(20, bold=True)
     title = "DESARROLLADORA FULLSTACK"
     tw = draw.textlength(title, font=f_title)
     draw.text(((W - tw) / 2, y), title, fill=INK, font=f_title)
-    y += 40
+    y += 36
 
     f_bio = font(18)
     bio = "Sitios web, tiendas online y WordPress/WooCommerce. Acompañamiento post-entrega para que gestiones tu sitio con confianza."
@@ -229,29 +329,25 @@ def build_vertical() -> Image.Image:
         lw = draw.textlength(line, font=f_bio)
         draw.text(((W - lw) / 2, y), line, fill=MUTED, font=f_bio)
         y += 26
-    y += 18
+    y += 16
 
     bw, bh = 220, 52
     bx = (W - bw) // 2
-    draw.rounded_rectangle((bx, y, bx + bw, y + bh), radius=10, fill=TEAL)
+    draw.rounded_rectangle((bx + 3, y + 4, bx + bw + 3, y + bh + 4), radius=12, fill=(13, 150, 134))
+    draw.rounded_rectangle((bx, y, bx + bw, y + bh), radius=12, fill=TEAL)
     f_btn = font(20, bold=True)
     label = "contacto"
     lw = draw.textlength(label, font=f_btn)
     draw.text((bx + (bw - lw) / 2, y + 14), label, fill=WHITE, font=f_btn)
-    y += bh + 28
+    y += bh + 26
 
-    f_lab = font(13, bold=True)
-    f_val = font(20, bold=True)
     for lab, val in (
         ("EMAIL", "josefaogalde@gmail.com"),
         ("WHATSAPP", "+56 9 6604 7614"),
         ("GITHUB", "github.com/JosefaOgalde"),
     ):
-        lw = draw.textlength(lab, font=f_lab)
-        draw.text(((W - lw) / 2, y), lab, fill=TEAL_DEEP, font=f_lab)
-        vw = draw.textlength(val, font=f_val)
-        draw.text(((W - vw) / 2, y + 18), val, fill=INK, font=f_val)
-        y += 56
+        draw_contact_row(draw, 0, y, lab, val, center=True, width=W)
+        y += 54
     return canvas
 
 
