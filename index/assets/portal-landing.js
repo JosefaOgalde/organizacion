@@ -5,6 +5,19 @@
   const API_URL = '/api/clientes';
   const ACTIVO_KEY = 'portal_clientes_activo_v1';
 
+  /** Sin F12: ?resetActivo=1 limpia overrides de Reactivar. */
+  try {
+    const qs = new URLSearchParams(location.search || '');
+    if (qs.get('resetActivo') === '1') {
+      localStorage.removeItem(ACTIVO_KEY);
+      qs.delete('resetActivo');
+      const next = `${location.pathname}${qs.toString() ? `?${qs}` : ''}${location.hash || ''}`;
+      history.replaceState(null, '', next);
+    }
+  } catch {
+    /* ignore */
+  }
+
   /** Abreviaturas / slugs cortos → carpeta real (por si la API aún trae legacy). */
   const SLUG_CARPETA = {
     ts: 'trendseeker',
