@@ -3,6 +3,7 @@
   if (!grid) return;
 
   const API_URL = '/api/clientes';
+  const ACTIVO_KEY = 'portal_clientes_activo_v1';
 
   /** Abreviaturas / slugs cortos → carpeta real (por si la API aún trae legacy). */
   const SLUG_CARPETA = {
@@ -17,12 +18,35 @@
     her: 'herramientas',
   };
 
+  const GRIS = { border: '#9a9a9a', bg: '#ececec', text: '#5a5a5a' };
+
   function escapeHtml(s) {
     return String(s ?? '')
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function leerOverridesActivo() {
+    try {
+      const raw = localStorage.getItem(ACTIVO_KEY);
+      const data = raw ? JSON.parse(raw) : {};
+      return data && typeof data === 'object' ? data : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function guardarOverrideActivo(id, activo) {
+    if (!id) return;
+    const map = leerOverridesActivo();
+    map[id] = !!activo;
+    try {
+      localStorage.setItem(ACTIVO_KEY, JSON.stringify(map));
+    } catch {
+      /* ignore */
+    }
   }
 
   /** Une slugs de la API con CLIENTES_PORTAL (id, slug, aliases, abrev). */
@@ -95,6 +119,19 @@
     return `clientes/${archivo}`;
   }
 
+  /** Activo salvo override localStorage o flag en datos/estático. */
+  function esActivo(c) {
+    const id = String(c.id || '');
+    const overrides = leerOverridesActivo();
+    if (id && Object.prototype.hasOwnProperty.call(overrides, id)) {
+      return !!overrides[id];
+    }
+    if (c.activo === false) return false;
+    const estatico = findEstatico(c);
+    if (estatico && estatico.activo === false) return false;
+    return true;
+  }
+
   /** Evita tarjetas repetidas (p. ej. slug ts + trendseeker). */
   function dedupeClientes(lista) {
     const out = [];
@@ -110,24 +147,88 @@
     return out;
   }
 
-  function renderTarjetas(lista, origen) {
-    const unica = dedupeClientes(lista);
-    grid.innerHTML = unica
-      .map((c) => {
-        const estatico = findEstatico(c);
-        const col = colorDe(c, estatico);
-        const archivo = archivoDe(c);
-        const agente = c.agente || estatico?.agente || '';
-        return `
+  function tarjetaActivaHtml(c, origen) {
+    const estatico = findEstatico(c);
+    const col = colorDe(c, estatico);
+    const archivo = archivoDe(c);
+    const agente = c.agente || estatico?.agente || '';
+    return `
     <a href="${hrefFicha(archivo)}" class="portal-card"
        style="--card-border:${col.border};--card-bg:${col.bg};--card-text:${col.text}">
       <div class="portal-card__tipo">${escapeHtml(tipoLabel(c.tipo))}${origen === 'api' ? ' · API' : ''}</div>
       <h2 class="portal-card__nombre">${escapeHtml(c.nombre)}</h2>
       <div class="portal-card__abrev">${escapeHtml(c.abrev)}${agente ? ` · ${escapeHtml(agente)}` : ''}</div>
     </a>`;
-      })
-      .join('');
   }
+
+  function tarjetaInactivaHtml(c, origen) {
+    const estatico = findEstatico(c);
+    const archivo = archivoDe(c);
+    const agente = c.agente || estatico?.agente || '';
+    const id = escapeHtml(c.id || '');
+    return `
+    <article class="portal-card portal-card--inactivo"
+       style="--card-border:${GRIS.border};--card-bg:${GRIS.bg};--card-text:${GRIS.text}">
+      <a href="${hrefFicha(archivo)}" class="portal-card__link">
+        <div class="portal-card__tipo">Inactivo · ${escapeHtml(tipoLabel(c.tipo))}${origen === 'api' ? ' · API' : ''}</div>
+        <h2 class="portal-card__nombre">${escapeHtml(c.nombre)}</h2>
+        <div class="portal-card__abrev">${escapeHtml(c.abrev)}${agente ? ` · ${escapeHtml(agente)}` : ''}</div>
+      </a>
+      <button type="button" class="portal-card__reactivar" data-reactivar="${id}">Reactivar</button>
+    </article>`;
+  }
+
+  function asegurarSeccionInactivos() {
+    let sec = document.getElementById('clientes-inactivos');
+    if (sec) return sec;
+    sec = document.createElement('section');
+    sec.id = 'clientes-inactivos';
+    sec.className = 'portal-inactivos';
+    sec.hidden = true;
+    sec.innerHTML = `
+      <header class="portal-inactivos__head">
+        <h2 class="portal-inactivos__titulo">Clientes inactivos</h2>
+        <p class="portal-inactivos__texto">Sin pendientes ni cotización. Podés reactivarlos cuando haga falta.</p>
+      </header>
+      <div id="clientes-grid-inactivos" class="portal-grid portal-grid--inactivos"></div>`;
+    grid.insertAdjacentElement('afterend', sec);
+    return sec;
+  }
+
+  function renderTarjetas(lista, origen) {
+    const unica = dedupeClientes(lista);
+    const activos = [];
+    const inactivos = [];
+    unica.forEach((c) => (esActivo(c) ? activos : inactivos).push(c));
+
+    grid.innerHTML = activos.map((c) => tarjetaActivaHtml(c, origen)).join('');
+
+    const sec = asegurarSeccionInactivos();
+    const gridIn = document.getElementById('clientes-grid-inactivos');
+    if (!inactivos.length) {
+      sec.hidden = true;
+      if (gridIn) gridIn.innerHTML = '';
+      return;
+    }
+    sec.hidden = false;
+    if (gridIn) {
+      gridIn.innerHTML = inactivos.map((c) => tarjetaInactivaHtml(c, origen)).join('');
+    }
+  }
+
+  let listaActual = [];
+  let origenActual = 'static';
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-reactivar]');
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const id = btn.getAttribute('data-reactivar');
+    if (!id) return;
+    guardarOverrideActivo(id, true);
+    renderTarjetas(listaActual, origenActual);
+  });
 
   async function cargar() {
     try {
@@ -135,14 +236,18 @@
       if (!res.ok) throw new Error('API no disponible');
       const data = await res.json();
       if (!Array.isArray(data) || !data.length) throw new Error('API vacía');
-      renderTarjetas(data, 'api');
+      listaActual = data;
+      origenActual = 'api';
+      renderTarjetas(listaActual, origenActual);
       console.info('Portal: clientes desde API Laravel', API_URL);
     } catch (e) {
       if (typeof CLIENTES_PORTAL === 'undefined') {
         grid.innerHTML = '<p class="portal-paso">Sin API ni datos estáticos. Arranca ABRIR-LARAVEL.bat.</p>';
         return;
       }
-      renderTarjetas(CLIENTES_PORTAL, 'static');
+      listaActual = CLIENTES_PORTAL;
+      origenActual = 'static';
+      renderTarjetas(listaActual, origenActual);
       console.warn('Portal: usando clientes-data.js (API no disponible)', e.message);
     }
   }

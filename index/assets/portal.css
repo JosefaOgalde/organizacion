@@ -181,6 +181,85 @@ body > .portal-nav ~ p {
   opacity: 0.82;
 }
 
+/* —— Clientes inactivos (sin pendientes / sin cotización) —— */
+.portal-inactivos {
+  margin-top: 2.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #d8d8d8;
+}
+
+.portal-inactivos__head {
+  margin-bottom: 1rem;
+}
+
+.portal-inactivos__titulo {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #6a6a6a;
+  letter-spacing: 0.02em;
+}
+
+.portal-inactivos__texto {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #8a8a8a;
+  max-width: 40rem;
+}
+
+.portal-grid--inactivos {
+  opacity: 0.95;
+}
+
+.portal-card--inactivo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  filter: grayscale(0.35);
+  box-shadow: none;
+  background: #ececec !important;
+  border-color: #c8c8c8 !important;
+  border-left-color: #9a9a9a !important;
+  color: #5a5a5a;
+}
+
+.portal-card--inactivo:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.portal-card__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+}
+
+.portal-card--inactivo .portal-card__tipo,
+.portal-card--inactivo .portal-card__nombre,
+.portal-card--inactivo .portal-card__abrev {
+  color: #5a5a5a !important;
+}
+
+.portal-card__reactivar {
+  align-self: flex-start;
+  border: 1px solid #9a9a9a;
+  background: #f7f7f7;
+  color: #444;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.portal-card__reactivar:hover {
+  background: #fff;
+  border-color: #6a6a6a;
+  color: #222;
+}
+
 /* —— Página con identidad de cliente/proyecto (misma paleta que tarjetas) —— */
 body.portal-body--themed {
   background: var(--card-bg);

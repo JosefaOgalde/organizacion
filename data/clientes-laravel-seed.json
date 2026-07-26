@@ -73,12 +73,13 @@
       "nombre": "Joyas Mercury",
       "abrev": "JM",
       "tipo": "freelance",
+      "activo": false,
       "color": "rosa",
       "color_border": "#C45A7A",
       "color_bg": "#F8E8EE",
       "color_text": "#6E2A40",
       "agente": "Agente Joyas Mercury",
-      "resumen": "Etapa 2 — Rediseño joyasmercury.cl"
+      "resumen": "Etapa 2 cerrada — Rediseño joyasmercury.cl"
     },
     {
       "id": "cli-sie",
