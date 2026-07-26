@@ -696,11 +696,11 @@
       minutosPintado: 0,
       unidadesMetal: 1,
       unidadesBolsa: 1,
-      precioVentaSugeridoClp: 0,
+      precioVentaSugeridoClp: 1000,
       costoSlicerRef: 0.34,
       pendienteCosto: false,
       notas:
-        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 5,58 m · 35 m 31 s · coste slicer 0,34. PLA amarillo $16.829/kg. +$50 argolla.`,
+        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 5,58 m · 35 m 31 s · coste slicer 0,34. PLA amarillo $16.829/kg. +$50 argolla. PVP $1.000.`,
     };
   }
 
@@ -1396,12 +1396,14 @@
       changed = true;
     }
 
-    // PED-004 · Ele SIE · Llavero Pesa Rusa amarillo · listo (impreso)
+    // PED-004 · Ele SIE · Llavero Pesa Rusa amarillo · listo (impreso) · PVP $1.000
     const id004 = 'ped-ele-pesa-rusa-004';
     const prodPesa = (d.productos || []).find(
       (p) => p.id === 'prod-llavero-pesa-rusa' || p.sku === 'LLPESRU001'
     );
     const costoPesa = prodPesa ? costoProdRough(d, prodPesa) : 415.43;
+    const precioPesa =
+      Number(prodPesa?.precioVentaSugeridoClp) > 0 ? Number(prodPesa.precioVentaSugeridoClp) : 1000;
     if (!d.pedidos.some((p) => p.id === id004 || p.numero === 'PED-004')) {
       d.pedidos.push({
         id: id004,
@@ -1416,7 +1418,7 @@
             sku: 'LLPESRU001',
             nombre: 'Llavero Pesa Rusa',
             cantidad: 1,
-            precioUnitarioClp: 0,
+            precioUnitarioClp: precioPesa,
             costoUnitarioClp: round2(costoPesa),
             filamento: 'PLA amarillo',
             estado: 'listo',
@@ -1424,13 +1426,13 @@
             enImpresion: 0,
           },
         ],
-        montoBruto: 0,
+        montoBruto: precioPesa,
         descuentoClp: 0,
-        montoNeto: 0,
+        montoNeto: precioPesa,
         costoTotal: round2(costoPesa),
         estado: 'listo',
         ventaId: null,
-        notas: `1× Llavero Pesa Rusa amarillo · impreso/listo · costo $${round2(costoPesa)} · pendiente precio venta`,
+        notas: `1× Llavero Pesa Rusa amarillo · listo/impreso · costo $${round2(costoPesa)} · PVP $${precioPesa}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T01:40:00.000Z',
       });
@@ -1449,10 +1451,18 @@
       }
       if (ped004 && ped004.estado !== 'transferido') {
         const it = (ped004.items || [])[0];
-        if (it && (!(Number(it.costoUnitarioClp) > 0) || Number(it.costoUnitarioClp) !== round2(costoPesa))) {
-          it.costoUnitarioClp = round2(costoPesa);
-          ped004.costoTotal = round2(costoPesa);
-          changed = true;
+        if (it) {
+          if (!(Number(it.costoUnitarioClp) > 0) || Number(it.costoUnitarioClp) !== round2(costoPesa)) {
+            it.costoUnitarioClp = round2(costoPesa);
+            ped004.costoTotal = round2(costoPesa);
+            changed = true;
+          }
+          if (!(Number(it.precioUnitarioClp) > 0)) {
+            it.precioUnitarioClp = precioPesa;
+            ped004.montoBruto = precioPesa;
+            ped004.montoNeto = precioPesa;
+            changed = true;
+          }
         }
       }
     }
