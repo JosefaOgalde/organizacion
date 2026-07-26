@@ -62,6 +62,10 @@ function main() {
       existing.extrusor = si.extrusor;
       touched = true;
     }
+    if (!existing.alias && si.alias) {
+      existing.alias = si.alias;
+      touched = true;
+    }
     if (!(Number(existing.consumoImpresoraKw) > 0) && Number(si.consumoImpresoraKw) > 0) {
       existing.consumoImpresoraKw = si.consumoImpresoraKw;
       touched = true;

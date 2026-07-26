@@ -111,7 +111,7 @@ Reglas al crear:
 Responder **pidiendo la imagen** (foto del producto / captura slicer) y, si no viene en la imagen:
 
 - gramos de filamento · horas de impresión · tipo/color y $/kg (o usar tabla PLA+ negro/rojo $17.986, amarillo/café $16.829, blanco $12.690)
-- **qué impresora:** Centauri (default) o **Ender 3 V2 Neo / Sprite Neo** (antigua · otro filamento)
+- **qué impresora:** «nueva»/Elegoo Centauri (default) o «antigua»/Ender 3 V2 Neo Sprite Neo (otro filamento)
 - si lleva argolla metal (+$50) o bolsa
 
 Calcular con la fórmula del panel y devolver costo/u + PVP sugerido (+margen 100% si no indican otro). Si es Ender, usar perfil `imp-ender-3-v2-neo` (recargo + consumo propios; $/kg del otro filamento si lo dan). Si no hay SKU, generarlo. Si piden guardar producto, crear/actualizar en Costos con `impresoraId`.
@@ -128,19 +128,25 @@ Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio
 
 ### Impresoras (perfiles de costo) — obligatorio recordar
 
+**Alias de lenguaje (no negociar):**
+- «impresora **antigua**» / «la vieja» / «Ender» → siempre `imp-ender-3-v2-neo` (**Creality Ender 3 V2 Neo · Sprite Neo**)
+- «impresora **nueva**» / «la Elegoo» / «Centauri» → siempre `imp-centauri-carbon-2` (**Elegoo Centauri Carbon 2**)
+
 Datos en `data.impresoras[]` (seed + live) y UI **Operación → Impresoras**. Cada producto puede tener `impresoraId`.
 
-| id | Modelo | Extrusor | Uso |
-|----|--------|----------|-----|
-| `imp-centauri-carbon-2` | Elegoo Centauri Carbon 2 | stock / multicolor | **Default** · filamentos tabla arriba |
-| `imp-ender-3-v2-neo` | Creality **Ender 3 V2 Neo** | **Sprite Neo (extrusión directa)** | Impresora **antigua** · suele usar **otro filamento** |
+| id | Modelo | Extrusor | Alias usuaria |
+|----|--------|----------|---------------|
+| `imp-centauri-carbon-2` | **Elegoo** Centauri Carbon 2 | stock / multicolor | **Nueva** (default) · filamentos tabla arriba |
+| `imp-ender-3-v2-neo` | Creality **Ender 3 V2 Neo** | **Sprite Neo (extrusión directa)** | **Antigua** · suele usar **otro filamento** |
 
-**Ender 3 V2 Neo (Sprite Neo):**
+**Antigua = Ender 3 V2 Neo (Sprite Neo):**
 - Perfil guardado para cálculos cuando imprimen ahí (otro filamento).
 - Defaults: consumo ~`0.16` kW · recargo fijo `$1.000` · `costoFilamentoDefaultKgClp` (definir en Operación cuando sepan el $/kg del rollo).
 - Si el producto no trae `$/kg`, usa el default del perfil Ender.
 - UI: Operación → **Guardar perfil Ender**; Costos → select Impresora; calculadora rápida también elige impresora.
 - Ejemplo seed: `TORREON001` → `impresoraId: imp-ender-3-v2-neo`.
+
+**Nueva = Elegoo Centauri Carbon 2:** default de costos salvo que digan antigua/Ender.
 
 ### SKUs clave (seed / `asegurarProducto*`)
 

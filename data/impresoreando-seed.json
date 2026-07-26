@@ -120,17 +120,19 @@
     {
       "id": "imp-centauri-carbon-2",
       "nombre": "Elegoo Centauri Carbon 2",
+      "alias": "nueva",
       "activaDefault": true,
       "extrusor": "Sistema stock / multicolor",
       "consumoImpresoraKw": 0.28,
       "tarifaKwhClp": 200,
       "recargoFijoClp": 0,
       "costoFilamentoDefaultKgClp": 0,
-      "notas": "Impresora principal. Pico ~1100 W @ 220 V · promedio PLA ~0,28 kW. Usar salvo que el producto diga otra."
+      "notas": "Impresora NUEVA (Elegoo). Pico ~1100 W @ 220 V · promedio PLA ~0,28 kW. Default salvo que digan antigua/Ender."
     },
     {
       "id": "imp-ender-3-v2-neo",
       "nombre": "Creality Ender 3 V2 Neo",
+      "alias": "antigua",
       "activaDefault": false,
       "extrusor": "Sprite Neo (extrusión directa)",
       "consumoImpresoraKw": 0.16,
@@ -138,7 +140,7 @@
       "recargoFijoClp": 1000,
       "costoFilamentoDefaultKgClp": 0,
       "filamentoOtro": true,
-      "notas": "Impresora antigua · extrusión directa Sprite Neo. Otro filamento (definir $/kg en Operación o en el producto). Recargo fijo $1.000 + consumo ~0,16 kW."
+      "notas": "Impresora ANTIGUA (Ender 3 V2 Neo · Sprite Neo). Otro filamento (definir $/kg en Operación o en el producto). Recargo fijo $1.000 + consumo ~0,16 kW. Si dicen «impresora antigua» → esta."
     }
   ],
   "gastos": [

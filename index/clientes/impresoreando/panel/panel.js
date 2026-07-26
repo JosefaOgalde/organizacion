@@ -287,11 +287,15 @@
       'Pico nominal 1100 W @ 220 V. Promedio estimado en impresión PLA con cama caliente: 0,28 kW. Tarifa ~$200/kWh (precio efectivo boleta residencial Chile 2026; ajústala a tu cuenta).',
   };
 
-  /** Perfiles de impresora para costos (Centauri = default · Ender = antigua / otro filamento). */
+  /**
+   * Perfiles de impresora para costos.
+   * Alias usuaria: «nueva» / Elegoo = Centauri · «antigua» = Ender 3 V2 Neo (Sprite Neo).
+   */
   const IMPRESORAS_SEED = [
     {
       id: 'imp-centauri-carbon-2',
       nombre: 'Elegoo Centauri Carbon 2',
+      alias: 'nueva',
       activaDefault: true,
       extrusor: 'Sistema stock / multicolor',
       consumoImpresoraKw: 0.28,
@@ -299,11 +303,12 @@
       recargoFijoClp: 0,
       costoFilamentoDefaultKgClp: 0,
       notas:
-        'Impresora principal. Pico ~1100 W @ 220 V · promedio PLA ~0,28 kW. Usar salvo que el producto diga otra.',
+        'Impresora NUEVA (Elegoo). Pico ~1100 W @ 220 V · promedio PLA ~0,28 kW. Default salvo que digan antigua/Ender.',
     },
     {
       id: 'imp-ender-3-v2-neo',
       nombre: 'Creality Ender 3 V2 Neo',
+      alias: 'antigua',
       activaDefault: false,
       extrusor: 'Sprite Neo (extrusión directa)',
       consumoImpresoraKw: 0.16,
@@ -312,7 +317,7 @@
       costoFilamentoDefaultKgClp: 0,
       filamentoOtro: true,
       notas:
-        'Impresora antigua · extrusión directa Sprite Neo. Suele usar otro filamento (definir $/kg en el producto o en este perfil). Menos económica: recargo fijo $1.000 + consumo ~0,16 kW (ajustable). Usar al calcular piezas hechas en Ender.',
+        'Impresora ANTIGUA (Ender 3 V2 Neo · Sprite Neo). Suele usar otro filamento (definir $/kg en el producto o en este perfil). Recargo fijo $1.000 + consumo ~0,16 kW. Si dicen «impresora antigua» → esta.',
     },
   ];
 
@@ -335,6 +340,10 @@
       }
       if (!existing.extrusor) {
         existing.extrusor = seed.extrusor;
+        changed = true;
+      }
+      if (!existing.alias && seed.alias) {
+        existing.alias = seed.alias;
         changed = true;
       }
       if (!(Number(existing.consumoImpresoraKw) > 0)) {
@@ -3700,10 +3709,16 @@
     const filasImp = imps
       .map((im) => {
         const luzH = Number(im.tarifaKwhClp || p.tarifaKwhClp || 0) * Number(im.consumoImpresoraKw || 0);
+        const aliasLbl =
+          im.alias === 'antigua'
+            ? '<div class="imp-badge">Antigua</div>'
+            : im.alias === 'nueva' || im.activaDefault
+              ? '<div class="imp-badge imp-badge--ok">Nueva · default</div>'
+              : '';
         return `<tr>
           <td><strong>${escapeHtml(im.nombre)}</strong>
             <div class="imp-muted">${escapeHtml(im.extrusor || '')}</div>
-            ${im.activaDefault ? '<div class="imp-badge imp-badge--ok">Default</div>' : ''}
+            ${aliasLbl}
           </td>
           <td class="num">${Number(im.consumoImpresoraKw || 0).toFixed(2)} kW</td>
           <td class="num">${money(luzH)}/h</td>
@@ -3718,7 +3733,7 @@
     $('#tab-operacion').innerHTML = `
       <div class="imp-card">
         <h2>Impresoras (perfiles de costo)</h2>
-        <p class="imp-muted">Elegí la impresora en cada producto (Costos). La <strong>Ender 3 V2 Neo · Sprite Neo</strong> es la antigua: otro filamento posible + recargo fijo.</p>
+        <p class="imp-muted"><strong>Nueva</strong> = Elegoo Centauri · <strong>Antigua</strong> = Ender 3 V2 Neo (Sprite Neo, otro filamento + recargo). Elegí la impresora en cada producto (Costos).</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>Impresora</th><th>Consumo</th><th>Luz/h</th><th>Recargo</th><th>$/kg default</th><th>Notas</th></tr></thead>
@@ -3968,10 +3983,11 @@
         const precioVenta = precioVentaProducto(prod, c.total);
         const impId = prod.impresoraId || impresoraDefault()?.id || 'imp-centauri-carbon-2';
         const optsImp = (data.impresoras || IMPRESORAS_SEED)
-          .map(
-            (im) =>
-              `<option value="${escapeHtml(im.id)}"${im.id === impId ? ' selected' : ''}>${escapeHtml(im.nombre)}${im.extrusor ? ` · ${escapeHtml(im.extrusor)}` : ''}</option>`
-          )
+          .map((im) => {
+            const tag =
+              im.alias === 'antigua' ? 'Antigua · ' : im.alias === 'nueva' || im.activaDefault ? 'Nueva · ' : '';
+            return `<option value="${escapeHtml(im.id)}"${im.id === impId ? ' selected' : ''}>${tag}${escapeHtml(im.nombre)}${im.extrusor ? ` · ${escapeHtml(im.extrusor)}` : ''}</option>`;
+          })
           .join('');
         return `
         <div class="imp-card imp-card--prod" data-prod-id="${pid}">
@@ -4043,10 +4059,15 @@
         <form class="imp-form" id="form-calc-pieza">
           <label class="imp-form-span">Impresora
             <select name="impresoraId">${(data.impresoras || IMPRESORAS_SEED)
-              .map(
-                (im) =>
-                  `<option value="${escapeHtml(im.id)}"${im.activaDefault ? ' selected' : ''}>${escapeHtml(im.nombre)}${im.extrusor ? ` · ${escapeHtml(im.extrusor)}` : ''}</option>`
-              )
+              .map((im) => {
+                const tag =
+                  im.alias === 'antigua'
+                    ? 'Antigua · '
+                    : im.alias === 'nueva' || im.activaDefault
+                      ? 'Nueva · '
+                      : '';
+                return `<option value="${escapeHtml(im.id)}"${im.activaDefault ? ' selected' : ''}>${tag}${escapeHtml(im.nombre)}${im.extrusor ? ` · ${escapeHtml(im.extrusor)}` : ''}</option>`;
+              })
               .join('')}</select>
           </label>
           <label>Modelo (g)<input name="modelo" type="number" step="0.01" value="135.55" /></label>
