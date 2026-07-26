@@ -12,10 +12,11 @@ Negocio de **impresiones 3D** (Instagram: **@impresoreando**). Sociedad **50/50*
 
 ## Panel (gastos, ventas, luz, costos, ads)
 
-URL local:
+URL local (tras `ABRIR-LARAVEL.bat`):
 
 ```
-http://localhost:3000/index/clientes/impresoreando/panel/
+http://127.0.0.1:8000/index/clientes/impresoreando/panel/
+http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen
 ```
 
 Incluye:
