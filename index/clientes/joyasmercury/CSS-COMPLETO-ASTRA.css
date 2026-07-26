@@ -1,7 +1,10 @@
 /**
  * Joyas Mercury — CSS COMPLETO Astra (todo en uno)
- * VERSIÓN: 2026-07-19-ultimas-responsive  ·  Últimas 2 cols legibles + swipe
- * Origen: rama cursor/jm-css-hero-contain-6a09 (recuperado a esta rama)
+ * VERSIÓN: 2026-07-25-carrito-icono-click
+ *   · Novedades mobile: grilla 2×2 + sin clones Slick
+ *   · Hero: object-position para no recortar tipografía MERCURY
+ *   · Carrito header: clic usable en móvil + drawer con marca JM
+ * Origen: rama cursor/jm-css-hero-contain-6a09 (+ cierre Novedades/carrito 25-jul)
  *
  * Incluye: catálogo/filtros · home/círculos · footer dorado · menú móvil · producto single · etc.
  *
@@ -9,7 +12,7 @@
  * Antes: BORRA el CSS JM anterior del cuadro (no acumular versiones).
  *
  * Si solo quieres piezas sueltas, ver también:
- *   CSS-CIRCULOS-COLECCIONES.css · CSS-FOOTER-JM.css · CSS-VIGENTE.md
+ *   CSS-CIRCULOS-COLECCIONES.css · CSS-FOOTER-JM.css · CSS-CARRITO-BOTON-FIX.css · CSS-VIGENTE.md
  */
 
 /* Joyas Mercury - CSS COMPLETO Astra */
@@ -969,16 +972,22 @@
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    object-position: center center !important;
+    /* Prioriza centro-alto: evita recortar tipografía MERCURY del banner */
+    object-position: center 28% !important;
+  }
+
+  .jm-hero-carrusel .n2-ss-layers-container {
+    overflow: visible !important;
   }
 
   .jm-hero-carrusel .n2-ss-layers-container > .n2-ss-layer {
-    max-width: 92% !important;
+    max-width: 94% !important;
   }
 
   .jm-hero-carrusel .n2-ss-layers-container > .n2-ss-layer img {
     max-width: 100% !important;
     height: auto !important;
+    object-fit: contain !important;
   }
 }
 
@@ -2078,8 +2087,10 @@
     object-fit: contain !important;
   }
 
+  /* No usar overflow-x:hidden en body: rompe el drawer del carrito Astra */
+  html,
   body {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 }
 
@@ -3758,33 +3769,183 @@ body.single-product .jm-producto-ultimas .jm-home-seccion__titulo {
     max-height: none !important;
   }
 
-  /* Novedades sin Slick: card un poco más ancha + peek */
-  .jm-home-novedades:not(:has(.slick-initialized)) ul.products,
-  .elementor-element.jm-home-novedades:not(:has(.slick-initialized)) ul.products {
-    display: flex !important;
-    flex-wrap: nowrap !important;
+  /* Novedades / Destacados mobile: grilla 2×2 (sin carrusel lateral) */
+  .jm-home-novedades .slick-cloned,
+  .jm-home-destacados .slick-cloned,
+  .elementor-element.jm-home-novedades .slick-cloned,
+  .elementor-element.jm-home-destacados .slick-cloned {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    max-width: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .jm-home-novedades .slick-list,
+  .jm-home-destacados .slick-list,
+  .elementor-element.jm-home-novedades .slick-list,
+  .elementor-element.jm-home-destacados .slick-list {
+    overflow: visible !important;
+    height: auto !important;
+    touch-action: pan-y !important;
+  }
+
+  .jm-home-novedades .slick-track,
+  .jm-home-destacados .slick-track,
+  .elementor-element.jm-home-novedades .slick-track,
+  .elementor-element.jm-home-destacados .slick-track {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
     gap: 12px !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    scroll-snap-type: x mandatory !important;
-    padding: 0 8px 12px !important;
+    transform: none !important;
+    width: 100% !important;
+    left: 0 !important;
+    margin: 0 !important;
+  }
+
+  .jm-home-novedades .slick-slide,
+  .jm-home-destacados .slick-slide,
+  .elementor-element.jm-home-novedades .slick-slide,
+  .elementor-element.jm-home-destacados .slick-slide {
+    width: auto !important;
+    float: none !important;
+    margin: 0 !important;
+  }
+
+  .jm-home-novedades .slick-arrow,
+  .jm-home-novedades .slick-dots,
+  .jm-home-destacados .slick-arrow,
+  .jm-home-destacados .slick-dots,
+  .elementor-element.jm-home-novedades .slick-arrow,
+  .elementor-element.jm-home-novedades .slick-dots,
+  .elementor-element.jm-home-destacados .slick-arrow,
+  .elementor-element.jm-home-destacados .slick-dots {
+    display: none !important;
+  }
+
+  .jm-home-novedades:not(:has(.slick-initialized)) ul.products,
+  .jm-home-destacados:not(:has(.slick-initialized)) ul.products,
+  .elementor-element.jm-home-novedades:not(:has(.slick-initialized)) ul.products,
+  .elementor-element.jm-home-destacados:not(:has(.slick-initialized)) ul.products {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    overflow: visible !important;
+    flex-wrap: unset !important;
     width: 100% !important;
     max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 8px 12px !important;
+    list-style: none !important;
   }
 
   .jm-home-novedades:not(:has(.slick-initialized)) ul.products > li.product,
-  .elementor-element.jm-home-novedades:not(:has(.slick-initialized)) ul.products > li.product {
-    flex: 0 0 70% !important;
-    width: 70% !important;
-    max-width: 280px !important;
+  .jm-home-destacados:not(:has(.slick-initialized)) ul.products > li.product,
+  .elementor-element.jm-home-novedades:not(:has(.slick-initialized)) ul.products > li.product,
+  .elementor-element.jm-home-destacados:not(:has(.slick-initialized)) ul.products > li.product {
+    flex: unset !important;
+    width: auto !important;
+    max-width: none !important;
     min-width: 0 !important;
-    scroll-snap-align: start !important;
+    margin: 0 !important;
     box-sizing: border-box !important;
   }
 
-  #jm-ultimas-unidades .slick-list,
-  .jm-home-novedades .slick-list {
+  #jm-ultimas-unidades .slick-list {
     touch-action: pan-x pan-y !important;
   }
+}
+
+
+/* === JM CARRITO HEADER — clic usable + drawer con marca ===
+   Camila (25-jul): el icono se “escondía” / no abría; al abrir parecía página antigua.
+   Causa: Astra pone pointer-events:none en el <a> del carrito móvil (flyout). */
+#ast-mobile-header .ast-site-header-cart-li a.cart-container,
+#ast-mobile-header .ast-site-header-cart-li a,
+.ast-header-break-point .ast-site-header-cart-li a.cart-container,
+.ast-header-break-point .ast-site-header-cart-li a,
+.ast-site-header-cart .cart-container {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  position: relative !important;
+  z-index: 9999 !important;
+}
+
+.ast-site-header-cart,
+.ast-header-woo-cart,
+#ast-mobile-header .ast-header-woo-cart {
+  position: relative !important;
+  z-index: 30 !important;
+  overflow: visible !important;
+}
+
+/* Drawer lateral — marca JM (no Woo “viejo” genérico) */
+.astra-cart-drawer {
+  background: #faf6f2 !important;
+  z-index: 100050 !important;
+}
+
+.astra-cart-drawer .astra-cart-drawer-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e8dfd4 !important;
+}
+
+.astra-cart-drawer .astra-cart-drawer-title,
+.astra-cart-drawer .widgettitle {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  color: #A97E23 !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+}
+
+.astra-cart-drawer .astra-cart-drawer-close {
+  color: #A97E23 !important;
+}
+
+.astra-mobile-cart-overlay.active,
+.astra-mobile-cart-overlay {
+  z-index: 100040 !important;
+}
+
+.woocommerce-js .astra-cart-drawer .astra-cart-drawer-content .woocommerce-mini-cart__buttons a.button,
+.astra-cart-drawer .woocommerce-mini-cart__buttons .button {
+  border-radius: 8px !important;
+  font-family: "Montserrat", system-ui, sans-serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+}
+
+.woocommerce-js .astra-cart-drawer .astra-cart-drawer-content .woocommerce-mini-cart__buttons a.checkout,
+.astra-cart-drawer .woocommerce-mini-cart__buttons .checkout {
+  background: #A97E23 !important;
+  border-color: #A97E23 !important;
+  color: #ffffff !important;
+}
+
+.astra-cart-drawer .ast-mini-cart-empty .ast-mini-cart-message,
+.astra-cart-drawer .woocommerce-mini-cart__empty-message {
+  font-family: "Montserrat", system-ui, sans-serif !important;
+  color: #555555 !important;
+}
+
+/* Página /mi-carrito/ — tabla vacía / botones con marca */
+.woocommerce-cart .cart-empty,
+.woocommerce-cart .return-to-shop .button,
+.woocommerce .cart-empty {
+  font-family: "Montserrat", system-ui, sans-serif !important;
+}
+
+.woocommerce-cart .return-to-shop .button,
+.woocommerce-cart a.button.wc-backward {
+  background: #A97E23 !important;
+  border-color: #A97E23 !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 12px 22px !important;
 }
 

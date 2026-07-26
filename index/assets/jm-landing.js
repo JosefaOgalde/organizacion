@@ -43,12 +43,19 @@
     const backupV = window.JM_BACKUP_FICHA?.version || 0;
     if (v < backupV) {
       cli.ficha.landing.objetivosEspecificos = [...(window.JM_OBJETIVOS?.especificos || [])];
-      cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({ ...t, completada: false, comentario: '' }));
+      // Conservar completada del seed (progreso del repo); no forzar false
+      cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({
+        ...t,
+        completada: !!t.completada,
+        comentario: t.comentario || ''
+      }));
       cli.ficha.landingVersion = backupV;
+      cli.ficha.backupJoyasMercuryV = backupV;
     }
     if (!Array.isArray(cli.ficha.landing.todos) || !cli.ficha.landing.todos.length) {
       cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({ ...t, comentario: t.comentario || '' }));
     }
+    if (typeof window.asegurarDocumentosJM === 'function') window.asegurarDocumentosJM(cli);
   }
 
   function menuObjetivoHtml() {
@@ -162,7 +169,8 @@
     asegurarSeccionesLanding();
     if (typeof window.jmAplicarProgresoChecklist === 'function') window.jmAplicarProgresoChecklist(datos);
     if (typeof window.jmFusionarTodosExtra === 'function') window.jmFusionarTodosExtra(datos);
-    if (typeof window.jmSyncLandingDesdeTareas === 'function') window.jmSyncLandingDesdeTareas(datos);
+    // Tras progreso del repo, el checklist manda al calendario (todo clickeado)
+    if (typeof window.jmSyncTareasDesdeLanding === 'function') window.jmSyncTareasDesdeLanding(datos);
     return cli;
   }
 
@@ -184,17 +192,44 @@
     }
   }
 
-  function documentosHtml(cli) {
-    const docs = cli.ficha?.documentos || [];
-    if (!docs.length) return '<p class="jm-docs__nota">Sin documentos aún.</p>';
+  function docHref(d) {
+    const rel = (d && (d.url || d.archivo || d.downloadUrl)) || '';
+    if (!rel) return '';
+    if (/^https?:\/\//i.test(rel) || rel.startsWith('/') || rel.startsWith('../')) return rel;
+    const base = (typeof window.jmAssetBase === 'string' && window.jmAssetBase) || '';
+    return base + String(rel).replace(/^\.?\//, '');
+  }
+
+  function documentosHtml(cli, opts) {
+    const soloDescargables = !!(opts && opts.soloDescargables);
+    let docs = cli.ficha?.documentos || [];
+    if (soloDescargables) docs = docs.filter((d) => docHref(d));
+    if (!docs.length) {
+      return soloDescargables
+        ? '<p class="jm-docs__nota">No hay archivos para descargar aún.</p>'
+        : '<p class="jm-docs__nota">Sin documentos aún.</p>';
+    }
     return `<ul class="jm-docs">${docs
-      .map(
-        (d) =>
-          `<li><span class="jm-docs__nombre">${escapeHtml(d.nombre)}</span>` +
+      .map((d) => {
+        const href = docHref(d);
+        const nombre = escapeHtml(d.nombre || 'Archivo');
+        const link = href
+          ? `<a class="jm-docs__link" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${nombre}</a>` +
+            ` <a class="jm-docs__btn" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" download>Descargar</a>`
+          : `<span class="jm-docs__nombre">${nombre}</span>`;
+        return (
+          `<li class="jm-docs__item${href ? ' jm-docs__item--file' : ''}">` +
+          link +
           (d.notasAnalisis ? `<br><span class="jm-docs__nota">${escapeHtml(d.notasAnalisis)}</span>` : '') +
           '</li>'
-      )
+        );
+      })
       .join('')}</ul>`;
+  }
+
+  function descargasHtml(cli) {
+    return `<p class="jm-docs__intro">Archivos del cliente listos para abrir o descargar (manual Camila, CSS, fragmento carrito).</p>
+      ${documentosHtml(cli, { soloDescargables: true })}`;
   }
 
   function ganttHtml() {
@@ -235,7 +270,7 @@
           </li>`
       )
       .join('');
-    return `<p class="jm-todo__intro">20 tareas · 1 por día desde el 23 jun 2026 · sincronizadas con el calendario del organizador (color rosa JM). Marca lo que avances aquí o en el calendario.</p>
+    return `<p class="jm-todo__intro">Checklist Fase 2 + sesiones · sincronizado con el calendario (rosa JM). Todo lo cerrado en repo aparece marcado.</p>
       <ul class="jm-todo__lista">${lista}</ul>
       <p class="jm-todo__progreso">${hechos} / ${items.length} completadas</p>
       <div class="jm-todo__add jm-solo-edicion">
@@ -284,6 +319,7 @@
   const JM_SECCIONES = {
     wireframes: { titulo: 'Wireframes · Desktop', etiqueta: 'los wireframes desktop' },
     identidad: { titulo: 'Identidad de marca', etiqueta: 'la identidad de marca' },
+    descargas: { titulo: 'Descargas · archivos del cliente', etiqueta: 'las descargas' },
     objetivos: { titulo: 'Objetivos · Fase 2', etiqueta: 'los objetivos' },
     menu: { titulo: 'Menú objetivo · Paso 4', etiqueta: 'el menú objetivo' },
     mapa: { titulo: 'Mapa de navegación · Paso 5', etiqueta: 'el mapa de navegación' },
@@ -487,6 +523,8 @@
           ${wireframes}
 
           ${blockSeccion('identidad', JM_SECCIONES.identidad.titulo, identidadHtml(cli))}
+
+          ${blockSeccion('descargas', JM_SECCIONES.descargas.titulo, descargasHtml(cli))}
 
           ${blockSeccion('objetivos', JM_SECCIONES.objetivos.titulo, objetivosHtml())}
 

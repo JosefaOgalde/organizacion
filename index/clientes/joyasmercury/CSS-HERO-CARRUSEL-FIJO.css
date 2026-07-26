@@ -81,16 +81,22 @@
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    object-position: center center !important;
+    /* Prioriza centro-alto: evita recortar tipografía MERCURY del banner */
+    object-position: center 28% !important;
+  }
+
+  .jm-hero-carrusel .n2-ss-layers-container {
+    overflow: visible !important;
   }
 
   .jm-hero-carrusel .n2-ss-layers-container > .n2-ss-layer {
-    max-width: 92% !important;
+    max-width: 94% !important;
   }
 
   .jm-hero-carrusel .n2-ss-layers-container > .n2-ss-layer img {
     max-width: 100% !important;
     height: auto !important;
+    object-fit: contain !important;
   }
 }
 

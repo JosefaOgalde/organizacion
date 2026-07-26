@@ -261,18 +261,85 @@
         ],
         "documentos": [
           {
+            "id": "doc-jm-manual-camila-pdf",
+            "nombre": "Manual Camila — Joyas Mercury.pdf",
+            "categoria": "pdf",
+            "mime": "application/pdf",
+            "url": "MANUAL-CAMILA-JOYAS-MERCURY.pdf",
+            "notasAnalisis": "Manual clickeable: cupones, menú, categorías, inicio, fotos, pedidos + YouTube.",
+            "extraccionEstado": "ok",
+            "extraccionMetodo": "entrega-25-jul",
+            "subido": "2026-07-25"
+          },
+          {
+            "id": "doc-jm-manual-camila-html",
+            "nombre": "Manual Camila — Joyas Mercury.html",
+            "categoria": "html",
+            "mime": "text/html",
+            "url": "MANUAL-CAMILA-JOYAS-MERCURY.html",
+            "notasAnalisis": "Misma guía en HTML (abrir en el navegador / imprimir a PDF).",
+            "extraccionEstado": "ok",
+            "extraccionMetodo": "entrega-25-jul",
+            "subido": "2026-07-25"
+          },
+          {
+            "id": "doc-jm-css-completo",
+            "nombre": "CSS-COMPLETO-ASTRA.css",
+            "categoria": "css",
+            "mime": "text/css",
+            "url": "CSS-COMPLETO-ASTRA.css",
+            "notasAnalisis": "CSS vigente Astra/Woo · Novedades 2×2 + carrito icono.",
+            "extraccionEstado": "ok",
+            "extraccionMetodo": "entrega-25-jul",
+            "subido": "2026-07-25"
+          },
+          {
+            "id": "doc-jm-css-carrito",
+            "nombre": "CSS-CARRITO-BOTON-FIX.css",
+            "categoria": "css",
+            "mime": "text/css",
+            "url": "CSS-CARRITO-BOTON-FIX.css",
+            "notasAnalisis": "Parche pointer-events del icono bolsa móvil.",
+            "extraccionEstado": "ok",
+            "extraccionMetodo": "entrega-25-jul",
+            "subido": "2026-07-25"
+          },
+          {
+            "id": "doc-jm-css-novedades",
+            "nombre": "CSS-NOVEDADES-MOBILE-2x2.css",
+            "categoria": "css",
+            "mime": "text/css",
+            "url": "CSS-NOVEDADES-MOBILE-2x2.css",
+            "notasAnalisis": "Parche grilla Novedades/Destacados 2×2 en móvil.",
+            "extraccionEstado": "ok",
+            "extraccionMetodo": "entrega-25-jul",
+            "subido": "2026-07-25"
+          },
+          {
+            "id": "doc-jm-php-carrito",
+            "nombre": "JM-CARRITO-IR-PAGINA.php",
+            "categoria": "php",
+            "mime": "text/x-php",
+            "url": "JM-CARRITO-IR-PAGINA.php",
+            "notasAnalisis": "Fragmento WPCode PHP · icono carrito → /mi-carrito/.",
+            "extraccionEstado": "ok",
+            "extraccionMetodo": "entrega-25-jul",
+            "subido": "2026-07-25"
+          },
+          {
             "id": "doc-manual-marca-jm",
             "clienteId": "cli-joyas-mercury",
-            "nombre": "Manual de marca - Joyas Mercury.pdf",
-            "mime": "application/pdf",
-            "categoria": "pdf",
+            "nombre": "Manual de marca — Joyas Mercury.txt",
+            "mime": "text/plain",
+            "categoria": "texto",
             "tamano": 0,
-            "subido": "2026-06-24",
+            "subido": "2026-07-25",
             "contenidoTexto": "Manual de marca — Joyas Mercury\nFuente: Manual de marca - Joyas Mercury.pdf\n\n## Propósito\nEste manual reúne las herramientas básicas para el correcto uso y aplicación gráfica de la marca en todas sus posibles expresiones. Pensado para quienes interpretan, articulan, comunican y aplican la marca. El uso consistente refuerza la identidad de Joyas Mercury.\n\n## Logotipo\n- Marca: JOYAS MERCURY\n- Margen obligatorio: la distancia entre el logo y el siguiente elemento debe ser la cuarta parte (¼) del tamaño del logo.\n\n## Isotipo\n- Isotipo: letra «M»\n- Mismo margen obligatorio que el logotipo (¼ del tamaño).\n\n## Paleta de colores\n- #ECC54A — dorado / amarillo\n- #A97E23 — dorado oscuro\n- #C88F9C — rosa\n- #D8BFB1 — beige / nude\n- #C4C4C4 — gris\n\n## Aplicación web (Fase 2 WooCommerce)\n- Líneas de producto en filtros: Esencial · Gold · Deluxe\n- Usar la paleta en chips de filtro, destacados, botones y componentes del rediseño joyasmercury.cl\n- Respetar márgenes del logo e isotipo en headers, favicon y piezas gráficas",
             "dataUrl": null,
-            "notasAnalisis": "Texto extraído del PDF (17 pág.) — sin archivo binario para no ocupar espacio",
-            "extraccionMetodo": "pdf-texto",
-            "extraccionEstado": "ok"
+            "notasAnalisis": "Texto del manual de marca (logo, paleta, aplicación web).",
+            "extraccionMetodo": "backup",
+            "extraccionEstado": "ok",
+            "url": "../../../data/manual-marca-joyas-mercury.txt"
           },
           {
             "id": "doc-jm-backup-requerimientos",
@@ -317,8 +384,8 @@
             "dataUrl": null
           }
         ],
-        "actualizado": "2026-07-01",
-        "backupJoyasMercuryV": 8,
+        "actualizado": "2026-07-25T23:40:47Z",
+        "backupJoyasMercuryV": 9,
         "landing": {
           "imagenesOverrides": [],
           "landingSchemaVersion": 8,
@@ -514,6 +581,24 @@
               "completada": true,
               "comentario": "OK · Inicio, Esencial, Gold, Deluxe, Carrito, Ayuda, Productos.",
               "sinCalendario": true
+            },
+            {
+              "id": "jm-sesion-02-carrito-icono",
+              "titulo": "Icono carrito móvil → /mi-carrito/ (sin panel que se esconde)",
+              "dias": "25-jul",
+              "fase": 6,
+              "completada": true,
+              "comentario": "OK · Astra Página del carrito + fragmento PHP + CSS.",
+              "sinCalendario": true
+            },
+            {
+              "id": "jm-sesion-03-manual-camila",
+              "titulo": "Manual Camila (PDF/HTML) con links WP y YouTube",
+              "dias": "25-jul",
+              "fase": 7,
+              "completada": true,
+              "comentario": "OK · Descargable en la landing del cliente.",
+              "sinCalendario": true
             }
           ]
         },
@@ -561,7 +646,7 @@
             "titulo": "Productos"
           }
         ],
-        "landingVersion": 8
+        "landingVersion": 9
       }
     },
     {
@@ -1614,9 +1699,9 @@
       "fecha": "2026-07-27",
       "horaInicio": "11:00",
       "horaFin": "14:00",
-      "notas": "Última tarea JM vigente (la serie F2 D1–D20 ya no va en el calendario). Cerrar Novedades/Destacados en mobile: grilla 2×2, ocultar clones Slick, validar hero/banner sin recorte MERCURY, paridad con wireframes. CSS: index/clientes/joyasmercury/CSS-COMPLETO-ASTRA.css · landing JM. Al terminar → marcar hecha.",
+      "notas": "Última tarea JM vigente (la serie F2 D1–D20 ya no va en el calendario). Cerrar Novedades/Destacados en mobile: grilla 2×2, ocultar clones Slick, validar hero/banner sin recorte MERCURY, paridad con wireframes. CSS: index/clientes/joyasmercury/CSS-COMPLETO-ASTRA.css · landing JM. Al terminar → marcar hecha.\nOK · cerrado 25-jul 2026 · checklist + descargas en landing.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "21",
       "tipoEntregable": "jm-novedades-mobile",

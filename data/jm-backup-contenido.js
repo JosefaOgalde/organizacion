@@ -29,7 +29,7 @@ Este manual reúne las herramientas básicas para el correcto uso y aplicación 
 - Respetar márgenes del logo e isotipo en headers, favicon y piezas gráficas`;
 
 window.JM_BACKUP_FICHA = {
-  version: 8,
+  version: 9,
   metas: `Etapa 2 — Rediseño joyasmercury.cl
 - Navegación limpia y elegante (referencia joyería premium)
 - Filtros visuales Esencial / Gold / Deluxe en la misma vista (sin cambiar de página)
@@ -112,6 +112,94 @@ Plugins: Elementor, WooCommerce, Astra, WP Bottom Menu, Smart Slider.`
   ],
 
   documentos: [
+    {
+      id: 'doc-jm-tarjeta-referencia',
+      nombre: 'Tarjeta de referencia — Camila.html',
+      categoria: 'html',
+      mime: 'text/html',
+      url: 'TARJETA-REFERENCIA-CAMILA.html',
+      notasAnalisis: 'Tarjeta corta con botones al PDF y al HTML del manual.',
+      extraccionEstado: 'ok',
+      extraccionMetodo: 'entrega-25-jul',
+      subido: '2026-07-25'
+    },
+    {
+      id: 'doc-jm-manual-camila-pdf',
+      nombre: 'Manual Camila — Joyas Mercury.pdf',
+      categoria: 'pdf',
+      mime: 'application/pdf',
+      url: 'MANUAL-CAMILA-JOYAS-MERCURY.pdf',
+      notasAnalisis: 'Manual clickeable: cupones, menú, categorías, inicio, fotos, pedidos + YouTube.',
+      extraccionEstado: 'ok',
+      extraccionMetodo: 'entrega-25-jul',
+      subido: '2026-07-25'
+    },
+    {
+      id: 'doc-jm-manual-camila-html',
+      nombre: 'Manual Camila — Joyas Mercury.html',
+      categoria: 'html',
+      mime: 'text/html',
+      url: 'MANUAL-CAMILA-JOYAS-MERCURY.html',
+      notasAnalisis: 'Misma guía en HTML (abrir en el navegador / imprimir a PDF).',
+      extraccionEstado: 'ok',
+      extraccionMetodo: 'entrega-25-jul',
+      subido: '2026-07-25'
+    },
+    {
+      id: 'doc-jm-css-completo',
+      nombre: 'CSS-COMPLETO-ASTRA.css',
+      categoria: 'css',
+      mime: 'text/css',
+      url: 'CSS-COMPLETO-ASTRA.css',
+      notasAnalisis: 'CSS vigente Astra/Woo · Novedades 2×2 + carrito icono.',
+      extraccionEstado: 'ok',
+      extraccionMetodo: 'entrega-25-jul',
+      subido: '2026-07-25'
+    },
+    {
+      id: 'doc-jm-css-carrito',
+      nombre: 'CSS-CARRITO-BOTON-FIX.css',
+      categoria: 'css',
+      mime: 'text/css',
+      url: 'CSS-CARRITO-BOTON-FIX.css',
+      notasAnalisis: 'Parche pointer-events del icono bolsa móvil.',
+      extraccionEstado: 'ok',
+      extraccionMetodo: 'entrega-25-jul',
+      subido: '2026-07-25'
+    },
+    {
+      id: 'doc-jm-css-novedades',
+      nombre: 'CSS-NOVEDADES-MOBILE-2x2.css',
+      categoria: 'css',
+      mime: 'text/css',
+      url: 'CSS-NOVEDADES-MOBILE-2x2.css',
+      notasAnalisis: 'Parche grilla Novedades/Destacados 2×2 en móvil.',
+      extraccionEstado: 'ok',
+      extraccionMetodo: 'entrega-25-jul',
+      subido: '2026-07-25'
+    },
+    {
+      id: 'doc-jm-php-carrito',
+      nombre: 'JM-CARRITO-IR-PAGINA.php',
+      categoria: 'php',
+      mime: 'text/x-php',
+      url: 'JM-CARRITO-IR-PAGINA.php',
+      notasAnalisis: 'Fragmento WPCode PHP · icono carrito → /mi-carrito/.',
+      extraccionEstado: 'ok',
+      extraccionMetodo: 'entrega-25-jul',
+      subido: '2026-07-25'
+    },
+    {
+      id: 'doc-manual-marca-jm',
+      nombre: 'Manual de marca — Joyas Mercury.txt',
+      categoria: 'texto',
+      mime: 'text/plain',
+      url: '../../../data/manual-marca-joyas-mercury.txt',
+      notasAnalisis: 'Texto del manual de marca (logo, paleta, aplicación web).',
+      extraccionEstado: 'ok',
+      extraccionMetodo: 'backup',
+      subido: '2026-07-25'
+    },
     {
       id: 'doc-jm-backup-requerimientos',
       nombre: 'REQUERIMIENTOS-CLIENTE.md (backup)',
@@ -226,6 +314,45 @@ window.jmMigrarLandingJM = function jmMigrarLandingJM(cli) {
   landing.landingSchemaVersion = 8;
   cli.ficha.landingVersion = Math.max(cli.ficha.landingVersion || 0, 8);
   return true;
+};
+
+/** Fusiona documentos del backup (con URL de descarga) en la ficha del cliente */
+window.asegurarDocumentosJM = function asegurarDocumentosJM(cli) {
+  if (!cli || cli.id !== 'cli-joyas-mercury') return false;
+  if (!cli.ficha || typeof cli.ficha !== 'object') {
+    cli.ficha = { contacto: '', links: '', notas: '', seccionesExtra: [], documentos: [] };
+  }
+  const src = window.JM_BACKUP_FICHA?.documentos;
+  if (!Array.isArray(src) || !src.length) return false;
+  if (!Array.isArray(cli.ficha.documentos)) cli.ficha.documentos = [];
+  const byId = new Map(cli.ficha.documentos.map((d) => [d.id, d]));
+  let changed = false;
+  src.forEach((seed) => {
+    if (!seed?.id) return;
+    const cur = byId.get(seed.id);
+    if (!cur) {
+      cli.ficha.documentos.unshift({ ...seed });
+      byId.set(seed.id, cli.ficha.documentos[0]);
+      changed = true;
+      return;
+    }
+    ['nombre', 'categoria', 'mime', 'url', 'notasAnalisis', 'extraccionEstado', 'extraccionMetodo', 'subido'].forEach((k) => {
+      if (seed[k] != null && cur[k] !== seed[k]) {
+        cur[k] = seed[k];
+        changed = true;
+      }
+    });
+    if (seed.contenidoTexto && !cur.contenidoTexto) {
+      cur.contenidoTexto = seed.contenidoTexto;
+      changed = true;
+    }
+  });
+  const bv = window.JM_BACKUP_FICHA?.version || 0;
+  if ((cli.ficha.backupJoyasMercuryV || 0) < bv) {
+    cli.ficha.backupJoyasMercuryV = bv;
+    changed = true;
+  }
+  return changed;
 };
 
 /** Copia wireframes al objeto ficha (persisten en localStorage al guardar) */
@@ -647,34 +774,52 @@ window.JM_CLI_SYNC_ID = 'cli-joyas-mercury';
 
 /** Checklist Fase 2 — 20 tareas · 1 por día · sincronizado con el organizador */
 window.JM_TODO_SEED = [
-  { id: 'jm-todo-01', titulo: 'Auditoría menú actual + mapa de navegación', dias: '1', fase: 1, completada: false, notas: 'Etapa 1 · Inventario menú desktop/móvil y mapa de navegación propuesto.' },
-  { id: 'jm-todo-02', titulo: 'Implementar menú limpio (desktop + móvil)', dias: '2', fase: 1, completada: false, notas: 'Etapa 1 · Menú limpio con colecciones como eje principal.' },
-  { id: 'jm-todo-03', titulo: 'Menú objetivo (paso 4) + mapa de navegación (paso 5)', dias: '3', fase: 1, completada: false, notas: 'Estructura acordada: Inicio, Colecciones, Últimas unidades, Mi Carrito + rutas.' },
-  { id: 'jm-todo-04', titulo: '3 colecciones × 5 categorías en WooCommerce', dias: '4', fase: 2, completada: false, notas: 'Etapa 2 · Esencial, Gold y Deluxe con Aros, Cadenas, Anillos, Pulseras, Conjuntos.' },
-  { id: 'jm-todo-05', titulo: 'Validar URLs y slugs de colecciones', dias: '5', fase: 2, completada: false, notas: 'Probar las 15 combinaciones colección/categoría.' },
-  { id: 'jm-todo-06', titulo: 'Diseñar chips filtro Esencial / Gold / Deluxe', dias: '6', fase: 3, completada: false, notas: 'Etapa 3 · Filtros visuales en la misma landing.' },
-  { id: 'jm-todo-07', titulo: 'Landings colección · layout y estructura', dias: '7', fase: 3, completada: false, notas: 'Maquetación base de las 3 landings de colección.' },
-  { id: 'jm-todo-08', titulo: 'Filtrado AJAX sin recargar página', dias: '8', fase: 3, completada: false, notas: 'Filtros activos, estados y UX en misma vista.' },
-  { id: 'jm-todo-09', titulo: 'QA filtros (mobile, UX y rendimiento)', dias: '9', fase: 3, completada: false, notas: 'Pruebas mobile, touch, estados activos y rendimiento.' },
-  { id: 'jm-todo-10', titulo: 'Destacados / Novedades en Inicio', dias: '10', fase: 4, completada: false, notas: 'Etapa 4 · Bloque en home para productos destacados.' },
-  { id: 'jm-todo-11', titulo: 'Guía para Camila · gestionar destacados', dias: '11', fase: 4, completada: false, notas: 'Documentar cómo marcar/desmarcar destacados.' },
-  { id: 'jm-todo-12', titulo: 'Últimas unidades + páginas legales', dias: '12', fase: 5, completada: false, notas: 'Etapa 5 · Stock limitado, políticas, despachos y garantías.' },
-  { id: 'jm-todo-13', titulo: 'Nosotros + WhatsApp canal principal', dias: '13', fase: 5, completada: false, notas: 'Página Nosotros y botón WhatsApp oficial.' },
-  { id: 'jm-todo-14', titulo: 'Maquetación carrito · parte visual superior', dias: '14', fase: 6, completada: false, notas: 'Etapa 6 · Carrito alineado al rediseño de la tienda.' },
-  { id: 'jm-todo-15', titulo: 'Carrito · pruebas checkout WooCommerce', dias: '15', fase: 6, completada: false, notas: 'Checkout, totales, envío y flujo de compra.' },
-  { id: 'jm-todo-16', titulo: 'Pruebas integrales del sitio', dias: '16', fase: 7, completada: false, notas: 'Etapa 7 · Recorrido menú → filtros → destacados → legales → carrito.' },
-  { id: 'jm-todo-17', titulo: 'Corrección de bugs y refinamiento', dias: '17', fase: 7, completada: false, notas: 'Resolver issues detectados en pruebas.' },
-  { id: 'jm-todo-18', titulo: 'Guías de catálogo y documentación', dias: '18', fase: 7, completada: false, notas: 'Guía para que Camila gestione catálogo y colecciones.' },
-  { id: 'jm-todo-19', titulo: 'Revisión con Camila + ajustes finales', dias: '19', fase: 7, completada: false, notas: 'Sesión de revisión y últimos ajustes.' },
-  { id: 'jm-todo-20', titulo: 'Entrega Fase 2 + soporte post-entrega', dias: '20', fase: 7, completada: false, notas: 'Entrega oficial joyasmercury.cl · inicio ventana 10 días de soporte.' }
+  { id: 'jm-todo-01', titulo: 'Auditoría menú actual + mapa de navegación', dias: '1', fase: 1, completada: true, notas: 'Etapa 1 · Inventario menú desktop/móvil y mapa de navegación propuesto.' },
+  { id: 'jm-todo-02', titulo: 'Implementar menú limpio (desktop + móvil)', dias: '2', fase: 1, completada: true, notas: 'Etapa 1 · Menú limpio con colecciones como eje principal.' },
+  { id: 'jm-todo-03', titulo: 'Menú objetivo (paso 4) + mapa de navegación (paso 5)', dias: '3', fase: 1, completada: true, notas: 'Estructura acordada: Inicio, Colecciones, Últimas unidades, Mi Carrito + rutas.' },
+  { id: 'jm-todo-04', titulo: '3 colecciones × 5 categorías en WooCommerce', dias: '4', fase: 2, completada: true, notas: 'Etapa 2 · Esencial, Gold y Deluxe con Aros, Cadenas, Anillos, Pulseras, Conjuntos.' },
+  { id: 'jm-todo-05', titulo: 'Validar URLs y slugs de colecciones', dias: '5', fase: 2, completada: true, notas: 'Probar las 15 combinaciones colección/categoría.' },
+  { id: 'jm-todo-06', titulo: 'Diseñar chips filtro Esencial / Gold / Deluxe', dias: '6', fase: 3, completada: true, notas: 'Etapa 3 · Filtros visuales en la misma landing.' },
+  { id: 'jm-todo-07', titulo: 'Landings colección · layout y estructura', dias: '7', fase: 3, completada: true, notas: 'Maquetación base de las 3 landings de colección.' },
+  { id: 'jm-todo-08', titulo: 'Filtrado AJAX sin recargar página', dias: '8', fase: 3, completada: true, notas: 'Filtros activos, estados y UX en misma vista.' },
+  { id: 'jm-todo-09', titulo: 'QA filtros (mobile, UX y rendimiento)', dias: '9', fase: 3, completada: true, notas: 'Pruebas mobile, touch, estados activos y rendimiento.' },
+  { id: 'jm-todo-10', titulo: 'Destacados / Novedades en Inicio', dias: '10', fase: 4, completada: true, notas: 'Etapa 4 · Bloque en home para productos destacados.' },
+  { id: 'jm-todo-11', titulo: 'Guía para Camila · gestionar destacados', dias: '11', fase: 4, completada: true, notas: 'Documentar cómo marcar/desmarcar destacados.' },
+  { id: 'jm-todo-12', titulo: 'Últimas unidades + páginas legales', dias: '12', fase: 5, completada: true, notas: 'Etapa 5 · Stock limitado, políticas, despachos y garantías.' },
+  { id: 'jm-todo-13', titulo: 'Nosotros + WhatsApp canal principal', dias: '13', fase: 5, completada: true, notas: 'Página Nosotros y botón WhatsApp oficial.' },
+  { id: 'jm-todo-14', titulo: 'Maquetación carrito · parte visual superior', dias: '14', fase: 6, completada: true, notas: 'Etapa 6 · Carrito alineado al rediseño de la tienda.' },
+  { id: 'jm-todo-15', titulo: 'Carrito · pruebas checkout WooCommerce', dias: '15', fase: 6, completada: true, notas: 'Checkout, totales, envío y flujo de compra.' },
+  { id: 'jm-todo-16', titulo: 'Pruebas integrales del sitio', dias: '16', fase: 7, completada: true, notas: 'Etapa 7 · Recorrido menú → filtros → destacados → legales → carrito.' },
+  { id: 'jm-todo-17', titulo: 'Corrección de bugs y refinamiento', dias: '17', fase: 7, completada: true, notas: 'Resolver issues detectados en pruebas.' },
+  { id: 'jm-todo-18', titulo: 'Guías de catálogo y documentación', dias: '18', fase: 7, completada: true, notas: 'Guía para que Camila gestione catálogo y colecciones.' },
+  { id: 'jm-todo-19', titulo: 'Revisión con Camila + ajustes finales', dias: '19', fase: 7, completada: true, notas: 'Sesión de revisión y últimos ajustes.' },
+  { id: 'jm-todo-20', titulo: 'Entrega Fase 2 + soporte post-entrega', dias: '20', fase: 7, completada: true, notas: 'Entrega oficial joyasmercury.cl · inicio ventana 10 días de soporte.' }
 ];
 
 /** Progreso confirmado en repo → se fusiona al cargar (checklist + calendario) */
 window.JM_TODO_PROGRESO = {
-  'jm-todo-01': { completada: true },
-  'jm-todo-03': { completada: true },
-  'jm-todo-04': { completada: true }
+  'jm-todo-01': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-02': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-03': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-04': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-05': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-06': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-07': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-08': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-09': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-10': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-11': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-12': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-13': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-14': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-15': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-16': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-17': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-18': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-19': { completada: true, comentario: 'OK · cerrado 25-jul 2026' },
+  'jm-todo-20': { completada: true, comentario: 'OK · cerrado 25-jul 2026' }
 };
+
 
 /** Ítems de sesión en checklist landing (sin tarea en calendario) */
 window.JM_TODO_EXTRA = [
@@ -685,6 +830,24 @@ window.JM_TODO_EXTRA = [
     fase: 0,
     completada: true,
     comentario: 'OK · Inicio, Esencial, Gold, Deluxe, Carrito, Ayuda, Productos.',
+    sinCalendario: true
+  },
+  {
+    id: 'jm-sesion-02-carrito-icono',
+    titulo: 'Icono carrito móvil → /mi-carrito/ (sin panel que se esconde)',
+    dias: '25-jul',
+    fase: 6,
+    completada: true,
+    comentario: 'OK · Astra Página del carrito + fragmento PHP + CSS.',
+    sinCalendario: true
+  },
+  {
+    id: 'jm-sesion-03-manual-camila',
+    titulo: 'Manual Camila (PDF/HTML) con links WP y YouTube',
+    dias: '25-jul',
+    fase: 7,
+    completada: true,
+    comentario: 'OK · Descargable en la landing del cliente.',
     sinCalendario: true
   }
 ];
@@ -780,9 +943,11 @@ window.jmAsegurarDatosMinimos = function jmAsegurarDatosMinimos(data) {
       if (!t.fecha) t.fecha = fecha;
     }
   });
+  if (cli && typeof window.asegurarDocumentosJM === 'function') window.asegurarDocumentosJM(cli);
   if (typeof window.jmAplicarProgresoChecklist === 'function') window.jmAplicarProgresoChecklist(data);
   if (typeof window.jmFusionarTodosExtra === 'function') window.jmFusionarTodosExtra(data);
-  window.jmSyncLandingDesdeTareas(data);
+  // Checklist del repo (todo clickeado) → calendario
+  if (typeof window.jmSyncTareasDesdeLanding === 'function') window.jmSyncTareasDesdeLanding(data);
   return data;
 };
 
