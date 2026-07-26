@@ -674,21 +674,30 @@
     });
   }
 
-  /** Llavero Pesa Rusa — soft seed: no pisa g/h si ya hay costo local. PLA amarillo + argolla. */
+  /** Llavero Pesa Rusa — slicer 16,78 g · 35 m 31 s · PLA amarillo + $50 argolla. Soft: no pisa si editadoLocal con g. */
   function seedLlaveroPesaRusa() {
+    const filamentoModeloGramos = 16.31;
+    const filamentoPurgeGramos = 0.47;
+    const filamentoGramos = round2(filamentoModeloGramos + filamentoPurgeGramos); // 16,78
     return {
       sku: 'LLPESRU001',
       nombre: 'Llavero Pesa Rusa',
       activo: true,
-      filamentoGramos: 0,
+      filamentoModeloGramos,
+      filamentoSoportesGramos: 0,
+      filamentoPurgeGramos,
+      filamentoMetros: 5.58,
+      filamentoGramos,
       costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG,
-      horasImpresion: 0,
+      horasImpresion: round2((35 + 31 / 60) / 60), // 35 m 31 s → 0,59 h
       minutosPintado: 0,
       unidadesMetal: 1,
       unidadesBolsa: 1,
       precioVentaSugeridoClp: 0,
-      pendienteCosto: true,
-      notas: 'PLA amarillo $16.829/kg + $50 argolla. Pendiente g/h slicer (pedir imagen).',
+      costoSlicerRef: 0.34,
+      pendienteCosto: false,
+      notas:
+        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 5,58 m · 35 m 31 s · coste slicer 0,34. PLA amarillo $16.829/kg. +$50 argolla.`,
     };
   }
 
@@ -710,21 +719,17 @@
       existing.nombre = seed.nombre;
       changed = true;
     }
-    if (!(Number(existing.filamentoGramos) > 0) && !(Number(existing.horasImpresion) > 0)) {
-      if (existing.costoFilamentoKgClp !== seed.costoFilamentoKgClp) {
-        existing.costoFilamentoKgClp = seed.costoFilamentoKgClp;
-        changed = true;
-      }
-      if (existing.pendienteCosto !== true) {
-        existing.pendienteCosto = true;
-        changed = true;
-      }
-    } else if (existing.pendienteCosto) {
-      existing.pendienteCosto = false;
-      changed = true;
+    // Si aún no tenía g/h (pendiente) o quedó en 0, aplica slicer.
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
     }
     if (existing.unidadesMetal == null) {
       existing.unidadesMetal = 1;
+      changed = true;
+    }
+    if (existing.pendienteCosto) {
+      existing.pendienteCosto = false;
       changed = true;
     }
     return changed;
@@ -1224,6 +1229,56 @@
         costoTotal: round2(costoH + costoV),
       });
       changed = true;
+    }
+
+    // PED-004 · Ele SIE · Llavero Pesa Rusa amarillo · listo (impreso)
+    const id004 = 'ped-ele-pesa-rusa-004';
+    if (!d.pedidos.some((p) => p.id === id004 || p.numero === 'PED-004')) {
+      d.pedidos.push({
+        id: id004,
+        numero: 'PED-004',
+        fecha: '2026-07-26',
+        cliente: 'Ele SIE',
+        clienteNombre: 'Ele',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'LLPESRU001',
+            nombre: 'Llavero Pesa Rusa',
+            cantidad: 1,
+            precioUnitarioClp: 0,
+            costoUnitarioClp: 0,
+            filamento: 'PLA amarillo',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: 0,
+        descuentoClp: 0,
+        montoNeto: 0,
+        costoTotal: 0,
+        estado: 'listo',
+        ventaId: null,
+        notas:
+          '1× Llavero Pesa Rusa amarillo · impreso/listo · pendiente costo (imagen slicer) y precio venta',
+        socioRegistro: 'Ambos',
+        creado: '2026-07-26T01:40:00.000Z',
+      });
+      changed = true;
+    } else {
+      const ped004 = d.pedidos.find((p) => p.id === id004 || p.numero === 'PED-004');
+      if (ped004 && ped004.estado !== 'transferido' && ped004.estado !== 'listo') {
+        ped004.estado = 'listo';
+        changed = true;
+      }
+      if (ped004 && ped004.cliente !== 'Ele SIE') {
+        ped004.cliente = 'Ele SIE';
+        ped004.clienteNombre = 'Ele';
+        ped004.clienteOrigen = 'SIE';
+        changed = true;
+      }
     }
 
     const maxNum = d.pedidos.reduce((m, p) => {
