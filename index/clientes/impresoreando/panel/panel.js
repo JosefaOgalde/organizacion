@@ -78,6 +78,7 @@
     if (asegurarProductoLlaveroPortaLipstickStanley(d)) changed = true;
     if (asegurarProductoLlaveroPesaRusa(d)) changed = true;
     if (asegurarProductoSoporteCelular(d)) changed = true;
+    if (asegurarProductoDragon(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
@@ -1616,6 +1617,7 @@
     if (/llavero/.test(t) && /(pesa|kettlebell|rusa)/.test(t)) return 'LLPESRU';
     if (/soporte/.test(t) && /celular|telefono|tel[eé]fono|phone/.test(t)) return 'SOPCEL';
     if (/soporte/.test(t)) return 'SOPCEL';
+    if (/drag[oó]n/.test(t)) return 'DRAGON';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -1665,6 +1667,7 @@
       'prod-llavero-porta-lipstick-stanley': { sku: 'LLSTANDL001', nombre: 'Llavero Porta Lipstick Stanley' },
       'prod-llavero-pesa-rusa': { sku: 'LLPESRU001', nombre: 'Llavero Pesa Rusa' },
       'prod-soporte-celular': { sku: 'SOPCEL001', nombre: 'Soporte celular' },
+      'prod-dragon': { sku: 'DRAGON001', nombre: 'Dragón' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',
