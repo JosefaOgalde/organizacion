@@ -49,6 +49,28 @@
     }
   }
 
+  /** Quita overrides de clientes cerrados fijos (p. ej. JM reactivado por error). */
+  function purgarOverridesCerrados(lista) {
+    const map = leerOverridesActivo();
+    let changed = false;
+    for (const c of lista || []) {
+      const estatico = findEstatico(c);
+      if (!esClienteCerradoFijo(c, estatico)) continue;
+      for (const id of [c.id, estatico?.id].filter(Boolean).map(String)) {
+        if (Object.prototype.hasOwnProperty.call(map, id)) {
+          delete map[id];
+          changed = true;
+        }
+      }
+    }
+    if (!changed) return;
+    try {
+      localStorage.setItem(ACTIVO_KEY, JSON.stringify(map));
+    } catch {
+      /* ignore */
+    }
+  }
+
   /** Une slugs de la API con CLIENTES_PORTAL (id, slug, aliases, abrev). */
   function findEstatico(c) {
     if (typeof CLIENTES_PORTAL === 'undefined') return null;
@@ -147,20 +169,14 @@
 
   /**
    * Activo salvo:
-   * - override localStorage (Reactivar),
+   * - lista fija de cerrados (Joyas Mercury) — siempre gana, ignora Reactivar,
    * - flag `activo: false` en estático (gana sobre API),
    * - flag en API,
-   * - lista fija de cerrados (Joyas Mercury).
+   * - override localStorage (Reactivar) solo para el resto.
    */
   function esActivo(c) {
     const estatico = findEstatico(c);
-    const overrides = leerOverridesActivo();
-    const idsOverride = [c.id, estatico?.id].filter(Boolean).map(String);
-    for (const id of idsOverride) {
-      if (Object.prototype.hasOwnProperty.call(overrides, id)) {
-        return !!overrides[id];
-      }
-    }
+    if (esClienteCerradoFijo(c, estatico)) return false;
 
     const estFlag = estatico ? flagActivo(estatico.activo) : null;
     if (estFlag === false) return false;
@@ -168,7 +184,13 @@
     const apiFlag = flagActivo(c.activo);
     if (apiFlag === false) return false;
 
-    if (esClienteCerradoFijo(c, estatico)) return false;
+    const overrides = leerOverridesActivo();
+    const idsOverride = [c.id, estatico?.id].filter(Boolean).map(String);
+    for (const id of idsOverride) {
+      if (Object.prototype.hasOwnProperty.call(overrides, id)) {
+        return !!overrides[id];
+      }
+    }
 
     return true;
   }
@@ -209,15 +231,19 @@
     /** Preferir id estático para que Reactivar / overrides coincidan con clientes-data. */
     const idRaw = String(estatico?.id || c.id || '');
     const id = escapeHtml(idRaw);
+    const cerradoFijo = esClienteCerradoFijo(c, estatico);
+    const accion = cerradoFijo
+      ? '<span class="portal-card__cerrado">Cerrado · etapa entregada</span>'
+      : `<button type="button" class="portal-card__reactivar" data-reactivar="${id}">Reactivar</button>`;
     return `
-    <article class="portal-card portal-card--inactivo"
+    <article class="portal-card portal-card--inactivo"${cerradoFijo ? ' data-cerrado-fijo="1"' : ''}
        style="--card-border:${GRIS.border};--card-bg:${GRIS.bg};--card-text:${GRIS.text}">
       <a href="${hrefFicha(archivo)}" class="portal-card__link">
         <div class="portal-card__tipo">Inactivo · ${escapeHtml(tipoLabel(c.tipo))}${origen === 'api' ? ' · API' : ''}</div>
         <h2 class="portal-card__nombre">${escapeHtml(c.nombre)}</h2>
         <div class="portal-card__abrev">${escapeHtml(c.abrev)}${agente ? ` · ${escapeHtml(agente)}` : ''}</div>
       </a>
-      <button type="button" class="portal-card__reactivar" data-reactivar="${id}">Reactivar</button>
+      ${accion}
     </article>`;
   }
 
@@ -240,6 +266,7 @@
 
   function renderTarjetas(lista, origen) {
     const unica = dedupeClientes(lista);
+    purgarOverridesCerrados(unica);
     const activos = [];
     const inactivos = [];
     unica.forEach((c) => (esActivo(c) ? activos : inactivos).push(c));
@@ -269,13 +296,20 @@
     e.stopPropagation();
     const id = btn.getAttribute('data-reactivar');
     if (!id) return;
+    const cli = (listaActual || []).find(
+      (c) => String(c.id) === id || String(findEstatico(c)?.id || '') === id
+    );
+    if (cli && esClienteCerradoFijo(cli, findEstatico(cli))) {
+      console.info('Portal: Joyas Mercury permanece cerrada (no se reactiva desde UI)');
+      return;
+    }
     guardarOverrideActivo(id, true);
     renderTarjetas(listaActual, origenActual);
   });
 
   async function cargar() {
     try {
-      const res = await fetch(API_URL);
+      const res = await fetch(API_URL, { cache: 'no-store' });
       if (!res.ok) throw new Error('API no disponible');
       const data = await res.json();
       if (!Array.isArray(data) || !data.length) throw new Error('API vacía');
