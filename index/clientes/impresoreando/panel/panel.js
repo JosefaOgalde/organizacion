@@ -77,6 +77,7 @@
     if (asegurarProductoLlaveroEscudoRanger(d)) changed = true;
     if (asegurarProductoLlaveroPortaLipstickStanley(d)) changed = true;
     if (asegurarProductoLlaveroPesaRusa(d)) changed = true;
+    if (asegurarProductoSoporteCelular(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
@@ -735,6 +736,49 @@
     return changed;
   }
 
+  /** Soporte celular — soft seed; g/h/$ llegan con imagen slicer. */
+  function seedSoporteCelular() {
+    return {
+      sku: 'SOPCEL001',
+      nombre: 'Soporte celular',
+      activo: true,
+      filamentoGramos: 0,
+      costoFilamentoKgClp: 0,
+      horasImpresion: 0,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 0,
+      pendienteCosto: true,
+      notas: 'Pendiente g/h slicer y $/kg del filamento (pedir imagen).',
+    };
+  }
+
+  function asegurarProductoSoporteCelular(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-soporte-celular';
+    const seed = seedSoporteCelular();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) && existing.pendienteCosto !== true) {
+      existing.pendienteCosto = true;
+      changed = true;
+    }
+    return changed;
+  }
+
 
   function formatearCodigoVenta(n) {
     return `I${String(n).padStart(6, '0')}`;
@@ -1292,6 +1336,44 @@
       }
     }
 
+    // PED-005 · María Paz SIE · Soporte celular rosado pastel · pendiente
+    const id005 = 'ped-maria-paz-soporte-005';
+    if (!d.pedidos.some((p) => p.id === id005 || p.numero === 'PED-005')) {
+      d.pedidos.push({
+        id: id005,
+        numero: 'PED-005',
+        fecha: '2026-07-26',
+        cliente: 'María Paz SIE',
+        clienteNombre: 'María',
+        clienteSegundoNombre: 'Paz',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: 0,
+            costoUnitarioClp: 0,
+            filamento: 'rosado pastel',
+            estado: 'pendiente',
+            listos: 0,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: 0,
+        descuentoClp: 0,
+        montoNeto: 0,
+        costoTotal: 0,
+        estado: 'pendiente',
+        ventaId: null,
+        notas: '1× Soporte celular rosado pastel · pendiente costo (imagen slicer) y precio venta',
+        socioRegistro: 'Ambos',
+        creado: '2026-07-26T01:43:00.000Z',
+      });
+      changed = true;
+    }
+
     const maxNum = d.pedidos.reduce((m, p) => {
       const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
       return Math.max(m, n);
@@ -1490,6 +1572,8 @@
     if (/llavero/.test(t) && /ranger|escudo/.test(t)) return 'LLRANGER';
     if (/llavero/.test(t) && /lipstick|stanley|standley/.test(t)) return 'LLSTANDL';
     if (/llavero/.test(t) && /(pesa|kettlebell|rusa)/.test(t)) return 'LLPESRU';
+    if (/soporte/.test(t) && /celular|telefono|tel[eé]fono|phone/.test(t)) return 'SOPCEL';
+    if (/soporte/.test(t)) return 'SOPCEL';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -1538,6 +1622,7 @@
       'prod-llavero-escudo-ranger': { sku: 'LLRANGER001', nombre: 'Llavero Escudo Ranger' },
       'prod-llavero-porta-lipstick-stanley': { sku: 'LLSTANDL001', nombre: 'Llavero Porta Lipstick Stanley' },
       'prod-llavero-pesa-rusa': { sku: 'LLPESRU001', nombre: 'Llavero Pesa Rusa' },
+      'prod-soporte-celular': { sku: 'SOPCEL001', nombre: 'Soporte celular' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',

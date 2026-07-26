@@ -47,6 +47,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-002 | Gianni SIE | 1× Macetero bulldog `MCPEBUL001` + 4× Portacompleto bulldog `PCPEBUL001` | **transferido** → I000002 $15.000 |
 | PED-003 | Juan SIE | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | **transferido** → I000003 $15.000 |
 | PED-004 | Ele SIE | 1× Llavero Pesa Rusa amarillo `LLPESRU001` | **listo** (impreso) · costo ~$415 · pendiente precio venta |
+| PED-005 | María Paz SIE | 1× Soporte celular rosado pastel `SOPCEL001` | **pendiente** · falta costo (imagen) y precio |
 
 ### Ventas — ID correlativo + historial
 
@@ -135,6 +136,7 @@ Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio
 | `LLRANGER001` | Llavero Escudo Ranger | 10,06 | 0,73 | Multicolor + $50 argolla · ~$315 · PVP ~$629 · alias `LLAVRANGER001` |
 | `LLSTANDL001` | Llavero Porta Lipstick Stanley | 26,32 | 0,78 | Placa÷2 + $50 argolla · ~$478 · PVP ~$955 · alias `LLAVSTAN001` |
 | `LLPESRU001` | Llavero Pesa Rusa | **16,78** | **0,59 (35 m 31 s)** | PLA amarillo · modelo 16,31 + purge 0,47 · +$50 argolla · costo ~$415 · PVP sug. ~$831 |
+| `SOPCEL001` | Soporte celular | — | — | **pendiente g/h** (pedir imagen slicer) · color según pedido |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
 
