@@ -1701,8 +1701,8 @@
       "fecha": "2026-07-27",
       "horaInicio": "11:00",
       "horaFin": "14:00",
-      "notas": "Última tarea JM vigente (la serie F2 D1–D20 ya no va en el calendario). Cerrar Novedades/Destacados en mobile: grilla 2×2, ocultar clones Slick, validar hero/banner sin recorte MERCURY, paridad con wireframes. CSS: index/clientes/joyasmercury/CSS-COMPLETO-ASTRA.css · landing JM. Al terminar → marcar hecha.\nOK · cerrado 25-jul 2026 · checklist + descargas en landing.",
-      "prioridad": "alta",
+      "notas": "Última tarea JM vigente (la serie F2 D1–D20 ya no va en el calendario). Cerrar Novedades/Destacados en mobile: grilla 2×2, ocultar clones Slick, validar hero/banner sin recorte MERCURY, paridad con wireframes. CSS: index/clientes/joyasmercury/CSS-COMPLETO-ASTRA.css · landing JM. Al terminar → marcar hecha.\nOK · cerrado 25-jul 2026 · checklist + descargas en landing.\nCERRADA · Joyas Mercury inactivo · etapa 2 entregada · 2026-07-25.",
+      "prioridad": "baja",
       "completada": true,
       "pendiente": false,
       "numeroHistorico": "21",
@@ -1721,7 +1721,8 @@
         "imagenesPendientes": [],
         "imagenesReferencia": []
       },
-      "estadoFijado": true
+      "estadoFijado": true,
+      "fechaFinalizado": "2026-07-25"
     },
     {
       "id": "tarea-tw-ajustar-textos-2026-07-19",
@@ -2041,7 +2042,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 16,
-  "respaldoActualizado": "2026-07-26T02:57:52.621Z",
+  "respaldoActualizado": "2026-07-26T03:06:21.758Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
