@@ -79,6 +79,7 @@
     if (asegurarProductoLlaveroPesaRusa(d)) changed = true;
     if (asegurarProductoSoporteCelular(d)) changed = true;
     if (asegurarProductoDragon(d)) changed = true;
+    if (asegurarProductoTorreon(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
@@ -845,6 +846,61 @@
     return changed;
   }
 
+  /**
+   * Torreón — sin slicer (impresora antigua). Estimación ~120 g / 4 h + $1.000 recargo.
+   * Soft seed: no pisa si ya hay g reales de slicer.
+   */
+  function seedTorreon() {
+    const filamentoGramos = 120;
+    const horasImpresion = 4;
+    const recargo = 1000;
+    return {
+      sku: 'TORREON001',
+      nombre: 'Torreón',
+      activo: true,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 6500,
+      pendienteCosto: false,
+      estimacionSinSlicer: true,
+      recargoImpresoraAntiguaClp: recargo,
+      notas:
+        `Estimación sin registro slicer (impresora antigua): ~${filamentoGramos} g · ~${horasImpresion} h · PLA color $16.829/kg + $${recargo} recargo impresora menos económica. PVP $6.500.`,
+    };
+  }
+
+  function asegurarProductoTorreon(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-torreon';
+    const seed = seedTorreon();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.estimacionSinSlicer) {
+      // Solo completa huecos; no pisa si después hay slicer real (estimacionSinSlicer false + g).
+      if (existing.estimacionSinSlicer !== false) {
+        Object.assign(existing, seed);
+        return true;
+      }
+    }
+    return changed;
+  }
+
   function formatearCodigoVenta(n) {
     return `I${String(n).padStart(6, '0')}`;
   }
@@ -1519,6 +1575,89 @@
       }
     }
 
+    // PED-007 · Juan SIE · Torreón · listo (estimación + $1.000 impresora antigua)
+    const id007 = 'ped-juan-torreon-007';
+    const prodTorre = (d.productos || []).find((p) => p.id === 'prod-torreon' || p.sku === 'TORREON001');
+    const costoTorre = prodTorre ? costoProdRough(d, prodTorre) : 3293.48;
+    const precioTorre =
+      Number(prodTorre?.precioVentaSugeridoClp) > 0 ? Number(prodTorre.precioVentaSugeridoClp) : 6500;
+    if (!d.pedidos.some((p) => p.id === id007 || p.numero === 'PED-007')) {
+      d.pedidos.push({
+        id: id007,
+        numero: 'PED-007',
+        fecha: '2026-07-26',
+        cliente: 'Juan SIE',
+        clienteNombre: 'Juan',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'TORREON001',
+            nombre: 'Torreón',
+            cantidad: 1,
+            precioUnitarioClp: precioTorre,
+            costoUnitarioClp: round2(costoTorre),
+            filamento: 'PLA color (estimación)',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioTorre,
+        descuentoClp: 0,
+        montoNeto: precioTorre,
+        costoTotal: round2(costoTorre),
+        estado: 'listo',
+        ventaId: null,
+        notas: `1× Torreón · listo · costo estimado $${round2(costoTorre)} (+$1.000 impresora antigua) · PVP $${precioTorre}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-26T02:00:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-008 · Juan MKOF · Porta Bob Esponja · listo
+    const id008 = 'ped-juan-bob-008';
+    const prodBob = (d.productos || []).find(
+      (p) => p.id === 'prod-porta-bob-esponja' || p.sku === 'PTBOBES001'
+    );
+    const costoBob = prodBob ? costoProdRough(d, prodBob) : 998.17;
+    const precioBob = 7000;
+    if (!d.pedidos.some((p) => p.id === id008 || p.numero === 'PED-008')) {
+      d.pedidos.push({
+        id: id008,
+        numero: 'PED-008',
+        fecha: '2026-07-26',
+        cliente: 'Juan MKOF',
+        clienteNombre: 'Juan',
+        clienteOrigen: 'MKOF',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'PTBOBES001',
+            nombre: 'Porta Bob Esponja',
+            cantidad: 1,
+            precioUnitarioClp: precioBob,
+            costoUnitarioClp: round2(costoBob),
+            filamento: 'multicolor',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioBob,
+        descuentoClp: 0,
+        montoNeto: precioBob,
+        costoTotal: round2(costoBob),
+        estado: 'listo',
+        ventaId: null,
+        notas: `1× Porta Bob Esponja · listo · costo $${round2(costoBob)} · PVP $${precioBob}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-26T02:00:00.000Z',
+      });
+      changed = true;
+    }
+
     const maxNum = d.pedidos.reduce((m, p) => {
       const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
       return Math.max(m, n);
@@ -1720,6 +1859,7 @@
     if (/soporte/.test(t) && /celular|telefono|tel[eé]fono|phone/.test(t)) return 'SOPCEL';
     if (/soporte/.test(t)) return 'SOPCEL';
     if (/drag[oó]n/.test(t)) return 'DRAGON';
+    if (/torre[oó]n|torreon/.test(t)) return 'TORREON';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -1770,6 +1910,7 @@
       'prod-llavero-pesa-rusa': { sku: 'LLPESRU001', nombre: 'Llavero Pesa Rusa' },
       'prod-soporte-celular': { sku: 'SOPCEL001', nombre: 'Soporte celular' },
       'prod-dragon': { sku: 'DRAGON001', nombre: 'Dragón' },
+      'prod-torreon': { sku: 'TORREON001', nombre: 'Torreón' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',
@@ -1920,8 +2061,9 @@
     );
     const metal = round2(Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0));
     const bolsa = round2(Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 0));
-    const total = round2(filamento + luz + pintado + metal + bolsa);
-    return { filamento, luz, pintado, metal, bolsa, total, gramos: round2(gramos) };
+    const recargo = round2(Number(prod.recargoImpresoraAntiguaClp || 0));
+    const total = round2(filamento + luz + pintado + metal + bolsa + recargo);
+    return { filamento, luz, pintado, metal, bolsa, recargo, total, gramos: round2(gramos) };
   }
 
   function leerProductoDesdeForm(form) {

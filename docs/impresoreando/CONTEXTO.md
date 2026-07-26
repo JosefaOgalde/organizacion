@@ -49,6 +49,8 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-004 | Ele SIE | 1× Llavero Pesa Rusa amarillo `LLPESRU001` | **listo** (impreso) · costo ~$415 · pendiente precio venta |
 | PED-005 | María Paz SIE | 1× Soporte celular rosado pastel `SOPCEL001` | **listo** (impreso) · costo ~$684 · **PVP $4.000** |
 | PED-006 | Rebe SIE | 1× Dragón `DRAGON001` | **en_impresion** · costo ~$5.476 · **PVP $11.000** |
+| PED-007 | Juan SIE | 1× Torreón `TORREON001` | **listo** · costo est. ~$3.293 (+$1.000 impresora antigua) · PVP sug. $6.500 |
+| PED-008 | Juan MKOF | 1× Porta Bob Esponja `PTBOBES001` | **listo** · costo ~$998 · **PVP $7.000** |
 
 ### Ventas — ID correlativo + historial
 
