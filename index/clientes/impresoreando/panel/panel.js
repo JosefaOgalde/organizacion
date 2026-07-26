@@ -66,6 +66,7 @@
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
     if (agruparGastosPorRegistro(d)) changed = true;
     if (asegurarParametrosLuzChileCentauri(d)) changed = true;
+    if (asegurarImpresoras(d)) changed = true;
     if (asegurarProductoPortacompletosGato(d)) changed = true;
     if (asegurarProductoPortacompletosPerro(d)) changed = true;
     if (asegurarProductoPortaLataMonster(d)) changed = true;
@@ -285,6 +286,95 @@
     impresoraNotas:
       'Pico nominal 1100 W @ 220 V. Promedio estimado en impresión PLA con cama caliente: 0,28 kW. Tarifa ~$200/kWh (precio efectivo boleta residencial Chile 2026; ajústala a tu cuenta).',
   };
+
+  /** Perfiles de impresora para costos (Centauri = default · Ender = antigua / otro filamento). */
+  const IMPRESORAS_SEED = [
+    {
+      id: 'imp-centauri-carbon-2',
+      nombre: 'Elegoo Centauri Carbon 2',
+      activaDefault: true,
+      extrusor: 'Sistema stock / multicolor',
+      consumoImpresoraKw: 0.28,
+      tarifaKwhClp: 200,
+      recargoFijoClp: 0,
+      costoFilamentoDefaultKgClp: 0,
+      notas:
+        'Impresora principal. Pico ~1100 W @ 220 V · promedio PLA ~0,28 kW. Usar salvo que el producto diga otra.',
+    },
+    {
+      id: 'imp-ender-3-v2-neo',
+      nombre: 'Creality Ender 3 V2 Neo',
+      activaDefault: false,
+      extrusor: 'Sprite Neo (extrusión directa)',
+      consumoImpresoraKw: 0.16,
+      tarifaKwhClp: 200,
+      recargoFijoClp: 1000,
+      costoFilamentoDefaultKgClp: 0,
+      filamentoOtro: true,
+      notas:
+        'Impresora antigua · extrusión directa Sprite Neo. Suele usar otro filamento (definir $/kg en el producto o en este perfil). Menos económica: recargo fijo $1.000 + consumo ~0,16 kW (ajustable). Usar al calcular piezas hechas en Ender.',
+    },
+  ];
+
+  function asegurarImpresoras(d) {
+    d.impresoras = Array.isArray(d.impresoras) ? d.impresoras : [];
+    let changed = false;
+    const byId = new Map(d.impresoras.filter((x) => x && x.id).map((x) => [x.id, x]));
+    for (const seed of IMPRESORAS_SEED) {
+      const existing = byId.get(seed.id);
+      if (!existing) {
+        d.impresoras.push({ ...seed });
+        byId.set(seed.id, seed);
+        changed = true;
+        continue;
+      }
+      // Completa campos canónicos sin pisar $/kg ni consumo editados a mano.
+      if (!existing.nombre) {
+        existing.nombre = seed.nombre;
+        changed = true;
+      }
+      if (!existing.extrusor) {
+        existing.extrusor = seed.extrusor;
+        changed = true;
+      }
+      if (!(Number(existing.consumoImpresoraKw) > 0)) {
+        existing.consumoImpresoraKw = seed.consumoImpresoraKw;
+        changed = true;
+      }
+      if (!(Number(existing.tarifaKwhClp) > 0)) {
+        existing.tarifaKwhClp = seed.tarifaKwhClp;
+        changed = true;
+      }
+      if (existing.recargoFijoClp == null) {
+        existing.recargoFijoClp = seed.recargoFijoClp;
+        changed = true;
+      }
+      if (existing.filamentoOtro == null && seed.filamentoOtro) {
+        existing.filamentoOtro = true;
+        changed = true;
+      }
+      if (!existing.notas) {
+        existing.notas = seed.notas;
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  function impresoraPorId(id) {
+    const list = data?.impresoras || IMPRESORAS_SEED;
+    return list.find((x) => x.id === id) || null;
+  }
+
+  function impresoraDefault() {
+    const list = data?.impresoras || IMPRESORAS_SEED;
+    return list.find((x) => x.activaDefault) || list[0] || IMPRESORAS_SEED[0];
+  }
+
+  function impresoraDeProducto(prod) {
+    const id = prod?.impresoraId || '';
+    return (id && impresoraPorId(id)) || impresoraDefault();
+  }
 
   function asegurarParametrosLuzChileCentauri(d) {
     d.parametros = d.parametros && typeof d.parametros === 'object' ? d.parametros : {};
@@ -853,11 +943,11 @@
   function seedTorreon() {
     const filamentoGramos = 120;
     const horasImpresion = 4;
-    const recargo = 1000;
     return {
       sku: 'TORREON001',
       nombre: 'Torreón',
       activo: true,
+      impresoraId: 'imp-ender-3-v2-neo',
       filamentoGramos,
       costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG,
       horasImpresion,
@@ -867,9 +957,8 @@
       precioVentaSugeridoClp: 6500,
       pendienteCosto: false,
       estimacionSinSlicer: true,
-      recargoImpresoraAntiguaClp: recargo,
       notas:
-        `Estimación sin registro slicer (impresora antigua): ~${filamentoGramos} g · ~${horasImpresion} h · PLA color $16.829/kg + $${recargo} recargo impresora menos económica. PVP $6.500.`,
+        `Estimación sin registro slicer · Ender 3 V2 Neo (Sprite Neo): ~${filamentoGramos} g · ~${horasImpresion} h · PLA color $16.829/kg + recargo perfil Ender. PVP $6.500.`,
     };
   }
 
@@ -891,10 +980,19 @@
       existing.nombre = seed.nombre;
       changed = true;
     }
+    if (existing.impresoraId !== seed.impresoraId) {
+      existing.impresoraId = seed.impresoraId;
+      changed = true;
+    }
+    if (existing.recargoImpresoraAntiguaClp != null) {
+      delete existing.recargoImpresoraAntiguaClp;
+      changed = true;
+    }
     if (!(Number(existing.filamentoGramos) > 0) || existing.estimacionSinSlicer) {
       // Solo completa huecos; no pisa si después hay slicer real (estimacionSinSlicer false + g).
       if (existing.estimacionSinSlicer !== false) {
         Object.assign(existing, seed);
+        delete existing.recargoImpresoraAntiguaClp;
         return true;
       }
     }
@@ -1728,16 +1826,27 @@
 
   function costoProdRough(d, prod) {
     const p = d.parametros || {};
+    const imps = Array.isArray(d.impresoras) ? d.impresoras : IMPRESORAS_SEED;
+    const imp =
+      imps.find((x) => x.id === prod.impresoraId) ||
+      imps.find((x) => x.activaDefault) ||
+      imps[0] ||
+      {};
     const g = Number(prod.filamentoGramos || 0);
-    const kg = Number(prod.costoFilamentoKgClp || 0);
+    let kg = Number(prod.costoFilamentoKgClp || 0);
+    if (!(kg > 0) && Number(imp.costoFilamentoDefaultKgClp) > 0) {
+      kg = Number(imp.costoFilamentoDefaultKgClp);
+    }
     const fil = (g / 1000) * kg;
-    const luz =
-      Number(prod.horasImpresion || 0) *
-      Number(p.tarifaKwhClp || 0) *
-      Number(p.consumoImpresoraKw || 0);
+    const tarifa = Number(imp.tarifaKwhClp > 0 ? imp.tarifaKwhClp : p.tarifaKwhClp || 0);
+    const consumo = Number(
+      imp.consumoImpresoraKw > 0 ? imp.consumoImpresoraKw : p.consumoImpresoraKw || 0
+    );
+    const luz = Number(prod.horasImpresion || 0) * tarifa * consumo;
     const bolsa = Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 50);
     const metal = Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0);
-    const recargo = Number(prod.recargoImpresoraAntiguaClp || 0);
+    const recargoProd = Number(prod.recargoImpresoraAntiguaClp || 0);
+    const recargo = recargoProd > 0 ? recargoProd : Number(imp.recargoFijoClp || 0);
     return round2(fil + luz + bolsa + metal + recargo);
   }
 
@@ -1992,9 +2101,16 @@
     return (arr || []).reduce((a, x) => a + Number(x[key] || 0), 0);
   }
 
-  function costoHoraImpresora() {
+  function costoHoraImpresora(impresoraOrId) {
     const p = data.parametros || {};
-    return Number(p.tarifaKwhClp || 0) * Number(p.consumoImpresoraKw || 0);
+    let imp = null;
+    if (impresoraOrId && typeof impresoraOrId === 'object') imp = impresoraOrId;
+    else if (impresoraOrId) imp = impresoraPorId(impresoraOrId);
+    const tarifa = Number(imp?.tarifaKwhClp > 0 ? imp.tarifaKwhClp : p.tarifaKwhClp || 0);
+    const consumo = Number(
+      imp?.consumoImpresoraKw > 0 ? imp.consumoImpresoraKw : p.consumoImpresoraKw || 0
+    );
+    return tarifa * consumo;
   }
 
   function partesHoras(horas) {
@@ -2064,17 +2180,36 @@
 
   function costoProducto(prod) {
     const p = data.parametros || {};
+    const imp = impresoraDeProducto(prod);
     const gramos = gramosDesdeDesglose(prod) || round2(prod.filamentoGramos || 0);
-    const filamento = round2((gramos / 1000) * Number(prod.costoFilamentoKgClp || 0));
-    const luz = round2(Number(prod.horasImpresion || 0) * costoHoraImpresora());
+    let kgFil = Number(prod.costoFilamentoKgClp || 0);
+    if (!(kgFil > 0) && Number(imp?.costoFilamentoDefaultKgClp) > 0) {
+      kgFil = Number(imp.costoFilamentoDefaultKgClp);
+    }
+    const filamento = round2((gramos / 1000) * kgFil);
+    const luz = round2(Number(prod.horasImpresion || 0) * costoHoraImpresora(imp));
     const pintado = round2(
       (Number(prod.minutosPintado || 0) / 60) * Number(p.valorHoraManoObraClp || 0)
     );
     const metal = round2(Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0));
     const bolsa = round2(Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 0));
-    const recargo = round2(Number(prod.recargoImpresoraAntiguaClp || 0));
+    const recargoProd = Number(prod.recargoImpresoraAntiguaClp || 0);
+    const recargoPerfil = Number(imp?.recargoFijoClp || 0);
+    // Si el producto ya trae recargo explícito, no duplicar el del perfil.
+    const recargo = round2(recargoProd > 0 ? recargoProd : recargoPerfil);
     const total = round2(filamento + luz + pintado + metal + bolsa + recargo);
-    return { filamento, luz, pintado, metal, bolsa, recargo, total, gramos: round2(gramos) };
+    return {
+      filamento,
+      luz,
+      pintado,
+      metal,
+      bolsa,
+      recargo,
+      total,
+      gramos: round2(gramos),
+      impresoraId: imp?.id || '',
+      impresoraNombre: imp?.nombre || '',
+    };
   }
 
   function leerProductoDesdeForm(form) {
@@ -2102,6 +2237,7 @@
       unidadesBolsa: round2(fd.get('unidadesBolsa') || 0),
       precioVentaSugeridoClp: round2(fd.get('precioVentaSugeridoClp') || 0),
       costoSlicerRef: round2(fd.get('costoSlicerRef') || 0),
+      impresoraId: String(fd.get('impresoraId') || '').trim() || impresoraDefault()?.id || '',
       notas: String(fd.get('notas') || '').trim(),
       usarDesglose,
     };
@@ -2111,10 +2247,19 @@
     const pctObj = Number(data?.parametros?.margenObjetivoPct ?? 100);
     const sugerido = precioSugeridoDesdeCosto(c.total);
     const markupReal = markupRealPct(precioVenta, c.total);
+    const recargoHtml =
+      Number(c.recargo) > 0
+        ? `<div class="imp-kpi"><span>Recargo impresora</span><strong>${money(c.recargo)}</strong></div>`
+        : '';
+    const impLbl = c.impresoraNombre
+      ? `<p class="imp-muted" style="margin:0 0 0.35rem">Impresora: <strong>${escapeHtml(c.impresoraNombre)}</strong></p>`
+      : '';
     return `
+      ${impLbl}
       <div class="imp-grid imp-grid--costo-live">
         <div class="imp-kpi"><span>Filamento (${Number(c.gramos || 0).toFixed(2)} g)</span><strong>${money(c.filamento)}</strong></div>
         <div class="imp-kpi"><span>Luz (impresión)</span><strong>${money(c.luz)}</strong></div>
+        ${recargoHtml}
         <div class="imp-kpi"><span>Pintado / MO</span><strong>${money(c.pintado)}</strong></div>
         <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
         <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
@@ -3551,10 +3696,54 @@
       )
       .join('');
 
+    const imps = data.impresoras || IMPRESORAS_SEED;
+    const filasImp = imps
+      .map((im) => {
+        const luzH = Number(im.tarifaKwhClp || p.tarifaKwhClp || 0) * Number(im.consumoImpresoraKw || 0);
+        return `<tr>
+          <td><strong>${escapeHtml(im.nombre)}</strong>
+            <div class="imp-muted">${escapeHtml(im.extrusor || '')}</div>
+            ${im.activaDefault ? '<div class="imp-badge imp-badge--ok">Default</div>' : ''}
+          </td>
+          <td class="num">${Number(im.consumoImpresoraKw || 0).toFixed(2)} kW</td>
+          <td class="num">${money(luzH)}/h</td>
+          <td class="num">${Number(im.recargoFijoClp) > 0 ? money(im.recargoFijoClp) : '—'}</td>
+          <td class="num">${Number(im.costoFilamentoDefaultKgClp) > 0 ? money(im.costoFilamentoDefaultKgClp) : (im.filamentoOtro ? 'definir' : '—')}</td>
+          <td class="imp-muted">${escapeHtml(im.notas || '')}</td>
+        </tr>`;
+      })
+      .join('');
+    const ender = imps.find((x) => x.id === 'imp-ender-3-v2-neo');
+
     $('#tab-operacion').innerHTML = `
       <div class="imp-card">
+        <h2>Impresoras (perfiles de costo)</h2>
+        <p class="imp-muted">Elegí la impresora en cada producto (Costos). La <strong>Ender 3 V2 Neo · Sprite Neo</strong> es la antigua: otro filamento posible + recargo fijo.</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>Impresora</th><th>Consumo</th><th>Luz/h</th><th>Recargo</th><th>$/kg default</th><th>Notas</th></tr></thead>
+            <tbody>${filasImp}</tbody>
+          </table>
+        </div>
+        <form class="imp-form" id="form-ender-filamento" style="margin-top:0.75rem">
+          <label>$ / kg filamento Ender (otro filamento)
+            <input name="costoFilamentoDefaultKgClp" type="number" min="0" step="0.01" value="${num2(ender?.costoFilamentoDefaultKgClp || 0)}" placeholder="Ej. 12990" />
+          </label>
+          <label>Consumo Ender kW promedio
+            <input name="consumoImpresoraKw" type="number" min="0" step="0.01" value="${num2(ender?.consumoImpresoraKw || 0.16)}" />
+          </label>
+          <label>Recargo fijo Ender CLP
+            <input name="recargoFijoClp" type="number" min="0" step="1" value="${Math.round(Number(ender?.recargoFijoClp || 1000))}" />
+          </label>
+          <div class="imp-form-actions">
+            <button class="imp-btn imp-btn--primary" type="submit">Guardar perfil Ender</button>
+            <span class="imp-muted">Se usa al calcular productos con impresora Ender (si el producto no trae $/kg propio).</span>
+          </div>
+        </form>
+      </div>
+      <div class="imp-card">
         <h2>Parámetros (luz / mano de obra / empaque)</h2>
-        <p class="imp-muted"><strong>${escapeHtml(p.impresoraModelo || LUZ_CHILE.impresoraModelo)}</strong> · Chile 220 V</p>
+        <p class="imp-muted"><strong>${escapeHtml(p.impresoraModelo || LUZ_CHILE.impresoraModelo)}</strong> · Chile 220 V · default Centauri</p>
         <p class="imp-muted">${escapeHtml(p.impresoraNotas || LUZ_CHILE.impresoraNotas)}</p>
         <form class="imp-form" id="form-params">
           <label>Tarifa luz Chile $/kWh
@@ -3571,7 +3760,7 @@
           </label>
           <div class="imp-form-actions">
             <button class="imp-btn imp-btn--primary" type="submit">Guardar parámetros</button>
-            <span class="imp-muted">Luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> (= ${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp} × ${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw} kW)</span>
+            <span class="imp-muted">Luz/hora Centauri ≈ <strong>${money(costoHoraImpresora('imp-centauri-carbon-2'))}</strong></span>
           </div>
         </form>
       </div>
@@ -3621,6 +3810,32 @@
       setStatus(`Parámetros luz actualizados — ${money(costoHoraImpresora())}/h · guarda online`, 'warn');
     });
 
+    $('#form-ender-filamento')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      asegurarImpresoras(data);
+      const ender = (data.impresoras || []).find((x) => x.id === 'imp-ender-3-v2-neo');
+      if (!ender) {
+        setStatus('No se encontró el perfil Ender 3 V2 Neo', 'err');
+        return;
+      }
+      const fd = new FormData(e.target);
+      ender.costoFilamentoDefaultKgClp = Math.max(
+        0,
+        Number(fd.get('costoFilamentoDefaultKgClp')) || 0
+      );
+      ender.consumoImpresoraKw = Math.max(0, Number(fd.get('consumoImpresoraKw')) || 0.16);
+      ender.recargoFijoClp = Math.max(0, Number(fd.get('recargoFijoClp')) || 0);
+      ender.filamentoOtro = true;
+      if (!ender.extrusor) ender.extrusor = 'Sprite Neo (extrusión directa)';
+      markDirty();
+      renderAll();
+      activarTab('operacion');
+      setStatus(
+        `Perfil Ender 3 V2 Neo guardado · $/kg ${money(ender.costoFilamentoDefaultKgClp)} · recargo ${money(ender.recargoFijoClp)} · guarda online`,
+        'warn'
+      );
+    });
+
     $('#form-op').addEventListener('submit', (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
@@ -3660,6 +3875,7 @@
       filamentoPurgeGramos: purge,
       filamentoGramos: round2(modelo + soportes + purge),
       costoFilamentoKgClp: round2(fd.get('kg')),
+      impresoraId: String(fd.get('impresoraId') || '').trim() || impresoraDefault()?.id || '',
       horasImpresion: horasDesdePartes(fd.get('horasPart'), fd.get('minutosPart')),
       minutosPintado: round2(fd.get('m')),
       unidadesMetal: round2(fd.get('metal')),
@@ -3750,12 +3966,20 @@
           prod.filamentoPurgeGramos != null;
         const usarDesglose = tieneDesglose ? '1' : '0';
         const precioVenta = precioVentaProducto(prod, c.total);
+        const impId = prod.impresoraId || impresoraDefault()?.id || 'imp-centauri-carbon-2';
+        const optsImp = (data.impresoras || IMPRESORAS_SEED)
+          .map(
+            (im) =>
+              `<option value="${escapeHtml(im.id)}"${im.id === impId ? ' selected' : ''}>${escapeHtml(im.nombre)}${im.extrusor ? ` · ${escapeHtml(im.extrusor)}` : ''}</option>`
+          )
+          .join('');
         return `
         <div class="imp-card imp-card--prod" data-prod-id="${pid}">
           <div class="imp-prod-summary">
             <div class="imp-prod-summary__title">
               <h3 data-prod-nombre>${escapeHtml(prod.nombre)}</h3>
               <span class="imp-sku" data-prod-sku title="SKU del producto">SKU ${sku}</span>
+              ${c.impresoraNombre ? `<span class="imp-muted">${escapeHtml(c.impresoraNombre)}</span>` : ''}
             </div>
             <div class="imp-prod-summary__nums">
               <span class="imp-prod-kpi">Costo <strong data-prod-costo>${money(c.total)}</strong></span>
@@ -3771,6 +3995,9 @@
                 <label>Nombre<input name="nombre" required value="${escapeHtml(prod.nombre || '')}" /></label>
                 <label>SKU
                   <input name="sku" required pattern="[A-Za-z]{2,10}[0-9]{3}" title="Ej. PCGATO001, PLMONS001" value="${sku}" />
+                </label>
+                <label class="imp-form-span">Impresora
+                  <select name="impresoraId">${optsImp}</select>
                 </label>
                 <label>$ / kg filamento (CLP)<input name="costoFilamentoKgClp" type="number" min="0" step="0.01" value="${num2(prod.costoFilamentoKgClp || 0)}" /></label>
                 <label class="imp-form-span">Desglose slicer (como en la foto)
@@ -3814,10 +4041,18 @@
       <div class="imp-card">
         <h3>Calculadora rápida de pieza</h3>
         <form class="imp-form" id="form-calc-pieza">
+          <label class="imp-form-span">Impresora
+            <select name="impresoraId">${(data.impresoras || IMPRESORAS_SEED)
+              .map(
+                (im) =>
+                  `<option value="${escapeHtml(im.id)}"${im.activaDefault ? ' selected' : ''}>${escapeHtml(im.nombre)}${im.extrusor ? ` · ${escapeHtml(im.extrusor)}` : ''}</option>`
+              )
+              .join('')}</select>
+          </label>
           <label>Modelo (g)<input name="modelo" type="number" step="0.01" value="135.55" /></label>
           <label>Soportes (g)<input name="soportes" type="number" step="0.01" value="8.43" /></label>
           <label>Purge (g)<input name="purge" type="number" step="0.01" value="0.47" /></label>
-          <label>$ / kg filamento<input name="kg" type="number" value="${avgFilKg}" /></label>
+          <label>$ / kg filamento<input name="kg" type="number" value="${avgFilKg}" placeholder="0 = default impresora" /></label>
           <label>Horas<input name="horasPart" type="number" min="0" step="1" value="3" /></label>
           <label>Minutos<input name="minutosPart" type="number" min="0" max="59" step="1" value="25" /></label>
           <label>Minutos pintado<input name="m" type="number" value="0" /></label>
@@ -3842,6 +4077,7 @@
       const prod = {
         filamentoGramos: g,
         costoFilamentoKgClp: Number(fd.get('kg')),
+        impresoraId: String(fd.get('impresoraId') || '').trim() || impresoraDefault()?.id || '',
         horasImpresion: horasDesdePartes(fd.get('horasPart'), fd.get('minutosPart')),
         minutosPintado: Number(fd.get('m')),
         unidadesMetal: Number(fd.get('metal')),
@@ -3850,14 +4086,16 @@
       const c = costoProducto(prod);
       const sugerido = precioSugeridoDesdeCosto(c.total);
       const pctObj = Number(p.margenObjetivoPct ?? 100);
+      const recargoTxt = Number(c.recargo) > 0 ? ` · Recargo ${money(c.recargo)}` : '';
       el.innerHTML = `
           Total filamento <strong>${g.toFixed(2)} g</strong>
-          · Filamento ${money(c.filamento)} · Luz ${money(c.luz)} · Pintado ${money(c.pintado)} · Metal ${money(c.metal)} · Bolsa ${money(c.bolsa)}
+          · Filamento ${money(c.filamento)} · Luz ${money(c.luz)}${recargoTxt} · Pintado ${money(c.pintado)} · Metal ${money(c.metal)} · Bolsa ${money(c.bolsa)}
           <br><strong>Costo unitario: ${money(c.total)}</strong> · precio sugerido (+${pctObj}% sobre costo): <strong>${money(sugerido)}</strong>
-          <div class="imp-muted" style="margin-top:0.35rem">Tarifa Chile ${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp} $/kWh · ${p.impresoraModelo || 'Centauri Carbon 2'} ${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw} kW</div>`;
+          <div class="imp-muted" style="margin-top:0.35rem">Impresora: <strong>${escapeHtml(c.impresoraNombre || '—')}</strong> · luz/h ${money(costoHoraImpresora(prod.impresoraId))}</div>`;
       form.dataset.calcSnapshot = JSON.stringify({ ...prod, sugerido, c });
     };
     $('#form-calc-pieza')?.addEventListener('input', updateCalc);
+    $('#form-calc-pieza')?.addEventListener('change', updateCalc);
     updateCalc();
     $('#btn-calc-guardar')?.addEventListener('click', abrirModalDesdeCalculadora);
 
@@ -3944,6 +4182,7 @@
           filamentoMetros: leido.filamentoMetros,
           filamentoGramos: leido.filamentoGramos,
           costoFilamentoKgClp: leido.costoFilamentoKgClp,
+          impresoraId: leido.impresoraId,
           horasImpresion: leido.horasImpresion,
           minutosPintado: leido.minutosPintado,
           unidadesMetal: leido.unidadesMetal,
@@ -3953,6 +4192,10 @@
           notas: leido.notas,
           editadoLocal: true,
         });
+        // Si usa perfil Ender, el recargo vive en el perfil (evitar duplicar).
+        if (prod.impresoraId === 'imp-ender-3-v2-neo' && prod.recargoImpresoraAntiguaClp != null) {
+          delete prod.recargoImpresoraAntiguaClp;
+        }
         markDirty();
         refreshLive();
         renderResumen();
@@ -4157,6 +4400,7 @@
       sku,
       nombre,
       activo: true,
+      impresoraId: calcDraft?.impresoraId || impresoraDefault()?.id || 'imp-centauri-carbon-2',
       filamentoModeloGramos: round2(calcDraft?.filamentoModeloGramos ?? 0),
       filamentoSoportesGramos: round2(calcDraft?.filamentoSoportesGramos ?? 0),
       filamentoPurgeGramos: round2(calcDraft?.filamentoPurgeGramos ?? 0),

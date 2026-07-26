@@ -40,6 +40,50 @@ function main() {
   live.productos = Array.isArray(live.productos) ? live.productos : [];
   live.pedidos = Array.isArray(live.pedidos) ? live.pedidos : [];
   live.ventas = Array.isArray(live.ventas) ? live.ventas : [];
+  live.impresoras = Array.isArray(live.impresoras) ? live.impresoras : [];
+
+  // Perfiles de impresora (Centauri + Ender): agrega faltantes; no pisa $/kg ni consumo editados.
+  const impById = new Map(live.impresoras.filter((i) => i && i.id).map((i) => [i.id, i]));
+  for (const si of seed.impresoras || []) {
+    if (!si || !si.id) continue;
+    const existing = impById.get(si.id);
+    if (!existing) {
+      live.impresoras.push(JSON.parse(JSON.stringify(si)));
+      impById.set(si.id, si);
+      changed += 1;
+      continue;
+    }
+    let touched = false;
+    if (!existing.nombre && si.nombre) {
+      existing.nombre = si.nombre;
+      touched = true;
+    }
+    if (!existing.extrusor && si.extrusor) {
+      existing.extrusor = si.extrusor;
+      touched = true;
+    }
+    if (!(Number(existing.consumoImpresoraKw) > 0) && Number(si.consumoImpresoraKw) > 0) {
+      existing.consumoImpresoraKw = si.consumoImpresoraKw;
+      touched = true;
+    }
+    if (!(Number(existing.tarifaKwhClp) > 0) && Number(si.tarifaKwhClp) > 0) {
+      existing.tarifaKwhClp = si.tarifaKwhClp;
+      touched = true;
+    }
+    if (existing.recargoFijoClp == null && si.recargoFijoClp != null) {
+      existing.recargoFijoClp = si.recargoFijoClp;
+      touched = true;
+    }
+    if (existing.filamentoOtro == null && si.filamentoOtro) {
+      existing.filamentoOtro = true;
+      touched = true;
+    }
+    if (!existing.notas && si.notas) {
+      existing.notas = si.notas;
+      touched = true;
+    }
+    if (touched) changed += 1;
+  }
 
   const prodById = new Map(live.productos.filter((p) => p && p.id).map((p) => [p.id, p]));
   const prodBySku = new Map(
@@ -59,6 +103,10 @@ function main() {
       changed += 1;
     } else if (!(Number(existing.precioVentaSugeridoClp) > 0) && Number(sp.precioVentaSugeridoClp) > 0) {
       existing.precioVentaSugeridoClp = sp.precioVentaSugeridoClp;
+      changed += 1;
+    }
+    if (!existing.impresoraId && sp.impresoraId) {
+      existing.impresoraId = sp.impresoraId;
       changed += 1;
     }
   }

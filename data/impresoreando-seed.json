@@ -116,6 +116,31 @@
     "impresoraModelo": "Elegoo Centauri Carbon 2",
     "impresoraNotas": "Pico nominal 1100 W @ 220 V. Promedio estimado en impresión PLA con cama caliente: 0,28 kW. Tarifa ~$200/kWh (precio efectivo boleta residencial Chile 2026; ajústala a tu cuenta)."
   },
+  "impresoras": [
+    {
+      "id": "imp-centauri-carbon-2",
+      "nombre": "Elegoo Centauri Carbon 2",
+      "activaDefault": true,
+      "extrusor": "Sistema stock / multicolor",
+      "consumoImpresoraKw": 0.28,
+      "tarifaKwhClp": 200,
+      "recargoFijoClp": 0,
+      "costoFilamentoDefaultKgClp": 0,
+      "notas": "Impresora principal. Pico ~1100 W @ 220 V · promedio PLA ~0,28 kW. Usar salvo que el producto diga otra."
+    },
+    {
+      "id": "imp-ender-3-v2-neo",
+      "nombre": "Creality Ender 3 V2 Neo",
+      "activaDefault": false,
+      "extrusor": "Sprite Neo (extrusión directa)",
+      "consumoImpresoraKw": 0.16,
+      "tarifaKwhClp": 200,
+      "recargoFijoClp": 1000,
+      "costoFilamentoDefaultKgClp": 0,
+      "filamentoOtro": true,
+      "notas": "Impresora antigua · extrusión directa Sprite Neo. Otro filamento (definir $/kg en Operación o en el producto). Recargo fijo $1.000 + consumo ~0,16 kW."
+    }
+  ],
   "gastos": [
     {
       "id": "gas-reg-312435",
@@ -929,6 +954,7 @@
       "sku": "TORREON001",
       "nombre": "Torreón",
       "activo": true,
+      "impresoraId": "imp-ender-3-v2-neo",
       "filamentoGramos": 120,
       "costoFilamentoKgClp": 16829,
       "horasImpresion": 4,
@@ -938,9 +964,8 @@
       "precioVentaSugeridoClp": 6500,
       "pendienteCosto": false,
       "estimacionSinSlicer": true,
-      "recargoImpresoraAntiguaClp": 1000,
       "editadoLocal": true,
-      "notas": "Estimación sin registro slicer (impresora antigua): ~120 g · ~4 h · PLA color $16829/kg → base $2.293,48 + $1.000 (impresora menos económica) = costo $3.293,48. PVP sugerido $6.587."
+      "notas": "Estimación sin registro slicer · Ender 3 V2 Neo (Sprite Neo): ~120 g · ~4 h · PLA color $16829/kg + recargo perfil Ender $1.000. PVP sugerido $6.500."
     }
   ],
   "planAds": {

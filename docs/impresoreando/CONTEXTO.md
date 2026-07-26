@@ -111,19 +111,36 @@ Reglas al crear:
 Responder **pidiendo la imagen** (foto del producto / captura slicer) y, si no viene en la imagen:
 
 - gramos de filamento · horas de impresión · tipo/color y $/kg (o usar tabla PLA+ negro/rojo $17.986, amarillo/café $16.829, blanco $12.690)
+- **qué impresora:** Centauri (default) o **Ender 3 V2 Neo / Sprite Neo** (antigua · otro filamento)
 - si lleva argolla metal (+$50) o bolsa
 
-Calcular con la fórmula del panel y devolver costo/u + PVP sugerido (+margen 100% si no indican otro). Si no hay SKU, generarlo. Si piden guardar producto, crear/actualizar en Costos.
+Calcular con la fórmula del panel y devolver costo/u + PVP sugerido (+margen 100% si no indican otro). Si es Ender, usar perfil `imp-ender-3-v2-neo` (recargo + consumo propios; $/kg del otro filamento si lo dan). Si no hay SKU, generarlo. Si piden guardar producto, crear/actualizar en Costos con `impresoraId`.
 
 ## Productos / costos
 
 Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio venta · Eliminar. Resto en `<details> Parámetros y desglose`.
 
-**Fórmula:** `filamento = g/1000 × $/kg` + `luz = horas × tarifaKwh × consumoKw` + pintado + metal + bolsa.  
+**Fórmula:** `filamento = g/1000 × $/kg` + `luz = horas × tarifaKwh × consumoKw` + pintado + metal + bolsa (+ recargo perfil si aplica).  
 **Markup sugerido:** `precio = costo × (1 + margenObjetivoPct/100)` (default +100%).  
-**Params default:** `tarifaKwhClp: 200`, `consumoImpresoraKw: 0.28`, impresora Centauri Carbon 2, `costoAnilloMetalLlaveroClp: 50`.  
-**$/kg:** PLA+ negro/rojo `$17.986` · PLA amarillo/café `$16.829` · PLA blanco `$12.690`.  
+**Params default (Centauri):** `tarifaKwhClp: 200`, `consumoImpresoraKw: 0.28`, `costoAnilloMetalLlaveroClp: 50`.  
+**$/kg Centauri:** PLA+ negro/rojo `$17.986` · PLA amarillo/café `$16.829` · PLA blanco `$12.690`.  
 **Diseños Cults/digitales** → gastos socios (categoría `diseño`); **no** van al costo unitario del producto.
+
+### Impresoras (perfiles de costo) — obligatorio recordar
+
+Datos en `data.impresoras[]` (seed + live) y UI **Operación → Impresoras**. Cada producto puede tener `impresoraId`.
+
+| id | Modelo | Extrusor | Uso |
+|----|--------|----------|-----|
+| `imp-centauri-carbon-2` | Elegoo Centauri Carbon 2 | stock / multicolor | **Default** · filamentos tabla arriba |
+| `imp-ender-3-v2-neo` | Creality **Ender 3 V2 Neo** | **Sprite Neo (extrusión directa)** | Impresora **antigua** · suele usar **otro filamento** |
+
+**Ender 3 V2 Neo (Sprite Neo):**
+- Perfil guardado para cálculos cuando imprimen ahí (otro filamento).
+- Defaults: consumo ~`0.16` kW · recargo fijo `$1.000` · `costoFilamentoDefaultKgClp` (definir en Operación cuando sepan el $/kg del rollo).
+- Si el producto no trae `$/kg`, usa el default del perfil Ender.
+- UI: Operación → **Guardar perfil Ender**; Costos → select Impresora; calculadora rápida también elige impresora.
+- Ejemplo seed: `TORREON001` → `impresoraId: imp-ender-3-v2-neo`.
 
 ### SKUs clave (seed / `asegurarProducto*`)
 
@@ -142,7 +159,7 @@ Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio
 | `LLPESRU001` | Llavero Pesa Rusa | **16,78** | **0,59 (35 m 31 s)** | PLA amarillo · modelo 16,31 + purge 0,47 · +$50 argolla · costo ~$415 · PVP sug. ~$831 |
 | `SOPCEL001` | Soporte celular | **34,46** | **0,96 (57 m 30 s)** | PLA rosado pastel · costo ~$684 · **PVP $4.000** (manual) |
 | `DRAGON001` | Dragón | **275,41** | **14,12 (14 h 7 m)** | PLA color · modelo+soportes · costo ~$5.476 · **PVP $11.000** |
-| `TORREON001` | Torreón | **~120** (est.) | **~4 h** (est.) | Sin slicer · +$1.000 impresora antigua · costo ~$3.293 · PVP sug. $6.500 |
+| `TORREON001` | Torreón | **~120** (est.) | **~4 h** (est.) | **Ender 3 V2 Neo (Sprite Neo)** · sin slicer · recargo perfil +$1.000 · costo ~$3.293 · PVP sug. $6.500 |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
 
