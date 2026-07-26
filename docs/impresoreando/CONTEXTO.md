@@ -141,6 +141,7 @@ Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio
 | `LLPESRU001` | Llavero Pesa Rusa | **16,78** | **0,59 (35 m 31 s)** | PLA amarillo · modelo 16,31 + purge 0,47 · +$50 argolla · costo ~$415 · PVP sug. ~$831 |
 | `SOPCEL001` | Soporte celular | **34,46** | **0,96 (57 m 30 s)** | PLA rosado pastel · costo ~$684 · **PVP $4.000** (manual) |
 | `DRAGON001` | Dragón | **275,41** | **14,12 (14 h 7 m)** | PLA color · modelo+soportes · costo ~$5.476 · **PVP $11.000** |
+| `TORREON001` | Torreón | **~120** (est.) | **~4 h** (est.) | Sin slicer · +$1.000 impresora antigua · costo ~$3.293 · PVP sug. $6.500 |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
 

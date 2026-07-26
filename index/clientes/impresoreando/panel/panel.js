@@ -1727,7 +1727,8 @@
       Number(p.consumoImpresoraKw || 0);
     const bolsa = Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 50);
     const metal = Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0);
-    return round2(fil + luz + bolsa + metal);
+    const recargo = Number(prod.recargoImpresoraAntiguaClp || 0);
+    return round2(fil + luz + bolsa + metal + recargo);
   }
 
   function asegurarProductoPortacompletoPerroBulldog(d) {
