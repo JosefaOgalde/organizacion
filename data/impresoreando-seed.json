@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-26T01:46:29.423Z",
+    "actualizado": "2026-07-26T01:47:23.784Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -1124,8 +1124,8 @@
           "precioUnitarioClp": 4000,
           "costoUnitarioClp": 683.69,
           "filamento": "PLA rosado pastel",
-          "estado": "pendiente",
-          "listos": 0,
+          "estado": "listo",
+          "listos": 1,
           "enImpresion": 0
         }
       ],
@@ -1133,9 +1133,9 @@
       "descuentoClp": 0,
       "montoNeto": 4000,
       "costoTotal": 683.69,
-      "estado": "pendiente",
+      "estado": "listo",
       "ventaId": null,
-      "notas": "1× Soporte celular rosado pastel · pendiente · costo $683,69 · precio venta $4.000",
+      "notas": "1× Soporte celular rosado pastel · listo/impreso · costo $683,69 · precio venta $4.000",
       "socioRegistro": "Ambos",
       "creado": "2026-07-26T01:44:08.009Z"
     }
