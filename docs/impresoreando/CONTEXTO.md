@@ -17,7 +17,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Panel / Resumen | `http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen` |
 | Catálogo IG | `…/impresoreando/catalogo/` · 1080×1350 · PDF `catalogo/export/catalogo-impresoreando.pdf` · `exportar-pngs.js` + `exportar-pdf.js` |
 | Status correo | `scripts/impresoreando-status-diario.js` · `ENVIAR-STATUS-IMPRESOREANDO.bat` · lib `scripts/lib/smtp-send.js` |
-| Sync → organizador | `node scripts/sync-impresoreando-pedidos-organizacion.js --also-respaldo` (también lo corre `ABRIR-LARAVEL.bat`) |
+| Sync → organizador | `node scripts/sync-impresoreando-pedidos-organizacion.js --also-respaldo` (también lo corre `ABRIR-LARAVEL.bat`). **1 tarea por PED activo** (`[IMP] PED-00n · …`); transferidos → completadas (no cuentan en «Pedidos activos»). |
 
 Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. Persistencia siempre vía API (live), no solo localStorage.
 

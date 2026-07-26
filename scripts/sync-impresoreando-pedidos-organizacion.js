@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 /**
  * Sincroniza pedidos Impresoreando → tareas del organizador.
- * Pedidos transferidos → tarea completada (no cuentan como activos).
+ *
+ * Reglas:
+ * - Cada pedido ACTIVO (pendiente|listo|en_impresion) = 1 subtarea con número PED-00n
+ * - Pedidos transferidos → tarea completada (tachada; no cuentan en «Pedidos activos · N»)
+ * - Madre `tarea-imp-pedidos-hoy` resume solo los activos
  *
  * Uso:
  *   node scripts/sync-impresoreando-pedidos-organizacion.js
@@ -16,7 +20,7 @@ const ROOT = path.resolve(__dirname, '..');
 const IMP_LIVE = path.join(ROOT, 'data', 'impresoreando-live.json');
 const IMP_SEED = path.join(ROOT, 'data', 'impresoreando-seed.json');
 const ORG_LIVE = path.join(ROOT, 'data', 'organizacion-live.json');
-const ORG_RESPALDO = path.join(ROOT, 'data', 'organizacion-respaldo-2026-07-21.json');
+const DATA_DIR = path.join(ROOT, 'data');
 
 const MADRE_ID = 'tarea-imp-pedidos-hoy';
 const CLI = 'cli-impresoreando';
@@ -37,7 +41,7 @@ function loadImp() {
 }
 
 function pedidoActivo(estado) {
-  return ['pendiente', 'listo', 'en_impresion'].includes(estado || 'pendiente');
+  return ['pendiente', 'listo', 'en_impresion'].includes(String(estado || 'pendiente').toLowerCase());
 }
 
 function itemsTxt(ped) {
@@ -54,11 +58,22 @@ function money(n) {
   });
 }
 
+function clienteCorto(ped) {
+  return String(ped.cliente || ped.clienteNombre || '—')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function taskIdForPedido(ped) {
   const map = {
     'ped-rebe-plmons-001': 'tarea-imp-ped-rebe-plmons-001',
     'ped-gianni-bulldog-002': 'tarea-imp-ped-gianni-bulldog-002',
     'ped-naves-espaciales-003': 'tarea-imp-ped-juan-naves-003',
+    'ped-ele-pesa-rusa-004': 'tarea-imp-ped-ele-pesa-004',
+    'ped-maria-paz-soporte-005': 'tarea-imp-ped-mpaz-soporte-005',
+    'ped-rebe-dragon-006': 'tarea-imp-ped-rebe-dragon-006',
+    'ped-juan-torreon-007': 'tarea-imp-ped-juan-torreon-007',
+    'ped-juan-bob-008': 'tarea-imp-ped-juan-bob-008',
   };
   if (map[ped.id]) return map[ped.id];
   const slug = String(ped.numero || ped.id || 'x')
@@ -67,11 +82,27 @@ function taskIdForPedido(ped) {
   return `tarea-imp-ped-${slug}`;
 }
 
-function syncOrgFile(orgPath, pedidos, impActualizado) {
-  if (!fs.existsSync(orgPath)) {
-    console.log('[sync-imp] Skip (no existe):', path.basename(orgPath));
-    return false;
+function tituloPedido(ped) {
+  const num = ped.numero || 'PED-???';
+  return `[IMP] ${num} · ${clienteCorto(ped)} · ${itemsTxt(ped)}`;
+}
+
+function listOrgTargets(alsoRespaldo) {
+  const files = [ORG_LIVE];
+  if (!alsoRespaldo) return files.filter((f) => fs.existsSync(f));
+  try {
+    for (const name of fs.readdirSync(DATA_DIR)) {
+      if (!/^organizacion-respaldo-.*\.json$/i.test(name)) continue;
+      if (/ejemplo/i.test(name)) continue;
+      files.push(path.join(DATA_DIR, name));
+    }
+  } catch {
+    /* ignore */
   }
+  return [...new Set(files)].filter((f) => fs.existsSync(f));
+}
+
+function syncOrgFile(orgPath, pedidos, impActualizado) {
   const org = readJson(orgPath);
   org.tareas = Array.isArray(org.tareas) ? org.tareas : [];
   let changed = false;
@@ -79,7 +110,7 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
   const activos = pedidos.filter((p) => pedidoActivo(p.estado));
   const nActivos = activos.length;
   const resumenActivos = activos
-    .map((p) => `${p.numero} ${p.cliente || ''} ${p.estado}`)
+    .map((p) => `${p.numero} ${clienteCorto(p)} (${p.estado})`)
     .join(' · ');
 
   let madre = org.tareas.find((t) => t && t.id === MADRE_ID);
@@ -88,17 +119,19 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
     nActivos === 0
       ? `Sin pedidos activos. Panel: /index/clientes/impresoreando/panel/ · Imp live ${impActualizado || '—'}`
       : `Panel socios 50/50 · ${resumenActivos}. Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. Imp live ${impActualizado || '—'}`;
+  const fechaMadre =
+    (activos[0] && activos[0].fecha) ||
+    (madre && madre.fecha) ||
+    new Date().toISOString().slice(0, 10);
 
   if (!madre) {
-    if (nActivos === 0) {
-      // no crear madre vacía
-    } else {
+    if (nActivos > 0) {
       madre = {
         id: MADRE_ID,
         titulo: madreTitulo,
         clienteId: CLI,
         rolId: ROL,
-        fecha: (activos[0] && activos[0].fecha) || new Date().toISOString().slice(0, 10),
+        fecha: fechaMadre,
         horaInicio: '10:00',
         horaFin: '18:00',
         notas: madreNotas,
@@ -109,7 +142,7 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
         tipoEntregable: 'impresoreando-pedidos',
         parentId: null,
         linkPanel: '/index/clientes/impresoreando/panel/',
-        fechaFin: (activos[0] && activos[0].fecha) || undefined,
+        fechaFin: fechaMadre,
       };
       org.tareas.push(madre);
       changed = true;
@@ -132,44 +165,56 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
 
   const byPedidoId = new Map();
   const byPedidoNum = new Map();
+  const byTaskId = new Map();
   for (const t of org.tareas) {
     if (!t || t.tipoEntregable !== 'impresoreando-pedido') continue;
     if (t.pedidoId) byPedidoId.set(t.pedidoId, t);
     if (t.pedidoNumero) byPedidoNum.set(t.pedidoNumero, t);
+    if (t.id) byTaskId.set(t.id, t);
   }
 
-  let orden = 1;
+  let ordenActivo = 1;
+  let ordenHecho = 1;
   for (const ped of pedidos) {
     const activo = pedidoActivo(ped.estado);
-    let t = byPedidoId.get(ped.id) || byPedidoNum.get(ped.numero);
-    const titulo = `[IMP] ${ped.numero} ${ped.cliente || '—'} · ${itemsTxt(ped)}`;
+    const tid = taskIdForPedido(ped);
+    let t =
+      byPedidoId.get(ped.id) ||
+      byPedidoNum.get(ped.numero) ||
+      byTaskId.get(tid);
+    const titulo = tituloPedido(ped);
     const notas = activo
-      ? `Estado pedido: ${ped.estado}. Total ${money(ped.montoNeto)}. ${ped.notas || ''} · Panel: /index/clientes/impresoreando/panel/`
-      : `Transferido a venta (${ped.ventaId || 'ok'}). Total cobrado ${money(ped.montoNeto)}. ${ped.notas || ''} · Ya no es pedido activo.`;
+      ? `Estado: ${ped.estado}. Total ${money(ped.montoNeto)}. ${ped.notas || ''} · Panel: /index/clientes/impresoreando/panel/`
+      : `Transferido a venta (${ped.ventaId || ped.ventaCodigo || 'ok'}). Total cobrado ${money(ped.montoNeto)}. ${ped.notas || ''} · Ya no es pedido activo.`;
+    const ordenHijo = activo ? ordenActivo : 900 + ordenHecho;
 
     if (!t) {
-      if (!activo) continue; // no crear tarea para transferidos nuevos
+      if (!activo) continue; // no crear tarea nueva solo para transferidos
       t = {
-        id: taskIdForPedido(ped),
+        id: tid,
         titulo,
         clienteId: CLI,
         rolId: ROL,
-        fecha: ped.fecha || new Date().toISOString().slice(0, 10),
+        fecha: ped.fecha || fechaMadre,
         horaInicio: '10:00',
         horaFin: '13:00',
         notas,
-        prioridad: activo ? 'alta' : 'baja',
-        completada: !activo,
+        prioridad: 'alta',
+        completada: false,
         pendiente: false,
         tipoEntregable: 'impresoreando-pedido',
         parentId: MADRE_ID,
-        ordenHijo: orden,
+        ordenHijo,
         pedidoId: ped.id,
         pedidoNumero: ped.numero,
         pedidoEstado: ped.estado || 'pendiente',
         linkPanel: '/index/clientes/impresoreando/panel/',
+        numeroHistorico: String(ped.numero || '').replace(/\D/g, '').padStart(2, '0') || undefined,
       };
       org.tareas.push(t);
+      byPedidoId.set(ped.id, t);
+      byPedidoNum.set(ped.numero, t);
+      byTaskId.set(tid, t);
       changed = true;
     } else {
       const next = {
@@ -180,8 +225,11 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
         pedidoId: ped.id,
         pedidoNumero: ped.numero,
         parentId: MADRE_ID,
-        ordenHijo: orden,
+        ordenHijo,
         prioridad: activo ? t.prioridad || 'alta' : 'baja',
+        clienteId: CLI,
+        rolId: ROL,
+        tipoEntregable: 'impresoreando-pedido',
       };
       for (const [k, v] of Object.entries(next)) {
         if (t[k] !== v) {
@@ -190,7 +238,8 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
         }
       }
     }
-    orden += 1;
+    if (activo) ordenActivo += 1;
+    else ordenHecho += 1;
   }
 
   // Tareas de pedido huérfanas (ya no están en live) → completar
@@ -198,11 +247,14 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
   const liveNums = new Set(pedidos.map((p) => p.numero));
   for (const t of org.tareas) {
     if (!t || t.tipoEntregable !== 'impresoreando-pedido') continue;
-    const still = (t.pedidoId && liveIds.has(t.pedidoId)) || (t.pedidoNumero && liveNums.has(t.pedidoNumero));
+    const still =
+      (t.pedidoId && liveIds.has(t.pedidoId)) ||
+      (t.pedidoNumero && liveNums.has(t.pedidoNumero));
     if (!still && !t.completada) {
       t.completada = true;
       t.pedidoEstado = 'transferido';
-      t.notas = `${t.notas || ''} · Marcado completado (pedido ya no activo).`.trim();
+      t.prioridad = 'baja';
+      t.notas = `${t.notas || ''} · Marcado completado (pedido ya no en live).`.trim();
       changed = true;
     }
   }
@@ -211,7 +263,7 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
     org.respaldoActualizado = new Date().toISOString();
     writeJson(orgPath, org);
     console.log(
-      `[sync-imp] ${path.basename(orgPath)}: pedidos activos ${nActivos} · madre «${madreTitulo}»`
+      `[sync-imp] ${path.basename(orgPath)}: activos ${nActivos} · madre «${madreTitulo}»`
     );
   } else {
     console.log(`[sync-imp] ${path.basename(orgPath)}: sin cambios`);
@@ -224,10 +276,22 @@ function main() {
   const { data: imp, file } = loadImp();
   const pedidos = Array.isArray(imp.pedidos) ? imp.pedidos : [];
   const actualizado = imp.meta?.actualizado || path.basename(file);
-  console.log(`[sync-imp] Fuente pedidos: ${path.basename(file)} (${pedidos.length})`);
+  console.log(`[sync-imp] Fuente: ${path.basename(file)} · ${pedidos.length} pedidos`);
+  console.log(
+    `[sync-imp] Activos: ${pedidos.filter((p) => pedidoActivo(p.estado)).map((p) => p.numero).join(', ') || '(ninguno)'}`
+  );
+  console.log(
+    `[sync-imp] Transferidos: ${pedidos.filter((p) => !pedidoActivo(p.estado)).map((p) => p.numero).join(', ') || '(ninguno)'}`
+  );
 
-  syncOrgFile(ORG_LIVE, pedidos, actualizado);
-  if (alsoRespaldo) syncOrgFile(ORG_RESPALDO, pedidos, actualizado);
+  const targets = listOrgTargets(alsoRespaldo);
+  if (!targets.length) {
+    console.error('[sync-imp] No hay organizacion-live.json ni respaldos');
+    process.exit(1);
+  }
+  for (const orgPath of targets) {
+    syncOrgFile(orgPath, pedidos, actualizado);
+  }
 }
 
 main();
