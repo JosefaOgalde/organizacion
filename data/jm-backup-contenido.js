@@ -852,6 +852,43 @@ window.JM_TODO_EXTRA = [
   }
 ];
 
+/**
+ * Fusiona el checklist seed por ID.
+ * Los metadatos del seed pueden evolucionar, pero el progreso explícito del
+ * usuario (incluido false o comentario vacío) siempre tiene prioridad.
+ */
+window.jmFusionarChecklistSeed = function jmFusionarChecklistSeed(cli) {
+  if (!cli?.ficha) return false;
+  if (!cli.ficha.landing || typeof cli.ficha.landing !== 'object') cli.ficha.landing = {};
+  const landing = cli.ficha.landing;
+  const actuales = Array.isArray(landing.todos) ? landing.todos : [];
+  const seeds = window.JM_TODO_SEED || [];
+  const porId = new Map(actuales.filter((todo) => todo?.id).map((todo) => [todo.id, todo]));
+  let changed = !Array.isArray(landing.todos);
+  const idsSeed = new Set();
+  const fusionados = seeds.map((seed) => {
+    idsSeed.add(seed.id);
+    const actual = porId.get(seed.id);
+    if (!actual) {
+      changed = true;
+      return { ...seed };
+    }
+    const merged = { ...actual, ...seed };
+    ['completada', 'comentario'].forEach((campo) => {
+      if (Object.prototype.hasOwnProperty.call(actual, campo)) {
+        merged[campo] = actual[campo];
+      } else if (!Object.prototype.hasOwnProperty.call(seed, campo)) {
+        delete merged[campo];
+      }
+    });
+    if (JSON.stringify(merged) !== JSON.stringify(actual)) changed = true;
+    return merged;
+  });
+  const personalizados = actuales.filter((todo) => !todo?.id || !idsSeed.has(todo.id));
+  landing.todos = [...fusionados, ...personalizados];
+  return changed;
+};
+
 /** Marca completadas las tareas del plan JM según JM_TODO_PROGRESO */
 window.jmAplicarProgresoChecklist = function jmAplicarProgresoChecklist(data) {
   const prog = window.JM_TODO_PROGRESO;
@@ -859,12 +896,7 @@ window.jmAplicarProgresoChecklist = function jmAplicarProgresoChecklist(data) {
   const cli = data.clientes.find((c) => c.id === window.JM_CLI_SYNC_ID);
   if (!cli?.ficha?.landing) return data;
   const todosSinProgreso = !Array.isArray(cli.ficha.landing.todos);
-  if (!Array.isArray(cli.ficha.landing.todos)) {
-    cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({
-      ...t,
-      comentario: t.comentario || ''
-    }));
-  }
+  window.jmFusionarChecklistSeed(cli);
   Object.entries(prog).forEach(([todoId, patch]) => {
     const todo = cli.ficha.landing.todos.find((x) => x.id === todoId);
     if (todo) {
@@ -898,17 +930,18 @@ window.jmFusionarTodosExtra = function jmFusionarTodosExtra(data) {
   if (!cli?.ficha) return data;
   if (!cli.ficha.landing) cli.ficha.landing = {};
   if (!Array.isArray(cli.ficha.landing.todos)) {
-    cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({
-      ...t,
-      comentario: t.comentario || ''
-    }));
+    window.jmFusionarChecklistSeed(cli);
   }
   extras.forEach((extra) => {
     const todo = cli.ficha.landing.todos.find((x) => x.id === extra.id);
     if (!todo) {
       cli.ficha.landing.todos.push({ ...extra });
     } else {
-      Object.assign(todo, extra);
+      const progreso = {};
+      ['completada', 'comentario'].forEach((campo) => {
+        if (Object.prototype.hasOwnProperty.call(todo, campo)) progreso[campo] = todo[campo];
+      });
+      Object.assign(todo, extra, progreso);
     }
   });
   return data;

@@ -124,7 +124,56 @@ async function main() {
     'un checklist inexistente debe crearse con el progreso confirmado'
   );
 
-  console.log('OK: 4 regresiones JM — estado explícito y POST preservados; datos sin progreso migrados.');
+  const versionAnterior = fixture();
+  const todosAnteriores = versionAnterior.clientes[0].ficha.landing.todos;
+  todosAnteriores[0].titulo = 'TÍTULO-OBSOLETO';
+  todosAnteriores.push({
+    id: 'jm-personalizada',
+    titulo: 'Tarea creada por la usuaria',
+    completada: false,
+    comentario: 'NOTA-PERSONALIZADA'
+  });
+  window.jmAplicarProgresoChecklist(versionAnterior);
+  const todosFusionados = versionAnterior.clientes[0].ficha.landing.todos;
+  const primerFusionado = todosFusionados.find((todo) => todo.id === 'jm-todo-01');
+  const nuevoSeed = todosFusionados.find((todo) => todo.id === 'jm-todo-02');
+  const personalizado = todosFusionados.find((todo) => todo.id === 'jm-personalizada');
+  assert.deepEqual(
+    [
+      primerFusionado.titulo,
+      primerFusionado.completada,
+      primerFusionado.comentario,
+      nuevoSeed?.completada,
+      nuevoSeed?.comentario,
+      personalizado?.comentario
+    ],
+    [
+      'Auditoría menú actual + mapa de navegación',
+      false,
+      'NOTA-USUARIO-REPRO',
+      true,
+      FIXED,
+      'NOTA-PERSONALIZADA'
+    ],
+    'la migración debe actualizar metadatos, agregar seeds y conservar progreso y tareas personalizadas'
+  );
+
+  const extraId = window.JM_TODO_EXTRA[0].id;
+  todosFusionados.push({
+    id: extraId,
+    titulo: 'Sesión anterior',
+    completada: false,
+    comentario: ''
+  });
+  window.jmFusionarTodosExtra(versionAnterior);
+  const extraFusionado = todosFusionados.find((todo) => todo.id === extraId);
+  assert.deepEqual(
+    [extraFusionado.titulo, extraFusionado.completada, extraFusionado.comentario],
+    [window.JM_TODO_EXTRA[0].titulo, false, ''],
+    'los extras deben actualizar metadatos sin pisar progreso explícito'
+  );
+
+  console.log('OK: 6 regresiones JM — estado, POST, migración seed y extras preservados.');
 }
 
 main().catch((error) => {
