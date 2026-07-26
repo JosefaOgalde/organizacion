@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-19T19:45:00.000Z",
+    "actualizado": "2026-07-26T01:20:00.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -26,7 +26,85 @@
       "montoNetoClp": 800442,
       "deudaJosefaClp": 400221
     },
-    "pedidoSeq": 3
+    "pedidoSeq": 3,
+    "ventaSeq": 10,
+    "ventaCodigoPrefijo": "I",
+    "clientesHistorial": [
+      {
+        "cliente": "Cata SIE",
+        "ventaCodigos": [
+          "I000004",
+          "I000010"
+        ],
+        "ventaIds": [
+          "ven-cata-gatos-001",
+          "ven-cata-bob-010"
+        ],
+        "totalNeto": 17000.0,
+        "compras": 2
+      },
+      {
+        "cliente": "Gianni SIE",
+        "ventaCodigos": [
+          "I000002",
+          "I000006"
+        ],
+        "ventaIds": [
+          "ven-gianni-bulldog-002",
+          "ven-gianni-bob-001"
+        ],
+        "totalNeto": 22000.0,
+        "compras": 2
+      },
+      {
+        "cliente": "Marcia SIE",
+        "ventaCodigos": [
+          "I000005",
+          "I000009"
+        ],
+        "ventaIds": [
+          "ven-marcia-stanley-001",
+          "ven-marcia-soporte-009"
+        ],
+        "totalNeto": 6000.0,
+        "compras": 2
+      },
+      {
+        "cliente": "Rebe SIE",
+        "ventaCodigos": [
+          "I000007",
+          "I000008"
+        ],
+        "ventaIds": [
+          "ven-rebe-monster-007",
+          "ven-rebe-stanley-008"
+        ],
+        "totalNeto": 13000.0,
+        "compras": 2
+      },
+      {
+        "cliente": "Juan SIE",
+        "ventaCodigos": [
+          "I000003"
+        ],
+        "ventaIds": [
+          "ven-juan-naves-003"
+        ],
+        "totalNeto": 15000.0,
+        "compras": 1
+      },
+      {
+        "cliente": "Tito MKOF",
+        "ventaCodigos": [
+          "I000001"
+        ],
+        "ventaIds": [
+          "ven-mrpqov4c"
+        ],
+        "totalNeto": 15000.0,
+        "compras": 1
+      }
+    ]
   },
   "parametros": {
     "tarifaKwhClp": 200,
@@ -279,18 +357,19 @@
     {
       "id": "ven-mrpqov4c",
       "fecha": "2026-07-18",
-      "cliente": "Tito",
+      "cliente": "Tito MKOF",
       "descripcion": "Portacompletos ×6 (4 perros + 2 gatos)",
       "cantidad": 6,
       "montoNeto": 15000,
       "canal": "WhatsApp",
-      "notas": "Cliente Tito · 4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000",
-      "socioRegistro": "Ambos"
+      "notas": "Cliente Tito MKOF · 4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000",
+      "socioRegistro": "Ambos",
+      "codigo": "I000001"
     },
     {
       "id": "ven-cata-gatos-001",
       "fecha": "2026-07-23",
-      "cliente": "Cata",
+      "cliente": "Cata SIE",
       "descripcion": "4× Porta Completos Gato (2 negros + 2 naranjos)",
       "cantidad": 4,
       "montoBruto": 10000,
@@ -317,12 +396,13 @@
           "costoUnitarioClp": 3421.17,
           "filamento": "PLA naranjo"
         }
-      ]
+      ],
+      "codigo": "I000004"
     },
     {
       "id": "ven-gianni-bulldog-002",
       "fecha": "2026-07-18",
-      "cliente": "Gianni",
+      "cliente": "Gianni SIE",
       "descripcion": "PED-002 · 1× Macetero + 4× Porta Completo Bulldog · Gianni",
       "cantidad": 5,
       "montoBruto": 15000,
@@ -351,12 +431,13 @@
           "costoUnitarioClp": 1335.86,
           "filamento": "PLA+ negro"
         }
-      ]
+      ],
+      "codigo": "I000002"
     },
     {
       "id": "ven-juan-naves-003",
       "fecha": "2026-07-19",
-      "cliente": "Juan",
+      "cliente": "Juan SIE",
       "descripcion": "PED-003 · 2× Naves espaciales · Juan",
       "cantidad": 2,
       "montoBruto": 15000,
@@ -385,12 +466,13 @@
           "costoUnitarioClp": 915.14,
           "filamento": "PLA blanco"
         }
-      ]
+      ],
+      "codigo": "I000003"
     },
     {
       "id": "ven-marcia-stanley-001",
       "fecha": "2026-07-23",
-      "cliente": "Marcia",
+      "cliente": "Marcia SIE",
       "descripcion": "1× Llavero Porta Lipstick Stanley",
       "cantidad": 1,
       "montoBruto": 3000,
@@ -409,12 +491,13 @@
           "costoUnitarioClp": 477.93,
           "filamento": "PLA blanco"
         }
-      ]
+      ],
+      "codigo": "I000005"
     },
     {
       "id": "ven-gianni-bob-001",
       "fecha": "2026-07-23",
-      "cliente": "Gianni",
+      "cliente": "Gianni SIE",
       "descripcion": "1× Porta Bob Esponja",
       "cantidad": 1,
       "montoBruto": 7000,
@@ -423,6 +506,107 @@
       "costoTotal": 998.17,
       "canal": "WhatsApp",
       "notas": "1× Porta Bob Esponja · cobrado $7.000",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "sku": "PTBOBES001",
+          "nombre": "Porta Bob Esponja",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 998.17,
+          "filamento": "multicolor"
+        }
+      ],
+      "codigo": "I000006"
+    },
+    {
+      "id": "ven-rebe-monster-007",
+      "codigo": "I000007",
+      "fecha": "2026-07-26",
+      "cliente": "Rebe SIE",
+      "descripcion": "PED-001 · 1× Porta Lata Monster · Rebe SIE",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 2839.6,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-001 · 1× vaso/porta Monster · cobrado $7.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-rebe-plmons-001",
+      "pedidoNumero": "PED-001",
+      "items": [
+        {
+          "sku": "PLMONS001",
+          "nombre": "Porta Lata Monster",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 2839.6,
+          "filamento": "PLA+ negro"
+        }
+      ]
+    },
+    {
+      "id": "ven-rebe-stanley-008",
+      "codigo": "I000008",
+      "fecha": "2026-07-26",
+      "cliente": "Rebe SIE",
+      "descripcion": "2× Llavero Porta Lipstick Stanley (rojo / círculo blanco)",
+      "cantidad": 2,
+      "montoBruto": 6000,
+      "descuentoClp": 0,
+      "montoNeto": 6000,
+      "costoTotal": 955.86,
+      "canal": "WhatsApp",
+      "notas": "2× Stanley impresos en rojo con círculo blanco · cobrado $6.000",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "sku": "LLSTANDL001",
+          "nombre": "Llavero Porta Lipstick Stanley",
+          "cantidad": 2,
+          "precioUnitarioClp": 3000,
+          "costoUnitarioClp": 477.93,
+          "filamento": "PLA+ rojo · círculo blanco"
+        }
+      ]
+    },
+    {
+      "id": "ven-marcia-soporte-009",
+      "codigo": "I000009",
+      "fecha": "2026-07-26",
+      "cliente": "Marcia SIE",
+      "descripcion": "1× Soporte celular (filamento blanco)",
+      "cantidad": 1,
+      "montoBruto": 3000,
+      "descuentoClp": 0,
+      "montoNeto": 3000,
+      "canal": "WhatsApp",
+      "notas": "1× soporte celular · filamento blanco · cobrado $3.000",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 1,
+          "precioUnitarioClp": 3000,
+          "filamento": "PLA blanco"
+        }
+      ]
+    },
+    {
+      "id": "ven-cata-bob-010",
+      "codigo": "I000010",
+      "fecha": "2026-07-26",
+      "cliente": "Cata SIE",
+      "descripcion": "1× Porta Bob Esponja",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 998.17,
+      "canal": "WhatsApp",
+      "notas": "1× Porta Bob Esponja · costo ya calculado · cobrado $7.000",
       "socioRegistro": "Ambos",
       "items": [
         {
@@ -743,14 +927,14 @@
       "id": "ped-rebe-plmons-001",
       "numero": "PED-001",
       "fecha": "2026-07-18",
-      "cliente": "Rebe",
+      "cliente": "Rebe SIE",
       "canal": "WhatsApp",
       "items": [
         {
           "sku": "PLMONS001",
           "nombre": "Porta Lata Monster",
           "cantidad": 1,
-          "precioUnitarioClp": 5679.2,
+          "precioUnitarioClp": 7000,
           "costoUnitarioClp": 2839.6,
           "filamento": "PLA+ negro",
           "estado": "listo",
@@ -758,10 +942,10 @@
           "enImpresion": 0
         }
       ],
-      "montoNeto": 5679.2,
-      "estado": "listo",
-      "ventaId": null,
-      "notas": "1× Porta lata Monster · PLA+ negro · listo para entregar",
+      "montoNeto": 7000,
+      "estado": "transferido",
+      "ventaId": "ven-rebe-monster-007",
+      "notas": "1× Porta Lata Monster · transferido a venta I000007 · $7.000",
       "socioRegistro": "Ambos",
       "creado": "2026-07-18T04:29:00.000Z",
       "costoTotal": 2839.6
@@ -770,7 +954,7 @@
       "id": "ped-gianni-bulldog-002",
       "numero": "PED-002",
       "fecha": "2026-07-18",
-      "cliente": "Gianni",
+      "cliente": "Gianni SIE",
       "canal": "WhatsApp",
       "items": [
         {
@@ -812,7 +996,7 @@
       "id": "ped-naves-espaciales-003",
       "numero": "PED-003",
       "fecha": "2026-07-19",
-      "cliente": "Juan",
+      "cliente": "Juan SIE",
       "canal": "WhatsApp",
       "items": [
         {

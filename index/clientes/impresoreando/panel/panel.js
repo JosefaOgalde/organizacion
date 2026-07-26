@@ -673,6 +673,36 @@
     });
   }
 
+
+  function formatearCodigoVenta(n) {
+    return `I${String(n).padStart(6, '0')}`;
+  }
+
+  function nextVentaCodigo(d) {
+    if (!d.meta || typeof d.meta !== 'object') d.meta = {};
+    const n = Number(d.meta.ventaSeq || 0) + 1;
+    d.meta.ventaSeq = n;
+    return formatearCodigoVenta(n);
+  }
+
+  function rebuildClientesHistorial(d) {
+    if (!d.meta || typeof d.meta !== 'object') d.meta = {};
+    const by = {};
+    for (const v of d.ventas || []) {
+      const c = String(v.cliente || '—').trim() || '—';
+      if (!by[c]) by[c] = { cliente: c, ventaCodigos: [], ventaIds: [], totalNeto: 0, compras: 0 };
+      const h = by[c];
+      h.compras += 1;
+      h.totalNeto += Number(v.montoNeto || 0);
+      if (v.codigo) h.ventaCodigos.push(v.codigo);
+      if (v.id) h.ventaIds.push(v.id);
+    }
+    d.meta.clientesHistorial = Object.values(by).sort(
+      (a, b) => b.compras - a.compras || a.cliente.localeCompare(b.cliente, 'es')
+    );
+    return d.meta.clientesHistorial;
+  }
+
   /** Ventas base del seed: si el live quedó vacío (o sin ese id), las reinyecta. No pisa ventas nuevas. */
   function asegurarVentasSeed(d) {
     d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
@@ -680,52 +710,22 @@
     const SEED_VENTAS = [
       {
         id: 'ven-mrpqov4c',
+        codigo: 'I000001',
         fecha: '2026-07-18',
-        cliente: 'Tito',
+        cliente: 'Tito MKOF',
         descripcion: 'Portacompletos ×6 (4 perros + 2 gatos)',
         cantidad: 6,
         montoNeto: 15000,
         canal: 'WhatsApp',
-        notas: 'Cliente Tito · 4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000',
+        notas: 'Cliente Tito MKOF · 4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000',
         socioRegistro: 'Ambos',
-      },
-      {
-        id: 'ven-cata-gatos-001',
-        fecha: '2026-07-23',
-        cliente: 'Cata',
-        descripcion: '4× Porta Completos Gato (2 negros + 2 naranjos)',
-        cantidad: 4,
-        montoBruto: 10000,
-        descuentoClp: 0,
-        montoNeto: 10000,
-        costoTotal: 13684.68,
-        canal: 'WhatsApp',
-        notas: '2× gatos negros + 2× gatos naranjos (porta completo) · cobrado $10.000',
-        socioRegistro: 'Ambos',
-        items: [
-          {
-            sku: 'PCGATO001',
-            nombre: 'Porta Completos Gato (negro)',
-            cantidad: 2,
-            precioUnitarioClp: 2500,
-            costoUnitarioClp: 3421.17,
-            filamento: 'PLA negro',
-          },
-          {
-            sku: 'PCGATO001',
-            nombre: 'Porta Completos Gato (naranjo)',
-            cantidad: 2,
-            precioUnitarioClp: 2500,
-            costoUnitarioClp: 3421.17,
-            filamento: 'PLA naranjo',
-          },
-        ],
       },
       {
         id: 'ven-gianni-bulldog-002',
+        codigo: 'I000002',
         fecha: '2026-07-18',
-        cliente: 'Gianni',
-        descripcion: 'PED-002 · 1× Macetero + 4× Porta Completo Bulldog · Gianni',
+        cliente: 'Gianni SIE',
+        descripcion: 'PED-002 · 1× Macetero + 4× Porta Completo Bulldog · Gianni SIE',
         cantidad: 5,
         montoBruto: 15000,
         descuentoClp: 0,
@@ -737,29 +737,16 @@
         pedidoId: 'ped-gianni-bulldog-002',
         pedidoNumero: 'PED-002',
         items: [
-          {
-            sku: 'MCPEBUL001',
-            nombre: 'Macetero Perro Bulldog',
-            cantidad: 1,
-            precioUnitarioClp: 3000,
-            costoUnitarioClp: 1981.34,
-            filamento: 'PLA+ negro',
-          },
-          {
-            sku: 'PCPEBUL001',
-            nombre: 'Porta Completo Perro Bulldog',
-            cantidad: 4,
-            precioUnitarioClp: 3000,
-            costoUnitarioClp: 1335.86,
-            filamento: 'PLA+ negro',
-          },
+          { sku: 'MCPEBUL001', nombre: 'Macetero Perro Bulldog', cantidad: 1, precioUnitarioClp: 3000, costoUnitarioClp: 1981.34, filamento: 'PLA+ negro' },
+          { sku: 'PCPEBUL001', nombre: 'Porta Completo Perro Bulldog', cantidad: 4, precioUnitarioClp: 3000, costoUnitarioClp: 1335.86, filamento: 'PLA+ negro' },
         ],
       },
       {
         id: 'ven-juan-naves-003',
+        codigo: 'I000003',
         fecha: '2026-07-19',
-        cliente: 'Juan',
-        descripcion: 'PED-003 · 2× Naves espaciales · Juan',
+        cliente: 'Juan SIE',
+        descripcion: 'PED-003 · 2× Naves espaciales · Juan SIE',
         cantidad: 2,
         montoBruto: 15000,
         descuentoClp: 0,
@@ -771,28 +758,34 @@
         pedidoId: 'ped-naves-espaciales-003',
         pedidoNumero: 'PED-003',
         items: [
-          {
-            sku: 'NAVEHOR001',
-            nombre: 'Nave Espacial Horizontal',
-            cantidad: 1,
-            precioUnitarioClp: 7500,
-            costoUnitarioClp: 647.55,
-            filamento: 'PLA blanco',
-          },
-          {
-            sku: 'NAVEVERT001',
-            nombre: 'Nave Espacial Vertical',
-            cantidad: 1,
-            precioUnitarioClp: 7500,
-            costoUnitarioClp: 915.14,
-            filamento: 'PLA blanco',
-          },
+          { sku: 'NAVEHOR001', nombre: 'Nave Espacial Horizontal', cantidad: 1, precioUnitarioClp: 7500, costoUnitarioClp: 647.55, filamento: 'PLA blanco' },
+          { sku: 'NAVEVERT001', nombre: 'Nave Espacial Vertical', cantidad: 1, precioUnitarioClp: 7500, costoUnitarioClp: 915.14, filamento: 'PLA blanco' },
+        ],
+      },
+      {
+        id: 'ven-cata-gatos-001',
+        codigo: 'I000004',
+        fecha: '2026-07-23',
+        cliente: 'Cata SIE',
+        descripcion: '4× Porta Completos Gato (2 negros + 2 naranjos)',
+        cantidad: 4,
+        montoBruto: 10000,
+        descuentoClp: 0,
+        montoNeto: 10000,
+        costoTotal: 13684.68,
+        canal: 'WhatsApp',
+        notas: '2× gatos negros + 2× gatos naranjos (porta completo) · cobrado $10.000',
+        socioRegistro: 'Ambos',
+        items: [
+          { sku: 'PCGATO001', nombre: 'Porta Completos Gato (negro)', cantidad: 2, precioUnitarioClp: 2500, costoUnitarioClp: 3421.17, filamento: 'PLA negro' },
+          { sku: 'PCGATO001', nombre: 'Porta Completos Gato (naranjo)', cantidad: 2, precioUnitarioClp: 2500, costoUnitarioClp: 3421.17, filamento: 'PLA naranjo' },
         ],
       },
       {
         id: 'ven-marcia-stanley-001',
+        codigo: 'I000005',
         fecha: '2026-07-23',
-        cliente: 'Marcia',
+        cliente: 'Marcia SIE',
         descripcion: '1× Llavero Porta Lipstick Stanley',
         cantidad: 1,
         montoBruto: 3000,
@@ -803,20 +796,14 @@
         notas: '1× llavero Stanley · cobrado $3.000',
         socioRegistro: 'Ambos',
         items: [
-          {
-            sku: 'LLSTANDL001',
-            nombre: 'Llavero Porta Lipstick Stanley',
-            cantidad: 1,
-            precioUnitarioClp: 3000,
-            costoUnitarioClp: 477.93,
-            filamento: 'PLA blanco',
-          },
+          { sku: 'LLSTANDL001', nombre: 'Llavero Porta Lipstick Stanley', cantidad: 1, precioUnitarioClp: 3000, costoUnitarioClp: 477.93, filamento: 'PLA blanco' },
         ],
       },
       {
         id: 'ven-gianni-bob-001',
+        codigo: 'I000006',
         fecha: '2026-07-23',
-        cliente: 'Gianni',
+        cliente: 'Gianni SIE',
         descripcion: '1× Porta Bob Esponja',
         cantidad: 1,
         montoBruto: 7000,
@@ -827,17 +814,84 @@
         notas: '1× Porta Bob Esponja · cobrado $7.000',
         socioRegistro: 'Ambos',
         items: [
-          {
-            sku: 'PTBOBES001',
-            nombre: 'Porta Bob Esponja',
-            cantidad: 1,
-            precioUnitarioClp: 7000,
-            costoUnitarioClp: 998.17,
-            filamento: 'multicolor',
-          },
+          { sku: 'PTBOBES001', nombre: 'Porta Bob Esponja', cantidad: 1, precioUnitarioClp: 7000, costoUnitarioClp: 998.17, filamento: 'multicolor' },
+        ],
+      },
+      {
+        id: 'ven-rebe-monster-007',
+        codigo: 'I000007',
+        fecha: '2026-07-26',
+        cliente: 'Rebe SIE',
+        descripcion: 'PED-001 · 1× Porta Lata Monster · Rebe SIE',
+        cantidad: 1,
+        montoBruto: 7000,
+        descuentoClp: 0,
+        montoNeto: 7000,
+        costoTotal: 2839.6,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-001 · 1× vaso/porta Monster · cobrado $7.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-rebe-plmons-001',
+        pedidoNumero: 'PED-001',
+        items: [
+          { sku: 'PLMONS001', nombre: 'Porta Lata Monster', cantidad: 1, precioUnitarioClp: 7000, costoUnitarioClp: 2839.6, filamento: 'PLA+ negro' },
+        ],
+      },
+      {
+        id: 'ven-rebe-stanley-008',
+        codigo: 'I000008',
+        fecha: '2026-07-26',
+        cliente: 'Rebe SIE',
+        descripcion: '2× Llavero Porta Lipstick Stanley (rojo / círculo blanco)',
+        cantidad: 2,
+        montoBruto: 6000,
+        descuentoClp: 0,
+        montoNeto: 6000,
+        costoTotal: 955.86,
+        canal: 'WhatsApp',
+        notas: '2× Stanley impresos en rojo con círculo blanco · cobrado $6.000',
+        socioRegistro: 'Ambos',
+        items: [
+          { sku: 'LLSTANDL001', nombre: 'Llavero Porta Lipstick Stanley', cantidad: 2, precioUnitarioClp: 3000, costoUnitarioClp: 477.93, filamento: 'PLA+ rojo · círculo blanco' },
+        ],
+      },
+      {
+        id: 'ven-marcia-soporte-009',
+        codigo: 'I000009',
+        fecha: '2026-07-26',
+        cliente: 'Marcia SIE',
+        descripcion: '1× Soporte celular (filamento blanco)',
+        cantidad: 1,
+        montoBruto: 3000,
+        descuentoClp: 0,
+        montoNeto: 3000,
+        canal: 'WhatsApp',
+        notas: '1× soporte celular · filamento blanco · cobrado $3.000',
+        socioRegistro: 'Ambos',
+        items: [
+          { sku: 'SOPCEL001', nombre: 'Soporte celular', cantidad: 1, precioUnitarioClp: 3000, filamento: 'PLA blanco' },
+        ],
+      },
+      {
+        id: 'ven-cata-bob-010',
+        codigo: 'I000010',
+        fecha: '2026-07-26',
+        cliente: 'Cata SIE',
+        descripcion: '1× Porta Bob Esponja',
+        cantidad: 1,
+        montoBruto: 7000,
+        descuentoClp: 0,
+        montoNeto: 7000,
+        costoTotal: 998.17,
+        canal: 'WhatsApp',
+        notas: '1× Porta Bob Esponja · costo ya calculado · cobrado $7.000',
+        socioRegistro: 'Ambos',
+        items: [
+          { sku: 'PTBOBES001', nombre: 'Porta Bob Esponja', cantidad: 1, precioUnitarioClp: 7000, costoUnitarioClp: 998.17, filamento: 'multicolor' },
         ],
       },
     ];
+
     let changed = false;
     const byId = new Map(d.ventas.filter((v) => v && v.id).map((v) => [v.id, v]));
     for (const seed of SEED_VENTAS) {
@@ -849,6 +903,10 @@
       } else {
         if (seed.cliente && String(existing.cliente || '').trim() !== seed.cliente) {
           existing.cliente = seed.cliente;
+          changed = true;
+        }
+        if (seed.codigo && existing.codigo !== seed.codigo) {
+          existing.codigo = seed.codigo;
           changed = true;
         }
         if (Number(existing.montoNeto) !== Number(seed.montoNeto)) {
@@ -871,20 +929,28 @@
     // PED-002 / PED-003 → transferido + link a venta (live que aún estaba en listo).
     const transfers = [
       {
+        pedId: 'ped-rebe-plmons-001',
+        numero: 'PED-001',
+        ventaId: 'ven-rebe-monster-007',
+        cliente: 'Rebe SIE',
+        montoNeto: 7000,
+        notas: '1× Porta Lata Monster · transferido a venta I000007 · $7.000',
+      },
+      {
         pedId: 'ped-gianni-bulldog-002',
         numero: 'PED-002',
         ventaId: 'ven-gianni-bulldog-002',
-        cliente: 'Gianni',
+        cliente: 'Gianni SIE',
         montoNeto: 15000,
-        notas: 'Macetero + 4× portacompleto bulldog · transferido a venta $15.000',
+        notas: 'Macetero + 4× portacompleto bulldog · transferido a venta I000002 · $15.000',
       },
       {
         pedId: 'ped-naves-espaciales-003',
         numero: 'PED-003',
         ventaId: 'ven-juan-naves-003',
-        cliente: 'Juan',
+        cliente: 'Juan SIE',
         montoNeto: 15000,
-        notas: '2× naves espaciales · Juan · transferido a venta $15.000',
+        notas: '2× naves espaciales · Juan SIE · transferido a venta I000003 · $15.000',
       },
     ];
     for (const t of transfers) {
@@ -920,6 +986,18 @@
       }
       if (pedChanged) changed = true;
     }
+    // Secuencia correlativa I00000n
+    const maxCod = (d.ventas || []).reduce((m, v) => {
+      const n = Number(String(v.codigo || '').replace(/^I0*/, '') || 0);
+      return Number.isFinite(n) ? Math.max(m, n) : m;
+    }, 0);
+    if (!d.meta || typeof d.meta !== 'object') d.meta = {};
+    if (Number(d.meta.ventaSeq || 0) < maxCod) {
+      d.meta.ventaSeq = maxCod;
+      changed = true;
+    }
+    d.meta.ventaCodigoPrefijo = 'I';
+    rebuildClientesHistorial(d);
     return changed;
   }
 
@@ -2418,8 +2496,10 @@
       const cant = itemsSnap.reduce((a, it) => a + Number(it.cantidad || 0), 0) || 1;
       const notaDesc =
         descuentoClp > 0 ? `Descuento ${money(descuentoClp)} (${descuentoPct}%). ` : '';
+      const codigo = nextVentaCodigo(data);
       const venta = {
         id: uid('ven'),
+        codigo,
         fecha: pedNow.fecha || today(),
         descripcion: `${pedNow.numero} · ${itemsTxt}${pedNow.cliente ? ` · ${pedNow.cliente}` : ''}`,
         cantidad: cant,
@@ -2439,6 +2519,7 @@
       };
       data.ventas = data.ventas || [];
       data.ventas.push(venta);
+      rebuildClientesHistorial(data);
       pedNow.estado = 'transferido';
       pedNow.ventaId = venta.id;
       pedNow.transferidoEn = new Date().toISOString();
@@ -2452,10 +2533,10 @@
       renderAll();
       activarTab('ventas');
       const msgDesc = descuentoClp > 0 ? ` (desc. ${money(descuentoClp)})` : '';
-      setStatus(`${pedNow.numero} → venta · ${money(montoNeto)}${msgDesc} · guardando…`, 'warn');
+      setStatus(`${pedNow.numero} → ${codigo} · ${money(montoNeto)}${msgDesc} · guardando…`, 'warn');
       save()
         .then(() =>
-          setStatus(`${pedNow.numero} → venta · ${money(montoNeto)}${msgDesc} contabilizado y guardado ✓`, 'ok')
+          setStatus(`${pedNow.numero} → ${codigo} · ${money(montoNeto)}${msgDesc} contabilizado y guardado ✓`, 'ok')
         )
         .catch((err) => setStatus(String(err.message || err), 'err'));
     });
@@ -2719,7 +2800,15 @@
   }
 
   function renderVentas() {
+    rebuildClientesHistorial(data);
     const rows = (data.ventas || [])
+      .slice()
+      .sort((a, b) => {
+        const na = Number(String(a.codigo || '').replace(/^I0*/, '') || 0);
+        const nb = Number(String(b.codigo || '').replace(/^I0*/, '') || 0);
+        if (na && nb && na !== nb) return na - nb;
+        return String(a.fecha || '').localeCompare(String(b.fecha || ''));
+      })
       .map((v) => {
         const itemsHtml = (v.items || [])
           .map(
@@ -2729,12 +2818,12 @@
           .join('');
         return `
       <tr>
-        <td>${escapeHtml(v.fecha || '')}</td>
-        <td>${escapeHtml(v.cliente || v.descripcion || '')}${
+        <td><strong>${escapeHtml(v.codigo || '—')}</strong><div class="imp-muted">${escapeHtml(v.fecha || '')}</div></td>
+        <td><strong>${escapeHtml(v.cliente || '—')}</strong>${
           v.pedidoNumero
             ? `<div class="imp-muted">Desde pedido <strong>${escapeHtml(v.pedidoNumero)}</strong></div>`
             : ''
-        }${itemsHtml || (v.descripcion && v.cliente ? `<div class="imp-muted">${escapeHtml(v.descripcion)}</div>` : '')}</td>
+        }${itemsHtml || (v.descripcion ? `<div class="imp-muted">${escapeHtml(v.descripcion)}</div>` : '')}</td>
         <td class="num">${v.cantidad || 1}</td>
         <td class="num"><strong>${money(v.montoNeto)}</strong>${
           Number(v.descuentoClp) > 0
@@ -2747,26 +2836,49 @@
       })
       .join('');
 
+    const hist = data.meta?.clientesHistorial || [];
+    const histRows = hist
+      .map(
+        (h) => `<tr>
+        <td><strong>${escapeHtml(h.cliente)}</strong></td>
+        <td class="num">${h.compras}</td>
+        <td>${(h.ventaCodigos || []).map((c) => escapeHtml(c)).join(', ') || '—'}</td>
+        <td class="num"><strong>${money(h.totalNeto)}</strong></td>
+      </tr>`
+      )
+      .join('');
+
     $('#tab-ventas').innerHTML = `
       <div class="imp-card imp-kpi--accent" style="padding:0.9rem 1rem">
         <p style="margin:0"><strong>Flujo recomendado:</strong> registra en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>
-        (ajustá el precio venta/u si cobraste más) y al transferir se guarda la venta. Solo las ventas bajan la deuda.</p>
+        (ajustá el precio venta/u si cobraste más) y al transferir se guarda la venta con ID <strong>I00000n</strong>. Solo las ventas bajan la deuda.</p>
       </div>
       <div class="imp-card">
         <h2>Ventas contabilizadas (${money(sum(data.ventas))})</h2>
-        <p class="imp-muted">Estas sí entran al dashboard: <strong>saldo = gastos − ventas</strong>.</p>
+        <p class="imp-muted">ID correlativo: primera = <strong>I000001 Tito MKOF</strong>. Clientes siguientes llevan sufijo <strong>SIE</strong> (ej. Rebe SIE).</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
-            <thead><tr><th>Fecha</th><th>Cliente / detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
+            <thead><tr><th>ID / Fecha</th><th>Cliente / detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
             <tbody>${rows || '<tr><td colspan="6">Sin ventas aún</td></tr>'}</tbody>
           </table>
         </div>
       </div>
       <div class="imp-card">
+        <h2>Historial por cliente</h2>
+        <p class="imp-muted">Quién compró más de una vez y el total acumulado.</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>Cliente</th><th>Compras</th><th>IDs venta</th><th>Total</th></tr></thead>
+            <tbody>${histRows || '<tr><td colspan="4">Sin historial aún</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>
+      <div class="imp-card">
         <h3>Venta directa (sin pedido)</h3>
-        <p class="imp-muted">Úsalo solo si no pasaste por Pedidos. Prefiere Pedidos → Transferir a venta.</p>
+        <p class="imp-muted">Úsalo solo si no pasaste por Pedidos. Prefiere Pedidos → Transferir a venta. Se asigna el siguiente ID I00000n.</p>
         <form class="imp-form" id="form-venta">
           <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
+          <label>Cliente<input name="cliente" required placeholder="Nombre SIE" /></label>
           <label>Descripción<input name="descripcion" required placeholder="Llavero x3" /></label>
           <label>Cantidad<input name="cantidad" type="number" min="1" value="1" /></label>
           <label>Total cobrado CLP<input name="montoNeto" type="number" required /></label>
@@ -2793,6 +2905,11 @@
       const fd = new FormData(e.target);
       const monto = Number(fd.get('montoNeto'));
       const desc = String(fd.get('descripcion') || '').trim();
+      const cliente = String(fd.get('cliente') || '').trim();
+      if (!cliente) {
+        setStatus('Escribe el nombre del cliente (ej. Rebe SIE)', 'warn');
+        return;
+      }
       if (!desc) {
         setStatus('Escribe qué se vendió', 'warn');
         return;
@@ -2801,25 +2918,32 @@
         setStatus('Falta el Total cobrado CLP (debe ser mayor a 0)', 'warn');
         return;
       }
+      const codigo = nextVentaCodigo(data);
       data.ventas = data.ventas || [];
       data.ventas.push({
         id: uid('ven'),
+        codigo,
         fecha: fd.get('fecha'),
+        cliente,
         descripcion: desc,
         cantidad: Number(fd.get('cantidad') || 1),
         montoNeto: monto,
+        montoBruto: monto,
+        descuentoClp: 0,
         canal: fd.get('canal') || '',
         notas: fd.get('notas') || '',
         socioRegistro: fd.get('socioRegistro') || '',
       });
+      rebuildClientesHistorial(data);
       markDirty();
       renderAll();
-      setStatus('Venta agregada — pulsa «Guardar online» para fijarla', 'warn');
+      setStatus(`${codigo} · ${cliente} · venta agregada — pulsa «Guardar online» para fijarla`, 'warn');
     });
 
     $('#tab-ventas').querySelectorAll('[data-del-venta]').forEach((btn) => {
       btn.addEventListener('click', () => {
         data.ventas = data.ventas.filter((v) => v.id !== btn.getAttribute('data-del-venta'));
+        rebuildClientesHistorial(data);
         markDirty();
         renderAll();
       });

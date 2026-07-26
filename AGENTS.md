@@ -62,5 +62,6 @@
 - **Imágenes en tareas:** en el detalle de la tarea, bloque **Imágenes de la tarea** → `+ Guardar imágenes`. Se comprimen y suben a disco vía `POST /api/tarea-imagen` (`index/uploads/tarea-imagenes/…`); en `localStorage` solo queda la **URL** (evita “almacenamiento lleno”). Landing del cliente: sección **Tareas con imágenes**. Requiere `node scripts/organizacion-server.js` corriendo.
 
 ### Impresoreando — Panel socios 50/50
-**Antes de tocar nada:** leer `docs/impresoreando/CONTEXTO.md` (fuente única: rutas, deuda, pedidos, SKUs, status correo, checklist). **No reexplorar** `panel.js` ni el seed salvo bug concreto.
-Resumen 1 línea: panel `index/clientes/impresoreando/panel/` · live `data/impresoreando-live.json` · API `/api/impresoreando` · pedidos `PED-00n` con estado select · solo ventas bajan deuda · PLA+ negro `$17986/kg`.
+**Antes de tocar nada:** leer `docs/impresoreando/CONTEXTO.md` (fuente única: rutas, deuda, pedidos, SKUs, ventas I00000n, historial, status correo, checklist). **No reexplorar** `panel.js` ni el seed salvo bug concreto.
+Resumen 1 línea: panel `index/clientes/impresoreando/panel/` · live `data/impresoreando-live.json` · API `/api/impresoreando` · pedidos `PED-00n` con estado select · ventas `I00000n` (I000001 = Tito MKOF; resto clientes + SIE) · historial en `meta.clientesHistorial` · solo ventas bajan deuda · PLA+ negro `$17986/kg`.
+**Frases gatillo (chat):** «pedidos e impresoreando» → pedir datos y crear pedido en panel (ver CONTEXTO). «calcular costo producto impresoreando» → pedir imagen y calcular costo (ver CONTEXTO).

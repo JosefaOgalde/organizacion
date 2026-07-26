@@ -39,15 +39,56 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 6. **Transferir a venta** = modal `#imp-modal-transferir` con descuento **% o CLP** → venta `{ montoBruto, descuentoClp, montoNeto }` · `montoNeto` baja deuda · auto-`save()`
 7. Pedidos no cuentan como venta hasta transferir
 
-### Seed vigente
+### Seed vigente — pedidos
 
 | ID | Cliente | Ítems | Estado |
 |----|---------|-------|--------|
-| PED-001 | Rebe | 1× Porta lata Monster `PLMONS001` | listo |
-| PED-002 | Gianni | 1× Macetero bulldog `MCPEBUL001` + 4× Portacompleto bulldog `PCPEBUL001` | **transferido** → venta $15.000 |
-| PED-003 | Juan | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | **transferido** → venta $15.000 |
+| PED-001 | Rebe SIE | 1× Porta lata Monster `PLMONS001` | **transferido** → I000007 $7.000 |
+| PED-002 | Gianni SIE | 1× Macetero bulldog `MCPEBUL001` + 4× Portacompleto bulldog `PCPEBUL001` | **transferido** → I000002 $15.000 |
+| PED-003 | Juan SIE | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | **transferido** → I000003 $15.000 |
 
-Ventas seed (además Tito $15.000): Cata gatos $10.000 · Marcia Stanley $3.000 · Gianni Bob $7.000.
+### Ventas — ID correlativo + historial
+
+- Cada venta tiene `codigo` `I000001…` (`meta.ventaSeq`). **Primera registrada = I000001 · Tito MKOF**.
+- Nombres de cliente: Tito = **Tito MKOF**; todos los demás llevan sufijo **SIE** (Rebe SIE, Marcia SIE, Cata SIE, …).
+- `meta.clientesHistorial[]` agrupa compras repetidas (cliente, códigos, total, #compras). UI: tab Ventas → tabla + bloque Historial por cliente.
+- Al transferir pedido → venta o al crear venta directa: asignar `nextVentaCodigo` + `rebuildClientesHistorial`.
+
+| Código | Cliente | Monto | Notas |
+|--------|---------|-------|-------|
+| I000001 | Tito MKOF | 15.000 | Portacompletos ×6 |
+| I000002 | Gianni SIE | 15.000 | PED-002 bulldogs |
+| I000003 | Juan SIE | 15.000 | PED-003 naves |
+| I000004 | Cata SIE | 10.000 | 4× gatos |
+| I000005 | Marcia SIE | 3.000 | 1× Stanley |
+| I000006 | Gianni SIE | 7.000 | Bob |
+| I000007 | Rebe SIE | 7.000 | PED-001 Monster |
+| I000008 | Rebe SIE | 6.000 | 2× Stanley rojo / círculo blanco |
+| I000009 | Marcia SIE | 3.000 | Soporte celular PLA blanco |
+| I000010 | Cata SIE | 7.000 | Bob (costo ya calculado) |
+
+## Flujos de chat (agente) — frases gatillo
+
+### «pedidos e impresoreando» / «pedido impresoreando»
+
+Responder **pidiendo estos datos** (no crear a ciegas):
+
+1. **Cliente** (nombre + sufijo: MKOF solo Tito; resto **SIE**)
+2. **Ítems:** producto/SKU, cantidad, color/filamento
+3. **Precio venta/u** o total cobrado CLP
+4. **Canal** (WhatsApp / Instagram / feria)
+5. **Estado** deseado: `pendiente` · `en_impresion` · `listo` (default `pendiente`)
+
+Con eso: crear pedido `PED-00n` en live/seed + panel (tab Pedidos), con ítems y estado. No transferir a venta hasta que la usuaria lo diga.
+
+### «calcular costo producto impresoreando»
+
+Responder **pidiendo la imagen** (foto del producto / captura slicer) y, si no viene en la imagen:
+
+- gramos de filamento · horas de impresión · tipo/color y $/kg (o usar tabla PLA+ negro/rojo $17.986, amarillo/café $16.829, blanco $12.690)
+- si lleva argolla metal (+$50) o bolsa
+
+Calcular con la fórmula del panel y devolver costo/u + PVP sugerido (+margen 100% si no indican otro). Si piden guardar producto, crear/actualizar en Costos.
 
 ## Productos / costos
 
@@ -108,11 +149,13 @@ Solo si hay módulo CAM + base USB/CH340. Guía: `docs/impresoreando/ESP32-CAM.m
 ## Cómo atender un pedido nuevo (checklist agente)
 
 1. Leer **este archivo** (no explorar panel.js salvo bug concreto).
-2. Si el producto no existe: crear/actualizar vía seed en `asegurarProducto*` + parámetros slicer (g, h, $/kg) · preferir **costo más alto** si hay dos mediciones.
-3. Añadir/editar pedido en live (API) o seed si debe quedar en repo: cliente, ítems SKU×cant, costo/u, precio venta/u, estado pedido.
-4. No inventar tipografía Midjourney/Gemini: esto es panel ops, no prompts creativos.
-5. Commit en rama `cursor/…-d733`, bump `?v=` si tocó UI, push + actualizar PR.
-6. Responder en español, corto: qué PED, qué SKUs, montos, estado.
+2. Si la usuaria solo escribió la frase gatillo («pedidos e impresoreando» / «calcular costo…»), **pedir los datos** listados arriba; no inventar.
+3. Si el producto no existe: crear/actualizar vía seed en `asegurarProducto*` + parámetros slicer (g, h, $/kg) · preferir **costo más alto** si hay dos mediciones.
+4. Añadir/editar pedido en live (API) o seed si debe quedar en repo: cliente (+ SIE/MKOF), ítems SKU×cant, costo/u, precio venta/u, estado pedido.
+5. Al pasar a venta: asignar `I00000n` correlativo y actualizar historial de cliente.
+6. No inventar tipografía Midjourney/Gemini: esto es panel ops, no prompts creativos.
+7. Commit en rama `cursor/…`, bump `?v=` si tocó UI, push + actualizar PR.
+8. Responder en español, corto: qué PED/I0…, qué SKUs, montos, estado.
 
 ## Layout UI (no rediseñar sin pedido)
 
