@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-26T01:44:08.009Z",
+    "actualizado": "2026-07-26T01:45:13.207Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -887,15 +887,21 @@
       "sku": "SOPCEL001",
       "nombre": "Soporte celular",
       "activo": true,
-      "filamentoGramos": 0,
-      "costoFilamentoKgClp": 0,
-      "horasImpresion": 0,
+      "filamentoGramos": 34.46,
+      "costoFilamentoKgClp": 16829,
+      "horasImpresion": 0.96,
       "minutosPintado": 0,
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 0,
-      "pendienteCosto": true,
-      "notas": "Pendiente g/h slicer y $/kg del filamento rosado pastel (pedir imagen)."
+      "pendienteCosto": false,
+      "notas": "Slicer 1 ud: modelo 33.99 g + descargado 0.47 g = 34.46 g · 11.46 m · 57 m 30 s · coste slicer 0,69. PLA rosado pastel (ref $/kg color $16.829). Costo ~$683,69 · PVP sugerido +100% ~$1.367,38.",
+      "filamentoModeloGramos": 33.99,
+      "filamentoSoportesGramos": 0,
+      "filamentoPurgeGramos": 0.47,
+      "filamentoMetros": 11.46,
+      "costoSlicerRef": 0.69,
+      "editadoLocal": true
     }
   ],
   "planAds": {
@@ -1116,8 +1122,8 @@
           "nombre": "Soporte celular",
           "cantidad": 1,
           "precioUnitarioClp": 0,
-          "costoUnitarioClp": 0,
-          "filamento": "rosado pastel",
+          "costoUnitarioClp": 683.69,
+          "filamento": "PLA rosado pastel",
           "estado": "pendiente",
           "listos": 0,
           "enImpresion": 0
@@ -1126,10 +1132,10 @@
       "montoBruto": 0,
       "descuentoClp": 0,
       "montoNeto": 0,
-      "costoTotal": 0,
+      "costoTotal": 683.69,
       "estado": "pendiente",
       "ventaId": null,
-      "notas": "1× Soporte celular rosado pastel · pendiente costo (imagen slicer) y precio venta",
+      "notas": "1× Soporte celular rosado pastel · pendiente · costo $683,69 · pendiente precio venta (sugerido ~$1.367,38; Marcia blanco cobró $3.000)",
       "socioRegistro": "Ambos",
       "creado": "2026-07-26T01:44:08.009Z"
     }

@@ -736,21 +736,30 @@
     return changed;
   }
 
-  /** Soporte celular — soft seed; g/h/$ llegan con imagen slicer. */
+  /** Soporte celular — slicer 34,46 g · 57 m 30 s · PLA color (rosado). Soft: no pisa si ya tiene g. */
   function seedSoporteCelular() {
+    const filamentoModeloGramos = 33.99;
+    const filamentoPurgeGramos = 0.47;
+    const filamentoGramos = round2(filamentoModeloGramos + filamentoPurgeGramos); // 34,46
     return {
       sku: 'SOPCEL001',
       nombre: 'Soporte celular',
       activo: true,
-      filamentoGramos: 0,
-      costoFilamentoKgClp: 0,
-      horasImpresion: 0,
+      filamentoModeloGramos,
+      filamentoSoportesGramos: 0,
+      filamentoPurgeGramos,
+      filamentoMetros: 11.46,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG, // ref PLA color (rosado pastel)
+      horasImpresion: round2((57 + 30 / 60) / 60), // 57 m 30 s → 0,96 h
       minutosPintado: 0,
       unidadesMetal: 0,
       unidadesBolsa: 1,
       precioVentaSugeridoClp: 0,
-      pendienteCosto: true,
-      notas: 'Pendiente g/h slicer y $/kg del filamento (pedir imagen).',
+      costoSlicerRef: 0.69,
+      pendienteCosto: false,
+      notas:
+        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 11,46 m · 57 m 30 s · coste slicer 0,69. PLA rosado pastel (ref $/kg color $16.829).`,
     };
   }
 
@@ -772,9 +781,9 @@
       existing.nombre = seed.nombre;
       changed = true;
     }
-    if (!(Number(existing.filamentoGramos) > 0) && existing.pendienteCosto !== true) {
-      existing.pendienteCosto = true;
-      changed = true;
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
     }
     return changed;
   }
