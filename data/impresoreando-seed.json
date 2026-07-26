@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-26T01:45:13.207Z",
+    "actualizado": "2026-07-26T01:46:29.423Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -893,9 +893,9 @@
       "minutosPintado": 0,
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
-      "precioVentaSugeridoClp": 0,
+      "precioVentaSugeridoClp": 4000,
       "pendienteCosto": false,
-      "notas": "Slicer 1 ud: modelo 33.99 g + descargado 0.47 g = 34.46 g · 11.46 m · 57 m 30 s · coste slicer 0,69. PLA rosado pastel (ref $/kg color $16.829). Costo ~$683,69 · PVP sugerido +100% ~$1.367,38.",
+      "notas": "Slicer 1 ud: modelo 33.99 g + descargado 0.47 g = 34.46 g · 11.46 m · 57 m 30 s · coste slicer 0,69. PLA rosado pastel (ref $/kg color $16.829). Costo ~$683,69 · 367,38. Precio venta $4.000.",
       "filamentoModeloGramos": 33.99,
       "filamentoSoportesGramos": 0,
       "filamentoPurgeGramos": 0.47,
@@ -1121,7 +1121,7 @@
           "sku": "SOPCEL001",
           "nombre": "Soporte celular",
           "cantidad": 1,
-          "precioUnitarioClp": 0,
+          "precioUnitarioClp": 4000,
           "costoUnitarioClp": 683.69,
           "filamento": "PLA rosado pastel",
           "estado": "pendiente",
@@ -1129,13 +1129,13 @@
           "enImpresion": 0
         }
       ],
-      "montoBruto": 0,
+      "montoBruto": 4000,
       "descuentoClp": 0,
-      "montoNeto": 0,
+      "montoNeto": 4000,
       "costoTotal": 683.69,
       "estado": "pendiente",
       "ventaId": null,
-      "notas": "1× Soporte celular rosado pastel · pendiente · costo $683,69 · pendiente precio venta (sugerido ~$1.367,38; Marcia blanco cobró $3.000)",
+      "notas": "1× Soporte celular rosado pastel · pendiente · costo $683,69 · precio venta $4.000",
       "socioRegistro": "Ambos",
       "creado": "2026-07-26T01:44:08.009Z"
     }
