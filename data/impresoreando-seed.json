@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-26T02:01:28.779Z",
+    "actualizado": "2026-07-26T02:12:08.388Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -872,9 +872,9 @@
       "minutosPintado": 0,
       "unidadesMetal": 1,
       "unidadesBolsa": 1,
-      "precioVentaSugeridoClp": 0,
+      "precioVentaSugeridoClp": 1000,
       "pendienteCosto": false,
-      "notas": "Slicer 1 ud: modelo 16.31 g + descargado 0.47 g = 16.78 g · 5.58 m · 35 m 31 s · coste slicer 0,34. PLA amarillo $16.829/kg. +$50 argolla. Costo ~$415,43 · PVP sugerido +100% ~$830,86.",
+      "notas": "Slicer 1 ud: modelo 16.31 g + descargado 0.47 g = 16.78 g · 5.58 m · 35 m 31 s · coste slicer 0,34. PLA amarillo $16.829/kg. +$50 argolla. Costo ~$415,43 · PVP sugerido +100% ~$830,86. Precio venta $1.000.",
       "filamentoModeloGramos": 16.31,
       "filamentoSoportesGramos": 0,
       "filamentoPurgeGramos": 0.47,
@@ -1128,7 +1128,7 @@
           "sku": "LLPESRU001",
           "nombre": "Llavero Pesa Rusa",
           "cantidad": 1,
-          "precioUnitarioClp": 0,
+          "precioUnitarioClp": 1000,
           "costoUnitarioClp": 415.43,
           "filamento": "PLA amarillo",
           "estado": "listo",
@@ -1136,13 +1136,13 @@
           "enImpresion": 0
         }
       ],
-      "montoBruto": 0,
+      "montoBruto": 1000,
       "descuentoClp": 0,
-      "montoNeto": 0,
+      "montoNeto": 1000,
       "costoTotal": 415.43,
       "estado": "listo",
       "ventaId": null,
-      "notas": "1× Llavero Pesa Rusa amarillo · impreso/listo · costo $415,43 · pendiente precio venta (sugerido ~$830,86)",
+      "notas": "1× Llavero Pesa Rusa amarillo · listo/impreso · costo $415,43 · PVP $1.000",
       "socioRegistro": "Ambos",
       "creado": "2026-07-26T01:40:00.000Z"
     },

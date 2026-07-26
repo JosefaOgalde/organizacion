@@ -2312,24 +2312,8 @@
         </div>
       </div>
       <div class="imp-card">
-        <h2>Costos de producto (resumen)</h2>
-        <p class="imp-muted">Mismos costo y precio que en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>. Si no hay precio manual, se sugiere <strong>+${pctMarkup}%</strong> sobre el costo.</p>
-        <div class="imp-table-wrap">
-          <table class="imp-table">
-            <thead><tr><th>SKU</th><th>Producto</th><th>Costo</th><th>Precio venta</th></tr></thead>
-            <tbody>${filasCostoProd || '<tr><td colspan="4">Sin productos</td></tr>'}</tbody>
-          </table>
-        </div>
-      </div>
-      <div class="imp-grid">
-        <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
-        <div class="imp-kpi imp-kpi--ok"><span>Ventas (contabilizadas)</span><strong>${money(ventas)}</strong></div>
-        <div class="imp-kpi"><span>Pedidos activos</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
-        <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
-      </div>
-      <div class="imp-card">
         <h2>Estado de pedidos</h2>
-        <p class="imp-muted">Status en vivo del pipeline. Los activos aún no bajan la deuda (solo al transferir → venta).</p>
+        <p class="imp-muted">Pipeline en vivo (PED-00n). Los activos aún no bajan la deuda — solo al transferir → venta. Detalle en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>.</p>
         <div class="imp-pedido-status-counts" aria-label="Conteo por estado">
           <span class="imp-badge imp-badge--warn">Pendiente ${countEst.pendiente}</span>
           <span class="imp-badge imp-badge--print">En impresión ${countEst.en_impresion}</span>
@@ -2342,7 +2326,22 @@
             <tbody>${filasPedidosStatus || '<tr><td colspan="4">Sin pedidos</td></tr>'}</tbody>
           </table>
         </div>
-        <p class="imp-muted" style="margin-top:0.5rem">Detalle y edición en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>.</p>
+      </div>
+      <div class="imp-grid">
+        <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
+        <div class="imp-kpi imp-kpi--ok"><span>Ventas (contabilizadas)</span><strong>${money(ventas)}</strong></div>
+        <div class="imp-kpi"><span>Pedidos activos</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
+        <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
+      </div>
+      <div class="imp-card">
+        <h2>Costos de producto (resumen)</h2>
+        <p class="imp-muted">Mismos costo y precio que en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>. Si no hay precio manual, se sugiere <strong>+${pctMarkup}%</strong> sobre el costo.</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>SKU</th><th>Producto</th><th>Costo</th><th>Precio venta</th></tr></thead>
+            <tbody>${filasCostoProd || '<tr><td colspan="4">Sin productos</td></tr>'}</tbody>
+          </table>
+        </div>
       </div>
       <div class="imp-socios" aria-label="Detalle por socio">
         <article class="imp-socio imp-socio--josefa">

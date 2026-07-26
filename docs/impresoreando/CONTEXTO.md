@@ -12,7 +12,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Seed (repo) | `data/impresoreando-seed.json` |
 | Live (gitignored) | `data/impresoreando-live.json` |
 | API | `GET/POST /api/impresoreando` · `POST /api/impresoreando/venta` en `scripts/organizacion-server.js` |
-| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo) |
+| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre `scripts/sync-impresoreando-seed-a-live.js` para meter PED/productos nuevos del seed en el live local. |
 | Landing | `http://127.0.0.1:8000/index/clientes/impresoreando/` · CTA **Resumen 50/50** · logo `identidad/logo-impresoreando.png` |
 | Panel / Resumen | `http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen` |
 | Catálogo IG | `…/impresoreando/catalogo/` · 1080×1350 · PDF `catalogo/export/catalogo-impresoreando.pdf` · `exportar-pngs.js` + `exportar-pdf.js` |
@@ -47,7 +47,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-001 | Rebe SIE | 1× Porta lata Monster `PLMONS001` | **transferido** → I000007 $7.000 |
 | PED-002 | Gianni SIE | 1× Macetero bulldog `MCPEBUL001` + 4× Portacompleto bulldog `PCPEBUL001` | **transferido** → I000002 $15.000 |
 | PED-003 | Juan SIE | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | **transferido** → I000003 $15.000 |
-| PED-004 | Ele SIE | 1× Llavero Pesa Rusa amarillo `LLPESRU001` | **listo** (impreso) · costo ~$415 · pendiente precio venta |
+| PED-004 | Ele SIE | 1× Llavero Pesa Rusa amarillo `LLPESRU001` | **listo** (impreso) · costo ~$415 · **PVP $1.000** |
 | PED-005 | María Paz SIE | 1× Soporte celular rosado pastel `SOPCEL001` | **listo** (impreso) · costo ~$684 · **PVP $4.000** |
 | PED-006 | Rebe SIE | 1× Dragón `DRAGON001` | **en_impresion** · costo ~$5.476 · **PVP $11.000** |
 | PED-007 | Juan SIE | 1× Torreón `TORREON001` | **listo** · costo est. ~$3.293 (+$1.000 impresora antigua) · PVP sug. $6.500 |
