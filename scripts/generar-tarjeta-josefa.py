@@ -130,11 +130,8 @@ def build_horizontal() -> Image.Image:
     # right column
     x0 = 620
     y = 160
-    f_name = font(56, bold=True)
-    f_script = font_serif(52)
-    draw.text((x0, y), "JOSEFA", fill=INK, font=f_name)
-    jw = draw.textlength("JOSEFA ", font=f_name)
-    draw.text((x0 + jw, y + 4), "Ogalde", fill=TEAL, font=f_script)
+    f_name = font(52, bold=True)
+    draw.text((x0, y), "Josefa Ogalde", fill=INK, font=f_name)
     y += 78
 
     f_eye = font(16, bold=True)
@@ -204,14 +201,10 @@ def build_vertical() -> Image.Image:
     canvas.paste(pol, (px, 48), pol)
 
     y = 48 + pol.height + 8
-    f_name = font(44, bold=True)
-    f_script = font_serif(42)
-    name = "JOSEFA"
-    nw = draw.textlength(name + " ", font=f_name)
-    sw = draw.textlength("Ogalde", font=f_script)
-    start = (W - (nw + sw)) // 2
-    draw.text((start, y), name, fill=INK, font=f_name)
-    draw.text((start + nw, y + 2), "Ogalde", fill=TEAL, font=f_script)
+    f_name = font(42, bold=True)
+    name = "Josefa Ogalde"
+    nw = draw.textlength(name, font=f_name)
+    draw.text(((W - nw) / 2, y), name, fill=INK, font=f_name)
     y += 62
 
     f_eye = font(15, bold=True)
