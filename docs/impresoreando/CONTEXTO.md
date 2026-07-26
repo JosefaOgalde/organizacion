@@ -165,7 +165,7 @@ Datos en `data.impresoras[]` (seed + live) y UI **Operación → Impresoras**. C
 | `LLSTANDL001` | Llavero Porta Lipstick Stanley | 26,32 | 0,78 | Placa÷2 + $50 argolla · ~$478 · PVP ~$955 · alias `LLAVSTAN001` |
 | `LLPESRU001` | Llavero Pesa Rusa | **16,78** | **0,59 (35 m 31 s)** | PLA amarillo · modelo 16,31 + purge 0,47 · +$50 argolla · costo ~$415 · PVP sug. ~$831 |
 | `SOPCEL001` | Soporte celular | **34,46** | **0,96 (57 m 30 s)** | PLA rosado pastel · costo ~$684 · **PVP $4.000** (manual) |
-| `DRAGON001` | Dragón | **275,41** | **14,12 (14 h 7 m)** | PLA color · modelo+soportes · costo ~$5.476 · **PVP $11.000** |
+| `DRAGON001` | Dragón | **275,41** | **14,12 (14 h 7 m)** | PLA color · modelo+soportes · costo ~$5.476 · **PVP $11.000** · diseño comprado **$3.000** en gastos (no en costo/u) |
 | `TORREON001` | Torreón | **~120** (est.) | **~4 h** (est.) | **Ender 3 V2 Neo (Sprite Neo)** · sin slicer · recargo perfil +$1.000 · costo ~$3.293 · PVP sug. $6.500 |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
