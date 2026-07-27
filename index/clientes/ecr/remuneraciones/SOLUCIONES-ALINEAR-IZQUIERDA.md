@@ -1,17 +1,30 @@
 # ECR · Soluciones / Remuneraciones — textos a la izquierda
 
 **URL:** https://ecrgroup.cl/soluciones/remuneraciones/  
-**Sección:** “¿Cómo te ayudamos con las remuneraciones en tu empresa?”
+**Sección:** “¿Cómo te ayudamos…?” · widget **Pestañas anidadas** (`nested-tabs` / `e-n-tab-title`)
 
-## Por qué Pestañas no sirve acá
+## CSS mínimo (pegar en el widget Pestañas)
 
-En el live se ven **los 5 ítems a la vez** (el activo con fondo celeste). El tema **centra** los títulos inactivos aunque en Elementor pongas Izquierda / Justificar Inicio. Por eso el editor se ve bien y el sitio no.
+Avanzado → CSS personalizado → **reemplazar** lo anterior por:
 
-## Arreglo en Elementor (sin CSS)
+```css
+selector {
+  --n-tabs-title-text-align: left;
+  --n-tabs-title-justify-content: flex-start;
+  --n-tabs-title-align-items: flex-start;
+  --n-tabs-title-width: 100%;
+}
 
-1. Columna izquierda → **borrá u ocultá** el widget **Pestañas**.
-2. Agregá un **Editor de texto** (o 5 widgets de texto, uno por ítem).
-3. Pegá los 5 párrafos (negrita en el título de cada uno).
-4. **Estilo → Alineación → Izquierda** (Desktop + Móvil).
-5. Foto de la derecha: no tocar.
-6. **Actualizar** → `?nocache=1`.
+selector .e-n-tab-title-text {
+  text-align: left !important;
+  align-items: flex-start !important;
+}
+```
+
+**Actualizar** → `?nocache=1`
+
+### Por qué el CSS corto anterior no alcanzó
+
+- El widget es **nested-tabs**, no tabs clásicas.
+- El texto se alinea en `.e-n-tab-title-text` (no solo en el botón).
+- Con ancho `content` el botón se encoge y en el live parece centrado; `width: 100%` lo corrige.
