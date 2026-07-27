@@ -1,0 +1,51 @@
+<!--
+  ECR Blog — paginación Loop Grid (Anterior / Siguiente limpios)
+  Pegar en widget HTML de la página Blog (reemplaza el script viejo).
+  Guía: BOTONES-ANTERIOR-SIGUIENTE.md
+-->
+<script>
+jQuery(document).ready(function ($) {
+  var $gridWidget = $('.elementor-widget-loop-grid').eq(0);
+
+  function arreglarPaginacionArriba() {
+    var $nav = $gridWidget.find('.elementor-pagination');
+    if (!$nav.length) return;
+
+    // Limpiar labels rotos (←0a0…Anterior / Siguiente…0a0→)
+    $nav.find('a.prev, span.prev, a.page-numbers.prev, span.page-numbers.prev').each(function () {
+      $(this).text('Anterior');
+    });
+    $nav.find('a.next, span.next, a.page-numbers.next, span.page-numbers.next').each(function () {
+      $(this).text('Siguiente');
+    });
+
+    if ($nav.find('.prev').length === 0) {
+      $nav.prepend('<span class="page-numbers prev disabled">Anterior</span>');
+    }
+    if ($nav.find('.next').length === 0) {
+      $nav.append('<span class="page-numbers next disabled">Siguiente</span>');
+    }
+  }
+
+  arreglarPaginacionArriba();
+
+  $(document).on(
+    'click',
+    '.elementor-widget-loop-grid:eq(0) .elementor-pagination a',
+    function (e) {
+      if ($(this).hasClass('disabled') || $(this).parent().hasClass('disabled')) {
+        e.preventDefault();
+        return false;
+      }
+      $gridWidget.find('.elementor-loop-container').addClass('bucle-bloqueado');
+    }
+  );
+
+  $(document).on('elementor/loop/query_filter_end', function () {
+    arreglarPaginacionArriba();
+    setTimeout(function () {
+      $gridWidget.find('.elementor-loop-container').removeClass('bucle-bloqueado');
+    }, 40);
+  });
+});
+</script>

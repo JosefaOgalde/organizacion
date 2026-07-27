@@ -1,74 +1,78 @@
-# ECR · Blog — botones Anterior / Siguiente (encoding)
+# ECR · Blog — botones Anterior / Siguiente (paginación Loop Grid)
 
-**Síntoma:** en los botones se lee algo como:
+**Síntoma:** `←0a00a0Anterior` · `Siguiente0a00a0→`  
+(rombo + `0a0` = `&nbsp;` / `U+00A0` mal guardado junto a flechas Unicode).
 
-- `←0a00a0Anterior`
-- `Siguiente0a00a0→`
-
-(rombo `` + texto `0a0` = espacio de no separación `U+00A0` / `&nbsp;` mal guardado, más flechas Unicode pegadas al texto).
-
-**Dónde:** plantilla Elementor del **single del blog** (Theme Builder → Single Post) o widgets **Post Navigation** / botones manuales al pie del artículo.  
-También puede verse en landings que reutilizan el mismo bloque (p. ej. artículos relacionados).
-
-**No es CSS.** Se arregla en el panel de Elementor.
+**Dónde:** página **Blog** → widget **Loop Grid** + HTML personalizado con jQuery (no es Post Navigation del single).
 
 ---
 
-## Arreglo (paso a paso)
+## Causas
 
-### 1. Abrí el widget correcto
+1. En el Loop Grid → **Paginación** → labels con `←`/`→` + `&nbsp;` pegados.
+2. El script HTML tenía un bug: llama `forzarBotonesArriba()` pero la función se llama `arreglarPaginacionArriba` → no corre el arreglo.
+3. El script solo **agrega** botones disabled si faltan; **no limpia** el texto ya roto de Elementor.
 
-1. WordPress → **Plantillas** → **Theme Builder** → **Single** (o la página/plantilla donde se ven los botones).
-2. Editar con Elementor.
-3. Clic en el botón **Anterior** o en el widget **Post Navigation**.
+---
 
-Si son dos **Botones** sueltos (no Post Navigation), repetí el arreglo en cada uno.
+## Paso A — Labels en Elementor (obligatorio)
 
-### 2. Limpiar el texto (lo importante)
+Loop Grid (el de arriba del blog) → **Paginación**:
 
-En **Contenido → Texto** / **Previous Label** / **Next Label**:
+| Campo | Valor exacto |
+|-------|----------------|
+| Previous Label | `Anterior` |
+| Next Label | `Siguiente` |
 
-| Campo | Pegar exactamente (solo esto) |
-|-------|-------------------------------|
-| Anterior | `Anterior` |
-| Siguiente | `Siguiente` |
+Borrar el campo y **tipear** (no pegar). Sin flechas ni espacios raros.
 
-**Prohibido en el campo de texto:**
+---
 
-- Flechas `←` `→` `‹` `›` escritas a mano
-- `&nbsp;` o espacios copiados de Word / Notion / Slack
-- Pegar desde un TXT viejo que ya tenga `0a0`
+## Paso B — Reemplazar el HTML/JS
 
-Tip: borrá **todo** el campo → escribí de nuevo en el teclado (no pegues).
+Widget **HTML** (o el Custom Code donde está el script) → pegar **esto entero**:
 
-### 3. Flechas con ícono Elementor (no Unicode)
+Pegá el contenido de [`paginacion-loop-grid-fix.html`](./paginacion-loop-grid-fix.html) (reemplaza el script viejo completo).
 
-1. En el mismo widget → **Ícono** / **Icon** → activar.
-2. Elegí una flecha de la librería (p. ej. `angle-left` / `angle-right` o `arrow-left` / `arrow-right`).
-3. Posición:
-   - **Anterior:** ícono **Antes** del texto
-   - **Siguiente:** ícono **Después** del texto
-4. Espacio ícono–texto: el control **Spacing** de Elementor (4–8 px). No uses espacios raros en el label.
+Cambios clave vs tu HTML:
 
-### 4. Publicar y verificar
+1. `forzarBotonesArriba()` → `arreglarPaginacionArriba()` (antes no existía y fallaba en consola).
+2. Fuerza `.text('Anterior')` / `.text('Siguiente')` en prev/next ya renderizados (limpia el `0a0`).
+3. Mantiene el disabled cuando falta prev/next y el `bucle-bloqueado` al filtrar.
 
-1. **Actualizar** / Publicar la plantilla.
-2. Abrí un artículo en incógnito: `https://ecrgroup.cl/blog/…?nocache=1`
-3. Debe verse: **← Anterior** y **Siguiente →** limpios (flecha = ícono, texto = solo la palabra).
-4. Si sigue el `0a0`: el texto viejo quedó en **otro** widget duplicado — buscá en el árbol otro Heading/Button con el mismo label.
+---
+
+## Paso C — Flechas (opcional, por CSS)
+
+Si querés flechas **sin** tocar el texto, en CSS personalizado de la página:
+
+```css
+.elementor-widget-loop-grid .elementor-pagination .prev::before {
+  content: "← ";
+}
+.elementor-widget-loop-grid .elementor-pagination .next::after {
+  content: " →";
+}
+```
+
+Así el HTML del label sigue siendo solo `Anterior` / `Siguiente`.
 
 ---
 
 ## Checklist
 
-- [ ] Label Anterior = `Anterior` (sin flecha ni NBSP)
-- [ ] Label Siguiente = `Siguiente` (sin flecha ni NBSP)
-- [ ] Flechas solo por **ícono** Elementor
-- [ ] Vista live sin `` ni `0a0`
-- [ ] Hard refresh / purge caché si el sitio usa cache plugin
+- [ ] Labels del Loop Grid = `Anterior` / `Siguiente` (tipeados)
+- [ ] Script reemplazado (ya no llama `forzarBotonesArriba`)
+- [ ] Tras filtrar / paginar, los botones siguen limpios
+- [ ] Live: `https://ecrgroup.cl/blog/?nocache=1` sin `0a0`
+- [ ] Actualizar + purge caché
 
 ---
 
-## Por qué pasa
+## Por qué el script viejo no alcanzaba
 
-Elementor a veces guarda mal un `&nbsp;` o un `U+00A0` pegado junto a `←`/`→`. En el front se “rompe” y se muestra el hex `0a0` con carácter de reemplazo. Texto ASCII limpio + ícono evita el bug del todo.
+```js
+forzarBotonesArriba(); // ❌ no existe → ReferenceError en consola
+```
+
+La función real era `arreglarPaginacionArriba`. Además no reescribía el texto ya roto que viene del widget.
