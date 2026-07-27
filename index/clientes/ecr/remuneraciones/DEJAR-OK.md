@@ -15,6 +15,7 @@ Detalle: [`AJUSTES-ELEMENTOR.md`](./AJUSTES-ELEMENTOR.md) · tipografía: [`RESP
 - [ ] Un solo H1 en el hero (borrar duplicado)
 - [ ] Sin headings vacíos antes de secciones
 - [ ] Bloque “Últimas entradas” con posts o eliminado/oculto
+- [ ] Blog: botones **Anterior / Siguiente** sin `0a0` ni flechas Unicode en el texto → [`../blog/BOTONES-ANTERIOR-SIGUIENTE.md`](../blog/BOTONES-ANTERIOR-SIGUIENTE.md)
 
 ---
 

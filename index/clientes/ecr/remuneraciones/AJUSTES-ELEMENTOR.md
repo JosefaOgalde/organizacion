@@ -71,7 +71,20 @@ Desktop: pueden seguir en **fila** (55/45 o 50/50). No copiar valores de móvil 
 
 ---
 
-## Problema 4 — Bloque “Últimas entradas” vacío o raro
+## Problema 4 — Botones blog Anterior / Siguiente (`0a0`)
+
+Si en el single del blog (o bloque reutilizado) los botones se ven así:
+
+`←0a00a0Anterior` · `Siguiente0a00a0→`
+
+→ **Texto limpio** (`Anterior` / `Siguiente`) + **ícono** Elementor para la flecha.  
+Sin `←`/`→` ni `&nbsp;` en el label.
+
+Guía completa: [`../blog/BOTONES-ANTERIOR-SIGUIENTE.md`](../blog/BOTONES-ANTERIOR-SIGUIENTE.md).
+
+---
+
+## Problema 5 — Bloque “Últimas entradas” vacío o raro
 
 Si en Elementor hay un widget de posts sin entradas / heading vacío:
 
@@ -83,7 +96,7 @@ No dejar un H2 “Últimas entradas” sin contenido.
 
 ---
 
-## Problema 5 — Formulario (accesibilidad / UI)
+## Problema 6 — Formulario (accesibilidad / UI)
 
 Campos del form de consulta: Nombre, Email, Teléfono, Empresa, Mensaje, etc.
 
@@ -93,7 +106,7 @@ Campos del form de consulta: Nombre, Email, Teléfono, Empresa, Mensaje, etc.
 
 ---
 
-## Problema 6 — CTA hero
+## Problema 7 — CTA hero
 
 Botón tipo “Agenda una demo” / similar:
 
