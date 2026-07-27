@@ -1289,23 +1289,23 @@
     },
     {
       "id": "tarea-ts-contenido-12-de-12-copy",
-      "titulo": "[TS] C12/12 — Copys video",
+      "titulo": "[TS] C12/12 — Copys video · Sherpa DOV",
       "clienteId": "cli-trendseeker",
       "rolId": "rol-cm",
       "fecha": "2026-07-27",
       "horaInicio": "10:45",
       "horaFin": "12:00",
-      "notas": "Copys video · Producto: Botas Estilo Sherpa Con Parte Superior Enrollable Para Mujer Verde Oliva. Link: https://trendseeker.cl/producto/botas-estilo-sherpa-con-parte-superior-enrollable-para-mujer-verde-oliva/",
+      "notas": "Copys video C12 · Sherpa Roll Top Verde Oliva WFT2052NRE-DOV. A recomendada (lluvia/bus). Link: https://trendseeker.cl/producto/botas-estilo-sherpa-con-parte-superior-enrollable-para-mujer-verde-oliva/",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "27",
       "tipoEntregable": "copy-video",
-      "entregableArchivo": "index/clientes/trendseeker/copys/COPY-c12-original-ninos-rosado-brillante-A.txt",
+      "entregableArchivo": "index/clientes/trendseeker/copys/COPY-c12-sherpa-roll-top-dov-A.txt",
       "entregableArchivosCopy": {
-        "A": "index/clientes/trendseeker/copys/COPY-c12-original-ninos-rosado-brillante-A.txt",
-        "B": "index/clientes/trendseeker/copys/COPY-c12-original-ninos-rosado-brillante-B.txt",
-        "C": "index/clientes/trendseeker/copys/COPY-c12-original-ninos-rosado-brillante-C.txt"
+        "A": "index/clientes/trendseeker/copys/COPY-c12-sherpa-roll-top-dov-A.txt",
+        "B": "index/clientes/trendseeker/copys/COPY-c12-sherpa-roll-top-dov-B.txt",
+        "C": "index/clientes/trendseeker/copys/COPY-c12-sherpa-roll-top-dov-C.txt"
       },
       "parentId": "tarea-ts-contenido-12-de-12",
       "productoUrl": "https://trendseeker.cl/producto/botas-estilo-sherpa-con-parte-superior-enrollable-para-mujer-verde-oliva/",
@@ -2110,7 +2110,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 16,
-  "respaldoActualizado": "2026-07-27T14:18:09.898562+00:00",
+  "respaldoActualizado": "2026-07-27T14:35:56.434980+00:00",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
