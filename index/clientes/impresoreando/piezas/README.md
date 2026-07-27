@@ -1,15 +1,24 @@
 # Impresoreando · Piezas redes
 
-## Porta completos bulldog — 1080×1920 (27 jul 2026)
+## Porta completos bulldog — 1080×1920
+
+El producto debe ser **idéntico a tu foto** (sin regenerar con IA).
+
+### Cómo generar la pieza (PC)
+
+1. Guardá la foto del bulldog en la mano como:
+   - `Downloads\foto-producto-bulldog.jpg`  
+   o  
+   - `index\clientes\impresoreando\piezas\foto-producto-bulldog.jpg`
+2. Corré:
+   ```bat
+   python scripts\montar-pieza-porta-completos-bulldog.py
+   ```
+   (o el todo-en-uno `CARGAR-27-JUL.bat`)
+3. Sale: `porta-completos-bulldog-1080x1920.png` — **tu foto** + tipografía identidad Porta completos.
 
 | Campo | Valor |
 |-------|--------|
-| Archivo | [`porta-completos-bulldog-1080x1920.png`](./porta-completos-bulldog-1080x1920.png) |
-| Tamaño | **1080 × 1920** px |
-| Identidad | Poster “Porta completos”: fondo beige, título serif, subtítulo sans, pie “Hecho a pedido” |
-| Producto | Porta completos bulldog francés — **mate** FDM, orejas interior beige, ojos morados, **riel largo en U** detrás de la cabeza (no cuerpo de perro, no soporte celular corto) |
-| Texto | **Porta completos** · *El bulldog que cuida tu completo* · Hecho a pedido |
-
-### Si aún no calza 100% con tu foto
-
-La IA interpreta el producto; para calce exacto, guardá tu foto real en esta carpeta como `foto-producto-bulldog.jpg` y pedí un montaje (foto real + tipografía del poster).
+| Salida | [`porta-completos-bulldog-1080x1920.png`](./porta-completos-bulldog-1080x1920.png) |
+| Foto fuente | `foto-producto-bulldog.jpg` |
+| Texto | Porta completos · El bulldog que cuida tu completo · Hecho a pedido |

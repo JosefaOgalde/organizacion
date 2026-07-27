@@ -2,16 +2,16 @@
 /**
  * 27 jul 2026 — Cargar respaldo reciente + tareas del día.
  *
- * Prioridad de base:
- *   1) data/organizacion-respaldo-2026-07-26.json  (o Descargas del usuario)
- *   2) data/organizacion-respaldo-2026-07-24.json
- *   3) data/organizacion-live.json
+ * Prioridad de base (la más nueva primero):
+ *   1) Downloads o data / organizacion-respaldo-2026-07-27.json  ← vigente
+ *   2) …-2026-07-26.json
+ *   3) …-2026-07-24.json
+ *   4) organizacion-live.json
  *
- * En la PC (josef):
- *   copy %USERPROFILE%\Downloads\organizacion-respaldo-2026-07-26.json data\
- *   node scripts/cargar-respaldo-y-tareas-27-jul.js
- *
- *   node scripts/cargar-respaldo-y-tareas-27-jul.js
+ * En la PC (josef) — OBLIGATORIO usar el del 27:
+ *   copy %USERPROFILE%\Downloads\organizacion-respaldo-2026-07-27.json data\
+ *   node scripts\cargar-respaldo-y-tareas-27-jul.js
+ *   .\ABRIR-LARAVEL.bat
  */
 const fs = require('fs');
 const path = require('path');
@@ -60,11 +60,12 @@ function leerJson(ruta) {
 function candidatosBase() {
   const downloads = path.join(process.env.USERPROFILE || process.env.HOME || '', 'Downloads');
   const names = [
+    'organizacion-respaldo-2026-07-27.json',
     'organizacion-respaldo-2026-07-26.json',
     'organizacion-respaldo-2026-07-24.json',
     'organizacion-respaldo-2026-07-21.json',
   ];
-  const dirs = [DATA, downloads].filter((d) => d && fs.existsSync(d));
+  const dirs = [downloads, DATA].filter((d) => d && fs.existsSync(d));
   const found = [];
   for (const dir of dirs) {
     for (const name of names) {
@@ -72,21 +73,25 @@ function candidatosBase() {
       if (!fs.existsSync(abs)) continue;
       const obj = leerJson(abs);
       if (!obj) continue;
-      found.push({ path: abs, obj, name });
+      found.push({ path: abs, obj, name, dir });
     }
   }
   if (fs.existsSync(LIVE)) {
     const obj = leerJson(LIVE);
-    if (obj) found.push({ path: LIVE, obj, name: 'organizacion-live.json' });
+    if (obj) found.push({ path: LIVE, obj, name: 'organizacion-live.json', dir: DATA });
   }
-  // Preferir 26 > 24 > 21 > live
-  const rank = (n) => {
-    if (/2026-07-26/.test(n)) return 0;
-    if (/2026-07-24/.test(n)) return 1;
-    if (/2026-07-21/.test(n)) return 2;
-    return 3;
+  // Preferir 27 > 26 > 24 > 21 > live; si hay dos del mismo nombre, preferir Downloads
+  const rank = (c) => {
+    let r = 9;
+    if (/2026-07-27/.test(c.name)) r = 0;
+    else if (/2026-07-26/.test(c.name)) r = 1;
+    else if (/2026-07-24/.test(c.name)) r = 2;
+    else if (/2026-07-21/.test(c.name)) r = 3;
+    else r = 4;
+    const fromDl = /Downloads/i.test(c.path) ? 0 : 1;
+    return r * 10 + fromDl;
   };
-  found.sort((a, b) => rank(a.name) - rank(b.name));
+  found.sort((a, b) => rank(a) - rank(b));
   return found;
 }
 
@@ -191,12 +196,21 @@ function main() {
   }
   const base = cands[0];
   console.log('[base]', base.path);
-  if (!/2026-07-26/.test(base.name)) {
+  if (!/2026-07-27/.test(base.name)) {
     console.warn(
-      '[aviso] No está el respaldo 2026-07-26. Usando',
+      '[aviso] No está organizacion-respaldo-2026-07-27.json. Usando',
       base.name,
-      '— en la PC: copy Downloads\\organizacion-respaldo-2026-07-26.json data\\ y re-ejecutá.'
+      '— en la PC: copy %USERPROFILE%\\Downloads\\organizacion-respaldo-2026-07-27.json data\\ y re-ejecutá.'
     );
+  } else {
+    console.log('[ok] Usando respaldo vigente 2026-07-27');
+  }
+
+  // Si vino de Downloads, copiar a data/ para que quede en el repo local
+  const copy27 = path.join(DATA, 'organizacion-respaldo-2026-07-27.json');
+  if (/2026-07-27/.test(base.name) && path.resolve(base.path) !== path.resolve(copy27)) {
+    fs.copyFileSync(base.path, copy27);
+    console.log('[copy]', copy27);
   }
 
   const data = JSON.parse(JSON.stringify(base.obj));
@@ -291,22 +305,22 @@ function main() {
   const nImp = nextNumero(data.tareas, 'cli-impresoreando');
   upsert(data.tareas, {
     id: 'tarea-imp-pieza-porta-celular-bulldog-2026-07-27',
-    titulo: '[IMP] Pieza IG Porta celular bulldog 1080×1920',
+    titulo: '[IMP] Pieza IG Porta completos bulldog 1080×1920',
     clienteId: 'cli-impresoreando',
     rolId: 'rol-imp-dis',
     fecha: HOY,
     horaInicio: '17:00',
     horaFin: '18:00',
     notas:
-      'Pieza vertical 1080×1920 identidad “Porta completos” (beige + serif + Hecho a pedido) ' +
-      'con producto porta celular bulldog francés negro. Archivo: ' +
-      'index/clientes/impresoreando/piezas/porta-celular-bulldog-1080x1920.png',
+      'Pieza 1080×1920 identidad Porta completos. Producto = foto real (montaje). ' +
+      'Archivo final: index/clientes/impresoreando/piezas/porta-completos-bulldog-1080x1920.png · ' +
+      'Script: node scripts/montar-pieza-porta-completos-bulldog.js (requiere foto-producto-bulldog.jpg)',
     prioridad: 'media',
-    completada: true,
+    completada: false,
     pendiente: false,
     numeroHistorico: nImp,
     tipoEntregable: 'pieza-ig',
-    entregableArchivo: 'index/clientes/impresoreando/piezas/porta-celular-bulldog-1080x1920.png',
+    entregableArchivo: 'index/clientes/impresoreando/piezas/porta-completos-bulldog-1080x1920.png',
     parentId: null,
     agendaFijada: true,
   });
@@ -317,22 +331,20 @@ function main() {
   data.meta.ultimaCargaRespaldo = {
     fuente: base.path,
     fecha: data.respaldoActualizado,
-    nota: 'Tareas 27 jul 2026 (ADL + ECR canal + TS productos + IMP pieza)',
+    nota: 'Tareas 27 jul 2026 sobre respaldo vigente (preferir Downloads …-07-27.json)',
   };
 
   fs.writeFileSync(LIVE, JSON.stringify(data, null, 2) + '\n');
-  fs.writeFileSync(OUT_RESPALDO, JSON.stringify(data, null, 2) + '\n');
-  // También dejar copia con nombre del 26 si vino de ahí, para cadena de respaldos
-  if (/2026-07-26/.test(base.name)) {
-    const copy26 = path.join(DATA, 'organizacion-respaldo-2026-07-26.json');
-    if (base.path !== copy26) {
-      fs.copyFileSync(base.path, copy26);
-      console.log('[copy]', copy26);
-    }
+  // No pisar el JSON fuente del usuario: live + copia con sufijo aplicado
+  const outAplicado = path.join(DATA, 'organizacion-respaldo-2026-07-27-aplicado.json');
+  fs.writeFileSync(outAplicado, JSON.stringify(data, null, 2) + '\n');
+  // Si la base NO era el 27 del usuario, también escribir OUT_RESPALDO legacy
+  if (!/2026-07-27/.test(base.name)) {
+    fs.writeFileSync(OUT_RESPALDO, JSON.stringify(data, null, 2) + '\n');
   }
 
   console.log('[ok] live →', LIVE);
-  console.log('[ok] respaldo →', OUT_RESPALDO);
+  console.log('[ok] aplicado →', outAplicado);
   console.log('Hoy:', HOY, '| Miércoles:', MIE);
   console.log('TS hoy:', PRODUCTOS_TS[0].sku, PRODUCTOS_TS[0].url);
   console.log('TS mié:', PRODUCTOS_TS[1].sku, PRODUCTOS_TS[1].url);
