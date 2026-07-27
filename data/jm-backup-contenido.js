@@ -910,6 +910,7 @@ window.jmAsegurarDatosMinimos = function jmAsegurarDatosMinimos(data) {
   if (!data || typeof data !== 'object') return data;
   if (!Array.isArray(data.tareas)) data.tareas = [];
   if (!Array.isArray(data.clientes)) data.clientes = [];
+  const tareasEliminadas = new Set(Array.isArray(data.tareasEliminadas) ? data.tareasEliminadas : []);
   const cli = data.clientes.find((c) => c.id === window.JM_CLI_SYNC_ID);
   if (cli && typeof window.jmMigrarLandingJM === 'function') window.jmMigrarLandingJM(cli);
   const seeds = window.JM_TODO_SEED || [];
@@ -921,6 +922,12 @@ window.jmAsegurarDatosMinimos = function jmAsegurarDatosMinimos(data) {
     const fecha = d.toISOString().slice(0, 10);
     const titulo = window.jmTituloCalendario(todo);
     let t = data.tareas.find((x) => x.id === id);
+    if (tareasEliminadas.has(id) || tareasEliminadas.has(todo.id)) {
+      // La landing y los wireframes también cargan esta migración. Nunca deben
+      // resucitar (ni volver a persistir) tareas borradas desde el organizador.
+      if (t) data.tareas = data.tareas.filter((x) => x.id !== id && x.jmTodoId !== todo.id);
+      return;
+    }
     if (!t) {
       data.tareas.push({
         id,
