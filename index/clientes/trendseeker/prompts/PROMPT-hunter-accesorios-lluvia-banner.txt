@@ -1,23 +1,28 @@
-PRODUCTOS: Accesorios Hunter — calcetines, gorro, paraguas (+ botas de apoyo)
+PRODUCTOS (foco banner):
+1) Gorro con Pon Pon Moustache Original Negro
+   SKU: UAH3031WXA-GZB
+   https://trendseeker.cl/producto/gorro-con-pon-pon-moustache-original-negro/
+   — Beanie ribbed: puño negro + cuerpo gris jaspeado + triángulo/chevron negro + pompón negro grande + etiqueta Hunter blanca borde rojo en el puño.
+
+2) Hunter Calcetín Bota 6 Puntadas
+   SKU: UAS3036AAB-NWH
+   https://trendseeker.cl/producto/hunter-calcetin-bota-6-puntadas-2/
+   — Calcetín bota crema/off-white: cuerpo fleece + puño cable-knit grueso con parche Hunter (blanco, borde rojo, texto HUNTER).
+
 Campaña: 40% OFF accesorios · desde miércoles
-Herramienta: Google Gemini (imagen / still para BANNER). Primero sube fotos REALES de calcetines, gorro y paraguas Hunter.
-Uso: banner web / feed (después tipografía “40% OFF” y CTA en Canva; NO pedir texto en la generación).
+Herramienta: Gemini imagen / still banner. Subir fotos REALES de estos 2 productos.
+Uso: overlay “40% OFF” en Canva (NO generar texto en la imagen).
 
-FOCO: ACCESORIOS. Composición con espacio limpio para overlay de título.
-
-PROHIBIDO en la imagen generada:
-- Texto, tipografía, “40%”, logos inventados, watermarks
-- Inventar branding Hunter que no esté en las fotos
-- Escena caótica o producto pequeño/ilegible
+Propuesta generada: banners/hunter-gorro-calcetin-banner-propuesta.png
 
 ---
-PROMPT BANNER (pegar en Gemini)
+PROMPT BANNER (pegar en Gemini + fotos de estos 2 productos)
 ---
 
-Genera una IMAGEN fotorrealista horizontal tipo banner publicitario (relación aprox. 16:9 o 21:9), lifestyle premium, product-first en ACCESORIOS Hunter. Usa las fotos adjuntas como referencia obligatoria: calcetines Hunter, gorro Hunter (Moustache Bubble o Branded Stripe) y paraguas Hunter (Original Weld Moustache Bubble) exactos en color, forma y detalle. Opcional: un par de botas Hunter al borde del frame como apoyo, más pequeñas que los accesorios.
+Genera una IMAGEN fotorrealista horizontal 16:9 tipo banner, lifestyle premium. Usa las fotos adjuntas como referencia OBLIGATORIA de estos dos productos exactos:
 
-Composición: mujer adulta a punto de salir de casa bajo lluvia suave visible por la puerta o ventana. Ella ya lleva el gorro Hunter y sostiene el paraguas Hunter en primer plano (héroe). En el antepecho / banco / suelo, cerca de ella y bien legibles: los calcetines Hunter doblados o uno a medio poner (detalle de tejido). Botas Hunter apenas entrando en cuadro abajo, sin tapar gorro ni paraguas.
+1) Gorro Hunter Moustache Original Negro (UAH3031WXA-GZB): beanie de punto canalé, mitad inferior/puño negro, parte superior gris jaspeado con bloque triangular negro hacia arriba, pompón negro grande y esponjoso, etiqueta Hunter blanca con borde rojo en el puño. Misma silueta y colores que la foto.
 
-Espacio: deja el tercio superior o un lateral con área limpia (pared clara / luz suave / desenfoque) para overlay de texto en Canva después.
+2) Calcetín bota Hunter 6 puntadas (UAS3036AAB-NWH): color crema/off-white, cuerpo tipo fleece, puño grueso de punto cable (6 puntadas) con el parche rectangular Hunter blanco borde rojo. Mostrar el calcetín bien legible (doblado o con el puño visible).
 
-Luz natural fría de día lluvioso; atmósfera cozy indoor → outdoor. Sin texto en la imagen. Sin logos inventados. Prioridad: gorro + paraguas + calcetines nítidos y fieles a las fotos.
+Composición: mujer adulta en casa, lluvia afuera por la ventana/puerta. Lleva el gorro puesto (héroe superior). Los calcetines Hunter crema en primer plano sobre banco/suelo (héroe inferior). Botas solo apoyo al borde, sin tapar accesorios. Tercio izquierdo limpio para overlay de texto. Sin tipografía generada. Sin inventar otros logos.
