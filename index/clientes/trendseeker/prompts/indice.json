@@ -100,7 +100,9 @@
       "archivos": {
         "A": "prompts/PROMPT-c12-sherpa-roll-top-dov-A.txt",
         "B": "prompts/PROMPT-c12-sherpa-roll-top-dov-B.txt",
-        "C": "prompts/PROMPT-c12-sherpa-roll-top-dov-C.txt"
+        "C": "prompts/PROMPT-c12-sherpa-roll-top-dov-C.txt",
+        "D": "prompts/PROMPT-c12-sherpa-roll-top-dov-D.txt",
+        "E": "prompts/PROMPT-c12-sherpa-roll-top-dov-E.txt"
       }
     }
   ]

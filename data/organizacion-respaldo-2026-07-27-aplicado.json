@@ -1275,11 +1275,13 @@
       "pendiente": false,
       "numeroHistorico": "26",
       "tipoEntregable": "prompt-gemini-video",
-      "entregableArchivo": "index/clientes/trendseeker/prompts/PROMPT-c12-sherpa-roll-top-dov-A.txt",
+      "entregableArchivo": "index/clientes/trendseeker/prompts/PROMPT-c12-sherpa-roll-top-dov-D.txt",
       "entregableArchivosPrompt": {
         "A": "index/clientes/trendseeker/prompts/PROMPT-c12-sherpa-roll-top-dov-A.txt",
         "B": "index/clientes/trendseeker/prompts/PROMPT-c12-sherpa-roll-top-dov-B.txt",
-        "C": "index/clientes/trendseeker/prompts/PROMPT-c12-sherpa-roll-top-dov-C.txt"
+        "C": "index/clientes/trendseeker/prompts/PROMPT-c12-sherpa-roll-top-dov-C.txt",
+        "D": "index/clientes/trendseeker/prompts/PROMPT-c12-sherpa-roll-top-dov-D.txt",
+        "E": "index/clientes/trendseeker/prompts/PROMPT-c12-sherpa-roll-top-dov-E.txt"
       },
       "parentId": "tarea-ts-contenido-12-de-12",
       "productoUrl": "https://trendseeker.cl/producto/botas-estilo-sherpa-con-parte-superior-enrollable-para-mujer-verde-oliva/",
@@ -2108,7 +2110,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 16,
-  "respaldoActualizado": "2026-07-27T14:11:45.940267Z",
+  "respaldoActualizado": "2026-07-27T14:18:09.901625+00:00",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
