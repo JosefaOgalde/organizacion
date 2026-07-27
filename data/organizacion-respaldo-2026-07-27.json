@@ -1876,7 +1876,7 @@
       "horaFin": "12:00",
       "notas": "Enviar boleta y formulario Desafío Latam.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "02",
       "tipoEntregable": "admin",
@@ -2110,7 +2110,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 16,
-  "respaldoActualizado": "2026-07-27T15:03:57.708330+00:00",
+  "respaldoActualizado": "2026-07-27T15:05:59.365892+00:00",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
