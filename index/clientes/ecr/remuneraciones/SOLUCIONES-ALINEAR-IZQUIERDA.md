@@ -1,15 +1,22 @@
-# ECR · Soluciones / Remuneraciones — Pestañas alineadas a la izquierda
+# ECR · Soluciones / Remuneraciones — textos a la izquierda
 
 **URL:** https://ecrgroup.cl/soluciones/remuneraciones/  
-**Sección:** “¿Cómo te ayudamos con las remuneraciones en tu empresa?”  
-**Widget:** **Pestañas** (Tabs) — no es un Editor de texto suelto.
+**Sección:** “¿Cómo te ayudamos con las remuneraciones en tu empresa?”
 
-## Por qué falla
+## Recomendado: no usar Pestañas
 
-- En Elementor (editor) se ve a la izquierda.
-- En el sitio cargado se ve **centrado / “indexado”**.
-- El CSS solo con `selector { text-align: left }` **no alcanza**: los títulos de pestaña usan `display: flex` + `justify-content: center`.
-- Los avisos amarillos en `!important` son del linter de Elementor; **no impiden** que el CSS funcione.
+En el live se ven **los 5 ítems a la vez** (solo el activo con fondo celeste). Eso no es un buen uso de Pestañas, y el tema **centra** los títulos inactivos aunque en Elementor pongas Izquierda / Justificar Inicio.
+
+### Arreglo directo en Elementor (sin CSS)
+
+1. En la columna izquierda, **borrá** (o ocultá) el widget **Pestañas**.
+2. Agregá un **Editor de texto** (o 5 widgets Título/Texto, uno por ítem).
+3. Pegá los 5 párrafos.
+4. En cada uno: **Estilo → Alineación → Izquierda** (Desktop + Móvil).
+5. La foto de la derecha no se toca.
+6. **Actualizar** → `?nocache=1`.
+
+Así queda alineado de verdad, sin pelear con el CSS de Tabs.
 
 ---
 
