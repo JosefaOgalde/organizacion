@@ -2,6 +2,8 @@
 
 Detalle de Instagram **pendiente** (lo entrega la usuaria).
 
+**Códigos para consola del navegador (F12):** ver [`CODIGOS-CONSOLA.md`](./CODIGOS-CONSOLA.md).
+
 Cuando llegue, completar:
 
 - Seguidores / publicaciones
