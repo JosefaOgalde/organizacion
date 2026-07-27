@@ -90,16 +90,17 @@
     },
     {
       "id": "contenido-12-prompt",
-      "titulo": "C12/12 · Botas de Agua Original Niños Rosado Brillante",
-      "archivo": "prompts/PROMPT-c12-original-ninos-rosado-brillante-A.txt",
-      "descripcion": "VIDEO Gemini · NIÑOS / NIÑAS (aprox. 5–11 años) · TXT separados A/B/C editables.",
+      "titulo": "C12/12 · Botas Sherpa Roll Top Verde Oliva Mujer",
+      "archivo": "prompts/PROMPT-c12-sherpa-roll-top-dov-A.txt",
+      "descripcion": "VIDEO Gemini · MUJER · Hunter Roll Top Sherpa DOV · TXT A/B/C · fotos producto primero.",
       "tareaNumero": "26",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
+      "productoUrl": "https://trendseeker.cl/producto/botas-estilo-sherpa-con-parte-superior-enrollable-para-mujer-verde-oliva/",
+      "sku": "WFT2052NRE-DOV",
       "contenidoSerie": 12,
       "archivos": {
-        "A": "prompts/PROMPT-c12-original-ninos-rosado-brillante-A.txt",
-        "B": "prompts/PROMPT-c12-original-ninos-rosado-brillante-B.txt",
-        "C": "prompts/PROMPT-c12-original-ninos-rosado-brillante-C.txt"
+        "A": "prompts/PROMPT-c12-sherpa-roll-top-dov-A.txt",
+        "B": "prompts/PROMPT-c12-sherpa-roll-top-dov-B.txt",
+        "C": "prompts/PROMPT-c12-sherpa-roll-top-dov-C.txt"
       }
     }
   ]

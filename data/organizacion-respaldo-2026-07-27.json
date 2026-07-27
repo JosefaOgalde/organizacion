@@ -1263,7 +1263,7 @@
     },
     {
       "id": "tarea-ts-contenido-12-de-12-prompt",
-      "titulo": "[TS] C12/12 — Prompt Gemini (video)",
+      "titulo": "[TS] C12/12 — Prompt Gemini (video) · Sherpa DOV",
       "clienteId": "cli-trendseeker",
       "rolId": "rol-cm",
       "fecha": "2026-07-27",
@@ -1275,11 +1275,11 @@
       "pendiente": false,
       "numeroHistorico": "26",
       "tipoEntregable": "prompt-gemini-video",
-      "entregableArchivo": "index/clientes/trendseeker/prompts/PROMPT-c12-original-ninos-rosado-brillante-A.txt",
+      "entregableArchivo": "index/clientes/trendseeker/prompts/PROMPT-c12-sherpa-roll-top-dov-A.txt",
       "entregableArchivosPrompt": {
-        "A": "index/clientes/trendseeker/prompts/PROMPT-c12-original-ninos-rosado-brillante-A.txt",
-        "B": "index/clientes/trendseeker/prompts/PROMPT-c12-original-ninos-rosado-brillante-B.txt",
-        "C": "index/clientes/trendseeker/prompts/PROMPT-c12-original-ninos-rosado-brillante-C.txt"
+        "A": "index/clientes/trendseeker/prompts/PROMPT-c12-sherpa-roll-top-dov-A.txt",
+        "B": "index/clientes/trendseeker/prompts/PROMPT-c12-sherpa-roll-top-dov-B.txt",
+        "C": "index/clientes/trendseeker/prompts/PROMPT-c12-sherpa-roll-top-dov-C.txt"
       },
       "parentId": "tarea-ts-contenido-12-de-12",
       "productoUrl": "https://trendseeker.cl/producto/botas-estilo-sherpa-con-parte-superior-enrollable-para-mujer-verde-oliva/",
@@ -1889,13 +1889,13 @@
       "fecha": "2026-07-27",
       "horaInicio": "14:00",
       "horaFin": "17:00",
-      "notas": "Revisar y ajustar tipografía/layout responsive en https://ecrgroup.cl/canaldenuncias/ (Elementor). Guía: index/clientes/ecr/canal-denuncias/RESPONSIVE-TEXTO.md. Relacionado Ley Karin: index/clientes/ecr/ley-karin/AJUSTES-ELEMENTOR.md",
+      "notas": "Revisar y ajustar tipografía/layout responsive en https://ecrgroup.cl/canaldenuncias/ (Elementor). Guía: index/clientes/ecr/canal-denuncias/RESPONSIVE-TEXTO.md. Relacionado Ley Karin: index/clientes/ecr/ley-karin/AJUSTES-ELEMENTOR.md Checklist final: index/clientes/ecr/canal-denuncias/DEJAR-OK.md",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "15",
       "tipoEntregable": "landing-elementor",
-      "entregableArchivo": "index/clientes/ecr/canal-denuncias/RESPONSIVE-TEXTO.md",
+      "entregableArchivo": "index/clientes/ecr/canal-denuncias/DEJAR-OK.md",
       "productoUrl": "https://ecrgroup.cl/canaldenuncias/",
       "parentId": null,
       "agendaFijada": true
@@ -2108,7 +2108,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 16,
-  "respaldoActualizado": "2026-07-27T13:55:19.041Z",
+  "respaldoActualizado": "2026-07-27T14:11:45.937212Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
