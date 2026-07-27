@@ -1,0 +1,38 @@
+{
+  "actualizado": "2026-07-27",
+  "nivel": "general",
+  "oportunidades": [
+    {
+      "id": 1,
+      "titulo": "Arquitectura de marca y naming",
+      "bullets": [
+        "Definir rol de Grupo Flesan / Flesan / DVC",
+        "Reglas de uso verbal y visual entre holding y operativas"
+      ]
+    },
+    {
+      "id": 2,
+      "titulo": "Alineación de los 3 sitios web",
+      "bullets": [
+        "Misma narrativa según arquitectura elegida",
+        "Benchmark de claridad: Echeverría Izquierdo (ei.cl)"
+      ]
+    },
+    {
+      "id": 3,
+      "titulo": "RRSS orgánicas bajo la marca definida",
+      "bullets": [
+        "Ya existe perfil único Grupo Flesan",
+        "Falta lineamiento de contenido + medición (detalle IG pendiente)"
+      ]
+    },
+    {
+      "id": 4,
+      "titulo": "YouTube / audiovisual de obras",
+      "bullets": [
+        "Canal desde 2014 con ~509 suscriptores",
+        "Espacio para storytelling de proyectos si hay marca clara"
+      ]
+    }
+  ]
+}
