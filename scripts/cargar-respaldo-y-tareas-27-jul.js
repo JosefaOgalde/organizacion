@@ -109,11 +109,19 @@ function upsert(tareas, tarea) {
   const idx = tareas.findIndex((t) => t.id === tarea.id);
   if (idx >= 0) {
     const prev = tareas[idx];
+    const yaFinalizada = prev.completada === true;
     tareas[idx] = {
       ...prev,
       ...tarea,
       numeroHistorico: prev.numeroHistorico || tarea.numeroHistorico,
+      // Nunca reabrir una tarea que la usuaria ya dejó finalizada
+      completada: yaFinalizada ? true : tarea.completada,
+      pendiente: yaFinalizada ? false : tarea.pendiente,
     };
+    if (yaFinalizada) {
+      console.log('[respetar finalizada]', prev.titulo || tarea.titulo);
+      return 'keep-done';
+    }
     return 'upd';
   }
   tareas.push(tarea);
@@ -123,6 +131,11 @@ function upsert(tareas, tarea) {
 function patchTsMadre(tareas, madreId, producto, fecha, horas) {
   const madre = tareas.find((t) => t.id === madreId);
   if (!madre) return false;
+  // Si ya estaba finalizada en el respaldo, no tocar
+  if (madre.completada === true) {
+    console.log('[TS skip finalizada]', madreId, madre.titulo);
+    return false;
+  }
   const nSerie = madre.contenidoSerie || madreId.match(/(\d+)-de-12/)?.[1] || '?';
   madre.titulo = `[TS] Contenido ${nSerie}/12 · ${producto.nombre}`;
   madre.fecha = fecha;
@@ -159,6 +172,10 @@ function patchTsMadre(tareas, madreId, producto, fecha, horas) {
     const id = `${madreId}-${suf}`;
     const child = tareas.find((t) => t.id === id);
     if (!child) continue;
+    if (child.completada === true) {
+      console.log('[TS skip hija finalizada]', id);
+      continue;
+    }
     child.titulo = meta.titulo;
     child.fecha = fecha;
     child.horaInicio = meta.horas[0];
@@ -179,9 +196,16 @@ function patchTsMadre(tareas, madreId, producto, fecha, horas) {
 }
 
 function archivarTsMadre(tareas, madreId, motivo) {
+  const madre = tareas.find((t) => t.id === madreId);
+  // Si ya estaba finalizada, no agregar notas de "archivada" ni tocar
+  if (madre && madre.completada === true) {
+    console.log('[TS ya finalizada, no archivar de nuevo]', madreId);
+    return;
+  }
   const ids = new Set([madreId, `${madreId}-prompt`, `${madreId}-copy`, `${madreId}-programar`]);
   for (const t of tareas) {
     if (!ids.has(t.id)) continue;
+    if (t.completada === true) continue;
     t.completada = true;
     t.pendiente = false;
     t.notas = `${(t.notas || '').trim()}\n\n[27 jul] Archivada: ${motivo}`.trim();
@@ -191,7 +215,7 @@ function archivarTsMadre(tareas, madreId, motivo) {
 function main() {
   const cands = candidatosBase();
   if (!cands.length) {
-    console.error('No hay respaldo base. Copiá organizacion-respaldo-2026-07-26.json a data/');
+    console.error('No hay respaldo base. Copiá organizacion-respaldo-2026-07-27.json a data/');
     process.exit(1);
   }
   const base = cands[0];
@@ -279,27 +303,53 @@ function main() {
     agendaFijada: true,
   });
 
-  // —— Trendseeker: incompletas → 1 hoy + 1 miércoles (pedido explícito) ——
-  // 3 SKU en la imagen → 2 activas (DOV hoy, WHW mié); DOC queda como próximo.
-  archivarTsMadre(
-    data.tareas,
-    'tarea-ts-contenido-10-de-12',
-    'solo 2 TS activas (hoy + miércoles). Próximo SKU: WFF1088RMA-DOC · https://trendseeker.cl/producto/zueco-de-jardin-para-mujer-verde-oliva/'
+  // —— Trendseeker: solo tocar madres AÚN NO finalizadas ——
+  // Respetar C7–C10 (u otras) si ya están completada=true en el respaldo del 27.
+  const tsMadresIncompletas = data.tareas.filter(
+    (t) =>
+      t.clienteId === 'cli-trendseeker' &&
+      !t.parentId &&
+      t.completada !== true &&
+      /contenido-\d+-de-12$/i.test(t.id)
+  );
+  console.log(
+    '[TS incompletas]',
+    tsMadresIncompletas.map((t) => t.id + ' · ' + (t.titulo || '')).join(' | ') || '(ninguna)'
   );
 
-  patchTsMadre(data.tareas, 'tarea-ts-contenido-12-de-12', PRODUCTOS_TS[0], HOY, {
-    madre: ['09:30', '13:00'],
-    prompt: ['09:30', '10:45'],
-    copy: ['10:45', '12:00'],
-    programar: ['12:00', '13:00'],
-  });
+  // No archivar ni reabrir finalizadas. Solo reasignar productos a incompletas.
+  const slots = [
+    { producto: PRODUCTOS_TS[0], fecha: HOY, horas: { madre: ['09:30', '13:00'], prompt: ['09:30', '10:45'], copy: ['10:45', '12:00'], programar: ['12:00', '13:00'] } },
+    { producto: PRODUCTOS_TS[1], fecha: MIE, horas: { madre: ['09:30', '13:00'], prompt: ['09:30', '10:45'], copy: ['10:45', '12:00'], programar: ['12:00', '13:00'] } },
+  ];
 
-  patchTsMadre(data.tareas, 'tarea-ts-contenido-11-de-12', PRODUCTOS_TS[1], MIE, {
-    madre: ['09:30', '13:00'],
-    prompt: ['09:30', '10:45'],
-    copy: ['10:45', '12:00'],
-    programar: ['12:00', '13:00'],
-  });
+  // Preferir C12 → hoy, C11 → mié si siguen incompletas; si no, la primera incompleta disponible
+  const pick = (preferId) => {
+    const hit = tsMadresIncompletas.find((t) => t.id === preferId);
+    if (hit) return hit;
+    return tsMadresIncompletas.find((t) => !t._usado);
+  };
+
+  const hoyMadre = pick('tarea-ts-contenido-12-de-12');
+  if (hoyMadre) {
+    hoyMadre._usado = true;
+    patchTsMadre(data.tareas, hoyMadre.id, slots[0].producto, slots[0].fecha, slots[0].horas);
+  } else {
+    console.log('[TS] No hay madre incompleta para hoy — no se crea ni se reabre nada finalizado');
+  }
+
+  const mieMadre = pick('tarea-ts-contenido-11-de-12');
+  if (mieMadre) {
+    mieMadre._usado = true;
+    patchTsMadre(data.tareas, mieMadre.id, slots[1].producto, slots[1].fecha, slots[1].horas);
+  } else {
+    console.log('[TS] No hay madre incompleta para miércoles — no se reabre finalizada');
+  }
+
+  // Limpiar flag temporal
+  for (const t of data.tareas) delete t._usado;
+
+  console.log('[TS próximo SKU sin tarea]', PRODUCTOS_TS[2].sku, PRODUCTOS_TS[2].url);
 
   // —— Impresoreando: pieza 1080×1920 ——
   const nImp = nextNumero(data.tareas, 'cli-impresoreando');
