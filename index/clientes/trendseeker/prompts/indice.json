@@ -104,6 +104,16 @@
         "D": "prompts/PROMPT-c12-sherpa-roll-top-dov-D.txt",
         "E": "prompts/PROMPT-c12-sherpa-roll-top-dov-E.txt"
       }
+    },
+    {
+      "id": "hunter-accesorios-lluvia",
+      "titulo": "Hunter accesorios · lluvia casa→salida (40% OFF)",
+      "archivo": "prompts/PROMPT-hunter-accesorios-lluvia-video.txt",
+      "descripcion": "VIDEO + BANNER Gemini · foco calcetines, gorro y paraguas Hunter; botas solo apoyo. Campaña 40% desde miércoles.",
+      "archivos": {
+        "video": "prompts/PROMPT-hunter-accesorios-lluvia-video.txt",
+        "banner": "prompts/PROMPT-hunter-accesorios-lluvia-banner.txt"
+      }
     }
   ]
 }

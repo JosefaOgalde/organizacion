@@ -1,0 +1,23 @@
+PRODUCTOS: Accesorios Hunter — calcetines, gorro, paraguas (+ botas de apoyo)
+Campaña: 40% OFF accesorios · desde miércoles
+Herramienta: Google Gemini (imagen / still para BANNER). Primero sube fotos REALES de calcetines, gorro y paraguas Hunter.
+Uso: banner web / feed (después tipografía “40% OFF” y CTA en Canva; NO pedir texto en la generación).
+
+FOCO: ACCESORIOS. Composición con espacio limpio para overlay de título.
+
+PROHIBIDO en la imagen generada:
+- Texto, tipografía, “40%”, logos inventados, watermarks
+- Inventar branding Hunter que no esté en las fotos
+- Escena caótica o producto pequeño/ilegible
+
+---
+PROMPT BANNER (pegar en Gemini)
+---
+
+Genera una IMAGEN fotorrealista horizontal tipo banner publicitario (relación aprox. 16:9 o 21:9), lifestyle premium, product-first en ACCESORIOS Hunter. Usa las fotos adjuntas como referencia obligatoria: calcetines Hunter, gorro Hunter (Moustache Bubble o Branded Stripe) y paraguas Hunter (Original Weld Moustache Bubble) exactos en color, forma y detalle. Opcional: un par de botas Hunter al borde del frame como apoyo, más pequeñas que los accesorios.
+
+Composición: mujer adulta a punto de salir de casa bajo lluvia suave visible por la puerta o ventana. Ella ya lleva el gorro Hunter y sostiene el paraguas Hunter en primer plano (héroe). En el antepecho / banco / suelo, cerca de ella y bien legibles: los calcetines Hunter doblados o uno a medio poner (detalle de tejido). Botas Hunter apenas entrando en cuadro abajo, sin tapar gorro ni paraguas.
+
+Espacio: deja el tercio superior o un lateral con área limpia (pared clara / luz suave / desenfoque) para overlay de texto en Canva después.
+
+Luz natural fría de día lluvioso; atmósfera cozy indoor → outdoor. Sin texto en la imagen. Sin logos inventados. Prioridad: gorro + paraguas + calcetines nítidos y fieles a las fotos.
