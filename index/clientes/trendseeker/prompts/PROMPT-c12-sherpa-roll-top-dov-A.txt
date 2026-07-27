@@ -1,0 +1,38 @@
+PRODUCTO: Botas Estilo Sherpa Con Parte Superior Enrollable Para Mujer Verde Oliva
+SKU: WFT2052NRE-DOV
+Link: https://trendseeker.cl/producto/botas-estilo-sherpa-con-parte-superior-enrollable-para-mujer-verde-oliva/
+Público: MUJER (adulta)
+Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales (obligatorio).
+
+CARACTERÍSTICAS (no inventar otras):
+- Hunter Roll Top Sherpa · color verde oliva (DOV)
+- 100% impermeable · caucho natural + neopreno aislante
+- Forro polar sherpa (ayuda a eliminar humedad)
+- Plantilla Ortholite + aislamiento térmico
+- Uso hasta -5 °C (23 °F)
+- Estilo superior enrollable (subir o bajar la caña)
+- Vegano certificado · hechas a mano
+- Suela con agarre para invierno / piso resbaladizo
+
+VESTUARIO / MODELO:
+- Mujer adulta
+- Outfit de invierno urbano (jeans o pantalón + abrigo); jeans metidos o que dejen ver la caña y el forro sherpa al enrollar
+- Sin tipografía ni logos inventados fuera de los del producto real
+
+CÓMO USAR:
+1) Gemini en modo VIDEO
+2) Subí primero las fotos de producto (verde oliva DOV)
+3) Pegá UNA versión (A, B o C)
+4) Si cambia el color/diseño: “replica exactamente las botas de las fotos, verde oliva, caña enrollable y forro sherpa”
+
+---
+VERSIÓN A — Video producto héroe (recomendado)
+---
+
+Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria: botas Sherpa roll-top verde oliva (SKU WFT2052NRE-DOV). No rediseñes; misma silueta, mismo verde oliva, mismo forro sherpa, misma caña enrollable.
+
+PROHIBIDO inventar el parche rectangular blanco con borde rojo ni el texto HUNTER en el costado (no va en este modelo). Sin logos ni tipografía inventados; solo lo que se ve en las fotos.
+
+Acción: mujer en mañana fría de invierno con lluvia fina o escarcha. Muestra caña enrollable y forro sherpa. Gotas en la goma; agarre en piso frío/húmedo.
+
+Cámara: product-first, botas nítidas. Cara/torso secundarios. Ritmo comercial corto.

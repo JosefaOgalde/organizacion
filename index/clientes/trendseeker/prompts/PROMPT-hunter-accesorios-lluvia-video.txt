@@ -1,0 +1,33 @@
+PRODUCTOS: Accesorios Hunter (foco) + botas Hunter (soporte)
+Campaña: potenciar accesorios · 40% OFF · salida desde miércoles
+Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos REALES de:
+- calcetines Hunter (Boot Sock / cable tall)
+- gorro Hunter (Moustache Bubble Hat o Branded Stripe Hat)
+- paraguas Hunter (Original Weld Moustache Bubble)
+- botas Hunter de agua (las que uses en la pieza; fidelidad a la foto)
+
+Público: MUJER (adulta)
+FOCO: ACCESORIOS (calcetines → gorro → paraguas). Las botas cierran el look, no roban el protagonismo.
+
+PROHIBIDO:
+- Tipografía / logos / “40% OFF” en pantalla (el descuento va después en Canva/copy)
+- Inventar parches HUNTER, stickers o branding que no estén en las fotos
+- Piernas descubiertas: calcetines + botas, sin piel en tobillos
+
+---
+PROMPT VIDEO (pegar en Gemini VIDEO)
+---
+
+Genera un VIDEO publicitario fotorrealista CORTO (aprox. 8–12 s), estilo lifestyle premium, product-first en ACCESORIOS Hunter. Usa las fotos adjuntas como referencia obligatoria: calcetines, gorro, paraguas y botas Hunter exactos (mismo tejido, color, silueta, costuras y detalles; no rediseñes).
+
+Relato: mujer adulta en su casa un día de lluvia. Se prepara para salir. Ritmo calmado, íntimo, cercano al producto.
+
+Secuencia (montaje de tomas, no un solo plano continuo):
+1) Interior, luz de ventana gris/lluvia afuera. Close-up de manos sacando los calcetines Hunter del cajón / mesa; detalle del tejido y del logo solo si aparece en la foto de producto.
+2) Se sienta; se pone los calcetines Hunter con cuidado (plano medio-bajo a los pies). Textura del tejido, ajuste en el tobillo.
+3) Entra en las botas Hunter encima de los calcetines (calcetines metidos dentro; no se ve piel). Brief shot de botas — soporte, no héroe largo.
+4) Close-up: se coloca el gorro Hunter (Moustache Bubble / stripe según foto). Ajuste del gorro, expresión natural, sin pose forzada.
+5) Toma el paraguas Hunter (bubble / moustache según foto) del perchero o de la mesa; abre o sostiene el mango en primer plano.
+6) Abre la puerta: lluvia afuera; sale con gorro + paraguas + botas. Último frame: paraguas y gorro bien visibles bajo la lluvia; calcetines ya no se ven (dentro de las botas), pero el look completo de accesorios Hunter queda claro.
+
+Cámara: close-ups de calcetines, gorro y paraguas; planos cortos y limpios; sin texto en pantalla; sin logos inventados. Ambiente lluvia / invierno suave. Prioridad absoluta a fidelidad de los tres accesorios.

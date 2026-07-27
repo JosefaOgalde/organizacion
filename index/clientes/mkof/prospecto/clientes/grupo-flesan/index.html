@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grupo Flesan · Prospecto MKOF</title>
+  <style>
+    :root {
+      --bg: #f4f7f5; --ink: #1e3d32; --muted: #5a7368; --card: #fff;
+      --line: #d5e3d9; --accent: #2f7a5c; --beige: #e8f0eb;
+      --prospecto: #0b3d5c;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; }
+    header {
+      padding: 1.25rem 1.5rem; background: #fff; border-bottom: 1px solid var(--line);
+      display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; justify-content: space-between; align-items: baseline;
+    }
+    header h1 { margin: 0; font-size: 1.35rem; }
+    header p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    nav a { color: var(--accent); font-weight: 600; text-decoration: none; margin-right: 1rem; }
+    main { max-width: 820px; margin: 0 auto; padding: 1.75rem 1.5rem; }
+    .aviso {
+      background: var(--beige); border-left: 4px solid var(--accent);
+      padding: 0.9rem 1rem; border-radius: 0 10px 10px 0; margin-bottom: 1.25rem;
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+      padding: 1.1rem 1.2rem; margin-bottom: 0.85rem;
+    }
+    .card h2 { margin: 0 0 0.4rem; font-size: 1.05rem; }
+    .card p, .card li { margin: 0; color: var(--muted); font-size: 0.92rem; }
+    .card ul { margin: 0.4rem 0 0; padding-left: 1.2rem; }
+    .links a { color: var(--prospecto); font-weight: 700; text-decoration: none; margin-right: 1rem; font-size: 0.9rem; }
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Grupo Flesan</h1>
+      <p>Prospecto MKOF · diagnóstico general (marca · webs · RRSS)</p>
+    </div>
+    <nav>
+      <a href="../../?disco=1">← Hub prospectos</a>
+      <a href="../../../?disco=1">Landing MKOF</a>
+    </nav>
+  </header>
+  <main>
+    <div class="aviso">
+      <strong>Nivel: general</strong>
+      Menos detalle que Indisa. Instagram pendiente de tu captura. PDFs de manual/valores aún no están en el repo.
+    </div>
+
+    <div class="card">
+      <h2>Diagnóstico</h2>
+      <p>Problema central: varios nombres (Grupo Flesan / Flesan / DVC) + 3 sitios + RRSS únicas.</p>
+      <p class="links" style="margin-top:0.75rem">
+        <a href="DIAGNOSTICO-GENERAL.md">DIAGNOSTICO-GENERAL.md</a>
+        <a href="fuentes.json">fuentes.json</a>
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Sitios</h2>
+      <ul>
+        <li><a href="https://www.grupoflesan.com/" target="_blank" rel="noopener">grupoflesan.com</a> — holding</li>
+        <li><a href="https://flesan.cl/" target="_blank" rel="noopener">flesan.cl</a> — unidades Flesan</li>
+        <li><a href="https://www.dvc.cl/" target="_blank" rel="noopener">dvc.cl</a> — De Vicente Constructora</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>RRSS (footer compartido)</h2>
+      <ul>
+        <li>IG <a href="https://www.instagram.com/grupoflesan/" target="_blank" rel="noopener">@grupoflesan</a> — números pendiente</li>
+        <li>FB <a href="https://www.facebook.com/grupoflesanchile" target="_blank" rel="noopener">grupoflesanchile</a> — pendiente</li>
+        <li>YT <a href="https://www.youtube.com/@GrupoFlesan" target="_blank" rel="noopener">@GrupoFlesan</a> — ~509 suscriptores</li>
+      </ul>
+      <p class="links" style="margin-top:0.75rem"><a href="data/ecosistema-rrss.json">ecosistema-rrss.json</a></p>
+    </div>
+
+    <div class="card">
+      <h2>Competencia</h2>
+      <p>Echeverría Izquierdo (referente), Inarco, Icafal, Tecsa.</p>
+      <p class="links" style="margin-top:0.75rem"><a href="data/competencia.json">competencia.json</a></p>
+    </div>
+
+    <div class="card">
+      <h2>Data</h2>
+      <p class="links">
+        <a href="data/webs-marcas.json">webs-marcas</a>
+        <a href="data/oportunidades.json">oportunidades</a>
+        <a href="RRSS/">RRSS/</a>
+      </p>
+    </div>
+  </main>
+  <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
+</body>
+</html>
