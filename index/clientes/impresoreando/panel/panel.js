@@ -841,7 +841,7 @@
     return changed;
   }
 
-  /** Soporte celular — slicer 34,46 g · 57 m 30 s · PLA color (rosado). Soft: no pisa si ya tiene g. */
+  /** Soporte celular — slicer 34,46 g · 57 m 30 s · PLA color (morado pastel). Soft: no pisa si ya tiene g. */
   function seedSoporteCelular() {
     const filamentoModeloGramos = 33.99;
     const filamentoPurgeGramos = 0.47;
@@ -855,7 +855,7 @@
       filamentoPurgeGramos,
       filamentoMetros: 11.46,
       filamentoGramos,
-      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG, // ref PLA color (rosado pastel)
+      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG, // ref PLA color (morado pastel)
       horasImpresion: round2((57 + 30 / 60) / 60), // 57 m 30 s → 0,96 h
       minutosPintado: 0,
       unidadesMetal: 0,
@@ -864,7 +864,7 @@
       costoSlicerRef: 0.69,
       pendienteCosto: false,
       notas:
-        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 11,46 m · 57 m 30 s · coste slicer 0,69. PLA rosado pastel (ref $/kg color $16.829). Precio venta $4.000.`,
+        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 11,46 m · 57 m 30 s · coste slicer 0,69. PLA morado pastel (ref $/kg color $16.829). Precio venta $4.000.`,
     };
   }
 
@@ -1280,14 +1280,14 @@
         codigo: 'I000011',
         fecha: '2026-07-28',
         cliente: 'María Paz SIE',
-        descripcion: 'PED-005 · 1× Soporte celular rosado pastel · María Paz SIE',
+        descripcion: 'PED-005 · 1× Soporte celular morado pastel · María Paz SIE',
         cantidad: 1,
         montoBruto: 4000,
         descuentoClp: 0,
         montoNeto: 4000,
         costoTotal: 683.69,
         canal: 'WhatsApp',
-        notas: 'Transferido desde PED-005 · 1× Soporte celular rosado · pagado $4.000',
+        notas: 'Transferido desde PED-005 · 1× Soporte celular morado pastel · pagado $4.000',
         socioRegistro: 'Ambos',
         pedidoId: 'ped-maria-paz-soporte-005',
         pedidoNumero: 'PED-005',
@@ -1298,7 +1298,7 @@
             cantidad: 1,
             precioUnitarioClp: 4000,
             costoUnitarioClp: 683.69,
-            filamento: 'PLA rosado pastel',
+            filamento: 'PLA morado pastel',
           },
         ],
       },
@@ -1424,7 +1424,7 @@
         ventaId: 'ven-maria-paz-soporte-011',
         cliente: 'María Paz SIE',
         montoNeto: 4000,
-        notas: '1× Soporte celular rosado pastel · transferido a venta I000011 · $4.000',
+        notas: '1× Soporte celular morado pastel · transferido a venta I000011 · $4.000',
         transferidoEn: '2026-07-28T15:20:00.000Z',
       },
       {
@@ -1729,7 +1729,7 @@
       }
     }
 
-    // PED-005 · María Paz SIE · Soporte celular rosado pastel · listo (impreso) · PVP $4.000
+    // PED-005 · María Paz SIE · Soporte celular morado pastel · listo (impreso) · PVP $4.000
     const id005 = 'ped-maria-paz-soporte-005';
     const prodSop = (d.productos || []).find(
       (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
@@ -1753,7 +1753,7 @@
             cantidad: 1,
             precioUnitarioClp: precioSop,
             costoUnitarioClp: round2(costoSop),
-            filamento: 'PLA rosado pastel',
+            filamento: 'PLA morado pastel',
             estado: 'listo',
             listos: 1,
             enImpresion: 0,
@@ -1765,7 +1765,7 @@
         costoTotal: round2(costoSop),
         estado: 'listo',
         ventaId: null,
-        notas: `1× Soporte celular rosado pastel · listo/impreso · costo $${round2(costoSop)} · precio venta $${precioSop}`,
+        notas: `1× Soporte celular morado pastel · listo/impreso · costo $${round2(costoSop)} · precio venta $${precioSop}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T01:43:00.000Z',
       });

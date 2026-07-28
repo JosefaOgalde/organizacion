@@ -683,14 +683,14 @@
       "codigo": "I000011",
       "fecha": "2026-07-28",
       "cliente": "María Paz SIE",
-      "descripcion": "PED-005 · 1× Soporte celular rosado pastel · María Paz SIE",
+      "descripcion": "PED-005 · 1× Soporte celular morado pastel · María Paz SIE",
       "cantidad": 1,
       "montoBruto": 4000,
       "descuentoClp": 0,
       "montoNeto": 4000,
       "costoTotal": 683.69,
       "canal": "WhatsApp",
-      "notas": "Transferido desde PED-005 · 1× Soporte celular rosado · pagado $4.000",
+      "notas": "Transferido desde PED-005 · 1× Soporte celular morado pastel · pagado $4.000",
       "socioRegistro": "Ambos",
       "pedidoId": "ped-maria-paz-soporte-005",
       "pedidoNumero": "PED-005",
@@ -701,7 +701,7 @@
           "cantidad": 1,
           "precioUnitarioClp": 4000,
           "costoUnitarioClp": 683.69,
-          "filamento": "PLA rosado pastel"
+          "filamento": "PLA morado pastel"
         }
       ]
     },
@@ -1035,7 +1035,7 @@
       "unidadesBolsa": 1,
       "precioVentaSugeridoClp": 4000,
       "pendienteCosto": false,
-      "notas": "Slicer 1 ud: modelo 33.99 g + descargado 0.47 g = 34.46 g · 11.46 m · 57 m 30 s · coste slicer 0,69. PLA rosado pastel (ref $/kg color $16.829). Costo ~$683,69 · 367,38. Precio venta $4.000.",
+      "notas": "Slicer 1 ud: modelo 33.99 g + descargado 0.47 g = 34.46 g · 11.46 m · 57 m 30 s · coste slicer 0,69. PLA morado pastel (ref $/kg color $16.829). Costo ~$683,69 · 367,38. Precio venta $4.000.",
       "filamentoModeloGramos": 33.99,
       "filamentoSoportesGramos": 0,
       "filamentoPurgeGramos": 0.47,
@@ -1146,7 +1146,7 @@
       "id": "bit-maria-paz-011",
       "fecha": "2026-07-28",
       "autor": "Josefa",
-      "texto": "PED-005 María Paz SIE → venta I000011 · 1× Soporte celular rosado · pagado $4.000."
+      "texto": "PED-005 María Paz SIE → venta I000011 · 1× Soporte celular morado pastel · pagado $4.000."
     },
     {
       "id": "bit-rebe-012-013",
@@ -1326,7 +1326,7 @@
           "cantidad": 1,
           "precioUnitarioClp": 4000,
           "costoUnitarioClp": 683.69,
-          "filamento": "PLA rosado pastel",
+          "filamento": "PLA morado pastel",
           "estado": "listo",
           "listos": 1,
           "enImpresion": 0
@@ -1338,7 +1338,7 @@
       "costoTotal": 683.69,
       "estado": "transferido",
       "ventaId": "ven-maria-paz-soporte-011",
-      "notas": "1× Soporte celular rosado pastel · transferido a venta I000011 · $4.000",
+      "notas": "1× Soporte celular morado pastel · transferido a venta I000011 · $4.000",
       "socioRegistro": "Ambos",
       "creado": "2026-07-26T01:44:08.009Z",
       "transferidoEn": "2026-07-28T15:20:00.000Z"
