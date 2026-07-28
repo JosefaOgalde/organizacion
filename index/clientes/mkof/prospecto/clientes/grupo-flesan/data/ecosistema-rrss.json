@@ -68,7 +68,12 @@
         "exacto": "Confirmado por usuaria 2026-07-28: Inarco no tiene Facebook"
       },
       "icafal": { "display": "XX mill", "estado": "PENDIENTE" },
-      "tecsa": { "display": "XX mill", "estado": "PENDIENTE" },
+      "tecsa": {
+        "display": "No tiene",
+        "estado": "NO_TIENE",
+        "fuenteId": "fb-tecsa-no-tiene-2026-07-28",
+        "exacto": "Confirmado por usuaria 2026-07-28: Tecsa no tiene Facebook"
+      },
       "comp5": { "display": "XX mill", "estado": "PENDIENTE" },
       "flesan": {
         "display": "XX mill",

@@ -100,7 +100,16 @@
       "columnaTabla": "Competidor 4",
       "web": "https://www.tecsa.cl/",
       "esReferente": false,
-      "estado": "PENDIENTE_CAPTURAS"
+      "estado": "PARCIAL_FB_NO_TIENE",
+      "rrss": {
+        "facebook": {
+          "display": "No tiene",
+          "estado": "NO_TIENE",
+          "fuenteId": "fb-tecsa-no-tiene-2026-07-28"
+        },
+        "instagram": { "estado": "PENDIENTE" },
+        "linkedin": { "estado": "PENDIENTE" }
+      }
     }
   ],
   "contrasteConProspecto": "EI: IG 8.649 (ER 0,58%) + LI 129 mil. Inarco: IG 1.517 (ER 4,17%) + LI 66 mil. Icafal: IG 4.782 (ER 1,04%) + LI 65 mil. Mejor ER muestra: Inarco."
