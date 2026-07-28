@@ -67,17 +67,25 @@ Fuente de perfiles (footer de los 3 sitios):
 | Icafal | https://www.icafal.cl/ | Ingeniería y construcción |
 | Tecsa | https://www.tecsa.cl/ | Construcción |
 
-### Referente: Echeverría Izquierdo (EI)
+### Referente: Echeverría Izquierdo (EI) — Competidor 1 (matriz)
 
-Revisión general de [ei.cl](https://ei.cl/):
+Revisión general de [ei.cl](https://ei.cl/) + capturas usuaria **2026-07-28**:
+
+| Red | Dato | Fuente |
+|-----|------|--------|
+| Instagram | **8.649** seguidores · 1.076 posts · 351 seguidos · `@echeverria.izquierdo` | Perfil IG (ima 3) |
+| IG ER (muestra) | **0,58%** · N=5 últimos posts · Σ likes 251 · comentarios visibles 0 | Imas 4–8 → `RRSS/data/ig-er-ei-muestra.json` |
+| LinkedIn | **129 mil** seguidores · +10 mil empleados · Construcción · Santiago | Página empresa (ima 9) |
+| Facebook / YouTube / TikTok | Pendiente | — |
+
+Temáticas IG observadas (últimos 5): innovación/transformación digital, LPS 360 en obra, liderazgo (UC), sostenibilidad (Best Performer), networking corporativo. Formatos: video + carrusel con overlay de marca.
 
 - Marca clara bajo **“Ei / Echeverría Izquierdo”** (un nombre dominante en home).
-- Home con **propuesta + datos de negocio** (backlog, EBITDA, trabajadores, etc.) → tono corporativo / inversor + industria.
+- Home con **propuesta + datos de negocio** → tono corporativo / inversor + industria.
 - Estructura por empresas del grupo, pero **paraguas verbal único**.
-- Instagram: https://www.instagram.com/echeverria.izquierdo/
 
 **Contraste general con Flesan:**  
-EI proyecta **una marca holding fuerte**. Flesan/DVC/Grupo Flesan proyectan **varias puertas de entrada** (3 webs) con **una sola voz en RRSS**. El gap de estrategia de marca es evidente.
+EI proyecta **una marca holding fuerte** + IG corporativo activo + LI masivo (129 mil). Flesan/DVC/Grupo Flesan proyectan **varias puertas de entrada** (3 webs) con **una sola voz en RRSS**. El gap de estrategia de marca es evidente.
 
 ---
 
@@ -109,4 +117,4 @@ Ruta en PC (pendiente copiar al repo):
 - Competencia directa citada; **EI** es el espejo de “cómo se ve una marca clara en web/comms”.
 - MKOF puede entrar por **estrategia de marca + sistema de comunicación** (web + RRSS), no solo por pauta orgánica.
 
-**Siguiente paso:** incorporar detalle Instagram que entrega la usuaria → completar números y tipo de contenido en `data/ecosistema-rrss.json`.
+**Siguiente paso:** capturas Competidores 2–4 (Inarco, Icafal, Tecsa) + detalle IG `@grupoflesan` → completar el resto de la matriz.

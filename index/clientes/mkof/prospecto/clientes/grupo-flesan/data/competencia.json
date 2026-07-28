@@ -1,30 +1,58 @@
 {
-  "actualizado": "2026-07-27",
+  "actualizado": "2026-07-28",
   "nivel": "general",
   "competidoresDeclarados": [
     {
+      "id": "ei",
       "nombre": "Echeverría Izquierdo",
+      "columnaTabla": "Competidor 1",
       "web": "https://ei.cl/",
       "instagram": "https://www.instagram.com/echeverria.izquierdo/",
+      "linkedin": "https://www.linkedin.com/company/echeverria-izquierdo/",
       "esReferente": true,
-      "nota": "Referente web y comunicacional según cliente. Marca holding clara (Ei)."
+      "nota": "Referente web y comunicacional según cliente. Marca holding clara (Ei).",
+      "rrss": {
+        "instagram": {
+          "seguidores": 8649,
+          "display": "8.649",
+          "posts": 1076,
+          "erMuestraN5": "0,58%",
+          "fuenteId": "ig-ei-perfil-2026-07-28",
+          "muestraPosts": "RRSS/data/ig-er-ei-muestra.json"
+        },
+        "linkedin": {
+          "seguidores": 129000,
+          "display": "129 mil",
+          "empleadosDisplay": "Más de 10 mil",
+          "fuenteId": "li-ei-2026-07-28"
+        }
+      }
     },
     {
+      "id": "inarco",
       "nombre": "Inarco",
+      "columnaTabla": "Competidor 2",
       "web": "https://inarco.cl/",
       "linkedin": "https://www.linkedin.com/company/constructora-inarco-s.a",
-      "esReferente": false
+      "esReferente": false,
+      "estado": "PENDIENTE_CAPTURAS"
     },
     {
+      "id": "icafal",
       "nombre": "Icafal",
+      "columnaTabla": "Competidor 3",
       "web": "https://www.icafal.cl/",
-      "esReferente": false
+      "esReferente": false,
+      "estado": "PENDIENTE_CAPTURAS"
     },
     {
+      "id": "tecsa",
       "nombre": "Tecsa",
+      "columnaTabla": "Competidor 4",
       "web": "https://www.tecsa.cl/",
-      "esReferente": false
+      "esReferente": false,
+      "estado": "PENDIENTE_CAPTURAS"
     }
   ],
-  "contrasteConProspecto": "EI proyecta un nombre dominante en web; Flesan opera con tres sitios (Grupo / Flesan / DVC) y RRSS unificadas bajo Grupo Flesan."
+  "contrasteConProspecto": "EI proyecta un nombre dominante en web + IG corporativo activo (formación, innovación, obra, sostenibilidad) y LI masivo (129 mil). Flesan opera con tres sitios (Grupo / Flesan / DVC) y RRSS unificadas bajo Grupo Flesan."
 }

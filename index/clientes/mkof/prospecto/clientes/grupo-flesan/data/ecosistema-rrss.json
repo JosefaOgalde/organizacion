@@ -1,44 +1,131 @@
 {
-  "actualizado": "2026-07-27",
+  "titulo": "ECOSISTEMA RRSS",
+  "fecha": "2026-07-28",
   "nivel": "general",
-  "prospecto": {
-    "nombre": "Grupo Flesan",
-    "instagram": {
-      "url": "https://www.instagram.com/grupoflesan/",
-      "handle": "@grupoflesan",
-      "seguidores": null,
-      "estado": "PENDIENTE_DETALLE_USUARIA"
+  "notaPresentacion": "Columna Grupo Flesan = PROSPECTO (fondo distinto). Competidor 1 = EI: IG 8.649 + LI 129 mil (2026-07-28). Celdas XX mill = pendiente de captura.",
+  "plataformas": ["Facebook", "Instagram", "LinkedIn", "YouTube", "TikTok"],
+  "columnas": [
+    {
+      "id": "ei",
+      "nombre": "Echeverría Izquierdo",
+      "nombreCorto": "EI",
+      "rol": "competidor",
+      "etiqueta": "Competidor 1",
+      "esReferente": true
     },
-    "facebook": {
-      "url": "https://www.facebook.com/grupoflesanchile",
-      "seguidores": null,
-      "estado": "PENDIENTE"
+    {
+      "id": "inarco",
+      "nombre": "Inarco",
+      "rol": "competidor",
+      "etiqueta": "Competidor 2"
     },
-    "youtube": {
-      "url": "https://www.youtube.com/@GrupoFlesan",
-      "nombreCanal": "Grupo Flesan Chile",
-      "suscriptores": 509,
-      "vistasAprox": 161386,
-      "alta": "2014-05-26",
-      "fuenteId": "yt-grupoflesan",
-      "estado": "OK_APROX_PUBLICO"
+    {
+      "id": "icafal",
+      "nombre": "Icafal",
+      "rol": "competidor",
+      "etiqueta": "Competidor 3"
     },
-    "linkedin": {
-      "url": null,
-      "estado": "NO_EN_FOOTER_REVISADO"
+    {
+      "id": "tecsa",
+      "nombre": "Tecsa",
+      "rol": "competidor",
+      "etiqueta": "Competidor 4"
     },
-    "tiktok": {
-      "url": null,
-      "estado": "NO_EN_FOOTER_REVISADO"
+    {
+      "id": "comp5",
+      "nombre": "Competidor 5",
+      "rol": "competidor",
+      "etiqueta": "Competidor 5",
+      "estado": "PENDIENTE_DEFINIR"
+    },
+    {
+      "id": "flesan",
+      "nombre": "Grupo Flesan",
+      "rol": "prospecto",
+      "etiqueta": "Prospecto"
+    }
+  ],
+  "celdas": {
+    "Facebook": {
+      "ei": { "display": "XX mill", "estado": "PENDIENTE", "url": null },
+      "inarco": { "display": "XX mill", "estado": "PENDIENTE" },
+      "icafal": { "display": "XX mill", "estado": "PENDIENTE" },
+      "tecsa": { "display": "XX mill", "estado": "PENDIENTE" },
+      "comp5": { "display": "XX mill", "estado": "PENDIENTE" },
+      "flesan": {
+        "display": "XX mill",
+        "estado": "PENDIENTE",
+        "url": "https://www.facebook.com/grupoflesanchile",
+        "fuenteId": "fb-grupoflesan"
+      }
+    },
+    "Instagram": {
+      "ei": {
+        "valor": 8649,
+        "display": "8.649",
+        "posts": 1076,
+        "siguiendo": 351,
+        "handle": "@echeverria.izquierdo",
+        "nombrePerfil": "Echeverría Izquierdo S.A",
+        "url": "https://www.instagram.com/echeverria.izquierdo/",
+        "fuenteId": "ig-ei-perfil-2026-07-28",
+        "exacto": "8.649 seguidores · 1.076 publicaciones · 351 seguidos (screenshot IG desktop 2026-07-28)",
+        "estado": "OK"
+      },
+      "inarco": { "display": "XX mill", "estado": "PENDIENTE" },
+      "icafal": { "display": "XX mill", "estado": "PENDIENTE" },
+      "tecsa": { "display": "XX mill", "estado": "PENDIENTE" },
+      "comp5": { "display": "XX mill", "estado": "PENDIENTE" },
+      "flesan": {
+        "display": "XX mill",
+        "estado": "PENDIENTE_DETALLE_USUARIA",
+        "handle": "@grupoflesan",
+        "url": "https://www.instagram.com/grupoflesan/",
+        "fuenteId": "ig-grupoflesan"
+      }
+    },
+    "LinkedIn": {
+      "ei": {
+        "valor": 129000,
+        "display": "129 mil",
+        "empleadosDisplay": "Más de 10 mil",
+        "industria": "Construcción",
+        "ubicacion": "Santiago, Metropolitana",
+        "nombrePagina": "Echeverría Izquierdo S.A.",
+        "url": "https://www.linkedin.com/company/echeverria-izquierdo/",
+        "fuenteId": "li-ei-2026-07-28",
+        "exacto": "129 mil seguidores · +10 mil empleados (screenshot LinkedIn 2026-07-28)",
+        "estado": "OK"
+      },
+      "inarco": { "display": "XX mill", "estado": "PENDIENTE" },
+      "icafal": { "display": "XX mill", "estado": "PENDIENTE" },
+      "tecsa": { "display": "XX mill", "estado": "PENDIENTE" },
+      "comp5": { "display": "XX mill", "estado": "PENDIENTE" },
+      "flesan": { "display": "XX mill", "estado": "PENDIENTE", "nota": "No en footer de los 3 sitios" }
+    },
+    "YouTube": {
+      "ei": { "display": "XX mill", "estado": "PENDIENTE" },
+      "inarco": { "display": "XX mill", "estado": "PENDIENTE" },
+      "icafal": { "display": "XX mill", "estado": "PENDIENTE" },
+      "tecsa": { "display": "XX mill", "estado": "PENDIENTE" },
+      "comp5": { "display": "XX mill", "estado": "PENDIENTE" },
+      "flesan": {
+        "valor": 509,
+        "display": "509",
+        "vistasAprox": 161386,
+        "url": "https://www.youtube.com/@GrupoFlesan",
+        "fuenteId": "yt-grupoflesan",
+        "estado": "OK_APROX_PUBLICO"
+      }
+    },
+    "TikTok": {
+      "ei": { "display": "XX mill", "estado": "PENDIENTE" },
+      "inarco": { "display": "XX mill", "estado": "PENDIENTE" },
+      "icafal": { "display": "XX mill", "estado": "PENDIENTE" },
+      "tecsa": { "display": "XX mill", "estado": "PENDIENTE" },
+      "comp5": { "display": "XX mill", "estado": "PENDIENTE" },
+      "flesan": { "display": "XX mill", "estado": "NO_EN_FOOTER_REVISADO" }
     }
   },
-  "notaComunicacion": "Los 3 sitios (grupoflesan.com, flesan.cl, dvc.cl) enlazan el mismo trío FB/IG/YT. La voz pública digital es Grupo Flesan.",
-  "tipoComunicacionObservado": {
-    "nivel": "hipotesis_general",
-    "bullets": [
-      "Perfil único de grupo (no perfiles DVC/Flesan separados en footer)",
-      "YouTube con historial largo pero baja suscripción → video institucional subaprovechado",
-      "Detalle de tono/formatos IG pendiente de captura usuaria"
-    ]
-  }
+  "notaComunicacion": "Los 3 sitios Flesan enlazan el mismo trío FB/IG/YT. EI concentra marca holding en IG + LI fuertes."
 }

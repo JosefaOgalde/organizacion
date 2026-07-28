@@ -7,7 +7,7 @@
   "notaNivel": "Más general que Clínica Indisa. Sin láminas UX/UI profundas ni ER por post hasta recibir detalle IG.",
   "etapa": 1,
   "creado": "2026-07-27T22:00:00Z",
-  "updatedAt": "2026-07-27T22:00:00Z",
+  "updatedAt": "2026-07-28T22:10:00Z",
   "problemaCliente": "Operan con varios nombres (Flesan, DVC, Grupo Flesan). Desafío: definir el nombre adecuado y una estrategia de marca.",
   "competidores": [
     "Echeverría Izquierdo",
@@ -18,31 +18,16 @@
   "referenteWebComunicacional": {
     "nombre": "Echeverría Izquierdo",
     "web": "https://ei.cl/",
-    "instagram": "https://www.instagram.com/echeverria.izquierdo/"
-  },
-  "sitios": {
-    "grupo": "https://www.grupoflesan.com/",
-    "flesan": "https://flesan.cl/",
-    "dvc": "https://www.dvc.cl/"
-  },
-  "canalesOficiales": {
-    "facebook": "https://www.facebook.com/grupoflesanchile",
-    "instagram": "https://www.instagram.com/grupoflesan/",
-    "youtube": "https://www.youtube.com/@GrupoFlesan",
-    "nota": "Los 3 sitios usan los mismos links de RRSS en el footer."
-  },
-  "materialesCliente": {
-    "rutaLocalPC": "C:\\Users\\josef\\Downloads\\Información Grupo Making Of_Flesan DVC (2)\\1. Grupo Making Of\\",
-    "archivos": [
-      "1. Valores Corporativos_2026/Afiche Obra Nuevos Valores.pdf",
-      "1. Valores Corporativos_2026/Tarjetas nuevos valores Anverso & Reverso.pdf",
-      "2. Manual de Marca_2026/Comunicacion y Marketing - Manual de Marca 2026.pdf"
-    ],
-    "estadoEnRepo": "pendiente_copiar"
+    "instagram": "https://www.instagram.com/echeverria.izquierdo/",
+    "linkedin": "https://www.linkedin.com/company/echeverria-izquierdo/",
+    "igSeguidores": 8649,
+    "liSeguidores": 129000
   },
   "pendientes": [
-    "Detalle Instagram (seguidores, posts, temáticas, periodicidad) — lo entrega la usuaria",
-    "Números Facebook y LinkedIn si aplica",
-    "Copiar PDFs de valores/manual al repo para cruzar tono de marca"
+    "Detalle Instagram @grupoflesan (seguidores, posts, temáticas, periodicidad)",
+    "Competidores 2–4 (Inarco, Icafal, Tecsa): capturas IG/LI/FB/YT/TikTok",
+    "Competidor 5 (si aplica) o confirmar solo 4",
+    "Números Facebook Flesan y LinkedIn Flesan si aplica",
+    "Copiar PDFs de valores/manual al repo"
   ]
 }

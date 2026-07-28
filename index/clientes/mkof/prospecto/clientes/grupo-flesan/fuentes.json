@@ -1,7 +1,7 @@
 {
   "prospecto": "Grupo Flesan",
   "slug": "grupo-flesan",
-  "actualizado": "2026-07-27",
+  "actualizado": "2026-07-28",
   "regla": "Todo número con fuente, fecha y método",
   "fuentes": [
     {
@@ -59,6 +59,27 @@
       "url": "https://www.instagram.com/echeverria.izquierdo/",
       "fecha": "2026-07-27",
       "metodo": "Link en ei.cl"
+    },
+    {
+      "id": "ig-ei-perfil-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/echeverria.izquierdo/",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot perfil IG desktop entregado por usuaria (Competidor 1 / ima 3): 8.649 seguidores · 1.076 posts · 351 seguidos"
+    },
+    {
+      "id": "ig-ei-posts-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/echeverria.izquierdo/",
+      "fecha": "2026-07-28",
+      "metodo": "5 screenshots de últimos contenidos IG (imas 4–8): likes visibles; comentarios no visibles → 0. Ver RRSS/data/ig-er-ei-muestra.json"
+    },
+    {
+      "id": "li-ei-2026-07-28",
+      "tipo": "linkedin",
+      "url": "https://www.linkedin.com/company/echeverria-izquierdo/",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot página empresa LinkedIn (ima 9): 129 mil seguidores · +10 mil empleados · Construcción · Santiago"
     },
     {
       "id": "manual-marca-local",

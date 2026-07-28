@@ -1,6 +1,18 @@
 # RRSS · Grupo Flesan
 
-Detalle de Instagram **pendiente** (lo entrega la usuaria).
+## Competidor 1 · Echeverría Izquierdo (listo 2026-07-28)
+
+| Dato | Valor |
+|------|-------|
+| IG | [@echeverria.izquierdo](https://www.instagram.com/echeverria.izquierdo/) · **8.649** seguidores · 1.076 posts |
+| IG ER muestra | **0,58%** (N=5 · likes 47+62+32+58+52) → [`data/ig-er-ei-muestra.json`](./data/ig-er-ei-muestra.json) |
+| LinkedIn | **129 mil** seguidores · [página empresa](https://www.linkedin.com/company/echeverria-izquierdo/) |
+
+Fuentes: `ig-ei-perfil-2026-07-28`, `ig-ei-posts-2026-07-28`, `li-ei-2026-07-28` en `../fuentes.json`.
+
+## Prospecto · pendiente
+
+Detalle de Instagram **@grupoflesan** pendiente (lo entrega la usuaria).
 
 **Códigos para consola del navegador (F12):** ver [`CODIGOS-CONSOLA.md`](./CODIGOS-CONSOLA.md).
 
