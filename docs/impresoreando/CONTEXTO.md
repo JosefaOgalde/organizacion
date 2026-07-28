@@ -60,6 +60,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 - Cada venta tiene `codigo` `I000001…` (`meta.ventaSeq`). **Primera registrada = I000001 · Tito MKOF**.
 - Clientes históricos ya migrados (no re-etiquetar): Tito MKOF · Gianni/Juan/Cata/Marcia/Rebe SIE.
 - `meta.clientesHistorial[]` agrupa compras repetidas. UI: tab Ventas + bloque Historial.
+- **Filtro por cliente** (tab Ventas): select Cliente · Origen (SIE/MKOF) · buscar texto; clic en fila del historial filtra sus compras; muestra total filtrado.
 - Al transferir / venta directa: `nextVentaCodigo` + `rebuildClientesHistorial`.
 
 | Código | Cliente | Monto | Notas |

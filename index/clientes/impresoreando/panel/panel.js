@@ -3,6 +3,10 @@
   const API = '/api/impresoreando';
   let data = null;
   let dirty = false;
+  /** Filtros tab Ventas: compras por cliente / origen. */
+  let ventasFiltroCliente = '';
+  let ventasFiltroOrigen = '';
+  let ventasFiltroTexto = '';
 
   const $ = (sel) => document.querySelector(sel);
   const money = (n) =>
@@ -3727,16 +3731,59 @@
     });
   }
 
+  function origenDesdeCliente(cliente) {
+    const parts = String(cliente || '')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    if (!parts.length) return '';
+    const last = parts[parts.length - 1].toUpperCase();
+    if (last === 'SIE' || last === 'MKOF') return last;
+    return '';
+  }
+
+  function ventaPasaFiltros(v) {
+    const cliente = String(v.cliente || '').trim();
+    if (ventasFiltroCliente && cliente !== ventasFiltroCliente) return false;
+    if (ventasFiltroOrigen) {
+      const orig = origenDesdeCliente(cliente);
+      if (orig !== ventasFiltroOrigen) return false;
+    }
+    if (ventasFiltroTexto) {
+      const q = ventasFiltroTexto.toLowerCase();
+      const blob = [
+        v.codigo,
+        v.cliente,
+        v.descripcion,
+        v.pedidoNumero,
+        v.notas,
+        ...(v.items || []).map((it) => `${it.nombre || ''} ${it.sku || ''} ${it.filamento || ''}`),
+      ]
+        .join(' ')
+        .toLowerCase();
+      if (!blob.includes(q)) return false;
+    }
+    return true;
+  }
+
   function renderVentas() {
     rebuildClientesHistorial(data);
-    const rows = (data.ventas || [])
-      .slice()
-      .sort((a, b) => {
-        const na = Number(String(a.codigo || '').replace(/^I0*/, '') || 0);
-        const nb = Number(String(b.codigo || '').replace(/^I0*/, '') || 0);
-        if (na && nb && na !== nb) return na - nb;
-        return String(a.fecha || '').localeCompare(String(b.fecha || ''));
-      })
+    const ventasSorted = (data.ventas || []).slice().sort((a, b) => {
+      const na = Number(String(a.codigo || '').replace(/^I0*/, '') || 0);
+      const nb = Number(String(b.codigo || '').replace(/^I0*/, '') || 0);
+      if (na && nb && na !== nb) return na - nb;
+      return String(a.fecha || '').localeCompare(String(b.fecha || ''));
+    });
+    const ventasFiltradas = ventasSorted.filter(ventaPasaFiltros);
+    const clientesOpts = Array.from(
+      new Set(
+        (data.ventas || [])
+          .map((v) => String(v.cliente || '').trim())
+          .filter(Boolean)
+      )
+    ).sort((a, b) => a.localeCompare(b, 'es'));
+
+    const rows = ventasFiltradas
       .map((v) => {
         const itemsHtml = (v.items || [])
           .map(
@@ -3765,39 +3812,88 @@
       .join('');
 
     const hist = data.meta?.clientesHistorial || [];
-    const histRows = hist
-      .map(
-        (h) => `<tr>
-        <td><strong>${escapeHtml(h.cliente)}</strong></td>
+    const histFiltrado = hist.filter((h) => {
+      if (ventasFiltroCliente && h.cliente !== ventasFiltroCliente) return false;
+      if (ventasFiltroOrigen && origenDesdeCliente(h.cliente) !== ventasFiltroOrigen) return false;
+      if (ventasFiltroTexto) {
+        const q = ventasFiltroTexto.toLowerCase();
+        const blob = `${h.cliente} ${(h.ventaCodigos || []).join(' ')}`.toLowerCase();
+        if (!blob.includes(q)) return false;
+      }
+      return true;
+    });
+    const histRows = histFiltrado
+      .map((h) => {
+        const activo = ventasFiltroCliente === h.cliente;
+        return `<tr class="imp-hist-row${activo ? ' is-active' : ''}" data-filtro-cliente="${escapeHtml(h.cliente)}" title="Ver compras de ${escapeHtml(h.cliente)}">
+        <td><strong>${escapeHtml(h.cliente)}</strong>${activo ? ' <span class="imp-badge">filtro</span>' : ''}</td>
         <td class="num">${h.compras}</td>
         <td>${(h.ventaCodigos || []).map((c) => escapeHtml(c)).join(', ') || '—'}</td>
         <td class="num"><strong>${money(h.totalNeto)}</strong></td>
-      </tr>`
+      </tr>`;
+      })
+      .join('');
+
+    const totalFiltrado = ventasFiltradas.reduce((a, v) => a + Number(v.montoNeto || 0), 0);
+    const totalGlobal = sum(data.ventas);
+    const hayFiltro = !!(ventasFiltroCliente || ventasFiltroOrigen || ventasFiltroTexto);
+    const clienteOptionsHtml = clientesOpts
+      .map(
+        (c) =>
+          `<option value="${escapeHtml(c)}"${c === ventasFiltroCliente ? ' selected' : ''}>${escapeHtml(c)}</option>`
       )
       .join('');
 
     $('#tab-ventas').innerHTML = `
       <div class="imp-card imp-kpi--accent" style="padding:0.9rem 1rem">
         <p style="margin:0"><strong>Flujo recomendado:</strong> registra en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>
-        (ajustá el precio venta/u si cobraste más) y al transferir se guarda la venta con ID <strong>I00000n</strong>. Solo las ventas bajan la deuda.</p>
+        (ajustá el precio venta/u si cobraste más) y al transferir se guarda la venta con ID <strong>I00000n</strong>. Solo las ventas bajan la deuda. <strong>«Pagado»</strong> = venta.</p>
       </div>
       <div class="imp-card">
-        <h2>Ventas contabilizadas (${money(sum(data.ventas))})</h2>
+        <h2>Filtro · compras por cliente</h2>
+        <p class="imp-muted">Elegí un cliente o origen, o hacé clic en una fila del historial. El total de abajo refleja el filtro.</p>
+        <div class="imp-ventas-filtros" id="imp-ventas-filtros">
+          <label>Cliente
+            <select id="filtro-venta-cliente" class="imp-select-estado" style="max-width:16rem">
+              <option value="">Todos</option>
+              ${clienteOptionsHtml}
+            </select>
+          </label>
+          <label>Origen
+            <select id="filtro-venta-origen" class="imp-select-estado">
+              <option value=""${ventasFiltroOrigen === '' ? ' selected' : ''}>Todos</option>
+              <option value="SIE"${ventasFiltroOrigen === 'SIE' ? ' selected' : ''}>SIE (Nico)</option>
+              <option value="MKOF"${ventasFiltroOrigen === 'MKOF' ? ' selected' : ''}>MKOF (Josefa)</option>
+            </select>
+          </label>
+          <label>Buscar
+            <input id="filtro-venta-texto" type="search" placeholder="código, producto…" value="${escapeHtml(ventasFiltroTexto)}" />
+          </label>
+          <button type="button" class="imp-btn" id="btn-filtro-venta-limpiar"${hayFiltro ? '' : ' disabled'}>Limpiar</button>
+        </div>
+        <p class="imp-muted" style="margin-top:0.6rem">
+          Mostrando <strong>${ventasFiltradas.length}</strong> de ${ventasSorted.length} ventas ·
+          total filtrado <strong>${money(totalFiltrado)}</strong>
+          ${hayFiltro ? ` · global ${money(totalGlobal)}` : ''}
+        </p>
+      </div>
+      <div class="imp-card">
+        <h2>Ventas contabilizadas (${money(hayFiltro ? totalFiltrado : totalGlobal)})</h2>
         <p class="imp-muted">ID correlativo: primera = <strong>I000001 Tito MKOF</strong>. Clientes nuevos = <strong>nombre + origen</strong> (SIE = Nico · MKOF = Josefa); no se auto-agrega SIE.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID / Fecha</th><th>Cliente / detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
-            <tbody>${rows || '<tr><td colspan="6">Sin ventas aún</td></tr>'}</tbody>
+            <tbody>${rows || `<tr><td colspan="6">${hayFiltro ? 'Sin ventas con este filtro' : 'Sin ventas aún'}</td></tr>`}</tbody>
           </table>
         </div>
       </div>
       <div class="imp-card">
         <h2>Historial por cliente</h2>
-        <p class="imp-muted">Quién compró más de una vez y el total acumulado.</p>
+        <p class="imp-muted">Clic en un cliente para filtrar sus compras. Quién compró más de una vez y el total acumulado.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>Cliente</th><th>Compras</th><th>IDs venta</th><th>Total</th></tr></thead>
-            <tbody>${histRows || '<tr><td colspan="4">Sin historial aún</td></tr>'}</tbody>
+            <tbody>${histRows || `<tr><td colspan="4">${hayFiltro ? 'Sin clientes con este filtro' : 'Sin historial aún'}</td></tr>`}</tbody>
           </table>
         </div>
       </div>
@@ -3823,6 +3919,34 @@
         </form>
       </div>
     `;
+
+    const aplicarFiltrosYRender = () => {
+      ventasFiltroCliente = String($('#filtro-venta-cliente')?.value || '').trim();
+      ventasFiltroOrigen = String($('#filtro-venta-origen')?.value || '').trim();
+      ventasFiltroTexto = String($('#filtro-venta-texto')?.value || '').trim();
+      renderVentas();
+    };
+
+    $('#filtro-venta-cliente')?.addEventListener('change', aplicarFiltrosYRender);
+    $('#filtro-venta-origen')?.addEventListener('change', aplicarFiltrosYRender);
+    let textoTimer = null;
+    $('#filtro-venta-texto')?.addEventListener('input', () => {
+      clearTimeout(textoTimer);
+      textoTimer = setTimeout(aplicarFiltrosYRender, 180);
+    });
+    $('#btn-filtro-venta-limpiar')?.addEventListener('click', () => {
+      ventasFiltroCliente = '';
+      ventasFiltroOrigen = '';
+      ventasFiltroTexto = '';
+      renderVentas();
+    });
+    $('#tab-ventas')?.querySelectorAll('[data-filtro-cliente]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const c = row.getAttribute('data-filtro-cliente') || '';
+        ventasFiltroCliente = ventasFiltroCliente === c ? '' : c;
+        renderVentas();
+      });
+    });
 
     $('#tab-ventas')?.querySelectorAll('[data-goto-tab]').forEach((btn) => {
       btn.addEventListener('click', () => activarTab(btn.getAttribute('data-goto-tab')));
