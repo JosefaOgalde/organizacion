@@ -36,6 +36,8 @@ Fuentes: `ig-ei-perfil-2026-07-28`, `ig-ei-posts-2026-07-28`, `li-ei-2026-07-28`
 | LinkedIn | **33 mil** seguidores · Grupo Flesan Chile · 1 mil–5 mil emp. |
 | Nota | Contenidos en collab con DVC / Flesan.ic; muestra ER más antigua que la de competidores |
 
+**Lámina 02 (formatos · temáticas · periodicidad):** [`laminas/02-ecosistema-competencia.html`](./laminas/02-ecosistema-competencia.html) · [`laminas/TEXTOS-LAMINA.md`](./laminas/TEXTOS-LAMINA.md) · data `../data/ecosistema-competencia.json`
+
 **Códigos para consola del navegador (F12):** ver [`CODIGOS-CONSOLA.md`](./CODIGOS-CONSOLA.md).
 
 También: https://www.facebook.com/grupoflesanchile · https://www.youtube.com/@GrupoFlesan

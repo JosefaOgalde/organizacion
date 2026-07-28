@@ -82,6 +82,24 @@
     .swatch.prospecto { background: #efe6d4; border-color: #b8a078; }
     .ei-box { margin-top: 0.65rem; padding: 0.75rem 0.85rem; background: #f0faf4; border-radius: 10px; border: 1px solid #b8dfc8; font-size: 0.88rem; color: var(--ink); }
     .ei-box strong { color: var(--ok); }
+    .comp-grid { display: grid; gap: 0.55rem; }
+    .comp-row {
+      display: grid; grid-template-columns: 7.5rem 1fr; gap: 0.65rem;
+      border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff;
+    }
+    .comp-label {
+      background: #c8e4dc; color: #1a4d3e; font-size: 0.72rem; font-weight: 800;
+      letter-spacing: 0.05em; text-transform: uppercase; display: grid; place-items: center; padding: 0.55rem;
+    }
+    .comp-body { padding: 0.55rem 0.75rem; font-size: 0.88rem; color: var(--ink); }
+    .comp-body ul { margin: 0; padding-left: 1.1rem; }
+    .comp-body .big { font-size: 1.05rem; font-weight: 800; color: #1a4d3e; }
+    .comp-body .sub { color: var(--muted); font-weight: 600; }
+    .importante {
+      margin-top: 0.75rem; padding: 0.75rem 0.85rem; background: #fff8e8;
+      border-left: 4px solid #c45c26; border-radius: 0 10px 10px 0; font-size: 0.86rem; color: var(--ink);
+    }
+    .importante ul { margin: 0.35rem 0 0; padding-left: 1.15rem; color: var(--muted); }
     footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
   </style>
 </head>
@@ -120,6 +138,17 @@
         <a href="data/ecosistema-rrss.json">ecosistema-rrss.json</a>
         <a href="RRSS/data/ig-er-ei-muestra.json">ER IG EI (N=5)</a>
         <a href="fuentes.json">fuentes.json</a>
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>02 · Ecosistema RRSS competencia (Prospecto)</h2>
+      <p>Estado actual IG <strong>@grupoflesan</strong> — para pegar en la lámina.</p>
+      <div id="eco-comp" style="margin-top:0.75rem"></div>
+      <p class="links" style="margin-top:0.75rem">
+        <a href="data/ecosistema-competencia.json">ecosistema-competencia.json</a>
+        <a href="RRSS/laminas/02-ecosistema-competencia.html">Lámina HTML</a>
+        <a href="RRSS/laminas/TEXTOS-LAMINA.md">TEXTOS-LAMINA.md</a>
       </p>
     </div>
 
@@ -166,10 +195,22 @@
   </main>
   <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
   <script>
-    const v = '20260728-hi-max';
-    fetch('data/ecosistema-rrss.json?v=' + v, { cache: 'no-store' })
-      .then((r) => r.json())
-      .then((eco) => {
+    const v = '20260728-eco-comp';
+    Promise.all([
+      fetch('data/ecosistema-rrss.json?v=' + v, { cache: 'no-store' }).then((r) => r.json()),
+      fetch('data/ecosistema-competencia.json?v=' + v, { cache: 'no-store' }).then((r) => r.json()),
+    ]).then(([eco, comp]) => {
+        const box = document.getElementById('eco-comp');
+        if (box && comp) {
+          box.innerHTML =
+            `<div class="comp-grid">
+              <div class="comp-row"><div class="comp-label">Formatos</div><div class="comp-body"><ul>${(comp.formatos||[]).map((x)=>`<li>${x}</li>`).join('')}</ul></div></div>
+              <div class="comp-row"><div class="comp-label">Temáticas</div><div class="comp-body"><ul>${(comp.tematicas||[]).map((x)=>`<li>${x}</li>`).join('')}</ul></div></div>
+              <div class="comp-row"><div class="comp-label">Periodicidad</div><div class="comp-body"><div class="big">${comp.periodicidad.linea1}</div><div class="sub">${comp.periodicidad.linea2}</div></div></div>
+            </div>
+            <div class="importante"><strong>Lo importante</strong><ul>${(comp.lecturaImportante||[]).map((x)=>`<li>${x}</li>`).join('')}</ul></div>`;
+        }
+
         const thead = document.querySelector('#tabla-eco thead');
         const tbody = document.querySelector('#tabla-eco tbody');
         thead.innerHTML = '<tr><th class="platform">Red</th>' + eco.columnas.map((c) => {
@@ -221,7 +262,7 @@
           ` · LI <strong>${li.flesan ? li.flesan.display : '—'}</strong>.`;
       })
       .catch(() => {
-        document.getElementById('ei-resumen').textContent = 'No se pudo cargar ecosistema-rrss.json';
+        document.getElementById('ei-resumen').textContent = 'No se pudo cargar datos del ecosistema';
       });
   </script>
 </body>

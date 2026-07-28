@@ -1,0 +1,42 @@
+{
+  "titulo": "ECOSISTEMA DE RRSS COMPETENCIA",
+  "sujeto": "Grupo Flesan",
+  "rol": "prospecto",
+  "canal": "Instagram",
+  "handle": "@grupoflesan",
+  "fecha": "2026-07-28",
+  "fuenteMuestra": "RRSS/data/ig-er-flesan-muestra.json",
+  "perfil": {
+    "nombre": "Grupo Flesan Chile CL",
+    "seguidores": 4168,
+    "seguidoresDisplay": "4.168",
+    "publicaciones": 466,
+    "siguiendo": 1305,
+    "erMuestra": "1,82%",
+    "erNota": "N=5 · likes+com. visibles · collabs DVC/Flesan.ic"
+  },
+  "formatos": [
+    "Carruseles / fotos de obra con overlay de marca",
+    "Collabs multi-marca (Grupo + DVC / Flesan.ic)",
+    "Piezas con ficha técnica de proyecto"
+  ],
+  "tematicas": [
+    "Avance y entrega de obras (infraestructura, educación, frontera)",
+    "Obras públicas (MOP / Serviu / Aduanas)",
+    "Hitos institucionales (primera piedra, inauguraciones)"
+  ],
+  "periodicidad": {
+    "linea1": "0 a 1 posts por semana",
+    "linea2": "Baja — Irregular",
+    "detalle": "Muestra N=5 entre nov 2025 y mar 2026 (≈1 pieza cada 3–4 semanas). El top del feed sigue mostrando posts antiguos → poca frecuencia reciente.",
+    "ventanaMuestra": "2025-11-12 → 2026-03-03"
+  },
+  "lecturaImportante": [
+    "Una sola voz en IG (@grupoflesan) pero los collabs muestran DVC y Flesan.ic → la fragmentación de marca también se ve en redes.",
+    "Temática 100% obra/proyecto B2B: poco contenido de personas, empleador o cultura vs EI (formación, innovación, liderazgo).",
+    "ER muestra 1,82% supera a EI (0,58%) e Icafal (1,04%), con base similar a Icafal (~4 mil). Ojo: muestra más antigua que la de competidores.",
+    "LinkedIn (33 mil) queda lejos de EI (129 mil) e Inarco/Icafal (~65 mil): gap B2B profesional.",
+    "Facebook existe (1,2 mil) pero es canal menor; Inarco/Tecsa no tienen FB."
+  ],
+  "mockupNota": "Pegar screenshot de perfil @grupoflesan en el teléfono de la lámina (4.168 seg. · 466 pubs)."
+}
