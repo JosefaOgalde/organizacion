@@ -4,7 +4,16 @@ Diagnóstico **general** (menos detalle que Clínica Indisa). Foco: marca / webs
 
 ## Abrir
 
-`http://127.0.0.1:8000/index/clientes/mkof/prospecto/clientes/grupo-flesan/?disco=1`
+Siempre el flujo unificado:
+
+```bat
+git pull
+ABRIR-LARAVEL.bat
+```
+
+URL: `http://127.0.0.1:8000/index/clientes/mkof/prospecto/clientes/grupo-flesan/?disco=1`
+
+Atajo opcional (igual termina en ABRIR-LARAVEL): `VER-GRUPO-FLESAN.bat`
 
 ## Estructura
 
