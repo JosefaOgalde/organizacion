@@ -79,6 +79,7 @@ function taskIdForPedido(ped) {
     'ped-rebe-soporte-009': 'tarea-imp-ped-rebe-soporte-009',
     'ped-gianni-soporte-010': 'tarea-imp-ped-gianni-soporte-010',
     'ped-marcia-soporte-011': 'tarea-imp-ped-marcia-soporte-011',
+    'ped-ele-pesa-012': 'tarea-imp-ped-ele-pesa-012',
   };
   if (map[ped.id]) return map[ped.id];
   const slug = String(ped.numero || ped.id || 'x')

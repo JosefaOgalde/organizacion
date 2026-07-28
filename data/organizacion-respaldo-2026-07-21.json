@@ -1529,7 +1529,7 @@
       "fecha": "2026-07-28",
       "horaInicio": "10:00",
       "horaFin": "18:00",
-      "notas": "Panel socios 50/50 · PED-004 Ele SIE (listo) · PED-007 Juan SIE (listo) · PED-008 Juan MKOF (listo) · PED-010 Gianni SIE (pendiente) · PED-011 Marcia SIE (pendiente). Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. Imp live 2026-07-28T15:40:13.787Z",
+      "notas": "Panel socios 50/50 · PED-004 Ele SIE (listo) · PED-007 Juan SIE (listo) · PED-008 Juan MKOF (listo) · PED-010 Gianni SIE (pendiente) · PED-011 Marcia SIE (pendiente). Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. Imp live 2026-07-28T15:43:26.304Z",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
@@ -2010,7 +2010,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 14,
-  "respaldoActualizado": "2026-07-28T15:40:13.830Z",
+  "respaldoActualizado": "2026-07-28T15:43:26.345Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",

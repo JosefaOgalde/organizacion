@@ -1394,6 +1394,33 @@
           },
         ],
       },
+      {
+        id: 'ven-ele-pesa-014',
+        codigo: 'I000014',
+        fecha: '2026-07-28',
+        cliente: 'Ele SIE',
+        descripcion: 'PED-012 · 2× Llavero Pesa Rusa amarillo · Ele SIE',
+        cantidad: 2,
+        montoBruto: 5000,
+        descuentoClp: 0,
+        montoNeto: 5000,
+        costoTotal: 830.86,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-012 · 2× Llavero Pesa Rusa amarillo · pagado $5.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-ele-pesa-012',
+        pedidoNumero: 'PED-012',
+        items: [
+          {
+            sku: 'LLPESRU001',
+            nombre: 'Llavero Pesa Rusa',
+            cantidad: 2,
+            precioUnitarioClp: 2500,
+            costoUnitarioClp: 415.43,
+            filamento: 'PLA amarillo',
+          },
+        ],
+      },
     ];
 
     let changed = false;

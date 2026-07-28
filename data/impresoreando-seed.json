@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-28T15:39:57.000Z",
+    "actualizado": "2026-07-28T15:42:32.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -26,8 +26,8 @@
       "montoNetoClp": 800442,
       "deudaJosefaClp": 400221
     },
-    "pedidoSeq": 11,
-    "ventaSeq": 13,
+    "pedidoSeq": 12,
+    "ventaSeq": 14,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
       {
@@ -85,6 +85,17 @@
         ],
         "totalNeto": 6000,
         "compras": 2
+      },
+      {
+        "cliente": "Ele SIE",
+        "ventaCodigos": [
+          "I000014"
+        ],
+        "ventaIds": [
+          "ven-ele-pesa-014"
+        ],
+        "totalNeto": 5000,
+        "compras": 1
       },
       {
         "cliente": "Juan SIE",
@@ -758,6 +769,33 @@
           "filamento": "PLA morado"
         }
       ]
+    },
+    {
+      "id": "ven-ele-pesa-014",
+      "codigo": "I000014",
+      "fecha": "2026-07-28",
+      "cliente": "Ele SIE",
+      "descripcion": "PED-012 · 2× Llavero Pesa Rusa amarillo · Ele SIE",
+      "cantidad": 2,
+      "montoBruto": 5000,
+      "descuentoClp": 0,
+      "montoNeto": 5000,
+      "costoTotal": 830.86,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-012 · 2× Llavero Pesa Rusa amarillo · pagado $5.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-ele-pesa-012",
+      "pedidoNumero": "PED-012",
+      "items": [
+        {
+          "sku": "LLPESRU001",
+          "nombre": "Llavero Pesa Rusa",
+          "cantidad": 2,
+          "precioUnitarioClp": 2500,
+          "costoUnitarioClp": 415.43,
+          "filamento": "PLA amarillo"
+        }
+      ]
     }
   ],
   "operacion": [
@@ -1165,6 +1203,12 @@
       "fecha": "2026-07-28",
       "autor": "Josefa",
       "texto": "PED-011 Marcia SIE · 1× Soporte celular morado · $3.000 · pendiente."
+    },
+    {
+      "id": "bit-ele-014",
+      "fecha": "2026-07-28",
+      "autor": "Josefa",
+      "texto": "PED-012 Ele SIE → I000014 · 2× Llavero Pesa Rusa amarillo · pagado $5.000."
     }
   ],
   "pedidos": [
@@ -1533,6 +1577,38 @@
       "notas": "1× Soporte celular morado · PVP $3.000",
       "socioRegistro": "Ambos",
       "creado": "2026-07-28T15:45:00.000Z"
+    },
+    {
+      "id": "ped-ele-pesa-012",
+      "numero": "PED-012",
+      "fecha": "2026-07-28",
+      "cliente": "Ele SIE",
+      "clienteNombre": "Ele",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "LLPESRU001",
+          "nombre": "Llavero Pesa Rusa",
+          "cantidad": 2,
+          "precioUnitarioClp": 2500,
+          "costoUnitarioClp": 415.43,
+          "filamento": "PLA amarillo",
+          "estado": "listo",
+          "listos": 2,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 5000,
+      "descuentoClp": 0,
+      "montoNeto": 5000,
+      "costoTotal": 830.86,
+      "estado": "transferido",
+      "ventaId": "ven-ele-pesa-014",
+      "transferidoEn": "2026-07-28T15:50:00.000Z",
+      "notas": "2× Llavero Pesa Rusa amarillo · transferido a venta I000014 · $5.000",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-28T15:50:00.000Z"
     }
   ]
 }
