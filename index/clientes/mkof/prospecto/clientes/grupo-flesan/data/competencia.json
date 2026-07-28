@@ -25,6 +25,13 @@
           "display": "129 mil",
           "empleadosDisplay": "Más de 10 mil",
           "fuenteId": "li-ei-2026-07-28"
+        },
+        "facebook": {
+          "display": "8",
+          "unidad": "amigos",
+          "tipoPerfil": "perfil_personal_o_legacy",
+          "fuenteId": "fb-ei-2026-07-28",
+          "nota": "No es Page con seguidores; presencia residual vs IG/LI"
         }
       }
     },

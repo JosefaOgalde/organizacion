@@ -48,7 +48,19 @@
   ],
   "celdas": {
     "Facebook": {
-      "ei": { "display": "XX mill", "estado": "PENDIENTE", "url": null },
+      "ei": {
+        "valor": 8,
+        "display": "8",
+        "unidad": "amigos",
+        "tipoPerfil": "perfil_personal_o_legacy",
+        "nombrePagina": "Echeverría Izquierdo",
+        "marcaVisible": "GRUPO Ei",
+        "bio": "Empresa de Ingeniería y Construcción, enfocada en diferentes áreas.",
+        "fuenteId": "fb-ei-2026-07-28",
+        "exacto": "8 amigos (screenshot FB 2026-07-28). UI tipo perfil (Agregar a amigos / Amigos), no página con 'seguidores'.",
+        "nota": "Presencia FB residual/no estratégica vs IG+LI. No interpretar como 8 mil seguidores de Page.",
+        "estado": "OK"
+      },
       "inarco": { "display": "XX mill", "estado": "PENDIENTE" },
       "icafal": { "display": "XX mill", "estado": "PENDIENTE" },
       "tecsa": { "display": "XX mill", "estado": "PENDIENTE" },

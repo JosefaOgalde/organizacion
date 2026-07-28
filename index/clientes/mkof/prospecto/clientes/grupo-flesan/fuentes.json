@@ -124,6 +124,13 @@
       "metodo": "5 screenshots últimos contenidos IG: likes 21+59+65+64+30 · com. visibles 0+3+4+2+0. ER N=5 = 1,04%. Ver RRSS/data/ig-er-icafal-muestra.json"
     },
     {
+      "id": "fb-ei-2026-07-28",
+      "tipo": "facebook",
+      "url": null,
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot perfil FB Echeverría Izquierdo / GRUPO Ei: 8 amigos. UI de perfil (Agregar a amigos), no Page con seguidores. Competidor 1."
+    },
+    {
       "id": "manual-marca-local",
       "tipo": "documento_cliente",
       "url": null,
