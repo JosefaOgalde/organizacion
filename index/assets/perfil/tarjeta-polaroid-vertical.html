@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarjeta vertical — Josefa Ogalde</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,500;0,9..40,700;1,9..40,500&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root { --teal: #14b8a4; --teal-deep: #0f766e; --ink: #141414; --muted: #5a5a5a; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 900px;
+    height: 1236px;
+    overflow: hidden;
+    background: #f3f3f3;
+    font-family: "DM Sans", sans-serif;
+  }
+  a.link-all { position: absolute; inset: 0; z-index: 50; display: block; }
+  .card {
+    position: relative;
+    width: 900px;
+    height: 1236px;
+    background: #fff;
+    padding: 48px 48px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .polaroid {
+    width: 520px;
+    background: #fff;
+    border: 1px solid #ececec;
+    box-shadow: 0 18px 40px rgba(0,0,0,.12);
+    padding: 18px 18px 0;
+    transform: rotate(-2.8deg);
+    margin: 12px 0 36px;
+  }
+  .polaroid__photo {
+    width: 100%;
+    aspect-ratio: 1 / 1.12;
+    overflow: hidden;
+    background: #ddd;
+  }
+  .polaroid__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 20%;
+    display: block;
+  }
+  .polaroid__caption {
+    min-height: 78px;
+    display: grid;
+    place-items: center;
+    padding: 12px 10px 18px;
+    text-align: center;
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .name {
+    font-size: 2.4rem;
+    line-height: 1.05;
+    margin-bottom: 0.45rem;
+    text-align: center;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 0.7rem;
+    text-align: center;
+  }
+  .eyebrow span {
+    color: var(--teal);
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 1rem;
+  }
+  .title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 0.85rem;
+  }
+  .bio {
+    text-align: center;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.5;
+    max-width: 28rem;
+    margin: 0 auto 1.2rem;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 220px;
+    min-height: 50px;
+    padding: 0.7rem 1.4rem;
+    background: var(--teal);
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 1.4rem;
+  }
+  .contacts {
+    width: 100%;
+    max-width: 28rem;
+    display: grid;
+    gap: 0.85rem;
+  }
+  .contacts div {
+    text-align: center;
+  }
+  .contacts dt {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal-deep);
+    font-weight: 700;
+  }
+  .contacts dd {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+</style>
+</head>
+<body>
+  <a class="link-all" href="https://wa.me/56966047614" aria-label="Contactar por WhatsApp"></a>
+  <article class="card">
+    <div class="polaroid">
+      <div class="polaroid__photo">
+        <img src="josefa-ogalde-foto-fuente.jpg" alt="Josefa Ogalde">
+      </div>
+      <p class="polaroid__caption">desarrolladora fullstack</p>
+    </div>
+    <h1 class="name">Josefa Ogalde</h1>
+    <p class="eyebrow">Sobre <span>mí</span></p>
+    <p class="title">Desarrolladora fullstack</p>
+    <p class="bio">Sitios web, tiendas online y WordPress/WooCommerce. Acompañamiento post-entrega para que gestiones tu sitio con confianza.</p>
+    <span class="btn">contacto</span>
+    <dl class="contacts">
+      <div><dt>Email</dt><dd>josefaogalde@gmail.com</dd></div>
+      <div><dt>WhatsApp</dt><dd>+56 9 6604 7614</dd></div>
+      <div><dt>GitHub</dt><dd>github.com/JosefaOgalde</dd></div>
+    </dl>
+  </article>
+</body>
+</html>

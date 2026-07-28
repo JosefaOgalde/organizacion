@@ -7679,7 +7679,7 @@ function renderTarjetaPerfilPersonal() {
   const p = perfilPersonalActual();
   const nombre = (p.nombre || '').trim() || 'Josefa Ogalde';
   const titulo = (p.titulo || '').trim() || 'Desarrolladora Fullstack · Web · E-commerce · WordPress';
-  const v = 'tarjeta3';
+  const v = 'tarjeta6';
   const horiz = `index/assets/perfil/josefa-ogalde-tarjeta.png?v=${v}`;
   const horizThumb = `index/assets/perfil/josefa-ogalde-tarjeta-thumb.png?v=${v}`;
   const vert = `index/assets/perfil/josefa-ogalde-tarjeta-vertical.png?v=${v}`;
