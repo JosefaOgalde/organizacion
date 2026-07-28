@@ -63,7 +63,7 @@
   <main>
     <div class="aviso">
       <strong>Nivel: general</strong>
-      Matriz: 3 competidores + Prospecto (IG 4.168 · ER 1,82% · LI <strong>33 mil</strong>).
+      Matriz: 3 competidores + Prospecto (FB <strong>1,2 mil</strong> · IG 4.168 · ER 1,82% · LI 33 mil).
     </div>
 
     <div class="card">
@@ -126,7 +126,7 @@
   </main>
   <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
   <script>
-    const v = '20260728-flesan-li';
+    const v = '20260728-flesan-fb';
     fetch('data/ecosistema-rrss.json?v=' + v, { cache: 'no-store' })
       .then((r) => r.json())
       .then((eco) => {
@@ -169,7 +169,8 @@
           `<strong>Comp.3 Icafal</strong> (@icafal_sa) IG <strong>${ig.icafal ? ig.icafal.display : '—'}</strong>` +
           ` · ER <strong>${er.icafal ? er.icafal.display : '—'}</strong>` +
           ` · LI <strong>${li.icafal ? li.icafal.display : '—'}</strong><br>` +
-          `<strong>Prospecto</strong> IG <strong>${ig.flesan ? ig.flesan.display : '—'}</strong>` +
+          `<strong>Prospecto</strong> FB <strong>${(eco.celdas.Facebook && eco.celdas.Facebook.flesan) ? eco.celdas.Facebook.flesan.display : '—'}</strong>` +
+          ` · IG <strong>${ig.flesan ? ig.flesan.display : '—'}</strong>` +
           ` · ER <strong>${er.flesan ? er.flesan.display : '—'}</strong>` +
           ` · LI <strong>${li.flesan ? li.flesan.display : '—'}</strong>.`;
       })

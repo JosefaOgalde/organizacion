@@ -119,4 +119,4 @@ Ruta en PC (pendiente copiar al repo):
 - Competencia directa citada; **EI** es el espejo de “cómo se ve una marca clara en web/comms”.
 - MKOF puede entrar por **estrategia de marca + sistema de comunicación** (web + RRSS), no solo por pauta orgánica.
 
-**Siguiente paso:** FB Icafal / FB Prospecto / YT-TikTok pendientes → cerrar matriz.
+**Siguiente paso:** FB Icafal / YT-TikTok pendientes → cerrar matriz.
