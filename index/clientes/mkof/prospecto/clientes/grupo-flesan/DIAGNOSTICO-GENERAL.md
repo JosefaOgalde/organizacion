@@ -45,7 +45,8 @@ Fuente de perfiles (footer de los 3 sitios):
 | Red | URL | Números (2026-07-27) | Método |
 |-----|-----|----------------------|--------|
 | Instagram | https://www.instagram.com/grupoflesan/ | **4.168** seguidores · 466 posts · ER muestra **1,82%** (N=5) | Screenshot 2026-07-28 |
-| Facebook | https://www.facebook.com/grupoflesanchile | **Pendiente** (login/bloqueo en scrape) | Revisar en navegador |
+| LinkedIn | Grupo Flesan Chile | **33 mil** seguidores · 1 mil–5 mil emp. · Las Condes | Screenshot 2026-07-28 |
+| Facebook | https://www.facebook.com/grupoflesanchile | **1,2 mil** seguidores · 12 seguidos | Screenshot 2026-07-28 |
 | YouTube | https://www.youtube.com/@GrupoFlesan | ~**509** suscriptores · ~**161 mil** vistas · canal desde **may 2014** | Texto público del canal YouTube |
 
 ### Tipo de comunicación (lectura general, sin ER por post)

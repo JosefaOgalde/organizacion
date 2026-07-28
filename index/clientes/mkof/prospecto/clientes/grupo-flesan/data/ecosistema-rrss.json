@@ -66,10 +66,16 @@
         "estado": "PENDIENTE"
       },
       "flesan": {
-        "display": "XX mill",
-        "estado": "PENDIENTE",
+        "valor": 1200,
+        "display": "1,2 mil",
+        "siguiendo": 12,
+        "nombrePagina": "Grupo Flesan Chile",
+        "categoria": "Empresa de construcción",
+        "bio": "Abarcamos todas las áreas de ingeniería, BIM, obras previas, civiles, construcción e inmobiliaria.",
         "url": "https://www.facebook.com/grupoflesanchile",
-        "fuenteId": "fb-grupoflesan"
+        "fuenteId": "fb-grupoflesan-2026-07-28",
+        "exacto": "1,2 mil seguidores · 12 seguidos (screenshot Facebook Page 2026-07-28)",
+        "estado": "OK"
       }
     },
     "Instagram": {
