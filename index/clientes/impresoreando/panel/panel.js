@@ -931,7 +931,7 @@
     return changed;
   }
 
-  /** Dragón — slicer alto 275,41 g · 14 h 7 m · PVP $11.000. Soft seed. */
+  /** Dragón — slicer alto 275,41 g · 14 h 7 m · PVP $20.000. Soft seed. */
   function seedDragon() {
     const filamentoModeloGramos = 192.38;
     const filamentoGramos = 275.41;
@@ -1513,6 +1513,8 @@
         transferidoEn: '2026-07-28T15:30:00.000Z',
         itemPrecioUnitarioClp: 20000,
         itemFilamento: 'PLA morado',
+        itemSku: 'DRAGON001',
+        itemNombre: 'Dragón',
       },
       {
         pedId: 'ped-ele-pesa-rusa-004',
@@ -1528,9 +1530,30 @@
       },
     ];
     for (const t of transfers) {
-      const ped = d.pedidos.find((p) => p.id === t.pedId || p.numero === t.numero);
+      let ped = d.pedidos.find((p) => p.id === t.pedId || p.numero === t.numero);
+      // Live viejo: mismo Dragón Rebe pero id distinto / aún en_impresion $11.000
+      if (!ped && t.numero === 'PED-006') {
+        ped = d.pedidos.find((p) => {
+          if (p.estado === 'transferido') return false;
+          const cli = String(p.cliente || '');
+          if (!/rebe/i.test(cli)) return false;
+          return (p.items || []).some(
+            (it) =>
+              String(it.sku || '').toUpperCase() === 'DRAGON001' ||
+              /drag[oó]n/i.test(String(it.nombre || ''))
+          );
+        });
+      }
       if (!ped) continue;
       let pedChanged = false;
+      if (ped.numero !== t.numero) {
+        ped.numero = t.numero;
+        pedChanged = true;
+      }
+      if (ped.id !== t.pedId) {
+        ped.id = t.pedId;
+        pedChanged = true;
+      }
       if (ped.estado !== 'transferido') {
         ped.estado = 'transferido';
         pedChanged = true;
@@ -1558,9 +1581,39 @@
         ped.notas = t.notas;
         pedChanged = true;
       }
-      if (t.itemPrecioUnitarioClp != null || t.itemFilamento || t.itemCantidad != null) {
+      if (
+        t.itemPrecioUnitarioClp != null ||
+        t.itemFilamento ||
+        t.itemCantidad != null ||
+        t.itemSku ||
+        t.itemNombre
+      ) {
+        if (!Array.isArray(ped.items) || !ped.items.length) {
+          ped.items = [
+            {
+              sku: t.itemSku || '',
+              nombre: t.itemNombre || '',
+              cantidad: t.itemCantidad != null ? t.itemCantidad : 1,
+              precioUnitarioClp: t.itemPrecioUnitarioClp != null ? t.itemPrecioUnitarioClp : t.montoNeto,
+              costoUnitarioClp: 0,
+              filamento: t.itemFilamento || '',
+              estado: 'listo',
+              listos: t.itemCantidad != null ? t.itemCantidad : 1,
+              enImpresion: 0,
+            },
+          ];
+          pedChanged = true;
+        }
         const it = (ped.items || [])[0];
         if (it) {
+          if (t.itemSku && String(it.sku || '').toUpperCase() !== String(t.itemSku).toUpperCase()) {
+            it.sku = t.itemSku;
+            pedChanged = true;
+          }
+          if (t.itemNombre && it.nombre !== t.itemNombre) {
+            it.nombre = t.itemNombre;
+            pedChanged = true;
+          }
           if (
             t.itemPrecioUnitarioClp != null &&
             Number(it.precioUnitarioClp) !== Number(t.itemPrecioUnitarioClp)
@@ -1579,7 +1632,7 @@
             it.estado = 'listo';
             pedChanged = true;
           }
-          if (it.estado !== 'listo' || Number(it.listos) !== Number(it.cantidad || 1)) {
+          if (it.estado !== 'listo' || Number(it.listos) !== Number(it.cantidad || 1) || Number(it.enImpresion) > 0) {
             it.estado = 'listo';
             it.listos = Number(it.cantidad || 1);
             it.enImpresion = 0;
