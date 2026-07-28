@@ -195,75 +195,21 @@
   </main>
   <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
   <script>
-    const v = '20260728-eco-comp';
-    Promise.all([
-      fetch('data/ecosistema-rrss.json?v=' + v, { cache: 'no-store' }).then((r) => r.json()),
-      fetch('data/ecosistema-competencia.json?v=' + v, { cache: 'no-store' }).then((r) => r.json()),
-    ]).then(([eco, comp]) => {
+    const v = '20260728-static-tabla';
+    fetch('data/ecosistema-competencia.json?v=' + v, { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((comp) => {
         const box = document.getElementById('eco-comp');
-        if (box && comp) {
-          box.innerHTML =
-            `<div class="comp-grid">
-              <div class="comp-row"><div class="comp-label">Formatos</div><div class="comp-body"><ul>${(comp.formatos||[]).map((x)=>`<li>${x}</li>`).join('')}</ul></div></div>
-              <div class="comp-row"><div class="comp-label">Temáticas</div><div class="comp-body"><ul>${(comp.tematicas||[]).map((x)=>`<li>${x}</li>`).join('')}</ul></div></div>
-              <div class="comp-row"><div class="comp-label">Periodicidad</div><div class="comp-body"><div class="big">${comp.periodicidad.linea1}</div><div class="sub">${comp.periodicidad.linea2}</div></div></div>
-            </div>
-            <div class="importante"><strong>Lo importante</strong><ul>${(comp.lecturaImportante||[]).map((x)=>`<li>${x}</li>`).join('')}</ul></div>`;
-        }
-
-        const thead = document.querySelector('#tabla-eco thead');
-        const tbody = document.querySelector('#tabla-eco tbody');
-        thead.innerHTML = '<tr><th class="platform">Red</th>' + eco.columnas.map((c) => {
-          const cls = c.rol === 'prospecto' ? 'col-prospecto' : '';
-          const etag = c.etiqueta ? `<span class="etag">${c.etiqueta}</span>` : '';
-          return `<th class="${cls}">${c.nombreCorto || c.nombre}${etag}</th>`;
-        }).join('') + '</tr>';
-
-        tbody.innerHTML = eco.plataformas.map((p) => {
-          const row = eco.celdas[p] || {};
-          const isEr = /ER|engagement/i.test(p);
-          const nums = eco.columnas
-            .map((c) => {
-              const cell = row[c.id];
-              if (!cell || typeof cell.valor !== 'number') return null;
-              if (!(cell.estado && String(cell.estado).startsWith('OK'))) return null;
-              return { id: c.id, v: cell.valor };
-            })
-            .filter(Boolean);
-          const max = nums.length ? Math.max(...nums.map((x) => x.v)) : null;
-          const label = p === 'Instagram ER' ? 'Instagram ER<span style="display:block;font-size:0.65rem;font-weight:600;color:#5a7368;text-transform:none">N=5 likes+com.</span>' : p;
-          return `<tr><th class="platform">${label}</th>` + eco.columnas.map((c) => {
-            const cell = row[c.id] || { display: isEr ? '—' : 'XX mill', estado: 'PENDIENTE' };
-            const isP = c.rol === 'prospecto';
-            const ok = cell.estado && String(cell.estado).startsWith('OK');
-            const noTiene = cell.estado === 'NO_TIENE';
-            const isHi = !!(cell.mejorMetrica || cell.highlight) || (ok && max != null && cell.valor === max);
-            let cls = isP ? 'col-prospecto' : '';
-            if (isHi) cls += ' hi';
-            else if (ok || noTiene) cls += ' ok';
-            else cls += ' pend';
-            const badge = isHi ? '<span class="badge-mejor">máximo</span>' : '';
-            return `<td class="${cls.trim()}">${cell.display || (isEr ? '—' : 'XX mill')}${badge}</td>`;
-          }).join('') + '</tr>';
-        }).join('');
-
-        const ig = eco.celdas.Instagram || {};
-        const er = eco.celdas['Instagram ER'] || {};
-        const li = eco.celdas.LinkedIn || {};
-        document.getElementById('ei-resumen').innerHTML =
-          `<strong>Comp.1 EI</strong> IG ${ig.ei ? ig.ei.display : '—'} · ER ${er.ei ? er.ei.display : '—'} · LI ${li.ei ? li.ei.display : '—'}<br>` +
-          `<strong>Comp.2 Inarco</strong> IG ${ig.inarco ? ig.inarco.display : '—'} · ER ${er.inarco ? er.inarco.display : '—'} · LI ${li.inarco ? li.inarco.display : '—'}<br>` +
-          `<strong>Comp.3 Icafal</strong> (@icafal_sa) IG <strong>${ig.icafal ? ig.icafal.display : '—'}</strong>` +
-          ` · ER <strong>${er.icafal ? er.icafal.display : '—'}</strong>` +
-          ` · LI <strong>${li.icafal ? li.icafal.display : '—'}</strong><br>` +
-          `<strong>Prospecto</strong> FB <strong>${(eco.celdas.Facebook && eco.celdas.Facebook.flesan) ? eco.celdas.Facebook.flesan.display : '—'}</strong>` +
-          ` · IG <strong>${ig.flesan ? ig.flesan.display : '—'}</strong>` +
-          ` · ER <strong>${er.flesan ? er.flesan.display : '—'}</strong>` +
-          ` · LI <strong>${li.flesan ? li.flesan.display : '—'}</strong>.`;
+        if (!box || !comp) return;
+        box.innerHTML =
+          `<div class="comp-grid">
+            <div class="comp-row"><div class="comp-label">Formatos</div><div class="comp-body"><ul>${(comp.formatos||[]).map((x)=>`<li>${x}</li>`).join('')}</ul></div></div>
+            <div class="comp-row"><div class="comp-label">Temáticas</div><div class="comp-body"><ul>${(comp.tematicas||[]).map((x)=>`<li>${x}</li>`).join('')}</ul></div></div>
+            <div class="comp-row"><div class="comp-label">Periodicidad</div><div class="comp-body"><div class="big">${comp.periodicidad.linea1}</div><div class="sub">${comp.periodicidad.linea2}</div></div></div>
+          </div>
+          <div class="importante"><strong>Lo importante</strong><ul>${(comp.lecturaImportante||[]).map((x)=>`<li>${x}</li>`).join('')}</ul></div>`;
       })
-      .catch(() => {
-        document.getElementById('ei-resumen').textContent = 'No se pudo cargar datos del ecosistema';
-      });
+      .catch(() => {});
   </script>
 </body>
 </html>

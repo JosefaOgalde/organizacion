@@ -38,17 +38,22 @@ if not exist "index\clientes\mkof\prospecto\clientes\grupo-flesan\index.html" (
   pause
   exit /b 1
 )
+if not exist "index\clientes\mkof\prospecto\clientes\grupo-flesan\RRSS\laminas\01-ecosistema-rrss.html" (
+  echo [ERROR] Falta lamina 01 ECOSISTEMA — corre git pull otra vez.
+  pause
+  exit /b 1
+)
 
 echo.
 echo [2] ABRIR-LARAVEL.bat...
 call "%~dp0ABRIR-LARAVEL.bat"
 
 echo.
-echo [3] Prospecto Flesan:
-echo     http://127.0.0.1:8000/index/clientes/mkof/prospecto/clientes/grupo-flesan/?disco=1
-echo     Hub: http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1
+echo [3] Prospecto Flesan + tabla ECOSISTEMA:
+echo     Hub:   http://127.0.0.1:8000/index/clientes/mkof/prospecto/clientes/grupo-flesan/?disco=1
+echo     Tabla: http://127.0.0.1:8000/index/clientes/mkof/prospecto/clientes/grupo-flesan/RRSS/laminas/01-ecosistema-rrss.html?v=20260728t
 echo.
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/mkof/prospecto/clientes/grupo-flesan/?disco=1'"
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/mkof/prospecto/clientes/grupo-flesan/RRSS/laminas/01-ecosistema-rrss.html?v=20260728t'"
 echo.
 pause
