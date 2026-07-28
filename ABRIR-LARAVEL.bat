@@ -88,7 +88,10 @@ pushd backend
 popd
 
 if not exist "data\organizacion-live.json" (
-  if exist "data\organizacion-respaldo-2026-07-27.json" (
+  if exist "data\organizacion-respaldo-2026-07-28.json" (
+    copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
+    echo  Live creado desde data\organizacion-respaldo-2026-07-28.json
+  ) else if exist "data\organizacion-respaldo-2026-07-27.json" (
     copy /Y "data\organizacion-respaldo-2026-07-27.json" "data\organizacion-live.json" >nul
     echo  Live creado desde data\organizacion-respaldo-2026-07-27.json
   ) else if exist "data\organizacion-respaldo-2026-07-24.json" (
