@@ -74,10 +74,32 @@ $ej = $root . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'laravel' . D
 @mkdir($backend . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Models', 0775, true);
 @mkdir($backend . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations', 0775, true);
 
-copy($ej . DIRECTORY_SEPARATOR . 'Model_Cliente.php', $backend . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'Cliente.php');
-copy($ej . DIRECTORY_SEPARATOR . 'ClienteSeeder.php', $backend . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'seeders' . DIRECTORY_SEPARATOR . 'ClienteSeeder.php');
-copy($ej . DIRECTORY_SEPARATOR . 'DatabaseSeeder.php', $backend . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'seeders' . DIRECTORY_SEPARATOR . 'DatabaseSeeder.php');
-echo "  · Modelo + seeders copiados\n";
+function mustCopy(string $from, string $to, string $label): void
+{
+    if (!is_file($from)) {
+        throw new RuntimeException("No existe ejemplo: $from");
+    }
+    if (!copy($from, $to)) {
+        throw new RuntimeException("No se pudo copiar $label → $to");
+    }
+    echo "  · Copiado $label\n";
+}
+
+mustCopy(
+    $ej . DIRECTORY_SEPARATOR . 'Model_Cliente.php',
+    $backend . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR . 'Cliente.php',
+    'Model Cliente (sin activo en fillable)'
+);
+mustCopy(
+    $ej . DIRECTORY_SEPARATOR . 'ClienteSeeder.php',
+    $backend . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'seeders' . DIRECTORY_SEPARATOR . 'ClienteSeeder.php',
+    'ClienteSeeder (sin activo vía Eloquent)'
+);
+mustCopy(
+    $ej . DIRECTORY_SEPARATOR . 'DatabaseSeeder.php',
+    $backend . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'seeders' . DIRECTORY_SEPARATOR . 'DatabaseSeeder.php',
+    'DatabaseSeeder'
+);
 
 // Migración clientes si no hay ninguna create_clientes
 $migDir = $backend . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations';

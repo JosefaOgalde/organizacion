@@ -4,8 +4,9 @@
  * Fuente: ../data/clientes-laravel-seed.json
  *
  * Slugs = carpetas reales bajo index/clientes/ (no abreviaturas).
- * Upsert por slug canónico y elimina duplicados por abreviatura
- * (p. ej. quedaron "ts" y "trendseeker" del mismo cliente).
+ * Upsert por slug canónico y elimina duplicados por abreviatura.
+ *
+ * Nunca escribe "activo" vía Eloquent (evita SQLSTATE no such column).
  */
 
 namespace Database\Seeders;
@@ -17,7 +18,6 @@ use PDO;
 
 class ClienteSeeder extends Seeder
 {
-    /** Slugs viejos / alias → canónicos del portal (= carpeta) */
     private const ALIASES = [
         'ts' => 'trendseeker',
         'pisc' => 'piscineria',
@@ -32,7 +32,6 @@ class ClienteSeeder extends Seeder
 
     public function run(): void
     {
-        // Antes de cualquier UPDATE: la columna debe existir (DBs SQLite viejas).
         $this->asegurarColumnaActivo();
 
         $path = dirname(base_path()) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'clientes-laravel-seed.json';
@@ -48,7 +47,6 @@ class ClienteSeeder extends Seeder
             return;
         }
 
-        // Renombrar slugs alias → canónico antes del upsert
         foreach (self::ALIASES as $old => $nuevo) {
             $row = Cliente::query()->where('slug', $old)->first();
             if (!$row) {
@@ -57,7 +55,6 @@ class ClienteSeeder extends Seeder
             if (Cliente::query()->where('slug', $nuevo)->exists()) {
                 $row->delete();
             } else {
-                // Solo tocar slug (evitar dirty de casts sobre columnas ausentes).
                 Cliente::query()->where('id', $row->id)->update(['slug' => $nuevo]);
             }
         }
@@ -71,6 +68,7 @@ class ClienteSeeder extends Seeder
                 continue;
             }
             $abrev = strtoupper((string) ($c['abrev'] ?? substr($slug, 0, 4)));
+            // Sin "activo" aquí — Eloquent no debe tocarlo.
             $payload = [
                 'nombre' => $c['nombre'] ?? $slug,
                 'abrev' => $abrev,
@@ -81,27 +79,20 @@ class ClienteSeeder extends Seeder
                 'agente' => $c['agente'] ?? null,
                 'resumen' => $c['resumen'] ?? null,
             ];
-            if ($tieneActivo) {
-                $payload['activo'] = array_key_exists('activo', $c) ? (bool) $c['activo'] : true;
-            }
 
-            try {
-                Cliente::updateOrCreate(['slug' => $slug], $payload);
-            } catch (\Throwable $e) {
-                $msg = $e->getMessage();
-                if (stripos($msg, 'activo') !== false) {
-                    $this->asegurarColumnaActivo();
-                    $tieneActivo = $this->tieneColumnaActivo();
-                    if ($tieneActivo) {
-                        $payload['activo'] = array_key_exists('activo', $c) ? (bool) $c['activo'] : true;
-                    } else {
-                        unset($payload['activo']);
-                    }
-                    Cliente::updateOrCreate(['slug' => $slug], $payload);
-                } else {
-                    throw $e;
+            Cliente::updateOrCreate(['slug' => $slug], $payload);
+
+            if ($tieneActivo) {
+                $activo = array_key_exists('activo', $c) ? ((bool) $c['activo'] ? 1 : 0) : 1;
+                try {
+                    DB::table('clientes')->where('slug', $slug)->update(['activo' => $activo]);
+                } catch (\Throwable $e) {
+                    // Columna ausente a mitad de carrera: seguir sin tumbar el seed.
+                    $tieneActivo = false;
+                    $this->command?->warn('Skip activo: ' . $e->getMessage());
                 }
             }
+
             $preferidoPorAbrev[$abrev] = $slug;
         }
 
@@ -124,7 +115,6 @@ class ClienteSeeder extends Seeder
         $this->command?->info('Clientes: ' . Cliente::count() . " (duplicados eliminados: $borrados)");
     }
 
-    /** ALTER directo vía PDO (no depende de Schema::hasColumn / migraciones a medias). */
     private function asegurarColumnaActivo(): void
     {
         try {

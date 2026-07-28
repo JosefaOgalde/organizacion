@@ -50,10 +50,23 @@ function main() {
   if (!force && fs.existsSync(LIVE)) {
     const liveMtime = fs.statSync(LIVE).mtimeMs;
     const liveObj = leerJson(LIVE);
-    const liveScore = liveObj ? marcaTiempo(liveObj, liveMtime) : 0;
-    if (mejor.mtime <= liveMtime && mejor.score <= liveScore) {
-      console.log('[sync] Live ya al día ←', path.basename(mejor.path));
-      return;
+    if (liveObj) {
+      const liveScore = marcaTiempo(liveObj, liveMtime);
+      const liveN = liveObj.tareas.length;
+      const mejorN = mejor.obj.tareas.length;
+      // Nunca degradar: live con más tareas, o live igual de fresco.
+      if (liveN > mejorN) {
+        console.log('[sync] Live conservado (' + liveN + ' tareas > respaldo ' + mejorN + ') ←', path.basename(mejor.path));
+        return;
+      }
+      if (liveScore >= mejor.score) {
+        console.log('[sync] Live ya al día ←', path.basename(mejor.path));
+        return;
+      }
+      if (mejor.mtime <= liveMtime && mejor.score <= liveScore) {
+        console.log('[sync] Live ya al día ←', path.basename(mejor.path));
+        return;
+      }
     }
   }
 
