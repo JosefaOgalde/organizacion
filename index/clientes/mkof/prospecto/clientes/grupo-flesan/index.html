@@ -63,7 +63,7 @@
   <main>
     <div class="aviso">
       <strong>Nivel: general</strong>
-      Matriz con fila <strong>Instagram ER</strong> (N=5). Comp.1–3 listos en IG+LI. Restan Tecsa, Comp.5 y prospecto.
+      Matriz con <strong>3 competidores</strong> (EI · Inarco · Icafal) + Prospecto. Fila Instagram ER (N=5).
     </div>
 
     <div class="card">
@@ -111,7 +111,7 @@
 
     <div class="card">
       <h2>Competencia</h2>
-      <p>Echeverría Izquierdo (referente · Comp. 1 listo), Inarco, Icafal, Tecsa.</p>
+      <p>Solo 3: Echeverría Izquierdo (referente), Inarco, Icafal.</p>
       <p class="links" style="margin-top:0.75rem"><a href="data/competencia.json">competencia.json</a></p>
     </div>
 
@@ -126,7 +126,7 @@
   </main>
   <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
   <script>
-    const v = '20260728-tecsa-no-fb';
+    const v = '20260728-solo-3-comp';
     fetch('data/ecosistema-rrss.json?v=' + v, { cache: 'no-store' })
       .then((r) => r.json())
       .then((eco) => {
@@ -168,7 +168,7 @@
           `<strong>Comp.2 Inarco</strong> IG ${ig.inarco ? ig.inarco.display : '—'} · ER ${er.inarco ? er.inarco.display : '—'} · LI ${li.inarco ? li.inarco.display : '—'}<br>` +
           `<strong>Comp.3 Icafal</strong> (@icafal_sa) IG <strong>${ig.icafal ? ig.icafal.display : '—'}</strong>` +
           ` · ER <strong>${er.icafal ? er.icafal.display : '—'}</strong>` +
-          ` · LI <strong>${li.icafal ? li.icafal.display : '—'}</strong>. Siguiente: Tecsa.`;
+          ` · LI <strong>${li.icafal ? li.icafal.display : '—'}</strong>. Alcance: solo 3 competidores + Prospecto.`;
       })
       .catch(() => {
         document.getElementById('ei-resumen').textContent = 'No se pudo cargar ecosistema-rrss.json';

@@ -12,9 +12,9 @@
   "competidores": [
     "Echeverría Izquierdo",
     "Inarco",
-    "Icafal",
-    "Tecsa"
+    "Icafal"
   ],
+  "alcanceCompetencia": "Solo 3 competidores (sin Tecsa ni 5º).",
   "referenteWebComunicacional": {
     "nombre": "Echeverría Izquierdo",
     "web": "https://ei.cl/",
@@ -44,8 +44,7 @@
   "pendientes": [
     "Detalle Instagram @grupoflesan (seguidores, posts, temáticas, periodicidad)",
     "Icafal: FB / YT / TikTok (IG+LI listos)",
-    "Tecsa: capturas IG/LI/FB/YT/TikTok",
-    "Competidor 5 (si aplica) o confirmar solo 4",
+    "EI / Inarco / Icafal: YT / TikTok si aplica",
     "Números Facebook Flesan y LinkedIn Flesan si aplica",
     "Copiar PDFs de valores/manual al repo"
   ]
