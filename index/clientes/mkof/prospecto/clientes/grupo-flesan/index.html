@@ -63,7 +63,7 @@
   <main>
     <div class="aviso">
       <strong>Nivel: general</strong>
-      Matriz: 3 competidores + Prospecto <strong>@grupoflesan</strong> (IG 4.168 · ER 1,82%). Fila Instagram ER (N=5).
+      Matriz: 3 competidores + Prospecto (IG 4.168 · ER 1,82% · LI <strong>33 mil</strong>).
     </div>
 
     <div class="card">
@@ -126,7 +126,7 @@
   </main>
   <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
   <script>
-    const v = '20260728-flesan-ig';
+    const v = '20260728-flesan-li';
     fetch('data/ecosistema-rrss.json?v=' + v, { cache: 'no-store' })
       .then((r) => r.json())
       .then((eco) => {
@@ -169,8 +169,9 @@
           `<strong>Comp.3 Icafal</strong> (@icafal_sa) IG <strong>${ig.icafal ? ig.icafal.display : '—'}</strong>` +
           ` · ER <strong>${er.icafal ? er.icafal.display : '—'}</strong>` +
           ` · LI <strong>${li.icafal ? li.icafal.display : '—'}</strong><br>` +
-          `<strong>Prospecto @grupoflesan</strong> IG <strong>${ig.flesan ? ig.flesan.display : '—'}</strong>` +
-          ` · ER <strong>${er.flesan ? er.flesan.display : '—'}</strong>.`;
+          `<strong>Prospecto</strong> IG <strong>${ig.flesan ? ig.flesan.display : '—'}</strong>` +
+          ` · ER <strong>${er.flesan ? er.flesan.display : '—'}</strong>` +
+          ` · LI <strong>${li.flesan ? li.flesan.display : '—'}</strong>.`;
       })
       .catch(() => {
         document.getElementById('ei-resumen').textContent = 'No se pudo cargar ecosistema-rrss.json';

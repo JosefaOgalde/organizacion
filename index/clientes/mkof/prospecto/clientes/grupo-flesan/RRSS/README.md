@@ -32,7 +32,8 @@ Fuentes: `ig-ei-perfil-2026-07-28`, `ig-ei-posts-2026-07-28`, `li-ei-2026-07-28`
 |------|-------|
 | IG | [@grupoflesan](https://www.instagram.com/grupoflesan/) · **4.168** seguidores · 466 posts |
 | IG ER muestra | **1,82%** (N=5 · likes 92+49+109+60+66 · com. 0+0+0+1+2) → [`data/ig-er-flesan-muestra.json`](./data/ig-er-flesan-muestra.json) |
-| Nota | Contenidos en collab con DVC / Flesan.ic; muestra más antigua que la de competidores |
+| LinkedIn | **33 mil** seguidores · Grupo Flesan Chile · 1 mil–5 mil emp. |
+| Nota | Contenidos en collab con DVC / Flesan.ic; muestra ER más antigua que la de competidores |
 
 **Códigos para consola del navegador (F12):** ver [`CODIGOS-CONSOLA.md`](./CODIGOS-CONSOLA.md).
 

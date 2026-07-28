@@ -2,7 +2,7 @@
   "titulo": "ECOSISTEMA RRSS",
   "fecha": "2026-07-28",
   "nivel": "general",
-  "notaPresentacion": "PROSPECTO @grupoflesan: IG 4.168 · ER 1,82% (N=5). Competidores: EI · Inarco · Icafal. XX mill / — = pendiente.",
+  "notaPresentacion": "PROSPECTO: IG 4.168 · ER 1,82% · LI 33 mil. Competidores: EI · Inarco · Icafal. XX mill / — = pendiente.",
   "plataformas": [
     "Facebook",
     "Instagram",
@@ -208,9 +208,16 @@
         "estado": "OK"
       },
       "flesan": {
-        "display": "XX mill",
-        "estado": "PENDIENTE",
-        "nota": "No en footer de los 3 sitios"
+        "valor": 33000,
+        "display": "33 mil",
+        "empleadosDisplay": "1 mil-5 mil",
+        "industria": "Construcción",
+        "ubicacion": "Las Condes, Región Metropolitana de Santiago",
+        "nombrePagina": "Grupo Flesan Chile",
+        "url": "https://www.linkedin.com/company/grupo-flesan/",
+        "fuenteId": "li-grupoflesan-2026-07-28",
+        "exacto": "33 mil seguidores · 1 mil-5 mil empleados (screenshot LinkedIn 2026-07-28)",
+        "estado": "OK"
       }
     },
     "YouTube": {
