@@ -2719,12 +2719,11 @@
       .map((prod) => {
         const c = costoProducto(prod);
         const precio = precioVentaProducto(prod, c.total);
-        const precioEsManual = Number(prod.precioVentaSugeridoClp) > 0;
         return `<tr>
           <td><span class="imp-sku">${escapeHtml(prod.sku || '—')}</span></td>
           <td>${escapeHtml(prod.nombre || '')}</td>
           <td class="num">${money(c.total)}</td>
-          <td class="num"><strong>${money(precio)}</strong>${precioEsManual ? ' <span class="imp-muted">manual</span>' : ''}</td>
+          <td class="num"><strong>${money(precio)}</strong></td>
         </tr>`;
       })
       .join('');
