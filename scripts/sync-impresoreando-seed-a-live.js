@@ -195,6 +195,7 @@ function main() {
   }
 
   // Actualiza ventas seed existentes (p. ej. pedidoId consolidado) sin pisar montos locales distintos.
+  const venIds = new Set(live.ventas.filter((v) => v && v.id).map((v) => v.id));
   for (const sv of seed.ventas || []) {
     if (!sv || !sv.id) continue;
     if (!venIds.has(sv.id)) {
