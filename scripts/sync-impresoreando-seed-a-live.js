@@ -141,7 +141,53 @@ function main() {
       if (sp.montoNeto != null) existing.montoNeto = sp.montoNeto;
       if (sp.montoBruto != null) existing.montoBruto = sp.montoBruto;
       if (sp.descuentoClp != null) existing.descuentoClp = sp.descuentoClp;
+      if (Array.isArray(sp.items) && sp.items.length) {
+        existing.items = JSON.parse(JSON.stringify(sp.items));
+      }
       changed += 1;
+    } else if (sp.estado === 'transferido' && existing.estado === 'transferido') {
+      let touched = false;
+      if (sp.ventaId && existing.ventaId !== sp.ventaId) {
+        existing.ventaId = sp.ventaId;
+        touched = true;
+      }
+      if (sp.montoNeto != null && Number(existing.montoNeto) !== Number(sp.montoNeto)) {
+        existing.montoNeto = sp.montoNeto;
+        if (sp.montoBruto != null) existing.montoBruto = sp.montoBruto;
+        touched = true;
+      }
+      if (sp.notas && existing.notas !== sp.notas) {
+        existing.notas = sp.notas;
+        touched = true;
+      }
+      const seedIt = (sp.items || [])[0];
+      const liveIt = (existing.items || [])[0];
+      if (seedIt && liveIt) {
+        if (
+          seedIt.filamento &&
+          liveIt.filamento !== seedIt.filamento
+        ) {
+          liveIt.filamento = seedIt.filamento;
+          touched = true;
+        }
+        if (
+          seedIt.precioUnitarioClp != null &&
+          Number(liveIt.precioUnitarioClp) !== Number(seedIt.precioUnitarioClp)
+        ) {
+          liveIt.precioUnitarioClp = seedIt.precioUnitarioClp;
+          touched = true;
+        }
+        if (seedIt.estado && liveIt.estado !== seedIt.estado) {
+          liveIt.estado = seedIt.estado;
+          touched = true;
+        }
+        if (seedIt.listos != null && Number(liveIt.listos) !== Number(seedIt.listos)) {
+          liveIt.listos = seedIt.listos;
+          liveIt.enImpresion = seedIt.enImpresion != null ? seedIt.enImpresion : 0;
+          touched = true;
+        }
+      }
+      if (touched) changed += 1;
     } else if (sp.ventaId && existing.ventaId !== sp.ventaId) {
       existing.ventaId = sp.ventaId;
       changed += 1;
