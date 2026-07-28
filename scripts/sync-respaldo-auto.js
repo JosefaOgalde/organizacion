@@ -28,57 +28,16 @@ function marcaTiempo(obj, mtimeMs) {
   return Number.isFinite(parsed) ? parsed : mtimeMs;
 }
 
-function candidatos() {
-  const list = [];
-  const dirs = [DATA_DIR, DOWNLOADS].filter((d) => d && fs.existsSync(d));
-
-  dirs.forEach((dir) => {
-    let files = [];
-    try {
-      files = fs.readdirSync(dir);
-    } catch {
-      return;
-    }
-    files.forEach((name) => {
-      if (!/^organizacion-respaldo-.*\.json$/i.test(name)) return;
-      if (/ejemplo/i.test(name)) return;
-      const abs = path.join(dir, name);
-      try {
-        const st = fs.statSync(abs);
-        if (!st.isFile()) return;
-        const obj = leerJson(abs);
-        if (!obj) return;
-        list.push({ path: abs, obj, mtime: st.mtimeMs, score: marcaTiempo(obj, st.mtimeMs) });
-      } catch {
-        /* ignore */
-      }
-    });
-  });
-
-  if (fs.existsSync(LIVE)) {
-    try {
-      const st = fs.statSync(LIVE);
-      const obj = leerJson(LIVE);
-      if (obj) {
-        list.push({ path: LIVE, obj, mtime: st.mtimeMs, score: marcaTiempo(obj, st.mtimeMs), esLive: true });
-      }
-    } catch {
-      /* ignore */
-    }
-  }
-
-  return list;
-}
-
 function main() {
   const force = process.argv.includes('--force');
-  const all = candidatos().filter((c) => !c.esLive);
+  const soloRepo = process.argv.includes('--solo-repo');
+  const all = candidatos({ soloRepo }).filter((c) => !c.esLive);
   if (!all.length) {
     if (fs.existsSync(LIVE) && leerJson(LIVE)) {
       console.log('[sync] Usando organizacion-live.json existente');
       return;
     }
-    console.log('[sync] Sin respaldos organizacion-respaldo-*.json en data/ ni Descargas');
+    console.log('[sync] Sin respaldos organizacion-respaldo-*.json en data/' + (soloRepo ? '' : ' ni Descargas'));
     return;
   }
 
@@ -135,7 +94,51 @@ function main() {
 
   console.log('[sync] Actualizado data/organizacion-live.json ←', mejor.path);
   console.log('[sync] Fecha respaldo:', mejor.obj.respaldoActualizado || '(sin fecha)');
-  if (force) console.log('[sync] Modo --force (ignoró comparación con live anterior)');
+  if (force) console.log('[sync] Modo --force' + (soloRepo ? ' --solo-repo (solo data/ del repo)' : ''));
+}
+
+function candidatos({ soloRepo = false } = {}) {
+  const list = [];
+  const dirs = soloRepo
+    ? [DATA_DIR].filter((d) => d && fs.existsSync(d))
+    : [DATA_DIR, DOWNLOADS].filter((d) => d && fs.existsSync(d));
+
+  dirs.forEach((dir) => {
+    let files = [];
+    try {
+      files = fs.readdirSync(dir);
+    } catch {
+      return;
+    }
+    files.forEach((name) => {
+      if (!/^organizacion-respaldo-.*\.json$/i.test(name)) return;
+      if (/ejemplo/i.test(name)) return;
+      const abs = path.join(dir, name);
+      try {
+        const st = fs.statSync(abs);
+        if (!st.isFile()) return;
+        const obj = leerJson(abs);
+        if (!obj) return;
+        list.push({ path: abs, obj, mtime: st.mtimeMs, score: marcaTiempo(obj, st.mtimeMs) });
+      } catch {
+        /* ignore */
+      }
+    });
+  });
+
+  if (fs.existsSync(LIVE)) {
+    try {
+      const st = fs.statSync(LIVE);
+      const obj = leerJson(LIVE);
+      if (obj) {
+        list.push({ path: LIVE, obj, mtime: st.mtimeMs, score: marcaTiempo(obj, st.mtimeMs), esLive: true });
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  return list;
 }
 
 main();
