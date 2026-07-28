@@ -75,8 +75,14 @@ class ClienteSeeder extends Seeder
                 'agente' => $c['agente'] ?? null,
                 'resumen' => $c['resumen'] ?? null,
             ];
-            // Solo si la columna existe (migración add_activo en DBs viejas).
-            if (Schema::hasColumn('clientes', 'activo')) {
+            // Solo si la columna existe (migración add_activo / script asegurar-columna).
+            $tieneActivo = false;
+            try {
+                $tieneActivo = Schema::hasColumn('clientes', 'activo');
+            } catch (\Throwable $e) {
+                $tieneActivo = false;
+            }
+            if ($tieneActivo) {
                 $payload['activo'] = array_key_exists('activo', $c) ? (bool) $c['activo'] : true;
             }
             Cliente::updateOrCreate(

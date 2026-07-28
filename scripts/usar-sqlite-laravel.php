@@ -129,7 +129,7 @@ PHP;
     echo "  · Migración clientes ya existe\n";
 }
 
-// DB vieja sin columna activo → migración add_activo (idempotente)
+// DB vieja sin columna activo → migración add_activo (idempotente) + ALTER directo
 $hasAddActivo = false;
 foreach (glob($migDir . DIRECTORY_SEPARATOR . '*add_activo*clientes*') ?: [] as $f) {
     $hasAddActivo = true;
@@ -138,14 +138,7 @@ foreach (glob($migDir . DIRECTORY_SEPARATOR . '*add_activo*clientes*') ?: [] as 
 if (!$hasAddActivo) {
     $stamp = date('Y_m_d_His', time() + 1);
     $targetAdd = $migDir . DIRECTORY_SEPARATOR . "{$stamp}_add_activo_to_clientes_table.php";
-    $srcAdd = $ej . DIRECTORY_SEPARATOR . 'migration_add_activo_to_clientes.php';
-    if (is_file($srcAdd)) {
-        // Quitar bloque de comentario de documentación del ejemplo
-        $raw = file_get_contents($srcAdd);
-        $raw = preg_replace('/^<\?php\s*\/\*\*.*?\*\/\s*/s', "<?php\n\n", $raw, 1) ?: $raw;
-        file_put_contents($targetAdd, $raw);
-    } else {
-        $migAdd = <<<'PHP'
+    $migAdd = <<<'PHP'
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -175,11 +168,33 @@ return new class extends Migration
     }
 };
 PHP;
-        file_put_contents($targetAdd, $migAdd);
-    }
+    file_put_contents($targetAdd, $migAdd);
     echo "  · Migración add_activo_to_clientes_table creada\n";
 } else {
     echo "  · Migración add_activo ya existe\n";
+}
+
+// Cinturón: ALTER directo en SQLite si la tabla existe y falta la columna
+if (is_file($dbFile)) {
+    try {
+        $pdo = new PDO('sqlite:' . $dbFile);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $hasTable = (bool) $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name='clientes'")->fetchColumn();
+        if ($hasTable) {
+            $cols = [];
+            foreach ($pdo->query('PRAGMA table_info(clientes)') as $row) {
+                $cols[strtolower((string) $row['name'])] = true;
+            }
+            if (!isset($cols['activo'])) {
+                $pdo->exec('ALTER TABLE clientes ADD COLUMN activo INTEGER NOT NULL DEFAULT 1');
+                echo "  · ALTER TABLE clientes ADD activo (SQLite directo)\n";
+            } else {
+                echo "  · SQLite clientes.activo OK\n";
+            }
+        }
+    } catch (Throwable $e) {
+        echo "  · Aviso ALTER activo: " . $e->getMessage() . "\n";
+    }
 }
 
 echo "\nSiguiente (en backend):\n";

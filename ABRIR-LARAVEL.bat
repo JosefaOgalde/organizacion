@@ -77,12 +77,15 @@ if not errorlevel 1 (
   )
 )
 
-echo  1^) SQLite + seed clientes...
+echo " 1^) SQLite + seed clientes...
 "%PHP_EXE%" scripts\usar-sqlite-laravel.php
 if errorlevel 1 (
   pause
   exit /b 1
 )
+
+echo  1b^) Asegurar columna clientes.activo...
+"%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
 
 echo  2^) Rutas API + frontend unificado...
 "%PHP_EXE%" scripts\configurar-laravel-unificado.php
@@ -96,6 +99,12 @@ pushd backend
 "%PHP_EXE%" artisan config:clear >nul 2>&1
 "%PHP_EXE%" artisan route:clear >nul 2>&1
 "%PHP_EXE%" artisan migrate --force
+popd
+
+echo  3a^) Columna activo (por si migrate no la añadió)...
+"%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
+
+pushd backend
 "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
 popd
 
