@@ -12,10 +12,11 @@ Negocio de **impresiones 3D** (Instagram: **@impresoreando**). Sociedad **50/50*
 
 ## Panel (gastos, ventas, luz, costos, ads)
 
-URL local:
+URL local (tras `ABRIR-LARAVEL.bat`):
 
 ```
-http://localhost:3000/index/clientes/impresoreando/panel/
+http://127.0.0.1:8000/index/clientes/impresoreando/panel/
+http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen
 ```
 
 Incluye:
@@ -37,28 +38,23 @@ Los datos se guardan en disco vía API:
 
 ## Comandos Windows
 
-En `C:\Users\Josefa Ogalde\organizacion` (con comillas por el espacio):
+Flujo unificado (igual que el resto del repo):
 
 ```bat
 cd /d "C:\Users\Josefa Ogalde\organizacion"
-git checkout cursor/impresoreando-6a09
-ABRIR-IMPRESOREANDO.bat
-```
-
-O:
-
-```bat
-node scripts\organizacion-server.js
+git pull
+ABRIR-LARAVEL.bat
 ```
 
 Abre:
 
 | Qué | URL |
 |-----|-----|
-| Panel socios | http://localhost:3000/index/clientes/impresoreando/panel/ |
-| Calculadora de productos | http://localhost:3000/index/clientes/impresoreando/panel/?tab=costos |
-| Landing | http://localhost:3000/index/clientes/impresoreando/ |
-| Portal | http://localhost:3000/index/clientes/ |
+| Panel socios | http://127.0.0.1:8000/index/clientes/impresoreando/panel/ |
+| Resumen | http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen |
+| Calculadora de productos | http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=costos |
+| Landing | http://127.0.0.1:8000/index/clientes/impresoreando/ |
+| Portal | http://127.0.0.1:8000/index/clientes/ |
 
 ## Que tu socio vea y edite (online)
 

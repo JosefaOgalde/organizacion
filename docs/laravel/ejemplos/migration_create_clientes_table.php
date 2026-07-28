@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('abrev', 16);
             $table->enum('tipo', ['full-time', 'freelance', 'oportunidad', 'personal'])->default('freelance');
+            $table->boolean('activo')->default(true);
             $table->char('color_border', 7)->nullable();
             $table->char('color_bg', 7)->nullable();
             $table->char('color_text', 7)->nullable();

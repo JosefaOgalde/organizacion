@@ -57,14 +57,23 @@ if not exist "data\impresoreando-live.json" (
 where node >nul 2>&1
 if not errorlevel 1 (
   if exist "scripts\sync-respaldo-auto.js" (
-    echo  0^) Sync respaldo local...
-    node scripts\sync-respaldo-auto.js --force 2>nul
+    echo  0^) Sync respaldo (solo data\ del repo; NO Descargas; no pisa live mas nuevo)...
+    node scripts\sync-respaldo-auto.js --solo-repo 2>nul
   )
   if exist "scripts\asegurar-impresoreando-live.js" (
     node scripts\asegurar-impresoreando-live.js 2>nul
   )
-  if exist "scripts\sync-impresoreando-pedidos-organizacion.js" (
-    node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo 2>nul
+  if exist "scripts\sync-impresoreando-seed-a-live.js" (
+    echo  0b^) Sync pedidos Impresoreando seed → live...
+    node scripts\sync-impresoreando-seed-a-live.js
+  )
+  if exist "scripts\add-ecr-trade-marketing-mis-servicios.js" (
+    echo  0c^) Asegurar tarea ECR Trade Marketing...
+    node scripts\add-ecr-trade-marketing-mis-servicios.js --also-respaldo
+  )
+  if exist "scripts\asegurar-tareas-cerradas.js" (
+    echo  0d^) Re-cerrar tareas que ya estaban hechas...
+    node scripts\asegurar-tareas-cerradas.js --also-respaldo
   )
 )
 
@@ -74,6 +83,9 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
+
+echo  1b^) Asegurar columna clientes.activo...
+"%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
 
 echo  2^) Rutas API + frontend unificado...
 "%PHP_EXE%" scripts\configurar-laravel-unificado.php
@@ -87,12 +99,43 @@ pushd backend
 "%PHP_EXE%" artisan config:clear >nul 2>&1
 "%PHP_EXE%" artisan route:clear >nul 2>&1
 "%PHP_EXE%" artisan migrate --force
+popd
+
+echo  3a^) Columna activo (por si migrate no la anadio)...
+"%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
+
+pushd backend
+echo  3a2^) Seed clientes...
 "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
+if errorlevel 1 (
+  echo  [AVISO] Seed fallo — reintento tras ALTER activo...
+  popd
+  "%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
+  "%PHP_EXE%" scripts\usar-sqlite-laravel.php
+  pushd backend
+  "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
+  if errorlevel 1 (
+    echo  [ERROR] Seed clientes fallo. Corre REPARAR-SQLITE-ACTIVO.bat
+    echo  o copia el texto rojo y pegalo en el chat.
+    popd
+    pause
+    exit /b 1
+  )
+)
 popd
 
 if exist "scripts\limpiar-clientes-duplicados.php" (
   echo  3b^) Limpiar clientes duplicados en SQLite...
   "%PHP_EXE%" scripts\limpiar-clientes-duplicados.php
+)
+
+REM Pedidos → organizador AL FINAL (madre en fecha de hoy; no lo pise sync-respaldo)
+where node >nul 2>&1
+if not errorlevel 1 (
+  if exist "scripts\sync-impresoreando-pedidos-organizacion.js" (
+    echo  3c^) Sync pedidos Impresoreando → organizador ^(madre = hoy^)...
+    node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo
+  )
 )
 
 if not exist "data\organizacion-live.json" (

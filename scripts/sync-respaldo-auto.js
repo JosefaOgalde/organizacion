@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 /**
  * Sincroniza el respaldo más reciente → data/organizacion-live.json
- * Busca en data/ y en Descargas del usuario. Sin intervención manual.
+ *
+ * Por defecto busca en data/ y en Descargas.
+ * --solo-repo → solo data/ del repo (no Descargas; evita pisar con JSON viejo de Downloads).
+ * --force → sobrescribe live aunque sea más nuevo (usar con cuidado; ABRIR ya NO lo usa).
  */
 const fs = require('fs');
 const path = require('path');
@@ -28,9 +31,80 @@ function marcaTiempo(obj, mtimeMs) {
   return Number.isFinite(parsed) ? parsed : mtimeMs;
 }
 
-function candidatos() {
+function main() {
+  const force = process.argv.includes('--force');
+  const soloRepo = process.argv.includes('--solo-repo');
+  const all = candidatos({ soloRepo }).filter((c) => !c.esLive);
+  if (!all.length) {
+    if (fs.existsSync(LIVE) && leerJson(LIVE)) {
+      console.log('[sync] Usando organizacion-live.json existente');
+      return;
+    }
+    console.log('[sync] Sin respaldos organizacion-respaldo-*.json en data/' + (soloRepo ? '' : ' ni Descargas'));
+    return;
+  }
+
+  all.sort((a, b) => b.score - a.score || b.mtime - a.mtime);
+  const mejor = all[0];
+
+  if (!force && fs.existsSync(LIVE)) {
+    const liveMtime = fs.statSync(LIVE).mtimeMs;
+    const liveObj = leerJson(LIVE);
+    const liveScore = liveObj ? marcaTiempo(liveObj, liveMtime) : 0;
+    if (mejor.mtime <= liveMtime && mejor.score <= liveScore) {
+      console.log('[sync] Live ya al día ←', path.basename(mejor.path));
+      return;
+    }
+  }
+
+  fs.mkdirSync(path.dirname(LIVE), { recursive: true });
+
+  /** No reabrir tareas que en el live actual ya estaban cerradas / fijadas. */
+  let prevLive = null;
+  if (fs.existsSync(LIVE)) {
+    prevLive = leerJson(LIVE);
+  }
+
+  fs.copyFileSync(mejor.path, LIVE);
+
+  if (prevLive && Array.isArray(prevLive.tareas)) {
+    const nuevo = leerJson(LIVE);
+    if (nuevo && Array.isArray(nuevo.tareas)) {
+      const prevById = new Map(prevLive.tareas.filter((t) => t && t.id).map((t) => [t.id, t]));
+      let preserved = 0;
+      for (const t of nuevo.tareas) {
+        if (!t || !t.id) continue;
+        const prev = prevById.get(t.id);
+        if (!prev) continue;
+        if (prev.completada === true || prev.estadoFijado === true) {
+          if (t.completada !== true || t.pendiente === true || t.estadoFijado !== prev.estadoFijado) {
+            t.completada = prev.completada === true;
+            t.pendiente = false;
+            if (prev.estadoFijado === true) t.estadoFijado = true;
+            preserved += 1;
+          }
+        }
+      }
+      if (preserved) {
+        nuevo.respaldoActualizado = new Date().toISOString();
+        if (!nuevo.meta || typeof nuevo.meta !== 'object') nuevo.meta = {};
+        nuevo.meta.actualizado = nuevo.respaldoActualizado;
+        fs.writeFileSync(LIVE, JSON.stringify(nuevo, null, 2) + '\n', 'utf8');
+        console.log('[sync] Preservadas', preserved, 'tareas ya cerradas/fijadas del live anterior');
+      }
+    }
+  }
+
+  console.log('[sync] Actualizado data/organizacion-live.json ←', mejor.path);
+  console.log('[sync] Fecha respaldo:', mejor.obj.respaldoActualizado || '(sin fecha)');
+  if (force) console.log('[sync] Modo --force' + (soloRepo ? ' --solo-repo (solo data/ del repo)' : ''));
+}
+
+function candidatos({ soloRepo = false } = {}) {
   const list = [];
-  const dirs = [DATA_DIR, DOWNLOADS].filter((d) => d && fs.existsSync(d));
+  const dirs = soloRepo
+    ? [DATA_DIR].filter((d) => d && fs.existsSync(d))
+    : [DATA_DIR, DOWNLOADS].filter((d) => d && fs.existsSync(d));
 
   dirs.forEach((dir) => {
     let files = [];
@@ -68,38 +142,6 @@ function candidatos() {
   }
 
   return list;
-}
-
-function main() {
-  const force = process.argv.includes('--force');
-  const all = candidatos().filter((c) => !c.esLive);
-  if (!all.length) {
-    if (fs.existsSync(LIVE) && leerJson(LIVE)) {
-      console.log('[sync] Usando organizacion-live.json existente');
-      return;
-    }
-    console.log('[sync] Sin respaldos organizacion-respaldo-*.json en data/ ni Descargas');
-    return;
-  }
-
-  all.sort((a, b) => b.score - a.score || b.mtime - a.mtime);
-  const mejor = all[0];
-
-  if (!force && fs.existsSync(LIVE)) {
-    const liveMtime = fs.statSync(LIVE).mtimeMs;
-    const liveObj = leerJson(LIVE);
-    const liveScore = liveObj ? marcaTiempo(liveObj, liveMtime) : 0;
-    if (mejor.mtime <= liveMtime && mejor.score <= liveScore) {
-      console.log('[sync] Live ya al día ←', path.basename(mejor.path));
-      return;
-    }
-  }
-
-  fs.mkdirSync(path.dirname(LIVE), { recursive: true });
-  fs.copyFileSync(mejor.path, LIVE);
-  console.log('[sync] Actualizado data/organizacion-live.json ←', mejor.path);
-  console.log('[sync] Fecha respaldo:', mejor.obj.respaldoActualizado || '(sin fecha)');
-  if (force) console.log('[sync] Modo --force (ignoró comparación con live anterior)');
 }
 
 main();

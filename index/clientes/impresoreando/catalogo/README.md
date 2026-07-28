@@ -10,9 +10,9 @@ Carrusel listo para Instagram (Stories / posts verticales).
 
 ## Ver en el navegador
 
-Con `SERVIR.bat` / `ABRIR-IMPRESOREANDO.bat`:
+Con `ABRIR-LARAVEL.bat`:
 
-http://localhost:3000/index/clientes/impresoreando/catalogo/
+http://127.0.0.1:8000/index/clientes/impresoreando/catalogo/
 
 ## Descargar PDF
 

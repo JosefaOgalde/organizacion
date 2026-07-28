@@ -19,18 +19,30 @@ Para no duplicar datos ni dejar info en cachés distintas, **siempre** el mismo 
 
 ## Pasos en cualquier PC (iguales siempre)
 
+**Importante:** los cambios actuales de Impresoreando (logo, PED-006, Fiados, Trade Marketing ECR, etc.) están en la rama  
+`cursor/impresoreando-maria-paz-venta-4e97`, **no en `main`**.  
+Si solo hacés `git pull` en `main`, vas a seguir viendo lo antiguo.
+
+### Opción recomendada
+Doble clic **`TRAER-CAMBIOS.bat`** (fetch + checkout de esa rama + pull + `ABRIR-LARAVEL.bat`).
+
+### Opción manual
 ```bat
 cd "C:\Users\Josefa Ogalde\organizacion"
+git fetch
+git checkout cursor/impresoreando-maria-paz-venta-4e97
 git pull
 ABRIR-LARAVEL.bat
 ```
 
-Abre solo:
+Abre solo (con `?disco=1`):
 
-- http://127.0.0.1:8000/index.html  
+- http://127.0.0.1:8000/index.html?disco=1  
 - http://127.0.0.1:8000/api/clientes  
 
-Si ves datos viejos: **Ctrl+Shift+R**.
+Si ves datos viejos: **Ctrl+Shift+R**. El sync de ABRIR solo usa `data\` del repo y **no pisa** un live más nuevo.
+
+Si aparece `SQLSTATE … no such column: activo`: doble clic **`REPARAR-SQLITE-ACTIVO.bat`**, luego `ABRIR-LARAVEL.bat`.
 
 ---
 

@@ -17,10 +17,15 @@ class Cliente extends Model
         'nombre',
         'abrev',
         'tipo',
+        'activo',
         'color_border',
         'color_bg',
         'color_text',
         'agente',
         'resumen',
+    ];
+
+    protected $casts = [
+        'activo' => 'boolean',
     ];
 }

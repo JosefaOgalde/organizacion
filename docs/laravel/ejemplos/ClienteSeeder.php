@@ -12,6 +12,8 @@ namespace Database\Seeders;
 
 use App\Models\Cliente;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use PDO;
 
 class ClienteSeeder extends Seeder
 {
@@ -30,6 +32,9 @@ class ClienteSeeder extends Seeder
 
     public function run(): void
     {
+        // Antes de cualquier UPDATE: la columna debe existir (DBs SQLite viejas).
+        $this->asegurarColumnaActivo();
+
         $path = dirname(base_path()) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'clientes-laravel-seed.json';
         if (!is_file($path)) {
             $this->command?->error("No existe $path");
@@ -52,31 +57,51 @@ class ClienteSeeder extends Seeder
             if (Cliente::query()->where('slug', $nuevo)->exists()) {
                 $row->delete();
             } else {
-                $row->slug = $nuevo;
-                $row->save();
+                // Solo tocar slug (evitar dirty de casts sobre columnas ausentes).
+                Cliente::query()->where('id', $row->id)->update(['slug' => $nuevo]);
             }
         }
 
         $preferidoPorAbrev = [];
+        $tieneActivo = $this->tieneColumnaActivo();
+
         foreach ($lista as $c) {
             $slug = $c['slug'] ?? null;
             if (!$slug) {
                 continue;
             }
             $abrev = strtoupper((string) ($c['abrev'] ?? substr($slug, 0, 4)));
-            Cliente::updateOrCreate(
-                ['slug' => $slug],
-                [
-                    'nombre' => $c['nombre'] ?? $slug,
-                    'abrev' => $abrev,
-                    'tipo' => $c['tipo'] ?? 'freelance',
-                    'color_border' => $c['color_border'] ?? null,
-                    'color_bg' => $c['color_bg'] ?? null,
-                    'color_text' => $c['color_text'] ?? null,
-                    'agente' => $c['agente'] ?? null,
-                    'resumen' => $c['resumen'] ?? null,
-                ]
-            );
+            $payload = [
+                'nombre' => $c['nombre'] ?? $slug,
+                'abrev' => $abrev,
+                'tipo' => $c['tipo'] ?? 'freelance',
+                'color_border' => $c['color_border'] ?? null,
+                'color_bg' => $c['color_bg'] ?? null,
+                'color_text' => $c['color_text'] ?? null,
+                'agente' => $c['agente'] ?? null,
+                'resumen' => $c['resumen'] ?? null,
+            ];
+            if ($tieneActivo) {
+                $payload['activo'] = array_key_exists('activo', $c) ? (bool) $c['activo'] : true;
+            }
+
+            try {
+                Cliente::updateOrCreate(['slug' => $slug], $payload);
+            } catch (\Throwable $e) {
+                $msg = $e->getMessage();
+                if (stripos($msg, 'activo') !== false) {
+                    $this->asegurarColumnaActivo();
+                    $tieneActivo = $this->tieneColumnaActivo();
+                    if ($tieneActivo) {
+                        $payload['activo'] = array_key_exists('activo', $c) ? (bool) $c['activo'] : true;
+                    } else {
+                        unset($payload['activo']);
+                    }
+                    Cliente::updateOrCreate(['slug' => $slug], $payload);
+                } else {
+                    throw $e;
+                }
+            }
             $preferidoPorAbrev[$abrev] = $slug;
         }
 
@@ -97,5 +122,42 @@ class ClienteSeeder extends Seeder
         }
 
         $this->command?->info('Clientes: ' . Cliente::count() . " (duplicados eliminados: $borrados)");
+    }
+
+    /** ALTER directo vía PDO (no depende de Schema::hasColumn / migraciones a medias). */
+    private function asegurarColumnaActivo(): void
+    {
+        try {
+            $pdo = DB::connection()->getPdo();
+            $hasTable = (bool) $pdo->query(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='clientes'"
+            )->fetchColumn();
+            if (!$hasTable) {
+                return;
+            }
+            if ($this->tieneColumnaActivo($pdo)) {
+                return;
+            }
+            $pdo->exec('ALTER TABLE clientes ADD COLUMN activo INTEGER NOT NULL DEFAULT 1');
+            $this->command?->info('Añadida columna clientes.activo (SQLite)');
+        } catch (\Throwable $e) {
+            $this->command?->warn('No se pudo asegurar columna activo: ' . $e->getMessage());
+        }
+    }
+
+    private function tieneColumnaActivo(?PDO $pdo = null): bool
+    {
+        try {
+            $pdo ??= DB::connection()->getPdo();
+            foreach ($pdo->query('PRAGMA table_info(clientes)') as $row) {
+                $name = is_array($row) ? ($row['name'] ?? $row[1] ?? '') : '';
+                if (strtolower((string) $name) === 'activo') {
+                    return true;
+                }
+            }
+        } catch (\Throwable $e) {
+            return false;
+        }
+        return false;
     }
 }

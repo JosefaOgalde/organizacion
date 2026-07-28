@@ -3,6 +3,10 @@
   const API = '/api/impresoreando';
   let data = null;
   let dirty = false;
+  /** Filtros tab Ventas: compras por cliente / origen. */
+  let ventasFiltroCliente = '';
+  let ventasFiltroOrigen = '';
+  let ventasFiltroTexto = '';
 
   const $ = (sel) => document.querySelector(sel);
   const money = (n) =>
@@ -66,6 +70,7 @@
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
     if (agruparGastosPorRegistro(d)) changed = true;
     if (asegurarParametrosLuzChileCentauri(d)) changed = true;
+    if (asegurarImpresoras(d)) changed = true;
     if (asegurarProductoPortacompletosGato(d)) changed = true;
     if (asegurarProductoPortacompletosPerro(d)) changed = true;
     if (asegurarProductoPortaLataMonster(d)) changed = true;
@@ -76,6 +81,11 @@
     if (asegurarProductoNaveEspacialVertical(d)) changed = true;
     if (asegurarProductoLlaveroEscudoRanger(d)) changed = true;
     if (asegurarProductoLlaveroPortaLipstickStanley(d)) changed = true;
+    if (asegurarProductoLlaveroPesaRusa(d)) changed = true;
+    if (asegurarProductoSoporteCelular(d)) changed = true;
+    if (asegurarRenombrarRosadoPastelAMorado(d)) changed = true;
+    if (asegurarProductoDragon(d)) changed = true;
+    if (asegurarProductoTorreon(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
@@ -281,6 +291,104 @@
     impresoraNotas:
       'Pico nominal 1100 W @ 220 V. Promedio estimado en impresión PLA con cama caliente: 0,28 kW. Tarifa ~$200/kWh (precio efectivo boleta residencial Chile 2026; ajústala a tu cuenta).',
   };
+
+  /**
+   * Perfiles de impresora para costos.
+   * Alias usuaria: «nueva» / Elegoo = Centauri · «antigua» = Ender 3 V2 Neo (Sprite Neo).
+   */
+  const IMPRESORAS_SEED = [
+    {
+      id: 'imp-centauri-carbon-2',
+      nombre: 'Elegoo Centauri Carbon 2',
+      alias: 'nueva',
+      activaDefault: true,
+      extrusor: 'Sistema stock / multicolor',
+      consumoImpresoraKw: 0.28,
+      tarifaKwhClp: 200,
+      recargoFijoClp: 0,
+      costoFilamentoDefaultKgClp: 0,
+      notas:
+        'Impresora NUEVA (Elegoo). Pico ~1100 W @ 220 V · promedio PLA ~0,28 kW. Default salvo que digan antigua/Ender.',
+    },
+    {
+      id: 'imp-ender-3-v2-neo',
+      nombre: 'Creality Ender 3 V2 Neo',
+      alias: 'antigua',
+      activaDefault: false,
+      extrusor: 'Sprite Neo (extrusión directa)',
+      consumoImpresoraKw: 0.16,
+      tarifaKwhClp: 200,
+      recargoFijoClp: 1000,
+      costoFilamentoDefaultKgClp: 0,
+      filamentoOtro: true,
+      notas:
+        'Impresora ANTIGUA (Ender 3 V2 Neo · Sprite Neo). Suele usar otro filamento (definir $/kg en el producto o en este perfil). Recargo fijo $1.000 + consumo ~0,16 kW. Si dicen «impresora antigua» → esta.',
+    },
+  ];
+
+  function asegurarImpresoras(d) {
+    d.impresoras = Array.isArray(d.impresoras) ? d.impresoras : [];
+    let changed = false;
+    const byId = new Map(d.impresoras.filter((x) => x && x.id).map((x) => [x.id, x]));
+    for (const seed of IMPRESORAS_SEED) {
+      const existing = byId.get(seed.id);
+      if (!existing) {
+        d.impresoras.push({ ...seed });
+        byId.set(seed.id, seed);
+        changed = true;
+        continue;
+      }
+      // Completa campos canónicos sin pisar $/kg ni consumo editados a mano.
+      if (!existing.nombre) {
+        existing.nombre = seed.nombre;
+        changed = true;
+      }
+      if (!existing.extrusor) {
+        existing.extrusor = seed.extrusor;
+        changed = true;
+      }
+      if (!existing.alias && seed.alias) {
+        existing.alias = seed.alias;
+        changed = true;
+      }
+      if (!(Number(existing.consumoImpresoraKw) > 0)) {
+        existing.consumoImpresoraKw = seed.consumoImpresoraKw;
+        changed = true;
+      }
+      if (!(Number(existing.tarifaKwhClp) > 0)) {
+        existing.tarifaKwhClp = seed.tarifaKwhClp;
+        changed = true;
+      }
+      if (existing.recargoFijoClp == null) {
+        existing.recargoFijoClp = seed.recargoFijoClp;
+        changed = true;
+      }
+      if (existing.filamentoOtro == null && seed.filamentoOtro) {
+        existing.filamentoOtro = true;
+        changed = true;
+      }
+      if (!existing.notas) {
+        existing.notas = seed.notas;
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  function impresoraPorId(id) {
+    const list = data?.impresoras || IMPRESORAS_SEED;
+    return list.find((x) => x.id === id) || null;
+  }
+
+  function impresoraDefault() {
+    const list = data?.impresoras || IMPRESORAS_SEED;
+    return list.find((x) => x.activaDefault) || list[0] || IMPRESORAS_SEED[0];
+  }
+
+  function impresoraDeProducto(prod) {
+    const id = prod?.impresoraId || '';
+    return (id && impresoraPorId(id)) || impresoraDefault();
+  }
 
   function asegurarParametrosLuzChileCentauri(d) {
     d.parametros = d.parametros && typeof d.parametros === 'object' ? d.parametros : {};
@@ -673,6 +781,351 @@
     });
   }
 
+  /** Llavero Pesa Rusa — slicer 16,78 g · 35 m 31 s · PLA amarillo + $50 argolla. Soft: no pisa si editadoLocal con g. */
+  function seedLlaveroPesaRusa() {
+    const filamentoModeloGramos = 16.31;
+    const filamentoPurgeGramos = 0.47;
+    const filamentoGramos = round2(filamentoModeloGramos + filamentoPurgeGramos); // 16,78
+    return {
+      sku: 'LLPESRU001',
+      nombre: 'Llavero Pesa Rusa',
+      activo: true,
+      filamentoModeloGramos,
+      filamentoSoportesGramos: 0,
+      filamentoPurgeGramos,
+      filamentoMetros: 5.58,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG,
+      horasImpresion: round2((35 + 31 / 60) / 60), // 35 m 31 s → 0,59 h
+      minutosPintado: 0,
+      unidadesMetal: 1,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 1000,
+      costoSlicerRef: 0.34,
+      pendienteCosto: false,
+      notas:
+        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 5,58 m · 35 m 31 s · coste slicer 0,34. PLA amarillo $16.829/kg. +$50 argolla. PVP $1.000.`,
+    };
+  }
+
+  function asegurarProductoLlaveroPesaRusa(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-llavero-pesa-rusa';
+    const seed = seedLlaveroPesaRusa();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    // Si aún no tenía g/h (pendiente) o quedó en 0, aplica slicer.
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (existing.unidadesMetal == null) {
+      existing.unidadesMetal = 1;
+      changed = true;
+    }
+    if (existing.pendienteCosto) {
+      existing.pendienteCosto = false;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /** Soporte celular — slicer 34,46 g · 57 m 30 s · PLA color (morado pastel). Soft: no pisa si ya tiene g. */
+  function seedSoporteCelular() {
+    const filamentoModeloGramos = 33.99;
+    const filamentoPurgeGramos = 0.47;
+    const filamentoGramos = round2(filamentoModeloGramos + filamentoPurgeGramos); // 34,46
+    return {
+      sku: 'SOPCEL001',
+      nombre: 'Soporte celular',
+      activo: true,
+      filamentoModeloGramos,
+      filamentoSoportesGramos: 0,
+      filamentoPurgeGramos,
+      filamentoMetros: 11.46,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG, // ref PLA color (morado pastel)
+      horasImpresion: round2((57 + 30 / 60) / 60), // 57 m 30 s → 0,96 h
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 4000,
+      costoSlicerRef: 0.69,
+      pendienteCosto: false,
+      notas:
+        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 11,46 m · 57 m 30 s · coste slicer 0,69. PLA morado pastel (ref $/kg color $16.829). Precio venta $4.000.`,
+    };
+  }
+
+  function asegurarProductoSoporteCelular(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-soporte-celular';
+    const seed = seedSoporteCelular();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    return changed;
+  }
+
+  /** Color vigente: «rosado pastel» → «morado pastel» (producto / pedidos / ventas). */
+  function renombrarRosadoPastel(texto) {
+    let s = String(texto || '');
+    if (!s) return s;
+    s = s.replace(/PLA rosado pastel/gi, 'PLA morado pastel');
+    s = s.replace(/rosado pastel/gi, 'morado pastel');
+    s = s.replace(/Soporte celular rosado(?!\s*pastel)/gi, 'Soporte celular morado pastel');
+    s = s.replace(/morado pastel pastel/gi, 'morado pastel');
+    return s;
+  }
+
+  function asegurarRenombrarRosadoPastelAMorado(d) {
+    let changed = false;
+    const touchStr = (obj, key) => {
+      if (!obj || obj[key] == null) return;
+      const next = renombrarRosadoPastel(obj[key]);
+      if (next !== obj[key]) {
+        obj[key] = next;
+        changed = true;
+      }
+    };
+    for (const p of d.productos || []) {
+      touchStr(p, 'notas');
+    }
+    for (const ped of d.pedidos || []) {
+      touchStr(ped, 'notas');
+      for (const it of ped.items || []) touchStr(it, 'filamento');
+    }
+    for (const v of d.ventas || []) {
+      touchStr(v, 'descripcion');
+      touchStr(v, 'notas');
+      for (const it of v.items || []) touchStr(it, 'filamento');
+    }
+    for (const b of d.bitacora || []) touchStr(b, 'texto');
+    return changed;
+  }
+
+  /** Dragón — slicer alto 275,41 g · 14 h 7 m · PVP $20.000. Soft seed. */
+  function seedDragon() {
+    const filamentoModeloGramos = 192.38;
+    const filamentoGramos = 275.41;
+    const filamentoSoportesGramos = round2(filamentoGramos - filamentoModeloGramos);
+    return {
+      sku: 'DRAGON001',
+      nombre: 'Dragón',
+      activo: true,
+      filamentoModeloGramos,
+      filamentoSoportesGramos,
+      filamentoPurgeGramos: 0,
+      filamentoMetros: 91.6,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG,
+      horasImpresion: round2((14 * 60 + 7) / 60), // 14 h 7 m
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 20000,
+      costoSlicerRef: 5.51,
+      pendienteCosto: false,
+      notas:
+        `Slicer (medición alta): modelo ${filamentoModeloGramos} g + soportes ${filamentoSoportesGramos} g = ${filamentoGramos} g · 91,6 m · 14 h 7 m · coste slicer 5,51. PLA color $16.829/kg. PVP $20.000.`,
+    };
+  }
+
+  function asegurarProductoDragon(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-dragon';
+    const seed = seedDragon();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
+      existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    } else if (Number(existing.precioVentaSugeridoClp) === 11000) {
+      // Migrar PVP viejo del seed → cobrado vigente $20.000
+      existing.precioVentaSugeridoClp = 20000;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /**
+   * Torreón — sin slicer (impresora antigua). Estimación ~120 g / 4 h + $1.000 recargo.
+   * Soft seed: no pisa si ya hay g reales de slicer.
+   */
+  function seedTorreon() {
+    const filamentoGramos = 120;
+    const horasImpresion = 4;
+    return {
+      sku: 'TORREON001',
+      nombre: 'Torreón',
+      activo: true,
+      impresoraId: 'imp-ender-3-v2-neo',
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 6500,
+      pendienteCosto: false,
+      estimacionSinSlicer: true,
+      notas:
+        `Estimación sin registro slicer · Ender 3 V2 Neo (Sprite Neo): ~${filamentoGramos} g · ~${horasImpresion} h · PLA color $16.829/kg + recargo perfil Ender. PVP $6.500.`,
+    };
+  }
+
+  function asegurarProductoTorreon(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-torreon';
+    const seed = seedTorreon();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (existing.impresoraId !== seed.impresoraId) {
+      existing.impresoraId = seed.impresoraId;
+      changed = true;
+    }
+    if (existing.recargoImpresoraAntiguaClp != null) {
+      delete existing.recargoImpresoraAntiguaClp;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.estimacionSinSlicer) {
+      // Solo completa huecos; no pisa si después hay slicer real (estimacionSinSlicer false + g).
+      if (existing.estimacionSinSlicer !== false) {
+        Object.assign(existing, seed);
+        delete existing.recargoImpresoraAntiguaClp;
+        return true;
+      }
+    }
+    return changed;
+  }
+
+  function formatearCodigoVenta(n) {
+    return `I${String(n).padStart(6, '0')}`;
+  }
+
+  /** Nombre + origen: SIE = trabajo Nicolás · MKOF = trabajo Josefa. No auto-poner SIE. */
+  function formatearClienteImp(nombre, segundoNombre, origen) {
+    const n = String(nombre || '').trim();
+    const s = String(segundoNombre || '').trim();
+    const o = String(origen || '').trim().toUpperCase();
+    const origenOk = o === 'SIE' || o === 'MKOF' ? o : '';
+    const parts = [n, s, origenOk].filter(Boolean);
+    return parts.join(' ');
+  }
+
+  function labelOrigenCliente(origen) {
+    const o = String(origen || '').toUpperCase();
+    if (o === 'SIE') return 'SIE · trabajo Nicolás';
+    if (o === 'MKOF') return 'MKOF · trabajo Josefa';
+    return '';
+  }
+
+  /** Separa "María José MKOF" → { nombre, segundoNombre, origen } (origen al final si es SIE/MKOF). */
+  function parseClienteImp(cliente, meta) {
+    if (meta && (meta.clienteNombre || meta.clienteOrigen)) {
+      return {
+        nombre: String(meta.clienteNombre || '').trim(),
+        segundoNombre: String(meta.clienteSegundoNombre || '').trim(),
+        origen: String(meta.clienteOrigen || '').trim().toUpperCase(),
+      };
+    }
+    const parts = String(cliente || '')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    if (!parts.length) return { nombre: '', segundoNombre: '', origen: '' };
+    const last = parts[parts.length - 1].toUpperCase();
+    if (last === 'SIE' || last === 'MKOF') {
+      const nameParts = parts.slice(0, -1);
+      return {
+        nombre: nameParts[0] || '',
+        segundoNombre: nameParts.slice(1).join(' '),
+        origen: last,
+      };
+    }
+    return { nombre: parts[0] || '', segundoNombre: parts.slice(1).join(' '), origen: '' };
+  }
+
+  function nextVentaCodigo(d) {
+    if (!d.meta || typeof d.meta !== 'object') d.meta = {};
+    const n = Number(d.meta.ventaSeq || 0) + 1;
+    d.meta.ventaSeq = n;
+    return formatearCodigoVenta(n);
+  }
+
+  function rebuildClientesHistorial(d) {
+    if (!d.meta || typeof d.meta !== 'object') d.meta = {};
+    const by = {};
+    for (const v of d.ventas || []) {
+      const c = String(v.cliente || '—').trim() || '—';
+      if (!by[c]) by[c] = { cliente: c, ventaCodigos: [], ventaIds: [], totalNeto: 0, compras: 0 };
+      const h = by[c];
+      h.compras += 1;
+      h.totalNeto += Number(v.montoNeto || 0);
+      if (v.codigo) h.ventaCodigos.push(v.codigo);
+      if (v.id) h.ventaIds.push(v.id);
+    }
+    d.meta.clientesHistorial = Object.values(by).sort(
+      (a, b) => b.compras - a.compras || a.cliente.localeCompare(b.cliente, 'es')
+    );
+    return d.meta.clientesHistorial;
+  }
+
   /** Ventas base del seed: si el live quedó vacío (o sin ese id), las reinyecta. No pisa ventas nuevas. */
   function asegurarVentasSeed(d) {
     d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
@@ -680,52 +1133,22 @@
     const SEED_VENTAS = [
       {
         id: 'ven-mrpqov4c',
+        codigo: 'I000001',
         fecha: '2026-07-18',
-        cliente: 'Tito',
+        cliente: 'Tito MKOF',
         descripcion: 'Portacompletos ×6 (4 perros + 2 gatos)',
         cantidad: 6,
         montoNeto: 15000,
         canal: 'WhatsApp',
-        notas: 'Cliente Tito · 4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000',
+        notas: 'Cliente Tito MKOF · 4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000',
         socioRegistro: 'Ambos',
-      },
-      {
-        id: 'ven-cata-gatos-001',
-        fecha: '2026-07-23',
-        cliente: 'Cata',
-        descripcion: '4× Porta Completos Gato (2 negros + 2 naranjos)',
-        cantidad: 4,
-        montoBruto: 10000,
-        descuentoClp: 0,
-        montoNeto: 10000,
-        costoTotal: 13684.68,
-        canal: 'WhatsApp',
-        notas: '2× gatos negros + 2× gatos naranjos (porta completo) · cobrado $10.000',
-        socioRegistro: 'Ambos',
-        items: [
-          {
-            sku: 'PCGATO001',
-            nombre: 'Porta Completos Gato (negro)',
-            cantidad: 2,
-            precioUnitarioClp: 2500,
-            costoUnitarioClp: 3421.17,
-            filamento: 'PLA negro',
-          },
-          {
-            sku: 'PCGATO001',
-            nombre: 'Porta Completos Gato (naranjo)',
-            cantidad: 2,
-            precioUnitarioClp: 2500,
-            costoUnitarioClp: 3421.17,
-            filamento: 'PLA naranjo',
-          },
-        ],
       },
       {
         id: 'ven-gianni-bulldog-002',
+        codigo: 'I000002',
         fecha: '2026-07-18',
-        cliente: 'Gianni',
-        descripcion: 'PED-002 · 1× Macetero + 4× Porta Completo Bulldog · Gianni',
+        cliente: 'Gianni SIE',
+        descripcion: 'PED-002 · 1× Macetero + 4× Porta Completo Bulldog · Gianni SIE',
         cantidad: 5,
         montoBruto: 15000,
         descuentoClp: 0,
@@ -737,29 +1160,16 @@
         pedidoId: 'ped-gianni-bulldog-002',
         pedidoNumero: 'PED-002',
         items: [
-          {
-            sku: 'MCPEBUL001',
-            nombre: 'Macetero Perro Bulldog',
-            cantidad: 1,
-            precioUnitarioClp: 3000,
-            costoUnitarioClp: 1981.34,
-            filamento: 'PLA+ negro',
-          },
-          {
-            sku: 'PCPEBUL001',
-            nombre: 'Porta Completo Perro Bulldog',
-            cantidad: 4,
-            precioUnitarioClp: 3000,
-            costoUnitarioClp: 1335.86,
-            filamento: 'PLA+ negro',
-          },
+          { sku: 'MCPEBUL001', nombre: 'Macetero Perro Bulldog', cantidad: 1, precioUnitarioClp: 3000, costoUnitarioClp: 1981.34, filamento: 'PLA+ negro' },
+          { sku: 'PCPEBUL001', nombre: 'Porta Completo Perro Bulldog', cantidad: 4, precioUnitarioClp: 3000, costoUnitarioClp: 1335.86, filamento: 'PLA+ negro' },
         ],
       },
       {
         id: 'ven-juan-naves-003',
+        codigo: 'I000003',
         fecha: '2026-07-19',
-        cliente: 'Juan',
-        descripcion: 'PED-003 · 2× Naves espaciales · Juan',
+        cliente: 'Juan SIE',
+        descripcion: 'PED-003 · 2× Naves espaciales · Juan SIE',
         cantidad: 2,
         montoBruto: 15000,
         descuentoClp: 0,
@@ -771,28 +1181,34 @@
         pedidoId: 'ped-naves-espaciales-003',
         pedidoNumero: 'PED-003',
         items: [
-          {
-            sku: 'NAVEHOR001',
-            nombre: 'Nave Espacial Horizontal',
-            cantidad: 1,
-            precioUnitarioClp: 7500,
-            costoUnitarioClp: 647.55,
-            filamento: 'PLA blanco',
-          },
-          {
-            sku: 'NAVEVERT001',
-            nombre: 'Nave Espacial Vertical',
-            cantidad: 1,
-            precioUnitarioClp: 7500,
-            costoUnitarioClp: 915.14,
-            filamento: 'PLA blanco',
-          },
+          { sku: 'NAVEHOR001', nombre: 'Nave Espacial Horizontal', cantidad: 1, precioUnitarioClp: 7500, costoUnitarioClp: 647.55, filamento: 'PLA blanco' },
+          { sku: 'NAVEVERT001', nombre: 'Nave Espacial Vertical', cantidad: 1, precioUnitarioClp: 7500, costoUnitarioClp: 915.14, filamento: 'PLA blanco' },
+        ],
+      },
+      {
+        id: 'ven-cata-gatos-001',
+        codigo: 'I000004',
+        fecha: '2026-07-23',
+        cliente: 'Cata SIE',
+        descripcion: '4× Porta Completos Gato (2 negros + 2 naranjos)',
+        cantidad: 4,
+        montoBruto: 10000,
+        descuentoClp: 0,
+        montoNeto: 10000,
+        costoTotal: 13684.68,
+        canal: 'WhatsApp',
+        notas: '2× gatos negros + 2× gatos naranjos (porta completo) · cobrado $10.000',
+        socioRegistro: 'Ambos',
+        items: [
+          { sku: 'PCGATO001', nombre: 'Porta Completos Gato (negro)', cantidad: 2, precioUnitarioClp: 2500, costoUnitarioClp: 3421.17, filamento: 'PLA negro' },
+          { sku: 'PCGATO001', nombre: 'Porta Completos Gato (naranjo)', cantidad: 2, precioUnitarioClp: 2500, costoUnitarioClp: 3421.17, filamento: 'PLA naranjo' },
         ],
       },
       {
         id: 'ven-marcia-stanley-001',
+        codigo: 'I000005',
         fecha: '2026-07-23',
-        cliente: 'Marcia',
+        cliente: 'Marcia SIE',
         descripcion: '1× Llavero Porta Lipstick Stanley',
         cantidad: 1,
         montoBruto: 3000,
@@ -803,20 +1219,14 @@
         notas: '1× llavero Stanley · cobrado $3.000',
         socioRegistro: 'Ambos',
         items: [
-          {
-            sku: 'LLSTANDL001',
-            nombre: 'Llavero Porta Lipstick Stanley',
-            cantidad: 1,
-            precioUnitarioClp: 3000,
-            costoUnitarioClp: 477.93,
-            filamento: 'PLA blanco',
-          },
+          { sku: 'LLSTANDL001', nombre: 'Llavero Porta Lipstick Stanley', cantidad: 1, precioUnitarioClp: 3000, costoUnitarioClp: 477.93, filamento: 'PLA blanco' },
         ],
       },
       {
         id: 'ven-gianni-bob-001',
+        codigo: 'I000006',
         fecha: '2026-07-23',
-        cliente: 'Gianni',
+        cliente: 'Gianni SIE',
         descripcion: '1× Porta Bob Esponja',
         cantidad: 1,
         montoBruto: 7000,
@@ -827,17 +1237,192 @@
         notas: '1× Porta Bob Esponja · cobrado $7.000',
         socioRegistro: 'Ambos',
         items: [
+          { sku: 'PTBOBES001', nombre: 'Porta Bob Esponja', cantidad: 1, precioUnitarioClp: 7000, costoUnitarioClp: 998.17, filamento: 'multicolor' },
+        ],
+      },
+      {
+        id: 'ven-rebe-monster-007',
+        codigo: 'I000007',
+        fecha: '2026-07-26',
+        cliente: 'Rebe SIE',
+        descripcion: 'PED-001 · 1× Porta Lata Monster · Rebe SIE',
+        cantidad: 1,
+        montoBruto: 7000,
+        descuentoClp: 0,
+        montoNeto: 7000,
+        costoTotal: 2839.6,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-001 · 1× vaso/porta Monster · cobrado $7.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-rebe-plmons-001',
+        pedidoNumero: 'PED-001',
+        items: [
+          { sku: 'PLMONS001', nombre: 'Porta Lata Monster', cantidad: 1, precioUnitarioClp: 7000, costoUnitarioClp: 2839.6, filamento: 'PLA+ negro' },
+        ],
+      },
+      {
+        id: 'ven-rebe-stanley-008',
+        codigo: 'I000008',
+        fecha: '2026-07-26',
+        cliente: 'Rebe SIE',
+        descripcion: '2× Llavero Porta Lipstick Stanley (rojo / círculo blanco)',
+        cantidad: 2,
+        montoBruto: 6000,
+        descuentoClp: 0,
+        montoNeto: 6000,
+        costoTotal: 955.86,
+        canal: 'WhatsApp',
+        notas: '2× Stanley impresos en rojo con círculo blanco · cobrado $6.000',
+        socioRegistro: 'Ambos',
+        items: [
+          { sku: 'LLSTANDL001', nombre: 'Llavero Porta Lipstick Stanley', cantidad: 2, precioUnitarioClp: 3000, costoUnitarioClp: 477.93, filamento: 'PLA+ rojo · círculo blanco' },
+        ],
+      },
+      {
+        id: 'ven-marcia-soporte-009',
+        codigo: 'I000009',
+        fecha: '2026-07-26',
+        cliente: 'Marcia SIE',
+        descripcion: '1× Soporte celular (filamento blanco)',
+        cantidad: 1,
+        montoBruto: 3000,
+        descuentoClp: 0,
+        montoNeto: 3000,
+        canal: 'WhatsApp',
+        notas: '1× soporte celular · filamento blanco · cobrado $3.000',
+        socioRegistro: 'Ambos',
+        items: [
+          { sku: 'SOPCEL001', nombre: 'Soporte celular', cantidad: 1, precioUnitarioClp: 3000, filamento: 'PLA blanco' },
+        ],
+      },
+      {
+        id: 'ven-cata-bob-010',
+        codigo: 'I000010',
+        fecha: '2026-07-26',
+        cliente: 'Cata SIE',
+        descripcion: '1× Porta Bob Esponja',
+        cantidad: 1,
+        montoBruto: 7000,
+        descuentoClp: 0,
+        montoNeto: 7000,
+        costoTotal: 998.17,
+        canal: 'WhatsApp',
+        notas: '1× Porta Bob Esponja · costo ya calculado · cobrado $7.000',
+        socioRegistro: 'Ambos',
+        items: [
+          { sku: 'PTBOBES001', nombre: 'Porta Bob Esponja', cantidad: 1, precioUnitarioClp: 7000, costoUnitarioClp: 998.17, filamento: 'multicolor' },
+        ],
+      },
+      {
+        id: 'ven-maria-paz-soporte-011',
+        codigo: 'I000011',
+        fecha: '2026-07-28',
+        cliente: 'María Paz SIE',
+        descripcion: 'PED-005 · 1× Soporte celular morado pastel · María Paz SIE',
+        cantidad: 1,
+        montoBruto: 4000,
+        descuentoClp: 0,
+        montoNeto: 4000,
+        costoTotal: 683.69,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-005 · 1× Soporte celular morado pastel · pagado $4.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-maria-paz-soporte-005',
+        pedidoNumero: 'PED-005',
+        items: [
           {
-            sku: 'PTBOBES001',
-            nombre: 'Porta Bob Esponja',
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
             cantidad: 1,
-            precioUnitarioClp: 7000,
-            costoUnitarioClp: 998.17,
-            filamento: 'multicolor',
+            precioUnitarioClp: 4000,
+            costoUnitarioClp: 683.69,
+            filamento: 'PLA morado pastel',
+          },
+        ],
+      },
+      {
+        id: 'ven-rebe-soporte-012',
+        codigo: 'I000012',
+        fecha: '2026-07-28',
+        cliente: 'Rebe SIE',
+        descripcion: 'PED-009 · 1× Soporte celular negro · Rebe SIE',
+        cantidad: 1,
+        montoBruto: 4000,
+        descuentoClp: 0,
+        montoNeto: 4000,
+        costoTotal: 683.69,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-009 · 1× Soporte celular negro · pagado $4.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-rebe-soporte-009',
+        pedidoNumero: 'PED-009',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: 4000,
+            costoUnitarioClp: 683.69,
+            filamento: 'PLA+ negro',
+          },
+        ],
+      },
+      {
+        id: 'ven-rebe-dragon-013',
+        codigo: 'I000013',
+        fecha: '2026-07-28',
+        cliente: 'Rebe SIE',
+        descripcion: 'PED-006 · 1× Dragón morado · Rebe SIE',
+        cantidad: 1,
+        montoBruto: 20000,
+        descuentoClp: 0,
+        montoNeto: 20000,
+        costoTotal: 5475.59,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-006 · 1× Dragón morado · pagado $20.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-rebe-dragon-006',
+        pedidoNumero: 'PED-006',
+        items: [
+          {
+            sku: 'DRAGON001',
+            nombre: 'Dragón',
+            cantidad: 1,
+            precioUnitarioClp: 20000,
+            costoUnitarioClp: 5475.59,
+            filamento: 'PLA morado',
+          },
+        ],
+      },
+      {
+        id: 'ven-ele-pesa-014',
+        codigo: 'I000014',
+        fecha: '2026-07-28',
+        cliente: 'Ele SIE',
+        descripcion: 'PED-004 · 2× Llavero Pesa Rusa amarillo · Ele SIE',
+        cantidad: 2,
+        montoBruto: 5000,
+        descuentoClp: 0,
+        montoNeto: 5000,
+        costoTotal: 830.86,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-004 · 2× Llavero Pesa Rusa amarillo · pagado $5.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-ele-pesa-rusa-004',
+        pedidoNumero: 'PED-004',
+        items: [
+          {
+            sku: 'LLPESRU001',
+            nombre: 'Llavero Pesa Rusa',
+            cantidad: 2,
+            precioUnitarioClp: 2500,
+            costoUnitarioClp: 415.43,
+            filamento: 'PLA amarillo',
           },
         ],
       },
     ];
+
     let changed = false;
     const byId = new Map(d.ventas.filter((v) => v && v.id).map((v) => [v.id, v]));
     for (const seed of SEED_VENTAS) {
@@ -849,6 +1434,10 @@
       } else {
         if (seed.cliente && String(existing.cliente || '').trim() !== seed.cliente) {
           existing.cliente = seed.cliente;
+          changed = true;
+        }
+        if (seed.codigo && existing.codigo !== seed.codigo) {
+          existing.codigo = seed.codigo;
           changed = true;
         }
         if (Number(existing.montoNeto) !== Number(seed.montoNeto)) {
@@ -871,26 +1460,100 @@
     // PED-002 / PED-003 → transferido + link a venta (live que aún estaba en listo).
     const transfers = [
       {
+        pedId: 'ped-rebe-plmons-001',
+        numero: 'PED-001',
+        ventaId: 'ven-rebe-monster-007',
+        cliente: 'Rebe SIE',
+        montoNeto: 7000,
+        notas: '1× Porta Lata Monster · transferido a venta I000007 · $7.000',
+      },
+      {
         pedId: 'ped-gianni-bulldog-002',
         numero: 'PED-002',
         ventaId: 'ven-gianni-bulldog-002',
-        cliente: 'Gianni',
+        cliente: 'Gianni SIE',
         montoNeto: 15000,
-        notas: 'Macetero + 4× portacompleto bulldog · transferido a venta $15.000',
+        notas: 'Macetero + 4× portacompleto bulldog · transferido a venta I000002 · $15.000',
       },
       {
         pedId: 'ped-naves-espaciales-003',
         numero: 'PED-003',
         ventaId: 'ven-juan-naves-003',
-        cliente: 'Juan',
+        cliente: 'Juan SIE',
         montoNeto: 15000,
-        notas: '2× naves espaciales · Juan · transferido a venta $15.000',
+        notas: '2× naves espaciales · Juan SIE · transferido a venta I000003 · $15.000',
+      },
+      {
+        pedId: 'ped-maria-paz-soporte-005',
+        numero: 'PED-005',
+        ventaId: 'ven-maria-paz-soporte-011',
+        cliente: 'María Paz SIE',
+        montoNeto: 4000,
+        notas: '1× Soporte celular morado pastel · transferido a venta I000011 · $4.000',
+        transferidoEn: '2026-07-28T15:20:00.000Z',
+      },
+      {
+        pedId: 'ped-rebe-soporte-009',
+        numero: 'PED-009',
+        ventaId: 'ven-rebe-soporte-012',
+        cliente: 'Rebe SIE',
+        montoNeto: 4000,
+        notas: '1× Soporte celular negro · transferido a venta I000012 · $4.000',
+        transferidoEn: '2026-07-28T15:30:00.000Z',
+        itemPrecioUnitarioClp: 4000,
+        itemFilamento: 'PLA+ negro',
+      },
+      {
+        pedId: 'ped-rebe-dragon-006',
+        numero: 'PED-006',
+        ventaId: 'ven-rebe-dragon-013',
+        cliente: 'Rebe SIE',
+        montoNeto: 20000,
+        notas: '1× Dragón morado · transferido a venta I000013 · $20.000',
+        transferidoEn: '2026-07-28T15:30:00.000Z',
+        itemPrecioUnitarioClp: 20000,
+        itemFilamento: 'PLA morado',
+        itemSku: 'DRAGON001',
+        itemNombre: 'Dragón',
+      },
+      {
+        pedId: 'ped-ele-pesa-rusa-004',
+        numero: 'PED-004',
+        ventaId: 'ven-ele-pesa-014',
+        cliente: 'Ele SIE',
+        montoNeto: 5000,
+        notas: '2× Llavero Pesa Rusa amarillo · transferido a venta I000014 · $5.000',
+        transferidoEn: '2026-07-28T15:50:00.000Z',
+        itemPrecioUnitarioClp: 2500,
+        itemFilamento: 'PLA amarillo',
+        itemCantidad: 2,
       },
     ];
     for (const t of transfers) {
-      const ped = d.pedidos.find((p) => p.id === t.pedId || p.numero === t.numero);
+      let ped = d.pedidos.find((p) => p.id === t.pedId || p.numero === t.numero);
+      // Live viejo: mismo Dragón Rebe pero id distinto / aún en_impresion $11.000
+      if (!ped && t.numero === 'PED-006') {
+        ped = d.pedidos.find((p) => {
+          if (p.estado === 'transferido') return false;
+          const cli = String(p.cliente || '');
+          if (!/rebe/i.test(cli)) return false;
+          return (p.items || []).some(
+            (it) =>
+              String(it.sku || '').toUpperCase() === 'DRAGON001' ||
+              /drag[oó]n/i.test(String(it.nombre || ''))
+          );
+        });
+      }
       if (!ped) continue;
       let pedChanged = false;
+      if (ped.numero !== t.numero) {
+        ped.numero = t.numero;
+        pedChanged = true;
+      }
+      if (ped.id !== t.pedId) {
+        ped.id = t.pedId;
+        pedChanged = true;
+      }
       if (ped.estado !== 'transferido') {
         ped.estado = 'transferido';
         pedChanged = true;
@@ -911,15 +1574,86 @@
         pedChanged = true;
       }
       if (!ped.transferidoEn) {
-        ped.transferidoEn = '2026-07-23T14:50:00.000Z';
+        ped.transferidoEn = t.transferidoEn || '2026-07-23T14:50:00.000Z';
         pedChanged = true;
       }
       if (ped.notas !== t.notas) {
         ped.notas = t.notas;
         pedChanged = true;
       }
+      if (
+        t.itemPrecioUnitarioClp != null ||
+        t.itemFilamento ||
+        t.itemCantidad != null ||
+        t.itemSku ||
+        t.itemNombre
+      ) {
+        if (!Array.isArray(ped.items) || !ped.items.length) {
+          ped.items = [
+            {
+              sku: t.itemSku || '',
+              nombre: t.itemNombre || '',
+              cantidad: t.itemCantidad != null ? t.itemCantidad : 1,
+              precioUnitarioClp: t.itemPrecioUnitarioClp != null ? t.itemPrecioUnitarioClp : t.montoNeto,
+              costoUnitarioClp: 0,
+              filamento: t.itemFilamento || '',
+              estado: 'listo',
+              listos: t.itemCantidad != null ? t.itemCantidad : 1,
+              enImpresion: 0,
+            },
+          ];
+          pedChanged = true;
+        }
+        const it = (ped.items || [])[0];
+        if (it) {
+          if (t.itemSku && String(it.sku || '').toUpperCase() !== String(t.itemSku).toUpperCase()) {
+            it.sku = t.itemSku;
+            pedChanged = true;
+          }
+          if (t.itemNombre && it.nombre !== t.itemNombre) {
+            it.nombre = t.itemNombre;
+            pedChanged = true;
+          }
+          if (
+            t.itemPrecioUnitarioClp != null &&
+            Number(it.precioUnitarioClp) !== Number(t.itemPrecioUnitarioClp)
+          ) {
+            it.precioUnitarioClp = t.itemPrecioUnitarioClp;
+            pedChanged = true;
+          }
+          if (t.itemFilamento && it.filamento !== t.itemFilamento) {
+            it.filamento = t.itemFilamento;
+            pedChanged = true;
+          }
+          if (t.itemCantidad != null && Number(it.cantidad) !== Number(t.itemCantidad)) {
+            it.cantidad = t.itemCantidad;
+            it.listos = t.itemCantidad;
+            it.enImpresion = 0;
+            it.estado = 'listo';
+            pedChanged = true;
+          }
+          if (it.estado !== 'listo' || Number(it.listos) !== Number(it.cantidad || 1) || Number(it.enImpresion) > 0) {
+            it.estado = 'listo';
+            it.listos = Number(it.cantidad || 1);
+            it.enImpresion = 0;
+            pedChanged = true;
+          }
+        }
+      }
       if (pedChanged) changed = true;
     }
+    // Secuencia correlativa I00000n
+    const maxCod = (d.ventas || []).reduce((m, v) => {
+      const n = Number(String(v.codigo || '').replace(/^I0*/, '') || 0);
+      return Number.isFinite(n) ? Math.max(m, n) : m;
+    }, 0);
+    if (!d.meta || typeof d.meta !== 'object') d.meta = {};
+    if (Number(d.meta.ventaSeq || 0) < maxCod) {
+      d.meta.ventaSeq = maxCod;
+      changed = true;
+    }
+    d.meta.ventaCodigoPrefijo = 'I';
+    rebuildClientesHistorial(d);
     return changed;
   }
 
@@ -962,6 +1696,19 @@
         notas: 'Diseño digital. No se suma al costo unitario. Pagó Nicolás · sociedad 50/50.',
         socioRegistro: 'Nicolás',
         items: [{ descripcion: 'Nave espacial horizontal (diseño)', monto: 1000 }],
+      },
+      {
+        id: 'gas-diseno-dragon',
+        fecha: '2026-07-26',
+        categoria: 'diseño',
+        descripcion: 'Diseño Dragón (comprado)',
+        proveedor: 'Diseño digital',
+        cantidad: 1,
+        montoNeto: 3000,
+        notas:
+          'Diseño digital del Dragón (DRAGON001). No se suma al costo unitario del producto. Gastos socios · sociedad 50/50.',
+        socioRegistro: 'Ambos',
+        items: [{ descripcion: 'Diseño Dragón', monto: 3000 }],
       },
     ];
     let changed = false;
@@ -1048,6 +1795,356 @@
       changed = true;
     }
 
+    // PED-004 · Ele SIE · 2× Llavero Pesa Rusa amarillo · transferido I000014 $5.000 (pagado)
+    const id004 = 'ped-ele-pesa-rusa-004';
+    const prodPesa = (d.productos || []).find(
+      (p) => p.id === 'prod-llavero-pesa-rusa' || p.sku === 'LLPESRU001'
+    );
+    const costoPesa = prodPesa ? costoProdRough(d, prodPesa) : 415.43;
+    const cant004 = 2;
+    const precioU004 = 2500;
+    const total004 = 5000;
+    if (!d.pedidos.some((p) => p.id === id004 || p.numero === 'PED-004')) {
+      d.pedidos.push({
+        id: id004,
+        numero: 'PED-004',
+        fecha: '2026-07-26',
+        cliente: 'Ele SIE',
+        clienteNombre: 'Ele',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'LLPESRU001',
+            nombre: 'Llavero Pesa Rusa',
+            cantidad: cant004,
+            precioUnitarioClp: precioU004,
+            costoUnitarioClp: round2(costoPesa),
+            filamento: 'PLA amarillo',
+            estado: 'listo',
+            listos: cant004,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: total004,
+        descuentoClp: 0,
+        montoNeto: total004,
+        costoTotal: round2(costoPesa * cant004),
+        estado: 'transferido',
+        ventaId: 'ven-ele-pesa-014',
+        transferidoEn: '2026-07-28T15:50:00.000Z',
+        notas: `2× Llavero Pesa Rusa amarillo · transferido a venta I000014 · $${total004}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-26T01:40:00.000Z',
+      });
+      changed = true;
+    }
+    // Quitar PED-012 si quedó como duplicado de la venta Ele (I000014 vive en PED-004).
+    const before012 = (d.pedidos || []).length;
+    d.pedidos = (d.pedidos || []).filter(
+      (p) => p && p.id !== 'ped-ele-pesa-012' && p.numero !== 'PED-012'
+    );
+    if (d.pedidos.length !== before012) changed = true;
+
+    // PED-005 · María Paz SIE · Soporte celular morado pastel · transferido I000011 $4.000 (pagado)
+    const id005 = 'ped-maria-paz-soporte-005';
+    const prodSop = (d.productos || []).find(
+      (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
+    );
+    const costoSop = prodSop ? costoProdRough(d, prodSop) : 683.69;
+    const precioSop = 4000;
+    if (!d.pedidos.some((p) => p.id === id005 || p.numero === 'PED-005')) {
+      d.pedidos.push({
+        id: id005,
+        numero: 'PED-005',
+        fecha: '2026-07-26',
+        cliente: 'María Paz SIE',
+        clienteNombre: 'María',
+        clienteSegundoNombre: 'Paz',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: precioSop,
+            costoUnitarioClp: round2(costoSop),
+            filamento: 'PLA morado pastel',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioSop,
+        descuentoClp: 0,
+        montoNeto: precioSop,
+        costoTotal: round2(costoSop),
+        estado: 'transferido',
+        ventaId: 'ven-maria-paz-soporte-011',
+        transferidoEn: '2026-07-28T15:20:00.000Z',
+        notas: `1× Soporte celular morado pastel · transferido a venta I000011 · $${precioSop}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-26T01:43:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-006 · Rebe SIE · Dragón morado · transferido I000013 $20.000
+    const id006 = 'ped-rebe-dragon-006';
+    const prodDra = (d.productos || []).find((p) => p.id === 'prod-dragon' || p.sku === 'DRAGON001');
+    const costoDra = prodDra ? costoProdRough(d, prodDra) : 5475.59;
+    const precioDra = 20000;
+    if (!d.pedidos.some((p) => p.id === id006 || p.numero === 'PED-006')) {
+      d.pedidos.push({
+        id: id006,
+        numero: 'PED-006',
+        fecha: '2026-07-26',
+        cliente: 'Rebe SIE',
+        clienteNombre: 'Rebe',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'DRAGON001',
+            nombre: 'Dragón',
+            cantidad: 1,
+            precioUnitarioClp: precioDra,
+            costoUnitarioClp: round2(costoDra),
+            filamento: 'PLA morado',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioDra,
+        descuentoClp: 0,
+        montoNeto: precioDra,
+        costoTotal: round2(costoDra),
+        estado: 'transferido',
+        ventaId: 'ven-rebe-dragon-013',
+        transferidoEn: '2026-07-28T15:30:00.000Z',
+        notas: `1× Dragón morado · transferido a venta I000013 · $${precioDra}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-26T01:49:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-007 · Juan SIE · Torreón · listo (estimación + $1.000 impresora antigua)
+    const id007 = 'ped-juan-torreon-007';
+    const prodTorre = (d.productos || []).find((p) => p.id === 'prod-torreon' || p.sku === 'TORREON001');
+    const costoTorre = prodTorre ? costoProdRough(d, prodTorre) : 3293.48;
+    const precioTorre =
+      Number(prodTorre?.precioVentaSugeridoClp) > 0 ? Number(prodTorre.precioVentaSugeridoClp) : 6500;
+    if (!d.pedidos.some((p) => p.id === id007 || p.numero === 'PED-007')) {
+      d.pedidos.push({
+        id: id007,
+        numero: 'PED-007',
+        fecha: '2026-07-26',
+        cliente: 'Juan SIE',
+        clienteNombre: 'Juan',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'TORREON001',
+            nombre: 'Torreón',
+            cantidad: 1,
+            precioUnitarioClp: precioTorre,
+            costoUnitarioClp: round2(costoTorre),
+            filamento: 'PLA color (estimación)',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioTorre,
+        descuentoClp: 0,
+        montoNeto: precioTorre,
+        costoTotal: round2(costoTorre),
+        estado: 'listo',
+        ventaId: null,
+        notas: `1× Torreón · listo · costo estimado $${round2(costoTorre)} (+$1.000 impresora antigua) · PVP $${precioTorre}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-26T02:00:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-008 · Juan MKOF · Porta Bob Esponja · listo
+    const id008 = 'ped-juan-bob-008';
+    const prodBob = (d.productos || []).find(
+      (p) => p.id === 'prod-porta-bob-esponja' || p.sku === 'PTBOBES001'
+    );
+    const costoBob = prodBob ? costoProdRough(d, prodBob) : 998.17;
+    const precioBob = 7000;
+    if (!d.pedidos.some((p) => p.id === id008 || p.numero === 'PED-008')) {
+      d.pedidos.push({
+        id: id008,
+        numero: 'PED-008',
+        fecha: '2026-07-26',
+        cliente: 'Juan MKOF',
+        clienteNombre: 'Juan',
+        clienteOrigen: 'MKOF',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'PTBOBES001',
+            nombre: 'Porta Bob Esponja',
+            cantidad: 1,
+            precioUnitarioClp: precioBob,
+            costoUnitarioClp: round2(costoBob),
+            filamento: 'multicolor',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioBob,
+        descuentoClp: 0,
+        montoNeto: precioBob,
+        costoTotal: round2(costoBob),
+        estado: 'listo',
+        ventaId: null,
+        notas: `1× Porta Bob Esponja · listo · costo $${round2(costoBob)} · PVP $${precioBob}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-26T02:00:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-009 · Rebe SIE · Soporte celular negro · transferido I000012 $4.000
+    const id009 = 'ped-rebe-soporte-009';
+    const prodSop009 = (d.productos || []).find(
+      (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
+    );
+    const costoSop009 = prodSop009 ? costoProdRough(d, prodSop009) : 683.69;
+    const precioSop009 = 4000;
+    if (!d.pedidos.some((p) => p.id === id009 || p.numero === 'PED-009')) {
+      d.pedidos.push({
+        id: id009,
+        numero: 'PED-009',
+        fecha: '2026-07-28',
+        cliente: 'Rebe SIE',
+        clienteNombre: 'Rebe',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: precioSop009,
+            costoUnitarioClp: round2(costoSop009),
+            filamento: 'PLA+ negro',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioSop009,
+        descuentoClp: 0,
+        montoNeto: precioSop009,
+        costoTotal: round2(costoSop009),
+        estado: 'transferido',
+        ventaId: 'ven-rebe-soporte-012',
+        transferidoEn: '2026-07-28T15:30:00.000Z',
+        notas: `1× Soporte celular negro · transferido a venta I000012 · $${precioSop009}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-28T15:30:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-010 · Gianni SIE · 2× Soporte celular negro · fiado (paga 18 ago) · $8.000
+    const id010 = 'ped-gianni-soporte-010';
+    const prodSop010 = (d.productos || []).find(
+      (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
+    );
+    const costoSop010 = prodSop010 ? costoProdRough(d, prodSop010) : 683.69;
+    const precioSop010 = 4000;
+    const cant010 = 2;
+    if (!d.pedidos.some((p) => p.id === id010 || p.numero === 'PED-010')) {
+      d.pedidos.push({
+        id: id010,
+        numero: 'PED-010',
+        fecha: '2026-07-28',
+        cliente: 'Gianni SIE',
+        clienteNombre: 'Gianni',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: cant010,
+            precioUnitarioClp: precioSop010,
+            costoUnitarioClp: round2(costoSop010),
+            filamento: 'PLA+ negro',
+            estado: 'pendiente',
+            listos: 0,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioSop010 * cant010,
+        descuentoClp: 0,
+        montoNeto: precioSop010 * cant010,
+        costoTotal: round2(costoSop010 * cant010),
+        estado: 'pendiente',
+        ventaId: null,
+        fiado: true,
+        fechaPagoEsperada: '2026-08-18',
+        pagoNotas: 'Paga el 18 de agosto',
+        notas: `2× Soporte celular negro · fiado · paga 2026-08-18 · PVP $${precioSop010}/u · total $${precioSop010 * cant010}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-28T15:40:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-011 · Marcia SIE · 1× Soporte celular morado · $3.000 · pendiente
+    const id011 = 'ped-marcia-soporte-011';
+    const prodSop011 = (d.productos || []).find(
+      (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
+    );
+    const costoSop011 = prodSop011 ? costoProdRough(d, prodSop011) : 683.69;
+    const precioSop011 = 3000;
+    if (!d.pedidos.some((p) => p.id === id011 || p.numero === 'PED-011')) {
+      d.pedidos.push({
+        id: id011,
+        numero: 'PED-011',
+        fecha: '2026-07-28',
+        cliente: 'Marcia SIE',
+        clienteNombre: 'Marcia',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: precioSop011,
+            costoUnitarioClp: round2(costoSop011),
+            filamento: 'PLA morado',
+            estado: 'pendiente',
+            listos: 0,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioSop011,
+        descuentoClp: 0,
+        montoNeto: precioSop011,
+        costoTotal: round2(costoSop011),
+        estado: 'pendiente',
+        ventaId: null,
+        notas: `1× Soporte celular morado · PVP $${precioSop011}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-28T15:45:00.000Z',
+      });
+      changed = true;
+    }
+
     const maxNum = d.pedidos.reduce((m, p) => {
       const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
       return Math.max(m, n);
@@ -1108,16 +2205,28 @@
 
   function costoProdRough(d, prod) {
     const p = d.parametros || {};
+    const imps = Array.isArray(d.impresoras) ? d.impresoras : IMPRESORAS_SEED;
+    const imp =
+      imps.find((x) => x.id === prod.impresoraId) ||
+      imps.find((x) => x.activaDefault) ||
+      imps[0] ||
+      {};
     const g = Number(prod.filamentoGramos || 0);
-    const kg = Number(prod.costoFilamentoKgClp || 0);
+    let kg = Number(prod.costoFilamentoKgClp || 0);
+    if (!(kg > 0) && Number(imp.costoFilamentoDefaultKgClp) > 0) {
+      kg = Number(imp.costoFilamentoDefaultKgClp);
+    }
     const fil = (g / 1000) * kg;
-    const luz =
-      Number(prod.horasImpresion || 0) *
-      Number(p.tarifaKwhClp || 0) *
-      Number(p.consumoImpresoraKw || 0);
+    const tarifa = Number(imp.tarifaKwhClp > 0 ? imp.tarifaKwhClp : p.tarifaKwhClp || 0);
+    const consumo = Number(
+      imp.consumoImpresoraKw > 0 ? imp.consumoImpresoraKw : p.consumoImpresoraKw || 0
+    );
+    const luz = Number(prod.horasImpresion || 0) * tarifa * consumo;
     const bolsa = Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 50);
     const metal = Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0);
-    return round2(fil + luz + bolsa + metal);
+    const recargoProd = Number(prod.recargoImpresoraAntiguaClp || 0);
+    const recargo = recargoProd > 0 ? recargoProd : Number(imp.recargoFijoClp || 0);
+    return round2(fil + luz + bolsa + metal + recargo);
   }
 
   function asegurarProductoPortacompletoPerroBulldog(d) {
@@ -1245,6 +2354,11 @@
     if (/nave/.test(t) && /vert/.test(t)) return 'NAVEVERT';
     if (/llavero/.test(t) && /ranger|escudo/.test(t)) return 'LLRANGER';
     if (/llavero/.test(t) && /lipstick|stanley|standley/.test(t)) return 'LLSTANDL';
+    if (/llavero/.test(t) && /(pesa|kettlebell|rusa)/.test(t)) return 'LLPESRU';
+    if (/soporte/.test(t) && /celular|telefono|tel[eé]fono|phone/.test(t)) return 'SOPCEL';
+    if (/soporte/.test(t)) return 'SOPCEL';
+    if (/drag[oó]n/.test(t)) return 'DRAGON';
+    if (/torre[oó]n|torreon/.test(t)) return 'TORREON';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -1292,6 +2406,10 @@
       'prod-nave-espacial-vertical': { sku: 'NAVEVERT001', nombre: 'Nave Espacial Vertical' },
       'prod-llavero-escudo-ranger': { sku: 'LLRANGER001', nombre: 'Llavero Escudo Ranger' },
       'prod-llavero-porta-lipstick-stanley': { sku: 'LLSTANDL001', nombre: 'Llavero Porta Lipstick Stanley' },
+      'prod-llavero-pesa-rusa': { sku: 'LLPESRU001', nombre: 'Llavero Pesa Rusa' },
+      'prod-soporte-celular': { sku: 'SOPCEL001', nombre: 'Soporte celular' },
+      'prod-dragon': { sku: 'DRAGON001', nombre: 'Dragón' },
+      'prod-torreon': { sku: 'TORREON001', nombre: 'Torreón' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',
@@ -1362,9 +2480,16 @@
     return (arr || []).reduce((a, x) => a + Number(x[key] || 0), 0);
   }
 
-  function costoHoraImpresora() {
+  function costoHoraImpresora(impresoraOrId) {
     const p = data.parametros || {};
-    return Number(p.tarifaKwhClp || 0) * Number(p.consumoImpresoraKw || 0);
+    let imp = null;
+    if (impresoraOrId && typeof impresoraOrId === 'object') imp = impresoraOrId;
+    else if (impresoraOrId) imp = impresoraPorId(impresoraOrId);
+    const tarifa = Number(imp?.tarifaKwhClp > 0 ? imp.tarifaKwhClp : p.tarifaKwhClp || 0);
+    const consumo = Number(
+      imp?.consumoImpresoraKw > 0 ? imp.consumoImpresoraKw : p.consumoImpresoraKw || 0
+    );
+    return tarifa * consumo;
   }
 
   function partesHoras(horas) {
@@ -1434,16 +2559,36 @@
 
   function costoProducto(prod) {
     const p = data.parametros || {};
+    const imp = impresoraDeProducto(prod);
     const gramos = gramosDesdeDesglose(prod) || round2(prod.filamentoGramos || 0);
-    const filamento = round2((gramos / 1000) * Number(prod.costoFilamentoKgClp || 0));
-    const luz = round2(Number(prod.horasImpresion || 0) * costoHoraImpresora());
+    let kgFil = Number(prod.costoFilamentoKgClp || 0);
+    if (!(kgFil > 0) && Number(imp?.costoFilamentoDefaultKgClp) > 0) {
+      kgFil = Number(imp.costoFilamentoDefaultKgClp);
+    }
+    const filamento = round2((gramos / 1000) * kgFil);
+    const luz = round2(Number(prod.horasImpresion || 0) * costoHoraImpresora(imp));
     const pintado = round2(
       (Number(prod.minutosPintado || 0) / 60) * Number(p.valorHoraManoObraClp || 0)
     );
     const metal = round2(Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0));
     const bolsa = round2(Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 0));
-    const total = round2(filamento + luz + pintado + metal + bolsa);
-    return { filamento, luz, pintado, metal, bolsa, total, gramos: round2(gramos) };
+    const recargoProd = Number(prod.recargoImpresoraAntiguaClp || 0);
+    const recargoPerfil = Number(imp?.recargoFijoClp || 0);
+    // Si el producto ya trae recargo explícito, no duplicar el del perfil.
+    const recargo = round2(recargoProd > 0 ? recargoProd : recargoPerfil);
+    const total = round2(filamento + luz + pintado + metal + bolsa + recargo);
+    return {
+      filamento,
+      luz,
+      pintado,
+      metal,
+      bolsa,
+      recargo,
+      total,
+      gramos: round2(gramos),
+      impresoraId: imp?.id || '',
+      impresoraNombre: imp?.nombre || '',
+    };
   }
 
   function leerProductoDesdeForm(form) {
@@ -1471,6 +2616,7 @@
       unidadesBolsa: round2(fd.get('unidadesBolsa') || 0),
       precioVentaSugeridoClp: round2(fd.get('precioVentaSugeridoClp') || 0),
       costoSlicerRef: round2(fd.get('costoSlicerRef') || 0),
+      impresoraId: String(fd.get('impresoraId') || '').trim() || impresoraDefault()?.id || '',
       notas: String(fd.get('notas') || '').trim(),
       usarDesglose,
     };
@@ -1480,10 +2626,19 @@
     const pctObj = Number(data?.parametros?.margenObjetivoPct ?? 100);
     const sugerido = precioSugeridoDesdeCosto(c.total);
     const markupReal = markupRealPct(precioVenta, c.total);
+    const recargoHtml =
+      Number(c.recargo) > 0
+        ? `<div class="imp-kpi"><span>Recargo impresora</span><strong>${money(c.recargo)}</strong></div>`
+        : '';
+    const impLbl = c.impresoraNombre
+      ? `<p class="imp-muted" style="margin:0 0 0.35rem">Impresora: <strong>${escapeHtml(c.impresoraNombre)}</strong></p>`
+      : '';
     return `
+      ${impLbl}
       <div class="imp-grid imp-grid--costo-live">
         <div class="imp-kpi"><span>Filamento (${Number(c.gramos || 0).toFixed(2)} g)</span><strong>${money(c.filamento)}</strong></div>
         <div class="imp-kpi"><span>Luz (impresión)</span><strong>${money(c.luz)}</strong></div>
+        ${recargoHtml}
         <div class="imp-kpi"><span>Pintado / MO</span><strong>${money(c.pintado)}</strong></div>
         <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
         <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
@@ -1572,7 +2727,6 @@
     const gastos = sum(data.gastos);
     const ventas = sum(data.ventas);
     const operacion = sum((data.operacion || []).filter((x) => Number(x.montoNeto) !== 0));
-    const ads = Number(data.planAds?.presupuestoMensualClp || 0);
     /** Resultado = ventas − gastos − operación (sube al vender; más negativo si solo hay gastos). */
     const resultado = ventas - gastos - operacion;
     const metaRecuperar = gastos + operacion;
@@ -1613,22 +2767,28 @@
       Math.max(0, 100 - pctGastosEnPipeline),
       (montoPedidosPend / denom) * 100
     );
-    const linkVenta = `${location.origin}/index/clientes/impresoreando/panel/venta/`;
-    const esLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
     const pctMarkup = Number(data.parametros?.margenObjetivoPct ?? 100);
     const filasCostoProd = (data.productos || [])
       .map((prod) => {
         const c = costoProducto(prod);
         const precio = precioVentaProducto(prod, c.total);
-        const precioEsManual = Number(prod.precioVentaSugeridoClp) > 0;
         return `<tr>
           <td><span class="imp-sku">${escapeHtml(prod.sku || '—')}</span></td>
           <td>${escapeHtml(prod.nombre || '')}</td>
           <td class="num">${money(c.total)}</td>
-          <td class="num"><strong>${money(precio)}</strong>${precioEsManual ? ' <span class="imp-muted">manual</span>' : ''}</td>
+          <td class="num"><strong>${money(precio)}</strong></td>
         </tr>`;
       })
       .join('');
+
+    const todosPedidos = (data.pedidos || []).slice();
+    const countEst = { pendiente: 0, en_impresion: 0, listo: 0, transferido: 0 };
+    for (const p of todosPedidos) {
+      const e = p.estado || 'pendiente';
+      if (countEst[e] != null) countEst[e] += 1;
+    }
+    const nVentas = (data.ventas || []).length;
+    const nClientesHist = (data.meta?.clientesHistorial || []).length;
 
     $('#tab-resumen').innerHTML = `
       <div class="imp-balance ${sinDeuda ? 'imp-balance--ok' : 'imp-balance--deuda'}">
@@ -1662,6 +2822,31 @@
           <span><strong>Total ${money(gastosMasPedidos)}</strong></span>
         </div>
       </div>
+      <div class="imp-grid imp-grid--2">
+        <div class="imp-card imp-card--resumen-gen">
+          <h2>Ventas</h2>
+          <p class="imp-muted">Vista general. El detalle (IDs, ítems, descuentos, historial) está en <button type="button" class="imp-linkish" data-goto-tab="ventas">Ventas</button>.</p>
+          <div class="imp-kpi imp-kpi--ok"><span>Contabilizadas</span><strong>${nVentas} · ${money(ventas)}</strong></div>
+          <p class="imp-muted" style="margin:0.65rem 0 0">${nClientesHist} cliente${nClientesHist === 1 ? '' : 's'} en historial</p>
+        </div>
+        <div class="imp-card imp-card--resumen-gen">
+          <h2>Pedidos</h2>
+          <p class="imp-muted">Pipeline. Detalle y fiados en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>.</p>
+          <div class="imp-pedido-status-counts" aria-label="Conteo por estado">
+            <span class="imp-badge imp-badge--warn">Pendiente ${countEst.pendiente}</span>
+            <span class="imp-badge imp-badge--print">En impresión ${countEst.en_impresion}</span>
+            <span class="imp-badge imp-badge--listo">Listo ${countEst.listo}</span>
+            <span class="imp-badge imp-badge--ok">Transferido ${countEst.transferido}</span>
+          </div>
+          <div class="imp-kpi" style="margin-top:0.75rem"><span>Activos (aún no bajan deuda)</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
+        </div>
+      </div>
+      <div class="imp-grid">
+        <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
+        <div class="imp-kpi imp-kpi--ok"><span>Ventas (contabilizadas)</span><strong>${money(ventas)}</strong></div>
+        <div class="imp-kpi"><span>Pedidos activos</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
+        <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
+      </div>
       <div class="imp-card">
         <h2>Costos de producto (resumen)</h2>
         <p class="imp-muted">Mismos costo y precio que en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>. Si no hay precio manual, se sugiere <strong>+${pctMarkup}%</strong> sobre el costo.</p>
@@ -1671,12 +2856,6 @@
             <tbody>${filasCostoProd || '<tr><td colspan="4">Sin productos</td></tr>'}</tbody>
           </table>
         </div>
-      </div>
-      <div class="imp-grid">
-        <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
-        <div class="imp-kpi imp-kpi--ok"><span>Ventas (contabilizadas)</span><strong>${money(ventas)}</strong></div>
-        <div class="imp-kpi"><span>Pedidos activos</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
-        <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
       </div>
       <div class="imp-socios" aria-label="Detalle por socio">
         <article class="imp-socio imp-socio--josefa">
@@ -1736,37 +2915,7 @@
         <p class="imp-deuda"><strong>Capital:</strong> lo aportó <strong>Nicolás</strong>. Todos los gastos son de <strong>ambos</strong>. Josefa le debe a Nicolás el <strong>50%</strong> del capital (${money(deuda)}).</p>
         <p class="imp-muted">Esa deuda entre socios es distinta del saldo de arriba: el saldo baja con cada venta del negocio; la deuda 50% de Josefa se actualiza con el capital aportado.</p>
       </div>
-      <div class="imp-card">
-        <h2>Link para registrar ventas (celular)</h2>
-        <p class="imp-aviso-local"${esLocalhost ? '' : ' hidden'}>
-          <strong>Importante:</strong> <code>localhost</code> solo funciona en esta PC.
-          En el celular falla con ERR_CONNECTION_FAILED. Usa la IP WiFi o el túnel público.
-        </p>
-        <p class="imp-muted">Misma WiFi — abre en el celular (no localhost):</p>
-        <div class="imp-share" id="imp-links-lan"><span class="imp-muted">Cargando IPs…</span></div>
-        <p class="imp-muted" style="margin-top:0.75rem">Cualquier lugar / datos móviles:</p>
-        <ol class="imp-list">
-          <li>En la PC deja <strong>SERVIR.bat</strong> corriendo.</li>
-          <li>Abre <strong>ABRIR-VENTA-PUBLICA.bat</strong> (segunda ventana).</li>
-          <li>Copia el link <code>https://….loca.lt/…/venta/</code> y envíalo por WhatsApp.</li>
-        </ol>
-        <div class="imp-share">
-          <code id="imp-link-venta">${escapeHtml(linkVenta)}</code>
-          <button type="button" class="imp-btn imp-btn--primary" id="btn-copiar-link-venta">Copiar link de esta ventana</button>
-          <a class="imp-btn" href="./venta/">Abrir registrador</a>
-        </div>
-        <p class="imp-muted">Presupuesto ads mes (plan): ${money(ads)}</p>
-      </div>
     `;
-
-    $('#btn-copiar-link-venta')?.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(linkVenta);
-        setStatus('Link de ventas copiado', 'ok');
-      } catch {
-        setStatus('No se pudo copiar — selecciónalo a mano', 'warn');
-      }
-    });
 
     $('#tab-resumen')?.querySelectorAll('[data-goto-tab]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -1774,38 +2923,6 @@
         document.querySelector(`#imp-tabs button[data-tab="${tab}"]`)?.click();
       });
     });
-
-    fetch('/api/acceso', { cache: 'no-store' })
-      .then((r) => r.json())
-      .then((info) => {
-        const box = $('#imp-links-lan');
-        if (!box) return;
-        const urls = info.lan || [];
-        if (!urls.length) {
-          box.innerHTML = '<span class="imp-muted">No se detectó IP de red — usa ABRIR-VENTA-PUBLICA.bat</span>';
-          return;
-        }
-        box.innerHTML = urls
-          .map(
-            (u) =>
-              `<code class="imp-lan-url">${escapeHtml(u)}</code><button type="button" class="imp-btn" data-copy="${escapeHtml(u)}">Copiar</button>`
-          )
-          .join('');
-        box.querySelectorAll('[data-copy]').forEach((btn) => {
-          btn.addEventListener('click', async () => {
-            try {
-              await navigator.clipboard.writeText(btn.getAttribute('data-copy'));
-              setStatus('Link WiFi copiado', 'ok');
-            } catch {
-              setStatus('Copia manual del link', 'warn');
-            }
-          });
-        });
-      })
-      .catch(() => {
-        const box = $('#imp-links-lan');
-        if (box) box.innerHTML = '<span class="imp-muted">No se pudo leer /api/acceso</span>';
-      });
   }
 
   function renderGastos() {
@@ -1925,6 +3042,22 @@
 
   function pedidoActivo(estado) {
     return ['pendiente', 'listo', 'en_impresion'].includes(estado || 'pendiente');
+  }
+
+  function fechaPagoPedidoUi(p) {
+    const d = String(p?.fechaPagoEsperada || p?.fechaPago || p?.pagaEl || '').slice(0, 10);
+    return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : '';
+  }
+
+  function esPedidoFiado(p) {
+    if (!p) return false;
+    if (p.fiado === true) return true;
+    if (fechaPagoPedidoUi(p)) return true;
+    return false;
+  }
+
+  function fiadoPendiente(p) {
+    return esPedidoFiado(p) && pedidoActivo(p.estado || 'pendiente');
   }
 
   function textoEstadoItem(it) {
@@ -2086,7 +3219,19 @@
     if (!form) return pedidoEditDraft;
     const fd = new FormData(form);
     pedidoEditDraft.fecha = String(fd.get('fecha') || pedidoEditDraft.fecha || '');
-    pedidoEditDraft.cliente = String(fd.get('cliente') || '').trim();
+    const cn = String(fd.get('clienteNombre') || '').trim();
+    const cs = String(fd.get('clienteSegundoNombre') || '').trim();
+    const co = String(fd.get('clienteOrigen') || '')
+      .trim()
+      .toUpperCase();
+    if (cn || co) {
+      pedidoEditDraft.clienteNombre = cn;
+      pedidoEditDraft.clienteSegundoNombre = cs || undefined;
+      pedidoEditDraft.clienteOrigen = co === 'SIE' || co === 'MKOF' ? co : '';
+      pedidoEditDraft.cliente = formatearClienteImp(cn, cs, pedidoEditDraft.clienteOrigen);
+    } else {
+      pedidoEditDraft.cliente = String(fd.get('cliente') || '').trim();
+    }
     pedidoEditDraft.canal = String(fd.get('canal') || '').trim();
     pedidoEditDraft.notas = String(fd.get('notas') || '').trim();
     pedidoEditDraft.socioRegistro = String(fd.get('socioRegistro') || 'Ambos');
@@ -2144,11 +3289,20 @@
       })
       .join('');
 
+    const cliParsed = parseClienteImp(ped.cliente, ped);
     body.innerHTML = `
       <form class="imp-form" id="form-editar-pedido">
-        <p class="imp-muted">Podés cambiar cliente, ítems, cantidades y precios. El estado se elige en la columna Estado del listado (o acá abajo).</p>
+        <p class="imp-muted">Nombre + origen (SIE = Nico · MKOF = Josefa). Precio venta/u se puede subir. El estado también está en Resumen.</p>
         <label>Fecha<input name="fecha" type="date" required value="${escapeHtml(ped.fecha || today())}" /></label>
-        <label>Cliente<input name="cliente" value="${escapeHtml(ped.cliente || '')}" required /></label>
+        <label>Nombre<input name="clienteNombre" value="${escapeHtml(cliParsed.nombre)}" required /></label>
+        <label>Segundo nombre<input name="clienteSegundoNombre" value="${escapeHtml(cliParsed.segundoNombre)}" placeholder="Opcional" /></label>
+        <label>Origen
+          <select name="clienteOrigen" required>
+            <option value="">Elegir…</option>
+            <option value="SIE"${cliParsed.origen === 'SIE' ? ' selected' : ''}>SIE · trabajo Nicolás</option>
+            <option value="MKOF"${cliParsed.origen === 'MKOF' ? ' selected' : ''}>MKOF · trabajo Josefa</option>
+          </select>
+        </label>
         <label>Canal<input name="canal" value="${escapeHtml(ped.canal || '')}" /></label>
         <label>Quién
           <select name="socioRegistro">
@@ -2264,6 +3418,9 @@
         : 'pendiente';
       ped.fecha = pedidoEditDraft.fecha;
       ped.cliente = pedidoEditDraft.cliente;
+      ped.clienteNombre = pedidoEditDraft.clienteNombre;
+      ped.clienteSegundoNombre = pedidoEditDraft.clienteSegundoNombre;
+      ped.clienteOrigen = pedidoEditDraft.clienteOrigen;
       ped.canal = pedidoEditDraft.canal;
       ped.notas = pedidoEditDraft.notas;
       ped.socioRegistro = pedidoEditDraft.socioRegistro;
@@ -2418,8 +3575,10 @@
       const cant = itemsSnap.reduce((a, it) => a + Number(it.cantidad || 0), 0) || 1;
       const notaDesc =
         descuentoClp > 0 ? `Descuento ${money(descuentoClp)} (${descuentoPct}%). ` : '';
+      const codigo = nextVentaCodigo(data);
       const venta = {
         id: uid('ven'),
+        codigo,
         fecha: pedNow.fecha || today(),
         descripcion: `${pedNow.numero} · ${itemsTxt}${pedNow.cliente ? ` · ${pedNow.cliente}` : ''}`,
         cantidad: cant,
@@ -2439,6 +3598,7 @@
       };
       data.ventas = data.ventas || [];
       data.ventas.push(venta);
+      rebuildClientesHistorial(data);
       pedNow.estado = 'transferido';
       pedNow.ventaId = venta.id;
       pedNow.transferidoEn = new Date().toISOString();
@@ -2452,10 +3612,10 @@
       renderAll();
       activarTab('ventas');
       const msgDesc = descuentoClp > 0 ? ` (desc. ${money(descuentoClp)})` : '';
-      setStatus(`${pedNow.numero} → venta · ${money(montoNeto)}${msgDesc} · guardando…`, 'warn');
+      setStatus(`${pedNow.numero} → ${codigo} · ${money(montoNeto)}${msgDesc} · guardando…`, 'warn');
       save()
         .then(() =>
-          setStatus(`${pedNow.numero} → venta · ${money(montoNeto)}${msgDesc} contabilizado y guardado ✓`, 'ok')
+          setStatus(`${pedNow.numero} → ${codigo} · ${money(montoNeto)}${msgDesc} contabilizado y guardado ✓`, 'ok')
         )
         .catch((err) => setStatus(String(err.message || err), 'err'));
     });
@@ -2473,40 +3633,74 @@
     const optsProd = productos
       .map((p) => `<option value="${escapeHtml(p.sku || '')}">${escapeHtml(p.sku || '')} · ${escapeHtml(p.nombre || '')}</option>`)
       .join('');
-    const rows = (data.pedidos || [])
-      .slice()
-      .reverse()
-      .map((p) => {
-        recalcularMontoPedido(p);
-        const estado = p.estado || 'pendiente';
-        let acciones = `<span class="imp-muted">${escapeHtml(p.ventaId || '—')}</span>`;
-        if (pedidoActivo(estado)) {
-          acciones = `<button type="button" class="imp-btn imp-btn--sm" data-edit-pedido="${escapeHtml(p.id)}">Editar</button>
-            <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
-            <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
-        }
-        return `<tr>
-          <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
-          <td>
-            <strong>${escapeHtml(p.cliente || '—')}</strong>
-            <div class="imp-pedido-items">${renderItemsPedido(p)}</div>
-            ${p.notas ? `<div class="imp-muted">${escapeHtml(p.notas)}</div>` : ''}
-          </td>
-          <td class="num">
-            <strong>${money(p.montoNeto)}</strong>
-            <div class="imp-muted">venta</div>
-            <div class="imp-muted">costo ${money(p.costoTotal || 0)}</div>
-          </td>
-          <td>${selectEstadoPedido(p)}</td>
-          <td class="imp-pedidos-actions">${acciones}</td>
-        </tr>`;
-      })
-      .join('');
+
+    const filaPedido = (p, { mostrarPagaEl = false } = {}) => {
+      recalcularMontoPedido(p);
+      const estado = p.estado || 'pendiente';
+      let acciones = `<span class="imp-muted">${escapeHtml(p.ventaId || '—')}</span>`;
+      if (pedidoActivo(estado)) {
+        acciones = `<button type="button" class="imp-btn imp-btn--sm" data-edit-pedido="${escapeHtml(p.id)}">Editar</button>
+          <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
+          <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
+      }
+      const pagaCell = mostrarPagaEl
+        ? `<td><strong>${escapeHtml(fechaPagoPedidoUi(p) || '—')}</strong></td>`
+        : '';
+      return `<tr>
+        <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
+        <td>
+          <strong>${escapeHtml(p.cliente || '—')}</strong>
+          ${
+            !mostrarPagaEl && (p.fiado || p.fechaPagoEsperada)
+              ? `<div class="imp-badge">Fiado · paga ${escapeHtml(fechaPagoPedidoUi(p) || '—')}</div>`
+              : ''
+          }
+          <div class="imp-pedido-items">${renderItemsPedido(p)}</div>
+          ${p.notas ? `<div class="imp-muted">${escapeHtml(p.notas)}</div>` : ''}
+        </td>
+        ${pagaCell}
+        <td class="num">
+          <strong>${money(p.montoNeto)}</strong>
+          <div class="imp-muted">venta</div>
+          <div class="imp-muted">costo ${money(p.costoTotal || 0)}</div>
+        </td>
+        <td>${selectEstadoPedido(p)}</td>
+        <td class="imp-pedidos-actions">${acciones}</td>
+      </tr>`;
+    };
+
+    const pedidosOrden = (data.pedidos || []).slice().reverse();
+    const fiadosPendientes = pedidosOrden.filter(fiadoPendiente);
+    const pedidosResto = pedidosOrden.filter((p) => !fiadoPendiente(p));
+    const totalFiados = fiadosPendientes.reduce((s, p) => {
+      recalcularMontoPedido(p);
+      return s + Number(p.montoNeto || 0);
+    }, 0);
+
+    const rowsFiados = fiadosPendientes.map((p) => filaPedido(p, { mostrarPagaEl: true })).join('');
+    const rows = pedidosResto.map((p) => filaPedido(p)).join('');
+
+    const bloqueFiados = `
+      <div class="imp-card imp-card--fiados">
+        <h2>Fiados</h2>
+        <p class="imp-muted">Pedidos entregados o en curso que <strong>aún no se cobraron</strong>. La fecha «Paga el» crea el recordatorio en el organizador. Cuando paguen → <strong>Transferir a venta</strong>.</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Paga el</th><th>Monto</th><th>Estado</th><th></th></tr></thead>
+            <tbody>${
+              rowsFiados ||
+              '<tr><td colspan="6" class="imp-muted">Sin fiados pendientes</td></tr>'
+            }</tbody>
+          </table>
+        </div>
+        <p class="imp-kpi"><span>Por cobrar</span><strong>${money(totalFiados)}</strong></p>
+      </div>`;
 
     $('#tab-pedidos').innerHTML = `
+      ${bloqueFiados}
       <div class="imp-card">
         <h2>Pedidos</h2>
-        <p class="imp-muted">Por ítem: <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable). El <strong>estado</strong> se elige en el menú. Al <strong>Transferir a venta</strong> podés aplicar un <strong>descuento</strong>; el total cobrado es el que baja la deuda.</p>
+        <p class="imp-muted">Por ítem: <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable). El <strong>estado</strong> se elige en el menú. Al <strong>Transferir a venta</strong> podés aplicar un <strong>descuento</strong>; el total cobrado es el que baja la deuda. Los fiados pendientes están arriba en <strong>Fiados</strong>.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th><th></th></tr></thead>
@@ -2516,9 +3710,18 @@
       </div>
       <div class="imp-card">
         <h3>Nuevo pedido</h3>
+        <p class="imp-muted">Mínimo: <strong>nombre</strong> + <strong>origen</strong> (SIE = trabajo Nicolás · MKOF = trabajo Josefa). Segundo nombre opcional. Precio venta se puede subir a mano.</p>
         <form class="imp-form" id="form-pedido">
           <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
-          <label>Cliente<input name="cliente" placeholder="Nombre o @instagram" /></label>
+          <label>Nombre<input name="clienteNombre" required placeholder="Ej. Rebe" /></label>
+          <label>Segundo nombre<input name="clienteSegundoNombre" placeholder="Opcional" /></label>
+          <label>Origen (dónde viene)
+            <select name="clienteOrigen" required>
+              <option value="">Elegir…</option>
+              <option value="SIE">SIE · trabajo Nicolás</option>
+              <option value="MKOF">MKOF · trabajo Josefa</option>
+            </select>
+          </label>
           <label>Producto (SKU)
             <select name="sku" required id="pedido-sku">
               <option value="">Elegir…</option>
@@ -2537,12 +3740,21 @@
           </label>
           <label>Estado
             <select name="estado">
-              <option value="pendiente">Pendiente</option>
+              <option value="pendiente" selected>Pendiente</option>
               <option value="en_impresion">En impresión</option>
-              <option value="listo" selected>Listo para entregar</option>
+              <option value="listo">Listo para entregar</option>
             </select>
           </label>
           <label>Canal<input name="canal" placeholder="WhatsApp / Instagram / feria" value="WhatsApp" /></label>
+          <label>Fiado (paga después)
+            <select name="fiado" id="pedido-fiado">
+              <option value="no" selected>No · cobrado / al contado</option>
+              <option value="si">Sí · paga más adelante</option>
+            </select>
+          </label>
+          <label>Fecha de pago (si fiado)
+            <input name="fechaPagoEsperada" type="date" id="pedido-fecha-pago" />
+          </label>
           <label>Quién
             <select name="socioRegistro">
               <option value="Ambos" selected>Ambos</option>
@@ -2550,10 +3762,10 @@
               <option value="Nicolás">Nicolás</option>
             </select>
           </label>
-          <label class="imp-form-span">Notas<textarea name="notas" rows="2" placeholder="Ej. PLA negro"></textarea></label>
+          <label class="imp-form-span">Notas<textarea name="notas" rows="2" placeholder="Ej. PLA negro · paga el 18 ago"></textarea></label>
           <div class="imp-form-actions">
             <button class="imp-btn imp-btn--primary" type="submit">Registrar pedido</button>
-            <span class="imp-muted">Se asigna el siguiente PED-xxx automáticamente</span>
+            <span class="imp-muted">Fiado → crea recordatorio de cobro en el organizador el día de pago</span>
           </div>
         </form>
       </div>
@@ -2598,6 +3810,20 @@
     $('#form-pedido')?.addEventListener('submit', (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
+      const clienteNombre = String(fd.get('clienteNombre') || '').trim();
+      const clienteSegundoNombre = String(fd.get('clienteSegundoNombre') || '').trim();
+      const clienteOrigen = String(fd.get('clienteOrigen') || '')
+        .trim()
+        .toUpperCase();
+      if (!clienteNombre) {
+        setStatus('Falta el nombre del cliente', 'warn');
+        return;
+      }
+      if (clienteOrigen !== 'SIE' && clienteOrigen !== 'MKOF') {
+        setStatus('Elige origen: SIE (Nico) o MKOF (Josefa)', 'warn');
+        return;
+      }
+      const cliente = formatearClienteImp(clienteNombre, clienteSegundoNombre, clienteOrigen);
       const sku = String(fd.get('sku') || '').trim();
       const prod = (data.productos || []).find((p) => p.sku === sku);
       const cantidad = round2(fd.get('cantidad') || 1);
@@ -2609,14 +3835,27 @@
         setStatus('Elige producto y precio de venta / unidad', 'warn');
         return;
       }
+      if (!(costoUnitarioClp > 0)) {
+        setStatus('Ese producto no tiene costo calculado — carga parámetros o imagen en Costos', 'warn');
+        return;
+      }
       const numero = siguienteNumeroPedido();
       data.pedidos = data.pedidos || [];
       const estadoOk = pedidoActivo(estado) ? estado : 'pendiente';
+      const fiadoSi = String(fd.get('fiado') || 'no') === 'si';
+      const fechaPagoEsperada = String(fd.get('fechaPagoEsperada') || '').slice(0, 10);
+      if (fiadoSi && !/^\d{4}-\d{2}-\d{2}$/.test(fechaPagoEsperada)) {
+        setStatus('Si es fiado, indica la fecha de pago (día en que cobramos)', 'warn');
+        return;
+      }
       const ped = {
         id: uid('ped'),
         numero,
         fecha: fd.get('fecha'),
-        cliente: String(fd.get('cliente') || '').trim(),
+        cliente,
+        clienteNombre,
+        clienteSegundoNombre: clienteSegundoNombre || undefined,
+        clienteOrigen,
         canal: String(fd.get('canal') || ''),
         items: [
           {
@@ -2637,11 +3876,22 @@
         socioRegistro: fd.get('socioRegistro') || 'Ambos',
         creado: new Date().toISOString(),
       };
+      if (fiadoSi) {
+        ped.fiado = true;
+        ped.fechaPagoEsperada = fechaPagoEsperada;
+        ped.pagoNotas = `Paga el ${fechaPagoEsperada}`;
+        if (!ped.notas) ped.notas = `Fiado · paga ${fechaPagoEsperada}`;
+      }
       data.pedidos.push(ped);
       markDirty();
       renderAll();
       activarTab('pedidos');
-      setStatus(`Pedido ${numero} creado · venta ${money(montoNeto)} · guarda online`, 'warn');
+      setStatus(
+        fiadoSi
+          ? `${numero} · ${cliente} · fiado · cobra ${fechaPagoEsperada} · ${money(montoNeto)} (recordatorio en organizador al sync)`
+          : `${numero} · ${cliente} · ${estadoOk} · ${money(montoNeto)} · visible en Resumen`,
+        'warn'
+      );
       save().catch((err) => setStatus(String(err.message || err), 'err'));
     });
 
@@ -2718,8 +3968,59 @@
     });
   }
 
+  function origenDesdeCliente(cliente) {
+    const parts = String(cliente || '')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    if (!parts.length) return '';
+    const last = parts[parts.length - 1].toUpperCase();
+    if (last === 'SIE' || last === 'MKOF') return last;
+    return '';
+  }
+
+  function ventaPasaFiltros(v) {
+    const cliente = String(v.cliente || '').trim();
+    if (ventasFiltroCliente && cliente !== ventasFiltroCliente) return false;
+    if (ventasFiltroOrigen) {
+      const orig = origenDesdeCliente(cliente);
+      if (orig !== ventasFiltroOrigen) return false;
+    }
+    if (ventasFiltroTexto) {
+      const q = ventasFiltroTexto.toLowerCase();
+      const blob = [
+        v.codigo,
+        v.cliente,
+        v.descripcion,
+        v.pedidoNumero,
+        v.notas,
+        ...(v.items || []).map((it) => `${it.nombre || ''} ${it.sku || ''} ${it.filamento || ''}`),
+      ]
+        .join(' ')
+        .toLowerCase();
+      if (!blob.includes(q)) return false;
+    }
+    return true;
+  }
+
   function renderVentas() {
-    const rows = (data.ventas || [])
+    rebuildClientesHistorial(data);
+    const ventasSorted = (data.ventas || []).slice().sort((a, b) => {
+      const na = Number(String(a.codigo || '').replace(/^I0*/, '') || 0);
+      const nb = Number(String(b.codigo || '').replace(/^I0*/, '') || 0);
+      if (na && nb && na !== nb) return na - nb;
+      return String(a.fecha || '').localeCompare(String(b.fecha || ''));
+    });
+    const ventasFiltradas = ventasSorted.filter(ventaPasaFiltros);
+    const clientesOpts = Array.from(
+      new Set(
+        (data.ventas || [])
+          .map((v) => String(v.cliente || '').trim())
+          .filter(Boolean)
+      )
+    ).sort((a, b) => a.localeCompare(b, 'es'));
+
+    const rows = ventasFiltradas
       .map((v) => {
         const itemsHtml = (v.items || [])
           .map(
@@ -2729,12 +4030,12 @@
           .join('');
         return `
       <tr>
-        <td>${escapeHtml(v.fecha || '')}</td>
-        <td>${escapeHtml(v.cliente || v.descripcion || '')}${
+        <td><strong>${escapeHtml(v.codigo || '—')}</strong><div class="imp-muted">${escapeHtml(v.fecha || '')}</div></td>
+        <td><strong>${escapeHtml(v.cliente || '—')}</strong>${
           v.pedidoNumero
             ? `<div class="imp-muted">Desde pedido <strong>${escapeHtml(v.pedidoNumero)}</strong></div>`
             : ''
-        }${itemsHtml || (v.descripcion && v.cliente ? `<div class="imp-muted">${escapeHtml(v.descripcion)}</div>` : '')}</td>
+        }${itemsHtml || (v.descripcion ? `<div class="imp-muted">${escapeHtml(v.descripcion)}</div>` : '')}</td>
         <td class="num">${v.cantidad || 1}</td>
         <td class="num"><strong>${money(v.montoNeto)}</strong>${
           Number(v.descuentoClp) > 0
@@ -2747,26 +4048,98 @@
       })
       .join('');
 
+    const hist = data.meta?.clientesHistorial || [];
+    const histFiltrado = hist.filter((h) => {
+      if (ventasFiltroCliente && h.cliente !== ventasFiltroCliente) return false;
+      if (ventasFiltroOrigen && origenDesdeCliente(h.cliente) !== ventasFiltroOrigen) return false;
+      if (ventasFiltroTexto) {
+        const q = ventasFiltroTexto.toLowerCase();
+        const blob = `${h.cliente} ${(h.ventaCodigos || []).join(' ')}`.toLowerCase();
+        if (!blob.includes(q)) return false;
+      }
+      return true;
+    });
+    const histRows = histFiltrado
+      .map((h) => {
+        const activo = ventasFiltroCliente === h.cliente;
+        return `<tr class="imp-hist-row${activo ? ' is-active' : ''}" data-filtro-cliente="${escapeHtml(h.cliente)}" title="Ver compras de ${escapeHtml(h.cliente)}">
+        <td><strong>${escapeHtml(h.cliente)}</strong>${activo ? ' <span class="imp-badge">filtro</span>' : ''}</td>
+        <td class="num">${h.compras}</td>
+        <td>${(h.ventaCodigos || []).map((c) => escapeHtml(c)).join(', ') || '—'}</td>
+        <td class="num"><strong>${money(h.totalNeto)}</strong></td>
+      </tr>`;
+      })
+      .join('');
+
+    const totalFiltrado = ventasFiltradas.reduce((a, v) => a + Number(v.montoNeto || 0), 0);
+    const totalGlobal = sum(data.ventas);
+    const hayFiltro = !!(ventasFiltroCliente || ventasFiltroOrigen || ventasFiltroTexto);
+    const clienteOptionsHtml = clientesOpts
+      .map(
+        (c) =>
+          `<option value="${escapeHtml(c)}"${c === ventasFiltroCliente ? ' selected' : ''}>${escapeHtml(c)}</option>`
+      )
+      .join('');
+
     $('#tab-ventas').innerHTML = `
       <div class="imp-card imp-kpi--accent" style="padding:0.9rem 1rem">
         <p style="margin:0"><strong>Flujo recomendado:</strong> registra en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>
-        (ajustá el precio venta/u si cobraste más) y al transferir se guarda la venta. Solo las ventas bajan la deuda.</p>
+        (ajustá el precio venta/u si cobraste más) y al transferir se guarda la venta con ID <strong>I00000n</strong>. Solo las ventas bajan la deuda. <strong>«Pagado»</strong> = venta.</p>
       </div>
       <div class="imp-card">
-        <h2>Ventas contabilizadas (${money(sum(data.ventas))})</h2>
-        <p class="imp-muted">Estas sí entran al dashboard: <strong>saldo = gastos − ventas</strong>.</p>
+        <h2>Filtro · compras por cliente</h2>
+        <p class="imp-muted">Elegí un cliente o origen, o hacé clic en una fila del historial. El total de abajo refleja el filtro.</p>
+        <div class="imp-ventas-filtros" id="imp-ventas-filtros">
+          <label>Cliente
+            <select id="filtro-venta-cliente" class="imp-select-estado" style="max-width:16rem">
+              <option value="">Todos</option>
+              ${clienteOptionsHtml}
+            </select>
+          </label>
+          <label>Origen
+            <select id="filtro-venta-origen" class="imp-select-estado">
+              <option value=""${ventasFiltroOrigen === '' ? ' selected' : ''}>Todos</option>
+              <option value="SIE"${ventasFiltroOrigen === 'SIE' ? ' selected' : ''}>SIE (Nico)</option>
+              <option value="MKOF"${ventasFiltroOrigen === 'MKOF' ? ' selected' : ''}>MKOF (Josefa)</option>
+            </select>
+          </label>
+          <label>Buscar
+            <input id="filtro-venta-texto" type="search" placeholder="código, producto…" value="${escapeHtml(ventasFiltroTexto)}" />
+          </label>
+          <button type="button" class="imp-btn" id="btn-filtro-venta-limpiar"${hayFiltro ? '' : ' disabled'}>Limpiar</button>
+        </div>
+        <p class="imp-muted" style="margin-top:0.6rem">
+          Mostrando <strong>${ventasFiltradas.length}</strong> de ${ventasSorted.length} ventas ·
+          total filtrado <strong>${money(totalFiltrado)}</strong>
+          ${hayFiltro ? ` · global ${money(totalGlobal)}` : ''}
+        </p>
+      </div>
+      <div class="imp-card">
+        <h2>Ventas contabilizadas (${money(hayFiltro ? totalFiltrado : totalGlobal)})</h2>
+        <p class="imp-muted">ID correlativo: primera = <strong>I000001 Tito MKOF</strong>. Clientes nuevos = <strong>nombre + origen</strong> (SIE = Nico · MKOF = Josefa); no se auto-agrega SIE.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
-            <thead><tr><th>Fecha</th><th>Cliente / detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
-            <tbody>${rows || '<tr><td colspan="6">Sin ventas aún</td></tr>'}</tbody>
+            <thead><tr><th>ID / Fecha</th><th>Cliente / detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
+            <tbody>${rows || `<tr><td colspan="6">${hayFiltro ? 'Sin ventas con este filtro' : 'Sin ventas aún'}</td></tr>`}</tbody>
+          </table>
+        </div>
+      </div>
+      <div class="imp-card">
+        <h2>Historial por cliente</h2>
+        <p class="imp-muted">Clic en un cliente para filtrar sus compras. Quién compró más de una vez y el total acumulado.</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>Cliente</th><th>Compras</th><th>IDs venta</th><th>Total</th></tr></thead>
+            <tbody>${histRows || `<tr><td colspan="4">${hayFiltro ? 'Sin clientes con este filtro' : 'Sin historial aún'}</td></tr>`}</tbody>
           </table>
         </div>
       </div>
       <div class="imp-card">
         <h3>Venta directa (sin pedido)</h3>
-        <p class="imp-muted">Úsalo solo si no pasaste por Pedidos. Prefiere Pedidos → Transferir a venta.</p>
+        <p class="imp-muted">Úsalo solo si no pasaste por Pedidos. Prefiere Pedidos → Transferir a venta. Se asigna el siguiente ID I00000n.</p>
         <form class="imp-form" id="form-venta">
           <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
+          <label>Cliente<input name="cliente" required placeholder="Nombre ORIGEN · ej. Ana MKOF" /></label>
           <label>Descripción<input name="descripcion" required placeholder="Llavero x3" /></label>
           <label>Cantidad<input name="cantidad" type="number" min="1" value="1" /></label>
           <label>Total cobrado CLP<input name="montoNeto" type="number" required /></label>
@@ -2784,6 +4157,34 @@
       </div>
     `;
 
+    const aplicarFiltrosYRender = () => {
+      ventasFiltroCliente = String($('#filtro-venta-cliente')?.value || '').trim();
+      ventasFiltroOrigen = String($('#filtro-venta-origen')?.value || '').trim();
+      ventasFiltroTexto = String($('#filtro-venta-texto')?.value || '').trim();
+      renderVentas();
+    };
+
+    $('#filtro-venta-cliente')?.addEventListener('change', aplicarFiltrosYRender);
+    $('#filtro-venta-origen')?.addEventListener('change', aplicarFiltrosYRender);
+    let textoTimer = null;
+    $('#filtro-venta-texto')?.addEventListener('input', () => {
+      clearTimeout(textoTimer);
+      textoTimer = setTimeout(aplicarFiltrosYRender, 180);
+    });
+    $('#btn-filtro-venta-limpiar')?.addEventListener('click', () => {
+      ventasFiltroCliente = '';
+      ventasFiltroOrigen = '';
+      ventasFiltroTexto = '';
+      renderVentas();
+    });
+    $('#tab-ventas')?.querySelectorAll('[data-filtro-cliente]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const c = row.getAttribute('data-filtro-cliente') || '';
+        ventasFiltroCliente = ventasFiltroCliente === c ? '' : c;
+        renderVentas();
+      });
+    });
+
     $('#tab-ventas')?.querySelectorAll('[data-goto-tab]').forEach((btn) => {
       btn.addEventListener('click', () => activarTab(btn.getAttribute('data-goto-tab')));
     });
@@ -2793,6 +4194,11 @@
       const fd = new FormData(e.target);
       const monto = Number(fd.get('montoNeto'));
       const desc = String(fd.get('descripcion') || '').trim();
+      const cliente = String(fd.get('cliente') || '').trim();
+      if (!cliente) {
+        setStatus('Escribe el nombre del cliente (ej. Rebe SIE)', 'warn');
+        return;
+      }
       if (!desc) {
         setStatus('Escribe qué se vendió', 'warn');
         return;
@@ -2801,25 +4207,32 @@
         setStatus('Falta el Total cobrado CLP (debe ser mayor a 0)', 'warn');
         return;
       }
+      const codigo = nextVentaCodigo(data);
       data.ventas = data.ventas || [];
       data.ventas.push({
         id: uid('ven'),
+        codigo,
         fecha: fd.get('fecha'),
+        cliente,
         descripcion: desc,
         cantidad: Number(fd.get('cantidad') || 1),
         montoNeto: monto,
+        montoBruto: monto,
+        descuentoClp: 0,
         canal: fd.get('canal') || '',
         notas: fd.get('notas') || '',
         socioRegistro: fd.get('socioRegistro') || '',
       });
+      rebuildClientesHistorial(data);
       markDirty();
       renderAll();
-      setStatus('Venta agregada — pulsa «Guardar online» para fijarla', 'warn');
+      setStatus(`${codigo} · ${cliente} · venta agregada — pulsa «Guardar online» para fijarla`, 'warn');
     });
 
     $('#tab-ventas').querySelectorAll('[data-del-venta]').forEach((btn) => {
       btn.addEventListener('click', () => {
         data.ventas = data.ventas.filter((v) => v.id !== btn.getAttribute('data-del-venta'));
+        rebuildClientesHistorial(data);
         markDirty();
         renderAll();
       });
@@ -2841,10 +4254,60 @@
       )
       .join('');
 
+    const imps = data.impresoras || IMPRESORAS_SEED;
+    const filasImp = imps
+      .map((im) => {
+        const luzH = Number(im.tarifaKwhClp || p.tarifaKwhClp || 0) * Number(im.consumoImpresoraKw || 0);
+        const aliasLbl =
+          im.alias === 'antigua'
+            ? '<div class="imp-badge">Antigua</div>'
+            : im.alias === 'nueva' || im.activaDefault
+              ? '<div class="imp-badge imp-badge--ok">Nueva · default</div>'
+              : '';
+        return `<tr>
+          <td><strong>${escapeHtml(im.nombre)}</strong>
+            <div class="imp-muted">${escapeHtml(im.extrusor || '')}</div>
+            ${aliasLbl}
+          </td>
+          <td class="num">${Number(im.consumoImpresoraKw || 0).toFixed(2)} kW</td>
+          <td class="num">${money(luzH)}/h</td>
+          <td class="num">${Number(im.recargoFijoClp) > 0 ? money(im.recargoFijoClp) : '—'}</td>
+          <td class="num">${Number(im.costoFilamentoDefaultKgClp) > 0 ? money(im.costoFilamentoDefaultKgClp) : (im.filamentoOtro ? 'definir' : '—')}</td>
+          <td class="imp-muted">${escapeHtml(im.notas || '')}</td>
+        </tr>`;
+      })
+      .join('');
+    const ender = imps.find((x) => x.id === 'imp-ender-3-v2-neo');
+
     $('#tab-operacion').innerHTML = `
       <div class="imp-card">
+        <h2>Impresoras (perfiles de costo)</h2>
+        <p class="imp-muted"><strong>Nueva</strong> = Elegoo Centauri · <strong>Antigua</strong> = Ender 3 V2 Neo (Sprite Neo, otro filamento + recargo). Elegí la impresora en cada producto (Costos).</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>Impresora</th><th>Consumo</th><th>Luz/h</th><th>Recargo</th><th>$/kg default</th><th>Notas</th></tr></thead>
+            <tbody>${filasImp}</tbody>
+          </table>
+        </div>
+        <form class="imp-form" id="form-ender-filamento" style="margin-top:0.75rem">
+          <label>$ / kg filamento Ender (otro filamento)
+            <input name="costoFilamentoDefaultKgClp" type="number" min="0" step="0.01" value="${num2(ender?.costoFilamentoDefaultKgClp || 0)}" placeholder="Ej. 12990" />
+          </label>
+          <label>Consumo Ender kW promedio
+            <input name="consumoImpresoraKw" type="number" min="0" step="0.01" value="${num2(ender?.consumoImpresoraKw || 0.16)}" />
+          </label>
+          <label>Recargo fijo Ender CLP
+            <input name="recargoFijoClp" type="number" min="0" step="1" value="${Math.round(Number(ender?.recargoFijoClp || 1000))}" />
+          </label>
+          <div class="imp-form-actions">
+            <button class="imp-btn imp-btn--primary" type="submit">Guardar perfil Ender</button>
+            <span class="imp-muted">Se usa al calcular productos con impresora Ender (si el producto no trae $/kg propio).</span>
+          </div>
+        </form>
+      </div>
+      <div class="imp-card">
         <h2>Parámetros (luz / mano de obra / empaque)</h2>
-        <p class="imp-muted"><strong>${escapeHtml(p.impresoraModelo || LUZ_CHILE.impresoraModelo)}</strong> · Chile 220 V</p>
+        <p class="imp-muted"><strong>${escapeHtml(p.impresoraModelo || LUZ_CHILE.impresoraModelo)}</strong> · Chile 220 V · default Centauri</p>
         <p class="imp-muted">${escapeHtml(p.impresoraNotas || LUZ_CHILE.impresoraNotas)}</p>
         <form class="imp-form" id="form-params">
           <label>Tarifa luz Chile $/kWh
@@ -2861,7 +4324,7 @@
           </label>
           <div class="imp-form-actions">
             <button class="imp-btn imp-btn--primary" type="submit">Guardar parámetros</button>
-            <span class="imp-muted">Luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> (= ${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp} × ${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw} kW)</span>
+            <span class="imp-muted">Luz/hora Centauri ≈ <strong>${money(costoHoraImpresora('imp-centauri-carbon-2'))}</strong></span>
           </div>
         </form>
       </div>
@@ -2911,6 +4374,32 @@
       setStatus(`Parámetros luz actualizados — ${money(costoHoraImpresora())}/h · guarda online`, 'warn');
     });
 
+    $('#form-ender-filamento')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      asegurarImpresoras(data);
+      const ender = (data.impresoras || []).find((x) => x.id === 'imp-ender-3-v2-neo');
+      if (!ender) {
+        setStatus('No se encontró el perfil Ender 3 V2 Neo', 'err');
+        return;
+      }
+      const fd = new FormData(e.target);
+      ender.costoFilamentoDefaultKgClp = Math.max(
+        0,
+        Number(fd.get('costoFilamentoDefaultKgClp')) || 0
+      );
+      ender.consumoImpresoraKw = Math.max(0, Number(fd.get('consumoImpresoraKw')) || 0.16);
+      ender.recargoFijoClp = Math.max(0, Number(fd.get('recargoFijoClp')) || 0);
+      ender.filamentoOtro = true;
+      if (!ender.extrusor) ender.extrusor = 'Sprite Neo (extrusión directa)';
+      markDirty();
+      renderAll();
+      activarTab('operacion');
+      setStatus(
+        `Perfil Ender 3 V2 Neo guardado · $/kg ${money(ender.costoFilamentoDefaultKgClp)} · recargo ${money(ender.recargoFijoClp)} · guarda online`,
+        'warn'
+      );
+    });
+
     $('#form-op').addEventListener('submit', (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
@@ -2950,6 +4439,7 @@
       filamentoPurgeGramos: purge,
       filamentoGramos: round2(modelo + soportes + purge),
       costoFilamentoKgClp: round2(fd.get('kg')),
+      impresoraId: String(fd.get('impresoraId') || '').trim() || impresoraDefault()?.id || '',
       horasImpresion: horasDesdePartes(fd.get('horasPart'), fd.get('minutosPart')),
       minutosPintado: round2(fd.get('m')),
       unidadesMetal: round2(fd.get('metal')),
@@ -3040,12 +4530,21 @@
           prod.filamentoPurgeGramos != null;
         const usarDesglose = tieneDesglose ? '1' : '0';
         const precioVenta = precioVentaProducto(prod, c.total);
+        const impId = prod.impresoraId || impresoraDefault()?.id || 'imp-centauri-carbon-2';
+        const optsImp = (data.impresoras || IMPRESORAS_SEED)
+          .map((im) => {
+            const tag =
+              im.alias === 'antigua' ? 'Antigua · ' : im.alias === 'nueva' || im.activaDefault ? 'Nueva · ' : '';
+            return `<option value="${escapeHtml(im.id)}"${im.id === impId ? ' selected' : ''}>${tag}${escapeHtml(im.nombre)}${im.extrusor ? ` · ${escapeHtml(im.extrusor)}` : ''}</option>`;
+          })
+          .join('');
         return `
         <div class="imp-card imp-card--prod" data-prod-id="${pid}">
           <div class="imp-prod-summary">
             <div class="imp-prod-summary__title">
               <h3 data-prod-nombre>${escapeHtml(prod.nombre)}</h3>
               <span class="imp-sku" data-prod-sku title="SKU del producto">SKU ${sku}</span>
+              ${c.impresoraNombre ? `<span class="imp-muted">${escapeHtml(c.impresoraNombre)}</span>` : ''}
             </div>
             <div class="imp-prod-summary__nums">
               <span class="imp-prod-kpi">Costo <strong data-prod-costo>${money(c.total)}</strong></span>
@@ -3061,6 +4560,9 @@
                 <label>Nombre<input name="nombre" required value="${escapeHtml(prod.nombre || '')}" /></label>
                 <label>SKU
                   <input name="sku" required pattern="[A-Za-z]{2,10}[0-9]{3}" title="Ej. PCGATO001, PLMONS001" value="${sku}" />
+                </label>
+                <label class="imp-form-span">Impresora
+                  <select name="impresoraId">${optsImp}</select>
                 </label>
                 <label>$ / kg filamento (CLP)<input name="costoFilamentoKgClp" type="number" min="0" step="0.01" value="${num2(prod.costoFilamentoKgClp || 0)}" /></label>
                 <label class="imp-form-span">Desglose slicer (como en la foto)
@@ -3104,10 +4606,23 @@
       <div class="imp-card">
         <h3>Calculadora rápida de pieza</h3>
         <form class="imp-form" id="form-calc-pieza">
+          <label class="imp-form-span">Impresora
+            <select name="impresoraId">${(data.impresoras || IMPRESORAS_SEED)
+              .map((im) => {
+                const tag =
+                  im.alias === 'antigua'
+                    ? 'Antigua · '
+                    : im.alias === 'nueva' || im.activaDefault
+                      ? 'Nueva · '
+                      : '';
+                return `<option value="${escapeHtml(im.id)}"${im.activaDefault ? ' selected' : ''}>${tag}${escapeHtml(im.nombre)}${im.extrusor ? ` · ${escapeHtml(im.extrusor)}` : ''}</option>`;
+              })
+              .join('')}</select>
+          </label>
           <label>Modelo (g)<input name="modelo" type="number" step="0.01" value="135.55" /></label>
           <label>Soportes (g)<input name="soportes" type="number" step="0.01" value="8.43" /></label>
           <label>Purge (g)<input name="purge" type="number" step="0.01" value="0.47" /></label>
-          <label>$ / kg filamento<input name="kg" type="number" value="${avgFilKg}" /></label>
+          <label>$ / kg filamento<input name="kg" type="number" value="${avgFilKg}" placeholder="0 = default impresora" /></label>
           <label>Horas<input name="horasPart" type="number" min="0" step="1" value="3" /></label>
           <label>Minutos<input name="minutosPart" type="number" min="0" max="59" step="1" value="25" /></label>
           <label>Minutos pintado<input name="m" type="number" value="0" /></label>
@@ -3132,6 +4647,7 @@
       const prod = {
         filamentoGramos: g,
         costoFilamentoKgClp: Number(fd.get('kg')),
+        impresoraId: String(fd.get('impresoraId') || '').trim() || impresoraDefault()?.id || '',
         horasImpresion: horasDesdePartes(fd.get('horasPart'), fd.get('minutosPart')),
         minutosPintado: Number(fd.get('m')),
         unidadesMetal: Number(fd.get('metal')),
@@ -3140,14 +4656,16 @@
       const c = costoProducto(prod);
       const sugerido = precioSugeridoDesdeCosto(c.total);
       const pctObj = Number(p.margenObjetivoPct ?? 100);
+      const recargoTxt = Number(c.recargo) > 0 ? ` · Recargo ${money(c.recargo)}` : '';
       el.innerHTML = `
           Total filamento <strong>${g.toFixed(2)} g</strong>
-          · Filamento ${money(c.filamento)} · Luz ${money(c.luz)} · Pintado ${money(c.pintado)} · Metal ${money(c.metal)} · Bolsa ${money(c.bolsa)}
+          · Filamento ${money(c.filamento)} · Luz ${money(c.luz)}${recargoTxt} · Pintado ${money(c.pintado)} · Metal ${money(c.metal)} · Bolsa ${money(c.bolsa)}
           <br><strong>Costo unitario: ${money(c.total)}</strong> · precio sugerido (+${pctObj}% sobre costo): <strong>${money(sugerido)}</strong>
-          <div class="imp-muted" style="margin-top:0.35rem">Tarifa Chile ${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp} $/kWh · ${p.impresoraModelo || 'Centauri Carbon 2'} ${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw} kW</div>`;
+          <div class="imp-muted" style="margin-top:0.35rem">Impresora: <strong>${escapeHtml(c.impresoraNombre || '—')}</strong> · luz/h ${money(costoHoraImpresora(prod.impresoraId))}</div>`;
       form.dataset.calcSnapshot = JSON.stringify({ ...prod, sugerido, c });
     };
     $('#form-calc-pieza')?.addEventListener('input', updateCalc);
+    $('#form-calc-pieza')?.addEventListener('change', updateCalc);
     updateCalc();
     $('#btn-calc-guardar')?.addEventListener('click', abrirModalDesdeCalculadora);
 
@@ -3234,6 +4752,7 @@
           filamentoMetros: leido.filamentoMetros,
           filamentoGramos: leido.filamentoGramos,
           costoFilamentoKgClp: leido.costoFilamentoKgClp,
+          impresoraId: leido.impresoraId,
           horasImpresion: leido.horasImpresion,
           minutosPintado: leido.minutosPintado,
           unidadesMetal: leido.unidadesMetal,
@@ -3243,6 +4762,10 @@
           notas: leido.notas,
           editadoLocal: true,
         });
+        // Si usa perfil Ender, el recargo vive en el perfil (evitar duplicar).
+        if (prod.impresoraId === 'imp-ender-3-v2-neo' && prod.recargoImpresoraAntiguaClp != null) {
+          delete prod.recargoImpresoraAntiguaClp;
+        }
         markDirty();
         refreshLive();
         renderResumen();
@@ -3447,6 +4970,7 @@
       sku,
       nombre,
       activo: true,
+      impresoraId: calcDraft?.impresoraId || impresoraDefault()?.id || 'imp-centauri-carbon-2',
       filamentoModeloGramos: round2(calcDraft?.filamentoModeloGramos ?? 0),
       filamentoSoportesGramos: round2(calcDraft?.filamentoSoportesGramos ?? 0),
       filamentoPurgeGramos: round2(calcDraft?.filamentoPurgeGramos ?? 0),

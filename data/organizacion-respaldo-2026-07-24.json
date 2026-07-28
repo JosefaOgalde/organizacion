@@ -1080,7 +1080,7 @@
       "horaFin": "13:00",
       "notas": "Tarea madre Contenido 10/12 (serie mensual 12 pubs). Producto: Botas de Agua Original para Niños · SKU JFT6000RMA-BLK. Link: https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/ · Características: Hunter Original kids · 5–11 años (31–37) · 100% impermeables · caucho natural mate · hechas a mano · forro poliéster · suela Original · parches reflectantes. Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. Con las 3 hechas → finalizar esta madre. Bloque: 2026-07-22.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "17",
       "tipoEntregable": "ecosistema",
@@ -1088,7 +1088,8 @@
       "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
       "contenidoSerie": 10,
       "contenidoTotal": 12,
-      "fechaFin": "2026-07-22"
+      "fechaFin": "2026-07-22",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-10-de-12-prompt",
@@ -1100,7 +1101,7 @@
       "horaFin": "10:30",
       "notas": "Prompt Gemini VIDEO · NIÑOS / NIÑAS (aprox. 5–11 años). Producto: Botas de Agua Original para Niños. Tres TXT independientes (A/B/C): edita y copia cada uno por separado.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "18",
       "tipoEntregable": "prompt-gemini",
@@ -1111,7 +1112,8 @@
         "C": "index/clientes/trendseeker/prompts/PROMPT-c10-original-ninos-C.txt"
       },
       "parentId": "tarea-ts-contenido-10-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/"
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-10-de-12-copy",
@@ -1123,7 +1125,7 @@
       "horaFin": "12:00",
       "notas": "Copys video C10/12 · tres TXT (A/B/C). Producto: Botas de Agua Original para Niños. Edita, guarda y copia cada versión. Link: https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "19",
       "tipoEntregable": "copys-txt",
@@ -1134,7 +1136,8 @@
         "C": "index/clientes/trendseeker/copys/COPY-c10-original-ninos-C.txt"
       },
       "parentId": "tarea-ts-contenido-10-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/"
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-10-de-12-programar",
@@ -1146,12 +1149,13 @@
       "horaFin": "13:00",
       "notas": "Dejar el contenido programado/listo para publicar (feed/Reels/historias según plan TS). Verificar copy + video + link producto. Al terminar → marcar hecha y finalizar madre Contenido 10/12.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "20",
       "tipoEntregable": "programar",
       "parentId": "tarea-ts-contenido-10-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/"
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-11-de-12",
@@ -1246,7 +1250,7 @@
       "horaFin": "13:00",
       "notas": "Tarea madre Contenido 12/12 (serie mensual 12 pubs). Producto: Botas de Agua Original Niños Rosado Brillante · SKU JFT6000RMA-RBP. Link: https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/ · Características: Hunter Original kids · rosado brillante · 5–11 años (31–37) · 100% impermeables · caucho natural · hechas a mano · forro poliéster · suela Original · parches reflectantes. Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. Con las 3 hechas → finalizar esta madre. Bloque: 2026-07-27.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "25",
       "tipoEntregable": "ecosistema",
@@ -1254,7 +1258,8 @@
       "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
       "contenidoSerie": 12,
       "contenidoTotal": 12,
-      "fechaFin": "2026-07-27"
+      "fechaFin": "2026-07-27",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-12-de-12-prompt",
@@ -1266,7 +1271,7 @@
       "horaFin": "10:30",
       "notas": "Prompt Gemini VIDEO · NIÑOS / NIÑAS (aprox. 5–11 años). Producto: Botas de Agua Original Niños Rosado Brillante. Tres TXT independientes (A/B/C): edita y copia cada uno por separado.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "26",
       "tipoEntregable": "prompt-gemini",
@@ -1277,7 +1282,8 @@
         "C": "index/clientes/trendseeker/prompts/PROMPT-c12-original-ninos-rosado-brillante-C.txt"
       },
       "parentId": "tarea-ts-contenido-12-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/"
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-12-de-12-copy",
@@ -1289,7 +1295,7 @@
       "horaFin": "12:00",
       "notas": "Copys video C12/12 · tres TXT (A/B/C). Producto: Botas de Agua Original Niños Rosado Brillante. Edita, guarda y copia cada versión. Link: https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "27",
       "tipoEntregable": "copys-txt",
@@ -1300,7 +1306,8 @@
         "C": "index/clientes/trendseeker/copys/COPY-c12-original-ninos-rosado-brillante-C.txt"
       },
       "parentId": "tarea-ts-contenido-12-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/"
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-12-de-12-programar",
@@ -1312,12 +1319,13 @@
       "horaFin": "13:00",
       "notas": "Dejar el contenido programado/listo para publicar (feed/Reels/historias según plan TS). Verificar copy + video + link producto. Al terminar → marcar hecha y finalizar madre Contenido 12/12.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "28",
       "tipoEntregable": "programar",
       "parentId": "tarea-ts-contenido-12-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/"
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ecr-ecosistema-nl-agosto-2026-07-17",
@@ -1609,13 +1617,13 @@
     },
     {
       "id": "tarea-imp-pedidos-hoy",
-      "titulo": "[IMP] Pedidos activos · 1",
+      "titulo": "[IMP] Pedidos activos · 4",
       "clienteId": "cli-impresoreando",
       "rolId": "rol-imp-dis",
-      "fecha": "2026-07-18",
+      "fecha": "2026-07-28",
       "horaInicio": "10:00",
       "horaFin": "18:00",
-      "notas": "Panel socios 50/50 · PED-001 Rebe listo. Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. Imp live 2026-07-23T17:17:45+00:00",
+      "notas": "Panel socios 50/50 · PED-007 Juan SIE (listo) · PED-008 Juan MKOF (listo) · PED-010 Gianni SIE (pendiente) · PED-011 Marcia SIE (pendiente). Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. Imp live 2026-07-28T15:52:12.107Z",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
@@ -1623,7 +1631,7 @@
       "tipoEntregable": "impresoreando-pedidos",
       "parentId": null,
       "linkPanel": "/index/clientes/impresoreando/panel/",
-      "fechaFin": "2026-07-18",
+      "fechaFin": "2026-07-28",
       "sesionAgente": {
         "mensajes": [
           {
@@ -1639,23 +1647,23 @@
     },
     {
       "id": "tarea-imp-ped-rebe-plmons-001",
-      "titulo": "[IMP] PED-001 Rebe · 1× Porta Lata Monster",
+      "titulo": "[IMP] PED-001 · Rebe SIE · 1× Porta Lata Monster",
       "clienteId": "cli-impresoreando",
       "rolId": "rol-imp-dis",
       "fecha": "2026-07-18",
       "horaInicio": "10:00",
       "horaFin": "13:00",
-      "notas": "Estado pedido: listo. Total $5.679. 1× Porta lata Monster · PLA+ negro · listo para entregar · Panel: /index/clientes/impresoreando/panel/",
-      "prioridad": "media",
-      "completada": false,
+      "notas": "Transferido a venta (ven-rebe-monster-007). Total cobrado $7.000. 1× Porta Lata Monster · transferido a venta I000007 · $7.000 · Ya no es pedido activo.",
+      "prioridad": "baja",
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "02",
       "tipoEntregable": "impresoreando-pedido",
       "parentId": "tarea-imp-pedidos-hoy",
-      "ordenHijo": 1,
+      "ordenHijo": 901,
       "pedidoId": "ped-rebe-plmons-001",
       "pedidoNumero": "PED-001",
-      "pedidoEstado": "listo",
+      "pedidoEstado": "transferido",
       "linkPanel": "/index/clientes/impresoreando/panel/",
       "sesionAgente": {
         "mensajes": [
@@ -1668,14 +1676,15 @@
         "archivosAdjuntos": [],
         "imagenesPendientes": [],
         "imagenesReferencia": []
-      }
+      },
+      "fechaFinalizado": "2026-07-18"
     },
     {
       "id": "tarea-imp-ped-gianni-bulldog-002",
-      "titulo": "[IMP] PED-002 Gianni · 1× Macetero Perro Bulldog + 4× Porta Completo Perro Bulldog",
+      "titulo": "[IMP] PED-002 · Gianni SIE · 1× Macetero Perro Bulldog + 4× Porta Completo Perro Bulldog",
       "clienteId": "cli-impresoreando",
       "rolId": "rol-imp-dis",
-      "fecha": "2026-07-18",
+      "fecha": "2026-07-23",
       "horaInicio": "14:00",
       "horaFin": "18:00",
       "notas": "Transferido a venta (ven-gianni-bulldog-002). Total cobrado $15.000. Macetero + 4× portacompleto bulldog · transferido a venta $15.000 · Ya no es pedido activo.",
@@ -1685,11 +1694,12 @@
       "numeroHistorico": "03",
       "tipoEntregable": "impresoreando-pedido",
       "parentId": "tarea-imp-pedidos-hoy",
-      "ordenHijo": 2,
+      "ordenHijo": 902,
       "pedidoId": "ped-gianni-bulldog-002",
       "pedidoNumero": "PED-002",
       "pedidoEstado": "transferido",
-      "linkPanel": "/index/clientes/impresoreando/panel/"
+      "linkPanel": "/index/clientes/impresoreando/panel/",
+      "fechaFinalizado": "2026-07-23"
     },
     {
       "id": "tarea-jm-novedades-mobile-actual",
@@ -1699,8 +1709,8 @@
       "fecha": "2026-07-27",
       "horaInicio": "11:00",
       "horaFin": "14:00",
-      "notas": "Última tarea JM vigente (la serie F2 D1–D20 ya no va en el calendario). Cerrar Novedades/Destacados en mobile: grilla 2×2, ocultar clones Slick, validar hero/banner sin recorte MERCURY, paridad con wireframes. CSS: index/clientes/joyasmercury/CSS-COMPLETO-ASTRA.css · landing JM. Al terminar → marcar hecha.\nOK · cerrado 25-jul 2026 · checklist + descargas en landing.",
-      "prioridad": "alta",
+      "notas": "Última tarea JM vigente (la serie F2 D1–D20 ya no va en el calendario). Cerrar Novedades/Destacados en mobile: grilla 2×2, ocultar clones Slick, validar hero/banner sin recorte MERCURY, paridad con wireframes. CSS: index/clientes/joyasmercury/CSS-COMPLETO-ASTRA.css · landing JM. Al terminar → marcar hecha.\nOK · cerrado 25-jul 2026 · checklist + descargas en landing.\nCERRADA · Joyas Mercury inactivo · etapa 2 entregada · 2026-07-25.",
+      "prioridad": "baja",
       "completada": true,
       "pendiente": false,
       "numeroHistorico": "21",
@@ -1719,7 +1729,8 @@
         "imagenesPendientes": [],
         "imagenesReferencia": []
       },
-      "estadoFijado": true
+      "estadoFijado": true,
+      "fechaFinalizado": "2026-07-25"
     },
     {
       "id": "tarea-tw-ajustar-textos-2026-07-19",
@@ -1838,6 +1849,197 @@
       "parentId": null,
       "agendaFijada": true,
       "estadoFijado": true
+    },
+    {
+      "id": "tarea-imp-ped-ele-pesa-004",
+      "titulo": "[IMP] PED-004 · Ele SIE · 2× Llavero Pesa Rusa",
+      "clienteId": "cli-impresoreando",
+      "rolId": "rol-imp-dis",
+      "fecha": "2026-07-28",
+      "horaInicio": "10:00",
+      "horaFin": "13:00",
+      "notas": "Transferido a venta (ven-ele-pesa-014). Total cobrado $5.000. 2× Llavero Pesa Rusa amarillo · transferido a venta I000014 · $5.000 · Ya no es pedido activo.",
+      "prioridad": "baja",
+      "completada": true,
+      "pendiente": false,
+      "tipoEntregable": "impresoreando-pedido",
+      "parentId": "tarea-imp-pedidos-hoy",
+      "ordenHijo": 903,
+      "pedidoId": "ped-ele-pesa-rusa-004",
+      "pedidoNumero": "PED-004",
+      "pedidoEstado": "transferido",
+      "linkPanel": "/index/clientes/impresoreando/panel/",
+      "numeroHistorico": "004",
+      "fechaFinalizado": "2026-07-28"
+    },
+    {
+      "id": "tarea-imp-ped-mpaz-soporte-005",
+      "titulo": "[IMP] PED-005 · María Paz SIE · 1× Soporte celular",
+      "clienteId": "cli-impresoreando",
+      "rolId": "rol-imp-dis",
+      "fecha": "2026-07-28",
+      "horaInicio": "10:00",
+      "horaFin": "13:00",
+      "notas": "Transferido a venta (ven-maria-paz-soporte-011). Total cobrado $4.000. 1× Soporte celular morado pastel · transferido a venta I000011 · $4.000 · Ya no es pedido activo.",
+      "prioridad": "baja",
+      "completada": true,
+      "pendiente": false,
+      "tipoEntregable": "impresoreando-pedido",
+      "parentId": "tarea-imp-pedidos-hoy",
+      "ordenHijo": 904,
+      "pedidoId": "ped-maria-paz-soporte-005",
+      "pedidoNumero": "PED-005",
+      "pedidoEstado": "transferido",
+      "linkPanel": "/index/clientes/impresoreando/panel/",
+      "numeroHistorico": "005",
+      "fechaFinalizado": "2026-07-28"
+    },
+    {
+      "id": "tarea-imp-ped-rebe-dragon-006",
+      "titulo": "[IMP] PED-006 · Rebe SIE · 1× Dragón",
+      "clienteId": "cli-impresoreando",
+      "rolId": "rol-imp-dis",
+      "fecha": "2026-07-28",
+      "horaInicio": "10:00",
+      "horaFin": "13:00",
+      "notas": "Transferido a venta (ven-rebe-dragon-013). Total cobrado $20.000. 1× Dragón morado · transferido a venta I000013 · $20.000 · Ya no es pedido activo.",
+      "prioridad": "baja",
+      "completada": true,
+      "pendiente": false,
+      "tipoEntregable": "impresoreando-pedido",
+      "parentId": "tarea-imp-pedidos-hoy",
+      "ordenHijo": 905,
+      "pedidoId": "ped-rebe-dragon-006",
+      "pedidoNumero": "PED-006",
+      "pedidoEstado": "transferido",
+      "linkPanel": "/index/clientes/impresoreando/panel/",
+      "numeroHistorico": "006",
+      "fechaFinalizado": "2026-07-28"
+    },
+    {
+      "id": "tarea-imp-ped-juan-torreon-007",
+      "titulo": "[IMP] PED-007 · Juan SIE · 1× Torreón",
+      "clienteId": "cli-impresoreando",
+      "rolId": "rol-imp-dis",
+      "fecha": "2026-07-28",
+      "horaInicio": "10:00",
+      "horaFin": "13:00",
+      "notas": "Estado: listo. Total $6.500. 1× Torreón · listo · costo estimado $3.293,48 (base ~$2.293,48 + $1.000 impresora antigua) · PVP sugerido $6.500 · Panel: /index/clientes/impresoreando/panel/",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "tipoEntregable": "impresoreando-pedido",
+      "parentId": "tarea-imp-pedidos-hoy",
+      "ordenHijo": 1,
+      "pedidoId": "ped-juan-torreon-007",
+      "pedidoNumero": "PED-007",
+      "pedidoEstado": "listo",
+      "linkPanel": "/index/clientes/impresoreando/panel/",
+      "numeroHistorico": "007"
+    },
+    {
+      "id": "tarea-imp-ped-juan-bob-008",
+      "titulo": "[IMP] PED-008 · Juan MKOF · 1× Porta Bob Esponja",
+      "clienteId": "cli-impresoreando",
+      "rolId": "rol-imp-dis",
+      "fecha": "2026-07-28",
+      "horaInicio": "10:00",
+      "horaFin": "13:00",
+      "notas": "Estado: listo. Total $7.000. 1× Porta Bob Esponja · listo · costo $998,17 (catálogo) · PVP $7.000 · Panel: /index/clientes/impresoreando/panel/",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "tipoEntregable": "impresoreando-pedido",
+      "parentId": "tarea-imp-pedidos-hoy",
+      "ordenHijo": 2,
+      "pedidoId": "ped-juan-bob-008",
+      "pedidoNumero": "PED-008",
+      "pedidoEstado": "listo",
+      "linkPanel": "/index/clientes/impresoreando/panel/",
+      "numeroHistorico": "008"
+    },
+    {
+      "id": "tarea-imp-ped-gianni-soporte-010",
+      "titulo": "[IMP] PED-010 · Gianni SIE · 2× Soporte celular",
+      "clienteId": "cli-impresoreando",
+      "rolId": "rol-imp-dis",
+      "fecha": "2026-07-28",
+      "horaInicio": "10:00",
+      "horaFin": "13:00",
+      "notas": "Estado: pendiente. Total $8.000. 2× Soporte celular negro · fiado · paga 2026-08-18 · PVP $4.000/u · total $8.000 · Panel: /index/clientes/impresoreando/panel/",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "tipoEntregable": "impresoreando-pedido",
+      "parentId": "tarea-imp-pedidos-hoy",
+      "ordenHijo": 3,
+      "pedidoId": "ped-gianni-soporte-010",
+      "pedidoNumero": "PED-010",
+      "pedidoEstado": "pendiente",
+      "linkPanel": "/index/clientes/impresoreando/panel/",
+      "numeroHistorico": "010"
+    },
+    {
+      "id": "tarea-imp-cobro-ped-010",
+      "titulo": "[IMP] Cobrar PED-010 · Gianni SIE · $8.000",
+      "clienteId": "cli-impresoreando",
+      "rolId": "rol-imp-dis",
+      "fecha": "2026-08-18",
+      "horaInicio": "09:00",
+      "horaFin": "12:00",
+      "notas": "Fiado · cobrar el 2026-08-18. Pedido PED-010 · 2× Soporte celular. Total $8.000. Paga el 18 de agosto · Panel: /index/clientes/impresoreando/panel/?tab=pedidos",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": true,
+      "tipoEntregable": "impresoreando-cobro",
+      "parentId": null,
+      "pedidoId": "ped-gianni-soporte-010",
+      "pedidoNumero": "PED-010",
+      "pedidoEstado": "pendiente",
+      "fechaPagoEsperada": "2026-08-18",
+      "fiado": true,
+      "linkPanel": "/index/clientes/impresoreando/panel/?tab=pedidos",
+      "numeroHistorico": "010"
+    },
+    {
+      "id": "tarea-imp-ped-marcia-soporte-011",
+      "titulo": "[IMP] PED-011 · Marcia SIE · 1× Soporte celular",
+      "clienteId": "cli-impresoreando",
+      "rolId": "rol-imp-dis",
+      "fecha": "2026-07-28",
+      "horaInicio": "10:00",
+      "horaFin": "13:00",
+      "notas": "Estado: pendiente. Total $3.000. 1× Soporte celular morado · PVP $3.000 · Panel: /index/clientes/impresoreando/panel/",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "tipoEntregable": "impresoreando-pedido",
+      "parentId": "tarea-imp-pedidos-hoy",
+      "ordenHijo": 4,
+      "pedidoId": "ped-marcia-soporte-011",
+      "pedidoNumero": "PED-011",
+      "pedidoEstado": "pendiente",
+      "linkPanel": "/index/clientes/impresoreando/panel/",
+      "numeroHistorico": "011"
+    },
+    {
+      "id": "tarea-ecr-trade-marketing-mis-servicios-2026-07-28",
+      "titulo": "[ECR] Landing Trade Marketing · sección Mis servicios (Elementor)",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-dev",
+      "fecha": "2026-07-28",
+      "horaInicio": "10:00",
+      "horaFin": "14:00",
+      "notas": "Agregar en Elementor la sección «Mis servicios» en la landing de Trade Marketing. Montar el bloque de servicios en la página WP (Elementor), alinear a marca ECR y al layout vigente de la landing. Revisar desktop + mobile.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "tipoEntregable": "landing-elementor",
+      "parentId": null,
+      "numeroHistorico": "16",
+      "color": "celeste",
+      "agendaFijada": true,
+      "estadoFijado": false
     }
   ],
   "citasSalud": [
@@ -1934,7 +2136,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 16,
-  "respaldoActualizado": "2026-07-24",
+  "respaldoActualizado": "2026-07-28T17:55:22.956Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
@@ -1973,7 +2175,8 @@
         "origenTareaId": "tarea-ecr-ecosistema-equipos-terreno-2026-07-24"
       }
     ],
-    "jmFase2ArchivadaCalendario": true
+    "jmFase2ArchivadaCalendario": true,
+    "actualizado": "2026-07-28T17:55:22.956Z"
   },
   "perfilPersonal": {
     "nombre": "Josefa Ogalde",

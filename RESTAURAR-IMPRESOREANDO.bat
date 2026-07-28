@@ -24,9 +24,12 @@ if errorlevel 1 (
 )
 
 echo.
-echo  Listo. Abre el organizador con disco:
-echo    ABRIR-ORGANIZADOR.bat
+echo  Listo. Arranca con:
+echo    git pull
+echo    ABRIR-LARAVEL.bat
 echo  Panel socios:
-echo    http://localhost:3000/index/clientes/impresoreando/panel/
+echo    http://127.0.0.1:8000/index/clientes/impresoreando/panel/
+echo  Resumen:
+echo    http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen
 echo.
 pause
