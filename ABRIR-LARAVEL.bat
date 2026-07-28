@@ -9,11 +9,31 @@ echo  Uso:
 echo    ABRIR-LARAVEL.bat           → sync + reinicia :8000 + abre Organizador + Portal
 echo    ABRIR-LARAVEL.bat todo      → tambien abre ECR, MKOF, MOVA y prospecto
 echo    ABRIR-LARAVEL.bat sin-nav   → solo servidor / sync, sin abrir navegador
+echo    ABRIR-LARAVEL.bat restaurar → restaura live desde respaldo 28-jul y abre
 echo    RECARGAR.bat                → solo recarga organizador ?disco=1
+echo    TRAER-CAMBIOS.bat           → si estas en main sin la entrega
+echo    REPARAR-SQLITE-ACTIVO.bat   → si sale "no such column: activo"
 echo.
 
 set "MODO=%~1"
 if "%MODO%"=="" set "MODO=auto"
+
+REM Restaurar calendario desde respaldo del repo (si el live se piso con uno viejo)
+if /I "%MODO%"=="restaurar" (
+  if exist "data\organizacion-respaldo-2026-07-28.json" (
+    if exist "data\organizacion-live.json" (
+      copy /Y "data\organizacion-live.json" "data\organizacion-live-antes-restaurar.json" >nul 2>&1
+    )
+    copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
+    echo  Live restaurado desde data\organizacion-respaldo-2026-07-28.json
+  ) else (
+    echo  [ERROR] Falta data\organizacion-respaldo-2026-07-28.json
+    echo  Corre TRAER-CAMBIOS.bat primero ^(rama con la entrega^).
+    pause
+    exit /b 1
+  )
+  set "MODO=auto"
+)
 
 REM No cerrar Laravel si ya esta en :8000; solo cerrar Node viejo si no hay Laravel
 netstat -ano 2>nul | findstr ":8000" | findstr "LISTENING" >nul
@@ -38,6 +58,13 @@ if not defined PHP_EXE (
 
 if not exist "backend\artisan" (
   echo  [ERROR] Falta backend\artisan
+  echo.
+  echo  La carpeta backend/ NO va en Git ^(se crea en tu PC^).
+  echo  En esta misma carpeta del proyecto:
+  echo    composer create-project laravel/laravel backend
+  echo  Guia: docs\laravel\BACKEND-README.md
+  echo  Luego vuelve a correr ABRIR-LARAVEL.bat
+  echo.
   pause
   exit /b 1
 )
@@ -186,7 +213,7 @@ if /I "%MODO%"=="sin-navegador" goto :fin_urls
 
 REM powershell conserva el "=" de ?disco=1 (start de cmd lo convierte en %3D)
 REM Por defecto: solo Organizador + Portal clientes
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1&v=20260728c'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1&v=20260728e'"
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/?disco=1'"
 
 if /I not "%MODO%"=="todo" goto :fin_urls
@@ -209,8 +236,11 @@ echo    MKOF / MOVA:  http://127.0.0.1:8000/index/clientes/mkof/?disco=1
 echo    MKOF prospecto: http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1
 echo    Impresoreando: http://127.0.0.1:8000/index/clientes/impresoreando/panel/?disco=1
 echo.
-echo  Recarga rapida: RECARGAR.bat
-echo  Abrir todo:     ABRIR-LARAVEL.bat todo
-echo  Sin navegador:  ABRIR-LARAVEL.bat sin-nav
+echo  Recarga rapida:     RECARGAR.bat
+echo  Abrir todo:         ABRIR-LARAVEL.bat todo
+echo  Sin navegador:      ABRIR-LARAVEL.bat sin-nav
+echo  Restaurar calendario: ABRIR-LARAVEL.bat restaurar
+echo  Si estas en main:   TRAER-CAMBIOS.bat
+echo  Error columna activo: REPARAR-SQLITE-ACTIVO.bat
 echo.
 if /I not "%MODO%"=="sin-nav" if /I not "%MODO%"=="sin-navegador" pause

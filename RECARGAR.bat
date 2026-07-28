@@ -16,7 +16,23 @@ if errorlevel 1 (
   exit /b 1
 )
 
+where node >nul 2>&1
+if not errorlevel 1 (
+  if exist "scripts\add-ecr-trade-marketing-mis-servicios.js" (
+    echo  Asegurar ECR Trade Marketing en hoy...
+    node scripts\add-ecr-trade-marketing-mis-servicios.js --also-respaldo
+  )
+  if exist "scripts\sync-impresoreando-pedidos-organizacion.js" (
+    echo  Sync pedidos Impresoreando → organizador ^(madre = hoy^)...
+    node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo
+  )
+  if exist "scripts\asegurar-tareas-cerradas.js" (
+    echo  Re-cerrar tareas ya hechas...
+    node scripts\asegurar-tareas-cerradas.js --also-respaldo
+  )
+)
+
 echo  Recargando http://127.0.0.1:8000/index.html?disco=1
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1'"
-echo  Listo. Si la pestana ya estaba abierta, usa F5 o esta pestana nueva.
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1&v=20260728d'"
+echo  Listo. Si la pestana ya estaba abierta, usa Ctrl+Shift+R.
 echo.

@@ -1,16 +1,17 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-title Traer cambios (rama Impresoreando)
+title Traer entrega (Laravel + Impresoreando + calendario)
 
 echo.
 echo  ========================================
-echo   TRAER CAMBIOS ACTUALES
+echo   TRAER ENTREGA ACTUAL
 echo  ========================================
 echo.
-echo  La rama con logo nuevo, PED-006 transferido,
-echo  Trade Marketing y demas NO esta en main.
-echo  Este bat cambia a esa rama y abre Laravel.
+echo  En main faltan: fixes de ABRIR-LARAVEL,
+echo  ventas Impresoreando, Trade Marketing y
+echo  calendario 28-jul. Este bat cambia a la
+echo  rama con todo eso y abre Laravel.
 echo.
 
 where git >nul 2>&1
@@ -28,26 +29,31 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo [2] checkout rama cursor/impresoreando-maria-paz-venta-4e97...
-git checkout cursor/impresoreando-maria-paz-venta-4e97
+set "RAMA=cursor/laravel-guardar-entrega-02f9"
+echo [2] checkout rama %RAMA%...
+git checkout "%RAMA%"
 if errorlevel 1 (
   echo Intentando crear rama local desde origin...
-  git checkout -B cursor/impresoreando-maria-paz-venta-4e97 origin/cursor/impresoreando-maria-paz-venta-4e97
+  git checkout -B "%RAMA%" "origin/%RAMA%"
   if errorlevel 1 (
-    echo [ERROR] No se pudo cambiar a la rama.
-    echo Revisa que el remoto sea JosefaOgalde/organizacion.
-    pause
-    exit /b 1
+    echo Probando rama anterior cursor/impresoreando-maria-paz-venta-4e97...
+    git checkout -B cursor/impresoreando-maria-paz-venta-4e97 origin/cursor/impresoreando-maria-paz-venta-4e97
+    if errorlevel 1 (
+      echo [ERROR] No se pudo cambiar de rama.
+      pause
+      exit /b 1
+    )
+    set "RAMA=cursor/impresoreando-maria-paz-venta-4e97"
   )
 )
 
 echo [3] git pull...
-git pull origin cursor/impresoreando-maria-paz-venta-4e97
+git pull origin "%RAMA%"
 if errorlevel 1 (
   echo [AVISO] pull con problemas; continuo con lo local.
 )
 
 echo.
-echo [4] Abrir Laravel (sync solo desde data\ del repo)...
+echo [4] Abrir Laravel...
 call "%~dp0ABRIR-LARAVEL.bat"
 exit /b %ERRORLEVEL%
