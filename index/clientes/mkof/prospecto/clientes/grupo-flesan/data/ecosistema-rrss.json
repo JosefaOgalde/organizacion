@@ -75,7 +75,9 @@
         "url": "https://www.facebook.com/grupoflesanchile",
         "fuenteId": "fb-grupoflesan-2026-07-28",
         "exacto": "1,2 mil seguidores · 12 seguidos (screenshot Facebook Page 2026-07-28)",
-        "estado": "OK"
+        "estado": "OK",
+        "mejorMetrica": true,
+        "highlight": true
       }
     },
     "Instagram": {
@@ -91,7 +93,9 @@
         "fuenteId": "ig-ei-perfil-2026-07-28",
         "muestraPosts": "RRSS/data/ig-er-ei-muestra.json",
         "exacto": "8.649 seguidores · 1.076 publicaciones · 351 seguidos (screenshot IG desktop 2026-07-28)",
-        "estado": "OK"
+        "estado": "OK",
+        "mejorMetrica": true,
+        "highlight": true
       },
       "inarco": {
         "valor": 1517,
@@ -154,7 +158,8 @@
         "fuenteId": "ig-inarco-posts-2026-07-28",
         "muestraPosts": "RRSS/data/ig-er-inarco-muestra.json",
         "estado": "OK",
-        "mejorMetrica": true
+        "mejorMetrica": true,
+        "highlight": true
       },
       "icafal": {
         "valor": 1.0372,
@@ -185,7 +190,9 @@
         "url": "https://www.linkedin.com/company/echeverria-izquierdo/",
         "fuenteId": "li-ei-2026-07-28",
         "exacto": "129 mil seguidores · +10 mil empleados (screenshot LinkedIn 2026-07-28)",
-        "estado": "OK"
+        "estado": "OK",
+        "mejorMetrica": true,
+        "highlight": true
       },
       "inarco": {
         "valor": 66000,
@@ -245,7 +252,9 @@
         "vistasAprox": 161386,
         "url": "https://www.youtube.com/@GrupoFlesan",
         "fuenteId": "yt-grupoflesan",
-        "estado": "OK_APROX_PUBLICO"
+        "estado": "OK_APROX_PUBLICO",
+        "mejorMetrica": true,
+        "highlight": true
       }
     },
     "TikTok": {

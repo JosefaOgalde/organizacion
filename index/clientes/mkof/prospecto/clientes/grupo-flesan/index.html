@@ -9,7 +9,7 @@
       --bg: #f4f7f5; --ink: #1e3d32; --muted: #5a7368; --card: #fff;
       --line: #d5e3d9; --accent: #2f7a5c; --beige: #e8f0eb;
       --prospecto: #0b3d5c; --warn: #8a5a00; --ok: #1a6b4a;
-      --hi: #c8f0d8;
+      --hi: #a8e4c0; --hi-border: #1a9a5c; --hi-ink: #0d5c38;
     }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; }
@@ -42,8 +42,44 @@
     table.eco th.col-prospecto { background: #d4c4a8; color: #3d3428; }
     table.eco td.col-prospecto { background: #efe6d4; font-weight: 800; color: #3d3428; }
     table.eco td.ok { font-weight: 800; color: var(--ok); background: #f0faf4; }
-    table.eco td.hi { background: var(--hi); font-weight: 800; color: #0d5c38; }
+    table.eco td.hi {
+      background: linear-gradient(180deg, #c8f0d8 0%, var(--hi) 100%);
+      font-weight: 800;
+      color: var(--hi-ink);
+      box-shadow: inset 0 0 0 2px var(--hi-border);
+      border-radius: 6px;
+      position: relative;
+    }
+    table.eco td.col-prospecto.hi {
+      background: linear-gradient(180deg, #b8ebd0 0%, #9ad9b8 100%);
+      color: var(--hi-ink);
+      box-shadow: inset 0 0 0 2px var(--hi-border);
+    }
+    table.eco td.hi .badge-mejor {
+      display: block;
+      font-size: 0.58rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--hi-ink);
+      margin-top: 0.15rem;
+    }
     table.eco td.pend { color: var(--warn); font-weight: 600; }
+    .leyenda {
+      display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem;
+      margin: 0.55rem 0 0; font-size: 0.78rem; color: var(--muted);
+    }
+    .leyenda span { display: inline-flex; align-items: center; gap: 0.35rem; }
+    .swatch {
+      width: 0.9rem; height: 0.9rem; border-radius: 4px;
+      border: 1px solid var(--line); display: inline-block;
+    }
+    .swatch.mejor {
+      background: linear-gradient(180deg, #c8f0d8, var(--hi));
+      border-color: var(--hi-border);
+      box-shadow: inset 0 0 0 1px var(--hi-border);
+    }
+    .swatch.prospecto { background: #efe6d4; border-color: #b8a078; }
     .ei-box { margin-top: 0.65rem; padding: 0.75rem 0.85rem; background: #f0faf4; border-radius: 10px; border: 1px solid #b8dfc8; font-size: 0.88rem; color: var(--ink); }
     .ei-box strong { color: var(--ok); }
     footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
@@ -68,7 +104,11 @@
 
     <div class="card">
       <h2>ECOSISTEMA RRSS</h2>
-      <p>Matriz plataformas × competidores + Prospecto. Celdas verdes = dato cargado.</p>
+      <p>Matriz plataformas × competidores + Prospecto. El recuadro verde marca el <strong>número más alto</strong> de cada fila.</p>
+      <div class="leyenda">
+        <span><i class="swatch mejor" aria-hidden="true"></i> Máximo de la fila</span>
+        <span><i class="swatch prospecto" aria-hidden="true"></i> Columna Prospecto</span>
+      </div>
       <div class="table-wrap">
         <table class="eco" id="tabla-eco">
           <thead></thead>
@@ -126,7 +166,7 @@
   </main>
   <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
   <script>
-    const v = '20260728-flesan-fb';
+    const v = '20260728-hi-max';
     fetch('data/ecosistema-rrss.json?v=' + v, { cache: 'no-store' })
       .then((r) => r.json())
       .then((eco) => {
@@ -142,8 +182,13 @@
           const row = eco.celdas[p] || {};
           const isEr = /ER|engagement/i.test(p);
           const nums = eco.columnas
-            .map((c) => ({ id: c.id, v: row[c.id] && typeof row[c.id].valor === 'number' ? row[c.id].valor : null }))
-            .filter((x) => x.v != null);
+            .map((c) => {
+              const cell = row[c.id];
+              if (!cell || typeof cell.valor !== 'number') return null;
+              if (!(cell.estado && String(cell.estado).startsWith('OK'))) return null;
+              return { id: c.id, v: cell.valor };
+            })
+            .filter(Boolean);
           const max = nums.length ? Math.max(...nums.map((x) => x.v)) : null;
           const label = p === 'Instagram ER' ? 'Instagram ER<span style="display:block;font-size:0.65rem;font-weight:600;color:#5a7368;text-transform:none">N=5 likes+com.</span>' : p;
           return `<tr><th class="platform">${label}</th>` + eco.columnas.map((c) => {
@@ -151,12 +196,13 @@
             const isP = c.rol === 'prospecto';
             const ok = cell.estado && String(cell.estado).startsWith('OK');
             const noTiene = cell.estado === 'NO_TIENE';
-            const isHi = ok && max != null && cell.valor === max;
+            const isHi = !!(cell.mejorMetrica || cell.highlight) || (ok && max != null && cell.valor === max);
             let cls = isP ? 'col-prospecto' : '';
             if (isHi) cls += ' hi';
             else if (ok || noTiene) cls += ' ok';
             else cls += ' pend';
-            return `<td class="${cls.trim()}">${cell.display || (isEr ? '—' : 'XX mill')}</td>`;
+            const badge = isHi ? '<span class="badge-mejor">máximo</span>' : '';
+            return `<td class="${cls.trim()}">${cell.display || (isEr ? '—' : 'XX mill')}${badge}</td>`;
           }).join('') + '</tr>';
         }).join('');
 
