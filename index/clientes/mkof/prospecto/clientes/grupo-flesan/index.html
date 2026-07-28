@@ -127,15 +127,72 @@
         <span><i class="swatch mejor" aria-hidden="true"></i> Máximo de la fila</span>
         <span><i class="swatch prospecto" aria-hidden="true"></i> Columna Prospecto</span>
       </div>
+      <!-- Tabla estática (siempre visible; no depende de fetch) -->
       <div class="table-wrap">
-        <table class="eco" id="tabla-eco">
-          <thead></thead>
-          <tbody></tbody>
+        <table class="eco" id="tabla-eco-static">
+          <thead>
+            <tr>
+              <th class="platform">Red</th>
+              <th>EI<span class="etag">Competidor 1</span></th>
+              <th>Inarco<span class="etag">Competidor 2</span></th>
+              <th>Icafal<span class="etag">Competidor 3</span></th>
+              <th class="col-prospecto">Grupo Flesan<span class="etag">Prospecto</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="platform">Facebook</th>
+              <td class="pend">8</td>
+              <td class="ok">No tiene</td>
+              <td class="pend">XX mill</td>
+              <td class="col-prospecto hi">1,2 mil<span class="badge-mejor">máximo</span></td>
+            </tr>
+            <tr>
+              <th class="platform">Instagram</th>
+              <td class="hi">8.649<span class="badge-mejor">máximo</span></td>
+              <td class="ok">1.517</td>
+              <td class="ok">4.782</td>
+              <td class="col-prospecto ok">4.168</td>
+            </tr>
+            <tr>
+              <th class="platform">Instagram ER<span style="display:block;font-size:0.65rem;font-weight:600;color:#5a7368;text-transform:none">N=5 likes+com.</span></th>
+              <td class="ok">0,58%</td>
+              <td class="hi">4,17%<span class="badge-mejor">máximo</span></td>
+              <td class="ok">1,04%</td>
+              <td class="col-prospecto ok">1,82%</td>
+            </tr>
+            <tr>
+              <th class="platform">LinkedIn</th>
+              <td class="hi">129 mil<span class="badge-mejor">máximo</span></td>
+              <td class="ok">66 mil</td>
+              <td class="ok">65 mil</td>
+              <td class="col-prospecto ok">33 mil</td>
+            </tr>
+            <tr>
+              <th class="platform">YouTube</th>
+              <td class="pend">XX mill</td>
+              <td class="pend">XX mill</td>
+              <td class="pend">XX mill</td>
+              <td class="col-prospecto hi">509<span class="badge-mejor">máximo</span></td>
+            </tr>
+            <tr>
+              <th class="platform">TikTok</th>
+              <td class="pend">XX mill</td>
+              <td class="pend">XX mill</td>
+              <td class="pend">XX mill</td>
+              <td class="col-prospecto pend">XX mill</td>
+            </tr>
+          </tbody>
         </table>
       </div>
-      <div class="ei-box" id="ei-resumen">Cargando Competidor 1…</div>
+      <div class="ei-box" id="ei-resumen">
+        <strong>Comp.1 EI</strong> IG 8.649 · ER 0,58% · LI 129 mil<br>
+        <strong>Comp.2 Inarco</strong> IG 1.517 · ER 4,17% · LI 66 mil<br>
+        <strong>Comp.3 Icafal</strong> IG 4.782 · ER 1,04% · LI 65 mil<br>
+        <strong>Prospecto</strong> FB 1,2 mil · IG 4.168 · ER 1,82% · LI 33 mil.
+      </div>
       <p class="links" style="margin-top:0.75rem">
-        <a href="RRSS/laminas/01-ecosistema-rrss.html">Ver lámina tabla (HTML)</a>
+        <a href="RRSS/laminas/01-ecosistema-rrss.html?v=20260728t">Abrir lámina grande</a>
         <a href="data/ecosistema-rrss.json">ecosistema-rrss.json</a>
         <a href="fuentes.json">fuentes.json</a>
       </p>
