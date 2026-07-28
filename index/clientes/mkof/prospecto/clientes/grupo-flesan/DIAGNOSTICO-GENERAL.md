@@ -62,10 +62,10 @@ Fuente de perfiles (footer de los 3 sitios):
 
 | Competidor | Web (referencia) | Nota |
 |------------|------------------|------|
-| **Echeverría Izquierdo** | https://ei.cl/ | Referente web y comunicacional declarado |
-| Inarco | https://inarco.cl/ | Constructora |
-| Icafal | https://www.icafal.cl/ | Ingeniería y construcción |
-| Tecsa | https://www.tecsa.cl/ | Construcción |
+| **Echeverría Izquierdo** | https://ei.cl/ | Referente · IG 8.649 · LI **129 mil** |
+| **Inarco** (Constructora INARCO S.A) | https://inarco.cl/ | Comp.2 · LI **66 mil** · 51-200 emp. (2026-07-28) · IG pendiente |
+| Icafal | https://www.icafal.cl/ | Ingeniería y construcción · pendiente |
+| Tecsa | https://www.tecsa.cl/ | Construcción · pendiente |
 
 ### Referente: Echeverría Izquierdo (EI) — Competidor 1 (matriz)
 

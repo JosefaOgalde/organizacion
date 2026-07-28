@@ -82,6 +82,13 @@
       "metodo": "Screenshot página empresa LinkedIn (ima 9): 129 mil seguidores · +10 mil empleados · Construcción · Santiago"
     },
     {
+      "id": "li-inarco-2026-07-28",
+      "tipo": "linkedin",
+      "url": "https://www.linkedin.com/company/constructora-inarco-s.a",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot página empresa LinkedIn (Competidor 2): Constructora INARCO S.A · 66 mil seguidores · 51-200 empleados · Construcción · Santiago"
+    },
+    {
       "id": "manual-marca-local",
       "tipo": "documento_cliente",
       "url": null,

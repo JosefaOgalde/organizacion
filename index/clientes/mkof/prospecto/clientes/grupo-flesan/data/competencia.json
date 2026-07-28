@@ -31,11 +31,21 @@
     {
       "id": "inarco",
       "nombre": "Inarco",
+      "nombreLegal": "Constructora INARCO S.A",
       "columnaTabla": "Competidor 2",
       "web": "https://inarco.cl/",
       "linkedin": "https://www.linkedin.com/company/constructora-inarco-s.a",
       "esReferente": false,
-      "estado": "PENDIENTE_CAPTURAS"
+      "estado": "PARCIAL_LI_OK",
+      "rrss": {
+        "linkedin": {
+          "seguidores": 66000,
+          "display": "66 mil",
+          "empleadosDisplay": "51-200",
+          "fuenteId": "li-inarco-2026-07-28"
+        },
+        "instagram": { "estado": "PENDIENTE" }
+      }
     },
     {
       "id": "icafal",
@@ -54,5 +64,5 @@
       "estado": "PENDIENTE_CAPTURAS"
     }
   ],
-  "contrasteConProspecto": "EI proyecta un nombre dominante en web + IG corporativo activo (formación, innovación, obra, sostenibilidad) y LI masivo (129 mil). Flesan opera con tres sitios (Grupo / Flesan / DVC) y RRSS unificadas bajo Grupo Flesan."
+  "contrasteConProspecto": "EI: IG 8.649 + LI 129 mil. Inarco: LI 66 mil (IG pendiente). Flesan: tres sitios + RRSS unificadas bajo Grupo Flesan."
 }
