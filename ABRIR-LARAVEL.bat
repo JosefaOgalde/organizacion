@@ -77,7 +77,7 @@ if not errorlevel 1 (
   )
 )
 
-echo " 1^) SQLite + seed clientes...
+echo  1^) SQLite + seed clientes...
 "%PHP_EXE%" scripts\usar-sqlite-laravel.php
 if errorlevel 1 (
   pause
