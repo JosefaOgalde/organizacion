@@ -96,7 +96,43 @@ function main() {
   }
 
   fs.mkdirSync(path.dirname(LIVE), { recursive: true });
+
+  /** No reabrir tareas que en el live actual ya estaban cerradas / fijadas. */
+  let prevLive = null;
+  if (fs.existsSync(LIVE)) {
+    prevLive = leerJson(LIVE);
+  }
+
   fs.copyFileSync(mejor.path, LIVE);
+
+  if (prevLive && Array.isArray(prevLive.tareas)) {
+    const nuevo = leerJson(LIVE);
+    if (nuevo && Array.isArray(nuevo.tareas)) {
+      const prevById = new Map(prevLive.tareas.filter((t) => t && t.id).map((t) => [t.id, t]));
+      let preserved = 0;
+      for (const t of nuevo.tareas) {
+        if (!t || !t.id) continue;
+        const prev = prevById.get(t.id);
+        if (!prev) continue;
+        if (prev.completada === true || prev.estadoFijado === true) {
+          if (t.completada !== true || t.pendiente === true || t.estadoFijado !== prev.estadoFijado) {
+            t.completada = prev.completada === true;
+            t.pendiente = false;
+            if (prev.estadoFijado === true) t.estadoFijado = true;
+            preserved += 1;
+          }
+        }
+      }
+      if (preserved) {
+        nuevo.respaldoActualizado = new Date().toISOString();
+        if (!nuevo.meta || typeof nuevo.meta !== 'object') nuevo.meta = {};
+        nuevo.meta.actualizado = nuevo.respaldoActualizado;
+        fs.writeFileSync(LIVE, JSON.stringify(nuevo, null, 2) + '\n', 'utf8');
+        console.log('[sync] Preservadas', preserved, 'tareas ya cerradas/fijadas del live anterior');
+      }
+    }
+  }
+
   console.log('[sync] Actualizado data/organizacion-live.json ←', mejor.path);
   console.log('[sync] Fecha respaldo:', mejor.obj.respaldoActualizado || '(sin fecha)');
   if (force) console.log('[sync] Modo --force (ignoró comparación con live anterior)');

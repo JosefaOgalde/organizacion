@@ -1080,7 +1080,7 @@
       "horaFin": "13:00",
       "notas": "Tarea madre Contenido 10/12 (serie mensual 12 pubs). Producto: Botas de Agua Original para Niños · SKU JFT6000RMA-BLK. Link: https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/ · Características: Hunter Original kids · 5–11 años (31–37) · 100% impermeables · caucho natural mate · hechas a mano · forro poliéster · suela Original · parches reflectantes. Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. Con las 3 hechas → finalizar esta madre. Bloque: 2026-07-22.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "17",
       "tipoEntregable": "ecosistema",
@@ -1088,7 +1088,8 @@
       "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
       "contenidoSerie": 10,
       "contenidoTotal": 12,
-      "fechaFin": "2026-07-22"
+      "fechaFin": "2026-07-22",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-10-de-12-prompt",
@@ -1100,7 +1101,7 @@
       "horaFin": "10:30",
       "notas": "Prompt Gemini VIDEO · NIÑOS / NIÑAS (aprox. 5–11 años). Producto: Botas de Agua Original para Niños. Tres TXT independientes (A/B/C): edita y copia cada uno por separado.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "18",
       "tipoEntregable": "prompt-gemini",
@@ -1111,7 +1112,8 @@
         "C": "index/clientes/trendseeker/prompts/PROMPT-c10-original-ninos-C.txt"
       },
       "parentId": "tarea-ts-contenido-10-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/"
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-10-de-12-copy",
@@ -1123,7 +1125,7 @@
       "horaFin": "12:00",
       "notas": "Copys video C10/12 · tres TXT (A/B/C). Producto: Botas de Agua Original para Niños. Edita, guarda y copia cada versión. Link: https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "19",
       "tipoEntregable": "copys-txt",
@@ -1134,7 +1136,8 @@
         "C": "index/clientes/trendseeker/copys/COPY-c10-original-ninos-C.txt"
       },
       "parentId": "tarea-ts-contenido-10-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/"
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-10-de-12-programar",
@@ -1146,12 +1149,13 @@
       "horaFin": "13:00",
       "notas": "Dejar el contenido programado/listo para publicar (feed/Reels/historias según plan TS). Verificar copy + video + link producto. Al terminar → marcar hecha y finalizar madre Contenido 10/12.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "20",
       "tipoEntregable": "programar",
       "parentId": "tarea-ts-contenido-10-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/"
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos/",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-11-de-12",
@@ -1246,7 +1250,7 @@
       "horaFin": "13:00",
       "notas": "Tarea madre Contenido 12/12 (serie mensual 12 pubs). Producto: Botas de Agua Original Niños Rosado Brillante · SKU JFT6000RMA-RBP. Link: https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/ · Características: Hunter Original kids · rosado brillante · 5–11 años (31–37) · 100% impermeables · caucho natural · hechas a mano · forro poliéster · suela Original · parches reflectantes. Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. Con las 3 hechas → finalizar esta madre. Bloque: 2026-07-27.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "25",
       "tipoEntregable": "ecosistema",
@@ -1254,7 +1258,8 @@
       "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
       "contenidoSerie": 12,
       "contenidoTotal": 12,
-      "fechaFin": "2026-07-27"
+      "fechaFin": "2026-07-27",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-12-de-12-prompt",
@@ -1266,7 +1271,7 @@
       "horaFin": "10:30",
       "notas": "Prompt Gemini VIDEO · NIÑOS / NIÑAS (aprox. 5–11 años). Producto: Botas de Agua Original Niños Rosado Brillante. Tres TXT independientes (A/B/C): edita y copia cada uno por separado.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "26",
       "tipoEntregable": "prompt-gemini",
@@ -1277,7 +1282,8 @@
         "C": "index/clientes/trendseeker/prompts/PROMPT-c12-original-ninos-rosado-brillante-C.txt"
       },
       "parentId": "tarea-ts-contenido-12-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/"
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-12-de-12-copy",
@@ -1289,7 +1295,7 @@
       "horaFin": "12:00",
       "notas": "Copys video C12/12 · tres TXT (A/B/C). Producto: Botas de Agua Original Niños Rosado Brillante. Edita, guarda y copia cada versión. Link: https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "27",
       "tipoEntregable": "copys-txt",
@@ -1300,7 +1306,8 @@
         "C": "index/clientes/trendseeker/copys/COPY-c12-original-ninos-rosado-brillante-C.txt"
       },
       "parentId": "tarea-ts-contenido-12-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/"
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ts-contenido-12-de-12-programar",
@@ -1312,12 +1319,13 @@
       "horaFin": "13:00",
       "notas": "Dejar el contenido programado/listo para publicar (feed/Reels/historias según plan TS). Verificar copy + video + link producto. Al terminar → marcar hecha y finalizar madre Contenido 12/12.",
       "prioridad": "alta",
-      "completada": false,
+      "completada": true,
       "pendiente": false,
       "numeroHistorico": "28",
       "tipoEntregable": "programar",
       "parentId": "tarea-ts-contenido-12-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/"
+      "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-rosado-brillante/",
+      "estadoFijado": true
     },
     {
       "id": "tarea-ecr-ecosistema-nl-agosto-2026-07-17",
@@ -2128,7 +2136,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 16,
-  "respaldoActualizado": "2026-07-28T16:28:00.792Z",
+  "respaldoActualizado": "2026-07-28T17:55:22.956Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
@@ -2168,7 +2176,7 @@
       }
     ],
     "jmFase2ArchivadaCalendario": true,
-    "actualizado": "2026-07-28T16:28:00.792Z"
+    "actualizado": "2026-07-28T17:55:22.956Z"
   },
   "perfilPersonal": {
     "nombre": "Josefa Ogalde",

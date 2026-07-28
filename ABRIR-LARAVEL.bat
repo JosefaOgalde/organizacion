@@ -71,6 +71,10 @@ if not errorlevel 1 (
     echo  0c^) Asegurar tarea ECR Trade Marketing...
     node scripts\add-ecr-trade-marketing-mis-servicios.js --also-respaldo
   )
+  if exist "scripts\asegurar-tareas-cerradas.js" (
+    echo  0d^) Re-cerrar tareas que ya estaban hechas...
+    node scripts\asegurar-tareas-cerradas.js --also-respaldo
+  )
 )
 
 echo  1^) SQLite + seed clientes...

@@ -68,8 +68,15 @@ function upsert(filePath) {
 
   const idx = data.tareas.findIndex((t) => t.id === ID);
   if (idx >= 0) {
-    tarea.numeroHistorico = data.tareas[idx].numeroHistorico || num;
-    data.tareas[idx] = { ...data.tareas[idx], ...tarea };
+    const prev = data.tareas[idx];
+    tarea.numeroHistorico = prev.numeroHistorico || num;
+    // No reabrir si ya la cerraron
+    if (prev.completada === true) {
+      tarea.completada = true;
+      tarea.pendiente = false;
+      tarea.estadoFijado = prev.estadoFijado === true ? true : tarea.estadoFijado;
+    }
+    data.tareas[idx] = { ...prev, ...tarea };
     console.log('Actualizada', path.basename(filePath), tarea.titulo, '#' + tarea.numeroHistorico);
   } else {
     data.tareas.push(tarea);
