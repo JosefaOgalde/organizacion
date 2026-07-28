@@ -49,7 +49,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-001 | Rebe SIE | 1× Porta lata Monster `PLMONS001` | **transferido** → I000007 $7.000 |
 | PED-002 | Gianni SIE | 1× Macetero bulldog `MCPEBUL001` + 4× Portacompleto bulldog `PCPEBUL001` | **transferido** → I000002 $15.000 |
 | PED-003 | Juan SIE | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | **transferido** → I000003 $15.000 |
-| PED-004 | Ele SIE | 1× Llavero Pesa Rusa amarillo `LLPESRU001` | **listo** (impreso) · costo ~$415 · **PVP $1.000** |
+| PED-004 | Ele SIE | 2× Llavero Pesa Rusa amarillo `LLPESRU001` | **transferido** → I000014 $5.000 |
 | PED-005 | María Paz SIE | 1× Soporte celular morado pastel `SOPCEL001` | **transferido** → I000011 $4.000 |
 | PED-006 | Rebe SIE | 1× Dragón morado `DRAGON001` | **transferido** → I000013 $20.000 |
 | PED-007 | Juan SIE | 1× Torreón `TORREON001` | **listo** · costo est. ~$3.293 (+$1.000 impresora antigua) · PVP sug. $6.500 |
@@ -57,7 +57,6 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-009 | Rebe SIE | 1× Soporte celular negro `SOPCEL001` | **transferido** → I000012 $4.000 |
 | PED-010 | Gianni SIE | 2× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · **paga 2026-08-18** · $8.000 |
 | PED-011 | Marcia SIE | 1× Soporte celular morado `SOPCEL001` | **pendiente** · $3.000 |
-| PED-012 | Ele SIE | 2× Llavero Pesa Rusa amarillo `LLPESRU001` | **transferido** → I000014 $5.000 |
 
 ### Ventas — ID correlativo + historial
 
@@ -82,7 +81,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000011 | María Paz SIE | 4.000 | PED-005 Soporte celular morado pastel |
 | I000012 | Rebe SIE | 4.000 | PED-009 Soporte celular negro |
 | I000013 | Rebe SIE | 20.000 | PED-006 Dragón morado |
-| I000014 | Ele SIE | 5.000 | PED-012 2× Llavero Pesa Rusa amarillo |
+| I000014 | Ele SIE | 5.000 | PED-004 2× Llavero Pesa Rusa amarillo |
 
 ### Clientes nuevos — nombre + origen (obligatorio)
 

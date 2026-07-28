@@ -194,13 +194,53 @@ function main() {
     }
   }
 
-  const venIds = new Set(live.ventas.filter((v) => v && v.id).map((v) => v.id));
+  // Actualiza ventas seed existentes (p. ej. pedidoId consolidado) sin pisar montos locales distintos.
   for (const sv of seed.ventas || []) {
-    if (!sv || !sv.id || venIds.has(sv.id)) continue;
-    live.ventas.push(JSON.parse(JSON.stringify(sv)));
-    venIds.add(sv.id);
-    changed += 1;
+    if (!sv || !sv.id) continue;
+    if (!venIds.has(sv.id)) {
+      live.ventas.push(JSON.parse(JSON.stringify(sv)));
+      venIds.add(sv.id);
+      changed += 1;
+      continue;
+    }
+    const existing = live.ventas.find((v) => v && v.id === sv.id);
+    if (!existing) continue;
+    let touched = false;
+    if (sv.pedidoId && existing.pedidoId !== sv.pedidoId) {
+      existing.pedidoId = sv.pedidoId;
+      existing.pedidoNumero = sv.pedidoNumero;
+      touched = true;
+    }
+    if (sv.descripcion && existing.descripcion !== sv.descripcion) {
+      existing.descripcion = sv.descripcion;
+      touched = true;
+    }
+    if (sv.notas && existing.notas !== sv.notas) {
+      existing.notas = sv.notas;
+      touched = true;
+    }
+    if (sv.montoNeto != null && Number(existing.montoNeto) !== Number(sv.montoNeto)) {
+      existing.montoNeto = sv.montoNeto;
+      if (sv.montoBruto != null) existing.montoBruto = sv.montoBruto;
+      touched = true;
+    }
+    if (Array.isArray(sv.items) && sv.items.length) {
+      existing.items = JSON.parse(JSON.stringify(sv.items));
+      touched = true;
+    }
+    if (touched) changed += 1;
   }
+
+  // Quitar pedidos duplicados obsoletos (p. ej. PED-012 Ele consolidado en PED-004).
+  const dropDupIds = new Set(['ped-ele-pesa-012']);
+  const dropDupNums = new Set(['PED-012']);
+  const beforeDrop = live.pedidos.length;
+  live.pedidos = live.pedidos.filter((p) => {
+    if (!p) return false;
+    if (dropDupIds.has(p.id) || dropDupNums.has(String(p.numero || ''))) return false;
+    return true;
+  });
+  if (live.pedidos.length !== beforeDrop) changed += 1;
 
   // Historial clientes del seed (si live aún no lo tiene o le faltan códigos).
   if (Array.isArray(seed.meta?.clientesHistorial) && seed.meta.clientesHistorial.length) {

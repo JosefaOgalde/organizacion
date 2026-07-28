@@ -1399,17 +1399,17 @@
         codigo: 'I000014',
         fecha: '2026-07-28',
         cliente: 'Ele SIE',
-        descripcion: 'PED-012 · 2× Llavero Pesa Rusa amarillo · Ele SIE',
+        descripcion: 'PED-004 · 2× Llavero Pesa Rusa amarillo · Ele SIE',
         cantidad: 2,
         montoBruto: 5000,
         descuentoClp: 0,
         montoNeto: 5000,
         costoTotal: 830.86,
         canal: 'WhatsApp',
-        notas: 'Transferido desde PED-012 · 2× Llavero Pesa Rusa amarillo · pagado $5.000',
+        notas: 'Transferido desde PED-004 · 2× Llavero Pesa Rusa amarillo · pagado $5.000',
         socioRegistro: 'Ambos',
-        pedidoId: 'ped-ele-pesa-012',
-        pedidoNumero: 'PED-012',
+        pedidoId: 'ped-ele-pesa-rusa-004',
+        pedidoNumero: 'PED-004',
         items: [
           {
             sku: 'LLPESRU001',
@@ -1515,8 +1515,8 @@
         itemFilamento: 'PLA morado',
       },
       {
-        pedId: 'ped-ele-pesa-012',
-        numero: 'PED-012',
+        pedId: 'ped-ele-pesa-rusa-004',
+        numero: 'PED-004',
         ventaId: 'ven-ele-pesa-014',
         cliente: 'Ele SIE',
         montoNeto: 5000,
@@ -1524,6 +1524,7 @@
         transferidoEn: '2026-07-28T15:50:00.000Z',
         itemPrecioUnitarioClp: 2500,
         itemFilamento: 'PLA amarillo',
+        itemCantidad: 2,
       },
     ];
     for (const t of transfers) {
@@ -1557,7 +1558,7 @@
         ped.notas = t.notas;
         pedChanged = true;
       }
-      if (t.itemPrecioUnitarioClp != null || t.itemFilamento) {
+      if (t.itemPrecioUnitarioClp != null || t.itemFilamento || t.itemCantidad != null) {
         const it = (ped.items || [])[0];
         if (it) {
           if (
@@ -1569,6 +1570,13 @@
           }
           if (t.itemFilamento && it.filamento !== t.itemFilamento) {
             it.filamento = t.itemFilamento;
+            pedChanged = true;
+          }
+          if (t.itemCantidad != null && Number(it.cantidad) !== Number(t.itemCantidad)) {
+            it.cantidad = t.itemCantidad;
+            it.listos = t.itemCantidad;
+            it.enImpresion = 0;
+            it.estado = 'listo';
             pedChanged = true;
           }
           if (it.estado !== 'listo' || Number(it.listos) !== Number(it.cantidad || 1)) {
@@ -1734,14 +1742,15 @@
       changed = true;
     }
 
-    // PED-004 · Ele SIE · Llavero Pesa Rusa amarillo · listo (impreso) · PVP $1.000
+    // PED-004 · Ele SIE · 2× Llavero Pesa Rusa amarillo · transferido I000014 $5.000 (pagado)
     const id004 = 'ped-ele-pesa-rusa-004';
     const prodPesa = (d.productos || []).find(
       (p) => p.id === 'prod-llavero-pesa-rusa' || p.sku === 'LLPESRU001'
     );
     const costoPesa = prodPesa ? costoProdRough(d, prodPesa) : 415.43;
-    const precioPesa =
-      Number(prodPesa?.precioVentaSugeridoClp) > 0 ? Number(prodPesa.precioVentaSugeridoClp) : 1000;
+    const cant004 = 2;
+    const precioU004 = 2500;
+    const total004 = 5000;
     if (!d.pedidos.some((p) => p.id === id004 || p.numero === 'PED-004')) {
       d.pedidos.push({
         id: id004,
@@ -1755,63 +1764,42 @@
           {
             sku: 'LLPESRU001',
             nombre: 'Llavero Pesa Rusa',
-            cantidad: 1,
-            precioUnitarioClp: precioPesa,
+            cantidad: cant004,
+            precioUnitarioClp: precioU004,
             costoUnitarioClp: round2(costoPesa),
             filamento: 'PLA amarillo',
             estado: 'listo',
-            listos: 1,
+            listos: cant004,
             enImpresion: 0,
           },
         ],
-        montoBruto: precioPesa,
+        montoBruto: total004,
         descuentoClp: 0,
-        montoNeto: precioPesa,
-        costoTotal: round2(costoPesa),
-        estado: 'listo',
-        ventaId: null,
-        notas: `1× Llavero Pesa Rusa amarillo · listo/impreso · costo $${round2(costoPesa)} · PVP $${precioPesa}`,
+        montoNeto: total004,
+        costoTotal: round2(costoPesa * cant004),
+        estado: 'transferido',
+        ventaId: 'ven-ele-pesa-014',
+        transferidoEn: '2026-07-28T15:50:00.000Z',
+        notas: `2× Llavero Pesa Rusa amarillo · transferido a venta I000014 · $${total004}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T01:40:00.000Z',
       });
       changed = true;
-    } else {
-      const ped004 = d.pedidos.find((p) => p.id === id004 || p.numero === 'PED-004');
-      if (ped004 && ped004.estado !== 'transferido' && ped004.estado !== 'listo') {
-        ped004.estado = 'listo';
-        changed = true;
-      }
-      if (ped004 && ped004.cliente !== 'Ele SIE') {
-        ped004.cliente = 'Ele SIE';
-        ped004.clienteNombre = 'Ele';
-        ped004.clienteOrigen = 'SIE';
-        changed = true;
-      }
-      if (ped004 && ped004.estado !== 'transferido') {
-        const it = (ped004.items || [])[0];
-        if (it) {
-          if (!(Number(it.costoUnitarioClp) > 0) || Number(it.costoUnitarioClp) !== round2(costoPesa)) {
-            it.costoUnitarioClp = round2(costoPesa);
-            ped004.costoTotal = round2(costoPesa);
-            changed = true;
-          }
-          if (!(Number(it.precioUnitarioClp) > 0)) {
-            it.precioUnitarioClp = precioPesa;
-            ped004.montoBruto = precioPesa;
-            ped004.montoNeto = precioPesa;
-            changed = true;
-          }
-        }
-      }
     }
+    // Quitar PED-012 si quedó como duplicado de la venta Ele (I000014 vive en PED-004).
+    const before012 = (d.pedidos || []).length;
+    d.pedidos = (d.pedidos || []).filter(
+      (p) => p && p.id !== 'ped-ele-pesa-012' && p.numero !== 'PED-012'
+    );
+    if (d.pedidos.length !== before012) changed = true;
 
-    // PED-005 · María Paz SIE · Soporte celular morado pastel · listo (impreso) · PVP $4.000
+    // PED-005 · María Paz SIE · Soporte celular morado pastel · transferido I000011 $4.000 (pagado)
     const id005 = 'ped-maria-paz-soporte-005';
     const prodSop = (d.productos || []).find(
       (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
     );
     const costoSop = prodSop ? costoProdRough(d, prodSop) : 683.69;
-    const precioSop = Number(prodSop?.precioVentaSugeridoClp) > 0 ? Number(prodSop.precioVentaSugeridoClp) : 4000;
+    const precioSop = 4000;
     if (!d.pedidos.some((p) => p.id === id005 || p.numero === 'PED-005')) {
       d.pedidos.push({
         id: id005,
@@ -1839,41 +1827,14 @@
         descuentoClp: 0,
         montoNeto: precioSop,
         costoTotal: round2(costoSop),
-        estado: 'listo',
-        ventaId: null,
-        notas: `1× Soporte celular morado pastel · listo/impreso · costo $${round2(costoSop)} · precio venta $${precioSop}`,
+        estado: 'transferido',
+        ventaId: 'ven-maria-paz-soporte-011',
+        transferidoEn: '2026-07-28T15:20:00.000Z',
+        notas: `1× Soporte celular morado pastel · transferido a venta I000011 · $${precioSop}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T01:43:00.000Z',
       });
       changed = true;
-    } else {
-      const ped005 = d.pedidos.find((p) => p.id === id005 || p.numero === 'PED-005');
-      if (ped005 && ped005.estado !== 'transferido') {
-        if (ped005.estado !== 'listo') {
-          ped005.estado = 'listo';
-          changed = true;
-        }
-        const it = (ped005.items || [])[0];
-        if (it) {
-          if (it.estado !== 'listo' || Number(it.listos) !== Number(it.cantidad || 1)) {
-            it.estado = 'listo';
-            it.listos = Number(it.cantidad || 1);
-            it.enImpresion = 0;
-            changed = true;
-          }
-          if (Number(it.precioUnitarioClp) !== precioSop) {
-            it.precioUnitarioClp = precioSop;
-            ped005.montoBruto = precioSop;
-            ped005.montoNeto = precioSop;
-            changed = true;
-          }
-          if (Number(it.costoUnitarioClp) !== round2(costoSop) && costoSop > 0) {
-            it.costoUnitarioClp = round2(costoSop);
-            ped005.costoTotal = round2(costoSop);
-            changed = true;
-          }
-        }
-      }
     }
 
     // PED-006 · Rebe SIE · Dragón morado · transferido I000013 $20.000
@@ -2127,51 +2088,6 @@
         notas: `1× Soporte celular morado · PVP $${precioSop011}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-28T15:45:00.000Z',
-      });
-      changed = true;
-    }
-
-    // PED-012 · Ele SIE · 2× Llavero Pesa Rusa amarillo · transferido I000014 $5.000
-    const id012 = 'ped-ele-pesa-012';
-    const prodPesa012 = (d.productos || []).find(
-      (p) => p.id === 'prod-llavero-pesa-rusa' || p.sku === 'LLPESRU001'
-    );
-    const costoPesa012 = prodPesa012 ? costoProdRough(d, prodPesa012) : 415.43;
-    const cant012 = 2;
-    const precioU012 = 2500;
-    const total012 = 5000;
-    if (!d.pedidos.some((p) => p.id === id012 || p.numero === 'PED-012')) {
-      d.pedidos.push({
-        id: id012,
-        numero: 'PED-012',
-        fecha: '2026-07-28',
-        cliente: 'Ele SIE',
-        clienteNombre: 'Ele',
-        clienteOrigen: 'SIE',
-        canal: 'WhatsApp',
-        items: [
-          {
-            sku: 'LLPESRU001',
-            nombre: 'Llavero Pesa Rusa',
-            cantidad: cant012,
-            precioUnitarioClp: precioU012,
-            costoUnitarioClp: round2(costoPesa012),
-            filamento: 'PLA amarillo',
-            estado: 'listo',
-            listos: cant012,
-            enImpresion: 0,
-          },
-        ],
-        montoBruto: total012,
-        descuentoClp: 0,
-        montoNeto: total012,
-        costoTotal: round2(costoPesa012 * cant012),
-        estado: 'transferido',
-        ventaId: 'ven-ele-pesa-014',
-        transferidoEn: '2026-07-28T15:50:00.000Z',
-        notas: `2× Llavero Pesa Rusa amarillo · transferido a venta I000014 · $${total012}`,
-        socioRegistro: 'Ambos',
-        creado: '2026-07-28T15:50:00.000Z',
       });
       changed = true;
     }
