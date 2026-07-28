@@ -65,9 +65,9 @@
 
 .imp-logo {
   display: block;
-  height: clamp(40px, 7vw, 56px);
+  height: clamp(44px, 8vw, 64px);
   width: auto;
-  max-width: min(420px, 72vw);
+  max-width: min(480px, 85vw);
   object-fit: contain;
   object-position: left center;
 }
