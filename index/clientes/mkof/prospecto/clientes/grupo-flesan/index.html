@@ -63,7 +63,7 @@
   <main>
     <div class="aviso">
       <strong>Nivel: general</strong>
-      Matriz ECOSISTEMA: EI + Inarco (IG+LI) · Comp.3 Icafal (LI 65 mil). Restan IG Icafal, Tecsa, Comp.5 y prospecto.
+      Matriz con fila <strong>Instagram ER</strong> (N=5). Comp.1–3 listos en IG+LI. Restan Tecsa, Comp.5 y prospecto.
     </div>
 
     <div class="card">
@@ -126,7 +126,7 @@
   </main>
   <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
   <script>
-    const v = '20260728-icafal-li';
+    const v = '20260728-icafal-ig-er';
     fetch('data/ecosistema-rrss.json?v=' + v, { cache: 'no-store' })
       .then((r) => r.json())
       .then((eco) => {
@@ -138,34 +138,36 @@
           return `<th class="${cls}">${c.nombreCorto || c.nombre}${etag}</th>`;
         }).join('') + '</tr>';
 
-        // Highlight best numeric value per row among filled cells
         tbody.innerHTML = eco.plataformas.map((p) => {
           const row = eco.celdas[p] || {};
+          const isEr = /ER|engagement/i.test(p);
           const nums = eco.columnas
             .map((c) => ({ id: c.id, v: row[c.id] && typeof row[c.id].valor === 'number' ? row[c.id].valor : null }))
             .filter((x) => x.v != null);
           const max = nums.length ? Math.max(...nums.map((x) => x.v)) : null;
-          return `<tr><th class="platform">${p}</th>` + eco.columnas.map((c) => {
-            const cell = row[c.id] || { display: 'XX mill', estado: 'PENDIENTE' };
+          const label = p === 'Instagram ER' ? 'Instagram ER<span style="display:block;font-size:0.65rem;font-weight:600;color:#5a7368;text-transform:none">N=5 likes+com.</span>' : p;
+          return `<tr><th class="platform">${label}</th>` + eco.columnas.map((c) => {
+            const cell = row[c.id] || { display: isEr ? '—' : 'XX mill', estado: 'PENDIENTE' };
             const isP = c.rol === 'prospecto';
             const ok = cell.estado && String(cell.estado).startsWith('OK');
             const isHi = ok && max != null && cell.valor === max;
             let cls = isP ? 'col-prospecto' : '';
             if (isHi) cls += ' hi';
             else if (ok) cls += ' ok';
-            else if (!ok) cls += ' pend';
-            return `<td class="${cls.trim()}">${cell.display || 'XX mill'}</td>`;
+            else cls += ' pend';
+            return `<td class="${cls.trim()}">${cell.display || (isEr ? '—' : 'XX mill')}</td>`;
           }).join('') + '</tr>';
         }).join('');
 
-        const ig = eco.celdas.Instagram && eco.celdas.Instagram.ei;
-        const li = eco.celdas.LinkedIn && eco.celdas.LinkedIn.ei;
-        const ig2 = eco.celdas.Instagram && eco.celdas.Instagram.inarco;
-        const li2 = eco.celdas.LinkedIn && eco.celdas.LinkedIn.inarco;
+        const ig = eco.celdas.Instagram || {};
+        const er = eco.celdas['Instagram ER'] || {};
+        const li = eco.celdas.LinkedIn || {};
         document.getElementById('ei-resumen').innerHTML =
-          `<strong>Comp.1 EI</strong> IG ${ig ? ig.display : '—'} · ER 0,58% · LI ${li ? li.display : '—'}<br>` +
-          `<strong>Comp.2 Inarco</strong> IG ${ig2 ? ig2.display : '—'} · ER ${ig2 && ig2.erMuestraN5 ? ig2.erMuestraN5 : '—'} · LI ${li2 ? li2.display : '—'}<br>` +
-          `<strong>Comp.3 Icafal</strong> LI <strong>${eco.celdas.LinkedIn && eco.celdas.LinkedIn.icafal ? eco.celdas.LinkedIn.icafal.display : '—'}</strong> · IG pendiente. Siguiente: IG Icafal o Tecsa.`;
+          `<strong>Comp.1 EI</strong> IG ${ig.ei ? ig.ei.display : '—'} · ER ${er.ei ? er.ei.display : '—'} · LI ${li.ei ? li.ei.display : '—'}<br>` +
+          `<strong>Comp.2 Inarco</strong> IG ${ig.inarco ? ig.inarco.display : '—'} · ER ${er.inarco ? er.inarco.display : '—'} · LI ${li.inarco ? li.inarco.display : '—'}<br>` +
+          `<strong>Comp.3 Icafal</strong> (@icafal_sa) IG <strong>${ig.icafal ? ig.icafal.display : '—'}</strong>` +
+          ` · ER <strong>${er.icafal ? er.icafal.display : '—'}</strong>` +
+          ` · LI <strong>${li.icafal ? li.icafal.display : '—'}</strong>. Siguiente: Tecsa.`;
       })
       .catch(() => {
         document.getElementById('ei-resumen').textContent = 'No se pudo cargar ecosistema-rrss.json';

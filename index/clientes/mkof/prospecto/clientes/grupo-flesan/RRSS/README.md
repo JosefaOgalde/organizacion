@@ -18,6 +18,14 @@ Fuentes: `ig-ei-perfil-2026-07-28`, `ig-ei-posts-2026-07-28`, `li-ei-2026-07-28`
 | IG ER muestra | **4,17%** (N=5 · likes 56+44+64+96+46 · com. 1+3+4+2+0) → [`data/ig-er-inarco-muestra.json`](./data/ig-er-inarco-muestra.json) |
 | LinkedIn | **66 mil** seguidores · [página empresa](https://www.linkedin.com/company/constructora-inarco-s.a) |
 
+## Competidor 3 · Icafal (listo 2026-07-28)
+
+| Dato | Valor |
+|------|-------|
+| IG | [@icafal_sa](https://www.instagram.com/icafal_sa/) · **4.782** seguidores · 625 posts |
+| IG ER muestra | **1,04%** (N=5 · likes 21+59+65+64+30 · com. 0+3+4+2+0) → [`data/ig-er-icafal-muestra.json`](./data/ig-er-icafal-muestra.json) |
+| LinkedIn | **65 mil** seguidores · [página empresa](https://www.linkedin.com/company/icafal/) |
+
 ## Prospecto · pendiente
 
 Detalle de Instagram **@grupoflesan** pendiente (lo entrega la usuaria).

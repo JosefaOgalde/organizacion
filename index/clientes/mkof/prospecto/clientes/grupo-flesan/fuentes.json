@@ -110,6 +110,20 @@
       "metodo": "Screenshot página empresa LinkedIn (Competidor 3): Icafal S.A. · 65 mil seguidores · 501-1 mil empleados · Construcción · Santiago"
     },
     {
+      "id": "ig-icafal-perfil-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/icafal_sa/",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot perfil IG (Competidor 3): @icafal_sa · 4.782 seguidores · 625 posts · 347 seguidos"
+    },
+    {
+      "id": "ig-icafal-posts-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/icafal_sa/",
+      "fecha": "2026-07-28",
+      "metodo": "5 screenshots últimos contenidos IG: likes 21+59+65+64+30 · com. visibles 0+3+4+2+0. ER N=5 = 1,04%. Ver RRSS/data/ig-er-icafal-muestra.json"
+    },
+    {
       "id": "manual-marca-local",
       "tipo": "documento_cliente",
       "url": null,

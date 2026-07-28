@@ -63,15 +63,23 @@
       "web": "https://www.icafal.cl/",
       "linkedin": "https://www.linkedin.com/company/icafal/",
       "esReferente": false,
-      "estado": "PARCIAL_LI_OK",
+      "estado": "IG_LI_OK",
+      "instagram": "https://www.instagram.com/icafal_sa/",
       "rrss": {
+        "instagram": {
+          "seguidores": 4782,
+          "display": "4.782",
+          "posts": 625,
+          "erMuestraN5": "1,04%",
+          "fuenteId": "ig-icafal-perfil-2026-07-28",
+          "muestraPosts": "RRSS/data/ig-er-icafal-muestra.json"
+        },
         "linkedin": {
           "seguidores": 65000,
           "display": "65 mil",
           "empleadosDisplay": "501-1 mil",
           "fuenteId": "li-icafal-2026-07-28"
-        },
-        "instagram": { "estado": "PENDIENTE" }
+        }
       }
     },
     {
@@ -83,5 +91,5 @@
       "estado": "PENDIENTE_CAPTURAS"
     }
   ],
-  "contrasteConProspecto": "EI: IG 8.649 (ER 0,58%) + LI 129 mil. Inarco: IG 1.517 (ER 4,17%) + LI 66 mil. Icafal: LI 65 mil (IG pendiente). Flesan: tres sitios + RRSS unificadas."
+  "contrasteConProspecto": "EI: IG 8.649 (ER 0,58%) + LI 129 mil. Inarco: IG 1.517 (ER 4,17%) + LI 66 mil. Icafal: IG 4.782 (ER 1,04%) + LI 65 mil. Mejor ER muestra: Inarco."
 }
