@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
  * Tarea ECR: sección «Mis servicios» en landing Trade Marketing (Elementor)
+ * Fijada: miércoles 29 jul 2026 · mañana (09:00–12:00 Chile).
  *
  *   node scripts/add-ecr-trade-marketing-mis-servicios.js
  *   node scripts/add-ecr-trade-marketing-mis-servicios.js --also-respaldo
@@ -11,16 +12,10 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const DATA = path.join(ROOT, 'data');
 const LIVE = path.join(DATA, 'organizacion-live.json');
-/** Día Chile (YYYY-MM-DD) — la tarea queda en el calendario de hoy al asegurar. */
-function fechaChileHoy() {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/Santiago',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date());
-}
-const FECHA = fechaChileHoy();
+/** Miércoles 29 jul 2026 — mañana */
+const FECHA = '2026-07-29';
+const HORA_INICIO = '09:00';
+const HORA_FIN = '12:00';
 const CLIENTE = 'cli-ecr';
 const ROL = 'rol-ecr-dev';
 const ID = 'tarea-ecr-trade-marketing-mis-servicios-2026-07-28';
@@ -49,12 +44,12 @@ function upsert(filePath) {
     clienteId: CLIENTE,
     rolId: ROL,
     fecha: FECHA,
-    horaInicio: '10:00',
-    horaFin: '14:00',
+    horaInicio: HORA_INICIO,
+    horaFin: HORA_FIN,
     notas:
       'Agregar en Elementor la sección «Mis servicios» en la landing de Trade Marketing. ' +
       'Montar el bloque de servicios en la página WP (Elementor), alinear a marca ECR y al layout vigente de la landing. ' +
-      'Revisar desktop + mobile.',
+      'Revisar desktop + mobile. Programada: miércoles 29 jul mañana.',
     prioridad: 'alta',
     completada: false,
     pendiente: false,
@@ -62,7 +57,7 @@ function upsert(filePath) {
     tipoEntregable: 'landing-elementor',
     parentId: null,
     agendaFijada: true,
-    estadoFijado: false,
+    estadoFijado: true,
     color: 'celeste',
   };
 
@@ -74,13 +69,13 @@ function upsert(filePath) {
     if (prev.completada === true) {
       tarea.completada = true;
       tarea.pendiente = false;
-      tarea.estadoFijado = prev.estadoFijado === true ? true : tarea.estadoFijado;
+      tarea.estadoFijado = true;
     }
     data.tareas[idx] = { ...prev, ...tarea };
-    console.log('Actualizada', path.basename(filePath), tarea.titulo, '#' + tarea.numeroHistorico);
+    console.log('Actualizada', path.basename(filePath), tarea.titulo, '#' + tarea.numeroHistorico, FECHA, HORA_INICIO);
   } else {
     data.tareas.push(tarea);
-    console.log('Creada', path.basename(filePath), tarea.titulo, '#' + tarea.numeroHistorico);
+    console.log('Creada', path.basename(filePath), tarea.titulo, '#' + tarea.numeroHistorico, FECHA, HORA_INICIO);
   }
 
   data.respaldoActualizado = new Date().toISOString();
@@ -99,7 +94,9 @@ if (process.argv.includes('--also-respaldo')) {
   }
 }
 
-const live = JSON.parse(fs.readFileSync(LIVE, 'utf8'));
-const t = (live.tareas || []).find((x) => x.id === ID);
-const num = t ? t.numeroHistorico : '?';
-console.log(`Ver: http://127.0.0.1:8000/index.html?disco=1&tarea=ecr/${num}`);
+if (fs.existsSync(LIVE)) {
+  const live = JSON.parse(fs.readFileSync(LIVE, 'utf8'));
+  const t = (live.tareas || []).find((x) => x.id === ID);
+  const num = t ? t.numeroHistorico : '?';
+  console.log(`Ver: http://127.0.0.1:8000/index.html?disco=1&tarea=ecr/${num}`);
+}

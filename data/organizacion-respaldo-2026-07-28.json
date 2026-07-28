@@ -2114,6 +2114,25 @@
       "pedidoEstado": "transferido",
       "linkPanel": "/index/clientes/impresoreando/panel/",
       "numeroHistorico": "10"
+    },
+    {
+      "id": "tarea-ecr-trade-marketing-mis-servicios-2026-07-28",
+      "titulo": "[ECR] Landing Trade Marketing · sección Mis servicios (Elementor)",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-dev",
+      "fecha": "2026-07-29",
+      "horaInicio": "09:00",
+      "horaFin": "12:00",
+      "notas": "Agregar en Elementor la sección «Mis servicios» en la landing de Trade Marketing. Montar el bloque de servicios en la página WP (Elementor), alinear a marca ECR y al layout vigente de la landing. Revisar desktop + mobile. Programada: miércoles 29 jul mañana.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "16",
+      "tipoEntregable": "landing-elementor",
+      "parentId": null,
+      "agendaFijada": true,
+      "estadoFijado": true,
+      "color": "celeste"
     }
   ],
   "citasSalud": [
@@ -2211,7 +2230,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 18,
-  "respaldoActualizado": "2026-07-28",
+  "respaldoActualizado": "2026-07-28T21:35:37.245Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
@@ -2255,7 +2274,8 @@
       "fuente": "C:\\Users\\josef\\Downloads\\organizacion-respaldo-2026-07-27.json",
       "fecha": "2026-07-27T13:50:07.040Z",
       "nota": "Tareas 27 jul 2026 sobre respaldo vigente (preferir Downloads …-07-27.json)"
-    }
+    },
+    "actualizado": "2026-07-28T21:35:37.245Z"
   },
   "perfilPersonal": {
     "nombre": "Josefa Ogalde",

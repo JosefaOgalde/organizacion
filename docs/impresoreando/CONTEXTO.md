@@ -28,7 +28,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 - `metaRecuperar = gastos + operación`
 - `saldoPendiente = max(0, meta − ventas)` — solo **ventas** bajan deuda
 - `% progreso = ventas / meta`
-- Barras UI: (1) progreso % · (2) gastos vs ventas · (3) **gastos + pedidos activos** (pipeline azul; pedidos **no** bajan deuda)
+- Barras UI: (1) progreso % · (2) gastos vs ventas · (3) **ventas + pedidos pendientes** (pipeline verde+azul; pedidos aún no bajan deuda)
 - KPI pedidos activos = suma `montoNeto` de pedidos en `pendiente|listo|en_impresion`
 
 ## Pedidos (regla de oro)
@@ -57,7 +57,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-008 | Juan MKOF | 1× Porta Bob Esponja `PTBOBES001` | **listo** · costo ~$998 · **PVP $7.000** |
 | PED-009 | Rebe SIE | 1× Soporte celular negro `SOPCEL001` | **transferido** → I000012 $4.000 |
 | PED-010 | Gianni SIE | 2× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · **paga 2026-08-18** · $8.000 |
-| PED-011 | Marcia SIE | 1× Soporte celular morado `SOPCEL001` | **pendiente** · $3.000 |
+| PED-011 | Marcia SIE | 1× Soporte celular morado `SOPCEL001` | **transferido** → I000015 $3.000 |
 
 ### Ventas — ID correlativo + historial
 
@@ -83,6 +83,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000012 | Rebe SIE | 4.000 | PED-009 Soporte celular negro |
 | I000013 | Rebe SIE | 20.000 | PED-006 Dragón morado |
 | I000014 | Ele SIE | 5.000 | PED-004 2× Llavero Pesa Rusa amarillo |
+| I000015 | Marcia SIE | 3.000 | PED-011 Soporte celular morado |
 
 ### Clientes nuevos — nombre + origen (obligatorio)
 
