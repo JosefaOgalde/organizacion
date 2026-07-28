@@ -106,7 +106,8 @@ PHP;
 file_put_contents($web, rtrim($webSrc) . "\n" . $webBlock . "\n");
 echo "  · routes/web.php: home + fallback frontend\n";
 
-// Junctions Windows / symlinks: artisan serve entrega estáticos desde public/ sin pasar por PHP
+// Junctions Windows / symlinks: artisan serve entrega estáticos desde public/
+// ABRIR-LARAVEL usa servidor-unificado-8000.php (sirve el repo) — public/ es opcional.
 $public = $backend . DIRECTORY_SEPARATOR . 'public';
 $links = [
     'index' => $root . DIRECTORY_SEPARATOR . 'index',
@@ -119,22 +120,48 @@ foreach ($links as $name => $target) {
     if (!file_exists($target) && !is_dir($target)) {
         continue;
     }
-    if (file_exists($link) || is_link($link) || is_dir($link)) {
-        echo "  · public/$name ya existe\n";
+    // Ya hay junction/symlink usable
+    if (is_link($link) || (PHP_OS_FAMILY === 'Windows' && is_dir($link) && is_dir($target) && !is_file($link))) {
+        // directorio junction: OK si apunta; no rehacer
+        if (is_dir($link) && is_dir($target)) {
+            echo "  · public/$name ya existe\n";
+            continue;
+        }
+    }
+    if (is_dir($target)) {
+        if (file_exists($link) || is_link($link) || is_dir($link)) {
+            echo "  · public/$name ya existe\n";
+            continue;
+        }
+        if (PHP_OS_FAMILY === 'Windows') {
+            $cmd = 'cmd /c mklink /J "' . $link . '" "' . $target . '"';
+            exec($cmd, $out, $code);
+            echo $code === 0
+                ? "  · Junction public/$name\n"
+                : "  · (aviso) no se pudo crear public/$name — OK con ABRIR-LARAVEL (servidor-unificado)\n";
+        } else {
+            @symlink($target, $link);
+            echo is_link($link)
+                ? "  · Symlink public/$name\n"
+                : "  · (aviso) no se pudo crear public/$name\n";
+        }
         continue;
     }
-    if (PHP_OS_FAMILY === 'Windows') {
-        // mklink no quiere escapeshellarg con comillas raras — comillas dobles literales
-        $linkQ = '"' . $link . '"';
-        $targetQ = '"' . $target . '"';
-        $cmd = is_dir($target)
-            ? 'cmd /c mklink /J ' . $linkQ . ' ' . $targetQ
-            : 'cmd /c mklink ' . $linkQ . ' ' . $targetQ;
-        exec($cmd, $out, $code);
-        echo $code === 0 ? "  · Junction public/$name\n" : "  · (aviso) no se pudo crear public/$name\n";
+
+    // Archivos: NUNCA mklink (en Windows pide admin → "Carece de privilegios").
+    // Copiar bytes al public/ (o saltar si servidor-unificado).
+    if (is_file($link)) {
+        $srcM = @filemtime($target) ?: 0;
+        $dstM = @filemtime($link) ?: 0;
+        if ($dstM >= $srcM && filesize($link) === filesize($target)) {
+            echo "  · public/$name ya actualizado\n";
+            continue;
+        }
+    }
+    if (@copy($target, $link)) {
+        echo "  · Copiado public/$name\n";
     } else {
-        @symlink($target, $link);
-        echo is_link($link) ? "  · Symlink public/$name\n" : "  · (aviso) no se pudo crear public/$name\n";
+        echo "  · (aviso) no se pudo copiar public/$name — OK con ABRIR-LARAVEL (sirve el repo, no public/)\n";
     }
 }
 

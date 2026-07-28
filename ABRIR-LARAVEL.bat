@@ -9,11 +9,31 @@ echo  Uso:
 echo    ABRIR-LARAVEL.bat           → sync + reinicia :8000 + abre Organizador + Portal
 echo    ABRIR-LARAVEL.bat todo      → tambien abre ECR, MKOF, MOVA y prospecto
 echo    ABRIR-LARAVEL.bat sin-nav   → solo servidor / sync, sin abrir navegador
+echo    ABRIR-LARAVEL.bat restaurar → restaura live desde respaldo 28-jul y abre
 echo    RECARGAR.bat                → solo recarga organizador ?disco=1
+echo    TRAER-CAMBIOS.bat           → si estas en main sin la entrega
+echo    REPARAR-SQLITE-ACTIVO.bat   → si sale "no such column: activo"
 echo.
 
 set "MODO=%~1"
 if "%MODO%"=="" set "MODO=auto"
+
+REM Restaurar calendario desde respaldo del repo (si el live se piso con uno viejo)
+if /I "%MODO%"=="restaurar" (
+  if exist "data\organizacion-respaldo-2026-07-28.json" (
+    if exist "data\organizacion-live.json" (
+      copy /Y "data\organizacion-live.json" "data\organizacion-live-antes-restaurar.json" >nul 2>&1
+    )
+    copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
+    echo  Live restaurado desde data\organizacion-respaldo-2026-07-28.json
+  ) else (
+    echo  [ERROR] Falta data\organizacion-respaldo-2026-07-28.json
+    echo  Corre TRAER-CAMBIOS.bat primero ^(rama con la entrega^).
+    pause
+    exit /b 1
+  )
+  set "MODO=auto"
+)
 
 REM No cerrar Laravel si ya esta en :8000; solo cerrar Node viejo si no hay Laravel
 netstat -ano 2>nul | findstr ":8000" | findstr "LISTENING" >nul
@@ -38,6 +58,13 @@ if not defined PHP_EXE (
 
 if not exist "backend\artisan" (
   echo  [ERROR] Falta backend\artisan
+  echo.
+  echo  La carpeta backend/ NO va en Git ^(se crea en tu PC^).
+  echo  En esta misma carpeta del proyecto:
+  echo    composer create-project laravel/laravel backend
+  echo  Guia: docs\laravel\BACKEND-README.md
+  echo  Luego vuelve a correr ABRIR-LARAVEL.bat
+  echo.
   pause
   exit /b 1
 )
@@ -54,12 +81,21 @@ if not exist "data\impresoreando-live.json" (
   )
 )
 
+REM 0) Solo crear live si FALTA (nunca pisar el calendario local con un respaldo viejo)
+if not exist "data\organizacion-live.json" (
+  echo  0^) Creando organizacion-live.json desde respaldo del repo...
+  if exist "data\organizacion-respaldo-2026-07-28.json" (
+    copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
+    echo  Live creado desde data\organizacion-respaldo-2026-07-28.json
+  ) else if exist "scripts\sync-respaldo-auto.js" (
+    where node >nul 2>&1 && node scripts\sync-respaldo-auto.js --solo-repo --force
+  )
+) else (
+  echo  0^) Live ya existe — no se pisa con respaldo
+)
+
 where node >nul 2>&1
 if not errorlevel 1 (
-  if exist "scripts\sync-respaldo-auto.js" (
-    echo  0^) Sync respaldo local...
-    node scripts\sync-respaldo-auto.js --force 2>nul
-  )
   if exist "scripts\asegurar-impresoreando-live.js" (
     node scripts\asegurar-impresoreando-live.js 2>nul
   )
@@ -76,6 +112,9 @@ if errorlevel 1 (
   exit /b 1
 )
 
+echo  1b^) Asegurar columna clientes.activo...
+"%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
+
 echo  2^) Rutas API + frontend unificado...
 "%PHP_EXE%" scripts\configurar-laravel-unificado.php
 if errorlevel 1 (
@@ -88,7 +127,29 @@ pushd backend
 "%PHP_EXE%" artisan config:clear >nul 2>&1
 "%PHP_EXE%" artisan route:clear >nul 2>&1
 "%PHP_EXE%" artisan migrate --force
+popd
+
+echo  3a^) Columna activo (por si migrate no la anadio)...
+"%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
+
+pushd backend
+echo  3a2^) Seed clientes...
 "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
+if errorlevel 1 (
+  echo  [AVISO] Seed fallo — reintento tras ALTER activo...
+  popd
+  "%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
+  "%PHP_EXE%" scripts\usar-sqlite-laravel.php
+  pushd backend
+  "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
+  if errorlevel 1 (
+    echo  [ERROR] Seed clientes fallo. Corre REPARAR-SQLITE-ACTIVO.bat
+    echo  o copia el texto rojo y pegalo en el chat.
+    popd
+    pause
+    exit /b 1
+  )
+)
 popd
 
 if exist "scripts\limpiar-clientes-duplicados.php" (
@@ -96,26 +157,33 @@ if exist "scripts\limpiar-clientes-duplicados.php" (
   "%PHP_EXE%" scripts\limpiar-clientes-duplicados.php
 )
 
-REM Pedidos → organizador AL FINAL (madre en fecha de hoy; no lo pise sync-respaldo)
+REM Calendario de HOY (Chile) — SIEMPRE al final, despues de cualquier sync
 where node >nul 2>&1
 if not errorlevel 1 (
+  if exist "scripts\add-ecr-trade-marketing-mis-servicios.js" (
+    echo  3c^) Asegurar ECR Trade Marketing en hoy...
+    node scripts\add-ecr-trade-marketing-mis-servicios.js --also-respaldo
+  )
   if exist "scripts\sync-impresoreando-pedidos-organizacion.js" (
-    echo  3c^) Sync pedidos Impresoreando → organizador ^(madre = hoy^)...
+    echo  3d^) Sync pedidos Impresoreando → organizador ^(madre = hoy^)...
     node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo
+  )
+  if exist "scripts\asegurar-tareas-cerradas.js" (
+    echo  3e^) Re-cerrar tareas ya hechas...
+    node scripts\asegurar-tareas-cerradas.js --also-respaldo
   )
 )
 
 if not exist "data\organizacion-live.json" (
-  if exist "data\organizacion-respaldo-2026-07-24.json" (
+  if exist "data\organizacion-respaldo-2026-07-28.json" (
+    copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
+    echo  Live creado desde data\organizacion-respaldo-2026-07-28.json
+  ) else if exist "data\organizacion-respaldo-2026-07-24.json" (
     copy /Y "data\organizacion-respaldo-2026-07-24.json" "data\organizacion-live.json" >nul
     echo  Live creado desde data\organizacion-respaldo-2026-07-24.json
   ) else if exist "data\organizacion-respaldo-2026-07-21.json" (
     copy /Y "data\organizacion-respaldo-2026-07-21.json" "data\organizacion-live.json" >nul
     echo  Live creado desde data\organizacion-respaldo-2026-07-21.json
-  ) else if exist "data\organizacion-respaldo-2026-07-18.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-18.json" "data\organizacion-live.json" >nul
-  ) else if exist "data\organizacion-respaldo-2026-07-17.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-17.json" "data\organizacion-live.json" >nul
   )
 )
 
@@ -145,7 +213,7 @@ if /I "%MODO%"=="sin-navegador" goto :fin_urls
 
 REM powershell conserva el "=" de ?disco=1 (start de cmd lo convierte en %3D)
 REM Por defecto: solo Organizador + Portal clientes
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1&v=20260728e'"
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/?disco=1'"
 
 if /I not "%MODO%"=="todo" goto :fin_urls
@@ -168,8 +236,11 @@ echo    MKOF / MOVA:  http://127.0.0.1:8000/index/clientes/mkof/?disco=1
 echo    MKOF prospecto: http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1
 echo    Impresoreando: http://127.0.0.1:8000/index/clientes/impresoreando/panel/?disco=1
 echo.
-echo  Recarga rapida: RECARGAR.bat
-echo  Abrir todo:     ABRIR-LARAVEL.bat todo
-echo  Sin navegador:  ABRIR-LARAVEL.bat sin-nav
+echo  Recarga rapida:     RECARGAR.bat
+echo  Abrir todo:         ABRIR-LARAVEL.bat todo
+echo  Sin navegador:      ABRIR-LARAVEL.bat sin-nav
+echo  Restaurar calendario: ABRIR-LARAVEL.bat restaurar
+echo  Si estas en main:   TRAER-CAMBIOS.bat
+echo  Error columna activo: REPARAR-SQLITE-ACTIVO.bat
 echo.
 if /I not "%MODO%"=="sin-nav" if /I not "%MODO%"=="sin-navegador" pause

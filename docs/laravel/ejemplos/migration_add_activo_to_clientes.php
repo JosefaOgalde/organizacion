@@ -19,7 +19,8 @@ return new class extends Migration
             return;
         }
         Schema::table('clientes', function (Blueprint $table) {
-            $table->boolean('activo')->default(true)->after('tipo');
+            // SQLite no soporta after(); solo añadir la columna.
+            $table->boolean('activo')->default(true);
         });
     }
 

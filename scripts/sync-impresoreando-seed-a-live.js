@@ -116,24 +116,142 @@ function main() {
     }
   }
 
-  const pedKeys = new Set(
-    live.pedidos.flatMap((p) => [p.id, p.numero].filter(Boolean).map(String))
-  );
+  const pedByKey = new Map();
+  for (const p of live.pedidos) {
+    if (!p) continue;
+    if (p.id) pedByKey.set(String(p.id), p);
+    if (p.numero) pedByKey.set(String(p.numero), p);
+  }
   for (const sp of seed.pedidos || []) {
     if (!sp) continue;
     const keys = [sp.id, sp.numero].filter(Boolean).map(String);
-    if (keys.some((k) => pedKeys.has(k))) continue;
-    live.pedidos.push(JSON.parse(JSON.stringify(sp)));
-    keys.forEach((k) => pedKeys.add(k));
-    changed += 1;
+    const existing = keys.map((k) => pedByKey.get(k)).find(Boolean);
+    if (!existing) {
+      live.pedidos.push(JSON.parse(JSON.stringify(sp)));
+      keys.forEach((k) => pedByKey.set(k, sp));
+      changed += 1;
+      continue;
+    }
+    // Si el seed ya marcó transferido (o apunta venta), propaga al live sin pisar ventas nuevas.
+    if (sp.estado === 'transferido' && existing.estado !== 'transferido') {
+      existing.estado = 'transferido';
+      if (sp.ventaId) existing.ventaId = sp.ventaId;
+      if (sp.transferidoEn) existing.transferidoEn = sp.transferidoEn;
+      if (sp.notas) existing.notas = sp.notas;
+      if (sp.montoNeto != null) existing.montoNeto = sp.montoNeto;
+      if (sp.montoBruto != null) existing.montoBruto = sp.montoBruto;
+      if (sp.descuentoClp != null) existing.descuentoClp = sp.descuentoClp;
+      if (Array.isArray(sp.items) && sp.items.length) {
+        existing.items = JSON.parse(JSON.stringify(sp.items));
+      }
+      changed += 1;
+    } else if (sp.estado === 'transferido' && existing.estado === 'transferido') {
+      let touched = false;
+      if (sp.ventaId && existing.ventaId !== sp.ventaId) {
+        existing.ventaId = sp.ventaId;
+        touched = true;
+      }
+      if (sp.montoNeto != null && Number(existing.montoNeto) !== Number(sp.montoNeto)) {
+        existing.montoNeto = sp.montoNeto;
+        if (sp.montoBruto != null) existing.montoBruto = sp.montoBruto;
+        touched = true;
+      }
+      if (sp.notas && existing.notas !== sp.notas) {
+        existing.notas = sp.notas;
+        touched = true;
+      }
+      const seedIt = (sp.items || [])[0];
+      const liveIt = (existing.items || [])[0];
+      if (seedIt && liveIt) {
+        if (
+          seedIt.filamento &&
+          liveIt.filamento !== seedIt.filamento
+        ) {
+          liveIt.filamento = seedIt.filamento;
+          touched = true;
+        }
+        if (
+          seedIt.precioUnitarioClp != null &&
+          Number(liveIt.precioUnitarioClp) !== Number(seedIt.precioUnitarioClp)
+        ) {
+          liveIt.precioUnitarioClp = seedIt.precioUnitarioClp;
+          touched = true;
+        }
+        if (seedIt.estado && liveIt.estado !== seedIt.estado) {
+          liveIt.estado = seedIt.estado;
+          touched = true;
+        }
+        if (seedIt.listos != null && Number(liveIt.listos) !== Number(seedIt.listos)) {
+          liveIt.listos = seedIt.listos;
+          liveIt.enImpresion = seedIt.enImpresion != null ? seedIt.enImpresion : 0;
+          touched = true;
+        }
+      }
+      if (touched) changed += 1;
+    } else if (sp.ventaId && existing.ventaId !== sp.ventaId) {
+      existing.ventaId = sp.ventaId;
+      changed += 1;
+    }
   }
 
+  // Actualiza ventas seed existentes (p. ej. pedidoId consolidado) sin pisar montos locales distintos.
   const venIds = new Set(live.ventas.filter((v) => v && v.id).map((v) => v.id));
   for (const sv of seed.ventas || []) {
-    if (!sv || !sv.id || venIds.has(sv.id)) continue;
-    live.ventas.push(JSON.parse(JSON.stringify(sv)));
-    venIds.add(sv.id);
-    changed += 1;
+    if (!sv || !sv.id) continue;
+    if (!venIds.has(sv.id)) {
+      live.ventas.push(JSON.parse(JSON.stringify(sv)));
+      venIds.add(sv.id);
+      changed += 1;
+      continue;
+    }
+    const existing = live.ventas.find((v) => v && v.id === sv.id);
+    if (!existing) continue;
+    let touched = false;
+    if (sv.pedidoId && existing.pedidoId !== sv.pedidoId) {
+      existing.pedidoId = sv.pedidoId;
+      existing.pedidoNumero = sv.pedidoNumero;
+      touched = true;
+    }
+    if (sv.descripcion && existing.descripcion !== sv.descripcion) {
+      existing.descripcion = sv.descripcion;
+      touched = true;
+    }
+    if (sv.notas && existing.notas !== sv.notas) {
+      existing.notas = sv.notas;
+      touched = true;
+    }
+    if (sv.montoNeto != null && Number(existing.montoNeto) !== Number(sv.montoNeto)) {
+      existing.montoNeto = sv.montoNeto;
+      if (sv.montoBruto != null) existing.montoBruto = sv.montoBruto;
+      touched = true;
+    }
+    if (Array.isArray(sv.items) && sv.items.length) {
+      existing.items = JSON.parse(JSON.stringify(sv.items));
+      touched = true;
+    }
+    if (touched) changed += 1;
+  }
+
+  // Quitar pedidos duplicados obsoletos (p. ej. PED-012 Ele consolidado en PED-004).
+  const dropDupIds = new Set(['ped-ele-pesa-012']);
+  const dropDupNums = new Set(['PED-012']);
+  const beforeDrop = live.pedidos.length;
+  live.pedidos = live.pedidos.filter((p) => {
+    if (!p) return false;
+    if (dropDupIds.has(p.id) || dropDupNums.has(String(p.numero || ''))) return false;
+    return true;
+  });
+  if (live.pedidos.length !== beforeDrop) changed += 1;
+
+  // Historial clientes del seed (si live aún no lo tiene o le faltan códigos).
+  if (Array.isArray(seed.meta?.clientesHistorial) && seed.meta.clientesHistorial.length) {
+    const liveHist = Array.isArray(live.meta.clientesHistorial) ? live.meta.clientesHistorial : [];
+    const liveCodes = new Set(liveHist.flatMap((h) => h.ventaCodigos || []));
+    const seedCodes = seed.meta.clientesHistorial.flatMap((h) => h.ventaCodigos || []);
+    if (!liveHist.length || seedCodes.some((c) => c && !liveCodes.has(c))) {
+      live.meta.clientesHistorial = JSON.parse(JSON.stringify(seed.meta.clientesHistorial));
+      changed += 1;
+    }
   }
 
   // Gastos nuevos del seed (p. ej. diseños Cults) sin pisar montos editados en live.

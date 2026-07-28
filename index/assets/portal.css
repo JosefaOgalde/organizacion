@@ -528,7 +528,7 @@ body.portal-body--themed .portal-cliente {
 
 /* Impresoreando: wordmark navy/naranja (sin tipografía genérica) */
 body[data-cliente-slug="impresoreando"] .portal-landing-hero__logo {
-  height: clamp(64px, 14vw, 110px);
+  height: clamp(48px, 10vw, 72px);
   max-width: min(640px, 98%);
 }
 

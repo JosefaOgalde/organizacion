@@ -3,6 +3,10 @@
   const API = '/api/impresoreando';
   let data = null;
   let dirty = false;
+  /** Filtros tab Ventas: compras por cliente / origen. */
+  let ventasFiltroCliente = '';
+  let ventasFiltroOrigen = '';
+  let ventasFiltroTexto = '';
 
   const $ = (sel) => document.querySelector(sel);
   const money = (n) =>
@@ -79,6 +83,7 @@
     if (asegurarProductoLlaveroPortaLipstickStanley(d)) changed = true;
     if (asegurarProductoLlaveroPesaRusa(d)) changed = true;
     if (asegurarProductoSoporteCelular(d)) changed = true;
+    if (asegurarRenombrarRosadoPastelAMorado(d)) changed = true;
     if (asegurarProductoDragon(d)) changed = true;
     if (asegurarProductoTorreon(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
@@ -837,7 +842,7 @@
     return changed;
   }
 
-  /** Soporte celular — slicer 34,46 g · 57 m 30 s · PLA color (rosado). Soft: no pisa si ya tiene g. */
+  /** Soporte celular — slicer 34,46 g · 57 m 30 s · PLA color (morado pastel). Soft: no pisa si ya tiene g. */
   function seedSoporteCelular() {
     const filamentoModeloGramos = 33.99;
     const filamentoPurgeGramos = 0.47;
@@ -851,7 +856,7 @@
       filamentoPurgeGramos,
       filamentoMetros: 11.46,
       filamentoGramos,
-      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG, // ref PLA color (rosado pastel)
+      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG, // ref PLA color (morado pastel)
       horasImpresion: round2((57 + 30 / 60) / 60), // 57 m 30 s → 0,96 h
       minutosPintado: 0,
       unidadesMetal: 0,
@@ -860,7 +865,7 @@
       costoSlicerRef: 0.69,
       pendienteCosto: false,
       notas:
-        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 11,46 m · 57 m 30 s · coste slicer 0,69. PLA rosado pastel (ref $/kg color $16.829). Precio venta $4.000.`,
+        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 11,46 m · 57 m 30 s · coste slicer 0,69. PLA morado pastel (ref $/kg color $16.829). Precio venta $4.000.`,
     };
   }
 
@@ -889,7 +894,44 @@
     return changed;
   }
 
-  /** Dragón — slicer alto 275,41 g · 14 h 7 m · PVP $11.000. Soft seed. */
+  /** Color vigente: «rosado pastel» → «morado pastel» (producto / pedidos / ventas). */
+  function renombrarRosadoPastel(texto) {
+    let s = String(texto || '');
+    if (!s) return s;
+    s = s.replace(/PLA rosado pastel/gi, 'PLA morado pastel');
+    s = s.replace(/rosado pastel/gi, 'morado pastel');
+    s = s.replace(/Soporte celular rosado(?!\s*pastel)/gi, 'Soporte celular morado pastel');
+    s = s.replace(/morado pastel pastel/gi, 'morado pastel');
+    return s;
+  }
+
+  function asegurarRenombrarRosadoPastelAMorado(d) {
+    let changed = false;
+    const touchStr = (obj, key) => {
+      if (!obj || obj[key] == null) return;
+      const next = renombrarRosadoPastel(obj[key]);
+      if (next !== obj[key]) {
+        obj[key] = next;
+        changed = true;
+      }
+    };
+    for (const p of d.productos || []) {
+      touchStr(p, 'notas');
+    }
+    for (const ped of d.pedidos || []) {
+      touchStr(ped, 'notas');
+      for (const it of ped.items || []) touchStr(it, 'filamento');
+    }
+    for (const v of d.ventas || []) {
+      touchStr(v, 'descripcion');
+      touchStr(v, 'notas');
+      for (const it of v.items || []) touchStr(it, 'filamento');
+    }
+    for (const b of d.bitacora || []) touchStr(b, 'texto');
+    return changed;
+  }
+
+  /** Dragón — slicer alto 275,41 g · 14 h 7 m · PVP $20.000. Soft seed. */
   function seedDragon() {
     const filamentoModeloGramos = 192.38;
     const filamentoGramos = 275.41;
@@ -908,11 +950,11 @@
       minutosPintado: 0,
       unidadesMetal: 0,
       unidadesBolsa: 1,
-      precioVentaSugeridoClp: 11000,
+      precioVentaSugeridoClp: 20000,
       costoSlicerRef: 5.51,
       pendienteCosto: false,
       notas:
-        `Slicer (medición alta): modelo ${filamentoModeloGramos} g + soportes ${filamentoSoportesGramos} g = ${filamentoGramos} g · 91,6 m · 14 h 7 m · coste slicer 5,51. PLA color $16.829/kg. PVP $11.000.`,
+        `Slicer (medición alta): modelo ${filamentoModeloGramos} g + soportes ${filamentoSoportesGramos} g = ${filamentoGramos} g · 91,6 m · 14 h 7 m · coste slicer 5,51. PLA color $16.829/kg. PVP $20.000.`,
     };
   }
 
@@ -940,6 +982,10 @@
     }
     if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
       existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    } else if (Number(existing.precioVentaSugeridoClp) === 11000) {
+      // Migrar PVP viejo del seed → cobrado vigente $20.000
+      existing.precioVentaSugeridoClp = 20000;
       changed = true;
     }
     return changed;
@@ -1267,6 +1313,114 @@
           { sku: 'PTBOBES001', nombre: 'Porta Bob Esponja', cantidad: 1, precioUnitarioClp: 7000, costoUnitarioClp: 998.17, filamento: 'multicolor' },
         ],
       },
+      {
+        id: 'ven-maria-paz-soporte-011',
+        codigo: 'I000011',
+        fecha: '2026-07-28',
+        cliente: 'María Paz SIE',
+        descripcion: 'PED-005 · 1× Soporte celular morado pastel · María Paz SIE',
+        cantidad: 1,
+        montoBruto: 4000,
+        descuentoClp: 0,
+        montoNeto: 4000,
+        costoTotal: 683.69,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-005 · 1× Soporte celular morado pastel · pagado $4.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-maria-paz-soporte-005',
+        pedidoNumero: 'PED-005',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: 4000,
+            costoUnitarioClp: 683.69,
+            filamento: 'PLA morado pastel',
+          },
+        ],
+      },
+      {
+        id: 'ven-rebe-soporte-012',
+        codigo: 'I000012',
+        fecha: '2026-07-28',
+        cliente: 'Rebe SIE',
+        descripcion: 'PED-009 · 1× Soporte celular negro · Rebe SIE',
+        cantidad: 1,
+        montoBruto: 4000,
+        descuentoClp: 0,
+        montoNeto: 4000,
+        costoTotal: 683.69,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-009 · 1× Soporte celular negro · pagado $4.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-rebe-soporte-009',
+        pedidoNumero: 'PED-009',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: 4000,
+            costoUnitarioClp: 683.69,
+            filamento: 'PLA+ negro',
+          },
+        ],
+      },
+      {
+        id: 'ven-rebe-dragon-013',
+        codigo: 'I000013',
+        fecha: '2026-07-28',
+        cliente: 'Rebe SIE',
+        descripcion: 'PED-006 · 1× Dragón morado · Rebe SIE',
+        cantidad: 1,
+        montoBruto: 20000,
+        descuentoClp: 0,
+        montoNeto: 20000,
+        costoTotal: 5475.59,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-006 · 1× Dragón morado · pagado $20.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-rebe-dragon-006',
+        pedidoNumero: 'PED-006',
+        items: [
+          {
+            sku: 'DRAGON001',
+            nombre: 'Dragón',
+            cantidad: 1,
+            precioUnitarioClp: 20000,
+            costoUnitarioClp: 5475.59,
+            filamento: 'PLA morado',
+          },
+        ],
+      },
+      {
+        id: 'ven-ele-pesa-014',
+        codigo: 'I000014',
+        fecha: '2026-07-28',
+        cliente: 'Ele SIE',
+        descripcion: 'PED-004 · 2× Llavero Pesa Rusa amarillo · Ele SIE',
+        cantidad: 2,
+        montoBruto: 5000,
+        descuentoClp: 0,
+        montoNeto: 5000,
+        costoTotal: 830.86,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-004 · 2× Llavero Pesa Rusa amarillo · pagado $5.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-ele-pesa-rusa-004',
+        pedidoNumero: 'PED-004',
+        items: [
+          {
+            sku: 'LLPESRU001',
+            nombre: 'Llavero Pesa Rusa',
+            cantidad: 2,
+            precioUnitarioClp: 2500,
+            costoUnitarioClp: 415.43,
+            filamento: 'PLA amarillo',
+          },
+        ],
+      },
     ];
 
     let changed = false;
@@ -1329,11 +1483,77 @@
         montoNeto: 15000,
         notas: '2× naves espaciales · Juan SIE · transferido a venta I000003 · $15.000',
       },
+      {
+        pedId: 'ped-maria-paz-soporte-005',
+        numero: 'PED-005',
+        ventaId: 'ven-maria-paz-soporte-011',
+        cliente: 'María Paz SIE',
+        montoNeto: 4000,
+        notas: '1× Soporte celular morado pastel · transferido a venta I000011 · $4.000',
+        transferidoEn: '2026-07-28T15:20:00.000Z',
+      },
+      {
+        pedId: 'ped-rebe-soporte-009',
+        numero: 'PED-009',
+        ventaId: 'ven-rebe-soporte-012',
+        cliente: 'Rebe SIE',
+        montoNeto: 4000,
+        notas: '1× Soporte celular negro · transferido a venta I000012 · $4.000',
+        transferidoEn: '2026-07-28T15:30:00.000Z',
+        itemPrecioUnitarioClp: 4000,
+        itemFilamento: 'PLA+ negro',
+      },
+      {
+        pedId: 'ped-rebe-dragon-006',
+        numero: 'PED-006',
+        ventaId: 'ven-rebe-dragon-013',
+        cliente: 'Rebe SIE',
+        montoNeto: 20000,
+        notas: '1× Dragón morado · transferido a venta I000013 · $20.000',
+        transferidoEn: '2026-07-28T15:30:00.000Z',
+        itemPrecioUnitarioClp: 20000,
+        itemFilamento: 'PLA morado',
+        itemSku: 'DRAGON001',
+        itemNombre: 'Dragón',
+      },
+      {
+        pedId: 'ped-ele-pesa-rusa-004',
+        numero: 'PED-004',
+        ventaId: 'ven-ele-pesa-014',
+        cliente: 'Ele SIE',
+        montoNeto: 5000,
+        notas: '2× Llavero Pesa Rusa amarillo · transferido a venta I000014 · $5.000',
+        transferidoEn: '2026-07-28T15:50:00.000Z',
+        itemPrecioUnitarioClp: 2500,
+        itemFilamento: 'PLA amarillo',
+        itemCantidad: 2,
+      },
     ];
     for (const t of transfers) {
-      const ped = d.pedidos.find((p) => p.id === t.pedId || p.numero === t.numero);
+      let ped = d.pedidos.find((p) => p.id === t.pedId || p.numero === t.numero);
+      // Live viejo: mismo Dragón Rebe pero id distinto / aún en_impresion $11.000
+      if (!ped && t.numero === 'PED-006') {
+        ped = d.pedidos.find((p) => {
+          if (p.estado === 'transferido') return false;
+          const cli = String(p.cliente || '');
+          if (!/rebe/i.test(cli)) return false;
+          return (p.items || []).some(
+            (it) =>
+              String(it.sku || '').toUpperCase() === 'DRAGON001' ||
+              /drag[oó]n/i.test(String(it.nombre || ''))
+          );
+        });
+      }
       if (!ped) continue;
       let pedChanged = false;
+      if (ped.numero !== t.numero) {
+        ped.numero = t.numero;
+        pedChanged = true;
+      }
+      if (ped.id !== t.pedId) {
+        ped.id = t.pedId;
+        pedChanged = true;
+      }
       if (ped.estado !== 'transferido') {
         ped.estado = 'transferido';
         pedChanged = true;
@@ -1354,12 +1574,71 @@
         pedChanged = true;
       }
       if (!ped.transferidoEn) {
-        ped.transferidoEn = '2026-07-23T14:50:00.000Z';
+        ped.transferidoEn = t.transferidoEn || '2026-07-23T14:50:00.000Z';
         pedChanged = true;
       }
       if (ped.notas !== t.notas) {
         ped.notas = t.notas;
         pedChanged = true;
+      }
+      if (
+        t.itemPrecioUnitarioClp != null ||
+        t.itemFilamento ||
+        t.itemCantidad != null ||
+        t.itemSku ||
+        t.itemNombre
+      ) {
+        if (!Array.isArray(ped.items) || !ped.items.length) {
+          ped.items = [
+            {
+              sku: t.itemSku || '',
+              nombre: t.itemNombre || '',
+              cantidad: t.itemCantidad != null ? t.itemCantidad : 1,
+              precioUnitarioClp: t.itemPrecioUnitarioClp != null ? t.itemPrecioUnitarioClp : t.montoNeto,
+              costoUnitarioClp: 0,
+              filamento: t.itemFilamento || '',
+              estado: 'listo',
+              listos: t.itemCantidad != null ? t.itemCantidad : 1,
+              enImpresion: 0,
+            },
+          ];
+          pedChanged = true;
+        }
+        const it = (ped.items || [])[0];
+        if (it) {
+          if (t.itemSku && String(it.sku || '').toUpperCase() !== String(t.itemSku).toUpperCase()) {
+            it.sku = t.itemSku;
+            pedChanged = true;
+          }
+          if (t.itemNombre && it.nombre !== t.itemNombre) {
+            it.nombre = t.itemNombre;
+            pedChanged = true;
+          }
+          if (
+            t.itemPrecioUnitarioClp != null &&
+            Number(it.precioUnitarioClp) !== Number(t.itemPrecioUnitarioClp)
+          ) {
+            it.precioUnitarioClp = t.itemPrecioUnitarioClp;
+            pedChanged = true;
+          }
+          if (t.itemFilamento && it.filamento !== t.itemFilamento) {
+            it.filamento = t.itemFilamento;
+            pedChanged = true;
+          }
+          if (t.itemCantidad != null && Number(it.cantidad) !== Number(t.itemCantidad)) {
+            it.cantidad = t.itemCantidad;
+            it.listos = t.itemCantidad;
+            it.enImpresion = 0;
+            it.estado = 'listo';
+            pedChanged = true;
+          }
+          if (it.estado !== 'listo' || Number(it.listos) !== Number(it.cantidad || 1) || Number(it.enImpresion) > 0) {
+            it.estado = 'listo';
+            it.listos = Number(it.cantidad || 1);
+            it.enImpresion = 0;
+            pedChanged = true;
+          }
+        }
       }
       if (pedChanged) changed = true;
     }
@@ -1516,14 +1795,15 @@
       changed = true;
     }
 
-    // PED-004 · Ele SIE · Llavero Pesa Rusa amarillo · listo (impreso) · PVP $1.000
+    // PED-004 · Ele SIE · 2× Llavero Pesa Rusa amarillo · transferido I000014 $5.000 (pagado)
     const id004 = 'ped-ele-pesa-rusa-004';
     const prodPesa = (d.productos || []).find(
       (p) => p.id === 'prod-llavero-pesa-rusa' || p.sku === 'LLPESRU001'
     );
     const costoPesa = prodPesa ? costoProdRough(d, prodPesa) : 415.43;
-    const precioPesa =
-      Number(prodPesa?.precioVentaSugeridoClp) > 0 ? Number(prodPesa.precioVentaSugeridoClp) : 1000;
+    const cant004 = 2;
+    const precioU004 = 2500;
+    const total004 = 5000;
     if (!d.pedidos.some((p) => p.id === id004 || p.numero === 'PED-004')) {
       d.pedidos.push({
         id: id004,
@@ -1537,63 +1817,42 @@
           {
             sku: 'LLPESRU001',
             nombre: 'Llavero Pesa Rusa',
-            cantidad: 1,
-            precioUnitarioClp: precioPesa,
+            cantidad: cant004,
+            precioUnitarioClp: precioU004,
             costoUnitarioClp: round2(costoPesa),
             filamento: 'PLA amarillo',
             estado: 'listo',
-            listos: 1,
+            listos: cant004,
             enImpresion: 0,
           },
         ],
-        montoBruto: precioPesa,
+        montoBruto: total004,
         descuentoClp: 0,
-        montoNeto: precioPesa,
-        costoTotal: round2(costoPesa),
-        estado: 'listo',
-        ventaId: null,
-        notas: `1× Llavero Pesa Rusa amarillo · listo/impreso · costo $${round2(costoPesa)} · PVP $${precioPesa}`,
+        montoNeto: total004,
+        costoTotal: round2(costoPesa * cant004),
+        estado: 'transferido',
+        ventaId: 'ven-ele-pesa-014',
+        transferidoEn: '2026-07-28T15:50:00.000Z',
+        notas: `2× Llavero Pesa Rusa amarillo · transferido a venta I000014 · $${total004}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T01:40:00.000Z',
       });
       changed = true;
-    } else {
-      const ped004 = d.pedidos.find((p) => p.id === id004 || p.numero === 'PED-004');
-      if (ped004 && ped004.estado !== 'transferido' && ped004.estado !== 'listo') {
-        ped004.estado = 'listo';
-        changed = true;
-      }
-      if (ped004 && ped004.cliente !== 'Ele SIE') {
-        ped004.cliente = 'Ele SIE';
-        ped004.clienteNombre = 'Ele';
-        ped004.clienteOrigen = 'SIE';
-        changed = true;
-      }
-      if (ped004 && ped004.estado !== 'transferido') {
-        const it = (ped004.items || [])[0];
-        if (it) {
-          if (!(Number(it.costoUnitarioClp) > 0) || Number(it.costoUnitarioClp) !== round2(costoPesa)) {
-            it.costoUnitarioClp = round2(costoPesa);
-            ped004.costoTotal = round2(costoPesa);
-            changed = true;
-          }
-          if (!(Number(it.precioUnitarioClp) > 0)) {
-            it.precioUnitarioClp = precioPesa;
-            ped004.montoBruto = precioPesa;
-            ped004.montoNeto = precioPesa;
-            changed = true;
-          }
-        }
-      }
     }
+    // Quitar PED-012 si quedó como duplicado de la venta Ele (I000014 vive en PED-004).
+    const before012 = (d.pedidos || []).length;
+    d.pedidos = (d.pedidos || []).filter(
+      (p) => p && p.id !== 'ped-ele-pesa-012' && p.numero !== 'PED-012'
+    );
+    if (d.pedidos.length !== before012) changed = true;
 
-    // PED-005 · María Paz SIE · Soporte celular rosado pastel · listo (impreso) · PVP $4.000
+    // PED-005 · María Paz SIE · Soporte celular morado pastel · transferido I000011 $4.000 (pagado)
     const id005 = 'ped-maria-paz-soporte-005';
     const prodSop = (d.productos || []).find(
       (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
     );
     const costoSop = prodSop ? costoProdRough(d, prodSop) : 683.69;
-    const precioSop = Number(prodSop?.precioVentaSugeridoClp) > 0 ? Number(prodSop.precioVentaSugeridoClp) : 4000;
+    const precioSop = 4000;
     if (!d.pedidos.some((p) => p.id === id005 || p.numero === 'PED-005')) {
       d.pedidos.push({
         id: id005,
@@ -1611,7 +1870,7 @@
             cantidad: 1,
             precioUnitarioClp: precioSop,
             costoUnitarioClp: round2(costoSop),
-            filamento: 'PLA rosado pastel',
+            filamento: 'PLA morado pastel',
             estado: 'listo',
             listos: 1,
             enImpresion: 0,
@@ -1621,49 +1880,21 @@
         descuentoClp: 0,
         montoNeto: precioSop,
         costoTotal: round2(costoSop),
-        estado: 'listo',
-        ventaId: null,
-        notas: `1× Soporte celular rosado pastel · listo/impreso · costo $${round2(costoSop)} · precio venta $${precioSop}`,
+        estado: 'transferido',
+        ventaId: 'ven-maria-paz-soporte-011',
+        transferidoEn: '2026-07-28T15:20:00.000Z',
+        notas: `1× Soporte celular morado pastel · transferido a venta I000011 · $${precioSop}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T01:43:00.000Z',
       });
       changed = true;
-    } else {
-      const ped005 = d.pedidos.find((p) => p.id === id005 || p.numero === 'PED-005');
-      if (ped005 && ped005.estado !== 'transferido') {
-        if (ped005.estado !== 'listo') {
-          ped005.estado = 'listo';
-          changed = true;
-        }
-        const it = (ped005.items || [])[0];
-        if (it) {
-          if (it.estado !== 'listo' || Number(it.listos) !== Number(it.cantidad || 1)) {
-            it.estado = 'listo';
-            it.listos = Number(it.cantidad || 1);
-            it.enImpresion = 0;
-            changed = true;
-          }
-          if (Number(it.precioUnitarioClp) !== precioSop) {
-            it.precioUnitarioClp = precioSop;
-            ped005.montoBruto = precioSop;
-            ped005.montoNeto = precioSop;
-            changed = true;
-          }
-          if (Number(it.costoUnitarioClp) !== round2(costoSop) && costoSop > 0) {
-            it.costoUnitarioClp = round2(costoSop);
-            ped005.costoTotal = round2(costoSop);
-            changed = true;
-          }
-        }
-      }
     }
 
-    // PED-006 · Rebe SIE · Dragón · en impresión · PVP $11.000
+    // PED-006 · Rebe SIE · Dragón morado · transferido I000013 $20.000
     const id006 = 'ped-rebe-dragon-006';
     const prodDra = (d.productos || []).find((p) => p.id === 'prod-dragon' || p.sku === 'DRAGON001');
     const costoDra = prodDra ? costoProdRough(d, prodDra) : 5475.59;
-    const precioDra =
-      Number(prodDra?.precioVentaSugeridoClp) > 0 ? Number(prodDra.precioVentaSugeridoClp) : 11000;
+    const precioDra = 20000;
     if (!d.pedidos.some((p) => p.id === id006 || p.numero === 'PED-006')) {
       d.pedidos.push({
         id: id006,
@@ -1680,29 +1911,24 @@
             cantidad: 1,
             precioUnitarioClp: precioDra,
             costoUnitarioClp: round2(costoDra),
-            filamento: 'PLA color',
-            estado: 'en_impresion',
-            listos: 0,
-            enImpresion: 1,
+            filamento: 'PLA morado',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
           },
         ],
         montoBruto: precioDra,
         descuentoClp: 0,
         montoNeto: precioDra,
         costoTotal: round2(costoDra),
-        estado: 'en_impresion',
-        ventaId: null,
-        notas: `1× Dragón · en impresión · costo $${round2(costoDra)} · PVP $${precioDra}`,
+        estado: 'transferido',
+        ventaId: 'ven-rebe-dragon-013',
+        transferidoEn: '2026-07-28T15:30:00.000Z',
+        notas: `1× Dragón morado · transferido a venta I000013 · $${precioDra}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T01:49:00.000Z',
       });
       changed = true;
-    } else {
-      const ped006 = d.pedidos.find((p) => p.id === id006 || p.numero === 'PED-006');
-      if (ped006 && ped006.estado !== 'transferido' && ped006.estado !== 'en_impresion') {
-        ped006.estado = 'en_impresion';
-        changed = true;
-      }
     }
 
     // PED-007 · Juan SIE · Torreón · listo (estimación + $1.000 impresora antigua)
@@ -1784,6 +2010,137 @@
         notas: `1× Porta Bob Esponja · listo · costo $${round2(costoBob)} · PVP $${precioBob}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T02:00:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-009 · Rebe SIE · Soporte celular negro · transferido I000012 $4.000
+    const id009 = 'ped-rebe-soporte-009';
+    const prodSop009 = (d.productos || []).find(
+      (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
+    );
+    const costoSop009 = prodSop009 ? costoProdRough(d, prodSop009) : 683.69;
+    const precioSop009 = 4000;
+    if (!d.pedidos.some((p) => p.id === id009 || p.numero === 'PED-009')) {
+      d.pedidos.push({
+        id: id009,
+        numero: 'PED-009',
+        fecha: '2026-07-28',
+        cliente: 'Rebe SIE',
+        clienteNombre: 'Rebe',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: precioSop009,
+            costoUnitarioClp: round2(costoSop009),
+            filamento: 'PLA+ negro',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioSop009,
+        descuentoClp: 0,
+        montoNeto: precioSop009,
+        costoTotal: round2(costoSop009),
+        estado: 'transferido',
+        ventaId: 'ven-rebe-soporte-012',
+        transferidoEn: '2026-07-28T15:30:00.000Z',
+        notas: `1× Soporte celular negro · transferido a venta I000012 · $${precioSop009}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-28T15:30:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-010 · Gianni SIE · 2× Soporte celular negro · fiado (paga 18 ago) · $8.000
+    const id010 = 'ped-gianni-soporte-010';
+    const prodSop010 = (d.productos || []).find(
+      (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
+    );
+    const costoSop010 = prodSop010 ? costoProdRough(d, prodSop010) : 683.69;
+    const precioSop010 = 4000;
+    const cant010 = 2;
+    if (!d.pedidos.some((p) => p.id === id010 || p.numero === 'PED-010')) {
+      d.pedidos.push({
+        id: id010,
+        numero: 'PED-010',
+        fecha: '2026-07-28',
+        cliente: 'Gianni SIE',
+        clienteNombre: 'Gianni',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: cant010,
+            precioUnitarioClp: precioSop010,
+            costoUnitarioClp: round2(costoSop010),
+            filamento: 'PLA+ negro',
+            estado: 'pendiente',
+            listos: 0,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioSop010 * cant010,
+        descuentoClp: 0,
+        montoNeto: precioSop010 * cant010,
+        costoTotal: round2(costoSop010 * cant010),
+        estado: 'pendiente',
+        ventaId: null,
+        fiado: true,
+        fechaPagoEsperada: '2026-08-18',
+        pagoNotas: 'Paga el 18 de agosto',
+        notas: `2× Soporte celular negro · fiado · paga 2026-08-18 · PVP $${precioSop010}/u · total $${precioSop010 * cant010}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-28T15:40:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-011 · Marcia SIE · 1× Soporte celular morado · $3.000 · pendiente
+    const id011 = 'ped-marcia-soporte-011';
+    const prodSop011 = (d.productos || []).find(
+      (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
+    );
+    const costoSop011 = prodSop011 ? costoProdRough(d, prodSop011) : 683.69;
+    const precioSop011 = 3000;
+    if (!d.pedidos.some((p) => p.id === id011 || p.numero === 'PED-011')) {
+      d.pedidos.push({
+        id: id011,
+        numero: 'PED-011',
+        fecha: '2026-07-28',
+        cliente: 'Marcia SIE',
+        clienteNombre: 'Marcia',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: precioSop011,
+            costoUnitarioClp: round2(costoSop011),
+            filamento: 'PLA morado',
+            estado: 'pendiente',
+            listos: 0,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioSop011,
+        descuentoClp: 0,
+        montoNeto: precioSop011,
+        costoTotal: round2(costoSop011),
+        estado: 'pendiente',
+        ventaId: null,
+        notas: `1× Soporte celular morado · PVP $${precioSop011}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-28T15:45:00.000Z',
       });
       changed = true;
     }
@@ -2415,43 +2772,23 @@
       .map((prod) => {
         const c = costoProducto(prod);
         const precio = precioVentaProducto(prod, c.total);
-        const precioEsManual = Number(prod.precioVentaSugeridoClp) > 0;
         return `<tr>
           <td><span class="imp-sku">${escapeHtml(prod.sku || '—')}</span></td>
           <td>${escapeHtml(prod.nombre || '')}</td>
           <td class="num">${money(c.total)}</td>
-          <td class="num"><strong>${money(precio)}</strong>${precioEsManual ? ' <span class="imp-muted">manual</span>' : ''}</td>
+          <td class="num"><strong>${money(precio)}</strong></td>
         </tr>`;
       })
       .join('');
 
-    const todosPedidos = (data.pedidos || []).slice().sort((a, b) =>
-      String(b.numero || '').localeCompare(String(a.numero || ''), 'es')
-    );
+    const todosPedidos = (data.pedidos || []).slice();
     const countEst = { pendiente: 0, en_impresion: 0, listo: 0, transferido: 0 };
     for (const p of todosPedidos) {
       const e = p.estado || 'pendiente';
       if (countEst[e] != null) countEst[e] += 1;
     }
-    const filasPedidosStatus = todosPedidos
-      .map((p) => {
-        recalcularMontoPedido(p);
-        const itemsTxt = (p.items || [])
-          .map((it) => `${it.cantidad || 1}× ${it.nombre || it.sku || ''}`)
-          .join(', ');
-        const origenLbl = labelOrigenCliente(p.clienteOrigen);
-        return `<tr>
-          <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
-          <td>
-            <strong>${escapeHtml(p.cliente || '—')}</strong>
-            ${origenLbl ? `<div class="imp-muted">${escapeHtml(origenLbl)}</div>` : ''}
-            <div class="imp-muted">${escapeHtml(itemsTxt || '—')}</div>
-          </td>
-          <td class="num"><strong>${money(p.montoNeto)}</strong></td>
-          <td>${badgeEstadoPedido(p.estado || 'pendiente')}</td>
-        </tr>`;
-      })
-      .join('');
+    const nVentas = (data.ventas || []).length;
+    const nClientesHist = (data.meta?.clientesHistorial || []).length;
 
     $('#tab-resumen').innerHTML = `
       <div class="imp-balance ${sinDeuda ? 'imp-balance--ok' : 'imp-balance--deuda'}">
@@ -2485,20 +2822,23 @@
           <span><strong>Total ${money(gastosMasPedidos)}</strong></span>
         </div>
       </div>
-      <div class="imp-card">
-        <h2>Estado de pedidos</h2>
-        <p class="imp-muted">Pipeline en vivo (PED-00n). Los activos aún no bajan la deuda — solo al transferir → venta. Detalle en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>.</p>
-        <div class="imp-pedido-status-counts" aria-label="Conteo por estado">
-          <span class="imp-badge imp-badge--warn">Pendiente ${countEst.pendiente}</span>
-          <span class="imp-badge imp-badge--print">En impresión ${countEst.en_impresion}</span>
-          <span class="imp-badge imp-badge--listo">Listo ${countEst.listo}</span>
-          <span class="imp-badge imp-badge--ok">Transferido ${countEst.transferido}</span>
+      <div class="imp-grid imp-grid--2">
+        <div class="imp-card imp-card--resumen-gen">
+          <h2>Ventas</h2>
+          <p class="imp-muted">Vista general. El detalle (IDs, ítems, descuentos, historial) está en <button type="button" class="imp-linkish" data-goto-tab="ventas">Ventas</button>.</p>
+          <div class="imp-kpi imp-kpi--ok"><span>Contabilizadas</span><strong>${nVentas} · ${money(ventas)}</strong></div>
+          <p class="imp-muted" style="margin:0.65rem 0 0">${nClientesHist} cliente${nClientesHist === 1 ? '' : 's'} en historial</p>
         </div>
-        <div class="imp-table-wrap" style="margin-top:0.75rem">
-          <table class="imp-table">
-            <thead><tr><th>Pedido</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th></tr></thead>
-            <tbody>${filasPedidosStatus || '<tr><td colspan="4">Sin pedidos</td></tr>'}</tbody>
-          </table>
+        <div class="imp-card imp-card--resumen-gen">
+          <h2>Pedidos</h2>
+          <p class="imp-muted">Pipeline. Detalle y fiados en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>.</p>
+          <div class="imp-pedido-status-counts" aria-label="Conteo por estado">
+            <span class="imp-badge imp-badge--warn">Pendiente ${countEst.pendiente}</span>
+            <span class="imp-badge imp-badge--print">En impresión ${countEst.en_impresion}</span>
+            <span class="imp-badge imp-badge--listo">Listo ${countEst.listo}</span>
+            <span class="imp-badge imp-badge--ok">Transferido ${countEst.transferido}</span>
+          </div>
+          <div class="imp-kpi" style="margin-top:0.75rem"><span>Activos (aún no bajan deuda)</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
         </div>
       </div>
       <div class="imp-grid">
@@ -2702,6 +3042,22 @@
 
   function pedidoActivo(estado) {
     return ['pendiente', 'listo', 'en_impresion'].includes(estado || 'pendiente');
+  }
+
+  function fechaPagoPedidoUi(p) {
+    const d = String(p?.fechaPagoEsperada || p?.fechaPago || p?.pagaEl || '').slice(0, 10);
+    return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : '';
+  }
+
+  function esPedidoFiado(p) {
+    if (!p) return false;
+    if (p.fiado === true) return true;
+    if (fechaPagoPedidoUi(p)) return true;
+    return false;
+  }
+
+  function fiadoPendiente(p) {
+    return esPedidoFiado(p) && pedidoActivo(p.estado || 'pendiente');
   }
 
   function textoEstadoItem(it) {
@@ -3277,40 +3633,74 @@
     const optsProd = productos
       .map((p) => `<option value="${escapeHtml(p.sku || '')}">${escapeHtml(p.sku || '')} · ${escapeHtml(p.nombre || '')}</option>`)
       .join('');
-    const rows = (data.pedidos || [])
-      .slice()
-      .reverse()
-      .map((p) => {
-        recalcularMontoPedido(p);
-        const estado = p.estado || 'pendiente';
-        let acciones = `<span class="imp-muted">${escapeHtml(p.ventaId || '—')}</span>`;
-        if (pedidoActivo(estado)) {
-          acciones = `<button type="button" class="imp-btn imp-btn--sm" data-edit-pedido="${escapeHtml(p.id)}">Editar</button>
-            <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
-            <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
-        }
-        return `<tr>
-          <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
-          <td>
-            <strong>${escapeHtml(p.cliente || '—')}</strong>
-            <div class="imp-pedido-items">${renderItemsPedido(p)}</div>
-            ${p.notas ? `<div class="imp-muted">${escapeHtml(p.notas)}</div>` : ''}
-          </td>
-          <td class="num">
-            <strong>${money(p.montoNeto)}</strong>
-            <div class="imp-muted">venta</div>
-            <div class="imp-muted">costo ${money(p.costoTotal || 0)}</div>
-          </td>
-          <td>${selectEstadoPedido(p)}</td>
-          <td class="imp-pedidos-actions">${acciones}</td>
-        </tr>`;
-      })
-      .join('');
+
+    const filaPedido = (p, { mostrarPagaEl = false } = {}) => {
+      recalcularMontoPedido(p);
+      const estado = p.estado || 'pendiente';
+      let acciones = `<span class="imp-muted">${escapeHtml(p.ventaId || '—')}</span>`;
+      if (pedidoActivo(estado)) {
+        acciones = `<button type="button" class="imp-btn imp-btn--sm" data-edit-pedido="${escapeHtml(p.id)}">Editar</button>
+          <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
+          <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
+      }
+      const pagaCell = mostrarPagaEl
+        ? `<td><strong>${escapeHtml(fechaPagoPedidoUi(p) || '—')}</strong></td>`
+        : '';
+      return `<tr>
+        <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
+        <td>
+          <strong>${escapeHtml(p.cliente || '—')}</strong>
+          ${
+            !mostrarPagaEl && (p.fiado || p.fechaPagoEsperada)
+              ? `<div class="imp-badge">Fiado · paga ${escapeHtml(fechaPagoPedidoUi(p) || '—')}</div>`
+              : ''
+          }
+          <div class="imp-pedido-items">${renderItemsPedido(p)}</div>
+          ${p.notas ? `<div class="imp-muted">${escapeHtml(p.notas)}</div>` : ''}
+        </td>
+        ${pagaCell}
+        <td class="num">
+          <strong>${money(p.montoNeto)}</strong>
+          <div class="imp-muted">venta</div>
+          <div class="imp-muted">costo ${money(p.costoTotal || 0)}</div>
+        </td>
+        <td>${selectEstadoPedido(p)}</td>
+        <td class="imp-pedidos-actions">${acciones}</td>
+      </tr>`;
+    };
+
+    const pedidosOrden = (data.pedidos || []).slice().reverse();
+    const fiadosPendientes = pedidosOrden.filter(fiadoPendiente);
+    const pedidosResto = pedidosOrden.filter((p) => !fiadoPendiente(p));
+    const totalFiados = fiadosPendientes.reduce((s, p) => {
+      recalcularMontoPedido(p);
+      return s + Number(p.montoNeto || 0);
+    }, 0);
+
+    const rowsFiados = fiadosPendientes.map((p) => filaPedido(p, { mostrarPagaEl: true })).join('');
+    const rows = pedidosResto.map((p) => filaPedido(p)).join('');
+
+    const bloqueFiados = `
+      <div class="imp-card imp-card--fiados">
+        <h2>Fiados</h2>
+        <p class="imp-muted">Pedidos entregados o en curso que <strong>aún no se cobraron</strong>. La fecha «Paga el» crea el recordatorio en el organizador. Cuando paguen → <strong>Transferir a venta</strong>.</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Paga el</th><th>Monto</th><th>Estado</th><th></th></tr></thead>
+            <tbody>${
+              rowsFiados ||
+              '<tr><td colspan="6" class="imp-muted">Sin fiados pendientes</td></tr>'
+            }</tbody>
+          </table>
+        </div>
+        <p class="imp-kpi"><span>Por cobrar</span><strong>${money(totalFiados)}</strong></p>
+      </div>`;
 
     $('#tab-pedidos').innerHTML = `
+      ${bloqueFiados}
       <div class="imp-card">
         <h2>Pedidos</h2>
-        <p class="imp-muted">Por ítem: <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable). El <strong>estado</strong> se elige en el menú. Al <strong>Transferir a venta</strong> podés aplicar un <strong>descuento</strong>; el total cobrado es el que baja la deuda.</p>
+        <p class="imp-muted">Por ítem: <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable). El <strong>estado</strong> se elige en el menú. Al <strong>Transferir a venta</strong> podés aplicar un <strong>descuento</strong>; el total cobrado es el que baja la deuda. Los fiados pendientes están arriba en <strong>Fiados</strong>.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th><th></th></tr></thead>
@@ -3356,6 +3746,15 @@
             </select>
           </label>
           <label>Canal<input name="canal" placeholder="WhatsApp / Instagram / feria" value="WhatsApp" /></label>
+          <label>Fiado (paga después)
+            <select name="fiado" id="pedido-fiado">
+              <option value="no" selected>No · cobrado / al contado</option>
+              <option value="si">Sí · paga más adelante</option>
+            </select>
+          </label>
+          <label>Fecha de pago (si fiado)
+            <input name="fechaPagoEsperada" type="date" id="pedido-fecha-pago" />
+          </label>
           <label>Quién
             <select name="socioRegistro">
               <option value="Ambos" selected>Ambos</option>
@@ -3363,10 +3762,10 @@
               <option value="Nicolás">Nicolás</option>
             </select>
           </label>
-          <label class="imp-form-span">Notas<textarea name="notas" rows="2" placeholder="Ej. PLA negro"></textarea></label>
+          <label class="imp-form-span">Notas<textarea name="notas" rows="2" placeholder="Ej. PLA negro · paga el 18 ago"></textarea></label>
           <div class="imp-form-actions">
             <button class="imp-btn imp-btn--primary" type="submit">Registrar pedido</button>
-            <span class="imp-muted">Se asigna el siguiente PED-xxx automáticamente · status en Resumen</span>
+            <span class="imp-muted">Fiado → crea recordatorio de cobro en el organizador el día de pago</span>
           </div>
         </form>
       </div>
@@ -3443,6 +3842,12 @@
       const numero = siguienteNumeroPedido();
       data.pedidos = data.pedidos || [];
       const estadoOk = pedidoActivo(estado) ? estado : 'pendiente';
+      const fiadoSi = String(fd.get('fiado') || 'no') === 'si';
+      const fechaPagoEsperada = String(fd.get('fechaPagoEsperada') || '').slice(0, 10);
+      if (fiadoSi && !/^\d{4}-\d{2}-\d{2}$/.test(fechaPagoEsperada)) {
+        setStatus('Si es fiado, indica la fecha de pago (día en que cobramos)', 'warn');
+        return;
+      }
       const ped = {
         id: uid('ped'),
         numero,
@@ -3471,11 +3876,22 @@
         socioRegistro: fd.get('socioRegistro') || 'Ambos',
         creado: new Date().toISOString(),
       };
+      if (fiadoSi) {
+        ped.fiado = true;
+        ped.fechaPagoEsperada = fechaPagoEsperada;
+        ped.pagoNotas = `Paga el ${fechaPagoEsperada}`;
+        if (!ped.notas) ped.notas = `Fiado · paga ${fechaPagoEsperada}`;
+      }
       data.pedidos.push(ped);
       markDirty();
       renderAll();
       activarTab('pedidos');
-      setStatus(`${numero} · ${cliente} · ${estadoOk} · ${money(montoNeto)} · visible en Resumen`, 'warn');
+      setStatus(
+        fiadoSi
+          ? `${numero} · ${cliente} · fiado · cobra ${fechaPagoEsperada} · ${money(montoNeto)} (recordatorio en organizador al sync)`
+          : `${numero} · ${cliente} · ${estadoOk} · ${money(montoNeto)} · visible en Resumen`,
+        'warn'
+      );
       save().catch((err) => setStatus(String(err.message || err), 'err'));
     });
 
@@ -3552,16 +3968,59 @@
     });
   }
 
+  function origenDesdeCliente(cliente) {
+    const parts = String(cliente || '')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    if (!parts.length) return '';
+    const last = parts[parts.length - 1].toUpperCase();
+    if (last === 'SIE' || last === 'MKOF') return last;
+    return '';
+  }
+
+  function ventaPasaFiltros(v) {
+    const cliente = String(v.cliente || '').trim();
+    if (ventasFiltroCliente && cliente !== ventasFiltroCliente) return false;
+    if (ventasFiltroOrigen) {
+      const orig = origenDesdeCliente(cliente);
+      if (orig !== ventasFiltroOrigen) return false;
+    }
+    if (ventasFiltroTexto) {
+      const q = ventasFiltroTexto.toLowerCase();
+      const blob = [
+        v.codigo,
+        v.cliente,
+        v.descripcion,
+        v.pedidoNumero,
+        v.notas,
+        ...(v.items || []).map((it) => `${it.nombre || ''} ${it.sku || ''} ${it.filamento || ''}`),
+      ]
+        .join(' ')
+        .toLowerCase();
+      if (!blob.includes(q)) return false;
+    }
+    return true;
+  }
+
   function renderVentas() {
     rebuildClientesHistorial(data);
-    const rows = (data.ventas || [])
-      .slice()
-      .sort((a, b) => {
-        const na = Number(String(a.codigo || '').replace(/^I0*/, '') || 0);
-        const nb = Number(String(b.codigo || '').replace(/^I0*/, '') || 0);
-        if (na && nb && na !== nb) return na - nb;
-        return String(a.fecha || '').localeCompare(String(b.fecha || ''));
-      })
+    const ventasSorted = (data.ventas || []).slice().sort((a, b) => {
+      const na = Number(String(a.codigo || '').replace(/^I0*/, '') || 0);
+      const nb = Number(String(b.codigo || '').replace(/^I0*/, '') || 0);
+      if (na && nb && na !== nb) return na - nb;
+      return String(a.fecha || '').localeCompare(String(b.fecha || ''));
+    });
+    const ventasFiltradas = ventasSorted.filter(ventaPasaFiltros);
+    const clientesOpts = Array.from(
+      new Set(
+        (data.ventas || [])
+          .map((v) => String(v.cliente || '').trim())
+          .filter(Boolean)
+      )
+    ).sort((a, b) => a.localeCompare(b, 'es'));
+
+    const rows = ventasFiltradas
       .map((v) => {
         const itemsHtml = (v.items || [])
           .map(
@@ -3590,39 +4049,88 @@
       .join('');
 
     const hist = data.meta?.clientesHistorial || [];
-    const histRows = hist
-      .map(
-        (h) => `<tr>
-        <td><strong>${escapeHtml(h.cliente)}</strong></td>
+    const histFiltrado = hist.filter((h) => {
+      if (ventasFiltroCliente && h.cliente !== ventasFiltroCliente) return false;
+      if (ventasFiltroOrigen && origenDesdeCliente(h.cliente) !== ventasFiltroOrigen) return false;
+      if (ventasFiltroTexto) {
+        const q = ventasFiltroTexto.toLowerCase();
+        const blob = `${h.cliente} ${(h.ventaCodigos || []).join(' ')}`.toLowerCase();
+        if (!blob.includes(q)) return false;
+      }
+      return true;
+    });
+    const histRows = histFiltrado
+      .map((h) => {
+        const activo = ventasFiltroCliente === h.cliente;
+        return `<tr class="imp-hist-row${activo ? ' is-active' : ''}" data-filtro-cliente="${escapeHtml(h.cliente)}" title="Ver compras de ${escapeHtml(h.cliente)}">
+        <td><strong>${escapeHtml(h.cliente)}</strong>${activo ? ' <span class="imp-badge">filtro</span>' : ''}</td>
         <td class="num">${h.compras}</td>
         <td>${(h.ventaCodigos || []).map((c) => escapeHtml(c)).join(', ') || '—'}</td>
         <td class="num"><strong>${money(h.totalNeto)}</strong></td>
-      </tr>`
+      </tr>`;
+      })
+      .join('');
+
+    const totalFiltrado = ventasFiltradas.reduce((a, v) => a + Number(v.montoNeto || 0), 0);
+    const totalGlobal = sum(data.ventas);
+    const hayFiltro = !!(ventasFiltroCliente || ventasFiltroOrigen || ventasFiltroTexto);
+    const clienteOptionsHtml = clientesOpts
+      .map(
+        (c) =>
+          `<option value="${escapeHtml(c)}"${c === ventasFiltroCliente ? ' selected' : ''}>${escapeHtml(c)}</option>`
       )
       .join('');
 
     $('#tab-ventas').innerHTML = `
       <div class="imp-card imp-kpi--accent" style="padding:0.9rem 1rem">
         <p style="margin:0"><strong>Flujo recomendado:</strong> registra en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>
-        (ajustá el precio venta/u si cobraste más) y al transferir se guarda la venta con ID <strong>I00000n</strong>. Solo las ventas bajan la deuda.</p>
+        (ajustá el precio venta/u si cobraste más) y al transferir se guarda la venta con ID <strong>I00000n</strong>. Solo las ventas bajan la deuda. <strong>«Pagado»</strong> = venta.</p>
       </div>
       <div class="imp-card">
-        <h2>Ventas contabilizadas (${money(sum(data.ventas))})</h2>
+        <h2>Filtro · compras por cliente</h2>
+        <p class="imp-muted">Elegí un cliente o origen, o hacé clic en una fila del historial. El total de abajo refleja el filtro.</p>
+        <div class="imp-ventas-filtros" id="imp-ventas-filtros">
+          <label>Cliente
+            <select id="filtro-venta-cliente" class="imp-select-estado" style="max-width:16rem">
+              <option value="">Todos</option>
+              ${clienteOptionsHtml}
+            </select>
+          </label>
+          <label>Origen
+            <select id="filtro-venta-origen" class="imp-select-estado">
+              <option value=""${ventasFiltroOrigen === '' ? ' selected' : ''}>Todos</option>
+              <option value="SIE"${ventasFiltroOrigen === 'SIE' ? ' selected' : ''}>SIE (Nico)</option>
+              <option value="MKOF"${ventasFiltroOrigen === 'MKOF' ? ' selected' : ''}>MKOF (Josefa)</option>
+            </select>
+          </label>
+          <label>Buscar
+            <input id="filtro-venta-texto" type="search" placeholder="código, producto…" value="${escapeHtml(ventasFiltroTexto)}" />
+          </label>
+          <button type="button" class="imp-btn" id="btn-filtro-venta-limpiar"${hayFiltro ? '' : ' disabled'}>Limpiar</button>
+        </div>
+        <p class="imp-muted" style="margin-top:0.6rem">
+          Mostrando <strong>${ventasFiltradas.length}</strong> de ${ventasSorted.length} ventas ·
+          total filtrado <strong>${money(totalFiltrado)}</strong>
+          ${hayFiltro ? ` · global ${money(totalGlobal)}` : ''}
+        </p>
+      </div>
+      <div class="imp-card">
+        <h2>Ventas contabilizadas (${money(hayFiltro ? totalFiltrado : totalGlobal)})</h2>
         <p class="imp-muted">ID correlativo: primera = <strong>I000001 Tito MKOF</strong>. Clientes nuevos = <strong>nombre + origen</strong> (SIE = Nico · MKOF = Josefa); no se auto-agrega SIE.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID / Fecha</th><th>Cliente / detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
-            <tbody>${rows || '<tr><td colspan="6">Sin ventas aún</td></tr>'}</tbody>
+            <tbody>${rows || `<tr><td colspan="6">${hayFiltro ? 'Sin ventas con este filtro' : 'Sin ventas aún'}</td></tr>`}</tbody>
           </table>
         </div>
       </div>
       <div class="imp-card">
         <h2>Historial por cliente</h2>
-        <p class="imp-muted">Quién compró más de una vez y el total acumulado.</p>
+        <p class="imp-muted">Clic en un cliente para filtrar sus compras. Quién compró más de una vez y el total acumulado.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>Cliente</th><th>Compras</th><th>IDs venta</th><th>Total</th></tr></thead>
-            <tbody>${histRows || '<tr><td colspan="4">Sin historial aún</td></tr>'}</tbody>
+            <tbody>${histRows || `<tr><td colspan="4">${hayFiltro ? 'Sin clientes con este filtro' : 'Sin historial aún'}</td></tr>`}</tbody>
           </table>
         </div>
       </div>
@@ -3648,6 +4156,34 @@
         </form>
       </div>
     `;
+
+    const aplicarFiltrosYRender = () => {
+      ventasFiltroCliente = String($('#filtro-venta-cliente')?.value || '').trim();
+      ventasFiltroOrigen = String($('#filtro-venta-origen')?.value || '').trim();
+      ventasFiltroTexto = String($('#filtro-venta-texto')?.value || '').trim();
+      renderVentas();
+    };
+
+    $('#filtro-venta-cliente')?.addEventListener('change', aplicarFiltrosYRender);
+    $('#filtro-venta-origen')?.addEventListener('change', aplicarFiltrosYRender);
+    let textoTimer = null;
+    $('#filtro-venta-texto')?.addEventListener('input', () => {
+      clearTimeout(textoTimer);
+      textoTimer = setTimeout(aplicarFiltrosYRender, 180);
+    });
+    $('#btn-filtro-venta-limpiar')?.addEventListener('click', () => {
+      ventasFiltroCliente = '';
+      ventasFiltroOrigen = '';
+      ventasFiltroTexto = '';
+      renderVentas();
+    });
+    $('#tab-ventas')?.querySelectorAll('[data-filtro-cliente]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const c = row.getAttribute('data-filtro-cliente') || '';
+        ventasFiltroCliente = ventasFiltroCliente === c ? '' : c;
+        renderVentas();
+      });
+    });
 
     $('#tab-ventas')?.querySelectorAll('[data-goto-tab]').forEach((btn) => {
       btn.addEventListener('click', () => activarTab(btn.getAttribute('data-goto-tab')));

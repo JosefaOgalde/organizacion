@@ -65,9 +65,9 @@
 
 .imp-logo {
   display: block;
-  height: clamp(40px, 7vw, 56px);
+  height: clamp(44px, 8vw, 64px);
   width: auto;
-  max-width: min(420px, 72vw);
+  max-width: min(480px, 85vw);
   object-fit: contain;
   object-position: left center;
 }
@@ -269,6 +269,19 @@
   box-sizing: border-box;
 }
 .imp-card h2, .imp-card h3 { margin: 0 0 0.75rem; color: var(--imp-text); font-size: 1.05rem; }
+.imp-card--fiados {
+  border-color: color-mix(in srgb, #c47a9a 35%, var(--imp-border));
+  background: linear-gradient(180deg, #fdf6f9 0%, #fff 55%);
+}
+.imp-card--fiados > .imp-kpi {
+  margin: 0.75rem 0 0;
+  max-width: 16rem;
+  background: color-mix(in srgb, #fff 70%, #f8e8ef);
+  border-color: color-mix(in srgb, #c47a9a 25%, var(--imp-border));
+}
+.imp-card--fiados > .imp-kpi strong { color: #8a3d5c; }
+.imp-card--resumen-gen .imp-kpi { margin-top: 0.35rem; }
+.imp-card--resumen-gen .imp-pedido-status-counts { margin-top: 0.35rem; }
 
 .imp-table-wrap { overflow-x: auto; width: 100%; }
 table.imp-table {
@@ -751,6 +764,41 @@ table.imp-table {
 .imp-select-estado:focus {
   outline: 2px solid color-mix(in srgb, var(--imp-accent, #c45c26) 45%, transparent);
   outline-offset: 1px;
+}
+
+.imp-ventas-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: flex-end;
+}
+.imp-ventas-filtros label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--imp-muted);
+}
+.imp-ventas-filtros input[type="search"] {
+  font: inherit;
+  font-size: 0.9em;
+  font-weight: 400;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--imp-border);
+  border-radius: 6px;
+  background: #fff;
+  min-width: 11rem;
+  color: var(--imp-ink, inherit);
+}
+.imp-hist-row {
+  cursor: pointer;
+}
+.imp-hist-row:hover td {
+  background: color-mix(in srgb, var(--imp-accent, #d4b06a) 12%, transparent);
+}
+.imp-hist-row.is-active td {
+  background: #faf6eb;
 }
 
 .imp-pedidos-actions {
