@@ -1,0 +1,72 @@
+{
+  "prospecto": "Grupo Flesan",
+  "slug": "grupo-flesan",
+  "actualizado": "2026-07-27",
+  "regla": "Todo número con fuente, fecha y método",
+  "fuentes": [
+    {
+      "id": "web-grupo",
+      "tipo": "web",
+      "url": "https://www.grupoflesan.com/",
+      "fecha": "2026-07-27",
+      "metodo": "Revisión manual home (WebFetch)"
+    },
+    {
+      "id": "web-flesan",
+      "tipo": "web",
+      "url": "https://flesan.cl/",
+      "fecha": "2026-07-27",
+      "metodo": "Revisión manual home"
+    },
+    {
+      "id": "web-dvc",
+      "tipo": "web",
+      "url": "https://www.dvc.cl/",
+      "fecha": "2026-07-27",
+      "metodo": "Revisión manual home"
+    },
+    {
+      "id": "ig-grupoflesan",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/grupoflesan/",
+      "fecha": "2026-07-27",
+      "metodo": "URL footer sitios; números pendientes (detalle usuaria)"
+    },
+    {
+      "id": "fb-grupoflesan",
+      "tipo": "facebook",
+      "url": "https://www.facebook.com/grupoflesanchile",
+      "fecha": "2026-07-27",
+      "metodo": "URL footer sitios; números pendientes"
+    },
+    {
+      "id": "yt-grupoflesan",
+      "tipo": "youtube",
+      "url": "https://www.youtube.com/@GrupoFlesan",
+      "fecha": "2026-07-27",
+      "metodo": "Texto público canal (subscriberCountText / viewCountText en HTML)"
+    },
+    {
+      "id": "web-ei",
+      "tipo": "web",
+      "url": "https://ei.cl/",
+      "fecha": "2026-07-27",
+      "metodo": "Revisión manual home — referente declarado"
+    },
+    {
+      "id": "ig-ei",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/echeverria.izquierdo/",
+      "fecha": "2026-07-27",
+      "metodo": "Link en ei.cl"
+    },
+    {
+      "id": "manual-marca-local",
+      "tipo": "documento_cliente",
+      "url": null,
+      "rutaPc": "C:\\Users\\josef\\Downloads\\Información Grupo Making Of_Flesan DVC (2)\\1. Grupo Making Of\\2. Manual de Marca_2026\\Comunicacion y Marketing - Manual de Marca 2026.pdf",
+      "fecha": "2026-07-27",
+      "metodo": "Entregado por cliente; pendiente copiar al repo"
+    }
+  ]
+}

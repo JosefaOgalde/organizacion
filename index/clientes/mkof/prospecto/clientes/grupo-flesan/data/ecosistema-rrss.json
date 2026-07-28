@@ -1,0 +1,44 @@
+{
+  "actualizado": "2026-07-27",
+  "nivel": "general",
+  "prospecto": {
+    "nombre": "Grupo Flesan",
+    "instagram": {
+      "url": "https://www.instagram.com/grupoflesan/",
+      "handle": "@grupoflesan",
+      "seguidores": null,
+      "estado": "PENDIENTE_DETALLE_USUARIA"
+    },
+    "facebook": {
+      "url": "https://www.facebook.com/grupoflesanchile",
+      "seguidores": null,
+      "estado": "PENDIENTE"
+    },
+    "youtube": {
+      "url": "https://www.youtube.com/@GrupoFlesan",
+      "nombreCanal": "Grupo Flesan Chile",
+      "suscriptores": 509,
+      "vistasAprox": 161386,
+      "alta": "2014-05-26",
+      "fuenteId": "yt-grupoflesan",
+      "estado": "OK_APROX_PUBLICO"
+    },
+    "linkedin": {
+      "url": null,
+      "estado": "NO_EN_FOOTER_REVISADO"
+    },
+    "tiktok": {
+      "url": null,
+      "estado": "NO_EN_FOOTER_REVISADO"
+    }
+  },
+  "notaComunicacion": "Los 3 sitios (grupoflesan.com, flesan.cl, dvc.cl) enlazan el mismo trío FB/IG/YT. La voz pública digital es Grupo Flesan.",
+  "tipoComunicacionObservado": {
+    "nivel": "hipotesis_general",
+    "bullets": [
+      "Perfil único de grupo (no perfiles DVC/Flesan separados en footer)",
+      "YouTube con historial largo pero baja suscripción → video institucional subaprovechado",
+      "Detalle de tono/formatos IG pendiente de captura usuaria"
+    ]
+  }
+}

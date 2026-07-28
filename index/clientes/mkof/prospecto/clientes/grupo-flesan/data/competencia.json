@@ -1,0 +1,30 @@
+{
+  "actualizado": "2026-07-27",
+  "nivel": "general",
+  "competidoresDeclarados": [
+    {
+      "nombre": "Echeverría Izquierdo",
+      "web": "https://ei.cl/",
+      "instagram": "https://www.instagram.com/echeverria.izquierdo/",
+      "esReferente": true,
+      "nota": "Referente web y comunicacional según cliente. Marca holding clara (Ei)."
+    },
+    {
+      "nombre": "Inarco",
+      "web": "https://inarco.cl/",
+      "linkedin": "https://www.linkedin.com/company/constructora-inarco-s.a",
+      "esReferente": false
+    },
+    {
+      "nombre": "Icafal",
+      "web": "https://www.icafal.cl/",
+      "esReferente": false
+    },
+    {
+      "nombre": "Tecsa",
+      "web": "https://www.tecsa.cl/",
+      "esReferente": false
+    }
+  ],
+  "contrasteConProspecto": "EI proyecta un nombre dominante en web; Flesan opera con tres sitios (Grupo / Flesan / DVC) y RRSS unificadas bajo Grupo Flesan."
+}

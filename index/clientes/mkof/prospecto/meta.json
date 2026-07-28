@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-21T04:05:00Z",
+  "updatedAt": "2026-07-28T21:40:00Z",
   "ambito": "RRSS orgánicas + Diagnóstico WEB UX/UI",
   "clienteAgencia": "MKOF",
   "etapaActual": 2,
-  "etapaNombre": "Prospectos con módulos RRSS/ y UX-UI/ (plantillas + data + láminas)",
+  "etapaNombre": "Prospectos activos (Indisa detallado · Flesan general)",
   "esperandoNombreProspecto": false,
   "patrones": [
     {
@@ -52,8 +52,21 @@
         "Clínica Dávila",
         "Clínica Santa María"
       ]
+    },
+    {
+      "nombre": "Grupo Flesan",
+      "slug": "grupo-flesan",
+      "estado": "Diagnóstico general · marca / 3 webs / RRSS (IG pendiente)",
+      "href": "clientes/grupo-flesan/?disco=1",
+      "nivelDetalle": "general",
+      "competidores": [
+        "Echeverría Izquierdo",
+        "Inarco",
+        "Icafal",
+        "Tecsa"
+      ]
     }
   ],
-  "reglaData": "Todo número debe citar fuente, fecha y método en clientes/<slug>/RRSS/fuentes.json o UX-UI/fuentes.json",
-  "nota": "Prospecto activo: Clínica Indisa. Documentos/plantillas en RRSS/ y UX-UI/."
+  "reglaData": "Todo número debe citar fuente, fecha y método en clientes/<slug>/fuentes.json o UX-UI/fuentes.json",
+  "nota": "Prospectos: Indisa (detallado) · Grupo Flesan (general · IG pendiente)."
 }
