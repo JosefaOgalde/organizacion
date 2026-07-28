@@ -5,22 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clientes · Organización</title>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <link rel="stylesheet" href="../assets/portal.css?v=jm-cerrado4">
-  <script>
-    /* Joyas Mercury cerrada: quita override de Reactivar sin abrir F12. */
-    try {
-      var k = 'portal_clientes_activo_v1';
-      var raw = localStorage.getItem(k);
-      if (raw) {
-        var map = JSON.parse(raw) || {};
-        delete map['cli-joyas-mercury'];
-        delete map['joyasmercury'];
-        delete map['joyas-mercury'];
-        delete map['jm'];
-        localStorage.setItem(k, JSON.stringify(map));
-      }
-    } catch (e) {}
-  </script>
+  <link rel="stylesheet" href="../assets/portal.css?v=jm-reactivar1">
 </head>
 <body class="portal-page--light">
   <header class="portal-header">
@@ -32,7 +17,7 @@
     <div id="clientes-grid" class="portal-grid"></div>
   </main>
   <script src="../assets/file-protocol-banner.js"></script>
-  <script src="../assets/clientes-data.js?v=jm-cerrado4"></script>
-  <script src="../assets/portal-landing.js?v=jm-cerrado4"></script>
+  <script src="../assets/clientes-data.js?v=jm-reactivar1"></script>
+  <script src="../assets/portal-landing.js?v=jm-reactivar1"></script>
 </body>
 </html>
