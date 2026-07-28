@@ -49,9 +49,10 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-003 | Juan SIE | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | **transferido** → I000003 $15.000 |
 | PED-004 | Ele SIE | 1× Llavero Pesa Rusa amarillo `LLPESRU001` | **listo** (impreso) · costo ~$415 · **PVP $1.000** |
 | PED-005 | María Paz SIE | 1× Soporte celular rosado pastel `SOPCEL001` | **transferido** → I000011 $4.000 |
-| PED-006 | Rebe SIE | 1× Dragón `DRAGON001` | **en_impresion** · costo ~$5.476 · **PVP $11.000** |
+| PED-006 | Rebe SIE | 1× Dragón morado `DRAGON001` | **transferido** → I000013 $20.000 |
 | PED-007 | Juan SIE | 1× Torreón `TORREON001` | **listo** · costo est. ~$3.293 (+$1.000 impresora antigua) · PVP sug. $6.500 |
 | PED-008 | Juan MKOF | 1× Porta Bob Esponja `PTBOBES001` | **listo** · costo ~$998 · **PVP $7.000** |
+| PED-009 | Rebe SIE | 1× Soporte celular negro `SOPCEL001` | **transferido** → I000012 $4.000 |
 
 ### Ventas — ID correlativo + historial
 
@@ -73,6 +74,8 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000009 | Marcia SIE | 3.000 | Soporte celular PLA blanco |
 | I000010 | Cata SIE | 7.000 | Bob (costo ya calculado) |
 | I000011 | María Paz SIE | 4.000 | PED-005 Soporte celular rosado |
+| I000012 | Rebe SIE | 4.000 | PED-009 Soporte celular negro |
+| I000013 | Rebe SIE | 20.000 | PED-006 Dragón morado |
 
 ### Clientes nuevos — nombre + origen (obligatorio)
 
@@ -166,7 +169,7 @@ Datos en `data.impresoras[]` (seed + live) y UI **Operación → Impresoras**. C
 | `LLSTANDL001` | Llavero Porta Lipstick Stanley | 26,32 | 0,78 | Placa÷2 + $50 argolla · ~$478 · PVP ~$955 · alias `LLAVSTAN001` |
 | `LLPESRU001` | Llavero Pesa Rusa | **16,78** | **0,59 (35 m 31 s)** | PLA amarillo · modelo 16,31 + purge 0,47 · +$50 argolla · costo ~$415 · PVP sug. ~$831 |
 | `SOPCEL001` | Soporte celular | **34,46** | **0,96 (57 m 30 s)** | PLA rosado pastel · costo ~$684 · **PVP $4.000** (manual) |
-| `DRAGON001` | Dragón | **275,41** | **14,12 (14 h 7 m)** | PLA color · modelo+soportes · costo ~$5.476 · **PVP $11.000** · diseño comprado **$3.000** en gastos (no en costo/u) |
+| `DRAGON001` | Dragón | **275,41** | **14,12 (14 h 7 m)** | PLA color · modelo+soportes · costo ~$5.476 · **PVP $20.000** · diseño comprado **$3.000** en gastos (no en costo/u) |
 | `TORREON001` | Torreón | **~120** (est.) | **~4 h** (est.) | **Ender 3 V2 Neo (Sprite Neo)** · sin slicer · recargo perfil +$1.000 · costo ~$3.293 · PVP sug. $6.500 |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.

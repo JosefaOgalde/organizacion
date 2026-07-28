@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-28T15:21:06.000Z",
+    "actualizado": "2026-07-28T15:28:56.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -26,10 +26,27 @@
       "montoNetoClp": 800442,
       "deudaJosefaClp": 400221
     },
-    "pedidoSeq": 8,
-    "ventaSeq": 11,
+    "pedidoSeq": 9,
+    "ventaSeq": 13,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
+      {
+        "cliente": "Rebe SIE",
+        "ventaCodigos": [
+          "I000007",
+          "I000008",
+          "I000012",
+          "I000013"
+        ],
+        "ventaIds": [
+          "ven-rebe-monster-007",
+          "ven-rebe-stanley-008",
+          "ven-rebe-soporte-012",
+          "ven-rebe-dragon-013"
+        ],
+        "totalNeto": 37000,
+        "compras": 4
+      },
       {
         "cliente": "Cata SIE",
         "ventaCodigos": [
@@ -67,19 +84,6 @@
           "ven-marcia-soporte-009"
         ],
         "totalNeto": 6000,
-        "compras": 2
-      },
-      {
-        "cliente": "Rebe SIE",
-        "ventaCodigos": [
-          "I000007",
-          "I000008"
-        ],
-        "ventaIds": [
-          "ven-rebe-monster-007",
-          "ven-rebe-stanley-008"
-        ],
-        "totalNeto": 13000,
         "compras": 2
       },
       {
@@ -700,6 +704,60 @@
           "filamento": "PLA rosado pastel"
         }
       ]
+    },
+    {
+      "id": "ven-rebe-soporte-012",
+      "codigo": "I000012",
+      "fecha": "2026-07-28",
+      "cliente": "Rebe SIE",
+      "descripcion": "PED-009 · 1× Soporte celular negro · Rebe SIE",
+      "cantidad": 1,
+      "montoBruto": 4000,
+      "descuentoClp": 0,
+      "montoNeto": 4000,
+      "costoTotal": 683.69,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-009 · 1× Soporte celular negro · pagado $4.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-rebe-soporte-009",
+      "pedidoNumero": "PED-009",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 1,
+          "precioUnitarioClp": 4000,
+          "costoUnitarioClp": 683.69,
+          "filamento": "PLA+ negro"
+        }
+      ]
+    },
+    {
+      "id": "ven-rebe-dragon-013",
+      "codigo": "I000013",
+      "fecha": "2026-07-28",
+      "cliente": "Rebe SIE",
+      "descripcion": "PED-006 · 1× Dragón morado · Rebe SIE",
+      "cantidad": 1,
+      "montoBruto": 20000,
+      "descuentoClp": 0,
+      "montoNeto": 20000,
+      "costoTotal": 5475.59,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-006 · 1× Dragón morado · pagado $20.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-rebe-dragon-006",
+      "pedidoNumero": "PED-006",
+      "items": [
+        {
+          "sku": "DRAGON001",
+          "nombre": "Dragón",
+          "cantidad": 1,
+          "precioUnitarioClp": 20000,
+          "costoUnitarioClp": 5475.59,
+          "filamento": "PLA morado"
+        }
+      ]
     }
   ],
   "operacion": [
@@ -1000,11 +1058,11 @@
       "minutosPintado": 0,
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
-      "precioVentaSugeridoClp": 11000,
+      "precioVentaSugeridoClp": 20000,
       "costoSlicerRef": 5.51,
       "pendienteCosto": false,
       "editadoLocal": true,
-      "notas": "Slicer (medición alta): modelo 192.38 g + soportes ~83.03 g = 275.41 g · 91.6 m · 14 h 7 m · coste slicer 5,51. PLA color $16.829/kg. Costo ~$5.475,59 · PVP $11.000."
+      "notas": "Slicer (medición alta): modelo 192.38 g + soportes ~83.03 g = 275.41 g · 91.6 m · 14 h 7 m · coste slicer 5,51. PLA color $16.829/kg. Costo ~$5.475,59 · PVP $20.000."
     },
     {
       "id": "prod-torreon",
@@ -1089,6 +1147,12 @@
       "fecha": "2026-07-28",
       "autor": "Josefa",
       "texto": "PED-005 María Paz SIE → venta I000011 · 1× Soporte celular rosado · pagado $4.000."
+    },
+    {
+      "id": "bit-rebe-012-013",
+      "fecha": "2026-07-28",
+      "autor": "Josefa",
+      "texto": "Rebe SIE: PED-009 soporte celular negro → I000012 $4.000 · PED-006 dragón morado → I000013 $20.000."
     }
   ],
   "pedidos": [
@@ -1280,23 +1344,24 @@
           "sku": "DRAGON001",
           "nombre": "Dragón",
           "cantidad": 1,
-          "precioUnitarioClp": 11000,
+          "precioUnitarioClp": 20000,
           "costoUnitarioClp": 5475.59,
-          "filamento": "PLA color",
-          "estado": "en_impresion",
-          "listos": 0,
-          "enImpresion": 1
+          "filamento": "PLA morado",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
         }
       ],
-      "montoBruto": 11000,
+      "montoBruto": 20000,
       "descuentoClp": 0,
-      "montoNeto": 11000,
+      "montoNeto": 20000,
       "costoTotal": 5475.59,
-      "estado": "en_impresion",
-      "ventaId": null,
-      "notas": "1× Dragón · en impresión · costo $5.475,59 · PVP $11.000",
+      "estado": "transferido",
+      "ventaId": "ven-rebe-dragon-013",
+      "notas": "1× Dragón morado · transferido a venta I000013 · $20.000",
       "socioRegistro": "Ambos",
-      "creado": "2026-07-26T01:49:41.589Z"
+      "creado": "2026-07-26T01:49:41.589Z",
+      "transferidoEn": "2026-07-28T15:30:00.000Z"
     },
     {
       "id": "ped-juan-torreon-007",
@@ -1359,6 +1424,38 @@
       "notas": "1× Porta Bob Esponja · listo · costo $998,17 (catálogo) · PVP $7.000",
       "socioRegistro": "Ambos",
       "creado": "2026-07-26T02:01:28.779Z"
+    },
+    {
+      "id": "ped-rebe-soporte-009",
+      "numero": "PED-009",
+      "fecha": "2026-07-28",
+      "cliente": "Rebe SIE",
+      "clienteNombre": "Rebe",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 1,
+          "precioUnitarioClp": 4000,
+          "costoUnitarioClp": 683.69,
+          "filamento": "PLA+ negro",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 4000,
+      "descuentoClp": 0,
+      "montoNeto": 4000,
+      "costoTotal": 683.69,
+      "estado": "transferido",
+      "ventaId": "ven-rebe-soporte-012",
+      "transferidoEn": "2026-07-28T15:30:00.000Z",
+      "notas": "1× Soporte celular negro · transferido a venta I000012 · $4.000",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-28T15:30:00.000Z"
     }
   ]
 }

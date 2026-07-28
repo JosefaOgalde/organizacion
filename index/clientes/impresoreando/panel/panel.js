@@ -908,11 +908,11 @@
       minutosPintado: 0,
       unidadesMetal: 0,
       unidadesBolsa: 1,
-      precioVentaSugeridoClp: 11000,
+      precioVentaSugeridoClp: 20000,
       costoSlicerRef: 5.51,
       pendienteCosto: false,
       notas:
-        `Slicer (medición alta): modelo ${filamentoModeloGramos} g + soportes ${filamentoSoportesGramos} g = ${filamentoGramos} g · 91,6 m · 14 h 7 m · coste slicer 5,51. PLA color $16.829/kg. PVP $11.000.`,
+        `Slicer (medición alta): modelo ${filamentoModeloGramos} g + soportes ${filamentoSoportesGramos} g = ${filamentoGramos} g · 91,6 m · 14 h 7 m · coste slicer 5,51. PLA color $16.829/kg. PVP $20.000.`,
     };
   }
 
@@ -940,6 +940,10 @@
     }
     if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
       existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    } else if (Number(existing.precioVentaSugeridoClp) === 11000) {
+      // Migrar PVP viejo del seed → cobrado vigente $20.000
+      existing.precioVentaSugeridoClp = 20000;
       changed = true;
     }
     return changed;
@@ -1294,6 +1298,60 @@
           },
         ],
       },
+      {
+        id: 'ven-rebe-soporte-012',
+        codigo: 'I000012',
+        fecha: '2026-07-28',
+        cliente: 'Rebe SIE',
+        descripcion: 'PED-009 · 1× Soporte celular negro · Rebe SIE',
+        cantidad: 1,
+        montoBruto: 4000,
+        descuentoClp: 0,
+        montoNeto: 4000,
+        costoTotal: 683.69,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-009 · 1× Soporte celular negro · pagado $4.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-rebe-soporte-009',
+        pedidoNumero: 'PED-009',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: 4000,
+            costoUnitarioClp: 683.69,
+            filamento: 'PLA+ negro',
+          },
+        ],
+      },
+      {
+        id: 'ven-rebe-dragon-013',
+        codigo: 'I000013',
+        fecha: '2026-07-28',
+        cliente: 'Rebe SIE',
+        descripcion: 'PED-006 · 1× Dragón morado · Rebe SIE',
+        cantidad: 1,
+        montoBruto: 20000,
+        descuentoClp: 0,
+        montoNeto: 20000,
+        costoTotal: 5475.59,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-006 · 1× Dragón morado · pagado $20.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-rebe-dragon-006',
+        pedidoNumero: 'PED-006',
+        items: [
+          {
+            sku: 'DRAGON001',
+            nombre: 'Dragón',
+            cantidad: 1,
+            precioUnitarioClp: 20000,
+            costoUnitarioClp: 5475.59,
+            filamento: 'PLA morado',
+          },
+        ],
+      },
     ];
 
     let changed = false;
@@ -1365,6 +1423,28 @@
         notas: '1× Soporte celular rosado pastel · transferido a venta I000011 · $4.000',
         transferidoEn: '2026-07-28T15:20:00.000Z',
       },
+      {
+        pedId: 'ped-rebe-soporte-009',
+        numero: 'PED-009',
+        ventaId: 'ven-rebe-soporte-012',
+        cliente: 'Rebe SIE',
+        montoNeto: 4000,
+        notas: '1× Soporte celular negro · transferido a venta I000012 · $4.000',
+        transferidoEn: '2026-07-28T15:30:00.000Z',
+        itemPrecioUnitarioClp: 4000,
+        itemFilamento: 'PLA+ negro',
+      },
+      {
+        pedId: 'ped-rebe-dragon-006',
+        numero: 'PED-006',
+        ventaId: 'ven-rebe-dragon-013',
+        cliente: 'Rebe SIE',
+        montoNeto: 20000,
+        notas: '1× Dragón morado · transferido a venta I000013 · $20.000',
+        transferidoEn: '2026-07-28T15:30:00.000Z',
+        itemPrecioUnitarioClp: 20000,
+        itemFilamento: 'PLA morado',
+      },
     ];
     for (const t of transfers) {
       const ped = d.pedidos.find((p) => p.id === t.pedId || p.numero === t.numero);
@@ -1396,6 +1476,28 @@
       if (ped.notas !== t.notas) {
         ped.notas = t.notas;
         pedChanged = true;
+      }
+      if (t.itemPrecioUnitarioClp != null || t.itemFilamento) {
+        const it = (ped.items || [])[0];
+        if (it) {
+          if (
+            t.itemPrecioUnitarioClp != null &&
+            Number(it.precioUnitarioClp) !== Number(t.itemPrecioUnitarioClp)
+          ) {
+            it.precioUnitarioClp = t.itemPrecioUnitarioClp;
+            pedChanged = true;
+          }
+          if (t.itemFilamento && it.filamento !== t.itemFilamento) {
+            it.filamento = t.itemFilamento;
+            pedChanged = true;
+          }
+          if (it.estado !== 'listo' || Number(it.listos) !== Number(it.cantidad || 1)) {
+            it.estado = 'listo';
+            it.listos = Number(it.cantidad || 1);
+            it.enImpresion = 0;
+            pedChanged = true;
+          }
+        }
       }
       if (pedChanged) changed = true;
     }
@@ -1694,12 +1796,11 @@
       }
     }
 
-    // PED-006 · Rebe SIE · Dragón · en impresión · PVP $11.000
+    // PED-006 · Rebe SIE · Dragón morado · transferido I000013 $20.000
     const id006 = 'ped-rebe-dragon-006';
     const prodDra = (d.productos || []).find((p) => p.id === 'prod-dragon' || p.sku === 'DRAGON001');
     const costoDra = prodDra ? costoProdRough(d, prodDra) : 5475.59;
-    const precioDra =
-      Number(prodDra?.precioVentaSugeridoClp) > 0 ? Number(prodDra.precioVentaSugeridoClp) : 11000;
+    const precioDra = 20000;
     if (!d.pedidos.some((p) => p.id === id006 || p.numero === 'PED-006')) {
       d.pedidos.push({
         id: id006,
@@ -1716,29 +1817,24 @@
             cantidad: 1,
             precioUnitarioClp: precioDra,
             costoUnitarioClp: round2(costoDra),
-            filamento: 'PLA color',
-            estado: 'en_impresion',
-            listos: 0,
-            enImpresion: 1,
+            filamento: 'PLA morado',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
           },
         ],
         montoBruto: precioDra,
         descuentoClp: 0,
         montoNeto: precioDra,
         costoTotal: round2(costoDra),
-        estado: 'en_impresion',
-        ventaId: null,
-        notas: `1× Dragón · en impresión · costo $${round2(costoDra)} · PVP $${precioDra}`,
+        estado: 'transferido',
+        ventaId: 'ven-rebe-dragon-013',
+        transferidoEn: '2026-07-28T15:30:00.000Z',
+        notas: `1× Dragón morado · transferido a venta I000013 · $${precioDra}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T01:49:00.000Z',
       });
       changed = true;
-    } else {
-      const ped006 = d.pedidos.find((p) => p.id === id006 || p.numero === 'PED-006');
-      if (ped006 && ped006.estado !== 'transferido' && ped006.estado !== 'en_impresion') {
-        ped006.estado = 'en_impresion';
-        changed = true;
-      }
     }
 
     // PED-007 · Juan SIE · Torreón · listo (estimación + $1.000 impresora antigua)
@@ -1820,6 +1916,49 @@
         notas: `1× Porta Bob Esponja · listo · costo $${round2(costoBob)} · PVP $${precioBob}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T02:00:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-009 · Rebe SIE · Soporte celular negro · transferido I000012 $4.000
+    const id009 = 'ped-rebe-soporte-009';
+    const prodSop009 = (d.productos || []).find(
+      (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
+    );
+    const costoSop009 = prodSop009 ? costoProdRough(d, prodSop009) : 683.69;
+    const precioSop009 = 4000;
+    if (!d.pedidos.some((p) => p.id === id009 || p.numero === 'PED-009')) {
+      d.pedidos.push({
+        id: id009,
+        numero: 'PED-009',
+        fecha: '2026-07-28',
+        cliente: 'Rebe SIE',
+        clienteNombre: 'Rebe',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: precioSop009,
+            costoUnitarioClp: round2(costoSop009),
+            filamento: 'PLA+ negro',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioSop009,
+        descuentoClp: 0,
+        montoNeto: precioSop009,
+        costoTotal: round2(costoSop009),
+        estado: 'transferido',
+        ventaId: 'ven-rebe-soporte-012',
+        transferidoEn: '2026-07-28T15:30:00.000Z',
+        notas: `1× Soporte celular negro · transferido a venta I000012 · $${precioSop009}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-28T15:30:00.000Z',
       });
       changed = true;
     }
