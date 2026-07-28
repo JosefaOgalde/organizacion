@@ -2,7 +2,7 @@
   "titulo": "ECOSISTEMA RRSS",
   "fecha": "2026-07-28",
   "nivel": "general",
-  "notaPresentacion": "PROSPECTO = Flesan. Solo 3 competidores: EI · Inarco · Icafal. Fila Instagram ER = N=5. XX mill / — = pendiente.",
+  "notaPresentacion": "PROSPECTO @grupoflesan: IG 4.168 · ER 1,82% (N=5). Competidores: EI · Inarco · Icafal. XX mill / — = pendiente.",
   "plataformas": [
     "Facebook",
     "Instagram",
@@ -116,11 +116,20 @@
         "estado": "OK"
       },
       "flesan": {
-        "display": "XX mill",
-        "estado": "PENDIENTE_DETALLE_USUARIA",
+        "valor": 4168,
+        "display": "4.168",
+        "posts": 466,
+        "siguiendo": 1305,
         "handle": "@grupoflesan",
+        "nombrePerfil": "Grupo Flesan Chile CL",
+        "categoria": "Construction Company",
         "url": "https://www.instagram.com/grupoflesan/",
-        "fuenteId": "ig-grupoflesan"
+        "linktree": "https://linktr.ee/grupoflesan",
+        "erMuestraN5": "1,82%",
+        "fuenteId": "ig-grupoflesan-perfil-2026-07-28",
+        "muestraPosts": "RRSS/data/ig-er-flesan-muestra.json",
+        "exacto": "4.168 seguidores · 466 publicaciones · 1.305 seguidos (screenshot IG 2026-07-28)",
+        "estado": "OK"
       }
     },
     "Instagram ER": {
@@ -150,8 +159,13 @@
         "estado": "OK"
       },
       "flesan": {
-        "display": "—",
-        "estado": "PENDIENTE_DETALLE_USUARIA"
+        "valor": 1.8181,
+        "display": "1,82%",
+        "nPosts": 5,
+        "fuenteId": "ig-grupoflesan-posts-2026-07-28",
+        "muestraPosts": "RRSS/data/ig-er-flesan-muestra.json",
+        "nota": "Muestra collab DVC/Flesan.ic; posts más antiguos que N=5 de competidores",
+        "estado": "OK"
       }
     },
     "LinkedIn": {

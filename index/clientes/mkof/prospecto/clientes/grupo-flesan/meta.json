@@ -41,10 +41,15 @@
     "liSeguidores": 65000,
     "cargado": "2026-07-28"
   },
+  "prospectoIg": {
+    "handle": "@grupoflesan",
+    "seguidores": 4168,
+    "erMuestraPct": 1.82,
+    "cargado": "2026-07-28"
+  },
   "pendientes": [
-    "Detalle Instagram @grupoflesan (seguidores, posts, temáticas, periodicidad)",
     "Icafal: FB / YT / TikTok (IG+LI listos)",
-    "EI / Inarco / Icafal: YT / TikTok si aplica",
+    "EI / Inarco / Icafal / Prospecto: YT / TikTok si aplica",
     "Números Facebook Flesan y LinkedIn Flesan si aplica",
     "Copiar PDFs de valores/manual al repo"
   ]

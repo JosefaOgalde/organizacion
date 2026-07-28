@@ -30,7 +30,21 @@
       "tipo": "instagram",
       "url": "https://www.instagram.com/grupoflesan/",
       "fecha": "2026-07-27",
-      "metodo": "URL footer sitios; números pendientes (detalle usuaria)"
+      "metodo": "URL footer sitios"
+    },
+    {
+      "id": "ig-grupoflesan-perfil-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/grupoflesan/",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot perfil IG Prospecto: @grupoflesan · Grupo Flesan Chile CL · 4.168 seguidores · 466 posts · 1.305 seguidos · linktr.ee/grupoflesan"
+    },
+    {
+      "id": "ig-grupoflesan-posts-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/grupoflesan/",
+      "fecha": "2026-07-28",
+      "metodo": "5 screenshots contenidos IG (varios collab DVC/flesan.ic): likes 92+49+109+60+66 · com. 0+0+0+1+2. ER N=5 = 1,82%. Ver RRSS/data/ig-er-flesan-muestra.json"
     },
     {
       "id": "fb-grupoflesan",

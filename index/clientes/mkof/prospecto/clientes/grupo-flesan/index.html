@@ -63,7 +63,7 @@
   <main>
     <div class="aviso">
       <strong>Nivel: general</strong>
-      Matriz con <strong>3 competidores</strong> (EI · Inarco · Icafal) + Prospecto. Fila Instagram ER (N=5).
+      Matriz: 3 competidores + Prospecto <strong>@grupoflesan</strong> (IG 4.168 · ER 1,82%). Fila Instagram ER (N=5).
     </div>
 
     <div class="card">
@@ -103,7 +103,7 @@
     <div class="card">
       <h2>RRSS prospecto (footer compartido)</h2>
       <ul>
-        <li>IG <a href="https://www.instagram.com/grupoflesan/" target="_blank" rel="noopener">@grupoflesan</a> — números pendiente</li>
+        <li>IG <a href="https://www.instagram.com/grupoflesan/" target="_blank" rel="noopener">@grupoflesan</a> — <strong>4.168</strong> · ER 1,82%</li>
         <li>FB <a href="https://www.facebook.com/grupoflesanchile" target="_blank" rel="noopener">grupoflesanchile</a> — pendiente</li>
         <li>YT <a href="https://www.youtube.com/@GrupoFlesan" target="_blank" rel="noopener">@GrupoFlesan</a> — ~509 suscriptores</li>
       </ul>
@@ -126,7 +126,7 @@
   </main>
   <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
   <script>
-    const v = '20260728-solo-3-comp';
+    const v = '20260728-flesan-ig';
     fetch('data/ecosistema-rrss.json?v=' + v, { cache: 'no-store' })
       .then((r) => r.json())
       .then((eco) => {
@@ -168,7 +168,9 @@
           `<strong>Comp.2 Inarco</strong> IG ${ig.inarco ? ig.inarco.display : '—'} · ER ${er.inarco ? er.inarco.display : '—'} · LI ${li.inarco ? li.inarco.display : '—'}<br>` +
           `<strong>Comp.3 Icafal</strong> (@icafal_sa) IG <strong>${ig.icafal ? ig.icafal.display : '—'}</strong>` +
           ` · ER <strong>${er.icafal ? er.icafal.display : '—'}</strong>` +
-          ` · LI <strong>${li.icafal ? li.icafal.display : '—'}</strong>. Alcance: solo 3 competidores + Prospecto.`;
+          ` · LI <strong>${li.icafal ? li.icafal.display : '—'}</strong><br>` +
+          `<strong>Prospecto @grupoflesan</strong> IG <strong>${ig.flesan ? ig.flesan.display : '—'}</strong>` +
+          ` · ER <strong>${er.flesan ? er.flesan.display : '—'}</strong>.`;
       })
       .catch(() => {
         document.getElementById('ei-resumen').textContent = 'No se pudo cargar ecosistema-rrss.json';

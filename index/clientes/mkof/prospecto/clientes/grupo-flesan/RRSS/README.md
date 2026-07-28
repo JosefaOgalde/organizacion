@@ -26,21 +26,14 @@ Fuentes: `ig-ei-perfil-2026-07-28`, `ig-ei-posts-2026-07-28`, `li-ei-2026-07-28`
 | IG ER muestra | **1,04%** (N=5 · likes 21+59+65+64+30 · com. 0+3+4+2+0) → [`data/ig-er-icafal-muestra.json`](./data/ig-er-icafal-muestra.json) |
 | LinkedIn | **65 mil** seguidores · [página empresa](https://www.linkedin.com/company/icafal/) |
 
-## Prospecto · pendiente
+## Prospecto · Grupo Flesan (IG listo 2026-07-28)
 
-Detalle de Instagram **@grupoflesan** pendiente (lo entrega la usuaria).
+| Dato | Valor |
+|------|-------|
+| IG | [@grupoflesan](https://www.instagram.com/grupoflesan/) · **4.168** seguidores · 466 posts |
+| IG ER muestra | **1,82%** (N=5 · likes 92+49+109+60+66 · com. 0+0+0+1+2) → [`data/ig-er-flesan-muestra.json`](./data/ig-er-flesan-muestra.json) |
+| Nota | Contenidos en collab con DVC / Flesan.ic; muestra más antigua que la de competidores |
 
 **Códigos para consola del navegador (F12):** ver [`CODIGOS-CONSOLA.md`](./CODIGOS-CONSOLA.md).
 
-Cuando llegue, completar:
-
-- Seguidores / publicaciones
-- Tipo de contenido (obras, personas, seguridad, empleador…)
-- Periodicidad aproximada
-- Tonos vs Echeverría Izquierdo
-
-Perfiles oficiales (footer de los 3 sitios):
-
-- https://www.instagram.com/grupoflesan/
-- https://www.facebook.com/grupoflesanchile
-- https://www.youtube.com/@GrupoFlesan
+También: https://www.facebook.com/grupoflesanchile · https://www.youtube.com/@GrupoFlesan

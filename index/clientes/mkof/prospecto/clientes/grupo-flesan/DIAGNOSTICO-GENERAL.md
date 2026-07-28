@@ -44,7 +44,7 @@ Fuente de perfiles (footer de los 3 sitios):
 
 | Red | URL | Números (2026-07-27) | Método |
 |-----|-----|----------------------|--------|
-| Instagram | https://www.instagram.com/grupoflesan/ | **Pendiente** — detalle lo entrega la usuaria | — |
+| Instagram | https://www.instagram.com/grupoflesan/ | **4.168** seguidores · 466 posts · ER muestra **1,82%** (N=5) | Screenshot 2026-07-28 |
 | Facebook | https://www.facebook.com/grupoflesanchile | **Pendiente** (login/bloqueo en scrape) | Revisar en navegador |
 | YouTube | https://www.youtube.com/@GrupoFlesan | ~**509** suscriptores · ~**161 mil** vistas · canal desde **may 2014** | Texto público del canal YouTube |
 
@@ -54,7 +54,7 @@ Fuente de perfiles (footer de los 3 sitios):
 - Rubro B2B construcción / ingeniería: suele priorizar obras, hitos, seguridad, comunidad y empleador; conviene validar con el detalle de IG.
 - YouTube con trayectoria larga pero **audiencia baja** (~509) → oportunidad de video institucional / obras / marca, si se define el nombre.
 
-> Instagram: esperar captura/números de la usuaria para completar seguidores, formato y periodicidad.
+> Instagram cargado: `@grupoflesan` · collabs frecuentes con DVC (`@devicenteconstructora`) y Flesan IC (`@flesan.ic`). Muestra ER con posts más antiguos que la de competidores.
 
 ---
 
@@ -118,4 +118,4 @@ Ruta en PC (pendiente copiar al repo):
 - Competencia directa citada; **EI** es el espejo de “cómo se ve una marca clara en web/comms”.
 - MKOF puede entrar por **estrategia de marca + sistema de comunicación** (web + RRSS), no solo por pauta orgánica.
 
-**Siguiente paso:** detalle IG `@grupoflesan` + FB Icafal / YT-TikTok pendientes → cerrar matriz de 3 competidores + Prospecto.
+**Siguiente paso:** FB Icafal / LinkedIn Prospecto / YT-TikTok pendientes → cerrar matriz.
