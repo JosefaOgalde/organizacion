@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-26T02:12:08.388Z",
+    "actualizado": "2026-07-28T15:21:06.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -27,7 +27,7 @@
       "deudaJosefaClp": 400221
     },
     "pedidoSeq": 8,
-    "ventaSeq": 10,
+    "ventaSeq": 11,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
       {
@@ -91,6 +91,17 @@
           "ven-juan-naves-003"
         ],
         "totalNeto": 15000,
+        "compras": 1
+      },
+      {
+        "cliente": "María Paz SIE",
+        "ventaCodigos": [
+          "I000011"
+        ],
+        "ventaIds": [
+          "ven-maria-paz-soporte-011"
+        ],
+        "totalNeto": 4000,
         "compras": 1
       },
       {
@@ -662,6 +673,33 @@
           "filamento": "multicolor"
         }
       ]
+    },
+    {
+      "id": "ven-maria-paz-soporte-011",
+      "codigo": "I000011",
+      "fecha": "2026-07-28",
+      "cliente": "María Paz SIE",
+      "descripcion": "PED-005 · 1× Soporte celular rosado pastel · María Paz SIE",
+      "cantidad": 1,
+      "montoBruto": 4000,
+      "descuentoClp": 0,
+      "montoNeto": 4000,
+      "costoTotal": 683.69,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-005 · 1× Soporte celular rosado · pagado $4.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-maria-paz-soporte-005",
+      "pedidoNumero": "PED-005",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 1,
+          "precioUnitarioClp": 4000,
+          "costoUnitarioClp": 683.69,
+          "filamento": "PLA rosado pastel"
+        }
+      ]
     }
   ],
   "operacion": [
@@ -1045,6 +1083,12 @@
       "fecha": "2026-07-23",
       "autor": "Josefa",
       "texto": "Ventas: Tito $15.000 · Cata gatos $10.000 · PED-002 Gianni bulldogs→venta $15.000 · PED-003 Juan naves→venta $15.000 · Marcia Stanley $3.000 · Gianni Bob $7.000."
+    },
+    {
+      "id": "bit-maria-paz-011",
+      "fecha": "2026-07-28",
+      "autor": "Josefa",
+      "texto": "PED-005 María Paz SIE → venta I000011 · 1× Soporte celular rosado · pagado $4.000."
     }
   ],
   "pedidos": [
@@ -1216,11 +1260,12 @@
       "descuentoClp": 0,
       "montoNeto": 4000,
       "costoTotal": 683.69,
-      "estado": "listo",
-      "ventaId": null,
-      "notas": "1× Soporte celular rosado pastel · listo/impreso · costo $683,69 · precio venta $4.000",
+      "estado": "transferido",
+      "ventaId": "ven-maria-paz-soporte-011",
+      "notas": "1× Soporte celular rosado pastel · transferido a venta I000011 · $4.000",
       "socioRegistro": "Ambos",
-      "creado": "2026-07-26T01:44:08.009Z"
+      "creado": "2026-07-26T01:44:08.009Z",
+      "transferidoEn": "2026-07-28T15:20:00.000Z"
     },
     {
       "id": "ped-rebe-dragon-006",

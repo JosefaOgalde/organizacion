@@ -1267,6 +1267,33 @@
           { sku: 'PTBOBES001', nombre: 'Porta Bob Esponja', cantidad: 1, precioUnitarioClp: 7000, costoUnitarioClp: 998.17, filamento: 'multicolor' },
         ],
       },
+      {
+        id: 'ven-maria-paz-soporte-011',
+        codigo: 'I000011',
+        fecha: '2026-07-28',
+        cliente: 'María Paz SIE',
+        descripcion: 'PED-005 · 1× Soporte celular rosado pastel · María Paz SIE',
+        cantidad: 1,
+        montoBruto: 4000,
+        descuentoClp: 0,
+        montoNeto: 4000,
+        costoTotal: 683.69,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-005 · 1× Soporte celular rosado · pagado $4.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-maria-paz-soporte-005',
+        pedidoNumero: 'PED-005',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: 4000,
+            costoUnitarioClp: 683.69,
+            filamento: 'PLA rosado pastel',
+          },
+        ],
+      },
     ];
 
     let changed = false;
@@ -1329,6 +1356,15 @@
         montoNeto: 15000,
         notas: '2× naves espaciales · Juan SIE · transferido a venta I000003 · $15.000',
       },
+      {
+        pedId: 'ped-maria-paz-soporte-005',
+        numero: 'PED-005',
+        ventaId: 'ven-maria-paz-soporte-011',
+        cliente: 'María Paz SIE',
+        montoNeto: 4000,
+        notas: '1× Soporte celular rosado pastel · transferido a venta I000011 · $4.000',
+        transferidoEn: '2026-07-28T15:20:00.000Z',
+      },
     ];
     for (const t of transfers) {
       const ped = d.pedidos.find((p) => p.id === t.pedId || p.numero === t.numero);
@@ -1354,7 +1390,7 @@
         pedChanged = true;
       }
       if (!ped.transferidoEn) {
-        ped.transferidoEn = '2026-07-23T14:50:00.000Z';
+        ped.transferidoEn = t.transferidoEn || '2026-07-23T14:50:00.000Z';
         pedChanged = true;
       }
       if (ped.notas !== t.notas) {

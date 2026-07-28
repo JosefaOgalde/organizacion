@@ -48,7 +48,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-002 | Gianni SIE | 1× Macetero bulldog `MCPEBUL001` + 4× Portacompleto bulldog `PCPEBUL001` | **transferido** → I000002 $15.000 |
 | PED-003 | Juan SIE | 1× Nave horizontal `NAVEHOR001` + 1× Nave vertical `NAVEVERT001` | **transferido** → I000003 $15.000 |
 | PED-004 | Ele SIE | 1× Llavero Pesa Rusa amarillo `LLPESRU001` | **listo** (impreso) · costo ~$415 · **PVP $1.000** |
-| PED-005 | María Paz SIE | 1× Soporte celular rosado pastel `SOPCEL001` | **listo** (impreso) · costo ~$684 · **PVP $4.000** |
+| PED-005 | María Paz SIE | 1× Soporte celular rosado pastel `SOPCEL001` | **transferido** → I000011 $4.000 |
 | PED-006 | Rebe SIE | 1× Dragón `DRAGON001` | **en_impresion** · costo ~$5.476 · **PVP $11.000** |
 | PED-007 | Juan SIE | 1× Torreón `TORREON001` | **listo** · costo est. ~$3.293 (+$1.000 impresora antigua) · PVP sug. $6.500 |
 | PED-008 | Juan MKOF | 1× Porta Bob Esponja `PTBOBES001` | **listo** · costo ~$998 · **PVP $7.000** |
@@ -72,6 +72,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000008 | Rebe SIE | 6.000 | 2× Stanley rojo / círculo blanco |
 | I000009 | Marcia SIE | 3.000 | Soporte celular PLA blanco |
 | I000010 | Cata SIE | 7.000 | Bob (costo ya calculado) |
+| I000011 | María Paz SIE | 4.000 | PED-005 Soporte celular rosado |
 
 ### Clientes nuevos — nombre + origen (obligatorio)
 
