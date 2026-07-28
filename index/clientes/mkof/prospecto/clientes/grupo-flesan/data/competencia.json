@@ -36,15 +36,23 @@
       "web": "https://inarco.cl/",
       "linkedin": "https://www.linkedin.com/company/constructora-inarco-s.a",
       "esReferente": false,
-      "estado": "PARCIAL_LI_OK",
+      "estado": "IG_LI_OK",
+      "instagram": "https://www.instagram.com/inarcochile/",
       "rrss": {
+        "instagram": {
+          "seguidores": 1517,
+          "display": "1.517",
+          "posts": 104,
+          "erMuestraN5": "4,17%",
+          "fuenteId": "ig-inarco-perfil-2026-07-28",
+          "muestraPosts": "RRSS/data/ig-er-inarco-muestra.json"
+        },
         "linkedin": {
           "seguidores": 66000,
           "display": "66 mil",
           "empleadosDisplay": "51-200",
           "fuenteId": "li-inarco-2026-07-28"
-        },
-        "instagram": { "estado": "PENDIENTE" }
+        }
       }
     },
     {

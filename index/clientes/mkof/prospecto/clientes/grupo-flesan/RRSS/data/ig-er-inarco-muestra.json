@@ -1,0 +1,92 @@
+{
+  "cuenta": "@inarcochile",
+  "nombre": "Constructora Inarco",
+  "competidor": "Inarco",
+  "columnaTabla": "Competidor 2",
+  "fechaCaptura": "2026-07-28",
+  "seguidores": 1517,
+  "seguidoresDisplay": "1.517",
+  "publicaciones": 104,
+  "siguiendo": 164,
+  "urlPerfil": "https://www.instagram.com/inarcochile/",
+  "fuenteIdPerfil": "ig-inarco-perfil-2026-07-28",
+  "formula": "ER% = ((Σ likes + Σ comentarios visibles) / N) / seguidores × 100",
+  "metodologia": "N=5: los 5 últimos contenidos IG entregados por la usuaria (screenshots desktop 2026-07-28). Comentarios = visibles en captura (incluye hilo; 'comentarios ocultos' no suman si no se ve el total).",
+  "nPosts": 5,
+  "nPostsEnCalculo": 5,
+  "sumaLikes": 306,
+  "sumaComentariosVisibles": 10,
+  "sumaInteracciones": 316,
+  "promedioInteracciones": 63.2,
+  "engagementRate": 4.1661,
+  "engagementRateDisplay": "4,17%",
+  "tematicasObservadas": [
+    "Obras en curso (lab clínico UC Christus, Talleres EFE Peñaflor)",
+    "Seguridad / SST (días sin accidentes, Mutual)",
+    "Trayectoria e infraestructura (m² construidos Chile–Perú–Paraguay)",
+    "Obras históricas / valor urbano (Portal La Reina 2001)",
+    "Personas en obra (administrador, jefe SST)"
+  ],
+  "formatosObservados": ["video/reel con testimonio", "foto aérea de obra", "carrusel obra histórica"],
+  "limitaciones": [
+    "Post 'experiencia desde 1983' muestra 'Ver comentarios ocultos' → solo se cuentan los 4 visibles.",
+    "N=5 (muestra entregada); misma metodología que EI."
+  ],
+  "posts": [
+    {
+      "n": 1,
+      "recencia": "hace 1 día",
+      "fechaAprox": "2026-07-27",
+      "likes": 56,
+      "comments": 1,
+      "interacciones": 57,
+      "formato": "video",
+      "tema": "Lab clínico 5.000 m² UC Christus · Julio Silva / Jonathan Chamorro",
+      "captionResumen": "Habilitación laboratorio clínico; #Inarco #GrandesObras."
+    },
+    {
+      "n": 2,
+      "recencia": "hace 4 días",
+      "fechaAprox": "2026-07-24",
+      "likes": 44,
+      "comments": 3,
+      "interacciones": 47,
+      "formato": "video",
+      "tema": "SST Altos de Santa Cruz · 533 días / 1 año sin accidentes (Mutual)",
+      "captionResumen": "Álex Madrid, Jefe de SSTMA; cultura de seguridad."
+    },
+    {
+      "n": 3,
+      "recencia": "hace 5 días",
+      "fechaAprox": "2026-07-23",
+      "likes": 64,
+      "comments": 4,
+      "interacciones": 68,
+      "formato": "foto",
+      "tema": "Trayectoria desde 1983 · +7,9 millones m² Chile PE PY",
+      "captionResumen": "Capacidad de ejecución en obras de gran escala."
+    },
+    {
+      "n": 4,
+      "recencia": "hace 7 días / 1 sem",
+      "fechaAprox": "2026-07-21",
+      "likes": 96,
+      "comments": 2,
+      "interacciones": 98,
+      "formato": "video",
+      "tema": "Talleres y Cocheras EFE Peñaflor · César Rojas, Adm. de Obra",
+      "captionResumen": "18 ha para mantención trenes Alameda–Melipilla."
+    },
+    {
+      "n": 5,
+      "recencia": "17 de julio / 1 sem",
+      "fechaAprox": "2026-07-17",
+      "likes": 46,
+      "comments": 0,
+      "interacciones": 46,
+      "formato": "carrusel",
+      "tema": "Portal La Reina 2001 · +125.000 m² (Jumbo, Easy)",
+      "captionResumen": "Obra histórica que sigue generando valor urbano."
+    }
+  ]
+}

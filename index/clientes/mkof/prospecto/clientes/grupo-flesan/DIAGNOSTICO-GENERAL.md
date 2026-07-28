@@ -63,7 +63,7 @@ Fuente de perfiles (footer de los 3 sitios):
 | Competidor | Web (referencia) | Nota |
 |------------|------------------|------|
 | **Echeverría Izquierdo** | https://ei.cl/ | Referente · IG 8.649 · LI **129 mil** |
-| **Inarco** (Constructora INARCO S.A) | https://inarco.cl/ | Comp.2 · LI **66 mil** · 51-200 emp. (2026-07-28) · IG pendiente |
+| **Inarco** (Constructora INARCO S.A) | https://inarco.cl/ | Comp.2 · IG **1.517** (@inarcochile) · ER **4,17%** N=5 · LI **66 mil** |
 | Icafal | https://www.icafal.cl/ | Ingeniería y construcción · pendiente |
 | Tecsa | https://www.tecsa.cl/ | Construcción · pendiente |
 

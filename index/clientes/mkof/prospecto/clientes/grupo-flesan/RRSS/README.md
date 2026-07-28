@@ -10,6 +10,14 @@
 
 Fuentes: `ig-ei-perfil-2026-07-28`, `ig-ei-posts-2026-07-28`, `li-ei-2026-07-28` en `../fuentes.json`.
 
+## Competidor 2 · Inarco (listo 2026-07-28)
+
+| Dato | Valor |
+|------|-------|
+| IG | [@inarcochile](https://www.instagram.com/inarcochile/) · **1.517** seguidores · 104 posts |
+| IG ER muestra | **4,17%** (N=5 · likes 56+44+64+96+46 · com. 1+3+4+2+0) → [`data/ig-er-inarco-muestra.json`](./data/ig-er-inarco-muestra.json) |
+| LinkedIn | **66 mil** seguidores · [página empresa](https://www.linkedin.com/company/constructora-inarco-s.a) |
+
 ## Prospecto · pendiente
 
 Detalle de Instagram **@grupoflesan** pendiente (lo entrega la usuaria).

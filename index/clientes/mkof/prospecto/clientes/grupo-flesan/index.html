@@ -63,7 +63,7 @@
   <main>
     <div class="aviso">
       <strong>Nivel: general</strong>
-      Matriz ECOSISTEMA: Comp.1 EI (IG+LI) · Comp.2 Inarco (LI 66 mil). Restan IG de Inarco, Comp. 3–5 y detalle IG del prospecto.
+      Matriz ECOSISTEMA: Comp.1 EI (IG+LI) · Comp.2 Inarco (IG 1.517 · ER 4,17% · LI 66 mil). Restan Comp. 3–5 y detalle IG del prospecto.
     </div>
 
     <div class="card">
@@ -126,7 +126,7 @@
   </main>
   <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
   <script>
-    const v = '20260728-inarco-li';
+    const v = '20260728-inarco-ig';
     fetch('data/ecosistema-rrss.json?v=' + v, { cache: 'no-store' })
       .then((r) => r.json())
       .then((eco) => {

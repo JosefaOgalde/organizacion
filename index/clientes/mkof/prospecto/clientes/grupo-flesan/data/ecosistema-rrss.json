@@ -2,7 +2,7 @@
   "titulo": "ECOSISTEMA RRSS",
   "fecha": "2026-07-28",
   "nivel": "general",
-  "notaPresentacion": "Columna Grupo Flesan = PROSPECTO. Comp.1 EI: IG 8.649 + LI 129 mil. Comp.2 Inarco: LI 66 mil (2026-07-28). Celdas XX mill = pendiente.",
+  "notaPresentacion": "PROSPECTO = Flesan. Comp.1 EI: IG 8.649 + LI 129 mil. Comp.2 Inarco: IG 1.517 (ER 4,17%) + LI 66 mil. Celdas XX mill = pendiente.",
   "plataformas": ["Facebook", "Instagram", "LinkedIn", "YouTube", "TikTok"],
   "columnas": [
     {
@@ -72,7 +72,20 @@
         "exacto": "8.649 seguidores · 1.076 publicaciones · 351 seguidos (screenshot IG desktop 2026-07-28)",
         "estado": "OK"
       },
-      "inarco": { "display": "XX mill", "estado": "PENDIENTE" },
+      "inarco": {
+        "valor": 1517,
+        "display": "1.517",
+        "posts": 104,
+        "siguiendo": 164,
+        "handle": "@inarcochile",
+        "nombrePerfil": "Constructora Inarco",
+        "url": "https://www.instagram.com/inarcochile/",
+        "erMuestraN5": "4,17%",
+        "fuenteId": "ig-inarco-perfil-2026-07-28",
+        "muestraPosts": "RRSS/data/ig-er-inarco-muestra.json",
+        "exacto": "1.517 seguidores · 104 publicaciones · 164 seguidos (screenshot IG 2026-07-28)",
+        "estado": "OK"
+      },
       "icafal": { "display": "XX mill", "estado": "PENDIENTE" },
       "tecsa": { "display": "XX mill", "estado": "PENDIENTE" },
       "comp5": { "display": "XX mill", "estado": "PENDIENTE" },
