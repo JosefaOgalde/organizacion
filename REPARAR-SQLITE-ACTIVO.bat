@@ -45,12 +45,9 @@ if errorlevel 1 (
 )
 
 echo  3^) Seed clientes...
-pushd backend
-"%PHP_EXE%" artisan config:clear >nul 2>&1
-"%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php 2>nul
-cd /d "%~dp0"
 "%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
 pushd backend
+"%PHP_EXE%" artisan config:clear >nul 2>&1
 "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
 set "SEED_ERR=%ERRORLEVEL%"
 popd

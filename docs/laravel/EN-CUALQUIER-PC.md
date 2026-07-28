@@ -40,7 +40,9 @@ Abre solo (con `?disco=1`):
 - http://127.0.0.1:8000/index.html?disco=1  
 - http://127.0.0.1:8000/api/clientes  
 
-Si ves datos viejos: **Ctrl+Shift+R**. El sync de ABRIR solo usa `data\` del repo (ya no Descargas).
+Si ves datos viejos: **Ctrl+Shift+R**. El sync de ABRIR solo usa `data\` del repo y **no pisa** un live más nuevo.
+
+Si aparece `SQLSTATE … no such column: activo`: doble clic **`REPARAR-SQLITE-ACTIVO.bat`**, luego `ABRIR-LARAVEL.bat`.
 
 ---
 
