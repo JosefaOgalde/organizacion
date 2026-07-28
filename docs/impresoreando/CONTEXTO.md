@@ -82,6 +82,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000011 | María Paz SIE | 4.000 | PED-005 Soporte celular morado pastel |
 | I000012 | Rebe SIE | 4.000 | PED-009 Soporte celular negro |
 | I000013 | Rebe SIE | 20.000 | PED-006 Dragón morado |
+| I000014 | Ele SIE | 5.000 | PED-012 2× Llavero Pesa Rusa amarillo |
 
 ### Clientes nuevos — nombre + origen (obligatorio)
 

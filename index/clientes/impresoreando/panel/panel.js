@@ -1514,6 +1514,17 @@
         itemPrecioUnitarioClp: 20000,
         itemFilamento: 'PLA morado',
       },
+      {
+        pedId: 'ped-ele-pesa-012',
+        numero: 'PED-012',
+        ventaId: 'ven-ele-pesa-014',
+        cliente: 'Ele SIE',
+        montoNeto: 5000,
+        notas: '2× Llavero Pesa Rusa amarillo · transferido a venta I000014 · $5.000',
+        transferidoEn: '2026-07-28T15:50:00.000Z',
+        itemPrecioUnitarioClp: 2500,
+        itemFilamento: 'PLA amarillo',
+      },
     ];
     for (const t of transfers) {
       const ped = d.pedidos.find((p) => p.id === t.pedId || p.numero === t.numero);
@@ -2116,6 +2127,51 @@
         notas: `1× Soporte celular morado · PVP $${precioSop011}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-28T15:45:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-012 · Ele SIE · 2× Llavero Pesa Rusa amarillo · transferido I000014 $5.000
+    const id012 = 'ped-ele-pesa-012';
+    const prodPesa012 = (d.productos || []).find(
+      (p) => p.id === 'prod-llavero-pesa-rusa' || p.sku === 'LLPESRU001'
+    );
+    const costoPesa012 = prodPesa012 ? costoProdRough(d, prodPesa012) : 415.43;
+    const cant012 = 2;
+    const precioU012 = 2500;
+    const total012 = 5000;
+    if (!d.pedidos.some((p) => p.id === id012 || p.numero === 'PED-012')) {
+      d.pedidos.push({
+        id: id012,
+        numero: 'PED-012',
+        fecha: '2026-07-28',
+        cliente: 'Ele SIE',
+        clienteNombre: 'Ele',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'LLPESRU001',
+            nombre: 'Llavero Pesa Rusa',
+            cantidad: cant012,
+            precioUnitarioClp: precioU012,
+            costoUnitarioClp: round2(costoPesa012),
+            filamento: 'PLA amarillo',
+            estado: 'listo',
+            listos: cant012,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: total012,
+        descuentoClp: 0,
+        montoNeto: total012,
+        costoTotal: round2(costoPesa012 * cant012),
+        estado: 'transferido',
+        ventaId: 'ven-ele-pesa-014',
+        transferidoEn: '2026-07-28T15:50:00.000Z',
+        notas: `2× Llavero Pesa Rusa amarillo · transferido a venta I000014 · $${total012}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-28T15:50:00.000Z',
       });
       changed = true;
     }
