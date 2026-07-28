@@ -59,6 +59,11 @@
           "display": "66 mil",
           "empleadosDisplay": "51-200",
           "fuenteId": "li-inarco-2026-07-28"
+        },
+        "facebook": {
+          "display": "No tiene",
+          "estado": "NO_TIENE",
+          "fuenteId": "fb-inarco-no-tiene-2026-07-28"
         }
       }
     },

@@ -126,7 +126,7 @@
   </main>
   <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
   <script>
-    const v = '20260728-ei-fb';
+    const v = '20260728-inarco-no-fb';
     fetch('data/ecosistema-rrss.json?v=' + v, { cache: 'no-store' })
       .then((r) => r.json())
       .then((eco) => {
@@ -150,10 +150,11 @@
             const cell = row[c.id] || { display: isEr ? '—' : 'XX mill', estado: 'PENDIENTE' };
             const isP = c.rol === 'prospecto';
             const ok = cell.estado && String(cell.estado).startsWith('OK');
+            const noTiene = cell.estado === 'NO_TIENE';
             const isHi = ok && max != null && cell.valor === max;
             let cls = isP ? 'col-prospecto' : '';
             if (isHi) cls += ' hi';
-            else if (ok) cls += ' ok';
+            else if (ok || noTiene) cls += ' ok';
             else cls += ' pend';
             return `<td class="${cls.trim()}">${cell.display || (isEr ? '—' : 'XX mill')}</td>`;
           }).join('') + '</tr>';

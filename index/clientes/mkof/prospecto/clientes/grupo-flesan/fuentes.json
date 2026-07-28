@@ -131,6 +131,13 @@
       "metodo": "Screenshot perfil FB Echeverría Izquierdo / GRUPO Ei: 8 amigos. UI de perfil (Agregar a amigos), no Page con seguidores. Competidor 1."
     },
     {
+      "id": "fb-inarco-no-tiene-2026-07-28",
+      "tipo": "facebook",
+      "url": null,
+      "fecha": "2026-07-28",
+      "metodo": "Confirmación usuaria: Competidor 2 (Inarco) no tiene Facebook"
+    },
+    {
       "id": "manual-marca-local",
       "tipo": "documento_cliente",
       "url": null,
