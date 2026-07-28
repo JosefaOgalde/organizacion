@@ -280,6 +280,8 @@
   border-color: color-mix(in srgb, #c47a9a 25%, var(--imp-border));
 }
 .imp-card--fiados > .imp-kpi strong { color: #8a3d5c; }
+.imp-card--resumen-gen .imp-kpi { margin-top: 0.35rem; }
+.imp-card--resumen-gen .imp-pedido-status-counts { margin-top: 0.35rem; }
 
 .imp-table-wrap { overflow-x: auto; width: 100%; }
 table.imp-table {

@@ -2728,33 +2728,14 @@
       })
       .join('');
 
-    const todosPedidos = (data.pedidos || []).slice().sort((a, b) =>
-      String(b.numero || '').localeCompare(String(a.numero || ''), 'es')
-    );
+    const todosPedidos = (data.pedidos || []).slice();
     const countEst = { pendiente: 0, en_impresion: 0, listo: 0, transferido: 0 };
     for (const p of todosPedidos) {
       const e = p.estado || 'pendiente';
       if (countEst[e] != null) countEst[e] += 1;
     }
-    const filasPedidosStatus = todosPedidos
-      .map((p) => {
-        recalcularMontoPedido(p);
-        const itemsTxt = (p.items || [])
-          .map((it) => `${it.cantidad || 1}× ${it.nombre || it.sku || ''}`)
-          .join(', ');
-        const origenLbl = labelOrigenCliente(p.clienteOrigen);
-        return `<tr>
-          <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
-          <td>
-            <strong>${escapeHtml(p.cliente || '—')}</strong>
-            ${origenLbl ? `<div class="imp-muted">${escapeHtml(origenLbl)}</div>` : ''}
-            <div class="imp-muted">${escapeHtml(itemsTxt || '—')}</div>
-          </td>
-          <td class="num"><strong>${money(p.montoNeto)}</strong></td>
-          <td>${badgeEstadoPedido(p.estado || 'pendiente')}</td>
-        </tr>`;
-      })
-      .join('');
+    const nVentas = (data.ventas || []).length;
+    const nClientesHist = (data.meta?.clientesHistorial || []).length;
 
     $('#tab-resumen').innerHTML = `
       <div class="imp-balance ${sinDeuda ? 'imp-balance--ok' : 'imp-balance--deuda'}">
@@ -2788,20 +2769,23 @@
           <span><strong>Total ${money(gastosMasPedidos)}</strong></span>
         </div>
       </div>
-      <div class="imp-card">
-        <h2>Estado de pedidos</h2>
-        <p class="imp-muted">Pipeline en vivo (PED-00n). Los activos aún no bajan la deuda — solo al transferir → venta. Detalle en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>.</p>
-        <div class="imp-pedido-status-counts" aria-label="Conteo por estado">
-          <span class="imp-badge imp-badge--warn">Pendiente ${countEst.pendiente}</span>
-          <span class="imp-badge imp-badge--print">En impresión ${countEst.en_impresion}</span>
-          <span class="imp-badge imp-badge--listo">Listo ${countEst.listo}</span>
-          <span class="imp-badge imp-badge--ok">Transferido ${countEst.transferido}</span>
+      <div class="imp-grid imp-grid--2">
+        <div class="imp-card imp-card--resumen-gen">
+          <h2>Ventas</h2>
+          <p class="imp-muted">Vista general. El detalle (IDs, ítems, descuentos, historial) está en <button type="button" class="imp-linkish" data-goto-tab="ventas">Ventas</button>.</p>
+          <div class="imp-kpi imp-kpi--ok"><span>Contabilizadas</span><strong>${nVentas} · ${money(ventas)}</strong></div>
+          <p class="imp-muted" style="margin:0.65rem 0 0">${nClientesHist} cliente${nClientesHist === 1 ? '' : 's'} en historial</p>
         </div>
-        <div class="imp-table-wrap" style="margin-top:0.75rem">
-          <table class="imp-table">
-            <thead><tr><th>Pedido</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th></tr></thead>
-            <tbody>${filasPedidosStatus || '<tr><td colspan="4">Sin pedidos</td></tr>'}</tbody>
-          </table>
+        <div class="imp-card imp-card--resumen-gen">
+          <h2>Pedidos</h2>
+          <p class="imp-muted">Pipeline. Detalle y fiados en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>.</p>
+          <div class="imp-pedido-status-counts" aria-label="Conteo por estado">
+            <span class="imp-badge imp-badge--warn">Pendiente ${countEst.pendiente}</span>
+            <span class="imp-badge imp-badge--print">En impresión ${countEst.en_impresion}</span>
+            <span class="imp-badge imp-badge--listo">Listo ${countEst.listo}</span>
+            <span class="imp-badge imp-badge--ok">Transferido ${countEst.transferido}</span>
+          </div>
+          <div class="imp-kpi" style="margin-top:0.75rem"><span>Activos (aún no bajan deuda)</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
         </div>
       </div>
       <div class="imp-grid">

@@ -23,6 +23,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 
 ## Deuda / resumen
 
+- Tab Resumen: vista **general** (totales, conteos, barras, socios). El **detalle de ventas** (IDs, ítems, descuentos, historial) solo en tab **Ventas**.
 - Gastos de **ambos**; capital aportado por **Nicolás**; Josefa debe 50% (`meta.capital.deudaJosefaClp`).
 - `metaRecuperar = gastos + operación`
 - `saldoPendiente = max(0, meta − ventas)` — solo **ventas** bajan deuda
