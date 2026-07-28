@@ -11,7 +11,16 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const DATA = path.join(ROOT, 'data');
 const LIVE = path.join(DATA, 'organizacion-live.json');
-const FECHA = '2026-07-28';
+/** Día Chile (YYYY-MM-DD) — la tarea queda en el calendario de hoy al asegurar. */
+function fechaChileHoy() {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Santiago',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
+}
+const FECHA = fechaChileHoy();
 const CLIENTE = 'cli-ecr';
 const ROL = 'rol-ecr-dev';
 const ID = 'tarea-ecr-trade-marketing-mis-servicios-2026-07-28';

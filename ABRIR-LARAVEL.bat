@@ -67,6 +67,10 @@ if not errorlevel 1 (
     echo  0b^) Sync pedidos Impresoreando seed → live...
     node scripts\sync-impresoreando-seed-a-live.js
   )
+  if exist "scripts\add-ecr-trade-marketing-mis-servicios.js" (
+    echo  0c^) Asegurar tarea ECR Trade Marketing...
+    node scripts\add-ecr-trade-marketing-mis-servicios.js --also-respaldo
+  )
 )
 
 echo  1^) SQLite + seed clientes...
