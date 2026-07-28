@@ -83,6 +83,7 @@
     if (asegurarProductoLlaveroPortaLipstickStanley(d)) changed = true;
     if (asegurarProductoLlaveroPesaRusa(d)) changed = true;
     if (asegurarProductoSoporteCelular(d)) changed = true;
+    if (asegurarRenombrarRosadoPastelAMorado(d)) changed = true;
     if (asegurarProductoDragon(d)) changed = true;
     if (asegurarProductoTorreon(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
@@ -890,6 +891,43 @@
       Object.assign(existing, seed);
       return true;
     }
+    return changed;
+  }
+
+  /** Color vigente: «rosado pastel» → «morado pastel» (producto / pedidos / ventas). */
+  function renombrarRosadoPastel(texto) {
+    let s = String(texto || '');
+    if (!s) return s;
+    s = s.replace(/PLA rosado pastel/gi, 'PLA morado pastel');
+    s = s.replace(/rosado pastel/gi, 'morado pastel');
+    s = s.replace(/Soporte celular rosado(?!\s*pastel)/gi, 'Soporte celular morado pastel');
+    s = s.replace(/morado pastel pastel/gi, 'morado pastel');
+    return s;
+  }
+
+  function asegurarRenombrarRosadoPastelAMorado(d) {
+    let changed = false;
+    const touchStr = (obj, key) => {
+      if (!obj || obj[key] == null) return;
+      const next = renombrarRosadoPastel(obj[key]);
+      if (next !== obj[key]) {
+        obj[key] = next;
+        changed = true;
+      }
+    };
+    for (const p of d.productos || []) {
+      touchStr(p, 'notas');
+    }
+    for (const ped of d.pedidos || []) {
+      touchStr(ped, 'notas');
+      for (const it of ped.items || []) touchStr(it, 'filamento');
+    }
+    for (const v of d.ventas || []) {
+      touchStr(v, 'descripcion');
+      touchStr(v, 'notas');
+      for (const it of v.items || []) touchStr(it, 'filamento');
+    }
+    for (const b of d.bitacora || []) touchStr(b, 'texto');
     return changed;
   }
 
