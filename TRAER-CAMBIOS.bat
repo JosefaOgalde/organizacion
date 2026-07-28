@@ -44,7 +44,7 @@ if errorlevel 1 (
 echo [3] git pull...
 git pull origin cursor/impresoreando-maria-paz-venta-4e97
 if errorlevel 1 (
-  echo [AVISO] pull con problemas; continúo con lo local.
+  echo [AVISO] pull con problemas; continuo con lo local.
 )
 
 echo.

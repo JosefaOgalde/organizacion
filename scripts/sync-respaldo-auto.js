@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 /**
  * Sincroniza el respaldo más reciente → data/organizacion-live.json
- * Busca en data/ y en Descargas del usuario. Sin intervención manual.
+ *
+ * Por defecto busca en data/ y en Descargas.
+ * --solo-repo → solo data/ del repo (no Descargas; evita pisar con JSON viejo de Downloads).
+ * --force → sobrescribe live aunque sea más nuevo (usar con cuidado; ABRIR ya NO lo usa).
  */
 const fs = require('fs');
 const path = require('path');

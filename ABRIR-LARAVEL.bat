@@ -57,8 +57,8 @@ if not exist "data\impresoreando-live.json" (
 where node >nul 2>&1
 if not errorlevel 1 (
   if exist "scripts\sync-respaldo-auto.js" (
-    echo  0^) Sync respaldo (solo data\ del repo; NO Descargas)...
-    node scripts\sync-respaldo-auto.js --force --solo-repo 2>nul
+    echo  0^) Sync respaldo (solo data\ del repo; NO Descargas; no pisa live mas nuevo)...
+    node scripts\sync-respaldo-auto.js --solo-repo 2>nul
   )
   if exist "scripts\asegurar-impresoreando-live.js" (
     node scripts\asegurar-impresoreando-live.js 2>nul
@@ -101,11 +101,27 @@ pushd backend
 "%PHP_EXE%" artisan migrate --force
 popd
 
-echo  3a^) Columna activo (por si migrate no la añadió)...
+echo  3a^) Columna activo (por si migrate no la anadio)...
 "%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
 
 pushd backend
+echo  3a2^) Seed clientes...
 "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
+if errorlevel 1 (
+  echo  [AVISO] Seed fallo — reintento tras ALTER activo...
+  popd
+  "%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
+  "%PHP_EXE%" scripts\usar-sqlite-laravel.php
+  pushd backend
+  "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
+  if errorlevel 1 (
+    echo  [ERROR] Seed clientes fallo. Corre REPARAR-SQLITE-ACTIVO.bat
+    echo  o copia el texto rojo y pegalo en el chat.
+    popd
+    pause
+    exit /b 1
+  )
+)
 popd
 
 if exist "scripts\limpiar-clientes-duplicados.php" (
