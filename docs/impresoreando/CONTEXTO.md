@@ -39,6 +39,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 5. **Editar** = modal `#imp-modal-pedido`
 6. **Transferir a venta** = modal `#imp-modal-transferir` con descuento **% o CLP** → venta `{ montoBruto, descuentoClp, montoNeto }` · `montoNeto` baja deuda · auto-`save()`
 7. Pedidos no cuentan como venta hasta transferir
+8. **«Pagado» = venta (obligatorio):** si la usuaria dice **pagado** / **ya pagó** / **cobrado** en un pedido Impresoreando → **no dejarlo como pedido activo**. Crear/actualizar el `PED-00n` y **transferirlo de inmediato** a venta `I00000n` (estado `transferido`). El monto pagado es el `montoNeto` de la venta.
 
 ### Seed vigente — pedidos
 
@@ -100,7 +101,7 @@ Responder **pidiendo estos datos** (no crear a ciegas). Mínimo nombre + origen:
 3. **Ítems:** producto, cantidad, color/filamento
 4. **Precio venta/u** o total (ajustable; puede ser más caro que el sugerido)
 5. **Canal** (WhatsApp / Instagram / feria) — opcional
-6. **Estado:** `pendiente` · `en_impresion` · `listo` (default `pendiente`)
+6. **Estado:** `pendiente` · `en_impresion` · `listo` (default `pendiente`) — **salvo que diga pagado** (ver abajo)
 
 Reglas al crear:
 
@@ -108,7 +109,8 @@ Reglas al crear:
 - Si el producto **no tiene costo calculado** → **pedir imagen** (slicer/foto) y crear producto en Costos antes de cerrar el pedido (o dejar pendiente de costo).
 - Precio de venta se puede **subir a mano** aunque el markup sugerido sea +100%.
 - Crear `PED-00n` en live/seed; estado visible en tab Pedidos **y en Resumen**.
-- No transferir a venta hasta que la usuaria lo diga.
+- **«Pagado» = venta:** si en el mensaje aparece **pagado** / **ya pagó** / **cobrado** → transferir a venta `I00000n` al tiro (pedido `transferido`). No preguntar otra vez si ya lo dijo.
+- Si **no** dice pagado → dejar como pedido (`pendiente`/`en_impresion`/`listo`) y **no** transferir hasta que lo indique.
 
 ### «calcular costo producto impresoreando»
 
@@ -210,7 +212,7 @@ Solo si hay módulo CAM + base USB/CH340. Guía: `docs/impresoreando/ESP32-CAM.m
 3. Sin SKU → generar. Sin costo → pedir imagen y calcular producto.
 4. Pedido en live/seed: `cliente` compuesto, ítems SKU×cant, costo/u, precio venta/u (ajustable), estado.
 5. Estado del pedido debe verse en **Resumen** (tabla de status) y en Pedidos.
-6. Al pasar a venta: `I00000n` + historial.
+6. **Si dice pagado** → transferir ya: venta `I00000n` + historial + pedido `transferido` (baja deuda). Si no dice pagado → no transferir.
 7. Commit en rama `cursor/…`, bump `?v=` si tocó UI, push + actualizar PR.
 8. Responder en español, corto: qué PED/I0…, qué SKUs, montos, estado, origen.
 
