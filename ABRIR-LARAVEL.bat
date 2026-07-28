@@ -54,26 +54,27 @@ if not exist "data\impresoreando-live.json" (
   )
 )
 
+REM 0) Solo crear live si FALTA (nunca pisar el calendario local con un respaldo viejo)
+if not exist "data\organizacion-live.json" (
+  echo  0^) Creando organizacion-live.json desde respaldo del repo...
+  if exist "data\organizacion-respaldo-2026-07-28.json" (
+    copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
+    echo  Live creado desde data\organizacion-respaldo-2026-07-28.json
+  ) else if exist "scripts\sync-respaldo-auto.js" (
+    where node >nul 2>&1 && node scripts\sync-respaldo-auto.js --solo-repo --force
+  )
+) else (
+  echo  0^) Live ya existe — no se pisa con respaldo
+)
+
 where node >nul 2>&1
 if not errorlevel 1 (
-  if exist "scripts\sync-respaldo-auto.js" (
-    echo  0^) Sync respaldo (solo data\ del repo; NO Descargas; no pisa live mas nuevo)...
-    node scripts\sync-respaldo-auto.js --solo-repo 2>nul
-  )
   if exist "scripts\asegurar-impresoreando-live.js" (
     node scripts\asegurar-impresoreando-live.js 2>nul
   )
   if exist "scripts\sync-impresoreando-seed-a-live.js" (
     echo  0b^) Sync pedidos Impresoreando seed → live...
     node scripts\sync-impresoreando-seed-a-live.js
-  )
-  if exist "scripts\add-ecr-trade-marketing-mis-servicios.js" (
-    echo  0c^) Asegurar tarea ECR Trade Marketing...
-    node scripts\add-ecr-trade-marketing-mis-servicios.js --also-respaldo
-  )
-  if exist "scripts\asegurar-tareas-cerradas.js" (
-    echo  0d^) Re-cerrar tareas que ya estaban hechas...
-    node scripts\asegurar-tareas-cerradas.js --also-respaldo
   )
 )
 
@@ -129,26 +130,33 @@ if exist "scripts\limpiar-clientes-duplicados.php" (
   "%PHP_EXE%" scripts\limpiar-clientes-duplicados.php
 )
 
-REM Pedidos → organizador AL FINAL (madre en fecha de hoy; no lo pise sync-respaldo)
+REM Calendario de HOY (Chile) — SIEMPRE al final, despues de cualquier sync
 where node >nul 2>&1
 if not errorlevel 1 (
+  if exist "scripts\add-ecr-trade-marketing-mis-servicios.js" (
+    echo  3c^) Asegurar ECR Trade Marketing en hoy...
+    node scripts\add-ecr-trade-marketing-mis-servicios.js --also-respaldo
+  )
   if exist "scripts\sync-impresoreando-pedidos-organizacion.js" (
-    echo  3c^) Sync pedidos Impresoreando → organizador ^(madre = hoy^)...
+    echo  3d^) Sync pedidos Impresoreando → organizador ^(madre = hoy^)...
     node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo
+  )
+  if exist "scripts\asegurar-tareas-cerradas.js" (
+    echo  3e^) Re-cerrar tareas ya hechas...
+    node scripts\asegurar-tareas-cerradas.js --also-respaldo
   )
 )
 
 if not exist "data\organizacion-live.json" (
-  if exist "data\organizacion-respaldo-2026-07-24.json" (
+  if exist "data\organizacion-respaldo-2026-07-28.json" (
+    copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
+    echo  Live creado desde data\organizacion-respaldo-2026-07-28.json
+  ) else if exist "data\organizacion-respaldo-2026-07-24.json" (
     copy /Y "data\organizacion-respaldo-2026-07-24.json" "data\organizacion-live.json" >nul
     echo  Live creado desde data\organizacion-respaldo-2026-07-24.json
   ) else if exist "data\organizacion-respaldo-2026-07-21.json" (
     copy /Y "data\organizacion-respaldo-2026-07-21.json" "data\organizacion-live.json" >nul
     echo  Live creado desde data\organizacion-respaldo-2026-07-21.json
-  ) else if exist "data\organizacion-respaldo-2026-07-18.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-18.json" "data\organizacion-live.json" >nul
-  ) else if exist "data\organizacion-respaldo-2026-07-17.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-17.json" "data\organizacion-live.json" >nul
   )
 )
 
@@ -178,7 +186,7 @@ if /I "%MODO%"=="sin-navegador" goto :fin_urls
 
 REM powershell conserva el "=" de ?disco=1 (start de cmd lo convierte en %3D)
 REM Por defecto: solo Organizador + Portal clientes
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1&v=20260728c'"
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/?disco=1'"
 
 if /I not "%MODO%"=="todo" goto :fin_urls
