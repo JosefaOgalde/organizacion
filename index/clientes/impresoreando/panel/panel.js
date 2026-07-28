@@ -3007,6 +3007,22 @@
     return ['pendiente', 'listo', 'en_impresion'].includes(estado || 'pendiente');
   }
 
+  function fechaPagoPedidoUi(p) {
+    const d = String(p?.fechaPagoEsperada || p?.fechaPago || p?.pagaEl || '').slice(0, 10);
+    return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : '';
+  }
+
+  function esPedidoFiado(p) {
+    if (!p) return false;
+    if (p.fiado === true) return true;
+    if (fechaPagoPedidoUi(p)) return true;
+    return false;
+  }
+
+  function fiadoPendiente(p) {
+    return esPedidoFiado(p) && pedidoActivo(p.estado || 'pendiente');
+  }
+
   function textoEstadoItem(it) {
     const cant = Math.max(1, Number(it.cantidad || 1));
     const listos = Math.min(cant, Math.max(0, Number(it.listos ?? (it.estado === 'listo' ? cant : 0))));
@@ -3580,45 +3596,74 @@
     const optsProd = productos
       .map((p) => `<option value="${escapeHtml(p.sku || '')}">${escapeHtml(p.sku || '')} · ${escapeHtml(p.nombre || '')}</option>`)
       .join('');
-    const rows = (data.pedidos || [])
-      .slice()
-      .reverse()
-      .map((p) => {
-        recalcularMontoPedido(p);
-        const estado = p.estado || 'pendiente';
-        let acciones = `<span class="imp-muted">${escapeHtml(p.ventaId || '—')}</span>`;
-        if (pedidoActivo(estado)) {
-          acciones = `<button type="button" class="imp-btn imp-btn--sm" data-edit-pedido="${escapeHtml(p.id)}">Editar</button>
-            <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
-            <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
-        }
-        return `<tr>
-          <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
-          <td>
-            <strong>${escapeHtml(p.cliente || '—')}</strong>
-            ${
-              p.fiado || p.fechaPagoEsperada
-                ? `<div class="imp-badge">Fiado · paga ${escapeHtml(p.fechaPagoEsperada || '—')}</div>`
-                : ''
-            }
-            <div class="imp-pedido-items">${renderItemsPedido(p)}</div>
-            ${p.notas ? `<div class="imp-muted">${escapeHtml(p.notas)}</div>` : ''}
-          </td>
-          <td class="num">
-            <strong>${money(p.montoNeto)}</strong>
-            <div class="imp-muted">venta</div>
-            <div class="imp-muted">costo ${money(p.costoTotal || 0)}</div>
-          </td>
-          <td>${selectEstadoPedido(p)}</td>
-          <td class="imp-pedidos-actions">${acciones}</td>
-        </tr>`;
-      })
-      .join('');
+
+    const filaPedido = (p, { mostrarPagaEl = false } = {}) => {
+      recalcularMontoPedido(p);
+      const estado = p.estado || 'pendiente';
+      let acciones = `<span class="imp-muted">${escapeHtml(p.ventaId || '—')}</span>`;
+      if (pedidoActivo(estado)) {
+        acciones = `<button type="button" class="imp-btn imp-btn--sm" data-edit-pedido="${escapeHtml(p.id)}">Editar</button>
+          <button type="button" class="imp-btn imp-btn--primary imp-btn--sm" data-transferir-pedido="${escapeHtml(p.id)}">Transferir a venta</button>
+          <button type="button" class="imp-btn imp-btn--danger imp-btn--sm" data-del-pedido="${escapeHtml(p.id)}">✕</button>`;
+      }
+      const pagaCell = mostrarPagaEl
+        ? `<td><strong>${escapeHtml(fechaPagoPedidoUi(p) || '—')}</strong></td>`
+        : '';
+      return `<tr>
+        <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
+        <td>
+          <strong>${escapeHtml(p.cliente || '—')}</strong>
+          ${
+            !mostrarPagaEl && (p.fiado || p.fechaPagoEsperada)
+              ? `<div class="imp-badge">Fiado · paga ${escapeHtml(fechaPagoPedidoUi(p) || '—')}</div>`
+              : ''
+          }
+          <div class="imp-pedido-items">${renderItemsPedido(p)}</div>
+          ${p.notas ? `<div class="imp-muted">${escapeHtml(p.notas)}</div>` : ''}
+        </td>
+        ${pagaCell}
+        <td class="num">
+          <strong>${money(p.montoNeto)}</strong>
+          <div class="imp-muted">venta</div>
+          <div class="imp-muted">costo ${money(p.costoTotal || 0)}</div>
+        </td>
+        <td>${selectEstadoPedido(p)}</td>
+        <td class="imp-pedidos-actions">${acciones}</td>
+      </tr>`;
+    };
+
+    const pedidosOrden = (data.pedidos || []).slice().reverse();
+    const fiadosPendientes = pedidosOrden.filter(fiadoPendiente);
+    const pedidosResto = pedidosOrden.filter((p) => !fiadoPendiente(p));
+    const totalFiados = fiadosPendientes.reduce((s, p) => {
+      recalcularMontoPedido(p);
+      return s + Number(p.montoNeto || 0);
+    }, 0);
+
+    const rowsFiados = fiadosPendientes.map((p) => filaPedido(p, { mostrarPagaEl: true })).join('');
+    const rows = pedidosResto.map((p) => filaPedido(p)).join('');
+
+    const bloqueFiados = `
+      <div class="imp-card imp-card--fiados">
+        <h2>Fiados</h2>
+        <p class="imp-muted">Pedidos entregados o en curso que <strong>aún no se cobraron</strong>. La fecha «Paga el» crea el recordatorio en el organizador. Cuando paguen → <strong>Transferir a venta</strong>.</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Paga el</th><th>Monto</th><th>Estado</th><th></th></tr></thead>
+            <tbody>${
+              rowsFiados ||
+              '<tr><td colspan="6" class="imp-muted">Sin fiados pendientes</td></tr>'
+            }</tbody>
+          </table>
+        </div>
+        <p class="imp-kpi"><span>Por cobrar</span><strong>${money(totalFiados)}</strong></p>
+      </div>`;
 
     $('#tab-pedidos').innerHTML = `
+      ${bloqueFiados}
       <div class="imp-card">
         <h2>Pedidos</h2>
-        <p class="imp-muted">Por ítem: <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable). El <strong>estado</strong> se elige en el menú. Al <strong>Transferir a venta</strong> podés aplicar un <strong>descuento</strong>; el total cobrado es el que baja la deuda.</p>
+        <p class="imp-muted">Por ítem: <strong>costo/u</strong> y <strong>precio venta/u</strong> (editable). El <strong>estado</strong> se elige en el menú. Al <strong>Transferir a venta</strong> podés aplicar un <strong>descuento</strong>; el total cobrado es el que baja la deuda. Los fiados pendientes están arriba en <strong>Fiados</strong>.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID</th><th>Cliente / ítems</th><th>Total</th><th>Estado</th><th></th></tr></thead>

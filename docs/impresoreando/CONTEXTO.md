@@ -32,7 +32,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 
 ## Pedidos (regla de oro)
 
-1. Tab Pedidos · IDs `PED-001…` (`meta.pedidoSeq`)
+1. Tab Pedidos · IDs `PED-001…` (`meta.pedidoSeq`) · arriba bloque **Fiados** (activos con `fiado`/`fechaPagoEsperada`, columna «Paga el» + total por cobrar); debajo el resto de pedidos
 2. Por ítem: producto/SKU, cantidad, **costo/u**, **precio venta/u** (editable)
 3. **Estado solo `<select>` a nivel pedido** — no badges / +imp / +listo en ítems
 4. Estados: `pendiente` · `en_impresion` · `listo` · `transferido`

@@ -269,6 +269,17 @@
   box-sizing: border-box;
 }
 .imp-card h2, .imp-card h3 { margin: 0 0 0.75rem; color: var(--imp-text); font-size: 1.05rem; }
+.imp-card--fiados {
+  border-color: color-mix(in srgb, #c47a9a 35%, var(--imp-border));
+  background: linear-gradient(180deg, #fdf6f9 0%, #fff 55%);
+}
+.imp-card--fiados > .imp-kpi {
+  margin: 0.75rem 0 0;
+  max-width: 16rem;
+  background: color-mix(in srgb, #fff 70%, #f8e8ef);
+  border-color: color-mix(in srgb, #c47a9a 25%, var(--imp-border));
+}
+.imp-card--fiados > .imp-kpi strong { color: #8a3d5c; }
 
 .imp-table-wrap { overflow-x: auto; width: 100%; }
 table.imp-table {
