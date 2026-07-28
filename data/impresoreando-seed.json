@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-28T15:36:46.000Z",
+    "actualizado": "2026-07-28T15:39:57.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -26,7 +26,7 @@
       "montoNetoClp": 800442,
       "deudaJosefaClp": 400221
     },
-    "pedidoSeq": 10,
+    "pedidoSeq": 11,
     "ventaSeq": 13,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
@@ -1159,6 +1159,12 @@
       "fecha": "2026-07-28",
       "autor": "Josefa",
       "texto": "PED-010 Gianni SIE · 2× Soporte celular negro · $8.000 fiado · paga 18 ago · recordatorio en organizador."
+    },
+    {
+      "id": "bit-marcia-011",
+      "fecha": "2026-07-28",
+      "autor": "Josefa",
+      "texto": "PED-011 Marcia SIE · 1× Soporte celular morado · $3.000 · pendiente."
     }
   ],
   "pedidos": [
@@ -1496,6 +1502,37 @@
       "notas": "2× Soporte celular negro · fiado · paga 2026-08-18 · PVP $4.000/u · total $8.000",
       "socioRegistro": "Ambos",
       "creado": "2026-07-28T15:40:00.000Z"
+    },
+    {
+      "id": "ped-marcia-soporte-011",
+      "numero": "PED-011",
+      "fecha": "2026-07-28",
+      "cliente": "Marcia SIE",
+      "clienteNombre": "Marcia",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 1,
+          "precioUnitarioClp": 3000,
+          "costoUnitarioClp": 683.69,
+          "filamento": "PLA morado",
+          "estado": "pendiente",
+          "listos": 0,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 3000,
+      "descuentoClp": 0,
+      "montoNeto": 3000,
+      "costoTotal": 683.69,
+      "estado": "pendiente",
+      "ventaId": null,
+      "notas": "1× Soporte celular morado · PVP $3.000",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-28T15:45:00.000Z"
     }
   ]
 }

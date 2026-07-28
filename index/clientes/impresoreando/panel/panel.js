@@ -2013,6 +2013,48 @@
       changed = true;
     }
 
+    // PED-011 · Marcia SIE · 1× Soporte celular morado · $3.000 · pendiente
+    const id011 = 'ped-marcia-soporte-011';
+    const prodSop011 = (d.productos || []).find(
+      (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
+    );
+    const costoSop011 = prodSop011 ? costoProdRough(d, prodSop011) : 683.69;
+    const precioSop011 = 3000;
+    if (!d.pedidos.some((p) => p.id === id011 || p.numero === 'PED-011')) {
+      d.pedidos.push({
+        id: id011,
+        numero: 'PED-011',
+        fecha: '2026-07-28',
+        cliente: 'Marcia SIE',
+        clienteNombre: 'Marcia',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: precioSop011,
+            costoUnitarioClp: round2(costoSop011),
+            filamento: 'PLA morado',
+            estado: 'pendiente',
+            listos: 0,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioSop011,
+        descuentoClp: 0,
+        montoNeto: precioSop011,
+        costoTotal: round2(costoSop011),
+        estado: 'pendiente',
+        ventaId: null,
+        notas: `1× Soporte celular morado · PVP $${precioSop011}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-28T15:45:00.000Z',
+      });
+      changed = true;
+    }
+
     const maxNum = d.pedidos.reduce((m, p) => {
       const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
       return Math.max(m, n);
