@@ -5,6 +5,19 @@
   const API_URL = '/api/clientes';
   const ACTIVO_KEY = 'portal_clientes_activo_v1';
 
+  /** Sin F12: ?resetActivo=1 limpia overrides de Reactivar. */
+  try {
+    const qs = new URLSearchParams(location.search || '');
+    if (qs.get('resetActivo') === '1') {
+      localStorage.removeItem(ACTIVO_KEY);
+      qs.delete('resetActivo');
+      const next = `${location.pathname}${qs.toString() ? `?${qs}` : ''}${location.hash || ''}`;
+      history.replaceState(null, '', next);
+    }
+  } catch {
+    /* ignore */
+  }
+
   /** Abreviaturas / slugs cortos → carpeta real (por si la API aún trae legacy). */
   const SLUG_CARPETA = {
     ts: 'trendseeker',
@@ -42,6 +55,28 @@
     if (!id) return;
     const map = leerOverridesActivo();
     map[id] = !!activo;
+    try {
+      localStorage.setItem(ACTIVO_KEY, JSON.stringify(map));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  /** Quita overrides de clientes cerrados fijos (p. ej. JM reactivado por error). */
+  function purgarOverridesCerrados(lista) {
+    const map = leerOverridesActivo();
+    let changed = false;
+    for (const c of lista || []) {
+      const estatico = findEstatico(c);
+      if (!esClienteCerradoFijo(c, estatico)) continue;
+      for (const id of [c.id, estatico?.id].filter(Boolean).map(String)) {
+        if (Object.prototype.hasOwnProperty.call(map, id)) {
+          delete map[id];
+          changed = true;
+        }
+      }
+    }
+    if (!changed) return;
     try {
       localStorage.setItem(ACTIVO_KEY, JSON.stringify(map));
     } catch {
@@ -119,16 +154,57 @@
     return `clientes/${archivo}`;
   }
 
-  /** Activo salvo override localStorage o flag en datos/estático. */
+  function flagActivo(val) {
+    if (val === false || val === 0 || val === '0' || val === 'false') return false;
+    if (val === true || val === 1 || val === '1' || val === 'true') return true;
+    return null;
+  }
+
+  /** Clientes cerrados aunque la API Laravel aún no tenga columna `activo`. */
+  function esClienteCerradoFijo(c, estatico) {
+    const slug = String(c.slug || estatico?.slug || '')
+      .toLowerCase()
+      .replace(/\s+/g, '');
+    const abrev = String(c.abrev || estatico?.abrev || '')
+      .toLowerCase()
+      .trim();
+    const nombre = String(c.nombre || estatico?.nombre || '')
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+      .trim();
+    const id = String(c.id || estatico?.id || '').toLowerCase();
+    if (id === 'cli-joyas-mercury') return true;
+    if (abrev === 'jm') return true;
+    if (slug === 'joyasmercury' || slug === 'joyas-mercury' || slug === 'jm') return true;
+    if (nombre === 'joyas mercury' || nombre.startsWith('joyas mercury')) return true;
+    return false;
+  }
+
+  /**
+   * Activo salvo:
+   * - lista fija de cerrados (Joyas Mercury) — siempre gana, ignora Reactivar,
+   * - flag `activo: false` en estático (gana sobre API),
+   * - flag en API,
+   * - override localStorage (Reactivar) solo para el resto.
+   */
   function esActivo(c) {
-    const id = String(c.id || '');
-    const overrides = leerOverridesActivo();
-    if (id && Object.prototype.hasOwnProperty.call(overrides, id)) {
-      return !!overrides[id];
-    }
-    if (c.activo === false) return false;
     const estatico = findEstatico(c);
-    if (estatico && estatico.activo === false) return false;
+    if (esClienteCerradoFijo(c, estatico)) return false;
+
+    const estFlag = estatico ? flagActivo(estatico.activo) : null;
+    if (estFlag === false) return false;
+
+    const apiFlag = flagActivo(c.activo);
+    if (apiFlag === false) return false;
+
+    const overrides = leerOverridesActivo();
+    const idsOverride = [c.id, estatico?.id].filter(Boolean).map(String);
+    for (const id of idsOverride) {
+      if (Object.prototype.hasOwnProperty.call(overrides, id)) {
+        return !!overrides[id];
+      }
+    }
+
     return true;
   }
 
@@ -165,16 +241,22 @@
     const estatico = findEstatico(c);
     const archivo = archivoDe(c);
     const agente = c.agente || estatico?.agente || '';
-    const id = escapeHtml(c.id || '');
+    /** Preferir id estático para que Reactivar / overrides coincidan con clientes-data. */
+    const idRaw = String(estatico?.id || c.id || '');
+    const id = escapeHtml(idRaw);
+    const cerradoFijo = esClienteCerradoFijo(c, estatico);
+    const accion = cerradoFijo
+      ? '<span class="portal-card__cerrado">Cerrado · etapa entregada</span>'
+      : `<button type="button" class="portal-card__reactivar" data-reactivar="${id}">Reactivar</button>`;
     return `
-    <article class="portal-card portal-card--inactivo"
+    <article class="portal-card portal-card--inactivo"${cerradoFijo ? ' data-cerrado-fijo="1"' : ''}
        style="--card-border:${GRIS.border};--card-bg:${GRIS.bg};--card-text:${GRIS.text}">
       <a href="${hrefFicha(archivo)}" class="portal-card__link">
         <div class="portal-card__tipo">Inactivo · ${escapeHtml(tipoLabel(c.tipo))}${origen === 'api' ? ' · API' : ''}</div>
         <h2 class="portal-card__nombre">${escapeHtml(c.nombre)}</h2>
         <div class="portal-card__abrev">${escapeHtml(c.abrev)}${agente ? ` · ${escapeHtml(agente)}` : ''}</div>
       </a>
-      <button type="button" class="portal-card__reactivar" data-reactivar="${id}">Reactivar</button>
+      ${accion}
     </article>`;
   }
 
@@ -197,6 +279,7 @@
 
   function renderTarjetas(lista, origen) {
     const unica = dedupeClientes(lista);
+    purgarOverridesCerrados(unica);
     const activos = [];
     const inactivos = [];
     unica.forEach((c) => (esActivo(c) ? activos : inactivos).push(c));
@@ -226,13 +309,20 @@
     e.stopPropagation();
     const id = btn.getAttribute('data-reactivar');
     if (!id) return;
+    const cli = (listaActual || []).find(
+      (c) => String(c.id) === id || String(findEstatico(c)?.id || '') === id
+    );
+    if (cli && esClienteCerradoFijo(cli, findEstatico(cli))) {
+      console.info('Portal: Joyas Mercury permanece cerrada (no se reactiva desde UI)');
+      return;
+    }
     guardarOverrideActivo(id, true);
     renderTarjetas(listaActual, origenActual);
   });
 
   async function cargar() {
     try {
-      const res = await fetch(API_URL);
+      const res = await fetch(API_URL, { cache: 'no-store' });
       if (!res.ok) throw new Error('API no disponible');
       const data = await res.json();
       if (!Array.isArray(data) || !data.length) throw new Error('API vacía');

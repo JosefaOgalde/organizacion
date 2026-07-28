@@ -126,11 +126,12 @@ window.CLIENTES_PORTAL = [
   {
     archivo: 'joyasmercury/index.html?v=secciones3',
     id: 'cli-joyas-mercury',
-    slug: 'joyas-mercury',
-    slugAliases: ['jm', 'joyasmercury'],
+    slug: 'joyasmercury',
+    slugAliases: ['jm', 'joyas-mercury'],
     nombre: 'Joyas Mercury',
     abrev: 'JM',
     tipo: 'Freelance',
+    /** Etapa 2 entregada — portal: gris / sección inactivos */
     activo: false,
     color: { border: '#C45A7A', bg: '#F8E8EE', text: '#6E2A40' },
     agente: 'Dev WooCommerce Fase 2',

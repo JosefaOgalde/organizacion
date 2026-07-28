@@ -12,6 +12,7 @@ namespace Database\Seeders;
 
 use App\Models\Cliente;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class ClienteSeeder extends Seeder
 {
@@ -64,18 +65,23 @@ class ClienteSeeder extends Seeder
                 continue;
             }
             $abrev = strtoupper((string) ($c['abrev'] ?? substr($slug, 0, 4)));
+            $payload = [
+                'nombre' => $c['nombre'] ?? $slug,
+                'abrev' => $abrev,
+                'tipo' => $c['tipo'] ?? 'freelance',
+                'color_border' => $c['color_border'] ?? null,
+                'color_bg' => $c['color_bg'] ?? null,
+                'color_text' => $c['color_text'] ?? null,
+                'agente' => $c['agente'] ?? null,
+                'resumen' => $c['resumen'] ?? null,
+            ];
+            // Solo si la columna existe (migración add_activo en DBs viejas).
+            if (Schema::hasColumn('clientes', 'activo')) {
+                $payload['activo'] = array_key_exists('activo', $c) ? (bool) $c['activo'] : true;
+            }
             Cliente::updateOrCreate(
                 ['slug' => $slug],
-                [
-                    'nombre' => $c['nombre'] ?? $slug,
-                    'abrev' => $abrev,
-                    'tipo' => $c['tipo'] ?? 'freelance',
-                    'color_border' => $c['color_border'] ?? null,
-                    'color_bg' => $c['color_bg'] ?? null,
-                    'color_text' => $c['color_text'] ?? null,
-                    'agente' => $c['agente'] ?? null,
-                    'resumen' => $c['resumen'] ?? null,
-                ]
+                $payload
             );
             $preferidoPorAbrev[$abrev] = $slug;
         }

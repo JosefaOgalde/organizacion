@@ -62,5 +62,7 @@
 - **Imágenes en tareas:** en el detalle de la tarea, bloque **Imágenes de la tarea** → `+ Guardar imágenes`. Se comprimen y suben a disco vía `POST /api/tarea-imagen` (`index/uploads/tarea-imagenes/…`); en `localStorage` solo queda la **URL** (evita “almacenamiento lleno”). Landing del cliente: sección **Tareas con imágenes**. Requiere `node scripts/organizacion-server.js` corriendo.
 
 ### Impresoreando — Panel socios 50/50
-**Antes de tocar nada:** leer `docs/impresoreando/CONTEXTO.md` (fuente única: rutas, deuda, pedidos, SKUs, status correo, checklist). **No reexplorar** `panel.js` ni el seed salvo bug concreto.
-Resumen 1 línea: panel `index/clientes/impresoreando/panel/` · live `data/impresoreando-live.json` · API `/api/impresoreando` · pedidos `PED-00n` con estado select · solo ventas bajan deuda · PLA+ negro `$17986/kg`.
+**Antes de tocar nada:** leer `docs/impresoreando/CONTEXTO.md` (fuente única: rutas, deuda, pedidos, SKUs, ventas I00000n, historial, status correo, checklist). **No reexplorar** `panel.js` ni el seed salvo bug concreto.
+Resumen 1 línea: panel `…/impresoreando/panel/` · live `data/impresoreando-live.json` · API `/api/impresoreando` · pedidos `PED-00n` · ventas `I00000n` · historial · solo ventas bajan deuda · PLA+ negro `$17986/kg`. **Impresoras:** «nueva»/Elegoo = Centauri Carbon 2 · «antigua» = Ender 3 V2 Neo Sprite Neo (otro filamento).
+**Cliente nuevo:** mínimo **nombre** + **origen** (SIE = trabajo Nico · MKOF = trabajo Josefa). Puede haber segundo nombre. **No** auto-agregar SIE (solo migración histórica). Sin SKU → generar; sin costo → pedir imagen.
+**Frases gatillo:** «pedidos e impresoreando» → pedir nombre+origen+ítems+precio. «calcular costo producto impresoreando» → pedir imagen. Estado de pedidos visible en Resumen.

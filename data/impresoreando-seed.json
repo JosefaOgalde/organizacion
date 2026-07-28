@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-19T19:45:00.000Z",
+    "actualizado": "2026-07-26T02:12:08.388Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -26,7 +26,85 @@
       "montoNetoClp": 800442,
       "deudaJosefaClp": 400221
     },
-    "pedidoSeq": 3
+    "pedidoSeq": 8,
+    "ventaSeq": 10,
+    "ventaCodigoPrefijo": "I",
+    "clientesHistorial": [
+      {
+        "cliente": "Cata SIE",
+        "ventaCodigos": [
+          "I000004",
+          "I000010"
+        ],
+        "ventaIds": [
+          "ven-cata-gatos-001",
+          "ven-cata-bob-010"
+        ],
+        "totalNeto": 17000,
+        "compras": 2
+      },
+      {
+        "cliente": "Gianni SIE",
+        "ventaCodigos": [
+          "I000002",
+          "I000006"
+        ],
+        "ventaIds": [
+          "ven-gianni-bulldog-002",
+          "ven-gianni-bob-001"
+        ],
+        "totalNeto": 22000,
+        "compras": 2
+      },
+      {
+        "cliente": "Marcia SIE",
+        "ventaCodigos": [
+          "I000005",
+          "I000009"
+        ],
+        "ventaIds": [
+          "ven-marcia-stanley-001",
+          "ven-marcia-soporte-009"
+        ],
+        "totalNeto": 6000,
+        "compras": 2
+      },
+      {
+        "cliente": "Rebe SIE",
+        "ventaCodigos": [
+          "I000007",
+          "I000008"
+        ],
+        "ventaIds": [
+          "ven-rebe-monster-007",
+          "ven-rebe-stanley-008"
+        ],
+        "totalNeto": 13000,
+        "compras": 2
+      },
+      {
+        "cliente": "Juan SIE",
+        "ventaCodigos": [
+          "I000003"
+        ],
+        "ventaIds": [
+          "ven-juan-naves-003"
+        ],
+        "totalNeto": 15000,
+        "compras": 1
+      },
+      {
+        "cliente": "Tito MKOF",
+        "ventaCodigos": [
+          "I000001"
+        ],
+        "ventaIds": [
+          "ven-mrpqov4c"
+        ],
+        "totalNeto": 15000,
+        "compras": 1
+      }
+    ]
   },
   "parametros": {
     "tarifaKwhClp": 200,
@@ -38,6 +116,33 @@
     "impresoraModelo": "Elegoo Centauri Carbon 2",
     "impresoraNotas": "Pico nominal 1100 W @ 220 V. Promedio estimado en impresión PLA con cama caliente: 0,28 kW. Tarifa ~$200/kWh (precio efectivo boleta residencial Chile 2026; ajústala a tu cuenta)."
   },
+  "impresoras": [
+    {
+      "id": "imp-centauri-carbon-2",
+      "nombre": "Elegoo Centauri Carbon 2",
+      "alias": "nueva",
+      "activaDefault": true,
+      "extrusor": "Sistema stock / multicolor",
+      "consumoImpresoraKw": 0.28,
+      "tarifaKwhClp": 200,
+      "recargoFijoClp": 0,
+      "costoFilamentoDefaultKgClp": 0,
+      "notas": "Impresora NUEVA (Elegoo). Pico ~1100 W @ 220 V · promedio PLA ~0,28 kW. Default salvo que digan antigua/Ender."
+    },
+    {
+      "id": "imp-ender-3-v2-neo",
+      "nombre": "Creality Ender 3 V2 Neo",
+      "alias": "antigua",
+      "activaDefault": false,
+      "extrusor": "Sprite Neo (extrusión directa)",
+      "consumoImpresoraKw": 0.16,
+      "tarifaKwhClp": 200,
+      "recargoFijoClp": 1000,
+      "costoFilamentoDefaultKgClp": 0,
+      "filamentoOtro": true,
+      "notas": "Impresora ANTIGUA (Ender 3 V2 Neo · Sprite Neo). Otro filamento (definir $/kg en Operación o en el producto). Recargo fijo $1.000 + consumo ~0,16 kW. Si dicen «impresora antigua» → esta."
+    }
+  ],
   "gastos": [
     {
       "id": "gas-reg-312435",
@@ -273,24 +378,42 @@
           "monto": 1000
         }
       ]
+    },
+    {
+      "id": "gas-diseno-dragon",
+      "fecha": "2026-07-26",
+      "categoria": "diseño",
+      "descripcion": "Diseño Dragón (comprado)",
+      "proveedor": "Diseño digital",
+      "cantidad": 1,
+      "montoNeto": 3000,
+      "notas": "Diseño digital del Dragón (DRAGON001). No se suma al costo unitario. Gastos socios · 50/50.",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "descripcion": "Diseño Dragón",
+          "monto": 3000
+        }
+      ]
     }
   ],
   "ventas": [
     {
       "id": "ven-mrpqov4c",
       "fecha": "2026-07-18",
-      "cliente": "Tito",
+      "cliente": "Tito MKOF",
       "descripcion": "Portacompletos ×6 (4 perros + 2 gatos)",
       "cantidad": 6,
       "montoNeto": 15000,
       "canal": "WhatsApp",
-      "notas": "Cliente Tito · 4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000",
-      "socioRegistro": "Ambos"
+      "notas": "Cliente Tito MKOF · 4 Portacompletos perro + 2 Portacompletos gato · total cobrado $15.000",
+      "socioRegistro": "Ambos",
+      "codigo": "I000001"
     },
     {
       "id": "ven-cata-gatos-001",
       "fecha": "2026-07-23",
-      "cliente": "Cata",
+      "cliente": "Cata SIE",
       "descripcion": "4× Porta Completos Gato (2 negros + 2 naranjos)",
       "cantidad": 4,
       "montoBruto": 10000,
@@ -317,12 +440,13 @@
           "costoUnitarioClp": 3421.17,
           "filamento": "PLA naranjo"
         }
-      ]
+      ],
+      "codigo": "I000004"
     },
     {
       "id": "ven-gianni-bulldog-002",
       "fecha": "2026-07-18",
-      "cliente": "Gianni",
+      "cliente": "Gianni SIE",
       "descripcion": "PED-002 · 1× Macetero + 4× Porta Completo Bulldog · Gianni",
       "cantidad": 5,
       "montoBruto": 15000,
@@ -351,12 +475,13 @@
           "costoUnitarioClp": 1335.86,
           "filamento": "PLA+ negro"
         }
-      ]
+      ],
+      "codigo": "I000002"
     },
     {
       "id": "ven-juan-naves-003",
       "fecha": "2026-07-19",
-      "cliente": "Juan",
+      "cliente": "Juan SIE",
       "descripcion": "PED-003 · 2× Naves espaciales · Juan",
       "cantidad": 2,
       "montoBruto": 15000,
@@ -385,12 +510,13 @@
           "costoUnitarioClp": 915.14,
           "filamento": "PLA blanco"
         }
-      ]
+      ],
+      "codigo": "I000003"
     },
     {
       "id": "ven-marcia-stanley-001",
       "fecha": "2026-07-23",
-      "cliente": "Marcia",
+      "cliente": "Marcia SIE",
       "descripcion": "1× Llavero Porta Lipstick Stanley",
       "cantidad": 1,
       "montoBruto": 3000,
@@ -409,12 +535,13 @@
           "costoUnitarioClp": 477.93,
           "filamento": "PLA blanco"
         }
-      ]
+      ],
+      "codigo": "I000005"
     },
     {
       "id": "ven-gianni-bob-001",
       "fecha": "2026-07-23",
-      "cliente": "Gianni",
+      "cliente": "Gianni SIE",
       "descripcion": "1× Porta Bob Esponja",
       "cantidad": 1,
       "montoBruto": 7000,
@@ -423,6 +550,107 @@
       "costoTotal": 998.17,
       "canal": "WhatsApp",
       "notas": "1× Porta Bob Esponja · cobrado $7.000",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "sku": "PTBOBES001",
+          "nombre": "Porta Bob Esponja",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 998.17,
+          "filamento": "multicolor"
+        }
+      ],
+      "codigo": "I000006"
+    },
+    {
+      "id": "ven-rebe-monster-007",
+      "codigo": "I000007",
+      "fecha": "2026-07-26",
+      "cliente": "Rebe SIE",
+      "descripcion": "PED-001 · 1× Porta Lata Monster · Rebe SIE",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 2839.6,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-001 · 1× vaso/porta Monster · cobrado $7.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-rebe-plmons-001",
+      "pedidoNumero": "PED-001",
+      "items": [
+        {
+          "sku": "PLMONS001",
+          "nombre": "Porta Lata Monster",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 2839.6,
+          "filamento": "PLA+ negro"
+        }
+      ]
+    },
+    {
+      "id": "ven-rebe-stanley-008",
+      "codigo": "I000008",
+      "fecha": "2026-07-26",
+      "cliente": "Rebe SIE",
+      "descripcion": "2× Llavero Porta Lipstick Stanley (rojo / círculo blanco)",
+      "cantidad": 2,
+      "montoBruto": 6000,
+      "descuentoClp": 0,
+      "montoNeto": 6000,
+      "costoTotal": 955.86,
+      "canal": "WhatsApp",
+      "notas": "2× Stanley impresos en rojo con círculo blanco · cobrado $6.000",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "sku": "LLSTANDL001",
+          "nombre": "Llavero Porta Lipstick Stanley",
+          "cantidad": 2,
+          "precioUnitarioClp": 3000,
+          "costoUnitarioClp": 477.93,
+          "filamento": "PLA+ rojo · círculo blanco"
+        }
+      ]
+    },
+    {
+      "id": "ven-marcia-soporte-009",
+      "codigo": "I000009",
+      "fecha": "2026-07-26",
+      "cliente": "Marcia SIE",
+      "descripcion": "1× Soporte celular (filamento blanco)",
+      "cantidad": 1,
+      "montoBruto": 3000,
+      "descuentoClp": 0,
+      "montoNeto": 3000,
+      "canal": "WhatsApp",
+      "notas": "1× soporte celular · filamento blanco · cobrado $3.000",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 1,
+          "precioUnitarioClp": 3000,
+          "filamento": "PLA blanco"
+        }
+      ]
+    },
+    {
+      "id": "ven-cata-bob-010",
+      "codigo": "I000010",
+      "fecha": "2026-07-26",
+      "cliente": "Cata SIE",
+      "descripcion": "1× Porta Bob Esponja",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 998.17,
+      "canal": "WhatsApp",
+      "notas": "1× Porta Bob Esponja · costo ya calculado · cobrado $7.000",
       "socioRegistro": "Ambos",
       "items": [
         {
@@ -544,7 +772,7 @@
       "minutosPintado": 0,
       "unidadesMetal": 0,
       "unidadesBolsa": 1,
-      "precioVentaSugeridoClp": 0,
+      "precioVentaSugeridoClp": 7000,
       "partesSlicer": [
         {
           "pieza": "brazos+piernas",
@@ -676,6 +904,87 @@
       "precioVentaSugeridoClp": 0,
       "costoSlicerRef": 0.52,
       "notas": "Placa 2 uds → 1 ud 26,33 g · 0,78 h · PLA blanco. +$50 argolla."
+    },
+    {
+      "id": "prod-llavero-pesa-rusa",
+      "sku": "LLPESRU001",
+      "nombre": "Llavero Pesa Rusa",
+      "activo": true,
+      "filamentoGramos": 16.78,
+      "costoFilamentoKgClp": 16829,
+      "horasImpresion": 0.59,
+      "minutosPintado": 0,
+      "unidadesMetal": 1,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 1000,
+      "pendienteCosto": false,
+      "notas": "Slicer 1 ud: modelo 16.31 g + descargado 0.47 g = 16.78 g · 5.58 m · 35 m 31 s · coste slicer 0,34. PLA amarillo $16.829/kg. +$50 argolla. Costo ~$415,43 · PVP sugerido +100% ~$830,86. Precio venta $1.000.",
+      "filamentoModeloGramos": 16.31,
+      "filamentoSoportesGramos": 0,
+      "filamentoPurgeGramos": 0.47,
+      "filamentoMetros": 5.58,
+      "costoSlicerRef": 0.34,
+      "editadoLocal": true
+    },
+    {
+      "id": "prod-soporte-celular",
+      "sku": "SOPCEL001",
+      "nombre": "Soporte celular",
+      "activo": true,
+      "filamentoGramos": 34.46,
+      "costoFilamentoKgClp": 16829,
+      "horasImpresion": 0.96,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 4000,
+      "pendienteCosto": false,
+      "notas": "Slicer 1 ud: modelo 33.99 g + descargado 0.47 g = 34.46 g · 11.46 m · 57 m 30 s · coste slicer 0,69. PLA rosado pastel (ref $/kg color $16.829). Costo ~$683,69 · 367,38. Precio venta $4.000.",
+      "filamentoModeloGramos": 33.99,
+      "filamentoSoportesGramos": 0,
+      "filamentoPurgeGramos": 0.47,
+      "filamentoMetros": 11.46,
+      "costoSlicerRef": 0.69,
+      "editadoLocal": true
+    },
+    {
+      "id": "prod-dragon",
+      "sku": "DRAGON001",
+      "nombre": "Dragón",
+      "activo": true,
+      "filamentoModeloGramos": 192.38,
+      "filamentoSoportesGramos": 83.03,
+      "filamentoPurgeGramos": 0,
+      "filamentoMetros": 91.6,
+      "filamentoGramos": 275.41,
+      "costoFilamentoKgClp": 16829,
+      "horasImpresion": 14.12,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 11000,
+      "costoSlicerRef": 5.51,
+      "pendienteCosto": false,
+      "editadoLocal": true,
+      "notas": "Slicer (medición alta): modelo 192.38 g + soportes ~83.03 g = 275.41 g · 91.6 m · 14 h 7 m · coste slicer 5,51. PLA color $16.829/kg. Costo ~$5.475,59 · PVP $11.000."
+    },
+    {
+      "id": "prod-torreon",
+      "sku": "TORREON001",
+      "nombre": "Torreón",
+      "activo": true,
+      "impresoraId": "imp-ender-3-v2-neo",
+      "filamentoGramos": 120,
+      "costoFilamentoKgClp": 16829,
+      "horasImpresion": 4,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 6500,
+      "pendienteCosto": false,
+      "estimacionSinSlicer": true,
+      "editadoLocal": true,
+      "notas": "Estimación sin registro slicer · Ender 3 V2 Neo (Sprite Neo): ~120 g · ~4 h · PLA color $16829/kg + recargo perfil Ender $1.000. PVP sugerido $6.500."
     }
   ],
   "planAds": {
@@ -743,14 +1052,14 @@
       "id": "ped-rebe-plmons-001",
       "numero": "PED-001",
       "fecha": "2026-07-18",
-      "cliente": "Rebe",
+      "cliente": "Rebe SIE",
       "canal": "WhatsApp",
       "items": [
         {
           "sku": "PLMONS001",
           "nombre": "Porta Lata Monster",
           "cantidad": 1,
-          "precioUnitarioClp": 5679.2,
+          "precioUnitarioClp": 7000,
           "costoUnitarioClp": 2839.6,
           "filamento": "PLA+ negro",
           "estado": "listo",
@@ -758,10 +1067,10 @@
           "enImpresion": 0
         }
       ],
-      "montoNeto": 5679.2,
-      "estado": "listo",
-      "ventaId": null,
-      "notas": "1× Porta lata Monster · PLA+ negro · listo para entregar",
+      "montoNeto": 7000,
+      "estado": "transferido",
+      "ventaId": "ven-rebe-monster-007",
+      "notas": "1× Porta Lata Monster · transferido a venta I000007 · $7.000",
       "socioRegistro": "Ambos",
       "creado": "2026-07-18T04:29:00.000Z",
       "costoTotal": 2839.6
@@ -770,7 +1079,7 @@
       "id": "ped-gianni-bulldog-002",
       "numero": "PED-002",
       "fecha": "2026-07-18",
-      "cliente": "Gianni",
+      "cliente": "Gianni SIE",
       "canal": "WhatsApp",
       "items": [
         {
@@ -812,7 +1121,7 @@
       "id": "ped-naves-espaciales-003",
       "numero": "PED-003",
       "fecha": "2026-07-19",
-      "cliente": "Juan",
+      "cliente": "Juan SIE",
       "canal": "WhatsApp",
       "items": [
         {
@@ -849,6 +1158,162 @@
       "socioRegistro": "Ambos",
       "creado": "2026-07-19T19:40:00.000Z",
       "costoTotal": 1562.69
+    },
+    {
+      "id": "ped-ele-pesa-rusa-004",
+      "numero": "PED-004",
+      "fecha": "2026-07-26",
+      "cliente": "Ele SIE",
+      "clienteNombre": "Ele",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "LLPESRU001",
+          "nombre": "Llavero Pesa Rusa",
+          "cantidad": 1,
+          "precioUnitarioClp": 1000,
+          "costoUnitarioClp": 415.43,
+          "filamento": "PLA amarillo",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 1000,
+      "descuentoClp": 0,
+      "montoNeto": 1000,
+      "costoTotal": 415.43,
+      "estado": "listo",
+      "ventaId": null,
+      "notas": "1× Llavero Pesa Rusa amarillo · listo/impreso · costo $415,43 · PVP $1.000",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-26T01:40:00.000Z"
+    },
+    {
+      "id": "ped-maria-paz-soporte-005",
+      "numero": "PED-005",
+      "fecha": "2026-07-26",
+      "cliente": "María Paz SIE",
+      "clienteNombre": "María",
+      "clienteSegundoNombre": "Paz",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 1,
+          "precioUnitarioClp": 4000,
+          "costoUnitarioClp": 683.69,
+          "filamento": "PLA rosado pastel",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 4000,
+      "descuentoClp": 0,
+      "montoNeto": 4000,
+      "costoTotal": 683.69,
+      "estado": "listo",
+      "ventaId": null,
+      "notas": "1× Soporte celular rosado pastel · listo/impreso · costo $683,69 · precio venta $4.000",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-26T01:44:08.009Z"
+    },
+    {
+      "id": "ped-rebe-dragon-006",
+      "numero": "PED-006",
+      "fecha": "2026-07-26",
+      "cliente": "Rebe SIE",
+      "clienteNombre": "Rebe",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "DRAGON001",
+          "nombre": "Dragón",
+          "cantidad": 1,
+          "precioUnitarioClp": 11000,
+          "costoUnitarioClp": 5475.59,
+          "filamento": "PLA color",
+          "estado": "en_impresion",
+          "listos": 0,
+          "enImpresion": 1
+        }
+      ],
+      "montoBruto": 11000,
+      "descuentoClp": 0,
+      "montoNeto": 11000,
+      "costoTotal": 5475.59,
+      "estado": "en_impresion",
+      "ventaId": null,
+      "notas": "1× Dragón · en impresión · costo $5.475,59 · PVP $11.000",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-26T01:49:41.589Z"
+    },
+    {
+      "id": "ped-juan-torreon-007",
+      "numero": "PED-007",
+      "fecha": "2026-07-26",
+      "cliente": "Juan SIE",
+      "clienteNombre": "Juan",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "TORREON001",
+          "nombre": "Torreón",
+          "cantidad": 1,
+          "precioUnitarioClp": 6500,
+          "costoUnitarioClp": 3293.48,
+          "filamento": "PLA color (estimación)",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 6500,
+      "descuentoClp": 0,
+      "montoNeto": 6500,
+      "costoTotal": 3293.48,
+      "estado": "listo",
+      "ventaId": null,
+      "notas": "1× Torreón · listo · costo estimado $3.293,48 (base ~$2.293,48 + $1.000 impresora antigua) · PVP sugerido $6.500",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-26T02:01:28.779Z"
+    },
+    {
+      "id": "ped-juan-bob-008",
+      "numero": "PED-008",
+      "fecha": "2026-07-26",
+      "cliente": "Juan MKOF",
+      "clienteNombre": "Juan",
+      "clienteOrigen": "MKOF",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "PTBOBES001",
+          "nombre": "Porta Bob Esponja",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 998.17,
+          "filamento": "multicolor",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 998.17,
+      "estado": "listo",
+      "ventaId": null,
+      "notas": "1× Porta Bob Esponja · listo · costo $998,17 (catálogo) · PVP $7.000",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-26T02:01:28.779Z"
     }
   ]
 }

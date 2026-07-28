@@ -107,6 +107,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('abrev', 16);
             $table->string('tipo', 32)->default('freelance');
+            $table->boolean('activo')->default(true);
             $table->string('color_border', 7)->nullable();
             $table->string('color_bg', 7)->nullable();
             $table->string('color_text', 7)->nullable();
@@ -123,9 +124,62 @@ return new class extends Migration
 };
 PHP;
     file_put_contents($target, $mig);
-    echo "  · Migración create_clientes_table creada\n";
+    echo "  · Migración create_clientes_table creada (con activo)\n";
 } else {
     echo "  · Migración clientes ya existe\n";
+}
+
+// DB vieja sin columna activo → migración add_activo (idempotente)
+$hasAddActivo = false;
+foreach (glob($migDir . DIRECTORY_SEPARATOR . '*add_activo*clientes*') ?: [] as $f) {
+    $hasAddActivo = true;
+    break;
+}
+if (!$hasAddActivo) {
+    $stamp = date('Y_m_d_His', time() + 1);
+    $targetAdd = $migDir . DIRECTORY_SEPARATOR . "{$stamp}_add_activo_to_clientes_table.php";
+    $srcAdd = $ej . DIRECTORY_SEPARATOR . 'migration_add_activo_to_clientes.php';
+    if (is_file($srcAdd)) {
+        // Quitar bloque de comentario de documentación del ejemplo
+        $raw = file_get_contents($srcAdd);
+        $raw = preg_replace('/^<\?php\s*\/\*\*.*?\*\/\s*/s', "<?php\n\n", $raw, 1) ?: $raw;
+        file_put_contents($targetAdd, $raw);
+    } else {
+        $migAdd = <<<'PHP'
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        if (!Schema::hasTable('clientes') || Schema::hasColumn('clientes', 'activo')) {
+            return;
+        }
+        Schema::table('clientes', function (Blueprint $table) {
+            $table->boolean('activo')->default(true);
+        });
+    }
+
+    public function down(): void
+    {
+        if (!Schema::hasTable('clientes') || !Schema::hasColumn('clientes', 'activo')) {
+            return;
+        }
+        Schema::table('clientes', function (Blueprint $table) {
+            $table->dropColumn('activo');
+        });
+    }
+};
+PHP;
+        file_put_contents($targetAdd, $migAdd);
+    }
+    echo "  · Migración add_activo_to_clientes_table creada\n";
+} else {
+    echo "  · Migración add_activo ya existe\n";
 }
 
 echo "\nSiguiente (en backend):\n";

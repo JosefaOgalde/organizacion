@@ -260,6 +260,14 @@ body > .portal-nav ~ p {
   color: #222;
 }
 
+.portal-card__cerrado {
+  align-self: flex-start;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6a6a6a;
+  padding: 0.25rem 0;
+}
+
 /* —— Página con identidad de cliente/proyecto (misma paleta que tarjetas) —— */
 body.portal-body--themed {
   background: var(--card-bg);
