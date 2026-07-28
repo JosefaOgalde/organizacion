@@ -115,8 +115,14 @@
   function hrefFicha(archivo) {
     const p = (location.pathname || '').replace(/\\/g, '/');
     const enListadoClientes = /\/index\/clientes\/?(index\.html)?$/i.test(p);
-    if (enListadoClientes) return archivo;
-    return `clientes/${archivo}`;
+    const destino = enListadoClientes ? archivo : `clientes/${archivo}`;
+    const forzarDisco = new URLSearchParams(location.search || '').get('disco') === '1';
+    if (!forzarDisco) return destino;
+
+    const hashIndex = destino.indexOf('#');
+    const sinHash = hashIndex >= 0 ? destino.slice(0, hashIndex) : destino;
+    const hash = hashIndex >= 0 ? destino.slice(hashIndex) : '';
+    return `${sinHash}${sinHash.includes('?') ? '&' : '?'}disco=1${hash}`;
   }
 
   /** Activo salvo override localStorage o flag en datos/estático. */
