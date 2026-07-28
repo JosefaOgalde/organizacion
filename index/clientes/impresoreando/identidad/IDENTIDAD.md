@@ -4,11 +4,10 @@
 
 | Archivo | Uso |
 |---------|-----|
-| `logo-oficial.png` | **Marca en UI ahora** (wordmark transparente · `?v=ima2-20260728`). Landing, panel, venta, catálogo |
-| `logo-marca.png` | Copia anterior (mismo arte; no usar en UI — caché vieja) |
-| `logo-impresoreando.png` | Misma marca (transparente) |
-| `logo-impresoreando-transparente.png` | Copia transparente |
-| `logo-impresoreando-claro.png` | Sobre blanco (referencia / ima 2) |
+| `logo-ima2.png` | **Marca en UI ahora** (wordmark nítido sobre blanco · `?v=ima2-claro-1`). Landing, panel, venta, catálogo |
+| `logo-oficial.png` / `logo-marca.png` | Versiones anteriores (caché vieja; no usar en UI) |
+| `logo-impresoreando-claro.png` | Misma arte que `logo-ima2` (fuente del archivo vigente) |
+| `logo-impresoreando-transparente.png` | Wordmark transparente (alternativa) |
 | `logo-impresoreando-oscuro.png` | Sobre negro |
 | `logo-impresoreando-fuente.png` | Canvas original 1536×1024 (respaldo; no usar en UI) |
 | `logo-impresoreando.svg` | Aproximación vectorial de apoyo |
@@ -20,7 +19,7 @@
 
 - Navy: `#163a6b`
 - Naranja filament: `#f07a28`
-- Fondo UI: crema (el logo va **transparente**, sin caja blanca)
+- Fondo UI: crema
 
 ## Regla
 
