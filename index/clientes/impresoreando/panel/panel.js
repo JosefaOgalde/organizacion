@@ -1967,6 +1967,52 @@
       changed = true;
     }
 
+    // PED-010 · Gianni SIE · 2× Soporte celular negro · fiado (paga 18 ago) · $8.000
+    const id010 = 'ped-gianni-soporte-010';
+    const prodSop010 = (d.productos || []).find(
+      (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
+    );
+    const costoSop010 = prodSop010 ? costoProdRough(d, prodSop010) : 683.69;
+    const precioSop010 = 4000;
+    const cant010 = 2;
+    if (!d.pedidos.some((p) => p.id === id010 || p.numero === 'PED-010')) {
+      d.pedidos.push({
+        id: id010,
+        numero: 'PED-010',
+        fecha: '2026-07-28',
+        cliente: 'Gianni SIE',
+        clienteNombre: 'Gianni',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: cant010,
+            precioUnitarioClp: precioSop010,
+            costoUnitarioClp: round2(costoSop010),
+            filamento: 'PLA+ negro',
+            estado: 'pendiente',
+            listos: 0,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioSop010 * cant010,
+        descuentoClp: 0,
+        montoNeto: precioSop010 * cant010,
+        costoTotal: round2(costoSop010 * cant010),
+        estado: 'pendiente',
+        ventaId: null,
+        fiado: true,
+        fechaPagoEsperada: '2026-08-18',
+        pagoNotas: 'Paga el 18 de agosto',
+        notas: `2× Soporte celular negro · fiado · paga 2026-08-18 · PVP $${precioSop010}/u · total $${precioSop010 * cant010}`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-28T15:40:00.000Z',
+      });
+      changed = true;
+    }
+
     const maxNum = d.pedidos.reduce((m, p) => {
       const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
       return Math.max(m, n);
@@ -3472,6 +3518,11 @@
           <td><strong>${escapeHtml(p.numero || '')}</strong><div class="imp-muted">${escapeHtml(p.fecha || '')}</div></td>
           <td>
             <strong>${escapeHtml(p.cliente || '—')}</strong>
+            ${
+              p.fiado || p.fechaPagoEsperada
+                ? `<div class="imp-badge">Fiado · paga ${escapeHtml(p.fechaPagoEsperada || '—')}</div>`
+                : ''
+            }
             <div class="imp-pedido-items">${renderItemsPedido(p)}</div>
             ${p.notas ? `<div class="imp-muted">${escapeHtml(p.notas)}</div>` : ''}
           </td>
@@ -3535,6 +3586,15 @@
             </select>
           </label>
           <label>Canal<input name="canal" placeholder="WhatsApp / Instagram / feria" value="WhatsApp" /></label>
+          <label>Fiado (paga después)
+            <select name="fiado" id="pedido-fiado">
+              <option value="no" selected>No · cobrado / al contado</option>
+              <option value="si">Sí · paga más adelante</option>
+            </select>
+          </label>
+          <label>Fecha de pago (si fiado)
+            <input name="fechaPagoEsperada" type="date" id="pedido-fecha-pago" />
+          </label>
           <label>Quién
             <select name="socioRegistro">
               <option value="Ambos" selected>Ambos</option>
@@ -3542,10 +3602,10 @@
               <option value="Nicolás">Nicolás</option>
             </select>
           </label>
-          <label class="imp-form-span">Notas<textarea name="notas" rows="2" placeholder="Ej. PLA negro"></textarea></label>
+          <label class="imp-form-span">Notas<textarea name="notas" rows="2" placeholder="Ej. PLA negro · paga el 18 ago"></textarea></label>
           <div class="imp-form-actions">
             <button class="imp-btn imp-btn--primary" type="submit">Registrar pedido</button>
-            <span class="imp-muted">Se asigna el siguiente PED-xxx automáticamente · status en Resumen</span>
+            <span class="imp-muted">Fiado → crea recordatorio de cobro en el organizador el día de pago</span>
           </div>
         </form>
       </div>
@@ -3622,6 +3682,12 @@
       const numero = siguienteNumeroPedido();
       data.pedidos = data.pedidos || [];
       const estadoOk = pedidoActivo(estado) ? estado : 'pendiente';
+      const fiadoSi = String(fd.get('fiado') || 'no') === 'si';
+      const fechaPagoEsperada = String(fd.get('fechaPagoEsperada') || '').slice(0, 10);
+      if (fiadoSi && !/^\d{4}-\d{2}-\d{2}$/.test(fechaPagoEsperada)) {
+        setStatus('Si es fiado, indica la fecha de pago (día en que cobramos)', 'warn');
+        return;
+      }
       const ped = {
         id: uid('ped'),
         numero,
@@ -3650,11 +3716,22 @@
         socioRegistro: fd.get('socioRegistro') || 'Ambos',
         creado: new Date().toISOString(),
       };
+      if (fiadoSi) {
+        ped.fiado = true;
+        ped.fechaPagoEsperada = fechaPagoEsperada;
+        ped.pagoNotas = `Paga el ${fechaPagoEsperada}`;
+        if (!ped.notas) ped.notas = `Fiado · paga ${fechaPagoEsperada}`;
+      }
       data.pedidos.push(ped);
       markDirty();
       renderAll();
       activarTab('pedidos');
-      setStatus(`${numero} · ${cliente} · ${estadoOk} · ${money(montoNeto)} · visible en Resumen`, 'warn');
+      setStatus(
+        fiadoSi
+          ? `${numero} · ${cliente} · fiado · cobra ${fechaPagoEsperada} · ${money(montoNeto)} (recordatorio en organizador al sync)`
+          : `${numero} · ${cliente} · ${estadoOk} · ${money(montoNeto)} · visible en Resumen`,
+        'warn'
+      );
       save().catch((err) => setStatus(String(err.message || err), 'err'));
     });
 

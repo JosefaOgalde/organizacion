@@ -6,6 +6,8 @@
  * - Cada pedido ACTIVO (pendiente|listo|en_impresion) = 1 subtarea con número PED-00n
  * - Pedidos transferidos → tarea completada (tachada; no cuentan en «Pedidos activos · N»)
  * - Madre `tarea-imp-pedidos-hoy` resume solo los activos
+ * - Pedidos **fiados** (`fiado` o `fechaPagoEsperada`) → tarea de cobro el día de pago
+ *   (`tipoEntregable: impresoreando-cobro`). Al transferir a venta se completa.
  *
  * Uso:
  *   node scripts/sync-impresoreando-pedidos-organizacion.js
@@ -74,6 +76,8 @@ function taskIdForPedido(ped) {
     'ped-rebe-dragon-006': 'tarea-imp-ped-rebe-dragon-006',
     'ped-juan-torreon-007': 'tarea-imp-ped-juan-torreon-007',
     'ped-juan-bob-008': 'tarea-imp-ped-juan-bob-008',
+    'ped-rebe-soporte-009': 'tarea-imp-ped-rebe-soporte-009',
+    'ped-gianni-soporte-010': 'tarea-imp-ped-gianni-soporte-010',
   };
   if (map[ped.id]) return map[ped.id];
   const slug = String(ped.numero || ped.id || 'x')
@@ -132,6 +136,31 @@ function fechaFinalizacionPedido(ped, tareaExistente) {
   if (tareaExistente?.completada && tareaExistente.fecha) return tareaExistente.fecha;
   if (tareaExistente?.fechaFinalizado) return tareaExistente.fechaFinalizado;
   return hoyChile();
+}
+
+function taskIdForCobro(ped) {
+  const num = String(ped.numero || ped.id || 'x')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-');
+  return `tarea-imp-cobro-${num}`;
+}
+
+function fechaPagoPedido(ped) {
+  const raw = ped.fechaPagoEsperada || ped.fechaPago || ped.pagaEl || '';
+  const d = String(raw).slice(0, 10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : '';
+}
+
+function esFiado(ped) {
+  if (ped.fiado === true) return true;
+  if (fechaPagoPedido(ped)) return true;
+  const blob = `${ped.pagoNotas || ''} ${ped.notas || ''}`.toLowerCase();
+  return /\bfiado\b|\bpaga(r)?\s+el\b|\bcobra(r)?\b/.test(blob) && !!fechaPagoPedido(ped);
+}
+
+function tituloCobro(ped) {
+  const num = ped.numero || 'PED-???';
+  return `[IMP] Cobrar ${num} · ${clienteCorto(ped)} · ${money(ped.montoNeto)}`;
 }
 
 function syncOrgFile(orgPath, pedidos, impActualizado) {
@@ -304,6 +333,93 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
     }
   }
 
+  // Recordatorios de cobro (fiados): tarea el día de pago esperado.
+  const byCobroId = new Map();
+  for (const t of org.tareas) {
+    if (!t || t.tipoEntregable !== 'impresoreando-cobro') continue;
+    if (t.id) byCobroId.set(t.id, t);
+    if (t.pedidoId) byCobroId.set(`ped:${t.pedidoId}`, t);
+    if (t.pedidoNumero) byCobroId.set(`num:${t.pedidoNumero}`, t);
+  }
+  const cobroLiveIds = new Set();
+  for (const ped of pedidos) {
+    const fechaPago = fechaPagoPedido(ped);
+    if (!esFiado(ped) || !fechaPago) continue;
+    const cobroId = taskIdForCobro(ped);
+    cobroLiveIds.add(cobroId);
+    const pagado = String(ped.estado || '').toLowerCase() === 'transferido' || !!ped.ventaId;
+    let t =
+      byCobroId.get(cobroId) ||
+      byCobroId.get(`ped:${ped.id}`) ||
+      byCobroId.get(`num:${ped.numero}`);
+    const titulo = tituloCobro(ped);
+    const notas = pagado
+      ? `Pagado / transferido a venta (${ped.ventaId || ped.ventaCodigo || 'ok'}). Total ${money(ped.montoNeto)}. ${ped.pagoNotas || ped.notas || ''}`
+      : `Fiado · cobrar el ${fechaPago}. Pedido ${ped.numero} · ${itemsTxt(ped)}. Total ${money(ped.montoNeto)}. ${ped.pagoNotas || ped.notas || ''} · Panel: /index/clientes/impresoreando/panel/?tab=pedidos`;
+    if (!t) {
+      t = {
+        id: cobroId,
+        titulo,
+        clienteId: CLI,
+        rolId: ROL,
+        fecha: fechaPago,
+        horaInicio: '09:00',
+        horaFin: '12:00',
+        notas,
+        prioridad: pagado ? 'baja' : 'alta',
+        completada: pagado,
+        pendiente: !pagado,
+        tipoEntregable: 'impresoreando-cobro',
+        parentId: null,
+        pedidoId: ped.id,
+        pedidoNumero: ped.numero,
+        pedidoEstado: ped.estado || 'pendiente',
+        fechaPagoEsperada: fechaPago,
+        fiado: true,
+        linkPanel: '/index/clientes/impresoreando/panel/?tab=pedidos',
+        numeroHistorico: String(ped.numero || '').replace(/\D/g, '').padStart(2, '0') || undefined,
+      };
+      org.tareas.push(t);
+      changed = true;
+    } else {
+      const next = {
+        titulo,
+        notas,
+        fecha: fechaPago,
+        fechaPagoEsperada: fechaPago,
+        completada: pagado,
+        pendiente: !pagado,
+        prioridad: pagado ? 'baja' : 'alta',
+        pedidoId: ped.id,
+        pedidoNumero: ped.numero,
+        pedidoEstado: ped.estado || 'pendiente',
+        fiado: true,
+        clienteId: CLI,
+        rolId: ROL,
+        tipoEntregable: 'impresoreando-cobro',
+        linkPanel: '/index/clientes/impresoreando/panel/?tab=pedidos',
+      };
+      for (const [k, v] of Object.entries(next)) {
+        if (t[k] !== v) {
+          t[k] = v;
+          changed = true;
+        }
+      }
+    }
+  }
+  for (const t of org.tareas) {
+    if (!t || t.tipoEntregable !== 'impresoreando-cobro') continue;
+    if (cobroLiveIds.has(t.id)) continue;
+    // Cobro huérfano: completar si el pedido ya no existe o ya no es fiado.
+    if (!t.completada) {
+      t.completada = true;
+      t.pendiente = false;
+      t.prioridad = 'baja';
+      t.notas = `${t.notas || ''} · Completado (fiado ya no vigente en live).`.trim();
+      changed = true;
+    }
+  }
+
   if (changed) {
     org.respaldoActualizado = new Date().toISOString();
     writeJson(orgPath, org);
@@ -327,6 +443,10 @@ function main() {
   );
   console.log(
     `[sync-imp] Transferidos: ${pedidos.filter((p) => !pedidoActivo(p.estado)).map((p) => p.numero).join(', ') || '(ninguno)'}`
+  );
+  const fiados = pedidos.filter((p) => esFiado(p) && fechaPagoPedido(p));
+  console.log(
+    `[sync-imp] Fiados (cobro): ${fiados.map((p) => `${p.numero}@${fechaPagoPedido(p)}`).join(', ') || '(ninguno)'}`
   );
 
   const targets = listOrgTargets(alsoRespaldo);

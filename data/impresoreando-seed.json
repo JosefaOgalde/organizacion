@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-28T15:28:56.000Z",
+    "actualizado": "2026-07-28T15:36:46.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -26,7 +26,7 @@
       "montoNetoClp": 800442,
       "deudaJosefaClp": 400221
     },
-    "pedidoSeq": 9,
+    "pedidoSeq": 10,
     "ventaSeq": 13,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
@@ -1153,6 +1153,12 @@
       "fecha": "2026-07-28",
       "autor": "Josefa",
       "texto": "Rebe SIE: PED-009 soporte celular negro → I000012 $4.000 · PED-006 dragón morado → I000013 $20.000."
+    },
+    {
+      "id": "bit-gianni-010-fiado",
+      "fecha": "2026-07-28",
+      "autor": "Josefa",
+      "texto": "PED-010 Gianni SIE · 2× Soporte celular negro · $8.000 fiado · paga 18 ago · recordatorio en organizador."
     }
   ],
   "pedidos": [
@@ -1456,6 +1462,40 @@
       "notas": "1× Soporte celular negro · transferido a venta I000012 · $4.000",
       "socioRegistro": "Ambos",
       "creado": "2026-07-28T15:30:00.000Z"
+    },
+    {
+      "id": "ped-gianni-soporte-010",
+      "numero": "PED-010",
+      "fecha": "2026-07-28",
+      "cliente": "Gianni SIE",
+      "clienteNombre": "Gianni",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 2,
+          "precioUnitarioClp": 4000,
+          "costoUnitarioClp": 683.69,
+          "filamento": "PLA+ negro",
+          "estado": "pendiente",
+          "listos": 0,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 8000,
+      "descuentoClp": 0,
+      "montoNeto": 8000,
+      "costoTotal": 1367.38,
+      "estado": "pendiente",
+      "ventaId": null,
+      "fiado": true,
+      "fechaPagoEsperada": "2026-08-18",
+      "pagoNotas": "Paga el 18 de agosto",
+      "notas": "2× Soporte celular negro · fiado · paga 2026-08-18 · PVP $4.000/u · total $8.000",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-28T15:40:00.000Z"
     }
   ]
 }

@@ -17,7 +17,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Panel / Resumen | `http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen` |
 | Catálogo IG | `…/impresoreando/catalogo/` · 1080×1350 · PDF `catalogo/export/catalogo-impresoreando.pdf` · `exportar-pngs.js` + `exportar-pdf.js` |
 | Status correo | `scripts/impresoreando-status-diario.js` · `ENVIAR-STATUS-IMPRESOREANDO.bat` · lib `scripts/lib/smtp-send.js` |
-| Sync → organizador | `node scripts/sync-impresoreando-pedidos-organizacion.js --also-respaldo` (también `ABRIR-LARAVEL.bat`). **1 tarea por PED activo** (`[IMP] PED-00n · …`); transferidos → completadas. **Madre siempre en fecha de hoy (Chile)**; subtareas finalizadas se quedan en el día de cierre. |
+| Sync → organizador | `node scripts/sync-impresoreando-pedidos-organizacion.js --also-respaldo` (también `ABRIR-LARAVEL.bat`). **1 tarea por PED activo** (`[IMP] PED-00n · …`); transferidos → completadas. **Fiados** → tarea `[IMP] Cobrar PED-00n · …` el día `fechaPagoEsperada`. **Madre siempre en fecha de hoy (Chile)**; subtareas finalizadas se quedan en el día de cierre. |
 
 Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. Persistencia siempre vía API (live), no solo localStorage.
 
@@ -40,6 +40,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 6. **Transferir a venta** = modal `#imp-modal-transferir` con descuento **% o CLP** → venta `{ montoBruto, descuentoClp, montoNeto }` · `montoNeto` baja deuda · auto-`save()`
 7. Pedidos no cuentan como venta hasta transferir
 8. **«Pagado» = venta (obligatorio):** si la usuaria dice **pagado** / **ya pagó** / **cobrado** en un pedido Impresoreando → **no dejarlo como pedido activo**. Crear/actualizar el `PED-00n` y **transferirlo de inmediato** a venta `I00000n` (estado `transferido`). El monto pagado es el `montoNeto` de la venta.
+9. **«Fiado» / paga más adelante (obligatorio):** si dice **fiado**, **paga el DD**, **cobra el DD**, **paga en agosto**, etc. → pedido **activo** (no venta aún) con `fiado: true` + `fechaPagoEsperada` (YYYY-MM-DD). **Crear tarea en el organizador** ese día: `[IMP] Cobrar PED-00n · Cliente · $monto` (`tipoEntregable: impresoreando-cobro`). Al transferir a venta (cuando pague) → completar esa tarea. Sync: `scripts/sync-impresoreando-pedidos-organizacion.js`.
 
 ### Seed vigente — pedidos
 
@@ -54,6 +55,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-007 | Juan SIE | 1× Torreón `TORREON001` | **listo** · costo est. ~$3.293 (+$1.000 impresora antigua) · PVP sug. $6.500 |
 | PED-008 | Juan MKOF | 1× Porta Bob Esponja `PTBOBES001` | **listo** · costo ~$998 · **PVP $7.000** |
 | PED-009 | Rebe SIE | 1× Soporte celular negro `SOPCEL001` | **transferido** → I000012 $4.000 |
+| PED-010 | Gianni SIE | 2× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · **paga 2026-08-18** · $8.000 |
 
 ### Ventas — ID correlativo + historial
 
@@ -111,7 +113,8 @@ Reglas al crear:
 - Precio de venta se puede **subir a mano** aunque el markup sugerido sea +100%.
 - Crear `PED-00n` en live/seed; estado visible en tab Pedidos **y en Resumen**.
 - **«Pagado» = venta:** si en el mensaje aparece **pagado** / **ya pagó** / **cobrado** → transferir a venta `I00000n` al tiro (pedido `transferido`). No preguntar otra vez si ya lo dijo.
-- Si **no** dice pagado → dejar como pedido (`pendiente`/`en_impresion`/`listo`) y **no** transferir hasta que lo indique.
+- **«Fiado» / paga el DD:** pedido activo con `fiado` + `fechaPagoEsperada` · **tarea organizador** el día de cobro (`[IMP] Cobrar PED-…`). No es venta hasta que pague.
+- Si **no** dice pagado ni fiado → dejar como pedido (`pendiente`/`en_impresion`/`listo`) y **no** transferir hasta que lo indique.
 
 ### «calcular costo producto impresoreando»
 
@@ -213,9 +216,9 @@ Solo si hay módulo CAM + base USB/CH340. Guía: `docs/impresoreando/ESP32-CAM.m
 3. Sin SKU → generar. Sin costo → pedir imagen y calcular producto.
 4. Pedido en live/seed: `cliente` compuesto, ítems SKU×cant, costo/u, precio venta/u (ajustable), estado.
 5. Estado del pedido debe verse en **Resumen** (tabla de status) y en Pedidos.
-6. **Si dice pagado** → transferir ya: venta `I00000n` + historial + pedido `transferido` (baja deuda). Si no dice pagado → no transferir.
+6. **Si dice pagado** → transferir ya: venta `I00000n` + historial + pedido `transferido` (baja deuda). **Si dice fiado / paga el DD** → pedido activo + `fechaPagoEsperada` + tarea cobro en organizador ese día. Si no dice pagado → no transferir.
 7. Commit en rama `cursor/…`, bump `?v=` si tocó UI, push + actualizar PR.
-8. Responder en español, corto: qué PED/I0…, qué SKUs, montos, estado, origen.
+8. Responder en español, corto: qué PED/I0…, qué SKUs, montos, estado, origen (y fecha de cobro si fiado).
 
 ## Layout UI (no rediseñar sin pedido)
 
