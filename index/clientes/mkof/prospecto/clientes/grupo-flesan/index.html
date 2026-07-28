@@ -160,13 +160,13 @@
 
         const ig = eco.celdas.Instagram && eco.celdas.Instagram.ei;
         const li = eco.celdas.LinkedIn && eco.celdas.LinkedIn.ei;
+        const ig2 = eco.celdas.Instagram && eco.celdas.Instagram.inarco;
+        const li2 = eco.celdas.LinkedIn && eco.celdas.LinkedIn.inarco;
         document.getElementById('ei-resumen').innerHTML =
-          `<strong>Competidor 1 · Echeverría Izquierdo</strong> (@echeverria.izquierdo)<br>` +
-          `IG <strong>${ig ? ig.display : '—'}</strong> seguidores · ${ig && ig.posts ? ig.posts.toLocaleString('es-CL') : '—'} posts` +
-          ` · ER muestra N=5 ≈ <strong>0,58%</strong><br>` +
-          `LinkedIn <strong>${li ? li.display : '—'}</strong> seguidores` +
-          (li && li.empleadosDisplay ? ` · ${li.empleadosDisplay} empleados` : '') +
-          `. FB / YT / TikTok aún pendientes.`;
+          `<strong>Comp.1 EI</strong> IG ${ig ? ig.display : '—'} · ER 0,58% · LI ${li ? li.display : '—'}<br>` +
+          `<strong>Comp.2 Inarco</strong> (@inarcochile) IG <strong>${ig2 ? ig2.display : '—'}</strong>` +
+          ` · ER N=5 <strong>${ig2 && ig2.erMuestraN5 ? ig2.erMuestraN5 : '—'}</strong>` +
+          ` · LI <strong>${li2 ? li2.display : '—'}</strong>. Siguiente: Comp.3 Icafal.`;
       })
       .catch(() => {
         document.getElementById('ei-resumen').textContent = 'No se pudo cargar ecosistema-rrss.json';
