@@ -58,10 +58,21 @@
     {
       "id": "icafal",
       "nombre": "Icafal",
+      "nombreLegal": "Icafal S.A.",
       "columnaTabla": "Competidor 3",
       "web": "https://www.icafal.cl/",
+      "linkedin": "https://www.linkedin.com/company/icafal/",
       "esReferente": false,
-      "estado": "PENDIENTE_CAPTURAS"
+      "estado": "PARCIAL_LI_OK",
+      "rrss": {
+        "linkedin": {
+          "seguidores": 65000,
+          "display": "65 mil",
+          "empleadosDisplay": "501-1 mil",
+          "fuenteId": "li-icafal-2026-07-28"
+        },
+        "instagram": { "estado": "PENDIENTE" }
+      }
     },
     {
       "id": "tecsa",
@@ -72,5 +83,5 @@
       "estado": "PENDIENTE_CAPTURAS"
     }
   ],
-  "contrasteConProspecto": "EI: IG 8.649 (ER 0,58%) + LI 129 mil. Inarco: IG 1.517 (ER 4,17%) + LI 66 mil. Flesan: tres sitios + RRSS unificadas bajo Grupo Flesan."
+  "contrasteConProspecto": "EI: IG 8.649 (ER 0,58%) + LI 129 mil. Inarco: IG 1.517 (ER 4,17%) + LI 66 mil. Icafal: LI 65 mil (IG pendiente). Flesan: tres sitios + RRSS unificadas."
 }

@@ -63,7 +63,7 @@
   <main>
     <div class="aviso">
       <strong>Nivel: general</strong>
-      Matriz ECOSISTEMA: Comp.1 EI (IG+LI) · Comp.2 Inarco (IG 1.517 · ER 4,17% · LI 66 mil). Restan Comp. 3–5 y detalle IG del prospecto.
+      Matriz ECOSISTEMA: EI + Inarco (IG+LI) · Comp.3 Icafal (LI 65 mil). Restan IG Icafal, Tecsa, Comp.5 y prospecto.
     </div>
 
     <div class="card">
@@ -126,7 +126,7 @@
   </main>
   <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
   <script>
-    const v = '20260728-inarco-ig';
+    const v = '20260728-icafal-li';
     fetch('data/ecosistema-rrss.json?v=' + v, { cache: 'no-store' })
       .then((r) => r.json())
       .then((eco) => {
@@ -164,9 +164,8 @@
         const li2 = eco.celdas.LinkedIn && eco.celdas.LinkedIn.inarco;
         document.getElementById('ei-resumen').innerHTML =
           `<strong>Comp.1 EI</strong> IG ${ig ? ig.display : '—'} · ER 0,58% · LI ${li ? li.display : '—'}<br>` +
-          `<strong>Comp.2 Inarco</strong> (@inarcochile) IG <strong>${ig2 ? ig2.display : '—'}</strong>` +
-          ` · ER N=5 <strong>${ig2 && ig2.erMuestraN5 ? ig2.erMuestraN5 : '—'}</strong>` +
-          ` · LI <strong>${li2 ? li2.display : '—'}</strong>. Siguiente: Comp.3 Icafal.`;
+          `<strong>Comp.2 Inarco</strong> IG ${ig2 ? ig2.display : '—'} · ER ${ig2 && ig2.erMuestraN5 ? ig2.erMuestraN5 : '—'} · LI ${li2 ? li2.display : '—'}<br>` +
+          `<strong>Comp.3 Icafal</strong> LI <strong>${eco.celdas.LinkedIn && eco.celdas.LinkedIn.icafal ? eco.celdas.LinkedIn.icafal.display : '—'}</strong> · IG pendiente. Siguiente: IG Icafal o Tecsa.`;
       })
       .catch(() => {
         document.getElementById('ei-resumen').textContent = 'No se pudo cargar ecosistema-rrss.json';

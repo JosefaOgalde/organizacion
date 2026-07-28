@@ -103,6 +103,13 @@
       "metodo": "5 screenshots últimos contenidos IG: likes 56+44+64+96+46 · comentarios visibles 1+3+4+2+0. ER N=5 = 4,17%. Ver RRSS/data/ig-er-inarco-muestra.json"
     },
     {
+      "id": "li-icafal-2026-07-28",
+      "tipo": "linkedin",
+      "url": "https://www.linkedin.com/company/icafal/",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot página empresa LinkedIn (Competidor 3): Icafal S.A. · 65 mil seguidores · 501-1 mil empleados · Construcción · Santiago"
+    },
+    {
       "id": "manual-marca-local",
       "tipo": "documento_cliente",
       "url": null,

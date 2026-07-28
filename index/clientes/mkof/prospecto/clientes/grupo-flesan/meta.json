@@ -7,7 +7,7 @@
   "notaNivel": "Más general que Clínica Indisa. Sin láminas UX/UI profundas ni ER por post hasta recibir detalle IG.",
   "etapa": 1,
   "creado": "2026-07-27T22:00:00Z",
-  "updatedAt": "2026-07-28T22:20:00Z",
+  "updatedAt": "2026-07-28T22:25:00Z",
   "problemaCliente": "Operan con varios nombres (Flesan, DVC, Grupo Flesan). Desafío: definir el nombre adecuado y una estrategia de marca.",
   "competidores": [
     "Echeverría Izquierdo",
@@ -32,10 +32,16 @@
     "liSeguidores": 66000,
     "cargado": "2026-07-28"
   },
+  "competidor3": {
+    "nombre": "Icafal",
+    "nombreLegal": "Icafal S.A.",
+    "liSeguidores": 65000,
+    "cargado": "2026-07-28"
+  },
   "pendientes": [
     "Detalle Instagram @grupoflesan (seguidores, posts, temáticas, periodicidad)",
-    "Inarco: FB / YT / TikTok (IG+LI listos)",
-    "Competidores 3–4 (Icafal, Tecsa): capturas IG/LI/FB/YT/TikTok",
+    "Icafal: IG / FB / YT / TikTok (LI listo)",
+    "Tecsa: capturas IG/LI/FB/YT/TikTok",
     "Competidor 5 (si aplica) o confirmar solo 4",
     "Números Facebook Flesan y LinkedIn Flesan si aplica",
     "Copiar PDFs de valores/manual al repo"

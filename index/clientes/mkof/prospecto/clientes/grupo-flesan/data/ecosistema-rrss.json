@@ -2,7 +2,7 @@
   "titulo": "ECOSISTEMA RRSS",
   "fecha": "2026-07-28",
   "nivel": "general",
-  "notaPresentacion": "PROSPECTO = Flesan. Comp.1 EI: IG 8.649 + LI 129 mil. Comp.2 Inarco: IG 1.517 (ER 4,17%) + LI 66 mil. Celdas XX mill = pendiente.",
+  "notaPresentacion": "PROSPECTO = Flesan. EI: IG+LI. Inarco: IG+LI. Icafal: LI 65 mil. Celdas XX mill = pendiente.",
   "plataformas": ["Facebook", "Instagram", "LinkedIn", "YouTube", "TikTok"],
   "columnas": [
     {
@@ -123,7 +123,19 @@
         "exacto": "66 mil seguidores · 51-200 empleados (screenshot LinkedIn 2026-07-28)",
         "estado": "OK"
       },
-      "icafal": { "display": "XX mill", "estado": "PENDIENTE" },
+      "icafal": {
+        "valor": 65000,
+        "display": "65 mil",
+        "empleadosDisplay": "501-1 mil",
+        "industria": "Construcción",
+        "ubicacion": "Santiago, Santiago",
+        "nombrePagina": "Icafal S.A.",
+        "slogan": "Trayectoria de 42 años, destacándose por sus elevados estándares de calidad y satisfacción de sus clientes.",
+        "url": "https://www.linkedin.com/company/icafal/",
+        "fuenteId": "li-icafal-2026-07-28",
+        "exacto": "65 mil seguidores · 501-1 mil empleados (screenshot LinkedIn 2026-07-28)",
+        "estado": "OK"
+      },
       "tecsa": { "display": "XX mill", "estado": "PENDIENTE" },
       "comp5": { "display": "XX mill", "estado": "PENDIENTE" },
       "flesan": { "display": "XX mill", "estado": "PENDIENTE", "nota": "No en footer de los 3 sitios" }
