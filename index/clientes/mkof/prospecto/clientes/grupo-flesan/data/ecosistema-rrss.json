@@ -2,7 +2,7 @@
   "titulo": "ECOSISTEMA RRSS",
   "fecha": "2026-07-28",
   "nivel": "general",
-  "notaPresentacion": "PROSPECTO: FB 1,2 mil · IG 4.168 · ER 1,82% · LI 33 mil. Competidores: EI · Inarco · Icafal.",
+  "notaPresentacion": "PROSPECTO: FB 1,2 mil · IG 4.168 · ER 1,82% · LI 33 mil · YT pendiente captura. Competidores: EI · Inarco · Icafal.",
   "plataformas": [
     "Facebook",
     "Instagram",
@@ -247,14 +247,11 @@
         "estado": "PENDIENTE"
       },
       "flesan": {
-        "valor": 509,
-        "display": "509",
-        "vistasAprox": 161386,
+        "display": "XX mill",
         "url": "https://www.youtube.com/@GrupoFlesan",
         "fuenteId": "yt-grupoflesan",
-        "estado": "OK_APROX_PUBLICO",
-        "mejorMetrica": true,
-        "highlight": true
+        "estado": "PENDIENTE_DETALLE_USUARIA",
+        "nota": "URL conocida (footer sitios). Número de suscriptores pendiente de captura usuaria — no usar scrape aproximado."
       }
     },
     "TikTok": {

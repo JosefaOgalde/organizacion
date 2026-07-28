@@ -47,13 +47,13 @@ Fuente de perfiles (footer de los 3 sitios):
 | Instagram | https://www.instagram.com/grupoflesan/ | **4.168** seguidores · 466 posts · ER muestra **1,82%** (N=5) | Screenshot 2026-07-28 |
 | LinkedIn | Grupo Flesan Chile | **33 mil** seguidores · 1 mil–5 mil emp. · Las Condes | Screenshot 2026-07-28 |
 | Facebook | https://www.facebook.com/grupoflesanchile | **1,2 mil** seguidores · 12 seguidos | Screenshot 2026-07-28 |
-| YouTube | https://www.youtube.com/@GrupoFlesan | ~**509** suscriptores · ~**161 mil** vistas · canal desde **may 2014** | Texto público del canal YouTube |
+| YouTube | https://www.youtube.com/@GrupoFlesan | **Pendiente** — captura usuaria | URL footer sitios |
 
 ### Tipo de comunicación (lectura general, sin ER por post)
 
 - Marca en redes = **Grupo Flesan** (no perfiles separados DVC/Flesan visibles en footer).
 - Rubro B2B construcción / ingeniería: suele priorizar obras, hitos, seguridad, comunidad y empleador; conviene validar con el detalle de IG.
-- YouTube con trayectoria larga pero **audiencia baja** (~509) → oportunidad de video institucional / obras / marca, si se define el nombre.
+- YouTube: canal existe (@GrupoFlesan); números pendientes de captura → validar audiencia antes de proponer video.
 
 > Instagram cargado: `@grupoflesan` · collabs frecuentes con DVC (`@devicenteconstructora`) y Flesan IC (`@flesan.ic`). Muestra ER con posts más antiguos que la de competidores.
 

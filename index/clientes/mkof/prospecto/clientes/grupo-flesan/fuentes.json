@@ -71,8 +71,8 @@
       "id": "yt-grupoflesan",
       "tipo": "youtube",
       "url": "https://www.youtube.com/@GrupoFlesan",
-      "fecha": "2026-07-27",
-      "metodo": "Texto público canal (subscriberCountText / viewCountText en HTML)"
+      "fecha": "2026-07-28",
+      "metodo": "URL footer sitios. Números NO cargados en matriz: pendiente captura usuaria (no usar scrape aproximado)"
     },
     {
       "id": "web-ei",
