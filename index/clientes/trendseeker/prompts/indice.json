@@ -76,16 +76,32 @@
     },
     {
       "id": "contenido-11-prompt",
-      "titulo": "C11/12 · Botas Play Altas Shearling White Mujer",
-      "archivo": "prompts/PROMPT-c11-play-altas-shearling-white-mujer-A.txt",
-      "descripcion": "VIDEO Gemini · MUJER (adulta) · TXT separados A/B/C editables.",
+      "titulo": "C11/12 · Botín corto Gardener Verde Oliva Mujer",
+      "archivo": "prompts/PROMPT-c11-gardener-corta-verde-oliva-A.txt",
+      "descripcion": "VIDEO Gemini · MUJER · invierno en huerto/jardín campestre · zona cavar · talón relieve · TXT A/B/C. SKU WFS2018RMA-DOC.",
       "tareaNumero": "22",
-      "productoUrl": "https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/",
+      "productoUrl": "https://trendseeker.cl/producto/bota-corta-garden/",
       "contenidoSerie": 11,
+      "sku": "WFS2018RMA-DOC",
       "archivos": {
-        "A": "prompts/PROMPT-c11-play-altas-shearling-white-mujer-A.txt",
-        "B": "prompts/PROMPT-c11-play-altas-shearling-white-mujer-B.txt",
-        "C": "prompts/PROMPT-c11-play-altas-shearling-white-mujer-C.txt"
+        "A": "prompts/PROMPT-c11-gardener-corta-verde-oliva-A.txt",
+        "B": "prompts/PROMPT-c11-gardener-corta-verde-oliva-B.txt",
+        "C": "prompts/PROMPT-c11-gardener-corta-verde-oliva-C.txt"
+      }
+    },
+    {
+      "id": "contenido-11-copy",
+      "titulo": "C11/12 · Copys · Gardener Verde Oliva",
+      "archivo": "copys/COPY-c11-gardener-corta-verde-oliva-A.txt",
+      "descripcion": "Copys video A/B/C · botín corto Gardener · invierno + huerto.",
+      "tareaNumero": "23",
+      "productoUrl": "https://trendseeker.cl/producto/bota-corta-garden/",
+      "contenidoSerie": 11,
+      "sku": "WFS2018RMA-DOC",
+      "archivos": {
+        "A": "copys/COPY-c11-gardener-corta-verde-oliva-A.txt",
+        "B": "copys/COPY-c11-gardener-corta-verde-oliva-B.txt",
+        "C": "copys/COPY-c11-gardener-corta-verde-oliva-C.txt"
       }
     },
     {

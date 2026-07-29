@@ -1187,24 +1187,24 @@
     },
     {
       "id": "tarea-ts-contenido-11-de-12",
-      "titulo": "[TS] Contenido 11/12 · Botas Play Altas Aislante Con Forro - Shearling White - Mujer",
+      "titulo": "[TS] Contenido 11/12 · Botín corto Gardener / Bota Corta de Jardinera · Mujer · Verde oliva",
       "clienteId": "cli-trendseeker",
       "rolId": "rol-cm",
       "fecha": "2026-07-29",
       "horaInicio": "09:30",
       "horaFin": "13:00",
-      "notas": "Tarea madre Contenido 11/12 (serie mensual). Producto: Botas Play Altas Aislante Con Forro - Shearling White - Mujer · SKU WFT2235RMA-WHW. Link: https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/ · Características: Hunter Play altas · shearling white · vegano · impermeable · hechas a mano · forro borrego vegano · aislante hasta -5°C · plantilla térmica · suela plana · lengüeta de entrada. Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. Con las 3 hechas → finalizar esta madre.",
+      "notas": "Tarea madre Contenido 11/12 (serie mensual). Producto: Botín corto Gardener / Bota Corta de Jardinera · Mujer · Verde oliva · SKU WFS2018RMA-DOC. Link: https://trendseeker.cl/producto/bota-corta-garden/ · Características: Diseñado para trabajar al aire libre · botín corto Gardener mujer verde oliva · ajuste estilizado · flexibilidad en tobillo · suela con zona reforzada para cavar · talón con relieve para quitárselo fácilmente · forro de algodón suave · invierno en huerto/jardín campestre. Brief cliente 2026-07-28. Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. Con las 3 hechas → finalizar esta madre. Ajuste: solicitud cliente reel huerto/jardín campestre + invierno.",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "21",
       "tipoEntregable": "ecosistema",
       "parentId": null,
-      "productoUrl": "https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/",
+      "productoUrl": "https://trendseeker.cl/producto/bota-corta-garden/",
       "contenidoSerie": 11,
       "contenidoTotal": 12,
       "fechaFin": "2026-07-29",
-      "sku": "WFT2235RMA-WHW"
+      "sku": "WFS2018RMA-DOC"
     },
     {
       "id": "tarea-ts-contenido-11-de-12-prompt",
@@ -1214,21 +1214,21 @@
       "fecha": "2026-07-29",
       "horaInicio": "09:30",
       "horaFin": "10:45",
-      "notas": "Prompt Gemini VIDEO del producto. SKU WFT2235RMA-WHW. Link: https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/. Características: Hunter Play altas · shearling white · vegano · impermeable · hechas a mano · forro borrego vegano · aislante hasta -5°C · plantilla térmica · suela plana · lengüeta de entrada.",
+      "notas": "Prompt Gemini VIDEO · MUJER. Producto: Botín corto Gardener / Bota Corta de Jardinera · Mujer · Verde oliva. SKU WFS2018RMA-DOC. Link: https://trendseeker.cl/producto/bota-corta-garden/. Escena: invierno en huerto/jardín campestre; destacar zona para cavar, talón con relieve, flexibilidad tobillo, forro algodón. Tres TXT A/B/C. Primero fotos de producto.",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "22",
       "tipoEntregable": "prompt-gemini-video",
-      "entregableArchivo": "index/clientes/trendseeker/prompts/PROMPT-c11-play-altas-shearling-white-mujer-A.txt",
+      "entregableArchivo": "index/clientes/trendseeker/prompts/PROMPT-c11-gardener-corta-verde-oliva-A.txt",
       "entregableArchivosPrompt": {
-        "A": "index/clientes/trendseeker/prompts/PROMPT-c11-play-altas-shearling-white-mujer-A.txt",
-        "B": "index/clientes/trendseeker/prompts/PROMPT-c11-play-altas-shearling-white-mujer-B.txt",
-        "C": "index/clientes/trendseeker/prompts/PROMPT-c11-play-altas-shearling-white-mujer-C.txt"
+        "A": "index/clientes/trendseeker/prompts/PROMPT-c11-gardener-corta-verde-oliva-A.txt",
+        "B": "index/clientes/trendseeker/prompts/PROMPT-c11-gardener-corta-verde-oliva-B.txt",
+        "C": "index/clientes/trendseeker/prompts/PROMPT-c11-gardener-corta-verde-oliva-C.txt"
       },
       "parentId": "tarea-ts-contenido-11-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/",
-      "sku": "WFT2235RMA-WHW"
+      "productoUrl": "https://trendseeker.cl/producto/bota-corta-garden/",
+      "sku": "WFS2018RMA-DOC"
     },
     {
       "id": "tarea-ts-contenido-11-de-12-copy",
@@ -1238,21 +1238,21 @@
       "fecha": "2026-07-29",
       "horaInicio": "10:45",
       "horaFin": "12:00",
-      "notas": "Copys video · Producto: Botas Play Altas Aislante Con Forro - Shearling White - Mujer. Link: https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/",
+      "notas": "Copys video C11/12 · tres TXT (A/B/C). Producto: Botín corto Gardener / Bota Corta de Jardinera · Mujer · Verde oliva. Link: https://trendseeker.cl/producto/bota-corta-garden/",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "23",
       "tipoEntregable": "copy-video",
-      "entregableArchivo": "index/clientes/trendseeker/copys/COPY-c11-play-altas-shearling-white-mujer-A.txt",
+      "entregableArchivo": "index/clientes/trendseeker/copys/COPY-c11-gardener-corta-verde-oliva-A.txt",
       "entregableArchivosCopy": {
-        "A": "index/clientes/trendseeker/copys/COPY-c11-play-altas-shearling-white-mujer-A.txt",
-        "B": "index/clientes/trendseeker/copys/COPY-c11-play-altas-shearling-white-mujer-B.txt",
-        "C": "index/clientes/trendseeker/copys/COPY-c11-play-altas-shearling-white-mujer-C.txt"
+        "A": "index/clientes/trendseeker/copys/COPY-c11-gardener-corta-verde-oliva-A.txt",
+        "B": "index/clientes/trendseeker/copys/COPY-c11-gardener-corta-verde-oliva-B.txt",
+        "C": "index/clientes/trendseeker/copys/COPY-c11-gardener-corta-verde-oliva-C.txt"
       },
       "parentId": "tarea-ts-contenido-11-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/",
-      "sku": "WFT2235RMA-WHW"
+      "productoUrl": "https://trendseeker.cl/producto/bota-corta-garden/",
+      "sku": "WFS2018RMA-DOC"
     },
     {
       "id": "tarea-ts-contenido-11-de-12-programar",
@@ -1262,15 +1262,15 @@
       "fecha": "2026-07-29",
       "horaInicio": "12:00",
       "horaFin": "13:00",
-      "notas": "Programar publicación. Producto: Botas Play Altas Aislante Con Forro - Shearling White - Mujer. Link: https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/",
+      "notas": "Programar publicación. Producto: Botín corto Gardener / Bota Corta de Jardinera · Mujer · Verde oliva. Link: https://trendseeker.cl/producto/bota-corta-garden/. Verificar copy + video + link producto.",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
       "numeroHistorico": "24",
       "tipoEntregable": "programar",
       "parentId": "tarea-ts-contenido-11-de-12",
-      "productoUrl": "https://trendseeker.cl/producto/botas-play-altas-con-forro-de-shearling-white-para-mujer/",
-      "sku": "WFT2235RMA-WHW"
+      "productoUrl": "https://trendseeker.cl/producto/bota-corta-garden/",
+      "sku": "WFS2018RMA-DOC"
     },
     {
       "id": "tarea-ts-contenido-12-de-12",
