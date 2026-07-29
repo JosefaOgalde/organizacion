@@ -36,4 +36,4 @@ Pegar screenshot de perfil **@grupoflesan**:
 2. Casi todo es obra/proyecto (B2B). Poco de personas, cultura o empleador; Echeverría Izquierdo sí trabaja formación, innovación y liderazgo.
 3. Con aproximadamente 4 mil seguidores (como Icafal), el engagement de muestra (1,82%) supera a Echeverría Izquierdo e Icafal. Ojo: esos 5 posts eran más antiguos.
 4. LinkedIn es el mayor gap: 33 mil vs aproximadamente 65 mil (Inarco/Icafal) y 129 mil (Echeverría Izquierdo).
-5. Facebook existe (1,2 mil) pero es canal menor; Inarco no tiene FB.
+5. Facebook existe (1,2 mil) pero es canal menor.
