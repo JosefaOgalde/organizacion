@@ -69,7 +69,7 @@ Fuente de perfiles (footer de los 3 sitios):
 
 > Alcance matriz: **solo estos 3 competidores** (+ Prospecto).
 
-### Referente: Echeverría Izquierdo (EI) — Competidor 1 (matriz)
+### Referente: Echeverría Izquierdo — Competidor 1 (matriz)
 
 Revisión general de [ei.cl](https://ei.cl/) + capturas usuaria **2026-07-28**:
 
@@ -87,7 +87,7 @@ Temáticas IG observadas (últimos 5): innovación/transformación digital, LPS 
 - Estructura por empresas del grupo, pero **paraguas verbal único**.
 
 **Contraste general con Flesan:**  
-EI proyecta **una marca holding fuerte** + IG corporativo activo + LI masivo (129 mil). Flesan/DVC/Grupo Flesan proyectan **varias puertas de entrada** (3 webs) con **una sola voz en RRSS**. El gap de estrategia de marca es evidente.
+Echeverría Izquierdo proyecta **una marca holding fuerte** + IG corporativo activo + LI masivo (129 mil). Flesan/DVC/Grupo Flesan proyectan **varias puertas de entrada** (3 webs) con **una sola voz en RRSS**. El gap de estrategia de marca es evidente.
 
 ---
 
@@ -106,7 +106,7 @@ Ruta en PC (pendiente copiar al repo):
 ## 6. Oportunidades (generales) para oferta MKOF
 
 1. **Arquitectura de marca y naming** — Definir rol de Grupo Flesan / Flesan / DVC (masterbrand vs endorsed vs independientes) y reglas de uso.
-2. **Alineación web** — Homogeneizar narrativa entre los 3 sitios (o consolidar) según la arquitectura elegida; EI como benchmark de claridad.
+2. **Alineación web** — Homogeneizar narrativa entre los 3 sitios (o consolidar) según la arquitectura elegida; Echeverría Izquierdo como benchmark de claridad.
 3. **RRSS orgánicas bajo la marca definida** — Hoy ya hay un perfil único; falta potenciarlo con lineamiento de contenido y medición (detalle IG pendiente).
 4. **YouTube / audiovisual de obras** — Canal antiguo con poco volumen: encaja con storytelling de proyectos si hay estrategia de marca clara.
 
@@ -116,7 +116,7 @@ Ruta en PC (pendiente copiar al repo):
 
 - El dolor central no es “falta de posts”: es **identidad de marca fragmentada**.
 - Tres webs + un pack de RRSS = síntoma de **holding multi-empresa sin jerarquía comunicacional clara**.
-- Competencia directa citada; **EI** es el espejo de “cómo se ve una marca clara en web/comms”.
+- Competencia directa citada; **Echeverría Izquierdo** es el espejo de “cómo se ve una marca clara en web/comms”.
 - MKOF puede entrar por **estrategia de marca + sistema de comunicación** (web + RRSS), no solo por pauta orgánica.
 
 **Siguiente paso:** FB Icafal / YT-TikTok pendientes → cerrar matriz.

@@ -2,7 +2,7 @@
   "titulo": "ECOSISTEMA RRSS",
   "fecha": "2026-07-28",
   "nivel": "general",
-  "notaPresentacion": "PROSPECTO: FB 1,2 mil · IG 4.168 · ER 1,82% · LI 33 mil · YT pendiente captura. Competidores: EI · Inarco · Icafal.",
+  "notaPresentacion": "PROSPECTO: FB 1,2 mil · IG 4.168 · ER 1,82% · LI 33 mil · YT pendiente captura. Competidores: Echeverría Izquierdo · Inarco · Icafal.",
   "plataformas": [
     "Facebook",
     "Instagram",
@@ -16,7 +16,7 @@
     {
       "id": "ei",
       "nombre": "Echeverría Izquierdo",
-      "nombreCorto": "EI",
+      "nombreCorto": "Echeverría Izquierdo",
       "rol": "competidor",
       "etiqueta": "Competidor 1",
       "esReferente": true
@@ -273,5 +273,5 @@
       }
     }
   },
-  "notaComunicacion": "Los 3 sitios Flesan enlazan el mismo trío FB/IG/YT. EI concentra marca holding en IG + LI fuertes."
+  "notaComunicacion": "Los 3 sitios Flesan enlazan el mismo trío FB/IG/YT. Echeverría Izquierdo concentra marca holding en IG + LI fuertes."
 }

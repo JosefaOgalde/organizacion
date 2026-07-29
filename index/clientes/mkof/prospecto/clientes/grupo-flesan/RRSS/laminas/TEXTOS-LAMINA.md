@@ -33,7 +33,7 @@ Pegar screenshot de perfil **@grupoflesan**:
 
 ### Lo importante (para briefing)
 1. Publican solo como @grupoflesan, pero muchos posts van en collab con DVC y Flesan.ic: la fragmentación de nombres también se ve en redes.
-2. Casi todo es obra/proyecto (B2B). Poco de personas, cultura o empleador; EI sí trabaja formación, innovación y liderazgo.
-3. Con ~4 mil seguidores (como Icafal), el ER de muestra (1,82%) supera a EI e Icafal. Ojo: esos 5 posts eran más antiguos.
-4. LinkedIn es el mayor gap: 33 mil vs ~65 mil (Inarco/Icafal) y 129 mil (EI).
+2. Casi todo es obra/proyecto (B2B). Poco de personas, cultura o empleador; Echeverría Izquierdo sí trabaja formación, innovación y liderazgo.
+3. Con ~4 mil seguidores (como Icafal), el ER de muestra (1,82%) supera a Echeverría Izquierdo e Icafal. Ojo: esos 5 posts eran más antiguos.
+4. LinkedIn es el mayor gap: 33 mil vs ~65 mil (Inarco/Icafal) y 129 mil (Echeverría Izquierdo).
 5. Facebook existe (1,2 mil) pero es canal menor; Inarco no tiene FB.
