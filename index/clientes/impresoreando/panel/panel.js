@@ -1448,6 +1448,35 @@
           },
         ],
       },
+      {
+        id: 'ven-fabian-bob-016',
+        codigo: 'I000016',
+        fecha: '2026-07-29',
+        cliente: 'Fabian MKOF',
+        clienteNombre: 'Fabian',
+        clienteOrigen: 'MKOF',
+        descripcion: 'PED-012 · 1× Porta Bob Esponja · Fabian MKOF',
+        cantidad: 1,
+        montoBruto: 7000,
+        descuentoClp: 0,
+        montoNeto: 7000,
+        costoTotal: 998.17,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-012 · 1× Porta Bob Esponja · pagado $7.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-fabian-bob-012',
+        pedidoNumero: 'PED-012',
+        items: [
+          {
+            sku: 'PTBOBES001',
+            nombre: 'Porta Bob Esponja',
+            cantidad: 1,
+            precioUnitarioClp: 7000,
+            costoUnitarioClp: 998.17,
+            filamento: 'multicolor',
+          },
+        ],
+      },
     ];
 
     let changed = false;
@@ -1567,6 +1596,19 @@
         itemFilamento: 'PLA morado',
         itemSku: 'SOPCEL001',
         itemNombre: 'Soporte celular',
+      },
+      {
+        pedId: 'ped-fabian-bob-012',
+        numero: 'PED-012',
+        ventaId: 'ven-fabian-bob-016',
+        cliente: 'Fabian MKOF',
+        montoNeto: 7000,
+        notas: '1× Porta Bob Esponja · transferido a venta I000016 · $7.000 · pagado',
+        transferidoEn: '2026-07-29T19:40:00.000Z',
+        itemPrecioUnitarioClp: 7000,
+        itemFilamento: 'multicolor',
+        itemSku: 'PTBOBES001',
+        itemNombre: 'Porta Bob Esponja',
       },
     ];
     for (const t of transfers) {
@@ -2182,6 +2224,49 @@
         notas: `1× Soporte celular morado · transferido a venta I000015 · $${precioSop011}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-28T15:45:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-012 · Fabian MKOF · 1× Porta Bob Esponja · transferido I000016 $7.000 (pagado)
+    const id012 = 'ped-fabian-bob-012';
+    const prodBob012 = (d.productos || []).find(
+      (p) => p.id === 'prod-porta-bob-esponja' || p.sku === 'PTBOBES001'
+    );
+    const costoBob012 = prodBob012 ? costoProdRough(d, prodBob012) : 998.17;
+    const precioBob012 = 7000;
+    if (!d.pedidos.some((p) => p.id === id012 || p.numero === 'PED-012')) {
+      d.pedidos.push({
+        id: id012,
+        numero: 'PED-012',
+        fecha: '2026-07-29',
+        cliente: 'Fabian MKOF',
+        clienteNombre: 'Fabian',
+        clienteOrigen: 'MKOF',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'PTBOBES001',
+            nombre: 'Porta Bob Esponja',
+            cantidad: 1,
+            precioUnitarioClp: precioBob012,
+            costoUnitarioClp: round2(costoBob012),
+            filamento: 'multicolor',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioBob012,
+        descuentoClp: 0,
+        montoNeto: precioBob012,
+        costoTotal: round2(costoBob012),
+        estado: 'transferido',
+        ventaId: 'ven-fabian-bob-016',
+        transferidoEn: '2026-07-29T19:40:00.000Z',
+        notas: `1× Porta Bob Esponja · transferido a venta I000016 · $${precioBob012} · pagado`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-29T19:40:00.000Z',
       });
       changed = true;
     }

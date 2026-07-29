@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital inicial; Josefa le debe el 50% de ese capital.",
-    "actualizado": "2026-07-28T15:48:58.000Z",
+    "actualizado": "2026-07-29T19:40:00.000Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -27,7 +27,7 @@
       "deudaJosefaClp": 400221
     },
     "pedidoSeq": 12,
-    "ventaSeq": 15,
+    "ventaSeq": 16,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
       {
@@ -46,6 +46,21 @@
         ],
         "totalNeto": 37000,
         "compras": 4
+      },
+      {
+        "cliente": "Marcia SIE",
+        "ventaCodigos": [
+          "I000005",
+          "I000009",
+          "I000015"
+        ],
+        "ventaIds": [
+          "ven-marcia-stanley-001",
+          "ven-marcia-soporte-009",
+          "ven-marcia-soporte-015"
+        ],
+        "totalNeto": 9000,
+        "compras": 3
       },
       {
         "cliente": "Cata SIE",
@@ -74,21 +89,6 @@
         "compras": 2
       },
       {
-        "cliente": "Marcia SIE",
-        "ventaCodigos": [
-          "I000005",
-          "I000009",
-          "I000015"
-        ],
-        "ventaIds": [
-          "ven-marcia-stanley-001",
-          "ven-marcia-soporte-009",
-          "ven-marcia-soporte-015"
-        ],
-        "totalNeto": 9000,
-        "compras": 3
-      },
-      {
         "cliente": "Ele SIE",
         "ventaCodigos": [
           "I000014"
@@ -97,6 +97,17 @@
           "ven-ele-pesa-014"
         ],
         "totalNeto": 5000,
+        "compras": 1
+      },
+      {
+        "cliente": "Fabian MKOF",
+        "ventaCodigos": [
+          "I000016"
+        ],
+        "ventaIds": [
+          "ven-fabian-bob-016"
+        ],
+        "totalNeto": 7000,
         "compras": 1
       },
       {
@@ -825,6 +836,35 @@
           "filamento": "PLA morado"
         }
       ]
+    },
+    {
+      "id": "ven-fabian-bob-016",
+      "codigo": "I000016",
+      "fecha": "2026-07-29",
+      "cliente": "Fabian MKOF",
+      "clienteNombre": "Fabian",
+      "clienteOrigen": "MKOF",
+      "descripcion": "PED-012 · 1× Porta Bob Esponja · Fabian MKOF",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 998.17,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-012 · 1× Porta Bob Esponja · pagado $7.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-fabian-bob-012",
+      "pedidoNumero": "PED-012",
+      "items": [
+        {
+          "sku": "PTBOBES001",
+          "nombre": "Porta Bob Esponja",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 998.17,
+          "filamento": "multicolor"
+        }
+      ]
     }
   ],
   "operacion": [
@@ -1248,6 +1288,12 @@
     {
       "fecha": "2026-07-28",
       "texto": "PED-011 Marcia SIE → I000015 · 1× Soporte celular morado · pagado $3.000."
+    },
+    {
+      "id": "bit-fabian-016",
+      "fecha": "2026-07-29",
+      "autor": "Josefa",
+      "texto": "PED-012 Fabian MKOF → I000016 · 1× Porta Bob Esponja · pagado $7.000."
     }
   ],
   "pedidos": [
@@ -1618,6 +1664,38 @@
       "socioRegistro": "Ambos",
       "creado": "2026-07-28T15:45:00.000Z",
       "transferidoEn": "2026-07-28T21:30:00.000Z"
+    },
+    {
+      "id": "ped-fabian-bob-012",
+      "numero": "PED-012",
+      "fecha": "2026-07-29",
+      "cliente": "Fabian MKOF",
+      "clienteNombre": "Fabian",
+      "clienteOrigen": "MKOF",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "PTBOBES001",
+          "nombre": "Porta Bob Esponja",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 998.17,
+          "filamento": "multicolor",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 998.17,
+      "estado": "transferido",
+      "ventaId": "ven-fabian-bob-016",
+      "notas": "1× Porta Bob Esponja · transferido a venta I000016 · $7.000 · pagado",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-29T19:40:00.000Z",
+      "transferidoEn": "2026-07-29T19:40:00.000Z"
     }
   ]
 }
