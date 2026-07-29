@@ -89,6 +89,7 @@
     if (asegurarProductoLimpiadorBrochas(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
+    if (asegurarGastosCompras20260729(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
     if (asegurarPedidosImpresosYNaves(d)) changed = true;
@@ -111,19 +112,22 @@
       montoNetoClp: capitalNeto,
       deudaJosefaClp: Math.round(capitalNeto * 0.5),
       nota:
-        'Nicolás puso el capital. Josefa debe el 50% de ese capital a Nicolás. Todos los gastos de la sociedad son de ambos.',
+        'Nicolás puso el capital y, hasta ahora, ha pagado todos los gastos. «Ambos» = sociedad 50/50 (Josefa debe el 50% a Nicolás), no que Josefa haya pagado.',
     };
     if (
       cap.aportadoPor !== nextCap.aportadoPor ||
       Number(cap.deudaJosefaClp) !== nextCap.deudaJosefaClp ||
-      Number(cap.montoNetoClp) !== nextCap.montoNetoClp
+      Number(cap.montoNetoClp) !== nextCap.montoNetoClp ||
+      cap.nota !== nextCap.nota
     ) {
       d.meta.capital = { ...cap, ...nextCap };
       changed = true;
     }
-    if (!/nicol/i.test(String(d.meta.notas || ''))) {
+    const notasMetaOk =
+      /pagado todos/i.test(String(d.meta.notas || '')) && /nicol/i.test(String(d.meta.notas || ''));
+    if (!notasMetaOk) {
       d.meta.notas =
-        'Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Todos los gastos son de ambos. Nicolás aportó el capital; Josefa le debe el 50%.';
+        'Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Los gastos son de ambos (deuda 50/50), pero hasta ahora los ha pagado todos Nicolás. Josefa le debe el 50% del capital/gastos.';
       changed = true;
     }
     return changed;
@@ -1126,6 +1130,19 @@
     return parts.join(' ');
   }
 
+  /** Columna gastos: Ambos = sociedad 50/50; hasta ahora pagó Nicolás. */
+  function labelQuienGasto(g) {
+    const socio = String(g.socioRegistro || 'Ambos').trim() || 'Ambos';
+    const pago = String(g.pagadoPor || '').trim();
+    if (pago) {
+      if (/^ambos$/i.test(socio)) return `Ambos · pagó ${pago}`;
+      return `${socio} · pagó ${pago}`;
+    }
+    if (/^ambos$/i.test(socio)) return 'Ambos · pagó Nicolás';
+    if (/^nicol/i.test(socio)) return 'Nicolás (pagó)';
+    return socio;
+  }
+
   function labelOrigenCliente(origen) {
     const o = String(origen || '').toUpperCase();
     if (o === 'SIE') return 'SIE · trabajo Nicolás';
@@ -1752,6 +1769,75 @@
     }
     d.meta.ventaCodigoPrefijo = 'I';
     rebuildClientesHistorial(d);
+    return changed;
+  }
+
+  /** Compras 29 jul 2026 — llaveros, filamento rosado, ganchos aros. Sociedad 50/50 · pagó Nicolás. */
+  function asegurarGastosCompras20260729(d) {
+    d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
+    const regs = [
+      {
+        id: 'gas-llaveros-100-6978',
+        fecha: '2026-07-29',
+        categoria: 'metal',
+        descripcion: 'Llaveros ×100 unidades (PAGADO)',
+        proveedor: 'Insumos',
+        cantidad: 100,
+        montoNeto: 6978,
+        notas: '100 unidades de llaveros. Sociedad 50/50 · pagó Nicolás.',
+        socioRegistro: 'Ambos',
+        pagadoPor: 'Nicolás',
+        items: [{ descripcion: 'Llaveros ×100', monto: 6978 }],
+      },
+      {
+        id: 'gas-filamento-rosado-10990',
+        fecha: '2026-07-29',
+        categoria: 'filamento',
+        descripcion: 'Filamento rosado 1kg (PAGADO)',
+        proveedor: 'Insumos',
+        cantidad: 1,
+        montoNeto: 10990,
+        notas: 'Filamento PLA rosado. Sociedad 50/50 · pagó Nicolás.',
+        socioRegistro: 'Ambos',
+        pagadoPor: 'Nicolás',
+        items: [{ descripcion: 'Filamento rosado 1kg', monto: 10990 }],
+      },
+      {
+        id: 'gas-gancho-aros-tope-3490',
+        fecha: '2026-07-29',
+        categoria: 'metal',
+        descripcion: 'Gancho aros con tope ×100 ud / 50 pares (PAGADO)',
+        proveedor: 'Insumos',
+        cantidad: 100,
+        montoNeto: 3490,
+        notas: '100 unidades = 50 pares de gancho aros con tope. Sociedad 50/50 · pagó Nicolás.',
+        socioRegistro: 'Ambos',
+        pagadoPor: 'Nicolás',
+        items: [{ descripcion: 'Gancho aros con tope ×100 ud (50 pares)', monto: 3490 }],
+      },
+    ];
+    let changed = false;
+    const byId = new Map(d.gastos.map((g) => [g.id, g]));
+    for (const reg of regs) {
+      const existing = byId.get(reg.id);
+      if (!existing) {
+        d.gastos.push({ ...reg });
+        changed = true;
+      } else if (Number(existing.montoNeto) !== reg.montoNeto || existing.descripcion !== reg.descripcion) {
+        Object.assign(existing, reg);
+        changed = true;
+      }
+    }
+    d.bitacora = Array.isArray(d.bitacora) ? d.bitacora : [];
+    if (!d.bitacora.some((b) => b.id === 'bit-gastos-2026-07-29')) {
+      d.bitacora.unshift({
+        id: 'bit-gastos-2026-07-29',
+        fecha: '2026-07-29',
+        texto:
+          'Gastos: llaveros ×100 $6.978 · filamento rosado $10.990 · gancho aros con tope ×100/50 pares $3.490. Total $21.458. Pagó Nicolás · sociedad 50/50.',
+      });
+      changed = true;
+    }
     return changed;
   }
 
@@ -3049,7 +3135,7 @@
           ${detalle}
         </td>
         <td class="num ${Number(g.montoNeto) < 0 ? 'imp-neg' : 'imp-pos'}">${money(g.montoNeto)}</td>
-        <td>${escapeHtml(g.socioRegistro || '')}</td>
+        <td>${escapeHtml(labelQuienGasto(g))}</td>
         <td><button type="button" class="imp-btn imp-btn--danger" data-del-gasto="${g.id}">✕</button></td>
       </tr>`;
       })
@@ -3059,9 +3145,10 @@
       <div class="imp-card">
         <h2>Gastos por registro (${money(sum(data.gastos))})</h2>
         <p class="imp-muted">Cada compra se guarda como <strong>un solo registro</strong> (orden / AliExpress / Líder / Mercado Libre…). El detalle de ítems queda desplegable.</p>
+        <p class="imp-muted"><strong>«Ambos»</strong> = gasto de la sociedad (deuda 50/50). Hasta ahora <strong>todo lo ha pagado Nicolás</strong>; Josefa debe el 50%.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
-            <thead><tr><th>Fecha</th><th>Cat.</th><th>Registro</th><th>Monto</th><th>Quién</th><th></th></tr></thead>
+            <thead><tr><th>Fecha</th><th>Cat.</th><th>Registro</th><th>Monto</th><th>Quién / pagó</th><th></th></tr></thead>
             <tbody>${rows || '<tr><td colspan="6">Sin gastos</td></tr>'}</tbody>
           </table>
         </div>
@@ -3086,11 +3173,17 @@
           <label>Proveedor / registro<input name="proveedor" required placeholder="Ej. Mercado Libre / AliExpress" /></label>
           <label>Descripción<input name="descripcion" required placeholder="Resumen de la compra" /></label>
           <label>Monto total CLP<input name="montoNeto" type="number" required step="1" /></label>
-          <label>Quién
+          <label>Sociedad (deuda)
             <select name="socioRegistro">
-              <option value="Ambos" selected>Ambos</option>
+              <option value="Ambos" selected>Ambos (50/50)</option>
               <option value="Josefa">Josefa</option>
               <option value="Nicolás">Nicolás</option>
+            </select>
+          </label>
+          <label>Quién pagó
+            <select name="pagadoPor">
+              <option value="Nicolás" selected>Nicolás</option>
+              <option value="Josefa">Josefa</option>
             </select>
           </label>
           <label>Notas / ítems<textarea name="notas" placeholder="Opcional: listar productos del ticket"></textarea></label>
@@ -3104,6 +3197,10 @@
     $('#form-gasto').addEventListener('submit', (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
+      const pagadoPor = String(fd.get('pagadoPor') || 'Nicolás').trim() || 'Nicolás';
+      const socioRegistro = String(fd.get('socioRegistro') || 'Ambos').trim() || 'Ambos';
+      const notasBase = String(fd.get('notas') || '').trim();
+      const notasPago = `Sociedad ${socioRegistro} · pagó ${pagadoPor}.`;
       data.gastos.push({
         id: uid('gas'),
         fecha: fd.get('fecha'),
@@ -3112,9 +3209,10 @@
         proveedor: fd.get('proveedor') || '',
         cantidad: 1,
         montoNeto: Number(fd.get('montoNeto')),
-        notas: fd.get('notas') || '',
+        notas: notasBase ? `${notasBase} ${notasPago}` : notasPago,
         ordenId: '',
-        socioRegistro: fd.get('socioRegistro') || '',
+        socioRegistro,
+        pagadoPor,
         items: [],
       });
       markDirty();
