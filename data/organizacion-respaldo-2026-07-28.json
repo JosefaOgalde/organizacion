@@ -2205,6 +2205,26 @@
       "color": "celeste",
       "agendaFijada": true,
       "estadoFijado": true
+    },
+    {
+      "id": "tarea-ts-sherpa-verde-destacado-landing-2026-07-29",
+      "titulo": "[TS] WP · Sherpa verde oliva a destacado / primera en Botas mujer",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-29",
+      "horaInicio": "14:00",
+      "horaFin": "15:30",
+      "notas": "WooCommerce / catálogo Trendseeker. Producto: Botas Estilo Sherpa Con Parte Superior Enrollable Para Mujer Verde Oliva · SKU WFT2052NRE-DOV. Link: https://trendseeker.cl/producto/botas-estilo-sherpa-con-parte-superior-enrollable-para-mujer-verde-oliva/\n\nPedido cliente: está muy abajo; hay que subirla.\nChecklist:\n1) Marcar como Destacado (featured) en la landing / home si aplica.\n2) En la marca Hunter: dejarla visible/arriba (orden de catálogo o menú_order).\n3) En Botas de mujer: primera posición (o entre las primeras) — hoy está muy abajo.\n4) Verificar en front: Inicio (destacados), archivo Hunter, categoría Botas + filtro Mujer.\n5) Desktop + mobile. Al terminar → marcar hecha.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "29",
+      "tipoEntregable": "wordpress-catalogo",
+      "parentId": null,
+      "productoUrl": "https://trendseeker.cl/producto/botas-estilo-sherpa-con-parte-superior-enrollable-para-mujer-verde-oliva/",
+      "sku": "WFT2052NRE-DOV",
+      "agendaFijada": true,
+      "color": "lavanda"
     }
   ],
   "citasSalud": [
@@ -2302,7 +2322,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 18,
-  "respaldoActualizado": "2026-07-28T19:51:10.905Z",
+  "respaldoActualizado": "2026-07-29T00:34:27.428Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
@@ -2347,7 +2367,7 @@
       "fecha": "2026-07-27T13:50:07.040Z",
       "nota": "Tareas 27 jul 2026 sobre respaldo vigente (preferir Downloads …-07-27.json)"
     },
-    "actualizado": "2026-07-28T19:51:10.905Z"
+    "actualizado": "2026-07-29T00:34:27.428Z"
   },
   "perfilPersonal": {
     "nombre": "Josefa Ogalde",
