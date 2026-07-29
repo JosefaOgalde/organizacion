@@ -86,6 +86,7 @@
     if (asegurarRenombrarRosadoPastelAMorado(d)) changed = true;
     if (asegurarProductoDragon(d)) changed = true;
     if (asegurarProductoTorreon(d)) changed = true;
+    if (asegurarProductoLimpiadorBrochas(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
@@ -1050,6 +1051,63 @@
         delete existing.recargoImpresoraAntiguaClp;
         return true;
       }
+    }
+    return changed;
+  }
+
+  /** Limpiador de brochas — slicer 114,05 g · 3 h 28 m · PLA morado pastel · Elegoo. Soft seed. */
+  function seedLimpiadorBrochas() {
+    const filamentoModeloGramos = 113.58;
+    const filamentoPurgeGramos = 0.47;
+    const filamentoGramos = round2(filamentoModeloGramos + filamentoPurgeGramos); // 114,05
+    return {
+      sku: 'LMBROC001',
+      nombre: 'Limpiador de brochas',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoModeloGramos,
+      filamentoSoportesGramos: 0,
+      filamentoPurgeGramos,
+      filamentoMetros: 37.93,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG, // PLA color / morado pastel
+      horasImpresion: round2((3 * 60 + 28) / 60), // 3 h 28 m → 3,47 h
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 4300,
+      costoSlicerRef: 2.28,
+      pendienteCosto: false,
+      notas:
+        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 37,93 m · 3 h 28 m · coste slicer 2,28. PLA morado pastel (ref $/kg color $16.829) · Elegoo Centauri. Costo ~$2.163 · PVP sugerido $4.300.`,
+    };
+  }
+
+  function asegurarProductoLimpiadorBrochas(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-limpiador-brochas';
+    const seed = seedLimpiadorBrochas();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
+      existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
     }
     return changed;
   }

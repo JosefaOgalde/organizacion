@@ -181,6 +181,7 @@ Datos en `data.impresoras[]` (seed + live) y UI **Operación → Impresoras**. C
 | `SOPCEL001` | Soporte celular | **34,46** | **0,96 (57 m 30 s)** | PLA morado pastel · costo ~$684 · **PVP $4.000** (manual) |
 | `DRAGON001` | Dragón | **275,41** | **14,12 (14 h 7 m)** | PLA color · modelo+soportes · costo ~$5.476 · **PVP $20.000** · diseño comprado **$3.000** en gastos (no en costo/u) |
 | `TORREON001` | Torreón | **~120** (est.) | **~4 h** (est.) | **Ender 3 V2 Neo (Sprite Neo)** · sin slicer · recargo perfil +$1.000 · costo ~$3.293 · PVP sug. $6.500 |
+| `LMBROC001` | Limpiador de brochas | **114,05** | **3,47 (3 h 28 m)** | PLA morado pastel · Elegoo · modelo 113,58 + purge 0,47 · costo ~$2.163 · **PVP sug. $4.300** |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
 
