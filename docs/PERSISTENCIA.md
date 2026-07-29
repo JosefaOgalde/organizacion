@@ -99,6 +99,7 @@ Los archivos en disco **no dependen** del navegador.
 
 ## Recuperar si algo se rompe
 
-- Importar JSON desde Descargas: **`IMPORTAR-RESPALDO.bat`** (copia a `data/organizacion-respaldo-2026-07-01.json` y `organizacion-live.json`)
-- Forzar respaldo del repo: `http://localhost:3000/index.html?respaldo=1`
+- Importar JSON desde Descargas: **`IMPORTAR-RESPALDO.bat "ruta\archivo.json"`** (copia a `data/organizacion-live.json` **y** al `organizacion-respaldo-YYYY-MM-DD.json` del nombre)
+- Restaurar canónico 28-jul: `ABRIR-LARAVEL.bat restaurar` o `RECUPERAR-CALENDARIO.bat`
+- Forzar respaldo del repo: `http://127.0.0.1:8000/index.html?disco=1`
 - Restaurar desde archivo: en consola del navegador (F12), pegar el contenido de un JSON de respaldo en la variable y recargar — o reemplazar `data/organizacion-live.json` y recargar con el servidor Node.

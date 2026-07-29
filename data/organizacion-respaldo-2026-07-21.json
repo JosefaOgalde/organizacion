@@ -2301,11 +2301,11 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 18,
-  "respaldoActualizado": "2026-07-28T21:35:37.240Z",
+  "respaldoActualizado": "2026-07-28T21:35:37.243Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
-    "nota": "Respaldo trackeado 28-jul: Trade Marketing + IMP pedidos en hoy Chile",
+    "nota": "Espejo histórico (alineado a canónico 28-jul); preferir organizacion-respaldo-2026-07-28.json",
     "plantillasMadre": [
       {
         "id": "ecr-nl-ecosistema",
@@ -2342,11 +2342,11 @@
     ],
     "jmFase2ArchivadaCalendario": true,
     "ultimaCargaRespaldo": {
-      "fuente": "C:\\Users\\josef\\Downloads\\organizacion-respaldo-2026-07-27.json",
-      "fecha": "2026-07-27T13:50:07.040Z",
-      "nota": "Tareas 27 jul 2026 sobre respaldo vigente (preferir Downloads …-07-27.json)"
+      "fuente": "C:\\Users\\josef\\Downloads\\organizacion-respaldo-2026-07-28 (1).json",
+      "fecha": "2026-07-29T14:20:11.119Z",
+      "nota": "Declarado por usuaria como último respaldo; promovido a data/organizacion-respaldo-2026-07-28.json + live"
     },
-    "actualizado": "2026-07-28T21:35:37.240Z"
+    "actualizado": "2026-07-28T21:35:37.243Z"
   },
   "perfilPersonal": {
     "nombre": "Josefa Ogalde",
