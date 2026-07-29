@@ -1,6 +1,6 @@
 # Joyas Mercury — continuar desde respaldo 24 jul
 
-**Respaldo activo:** `data/organizacion-respaldo-2026-07-24.json`  
+**Respaldo activo:** `data/organizacion-respaldo-2026-07-28.json`  
 **Organizador:** `http://127.0.0.1:8000/index.html?disco=1&tarea=jm/01`  
 **Landing:** `http://127.0.0.1:8000/index/clientes/joyasmercury/`  
 **Sitio:** https://joyasmercury.cl

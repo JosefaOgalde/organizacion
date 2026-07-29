@@ -1668,13 +1668,13 @@
     },
     {
       "id": "tarea-imp-pedidos-hoy",
-      "titulo": "[IMP] Pedidos activos · 3",
+      "titulo": "[IMP] Pedidos activos · 4",
       "clienteId": "cli-impresoreando",
       "rolId": "rol-imp-dis",
       "fecha": "2026-07-28",
       "horaInicio": "10:00",
       "horaFin": "18:00",
-      "notas": "Panel socios 50/50 · PED-007 Juan SIE (listo) · PED-008 Juan MKOF (listo) · PED-010 Gianni SIE (pendiente). PED-011 Marcia transferido→I000015. Cobro PED-010 aparte.",
+      "notas": "Panel socios 50/50 · PED-007 Juan SIE (listo) · PED-008 Juan MKOF (listo) · PED-010 Gianni SIE (pendiente) · PED-011 Marcia SIE (pendiente). Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. Imp live 2026-07-28T19:51:10.773Z",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
@@ -2173,19 +2173,18 @@
       "fecha": "2026-07-28",
       "horaInicio": "10:00",
       "horaFin": "13:00",
-      "notas": "Estado: transferido → venta I000015. Total $3.000. 1× Soporte celular morado · PVP $3.000 · Panel: /index/clientes/impresoreando/panel/",
-      "prioridad": "baja",
-      "completada": true,
+      "notas": "Estado: pendiente. Total $3.000. 1× Soporte celular morado · PVP $3.000 · Panel: /index/clientes/impresoreando/panel/",
+      "prioridad": "alta",
+      "completada": false,
       "pendiente": false,
       "tipoEntregable": "impresoreando-pedido",
       "parentId": "tarea-imp-pedidos-hoy",
       "ordenHijo": 4,
       "pedidoId": "ped-marcia-soporte-011",
       "pedidoNumero": "PED-011",
-      "pedidoEstado": "transferido",
+      "pedidoEstado": "pendiente",
       "linkPanel": "/index/clientes/impresoreando/panel/",
-      "numeroHistorico": "011",
-      "fechaFinalizado": "2026-07-28"
+      "numeroHistorico": "011"
     },
     {
       "id": "tarea-ecr-trade-marketing-mis-servicios-2026-07-28",
@@ -2302,11 +2301,11 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 18,
-  "respaldoActualizado": "2026-07-28T19:51:10.905Z",
+  "respaldoActualizado": "2026-07-29T14:21:04.741105Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
-    "nota": "Respaldo trackeado 28-jul: Trade Marketing + IMP pedidos en hoy Chile",
+    "nota": "Respaldo canónico 28-jul (último): Trade Marketing + IMP pedidos · fuente Downloads 28-jul",
     "plantillasMadre": [
       {
         "id": "ecr-nl-ecosistema",
@@ -2343,11 +2342,11 @@
     ],
     "jmFase2ArchivadaCalendario": true,
     "ultimaCargaRespaldo": {
-      "fuente": "C:\\Users\\josef\\Downloads\\organizacion-respaldo-2026-07-27.json",
-      "fecha": "2026-07-27T13:50:07.040Z",
-      "nota": "Tareas 27 jul 2026 sobre respaldo vigente (preferir Downloads …-07-27.json)"
+      "fuente": "C:\\Users\\josef\\Downloads\\organizacion-respaldo-2026-07-28 (1).json",
+      "fecha": "2026-07-29T14:20:11.119Z",
+      "nota": "Declarado por usuaria como último respaldo; promovido a data/organizacion-respaldo-2026-07-28.json + live"
     },
-    "actualizado": "2026-07-28T19:51:10.905Z"
+    "actualizado": "2026-07-29T14:21:04.741105Z"
   },
   "perfilPersonal": {
     "nombre": "Josefa Ogalde",

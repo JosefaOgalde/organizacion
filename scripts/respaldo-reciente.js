@@ -18,12 +18,15 @@ function leerJson(ruta) {
 }
 
 function score(ruta, obj, st) {
-  const d = obj.respaldoActualizado || '';
-  const parsed = Date.parse(d);
-  const t = Number.isFinite(parsed) ? parsed : st.mtimeMs;
+  // Preferir fecha del nombre (…-YYYY-MM-DD…) para no ganar respaldos viejos
+  // solo porque un script les tocó el mtime / respaldoActualizado.
   const m = ruta.match(/organizacion-respaldo-(\d{4}-\d{2}-\d{2})/i);
-  const fileDate = m ? Date.parse(m[1]) : 0;
-  return Math.max(t, fileDate || 0, st.mtimeMs);
+  const fileDate = m ? Date.parse(m[1] + 'T23:59:59.999Z') : 0;
+  const d = obj.respaldoActualizado || '';
+  const stamp = Date.parse(d);
+  const t = Number.isFinite(stamp) ? stamp : 0;
+  if (fileDate) return fileDate * 1e6 + t + (st.mtimeMs % 1e6);
+  return Math.max(t, st.mtimeMs);
 }
 
 function candidatos() {

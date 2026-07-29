@@ -4,6 +4,7 @@ cd /d "%~dp0"
 
 set "ORIGEN=%~1"
 set "LIVE=data\organizacion-live.json"
+set "RESPALDO=data\organizacion-respaldo-2026-07-28.json"
 
 if "%ORIGEN%"=="" (
   for /f "usebackq delims=" %%i in (`node scripts/respaldo-reciente.js 2^>nul`) do set "ORIGEN=%%i"
@@ -31,12 +32,21 @@ if not exist "%ORIGEN%" (
 )
 
 if not exist "data" mkdir data
+
+REM Extraer fecha YYYY-MM-DD del nombre si existe (tambien con " (1)")
+for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "$n=[IO.Path]::GetFileNameWithoutExtension('%ORIGEN%'); if ($n -match 'organizacion-respaldo-(\d{4}-\d{2}-\d{2})') { $matches[1] }"`) do set "FECHA=%%i"
+if defined FECHA (
+  set "RESPALDO=data\organizacion-respaldo-%FECHA%.json"
+)
+
 copy /Y "%ORIGEN%" "%LIVE%" >nul
+copy /Y "%ORIGEN%" "%RESPALDO%" >nul
 
 echo.
-echo  === Respaldo importado ===
-echo  Origen:  %ORIGEN%
-echo  Live:    %LIVE%
+echo  === Respaldo guardado ===
+echo  Origen:   %ORIGEN%
+echo  Live:     %LIVE%
+echo  Respaldo: %RESPALDO%
 echo.
 
 node scripts\asegurar-impresoreando-live.js 2>nul
@@ -47,6 +57,8 @@ if errorlevel 1 (
 )
 
 echo.
-echo  Siguiente: ABRIR-ORGANIZADOR.bat
+echo  Siguiente: ABRIR-LARAVEL.bat
+echo  Luego abre: http://127.0.0.1:8000/index.html?disco=1
+echo  ^(Ctrl+Shift+R si ves datos viejos^)
 echo.
 pause
