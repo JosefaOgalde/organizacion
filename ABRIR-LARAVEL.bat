@@ -103,6 +103,10 @@ if not errorlevel 1 (
     echo  0b^) Sync pedidos Impresoreando seed → live...
     node scripts\sync-impresoreando-seed-a-live.js
   )
+  if exist "scripts\force-imp-producto-limpiador-brochas.js" (
+    echo  0c^) Asegurar producto Limpiador de brochas LMBROC001...
+    node scripts\force-imp-producto-limpiador-brochas.js
+  )
 )
 
 echo  1^) SQLite + seed clientes...
