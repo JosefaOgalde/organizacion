@@ -59,6 +59,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-010 | Gianni SIE | 2× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · **paga 2026-08-18** · $8.000 |
 | PED-011 | Marcia SIE | 1× Soporte celular morado `SOPCEL001` | **transferido** → I000015 $3.000 |
 | PED-012 | Fabian MKOF | 1× Porta Bob Esponja `PTBOBES001` | **transferido** → I000016 $7.000 |
+| PED-013 | Mel MKOF | 1× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · $4.000 · fecha pago por confirmar |
 
 ### Ventas — ID correlativo + historial
 

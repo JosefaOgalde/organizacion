@@ -1668,13 +1668,13 @@
     },
     {
       "id": "tarea-imp-pedidos-hoy",
-      "titulo": "[IMP] Pedidos activos · 3",
+      "titulo": "[IMP] Pedidos activos · 4",
       "clienteId": "cli-impresoreando",
       "rolId": "rol-imp-dis",
       "fecha": "2026-07-29",
       "horaInicio": "10:00",
       "horaFin": "18:00",
-      "notas": "Panel socios 50/50 · PED-007 Juan SIE (listo) · PED-008 Juan MKOF (listo) · PED-010 Gianni SIE (pendiente). Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. Imp live 2026-07-29T19:40:00.000Z",
+      "notas": "Panel socios 50/50 · PED-007 Juan SIE (listo) · PED-008 Juan MKOF (listo) · PED-010 Gianni SIE (pendiente) · PED-013 Mel MKOF (pendiente). Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. Imp live 2026-07-29T19:42:00.000Z",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
@@ -2205,6 +2205,27 @@
       "color": "celeste",
       "agendaFijada": true,
       "estadoFijado": true
+    },
+    {
+      "id": "tarea-imp-ped-ped-013",
+      "titulo": "[IMP] PED-013 · Mel MKOF · 1× Soporte celular",
+      "clienteId": "cli-impresoreando",
+      "rolId": "rol-imp-dis",
+      "fecha": "2026-07-29",
+      "horaInicio": "10:00",
+      "horaFin": "13:00",
+      "notas": "Estado: pendiente. Total $4.000. 1× Soporte celular negro · fiado · PVP $4.000 · fecha de pago por confirmar · Panel: /index/clientes/impresoreando/panel/",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "tipoEntregable": "impresoreando-pedido",
+      "parentId": "tarea-imp-pedidos-hoy",
+      "ordenHijo": 4,
+      "pedidoId": "ped-mel-soporte-013",
+      "pedidoNumero": "PED-013",
+      "pedidoEstado": "pendiente",
+      "linkPanel": "/index/clientes/impresoreando/panel/",
+      "numeroHistorico": "013"
     }
   ],
   "citasSalud": [
@@ -2302,7 +2323,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 18,
-  "respaldoActualizado": "2026-07-29T19:40:40.578Z",
+  "respaldoActualizado": "2026-07-29T19:42:04.925Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
