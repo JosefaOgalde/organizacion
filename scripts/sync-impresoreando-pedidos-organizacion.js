@@ -4,7 +4,7 @@
  *
  * Reglas:
  * - Cada pedido ACTIVO (pendiente|listo|en_impresion) = 1 subtarea con número PED-00n
- * - Pedidos transferidos → tarea completada (tachada; no cuentan en «Pedidos activos · N»)
+ * - Pedidos transferidos / entregados / cerrados → **se eliminan** de subtareas (no quedan tachados bajo la madre)
  * - Madre `tarea-imp-pedidos-hoy` resume solo los activos
  * - Pedidos **fiados** (`fiado` o `fechaPagoEsperada`) → tarea de cobro el día de pago
  *   (`tipoEntregable: impresoreando-cobro`). Al transferir a venta se completa.
@@ -118,28 +118,6 @@ function hoyChile() {
   }).format(new Date());
 }
 
-/** Día en que se finalizó/transferió el pedido (para congelar la subtarea). */
-function fechaFinalizacionPedido(ped, tareaExistente) {
-  const raw = ped.transferidoEn || ped.actualizado || ped.ventaFecha || '';
-  if (raw) {
-    const d = String(raw).slice(0, 10);
-    if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
-    const parsed = Date.parse(raw);
-    if (Number.isFinite(parsed)) {
-      return new Intl.DateTimeFormat('en-CA', {
-        timeZone: 'America/Santiago',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      }).format(new Date(parsed));
-    }
-  }
-  // Si ya estaba completada, no moverla de su día.
-  if (tareaExistente?.completada && tareaExistente.fecha) return tareaExistente.fecha;
-  if (tareaExistente?.fechaFinalizado) return tareaExistente.fechaFinalizado;
-  return hoyChile();
-}
-
 function taskIdForCobro(ped) {
   const num = String(ped.numero || ped.id || 'x')
     .toLowerCase()
@@ -243,8 +221,10 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
     if (t.id) byTaskId.set(t.id, t);
   }
 
+  /** IDs de subtareas a quitar (transferidos / cerrados / huérfanas). */
+  const removeIds = new Set();
+
   let ordenActivo = 1;
-  let ordenHecho = 1;
   for (const ped of pedidos) {
     const activo = pedidoActivo(ped.estado);
     const tid = taskIdForPedido(ped);
@@ -253,15 +233,17 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
       byPedidoNum.get(ped.numero) ||
       byTaskId.get(tid);
     const titulo = tituloPedido(ped);
-    const notas = activo
-      ? `Estado: ${ped.estado}. Total ${money(ped.montoNeto)}. ${ped.notas || ''} · Panel: /index/clientes/impresoreando/panel/`
-      : `Transferido a venta (${ped.ventaId || ped.ventaCodigo || 'ok'}). Total cobrado ${money(ped.montoNeto)}. ${ped.notas || ''} · Ya no es pedido activo.`;
-    const ordenHijo = activo ? ordenActivo : 900 + ordenHecho;
-    // Activas van con la madre (hoy). Finalizadas se congelan en el día de cierre.
-    const fechaHijo = activo ? hoy : fechaFinalizacionPedido(ped, t);
+    const notas = `Estado: ${ped.estado}. Total ${money(ped.montoNeto)}. ${ped.notas || ''} · Panel: /index/clientes/impresoreando/panel/`;
+    const ordenHijo = ordenActivo;
+    const fechaHijo = hoy;
+
+    if (!activo) {
+      // Entregado / transferido / cerrado → no debe quedar como subtarea
+      if (t && t.id) removeIds.add(t.id);
+      continue;
+    }
 
     if (!t) {
-      if (!activo) continue; // no crear tarea nueva solo para transferidos
       t = {
         id: tid,
         titulo,
@@ -293,46 +275,68 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
         titulo,
         notas,
         fecha: fechaHijo,
-        completada: !activo,
+        completada: false,
+        pendiente: false,
         pedidoEstado: ped.estado || 'pendiente',
         pedidoId: ped.id,
         pedidoNumero: ped.numero,
         parentId: MADRE_ID,
         ordenHijo,
-        prioridad: activo ? t.prioridad || 'alta' : 'baja',
+        prioridad: t.prioridad || 'alta',
         clienteId: CLI,
         rolId: ROL,
         tipoEntregable: 'impresoreando-pedido',
       };
-      if (!activo) {
-        next.fechaFinalizado = t.fechaFinalizado || fechaHijo;
-      }
       for (const [k, v] of Object.entries(next)) {
         if (t[k] !== v) {
           t[k] = v;
           changed = true;
         }
       }
+      if (t.fechaFinalizado) {
+        delete t.fechaFinalizado;
+        changed = true;
+      }
     }
-    if (activo) ordenActivo += 1;
-    else ordenHecho += 1;
+    ordenActivo += 1;
   }
 
-  // Tareas de pedido huérfanas (ya no están en live) → completar
-  const liveIds = new Set(pedidos.map((p) => p.id));
-  const liveNums = new Set(pedidos.map((p) => p.numero));
+  // Tareas de pedido no activas (transferidas / huérfanas / cerradas) → eliminar de subtareas
+  const activosIds = new Set(pedidos.filter((p) => pedidoActivo(p.estado)).map((p) => p.id));
+  const activosNums = new Set(
+    pedidos.filter((p) => pedidoActivo(p.estado)).map((p) => p.numero)
+  );
   for (const t of org.tareas) {
     if (!t || t.tipoEntregable !== 'impresoreando-pedido') continue;
-    const still =
-      (t.pedidoId && liveIds.has(t.pedidoId)) ||
-      (t.pedidoNumero && liveNums.has(t.pedidoNumero));
-    if (!still && !t.completada) {
-      t.completada = true;
-      t.pedidoEstado = 'transferido';
-      t.prioridad = 'baja';
-      t.notas = `${t.notas || ''} · Marcado completado (pedido ya no en live).`.trim();
-      changed = true;
+    const stillActivo =
+      (t.pedidoId && activosIds.has(t.pedidoId)) ||
+      (t.pedidoNumero && activosNums.has(t.pedidoNumero));
+    if (!stillActivo && t.id) removeIds.add(t.id);
+  }
+
+  if (removeIds.size) {
+    if (!Array.isArray(org.tareasEliminadas)) org.tareasEliminadas = [];
+    const elimIds = new Set(
+      org.tareasEliminadas
+        .map((t) => (typeof t === 'string' ? t : t && t.id))
+        .filter(Boolean)
+    );
+    const ahora = new Date().toISOString();
+    for (const t of org.tareas) {
+      if (!t || !removeIds.has(t.id) || elimIds.has(t.id)) continue;
+      org.tareasEliminadas.push({
+        ...t,
+        eliminadaEn: ahora,
+        motivoEliminacion: 'Pedido Impresoreando transferido/cerrado — quitado de subtareas',
+      });
+      elimIds.add(t.id);
     }
+    const before = org.tareas.length;
+    org.tareas = org.tareas.filter((t) => !t || !removeIds.has(t.id));
+    if (org.tareas.length !== before) changed = true;
+    console.log(
+      `[sync-imp] ${path.basename(orgPath)}: eliminadas ${before - org.tareas.length} subtareas de pedidos cerrados/transferidos`
+    );
   }
 
   // Recordatorios de cobro (fiados): tarea el día de pago esperado.
