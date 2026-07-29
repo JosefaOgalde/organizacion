@@ -32,7 +32,8 @@ Pegar screenshot de perfil **@grupoflesan**:
 - ER muestra 1,82%
 
 ### Lo importante (para briefing)
-1. Una voz en IG, pero collabs con DVC y Flesan.ic → la arquitectura de marca se ve en redes.
-2. Contenido 100% obra/proyecto; poco de personas/cultura vs EI.
-3. ER 1,82% (muestra) > EI e Icafal, con base ~4 mil; periodicidad baja.
-4. Gap fuerte en LinkedIn (33 mil vs 65–129 mil de competencia).
+1. Publican solo como @grupoflesan, pero muchos posts van en collab con DVC y Flesan.ic: el lío de nombres también se ve en redes.
+2. Casi todo es obra/proyecto (B2B). Poco de personas, cultura o empleador; EI sí trabaja formación, innovación y liderazgo.
+3. Con ~4 mil seguidores (como Icafal), el ER de muestra (1,82%) supera a EI e Icafal. Ojo: esos 5 posts eran más antiguos.
+4. LinkedIn es el mayor gap: 33 mil vs ~65 mil (Inarco/Icafal) y 129 mil (EI).
+5. Facebook existe (1,2 mil) pero es canal menor; Inarco no tiene FB.
