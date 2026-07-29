@@ -24,16 +24,16 @@ JSON: `../../data/ecosistema-competencia.json`
 ### PERIODICIDAD
 - **0 a 1 posts por semana**
 - Baja — Irregular
-- Detalle: N=5 entre nov 2025 y mar 2026 (≈1 cada 3–4 semanas)
+- Detalle: N=5 entre nov 2025 y mar 2026 (aproximadamente 1 cada 3–4 semanas)
 
 ### Mockup celular
 Pegar screenshot de perfil **@grupoflesan**:
 - 4.168 seguidores · 466 publicaciones · 1.305 seguidos
-- ER muestra 1,82%
+- engagement muestra 1,82%
 
 ### Lo importante (para briefing)
 1. Publican solo como @grupoflesan, pero muchos posts van en collab con DVC y Flesan.ic: la fragmentación de nombres también se ve en redes.
 2. Casi todo es obra/proyecto (B2B). Poco de personas, cultura o empleador; Echeverría Izquierdo sí trabaja formación, innovación y liderazgo.
-3. Con ~4 mil seguidores (como Icafal), el ER de muestra (1,82%) supera a Echeverría Izquierdo e Icafal. Ojo: esos 5 posts eran más antiguos.
-4. LinkedIn es el mayor gap: 33 mil vs ~65 mil (Inarco/Icafal) y 129 mil (Echeverría Izquierdo).
+3. Con aproximadamente 4 mil seguidores (como Icafal), el engagement de muestra (1,82%) supera a Echeverría Izquierdo e Icafal. Ojo: esos 5 posts eran más antiguos.
+4. LinkedIn es el mayor gap: 33 mil vs aproximadamente 65 mil (Inarco/Icafal) y 129 mil (Echeverría Izquierdo).
 5. Facebook existe (1,2 mil) pero es canal menor; Inarco no tiene FB.
