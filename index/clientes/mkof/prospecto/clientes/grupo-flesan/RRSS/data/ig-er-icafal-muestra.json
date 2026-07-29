@@ -1,0 +1,93 @@
+{
+  "cuenta": "@icafal_sa",
+  "nombre": "Icafal S.A.",
+  "competidor": "Icafal",
+  "columnaTabla": "Competidor 3",
+  "fechaCaptura": "2026-07-28",
+  "seguidores": 4782,
+  "seguidoresDisplay": "4.782",
+  "publicaciones": 625,
+  "siguiendo": 347,
+  "urlPerfil": "https://www.instagram.com/icafal_sa/",
+  "fuenteIdPerfil": "ig-icafal-perfil-2026-07-28",
+  "formula": "ER% = ((Σ likes + Σ comentarios visibles) / N) / seguidores × 100",
+  "metodologia": "N=5: los 5 últimos contenidos IG entregados por la usuaria (screenshots desktop 2026-07-28). Comentarios IG visibles (no se suman comentarios de Facebook cross-post).",
+  "nPosts": 5,
+  "nPostsEnCalculo": 5,
+  "sumaLikes": 239,
+  "sumaComentariosVisibles": 9,
+  "sumaInteracciones": 248,
+  "promedioInteracciones": 49.6,
+  "engagementRate": 1.0372,
+  "engagementRateDisplay": "1,04%",
+  "tematicasObservadas": [
+    "Sostenibilidad / economía circular en obras",
+    "Seguridad laboral (1 año sin accidentes, catenaria Biotren)",
+    "Infraestructura ferroviaria (obra F-395 2HC, EFE)",
+    "Colaboración con proveedores de maquinaria (Develon)",
+    "Expansión internacional / energía FV (Brasil)"
+  ],
+  "formatosObservados": ["pieza gráfica + foto", "collage", "reel/video", "carrusel aéreo"],
+  "limitaciones": [
+    "Post colaborativo con @develon_chile: likes/comentarios de la vista collab; se cuentan 2 comentarios + 2 respuestas visibles (=4).",
+    "Comentarios de Facebook en reels no se incluyen.",
+    "N=5 (muestra entregada)."
+  ],
+  "posts": [
+    {
+      "n": 1,
+      "recencia": "hace 7 horas",
+      "fechaAprox": "2026-07-28",
+      "likes": 21,
+      "comments": 0,
+      "interacciones": 21,
+      "formato": "pieza gráfica",
+      "tema": "Economía circular Icafal Sicomaq en obras Q79–Q87",
+      "captionResumen": "Campaña residuos → recurso; #sostenibilidad."
+    },
+    {
+      "n": 2,
+      "recencia": "hace 4 días",
+      "fechaAprox": "2026-07-24",
+      "likes": 59,
+      "comments": 3,
+      "interacciones": 62,
+      "formato": "collage",
+      "tema": "Obra F-395 2HC · 1 año sin accidentes laborales (Biotren)",
+      "captionResumen": "Hito SST en contrato de catenaria Concepción–Coronel."
+    },
+    {
+      "n": 3,
+      "recencia": "hace 1 sem",
+      "fechaAprox": "2026-07-21",
+      "likes": 65,
+      "comments": 4,
+      "interacciones": 69,
+      "formato": "video/reel (collab Develon)",
+      "tema": "Excavadora DX190W-7 · labores ferroviarias Talagante",
+      "captionResumen": "Collab @develon_chile + @icafal_sa."
+    },
+    {
+      "n": 4,
+      "recencia": "15 de julio",
+      "fechaAprox": "2026-07-15",
+      "likes": 64,
+      "comments": 2,
+      "interacciones": 66,
+      "formato": "reel",
+      "tema": "Obra F-395 2HC · catenaria Biotren noche (capacidad L2)",
+      "captionResumen": "icil-icafal infraestructura ferroviaria; #Icafallohace."
+    },
+    {
+      "n": 5,
+      "recencia": "14 de julio / 2 sem",
+      "fechaAprox": "2026-07-14",
+      "likes": 30,
+      "comments": 0,
+      "interacciones": 30,
+      "formato": "carrusel/collage aéreo",
+      "tema": "3 proyectos FV Mato Grosso do Sul (9 MWp) — Icafal Inversiones",
+      "captionResumen": "Conexión a red Brasil; ~19,5 GWh/año."
+    }
+  ]
+}

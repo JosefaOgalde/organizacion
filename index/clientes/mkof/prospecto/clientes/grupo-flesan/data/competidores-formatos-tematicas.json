@@ -1,0 +1,84 @@
+{
+  "titulo": "Competidores · Formatos / Temáticas / Periodicidad",
+  "canal": "Instagram",
+  "fecha": "2026-07-28",
+  "metodologia": "N=5 últimos contenidos IG por competidor (screenshots usuaria). Periodicidad estimada desde fechas de esa muestra.",
+  "columnas": [
+    {
+      "id": "ei",
+      "nombre": "Echeverría Izquierdo",
+      "etiqueta": "Competidor 1",
+      "handle": "@echeverria.izquierdo",
+      "seguidoresDisplay": "8.649",
+      "erDisplay": "0,58%",
+      "formatos": [
+        "Videos corporativos / eventos",
+        "Carruseles con overlay de marca",
+        "Fotos de obra + personas"
+      ],
+      "tematicas": [
+        "Innovación y transformación digital",
+        "Formación y liderazgo (UC)",
+        "Planificación en obra (LPS 360)",
+        "Sostenibilidad / rankings"
+      ],
+      "periodicidad": {
+        "linea1": "2 a 3 posts por semana",
+        "linea2": "Frecuente — Consistente",
+        "detalle": "5 posts entre 9 y 24 jul 2026"
+      },
+      "fuenteMuestra": "RRSS/data/ig-er-ei-muestra.json"
+    },
+    {
+      "id": "inarco",
+      "nombre": "Inarco",
+      "etiqueta": "Competidor 2",
+      "handle": "@inarcochile",
+      "seguidoresDisplay": "1.517",
+      "erDisplay": "4,17%",
+      "formatos": [
+        "Reels / videos con testimonio en obra",
+        "Fotos aéreas de proyecto",
+        "Carruseles de obra histórica"
+      ],
+      "tematicas": [
+        "Obras en curso (lab, EFE, etc.)",
+        "Seguridad / SST",
+        "Trayectoria e infraestructura",
+        "Personas en obra (adm. / jefe SST)"
+      ],
+      "periodicidad": {
+        "linea1": "3 a 4 posts por semana",
+        "linea2": "Frecuente — Consistente",
+        "detalle": "5 posts entre 17 y 27 jul 2026"
+      },
+      "fuenteMuestra": "RRSS/data/ig-er-inarco-muestra.json"
+    },
+    {
+      "id": "icafal",
+      "nombre": "Icafal",
+      "etiqueta": "Competidor 3",
+      "handle": "@icafal_sa",
+      "seguidoresDisplay": "4.782",
+      "erDisplay": "1,04%",
+      "formatos": [
+        "Piezas gráficas + foto",
+        "Reels / videos (obra y collab)",
+        "Collages / carruseles aéreos"
+      ],
+      "tematicas": [
+        "Sostenibilidad / economía circular",
+        "Seguridad laboral",
+        "Infraestructura ferroviaria",
+        "Expansión / energía (FV Brasil)"
+      ],
+      "periodicidad": {
+        "linea1": "2 a 3 posts por semana",
+        "linea2": "Frecuente — Consistente",
+        "detalle": "5 posts entre 14 y 28 jul 2026"
+      },
+      "fuenteMuestra": "RRSS/data/ig-er-icafal-muestra.json"
+    }
+  ],
+  "nota": "Solo 3 competidores. Prospecto (@grupoflesan) va en lámina 02 aparte. Periodicidad = estimación sobre muestra N=5, no calendario completo."
+}

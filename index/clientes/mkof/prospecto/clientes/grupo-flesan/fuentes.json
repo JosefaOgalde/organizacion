@@ -1,0 +1,177 @@
+{
+  "prospecto": "Grupo Flesan",
+  "slug": "grupo-flesan",
+  "actualizado": "2026-07-28",
+  "regla": "Todo número con fuente, fecha y método",
+  "fuentes": [
+    {
+      "id": "web-grupo",
+      "tipo": "web",
+      "url": "https://www.grupoflesan.com/",
+      "fecha": "2026-07-27",
+      "metodo": "Revisión manual home (WebFetch)"
+    },
+    {
+      "id": "web-flesan",
+      "tipo": "web",
+      "url": "https://flesan.cl/",
+      "fecha": "2026-07-27",
+      "metodo": "Revisión manual home"
+    },
+    {
+      "id": "web-dvc",
+      "tipo": "web",
+      "url": "https://www.dvc.cl/",
+      "fecha": "2026-07-27",
+      "metodo": "Revisión manual home"
+    },
+    {
+      "id": "ig-grupoflesan",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/grupoflesan/",
+      "fecha": "2026-07-27",
+      "metodo": "URL footer sitios"
+    },
+    {
+      "id": "ig-grupoflesan-perfil-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/grupoflesan/",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot perfil IG Prospecto: @grupoflesan · Grupo Flesan Chile CL · 4.168 seguidores · 466 posts · 1.305 seguidos · linktr.ee/grupoflesan"
+    },
+    {
+      "id": "ig-grupoflesan-posts-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/grupoflesan/",
+      "fecha": "2026-07-28",
+      "metodo": "5 screenshots contenidos IG (varios collab DVC/flesan.ic): likes 92+49+109+60+66 · com. 0+0+0+1+2. ER N=5 = 1,82%. Ver RRSS/data/ig-er-flesan-muestra.json"
+    },
+    {
+      "id": "li-grupoflesan-2026-07-28",
+      "tipo": "linkedin",
+      "url": "https://www.linkedin.com/company/grupo-flesan/",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot página empresa LinkedIn Prospecto: Grupo Flesan Chile · 33 mil seguidores · 1 mil-5 mil empleados · Construcción · Las Condes"
+    },
+    {
+      "id": "fb-grupoflesan",
+      "tipo": "facebook",
+      "url": "https://www.facebook.com/grupoflesanchile",
+      "fecha": "2026-07-27",
+      "metodo": "URL footer sitios"
+    },
+    {
+      "id": "fb-grupoflesan-2026-07-28",
+      "tipo": "facebook",
+      "url": "https://www.facebook.com/grupoflesanchile",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot Facebook Page Prospecto: Grupo Flesan Chile · 1,2 mil seguidores · 12 seguidos · Empresa de construcción"
+    },
+    {
+      "id": "yt-grupoflesan",
+      "tipo": "youtube",
+      "url": "https://www.youtube.com/@GrupoFlesan",
+      "fecha": "2026-07-28",
+      "metodo": "URL footer sitios. Números NO cargados en matriz: pendiente captura usuaria (no usar scrape aproximado)"
+    },
+    {
+      "id": "web-ei",
+      "tipo": "web",
+      "url": "https://ei.cl/",
+      "fecha": "2026-07-27",
+      "metodo": "Revisión manual home — referente declarado"
+    },
+    {
+      "id": "ig-ei",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/echeverria.izquierdo/",
+      "fecha": "2026-07-27",
+      "metodo": "Link en ei.cl"
+    },
+    {
+      "id": "ig-ei-perfil-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/echeverria.izquierdo/",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot perfil IG desktop entregado por usuaria (Competidor 1 / ima 3): 8.649 seguidores · 1.076 posts · 351 seguidos"
+    },
+    {
+      "id": "ig-ei-posts-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/echeverria.izquierdo/",
+      "fecha": "2026-07-28",
+      "metodo": "5 screenshots de últimos contenidos IG (imas 4–8): likes visibles; comentarios no visibles → 0. Ver RRSS/data/ig-er-ei-muestra.json"
+    },
+    {
+      "id": "li-ei-2026-07-28",
+      "tipo": "linkedin",
+      "url": "https://www.linkedin.com/company/echeverria-izquierdo/",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot página empresa LinkedIn (ima 9): 129 mil seguidores · +10 mil empleados · Construcción · Santiago"
+    },
+    {
+      "id": "li-inarco-2026-07-28",
+      "tipo": "linkedin",
+      "url": "https://www.linkedin.com/company/constructora-inarco-s.a",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot página empresa LinkedIn (Competidor 2): Constructora INARCO S.A · 66 mil seguidores · 51-200 empleados · Construcción · Santiago"
+    },
+    {
+      "id": "ig-inarco-perfil-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/inarcochile/",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot perfil IG desktop (Competidor 2): @inarcochile · 1.517 seguidores · 104 posts · 164 seguidos"
+    },
+    {
+      "id": "ig-inarco-posts-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/inarcochile/",
+      "fecha": "2026-07-28",
+      "metodo": "5 screenshots últimos contenidos IG: likes 56+44+64+96+46 · comentarios visibles 1+3+4+2+0. ER N=5 = 4,17%. Ver RRSS/data/ig-er-inarco-muestra.json"
+    },
+    {
+      "id": "li-icafal-2026-07-28",
+      "tipo": "linkedin",
+      "url": "https://www.linkedin.com/company/icafal/",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot página empresa LinkedIn (Competidor 3): Icafal S.A. · 65 mil seguidores · 501-1 mil empleados · Construcción · Santiago"
+    },
+    {
+      "id": "ig-icafal-perfil-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/icafal_sa/",
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot perfil IG (Competidor 3): @icafal_sa · 4.782 seguidores · 625 posts · 347 seguidos"
+    },
+    {
+      "id": "ig-icafal-posts-2026-07-28",
+      "tipo": "instagram",
+      "url": "https://www.instagram.com/icafal_sa/",
+      "fecha": "2026-07-28",
+      "metodo": "5 screenshots últimos contenidos IG: likes 21+59+65+64+30 · com. visibles 0+3+4+2+0. ER N=5 = 1,04%. Ver RRSS/data/ig-er-icafal-muestra.json"
+    },
+    {
+      "id": "fb-ei-2026-07-28",
+      "tipo": "facebook",
+      "url": null,
+      "fecha": "2026-07-28",
+      "metodo": "Screenshot perfil FB Echeverría Izquierdo / GRUPO Ei: 8 amigos. UI de perfil (Agregar a amigos), no Page con seguidores. Competidor 1."
+    },
+    {
+      "id": "fb-inarco-no-tiene-2026-07-28",
+      "tipo": "facebook",
+      "url": null,
+      "fecha": "2026-07-28",
+      "metodo": "Confirmación usuaria: Competidor 2 (Inarco) no tiene Facebook"
+    },
+    {
+      "id": "manual-marca-local",
+      "tipo": "documento_cliente",
+      "url": null,
+      "rutaPc": "C:\\Users\\josef\\Downloads\\Información Grupo Making Of_Flesan DVC (2)\\1. Grupo Making Of\\2. Manual de Marca_2026\\Comunicacion y Marketing - Manual de Marca 2026.pdf",
+      "fecha": "2026-07-27",
+      "metodo": "Entregado por cliente; pendiente copiar al repo"
+    }
+  ]
+}

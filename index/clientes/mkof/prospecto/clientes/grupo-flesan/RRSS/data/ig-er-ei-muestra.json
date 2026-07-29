@@ -1,0 +1,93 @@
+{
+  "cuenta": "@echeverria.izquierdo",
+  "nombre": "Echeverría Izquierdo S.A",
+  "competidor": "Echeverría Izquierdo",
+  "columnaTabla": "Competidor 1",
+  "fechaCaptura": "2026-07-28",
+  "seguidores": 8649,
+  "seguidoresDisplay": "8.649",
+  "publicaciones": 1076,
+  "siguiendo": 351,
+  "urlPerfil": "https://www.instagram.com/echeverria.izquierdo/",
+  "fuenteIdPerfil": "ig-ei-perfil-2026-07-28",
+  "formula": "ER% = ((Σ likes + Σ comentarios visibles) / N) / seguidores × 100",
+  "metodologia": "N=5: los 5 últimos contenidos IG entregados por la usuaria (screenshots desktop 2026-07-28). Comentarios = visibles en captura (0 si no aparecen).",
+  "nPosts": 5,
+  "nPostsEnCalculo": 5,
+  "sumaLikes": 251,
+  "sumaComentariosVisibles": 0,
+  "sumaInteracciones": 251,
+  "promedioInteracciones": 50.2,
+  "engagementRate": 0.5804,
+  "engagementRateDisplay": "0,58%",
+  "tematicasObservadas": [
+    "Innovación / transformación digital (eventos internos Chile–Perú)",
+    "Formación y liderazgo (Líderes que transforman + UC)",
+    "Planificación en obra (Last Planner System 360)",
+    "Sostenibilidad / rankings (Best Performer Chile)",
+    "Personas en obra + networking corporativo"
+  ],
+  "formatosObservados": ["video", "carrusel", "foto con overlay de marca"],
+  "limitaciones": [
+    "Sin comentarios visibles en las 5 capturas (mínimo = 0).",
+    "Sin guardados/shares públicos.",
+    "N=5 (muestra entregada); no paridad N=9 de Indisa."
+  ],
+  "posts": [
+    {
+      "n": 1,
+      "recencia": "hace 4 días",
+      "fechaAprox": "2026-07-24",
+      "likes": 47,
+      "comments": 0,
+      "interacciones": 47,
+      "formato": "video",
+      "tema": "Mes de Innovación y Transformación Digital · Pilotes Terratest (BIM, AI, VR)",
+      "captionResumen": "Equipos Chile y Perú conocieron iniciativas BIM, AI, realidad virtual y gestión de información."
+    },
+    {
+      "n": 2,
+      "recencia": "hace 7 días / 1 sem",
+      "fechaAprox": "2026-07-21",
+      "likes": 62,
+      "comments": 0,
+      "interacciones": 62,
+      "formato": "carrusel",
+      "tema": "Programa Last Planner System 360 · Torre Kennedy Oriente",
+      "captionResumen": "Planificación colaborativa en obra; metodología 6 meses entre áreas."
+    },
+    {
+      "n": 3,
+      "recencia": "15 de julio / 1 sem",
+      "fechaAprox": "2026-07-15",
+      "likes": 32,
+      "comments": 0,
+      "interacciones": 32,
+      "formato": "carrusel",
+      "tema": "Líderes que transforman 2026 · 5ª versión con UC Católica",
+      "captionResumen": "+160 colaboradores históricos; 40 personas de distintas UU.NN. en este ciclo."
+    },
+    {
+      "n": 4,
+      "recencia": "10 de julio / 2 sem",
+      "fechaAprox": "2026-07-10",
+      "likes": 58,
+      "comments": 0,
+      "interacciones": 58,
+      "formato": "carrusel",
+      "tema": "Best Performer Chile 2026 · Construcción e Infraestructura (Brinca / UAI / El Mercurio)",
+      "captionResumen": "Ranking de Sostenibilidad Empresarial 4ª edición; líder de industria."
+    },
+    {
+      "n": 5,
+      "recencia": "9 de julio / 2 sem",
+      "fechaAprox": "2026-07-09",
+      "likes": 52,
+      "comments": 0,
+      "interacciones": 52,
+      "formato": "video",
+      "tema": "Inicio Mes de Innovación y Transformación Digital (Homecenter, CENIA, Enaex)",
+      "captionResumen": "Avances del Modelo de Innovación; speakers externos en evento corporativo."
+    }
+  ]
+}

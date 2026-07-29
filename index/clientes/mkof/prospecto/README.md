@@ -48,4 +48,9 @@ Queda en `clientes/<slug>/fuentes.json` (o markdown) para poder responder el *po
 
 ## Estado actual
 
-Esperando el **nombre del prospecto** para crear `clientes/<slug>/` y empezar a rellenar data real.
+| Prospecto | Nivel | Carpeta |
+|-----------|-------|---------|
+| Clínica Indisa | Detalle (RRSS + UX/UI) | `clientes/clinica-indisa/` |
+| Grupo Flesan | General (marca · webs · RRSS) | `clientes/grupo-flesan/` |
+
+**Flesan pendiente:** detalle Instagram (números / formato / periodicidad) + PDFs Manual de Marca / Valores si los tienes.

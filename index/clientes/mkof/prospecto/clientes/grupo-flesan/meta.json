@@ -1,0 +1,58 @@
+{
+  "nombre": "Grupo Flesan",
+  "slug": "grupo-flesan",
+  "clienteAgencia": "MKOF",
+  "ambito": "Prospecto Grupo Flesan / Flesan / DVC · diagnóstico general (marca + webs + RRSS)",
+  "nivelDetalle": "general",
+  "notaNivel": "Más general que Clínica Indisa. Sin láminas UX/UI profundas ni ER por post hasta recibir detalle IG.",
+  "etapa": 1,
+  "creado": "2026-07-27T22:00:00Z",
+  "updatedAt": "2026-07-28T22:25:00Z",
+  "problemaCliente": "Operan con varios nombres (Flesan, DVC, Grupo Flesan). Desafío: definir el nombre adecuado y una estrategia de marca.",
+  "competidores": [
+    "Echeverría Izquierdo",
+    "Inarco",
+    "Icafal"
+  ],
+  "alcanceCompetencia": "Solo 3 competidores (sin Tecsa ni 5º).",
+  "referenteWebComunicacional": {
+    "nombre": "Echeverría Izquierdo",
+    "web": "https://ei.cl/",
+    "instagram": "https://www.instagram.com/echeverria.izquierdo/",
+    "linkedin": "https://www.linkedin.com/company/echeverria-izquierdo/",
+    "igSeguidores": 8649,
+    "liSeguidores": 129000
+  },
+  "competidor2": {
+    "nombre": "Inarco",
+    "nombreLegal": "Constructora INARCO S.A",
+    "ig": "@inarcochile",
+    "igSeguidores": 1517,
+    "igErMuestraPct": 4.17,
+    "liSeguidores": 66000,
+    "cargado": "2026-07-28"
+  },
+  "competidor3": {
+    "nombre": "Icafal",
+    "nombreLegal": "Icafal S.A.",
+    "ig": "@icafal_sa",
+    "igSeguidores": 4782,
+    "igErMuestraPct": 1.04,
+    "liSeguidores": 65000,
+    "cargado": "2026-07-28"
+  },
+  "prospectoIg": {
+    "handle": "@grupoflesan",
+    "seguidores": 4168,
+    "erMuestraPct": 1.82,
+    "liSeguidores": 33000,
+    "fbSeguidores": 1200,
+    "cargado": "2026-07-28"
+  },
+  "pendientes": [
+    "Icafal: FB / YT / TikTok (IG+LI listos)",
+    "Prospecto YouTube @GrupoFlesan: captura de suscriptores (números pendientes)",
+    "Echeverría Izquierdo / Inarco / Icafal: YT / TikTok si aplica",
+    "Copiar PDFs de valores/manual al repo"
+  ]
+}

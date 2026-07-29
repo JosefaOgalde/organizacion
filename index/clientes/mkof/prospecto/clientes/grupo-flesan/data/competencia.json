@@ -1,0 +1,100 @@
+{
+  "actualizado": "2026-07-28",
+  "nivel": "general",
+  "competidoresDeclarados": [
+    {
+      "id": "ei",
+      "nombre": "Echeverría Izquierdo",
+      "columnaTabla": "Competidor 1",
+      "web": "https://ei.cl/",
+      "instagram": "https://www.instagram.com/echeverria.izquierdo/",
+      "linkedin": "https://www.linkedin.com/company/echeverria-izquierdo/",
+      "esReferente": true,
+      "nota": "Referente web y comunicacional según cliente. Marca holding clara (Ei).",
+      "rrss": {
+        "instagram": {
+          "seguidores": 8649,
+          "display": "8.649",
+          "posts": 1076,
+          "erMuestraN5": "0,58%",
+          "fuenteId": "ig-ei-perfil-2026-07-28",
+          "muestraPosts": "RRSS/data/ig-er-ei-muestra.json"
+        },
+        "linkedin": {
+          "seguidores": 129000,
+          "display": "129 mil",
+          "empleadosDisplay": "Más de 10 mil",
+          "fuenteId": "li-ei-2026-07-28"
+        },
+        "facebook": {
+          "display": "8",
+          "unidad": "amigos",
+          "tipoPerfil": "perfil_personal_o_legacy",
+          "fuenteId": "fb-ei-2026-07-28",
+          "nota": "No es Page con seguidores; presencia residual vs IG/LI"
+        }
+      }
+    },
+    {
+      "id": "inarco",
+      "nombre": "Inarco",
+      "nombreLegal": "Constructora INARCO S.A",
+      "columnaTabla": "Competidor 2",
+      "web": "https://inarco.cl/",
+      "linkedin": "https://www.linkedin.com/company/constructora-inarco-s.a",
+      "esReferente": false,
+      "estado": "IG_LI_OK",
+      "instagram": "https://www.instagram.com/inarcochile/",
+      "rrss": {
+        "instagram": {
+          "seguidores": 1517,
+          "display": "1.517",
+          "posts": 104,
+          "erMuestraN5": "4,17%",
+          "fuenteId": "ig-inarco-perfil-2026-07-28",
+          "muestraPosts": "RRSS/data/ig-er-inarco-muestra.json"
+        },
+        "linkedin": {
+          "seguidores": 66000,
+          "display": "66 mil",
+          "empleadosDisplay": "51-200",
+          "fuenteId": "li-inarco-2026-07-28"
+        },
+        "facebook": {
+          "display": "No tiene",
+          "estado": "NO_TIENE",
+          "fuenteId": "fb-inarco-no-tiene-2026-07-28"
+        }
+      }
+    },
+    {
+      "id": "icafal",
+      "nombre": "Icafal",
+      "nombreLegal": "Icafal S.A.",
+      "columnaTabla": "Competidor 3",
+      "web": "https://www.icafal.cl/",
+      "linkedin": "https://www.linkedin.com/company/icafal/",
+      "esReferente": false,
+      "estado": "IG_LI_OK",
+      "instagram": "https://www.instagram.com/icafal_sa/",
+      "rrss": {
+        "instagram": {
+          "seguidores": 4782,
+          "display": "4.782",
+          "posts": 625,
+          "erMuestraN5": "1,04%",
+          "fuenteId": "ig-icafal-perfil-2026-07-28",
+          "muestraPosts": "RRSS/data/ig-er-icafal-muestra.json"
+        },
+        "linkedin": {
+          "seguidores": 65000,
+          "display": "65 mil",
+          "empleadosDisplay": "501-1 mil",
+          "fuenteId": "li-icafal-2026-07-28"
+        }
+      }
+    }
+  ],
+  "alcance": "Solo 3 competidores (Echeverría Izquierdo · Inarco · Icafal). Tecsa y 5º fuera de alcance.",
+  "contrasteConProspecto": "Prospecto: FB 1,2 mil · IG 4.168 (engagement 1,82%) · LI 33 mil. Echeverría Izquierdo: FB residual (8) · IG 8.649 (engagement 0,58%) · LI 129 mil. Inarco: sin FB · IG 1.517 (engagement 4,17%) · LI 66 mil. Icafal: IG 4.782 (engagement 1,04%) · LI 65 mil. Mejor engagement IG: Inarco. LI: Echeverría Izquierdo >> Inarco aproximadamente igual a Icafal >> Prospecto."
+}

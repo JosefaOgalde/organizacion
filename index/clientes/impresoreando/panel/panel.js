@@ -1421,6 +1421,33 @@
           },
         ],
       },
+      {
+        id: 'ven-marcia-soporte-015',
+        codigo: 'I000015',
+        fecha: '2026-07-28',
+        cliente: 'Marcia SIE',
+        descripcion: 'PED-011 · 1× Soporte celular morado · Marcia SIE',
+        cantidad: 1,
+        montoBruto: 3000,
+        descuentoClp: 0,
+        montoNeto: 3000,
+        costoTotal: 683.69,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-011 · 1× Soporte celular morado · pagado $3.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-marcia-soporte-011',
+        pedidoNumero: 'PED-011',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: 3000,
+            costoUnitarioClp: 683.69,
+            filamento: 'PLA morado',
+          },
+        ],
+      },
     ];
 
     let changed = false;
@@ -1527,6 +1554,19 @@
         itemPrecioUnitarioClp: 2500,
         itemFilamento: 'PLA amarillo',
         itemCantidad: 2,
+      },
+      {
+        pedId: 'ped-marcia-soporte-011',
+        numero: 'PED-011',
+        ventaId: 'ven-marcia-soporte-015',
+        cliente: 'Marcia SIE',
+        montoNeto: 3000,
+        notas: '1× Soporte celular morado · transferido a venta I000015 · $3.000',
+        transferidoEn: '2026-07-28T21:30:00.000Z',
+        itemPrecioUnitarioClp: 3000,
+        itemFilamento: 'PLA morado',
+        itemSku: 'SOPCEL001',
+        itemNombre: 'Soporte celular',
       },
     ];
     for (const t of transfers) {
@@ -2103,7 +2143,7 @@
       changed = true;
     }
 
-    // PED-011 · Marcia SIE · 1× Soporte celular morado · $3.000 · pendiente
+    // PED-011 · Marcia SIE · 1× Soporte celular morado · transferido I000015 $3.000 (pagado)
     const id011 = 'ped-marcia-soporte-011';
     const prodSop011 = (d.productos || []).find(
       (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
@@ -2127,8 +2167,8 @@
             precioUnitarioClp: precioSop011,
             costoUnitarioClp: round2(costoSop011),
             filamento: 'PLA morado',
-            estado: 'pendiente',
-            listos: 0,
+            estado: 'listo',
+            listos: 1,
             enImpresion: 0,
           },
         ],
@@ -2136,9 +2176,10 @@
         descuentoClp: 0,
         montoNeto: precioSop011,
         costoTotal: round2(costoSop011),
-        estado: 'pendiente',
-        ventaId: null,
-        notas: `1× Soporte celular morado · PVP $${precioSop011}`,
+        estado: 'transferido',
+        ventaId: 'ven-marcia-soporte-015',
+        transferidoEn: '2026-07-28T21:30:00.000Z',
+        notas: `1× Soporte celular morado · transferido a venta I000015 · $${precioSop011}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-28T15:45:00.000Z',
       });
@@ -2756,15 +2797,15 @@
     const pedidosActivos = (data.pedidos || []).filter((p) =>
       pedidoActivo(p.estado || 'pendiente')
     );
-    const pedidosPendientes = pedidosActivos;
     const montoPedidosPend = pedidosActivos.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
-    const gastosMasPedidos = metaRecuperar + montoPedidosPend;
-    const denom = Math.max(metaRecuperar, ventas, gastosMasPedidos, 1);
+    /** Barra inferior: ventas contabilizadas + pedidos pendientes (pipeline de recupero). */
+    const ventasMasPedidos = ventas + montoPedidosPend;
+    const denom = Math.max(metaRecuperar, ventas, ventasMasPedidos, 1);
     const pctGastos = Math.min(100, (metaRecuperar / denom) * 100);
     const pctVentas = Math.min(100, (ventas / denom) * 100);
-    const pctGastosEnPipeline = Math.min(100, (metaRecuperar / denom) * 100);
+    const pctVentasEnPipeline = Math.min(100, (ventas / denom) * 100);
     const pctPedidosEnPipeline = Math.min(
-      Math.max(0, 100 - pctGastosEnPipeline),
+      Math.max(0, 100 - pctVentasEnPipeline),
       (montoPedidosPend / denom) * 100
     );
     const pctMarkup = Number(data.parametros?.margenObjetivoPct ?? 100);
@@ -2812,14 +2853,14 @@
           <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(metaRecuperar)}</span>
           <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)} · solo cuentan al transferir pedido → venta</span>
         </div>
-        <div class="imp-balance__bar imp-balance__bar--pipeline" title="Gastos + pedidos activos (aún no bajan la deuda)" aria-label="Gastos más pedidos activos">
-          <div class="imp-balance__fill--gastos" style="width:${pctGastosEnPipeline}%"></div>
+        <div class="imp-balance__bar imp-balance__bar--pipeline" title="Ventas contabilizadas + pedidos pendientes" aria-label="Ventas más pedidos pendientes">
+          <div class="imp-balance__fill--ventas" style="width:${pctVentasEnPipeline}%"></div>
           <div class="imp-balance__fill--pedidos" style="width:${pctPedidosEnPipeline}%"></div>
         </div>
         <div class="imp-balance__legend">
-          <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(metaRecuperar)}</span>
-          <span><i class="imp-dot imp-dot--pedidos"></i>Pedidos activos ${money(montoPedidosPend)} (${pedidosActivos.length})</span>
-          <span><strong>Total ${money(gastosMasPedidos)}</strong></span>
+          <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)}</span>
+          <span><i class="imp-dot imp-dot--pedidos"></i>Pedidos pendientes ${money(montoPedidosPend)} (${pedidosActivos.length})</span>
+          <span><strong>Total ${money(ventasMasPedidos)}</strong></span>
         </div>
       </div>
       <div class="imp-grid imp-grid--2">

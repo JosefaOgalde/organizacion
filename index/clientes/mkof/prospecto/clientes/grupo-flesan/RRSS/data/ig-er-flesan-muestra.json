@@ -1,0 +1,94 @@
+{
+  "cuenta": "@grupoflesan",
+  "nombre": "Grupo Flesan Chile CL",
+  "rol": "prospecto",
+  "columnaTabla": "Prospecto",
+  "fechaCaptura": "2026-07-28",
+  "seguidores": 4168,
+  "seguidoresDisplay": "4.168",
+  "publicaciones": 466,
+  "siguiendo": 1305,
+  "urlPerfil": "https://www.instagram.com/grupoflesan/",
+  "fuenteIdPerfil": "ig-grupoflesan-perfil-2026-07-28",
+  "formula": "ER% = ((Σ likes + Σ comentarios visibles) / N) / seguidores × 100",
+  "metodologia": "N=5: 5 contenidos IG entregados por la usuaria (screenshots desktop 2026-07-28), varios en collab con @devicenteconstructora / @flesan.ic. Comentarios = visibles en captura. Muestra más antigua que la de competidores (semanas/meses).",
+  "nPosts": 5,
+  "nPostsEnCalculo": 5,
+  "sumaLikes": 376,
+  "sumaComentariosVisibles": 3,
+  "sumaInteracciones": 379,
+  "promedioInteracciones": 75.8,
+  "engagementRate": 1.8181,
+  "engagementRateDisplay": "1,82%",
+  "tematicasObservadas": [
+    "Obras en curso / avance (fundaciones Colegio Robinson Crusoe)",
+    "Entrega de infraestructura vial (Eje Sargento Menadier, Puente Alto)",
+    "Proyectos EPC / frontera (Complejo Fronterizo Quillagua)",
+    "Hitos institucionales (primera piedra colegio Juan Fernández)",
+    "Obras públicas / borde costero (Playa Chinchorro, Arica)"
+  ],
+  "formatosObservados": ["collab multi-marca (Grupo + DVC / Flesan.ic)", "foto/carrusel con overlay de obra", "pieza con ficha técnica"],
+  "marcasEnCollab": ["@grupoflesan", "@devicenteconstructora", "@flesan.ic"],
+  "limitaciones": [
+    "Posts no son los 5 más recientes en días: datan de mar–nov (semanas atrás). ER comparativo con N=5 de competidores (últimos días) tiene sesgo temporal.",
+    "Likes de collabs pueden incluir audiencia de cuentas hermanas (DVC / Flesan.ic).",
+    "Comentarios solo los visibles en captura."
+  ],
+  "posts": [
+    {
+      "n": 1,
+      "recencia": "21 sem / 3 de marzo",
+      "fechaAprox": "2026-03-03",
+      "likes": 92,
+      "comments": 0,
+      "interacciones": 92,
+      "formato": "collab foto",
+      "tema": "Colegio Insular Robinson Crusoe · fundaciones profundas Eco Pilotes",
+      "captionResumen": "Collab DVC + Grupo Flesan; obra gruesa en Juan Fernández."
+    },
+    {
+      "n": 2,
+      "recencia": "30 de enero",
+      "fechaAprox": "2026-01-30",
+      "likes": 49,
+      "comments": 0,
+      "interacciones": 49,
+      "formato": "collab foto aérea",
+      "tema": "Tramo 2 Eje Sargento Menadier · Puente Alto (Serviu)",
+      "captionResumen": "Collab flesan.ic + grupoflesan; entrega 2022–2025; viaducto 165 m."
+    },
+    {
+      "n": 3,
+      "recencia": "24 de diciembre",
+      "fechaAprox": "2025-12-24",
+      "likes": 109,
+      "comments": 0,
+      "interacciones": 109,
+      "formato": "collab carrusel aéreo",
+      "tema": "Complejo Fronterizo Avanzada Aduanera Quillagua (EPC DVC)",
+      "captionResumen": "3 plantas FV; entrega MOP/Aduanas."
+    },
+    {
+      "n": 4,
+      "recencia": "18 de diciembre / 31 sem",
+      "fechaAprox": "2025-12-18",
+      "likes": 60,
+      "comments": 1,
+      "interacciones": 61,
+      "formato": "collab (nota TV)",
+      "tema": "Primera piedra Colegio Robinson Crusoe · Juan Fernández",
+      "captionResumen": "Fin de escuela container a 15 años del tsunami; logística insular."
+    },
+    {
+      "n": 5,
+      "recencia": "12 de noviembre / 36 sem",
+      "fechaAprox": "2025-11-12",
+      "likes": 66,
+      "comments": 2,
+      "interacciones": 68,
+      "formato": "collab foto",
+      "tema": "Inauguración Etapa I Borde Costero Playa Chinchorro · Arica",
+      "captionResumen": "Flesan.ic para MOP; 500 m de borde urbano recuperado."
+    }
+  ]
+}

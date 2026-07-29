@@ -607,7 +607,7 @@
     const tagline = cfg?.tagline || c.agente;
     const logoImp =
       c.slug === 'impresoreando'
-        ? `<img class="portal-landing-hero__logo" src="./identidad/logo-marca.png?v=imp-logo-nuevo" width="640" height="134" alt="impresoreando" />`
+        ? `<img class="portal-landing-hero__logo" src="./identidad/logo-ima2.png?v=ima2-claro-1" width="640" height="134" alt="impresoreando" />`
         : '';
     const titulo = logoImp
       ? `<h1 class="portal-landing-hero__titulo portal-landing-hero__titulo--logo">${logoImp}</h1>`

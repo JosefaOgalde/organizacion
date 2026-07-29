@@ -1,0 +1,32 @@
+{
+  "actualizado": "2026-07-27",
+  "nivel": "general",
+  "sitios": [
+    {
+      "id": "grupo",
+      "nombre": "Grupo Flesan",
+      "url": "https://www.grupoflesan.com/",
+      "rol": "Holding / casa del grupo",
+      "mensajeHome": "Ingeniería & Construcción, Servicios Integrales e Inversiones; sinergia Chile–Perú; +43 años",
+      "empresasVisibles": ["DVC", "Flesan Infraestructura", "Flesan Geotecnia", "Flesan Demoliciones", "FAI", "DIFAI"]
+    },
+    {
+      "id": "flesan",
+      "nombre": "Flesan",
+      "url": "https://flesan.cl/",
+      "rol": "Marca operativa unidades especializadas",
+      "mensajeHome": "Somos Flesan — unidades infra, demoliciones, geotecnia, minería",
+      "empresasVisibles": ["Infraestructura", "Demoliciones", "Geotecnia", "Minería"]
+    },
+    {
+      "id": "dvc",
+      "nombre": "DVC / De Vicente Constructora",
+      "url": "https://www.dvc.cl/",
+      "rol": "Constructora edificación",
+      "mensajeHome": "Edificación integral con respaldo de Grupo Flesan",
+      "empresasVisibles": ["DVC"]
+    }
+  ],
+  "rrssCompartidasEnFooter": true,
+  "hallazgo": "Tres puertas web (Grupo / Flesan / DVC) + una sola presencia RRSS (Grupo Flesan)."
+}

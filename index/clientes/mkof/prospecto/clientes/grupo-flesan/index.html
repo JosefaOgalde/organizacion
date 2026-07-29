@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grupo Flesan · Prospecto MKOF</title>
+  <style>
+    :root {
+      --bg: #f4f7f5; --ink: #1e3d32; --muted: #5a7368; --card: #fff;
+      --line: #d5e3d9; --accent: #2f7a5c; --beige: #e8f0eb;
+      --prospecto: #0b3d5c; --warn: #8a5a00; --ok: #1a6b4a;
+      --hi: #a8e4c0; --hi-border: #1a9a5c; --hi-ink: #0d5c38;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; }
+    header {
+      padding: 1.25rem 1.5rem; background: #fff; border-bottom: 1px solid var(--line);
+      display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; justify-content: space-between; align-items: baseline;
+    }
+    header h1 { margin: 0; font-size: 1.35rem; }
+    header p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    nav a { color: var(--accent); font-weight: 600; text-decoration: none; margin-right: 1rem; }
+    main { max-width: 980px; margin: 0 auto; padding: 1.75rem 1.5rem; }
+    .aviso {
+      background: var(--beige); border-left: 4px solid var(--accent);
+      padding: 0.9rem 1rem; border-radius: 0 10px 10px 0; margin-bottom: 1.25rem;
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+      padding: 1.1rem 1.2rem; margin-bottom: 0.85rem;
+    }
+    .card h2 { margin: 0 0 0.4rem; font-size: 1.05rem; }
+    .card p, .card li { margin: 0; color: var(--muted); font-size: 0.92rem; }
+    .card ul { margin: 0.4rem 0 0; padding-left: 1.2rem; }
+    .links a { color: var(--prospecto); font-weight: 700; text-decoration: none; margin-right: 1rem; font-size: 0.9rem; }
+    .table-wrap { overflow-x: auto; margin-top: 0.75rem; border: 1px solid var(--line); border-radius: 10px; }
+    table.eco { width: 100%; border-collapse: collapse; font-size: 0.82rem; background: #fff; }
+    table.eco th, table.eco td { padding: 0.55rem 0.5rem; border-bottom: 1px solid var(--line); text-align: center; white-space: nowrap; }
+    table.eco th.platform, table.eco td.platform { text-align: left; font-weight: 700; position: sticky; left: 0; background: #fff; min-width: 5.5rem; }
+    table.eco thead th { background: #eef5f1; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    table.eco thead th .etag { display: block; margin-top: 0.15rem; font-size: 0.62rem; color: var(--muted); font-weight: 700; }
+    table.eco th.col-prospecto { background: #d4c4a8; color: #3d3428; }
+    table.eco td.col-prospecto { background: #efe6d4; font-weight: 800; color: #3d3428; }
+    table.eco td.ok { font-weight: 800; color: var(--ok); background: #f0faf4; }
+    table.eco td.hi {
+      background: linear-gradient(180deg, #c8f0d8 0%, var(--hi) 100%);
+      font-weight: 800;
+      color: var(--hi-ink);
+      box-shadow: inset 0 0 0 2px var(--hi-border);
+      border-radius: 6px;
+      position: relative;
+    }
+    table.eco td.col-prospecto.hi {
+      background: linear-gradient(180deg, #b8ebd0 0%, #9ad9b8 100%);
+      color: var(--hi-ink);
+      box-shadow: inset 0 0 0 2px var(--hi-border);
+    }
+    table.eco td.hi .badge-mejor {
+      display: block;
+      font-size: 0.58rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--hi-ink);
+      margin-top: 0.15rem;
+    }
+    table.eco td.pend { color: var(--warn); font-weight: 600; }
+    .leyenda {
+      display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem;
+      margin: 0.55rem 0 0; font-size: 0.78rem; color: var(--muted);
+    }
+    .leyenda span { display: inline-flex; align-items: center; gap: 0.35rem; }
+    .swatch {
+      width: 0.9rem; height: 0.9rem; border-radius: 4px;
+      border: 1px solid var(--line); display: inline-block;
+    }
+    .swatch.mejor {
+      background: linear-gradient(180deg, #c8f0d8, var(--hi));
+      border-color: var(--hi-border);
+      box-shadow: inset 0 0 0 1px var(--hi-border);
+    }
+    .swatch.prospecto { background: #efe6d4; border-color: #b8a078; }
+    .ei-box { margin-top: 0.65rem; padding: 0.75rem 0.85rem; background: #f0faf4; border-radius: 10px; border: 1px solid #b8dfc8; font-size: 0.88rem; color: var(--ink); }
+    .ei-box strong { color: var(--ok); }
+    .comp-grid { display: grid; gap: 0.55rem; }
+    .comp-row {
+      display: grid; grid-template-columns: 7.5rem 1fr; gap: 0.65rem;
+      border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff;
+    }
+    .comp-label {
+      background: #c8e4dc; color: #1a4d3e; font-size: 0.72rem; font-weight: 800;
+      letter-spacing: 0.05em; text-transform: uppercase; display: grid; place-items: center; padding: 0.55rem;
+    }
+    .comp-body { padding: 0.55rem 0.75rem; font-size: 0.88rem; color: var(--ink); }
+    .comp-body ul { margin: 0; padding-left: 1.1rem; }
+    .comp-body .big { font-size: 1.05rem; font-weight: 800; color: #1a4d3e; }
+    .comp-body .sub { color: var(--muted); font-weight: 600; }
+    .importante {
+      margin-top: 0.75rem; padding: 0.75rem 0.85rem; background: #fff8e8;
+      border-left: 4px solid #c45c26; border-radius: 0 10px 10px 0; font-size: 0.86rem; color: var(--ink);
+    }
+    .importante ul { margin: 0.35rem 0 0; padding-left: 1.15rem; color: var(--muted); }
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Grupo Flesan</h1>
+      <p>Prospecto MKOF · diagnóstico general (marca · webs · RRSS)</p>
+    </div>
+    <nav>
+      <a href="../../?disco=1">← Hub prospectos</a>
+      <a href="../../../?disco=1">Landing MKOF</a>
+    </nav>
+  </header>
+  <main>
+    <div class="aviso">
+      <strong>Nivel: general</strong>
+      Matriz: 3 competidores + Prospecto (FB <strong>1,2 mil</strong> · IG 4.168 · engagement 1,82% · LI 33 mil).
+    </div>
+
+    <div class="card">
+      <h2>ECOSISTEMA RRSS</h2>
+      <p>Matriz plataformas × competidores + Prospecto. El recuadro verde marca el <strong>número más alto</strong> de cada fila.</p>
+      <div class="leyenda">
+        <span><i class="swatch mejor" aria-hidden="true"></i> Máximo de la fila</span>
+        <span><i class="swatch prospecto" aria-hidden="true"></i> Columna Prospecto</span>
+      </div>
+      <!-- Tabla estática (siempre visible; no depende de fetch) -->
+      <div class="table-wrap">
+        <table class="eco" id="tabla-eco-static">
+          <thead>
+            <tr>
+              <th class="platform">Red</th>
+              <th>Echeverría Izquierdo<span class="etag">Competidor 1</span></th>
+              <th>Inarco<span class="etag">Competidor 2</span></th>
+              <th>Icafal<span class="etag">Competidor 3</span></th>
+              <th class="col-prospecto">Grupo Flesan<span class="etag">Prospecto</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="platform">Facebook</th>
+              <td class="pend">8</td>
+              <td class="ok">No tiene</td>
+              <td class="pend">XX mill</td>
+              <td class="col-prospecto hi">1,2 mil<span class="badge-mejor">máximo</span></td>
+            </tr>
+            <tr>
+              <th class="platform">Instagram</th>
+              <td class="hi">8.649<span class="badge-mejor">máximo</span></td>
+              <td class="ok">1.517</td>
+              <td class="ok">4.782</td>
+              <td class="col-prospecto ok">4.168</td>
+            </tr>
+            <tr>
+              <th class="platform">Instagram engagement<span style="display:block;font-size:0.65rem;font-weight:600;color:#5a7368;text-transform:none">N=5 likes+com.</span></th>
+              <td class="ok">0,58%</td>
+              <td class="hi">4,17%<span class="badge-mejor">máximo</span></td>
+              <td class="ok">1,04%</td>
+              <td class="col-prospecto ok">1,82%</td>
+            </tr>
+            <tr>
+              <th class="platform">LinkedIn</th>
+              <td class="hi">129 mil<span class="badge-mejor">máximo</span></td>
+              <td class="ok">66 mil</td>
+              <td class="ok">65 mil</td>
+              <td class="col-prospecto ok">33 mil</td>
+            </tr>
+            <tr>
+              <th class="platform">YouTube</th>
+              <td class="pend">XX mill</td>
+              <td class="pend">XX mill</td>
+              <td class="pend">XX mill</td>
+              <td class="col-prospecto pend">XX mill</td>
+            </tr>
+            <tr>
+              <th class="platform">TikTok</th>
+              <td class="pend">XX mill</td>
+              <td class="pend">XX mill</td>
+              <td class="pend">XX mill</td>
+              <td class="col-prospecto pend">XX mill</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ei-box" id="ei-resumen">
+        <strong>Comp.1 Echeverría Izquierdo</strong> IG 8.649 · engagement 0,58% · LI 129 mil<br>
+        <strong>Comp.2 Inarco</strong> IG 1.517 · engagement 4,17% · LI 66 mil<br>
+        <strong>Comp.3 Icafal</strong> IG 4.782 · engagement 1,04% · LI 65 mil<br>
+        <strong>Prospecto</strong> FB 1,2 mil · IG 4.168 · engagement 1,82% · LI 33 mil.
+      </div>
+      <p class="links" style="margin-top:0.75rem">
+        <a href="RRSS/laminas/01-ecosistema-rrss.html?v=20260728t">Abrir lámina grande</a>
+        <a href="data/ecosistema-rrss.json">ecosistema-rrss.json</a>
+        <a href="fuentes.json">fuentes.json</a>
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Competidores · Formatos / Temáticas / Periodicidad</h2>
+      <p>Una tabla con los 3 competidores (IG · muestra N=5).</p>
+      <div class="table-wrap" style="margin-top:0.75rem">
+        <table class="eco" style="min-width:720px;font-size:0.8rem;text-align:left">
+          <thead>
+            <tr>
+              <th class="platform">Dimensión</th>
+              <th>Echeverría Izquierdo<span class="etag">Comp. 1</span></th>
+              <th>Inarco<span class="etag">Comp. 2</span></th>
+              <th>Icafal<span class="etag">Comp. 3</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="platform">Formatos</th>
+              <td class="ok" style="text-align:left;font-weight:600;padding:0.65rem">Videos eventos · Carruseles overlay · Fotos obra+personas</td>
+              <td class="ok" style="text-align:left;font-weight:600;padding:0.65rem">Reels testimonio obra · Fotos aéreas · Carrusel histórico</td>
+              <td class="ok" style="text-align:left;font-weight:600;padding:0.65rem">Piezas gráficas · Reels/collab · Collages aéreos</td>
+            </tr>
+            <tr>
+              <th class="platform">Temáticas</th>
+              <td class="ok" style="text-align:left;font-weight:600;padding:0.65rem">Innovación digital · Liderazgo/UC · LPS en obra · Sostenibilidad</td>
+              <td class="ok" style="text-align:left;font-weight:600;padding:0.65rem">Obras en curso · SST · Trayectoria · Personas en obra</td>
+              <td class="ok" style="text-align:left;font-weight:600;padding:0.65rem">Economía circular · SST · Ferrocarril · Energía/Brasil</td>
+            </tr>
+            <tr>
+              <th class="platform">Periodicidad</th>
+              <td class="ok" style="text-align:left;padding:0.65rem"><strong>2–3 / semana</strong><br><span style="color:#5a7368;font-size:0.78rem">Frecuente — Consistente</span></td>
+              <td class="hi" style="text-align:left;padding:0.65rem"><strong>3–4 / semana</strong><span class="badge-mejor">más activa</span><br><span style="color:#0d5c38;font-size:0.78rem">Frecuente — Consistente</span></td>
+              <td class="ok" style="text-align:left;padding:0.65rem"><strong>2–3 / semana</strong><br><span style="color:#5a7368;font-size:0.78rem">Frecuente — Consistente</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="links" style="margin-top:0.75rem">
+        <a href="RRSS/laminas/03-competidores-formatos-tematicas.html?v=1">Abrir tabla grande</a>
+        <a href="data/competidores-formatos-tematicas.json">JSON</a>
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>02 · Ecosistema RRSS competencia (Prospecto)</h2>
+      <p>Estado actual IG <strong>@grupoflesan</strong> — para pegar en la lámina.</p>
+      <div id="eco-comp" style="margin-top:0.75rem"></div>
+      <p class="links" style="margin-top:0.75rem">
+        <a href="data/ecosistema-competencia.json">ecosistema-competencia.json</a>
+        <a href="RRSS/laminas/02-ecosistema-competencia.html">Lámina HTML</a>
+        <a href="RRSS/laminas/TEXTOS-LAMINA.md">TEXTOS-LAMINA.md</a>
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Diagnóstico</h2>
+      <p>Problema central: varios nombres (Grupo Flesan / Flesan / DVC) + 3 sitios + RRSS únicas.</p>
+      <p class="links" style="margin-top:0.75rem">
+        <a href="DIAGNOSTICO-GENERAL.md">DIAGNOSTICO-GENERAL.md</a>
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Sitios</h2>
+      <ul>
+        <li><a href="https://www.grupoflesan.com/" target="_blank" rel="noopener">grupoflesan.com</a> — holding</li>
+        <li><a href="https://flesan.cl/" target="_blank" rel="noopener">flesan.cl</a> — unidades Flesan</li>
+        <li><a href="https://www.dvc.cl/" target="_blank" rel="noopener">dvc.cl</a> — De Vicente Constructora</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>RRSS prospecto (footer compartido)</h2>
+      <ul>
+        <li>IG <a href="https://www.instagram.com/grupoflesan/" target="_blank" rel="noopener">@grupoflesan</a> — <strong>4.168</strong> · engagement 1,82%</li>
+        <li>FB <a href="https://www.facebook.com/grupoflesanchile" target="_blank" rel="noopener">grupoflesanchile</a> — <strong>1,2 mil</strong></li>
+        <li>YT <a href="https://www.youtube.com/@GrupoFlesan" target="_blank" rel="noopener">@GrupoFlesan</a> — números pendiente de tu captura</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Competencia</h2>
+      <p>Solo 3: Echeverría Izquierdo (referente), Inarco, Icafal.</p>
+      <p class="links" style="margin-top:0.75rem"><a href="data/competencia.json">competencia.json</a></p>
+    </div>
+
+    <div class="card">
+      <h2>Data</h2>
+      <p class="links">
+        <a href="data/webs-marcas.json">webs-marcas</a>
+        <a href="data/oportunidades.json">oportunidades</a>
+        <a href="RRSS/">RRSS/</a>
+      </p>
+    </div>
+  </main>
+  <footer>Prospecto MKOF · Grupo Flesan · nivel general</footer>
+  <script>
+    const v = '20260728-static-tabla';
+    fetch('data/ecosistema-competencia.json?v=' + v, { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((comp) => {
+        const box = document.getElementById('eco-comp');
+        if (!box || !comp) return;
+        box.innerHTML =
+          `<div class="comp-grid">
+            <div class="comp-row"><div class="comp-label">Formatos</div><div class="comp-body"><ul>${(comp.formatos||[]).map((x)=>`<li>${x}</li>`).join('')}</ul></div></div>
+            <div class="comp-row"><div class="comp-label">Temáticas</div><div class="comp-body"><ul>${(comp.tematicas||[]).map((x)=>`<li>${x}</li>`).join('')}</ul></div></div>
+            <div class="comp-row"><div class="comp-label">Periodicidad</div><div class="comp-body"><div class="big">${comp.periodicidad.linea1}</div><div class="sub">${comp.periodicidad.linea2}</div></div></div>
+          </div>
+          <div class="importante"><strong>Lo importante</strong><ul>${(comp.lecturaImportante||[]).map((x)=>`<li>${x}</li>`).join('')}</ul></div>`;
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>

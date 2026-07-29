@@ -27,7 +27,7 @@
       "deudaJosefaClp": 400221
     },
     "pedidoSeq": 12,
-    "ventaSeq": 14,
+    "ventaSeq": 15,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
       {
@@ -77,14 +77,16 @@
         "cliente": "Marcia SIE",
         "ventaCodigos": [
           "I000005",
-          "I000009"
+          "I000009",
+          "I000015"
         ],
         "ventaIds": [
           "ven-marcia-stanley-001",
-          "ven-marcia-soporte-009"
+          "ven-marcia-soporte-009",
+          "ven-marcia-soporte-015"
         ],
-        "totalNeto": 6000,
-        "compras": 2
+        "totalNeto": 9000,
+        "compras": 3
       },
       {
         "cliente": "Ele SIE",
@@ -796,6 +798,33 @@
           "filamento": "PLA amarillo"
         }
       ]
+    },
+    {
+      "id": "ven-marcia-soporte-015",
+      "codigo": "I000015",
+      "fecha": "2026-07-28",
+      "cliente": "Marcia SIE",
+      "descripcion": "PED-011 · 1× Soporte celular morado · Marcia SIE",
+      "cantidad": 1,
+      "montoBruto": 3000,
+      "descuentoClp": 0,
+      "montoNeto": 3000,
+      "costoTotal": 683.69,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-011 · 1× Soporte celular morado · pagado $3.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-marcia-soporte-011",
+      "pedidoNumero": "PED-011",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 1,
+          "precioUnitarioClp": 3000,
+          "costoUnitarioClp": 683.69,
+          "filamento": "PLA morado"
+        }
+      ]
     }
   ],
   "operacion": [
@@ -1202,7 +1231,7 @@
       "id": "bit-marcia-011",
       "fecha": "2026-07-28",
       "autor": "Josefa",
-      "texto": "PED-011 Marcia SIE · 1× Soporte celular morado · $3.000 · pendiente."
+      "texto": "PED-011 Marcia SIE → I000015 · 1× Soporte celular morado · pagado $3.000."
     },
     {
       "id": "bit-ele-014",
@@ -1215,6 +1244,10 @@
       "fecha": "2026-07-28",
       "autor": "Josefa",
       "texto": "Ele SIE: PED-004 (no PED-012) → I000014 · 2× pesa rusa amarillo · $5.000. Sin duplicar."
+    },
+    {
+      "fecha": "2026-07-28",
+      "texto": "PED-011 Marcia SIE → I000015 · 1× Soporte celular morado · pagado $3.000."
     }
   ],
   "pedidos": [
@@ -1570,8 +1603,8 @@
           "precioUnitarioClp": 3000,
           "costoUnitarioClp": 683.69,
           "filamento": "PLA morado",
-          "estado": "pendiente",
-          "listos": 0,
+          "estado": "listo",
+          "listos": 1,
           "enImpresion": 0
         }
       ],
@@ -1579,11 +1612,12 @@
       "descuentoClp": 0,
       "montoNeto": 3000,
       "costoTotal": 683.69,
-      "estado": "pendiente",
-      "ventaId": null,
-      "notas": "1× Soporte celular morado · PVP $3.000",
+      "estado": "transferido",
+      "ventaId": "ven-marcia-soporte-015",
+      "notas": "1× Soporte celular morado · transferido a venta I000015 · $3.000",
       "socioRegistro": "Ambos",
-      "creado": "2026-07-28T15:45:00.000Z"
+      "creado": "2026-07-28T15:45:00.000Z",
+      "transferidoEn": "2026-07-28T21:30:00.000Z"
     }
   ]
 }
