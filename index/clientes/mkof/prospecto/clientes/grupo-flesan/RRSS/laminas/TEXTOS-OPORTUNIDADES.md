@@ -1,7 +1,7 @@
 # OPORTUNIDADES EN RRSS · Grupo Flesan (Prospecto)
 
 Nivel: diagnóstico (observa el hueco, no prescribe la solución).  
-JSON: `../../data/oportunidades.json`
+JSON: `../../data/oportunidades.json` → clave `rrss`
 
 ---
 

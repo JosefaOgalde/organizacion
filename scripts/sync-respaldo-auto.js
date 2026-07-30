@@ -25,10 +25,15 @@ function leerJson(ruta) {
   }
 }
 
-function marcaTiempo(obj, mtimeMs) {
+function marcaTiempo(obj, mtimeMs, ruta) {
+  // Preferir fecha del nombre del archivo sobre mtime / stamp tocado por scripts.
+  const m = String(ruta || '').match(/organizacion-respaldo-(\d{4}-\d{2}-\d{2})/i);
+  const fileDate = m ? Date.parse(m[1] + 'T23:59:59.999Z') : 0;
   const d = obj.respaldoActualizado || '';
-  const parsed = Date.parse(d);
-  return Number.isFinite(parsed) ? parsed : mtimeMs;
+  const stamp = Date.parse(d);
+  const t = Number.isFinite(stamp) ? stamp : 0;
+  if (fileDate) return fileDate * 1e6 + t + ((mtimeMs || 0) % 1e6);
+  return Number.isFinite(stamp) ? stamp : mtimeMs;
 }
 
 function main() {
@@ -51,7 +56,7 @@ function main() {
     const liveMtime = fs.statSync(LIVE).mtimeMs;
     const liveObj = leerJson(LIVE);
     if (liveObj) {
-      const liveScore = marcaTiempo(liveObj, liveMtime);
+      const liveScore = marcaTiempo(liveObj, liveMtime, LIVE);
       const liveN = liveObj.tareas.length;
       const mejorN = mejor.obj.tareas.length;
       // Nunca degradar: live con más tareas, o live igual de fresco.
@@ -135,7 +140,7 @@ function candidatos({ soloRepo = false } = {}) {
         if (!st.isFile()) return;
         const obj = leerJson(abs);
         if (!obj) return;
-        list.push({ path: abs, obj, mtime: st.mtimeMs, score: marcaTiempo(obj, st.mtimeMs) });
+        list.push({ path: abs, obj, mtime: st.mtimeMs, score: marcaTiempo(obj, st.mtimeMs, abs) });
       } catch {
         /* ignore */
       }
@@ -147,7 +152,13 @@ function candidatos({ soloRepo = false } = {}) {
       const st = fs.statSync(LIVE);
       const obj = leerJson(LIVE);
       if (obj) {
-        list.push({ path: LIVE, obj, mtime: st.mtimeMs, score: marcaTiempo(obj, st.mtimeMs), esLive: true });
+        list.push({
+          path: LIVE,
+          obj,
+          mtime: st.mtimeMs,
+          score: marcaTiempo(obj, st.mtimeMs, LIVE),
+          esLive: true,
+        });
       }
     } catch {
       /* ignore */

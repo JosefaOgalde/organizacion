@@ -103,9 +103,18 @@ Ruta en PC (pendiente copiar al repo):
 
 ---
 
-## 6. Oportunidades en RRSS (diagnóstico)
+## 6. Oportunidades (generales) para oferta MKOF
 
-Fuente: `data/oportunidades.json` · `RRSS/laminas/TEXTOS-OPORTUNIDADES.md`
+Fuente: `data/oportunidades.json` → clave `generales`.
+
+1. **Arquitectura de marca y naming** — Definir rol de Grupo Flesan / Flesan / DVC (masterbrand vs endorsed vs independientes) y reglas de uso.
+2. **Alineación web** — Homogeneizar narrativa entre los 3 sitios (o consolidar) según la arquitectura elegida; Echeverría Izquierdo como benchmark de claridad.
+3. **RRSS orgánicas bajo la marca definida** — Hoy ya hay un perfil único; falta potenciarlo con lineamiento de contenido y medición (detalle IG pendiente).
+4. **YouTube / audiovisual de obras** — Canal antiguo con poco volumen: encaja con storytelling de proyectos si hay estrategia de marca clara.
+
+## 6b. Oportunidades en RRSS (diagnóstico)
+
+Fuente: `data/oportunidades.json` → clave `rrss` · `RRSS/laminas/TEXTOS-OPORTUNIDADES.md`
 
 1. **Fragmentación de marca en redes** — En Instagram la cuenta es una, pero en los posts aparecen varias marcas a la vez. Eso diluye quién habla.
 2. **Temática muy acotada a obra** — Casi todo el contenido es proyecto e hito B2B. Poco se ve de personas, cultura o empleador frente a la competencia.

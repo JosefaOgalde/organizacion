@@ -1,24 +1,67 @@
 {
-  "actualizado": "2026-07-29",
-  "nivel": "diagnostico",
-  "ambito": "RRSS",
-  "titulo": "OPORTUNIDADES EN RRSS",
-  "nota": "Lectura diagnóstica (observa el hueco). No prescribe soluciones.",
-  "oportunidades": [
-    {
-      "id": 1,
-      "titulo": "Fragmentación de marca en redes",
-      "texto": "En Instagram la cuenta es una, pero en los posts aparecen varias marcas a la vez. Eso diluye quién habla."
-    },
-    {
-      "id": 2,
-      "titulo": "Temática muy acotada a obra",
-      "texto": "Casi todo el contenido es proyecto e hito B2B. Poco se ve de personas, cultura o empleador frente a la competencia."
-    },
-    {
-      "id": 3,
-      "titulo": "Ritmo bajo e irregular + rezago en LinkedIn",
-      "texto": "Publican poco y sin constancia (0 a 1 por semana), mientras la competencia va 2–4 veces por semana. En LinkedIn quedan atrás en alcance (33 mil vs aproximadamente 65–129 mil)."
-    }
-  ]
+  "actualizado": "2026-07-30",
+  "nota": "Dos capas: generales (oferta MKOF) + RRSS (diagnóstico). Las láminas RRSS usan `rrss`.",
+  "generales": {
+    "nivel": "general",
+    "titulo": "Oportunidades (generales) para oferta MKOF",
+    "oportunidades": [
+      {
+        "id": 1,
+        "titulo": "Arquitectura de marca y naming",
+        "bullets": [
+          "Definir rol de Grupo Flesan / Flesan / DVC",
+          "Reglas de uso verbal y visual entre holding y operativas"
+        ]
+      },
+      {
+        "id": 2,
+        "titulo": "Alineación de los 3 sitios web",
+        "bullets": [
+          "Misma narrativa según arquitectura elegida",
+          "Benchmark de claridad: Echeverría Izquierdo (ei.cl)"
+        ]
+      },
+      {
+        "id": 3,
+        "titulo": "RRSS orgánicas bajo la marca definida",
+        "bullets": [
+          "Ya existe perfil único @grupoflesan (4.168 · ER 1,82%)",
+          "Periodicidad baja/irregular; collabs DVC/Flesan.ic sin sistema de serie",
+          "Gap LinkedIn (33 mil vs 65–129 mil de competencia)"
+        ]
+      },
+      {
+        "id": 4,
+        "titulo": "YouTube / audiovisual de obras",
+        "bullets": [
+          "Canal @GrupoFlesan existe (números pendientes de captura)",
+          "Espacio para storytelling de proyectos si hay marca clara"
+        ]
+      }
+    ]
+  },
+  "rrss": {
+    "nivel": "diagnostico",
+    "ambito": "RRSS",
+    "titulo": "OPORTUNIDADES EN RRSS",
+    "nota": "Lectura diagnóstica (observa el hueco). No prescribe soluciones.",
+    "fuenteTextos": "RRSS/laminas/TEXTOS-OPORTUNIDADES.md",
+    "oportunidades": [
+      {
+        "id": 1,
+        "titulo": "Fragmentación de marca en redes",
+        "texto": "En Instagram la cuenta es una, pero en los posts aparecen varias marcas a la vez. Eso diluye quién habla."
+      },
+      {
+        "id": 2,
+        "titulo": "Temática muy acotada a obra",
+        "texto": "Casi todo el contenido es proyecto e hito B2B. Poco se ve de personas, cultura o empleador frente a la competencia."
+      },
+      {
+        "id": 3,
+        "titulo": "Ritmo bajo e irregular + rezago en LinkedIn",
+        "texto": "Publican poco y sin constancia (0 a 1 por semana), mientras la competencia va 2–4 veces por semana. En LinkedIn quedan atrás en alcance (33 mil vs aproximadamente 65–129 mil)."
+      }
+    ]
+  }
 }
