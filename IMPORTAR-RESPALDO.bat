@@ -31,6 +31,15 @@ if not exist "%ORIGEN%" (
   exit /b 1
 )
 
+node scripts\validar-respaldo-organizacion.js "%ORIGEN%"
+if errorlevel 1 (
+  echo.
+  echo  No se modifico el live ni el respaldo canonico.
+  echo.
+  pause
+  exit /b 1
+)
+
 if not exist "data" mkdir data
 
 REM Extraer fecha YYYY-MM-DD del nombre si existe (tambien con " (1)")
