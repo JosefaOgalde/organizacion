@@ -1,76 +1,56 @@
-# Prompt Gemini · Banner bodegón Accesorios Hunter (sin texto)
-Uso: pegar en Gemini (modo imagen) + adjuntar/abrir los links de referencia.
-Formato salida: banner horizontal **4000 × 1770 px** (o el más ancho posible; luego se exporta a 4000×1770).
+# Prompt Gemini · Banner bodegón Accesorios Hunter
+Combinación pedida: **escena de la imagen 1** + **arreglo de productos de la imagen 2**.
+Sin texto en la imagen. Formato: banner **4000 × 1770 px**.
 
 ---
 
-## Referencias de producto (usar estas fotos exactas — fidelidad obligatoria)
+## Referencias de producto (fidelidad)
 
-1. **Gorro rayas rosa / gris**  
-   https://trendseeker.cl/wp-content/uploads/2023/07/UAH5101WXA-SPK-1.jpg
+1. Gorro rayas rosa: https://trendseeker.cl/wp-content/uploads/2023/07/UAH5101WXA-SPK-1.jpg  
+2. Gorro pon-pon negro: https://trendseeker.cl/wp-content/uploads/2023/07/UAH3031WXA-GZB-1.jpg  
+3. Calcetín rojo: https://trendseeker.cl/wp-content/uploads/2022/11/UAS3000AAA-MLR-1.png  
+4. Calcetín negro: https://trendseeker.cl/wp-content/uploads/2023/07/UAS3036AAB-BLK-1-princ.jpg  
+5. Paraguas navy: https://trendseeker.cl/wp-content/uploads/2023/07/PROD-AW18-ORG-UAU1004UPM-PKB-1.jpg  
+   → En escena: **azul navy + transparente + moustache** (no rosa).
 
-2. **Gorro con pon-pon moustache negro/gris**  
-   https://trendseeker.cl/wp-content/uploads/2023/07/UAH3031WXA-GZB-1.jpg  
-   (alt) https://trendseeker.cl/wp-content/uploads/2023/07/UAH3031WXA-GZB-2.jpg
-
-3. **Calcetín bota rojo** (cuff rojo sobre bota negra de soporte)  
-   https://trendseeker.cl/wp-content/uploads/2022/11/UAS3000AAA-MLR-1.png  
-   (alt) https://trendseeker.cl/wp-content/uploads/2022/11/PROD-AW16-ORG-UAS3000AAA-MLR-2-scaled-1.jpg
-
-4. **Calcetín bota negro 6 puntadas**  
-   https://trendseeker.cl/wp-content/uploads/2023/07/UAS3036AAB-BLK-1-princ.jpg  
-   (alt) https://trendseeker.cl/wp-content/uploads/2023/07/UAS3036AAB-BLK-2.jpg
-
-5. **Paraguas burbuja moustache azul (navy + transparente)**  
-   Ficha: https://trendseeker.cl/producto/paraguas-burbuja-moustache-azul/  
-   Imagen WP: https://trendseeker.cl/wp-content/uploads/2023/07/PROD-AW18-ORG-UAU1004UPM-PKB-1.jpg  
-   → En la escena el paraguas debe verse **azul navy + cúpula transparente + borde moustache**, mango curvo navy (no rosa).
+Si puedes adjuntar también:
+- Imagen 1 = ambiente (chimenea + ventana) que te gustó
+- Imagen 2 = cómo deben verse/agruparse los productos
 
 ---
 
 ## Prompt para pegar en Gemini
 
 ```
-Genera una fotografía publicitaria tipo bodegón horizontal (banner web 4000×1770 px, ratio ~2.26:1 o 16:9 muy ancho).
+Combina estas referencias exactamente así:
 
-IMPORTANTE — fidelidad a las fotos de referencia adjuntas/linkeadas:
-- Usa EXACTAMENTE estos accesorios Hunter de las referencias (colores, texturas, logos HUNTER en parches/etiquetas).
-- No inventes otros productos. No cambies el diseño de los logos.
+ESCENA / AMBIENTE (como la IMAGEN 1 — mantener):
+- Banner horizontal muy ancho (4000×1770 o 16:9 amplio).
+- Chimenea grande de piedra con fuego intenso a la IZQUIERDA.
+- Ventana con lluvia y bosque de coníferas a la DERECHA.
+- Piso continuo (piedra o madera oscura) de borde a borde.
+- Luz cálida de la chimenea vs luz fría de la ventana.
+- Foto realista, lente rectilínea: sin laterales estirados, sin blur artificial, sin barras de color, sin espejos.
 
-Productos en escena (todos completos, sin recortes):
-1) Dos botas de lluvia Hunter negras mate altas como soporte de los calcetines:
-   - Bota izquierda: calcetín bota ROJO tejido grueso doblado sobre el borde, parche HUNTER blanco/rojo.
-   - Bota derecha: calcetín bota NEGRO cable-knit doblado sobre el borde, parche HUNTER.
-   Se deben ver las botas enteras (incluida la suela).
-2) Paraguas burbuja Hunter abierto detrás: cúpula transparente, borde ancho AZUL NAVY con forma moustache, mango curvo navy, logo HUNTER en el panel navy. Paraguas completo, sin cortar arriba.
-3) En un banquito/banco de madera bajo delante:
-   - Gorro negro/gris con pon-pon negro grande (pico negro hacia el gris) + etiqueta Hunter.
-   - Gorro gris claro con puño de rayas solo rosa pálido + crema + gris (sin azul ni amarillo) + etiqueta Hunter.
-   Ambos gorros enteros (incluido el pon-pon).
+ARREGLO DE PRODUCTOS (como la IMAGEN 2 — usar este layout):
+- Un solo cluster centrado (no empujado a la derecha).
+- Dos botas Hunter negras mate ALTAS juntas, una al lado de la otra (pareja unida, no separadas a los lados):
+  · Izquierda: calcetín bota ROJO grueso con parche HUNTER blanco/rojo mirando a cámara.
+  · Derecha: calcetín bota NEGRO cable-knit con parche HUNTER mirando a cámara.
+- Paraguas burbuja transparente con borde AZUL NAVY moustache ABIERTO justo DETRÁS de las dos botas (pegado al grupo).
+- Banco de madera bajo INMEDIATAMENTE a la DERECHA de las botas, con:
+  · Gorro negro/gris con pon-pon negro grande + etiqueta Hunter.
+  · Gorro gris claro con rayas rosa pálido + crema + gris en el puño + etiqueta Hunter.
+- Productos completos (suelas, cúpula del paraguas, gorros enteros). Fidelidad a las fotos de producto linkeadas.
 
-Escena / atmósfera:
-- Entrada de casa / mudroom como refugio: chimenea de piedra con fuego encendido a la IZQUIERDA, ventana con día lluvioso a la DERECHA.
-- Piso de madera oscura continuo de borde a borde.
-- Iluminación cálida de la chimenea + luz fría de la ventana.
-- Grupo de productos CENTRADO en el fotograma, con aire alrededor (no zoom extremo, no pegados al borde).
-- Foto realista, lente rectilínea (sin ojo de pez, sin laterales estirados, sin blur artificial en los bordes, sin barras de color, sin espejos).
-- Profundidad de campo suficiente para que chimenea y ventana se vean nítidas.
+TEXTO: no poner ningún texto, tipografía ni watermark (solo logos que ya traen los productos).
 
-Texto:
-- NO poner ningún texto, tipografía, headline, watermark ni logo aparte de los que ya traen los productos.
-
-Entrega una sola imagen limpia lista para banner e-commerce.
+Entrega una sola imagen limpia de bodegón publicitario.
 ```
 
 ---
 
-## Cómo usarlo en Gemini
-1. Abre Gemini → genera imagen.
-2. Adjunta las 5 fotos (o pega los links de arriba).
-3. Pega el bloque «Prompt para pegar en Gemini».
-4. Si sale más cuadrada, pide: «reencuadra a banner horizontal 4000×1770 sin recortar productos ni deformar laterales».
-
-## Textos para montar después (Canva / WP)
+## Textos para montar después
 ```
 El refugio empieza en la entrada
 ```
