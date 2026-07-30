@@ -84,7 +84,10 @@ if not exist "data\impresoreando-live.json" (
 REM 0) Solo crear live si FALTA (nunca pisar el calendario local con un respaldo viejo)
 if not exist "data\organizacion-live.json" (
   echo  0^) Creando organizacion-live.json desde respaldo del repo...
-  if exist "data\organizacion-respaldo-2026-07-28.json" (
+  if exist "data\organizacion-respaldo-2026-07-29.json" (
+    copy /Y "data\organizacion-respaldo-2026-07-29.json" "data\organizacion-live.json" >nul
+    echo  Live creado desde data\organizacion-respaldo-2026-07-29.json
+  ) else if exist "data\organizacion-respaldo-2026-07-28.json" (
     copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
     echo  Live creado desde data\organizacion-respaldo-2026-07-28.json
   ) else if exist "scripts\sync-respaldo-auto.js" (
