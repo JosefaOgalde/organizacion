@@ -3,6 +3,14 @@
   "nota": "Prompts Trendseeker Gemini VIDEO — cada contenido tiene TXT A/B/C editables por separado.",
   "items": [
     {
+      "id": "banner-accesorios-hunter-40off",
+      "titulo": "Banner · Accesorios Hunter 40% OFF",
+      "archivo": "copys/COPY-banner-accesorios-hunter-40off.txt",
+      "descripcion": "Copy + CTA para el debut del descuento de accesorios Hunter (40% off). Primera pieza de la campaña.",
+      "tareaNumero": "banner",
+      "tipo": "banner-web"
+    },
+    {
       "id": "botas-rojas-lluvia",
       "titulo": "Botas rojas · lluvia",
       "archivo": "prompts/PROMPT-botas-rojas-lluvia.txt",

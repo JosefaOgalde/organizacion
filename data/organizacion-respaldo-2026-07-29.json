@@ -2217,6 +2217,25 @@
       "fiado": true,
       "linkPanel": "/index/clientes/impresoreando/panel/?tab=pedidos",
       "numeroHistorico": "010"
+    },
+    {
+      "id": "tarea-ts-banner-accesorios-hunter-40off-2026-07-30",
+      "titulo": "[TS] WP · Banner Accesorios Hunter 40% OFF (debut)",
+      "clienteId": "cli-trendseeker",
+      "rolId": "rol-cm",
+      "fecha": "2026-07-30",
+      "horaInicio": "10:00",
+      "horaFin": "12:00",
+      "notas": "Primera pieza del descuento nuevo: ACCESORIOS Hunter con 40% OFF.\nSubir banner en home/slider con CTA atractivo.\nCopy listo: index/clientes/trendseeker/copys/COPY-banner-accesorios-hunter-40off.txt\nCTA recomendado: «Ver accesorios en oferta».\nHeadline sugerido: Accesorios con 40% OFF · Sub: Estrenamos el descuento. Piezas seleccionadas.\nVerificar desktop + mobile. Link a categoría/filtro Accesorios Hunter u oferta. Al terminar → marcar hecha.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "29",
+      "tipoEntregable": "banner-web",
+      "entregableArchivo": "index/clientes/trendseeker/copys/COPY-banner-accesorios-hunter-40off.txt",
+      "parentId": null,
+      "agendaFijada": true,
+      "color": "lavanda"
     }
   ],
   "citasSalud": [
@@ -2314,7 +2333,7 @@
   ],
   "ultimaVisita": "2026-06-25",
   "respaldoVersion": 20,
-  "respaldoActualizado": "2026-07-29",
+  "respaldoActualizado": "2026-07-30T14:38:18.381Z",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",

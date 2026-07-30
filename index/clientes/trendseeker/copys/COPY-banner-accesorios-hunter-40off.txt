@@ -1,0 +1,55 @@
+# Banner Trendseeker · Accesorios Hunter 40% OFF
+Primera pieza de este descuento (debut en sitio).
+Uso: banner home / slider WP · desktop + mobile.
+
+## Mensaje clave
+- Marca: Hunter
+- Categoría: Accesorios (no botas)
+- Oferta: 40% off
+- Rol: lo primero que se sube de esta campaña → CTA claro y urgente
+
+---
+
+## Opción recomendada (A) — debut + urgencia
+
+**Eyebrow:** HUNTER  
+**Headline:** Accesorios con 40% OFF  
+**Sub:** Estrenamos el descuento. Piezas seleccionadas.  
+**CTA:** Ver accesorios en oferta  
+
+---
+
+## Opción B — más directa
+
+**Eyebrow:** NUEVO DESCUENTO  
+**Headline:** 40% OFF en accesorios Hunter  
+**Sub:** La primera tanda ya está online.  
+**CTA:** Comprar ahora  
+
+---
+
+## Opción C — más aspiracional
+
+**Eyebrow:** HUNTER  
+**Headline:** El look se completa con 40% OFF  
+**Sub:** Accesorios Hunter. Primera vez en oferta.  
+**CTA:** Descubrir la selección  
+
+---
+
+## CTAs cortos (botón)
+1. Ver accesorios en oferta ← recomendado
+2. Comprar ahora
+3. Aprovechar 40% OFF
+4. Ir a la oferta
+5. Ver selección Hunter
+
+## Textos cortos (si cabe una sola línea)
+- Accesorios Hunter · 40% OFF · ya disponible
+- Debut: accesorios Hunter con 40% de descuento
+
+## Notas de diseño
+- El **40%** debe leerse a primera vista (más grande que el resto).
+- CTA contrastado (botón sólido).
+- No mezclar con botas: dejar explícito **accesorios**.
+- Link sugerido: categoría/filtro Accesorios Hunter o landing de oferta (confirmar URL en WP).
