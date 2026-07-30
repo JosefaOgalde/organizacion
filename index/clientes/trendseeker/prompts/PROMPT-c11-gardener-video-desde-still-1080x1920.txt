@@ -27,20 +27,22 @@ Herramienta: Google Gemini VIDEO (Trendseeker)
 Genera un VIDEO publicitario fotorrealista corto en formato VERTICAL 9:16 (1080×1920).
 
 REFERENCIAS OBLIGATORIAS:
-- La imagen vertical 1080×1920 adjunta define la ESCENA, la modelo, el vestuario, el huerto de invierno y el encuadre. Mantén el mismo look: mujer adulta en cuclillas/trabajando entre hortalizas con escarcha, montañas nevadas al fondo, luz gris de invierno, cesta de mimbre.
+- La imagen vertical 1080×1920 adjunta define la ESCENA base, la modelo, el vestuario, el jardín/huerto de invierno y el encuadre. Mantén el mismo look de frío: mujer adulta en cuclillas, montañas nevadas al fondo, luz gris de invierno.
+- CAMBIO DE ACCIÓN (obligatorio): NO está cosechando ni sacando lechugas/kale. Está PLANTANDO FLORES (plantines o bulbos de flores de invierno/primavera temprana: p. ej. pensamientos, primulas o bulbos) en la tierra húmeda.
 - Las FOTOS DE PRODUCTO adjuntas definen el BOTÍN exacto: Hunter Gardener corto para mujer, verde oliva mate, banda beige/tan en el cuello y en la mediasuela, parche frontal HUNTER (blanco, borde rojo, letras negras), suela con taco/dibujo para tracción y zona reforzada para cavar, talón con relieve para quitárselo. No rediseñes el calzado.
 
 IMPORTANTE:
 - Ignora cualquier tipografía del still (no copies “Hechas para el jardín” ni otro texto en el video).
 - El producto es el héroe: botines siempre nítidos y fieles a las fotos.
 - INVIERNO de principio a fin (no verano, no tropical).
+- Acción clara: PLANTAR FLORES (hacer un hoyito, colocar el plantín/flor, cubrir con tierra). Nada de arrancar hortalizas.
 - Sin tipografía, sin logos inventados, sin watermark.
 
 ACCIÓN (5–8 s aprox.):
-1) Arranque en el mismo encuadre vertical del still: mujer en el huerto de invierno, botines Gardener verdes oliva bien visibles.
-2) Movimiento natural de trabajo: se agacha / toca las hojas con escarcha / da un paso corto en tierra húmeda — se nota flexibilidad del tobillo y tracción de la suela.
-3) Un plano más cercano (producto) al botín: verde oliva, banda beige, parche HUNTER, detalle de suela/zona de cavar o talón con relieve.
-4) Cierra volviendo a un plano medio vertical donde se vean ambos botines en contexto de huerto frío.
+1) Arranque en encuadre vertical: mujer en el jardín/huerto de invierno, botines Gardener verdes oliva bien visibles; a su lado plantines o flores listas para plantar (no un manojo de lechugas cosechadas).
+2) La planta: abre un pequeño hoyo en la tierra húmeda, coloca un plantín/flor y tapa con tierra — se nota flexibilidad del tobillo y la zona de la suela al apoyar/cavar suave.
+3) Plano cercano (producto) al botín: verde oliva, banda beige, parche HUNTER, detalle de suela/zona de cavar o talón con relieve.
+4) Cierra en plano medio vertical: ambos botines + ella terminando de plantar la flor en contexto de jardín frío.
 
 Cámara: vertical 9:16, product-first, ángulo que favorezca el calzado, ritmo cinematográfico comercial suave, sonido ambiente de campo frío opcional (sin voz en off obligatoria).
 ```
