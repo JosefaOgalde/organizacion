@@ -6,9 +6,16 @@
       "id": "banner-accesorios-hunter-40off",
       "titulo": "Banner · Accesorios Hunter 40% OFF",
       "archivo": "copys/COPY-banner-accesorios-hunter-40off.txt",
-      "descripcion": "Copy + CTA para el debut del descuento de accesorios Hunter (40% off). Primera pieza de la campaña.",
+      "descripcion": "Bodegón 4000×1770 (chimenea/entrada): gorros, calcetines y paraguas. Texto: «El refugio empieza en la entrada» · «40% OFF en lo que te abriga».",
       "tareaNumero": "banner",
-      "tipo": "banner-web"
+      "tipo": "banner-web",
+      "bannerArchivo": "banners/banner-hunter-accesorios-bodegon-4000x1770.jpg",
+      "productos": [
+        "https://trendseeker.cl/producto/gorro-con-pon-pon-moustache-original-negro/",
+        "https://trendseeker.cl/producto/hunter-calcetin-bota-rojo/",
+        "https://trendseeker.cl/producto/hunter-calcetin-bota-6-puntadas-1/",
+        "https://trendseeker.cl/producto/paraguas-burbuja-moustache-azul/"
+      ]
     },
     {
       "id": "botas-rojas-lluvia",
