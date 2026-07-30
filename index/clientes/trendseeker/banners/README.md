@@ -7,3 +7,7 @@
 - **Productos:** gorros, calcetines bota, paraguas burbuja navy
 - **Refs:** carpeta `refs/`
 - **Copy / notas:** `../copys/COPY-banner-accesorios-hunter-40off.txt`
+
+## Versión sin texto
+- **Archivo:** `banner-hunter-accesorios-bodegon-sin-texto-4000x1770.jpg`
+- Misma escena bodegón, sin tipografía (para montar copy en Canva/WP).
