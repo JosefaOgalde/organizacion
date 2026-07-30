@@ -68,6 +68,60 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
         );
     };
 
+    /** Fusiona productos/gastos del seed que falten en live (no pisa existentes). */
+    $mergeSeedMissing = static function (array $data) use ($seed): array {
+        if (!is_file($seed)) {
+            return $data;
+        }
+        $seedData = json_decode((string) file_get_contents($seed), true);
+        if (!is_array($seedData)) {
+            return $data;
+        }
+        $data['productos'] = is_array($data['productos'] ?? null) ? $data['productos'] : [];
+        $data['gastos'] = is_array($data['gastos'] ?? null) ? $data['gastos'] : [];
+        $prodKeys = [];
+        foreach ($data['productos'] as $p) {
+            if (!is_array($p)) {
+                continue;
+            }
+            if (!empty($p['id'])) {
+                $prodKeys['id:' . $p['id']] = true;
+            }
+            if (!empty($p['sku'])) {
+                $prodKeys['sku:' . strtoupper((string) $p['sku'])] = true;
+            }
+        }
+        foreach ($seedData['productos'] ?? [] as $sp) {
+            if (!is_array($sp) || empty($sp['id'])) {
+                continue;
+            }
+            $has =
+                (!empty($sp['id']) && isset($prodKeys['id:' . $sp['id']]))
+                || (!empty($sp['sku']) && isset($prodKeys['sku:' . strtoupper((string) $sp['sku'])]));
+            if (!$has) {
+                $data['productos'][] = $sp;
+                $prodKeys['id:' . $sp['id']] = true;
+                if (!empty($sp['sku'])) {
+                    $prodKeys['sku:' . strtoupper((string) $sp['sku'])] = true;
+                }
+            }
+        }
+        $gasIds = [];
+        foreach ($data['gastos'] as $g) {
+            if (is_array($g) && !empty($g['id'])) {
+                $gasIds[$g['id']] = true;
+            }
+        }
+        foreach ($seedData['gastos'] ?? [] as $sg) {
+            if (!is_array($sg) || empty($sg['id']) || isset($gasIds[$sg['id']])) {
+                continue;
+            }
+            $data['gastos'][] = $sg;
+            $gasIds[$sg['id']] = true;
+        }
+        return $data;
+    };
+
     $readBody = static function (): array {
         $raw = file_get_contents('php://input') ?: '';
         $data = json_decode($raw, true);
@@ -81,7 +135,7 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
             echo json_encode(['error' => 'faltan descripcion / montoNeto'], JSON_UNESCAPED_UNICODE);
             return true;
         }
-        $obj = $readLive();
+        $obj = $mergeSeedMissing($readLive());
         $obj['ventas'] = is_array($obj['ventas'] ?? null) ? $obj['ventas'] : [];
         $venta = [
             'id' => (string) ($item['id'] ?? ('ven-' . base_convert((string) time(), 10, 36))),
@@ -118,7 +172,9 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
     }
 
     if ($uri === '/api/impresoreando' && $method === 'GET') {
-        echo json_encode($readLive(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $data = $mergeSeedMissing($readLive());
+        $writeLive($data);
+        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         return true;
     }
 
@@ -129,6 +185,7 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
             echo json_encode(['error' => 'faltan gastos[] (estructura Impresoreando)'], JSON_UNESCAPED_UNICODE);
             return true;
         }
+        $data = $mergeSeedMissing($data);
         $writeLive($data);
         echo json_encode([
             'ok' => true,

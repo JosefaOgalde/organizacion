@@ -67,10 +67,68 @@ class ImpresoreandoController extends Controller
         );
     }
 
+    /** Productos/gastos del seed que falten en live (no pisa existentes). */
+    private function mergeSeedMissing(array $data): array
+    {
+        $seedPath = $this->seedPath();
+        if (!is_file($seedPath)) {
+            return $data;
+        }
+        $seedData = json_decode((string) file_get_contents($seedPath), true);
+        if (!is_array($seedData)) {
+            return $data;
+        }
+        $data['productos'] = is_array($data['productos'] ?? null) ? $data['productos'] : [];
+        $data['gastos'] = is_array($data['gastos'] ?? null) ? $data['gastos'] : [];
+        $prodKeys = [];
+        foreach ($data['productos'] as $p) {
+            if (!is_array($p)) {
+                continue;
+            }
+            if (!empty($p['id'])) {
+                $prodKeys['id:' . $p['id']] = true;
+            }
+            if (!empty($p['sku'])) {
+                $prodKeys['sku:' . strtoupper((string) $p['sku'])] = true;
+            }
+        }
+        foreach ($seedData['productos'] ?? [] as $sp) {
+            if (!is_array($sp) || empty($sp['id'])) {
+                continue;
+            }
+            $has =
+                (!empty($sp['id']) && isset($prodKeys['id:' . $sp['id']]))
+                || (!empty($sp['sku']) && isset($prodKeys['sku:' . strtoupper((string) $sp['sku'])]));
+            if (!$has) {
+                $data['productos'][] = $sp;
+                $prodKeys['id:' . $sp['id']] = true;
+                if (!empty($sp['sku'])) {
+                    $prodKeys['sku:' . strtoupper((string) $sp['sku'])] = true;
+                }
+            }
+        }
+        $gasIds = [];
+        foreach ($data['gastos'] as $g) {
+            if (is_array($g) && !empty($g['id'])) {
+                $gasIds[$g['id']] = true;
+            }
+        }
+        foreach ($seedData['gastos'] ?? [] as $sg) {
+            if (!is_array($sg) || empty($sg['id']) || isset($gasIds[$sg['id']])) {
+                continue;
+            }
+            $data['gastos'][] = $sg;
+            $gasIds[$sg['id']] = true;
+        }
+        return $data;
+    }
+
     /** GET /api/impresoreando */
     public function show()
     {
-        return response()->json($this->readLive());
+        $data = $this->mergeSeedMissing($this->readLive());
+        $this->writeLive($data);
+        return response()->json($data);
     }
 
     /** POST /api/impresoreando */
@@ -80,6 +138,7 @@ class ImpresoreandoController extends Controller
         if (!is_array($data) || !isset($data['gastos']) || !is_array($data['gastos'])) {
             return response()->json(['error' => 'faltan gastos[] (estructura Impresoreando)'], 400);
         }
+        $data = $this->mergeSeedMissing($data);
         $this->writeLive($data);
         return response()->json([
             'ok' => true,

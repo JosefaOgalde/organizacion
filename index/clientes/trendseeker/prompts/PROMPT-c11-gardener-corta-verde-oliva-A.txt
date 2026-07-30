@@ -1,0 +1,39 @@
+PRODUCTO: Botín corto Gardener / Bota Corta de Jardinera · Mujer · Verde oliva
+SKU: WFS2018RMA-DOC
+Link: https://trendseeker.cl/producto/bota-corta-garden/
+Público: MUJER (adulta)
+Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube las FOTOS DE PRODUCTO reales (refs adjuntas).
+Escena fija: INVIERNO en huerto o jardín campestre. Alguien trabajando al aire libre. El producto es el héroe.
+
+CARACTERÍSTICAS (no inventar otras; destacar en el video):
+- Diseñado específicamente para trabajar al aire libre
+- Botín corto Gardener para mujer, color verde oliva (mate)
+- Ajuste estilizado y mayor flexibilidad en el tobillo
+- Suela con zona reforzada para cavar (parche/textura en el arco)
+- Talón con relieve práctico para quitárselo fácilmente (kick spur)
+- Forro de algodón suave para comodidad en uso activo
+- Parche frontal HUNTER (blanco, borde rojo, tipografía negra) fiel a las fotos
+- Suela con dibujo zigzag / herringbone para tracción y barro
+- Caucho natural impermeable; sin logos inventados fuera del producto real
+
+VESTUARIO / MODELO:
+- Mujer adulta trabajando en huerto o jardín campestre en invierno
+- Look práctico de frío: chaqueta o sweater de invierno, pantalón/jeans que dejen ver el botín (metidos o arremangados)
+- Sin piel expuesta en tobillos si el plano lo permite; el botín corto debe verse completo
+- Ambiente: tierra húmeda, rocío/escarcha suave, luz invernal gris-fria, huerto rural (no tropical, no verano)
+
+CÓMO USAR EN GEMINI (VIDEO):
+1) Modo VIDEO (no imagen fija).
+2) Sube primero las FOTOS DE PRODUCTO reales del Gardener verde oliva.
+3) Pega este prompt en el mismo mensaje.
+4) Si Gemini cambia el diseño: reitera fidelidad exacta (verde oliva, caña corta, parche HUNTER, zona de cavar, talón con relieve).
+
+---
+VERSIÓN A — Video producto héroe · huerto de invierno (recomendado)
+---
+
+Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria: botín corto Hunter Gardener para mujer en verde oliva mate, caña baja al tobillo, parche frontal HUNTER, suela con zigzag y zona reforzada en el arco para cavar, talón con relieve para quitárselo. No rediseñes el calzado: misma silueta, mismo verde oliva, mismos detalles.
+
+Acción: invierno en un huerto o jardín campestre. Una mujer trabaja al aire libre (trasplantar, remover tierra o caminar entre surcos); se ve aliento o aire frío, tierra húmeda, luz invernal. El botín Gardener es el héroe absoluto del plano: se nota el ajuste estilizado, la flexibilidad del tobillo al agacharse o dar un paso, y la impermeabilidad en el suelo frío/húmedo.
+
+Cámara: ángulo bajo a la altura del pie, nítido, product-first. Cara y torso secundarios. Sin tipografía ni logos inventados. Ritmo cinematográfico comercial corto, atmósfera de invierno de principio a fin.
