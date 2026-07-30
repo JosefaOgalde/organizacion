@@ -232,13 +232,13 @@ function main() {
     if (touched) changed += 1;
   }
 
-  // Quitar pedidos duplicados obsoletos (p. ej. PED-012 Ele consolidado en PED-004).
+  // Quitar solo el registro duplicado conocido. El número PED-012 puede pertenecer
+  // a otro pedido legítimo en un live local y no identifica al duplicado histórico.
   const dropDupIds = new Set(['ped-ele-pesa-012']);
-  const dropDupNums = new Set(['PED-012']);
   const beforeDrop = live.pedidos.length;
   live.pedidos = live.pedidos.filter((p) => {
     if (!p) return false;
-    if (dropDupIds.has(p.id) || dropDupNums.has(String(p.numero || ''))) return false;
+    if (dropDupIds.has(p.id)) return false;
     return true;
   });
   if (live.pedidos.length !== beforeDrop) changed += 1;
