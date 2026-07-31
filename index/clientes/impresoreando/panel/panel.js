@@ -93,6 +93,7 @@
     if (asegurarGastosCompras20260729(d)) changed = true;
     if (asegurarGastoMlBolsasEnchufeLed20260731(d)) changed = true;
     if (asegurarGastoEntradaEvento3d16100(d)) changed = true;
+    if (asegurarMelVenta020(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
     if (asegurarPedidosImpresosYNaves(d)) changed = true;
@@ -1626,6 +1627,35 @@
             precioUnitarioClp: 7000,
             costoUnitarioClp: 998.17,
             filamento: 'multicolor',
+          },
+        ],
+      },
+      {
+        id: 'ven-mel-soporte-020',
+        codigo: 'I000020',
+        fecha: '2026-07-31',
+        cliente: 'Mel MKOF',
+        clienteNombre: 'Mel',
+        clienteOrigen: 'MKOF',
+        descripcion: 'PED-013 · 1× Soporte celular negro · Mel MKOF',
+        cantidad: 1,
+        montoBruto: 4000,
+        descuentoClp: 0,
+        montoNeto: 4000,
+        costoTotal: 683.69,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-013 · fiado cobrado · 1× Soporte celular negro · pagado $4.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-mel-soporte-013',
+        pedidoNumero: 'PED-013',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: 4000,
+            costoUnitarioClp: 683.69,
+            filamento: 'PLA+ negro',
           },
         ],
       },
