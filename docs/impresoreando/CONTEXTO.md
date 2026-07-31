@@ -12,7 +12,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Seed (repo) | `data/impresoreando-seed.json` |
 | Live (gitignored) | `data/impresoreando-live.json` |
 | API | `GET/POST /api/impresoreando` · `POST /api/impresoreando/venta` en `scripts/organizacion-server.js` |
-| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre `scripts/sync-impresoreando-seed-a-live.js` para meter PED/productos nuevos del seed en el live local. |
+| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre `scripts/sync-impresoreando-seed-a-live.js` + `force-imp-fiados-012-013.js` para meter PED/productos nuevos del seed en el live local. Si no ves fiados: `node scripts/force-imp-fiados-012-013.js` y recarga Pedidos. |
 | Landing | `http://127.0.0.1:8000/index/clientes/impresoreando/` · CTA **Resumen 50/50** · logo `identidad/logo-impresoreando.png` |
 | Panel / Resumen | `http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen` |
 | Catálogo IG | `…/impresoreando/catalogo/` · 1080×1350 · PDF `catalogo/export/catalogo-impresoreando.pdf` · `exportar-pngs.js` + `exportar-pdf.js` |

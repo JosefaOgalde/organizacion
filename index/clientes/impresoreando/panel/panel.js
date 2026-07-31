@@ -2229,11 +2229,10 @@
       });
       changed = true;
     }
-    // Quitar PED-012 si quedó como duplicado de la venta Ele (I000014 vive en PED-004).
+    // Quitar solo el id viejo ped-ele-pesa-012 (Ele → PED-004 / I000014).
+    // No borrar por número PED-012: vigente = Marcia limpia brochas.
     const before012 = (d.pedidos || []).length;
-    d.pedidos = (d.pedidos || []).filter(
-      (p) => p && p.id !== 'ped-ele-pesa-012' && p.numero !== 'PED-012'
-    );
+    d.pedidos = (d.pedidos || []).filter((p) => p && p.id !== 'ped-ele-pesa-012');
     if (d.pedidos.length !== before012) changed = true;
 
     // PED-005 · María Paz SIE · Soporte celular morado pastel · transferido I000011 $4.000 (pagado)
