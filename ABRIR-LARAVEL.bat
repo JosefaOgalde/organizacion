@@ -19,17 +19,20 @@ echo.
 set "MODO=%~1"
 if "%MODO%"=="" set "MODO=auto"
 
-REM Restaurar calendario: Descargas/data 31-jul → mas reciente → 29 → 28
+REM Restaurar calendario: Descargas 31-jul (1) → 31 → mas reciente → 29 → 28
 if /I "%MODO%"=="restaurar" (
+  set "DL=%USERPROFILE%\Downloads"
   set "REST_SRC="
-  if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" set "REST_SRC=%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json"
+  if exist "%DL%\organizacion-respaldo-2026-07-31 (1).json" set "REST_SRC=%DL%\organizacion-respaldo-2026-07-31 (1).json"
+  if not defined REST_SRC if exist "%DL%\organizacion-respaldo-2026-07-31 (2).json" set "REST_SRC=%DL%\organizacion-respaldo-2026-07-31 (2).json"
+  if not defined REST_SRC if exist "%DL%\organizacion-respaldo-2026-07-31.json" set "REST_SRC=%DL%\organizacion-respaldo-2026-07-31.json"
   if not defined REST_SRC if exist "data\organizacion-respaldo-2026-07-31.json" set "REST_SRC=data\organizacion-respaldo-2026-07-31.json"
   if not defined REST_SRC for /f "usebackq delims=" %%i in (`node scripts/respaldo-reciente.js 2^>nul`) do set "REST_SRC=%%i"
   if not defined REST_SRC if exist "data\organizacion-respaldo-2026-07-29.json" set "REST_SRC=data\organizacion-respaldo-2026-07-29.json"
   if not defined REST_SRC if exist "data\organizacion-respaldo-2026-07-28.json" set "REST_SRC=data\organizacion-respaldo-2026-07-28.json"
   if not defined REST_SRC (
     echo  [ERROR] No hay organizacion-respaldo-*.json ^(Descargas ni data^)
-    echo  Importa antes: IMPORTAR-RESPALDO.bat "%%USERPROFILE%%\Downloads\organizacion-respaldo-2026-07-31.json"
+    echo  Importa: IMPORTAR-RESPALDO.bat "%%USERPROFILE%%\Downloads\organizacion-respaldo-2026-07-31 (1).json"
     pause
     exit /b 1
   )
@@ -94,7 +97,11 @@ if not exist "data\impresoreando-live.json" (
 REM 0) Solo crear live si FALTA (nunca pisar el calendario local con un respaldo viejo)
 if not exist "data\organizacion-live.json" (
   echo  0^) Creando organizacion-live.json desde respaldo...
-  if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" (
+  if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json" (
+    copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json" "data\organizacion-live.json" >nul
+    copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json" "data\organizacion-respaldo-2026-07-31.json" >nul
+    echo  Live creado desde Descargas\organizacion-respaldo-2026-07-31 (1).json
+  ) else if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" (
     copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" "data\organizacion-live.json" >nul
     copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" "data\organizacion-respaldo-2026-07-31.json" >nul
     echo  Live creado desde Descargas\organizacion-respaldo-2026-07-31.json
@@ -204,7 +211,10 @@ if not errorlevel 1 (
 )
 
 if not exist "data\organizacion-live.json" (
-  if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" (
+  if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json" (
+    copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json" "data\organizacion-live.json" >nul
+    echo  Live creado desde Descargas 31-jul (1)
+  ) else if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" (
     copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" "data\organizacion-live.json" >nul
     echo  Live creado desde Descargas 31-jul
   ) else if exist "data\organizacion-respaldo-2026-07-31.json" (

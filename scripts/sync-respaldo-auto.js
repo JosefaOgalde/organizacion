@@ -32,8 +32,10 @@ function marcaTiempo(obj, mtimeMs, ruta) {
   const d = obj.respaldoActualizado || '';
   const stamp = Date.parse(d);
   const t = Number.isFinite(stamp) ? stamp : 0;
-  if (fileDate) return fileDate * 1e6 + t + ((mtimeMs || 0) % 1e6);
-  return Number.isFinite(stamp) ? stamp : mtimeMs;
+  const dup = String(ruta || '').match(/ \((\d+)\)\.json$/i);
+  const dupBoost = dup ? Number(dup[1]) * 1e4 : 0;
+  if (fileDate) return fileDate * 1e6 + t + dupBoost + ((mtimeMs || 0) % 1e4);
+  return (Number.isFinite(stamp) ? stamp : mtimeMs) + dupBoost;
 }
 
 function main() {

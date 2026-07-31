@@ -48,7 +48,7 @@ Si ves datos viejos: **Ctrl+Shift+R**. El sync de ABRIR solo usa `data\` del rep
 |---------|-----------|
 | Estás en `main` / ves logo viejo / sin Trade Marketing | `TRAER-CAMBIOS.bat` |
 | `SQLSTATE … no such column: activo` | `REPARAR-SQLITE-ACTIVO.bat` → `ABRIR-LARAVEL.bat` |
-| Calendario viejo / faltan tareas | `IMPORTAR-RESPALDO.bat "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json"` → `ABRIR-LARAVEL.bat` → `?disco=1` + Ctrl+Shift+R · o `ABRIR-LARAVEL.bat restaurar` / `RECUPERAR-CALENDARIO.bat` |
+| Calendario viejo / faltan tareas | `IMPORTAR-RESPALDO.bat "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json"` → `ABRIR-LARAVEL.bat` → `?disco=1` + Ctrl+Shift+R · o `ABRIR-LARAVEL.bat restaurar` / `RECUPERAR-CALENDARIO.bat` (priorizan el `(1)`) |
 | `Falta backend\artisan` | Crear Laravel local: `composer create-project laravel/laravel backend` (ver `BACKEND-README.md`) |
 | Carece de privilegios / mklink | Ya corregido en esta rama (copia archivos, sin symlink admin) |
 
