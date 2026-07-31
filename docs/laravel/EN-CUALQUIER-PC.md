@@ -63,9 +63,14 @@ Esos archivos **no van a Git** (privacidad). Llévatelos en la carpeta del proye
 | `data/organizacion-live.json` | Calendario, madres, subtareas |
 | `backend/database/database.sqlite` | Clientes de la API |
 
-En un PC nuevo, si no tienes `organizacion-live.json`, `ABRIR-LARAVEL.bat` crea uno desde el respaldo más reciente del repo (`data/organizacion-respaldo-2026-07-28.json`).
+En un PC nuevo, si no tienes `organizacion-live.json`, `ABRIR-LARAVEL.bat` crea uno desde el respaldo más reciente del repo (`data/organizacion-respaldo-YYYY-MM-DD.json`, hoy: **30-jul** si lo importaste).
 
-También puedes usar **↓ Respaldo** en el organizador, guardar el JSON, y en el otro PC reemplazar `data/organizacion-live.json`.
+Para marcar el JSON de Descargas como canónico:
+
+```bat
+IMPORTAR-RESPALDO.bat "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-30.json"
+ABRIR-LARAVEL.bat
+```
 
 ---
 

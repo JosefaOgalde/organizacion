@@ -1,11 +1,15 @@
 #!/usr/bin/env node
-/** Imprime la ruta del respaldo organizacion-respaldo-*.json más reciente (data/ + Descargas). */
+/** Imprime la ruta del respaldo organizacion-respaldo-*.json más reciente.
+ *  Por defecto: data/ + Descargas.
+ *  --solo-repo → solo data/ del repo (para ABRIR/RECUPERAR sin pisar con Downloads viejo).
+ */
 const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const DATA_DIR = path.join(ROOT, 'data');
 const DOWNLOADS = path.join(process.env.USERPROFILE || process.env.HOME || '', 'Downloads');
+const soloRepo = process.argv.includes('--solo-repo');
 
 function leerJson(ruta) {
   try {
@@ -31,7 +35,8 @@ function score(ruta, obj, st) {
 
 function candidatos() {
   const list = [];
-  [DATA_DIR, DOWNLOADS].filter((d) => d && fs.existsSync(d)).forEach((dir) => {
+  const dirs = soloRepo ? [DATA_DIR] : [DATA_DIR, DOWNLOADS];
+  dirs.filter((d) => d && fs.existsSync(d)).forEach((dir) => {
     let files = [];
     try {
       files = fs.readdirSync(dir);
