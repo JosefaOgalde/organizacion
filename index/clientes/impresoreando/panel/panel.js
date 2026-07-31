@@ -87,6 +87,7 @@
     if (asegurarProductoDragon(d)) changed = true;
     if (asegurarProductoTorreon(d)) changed = true;
     if (asegurarProductoLimpiadorBrochas(d)) changed = true;
+    if (asegurarProductoAlcanciaChanchito(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
@@ -563,6 +564,7 @@
   const COSTO_PLA_CAFE_KG = 16829; // PLA Café Elegoo (#312435)
   const COSTO_PLA_BLANCO_KG = 12690; // PLA blanco Elegoo (ML)
   const COSTO_PLA_ROJO_KG = 17986; // PLA+ Rojo Elegoo (#312435)
+  const COSTO_PLA_ROSADO_KG = 10990; // Filamento rosado 1kg (compra 29 jul)
 
   /**
    * Upsert que pisa parámetros slicer del seed (respeta precioVenta si ya > 0).
@@ -1092,6 +1094,66 @@
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     const id = 'prod-limpiador-brochas';
     const seed = seedLimpiadorBrochas();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
+      existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /** Alcancía chanchito — slicer 315,88 g · 12 h 9 m · PLA rosado · Elegoo. Soft seed. */
+  function seedAlcanciaChanchito() {
+    const filamentoModeloGramos = 280.74;
+    const filamentoSoportesGramos = 33.75;
+    const filamentoPurgeGramos = 1.4;
+    const filamentoGramos = 315.88; // total slicer
+    const horasImpresion = round2((12 * 60 + 9) / 60); // 12 h 9 m → 12,15 h
+    // Costo approx: fil 3471,52 + luz 680,40 + bolsa 50 ≈ 4201,92 → PVP +100% $8.400
+    return {
+      sku: 'ALCHAN001',
+      nombre: 'Alcancía chanchito',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoModeloGramos,
+      filamentoSoportesGramos,
+      filamentoPurgeGramos,
+      filamentoMetros: 105.06,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_ROSADO_KG,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 8400,
+      costoSlicerRef: 6.32,
+      pendienteCosto: false,
+      notas:
+        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + soportes ${filamentoSoportesGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 105,06 m · 12 h 9 m · coste slicer 6,32. PLA rosado $10.990/kg · Elegoo Centauri. Costo ~$4.202 · PVP sugerido $8.400.`,
+    };
+  }
+
+  function asegurarProductoAlcanciaChanchito(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-alcancia-chanchito';
+    const seed = seedAlcanciaChanchito();
     const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
     if (!existing) {
       d.productos.push({ id, ...seed });
@@ -2635,6 +2697,8 @@
     if (/soporte/.test(t)) return 'SOPCEL';
     if (/drag[oó]n/.test(t)) return 'DRAGON';
     if (/torre[oó]n|torreon/.test(t)) return 'TORREON';
+    if (/alcanc[ií]a|chanchito|cerdito|piggy/.test(t)) return 'ALCHAN';
+    if (/limpiador|secador/.test(t) && /brocha/.test(t)) return 'LMBROC';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -2686,6 +2750,8 @@
       'prod-soporte-celular': { sku: 'SOPCEL001', nombre: 'Soporte celular' },
       'prod-dragon': { sku: 'DRAGON001', nombre: 'Dragón' },
       'prod-torreon': { sku: 'TORREON001', nombre: 'Torreón' },
+      'prod-limpiador-brochas': { sku: 'LMBROC001', nombre: 'Limpiador de brochas' },
+      'prod-alcancia-chanchito': { sku: 'ALCHAN001', nombre: 'Alcancía chanchito' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',

@@ -1276,6 +1276,28 @@
       "pendienteCosto": false,
       "editadoLocal": true,
       "notas": "Slicer 1 ud: modelo 113.58 g + descargado 0.47 g = 114.05 g · 37.93 m · 3 h 28 m · coste slicer 2,28. PLA morado pastel (ref $/kg color $16.829) · Elegoo Centauri. Costo ~$2.163 · PVP sugerido $4.300."
+    },
+    {
+      "id": "prod-alcancia-chanchito",
+      "sku": "ALCHAN001",
+      "nombre": "Alcancía chanchito",
+      "activo": true,
+      "impresoraId": "imp-centauri-carbon-2",
+      "filamentoModeloGramos": 280.74,
+      "filamentoSoportesGramos": 33.75,
+      "filamentoPurgeGramos": 1.4,
+      "filamentoMetros": 105.06,
+      "filamentoGramos": 315.88,
+      "costoFilamentoKgClp": 10990,
+      "horasImpresion": 12.15,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 8400,
+      "costoSlicerRef": 6.32,
+      "pendienteCosto": false,
+      "editadoLocal": true,
+      "notas": "Slicer 1 ud: modelo 280.74 g + soportes 33.75 g + descargado 1.40 g = 315.88 g · 105.06 m · 12 h 9 m · coste slicer 6,32. PLA rosado $10.990/kg · Elegoo Centauri. Costo ~$4.202 · PVP sugerido $8.400."
     }
   ],
   "planAds": {
