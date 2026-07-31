@@ -12,7 +12,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Seed (repo) | `data/impresoreando-seed.json` |
 | Live (gitignored) | `data/impresoreando-live.json` |
 | API | `GET/POST /api/impresoreando` · `POST /api/impresoreando/venta` en `scripts/organizacion-server.js` |
-| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre `scripts/sync-impresoreando-seed-a-live.js` + `force-imp-fiados-012-013.js` para meter PED/productos nuevos del seed en el live local. Si no ves fiados: `node scripts/force-imp-fiados-012-013.js` y recarga Pedidos. |
+| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre `scripts/sync-impresoreando-seed-a-live.js` + `force-imp-fiados-012-013.js` + `force-imp-ventas-014-015-fiado-008.js` para meter PED/productos/ventas nuevos del seed en el live local. Si no ves fiados/ventas nuevas: `node scripts/force-imp-ventas-014-015-fiado-008.js` y recarga Pedidos/Ventas. |
 | Landing | `http://127.0.0.1:8000/index/clientes/impresoreando/` · CTA **Resumen 50/50** · logo `identidad/logo-impresoreando.png` |
 | Panel / Resumen | `http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen` |
 | Catálogo IG | `…/impresoreando/catalogo/` · 1080×1350 · PDF `catalogo/export/catalogo-impresoreando.pdf` · `exportar-pngs.js` + `exportar-pdf.js` |
@@ -27,6 +27,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 - Gastos de **ambos** (= sociedad 50/50); **hasta ahora los pagó todos Nicolás** (`pagadoPor`). Capital aportado por **Nicolás**; Josefa debe 50% (`meta.capital.deudaJosefaClp`).
 - Compra 29 jul: **mueble esquinero EASY INTERNET $35.990** (`gas-mueble-esquinero-easy-35990`, TC ****7022 · Nicolás) + lote insumos (llaveros / filamento rosado / ganchos).
 - Compra 31 jul ML: **bolsas kraft ×100 $4.590 + enchufe WiFi 16A $9.989 + tira LED RGB 20 m $17.990 = $32.569** (`gas-ml-bolsas-enchufe-led-32569` · Nicolás · 50/50).
+- Evento 3D 29 ago: **1 entrada $16.100** (`gas-entrada-evento-3d-16100` · **pagó Josefa** · sociedad 50/50).
 - `metaRecuperar = gastos + operación`
 - `saldoPendiente = max(0, meta − ventas)` — solo **ventas** bajan deuda
 - `% progreso = ventas / meta`
@@ -56,12 +57,14 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-005 | María Paz SIE | 1× Soporte celular morado pastel `SOPCEL001` | **transferido** → I000011 $4.000 |
 | PED-006 | Rebe SIE | 1× Dragón morado `DRAGON001` | **transferido** → I000013 $20.000 |
 | PED-007 | Juan SIE | 1× Torreón `TORREON001` | **listo** · costo est. ~$3.293 (+$1.000 impresora antigua) · PVP sug. $6.500 |
-| PED-008 | Juan MKOF | 1× Porta Bob Esponja `PTBOBES001` | **listo** · costo ~$998 · **PVP $7.000** |
+| PED-008 | Juan MKOF | 1× Porta Bob Esponja `PTBOBES001` | **listo** · **fiado** · costo ~$998 · **PVP $7.000** |
 | PED-009 | Rebe SIE | 1× Soporte celular negro `SOPCEL001` | **transferido** → I000012 $4.000 |
 | PED-010 | Gianni SIE | 2× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · **paga 2026-08-18** · $8.000 |
 | PED-011 | Marcia SIE | 1× Soporte celular morado `SOPCEL001` | **transferido** → I000015 $3.000 |
 | PED-012 | Marcia SIE | 1× Limpiador de brochas morado pastel `LMBROC001` | **pendiente** · fiado · $7.000 · fecha pago por confirmar |
 | PED-013 | Mel MKOF | 1× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · $4.000 · fecha pago por confirmar |
+| PED-014 | Rebe SIE | 1× Alcancía chanchito `ALCHAN001` | **transferido** → I000017 $18.000 |
+| PED-015 | Cata SIE | 3× Llavero One Piece `LLONEPI001` | **transferido** → I000018 $5.000 |
 
 ### Ventas — ID correlativo + historial
 
@@ -89,6 +92,8 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000014 | Ele SIE | 5.000 | PED-004 2× Llavero Pesa Rusa amarillo |
 | I000015 | Marcia SIE | 3.000 | PED-011 Soporte celular morado |
 | I000016 | Fabian MKOF | 7.000 | 1× Porta Bob Esponja |
+| I000017 | Rebe SIE | 18.000 | PED-014 Alcancía chanchito |
+| I000018 | Cata SIE | 5.000 | PED-015 3× Llavero One Piece |
 
 ### Clientes nuevos — nombre + origen (obligatorio)
 
@@ -187,7 +192,8 @@ Datos en `data.impresoras[]` (seed + live) y UI **Operación → Impresoras**. C
 | `DRAGON001` | Dragón | **275,41** | **14,12 (14 h 7 m)** | PLA color · modelo+soportes · costo ~$5.476 · **PVP $20.000** · diseño comprado **$3.000** en gastos (no en costo/u) |
 | `TORREON001` | Torreón | **~120** (est.) | **~4 h** (est.) | **Ender 3 V2 Neo (Sprite Neo)** · sin slicer · recargo perfil +$1.000 · costo ~$3.293 · PVP sug. $6.500 |
 | `LMBROC001` | Limpiador de brochas | **114,05** | **3,47 (3 h 28 m)** | PLA morado pastel · Elegoo · modelo 113,58 + purge 0,47 · costo ~$2.163 · **PVP sug. $4.300** |
-| `ALCHAN001` | Alcancía chanchito | **315,88** | **12,15 (12 h 9 m)** | PLA rosado `$10.990/kg` · Elegoo · modelo 280,74 + sop 33,75 + purge 1,40 · 105,06 m · costo ~$4.202 · **PVP sug. $8.400** · diseño comprado **$13.000** en gastos (no en costo/u) |
+| `ALCHAN001` | Alcancía chanchito | **315,88** | **12,15 (12 h 9 m)** | PLA rosado `$10.990/kg` · Elegoo · modelo 280,74 + sop 33,75 + purge 1,40 · 105,06 m · costo ~$4.202 · **PVP sug. $8.400** · diseño comprado **$13.000** en gastos (no en costo/u) · vendida Rebe **$18.000** (I000017) |
+| `LLONEPI001` | Llavero One Piece | — | — | **pendiente costo** · 3× Cata SIE **$5.000** (I000018) · ~$1.667/u |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
 

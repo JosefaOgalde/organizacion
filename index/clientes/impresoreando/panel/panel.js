@@ -3309,7 +3309,6 @@
         </div>
         <p class="imp-balance__meta imp-balance__meta--pipeline">
           Si se cobran los ${pedidosActivos.length} pedidos pendientes → progreso proyectado <strong>${pctPipeline.toFixed(1)}%</strong>
-          (hoy con ventas va en ${pctRecuperado.toFixed(1)}%).
         </p>
       </div>
       <div class="imp-grid imp-grid--2">

@@ -192,6 +192,28 @@ function main() {
       existing.ventaId = sp.ventaId;
       changed += 1;
     }
+
+    // Propagar fiado / estado listo desde seed (p. ej. PED-008 Juan MKOF).
+    if (existing.estado !== 'transferido' && sp.estado !== 'transferido') {
+      let fiadoTouch = false;
+      if (sp.fiado === true && existing.fiado !== true) {
+        existing.fiado = true;
+        fiadoTouch = true;
+      }
+      if (sp.fechaPagoEsperada && existing.fechaPagoEsperada !== sp.fechaPagoEsperada) {
+        existing.fechaPagoEsperada = sp.fechaPagoEsperada;
+        fiadoTouch = true;
+      }
+      if (sp.estado && existing.estado !== sp.estado) {
+        existing.estado = sp.estado;
+        fiadoTouch = true;
+      }
+      if (sp.notas && /fiado/i.test(sp.notas) && existing.notas !== sp.notas) {
+        existing.notas = sp.notas;
+        fiadoTouch = true;
+      }
+      if (fiadoTouch) changed += 1;
+    }
   }
 
   // Actualiza ventas seed existentes (p. ej. pedidoId consolidado) sin pisar montos locales distintos.
