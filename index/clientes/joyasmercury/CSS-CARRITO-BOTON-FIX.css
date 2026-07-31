@@ -1,0 +1,67 @@
+/**
+ * Joyas Mercury — FIX icono carrito (25-jul)
+ * Pegar al final del CSS adicional SI no reemplazás el completo.
+ * Además: fragmento PHP JM-CARRITO-IR-PAGINA + Astra → Página del carrito.
+ */
+
+#ast-mobile-header .ast-site-header-cart-li a.cart-container,
+#ast-mobile-header .ast-site-header-cart-li a,
+.ast-header-break-point .ast-site-header-cart-li a.cart-container,
+.ast-header-break-point .ast-site-header-cart-li a,
+.ast-site-header-cart .cart-container {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  position: relative !important;
+  z-index: 9999 !important;
+}
+
+.ast-site-header-cart,
+.ast-header-woo-cart,
+#ast-mobile-header .ast-header-woo-cart {
+  position: relative !important;
+  z-index: 9999 !important;
+  overflow: visible !important;
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+.astra-cart-drawer {
+  background: #faf6f2 !important;
+  z-index: 100050 !important;
+}
+
+.astra-cart-drawer .astra-cart-drawer-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e8dfd4 !important;
+}
+
+.astra-cart-drawer .astra-cart-drawer-title,
+.astra-cart-drawer .widgettitle {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  color: #A97E23 !important;
+  font-weight: 600 !important;
+}
+
+.astra-cart-drawer .astra-cart-drawer-close {
+  color: #A97E23 !important;
+}
+
+.woocommerce-js .astra-cart-drawer .astra-cart-drawer-content .woocommerce-mini-cart__buttons a.checkout,
+.astra-cart-drawer .woocommerce-mini-cart__buttons .checkout {
+  background: #A97E23 !important;
+  border-color: #A97E23 !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+}
+
+.woocommerce-cart .return-to-shop .button,
+.woocommerce-cart a.button.wc-backward {
+  background: #A97E23 !important;
+  border-color: #A97E23 !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 12px 22px !important;
+}

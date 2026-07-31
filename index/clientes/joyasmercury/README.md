@@ -1,21 +1,37 @@
-# Joyas Mercury — pausado (no subir a Git)
+# Joyas Mercury · en la nube (pausado)
 
-Trabajo JM **en pausa**. La copia más actualizada vive **fuera del repo**:
+El trabajo está **pausado**, pero los archivos **sí quedan en GitHub** para abrirlos después desde el **iPad / iPhone** (app GitHub o Safari).
+
+## Desde el iPad o iPhone
+
+1. Abrí la app **GitHub** (o Safari) → repo `JosefaOgalde/organizacion`
+2. Carpeta: [`index/clientes/joyasmercury/`](https://github.com/JosefaOgalde/organizacion/tree/main/index/clientes/joyasmercury)
+3. O descargá el zip del release:  
+   [`jm-archivo-2026-07-31`](https://github.com/JosefaOgalde/organizacion/releases/tag/jm-archivo-2026-07-31)  
+   (Archivos → Guardar en iCloud Drive / OneDrive)
+
+Si usás OneDrive en el PC, `ARCHIVAR-JOYAS-MERCURY.bat` también deja una copia en:
 
 ```
-%USERPROFILE%\joyasmercury-archivo-organizacion\
+OneDrive\joyasmercury-archivo-organizacion\
 ```
 
-Ejemplo PC casa: `C:\Users\Josefa Ogalde\joyasmercury-archivo-organizacion\`
+Esa carpeta aparece en la app **Archivos** del iPhone/iPad.
 
-## Cómo archivar / recuperar
+## En el PC (Laravel)
 
-1. Doble clic en la raíz del proyecto: **`ARCHIVAR-JOYAS-MERCURY.bat`**
-2. Tag git con el último snapshot en el repo: `archivo-joyas-mercury-2026-07-31`
-
-```bat
-git checkout archivo-joyas-mercury-2026-07-31 -- index/clientes/joyasmercury data/jm-backup-contenido.js
 ```
+http://127.0.0.1:8000/index/clientes/joyasmercury/
+```
+
+**Continuar trabajo:** [CONTINUAR-JM.md](CONTINUAR-JM.md)
+
+## Atajos
+
+| Página | URL |
+|--------|-----|
+| Landing | `/index/clientes/joyasmercury/` |
+| Wireframes desktop | `/index/clientes/joyasmercury/wireframes.html` |
 
 Sitio en producción: https://joyasmercury.cl  
-Backup técnico aparte: repo privado `JosefaOgalde/joyasmercury-backup`
+Backup técnico WP: repo `JosefaOgalde/joyasmercury-backup`

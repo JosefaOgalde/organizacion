@@ -12,7 +12,7 @@ Instrucciones cortas para no duplicar contexto. El detalle vive en los docs enla
 ## Herramientas por cliente
 - **Trendseeker** → Gemini (producto/video). Ver `index/clientes/trendseeker/prompts/README.md`
 - **ECR portadas** → Midjourney (solo fondo). Ver `index/clientes/ecr/newsletter/`
-- **Joyas Mercury** → pausado / no re-subir. Copia local: `%USERPROFILE%\joyasmercury-archivo-organizacion\` · `ARCHIVAR-JOYAS-MERCURY.bat` · tag git `archivo-joyas-mercury-2026-07-31`
+- **Joyas Mercury** → pausado (archivos sí en GitHub para iPad/iPhone). No abrir salvo que la usuaria retome JM. Carpeta: `index/clientes/joyasmercury/` · OneDrive vía `ARCHIVAR-JOYAS-MERCURY.bat`
 
 ## Impresoreando
 **Antes de tocar:** `docs/impresoreando/CONTEXTO.md`. No reexplorar `panel.js` ni seed salvo bug.

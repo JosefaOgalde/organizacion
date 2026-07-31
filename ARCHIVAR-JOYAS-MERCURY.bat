@@ -8,13 +8,13 @@ echo  ========================================
 echo   ARCHIVAR JOYAS MERCURY
 echo  ========================================
 echo.
-echo  Copia la version mas actual a tu usuario
-echo  Windows ^(NO sube nada a GitHub^):
+echo  Copia la version mas actual a:
+echo    1^) OneDrive / iCloud ^(si existen^) → iPad/iPhone app Archivos
+echo    2^) %%USERPROFILE%%\joyasmercury-archivo-organizacion\
 echo.
-echo  %%USERPROFILE%%\joyasmercury-archivo-organizacion\
-echo.
-echo  Si la carpeta del repo ya esta vacia,
-echo  restaura desde el tag git y luego archiva.
+echo  En GitHub tambien queda:
+echo    index/clientes/joyasmercury/
+echo  ^(abrir desde la app GitHub en el iPad^)
 echo.
 
 where node >nul 2>&1

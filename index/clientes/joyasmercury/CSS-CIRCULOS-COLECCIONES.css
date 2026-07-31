@@ -1,0 +1,322 @@
+/**
+ * Joyas Mercury — círculos categorías + Últimas unidades (móvil)
+ * VERSIÓN: 2026-07-19-v9  ← si no ves esta línea, es CSS antiguo
+ *
+ * Archivo correcto: index/clientes/joyasmercury/CSS-CIRCULOS-COLECCIONES.css
+ * Preferible: CSS-COMPLETO-ASTRA.css (paquete completo en la misma rama)
+ *
+ * Pegar en: Apariencia → Personalizar → CSS adicional → Publicar
+ * Antes: BORRA el CSS JM anterior del cuadro (no lo dejes abajo).
+ *
+ * Elementor (obligatorio):
+ * - Contenedor de círculos: clase  jm-circulos-categoria  · Overflow = Visible
+ * - Últimas: ID jm-ultimas-unidades + jm-home-ultimas · Slider+Arrows ON
+ * - Novedades: jm-home-novedades · Slider+Arrows ON
+ * Imágenes círculo: Completo/Miniatura (NO Personalizado 350px)
+ */
+
+/* ========== CÍRCULOS DE CATEGORÍAS (5 en fila + 3 en home) ========== */
+.elementor-element.jm-circulos-categoria.e-con,
+.jm-circulos-categoria.e-con,
+.jm-circulos-categoria {
+  --width: 100% !important;
+  max-width: 1200px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 16px 12px 8px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  overflow: visible !important; /* evita cortes del círculo */
+}
+
+.jm-circulos-categoria > .e-con.e-child,
+.jm-circulos-categoria > .elementor-column,
+.jm-circulos-categoria .e-con-inner > .e-con {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  width: auto !important;
+  align-items: center !important;
+  overflow: visible !important;
+  padding: 0 2px !important;
+}
+
+.jm-circulos-categoria .elementor-widget-image {
+  width: 100% !important;
+  max-width: 120px !important;
+  margin: 0 auto !important;
+}
+
+.jm-circulos-categoria .elementor-widget-image .elementor-widget-container {
+  width: 100% !important;
+  max-width: 120px !important;
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
+  margin: 0 auto !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  box-shadow: none !important;
+  border: 2px solid #e8b4c0;
+  background: #fdf8fa;
+}
+
+.jm-circulos-categoria.jm-circulos-esencial .elementor-widget-image .elementor-widget-container {
+  border-color: #f0d4dc;
+  background: #fdf5f7;
+}
+
+.jm-circulos-categoria.jm-circulos-gold .elementor-widget-image .elementor-widget-container {
+  border-color: #f5e6b8;
+  background: #fffdf5;
+}
+
+.jm-circulos-categoria.jm-circulos-deluxe .elementor-widget-image .elementor-widget-container {
+  border-color: #e8c4d0;
+  background: #fdf8fa;
+}
+
+.jm-circulos-categoria .elementor-widget-image a {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+}
+
+.jm-circulos-categoria .elementor-widget-image img,
+.jm-circulos-categoria .elementor-widget-image a img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  border-radius: 50% !important;
+  display: block !important;
+  margin: 0 !important;
+}
+
+/* Texto debajo del círculo — completo, sin cortar */
+.jm-circulos-categoria .elementor-widget-text-editor,
+.jm-circulos-categoria .elementor-widget-heading {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  overflow: visible !important;
+}
+
+.jm-circulos-categoria .elementor-widget-text-editor p,
+.jm-circulos-categoria .elementor-widget-heading .elementor-heading-title {
+  text-align: center !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: #A97E23 !important;
+  margin: 6px 0 0 !important;
+  line-height: 1.2 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: keep-all !important;
+  overflow-wrap: break-word !important;
+}
+
+.jm-circulos-categoria,
+.jm-circulos-categoria *,
+.jm-home-colecciones,
+.jm-home-colecciones * {
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* Móvil: 5 círculos en una fila, redondos y legibles */
+@media (max-width: 767px) {
+  .jm-circulos-categoria.e-con,
+  .jm-circulos-categoria {
+    padding: 10px 6px 4px !important;
+    gap: 4px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important; /* si no caben, scroll suave en vez de cortar */
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch;
+    justify-content: space-between !important;
+  }
+
+  .jm-circulos-categoria > .e-con.e-child,
+  .jm-circulos-categoria > .elementor-column,
+  .jm-circulos-categoria .e-con-inner > .e-con {
+    flex: 1 1 0 !important;
+    min-width: 56px !important;
+    max-width: 20% !important;
+    overflow: visible !important;
+    padding: 0 1px !important;
+  }
+
+  .jm-circulos-categoria .elementor-widget-image {
+    max-width: 64px !important;
+  }
+
+  .jm-circulos-categoria .elementor-widget-image .elementor-widget-container {
+    max-width: 64px !important;
+    width: 64px !important;
+    height: 64px !important;
+    aspect-ratio: 1 / 1 !important;
+  }
+
+  .jm-circulos-categoria .elementor-widget-text-editor p,
+  .jm-circulos-categoria .elementor-widget-heading .elementor-heading-title {
+    font-size: 8px !important;
+    letter-spacing: 0.02em !important;
+    margin-top: 4px !important;
+    padding: 0 1px !important;
+  }
+}
+
+/* ========== ÚLTIMAS + NOVEDADES: flechas visibles dentro, sin desborde ========== */
+#jm-ultimas-unidades,
+.elementor-element.jm-home-ultimas,
+.elementor-element[class*="jm-home-ult"],
+.jm-home-novedades,
+.elementor-element.jm-home-novedades,
+.e-con:has(.jm-home-novedades),
+.e-con:has(.jm-home-ultimas),
+.e-con:has(#jm-ultimas-unidades) {
+  position: relative !important;
+  overflow: visible !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#jm-ultimas-unidades .slick-list,
+.elementor-element.jm-home-ultimas .slick-list,
+.jm-home-novedades .slick-list,
+.elementor-element.jm-home-novedades .slick-list {
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* No forzar display/float del track: rompe productos en carrusel UAEL */
+
+#jm-ultimas-unidades .slick-prev,
+#jm-ultimas-unidades .slick-next,
+.elementor-element.jm-home-ultimas .slick-prev,
+.elementor-element.jm-home-ultimas .slick-next,
+.jm-home-novedades .slick-prev,
+.jm-home-novedades .slick-next,
+.elementor-element.jm-home-novedades .slick-prev,
+.elementor-element.jm-home-novedades .slick-next {
+  position: absolute !important;
+  top: 32% !important;
+  z-index: 50 !important;
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  border: 1.5px solid #A97E23 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  font-size: 0 !important;
+  transform: none !important;
+}
+
+#jm-ultimas-unidades .slick-prev,
+.jm-home-novedades .slick-prev {
+  left: 8px !important;
+}
+
+#jm-ultimas-unidades .slick-next,
+.jm-home-novedades .slick-next {
+  right: 8px !important;
+}
+
+#jm-ultimas-unidades .slick-prev::before,
+#jm-ultimas-unidades .slick-next::before,
+.jm-home-novedades .slick-prev::before,
+.jm-home-novedades .slick-next::before {
+  content: "" !important;
+  display: block !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-style: solid !important;
+  border-color: #A97E23 !important;
+  border-width: 0 0 2.5px 2.5px !important;
+  opacity: 1 !important;
+  background: none !important;
+  font-size: 0 !important;
+}
+
+#jm-ultimas-unidades .slick-prev::before,
+.jm-home-novedades .slick-prev::before {
+  transform: rotate(45deg) !important;
+  margin-left: 4px !important;
+}
+
+#jm-ultimas-unidades .slick-next::before,
+.jm-home-novedades .slick-next::before {
+  transform: rotate(225deg) !important;
+  margin-right: 4px !important;
+}
+
+#jm-ultimas-unidades .slick-dots,
+.jm-home-novedades .slick-dots {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  justify-content: center !important;
+}
+
+#jm-ultimas-unidades img,
+#jm-ultimas-unidades .uael-woo-product-wrapper img,
+.jm-home-novedades img {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: 180px !important;
+  margin: 0 auto !important;
+  object-fit: contain !important;
+}
+
+@media (max-width: 921px) {
+  #jm-ultimas-unidades .woocommerce-loop-product__title,
+  #jm-ultimas-unidades .uael-woo-products-title a {
+    font-size: 12px !important;
+    -webkit-line-clamp: 3 !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  #jm-ultimas-unidades .price,
+  #jm-ultimas-unidades .amount {
+    white-space: nowrap !important;
+    font-size: 13px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  #jm-ultimas-unidades li.product .button,
+  #jm-ultimas-unidades .add_to_cart_button {
+    width: 100% !important;
+    font-size: 10px !important;
+    max-height: none !important;
+    min-height: 40px !important;
+  }
+}
+

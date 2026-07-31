@@ -25,6 +25,8 @@ URL: http://127.0.0.1:8000/index.html?disco=1
 
 No hace falta pegar rutas del JSON ni preguntarle al agente.
 
-JOYAS MERCURY (pausado — no subir a Git):
-  ARCHIVAR-JOYAS-MERCURY.bat
-  Copia: %USERPROFILE%\joyasmercury-archivo-organizacion\
+JOYAS MERCURY (pausado, pero en la nube para iPad/iPhone):
+  GitHub: index/clientes/joyasmercury/
+  Release zip: releases → jm-archivo-2026-07-31
+  Tambien: ARCHIVAR-JOYAS-MERCURY.bat → OneDrive\joyasmercury-archivo-organizacion\
+  (aparece en app Archivos del iPhone/iPad si OneDrive esta sync)
