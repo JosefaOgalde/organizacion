@@ -46,6 +46,11 @@ function pedidoActivo(estado) {
   return ['pendiente', 'listo', 'en_impresion'].includes(String(estado || 'pendiente').toLowerCase());
 }
 
+function pedidoAnulado(estado) {
+  const e = String(estado || '').toLowerCase();
+  return e === 'anulado' || e === 'cancelado';
+}
+
 function itemsTxt(ped) {
   return (ped.items || [])
     .map((it) => `${it.cantidad || 1}× ${it.nombre || it.sku || 'ítem'}`)
@@ -118,9 +123,9 @@ function hoyChile() {
   }).format(new Date());
 }
 
-/** Día en que se finalizó/transferió el pedido (para congelar la subtarea). */
+/** Día en que se finalizó/transferió/anuló el pedido (para congelar la subtarea). */
 function fechaFinalizacionPedido(ped, tareaExistente) {
-  const raw = ped.transferidoEn || ped.actualizado || ped.ventaFecha || '';
+  const raw = ped.anuladoEn || ped.transferidoEn || ped.actualizado || ped.ventaFecha || '';
   if (raw) {
     const d = String(raw).slice(0, 10);
     if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
@@ -247,6 +252,7 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
   let ordenHecho = 1;
   for (const ped of pedidos) {
     const activo = pedidoActivo(ped.estado);
+    const anulado = pedidoAnulado(ped.estado);
     const tid = taskIdForPedido(ped);
     let t =
       byPedidoId.get(ped.id) ||
@@ -255,13 +261,15 @@ function syncOrgFile(orgPath, pedidos, impActualizado) {
     const titulo = tituloPedido(ped);
     const notas = activo
       ? `Estado: ${ped.estado}. Total ${money(ped.montoNeto)}. ${ped.notas || ''} · Panel: /index/clientes/impresoreando/panel/`
-      : `Transferido a venta (${ped.ventaId || ped.ventaCodigo || 'ok'}). Total cobrado ${money(ped.montoNeto)}. ${ped.notas || ''} · Ya no es pedido activo.`;
+      : anulado
+        ? `ANULADO. Total era ${money(ped.montoNeto)}. ${ped.notas || ''} · Ya no es pedido activo.`
+        : `Transferido a venta (${ped.ventaId || ped.ventaCodigo || 'ok'}). Total cobrado ${money(ped.montoNeto)}. ${ped.notas || ''} · Ya no es pedido activo.`;
     const ordenHijo = activo ? ordenActivo : 900 + ordenHecho;
     // Activas van con la madre (hoy). Finalizadas se congelan en el día de cierre.
     const fechaHijo = activo ? hoy : fechaFinalizacionPedido(ped, t);
 
     if (!t) {
-      if (!activo) continue; // no crear tarea nueva solo para transferidos
+      if (!activo) continue; // no crear tarea nueva solo para transferidos/anulados
       t = {
         id: tid,
         titulo,

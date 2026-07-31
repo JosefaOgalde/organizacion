@@ -154,7 +154,73 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
                 if (!empty($sp['numero'])) {
                     $pedKeys['num:' . $sp['numero']] = true;
                 }
+                continue;
             }
+            // Propagar anulado / transferido desde seed → live (no dejar PED-007 en listo).
+            $seedEstado = (string) ($sp['estado'] ?? '');
+            if ($seedEstado !== 'anulado' && $seedEstado !== 'transferido') {
+                continue;
+            }
+            foreach ($data['pedidos'] as &$lp) {
+                if (!is_array($lp)) {
+                    continue;
+                }
+                $same =
+                    (!empty($sp['id']) && ($lp['id'] ?? '') === $sp['id'])
+                    || (!empty($sp['numero']) && ($lp['numero'] ?? '') === $sp['numero']);
+                if (!$same) {
+                    continue;
+                }
+                $liveEstado = (string) ($lp['estado'] ?? '');
+                if ($liveEstado === 'transferido' && $seedEstado === 'anulado') {
+                    break;
+                }
+                if ($liveEstado === $seedEstado && $seedEstado === 'anulado') {
+                    // Asegurar notas/filamento limpios aunque ya diga anulado.
+                    if (!empty($sp['notas'])) {
+                        $lp['notas'] = $sp['notas'];
+                    }
+                    if (!empty($sp['anuladoEn'])) {
+                        $lp['anuladoEn'] = $sp['anuladoEn'];
+                    }
+                    if (isset($sp['items']) && is_array($sp['items'])) {
+                        $lp['items'] = $sp['items'];
+                    }
+                    $lp['ventaId'] = null;
+                    break;
+                }
+                if ($liveEstado !== $seedEstado) {
+                    $lp['estado'] = $seedEstado;
+                    if ($seedEstado === 'anulado') {
+                        $lp['ventaId'] = null;
+                        if (!empty($sp['anuladoEn'])) {
+                            $lp['anuladoEn'] = $sp['anuladoEn'];
+                        }
+                        if (!empty($sp['notas'])) {
+                            $lp['notas'] = $sp['notas'];
+                        }
+                        if (isset($sp['items']) && is_array($sp['items'])) {
+                            $lp['items'] = $sp['items'];
+                        }
+                    }
+                    if ($seedEstado === 'transferido') {
+                        if (!empty($sp['ventaId'])) {
+                            $lp['ventaId'] = $sp['ventaId'];
+                        }
+                        if (!empty($sp['transferidoEn'])) {
+                            $lp['transferidoEn'] = $sp['transferidoEn'];
+                        }
+                        if (!empty($sp['notas'])) {
+                            $lp['notas'] = $sp['notas'];
+                        }
+                        if (isset($sp['montoNeto'])) {
+                            $lp['montoNeto'] = $sp['montoNeto'];
+                        }
+                    }
+                }
+                break;
+            }
+            unset($lp);
         }
         $data['ventas'] = is_array($data['ventas'] ?? null) ? $data['ventas'] : [];
         $venIds = [];
@@ -224,6 +290,93 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
 
     if ($uri === '/api/impresoreando' && $method === 'GET') {
         $data = $mergeSeedMissing($readLive());
+        // Hard-fix: PED-007 Torreón siempre anulado (live viejos quedaban en listo).
+        $data['pedidos'] = is_array($data['pedidos'] ?? null) ? $data['pedidos'] : [];
+        foreach ($data['pedidos'] as &$p007) {
+            if (!is_array($p007)) {
+                continue;
+            }
+            if (($p007['numero'] ?? '') !== 'PED-007' && ($p007['id'] ?? '') !== 'ped-juan-torreon-007') {
+                continue;
+            }
+            if (($p007['estado'] ?? '') === 'transferido') {
+                break;
+            }
+            $p007['estado'] = 'anulado';
+            $p007['ventaId'] = null;
+            $p007['anuladoEn'] = $p007['anuladoEn'] ?? date('c');
+            $p007['notas'] = '1× Torreón · ANULADO · costo estimado $3.293,48 · PVP sugerido $6.500';
+            if (isset($p007['items']) && is_array($p007['items'])) {
+                foreach ($p007['items'] as &$it007) {
+                    if (!is_array($it007)) {
+                        continue;
+                    }
+                    $it007['estado'] = 'anulado';
+                    $it007['filamento'] = 'PLA color';
+                }
+                unset($it007);
+            }
+            break;
+        }
+        unset($p007);
+        // Hard-fix: PED-008 Juan MKOF Bob → venta I000019 (ya no fiado).
+        foreach ($data['pedidos'] as &$p008) {
+            if (!is_array($p008)) {
+                continue;
+            }
+            if (($p008['numero'] ?? '') !== 'PED-008' && ($p008['id'] ?? '') !== 'ped-juan-bob-008') {
+                continue;
+            }
+            $p008['estado'] = 'transferido';
+            $p008['fiado'] = false;
+            unset($p008['fechaPagoEsperada']);
+            $p008['ventaId'] = 'ven-juan-bob-019';
+            $p008['transferidoEn'] = $p008['transferidoEn'] ?? date('c');
+            $p008['montoNeto'] = 7000;
+            $p008['montoBruto'] = 7000;
+            $p008['notas'] = '1× Porta Bob Esponja · transferido a venta I000019 · pagado $7.000 · MKOF (Josefa)';
+            break;
+        }
+        unset($p008);
+        $data['ventas'] = is_array($data['ventas'] ?? null) ? $data['ventas'] : [];
+        $has019 = false;
+        foreach ($data['ventas'] as $v019) {
+            if (is_array($v019) && (($v019['id'] ?? '') === 'ven-juan-bob-019' || ($v019['codigo'] ?? '') === 'I000019')) {
+                $has019 = true;
+                break;
+            }
+        }
+        if (!$has019) {
+            $data['ventas'][] = [
+                'id' => 'ven-juan-bob-019',
+                'codigo' => 'I000019',
+                'fecha' => '2026-07-31',
+                'cliente' => 'Juan MKOF',
+                'clienteNombre' => 'Juan',
+                'clienteOrigen' => 'MKOF',
+                'descripcion' => 'PED-008 · 1× Porta Bob Esponja · Juan MKOF',
+                'cantidad' => 1,
+                'montoBruto' => 7000,
+                'descuentoClp' => 0,
+                'montoNeto' => 7000,
+                'costoTotal' => 998.17,
+                'canal' => 'WhatsApp',
+                'notas' => 'Transferido desde PED-008 · fiado cobrado · 1× Porta Bob Esponja · pagado $7.000',
+                'socioRegistro' => 'Ambos',
+                'pedidoId' => 'ped-juan-bob-008',
+                'pedidoNumero' => 'PED-008',
+                'items' => [
+                    [
+                        'sku' => 'PTBOBES001',
+                        'nombre' => 'Porta Bob Esponja',
+                        'cantidad' => 1,
+                        'precioUnitarioClp' => 7000,
+                        'costoUnitarioClp' => 998.17,
+                        'filamento' => 'multicolor',
+                    ],
+                ],
+            ];
+        }
         $writeLive($data);
         echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         return true;

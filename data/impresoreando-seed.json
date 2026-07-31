@@ -26,8 +26,8 @@
       "montoNetoClp": 915989,
       "deudaJosefaClp": 457995
     },
-    "pedidoSeq": 13,
-    "ventaSeq": 16,
+    "pedidoSeq": 15,
+    "ventaSeq": 19,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
       {
@@ -36,29 +36,33 @@
           "I000007",
           "I000008",
           "I000012",
-          "I000013"
+          "I000013",
+          "I000017"
         ],
         "ventaIds": [
           "ven-rebe-monster-007",
           "ven-rebe-stanley-008",
           "ven-rebe-soporte-012",
-          "ven-rebe-dragon-013"
+          "ven-rebe-dragon-013",
+          "ven-rebe-chanchito-017"
         ],
-        "totalNeto": 37000,
-        "compras": 4
+        "totalNeto": 55000,
+        "compras": 5
       },
       {
         "cliente": "Cata SIE",
         "ventaCodigos": [
           "I000004",
-          "I000010"
+          "I000010",
+          "I000018"
         ],
         "ventaIds": [
           "ven-cata-gatos-001",
-          "ven-cata-bob-010"
+          "ven-cata-bob-010",
+          "ven-cata-onepiece-018"
         ],
-        "totalNeto": 17000,
-        "compras": 2
+        "totalNeto": 22000,
+        "compras": 3
       },
       {
         "cliente": "Gianni SIE",
@@ -139,6 +143,17 @@
         ],
         "ventaIds": [
           "ven-fabian-bob-016"
+        ],
+        "totalNeto": 7000,
+        "compras": 1
+      },
+      {
+        "cliente": "Juan MKOF",
+        "ventaCodigos": [
+          "I000019"
+        ],
+        "ventaIds": [
+          "ven-juan-bob-019"
         ],
         "totalNeto": 7000,
         "compras": 1
@@ -556,6 +571,24 @@
         {
           "descripcion": "Tira cinta luces LED RGB Bluetooth Maxwell 20 m",
           "monto": 17990
+        }
+      ]
+    },
+    {
+      "id": "gas-entrada-evento-3d-16100",
+      "fecha": "2026-08-29",
+      "categoria": "marketing",
+      "descripcion": "1 entrada a evento 3D (29 agosto)",
+      "proveedor": "Evento 3D",
+      "cantidad": 1,
+      "montoNeto": 16100,
+      "notas": "1 entrada evento 3D el 29 de agosto 2026. Sociedad 50/50 · pagó Josefa.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Josefa",
+      "items": [
+        {
+          "descripcion": "Entrada evento 3D",
+          "monto": 16100
         }
       ]
     }
@@ -987,6 +1020,89 @@
           "filamento": "multicolor"
         }
       ]
+    },
+    {
+      "id": "ven-rebe-chanchito-017",
+      "codigo": "I000017",
+      "fecha": "2026-07-31",
+      "cliente": "Rebe SIE",
+      "descripcion": "PED-014 · 1× Alcancía chanchito · Rebe SIE",
+      "cantidad": 1,
+      "montoBruto": 18000,
+      "descuentoClp": 0,
+      "montoNeto": 18000,
+      "costoTotal": 4202,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-014 · 1× Alcancía chanchito · pagado $18.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-rebe-chanchito-014",
+      "pedidoNumero": "PED-014",
+      "items": [
+        {
+          "sku": "ALCHAN001",
+          "nombre": "Alcancía chanchito",
+          "cantidad": 1,
+          "precioUnitarioClp": 18000,
+          "costoUnitarioClp": 4202,
+          "filamento": "PLA rosado"
+        }
+      ]
+    },
+    {
+      "id": "ven-cata-onepiece-018",
+      "codigo": "I000018",
+      "fecha": "2026-07-31",
+      "cliente": "Cata SIE",
+      "descripcion": "PED-015 · 3× Llavero One Piece · Cata SIE",
+      "cantidad": 3,
+      "montoBruto": 5001,
+      "descuentoClp": 1,
+      "montoNeto": 5000,
+      "costoTotal": 0,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-015 · 3× Llavero One Piece · pagado $5.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-cata-onepiece-015",
+      "pedidoNumero": "PED-015",
+      "items": [
+        {
+          "sku": "LLONEPI001",
+          "nombre": "Llavero One Piece",
+          "cantidad": 3,
+          "precioUnitarioClp": 1667,
+          "costoUnitarioClp": 0,
+          "filamento": ""
+        }
+      ]
+    },
+    {
+      "id": "ven-juan-bob-019",
+      "codigo": "I000019",
+      "fecha": "2026-07-31",
+      "cliente": "Juan MKOF",
+      "clienteNombre": "Juan",
+      "clienteOrigen": "MKOF",
+      "descripcion": "PED-008 · 1× Porta Bob Esponja · Juan MKOF",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 998.17,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-008 · fiado cobrado · 1× Porta Bob Esponja · pagado $7.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-juan-bob-008",
+      "pedidoNumero": "PED-008",
+      "items": [
+        {
+          "sku": "PTBOBES001",
+          "nombre": "Porta Bob Esponja",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 998.17,
+          "filamento": "multicolor"
+        }
+      ]
     }
   ],
   "operacion": [
@@ -1354,6 +1470,17 @@
       "pendienteCosto": false,
       "editadoLocal": true,
       "notas": "Slicer 1 ud: modelo 280.74 g + soportes 33.75 g + descargado 1.40 g = 315.88 g · 105.06 m · 12 h 9 m · coste slicer 6,32. PLA rosado $10.990/kg · Elegoo Centauri. Costo ~$4.202 · PVP sugerido $8.400."
+    },
+    {
+      "id": "prod-llavero-one-piece",
+      "sku": "LLONEPI001",
+      "nombre": "Llavero One Piece",
+      "activo": true,
+      "unidadesMetal": 1,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 1667,
+      "pendienteCosto": true,
+      "notas": "3 uds cobradas a Cata SIE $5.000 total ($1.667/u). Costo pendiente (sin imagen slicer)."
     }
   ],
   "planAds": {
@@ -1474,6 +1601,42 @@
     {
       "fecha": "2026-07-28",
       "texto": "PED-011 Marcia SIE → I000015 · 1× Soporte celular morado · pagado $3.000."
+    },
+    {
+      "id": "bit-rebe-chanchito-017",
+      "fecha": "2026-07-31",
+      "autor": "Josefa",
+      "texto": "Rebe SIE: PED-014 Alcancía chanchito → I000017 · pagado $18.000."
+    },
+    {
+      "id": "bit-cata-onepiece-018",
+      "fecha": "2026-07-31",
+      "autor": "Josefa",
+      "texto": "Cata SIE: PED-015 3× Llavero One Piece → I000018 · pagado $5.000."
+    },
+    {
+      "id": "bit-juan-bob-fiado-008",
+      "fecha": "2026-07-31",
+      "autor": "Josefa",
+      "texto": "Juan MKOF PED-008 Porta Bob Esponja → fiado (listo, no pendiente genérico)."
+    },
+    {
+      "id": "bit-gasto-evento-3d-16100",
+      "fecha": "2026-07-31",
+      "autor": "Josefa",
+      "texto": "Gasto: 1 entrada evento 3D 29-ago · $16.100 · pagó Josefa · sociedad 50/50."
+    },
+    {
+      "id": "bit-juan-torreon-007-anulado",
+      "fecha": "2026-07-31",
+      "autor": "Josefa",
+      "texto": "Juan SIE PED-007 Torreón → anulado (no cuenta como activo ni venta)."
+    },
+    {
+      "id": "bit-juan-bob-019",
+      "fecha": "2026-07-31",
+      "autor": "Josefa",
+      "texto": "Juan MKOF PED-008 Porta Bob Esponja (fiado) → I000019 · pagado $7.000."
     }
   ],
   "pedidos": [
@@ -1700,8 +1863,8 @@
           "cantidad": 1,
           "precioUnitarioClp": 6500,
           "costoUnitarioClp": 3293.48,
-          "filamento": "PLA color (estimación)",
-          "estado": "listo",
+          "filamento": "PLA color",
+          "estado": "anulado",
           "listos": 1,
           "enImpresion": 0
         }
@@ -1710,11 +1873,12 @@
       "descuentoClp": 0,
       "montoNeto": 6500,
       "costoTotal": 3293.48,
-      "estado": "listo",
+      "estado": "anulado",
       "ventaId": null,
-      "notas": "1× Torreón · listo · costo estimado $3.293,48 (base ~$2.293,48 + $1.000 impresora antigua) · PVP sugerido $6.500",
+      "notas": "1× Torreón · ANULADO · costo estimado $3.293,48 · PVP sugerido $6.500",
       "socioRegistro": "Ambos",
-      "creado": "2026-07-26T02:01:28.779Z"
+      "creado": "2026-07-26T02:01:28.779Z",
+      "anuladoEn": "2026-07-31T20:30:00.000Z"
     },
     {
       "id": "ped-juan-bob-008",
@@ -1741,11 +1905,13 @@
       "descuentoClp": 0,
       "montoNeto": 7000,
       "costoTotal": 998.17,
-      "estado": "listo",
-      "ventaId": null,
-      "notas": "1× Porta Bob Esponja · listo · costo $998,17 (catálogo) · PVP $7.000",
+      "estado": "transferido",
+      "ventaId": "ven-juan-bob-019",
+      "notas": "1× Porta Bob Esponja · transferido a venta I000019 · pagado $7.000 · MKOF (Josefa)",
       "socioRegistro": "Ambos",
-      "creado": "2026-07-26T02:01:28.779Z"
+      "creado": "2026-07-26T02:01:28.779Z",
+      "fiado": false,
+      "transferidoEn": "2026-07-31T22:20:00.000Z"
     },
     {
       "id": "ped-rebe-soporte-009",
@@ -1910,6 +2076,70 @@
       "notas": "1× Soporte celular negro · fiado · PVP $4.000 · fecha de pago por confirmar",
       "socioRegistro": "Ambos",
       "creado": "2026-07-31T00:30:00.000Z"
+    },
+    {
+      "id": "ped-rebe-chanchito-014",
+      "numero": "PED-014",
+      "fecha": "2026-07-31",
+      "cliente": "Rebe SIE",
+      "clienteNombre": "Rebe",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "ALCHAN001",
+          "nombre": "Alcancía chanchito",
+          "cantidad": 1,
+          "precioUnitarioClp": 18000,
+          "costoUnitarioClp": 4202,
+          "filamento": "PLA rosado",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 18000,
+      "descuentoClp": 0,
+      "montoNeto": 18000,
+      "costoTotal": 4202,
+      "estado": "transferido",
+      "ventaId": "ven-rebe-chanchito-017",
+      "notas": "1× Alcancía chanchito · transferido a venta I000017 · pagado $18.000",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-31T19:00:00.000Z",
+      "transferidoEn": "2026-07-31T19:00:00.000Z"
+    },
+    {
+      "id": "ped-cata-onepiece-015",
+      "numero": "PED-015",
+      "fecha": "2026-07-31",
+      "cliente": "Cata SIE",
+      "clienteNombre": "Cata",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "LLONEPI001",
+          "nombre": "Llavero One Piece",
+          "cantidad": 3,
+          "precioUnitarioClp": 1667,
+          "costoUnitarioClp": 0,
+          "filamento": "",
+          "estado": "listo",
+          "listos": 3,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 5001,
+      "descuentoClp": 1,
+      "montoNeto": 5000,
+      "costoTotal": 0,
+      "estado": "transferido",
+      "ventaId": "ven-cata-onepiece-018",
+      "notas": "3× Llavero One Piece · transferido a venta I000018 · pagado $5.000",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-31T19:00:00.000Z",
+      "transferidoEn": "2026-07-31T19:00:00.000Z"
     }
   ]
 }

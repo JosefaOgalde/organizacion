@@ -397,6 +397,23 @@ table.imp-table {
   background: var(--imp-ok, #3d8b6e);
   transition: width 0.4s ease;
 }
+.imp-balance__pct {
+  margin: -0.35rem 0 0.55rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--imp-ok, #3d8b6e);
+  letter-spacing: 0.01em;
+}
+.imp-balance__total-pct {
+  font-variant-numeric: tabular-nums;
+}
+.imp-balance__total-pct strong:last-child {
+  color: var(--imp-ok, #3d8b6e);
+}
+.imp-balance__meta--pipeline {
+  margin: 0.45rem 0 0;
+}
 .imp-balance__bar {
   height: 12px;
   border-radius: 999px;
@@ -688,6 +705,12 @@ table.imp-table {
   color: #8a4b1a;
   border-color: #e0b48a;
   background: #fff4e8;
+}
+.imp-badge--anulado {
+  color: #8a3a4a;
+  border-color: #e0a8b4;
+  background: #fdf0f3;
+  text-decoration: line-through;
 }
 .imp-pedido-status-counts {
   display: flex;

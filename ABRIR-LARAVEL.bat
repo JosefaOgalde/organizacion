@@ -9,9 +9,9 @@ echo  Uso:
 echo    ABRIR-LARAVEL.bat           → sync + reinicia :8000 + abre Organizador + Portal
 echo    ABRIR-LARAVEL.bat todo      → tambien abre ECR, MKOF, MOVA y prospecto
 echo    ABRIR-LARAVEL.bat sin-nav   → solo servidor / sync, sin abrir navegador
-echo    ABRIR-LARAVEL.bat restaurar → restaura live ^(31-jul / mas reciente^) y abre
+echo    ABRIR-LARAVEL.bat restaurar → restaura live desde respaldo 31-jul y abre
 echo    RECARGAR.bat                → solo recarga organizador ?disco=1
-echo    RECUPERAR-CALENDARIO.bat    → igual que restaurar ^(Descargas 31-jul primero^)
+echo    RECUPERAR-CALENDARIO.bat    → igual ^(Descargas 31-jul (1)/(2) primero^)
 echo    TRAER-CAMBIOS.bat           → si estas en main sin la entrega
 echo    REPARAR-SQLITE-ACTIVO.bat   → si sale "no such column: activo"
 echo.
@@ -19,7 +19,7 @@ echo.
 set "MODO=%~1"
 if "%MODO%"=="" set "MODO=auto"
 
-REM Restaurar calendario: Descargas 31-jul (1) → 31 → mas reciente → 29 → 28
+REM Restaurar calendario: Descargas 31-jul (1)/(2) → data 31-jul → mas reciente → 29 → 28
 if /I "%MODO%"=="restaurar" (
   set "DL=%USERPROFILE%\Downloads"
   set "REST_SRC="
@@ -100,11 +100,11 @@ if not exist "data\organizacion-live.json" (
   if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json" (
     copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json" "data\organizacion-live.json" >nul
     copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json" "data\organizacion-respaldo-2026-07-31.json" >nul
-    echo  Live creado desde Descargas\organizacion-respaldo-2026-07-31 (1).json
+    echo  Live creado desde Descargas 31-jul (1)
   ) else if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" (
     copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" "data\organizacion-live.json" >nul
     copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" "data\organizacion-respaldo-2026-07-31.json" >nul
-    echo  Live creado desde Descargas\organizacion-respaldo-2026-07-31.json
+    echo  Live creado desde Descargas 31-jul
   ) else if exist "data\organizacion-respaldo-2026-07-31.json" (
     copy /Y "data\organizacion-respaldo-2026-07-31.json" "data\organizacion-live.json" >nul
     echo  Live creado desde data\organizacion-respaldo-2026-07-31.json
@@ -138,6 +138,14 @@ if not errorlevel 1 (
   if exist "scripts\force-imp-fiados-012-013.js" (
     echo  0d^) Forzar fiados PED-010/012/013 + venta Fabian...
     node scripts\force-imp-fiados-012-013.js
+  )
+  if exist "scripts\force-imp-ventas-014-015-fiado-008.js" (
+    echo  0e^) Forzar ventas PED-014/015 + fiado PED-008 + gasto evento 3D...
+    node scripts\force-imp-ventas-014-015-fiado-008.js
+  )
+  if exist "scripts\force-imp-ped-007-anulado.js" (
+    echo  0f^) Forzar PED-007 Torreón anulado...
+    node scripts\force-imp-ped-007-anulado.js
   )
 )
 

@@ -92,6 +92,7 @@
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
     if (asegurarGastoMlBolsasEnchufeLed20260731(d)) changed = true;
+    if (asegurarGastoEntradaEvento3d16100(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
     if (asegurarPedidosImpresosYNaves(d)) changed = true;
@@ -107,29 +108,44 @@
       }
     }
     const capitalNeto = gastos.reduce((a, g) => a + Number(g.montoNeto || 0), 0);
+    let capitalJosefa = 0;
+    let capitalNicolas = 0;
+    for (const g of gastos) {
+      const monto = Number(g.montoNeto || 0);
+      if (/josefa/i.test(String(g.pagadoPor || ''))) capitalJosefa += monto;
+      else capitalNicolas += monto;
+    }
+    const mitad = Math.round(capitalNeto * 0.5);
+    const deudaJosefaClp = Math.max(0, mitad - Math.round(capitalJosefa));
     const cap = d.meta.capital && typeof d.meta.capital === 'object' ? d.meta.capital : {};
     const nextCap = {
-      aportadoPor: 'Nicolás',
+      aportadoPor: capitalJosefa > 0 ? 'Nicolás + Josefa' : 'Nicolás',
+      aportadoJosefaClp: Math.round(capitalJosefa),
+      aportadoNicolasClp: Math.round(capitalNicolas),
       deudaPctJosefa: 50,
       montoNetoClp: capitalNeto,
-      deudaJosefaClp: Math.round(capitalNeto * 0.5),
+      deudaJosefaClp,
       nota:
-        'Nicolás puso el capital y, hasta ahora, ha pagado todos los gastos. «Ambos» = sociedad 50/50 (Josefa debe el 50% a Nicolás), no que Josefa haya pagado.',
+        capitalJosefa > 0
+          ? `Sociedad 50/50. Nicolás aportó ${Math.round(capitalNicolas).toLocaleString('es-CL')} y Josefa ${Math.round(capitalJosefa).toLocaleString('es-CL')}. Josefa debe el 50% de los gastos menos lo que ya pagó.`
+          : 'Nicolás puso el capital. «Ambos» = sociedad 50/50 (Josefa debe el 50% a Nicolás).',
     };
     if (
       cap.aportadoPor !== nextCap.aportadoPor ||
       Number(cap.deudaJosefaClp) !== nextCap.deudaJosefaClp ||
       Number(cap.montoNetoClp) !== nextCap.montoNetoClp ||
+      Number(cap.aportadoJosefaClp || 0) !== nextCap.aportadoJosefaClp ||
+      Number(cap.aportadoNicolasClp || 0) !== nextCap.aportadoNicolasClp ||
       cap.nota !== nextCap.nota
     ) {
       d.meta.capital = { ...cap, ...nextCap };
       changed = true;
     }
     const notasMetaOk =
-      /pagado todos/i.test(String(d.meta.notas || '')) && /nicol/i.test(String(d.meta.notas || ''));
-    if (!notasMetaOk) {
+      /sociedad 50\/50/i.test(String(d.meta.notas || '')) && /josefa/i.test(String(d.meta.notas || ''));
+    if (!notasMetaOk || /pagado todos Nicolás/i.test(String(d.meta.notas || ''))) {
       d.meta.notas =
-        'Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Los gastos son de ambos (deuda 50/50), pero hasta ahora los ha pagado todos Nicolás. Josefa le debe el 50% del capital/gastos.';
+        'Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Los gastos son de ambos. El capital aportado se calcula por quién pagó cada gasto (pagadoPor).';
       changed = true;
     }
     return changed;
@@ -2021,6 +2037,37 @@
     return changed;
   }
 
+  /** Entrada evento 3D 29-ago · pagó Josefa $16.100 · cuenta como capital aportado. */
+  function asegurarGastoEntradaEvento3d16100(d) {
+    d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
+    const reg = {
+      id: 'gas-entrada-evento-3d-16100',
+      fecha: '2026-08-29',
+      categoria: 'marketing',
+      descripcion: '1 entrada a evento 3D (29 agosto)',
+      proveedor: 'Evento 3D',
+      cantidad: 1,
+      montoNeto: 16100,
+      notas: '1 entrada evento 3D el 29 de agosto 2026. Sociedad 50/50 · pagó Josefa.',
+      socioRegistro: 'Ambos',
+      pagadoPor: 'Josefa',
+      items: [{ descripcion: 'Entrada evento 3D', monto: 16100 }],
+    };
+    let changed = false;
+    const existing = d.gastos.find((g) => g.id === reg.id);
+    if (!existing) {
+      d.gastos.push({ ...reg });
+      changed = true;
+    } else if (
+      Number(existing.montoNeto) !== reg.montoNeto ||
+      String(existing.pagadoPor || '') !== 'Josefa'
+    ) {
+      Object.assign(existing, reg);
+      changed = true;
+    }
+    return changed;
+  }
+
   /** Diseños Cults / digitales — gastos socios (no entran al costo de producto). Pagó Nicolás · 50/50. */
   function asegurarGastosDisenosCults(d) {
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
@@ -2320,13 +2367,15 @@
       changed = true;
     }
 
-    // PED-007 · Juan SIE · Torreón · listo (estimación + $1.000 impresora antigua)
+    // PED-007 · Juan SIE · Torreón · anulado (forzar siempre salvo ya transferido)
     const id007 = 'ped-juan-torreon-007';
     const prodTorre = (d.productos || []).find((p) => p.id === 'prod-torreon' || p.sku === 'TORREON001');
     const costoTorre = prodTorre ? costoProdRough(d, prodTorre) : 3293.48;
     const precioTorre =
       Number(prodTorre?.precioVentaSugeridoClp) > 0 ? Number(prodTorre.precioVentaSugeridoClp) : 6500;
-    if (!d.pedidos.some((p) => p.id === id007 || p.numero === 'PED-007')) {
+    const notas007 = `1× Torreón · ANULADO · costo estimado $${round2(costoTorre)} · PVP sugerido $${precioTorre}`;
+    const ped007 = d.pedidos.find((p) => p.id === id007 || p.numero === 'PED-007');
+    if (!ped007) {
       d.pedidos.push({
         id: id007,
         numero: 'PED-007',
@@ -2342,8 +2391,8 @@
             cantidad: 1,
             precioUnitarioClp: precioTorre,
             costoUnitarioClp: round2(costoTorre),
-            filamento: 'PLA color (estimación)',
-            estado: 'listo',
+            filamento: 'PLA color',
+            estado: 'anulado',
             listos: 1,
             enImpresion: 0,
           },
@@ -2352,23 +2401,57 @@
         descuentoClp: 0,
         montoNeto: precioTorre,
         costoTotal: round2(costoTorre),
-        estado: 'listo',
+        estado: 'anulado',
         ventaId: null,
-        notas: `1× Torreón · listo · costo estimado $${round2(costoTorre)} (+$1.000 impresora antigua) · PVP $${precioTorre}`,
+        anuladoEn: '2026-07-31T20:30:00.000Z',
+        notas: notas007,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T02:00:00.000Z',
       });
       changed = true;
+    } else if (ped007.estado !== 'transferido') {
+      let touch007 = false;
+      if (ped007.estado !== 'anulado') {
+        ped007.estado = 'anulado';
+        touch007 = true;
+      }
+      if (ped007.ventaId) {
+        ped007.ventaId = null;
+        touch007 = true;
+      }
+      if (!ped007.anuladoEn) {
+        ped007.anuladoEn = '2026-07-31T20:30:00.000Z';
+        touch007 = true;
+      }
+      if (ped007.notas !== notas007) {
+        ped007.notas = notas007;
+        touch007 = true;
+      }
+      if (Array.isArray(ped007.items)) {
+        for (const it of ped007.items) {
+          if (it.estado !== 'anulado') {
+            it.estado = 'anulado';
+            touch007 = true;
+          }
+          if (it.filamento !== 'PLA color') {
+            it.filamento = 'PLA color';
+            touch007 = true;
+          }
+        }
+      }
+      if (touch007) changed = true;
     }
 
-    // PED-008 · Juan MKOF · Porta Bob Esponja · listo
+    // PED-008 · Juan MKOF · Porta Bob Esponja · transferido I000019 $7.000 (era fiado, pagó)
     const id008 = 'ped-juan-bob-008';
     const prodBob = (d.productos || []).find(
       (p) => p.id === 'prod-porta-bob-esponja' || p.sku === 'PTBOBES001'
     );
     const costoBob = prodBob ? costoProdRough(d, prodBob) : 998.17;
     const precioBob = 7000;
-    if (!d.pedidos.some((p) => p.id === id008 || p.numero === 'PED-008')) {
+    const ped008 = d.pedidos.find((p) => p.id === id008 || p.numero === 'PED-008');
+    const notas008 = `1× Porta Bob Esponja · transferido a venta I000019 · pagado $${precioBob} · MKOF (Josefa)`;
+    if (!ped008) {
       d.pedidos.push({
         id: id008,
         numero: 'PED-008',
@@ -2394,11 +2477,57 @@
         descuentoClp: 0,
         montoNeto: precioBob,
         costoTotal: round2(costoBob),
-        estado: 'listo',
-        ventaId: null,
-        notas: `1× Porta Bob Esponja · listo · costo $${round2(costoBob)} · PVP $${precioBob}`,
+        estado: 'transferido',
+        fiado: false,
+        ventaId: 'ven-juan-bob-019',
+        transferidoEn: '2026-07-31T22:20:00.000Z',
+        notas: notas008,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T02:00:00.000Z',
+      });
+      changed = true;
+    } else if (ped008.estado !== 'transferido') {
+      ped008.estado = 'transferido';
+      ped008.fiado = false;
+      delete ped008.fechaPagoEsperada;
+      ped008.ventaId = 'ven-juan-bob-019';
+      ped008.transferidoEn = ped008.transferidoEn || '2026-07-31T22:20:00.000Z';
+      ped008.montoNeto = precioBob;
+      ped008.montoBruto = precioBob;
+      ped008.notas = notas008;
+      changed = true;
+    }
+    // Asegurar venta I000019
+    d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
+    if (!d.ventas.some((v) => v.id === 'ven-juan-bob-019' || v.codigo === 'I000019')) {
+      d.ventas.push({
+        id: 'ven-juan-bob-019',
+        codigo: 'I000019',
+        fecha: '2026-07-31',
+        cliente: 'Juan MKOF',
+        clienteNombre: 'Juan',
+        clienteOrigen: 'MKOF',
+        descripcion: 'PED-008 · 1× Porta Bob Esponja · Juan MKOF',
+        cantidad: 1,
+        montoBruto: precioBob,
+        descuentoClp: 0,
+        montoNeto: precioBob,
+        costoTotal: round2(costoBob),
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-008 · fiado cobrado · 1× Porta Bob Esponja · pagado $7.000',
+        socioRegistro: 'Ambos',
+        pedidoId: id008,
+        pedidoNumero: 'PED-008',
+        items: [
+          {
+            sku: 'PTBOBES001',
+            nombre: 'Porta Bob Esponja',
+            cantidad: 1,
+            precioUnitarioClp: precioBob,
+            costoUnitarioClp: round2(costoBob),
+            filamento: 'multicolor',
+          },
+        ],
       });
       changed = true;
     }
@@ -3219,7 +3348,19 @@
     const cadaUnoGastos = gastos / 2;
     const cadaUnoResultado = resultado / 2;
     const cap = data.meta?.capital || {};
-    const deuda = Number(cap.deudaJosefaClp != null ? cap.deudaJosefaClp : cadaUnoGastos);
+    const capitalJosefa = (data.gastos || []).reduce((a, g) => {
+      if (/josefa/i.test(String(g.pagadoPor || ''))) return a + Number(g.montoNeto || 0);
+      return a;
+    }, 0);
+    const capitalNicolas = Math.max(0, gastos - capitalJosefa);
+    const deuda = Math.max(
+      0,
+      Number(
+        cap.deudaJosefaClp != null
+          ? cap.deudaJosefaClp
+          : Math.round(cadaUnoGastos - capitalJosefa)
+      )
+    );
     const orden = (data.gastos || []).find((g) => g.id === 'gas-reg-312435' || g.ordenId === '312435');
     const ali = (data.gastos || []).find((g) => g.id === 'gas-reg-aliexpress');
     const lider = (data.gastos || []).find((g) => g.id === 'gas-reg-lider');
@@ -3249,6 +3390,9 @@
       Math.max(0, 100 - pctVentasEnPipeline),
       (montoPedidosPend / denom) * 100
     );
+    /** Si se cobraran/transferieran los pedidos activos: % de progreso hacia la meta. */
+    const pctPipeline =
+      metaRecuperar > 0 ? Math.min(100, (ventasMasPedidos / metaRecuperar) * 100) : 100;
     const pctMarkup = Number(data.parametros?.margenObjetivoPct ?? 100);
     const filasCostoProd = (data.productos || [])
       .map((prod) => {
@@ -3264,10 +3408,11 @@
       .join('');
 
     const todosPedidos = (data.pedidos || []).slice();
-    const countEst = { pendiente: 0, en_impresion: 0, listo: 0, transferido: 0 };
+    const countEst = { pendiente: 0, en_impresion: 0, listo: 0, transferido: 0, anulado: 0 };
     for (const p of todosPedidos) {
       const e = p.estado || 'pendiente';
       if (countEst[e] != null) countEst[e] += 1;
+      else if (e === 'cancelado') countEst.anulado += 1;
     }
     const nVentas = (data.ventas || []).length;
     const nClientesHist = (data.meta?.clientesHistorial || []).length;
@@ -3286,6 +3431,7 @@
         <div class="imp-balance__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pctRecuperado.toFixed(0)}" aria-label="Progreso hacia salir de deuda">
           <div class="imp-balance__progress-fill" style="width:${pctRecuperado}%"></div>
         </div>
+        <div class="imp-balance__pct" aria-hidden="true">${pctRecuperado.toFixed(1)}%</div>
         <div class="imp-balance__bar" title="Gastos + operación vs ventas contabilizadas">
           <div class="imp-balance__fill--gastos" style="width:${pctGastos}%"></div>
           <div class="imp-balance__fill--ventas" style="width:${pctVentas}%"></div>
@@ -3294,15 +3440,18 @@
           <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(metaRecuperar)}</span>
           <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)} · solo cuentan al transferir pedido → venta</span>
         </div>
-        <div class="imp-balance__bar imp-balance__bar--pipeline" title="Ventas contabilizadas + pedidos pendientes" aria-label="Ventas más pedidos pendientes">
+        <div class="imp-balance__bar imp-balance__bar--pipeline" title="Ventas contabilizadas + pedidos pendientes" aria-label="Ventas más pedidos pendientes" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pctPipeline.toFixed(0)}">
           <div class="imp-balance__fill--ventas" style="width:${pctVentasEnPipeline}%"></div>
           <div class="imp-balance__fill--pedidos" style="width:${pctPedidosEnPipeline}%"></div>
         </div>
         <div class="imp-balance__legend">
           <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)}</span>
           <span><i class="imp-dot imp-dot--pedidos"></i>Pedidos pendientes ${money(montoPedidosPend)} (${pedidosActivos.length})</span>
-          <span><strong>Total ${money(ventasMasPedidos)}</strong></span>
+          <span class="imp-balance__total-pct"><strong>Total ${money(ventasMasPedidos)}</strong> · progreso <strong>${pctPipeline.toFixed(1)}%</strong></span>
         </div>
+        <p class="imp-balance__meta imp-balance__meta--pipeline">
+          Si se cobran los ${pedidosActivos.length} pedidos pendientes → progreso proyectado <strong>${pctPipeline.toFixed(1)}%</strong>
+        </p>
       </div>
       <div class="imp-grid imp-grid--2">
         <div class="imp-card imp-card--resumen-gen">
@@ -3319,6 +3468,7 @@
             <span class="imp-badge imp-badge--print">En impresión ${countEst.en_impresion}</span>
             <span class="imp-badge imp-badge--listo">Listo ${countEst.listo}</span>
             <span class="imp-badge imp-badge--ok">Transferido ${countEst.transferido}</span>
+            ${countEst.anulado ? `<span class="imp-badge imp-badge--anulado">Anulado ${countEst.anulado}</span>` : ''}
           </div>
           <div class="imp-kpi" style="margin-top:0.75rem"><span>Activos (aún no bajan deuda)</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
         </div>
@@ -3349,9 +3499,9 @@
           <ul class="imp-socio__detalle">
             <li><span>Su 50% de los gastos</span><strong>${money(cadaUnoGastos)}</strong></li>
             <li><span>Su 50% del resultado</span><strong class="${cadaUnoResultado >= 0 ? 'is-ok' : 'is-warn'}">${money(cadaUnoResultado)}</strong></li>
-            <li><span>Capital que aportó</span><strong>$0</strong></li>
+            <li><span>Capital que aportó</span><strong>${money(capitalJosefa)}</strong></li>
           </ul>
-          <p class="imp-socio__nota">Nicolás puso el capital; a Josefa le corresponde el 50% (${money(deuda)}).</p>
+          <p class="imp-socio__nota">Le corresponde el 50% de los gastos; ya aportó ${money(capitalJosefa)} · saldo a Nicolás ${money(deuda)}.</p>
         </article>
         <article class="imp-socio imp-socio--nicolas">
           <header class="imp-socio__head">
@@ -3362,9 +3512,9 @@
           <ul class="imp-socio__detalle">
             <li><span>Su 50% de los gastos</span><strong>${money(cadaUnoGastos)}</strong></li>
             <li><span>Su 50% del resultado</span><strong class="${cadaUnoResultado >= 0 ? 'is-ok' : 'is-warn'}">${money(cadaUnoResultado)}</strong></li>
-            <li><span>Capital que aportó</span><strong>${money(gastos)}</strong></li>
+            <li><span>Capital que aportó</span><strong>${money(capitalNicolas)}</strong></li>
           </ul>
-          <p class="imp-socio__nota">Aportó el capital del negocio. Tiene por cobrar de Josefa ${money(deuda)}.</p>
+          <p class="imp-socio__nota">Aportó ${money(capitalNicolas)}. Tiene por cobrar de Josefa ${money(deuda)}.</p>
         </article>
       </div>
       <div class="imp-charts">
@@ -3528,9 +3678,11 @@
 
   function badgeEstadoPedido(estado) {
     if (estado === 'transferido') return '<span class="imp-badge imp-badge--ok">Transferido → venta</span>';
+    if (estado === 'anulado' || estado === 'cancelado') {
+      return '<span class="imp-badge imp-badge--anulado">Anulado</span>';
+    }
     if (estado === 'listo') return '<span class="imp-badge imp-badge--listo">Listo para entregar</span>';
     if (estado === 'en_impresion') return '<span class="imp-badge imp-badge--print">En impresión</span>';
-    if (estado === 'cancelado') return '<span class="imp-badge">Cancelado</span>';
     return '<span class="imp-badge imp-badge--warn">Pendiente</span>';
   }
 
@@ -3650,6 +3802,7 @@
       <option value="pendiente"${estado === 'pendiente' ? ' selected' : ''}>Pendiente</option>
       <option value="en_impresion"${estado === 'en_impresion' ? ' selected' : ''}>En impresión</option>
       <option value="listo"${estado === 'listo' ? ' selected' : ''}>Listo para entregar</option>
+      <option value="anulado"${estado === 'anulado' ? ' selected' : ''}>Anulado</option>
     </select>`;
   }
 
@@ -3813,6 +3966,7 @@
             <option value="pendiente"${ped.estado === 'pendiente' ? ' selected' : ''}>Pendiente</option>
             <option value="en_impresion"${ped.estado === 'en_impresion' ? ' selected' : ''}>En impresión</option>
             <option value="listo"${ped.estado === 'listo' ? ' selected' : ''}>Listo para entregar</option>
+            <option value="anulado"${ped.estado === 'anulado' ? ' selected' : ''}>Anulado</option>
           </select>
         </label>
         <label class="imp-form-span">Notas<textarea name="notas" rows="2">${escapeHtml(ped.notas || '')}</textarea></label>
@@ -4237,6 +4391,7 @@
               <option value="pendiente" selected>Pendiente</option>
               <option value="en_impresion">En impresión</option>
               <option value="listo">Listo para entregar</option>
+              <option value="anulado">Anulado</option>
             </select>
           </label>
           <label>Canal<input name="canal" placeholder="WhatsApp / Instagram / feria" value="WhatsApp" /></label>
@@ -4424,16 +4579,29 @@
         const next = String(sel.value || 'pendiente');
         const ped = (data.pedidos || []).find((p) => p.id === id);
         if (!ped || !pedidoActivo(ped.estado)) return;
-        if (!pedidoActivo(next)) {
+        if (!pedidoActivo(next) && next !== 'anulado') {
           sel.value = ped.estado || 'pendiente';
           return;
         }
         ped.estado = next;
+        if (next === 'anulado') {
+          ped.anuladoEn = ped.anuladoEn || new Date().toISOString();
+          ped.ventaId = null;
+          if (ped.notas && !/anulado/i.test(ped.notas)) {
+            ped.notas = `${ped.notas} · ANULADO`.trim();
+          }
+        }
         markDirty();
         renderAll();
         activarTab('pedidos');
         const label =
-          next === 'listo' ? 'listo para entregar' : next === 'en_impresion' ? 'en impresión' : 'pendiente';
+          next === 'anulado'
+            ? 'anulado'
+            : next === 'listo'
+              ? 'listo para entregar'
+              : next === 'en_impresion'
+                ? 'en impresión'
+                : 'pendiente';
         setStatus(`${ped.numero}: ${label} · guardando…`, 'warn');
         save()
           .then(() => setStatus(`${ped.numero}: ${label} ✓`, 'ok'))

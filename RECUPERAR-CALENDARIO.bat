@@ -1,11 +1,11 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-title Recuperar calendario (respaldo mas reciente)
+title Recuperar calendario (respaldo 31-jul)
 
 echo.
-echo  === Recuperar calendario desde respaldo ===
-echo  Prioridad: Descargas 31-jul ^(1^) → 31-jul → mas reciente → 29 → 28
+echo  === Recuperar calendario desde respaldo 31-jul ===
+echo  Prioridad: Descargas (1)/(2) → data\31-jul → mas reciente → 29 → 28
 echo.
 
 set "DL=%USERPROFILE%\Downloads"
@@ -69,6 +69,8 @@ for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "$n=[IO.Path]:
 if defined FECHA (
   copy /Y "%ORIGEN%" "data\organizacion-respaldo-%FECHA%.json" >nul
   echo  Respaldo en repo: data\organizacion-respaldo-%FECHA%.json
+) else (
+  copy /Y "%ORIGEN%" "data\organizacion-respaldo-2026-07-31.json" >nul 2>&1
 )
 
 node scripts\asegurar-impresoreando-live.js 2>nul
