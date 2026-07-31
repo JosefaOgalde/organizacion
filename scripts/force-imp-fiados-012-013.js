@@ -103,11 +103,12 @@ function main() {
       minutosPintado: 0,
       unidadesMetal: 1,
       unidadesBolsa: 1,
+      costoFijoClp: 300,
       precioVentaSugeridoClp: 2000,
-      pendienteCosto: true,
+      pendienteCosto: false,
       editadoLocal: true,
       notas:
-        'Llavero One Piece (Mugiwara / sombrero de paja). Sin registro slicer aún — falta g/h para costo. Incluye $50 argolla. PVP ref. ~$2.000/u (pedido Cata 3× $5.000).',
+        'Llavero One Piece (Mugiwara / sombrero de paja). Costo fijo $300/u (acordado; sin desglose slicer). Incluye argolla. PVP ref. ~$2.000/u · PED-014 Cata 3× $5.000.',
     });
     n += 1;
     console.log('+ producto LLONEP001 (fallback)');

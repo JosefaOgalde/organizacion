@@ -1367,10 +1367,11 @@
       "minutosPintado": 0,
       "unidadesMetal": 1,
       "unidadesBolsa": 1,
+      "costoFijoClp": 300,
       "precioVentaSugeridoClp": 2000,
-      "pendienteCosto": true,
+      "pendienteCosto": false,
       "editadoLocal": true,
-      "notas": "Llavero One Piece (Mugiwara / sombrero de paja). Sin registro slicer aún — falta g/h para costo. Incluye $50 argolla. PVP ref. ~$2.000/u (pedido Cata 3× $5.000)."
+      "notas": "Llavero One Piece (Mugiwara / sombrero de paja). Costo fijo $300/u (acordado; sin desglose slicer). Incluye argolla. PVP ref. ~$2.000/u · PED-014 Cata 3× $5.000."
     }
   ],
   "planAds": {
@@ -1405,7 +1406,7 @@
     {
       "id": "bit-fiado-ped014-cata-onepiece-2026-07-31",
       "fecha": "2026-07-31",
-      "texto": "Fiado PED-014 Cata SIE · 3× Llavero One Piece LLONEP001 · total $5.000. Fecha de pago por confirmar · costo slicer pendiente."
+      "texto": "Fiado PED-014 Cata SIE · 3× Llavero One Piece LLONEP001 · total $5.000 · costo fijo $300/u. Fecha de pago por confirmar."
     },
     {
       "id": "bit-fiados-012-013-2026-07-31",
@@ -1947,7 +1948,7 @@
           "nombre": "Llavero One Piece",
           "cantidad": 3,
           "precioUnitarioClp": 1666.67,
-          "costoUnitarioClp": 100,
+          "costoUnitarioClp": 300,
           "filamento": "multicolor",
           "estado": "pendiente",
           "listos": 0,
@@ -1957,12 +1958,12 @@
       "montoBruto": 5000,
       "descuentoClp": 0,
       "montoNeto": 5000,
-      "costoTotal": 300,
+      "costoTotal": 900,
       "estado": "pendiente",
       "ventaId": null,
       "fiado": true,
       "pagoNotas": "Fiado · fecha de pago por confirmar",
-      "notas": "3× Llavero One Piece · fiado · total $5.000 ($1.666,67/u) · fecha de pago por confirmar · costo pendiente de slicer",
+      "notas": "3× Llavero One Piece · fiado · total $5.000 ($1.666,67/u) · costo $300/u · fecha de pago por confirmar",
       "socioRegistro": "Ambos",
       "creado": "2026-07-31T01:00:00.000Z"
     }

@@ -1267,7 +1267,7 @@
     return changed;
   }
 
-  /** Llavero One Piece (Mugiwara) — sin slicer aún; +$50 argolla. Soft seed. */
+  /** Llavero One Piece (Mugiwara) — costo fijo $300/u (sin slicer; incluye argolla). Soft seed. */
   function seedLlaveroOnePiece() {
     return {
       sku: 'LLONEP001',
@@ -1280,10 +1280,11 @@
       minutosPintado: 0,
       unidadesMetal: 1,
       unidadesBolsa: 1,
+      costoFijoClp: 300,
       precioVentaSugeridoClp: 2000,
-      pendienteCosto: true,
+      pendienteCosto: false,
       notas:
-        'Llavero One Piece (Mugiwara / sombrero de paja). Sin registro slicer aún — falta g/h para costo. Incluye $50 argolla. PVP ref. ~$2.000/u (pedido Cata 3× $5.000).',
+        'Llavero One Piece (Mugiwara / sombrero de paja). Costo fijo $300/u (acordado; sin desglose slicer). Incluye argolla. PVP ref. ~$2.000/u · PED-014 Cata 3× $5.000.',
     };
   }
 
@@ -1305,8 +1306,20 @@
       existing.nombre = seed.nombre;
       changed = true;
     }
+    if (Number(existing.costoFijoClp) !== seed.costoFijoClp) {
+      existing.costoFijoClp = seed.costoFijoClp;
+      changed = true;
+    }
+    if (existing.pendienteCosto) {
+      existing.pendienteCosto = false;
+      changed = true;
+    }
     if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
       existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    }
+    if (!existing.notas || /pendiente|falta g\/h|sin registro slicer/i.test(existing.notas)) {
+      existing.notas = seed.notas;
       changed = true;
     }
     return changed;
@@ -2777,16 +2790,17 @@
       changed = true;
     }
 
-    // PED-014 · Cata SIE · 3× Llavero One Piece · fiado · $5.000 total
+    // PED-014 · Cata SIE · 3× Llavero One Piece · fiado · $5.000 total · costo $300/u
     const id014 = 'ped-cata-onepiece-014';
     const prodOp014 = (d.productos || []).find(
       (p) => p.id === 'prod-llavero-one-piece' || p.sku === 'LLONEP001'
     );
-    const costoOp014 = prodOp014 ? costoProdRough(d, prodOp014) : 100; // argolla+bolsa hasta tener slicer
+    const costoOp014 = prodOp014 ? costoProdRough(d, prodOp014) : 300;
     const cant014 = 3;
     const total014 = 5000;
     const precioOp014 = round2(total014 / cant014); // 1666,67
-    if (!d.pedidos.some((p) => p.id === id014 || p.numero === 'PED-014')) {
+    const ped014 = d.pedidos.find((p) => p.id === id014 || p.numero === 'PED-014');
+    if (!ped014) {
       d.pedidos.push({
         id: id014,
         numero: 'PED-014',
@@ -2816,11 +2830,19 @@
         ventaId: null,
         fiado: true,
         pagoNotas: 'Fiado · fecha de pago por confirmar',
-        notas: `3× Llavero One Piece · fiado · total $${total014} ($${precioOp014}/u) · fecha de pago por confirmar · costo pendiente de slicer`,
+        notas: `3× Llavero One Piece · fiado · total $${total014} ($${precioOp014}/u) · costo $${costoOp014}/u · fecha de pago por confirmar`,
         socioRegistro: 'Ambos',
         creado: '2026-07-31T01:00:00.000Z',
       });
       changed = true;
+    } else {
+      const it0 = Array.isArray(ped014.items) ? ped014.items[0] : null;
+      if (it0 && Number(it0.costoUnitarioClp) !== Number(costoOp014)) {
+        it0.costoUnitarioClp = round2(costoOp014);
+        ped014.costoTotal = round2(costoOp014 * Number(it0.cantidad || cant014));
+        ped014.notas = `3× Llavero One Piece · fiado · total $${total014} ($${precioOp014}/u) · costo $${costoOp014}/u · fecha de pago por confirmar`;
+        changed = true;
+      }
     }
 
     const maxNum = d.pedidos.reduce((m, p) => {
@@ -2882,6 +2904,8 @@
   }
 
   function costoProdRough(d, prod) {
+    const fijo = Number(prod?.costoFijoClp || 0);
+    if (fijo > 0) return round2(fijo);
     const p = d.parametros || {};
     const imps = Array.isArray(d.impresoras) ? d.impresoras : IMPRESORAS_SEED;
     const imp =
@@ -3244,6 +3268,23 @@
   }
 
   function costoProducto(prod) {
+    const fijo = Number(prod?.costoFijoClp || 0);
+    if (fijo > 0) {
+      const imp = impresoraDeProducto(prod);
+      return {
+        filamento: 0,
+        luz: 0,
+        pintado: 0,
+        metal: 0,
+        bolsa: 0,
+        recargo: 0,
+        total: round2(fijo),
+        gramos: round2(gramosDesdeDesglose(prod) || prod.filamentoGramos || 0),
+        impresoraId: imp?.id || '',
+        impresoraNombre: imp?.nombre || '',
+        costoFijo: true,
+      };
+    }
     const p = data.parametros || {};
     const imp = impresoraDeProducto(prod);
     const gramos = gramosDesdeDesglose(prod) || round2(prod.filamentoGramos || 0);
