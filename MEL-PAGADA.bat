@@ -43,7 +43,7 @@ start "Organizacion Mel" cmd /c "call ABRIR-LARAVEL.bat sin-nav & timeout /t 2 >
 
 timeout /t 3 >nul
 echo  6^) Abrir Ventas ^(anti-cache^)...
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=ventas&v=mel020c'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=ventas&v=mel020d'"
 
 echo.
 echo  En Ventas: Origen = Todos · Ctrl+Shift+R
