@@ -9,8 +9,9 @@ echo  Uso:
 echo    ABRIR-LARAVEL.bat           → sync + reinicia :8000 + abre Organizador + Portal
 echo    ABRIR-LARAVEL.bat todo      → tambien abre ECR, MKOF, MOVA y prospecto
 echo    ABRIR-LARAVEL.bat sin-nav   → solo servidor / sync, sin abrir navegador
-echo    ABRIR-LARAVEL.bat restaurar → restaura live desde respaldo 28-jul y abre
+echo    ABRIR-LARAVEL.bat restaurar → restaura live ^(31-jul / mas reciente^) y abre
 echo    RECARGAR.bat                → solo recarga organizador ?disco=1
+echo    RECUPERAR-CALENDARIO.bat    → igual que restaurar ^(Descargas 31-jul primero^)
 echo    TRAER-CAMBIOS.bat           → si estas en main sin la entrega
 echo    REPARAR-SQLITE-ACTIVO.bat   → si sale "no such column: activo"
 echo.
@@ -18,19 +19,28 @@ echo.
 set "MODO=%~1"
 if "%MODO%"=="" set "MODO=auto"
 
-REM Restaurar calendario desde respaldo del repo (si el live se piso con uno viejo)
+REM Restaurar calendario: Descargas/data 31-jul → mas reciente → 29 → 28
 if /I "%MODO%"=="restaurar" (
-  if exist "data\organizacion-respaldo-2026-07-28.json" (
-    if exist "data\organizacion-live.json" (
-      copy /Y "data\organizacion-live.json" "data\organizacion-live-antes-restaurar.json" >nul 2>&1
-    )
-    copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
-    echo  Live restaurado desde data\organizacion-respaldo-2026-07-28.json
-  ) else (
-    echo  [ERROR] Falta data\organizacion-respaldo-2026-07-28.json
-    echo  Corre TRAER-CAMBIOS.bat primero ^(rama con la entrega^).
+  set "REST_SRC="
+  if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" set "REST_SRC=%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json"
+  if not defined REST_SRC if exist "data\organizacion-respaldo-2026-07-31.json" set "REST_SRC=data\organizacion-respaldo-2026-07-31.json"
+  if not defined REST_SRC for /f "usebackq delims=" %%i in (`node scripts/respaldo-reciente.js 2^>nul`) do set "REST_SRC=%%i"
+  if not defined REST_SRC if exist "data\organizacion-respaldo-2026-07-29.json" set "REST_SRC=data\organizacion-respaldo-2026-07-29.json"
+  if not defined REST_SRC if exist "data\organizacion-respaldo-2026-07-28.json" set "REST_SRC=data\organizacion-respaldo-2026-07-28.json"
+  if not defined REST_SRC (
+    echo  [ERROR] No hay organizacion-respaldo-*.json ^(Descargas ni data^)
+    echo  Importa antes: IMPORTAR-RESPALDO.bat "%%USERPROFILE%%\Downloads\organizacion-respaldo-2026-07-31.json"
     pause
     exit /b 1
+  )
+  if exist "data\organizacion-live.json" (
+    copy /Y "data\organizacion-live.json" "data\organizacion-live-antes-restaurar.json" >nul 2>&1
+  )
+  if not exist "data" mkdir data
+  copy /Y "%REST_SRC%" "data\organizacion-live.json" >nul
+  echo  Live restaurado desde %REST_SRC%
+  for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "$n=[IO.Path]::GetFileNameWithoutExtension('%REST_SRC%'); if ($n -match 'organizacion-respaldo-(\d{4}-\d{2}-\d{2})') { $matches[1] }"`) do (
+    copy /Y "%REST_SRC%" "data\organizacion-respaldo-%%i.json" >nul 2>&1
   )
   set "MODO=auto"
 )
@@ -83,18 +93,26 @@ if not exist "data\impresoreando-live.json" (
 
 REM 0) Solo crear live si FALTA (nunca pisar el calendario local con un respaldo viejo)
 if not exist "data\organizacion-live.json" (
-  echo  0^) Creando organizacion-live.json desde respaldo del repo...
-  if exist "data\organizacion-respaldo-2026-07-29.json" (
+  echo  0^) Creando organizacion-live.json desde respaldo...
+  if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" (
+    copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" "data\organizacion-live.json" >nul
+    copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" "data\organizacion-respaldo-2026-07-31.json" >nul
+    echo  Live creado desde Descargas\organizacion-respaldo-2026-07-31.json
+  ) else if exist "data\organizacion-respaldo-2026-07-31.json" (
+    copy /Y "data\organizacion-respaldo-2026-07-31.json" "data\organizacion-live.json" >nul
+    echo  Live creado desde data\organizacion-respaldo-2026-07-31.json
+  ) else if exist "data\organizacion-respaldo-2026-07-29.json" (
     copy /Y "data\organizacion-respaldo-2026-07-29.json" "data\organizacion-live.json" >nul
     echo  Live creado desde data\organizacion-respaldo-2026-07-29.json
   ) else if exist "data\organizacion-respaldo-2026-07-28.json" (
     copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
     echo  Live creado desde data\organizacion-respaldo-2026-07-28.json
   ) else if exist "scripts\sync-respaldo-auto.js" (
-    where node >nul 2>&1 && node scripts\sync-respaldo-auto.js --solo-repo --force
+    where node >nul 2>&1 && node scripts\sync-respaldo-auto.js --force
   )
 ) else (
   echo  0^) Live ya existe — no se pisa con respaldo
+  echo     Si ves calendario viejo: ABRIR-LARAVEL.bat restaurar
 )
 
 where node >nul 2>&1
@@ -186,15 +204,21 @@ if not errorlevel 1 (
 )
 
 if not exist "data\organizacion-live.json" (
-  if exist "data\organizacion-respaldo-2026-07-28.json" (
+  if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" (
+    copy /Y "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json" "data\organizacion-live.json" >nul
+    echo  Live creado desde Descargas 31-jul
+  ) else if exist "data\organizacion-respaldo-2026-07-31.json" (
+    copy /Y "data\organizacion-respaldo-2026-07-31.json" "data\organizacion-live.json" >nul
+    echo  Live creado desde data\organizacion-respaldo-2026-07-31.json
+  ) else if exist "data\organizacion-respaldo-2026-07-29.json" (
+    copy /Y "data\organizacion-respaldo-2026-07-29.json" "data\organizacion-live.json" >nul
+    echo  Live creado desde data\organizacion-respaldo-2026-07-29.json
+  ) else if exist "data\organizacion-respaldo-2026-07-28.json" (
     copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
     echo  Live creado desde data\organizacion-respaldo-2026-07-28.json
   ) else if exist "data\organizacion-respaldo-2026-07-24.json" (
     copy /Y "data\organizacion-respaldo-2026-07-24.json" "data\organizacion-live.json" >nul
     echo  Live creado desde data\organizacion-respaldo-2026-07-24.json
-  ) else if exist "data\organizacion-respaldo-2026-07-21.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-21.json" "data\organizacion-live.json" >nul
-    echo  Live creado desde data\organizacion-respaldo-2026-07-21.json
   )
 )
 
