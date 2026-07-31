@@ -22,6 +22,19 @@ data/impresoreando-status-ultimo.html
 # Imágenes de tareas ( Midjourney / referencias) — se sirven en local, no van al repo
 index/uploads/
 
+# Joyas Mercury — pausado: no volver a subir medios/docs pesados
+# Copia local: %USERPROFILE%/joyasmercury-archivo-organizacion/
+# Snapshot git: tag archivo-joyas-mercury-2026-07-31
+index/clientes/joyasmercury/**
+!index/clientes/joyasmercury/README.md
+!index/clientes/joyasmercury/index.html
+index/clientes/joyasmercury/identidad/
+index/clientes/joyasmercury/dia-1/
+index/clientes/joyasmercury/interfaces/
+index/clientes/joyasmercury/ayuda/
+index/clientes/joyasmercury/wireframes/
+*.jm-local.zip
+
 # Excepción: plantilla vacía sin PII (sí puede ir al repo)
 !data/organizacion-respaldo-ejemplo.json
 !data/impresoreando-seed.json

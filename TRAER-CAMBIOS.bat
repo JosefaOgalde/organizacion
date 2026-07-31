@@ -41,6 +41,12 @@ if errorlevel 1 (
   exit /b 1
 )
 
+REM Si aun tenes Joyas Mercury en el repo, archivar ANTES del pull
+if exist "index\clientes\joyasmercury\identidad" (
+  echo [2b] Archivando Joyas Mercury a tu usuario Windows...
+  where node >nul 2>&1 && node scripts\archivar-joyas-mercury.js
+)
+
 echo [3] git pull origin main...
 git pull origin main
 if errorlevel 1 (

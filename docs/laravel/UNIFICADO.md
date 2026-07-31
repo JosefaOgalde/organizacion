@@ -6,9 +6,10 @@ Guía corta: [`EN-CUALQUIER-PC.md`](./EN-CUALQUIER-PC.md)
 
 ```bat
 cd "C:\Users\Josefa Ogalde\organizacion"
-git pull
-ABRIR-LARAVEL.bat
+EMPEZAR-AQUI.bat
 ```
+
+(Equivale a `git pull` en main + restaurar calendario + `ABRIR-LARAVEL`.)
 
 | Qué | URL |
 |-----|-----|

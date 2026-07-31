@@ -24,3 +24,7 @@ Si ves datos viejos en el navegador: Ctrl+Shift+R
 URL: http://127.0.0.1:8000/index.html?disco=1
 
 No hace falta pegar rutas del JSON ni preguntarle al agente.
+
+JOYAS MERCURY (pausado — no subir a Git):
+  ARCHIVAR-JOYAS-MERCURY.bat
+  Copia: %USERPROFILE%\joyasmercury-archivo-organizacion\
