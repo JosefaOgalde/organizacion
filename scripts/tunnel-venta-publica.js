@@ -3,7 +3,7 @@
  * Expone el servidor local con un túnel público (localtunnel)
  * para que Josefa/Nicolás abran el registrador de ventas desde cualquier celular.
  *
- * Uso (con el servidor ya corriendo en el puerto 3000):
+ * Uso (con Laravel ya corriendo en el puerto 8000):
  *   node scripts/tunnel-venta-publica.js
  *
  * O con ABRIR-VENTA-PUBLICA.bat en Windows.
@@ -14,7 +14,7 @@ const os = require('os');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = Number(process.env.PORT) || 8000;
 const VENTA_PATH = '/index/clientes/impresoreando/panel/venta/';
 
 function lanUrls() {
@@ -50,7 +50,7 @@ async function main() {
   const ok = await checkServer();
   if (!ok) {
     console.log('  ERROR: no hay servidor en el puerto', PORT);
-    console.log('  Primero ejecuta SERVIR.bat (o: node scripts/organizacion-server.js)');
+    console.log('  Primero ejecuta ABRIR-LARAVEL.bat (o deja :8000 corriendo)');
     console.log('  y deja esa ventana abierta.');
     console.log('');
     process.exit(1);

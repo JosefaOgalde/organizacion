@@ -5,7 +5,7 @@ echo.
 echo  Impresoreando — link publico para registrar ventas
 echo  (celular / cualquier red, no uses localhost en el telefono)
 echo.
-echo  1) Deja SERVIR.bat corriendo en otra ventana
+echo  1) Deja ABRIR-LARAVEL.bat corriendo en otra ventana (:8000)
 echo  2) Esta ventana abrira un tunel y mostrara el link
 echo.
 node scripts/tunnel-venta-publica.js

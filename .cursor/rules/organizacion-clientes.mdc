@@ -34,18 +34,16 @@ El usuario puede decir:
 
 ## Enlace por defecto (siempre clientes, no organizador)
 
-Con `SERVIR.bat` en puerto 3000:
+Con `ABRIR-LARAVEL.bat` en puerto **8000**:
 
 | Qué | URL |
 |-----|-----|
-| **Entrada portal** | http://localhost:3000/index/clientes/ |
-| MKOF | http://localhost:3000/index/clientes/mkof/ |
-| **MOVA** (subproyecto MKOF) | http://localhost:3000/index/clientes/MKOF/MOVA |
-| MOVA · auditoría charlas | http://localhost:3000/index/clientes/MKOF/MOVA/auditoria-charlas/ |
+| **Entrada portal** | http://127.0.0.1:8000/index/clientes/ |
+| MKOF | http://127.0.0.1:8000/index/clientes/mkof/ |
+| **MOVA** (subproyecto MKOF) | http://127.0.0.1:8000/index/clientes/MKOF/MOVA |
+| MOVA · auditoría charlas | http://127.0.0.1:8000/index/clientes/MKOF/MOVA/auditoria-charlas/ |
 
-MOVA está en **main** (portal + hub). El trabajo nuevo va en rama **`cursor/mova-trabajo-d6a1`** y se fusiona a main con PR al terminar. Ver `docs/MOVA-RUTINA.md`.
-
-Atajo Windows: **`ABRIR-MOVA.bat`** (servidor + sync + abre MKOF y MOVA).
+MOVA está en **main** (portal + hub). Arranque: **`ABRIR-LARAVEL.bat`**.
 
 ## Rutas portal (otros clientes)
 
