@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ver venta Fabian · Impresoreando</title>
+  <style>
+    body { font-family: Georgia, serif; margin: 2rem; background: #faf6eb; color: #2a2118; }
+    h1 { color: #7a5c28; }
+    .ok { background: #e8f5e9; border: 2px solid #2e7d32; padding: 1rem; margin: 1rem 0; }
+    .bad { background: #ffebee; border: 2px solid #c62828; padding: 1rem; margin: 1rem 0; }
+    table { border-collapse: collapse; width: 100%; background: #fff; }
+    th, td { border: 1px solid #d4b06a; padding: 0.5rem 0.75rem; text-align: left; }
+    th { background: #f5edd8; }
+    tr.fabian { background: #fff3cd; font-weight: bold; }
+    code { background: #fff; padding: 0.1rem 0.35rem; }
+    a { color: #7a5c28; }
+  </style>
+</head>
+<body>
+  <h1>Diagnóstico ventas Impresoreando</h1>
+  <p>Esta página lee <code>/api/impresoreando</code> directo (sin el panel).</p>
+  <div id="status">Cargando…</div>
+  <p><a href="./?tab=ventas&v=verfabian">← Ir al panel Ventas</a></p>
+  <table>
+    <thead><tr><th>Código</th><th>Fecha</th><th>Cliente</th><th>Detalle</th><th>Monto</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <script>
+    (async () => {
+      const status = document.getElementById('status');
+      const rows = document.getElementById('rows');
+      try {
+        const res = await fetch('/api/impresoreando?v=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const ventas = (data.ventas || []).slice().sort((a, b) => {
+          const na = Number(String(a.codigo || '').replace(/^I0*/, '') || 0);
+          const nb = Number(String(b.codigo || '').replace(/^I0*/, '') || 0);
+          return nb - na;
+        });
+        const fab = ventas.find((v) => v && (v.codigo === 'I000016' || /fabian/i.test(v.cliente || '')));
+        status.className = fab ? 'ok' : 'bad';
+        status.innerHTML = fab
+          ? '<strong>OK — Fabian está en la API:</strong> ' + fab.codigo + ' · ' + fab.cliente + ' · $' + Number(fab.montoNeto).toLocaleString('es-CL') + '<br>Total ventas: ' + ventas.length
+          : '<strong>NO está Fabian en la API.</strong> Total ventas: ' + ventas.length + '. Corré <code>node scripts\\inyectar-fabian-ahora.js</code> y recargá.';
+        rows.innerHTML = ventas.map((v) => {
+          const isFab = v.codigo === 'I000016' || /fabian/i.test(v.cliente || '');
+          const det = (v.items && v.items[0])
+            ? (v.items[0].cantidad || 1) + '× ' + (v.items[0].nombre || '')
+            : (v.descripcion || '');
+          return '<tr class="' + (isFab ? 'fabian' : '') + '"><td>' + (v.codigo || '—') + '</td><td>' + (v.fecha || '') + '</td><td>' + (v.cliente || '') + '</td><td>' + det + '</td><td>$' + Number(v.montoNeto || 0).toLocaleString('es-CL') + '</td></tr>';
+        }).join('') || '<tr><td colspan="5">Sin ventas</td></tr>';
+      } catch (e) {
+        status.className = 'bad';
+        status.textContent = 'Error: ' + e.message + ' — ¿está corriendo ABRIR-LARAVEL.bat?';
+      }
+    })();
+  </script>
+</body>
+</html>
