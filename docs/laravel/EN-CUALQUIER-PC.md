@@ -65,14 +65,17 @@ Esos archivos **no van a Git** (privacidad). Llévatelos en la carpeta del proye
 | `data/organizacion-live.json` | Calendario, madres, subtareas |
 | `backend/database/database.sqlite` | Clientes de la API |
 
-En un PC nuevo, si no tienes `organizacion-live.json`, `ABRIR-LARAVEL.bat` crea uno desde el respaldo más reciente del repo (`data/organizacion-respaldo-YYYY-MM-DD.json`, hoy: **30-jul** si lo importaste).
+En un PC nuevo, si no tienes `organizacion-live.json`, `ABRIR-LARAVEL.bat` crea uno desde el respaldo más reciente del repo (`data/organizacion-respaldo-YYYY-MM-DD.json`, hoy: **31-jul** si lo importaste).
 
-Para marcar el JSON de Descargas como canónico:
+Para marcar el JSON de Descargas como canónico (logo Impresoreando + tareas al día):
 
 ```bat
-IMPORTAR-RESPALDO.bat "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-30.json"
+cd /d C:\Users\josef\organizacion
+IMPORTAR-RESPALDO.bat "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json"
 ABRIR-LARAVEL.bat
 ```
+
+Luego: http://127.0.0.1:8000/index.html?disco=1 (Ctrl+Shift+R).
 
 ---
 
