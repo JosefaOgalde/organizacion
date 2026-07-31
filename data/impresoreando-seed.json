@@ -484,6 +484,24 @@
           "monto": 3490
         }
       ]
+    },
+    {
+      "id": "gas-mueble-esquinero-easy-35990",
+      "fecha": "2026-07-29",
+      "categoria": "equipo",
+      "descripcion": "Mueble esquinero — EASY INTERNET (PAGADO)",
+      "proveedor": "EASY INTERNET",
+      "cantidad": 1,
+      "montoNeto": 35990,
+      "notas": "Compra TC ****7022 · Nicolás Romero · 29/07/2026 00:28. Mueble esquinero para Impresoreando. Sociedad 50/50 · pagó Nicolás.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Nicolás",
+      "items": [
+        {
+          "descripcion": "Mueble esquinero EASY",
+          "monto": 35990
+        }
+      ]
     }
   ],
   "ventas": [

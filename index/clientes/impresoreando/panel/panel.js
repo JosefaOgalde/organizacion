@@ -1772,7 +1772,7 @@
     return changed;
   }
 
-  /** Compras 29 jul 2026 — llaveros, filamento rosado, ganchos aros. Sociedad 50/50 · pagó Nicolás. */
+  /** Compras 29 jul 2026 — llaveros, filamento rosado, ganchos aros, mueble esquinero EASY. Sociedad 50/50 · pagó Nicolás. */
   function asegurarGastosCompras20260729(d) {
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
     const regs = [
@@ -1815,6 +1815,20 @@
         pagadoPor: 'Nicolás',
         items: [{ descripcion: 'Gancho aros con tope ×100 ud (50 pares)', monto: 3490 }],
       },
+      {
+        id: 'gas-mueble-esquinero-easy-35990',
+        fecha: '2026-07-29',
+        categoria: 'equipo',
+        descripcion: 'Mueble esquinero — EASY INTERNET (PAGADO)',
+        proveedor: 'EASY INTERNET',
+        cantidad: 1,
+        montoNeto: 35990,
+        notas:
+          'Compra TC ****7022 · Nicolás Romero · 29/07/2026 00:28. Mueble esquinero para Impresoreando. Sociedad 50/50 · pagó Nicolás.',
+        socioRegistro: 'Ambos',
+        pagadoPor: 'Nicolás',
+        items: [{ descripcion: 'Mueble esquinero EASY', monto: 35990 }],
+      },
     ];
     let changed = false;
     const byId = new Map(d.gastos.map((g) => [g.id, g]));
@@ -1829,14 +1843,31 @@
       }
     }
     d.bitacora = Array.isArray(d.bitacora) ? d.bitacora : [];
+    const bitGastoEasy = {
+      id: 'bit-gasto-mueble-esquinero-2026-07-29',
+      fecha: '2026-07-29',
+      texto:
+        'Gasto: mueble esquinero EASY INTERNET $35.990 (TC ****7022). Pagó Nicolás · sociedad 50/50.',
+    };
+    if (!d.bitacora.some((b) => b.id === bitGastoEasy.id)) {
+      d.bitacora.unshift(bitGastoEasy);
+      changed = true;
+    }
     if (!d.bitacora.some((b) => b.id === 'bit-gastos-2026-07-29')) {
       d.bitacora.unshift({
         id: 'bit-gastos-2026-07-29',
         fecha: '2026-07-29',
         texto:
-          'Gastos: llaveros ×100 $6.978 · filamento rosado $10.990 · gancho aros con tope ×100/50 pares $3.490. Total $21.458. Pagó Nicolás · sociedad 50/50.',
+          'Gastos: llaveros ×100 $6.978 · filamento rosado $10.990 · gancho aros con tope ×100/50 pares $3.490 · mueble esquinero EASY $35.990. Pagó Nicolás · sociedad 50/50.',
       });
       changed = true;
+    } else {
+      const bit = d.bitacora.find((b) => b.id === 'bit-gastos-2026-07-29');
+      if (bit && !String(bit.texto || '').includes('mueble esquinero')) {
+        bit.texto =
+          'Gastos: llaveros ×100 $6.978 · filamento rosado $10.990 · gancho aros con tope ×100/50 pares $3.490 · mueble esquinero EASY $35.990. Pagó Nicolás · sociedad 50/50.';
+        changed = true;
+      }
     }
     return changed;
   }
