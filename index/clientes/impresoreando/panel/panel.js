@@ -1617,13 +1617,22 @@
 
     let changed = false;
     const byId = new Map(d.ventas.filter((v) => v && v.id).map((v) => [v.id, v]));
+    const byCodigo = new Map(
+      d.ventas.filter((v) => v && v.codigo).map((v) => [String(v.codigo).toUpperCase(), v])
+    );
     for (const seed of SEED_VENTAS) {
-      const existing = byId.get(seed.id);
+      const existing =
+        byId.get(seed.id) || (seed.codigo ? byCodigo.get(String(seed.codigo).toUpperCase()) : null);
       if (!existing) {
         d.ventas.push({ ...seed, items: seed.items ? seed.items.map((it) => ({ ...it })) : undefined });
         byId.set(seed.id, seed);
+        if (seed.codigo) byCodigo.set(String(seed.codigo).toUpperCase(), seed);
         changed = true;
       } else {
+        if (seed.id && existing.id !== seed.id) {
+          existing.id = seed.id;
+          changed = true;
+        }
         if (seed.cliente && String(existing.cliente || '').trim() !== seed.cliente) {
           existing.cliente = seed.cliente;
           changed = true;
@@ -1645,6 +1654,18 @@
         if (seed.items && !Array.isArray(existing.items)) {
           existing.items = seed.items.map((it) => ({ ...it }));
           changed = true;
+        }
+        // Fabian I000016: reinyectar ítems/cliente si el live quedó a medias.
+        if (seed.codigo === 'I000016' && seed.items) {
+          const missCliente = !/fabian/i.test(String(existing.cliente || ''));
+          const missItems = !Array.isArray(existing.items) || !existing.items.length;
+          if (missCliente || missItems || Number(existing.montoNeto) !== 7000) {
+            Object.assign(existing, {
+              ...seed,
+              items: seed.items.map((it) => ({ ...it })),
+            });
+            changed = true;
+          }
         }
       }
     }
