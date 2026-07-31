@@ -7,7 +7,7 @@
   const STORAGE_KEY = 'organizacion_v2';
   const CLI_ID = 'cli-impresoreando';
   const DEFAULT_FILE = 'logo-ima2.png';
-  const DEFAULT_V = 'ima2-claro-1';
+  const DEFAULT_V = 'imp-logo-20260731';
 
   function leerOverride() {
     try {

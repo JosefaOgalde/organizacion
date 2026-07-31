@@ -104,6 +104,10 @@ if not errorlevel 1 (
   if exist "scripts\asegurar-impresoreando-live.js" (
     node scripts\asegurar-impresoreando-live.js 2>nul
   )
+  if exist "scripts\promover-logo-impresoreando.js" (
+    echo  0a^) Promover logo Impresoreando canónico ^(si hay override^)...
+    node scripts\promover-logo-impresoreando.js 2>nul
+  )
   if exist "scripts\sync-impresoreando-seed-a-live.js" (
     echo  0b^) Sync pedidos Impresoreando seed → live...
     node scripts\sync-impresoreando-seed-a-live.js

@@ -56,6 +56,10 @@ if errorlevel 1 (
   echo  Impresoreando asegurado en el live ^(si faltaba^).
 )
 
+if exist "scripts\promover-logo-impresoreando.js" (
+  where node >nul 2>&1 && node scripts\promover-logo-impresoreando.js
+)
+
 echo.
 echo  Siguiente: ABRIR-LARAVEL.bat
 echo  Luego abre: http://127.0.0.1:8000/index.html?disco=1

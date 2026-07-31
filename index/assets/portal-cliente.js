@@ -609,7 +609,7 @@
     if (typeof window.impresoreandoLogoSrc === 'function') {
       return window.impresoreandoLogoSrc('./identidad/');
     }
-    return './identidad/logo-ima2.png?v=ima2-claro-1';
+    return './identidad/logo-ima2.png?v=imp-logo-20260731';
   }
 
   function leerArchivoComoDataUrl(file) {
