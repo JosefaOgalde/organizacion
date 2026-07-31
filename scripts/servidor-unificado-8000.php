@@ -319,6 +319,64 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
             break;
         }
         unset($p007);
+        // Hard-fix: PED-008 Juan MKOF Bob → venta I000019 (ya no fiado).
+        foreach ($data['pedidos'] as &$p008) {
+            if (!is_array($p008)) {
+                continue;
+            }
+            if (($p008['numero'] ?? '') !== 'PED-008' && ($p008['id'] ?? '') !== 'ped-juan-bob-008') {
+                continue;
+            }
+            $p008['estado'] = 'transferido';
+            $p008['fiado'] = false;
+            unset($p008['fechaPagoEsperada']);
+            $p008['ventaId'] = 'ven-juan-bob-019';
+            $p008['transferidoEn'] = $p008['transferidoEn'] ?? date('c');
+            $p008['montoNeto'] = 7000;
+            $p008['montoBruto'] = 7000;
+            $p008['notas'] = '1× Porta Bob Esponja · transferido a venta I000019 · pagado $7.000 · MKOF (Josefa)';
+            break;
+        }
+        unset($p008);
+        $data['ventas'] = is_array($data['ventas'] ?? null) ? $data['ventas'] : [];
+        $has019 = false;
+        foreach ($data['ventas'] as $v019) {
+            if (is_array($v019) && (($v019['id'] ?? '') === 'ven-juan-bob-019' || ($v019['codigo'] ?? '') === 'I000019')) {
+                $has019 = true;
+                break;
+            }
+        }
+        if (!$has019) {
+            $data['ventas'][] = [
+                'id' => 'ven-juan-bob-019',
+                'codigo' => 'I000019',
+                'fecha' => '2026-07-31',
+                'cliente' => 'Juan MKOF',
+                'clienteNombre' => 'Juan',
+                'clienteOrigen' => 'MKOF',
+                'descripcion' => 'PED-008 · 1× Porta Bob Esponja · Juan MKOF',
+                'cantidad' => 1,
+                'montoBruto' => 7000,
+                'descuentoClp' => 0,
+                'montoNeto' => 7000,
+                'costoTotal' => 998.17,
+                'canal' => 'WhatsApp',
+                'notas' => 'Transferido desde PED-008 · fiado cobrado · 1× Porta Bob Esponja · pagado $7.000',
+                'socioRegistro' => 'Ambos',
+                'pedidoId' => 'ped-juan-bob-008',
+                'pedidoNumero' => 'PED-008',
+                'items' => [
+                    [
+                        'sku' => 'PTBOBES001',
+                        'nombre' => 'Porta Bob Esponja',
+                        'cantidad' => 1,
+                        'precioUnitarioClp' => 7000,
+                        'costoUnitarioClp' => 998.17,
+                        'filamento' => 'multicolor',
+                    ],
+                ],
+            ];
+        }
         $writeLive($data);
         echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         return true;

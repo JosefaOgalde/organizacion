@@ -2442,14 +2442,16 @@
       if (touch007) changed = true;
     }
 
-    // PED-008 · Juan MKOF · Porta Bob Esponja · listo
+    // PED-008 · Juan MKOF · Porta Bob Esponja · transferido I000019 $7.000 (era fiado, pagó)
     const id008 = 'ped-juan-bob-008';
     const prodBob = (d.productos || []).find(
       (p) => p.id === 'prod-porta-bob-esponja' || p.sku === 'PTBOBES001'
     );
     const costoBob = prodBob ? costoProdRough(d, prodBob) : 998.17;
     const precioBob = 7000;
-    if (!d.pedidos.some((p) => p.id === id008 || p.numero === 'PED-008')) {
+    const ped008 = d.pedidos.find((p) => p.id === id008 || p.numero === 'PED-008');
+    const notas008 = `1× Porta Bob Esponja · transferido a venta I000019 · pagado $${precioBob} · MKOF (Josefa)`;
+    if (!ped008) {
       d.pedidos.push({
         id: id008,
         numero: 'PED-008',
@@ -2475,11 +2477,57 @@
         descuentoClp: 0,
         montoNeto: precioBob,
         costoTotal: round2(costoBob),
-        estado: 'listo',
-        ventaId: null,
-        notas: `1× Porta Bob Esponja · listo · costo $${round2(costoBob)} · PVP $${precioBob}`,
+        estado: 'transferido',
+        fiado: false,
+        ventaId: 'ven-juan-bob-019',
+        transferidoEn: '2026-07-31T22:20:00.000Z',
+        notas: notas008,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T02:00:00.000Z',
+      });
+      changed = true;
+    } else if (ped008.estado !== 'transferido') {
+      ped008.estado = 'transferido';
+      ped008.fiado = false;
+      delete ped008.fechaPagoEsperada;
+      ped008.ventaId = 'ven-juan-bob-019';
+      ped008.transferidoEn = ped008.transferidoEn || '2026-07-31T22:20:00.000Z';
+      ped008.montoNeto = precioBob;
+      ped008.montoBruto = precioBob;
+      ped008.notas = notas008;
+      changed = true;
+    }
+    // Asegurar venta I000019
+    d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
+    if (!d.ventas.some((v) => v.id === 'ven-juan-bob-019' || v.codigo === 'I000019')) {
+      d.ventas.push({
+        id: 'ven-juan-bob-019',
+        codigo: 'I000019',
+        fecha: '2026-07-31',
+        cliente: 'Juan MKOF',
+        clienteNombre: 'Juan',
+        clienteOrigen: 'MKOF',
+        descripcion: 'PED-008 · 1× Porta Bob Esponja · Juan MKOF',
+        cantidad: 1,
+        montoBruto: precioBob,
+        descuentoClp: 0,
+        montoNeto: precioBob,
+        costoTotal: round2(costoBob),
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-008 · fiado cobrado · 1× Porta Bob Esponja · pagado $7.000',
+        socioRegistro: 'Ambos',
+        pedidoId: id008,
+        pedidoNumero: 'PED-008',
+        items: [
+          {
+            sku: 'PTBOBES001',
+            nombre: 'Porta Bob Esponja',
+            cantidad: 1,
+            precioUnitarioClp: precioBob,
+            costoUnitarioClp: round2(costoBob),
+            filamento: 'multicolor',
+          },
+        ],
       });
       changed = true;
     }

@@ -27,7 +27,7 @@
       "deudaJosefaClp": 457995
     },
     "pedidoSeq": 15,
-    "ventaSeq": 18,
+    "ventaSeq": 19,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
       {
@@ -143,6 +143,17 @@
         ],
         "ventaIds": [
           "ven-fabian-bob-016"
+        ],
+        "totalNeto": 7000,
+        "compras": 1
+      },
+      {
+        "cliente": "Juan MKOF",
+        "ventaCodigos": [
+          "I000019"
+        ],
+        "ventaIds": [
+          "ven-juan-bob-019"
         ],
         "totalNeto": 7000,
         "compras": 1
@@ -1063,6 +1074,35 @@
           "filamento": ""
         }
       ]
+    },
+    {
+      "id": "ven-juan-bob-019",
+      "codigo": "I000019",
+      "fecha": "2026-07-31",
+      "cliente": "Juan MKOF",
+      "clienteNombre": "Juan",
+      "clienteOrigen": "MKOF",
+      "descripcion": "PED-008 · 1× Porta Bob Esponja · Juan MKOF",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 998.17,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-008 · fiado cobrado · 1× Porta Bob Esponja · pagado $7.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-juan-bob-008",
+      "pedidoNumero": "PED-008",
+      "items": [
+        {
+          "sku": "PTBOBES001",
+          "nombre": "Porta Bob Esponja",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 998.17,
+          "filamento": "multicolor"
+        }
+      ]
     }
   ],
   "operacion": [
@@ -1591,6 +1631,12 @@
       "fecha": "2026-07-31",
       "autor": "Josefa",
       "texto": "Juan SIE PED-007 Torreón → anulado (no cuenta como activo ni venta)."
+    },
+    {
+      "id": "bit-juan-bob-019",
+      "fecha": "2026-07-31",
+      "autor": "Josefa",
+      "texto": "Juan MKOF PED-008 Porta Bob Esponja (fiado) → I000019 · pagado $7.000."
     }
   ],
   "pedidos": [
@@ -1859,13 +1905,13 @@
       "descuentoClp": 0,
       "montoNeto": 7000,
       "costoTotal": 998.17,
-      "estado": "listo",
-      "ventaId": null,
-      "notas": "1× Porta Bob Esponja · listo · FIADO · costo $998,17 · PVP $7.000 · MKOF (Josefa)",
+      "estado": "transferido",
+      "ventaId": "ven-juan-bob-019",
+      "notas": "1× Porta Bob Esponja · transferido a venta I000019 · pagado $7.000 · MKOF (Josefa)",
       "socioRegistro": "Ambos",
       "creado": "2026-07-26T02:01:28.779Z",
-      "fiado": true,
-      "fechaPagoEsperada": null
+      "fiado": false,
+      "transferidoEn": "2026-07-31T22:20:00.000Z"
     },
     {
       "id": "ped-rebe-soporte-009",

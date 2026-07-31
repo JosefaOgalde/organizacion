@@ -57,7 +57,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-005 | María Paz SIE | 1× Soporte celular morado pastel `SOPCEL001` | **transferido** → I000011 $4.000 |
 | PED-006 | Rebe SIE | 1× Dragón morado `DRAGON001` | **transferido** → I000013 $20.000 |
 | PED-007 | Juan SIE | 1× Torreón `TORREON001` | **anulado** |
-| PED-008 | Juan MKOF | 1× Porta Bob Esponja `PTBOBES001` | **listo** · **fiado** · costo ~$998 · **PVP $7.000** |
+| PED-008 | Juan MKOF | 1× Porta Bob Esponja `PTBOBES001` | **transferido** → I000019 $7.000 |
 | PED-009 | Rebe SIE | 1× Soporte celular negro `SOPCEL001` | **transferido** → I000012 $4.000 |
 | PED-010 | Gianni SIE | 2× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · **paga 2026-08-18** · $8.000 |
 | PED-011 | Marcia SIE | 1× Soporte celular morado `SOPCEL001` | **transferido** → I000015 $3.000 |
@@ -94,6 +94,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000016 | Fabian MKOF | 7.000 | 1× Porta Bob Esponja |
 | I000017 | Rebe SIE | 18.000 | PED-014 Alcancía chanchito |
 | I000018 | Cata SIE | 5.000 | PED-015 3× Llavero One Piece |
+| I000019 | Juan MKOF | 7.000 | PED-008 Porta Bob Esponja |
 
 ### Clientes nuevos — nombre + origen (obligatorio)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Fuerza PED-014/015 (ventas), PED-008 fiado, producto LLONEPI001,
- * ventas I000017/018 y gasto entrada evento 3D desde seed → live.
+ * Fuerza PED-014/015 (ventas), PED-008 → venta I000019, PED-007 anulado,
+ * producto LLONEPI001, ventas I000017/018/019 y gasto entrada evento 3D.
  *
  *   node scripts/force-imp-ventas-014-015-fiado-008.js
  */
@@ -18,7 +18,7 @@ const FORCE_PED_IDS = [
   'ped-juan-bob-008',
   'ped-juan-torreon-007',
 ];
-const FORCE_VEN_IDS = ['ven-rebe-chanchito-017', 'ven-cata-onepiece-018'];
+const FORCE_VEN_IDS = ['ven-rebe-chanchito-017', 'ven-cata-onepiece-018', 'ven-juan-bob-019'];
 const FORCE_GAS_IDS = ['gas-entrada-evento-3d-16100'];
 const FORCE_PROD_SKUS = ['LLONEPI001', 'ALCHAN001'];
 
