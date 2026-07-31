@@ -1,17 +1,21 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-title Traer entrega (Laravel + Impresoreando + calendario)
+title Traer cambios (main + calendario + Laravel)
 
 echo.
 echo  ========================================
-echo   TRAER ENTREGA ACTUAL
+echo   TRAER CAMBIOS HOY
 echo  ========================================
 echo.
-echo  En main faltan: fixes de ABRIR-LARAVEL,
-echo  ventas Impresoreando, Trade Marketing y
-echo  calendario 28-jul. Este bat cambia a la
-echo  rama con todo eso y abre Laravel.
+echo  1^) git pull en main
+echo  2^) Restaura calendario desde Descargas
+echo     ^(organizacion-respaldo-2026-07-31 (1).json^)
+echo  3^) Abre Laravel en :8000
+echo.
+echo  Tu usuario Windows ya define Descargas:
+echo  %%USERPROFILE%%\Downloads
+echo  ^(ej. C:\Users\Josefa Ogalde\Downloads^)
 echo.
 
 where git >nul 2>&1
@@ -29,31 +33,28 @@ if errorlevel 1 (
   exit /b 1
 )
 
-set "RAMA=cursor/laravel-guardar-entrega-02f9"
-echo [2] checkout rama %RAMA%...
-git checkout "%RAMA%"
+echo [2] checkout main...
+git checkout main
 if errorlevel 1 (
-  echo Intentando crear rama local desde origin...
-  git checkout -B "%RAMA%" "origin/%RAMA%"
-  if errorlevel 1 (
-    echo Probando rama anterior cursor/impresoreando-maria-paz-venta-4e97...
-    git checkout -B cursor/impresoreando-maria-paz-venta-4e97 origin/cursor/impresoreando-maria-paz-venta-4e97
-    if errorlevel 1 (
-      echo [ERROR] No se pudo cambiar de rama.
-      pause
-      exit /b 1
-    )
-    set "RAMA=cursor/impresoreando-maria-paz-venta-4e97"
-  )
+  echo [ERROR] No se pudo cambiar a main.
+  pause
+  exit /b 1
 )
 
-echo [3] git pull...
-git pull origin "%RAMA%"
+echo [3] git pull origin main...
+git pull origin main
 if errorlevel 1 (
-  echo [AVISO] pull con problemas; continuo con lo local.
+  echo.
+  echo  [AVISO] El pull fallo ^(a veces por cambios locales^).
+  echo  Si menciona impresoreando-seed.json, corre:
+  echo    git checkout -- data\impresoreando-seed.json
+  echo  y vuelve a hacer doble clic en este .bat
+  echo.
+  pause
+  exit /b 1
 )
 
 echo.
-echo [4] Abrir Laravel...
-call "%~dp0ABRIR-LARAVEL.bat"
+echo [4] Abrir Laravel restaurando calendario...
+call "%~dp0ABRIR-LARAVEL.bat" restaurar
 exit /b %ERRORLEVEL%

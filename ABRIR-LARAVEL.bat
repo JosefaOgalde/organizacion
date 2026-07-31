@@ -12,7 +12,7 @@ echo    ABRIR-LARAVEL.bat sin-nav   → solo servidor / sync, sin abrir navegado
 echo    ABRIR-LARAVEL.bat restaurar → restaura live desde respaldo 31-jul y abre
 echo    RECARGAR.bat                → solo recarga organizador ?disco=1
 echo    RECUPERAR-CALENDARIO.bat    → igual ^(Descargas 31-jul (1) primero^)
-echo    TRAER-CAMBIOS.bat           → si estas en main sin la entrega
+echo    TRAER-CAMBIOS.bat           → git pull main + restaurar calendario + abrir
 echo    REPARAR-SQLITE-ACTIVO.bat   → si sale "no such column: activo"
 echo.
 
