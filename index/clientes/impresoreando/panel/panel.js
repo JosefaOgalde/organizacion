@@ -3302,15 +3302,15 @@
           <div class="imp-balance__fill--ventas" style="width:${pctVentasEnPipeline}%"></div>
           <div class="imp-balance__fill--pedidos" style="width:${pctPedidosEnPipeline}%"></div>
         </div>
-        <div class="imp-balance__pct imp-balance__pct--pipeline" aria-label="Progreso proyectado si se cobran los pedidos">
-          ${pctPipeline.toFixed(1)}%
-          <span class="imp-balance__pct-hint">progreso si se cobran los pedidos</span>
-        </div>
         <div class="imp-balance__legend">
           <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)}</span>
           <span><i class="imp-dot imp-dot--pedidos"></i>Pedidos pendientes ${money(montoPedidosPend)} (${pedidosActivos.length})</span>
-          <span><strong>Total ${money(ventasMasPedidos)}</strong></span>
+          <span class="imp-balance__total-pct"><strong>Total ${money(ventasMasPedidos)}</strong> · progreso <strong>${pctPipeline.toFixed(1)}%</strong></span>
         </div>
+        <p class="imp-balance__meta imp-balance__meta--pipeline">
+          Si se cobran los ${pedidosActivos.length} pedidos pendientes → progreso proyectado <strong>${pctPipeline.toFixed(1)}%</strong>
+          (hoy con ventas va en ${pctRecuperado.toFixed(1)}%).
+        </p>
       </div>
       <div class="imp-grid imp-grid--2">
         <div class="imp-card imp-card--resumen-gen">

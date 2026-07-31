@@ -405,20 +405,14 @@ table.imp-table {
   color: var(--imp-ok, #3d8b6e);
   letter-spacing: 0.01em;
 }
-.imp-balance__pct--pipeline {
-  margin-top: 0.35rem;
-  margin-bottom: 0.15rem;
-  color: var(--imp-text);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.45rem;
+.imp-balance__total-pct {
+  font-variant-numeric: tabular-nums;
 }
-.imp-balance__pct-hint {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--imp-muted);
-  letter-spacing: 0;
+.imp-balance__total-pct strong:last-child {
+  color: var(--imp-ok, #3d8b6e);
+}
+.imp-balance__meta--pipeline {
+  margin: 0.45rem 0 0;
 }
 .imp-balance__bar {
   height: 12px;
