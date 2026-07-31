@@ -89,11 +89,12 @@ function upsert(filePath) {
 
 let total = upsert(LIVE);
 if (process.argv.includes('--also-respaldo')) {
-  for (const name of fs.readdirSync(DATA)) {
-    if (!/^organizacion-respaldo-.*\.json$/i.test(name)) continue;
-    if (/ejemplo/i.test(name)) continue;
-    total += upsert(path.join(DATA, name));
-  }
+  const latest = fs
+    .readdirSync(DATA)
+    .filter((name) => /^organizacion-respaldo-\d{4}-\d{2}-\d{2}\.json$/i.test(name))
+    .sort()
+    .reverse()[0];
+  if (latest) total += upsert(path.join(DATA, latest));
 }
 console.log('Total re-cerradas:', total);
 console.log('Ver: http://127.0.0.1:8000/index.html?disco=1');

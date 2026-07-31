@@ -102,11 +102,13 @@ function listOrgTargets(alsoRespaldo) {
   const files = [ORG_LIVE];
   if (!alsoRespaldo) return files.filter((f) => fs.existsSync(f));
   try {
-    for (const name of fs.readdirSync(DATA_DIR)) {
-      if (!/^organizacion-respaldo-.*\.json$/i.test(name)) continue;
-      if (/ejemplo/i.test(name)) continue;
-      files.push(path.join(DATA_DIR, name));
-    }
+    // Solo live + respaldo más reciente (no reescribir 21/24/28/29)
+    const latest = fs
+      .readdirSync(DATA_DIR)
+      .filter((name) => /^organizacion-respaldo-\d{4}-\d{2}-\d{2}\.json$/i.test(name))
+      .sort()
+      .reverse()[0];
+    if (latest) files.push(path.join(DATA_DIR, latest));
   } catch {
     /* ignore */
   }

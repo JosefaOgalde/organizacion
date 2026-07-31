@@ -26,9 +26,6 @@ index/uploads/
 # Excepción: plantilla vacía sin PII (sí puede ir al repo)
 !data/organizacion-respaldo-ejemplo.json
 !data/impresoreando-seed.json
-# Respaldo del día (para recuperar al apagar / cambiar de PC)
-!data/organizacion-respaldo-2026-07-21.json
-!data/organizacion-respaldo-2026-07-24.json
-!data/organizacion-respaldo-2026-07-28.json
-!data/organizacion-respaldo-2026-07-29.json
+# Solo el respaldo canónico actual en Git (los viejos ya no se trackean:
+# ABRIR los pisaba y bloqueaban git pull)
 !data/organizacion-respaldo-2026-07-31.json
