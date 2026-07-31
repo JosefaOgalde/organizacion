@@ -404,8 +404,29 @@ table.imp-table {
   overflow: hidden;
   display: flex;
 }
+.imp-balance__pipeline-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+  margin-bottom: 0.35rem;
+}
+.imp-balance__pipeline-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--imp-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.imp-balance__pipeline-pct {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--imp-chart-pedidos, #3a7ca5);
+  font-variant-numeric: tabular-nums;
+}
 .imp-balance__bar--pipeline {
-  margin-top: 0.75rem;
+  margin-top: 0;
 }
 .imp-balance__meta--pipeline {
   margin: 0.45rem 0 0;

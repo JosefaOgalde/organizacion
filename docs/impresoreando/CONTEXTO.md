@@ -30,7 +30,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 - `metaRecuperar = gastos + operación`
 - `saldoPendiente = max(0, meta − ventas)` — solo **ventas** bajan deuda
 - `% progreso = ventas / meta`
-- Barras UI: (1) progreso % · (2) gastos vs ventas · (3) **ventas + pedidos pendientes** (pipeline verde+azul; pedidos aún no bajan deuda) · muestra **% pipeline = (ventas+pedidos)/meta** (ej. $168.500 → ~16,9%)
+- Barras UI: (1) progreso % · (2) gastos vs ventas · (3) **ventas + pedidos pendientes** (pipeline verde+azul; pedidos aún no bajan deuda) · muestra **% pipeline = (ventas+pedidos)/meta** (ej. $168.500 → ~16,9%) y lo **guarda** en `meta.resumenPipeline` al renderizar / Guardar online
 - KPI pedidos activos = suma `montoNeto` de pedidos en `pendiente|listo|en_impresion`
 
 ## Pedidos (regla de oro)

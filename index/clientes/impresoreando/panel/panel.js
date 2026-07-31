@@ -3168,11 +3168,62 @@
     return changed;
   }
 
+  /** Ventas + pedidos activos vs meta (gastos+op). Se guarda en meta.resumenPipeline. */
+  function calcularResumenPipeline(d) {
+    const src = d || data;
+    if (!src) {
+      return {
+        ventasClp: 0,
+        pedidosPendientesClp: 0,
+        pedidosActivosN: 0,
+        totalPipelineClp: 0,
+        metaRecuperarClp: 0,
+        pctVentas: 0,
+        pctPipeline: 0,
+      };
+    }
+    const ventasClp = sum(src.ventas);
+    const gastosClp = sum(src.gastos);
+    const operacionClp = sum((src.operacion || []).filter((x) => Number(x.montoNeto) !== 0));
+    const metaRecuperarClp = gastosClp + operacionClp;
+    const pedidosActivos = (src.pedidos || []).filter((p) =>
+      pedidoActivo(p.estado || 'pendiente')
+    );
+    const pedidosPendientesClp = pedidosActivos.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
+    const totalPipelineClp = ventasClp + pedidosPendientesClp;
+    const pctVentas =
+      metaRecuperarClp > 0 ? Math.min(100, (ventasClp / metaRecuperarClp) * 100) : 100;
+    const pctPipeline =
+      metaRecuperarClp > 0 ? Math.min(100, (totalPipelineClp / metaRecuperarClp) * 100) : 100;
+    return {
+      ventasClp,
+      pedidosPendientesClp,
+      pedidosActivosN: pedidosActivos.length,
+      totalPipelineClp,
+      metaRecuperarClp,
+      pctVentas: round2(pctVentas),
+      pctPipeline: round2(pctPipeline),
+    };
+  }
+
+  function persistirResumenPipeline(d) {
+    const src = d || data;
+    if (!src) return null;
+    src.meta = src.meta || {};
+    const snap = calcularResumenPipeline(src);
+    src.meta.resumenPipeline = {
+      ...snap,
+      actualizado: new Date().toISOString(),
+    };
+    return snap;
+  }
+
   async function save() {
     if (!data) return;
     setStatus('Guardando…');
     data.meta = data.meta || {};
     data.meta.actualizado = new Date().toISOString();
+    const pipe = persistirResumenPipeline(data);
     const res = await fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -3183,7 +3234,11 @@
       throw new Error(t || `POST ${res.status}`);
     }
     dirty = false;
-    setStatus('Guardado online ✓', 'ok');
+    const pctLbl =
+      pipe && Number.isFinite(pipe.pctPipeline)
+        ? ` · pipeline ${money(pipe.totalPipelineClp)} (${pipe.pctPipeline.toFixed(1)}%)`
+        : '';
+    setStatus(`Guardado online ✓${pctLbl}`, 'ok');
   }
 
   function sum(arr, key = 'montoNeto') {
@@ -3480,15 +3535,15 @@
     const totalMl21 = Number(ml21?.montoNeto || 0);
     const totalMlCreality = Number(mlCreality?.montoNeto || 0);
     const cats = gastosPorCategoria();
+    const pipeSnap = persistirResumenPipeline(data);
     const pedidosActivos = (data.pedidos || []).filter((p) =>
       pedidoActivo(p.estado || 'pendiente')
     );
-    const montoPedidosPend = pedidosActivos.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
+    const montoPedidosPend = Number(pipeSnap?.pedidosPendientesClp || 0);
     /** Barra inferior: ventas contabilizadas + pedidos pendientes (pipeline de recupero). */
-    const ventasMasPedidos = ventas + montoPedidosPend;
+    const ventasMasPedidos = Number(pipeSnap?.totalPipelineClp || ventas + montoPedidosPend);
     /** % del pipeline vs meta (gastos+op) — proyección si cobraran todos los pedidos activos. */
-    const pctPipeline =
-      metaRecuperar > 0 ? Math.min(100, (ventasMasPedidos / metaRecuperar) * 100) : 100;
+    const pctPipeline = Number(pipeSnap?.pctPipeline || 0);
     const denom = Math.max(metaRecuperar, ventas, ventasMasPedidos, 1);
     const pctGastos = Math.min(100, (metaRecuperar / denom) * 100);
     const pctVentas = Math.min(100, (ventas / denom) * 100);
