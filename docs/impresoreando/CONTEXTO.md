@@ -208,7 +208,7 @@ ENVIAR-STATUS-IMPRESOREANDO.bat
 
 ## Celular / red
 
-`localhost` en el teléfono **no** funciona. Server `HOST=0.0.0.0`. Misma WiFi → IP de `GET /api/acceso` → `lan[]`. Fuera → `ABRIR-VENTA-PUBLICA.bat` (loca.lt) con `SERVIR.bat` abierto.
+`localhost` en el teléfono **no** funciona. Misma WiFi → IP de `GET /api/acceso` → `lan[]`. Fuera → `ABRIR-VENTA-PUBLICA.bat` (loca.lt) con `ABRIR-LARAVEL.bat` abierto (:8000).
 
 ## RFID handheld (tarjetas) — vigente
 
