@@ -1,30 +1,28 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-title Forzar Mel PED-013 → venta I000020
+title Mel PED-013 → I000020
+
 echo.
-echo  Mel MKOF PED-013 → I000020 $4.000 ^(pagado^)
+echo  Forzando Mel pagada → venta I000020 ...
 echo.
 
 where node >nul 2>&1
 if errorlevel 1 (
-  echo [ERROR] Node no esta en PATH.
-  echo  Presiona una tecla...
-  pause >nul
-  exit /b 1
+  echo [ERROR] Falta Node en PATH.
+  goto :fin
 )
 
-node scripts\force-imp-ventas-014-015-fiado-008.js
-if errorlevel 1 (
-  echo [ERROR] Fallo el force. Copia el texto de arriba.
-  echo  Presiona una tecla...
-  pause >nul
-  exit /b 1
-)
+node scripts\force-imp-mel-013-venta.js
+if errorlevel 1 goto :fin
 
 echo.
-echo  OK. Ahora corre: ABRIR-LARAVEL.bat
-echo  Luego Ctrl+Shift+R en Ventas.
+echo  Si el servidor esta abierto, recarga con Ctrl+Shift+R:
+echo  http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=ventas
 echo.
-echo  === Si ves esto, NO esta pegado: pulsa una tecla para cerrar ===
+echo  Mel NO debe aparecer en Fiados.
+echo.
+
+:fin
+echo  Pulsa Enter para cerrar...
 pause >nul
