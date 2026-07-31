@@ -19,7 +19,7 @@ Para no duplicar datos ni dejar info en cachés distintas, **siempre** el mismo 
 
 ## Pasos en cualquier PC (iguales siempre)
 
-**Importante:** la última entrega (fixes ABRIR-LARAVEL, ventas Impresoreando, Trade Marketing ECR, calendario 28-jul) está en la rama  
+**Importante:** la última entrega (fixes ABRIR-LARAVEL, ventas Impresoreando, Trade Marketing ECR, calendario 31-jul) está en la rama  
 `cursor/laravel-guardar-entrega-02f9`, **no en `main`**.  
 Si solo hacés `git pull` en `main`, vas a seguir viendo lo antiguo y errores viejos.
 
@@ -48,7 +48,7 @@ Si ves datos viejos: **Ctrl+Shift+R**. El sync de ABRIR solo usa `data\` del rep
 |---------|-----------|
 | Estás en `main` / ves logo viejo / sin Trade Marketing | `TRAER-CAMBIOS.bat` |
 | `SQLSTATE … no such column: activo` | `REPARAR-SQLITE-ACTIVO.bat` → `ABRIR-LARAVEL.bat` |
-| Calendario del 28 vacío / faltan tareas | `ABRIR-LARAVEL.bat restaurar` o `RECUPERAR-CALENDARIO.bat` → Ctrl+Shift+R |
+| Calendario viejo / faltan tareas | `IMPORTAR-RESPALDO.bat "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json"` o `ABRIR-LARAVEL.bat restaurar` → `?disco=1` + Ctrl+Shift+R |
 | `Falta backend\artisan` | Crear Laravel local: `composer create-project laravel/laravel backend` (ver `BACKEND-README.md`) |
 | Carece de privilegios / mklink | Ya corregido en esta rama (copia archivos, sin symlink admin) |
 
@@ -63,7 +63,7 @@ Esos archivos **no van a Git** (privacidad). Llévatelos en la carpeta del proye
 | `data/organizacion-live.json` | Calendario, madres, subtareas |
 | `backend/database/database.sqlite` | Clientes de la API |
 
-En un PC nuevo, si no tienes `organizacion-live.json`, `ABRIR-LARAVEL.bat` crea uno desde el respaldo más reciente del repo (`data/organizacion-respaldo-2026-07-28.json`).
+En un PC nuevo, si no tienes `organizacion-live.json`, `ABRIR-LARAVEL.bat` crea uno desde el respaldo más reciente del repo (`data/organizacion-respaldo-2026-07-31.json`).
 
 También puedes usar **↓ Respaldo** en el organizador, guardar el JSON, y en el otro PC reemplazar `data/organizacion-live.json`.
 
