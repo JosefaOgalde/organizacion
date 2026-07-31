@@ -9,7 +9,7 @@ echo   TRAER ENTREGA ACTUAL
 echo  ========================================
 echo.
 echo  Incluye: Editar logo Impresoreando,
-echo  respaldo mas reciente (30-jul) y
+echo  respaldo mas reciente (31-jul) y
 echo  flujo Laravel unificado.
 echo.
 
