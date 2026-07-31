@@ -25,8 +25,9 @@ URL: http://127.0.0.1:8000/index.html?disco=1
 
 No hace falta pegar rutas del JSON ni preguntarle al agente.
 
-JOYAS MERCURY (pausado, pero en la nube para iPad/iPhone):
-  GitHub: index/clientes/joyasmercury/
-  Release zip: releases → jm-archivo-2026-07-31
-  Tambien: ARCHIVAR-JOYAS-MERCURY.bat → OneDrive\joyasmercury-archivo-organizacion\
-  (aparece en app Archivos del iPhone/iPad si OneDrive esta sync)
+SI GIT DICE "local changes would be overwritten":
+  DESBLOQUEAR-GIT.bat
+  (o: git checkout -- data\impresoreando-seed.json  y  git pull)
+
+JOYAS MERCURY (pausado, en la nube para iPad/iPhone):
+  Release: https://github.com/JosefaOgalde/organizacion/releases/tag/jm-archivo-2026-07-31
