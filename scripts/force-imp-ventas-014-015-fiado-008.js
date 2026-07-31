@@ -16,6 +16,7 @@ const FORCE_PED_IDS = [
   'ped-rebe-chanchito-014',
   'ped-cata-onepiece-015',
   'ped-juan-bob-008',
+  'ped-juan-torreon-007',
 ];
 const FORCE_VEN_IDS = ['ven-rebe-chanchito-017', 'ven-cata-onepiece-018'];
 const FORCE_GAS_IDS = ['gas-entrada-evento-3d-16100'];

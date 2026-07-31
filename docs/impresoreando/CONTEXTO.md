@@ -39,7 +39,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 1. Tab Pedidos · IDs `PED-001…` (`meta.pedidoSeq`) · arriba bloque **Fiados** (activos con `fiado`/`fechaPagoEsperada`, columna «Paga el» + total por cobrar); debajo el resto de pedidos
 2. Por ítem: producto/SKU, cantidad, **costo/u**, **precio venta/u** (editable)
 3. **Estado solo `<select>` a nivel pedido** — no badges / +imp / +listo en ítems
-4. Estados: `pendiente` · `en_impresion` · `listo` · `transferido`
+4. Estados: `pendiente` · `en_impresion` · `listo` · `transferido` · `anulado`
 5. **Editar** = modal `#imp-modal-pedido`
 6. **Transferir a venta** = modal `#imp-modal-transferir` con descuento **% o CLP** → venta `{ montoBruto, descuentoClp, montoNeto }` · `montoNeto` baja deuda · auto-`save()`
 7. Pedidos no cuentan como venta hasta transferir
@@ -56,7 +56,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-004 | Ele SIE | 2× Llavero Pesa Rusa amarillo `LLPESRU001` | **transferido** → I000014 $5.000 |
 | PED-005 | María Paz SIE | 1× Soporte celular morado pastel `SOPCEL001` | **transferido** → I000011 $4.000 |
 | PED-006 | Rebe SIE | 1× Dragón morado `DRAGON001` | **transferido** → I000013 $20.000 |
-| PED-007 | Juan SIE | 1× Torreón `TORREON001` | **listo** · costo est. ~$3.293 (+$1.000 impresora antigua) · PVP sug. $6.500 |
+| PED-007 | Juan SIE | 1× Torreón `TORREON001` | **anulado** |
 | PED-008 | Juan MKOF | 1× Porta Bob Esponja `PTBOBES001` | **listo** · **fiado** · costo ~$998 · **PVP $7.000** |
 | PED-009 | Rebe SIE | 1× Soporte celular negro `SOPCEL001` | **transferido** → I000012 $4.000 |
 | PED-010 | Gianni SIE | 2× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · **paga 2026-08-18** · $8.000 |

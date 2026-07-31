@@ -706,6 +706,12 @@ table.imp-table {
   border-color: #e0b48a;
   background: #fff4e8;
 }
+.imp-badge--anulado {
+  color: #8a3a4a;
+  border-color: #e0a8b4;
+  background: #fdf0f3;
+  text-decoration: line-through;
+}
 .imp-pedido-status-counts {
   display: flex;
   flex-wrap: wrap;

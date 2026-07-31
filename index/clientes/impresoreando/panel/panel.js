@@ -2320,13 +2320,14 @@
       changed = true;
     }
 
-    // PED-007 · Juan SIE · Torreón · listo (estimación + $1.000 impresora antigua)
+    // PED-007 · Juan SIE · Torreón · anulado
     const id007 = 'ped-juan-torreon-007';
     const prodTorre = (d.productos || []).find((p) => p.id === 'prod-torreon' || p.sku === 'TORREON001');
     const costoTorre = prodTorre ? costoProdRough(d, prodTorre) : 3293.48;
     const precioTorre =
       Number(prodTorre?.precioVentaSugeridoClp) > 0 ? Number(prodTorre.precioVentaSugeridoClp) : 6500;
-    if (!d.pedidos.some((p) => p.id === id007 || p.numero === 'PED-007')) {
+    const ped007 = d.pedidos.find((p) => p.id === id007 || p.numero === 'PED-007');
+    if (!ped007) {
       d.pedidos.push({
         id: id007,
         numero: 'PED-007',
@@ -2342,8 +2343,8 @@
             cantidad: 1,
             precioUnitarioClp: precioTorre,
             costoUnitarioClp: round2(costoTorre),
-            filamento: 'PLA color (estimación)',
-            estado: 'listo',
+            filamento: 'PLA color',
+            estado: 'anulado',
             listos: 1,
             enImpresion: 0,
           },
@@ -2352,12 +2353,25 @@
         descuentoClp: 0,
         montoNeto: precioTorre,
         costoTotal: round2(costoTorre),
-        estado: 'listo',
+        estado: 'anulado',
         ventaId: null,
-        notas: `1× Torreón · listo · costo estimado $${round2(costoTorre)} (+$1.000 impresora antigua) · PVP $${precioTorre}`,
+        anuladoEn: '2026-07-31T20:30:00.000Z',
+        notas: `1× Torreón · ANULADO · costo estimado $${round2(costoTorre)} · PVP sugerido $${precioTorre}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T02:00:00.000Z',
       });
+      changed = true;
+    } else if (ped007.estado !== 'anulado' && ped007.estado !== 'transferido') {
+      ped007.estado = 'anulado';
+      ped007.ventaId = null;
+      ped007.anuladoEn = ped007.anuladoEn || '2026-07-31T20:30:00.000Z';
+      ped007.notas = `1× Torreón · ANULADO · costo estimado $${round2(costoTorre)} · PVP sugerido $${precioTorre}`;
+      if (Array.isArray(ped007.items)) {
+        for (const it of ped007.items) {
+          it.estado = 'anulado';
+          if (/estimaci/i.test(String(it.filamento || ''))) it.filamento = 'PLA color';
+        }
+      }
       changed = true;
     }
 
@@ -3267,10 +3281,11 @@
       .join('');
 
     const todosPedidos = (data.pedidos || []).slice();
-    const countEst = { pendiente: 0, en_impresion: 0, listo: 0, transferido: 0 };
+    const countEst = { pendiente: 0, en_impresion: 0, listo: 0, transferido: 0, anulado: 0 };
     for (const p of todosPedidos) {
       const e = p.estado || 'pendiente';
       if (countEst[e] != null) countEst[e] += 1;
+      else if (e === 'cancelado') countEst.anulado += 1;
     }
     const nVentas = (data.ventas || []).length;
     const nClientesHist = (data.meta?.clientesHistorial || []).length;
@@ -3326,6 +3341,7 @@
             <span class="imp-badge imp-badge--print">En impresión ${countEst.en_impresion}</span>
             <span class="imp-badge imp-badge--listo">Listo ${countEst.listo}</span>
             <span class="imp-badge imp-badge--ok">Transferido ${countEst.transferido}</span>
+            ${countEst.anulado ? `<span class="imp-badge imp-badge--anulado">Anulado ${countEst.anulado}</span>` : ''}
           </div>
           <div class="imp-kpi" style="margin-top:0.75rem"><span>Activos (aún no bajan deuda)</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
         </div>
@@ -3535,9 +3551,11 @@
 
   function badgeEstadoPedido(estado) {
     if (estado === 'transferido') return '<span class="imp-badge imp-badge--ok">Transferido → venta</span>';
+    if (estado === 'anulado' || estado === 'cancelado') {
+      return '<span class="imp-badge imp-badge--anulado">Anulado</span>';
+    }
     if (estado === 'listo') return '<span class="imp-badge imp-badge--listo">Listo para entregar</span>';
     if (estado === 'en_impresion') return '<span class="imp-badge imp-badge--print">En impresión</span>';
-    if (estado === 'cancelado') return '<span class="imp-badge">Cancelado</span>';
     return '<span class="imp-badge imp-badge--warn">Pendiente</span>';
   }
 
@@ -3657,6 +3675,7 @@
       <option value="pendiente"${estado === 'pendiente' ? ' selected' : ''}>Pendiente</option>
       <option value="en_impresion"${estado === 'en_impresion' ? ' selected' : ''}>En impresión</option>
       <option value="listo"${estado === 'listo' ? ' selected' : ''}>Listo para entregar</option>
+      <option value="anulado"${estado === 'anulado' ? ' selected' : ''}>Anulado</option>
     </select>`;
   }
 
@@ -3820,6 +3839,7 @@
             <option value="pendiente"${ped.estado === 'pendiente' ? ' selected' : ''}>Pendiente</option>
             <option value="en_impresion"${ped.estado === 'en_impresion' ? ' selected' : ''}>En impresión</option>
             <option value="listo"${ped.estado === 'listo' ? ' selected' : ''}>Listo para entregar</option>
+            <option value="anulado"${ped.estado === 'anulado' ? ' selected' : ''}>Anulado</option>
           </select>
         </label>
         <label class="imp-form-span">Notas<textarea name="notas" rows="2">${escapeHtml(ped.notas || '')}</textarea></label>
@@ -4244,6 +4264,7 @@
               <option value="pendiente" selected>Pendiente</option>
               <option value="en_impresion">En impresión</option>
               <option value="listo">Listo para entregar</option>
+              <option value="anulado">Anulado</option>
             </select>
           </label>
           <label>Canal<input name="canal" placeholder="WhatsApp / Instagram / feria" value="WhatsApp" /></label>
@@ -4431,16 +4452,29 @@
         const next = String(sel.value || 'pendiente');
         const ped = (data.pedidos || []).find((p) => p.id === id);
         if (!ped || !pedidoActivo(ped.estado)) return;
-        if (!pedidoActivo(next)) {
+        if (!pedidoActivo(next) && next !== 'anulado') {
           sel.value = ped.estado || 'pendiente';
           return;
         }
         ped.estado = next;
+        if (next === 'anulado') {
+          ped.anuladoEn = ped.anuladoEn || new Date().toISOString();
+          ped.ventaId = null;
+          if (ped.notas && !/anulado/i.test(ped.notas)) {
+            ped.notas = `${ped.notas} · ANULADO`.trim();
+          }
+        }
         markDirty();
         renderAll();
         activarTab('pedidos');
         const label =
-          next === 'listo' ? 'listo para entregar' : next === 'en_impresion' ? 'en impresión' : 'pendiente';
+          next === 'anulado'
+            ? 'anulado'
+            : next === 'listo'
+              ? 'listo para entregar'
+              : next === 'en_impresion'
+                ? 'en impresión'
+                : 'pendiente';
         setStatus(`${ped.numero}: ${label} · guardando…`, 'warn');
         save()
           .then(() => setStatus(`${ped.numero}: ${label} ✓`, 'ok'))

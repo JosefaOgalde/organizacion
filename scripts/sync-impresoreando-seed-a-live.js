@@ -145,6 +145,15 @@ function main() {
         existing.items = JSON.parse(JSON.stringify(sp.items));
       }
       changed += 1;
+    } else if (sp.estado === 'anulado' && existing.estado !== 'anulado' && existing.estado !== 'transferido') {
+      existing.estado = 'anulado';
+      existing.ventaId = null;
+      if (sp.anuladoEn) existing.anuladoEn = sp.anuladoEn;
+      if (sp.notas) existing.notas = sp.notas;
+      if (Array.isArray(sp.items) && sp.items.length) {
+        existing.items = JSON.parse(JSON.stringify(sp.items));
+      }
+      changed += 1;
     } else if (sp.estado === 'transferido' && existing.estado === 'transferido') {
       let touched = false;
       if (sp.ventaId && existing.ventaId !== sp.ventaId) {

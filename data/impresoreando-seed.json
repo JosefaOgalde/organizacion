@@ -1585,6 +1585,12 @@
       "fecha": "2026-07-31",
       "autor": "Josefa",
       "texto": "Gasto: 1 entrada evento 3D 29-ago · $16.100 · pagó Josefa · sociedad 50/50."
+    },
+    {
+      "id": "bit-juan-torreon-007-anulado",
+      "fecha": "2026-07-31",
+      "autor": "Josefa",
+      "texto": "Juan SIE PED-007 Torreón → anulado (no cuenta como activo ni venta)."
     }
   ],
   "pedidos": [
@@ -1811,8 +1817,8 @@
           "cantidad": 1,
           "precioUnitarioClp": 6500,
           "costoUnitarioClp": 3293.48,
-          "filamento": "PLA color (estimación)",
-          "estado": "listo",
+          "filamento": "PLA color",
+          "estado": "anulado",
           "listos": 1,
           "enImpresion": 0
         }
@@ -1821,11 +1827,12 @@
       "descuentoClp": 0,
       "montoNeto": 6500,
       "costoTotal": 3293.48,
-      "estado": "listo",
+      "estado": "anulado",
       "ventaId": null,
-      "notas": "1× Torreón · listo · costo estimado $3.293,48 (base ~$2.293,48 + $1.000 impresora antigua) · PVP sugerido $6.500",
+      "notas": "1× Torreón · ANULADO · costo estimado $3.293,48 · PVP sugerido $6.500",
       "socioRegistro": "Ambos",
-      "creado": "2026-07-26T02:01:28.779Z"
+      "creado": "2026-07-26T02:01:28.779Z",
+      "anuladoEn": "2026-07-31T20:30:00.000Z"
     },
     {
       "id": "ped-juan-bob-008",
