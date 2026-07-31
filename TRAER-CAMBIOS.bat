@@ -1,17 +1,16 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-title Traer entrega (Laravel + Impresoreando + calendario)
+title Traer entrega (logo Impresoreando + respaldo reciente)
 
 echo.
 echo  ========================================
 echo   TRAER ENTREGA ACTUAL
 echo  ========================================
 echo.
-echo  En main faltan: fixes de ABRIR-LARAVEL,
-echo  ventas Impresoreando, Trade Marketing y
-echo  calendario 28-jul. Este bat cambia a la
-echo  rama con todo eso y abre Laravel.
+echo  Incluye: Editar logo Impresoreando,
+echo  respaldo mas reciente (30-jul) y
+echo  flujo Laravel unificado.
 echo.
 
 where git >nul 2>&1
@@ -29,21 +28,23 @@ if errorlevel 1 (
   exit /b 1
 )
 
-set "RAMA=cursor/laravel-guardar-entrega-02f9"
+REM Guardar cambios locales de data/ para poder cambiar de rama
+echo [1b] stash de cambios locales ^(si hay^)...
+git stash push -u -m "auto-traer-cambios" -- data/ 2>nul
+
+set "RAMA=cursor/imp-logo-editar-aac4"
 echo [2] checkout rama %RAMA%...
 git checkout "%RAMA%"
 if errorlevel 1 (
   echo Intentando crear rama local desde origin...
   git checkout -B "%RAMA%" "origin/%RAMA%"
   if errorlevel 1 (
-    echo Probando rama anterior cursor/impresoreando-maria-paz-venta-4e97...
-    git checkout -B cursor/impresoreando-maria-paz-venta-4e97 origin/cursor/impresoreando-maria-paz-venta-4e97
-    if errorlevel 1 (
-      echo [ERROR] No se pudo cambiar de rama.
-      pause
-      exit /b 1
-    )
-    set "RAMA=cursor/impresoreando-maria-paz-venta-4e97"
+    echo [ERROR] No se pudo cambiar de rama.
+    echo  Si git se queja de archivos locales:
+    echo    git stash push -u -m "tmp"
+    echo    git checkout %RAMA%
+    pause
+    exit /b 1
   )
 )
 
