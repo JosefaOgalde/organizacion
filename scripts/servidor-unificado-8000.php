@@ -154,7 +154,73 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
                 if (!empty($sp['numero'])) {
                     $pedKeys['num:' . $sp['numero']] = true;
                 }
+                continue;
             }
+            // Propagar anulado / transferido desde seed → live (no dejar PED-007 en listo).
+            $seedEstado = (string) ($sp['estado'] ?? '');
+            if ($seedEstado !== 'anulado' && $seedEstado !== 'transferido') {
+                continue;
+            }
+            foreach ($data['pedidos'] as &$lp) {
+                if (!is_array($lp)) {
+                    continue;
+                }
+                $same =
+                    (!empty($sp['id']) && ($lp['id'] ?? '') === $sp['id'])
+                    || (!empty($sp['numero']) && ($lp['numero'] ?? '') === $sp['numero']);
+                if (!$same) {
+                    continue;
+                }
+                $liveEstado = (string) ($lp['estado'] ?? '');
+                if ($liveEstado === 'transferido' && $seedEstado === 'anulado') {
+                    break;
+                }
+                if ($liveEstado === $seedEstado && $seedEstado === 'anulado') {
+                    // Asegurar notas/filamento limpios aunque ya diga anulado.
+                    if (!empty($sp['notas'])) {
+                        $lp['notas'] = $sp['notas'];
+                    }
+                    if (!empty($sp['anuladoEn'])) {
+                        $lp['anuladoEn'] = $sp['anuladoEn'];
+                    }
+                    if (isset($sp['items']) && is_array($sp['items'])) {
+                        $lp['items'] = $sp['items'];
+                    }
+                    $lp['ventaId'] = null;
+                    break;
+                }
+                if ($liveEstado !== $seedEstado) {
+                    $lp['estado'] = $seedEstado;
+                    if ($seedEstado === 'anulado') {
+                        $lp['ventaId'] = null;
+                        if (!empty($sp['anuladoEn'])) {
+                            $lp['anuladoEn'] = $sp['anuladoEn'];
+                        }
+                        if (!empty($sp['notas'])) {
+                            $lp['notas'] = $sp['notas'];
+                        }
+                        if (isset($sp['items']) && is_array($sp['items'])) {
+                            $lp['items'] = $sp['items'];
+                        }
+                    }
+                    if ($seedEstado === 'transferido') {
+                        if (!empty($sp['ventaId'])) {
+                            $lp['ventaId'] = $sp['ventaId'];
+                        }
+                        if (!empty($sp['transferidoEn'])) {
+                            $lp['transferidoEn'] = $sp['transferidoEn'];
+                        }
+                        if (!empty($sp['notas'])) {
+                            $lp['notas'] = $sp['notas'];
+                        }
+                        if (isset($sp['montoNeto'])) {
+                            $lp['montoNeto'] = $sp['montoNeto'];
+                        }
+                    }
+                }
+                break;
+            }
+            unset($lp);
         }
         $data['ventas'] = is_array($data['ventas'] ?? null) ? $data['ventas'] : [];
         $venIds = [];
@@ -224,6 +290,35 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
 
     if ($uri === '/api/impresoreando' && $method === 'GET') {
         $data = $mergeSeedMissing($readLive());
+        // Hard-fix: PED-007 Torreón siempre anulado (live viejos quedaban en listo).
+        $data['pedidos'] = is_array($data['pedidos'] ?? null) ? $data['pedidos'] : [];
+        foreach ($data['pedidos'] as &$p007) {
+            if (!is_array($p007)) {
+                continue;
+            }
+            if (($p007['numero'] ?? '') !== 'PED-007' && ($p007['id'] ?? '') !== 'ped-juan-torreon-007') {
+                continue;
+            }
+            if (($p007['estado'] ?? '') === 'transferido') {
+                break;
+            }
+            $p007['estado'] = 'anulado';
+            $p007['ventaId'] = null;
+            $p007['anuladoEn'] = $p007['anuladoEn'] ?? date('c');
+            $p007['notas'] = '1× Torreón · ANULADO · costo estimado $3.293,48 · PVP sugerido $6.500';
+            if (isset($p007['items']) && is_array($p007['items'])) {
+                foreach ($p007['items'] as &$it007) {
+                    if (!is_array($it007)) {
+                        continue;
+                    }
+                    $it007['estado'] = 'anulado';
+                    $it007['filamento'] = 'PLA color';
+                }
+                unset($it007);
+            }
+            break;
+        }
+        unset($p007);
         $writeLive($data);
         echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         return true;
