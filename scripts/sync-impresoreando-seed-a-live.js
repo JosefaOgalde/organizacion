@@ -145,6 +145,15 @@ function main() {
         existing.items = JSON.parse(JSON.stringify(sp.items));
       }
       changed += 1;
+    } else if (sp.estado === 'anulado' && existing.estado !== 'anulado' && existing.estado !== 'transferido') {
+      existing.estado = 'anulado';
+      existing.ventaId = null;
+      if (sp.anuladoEn) existing.anuladoEn = sp.anuladoEn;
+      if (sp.notas) existing.notas = sp.notas;
+      if (Array.isArray(sp.items) && sp.items.length) {
+        existing.items = JSON.parse(JSON.stringify(sp.items));
+      }
+      changed += 1;
     } else if (sp.estado === 'transferido' && existing.estado === 'transferido') {
       let touched = false;
       if (sp.ventaId && existing.ventaId !== sp.ventaId) {
@@ -191,6 +200,28 @@ function main() {
     } else if (sp.ventaId && existing.ventaId !== sp.ventaId) {
       existing.ventaId = sp.ventaId;
       changed += 1;
+    }
+
+    // Propagar fiado / estado listo desde seed (p. ej. PED-008 Juan MKOF).
+    if (existing.estado !== 'transferido' && sp.estado !== 'transferido') {
+      let fiadoTouch = false;
+      if (sp.fiado === true && existing.fiado !== true) {
+        existing.fiado = true;
+        fiadoTouch = true;
+      }
+      if (sp.fechaPagoEsperada && existing.fechaPagoEsperada !== sp.fechaPagoEsperada) {
+        existing.fechaPagoEsperada = sp.fechaPagoEsperada;
+        fiadoTouch = true;
+      }
+      if (sp.estado && existing.estado !== sp.estado) {
+        existing.estado = sp.estado;
+        fiadoTouch = true;
+      }
+      if (sp.notas && /fiado/i.test(sp.notas) && existing.notas !== sp.notas) {
+        existing.notas = sp.notas;
+        fiadoTouch = true;
+      }
+      if (fiadoTouch) changed += 1;
     }
   }
 
