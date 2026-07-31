@@ -86,6 +86,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000013 | Rebe SIE | 20.000 | PED-006 Dragón morado |
 | I000014 | Ele SIE | 5.000 | PED-004 2× Llavero Pesa Rusa amarillo |
 | I000015 | Marcia SIE | 3.000 | PED-011 Soporte celular morado |
+| I000016 | Fabian MKOF | 7.000 | 1× Porta Bob Esponja |
 
 ### Clientes nuevos — nombre + origen (obligatorio)
 

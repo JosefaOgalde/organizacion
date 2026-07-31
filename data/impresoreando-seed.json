@@ -27,7 +27,7 @@
       "deudaJosefaClp": 457995
     },
     "pedidoSeq": 12,
-    "ventaSeq": 15,
+    "ventaSeq": 16,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
       {
@@ -130,6 +130,17 @@
           "ven-mrpqov4c"
         ],
         "totalNeto": 15000,
+        "compras": 1
+      },
+      {
+        "cliente": "Fabian MKOF",
+        "ventaCodigos": [
+          "I000016"
+        ],
+        "ventaIds": [
+          "ven-fabian-bob-016"
+        ],
+        "totalNeto": 7000,
         "compras": 1
       }
     ]
@@ -947,6 +958,33 @@
           "precioUnitarioClp": 3000,
           "costoUnitarioClp": 683.69,
           "filamento": "PLA morado"
+        }
+      ]
+    },
+    {
+      "id": "ven-fabian-bob-016",
+      "codigo": "I000016",
+      "fecha": "2026-07-31",
+      "cliente": "Fabian MKOF",
+      "clienteNombre": "Fabian",
+      "clienteOrigen": "MKOF",
+      "descripcion": "1× Porta Bob Esponja · Fabian MKOF",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 998.17,
+      "canal": "WhatsApp",
+      "notas": "1× Porta Bob Esponja · cobrado $7.000 · MKOF (Josefa)",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "sku": "PTBOBES001",
+          "nombre": "Porta Bob Esponja",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 998.17,
+          "filamento": "multicolor"
         }
       ]
     }
