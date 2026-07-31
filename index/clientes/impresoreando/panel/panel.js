@@ -3486,6 +3486,9 @@
     const montoPedidosPend = pedidosActivos.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
     /** Barra inferior: ventas contabilizadas + pedidos pendientes (pipeline de recupero). */
     const ventasMasPedidos = ventas + montoPedidosPend;
+    /** % del pipeline vs meta (gastos+op) — proyección si cobraran todos los pedidos activos. */
+    const pctPipeline =
+      metaRecuperar > 0 ? Math.min(100, (ventasMasPedidos / metaRecuperar) * 100) : 100;
     const denom = Math.max(metaRecuperar, ventas, ventasMasPedidos, 1);
     const pctGastos = Math.min(100, (metaRecuperar / denom) * 100);
     const pctVentas = Math.min(100, (ventas / denom) * 100);
@@ -3539,14 +3542,19 @@
           <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(metaRecuperar)}</span>
           <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)} · solo cuentan al transferir pedido → venta</span>
         </div>
-        <div class="imp-balance__bar imp-balance__bar--pipeline" title="Ventas contabilizadas + pedidos pendientes" aria-label="Ventas más pedidos pendientes">
+        <div class="imp-balance__bar imp-balance__bar--pipeline" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pctPipeline.toFixed(0)}" title="Ventas + pedidos pendientes = ${pctPipeline.toFixed(1)}% de la meta" aria-label="Ventas más pedidos pendientes ${pctPipeline.toFixed(1)} por ciento de la meta">
           <div class="imp-balance__fill--ventas" style="width:${pctVentasEnPipeline}%"></div>
           <div class="imp-balance__fill--pedidos" style="width:${pctPedidosEnPipeline}%"></div>
         </div>
+        <p class="imp-balance__meta imp-balance__meta--pipeline">
+          Ventas + pedidos pendientes <strong>${money(ventasMasPedidos)}</strong>
+          · <strong>${pctPipeline.toFixed(1)}%</strong> de la meta ${money(metaRecuperar)}
+          <span class="imp-muted">(proyección; los pedidos aún no bajan deuda)</span>
+        </p>
         <div class="imp-balance__legend">
           <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)}</span>
           <span><i class="imp-dot imp-dot--pedidos"></i>Pedidos pendientes ${money(montoPedidosPend)} (${pedidosActivos.length})</span>
-          <span><strong>Total ${money(ventasMasPedidos)}</strong></span>
+          <span><strong>Total ${money(ventasMasPedidos)} · ${pctPipeline.toFixed(1)}%</strong></span>
         </div>
       </div>
       <div class="imp-grid imp-grid--2">

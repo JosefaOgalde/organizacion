@@ -407,6 +407,15 @@ table.imp-table {
 .imp-balance__bar--pipeline {
   margin-top: 0.75rem;
 }
+.imp-balance__meta--pipeline {
+  margin: 0.45rem 0 0;
+  font-size: 0.88rem;
+}
+.imp-balance__meta--pipeline .imp-muted {
+  display: inline;
+  margin-left: 0.25rem;
+  font-size: 0.82rem;
+}
 .imp-balance__fill--gastos {
   background: var(--imp-chart-gastos);
   height: 100%;
