@@ -234,20 +234,8 @@ powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clien
 
 :fin_urls
 echo.
-echo  === URLs ^(con ?disco=1^) ===
-echo    Organizador:  http://127.0.0.1:8000/index.html?disco=1
-echo    Portal:       http://127.0.0.1:8000/index/clientes/?disco=1
-echo    ^(opcionales con "todo"^)
-echo    ECR:          http://127.0.0.1:8000/index/clientes/ecr/?disco=1
-echo    MKOF / MOVA:  http://127.0.0.1:8000/index/clientes/mkof/?disco=1
-echo    MKOF prospecto: http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1
-echo    Impresoreando: http://127.0.0.1:8000/index/clientes/impresoreando/panel/?disco=1
-echo.
-echo  Recarga rapida:     RECARGAR.bat
-echo  Abrir todo:         ABRIR-LARAVEL.bat todo
-echo  Sin navegador:      ABRIR-LARAVEL.bat sin-nav
-echo  Restaurar calendario: ABRIR-LARAVEL.bat restaurar
-echo  Si estas en main:   TRAER-CAMBIOS.bat
-echo  Error columna activo: REPARAR-SQLITE-ACTIVO.bat
+echo  Listo → http://127.0.0.1:8000/index.html?disco=1
+echo  ^(Ctrl+Shift+R si ves datos viejos^)
+echo  Git bloqueado: DESBLOQUEAR-GIT.bat
 echo.
 if /I not "%MODO%"=="sin-nav" if /I not "%MODO%"=="sin-navegador" pause
