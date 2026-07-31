@@ -2320,46 +2320,11 @@
       changed = true;
     }
 
-    // PED-007 · Juan SIE · Torreón · listo (estimación + $1.000 impresora antigua)
+    // PED-007 · Juan SIE · Torreón — eliminado (pedido cancelado / no aplica)
     const id007 = 'ped-juan-torreon-007';
-    const prodTorre = (d.productos || []).find((p) => p.id === 'prod-torreon' || p.sku === 'TORREON001');
-    const costoTorre = prodTorre ? costoProdRough(d, prodTorre) : 3293.48;
-    const precioTorre =
-      Number(prodTorre?.precioVentaSugeridoClp) > 0 ? Number(prodTorre.precioVentaSugeridoClp) : 6500;
-    if (!d.pedidos.some((p) => p.id === id007 || p.numero === 'PED-007')) {
-      d.pedidos.push({
-        id: id007,
-        numero: 'PED-007',
-        fecha: '2026-07-26',
-        cliente: 'Juan SIE',
-        clienteNombre: 'Juan',
-        clienteOrigen: 'SIE',
-        canal: 'WhatsApp',
-        items: [
-          {
-            sku: 'TORREON001',
-            nombre: 'Torreón',
-            cantidad: 1,
-            precioUnitarioClp: precioTorre,
-            costoUnitarioClp: round2(costoTorre),
-            filamento: 'PLA color (estimación)',
-            estado: 'listo',
-            listos: 1,
-            enImpresion: 0,
-          },
-        ],
-        montoBruto: precioTorre,
-        descuentoClp: 0,
-        montoNeto: precioTorre,
-        costoTotal: round2(costoTorre),
-        estado: 'listo',
-        ventaId: null,
-        notas: `1× Torreón · listo · costo estimado $${round2(costoTorre)} (+$1.000 impresora antigua) · PVP $${precioTorre}`,
-        socioRegistro: 'Ambos',
-        creado: '2026-07-26T02:00:00.000Z',
-      });
-      changed = true;
-    }
+    const before007 = d.pedidos.length;
+    d.pedidos = d.pedidos.filter((p) => p.id !== id007 && p.numero !== 'PED-007');
+    if (d.pedidos.length !== before007) changed = true;
 
     // PED-008 · Juan MKOF · Porta Bob Esponja · listo
     const id008 = 'ped-juan-bob-008';

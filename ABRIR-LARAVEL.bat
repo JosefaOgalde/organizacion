@@ -120,6 +120,10 @@ if not errorlevel 1 (
     echo  0d^) Forzar fiados PED-010/012/013 + venta Fabian...
     node scripts\force-imp-fiados-012-013.js
   )
+  if exist "scripts\force-imp-eliminar-ped-007.js" (
+    echo  0e^) Eliminar PED-007 Juan SIE Torreón...
+    node scripts\force-imp-eliminar-ped-007.js
+  )
 )
 
 echo  1^) SQLite + seed clientes...
