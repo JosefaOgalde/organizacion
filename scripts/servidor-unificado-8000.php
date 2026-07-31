@@ -18,7 +18,11 @@ $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 /**
  * API Impresoreando (live JSON) — antes de Laravel, para que el panel no dependa de rutas artisan.
  */
-if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
+if (
+    $uri === '/api/impresoreando'
+    || $uri === '/api/impresoreando/venta'
+    || $uri === '/api/impresoreando/debug-fabian'
+) {
     header('Content-Type: application/json; charset=utf-8');
     header('Cache-Control: no-store');
 
@@ -170,6 +174,49 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
             $data['ventas'][] = $sv;
             $venIds[$sv['id']] = true;
         }
+        // Hard-force I000016 Fabian (también en POST, por si el cliente manda live viejo).
+        $hasFabian = isset($venIds['ven-fabian-bob-016']);
+        if (!$hasFabian) {
+            foreach ($data['ventas'] as $v) {
+                if (is_array($v) && (($v['codigo'] ?? '') === 'I000016')) {
+                    $hasFabian = true;
+                    break;
+                }
+            }
+        }
+        if (!$hasFabian) {
+            $data['ventas'][] = [
+                'id' => 'ven-fabian-bob-016',
+                'codigo' => 'I000016',
+                'fecha' => '2026-07-31',
+                'cliente' => 'Fabian MKOF',
+                'clienteNombre' => 'Fabian',
+                'clienteOrigen' => 'MKOF',
+                'descripcion' => '1× Porta Bob Esponja · Fabian MKOF',
+                'cantidad' => 1,
+                'montoBruto' => 7000,
+                'descuentoClp' => 0,
+                'montoNeto' => 7000,
+                'costoTotal' => 998.17,
+                'canal' => 'WhatsApp',
+                'notas' => '1× Porta Bob Esponja · cobrado $7.000 · MKOF (Josefa)',
+                'socioRegistro' => 'Ambos',
+                'items' => [[
+                    'sku' => 'PTBOBES001',
+                    'nombre' => 'Porta Bob Esponja',
+                    'cantidad' => 1,
+                    'precioUnitarioClp' => 7000,
+                    'costoUnitarioClp' => 998.17,
+                    'filamento' => 'multicolor',
+                ]],
+            ];
+        }
+        if (!isset($data['meta']) || !is_array($data['meta'])) {
+            $data['meta'] = [];
+        }
+        if ((int) ($data['meta']['ventaSeq'] ?? 0) < 16) {
+            $data['meta']['ventaSeq'] = 16;
+        }
         return $data;
     };
 
@@ -224,53 +271,39 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
 
     if ($uri === '/api/impresoreando' && $method === 'GET') {
         $data = $mergeSeedMissing($readLive());
-        // Hard-force I000016 Fabian MKOF (si el live del PC quedó sin ella).
-        $data['ventas'] = is_array($data['ventas'] ?? null) ? $data['ventas'] : [];
-        $hasFabian = false;
-        foreach ($data['ventas'] as $v) {
-            if (!is_array($v)) {
-                continue;
-            }
-            if (($v['codigo'] ?? '') === 'I000016' || ($v['id'] ?? '') === 'ven-fabian-bob-016') {
-                $hasFabian = true;
+        $writeLive($data);
+        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return true;
+    }
+
+    // Diagnóstico: ¿está Fabian en el live que sirve la API?
+    if ($uri === '/api/impresoreando/debug-fabian' && $method === 'GET') {
+        $data = $mergeSeedMissing($readLive());
+        $writeLive($data);
+        $fab = null;
+        foreach ($data['ventas'] ?? [] as $v) {
+            if (is_array($v) && (($v['codigo'] ?? '') === 'I000016' || ($v['id'] ?? '') === 'ven-fabian-bob-016')) {
+                $fab = $v;
                 break;
             }
         }
-        if (!$hasFabian) {
-            $data['ventas'][] = [
-                'id' => 'ven-fabian-bob-016',
-                'codigo' => 'I000016',
-                'fecha' => '2026-07-31',
-                'cliente' => 'Fabian MKOF',
-                'clienteNombre' => 'Fabian',
-                'clienteOrigen' => 'MKOF',
-                'descripcion' => '1× Porta Bob Esponja · Fabian MKOF',
-                'cantidad' => 1,
-                'montoBruto' => 7000,
-                'descuentoClp' => 0,
-                'montoNeto' => 7000,
-                'costoTotal' => 998.17,
-                'canal' => 'WhatsApp',
-                'notas' => '1× Porta Bob Esponja · cobrado $7.000 · MKOF (Josefa)',
-                'socioRegistro' => 'Ambos',
-                'items' => [[
-                    'sku' => 'PTBOBES001',
-                    'nombre' => 'Porta Bob Esponja',
-                    'cantidad' => 1,
-                    'precioUnitarioClp' => 7000,
-                    'costoUnitarioClp' => 998.17,
-                    'filamento' => 'multicolor',
-                ]],
-            ];
-            if (!isset($data['meta']) || !is_array($data['meta'])) {
-                $data['meta'] = [];
-            }
-            if ((int) ($data['meta']['ventaSeq'] ?? 0) < 16) {
-                $data['meta']['ventaSeq'] = 16;
+        $codigos = [];
+        foreach ($data['ventas'] ?? [] as $v) {
+            if (is_array($v) && !empty($v['codigo'])) {
+                $codigos[] = $v['codigo'];
             }
         }
-        $writeLive($data);
-        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        sort($codigos);
+        echo json_encode([
+            'ok' => (bool) $fab,
+            'fabian' => $fab,
+            'totalVentas' => count($data['ventas'] ?? []),
+            'codigos' => $codigos,
+            'live' => 'data/impresoreando-live.json',
+            'mensaje' => $fab
+                ? ('OK: ' . ($fab['codigo'] ?? '') . ' ' . ($fab['cliente'] ?? '') . ' $' . ($fab['montoNeto'] ?? ''))
+                : 'FALTA I000016 en live',
+        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         return true;
     }
 

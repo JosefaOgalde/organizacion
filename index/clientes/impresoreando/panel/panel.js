@@ -4606,14 +4606,23 @@
   }
 
   function renderVentas() {
+    // Por si el live llegó sin Fabian (PC desactualizado).
+    if (asegurarVentaFabianHard(data)) {
+      dirty = true;
+      save().catch(() => {});
+    }
     rebuildClientesHistorial(data);
+    // Más recientes arriba (I000016 Fabian visible sin scrollear al final).
     const ventasSorted = (data.ventas || []).slice().sort((a, b) => {
       const na = Number(String(a.codigo || '').replace(/^I0*/, '') || 0);
       const nb = Number(String(b.codigo || '').replace(/^I0*/, '') || 0);
-      if (na && nb && na !== nb) return na - nb;
-      return String(a.fecha || '').localeCompare(String(b.fecha || ''));
+      if (na && nb && na !== nb) return nb - na;
+      return String(b.fecha || '').localeCompare(String(a.fecha || ''));
     });
     const ventasFiltradas = ventasSorted.filter(ventaPasaFiltros);
+    const fabian = (data.ventas || []).find(
+      (v) => v && (v.codigo === 'I000016' || /^fabian/i.test(String(v.cliente || '')))
+    );
     const clientesOpts = Array.from(
       new Set(
         (data.ventas || [])
@@ -4683,14 +4692,24 @@
       )
       .join('');
 
+    const fabBanner = fabian
+      ? `<div class="imp-card" style="border:2px solid #d4b06a;background:#faf6eb;padding:0.85rem 1rem">
+          <p style="margin:0"><strong>Última venta:</strong> ${escapeHtml(fabian.codigo)} · ${escapeHtml(fabian.cliente)} · ${money(fabian.montoNeto)} · ${escapeHtml(fabian.descripcion || 'Porta Bob Esponja')}</p>
+          <p class="imp-muted" style="margin:0.35rem 0 0">Origen MKOF — si no la ves en la tabla, poné filtro Origen = <strong>Todos</strong> o <strong>MKOF</strong>.</p>
+        </div>`
+      : `<div class="imp-card" style="border:2px solid #c44;background:#fff5f5;padding:0.85rem 1rem">
+          <p style="margin:0"><strong>Falta I000016 Fabian MKOF</strong> en memoria. Recargá con Ctrl+F5 o corré <code>FORZAR-VENTA-FABIAN.bat</code>.</p>
+        </div>`;
+
     $('#tab-ventas').innerHTML = `
+      ${fabBanner}
       <div class="imp-card imp-kpi--accent" style="padding:0.9rem 1rem">
         <p style="margin:0"><strong>Flujo recomendado:</strong> registra en <button type="button" class="imp-linkish" data-goto-tab="pedidos">Pedidos</button>
         (ajustá el precio venta/u si cobraste más) y al transferir se guarda la venta con ID <strong>I00000n</strong>. Solo las ventas bajan la deuda. <strong>«Pagado»</strong> = venta.</p>
       </div>
       <div class="imp-card">
         <h2>Filtro · compras por cliente</h2>
-        <p class="imp-muted">Elegí un cliente o origen, o hacé clic en una fila del historial. El total de abajo refleja el filtro.</p>
+        <p class="imp-muted">Elegí un cliente o origen, o hacé clic en una fila del historial. El total de abajo refleja el filtro. Fabian es <strong>MKOF</strong>.</p>
         <div class="imp-ventas-filtros" id="imp-ventas-filtros">
           <label>Cliente
             <select id="filtro-venta-cliente" class="imp-select-estado" style="max-width:16rem">
