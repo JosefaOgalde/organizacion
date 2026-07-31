@@ -18,6 +18,26 @@ const FORCE_PED_IDS = [
 ];
 const FORCE_VEN_IDS = ['ven-fabian-bob-016'];
 
+function addMissingForcedOrders(seed, live) {
+  let added = 0;
+  for (const id of FORCE_PED_IDS) {
+    const sp = (seed.pedidos || []).find((p) => p && p.id === id);
+    if (!sp) {
+      console.warn('No en seed:', id);
+      continue;
+    }
+    const idx = live.pedidos.findIndex((p) => p && (p.id === id || p.numero === sp.numero));
+    if (idx < 0) {
+      live.pedidos.push(JSON.parse(JSON.stringify(sp)));
+      added += 1;
+      console.log('+ pedido', sp.numero, sp.cliente);
+    } else {
+      console.log('= pedido live conservado', sp.numero, live.pedidos[idx].cliente);
+    }
+  }
+  return added;
+}
+
 function main() {
   if (!fs.existsSync(SEED)) {
     console.error('Falta seed');
@@ -41,23 +61,7 @@ function main() {
   live.pedidos = live.pedidos.filter((p) => p && p.id !== 'ped-ele-pesa-012');
 
   let n = 0;
-  for (const id of FORCE_PED_IDS) {
-    const sp = (seed.pedidos || []).find((p) => p && p.id === id);
-    if (!sp) {
-      console.warn('No en seed:', id);
-      continue;
-    }
-    const idx = live.pedidos.findIndex((p) => p && (p.id === id || p.numero === sp.numero));
-    if (idx < 0) {
-      live.pedidos.push(JSON.parse(JSON.stringify(sp)));
-      n += 1;
-      console.log('+ pedido', sp.numero, sp.cliente);
-    } else {
-      live.pedidos[idx] = { ...live.pedidos[idx], ...JSON.parse(JSON.stringify(sp)) };
-      n += 1;
-      console.log('~ pedido', sp.numero, sp.cliente);
-    }
-  }
+  n += addMissingForcedOrders(seed, live);
 
   for (const id of FORCE_VEN_IDS) {
     const sv = (seed.ventas || []).find((v) => v && v.id === id);
@@ -98,4 +102,8 @@ function main() {
   );
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = { addMissingForcedOrders };
