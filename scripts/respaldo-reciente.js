@@ -25,8 +25,11 @@ function score(ruta, obj, st) {
   const d = obj.respaldoActualizado || '';
   const stamp = Date.parse(d);
   const t = Number.isFinite(stamp) ? stamp : 0;
-  if (fileDate) return fileDate * 1e6 + t + (st.mtimeMs % 1e6);
-  return Math.max(t, st.mtimeMs);
+  // Windows: "…-31 (1).json" es la re-descarga; priorizarla sobre la copia sin (N).
+  const dup = path.basename(ruta).match(/ \((\d+)\)\.json$/i);
+  const dupBoost = dup ? Number(dup[1]) * 1e4 : 0;
+  if (fileDate) return fileDate * 1e6 + t + dupBoost + (st.mtimeMs % 1e4);
+  return Math.max(t, st.mtimeMs) + dupBoost;
 }
 
 function candidatos() {

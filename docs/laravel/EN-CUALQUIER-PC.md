@@ -53,7 +53,7 @@ Si ves datos viejos: **Ctrl+Shift+R**.
 |---------|-----------|
 | `git pull` bloqueado por seed | `git checkout -- data\impresoreando-seed.json` → otra vez `TRAER-CAMBIOS.bat` |
 | `SQLSTATE … no such column: activo` | `REPARAR-SQLITE-ACTIVO.bat` → `ABRIR-LARAVEL.bat` |
-| Calendario viejo / faltan tareas | `ABRIR-LARAVEL.bat restaurar` (o arrastrá el JSON sobre `IMPORTAR-RESPALDO.bat`) |
+| Calendario viejo / faltan tareas | `ABRIR-LARAVEL.bat restaurar` / `RECUPERAR-CALENDARIO.bat` o `IMPORTAR-RESPALDO.bat` con el JSON de Descargas `(1)` → `?disco=1` + Ctrl+Shift+R |
 | `Falta backend\artisan` | Crear Laravel local: `composer create-project laravel/laravel backend` (ver `BACKEND-README.md`) |
 
 ---
@@ -67,7 +67,7 @@ Esos archivos **no van a Git** (privacidad). Llévatelos en la carpeta del proye
 | `data/organizacion-live.json` | Calendario, madres, subtareas |
 | `backend/database/database.sqlite` | Clientes de la API |
 
-En un PC nuevo, si no tienes `organizacion-live.json`, `ABRIR-LARAVEL.bat` crea uno desde el respaldo del repo (`data/organizacion-respaldo-2026-07-31.json`).
+En un PC nuevo, si no tienes `organizacion-live.json`, `ABRIR-LARAVEL.bat` crea uno desde el respaldo más reciente (`Descargas` 31-jul `(1)` o `data/organizacion-respaldo-2026-07-31.json`; si no, 29/28-jul).
 
 También puedes usar **↓ Respaldo** en el organizador, guardar el JSON, y en el otro PC: `ABRIR-LARAVEL.bat restaurar`.
 
