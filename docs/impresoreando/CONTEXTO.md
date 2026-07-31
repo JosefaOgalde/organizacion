@@ -62,7 +62,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-010 | Gianni SIE | 2× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · **paga 2026-08-18** · $8.000 |
 | PED-011 | Marcia SIE | 1× Soporte celular morado `SOPCEL001` | **transferido** → I000015 $3.000 |
 | PED-012 | Marcia SIE | 1× Limpiador de brochas morado pastel `LMBROC001` | **pendiente** · fiado · $7.000 · fecha pago por confirmar |
-| PED-013 | Mel MKOF | 1× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · $4.000 · fecha pago por confirmar |
+| PED-013 | Mel MKOF | 1× Soporte celular negro `SOPCEL001` | **transferido** → I000020 $4.000 |
 | PED-014 | Rebe SIE | 1× Alcancía chanchito `ALCHAN001` | **transferido** → I000017 $18.000 |
 | PED-015 | Cata SIE | 3× Llavero One Piece `LLONEPI001` | **transferido** → I000018 $5.000 |
 
@@ -95,6 +95,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000017 | Rebe SIE | 18.000 | PED-014 Alcancía chanchito |
 | I000018 | Cata SIE | 5.000 | PED-015 3× Llavero One Piece |
 | I000019 | Juan MKOF | 7.000 | PED-008 Porta Bob Esponja |
+| I000020 | Mel MKOF | 4.000 | PED-013 Soporte celular negro |
 
 ### Clientes nuevos — nombre + origen (obligatorio)
 

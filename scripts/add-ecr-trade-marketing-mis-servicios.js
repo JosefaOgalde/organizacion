@@ -87,11 +87,13 @@ function upsert(filePath) {
 
 upsert(LIVE);
 if (process.argv.includes('--also-respaldo')) {
-  for (const name of fs.readdirSync(DATA)) {
-    if (!/^organizacion-respaldo-.*\.json$/i.test(name)) continue;
-    if (/ejemplo/i.test(name)) continue;
-    upsert(path.join(DATA, name));
-  }
+  // Solo el respaldo con fecha más nueva (evita pisar 21/24/28/29 y bloquear git)
+  const latest = fs
+    .readdirSync(DATA)
+    .filter((name) => /^organizacion-respaldo-\d{4}-\d{2}-\d{2}\.json$/i.test(name))
+    .sort()
+    .reverse()[0];
+  if (latest) upsert(path.join(DATA, latest));
 }
 
 if (fs.existsSync(LIVE)) {

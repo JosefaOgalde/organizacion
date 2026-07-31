@@ -377,6 +377,63 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
                 ],
             ];
         }
+        // Hard-force: PED-013 Mel MKOF soporte → venta I000020 (ya no fiado).
+        foreach ($data['pedidos'] as &$p013) {
+            if (!is_array($p013)) {
+                continue;
+            }
+            if (($p013['numero'] ?? '') !== 'PED-013' && ($p013['id'] ?? '') !== 'ped-mel-soporte-013') {
+                continue;
+            }
+            $p013['estado'] = 'transferido';
+            $p013['fiado'] = false;
+            unset($p013['fechaPagoEsperada']);
+            $p013['ventaId'] = 'ven-mel-soporte-020';
+            $p013['transferidoEn'] = $p013['transferidoEn'] ?? date('c');
+            $p013['montoNeto'] = 4000;
+            $p013['montoBruto'] = 4000;
+            $p013['notas'] = '1× Soporte celular negro · transferido a venta I000020 · pagado $4.000 · MKOF (Josefa)';
+            break;
+        }
+        unset($p013);
+        $has020 = false;
+        foreach ($data['ventas'] as $v020) {
+            if (is_array($v020) && (($v020['id'] ?? '') === 'ven-mel-soporte-020' || ($v020['codigo'] ?? '') === 'I000020')) {
+                $has020 = true;
+                break;
+            }
+        }
+        if (!$has020) {
+            $data['ventas'][] = [
+                'id' => 'ven-mel-soporte-020',
+                'codigo' => 'I000020',
+                'fecha' => '2026-07-31',
+                'cliente' => 'Mel MKOF',
+                'clienteNombre' => 'Mel',
+                'clienteOrigen' => 'MKOF',
+                'descripcion' => 'PED-013 · 1× Soporte celular negro · Mel MKOF',
+                'cantidad' => 1,
+                'montoBruto' => 4000,
+                'descuentoClp' => 0,
+                'montoNeto' => 4000,
+                'costoTotal' => 683.69,
+                'canal' => 'WhatsApp',
+                'notas' => 'Transferido desde PED-013 · fiado cobrado · 1× Soporte celular negro · pagado $4.000',
+                'socioRegistro' => 'Ambos',
+                'pedidoId' => 'ped-mel-soporte-013',
+                'pedidoNumero' => 'PED-013',
+                'items' => [
+                    [
+                        'sku' => 'SOPCEL001',
+                        'nombre' => 'Soporte celular',
+                        'cantidad' => 1,
+                        'precioUnitarioClp' => 4000,
+                        'costoUnitarioClp' => 683.69,
+                        'filamento' => 'PLA+ negro',
+                    ],
+                ],
+            ];
+        }
         $writeLive($data);
         echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         return true;

@@ -11,10 +11,10 @@ const ROOT = path.join(__dirname, '..');
 const SEED = path.join(ROOT, 'data', 'impresoreando-seed.json');
 const LIVE = path.join(ROOT, 'data', 'impresoreando-live.json');
 
+// Mel PED-013 ya NO va acá: está pagada → I000020 (force-imp-ventas-014-015-fiado-008.js)
 const FORCE_PED_IDS = [
   'ped-gianni-soporte-010',
   'ped-marcia-limpiador-012',
-  'ped-mel-soporte-013',
 ];
 const FORCE_VEN_IDS = ['ven-fabian-bob-016'];
 

@@ -12,7 +12,9 @@ echo    ABRIR-LARAVEL.bat sin-nav   → solo servidor / sync, sin abrir navegado
 echo    ABRIR-LARAVEL.bat restaurar → restaura live desde respaldo 31-jul y abre
 echo    RECARGAR.bat                → solo recarga organizador ?disco=1
 echo    RECUPERAR-CALENDARIO.bat    → igual ^(Descargas 31-jul (1)/(2) primero^)
-echo    TRAER-CAMBIOS.bat           → si estas en main sin la entrega
+echo    EMPEZAR-AQUI.bat / TRAER-CAMBIOS.bat → pull main + restaurar + abrir
+echo    CREAR-ACCESOS-ESCRITORIO.bat → iconos en el Escritorio ^(una vez^)
+echo    DESBLOQUEAR-GIT.bat         → si git pull se bloquea por seed/JSON
 echo    REPARAR-SQLITE-ACTIVO.bat   → si sale "no such column: activo"
 echo.
 
@@ -122,65 +124,40 @@ if not exist "data\organizacion-live.json" (
   echo     Si ves calendario viejo: ABRIR-LARAVEL.bat restaurar
 )
 
+echo  Sync Impresoreando ^(silencioso^)...
 where node >nul 2>&1
 if not errorlevel 1 (
-  if exist "scripts\asegurar-impresoreando-live.js" (
-    node scripts\asegurar-impresoreando-live.js 2>nul
-  )
-  if exist "scripts\sync-impresoreando-seed-a-live.js" (
-    echo  0b^) Sync pedidos Impresoreando seed → live...
-    node scripts\sync-impresoreando-seed-a-live.js
-  )
-  if exist "scripts\force-imp-producto-limpiador-brochas.js" (
-    echo  0c^) Asegurar producto Limpiador de brochas LMBROC001...
-    node scripts\force-imp-producto-limpiador-brochas.js
-  )
-  if exist "scripts\force-imp-fiados-012-013.js" (
-    echo  0d^) Forzar fiados PED-010/012/013 + venta Fabian...
-    node scripts\force-imp-fiados-012-013.js
-  )
-  if exist "scripts\force-imp-ventas-014-015-fiado-008.js" (
-    echo  0e^) Forzar ventas PED-014/015 + fiado PED-008 + gasto evento 3D...
-    node scripts\force-imp-ventas-014-015-fiado-008.js
-  )
-  if exist "scripts\force-imp-ped-007-anulado.js" (
-    echo  0f^) Forzar PED-007 Torreón anulado...
-    node scripts\force-imp-ped-007-anulado.js
-  )
+  if exist "scripts\asegurar-impresoreando-live.js" node scripts\asegurar-impresoreando-live.js >nul 2>&1
+  if exist "scripts\sync-impresoreando-seed-a-live.js" node scripts\sync-impresoreando-seed-a-live.js >nul 2>&1
+  if exist "scripts\force-imp-producto-limpiador-brochas.js" node scripts\force-imp-producto-limpiador-brochas.js >nul 2>&1
+  if exist "scripts\force-imp-fiados-012-013.js" node scripts\force-imp-fiados-012-013.js >nul 2>&1
+  if exist "scripts\force-imp-ventas-014-015-fiado-008.js" node scripts\force-imp-ventas-014-015-fiado-008.js >nul 2>&1
+  if exist "scripts\force-imp-ped-007-anulado.js" node scripts\force-imp-ped-007-anulado.js >nul 2>&1
+  if exist "scripts\force-imp-mel-013-venta.js" node scripts\force-imp-mel-013-venta.js >nul 2>&1
 )
 
-echo  1^) SQLite + seed clientes...
-"%PHP_EXE%" scripts\usar-sqlite-laravel.php
+echo  1^) SQLite + API Laravel...
+"%PHP_EXE%" scripts\usar-sqlite-laravel.php >nul 2>&1
 if errorlevel 1 (
+  "%PHP_EXE%" scripts\usar-sqlite-laravel.php
+  pause
+  exit /b 1
+)
+"%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php >nul 2>&1
+"%PHP_EXE%" scripts\configurar-laravel-unificado.php >nul 2>&1
+if errorlevel 1 (
+  "%PHP_EXE%" scripts\configurar-laravel-unificado.php
   pause
   exit /b 1
 )
 
-echo  1b^) Asegurar columna clientes.activo...
-"%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
-
-echo  2^) Rutas API + frontend unificado...
-"%PHP_EXE%" scripts\configurar-laravel-unificado.php
-if errorlevel 1 (
-  pause
-  exit /b 1
-)
-
-echo  3^) migrate + seed + limpiar cache rutas...
 pushd backend
 "%PHP_EXE%" artisan config:clear >nul 2>&1
 "%PHP_EXE%" artisan route:clear >nul 2>&1
-"%PHP_EXE%" artisan migrate --force
-popd
-
-echo  3a^) Columna activo (por si migrate no la anadio)...
-"%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
-
-pushd backend
-echo  3a2^) Seed clientes...
-"%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
+"%PHP_EXE%" artisan migrate --force >nul 2>&1
+"%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force >nul 2>&1
 if errorlevel 1 (
-  echo  [AVISO] Seed fallo — reintento tras ALTER activo...
+  echo  [AVISO] Seed fallo — reintento...
   popd
   "%PHP_EXE%" scripts\asegurar-columna-activo-clientes.php
   "%PHP_EXE%" scripts\usar-sqlite-laravel.php
@@ -188,7 +165,6 @@ if errorlevel 1 (
   "%PHP_EXE%" artisan db:seed --class=ClienteSeeder --force
   if errorlevel 1 (
     echo  [ERROR] Seed clientes fallo. Corre REPARAR-SQLITE-ACTIVO.bat
-    echo  o copia el texto rojo y pegalo en el chat.
     popd
     pause
     exit /b 1
@@ -197,25 +173,16 @@ if errorlevel 1 (
 popd
 
 if exist "scripts\limpiar-clientes-duplicados.php" (
-  echo  3b^) Limpiar clientes duplicados en SQLite...
-  "%PHP_EXE%" scripts\limpiar-clientes-duplicados.php
+  "%PHP_EXE%" scripts\limpiar-clientes-duplicados.php >nul 2>&1
 )
 
-REM Calendario de HOY (Chile) — SIEMPRE al final, despues de cualquier sync
+REM Solo live + respaldo mas reciente (ya no reescribe 21/24/28/29)
+echo  2^) Calendario ^(ECR / pedidos IMP^)...
 where node >nul 2>&1
 if not errorlevel 1 (
-  if exist "scripts\add-ecr-trade-marketing-mis-servicios.js" (
-    echo  3c^) Asegurar ECR Trade Marketing en hoy...
-    node scripts\add-ecr-trade-marketing-mis-servicios.js --also-respaldo
-  )
-  if exist "scripts\sync-impresoreando-pedidos-organizacion.js" (
-    echo  3d^) Sync pedidos Impresoreando → organizador ^(madre = hoy^)...
-    node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo
-  )
-  if exist "scripts\asegurar-tareas-cerradas.js" (
-    echo  3e^) Re-cerrar tareas ya hechas...
-    node scripts\asegurar-tareas-cerradas.js --also-respaldo
-  )
+  if exist "scripts\add-ecr-trade-marketing-mis-servicios.js" node scripts\add-ecr-trade-marketing-mis-servicios.js --also-respaldo >nul 2>&1
+  if exist "scripts\sync-impresoreando-pedidos-organizacion.js" node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo >nul 2>&1
+  if exist "scripts\asegurar-tareas-cerradas.js" node scripts\asegurar-tareas-cerradas.js --also-respaldo >nul 2>&1
 )
 
 if not exist "data\organizacion-live.json" (
@@ -280,20 +247,8 @@ powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clien
 
 :fin_urls
 echo.
-echo  === URLs ^(con ?disco=1^) ===
-echo    Organizador:  http://127.0.0.1:8000/index.html?disco=1
-echo    Portal:       http://127.0.0.1:8000/index/clientes/?disco=1
-echo    ^(opcionales con "todo"^)
-echo    ECR:          http://127.0.0.1:8000/index/clientes/ecr/?disco=1
-echo    MKOF / MOVA:  http://127.0.0.1:8000/index/clientes/mkof/?disco=1
-echo    MKOF prospecto: http://127.0.0.1:8000/index/clientes/mkof/prospecto/?disco=1
-echo    Impresoreando: http://127.0.0.1:8000/index/clientes/impresoreando/panel/?disco=1
-echo.
-echo  Recarga rapida:     RECARGAR.bat
-echo  Abrir todo:         ABRIR-LARAVEL.bat todo
-echo  Sin navegador:      ABRIR-LARAVEL.bat sin-nav
-echo  Restaurar calendario: ABRIR-LARAVEL.bat restaurar
-echo  Si estas en main:   TRAER-CAMBIOS.bat
-echo  Error columna activo: REPARAR-SQLITE-ACTIVO.bat
+echo  Listo → http://127.0.0.1:8000/index.html?disco=1
+echo  ^(Ctrl+Shift+R si ves datos viejos^)
+echo  Git bloqueado: DESBLOQUEAR-GIT.bat
 echo.
 if /I not "%MODO%"=="sin-nav" if /I not "%MODO%"=="sin-navegador" pause

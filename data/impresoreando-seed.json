@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Los gastos son de ambos (deuda 50/50), pero hasta ahora los ha pagado todos Nicolás. Josefa le debe el 50% del capital/gastos.",
-    "actualizado": "2026-07-28T15:48:58.000Z",
+    "actualizado": "2026-07-31T23:00:07.473Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -27,7 +27,7 @@
       "deudaJosefaClp": 457995
     },
     "pedidoSeq": 15,
-    "ventaSeq": 19,
+    "ventaSeq": 20,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
       {
@@ -156,6 +156,17 @@
           "ven-juan-bob-019"
         ],
         "totalNeto": 7000,
+        "compras": 1
+      },
+      {
+        "cliente": "Mel MKOF",
+        "ventaCodigos": [
+          "I000020"
+        ],
+        "ventaIds": [
+          "ven-mel-soporte-020"
+        ],
+        "totalNeto": 4000,
         "compras": 1
       }
     ]
@@ -1103,6 +1114,35 @@
           "filamento": "multicolor"
         }
       ]
+    },
+    {
+      "id": "ven-mel-soporte-020",
+      "codigo": "I000020",
+      "fecha": "2026-07-31",
+      "cliente": "Mel MKOF",
+      "clienteNombre": "Mel",
+      "clienteOrigen": "MKOF",
+      "descripcion": "PED-013 · 1× Soporte celular negro · Mel MKOF",
+      "cantidad": 1,
+      "montoBruto": 4000,
+      "descuentoClp": 0,
+      "montoNeto": 4000,
+      "costoTotal": 683.69,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-013 · fiado cobrado · 1× Soporte celular negro · pagado $4.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-mel-soporte-013",
+      "pedidoNumero": "PED-013",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 1,
+          "precioUnitarioClp": 4000,
+          "costoUnitarioClp": 683.69,
+          "filamento": "PLA+ negro"
+        }
+      ]
     }
   ],
   "operacion": [
@@ -1515,7 +1555,7 @@
     {
       "id": "bit-fiados-012-013-2026-07-31",
       "fecha": "2026-07-31",
-      "texto": "Fiados: PED-012 Marcia SIE · limpia brochas morado pastel $7.000 · PED-013 Mel MKOF · soporte celular negro $4.000. Fecha de pago por confirmar."
+      "texto": "Fiados: PED-012 Marcia SIE · limpia brochas morado pastel $7.000 · PED-013 Mel MKOF → I000020 pagado $4.000. Fecha de pago por confirmar."
     },
     {
       "id": "bit-gasto-diseno-alcancia-chanchito-2026-07-31",
@@ -1637,6 +1677,12 @@
       "fecha": "2026-07-31",
       "autor": "Josefa",
       "texto": "Juan MKOF PED-008 Porta Bob Esponja (fiado) → I000019 · pagado $7.000."
+    },
+    {
+      "id": "bit-mel-013-venta-020",
+      "fecha": "2026-07-31",
+      "autor": "Josefa",
+      "texto": "Mel MKOF PED-013 Soporte celular negro (fiado) → I000020 · pagado $4.000."
     }
   ],
   "pedidos": [
@@ -2060,8 +2106,8 @@
           "precioUnitarioClp": 4000,
           "costoUnitarioClp": 683.69,
           "filamento": "PLA+ negro",
-          "estado": "pendiente",
-          "listos": 0,
+          "estado": "listo",
+          "listos": 1,
           "enImpresion": 0
         }
       ],
@@ -2069,13 +2115,14 @@
       "descuentoClp": 0,
       "montoNeto": 4000,
       "costoTotal": 683.69,
-      "estado": "pendiente",
-      "ventaId": null,
-      "fiado": true,
-      "pagoNotas": "Fiado · fecha de pago por confirmar",
-      "notas": "1× Soporte celular negro · fiado · PVP $4.000 · fecha de pago por confirmar",
+      "estado": "transferido",
+      "ventaId": "ven-mel-soporte-020",
+      "fiado": false,
+      "pagoNotas": "Pagado · transferido a venta I000020",
+      "notas": "1× Soporte celular negro · transferido a venta I000020 · pagado $4.000 · MKOF (Josefa)",
       "socioRegistro": "Ambos",
-      "creado": "2026-07-31T00:30:00.000Z"
+      "creado": "2026-07-31T00:30:00.000Z",
+      "transferidoEn": "2026-07-31T23:00:00.000Z"
     },
     {
       "id": "ped-rebe-chanchito-014",

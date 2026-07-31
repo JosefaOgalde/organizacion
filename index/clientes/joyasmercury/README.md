@@ -1,61 +1,37 @@
-# Joyas Mercury · landing cliente
+# Joyas Mercury · en la nube (pausado)
 
-Todo el trabajo de **joyasmercury.cl** (Fase 2) vive en esta carpeta.
+El trabajo está **pausado**, pero los archivos **sí quedan en GitHub** para abrirlos después desde el **iPad / iPhone** (app GitHub o Safari).
 
-## Entrada principal
+## Desde el iPad o iPhone
+
+1. Abrí la app **GitHub** (o Safari) → repo `JosefaOgalde/organizacion`
+2. Carpeta: [`index/clientes/joyasmercury/`](https://github.com/JosefaOgalde/organizacion/tree/main/index/clientes/joyasmercury)
+3. O descargá el zip del release:  
+   [`jm-archivo-2026-07-31`](https://github.com/JosefaOgalde/organizacion/releases/tag/jm-archivo-2026-07-31)  
+   (Archivos → Guardar en iCloud Drive / OneDrive)
+
+Si usás OneDrive en el PC, `ARCHIVAR-JOYAS-MERCURY.bat` también deja una copia en:
+
+```
+OneDrive\joyasmercury-archivo-organizacion\
+```
+
+Esa carpeta aparece en la app **Archivos** del iPhone/iPad.
+
+## En el PC (Laravel)
 
 ```
 http://127.0.0.1:8000/index/clientes/joyasmercury/
 ```
 
-Incluye: **wireframes desktop** (7 pantallas), identidad, menú objetivo, Gantt y checklist.
-
-**Continuar trabajo:** [CONTINUAR-JM.md](CONTINUAR-JM.md) · respaldo `data/organizacion-respaldo-2026-07-28.json`
+**Continuar trabajo:** [CONTINUAR-JM.md](CONTINUAR-JM.md)
 
 ## Atajos
 
 | Página | URL |
 |--------|-----|
 | Landing | `/index/clientes/joyasmercury/` |
-| Wireframes desktop (pantalla completa) | `/index/clientes/joyasmercury/wireframes.html` |
+| Wireframes desktop | `/index/clientes/joyasmercury/wireframes.html` |
 
-## Wireframes desktop (7 pantallas)
-
-Carpeta: `interfaces/referencia-landings/`
-
-| # | Archivo | Pantalla |
-|---|---------|----------|
-| 1 | `01-inicio-referencia.png` | Inicio |
-| 2 | `02-esencial-referencia.png` | Esencial |
-| 3 | `03-gold-referencia.png` | Gold |
-| 4 | `04-deluxe-referencia.png` | Deluxe |
-| 5 | `05-carrito-referencia.png` | Carrito |
-| 6 | `06-ayuda-referencia.png` | Ayuda |
-| 7 | `07-productos-referencia.png` | Productos |
-
-Regenerar manifiesto tras reemplazar PNG:
-
-```bash
-python3 scripts/sync-jm-landings-carrusel.py
-```
-
-## Estructura
-
-```
-joyasmercury/
-├── index.html          ← landing cliente
-├── wireframes.html     ← carrusel desktop pantalla completa
-├── identidad/          ← manual de marca, logos
-├── interfaces/
-│   ├── referencia-landings/   ← 7 PNG desktop + HTML fuente capturas
-│   └── README.md              ← auditoría sitio (PNG estáticos)
-└── dia-1/              ← guías auditoría menú
-```
-
-## Agente
-
-`@joyas-mercury` · organiser: `index.html?tarea=joyas-mercury/01`
-
-## Guías Fase 2
-
-Ver [GUIAS-FASE2.md](GUIAS-FASE2.md) y [interfaces/README.md](interfaces/README.md).
+Sitio en producción: https://joyasmercury.cl  
+Backup técnico WP: repo `JosefaOgalde/joyasmercury-backup`
