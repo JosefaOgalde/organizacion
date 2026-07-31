@@ -502,6 +502,33 @@
           "monto": 35990
         }
       ]
+    },
+    {
+      "id": "gas-ml-bolsas-enchufe-led-32569",
+      "fecha": "2026-07-31",
+      "categoria": "equipo",
+      "descripcion": "Mercado Libre — bolsas kraft ×100 + enchufe inteligente WiFi + tira LED RGB 20 m (PAGADO)",
+      "proveedor": "Mercado Libre",
+      "cantidad": 3,
+      "montoNeto": 32569,
+      "notas": "Envío 1: bolsas kraft heladería/panadería pack 100 $4.590 · enchufe inteligente medidor consumo WiFi 16A Alexa $9.989 · tira LED RGB Bluetooth Maxwell 20 m $17.990. Total $32.569. Sociedad 50/50 · pagó Nicolás.",
+      "ordenId": "ml-bolsas-enchufe-led-32569",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Nicolás",
+      "items": [
+        {
+          "descripcion": "Bolsa papel kraft heladería/panadería pack 100 ud marrón claro",
+          "monto": 4590
+        },
+        {
+          "descripcion": "Enchufe inteligente medidor de consumo WiFi 16A Alexa",
+          "monto": 9989
+        },
+        {
+          "descripcion": "Tira cinta luces LED RGB Bluetooth Maxwell 20 m",
+          "monto": 17990
+        }
+      ]
     }
   ],
   "ventas": [
@@ -1280,6 +1307,11 @@
     ]
   },
   "bitacora": [
+    {
+      "id": "bit-gasto-ml-bolsas-enchufe-led-2026-07-31",
+      "fecha": "2026-07-31",
+      "texto": "Gasto ML: bolsas kraft ×100 $4.590 · enchufe WiFi 16A $9.989 · tira LED RGB 20 m $17.990. Total $32.569. Pagó Nicolás · sociedad 50/50."
+    },
     {
       "id": "bit-gastos-2026-07-29",
       "fecha": "2026-07-29",

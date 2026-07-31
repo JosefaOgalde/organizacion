@@ -90,6 +90,7 @@
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
+    if (asegurarGastoMlBolsasEnchufeLed20260731(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
     if (asegurarPedidosImpresosYNaves(d)) changed = true;
@@ -1868,6 +1869,65 @@
           'Gastos: llaveros ×100 $6.978 · filamento rosado $10.990 · gancho aros con tope ×100/50 pares $3.490 · mueble esquinero EASY $35.990. Pagó Nicolás · sociedad 50/50.';
         changed = true;
       }
+    }
+    return changed;
+  }
+
+  /** Mercado Libre — bolsas kraft + enchufe inteligente + tira LED RGB. Sociedad 50/50 · pagó Nicolás. */
+  function asegurarGastoMlBolsasEnchufeLed20260731(d) {
+    d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
+    const reg = {
+      id: 'gas-ml-bolsas-enchufe-led-32569',
+      fecha: '2026-07-31',
+      categoria: 'equipo',
+      descripcion:
+        'Mercado Libre — bolsas kraft ×100 + enchufe inteligente WiFi + tira LED RGB 20 m (PAGADO)',
+      proveedor: 'Mercado Libre',
+      cantidad: 3,
+      montoNeto: 32569,
+      notas:
+        'Envío 1: bolsas kraft heladería/panadería pack 100 $4.590 · enchufe inteligente medidor consumo WiFi 16A Alexa $9.989 · tira LED RGB Bluetooth Maxwell 20 m $17.990. Total $32.569. Sociedad 50/50 · pagó Nicolás.',
+      ordenId: 'ml-bolsas-enchufe-led-32569',
+      socioRegistro: 'Ambos',
+      pagadoPor: 'Nicolás',
+      items: [
+        {
+          descripcion: 'Bolsa papel kraft heladería/panadería pack 100 ud marrón claro',
+          monto: 4590,
+        },
+        {
+          descripcion: 'Enchufe inteligente medidor de consumo WiFi 16A Alexa',
+          monto: 9989,
+        },
+        {
+          descripcion: 'Tira cinta luces LED RGB Bluetooth Maxwell 20 m',
+          monto: 17990,
+        },
+      ],
+    };
+    let changed = false;
+    const existing = d.gastos.find((g) => g.id === reg.id);
+    if (!existing) {
+      d.gastos.push({ ...reg });
+      changed = true;
+    } else if (
+      Number(existing.montoNeto) !== reg.montoNeto ||
+      existing.descripcion !== reg.descripcion ||
+      !Array.isArray(existing.items)
+    ) {
+      Object.assign(existing, reg);
+      changed = true;
+    }
+    d.bitacora = Array.isArray(d.bitacora) ? d.bitacora : [];
+    const bit = {
+      id: 'bit-gasto-ml-bolsas-enchufe-led-2026-07-31',
+      fecha: '2026-07-31',
+      texto:
+        'Gasto ML: bolsas kraft ×100 $4.590 · enchufe WiFi 16A $9.989 · tira LED RGB 20 m $17.990. Total $32.569. Pagó Nicolás · sociedad 50/50.',
+    };
+    if (!d.bitacora.some((b) => b.id === bit.id)) {
+      d.bitacora.unshift(bit);
+      changed = true;
     }
     return changed;
   }

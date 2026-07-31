@@ -26,6 +26,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 - Tab Resumen: vista **general** (totales, conteos, barras, socios). El **detalle de ventas** (IDs, ítems, descuentos, historial) solo en tab **Ventas**.
 - Gastos de **ambos** (= sociedad 50/50); **hasta ahora los pagó todos Nicolás** (`pagadoPor`). Capital aportado por **Nicolás**; Josefa debe 50% (`meta.capital.deudaJosefaClp`).
 - Compra 29 jul: **mueble esquinero EASY INTERNET $35.990** (`gas-mueble-esquinero-easy-35990`, TC ****7022 · Nicolás) + lote insumos (llaveros / filamento rosado / ganchos).
+- Compra 31 jul ML: **bolsas kraft ×100 $4.590 + enchufe WiFi 16A $9.989 + tira LED RGB 20 m $17.990 = $32.569** (`gas-ml-bolsas-enchufe-led-32569` · Nicolás · 50/50).
 - `metaRecuperar = gastos + operación`
 - `saldoPendiente = max(0, meta − ventas)` — solo **ventas** bajan deuda
 - `% progreso = ventas / meta`
