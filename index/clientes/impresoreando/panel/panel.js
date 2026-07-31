@@ -92,6 +92,7 @@
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
     if (asegurarGastoMlBolsasEnchufeLed20260731(d)) changed = true;
+    if (asegurarGastoEntradaEvento3d16100(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
     if (asegurarPedidosImpresosYNaves(d)) changed = true;
@@ -107,29 +108,44 @@
       }
     }
     const capitalNeto = gastos.reduce((a, g) => a + Number(g.montoNeto || 0), 0);
+    let capitalJosefa = 0;
+    let capitalNicolas = 0;
+    for (const g of gastos) {
+      const monto = Number(g.montoNeto || 0);
+      if (/josefa/i.test(String(g.pagadoPor || ''))) capitalJosefa += monto;
+      else capitalNicolas += monto;
+    }
+    const mitad = Math.round(capitalNeto * 0.5);
+    const deudaJosefaClp = Math.max(0, mitad - Math.round(capitalJosefa));
     const cap = d.meta.capital && typeof d.meta.capital === 'object' ? d.meta.capital : {};
     const nextCap = {
-      aportadoPor: 'Nicolás',
+      aportadoPor: capitalJosefa > 0 ? 'Nicolás + Josefa' : 'Nicolás',
+      aportadoJosefaClp: Math.round(capitalJosefa),
+      aportadoNicolasClp: Math.round(capitalNicolas),
       deudaPctJosefa: 50,
       montoNetoClp: capitalNeto,
-      deudaJosefaClp: Math.round(capitalNeto * 0.5),
+      deudaJosefaClp,
       nota:
-        'Nicolás puso el capital y, hasta ahora, ha pagado todos los gastos. «Ambos» = sociedad 50/50 (Josefa debe el 50% a Nicolás), no que Josefa haya pagado.',
+        capitalJosefa > 0
+          ? `Sociedad 50/50. Nicolás aportó ${Math.round(capitalNicolas).toLocaleString('es-CL')} y Josefa ${Math.round(capitalJosefa).toLocaleString('es-CL')}. Josefa debe el 50% de los gastos menos lo que ya pagó.`
+          : 'Nicolás puso el capital. «Ambos» = sociedad 50/50 (Josefa debe el 50% a Nicolás).',
     };
     if (
       cap.aportadoPor !== nextCap.aportadoPor ||
       Number(cap.deudaJosefaClp) !== nextCap.deudaJosefaClp ||
       Number(cap.montoNetoClp) !== nextCap.montoNetoClp ||
+      Number(cap.aportadoJosefaClp || 0) !== nextCap.aportadoJosefaClp ||
+      Number(cap.aportadoNicolasClp || 0) !== nextCap.aportadoNicolasClp ||
       cap.nota !== nextCap.nota
     ) {
       d.meta.capital = { ...cap, ...nextCap };
       changed = true;
     }
     const notasMetaOk =
-      /pagado todos/i.test(String(d.meta.notas || '')) && /nicol/i.test(String(d.meta.notas || ''));
-    if (!notasMetaOk) {
+      /sociedad 50\/50/i.test(String(d.meta.notas || '')) && /josefa/i.test(String(d.meta.notas || ''));
+    if (!notasMetaOk || /pagado todos Nicolás/i.test(String(d.meta.notas || ''))) {
       d.meta.notas =
-        'Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Los gastos son de ambos (deuda 50/50), pero hasta ahora los ha pagado todos Nicolás. Josefa le debe el 50% del capital/gastos.';
+        'Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Los gastos son de ambos. El capital aportado se calcula por quién pagó cada gasto (pagadoPor).';
       changed = true;
     }
     return changed;
@@ -2021,6 +2037,37 @@
     return changed;
   }
 
+  /** Entrada evento 3D 29-ago · pagó Josefa $16.100 · cuenta como capital aportado. */
+  function asegurarGastoEntradaEvento3d16100(d) {
+    d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
+    const reg = {
+      id: 'gas-entrada-evento-3d-16100',
+      fecha: '2026-08-29',
+      categoria: 'marketing',
+      descripcion: '1 entrada a evento 3D (29 agosto)',
+      proveedor: 'Evento 3D',
+      cantidad: 1,
+      montoNeto: 16100,
+      notas: '1 entrada evento 3D el 29 de agosto 2026. Sociedad 50/50 · pagó Josefa.',
+      socioRegistro: 'Ambos',
+      pagadoPor: 'Josefa',
+      items: [{ descripcion: 'Entrada evento 3D', monto: 16100 }],
+    };
+    let changed = false;
+    const existing = d.gastos.find((g) => g.id === reg.id);
+    if (!existing) {
+      d.gastos.push({ ...reg });
+      changed = true;
+    } else if (
+      Number(existing.montoNeto) !== reg.montoNeto ||
+      String(existing.pagadoPor || '') !== 'Josefa'
+    ) {
+      Object.assign(existing, reg);
+      changed = true;
+    }
+    return changed;
+  }
+
   /** Diseños Cults / digitales — gastos socios (no entran al costo de producto). Pagó Nicolás · 50/50. */
   function asegurarGastosDisenosCults(d) {
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
@@ -3233,7 +3280,19 @@
     const cadaUnoGastos = gastos / 2;
     const cadaUnoResultado = resultado / 2;
     const cap = data.meta?.capital || {};
-    const deuda = Number(cap.deudaJosefaClp != null ? cap.deudaJosefaClp : cadaUnoGastos);
+    const capitalJosefa = (data.gastos || []).reduce((a, g) => {
+      if (/josefa/i.test(String(g.pagadoPor || ''))) return a + Number(g.montoNeto || 0);
+      return a;
+    }, 0);
+    const capitalNicolas = Math.max(0, gastos - capitalJosefa);
+    const deuda = Math.max(
+      0,
+      Number(
+        cap.deudaJosefaClp != null
+          ? cap.deudaJosefaClp
+          : Math.round(cadaUnoGastos - capitalJosefa)
+      )
+    );
     const orden = (data.gastos || []).find((g) => g.id === 'gas-reg-312435' || g.ordenId === '312435');
     const ali = (data.gastos || []).find((g) => g.id === 'gas-reg-aliexpress');
     const lider = (data.gastos || []).find((g) => g.id === 'gas-reg-lider');
@@ -3372,9 +3431,9 @@
           <ul class="imp-socio__detalle">
             <li><span>Su 50% de los gastos</span><strong>${money(cadaUnoGastos)}</strong></li>
             <li><span>Su 50% del resultado</span><strong class="${cadaUnoResultado >= 0 ? 'is-ok' : 'is-warn'}">${money(cadaUnoResultado)}</strong></li>
-            <li><span>Capital que aportó</span><strong>$0</strong></li>
+            <li><span>Capital que aportó</span><strong>${money(capitalJosefa)}</strong></li>
           </ul>
-          <p class="imp-socio__nota">Nicolás puso el capital; a Josefa le corresponde el 50% (${money(deuda)}).</p>
+          <p class="imp-socio__nota">Le corresponde el 50% de los gastos; ya aportó ${money(capitalJosefa)} · saldo a Nicolás ${money(deuda)}.</p>
         </article>
         <article class="imp-socio imp-socio--nicolas">
           <header class="imp-socio__head">
@@ -3385,9 +3444,9 @@
           <ul class="imp-socio__detalle">
             <li><span>Su 50% de los gastos</span><strong>${money(cadaUnoGastos)}</strong></li>
             <li><span>Su 50% del resultado</span><strong class="${cadaUnoResultado >= 0 ? 'is-ok' : 'is-warn'}">${money(cadaUnoResultado)}</strong></li>
-            <li><span>Capital que aportó</span><strong>${money(gastos)}</strong></li>
+            <li><span>Capital que aportó</span><strong>${money(capitalNicolas)}</strong></li>
           </ul>
-          <p class="imp-socio__nota">Aportó el capital del negocio. Tiene por cobrar de Josefa ${money(deuda)}.</p>
+          <p class="imp-socio__nota">Aportó ${money(capitalNicolas)}. Tiene por cobrar de Josefa ${money(deuda)}.</p>
         </article>
       </div>
       <div class="imp-charts">
