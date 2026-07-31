@@ -1,0 +1,26 @@
+ORGANIZACION — EMPIEZA AQUI
+===========================
+
+Usuario PC casa: Josefa Ogalde
+Carpeta tipica:  C:\Users\Josefa Ogalde\organizacion
+
+DEL DIA A DIA (elige UNA):
+  1) Doble clic:  EMPEZAR-AQUI.bat
+  2) O doble clic: TRAER-CAMBIOS.bat
+
+Eso hace: git pull en main + restaura el calendario
+desde Descargas + abre http://127.0.0.1:8000
+
+PARA VERLOS SIEMPRE EN EL ESCRITORIO (una sola vez):
+  Doble clic:  CREAR-ACCESOS-ESCRITORIO.bat
+
+Quedan 4 iconos:
+  1. Organizacion - Empezar aqui   ← usa este
+  2. Organizacion - Abrir Laravel
+  3. Organizacion - Recargar
+  4. Organizacion - Cerrar servidor
+
+Si ves datos viejos en el navegador: Ctrl+Shift+R
+URL: http://127.0.0.1:8000/index.html?disco=1
+
+No hace falta pegar rutas del JSON ni preguntarle al agente.
