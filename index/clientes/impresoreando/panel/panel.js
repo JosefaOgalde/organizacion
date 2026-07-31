@@ -3249,6 +3249,9 @@
       Math.max(0, 100 - pctVentasEnPipeline),
       (montoPedidosPend / denom) * 100
     );
+    /** Si se cobraran/transferieran los pedidos activos: % de progreso hacia la meta. */
+    const pctPipeline =
+      metaRecuperar > 0 ? Math.min(100, (ventasMasPedidos / metaRecuperar) * 100) : 100;
     const pctMarkup = Number(data.parametros?.margenObjetivoPct ?? 100);
     const filasCostoProd = (data.productos || [])
       .map((prod) => {
@@ -3286,6 +3289,7 @@
         <div class="imp-balance__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pctRecuperado.toFixed(0)}" aria-label="Progreso hacia salir de deuda">
           <div class="imp-balance__progress-fill" style="width:${pctRecuperado}%"></div>
         </div>
+        <div class="imp-balance__pct" aria-hidden="true">${pctRecuperado.toFixed(1)}%</div>
         <div class="imp-balance__bar" title="Gastos + operación vs ventas contabilizadas">
           <div class="imp-balance__fill--gastos" style="width:${pctGastos}%"></div>
           <div class="imp-balance__fill--ventas" style="width:${pctVentas}%"></div>
@@ -3294,9 +3298,13 @@
           <span><i class="imp-dot imp-dot--gastos"></i>Gastos + op. ${money(metaRecuperar)}</span>
           <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)} · solo cuentan al transferir pedido → venta</span>
         </div>
-        <div class="imp-balance__bar imp-balance__bar--pipeline" title="Ventas contabilizadas + pedidos pendientes" aria-label="Ventas más pedidos pendientes">
+        <div class="imp-balance__bar imp-balance__bar--pipeline" title="Ventas contabilizadas + pedidos pendientes" aria-label="Ventas más pedidos pendientes" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pctPipeline.toFixed(0)}">
           <div class="imp-balance__fill--ventas" style="width:${pctVentasEnPipeline}%"></div>
           <div class="imp-balance__fill--pedidos" style="width:${pctPedidosEnPipeline}%"></div>
+        </div>
+        <div class="imp-balance__pct imp-balance__pct--pipeline" aria-label="Progreso proyectado si se cobran los pedidos">
+          ${pctPipeline.toFixed(1)}%
+          <span class="imp-balance__pct-hint">progreso si se cobran los pedidos</span>
         </div>
         <div class="imp-balance__legend">
           <span><i class="imp-dot imp-dot--ventas"></i>Ventas ${money(ventas)}</span>
