@@ -48,7 +48,7 @@ Si ves datos viejos: **Ctrl+Shift+R**. El sync de ABRIR solo usa `data\` del rep
 |---------|-----------|
 | Estás en `main` / ves logo viejo / sin Trade Marketing | `TRAER-CAMBIOS.bat` |
 | `SQLSTATE … no such column: activo` | `REPARAR-SQLITE-ACTIVO.bat` → `ABRIR-LARAVEL.bat` |
-| Calendario viejo / faltan tareas | `IMPORTAR-RESPALDO.bat "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json"` o `ABRIR-LARAVEL.bat restaurar` → `?disco=1` + Ctrl+Shift+R |
+| Calendario viejo / faltan tareas | `IMPORTAR-RESPALDO.bat "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json"` o `ABRIR-LARAVEL.bat restaurar` / `RECUPERAR-CALENDARIO.bat` → `?disco=1` + Ctrl+Shift+R (priorizan el `(1)`) |
 | `Falta backend\artisan` | Crear Laravel local: `composer create-project laravel/laravel backend` (ver `BACKEND-README.md`) |
 | Carece de privilegios / mklink | Ya corregido en esta rama (copia archivos, sin symlink admin) |
 
@@ -63,7 +63,7 @@ Esos archivos **no van a Git** (privacidad). Llévatelos en la carpeta del proye
 | `data/organizacion-live.json` | Calendario, madres, subtareas |
 | `backend/database/database.sqlite` | Clientes de la API |
 
-En un PC nuevo, si no tienes `organizacion-live.json`, `ABRIR-LARAVEL.bat` crea uno desde el respaldo más reciente del repo (`data/organizacion-respaldo-2026-07-31.json`).
+En un PC nuevo, si no tienes `organizacion-live.json`, `ABRIR-LARAVEL.bat` crea uno desde el respaldo más reciente (`Descargas` 31-jul `(1)` o `data/organizacion-respaldo-2026-07-31.json`; si no, 29/28-jul).
 
 También puedes usar **↓ Respaldo** en el organizador, guardar el JSON, y en el otro PC reemplazar `data/organizacion-live.json`.
 
