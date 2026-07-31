@@ -432,6 +432,24 @@
       "pagadoPor": "Nicolás"
     },
     {
+      "id": "gas-diseno-alcancia-chanchito",
+      "fecha": "2026-07-31",
+      "categoria": "diseño",
+      "descripcion": "Diseño Alcancía chanchito (comprado)",
+      "proveedor": "Diseño digital",
+      "cantidad": 1,
+      "montoNeto": 13000,
+      "notas": "Diseño digital de la Alcancía chanchito (ALCHAN001). No se suma al costo unitario del producto. Gastos socios · sociedad 50/50 · pagó Nicolás.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Nicolás",
+      "items": [
+        {
+          "descripcion": "Diseño Alcancía chanchito",
+          "monto": 13000
+        }
+      ]
+    },
+    {
       "id": "gas-llaveros-100-6978",
       "fecha": "2026-07-29",
       "categoria": "metal",
@@ -1329,6 +1347,11 @@
     ]
   },
   "bitacora": [
+    {
+      "id": "bit-gasto-diseno-alcancia-chanchito-2026-07-31",
+      "fecha": "2026-07-31",
+      "texto": "Gasto diseño: Alcancía chanchito $13.000 (ALCHAN001). No va al costo/u. Pagó Nicolás · sociedad 50/50."
+    },
     {
       "id": "bit-gasto-ml-bolsas-enchufe-led-2026-07-31",
       "fecha": "2026-07-31",

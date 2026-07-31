@@ -141,7 +141,7 @@ Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio
 **Params default (Centauri):** `tarifaKwhClp: 200`, `consumoImpresoraKw: 0.28`, `costoAnilloMetalLlaveroClp: 50`.  
 **$/kg Centauri:** PLA+ negro/rojo `$17.986` · PLA amarillo/café `$16.829` · PLA blanco `$12.690`.  
 **Diseños Cults/digitales** → gastos socios (categoría `diseño`); **no** van al costo unitario del producto.  
-Vigente: Bob $1.402 · bulldog $1.000 · nave H $1.000 · **Dragón $3.000** (`gas-diseno-dragon`).
+Vigente: Bob $1.402 · bulldog $1.000 · nave H $1.000 · **Dragón $3.000** (`gas-diseno-dragon`) · **Alcancía chanchito $13.000** (`gas-diseno-alcancia-chanchito`).
 
 ### Impresoras (perfiles de costo) — obligatorio recordar
 
@@ -184,7 +184,7 @@ Datos en `data.impresoras[]` (seed + live) y UI **Operación → Impresoras**. C
 | `DRAGON001` | Dragón | **275,41** | **14,12 (14 h 7 m)** | PLA color · modelo+soportes · costo ~$5.476 · **PVP $20.000** · diseño comprado **$3.000** en gastos (no en costo/u) |
 | `TORREON001` | Torreón | **~120** (est.) | **~4 h** (est.) | **Ender 3 V2 Neo (Sprite Neo)** · sin slicer · recargo perfil +$1.000 · costo ~$3.293 · PVP sug. $6.500 |
 | `LMBROC001` | Limpiador de brochas | **114,05** | **3,47 (3 h 28 m)** | PLA morado pastel · Elegoo · modelo 113,58 + purge 0,47 · costo ~$2.163 · **PVP sug. $4.300** |
-| `ALCHAN001` | Alcancía chanchito | **315,88** | **12,15 (12 h 9 m)** | PLA rosado `$10.990/kg` · Elegoo · modelo 280,74 + sop 33,75 + purge 1,40 · 105,06 m · costo ~$4.202 · **PVP sug. $8.400** |
+| `ALCHAN001` | Alcancía chanchito | **315,88** | **12,15 (12 h 9 m)** | PLA rosado `$10.990/kg` · Elegoo · modelo 280,74 + sop 33,75 + purge 1,40 · 105,06 m · costo ~$4.202 · **PVP sug. $8.400** · diseño comprado **$13.000** en gastos (no en costo/u) |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
 

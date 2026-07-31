@@ -2045,7 +2045,22 @@
         notas:
           'Diseño digital del Dragón (DRAGON001). No se suma al costo unitario del producto. Gastos socios · sociedad 50/50.',
         socioRegistro: 'Ambos',
+        pagadoPor: 'Nicolás',
         items: [{ descripcion: 'Diseño Dragón', monto: 3000 }],
+      },
+      {
+        id: 'gas-diseno-alcancia-chanchito',
+        fecha: '2026-07-31',
+        categoria: 'diseño',
+        descripcion: 'Diseño Alcancía chanchito (comprado)',
+        proveedor: 'Diseño digital',
+        cantidad: 1,
+        montoNeto: 13000,
+        notas:
+          'Diseño digital de la Alcancía chanchito (ALCHAN001). No se suma al costo unitario del producto. Gastos socios · sociedad 50/50 · pagó Nicolás.',
+        socioRegistro: 'Ambos',
+        pagadoPor: 'Nicolás',
+        items: [{ descripcion: 'Diseño Alcancía chanchito', monto: 13000 }],
       },
     ];
     let changed = false;
@@ -2059,6 +2074,17 @@
         Object.assign(existing, reg);
         changed = true;
       }
+    }
+    d.bitacora = Array.isArray(d.bitacora) ? d.bitacora : [];
+    const bitDisenoChanchito = {
+      id: 'bit-gasto-diseno-alcancia-chanchito-2026-07-31',
+      fecha: '2026-07-31',
+      texto:
+        'Gasto diseño: Alcancía chanchito $13.000 (ALCHAN001). No va al costo/u. Pagó Nicolás · sociedad 50/50.',
+    };
+    if (!d.bitacora.some((b) => b.id === bitDisenoChanchito.id)) {
+      d.bitacora.unshift(bitDisenoChanchito);
+      changed = true;
     }
     return changed;
   }
