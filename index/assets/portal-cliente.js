@@ -603,11 +603,97 @@
     </div>`;
   }
 
-  function heroHtml(cfg, stats) {
+  function logoImpSrc(landing) {
+    const override = landing?.logoUrl;
+    if (typeof override === 'string' && override.trim()) return override.trim();
+    if (typeof window.impresoreandoLogoSrc === 'function') {
+      return window.impresoreandoLogoSrc('./identidad/');
+    }
+    return './identidad/logo-ima2.png?v=ima2-claro-1';
+  }
+
+  function leerArchivoComoDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      if (!file || !/^image\//.test(file.type)) {
+        reject(new Error('Elige una imagen (PNG/JPG/WebP)'));
+        return;
+      }
+      if (file.size > 8 * 1024 * 1024) {
+        reject(new Error('Imagen muy grande (máx. 8 MB)'));
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error('No se pudo leer la imagen'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function subirLogoImpresoreando(file) {
+    const cli = asegurarClienteEnDatos();
+    const landing = cli.ficha.landing;
+    const dataUrl = await leerArchivoComoDataUrl(file);
+    let urlFinal = dataUrl;
+    try {
+      const res = await fetch('/api/cliente-logo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: 'impresoreando', dataUrl }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json?.stableUrl || json?.url) urlFinal = json.stableUrl || json.url;
+      }
+    } catch {
+      /* API no disponible: queda data URL en landing */
+    }
+    landing.logoUrl = urlFinal;
+    landing.logoActualizado = new Date().toISOString();
+    guardar(cli);
+    render();
+    toast('Logo actualizado');
+  }
+
+  function bindLogoEdit() {
+    if (c.slug !== 'impresoreando') return;
+    const btn = document.getElementById('portal-btn-editar-logo');
+    const input = document.getElementById('portal-input-logo');
+    const reset = document.getElementById('portal-btn-reset-logo');
+    btn?.addEventListener('click', () => input?.click());
+    input?.addEventListener('change', async () => {
+      const file = input.files && input.files[0];
+      input.value = '';
+      if (!file) return;
+      try {
+        await subirLogoImpresoreando(file);
+      } catch (e) {
+        toast(e.message || 'No se pudo actualizar el logo');
+      }
+    });
+    reset?.addEventListener('click', () => {
+      const cli = asegurarClienteEnDatos();
+      if (cli.ficha?.landing) {
+        delete cli.ficha.landing.logoUrl;
+        delete cli.ficha.landing.logoActualizado;
+      }
+      guardar(cli);
+      render();
+      toast('Logo restaurado al de identidad/');
+    });
+  }
+
+  function heroHtml(cfg, stats, landingStore) {
     const tagline = cfg?.tagline || c.agente;
     const logoImp =
       c.slug === 'impresoreando'
-        ? `<img class="portal-landing-hero__logo" src="./identidad/logo-ima2.png?v=ima2-claro-1" width="640" height="134" alt="impresoreando" />`
+        ? `<div class="portal-landing-hero__logo-wrap">
+            <img class="portal-landing-hero__logo" src="${escapeHtml(logoImpSrc(landingStore))}" width="640" height="134" alt="impresoreando" />
+            <div class="portal-landing-hero__logo-actions">
+              <button type="button" class="portal-btn portal-btn--logo-edit" id="portal-btn-editar-logo">Editar logo</button>
+              ${landingStore?.logoUrl ? '<button type="button" class="portal-btn portal-btn--ghost portal-btn--logo-reset" id="portal-btn-reset-logo">Usar logo de carpeta</button>' : ''}
+              <input type="file" id="portal-input-logo" accept="image/png,image/jpeg,image/webp,image/gif" hidden />
+            </div>
+          </div>`
         : '';
     const titulo = logoImp
       ? `<h1 class="portal-landing-hero__titulo portal-landing-hero__titulo--logo">${logoImp}</h1>`
@@ -826,7 +912,7 @@
         </div>
         ${panelNuevaTarea}
         ${modoEdicion ? '<p class="portal-cliente__hint landing-img__solo-edicion">Agrega imágenes, mockups o referencias. Se guardan en tu organizador local.</p>' : ''}
-        ${heroHtml(landingCfg, stats)}
+        ${heroHtml(landingCfg, stats, landing)}
         ${entregablesHtml(landingCfg)}
         ${seccionesHtml(landingCfg)}
         ${ecrPortadaHtml}
@@ -854,6 +940,8 @@
       modoEdicion = !modoEdicion;
       render();
     });
+
+    bindLogoEdit();
 
     document.getElementById('portal-btn-nueva-tarea')?.addEventListener('click', () => {
       mostrarNuevaTarea = !mostrarNuevaTarea;

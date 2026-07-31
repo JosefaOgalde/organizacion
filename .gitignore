@@ -22,6 +22,9 @@ data/impresoreando-status-ultimo.html
 # Imágenes de tareas ( Midjourney / referencias) — se sirven en local, no van al repo
 index/uploads/
 
+# Logo Impresoreando subido por UI (override local)
+index/clientes/impresoreando/identidad/logo-ui-custom*
+
 # Excepción: plantilla vacía sin PII (sí puede ir al repo)
 !data/organizacion-respaldo-ejemplo.json
 !data/impresoreando-seed.json

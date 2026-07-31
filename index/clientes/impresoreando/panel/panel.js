@@ -5536,6 +5536,69 @@
     }
   });
 
+  (function initLogoEditable() {
+    const img = $('#imp-logo-img');
+    const btn = $('#imp-btn-editar-logo');
+    const input = $('#imp-input-logo');
+    if (img && typeof window.impresoreandoLogoSrc === 'function') {
+      img.src = window.impresoreandoLogoSrc('../identidad/');
+    }
+    btn?.addEventListener('click', () => input?.click());
+    input?.addEventListener('change', async () => {
+      const file = input.files && input.files[0];
+      input.value = '';
+      if (!file || !/^image\//.test(file.type)) return;
+      if (file.size > 8 * 1024 * 1024) {
+        setStatus('Logo muy grande (máx 8 MB)', 'err');
+        return;
+      }
+      const dataUrl = await new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result);
+        r.onerror = () => reject(new Error('No se pudo leer'));
+        r.readAsDataURL(file);
+      });
+      let urlFinal = dataUrl;
+      try {
+        const res = await fetch('/api/cliente-logo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug: 'impresoreando', dataUrl }),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json?.stableUrl || json?.url) urlFinal = json.stableUrl || json.url;
+        }
+      } catch {
+        /* keep dataUrl */
+      }
+      try {
+        const raw = localStorage.getItem('organizacion_v2');
+        const datos = raw ? JSON.parse(raw) : { clientes: [], tareas: [], version: 2 };
+        if (!Array.isArray(datos.clientes)) datos.clientes = [];
+        let cli = datos.clientes.find((x) => x.id === 'cli-impresoreando');
+        if (!cli) {
+          cli = { id: 'cli-impresoreando', nombre: 'Impresoreando', abrev: 'IMP', ficha: {} };
+          datos.clientes.push(cli);
+        }
+        if (!cli.ficha) cli.ficha = {};
+        if (!cli.ficha.landing) cli.ficha.landing = {};
+        cli.ficha.landing.logoUrl = urlFinal;
+        cli.ficha.landing.logoActualizado = new Date().toISOString();
+        localStorage.setItem('organizacion_v2', JSON.stringify(datos));
+        if (typeof window.persistOrganizacionToDisk === 'function') {
+          window.persistOrganizacionToDisk(datos);
+        }
+      } catch (e) {
+        setStatus('No se pudo guardar el logo', 'err');
+        console.error(e);
+        return;
+      }
+      if (img) img.src = urlFinal;
+      setStatus('Logo actualizado', 'ok');
+    });
+  })();
+
   load()
     .then(() => activarTab(tabDesdeUrl()))
     .catch((e) => setStatus(String(e.message || e), 'err'));
