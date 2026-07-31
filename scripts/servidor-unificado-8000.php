@@ -16,6 +16,73 @@ $uri = rawurldecode($uri);
 $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 
 /**
+ * POST /api/cliente-logo — guarda PNG/JPG/WebP del logo de un cliente en identidad/.
+ * Body JSON: { slug: "impresoreando", dataUrl: "data:image/png;base64,…" }
+ */
+if ($uri === '/api/cliente-logo') {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: no-store');
+    if ($method !== 'POST') {
+        http_response_code(405);
+        echo json_encode(['error' => 'método no permitido'], JSON_UNESCAPED_UNICODE);
+        return true;
+    }
+    $raw = file_get_contents('php://input') ?: '';
+    if (strlen($raw) > 12 * 1024 * 1024) {
+        http_response_code(413);
+        echo json_encode(['error' => 'cuerpo demasiado grande'], JSON_UNESCAPED_UNICODE);
+        return true;
+    }
+    $obj = json_decode($raw, true);
+    if (!is_array($obj)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'JSON inválido'], JSON_UNESCAPED_UNICODE);
+        return true;
+    }
+    $slug = preg_replace('/[^a-z0-9\-]/', '', strtolower((string) ($obj['slug'] ?? ''))) ?: '';
+    $dataUrl = (string) ($obj['dataUrl'] ?? '');
+    $allowed = ['impresoreando'];
+    if (!in_array($slug, $allowed, true)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'slug no permitido'], JSON_UNESCAPED_UNICODE);
+        return true;
+    }
+    if (!preg_match('#^data:(image/(png|jpeg|jpg|webp));base64,(.+)$#i', $dataUrl, $m)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'dataUrl de imagen no válida'], JSON_UNESCAPED_UNICODE);
+        return true;
+    }
+    $mime = strtolower($m[1]);
+    $ext = str_contains($mime, 'png') ? 'png' : (str_contains($mime, 'webp') ? 'webp' : 'jpg');
+    $bin = base64_decode($m[3], true);
+    if ($bin === false || strlen($bin) < 32 || strlen($bin) > 8 * 1024 * 1024) {
+        http_response_code(400);
+        echo json_encode(['error' => 'imagen inválida o demasiado grande'], JSON_UNESCAPED_UNICODE);
+        return true;
+    }
+    $dir = $root . DIRECTORY_SEPARATOR . 'index' . DIRECTORY_SEPARATOR . 'clientes'
+        . DIRECTORY_SEPARATOR . $slug . DIRECTORY_SEPARATOR . 'identidad';
+    if (!is_dir($dir)) {
+        mkdir($dir, 0775, true);
+    }
+    $stamp = date('YmdHis');
+    $fileName = 'logo-ui-custom-' . $stamp . '.' . $ext;
+    $abs = $dir . DIRECTORY_SEPARATOR . $fileName;
+    file_put_contents($abs, $bin);
+    // Copia estable para referencias fijas
+    $stable = $dir . DIRECTORY_SEPARATOR . 'logo-ui-custom.' . $ext;
+    file_put_contents($stable, $bin);
+    $url = '/index/clientes/' . $slug . '/identidad/' . $fileName;
+    echo json_encode([
+        'ok' => true,
+        'url' => $url,
+        'stableUrl' => '/index/clientes/' . $slug . '/identidad/logo-ui-custom.' . $ext . '?v=' . $stamp,
+        'bytes' => strlen($bin),
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    return true;
+}
+
+/**
  * API Impresoreando (live JSON) — antes de Laravel, para que el panel no dependa de rutas artisan.
  */
 if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {

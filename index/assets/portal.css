@@ -517,6 +517,13 @@ body.portal-body--themed .portal-cliente {
   line-height: 0;
 }
 
+.portal-landing-hero__logo-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.65rem 0.85rem;
+}
+
 .portal-landing-hero__logo {
   display: block;
   height: clamp(56px, 12vw, 96px);
@@ -524,6 +531,26 @@ body.portal-body--themed .portal-cliente {
   max-width: min(560px, 96%);
   object-fit: contain;
   object-position: left center;
+}
+
+.portal-landing-hero__logo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.portal-btn--logo-edit {
+  font-size: 0.82rem;
+  padding: 0.35rem 0.75rem;
+  background: color-mix(in srgb, var(--card-border) 88%, #1a1a1a);
+  color: #fff;
+  border: none;
+}
+
+.portal-btn--logo-reset {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.65rem;
 }
 
 /* Impresoreando: wordmark navy/naranja (sin tipografía genérica) */

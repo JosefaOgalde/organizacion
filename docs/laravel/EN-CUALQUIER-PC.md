@@ -19,18 +19,19 @@ Para no duplicar datos ni dejar info en cachés distintas, **siempre** el mismo 
 
 ## Pasos en cualquier PC (iguales siempre)
 
-**Importante:** la última entrega (fixes ABRIR-LARAVEL, ventas Impresoreando, Trade Marketing ECR, calendario 28-jul) está en la rama  
-`cursor/laravel-guardar-entrega-02f9`, **no en `main`**.  
-Si solo hacés `git pull` en `main`, vas a seguir viendo lo antiguo y errores viejos.
+**Importante:** la entrega con **Editar logo** Impresoreando + respaldo reciente está en  
+`cursor/imp-logo-editar-aac4`.  
+Si solo hacés `git pull` en `main`, vas a seguir viendo lo antiguo.
 
 ### Opción recomendada
 Doble clic **`TRAER-CAMBIOS.bat`** (fetch + checkout de esa rama + pull + `ABRIR-LARAVEL.bat`).
 
 ### Opción manual
 ```bat
-cd "C:\Users\Josefa Ogalde\organizacion"
+cd /d C:\Users\josef\organizacion
 git fetch
-git checkout cursor/laravel-guardar-entrega-02f9
+git stash push -u -m "tmp-data" -- data/
+git checkout cursor/imp-logo-editar-aac4
 git pull
 ABRIR-LARAVEL.bat
 ```
@@ -38,7 +39,8 @@ ABRIR-LARAVEL.bat
 Abre solo (con `?disco=1`):
 
 - http://127.0.0.1:8000/index.html?disco=1  
-- http://127.0.0.1:8000/api/clientes  
+- http://127.0.0.1:8000/index/clientes/impresoreando/  
+- API clientes: http://127.0.0.1:8000/api/clientes  
 
 Si ves datos viejos: **Ctrl+Shift+R**. El sync de ABRIR solo usa `data\` del repo y **no pisa** un live más nuevo.
 
@@ -63,9 +65,17 @@ Esos archivos **no van a Git** (privacidad). Llévatelos en la carpeta del proye
 | `data/organizacion-live.json` | Calendario, madres, subtareas |
 | `backend/database/database.sqlite` | Clientes de la API |
 
-En un PC nuevo, si no tienes `organizacion-live.json`, `ABRIR-LARAVEL.bat` crea uno desde el respaldo más reciente del repo (`data/organizacion-respaldo-2026-07-28.json`).
+En un PC nuevo, si no tienes `organizacion-live.json`, `ABRIR-LARAVEL.bat` crea uno desde el respaldo más reciente del repo (`data/organizacion-respaldo-YYYY-MM-DD.json`, hoy: **31-jul** si lo importaste).
 
-También puedes usar **↓ Respaldo** en el organizador, guardar el JSON, y en el otro PC reemplazar `data/organizacion-live.json`.
+Para marcar el JSON de Descargas como canónico (logo Impresoreando + tareas al día):
+
+```bat
+cd /d C:\Users\josef\organizacion
+IMPORTAR-RESPALDO.bat "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31.json"
+ABRIR-LARAVEL.bat
+```
+
+Luego: http://127.0.0.1:8000/index.html?disco=1 (Ctrl+Shift+R).
 
 ---
 

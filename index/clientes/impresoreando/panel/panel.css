@@ -72,6 +72,12 @@
   object-position: left center;
 }
 
+.imp-btn--logo-edit {
+  align-self: center;
+  font-size: 0.78rem;
+  padding: 0.3rem 0.7rem;
+}
+
 .imp-tabs-bleed {
   width: 100%;
   background: #fffdf7;

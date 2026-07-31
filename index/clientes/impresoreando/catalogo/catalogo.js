@@ -11,7 +11,7 @@
   function slidePortada() {
     return `
       <article class="slide slide--portada" data-slide="0" aria-label="Portada">
-        <img class="slide-logo" src="../identidad/logo-ima2.png?v=ima2-claro-1" alt="impresoreando" width="820" height="172" />
+        <img class="slide-logo" src="../identidad/logo-ima2.png?v=imp-logo-20260731" alt="impresoreando" width="820" height="172" />
         <p class="slide-kicker">Catálogo</p>
         <h1 class="slide-title">Piezas 3D<br>hechas con cariño</h1>
         <p class="slide-pedido">${cfg.taglinePedido}</p>
@@ -47,7 +47,7 @@
     return `
       <article class="slide slide--cierre" data-slide="${total - 1}" aria-label="Cierre">
         <div class="slide-cierre-logo-wrap">
-          <img class="slide-logo-cierre" src="../identidad/logo-ima2.png?v=ima2-claro-1" alt="impresoreando" width="720" height="151" />
+          <img class="slide-logo-cierre" src="../identidad/logo-ima2.png?v=imp-logo-20260731" alt="impresoreando" width="720" height="151" />
         </div>
         <h2 class="slide-cierre-title">Pide los tuyos en <span>impresoreando</span></h2>
         <div class="slide-ig-box">

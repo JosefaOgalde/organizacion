@@ -33,6 +33,9 @@ if not errorlevel 1 (
 )
 
 echo  Recargando http://127.0.0.1:8000/index.html?disco=1
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1&v=20260728d'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1&v=20260731imp'"
 echo  Listo. Si la pestana ya estaba abierta, usa Ctrl+Shift+R.
+echo.
+echo  Si SIGUE viejo, en esa pestana F12 → Consola → pega y Enter:
+echo    localStorage.removeItem('organizacion_v2'); location.href='http://127.0.0.1:8000/index.html?disco=1^&v=20260731imp';
 echo.

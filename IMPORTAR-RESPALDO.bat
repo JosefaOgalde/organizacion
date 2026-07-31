@@ -4,7 +4,7 @@ cd /d "%~dp0"
 
 set "ORIGEN=%~1"
 set "LIVE=data\organizacion-live.json"
-set "RESPALDO=data\organizacion-respaldo-2026-07-28.json"
+set "RESPALDO=data\organizacion-respaldo-2026-07-31.json"
 
 if "%ORIGEN%"=="" (
   for /f "usebackq delims=" %%i in (`node scripts/respaldo-reciente.js 2^>nul`) do set "ORIGEN=%%i"
@@ -54,6 +54,10 @@ if errorlevel 1 (
   echo  Aviso: no se pudo asegurar Impresoreando automaticamente.
 ) else (
   echo  Impresoreando asegurado en el live ^(si faltaba^).
+)
+
+if exist "scripts\promover-logo-impresoreando.js" (
+  where node >nul 2>&1 && node scripts\promover-logo-impresoreando.js
 )
 
 echo.

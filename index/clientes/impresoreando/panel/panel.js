@@ -2320,46 +2320,11 @@
       changed = true;
     }
 
-    // PED-007 · Juan SIE · Torreón · listo (estimación + $1.000 impresora antigua)
+    // PED-007 · Juan SIE · Torreón — eliminado (pedido cancelado / no aplica)
     const id007 = 'ped-juan-torreon-007';
-    const prodTorre = (d.productos || []).find((p) => p.id === 'prod-torreon' || p.sku === 'TORREON001');
-    const costoTorre = prodTorre ? costoProdRough(d, prodTorre) : 3293.48;
-    const precioTorre =
-      Number(prodTorre?.precioVentaSugeridoClp) > 0 ? Number(prodTorre.precioVentaSugeridoClp) : 6500;
-    if (!d.pedidos.some((p) => p.id === id007 || p.numero === 'PED-007')) {
-      d.pedidos.push({
-        id: id007,
-        numero: 'PED-007',
-        fecha: '2026-07-26',
-        cliente: 'Juan SIE',
-        clienteNombre: 'Juan',
-        clienteOrigen: 'SIE',
-        canal: 'WhatsApp',
-        items: [
-          {
-            sku: 'TORREON001',
-            nombre: 'Torreón',
-            cantidad: 1,
-            precioUnitarioClp: precioTorre,
-            costoUnitarioClp: round2(costoTorre),
-            filamento: 'PLA color (estimación)',
-            estado: 'listo',
-            listos: 1,
-            enImpresion: 0,
-          },
-        ],
-        montoBruto: precioTorre,
-        descuentoClp: 0,
-        montoNeto: precioTorre,
-        costoTotal: round2(costoTorre),
-        estado: 'listo',
-        ventaId: null,
-        notas: `1× Torreón · listo · costo estimado $${round2(costoTorre)} (+$1.000 impresora antigua) · PVP $${precioTorre}`,
-        socioRegistro: 'Ambos',
-        creado: '2026-07-26T02:00:00.000Z',
-      });
-      changed = true;
-    }
+    const before007 = d.pedidos.length;
+    d.pedidos = d.pedidos.filter((p) => p.id !== id007 && p.numero !== 'PED-007');
+    if (d.pedidos.length !== before007) changed = true;
 
     // PED-008 · Juan MKOF · Porta Bob Esponja · listo
     const id008 = 'ped-juan-bob-008';
@@ -5535,6 +5500,69 @@
       e.returnValue = '';
     }
   });
+
+  (function initLogoEditable() {
+    const img = $('#imp-logo-img');
+    const btn = $('#imp-btn-editar-logo');
+    const input = $('#imp-input-logo');
+    if (img && typeof window.impresoreandoLogoSrc === 'function') {
+      img.src = window.impresoreandoLogoSrc('../identidad/');
+    }
+    btn?.addEventListener('click', () => input?.click());
+    input?.addEventListener('change', async () => {
+      const file = input.files && input.files[0];
+      input.value = '';
+      if (!file || !/^image\//.test(file.type)) return;
+      if (file.size > 8 * 1024 * 1024) {
+        setStatus('Logo muy grande (máx 8 MB)', 'err');
+        return;
+      }
+      const dataUrl = await new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result);
+        r.onerror = () => reject(new Error('No se pudo leer'));
+        r.readAsDataURL(file);
+      });
+      let urlFinal = dataUrl;
+      try {
+        const res = await fetch('/api/cliente-logo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug: 'impresoreando', dataUrl }),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json?.stableUrl || json?.url) urlFinal = json.stableUrl || json.url;
+        }
+      } catch {
+        /* keep dataUrl */
+      }
+      try {
+        const raw = localStorage.getItem('organizacion_v2');
+        const datos = raw ? JSON.parse(raw) : { clientes: [], tareas: [], version: 2 };
+        if (!Array.isArray(datos.clientes)) datos.clientes = [];
+        let cli = datos.clientes.find((x) => x.id === 'cli-impresoreando');
+        if (!cli) {
+          cli = { id: 'cli-impresoreando', nombre: 'Impresoreando', abrev: 'IMP', ficha: {} };
+          datos.clientes.push(cli);
+        }
+        if (!cli.ficha) cli.ficha = {};
+        if (!cli.ficha.landing) cli.ficha.landing = {};
+        cli.ficha.landing.logoUrl = urlFinal;
+        cli.ficha.landing.logoActualizado = new Date().toISOString();
+        localStorage.setItem('organizacion_v2', JSON.stringify(datos));
+        if (typeof window.persistOrganizacionToDisk === 'function') {
+          window.persistOrganizacionToDisk(datos);
+        }
+      } catch (e) {
+        setStatus('No se pudo guardar el logo', 'err');
+        console.error(e);
+        return;
+      }
+      if (img) img.src = urlFinal;
+      setStatus('Logo actualizado', 'ok');
+    });
+  })();
 
   load()
     .then(() => activarTab(tabDesdeUrl()))

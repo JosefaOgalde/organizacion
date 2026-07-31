@@ -544,6 +544,67 @@ function slugSeguro(s) {
     .slice(0, 80) || 'x';
 }
 
+/** Guarda logo de marca del cliente en identidad/ (p. ej. Impresoreando). */
+function handleApiClienteLogo(req, res) {
+  if (!checkApiAuth(req, res)) return;
+  if (req.method !== 'POST') return send(res, 405, 'Método no permitido');
+
+  return readBody(req).then((raw) => {
+    let obj;
+    try {
+      obj = JSON.parse(raw);
+    } catch {
+      return send(res, 400, JSON.stringify({ error: 'JSON inválido' }), 'application/json');
+    }
+    const slug = String(obj.slug || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, '');
+    const dataUrl = String(obj.dataUrl || '');
+    if (!['impresoreando'].includes(slug)) {
+      return send(res, 400, JSON.stringify({ error: 'slug no permitido' }), 'application/json');
+    }
+    const m = dataUrl.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+    if (!m) {
+      return send(res, 400, JSON.stringify({ error: 'dataUrl no válida' }), 'application/json');
+    }
+    const mime = m[1].toLowerCase();
+    const ext =
+      mime.includes('png') ? 'png' :
+      mime.includes('webp') ? 'webp' :
+      mime.includes('gif') ? 'gif' : 'jpg';
+    let buf;
+    try {
+      buf = Buffer.from(m[2], 'base64');
+    } catch {
+      return send(res, 400, JSON.stringify({ error: 'base64 inválido' }), 'application/json');
+    }
+    if (!buf.length || buf.length > 8 * 1024 * 1024) {
+      return send(res, 413, JSON.stringify({ error: 'imagen demasiado grande (máx 8 MB)' }), 'application/json');
+    }
+    const stamp = new Date().toISOString().replace(/[-:TZ.]/g, '').slice(0, 14);
+    const fileName = `logo-ui-custom-${stamp}.${ext}`;
+    const relDir = path.join('index', 'clientes', slug, 'identidad');
+    const absDir = path.join(ROOT, relDir);
+    fs.mkdirSync(absDir, { recursive: true });
+    fs.writeFileSync(path.join(absDir, fileName), buf);
+    fs.writeFileSync(path.join(absDir, `logo-ui-custom.${ext}`), buf);
+    const url = `/${relDir.replace(/\\/g, '/')}/${fileName}`;
+    const stableUrl = `/${relDir.replace(/\\/g, '/')}/logo-ui-custom.${ext}?v=${stamp}`;
+    console.log('[api] Logo cliente', url, `(${Math.round(buf.length / 1024)} KB)`);
+    return send(
+      res,
+      200,
+      JSON.stringify({ ok: true, url, stableUrl, bytes: buf.length }),
+      'application/json'
+    );
+  }).catch((e) => {
+    if (e && e.message === 'BODY_TOO_LARGE') {
+      return send(res, 413, JSON.stringify({ error: 'cuerpo demasiado grande' }), 'application/json');
+    }
+    return send(res, 500, String(e), 'text/plain');
+  });
+}
+
 /** Guarda imagen de tarea en disco (evita saturar localStorage con data URLs). */
 function handleApiTareaImagen(req, res) {
   if (!checkApiAuth(req, res)) return;
@@ -947,6 +1008,10 @@ const server = http.createServer((req, res) => {
 
   if (url.startsWith('/api/impresoreando')) {
     return handleApiImpresoreando(req, res);
+  }
+
+  if (url.startsWith('/api/cliente-logo')) {
+    return handleApiClienteLogo(req, res);
   }
 
   if (url.startsWith('/api/tarea-imagen')) {
