@@ -2536,6 +2536,94 @@
       changed = true;
     }
 
+    // PED-012 · Marcia SIE · 1× Limpiador de brochas morado pastel · fiado · $7.000
+    const id012 = 'ped-marcia-limpiador-012';
+    const prodLb012 = (d.productos || []).find(
+      (p) => p.id === 'prod-limpiador-brochas' || p.sku === 'LMBROC001'
+    );
+    const costoLb012 = prodLb012 ? costoProdRough(d, prodLb012) : 2163.67;
+    const precioLb012 = 7000;
+    if (!d.pedidos.some((p) => p.id === id012 || p.numero === 'PED-012')) {
+      d.pedidos.push({
+        id: id012,
+        numero: 'PED-012',
+        fecha: '2026-07-31',
+        cliente: 'Marcia SIE',
+        clienteNombre: 'Marcia',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'LMBROC001',
+            nombre: 'Limpiador de brochas',
+            cantidad: 1,
+            precioUnitarioClp: precioLb012,
+            costoUnitarioClp: round2(costoLb012),
+            filamento: 'PLA morado pastel',
+            estado: 'pendiente',
+            listos: 0,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioLb012,
+        descuentoClp: 0,
+        montoNeto: precioLb012,
+        costoTotal: round2(costoLb012),
+        estado: 'pendiente',
+        ventaId: null,
+        fiado: true,
+        pagoNotas: 'Fiado · fecha de pago por confirmar',
+        notas: `1× Limpiador de brochas morado pastel · fiado · PVP $${precioLb012} · fecha de pago por confirmar`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-31T00:30:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-013 · Mel MKOF · 1× Soporte celular negro · fiado · $4.000
+    const id013 = 'ped-mel-soporte-013';
+    const prodSop013 = (d.productos || []).find(
+      (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
+    );
+    const costoSop013 = prodSop013 ? costoProdRough(d, prodSop013) : 683.69;
+    const precioSop013 = 4000;
+    if (!d.pedidos.some((p) => p.id === id013 || p.numero === 'PED-013')) {
+      d.pedidos.push({
+        id: id013,
+        numero: 'PED-013',
+        fecha: '2026-07-31',
+        cliente: 'Mel MKOF',
+        clienteNombre: 'Mel',
+        clienteOrigen: 'MKOF',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: precioSop013,
+            costoUnitarioClp: round2(costoSop013),
+            filamento: 'PLA+ negro',
+            estado: 'pendiente',
+            listos: 0,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioSop013,
+        descuentoClp: 0,
+        montoNeto: precioSop013,
+        costoTotal: round2(costoSop013),
+        estado: 'pendiente',
+        ventaId: null,
+        fiado: true,
+        pagoNotas: 'Fiado · fecha de pago por confirmar',
+        notas: `1× Soporte celular negro · fiado · PVP $${precioSop013} · fecha de pago por confirmar`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-31T00:30:00.000Z',
+      });
+      changed = true;
+    }
+
     const maxNum = d.pedidos.reduce((m, p) => {
       const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
       return Math.max(m, n);

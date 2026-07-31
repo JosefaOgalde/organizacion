@@ -26,7 +26,7 @@
       "montoNetoClp": 915989,
       "deudaJosefaClp": 457995
     },
-    "pedidoSeq": 12,
+    "pedidoSeq": 13,
     "ventaSeq": 16,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
@@ -1386,6 +1386,11 @@
   },
   "bitacora": [
     {
+      "id": "bit-fiados-012-013-2026-07-31",
+      "fecha": "2026-07-31",
+      "texto": "Fiados: PED-012 Marcia SIE · limpia brochas morado pastel $7.000 · PED-013 Mel MKOF · soporte celular negro $4.000. Fecha de pago por confirmar."
+    },
+    {
       "id": "bit-gasto-diseno-alcancia-chanchito-2026-07-31",
       "fecha": "2026-07-31",
       "texto": "Gasto diseño: Alcancía chanchito $13.000 (ALCHAN001). No va al costo/u. Pagó Nicolás · sociedad 50/50."
@@ -1839,6 +1844,72 @@
       "socioRegistro": "Ambos",
       "creado": "2026-07-28T15:45:00.000Z",
       "transferidoEn": "2026-07-28T21:30:00.000Z"
+    },
+    {
+      "id": "ped-marcia-limpiador-012",
+      "numero": "PED-012",
+      "fecha": "2026-07-31",
+      "cliente": "Marcia SIE",
+      "clienteNombre": "Marcia",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "LMBROC001",
+          "nombre": "Limpiador de brochas",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 2163.67,
+          "filamento": "PLA morado pastel",
+          "estado": "pendiente",
+          "listos": 0,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 2163.67,
+      "estado": "pendiente",
+      "ventaId": null,
+      "fiado": true,
+      "pagoNotas": "Fiado · fecha de pago por confirmar",
+      "notas": "1× Limpiador de brochas morado pastel · fiado · PVP $7.000 · fecha de pago por confirmar",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-31T00:30:00.000Z"
+    },
+    {
+      "id": "ped-mel-soporte-013",
+      "numero": "PED-013",
+      "fecha": "2026-07-31",
+      "cliente": "Mel MKOF",
+      "clienteNombre": "Mel",
+      "clienteOrigen": "MKOF",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 1,
+          "precioUnitarioClp": 4000,
+          "costoUnitarioClp": 683.69,
+          "filamento": "PLA+ negro",
+          "estado": "pendiente",
+          "listos": 0,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 4000,
+      "descuentoClp": 0,
+      "montoNeto": 4000,
+      "costoTotal": 683.69,
+      "estado": "pendiente",
+      "ventaId": null,
+      "fiado": true,
+      "pagoNotas": "Fiado · fecha de pago por confirmar",
+      "notas": "1× Soporte celular negro · fiado · PVP $4.000 · fecha de pago por confirmar",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-31T00:30:00.000Z"
     }
   ]
 }
