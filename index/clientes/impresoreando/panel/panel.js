@@ -31,22 +31,109 @@
     setStatus('Cambios sin guardar', 'warn');
   }
 
+  /** Venta I000016 — hardcode por si el live/seed del PC quedó atrás. */
+  function ventaFabianSeed() {
+    return {
+      id: 'ven-fabian-bob-016',
+      codigo: 'I000016',
+      fecha: '2026-07-31',
+      cliente: 'Fabian MKOF',
+      clienteNombre: 'Fabian',
+      clienteOrigen: 'MKOF',
+      descripcion: '1× Porta Bob Esponja · Fabian MKOF',
+      cantidad: 1,
+      montoBruto: 7000,
+      descuentoClp: 0,
+      montoNeto: 7000,
+      costoTotal: 998.17,
+      canal: 'WhatsApp',
+      notas: '1× Porta Bob Esponja · cobrado $7.000 · MKOF (Josefa)',
+      socioRegistro: 'Ambos',
+      items: [
+        {
+          sku: 'PTBOBES001',
+          nombre: 'Porta Bob Esponja',
+          cantidad: 1,
+          precioUnitarioClp: 7000,
+          costoUnitarioClp: 998.17,
+          filamento: 'multicolor',
+        },
+      ],
+    };
+  }
+
+  function asegurarVentaFabianHard(d) {
+    if (!d || typeof d !== 'object') return false;
+    d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
+    d.meta = d.meta && typeof d.meta === 'object' ? d.meta : {};
+    const seed = ventaFabianSeed();
+    const idx = d.ventas.findIndex(
+      (v) =>
+        v &&
+        (v.id === seed.id ||
+          String(v.codigo || '').toUpperCase() === 'I000016' ||
+          /^fabian\b/i.test(String(v.cliente || '')))
+    );
+    let changed = false;
+    if (idx < 0) {
+      d.ventas.push({ ...seed, items: seed.items.map((it) => ({ ...it })) });
+      changed = true;
+    } else {
+      const cur = d.ventas[idx];
+      if (
+        String(cur.cliente || '') !== seed.cliente ||
+        Number(cur.montoNeto) !== seed.montoNeto ||
+        !Array.isArray(cur.items) ||
+        !cur.items.length
+      ) {
+        d.ventas[idx] = { ...cur, ...seed, items: seed.items.map((it) => ({ ...it })) };
+        changed = true;
+      }
+    }
+    if (Number(d.meta.ventaSeq || 0) < 16) {
+      d.meta.ventaSeq = 16;
+      changed = true;
+    }
+    if (changed) rebuildClientesHistorial(d);
+    return changed;
+  }
+
   async function load() {
     setStatus('Cargando…');
-    const res = await fetch(API, { cache: 'no-store' });
+    const res = await fetch(API + '?v=' + Date.now(), { cache: 'no-store' });
     if (!res.ok) throw new Error(`GET ${res.status}`);
     data = await res.json();
-    if (normalizarSociedad(data)) {
+    let migrated = normalizarSociedad(data);
+    // Siempre asegurar Fabian I000016 (aunque el seed del PC esté viejo).
+    if (asegurarVentaFabianHard(data)) migrated = true;
+    if (migrated) {
       dirty = true;
       try {
         await save();
+        const fab = (data.ventas || []).find((v) => v && v.codigo === 'I000016');
+        setStatus(
+          fab
+            ? `Guardado · venta ${fab.codigo} ${fab.cliente} ${money(fab.montoNeto)}`
+            : 'Guardado · migrado',
+          'ok'
+        );
       } catch (e) {
         setStatus(`Datos migrados — guarda manual: ${e.message || e}`, 'warn');
       }
     } else {
       dirty = false;
+      const fab = (data.ventas || []).find((v) => v && v.codigo === 'I000016');
       const when = data.meta?.actualizado ? new Date(data.meta.actualizado).toLocaleString('es-CL') : '—';
-      setStatus(`Actualizado: ${when}`, 'ok');
+      setStatus(
+        fab
+          ? `Actualizado: ${when} · ${fab.codigo} ${fab.cliente}`
+          : `Actualizado: ${when} · sin I000016 Fabian`,
+        fab ? 'ok' : 'warn'
+      );
+    }
+    // Si hay filtro Origen=SIE, avisar (Fabian es MKOF).
+    if (ventasFiltroOrigen === 'SIE') {
+      setStatus('Filtro Origen=SIE oculta a Fabian MKOF — poné Todos o MKOF', 'warn');
     }
     renderAll();
   }
