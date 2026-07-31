@@ -10,7 +10,7 @@ http://127.0.0.1:8000/index/clientes/joyasmercury/
 
 Incluye: **wireframes desktop** (7 pantallas), identidad, menú objetivo, Gantt y checklist.
 
-**Continuar trabajo:** [CONTINUAR-JM.md](CONTINUAR-JM.md) · respaldo `data/organizacion-respaldo-2026-07-28.json`
+**Continuar trabajo:** [CONTINUAR-JM.md](CONTINUAR-JM.md) · respaldo más reciente en `data/organizacion-respaldo-*.json`
 
 ## Atajos
 

@@ -9,7 +9,7 @@ echo  Uso:
 echo    ABRIR-LARAVEL.bat           → sync + reinicia :8000 + abre Organizador + Portal
 echo    ABRIR-LARAVEL.bat todo      → tambien abre ECR, MKOF, MOVA y prospecto
 echo    ABRIR-LARAVEL.bat sin-nav   → solo servidor / sync, sin abrir navegador
-echo    ABRIR-LARAVEL.bat restaurar → restaura live desde respaldo 28-jul y abre
+echo    ABRIR-LARAVEL.bat restaurar → restaura live desde el respaldo mas reciente y abre
 echo    RECARGAR.bat                → solo recarga organizador ?disco=1
 echo    TRAER-CAMBIOS.bat           → si estas en main sin la entrega
 echo    REPARAR-SQLITE-ACTIVO.bat   → si sale "no such column: activo"
@@ -18,17 +18,20 @@ echo.
 set "MODO=%~1"
 if "%MODO%"=="" set "MODO=auto"
 
-REM Restaurar calendario desde respaldo del repo (si el live se piso con uno viejo)
+REM Restaurar calendario desde el respaldo mas reciente del repo (fecha en el nombre)
 if /I "%MODO%"=="restaurar" (
-  if exist "data\organizacion-respaldo-2026-07-28.json" (
+  set "RESPALDO_SRC="
+  for /f "usebackq delims=" %%i in (`node scripts/respaldo-reciente.js --solo-repo 2^>nul`) do set "RESPALDO_SRC=%%i"
+  if defined RESPALDO_SRC if exist "%RESPALDO_SRC%" (
     if exist "data\organizacion-live.json" (
       copy /Y "data\organizacion-live.json" "data\organizacion-live-antes-restaurar.json" >nul 2>&1
     )
-    copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
-    echo  Live restaurado desde data\organizacion-respaldo-2026-07-28.json
+    copy /Y "%RESPALDO_SRC%" "data\organizacion-live.json" >nul
+    echo  Live restaurado desde %RESPALDO_SRC%
   ) else (
-    echo  [ERROR] Falta data\organizacion-respaldo-2026-07-28.json
-    echo  Corre TRAER-CAMBIOS.bat primero ^(rama con la entrega^).
+    echo  [ERROR] No hay organizacion-respaldo-*.json en data\
+    echo  Importa el ultimo: IMPORTAR-RESPALDO.bat "ruta\al\json"
+    echo  O corre TRAER-CAMBIOS.bat primero.
     pause
     exit /b 1
   )
@@ -83,13 +86,12 @@ if not exist "data\impresoreando-live.json" (
 
 REM 0) Solo crear live si FALTA (nunca pisar el calendario local con un respaldo viejo)
 if not exist "data\organizacion-live.json" (
-  echo  0^) Creando organizacion-live.json desde respaldo del repo...
-  if exist "data\organizacion-respaldo-2026-07-29.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-29.json" "data\organizacion-live.json" >nul
-    echo  Live creado desde data\organizacion-respaldo-2026-07-29.json
-  ) else if exist "data\organizacion-respaldo-2026-07-28.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
-    echo  Live creado desde data\organizacion-respaldo-2026-07-28.json
+  echo  0^) Creando organizacion-live.json desde el respaldo mas reciente del repo...
+  set "RESPALDO_SRC="
+  for /f "usebackq delims=" %%i in (`node scripts/respaldo-reciente.js --solo-repo 2^>nul`) do set "RESPALDO_SRC=%%i"
+  if defined RESPALDO_SRC if exist "%RESPALDO_SRC%" (
+    copy /Y "%RESPALDO_SRC%" "data\organizacion-live.json" >nul
+    echo  Live creado desde %RESPALDO_SRC%
   ) else if exist "scripts\sync-respaldo-auto.js" (
     where node >nul 2>&1 && node scripts\sync-respaldo-auto.js --solo-repo --force
   )
@@ -186,15 +188,11 @@ if not errorlevel 1 (
 )
 
 if not exist "data\organizacion-live.json" (
-  if exist "data\organizacion-respaldo-2026-07-28.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-28.json" "data\organizacion-live.json" >nul
-    echo  Live creado desde data\organizacion-respaldo-2026-07-28.json
-  ) else if exist "data\organizacion-respaldo-2026-07-24.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-24.json" "data\organizacion-live.json" >nul
-    echo  Live creado desde data\organizacion-respaldo-2026-07-24.json
-  ) else if exist "data\organizacion-respaldo-2026-07-21.json" (
-    copy /Y "data\organizacion-respaldo-2026-07-21.json" "data\organizacion-live.json" >nul
-    echo  Live creado desde data\organizacion-respaldo-2026-07-21.json
+  set "RESPALDO_SRC="
+  for /f "usebackq delims=" %%i in (`node scripts/respaldo-reciente.js --solo-repo 2^>nul`) do set "RESPALDO_SRC=%%i"
+  if defined RESPALDO_SRC if exist "%RESPALDO_SRC%" (
+    copy /Y "%RESPALDO_SRC%" "data\organizacion-live.json" >nul
+    echo  Live creado desde %RESPALDO_SRC%
   )
 )
 

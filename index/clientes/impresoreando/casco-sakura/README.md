@@ -50,5 +50,5 @@ python scripts\reducir-stl-tinkercad.py "C:\ruta\CASCO.stl" --max-mb 18 --max-fa
 **Meshmixer** (gratis) abre STL grandes y puede hacer los agujeros sin el límite de 300k.
 
 ## Organizador
-Respaldo vigente: `data/organizacion-respaldo-2026-07-28.json`  
+Respaldo vigente: el `data/organizacion-respaldo-YYYY-MM-DD.json` más reciente (importar 30-jul si es el último)  
 `ABRIR-LARAVEL.bat` lo usa si falta `organizacion-live.json`.
