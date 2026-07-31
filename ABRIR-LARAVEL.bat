@@ -226,8 +226,8 @@ if /I "%MODO%"=="sin-navegador" goto :fin_urls
 
 REM powershell conserva el "=" de ?disco=1 (start de cmd lo convierte en %3D)
 REM Por defecto: solo Organizador + Portal clientes
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1&v=20260728e'"
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/?disco=1'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1&v=20260731imp'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/?disco=1&v=20260731imp'"
 
 if /I not "%MODO%"=="todo" goto :fin_urls
 
