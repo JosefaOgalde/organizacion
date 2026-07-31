@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Fuerza PED-010/012/013 (fiados) + venta I000016 desde seed → live.
+ * Fuerza PED-010/012/013/014 (fiados) + venta I000016 + producto LLONEP001 → live.
  * Uso si el panel no muestra los fiados tras git pull:
  *   node scripts/force-imp-fiados-012-013.js
  */
@@ -15,8 +15,10 @@ const FORCE_PED_IDS = [
   'ped-gianni-soporte-010',
   'ped-marcia-limpiador-012',
   'ped-mel-soporte-013',
+  'ped-cata-onepiece-014',
 ];
 const FORCE_VEN_IDS = ['ven-fabian-bob-016'];
+const FORCE_PROD_IDS = ['prod-llavero-one-piece'];
 
 function main() {
   if (!fs.existsSync(SEED)) {
@@ -70,12 +72,45 @@ function main() {
     }
   }
 
-  // Producto limpia brochas si falta
-  const lb = (seed.productos || []).find((p) => p && p.sku === 'LMBROC001');
-  if (lb && !(live.productos || []).some((p) => p && (p.id === lb.id || p.sku === 'LMBROC001'))) {
-    live.productos.push(JSON.parse(JSON.stringify(lb)));
+  // Productos canónicos (limpia brochas + llavero One Piece)
+  for (const forceId of FORCE_PROD_IDS.concat(['prod-limpiador-brochas'])) {
+    const sp = (seed.productos || []).find((p) => p && p.id === forceId);
+    if (!sp) continue;
+    const idx = live.productos.findIndex(
+      (p) => p && (p.id === sp.id || (sp.sku && p.sku === sp.sku))
+    );
+    if (idx < 0) {
+      live.productos.push(JSON.parse(JSON.stringify(sp)));
+      n += 1;
+      console.log('+ producto', sp.sku || sp.id);
+    } else if (FORCE_PROD_IDS.includes(forceId)) {
+      live.productos[idx] = { ...live.productos[idx], ...JSON.parse(JSON.stringify(sp)) };
+      n += 1;
+      console.log('~ producto', sp.sku || sp.id);
+    }
+  }
+  // Fallback si el seed local aún no trae LLONEP001
+  if (!live.productos.some((p) => p && (p.id === 'prod-llavero-one-piece' || p.sku === 'LLONEP001'))) {
+    live.productos.push({
+      id: 'prod-llavero-one-piece',
+      sku: 'LLONEP001',
+      nombre: 'Llavero One Piece',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoGramos: 0,
+      costoFilamentoKgClp: 16829,
+      horasImpresion: 0,
+      minutosPintado: 0,
+      unidadesMetal: 1,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 2000,
+      pendienteCosto: true,
+      editadoLocal: true,
+      notas:
+        'Llavero One Piece (Mugiwara / sombrero de paja). Sin registro slicer aún — falta g/h para costo. Incluye $50 argolla. PVP ref. ~$2.000/u (pedido Cata 3× $5.000).',
+    });
     n += 1;
-    console.log('+ producto LMBROC001');
+    console.log('+ producto LLONEP001 (fallback)');
   }
 
   const maxPed = live.pedidos.reduce((m, p) => {

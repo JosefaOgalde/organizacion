@@ -62,6 +62,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-011 | Marcia SIE | 1× Soporte celular morado `SOPCEL001` | **transferido** → I000015 $3.000 |
 | PED-012 | Marcia SIE | 1× Limpiador de brochas morado pastel `LMBROC001` | **pendiente** · fiado · $7.000 · fecha pago por confirmar |
 | PED-013 | Mel MKOF | 1× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · $4.000 · fecha pago por confirmar |
+| PED-014 | Cata SIE | 3× Llavero One Piece `LLONEP001` | **pendiente** · fiado · **$5.000** total · fecha pago por confirmar · costo slicer pendiente |
 
 ### Ventas — ID correlativo + historial
 
@@ -188,6 +189,7 @@ Datos en `data.impresoras[]` (seed + live) y UI **Operación → Impresoras**. C
 | `TORREON001` | Torreón | **~120** (est.) | **~4 h** (est.) | **Ender 3 V2 Neo (Sprite Neo)** · sin slicer · recargo perfil +$1.000 · costo ~$3.293 · PVP sug. $6.500 |
 | `LMBROC001` | Limpiador de brochas | **114,05** | **3,47 (3 h 28 m)** | PLA morado pastel · Elegoo · modelo 113,58 + purge 0,47 · costo ~$2.163 · **PVP sug. $4.300** |
 | `ALCHAN001` | Alcancía chanchito | **315,88** | **12,15 (12 h 9 m)** | PLA rosado `$10.990/kg` · Elegoo · modelo 280,74 + sop 33,75 + purge 1,40 · 105,06 m · costo ~$4.202 · **PVP sug. $8.400** · diseño comprado **$13.000** en gastos (no en costo/u) |
+| `LLONEP001` | Llavero One Piece | — | — | **pendiente slicer** · +$50 argolla · PVP ref. ~$2.000/u · PED-014 Cata 3× $5.000 |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
 

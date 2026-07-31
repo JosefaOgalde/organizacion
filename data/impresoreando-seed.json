@@ -26,7 +26,7 @@
       "montoNetoClp": 915989,
       "deudaJosefaClp": 457995
     },
-    "pedidoSeq": 13,
+    "pedidoSeq": 14,
     "ventaSeq": 16,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
@@ -1354,6 +1354,23 @@
       "pendienteCosto": false,
       "editadoLocal": true,
       "notas": "Slicer 1 ud: modelo 280.74 g + soportes 33.75 g + descargado 1.40 g = 315.88 g · 105.06 m · 12 h 9 m · coste slicer 6,32. PLA rosado $10.990/kg · Elegoo Centauri. Costo ~$4.202 · PVP sugerido $8.400."
+    },
+    {
+      "id": "prod-llavero-one-piece",
+      "sku": "LLONEP001",
+      "nombre": "Llavero One Piece",
+      "activo": true,
+      "impresoraId": "imp-centauri-carbon-2",
+      "filamentoGramos": 0,
+      "costoFilamentoKgClp": 16829,
+      "horasImpresion": 0,
+      "minutosPintado": 0,
+      "unidadesMetal": 1,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 2000,
+      "pendienteCosto": true,
+      "editadoLocal": true,
+      "notas": "Llavero One Piece (Mugiwara / sombrero de paja). Sin registro slicer aún — falta g/h para costo. Incluye $50 argolla. PVP ref. ~$2.000/u (pedido Cata 3× $5.000)."
     }
   ],
   "planAds": {
@@ -1385,6 +1402,11 @@
     ]
   },
   "bitacora": [
+    {
+      "id": "bit-fiado-ped014-cata-onepiece-2026-07-31",
+      "fecha": "2026-07-31",
+      "texto": "Fiado PED-014 Cata SIE · 3× Llavero One Piece LLONEP001 · total $5.000. Fecha de pago por confirmar · costo slicer pendiente."
+    },
     {
       "id": "bit-fiados-012-013-2026-07-31",
       "fecha": "2026-07-31",
@@ -1910,6 +1932,39 @@
       "notas": "1× Soporte celular negro · fiado · PVP $4.000 · fecha de pago por confirmar",
       "socioRegistro": "Ambos",
       "creado": "2026-07-31T00:30:00.000Z"
+    },
+    {
+      "id": "ped-cata-onepiece-014",
+      "numero": "PED-014",
+      "fecha": "2026-07-31",
+      "cliente": "Cata SIE",
+      "clienteNombre": "Cata",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "LLONEP001",
+          "nombre": "Llavero One Piece",
+          "cantidad": 3,
+          "precioUnitarioClp": 1666.67,
+          "costoUnitarioClp": 100,
+          "filamento": "multicolor",
+          "estado": "pendiente",
+          "listos": 0,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 5000,
+      "descuentoClp": 0,
+      "montoNeto": 5000,
+      "costoTotal": 300,
+      "estado": "pendiente",
+      "ventaId": null,
+      "fiado": true,
+      "pagoNotas": "Fiado · fecha de pago por confirmar",
+      "notas": "3× Llavero One Piece · fiado · total $5.000 ($1.666,67/u) · fecha de pago por confirmar · costo pendiente de slicer",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-31T01:00:00.000Z"
     }
   ]
 }

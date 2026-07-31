@@ -175,6 +175,7 @@
     if (asegurarProductoTorreon(d)) changed = true;
     if (asegurarProductoLimpiadorBrochas(d)) changed = true;
     if (asegurarProductoAlcanciaChanchito(d)) changed = true;
+    if (asegurarProductoLlaveroOnePiece(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
@@ -1258,6 +1259,51 @@
     if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
       Object.assign(existing, seed);
       return true;
+    }
+    if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
+      existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /** Llavero One Piece (Mugiwara) — sin slicer aún; +$50 argolla. Soft seed. */
+  function seedLlaveroOnePiece() {
+    return {
+      sku: 'LLONEP001',
+      nombre: 'Llavero One Piece',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoGramos: 0,
+      costoFilamentoKgClp: COSTO_PLA_AMARILLO_KG,
+      horasImpresion: 0,
+      minutosPintado: 0,
+      unidadesMetal: 1,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 2000,
+      pendienteCosto: true,
+      notas:
+        'Llavero One Piece (Mugiwara / sombrero de paja). Sin registro slicer aún — falta g/h para costo. Incluye $50 argolla. PVP ref. ~$2.000/u (pedido Cata 3× $5.000).',
+    };
+  }
+
+  function asegurarProductoLlaveroOnePiece(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-llavero-one-piece';
+    const seed = seedLlaveroOnePiece();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
     }
     if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
       existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
@@ -2731,6 +2777,52 @@
       changed = true;
     }
 
+    // PED-014 · Cata SIE · 3× Llavero One Piece · fiado · $5.000 total
+    const id014 = 'ped-cata-onepiece-014';
+    const prodOp014 = (d.productos || []).find(
+      (p) => p.id === 'prod-llavero-one-piece' || p.sku === 'LLONEP001'
+    );
+    const costoOp014 = prodOp014 ? costoProdRough(d, prodOp014) : 100; // argolla+bolsa hasta tener slicer
+    const cant014 = 3;
+    const total014 = 5000;
+    const precioOp014 = round2(total014 / cant014); // 1666,67
+    if (!d.pedidos.some((p) => p.id === id014 || p.numero === 'PED-014')) {
+      d.pedidos.push({
+        id: id014,
+        numero: 'PED-014',
+        fecha: '2026-07-31',
+        cliente: 'Cata SIE',
+        clienteNombre: 'Cata',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'LLONEP001',
+            nombre: 'Llavero One Piece',
+            cantidad: cant014,
+            precioUnitarioClp: precioOp014,
+            costoUnitarioClp: round2(costoOp014),
+            filamento: 'multicolor',
+            estado: 'pendiente',
+            listos: 0,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: total014,
+        descuentoClp: 0,
+        montoNeto: total014,
+        costoTotal: round2(costoOp014 * cant014),
+        estado: 'pendiente',
+        ventaId: null,
+        fiado: true,
+        pagoNotas: 'Fiado · fecha de pago por confirmar',
+        notas: `3× Llavero One Piece · fiado · total $${total014} ($${precioOp014}/u) · fecha de pago por confirmar · costo pendiente de slicer`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-31T01:00:00.000Z',
+      });
+      changed = true;
+    }
+
     const maxNum = d.pedidos.reduce((m, p) => {
       const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
       return Math.max(m, n);
@@ -2947,6 +3039,9 @@
     if (/torre[oó]n|torreon/.test(t)) return 'TORREON';
     if (/alcanc[ií]a|chanchito|cerdito|piggy/.test(t)) return 'ALCHAN';
     if (/limpiador|secador/.test(t) && /brocha/.test(t)) return 'LMBROC';
+    if (/llavero/.test(t) && /(one\s*piece|onepiece|mugiwara|sombrero\s*de\s*paja)/.test(t))
+      return 'LLONEP';
+    if (/(one\s*piece|onepiece|mugiwara)/.test(t)) return 'LLONEP';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -3000,6 +3095,7 @@
       'prod-torreon': { sku: 'TORREON001', nombre: 'Torreón' },
       'prod-limpiador-brochas': { sku: 'LMBROC001', nombre: 'Limpiador de brochas' },
       'prod-alcancia-chanchito': { sku: 'ALCHAN001', nombre: 'Alcancía chanchito' },
+      'prod-llavero-one-piece': { sku: 'LLONEP001', nombre: 'Llavero One Piece' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',
