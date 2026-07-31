@@ -118,6 +118,10 @@ if not errorlevel 1 (
     echo  0e^) Forzar ventas PED-014/015 + fiado PED-008 + gasto evento 3D...
     node scripts\force-imp-ventas-014-015-fiado-008.js
   )
+  if exist "scripts\force-imp-ped-007-anulado.js" (
+    echo  0f^) Forzar PED-007 Torreón anulado...
+    node scripts\force-imp-ped-007-anulado.js
+  )
 )
 
 echo  1^) SQLite + seed clientes...

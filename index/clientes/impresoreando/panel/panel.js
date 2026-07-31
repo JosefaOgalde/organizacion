@@ -2367,12 +2367,13 @@
       changed = true;
     }
 
-    // PED-007 · Juan SIE · Torreón · anulado
+    // PED-007 · Juan SIE · Torreón · anulado (forzar siempre salvo ya transferido)
     const id007 = 'ped-juan-torreon-007';
     const prodTorre = (d.productos || []).find((p) => p.id === 'prod-torreon' || p.sku === 'TORREON001');
     const costoTorre = prodTorre ? costoProdRough(d, prodTorre) : 3293.48;
     const precioTorre =
       Number(prodTorre?.precioVentaSugeridoClp) > 0 ? Number(prodTorre.precioVentaSugeridoClp) : 6500;
+    const notas007 = `1× Torreón · ANULADO · costo estimado $${round2(costoTorre)} · PVP sugerido $${precioTorre}`;
     const ped007 = d.pedidos.find((p) => p.id === id007 || p.numero === 'PED-007');
     if (!ped007) {
       d.pedidos.push({
@@ -2403,23 +2404,42 @@
         estado: 'anulado',
         ventaId: null,
         anuladoEn: '2026-07-31T20:30:00.000Z',
-        notas: `1× Torreón · ANULADO · costo estimado $${round2(costoTorre)} · PVP sugerido $${precioTorre}`,
+        notas: notas007,
         socioRegistro: 'Ambos',
         creado: '2026-07-26T02:00:00.000Z',
       });
       changed = true;
-    } else if (ped007.estado !== 'anulado' && ped007.estado !== 'transferido') {
-      ped007.estado = 'anulado';
-      ped007.ventaId = null;
-      ped007.anuladoEn = ped007.anuladoEn || '2026-07-31T20:30:00.000Z';
-      ped007.notas = `1× Torreón · ANULADO · costo estimado $${round2(costoTorre)} · PVP sugerido $${precioTorre}`;
+    } else if (ped007.estado !== 'transferido') {
+      let touch007 = false;
+      if (ped007.estado !== 'anulado') {
+        ped007.estado = 'anulado';
+        touch007 = true;
+      }
+      if (ped007.ventaId) {
+        ped007.ventaId = null;
+        touch007 = true;
+      }
+      if (!ped007.anuladoEn) {
+        ped007.anuladoEn = '2026-07-31T20:30:00.000Z';
+        touch007 = true;
+      }
+      if (ped007.notas !== notas007) {
+        ped007.notas = notas007;
+        touch007 = true;
+      }
       if (Array.isArray(ped007.items)) {
         for (const it of ped007.items) {
-          it.estado = 'anulado';
-          if (/estimaci/i.test(String(it.filamento || ''))) it.filamento = 'PLA color';
+          if (it.estado !== 'anulado') {
+            it.estado = 'anulado';
+            touch007 = true;
+          }
+          if (it.filamento !== 'PLA color') {
+            it.filamento = 'PLA color';
+            touch007 = true;
+          }
         }
       }
-      changed = true;
+      if (touch007) changed = true;
     }
 
     // PED-008 · Juan MKOF · Porta Bob Esponja · listo
