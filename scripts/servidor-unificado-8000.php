@@ -119,6 +119,57 @@ if ($uri === '/api/impresoreando' || $uri === '/api/impresoreando/venta') {
             $data['gastos'][] = $sg;
             $gasIds[$sg['id']] = true;
         }
+        // Pedidos del seed que falten (por id o número). No pisa existentes.
+        $data['pedidos'] = is_array($data['pedidos'] ?? null) ? $data['pedidos'] : [];
+        // Solo borra el id viejo de Ele; PED-012 vigente = Marcia limpia brochas.
+        $data['pedidos'] = array_values(array_filter(
+            $data['pedidos'],
+            static fn ($p) => is_array($p) && (($p['id'] ?? '') !== 'ped-ele-pesa-012')
+        ));
+        $pedKeys = [];
+        foreach ($data['pedidos'] as $p) {
+            if (!is_array($p)) {
+                continue;
+            }
+            if (!empty($p['id'])) {
+                $pedKeys['id:' . $p['id']] = true;
+            }
+            if (!empty($p['numero'])) {
+                $pedKeys['num:' . $p['numero']] = true;
+            }
+        }
+        foreach ($seedData['pedidos'] ?? [] as $sp) {
+            if (!is_array($sp) || empty($sp['id'])) {
+                continue;
+            }
+            if (($sp['id'] ?? '') === 'ped-ele-pesa-012') {
+                continue;
+            }
+            $has =
+                (!empty($sp['id']) && isset($pedKeys['id:' . $sp['id']]))
+                || (!empty($sp['numero']) && isset($pedKeys['num:' . $sp['numero']]));
+            if (!$has) {
+                $data['pedidos'][] = $sp;
+                $pedKeys['id:' . $sp['id']] = true;
+                if (!empty($sp['numero'])) {
+                    $pedKeys['num:' . $sp['numero']] = true;
+                }
+            }
+        }
+        $data['ventas'] = is_array($data['ventas'] ?? null) ? $data['ventas'] : [];
+        $venIds = [];
+        foreach ($data['ventas'] as $v) {
+            if (is_array($v) && !empty($v['id'])) {
+                $venIds[$v['id']] = true;
+            }
+        }
+        foreach ($seedData['ventas'] ?? [] as $sv) {
+            if (!is_array($sv) || empty($sv['id']) || isset($venIds[$sv['id']])) {
+                continue;
+            }
+            $data['ventas'][] = $sv;
+            $venIds[$sv['id']] = true;
+        }
         return $data;
     };
 

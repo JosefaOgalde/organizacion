@@ -110,6 +110,10 @@ if not errorlevel 1 (
     echo  0c^) Asegurar producto Limpiador de brochas LMBROC001...
     node scripts\force-imp-producto-limpiador-brochas.js
   )
+  if exist "scripts\force-imp-fiados-012-013.js" (
+    echo  0d^) Forzar fiados PED-010/012/013 + venta Fabian...
+    node scripts\force-imp-fiados-012-013.js
+  )
 )
 
 echo  1^) SQLite + seed clientes...

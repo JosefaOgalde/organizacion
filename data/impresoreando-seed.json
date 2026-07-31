@@ -26,8 +26,8 @@
       "montoNetoClp": 915989,
       "deudaJosefaClp": 457995
     },
-    "pedidoSeq": 12,
-    "ventaSeq": 15,
+    "pedidoSeq": 13,
+    "ventaSeq": 16,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
       {
@@ -130,6 +130,17 @@
           "ven-mrpqov4c"
         ],
         "totalNeto": 15000,
+        "compras": 1
+      },
+      {
+        "cliente": "Fabian MKOF",
+        "ventaCodigos": [
+          "I000016"
+        ],
+        "ventaIds": [
+          "ven-fabian-bob-016"
+        ],
+        "totalNeto": 7000,
         "compras": 1
       }
     ]
@@ -432,6 +443,24 @@
       "pagadoPor": "Nicolás"
     },
     {
+      "id": "gas-diseno-alcancia-chanchito",
+      "fecha": "2026-07-31",
+      "categoria": "diseño",
+      "descripcion": "Diseño Alcancía chanchito (comprado)",
+      "proveedor": "Diseño digital",
+      "cantidad": 1,
+      "montoNeto": 13000,
+      "notas": "Diseño digital de la Alcancía chanchito (ALCHAN001). No se suma al costo unitario del producto. Gastos socios · sociedad 50/50 · pagó Nicolás.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Nicolás",
+      "items": [
+        {
+          "descripcion": "Diseño Alcancía chanchito",
+          "monto": 13000
+        }
+      ]
+    },
+    {
       "id": "gas-llaveros-100-6978",
       "fecha": "2026-07-29",
       "categoria": "metal",
@@ -482,6 +511,51 @@
         {
           "descripcion": "Gancho aros con tope ×100 ud (50 pares)",
           "monto": 3490
+        }
+      ]
+    },
+    {
+      "id": "gas-mueble-esquinero-easy-35990",
+      "fecha": "2026-07-29",
+      "categoria": "equipo",
+      "descripcion": "Mueble esquinero — EASY INTERNET (PAGADO)",
+      "proveedor": "EASY INTERNET",
+      "cantidad": 1,
+      "montoNeto": 35990,
+      "notas": "Compra TC ****7022 · Nicolás Romero · 29/07/2026 00:28. Mueble esquinero para Impresoreando. Sociedad 50/50 · pagó Nicolás.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Nicolás",
+      "items": [
+        {
+          "descripcion": "Mueble esquinero EASY",
+          "monto": 35990
+        }
+      ]
+    },
+    {
+      "id": "gas-ml-bolsas-enchufe-led-32569",
+      "fecha": "2026-07-31",
+      "categoria": "equipo",
+      "descripcion": "Mercado Libre — bolsas kraft ×100 + enchufe inteligente WiFi + tira LED RGB 20 m (PAGADO)",
+      "proveedor": "Mercado Libre",
+      "cantidad": 3,
+      "montoNeto": 32569,
+      "notas": "Envío 1: bolsas kraft heladería/panadería pack 100 $4.590 · enchufe inteligente medidor consumo WiFi 16A Alexa $9.989 · tira LED RGB Bluetooth Maxwell 20 m $17.990. Total $32.569. Sociedad 50/50 · pagó Nicolás.",
+      "ordenId": "ml-bolsas-enchufe-led-32569",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Nicolás",
+      "items": [
+        {
+          "descripcion": "Bolsa papel kraft heladería/panadería pack 100 ud marrón claro",
+          "monto": 4590
+        },
+        {
+          "descripcion": "Enchufe inteligente medidor de consumo WiFi 16A Alexa",
+          "monto": 9989
+        },
+        {
+          "descripcion": "Tira cinta luces LED RGB Bluetooth Maxwell 20 m",
+          "monto": 17990
         }
       ]
     }
@@ -886,6 +960,33 @@
           "filamento": "PLA morado"
         }
       ]
+    },
+    {
+      "id": "ven-fabian-bob-016",
+      "codigo": "I000016",
+      "fecha": "2026-07-31",
+      "cliente": "Fabian MKOF",
+      "clienteNombre": "Fabian",
+      "clienteOrigen": "MKOF",
+      "descripcion": "1× Porta Bob Esponja · Fabian MKOF",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 998.17,
+      "canal": "WhatsApp",
+      "notas": "1× Porta Bob Esponja · cobrado $7.000 · MKOF (Josefa)",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "sku": "PTBOBES001",
+          "nombre": "Porta Bob Esponja",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 998.17,
+          "filamento": "multicolor"
+        }
+      ]
     }
   ],
   "operacion": [
@@ -1231,6 +1332,28 @@
       "pendienteCosto": false,
       "editadoLocal": true,
       "notas": "Slicer 1 ud: modelo 113.58 g + descargado 0.47 g = 114.05 g · 37.93 m · 3 h 28 m · coste slicer 2,28. PLA morado pastel (ref $/kg color $16.829) · Elegoo Centauri. Costo ~$2.163 · PVP sugerido $4.300."
+    },
+    {
+      "id": "prod-alcancia-chanchito",
+      "sku": "ALCHAN001",
+      "nombre": "Alcancía chanchito",
+      "activo": true,
+      "impresoraId": "imp-centauri-carbon-2",
+      "filamentoModeloGramos": 280.74,
+      "filamentoSoportesGramos": 33.75,
+      "filamentoPurgeGramos": 1.4,
+      "filamentoMetros": 105.06,
+      "filamentoGramos": 315.88,
+      "costoFilamentoKgClp": 10990,
+      "horasImpresion": 12.15,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 8400,
+      "costoSlicerRef": 6.32,
+      "pendienteCosto": false,
+      "editadoLocal": true,
+      "notas": "Slicer 1 ud: modelo 280.74 g + soportes 33.75 g + descargado 1.40 g = 315.88 g · 105.06 m · 12 h 9 m · coste slicer 6,32. PLA rosado $10.990/kg · Elegoo Centauri. Costo ~$4.202 · PVP sugerido $8.400."
     }
   ],
   "planAds": {
@@ -1262,6 +1385,21 @@
     ]
   },
   "bitacora": [
+    {
+      "id": "bit-fiados-012-013-2026-07-31",
+      "fecha": "2026-07-31",
+      "texto": "Fiados: PED-012 Marcia SIE · limpia brochas morado pastel $7.000 · PED-013 Mel MKOF · soporte celular negro $4.000. Fecha de pago por confirmar."
+    },
+    {
+      "id": "bit-gasto-diseno-alcancia-chanchito-2026-07-31",
+      "fecha": "2026-07-31",
+      "texto": "Gasto diseño: Alcancía chanchito $13.000 (ALCHAN001). No va al costo/u. Pagó Nicolás · sociedad 50/50."
+    },
+    {
+      "id": "bit-gasto-ml-bolsas-enchufe-led-2026-07-31",
+      "fecha": "2026-07-31",
+      "texto": "Gasto ML: bolsas kraft ×100 $4.590 · enchufe WiFi 16A $9.989 · tira LED RGB 20 m $17.990. Total $32.569. Pagó Nicolás · sociedad 50/50."
+    },
     {
       "id": "bit-gastos-2026-07-29",
       "fecha": "2026-07-29",
@@ -1706,6 +1844,72 @@
       "socioRegistro": "Ambos",
       "creado": "2026-07-28T15:45:00.000Z",
       "transferidoEn": "2026-07-28T21:30:00.000Z"
+    },
+    {
+      "id": "ped-marcia-limpiador-012",
+      "numero": "PED-012",
+      "fecha": "2026-07-31",
+      "cliente": "Marcia SIE",
+      "clienteNombre": "Marcia",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "LMBROC001",
+          "nombre": "Limpiador de brochas",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 2163.67,
+          "filamento": "PLA morado pastel",
+          "estado": "pendiente",
+          "listos": 0,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 2163.67,
+      "estado": "pendiente",
+      "ventaId": null,
+      "fiado": true,
+      "pagoNotas": "Fiado · fecha de pago por confirmar",
+      "notas": "1× Limpiador de brochas morado pastel · fiado · PVP $7.000 · fecha de pago por confirmar",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-31T00:30:00.000Z"
+    },
+    {
+      "id": "ped-mel-soporte-013",
+      "numero": "PED-013",
+      "fecha": "2026-07-31",
+      "cliente": "Mel MKOF",
+      "clienteNombre": "Mel",
+      "clienteOrigen": "MKOF",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 1,
+          "precioUnitarioClp": 4000,
+          "costoUnitarioClp": 683.69,
+          "filamento": "PLA+ negro",
+          "estado": "pendiente",
+          "listos": 0,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 4000,
+      "descuentoClp": 0,
+      "montoNeto": 4000,
+      "costoTotal": 683.69,
+      "estado": "pendiente",
+      "ventaId": null,
+      "fiado": true,
+      "pagoNotas": "Fiado · fecha de pago por confirmar",
+      "notas": "1× Soporte celular negro · fiado · PVP $4.000 · fecha de pago por confirmar",
+      "socioRegistro": "Ambos",
+      "creado": "2026-07-31T00:30:00.000Z"
     }
   ]
 }

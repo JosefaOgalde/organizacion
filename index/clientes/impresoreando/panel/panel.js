@@ -87,9 +87,11 @@
     if (asegurarProductoDragon(d)) changed = true;
     if (asegurarProductoTorreon(d)) changed = true;
     if (asegurarProductoLimpiadorBrochas(d)) changed = true;
+    if (asegurarProductoAlcanciaChanchito(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
+    if (asegurarGastoMlBolsasEnchufeLed20260731(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
     if (asegurarPedidosImpresosYNaves(d)) changed = true;
@@ -562,6 +564,7 @@
   const COSTO_PLA_CAFE_KG = 16829; // PLA Café Elegoo (#312435)
   const COSTO_PLA_BLANCO_KG = 12690; // PLA blanco Elegoo (ML)
   const COSTO_PLA_ROJO_KG = 17986; // PLA+ Rojo Elegoo (#312435)
+  const COSTO_PLA_ROSADO_KG = 10990; // Filamento rosado 1kg (compra 29 jul)
 
   /**
    * Upsert que pisa parámetros slicer del seed (respeta precioVenta si ya > 0).
@@ -1116,6 +1119,66 @@
     return changed;
   }
 
+  /** Alcancía chanchito — slicer 315,88 g · 12 h 9 m · PLA rosado · Elegoo. Soft seed. */
+  function seedAlcanciaChanchito() {
+    const filamentoModeloGramos = 280.74;
+    const filamentoSoportesGramos = 33.75;
+    const filamentoPurgeGramos = 1.4;
+    const filamentoGramos = 315.88; // total slicer
+    const horasImpresion = round2((12 * 60 + 9) / 60); // 12 h 9 m → 12,15 h
+    // Costo approx: fil 3471,52 + luz 680,40 + bolsa 50 ≈ 4201,92 → PVP +100% $8.400
+    return {
+      sku: 'ALCHAN001',
+      nombre: 'Alcancía chanchito',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoModeloGramos,
+      filamentoSoportesGramos,
+      filamentoPurgeGramos,
+      filamentoMetros: 105.06,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_ROSADO_KG,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 8400,
+      costoSlicerRef: 6.32,
+      pendienteCosto: false,
+      notas:
+        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + soportes ${filamentoSoportesGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 105,06 m · 12 h 9 m · coste slicer 6,32. PLA rosado $10.990/kg · Elegoo Centauri. Costo ~$4.202 · PVP sugerido $8.400.`,
+    };
+  }
+
+  function asegurarProductoAlcanciaChanchito(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-alcancia-chanchito';
+    const seed = seedAlcanciaChanchito();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
+      existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    }
+    return changed;
+  }
+
   function formatearCodigoVenta(n) {
     return `I${String(n).padStart(6, '0')}`;
   }
@@ -1523,6 +1586,33 @@
           },
         ],
       },
+      {
+        id: 'ven-fabian-bob-016',
+        codigo: 'I000016',
+        fecha: '2026-07-31',
+        cliente: 'Fabian MKOF',
+        clienteNombre: 'Fabian',
+        clienteOrigen: 'MKOF',
+        descripcion: '1× Porta Bob Esponja · Fabian MKOF',
+        cantidad: 1,
+        montoBruto: 7000,
+        descuentoClp: 0,
+        montoNeto: 7000,
+        costoTotal: 998.17,
+        canal: 'WhatsApp',
+        notas: '1× Porta Bob Esponja · cobrado $7.000 · MKOF (Josefa)',
+        socioRegistro: 'Ambos',
+        items: [
+          {
+            sku: 'PTBOBES001',
+            nombre: 'Porta Bob Esponja',
+            cantidad: 1,
+            precioUnitarioClp: 7000,
+            costoUnitarioClp: 998.17,
+            filamento: 'multicolor',
+          },
+        ],
+      },
     ];
 
     let changed = false;
@@ -1772,7 +1862,7 @@
     return changed;
   }
 
-  /** Compras 29 jul 2026 — llaveros, filamento rosado, ganchos aros. Sociedad 50/50 · pagó Nicolás. */
+  /** Compras 29 jul 2026 — llaveros, filamento rosado, ganchos aros, mueble esquinero EASY. Sociedad 50/50 · pagó Nicolás. */
   function asegurarGastosCompras20260729(d) {
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
     const regs = [
@@ -1815,6 +1905,20 @@
         pagadoPor: 'Nicolás',
         items: [{ descripcion: 'Gancho aros con tope ×100 ud (50 pares)', monto: 3490 }],
       },
+      {
+        id: 'gas-mueble-esquinero-easy-35990',
+        fecha: '2026-07-29',
+        categoria: 'equipo',
+        descripcion: 'Mueble esquinero — EASY INTERNET (PAGADO)',
+        proveedor: 'EASY INTERNET',
+        cantidad: 1,
+        montoNeto: 35990,
+        notas:
+          'Compra TC ****7022 · Nicolás Romero · 29/07/2026 00:28. Mueble esquinero para Impresoreando. Sociedad 50/50 · pagó Nicolás.',
+        socioRegistro: 'Ambos',
+        pagadoPor: 'Nicolás',
+        items: [{ descripcion: 'Mueble esquinero EASY', monto: 35990 }],
+      },
     ];
     let changed = false;
     const byId = new Map(d.gastos.map((g) => [g.id, g]));
@@ -1829,13 +1933,89 @@
       }
     }
     d.bitacora = Array.isArray(d.bitacora) ? d.bitacora : [];
+    const bitGastoEasy = {
+      id: 'bit-gasto-mueble-esquinero-2026-07-29',
+      fecha: '2026-07-29',
+      texto:
+        'Gasto: mueble esquinero EASY INTERNET $35.990 (TC ****7022). Pagó Nicolás · sociedad 50/50.',
+    };
+    if (!d.bitacora.some((b) => b.id === bitGastoEasy.id)) {
+      d.bitacora.unshift(bitGastoEasy);
+      changed = true;
+    }
     if (!d.bitacora.some((b) => b.id === 'bit-gastos-2026-07-29')) {
       d.bitacora.unshift({
         id: 'bit-gastos-2026-07-29',
         fecha: '2026-07-29',
         texto:
-          'Gastos: llaveros ×100 $6.978 · filamento rosado $10.990 · gancho aros con tope ×100/50 pares $3.490. Total $21.458. Pagó Nicolás · sociedad 50/50.',
+          'Gastos: llaveros ×100 $6.978 · filamento rosado $10.990 · gancho aros con tope ×100/50 pares $3.490 · mueble esquinero EASY $35.990. Pagó Nicolás · sociedad 50/50.',
       });
+      changed = true;
+    } else {
+      const bit = d.bitacora.find((b) => b.id === 'bit-gastos-2026-07-29');
+      if (bit && !String(bit.texto || '').includes('mueble esquinero')) {
+        bit.texto =
+          'Gastos: llaveros ×100 $6.978 · filamento rosado $10.990 · gancho aros con tope ×100/50 pares $3.490 · mueble esquinero EASY $35.990. Pagó Nicolás · sociedad 50/50.';
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  /** Mercado Libre — bolsas kraft + enchufe inteligente + tira LED RGB. Sociedad 50/50 · pagó Nicolás. */
+  function asegurarGastoMlBolsasEnchufeLed20260731(d) {
+    d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
+    const reg = {
+      id: 'gas-ml-bolsas-enchufe-led-32569',
+      fecha: '2026-07-31',
+      categoria: 'equipo',
+      descripcion:
+        'Mercado Libre — bolsas kraft ×100 + enchufe inteligente WiFi + tira LED RGB 20 m (PAGADO)',
+      proveedor: 'Mercado Libre',
+      cantidad: 3,
+      montoNeto: 32569,
+      notas:
+        'Envío 1: bolsas kraft heladería/panadería pack 100 $4.590 · enchufe inteligente medidor consumo WiFi 16A Alexa $9.989 · tira LED RGB Bluetooth Maxwell 20 m $17.990. Total $32.569. Sociedad 50/50 · pagó Nicolás.',
+      ordenId: 'ml-bolsas-enchufe-led-32569',
+      socioRegistro: 'Ambos',
+      pagadoPor: 'Nicolás',
+      items: [
+        {
+          descripcion: 'Bolsa papel kraft heladería/panadería pack 100 ud marrón claro',
+          monto: 4590,
+        },
+        {
+          descripcion: 'Enchufe inteligente medidor de consumo WiFi 16A Alexa',
+          monto: 9989,
+        },
+        {
+          descripcion: 'Tira cinta luces LED RGB Bluetooth Maxwell 20 m',
+          monto: 17990,
+        },
+      ],
+    };
+    let changed = false;
+    const existing = d.gastos.find((g) => g.id === reg.id);
+    if (!existing) {
+      d.gastos.push({ ...reg });
+      changed = true;
+    } else if (
+      Number(existing.montoNeto) !== reg.montoNeto ||
+      existing.descripcion !== reg.descripcion ||
+      !Array.isArray(existing.items)
+    ) {
+      Object.assign(existing, reg);
+      changed = true;
+    }
+    d.bitacora = Array.isArray(d.bitacora) ? d.bitacora : [];
+    const bit = {
+      id: 'bit-gasto-ml-bolsas-enchufe-led-2026-07-31',
+      fecha: '2026-07-31',
+      texto:
+        'Gasto ML: bolsas kraft ×100 $4.590 · enchufe WiFi 16A $9.989 · tira LED RGB 20 m $17.990. Total $32.569. Pagó Nicolás · sociedad 50/50.',
+    };
+    if (!d.bitacora.some((b) => b.id === bit.id)) {
+      d.bitacora.unshift(bit);
       changed = true;
     }
     return changed;
@@ -1892,7 +2072,22 @@
         notas:
           'Diseño digital del Dragón (DRAGON001). No se suma al costo unitario del producto. Gastos socios · sociedad 50/50.',
         socioRegistro: 'Ambos',
+        pagadoPor: 'Nicolás',
         items: [{ descripcion: 'Diseño Dragón', monto: 3000 }],
+      },
+      {
+        id: 'gas-diseno-alcancia-chanchito',
+        fecha: '2026-07-31',
+        categoria: 'diseño',
+        descripcion: 'Diseño Alcancía chanchito (comprado)',
+        proveedor: 'Diseño digital',
+        cantidad: 1,
+        montoNeto: 13000,
+        notas:
+          'Diseño digital de la Alcancía chanchito (ALCHAN001). No se suma al costo unitario del producto. Gastos socios · sociedad 50/50 · pagó Nicolás.',
+        socioRegistro: 'Ambos',
+        pagadoPor: 'Nicolás',
+        items: [{ descripcion: 'Diseño Alcancía chanchito', monto: 13000 }],
       },
     ];
     let changed = false;
@@ -1906,6 +2101,17 @@
         Object.assign(existing, reg);
         changed = true;
       }
+    }
+    d.bitacora = Array.isArray(d.bitacora) ? d.bitacora : [];
+    const bitDisenoChanchito = {
+      id: 'bit-gasto-diseno-alcancia-chanchito-2026-07-31',
+      fecha: '2026-07-31',
+      texto:
+        'Gasto diseño: Alcancía chanchito $13.000 (ALCHAN001). No va al costo/u. Pagó Nicolás · sociedad 50/50.',
+    };
+    if (!d.bitacora.some((b) => b.id === bitDisenoChanchito.id)) {
+      d.bitacora.unshift(bitDisenoChanchito);
+      changed = true;
     }
     return changed;
   }
@@ -2023,11 +2229,10 @@
       });
       changed = true;
     }
-    // Quitar PED-012 si quedó como duplicado de la venta Ele (I000014 vive en PED-004).
+    // Quitar solo el id viejo ped-ele-pesa-012 (Ele → PED-004 / I000014).
+    // No borrar por número PED-012: vigente = Marcia limpia brochas.
     const before012 = (d.pedidos || []).length;
-    d.pedidos = (d.pedidos || []).filter(
-      (p) => p && p.id !== 'ped-ele-pesa-012' && p.numero !== 'PED-012'
-    );
+    d.pedidos = (d.pedidos || []).filter((p) => p && p.id !== 'ped-ele-pesa-012');
     if (d.pedidos.length !== before012) changed = true;
 
     // PED-005 · María Paz SIE · Soporte celular morado pastel · transferido I000011 $4.000 (pagado)
@@ -2330,6 +2535,94 @@
       changed = true;
     }
 
+    // PED-012 · Marcia SIE · 1× Limpiador de brochas morado pastel · fiado · $7.000
+    const id012 = 'ped-marcia-limpiador-012';
+    const prodLb012 = (d.productos || []).find(
+      (p) => p.id === 'prod-limpiador-brochas' || p.sku === 'LMBROC001'
+    );
+    const costoLb012 = prodLb012 ? costoProdRough(d, prodLb012) : 2163.67;
+    const precioLb012 = 7000;
+    if (!d.pedidos.some((p) => p.id === id012 || p.numero === 'PED-012')) {
+      d.pedidos.push({
+        id: id012,
+        numero: 'PED-012',
+        fecha: '2026-07-31',
+        cliente: 'Marcia SIE',
+        clienteNombre: 'Marcia',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'LMBROC001',
+            nombre: 'Limpiador de brochas',
+            cantidad: 1,
+            precioUnitarioClp: precioLb012,
+            costoUnitarioClp: round2(costoLb012),
+            filamento: 'PLA morado pastel',
+            estado: 'pendiente',
+            listos: 0,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioLb012,
+        descuentoClp: 0,
+        montoNeto: precioLb012,
+        costoTotal: round2(costoLb012),
+        estado: 'pendiente',
+        ventaId: null,
+        fiado: true,
+        pagoNotas: 'Fiado · fecha de pago por confirmar',
+        notas: `1× Limpiador de brochas morado pastel · fiado · PVP $${precioLb012} · fecha de pago por confirmar`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-31T00:30:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-013 · Mel MKOF · 1× Soporte celular negro · fiado · $4.000
+    const id013 = 'ped-mel-soporte-013';
+    const prodSop013 = (d.productos || []).find(
+      (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
+    );
+    const costoSop013 = prodSop013 ? costoProdRough(d, prodSop013) : 683.69;
+    const precioSop013 = 4000;
+    if (!d.pedidos.some((p) => p.id === id013 || p.numero === 'PED-013')) {
+      d.pedidos.push({
+        id: id013,
+        numero: 'PED-013',
+        fecha: '2026-07-31',
+        cliente: 'Mel MKOF',
+        clienteNombre: 'Mel',
+        clienteOrigen: 'MKOF',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: precioSop013,
+            costoUnitarioClp: round2(costoSop013),
+            filamento: 'PLA+ negro',
+            estado: 'pendiente',
+            listos: 0,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precioSop013,
+        descuentoClp: 0,
+        montoNeto: precioSop013,
+        costoTotal: round2(costoSop013),
+        estado: 'pendiente',
+        ventaId: null,
+        fiado: true,
+        pagoNotas: 'Fiado · fecha de pago por confirmar',
+        notas: `1× Soporte celular negro · fiado · PVP $${precioSop013} · fecha de pago por confirmar`,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-31T00:30:00.000Z',
+      });
+      changed = true;
+    }
+
     const maxNum = d.pedidos.reduce((m, p) => {
       const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
       return Math.max(m, n);
@@ -2544,6 +2837,8 @@
     if (/soporte/.test(t)) return 'SOPCEL';
     if (/drag[oó]n/.test(t)) return 'DRAGON';
     if (/torre[oó]n|torreon/.test(t)) return 'TORREON';
+    if (/alcanc[ií]a|chanchito|cerdito|piggy/.test(t)) return 'ALCHAN';
+    if (/limpiador|secador/.test(t) && /brocha/.test(t)) return 'LMBROC';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -2595,6 +2890,8 @@
       'prod-soporte-celular': { sku: 'SOPCEL001', nombre: 'Soporte celular' },
       'prod-dragon': { sku: 'DRAGON001', nombre: 'Dragón' },
       'prod-torreon': { sku: 'TORREON001', nombre: 'Torreón' },
+      'prod-limpiador-brochas': { sku: 'LMBROC001', nombre: 'Limpiador de brochas' },
+      'prod-alcancia-chanchito': { sku: 'ALCHAN001', nombre: 'Alcancía chanchito' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',

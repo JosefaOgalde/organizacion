@@ -23,7 +23,7 @@ Uso: banner home / slider WP · 4000 × 1770 px.
 **Eyebrow:** HUNTER  
 **Headline:** Accesorios con 40% OFF  
 **Sub:** Estrenamos el descuento. Piezas seleccionadas.  
-**CTA:** Ver accesorios en oferta  
+**CTA:** Entrar al refugio  
 
 ### B — más directa
 **Eyebrow:** NUEVO DESCUENTO  
@@ -37,12 +37,26 @@ Uso: banner home / slider WP · 4000 × 1770 px.
 **Sub:** Accesorios Hunter. Primera vez en oferta.  
 **CTA:** Descubrir la selección  
 
-## CTAs cortos (botón WP / overlay)
-1. Ver accesorios en oferta ← recomendado
-2. Comprar ahora
-3. Aprovechar 40% OFF
-4. Ir a la oferta
-5. Ver selección Hunter
+## CTAs (botón WP / overlay)
+El **40% OFF** va aparte (headline/sub). El botón no repite el porcentaje.
+
+### Recomendado (con el bodegón «refugio»)
+**Entrar al refugio** ← mejor con la escena
+
+### Alternativas fuertes
+1. Quiero abrigarme
+2. Ver la selección
+3. Descubrir accesorios
+4. Llevarme lo mío
+5. Sumar a mi look
+6. Explorar la entrada
+7. Ver piezas Hunter
+
+### Evitar
+- Incluir «40%» / «OFF» en el botón (ya va en el texto de oferta)
+- Ver accesorios en oferta
+- Comprar ahora
+- Ir a la oferta
 
 ## Productos en escena
 - Gorro con pon-pon moustache original negro — https://trendseeker.cl/producto/gorro-con-pon-pon-moustache-original-negro/

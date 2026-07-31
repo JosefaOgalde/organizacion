@@ -1,0 +1,62 @@
+# Prompt Gemini · Banner bodegón Accesorios Hunter
+Combinación pedida: **escena de la imagen 1** + **arreglo de productos de la imagen 2**.
+Sin texto en la imagen. Formato: banner **4000 × 1770 px**.
+
+---
+
+## Referencias de producto (fidelidad)
+
+1. Gorro rayas rosa: https://trendseeker.cl/wp-content/uploads/2023/07/UAH5101WXA-SPK-1.jpg  
+2. Gorro pon-pon negro: https://trendseeker.cl/wp-content/uploads/2023/07/UAH3031WXA-GZB-1.jpg  
+3. Calcetín rojo: https://trendseeker.cl/wp-content/uploads/2022/11/UAS3000AAA-MLR-1.png  
+4. Calcetín negro: https://trendseeker.cl/wp-content/uploads/2023/07/UAS3036AAB-BLK-1-princ.jpg  
+5. Paraguas navy: https://trendseeker.cl/wp-content/uploads/2023/07/PROD-AW18-ORG-UAU1004UPM-PKB-1.jpg  
+   → En escena: **azul navy + transparente + moustache** (no rosa).
+
+Si puedes adjuntar también:
+- Imagen 1 = ambiente (chimenea + ventana) que te gustó
+- Imagen 2 = cómo deben verse/agruparse los productos
+
+---
+
+## Prompt para pegar en Gemini
+
+```
+Combina estas referencias exactamente así:
+
+ESCENA / AMBIENTE (como la IMAGEN 1 — mantener):
+- Banner horizontal muy ancho (4000×1770 o 16:9 amplio).
+- Chimenea grande de piedra con fuego intenso a la IZQUIERDA.
+- Ventana con lluvia y bosque de coníferas a la DERECHA.
+- Piso continuo (piedra o madera oscura) de borde a borde.
+- Luz cálida de la chimenea vs luz fría de la ventana.
+- Foto realista, lente rectilínea: sin laterales estirados, sin blur artificial, sin barras de color, sin espejos.
+
+ARREGLO DE PRODUCTOS (como la IMAGEN 2 — usar este layout):
+- Un solo cluster centrado (no empujado a la derecha).
+- Dos botas Hunter negras mate ALTAS juntas, una al lado de la otra (pareja unida, no separadas a los lados):
+  · Izquierda: calcetín bota ROJO grueso con parche HUNTER blanco/rojo mirando a cámara.
+  · Derecha: calcetín bota NEGRO cable-knit con parche HUNTER mirando a cámara.
+- Paraguas burbuja transparente con borde AZUL NAVY moustache ABIERTO justo DETRÁS de las dos botas (pegado al grupo).
+- Banco de madera bajo INMEDIATAMENTE a la DERECHA de las botas, con:
+  · Gorro negro/gris con pon-pon negro grande + etiqueta Hunter.
+  · Gorro gris claro con rayas rosa pálido + crema + gris en el puño + etiqueta Hunter.
+- Productos completos (suelas, cúpula del paraguas, gorros enteros). Fidelidad a las fotos de producto linkeadas.
+
+TEXTO: no poner ningún texto, tipografía ni watermark (solo logos que ya traen los productos).
+
+Entrega una sola imagen limpia de bodegón publicitario.
+```
+
+---
+
+## Textos para montar después
+```
+El refugio empieza en la entrada
+```
+```
+40% OFF en lo que te abriga
+```
+```
+Ver accesorios en oferta
+```
