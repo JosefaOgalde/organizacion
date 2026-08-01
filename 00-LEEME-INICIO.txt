@@ -34,7 +34,11 @@ No hace falta pegar rutas del JSON ni preguntarle al agente.
 
 SI GIT DICE "local changes would be overwritten":
   DESBLOQUEAR-GIT.bat
-  (o: git checkout -- data\impresoreando-seed.json  y  git pull)
+  Luego: FORZAR-TRAER-REDES.bat
+  O pega en la consola:
+    git checkout -- data\impresoreando-seed.json
+    git checkout -- data\organizacion-respaldo-2026-07-31.json
+    git pull origin main
 
 JOYAS MERCURY (pausado, en la nube para iPad/iPhone):
   Release: https://github.com/JosefaOgalde/organizacion/releases/tag/jm-archivo-2026-07-31

@@ -18,12 +18,20 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo [1] git fetch origin main...
+echo [0] Desbloquear pull ^(seed + respaldo 31-jul^)...
+git checkout -- data/impresoreando-seed.json 2>nul
+git checkout -- data/organizacion-respaldo-2026-07-31.json 2>nul
+
+echo [1] git fetch + pull origin main...
 git fetch origin main
 if errorlevel 1 (
   echo [ERROR] fetch fallo
   pause
   exit /b 1
+)
+git pull origin main
+if errorlevel 1 (
+  echo [AVISO] pull fallo — igual traigo archivos con checkout
 )
 
 echo [2] checkout main...
