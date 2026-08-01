@@ -2,7 +2,7 @@
 /**
  * Pieza IG 1080×1350 — Alcancía chanchito
  * Misma estética que el post 1 de @impresoreando ("Porta completos"):
- *   · fondo beige #EBD9C1
+ *   · fondo sage #D8E0D4
  *   · título serif Playfair Display
  *   · subtítulo + pie sans Montserrat
  *   · producto centrado (sin marco)
@@ -67,7 +67,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from pathlib import Path
 
 W, H = 1080, 1350
-BEIGE = (235, 217, 193)
+BEIGE = (216, 224, 212)  # sage #D8E0D4 (antes beige post 1)
 INK = (46, 33, 26)
 
 prod_path = r'''${foto.replace(/\\/g, '/')}'''
@@ -92,7 +92,8 @@ w0, h0 = src.size
 for y in range(h0):
     for x in range(w0):
         r, g, b, a = px[x, y]
-        db = abs(r - BEIGE[0]) + abs(g - BEIGE[1]) + abs(b - BEIGE[2])
+        OLD_BEIGE = (235, 217, 193)
+        db = abs(r - OLD_BEIGE[0]) + abs(g - OLD_BEIGE[1]) + abs(b - OLD_BEIGE[2])
         warm = r > 200 and g > 180 and b > 150 and abs(r - g) < 45
         if db < 55 or (warm and db < 90) or (r > 245 and g > 235 and b > 220):
             alpha = 0 if db < 35 or warm else max(0, min(255, int((db - 35) * 6)))
