@@ -578,6 +578,36 @@ $mime = [
 ][$ext] ?? 'application/octet-stream';
 
 header('Content-Type: ' . $mime);
-header('Cache-Control: no-cache');
+header('Cache-Control: no-store, no-cache, must-revalidate');
+
+// Panel Impresoreando viejo (sin pestaña Redes): inyectar enlace a la estrategia.
+$isImpPanelIndex =
+    str_ends_with($fullNorm, '/index/clientes/impresoreando/panel/index.html')
+    || str_ends_with($relFromRoot, 'index/clientes/impresoreando/panel/index.html');
+if ($isImpPanelIndex && $ext === 'html') {
+    $html = (string) file_get_contents($full);
+    if ($html !== '' && !str_contains($html, 'data-tab="redes"') && !str_contains($html, 'estrategia.html')) {
+        $tabHtml = '<a class="imp-tab--redes" href="./estrategia.html?v=srv-redes-1" style="display:inline-flex;align-items:center;padding:0.45rem 0.8rem;border-radius:999px;border:1px solid #5a8f7b;background:#eef7f2;color:#2f5c4a;font-weight:700;text-decoration:none">Redes sociales</a>';
+        if (str_contains($html, 'data-tab="bitacora"')) {
+            $html = preg_replace(
+                '/(<button[^>]*data-tab="bitacora"[^>]*>.*?<\/button>)/is',
+                '$1' . "\n      " . $tabHtml,
+                $html,
+                1
+            ) ?? $html;
+        }
+        $btnTop = '<a class="imp-btn" href="./estrategia.html?v=srv-redes-1" style="background:#eef7f2;border-color:#5a8f7b;color:#2f5c4a">Estrategia redes</a>';
+        if (str_contains($html, 'id="btn-recargar"')) {
+            $html = str_replace(
+                '<button type="button" id="btn-recargar"',
+                $btnTop . "\n        <button type=\"button\" id=\"btn-recargar\"",
+                $html
+            );
+        }
+        echo $html;
+        return true;
+    }
+}
+
 readfile($full);
 return true;
