@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 /**
- * Monta pieza IG 1080×1350 Alcancía chanchito (ALCHAN001).
- * Misma tipografía/layout del catálogo Impresoreando (Nunito 800, navy/naranja).
- * Texto mínimo: SKU · nombre · Todo es a pedido · @impresoreando
+ * Pieza IG 1080×1350 — Alcancía chanchito
+ * Misma estética que el post 1 de @impresoreando ("Porta completos"):
+ * fondo beige, título serif (Playfair), subtítulo sans (Montserrat),
+ * producto centrado, pie "Hecho a pedido" entre líneas.
  *
- * Foto preferida: piezas/foto-producto-chanchito.jpg
- * Fallback: piezas/alcancia-chanchito-producto-ref.jpg
+ * Foto preferida (fondo beige/studio):
+ *   piezas/foto-producto-chanchito.jpg
+ * Fallback:
+ *   piezas/alcancia-chanchito-producto-beige.png
  *
  *   node scripts/montar-pieza-alcancia-chanchito.js
  */
@@ -24,8 +27,9 @@ const foto =
     path.join(PIEZAS, 'foto-producto-chanchito.jpg'),
     path.join(PIEZAS, 'foto-producto-chanchito.jpeg'),
     path.join(PIEZAS, 'foto-producto-chanchito.png'),
+    path.join(PIEZAS, 'alcancia-chanchito-producto-beige.png'),
+    path.join(PIEZAS, 'alcancia-chanchito-producto-beige.jpg'),
     path.join(PIEZAS, 'alcancia-chanchito-producto-ref.jpg'),
-    path.join(PIEZAS, 'alcancia-chanchito-producto-ref.png'),
   ].find((p) => fs.existsSync(p)) || null;
 
 if (!foto) {
@@ -33,102 +37,126 @@ if (!foto) {
   process.exit(1);
 }
 
-const fontCandidates = [
-  '/tmp/Nunito.ttf',
-  path.join(ROOT, 'fonts/Nunito.ttf'),
-].filter((p) => fs.existsSync(p));
-const NUNITO = fontCandidates[0] || '';
+const PLAYFAIR =
+  [
+    '/tmp/ig-fonts/ttf/PlayfairDisplay-Regular.ttf',
+    path.join(ROOT, 'fonts/PlayfairDisplay.ttf'),
+  ].find((p) => fs.existsSync(p)) || '';
+
+const MONTSERRAT =
+  [
+    '/tmp/ig-fonts/ttf/Montserrat-Regular.ttf',
+    path.join(ROOT, 'fonts/Montserrat.ttf'),
+  ].find((p) => fs.existsSync(p)) || '';
 
 const py = `
-from PIL import Image, ImageDraw, ImageFont, ImageEnhance
+from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageFilter, ImageChops
 from pathlib import Path
 
-# Layout idéntico a catálogo slide--producto (catalogo.css)
 W, H = 1080, 1350
-NAVY = (22, 58, 107)       # #163a6b
-ORANGE = (240, 122, 40)    # #f07a28
-CREAM_TOP = (255, 253, 249)
-CREAM_BOT = (247, 241, 230)
-WHITE = (255, 255, 255)
-HANDLE = (90, 120, 150)
+# Fondo post 1 Impresoreando
+BEIGE = (235, 217, 193)  # #EBD9C1
+INK = (46, 33, 26)       # #2E211A
 
 prod_path = r'''${foto.replace(/\\/g, '/')}'''
 out1 = r'''${OUT.replace(/\\/g, '/')}'''
 out2 = r'''${OUT2.replace(/\\/g, '/')}'''
-nunito = r'''${NUNITO.replace(/\\/g, '/')}'''
+playfair = r'''${PLAYFAIR.replace(/\\/g, '/')}'''
+montserrat = r'''${MONTSERRAT.replace(/\\/g, '/')}'''
 
-def font(size, weight='ExtraBold'):
-    if nunito and Path(nunito).exists():
-        f = ImageFont.truetype(nunito, size)
-        for w in (weight, weight.encode() if isinstance(weight, str) else weight):
+def load_font(path, size, weight_name='Regular'):
+    if path and Path(path).exists():
+        f = ImageFont.truetype(path, size)
+        for w in (weight_name, weight_name.encode()):
             try:
                 f.set_variation_by_name(w)
                 break
             except Exception:
                 pass
         return f
-    p = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
-    return ImageFont.truetype(p, size) if Path(p).exists() else ImageFont.load_default()
+    fallback = '/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf'
+    if 'Montserrat' in (path or '') or weight_name in ('Light', 'Regular', 'Medium'):
+        fallback = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+    return ImageFont.truetype(fallback, size) if Path(fallback).exists() else ImageFont.load_default()
 
-img = Image.new('RGB', (W, H), CREAM_BOT)
+img = Image.new('RGB', (W, H), BEIGE)
 draw = ImageDraw.Draw(img)
-for y in range(H):
-    t = y / (H - 1)
-    draw.line([(0, y), (W, y)], fill=(
-        int(CREAM_TOP[0] * (1 - t) + CREAM_BOT[0] * t),
-        int(CREAM_TOP[1] * (1 - t) + CREAM_BOT[1] * t),
-        int(CREAM_TOP[2] * (1 - t) + CREAM_BOT[2] * t),
-    ))
 
-# Visual: margin 48/56, 780px alto, radius 36, border navy 12%
-mx, my = 56, 48
-vw, vh = W - mx * 2, 780
-# border
-draw.rounded_rectangle([mx, my, mx + vw - 1, my + vh - 1], radius=36, outline=(22, 58, 107, 30), width=3)
-# white fill under photo
-draw.rounded_rectangle([mx + 3, my + 3, mx + vw - 4, my + vh - 4], radius=33, fill=WHITE)
+f_title = load_font(playfair, 78, 'Medium')
+f_sub = load_font(montserrat, 28, 'Light')
+f_foot = load_font(montserrat, 26, 'Regular')
 
-prod = Image.open(prod_path).convert('RGB')
-prod = ImageEnhance.Color(prod).enhance(1.06)
-prod = ImageEnhance.Contrast(prod).enhance(1.04)
-inner = 20
-aw, ah = vw - inner * 2, vh - inner * 2
-scale = min(aw / prod.width, ah / prod.height)
+# —— Título (serif, centrado) ——
+title = 'Alcancía chanchito'
+tb = draw.textbbox((0, 0), title, font=f_title)
+tw, th = tb[2] - tb[0], tb[3] - tb[1]
+title_y = 110
+draw.text(((W - tw) // 2, title_y), title, font=f_title, fill=INK)
+
+# —— Subtítulo (sans, centrado) ——
+sub = 'Diseño adorable para cuidar tus ahorros'
+# wrap if needed
+sb = draw.textbbox((0, 0), sub, font=f_sub)
+sw = sb[2] - sb[0]
+sub_y = title_y + th + 28
+draw.text(((W - sw) // 2, sub_y), sub, font=f_sub, fill=INK)
+
+# —— Producto centrado ——
+prod = Image.open(prod_path).convert('RGBA')
+
+# Si la foto trae fondo distinto al beige, intentar “recortar” por similitud
+# y pegar sobre beige (mejora fotos de impresora). Si ya es beige/studio, se ve limpio.
+rgb = prod.convert('RGB')
+# auto-crop márgenes muy claros/beige
+def content_bbox(im, thresh=18):
+    bg = Image.new('RGB', im.size, BEIGE)
+    diff = ImageChops.difference(im, bg).convert('L')
+    diff = diff.point(lambda p: 255 if p > thresh else 0)
+    return diff.getbbox()
+
+bbox = content_bbox(rgb)
+if bbox:
+    # padding pequeño
+    pad = 12
+    x0, y0, x1, y1 = bbox
+    x0 = max(0, x0 - pad); y0 = max(0, y0 - pad)
+    x1 = min(rgb.width, x1 + pad); y1 = min(rgb.height, y1 + pad)
+    prod = prod.crop((x0, y0, x1, y1))
+
+# Escala: producto ocupa ~58% del alto útil
+max_w, max_h = 820, 720
+scale = min(max_w / prod.width, max_h / prod.height)
 nw, nh = int(prod.width * scale), int(prod.height * scale)
-prod_r = prod.resize((nw, nh), Image.Resampling.LANCZOS)
-mask = Image.new('L', (nw, nh), 0)
-ImageDraw.Draw(mask).rounded_rectangle([0, 0, nw - 1, nh - 1], radius=28, fill=255)
-px = mx + (vw - nw) // 2
-py = my + (vh - nh) // 2
-img.paste(prod_r, (px, py), mask)
+prod = prod.resize((nw, nh), Image.Resampling.LANCZOS)
+
+# Si el fondo de la foto no es beige, suavizar bordes: opcional feather no crítico
+prod_x = (W - nw) // 2
+prod_y = sub_y + 70 + (720 - nh) // 2
+# clamp so it doesn't collide with footer
+footer_zone = H - 160
+if prod_y + nh > footer_zone:
+    prod_y = max(sub_y + 50, footer_zone - nh)
+
+img.paste(prod, (prod_x, prod_y), prod if prod.mode == 'RGBA' else None)
 
 draw = ImageDraw.Draw(img)
 
-# Meta: padding 36/64 — solo SKU + nombre + pedido + @
-f_sku = font(28, 'ExtraBold')
-f_nombre = font(56, 'ExtraBold')
-f_pedido = font(28, 'ExtraBold')
-f_ig = font(24, 'Bold')
-
-meta_x = 64
-meta_y = my + vh + 36
-
-sku = 'ALCHAN001'
-bb = draw.textbbox((0, 0), sku, font=f_sku)
-pw, ph = bb[2] - bb[0] + 44, bb[3] - bb[1] + 24
-draw.rounded_rectangle([meta_x, meta_y, meta_x + pw, meta_y + ph], radius=999, fill=NAVY)
-draw.text((meta_x + 22, meta_y + 10), sku, font=f_sku, fill=WHITE)
-
-nombre = 'Alcancía chanchito'
-ny = meta_y + ph + 18
-draw.text((meta_x, ny), nombre, font=f_nombre, fill=NAVY)
-
-foot_y = ny + 70
-draw.text((meta_x, foot_y), 'Todo es a pedido', font=f_pedido, fill=ORANGE)
-
-ig = '@impresoreando'
-ibb = draw.textbbox((0, 0), ig, font=f_ig)
-draw.text((W - 64 - (ibb[2] - ibb[0]), foot_y + 4), ig, font=f_ig, fill=HANDLE)
+# —— Pie: líneas + "Hecho a pedido" ——
+foot = 'Hecho a pedido'
+fb = draw.textbbox((0, 0), foot, font=f_foot)
+fw, fh = fb[2] - fb[0], fb[3] - fb[1]
+foot_y = H - 110
+fx = (W - fw) // 2
+gap = 28
+line_y = foot_y + fh // 2 + 2
+# líneas finas a ambos lados
+left_x1 = 90
+left_x2 = fx - gap
+right_x1 = fx + fw + gap
+right_x2 = W - 90
+draw.line([(left_x1, line_y), (left_x2, line_y)], fill=INK, width=2)
+draw.line([(right_x1, line_y), (right_x2, line_y)], fill=INK, width=2)
+draw.text((fx, foot_y), foot, font=f_foot, fill=INK)
 
 Path(out1).parent.mkdir(parents=True, exist_ok=True)
 Path(out2).parent.mkdir(parents=True, exist_ok=True)
@@ -136,6 +164,7 @@ img.save(out1, 'PNG', optimize=True)
 img.save(out2, 'PNG', optimize=True)
 print('OK', out1, img.size)
 print('OK', out2)
+print('foto', prod_path)
 `;
 
 const r = spawnSync('python3', ['-c', py], { encoding: 'utf8' });
