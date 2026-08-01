@@ -23,37 +23,29 @@ if not errorlevel 1 (
     pause
     exit /b 1
   )
-) else (
-  echo [1] Git no esta en PATH — sigo
 )
 
-echo [2] Comprobar servidor unificado...
-if not exist "scripts\servidor-unificado-8000.php" (
-  echo [ERROR] Falta scripts\servidor-unificado-8000.php
-  pause
-  exit /b 1
-)
-findstr /C:"imp-estrategia-redes-page" "scripts\servidor-unificado-8000.php" >nul
+echo [2] Comprobar landing con estrategia...
+findstr /C:"estrategia-redes" "index\clientes\impresoreando\index.html" >nul
 if errorlevel 1 (
-  echo [ERROR] Tu pull no trajo el fallback de redes.
-  echo  Carpeta actual: %CD%
+  echo [ERROR] La landing aun no tiene el bloque Estrategia redes.
+  echo  Carpeta: %CD%
   pause
   exit /b 1
 )
-echo  OK — servidor tiene la campana embebida
+echo  OK — bloque #estrategia-redes en la landing
 
-echo [3] Cerrar :8000 y volver a abrir...
+echo [3] Reiniciar :8000...
 if exist "CERRAR-SERVIDOR.bat" call "%~dp0CERRAR-SERVIDOR.bat"
 timeout /t 2 >nul
 call "%~dp0ABRIR-LARAVEL.bat" sin-nav
 timeout /t 3 >nul
 
-echo [4] Abrir en el navegador del sistema (no solo preview Cursor)...
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/panel/estrategia.html?v=20260801e'"
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/estrategia-redes.html?v=20260801e'"
+echo [4] Abrir landing Impresoreando ^(con estrategia abajo^)...
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/?v=20260801f#estrategia-redes'"
 
 echo.
-echo  Debes ver franja verde: ESTRATEGIA REDES · IMPRESOREANDO
-echo  Si el preview de Cursor sigue blanco, usa la ventana de Chrome/Edge que se abrio.
+echo  Baja hasta la franja verde: ESTRATEGIA REDES · IMPRESOREANDO
+echo  Si el preview de Cursor queda blanco, mira la ventana de Chrome/Edge.
 echo.
 pause

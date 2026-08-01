@@ -237,6 +237,11 @@ REM Por defecto: solo Organizador + Portal clientes
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index.html?disco=1&v=20260728e'"
 powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/?disco=1'"
 
+if /I "%MODO%"=="redes" (
+  powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/?v=20260801f#estrategia-redes'"
+  goto :fin_urls
+)
+
 if /I not "%MODO%"=="todo" goto :fin_urls
 
 REM Modo "todo": tambien ECR, MKOF, MOVA y prospecto
