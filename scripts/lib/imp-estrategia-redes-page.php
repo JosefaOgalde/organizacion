@@ -1,0 +1,96 @@
+<?php
+/**
+ * HTML de campaña IG Impresoreando (servido aunque falte el .html en disco).
+ */
+declare(strict_types=1);
+
+function imp_estrategia_redes_html(): string
+{
+    return <<<'HTML'
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Estrategia redes · Impresoreando agosto 2026</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: #faf6eb; color: #2a2114; line-height: 1.45; }
+    .wrap { max-width: 820px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+    .top { display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 2px solid #d4b06a; }
+    .top a { color: #7a5c28; font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+    .kicker { margin: 0 0 0.35rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #2f5c4a; }
+    h1 { margin: 0 0 0.5rem; font-size: 1.7rem; color: #7a5c28; }
+    .lead { margin: 0 0 1.25rem; color: #8a7350; }
+    .btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .btn { display: inline-flex; align-items: center; padding: 0.5rem 0.9rem; border-radius: 10px; border: 1px solid #d4b06a; background: #fff; color: #7a5c28; font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+    .btn-green { background: #eef7f2; border-color: #5a8f7b; color: #2f5c4a; }
+    .card { background: #fffdf7; border: 1px solid #e6d7b0; border-radius: 14px; padding: 1rem; margin-bottom: 1rem; }
+    .card h2 { margin: 0 0 0.75rem; font-size: 1.1rem; color: #7a5c28; }
+    .pillars { display: grid; gap: 0.65rem; }
+    @media (min-width: 640px) { .pillars { grid-template-columns: 1fr 1fr; } }
+    .pillar { background: #fff; border: 1px solid #e6d7b0; border-radius: 12px; padding: 0.85rem 1rem; }
+    .pillar strong { display: block; margin-bottom: 0.25rem; color: #7a5c28; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th, td { text-align: left; padding: 0.5rem 0.4rem; border-bottom: 1px solid #eee3c8; vertical-align: top; }
+    th { color: #8a7350; font-size: 0.75rem; text-transform: uppercase; }
+    th[scope="row"] { color: #7a5c28; text-transform: none; font-size: 0.92rem; white-space: nowrap; }
+    .muted { color: #8a7350; }
+    ul { margin: 0; padding-left: 1.2rem; }
+    li { margin: 0.35rem 0; }
+    .note { margin-top: 1rem; padding: 0.9rem 1rem; border-radius: 12px; background: #eef7f2; border: 1px solid #b7d4c6; color: #2f5c4a; font-size: 0.92rem; }
+    .banner { background: #2f5c4a; color: #fff; padding: 0.65rem 1rem; text-align: center; font-weight: 700; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <div class="banner">ESTRATEGIA REDES · IMPRESOREANDO · AGOSTO 2026</div>
+  <div class="wrap">
+    <div class="top">
+      <a href="/index/clientes/impresoreando/">← Landing Impresoreando</a>
+      <a href="/index/clientes/impresoreando/panel/">Panel Resumen 50/50 →</a>
+    </div>
+    <p class="kicker">Campaña orgánica Instagram</p>
+    <h1>@impresoreando</h1>
+    <p class="lead">Meta agosto: <strong>3 posts/semana</strong> (lunes · miércoles · viernes) o stories diarias cortas. Priorizar SKUs con stock o venta real.</p>
+    <div class="btns">
+      <a class="btn btn-green" href="/index/clientes/impresoreando/catalogo/">Catálogo IG</a>
+      <a class="btn" href="https://www.instagram.com/impresoreando/" target="_blank" rel="noopener">Abrir Instagram</a>
+      <a class="btn" href="/index/clientes/impresoreando/panel/?tab=ads">Plan paid</a>
+      <a class="btn" href="/docs/ESTRATEGIA-REDES-AGOSTO-2026.md" target="_blank" rel="noopener">Doc TS · ECR · IMP</a>
+    </div>
+    <div class="card">
+      <h2>Pilares (rotar cada semana)</h2>
+      <div class="pillars">
+        <div class="pillar"><strong>1. Producto hero</strong>1080×1920 — Porta completos bulldog, Soporte celular, Bob, etc.</div>
+        <div class="pillar"><strong>2. Prueba social</strong>Pedido entregado / “se fue a…” (sin datos sensibles).</div>
+        <div class="pillar"><strong>3. Proceso</strong>Time-lapse impresora, filamento, mesa de trabajo.</div>
+        <div class="pillar"><strong>4. Oferta suave</strong>Precio + CTA WhatsApp.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Calendario tipo de la semana</h2>
+      <table>
+        <thead><tr><th>Día</th><th>Formato</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Lunes</th><td><strong>Reel / carrusel producto</strong></td><td class="muted">Soporte · Bob · Bulldog</td></tr>
+          <tr><th scope="row">Miércoles</th><td><strong>Story proceso + CTA</strong></td><td class="muted">¿Cuál pedís?</td></tr>
+          <tr><th scope="row">Viernes</th><td><strong>Post estático catálogo</strong></td><td class="muted">1 SKU + precio</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h2>Pendiente ahora</h2>
+      <ul>
+        <li>Terminar pieza IG Porta completos bulldog 1080×1920</li>
+        <li>Programar los 3 posts de la semana en Meta / Creator</li>
+        <li>Rotar pilares: no solo producto — también proceso y prueba social</li>
+      </ul>
+      <p class="muted" style="margin:0.85rem 0 0"><strong>KPI:</strong> posts / semana + DMs o pedidos atribuidos</p>
+    </div>
+    <p class="note">Servida por el servidor Laravel unificado (:8000). Si ves esto, la campaña cargó bien.</p>
+  </div>
+</body>
+</html>
+HTML;
+}

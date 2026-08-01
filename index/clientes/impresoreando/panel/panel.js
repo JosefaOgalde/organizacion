@@ -5855,7 +5855,12 @@
   ]);
 
   function activarTab(tab) {
-    const name = TABS_VALIDOS.has(tab) ? tab : 'resumen';
+    // Si el panel existe en el HTML, activarlo aunque el JS sea viejo/parcial
+    const pedido = String(tab || 'resumen');
+    const name =
+      TABS_VALIDOS.has(pedido) || document.getElementById(`tab-${pedido}`)
+        ? pedido
+        : 'resumen';
     document.querySelectorAll('#imp-tabs button').forEach((b) => b.classList.remove('is-active'));
     document.querySelectorAll('.imp-panel').forEach((p) => p.classList.remove('is-active'));
     const btn = $(`#imp-tabs button[data-tab="${name}"]`);

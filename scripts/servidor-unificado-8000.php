@@ -476,6 +476,25 @@ if ($uri === '/api' || str_starts_with($uri, '/api/')) {
     return true;
 }
 
+// --- Estrategia redes Impresoreando (HTML embebido: nunca página en blanco) ---
+$impRedesUris = [
+    '/index/clientes/impresoreando/estrategia-redes.html',
+    '/index/clientes/impresoreando/redes',
+    '/index/clientes/impresoreando/redes/',
+    '/index/clientes/impresoreando/redes/index.html',
+    '/index/clientes/impresoreando/panel/estrategia.html',
+];
+if (in_array($uri, $impRedesUris, true)) {
+    $lib = $root . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'imp-estrategia-redes-page.php';
+    if (is_file($lib)) {
+        require_once $lib;
+        header('Content-Type: text/html; charset=utf-8');
+        header('Cache-Control: no-store, no-cache, must-revalidate');
+        echo imp_estrategia_redes_html();
+        return true;
+    }
+}
+
 // --- Estáticos del repo ---
 $rel = $uri === '/' ? 'index.html' : ltrim(str_replace('\\', '/', $uri), '/');
 if ($rel === '' || str_ends_with($rel, '/')) {
