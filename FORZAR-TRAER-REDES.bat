@@ -1,14 +1,22 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
+
+REM Evitar "No se ha encontrado el archivo por lotes" si git reescribe este .bat
+if /I not "%~1"=="__FROMTEMP__" (
+  copy /Y "%~f0" "%TEMP%\FORZAR-TRAER-REDES-RUN.bat" >nul
+  call "%TEMP%\FORZAR-TRAER-REDES-RUN.bat" __FROMTEMP__ "%~dp0"
+  exit /b %ERRORLEVEL%
+)
+
+set "ROOT=%~2"
+if "%ROOT%"=="" set "ROOT=%~dp0"
+cd /d "%ROOT%"
 title Forzar traer estrategia Redes
 
 echo.
-echo  === FORZAR archivos de Redes desde GitHub main ===
+echo  === FORZAR Redes ^(corre desde TEMP, seguro^) ===
 echo  Carpeta: %CD%
-echo.
-echo  Esto actualiza SOLO archivos de Impresoreando / servidor
-echo  (no borra tu calendario ni impresoreando-live).
 echo.
 
 where git >nul 2>&1
@@ -18,84 +26,52 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo [0] Desbloquear pull ^(seed + respaldo 31-jul^)...
+echo [0] Desbloquear seed/respaldo...
 git checkout -- data/impresoreando-seed.json 2>nul
 git checkout -- data/organizacion-respaldo-2026-07-31.json 2>nul
 
-echo [1] git fetch + pull origin main...
+echo [1] fetch origin main...
 git fetch origin main
 if errorlevel 1 (
   echo [ERROR] fetch fallo
   pause
   exit /b 1
 )
-git pull origin main
-if errorlevel 1 (
-  echo [AVISO] pull fallo — igual traigo archivos con checkout
-)
 
-echo [2] checkout main...
+echo [2] checkout main + reset a origin/main...
 git checkout main
+git reset --hard origin/main
 if errorlevel 1 (
-  echo [AVISO] checkout main fallo — sigo trayendo archivos igual
-)
-
-echo [3] Traer archivos clave desde origin/main...
-git checkout origin/main -- ^
-  "index/clientes/impresoreando/index.html" ^
-  "index/clientes/impresoreando/panel/index.html" ^
-  "index/clientes/impresoreando/panel/panel.js" ^
-  "index/clientes/impresoreando/panel/panel.css" ^
-  "index/clientes/impresoreando/panel/estrategia.html" ^
-  "index/clientes/impresoreando/estrategia-redes.html" ^
-  "index/clientes/impresoreando/redes/index.html" ^
-  "index/assets/portal-cliente.js" ^
-  "index/assets/portal.css" ^
-  "scripts/servidor-unificado-8000.php" ^
-  "scripts/lib/imp-estrategia-redes-page.php" ^
-  "VER-REDES-IMP.bat" ^
-  "00-LEEME-INICIO.txt"
-
-if errorlevel 1 (
-  echo [ERROR] No pude traer los archivos. Proba:
-  echo   git checkout -- data\impresoreando-seed.json
-  echo   DESBLOQUEAR-GIT.bat
-  echo   y vuelve a correr este bat
+  echo [ERROR] No pude igualar origin/main
+  echo  Proba: SINCRONIZAR-MAIN.bat
   pause
   exit /b 1
 )
+git status -sb
+git log -1 --oneline
 
-echo [4] Verificar pestaña Redes en panel...
+echo [3] Verificar panel tiene Redes...
 findstr /C:"Redes sociales" "index\clientes\impresoreando\panel\index.html" >nul
 if errorlevel 1 (
-  echo [ERROR] panel\index.html aun no tiene Redes sociales
+  echo [ERROR] Aun no aparece Redes sociales en panel\index.html
   pause
   exit /b 1
 )
-echo  OK — panel tiene "Redes sociales"
+echo  OK
 
-echo [5] Verificar bloque en landing...
-findstr /C:"estrategia-redes" "index\clientes\impresoreando\index.html" >nul
-if errorlevel 1 (
-  echo [AVISO] landing sin #estrategia-redes — igual abro estrategia del panel
-) else (
-  echo  OK — landing tiene #estrategia-redes
-)
-
-echo [6] Reiniciar servidor...
-if exist "CERRAR-SERVIDOR.bat" call "%~dp0CERRAR-SERVIDOR.bat"
+echo [4] Reiniciar :8000...
+if exist "CERRAR-SERVIDOR.bat" call "%ROOT%CERRAR-SERVIDOR.bat"
 timeout /t 2 >nul
-call "%~dp0ABRIR-LARAVEL.bat" sin-nav
+call "%ROOT%ABRIR-LARAVEL.bat" sin-nav
 timeout /t 3 >nul
 
-echo [7] Abrir panel + estrategia...
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/panel/?v=forzar-redes-1'"
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/panel/estrategia.html?v=forzar-redes-1'"
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/?v=forzar-redes-1#estrategia-redes'"
+echo [5] Abrir...
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/panel/?v=forzar-redes-2'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/panel/estrategia.html?v=forzar-redes-2'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/?v=forzar-redes-2#estrategia-redes'"
 
 echo.
-echo  En el PANEL debes ver la pestana verde "Redes sociales" al lado de Bitacora.
-echo  Tambien se abre la pagina con franja verde ESTRATEGIA REDES.
-echo  Usa Chrome/Edge si el preview de Cursor queda blanco.
+echo  Pestana "Redes sociales" al lado de Bitacora + franja verde.
+echo  Si Cursor preview blanco → usa Chrome/Edge.
 echo.
 pause
