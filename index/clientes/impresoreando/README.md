@@ -161,7 +161,9 @@ Solo si hay módulo CAM + base USB. Guía: [`docs/impresoreando/ESP32-CAM.md`](.
 
 ## Imágenes para redes
 
-Cuando envíes fotos de productos, se editan aquí en `index/clientes/impresoreando/redes/` (próximo paso).
+- Pieza IG Porta Completo Bulldog 1080×1920: `piezas/porta-completos-bulldog-1080x1920.png` (copia en `redes/`)
+- Foto producto: poné la de Instagram en `piezas/foto-producto-bulldog.jpg` y corre `node scripts/montar-pieza-porta-completos-bulldog.js`
+- URL local: `http://127.0.0.1:8000/index/clientes/impresoreando/piezas/porta-completos-bulldog-1080x1920.png`
 
 ## Plan paid (detalle)
 
