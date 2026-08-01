@@ -2,13 +2,21 @@
 /**
  * Pieza IG 1080×1350 — Alcancía chanchito
  * Misma estética que el post 1 de @impresoreando ("Porta completos"):
- * fondo beige, título serif (Playfair), subtítulo sans (Montserrat),
- * producto centrado, pie "Hecho a pedido" entre líneas.
+ *   · fondo beige #EBD9C1
+ *   · título serif Playfair Display
+ *   · subtítulo + pie sans Montserrat
+ *   · producto centrado (sin marco)
+ *   · pie: —— Hecho a pedido ——
  *
- * Foto preferida (fondo beige/studio):
- *   piezas/foto-producto-chanchito.jpg
- * Fallback:
+ * Foto preferida:
+ *   piezas/foto-producto-chanchito.jpg  (o .png)
+ * Fallback studio beige:
  *   piezas/alcancia-chanchito-producto-beige.png
+ *
+ * Fuentes (variable TTF):
+ *   /tmp/ig-fonts/ttf/PlayfairDisplay-Regular.ttf
+ *   /tmp/ig-fonts/ttf/Montserrat-Regular.ttf
+ *   o fonts/PlayfairDisplay.ttf + fonts/Montserrat.ttf
  *
  *   node scripts/montar-pieza-alcancia-chanchito.js
  */
@@ -29,7 +37,6 @@ const foto =
     path.join(PIEZAS, 'foto-producto-chanchito.png'),
     path.join(PIEZAS, 'alcancia-chanchito-producto-beige.png'),
     path.join(PIEZAS, 'alcancia-chanchito-producto-beige.jpg'),
-    path.join(PIEZAS, 'alcancia-chanchito-producto-ref.jpg'),
   ].find((p) => fs.existsSync(p)) || null;
 
 if (!foto) {
@@ -49,14 +56,19 @@ const MONTSERRAT =
     path.join(ROOT, 'fonts/Montserrat.ttf'),
   ].find((p) => fs.existsSync(p)) || '';
 
+if (!PLAYFAIR || !MONTSERRAT) {
+  console.error('Faltan fuentes Playfair/Montserrat (estilo post 1 IG).');
+  console.error('Descargá variable TTF a fonts/ o /tmp/ig-fonts/ttf/');
+  process.exit(1);
+}
+
 const py = `
-from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageFilter, ImageChops
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from pathlib import Path
 
 W, H = 1080, 1350
-# Fondo post 1 Impresoreando
-BEIGE = (235, 217, 193)  # #EBD9C1
-INK = (46, 33, 26)       # #2E211A
+BEIGE = (235, 217, 193)
+INK = (46, 33, 26)
 
 prod_path = r'''${foto.replace(/\\/g, '/')}'''
 out1 = r'''${OUT.replace(/\\/g, '/')}'''
@@ -64,98 +76,73 @@ out2 = r'''${OUT2.replace(/\\/g, '/')}'''
 playfair = r'''${PLAYFAIR.replace(/\\/g, '/')}'''
 montserrat = r'''${MONTSERRAT.replace(/\\/g, '/')}'''
 
-def load_font(path, size, weight_name='Regular'):
-    if path and Path(path).exists():
-        f = ImageFont.truetype(path, size)
-        for w in (weight_name, weight_name.encode()):
-            try:
-                f.set_variation_by_name(w)
-                break
-            except Exception:
-                pass
-        return f
-    fallback = '/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf'
-    if 'Montserrat' in (path or '') or weight_name in ('Light', 'Regular', 'Medium'):
-        fallback = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-    return ImageFont.truetype(fallback, size) if Path(fallback).exists() else ImageFont.load_default()
+def load_font(path, size, weight='Regular'):
+    f = ImageFont.truetype(path, size)
+    for w in (weight, weight.encode()):
+        try:
+            f.set_variation_by_name(w)
+            break
+        except Exception:
+            pass
+    return f
+
+src = Image.open(prod_path).convert('RGBA')
+px = src.load()
+w0, h0 = src.size
+for y in range(h0):
+    for x in range(w0):
+        r, g, b, a = px[x, y]
+        db = abs(r - BEIGE[0]) + abs(g - BEIGE[1]) + abs(b - BEIGE[2])
+        warm = r > 200 and g > 180 and b > 150 and abs(r - g) < 45
+        if db < 55 or (warm and db < 90) or (r > 245 and g > 235 and b > 220):
+            alpha = 0 if db < 35 or warm else max(0, min(255, int((db - 35) * 6)))
+            px[x, y] = (r, g, b, alpha)
+
+bbox = src.split()[-1].getbbox()
+if bbox:
+    pad = 8
+    x0, y0, x1, y1 = bbox
+    src = src.crop((max(0, x0 - pad), max(0, y0 - pad), min(w0, x1 + pad), min(h0, y1 + pad)))
+a = src.split()[-1].filter(ImageFilter.GaussianBlur(0.6))
+src.putalpha(a)
 
 img = Image.new('RGB', (W, H), BEIGE)
 draw = ImageDraw.Draw(img)
+f_title = load_font(playfair, 82, 'Medium')
+f_sub = load_font(montserrat, 27, 'Light')
+f_foot = load_font(montserrat, 25, 'Regular')
 
-f_title = load_font(playfair, 78, 'Medium')
-f_sub = load_font(montserrat, 28, 'Light')
-f_foot = load_font(montserrat, 26, 'Regular')
-
-# —— Título (serif, centrado) ——
 title = 'Alcancía chanchito'
 tb = draw.textbbox((0, 0), title, font=f_title)
 tw, th = tb[2] - tb[0], tb[3] - tb[1]
-title_y = 110
+title_y = 118
 draw.text(((W - tw) // 2, title_y), title, font=f_title, fill=INK)
 
-# —— Subtítulo (sans, centrado) ——
 sub = 'Diseño adorable para cuidar tus ahorros'
-# wrap if needed
 sb = draw.textbbox((0, 0), sub, font=f_sub)
-sw = sb[2] - sb[0]
-sub_y = title_y + th + 28
-draw.text(((W - sw) // 2, sub_y), sub, font=f_sub, fill=INK)
+sub_y = title_y + th + 26
+draw.text(((W - (sb[2] - sb[0])) // 2, sub_y), sub, font=f_sub, fill=INK)
 
-# —— Producto centrado ——
-prod = Image.open(prod_path).convert('RGBA')
-
-# Si la foto trae fondo distinto al beige, intentar “recortar” por similitud
-# y pegar sobre beige (mejora fotos de impresora). Si ya es beige/studio, se ve limpio.
-rgb = prod.convert('RGB')
-# auto-crop márgenes muy claros/beige
-def content_bbox(im, thresh=18):
-    bg = Image.new('RGB', im.size, BEIGE)
-    diff = ImageChops.difference(im, bg).convert('L')
-    diff = diff.point(lambda p: 255 if p > thresh else 0)
-    return diff.getbbox()
-
-bbox = content_bbox(rgb)
-if bbox:
-    # padding pequeño
-    pad = 12
-    x0, y0, x1, y1 = bbox
-    x0 = max(0, x0 - pad); y0 = max(0, y0 - pad)
-    x1 = min(rgb.width, x1 + pad); y1 = min(rgb.height, y1 + pad)
-    prod = prod.crop((x0, y0, x1, y1))
-
-# Escala: producto ocupa ~58% del alto útil
-max_w, max_h = 820, 720
-scale = min(max_w / prod.width, max_h / prod.height)
-nw, nh = int(prod.width * scale), int(prod.height * scale)
-prod = prod.resize((nw, nh), Image.Resampling.LANCZOS)
-
-# Si el fondo de la foto no es beige, suavizar bordes: opcional feather no crítico
+max_w, max_h = 780, 780
+scale = min(max_w / src.width, max_h / src.height)
+nw, nh = int(src.width * scale), int(src.height * scale)
+prod = src.resize((nw, nh), Image.Resampling.LANCZOS)
+top = sub_y + 55
+bottom = H - 150
+prod_y = top + (bottom - top - nh) // 2
 prod_x = (W - nw) // 2
-prod_y = sub_y + 70 + (720 - nh) // 2
-# clamp so it doesn't collide with footer
-footer_zone = H - 160
-if prod_y + nh > footer_zone:
-    prod_y = max(sub_y + 50, footer_zone - nh)
-
-img.paste(prod, (prod_x, prod_y), prod if prod.mode == 'RGBA' else None)
+img.paste(prod, (prod_x, prod_y), prod)
 
 draw = ImageDraw.Draw(img)
-
-# —— Pie: líneas + "Hecho a pedido" ——
 foot = 'Hecho a pedido'
 fb = draw.textbbox((0, 0), foot, font=f_foot)
 fw, fh = fb[2] - fb[0], fb[3] - fb[1]
-foot_y = H - 110
+foot_y = H - 108
 fx = (W - fw) // 2
-gap = 28
+gap = 30
 line_y = foot_y + fh // 2 + 2
-# líneas finas a ambos lados
-left_x1 = 90
-left_x2 = fx - gap
-right_x1 = fx + fw + gap
-right_x2 = W - 90
-draw.line([(left_x1, line_y), (left_x2, line_y)], fill=INK, width=2)
-draw.line([(right_x1, line_y), (right_x2, line_y)], fill=INK, width=2)
+draw.line([(88, line_y), (fx - gap, line_y)], fill=INK, width=2)
+draw.line([(fx + fw + gap, line_y), (W - 88, line_y)], fill=INK, width=2)
 draw.text((fx, foot_y), foot, font=f_foot, fill=INK)
 
 Path(out1).parent.mkdir(parents=True, exist_ok=True)
