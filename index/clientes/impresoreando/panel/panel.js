@@ -4726,11 +4726,12 @@
 
   function renderVentas() {
     rebuildClientesHistorial(data);
+    // Más reciente arriba (I000020…), más antigua abajo (I000001)
     const ventasSorted = (data.ventas || []).slice().sort((a, b) => {
       const na = Number(String(a.codigo || '').replace(/^I0*/, '') || 0);
       const nb = Number(String(b.codigo || '').replace(/^I0*/, '') || 0);
-      if (na && nb && na !== nb) return na - nb;
-      return String(a.fecha || '').localeCompare(String(b.fecha || ''));
+      if (na && nb && na !== nb) return nb - na;
+      return String(b.fecha || '').localeCompare(String(a.fecha || ''));
     });
     const ventasFiltradas = ventasSorted.filter(ventaPasaFiltros);
     const clientesOpts = Array.from(
@@ -4786,7 +4787,15 @@
         return `<tr class="imp-hist-row${activo ? ' is-active' : ''}" data-filtro-cliente="${escapeHtml(h.cliente)}" title="Ver compras de ${escapeHtml(h.cliente)}">
         <td><strong>${escapeHtml(h.cliente)}</strong>${activo ? ' <span class="imp-badge">filtro</span>' : ''}</td>
         <td class="num">${h.compras}</td>
-        <td>${(h.ventaCodigos || []).map((c) => escapeHtml(c)).join(', ') || '—'}</td>
+        <td>${(h.ventaCodigos || [])
+          .slice()
+          .sort((a, b) => {
+            const na = Number(String(a || '').replace(/^I0*/, '') || 0);
+            const nb = Number(String(b || '').replace(/^I0*/, '') || 0);
+            return nb - na;
+          })
+          .map((c) => escapeHtml(c))
+          .join(', ') || '—'}</td>
         <td class="num"><strong>${money(h.totalNeto)}</strong></td>
       </tr>`;
       })
