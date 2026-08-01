@@ -406,6 +406,16 @@ body.portal-body--themed .portal-cliente {
   filter: none;
 }
 
+.portal-imp-panel-cta--redes {
+  background: #eef7f2;
+  color: #2f5c4a !important;
+  border-color: #5a8f7b;
+}
+
+.portal-imp-panel-cta--redes:hover {
+  background: #dcefe6;
+}
+
 .portal-btn--imp-panel {
   background: var(--card-text, #7a5c28);
   color: #fff;

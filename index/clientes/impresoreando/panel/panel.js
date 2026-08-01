@@ -3606,6 +3606,12 @@
     const nClientesHist = (data.meta?.clientesHistorial || []).length;
 
     $('#tab-resumen').innerHTML = `
+      <div class="imp-card imp-card--redes imp-card--redes-banner">
+        <p class="imp-redes-kicker">Campaña agosto · Instagram</p>
+        <h2 style="margin-bottom:0.35rem">Redes sociales</h2>
+        <p class="imp-muted" style="margin:0 0 0.75rem">Meta, pilares y calendario lun/mié/vie de @impresoreando.</p>
+        <button type="button" class="imp-btn imp-btn--redes" data-goto-tab="redes">Ver campaña →</button>
+      </div>
       <div class="imp-balance ${sinDeuda ? 'imp-balance--ok' : 'imp-balance--deuda'}">
         <div class="imp-balance__label">${sinDeuda ? 'Sin deuda de sociedad' : 'Para salir de deuda falta recuperar'}</div>
         <div class="imp-balance__valor">${money(saldoPendiente)}</div>
