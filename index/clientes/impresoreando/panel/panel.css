@@ -135,6 +135,21 @@
   border-color: var(--imp-border);
   color: var(--imp-text);
 }
+.imp-tabs button.imp-tab--redes {
+  border-color: color-mix(in srgb, #5a8f7b 45%, transparent);
+  background: #eef7f2;
+  color: #2f5c4a;
+}
+.imp-tabs button.imp-tab--redes.is-active {
+  background: #2f5c4a;
+  border-color: #2f5c4a;
+  color: #fff;
+}
+.imp-btn--redes {
+  background: #eef7f2;
+  border-color: #5a8f7b;
+  color: #2f5c4a;
+}
 
 .imp-main {
   padding: 1rem 0 2.5rem;
@@ -952,4 +967,9 @@ body.imp-modal-open { overflow: hidden; }
   flex-wrap: wrap;
   gap: 0.5rem;
   margin: 0;
+}
+.imp-card--redes-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
