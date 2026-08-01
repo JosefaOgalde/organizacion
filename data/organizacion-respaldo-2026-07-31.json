@@ -1552,7 +1552,7 @@
       "titulo": "[ECR] NL 2 ago · Equipos en terreno",
       "clienteId": "cli-ecr",
       "rolId": "rol-ecr-cm",
-      "fecha": "2026-08-03",
+      "fecha": "2026-08-05",
       "horaInicio": "09:00",
       "horaFin": "18:00",
       "notas": "Tarea madre · ART 23 · artículo «Equipos en terreno: la ventaja de ajustar a tiempo» (calendario 2026-07-22). Madre + subtareas indexadas el 2026-07-22 (Copys · Portada · Carrusel · Video). Word/TXT: articulos/ART23-equipos-en-terreno.* · Copys: copys/COPY-equipos-en-terreno.txt. La madre se completa cuando termine la última subtarea.",
@@ -1573,7 +1573,7 @@
         "kind": "articulo",
         "subido": "2026-07-22"
       },
-      "fechaFin": "2026-08-03",
+      "fechaFin": "2026-08-05",
       "parentId": null,
       "agendaFijada": true,
       "sesionAgente": {
@@ -1602,7 +1602,7 @@
       "notas": "Copys feed / carrusel / video · «Equipos en terreno: la ventaja de ajustar a tiempo» (NL 2 ago). Archivo: index/clientes/ecr/newsletter/copys/COPY-equipos-en-terreno.txt",
       "clienteId": "cli-ecr",
       "rolId": "rol-ecr-cm",
-      "fecha": "2026-08-03",
+      "fecha": "2026-08-05",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
@@ -1623,7 +1623,7 @@
       "notas": "Prompts/fondos ART23 · «Equipos en terreno: la ventaja de ajustar a tiempo» (NL 2 ago). Artículo: ART23-equipos-en-terreno.docx",
       "clienteId": "cli-ecr",
       "rolId": "rol-ecr-cm",
-      "fecha": "2026-08-03",
+      "fecha": "2026-08-05",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
@@ -1644,7 +1644,7 @@
       "notas": "Carrusel con slides del artículo «Equipos en terreno: la ventaja de ajustar a tiempo».",
       "clienteId": "cli-ecr",
       "rolId": "rol-ecr-cm",
-      "fecha": "2026-08-03",
+      "fecha": "2026-08-05",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
@@ -1665,7 +1665,7 @@
       "notas": "Video = carrusel animado · «Equipos en terreno: la ventaja de ajustar a tiempo».",
       "clienteId": "cli-ecr",
       "rolId": "rol-ecr-cm",
-      "fecha": "2026-08-03",
+      "fecha": "2026-08-05",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
@@ -1682,7 +1682,7 @@
       "fecha": "2026-07-31",
       "horaInicio": "10:00",
       "horaFin": "18:00",
-      "notas": "Panel socios 50/50 · PED-010 Gianni SIE (pendiente) · PED-012 Marcia SIE (pendiente) · PED-013 Mel MKOF (pendiente). Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. Imp live 2026-08-01T00:08:09.921Z",
+      "notas": "Panel socios 50/50 · PED-010 Gianni SIE (pendiente) · PED-012 Marcia SIE (pendiente) · PED-013 Mel MKOF (pendiente). Abrir panel: /index/clientes/impresoreando/panel/ · Transferir a venta baja la deuda. Imp live 2026-08-01T00:56:23.356Z",
       "prioridad": "alta",
       "completada": false,
       "pendiente": false,
@@ -2142,7 +2142,7 @@
       "horaFin": "13:00",
       "notas": "Estado: pendiente. Total $8.000. 2× Soporte celular negro · fiado · paga 2026-08-18 · PVP $4.000/u · total $8.000 · Panel: /index/clientes/impresoreando/panel/",
       "prioridad": "alta",
-      "completada": true,
+      "completada": false,
       "pendiente": false,
       "tipoEntregable": "impresoreando-pedido",
       "parentId": "tarea-imp-pedidos-hoy",
@@ -2151,9 +2151,7 @@
       "pedidoNumero": "PED-010",
       "pedidoEstado": "pendiente",
       "linkPanel": "/index/clientes/impresoreando/panel/",
-      "numeroHistorico": "010",
-      "agendaFijada": true,
-      "estadoFijado": true
+      "numeroHistorico": "010"
     },
     {
       "id": "tarea-imp-cobro-ped-010",
@@ -2270,7 +2268,7 @@
       "horaFin": "13:00",
       "notas": "Estado: pendiente. Total $7.000. 1× Limpiador de brochas morado pastel · fiado · PVP $7.000 · fecha de pago por confirmar · Panel: /index/clientes/impresoreando/panel/",
       "prioridad": "alta",
-      "completada": true,
+      "completada": false,
       "pendiente": false,
       "tipoEntregable": "impresoreando-pedido",
       "parentId": "tarea-imp-pedidos-hoy",
@@ -2279,9 +2277,7 @@
       "pedidoNumero": "PED-012",
       "pedidoEstado": "pendiente",
       "linkPanel": "/index/clientes/impresoreando/panel/",
-      "numeroHistorico": "012",
-      "agendaFijada": true,
-      "estadoFijado": true
+      "numeroHistorico": "012"
     },
     {
       "id": "tarea-imp-ped-ped-013",
@@ -2293,7 +2289,7 @@
       "horaFin": "13:00",
       "notas": "Estado: pendiente. Total $4.000. 1× Soporte celular negro · fiado · PVP $4.000 · fecha de pago por confirmar · Panel: /index/clientes/impresoreando/panel/",
       "prioridad": "alta",
-      "completada": true,
+      "completada": false,
       "pendiente": false,
       "tipoEntregable": "impresoreando-pedido",
       "parentId": "tarea-imp-pedidos-hoy",
@@ -2302,9 +2298,7 @@
       "pedidoNumero": "PED-013",
       "pedidoEstado": "pendiente",
       "linkPanel": "/index/clientes/impresoreando/panel/",
-      "numeroHistorico": "013",
-      "agendaFijada": true,
-      "estadoFijado": true
+      "numeroHistorico": "013"
     },
     {
       "id": "tarea-ecr-programar-nl1-2026-08-05",
@@ -2463,12 +2457,12 @@
     }
   ],
   "ultimaVisita": "2026-06-25",
-  "respaldoVersion": 20,
+  "respaldoVersion": 21,
   "respaldoActualizado": "2026-07-31",
   "meta": {
     "autoGenerarTareas": false,
     "modoTrabajo": "manual",
-    "nota": "Respaldo canónico 28-jul (último): Trade Marketing + IMP pedidos · fuente Downloads 28-jul",
+    "nota": "Respaldo canónico 31-jul (upload usuaria 1-ago 00:56) + Programar NL1 el 5 ago",
     "plantillasMadre": [
       {
         "id": "ecr-nl-ecosistema",
@@ -2505,11 +2499,11 @@
     ],
     "jmFase2ArchivadaCalendario": true,
     "ultimaCargaRespaldo": {
-      "fuente": "C:\\Users\\josef\\Downloads\\organizacion-respaldo-2026-07-28 (1).json",
-      "fecha": "2026-07-29T14:20:11.119Z",
-      "nota": "Declarado por usuaria como último respaldo; promovido a data/organizacion-respaldo-2026-07-28.json + live"
+      "fuente": "upload organizacion-respaldo-2026-07-31.json",
+      "fecha": "2026-08-01T01:07:45.817Z",
+      "nota": "Instalado desde Cursor upload; NL2 en 5 ago + Programar NL1"
     },
-    "actualizado": "2026-08-01T00:40:00.000Z"
+    "actualizado": "2026-08-01T01:07:45.817Z"
   },
   "perfilPersonal": {
     "nombre": "Josefa Ogalde",
