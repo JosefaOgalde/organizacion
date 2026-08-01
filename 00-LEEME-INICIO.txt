@@ -24,9 +24,10 @@ Si ves datos viejos en el navegador: Ctrl+Shift+R
 URL: http://127.0.0.1:8000/index.html?disco=1
 
 CAMPANA REDES IMPRESOREANDO:
-  Doble clic: VER-REDES-IMP.bat  ← reinicia :8000 y abre Chrome/Edge
-  URL: http://127.0.0.1:8000/index/clientes/impresoreando/panel/estrategia.html
-  (el preview de Cursor a veces queda blanco: usa Chrome/Edge)
+  Doble clic: VER-REDES-IMP.bat
+  O abre la landing y baja a la franja verde:
+  http://127.0.0.1:8000/index/clientes/impresoreando/#estrategia-redes
+  (si el preview de Cursor queda blanco, usa Chrome/Edge)
 
 No hace falta pegar rutas del JSON ni preguntarle al agente.
 

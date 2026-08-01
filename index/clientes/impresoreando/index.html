@@ -4,21 +4,127 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Impresoreando · Landing</title>
-  <link rel="stylesheet" href="../../assets/portal.css?v=imp-redes-cta-1">
+  <link rel="stylesheet" href="../../assets/portal.css?v=imp-redes-cta-5">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <style>
+    /* Estrategia redes — siempre visible (no depende del panel ni de JS) */
+    #estrategia-redes {
+      max-width: 920px;
+      margin: 0 auto 2.5rem;
+      padding: 0 1rem;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: #2a2114;
+    }
+    #estrategia-redes .er-banner {
+      background: #2f5c4a;
+      color: #fff;
+      text-align: center;
+      font-weight: 700;
+      padding: 0.7rem 1rem;
+      border-radius: 12px 12px 0 0;
+    }
+    #estrategia-redes .er-box {
+      background: #fffdf7;
+      border: 1px solid #e6d7b0;
+      border-top: 0;
+      border-radius: 0 0 14px 14px;
+      padding: 1.1rem 1.15rem 1.35rem;
+    }
+    #estrategia-redes h2 {
+      margin: 0 0 0.35rem;
+      color: #7a5c28;
+      font-size: 1.35rem;
+    }
+    #estrategia-redes .er-lead { margin: 0 0 1rem; color: #8a7350; line-height: 1.45; }
+    #estrategia-redes .er-grid {
+      display: grid;
+      gap: 0.65rem;
+      margin: 0 0 1rem;
+    }
+    @media (min-width: 640px) {
+      #estrategia-redes .er-grid { grid-template-columns: 1fr 1fr; }
+    }
+    #estrategia-redes .er-pillar {
+      background: #fff;
+      border: 1px solid #e6d7b0;
+      border-radius: 12px;
+      padding: 0.75rem 0.9rem;
+    }
+    #estrategia-redes .er-pillar strong { display: block; color: #7a5c28; margin-bottom: 0.2rem; }
+    #estrategia-redes table { width: 100%; border-collapse: collapse; font-size: 0.92rem; margin: 0 0 1rem; }
+    #estrategia-redes th, #estrategia-redes td {
+      text-align: left; padding: 0.45rem 0.35rem; border-bottom: 1px solid #eee3c8; vertical-align: top;
+    }
+    #estrategia-redes th[scope="row"] { color: #7a5c28; white-space: nowrap; }
+    #estrategia-redes ul { margin: 0; padding-left: 1.15rem; }
+    #estrategia-redes li { margin: 0.3rem 0; }
+    #estrategia-redes .er-links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+    #estrategia-redes .er-links a {
+      display: inline-flex; padding: 0.45rem 0.85rem; border-radius: 10px;
+      border: 1px solid #5a8f7b; background: #eef7f2; color: #2f5c4a;
+      font-weight: 700; text-decoration: none; font-size: 0.9rem;
+    }
+  </style>
 </head>
 <body class="portal-page--light" data-cliente-slug="impresoreando" data-portal-depth="1">
   <header class="portal-header portal-header--themed">
     <nav class="portal-nav">
       <a href="../">← Todos los clientes</a>
+      <a href="#estrategia-redes" style="margin-left:auto;font-weight:700;color:#2f5c4a">Estrategia redes ↓</a>
     </nav>
   </header>
   <main class="portal-main" id="portal-root"></main>
+
+  <!-- Visible siempre: no depende de pestañas del panel ni de archivos aparte -->
+  <section id="estrategia-redes" aria-label="Estrategia redes Impresoreando">
+    <div class="er-banner">ESTRATEGIA REDES · IMPRESOREANDO · AGOSTO 2026</div>
+    <div class="er-box">
+      <h2>Instagram @impresoreando</h2>
+      <p class="er-lead">
+        Meta agosto: <strong>3 posts/semana</strong> (lunes · miércoles · viernes)
+        o stories diarias cortas. Priorizar SKUs con stock o venta real.
+      </p>
+
+      <h3 style="margin:0 0 0.5rem;color:#7a5c28;font-size:1.05rem">Pilares (rotar)</h3>
+      <div class="er-grid">
+        <div class="er-pillar"><strong>1. Producto hero</strong>1080×1920 — Porta completos bulldog, Soporte celular, Bob…</div>
+        <div class="er-pillar"><strong>2. Prueba social</strong>Pedido entregado / “se fue a…” (sin datos sensibles)</div>
+        <div class="er-pillar"><strong>3. Proceso</strong>Time-lapse impresora / filamento / mesa</div>
+        <div class="er-pillar"><strong>4. Oferta suave</strong>Precio + CTA WhatsApp</div>
+      </div>
+
+      <h3 style="margin:0 0 0.5rem;color:#7a5c28;font-size:1.05rem">Calendario tipo</h3>
+      <table>
+        <thead><tr><th>Día</th><th>Formato</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Lunes</th><td><strong>Reel / carrusel</strong></td><td>Soporte · Bob · Bulldog</td></tr>
+          <tr><th scope="row">Miércoles</th><td><strong>Story proceso + CTA</strong></td><td>¿Cuál pedís?</td></tr>
+          <tr><th scope="row">Viernes</th><td><strong>Post catálogo</strong></td><td>1 SKU + precio</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin:0 0 0.5rem;color:#7a5c28;font-size:1.05rem">Pendiente ahora</h3>
+      <ul>
+        <li>Terminar pieza IG Porta completos bulldog 1080×1920</li>
+        <li>Programar los 3 posts de la semana en Meta / Creator</li>
+        <li>Rotar pilares (no solo producto)</li>
+      </ul>
+      <p style="margin:0.75rem 0 0;color:#8a7350"><strong>KPI:</strong> posts / semana + DMs o pedidos atribuidos</p>
+
+      <div class="er-links">
+        <a href="./catalogo/">Catálogo IG</a>
+        <a href="./panel/">Panel 50/50</a>
+        <a href="./panel/?tab=ads">Plan paid</a>
+        <a href="https://www.instagram.com/impresoreando/" target="_blank" rel="noopener">Abrir Instagram</a>
+      </div>
+    </div>
+  </section>
+
   <script src="../../assets/file-protocol-banner.js"></script>
   <script src="../../assets/clientes-data.js?v=ima2-claro-1"></script>
   <script src="../../assets/portal-theme.js"></script>
   <script src="../../assets/portal-theme-auto.js"></script>
   <script src="../../assets/cliente-landing-imagenes.js"></script>
-  <script src="../../assets/portal-cliente.js?v=imp-redes-cta-4"></script>
+  <script src="../../assets/portal-cliente.js?v=imp-redes-cta-5"></script>
 </body>
 </html>
