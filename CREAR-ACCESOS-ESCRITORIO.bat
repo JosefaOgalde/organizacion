@@ -24,7 +24,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "  @{ Name = '2. Organizacion - Abrir Laravel'; Target = 'ABRIR-LARAVEL.bat'; Desc = 'Solo abrir / reiniciar servidor :8000' }," ^
   "  @{ Name = '3. Organizacion - Recargar'; Target = 'RECARGAR.bat'; Desc = 'Abrir organizador con ?disco=1' }," ^
   "  @{ Name = '4. Organizacion - Cerrar servidor'; Target = 'CERRAR-SERVIDOR.bat'; Desc = 'Cerrar Laravel / puerto 8000' }," ^
-  "  @{ Name = '5. Organizacion - Estrategia redes IMP'; Target = 'VER-REDES-IMP.bat'; Desc = 'Abrir campaña Instagram Impresoreando' }" ^
+  "  @{ Name = '5. Organizacion - Estrategia redes IMP'; Target = 'FORZAR-TRAER-REDES.bat'; Desc = 'Traer y abrir campaña Instagram Impresoreando' }" ^
   ");" ^
   "foreach ($i in $items) {" ^
   "  $path = Join-Path $desk ($i.Name + '.lnk');" ^
