@@ -42,8 +42,15 @@ if errorlevel 1 (
 )
 
 echo.
-echo  Listo. Siguiente:
+echo  Listo. Siguiente para ver Redes:
+echo    FORZAR-TRAER-REDES.bat
+echo  O calendario:
 echo    ABRIR-LARAVEL.bat restaurar
-echo  ^(o EMPEZAR-AQUI.bat si ya esta en esta entrega^)
 echo.
+if exist "FORZAR-TRAER-REDES.bat" (
+  echo  Abriendo FORZAR-TRAER-REDES en 2s... ^(Ctrl+C para cancelar^)
+  timeout /t 2 >nul
+  call "%~dp0FORZAR-TRAER-REDES.bat"
+  exit /b %ERRORLEVEL%
+)
 pause
