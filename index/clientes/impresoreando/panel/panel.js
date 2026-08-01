@@ -93,6 +93,7 @@
     if (asegurarGastosCompras20260729(d)) changed = true;
     if (asegurarGastoMlBolsasEnchufeLed20260731(d)) changed = true;
     if (asegurarGastoEntradaEvento3d16100(d)) changed = true;
+    if (asegurarMelVenta020(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
     if (asegurarPedidosImpresosYNaves(d)) changed = true;
@@ -1280,6 +1281,105 @@
     return d.meta.clientesHistorial;
   }
 
+  /** Mel MKOF PED-013 pagado → I000020 (siempre; live viejos la dejan fuera). */
+  function asegurarMelVenta020(d) {
+    d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
+    d.pedidos = Array.isArray(d.pedidos) ? d.pedidos : [];
+    let changed = false;
+    const precio = 4000;
+    const costo = 683.69;
+    let ped = d.pedidos.find((p) => p && (p.id === 'ped-mel-soporte-013' || p.numero === 'PED-013'));
+    if (!ped) {
+      ped = {
+        id: 'ped-mel-soporte-013',
+        numero: 'PED-013',
+        fecha: '2026-07-31',
+        cliente: 'Mel MKOF',
+        clienteNombre: 'Mel',
+        clienteOrigen: 'MKOF',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: precio,
+            costoUnitarioClp: costo,
+            filamento: 'PLA+ negro',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precio,
+        descuentoClp: 0,
+        montoNeto: precio,
+        costoTotal: costo,
+        socioRegistro: 'Ambos',
+        creado: '2026-07-31T00:30:00.000Z',
+      };
+      d.pedidos.push(ped);
+      changed = true;
+    }
+    if (ped.estado !== 'transferido' || ped.fiado || ped.ventaId !== 'ven-mel-soporte-020') {
+      ped.estado = 'transferido';
+      ped.fiado = false;
+      delete ped.fechaPagoEsperada;
+      ped.ventaId = 'ven-mel-soporte-020';
+      ped.transferidoEn = ped.transferidoEn || new Date().toISOString();
+      ped.montoNeto = precio;
+      ped.montoBruto = precio;
+      ped.cliente = 'Mel MKOF';
+      ped.clienteOrigen = 'MKOF';
+      ped.notas =
+        '1× Soporte celular negro · transferido a venta I000020 · pagado $4.000 · MKOF (Josefa)';
+      ped.pagoNotas = 'Pagado · transferido a venta I000020';
+      changed = true;
+    }
+    const vi = d.ventas.findIndex(
+      (v) => v && (v.id === 'ven-mel-soporte-020' || v.codigo === 'I000020')
+    );
+    const venta = {
+      id: 'ven-mel-soporte-020',
+      codigo: 'I000020',
+      fecha: '2026-07-31',
+      cliente: 'Mel MKOF',
+      clienteNombre: 'Mel',
+      clienteOrigen: 'MKOF',
+      descripcion: 'PED-013 · 1× Soporte celular negro · Mel MKOF',
+      cantidad: 1,
+      montoBruto: precio,
+      descuentoClp: 0,
+      montoNeto: precio,
+      costoTotal: costo,
+      canal: 'WhatsApp',
+      notas: 'Transferido desde PED-013 · fiado cobrado · 1× Soporte celular negro · pagado $4.000',
+      socioRegistro: 'Ambos',
+      pedidoId: 'ped-mel-soporte-013',
+      pedidoNumero: 'PED-013',
+      items: [
+        {
+          sku: 'SOPCEL001',
+          nombre: 'Soporte celular',
+          cantidad: 1,
+          precioUnitarioClp: precio,
+          costoUnitarioClp: costo,
+          filamento: 'PLA+ negro',
+        },
+      ],
+    };
+    if (vi < 0) {
+      d.ventas.push(venta);
+      changed = true;
+    }
+    if (Number(d.meta?.ventaSeq || 0) < 20) {
+      d.meta = d.meta || {};
+      d.meta.ventaSeq = 20;
+      changed = true;
+    }
+    return changed;
+  }
+
   /** Ventas base del seed: si el live quedó vacío (o sin ese id), las reinyecta. No pisa ventas nuevas. */
   function asegurarVentasSeed(d) {
     d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
@@ -1626,6 +1726,35 @@
             precioUnitarioClp: 7000,
             costoUnitarioClp: 998.17,
             filamento: 'multicolor',
+          },
+        ],
+      },
+      {
+        id: 'ven-mel-soporte-020',
+        codigo: 'I000020',
+        fecha: '2026-07-31',
+        cliente: 'Mel MKOF',
+        clienteNombre: 'Mel',
+        clienteOrigen: 'MKOF',
+        descripcion: 'PED-013 · 1× Soporte celular negro · Mel MKOF',
+        cantidad: 1,
+        montoBruto: 4000,
+        descuentoClp: 0,
+        montoNeto: 4000,
+        costoTotal: 683.69,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-013 · fiado cobrado · 1× Soporte celular negro · pagado $4.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-mel-soporte-013',
+        pedidoNumero: 'PED-013',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: 1,
+            precioUnitarioClp: 4000,
+            costoUnitarioClp: 683.69,
+            filamento: 'PLA+ negro',
           },
         ],
       },
