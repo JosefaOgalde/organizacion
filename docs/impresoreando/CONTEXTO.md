@@ -15,7 +15,8 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre `scripts/sync-impresoreando-seed-a-live.js` + `force-imp-fiados-012-013.js` + `force-imp-ventas-014-015-fiado-008.js` para meter PED/productos/ventas nuevos del seed en el live local. Si no ves fiados/ventas nuevas: `node scripts/force-imp-ventas-014-015-fiado-008.js` y recarga Pedidos/Ventas. |
 | Landing | `http://127.0.0.1:8000/index/clientes/impresoreando/` · CTA **Resumen 50/50** · logo `identidad/logo-impresoreando.png` |
 | Panel / Resumen | `http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen` |
-| Panel / Redes | `…/panel/?tab=redes` — campaña IG agosto (junto a Bitácora); doc `docs/ESTRATEGIA-REDES-AGOSTO-2026.md` |
+| Panel / Redes | `…/panel/?tab=redes` — campaña IG (junto a Bitácora) |
+| Página estrategia | `…/impresoreando/redes/` — campaña visible sin depender de pestañas; bat `VER-REDES-IMP.bat` · doc `docs/ESTRATEGIA-REDES-AGOSTO-2026.md` |
 | Catálogo IG | `…/impresoreando/catalogo/` · 1080×1350 · PDF `catalogo/export/catalogo-impresoreando.pdf` · `exportar-pngs.js` + `exportar-pdf.js` |
 | Status correo | `scripts/impresoreando-status-diario.js` · `ENVIAR-STATUS-IMPRESOREANDO.bat` · lib `scripts/lib/smtp-send.js` |
 | Sync → organizador | `node scripts/sync-impresoreando-pedidos-organizacion.js --also-respaldo` (también `ABRIR-LARAVEL.bat`). **1 tarea por PED activo** (`[IMP] PED-00n · …`); transferidos → completadas. **Fiados** → tarea `[IMP] Cobrar PED-00n · …` el día `fechaPagoEsperada`. **Madre siempre en fecha de hoy (Chile)**; subtareas finalizadas se quedan en el día de cierre. |

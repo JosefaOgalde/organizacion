@@ -3610,7 +3610,10 @@
         <p class="imp-redes-kicker">Campaña agosto · Instagram</p>
         <h2 style="margin-bottom:0.35rem">Redes sociales</h2>
         <p class="imp-muted" style="margin:0 0 0.75rem">Meta, pilares y calendario lun/mié/vie de @impresoreando.</p>
-        <button type="button" class="imp-btn imp-btn--redes" data-goto-tab="redes">Ver campaña →</button>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+          <a class="imp-btn imp-btn--redes" href="../redes/?v=20260801c">Abrir estrategia redes →</a>
+          <button type="button" class="imp-btn" data-goto-tab="redes">Ver en esta pestaña</button>
+        </div>
       </div>
       <div class="imp-balance ${sinDeuda ? 'imp-balance--ok' : 'imp-balance--deuda'}">
         <div class="imp-balance__label">${sinDeuda ? 'Sin deuda de sociedad' : 'Para salir de deuda falta recuperar'}</div>
@@ -5798,8 +5801,9 @@
       <div class="imp-card">
         <h3>Atajos</h3>
         <p class="imp-redes-atajos">
+          <a class="imp-btn imp-btn--redes" href="../redes/?v=20260801c">Página estrategia (siempre visible)</a>
           <a class="imp-btn" href="../catalogo/">Catálogo IG</a>
-          <a class="imp-btn" href="/docs/ESTRATEGIA-REDES-AGOSTO-2026.md" target="_blank" rel="noopener">Estrategia completa (TS · ECR · IMP)</a>
+          <a class="imp-btn" href="/docs/ESTRATEGIA-REDES-AGOSTO-2026.md" target="_blank" rel="noopener">Doc TS · ECR · IMP</a>
           <a class="imp-btn" href="https://www.instagram.com/impresoreando/" target="_blank" rel="noopener">Abrir @impresoreando</a>
         </p>
       </div>
