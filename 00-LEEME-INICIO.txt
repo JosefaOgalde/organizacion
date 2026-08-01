@@ -25,8 +25,8 @@ URL: http://127.0.0.1:8000/index.html?disco=1
 
 CAMPANA REDES IMPRESOREANDO:
   Doble clic: VER-REDES-IMP.bat
-  URL fija: http://127.0.0.1:8000/index/clientes/impresoreando/redes/
-  (tambien boton verde "Estrategia redes" en la landing)
+  URL: http://127.0.0.1:8000/index/clientes/impresoreando/estrategia-redes.html
+  (si el preview de Cursor sale blanco, abrí en Chrome/Edge)
 
 No hace falta pegar rutas del JSON ni preguntarle al agente.
 
