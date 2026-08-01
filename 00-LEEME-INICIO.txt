@@ -8,8 +8,8 @@ DEL DIA A DIA (elige UNA):
   1) Doble clic:  EMPEZAR-AQUI.bat
   2) O doble clic: TRAER-CAMBIOS.bat
 
-Eso hace: git pull en main + restaura el calendario
-desde Descargas + abre http://127.0.0.1:8000
+Eso hace: git pull en main + conserva el calendario local
+y abre http://127.0.0.1:8000
 
 PARA VERLOS SIEMPRE EN EL ESCRITORIO (una sola vez):
   Doble clic:  CREAR-ACCESOS-ESCRITORIO.bat

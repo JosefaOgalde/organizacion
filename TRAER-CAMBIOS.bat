@@ -9,13 +9,8 @@ echo   TRAER CAMBIOS HOY
 echo  ========================================
 echo.
 echo  1^) git pull en main
-echo  2^) Restaura calendario desde Descargas
-echo     ^(organizacion-respaldo-2026-07-31 (1).json^)
+echo  2^) Conserva el calendario local
 echo  3^) Abre Laravel en :8000
-echo.
-echo  Tu usuario Windows ya define Descargas:
-echo  %%USERPROFILE%%\Downloads
-echo  ^(ej. C:\Users\Josefa Ogalde\Downloads^)
 echo.
 
 where git >nul 2>&1
@@ -61,6 +56,6 @@ if errorlevel 1 (
 )
 
 echo.
-echo [4] Abrir Laravel restaurando calendario...
-call "%~dp0ABRIR-LARAVEL.bat" restaurar
+echo [4] Abrir Laravel conservando calendario...
+call "%~dp0ABRIR-LARAVEL.bat"
 exit /b %ERRORLEVEL%

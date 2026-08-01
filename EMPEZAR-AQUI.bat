@@ -9,7 +9,7 @@ echo   ORGANIZACION · EMPEZAR AQUI
 echo  ========================================
 echo.
 echo  Este es el unico boton del dia a dia:
-echo  trae main + restaura calendario + abre Laravel.
+echo  trae main + conserva calendario + abre Laravel.
 echo.
 echo  Tip: corre una vez CREAR-ACCESOS-ESCRITORIO.bat
 echo  para tener iconos en el Escritorio.

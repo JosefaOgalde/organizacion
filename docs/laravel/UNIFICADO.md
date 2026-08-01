@@ -9,7 +9,7 @@ cd "C:\Users\Josefa Ogalde\organizacion"
 EMPEZAR-AQUI.bat
 ```
 
-(Equivale a `git pull` en main + restaurar calendario + `ABRIR-LARAVEL`.)
+(Equivale a `git pull` en main + conservar el calendario local + `ABRIR-LARAVEL`.)
 
 | Qué | URL |
 |-----|-----|
