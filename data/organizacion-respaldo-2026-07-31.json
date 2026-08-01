@@ -2305,6 +2305,68 @@
       "numeroHistorico": "013",
       "agendaFijada": true,
       "estadoFijado": true
+    },
+    {
+      "id": "tarea-ecr-programar-nl1-2026-08-05",
+      "titulo": "[ECR] Programar NL1",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-08-05",
+      "horaInicio": "09:00",
+      "horaFin": "13:00",
+      "notas": "Programar en LinkedIn / Meta el ecosistema NL 1 ago · Tecnología sin integración. Subtareas: Programar carrusel · Programar video.",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "numeroHistorico": "17",
+      "tipoEntregable": "programar",
+      "articuloSlug": "tecnologia-sin-integracion",
+      "articuloPublicacion": "2026-08-01",
+      "articuloTitulo": "Tecnología sin integración: el principal freno de la eficiencia",
+      "parentId": null,
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-ecr-programar-nl1-carrusel-2026-08-05",
+      "titulo": "[ECR] Programar carrusel",
+      "horaInicio": "09:00",
+      "horaFin": "11:00",
+      "numeroHistorico": "18",
+      "tipoEntregable": "programar-carrusel",
+      "ordenHijo": 1,
+      "notas": "Programar carrusel NL1 · Tecnología sin integración (LinkedIn).",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-08-05",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "parentId": "tarea-ecr-programar-nl1-2026-08-05",
+      "articuloSlug": "tecnologia-sin-integracion",
+      "articuloPublicacion": "2026-08-01",
+      "articuloTitulo": "Tecnología sin integración: el principal freno de la eficiencia",
+      "agendaFijada": true
+    },
+    {
+      "id": "tarea-ecr-programar-nl1-video-2026-08-05",
+      "titulo": "[ECR] Programar video",
+      "horaInicio": "11:00",
+      "horaFin": "13:00",
+      "numeroHistorico": "19",
+      "tipoEntregable": "programar-video",
+      "ordenHijo": 2,
+      "notas": "Programar video NL1 · Tecnología sin integración (LinkedIn).",
+      "clienteId": "cli-ecr",
+      "rolId": "rol-ecr-cm",
+      "fecha": "2026-08-05",
+      "prioridad": "alta",
+      "completada": false,
+      "pendiente": false,
+      "parentId": "tarea-ecr-programar-nl1-2026-08-05",
+      "articuloSlug": "tecnologia-sin-integracion",
+      "articuloPublicacion": "2026-08-01",
+      "articuloTitulo": "Tecnología sin integración: el principal freno de la eficiencia",
+      "agendaFijada": true
     }
   ],
   "citasSalud": [
@@ -2447,7 +2509,7 @@
       "fecha": "2026-07-29T14:20:11.119Z",
       "nota": "Declarado por usuaria como último respaldo; promovido a data/organizacion-respaldo-2026-07-28.json + live"
     },
-    "actualizado": "2026-08-01T00:08:13.332Z"
+    "actualizado": "2026-08-01T00:23:00.916Z"
   },
   "perfilPersonal": {
     "nombre": "Josefa Ogalde",
