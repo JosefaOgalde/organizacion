@@ -8,7 +8,7 @@ echo  ========================================
 echo   ACCESOS EN EL ESCRITORIO
 echo  ========================================
 echo.
-echo  Se crean 4 accesos directos visibles
+echo  Se crean 5 accesos directos visibles
 echo  en tu Escritorio ^(usuario actual^).
 echo.
 

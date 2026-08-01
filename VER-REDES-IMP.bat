@@ -1,60 +1,57 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-title Ver Redes Impresoreando
+title Ver estrategia Redes Impresoreando
 
 echo.
-echo  === Traer main + abrir campaña Redes ===
+echo  === Estrategia Redes Impresoreando ===
+echo  Carpeta: %CD%
 echo.
 
 where git >nul 2>&1
-if errorlevel 1 (
-  echo [ERROR] Falta Git en el PATH
-  pause
-  exit /b 1
+if not errorlevel 1 (
+  echo [1] git pull origin main...
+  git checkout main >nul 2>&1
+  git pull origin main
+  if errorlevel 1 (
+    echo.
+    echo  Si fallo por seed:
+    echo    git checkout -- data\impresoreando-seed.json
+    echo    git pull origin main
+    echo.
+    pause
+    exit /b 1
+  )
+) else (
+  echo [1] Git no esta en PATH — sigo igual
 )
 
-echo [1] git checkout main + pull...
-git checkout main
-if errorlevel 1 (
-  echo [ERROR] No pude cambiar a main
+echo [2] Comprobar pagina redes...
+if not exist "index\clientes\impresoreando\redes\index.html" (
+  echo [ERROR] Falta index\clientes\impresoreando\redes\index.html
+  echo  Esta carpeta no tiene la version nueva. Corre git pull en:
+  echo  C:\Users\Josefa Ogalde\organizacion
   pause
   exit /b 1
 )
-git pull origin main
-if errorlevel 1 (
-  echo.
-  echo  Si fallo por impresoreando-seed.json:
-  echo    git checkout -- data\impresoreando-seed.json
-  echo    git pull origin main
-  echo.
-  pause
-  exit /b 1
-)
+echo  OK — existe la pagina de estrategia
 
-echo [2] Comprobar que existe la pestana Redes...
-findstr /C:"Redes sociales" "index\clientes\impresoreando\panel\index.html" >nul
-if errorlevel 1 (
-  echo [ERROR] Tu carpeta aun NO tiene la pestana Redes.
-  echo  Estás en otra carpeta del proyecto o el pull no trajo main.
-  echo  Carpeta actual:
-  echo  %CD%
-  pause
-  exit /b 1
-)
-echo  OK — index.html tiene Redes sociales
-
-echo [3] Abrir Laravel + panel Redes...
+echo [3] Arrancar servidor :8000...
 if exist "ABRIR-LARAVEL.bat" (
   call "%~dp0ABRIR-LARAVEL.bat" sin-nav
 ) else (
-  echo [AVISO] No hay ABRIR-LARAVEL.bat — abro URL igual
+  echo [AVISO] No hay ABRIR-LARAVEL.bat
 )
 
 timeout /t 2 >nul
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=redes&v=20260801b'"
+
+echo [4] Abrir estrategia en el navegador...
+REM Pagina dedicada (siempre visible) + pestaña del panel
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/redes/?v=20260801c'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=redes&v=20260801c'"
+
 echo.
-echo  Si ves pantalla vieja: Ctrl+Shift+R
-echo  Debes ver la pestana "Redes sociales" al lado de Bitacora.
+echo  Debes ver la campana de Instagram @impresoreando.
+echo  Si sale viejo: Ctrl+Shift+R
 echo.
 pause

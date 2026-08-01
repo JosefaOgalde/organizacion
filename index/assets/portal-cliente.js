@@ -598,7 +598,7 @@
     if (c.slug !== 'impresoreando') return '';
     return `<div class="portal-imp-cta-row" id="portal-imp-panel-cta">
       <a href="./panel/" class="portal-imp-panel-cta">Resumen 50/50</a>
-      <a href="./panel/?tab=redes&amp;v=20260801b" class="portal-imp-panel-cta portal-imp-panel-cta--redes">Redes / campaña</a>
+      <a href="./redes/?v=20260801c" class="portal-imp-panel-cta portal-imp-panel-cta--redes">Estrategia redes</a>
       <a href="./panel/?tab=costos" class="portal-imp-panel-cta portal-imp-panel-cta--calc">Calculadora de productos</a>
       <a href="./catalogo/" class="portal-imp-panel-cta">Catálogo IG</a>
     </div>`;
