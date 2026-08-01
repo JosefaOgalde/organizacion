@@ -27,39 +27,33 @@ if not errorlevel 1 (
   echo [1] Git no esta en PATH — sigo
 )
 
-set "PAGE=index\clientes\impresoreando\estrategia-redes.html"
-echo [2] Comprobar archivo...
-if not exist "%PAGE%" (
-  echo [ERROR] No existe %PAGE%
-  echo  Esta carpeta NO tiene la version nueva.
-  echo  Debe ser: C:\Users\Josefa Ogalde\organizacion
+echo [2] Comprobar servidor unificado...
+if not exist "scripts\servidor-unificado-8000.php" (
+  echo [ERROR] Falta scripts\servidor-unificado-8000.php
   pause
   exit /b 1
 )
-for %%A in ("%PAGE%") do echo  OK — %%~zA bytes · %PAGE%
-findstr /C:"@impresoreando" "%PAGE%" >nul
+findstr /C:"imp-estrategia-redes-page" "scripts\servidor-unificado-8000.php" >nul
 if errorlevel 1 (
-  echo [ERROR] El HTML existe pero esta vacio o viejo.
+  echo [ERROR] Tu pull no trajo el fallback de redes.
+  echo  Carpeta actual: %CD%
   pause
   exit /b 1
 )
+echo  OK — servidor tiene la campana embebida
 
-echo [3] Reiniciar servidor :8000...
+echo [3] Cerrar :8000 y volver a abrir...
 if exist "CERRAR-SERVIDOR.bat" call "%~dp0CERRAR-SERVIDOR.bat"
-timeout /t 1 >nul
-if exist "ABRIR-LARAVEL.bat" (
-  call "%~dp0ABRIR-LARAVEL.bat" sin-nav
-) else (
-  echo [AVISO] No hay ABRIR-LARAVEL.bat
-)
-
 timeout /t 2 >nul
+call "%~dp0ABRIR-LARAVEL.bat" sin-nav
+timeout /t 3 >nul
 
-echo [4] Abrir pagina...
-powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/estrategia-redes.html?v=20260801d'"
+echo [4] Abrir en el navegador del sistema (no solo preview Cursor)...
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/panel/estrategia.html?v=20260801e'"
+powershell -NoProfile -Command "Start-Process 'http://127.0.0.1:8000/index/clientes/impresoreando/estrategia-redes.html?v=20260801e'"
 
 echo.
 echo  Debes ver franja verde: ESTRATEGIA REDES · IMPRESOREANDO
-echo  Si sigue blanco: Ctrl+Shift+R o abre en Chrome/Edge (no solo el preview de Cursor)
+echo  Si el preview de Cursor sigue blanco, usa la ventana de Chrome/Edge que se abrio.
 echo.
 pause

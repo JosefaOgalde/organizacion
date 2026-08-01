@@ -3611,7 +3611,7 @@
         <h2 style="margin-bottom:0.35rem">Redes sociales</h2>
         <p class="imp-muted" style="margin:0 0 0.75rem">Meta, pilares y calendario lun/mié/vie de @impresoreando.</p>
         <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
-          <a class="imp-btn imp-btn--redes" href="../estrategia-redes.html?v=20260801d">Abrir estrategia redes →</a>
+          <a class="imp-btn imp-btn--redes" href="./estrategia.html?v=20260801e">Abrir estrategia redes →</a>
           <button type="button" class="imp-btn" data-goto-tab="redes">Ver en esta pestaña</button>
         </div>
       </div>
@@ -5801,7 +5801,7 @@
       <div class="imp-card">
         <h3>Atajos</h3>
         <p class="imp-redes-atajos">
-          <a class="imp-btn imp-btn--redes" href="../estrategia-redes.html?v=20260801d">Página estrategia (siempre visible)</a>
+          <a class="imp-btn imp-btn--redes" href="./estrategia.html?v=20260801e">Página estrategia (siempre visible)</a>
           <a class="imp-btn" href="../catalogo/">Catálogo IG</a>
           <a class="imp-btn" href="/docs/ESTRATEGIA-REDES-AGOSTO-2026.md" target="_blank" rel="noopener">Doc TS · ECR · IMP</a>
           <a class="imp-btn" href="https://www.instagram.com/impresoreando/" target="_blank" rel="noopener">Abrir @impresoreando</a>
@@ -5855,7 +5855,12 @@
   ]);
 
   function activarTab(tab) {
-    const name = TABS_VALIDOS.has(tab) ? tab : 'resumen';
+    // Si el panel existe en el HTML, activarlo aunque el JS sea viejo/parcial
+    const pedido = String(tab || 'resumen');
+    const name =
+      TABS_VALIDOS.has(pedido) || document.getElementById(`tab-${pedido}`)
+        ? pedido
+        : 'resumen';
     document.querySelectorAll('#imp-tabs button').forEach((b) => b.classList.remove('is-active'));
     document.querySelectorAll('.imp-panel').forEach((p) => p.classList.remove('is-active'));
     const btn = $(`#imp-tabs button[data-tab="${name}"]`);
