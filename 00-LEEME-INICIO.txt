@@ -32,13 +32,16 @@ CAMPANA REDES IMPRESOREANDO:
 
 No hace falta pegar rutas del JSON ni preguntarle al agente.
 
-SI GIT DICE "local changes would be overwritten":
-  DESBLOQUEAR-GIT.bat
-  Luego: FORZAR-TRAER-REDES.bat
-  O pega en la consola:
+SI GIT DICE "diverged" / pull bloqueado / no ves Redes:
+  Pegá en la consola:
     git checkout -- data\impresoreando-seed.json
     git checkout -- data\organizacion-respaldo-2026-07-31.json
-    git pull origin main
+    git fetch origin main
+    git reset --hard origin/main
+  Luego:
+    SINCRONIZAR-MAIN.bat
+  O:
+    FORZAR-TRAER-REDES.bat
 
 JOYAS MERCURY (pausado, en la nube para iPad/iPhone):
   Release: https://github.com/JosefaOgalde/organizacion/releases/tag/jm-archivo-2026-07-31
