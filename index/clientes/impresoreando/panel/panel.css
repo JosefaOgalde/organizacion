@@ -911,3 +911,45 @@ body.imp-modal-open { overflow: hidden; }
   .imp-grid { grid-template-columns: 1fr; }
   .imp-grid--2 { grid-template-columns: 1fr; }
 }
+
+/* Redes sociales — campaña IG */
+.imp-card--redes {
+  border-color: color-mix(in srgb, #5a8f7b 40%, var(--imp-border));
+  background: linear-gradient(165deg, #f3faf6 0%, #fffdf7 55%);
+}
+.imp-redes-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #3d6b5a;
+}
+.imp-redes-meta { margin: 0 0 0.5rem; line-height: 1.45; }
+.imp-redes-pilares li { margin: 0.45rem 0; }
+.imp-redes-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-right: 0.25rem;
+  border-radius: 6px;
+  background: #e4f0ea;
+  color: #2f5c4a;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.imp-redes-semana th[scope='row'] {
+  font-weight: 700;
+  color: var(--imp-text);
+  text-transform: none;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+.imp-redes-atajos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+}

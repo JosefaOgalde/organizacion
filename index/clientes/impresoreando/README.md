@@ -29,6 +29,7 @@ Incluye:
 - Costos de producto (filamento, horas impresión, pintado, metal llavero, bolsa)
 - Plan paid de bajo presupuesto (~$30.000/mes)
 - Bitácora compartida
+- Redes sociales (campaña IG agosto · `?tab=redes`)
 
 Los datos se guardan en disco vía API:
 

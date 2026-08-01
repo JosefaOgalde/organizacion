@@ -5717,6 +5717,96 @@
     });
   }
 
+  /** Campaña IG agosto — Impresoreando (ver docs/ESTRATEGIA-REDES-AGOSTO-2026.md). */
+  const CAMPANA_REDES_IMP = {
+    mes: 'Agosto 2026',
+    canal: 'Instagram @impresoreando',
+    meta: '3 posts/semana (lun · mié · vie) o stories diarias cortas. Priorizar SKUs con stock/venta real.',
+    pilares: [
+      { nombre: 'Producto hero', detalle: '1080×1920 — ej. Porta completos bulldog, Soporte celular, Bob' },
+      { nombre: 'Prueba social', detalle: 'Pedido entregado / “se fue a…” (sin datos sensibles)' },
+      { nombre: 'Proceso', detalle: 'Time-lapse impresora / filamento / mesa' },
+      { nombre: 'Oferta suave', detalle: 'Precio + CTA WhatsApp' },
+    ],
+    semana: [
+      { dia: 'Lunes', formato: 'Reel / carrusel producto', ejemplo: 'Soporte celular · Bob · Bulldog' },
+      { dia: 'Miércoles', formato: 'Story proceso + CTA', ejemplo: '¿Cuál pedís?' },
+      { dia: 'Viernes', formato: 'Post estático catálogo', ejemplo: '1 SKU + precio' },
+    ],
+    pendientes: [
+      'Terminar pieza IG Porta completos bulldog 1080×1920',
+      'Programar los 3 posts de la semana en Meta / Creator',
+      'Rotar pilares: no solo producto, también proceso y prueba social',
+    ],
+    kpi: 'Posts publicados / semana + DMs o pedidos atribuidos',
+  };
+
+  function renderRedes() {
+    const c = CAMPANA_REDES_IMP;
+    const pilares = c.pilares
+      .map(
+        (p, i) =>
+          `<li><span class="imp-redes-num">${i + 1}</span> <strong>${escapeHtml(p.nombre)}</strong> — ${escapeHtml(p.detalle)}</li>`
+      )
+      .join('');
+    const semana = c.semana
+      .map(
+        (s) => `<tr>
+        <th scope="row">${escapeHtml(s.dia)}</th>
+        <td><strong>${escapeHtml(s.formato)}</strong></td>
+        <td class="imp-muted">${escapeHtml(s.ejemplo)}</td>
+      </tr>`
+      )
+      .join('');
+    const pendientes = c.pendientes.map((p) => `<li>${escapeHtml(p)}</li>`).join('');
+
+    $('#tab-redes').innerHTML = `
+      <div class="imp-card imp-card--redes">
+        <p class="imp-redes-kicker">Campaña · ${escapeHtml(c.mes)}</p>
+        <h2>Redes sociales — ${escapeHtml(c.canal)}</h2>
+        <p class="imp-redes-meta"><strong>Meta:</strong> ${escapeHtml(c.meta)}</p>
+        <p class="imp-muted">Paid ads van en la pestaña <button type="button" class="imp-linkish" data-goto-tab="ads">Plan paid</button>. Aquí es el plan orgánico.</p>
+      </div>
+
+      <div class="imp-card">
+        <h3>Pilares (rotar cada semana)</h3>
+        <ul class="imp-list imp-redes-pilares">${pilares}</ul>
+      </div>
+
+      <div class="imp-card">
+        <h3>Calendario tipo de la semana</h3>
+        <div class="imp-table-wrap">
+          <table class="imp-table imp-redes-semana">
+            <thead><tr><th>Día</th><th>Formato</th><th>Ejemplo</th></tr></thead>
+            <tbody>${semana}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="imp-card">
+        <h3>Pendiente ahora</h3>
+        <ul class="imp-list">${pendientes}</ul>
+        <p class="imp-muted" style="margin-top:0.75rem"><strong>KPI:</strong> ${escapeHtml(c.kpi)}</p>
+      </div>
+
+      <div class="imp-card">
+        <h3>Atajos</h3>
+        <p class="imp-redes-atajos">
+          <a class="imp-btn" href="../catalogo/">Catálogo IG</a>
+          <a class="imp-btn" href="/docs/ESTRATEGIA-REDES-AGOSTO-2026.md" target="_blank" rel="noopener">Estrategia completa (TS · ECR · IMP)</a>
+          <a class="imp-btn" href="https://www.instagram.com/impresoreando/" target="_blank" rel="noopener">Abrir @impresoreando</a>
+        </p>
+      </div>
+    `;
+
+    $('#tab-redes')?.querySelectorAll('[data-goto-tab]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const tab = btn.getAttribute('data-goto-tab');
+        document.querySelector(`#imp-tabs button[data-tab="${tab}"]`)?.click();
+      });
+    });
+  }
+
   function escapeHtml(str) {
     return String(str || '')
       .replace(/&/g, '&amp;')
@@ -5739,6 +5829,7 @@
     renderCostos();
     renderAds();
     renderBitacora();
+    renderRedes();
   }
 
   const TABS_VALIDOS = new Set([
@@ -5750,6 +5841,7 @@
     'costos',
     'ads',
     'bitacora',
+    'redes',
   ]);
 
   function activarTab(tab) {
