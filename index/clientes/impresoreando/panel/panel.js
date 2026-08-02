@@ -88,6 +88,7 @@
     if (asegurarProductoTorreon(d)) changed = true;
     if (asegurarProductoLimpiadorBrochas(d)) changed = true;
     if (asegurarProductoAlcanciaChanchito(d)) changed = true;
+    if (asegurarProductoSoporteCelularChimuelo(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
@@ -1171,6 +1172,69 @@
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     const id = 'prod-alcancia-chanchito';
     const seed = seedAlcanciaChanchito();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
+      existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /**
+   * Soporte celular Chimuelo — slicer 55,81 g · 2 h 41 m · PLA+ negro · Elegoo.
+   * Soft seed: no pisa g/h/$ si ya hay edición local.
+   */
+  function seedSoporteCelularChimuelo() {
+    const filamentoModeloGramos = 32.95;
+    const filamentoSoportesGramos = 22.39;
+    const filamentoPurgeGramos = 0.47;
+    const filamentoGramos = 55.81; // total slicer
+    const horasImpresion = round2((2 * 60 + 41) / 60); // 2 h 41 m → 2,68 h
+    // fil 1003,80 + luz 150,27 + bolsa 50 ≈ 1204,07 → PVP +100% $2.400
+    return {
+      sku: 'SOPCHI001',
+      nombre: 'Soporte celular Chimuelo',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoModeloGramos,
+      filamentoSoportesGramos,
+      filamentoPurgeGramos,
+      filamentoMetros: 18.56,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 2400,
+      costoSlicerRef: 1.12,
+      pendienteCosto: false,
+      notas:
+        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + soportes ${filamentoSoportesGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 18,56 m · 2 h 41 m · coste slicer 1,12 · 1 cambio filamento. PLA+ negro $17.986/kg · Elegoo Centauri. Costo ~$1.204 · PVP sugerido $2.400.`,
+    };
+  }
+
+  function asegurarProductoSoporteCelularChimuelo(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-soporte-celular-chimuelo';
+    const seed = seedSoporteCelularChimuelo();
     const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
     if (!existing) {
       d.productos.push({ id, ...seed });

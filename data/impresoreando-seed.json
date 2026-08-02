@@ -1512,6 +1512,27 @@
       "notas": "Slicer 1 ud: modelo 280.74 g + soportes 33.75 g + descargado 1.40 g = 315.88 g · 105.06 m · 12 h 9 m · coste slicer 6,32. PLA rosado $10.990/kg · Elegoo Centauri. Costo ~$4.202 · PVP sugerido $8.400."
     },
     {
+      "id": "prod-soporte-celular-chimuelo",
+      "sku": "SOPCHI001",
+      "nombre": "Soporte celular Chimuelo",
+      "activo": true,
+      "impresoraId": "imp-centauri-carbon-2",
+      "filamentoModeloGramos": 32.95,
+      "filamentoSoportesGramos": 22.39,
+      "filamentoPurgeGramos": 0.47,
+      "filamentoMetros": 18.56,
+      "filamentoGramos": 55.81,
+      "costoFilamentoKgClp": 17986,
+      "horasImpresion": 2.68,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 2400,
+      "costoSlicerRef": 1.12,
+      "pendienteCosto": false,
+      "notas": "Slicer 1 ud: modelo 32.95 g + soportes 22.39 g + descargado 0.47 g = 55.81 g · 18.56 m · 2 h 41 m · coste slicer 1,12 · 1 cambio filamento. PLA+ negro $17.986/kg · Elegoo Centauri. Costo ~$1.204 · PVP sugerido $2.400."
+    },
+    {
       "id": "prod-llavero-one-piece",
       "sku": "LLONEPI001",
       "nombre": "Llavero One Piece",
