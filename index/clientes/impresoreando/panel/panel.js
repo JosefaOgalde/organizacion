@@ -1198,16 +1198,18 @@
   }
 
   /**
-   * Soporte celular Chimuelo — slicer 55,81 g · 2 h 41 m · PLA+ negro · Elegoo.
+   * Soporte celular Chimuelo — slicer completo (modelo+soportes+purga) · 2 h 41 m · PLA+ negro · Elegoo.
    * Soft seed: no pisa g/h/$ si ya hay edición local.
    */
   function seedSoporteCelularChimuelo() {
-    const filamentoModeloGramos = 32.95;
-    const filamentoSoportesGramos = 22.39;
-    const filamentoPurgeGramos = 0.47;
-    const filamentoGramos = 55.81; // total slicer
+    const filamentoModeloGramos = 32.95; // 10,96 m
+    const filamentoSoportesGramos = 22.39; // 7,45 m
+    const filamentoPurgeGramos = 0.47; // descargado 0,16 m — va al costo
+    const filamentoGramos = round2(
+      filamentoModeloGramos + filamentoSoportesGramos + filamentoPurgeGramos
+    ); // 55,81 g · 18,56 m (todo lo consumido)
     const horasImpresion = round2((2 * 60 + 41) / 60); // 2 h 41 m → 2,68 h
-    // fil 1003,80 + luz 150,27 + bolsa 50 ≈ 1204,07 → PVP +100% $2.400
+    // fil (modelo+sop+purga) 1003,80 + luz 150,27 + bolsa 50 = 1204,07 → PVP +100% $2.400
     return {
       sku: 'SOPCHI001',
       nombre: 'Soporte celular Chimuelo',
@@ -1227,7 +1229,7 @@
       costoSlicerRef: 1.12,
       pendienteCosto: false,
       notas:
-        `Slicer 1 ud: modelo ${filamentoModeloGramos} g + soportes ${filamentoSoportesGramos} g + descargado ${filamentoPurgeGramos} g = ${filamentoGramos} g · 18,56 m · 2 h 41 m · coste slicer 1,12 · 1 cambio filamento. PLA+ negro $17.986/kg · Elegoo Centauri. Costo ~$1.204 · PVP sugerido $2.400.`,
+        `Slicer 1 ud (todo al costo): modelo ${filamentoModeloGramos} g (10,96 m) + soportes ${filamentoSoportesGramos} g (7,45 m) + purga/descargado ${filamentoPurgeGramos} g (0,16 m) = ${filamentoGramos} g · 18,56 m · 2 h 41 m · coste slicer 1,12 · 1 cambio filamento. PLA+ negro $17.986/kg · Elegoo. Fil ~$1.004 (incl. purga) + luz ~$150 + bolsa $50 = costo ~$1.204 · PVP sugerido $2.400.`,
     };
   }
 

@@ -1530,7 +1530,7 @@
       "precioVentaSugeridoClp": 2400,
       "costoSlicerRef": 1.12,
       "pendienteCosto": false,
-      "notas": "Slicer 1 ud: modelo 32.95 g + soportes 22.39 g + descargado 0.47 g = 55.81 g · 18.56 m · 2 h 41 m · coste slicer 1,12 · 1 cambio filamento. PLA+ negro $17.986/kg · Elegoo Centauri. Costo ~$1.204 · PVP sugerido $2.400."
+      "notas": "Slicer 1 ud (todo al costo): modelo 32.95 g (10,96 m) + soportes 22.39 g (7,45 m) + purga/descargado 0.47 g (0,16 m) = 55.81 g · 18.56 m · 2 h 41 m · coste slicer 1,12 · 1 cambio filamento. PLA+ negro $17.986/kg · Elegoo. Fil ~$1.004 (incl. purga) + luz ~$150 + bolsa $50 = costo ~$1.204 · PVP sugerido $2.400."
     },
     {
       "id": "prod-llavero-one-piece",
