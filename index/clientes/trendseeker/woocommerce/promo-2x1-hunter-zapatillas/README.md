@@ -21,37 +21,19 @@
 
 ---
 
-## Cómo configurarlo en WordPress
+## Continuar desde tu pantalla actual
 
-Site: https://trendseeker.cl/
+Filtro **ya OK** (Category = Zapatillas + Perfect Brands = Hunter).
 
-1. WP Admin → **WooCommerce → Discount Rules → Add New Rule**
-2. **Discount type:** `Buy X Get Y`
-3. **Rule name:** `[PRUEBA] 2x1 Hunter Zapatillas — más barato 100%`
-4. **Filter (Buy X) — productos que cuentan para la promo**
-   - Opción A (recomendada para la prueba):  
-     - Filter type: **Category** → `Zapatillas`  
-     - Y agregar condición / segundo filtro de **Brand** → `Hunter`  
-       (Perfect WooCommerce Brands está activo; si “Brand” no aparece en Filters, usá Opción B)
-   - Opción B (más segura para prueba corta):  
-     - Filter type: **Products** → seleccionar solo las zapatillas Hunter Travel (lista abajo)
-5. **Get Y / Discount**
-   - Tipo: `Buy X get Y - All` (o Categories/Products **iguales** al filtro, para que el gratis también sea zapatilla Hunter)
-   - Count quantities as: **Filter set above**
-   - Mode of apply: **Cheapest**
-   - Minimum quantity: **2**
-   - Maximum quantity: vacío (o 2 si querés que solo aplique exactamente de a 2, sin escalar)
-   - Free quantity: **1**
-   - Discount type: **Free** (o Percentage **100%**)
-   - Recursive:  
-     - **Off** para la prueba (solo 1 gratis aunque lleven 4)  
-     - **On** si querés 2 gratis al llevar 4, etc.
-6. **Conditions (opcional)**
-   - Dejar vacío en la prueba, o limitar a rol Admin / cupón secreto si no querés que clientes reales lo vean aún.
-7. **Guardar** y dejar la regla **Enabled** solo mientras probás.
+Seguí el archivo **`CONTINUAR-CONFIG.txt`** (pasos exactos del bloque Discount + qué no tocar en Reglas).
 
-Doc oficial Flycart (Buy X Get Y + Cheapest):  
-https://docs.flycart.org/en/articles/3810570-buy-x-get-y
+Resumen ultra corto:
+
+1. **Discount → Select Types** = `Buy X get Y - All`  
+2. Mode = **Cheapest** · Min **2** · Free qty **1** · Discount = **Free** (o 100%)  
+3. Recursive = **OFF**  
+4. En **Reglas**: no agregues “Cantidad de artículos por línea”  
+5. Guardar → probar con 2 Travel Hunter
 
 ---
 
