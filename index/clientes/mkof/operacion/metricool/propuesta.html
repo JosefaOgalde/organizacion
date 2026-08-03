@@ -116,6 +116,26 @@
     }
     .checks { list-style: none; padding-left: 0; }
     .checks li::before { content: "☐ "; color: var(--muted); }
+    figure.ev {
+      margin: 14px 0 18px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      padding: 8px;
+    }
+    figure.ev img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    figure.ev figcaption {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.35;
+    }
+    a { color: var(--accent); }
     footer {
       margin-top: 28px;
       padding-top: 12px;
@@ -264,6 +284,32 @@
 
     <h2>6. Pedido</h2>
     <p>Solicito autorización para ir a <strong>Advanced 15 marcas (anual)</strong> — piso viable con Looker Studio — y limpiar lo que no se use.</p>
+
+    <h2>7. Evidencia (links + pantallazos)</h2>
+    <p class="note">Fuentes oficiales Metricool · capturas ago 2026. Carpeta <code>evidencia/</code>.</p>
+    <ul>
+      <li><a href="https://metricool.com/pricing/" target="_blank" rel="noopener">metricool.com/pricing</a> — Advanced lista Looker Studio + API (from $53/mo anual)</li>
+      <li><a href="https://help.metricool.com/plans-add-ons-and-api-access-explained-xux1u" target="_blank" rel="noopener">Help: plans / API</a> — tabla Advanced = Looker Studio + API</li>
+      <li><a href="https://help.metricool.com/custom-reports-with-looker-studio-nsv1r" target="_blank" rel="noopener">Help: Looker Studio</a> — “available for Advanced and Custom plans”</li>
+      <li><a href="https://metricool.com/dsconnector/" target="_blank" rel="noopener">metricool.com/dsconnector</a> — conector requiere Advanced/Custom</li>
+    </ul>
+
+    <figure class="ev">
+      <img src="evidencia/01-pricing-advanced-looker-api.png" alt="Pricing Metricool: Advanced incluye Looker Studio y API">
+      <figcaption>01 · Pricing USD anual — Advanced incluye Looker Studio connector y Metricool API (from $53/mo)</figcaption>
+    </figure>
+    <figure class="ev">
+      <img src="evidencia/02-help-planes-looker-api.png" alt="Help Center: tabla de planes con Looker Studio en Advanced">
+      <figcaption>02 · Help Center — Advanced: Looker Studio connector + Metricool API</figcaption>
+    </figure>
+    <figure class="ev">
+      <img src="evidencia/03-help-looker-studio-advanced.png" alt="Help: conector Looker solo Advanced y Custom">
+      <figcaption>03 · “The connector is available for Advanced and Custom plans”</figcaption>
+    </figure>
+    <figure class="ev">
+      <img src="evidencia/04-dsconnector-advanced.png" alt="Página del conector Looker Studio">
+      <figcaption>04 · dsconnector — límite por plan Advanced / Custom</figcaption>
+    </figure>
 
     <footer>
       Documento interno MKOF · Community Management · Precios referenciales metricool.com/pricing · ago 2026

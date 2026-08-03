@@ -4,12 +4,19 @@ Material listo para enviar desde Community Manager a dirección/administración.
 
 | Archivo | Uso |
 |---------|-----|
-| `MAIL-borrador.txt` | Asunto + cuerpo del mail (copiar/pegar) |
+| `MAIL-borrador.txt` | Asunto + cuerpo del mail (incluye links) |
 | `PROPUESTA-downgrade-metricool.md` | Adjunta en texto / Notion / Drive |
-| `propuesta.html` | Abrir en navegador → Imprimir / Guardar como PDF y adjuntar |
+| `propuesta.html` | Imprimir / Guardar PDF (lleva pantallazos embebidos) |
+| `evidencia/` | **Links + PNG** para argumentar |
 
-**Restricción:** el conector de **Looker Studio** solo está en **Advanced**.
+**Restricción:** Looker Studio y API solo en **Advanced** (probado con pantallazos oficiales).
 
-**Recomendación:** Advanced · **15 marcas** · anual — piso viable sin perder Looker Studio (incluye API). Starter (~USD 240) no aplica si dependemos del conector.
+**Recomendación:** Advanced · **15 marcas** · anual.
 
-Precios según [metricool.com/pricing](https://metricool.com/pricing/) (ago 2026). Verificar monto exacto en la cuenta.
+### Evidencia rápida
+- https://metricool.com/pricing/
+- https://help.metricool.com/plans-add-ons-and-api-access-explained-xux1u
+- https://help.metricool.com/custom-reports-with-looker-studio-nsv1r
+- https://metricool.com/dsconnector/
+
+Ver `evidencia/EVIDENCIA.md`.

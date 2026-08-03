@@ -108,4 +108,19 @@ Solicito autorización para ir al **Advanced de 15 marcas (anual)** — el plan 
 
 ---
 
+## 9. Evidencia (links + pantallazos)
+
+Carpeta: `evidencia/` · detalle en `evidencia/EVIDENCIA.md`
+
+| Prueba | Link | Pantallazo |
+|--------|------|------------|
+| Advanced incluye Looker Studio + API; from $53/mo anual | https://metricool.com/pricing/ | `evidencia/01-pricing-advanced-looker-api.png` |
+| Tabla oficial de planes | https://help.metricool.com/plans-add-ons-and-api-access-explained-xux1u | `evidencia/02-help-planes-looker-api.png` |
+| “Connector available for Advanced and Custom” | https://help.metricool.com/custom-reports-with-looker-studio-nsv1r | `evidencia/03-help-looker-studio-advanced.png` |
+| Landing del conector | https://metricool.com/dsconnector/ | `evidencia/04-dsconnector-advanced.png` |
+
+**Argumento en una frase:** Starter es más barato, pero Looker Studio y la API solo existen en Advanced (fuentes oficiales Metricool).
+
+---
+
 *Documento interno MKOF · Community Management · ago 2026*
