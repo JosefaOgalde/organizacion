@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Propuesta Metricool · MKOF</title>
+  <style>
+    :root {
+      --ink: #1a2332;
+      --muted: #5a6578;
+      --line: #d5dce8;
+      --soft: #f3f6fb;
+      --accent: #0b6e6e;
+      --accent-soft: #e6f4f4;
+      --warn: #8a4b12;
+      --ok: #1b6b3a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #e8edf5;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+    .sheet {
+      max-width: 780px;
+      margin: 24px auto;
+      background: #fff;
+      padding: 40px 44px 36px;
+      box-shadow: 0 8px 28px rgba(26, 35, 50, 0.08);
+    }
+    header {
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 16px;
+      margin-bottom: 22px;
+    }
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 700;
+      margin: 0 0 6px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0;
+    }
+    h2 {
+      font-size: 15px;
+      margin: 26px 0 10px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    p { margin: 0 0 10px; }
+    ul { margin: 0 0 10px; padding-left: 18px; }
+    li { margin-bottom: 4px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 14px;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: var(--soft); font-weight: 650; }
+    tr.rec td { background: var(--accent-soft); font-weight: 600; }
+    .callout {
+      background: var(--accent-soft);
+      border-left: 4px solid var(--accent);
+      padding: 12px 14px;
+      margin: 14px 0;
+    }
+    .callout strong { color: var(--accent); }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 12px 0;
+    }
+    .card {
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      background: var(--soft);
+    }
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .save {
+      font-size: 28px;
+      font-weight: 750;
+      letter-spacing: -0.03em;
+      color: var(--ok);
+      margin: 4px 0;
+    }
+    .note {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .checks { list-style: none; padding-left: 0; }
+    .checks li::before { content: "☐ "; color: var(--muted); }
+    footer {
+      margin-top: 28px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .actions {
+      margin: 18px 0 0;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .actions button {
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: #fff;
+      padding: 8px 14px;
+      font: inherit;
+      cursor: pointer;
+    }
+    .actions button.secondary {
+      background: #fff;
+      color: var(--ink);
+    }
+    @media print {
+      body { background: #fff; }
+      .sheet { margin: 0; box-shadow: none; max-width: none; padding: 0; }
+      .actions { display: none; }
+    }
+    @media (max-width: 640px) {
+      .sheet { margin: 0; padding: 24px 18px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <article class="sheet">
+    <header>
+      <p class="eyebrow">MKOF · Community Management · Documento interno</p>
+      <h1>Propuesta: bajar el plan de Metricool</h1>
+      <p class="meta">Agosto 2026 · De: Community Manager · Para: Dirección / Administración</p>
+    </header>
+
+    <div class="actions">
+      <button type="button" onclick="window.print()">Imprimir / Guardar PDF</button>
+      <button type="button" class="secondary" onclick="navigator.clipboard.writeText(location.href)">Copiar enlace</button>
+    </div>
+
+    <h2>1. Situación</h2>
+    <p>Hoy gastamos aproximadamente <strong>USD 500 al año</strong> en Metricool. Con el volumen actual de clientes activos en redes, el plan queda grande: pagamos capacidad (marcas y funciones) que no estamos usando.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Gasto actual</h3>
+        <div class="save" style="color:var(--warn)">~USD 500/año</div>
+        <p class="note">Estimado de la suscripción vigente</p>
+      </div>
+      <div class="card">
+        <h3>Ahorro propuesto</h3>
+        <div class="save">~USD 260/año</div>
+        <p class="note">Pasando a Starter 5 marcas (anual)</p>
+      </div>
+    </div>
+
+    <h2>2. Qué necesitamos conservar</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Sí (esencial)</h3>
+        <ul>
+          <li>Programar y publicar</li>
+          <li>Analítica e historial</li>
+          <li>Informes PDF / PPT</li>
+          <li>LinkedIn cuando aplique</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>No prioritario hoy</h3>
+        <ul>
+          <li>15–50 marcas en paralelo</li>
+          <li>Roles / aprobaciones de equipo</li>
+          <li>Looker Studio / API / Zapier</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>3. Comparativa (pago anual, USD)</h2>
+    <p class="note">Referencia pública Metricool (ago 2026). El pago anual suele ahorrar hasta ~24% vs mensual. Verificar monto exacto en la cuenta.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Opción</th>
+          <th>Marcas</th>
+          <th>≈ / año</th>
+          <th>vs ~USD 500</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="rec">
+          <td>A · Recomendada — Starter 5</td>
+          <td>hasta 5</td>
+          <td>~USD 240</td>
+          <td>−USD 260 (~52%)</td>
+        </tr>
+        <tr>
+          <td>B · Intermedia — Starter 10</td>
+          <td>hasta 10</td>
+          <td>~USD 432</td>
+          <td>−USD 68 (~14%)</td>
+        </tr>
+        <tr>
+          <td>C · Advanced 15</td>
+          <td>hasta 15</td>
+          <td>~USD 636</td>
+          <td>+USD 136 (no conviene)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Recomendación:</strong> Starter · hasta <strong>5 marcas</strong> · facturación <strong>anual</strong> (~USD 240/año). Cubre el trabajo diario de CM y alinea el costo al número real de clientes.
+    </div>
+
+    <h2>4. Antes de cambiar el plan</h2>
+    <ul class="checks">
+      <li>Contar marcas conectadas; desconectar las inactivas si hay más de 5.</li>
+      <li>Confirmar que solo opera CM (Starter no incluye gestión de equipo).</li>
+      <li>Revisar add-ons (X/Twitter, Advanced Analytics) y quitar lo que no se use.</li>
+      <li>El downgrade suele aplicarse al final del ciclo de facturación.</li>
+    </ul>
+
+    <h2>5. Pedido</h2>
+    <p>Solicito autorización para bajar a <strong>Starter 5 marcas (anual)</strong>. Si preferís margen para crecer, la opción B (10 marcas) sigue siendo más barata que el gasto actual.</p>
+    <p>Si el volumen de clientes vuelve a subir, se puede mejorar el plan en cualquier momento.</p>
+
+    <footer>
+      Documento interno MKOF · Community Management · Precios referenciales metricool.com/pricing · ago 2026
+    </footer>
+  </article>
+</body>
+</html>
