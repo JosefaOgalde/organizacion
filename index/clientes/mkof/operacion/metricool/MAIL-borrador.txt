@@ -4,23 +4,32 @@ Destinatario sugerido: dirección / administración (Josefa)
 Adjunto: PROPUESTA-downgrade-metricool.pdf (o .md / propuesta.html → PDF)
 ================================================================================
 
-Asunto: Propuesta para bajar el plan de Metricool (ahorro ~USD 260/año)
+Asunto: Propuesta Metricool: bajar plan + decidir si conectamos la API
 
 ---
 
 Hola,
 
-Te escribo para proponer un ajuste en la suscripción de Metricool.
+Te escribo para proponer un ajuste en la suscripción de Metricool y, en paralelo, hablar de si nos conviene **conectar la API**.
 
-Hoy estamos gastando aproximadamente **USD 500 al año** en la herramienta. Con la cantidad actual de clientes activos en redes, ese plan nos queda sobredimensionado: no estamos aprovechando el cupo de marcas ni varias funciones premium.
+Hoy estamos gastando aproximadamente **USD 500 al año**. Con la cantidad actual de clientes activos en redes, el plan nos queda sobredimensionado. Adjunto una propuesta con opciones más económicas.
 
-Adjunto una propuesta concreta con dos opciones más económicas. La recomendada es pasar a **Starter · hasta 5 marcas · pago anual**, que cubre bien el volumen que manejamos hoy (programación, analítica e informes) y deja el costo en torno a **USD 240 al año** — un ahorro de unos **USD 260 anuales (~50%)**.
+La recomendada, si priorizamos ahorro, es **Starter · hasta 5 marcas · pago anual** (~**USD 240/año**, ahorro ~**USD 260**). Cubre programación, analítica e informes.
 
-Si en algún momento sumamos clientes y necesitamos más marcas o acceso de equipo/cliente, se puede subir de plan en cualquier momento (Metricool permite upgrade inmediato).
+Hay un punto importante a decidir juntos:
 
-¿Te parece bien que avancemos con el Starter de 5 marcas? Si prefieres dejar margen, también está la opción intermedia de 10 marcas (~USD 432/año).
+**La API de Metricool (Zapier / Make / integraciones) solo está en el plan Advanced.**  
+Si bajamos a Starter, ahorramos, pero **no podremos conectar la API**.  
+Si queremos automatizar (por ejemplo, tirar métricas o reportes hacia Make / n8n / otras herramientas), habría que quedarnos en **Advanced · 15 marcas** (~USD 636/año con precios actuales de lista) o subir a ese nivel — y ahí el costo deja de ser “más barato”, pero ganamos automatización.
 
-Quedo atenta a tu ok para hacer el cambio en la cuenta.
+En resumen, las dos rutas:
+
+1. **Ahorro:** Starter 5 → ~USD 240/año · sin API  
+2. **API + automatización:** Advanced 15 · con API (Zapier, Make, etc.) · más caro, pero útil si la vamos a usar de verdad  
+
+También está la intermedia Starter 10 (~USD 432/año) si solo necesitamos más marcas, sin API.
+
+¿Cómo preferís avanzar: priorizar ahorro (Starter) o dejar abierta la API (Advanced)? Con tu ok armamos el cambio en la cuenta.
 
 Saludos,
 [Tu nombre]
@@ -30,15 +39,17 @@ Community Manager · MKOF
 VERSIÓN CORTA (si prefieres un mail más breve)
 ================================================================================
 
-Asunto: Bajar plan Metricool — propuesta adjunta
+Asunto: Metricool — bajar plan y tema API (propuesta adjunta)
 
 Hola,
 
-Estamos en ~USD 500/año en Metricool y hoy no tenemos tantos clientes como para justificar ese plan.
+Estamos en ~USD 500/año en Metricool y hoy no tenemos tantos clientes.
 
-Adjunto una propuesta: bajar a **Starter 5 marcas (anual) ≈ USD 240/año** y ahorrar ~USD 260 sin perder lo esencial (publicación + informes).
+Adjunto propuesta:
+- **Ahorro:** Starter 5 ≈ USD 240/año (sin API)
+- **Si queremos conectar la API** (Make / Zapier / n8n): hace falta **Advanced** (la API no viene en Starter)
 
-¿Avanzamos con esa opción?
+¿Priorizamos ahorro o dejamos la API para automatizar?
 
 [Tu nombre]
 CM · MKOF

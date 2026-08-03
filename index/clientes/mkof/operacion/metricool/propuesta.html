@@ -156,7 +156,7 @@
   <article class="sheet">
     <header>
       <p class="eyebrow">MKOF · Community Management · Documento interno</p>
-      <h1>Propuesta: bajar el plan de Metricool</h1>
+      <h1>Propuesta Metricool: bajar plan + API</h1>
       <p class="meta">Agosto 2026 · De: Community Manager · Para: Dirección / Administración</p>
     </header>
 
@@ -166,7 +166,7 @@
     </div>
 
     <h2>1. Situación</h2>
-    <p>Hoy gastamos aproximadamente <strong>USD 500 al año</strong> en Metricool. Con el volumen actual de clientes activos en redes, el plan queda grande: pagamos capacidad (marcas y funciones) que no estamos usando.</p>
+    <p>Hoy gastamos aproximadamente <strong>USD 500 al año</strong> en Metricool. Con el volumen actual de clientes activos en redes, el plan queda grande. Además conviene decidir si vamos a <strong>conectar la API</strong> (Make / Zapier / n8n), porque eso cambia qué plan tiene sentido.</p>
 
     <div class="grid">
       <div class="card">
@@ -175,16 +175,33 @@
         <p class="note">Estimado de la suscripción vigente</p>
       </div>
       <div class="card">
-        <h3>Ahorro propuesto</h3>
+        <h3>Ahorro si Starter 5</h3>
         <div class="save">~USD 260/año</div>
-        <p class="note">Pasando a Starter 5 marcas (anual)</p>
+        <p class="note">Sin API · publicación + informes sí</p>
       </div>
     </div>
 
-    <h2>2. Qué necesitamos conservar</h2>
+    <h2>2. Punto clave: la API</h2>
+    <p>La <strong>API de Metricool</strong> (Zapier, Make.com y acceso API) solo está en <strong>Advanced / Custom</strong>. En Starter <strong>no</strong> se puede conectar.</p>
     <div class="grid">
       <div class="card">
-        <h3>Sí (esencial)</h3>
+        <h3>Útil para</h3>
+        <ul>
+          <li>Métricas / reportes hacia Make o n8n</li>
+          <li>Alertas o cierre de mes automatizado</li>
+          <li>Unificar RRSS con otras herramientas</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Criterio</h3>
+        <p>Pagar Advanced por la API solo si hay un flujo concreto en los próximos meses. Si no, Starter y subir después.</p>
+      </div>
+    </div>
+
+    <h2>3. Qué conservar vs qué decidir</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Esencial (ambos escenarios)</h3>
         <ul>
           <li>Programar y publicar</li>
           <li>Analítica e historial</li>
@@ -193,63 +210,76 @@
         </ul>
       </div>
       <div class="card">
-        <h3>No prioritario hoy</h3>
+        <h3>A decidir</h3>
         <ul>
-          <li>15–50 marcas en paralelo</li>
+          <li><strong>Conectar la API</strong> → Advanced</li>
           <li>Roles / aprobaciones de equipo</li>
-          <li>Looker Studio / API / Zapier</li>
+          <li>Looker Studio</li>
+          <li>15+ marcas en paralelo</li>
         </ul>
       </div>
     </div>
 
-    <h2>3. Comparativa (pago anual, USD)</h2>
+    <h2>4. Comparativa (pago anual, USD)</h2>
     <p class="note">Referencia pública Metricool (ago 2026). El pago anual suele ahorrar hasta ~24% vs mensual. Verificar monto exacto en la cuenta.</p>
     <table>
       <thead>
         <tr>
           <th>Opción</th>
           <th>Marcas</th>
+          <th>API</th>
           <th>≈ / año</th>
           <th>vs ~USD 500</th>
         </tr>
       </thead>
       <tbody>
         <tr class="rec">
-          <td>A · Recomendada — Starter 5</td>
+          <td>A · Ahorro — Starter 5</td>
           <td>hasta 5</td>
+          <td>No</td>
           <td>~USD 240</td>
           <td>−USD 260 (~52%)</td>
         </tr>
         <tr>
           <td>B · Intermedia — Starter 10</td>
           <td>hasta 10</td>
+          <td>No</td>
           <td>~USD 432</td>
           <td>−USD 68 (~14%)</td>
         </tr>
         <tr>
-          <td>C · Advanced 15</td>
+          <td>C · API — Advanced 15</td>
           <td>hasta 15</td>
+          <td><strong>Sí</strong></td>
           <td>~USD 636</td>
-          <td>+USD 136 (no conviene)</td>
+          <td>+USD 136 (si se usa la API)</td>
         </tr>
       </tbody>
     </table>
 
     <div class="callout">
-      <strong>Recomendación:</strong> Starter · hasta <strong>5 marcas</strong> · facturación <strong>anual</strong> (~USD 240/año). Cubre el trabajo diario de CM y alinea el costo al número real de clientes.
+      <strong>Dos rutas:</strong>
+      (1) <strong>Ahorro</strong> → Starter 5 anual (~USD 240) sin API.
+      (2) <strong>API + automatización</strong> → Advanced 15, activar API y un flujo piloto en Make/n8n.
+      Si el plan actual ya incluye API, puede bastar con <strong>conectar</strong> (no subir de plan).
     </div>
 
-    <h2>4. Antes de cambiar el plan</h2>
+    <h2>5. Antes de cambiar el plan</h2>
     <ul class="checks">
-      <li>Contar marcas conectadas; desconectar las inactivas si hay más de 5.</li>
-      <li>Confirmar que solo opera CM (Starter no incluye gestión de equipo).</li>
+      <li>Contar marcas conectadas; desconectar las inactivas si vamos a Starter 5.</li>
+      <li>Confirmar si el plan actual ya incluye API y solo falta activarla.</li>
+      <li>Confirmar que solo opera CM (equipo = Advanced).</li>
       <li>Revisar add-ons (X/Twitter, Advanced Analytics) y quitar lo que no se use.</li>
       <li>El downgrade suele aplicarse al final del ciclo de facturación.</li>
     </ul>
 
-    <h2>5. Pedido</h2>
-    <p>Solicito autorización para bajar a <strong>Starter 5 marcas (anual)</strong>. Si preferís margen para crecer, la opción B (10 marcas) sigue siendo más barata que el gasto actual.</p>
-    <p>Si el volumen de clientes vuelve a subir, se puede mejorar el plan en cualquier momento.</p>
+    <h2>6. Pedido</h2>
+    <p>Necesito definición:</p>
+    <ol>
+      <li><strong>¿Bajamos a Starter 5 (ahorro, sin API)?</strong> o</li>
+      <li><strong>¿Advanced / plan con API para conectar y automatizar?</strong></li>
+    </ol>
+    <p>Con esa respuesta avanzo el cambio en la cuenta y, si aplica, la conexión de la API.</p>
 
     <footer>
       Documento interno MKOF · Community Management · Precios referenciales metricool.com/pricing · ago 2026

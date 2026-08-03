@@ -8,6 +8,10 @@ Material listo para enviar desde Community Manager a dirección/administración.
 | `PROPUESTA-downgrade-metricool.md` | Adjunta en texto / Notion / Drive |
 | `propuesta.html` | Abrir en navegador → Imprimir / Guardar como PDF y adjuntar |
 
-**Recomendación:** Starter · hasta **5 marcas** · facturación **anual** (~USD 240/año vs ~USD 500 actuales).
+**Dos rutas:**
+- **Ahorro:** Starter · hasta **5 marcas** · anual (~USD 240/año) — **sin API**
+- **API:** Advanced · 15 marcas — API para Make / Zapier / n8n (más caro)
+
+La API de Metricool **solo** está en Advanced/Custom. Decidir antes de bajar de plan.
 
 Precios según [metricool.com/pricing](https://metricool.com/pricing/) (ago 2026). Verificar el plan exacto en la cuenta antes de confirmar el cambio.
