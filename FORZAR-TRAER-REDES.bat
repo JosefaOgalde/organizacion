@@ -38,12 +38,28 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo [2] checkout main + reset a origin/main...
+echo [2] checkout main + avance seguro a origin/main...
 git checkout main
-git reset --hard origin/main
 if errorlevel 1 (
-  echo [ERROR] No pude igualar origin/main
+  echo [ERROR] No pude cambiar a main
+  pause
+  exit /b 1
+)
+
+REM Solo permitir fast-forward: nunca borrar cambios ni commits locales desde este flujo.
+git merge --ff-only origin/main
+if errorlevel 1 (
+  echo [ERROR] main tiene cambios o commits que requieren revision
   echo  Proba: SINCRONIZAR-MAIN.bat
+  pause
+  exit /b 1
+)
+
+for /f "delims=" %%H in ('git rev-parse HEAD') do set "LOCAL_HEAD=%%H"
+for /f "delims=" %%H in ('git rev-parse origin/main') do set "REMOTE_HEAD=%%H"
+if /I not "%LOCAL_HEAD%"=="%REMOTE_HEAD%" (
+  echo [ERROR] main tiene commits locales que origin/main no contiene
+  echo  No se descarto nada. Revisa esos commits o usa SINCRONIZAR-MAIN.bat.
   pause
   exit /b 1
 )
