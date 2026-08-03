@@ -1,22 +1,14 @@
-# Metricool — plan más económico con Looker Studio (MKOF)
+# Metricool — propuesta de plan más económico (MKOF)
 
 Material listo para enviar desde Community Manager a dirección/administración.
 
 | Archivo | Uso |
 |---------|-----|
-| `MAIL-borrador.txt` | Asunto + cuerpo del mail (incluye links) |
+| `MAIL-borrador.txt` | Asunto + cuerpo del mail (copiar/pegar) |
 | `PROPUESTA-downgrade-metricool.md` | Adjunta en texto / Notion / Drive |
-| `propuesta.html` | Imprimir / Guardar PDF (lleva pantallazos embebidos) |
-| `evidencia/` | **Links + PNG** para argumentar |
+| `propuesta.html` | Abrir en navegador → Imprimir / Guardar como PDF |
+| `evidencia/` | Pantallazos de precios (opcional adjuntar) |
 
-**Restricción:** Looker Studio y API solo en **Advanced** (probado con pantallazos oficiales).
+**Recomendación:** Starter · hasta **5 marcas** · anual (~USD 240/año vs ~USD 500).
 
-**Recomendación:** Advanced · **15 marcas** · anual.
-
-### Evidencia rápida
-- https://metricool.com/pricing/
-- https://help.metricool.com/plans-add-ons-and-api-access-explained-xux1u
-- https://help.metricool.com/custom-reports-with-looker-studio-nsv1r
-- https://metricool.com/dsconnector/
-
-Ver `evidencia/EVIDENCIA.md`.
+Precios: https://metricool.com/pricing/
