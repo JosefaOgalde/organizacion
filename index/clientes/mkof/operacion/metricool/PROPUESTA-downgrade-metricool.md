@@ -84,7 +84,7 @@ Es el plan **más económico** que mantiene lo esencial del trabajo de CM.
 
 ## 7. Pedido
 
-Solicito autorización para bajar a **Starter 5 marcas (anual)** — el plan más económico viable para MKOF hoy.
+Solicito **evaluación y, si corresponde, ejecución** del cambio a **Starter 5 marcas (anual)** por quien administre la cuenta Metricool. Community Management solo propone; no ejecuta el cambio de plan.
 
 ---
 

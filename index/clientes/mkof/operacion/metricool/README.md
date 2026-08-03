@@ -4,7 +4,8 @@ Material listo para enviar desde Community Manager a dirección/administración.
 
 | Archivo | Uso |
 |---------|-----|
-| `MAIL-borrador.txt` | Asunto + cuerpo del mail (copiar/pegar) |
+| `CORREO-propuesta-metricool.txt` | **Mail listo** (solo propuesta; CM no ejecuta el cambio) |
+| `MAIL-borrador.txt` | Misma copia de respaldo |
 | `PROPUESTA-downgrade-metricool.md` | Adjunta en texto / Notion / Drive |
 | `propuesta.html` | Abrir en navegador → Imprimir / Guardar como PDF |
 | `evidencia/` | Pantallazos de precios (opcional adjuntar) |
