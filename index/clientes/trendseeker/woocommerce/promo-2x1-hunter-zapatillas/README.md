@@ -21,26 +21,29 @@
 
 ---
 
+## Si descuenta otros productos (no solo Hunter)
+
+`Buy X Get Y - All` puede regalar el más barato **de todo el carrito**.
+
+**Fix:**
+1. Cambiá Get Y a **`Buy X Get Y - Products`**
+2. En Select Product agregá **solo** las zapatillas Hunter Travel
+3. Revisá que los filtros Category + Brand usen **Match all (AND)**
+4. Probá: 2 Hunter + 1 producto barato de otra marca → el gratis debe ser Hunter, nunca el otro
+
+Detalle: `FIX-SOLO-HUNTER.txt`
+
 ## Si ves «Buy X Get Y - Products» con Select Product en rojo
 
-Eso pasa porque elegiste **Products** (pide elegir productos Get Y a mano).
+Para esta promo **sí** usá Products (no All) y llená Select Product con todas las zapatillas Hunter.
 
-**Opción recomendada (cambiar el tipo):**
-1. En el desplegable de Discount (donde dice `Buy X Get Y - Products`) cambiá a **`Buy X get Y - All`** / Todos  
-2. El campo rojo **Select Product** desaparece  
-3. Dejá el resto igual:
-   - Buy X Count = **Filters set above**
-   - Mode = **Cheapest**
-   - Min = **2** · Max = **0** (sin tope)
-   - Free qty = **1**
-   - Discount = **Free**
-   - Recursive = **OFF**
-4. Guardar
-
-**Opción B (si no existe All):**  
-Quedate en Products y en **Select Product** agregá **todas** las zapatillas Hunter Travel (las 11). Así el “gratis” solo puede ser una de esas.
-
-No toques Recursive. No agregues condiciones de cantidad abajo.
+Dejá:
+- Buy X Count = **Filters set above**
+- Mode = **Cheapest**
+- Min = **2** · Max = **vacío o 999** (no 0)
+- Free qty = **1**
+- Discount = **Free**
+- Recursive = **OFF**
 
 ---
 
