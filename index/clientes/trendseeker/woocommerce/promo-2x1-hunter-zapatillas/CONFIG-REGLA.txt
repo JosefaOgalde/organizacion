@@ -1,0 +1,56 @@
+================================================================================
+CONFIG RÁPIDA — Discount Rules PRO (Trendseeker)
+Copiar valores al crear la regla en WP Admin
+================================================================================
+
+Nombre:
+[PRUEBA] 2x1 Hunter Zapatillas — más barato 100%
+
+Discount type:
+Buy X Get Y
+
+FILTER (Buy X)
+-------------
+Opción A:
+  Category = Zapatillas
+  Brand    = Hunter     ← si el plugin muestra Brand (PWB)
+
+Opción B (si Brand no aparece):
+  Products = (seleccionar solo zapatillas Hunter Travel)
+  Ejemplos slug:
+  - zapatillas-deportivas-travel-para-hombre-black
+  - zapatillas-deportivas-travel-para-mujer-black
+  - zapatilla-travel-trainer-black-hombre
+  - zapatillas-deportivas-travel-para-hombre-zesty-yellow
+  - zapatillas-deportivas-travel-para-mujer-red
+  (+ resto Travel Hunter de la categoría Zapatillas)
+
+GET Y / DISCOUNT
+----------------
+Discount section: Buy X get Y - All
+  (o Categories/Products = mismo set que el filtro)
+
+Count quantities as: Filter set above
+Mode of apply:       Cheapest
+Minimum quantity:    2
+Maximum quantity:    (vacío)
+Free quantity:       1
+Discount type:       Free
+  (alternativa: Percentage Discount = 100)
+Recursive:           NO (para la prueba)
+
+CONDITIONS
+----------
+(vacío) — o limitar a Admin / cupón si no querés exponer la promo
+
+IDs ÚTILES EN EL SITIO (referencia)
+-----------------------------------
+product_brand Hunter  = 424
+product_cat Zapatillas = 145
+URL marca: https://trendseeker.cl/marca/hunter/
+
+Doc Flycart:
+https://docs.flycart.org/en/articles/3810570-buy-x-get-y
+
+Ruta WP:
+WooCommerce → Discount Rules → Add New Rule
