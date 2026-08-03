@@ -4,21 +4,25 @@ Destinatario sugerido: dirección / administración (Josefa)
 Adjunto: PROPUESTA-downgrade-metricool.pdf (o .md / propuesta.html → PDF)
 ================================================================================
 
-Asunto: Propuesta para bajar Metricool al plan más económico (~USD 240/año)
+Asunto: Propuesta Metricool: plan más económico compatible con Looker Studio
 
 ---
 
 Hola,
 
-Te escribo para proponer bajar la suscripción de Metricool al **plan más económico** que cubre lo que necesitamos hoy.
+Te escribo para proponer ajustar la suscripción de Metricool al **plan más económico que nos permita seguir trabajando con Looker Studio**.
 
-Hoy gastamos aproximadamente **USD 500 al año**. Con menos clientes activos en redes, ese monto nos queda grande. Adjunto la propuesta detallada.
+Hoy gastamos aproximadamente **USD 500 al año**. Con menos clientes activos, conviene no pagar de más — pero hay un límite: el **conector de Looker Studio solo está en el plan Advanced**. Si bajamos a Starter (más barato, ~USD 240/año), **perdemos Looker Studio** (y también la API).
 
-**Recomendación:** pasar a **Starter · hasta 5 marcas · pago anual** → alrededor de **USD 240/año** (ahorro ~**USD 260**, casi la mitad). Seguimos con programación, analítica e informes PDF/PPT; es suficiente para el volumen actual.
+Por eso la recomendación no es Starter, sino el Advanced más chico:
 
-Nota breve sobre la API: Metricool solo la incluye en Advanced (más caro). **Por ahora priorizamos el ahorro**; si más adelante queremos automatizar con Make / n8n, se puede subir de plan y conectar la API en ese momento.
+**Advanced · hasta 15 marcas · pago anual** ≈ **USD 636/año** (lista pública actual).
 
-¿Te parece bien que avancemos con Starter 5 marcas anual? Con tu ok hago el cambio en la cuenta.
+Incluye lo que usamos: publicación, informes, **Looker Studio** y, de paso, la **API** (Make / Zapier / n8n) por si más adelante la conectamos. Con 15 marcas sobra para el volumen actual.
+
+Adjunto la propuesta con el detalle. Si el plan que tenemos hoy ya es Advanced y solo está mal dimensionado (más marcas de las que usamos), el ajuste puede ser bajar al tramo de **15 marcas** y limpiar marcas/add-ons inactivos para acercarnos lo más posible a ese piso.
+
+¿Avanzamos con Advanced 15 (mínimo viable con Looker Studio) y revisamos la factura exacta de la cuenta?
 
 Saludos,
 [Tu nombre]
@@ -28,15 +32,15 @@ Community Manager · MKOF
 VERSIÓN CORTA
 ================================================================================
 
-Asunto: Bajar Metricool a Starter 5 (propuesta adjunta)
+Asunto: Metricool + Looker Studio — plan más económico viable (propuesta adjunta)
 
 Hola,
 
-Estamos en ~USD 500/año en Metricool y hoy no tenemos tantos clientes.
+Queremos bajar el gasto de Metricool (~USD 500/año), pero **trabajamos con Looker Studio** y ese conector **solo viene en Advanced**.
 
-**Propongo el plan más económico:** Starter 5 marcas anual ≈ **USD 240/año** (ahorro ~USD 260). La API queda para después (requiere Advanced y es más caro).
+**Recomendación:** Advanced 15 marcas anual (piso para no perder Looker Studio). Starter sería más barato (~USD 240) pero cortaría Looker Studio y la API.
 
-¿Avanzamos con Starter 5?
+Adjunto detalle. ¿Ok para ir a Advanced 15 y limpiar marcas/add-ons de más?
 
 [Tu nombre]
 CM · MKOF

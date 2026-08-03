@@ -1,9 +1,10 @@
-# Propuesta: plan más económico Metricool · MKOF
+# Propuesta: plan más económico Metricool · MKOF  
+## (compatible con Looker Studio)
 
 **Fecha:** agosto 2026  
 **De:** Community Manager  
 **Para:** Dirección / Administración  
-**Asunto:** Bajar Metricool a **Starter 5 marcas (anual)** — máximo ahorro
+**Asunto:** Bajar costos **sin perder Looker Studio**
 
 ---
 
@@ -11,83 +12,99 @@
 
 | Ítem | Detalle |
 |------|---------|
-| Herramienta | Metricool (gestión e informes de RRSS) |
+| Herramienta | Metricool (RRSS) + reportes en **Looker Studio** |
 | Gasto aproximado | **~USD 500 / año** |
-| Problema | Plan sobredimensionado para el número actual de clientes |
-| Objetivo | **Priorizar el plan más económico** sin perder publicación + informes |
+| Problema | Plan / cupo posiblemente sobredimensionado vs clientes actuales |
+| Objetivo | **Plan más económico posible que conserve Looker Studio** |
 
-Metricool cobra por **marcas** (cada cliente/marca = 1 brand), no por usuario.
-
----
-
-## 2. Qué necesitamos seguir haciendo
-
-- Programar y publicar en redes de los clientes activos  
-- Revisar métricas e historial  
-- Generar / descargar informes (PDF/PPT) para el reporte mensual  
-- Conectar LinkedIn cuando aplique  
-
-Con el volumen actual, **no necesitamos** cupo grande de marcas, equipo con roles ni API.
+Metricool cobra por **marcas**. El **conector de Looker Studio** (y la API) están solo en **Advanced / Custom**, no en Starter.
 
 ---
 
-## 3. Comparativa (pago anual, USD)
+## 2. Restricción clave: Looker Studio
 
-Precios de referencia según [metricool.com/pricing](https://metricool.com/pricing/) (ago 2026). El pago **anual** suele ahorrar hasta ~24% vs mensual.
+| Plan | Looker Studio | API | ≈ / año (lista, anual) |
+|------|---------------|-----|-------------------------|
+| Starter 5 | No | No | ~USD 240 |
+| Starter 10 | No | No | ~USD 432 |
+| **Advanced 15** | **Sí** | **Sí** | **~USD 636** |
+| Advanced 25 / 50 | Sí | Sí | ~USD 1.020 / ~USD 1.908 |
 
-| Opción | Marcas | API | ≈ / año | vs ~USD 500 |
-|--------|--------|-----|---------|-------------|
-| **A · Recomendada — Starter 5** | hasta 5 | No | **~USD 240** | **−USD 260 (~52%)** |
-| B · Intermedia — Starter 10 | hasta 10 | No | ~USD 432 | −USD 68 (~14%) |
-| C · Advanced 15 | hasta 15 | Sí | ~USD 636 | +USD 136 (no conviene ahora) |
-| Actual (estimado) | — | — | **~USD 500** | — |
+**Conclusión:** si seguimos trabajando con Looker Studio conectado a Metricool, el piso es **Advanced 15**. Starter es más barato, pero **rompe el flujo de Looker Studio**.
 
-> Si la cuenta está en EUR, Starter 5 anual parte de ~€20/mes. Verificar en el panel de facturación.
+---
+
+## 3. Qué necesitamos conservar
+
+- Programar y publicar  
+- Analítica e historial  
+- Informes PDF/PPT cuando haga falta  
+- **Looker Studio** (reportes / dashboards actuales)  
+- LinkedIn cuando aplique  
+
+**Bonus del mismo plan Advanced:** queda disponible la **API** (Make / Zapier / n8n) sin pagar un add-on aparte; se puede conectar después si hace falta.
 
 ---
 
 ## 4. Recomendación
 
-**Pasar a Starter · hasta 5 marcas · facturación anual (~USD 240/año).**
+**Advanced · hasta 15 marcas · facturación anual** — el **más económico compatible con Looker Studio**.
 
-Es el plan **más económico** que mantiene lo esencial del trabajo de CM.
+### Por qué
 
-1. Con pocos clientes activos, **5 marcas alcanzan**.  
-2. Conservamos publicación*, LinkedIn, historial e informes PDF/PPT.  
-3. Ahorro claro: de ~**500** a ~**240 USD/año**.  
-4. Metricool permite **subir de plan** cuando haga falta.
+1. Es el tramo Advanced más bajo; alcanza para el volumen actual de clientes.  
+2. Mantiene el **conector Looker Studio**.  
+3. Incluye API por si más adelante automatizamos.  
+4. Evita pagar Advanced 25/50 si no usamos tantas marcas.
 
-\*Sujeto a política de uso justo de Metricool.
+### Cómo bajar el gasto real (aunque la lista diga ~USD 636)
 
-### Nota sobre la API (no prioritaria ahora)
+El ~USD 500 actual puede ser un Advanced con otro tramo, add-ons o precio legado. Acciones:
 
-La API (Zapier / Make / n8n) **solo está en Advanced**, que es más caro.  
-**Priorizamos el plan económico.** Si más adelante hay un flujo concreto de automatización, se sube a Advanced y se conecta la API entonces.
+1. Bajar al cupo de **15 marcas** (si hoy hay más contratadas).  
+2. Desconectar marcas inactivas.  
+3. Revisar y cancelar add-ons que no se usen (X/Twitter, Advanced Analytics, etc.).  
+4. Confirmar facturación **anual** (suele ser más barata que mensual).
 
----
-
-## 5. Antes del cambio
-
-- [ ] Contar marcas conectadas; desconectar inactivas si hay más de 5.  
-- [ ] Confirmar que solo opera CM (Starter no incluye gestión de equipo).  
-- [ ] Revisar add-ons (X/Twitter, Advanced Analytics) y cancelar lo que no se use.  
-- [ ] El downgrade suele aplicarse **al final del ciclo de facturación** actual.
+> Si al cotizar Advanced 15 la factura sube respecto a los ~USD 500 actuales, conviene pedir a Metricool el precio exacto de la cuenta / retención antes de confirmar, o evaluar si algún reporte de Looker Studio se puede reemplazar sin el conector nativo (solo en ese caso Starter volvería a ser opción).
 
 ---
 
-## 6. Plan de acción
+## 5. Comparativa rápida
 
-1. Aprobar Starter 5 anual.  
-2. Limpiar marcas inactivas.  
-3. Cambiar el plan en Ajustes → Suscripción.  
-4. Confirmar el nuevo monto en la próxima factura.  
-5. Revisar en 3–6 meses (clientes nuevos o necesidad real de API).
+| Opción | Looker Studio | ≈ / año | Veredicto |
+|--------|---------------|---------|-----------|
+| Starter 5 | No | ~USD 240 | Más barato, **no viable** si dependemos de Looker Studio |
+| **Advanced 15** | **Sí** | **~USD 636** | **Recomendada** — piso con Looker Studio |
+| Advanced 25+ | Sí | más alto | Solo si necesitamos más de 15 marcas |
+
+Precios referenciales [metricool.com/pricing](https://metricool.com/pricing/) (ago 2026).
 
 ---
 
-## 7. Pedido
+## 6. Antes del cambio
 
-Solicito autorización para bajar a **Starter 5 marcas (anual)** — el plan más económico viable para MKOF hoy.
+- [ ] Confirmar que los dashboards de Looker Studio usan el **conector Metricool** (no solo CSV manual).  
+- [ ] Contar marcas activas (objetivo: ≤ 15).  
+- [ ] Revisar add-ons y cancelar lo innecesario.  
+- [ ] Pedir / revisar el monto exacto al pasar a Advanced 15 anual.  
+- [ ] Anotar si queremos activar la API más adelante (queda incluida).
+
+---
+
+## 7. Plan de acción
+
+1. Aprobar **Advanced 15 anual** como plan objetivo.  
+2. Limpiar marcas y add-ons.  
+3. Ajustar suscripción en Metricool.  
+4. Verificar que Looker Studio sigue trayendo datos.  
+5. Revisar en 3–6 meses (clientes nuevos / uso de API).
+
+---
+
+## 8. Pedido
+
+Solicito autorización para ir al **Advanced de 15 marcas (anual)** — el plan **más económico que mantiene Looker Studio** — y limpiar lo que no se use para acercar la factura lo máximo posible.
 
 ---
 
