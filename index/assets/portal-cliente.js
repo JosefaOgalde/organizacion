@@ -420,20 +420,9 @@
     </section>`;
   }
 
-  /** Serie mensual TS: Contenidos 7/12 … 12/12 (madre + Prompt / Copys / Programar). */
-  function htmlContenidosTsSerie() {
-    if (c.slug !== 'trendseeker' || !datos?.tareas) return '';
-    const madres = datos.tareas
-      .filter(
-        (t) =>
-          t.clienteId === c.id &&
-          t.tipoEntregable === 'ecosistema' &&
-          !t.parentId &&
-          (t.contenidoSerie || /Contenido \d+\/12/i.test(t.titulo || ''))
-      )
-      .sort((a, b) => Number(a.contenidoSerie || 0) - Number(b.contenidoSerie || 0));
+  /** Serie mensual TS: madre + Prompt Gemini / Copys / Programar (julio 7–12 y agosto 1–12). */
+  function htmlBloqueSerieTs(madres, tituloSeccion) {
     if (!madres.length) return '';
-
     const bloques = madres
       .map((madre) => {
         const hijos = datos.tareas
@@ -469,7 +458,7 @@
 
     return `<section class="portal-ts-cont ficha-seccion ficha-seccion--portal" data-portal-ts-contenidos>
       <div class="ficha-seccion__headline">
-        <h2 class="ficha-seccion__titulo">Contenidos 7–12</h2>
+        <h2 class="ficha-seccion__titulo">${escapeHtml(tituloSeccion)}</h2>
         <span class="ficha-seccion__estado">${madres.length} madres</span>
       </div>
       <p class="portal-ts-cont__intro">
@@ -478,6 +467,31 @@
       </p>
       <div class="portal-ts-cont__lista">${bloques}</div>
     </section>`;
+  }
+
+  function htmlContenidosTsSerie() {
+    if (c.slug !== 'trendseeker' || !datos?.tareas) return '';
+    const madres = datos.tareas
+      .filter(
+        (t) =>
+          t.clienteId === c.id &&
+          t.tipoEntregable === 'ecosistema' &&
+          !t.parentId &&
+          (t.contenidoSerie || /Contenido \d+\/12|Ago C\d+\/12/i.test(t.titulo || ''))
+      )
+      .sort((a, b) => {
+        const mes = String(a.contenidoMes || '').localeCompare(String(b.contenidoMes || ''));
+        if (mes) return mes;
+        return Number(a.contenidoSerie || 0) - Number(b.contenidoSerie || 0);
+      });
+    if (!madres.length) return '';
+
+    const ago = madres.filter((m) => m.contenidoMes === '2026-08' || /Ago C\d+\/12/i.test(m.titulo || ''));
+    const jul = madres.filter((m) => !ago.includes(m));
+    // Agosto primero (mes en curso), luego serie julio cerrada
+    return (
+      htmlBloqueSerieTs(ago, 'Grilla agosto 2026') + htmlBloqueSerieTs(jul, 'Contenidos 7–12 (julio)')
+    );
   }
 
   /** Registro compacto: solo título tipo “#08 · C7/12 — Programar”; acordeón + ir a la tarea. */
