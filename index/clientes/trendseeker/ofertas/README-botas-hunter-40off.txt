@@ -1,15 +1,17 @@
-BOTAS — todas las marcas · Hunter 40% OFF
-========================================
+BOTAS — todas las marcas · Hunter 40% OFF (precio único por modelo)
+=================================================================
 Archivo: botas-todas-marcas-hunter-40off-2026-08-04.csv
 
-- Todas las botas de todas las marcas (export completo de columnas).
-- Solo Hunter: Precio rebajado = 40% off.
-- Otras marcas: precios del export (sin forzar descuento).
-- Incluye atributos/tallas, inventario/stock, Superior, Marcas, etc.
+Reglas Hunter:
+- 40% off en TODAS las tallas del modelo (también stock 0).
+- Mismo Precio normal + Precio rebajado en padre y en cada variación
+  → el sitio muestra UN precio, no "desde $X a $Y".
+- Atributos/tallas e inventario se conservan del export completo.
 
-Filas: 694 · Padres: 107 · Variaciones: 587
-Variaciones con stock>0: 120 · stock 0: 467
-Hunter variaciones con rebaja: 536
+Otras marcas: sin forzar descuento.
 
-Import: WooCommerce → Productos → Importar → Actualizar existentes
-Mapear TODAS las columnas (sobre todo atributos + inventario).
+Modelos Hunter unificados: 94/94
+Tallas stock 0 con rebaja: 444
+Tallas stock 0 sin rebaja: 0
+
+Import: Actualizar productos existentes + mapear atributos e inventario.
