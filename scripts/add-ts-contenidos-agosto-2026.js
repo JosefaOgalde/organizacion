@@ -49,7 +49,8 @@ const CONTENIDOS = [
     caracteristicas:
       'Oferta debut 40% OFF en accesorios Hunter · piezales: gorros, calcetines bota, paraguas burbuja · banner bodegón 4000×1770',
     stem: 'accesorios-40off',
-    publicado: true,
+    // Abierta: hoy se trabaja en organizador (aunque la grilla externa diga publicado).
+    publicado: false,
     promptArchivo: 'index/clientes/trendseeker/prompts/PROMPT-banner-accesorios-hunter-bodegon-gemini.txt',
     copyArchivo: 'index/clientes/trendseeker/copys/COPY-banner-accesorios-hunter-40off.txt',
   },
@@ -201,20 +202,25 @@ function madreId(n) {
   return `tarea-ts-ago26-c${pad(n)}`;
 }
 
-function upsert(data, tarea) {
+function upsert(data, tarea, { forzarEstado } = {}) {
   data.tareas = Array.isArray(data.tareas) ? data.tareas : [];
   const i = data.tareas.findIndex((t) => t.id === tarea.id);
   if (i >= 0) {
     const prev = data.tareas[i];
+    const completada = forzarEstado
+      ? !!tarea.completada
+      : prev.completada === true || tarea.completada === true;
     data.tareas[i] = {
       ...prev,
       ...tarea,
       numeroHistorico: prev.numeroHistorico || tarea.numeroHistorico,
-      // No reabrir si ya estaba cerrada; sí respetar publicado de esta grilla
-      completada: prev.completada === true || tarea.completada === true,
+      completada,
       pendiente: false,
       sesionAgente: prev.sesionAgente,
     };
+    if (forzarEstado && completada === false) {
+      delete data.tareas[i].estadoFijado;
+    }
     return 'upd';
   }
   data.tareas.push(tarea);
@@ -252,7 +258,7 @@ function buildPieza(c, numStart) {
       `Link: ${c.url} · Características: ${c.caracteristicas}. ` +
       `Subtareas: 1) Prompt Gemini video · 2) Copys del video · 3) Programar. ` +
       `Con las 3 hechas → finalizar esta madre.` +
-      (done ? ' Estado grilla: PUBLICADO (madre + subtareas cerradas).' : ' Estado grilla: CREADOS.'),
+      (done ? ' Estado grilla: PUBLICADO (madre + subtareas cerradas).' : ' Estado: abierta en organizador.'),
     prioridad: 'alta',
     completada: done,
     pendiente: false,
@@ -366,7 +372,8 @@ for (const file of FILES) {
       // Si es upsert de hijos ya existentes, conservar su numeroHistorico
       const prev = data.tareas.find((t) => t.id === p.id);
       if (prev && prev.numeroHistorico) p.numeroHistorico = prev.numeroHistorico;
-      ops.push(upsert(data, p));
+      // C1 (hoy) se fuerza abierta; el resto no reabre lo ya cerrado a mano
+      ops.push(upsert(data, p, { forzarEstado: c.n === 1 }));
     }
     if (!existing) num = nextNum;
     else num = Math.max(num, nextNum);
@@ -385,6 +392,6 @@ for (const file of FILES) {
 }
 
 console.log(`\nListo: grilla TS agosto 2026 · ${CONTENIDOS.length} madres × 3 subtareas (${touched} archivo/s).`);
-console.log('C1 Accesorios 40% = PUBLICADO (cerrada). Resto = CREADOS.');
+console.log('C1 Accesorios 40% = abierta (hoy). Resto = CREADOS.');
 console.log('Ver: http://127.0.0.1:8000/index.html?disco=1&fecha=2026-08-04&vista=dia');
 console.log('Landing: http://127.0.0.1:8000/index/clientes/trendseeker/');

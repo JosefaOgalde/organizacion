@@ -26,7 +26,7 @@ Script: `node scripts/add-ts-contenidos-agosto-2026.js` (también corre al abrir
 
 | # | Grilla | Fecha | Producto / link |
 |---|--------|-------|-----------------|
-| C1 | Accesorios 40% | mar 4 ago | Selección accesorios Hunter 40% OFF · **PUBLICADO** |
+| C1 | Accesorios 40% | mar 4 ago | Selección accesorios Hunter 40% OFF · abierta hoy |
 | C2 | Zapatillas | vie 7 ago | [Travel Trainer Black Hombre](https://trendseeker.cl/producto/zapatilla-travel-trainer-black-hombre/) |
 | C3 | Kit cuidado | lun 10 ago | [Rubber Care Kit](https://trendseeker.cl/producto/hunter-rubber-care-kit/) |
 | C4 | Sherpa verde | mié 12 ago | [Sherpa verde oliva](https://trendseeker.cl/producto/botas-estilo-sherpa-con-parte-superior-enrollable-para-mujer-verde-oliva/) |
@@ -120,7 +120,7 @@ No abrir Joyas Mercury en redes hasta retomar el cliente.
 ## 6) Próximo paso concreto (esta semana)
 
 1. Importar este respaldo en el PC: `ABRIR-LARAVEL.bat` (inyecta grilla TS agosto si falta).  
-2. Hoy: C1 Accesorios 40% ya **publicado** — seguir con C2 Zapatillas (vie 7).  
+2. Hoy: **C1 Accesorios 40%** abierta en organizador — Prompt → Copys → Programar.  
 3. Preparar **ECR NL 2 ago** si quedó pendiente — Copys + Portada.  
 4. Impresoreando: 2–3 piezas IG de la semana.  
 5. TS: abrir madre del día + Prompt → Copys → Programar.  
