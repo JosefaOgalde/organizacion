@@ -1,0 +1,21 @@
+RESTAURAR CATÁLOGO (atributos / tallas)
+======================================
+Archivo:
+  RESTAURAR-wc-product-export-completo-2026-08-04.csv
+
+Es el export WooCommerce original (wc-product-export-4-8-2026-...).
+Trae TODAS las columnas, incluidos atributos de talla.
+
+Cómo importar en WP:
+1) WooCommerce → Productos → Importar
+2) Subir RESTAURAR-wc-product-export-completo-2026-08-04.csv
+3) Marcar: Actualizar productos existentes
+4) Dejar el mapeo automático de columnas (no quitar atributos)
+5) Ejecutar importación
+6) Probar una zapatilla: debe volver el selector de talla
+
+IMPORTANTE:
+- No uses después el CSV corto de solo precios/zapatillas
+  (ese borró atributos).
+- Cuando quieras quitar descuentos de zapatillas otra vez,
+  pedí un CSV que INCLUYA columnas de atributo + Precio rebajado vacío.
