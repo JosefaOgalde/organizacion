@@ -242,6 +242,57 @@ window.CLIENTES_PORTAL = [
     }
   },
   {
+    archivo: 'agencia-mel/index.html',
+    id: 'cli-agencia-mel',
+    slug: 'agencia-mel',
+    slugAliases: ['mel', 'agencia'],
+    nombre: 'Agencia Mel',
+    abrev: 'MEL',
+    tipo: 'Freelance',
+    color: { border: '#2F6F5E', bg: '#E3F1EC', text: '#1A3F36' },
+    agente: 'Web + contenidos (agencia)',
+    resumen: 'Agencia · proyectos Secuoyas (activo) y Tronwell (cerrado).',
+    landing: {
+      tagline: 'Proyectos web y contenidos',
+      entregables: ['Cotización Secuoyas.cl enviada', 'Desarrollo + contenido', 'Tronwell cerrado'],
+      secciones: [
+        {
+          titulo: 'Secuoyas.cl',
+          texto:
+            'Cotización enviada 4 ago 2026. Desarrollo $440.000 (wireframes 6×$20k + landings 6×$45k + soporte $30k + manual $20k) · Contenido $300.000 · Estrategia $50.000 · Total $790.000.',
+        },
+        {
+          titulo: 'Tronwell',
+          texto: 'Ajuste de textos OK · desactivado. Queda como proyecto histórico dentro de Agencia Mel.',
+        },
+      ],
+    },
+    proyectos: [
+      {
+        codigo: 'SEQ',
+        nombre: 'Secuoyas.cl',
+        archivo: 'agencia-mel/secuoyas/',
+        resumen: 'Cotización enviada · 6 landings · desarrollo + contenido SEO.',
+        color: { border: '#2F6F5E', bg: '#E3F1EC', text: '#1A3F36' },
+        entregables: [
+          'Wireframes 6 landings',
+          'Desarrollo responsive',
+          'Contenido SEO',
+          'Estrategia',
+        ],
+      },
+      {
+        codigo: 'TW',
+        nombre: 'Tronwell',
+        archivo: 'tronwell/',
+        resumen: 'Cerrado · ajuste de textos entregado.',
+        activo: false,
+        color: { border: '#8A93A0', bg: '#ECEEF1', text: '#4A5260' },
+        entregables: ['Ajuste de textos', 'Revisión por documento', 'Entrega Word'],
+      },
+    ],
+  },
+  {
     archivo: 'tronwell/index.html',
     id: 'cli-tronwell',
     slug: 'tronwell',
@@ -249,19 +300,25 @@ window.CLIENTES_PORTAL = [
     nombre: 'Tronwell',
     abrev: 'TW',
     tipo: 'Freelance',
+    /** Cerrado — vive bajo Agencia Mel; portal: sección inactivos */
+    activo: false,
     color: { border: '#1E5AA8', bg: '#D6E5F6', text: '#143A6B' },
     agente: 'Ajuste de textos',
-    resumen: 'Revisión y ajuste de documentos (Word) por encargo.',
+    resumen: 'Cerrado · proyecto de Agencia Mel. Ajuste de textos OK.',
     landing: {
       tagline: 'Textos claros, listos para publicar',
       entregables: ['Ajuste de textos', 'Revisión por documento', 'Entrega Word'],
       secciones: [
         {
+          titulo: 'Estado',
+          texto: 'Entrega OK. Cliente desactivado; visible dentro de Agencia Mel → proyecto Tronwell.',
+        },
+        {
           titulo: 'Ajustar textos (19 jul)',
-          texto: 'Madre + subtareas: Contacto.docx (✓) · curso adultos.docx (✓) · Home.docx (✓) · tutor ia.docx.'
-        }
-      ]
-    }
+          texto: 'Madre + subtareas: Contacto.docx (✓) · curso adultos.docx (✓) · Home.docx (✓) · tutor ia.docx.',
+        },
+      ],
+    },
   },
   {
     archivo: 'herramientas/index.html',

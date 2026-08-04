@@ -36,6 +36,7 @@
     'cli-desafio-latam': 'durazno',
     'cli-impresoreando': 'ambar',
     'cli-herramientas': 'grafito',
+    'cli-agencia-mel': 'menta',
     'cli-tronwell': 'azul',
   };
 
@@ -714,13 +715,19 @@
           <h2>Proyectos</h2>
           <p>Cada proyecto tiene su propia landing e identidad visual.</p>
           <div class="portal-grid portal-grid--proyectos">
-            ${c.proyectos.map((p) => `
-              <a href="${hrefProyecto(p.archivo)}" class="portal-card"
-                 style="--card-border:${p.color.border};--card-bg:${p.color.bg};--card-text:${p.color.text}">
-                <div class="portal-card__tipo">${escapeHtml(p.codigo)}</div>
+            ${c.proyectos.map((p) => {
+              const inact = p.activo === false;
+              const col = inact
+                ? { border: '#8A93A0', bg: '#ECEEF1', text: '#4A5260' }
+                : p.color;
+              return `
+              <a href="${hrefProyecto(p.archivo)}" class="portal-card${inact ? ' portal-card--inactivo' : ''}"
+                 style="--card-border:${col.border};--card-bg:${col.bg};--card-text:${col.text}">
+                <div class="portal-card__tipo">${inact ? 'Inactivo · ' : ''}${escapeHtml(p.codigo)}</div>
                 <h2 class="portal-card__nombre">${escapeHtml(p.nombre)}</h2>
                 <div class="portal-card__abrev">${escapeHtml(p.resumen)}</div>
-              </a>`).join('')}
+              </a>`;
+            }).join('')}
           </div>
           ${c.slug === 'herramientas' ? (() => {
             const tendHref = hrefProyecto('Herramientas/Tendencias.html');

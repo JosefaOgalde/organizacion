@@ -15,6 +15,9 @@
     desafiolatam: 'desafio-latam',
     joyasmercury: 'joyas-mercury',
     'joyas-mercury': 'joyas-mercury',
+    'agencia-mel': 'agencia-mel',
+    mel: 'agencia-mel',
+    tronwell: 'tronwell',
   };
 
   function normalizarSegmento(seg) {

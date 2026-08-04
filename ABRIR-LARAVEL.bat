@@ -186,6 +186,7 @@ if not errorlevel 1 (
     echo  Inyectando grilla TS agosto...
     node scripts\add-ts-contenidos-agosto-2026.js
   )
+  if exist "scripts\add-agencia-mel.js" node scripts\add-agencia-mel.js >nul 2>&1
   if exist "scripts\sync-impresoreando-pedidos-organizacion.js" node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo >nul 2>&1
   if exist "scripts\asegurar-tareas-cerradas.js" node scripts\asegurar-tareas-cerradas.js --also-respaldo >nul 2>&1
 )

@@ -825,8 +825,60 @@
       "ficha": {
         "contacto": "",
         "links": "",
-        "notas": "Docs de trabajo: Contacto, curso adultos, Home, tutor ia.",
+        "notas": "Docs de trabajo: Contacto, curso adultos, Home, tutor ia.\nCerrado OK · desactivado bajo Agencia Mel (ago 2026).",
         "seccionesExtra": [],
+        "documentos": []
+      },
+      "activo": false
+    },
+    {
+      "id": "cli-agencia-mel",
+      "nombre": "Agencia Mel",
+      "abrev": "MEL",
+      "tipo": "freelance",
+      "color": "menta",
+      "activo": true,
+      "roles": [
+        {
+          "id": "rol-mel-web",
+          "nombre": "Desarrollo web",
+          "abrev": "WEB",
+          "funciones": "Wireframes\nLandings\nResponsive\nSoporte post-entrega",
+          "tareasAlMes": "Según proyecto",
+          "plazosEntregables": "Por cotización"
+        },
+        {
+          "id": "rol-mel-contenido",
+          "nombre": "Contenidos / SEO",
+          "abrev": "SEO",
+          "funciones": "Redacción SEO\nMeta data\nEstrategia de contenidos",
+          "tareasAlMes": "Según proyecto",
+          "plazosEntregables": "Por cotización"
+        }
+      ],
+      "agente": {
+        "nombre": "Agente Agencia Mel",
+        "emoji": "🌿",
+        "especialidad": "Web + contenidos para proyectos de agencia",
+        "instrucciones": "Eres el asistente de Agencia Mel. Ayudas con cotizaciones, landings (Secuoyas.cl), desarrollo web responsive y contenidos SEO. Tronwell está cerrado/desactivado."
+      },
+      "manualMarca": {
+        "texto": "",
+        "archivos": []
+      },
+      "metas": "Secuoyas.cl — cotización enviada 4 ago 2026 · Total $790.000 CLP.",
+      "contextoPrompt": "Proyectos: Secuoyas.cl (activo, cotización enviada) · Tronwell (cerrado, desactivado).\nCotización Secuoyas: desarrollo $440.000 (6×$20k wireframes + 6×$45k landings + $30k soporte + $20k manual) · contenido $300.000 · estrategia $50.000.",
+      "ficha": {
+        "contacto": "dario.fdez1998@gmail.com · josefa.ogalde@gmail.com",
+        "links": "https://secuoyas.cl/\nLanding: /index/clientes/agencia-mel/\nCotización: /index/clientes/agencia-mel/secuoyas/",
+        "notas": "Cotización Secuoyas enviada 4 ago 2026.\nDesarrollo $440.000 · Contenido $300.000 · Estrategia $50.000 · Total $790.000.\nTronwell quedó OK → desactivado bajo esta agencia.",
+        "seccionesExtra": [
+          {
+            "id": "mel-sec-cotizacion-secuoyas",
+            "titulo": "Cotización Secuoyas.cl (enviada)",
+            "contenido": "Total: $790.000 CLP\nDesarrollo: $120.000 (wireframes 6×$20k) + $270.000 (landings 6×$45k) + $30.000 (soporte 15 días) + $20.000 (manual) = $440.000\nContenido: $300.000\nEstrategia: $50.000\nLandings: Home · Categorías · Recursos · Nosotros · Noticias · Contacto"
+          }
+        ],
         "documentos": []
       }
     }
@@ -3611,7 +3663,7 @@
       "fecha": "2026-08-01T01:07:45.817Z",
       "nota": "Instalado desde Cursor upload; NL2 en 5 ago + Programar NL1"
     },
-    "actualizado": "2026-08-04T16:47:29.291Z",
+    "actualizado": "2026-08-04T21:27:09.634Z",
     "tsGrillaAgosto2026": true
   },
   "perfilPersonal": {
