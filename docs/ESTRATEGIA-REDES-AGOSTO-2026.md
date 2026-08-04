@@ -28,9 +28,9 @@ Script: `node scripts/add-ts-contenidos-agosto-2026.js` (también corre al abrir
 |---|--------|-------|-----------------|
 | C1 | Accesorios 40% | mar 4 ago | Selección accesorios Hunter 40% OFF · abierta hoy |
 | C2 | Zapatillas | vie 7 ago | [Travel Trainer Black Hombre](https://trendseeker.cl/producto/zapatilla-travel-trainer-black-hombre/) |
-| C3 | Kit cuidado | lun 10 ago | [Rubber Care Kit](https://trendseeker.cl/producto/hunter-rubber-care-kit/) |
+| C3 | Chelsea Commando gris pálido | lun 10 ago | [Chelsea Commando gris pálido](https://trendseeker.cl/producto/botas-chelsea-commando-para-mujer-gris-palido/) |
 | C4 | Sherpa verde | mié 12 ago | [Sherpa verde oliva](https://trendseeker.cl/producto/botas-estilo-sherpa-con-parte-superior-enrollable-para-mujer-verde-oliva/) |
-| C5 | Reparador goma | vie 14 ago | [Reparador goma](https://trendseeker.cl/producto/hunter-reparador-goma-bo-miscel/) |
+| C5 | Botas rojo militar | vie 14 ago | [Bajas rojo militar](https://trendseeker.cl/producto/botas-de-agua-bajas-para-mujer-rojo-militar/) |
 | C6 | Botas bajas rojas | lun 17 ago | [Play bajas rojo](https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/) |
 | C7 | Botas altas hombre | mié 19 ago | [Original altas hombre verde oliva](https://trendseeker.cl/producto/botas-de-agua-altas-original-para-hombre-verde-oliva/) |
 | C8 | Calcetines | vie 21 ago | [Calcetín bota rojo](https://trendseeker.cl/producto/hunter-calcetin-bota-rojo/) |

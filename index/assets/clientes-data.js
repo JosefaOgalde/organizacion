@@ -16,7 +16,7 @@ window.CLIENTES_PORTAL = [
       entregables: ['12 publicaciones al mes', 'Informe Metricool', 'Historias en redes', 'Banners y WordPress'],
       secciones: [
         { titulo: 'Community Manager', texto: 'Publicaciones, historias y reportes mensuales en redes sociales.' },
-        { titulo: 'Grilla agosto 2026', texto: '12 piezas (lun·mié·vie): Accesorios 40%, Zapatillas, Kit cuidado, Sherpa verde, Reparador goma, Botas bajas rojas, Botas altas hombre, Calcetines, Paraguas, Botas jardinera, Botas niños verdes, Gorros. Cada una = Prompt Gemini + Copys + Programar.' },
+        { titulo: 'Grilla agosto 2026', texto: '12 piezas (lun·mié·vie): Accesorios 40%, Zapatillas, Chelsea Commando gris pálido, Sherpa verde, Botas rojo militar, Botas bajas rojas, Botas altas hombre, Calcetines, Paraguas, Botas jardinera, Botas niños verdes, Gorros. Cada una = Prompt Gemini + Copys + Programar.' },
         { titulo: 'Contenidos 7–12 (julio)', texto: 'Serie julio cerrada. Cada pieza = Prompt Gemini video + Copys + Programar.' },
         { titulo: 'Prompts Gemini (producto / video)', texto: 'Siempre Gemini para marcas/productos TS (nunca Midjourney; eso es ECR). Ver trendseeker/prompts/.' },
         { titulo: 'Copys + video', texto: 'Copys en trendseeker/copys/. El MP4 se sube en la tarea (+ Subir video) y aparece en Registro Trendseeker.' },

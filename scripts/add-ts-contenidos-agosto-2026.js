@@ -6,9 +6,9 @@
  * Grilla (lun · mié · vie):
  *   04 ago · C1  Accesorios 40%     (PUBLICADO)
  *   07 ago · C2  Zapatillas
- *   10 ago · C3  Kit cuidado
+ *   10 ago · C3  Chelsea Commando gris pálido
  *   12 ago · C4  Sherpa verde
- *   14 ago · C5  Reparador goma
+ *   14 ago · C5  Botas rojo militar
  *   17 ago · C6  Botas bajas rojas
  *   19 ago · C7  Botas altas hombre
  *   21 ago · C8  Calcetines
@@ -68,13 +68,13 @@ const CONTENIDOS = [
   {
     n: 3,
     fecha: '2026-08-10',
-    grilla: 'Kit cuidado',
-    producto: 'Hunter Rubber Care Kit',
-    url: 'https://trendseeker.cl/producto/hunter-rubber-care-kit/',
-    sku: 'UZC4007XXX-CLR',
+    grilla: 'Chelsea Commando gris pálido',
+    producto: 'Botas Chelsea Commando Para Mujer Gris Pálido',
+    url: 'https://trendseeker.cl/producto/botas-chelsea-commando-para-mujer-gris-palido/',
+    sku: 'WFS1018RMA-CAS',
     caracteristicas:
-      'Kit cuidado botas goma · rubber buffer + esponja brillo + paño · elimina floración/pruina · apto mate/brillante/neón/metálico/perlado · no nobuck/ante',
-    stem: 'kit-cuidado-rubber-care',
+      'Hunter Chelsea Commando mujer gris pálido · 100% waterproof · caucho natural FSC vegano · hechas a mano · forro/plantilla poliéster reciclado · suela Original · fuelles elásticos · perfil +15 mm',
+    stem: 'chelsea-commando-gris-palido',
   },
   {
     n: 4,
@@ -90,13 +90,15 @@ const CONTENIDOS = [
   {
     n: 5,
     fecha: '2026-08-14',
-    grilla: 'Reparador goma',
-    producto: 'Hunter Reparador Goma BO Miscel',
-    url: 'https://trendseeker.cl/producto/hunter-reparador-goma-bo-miscel/',
-    sku: 'UZC4010XXX-CLR',
+    grilla: 'Botas rojo militar',
+    producto: 'Botas de Agua Bajas para Mujer Rojo Militar',
+    url: 'https://trendseeker.cl/producto/botas-de-agua-bajas-para-mujer-rojo-militar/',
+    sku: 'WFS1000RMA-MLR',
     caracteristicas:
-      'Pulidor/reparador goma Hunter · elimina marcas blancas (pruina) · apto mate/brillante/neón/metalizado/nacarado · cuidado botas caucho natural',
-    stem: 'reparador-goma',
+      'Hunter Original bajas mujer rojo militar · 100% impermeables · caucho natural mate · 28 piezas a mano · forro poliéster · suela Original · vulcanizado',
+    stem: 'botas-rojo-militar',
+    promptArchivo: 'index/clientes/trendseeker/prompts/PROMPT-botas-rojas-lluvia.txt',
+    copyArchivo: 'index/clientes/trendseeker/copys/COPY-botas-hunter-rojo-militar-video.txt',
   },
   {
     n: 6,
@@ -372,8 +374,8 @@ for (const file of FILES) {
       // Si es upsert de hijos ya existentes, conservar su numeroHistorico
       const prev = data.tareas.find((t) => t.id === p.id);
       if (prev && prev.numeroHistorico) p.numeroHistorico = prev.numeroHistorico;
-      // C1 (hoy) se fuerza abierta; el resto no reabre lo ya cerrado a mano
-      ops.push(upsert(data, p, { forzarEstado: c.n === 1 }));
+      // C1 (hoy) y piezas renombradas (C3/C5) fuerzan título/producto actualizado
+      ops.push(upsert(data, p, { forzarEstado: c.n === 1 || c.n === 3 || c.n === 5 }));
     }
     if (!existing) num = nextNum;
     else num = Math.max(num, nextNum);
