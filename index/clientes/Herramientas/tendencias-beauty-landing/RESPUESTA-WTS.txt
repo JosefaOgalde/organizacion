@@ -1,0 +1,30 @@
+================================================================================
+RESPUESTA WHATSAPP (breve)
+================================================================================
+
+Hola! Dale, me sumo.
+
+Es igual lógica que recetas: un HTML para visualizar las tendencias beauty
+(para landings). Las sacamos de notas/medios o de Google Trends.
+
+Tiempos:
+• Desarrollo de la herramienta (una vez): ~1–1,5 días
+• Cuando eso esté ok, levantar/actualizar tendencias: minutos
+• Ritmo: 1 a 3 al mes, según cotización con María
+
+Yo entrego el brief/texto; ellas diseñan y programan la landing.
+
+¿Lo dejamos así en la coti?
+
+
+================================================================================
+ALTERNATIVA AÚN MÁS CORTA
+================================================================================
+
+Hola! Sí. Armamos un HTML (como recetas) para ver tendencias beauty.
+Fuente: notas/medios o Google Trends.
+
+Dev una vez (~1–1,5 días). Después sacar tendencias: minutos.
+Máx 3/mes. Yo brief/texto; ellas la landing.
+
+Ok para la coti con María?
