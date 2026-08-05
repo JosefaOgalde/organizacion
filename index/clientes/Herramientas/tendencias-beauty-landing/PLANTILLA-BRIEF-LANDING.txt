@@ -1,0 +1,64 @@
+================================================================================
+PLANTILLA · Brief tendencia beauty → landing
+Tiempo estimado: 2–3 h por tendencia
+================================================================================
+
+Fecha:
+Autor:
+Cliente / uso: landing beauty (ej. Maicao)
+
+1. TENDENCIA
+Nombre del concepto:
+Ejemplos relacionados:
+
+2. SEÑAL (por qué ahora)
+Qué se busca / qué está viral:
+Dónde se ve (TikTok, IG, Google, medios CL):
+Fuentes (links):
+-
+-
+
+3. ENCAJE RETAIL
+¿Por qué le sirve a una tienda beauty?:
+¿Conviene landing?:  Sí / No
+Por qué:
+
+4. ÁNGULO DE LA LANDING
+Promesa en una frase:
+Público:
+Tono:
+
+5. ESTRUCTURA DE COPY
+H1:
+Subtítulo:
+Secciones H2:
+  1)
+  2)
+  3)
+  4) (opcional)
+Bullets de beneficios:
+  -
+  -
+  -
+CTA principal:
+CTAs secundarios (opc):
+
+6. SEO / BÚSQUEDA
+Keywords principales:
+Keywords secundarias:
+URL sugerida (slug):
+
+7. BORRADOR INTRO (120–180 palabras)
+[pegar texto aquí]
+
+8. NOTAS PARA DISEÑO / DEV (cliente)
+-
+-
+
+9. CHECKLIST ENTREGA
+[ ] Concepto claro
+[ ] Al menos 2 fuentes
+[ ] Sí/No landing justificado
+[ ] H1 + secciones + CTA
+[ ] Intro lista para maquetar
+================================================================================
