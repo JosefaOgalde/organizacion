@@ -6,7 +6,9 @@ Fuente de copy: `CONTENIDO-GMO-REAL.txt`
 
 | Archivo | Página real |
 |---------|-------------|
-| `mock-gmo-mova.html` | Home |
+| `mock-gmo-mova.html` | Home (navegable completo) |
+| `mock-gmo-home-motion.html` | Home con **movimiento** (plexus vivo, reveal, marquee) |
+| `evidencia/gmo-home-mova-motion-concept.png` | Imagen concept del home con dinámica |
 | `estrategia.html` | Servicios → Estrategia |
 | `seo-geo.html` | Servicios → SEO & GEO |
 | `productos-digitales.html` | Servicios → Productos digitales |
@@ -21,7 +23,10 @@ Nav real: **Inicio · Servicios (dropdown) · Sobre nosotros · Contáctanos · 
 En home, «Definir / Crear / Analizar / Posicionar / Identificar» son pilares visuales (no páginas del menú).
 
 ### Navegar (Laravel :8000)
-`http://127.0.0.1:8000/index/clientes/mkof/estetica-gmo-mova/mock-gmo-mova.html`
+- Home navegable: `…/mock-gmo-mova.html`
+- Home + movimiento: `…/mock-gmo-home-motion.html`
+- Concept imagen: `evidencia/gmo-home-mova-motion-concept.png`
+- Demo video: `evidencia/gmo-home-mova-motion-demo.mp4`
 
 ```bat
 git fetch origin cursor/mkof-estetica-gmo-mova-951b
