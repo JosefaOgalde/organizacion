@@ -34,6 +34,16 @@ Con Min 2 + Free 1 + Cheapest + Recursive ON:
 
 Get Y sigue en **Products** con las 11 zapatillas Hunter. Max = 999 o vacío.
 
+Detalle: `FIX-RECURSIVE-4PARES.txt`
+
+## Si descuenta otros productos (no solo Hunter)
+
+`Buy X Get Y - All` puede regalar el más barato **de todo el carrito**.
+
+**Fix:** Get Y = **`Buy X Get Y - Products`** + Select Product = solo las 11 zapatillas Hunter. Filtros Category + Brand en **Match all (AND)**.
+
+Detalle: `FIX-SOLO-HUNTER.txt`
+
 ## Si ves «Buy X Get Y - Products» con Select Product en rojo
 
 Para esta promo **sí** usá Products (no All) y llená Select Product con todas las zapatillas Hunter.
@@ -44,8 +54,7 @@ Dejá:
 - Min = **2** · Max = **vacío o 999** (no 0)
 - Free qty = **1**
 - Discount = **Free**
-- Recursive = **OFF**
-
+- Recursive = **ON** (para que 4 pares den 2 gratis)
 ---
 
 ## Productos de prueba (Hunter + Zapatillas)
@@ -75,11 +84,13 @@ Ver archivo: `CHECKLIST-PRUEBA.txt`
 Casos mínimos:
 
 1. **2 zapatillas Hunter distintas** → 1 con 100% off (la más barata).  
-2. **2 unidades de la misma zapatilla Hunter** → 1 unidad gratis.  
-3. **1 sola zapatilla Hunter** → sin descuento.  
-4. **2 botas Hunter** (o calcetines) → **sin** descuento (fuera de alcance).  
-5. **1 zapatilla Hunter + 1 de otra marca** → **sin** descuento (o solo cuenta la Hunter: no llega a 2 elegibles).  
-6. **2 zapatillas otra marca** → sin descuento.
+2. **4 zapatillas Hunter** → **2** más baratas a $0 (Recursive ON).  
+3. **2 unidades de la misma zapatilla Hunter** → 1 unidad gratis.  
+4. **1 sola zapatilla Hunter** → sin descuento.  
+5. **2 botas Hunter** (o calcetines) → **sin** descuento (fuera de alcance).  
+6. **1 zapatilla Hunter + 1 de otra marca** → **sin** descuento (o solo cuenta la Hunter: no llega a 2 elegibles).  
+7. **2 zapatillas otra marca** → sin descuento.  
+8. **2 Hunter + 1 producto barato otra marca** → el gratis es Hunter, nunca el otro.
 
 ---
 
