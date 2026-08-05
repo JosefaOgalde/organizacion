@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mock GMO · estética MOVA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pt: #091914;
+      --pt2: #0d2318;
+      --pt3: #142e1f;
+      --verde: #93C64A;
+      --celeste: #99EADA;
+      --arena: #E1DFA7;
+      --vd: rgba(147, 198, 74, 0.12);
+      --bd: rgba(147, 198, 74, 0.12);
+      --t1: #E8F0E2;
+      --t2: #7A9878;
+      --t3: #3A4E38;
+      --r: 10px;
+      --bg: #060E09;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 80% 50% at 70% 0%, rgba(147, 198, 74, 0.08), transparent 55%),
+        var(--bg);
+      color: var(--t1);
+      font-family: "Instrument Sans", sans-serif;
+      line-height: 1.45;
+    }
+    .bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 22px 40px;
+      border-bottom: 1px solid var(--bd);
+    }
+    .logo {
+      font-family: "Instrument Sans", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--verde);
+      font-size: 15px;
+      text-transform: uppercase;
+    }
+    .logo span { opacity: 0.85; font-weight: 600; }
+    nav {
+      display: flex;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+    nav a {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--t2);
+      text-decoration: none;
+    }
+    nav a:hover { color: var(--verde); }
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 72px 40px 80px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+      align-items: center;
+    }
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; padding: 48px 24px; }
+      .bar { padding: 18px 20px; }
+    }
+    .eyebrow {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--verde);
+      margin: 0 0 14px;
+    }
+    h1 {
+      margin: 0 0 16px;
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+    }
+    .lead {
+      margin: 0 0 28px;
+      max-width: 34em;
+      color: var(--t2);
+      font-size: 1.05rem;
+    }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: var(--r);
+      font-family: "Instrument Sans", sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+    .btn--primary {
+      background: var(--verde);
+      color: #060E09;
+    }
+    .btn--ghost {
+      background: transparent;
+      color: var(--t1);
+      border-color: var(--bd);
+    }
+    .btn--ghost:hover { border-color: var(--verde); color: var(--verde); }
+    .panel {
+      background: var(--pt);
+      border: 1px solid var(--bd);
+      border-radius: 16px;
+      padding: 28px 26px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 1.15rem;
+    }
+    .panel p {
+      margin: 0 0 18px;
+      color: var(--t2);
+      font-size: 0.95rem;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .chip {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--verde);
+      background: var(--vd);
+      border: 1px solid var(--bd);
+      border-radius: 999px;
+      padding: 6px 10px;
+    }
+    .mods {
+      display: grid;
+      gap: 8px;
+    }
+    .mod {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: var(--r);
+      background: var(--pt2);
+      border: 1px solid var(--bd);
+      font-size: 13px;
+    }
+    .mod span {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      color: var(--celeste);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .note {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px 48px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--t2);
+    }
+    @media (max-width: 860px) {
+      .note { padding: 0 24px 40px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <div class="logo">Grupo <span>Making Of</span></div>
+    <nav>
+      <a href="#">Servicios</a>
+      <a href="#">Sobre nosotros</a>
+      <a href="#">Contáctanos</a>
+      <a href="#">Blog</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Propuesta visual · alineada a MOVA</p>
+      <h1>MAKING OF, your next business partner</h1>
+      <p class="lead">Misma marca, mismo sistema visual que la plataforma operacional: dark bosque, lima <code>#93C64A</code>, Instrument Sans + IBM Plex Mono.</p>
+      <div class="actions">
+        <a class="btn btn--primary" href="https://acme-chile.cl/mova/" target="_blank" rel="noopener">Ver MOVA</a>
+        <a class="btn btn--ghost" href="PROPUESTA.md">Leer propuesta</a>
+      </div>
+    </div>
+    <aside class="panel" aria-label="Puente a MOVA">
+      <h2>Plataforma operacional</h2>
+      <p>Módulos, herramientas y recursos del Grupo Making Of — el sitio público habla el mismo idioma visual.</p>
+      <div class="chips">
+        <span class="chip">@mkof.cl</span>
+        <span class="chip">@talkprod.cl</span>
+        <span class="chip">@acme-chile.cl</span>
+      </div>
+      <div class="mods">
+        <div class="mod">Definir <span>Estrategia</span></div>
+        <div class="mod">Crear <span>Producción</span></div>
+        <div class="mod">Analizar <span>Datos</span></div>
+      </div>
+    </aside>
+  </section>
+
+  <p class="note">Mock interno MKOF · no es producción · tokens desde acme-chile.cl/mova · ago 2026</p>
+</body>
+</html>
