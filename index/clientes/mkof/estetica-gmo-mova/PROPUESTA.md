@@ -82,13 +82,13 @@ Hero dark MOVA + secciones de servicios en `--pt2`/`--pt3` (no blanco puro). Út
 
 ---
 
-## 5. Mock de dirección
+## 5. Mock de dirección (actual)
 
-Abrir en navegador:
+Abrir: `index/clientes/mkof/estetica-gmo-mova/mock-gmo-mova.html`
 
-`index/clientes/mkof/estetica-gmo-mova/mock-gmo-mova.html`
+**Decisión de mock (ago 2026):** fondo mayormente blanco + banner tipo MOVA Financiero (poca densidad, visual marketing, sin gráfico de bolsa) + tipografía/acentos MOVA (`Instrument Sans`, `IBM Plex Mono`, `#93C64A`).
 
-Muestra un **primer viewport** de GMO ya con tokens MOVA (hero + nav + CTA). No es el sitio final; es la referencia visual para acordar.
+**Estructura y copy:** fiel a grupomakingof.com (nav con dropdown real, pilares Definir/Crear/… solo en home, páginas de servicio ESTRATEGIA / SEO&GEO / PRODUCTOS DIGITALES / CREATIVIDAD Y DISEÑO, Sobre, Contacto, Blog). Ver `CONTENIDO-GMO-REAL.txt`.
 
 ---
 

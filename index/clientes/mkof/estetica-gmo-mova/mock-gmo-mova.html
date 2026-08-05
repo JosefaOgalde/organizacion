@@ -3,496 +3,257 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mock GMO · banner principal (estilo MOVA, fondo claro)</title>
+  <title>Grupo Making OF · Home (mock estética MOVA)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --verde: #93C64A;
-      --verde-dark: #6fa32e;
-      --celeste: #5BB8A8;
-      --ink: #1a1f1c;
-      --muted: #5a6b5e;
-      --line: #e4ebe4;
-      --soft: #f4f7f3;
-      --white: #ffffff;
-      --r: 12px;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--white);
-      color: var(--ink);
-      font-family: "Instrument Sans", sans-serif;
-      line-height: 1.45;
-    }
-
-    /* Header mínimo */
-    .top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 18px 40px;
-      border-bottom: 1px solid var(--line);
-      background: var(--white);
-    }
-    .brand {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-    }
-    .brand strong {
-      font-size: 18px;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-    }
-    .brand em {
-      font-style: normal;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .pill-top {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 10px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 7px 12px;
-      background: var(--soft);
-    }
-
-    /* Banner principal (layout tipo MOVA Financiero, fondo blanco) */
-    .banner {
-      position: relative;
-      overflow: hidden;
-      padding: 56px 40px 64px;
-      background:
-        radial-gradient(ellipse 50% 60% at 85% 40%, rgba(147, 198, 74, 0.12), transparent 60%),
-        var(--white);
-    }
-    .banner::before {
-      content: "GMO";
-      position: absolute;
-      right: 4%;
-      top: 42%;
-      transform: translateY(-50%);
-      font-size: clamp(6rem, 18vw, 12rem);
-      font-weight: 700;
-      letter-spacing: -0.06em;
-      color: rgba(26, 31, 28, 0.035);
-      pointer-events: none;
-      user-select: none;
-      line-height: 1;
-    }
-    .banner-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 48px;
-      align-items: center;
-      position: relative;
-      z-index: 1;
-    }
-    @media (max-width: 900px) {
-      .top, .banner { padding-left: 22px; padding-right: 22px; }
-      .banner { padding-top: 40px; padding-bottom: 48px; }
-      .banner-inner { grid-template-columns: 1fr; gap: 36px; }
-      .banner::before { display: none; }
-    }
-
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 11px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--ink);
-      background: var(--soft);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 7px 12px;
-      margin: 0 0 18px;
-      opacity: 0;
-      animation: fadeUp 0.55s 0.05s forwards;
-    }
-    .tag i {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--verde);
-      box-shadow: 0 0 0 3px rgba(147, 198, 74, 0.25);
-      animation: pulse 1.8s ease-in-out infinite;
-    }
-    h1 {
-      margin: 0 0 14px;
-      font-size: clamp(1.85rem, 4.2vw, 3rem);
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      font-weight: 700;
-      text-transform: uppercase;
-      opacity: 0;
-      animation: fadeUp 0.55s 0.15s forwards;
-    }
-    h1 .accent { color: var(--verde); }
-    .lead {
-      margin: 0 0 26px;
-      max-width: 28em;
-      color: var(--muted);
-      font-size: 1.02rem;
-      opacity: 0;
-      animation: fadeUp 0.55s 0.28s forwards;
-    }
-    .cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--verde);
-      color: #12200f;
-      font-weight: 700;
-      font-size: 14px;
-      text-decoration: none;
-      border-radius: 999px;
-      padding: 13px 20px;
-      opacity: 0;
-      animation: fadeUp 0.55s 0.4s forwards;
-      transition: background 0.2s, transform 0.2s;
-    }
-    .cta:hover { background: var(--verde-dark); transform: translateY(-1px); }
-
-    /* Visual marketing (no bolsa) */
-    .visual {
-      position: relative;
-      min-height: 320px;
-      opacity: 0;
-      animation: fadeUp 0.7s 0.25s forwards;
-    }
-    .card-mkt {
-      position: absolute;
-      background: var(--white);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: 0 18px 50px rgba(26, 31, 28, 0.08);
-      padding: 16px 16px 14px;
-    }
-    .card-mkt--main {
-      inset: 18% 8% 12% 6%;
-      background: linear-gradient(160deg, #f7faf5 0%, #fff 45%, #eef7ea 100%);
-      overflow: hidden;
-    }
-    .card-mkt--float {
-      right: 0;
-      top: 8%;
-      width: min(200px, 48%);
-      animation: bob 5s ease-in-out infinite;
-      z-index: 2;
-    }
-    .card-mkt--float2 {
-      left: 0;
-      bottom: 6%;
-      width: min(180px, 44%);
-      animation: bob 5.8s ease-in-out 0.6s infinite;
-      z-index: 2;
-    }
-    .card-mkt h3 {
-      margin: 0 0 4px;
-      font-size: 13px;
-      font-weight: 650;
-    }
-    .card-mkt p {
-      margin: 0;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 10px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .rings {
-      position: absolute;
-      inset: 18% 16%;
-      border-radius: 50%;
-      border: 1px dashed rgba(147, 198, 74, 0.45);
-      animation: spin 28s linear infinite;
-    }
-    .rings::before, .rings::after {
-      content: "";
-      position: absolute;
-      inset: 14%;
-      border-radius: 50%;
-      border: 1px solid rgba(91, 184, 168, 0.35);
-    }
-    .rings::after {
-      inset: 28%;
-      border-color: rgba(147, 198, 74, 0.5);
-      animation: spin 18s linear infinite reverse;
-    }
-    .orbit-dot {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--verde);
-      top: 8%;
-      left: 48%;
-      box-shadow: 0 0 0 6px rgba(147, 198, 74, 0.15);
-    }
-    .orbit-dot--2 {
-      background: var(--celeste);
-      top: auto;
-      bottom: 18%;
-      left: 18%;
-      box-shadow: 0 0 0 6px rgba(91, 184, 168, 0.15);
-    }
-    .orbit-dot--3 {
-      background: #1a1f1c;
-      top: 42%;
-      left: auto;
-      right: 14%;
-      width: 8px;
-      height: 8px;
-      box-shadow: none;
-    }
-    .center-badge {
-      position: absolute;
-      inset: 34% 30%;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      background: var(--white);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(26, 31, 28, 0.06);
-      z-index: 1;
-    }
-    .center-badge strong {
-      display: block;
-      font-size: 1.15rem;
-      letter-spacing: -0.02em;
-    }
-    .center-badge span {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .metric {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      margin-top: 10px;
-    }
-    .metric b {
-      font-size: 1.35rem;
-      color: var(--verde-dark);
-      letter-spacing: -0.02em;
-    }
-    .metric span {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .bars-mini {
-      display: flex;
-      align-items: flex-end;
-      gap: 5px;
-      height: 36px;
-      margin-top: 12px;
-    }
-    .bars-mini i {
-      flex: 1;
-      border-radius: 3px 3px 0 0;
-      background: var(--verde);
-      opacity: 0.85;
-      transform-origin: bottom;
-      animation: grow 1.1s ease forwards;
-    }
-
-    /* Servicios: pocos, claros */
-    .services {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 8px 40px 64px;
-    }
-    @media (max-width: 900px) {
-      .services { padding: 0 22px 48px; }
-    }
-    .services-label {
-      display: inline-flex;
-      margin-bottom: 14px;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: #dff4ef;
-      border-radius: 999px;
-      padding: 8px 14px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-    }
-    @media (max-width: 800px) {
-      .grid { grid-template-columns: 1fr; }
-    }
-    .svc {
-      background: var(--verde);
-      color: #12200f;
-      border-radius: 16px;
-      padding: 22px 18px;
-      min-height: 140px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.2s, box-shadow 0.2s;
-      opacity: 0;
-      animation: fadeUp 0.55s ease forwards;
-      text-decoration: none;
-    }
-    .svc:nth-child(1) { animation-delay: 0.1s; }
-    .svc:nth-child(2) { animation-delay: 0.2s; }
-    .svc:nth-child(3) { animation-delay: 0.3s; }
-    .svc:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 28px rgba(111, 163, 46, 0.28);
-    }
-    .svc svg { margin-bottom: 18px; }
-    .svc h2 {
-      margin: 0;
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-
-    .note {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 40px 40px;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(14px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.15); opacity: 0.7; }
-    }
-    @keyframes bob {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    @keyframes grow {
-      from { transform: scaleY(0.2); }
-      to { transform: scaleY(1); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .tag, h1, .lead, .cta, .visual, .svc, .rings, .card-mkt--float, .card-mkt--float2, .bars-mini i, .tag i {
-        animation: none !important;
-        opacity: 1 !important;
-        transform: none !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="gmo-mock.css">
 </head>
 <body>
   <header class="top">
-    <div class="brand">
-      <strong>MAKING OF</strong>
-      <em>Marketing</em>
-    </div>
-    <nav style="display:flex;gap:8px;flex-wrap:wrap" aria-label="Servicios">
-      <a href="definir.html" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:#5a6b5e;border:1px solid #e4ebe4;border-radius:999px;padding:7px 12px;background:#f4f7f3">Definir</a>
-      <a href="crear.html" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:#5a6b5e;border:1px solid #e4ebe4;border-radius:999px;padding:7px 12px;background:#f4f7f3">Crear</a>
-      <a href="analizar.html" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:#5a6b5e;border:1px solid #e4ebe4;border-radius:999px;padding:7px 12px;background:#f4f7f3">Analizar</a>
+    <a class="brand" href="mock-gmo-mova.html">
+      <strong>Grupo Making OF</strong>
+      <em>Mock</em>
+    </a>
+    <nav class="nav" aria-label="Principal">
+      <a class="is-active" href="mock-gmo-mova.html">Inicio</a>
+      <details class="nav-drop">
+        <summary>Servicios</summary>
+        <div class="nav-drop-menu">
+          <a href="estrategia.html">Estrategia</a>
+          <a href="seo-geo.html">SEO &amp; GEO</a>
+          <a href="productos-digitales.html">Productos digitales</a>
+          <a href="creatividad-diseno.html">Creatividad y diseño</a>
+        </div>
+      </details>
+      <a href="sobre-nosotros.html">Sobre nosotros</a>
+      <a href="contactanos.html">Contáctanos</a>
+      <a href="blog.html">Blog</a>
+      <a class="nav-cta" href="contactanos.html">Contacto</a>
     </nav>
   </header>
 
-  <section class="banner" aria-label="Banner principal">
-    <div class="banner-inner">
-      <div>
-        <div class="tag"><i></i> GMO · Marketing digital</div>
-        <h1>Tu próximo partner,<br><span class="accent">en un solo lugar</span></h1>
-        <p class="lead">Definimos, creamos y medimos. Menos ruido, más estrategia.</p>
-        <a class="cta" href="#servicios">Ver servicios →</a>
-      </div>
+  <div class="wrap">
+    <p class="crumb">Inicio</p>
+  </div>
 
+  <section class="banner">
+    <div class="wrap banner-inner">
+      <div>
+        <p class="tag"><i></i> Marketing digital · Partner estratégico</p>
+        <h1>Making OF, <span class="accent">your next</span> business partner</h1>
+        <div class="cta-row">
+          <a class="cta" href="contactanos.html">Contáctanos</a>
+          <a class="cta cta--ghost" href="#servicios">Ver servicios</a>
+        </div>
+      </div>
       <div class="visual" aria-hidden="true">
-        <div class="card-mkt card-mkt--main">
-          <div class="rings">
-            <span class="orbit-dot"></span>
-            <span class="orbit-dot orbit-dot--2"></span>
-            <span class="orbit-dot orbit-dot--3"></span>
-          </div>
-          <div class="center-badge">
-            <div>
-              <strong>Campaigns</strong>
-              <span>Reach · Content · Ads</span>
+        <div class="card card--main">
+          <div>
+            <p class="mono">Campaña digital</p>
+            <h3>Brandformance en marcha</h3>
+            <div class="metric">
+              <b>+63%</b>
+              <span>KW top 10</span>
             </div>
           </div>
-        </div>
-
-        <div class="card-mkt card-mkt--float">
-          <h3>Engagement</h3>
-          <p>Redes · 30 días</p>
-          <div class="metric"><b>+38%</b><span>vs mes ant.</span></div>
-        </div>
-
-        <div class="card-mkt card-mkt--float2">
-          <h3>Contenido</h3>
-          <p>Piezas publicadas</p>
-          <div class="bars-mini">
-            <i style="height:40%;animation-delay:.05s"></i>
-            <i style="height:65%;animation-delay:.12s"></i>
-            <i style="height:50%;animation-delay:.2s"></i>
-            <i style="height:85%;animation-delay:.28s"></i>
-            <i style="height:70%;animation-delay:.36s"></i>
+          <div class="steps">
+            <div class="step">SEO / GEO <span>Orgánico</span></div>
+            <div class="step">Medios pagados <span>Alcance</span></div>
+            <div class="step">Creatividad <span>Impacto</span></div>
           </div>
+        </div>
+        <div class="card float">
+          <p class="mono">ROAS</p>
+          <h3>Maximizar retorno</h3>
+          <div class="metric"><b>↑</b><span>Inversión</span></div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="services" id="servicios">
-    <div class="services-label">Te acompañamos en</div>
-    <div class="grid">
-      <a class="svc" href="definir.html">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#12200f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l2.5-7 4 14 2.5-7H22"/><circle cx="19" cy="5" r="2"/></svg>
-        <h2>Definir</h2>
-      </a>
-      <a class="svc" href="crear.html">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#12200f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4V2"/><path d="M15 16v-2"/><path d="M8 9h2"/><path d="M20 9h2"/><path d="M17.8 11.8 19 13"/><path d="M15 9a4 4 0 0 0-4-4"/><path d="M12 19 4 21l2-8 8-2"/></svg>
-        <h2>Crear</h2>
-      </a>
-      <a class="svc" href="analizar.html">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#12200f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-        <h2>Analizar</h2>
-      </a>
+  <section class="sec">
+    <div class="wrap">
+      <p class="sec-label">Sobre nosotros</p>
+      <h2>Partner estratégico permanente</h2>
+      <p class="prose">Somos una empresa de marketing digital cuyo foco es ser un partner estratégico permanente para nuestros clientes, entendiendo sus necesidades y desafíos, adaptándonos continuamente para desarrollar, entregar e implementar soluciones adecuadas a la evolución de sus clientes y el mercado, agregando así valor medible a la marca.</p>
     </div>
   </section>
 
-  <p class="note">Mock GMO · banner tipo MOVA Financiero · fondo blanco · visual marketing (sin bolsa) · ago 2026</p>
+  <section class="sec sec--soft">
+    <div class="wrap">
+      <p class="sec-label">Cómo acompañamos</p>
+      <h2>Te acompañamos en:</h2>
+      <div class="pillars">
+        <div class="pillar">
+          <b>Definir</b>
+          <span>Objetivos, mercado y hoja de ruta</span>
+        </div>
+        <div class="pillar">
+          <b>Crear</b>
+          <span>Posicionamos tu marca en búsqueda (SEO/SEM/content)</span>
+        </div>
+        <div class="pillar">
+          <b>Analizar</b>
+          <span>Datos, IA y reportería accionable</span>
+        </div>
+        <div class="pillar">
+          <b>Posicionar</b>
+          <span>Mercado objetivo y brandformance</span>
+        </div>
+        <div class="pillar">
+          <b>Identificar</b>
+          <span>Oportunidades y tendencias</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <p class="sec-label">Experiencia</p>
+      <h2>11 años en marketing digital</h2>
+      <p class="prose">Contamos con 11 años de experiencia en la evolución del marketing digital, con un completo y dedicado equipo profesional, en Chile y en el extranjero, que nos permite dar una experiencia inmejorable en el aporte de valor a tu empresa.</p>
+    </div>
+  </section>
+
+  <section class="sec sec--soft">
+    <div class="wrap">
+      <p class="sec-label">Stack</p>
+      <h2>Herramientas y certificaciones</h2>
+      <div class="strip">
+        <span class="chip">ChatGPT 4o</span>
+        <span class="chip">Emarketer</span>
+        <span class="chip">Google Trends</span>
+        <span class="chip">Looker Studio</span>
+        <span class="chip">Metricool</span>
+        <span class="chip">Ahrefs</span>
+        <span class="chip">Google Analytics 4</span>
+        <span class="chip">Asana</span>
+        <span class="chip">Ranktank</span>
+        <span class="chip">Screaming Frog</span>
+        <span class="chip">Semrush</span>
+        <span class="chip">Adhesión</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="servicios">
+    <div class="wrap">
+      <p class="sec-label">Servicios</p>
+      <h2>Servicio 360°</h2>
+      <p class="prose">Nos enfocamos en un servicio 360°, con desarrollo e implementación de estrategias digitales, análisis y gestión de datos e IA, medios y contenidos, tecnología y creatividad, asistidos con equipos especializados de alto rendimiento.</p>
+      <div class="svc-grid">
+        <a class="svc" href="estrategia.html">
+          <p class="mono">01</p>
+          <h3>Estrategia</h3>
+          <p>Transformamos datos y tendencias en la hoja de ruta para el crecimiento de tu negocio.</p>
+        </a>
+        <a class="svc" href="seo-geo.html">
+          <p class="mono">02</p>
+          <h3>Posicionamiento SEO</h3>
+          <p>Construimos la autoridad de tu marca para que tus clientes te encuentren de forma orgánica y sostenible.</p>
+        </a>
+        <a class="svc" href="productos-digitales.html">
+          <p class="mono">03</p>
+          <h3>Productos digitales</h3>
+          <p>Aceleramos tus resultados llevando tu mensaje a la audiencia correcta a través de medios pagados.</p>
+        </a>
+        <a class="svc" href="creatividad-diseno.html">
+          <p class="mono">04</p>
+          <h3>Creatividad y diseño</h3>
+          <p>Damos vida a tu estrategia creando experiencias digitales que impactan y conectan con tu audiencia.</p>
+        </a>
+        <a class="svc svc--accent" href="productos-digitales.html">
+          <p class="mono">ROAS</p>
+          <h3>Maximizamos el retorno de tu inversión publicitaria</h3>
+          <p>Ver más →</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--soft">
+    <div class="wrap">
+      <p class="sec-label">Clientes</p>
+      <h2>Algunos clientes y partners</h2>
+      <div class="strip">
+        <span class="chip">Juan Valdez</span>
+        <span class="chip">Jumbo</span>
+        <span class="chip">Activa</span>
+        <span class="chip">Farmacias Ahumada</span>
+        <span class="chip">Burger King</span>
+        <span class="chip">LABB</span>
+        <span class="chip">Enterstep</span>
+        <span class="chip">Enel X</span>
+        <span class="chip">ECR Group</span>
+        <span class="chip">Unilever</span>
+        <span class="chip">Tricot</span>
+        <span class="chip">Starbucks</span>
+        <span class="chip">Chantilly</span>
+        <span class="chip">Paris</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-block">
+    <h2>Somos partner en el logro de tus objetivos</h2>
+    <p>En un trabajo en conjunto, te facilitamos el desarrollo de tus estrategias, acciones y mediciones.</p>
+    <a class="cta" href="contactanos.html">Contáctanos</a>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <p class="sec-label">FAQ</p>
+      <h2>Preguntas frecuentes</h2>
+      <div class="faq">
+        <details open>
+          <summary>¿Cuál es la mejor agencia de SEO en Chile?</summary>
+          <p>Grupo Making OF se ha posicionado entre las mejores gracias a su enfoque estratégico, años de experiencia en linkbuilding, uso de IA aplicada al SEO y resultados medibles en posicionamiento orgánico y visibilidad digital.</p>
+        </details>
+        <details>
+          <summary>¿Para qué sirve una agencia de marketing digital?</summary>
+          <p>Para diseñar, implementar y medir estrategias que conecten tu marca con clientes reales: SEO, medios, contenidos, creatividad y datos, con foco en resultados de negocio.</p>
+        </details>
+        <details>
+          <summary>¿En qué se especializa Grupo Making OF?</summary>
+          <p>En brandformance: estrategia, SEO &amp; GEO, productos digitales (medios) y creatividad/diseño, como partner permanente de marketing digital.</p>
+        </details>
+        <details>
+          <summary>¿Por qué es importante invertir en SEO en Chile?</summary>
+          <p>Porque captura demanda orgánica de forma sostenible, mejora la visibilidad frente a la competencia y reduce dependencia de inversión pagada a largo plazo.</p>
+        </details>
+        <details>
+          <summary>¿Qué servicios ofrece Grupo Making OF?</summary>
+          <p>Estrategia, SEO &amp; GEO, productos digitales y creatividad y diseño, con un enfoque 360° asistido por datos e IA.</p>
+        </details>
+        <details>
+          <summary>¿Cómo posicionar un sitio web en Google?</summary>
+          <p>Con keyword research, implementación técnica, contenidos, linkbuilding y medición continua — el camino que aplicamos en SEO &amp; GEO.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap foot-grid">
+      <div>
+        <strong>GRUPO MAKING OF</strong>
+        <a href="#">Política de Privacidad y Protección de Datos</a>
+      </div>
+      <div>
+        <h4>MKOF</h4>
+        <a href="#">TALK</a>
+        <a href="#">ACME</a>
+      </div>
+      <div>
+        <h4>Your Next Business Partner</h4>
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+    <div class="wrap foot-bottom">Política de privacidad. Making Of SPA, 2025 todos los derechos reservados. · Mock estética (no es el sitio live).</div>
+  </footer>
+
+  <p class="note-mock">Mock: estructura y copy de grupomakingof.com · estética clara alineada a MOVA · sin cambiar arquitectura de información.</p>
 </body>
 </html>
