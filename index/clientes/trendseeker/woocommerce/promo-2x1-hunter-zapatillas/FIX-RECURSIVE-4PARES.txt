@@ -1,0 +1,38 @@
+================================================================================
+FIX — 4 pares → 2 más baratos a $0 (Recursive)
+================================================================================
+
+PROBLEMA
+--------
+Con Recursive OFF, aunque lleven 4 zapatillas Hunter solo aplica
+1 gratis (un solo rango).
+
+SOLUCIÓN
+--------
+En Discount, activá la casilla:
+
+  ☑ Recursive?
+
+Dejá el resto igual:
+  Buy X Get Y - Products
+  Filters set above
+  Mode           = Cheapest
+  Min quantity   = 2
+  Max quantity   = 999 (o vacío)
+  Free quantity  = 1
+  Discount type  = Free
+  Product        = las 11 zapatillas Hunter Travel
+
+CÓMO ESCALA
+-----------
+  2 pares → 1 más barato a $0
+  4 pares → 2 más baratos a $0
+  6 pares → 3 más baratos a $0
+
+(de a 2 unidades elegibles, 1 gratis = la más barata de ese bloque)
+
+PROBAR
+------
+Carrito: 4 zapatillas Hunter (distintas o mismas)
+Esperado: descuento equivalente a los 2 precios más bajos en $0
+================================================================================

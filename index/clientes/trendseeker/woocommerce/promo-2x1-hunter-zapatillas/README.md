@@ -13,7 +13,7 @@
 | Campo | Valor |
 |-------|--------|
 | Nombre sugerido | `[PRUEBA] 2x1 Hunter Zapatillas — más barato 100%` |
-| Lógica | Llevás 2 → 1 (la más barata) a $0 |
+| Lógica | Cada 2 elegibles → 1 (la más barata) a $0 · **Recursive ON** (4 pares → 2 gratis) |
 | Marca | Hunter |
 | Categoría | Zapatillas |
 | Tipo descuento | 100% / Free sobre la unidad más barata |
@@ -21,17 +21,18 @@
 
 ---
 
-## Si descuenta otros productos (no solo Hunter)
+## Si llevás 4 pares y solo descuenta 1
 
-`Buy X Get Y - All` puede regalar el más barato **de todo el carrito**.
+Con Recursive **OFF** solo regala 1, aunque lleven 4.
 
-**Fix:**
-1. Cambiá Get Y a **`Buy X Get Y - Products`**
-2. En Select Product agregá **solo** las zapatillas Hunter Travel
-3. Revisá que los filtros Category + Brand usen **Match all (AND)**
-4. Probá: 2 Hunter + 1 producto barato de otra marca → el gratis debe ser Hunter, nunca el otro
+**Fix:** activá la casilla **Recursive?**
 
-Detalle: `FIX-SOLO-HUNTER.txt`
+Con Min 2 + Free 1 + Cheapest + Recursive ON:
+- 2 pares → 1 más barato a $0  
+- 4 pares → **2** más baratos a $0  
+- 6 pares → 3 a $0  
+
+Get Y sigue en **Products** con las 11 zapatillas Hunter. Max = 999 o vacío.
 
 ## Si ves «Buy X Get Y - Products» con Select Product en rojo
 
