@@ -362,6 +362,7 @@
       transition: transform 0.2s, box-shadow 0.2s;
       opacity: 0;
       animation: fadeUp 0.55s ease forwards;
+      text-decoration: none;
     }
     .svc:nth-child(1) { animation-delay: 0.1s; }
     .svc:nth-child(2) { animation-delay: 0.2s; }
@@ -422,7 +423,11 @@
       <strong>MAKING OF</strong>
       <em>Marketing</em>
     </div>
-    <div class="pill-top">Grupo Making Of · sitio público</div>
+    <nav style="display:flex;gap:8px;flex-wrap:wrap" aria-label="Servicios">
+      <a href="definir.html" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:#5a6b5e;border:1px solid #e4ebe4;border-radius:999px;padding:7px 12px;background:#f4f7f3">Definir</a>
+      <a href="crear.html" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:#5a6b5e;border:1px solid #e4ebe4;border-radius:999px;padding:7px 12px;background:#f4f7f3">Crear</a>
+      <a href="analizar.html" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:#5a6b5e;border:1px solid #e4ebe4;border-radius:999px;padding:7px 12px;background:#f4f7f3">Analizar</a>
+    </nav>
   </header>
 
   <section class="banner" aria-label="Banner principal">
@@ -473,18 +478,18 @@
   <section class="services" id="servicios">
     <div class="services-label">Te acompañamos en</div>
     <div class="grid">
-      <article class="svc">
+      <a class="svc" href="definir.html">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#12200f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l2.5-7 4 14 2.5-7H22"/><circle cx="19" cy="5" r="2"/></svg>
         <h2>Definir</h2>
-      </article>
-      <article class="svc">
+      </a>
+      <a class="svc" href="crear.html">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#12200f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4V2"/><path d="M15 16v-2"/><path d="M8 9h2"/><path d="M20 9h2"/><path d="M17.8 11.8 19 13"/><path d="M15 9a4 4 0 0 0-4-4"/><path d="M12 19 4 21l2-8 8-2"/></svg>
         <h2>Crear</h2>
-      </article>
-      <article class="svc">
+      </a>
+      <a class="svc" href="analizar.html">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#12200f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
         <h2>Analizar</h2>
-      </article>
+      </a>
     </div>
   </section>
 
