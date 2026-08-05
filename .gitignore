@@ -29,3 +29,4 @@ index/uploads/
 # Solo el respaldo canónico actual en Git (los viejos ya no se trackean:
 # ABRIR los pisaba y bloqueaban git pull)
 !data/organizacion-respaldo-2026-07-31.json
+!data/organizacion-respaldo-2026-08-05.json
