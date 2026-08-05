@@ -11,6 +11,12 @@ DEL DIA A DIA (elige UNA):
 Eso hace: git pull en main + restaura el calendario
 desde Descargas + abre http://127.0.0.1:8000
 
+GRILLA TRENDSEEKER AGOSTO (si no ves las 12 tareas):
+  Doble clic:  INYECTAR-TS-GRILLA-AGOSTO.bat
+  Luego Ctrl+Shift+R en:
+  http://127.0.0.1:8000/index.html?disco=1&fecha=2026-08-07&vista=mes
+  No uses "restaurar" despues: pisa con el JSON viejo de Descargas.
+
 PARA VERLOS SIEMPRE EN EL ESCRITORIO (una sola vez):
   Doble clic:  CREAR-ACCESOS-ESCRITORIO.bat
 

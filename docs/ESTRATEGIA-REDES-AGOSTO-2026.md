@@ -13,24 +13,31 @@ Fuente de calendario: `data/organizacion-respaldo-2026-07-31.json` (versión sin
 
 ## Objetivo del mes
 
-1. **Cerrar y programar** la serie TS Contenidos 7–12 (ya en calendario).
+1. **Ejecutar la grilla TS agosto** (12 pubs lun·mié·vie) en el organizador.
 2. **ECR:** terminar ecosistema NL 1 ago (si quedó pendiente) + ejecutar NL 2 ago «Equipos en terreno» (lunes 3 ago).
 3. **Impresoreando:** 2–3 piezas IG/semana con productos que ya venden (no catálogo vacío).
 
 ---
 
-## 1) Trendseeker — ritmo de serie
+## 1) Trendseeker — grilla agosto 2026
 
-Cada contenido = **madre + Prompt Gemini + Copys + Programar**.
+Cada contenido = **madre + Prompt Gemini + Copys + Programar**.  
+Script: `node scripts/add-ts-contenidos-agosto-2026.js` (también corre al abrir con `ABRIR-LARAVEL.bat`).
 
-| # | Producto | Día calendario | Slot sugerido |
-|---|----------|----------------|---------------|
-| C7 | Travel Trainer Black Hombre | vie AM | Ya en org 17-jul |
-| C8 | Chelsea Commando Negras Mujer | vie PM | 17-jul |
-| C9 | Play Bajas Rojo Mujer | lun | 20-jul |
-| C10 | Original Niños | mié | 22-jul |
-| C11 | Gardener verde oliva | vie | 29-jul |
-| C12 | Sherpa verde oliva | lun | 27-jul |
+| # | Grilla | Fecha | Producto / link |
+|---|--------|-------|-----------------|
+| C1 | Accesorios 40% | mar 4 ago | Selección accesorios Hunter 40% OFF · abierta hoy |
+| C2 | Zapatillas | vie 7 ago | [Travel Trainer Black Hombre](https://trendseeker.cl/producto/zapatilla-travel-trainer-black-hombre/) |
+| C3 | Chelsea Commando gris pálido | lun 10 ago | [Chelsea Commando gris pálido](https://trendseeker.cl/producto/botas-chelsea-commando-para-mujer-gris-palido/) |
+| C4 | Sherpa verde | mié 12 ago | [Sherpa verde oliva](https://trendseeker.cl/producto/botas-estilo-sherpa-con-parte-superior-enrollable-para-mujer-verde-oliva/) |
+| C5 | Botas rojo militar | vie 14 ago | [Bajas rojo militar](https://trendseeker.cl/producto/botas-de-agua-bajas-para-mujer-rojo-militar/) |
+| C6 | Botas bajas rojas | lun 17 ago | [Play bajas rojo](https://trendseeker.cl/producto/botas-de-agua-bajas-play-para-mujer-rojo/) |
+| C7 | Botas altas hombre | mié 19 ago | [Original altas hombre verde oliva](https://trendseeker.cl/producto/botas-de-agua-altas-original-para-hombre-verde-oliva/) |
+| C8 | Calcetines | vie 21 ago | [Calcetín bota rojo](https://trendseeker.cl/producto/hunter-calcetin-bota-rojo/) |
+| C9 | Paraguas | lun 24 ago | [Paraguas burbuja azul](https://trendseeker.cl/producto/paraguas-burbuja-moustache-azul/) |
+| C10 | Botas jardinera | mié 26 ago | [Gardener / bota corta garden](https://trendseeker.cl/producto/bota-corta-garden/) |
+| C11 | Botas niños verdes | vie 28 ago | [Original niños verde](https://trendseeker.cl/producto/botas-de-agua-original-para-ninos-verde/) |
+| C12 | Gorros | lun 31 ago | [Gorro pon-pon negro](https://trendseeker.cl/producto/gorro-con-pon-pon-moustache-original-negro/) |
 
 ### Checklist por pieza (orden fijo)
 1. Fotos producto de referencia  
@@ -44,7 +51,7 @@ Cada contenido = **madre + Prompt Gemini + Copys + Programar**.
 - Jeans dentro / sin inventar materiales  
 - Si Gemini solo da video: brief de video, no still  
 
-**WP en paralelo (no es “redes” pero alimenta el embudo):** Sherpa destacado + banner oferta Botas mujer (tareas 29-jul).
+Serie julio 7–12: ya cerrada en el organizador (referencia histórica en landing).
 
 ---
 
@@ -104,7 +111,7 @@ No abrir Joyas Mercury en redes hasta retomar el cliente.
 
 ## 5) KPIs simples (sin dashboard)
 
-- TS: N° de contenidos **programados** de la serie 7–12  
+- TS: N° de contenidos **programados** de la grilla agosto (C1–C12)  
 - ECR: NL publicado en LinkedIn + piezas del ecosistema hechas  
 - Impresoreando: posts publicados / semana + DMs o pedidos atribuidos  
 
@@ -112,8 +119,8 @@ No abrir Joyas Mercury en redes hasta retomar el cliente.
 
 ## 6) Próximo paso concreto (esta semana)
 
-1. Importar este respaldo en el PC: `ABRIR-LARAVEL.bat restaurar` (o `IMPORTAR-RESPALDO` del JSON 31-jul).  
-2. Hoy/mañana: cerrar lo abierto de **ECR NL 1 ago** si falta.  
-3. Preparar **ECR NL 2 ago (3 ago)** — empezar por Copys + Portada.  
-4. Impresoreando: terminar pieza bulldog IG y programar 3 posts de la semana.  
-5. TS: barrer C7–C12 y marcar qué falta solo en **Programar**.  
+1. Importar este respaldo en el PC: `ABRIR-LARAVEL.bat` (inyecta grilla TS agosto si falta).  
+2. Hoy: **C1 Accesorios 40%** abierta en organizador — Prompt → Copys → Programar.  
+3. Preparar **ECR NL 2 ago** si quedó pendiente — Copys + Portada.  
+4. Impresoreando: 2–3 piezas IG de la semana.  
+5. TS: abrir madre del día + Prompt → Copys → Programar.  

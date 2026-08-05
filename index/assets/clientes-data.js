@@ -16,7 +16,8 @@ window.CLIENTES_PORTAL = [
       entregables: ['12 publicaciones al mes', 'Informe Metricool', 'Historias en redes', 'Banners y WordPress'],
       secciones: [
         { titulo: 'Community Manager', texto: 'Publicaciones, historias y reportes mensuales en redes sociales.' },
-        { titulo: 'Contenidos 7–12', texto: 'Cada pieza = Prompt Gemini video + Copys + Programar. Serie visible en la landing y en el organizador (vie AM/PM → lun → mié → vie → lun).' },
+        { titulo: 'Grilla agosto 2026', texto: '12 piezas (lun·mié·vie): Accesorios 40%, Zapatillas, Chelsea Commando gris pálido, Sherpa verde, Botas rojo militar, Botas bajas rojas, Botas altas hombre, Calcetines, Paraguas, Botas jardinera, Botas niños verdes, Gorros. Cada una = Prompt Gemini + Copys + Programar.' },
+        { titulo: 'Contenidos 7–12 (julio)', texto: 'Serie julio cerrada. Cada pieza = Prompt Gemini video + Copys + Programar.' },
         { titulo: 'Prompts Gemini (producto / video)', texto: 'Siempre Gemini para marcas/productos TS (nunca Midjourney; eso es ECR). Ver trendseeker/prompts/.' },
         { titulo: 'Copys + video', texto: 'Copys en trendseeker/copys/. El MP4 se sube en la tarea (+ Subir video) y aparece en Registro Trendseeker.' },
         { titulo: 'WordPress', texto: 'Banners, productos, precios y cargas masivas en el sitio.' }
@@ -241,6 +242,57 @@ window.CLIENTES_PORTAL = [
     }
   },
   {
+    archivo: 'agencia-mel/index.html',
+    id: 'cli-agencia-mel',
+    slug: 'agencia-mel',
+    slugAliases: ['mel', 'agencia'],
+    nombre: 'Agencia Mel',
+    abrev: 'MEL',
+    tipo: 'Freelance',
+    color: { border: '#2F6F5E', bg: '#E3F1EC', text: '#1A3F36' },
+    agente: 'Web + contenidos (agencia)',
+    resumen: 'Agencia · proyectos Secuoyas (activo) y Tronwell (cerrado).',
+    landing: {
+      tagline: 'Proyectos web y contenidos',
+      entregables: ['Cotización Secuoyas.cl enviada', 'Desarrollo + contenido', 'Tronwell cerrado'],
+      secciones: [
+        {
+          titulo: 'Secuoyas.cl',
+          texto:
+            'Cotización enviada 4 ago 2026. Desarrollo $440.000 (wireframes 6×$20k + landings 6×$45k + soporte $30k + manual $20k) · Contenido $300.000 · Estrategia $50.000 · Total $790.000.',
+        },
+        {
+          titulo: 'Tronwell',
+          texto: 'Ajuste de textos OK · desactivado. Queda como proyecto histórico dentro de Agencia Mel.',
+        },
+      ],
+    },
+    proyectos: [
+      {
+        codigo: 'SEQ',
+        nombre: 'Secuoyas.cl',
+        archivo: 'agencia-mel/secuoyas/',
+        resumen: 'Cotización enviada · 6 landings · desarrollo + contenido SEO.',
+        color: { border: '#2F6F5E', bg: '#E3F1EC', text: '#1A3F36' },
+        entregables: [
+          'Wireframes 6 landings',
+          'Desarrollo responsive',
+          'Contenido SEO',
+          'Estrategia',
+        ],
+      },
+      {
+        codigo: 'TW',
+        nombre: 'Tronwell',
+        archivo: 'tronwell/',
+        resumen: 'Cerrado · ajuste de textos entregado.',
+        activo: false,
+        color: { border: '#8A93A0', bg: '#ECEEF1', text: '#4A5260' },
+        entregables: ['Ajuste de textos', 'Revisión por documento', 'Entrega Word'],
+      },
+    ],
+  },
+  {
     archivo: 'tronwell/index.html',
     id: 'cli-tronwell',
     slug: 'tronwell',
@@ -248,19 +300,25 @@ window.CLIENTES_PORTAL = [
     nombre: 'Tronwell',
     abrev: 'TW',
     tipo: 'Freelance',
+    /** Cerrado — vive bajo Agencia Mel; portal: sección inactivos */
+    activo: false,
     color: { border: '#1E5AA8', bg: '#D6E5F6', text: '#143A6B' },
     agente: 'Ajuste de textos',
-    resumen: 'Revisión y ajuste de documentos (Word) por encargo.',
+    resumen: 'Cerrado · proyecto de Agencia Mel. Ajuste de textos OK.',
     landing: {
       tagline: 'Textos claros, listos para publicar',
       entregables: ['Ajuste de textos', 'Revisión por documento', 'Entrega Word'],
       secciones: [
         {
+          titulo: 'Estado',
+          texto: 'Entrega OK. Cliente desactivado; visible dentro de Agencia Mel → proyecto Tronwell.',
+        },
+        {
           titulo: 'Ajustar textos (19 jul)',
-          texto: 'Madre + subtareas: Contacto.docx (✓) · curso adultos.docx (✓) · Home.docx (✓) · tutor ia.docx.'
-        }
-      ]
-    }
+          texto: 'Madre + subtareas: Contacto.docx (✓) · curso adultos.docx (✓) · Home.docx (✓) · tutor ia.docx.',
+        },
+      ],
+    },
   },
   {
     archivo: 'herramientas/index.html',

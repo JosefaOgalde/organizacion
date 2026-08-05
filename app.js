@@ -119,11 +119,17 @@ const AGENTES_CLIENTE = {
     especialidad: 'Impresión, identidad y piezas gráficas',
     instrucciones: 'Eres el asistente de Impresoreando. Ayudas con briefs de impresión, piezas gráficas, identidad visual, mockups, formatos de impresión y entregables para el cliente.'
   },
+  'cli-agencia-mel': {
+    nombre: 'Agente Agencia Mel',
+    emoji: '🌿',
+    especialidad: 'Web + contenidos (agencia)',
+    instrucciones: 'Eres el asistente de Agencia Mel. Ayudas con cotizaciones y proyectos (Secuoyas.cl activo; Tronwell cerrado). Desarrollo web, landings responsive y contenidos SEO.'
+  },
   'cli-tronwell': {
     nombre: 'Agente Tronwell',
     emoji: '📄',
     especialidad: 'Ajuste de textos y documentos',
-    instrucciones: 'Eres el asistente de Tronwell. Ayudas a revisar y ajustar textos de documentos (Word), mantener tono claro y entregar versiones listas.'
+    instrucciones: 'Eres el asistente de Tronwell (proyecto cerrado bajo Agencia Mel). Ayudas a revisar y ajustar textos de documentos (Word), mantener tono claro y entregar versiones listas.'
   }
 };
 
@@ -500,6 +506,7 @@ const PERFILES_CLIENTE = {
   'cli-sie': { tipo: 'oportunidad' },
   'cli-desafio-latam': { abrev: 'ADL' },
   'cli-impresoreando': { nombre: 'Impresoreando', tipo: 'freelance' },
+  'cli-agencia-mel': { nombre: 'Agencia Mel', tipo: 'freelance', abrev: 'MEL' },
   'cli-tronwell': { nombre: 'Tronwell', tipo: 'freelance', abrev: 'TW' }
 };
 let datos = null;

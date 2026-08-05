@@ -182,6 +182,11 @@ where node >nul 2>&1
 if not errorlevel 1 (
   if exist "scripts\add-ecr-trade-marketing-mis-servicios.js" node scripts\add-ecr-trade-marketing-mis-servicios.js --also-respaldo >nul 2>&1
   if exist "scripts\add-ecr-programar-nl1-5-ago.js" node scripts\add-ecr-programar-nl1-5-ago.js >nul 2>&1
+  if exist "scripts\add-ts-contenidos-agosto-2026.js" (
+    echo  Inyectando grilla TS agosto...
+    node scripts\add-ts-contenidos-agosto-2026.js
+  )
+  if exist "scripts\add-agencia-mel.js" node scripts\add-agencia-mel.js >nul 2>&1
   if exist "scripts\sync-impresoreando-pedidos-organizacion.js" node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo >nul 2>&1
   if exist "scripts\asegurar-tareas-cerradas.js" node scripts\asegurar-tareas-cerradas.js --also-respaldo >nul 2>&1
 )
