@@ -1,0 +1,43 @@
+CHECKLIST — Prueba 2×1 Hunter Zapatillas (más barato 100%)
+Trendseeker · WooCommerce · Discount Rules PRO
+================================================================================
+
+ANTES
+[ ] Regla creada: [PRUEBA] 2x1 Hunter Zapatillas — más barato 100%
+[ ] Filtro solo Hunter + categoría Zapatillas (o lista de productos Travel)
+[ ] Mode = Cheapest · Min qty 2 · Free qty 1 · Discount = Free / 100%
+[ ] Recursive OFF (salvo que quieras probar escalado)
+[ ] Carrito vacío / sesión limpia (o ventana privada)
+
+CASOS
+[ ] 1) Dos zapatillas Hunter distintas en carrito
+    Esperado: una línea (la más barata) con 100% descuento / $0
+[ ] 2) Cantidad 2 de la misma zapatilla Hunter
+    Esperado: 1 unidad gratis
+[ ] 3) Solo 1 zapatilla Hunter
+    Esperado: sin descuento de esta regla
+[ ] 4) Dos botas Hunter (o accesorios)
+    Esperado: sin descuento
+[ ] 5) 1 zapatilla Hunter + 1 producto otra marca
+    Esperado: sin descuento (no hay 2 elegibles)
+[ ] 6) Checkout hasta pago de prueba / pedido borrador (si aplica)
+    Esperado: total coherente; etiqueta de descuento visible
+
+DESPUÉS
+[ ] Captura de carrito OK (caso 1)
+[ ] Captura de carrito que NO debe aplicar (caso 4 o 5)
+[ ] Desactivar la regla [PRUEBA] si no se lanza aún
+[ ] Anotar resultado / bugs abajo
+
+RESULTADO
+Fecha:
+Quién probó:
+¿Funcionó?:  Sí / No / Parcial
+Notas:
+
+
+PRODUCTOS ÚTILES
+https://trendseeker.cl/producto/zapatillas-deportivas-travel-para-hombre-black/
+https://trendseeker.cl/producto/zapatillas-deportivas-travel-para-mujer-black/
+https://trendseeker.cl/producto/zapatilla-travel-trainer-black-hombre/
+https://trendseeker.cl/marca/hunter/

@@ -1,0 +1,88 @@
+================================================================================
+FIX — Solo zapatillas Hunter (no otros productos)
+Trendseeker · Discount Rules PRO
+================================================================================
+
+POR QUÉ TE ESTÁ DESCONTANDO OTROS PRODUCTOS
+-------------------------------------------
+Con «Buy X Get Y - All» el plugin puede regalar el ítem MÁS BARATO
+DE TODO EL CARRITO, no solo de Hunter/zapatillas.
+
+Hay que restringir también el lado GET Y.
+
+
+CAMBIO 1 — Discount / Get Y (obligatorio)
+-----------------------------------------
+Donde dice:  Buy X Get Y - All
+Cambiá a:   Buy X Get Y - Products
+
+En «Select Product» / Product agregá SOLO las zapatillas Hunter
+(todas las Travel Hunter). Ejemplos:
+
+- Zapatillas Deportivas Travel - Hombre Black
+- Zapatillas Deportivas Travel - Mujer Black
+- Zapatilla Travel Trainer Black Hombre
+- Zapatillas Deportivas Travel - Hombre Zesty Yellow
+- Zapatillas Deportivas Travel - Mujer Red
+- (+ el resto de Travel Hunter de categoría Zapatillas)
+
+NO agregues botas, calcetines, gorros ni otras marcas.
+
+Dejá el resto igual:
+  Buy X Count Based on = Filters set above
+  Mode                 = Cheapest
+  Minimum Quantity     = 2
+  Maximum Quantity     = (vacío o 999, NO 0)
+  Free Quantity        = 1
+  Discount type        = Free
+  Recursive            = OFF
+
+
+CAMBIO 2 — Filtro Buy X (revisar AND)
+------------------------------------
+Debés tener DOS filtros y que coincidan AMBOS en el mismo producto:
+
+  1) Category  → In List → Zapatillas
+  2) Perfect Brands → In List → Hunter
+
+Si arriba del filtro hay «Match any / Match all» o «Cualquiera / Todas»:
+  → elegí Match all / Coincide con todas (AND)
+
+Si queda en «any/OR», entra cualquier zapatilla O cualquier Hunter
+(botas, accesorios) y se rompe la prueba.
+
+
+CAMBIO 3 — Atajo más limpio (recomendado si sigue fallando)
+-----------------------------------------------------------
+1) Creá un tag de producto, ej:  2x1-hunter-zapatillas
+2) Asignalo SOLO a las zapatillas Hunter (las Travel)
+3) En la regla, FILTER = Tag → In List → 2x1-hunter-zapatillas
+   (un solo filtro, sin Category/Brand)
+4) Get Y = Buy X Get Y - Products → las mismas, O si existe
+   «Buy X Get Y» por Tag, usá el mismo tag
+
+Así no hay duda de AND/OR.
+
+
+CÓMO VALIDAR QUE YA NO TOCA OTROS
+---------------------------------
+Carrito prueba A (SÍ debe descontar):
+  2 zapatillas Hunter → 1 gratis (la más barata)
+
+Carrito prueba B (NO debe descontar nada de esta regla):
+  2 zapatillas Hunter + 1 producto barato de OTRA marca
+  → el gratis debe ser una Hunter, NUNCA el de otra marca
+
+Carrito prueba C (NO debe activar):
+  2 botas Hunter → sin este descuento
+
+Carrito prueba D (NO debe activar):
+  2 zapatillas de otra marca → sin este descuento
+
+
+RESUMEN
+-------
+[ ] Get Y: All → Products (solo zapatillas Hunter)
+[ ] Filter: Zapatillas AND Hunter (Match all)
+[ ] Max qty: vacío/999
+[ ] Probar carrito B (Hunter + otro barato) → el otro NO gratis

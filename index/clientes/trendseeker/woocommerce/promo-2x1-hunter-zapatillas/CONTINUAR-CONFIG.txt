@@ -1,0 +1,123 @@
+================================================================================
+CONTINUAR CONFIG — Trendseeker · Reglas de descuento
+Filtro YA OK: Category = Zapatillas + Perfect Brands = Hunter
+Completá DISCOUNT y dejá REGLAS casi vacío
+================================================================================
+
+PASO 1 — Sección DISCOUNT (la que dice «Select Types» / Get Y)
+----------------------------------------------------------------
+1) En el desplegable «Select Types» / Get Y Discount Type elegí:
+
+   → Buy X get Y - All
+     (en español puede verse como: «Buy X get Y - Todos» / «Comprar X obtener Y - Todos»)
+
+   Si NO aparece esa opción, la regla se creó con otro tipo.
+   Solución: Volvé a «Reglas de descuento» → Add New Rule → tipo
+   «Buy X Get Y» / «Comprar X obtener Y» y repetí el filtro.
+
+2) Cuando se abran los campos de Get Y, completá exactamente:
+
+   Contar cantidades como / Count quantities as:
+     → Filter set above
+       (o «Filtro establecido arriba» / «Los productos del filtro juntos»)
+
+   Modo de aplicación / Mode of apply:
+     → Cheapest
+       (o «Más barato» / «El más barato»)
+
+   Cantidad mínima / Minimum quantity:
+     → 2
+
+   Cantidad máxima / Maximum quantity:
+     → (dejalo vacío)
+
+   Cantidad gratis / Free quantity:
+     → 1
+
+   Tipo de descuento / Discount type:
+     → Free
+       (o «Gratis»)
+     Alternativa si no hay Free:
+     → Percentage / Porcentaje → 100
+
+   Recursive / Recurrente:
+     → NO / desactivado
+       (para la prueba: solo 1 gratis aunque lleven 4)
+
+3) NO hace falta elegir productos “Get Y” aparte si usaste «Buy X get Y - All»:
+   el gratis sale del mismo set (zapatillas Hunter).
+
+
+PASO 2 — Sección REGLAS (opcional) — casi no toques nada
+---------------------------------------------------------
+Relación de condiciones: «Coinciden todas» (está bien).
+
+Límite de uso máximo: Unlimited (está bien para la prueba).
+
+Válido desde / Válido hasta: vacío (o poné solo hoy→mañana si querés acotar).
+
+Condiciones populares (izquierda):
+  → NO agregues «Cantidad de artículos por línea»
+  → NO agregues Subtotal / Cupón / etc. para esta prueba
+
+  La cantidad «2» ya la define Minimum quantity = 2 en Discount.
+  Si sumás condición de cantidad, puede romper o duplicar lógica.
+
+
+PASO 3 — Guardar y activar
+--------------------------
+1) Título de la regla (arriba): 
+   [PRUEBA] 2x1 Hunter Zapatillas — más barato 100%
+
+2) Guardar / Save
+
+3) Dejar Enabled / Activa solo mientras probás
+
+
+PASO 4 — Probar en el front (ventana privada)
+---------------------------------------------
+Carrito A — DEBE aplicar:
+  + 1× https://trendseeker.cl/producto/zapatillas-deportivas-travel-para-hombre-black/
+  + 1× https://trendseeker.cl/producto/zapatillas-deportivas-travel-para-mujer-black/
+  Esperado: una de las dos (la más barata) con 100% / $0
+
+Carrito B — DEBE aplicar:
+  + cantidad 2 de la misma zapatilla Hunter
+  Esperado: 1 unidad gratis
+
+Carrito C — NO debe aplicar:
+  + 1 sola zapatilla Hunter
+  Esperado: precio normal
+
+Carrito D — NO debe aplicar:
+  + 2 botas Hunter (u otra categoría)
+  Esperado: sin este descuento
+
+Carrito E — NO debe aplicar:
+  + 1 zapatilla Hunter + 1 producto otra marca
+  Esperado: sin este descuento (no hay 2 elegibles)
+
+
+RESUMEN VISUAL DE LO QUE FALTA EN TU PANTALLA
+---------------------------------------------
+[✓] Filtro Category = Zapatillas
+[✓] Filtro Perfect Brands = Hunter
+[ ] Discount → Select Types = Buy X get Y - All
+[ ] Mode = Cheapest
+[ ] Min = 2 | Free qty = 1 | Discount = Free (o 100%)
+[ ] Recursive = OFF
+[ ] Reglas/condiciones = vacío (sin cantidad por línea)
+[ ] Guardar + probar
+
+
+SI EL DESPLEGABLE DISCOUNT NO MUESTRA «Buy X get Y - All»
+---------------------------------------------------------
+La regla actual no es Buy X Get Y. Creá una nueva:
+
+WooCommerce → Reglas de descuento → Add New Rule
+Tipo de descuento: Buy X Get Y
+Repetí los 2 filtros (Zapatillas + Hunter)
+Luego los valores de arriba.
+
+Doc oficial:
+https://docs.flycart.org/en/articles/3810570-buy-x-get-y
