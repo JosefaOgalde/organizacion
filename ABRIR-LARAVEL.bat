@@ -25,7 +25,10 @@ REM Restaurar calendario: Descargas 31-jul (1)/(2) → data 31-jul → mas recie
 if /I "%MODO%"=="restaurar" (
   set "DL=%USERPROFILE%\Downloads"
   set "REST_SRC="
-  if exist "%DL%\organizacion-respaldo-2026-07-31 (1).json" set "REST_SRC=%DL%\organizacion-respaldo-2026-07-31 (1).json"
+  if exist "%DL%\organizacion-respaldo-2026-08-06 (1).json" set "REST_SRC=%DL%\organizacion-respaldo-2026-08-06 (1).json"
+  if not defined REST_SRC if exist "%DL%\organizacion-respaldo-2026-08-06.json" set "REST_SRC=%DL%\organizacion-respaldo-2026-08-06.json"
+  if not defined REST_SRC if exist "data\organizacion-respaldo-2026-08-06.json" set "REST_SRC=data\organizacion-respaldo-2026-08-06.json"
+  if not defined REST_SRC if exist "%DL%\organizacion-respaldo-2026-07-31 (1).json" set "REST_SRC=%DL%\organizacion-respaldo-2026-07-31 (1).json"
   if not defined REST_SRC if exist "%DL%\organizacion-respaldo-2026-07-31 (2).json" set "REST_SRC=%DL%\organizacion-respaldo-2026-07-31 (2).json"
   if not defined REST_SRC if exist "%DL%\organizacion-respaldo-2026-07-31.json" set "REST_SRC=%DL%\organizacion-respaldo-2026-07-31.json"
   if not defined REST_SRC if exist "data\organizacion-respaldo-2026-07-31.json" set "REST_SRC=data\organizacion-respaldo-2026-07-31.json"
@@ -34,7 +37,7 @@ if /I "%MODO%"=="restaurar" (
   if not defined REST_SRC if exist "data\organizacion-respaldo-2026-07-28.json" set "REST_SRC=data\organizacion-respaldo-2026-07-28.json"
   if not defined REST_SRC (
     echo  [ERROR] No hay organizacion-respaldo-*.json ^(Descargas ni data^)
-    echo  Importa: IMPORTAR-RESPALDO.bat "%%USERPROFILE%%\Downloads\organizacion-respaldo-2026-07-31 (1).json"
+    echo  Importa: IMPORTAR-RESPALDO.bat "%%USERPROFILE%%\Downloads\organizacion-respaldo-2026-08-06.json"
     pause
     exit /b 1
   )
