@@ -189,3 +189,4 @@ Actualizado: 2026-07-21
 - **4 conceptos → 4 fondos:** [portadas-guardadas/ART23-4-conceptos-fondos.md](./portadas-guardadas/ART23-4-conceptos-fondos.md)
 - **2 fondos v2** (sin flota/autos · tono positivo · azul ECR `#0285e2`): [portadas-guardadas/ART23-2-fondos-v2-sin-flota.md](./portadas-guardadas/ART23-2-fondos-v2-sin-flota.md)
 - **2 fondos v3** (solo adultos · título “ajustar a tiempo” más explícito): [portadas-guardadas/ART23-2-fondos-v3-solo-adultos.md](./portadas-guardadas/ART23-2-fondos-v3-solo-adultos.md)
+- **1 fondo v4** (composición dual isométrica · distinta a los huddles): [portadas-guardadas/ART23-1-fondo-v4-composicion-dual.md](./portadas-guardadas/ART23-1-fondo-v4-composicion-dual.md)
