@@ -186,3 +186,4 @@ Actualizado: 2026-07-21
 - Archivo prompts portada: [portadas-guardadas/ART23-equipos-en-terreno.md](./portadas-guardadas/ART23-equipos-en-terreno.md)
 - Carrusel 8 slides + fondos MJ cuadrados: [carruseles/CARRUSEL-NL2-ago-equipos-en-terreno.md](./carruseles/CARRUSEL-NL2-ago-equipos-en-terreno.md) · [carruseles/PROMPTS-FONDOS-CUADRADOS-NL2-ago.md](./carruseles/PROMPTS-FONDOS-CUADRADOS-NL2-ago.md)
 - Video (= carrusel animado): [carruseles/VIDEO-NL2-ago-equipos-en-terreno.md](./carruseles/VIDEO-NL2-ago-equipos-en-terreno.md)
+- **4 conceptos → 4 fondos:** [portadas-guardadas/ART23-4-conceptos-fondos.md](./portadas-guardadas/ART23-4-conceptos-fondos.md)
