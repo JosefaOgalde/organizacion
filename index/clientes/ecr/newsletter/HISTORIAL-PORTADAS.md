@@ -191,3 +191,4 @@ Actualizado: 2026-07-21
 - **2 fondos v3** (solo adultos · título “ajustar a tiempo” más explícito): [portadas-guardadas/ART23-2-fondos-v3-solo-adultos.md](./portadas-guardadas/ART23-2-fondos-v3-solo-adultos.md)
 - **1 fondo v4** (composición dual isométrica · distinta a los huddles): [portadas-guardadas/ART23-1-fondo-v4-composicion-dual.md](./portadas-guardadas/ART23-1-fondo-v4-composicion-dual.md)
 - **1 fondo v5** (vista superior mapa de sala · solo adultos): [portadas-guardadas/ART23-1-fondo-v5-vista-superior.md](./portadas-guardadas/ART23-1-fondo-v5-vista-superior.md)
+- **1 fondo v6** (acción: cubrir ausencia al instante · friso lateral): [portadas-guardadas/ART23-1-fondo-v6-cobertura-ausencia.md](./portadas-guardadas/ART23-1-fondo-v6-cobertura-ausencia.md)
