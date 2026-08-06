@@ -185,6 +185,12 @@ if not errorlevel 1 (
   if exist "scripts\sync-impresoreando-pedidos-organizacion.js" node scripts\sync-impresoreando-pedidos-organizacion.js --also-respaldo >nul 2>&1
   if exist "scripts\asegurar-tareas-cerradas.js" node scripts\asegurar-tareas-cerradas.js --also-respaldo >nul 2>&1
 )
+if exist "data\organizacion-live.json" if exist "scripts\asegurar-ecr-ti-carrusel.php" (
+  "%PHP_EXE%" scripts\asegurar-ecr-ti-carrusel.php
+)
+if exist "data\organizacion-live.json" if exist "scripts\asegurar-ecr-et-carrusel-video.php" (
+  "%PHP_EXE%" scripts\asegurar-ecr-et-carrusel-video.php
+)
 
 if not exist "data\organizacion-live.json" (
   if exist "%USERPROFILE%\Downloads\organizacion-respaldo-2026-07-31 (1).json" (

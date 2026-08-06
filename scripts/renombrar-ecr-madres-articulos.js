@@ -232,8 +232,9 @@ const hijosET = [
     numeroHistorico: '12',
     tipoEntregable: 'carrusel',
     ordenHijo: 3,
-    entregableArchivo: ART_ET_TXT,
-    notas: `Carrusel con slides del artículo «${ART_ET_TITULO}».`,
+    entregableArchivo:
+      'index/clientes/ecr/newsletter/carruseles/CARRUSEL-NL2-ago-equipos-en-terreno.md',
+    notas: `Carrusel Canva NL2 ago · 8 slides · «${ART_ET_TITULO}». Guión: carruseles/CARRUSEL-NL2-ago-equipos-en-terreno.md`,
   },
   {
     id: 'tarea-ecr-et-video-2026-07-24',
@@ -243,8 +244,9 @@ const hijosET = [
     numeroHistorico: '13',
     tipoEntregable: 'video',
     ordenHijo: 4,
-    entregableArchivo: ART_ET_TXT,
-    notas: `Video = carrusel animado · «${ART_ET_TITULO}».`,
+    entregableArchivo:
+      'index/clientes/ecr/newsletter/carruseles/VIDEO-NL2-ago-equipos-en-terreno.md',
+    notas: `Video = carrusel animado · «${ART_ET_TITULO}». Brief: carruseles/VIDEO-NL2-ago-equipos-en-terreno.md`,
   },
 ];
 
