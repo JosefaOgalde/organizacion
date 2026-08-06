@@ -187,3 +187,4 @@ Actualizado: 2026-07-21
 - Carrusel 8 slides + fondos MJ cuadrados: [carruseles/CARRUSEL-NL2-ago-equipos-en-terreno.md](./carruseles/CARRUSEL-NL2-ago-equipos-en-terreno.md) · [carruseles/PROMPTS-FONDOS-CUADRADOS-NL2-ago.md](./carruseles/PROMPTS-FONDOS-CUADRADOS-NL2-ago.md)
 - Video (= carrusel animado): [carruseles/VIDEO-NL2-ago-equipos-en-terreno.md](./carruseles/VIDEO-NL2-ago-equipos-en-terreno.md)
 - **4 conceptos → 4 fondos:** [portadas-guardadas/ART23-4-conceptos-fondos.md](./portadas-guardadas/ART23-4-conceptos-fondos.md)
+- **2 fondos v2** (sin flota/autos · tono positivo · azul ECR `#0285e2`): [portadas-guardadas/ART23-2-fondos-v2-sin-flota.md](./portadas-guardadas/ART23-2-fondos-v2-sin-flota.md)
