@@ -193,3 +193,4 @@ Actualizado: 2026-07-21
 - **1 fondo v5** (vista superior mapa de sala · solo adultos): [portadas-guardadas/ART23-1-fondo-v5-vista-superior.md](./portadas-guardadas/ART23-1-fondo-v5-vista-superior.md)
 - **1 fondo v6** (acción: cubrir ausencia al instante · friso lateral): [portadas-guardadas/ART23-1-fondo-v6-cobertura-ausencia.md](./portadas-guardadas/ART23-1-fondo-v6-cobertura-ausencia.md)
 - **2 fondos v7** (estilo Memphis/red más rico, acercar a refs): [portadas-guardadas/ART23-2-fondos-v7-estilo-referencia.md](./portadas-guardadas/ART23-2-fondos-v7-estilo-referencia.md)
+- **2 fondos v8** (Memphis/red · prioridad mid-day + asistencia en vivo): [portadas-guardadas/ART23-2-fondos-v8-memphis-acciones.md](./portadas-guardadas/ART23-2-fondos-v8-memphis-acciones.md)
