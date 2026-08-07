@@ -89,6 +89,7 @@
     if (asegurarProductoLimpiadorBrochas(d)) changed = true;
     if (asegurarProductoAlcanciaChanchito(d)) changed = true;
     if (asegurarProductoSoporteCelularChimuelo(d)) changed = true;
+    if (asegurarProductoApoyaLibrosHarryPotter(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
@@ -1237,6 +1238,71 @@
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     const id = 'prod-soporte-celular-chimuelo';
     const seed = seedSoporteCelularChimuelo();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
+      existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /**
+   * Apoya libros Harry Potter — slicer Orca/Elegoo · 3 h 3 m · PLA+ negro · Centauri.
+   * Soft seed: no pisa g/h/$ si ya hay edición local.
+   */
+  function seedApoyaLibrosHarryPotter() {
+    const filamentoModeloGramos = 119.68; // 39,80 m
+    const filamentoSoportesGramos = 12.36; // 4,11 m
+    const filamentoPurgeGramos = 0.77; // falda/interfaz residual (total − modelo − soportes)
+    const filamentoGramos = round2(
+      filamentoModeloGramos + filamentoSoportesGramos + filamentoPurgeGramos
+    ); // 132,81 g · 44,17 m
+    const horasImpresion = round2((3 * 60 + 3) / 60); // 3 h 3 m → 3,05 h
+    // fil 2388,72 + luz 170,80 + bolsa 50 = 2609,52 → PVP +100% $5.200
+    return {
+      sku: 'APHARRY001',
+      nombre: 'Apoya libros Harry Potter',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoModeloGramos,
+      filamentoSoportesGramos,
+      filamentoPurgeGramos,
+      filamentoMetros: 44.17,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 5200,
+      costoSlicerRef: 2.66,
+      pendienteCosto: false,
+      notas:
+        `Slicer 1 ud (todo al costo): modelo ${filamentoModeloGramos} g (39,80 m) + soportes ${filamentoSoportesGramos} g (4,11 m) + falda/otros ${filamentoPurgeGramos} g = ${filamentoGramos} g · 44,17 m · 3 h 3 m · coste slicer 2,66. PLA+ negro $17.986/kg · Elegoo Centauri. Fil ~$2.389 + luz ~$171 + bolsa $50 = costo ~$2.610 · PVP sugerido $5.200.`,
+    };
+  }
+
+  function asegurarProductoApoyaLibrosHarryPotter(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-apoya-libros-harry-potter';
+    const seed = seedApoyaLibrosHarryPotter();
     const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
     if (!existing) {
       d.productos.push({ id, ...seed });
@@ -3222,6 +3288,8 @@
     if (/torre[oó]n|torreon/.test(t)) return 'TORREON';
     if (/alcanc[ií]a|chanchito|cerdito|piggy/.test(t)) return 'ALCHAN';
     if (/limpiador|secador/.test(t) && /brocha/.test(t)) return 'LMBROC';
+    if (/apoya|bookend/.test(t) && /harry|potter/.test(t)) return 'APHARRY';
+    if (/apoya\s*libros?|sujetalibros?|bookend/.test(t)) return 'APLIB';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -3275,6 +3343,8 @@
       'prod-torreon': { sku: 'TORREON001', nombre: 'Torreón' },
       'prod-limpiador-brochas': { sku: 'LMBROC001', nombre: 'Limpiador de brochas' },
       'prod-alcancia-chanchito': { sku: 'ALCHAN001', nombre: 'Alcancía chanchito' },
+      'prod-soporte-celular-chimuelo': { sku: 'SOPCHI001', nombre: 'Soporte celular Chimuelo' },
+      'prod-apoya-libros-harry-potter': { sku: 'APHARRY001', nombre: 'Apoya libros Harry Potter' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',
