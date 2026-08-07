@@ -25,6 +25,7 @@ El trabajo de cliente va en **rama agente** y se fusiona a `main` con PR al term
 El usuario puede decir:
 
 - `@organizacion-clientes` → organizador / rama madre
+- `@herramientas` → utilidades HER / Tendencias (TEND) / beauty landing
 - `@adl-cla` o archivos en `DesafioLatam/CLA` → certificados Caja Los Andes
 - **ADL · CChC** → `DesafioLatam/CChC-Alfabetizacion/reporte-impacto/` · rama `cursor/cchc-reporte-prompts-90d6`
 - `Agente Trendseeker` → CM + WordPress, manual marca
@@ -50,6 +51,7 @@ MOVA está en **main** (portal + hub). Arranque: **`ABRIR-LARAVEL.bat`**.
 | Cliente | Ficha |
 |---------|--------|
 | Listado | `index/clientes.html` |
+| Herramientas (HER) | `index/clientes/herramientas/` · TEND: `Herramientas/Tendencias.html` |
 | ADL | `index/clientes/Desafio-Latam.html` |
 | ADL → CLA | `index/clientes/DesafioLatam/CLA.html` |
 | ADL → CChC | `index/clientes/DesafioLatam/CChC-Alfabetizacion/reporte-impacto/` |

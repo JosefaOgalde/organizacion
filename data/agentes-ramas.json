@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-07-09",
+  "actualizado": "2026-08-07",
   "repo": "https://github.com/JosefaOgalde/organizacion",
   "ramaMadre": "main",
   "descripcionMadre": "Agente Organización — organizador, portal clientes, app.js, respaldos. Las demás ramas agente salen de main.",
@@ -88,6 +88,23 @@
           "titulo": "Integración portal MOVA (ya en main)",
           "pr": 18,
           "estado": "fusionada"
+        }
+      ]
+    },
+    {
+      "id": "herramientas",
+      "invocar": "@herramientas",
+      "clienteId": "cli-herramientas",
+      "cliente": "Herramientas",
+      "abrev": "HER",
+      "descripcion": "Utilidades internas — Tendencias (TEND) y beauty landing",
+      "portal": "index/clientes/herramientas/",
+      "ramas": [
+        {
+          "nombre": "cursor/herramientas-her-a135",
+          "titulo": "Agente HER + regla Cursor + skills",
+          "pr": null,
+          "estado": "activa"
         }
       ]
     },

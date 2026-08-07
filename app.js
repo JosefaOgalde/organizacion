@@ -124,6 +124,12 @@ const AGENTES_CLIENTE = {
     emoji: '📄',
     especialidad: 'Ajuste de textos y documentos',
     instrucciones: 'Eres el asistente de Tronwell. Ayudas a revisar y ajustar textos de documentos (Word), mantener tono claro y entregar versiones listas.'
+  },
+  'cli-herramientas': {
+    nombre: 'Agente Herramientas',
+    emoji: '🧰',
+    especialidad: 'Utilidades internas, Tendencias y beauty landing',
+    instrucciones: 'Eres el asistente de Herramientas (HER). Ayudas con el panel TEND (tendencias recetas Chile), el feed JSON, scripts de refresh, briefs beauty→landing y prototipos internos. En Cursor usa @herramientas. Carpetas: index/clientes/herramientas/, index/clientes/Herramientas/, data/tendencias-comida-chile.json. No mezcles con Trendseeker (Gemini), ECR (Midjourney) ni otros clientes.'
   }
 };
 
@@ -387,6 +393,18 @@ const SKILLS_CLIENTE = {
     usaManualMarca: true,
     checklist: ['Brief y medidas', 'Colores de marca / CMYK si aplica', 'Sangrado y márgenes', 'Archivo listo para impresión'],
     ejemploSolicitud: 'Necesito [flyer / tarjeta / banner / packaging] para Impresoreando. Formato: [mm o px]. Mensaje: …'
+  },
+  'cli-herramientas': {
+    nombre: 'TEND + utilidades HER',
+    descripcion: 'Feed de tendencias recetas Chile, refresh del JSON, briefs beauty→landing y prototipos internos.',
+    usaManualMarca: true,
+    checklist: [
+      'Confirmar proyecto (TEND o beauty)',
+      'Feed con fechas verificables / KPIs coherentes',
+      'Identidad TEND o plantilla beauty',
+      'Entregable concreto (panel, brief, cotización)'
+    ],
+    ejemploSolicitud: 'Cliente Herramientas · Proyecto TEND: refrescar feed / revisar ítems. O beauty: brief de landing para [tendencia] con PLANTILLA-BRIEF-LANDING.txt.'
   }
 };
 
