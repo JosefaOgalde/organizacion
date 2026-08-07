@@ -13,17 +13,13 @@
 
 ## 1. Resumen ejecutivo
 
-Hoy la carga de recetas a Business Manager Cencosud (`business-manager.ecomm.cencosud.com`) es **manual**: una operadora con acceso toma un Word ya redactado (formato editorial Jumbo) y lo transcribe campo a campo en la interfaz del BM hasta publicar (contenido que termina en espacios tipo `jumbo.cl/recetas`).
+Proponemos **CRC (Carga Recetas Cencosud)**: una herramienta interna que toma el **Word editorial que ya usamos y creamos nosotros**, estructura la información (incluido meta title, meta description, tags, ingredientes y pasos) y, con las **credenciales que ya tenemos** para ingresar a [Business Manager Cencosud](https://business-manager.ecomm.cencosud.com/), usa **scraping/automatización local** para hacer una **carga masiva** en esa plataforma.
 
-**Propuesta:** herramienta interna que, **sin pedirle nada al cliente**:
+El cliente **no** debe cambiar plantillas, desarrollo, CMS ni proceso: sigue igual. El cuello de botella es solo nuestra carga manual, por lo que debemos manejarlo nosotros.
 
-1. Lee el Word que ya usamos nosotros.  
-2. Extrae y estructura la información (título, SEO meta, tiempos, tags, ingredientes, pasos, tips).  
-3. En un segundo momento (en la PC de la operadora), abre el BM con **nuestras** credenciales y completa el formulario / publica.
+Hoy, al pasar el Word a la plataforma a mano, alguien tiene que ir sección por sección completando. Esta herramienta debe lograr que el contenido llegue **completo y igual que en el documento**, dividido en las secciones correspondientes, y publicar **sin bajar la calidad** y **sin** que una persona complete campo por campo. **No** reemplaza el trabajo de estrategia SEO: solo hace más fácil y segura la carga del contenido que ya preparamos.
 
-El cliente sigue igual: no cambia plantillas Word, no usa APIs nuevas, no desarrolla, no abre el BM.
-
-**Pregunta a MOVA:** ¿vale incorporarlo al catálogo de automatizaciones SEO (junto a Apify y similares) como herramienta de **productividad de publicación de contenido recetas**?
+**Pregunta a MOVA:** ¿incorporarlo al catálogo de automatizaciones SEO (https://acme-chile.cl/mova/seo/) como herramienta de publishing de recetas?
 
 ---
 
