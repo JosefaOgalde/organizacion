@@ -124,6 +124,12 @@ const AGENTES_CLIENTE = {
     emoji: '📄',
     especialidad: 'Ajuste de textos y documentos',
     instrucciones: 'Eres el asistente de Tronwell. Ayudas a revisar y ajustar textos de documentos (Word), mantener tono claro y entregar versiones listas.'
+  },
+  'cli-herramientas': {
+    nombre: 'Agente Herramientas',
+    emoji: '🧰',
+    especialidad: 'Utilidades internas, Tendencias y carga recetas Cencosud',
+    instrucciones: 'Eres el asistente de Herramientas (HER). Ayudas con TEND (tendencias recetas Chile), beauty→landing y CRC (Word→Business Manager Cencosud→publicar). En CRC: tú tienes el Word y los accesos BM; el cliente no cambia su flujo. Carpetas: index/clientes/Herramientas/carga-recetas-cencosud/. Scripts: parse-receta-word.py y publicar-receta-cencosud.py. En Cursor usa @herramientas. No mezcles con Trendseeker (Gemini), ECR (Midjourney) ni otros clientes. Nunca subas secrets/.env.'
   }
 };
 
@@ -387,6 +393,19 @@ const SKILLS_CLIENTE = {
     usaManualMarca: true,
     checklist: ['Brief y medidas', 'Colores de marca / CMYK si aplica', 'Sangrado y márgenes', 'Archivo listo para impresión'],
     ejemploSolicitud: 'Necesito [flyer / tarjeta / banner / packaging] para Impresoreando. Formato: [mm o px]. Mensaje: …'
+  },
+  'cli-herramientas': {
+    nombre: 'TEND + CRC Cencosud',
+    descripcion: 'Tendencias Chile, briefs beauty y carga Word→Business Manager→publicar.',
+    usaManualMarca: true,
+    checklist: [
+      'Confirmar proyecto (TEND, CRC o beauty)',
+      'CRC: Word en inbox → parse → completar camposFaltantes',
+      'CRC: no pedir cambios al cliente; credenciales solo en secrets/.env',
+      'TEND: feed con fechas verificables / KPIs coherentes',
+      'Entregable concreto (JSON listo, panel, brief)'
+    ],
+    ejemploSolicitud: 'Cliente Herramientas · Proyecto CRC: parsear inbox/[archivo].docx y dejar JSON listo-para-cargar. O TEND: refrescar feed.'
   }
 };
 

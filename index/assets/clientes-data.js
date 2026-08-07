@@ -299,6 +299,25 @@ window.CLIENTES_PORTAL = [
           'Fuentes de datos configurables',
           'Exportación de reportes'
         ]
+      },
+      {
+        codigo: 'CRC',
+        nombre: 'Carga recetas Cencosud',
+        archivo: 'Herramientas/Carga-recetas',
+        resumen: 'Word → Business Manager → publicar (automatización interna).',
+        descripcion: 'Parsea el Word de recetas, completa la ficha y publica en Business Manager Cencosud sin cambiar el flujo del cliente.',
+        color: { border: '#3D4A6B', bg: '#E2E6F0', text: '#1E2638' },
+        identidad: {
+          primario: '#3D4A6B',
+          secundario: '#5A6A8A',
+          acento: '#C4962A',
+          fondo: '#EEF1F7'
+        },
+        entregables: [
+          'Parser Word → JSON',
+          'Mapa de campos BM',
+          'Publicación asistida / automática'
+        ]
       }
     ]
   }

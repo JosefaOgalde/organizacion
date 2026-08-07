@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carga recetas Cencosud · Herramientas</title>
+  <link rel="stylesheet" href="../../assets/portal.css?v=layout-w1">
+  <link rel="stylesheet" href="../../assets/tendencias-feed.css">
+  <style>
+    .crc-wrap { max-width: 44rem; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+    .crc-wrap h1 { font-size: 1.75rem; margin: 0 0 0.35rem; color: #1E2638; }
+    .crc-wrap .crc-code { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: #5A6A8A; }
+    .crc-wrap p { line-height: 1.55; color: #2a3348; }
+    .crc-steps { list-style: none; padding: 0; margin: 1.5rem 0; }
+    .crc-steps li {
+      border-left: 3px solid #3D4A6B;
+      background: #EEF1F7;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.65rem;
+    }
+    .crc-steps strong { display: block; margin-bottom: 0.2rem; color: #1E2638; }
+    .crc-steps code { font-size: 0.85em; word-break: break-all; }
+    .crc-note {
+      margin-top: 1.5rem;
+      padding: 0.9rem 1rem;
+      background: #F7F3EA;
+      border-left: 3px solid #C4962A;
+      font-size: 0.92rem;
+    }
+  </style>
+</head>
+<body class="portal-page--light" data-cliente-slug="herramientas" data-proyecto-codigo="CRC">
+  <header class="portal-header portal-header--themed">
+    <nav class="portal-nav">
+      <a href="../herramientas/">← Herramientas (HER)</a>
+    </nav>
+  </header>
+  <main class="crc-wrap">
+    <p class="crc-code">CRC · Carga recetas Cencosud</p>
+    <h1>Scraping local → completar BM</h1>
+    <p>
+      Se hace <strong>en tu PC</strong> con tu usuario de
+      <a href="https://business-manager.ecomm.cencosud.com/" target="_blank" rel="noopener">Business Manager</a>.
+      No hace falta otra máquina: Chromium se abre en tu pantalla (ADFS / MFA a mano si pide).
+    </p>
+    <ol class="crc-steps">
+      <li>
+        <strong>0. Una vez — Playwright + .env</strong>
+        <code>pip install playwright</code> · <code>playwright install chromium</code><br>
+        Copia <code>carga-recetas-cencosud/secrets/env.example</code> → <code>secrets/.env</code> y pon tu usuario.
+      </li>
+      <li>
+        <strong>1. Word en inbox + parse</strong>
+        <code>python scripts/parse-receta-word.py …/inbox/archivo.docx</code>
+      </li>
+      <li>
+        <strong>2. Explorar / mapear el formulario (con tu login)</strong>
+        <code>python scripts/explorar-bm-cencosud.py</code><br>
+        Entras en la ventana → abres «Nueva receta» → ENTER en la terminal.
+      </li>
+      <li>
+        <strong>3. Completar la información en la interfaz</strong>
+        <code>python scripts/publicar-receta-cencosud.py …/out/receta.json --headed --dry-run</code><br>
+        Revisa en el BM; cuando esté bien, publica (sin <code>--dry-run</code>).
+      </li>
+    </ol>
+    <p class="crc-note">
+      <strong>Brief de factibilidad (para MOVA / SEO):</strong>
+      <code>carga-recetas-cencosud/BRIEF-FACTIBILIDAD-CRC-SEO.md</code>
+      · Evaluación: <code>@mova</code> · Cero cambios al cliente.
+      Credenciales solo en <code>secrets/</code> (no van a Git).
+    </p>
+  </main>
+  <script src="../../assets/file-protocol-banner.js"></script>
+  <script src="../../assets/portal-theme.js"></script>
+  <script src="../../assets/portal-theme-auto.js"></script>
+</body>
+</html>

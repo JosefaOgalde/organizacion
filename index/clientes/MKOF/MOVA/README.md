@@ -16,6 +16,7 @@ Tras `git pull`, lee:
 
 - **Handoff completo:** [`docs/MKOF-MOVA-HANDOFF.md`](../../../docs/MKOF-MOVA-HANDOFF.md)
 - **Resumen visible en portal:** [`RESUMEN.md`](RESUMEN.md)
+- **Evaluar CRC (carga recetas Cencosud) como herramienta SEO:** [`documentos/CRC-EVALUACION-SEO.md`](documentos/CRC-EVALUACION-SEO.md) → brief en Herramientas
 
 ## Traer tu carpeta de Windows
 
