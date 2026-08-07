@@ -3,51 +3,47 @@
 Destino: https://business-manager.ecomm.cencosud.com/  
 Público de referencia: https://www.jumbo.cl/recetas
 
-> Los selectores exactos del formulario BM se completan en la **sesión de mapeo** (con tu login). Mientras tanto el JSON intermedio ya lleva todos los datos.
+## Cómo mapear (local, con tu usuario)
+
+1. En tu PC: `python scripts/explorar-bm-cencosud.py`
+2. Login ADFS en la ventana (tu usuario; MFA si aplica).
+3. Abre el formulario de **nueva receta**.
+4. ENTER en la terminal → genera `secrets/bm-estructura.json` + `secrets/bm-selectores.json`.
+5. Revisa/ajusta selectores y prueba:
+   `python scripts/publicar-receta-cencosud.py out/….json --headed --dry-run`
+
+No se scrapea desde un servidor en la nube: es **navegador local** con tus credenciales.
 
 ## Quién hace qué
 
 | Actor | Rol |
 |-------|-----|
-| **Cliente final** | No envía Word ni entra al BM. No cambia su flujo. |
-| **Tú (operadora)** | Tienes el `.docx` y los accesos ADFS al BM. |
-| **Agente `@herramientas` + scripts** | Parsea Word → completa JSON → (fase 2) rellena BM y publica. |
+| **Cliente final** | No envía Word ni entra al BM. |
+| **Tú** | Word + accesos BM en tu PC. |
+| **Scripts CRC** | Parsean Word, mapean formulario, rellenan campos. |
 
 ## Campos
 
-| Campo JSON | Suele venir del Word | Campo típico en ficha pública Jumbo | Campo BM (completar al mapear) | Selector Playwright (completar) |
-|------------|----------------------|-------------------------------------|--------------------------------|----------------------------------|
-| `titulo` | Título / primera línea | Título de receta | | |
-| `descripcion` | Intro / bajada | Párrafo introductorio | | |
-| `porciones` | «Rinde…» / «Porciones» | Porciones | | |
-| `tiempoPreparacion` | Prep / preparación | Tiempo | | |
-| `tiempoCoccion` | Cocción / horno | Tiempo | | |
-| `tiempoTotal` | Total | Tiempo | | |
-| `dificultad` | Fácil / media / difícil | Nivel | | |
-| `categorias[]` | Pollo, carne, postre… | Filtros ingredientes / tipo | | |
-| `ocasiones[]` | Menú semanal, 18, etc. | Ocasión | | |
-| `ingredientes[].nombre` | Lista ingredientes | «Productos que necesitas» | | |
-| `ingredientes[].cantidad` | 200 g, 2 cdas… | | | |
-| `ingredientes[].skuCencosud` | Rara vez en Word | Link a producto carro | Buscar SKU en BM | |
-| `pasos[].texto` | Paso a paso numerado | Instrucciones | | |
-| `imagenes[]` | Adjuntos / carpeta local | Hero | Upload BM | |
-| `seo.metaTitulo` | Opcional | SEO | | |
-| `seo.metaDescripcion` | Opcional | SEO | | |
-| `seo.slugSugerido` | Derivado del título | URL `/recetas/…` | | |
+| Campo JSON | Suele venir del Word | Clave en `bm-selectores.json` |
+|------------|----------------------|-------------------------------|
+| `titulo` | Título editorial | `field_titulo` |
+| `descripcion` / meta desc | Meta descripción | `field_descripcion` |
+| `porciones` | Barra `N porciones` | `field_porciones` |
+| `tiempoTotal` | Barra `35 min` | `field_tiempo` |
+| `dificultad` | Barra `Fácil` | `field_dificultad` |
+| `categorias[]` | Tags | `field_tags` |
+| `ingredientes[]` | Lista | `field_ingredientes` |
+| `pasos[]` | Paso a paso | `field_pasos` |
+| `seo.metaTitulo` | Meta título | `field_meta_titulo` |
+| `seo.metaDescripcion` | Meta descripción | `field_meta_descripcion` |
+| — | Botón guardar | `btn_guardar_borrador` |
+| — | Botón publicar | `btn_publicar` |
+| — | Link nueva receta | `nav_nueva_receta` |
 
-## Checklist de mapeo BM (una vez, con sesión abierta)
+## Checklist
 
-1. Login ADFS en Business Manager.
-2. Ir al módulo donde se crean/editan **recetas** (anotar ruta del menú).
-3. Abrir «Nueva receta» y anotar **cada label** del formulario.
-4. Pegar label + tipo de control (input, rich text, select, upload) en la tabla de arriba.
-5. En DevTools, copiar `name` / `id` / selector estable → columna Playwright.
-6. Probar un borrador **sin publicar** con `scripts/publicar-receta-cencosud.py --dry-run`.
-
-## Estados del JSON
-
-- `borrador` — parseado, faltan campos (`camposFaltantes` no vacío)
-- `listo-para-cargar` — agente completó huecos; listo para Playwright
-- `cargado` — guardado en BM como borrador
-- `publicado` — visible en bandera (ej. jumbo.cl/recetas)
-- `error` — ver `publicacion.notas`
+1. Login ADFS OK (sesión en `bm-session.json`).
+2. Formulario de receta abierto al capturar.
+3. Selectores revisados en `bm-selectores.json`.
+4. Prueba `--dry-run` antes de publicar.
+5. Nunca commits de `secrets/.env` ni `bm-session.json`.

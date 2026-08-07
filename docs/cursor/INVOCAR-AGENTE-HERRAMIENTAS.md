@@ -48,16 +48,26 @@ python3 scripts/actualizar-tendencias-comida.py
 
 El JSON vive en `data/tendencias-comida-chile.json`.
 
-## CRC — Word → BM
+## CRC — Word → BM (en TU PC)
+
+El login ADFS/MFA y el relleno del formulario se hacen con Playwright **en tu computador** (navegador visible), no en un servidor remoto.
 
 ```bash
-# 1) Word en inbox/
+# Una vez
+pip install playwright && playwright install chromium
+cp index/clientes/Herramientas/carga-recetas-cencosud/secrets/env.example \
+   index/clientes/Herramientas/carga-recetas-cencosud/secrets/.env
+# Edita .env con tu usuario (nunca lo pegues en el chat)
+
+# Parse Word
 python3 scripts/parse-receta-word.py index/clientes/Herramientas/carga-recetas-cencosud/inbox/TU.docx
 
-# 2) Revisar / completar out/*.json con @herramientas
+# Mapear estructura del BM (abre Chromium; tú entras; vas a Nueva receta; ENTER)
+python3 scripts/explorar-bm-cencosud.py
 
-# 3) Publicar (selectores mapeados + secrets/.env local)
-python3 scripts/publicar-receta-cencosud.py index/clientes/Herramientas/carga-recetas-cencosud/out/TU.json --dry-run
+# Rellenar interfaz (dry-run = no publicar)
+python3 scripts/publicar-receta-cencosud.py \
+  index/clientes/Herramientas/carga-recetas-cencosud/out/TU.json --headed --dry-run
 ```
 
 Docs: `carga-recetas-cencosud/README.md` · `MAPA-CAMPOS-BM.md`
