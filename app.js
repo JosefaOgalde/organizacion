@@ -128,8 +128,8 @@ const AGENTES_CLIENTE = {
   'cli-herramientas': {
     nombre: 'Agente Herramientas',
     emoji: '🧰',
-    especialidad: 'Utilidades internas, Tendencias y beauty landing',
-    instrucciones: 'Eres el asistente de Herramientas (HER). Ayudas con el panel TEND (tendencias recetas Chile), el feed JSON, scripts de refresh, briefs beauty→landing y prototipos internos. En Cursor usa @herramientas. Carpetas: index/clientes/herramientas/, index/clientes/Herramientas/, data/tendencias-comida-chile.json. No mezcles con Trendseeker (Gemini), ECR (Midjourney) ni otros clientes.'
+    especialidad: 'Utilidades internas, Tendencias y carga recetas Cencosud',
+    instrucciones: 'Eres el asistente de Herramientas (HER). Ayudas con TEND (tendencias recetas Chile), beauty→landing y CRC (Word→Business Manager Cencosud→publicar). En CRC: tú tienes el Word y los accesos BM; el cliente no cambia su flujo. Carpetas: index/clientes/Herramientas/carga-recetas-cencosud/. Scripts: parse-receta-word.py y publicar-receta-cencosud.py. En Cursor usa @herramientas. No mezcles con Trendseeker (Gemini), ECR (Midjourney) ni otros clientes. Nunca subas secrets/.env.'
   }
 };
 
@@ -395,16 +395,17 @@ const SKILLS_CLIENTE = {
     ejemploSolicitud: 'Necesito [flyer / tarjeta / banner / packaging] para Impresoreando. Formato: [mm o px]. Mensaje: …'
   },
   'cli-herramientas': {
-    nombre: 'TEND + utilidades HER',
-    descripcion: 'Feed de tendencias recetas Chile, refresh del JSON, briefs beauty→landing y prototipos internos.',
+    nombre: 'TEND + CRC Cencosud',
+    descripcion: 'Tendencias Chile, briefs beauty y carga Word→Business Manager→publicar.',
     usaManualMarca: true,
     checklist: [
-      'Confirmar proyecto (TEND o beauty)',
-      'Feed con fechas verificables / KPIs coherentes',
-      'Identidad TEND o plantilla beauty',
-      'Entregable concreto (panel, brief, cotización)'
+      'Confirmar proyecto (TEND, CRC o beauty)',
+      'CRC: Word en inbox → parse → completar camposFaltantes',
+      'CRC: no pedir cambios al cliente; credenciales solo en secrets/.env',
+      'TEND: feed con fechas verificables / KPIs coherentes',
+      'Entregable concreto (JSON listo, panel, brief)'
     ],
-    ejemploSolicitud: 'Cliente Herramientas · Proyecto TEND: refrescar feed / revisar ítems. O beauty: brief de landing para [tendencia] con PLANTILLA-BRIEF-LANDING.txt.'
+    ejemploSolicitud: 'Cliente Herramientas · Proyecto CRC: parsear inbox/[archivo].docx y dejar JSON listo-para-cargar. O TEND: refrescar feed.'
   }
 };
 

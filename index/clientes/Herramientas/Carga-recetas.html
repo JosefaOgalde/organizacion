@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carga recetas Cencosud · Herramientas</title>
+  <link rel="stylesheet" href="../../assets/portal.css?v=layout-w1">
+  <link rel="stylesheet" href="../../assets/tendencias-feed.css">
+  <style>
+    .crc-wrap { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+    .crc-wrap h1 { font-size: 1.75rem; margin: 0 0 0.35rem; color: #1E2638; }
+    .crc-wrap .crc-code { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: #5A6A8A; }
+    .crc-wrap p { line-height: 1.55; color: #2a3348; }
+    .crc-steps { list-style: none; padding: 0; margin: 1.5rem 0; }
+    .crc-steps li {
+      border-left: 3px solid #3D4A6B;
+      background: #EEF1F7;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.65rem;
+    }
+    .crc-steps strong { display: block; margin-bottom: 0.2rem; color: #1E2638; }
+    .crc-steps code { font-size: 0.85em; }
+    .crc-note {
+      margin-top: 1.5rem;
+      padding: 0.9rem 1rem;
+      background: #F7F3EA;
+      border-left: 3px solid #C4962A;
+      font-size: 0.92rem;
+    }
+  </style>
+</head>
+<body class="portal-page--light" data-cliente-slug="herramientas" data-proyecto-codigo="CRC">
+  <header class="portal-header portal-header--themed">
+    <nav class="portal-nav">
+      <a href="../herramientas/">← Herramientas (HER)</a>
+    </nav>
+  </header>
+  <main class="crc-wrap">
+    <p class="crc-code">CRC · Carga recetas Cencosud</p>
+    <h1>Word → Business Manager → publicar</h1>
+    <p>
+      Tú tienes el Word y los accesos a
+      <a href="https://business-manager.ecomm.cencosud.com/" target="_blank" rel="noopener">Business Manager</a>.
+      El cliente no cambia su flujo: la automatización es interna.
+    </p>
+    <ol class="crc-steps">
+      <li>
+        <strong>1. Dejar el Word en inbox</strong>
+        Carpeta <code>carga-recetas-cencosud/inbox/</code>
+      </li>
+      <li>
+        <strong>2. Parsear</strong>
+        <code>python3 scripts/parse-receta-word.py …/inbox/archivo.docx</code>
+        → JSON en <code>out/</code>
+      </li>
+      <li>
+        <strong>3. Completar con el agente</strong>
+        En Cursor: <code>@herramientas</code> · Proyecto CRC · completar <code>camposFaltantes</code>
+      </li>
+      <li>
+        <strong>4. Publicar (cuando el mapa BM esté listo)</strong>
+        <code>python3 scripts/publicar-receta-cencosud.py …/out/receta.json</code>
+        Credenciales solo en <code>secrets/.env</code> (local).
+      </li>
+    </ol>
+    <p class="crc-note">
+      Detalle: <code>README.md</code> · campos: <code>MAPA-CAMPOS-BM.md</code> · contrato: <code>schema-receta.json</code>
+    </p>
+  </main>
+  <script src="../../assets/file-protocol-banner.js"></script>
+  <script src="../../assets/portal-theme.js"></script>
+  <script src="../../assets/portal-theme-auto.js"></script>
+</body>
+</html>

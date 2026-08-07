@@ -65,5 +65,58 @@ window.HERRAMIENTAS_PROYECTOS = {
         }
       ]
     }
+  },
+  CRC: {
+    codigo: 'CRC',
+    nombre: 'Carga recetas Cencosud',
+    descripcion: 'Word → completar ficha → Business Manager → publicar (operación interna)',
+    cliente: 'Herramientas',
+    colores: {
+      primario: '#3D4A6B',
+      secundario: '#5A6A8A',
+      acento: '#C4962A',
+      fondo: '#EEF1F7',
+      texto: '#1E2638',
+      textoClaro: '#FFFFFF'
+    },
+    destino: {
+      url: 'https://business-manager.ecomm.cencosud.com/',
+      banderaPublica: 'https://www.jumbo.cl/recetas',
+      carpeta: 'index/clientes/Herramientas/carga-recetas-cencosud/'
+    },
+    secciones: [
+      {
+        id: 'inbox',
+        titulo: 'Inbox Word',
+        descripcion: 'Dejas el .docx en inbox/. El cliente no envía ni usa el BM.'
+      },
+      {
+        id: 'parse',
+        titulo: 'Parser',
+        descripcion: 'python3 scripts/parse-receta-word.py → JSON en out/ según schema-receta.json'
+      },
+      {
+        id: 'publicar',
+        titulo: 'Publicar',
+        descripcion: 'Playwright contra BM cuando el mapa de selectores esté completo (secrets/.env local).'
+      }
+    ],
+    brief: {
+      titulo: 'Brief · Carga recetas Cencosud',
+      intro:
+        'Automatización interna: tú tienes el Word y los accesos ADFS. El agente completa la información de la interfaz y publica sin pedirle cambios al cliente.',
+      cuerpo: [
+        {
+          titulo: 'Qué hace',
+          texto:
+            'Extrae título, descripción, tiempos, ingredientes y pasos del Word; genera un JSON listo; (fase 2) rellena Business Manager y publica.'
+        },
+        {
+          titulo: 'Qué no hace',
+          texto:
+            'No pide al cliente que use otra plantilla ni que entre al BM. Credenciales nunca van a Git.'
+        }
+      ]
+    }
   }
 };

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema-receta-cencosud.json",
+  "title": "Receta lista para Business Manager Cencosud",
+  "description": "Payload intermedio: Word → este JSON → formulario BM → publicar en Jumbo (u otra bandera).",
+  "type": "object",
+  "required": ["titulo", "descripcion", "ingredientes", "pasos", "estado"],
+  "properties": {
+    "id": { "type": "string", "description": "Slug o id interno generado desde el nombre del archivo" },
+    "fuenteWord": { "type": "string", "description": "Ruta relativa del .docx de origen" },
+    "titulo": { "type": "string" },
+    "descripcion": { "type": "string", "description": "Intro / bajada editorial" },
+    "porciones": { "type": ["string", "number", "null"] },
+    "tiempoPreparacion": { "type": ["string", "null"], "description": "Ej. 20 min" },
+    "tiempoCoccion": { "type": ["string", "null"] },
+    "tiempoTotal": { "type": ["string", "null"] },
+    "dificultad": {
+      "type": ["string", "null"],
+      "enum": ["muy facil", "facil", "media", "dificil", "absurdamente dificil", null]
+    },
+    "categorias": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Ej. Pollo, Carne, Vegetariano, Postre"
+    },
+    "ocasiones": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "ingredientes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["nombre"],
+        "properties": {
+          "nombre": { "type": "string" },
+          "cantidad": { "type": ["string", "null"] },
+          "unidad": { "type": ["string", "null"] },
+          "skuCencosud": { "type": ["string", "null"], "description": "SKU producto BM / Jumbo si se conoce" },
+          "notas": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "pasos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["orden", "texto"],
+        "properties": {
+          "orden": { "type": "integer" },
+          "texto": { "type": "string" }
+        }
+      }
+    },
+    "imagenes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rutaLocal": { "type": "string" },
+          "alt": { "type": "string" },
+          "rol": { "type": "string", "enum": ["portada", "paso", "ingrediente", "otra"] }
+        }
+      }
+    },
+    "seo": {
+      "type": "object",
+      "properties": {
+        "metaTitulo": { "type": ["string", "null"] },
+        "metaDescripcion": { "type": ["string", "null"] },
+        "slugSugerido": { "type": ["string", "null"] }
+      }
+    },
+    "camposFaltantes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Lo que el parser no pudo inferir del Word; el agente debe completar antes de publicar"
+    },
+    "estado": {
+      "type": "string",
+      "enum": ["borrador", "listo-para-cargar", "cargado", "publicado", "error"]
+    },
+    "publicacion": {
+      "type": "object",
+      "properties": {
+        "destino": { "type": "string", "default": "business-manager.ecomm.cencosud.com" },
+        "bandera": { "type": "string", "default": "jumbo" },
+        "urlPublica": { "type": ["string", "null"] },
+        "publicadoEn": { "type": ["string", "null"] },
+        "notas": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

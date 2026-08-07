@@ -22,6 +22,15 @@ data/impresoreando-status-ultimo.html
 # Imágenes de tareas ( Midjourney / referencias) — se sirven en local, no van al repo
 index/uploads/
 
+# CRC — Word de entrada, salidas y secretos locales
+index/clientes/Herramientas/carga-recetas-cencosud/inbox/*
+!index/clientes/Herramientas/carga-recetas-cencosud/inbox/.gitkeep
+index/clientes/Herramientas/carga-recetas-cencosud/out/*
+!index/clientes/Herramientas/carga-recetas-cencosud/out/.gitkeep
+index/clientes/Herramientas/carga-recetas-cencosud/secrets/*
+!index/clientes/Herramientas/carga-recetas-cencosud/secrets/env.example
+!index/clientes/Herramientas/carga-recetas-cencosud/secrets/.gitkeep
+
 
 # Excepción: plantilla vacía sin PII (sí puede ir al repo)
 !data/organizacion-respaldo-ejemplo.json

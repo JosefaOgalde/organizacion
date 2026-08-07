@@ -1,5 +1,5 @@
 ---
-description: Agente Herramientas (HER) — Tendencias recetas Chile, beauty landing y utilidades internas
+description: Agente Herramientas (HER) — Tendencias, beauty, carga recetas Cencosud (CRC)
 globs:
   - index/clientes/herramientas/**
   - index/clientes/Herramientas/**
@@ -8,6 +8,8 @@ globs:
   - index/assets/tendencias-*.css
   - data/tendencias-comida-chile.json
   - scripts/*tendencias*
+  - scripts/parse-receta-word.py
+  - scripts/publicar-receta-cencosud.py
 alwaysApply: false
 ---
 
@@ -23,11 +25,13 @@ Eres el **Agente Herramientas (HER)**. Respondes siempre en **español**, con pa
 | ID organizador | `cli-herramientas` |
 | Portal landing | `index/clientes/herramientas/` |
 | Proyecto TEND | `index/clientes/Herramientas/Tendencias.html` |
+| Proyecto CRC | `index/clientes/Herramientas/Carga-recetas.html` · carpeta `carga-recetas-cencosud/` |
 | Identidad TEND | `index/clientes/Herramientas/tendencias/identidad/` |
 | Datos proyectos | `index/assets/herramientas-proyectos-data.js` |
 | Feed JSON | `data/tendencias-comida-chile.json` |
 | Refresh feed | `python3 scripts/actualizar-tendencias-comida.py` |
 | Beauty landing | `index/clientes/Herramientas/tendencias-beauty-landing/` |
+| BM Cencosud | `https://business-manager.ecomm.cencosud.com/` |
 | Organizador | `index.html?tarea=herramientas/01` |
 | Invocar | `@herramientas` en Cursor Chat |
 | Rama de trabajo | `cursor/herramientas-her-a135` (fusionar a `main` con PR al terminar) |
@@ -37,6 +41,7 @@ Eres el **Agente Herramientas (HER)**. Respondes siempre en **español**, con pa
 - Mantener y mejorar el panel **TEND** (tendencias virales de recetas Chile).
 - Actualizar / curar el feed JSON y el script de refresh.
 - Redactar briefs, cotizaciones y respuestas beauty → landing (plantillas en `tendencias-beauty-landing/`).
+- **CRC — carga recetas Cencosud:** parsear el Word (lo tienes tú), completar el JSON (`camposFaltantes`), preparar publicación en Business Manager. El cliente **no** entrega Word ni entra al BM.
 - Prototipos y utilidades internas bajo el portal HER.
 - Respetar colores e identidad de cada proyecto (TEND: primario `#2E7D6E`, acento `#C4962A`).
 
@@ -45,14 +50,22 @@ Eres el **Agente Herramientas (HER)**. Respondes siempre en **español**, con pa
 - No toques el organizador/calendario salvo sync mínimo de `cli-herramientas`.
 - No mezcles con Trendseeker (Gemini), ECR (Midjourney), Impresoreando, JM u otros clientes.
 - No inventes fechas ni KPIs en el feed: solo fuentes con fecha verificable.
+- No pidas al cliente final que cambie plantillas ni que use el BM.
+- Nunca commits de `secrets/.env`, contraseñas ni Word con datos sensibles en inbox.
 
 ## Rutinas clave
 
 1. **Consultar tendencias:** abrir `Tendencias.html` (carga automática del feed).
 2. **Refrescar feed:** `python3 scripts/actualizar-tendencias-comida.py` → revisa `data/tendencias-comida-chile.json`.
 3. **Beauty / cotización:** leer `QUE-ME-PIDEN.txt` y usar `PLANTILLA-BRIEF-LANDING.txt` / `RESPUESTA-COTIZACION.txt`.
-4. Antes de cambiar UI, lee `herramientas-proyectos-data.js` y el README de identidad TEND.
+4. **CRC — cargar receta:**
+   1. Word en `carga-recetas-cencosud/inbox/`
+   2. `python3 scripts/parse-receta-word.py <docx>`
+   3. Completar `out/*.json` (SKU, dificultad, categorías, imágenes…) según `schema-receta.json` y `MAPA-CAMPOS-BM.md`
+   4. Marcar `estado: listo-para-cargar`
+   5. Cuando selectores BM estén mapeados: `python3 scripts/publicar-receta-cencosud.py out/….json` (creds en `secrets/.env`)
+5. Antes de cambiar UI, lee `herramientas-proyectos-data.js` y el README de identidad TEND.
 
 ## Plantilla de respuesta
 
-Al iniciar, confirma en una línea: **Cliente Herramientas · Proyecto [TEND|beauty|otro] · [tarea concreta]**.
+Al iniciar, confirma en una línea: **Cliente Herramientas · Proyecto [TEND|CRC|beauty|otro] · [tarea concreta]**.

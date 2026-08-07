@@ -10,7 +10,7 @@ Instrucciones cortas para no duplicar contexto. El detalle vive en los docs enla
 - Guía: `docs/laravel/EN-CUALQUIER-PC.md`
 
 ## Herramientas por cliente
-- **Herramientas (HER)** → `@herramientas` · portal `index/clientes/herramientas/` · TEND `Herramientas/Tendencias.html` · feed `data/tendencias-comida-chile.json` · doc `docs/cursor/INVOCAR-AGENTE-HERRAMIENTAS.md`
+- **Herramientas (HER)** → `@herramientas` · portal `index/clientes/herramientas/` · TEND `Herramientas/Tendencias.html` · **CRC** `Herramientas/Carga-recetas.html` (Word→BM Cencosud) · feed `data/tendencias-comida-chile.json` · doc `docs/cursor/INVOCAR-AGENTE-HERRAMIENTAS.md`
 - **Trendseeker** → Gemini (producto/video). Ver `index/clientes/trendseeker/prompts/README.md`
 - **ECR portadas** → Midjourney (solo fondo). Ver `index/clientes/ecr/newsletter/`
 - **Joyas Mercury** → pausado (archivos sí en GitHub para iPad/iPhone). No abrir salvo que la usuaria retome JM. Carpeta: `index/clientes/joyasmercury/` · OneDrive vía `ARCHIVAR-JOYAS-MERCURY.bat`
