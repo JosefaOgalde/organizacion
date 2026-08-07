@@ -1,0 +1,122 @@
+TEXTO PARA COPIAR Y PEGAR — Brief de gobernanza / factibilidad
+Proyecto: CRC · Carga Recetas Cencosud (candidato herramienta SEO MOVA)
+Fecha: 2026-08-07
+Restricción dura: CERO cambios de estructura, desarrollo, CMS o proceso al cliente
+────────────────────────────────────────────────────────────────
+
+TÍTULO
+CRC — Automatización interna de carga de recetas (Word → Business Manager Cencosud) con foco en fidelidad SEO on-page y velocidad de publicación, sin impacto al cliente
+
+1) RESUMEN PARA GOBERNANZA (elevator)
+Hoy publicamos recetas copiando a mano desde un Word editorial al Business Manager de Cencosud (business-manager.ecomm.cencosud.com). Eso consume tiempo, genera omisiones (meta title, meta description, tags, tips) y no escala. Proponemos una herramienta INTERNA que: (a) lee el mismo Word que ya usamos, (b) estructura la información, (c) en la PC de la operadora, con nuestras credenciales, completa el formulario del BM y deja listo publicar/revisar. El cliente no cambia plantillas, no desarrolla, no abre APIs, no usa el BM: su proceso sigue igual. Pedimos evaluar CRC para el catálogo de automatizaciones SEO MOVA (acme-chile.cl/mova/seo/) como herramienta de operaciones de contenido con impacto SEO, no como crawler ni rank tracker.
+
+2) PROBLEMA
+- Carga 100% manual Word → formulario BM → publicación (contenido tipo jumbo.cl/recetas).
+- El Word ya trae señales SEO (meta título, meta descripción, tags); al transcribir a mano se pierden o se cargan mal.
+- No hay API pública documentada de “recetas” en BM; la vía realista es asistencia RPA local sobre la UI que ya usamos.
+- El cuello de botella es nuestro (operación), no un pedido de cambio al cliente.
+
+3) OBJETIVO
+- Reducir tiempo por receta: de “transcribir todo” a “revisar + confirmar”.
+- Preservar fidelidad SEO del Word (meta title, meta description, slug, tags, estructura de pasos).
+- Mantener CERO tickets de cambio al cliente (estructura, desarrollo, proceso).
+- Dejar CRC evaluable y registrable en gobernanza SEO MOVA con dueño, riesgos y criterios de éxito.
+
+4) ALCANCE (qué SÍ)
+- Parser Word (.docx) formato editorial Jumbo → JSON interno estandarizado.
+- Agente/operación interna (@herramientas · Proyecto CRC).
+- Automatización LOCAL (Playwright en la PC de la operadora): login BM con nuestra cuenta, mapeo de formulario, relleno, dry-run y publicación controlada.
+- Checklist SEO post-carga (meta, H1/título, tags, pasos visibles).
+- Documentación de factibilidad + ficha candidata a catálogo SEO MOVA.
+
+5) FUERA DE ALCANCE (qué NO)
+- Pedir al cliente APIs, webhooks, campos nuevos, cambios VTEX/Jumbo, rediseño de BM o permisos IT adicionales más allá de la cuenta que ya usamos.
+- Guardar credenciales en la nube, Git o chat.
+- Bot 24/7 en servidor cloud (ADFS/MFA exige navegador local headed).
+- Sustituir estrategia editorial; solo automatizamos la CARGA.
+- Prometer SKUs de productos del carro si el Word no los trae (queda como paso nuestro opcional, sin pedir nada al cliente).
+
+6) PRINCIPIO DE DISEÑO — “EL CLIENTE NO SE ENTERA”
+Misma fuente (Word actual) → nuestro parser → JSON interno → nuestro login BM local → formulario rellenado / publicado → misma URL pública de destino. Cero cambio de proceso pedido al cliente.
+
+7) EVIDENCIA YA CONSTRUIDA (reduce riesgo de gobernanza)
+- Carpeta proyecto, hub portal, schema JSON, README y mapa de campos.
+- Parser Word formato Jumbo PROBADO con “Anticuchos de verduras con chimichurri”: título, meta SEO, 35 min / fácil / 4 porciones, 6 tags, 14 ingredientes, 4 pasos, 3 tips → estado listo-para-cargar (falta típica: SKU, no viene en Word).
+- Scripts de exploración BM y publicación (Playwright) listos; falta 1 sesión real en PC para mapear selectores del formulario (no bloquea la evaluación de factibilidad).
+- Credenciales solo en secrets/.env local (gitignored).
+- Brief + ruta de evaluación @mova ya documentados en el repo.
+
+8) FACTIBILIDAD
+Técnica
+- Extracción Word: ALTA (formato Jumbo ya soportado).
+- Relleno UI BM sin API: MEDIA (Playwright; depende de estabilidad DOM).
+- Login ADFS/MFA: viable con navegador visible + sesión local reutilizable (no headless ciego).
+- Publicación E2E: MEDIA (1 mapeo humano + dry-run obligatorio + QA).
+- Cero cambios al cliente: ALTA (por diseño).
+
+Operativa
+- Corre en PC Windows de la operadora.
+- Mantenimiento: si el BM cambia el DOM, re-mapeamos nosotros; no pedimos desarrollo al cliente.
+- Validar internamente política de uso de RPA sobre BM con cuenta propia ya autorizada para el trabajo manual equivalente.
+
+SEO (ángulo MOVA)
+- Valor: operaciones de publishing con impacto SEO INDIRECTO (fidelidad on-page + más contenido publicado con menos error).
+- Preserva meta title/description, tags/intención, consistencia de slug/título.
+- El humano pasa de “teclear” a “QA de dry-run”.
+- NO reemplaza auditoría técnica, crawlers ni herramientas tipo Apify: es complemento de catálogo (automatización de contenido).
+
+9) RIESGOS Y MITIGACIONES (gobernanza)
+- ADFS/MFA → solo headed + bm-session local.
+- DOM BM cambia → script de re-exploración; dry-run por defecto.
+- Publicación incorrecta → CENCOSUD_BM_DRY_RUN=true; revisión visual antes de publicar.
+- Fuga de credenciales → secrets/ gitignored; nunca en chat/GitHub.
+- Expectativa de “cero clics eternos” → comunicar: 1 mapeo + QA por lote.
+- SKUs faltantes → camposFaltantes; proceso interno opcional, sin cliente.
+- ToS/política RPA → veredicto explícito en gobernanza antes de escalar volumen.
+
+10) GOBERNANZA PROPUESTA (para sacar buen puntaje)
+- Sponsor / dueño operativo: equipo HER (Josefa) con @herramientas.
+- Evaluador / catálogo: @mova · hub SEO https://acme-chile.cl/mova/seo/
+- Clasificación: Automatización de publishing de contenido (SEO operacional), no analítica.
+- Constraint auditado: 0 cambios al cliente (aceptación explícita en el veredicto).
+- Seguridad: credenciales locales; sin secretos en repo; dry-run default.
+- Mantenimiento: dueño de selectores BM definido en el veredicto (HER o SEO MOVA).
+- Evidencia de piloto antes de “producción”: criterios de la sección 11.
+- Registro: si se aprueba, ficha en catálogo SEO MOVA (mismo anaquel que otras automatizaciones).
+
+11) CRITERIOS DE ÉXITO DEL PILOTO (medibles)
+1. ≥ 5 recetas Word → JSON sin pérdida de meta title / meta description / tags.
+2. Tras 1 mapeo BM: ≥ 80% de campos del formulario rellenados en dry-run sin edición manual.
+3. 0 solicitudes de cambio enviadas al cliente.
+4. Checklist SEO post-publicación (meta, título/H1, tags, pasos) OK en la muestra.
+5. Tiempo de carga menor que copia manual (baseline antes/después en ≥ 3 piezas).
+
+12) DECISIÓN SOLICITADA
+Incorporar CRC al inventario de herramientas SEO MOVA como:
+“Automatización interna de carga de recetas (Word → Business Manager Cencosud) orientada a fidelidad SEO on-page y velocidad de publicación, sin cambios al cliente.”
+
+Veredictos posibles:
+A) SÍ — catálogo SEO (ficha + dueño + rutina de selectores).
+B) SÍ — laboratorio HER (sigue en Herramientas; MOVA solo referencia).
+C) NO por ahora (parser útil; no priorizar publicación automática).
+D) BLOQUEO (riesgo ADFS/ToS o prioridad baja).
+
+13) PREGUNTAS ABIERTAS (internas; NO al cliente)
+- ¿Módulo de recetas en BM estable / único por bandera?
+- ¿Publicación obliga SKUs de catálogo?
+- ¿Política interna permite RPA/Playwright sobre BM con cuenta propia?
+- ¿Quién mantiene selectores si cambia el DOM?
+- ¿Volumen mensual estimado de recetas?
+
+14) RECOMENDACIÓN
+Factible como herramienta interna con cumplimiento alto del constraint “cero cambios al cliente”. Factible como ítem SEO MOVA si se acepta el valor SEO operacional (publicar bien y más rápido contenido on-page). Siguiente paso técnico cuando se retome: 1 sesión local explorar-bm + dry-run Anticuchos. Siguiente paso de gobernanza: veredicto A/B/C/D y, si A, alta en acme-chile.cl/mova/seo/.
+
+15) REFERENCIAS
+- Brief repo: index/clientes/Herramientas/carga-recetas-cencosud/BRIEF-FACTIBILIDAD-CRC-SEO.md
+- Evaluación MOVA: index/clientes/MKOF/MOVA/documentos/CRC-EVALUACION-SEO.md
+- BM: https://business-manager.ecomm.cencosud.com/
+- Ref. público: https://www.jumbo.cl/recetas
+- Catálogo SEO MOVA: https://acme-chile.cl/mova/seo/
+- Agentes: @herramientas (CRC) · @mova (gobernanza SEO)
+
+FIN DEL TEXTO PARA COPIAR
