@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """
 Parsea un Word (.docx) o texto de receta → JSON intermedio CRC.
+
+Soporta:
+  - Formato Jumbo (Meta título / Meta descripción / "35 min | Fácil | 4 porciones" / Tags / Paso a paso)
+  - Formato simple etiquetado (Título:, Ingredientes:, Pasos:)
+
 Uso:
   python3 scripts/parse-receta-word.py index/clientes/Herramientas/carga-recetas-cencosud/inbox/receta.docx
-  python3 scripts/parse-receta-word.py path/a/receta.txt
 """
 from __future__ import annotations
 
@@ -50,30 +54,23 @@ def slugify(s: str) -> str:
     return s[:80] or "receta"
 
 
-def seccion(texto: str, nombres: list[str]) -> tuple[str | None, str]:
-    """Devuelve (contenido de sección, texto restante) si encuentra un encabezado."""
-    pattern = r"(?im)^(?:\s*(?:" + "|".join(re.escape(n) for n in nombres) + r")\s*:?\s*)$"
-    m = re.search(pattern, texto)
-    if not m:
-        return None, texto
-    start = m.end()
-    # siguiente encabezado conocido
-    headers = (
-        r"ingredientes?",
-        r"pasos?",
-        r"preparaci[oó]n",
-        r"instrucciones?",
-        r"descripci[oó]n",
-        r"categor[ií]as?",
-        r"ocasiones?",
-        r"dificultad",
-        r"porciones?",
-        r"tiempo(?:\s+de)?\s+(?:preparaci[oó]n|cocci[oó]n|total)",
-        r"t[ií]tulo",
-    )
-    nxt = re.search(r"(?im)^(?:\s*(?:" + "|".join(headers) + r")\s*:?\s*)$", texto[start:])
-    end = start + nxt.start() if nxt else len(texto)
-    return texto[start:end].strip(), texto
+def valor_despues_label(lines: list[str], labels: list[str]) -> str | None:
+    """Si la línea es 'Label:' toma el resto o la línea siguiente."""
+    labs = [l.lower() for l in labels]
+    for i, ln in enumerate(lines):
+        low = ln.lower().strip()
+        for lab in labs:
+            if low == lab or low == lab + ":":
+                if i + 1 < len(lines):
+                    return lines[i + 1].strip()
+                return None
+            if low.startswith(lab + ":"):
+                rest = ln.split(":", 1)[1].strip()
+                if rest:
+                    return rest
+                if i + 1 < len(lines):
+                    return lines[i + 1].strip()
+    return None
 
 
 def meta_linea(texto: str, labels: list[str]) -> str | None:
@@ -84,23 +81,55 @@ def meta_linea(texto: str, labels: list[str]) -> str | None:
     return None
 
 
+def parse_barra_info(texto: str) -> dict:
+    """Ej: '35 min | Fácil | 4 porciones'"""
+    out: dict = {}
+    m = re.search(
+        r"(?im)^\s*(\d+\s*(?:min|mins|minutos?|h|hs|horas?)(?:\s*\d+\s*min)?)\s*\|\s*([^|]+?)\s*\|\s*(\d+)\s*porciones?\s*$",
+        texto,
+    )
+    if not m:
+        m = re.search(
+            r"(?im)(\d+\s*min)\s*\|\s*([^|]+?)\s*\|\s*(\d+)\s*porciones?",
+            texto,
+        )
+    if m:
+        out["tiempoTotal"] = m.group(1).strip()
+        out["dificultad"] = m.group(2).strip().lower()
+        out["porciones"] = m.group(3).strip()
+    return out
+
+
 def parse_ingredientes(bloque: str) -> list[dict]:
     items = []
+    stop = re.compile(
+        r"(?i)^(¿?c[oó]mo preparar|paso a paso|tips?\b|preparaci[oó]n\b)",
+    )
     for raw in bloque.splitlines():
         line = raw.strip().lstrip("-•*").strip()
-        if not line:
+        if not line or stop.match(line):
+            if stop.match(line or ""):
+                break
+            continue
+        if line.lower() in ("ingredientes", "ingredientes:"):
             continue
         m = re.match(
-            r"^(?P<cant>\d+[.,]?\d*)\s*(?P<unidad>kg|g|gr|ml|l|lt|cdas?|cdtas?|tazas?|unidades?|u\.?)?\s+(?P<nombre>.+)$",
+            r"^(?P<cant>\d+[.,]?\d*)\s*(?P<unidad>kg|g|gr|ml|l|lt|cdas?|cdtas?|cucharaditas?|cucharadas?|tazas?|unidades?|u\.?)?\s*(?:de\s+)?(?P<nombre>.+)$",
             line,
             re.I,
         )
         if m:
+            nombre = m.group("nombre").strip()
+            unidad = m.group("unidad")
+            if unidad:
+                unidad = unidad.lower()
+                if unidad == "gr":
+                    unidad = "g"
             items.append(
                 {
-                    "nombre": m.group("nombre").strip(),
+                    "nombre": nombre,
                     "cantidad": m.group("cant"),
-                    "unidad": (m.group("unidad") or None),
+                    "unidad": unidad,
                     "skuCencosud": None,
                     "notas": None,
                 }
@@ -110,7 +139,7 @@ def parse_ingredientes(bloque: str) -> list[dict]:
                 {
                     "nombre": line,
                     "cantidad": None,
-                    "unidad": None,
+                    "unidad": null_str(),
                     "skuCencosud": None,
                     "notas": None,
                 }
@@ -118,18 +147,36 @@ def parse_ingredientes(bloque: str) -> list[dict]:
     return items
 
 
-def parse_pasos(bloque: str) -> list[dict]:
-    pasos = []
+def null_str():
+    return None
+
+
+def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str]]:
+    """Separa pasos reales de tips."""
+    pasos: list[dict] = []
+    tips: list[str] = []
+    en_tips = False
     for raw in bloque.splitlines():
         line = raw.strip()
         if not line:
+            continue
+        if re.match(r"(?i)^tips?\b", line):
+            en_tips = True
+            # si el tip viene en la misma línea tras "Tips …"
+            continue
+        if en_tips:
+            tips.append(line.lstrip("-•* ").strip())
             continue
         line = re.sub(r"^\d+[\).\:\-]\s*", "", line)
         line = line.lstrip("-•*").strip()
         if not line:
             continue
+        if re.match(r"(?i)^paso a paso\s*:?\s*$", line):
+            continue
+        if re.match(r"(?i)^¿?c[oó]mo preparar", line):
+            continue
         pasos.append({"orden": len(pasos) + 1, "texto": line})
-    return pasos
+    return pasos, tips
 
 
 def parse_lista_csv(valor: str | None) -> list[str]:
@@ -138,61 +185,169 @@ def parse_lista_csv(valor: str | None) -> list[str]:
     return [p.strip() for p in re.split(r"[,;/|]", valor) if p.strip()]
 
 
-def construir_receta(texto: str, fuente: str) -> dict:
-    lines = [ln.strip() for ln in texto.splitlines() if ln.strip()]
-    titulo = meta_linea(texto, ["título", "titulo", "title"]) or (lines[0] if lines else "Sin título")
-    if lines and lines[0].lower().startswith(("título:", "titulo:", "title:")):
-        # quitar línea de título del cuerpo si estaba etiquetada
-        pass
+def es_formato_jumbo(lines: list[str]) -> bool:
+    head = "\n".join(lines[:8]).lower()
+    return "meta título" in head or "meta titulo" in head or "meta descripción" in head or "meta descripcion" in head
 
-    desc = meta_linea(texto, ["descripción", "descripcion", "description", "bajada", "intro"])
+
+def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
+    meta_titulo = valor_despues_label(lines, ["meta título", "meta titulo"])
+    meta_desc = valor_despues_label(lines, ["meta descripción", "meta descripcion"])
+
+    # Título editorial: primera línea que no sea meta/foto/tags/barra
+    titulo = None
+    for ln in lines:
+        low = ln.lower()
+        if low.startswith("meta ") or low in ("meta título:", "meta titulo:", "meta descripción:", "meta descripcion:"):
+            continue
+        if low.startswith("texto alt:") or low.startswith("([foto])") or low == "[foto]":
+            continue
+        if low.startswith("tags:"):
+            continue
+        if re.match(r"(?i)^\d+\s*min\s*\|", ln):
+            continue
+        if meta_titulo and ln.strip() == meta_titulo.strip():
+            continue
+        if meta_desc and ln.strip() == meta_desc.strip():
+            continue
+        # título limpio (sin "| Recetas Jumbo")
+        if "|" in ln and "recetas jumbo" in low:
+            continue
+        if re.match(r"(?i)^ingredientes\s*:?\s*$", ln):
+            break
+        titulo = ln.strip()
+        break
+
+    if not titulo and meta_titulo:
+        titulo = re.sub(r"\s*\|\s*Recetas Jumbo\s*$", "", meta_titulo, flags=re.I).strip()
+
+    desc = meta_desc or ""
+    alt = valor_despues_label(lines, ["texto alt"]) or meta_linea(texto, ["texto alt", "alt"])
+
+    barra = parse_barra_info(texto)
+    tags_line = meta_linea(texto, ["tags", "etiquetas"]) or valor_despues_label(lines, ["tags", "etiquetas"])
+    categorias = parse_lista_csv(tags_line)
+
+    # Ingredientes: desde "Ingredientes" hasta "¿Cómo preparar" / "Paso a paso"
+    ing_bloque = ""
+    m_ing = re.search(
+        r"(?is)^\s*ingredientes?\s*:?\s*\n(.*?)(?=\n\s*(?:¿?c[oó]mo preparar|paso a paso)\b)",
+        texto,
+        re.M,
+    )
+    if m_ing:
+        ing_bloque = m_ing.group(1).strip()
+    ingredientes = parse_ingredientes(ing_bloque)
+
+    # Pasos
+    m_pas = re.search(
+        r"(?is)(?:paso a paso\s*:?\s*\n|¿?c[oó]mo preparar[^\n]*\n(?:paso a paso\s*:?\s*\n)?)(.*)\Z",
+        texto,
+    )
+    pas_bloque = m_pas.group(1).strip() if m_pas else ""
+    # si quedó el encabezado "Paso a paso" dentro, limpiar
+    pas_bloque = re.sub(r"(?im)^paso a paso\s*:?\s*\n?", "", pas_bloque).strip()
+    pasos, tips = parse_pasos_jumbo(pas_bloque)
+
+    faltantes: list[str] = []
+    if not titulo:
+        faltantes.append("titulo")
     if not desc:
-        # párrafo tras el título hasta el primer encabezado de sección
-        body = "\n".join(lines[1:]) if lines else ""
-        ing_m = re.search(r"(?im)^(ingredientes?|pasos?|preparaci[oó]n)\s*:?\s*$", body)
-        bloque = body[: ing_m.start()] if ing_m else body
-        # saltar líneas meta tipo Porciones:
-        paras = []
-        for ln in bloque.splitlines():
-            if re.match(
-                r"(?i)^(porciones?|dificultad|categor|ocasi|tiempo)\b",
-                ln.strip(),
-            ):
-                continue
-            if re.match(r"(?i)^(título|titulo|title|descripci)\s*:", ln.strip()):
-                continue
-            paras.append(ln.strip())
-        desc = " ".join(paras).strip() or ""
+        faltantes.append("descripcion")
+    if not ingredientes:
+        faltantes.append("ingredientes")
+    if not pasos:
+        faltantes.append("pasos")
+    if not barra.get("porciones"):
+        faltantes.append("porciones")
+    if not barra.get("dificultad"):
+        faltantes.append("dificultad")
+    if not categorias:
+        faltantes.append("categorias")
+    if any(i.get("skuCencosud") is None for i in ingredientes):
+        faltantes.append("ingredientes.skuCencosud")
 
-    ing_bloque, _ = seccion(texto, ["Ingredientes", "INGREDIENTES", "ingredients"])
-    # también "Ingredientes:" en la misma línea
-    if not ing_bloque:
-        m = re.search(
-            r"(?is)ingredientes?\s*:\s*\n(.*?)(?=\n\s*(?:pasos?|preparaci[oó]n|instrucciones?)\s*:?\s*\n|\Z)",
-            texto,
+    faltantes_bloqueantes = [f for f in faltantes if f != "ingredientes.skuCencosud"]
+    estado = "listo-para-cargar" if not faltantes_bloqueantes else "borrador"
+
+    sid = slugify(titulo or "receta")
+    seo_titulo = meta_titulo or titulo
+    seo_desc = meta_desc or desc
+
+    imagenes = []
+    if alt:
+        imagenes.append(
+            {
+                "rutaLocal": "",
+                "alt": alt,
+                "rol": "portada",
+                "nota": "Foto referenciada en Word; adjuntar archivo al cargar en BM",
+            }
         )
-        ing_bloque = m.group(1).strip() if m else ""
 
-    pas_bloque, _ = seccion(texto, ["Pasos", "PASOS", "Preparación", "Preparacion", "Instrucciones"])
-    if not pas_bloque:
-        m = re.search(
-            r"(?is)(?:pasos?|preparaci[oó]n|instrucciones?)\s*:\s*\n(.*)\Z",
-            texto,
-        )
-        pas_bloque = m.group(1).strip() if m else ""
+    return {
+        "id": sid,
+        "fuenteWord": fuente,
+        "formatoOrigen": "jumbo-word",
+        "titulo": titulo,
+        "descripcion": desc,
+        "porciones": barra.get("porciones"),
+        "tiempoPreparacion": None,
+        "tiempoCoccion": None,
+        "tiempoTotal": barra.get("tiempoTotal"),
+        "dificultad": barra.get("dificultad"),
+        "categorias": categorias,
+        "ocasiones": [],
+        "ingredientes": ingredientes,
+        "pasos": pasos,
+        "tips": tips,
+        "imagenes": imagenes,
+        "seo": {
+            "metaTitulo": seo_titulo,
+            "metaDescripcion": seo_desc,
+            "slugSugerido": sid,
+        },
+        "camposFaltantes": faltantes,
+        "estado": estado,
+        "publicacion": {
+            "destino": "business-manager.ecomm.cencosud.com",
+            "bandera": "jumbo",
+            "urlPublica": None,
+            "publicadoEn": None,
+            "notas": None,
+        },
+        "parseadoEn": datetime.now(timezone.utc).isoformat(),
+    }
 
-    ingredientes = parse_ingredientes(ing_bloque or "")
-    pasos = parse_pasos(pas_bloque or "")
+
+def construir_receta_simple(texto: str, lines: list[str], fuente: str) -> dict:
+    titulo = meta_linea(texto, ["título", "titulo", "title"]) or (lines[0] if lines else "Sin título")
+    desc = meta_linea(texto, ["descripción", "descripcion", "description", "bajada", "intro"]) or ""
+
+    m_ing = re.search(
+        r"(?is)ingredientes?\s*:\s*\n(.*?)(?=\n\s*(?:pasos?|preparaci[oó]n|instrucciones?|paso a paso)\s*:?\s*\n|\Z)",
+        texto,
+    )
+    ing_bloque = m_ing.group(1).strip() if m_ing else ""
+    m_pas = re.search(
+        r"(?is)(?:pasos?|preparaci[oó]n|instrucciones?|paso a paso)\s*:\s*\n(.*)\Z",
+        texto,
+    )
+    pas_bloque = m_pas.group(1).strip() if m_pas else ""
+    ingredientes = parse_ingredientes(ing_bloque)
+    pasos, tips = parse_pasos_jumbo(pas_bloque)
 
     porciones = meta_linea(texto, ["porciones", "rinde", "servings"])
-    t_prep = meta_linea(texto, ["tiempo de preparación", "tiempo de preparacion", "preparación", "preparacion", "prep"])
+    t_prep = meta_linea(
+        texto,
+        ["tiempo de preparación", "tiempo de preparacion", "preparación", "preparacion", "prep"],
+    )
     t_coc = meta_linea(texto, ["tiempo de cocción", "tiempo de coccion", "cocción", "coccion"])
     t_tot = meta_linea(texto, ["tiempo total", "total"])
     dificultad = meta_linea(texto, ["dificultad", "nivel"])
     if dificultad:
         dificultad = dificultad.lower().strip()
-
-    categorias = parse_lista_csv(meta_linea(texto, ["categorías", "categorias", "categoría", "categoria"]))
+    categorias = parse_lista_csv(meta_linea(texto, ["categorías", "categorias", "categoría", "categoria", "tags"]))
     ocasiones = parse_lista_csv(meta_linea(texto, ["ocasiones", "ocasión", "ocasion"]))
 
     faltantes: list[str] = []
@@ -213,16 +368,14 @@ def construir_receta(texto: str, fuente: str) -> dict:
     if any(i.get("skuCencosud") is None for i in ingredientes):
         faltantes.append("ingredientes.skuCencosud")
 
-    estado = "listo-para-cargar" if not faltantes else "borrador"
-    # SKUs casi siempre faltan del Word; no bloquear "casi listo" solo por SKU
     faltantes_bloqueantes = [f for f in faltantes if f != "ingredientes.skuCencosud"]
-    if not faltantes_bloqueantes and faltantes == ["ingredientes.skuCencosud"]:
-        estado = "listo-para-cargar"
-
+    estado = "listo-para-cargar" if not faltantes_bloqueantes else "borrador"
     sid = slugify(titulo)
+
     return {
         "id": sid,
         "fuenteWord": fuente,
+        "formatoOrigen": "simple",
         "titulo": titulo,
         "descripcion": desc,
         "porciones": porciones,
@@ -234,6 +387,7 @@ def construir_receta(texto: str, fuente: str) -> dict:
         "ocasiones": ocasiones,
         "ingredientes": ingredientes,
         "pasos": pasos,
+        "tips": tips,
         "imagenes": [],
         "seo": {
             "metaTitulo": titulo,
@@ -251,6 +405,13 @@ def construir_receta(texto: str, fuente: str) -> dict:
         },
         "parseadoEn": datetime.now(timezone.utc).isoformat(),
     }
+
+
+def construir_receta(texto: str, fuente: str) -> dict:
+    lines = [ln.strip() for ln in texto.splitlines() if ln.strip()]
+    if es_formato_jumbo(lines):
+        return construir_receta_jumbo(lines, texto, fuente)
+    return construir_receta_simple(texto, lines, fuente)
 
 
 def main() -> int:
@@ -274,17 +435,21 @@ def main() -> int:
 
     receta = construir_receta(texto, rel)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    # limpiar parseo fallido previo meta-titulo.*
+    for stale in OUT_DIR.glob("meta-titulo.*"):
+        stale.unlink(missing_ok=True)
+
     out = OUT_DIR / f"{receta['id']}.json"
     out.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-
-    # también guardar texto crudo para depurar
     raw_out = OUT_DIR / f"{receta['id']}.raw.txt"
     raw_out.write_text(texto + "\n", encoding="utf-8")
 
     print(f"OK → {out.relative_to(ROOT)}")
+    print(f"titulo: {receta.get('titulo')}")
     print(f"estado: {receta['estado']}")
     if receta["camposFaltantes"]:
         print("camposFaltantes:", ", ".join(receta["camposFaltantes"]))
+    print(f"ingredientes: {len(receta.get('ingredientes') or [])} · pasos: {len(receta.get('pasos') or [])}")
     return 0
 
 
