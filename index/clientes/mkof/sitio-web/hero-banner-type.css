@@ -45,10 +45,12 @@
   margin-top: 0.55rem;
   font-weight: 300;
   color: var(--mint-deep, #418870);
-  border-bottom: 2px solid color-mix(in srgb, var(--mint-deep, #418870) 55%, transparent);
-  padding-bottom: 0.35rem;
+  border-bottom: 3px solid #418870;
+  padding-bottom: 0.4rem;
   display: inline-block;
   max-width: 100%;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 .hero-diag--v1 .hero-bajada {
   margin-top: 1.15rem;
@@ -77,25 +79,28 @@
 /* ——— V3 Nav2 · partner medium + rail vertical ——— */
 .hero-diag--v3 {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0 1.25rem;
+  grid-template-columns: 5px minmax(0, 1fr);
+  column-gap: 1.1rem;
+  row-gap: 0.85rem;
   align-items: start;
 }
 .hero-diag--v3 .hero-line-brand {
   grid-column: 1 / -1;
 }
 .hero-diag--v3 .hero-rail {
-  width: 3px;
+  width: 5px;
+  grid-row: 2;
   align-self: stretch;
-  min-height: 4.5rem;
-  background: linear-gradient(180deg, #93c64a, #418870);
-  border-radius: 2px;
-  margin-top: 0.35rem;
+  min-height: 5.5rem;
+  background: linear-gradient(180deg, #93c64a 0%, #418870 100%);
+  border-radius: 3px;
 }
 .hero-diag--v3 .hero-diag__col {
+  grid-row: 2;
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  padding-top: 0.1rem;
 }
 .hero-diag--v3 .hero-line-partner {
   font-weight: 500;
