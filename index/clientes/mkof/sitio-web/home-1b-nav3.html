@@ -49,121 +49,34 @@
   </header>
 
   <main>
-    <!-- HERO · texto izq · elemento en movimiento der (malla de caras) -->
-    <section class="hero band band--cream" id="hero">
-      <div class="hero__copy">
-        <p class="t-label">
-          <span class="dot" aria-hidden="true"></span>
-          Marketing digital · Santiago · Desde 2014
-        </p>
+    <!-- HERO Nav3 · fondo arena (distinto a cream de Alt/Nav2) · tipografía + caras -->
+    <section class="hero hero--v3" id="hero">
+      <div class="hero-v3__grid">
+        <div class="hero-v3__copy">
+          <p class="t-label">
+            <span class="dot" aria-hidden="true"></span>
+            Marketing digital · Santiago · Desde 2014
+          </p>
 
-        <h1 class="hero__title">
-          <span class="t-display">Making Of,</span>
-          <span class="t-partner">your next<br>business<br>partner</span>
-        </h1>
+          <h1 class="hero__title">
+            <span class="t-display">Making Of,</span>
+            <span class="t-partner">your next<br>business<br>partner</span>
+          </h1>
 
-        <p class="t-lead">
-          Somos el partner estratégico de marcas que necesitan crecer con datos,
-          creatividad y tecnología. Entendemos el negocio antes de proponer el canal.
-        </p>
+          <p class="t-lead">
+            Somos el partner estratégico de marcas que necesitan crecer con datos,
+            creatividad y tecnología. Entendemos el negocio antes de proponer el canal.
+          </p>
 
-        <a class="btn" href="#contacto">Cuéntanos tu proyecto →</a>
-      </div>
-
-      <aside class="hero__visual" aria-label="Símbolo de la agencia">
-        <div class="hero__mark" role="img" aria-label="Conexiones · estrategia, datos y creatividad">
-          <svg class="hero__mark-svg" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="mk-disc" cx="38%" cy="32%" r="68%">
-                <stop offset="0%" stop-color="#F7F2E4"/>
-                <stop offset="42%" stop-color="#E8E2B8"/>
-                <stop offset="100%" stop-color="#C8C28A"/>
-              </radialGradient>
-              <radialGradient id="mk-ring-glow" cx="50%" cy="50%" r="50%">
-                <stop offset="70%" stop-color="#418870" stop-opacity="0"/>
-                <stop offset="100%" stop-color="#418870" stop-opacity="0.22"/>
-              </radialGradient>
-              <linearGradient id="mk-orbit" x1="40" y1="40" x2="240" y2="240">
-                <stop offset="0%" stop-color="#2A5A49"/>
-                <stop offset="50%" stop-color="#418870"/>
-                <stop offset="100%" stop-color="#56742A"/>
-              </linearGradient>
-              <linearGradient id="mk-orbit-soft" x1="240" y1="40" x2="40" y2="240">
-                <stop offset="0%" stop-color="#133429" stop-opacity="0.15"/>
-                <stop offset="100%" stop-color="#418870" stop-opacity="0.55"/>
-              </linearGradient>
-              <radialGradient id="mk-core" cx="35%" cy="30%" r="70%">
-                <stop offset="0%" stop-color="#2A5A49"/>
-                <stop offset="55%" stop-color="#133429"/>
-                <stop offset="100%" stop-color="#091914"/>
-              </radialGradient>
-              <radialGradient id="mk-spark" cx="40%" cy="35%" r="65%">
-                <stop offset="0%" stop-color="#FFFFFF"/>
-                <stop offset="45%" stop-color="#FBF6EB"/>
-                <stop offset="100%" stop-color="#E1DFA7"/>
-              </radialGradient>
-              <radialGradient id="mk-node" cx="35%" cy="30%" r="70%">
-                <stop offset="0%" stop-color="#6BA894"/>
-                <stop offset="100%" stop-color="#2A5A49"/>
-              </radialGradient>
-              <radialGradient id="mk-node-ink" cx="35%" cy="30%" r="70%">
-                <stop offset="0%" stop-color="#2A5A49"/>
-                <stop offset="100%" stop-color="#091914"/>
-              </radialGradient>
-              <filter id="mk-soft" x="-30%" y="-30%" width="160%" height="160%">
-                <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#091914" flood-opacity="0.22"/>
-              </filter>
-              <filter id="mk-lift" x="-40%" y="-40%" width="180%" height="180%">
-                <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#091914" flood-opacity="0.28"/>
-              </filter>
-            </defs>
-
-            <!-- Disco base con volumen -->
-            <circle cx="140" cy="148" r="118" fill="#091914" opacity="0.08"/>
-            <circle cx="140" cy="140" r="118" fill="url(#mk-disc)" filter="url(#mk-soft)"/>
-            <circle cx="140" cy="140" r="118" fill="url(#mk-ring-glow)"/>
-
-            <!-- Órbitas con degradé -->
-            <circle cx="140" cy="140" r="96" stroke="url(#mk-orbit)" stroke-width="2.5" stroke-opacity="0.55"/>
-            <circle cx="140" cy="140" r="68" stroke="url(#mk-orbit-soft)" stroke-width="2"/>
-
-            <!-- Ejes suaves -->
-            <path d="M140 48 V232" stroke="#133429" stroke-opacity="0.14" stroke-width="1.5"/>
-            <path d="M48 140 H232" stroke="#133429" stroke-opacity="0.14" stroke-width="1.5"/>
-
-            <!-- Nodos con volumen -->
-            <circle cx="141" cy="49" r="9" fill="#091914" opacity="0.18"/>
-            <circle cx="140" cy="46" r="9" fill="url(#mk-node-ink)" filter="url(#mk-lift)"/>
-            <circle cx="136" cy="42" r="3" fill="#FBF6EB" opacity="0.35"/>
-
-            <circle cx="235" cy="143" r="9" fill="#091914" opacity="0.18"/>
-            <circle cx="234" cy="140" r="9" fill="url(#mk-node)" filter="url(#mk-lift)"/>
-            <circle cx="230" cy="136" r="3" fill="#FBF6EB" opacity="0.4"/>
-
-            <circle cx="141" cy="237" r="9" fill="#091914" opacity="0.18"/>
-            <circle cx="140" cy="234" r="9" fill="url(#mk-node-ink)" filter="url(#mk-lift)"/>
-            <circle cx="136" cy="230" r="3" fill="#FBF6EB" opacity="0.35"/>
-
-            <circle cx="47" cy="143" r="9" fill="#091914" opacity="0.18"/>
-            <circle cx="46" cy="140" r="9" fill="url(#mk-node)" filter="url(#mk-lift)"/>
-            <circle cx="42" cy="136" r="3" fill="#FBF6EB" opacity="0.4"/>
-
-            <circle cx="198" cy="82" r="6" fill="url(#mk-node)" filter="url(#mk-lift)"/>
-            <circle cx="82" cy="198" r="6" fill="url(#mk-node)" filter="url(#mk-lift)"/>
-
-            <!-- Núcleo 3D -->
-            <circle cx="144" cy="148" r="34" fill="#091914" opacity="0.2"/>
-            <circle cx="140" cy="140" r="34" fill="url(#mk-core)" filter="url(#mk-lift)"/>
-            <circle cx="128" cy="126" r="14" fill="#FBF6EB" opacity="0.12"/>
-
-            <!-- Spark -->
-            <path d="M140 112 L147.2 134.8 L170 140 L147.2 145.2 L140 168 L132.8 145.2 L110 140 L132.8 134.8 Z" fill="url(#mk-spark)"/>
-            <circle cx="140" cy="140" r="6" fill="#418870"/>
-            <circle cx="137" cy="137" r="2.2" fill="#FBF6EB" opacity="0.7"/>
-          </svg>
-          <p class="hero__mark-cap">Estrategia · datos · creatividad</p>
+          <a class="btn" href="#contacto">Cuéntanos tu proyecto →</a>
         </div>
-      </aside>
+
+        <aside class="hero-v3__visual" aria-label="Malla de caras Making Of">
+          <div class="hero-v3__panel">
+            <img class="hero-v3__faces" src="assets/caras-mesh.svg" alt="" width="520" height="420">
+          </div>
+        </aside>
+      </div>
     </section>
 
     <!-- Capacidades · franja continua -->

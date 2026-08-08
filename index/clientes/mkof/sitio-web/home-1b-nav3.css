@@ -153,3 +153,91 @@
     grid-template-columns: 1fr auto;
   }
 }
+
+/* ——— Banner Nav3 · fondo arena (no cream) ———
+   Distinto a Alt (cream + ícono) y Nav2 (cream + capas).
+   Verde claro solo tipografía. Sin motion.
+*/
+.home-nav3 .hero--v3 {
+  display: block;
+  grid-template-columns: unset;
+  min-height: auto;
+  border-bottom: var(--rule);
+  background:
+    radial-gradient(ellipse 70% 60% at 85% 30%, #f3efd0 0%, transparent 55%),
+    radial-gradient(ellipse 50% 50% at 10% 80%, #d4cfa0 0%, transparent 50%),
+    #ebe9c2;
+  color: var(--ink);
+}
+
+.home-nav3 .hero-v3__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(15rem, 0.95fr);
+  gap: 2rem 2.5rem;
+  align-items: center;
+  padding: clamp(2.5rem, 5vw, 4rem) var(--pad);
+}
+
+.home-nav3 .hero-v3__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 34rem;
+}
+
+.home-nav3 .hero-v3__copy .t-display {
+  font-size: clamp(2.75rem, 6.5vw, 4.75rem);
+}
+
+.home-nav3 .hero-v3__copy .t-partner {
+  margin-top: 0.4rem;
+  font-size: clamp(1.35rem, 2.8vw, 2.15rem);
+}
+
+.home-nav3 .hero-v3__copy .t-lead {
+  color: var(--ink-2);
+}
+
+.home-nav3 .hero-v3__copy .btn {
+  align-self: flex-start;
+}
+
+.home-nav3 .hero-v3__visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-nav3 .hero-v3__panel {
+  width: min(100%, 22rem);
+  aspect-ratio: 1.15 / 1;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: var(--cream);
+  box-shadow:
+    0 20px 48px rgba(9, 25, 20, 0.14),
+    inset 0 0 0 1px rgba(19, 52, 41, 0.08);
+}
+
+.home-nav3 .hero-v3__faces {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transform: scale(1.06);
+}
+
+@media (max-width: 960px) {
+  .home-nav3 .hero-v3__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-nav3 .hero-v3__copy {
+    max-width: none;
+  }
+
+  .home-nav3 .hero-v3__panel {
+    margin: 0 auto;
+  }
+}
