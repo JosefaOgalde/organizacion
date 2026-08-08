@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" fill="none" role="img" aria-label="Malla de caras Making Of">
+  <defs>
+    <radialGradient id="meshBg" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#F7F2E4"/>
+      <stop offset="100%" stop-color="#D8D3A4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="faceL" x1="40" y1="40" x2="220" y2="360">
+      <stop offset="0%" stop-color="#6BA894"/>
+      <stop offset="45%" stop-color="#2A5A49"/>
+      <stop offset="100%" stop-color="#091914"/>
+    </linearGradient>
+    <linearGradient id="faceR" x1="480" y1="40" x2="280" y2="360">
+      <stop offset="0%" stop-color="#C8C28A"/>
+      <stop offset="40%" stop-color="#56742A"/>
+      <stop offset="100%" stop-color="#133429"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#091914" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect width="520" height="420" fill="url(#meshBg)"/>
+
+  <!-- Malla de puntos -->
+  <g fill="#56742A" fill-opacity="0.28">
+    <circle cx="260" cy="80" r="3"/><circle cx="220" cy="110" r="2.5"/><circle cx="300" cy="105" r="2.5"/>
+    <circle cx="190" cy="160" r="2.2"/><circle cx="330" cy="155" r="2.2"/>
+    <circle cx="260" cy="200" r="3.2"/><circle cx="210" cy="230" r="2.4"/><circle cx="310" cy="228" r="2.4"/>
+    <circle cx="240" cy="280" r="2.2"/><circle cx="280" cy="275" r="2.2"/>
+    <circle cx="260" cy="330" r="2.8"/>
+  </g>
+
+  <!-- Conexiones -->
+  <g stroke="#418870" stroke-opacity="0.55" stroke-width="1.6">
+    <path d="M170 150 C210 180 230 190 260 200"/>
+    <path d="M350 145 C310 175 290 190 260 200"/>
+    <path d="M175 250 C210 235 235 215 260 200"/>
+    <path d="M345 245 C310 230 285 215 260 200"/>
+    <path d="M260 200 L260 330"/>
+    <path d="M220 110 L260 200"/>
+    <path d="M300 105 L260 200"/>
+  </g>
+
+  <!-- Cara izquierda (perfil mirando a la derecha) -->
+  <g filter="url(#soft)">
+    <path fill="url(#faceL)" d="M188 70
+      C155 95 132 140 138 185
+      C142 220 155 245 168 268
+      C175 280 172 295 160 308
+      C175 300 190 288 198 272
+      C210 290 225 305 235 318
+      C242 290 248 255 245 220
+      C242 175 225 115 188 70 Z"/>
+    <!-- hint oreja / cuello -->
+    <path fill="#133429" fill-opacity="0.35" d="M150 175 C138 180 135 198 145 208 C152 198 155 185 150 175 Z"/>
+  </g>
+
+  <!-- Cara derecha (perfil mirando a la izquierda) -->
+  <g filter="url(#soft)">
+    <path fill="url(#faceR)" d="M332 68
+      C365 93 388 138 382 183
+      C378 218 365 243 352 266
+      C345 278 348 293 360 306
+      C345 298 330 286 322 270
+      C310 288 295 303 285 316
+      C278 288 272 253 275 218
+      C278 173 295 113 332 68 Z"/>
+    <path fill="#091914" fill-opacity="0.3" d="M370 173 C382 178 385 196 375 206 C368 196 365 183 370 173 Z"/>
+  </g>
+
+  <!-- Nodo central -->
+  <circle cx="260" cy="200" r="10" fill="#091914"/>
+  <circle cx="260" cy="200" r="5" fill="#99EADA"/>
+</svg>

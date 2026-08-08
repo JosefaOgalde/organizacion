@@ -199,45 +199,27 @@
 
 .home-nav2 .stack-card--front {
   position: relative;
-  width: min(100%, 16.5rem);
-  aspect-ratio: 1 / 1.05;
-  min-height: 14.5rem;
-  padding: 1.5rem;
+  width: min(100%, 20rem);
+  aspect-ratio: 1.15 / 1;
+  min-height: 16rem;
+  padding: 0;
+  overflow: hidden;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
   background:
-    radial-gradient(ellipse 90% 70% at 20% 15%, rgba(251, 246, 235, 0.28), transparent 55%),
+    radial-gradient(ellipse 90% 70% at 20% 15%, rgba(251, 246, 235, 0.22), transparent 55%),
     linear-gradient(165deg, #2a5a49 0%, #133429 48%, #091914 100%);
   z-index: 2;
 }
 
-.home-nav2 .stack-icons {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+.home-nav2 .stack-faces {
   width: 100%;
-  place-items: center;
-}
-
-.home-nav2 .stack-icon {
-  width: 3rem;
-  height: 3rem;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   display: block;
-  filter: drop-shadow(0 4px 10px rgba(9, 25, 20, 0.25));
-}
-
-.home-nav2 .stack-icons .stack-icon:nth-child(1) {
-  justify-self: start;
-}
-
-.home-nav2 .stack-icons .stack-icon:nth-child(2) {
-  width: 3.5rem;
-  height: 3.5rem;
-}
-
-.home-nav2 .stack-icons .stack-icon:nth-child(3) {
-  justify-self: end;
+  transform: scale(1.08);
 }
 
 @media (max-width: 960px) {
