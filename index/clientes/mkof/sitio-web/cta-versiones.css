@@ -48,12 +48,13 @@
 .cta8-block {
   margin-top: 1.75rem;
   border-top: 1px solid rgba(19,52,41,.12);
-  padding-bottom: 2rem;
+  padding-bottom: 2.5rem;
+  overflow: visible;
 }
 .cta8-tag {
   max-width: 72rem;
   margin: 0 auto;
-  padding: 1rem clamp(1rem, 4vw, 3rem) 0.75rem;
+  padding: 1.25rem clamp(1rem, 4vw, 3rem) 1rem;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -78,31 +79,36 @@
 
 /* —— 1 Card centrada (mockup) —— */
 .c1 {
-  padding: 1rem clamp(1rem, 4vw, 3rem) 2rem;
+  padding: 1.25rem clamp(1rem, 4vw, 3rem) 2.5rem;
+  box-sizing: border-box;
+  width: 100%;
 }
 .c1__box {
   max-width: 48rem;
+  width: 100%;
   margin: 0 auto;
   background: var(--cream);
   border-radius: 1.5rem;
-  padding: clamp(2rem, 5vw, 3.25rem) 1.75rem;
+  padding: clamp(2.25rem, 5vw, 3.5rem) clamp(1.5rem, 4vw, 2.5rem);
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.15rem;
+  box-sizing: border-box;
 }
 .c1__box h2 {
   margin: 0;
   font-size: clamp(1.45rem, 3vw, 2rem);
   letter-spacing: -0.03em;
-  line-height: 1.2;
+  line-height: 1.25;
+  max-width: 100%;
 }
 .c1__box p {
   margin: 0;
   max-width: 32rem;
   color: var(--mid);
-  line-height: 1.55;
+  line-height: 1.6;
   font-weight: 500;
 }
 
@@ -110,8 +116,10 @@
 .c2 {
   background: var(--forest);
   color: #fff;
-  padding: clamp(2.5rem, 6vw, 4rem) clamp(1rem, 4vw, 3rem);
+  padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 4vw, 3rem);
   text-align: center;
+  box-sizing: border-box;
+  width: 100%;
 }
 .c2 h2 {
   margin: 0 auto 0.85rem;
@@ -189,15 +197,17 @@
 /* —— 5 Tipografía monumental —— */
 .c5 {
   background: var(--cream);
-  padding: clamp(2.5rem, 6vw, 4rem) clamp(1rem, 4vw, 3rem);
+  padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 4vw, 3rem);
   text-align: center;
+  box-sizing: border-box;
+  width: 100%;
 }
 .c5 h2 {
   margin: 0 auto 1rem;
   max-width: 20ch;
-  font-size: clamp(2.25rem, 7vw, 4.5rem);
+  font-size: clamp(2rem, 6vw, 4rem);
   letter-spacing: -0.045em;
-  line-height: 0.98;
+  line-height: 1.05;
   font-weight: 800;
 }
 .c5 p {
@@ -220,9 +230,11 @@
 /* —— 6 Lima full bleed —— */
 .c6 {
   background: var(--lima);
-  padding: clamp(2.5rem, 6vw, 4rem) clamp(1rem, 4vw, 3rem);
+  padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 4vw, 3rem);
   text-align: center;
   color: var(--forest);
+  box-sizing: border-box;
+  width: 100%;
 }
 .c6 h2 {
   margin: 0 auto 0.85rem;
@@ -244,21 +256,24 @@
 
 /* —— 7 Dos líneas + CTA pill flotante —— */
 .c7 {
-  padding: 2rem clamp(1rem, 4vw, 3rem) 2.5rem;
+  padding: 2rem clamp(1rem, 4vw, 3rem) 4rem;
+  overflow: visible;
 }
 .c7__wrap {
   max-width: 56rem;
   margin: 0 auto;
   background: var(--sand);
   border-radius: 2.5rem;
-  padding: clamp(2rem, 5vw, 3rem) 1.5rem 3.25rem;
+  padding: clamp(2rem, 5vw, 3rem) 1.5rem 3.75rem;
   text-align: center;
   position: relative;
+  overflow: visible;
 }
 .c7__wrap h2 {
   margin: 0 0 0.65rem;
   font-size: clamp(1.4rem, 2.8vw, 1.9rem);
   letter-spacing: -0.02em;
+  line-height: 1.25;
 }
 .c7__wrap p {
   margin: 0 auto;
@@ -273,6 +288,7 @@
   bottom: 0;
   transform: translate(-50%, 50%);
   box-shadow: 0 10px 28px rgba(9,25,20,.18);
+  z-index: 2;
 }
 
 /* —— 8 Asimétrico con rail —— */
