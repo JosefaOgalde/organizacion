@@ -1,0 +1,124 @@
+/* Navbar V2 — isla de links + CTA sólido
+   Mismos ítems: Servicios ▾ · Sobre nosotros · Blog · Contáctanos (CTA)
+   Sin verde claro de fondo; mint solo en tipografía / hover.
+*/
+
+.home-nav2 .top--v2 {
+  padding: 0.85rem var(--pad);
+  gap: 1.25rem;
+  border-bottom: 0;
+  background: color-mix(in srgb, var(--cream) 88%, transparent);
+  box-shadow: 0 1px 0 rgba(19, 52, 41, 0.12);
+}
+
+.home-nav2 .brand {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.home-nav2 .brand__mark {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 0.65rem;
+  background: var(--ink);
+  color: var(--cream);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  flex: none;
+}
+
+.home-nav2 .brand__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  line-height: 1;
+}
+
+.home-nav2 .brand__grupo {
+  font-size: 0.6rem;
+}
+
+.home-nav2 .brand__name {
+  font-size: 1.15rem;
+}
+
+.home-nav2 .menu--v2 {
+  gap: 0.75rem;
+}
+
+.home-nav2 .menu__island {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.3rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sand) 55%, var(--cream));
+  border: 1px solid rgba(19, 52, 41, 0.12);
+}
+
+.home-nav2 .menu__island .menu__link,
+.home-nav2 .menu__island .menu__btn {
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  letter-spacing: 0.12em;
+  transition: background 200ms var(--ease), color 200ms var(--ease);
+}
+
+.home-nav2 .menu__island .menu__link:hover,
+.home-nav2 .menu__island .menu__btn:hover {
+  background: var(--cream);
+  color: var(--mint-deep);
+}
+
+.home-nav2 .menu__item--drop.is-open .menu__btn {
+  background: var(--cream);
+  color: var(--mint-deep);
+}
+
+.home-nav2 .menu__drop {
+  top: calc(100% + 0.55rem);
+  left: 0;
+  min-width: 16rem;
+  border-radius: 1rem;
+  padding: 0.5rem;
+}
+
+.home-nav2 .menu__cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: background 200ms var(--ease), transform 200ms var(--ease);
+  white-space: nowrap;
+}
+
+.home-nav2 .menu__cta:hover {
+  background: var(--mint-deep);
+}
+
+@media (max-width: 860px) {
+  .home-nav2 .brand__text {
+    display: none;
+  }
+
+  .home-nav2 .menu__island .menu__link[href="#blog"] {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .home-nav2 .menu__island {
+    display: none;
+  }
+}

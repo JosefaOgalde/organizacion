@@ -28,11 +28,13 @@ Propuestas Home 1B (Editorial arena):
 | Archivo | Rol |
 |---------|-----|
 | `home-1b.html` | 1B original · menú Servicios / Casos / Nosotros / Insights |
-| `home-1b-alt.html` | Otra diagramación · menú sitio: Servicios ▾ / Sobre nosotros / Contáctanos / Blog |
+| `home-1b-alt.html` | Otra diagramación · navbar links planos (menú sitio) |
+| `home-1b-nav2.html` | Misma Alt · **Navbar V2**: isla + CTA Contáctanos sólido |
 | `home-1b.css` / `home-1b.js` | Estilos + panel servicios (1B) |
 | `home-1b-alt.css` / `home-1b-alt.js` | Estilos + dropdown + tabs (Alt) |
+| `home-1b-nav2.css` | Overrides de navbar V2 |
 
-Abrir Alt: `http://127.0.0.1:8000/index/clientes/mkof/sitio-web/home-1b-alt.html`
+Abrir Nav2: `http://127.0.0.1:8000/index/clientes/mkof/sitio-web/home-1b-nav2.html`
 
 ### Criterios de diseño (feedback)
 - Jerarquía: **Making Of** > frase partner > bajada
