@@ -1,0 +1,135 @@
+/* Te acompañamos en · grilla 3+2 (ref. mockup) */
+
+.acomp {
+  --ac-ink: #091914;
+  --ac-forest: #133429;
+  --ac-lime: #93c64a;
+  --ac-mint: #99eada;
+  --ac-cream: #fbf6eb;
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 4rem);
+  background: #fff;
+}
+
+.acomp__head {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 1.75rem;
+}
+
+.acomp__pill {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.75rem;
+  border-radius: 999px;
+  background: var(--ac-mint);
+  color: var(--ac-ink);
+  font-family: "Instrument Sans", system-ui, sans-serif;
+  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.acomp__grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1rem;
+  max-width: 58rem;
+  margin: 0 auto;
+}
+
+.acomp__card {
+  grid-column: span 2;
+  aspect-ratio: 1;
+  border-radius: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: 1.25rem;
+  text-align: center;
+  min-height: 0;
+}
+
+/* Fila 2: centrar las 2 cards (columnas 2–5 de 6) */
+.acomp__card:nth-child(4) {
+  grid-column: 2 / span 2;
+}
+
+.acomp__card:nth-child(5) {
+  grid-column: 4 / span 2;
+}
+
+.acomp__card--dark {
+  background: var(--ac-forest);
+  color: #fff;
+}
+
+.acomp__card--dark p {
+  margin: 0;
+  max-width: 14rem;
+  font-family: "Instrument Sans", system-ui, sans-serif;
+  font-size: clamp(0.92rem, 1.35vw, 1.05rem);
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.acomp__card--lime {
+  background: var(--ac-lime);
+  color: var(--ac-forest);
+}
+
+.acomp__icon {
+  width: clamp(3.25rem, 7vw, 4.25rem);
+  height: clamp(3.25rem, 7vw, 4.25rem);
+  flex-shrink: 0;
+}
+
+.acomp__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.acomp__label {
+  margin: 0;
+  font-family: "Instrument Sans", system-ui, sans-serif;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ac-forest);
+}
+
+@media (max-width: 720px) {
+  .acomp__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .acomp__card,
+  .acomp__card:nth-child(4),
+  .acomp__card:nth-child(5) {
+    grid-column: span 1;
+  }
+
+  .acomp__card:first-child {
+    grid-column: 1 / -1;
+    aspect-ratio: auto;
+    min-height: 10rem;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
