@@ -17,6 +17,21 @@
       border-left: 3px solid #1A8F98;
       font-size: 0.92rem;
     }
+    .web-links { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.65rem; }
+    .web-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: #fff;
+      border: 1px solid #b7d9dc;
+      border-radius: 8px;
+      color: #0F555C;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .web-links a:hover { border-color: #1A8F98; background: #f4fbfc; }
+    .web-links span { font-weight: 400; color: #3a5a5e; font-size: 0.9rem; }
   </style>
 </head>
 <body class="portal-page--light" data-cliente-slug="mkof" data-proyecto-codigo="WEB">
@@ -30,11 +45,15 @@
     <h1>Sitio web</h1>
     <p>
       Espacio de trabajo del proyecto sitio web MKOF.
-      Briefs, alcance, referencias y entregables viven en esta carpeta.
+      Vista activa de propuesta: <strong>Home 1B · Editorial arena</strong>.
     </p>
+    <div class="web-links">
+      <a href="home-1b.html">Abrir Home 1B <span>— Editorial arena (única vista de trabajo)</span></a>
+    </div>
     <p class="web-note">
-      Ver <code>README.md</code> en esta misma carpeta.
-      Decí qué hacemos primero (brief, auditoría del sitio actual, wireframes, etc.).
+      Ajustes aplicados: jerarquía tipográfica Making Of → partner → bajada;
+      verde claro solo en tipografía; cortes de color suaves; caras / fotos / iconos;
+      panel de servicios interactivo. Ver <code>README.md</code>.
     </p>
   </main>
   <script src="../../../assets/file-protocol-banner.js"></script>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home 1B · Grupo Making Of</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="home-1b.css">
+</head>
+<body class="home-1b">
+  <!--
+    Vista única: Opción 1B (Editorial arena) + ajustes de feedback.
+    Jerarquía hero: Making Of > partner > bajada.
+    Verde claro (#99EADA / #C5EEE5) solo en tipografía, no como fondo de sección.
+    Contenedores continuos; cortes de color suaves arriba.
+  -->
+
+  <header class="site-header">
+    <a class="logo" href="#">Grupo Making Of</a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#servicios">Servicios</a>
+      <a href="#casos">Casos</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#insights">Insights</a>
+      <a class="nav-cta" href="#contacto">Contáctanos</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO · continuo arena -->
+    <section class="hero band band--cream">
+      <div class="hero__copy">
+        <p class="eyebrow">
+          <span class="eyebrow__dot" aria-hidden="true"></span>
+          01 — Marketing digital · Santiago · Desde 2014
+        </p>
+
+        <h1 class="hero__title">
+          <span class="t-display">Making Of,</span>
+          <span class="t-partner">your next<br>business<br>partner</span>
+        </h1>
+
+        <div class="hero__foot">
+          <p class="t-lead">
+            Somos el partner estratégico de marcas que necesitan crecer con datos,
+            creatividad y tecnología. Entendemos el negocio antes de proponer el canal.
+          </p>
+          <a class="btn btn--dark" href="#contacto">Cuéntanos tu proyecto <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+
+      <aside class="hero__media" aria-label="Composición visual">
+        <div class="hero__mesh" aria-hidden="true"></div>
+        <div class="hero__orb hero__orb--a" aria-hidden="true"></div>
+        <div class="hero__orb hero__orb--b" aria-hidden="true"></div>
+
+        <!-- Caras / fotos / iconos como elementos de estilo -->
+        <div class="hero__stack">
+          <figure class="media-tile media-tile--photo">
+            <span class="media-tile__label">Foto — equipo en oficina, luz natural</span>
+          </figure>
+          <div class="face-row" aria-hidden="true">
+            <span class="face face--1"></span>
+            <span class="face face--2"></span>
+            <span class="face face--3"></span>
+            <span class="face face--4"></span>
+            <span class="icon-chip">SEO</span>
+            <span class="icon-chip">Paid</span>
+          </div>
+          <div class="float-pill float-pill--a">Google Partner</div>
+          <div class="float-pill float-pill--b">▲ 120+ marcas</div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Franja de capacidades · mismo fondo, solo reglas -->
+    <section class="verbs band band--cream band--ruled" aria-label="Capacidades">
+      <div class="verb"><span class="verb__kicker">Te acompañamos en</span><strong>Definir</strong></div>
+      <div class="verb"><strong>Crear</strong></div>
+      <div class="verb"><strong>Analizar</strong></div>
+      <div class="verb"><strong>Posicionar</strong></div>
+      <div class="verb"><strong>Identificar</strong></div>
+    </section>
+
+    <!-- SERVICIOS · panel vivo -->
+    <section class="services band band--cream" id="servicios">
+      <div class="section-head">
+        <h2 class="t-label">02 — Servicios</h2>
+        <p class="t-body">Seis frentes, un solo modelo de medición. Recorre la lista para ver el detalle.</p>
+      </div>
+
+      <div class="services__grid">
+        <ul class="svc-list" id="svc-list">
+          <li class="svc-item is-active" data-svc="0">
+            <span class="svc-item__n">01</span>
+            <span class="svc-item__t">Estrategia 360°</span>
+            <span class="svc-item__arrow" aria-hidden="true">→</span>
+          </li>
+          <li class="svc-item" data-svc="1">
+            <span class="svc-item__n">02</span>
+            <span class="svc-item__t">Posicionamiento SEO</span>
+            <span class="svc-item__arrow" aria-hidden="true">→</span>
+          </li>
+          <li class="svc-item" data-svc="2">
+            <span class="svc-item__n">03</span>
+            <span class="svc-item__t">Paid Media</span>
+            <span class="svc-item__arrow" aria-hidden="true">→</span>
+          </li>
+          <li class="svc-item" data-svc="3">
+            <span class="svc-item__n">04</span>
+            <span class="svc-item__t">Content &amp; Social</span>
+            <span class="svc-item__arrow" aria-hidden="true">→</span>
+          </li>
+          <li class="svc-item" data-svc="4">
+            <span class="svc-item__n">05</span>
+            <span class="svc-item__t">Productos Digitales</span>
+            <span class="svc-item__arrow" aria-hidden="true">→</span>
+          </li>
+          <li class="svc-item" data-svc="5">
+            <span class="svc-item__n">06</span>
+            <span class="svc-item__t">Creatividad y Diseño</span>
+            <span class="svc-item__arrow" aria-hidden="true">→</span>
+          </li>
+        </ul>
+
+        <article class="svc-panel" id="svc-panel">
+          <div class="svc-panel__media" id="svc-panel-media">
+            <span>Imagen / iconografía del servicio</span>
+          </div>
+          <div class="svc-panel__body">
+            <p class="t-label" id="svc-panel-label">01 — Estrategia 360°</p>
+            <p class="t-body" id="svc-panel-desc">Diagnóstico, hoja de ruta y gobernanza de canales sobre un mismo tablero de datos.</p>
+            <div class="tag-row" id="svc-panel-tags">
+              <span>Roadmap</span><span>OKRs</span><span>Medición</span><span>Squads</span>
+            </div>
+            <p class="svc-panel__kpi"><strong id="svc-panel-kpi">▲ +1 modelo</strong> <span id="svc-panel-kpi-l">· de decisión compartida</span></p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CASOS · primer corte más marcado (mitad de página) -->
+    <section class="casos band band--ink" id="casos">
+      <div class="section-head section-head--ink">
+        <h2 class="t-label t-label--mint">03 — Casos</h2>
+        <a class="link-quiet" href="#">Ver todos →</a>
+      </div>
+      <div class="casos__grid">
+        <article class="caso caso--featured">
+          <div class="caso__media"><span>Foto / pantallas del caso · Favatex</span></div>
+          <div class="caso__body">
+            <p class="t-label t-label--lime">Retail · SEO + Contenidos</p>
+            <h3 class="caso__title">Favatex</h3>
+            <p>▲ +180% de tráfico orgánico en 12 meses. Arquitectura de contenidos, técnico y linkbuilding.</p>
+          </div>
+        </article>
+        <div class="casos__stack">
+          <article class="caso">
+            <p class="t-label t-label--lime">Consumo · Paid Media</p>
+            <h3 class="caso__title">Juan Valdez</h3>
+            <p>▲ CPA -34% con reasignación por incrementalidad.</p>
+          </article>
+          <article class="caso">
+            <p class="t-label t-label--lime">Retail Media</p>
+            <h3 class="caso__title">Grupo Coloso</h3>
+            <p>▲ Ventas atribuidas +52% integrando ficha y medios.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CERTIFICACIONES · vuelve a arena sin salto fuerte -->
+    <section class="certs band band--cream" id="nosotros">
+      <div class="certs__grid">
+        <div>
+          <h2 class="t-label">04 — Certificaciones</h2>
+          <p class="t-body">Herramientas certificadas y equipos acreditados detrás de cada decisión.</p>
+        </div>
+        <div>
+          <div class="pill-row">
+            <span>Google Partner</span>
+            <span>Google Analytics 4</span>
+            <span>Looker Studio</span>
+            <span>Metricool</span>
+            <span>EMARKETER</span>
+            <span>Meta Business</span>
+            <span>Google Trends</span>
+          </div>
+          <p class="t-label" style="margin:2rem 0 1rem">Clientes y partners</p>
+          <div class="logo-row" aria-label="Clientes">
+            <span>easy</span><span>falabella</span><span>FAVATEX</span><span>COLOSO</span><span>Juan Valdez</span>
+            <span>tricot</span><span>Starbucks</span><span>paris</span><span>NINHUE</span><span>McDonald's</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSIGHTS -->
+    <section class="insights band band--cream band--ruled-top" id="insights">
+      <div class="section-head">
+        <h2 class="t-label">05 — Insights</h2>
+        <a class="link-quiet link-quiet--dark" href="#">Ir al blog →</a>
+      </div>
+      <div class="insights__grid">
+        <article class="insight">
+          <div class="insight__media insight__media--sand"><span>Gráfico / datos</span></div>
+          <p class="t-label">SEO · 6 min</p>
+          <h3>IA aplicada al SEO: qué cambia realmente en la búsqueda</h3>
+          <p class="t-body">Resúmenes generativos, tráfico y arquitectura de contenidos.</p>
+        </article>
+        <article class="insight">
+          <div class="insight__media insight__media--photo"><span>Foto — retail / góndola</span></div>
+          <p class="t-label">Retail Media · 4 min</p>
+          <h3>Retail media en Chile: el inventario que nadie mide bien</h3>
+          <p class="t-body">Plataformas locales y medición central.</p>
+        </article>
+        <article class="insight">
+          <div class="insight__media insight__media--faces">
+            <span class="face face--1"></span>
+            <span class="face face--2"></span>
+            <span class="face face--3"></span>
+            <span class="insight__faces-label">Caras / equipo</span>
+          </div>
+          <p class="t-label">Medición · 8 min</p>
+          <h3>Del reporte al valor: KPIs que el negocio entiende</h3>
+          <p class="t-body">Conectar métricas de canal con resultado comercial.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq band band--cream band--ruled-top">
+      <div class="faq__grid">
+        <h2 class="t-label">06 — Preguntas frecuentes</h2>
+        <div class="faq__list">
+          <details class="faq__item" open>
+            <summary>¿Cuál es la mejor agencia de SEO en Chile?</summary>
+            <p>Grupo Making Of se ha posicionado entre las mejores gracias a su enfoque estratégico, experiencia en linkbuilding, IA aplicada al SEO y resultados medibles.</p>
+          </details>
+          <details class="faq__item">
+            <summary>¿En qué se especializa Grupo Making Of?</summary>
+            <p>En estrategia 360°: SEO, paid media, contenido y social, retail media, productos digitales y creatividad, con un modelo de medición común.</p>
+          </details>
+          <details class="faq__item">
+            <summary>¿Qué servicios ofrecen?</summary>
+            <p>Estrategia 360°, posicionamiento SEO, paid media, content y social, productos digitales, retail media y creatividad y diseño.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA · arena cálida (sin verde claro de fondo) -->
+    <section class="cta band band--sand" id="contacto">
+      <div class="cta__copy">
+        <h2 class="t-display t-display--sm">Hablemos<br>de tu próximo<br><span class="t-accent-mint">objetivo</span></h2>
+        <p class="t-lead">En un trabajo conjunto facilitamos el desarrollo de tus estrategias, acciones y mediciones.</p>
+      </div>
+      <div class="cta__aside">
+        <p class="t-label">Escríbenos</p>
+        <a class="cta__mail" href="mailto:hola@grupomakingof.com">hola@grupomakingof.com</a>
+        <a class="btn btn--dark" href="mailto:hola@grupomakingof.com">Agendar reunión <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer band band--cream band--ruled-top">
+    <div class="site-footer__brand">Grupo Making Of</div>
+    <div class="site-footer__mark">MKOF · Your Next Business Partner</div>
+    <div class="site-footer__meta">Santiago, Chile · <a href="#">LinkedIn ↗</a></div>
+    <p class="site-footer__legal">Política de privacidad y protección de datos · Making Of SPA, 2026.</p>
+  </footer>
+
+  <script src="home-1b.js"></script>
+</body>
+</html>
