@@ -686,3 +686,190 @@
   .sh { grid-template-columns: 1fr; }
   .sf__row { grid-template-columns: 4.5rem 1fr; }
 }
+
+/* ========== I · MOSAIC ========== */
+.si {
+  background: #fff;
+  padding: 0 0 2.5rem;
+}
+.si__ribbon {
+  background: var(--forest);
+  color: #fff;
+  padding: 2rem clamp(1rem, 4vw, 3rem);
+  text-align: center;
+}
+.si__kicker {
+  margin: 0 0 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lima);
+}
+.si__intro {
+  margin: 0 auto;
+  max-width: 44rem;
+  font-size: clamp(1.05rem, 1.7vw, 1.25rem);
+  line-height: 1.5;
+  font-weight: 500;
+  color: rgba(251,246,235,.9);
+}
+.si__mosaic {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  max-width: 56rem;
+  margin: -1.5rem auto 0;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+  position: relative;
+  z-index: 1;
+}
+.si__tile {
+  border-radius: 1.35rem;
+  padding: 1.5rem 1.35rem;
+  min-height: 12rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  box-shadow: 0 12px 32px rgba(9,25,20,.1);
+}
+.si__tile--lima { background: var(--lima); color: var(--forest); }
+.si__tile--dark { background: var(--ink); color: #fff; }
+.si__tile--sand { background: var(--sand); color: var(--ink); }
+.si__tile--mint { background: var(--mint); color: var(--ink); }
+.si__tile h3 {
+  margin: 0;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+.si__tile p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  font-weight: 500;
+  opacity: 0.92;
+}
+.si__tile a {
+  margin-top: auto;
+  align-self: flex-start;
+  padding: 0.45rem 1.05rem;
+  border: 1.5px solid #fff;
+  border-radius: 999px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* ========== J · TIMELINE ========== */
+.sj {
+  background: var(--cream);
+  padding: 2.5rem clamp(1rem, 4vw, 3rem) 3rem;
+}
+.sj__head {
+  max-width: 40rem;
+  margin: 0 auto 2.25rem;
+  text-align: center;
+}
+.sj__head h2 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  letter-spacing: -0.03em;
+}
+.sj__head p {
+  margin: 0;
+  color: var(--mid);
+  line-height: 1.5;
+  font-weight: 500;
+}
+.sj__axis {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 36rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.sj__axis::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 3px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, var(--lima), var(--mint), var(--mid));
+  border-radius: 2px;
+}
+.sj__axis li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.65rem;
+}
+.sj__dot {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 3px solid var(--lima);
+  z-index: 1;
+  box-shadow: 0 0 0 5px var(--cream);
+}
+.sj__feat .sj__dot { border-color: var(--forest); background: var(--lima); }
+.sj__card {
+  background: #fff;
+  border-radius: 1.15rem;
+  padding: 1.15rem 1.25rem;
+  width: 100%;
+  max-width: 28rem;
+  border: 1px solid rgba(19,52,41,.1);
+  position: relative;
+  z-index: 1;
+}
+.sj__feat .sj__card {
+  background: var(--forest);
+  color: #fff;
+  border-color: var(--forest);
+}
+.sj__n {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--lima);
+  margin-bottom: 0.35rem;
+}
+.sj__feat .sj__n { color: var(--mint); }
+.sj__card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+.sj__card p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--mid);
+  font-weight: 500;
+}
+.sj__feat .sj__card p { color: rgba(251,246,235,.88); }
+.sj__card a {
+  display: inline-flex;
+  margin-top: 0.75rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--mint);
+  color: var(--mint);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .si__mosaic { grid-template-columns: 1fr; margin-top: 1rem; }
+}
