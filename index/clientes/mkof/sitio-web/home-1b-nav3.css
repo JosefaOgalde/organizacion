@@ -164,15 +164,17 @@
   min-height: auto;
   border-bottom: var(--rule);
   background:
-    radial-gradient(ellipse 55% 70% at 92% 20%, rgba(9, 25, 20, 0.22) 0%, transparent 60%),
-    radial-gradient(ellipse 45% 55% at 8% 90%, rgba(19, 52, 41, 0.28) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 65% at 95% 15%, rgba(9, 25, 20, 0.45) 0%, transparent 58%),
+    radial-gradient(ellipse 48% 58% at 5% 92%, rgba(9, 25, 20, 0.4) 0%, transparent 55%),
     linear-gradient(
       135deg,
       #f3efd4 0%,
-      #ebe9c2 38%,
-      #cfc99a 68%,
-      #8a9a72 88%,
-      #2a5a49 100%
+      #ebe9c2 28%,
+      #cfc99a 48%,
+      #7a9470 62%,
+      #2a5a49 78%,
+      #133429 90%,
+      #091914 100%
     );
   color: var(--ink);
 }
