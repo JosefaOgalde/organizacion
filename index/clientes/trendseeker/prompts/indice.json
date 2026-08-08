@@ -3,6 +3,38 @@
   "nota": "Prompts Trendseeker Gemini VIDEO — cada contenido tiene TXT A/B/C editables por separado.",
   "items": [
     {
+      "id": "ofertas-zapatillas-2x1-hunter",
+      "titulo": "Ofertas · Zapatillas Hunter 2×1",
+      "archivo": "copys/COPY-ofertas-zapatillas-2x1-hunter.txt",
+      "descripcion": "Copy redes · 2×1 solo zapatillas Hunter Travel · landing ofertas filtrada zapatillas.",
+      "tipo": "copy-redes",
+      "link": "https://trendseeker.cl/campanas/ofertas/?_filtrar_por_tipo=zapatillas"
+    },
+    {
+      "id": "ofertas-accesorios-40off",
+      "titulo": "Ofertas · Accesorios Hunter 40% OFF",
+      "archivo": "copys/COPY-ofertas-accesorios-40off.txt",
+      "descripcion": "Copy redes · gorro, calcetines, paraguas · 40% OFF.",
+      "tipo": "copy-redes",
+      "link": "https://trendseeker.cl/campanas/ofertas/"
+    },
+    {
+      "id": "ofertas-botas-familia-40off",
+      "titulo": "Ofertas · Botas hombre, mujer y niños 40% OFF",
+      "archivo": "copys/COPY-ofertas-botas-familia-40off.txt",
+      "descripcion": "Copy redes · botas Hunter familia · 40% OFF.",
+      "tipo": "copy-redes",
+      "link": "https://trendseeker.cl/campanas/ofertas/"
+    },
+    {
+      "id": "ofertas-play-aislantes-40off",
+      "titulo": "Ofertas · Play aislantes 40% OFF",
+      "archivo": "copys/COPY-ofertas-play-aislantes-40off.txt",
+      "descripcion": "Copy redes · Play con forro aislante · 40% OFF.",
+      "tipo": "copy-redes",
+      "link": "https://trendseeker.cl/campanas/ofertas/"
+    },
+    {
       "id": "banner-accesorios-hunter-40off",
       "titulo": "Banner · Accesorios Hunter 40% OFF",
       "archivo": "copys/COPY-banner-accesorios-hunter-40off.txt",
