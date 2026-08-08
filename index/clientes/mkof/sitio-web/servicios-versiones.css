@@ -415,3 +415,274 @@
 @media (max-width: 560px) {
   .sb__cols { grid-template-columns: 1fr; }
 }
+
+/* ========== E · PISTA HORIZONTAL ========== */
+.se { padding: 2rem 0 2.5rem; background: var(--sand); }
+.se__head {
+  max-width: 48rem;
+  margin: 0 auto 1.5rem;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+  text-align: center;
+}
+.se__head h2 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  letter-spacing: -0.03em;
+}
+.se__head p {
+  margin: 0;
+  color: var(--mid);
+  line-height: 1.5;
+  font-weight: 500;
+}
+.se__track {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0.5rem clamp(1rem, 4vw, 3rem) 1.25rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.se__card {
+  flex: 0 0 min(78vw, 18rem);
+  scroll-snap-align: start;
+  border-radius: 1.35rem;
+  padding: 1.5rem 1.35rem;
+  min-height: 16rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.se__card--lima { background: var(--lima); color: var(--forest); }
+.se__card--dark { background: var(--forest); color: #fff; }
+.se__card--mint { background: var(--mint); color: var(--ink); }
+.se__n {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  opacity: 0.7;
+}
+.se__card h3 { margin: 0; font-size: 1.35rem; letter-spacing: -0.02em; }
+.se__card p { margin: 0; font-size: 0.95rem; line-height: 1.45; font-weight: 500; }
+.se__card a {
+  margin-top: auto;
+  color: var(--mint);
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+/* ========== F · MANIFESTO NÚMEROS ========== */
+.sf {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 2.5rem clamp(1rem, 4vw, 3rem) 3rem;
+  background: #fff;
+}
+.sf__kicker {
+  margin: 0 0 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lima);
+}
+.sf__intro {
+  margin: 0 0 2rem;
+  font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+  line-height: 1.45;
+  color: var(--mid);
+  font-weight: 500;
+  max-width: 40rem;
+}
+.sf__rows { display: flex; flex-direction: column; gap: 0; }
+.sf__row {
+  display: grid;
+  grid-template-columns: minmax(5rem, 8rem) 1fr;
+  gap: 1rem 1.5rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid rgba(19,52,41,.14);
+  align-items: start;
+}
+.sf__row:last-child { border-bottom: 1px solid rgba(19,52,41,.14); }
+.sf__num {
+  font-size: clamp(2.75rem, 6vw, 4.25rem);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+  color: var(--lima);
+}
+.sf__row--feat .sf__num { color: var(--forest); }
+.sf__row h3 {
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+  letter-spacing: -0.03em;
+}
+.sf__row p {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.5;
+  color: var(--mid);
+  font-weight: 500;
+  max-width: 34rem;
+}
+.sf__row a {
+  display: inline-flex;
+  margin-top: 0.85rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  background: var(--forest);
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* ========== G · ZIGZAG ========== */
+.sg {
+  background: var(--cream);
+  padding: 2.5rem clamp(1rem, 4vw, 3rem) 3rem;
+}
+.sg__h {
+  margin: 0 0 0.85rem;
+  text-align: center;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.sg__intro {
+  margin: 0 auto 2rem;
+  max-width: 40rem;
+  text-align: center;
+  color: var(--mid);
+  line-height: 1.5;
+  font-weight: 500;
+}
+.sg__zig {
+  max-width: 60rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.sg__panel {
+  width: min(100%, 32rem);
+  padding: 1.5rem 1.5rem;
+  border-radius: 1.35rem;
+  background: var(--lima);
+  color: var(--forest);
+}
+.sg__panel--left { align-self: flex-start; }
+.sg__panel--right { align-self: flex-end; }
+.sg__panel--dark {
+  background: var(--forest);
+  color: #fff;
+}
+.sg__panel--sand { background: var(--sand); }
+.sg__panel h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+.sg__panel p {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  font-weight: 500;
+}
+.sg__panel a {
+  display: inline-flex;
+  margin-top: 0.85rem;
+  padding: 0.45rem 1.1rem;
+  border: 1.5px solid #fff;
+  border-radius: 999px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* ========== H · SPLIT ========== */
+.sh {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 28rem;
+  background: #fff;
+}
+.sh__left {
+  background: var(--forest);
+  color: #fff;
+  padding: clamp(2rem, 5vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+.sh__kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lima);
+}
+.sh__left h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+.sh__left p {
+  margin: 0;
+  max-width: 28rem;
+  line-height: 1.55;
+  color: rgba(251,246,235,.82);
+  font-weight: 400;
+}
+.sh__right {
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+}
+.sh__link {
+  flex: 1;
+  padding: 1.25rem 1.5rem;
+  text-decoration: none;
+  color: var(--ink);
+  border-bottom: 1px solid rgba(19,52,41,.12);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  justify-content: center;
+  transition: background 160ms ease;
+}
+.sh__link:last-child { border-bottom: 0; }
+.sh__link:hover { background: #fff; }
+.sh__link--feat {
+  background: var(--lima);
+}
+.sh__link--feat:hover { background: color-mix(in srgb, var(--lima) 85%, white); }
+.sh__link span {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.sh__link small {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--mid);
+  font-weight: 500;
+}
+.sh__link em {
+  font-style: normal;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 800px) {
+  .sh { grid-template-columns: 1fr; }
+  .sf__row { grid-template-columns: 4.5rem 1fr; }
+}
