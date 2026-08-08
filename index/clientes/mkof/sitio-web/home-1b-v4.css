@@ -27,6 +27,9 @@
   --p-mint: #99eada;
   --p-ice: #c5eee5;
 
+  --mint-deep: #2a5a49;
+  --ink: #091914;
+
   --font: "Instrument Sans", system-ui, sans-serif;
   --pad: clamp(1.25rem, 4vw, 4rem);
   --ease: cubic-bezier(0.4, 0, 0.2, 1);

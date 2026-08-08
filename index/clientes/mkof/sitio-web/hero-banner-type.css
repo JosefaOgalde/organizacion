@@ -1,20 +1,41 @@
-/* Tipografía compartida del banner principal
-   Making Of + partner numerado (01/02/03) + bajada con énfasis.
-*/
+/* Tipografías distintas del banner por versión */
 
-.hero-type {
+/* ——— 1B · clásico apilado ——— */
+.hero-type--stack .t-display {
+  display: block;
+  margin: 0;
+}
+.hero-type--stack .t-partner {
+  display: block;
+  margin: 0.4rem 0 0;
+}
+
+/* ——— Alt · Making Of + partner en dos columnas ——— */
+.hero-type--split {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 1rem 1.5rem;
+  align-items: end;
+}
+.hero-type--split .t-display {
+  margin: 0;
+}
+.hero-type--split .t-partner {
+  margin: 0;
+  padding-bottom: 0.2rem;
+}
+
+/* ——— Nav2 · partner numerado ——— */
+.hero-type--numbered {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) auto;
   gap: 1.25rem 1.75rem;
   align-items: end;
 }
-
-.hero-type .t-display,
-.hero-type__brand {
+.hero-type--numbered .t-display {
   margin: 0;
 }
-
-.hero-type__partner {
+.hero-type--numbered ol {
   list-style: none;
   margin: 0;
   padding: 0 0 0.35rem 1rem;
@@ -23,8 +44,7 @@
   gap: 0.45rem;
   border-left: 2px solid var(--mint-deep, #418870);
 }
-
-.hero-type__partner li {
+.hero-type--numbered li {
   margin: 0;
   font-size: clamp(0.95rem, 1.6vw, 1.15rem);
   font-weight: 600;
@@ -36,8 +56,7 @@
   gap: 0.55rem;
   line-height: 1.2;
 }
-
-.hero-type__partner span {
+.hero-type--numbered li span {
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -45,8 +64,69 @@
   opacity: 0.45;
 }
 
-.hero-type__lead em,
-.t-lead.hero-type__lead em {
+/* ——— Nav2b · partner en chips ——— */
+.hero-type--chips .t-display {
+  margin: 0 0 0.85rem;
+}
+.hero-type--chips .chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hero-type--chips .chip-row li {
+  margin: 0;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(19, 52, 41, 0.22);
+  background: color-mix(in srgb, var(--sand, #ebe9c2) 70%, transparent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mint-deep, #418870);
+}
+
+/* ——— Nav3 · partner como frase continua con slash ——— */
+.hero-type--slash .t-display {
+  margin: 0 0 0.65rem;
+}
+.hero-type--slash .t-partner-slash {
+  margin: 0;
+  font-size: clamp(1.15rem, 2.4vw, 1.65rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mint-deep, #418870);
+  line-height: 1.35;
+}
+.hero-type--slash .t-partner-slash i {
+  font-style: normal;
+  opacity: 0.4;
+  margin: 0 0.35rem;
+}
+
+/* ——— V4 · partner en bloque cita ——— */
+.hero-type--quote .t-display,
+.hero-type--quote .hero-type__brand {
+  margin: 0 0 0.85rem;
+}
+.hero-type--quote .t-partner-quote {
+  margin: 0;
+  max-width: 22rem;
+  padding: 0.85rem 0 0.85rem 1.1rem;
+  border-left: 3px solid var(--v-lime, #93c64a);
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.15;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: var(--v-mid, #2a5a49);
+}
+
+.hero-lead-em em {
   font-style: normal;
   font-weight: 700;
   color: var(--ink, #091914);
@@ -54,11 +134,11 @@
 }
 
 @media (max-width: 720px) {
-  .hero-type {
+  .hero-type--split,
+  .hero-type--numbered {
     grid-template-columns: 1fr;
   }
-
-  .hero-type__partner {
+  .hero-type--numbered ol {
     border-left: 0;
     border-top: 2px solid var(--mint-deep, #418870);
     padding: 0.85rem 0 0;
