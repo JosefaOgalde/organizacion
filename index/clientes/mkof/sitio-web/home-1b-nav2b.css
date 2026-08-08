@@ -1,0 +1,69 @@
+/* Nav2b — otra manera de mostrar el texto del banner
+   Misma navbar + capas. Tipografía: Making Of + partner numerado al lado.
+*/
+
+.home-nav2b .hero-v2b__type {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) auto;
+  gap: 1.25rem 1.75rem;
+  align-items: end;
+}
+
+.home-nav2b .hero-v2b__copy .t-display {
+  margin: 0;
+  font-size: clamp(2.5rem, 5.5vw, 4.25rem);
+}
+
+.home-nav2b .hero-v2b__partner {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  border-left: 2px solid var(--mint-deep);
+  padding-left: 1rem;
+}
+
+.home-nav2b .hero-v2b__partner li {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mint-deep);
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  line-height: 1.2;
+}
+
+.home-nav2b .hero-v2b__partner span {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  opacity: 0.45;
+}
+
+.home-nav2b .hero-v2b__lead em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--ink);
+  border-bottom: 2px solid color-mix(in srgb, var(--mint-deep) 55%, transparent);
+}
+
+@media (max-width: 720px) {
+  .home-nav2b .hero-v2b__type {
+    grid-template-columns: 1fr;
+  }
+
+  .home-nav2b .hero-v2b__partner {
+    border-left: 0;
+    border-top: 2px solid var(--mint-deep);
+    padding: 0.85rem 0 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.65rem 1.25rem;
+  }
+}
