@@ -164,9 +164,16 @@
   min-height: auto;
   border-bottom: var(--rule);
   background:
-    radial-gradient(ellipse 70% 60% at 85% 30%, #f3efd0 0%, transparent 55%),
-    radial-gradient(ellipse 50% 50% at 10% 80%, #d4cfa0 0%, transparent 50%),
-    #ebe9c2;
+    radial-gradient(ellipse 55% 70% at 92% 20%, rgba(9, 25, 20, 0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 55% at 8% 90%, rgba(19, 52, 41, 0.28) 0%, transparent 55%),
+    linear-gradient(
+      135deg,
+      #f3efd4 0%,
+      #ebe9c2 38%,
+      #cfc99a 68%,
+      #8a9a72 88%,
+      #2a5a49 100%
+    );
   color: var(--ink);
 }
 
