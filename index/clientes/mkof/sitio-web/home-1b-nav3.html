@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home 1B · Navbar V3 · Grupo Making Of</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="home-1b-alt.css">
+  <link rel="stylesheet" href="home-1b-nav3.css">
+</head>
+<body class="home-alt home-nav3">
+  <!--
+    Navbar V3 · logo centrado, menú partido:
+    izq: Servicios▾ / Sobre nosotros · centro: marca · der: Blog / Contáctanos (outline).
+  -->
+
+  <header class="top top--v3">
+    <nav class="menu menu--v3" aria-label="Principal">
+      <div class="menu__side menu__side--left">
+        <div class="menu__item menu__item--drop">
+          <button type="button" class="menu__btn" id="svc-toggle" aria-expanded="false" aria-controls="svc-drop">
+            Servicios
+            <span class="menu__chev" aria-hidden="true"></span>
+          </button>
+          <div class="menu__drop" id="svc-drop" hidden>
+            <a href="#servicios" data-jump="0">Estrategia 360°</a>
+            <a href="#servicios" data-jump="1">Posicionamiento SEO</a>
+            <a href="#servicios" data-jump="2">Paid Media</a>
+            <a href="#servicios" data-jump="3">Content &amp; Social</a>
+            <a href="#servicios" data-jump="4">Productos Digitales</a>
+            <a href="#servicios" data-jump="5">Creatividad y Diseño</a>
+          </div>
+        </div>
+        <a class="menu__link" href="#nosotros">Sobre nosotros</a>
+      </div>
+
+      <a class="brand brand--center" href="#" aria-label="Grupo Making Of">
+        <span class="brand__grupo">Grupo</span>
+        <span class="brand__name">Making Of</span>
+      </a>
+
+      <div class="menu__side menu__side--right">
+        <a class="menu__link" href="#blog">Blog</a>
+        <a class="menu__cta" href="#contacto">Contáctanos</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO · full width, tipografía protagonista, media debajo (no columna lateral) -->
+    <section class="hero band band--cream">
+      <div class="hero__top">
+        <p class="t-label">
+          <span class="dot" aria-hidden="true"></span>
+          Marketing digital · Santiago · Desde 2014
+        </p>
+
+        <div class="hero__type">
+          <h1 class="t-display">Making Of,</h1>
+          <p class="t-partner" aria-label="Your next business partner">
+            your next<br>business partner
+          </p>
+        </div>
+
+        <div class="hero__row">
+          <p class="t-lead">
+            Somos el partner estratégico de marcas que necesitan crecer con datos,
+            creatividad y tecnología. Entendemos el negocio antes de proponer el canal.
+          </p>
+          <div class="hero__faces" aria-hidden="true">
+            <span class="face face--1"></span>
+            <span class="face face--2"></span>
+            <span class="face face--3"></span>
+            <span class="face face--4"></span>
+            <span class="chip">SEO</span>
+            <span class="chip">Paid</span>
+            <span class="chip">Content</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__band" aria-label="Composición visual">
+        <div class="hero__mesh" aria-hidden="true"></div>
+        <div class="hero__orb hero__orb--a" aria-hidden="true"></div>
+        <div class="hero__orb hero__orb--b" aria-hidden="true"></div>
+        <figure class="hero__photo">
+          <span>Foto — equipo en oficina, luz natural · trama de marca sobre la imagen</span>
+        </figure>
+        <div class="hero__float hero__float--a">Google Partner</div>
+        <div class="hero__float hero__float--b">▲ 120+ marcas</div>
+      </div>
+    </section>
+
+    <!-- Capacidades · franja continua -->
+    <section class="strip band band--cream" aria-label="Capacidades">
+      <p class="t-label strip__label">Te acompañamos en</p>
+      <div class="strip__words">
+        <span>Definir</span>
+        <span>Crear</span>
+        <span>Analizar</span>
+        <span>Posicionar</span>
+        <span>Identificar</span>
+      </div>
+    </section>
+
+    <!-- SERVICIOS · lista horizontal + detalle debajo (otra diagramación vs panel sticky) -->
+    <section class="services band band--cream" id="servicios">
+      <div class="block-head">
+        <h2 class="t-label">Servicios</h2>
+        <p class="t-body">Seis frentes, un solo modelo de medición. Elige uno para ver el detalle.</p>
+      </div>
+
+      <div class="svc-tabs" role="tablist" aria-label="Servicios">
+        <button type="button" class="svc-tab is-active" role="tab" aria-selected="true" data-svc="0">01 Estrategia</button>
+        <button type="button" class="svc-tab" role="tab" aria-selected="false" data-svc="1">02 SEO</button>
+        <button type="button" class="svc-tab" role="tab" aria-selected="false" data-svc="2">03 Paid</button>
+        <button type="button" class="svc-tab" role="tab" aria-selected="false" data-svc="3">04 Content</button>
+        <button type="button" class="svc-tab" role="tab" aria-selected="false" data-svc="4">05 Productos</button>
+        <button type="button" class="svc-tab" role="tab" aria-selected="false" data-svc="5">06 Creatividad</button>
+      </div>
+
+      <article class="svc-stage" id="svc-stage">
+        <div class="svc-stage__media" id="svc-media">
+          <span>Imagen / iconografía del servicio</span>
+        </div>
+        <div class="svc-stage__copy">
+          <p class="t-label" id="svc-label">01 — Estrategia 360°</p>
+          <h3 class="svc-stage__title" id="svc-title">Estrategia 360°</h3>
+          <p class="t-body" id="svc-desc">Diagnóstico, hoja de ruta y gobernanza de canales sobre un mismo tablero de datos.</p>
+          <div class="tags" id="svc-tags">
+            <span>Roadmap</span><span>OKRs</span><span>Medición</span><span>Squads</span>
+          </div>
+          <p class="svc-kpi"><strong id="svc-kpi">▲ +1 modelo</strong> <span id="svc-kpi-l">· de decisión compartida</span></p>
+        </div>
+      </article>
+    </section>
+
+    <!-- SOBRE NOSOTROS · primer corte suave a arena -->
+    <section class="about band band--sand" id="nosotros">
+      <div class="about__grid">
+        <div>
+          <h2 class="t-label">Sobre nosotros</h2>
+          <p class="t-display t-display--sm">Partner,<br>no proveedor</p>
+        </div>
+        <div class="about__copy">
+          <p class="t-lead">
+            Equipos de estrategia, medios y desarrollo sobre los mismos datos.
+            Sin intermediarios ni reportes decorativos: cada acción se conecta
+            con un objetivo de negocio.
+          </p>
+          <div class="about__faces" aria-hidden="true">
+            <span class="face face--1"></span>
+            <span class="face face--2"></span>
+            <span class="face face--3"></span>
+            <span class="face face--4"></span>
+            <span class="about__faces-cap">Caras del equipo · fotos reales</span>
+          </div>
+          <div class="pill-row">
+            <span>Google Partner</span>
+            <span>GA4</span>
+            <span>Looker Studio</span>
+            <span>Meta Business</span>
+            <span>Metricool</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CASOS · ink a mitad de página -->
+    <section class="casos band band--ink" id="casos">
+      <div class="block-head block-head--ink">
+        <h2 class="t-label t-label--mint">Casos</h2>
+        <a class="link-quiet" href="#">Ver todos →</a>
+      </div>
+      <div class="casos__rail">
+        <article class="caso">
+          <div class="caso__media"><span>Foto / pantallas · Favatex</span></div>
+          <p class="t-label t-label--lime">Retail · SEO</p>
+          <h3>Favatex</h3>
+          <p>▲ +180% tráfico orgánico en 12 meses.</p>
+        </article>
+        <article class="caso">
+          <div class="caso__media caso__media--b"><span>Campaña · Juan Valdez</span></div>
+          <p class="t-label t-label--lime">Paid Media</p>
+          <h3>Juan Valdez</h3>
+          <p>▲ CPA -34% por incrementalidad.</p>
+        </article>
+        <article class="caso">
+          <div class="caso__media caso__media--c"><span>Retail media · Coloso</span></div>
+          <p class="t-label t-label--lime">Retail Media</p>
+          <h3>Grupo Coloso</h3>
+          <p>▲ Ventas atribuidas +52%.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- BLOG -->
+    <section class="blog band band--cream" id="blog">
+      <div class="block-head">
+        <h2 class="t-label">Blog</h2>
+        <a class="link-quiet link-quiet--dark" href="#">Ir al blog →</a>
+      </div>
+      <div class="blog__grid">
+        <article class="post">
+          <div class="post__media post__media--sand"><span>Gráfico / datos</span></div>
+          <p class="t-label">SEO · 6 min</p>
+          <h3>IA aplicada al SEO: qué cambia realmente en la búsqueda</h3>
+        </article>
+        <article class="post">
+          <div class="post__media post__media--photo"><span>Foto — retail / góndola</span></div>
+          <p class="t-label">Retail Media · 4 min</p>
+          <h3>Retail media en Chile: el inventario que nadie mide bien</h3>
+        </article>
+        <article class="post">
+          <div class="post__media post__media--faces">
+            <span class="face face--1"></span>
+            <span class="face face--2"></span>
+            <span class="face face--3"></span>
+          </div>
+          <p class="t-label">Medición · 8 min</p>
+          <h3>Del reporte al valor: KPIs que el negocio entiende</h3>
+        </article>
+      </div>
+    </section>
+
+    <!-- CONTACTO · arena, sin verde claro de fondo -->
+    <section class="cta band band--sand" id="contacto">
+      <div>
+        <h2 class="t-display t-display--sm">Hablemos de tu<br>próximo <span class="t-accent">objetivo</span></h2>
+        <p class="t-lead">En un trabajo conjunto facilitamos el desarrollo de tus estrategias, acciones y mediciones.</p>
+      </div>
+      <div class="cta__aside">
+        <p class="t-label">Escríbenos</p>
+        <a class="cta__mail" href="mailto:hola@grupomakingof.com">hola@grupomakingof.com</a>
+        <a class="btn" href="mailto:hola@grupomakingof.com">Agendar reunión →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot band band--cream">
+    <div class="foot__brand">
+      <span class="brand__grupo">Grupo</span>
+      <span class="brand__name">Making Of</span>
+    </div>
+    <p>Your Next Business Partner · Santiago, Chile</p>
+    <p class="foot__legal">Making Of SPA, 2026 · Política de privacidad</p>
+  </footer>
+
+  <script src="home-1b-alt.js"></script>
+</body>
+</html>
