@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="home-1b-alt.css">
   <link rel="stylesheet" href="home-1b-nav2.css">
   <link rel="stylesheet" href="home-1b-nav2b.css">
+  <link rel="stylesheet" href="hero-banner-type.css">
 </head>
 <body class="home-alt home-nav2 home-nav2b">
   <!--
@@ -50,23 +51,29 @@
   </header>
 
   <main>
-    <!-- HERO Nav2 · Making Of contenido · capas con iconos (sin textos) -->
+    <!-- HERO Nav2b · otra tipografía: Making Of + partner en columna numerada -->
     <section class="hero hero--v2 band band--cream" id="hero">
       <div class="hero-v2__grid">
-        <div class="hero-v2__copy">
+        <div class="hero-v2__copy hero-v2b__copy">
           <p class="t-label">
             <span class="dot" aria-hidden="true"></span>
             Marketing digital · Santiago · Desde 2014
           </p>
 
-          <h1 class="hero__title">
-            <span class="t-display">Making Of,</span>
-            <span class="t-partner">your next<br>business<br>partner</span>
-          </h1>
+          
+          <div class="hero-type">
+            <h1 class="t-display hero-type__brand">Making Of,</h1>
+            <ol class="hero-type__partner" aria-label="your next business partner">
+              <li><span>01</span> your next</li>
+              <li><span>02</span> business</li>
+              <li><span>03</span> partner</li>
+            </ol>
+          </div>
 
-          <p class="t-lead">
-            Somos el partner estratégico de marcas que necesitan crecer con datos,
-            creatividad y tecnología. Entendemos el negocio antes de proponer el canal.
+          <p class="t-lead hero-type__lead">
+            Somos el partner estratégico de marcas que necesitan crecer con
+            <em>datos</em>, <em>creatividad</em> y <em>tecnología</em>.
+            Entendemos el negocio antes de proponer el canal.
           </p>
 
           <a class="btn" href="#contacto">Cuéntanos tu proyecto →</a>

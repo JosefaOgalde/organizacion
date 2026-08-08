@@ -161,7 +161,8 @@ a {
   gap: 0.5rem;
 }
 
-.hero4__brand {
+.hero4__brand,
+.hero4 .hero-type__brand {
   font-size: clamp(2.75rem, 7vw, 5rem);
   line-height: 0.9;
   letter-spacing: -0.04em;
