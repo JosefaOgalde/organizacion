@@ -167,7 +167,7 @@
   max-width: 52rem;
 }
 
-.acomp--v3 .acomp__card:first-child {
+.acomp--v3 .acomp__grid > .acomp__card--dark {
   background: transparent;
   color: var(--ac-ink);
   border-radius: 0;
@@ -192,7 +192,7 @@
   width: 100%;
 }
 
-.acomp--v3 .acomp__card--lime {
+.acomp--v3 .acomp__verbs .acomp__card--lime {
   flex: 1 1 9rem;
   max-width: 11.5rem;
   min-width: 8.5rem;
@@ -200,6 +200,7 @@
   min-height: 8.5rem;
   border-radius: 1.1rem;
   flex-direction: column;
+  background: var(--ac-lime);
 }
 
 /* ——— V4 · bento: Definir alto izq + 2×2 ——— */
