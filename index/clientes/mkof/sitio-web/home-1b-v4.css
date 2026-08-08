@@ -191,6 +191,59 @@ a {
   color: var(--v-deep);
 }
 
+/* Hero oscuro · V2 diagrama tipográfica */
+.hero4--dark {
+  background: linear-gradient(105deg, #091914 0%, #133429 45%, #2a5a49 78%, #56742a 100%);
+  color: #fbf6eb;
+  max-width: none;
+  border-bottom: 0;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2rem;
+  align-items: center;
+  padding: clamp(3rem, 7vw, 5.5rem) var(--pad);
+}
+
+.hero4--dark .eyebrow4 {
+  color: var(--v-lime);
+  margin-bottom: 1.25rem;
+}
+
+.hero4--dark .hero4__faces {
+  width: min(100%, 22rem);
+  justify-self: end;
+  opacity: 0.95;
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.35));
+}
+
+.hero4--dark .btn4 {
+  display: inline-flex;
+  margin-top: 1.35rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 999px;
+  background: var(--p-mint);
+  color: var(--v-ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background 200ms var(--ease);
+}
+
+.hero4--dark .btn4:hover {
+  background: var(--p-ice);
+}
+
+@media (max-width: 900px) {
+  .hero4--dark {
+    grid-template-columns: 1fr;
+  }
+
+  .hero4--dark .hero4__faces {
+    justify-self: center;
+  }
+}
+
 /* ——— Manifiesto ——— */
 .manifest {
   padding: clamp(2.5rem, 5vw, 4rem) var(--pad) clamp(3rem, 6vw, 5rem);

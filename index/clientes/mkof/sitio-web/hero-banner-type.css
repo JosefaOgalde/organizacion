@@ -1,160 +1,139 @@
-/* Propuestas de título · Making Of = solución creativa
-   V1 Nav3 · V2 V4 · V3 Nav2 · V4 Alt
+/* Banner · mismas frases, distinta diagramación
+   Solo «Making Of» en mayúsculas de marca. Partner y bajada en escritura normal.
 */
 
-/* ——— V1 · frase apilada (solución creativa) ——— */
-.hero-type--v1 .t-display {
+.hero-diag h1 {
   margin: 0;
+  font: inherit;
 }
-.hero-type--v1 .line-sol {
+
+.hero-line-brand {
   display: block;
-  margin: 0.45rem 0 0;
-  font-size: clamp(1.5rem, 3.5vw, 2.4rem);
-  line-height: 1.05;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-  color: var(--mint-deep, #418870);
-}
-.hero-type--v1 .line-need {
-  display: block;
-  margin: 0.25rem 0 0;
-  font-size: clamp(1.5rem, 3.5vw, 2.4rem);
-  line-height: 1.05;
-  font-weight: 400;
-  letter-spacing: -0.03em;
+  margin: 0;
+  font-size: clamp(2.75rem, 7vw, 4.75rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-weight: 700;
   text-transform: uppercase;
   color: var(--ink, #091914);
 }
 
-/* ——— V2 · highlight de la idea clave ——— */
-.hero-type--v2 .t-display {
-  margin: 0;
-  color: inherit;
-}
-.hero-type--v2 .line-is {
+.hero-line-partner {
   display: block;
-  margin: 0.35rem 0 0;
-  font-size: clamp(1.6rem, 3.8vw, 2.6rem);
-  line-height: 1.05;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
-  opacity: 0.85;
-}
-.hero-type--v2 .line-key {
-  display: block;
-  margin: 0.2rem 0 0;
-  font-size: clamp(1.75rem, 4.2vw, 2.85rem);
-  line-height: 1;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.035em;
-  color: var(--v-lime, #93c64a);
-}
-
-/* ——— V3 · ecuación creativa ——— */
-.hero-type--v3 .t-display {
-  margin: 0 0 0.75rem;
-}
-.hero-type--v3 .eq {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.45rem 0.65rem;
   margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.hero-type--v3 .eq li {
-  margin: 0;
-  font-size: clamp(0.85rem, 1.5vw, 1.05rem);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--mint-deep, #418870);
-}
-.hero-type--v3 .eq .op {
-  opacity: 0.35;
-  font-weight: 500;
-}
-.hero-type--v3 .eq .result {
-  padding: 0.45rem 0.85rem;
-  border-radius: 999px;
-  background: var(--ink, #091914);
-  color: var(--cream, #fbf6eb);
-}
-
-/* ——— V4 · pregunta → respuesta ——— */
-.hero-type--v4 .ask {
-  margin: 0 0 0.75rem;
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--mint-deep, #418870);
-}
-.hero-type--v4 .t-display {
-  margin: 0 0 0.45rem;
-}
-.hero-type--v4 .answer {
-  margin: 0;
-  font-size: clamp(1.25rem, 2.6vw, 1.85rem);
-  line-height: 1.15;
-  font-weight: 600;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.25;
   letter-spacing: -0.02em;
-  text-transform: uppercase;
-  color: var(--ink, #091914);
-  max-width: 18rem;
-}
-
-.hero-lead-em em {
+  text-transform: none;
+  font-weight: 400;
   font-style: normal;
-  font-weight: 700;
-  color: var(--ink, #091914);
+}
+
+.hero-bajada {
+  margin: 0;
+  max-width: 28rem;
+  font-size: clamp(1rem, 1.3vw, 1.1rem);
+  line-height: 1.65;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--forest, #2a5a49);
+}
+
+/* ——— V1 Nav3 · partner light + subrayado mint ——— */
+.hero-diag--v1 .hero-line-partner {
+  margin-top: 0.55rem;
+  font-weight: 300;
+  color: var(--mint-deep, #418870);
   border-bottom: 2px solid color-mix(in srgb, var(--mint-deep, #418870) 55%, transparent);
+  padding-bottom: 0.35rem;
+  display: inline-block;
+  max-width: 100%;
+}
+.hero-diag--v1 .hero-bajada {
+  margin-top: 1.15rem;
+  font-weight: 400;
 }
 
-/* V2 dark hero overrides when inside .hero4--dark */
-.hero4--dark {
-  background: linear-gradient(105deg, #091914 0%, #133429 45%, #2a5a49 78%, #56742a 100%);
+/* ——— V2 V4 · partner bold en bloque con fondo lima suave ——— */
+.hero-diag--v2 .hero-line-brand {
   color: #fbf6eb;
-  max-width: none;
-  border-bottom: 0;
+}
+.hero-diag--v2 .hero-line-partner {
+  margin-top: 0.85rem;
+  font-weight: 600;
+  color: #091914;
+  background: #93c64a;
+  padding: 0.55rem 0.85rem;
+  border-radius: 0.5rem;
+  display: inline-block;
+}
+.hero-diag--v2 .hero-bajada {
+  margin-top: 1.15rem;
+  color: rgba(251, 246, 235, 0.82);
+  font-weight: 400;
+}
+
+/* ——— V3 Nav2 · partner medium + rail vertical ——— */
+.hero-diag--v3 {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 2rem;
-  align-items: center;
-  padding: clamp(3rem, 7vw, 5.5rem) var(--pad);
+  grid-template-columns: auto 1fr;
+  gap: 0 1.25rem;
+  align-items: start;
 }
-.hero4--dark .eyebrow4 {
-  color: #93c64a;
+.hero-diag--v3 .hero-line-brand {
+  grid-column: 1 / -1;
 }
-.hero4--dark .hero-type--v2 .t-display {
-  color: #fbf6eb;
+.hero-diag--v3 .hero-rail {
+  width: 3px;
+  align-self: stretch;
+  min-height: 4.5rem;
+  background: linear-gradient(180deg, #93c64a, #418870);
+  border-radius: 2px;
+  margin-top: 0.35rem;
 }
-.hero4--dark .hero-type--v2 .line-is {
-  color: #fbf6eb;
+.hero-diag--v3 .hero-diag__col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
 }
-.hero4--dark .hero4__lead {
-  color: rgba(251, 246, 235, 0.78);
+.hero-diag--v3 .hero-line-partner {
+  font-weight: 500;
+  color: var(--mint-deep, #418870);
 }
-.hero4--dark .hero-lead-em em {
-  color: #fbf6eb;
-  border-bottom-color: rgba(147, 198, 74, 0.7);
-}
-.hero4--dark .hero4__faces {
-  width: min(100%, 22rem);
-  justify-self: end;
-  opacity: 0.95;
-  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.35));
+.hero-diag--v3 .hero-bajada {
+  font-weight: 400;
 }
 
-@media (max-width: 900px) {
-  .hero4--dark {
+/* ——— V4 Alt · partner en pill outline + bajada con fondo cream ——— */
+.hero-diag--v4 .hero-line-brand {
+  margin-bottom: 0.75rem;
+}
+.hero-diag--v4 .hero-line-partner {
+  font-weight: 500;
+  color: var(--mint-deep, #418870);
+  border: 1.5px solid rgba(65, 136, 112, 0.45);
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  display: inline-block;
+  background: color-mix(in srgb, #ebe9c2 55%, transparent);
+}
+.hero-diag--v4 .hero-bajada {
+  margin-top: 1.15rem;
+  padding: 0.9rem 1rem;
+  border-radius: 0.85rem;
+  background: #fbf6eb;
+  border: 1px solid rgba(19, 52, 41, 0.1);
+  font-weight: 400;
+}
+
+@media (max-width: 720px) {
+  .hero-diag--v3 {
     grid-template-columns: 1fr;
   }
-  .hero4--dark .hero4__faces {
-    justify-self: center;
+  .hero-diag--v3 .hero-rail {
+    width: 100%;
+    height: 3px;
+    min-height: 0;
   }
 }
