@@ -141,6 +141,7 @@ Responder **pidiendo la imagen** (foto del producto / captura slicer) y, si no v
 - gramos de filamento · horas de impresión · tipo/color y $/kg (o usar tabla PLA+ negro/rojo $17.986, amarillo/café $16.829, blanco $12.690)
 - **qué impresora:** «nueva»/Elegoo Centauri (default) o «antigua»/Ender 3 V2 Neo Sprite Neo (otro filamento)
 - si lleva argolla metal (+$50) o bolsa
+- **si es lámpara:** siempre sumar kit eléctrico $5.400 (pera 1400 + cable 1100 + enchufe 1000 + soquete 1900) en `costoExtrasClp`
 
 Calcular con la fórmula del panel y devolver costo/u + PVP sugerido (+margen 100% si no indican otro). Si es Ender, usar perfil `imp-ender-3-v2-neo` (recargo + consumo propios; $/kg del otro filamento si lo dan). Si no hay SKU, generarlo. Si piden guardar producto, crear/actualizar en Costos con `impresoraId`.
 
@@ -148,10 +149,11 @@ Calcular con la fórmula del panel y devolver costo/u + PVP sugerido (+margen 10
 
 Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio venta · Eliminar. Resto en `<details> Parámetros y desglose`.
 
-**Fórmula:** `filamento = g/1000 × $/kg` + `luz = horas × tarifaKwh × consumoKw` + pintado + metal + bolsa (+ recargo perfil si aplica).  
+**Fórmula:** `filamento = g/1000 × $/kg` + `luz = horas × tarifaKwh × consumoKw` + pintado + metal + bolsa + **extras** (+ recargo perfil si aplica).  
 **Markup sugerido:** `precio = costo × (1 + margenObjetivoPct/100)` (default +100%).  
 **Params default (Centauri):** `tarifaKwhClp: 200`, `consumoImpresoraKw: 0.28`, `costoAnilloMetalLlaveroClp: 50`.  
 **$/kg Centauri:** PLA+ negro/rojo `$17.986` · PLA amarillo/café `$16.829` · PLA blanco `$12.690`.  
+**Lámparas (siempre):** sumar kit eléctrico al costo/u vía `costoExtrasClp` = **pera $1.400 + cable $1.100 + enchufe $1.000 + soquete $1.900 = $5.400**. No va a gastos socios (es BOM del producto).  
 **Diseños Cults/digitales** → gastos socios (categoría `diseño`); **no** van al costo unitario del producto.  
 Vigente: Bob $1.402 · bulldog $1.000 · nave H $1.000 · **Dragón $3.000** (`gas-diseno-dragon`) · **Alcancía chanchito $13.000** (`gas-diseno-alcancia-chanchito`).
 
@@ -199,6 +201,7 @@ Datos en `data.impresoras[]` (seed + live) y UI **Operación → Impresoras**. C
 | `ALCHAN001` | Alcancía chanchito | **315,88** | **12,15 (12 h 9 m)** | PLA rosado `$10.990/kg` · Elegoo · modelo 280,74 + sop 33,75 + purge 1,40 · 105,06 m · costo ~$4.202 · **PVP sug. $8.400** · diseño comprado **$13.000** en gastos (no en costo/u) · vendida Rebe **$18.000** (I000017) |
 | `SOPCHI001` | Soporte celular Chimuelo | **55,81** (modelo+sop+purga) | **2,68 (2 h 41 m)** | PLA+ negro `$17.986/kg` · Elegoo · modelo 32,95 + soportes 22,39 + **purga 0,47** · 18,56 m · coste slicer 1,12 · fil~$1.004 + luz~$150 + bolsa $50 · costo ~**$1.204** · **PVP sug. $2.400** |
 | `APHARRY001` | Apoya libros Harry Potter | **132,81** (modelo+sop+falda) | **3,05 (3 h 3 m)** | PLA+ negro `$17.986/kg` · Elegoo · modelo 119,68 + soportes 12,36 + falda/otros 0,77 · 44,17 m · coste slicer 2,66 · fil~$2.389 + luz~$171 + bolsa $50 · costo ~**$2.610** · **PVP sug. $5.200** |
+| `LMMUSH001` | Lámpara mushroom (Zen Glow) | **285,50** (base+pantalla) | **12,93 (12 h 56 m)** | PLA blanco `$12.690/kg` · Elegoo · base 110,84 g / 5 h 14 m + pantalla 174,66 g / 7 h 42 m · 94,96 m · coste slicer 5,71 · fil~$3.623 + luz~$724 + bolsa $50 + **kit eléctrico $5.400** (pera 1400 + cable 1100 + enchufe 1000 + soquete 1900) · costo ~**$9.797** · **PVP sug. $19.600** |
 | `LLONEPI001` | Llavero One Piece | — | — | **pendiente costo** · 3× Cata SIE **$5.000** (I000018) · ~$1.667/u |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
