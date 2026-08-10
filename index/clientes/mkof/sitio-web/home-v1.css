@@ -228,45 +228,113 @@ mark {
 .v1-acomp {
   display: grid;
   grid-template-columns: 1.15fr 1fr;
-  gap: 1rem;
+  gap: 0.9rem;
   max-width: 64rem;
   margin: 0 auto;
   align-items: stretch;
 }
-.v1-acomp__dark {
+.v1-acomp__verbs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0.85rem;
+  min-height: 22.5rem;
+}
+
+/* Flip cards · todas lima al frente; dorso forest con info */
+.v1-flip {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  perspective: 1200px;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 10.75rem;
+  font: inherit;
+  color: inherit;
+  border-radius: 1.35rem;
+}
+.v1-flip--wide {
+  min-height: 100%;
+  align-self: stretch;
+}
+.v1-flip__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  transform-style: preserve-3d;
+  transition: transform 620ms cubic-bezier(0.4, 0.15, 0.2, 1);
+}
+.v1-flip.is-flipped .v1-flip__inner {
+  transform: rotateY(180deg);
+}
+.v1-flip__face {
+  position: absolute;
+  inset: 0;
+  border-radius: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1.35rem 1.3rem 1.25rem;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 14px 28px rgba(9, 25, 20, 0.1);
+}
+.v1-flip__face--front {
+  background: var(--lima);
+  color: var(--forest);
+  align-items: flex-start;
+  justify-content: space-between;
+  text-align: left;
+}
+.v1-flip__face--back {
   background: var(--forest);
   color: #fff;
-  border-radius: 1.35rem;
-  padding: 2rem 1.75rem;
-  display: flex;
+  transform: rotateY(180deg);
   align-items: center;
   justify-content: center;
   text-align: center;
 }
-.v1-acomp__dark p {
-  margin: 0;
-  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
-  line-height: 1.4;
-  font-weight: 600;
-  max-width: 18rem;
+.v1-flip--wide .v1-flip__face--back {
+  padding: 1.75rem 1.6rem;
 }
-.v1-acomp__verbs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.85rem;
-}
-.v1-acomp__verbs article {
-  background: var(--lima);
-  border-radius: 1.25rem;
-  aspect-ratio: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.65rem;
-  color: var(--forest);
+.v1-flip__label {
   font-weight: 800;
-  font-size: 1.15rem;
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--forest);
+}
+.v1-flip__face--back .v1-flip__label {
+  color: #fff;
+}
+.v1-flip__info {
+  font-size: clamp(0.98rem, 1.5vw, 1.15rem);
+  line-height: 1.45;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  max-width: 17rem;
+}
+.v1-flip--wide .v1-flip__info {
+  max-width: 18rem;
+  font-size: clamp(1.02rem, 1.6vw, 1.22rem);
+  line-height: 1.5;
+}
+.v1-flip:hover:not(.is-flipped) .v1-flip__face--front {
+  box-shadow: 0 16px 32px rgba(9, 25, 20, 0.14);
+}
+.v1-flip:focus-visible {
+  outline: 2px solid var(--mid);
+  outline-offset: 3px;
+}
+.v1-flip .v1-ico {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
 }
 .v1-ico {
   width: 2.75rem;
@@ -587,6 +655,8 @@ mark {
   .v1-foot__grid {
     grid-template-columns: 1fr;
   }
+  .v1-acomp__verbs { min-height: 20rem; }
+  .v1-flip--wide { min-height: 12rem; }
   .v1-menu { display: none; }
   .v1-hero__panel { min-height: 16rem; }
 }
@@ -613,42 +683,6 @@ mark {
 @keyframes v1-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
-}
-
-.v1-acomp__verbs article {
-  cursor: pointer;
-  transition: transform 200ms var(--ease), box-shadow 200ms var(--ease), background 200ms var(--ease);
-}
-.v1-acomp__verbs article:hover,
-.v1-acomp__verbs article:focus-visible {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 14px 28px rgba(9, 25, 20, 0.12);
-  outline: none;
-}
-.v1-acomp__verbs article.is-active {
-  background: var(--forest);
-  color: #fff;
-  box-shadow: 0 14px 28px rgba(9, 25, 20, 0.16);
-}
-.v1-acomp__verbs article.is-active .v1-ico svg [stroke="#fff"] { stroke: var(--lima); }
-.v1-acomp__verbs article.is-active .v1-ico svg [fill="#fff"] { fill: var(--lima); }
-
-.v1-acomp__detail {
-  max-width: 64rem;
-  margin: 1rem auto 0;
-  padding: 0.95rem 1.15rem;
-  border-radius: 0.85rem;
-  background: #fff;
-  border: 1px solid rgba(19, 52, 41, 0.1);
-  color: var(--mid);
-  font-weight: 500;
-  line-height: 1.45;
-  text-align: center;
-  animation: v1-fade 220ms var(--ease);
-}
-@keyframes v1-fade {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .v1-svc__feat a {
@@ -716,8 +750,22 @@ mark {
     transform: none;
     transition: none;
   }
+  .v1-flip__inner { transition: none; }
+  .v1-flip.is-flipped .v1-flip__inner { transform: none; }
+  .v1-flip__face--back {
+    opacity: 0;
+    transform: none;
+    pointer-events: none;
+  }
+  .v1-flip.is-flipped .v1-flip__face--front {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .v1-flip.is-flipped .v1-flip__face--back {
+    opacity: 1;
+    pointer-events: auto;
+  }
   .v1-btn:hover,
-  .v1-acomp__verbs article:hover,
   .v1-svc__chips article:hover {
     transform: none;
   }

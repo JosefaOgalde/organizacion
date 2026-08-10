@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home-v1.css?v=4">
+  <link rel="stylesheet" href="home-v1.css?v=5">
 </head>
 <body class="v1">
   <header class="v1-nav">
@@ -78,37 +78,78 @@
       <p class="v1-kicker">Te acompañamos en</p>
 
       <div class="v1-acomp" data-reveal>
-        <article class="v1-acomp__dark">
-          <p>Desarrollamos tu estrategia digital, presupuestos y estructuras; optimizando los recursos.</p>
-        </article>
+        <button type="button" class="v1-flip v1-flip--wide" data-flip aria-label="Definir">
+          <span class="v1-flip__inner">
+            <span class="v1-flip__face v1-flip__face--front">
+              <span class="v1-ico" aria-hidden="true">
+                <svg viewBox="0 0 64 64" fill="none"><path d="M18 50h28M22 50V28h20v22M26 28V18h12v10M24 18h16M28 14h8M32 10v4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>
+              </span>
+              <span class="v1-flip__label">Definir</span>
+            </span>
+            <span class="v1-flip__face v1-flip__face--back">
+              <span class="v1-flip__info">Desarrollamos tu estrategia digital, presupuestos y estructuras; optimizando los recursos.</span>
+            </span>
+          </span>
+        </button>
+
         <div class="v1-acomp__verbs">
-          <article>
-            <span class="v1-ico" aria-hidden="true">
-              <svg viewBox="0 0 64 64" fill="none"><path d="M40 8l8 8L22 42l-9 3 3-9L40 8z" stroke="#fff" stroke-width="2.4"/><path d="M48 6l1.4 2.8L52 10l-2.6 1.2L48 14l-1.4-2.8L44 10l2.6-1.2L48 6z" fill="#fff"/></svg>
+          <button type="button" class="v1-flip" data-flip aria-label="Crear">
+            <span class="v1-flip__inner">
+              <span class="v1-flip__face v1-flip__face--front">
+                <span class="v1-ico" aria-hidden="true">
+                  <svg viewBox="0 0 64 64" fill="none"><path d="M40 8l8 8L22 42l-9 3 3-9L40 8z" stroke="#fff" stroke-width="2.4"/><path d="M48 6l1.4 2.8L52 10l-2.6 1.2L48 14l-1.4-2.8L44 10l2.6-1.2L48 6z" fill="#fff"/></svg>
+                </span>
+                <span class="v1-flip__label">Crear</span>
+              </span>
+              <span class="v1-flip__face v1-flip__face--back">
+                <span class="v1-flip__info">Concepto, contenido y piezas que hacen tangible la estrategia.</span>
+              </span>
             </span>
-            <span>Crear</span>
-          </article>
-          <article>
-            <span class="v1-ico" aria-hidden="true">
-              <svg viewBox="0 0 64 64" fill="none"><path d="M28 12a16 16 0 1 0 16 16h-16V12z" stroke="#fff" stroke-width="2.4"/><path d="M32 8a16 16 0 0 1 16 16h-16V8z" stroke="#fff" stroke-width="2.4"/></svg>
+          </button>
+
+          <button type="button" class="v1-flip" data-flip aria-label="Analizar">
+            <span class="v1-flip__inner">
+              <span class="v1-flip__face v1-flip__face--front">
+                <span class="v1-ico" aria-hidden="true">
+                  <svg viewBox="0 0 64 64" fill="none"><path d="M28 12a16 16 0 1 0 16 16h-16V12z" stroke="#fff" stroke-width="2.4"/><path d="M32 8a16 16 0 0 1 16 16h-16V8z" stroke="#fff" stroke-width="2.4"/></svg>
+                </span>
+                <span class="v1-flip__label">Analizar</span>
+              </span>
+              <span class="v1-flip__face v1-flip__face--back">
+                <span class="v1-flip__info">Datos compartidos para decidir con evidencia, no con intuición.</span>
+              </span>
             </span>
-            <span>Analizar</span>
-          </article>
-          <article>
-            <span class="v1-ico" aria-hidden="true">
-              <svg viewBox="0 0 64 64" fill="none"><circle cx="18" cy="20" r="6" stroke="#fff" stroke-width="2.3"/><rect x="34" y="16" width="24" height="18" rx="2.5" stroke="#fff" stroke-width="2.3"/><path d="M39 28l5-6 4 3 6-8" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/></svg>
+          </button>
+
+          <button type="button" class="v1-flip" data-flip aria-label="Posicionar">
+            <span class="v1-flip__inner">
+              <span class="v1-flip__face v1-flip__face--front">
+                <span class="v1-ico" aria-hidden="true">
+                  <svg viewBox="0 0 64 64" fill="none"><circle cx="18" cy="20" r="6" stroke="#fff" stroke-width="2.3"/><rect x="34" y="16" width="24" height="18" rx="2.5" stroke="#fff" stroke-width="2.3"/><path d="M39 28l5-6 4 3 6-8" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/></svg>
+                </span>
+                <span class="v1-flip__label">Posicionar</span>
+              </span>
+              <span class="v1-flip__face v1-flip__face--back">
+                <span class="v1-flip__info">Presencia en buscadores, LLMs y canales donde está tu audiencia.</span>
+              </span>
             </span>
-            <span>Posicionar</span>
-          </article>
-          <article>
-            <span class="v1-ico" aria-hidden="true">
-              <svg viewBox="0 0 64 64" fill="none"><rect x="12" y="10" width="30" height="40" rx="2.5" stroke="#fff" stroke-width="2.3"/><path d="M40 34l12 18-7-1.5 1.2-7L40 34z" stroke="#fff" stroke-width="2.3"/></svg>
+          </button>
+
+          <button type="button" class="v1-flip" data-flip aria-label="Identificar">
+            <span class="v1-flip__inner">
+              <span class="v1-flip__face v1-flip__face--front">
+                <span class="v1-ico" aria-hidden="true">
+                  <svg viewBox="0 0 64 64" fill="none"><rect x="12" y="10" width="30" height="40" rx="2.5" stroke="#fff" stroke-width="2.3"/><path d="M40 34l12 18-7-1.5 1.2-7L40 34z" stroke="#fff" stroke-width="2.3"/></svg>
+                </span>
+                <span class="v1-flip__label">Identificar</span>
+              </span>
+              <span class="v1-flip__face v1-flip__face--back">
+                <span class="v1-flip__info">Oportunidades, audiencias y prioridades con foco de negocio.</span>
+              </span>
             </span>
-            <span>Identificar</span>
-          </article>
+          </button>
         </div>
       </div>
-      <p class="v1-acomp__detail" data-acomp-detail hidden></p>
     </section>
 
     <!-- STATEMENT BAND -->
@@ -258,6 +299,6 @@
     </div>
   </footer>
 
-  <script src="home-v1.js"></script>
+  <script src="home-v1.js?v=5"></script>
 </body>
 </html>

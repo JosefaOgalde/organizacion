@@ -68,39 +68,19 @@
     }
   }
 
-  /* Te acompañamos · verbs interactivas */
-  const verbs = document.querySelectorAll(".v1-acomp__verbs article");
-  const detail = document.querySelector("[data-acomp-detail]");
-  const details = {
-    Crear: "Concepto, contenido y piezas que hacen tangible la estrategia.",
-    Analizar: "Datos compartidos para decidir con evidencia, no con intuición.",
-    Posicionar: "Presencia en buscadores, LLMs y canales donde está tu audiencia.",
-    Identificar: "Oportunidades, audiencias y prioridades con foco de negocio.",
-  };
-  verbs.forEach((card) => {
-    const label = card.querySelector("span:last-child")?.textContent?.trim();
-    card.setAttribute("tabindex", "0");
-    card.setAttribute("role", "button");
+  /* Te acompañamos · flip cards */
+  const flips = document.querySelectorAll("[data-flip]");
+  flips.forEach((card) => {
     card.setAttribute("aria-pressed", "false");
-
-    const activate = () => {
-      verbs.forEach((c) => {
-        c.classList.remove("is-active");
+    card.addEventListener("click", () => {
+      const willOpen = !card.classList.contains("is-flipped");
+      flips.forEach((c) => {
+        c.classList.remove("is-flipped");
         c.setAttribute("aria-pressed", "false");
       });
-      card.classList.add("is-active");
-      card.setAttribute("aria-pressed", "true");
-      if (detail && label && details[label]) {
-        detail.hidden = false;
-        detail.textContent = details[label];
-      }
-    };
-
-    card.addEventListener("click", activate);
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        activate();
+      if (willOpen) {
+        card.classList.add("is-flipped");
+        card.setAttribute("aria-pressed", "true");
       }
     });
   });
