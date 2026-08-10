@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home 1B · Alt — menú sitio · Grupo Making Of</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="home-1b-alt.css">
+  <link rel="stylesheet" href="hero-banner-type.css">
+  <link rel="stylesheet" href="acompanamos.css?v=20260808b">
+</head>
+<body class="home-alt">
+  <!--
+    Otra diagramación · misma dirección 1B (Editorial arena).
+    Menú según sitio actual: Servicios (dropdown), Sobre nosotros, Contáctanos, Blog.
+    Logo apilado GRUPO / MAKING OF.
+    Jerarquía: Making Of > partner > bajada.
+    Verde claro solo en tipografía.
+  -->
+
+  <header class="top">
+    <a class="brand" href="#" aria-label="Grupo Making Of">
+      <span class="brand__grupo">Grupo</span>
+      <span class="brand__name">Making Of</span>
+    </a>
+
+    <nav class="menu" aria-label="Principal">
+      <div class="menu__item menu__item--drop">
+        <button type="button" class="menu__btn" id="svc-toggle" aria-expanded="false" aria-controls="svc-drop">
+          Servicios
+          <span class="menu__chev" aria-hidden="true"></span>
+        </button>
+        <div class="menu__drop" id="svc-drop" hidden>
+          <a href="#servicios" data-jump="0">Estrategia 360°</a>
+          <a href="#servicios" data-jump="1">Posicionamiento SEO</a>
+          <a href="#servicios" data-jump="2">Paid Media</a>
+          <a href="#servicios" data-jump="3">Content &amp; Social</a>
+          <a href="#servicios" data-jump="4">Productos Digitales</a>
+          <a href="#servicios" data-jump="5">Creatividad y Diseño</a>
+        </div>
+      </div>
+      <a class="menu__link" href="#nosotros">Sobre nosotros</a>
+      <a class="menu__link" href="#contacto">Contáctanos</a>
+      <a class="menu__link" href="#blog">Blog</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO · texto izq · elemento en movimiento der (malla de caras) -->
+    <section class="hero band band--cream" id="hero">
+      <div class="hero__copy">
+        <p class="t-label">
+          <span class="dot" aria-hidden="true"></span>
+          Marketing digital · Santiago · Desde 2014
+        </p>
+
+          <!-- V4 · Making Of + partner en pill + bajada en tarjeta -->
+          <div class="hero-diag hero-diag--v4">
+            <h1>
+              <span class="hero-line-brand">Making Of,</span>
+              <span class="hero-line-partner">your next business partner</span>
+            </h1>
+            <p class="hero-bajada">
+              Somos el partner estratégico de marcas que necesitan crecer con datos,
+              creatividad y tecnología. Entendemos el negocio antes de proponer el canal.
+            </p>
+          </div>
+
+        <a class="btn" href="#contacto">Cuéntanos tu proyecto →</a>
+      </div>
+
+      <aside class="hero__visual" aria-label="Símbolo de la agencia">
+        <div class="hero__mark" role="img" aria-label="Conexiones · estrategia, datos y creatividad">
+          <svg class="hero__mark-svg" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="mk-disc" cx="38%" cy="32%" r="68%">
+                <stop offset="0%" stop-color="#F7F2E4"/>
+                <stop offset="42%" stop-color="#E8E2B8"/>
+                <stop offset="100%" stop-color="#C8C28A"/>
+              </radialGradient>
+              <radialGradient id="mk-ring-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="70%" stop-color="#418870" stop-opacity="0"/>
+                <stop offset="100%" stop-color="#418870" stop-opacity="0.22"/>
+              </radialGradient>
+              <linearGradient id="mk-orbit" x1="40" y1="40" x2="240" y2="240">
+                <stop offset="0%" stop-color="#2A5A49"/>
+                <stop offset="50%" stop-color="#418870"/>
+                <stop offset="100%" stop-color="#56742A"/>
+              </linearGradient>
+              <linearGradient id="mk-orbit-soft" x1="240" y1="40" x2="40" y2="240">
+                <stop offset="0%" stop-color="#133429" stop-opacity="0.15"/>
+                <stop offset="100%" stop-color="#418870" stop-opacity="0.55"/>
+              </linearGradient>
+              <radialGradient id="mk-core" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#2A5A49"/>
+                <stop offset="55%" stop-color="#133429"/>
+                <stop offset="100%" stop-color="#091914"/>
+              </radialGradient>
+              <radialGradient id="mk-spark" cx="40%" cy="35%" r="65%">
+                <stop offset="0%" stop-color="#FFFFFF"/>
+                <stop offset="45%" stop-color="#FBF6EB"/>
+                <stop offset="100%" stop-color="#E1DFA7"/>
+              </radialGradient>
+              <radialGradient id="mk-node" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#6BA894"/>
+                <stop offset="100%" stop-color="#2A5A49"/>
+              </radialGradient>
+              <radialGradient id="mk-node-ink" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#2A5A49"/>
+                <stop offset="100%" stop-color="#091914"/>
+              </radialGradient>
+              <filter id="mk-soft" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#091914" flood-opacity="0.22"/>
+              </filter>
+              <filter id="mk-lift" x="-40%" y="-40%" width="180%" height="180%">
+                <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#091914" flood-opacity="0.28"/>
+              </filter>
+            </defs>
+
+            <!-- Disco base con volumen -->
+            <circle cx="140" cy="148" r="118" fill="#091914" opacity="0.08"/>
+            <circle cx="140" cy="140" r="118" fill="url(#mk-disc)" filter="url(#mk-soft)"/>
+            <circle cx="140" cy="140" r="118" fill="url(#mk-ring-glow)"/>
+
+            <!-- Órbitas con degradé -->
+            <circle cx="140" cy="140" r="96" stroke="url(#mk-orbit)" stroke-width="2.5" stroke-opacity="0.55"/>
+            <circle cx="140" cy="140" r="68" stroke="url(#mk-orbit-soft)" stroke-width="2"/>
+
+            <!-- Ejes suaves -->
+            <path d="M140 48 V232" stroke="#133429" stroke-opacity="0.14" stroke-width="1.5"/>
+            <path d="M48 140 H232" stroke="#133429" stroke-opacity="0.14" stroke-width="1.5"/>
+
+            <!-- Nodos con volumen -->
+            <circle cx="141" cy="49" r="9" fill="#091914" opacity="0.18"/>
+            <circle cx="140" cy="46" r="9" fill="url(#mk-node-ink)" filter="url(#mk-lift)"/>
+            <circle cx="136" cy="42" r="3" fill="#FBF6EB" opacity="0.35"/>
+
+            <circle cx="235" cy="143" r="9" fill="#091914" opacity="0.18"/>
+            <circle cx="234" cy="140" r="9" fill="url(#mk-node)" filter="url(#mk-lift)"/>
+            <circle cx="230" cy="136" r="3" fill="#FBF6EB" opacity="0.4"/>
+
+            <circle cx="141" cy="237" r="9" fill="#091914" opacity="0.18"/>
+            <circle cx="140" cy="234" r="9" fill="url(#mk-node-ink)" filter="url(#mk-lift)"/>
+            <circle cx="136" cy="230" r="3" fill="#FBF6EB" opacity="0.35"/>
+
+            <circle cx="47" cy="143" r="9" fill="#091914" opacity="0.18"/>
+            <circle cx="46" cy="140" r="9" fill="url(#mk-node)" filter="url(#mk-lift)"/>
+            <circle cx="42" cy="136" r="3" fill="#FBF6EB" opacity="0.4"/>
+
+            <circle cx="198" cy="82" r="6" fill="url(#mk-node)" filter="url(#mk-lift)"/>
+            <circle cx="82" cy="198" r="6" fill="url(#mk-node)" filter="url(#mk-lift)"/>
+
+            <!-- Núcleo 3D -->
+            <circle cx="144" cy="148" r="34" fill="#091914" opacity="0.2"/>
+            <circle cx="140" cy="140" r="34" fill="url(#mk-core)" filter="url(#mk-lift)"/>
+            <circle cx="128" cy="126" r="14" fill="#FBF6EB" opacity="0.12"/>
+
+            <!-- Spark -->
+            <path d="M140 112 L147.2 134.8 L170 140 L147.2 145.2 L140 168 L132.8 145.2 L110 140 L132.8 134.8 Z" fill="url(#mk-spark)"/>
+            <circle cx="140" cy="140" r="6" fill="#418870"/>
+            <circle cx="137" cy="137" r="2.2" fill="#FBF6EB" opacity="0.7"/>
+          </svg>
+          <p class="hero__mark-cap">Estrategia · datos · creatividad</p>
+        </div>
+      </aside>
+    </section>
+    <!-- Te acompañamos en · D · Editorial split -->
+    <section class="acomp acomp--v4" id="acompanamos" aria-label="Te acompañamos en">
+      <div class="acomp__head">
+        <p class="acomp__pill">Te acompañamos en:</p>
+      </div>
+      <p class="acomp__ver">D · Editorial split</p>
+      <div class="acomp__grid">
+        <article class="acomp__card acomp__card--dark">
+          <h3 class="visually-hidden">Definir</h3>
+          <p>Desarrollamos tu estrategia digital, presupuestos y estructuras; optimizando los recursos.</p>
+        </article>
+        <div class="acomp__verbs">
+          <article class="acomp__card acomp__card--lime">
+          <span class="acomp__icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M40 8l8 8L22 42l-9 3 3-9L40 8z" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/>
+              <path d="M36 12l8 8" stroke="#fff" stroke-width="2.4"/>
+              <path d="M14 50l8-2" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+              <path d="M48 6l1.4 2.8L52 10l-2.6 1.2L48 14l-1.4-2.8L44 10l2.6-1.2L48 6z" fill="#fff"/>
+              <path d="M56 18l1.1 2.2 2.2 1.1-2.2 1.1L56 24.6l-1.1-2.2-2.2-1.1 2.2-1.1L56 18z" fill="#fff"/>
+              <path d="M44 2l.9 1.8L47 5l-2.1.9L44 7.8l-.9-1.9L41 5l2.1-.9L44 2z" fill="#fff"/>
+            </svg>
+          </span>
+          <p class="acomp__label">Crear</p>
+        </article>
+          <article class="acomp__card acomp__card--lime">
+          <span class="acomp__icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M28 12a16 16 0 1 0 16 16h-16V12z" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/>
+              <path d="M32 8a16 16 0 0 1 16 16h-16V8z" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/>
+              <circle cx="46" cy="44" r="6.5" stroke="#fff" stroke-width="2.2"/>
+              <circle cx="56" cy="40" r="5" stroke="#fff" stroke-width="2.2"/>
+              <path d="M46 50.5V56M56 45v8" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <p class="acomp__label">Analizar</p>
+        </article>
+          <article class="acomp__card acomp__card--lime">
+          <span class="acomp__icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="18" cy="20" r="6" stroke="#fff" stroke-width="2.3"/>
+              <path d="M8 44c1.5-9 5.5-14 10-14s8.5 5 10 14" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/>
+              <path d="M28 26l10 5" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/>
+              <rect x="34" y="16" width="24" height="18" rx="2.5" stroke="#fff" stroke-width="2.3"/>
+              <path d="M39 28l5-6 4 3 6-8" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M52 22v-2.5h2.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <p class="acomp__label">Posicionar</p>
+        </article>
+          <article class="acomp__card acomp__card--lime">
+          <span class="acomp__icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="12" y="10" width="30" height="40" rx="2.5" stroke="#fff" stroke-width="2.3"/>
+              <path d="M19 20h16M19 27h12M19 34h14" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M20 44l4-4 3 2.5 6-6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M40 34l12 18-7-1.5 1.2-7L40 34z" stroke="#fff" stroke-width="2.3" stroke-linejoin="round"/>
+              <path d="M44 48l3.5 5.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <p class="acomp__label">Identificar</p>
+        </article>
+        </div>
+      </div>
+    </section>
+
+
+
+
+    <!-- SERVICIOS · lista horizontal + detalle debajo (otra diagramación vs panel sticky) -->
+    <section class="services band band--cream" id="servicios">
+      <div class="block-head">
+        <h2 class="t-label">Servicios</h2>
+        <p class="t-body">Seis frentes, un solo modelo de medición. Elige uno para ver el detalle.</p>
+      </div>
+
+      <div class="svc-tabs" role="tablist" aria-label="Servicios">
+        <button type="button" class="svc-tab is-active" role="tab" aria-selected="true" data-svc="0">01 Estrategia</button>
+        <button type="button" class="svc-tab" role="tab" aria-selected="false" data-svc="1">02 SEO</button>
+        <button type="button" class="svc-tab" role="tab" aria-selected="false" data-svc="2">03 Paid</button>
+        <button type="button" class="svc-tab" role="tab" aria-selected="false" data-svc="3">04 Content</button>
+        <button type="button" class="svc-tab" role="tab" aria-selected="false" data-svc="4">05 Productos</button>
+        <button type="button" class="svc-tab" role="tab" aria-selected="false" data-svc="5">06 Creatividad</button>
+      </div>
+
+      <article class="svc-stage" id="svc-stage">
+        <div class="svc-stage__media" id="svc-media">
+          <span>Imagen / iconografía del servicio</span>
+        </div>
+        <div class="svc-stage__copy">
+          <p class="t-label" id="svc-label">01 — Estrategia 360°</p>
+          <h3 class="svc-stage__title" id="svc-title">Estrategia 360°</h3>
+          <p class="t-body" id="svc-desc">Diagnóstico, hoja de ruta y gobernanza de canales sobre un mismo tablero de datos.</p>
+          <div class="tags" id="svc-tags">
+            <span>Roadmap</span><span>OKRs</span><span>Medición</span><span>Squads</span>
+          </div>
+          <p class="svc-kpi"><strong id="svc-kpi">▲ +1 modelo</strong> <span id="svc-kpi-l">· de decisión compartida</span></p>
+        </div>
+      </article>
+    </section>
+
+    <!-- SOBRE NOSOTROS · primer corte suave a arena -->
+    <section class="about band band--sand" id="nosotros">
+      <div class="about__grid">
+        <div>
+          <h2 class="t-label">Sobre nosotros</h2>
+          <p class="t-display t-display--sm">Partner,<br>no proveedor</p>
+        </div>
+        <div class="about__copy">
+          <p class="t-lead">
+            Equipos de estrategia, medios y desarrollo sobre los mismos datos.
+            Sin intermediarios ni reportes decorativos: cada acción se conecta
+            con un objetivo de negocio.
+          </p>
+          <div class="about__faces" aria-hidden="true">
+            <span class="face face--1"></span>
+            <span class="face face--2"></span>
+            <span class="face face--3"></span>
+            <span class="face face--4"></span>
+            <span class="about__faces-cap">Caras del equipo · fotos reales</span>
+          </div>
+          <div class="pill-row">
+            <span>Google Partner</span>
+            <span>GA4</span>
+            <span>Looker Studio</span>
+            <span>Meta Business</span>
+            <span>Metricool</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CASOS · ink a mitad de página -->
+    <section class="casos band band--ink" id="casos">
+      <div class="block-head block-head--ink">
+        <h2 class="t-label t-label--mint">Casos</h2>
+        <a class="link-quiet" href="#">Ver todos →</a>
+      </div>
+      <div class="casos__rail">
+        <article class="caso">
+          <div class="caso__media"><span>Foto / pantallas · Favatex</span></div>
+          <p class="t-label t-label--lime">Retail · SEO</p>
+          <h3>Favatex</h3>
+          <p>▲ +180% tráfico orgánico en 12 meses.</p>
+        </article>
+        <article class="caso">
+          <div class="caso__media caso__media--b"><span>Campaña · Juan Valdez</span></div>
+          <p class="t-label t-label--lime">Paid Media</p>
+          <h3>Juan Valdez</h3>
+          <p>▲ CPA -34% por incrementalidad.</p>
+        </article>
+        <article class="caso">
+          <div class="caso__media caso__media--c"><span>Retail media · Coloso</span></div>
+          <p class="t-label t-label--lime">Retail Media</p>
+          <h3>Grupo Coloso</h3>
+          <p>▲ Ventas atribuidas +52%.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- BLOG -->
+    <section class="blog band band--cream" id="blog">
+      <div class="block-head">
+        <h2 class="t-label">Blog</h2>
+        <a class="link-quiet link-quiet--dark" href="#">Ir al blog →</a>
+      </div>
+      <div class="blog__grid">
+        <article class="post">
+          <div class="post__media post__media--sand"><span>Gráfico / datos</span></div>
+          <p class="t-label">SEO · 6 min</p>
+          <h3>IA aplicada al SEO: qué cambia realmente en la búsqueda</h3>
+        </article>
+        <article class="post">
+          <div class="post__media post__media--photo"><span>Foto — retail / góndola</span></div>
+          <p class="t-label">Retail Media · 4 min</p>
+          <h3>Retail media en Chile: el inventario que nadie mide bien</h3>
+        </article>
+        <article class="post">
+          <div class="post__media post__media--faces">
+            <span class="face face--1"></span>
+            <span class="face face--2"></span>
+            <span class="face face--3"></span>
+          </div>
+          <p class="t-label">Medición · 8 min</p>
+          <h3>Del reporte al valor: KPIs que el negocio entiende</h3>
+        </article>
+      </div>
+    </section>
+
+    <!-- CONTACTO · arena, sin verde claro de fondo -->
+    <section class="cta band band--sand" id="contacto">
+      <div>
+        <h2 class="t-display t-display--sm">Hablemos de tu<br>próximo <span class="t-accent">objetivo</span></h2>
+        <p class="t-lead">En un trabajo conjunto facilitamos el desarrollo de tus estrategias, acciones y mediciones.</p>
+      </div>
+      <div class="cta__aside">
+        <p class="t-label">Escríbenos</p>
+        <a class="cta__mail" href="mailto:hola@grupomakingof.com">hola@grupomakingof.com</a>
+        <a class="btn" href="mailto:hola@grupomakingof.com">Agendar reunión →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot band band--cream">
+    <div class="foot__brand">
+      <span class="brand__grupo">Grupo</span>
+      <span class="brand__name">Making Of</span>
+    </div>
+    <p>Your Next Business Partner · Santiago, Chile</p>
+    <p class="foot__legal">Making Of SPA, 2026 · Política de privacidad</p>
+  </footer>
+
+  <script src="home-1b-alt.js"></script>
+</body>
+</html>

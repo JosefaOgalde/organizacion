@@ -1,0 +1,428 @@
+/* Te acompañamos en · 4 diseños nuevos
+   A bandas · B tipografía · C pista numerada · D editorial
+*/
+
+.acomp {
+  --ac-ink: #091914;
+  --ac-forest: #133429;
+  --ac-mid: #2a5a49;
+  --ac-lime: #93c64a;
+  --ac-mint: #99eada;
+  --ac-cream: #fbf6eb;
+  --ac-sand: #ebe9c2;
+  padding: clamp(2.75rem, 6vw, 5rem) 0;
+  background: #fff;
+  font-family: "Instrument Sans", system-ui, sans-serif;
+}
+
+.acomp__head {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 0.85rem;
+  padding: 0 clamp(1.25rem, 4vw, 4rem);
+}
+
+.acomp__pill {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ac-ink);
+}
+
+.acomp__ver {
+  display: block;
+  text-align: center;
+  margin: 0 0 1.75rem;
+  padding: 0 clamp(1.25rem, 4vw, 4rem);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ac-mid);
+}
+
+.acomp__grid {
+  margin: 0 auto;
+}
+
+.acomp__card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 0;
+}
+
+.acomp__card--dark p {
+  margin: 0;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.acomp__icon {
+  width: 3.25rem;
+  height: 3.25rem;
+  flex-shrink: 0;
+}
+
+.acomp__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.acomp__label {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ac-forest);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========== A · BANDAS (nav3 / V1) ========== */
+.acomp--v1 {
+  background: var(--ac-cream);
+  padding-bottom: 0;
+}
+
+.acomp--v1 .acomp__pill {
+  background: var(--ac-mint);
+  padding: 0.65rem 1.5rem;
+  border-radius: 999px;
+}
+
+.acomp--v1 .acomp__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: none;
+}
+
+.acomp--v1 .acomp__card {
+  border-radius: 0;
+  padding: 1.35rem clamp(1.25rem, 4vw, 4rem);
+  justify-content: center;
+  text-align: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.acomp--v1 .acomp__card--dark {
+  background: var(--ac-forest);
+  color: #fff;
+  padding-block: 2rem;
+}
+
+.acomp--v1 .acomp__card--dark p {
+  max-width: 40rem;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  text-align: center;
+}
+
+.acomp--v1 .acomp__card--lime {
+  background: var(--ac-lime);
+  color: var(--ac-forest);
+  justify-content: center;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(9, 25, 20, 0.12);
+}
+
+.acomp--v1 .acomp__card--lime:nth-child(odd) {
+  background: color-mix(in srgb, var(--ac-lime) 78%, white);
+}
+
+.acomp--v1 .acomp__label {
+  font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+}
+
+.acomp--v1 .acomp__icon {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.acomp--v1 .acomp__icon svg [stroke="#fff"] { stroke: var(--ac-forest); }
+.acomp--v1 .acomp__icon svg [fill="#fff"] { fill: var(--ac-forest); }
+
+/* ========== B · TIPOGRAFÍA MONUMENTAL (v4 / V2) ========== */
+.acomp--v2 {
+  background: #fff;
+}
+
+.acomp--v2 .acomp__pill {
+  color: var(--ac-mid);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  background: none;
+}
+
+.acomp--v2 .acomp__grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  max-width: 48rem;
+  padding: 0 clamp(1.25rem, 4vw, 4rem);
+  text-align: center;
+}
+
+.acomp--v2 .acomp__card--dark {
+  background: transparent;
+  color: var(--ac-ink);
+  padding: 0 0 2rem;
+  border-bottom: 3px solid var(--ac-lime);
+  margin-bottom: 1.5rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.acomp--v2 .acomp__card--dark p {
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+  font-weight: 500;
+  color: var(--ac-mid);
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.acomp--v2 .acomp__verbs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  width: 100%;
+}
+
+.acomp--v2 .acomp__card--lime {
+  background: transparent;
+  flex-direction: column;
+  gap: 0;
+  padding: 0.35rem 0;
+}
+
+.acomp--v2 .acomp__icon {
+  display: none;
+}
+
+.acomp--v2 .acomp__label {
+  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  color: var(--ac-ink);
+}
+
+.acomp--v2 .acomp__card--lime:nth-child(2) .acomp__label { color: var(--ac-mid); }
+.acomp--v2 .acomp__card--lime:nth-child(3) .acomp__label { color: var(--ac-lime); }
+.acomp--v2 .acomp__card--lime:nth-child(4) .acomp__label {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--ac-forest);
+}
+
+/* ========== C · PISTA NUMERADA (nav2 / V3) ========== */
+.acomp--v3 {
+  background: var(--ac-forest);
+  color: #fff;
+}
+
+.acomp--v3 .acomp__pill {
+  color: var(--ac-mint);
+  background: transparent;
+  border-bottom: 2px solid var(--ac-lime);
+  border-radius: 0;
+  padding: 0.25rem 0;
+}
+
+.acomp--v3 .acomp__ver { color: var(--ac-lime); }
+
+.acomp--v3 .acomp__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  max-width: 72rem;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+  background: rgba(251, 246, 235, 0.12);
+}
+
+.acomp--v3 .acomp__card {
+  background: var(--ac-forest);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.5rem 1.15rem 1.35rem;
+  min-height: 16rem;
+  text-align: left;
+  position: relative;
+}
+
+.acomp--v3 .acomp__card::before {
+  counter-increment: acomp;
+  content: counter(acomp, decimal-leading-zero);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--ac-lime);
+}
+
+.acomp--v3 .acomp__grid { counter-reset: acomp; }
+
+.acomp--v3 .acomp__card--dark p {
+  font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+  font-weight: 500;
+  color: rgba(251, 246, 235, 0.92);
+  max-width: 12rem;
+}
+
+.acomp--v3 .acomp__card--lime {
+  background: #0f2420;
+}
+
+.acomp--v3 .acomp__label {
+  color: #fff;
+  font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+  margin-top: auto;
+}
+
+.acomp--v3 .acomp__icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  align-self: flex-end;
+}
+
+.acomp--v3 .acomp__icon svg [stroke="#fff"] { stroke: var(--ac-mint); }
+.acomp--v3 .acomp__icon svg [fill="#fff"] { fill: var(--ac-mint); }
+
+/* ========== D · EDITORIAL SPLIT (alt / V4) ========== */
+.acomp--v4 {
+  background: #fff;
+}
+
+.acomp--v4 .acomp__head {
+  justify-content: flex-start;
+  max-width: 68rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.acomp--v4 .acomp__pill {
+  background: none;
+  color: var(--ac-lime);
+  font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+  letter-spacing: -0.03em;
+  padding: 0;
+}
+
+.acomp--v4 .acomp__ver {
+  text-align: left;
+  max-width: 68rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.acomp--v4 .acomp__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 2.5rem 3rem;
+  max-width: 68rem;
+  padding: 0 clamp(1.25rem, 4vw, 4rem);
+  align-items: start;
+}
+
+.acomp--v4 .acomp__card--dark {
+  background: var(--ac-sand);
+  color: var(--ac-ink);
+  border-radius: 0 2.5rem 0 2.5rem;
+  padding: clamp(1.75rem, 4vw, 2.75rem);
+  min-height: 100%;
+  align-items: flex-start;
+}
+
+.acomp--v4 .acomp__card--dark p {
+  font-size: clamp(1.25rem, 2.3vw, 1.7rem);
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--ac-ink);
+  max-width: 22rem;
+  text-align: left;
+}
+
+.acomp--v4 .acomp__verbs {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid rgba(19, 52, 41, 0.15);
+}
+
+.acomp--v4 .acomp__card--lime {
+  background: transparent;
+  border-bottom: 1px solid rgba(19, 52, 41, 0.15);
+  border-radius: 0;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 1.15rem;
+  padding: 1.15rem 0.25rem;
+  text-align: left;
+}
+
+.acomp--v4 .acomp__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--ac-lime);
+  border-radius: 0.65rem;
+  padding: 0.45rem;
+  box-sizing: border-box;
+}
+
+.acomp--v4 .acomp__icon svg [stroke="#fff"] { stroke: var(--ac-forest); }
+.acomp--v4 .acomp__icon svg [fill="#fff"] { fill: var(--ac-forest); }
+
+.acomp--v4 .acomp__label {
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+}
+
+@media (max-width: 900px) {
+  .acomp--v3 .acomp__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .acomp--v3 .acomp__card {
+    min-height: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .acomp--v3 .acomp__card::before {
+    margin-right: 0.25rem;
+  }
+
+  .acomp--v3 .acomp__icon {
+    margin-left: auto;
+    align-self: center;
+  }
+
+  .acomp--v3 .acomp__card--dark p {
+    max-width: none;
+  }
+
+  .acomp--v4 .acomp__grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}

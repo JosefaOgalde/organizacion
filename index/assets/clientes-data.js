@@ -120,6 +120,24 @@ window.CLIENTES_PORTAL = [
           'Charlas revisadas',
           'Informe de hallazgos'
         ]
+      },
+      {
+        codigo: 'WEB',
+        nombre: 'Sitio web',
+        archivo: 'mkof/sitio-web',
+        resumen: 'Trabajo del sitio web Making Of — briefs, alcance y entregables web.',
+        color: { border: '#1A8F98', bg: '#DCF4F6', text: '#0F555C' },
+        identidad: {
+          primario: '#1A8F98',
+          secundario: '#0F555C',
+          acento: '#3DB8C1',
+          fondo: '#DCF4F6'
+        },
+        entregables: [
+          'Brief y alcance',
+          'Referencias / wireframes',
+          'Entregables de implementación'
+        ]
       }
     ]
   },

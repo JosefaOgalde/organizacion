@@ -1,0 +1,344 @@
+/* CTA · 8 diseños distintos */
+
+.cta8 {
+  --ink: #091914;
+  --forest: #133429;
+  --mid: #2a5a49;
+  --lima: #93c64a;
+  --mint: #99eada;
+  --cream: #fbf6eb;
+  --sand: #ebe9c2;
+  margin: 0;
+  font-family: "Instrument Sans", system-ui, sans-serif;
+  color: var(--ink);
+  background: #efece0;
+}
+
+.cta8-top {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem clamp(1rem, 4vw, 3rem) 0.5rem;
+}
+.cta8-top a { color: var(--mid); font-weight: 600; text-decoration: none; }
+.cta8-top h1 {
+  margin: 0.75rem 0 0.35rem;
+  font-size: clamp(1.55rem, 3vw, 2.2rem);
+  letter-spacing: -0.03em;
+}
+.cta8-top p { margin: 0; color: var(--mid); max-width: 40rem; line-height: 1.5; }
+.cta8-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1.15rem;
+}
+.cta8-nav a {
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(19,52,41,.15);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.cta8-block {
+  margin-top: 1.75rem;
+  border-top: 1px solid rgba(19,52,41,.12);
+  padding-bottom: 2.5rem;
+  overflow: visible;
+}
+.cta8-tag {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.25rem clamp(1rem, 4vw, 3rem) 1rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  background: var(--lima);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  border: 0;
+}
+
+/* —— 1 Card centrada (mockup) —— */
+.c1 {
+  padding: 1.25rem clamp(1rem, 4vw, 3rem) 2.5rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+.c1__box {
+  max-width: 48rem;
+  width: 100%;
+  margin: 0 auto;
+  background: var(--cream);
+  border-radius: 1.5rem;
+  padding: clamp(2.25rem, 5vw, 3.5rem) clamp(1.5rem, 4vw, 2.5rem);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+  box-sizing: border-box;
+}
+.c1__box h2 {
+  margin: 0;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+  max-width: 100%;
+}
+.c1__box p {
+  margin: 0;
+  max-width: 32rem;
+  color: var(--mid);
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* —— 2 Franja oscura full —— */
+.c2 {
+  background: var(--forest);
+  color: #fff;
+  padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 4vw, 3rem);
+  text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+}
+.c2 h2 {
+  margin: 0 auto 0.85rem;
+  max-width: 28rem;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+.c2 p {
+  margin: 0 auto 1.5rem;
+  max-width: 30rem;
+  color: rgba(251,246,235,.8);
+  line-height: 1.55;
+}
+.c2 .btn-cta { background: var(--lima); color: var(--ink); }
+
+/* —— 3 Split texto / botón —— */
+.c3 {
+  display: grid;
+  grid-template-columns: 1.4fr auto;
+  gap: 2rem;
+  align-items: center;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2.5rem clamp(1rem, 4vw, 3rem);
+  background: #fff;
+}
+.c3 h2 {
+  margin: 0 0 0.65rem;
+  font-size: clamp(1.5rem, 3vw, 2.15rem);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+.c3 p {
+  margin: 0;
+  color: var(--mid);
+  line-height: 1.55;
+  max-width: 36rem;
+  font-weight: 500;
+}
+.c3 .btn-cta { white-space: nowrap; }
+
+/* —— 4 Outline + botón ghost —— */
+.c4 {
+  padding: 2rem clamp(1rem, 4vw, 3rem);
+}
+.c4__box {
+  max-width: 52rem;
+  margin: 0 auto;
+  border: 3px solid var(--ink);
+  border-radius: 0.5rem;
+  padding: clamp(2rem, 4vw, 3rem);
+  text-align: center;
+  background: #fff;
+}
+.c4__box h2 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.5rem, 3.2vw, 2.25rem);
+  letter-spacing: -0.03em;
+}
+.c4__box p {
+  margin: 0 auto 1.5rem;
+  max-width: 34rem;
+  color: var(--mid);
+  line-height: 1.55;
+}
+.c4__box .btn-cta {
+  background: transparent;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  border-radius: 0.35rem;
+}
+.c4__box .btn-cta:hover { background: var(--lima); border-color: var(--lima); }
+
+/* —— 5 Tipografía monumental —— */
+.c5 {
+  background: var(--cream);
+  padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 4vw, 3rem);
+  text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+}
+.c5 h2 {
+  margin: 0 auto 1rem;
+  max-width: 20ch;
+  font-size: clamp(2rem, 6vw, 4rem);
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  font-weight: 800;
+}
+.c5 p {
+  margin: 0 auto 1.75rem;
+  max-width: 28rem;
+  font-size: 1.05rem;
+  color: var(--mid);
+  line-height: 1.55;
+}
+.c5 .btn-cta {
+  background: var(--ink);
+  color: var(--lima);
+  border-radius: 0;
+  padding: 1rem 2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+}
+
+/* —— 6 Lima full bleed —— */
+.c6 {
+  background: var(--lima);
+  padding: clamp(3rem, 7vw, 4.5rem) clamp(1.25rem, 4vw, 3rem);
+  text-align: center;
+  color: var(--forest);
+  box-sizing: border-box;
+  width: 100%;
+}
+.c6 h2 {
+  margin: 0 auto 0.85rem;
+  max-width: 26rem;
+  font-size: clamp(1.65rem, 3.5vw, 2.4rem);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+.c6 p {
+  margin: 0 auto 1.5rem;
+  max-width: 32rem;
+  line-height: 1.55;
+  font-weight: 500;
+}
+.c6 .btn-cta {
+  background: var(--forest);
+  color: #fff;
+}
+
+/* —— 7 Dos líneas + CTA pill flotante —— */
+.c7 {
+  padding: 2rem clamp(1rem, 4vw, 3rem) 4rem;
+  overflow: visible;
+}
+.c7__wrap {
+  max-width: 56rem;
+  margin: 0 auto;
+  background: var(--sand);
+  border-radius: 2.5rem;
+  padding: clamp(2rem, 5vw, 3rem) 1.5rem 3.75rem;
+  text-align: center;
+  position: relative;
+  overflow: visible;
+}
+.c7__wrap h2 {
+  margin: 0 0 0.65rem;
+  font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+.c7__wrap p {
+  margin: 0 auto;
+  max-width: 34rem;
+  color: var(--mid);
+  line-height: 1.55;
+  font-weight: 500;
+}
+.c7__wrap .btn-cta {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 50%);
+  box-shadow: 0 10px 28px rgba(9,25,20,.18);
+  z-index: 2;
+}
+
+/* —— 8 Asimétrico con rail —— */
+.c8 {
+  display: grid;
+  grid-template-columns: 6px 1fr;
+  gap: 0 1.5rem;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 2.5rem clamp(1rem, 4vw, 3rem);
+  align-items: start;
+}
+.c8__rail {
+  background: linear-gradient(180deg, var(--lima), var(--mint), var(--mid));
+  border-radius: 4px;
+  min-height: 100%;
+  align-self: stretch;
+}
+.c8__copy h2 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.55rem, 3vw, 2.2rem);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+.c8__copy p {
+  margin: 0 0 1.35rem;
+  color: var(--mid);
+  line-height: 1.55;
+  max-width: 36rem;
+  font-weight: 500;
+}
+.c8__copy .btn-cta {
+  background: transparent;
+  border: 2px solid var(--lima);
+  color: var(--forest);
+}
+
+@media (max-width: 720px) {
+  .c3 {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .c3 p { margin-left: auto; margin-right: auto; }
+  .c3 .btn-cta { justify-self: center; }
+  .c8 {
+    grid-template-columns: 1fr;
+  }
+  .c8__rail {
+    width: 100%;
+    height: 4px;
+    min-height: 0;
+  }
+}
