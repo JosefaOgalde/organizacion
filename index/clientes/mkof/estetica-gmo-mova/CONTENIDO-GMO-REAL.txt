@@ -1,0 +1,324 @@
+GRUPO MAKING OF - CONTENIDO REAL DEL SITIO WEB
+===============================================
+Fecha de captura: 5 de agosto, 2026
+URL: https://grupomakingof.com/
+
+===============================================
+NAVEGACIÓN PRINCIPAL
+===============================================
+
+Logo: GRUPO MAKING OF
+
+Menú principal (de izquierda a derecha):
+1. INICIO
+2. SERVICIOS (con dropdown)
+   - ESTRATEGIA
+   - SEO & GEO
+   - PRODUCTOS DIGITALES
+   - CREATIVIDAD Y DISEÑO
+3. SOBRE NOSOTROS
+4. CONTÁCTANOS
+5. BLOG
+
+Botones adicionales en header (derecha):
+- Ley Karin
+- Contacto
+- Instagram
+- LinkedIn
+
+===============================================
+PÁGINA DE INICIO (HOME)
+===============================================
+
+Breadcrumb: INICIO
+
+SECCIÓN HERO:
+Headline principal: "MAKING OF, your next business partner"
+(No hay subtext visible en el hero principal)
+
+SECCIÓN ABOUT:
+Párrafo principal:
+"Somos una empresa de marketing digital cuyo foco es ser un partner estratégico permanente para nuestros clientes, entendiendo sus necesidades y desafíos, adaptándonos continuamente para desarrollar, entregar e implementar soluciones adecuadas a la evolución de sus clientes y el mercado, agregando así valor medible a la marca."
+
+SECCIÓN SERVICIOS:
+Título: "Te acompañamos en:"
+
+Servicios principales (5 bloques):
+1. Definir
+2. Crear (con tooltip: "Posicionamos tu marca eficientemente en las plataformas de búsqueda (SEO/SEM/CONTENT)")
+3. Analizar
+4. Posicionar (con tooltip: "Tu mercado objetivo y saber abordarlo a través de acciones efectivas de Brandformance")
+5. Identificar
+
+SECCIÓN EXPERIENCIA:
+"Contamos con 11 años de experiencia en la evolución del marketing digital, con un completo y dedicado equipo profesional, en Chile y en el extranjero, que nos permite dar una experiencia inmejorable en el aporte de valor a tu empresa."
+
+HERRAMIENTAS Y CERTIFICACIONES:
+Título: "Herramientas y certificaciones"
+Logos mostrados:
+- ChatGPT 4o
+- Emarketer
+- Google Trends
+- Looker Studio
+- Metricool
+- Ahrefs
+- Google Analytics 4
+- Asana
+- Ranktank
+- Screaming Frog
+- Semrush
+- Adhesión
+
+SECCIÓN SERVICIOS DETALLADOS:
+Título: "SERVICIOS"
+
+Descripción:
+"Nos enfocamos en un servicio 360°, con desarrollo e implementación de estrategias digitales, análisis y gestión de datos e IA, Medios y contenidos, tecnología y creatividad, asistidos con equipos especializados de alto rendimientos."
+
+Servicios específicos:
+1. Estrategia
+   Descripción: "Transformamos datos y tendencias en la hoja de ruta para el crecimiento de tu negocio."
+
+2. Posicionamiento SEO
+   Descripción: "Construimos la autoridad de tu marca para que tus clientes te encuentren de forma orgánica y sostenible."
+
+3. Productos Digitales
+   Descripción: "Aceleramos tus resultados de negocio llevando tu mensaje a la audiencia correcta e impacta de través de medios pagados."
+
+4. Creatividad y Diseño
+   Descripción: "Damos vida a tu estrategia creando experiencias digitales que impactan y conectan con tu audiencia."
+
+Bloque adicional: "Maximizamos el retorno de tu inversión publicitaria (ROAS)." [Ver más]
+
+CLIENTES Y PARTNERS:
+Título: "Algunos clientes y partners"
+Logos incluyen:
+- Juan Valdez
+- Jumbo
+- Activa diseño+espacio
+- Farmacias ahumada
+- Burger King
+- LABB
+- Enterstep
+- Enel X
+- ECR Group
+- Unilever
+- Tricot
+- Starbucks
+- Chantilly
+- Paris
+
+SECCIÓN CTA:
+"Somos partner en el logro de tus objetivos."
+"En un trabajo en conjunto, te facilitamos el desarrollo de tus estrategias, acciones y mediciones."
+Botón: "Contáctanos"
+
+PREGUNTAS FRECUENTES:
+Título: "Preguntas frecuentes"
+
+Preguntas listadas:
+1. ¿Cuál es la mejor agencia de SEO en Chile?
+   Respuesta: "Grupo Making OF se ha posicionado entre las mejores gracias a su enfoque estratégico, años de experiencia en linkbuilding, uso de IA aplicada al SEO y resultados medibles en posicionamiento orgánico y visibilidad digital."
+
+2. ¿Para qué sirve una agencia de marketing digital?
+3. ¿En qué se especializa la agencia de marketing digital Grupo Making OF?
+4. ¿Por qué es importante invertir en SEO para una empresa en Chile?
+5. ¿Qué servicios ofrece Grupo Making OF?
+6. ¿Cómo posicionar un sitio web en Google?
+
+===============================================
+SERVICIOS > SEO & GEO
+===============================================
+
+Breadcrumb: INICIO > SEO
+
+Título: "Agencia de SEO y GEO N°1 en Chile"
+Subtítulo: "Logramos que tus clientes te encuentren más rápido."
+
+Botón: "Servicios"
+
+ESTADÍSTICAS:
+- Premio por Optimización de sitio
+- +10 años trabajando linkbuilding
+- +5 años creando estrategias de posicionamiento
+- +63% de palabras posicionadas en top 10
+- +378 medios de comunicación
+
+Título sección: "SEO, el mejor camino para adelantarse a tu competencia"
+
+Descripción:
+"Para no perder oportunidades de tráfico y que tus clientes pasen de largo sin saber que estás ahí, te ayudamos a conocer qué es lo que realmente buscan, mostraries el camino claro hacia tu sitio y mejorar tu posicionamiento y estar un paso adelante de tu competencia, obteniendo así eficiencias en inversión y mejores beneficios a largo plazo.
+
+Desde las implementaciones técnicas, pasando por el keyword research y llegando a la conversión, estamos enfocados en posicionar..."
+
+===============================================
+SERVICIOS > ESTRATEGIA
+===============================================
+
+Breadcrumb: INICIO > ESTRATEGIA
+
+Título: "Estrategia"
+
+Botón: "Servicios"
+
+Descripción:
+"En Making OF generamos un diagnóstico y un diseño de trabajo que une la consultoría, el desarrollo de estrategias (marketing, comunicación, marca, digitales, etc) y la implementación de las mismas en el tiempo; identificamos tendencias de mercado y soluciones de BI para guiar cada paso con datos precisos y proyecciones claras. Nuestro enfoque está diseñado para optimizar recursos, detectar oportunidades y construir planes de acción que impulsen el crecimiento sostenible de tu empresa, con Kpi medibles y controles correspondientes. Acompañamos participativamente en la implementación."
+
+Título inferior: "Servicios de estrategia"
+
+===============================================
+SERVICIOS > PRODUCTOS DIGITALES
+===============================================
+
+Breadcrumb: INICIO > PRODUCTOS DIGITALES
+
+Título: "Productos Digitales"
+
+Botón: "Servicios"
+
+Descripción:
+"Llegar a la audiencia correcta requiere una estrategia que integre todos los puntos de contacto de forma coherente y efectiva. En Making OF diseñamos y gestionamos planes de acción que combinan las distintas plataformas digitales y sociales para maximizar tu alcance y conversión. Con un enfoque basado en datos, optimizamos cada canal para que trabaje en sinergia, asegurando campañas medibles, rentables y alineadas con los objetivos de tu marca. Generamos ingresos adicionales donde solo habían gastos."
+
+===============================================
+SERVICIOS > CREATIVIDAD Y DISEÑO
+===============================================
+
+Breadcrumb: INICIO > CREATIVIDAD Y DISEÑO
+
+Título: "Creatividad y Diseño"
+Subtítulo: "Ideas que Transforman tu Negocio"
+
+Botón: "servicios"
+
+Descripción:
+"En Making OF, la creatividad es el motor que da vida a la estrategia. No se trata solo de crear diseños atractivos o campañas ingeniosas; se trata de encontrar soluciones inteligentes a problemas de negocio complejos. Fusionamos el pensamiento estratégico con una ejecución visual y técnica impecable para crear experiencias que capturan la atención, comunican con claridad y, sobre todo, generan resultados. Creemos que una gran idea es el diferenciador más poderoso. Es la que convierte a un visitante en cliente, a un cliente en un embajador y a una marca en un referente de su industria."
+
+===============================================
+SOBRE NOSOTROS
+===============================================
+
+Breadcrumb: INICIO > SOBRE NOSOTROS
+
+Título: "Your Next Business Partner"
+
+Subtítulo:
+"Somos un equipo multiprofesional que capitaliza un proceso continuo de experiencia, conocimiento y desarrollo de más de 11 años en el marketing y comunicaciones digital."
+
+Sección: "Conocemos el negocio desde dentro"
+
+Descripción:
+"Luego de muchos años liderando diferentes equipos comerciales/ marketing/producto, en diferentes industrias, convergimos toda nuestra experiencia y visión tecnológicos, incorporando diferentes especialistas, podemos entregar servicios de brandformance adecuados para el logro de sus objetivos. Ser partner significa involucrarse y compartir los desafíos de la empresa, aportando una relación de valor en el tiempo."
+
+Sección: "¿Cómo trabajamos?"
+
+1. Pensamiento estratégico y ejecución táctica
+Descripción: "Acompañamos permanentemente a nuestros clientes desde la formulación de objetivos y estrategias hasta su implementación, con definición y control de KPIs y elaboración reportería consolidada, según requerimientos de cada negocio."
+
+2. Equipo a la vanguardia con los últimos avances y multidisciplinario
+Descripción: "Integramos equipos con variadas experiencias y permanente actualización de sus conocimientos, que aportan diferentes miradas generando un enriquecedor valor al desarrollo del brandformance que entregamos."
+
+3. Buscamos relaciones de largo plazo
+Descripción: "Ser PARTNER y acompañar en las diferentes etapas del negocio nuestra prioridad, generamos una relación cercana con nuestros clientes, ser una extensión de sus equipos, lo que nos permite estar en constante búsqueda de VALOR para nuestros clientes."
+
+4. Resultados en base a performance
+Descripción: "Nos importa la optimización y resultados, por lo cual establecemos todas nuestras acciones con asociación a KPI y sus controles, para obtener resultados medibles y cuantificables; generamos reportería, recomendación y cambios en un proceso continuo..."
+
+===============================================
+CONTÁCTANOS
+===============================================
+
+Breadcrumb: INICIO > CONTÁCTANOS
+
+Banner superior: "¿Tienes un proyecto? ¡Contáctanos!"
+
+Título: "¡Estamos aquí para aportar valor!"
+
+Columna izquierda:
+"Estamos a tu disposición para ayudarte con tus dudas o consultas"
+
+"En Making OF queremos acompañar a las empresas a avanzar en el mundo digital"
+
+Escribenos:
+contacto@mkof.cl
+
+Llámanos:
++569 9327 4663
+Lun - Jue 9:15 - 18:00 Vie 9:15 - 17:00 hrs
+
+Columna derecha - Formulario:
+Título: "¡Hablemos!"
+Subtítulo: "Déjanos tus datos y te contactaremos"
+*Obligatorio
+
+Campos del formulario:
+- Nombre y apellido *
+- Mail *
+- Teléfono
+- Tu sitio web *
+- Mensaje *
+Botón: "Enviar"
+
+===============================================
+BLOG
+===============================================
+
+Breadcrumb: INICIO > BLOG
+
+Título: "Bienvenidos al blog de Making OF"
+
+Descripción:
+"Acá encontrarás todo lo que nos inspira y nos mantiene a la vanguardia: las últimas tendencias digitales, análisis y consejos prácticos para tu marca.
+
+Desde el SEO que te posiciona, hasta la creatividad que engancha, aquí encontrarás información valiosa y relevante para potenciar tu negocio.
+
+Making OF, your next business partner"
+
+ÚLTIMOS POST:
+
+1. "SEO vs GEO: ¿Cuáles son sus diferencias y por qué hoy deben trabajar juntos?"
+   Fecha: Abril 1, 2026
+   Extracto: "Para las marcas, el objetivo era claro: lograr que una página apareciera entre los primeros resultados de los buscadores para captar tráfico orgánico. Ahora, el SEO sigue..."
+
+2. "Google refuerza la visibilidad de los enlaces en AI Overviews: ¿Qué significa esto?"
+   Fecha: Abril 1, 2026
+   Extracto: "La búsqueda está cambiando. Y no sólo porque aparezcan nuevas funcionalidades basadas en inteligencia artificial, sino porque también cambia la forma en que las..."
+
+3. "Crea una campaña de email marketing efectiva para tu tienda online con MKOF"
+   Fecha: Enero 29, 2026
+   Extracto: "En MKOF entendemos el email marketing como uno de los activos más sólidos dentro de una estrategia digital bien ejecutada. No se trata de enviar correos de forma masiva..."
+
+===============================================
+FOOTER
+===============================================
+
+Columna izquierda:
+Logo: GRUPO MAKING OF
+Link: "Política de Privacidad y Protección de Datos"
+
+Columna centro:
+MKOF
+- TALK
+- ACME
+
+Columna derecha:
+"Your Next Business Partner"
+LinkedIn icon
+
+Pie de página:
+"Política de privacidad. Making Of SPA, 2025 todos los derechos reservados."
+
+===============================================
+NOTAS ADICIONALES
+===============================================
+
+- El sitio está en español
+- Colores corporativos: Verde (varios tonos), Negro, Beige/Crema
+- El diseño es moderno y limpio con elementos de ilustración de redes/nodos
+- Hay animaciones sutiles en el scroll
+- El sitio es responsive
+- No se encontró un enlace directo a "www" (solo grupomakingof.com funciona)
+- Las secciones "Definir", "Crear", "Analizar", etc. parecen ser conceptos visuales en la home, no páginas separadas
+
+===============================================
+FIN DEL DOCUMENTO
+===============================================
