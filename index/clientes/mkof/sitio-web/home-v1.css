@@ -574,3 +574,135 @@ mark {
   .v1-menu { display: none; }
   .v1-hero__panel { min-height: 16rem; }
 }
+
+/* ——— Interacciones ——— */
+.v1-nav {
+  transition: box-shadow 200ms var(--ease), background 200ms var(--ease);
+}
+.v1-nav.is-scrolled {
+  box-shadow: 0 8px 24px rgba(9, 25, 20, 0.08);
+  background: color-mix(in srgb, var(--cream) 92%, white);
+}
+
+.v1-btn {
+  transition: background 180ms var(--ease), color 180ms var(--ease), transform 180ms var(--ease);
+}
+.v1-btn:hover { transform: translateY(-2px); }
+.v1-btn:active { transform: translateY(0); }
+
+.v1-hero__mark {
+  animation: v1-spin 28s linear infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes v1-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.v1-acomp__verbs article {
+  cursor: pointer;
+  transition: transform 200ms var(--ease), box-shadow 200ms var(--ease), background 200ms var(--ease);
+}
+.v1-acomp__verbs article:hover,
+.v1-acomp__verbs article:focus-visible {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 14px 28px rgba(9, 25, 20, 0.12);
+  outline: none;
+}
+.v1-acomp__verbs article.is-active {
+  background: var(--forest);
+  color: #fff;
+  box-shadow: 0 14px 28px rgba(9, 25, 20, 0.16);
+}
+.v1-acomp__verbs article.is-active .v1-ico svg [stroke="#fff"] { stroke: var(--lima); }
+.v1-acomp__verbs article.is-active .v1-ico svg [fill="#fff"] { fill: var(--lima); }
+
+.v1-acomp__detail {
+  max-width: 64rem;
+  margin: 1rem auto 0;
+  padding: 0.95rem 1.15rem;
+  border-radius: 0.85rem;
+  background: #fff;
+  border: 1px solid rgba(19, 52, 41, 0.1);
+  color: var(--mid);
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: center;
+  animation: v1-fade 220ms var(--ease);
+}
+@keyframes v1-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.v1-svc__feat a {
+  transition: background 180ms var(--ease), color 180ms var(--ease);
+}
+.v1-svc__feat a:hover {
+  background: #fff;
+  color: var(--forest);
+}
+
+.v1-svc__chips article {
+  cursor: pointer;
+  transition: transform 200ms var(--ease), box-shadow 200ms var(--ease), border-color 200ms var(--ease);
+}
+.v1-svc__chips article:hover,
+.v1-svc__chips article:focus-visible,
+.v1-svc__chips article.is-active {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(9, 25, 20, 0.1);
+  border-color: color-mix(in srgb, var(--lima) 55%, transparent);
+  outline: none;
+}
+.v1-svc__chips article.is-active {
+  border-color: var(--lima);
+}
+
+.v1-faq details {
+  transition: background 180ms var(--ease);
+}
+.v1-faq summary {
+  transition: color 180ms var(--ease);
+}
+.v1-faq summary:hover { color: var(--mid); }
+
+.v1-form__status {
+  margin: 0.35rem 0 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.65rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.v1-form__status.is-ok {
+  background: color-mix(in srgb, var(--mint) 35%, transparent);
+  color: var(--mint);
+}
+.v1-form [type="submit"]:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 520ms var(--ease), transform 520ms var(--ease);
+}
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v1-hero__mark { animation: none; }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .v1-btn:hover,
+  .v1-acomp__verbs article:hover,
+  .v1-svc__chips article:hover {
+    transform: none;
+  }
+}
