@@ -109,6 +109,10 @@ mark {
   align-items: center;
   gap: 0.25rem;
   padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  font-size: 0.72rem;
 }
 .v1-menu__drop { position: relative; }
 .v1-menu__list {
