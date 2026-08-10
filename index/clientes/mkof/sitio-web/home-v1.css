@@ -259,7 +259,7 @@ mark {
   border-radius: 1.35rem;
 }
 .v1-flip--wide {
-  min-height: 100%;
+  min-height: 22.5rem;
   align-self: stretch;
 }
 .v1-flip__inner {
@@ -268,6 +268,7 @@ mark {
   height: 100%;
   min-height: inherit;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transition: transform 620ms cubic-bezier(0.4, 0.15, 0.2, 1);
 }
 .v1-flip.is-flipped .v1-flip__inner {
@@ -290,14 +291,17 @@ mark {
   align-items: flex-start;
   justify-content: space-between;
   text-align: left;
+  transform: rotateY(0deg) translateZ(1px);
+  z-index: 2;
 }
 .v1-flip__face--back {
   background: var(--forest);
   color: #fff;
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) translateZ(1px);
   align-items: center;
   justify-content: center;
   text-align: center;
+  z-index: 1;
 }
 .v1-flip--wide .v1-flip__face--back {
   padding: 1.75rem 1.6rem;

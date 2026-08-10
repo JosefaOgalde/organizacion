@@ -71,6 +71,7 @@
   /* Te acompañamos · flip cards */
   const flips = document.querySelectorAll("[data-flip]");
   flips.forEach((card) => {
+    card.classList.remove("is-flipped");
     card.setAttribute("aria-pressed", "false");
     card.addEventListener("click", () => {
       const willOpen = !card.classList.contains("is-flipped");
