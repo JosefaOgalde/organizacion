@@ -12,7 +12,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Seed (repo) | `data/impresoreando-seed.json` |
 | Live (gitignored) | `data/impresoreando-live.json` |
 | API | `GET/POST /api/impresoreando` · `POST /api/impresoreando/venta` en `scripts/organizacion-server.js` |
-| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre `scripts/sync-impresoreando-seed-a-live.js` + `force-imp-fiados-012-013.js` + `force-imp-ventas-014-015-fiado-008.js` para meter PED/productos/ventas nuevos del seed en el live local. Si no ves fiados/ventas nuevas: `node scripts/force-imp-ventas-014-015-fiado-008.js` y recarga Pedidos/Ventas. |
+| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre sync seed→live + force PED/ventas + `force-imp-gastos-caja-ventas.js`. Si no ves ventas nuevas: `node scripts/force-imp-ped-010-012-016-ventas.js`. Si no ves caja/soquetes: `node scripts/force-imp-gastos-caja-ventas.js` y recarga Resumen. |
 | Landing | `http://127.0.0.1:8000/index/clientes/impresoreando/` · CTA **Resumen 50/50** · logo `identidad/logo-impresoreando.png` |
 | Panel / Resumen | `http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen` |
 | Panel / Redes | `…/panel/?tab=redes` — campaña IG (junto a Bitácora) |
@@ -25,15 +25,20 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 
 ## Deuda / resumen
 
-- Tab Resumen: vista **general** (totales, conteos, barras, socios). El **detalle de ventas** (IDs, ítems, descuentos, historial) solo en tab **Ventas**.
-- Gastos de **ambos** (= sociedad 50/50). Capital aportado = suma de gastos por `pagadoPor` (Josefa o Nicolás). Deuda Josefa → Nicolás = `50% gastos − capital Josefa`.
+- Tab Resumen: vista **general** (totales, conteos, barras, socios) + **dashboard dinámico** (filtros periodo/origen/canal/cliente · vistas Cercanos / Semana / Cliente / SIE vs MKOF) + bloque **Ideas para imprimir**. Primera instancia = cercanos, no ads Meta. El **detalle** de ítems/descuentos sigue en tab **Ventas**.
+- Tab **Ideas** (`data.ideasImprimir`): llaveros Colo-Colo / la U / Católica · soporte tablet · abrebotellas · pastillero · porta fotos burbuja. Se puede agregar más desde el tab.
+- Gastos de **ambos** (= sociedad 50/50). Capital aportado = suma de gastos por `pagadoPor` (Josefa o Nicolás). Deuda Josefa → Nicolás = `50% gastos (sin `excluirDeuda`) − capital Josefa`.
+- **Spiderman $21.000** (`gas-diseno-spiderman`, `excluirDeuda: true`): cuenta en gastos/meta recuperar, **no** suma a la deuda Josefa→Nicolás.
+- **Operación pagada con ventas** (`data.operacion[]` + `pagadoConVentas: true`): soquetes $22.254 + filamento dorado/plateado $19.429 + **Insumos $6.381** + **Cine / Hidalgo $41.936**. Viven en tab **Operación / luz**, bajan la **caja** del Resumen, **no** suben meta/deuda entre socios.
+- **Caja / saldo:** `meta.caja.saldoDeclaradoClp` (hoy **$97.000**). Teórico = ventas − operación `pagadoConVentas`. Si hay diferencia, se muestra en Resumen.
 - Compra 29 jul: **mueble esquinero EASY INTERNET $35.990** (`gas-mueble-esquinero-easy-35990`, TC ****7022 · Nicolás) + lote insumos (llaveros / filamento rosado / ganchos).
 - Compra 31 jul ML: **bolsas kraft ×100 $4.590 + enchufe WiFi 16A $9.989 + tira LED RGB 20 m $17.990 = $32.569** (`gas-ml-bolsas-enchufe-led-32569` · Nicolás · 50/50).
-- Evento 3D 29 ago: **1 entrada $16.100** (`gas-entrada-evento-3d-16100` · **pagó Josefa** · cuenta en «Capital que aportó» de Josefa).
-- `metaRecuperar = gastos + operación`
+- Evento 3D **Omnium 29 ago**: **1 entrada $16.100** (`gas-entrada-evento-3d-16100` · **pagó Josefa** · cuenta en «Capital que aportó» de Josefa).
+- `metaRecuperar = gastos de capital + operación de capital` (sin ítems `pagadoConVentas`)
 - `saldoPendiente = max(0, meta − ventas)` — solo **ventas** bajan deuda
 - `% progreso = ventas / meta`
 - Barras UI: (1) progreso % · (2) gastos vs ventas · (3) **ventas + pedidos pendientes** (pipeline verde+azul; debajo el **% proyectado** = `(ventas+pedidos)/meta`; pedidos aún no bajan deuda)
+- **Proyección 30% / 2 meses:** día 1 = fecha de la **primera venta** (`I000001` · 2026-07-18). Cierre = día 1 + 2 meses (18 sep 2026). Meta = **30% de `metaRecuperar`**. Resumen muestra ritmo actual vs ritmo diario/semanal que falta. Configurable: `meta.proyeccion.horizonteMeses` / `metaPct`.
 - KPI pedidos activos = suma `montoNeto` de pedidos en `pendiente|listo|en_impresion`
 
 ## Pedidos (regla de oro)
@@ -61,12 +66,15 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-007 | Juan SIE | 1× Torreón `TORREON001` | **anulado** |
 | PED-008 | Juan MKOF | 1× Porta Bob Esponja `PTBOBES001` | **transferido** → I000019 $7.000 |
 | PED-009 | Rebe SIE | 1× Soporte celular negro `SOPCEL001` | **transferido** → I000012 $4.000 |
-| PED-010 | Gianni SIE | 2× Soporte celular negro `SOPCEL001` | **pendiente** · fiado · **paga 2026-08-18** · $8.000 |
+| PED-010 | Gianni SIE | 2× Soporte celular negro `SOPCEL001` | **transferido** → I000022 $8.000 |
 | PED-011 | Marcia SIE | 1× Soporte celular morado `SOPCEL001` | **transferido** → I000015 $3.000 |
-| PED-012 | Marcia SIE | 1× Limpiador de brochas morado pastel `LMBROC001` | **pendiente** · fiado · $7.000 · fecha pago por confirmar |
+| PED-012 | Marcia SIE | 1× Limpiador de brochas morado pastel `LMBROC001` | **transferido** → I000023 $7.000 |
 | PED-013 | Mel MKOF | 1× Soporte celular negro `SOPCEL001` | **transferido** → I000020 $4.000 |
 | PED-014 | Rebe SIE | 1× Alcancía chanchito `ALCHAN001` | **transferido** → I000017 $18.000 |
 | PED-015 | Cata SIE | 3× Llavero One Piece `LLONEPI001` | **transferido** → I000018 $5.000 |
+| PED-016 | Gianni SIE | 1× Lámpara honguito `LMMUSH001` | **listo** para entregar · PVP $16.000 · costo ~$9.797 · aún no venta |
+| PED-017 | Rebe SIE | 1× Posalibro Harry Potter `PSHARR001` | **listo** para entregar · PVP **$9.000** · costo ~$2.610 · aún no venta |
+| PED-018 | Gianni SIE | 1× Porta fotos burbuja `PFBURB001` | **en impresión** · PVP **$6.000** · costo ~$3.204 |
 
 ### Ventas — ID correlativo + historial
 
@@ -98,6 +106,9 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000018 | Cata SIE | 5.000 | PED-015 3× Llavero One Piece |
 | I000019 | Juan MKOF | 7.000 | PED-008 Porta Bob Esponja |
 | I000020 | Mel MKOF | 4.000 | PED-013 Soporte celular negro |
+| I000021 | Juan MKOF | 7.000 | Soporte celular Chimuelo |
+| I000022 | Gianni SIE | 8.000 | PED-010 2× Soporte celular negro |
+| I000023 | Marcia SIE | 7.000 | PED-012 Limpiador de brochas |
 
 ### Clientes nuevos — nombre + origen (obligatorio)
 
@@ -148,12 +159,13 @@ Calcular con la fórmula del panel y devolver costo/u + PVP sugerido (+margen 10
 
 Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio venta · Eliminar. Resto en `<details> Parámetros y desglose`.
 
-**Fórmula:** `filamento = g/1000 × $/kg` + `luz = horas × tarifaKwh × consumoKw` + pintado + metal + bolsa (+ recargo perfil si aplica).  
+**Fórmula:** `filamento = g/1000 × $/kg` + `luz = horas × tarifaKwh × consumoKw` + pintado + metal + bolsa + `costoExtrasClp` (+ recargo perfil si aplica).  
+**Lámparas:** toda lámpara suma kit eléctrico fijo **$5.400** (`costoExtrasClp`: pera 1400 + cable 1100 + enchufe 1000 + soquete 1900).  
 **Markup sugerido:** `precio = costo × (1 + margenObjetivoPct/100)` (default +100%).  
 **Params default (Centauri):** `tarifaKwhClp: 200`, `consumoImpresoraKw: 0.28`, `costoAnilloMetalLlaveroClp: 50`.  
 **$/kg Centauri:** PLA+ negro/rojo `$17.986` · PLA amarillo/café `$16.829` · PLA blanco `$12.690`.  
 **Diseños Cults/digitales** → gastos socios (categoría `diseño`); **no** van al costo unitario del producto.  
-Vigente: Bob $1.402 · bulldog $1.000 · nave H $1.000 · **Dragón $3.000** (`gas-diseno-dragon`) · **Alcancía chanchito $13.000** (`gas-diseno-alcancia-chanchito`).
+Vigente: Bob $1.402 · bulldog $1.000 · nave H $1.000 · **Dragón $3.000** (`gas-diseno-dragon`) · **Alcancía chanchito $13.000** (`gas-diseno-alcancia-chanchito`) · **Spiderman $21.000** (`gas-diseno-spiderman`, no deuda socios).
 
 ### Impresoras (perfiles de costo) — obligatorio recordar
 
@@ -198,11 +210,14 @@ Datos en `data.impresoras[]` (seed + live) y UI **Operación → Impresoras**. C
 | `LMBROC001` | Limpiador de brochas | **114,05** | **3,47 (3 h 28 m)** | PLA morado pastel · Elegoo · modelo 113,58 + purge 0,47 · costo ~$2.163 · **PVP sug. $4.300** |
 | `ALCHAN001` | Alcancía chanchito | **315,88** | **12,15 (12 h 9 m)** | PLA rosado `$10.990/kg` · Elegoo · modelo 280,74 + sop 33,75 + purge 1,40 · 105,06 m · costo ~$4.202 · **PVP sug. $8.400** · diseño comprado **$13.000** en gastos (no en costo/u) · vendida Rebe **$18.000** (I000017) |
 | `SOPCHI001` | Soporte celular Chimuelo | **55,81** (modelo+sop+purga) | **2,68 (2 h 41 m)** | PLA+ negro `$17.986/kg` · Elegoo · modelo 32,95 + soportes 22,39 + **purga 0,47** · 18,56 m · coste slicer 1,12 · fil~$1.004 + luz~$150 + bolsa $50 · costo ~**$1.204** · **PVP sug. $2.400** |
+| `LMMUSH001` | Lámpara honguito | **285,50** | **12,93 (12 h 56 m)** | PLA blanco `$12.690/kg` · base 110,84 g (5 h 14 m) + pantalla 174,66 g (7 h 42 m) · fil~$3.623 + luz~$724 + bolsa $50 + **kit eléctrico $5.400** (pera 1400+cable 1100+enchufe 1000+soquete 1900) · costo ~**$9.797** · PVP sug. $19.600 · Gianni **listo** PED-016 **$16.000** (aún no venta) · alias `LAMHONG001` |
+| `PSHARR001` | Posalibro Harry Potter | **132,81** (modelo+sop+resto) | **3,05 (3 h 3 m)** | PLA+ negro primeros rollos `$17.986/kg` · Elegoo · modelo 119,68 + soportes 12,36 + interfaz 0,31 + resto/falda 0,46 · 44,17 m · coste slicer 2,66 · fil~$2.389 + luz~$171 + bolsa $50 · costo ~**$2.610** · **PVP $9.000** · Rebe SIE **listo** PED-017 · alias `ALHARR001` |
+| `PFBURB001` | Porta fotos burbuja | **161,81** (2 piezas) | **4,35 (4 h 21 m)** | PLA+ negro `$17.986/kg` · Elegoo · burbujas 68,98 g (2 h 14 m) + base 92,83 g (2 h 7 m) · 53,82 m · fil~$2.910 + luz~$244 + bolsa $50 · costo ~**$3.204** · **PVP $6.000** · Gianni **en impresión** PED-018 · alias `PTFBUR001` |
 | `LLONEPI001` | Llavero One Piece | — | — | **pendiente costo** · 3× Cata SIE **$5.000** (I000018) · ~$1.667/u |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
 
-Funciones seed en `panel.js`: `asegurarProductoPortacompletosGato|Perro|PortaLataMonster|MaceteroPerroBulldog|PortacompletoPerroBulldog|PortaBobEsponja|NaveEspacialHorizontal|NaveEspacialVertical|LlaveroEscudoRanger|LlaveroPortaLipstickStanley` + `asegurarGastosDisenosCults` + `asegurarPedidosImpresosYNaves`.
+Funciones seed en `panel.js`: `asegurarProductoPortacompletosGato|Perro|PortaLataMonster|MaceteroPerroBulldog|PortacompletoPerroBulldog|PortaBobEsponja|NaveEspacialHorizontal|NaveEspacialVertical|LlaveroEscudoRanger|LlaveroPortaLipstickStanley|SoporteCelularChimuelo|PosalibroHarryPotter|PortaFotosBurbuja` + `asegurarGastosDisenosCults` + `asegurarPedidosImpresosYNaves`.
 
 ## Status diario por correo
 
@@ -214,6 +229,7 @@ ENVIAR-STATUS-IMPRESOREANDO.bat
 
 - Destino default: `romerosilvanicolas@gmail.com` + `josefa.ogalde@gmail.com`
 - `.env`: `MAIL_USER` · `MAIL_PASS` (App Password Gmail) · `MAIL_FROM` · `STATUS_TO`
+- El mail/PDF: **Pedidos** arriba (recuadros listo / en impresión) · recomendaciones (≥3: IG @impresoreando, cobrar listos, Omnium 29 ago) · **ideas en lista** · números + barra ventas/pedidos · ventas sin n° de PED · **una sola hoja larga** (`data/impresoreando-resumen-YYYY-MM-DD.pdf`)
 - Dry-run → `data/impresoreando-status-ultimo.html`
 - Programar el `.bat` en el Programador de tareas de Windows (aún no envía solo sin eso)
 

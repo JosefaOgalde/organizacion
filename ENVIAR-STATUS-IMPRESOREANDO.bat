@@ -33,5 +33,6 @@ if %ERR% neq 0 (
 
 echo Listo. Correo enviado a Josefa y Nicolas.
 echo Vista previa: data\impresoreando-status-ultimo.html
+echo PDF: data\impresoreando-resumen-AAAA-MM-DD.pdf
 echo.
 exit /b 0

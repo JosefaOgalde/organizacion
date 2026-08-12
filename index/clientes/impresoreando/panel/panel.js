@@ -7,6 +7,14 @@
   let ventasFiltroCliente = '';
   let ventasFiltroOrigen = '';
   let ventasFiltroTexto = '';
+  /** Filtros / vistas del Resumen (primera instancia: cercanos). */
+  let resumenFiltro = { periodo: 'todo', origen: '', canal: '', cliente: '', vista: 'cercanos' };
+  try {
+    const saved = JSON.parse(localStorage.getItem('imp-resumen-filtro') || '{}');
+    if (saved && typeof saved === 'object') resumenFiltro = { ...resumenFiltro, ...saved };
+  } catch (_) {
+    /* ignore */
+  }
 
   const $ = (sel) => document.querySelector(sel);
   const money = (n) =>
@@ -19,6 +27,159 @@
     return Math.round(x * 100) / 100;
   };
   const num2 = (n) => round2(n).toFixed(2);
+
+  /** Compra pagada con caja de ventas (no capital de Josefa/Nicolás → nadie se debe). */
+  function esGastoDeVentas(g) {
+    if (!g) return false;
+    if (g.pagadoConVentas === true) return true;
+    return /^ventas$/i.test(String(g.pagadoPor || '').trim());
+  }
+
+  function chileYmd(d = new Date()) {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Santiago' }).format(d);
+  }
+
+  function parseYmd(s) {
+    const m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return null;
+    return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  }
+
+  function diffDaysYmd(a, b) {
+    const da = parseYmd(a);
+    const db = parseYmd(b);
+    if (!da || !db) return 0;
+    return Math.round((db - da) / 86400000);
+  }
+
+  function addDaysYmd(ymd, days) {
+    const d = parseYmd(ymd);
+    if (!d) return ymd;
+    d.setDate(d.getDate() + Number(days || 0));
+    const y = d.getFullYear();
+    const mo = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${mo}-${day}`;
+  }
+
+  function addMonthsYmd(ymd, months) {
+    const d = parseYmd(ymd);
+    if (!d) return ymd;
+    d.setMonth(d.getMonth() + Number(months || 0));
+    const y = d.getFullYear();
+    const mo = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${mo}-${day}`;
+  }
+
+  function fmtFechaCorta(ymd) {
+    const d = parseYmd(ymd);
+    if (!d) return ymd || '—';
+    return d.toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function fechaPrimeraVenta(d) {
+    const fechas = (d?.ventas || [])
+      .map((v) => String(v.fecha || '').slice(0, 10))
+      .filter((f) => /^\d{4}-\d{2}-\d{2}$/.test(f))
+      .sort();
+    return fechas[0] || '';
+  }
+
+  function origenDeVenta(v) {
+    const o = String(v?.clienteOrigen || '').trim().toUpperCase();
+    if (o === 'SIE' || o === 'MKOF') return o;
+    const parts = String(v?.cliente || '')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    const last = (parts[parts.length - 1] || '').toUpperCase();
+    return last === 'SIE' || last === 'MKOF' ? last : '';
+  }
+
+  function canalDeVenta(v) {
+    return String(v?.canal || 'WhatsApp').trim() || 'WhatsApp';
+  }
+
+  function guardarResumenFiltro() {
+    try {
+      localStorage.setItem('imp-resumen-filtro', JSON.stringify(resumenFiltro));
+    } catch (_) {
+      /* ignore */
+    }
+  }
+
+  function ventaEnPeriodoResumen(v, periodo, dia1, hoy) {
+    const f = String(v?.fecha || '').slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(f)) return periodo === 'todo';
+    if (periodo === 'todo') return true;
+    if (periodo === 'desde-dia1') return !dia1 || f >= dia1;
+    if (periodo === 'mes') return f.slice(0, 7) === String(hoy || '').slice(0, 7);
+    const lim = periodo === '7d' ? 7 : periodo === '15d' ? 15 : periodo === '30d' ? 30 : 0;
+    if (!lim) return true;
+    const d = diffDaysYmd(f, hoy);
+    return d >= 0 && d < lim;
+  }
+
+  function filtrarVentasResumen(lista, dia1, hoy) {
+    const f = resumenFiltro;
+    return (lista || []).filter((v) => {
+      if (!ventaEnPeriodoResumen(v, f.periodo, dia1, hoy)) return false;
+      if (f.origen && origenDeVenta(v) !== f.origen) return false;
+      if (f.canal && canalDeVenta(v) !== f.canal) return false;
+      if (f.cliente && String(v.cliente || '').trim() !== f.cliente) return false;
+      return true;
+    });
+  }
+
+  function semanasDesdeDia1(ventas, dia1, hoy) {
+    const start = dia1 || hoy;
+    const totalDias = Math.max(1, diffDaysYmd(start, hoy) + 1);
+    const nSem = Math.max(1, Math.ceil(totalDias / 7));
+    const weeks = [];
+    for (let i = 0; i < nSem; i += 1) {
+      weeks.push({
+        n: i + 1,
+        ini: addDaysYmd(start, i * 7),
+        fin: addDaysYmd(start, i * 7 + 6),
+        monto: 0,
+        nVentas: 0,
+      });
+    }
+    for (const v of ventas || []) {
+      const f = String(v.fecha || '').slice(0, 10);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(f) || f < start) continue;
+      const day = diffDaysYmd(start, f);
+      if (day < 0) continue;
+      const idx = Math.min(weeks.length - 1, Math.floor(day / 7));
+      weeks[idx].monto += Number(v.montoNeto || 0);
+      weeks[idx].nVentas += 1;
+    }
+    return weeks;
+  }
+
+  function svgSemanasVentas(semanas, metaSemana) {
+    const max = Math.max(Number(metaSemana || 0), ...semanas.map((s) => s.monto), 1);
+    const w = Math.max(240, 28 + semanas.length * 38);
+    const metaY = metaSemana ? 118 - Math.max(2, Math.round((metaSemana / max) * 100)) : null;
+    const bars = semanas
+      .map((s, i) => {
+        const bh = Math.max(3, Math.round((s.monto / max) * 100));
+        const x = 18 + i * 38;
+        const y = 118 - bh;
+        const ok = metaSemana > 0 && s.monto + 1 >= metaSemana;
+        return `<rect x="${x}" y="${y}" width="28" height="${bh}" rx="5" fill="${ok ? '#3d8b6e' : '#c47a3a'}" />
+          <text x="${x + 14}" y="134" text-anchor="middle" font-size="10" fill="#8a7350">S${s.n}</text>`;
+      })
+      .join('');
+    const line =
+      metaY != null
+        ? `<line x1="10" y1="${metaY}" x2="${w - 8}" y2="${metaY}" stroke="#2f7a4e" stroke-dasharray="4 3" stroke-width="1.5" />`
+        : '';
+    return `<svg class="imp-chart-svg imp-chart-svg--wide" viewBox="0 0 ${w} 148" role="img" aria-label="Ventas por semana">
+      ${line}${bars}
+    </svg>`;
+  }
 
   function setStatus(msg, kind) {
     const el = $('#imp-status');
@@ -89,11 +250,15 @@
     if (asegurarProductoLimpiadorBrochas(d)) changed = true;
     if (asegurarProductoAlcanciaChanchito(d)) changed = true;
     if (asegurarProductoSoporteCelularChimuelo(d)) changed = true;
+    if (asegurarProductoPosalibroHarryPotter(d)) changed = true;
+    if (asegurarProductoPortaFotosBurbuja(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
     if (asegurarGastoMlBolsasEnchufeLed20260731(d)) changed = true;
     if (asegurarGastoEntradaEvento3d16100(d)) changed = true;
+    if (asegurarGastosCajaVentas(d)) changed = true;
+    if (asegurarIdeasImprimir(d)) changed = true;
     if (asegurarMelVenta020(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
@@ -109,15 +274,27 @@
         changed = true;
       }
     }
-    const capitalNeto = gastos.reduce((a, g) => a + Number(g.montoNeto || 0), 0);
+    const excluyeDeuda = (g) =>
+      !!(g && (g.excluirDeuda === true || g.noCuentaDeuda === true || esGastoDeVentas(g)));
+    const capitalNeto = gastos.reduce(
+      (a, g) => a + (esGastoDeVentas(g) ? 0 : Number(g.montoNeto || 0)),
+      0
+    );
+    const baseDeuda = gastos.reduce(
+      (a, g) => a + (excluyeDeuda(g) ? 0 : Number(g.montoNeto || 0)),
+      0
+    );
     let capitalJosefa = 0;
     let capitalNicolas = 0;
     for (const g of gastos) {
+      if (esGastoDeVentas(g)) continue;
       const monto = Number(g.montoNeto || 0);
       if (/josefa/i.test(String(g.pagadoPor || ''))) capitalJosefa += monto;
       else capitalNicolas += monto;
     }
-    const mitad = Math.round(capitalNeto * 0.5);
+    // Deuda Josefa→Nicolás = 50% de gastos que sí cuentan − lo que ya pagó Josefa.
+    // Gastos con excluirDeuda (ej. Spiderman) siguen en totales/meta, pero no en esta deuda.
+    const mitad = Math.round(baseDeuda * 0.5);
     const deudaJosefaClp = Math.max(0, mitad - Math.round(capitalJosefa));
     const cap = d.meta.capital && typeof d.meta.capital === 'object' ? d.meta.capital : {};
     const nextCap = {
@@ -126,10 +303,11 @@
       aportadoNicolasClp: Math.round(capitalNicolas),
       deudaPctJosefa: 50,
       montoNetoClp: capitalNeto,
+      baseDeudaClp: baseDeuda,
       deudaJosefaClp,
       nota:
         capitalJosefa > 0
-          ? `Sociedad 50/50. Nicolás aportó ${Math.round(capitalNicolas).toLocaleString('es-CL')} y Josefa ${Math.round(capitalJosefa).toLocaleString('es-CL')}. Josefa debe el 50% de los gastos menos lo que ya pagó.`
+          ? `Sociedad 50/50. Nicolás aportó ${Math.round(capitalNicolas).toLocaleString('es-CL')} y Josefa ${Math.round(capitalJosefa).toLocaleString('es-CL')}. Josefa debe el 50% de los gastos (sin ítems excluidos de deuda) menos lo que ya pagó.`
           : 'Nicolás puso el capital. «Ambos» = sociedad 50/50 (Josefa debe el 50% a Nicolás).',
     };
     if (
@@ -1233,6 +1411,134 @@
     };
   }
 
+  /**
+   * Posalibro Harry Potter — slicer Elegoo · PLA+ negro primeros rollos · 3 h 3 m.
+   * Soft seed: no pisa g/h/$ si ya hay edición local.
+   */
+  function seedPosalibroHarryPotter() {
+    const filamentoModeloGramos = 119.68; // 39,80 m
+    const filamentoSoportesGramos = 12.67; // 12,36 soportes + 0,31 interfaz
+    const filamentoPurgeGramos = 0.46; // 132,81 − 119,68 − 12,67 (falda/brim/resto)
+    const filamentoGramos = 132.81; // slicer total · 44,17 m
+    const horasImpresion = round2((3 * 60 + 3) / 60); // 3 h 3 m → 3,05 h
+    // fil 2.388,72 + luz 170,80 + bolsa 50 = 2.609,52 → PVP venta $9.000
+    return {
+      sku: 'PSHARR001',
+      nombre: 'Posalibro Harry Potter',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoModeloGramos,
+      filamentoSoportesGramos,
+      filamentoPurgeGramos,
+      filamentoMetros: 44.17,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 9000,
+      costoSlicerRef: 2.66,
+      pendienteCosto: false,
+      aliasSku: ['ALHARR001', 'APHARR001'],
+      notas:
+        `Slicer 1 ud (PLA+ negro primeros rollos): modelo ${filamentoModeloGramos} g (39,80 m) + soportes 12,36 g + interfaz 0,31 g + resto/falda 0,46 g = ${filamentoGramos} g · 44,17 m · 3 h 3 m · coste slicer 2,66. PLA+ negro $17.986/kg · Elegoo. Fil ~$2.389 + luz ~$171 + bolsa $50 = costo ~$2.610 · PVP $9.000.`,
+    };
+  }
+
+  function asegurarProductoPosalibroHarryPotter(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-posalibro-harry-potter';
+    const seed = seedPosalibroHarryPotter();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (!existing.editadoLocal && Number(existing.precioVentaSugeridoClp) !== 9000) {
+      existing.precioVentaSugeridoClp = 9000;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /**
+   * Porta fotos burbuja — 2 placas slicer Elegoo · PLA+ negro · 4 h 21 m.
+   * Soft seed: no pisa g/h/$ si ya hay edición local.
+   */
+  function seedPortaFotosBurbuja() {
+    const filamentoModeloGramos = round2(62.47 + 85.77); // 148,24
+    const filamentoSoportesGramos = round2(5.07 + 0.97 + 6.59); // 12,63
+    const filamentoPurgeGramos = round2(0.47 + 0.47); // 0,94
+    const filamentoGramos = round2(68.98 + 92.83); // 161,81
+    const horasImpresion = round2((2 * 60 + 14 + 2 * 60 + 7) / 60); // 4 h 21 m → 4,35 h
+    // fil 2.910,35 + luz 243,60 + bolsa 50 = 3.203,95 → PVP venta $6.000
+    return {
+      sku: 'PFBURB001',
+      nombre: 'Porta fotos burbuja',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoModeloGramos,
+      filamentoSoportesGramos,
+      filamentoPurgeGramos,
+      filamentoMetros: round2(22.94 + 30.88),
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 6000,
+      costoSlicerRef: 3.24,
+      pendienteCosto: false,
+      aliasSku: ['PTFBUR001', 'PFOTBUR001'],
+      notas:
+        `Slicer 2 piezas (PLA+ negro $17.986/kg · Elegoo): burbujas 68,98 g (22,94 m · 2 h 14 m · coste 1,38) + base 92,83 g (30,88 m · 2 h 7 m · coste 1,86) = ${filamentoGramos} g · 53,82 m · 4 h 21 m. Fil ~$2.910 + luz ~$244 + bolsa $50 = costo ~$3.204 · PVP $6.000.`,
+    };
+  }
+
+  function asegurarProductoPortaFotosBurbuja(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-porta-fotos-burbuja';
+    const seed = seedPortaFotosBurbuja();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (!existing.editadoLocal && Number(existing.precioVentaSugeridoClp) !== 6000) {
+      existing.precioVentaSugeridoClp = 6000;
+      changed = true;
+    }
+    return changed;
+  }
+
   function asegurarProductoSoporteCelularChimuelo(d) {
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     const id = 'prod-soporte-celular-chimuelo';
@@ -1278,6 +1584,7 @@
 
   /** Columna gastos: Ambos = sociedad 50/50; hasta ahora pagó Nicolás. */
   function labelQuienGasto(g) {
+    if (esGastoDeVentas(g)) return 'Caja ventas · nadie debe';
     const socio = String(g.socioRegistro || 'Ambos').trim() || 'Ambos';
     const pago = String(g.pagadoPor || '').trim();
     if (pago) {
@@ -2239,11 +2546,11 @@
       id: 'gas-entrada-evento-3d-16100',
       fecha: '2026-08-29',
       categoria: 'marketing',
-      descripcion: '1 entrada a evento 3D (29 agosto)',
-      proveedor: 'Evento 3D',
+      descripcion: '1 entrada evento 3D Omnium (29 agosto)',
+      proveedor: 'Omnium',
       cantidad: 1,
       montoNeto: 16100,
-      notas: '1 entrada evento 3D el 29 de agosto 2026. Sociedad 50/50 · pagó Josefa.',
+      notas: '1 entrada evento 3D en Omnium el 29 de agosto 2026. Sociedad 50/50 · pagó Josefa.',
       socioRegistro: 'Ambos',
       pagadoPor: 'Josefa',
       items: [{ descripcion: 'Entrada evento 3D', monto: 16100 }],
@@ -2258,6 +2565,230 @@
       String(existing.pagadoPor || '') !== 'Josefa'
     ) {
       Object.assign(existing, reg);
+      changed = true;
+    }
+    return changed;
+  }
+
+  function seedIdeasImprimir() {
+    return [
+      {
+        id: 'idea-llavero-colocolo',
+        nombre: 'Llaveros Colo-Colo',
+        categoria: 'llavero',
+        estado: 'idea',
+        notas: 'Hincha · posible alto volumen',
+      },
+      {
+        id: 'idea-llavero-u',
+        nombre: 'Llaveros de la U',
+        categoria: 'llavero',
+        estado: 'idea',
+        notas: 'Universidad de Chile',
+      },
+      {
+        id: 'idea-llavero-catolica',
+        nombre: 'Llaveros de la Católica',
+        categoria: 'llavero',
+        estado: 'idea',
+        notas: 'Universidad Católica',
+      },
+      {
+        id: 'idea-soporte-tablet',
+        nombre: 'Soporte tablet',
+        categoria: 'soporte',
+        estado: 'idea',
+        notas: '',
+      },
+      {
+        id: 'idea-abrebotellas',
+        nombre: 'Abrebotellas',
+        categoria: 'util',
+        estado: 'idea',
+        notas: 'Cosito para abrir las botellas',
+      },
+      {
+        id: 'idea-pastillero',
+        nombre: 'Pastillero',
+        categoria: 'util',
+        estado: 'idea',
+        notas: '',
+      },
+      {
+        id: 'idea-porta-fotos-burbuja',
+        nombre: 'Porta fotos burbuja',
+        categoria: 'deco',
+        estado: 'idea',
+        notas: 'SKU PFBURB001 · 2 piezas · costo ~$3.204 · PVP $6.000 · PED-018 Gianni en impresión',
+      },
+    ];
+  }
+
+  function asegurarIdeasImprimir(d) {
+    d.ideasImprimir = Array.isArray(d.ideasImprimir) ? d.ideasImprimir : [];
+    let changed = false;
+    for (const seed of seedIdeasImprimir()) {
+      if (!d.ideasImprimir.some((x) => x && x.id === seed.id)) {
+        d.ideasImprimir.push({ ...seed });
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  function htmlIdeasImprimir(opts = {}) {
+    const compact = !!opts.compact;
+    const ideas = Array.isArray(data.ideasImprimir) ? data.ideasImprimir : seedIdeasImprimir();
+    const chips = ideas
+      .map((idea) => {
+        const extra = idea.notas ? ` title="${escapeHtml(idea.notas)}"` : '';
+        return `<li class="imp-ideas__chip"${extra}><span>${escapeHtml(idea.nombre || '')}</span></li>`;
+      })
+      .join('');
+    if (compact) {
+      return `
+      <div class="imp-ideas imp-ideas--resumen" aria-label="Ideas para imprimir">
+        <div class="imp-ideas__label">Ideas para imprimir</div>
+        <p class="imp-ideas__meta">Para prototipar y llevar al evento <strong>Omnium (29 ago)</strong>. Lista completa en
+          <button type="button" class="imp-linkish" data-goto-tab="ideas">Ideas</button>.</p>
+        <ul class="imp-ideas__chips">${chips}</ul>
+      </div>`;
+    }
+    return `
+      <div class="imp-ideas">
+        <h2>Ideas para imprimir</h2>
+        <p class="imp-muted">Cosas que quieren probar. No son pedidos ni ventas todavía. Útil para cercanos y para el evento Omnium (29 ago).</p>
+        <ul class="imp-ideas__lista">
+          ${ideas
+            .map(
+              (idea) => `<li>
+                <strong>${escapeHtml(idea.nombre || '')}</strong>
+                ${idea.notas ? `<span class="imp-muted"> · ${escapeHtml(idea.notas)}</span>` : ''}
+                <em class="imp-ideas__estado">${escapeHtml(idea.estado || 'idea')}</em>
+              </li>`
+            )
+            .join('')}
+        </ul>
+        <form class="imp-form imp-ideas__form" id="form-idea-nueva">
+          <label>Nueva idea
+            <input name="nombre" required placeholder="Ej. llavero de un equipo / soporte notebook" />
+          </label>
+          <label>Nota (opcional)
+            <input name="notas" placeholder="Color, tamaños, para quién…" />
+          </label>
+          <div class="imp-form-actions">
+            <button type="submit" class="imp-btn imp-btn--primary">Agregar idea</button>
+          </div>
+        </form>
+      </div>`;
+  }
+
+  function renderIdeas() {
+    const el = $('#tab-ideas');
+    if (!el) return;
+    el.innerHTML = `<div class="imp-card">${htmlIdeasImprimir({ compact: false })}</div>`;
+    $('#form-idea-nueva')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const nombre = String(fd.get('nombre') || '').trim();
+      if (!nombre) return;
+      data.ideasImprimir = Array.isArray(data.ideasImprimir) ? data.ideasImprimir : [];
+      data.ideasImprimir.push({
+        id: uid('idea'),
+        nombre,
+        categoria: 'otro',
+        estado: 'idea',
+        notas: String(fd.get('notas') || '').trim(),
+      });
+      markDirty();
+      renderAll();
+      activarTab('ideas');
+    });
+  }
+
+  /** Reinversión de caja → tab Operación (no capital de socios, no sube deuda). */
+  function asegurarGastosCajaVentas(d) {
+    d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
+    d.operacion = Array.isArray(d.operacion) ? d.operacion : [];
+    d.meta = d.meta && typeof d.meta === 'object' ? d.meta : {};
+    const regs = [
+      {
+        id: 'op-soquetes-ventas-22254',
+        fecha: '2026-08-11',
+        categoria: 'repuesto',
+        descripcion: 'Soquetes (operación · caja ventas)',
+        montoNeto: 22254,
+        notas: 'Reinversión de caja de ventas · no es capital de socios · nadie se debe.',
+        socioRegistro: 'Ambos',
+        pagadoPor: 'Ventas',
+        pagadoConVentas: true,
+      },
+      {
+        id: 'op-filamento-dorado-plateado-19429',
+        fecha: '2026-08-11',
+        categoria: 'filamento',
+        descripcion: 'Filamento dorado y plateado (operación · caja ventas)',
+        montoNeto: 19429,
+        notas: 'Reinversión de caja de ventas · no es capital de socios · nadie se debe.',
+        socioRegistro: 'Ambos',
+        pagadoPor: 'Ventas',
+        pagadoConVentas: true,
+      },
+      {
+        id: 'op-insumos-ventas-6381',
+        fecha: '2026-08-11',
+        categoria: 'insumo',
+        descripcion: 'Insumos (operación · caja ventas)',
+        montoNeto: 6381,
+        notas: 'Reinversión de caja · Insumos $6.381 · no es capital de socios.',
+        socioRegistro: 'Ambos',
+        pagadoPor: 'Ventas',
+        pagadoConVentas: true,
+      },
+      {
+        id: 'op-cine-hidalgo-41936',
+        fecha: '2026-08-11',
+        categoria: 'otro',
+        descripcion: 'Cine / Hidalgo (operación · caja ventas)',
+        montoNeto: 41936,
+        notas: 'Reinversión de caja · Cine / Hidalgo $41.936 · no es capital de socios.',
+        socioRegistro: 'Ambos',
+        pagadoPor: 'Ventas',
+        pagadoConVentas: true,
+      },
+    ];
+    const oldGastoIds = [
+      'gas-soquetes-ventas-22254',
+      'gas-filamento-dorado-plateado-19429',
+      'gas-insumos-ventas-6381',
+      'gas-cine-hidalgo-41936',
+    ];
+    let changed = false;
+    const nGastosAntes = d.gastos.length;
+    d.gastos = d.gastos.filter((g) => g && !oldGastoIds.includes(g.id) && !regs.some((r) => r.id === g.id));
+    if (d.gastos.length !== nGastosAntes) changed = true;
+    for (const reg of regs) {
+      const existing = d.operacion.find((o) => o && o.id === reg.id);
+      if (!existing) {
+        d.operacion.push({ ...reg });
+        changed = true;
+      } else if (
+        Number(existing.montoNeto) !== reg.montoNeto ||
+        existing.pagadoConVentas !== true ||
+        existing.descripcion !== reg.descripcion
+      ) {
+        Object.assign(existing, reg);
+        changed = true;
+      }
+    }
+    const caja = d.meta.caja && typeof d.meta.caja === 'object' ? d.meta.caja : {};
+    if (Number(caja.saldoDeclaradoClp) !== 97000 || caja.fecha !== '2026-08-11') {
+      d.meta.caja = {
+        ...caja,
+        saldoDeclaradoClp: 97000,
+        fecha: '2026-08-11',
+        nota: 'Saldo en mano declarado · sale de ventas, no de capital de socios',
+      };
       changed = true;
     }
     return changed;
@@ -2770,7 +3301,7 @@
       changed = true;
     }
 
-    // PED-010 · Gianni SIE · 2× Soporte celular negro · fiado (paga 18 ago) · $8.000
+    // PED-010 · Gianni SIE · 2× Soporte celular negro · transferido I000022 $8.000 (era fiado, pagó)
     const id010 = 'ped-gianni-soporte-010';
     const prodSop010 = (d.productos || []).find(
       (p) => p.id === 'prod-soporte-celular' || p.sku === 'SOPCEL001'
@@ -2778,8 +3309,11 @@
     const costoSop010 = prodSop010 ? costoProdRough(d, prodSop010) : 683.69;
     const precioSop010 = 4000;
     const cant010 = 2;
-    if (!d.pedidos.some((p) => p.id === id010 || p.numero === 'PED-010')) {
-      d.pedidos.push({
+    const monto010 = precioSop010 * cant010;
+    let ped010 = d.pedidos.find((p) => p.id === id010 || p.numero === 'PED-010');
+    const notas010 = `2× Soporte celular negro · transferido a venta I000022 · pagado $${monto010} · SIE (Nico)`;
+    if (!ped010) {
+      ped010 = {
         id: id010,
         numero: 'PED-010',
         fecha: '2026-07-28',
@@ -2795,23 +3329,63 @@
             precioUnitarioClp: precioSop010,
             costoUnitarioClp: round2(costoSop010),
             filamento: 'PLA+ negro',
-            estado: 'pendiente',
-            listos: 0,
+            estado: 'listo',
+            listos: cant010,
             enImpresion: 0,
           },
         ],
-        montoBruto: precioSop010 * cant010,
+        montoBruto: monto010,
         descuentoClp: 0,
-        montoNeto: precioSop010 * cant010,
+        montoNeto: monto010,
         costoTotal: round2(costoSop010 * cant010),
-        estado: 'pendiente',
-        ventaId: null,
-        fiado: true,
-        fechaPagoEsperada: '2026-08-18',
-        pagoNotas: 'Paga el 18 de agosto',
-        notas: `2× Soporte celular negro · fiado · paga 2026-08-18 · PVP $${precioSop010}/u · total $${precioSop010 * cant010}`,
         socioRegistro: 'Ambos',
         creado: '2026-07-28T15:40:00.000Z',
+      };
+      d.pedidos.push(ped010);
+      changed = true;
+    }
+    if (ped010.estado !== 'transferido' || ped010.fiado || ped010.ventaId !== 'ven-gianni-soporte-022') {
+      ped010.estado = 'transferido';
+      ped010.fiado = false;
+      delete ped010.fechaPagoEsperada;
+      ped010.ventaId = 'ven-gianni-soporte-022';
+      ped010.transferidoEn = ped010.transferidoEn || '2026-08-12T00:30:00.000Z';
+      ped010.montoNeto = monto010;
+      ped010.montoBruto = monto010;
+      ped010.notas = notas010;
+      ped010.pagoNotas = 'Pagado · transferido a venta I000022';
+      changed = true;
+    }
+    d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
+    if (!d.ventas.some((v) => v && (v.id === 'ven-gianni-soporte-022' || v.codigo === 'I000022'))) {
+      d.ventas.push({
+        id: 'ven-gianni-soporte-022',
+        codigo: 'I000022',
+        fecha: '2026-08-11',
+        cliente: 'Gianni SIE',
+        clienteNombre: 'Gianni',
+        clienteOrigen: 'SIE',
+        descripcion: 'PED-010 · 2× Soporte celular negro · Gianni SIE',
+        cantidad: cant010,
+        montoBruto: monto010,
+        descuentoClp: 0,
+        montoNeto: monto010,
+        costoTotal: round2(costoSop010 * cant010),
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-010 · fiado cobrado · 2× Soporte celular negro · pagado $8.000',
+        socioRegistro: 'Ambos',
+        pedidoId: id010,
+        pedidoNumero: 'PED-010',
+        items: [
+          {
+            sku: 'SOPCEL001',
+            nombre: 'Soporte celular',
+            cantidad: cant010,
+            precioUnitarioClp: precioSop010,
+            costoUnitarioClp: round2(costoSop010),
+            filamento: 'PLA+ negro',
+          },
+        ],
       });
       changed = true;
     }
@@ -2859,15 +3433,17 @@
       changed = true;
     }
 
-    // PED-012 · Marcia SIE · 1× Limpiador de brochas morado pastel · fiado · $7.000
+    // PED-012 · Marcia SIE · 1× Limpiador de brochas · transferido I000023 $7.000 (era fiado, pagó)
     const id012 = 'ped-marcia-limpiador-012';
     const prodLb012 = (d.productos || []).find(
       (p) => p.id === 'prod-limpiador-brochas' || p.sku === 'LMBROC001'
     );
     const costoLb012 = prodLb012 ? costoProdRough(d, prodLb012) : 2163.67;
     const precioLb012 = 7000;
-    if (!d.pedidos.some((p) => p.id === id012 || p.numero === 'PED-012')) {
-      d.pedidos.push({
+    let ped012 = d.pedidos.find((p) => p.id === id012 || p.numero === 'PED-012');
+    const notas012 = `1× Limpiador de brochas morado pastel · transferido a venta I000023 · pagado $${precioLb012} · SIE (Nico)`;
+    if (!ped012) {
+      ped012 = {
         id: id012,
         numero: 'PED-012',
         fecha: '2026-07-31',
@@ -2883,8 +3459,8 @@
             precioUnitarioClp: precioLb012,
             costoUnitarioClp: round2(costoLb012),
             filamento: 'PLA morado pastel',
-            estado: 'pendiente',
-            listos: 0,
+            estado: 'listo',
+            listos: 1,
             enImpresion: 0,
           },
         ],
@@ -2892,13 +3468,54 @@
         descuentoClp: 0,
         montoNeto: precioLb012,
         costoTotal: round2(costoLb012),
-        estado: 'pendiente',
-        ventaId: null,
-        fiado: true,
-        pagoNotas: 'Fiado · fecha de pago por confirmar',
-        notas: `1× Limpiador de brochas morado pastel · fiado · PVP $${precioLb012} · fecha de pago por confirmar`,
         socioRegistro: 'Ambos',
         creado: '2026-07-31T00:30:00.000Z',
+      };
+      d.pedidos.push(ped012);
+      changed = true;
+    }
+    if (ped012.estado !== 'transferido' || ped012.fiado || ped012.ventaId !== 'ven-marcia-limpiador-023') {
+      ped012.estado = 'transferido';
+      ped012.fiado = false;
+      delete ped012.fechaPagoEsperada;
+      ped012.ventaId = 'ven-marcia-limpiador-023';
+      ped012.transferidoEn = ped012.transferidoEn || '2026-08-12T00:30:00.000Z';
+      ped012.montoNeto = precioLb012;
+      ped012.montoBruto = precioLb012;
+      ped012.notas = notas012;
+      ped012.pagoNotas = 'Pagado · transferido a venta I000023';
+      changed = true;
+    }
+    d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
+    if (!d.ventas.some((v) => v && (v.id === 'ven-marcia-limpiador-023' || v.codigo === 'I000023'))) {
+      d.ventas.push({
+        id: 'ven-marcia-limpiador-023',
+        codigo: 'I000023',
+        fecha: '2026-08-11',
+        cliente: 'Marcia SIE',
+        clienteNombre: 'Marcia',
+        clienteOrigen: 'SIE',
+        descripcion: 'PED-012 · 1× Limpiador de brochas morado pastel · Marcia SIE',
+        cantidad: 1,
+        montoBruto: precioLb012,
+        descuentoClp: 0,
+        montoNeto: precioLb012,
+        costoTotal: round2(costoLb012),
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-012 · fiado cobrado · 1× Limpiador de brochas · pagado $7.000',
+        socioRegistro: 'Ambos',
+        pedidoId: id012,
+        pedidoNumero: 'PED-012',
+        items: [
+          {
+            sku: 'LMBROC001',
+            nombre: 'Limpiador de brochas',
+            cantidad: 1,
+            precioUnitarioClp: precioLb012,
+            costoUnitarioClp: round2(costoLb012),
+            filamento: 'PLA morado pastel',
+          },
+        ],
       });
       changed = true;
     }
@@ -3006,6 +3623,300 @@
       changed = true;
     }
 
+    // PED-016 · Gianni SIE · Lámpara honguito · LISTO para entregar (aún no venta)
+    const id016 = 'ped-gianni-honguito-016';
+    const precio016 = 16000;
+    const costo016 = 9797;
+    let ped016 = d.pedidos.find((p) => p.id === id016 || p.numero === 'PED-016');
+    const notas016 = `1× Lámpara honguito · listo para entregar · PVP $${precio016} · aún no cobrado · SIE (Nico)`;
+    if (!ped016) {
+      ped016 = {
+        id: id016,
+        numero: 'PED-016',
+        fecha: '2026-08-11',
+        cliente: 'Gianni SIE',
+        clienteNombre: 'Gianni',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'LMMUSH001',
+            nombre: 'Lámpara honguito',
+            cantidad: 1,
+            precioUnitarioClp: precio016,
+            costoUnitarioClp: costo016,
+            filamento: 'PLA blanco',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precio016,
+        descuentoClp: 0,
+        montoNeto: precio016,
+        costoTotal: costo016,
+        socioRegistro: 'Ambos',
+        creado: '2026-08-11T22:28:18.388Z',
+      };
+      d.pedidos.push(ped016);
+      changed = true;
+    }
+    if (
+      ped016.estado === 'transferido' ||
+      ped016.fiado ||
+      ped016.ventaId ||
+      ped016.estado !== 'listo'
+    ) {
+      ped016.estado = 'listo';
+      ped016.fiado = false;
+      delete ped016.fechaPagoEsperada;
+      delete ped016.ventaId;
+      delete ped016.transferidoEn;
+      ped016.montoNeto = precio016;
+      ped016.montoBruto = precio016;
+      ped016.notas = notas016;
+      ped016.pagoNotas = '';
+      if (Array.isArray(ped016.items)) {
+        for (const it of ped016.items) {
+          it.estado = 'listo';
+          it.listos = Number(it.cantidad || 1);
+          it.enImpresion = 0;
+        }
+      }
+      changed = true;
+    }
+    d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
+    const nVenAntes = d.ventas.length;
+    d.ventas = d.ventas.filter(
+      (v) => v && v.id !== 'ven-gianni-honguito-024' && v.codigo !== 'I000024'
+    );
+    if (d.ventas.length !== nVenAntes) changed = true;
+    if (Number(d.meta?.ventaSeq || 0) === 24) {
+      d.meta.ventaSeq = 23;
+      changed = true;
+    }
+
+    // PED-017 · Rebe SIE · Posalibro Harry Potter · LISTO para entregar (aún no venta)
+    const id017 = 'ped-rebe-posalibro-017';
+    const precio017 = 9000;
+    const costo017 = 2609.52; // slicer PLA+ negro 132,81 g · 3 h 3 m + bolsa
+    let ped017 = d.pedidos.find(
+      (p) =>
+        p.id === id017 ||
+        p.id === 'ped-gianni-posalibro-017' ||
+        p.numero === 'PED-017'
+    );
+    const notas017 =
+      '1× Posalibro Harry Potter · listo para entregar · PVP $9.000 · costo ~$2.610 · aún no cobrado · Rebe SIE (Nico)';
+    if (!ped017) {
+      ped017 = {
+        id: id017,
+        numero: 'PED-017',
+        fecha: '2026-08-11',
+        cliente: 'Rebe SIE',
+        clienteNombre: 'Rebe',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'PSHARR001',
+            nombre: 'Posalibro Harry Potter',
+            cantidad: 1,
+            precioUnitarioClp: precio017,
+            costoUnitarioClp: costo017,
+            filamento: 'PLA+ negro',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: precio017,
+        descuentoClp: 0,
+        montoNeto: precio017,
+        costoTotal: costo017,
+        estado: 'listo',
+        fiado: false,
+        ventaId: null,
+        notas: notas017,
+        socioRegistro: 'Ambos',
+        creado: new Date().toISOString(),
+      };
+      d.pedidos.push(ped017);
+      changed = true;
+    } else {
+      if (ped017.id !== id017) {
+        ped017.id = id017;
+        changed = true;
+      }
+      if (
+        ped017.cliente !== 'Rebe SIE' ||
+        ped017.clienteNombre !== 'Rebe' ||
+        ped017.clienteOrigen !== 'SIE'
+      ) {
+        ped017.cliente = 'Rebe SIE';
+        ped017.clienteNombre = 'Rebe';
+        ped017.clienteOrigen = 'SIE';
+        changed = true;
+      }
+      if (ped017.estado !== 'listo' || ped017.fiado || ped017.ventaId) {
+        ped017.estado = 'listo';
+        ped017.fiado = false;
+        delete ped017.fechaPagoEsperada;
+        delete ped017.ventaId;
+        delete ped017.transferidoEn;
+        changed = true;
+      }
+      if (
+        Number(ped017.costoTotal) !== costo017 ||
+        Number(ped017.montoNeto) !== precio017 ||
+        ped017.notas !== notas017
+      ) {
+        ped017.costoTotal = costo017;
+        ped017.montoBruto = precio017;
+        ped017.descuentoClp = 0;
+        ped017.montoNeto = precio017;
+        ped017.notas = notas017;
+        changed = true;
+      }
+      if (!Array.isArray(ped017.items) || !ped017.items.length) {
+        ped017.items = [
+          {
+            sku: 'PSHARR001',
+            nombre: 'Posalibro Harry Potter',
+            cantidad: 1,
+            precioUnitarioClp: precio017,
+            costoUnitarioClp: costo017,
+            filamento: 'PLA+ negro',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ];
+        changed = true;
+      } else {
+        const it = ped017.items[0];
+        if (
+          Number(it.precioUnitarioClp) !== precio017 ||
+          Number(it.costoUnitarioClp) !== costo017 ||
+          it.filamento !== 'PLA+ negro' ||
+          it.estado !== 'listo'
+        ) {
+          it.sku = 'PSHARR001';
+          it.nombre = 'Posalibro Harry Potter';
+          it.precioUnitarioClp = precio017;
+          it.costoUnitarioClp = costo017;
+          it.filamento = 'PLA+ negro';
+          it.estado = 'listo';
+          it.listos = Number(it.cantidad || 1);
+          it.enImpresion = 0;
+          changed = true;
+        }
+      }
+    }
+
+    // PED-018 · Gianni SIE · Porta fotos burbuja · EN IMPRESIÓN
+    const id018 = 'ped-gianni-porta-fotos-018';
+    const precio018 = 6000;
+    const costo018 = 3203.95;
+    let ped018 = d.pedidos.find((p) => p.id === id018 || p.numero === 'PED-018');
+    const notas018 =
+      '1× Porta fotos burbuja · en impresión · PVP $6.000 · costo ~$3.204 · SIE (Nico)';
+    if (!ped018) {
+      ped018 = {
+        id: id018,
+        numero: 'PED-018',
+        fecha: '2026-08-11',
+        cliente: 'Gianni SIE',
+        clienteNombre: 'Gianni',
+        clienteOrigen: 'SIE',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'PFBURB001',
+            nombre: 'Porta fotos burbuja',
+            cantidad: 1,
+            precioUnitarioClp: precio018,
+            costoUnitarioClp: costo018,
+            filamento: 'PLA+ negro',
+            estado: 'en_impresion',
+            listos: 0,
+            enImpresion: 1,
+          },
+        ],
+        montoBruto: precio018,
+        descuentoClp: 0,
+        montoNeto: precio018,
+        costoTotal: costo018,
+        estado: 'en_impresion',
+        fiado: false,
+        ventaId: null,
+        notas: notas018,
+        socioRegistro: 'Ambos',
+        creado: new Date().toISOString(),
+      };
+      d.pedidos.push(ped018);
+      changed = true;
+    } else {
+      if (ped018.estado === 'transferido' || ped018.fiado || ped018.ventaId) {
+        ped018.estado = 'en_impresion';
+        ped018.fiado = false;
+        delete ped018.fechaPagoEsperada;
+        delete ped018.ventaId;
+        delete ped018.transferidoEn;
+        changed = true;
+      }
+      if (
+        ped018.estado !== 'en_impresion' ||
+        Number(ped018.montoNeto) !== precio018 ||
+        Number(ped018.costoTotal) !== costo018 ||
+        ped018.notas !== notas018
+      ) {
+        ped018.estado = 'en_impresion';
+        ped018.montoBruto = precio018;
+        ped018.descuentoClp = 0;
+        ped018.montoNeto = precio018;
+        ped018.costoTotal = costo018;
+        ped018.notas = notas018;
+        ped018.cliente = 'Gianni SIE';
+        ped018.clienteNombre = 'Gianni';
+        ped018.clienteOrigen = 'SIE';
+        changed = true;
+      }
+      if (!Array.isArray(ped018.items) || !ped018.items.length) {
+        ped018.items = [
+          {
+            sku: 'PFBURB001',
+            nombre: 'Porta fotos burbuja',
+            cantidad: 1,
+            precioUnitarioClp: precio018,
+            costoUnitarioClp: costo018,
+            filamento: 'PLA+ negro',
+            estado: 'en_impresion',
+            listos: 0,
+            enImpresion: 1,
+          },
+        ];
+        changed = true;
+      } else {
+        const it = ped018.items[0];
+        if (
+          it.sku !== 'PFBURB001' ||
+          Number(it.precioUnitarioClp) !== precio018 ||
+          it.estado !== 'en_impresion'
+        ) {
+          it.sku = 'PFBURB001';
+          it.nombre = 'Porta fotos burbuja';
+          it.precioUnitarioClp = precio018;
+          it.costoUnitarioClp = costo018;
+          it.filamento = 'PLA+ negro';
+          it.estado = 'en_impresion';
+          it.listos = 0;
+          it.enImpresion = Number(it.cantidad || 1);
+          changed = true;
+        }
+      }
+    }
+
     const maxNum = d.pedidos.reduce((m, p) => {
       const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
       return Math.max(m, n);
@@ -3085,9 +3996,10 @@
     const luz = Number(prod.horasImpresion || 0) * tarifa * consumo;
     const bolsa = Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 50);
     const metal = Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0);
+    const extras = Number(prod.costoExtrasClp || 0);
     const recargoProd = Number(prod.recargoImpresoraAntiguaClp || 0);
     const recargo = recargoProd > 0 ? recargoProd : Number(imp.recargoFijoClp || 0);
-    return round2(fil + luz + bolsa + metal + recargo);
+    return round2(fil + luz + bolsa + metal + extras + recargo);
   }
 
   function asegurarProductoPortacompletoPerroBulldog(d) {
@@ -3222,6 +4134,9 @@
     if (/torre[oó]n|torreon/.test(t)) return 'TORREON';
     if (/alcanc[ií]a|chanchito|cerdito|piggy/.test(t)) return 'ALCHAN';
     if (/limpiador|secador/.test(t) && /brocha/.test(t)) return 'LMBROC';
+    if (/(porta\s*fotos?|portafotos)/.test(t) && /burbuja/.test(t)) return 'PFBURB';
+    if (/(posalibro|apoya\s*libros?|sujeta\s*libros?)/.test(t) && /harry|potter|hp/.test(t)) return 'PSHARR';
+    if (/posalibro|apoya\s*libros?/.test(t)) return 'PSLIBR';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -3275,6 +4190,7 @@
       'prod-torreon': { sku: 'TORREON001', nombre: 'Torreón' },
       'prod-limpiador-brochas': { sku: 'LMBROC001', nombre: 'Limpiador de brochas' },
       'prod-alcancia-chanchito': { sku: 'ALCHAN001', nombre: 'Alcancía chanchito' },
+      'prod-posalibro-harry-potter': { sku: 'PSHARR001', nombre: 'Posalibro Harry Potter' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',
@@ -3437,17 +4353,19 @@
     );
     const metal = round2(Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0));
     const bolsa = round2(Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 0));
+    const extras = round2(Number(prod.costoExtrasClp || 0));
     const recargoProd = Number(prod.recargoImpresoraAntiguaClp || 0);
     const recargoPerfil = Number(imp?.recargoFijoClp || 0);
     // Si el producto ya trae recargo explícito, no duplicar el del perfil.
     const recargo = round2(recargoProd > 0 ? recargoProd : recargoPerfil);
-    const total = round2(filamento + luz + pintado + metal + bolsa + recargo);
+    const total = round2(filamento + luz + pintado + metal + bolsa + extras + recargo);
     return {
       filamento,
       luz,
       pintado,
       metal,
       bolsa,
+      extras,
       recargo,
       total,
       gramos: round2(gramos),
@@ -3495,6 +4413,10 @@
       Number(c.recargo) > 0
         ? `<div class="imp-kpi"><span>Recargo impresora</span><strong>${money(c.recargo)}</strong></div>`
         : '';
+    const extrasHtml =
+      Number(c.extras) > 0
+        ? `<div class="imp-kpi"><span>Extras (kit lámpara)</span><strong>${money(c.extras)}</strong></div>`
+        : '';
     const impLbl = c.impresoraNombre
       ? `<p class="imp-muted" style="margin:0 0 0.35rem">Impresora: <strong>${escapeHtml(c.impresoraNombre)}</strong></p>`
       : '';
@@ -3507,6 +4429,7 @@
         <div class="imp-kpi"><span>Pintado / MO</span><strong>${money(c.pintado)}</strong></div>
         <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
         <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
+        ${extrasHtml}
         <div class="imp-kpi"><span>Costo unitario</span><strong>${money(c.total)}</strong></div>
         <div class="imp-kpi imp-kpi--accent"><span>Precio sugerido (+${pctObj}% sobre costo)</span><strong>${money(sugerido)}</strong></div>
         <div class="imp-kpi ${markupReal == null ? '' : markupReal >= pctObj ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Markup real sobre costo</span><strong>${markupReal == null ? '—' : `${markupReal.toFixed(0)}%`}</strong></div>
@@ -3588,21 +4511,264 @@
     </div>`;
   }
 
+  function htmlResumenDash(opts) {
+    const {
+      dia1,
+      hoyCl,
+      ritmoNecesarioSem,
+      ventasAll,
+      pedidosActivos,
+    } = opts;
+    const f = resumenFiltro;
+    const filtradas = filtrarVentasResumen(ventasAll, dia1, hoyCl);
+    const totalF = filtradas.reduce((s, v) => s + Number(v.montoNeto || 0), 0);
+    const nF = filtradas.length;
+    const clientesF = [...new Set(filtradas.map((v) => String(v.cliente || '').trim()).filter(Boolean))];
+    const ticket = nF ? totalF / nF : 0;
+    const sie = filtradas.filter((v) => origenDeVenta(v) === 'SIE');
+    const mkof = filtradas.filter((v) => origenDeVenta(v) === 'MKOF');
+    const sieM = sie.reduce((s, v) => s + Number(v.montoNeto || 0), 0);
+    const mkofM = mkof.reduce((s, v) => s + Number(v.montoNeto || 0), 0);
+    const maxOri = Math.max(sieM, mkofM, 1);
+    const canales = [...new Set((ventasAll || []).map(canalDeVenta))].sort((a, b) => a.localeCompare(b, 'es'));
+    const clientesAll = [...new Set((ventasAll || []).map((v) => String(v.cliente || '').trim()).filter(Boolean))].sort((a, b) =>
+      a.localeCompare(b, 'es')
+    );
+    const hayFiltro = !!(f.periodo !== 'todo' || f.origen || f.canal || f.cliente);
+    const vistaBtn = (id, label) =>
+      `<button type="button" class="imp-chip${f.vista === id ? ' is-on' : ''}" data-resumen-vista="${id}">${label}</button>`;
+
+    let cuerpo = '';
+    if (f.vista === 'semanal') {
+      const semanas = semanasDesdeDia1(filtradas, dia1, hoyCl);
+      cuerpo = `
+        <p class="imp-muted">Cada barra es una semana desde el día 1. Línea punteada = ritmo semanal para el 30% (${money(ritmoNecesarioSem)}).</p>
+        <div class="imp-chart-scroll">${svgSemanasVentas(semanas, ritmoNecesarioSem)}</div>
+        <div class="imp-table-wrap" style="margin-top:0.75rem">
+          <table class="imp-table">
+            <thead><tr><th>Sem</th><th>Desde</th><th>Hasta</th><th>Ventas</th><th>Total</th></tr></thead>
+            <tbody>
+              ${semanas
+                .map(
+                  (s) => `<tr>
+                    <td>S${s.n}</td>
+                    <td>${fmtFechaCorta(s.ini)}</td>
+                    <td>${fmtFechaCorta(s.fin)}</td>
+                    <td class="num">${s.nVentas}</td>
+                    <td class="num"><strong>${money(s.monto)}</strong></td>
+                  </tr>`
+                )
+                .join('')}
+            </tbody>
+          </table>
+        </div>`;
+    } else if (f.vista === 'clientes') {
+      const by = {};
+      for (const v of filtradas) {
+        const c = String(v.cliente || '—').trim() || '—';
+        if (!by[c]) by[c] = { cliente: c, origen: origenDeVenta(v), n: 0, total: 0 };
+        by[c].n += 1;
+        by[c].total += Number(v.montoNeto || 0);
+      }
+      const rows = Object.values(by).sort((a, b) => b.total - a.total || a.cliente.localeCompare(b.cliente, 'es'));
+      cuerpo = `
+        <p class="imp-muted">Ranking de cercanos en el filtro. Clic en un cliente para dejarlo filtrado.</p>
+        <div class="imp-table-wrap">
+          <table class="imp-table">
+            <thead><tr><th>Cliente</th><th>Origen</th><th>Compras</th><th>Total</th></tr></thead>
+            <tbody>
+              ${
+                rows
+                  .map(
+                    (r) => `<tr class="imp-row-click" data-resumen-cliente="${escapeHtml(r.cliente)}">
+                      <td><strong>${escapeHtml(r.cliente)}</strong></td>
+                      <td>${escapeHtml(r.origen || '—')}</td>
+                      <td class="num">${r.n}</td>
+                      <td class="num"><strong>${money(r.total)}</strong></td>
+                    </tr>`
+                  )
+                  .join('') || '<tr><td colspan="4">Sin ventas en este filtro</td></tr>'
+              }
+            </tbody>
+          </table>
+        </div>`;
+    } else if (f.vista === 'origen') {
+      cuerpo = `
+        <p class="imp-muted">Cercanos por origen: <strong>SIE = Nico</strong> · <strong>MKOF = Josefa</strong>.</p>
+        <div class="imp-grid imp-grid--2">
+          <div class="imp-kpi"><span>SIE · Nicolás · ${sie.length} ventas</span><strong>${money(sieM)}</strong>
+            <div class="imp-mini-bar"><i style="width:${(sieM / maxOri) * 100}%"></i></div>
+          </div>
+          <div class="imp-kpi imp-kpi--ok"><span>MKOF · Josefa · ${mkof.length} ventas</span><strong>${money(mkofM)}</strong>
+            <div class="imp-mini-bar imp-mini-bar--ok"><i style="width:${(mkofM / maxOri) * 100}%"></i></div>
+          </div>
+        </div>
+        <p class="imp-muted" style="margin-top:0.75rem">${totalF > 0 ? `SIE ${(sieM / totalF * 100).toFixed(0)}% · MKOF ${(mkofM / totalF * 100).toFixed(0)}%` : 'Sin ventas en el filtro.'}</p>`;
+    } else {
+      const ultimas = filtradas
+        .slice()
+        .sort((a, b) => String(b.fecha || '').localeCompare(String(a.fecha || '')))
+        .slice(0, 8);
+      const listos = (pedidosActivos || []).filter((p) => (p.estado || '') === 'listo');
+      cuerpo = `
+        <div class="imp-grid">
+          <div class="imp-kpi imp-kpi--ok"><span>Ventas en vista</span><strong>${nF} · ${money(totalF)}</strong></div>
+          <div class="imp-kpi"><span>Cercanos</span><strong>${clientesF.length}</strong></div>
+          <div class="imp-kpi"><span>Ticket promedio</span><strong>${money(ticket)}</strong></div>
+          <div class="imp-kpi"><span>SIE / MKOF</span><strong>${money(sieM)} / ${money(mkofM)}</strong></div>
+        </div>
+        ${
+          listos.length
+            ? `<p class="imp-muted" style="margin:0.75rem 0 0">Listos para entregar (aún no venta): <strong>${listos
+                .map((p) => `${p.numero} ${p.cliente} ${money(p.montoNeto)}`)
+                .join(' · ')}</strong></p>`
+            : ''
+        }
+        <div class="imp-table-wrap" style="margin-top:0.75rem">
+          <table class="imp-table">
+            <thead><tr><th>Fecha</th><th>Cliente</th><th>Origen</th><th>Canal</th><th>Total</th></tr></thead>
+            <tbody>
+              ${
+                ultimas
+                  .map(
+                    (v) => `<tr>
+                      <td>${escapeHtml(v.fecha || '')}</td>
+                      <td>${escapeHtml(v.cliente || '')}</td>
+                      <td>${escapeHtml(origenDeVenta(v) || '—')}</td>
+                      <td>${escapeHtml(canalDeVenta(v))}</td>
+                      <td class="num"><strong>${money(v.montoNeto)}</strong></td>
+                    </tr>`
+                  )
+                  .join('') || '<tr><td colspan="5">Sin ventas en este filtro</td></tr>'
+              }
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    return `
+      <div class="imp-dash" id="imp-resumen-dash">
+        <p class="imp-fase-kicker">Primera instancia · vendiendo a <strong>cercanos</strong> (SIE / MKOF). Ads Meta aún no → la estrategia de redes queda guardada para cuando se active.</p>
+        <div class="imp-dash__vistas" role="tablist" aria-label="Cómo ver el resumen">
+          ${vistaBtn('cercanos', 'Cercanos')}
+          ${vistaBtn('semanal', 'Por semana')}
+          ${vistaBtn('clientes', 'Por cliente')}
+          ${vistaBtn('origen', 'SIE vs MKOF')}
+        </div>
+        <div class="imp-dash__filtros">
+          <label>Periodo
+            <select id="resumen-periodo">
+              <option value="todo"${f.periodo === 'todo' ? ' selected' : ''}>Todo</option>
+              <option value="desde-dia1"${f.periodo === 'desde-dia1' ? ' selected' : ''}>Desde día 1</option>
+              <option value="7d"${f.periodo === '7d' ? ' selected' : ''}>Últimos 7 días</option>
+              <option value="15d"${f.periodo === '15d' ? ' selected' : ''}>Últimos 15 días</option>
+              <option value="30d"${f.periodo === '30d' ? ' selected' : ''}>Últimos 30 días</option>
+              <option value="mes"${f.periodo === 'mes' ? ' selected' : ''}>Este mes</option>
+            </select>
+          </label>
+          <label>Origen
+            <select id="resumen-origen">
+              <option value=""${f.origen === '' ? ' selected' : ''}>Todos</option>
+              <option value="SIE"${f.origen === 'SIE' ? ' selected' : ''}>SIE (Nico)</option>
+              <option value="MKOF"${f.origen === 'MKOF' ? ' selected' : ''}>MKOF (Josefa)</option>
+            </select>
+          </label>
+          <label>Canal
+            <select id="resumen-canal">
+              <option value=""${f.canal === '' ? ' selected' : ''}>Todos</option>
+              ${canales
+                .map(
+                  (c) =>
+                    `<option value="${escapeHtml(c)}"${f.canal === c ? ' selected' : ''}>${escapeHtml(c)}</option>`
+                )
+                .join('')}
+            </select>
+          </label>
+          <label>Cliente
+            <select id="resumen-cliente">
+              <option value=""${f.cliente === '' ? ' selected' : ''}>Todos</option>
+              ${clientesAll
+                .map(
+                  (c) =>
+                    `<option value="${escapeHtml(c)}"${f.cliente === c ? ' selected' : ''}>${escapeHtml(c)}</option>`
+                )
+                .join('')}
+            </select>
+          </label>
+          <button type="button" class="imp-btn" id="resumen-limpiar" ${hayFiltro ? '' : 'disabled'}>Limpiar</button>
+        </div>
+        <p class="imp-dash__meta">${hayFiltro ? 'Filtro activo' : 'Sin filtro'} · ${nF} venta${nF === 1 ? '' : 's'} · <strong>${money(totalF)}</strong>${nF !== (ventasAll || []).length ? ` de ${money((ventasAll || []).reduce((s, v) => s + Number(v.montoNeto || 0), 0))} total` : ''}</p>
+        ${cuerpo}
+      </div>`;
+  }
+
+  function bindResumenDash() {
+    const root = $('#imp-resumen-dash');
+    if (!root) return;
+    const aplicar = () => {
+      resumenFiltro.periodo = String($('#resumen-periodo')?.value || 'todo');
+      resumenFiltro.origen = String($('#resumen-origen')?.value || '');
+      resumenFiltro.canal = String($('#resumen-canal')?.value || '');
+      resumenFiltro.cliente = String($('#resumen-cliente')?.value || '');
+      guardarResumenFiltro();
+      renderResumen();
+    };
+    $('#resumen-periodo')?.addEventListener('change', aplicar);
+    $('#resumen-origen')?.addEventListener('change', aplicar);
+    $('#resumen-canal')?.addEventListener('change', aplicar);
+    $('#resumen-cliente')?.addEventListener('change', aplicar);
+    $('#resumen-limpiar')?.addEventListener('click', () => {
+      resumenFiltro = { periodo: 'todo', origen: '', canal: '', cliente: '', vista: resumenFiltro.vista || 'cercanos' };
+      guardarResumenFiltro();
+      renderResumen();
+    });
+    root.querySelectorAll('[data-resumen-vista]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        resumenFiltro.vista = btn.getAttribute('data-resumen-vista') || 'cercanos';
+        guardarResumenFiltro();
+        renderResumen();
+      });
+    });
+    root.querySelectorAll('[data-resumen-cliente]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const c = row.getAttribute('data-resumen-cliente') || '';
+        resumenFiltro.cliente = resumenFiltro.cliente === c ? '' : c;
+        guardarResumenFiltro();
+        renderResumen();
+      });
+    });
+  }
+
   function renderResumen() {
-    const gastos = sum(data.gastos);
+    const gastosLista = data.gastos || [];
+    const opLista = data.operacion || [];
+    const gastosDeVentasLista = gastosLista.filter(esGastoDeVentas);
+    const opReinversionLista = opLista.filter(esGastoDeVentas);
+    const listaReinversion = [...opReinversionLista, ...gastosDeVentasLista];
+    const gastosCapitalLista = gastosLista.filter((g) => !esGastoDeVentas(g));
+    const gastos = sum(gastosCapitalLista);
+    const gastosTodos = sum(gastosLista);
+    const reinversionVentas = sum(listaReinversion);
     const ventas = sum(data.ventas);
-    const operacion = sum((data.operacion || []).filter((x) => Number(x.montoNeto) !== 0));
-    /** Resultado = ventas − gastos − operación (sube al vender; más negativo si solo hay gastos). */
+    const operacionCapital = sum(
+      opLista.filter((x) => !esGastoDeVentas(x) && Number(x.montoNeto) !== 0)
+    );
+    const operacion = operacionCapital;
+    /** Resultado vs capital socios (no resta reinversión de caja). */
     const resultado = ventas - gastos - operacion;
     const metaRecuperar = gastos + operacion;
-    /** Saldo por recuperar = gastos + operación − ventas (baja cada vez que venden). */
+    /** Saldo por recuperar = gastos capital + operación − ventas (baja cada vez que venden). */
     const saldoPendiente = Math.max(0, metaRecuperar - ventas);
     const pctRecuperado = metaRecuperar > 0 ? Math.min(100, (ventas / metaRecuperar) * 100) : 100;
     const sinDeuda = saldoPendiente <= 0;
     const cadaUnoGastos = gastos / 2;
     const cadaUnoResultado = resultado / 2;
+    const cajaDecl = Number(data.meta?.caja?.saldoDeclaradoClp);
+    const cajaDeclarado = Number.isFinite(cajaDecl) ? cajaDecl : null;
+    const cajaTeorico = ventas - reinversionVentas;
+    const cajaDiff = cajaDeclarado != null ? cajaTeorico - cajaDeclarado : 0;
     const cap = data.meta?.capital || {};
-    const capitalJosefa = (data.gastos || []).reduce((a, g) => {
+    const capitalJosefa = gastosCapitalLista.reduce((a, g) => {
       if (/josefa/i.test(String(g.pagadoPor || ''))) return a + Number(g.montoNeto || 0);
       return a;
     }, 0);
@@ -3647,6 +4813,25 @@
     /** Si se cobraran/transferieran los pedidos activos: % de progreso hacia la meta. */
     const pctPipeline =
       metaRecuperar > 0 ? Math.min(100, (ventasMasPedidos / metaRecuperar) * 100) : 100;
+    const proyCfg = data.meta?.proyeccion && typeof data.meta.proyeccion === 'object' ? data.meta.proyeccion : {};
+    const horizonteMeses = Number(proyCfg.horizonteMeses) > 0 ? Number(proyCfg.horizonteMeses) : 2;
+    const metaPctObjetivo = Number(proyCfg.metaPct) > 0 ? Number(proyCfg.metaPct) : 30;
+    const dia1 = fechaPrimeraVenta(data) || '2026-07-18';
+    const hoyCl = chileYmd();
+    const fechaMeta30 = addMonthsYmd(dia1, horizonteMeses);
+    const diasTotales = Math.max(1, diffDaysYmd(dia1, fechaMeta30));
+    const diasTranscurridos = Math.max(1, diffDaysYmd(dia1, hoyCl));
+    const diasRestantes = Math.max(0, diffDaysYmd(hoyCl, fechaMeta30));
+    const meta30Clp = Math.round(metaRecuperar * (metaPctObjetivo / 100));
+    const faltante30 = Math.max(0, meta30Clp - ventas);
+    const ritmoActualDia = ventas / diasTranscurridos;
+    const ritmoNecesarioDia = diasRestantes > 0 ? faltante30 / diasRestantes : faltante30;
+    const ritmoActualSem = ritmoActualDia * 7;
+    const ritmoNecesarioSem = ritmoNecesarioDia * 7;
+    const proyeccionSiSiguen = ritmoActualDia * diasTotales;
+    const pctSiSiguen = metaRecuperar > 0 ? (proyeccionSiSiguen / metaRecuperar) * 100 : 0;
+    const ya30 = ventas >= meta30Clp;
+    const adelantadas = ritmoActualDia + 0.5 >= ritmoNecesarioDia || ya30;
     const pctMarkup = Number(data.parametros?.margenObjetivoPct ?? 100);
     const filasCostoProd = (data.productos || [])
       .map((prod) => {
@@ -3672,15 +4857,6 @@
     const nClientesHist = (data.meta?.clientesHistorial || []).length;
 
     $('#tab-resumen').innerHTML = `
-      <div class="imp-card imp-card--redes imp-card--redes-banner">
-        <p class="imp-redes-kicker">Campaña agosto · Instagram</p>
-        <h2 style="margin-bottom:0.35rem">Redes sociales</h2>
-        <p class="imp-muted" style="margin:0 0 0.75rem">Meta, pilares y calendario lun/mié/vie de @impresoreando.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
-          <a class="imp-btn imp-btn--redes" href="./estrategia.html?v=20260801e">Abrir estrategia redes →</a>
-          <button type="button" class="imp-btn" data-goto-tab="redes">Ver en esta pestaña</button>
-        </div>
-      </div>
       <div class="imp-balance ${sinDeuda ? 'imp-balance--ok' : 'imp-balance--deuda'}">
         <div class="imp-balance__label">${sinDeuda ? 'Sin deuda de sociedad' : 'Para salir de deuda falta recuperar'}</div>
         <div class="imp-balance__valor">${money(saldoPendiente)}</div>
@@ -3716,6 +4892,64 @@
           Si se cobran los ${pedidosActivos.length} pedidos pendientes → progreso proyectado <strong>${pctPipeline.toFixed(1)}%</strong>
         </p>
       </div>
+      <div class="imp-proy ${ya30 || adelantadas ? 'imp-proy--ok' : 'imp-proy--warn'}" aria-label="Proyección 30% a 2 meses">
+        <div class="imp-proy__label">Proyección · ${metaPctObjetivo}% a los ${horizonteMeses} meses</div>
+        <div class="imp-proy__valor">${ya30 ? 'Meta 30% alcanzada' : money(faltante30)}</div>
+        <p class="imp-proy__meta">
+          Día 1 = primera venta <strong>${fmtFechaCorta(dia1)}</strong>
+          · hoy día <strong>${diasTranscurridos}</strong>/${diasTotales}
+          · cierre <strong>${fmtFechaCorta(fechaMeta30)}</strong>
+          (${diasRestantes} días).
+          Objetivo <strong>${metaPctObjetivo}%</strong> = <strong>${money(meta30Clp)}</strong>
+          · van <strong>${money(ventas)}</strong> (${pctRecuperado.toFixed(1)}%).
+        </p>
+        <ul class="imp-proy__lista">
+          <li><span>Ritmo actual</span><strong>${money(ritmoActualDia)}/día · ${money(ritmoActualSem)}/sem</strong></li>
+          <li><span>Ritmo para el 30%</span><strong>${ya30 ? '—' : `${money(ritmoNecesarioDia)}/día · ${money(ritmoNecesarioSem)}/sem`}</strong></li>
+          <li><span>Si siguen igual</span><strong>${money(proyeccionSiSiguen)} · ${pctSiSiguen.toFixed(1)}% al cierre</strong></li>
+        </ul>
+        <p class="${adelantadas ? 'imp-muted' : 'imp-proy__diff'}" style="margin:0.65rem 0 0">
+          ${
+            ya30
+              ? `Ya superaron el ${metaPctObjetivo}%. Sigan el ritmo actual para seguir subiendo el % de recupero.`
+              : adelantadas
+                ? `Van <strong>adelantadas</strong> vs el ritmo del ${metaPctObjetivo}%. Falta vender ${money(faltante30)} en ${diasRestantes} días.`
+                : `Van <strong>bajo el ritmo</strong>. Para llegar al ${metaPctObjetivo}% el ${fmtFechaCorta(fechaMeta30)} hay que vender ${money(faltante30)} más (${money(ritmoNecesarioSem)} por semana).`
+          }
+        </p>
+      </div>
+      <div class="imp-caja" aria-label="Saldo de caja de ventas">
+        <div class="imp-caja__label">Saldo en caja (dinero de ventas)</div>
+        <div class="imp-caja__valor">${money(cajaDeclarado != null ? cajaDeclarado : cajaTeorico)}</div>
+        <p class="imp-caja__meta">
+          Ventas cobradas <strong>${money(ventas)}</strong>
+          − operación (caja) <strong>${money(reinversionVentas)}</strong>
+          = teórico <strong>${money(cajaTeorico)}</strong>
+          ${cajaDeclarado != null ? `· declarado <strong>${money(cajaDeclarado)}</strong>` : ''}
+        </p>
+        <ul class="imp-caja__lista">
+          ${listaReinversion
+            .map(
+              (g) =>
+                `<li><span>${escapeHtml(g.descripcion || g.proveedor || 'Operación')}</span><strong>${money(g.montoNeto)}</strong></li>`
+            )
+            .join('') || '<li class="imp-muted">Sin operación de caja registrada</li>'}
+        </ul>
+        ${
+          cajaDeclarado != null && Math.abs(cajaDiff) >= 1
+            ? `<p class="imp-caja__diff">Hay <strong>${money(Math.abs(cajaDiff))}</strong> de diferencia vs el teórico.
+               ${cajaDiff > 0 ? 'Falta indicar en qué se gastó ese monto.' : 'El saldo declarado es mayor que ventas − gastos de caja.'}</p>`
+            : `<p class="imp-muted" style="margin:0.5rem 0 0">Estas compras salen de ventas, no de capital: nadie le debe al otro.</p>`
+        }
+      </div>
+      ${htmlIdeasImprimir({ compact: true })}
+      ${htmlResumenDash({
+        dia1,
+        hoyCl,
+        ritmoNecesarioSem,
+        ventasAll: data.ventas || [],
+        pedidosActivos,
+      })}
       <div class="imp-grid imp-grid--2">
         <div class="imp-card imp-card--resumen-gen">
           <h2>Ventas</h2>
@@ -3737,10 +4971,10 @@
         </div>
       </div>
       <div class="imp-grid">
-        <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
+        <div class="imp-kpi"><span>Gastos capital (socios)</span><strong>${money(gastos)}</strong></div>
         <div class="imp-kpi imp-kpi--ok"><span>Ventas (contabilizadas)</span><strong>${money(ventas)}</strong></div>
-        <div class="imp-kpi"><span>Pedidos activos</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
-        <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
+        <div class="imp-kpi"><span>Operación (caja ventas)</span><strong>${money(reinversionVentas)}</strong></div>
+        <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado vs capital</span><strong>${money(resultado)}</strong></div>
       </div>
       <div class="imp-card">
         <h2>Costos de producto (resumen)</h2>
@@ -3783,7 +5017,7 @@
       <div class="imp-charts">
         <div class="imp-card imp-chart-card">
           <h3>Comparativa</h3>
-          ${svgBarrasComparativa(gastos, ventas, operacion)}
+          ${svgBarrasComparativa(gastos, ventas, operacion + reinversionVentas)}
           <p class="imp-muted">Cada venta suma al verde y baja el saldo por recuperar.</p>
         </div>
         <div class="imp-card imp-chart-card">
@@ -3818,10 +5052,15 @@
         document.querySelector(`#imp-tabs button[data-tab="${tab}"]`)?.click();
       });
     });
+    bindResumenDash();
   }
 
   function renderGastos() {
-    const rows = (data.gastos || [])
+    const gastosLista = data.gastos || [];
+    const gastosTodos = sum(gastosLista);
+    const reinversionVentas = sum(gastosLista.filter(esGastoDeVentas));
+    const gastos = gastosTodos - reinversionVentas;
+    const rows = gastosLista
       .slice()
       .sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)))
       .map((g) => {
@@ -3855,7 +5094,7 @@
       <div class="imp-card">
         <h2>Gastos por registro (${money(sum(data.gastos))})</h2>
         <p class="imp-muted">Cada compra se guarda como <strong>un solo registro</strong> (orden / AliExpress / Líder / Mercado Libre…). El detalle de ítems queda desplegable.</p>
-        <p class="imp-muted"><strong>«Ambos»</strong> = gasto de la sociedad (deuda 50/50). Hasta ahora <strong>todo lo ha pagado Nicolás</strong>; Josefa debe el 50%.</p>
+        <p class="imp-muted"><strong>«Ambos»</strong> = gasto de la sociedad (deuda 50/50). <strong>Caja ventas</strong> = pagado con dinero cobrado (nadie se debe). Total registros ${money(gastosTodos)} · de eso capital socios ${money(gastos)} · de ventas ${money(reinversionVentas)}.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>Fecha</th><th>Cat.</th><th>Registro</th><th>Monto</th><th>Quién / pagó</th><th></th></tr></thead>
@@ -3894,6 +5133,7 @@
             <select name="pagadoPor">
               <option value="Nicolás" selected>Nicolás</option>
               <option value="Josefa">Josefa</option>
+              <option value="Ventas">Caja de ventas (nadie se debe)</option>
             </select>
           </label>
           <label>Notas / ítems<textarea name="notas" placeholder="Opcional: listar productos del ticket"></textarea></label>
@@ -3909,8 +5149,11 @@
       const fd = new FormData(e.target);
       const pagadoPor = String(fd.get('pagadoPor') || 'Nicolás').trim() || 'Nicolás';
       const socioRegistro = String(fd.get('socioRegistro') || 'Ambos').trim() || 'Ambos';
+      const deVentas = /^ventas$/i.test(pagadoPor);
       const notasBase = String(fd.get('notas') || '').trim();
-      const notasPago = `Sociedad ${socioRegistro} · pagó ${pagadoPor}.`;
+      const notasPago = deVentas
+        ? 'Pagado con caja de ventas · nadie se debe.'
+        : `Sociedad ${socioRegistro} · pagó ${pagadoPor}.`;
       data.gastos.push({
         id: uid('gas'),
         fecha: fd.get('fecha'),
@@ -3921,8 +5164,10 @@
         montoNeto: Number(fd.get('montoNeto')),
         notas: notasBase ? `${notasBase} ${notasPago}` : notasPago,
         ordenId: '',
-        socioRegistro,
+        socioRegistro: deVentas ? 'Ambos' : socioRegistro,
         pagadoPor,
+        pagadoConVentas: deVentas || undefined,
+        excluirDeuda: deVentas || undefined,
         items: [],
       });
       markDirty();
@@ -5176,16 +6421,23 @@
   function renderOperacion() {
     const p = data.parametros || {};
     const rows = (data.operacion || [])
-      .map(
-        (o) => `
+      .map((o) => {
+        const caja = esGastoDeVentas(o)
+          ? ' <span class="imp-badge imp-badge--ok">Caja ventas</span>'
+          : '';
+        return `
       <tr>
         <td>${escapeHtml(o.fecha || '')}</td>
         <td>${escapeHtml(o.categoria || '')}</td>
-        <td>${escapeHtml(o.descripcion || '')}</td>
+        <td>${escapeHtml(o.descripcion || '')}${caja}</td>
         <td class="num">${money(o.montoNeto)}</td>
-        <td><button type="button" class="imp-btn imp-btn--danger" data-del-op="${o.id}">✕</button></td>
-      </tr>`
-      )
+        <td>${
+          esGastoDeVentas(o)
+            ? ''
+            : `<button type="button" class="imp-btn imp-btn--danger" data-del-op="${o.id}">✕</button>`
+        }</td>
+      </tr>`;
+      })
       .join('');
 
     const imps = data.impresoras || IMPRESORAS_SEED;
@@ -5264,6 +6516,7 @@
       </div>
       <div class="imp-card">
         <h2>Costos operacionales</h2>
+        <p class="imp-muted">Lo pagado con caja de ventas (soquetes, filamento, insumos, Cine/Hidalgo) vive aquí: <strong>no sube la deuda entre socios</strong>, solo baja el saldo de caja.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>Fecha</th><th>Cat.</th><th>Detalle</th><th>Monto</th><th></th></tr></thead>
@@ -5278,6 +6531,7 @@
               <option value="internet">internet</option>
               <option value="arriendo">arriendo</option>
               <option value="transporte">transporte</option>
+              <option value="insumo">insumo</option>
               <option value="otro">otro</option>
             </select>
           </label>
@@ -5905,6 +7159,7 @@
     renderCostos();
     renderAds();
     renderBitacora();
+    renderIdeas();
     renderRedes();
   }
 
@@ -5915,6 +7170,7 @@
     'ventas',
     'operacion',
     'costos',
+    'ideas',
     'ads',
     'bitacora',
     'redes',
@@ -5943,6 +7199,7 @@
     }
     // Releer datos vivos al entrar al tab (p. ej. costos → resumen).
     if (name === 'resumen') renderResumen();
+    if (name === 'ideas') renderIdeas();
     if (name === 'costos') {
       renderCostos();
       requestAnimationFrame(() => {

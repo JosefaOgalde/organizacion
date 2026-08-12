@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Fuerza PED-010/012/013 (fiados) + venta I000016 desde seed → live.
- * Uso si el panel no muestra los fiados tras git pull:
+ * Ya no fuerza fiados 010/012/013 (pagados → I000022/023/020).
+ * Solo asegura venta I000016 Fabian + producto LMBROC001.
  *   node scripts/force-imp-fiados-012-013.js
  */
 const fs = require('fs');
@@ -11,11 +11,8 @@ const ROOT = path.join(__dirname, '..');
 const SEED = path.join(ROOT, 'data', 'impresoreando-seed.json');
 const LIVE = path.join(ROOT, 'data', 'impresoreando-live.json');
 
-// Mel PED-013 ya NO va acá: está pagada → I000020 (force-imp-ventas-014-015-fiado-008.js)
-const FORCE_PED_IDS = [
-  'ped-gianni-soporte-010',
-  'ped-marcia-limpiador-012',
-];
+// PED-010/012/016 pagados → force-imp-ped-010-012-016-ventas.js
+const FORCE_PED_IDS = [];
 const FORCE_VEN_IDS = ['ven-fabian-bob-016'];
 
 function main() {

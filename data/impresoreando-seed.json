@@ -17,17 +17,20 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Los gastos son de ambos (deuda 50/50), pero hasta ahora los ha pagado todos Nicolás. Josefa le debe el 50% del capital/gastos.",
-    "actualizado": "2026-07-31T23:00:07.473Z",
+    "actualizado": "2026-08-12T01:29:47.865Z",
     "version": 1,
     "capital": {
-      "aportadoPor": "Nicolás",
+      "aportadoPor": "Nicolás + Josefa",
+      "aportadoJosefaClp": 16100,
+      "aportadoNicolasClp": 1018548,
       "deudaPctJosefa": 50,
-      "nota": "Nicolás puso el capital y, hasta ahora, ha pagado todos los gastos. «Ambos» = sociedad 50/50 (Josefa debe el 50% a Nicolás), no que Josefa haya pagado.",
-      "montoNetoClp": 915989,
-      "deudaJosefaClp": 457995
+      "montoNetoClp": 1034648,
+      "deudaJosefaClp": 490724,
+      "nota": "Sociedad 50/50. Deuda Josefa = 50% gastos (sin Spiderman/excluirDeuda) − lo que ya pagó. Spiderman .000 cuenta en meta pero no como deuda a Nicolás.",
+      "baseDeudaClp": 1013648
     },
-    "pedidoSeq": 15,
-    "ventaSeq": 20,
+    "pedidoSeq": 18,
+    "ventaSeq": 23,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
       {
@@ -50,6 +53,23 @@
         "compras": 5
       },
       {
+        "cliente": "Marcia SIE",
+        "ventaCodigos": [
+          "I000005",
+          "I000009",
+          "I000015",
+          "I000023"
+        ],
+        "ventaIds": [
+          "ven-marcia-stanley-001",
+          "ven-marcia-soporte-009",
+          "ven-marcia-soporte-015",
+          "ven-marcia-limpiador-023"
+        ],
+        "totalNeto": 16000,
+        "compras": 4
+      },
+      {
         "cliente": "Cata SIE",
         "ventaCodigos": [
           "I000004",
@@ -68,29 +88,29 @@
         "cliente": "Gianni SIE",
         "ventaCodigos": [
           "I000002",
-          "I000006"
+          "I000006",
+          "I000022"
         ],
         "ventaIds": [
           "ven-gianni-bulldog-002",
-          "ven-gianni-bob-001"
+          "ven-gianni-bob-001",
+          "ven-gianni-soporte-022"
         ],
-        "totalNeto": 22000,
-        "compras": 2
+        "totalNeto": 30000,
+        "compras": 3
       },
       {
-        "cliente": "Marcia SIE",
+        "cliente": "Juan MKOF",
         "ventaCodigos": [
-          "I000005",
-          "I000009",
-          "I000015"
+          "I000019",
+          "I000021"
         ],
         "ventaIds": [
-          "ven-marcia-stanley-001",
-          "ven-marcia-soporte-009",
-          "ven-marcia-soporte-015"
+          "ven-juan-bob-019",
+          "ven-juan-chimuelo-021"
         ],
-        "totalNeto": 9000,
-        "compras": 3
+        "totalNeto": 14000,
+        "compras": 2
       },
       {
         "cliente": "Ele SIE",
@@ -101,6 +121,17 @@
           "ven-ele-pesa-014"
         ],
         "totalNeto": 5000,
+        "compras": 1
+      },
+      {
+        "cliente": "Fabian MKOF",
+        "ventaCodigos": [
+          "I000016"
+        ],
+        "ventaIds": [
+          "ven-fabian-bob-016"
+        ],
+        "totalNeto": 7000,
         "compras": 1
       },
       {
@@ -126,39 +157,6 @@
         "compras": 1
       },
       {
-        "cliente": "Tito MKOF",
-        "ventaCodigos": [
-          "I000001"
-        ],
-        "ventaIds": [
-          "ven-mrpqov4c"
-        ],
-        "totalNeto": 15000,
-        "compras": 1
-      },
-      {
-        "cliente": "Fabian MKOF",
-        "ventaCodigos": [
-          "I000016"
-        ],
-        "ventaIds": [
-          "ven-fabian-bob-016"
-        ],
-        "totalNeto": 7000,
-        "compras": 1
-      },
-      {
-        "cliente": "Juan MKOF",
-        "ventaCodigos": [
-          "I000019"
-        ],
-        "ventaIds": [
-          "ven-juan-bob-019"
-        ],
-        "totalNeto": 7000,
-        "compras": 1
-      },
-      {
         "cliente": "Mel MKOF",
         "ventaCodigos": [
           "I000020"
@@ -168,8 +166,24 @@
         ],
         "totalNeto": 4000,
         "compras": 1
+      },
+      {
+        "cliente": "Tito MKOF",
+        "ventaCodigos": [
+          "I000001"
+        ],
+        "ventaIds": [
+          "ven-mrpqov4c"
+        ],
+        "totalNeto": 15000,
+        "compras": 1
       }
-    ]
+    ],
+    "caja": {
+      "saldoDeclaradoClp": 97000,
+      "fecha": "2026-08-11",
+      "nota": "Saldo en mano declarado · sale de ventas, no de capital de socios"
+    }
   },
   "parametros": {
     "tarifaKwhClp": 200,
@@ -179,7 +193,9 @@
     "costoBolsaEntregaClp": 50,
     "margenObjetivoPct": 100,
     "impresoraModelo": "Elegoo Centauri Carbon 2",
-    "impresoraNotas": "Pico nominal 1100 W @ 220 V. Promedio estimado en impresión PLA con cama caliente: 0,28 kW. Tarifa ~$200/kWh (precio efectivo boleta residencial Chile 2026; ajústala a tu cuenta)."
+    "impresoraNotas": "Pico nominal 1100 W @ 220 V. Promedio estimado en impresión PLA con cama caliente: 0,28 kW. Tarifa ~$200/kWh (precio efectivo boleta residencial Chile 2026; ajústala a tu cuenta).",
+    "costoKitElectricoLamparaClp": 5400,
+    "kitElectricoLamparaDetalle": "pera 1400 + cable 1100 + enchufe 1000 + soquete 1900"
   },
   "impresoras": [
     {
@@ -589,7 +605,7 @@
       "id": "gas-entrada-evento-3d-16100",
       "fecha": "2026-08-29",
       "categoria": "marketing",
-      "descripcion": "1 entrada a evento 3D (29 agosto)",
+      "descripcion": "1 entrada evento 3D Omnium (29 agosto)",
       "proveedor": "Evento 3D",
       "cantidad": 1,
       "montoNeto": 16100,
@@ -602,6 +618,25 @@
           "monto": 16100
         }
       ]
+    },
+    {
+      "id": "gas-diseno-spiderman",
+      "fecha": "2026-08-11",
+      "categoria": "diseño",
+      "descripcion": "Diseño Spiderman (comprado)",
+      "proveedor": "Diseño digital",
+      "cantidad": 1,
+      "montoNeto": 21000,
+      "notas": "Diseño digital Spiderman. No se suma al costo unitario. Cuenta en gastos/meta, pero NO en deuda Josefa→Nicolás (excluirDeuda). Sociedad 50/50 · pagó Nicolás.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Nicolás",
+      "items": [
+        {
+          "descripcion": "Diseño Spiderman",
+          "monto": 21000
+        }
+      ],
+      "excluirDeuda": true
     }
   ],
   "ventas": [
@@ -1143,6 +1178,92 @@
           "filamento": "PLA+ negro"
         }
       ]
+    },
+    {
+      "id": "ven-juan-chimuelo-021",
+      "codigo": "I000021",
+      "fecha": "2026-08-11",
+      "cliente": "Juan MKOF",
+      "clienteNombre": "Juan",
+      "clienteOrigen": "MKOF",
+      "descripcion": "1× Soporte celular Chimuelo · Juan MKOF",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 683.69,
+      "canal": "WhatsApp",
+      "notas": "Venta directa · 1× Soporte celular Chimuelo · cobrado .000 · MKOF (Josefa)",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular Chimuelo",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 683.69,
+          "filamento": "chimuelo"
+        }
+      ],
+      "creado": "2026-08-11T21:32:30.180Z"
+    },
+    {
+      "id": "ven-gianni-soporte-022",
+      "codigo": "I000022",
+      "fecha": "2026-08-11",
+      "cliente": "Gianni SIE",
+      "clienteNombre": "Gianni",
+      "clienteOrigen": "SIE",
+      "descripcion": "PED-010 · 2× Soporte celular negro · Gianni SIE",
+      "cantidad": 2,
+      "montoBruto": 8000,
+      "descuentoClp": 0,
+      "montoNeto": 8000,
+      "costoTotal": 1367.38,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-010 · fiado cobrado · 2× Soporte celular negro · pagado $8.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-gianni-soporte-010",
+      "pedidoNumero": "PED-010",
+      "items": [
+        {
+          "sku": "SOPCEL001",
+          "nombre": "Soporte celular",
+          "cantidad": 2,
+          "precioUnitarioClp": 4000,
+          "costoUnitarioClp": 683.69,
+          "filamento": "PLA+ negro"
+        }
+      ]
+    },
+    {
+      "id": "ven-marcia-limpiador-023",
+      "codigo": "I000023",
+      "fecha": "2026-08-11",
+      "cliente": "Marcia SIE",
+      "clienteNombre": "Marcia",
+      "clienteOrigen": "SIE",
+      "descripcion": "PED-012 · 1× Limpiador de brochas morado pastel · Marcia SIE",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 2163.67,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-012 · fiado cobrado · 1× Limpiador de brochas · pagado $7.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-marcia-limpiador-012",
+      "pedidoNumero": "PED-012",
+      "items": [
+        {
+          "sku": "LMBROC001",
+          "nombre": "Limpiador de brochas",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 2163.67,
+          "filamento": "PLA morado pastel"
+        }
+      ]
     }
   ],
   "operacion": [
@@ -1154,6 +1275,50 @@
       "montoNeto": 0,
       "notas": "Registrar boleta mensual de luz atribuible a impresión",
       "socioRegistro": "sistema"
+    },
+    {
+      "id": "op-soquetes-ventas-22254",
+      "fecha": "2026-08-11",
+      "categoria": "repuesto",
+      "descripcion": "Soquetes (operación · caja ventas)",
+      "montoNeto": 22254,
+      "notas": "Reinversión de caja de ventas · no es capital de socios · nadie se debe.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Ventas",
+      "pagadoConVentas": true
+    },
+    {
+      "id": "op-filamento-dorado-plateado-19429",
+      "fecha": "2026-08-11",
+      "categoria": "filamento",
+      "descripcion": "Filamento dorado y plateado (operación · caja ventas)",
+      "montoNeto": 19429,
+      "notas": "Reinversión de caja de ventas · no es capital de socios · nadie se debe.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Ventas",
+      "pagadoConVentas": true
+    },
+    {
+      "id": "op-insumos-ventas-6381",
+      "fecha": "2026-08-11",
+      "categoria": "insumo",
+      "descripcion": "Insumos (operación · caja ventas)",
+      "montoNeto": 6381,
+      "notas": "Reinversión de caja · Insumos $6.381 · no es capital de socios.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Ventas",
+      "pagadoConVentas": true
+    },
+    {
+      "id": "op-cine-hidalgo-41936",
+      "fecha": "2026-08-11",
+      "categoria": "otro",
+      "descripcion": "Cine / Hidalgo (operación · caja ventas)",
+      "montoNeto": 41936,
+      "notas": "Reinversión de caja · Cine / Hidalgo $41.936 · no es capital de socios.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Ventas",
+      "pagadoConVentas": true
     }
   ],
   "productos": [
@@ -1542,6 +1707,132 @@
       "precioVentaSugeridoClp": 1667,
       "pendienteCosto": true,
       "notas": "3 uds cobradas a Cata SIE $5.000 total ($1.667/u). Costo pendiente (sin imagen slicer)."
+    },
+    {
+      "id": "prod-lampara-honguito",
+      "sku": "LMMUSH001",
+      "nombre": "Lámpara honguito",
+      "activo": true,
+      "impresoraId": "imp-centauri-carbon-2",
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 19600,
+      "pendienteCosto": false,
+      "editadoLocal": true,
+      "notas": "Lámpara mushroom/honguito (LMMUSH001). Slicer: base 110,84 g (5 h 14 m) + pantalla 174,66 g (7 h 42 m) = 285,50 g · 12 h 56 m. PLA blanco .690/kg. Fil ~.623 + luz ~ + bolsa  + kit eléctrico .400 (pera 1400 + cable 1100 + enchufe 1000 + soquete 1900) = costo ~.797 · PVP sugerido .600. Venta fiado Gianni .000.",
+      "filamentoModeloGramos": 110.84,
+      "filamentoSoportesGramos": 174.66,
+      "filamentoPurgeGramos": 0,
+      "filamentoGramos": 285.5,
+      "costoFilamentoKgClp": 12690,
+      "horasImpresion": 12.933333,
+      "minutosPintado": 0,
+      "costoExtrasClp": 5400,
+      "tipoProducto": "lampara",
+      "aliasSku": [
+        "LAMHONG001"
+      ]
+    },
+    {
+      "id": "prod-posalibro-harry-potter",
+      "sku": "PSHARR001",
+      "nombre": "Posalibro Harry Potter",
+      "activo": true,
+      "impresoraId": "imp-centauri-carbon-2",
+      "filamentoModeloGramos": 119.68,
+      "filamentoSoportesGramos": 12.67,
+      "filamentoPurgeGramos": 0.46,
+      "filamentoMetros": 44.17,
+      "filamentoGramos": 132.81,
+      "costoFilamentoKgClp": 17986,
+      "horasImpresion": 3.05,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 9000,
+      "costoSlicerRef": 2.66,
+      "pendienteCosto": false,
+      "aliasSku": [
+        "ALHARR001",
+        "APHARR001"
+      ],
+      "notas": "Slicer 1 ud (PLA+ negro primeros rollos): modelo 119,68 g (39,80 m) + soportes 12,36 g + interfaz 0,31 g + resto/falda 0,46 g = 132,81 g · 44,17 m · 3 h 3 m · coste slicer 2,66. PLA+ negro $17.986/kg · Elegoo. Fil ~$2.389 + luz ~$171 + bolsa $50 = costo ~$2.610 · PVP $9.000. PED-017 Rebe SIE · listo para entregar."
+    },
+    {
+      "id": "prod-porta-fotos-burbuja",
+      "sku": "PFBURB001",
+      "nombre": "Porta fotos burbuja",
+      "activo": true,
+      "impresoraId": "imp-centauri-carbon-2",
+      "filamentoModeloGramos": 148.24,
+      "filamentoSoportesGramos": 12.63,
+      "filamentoPurgeGramos": 0.94,
+      "filamentoMetros": 53.82,
+      "filamentoGramos": 161.81,
+      "costoFilamentoKgClp": 17986,
+      "horasImpresion": 4.35,
+      "minutosPintado": 0,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 6000,
+      "costoSlicerRef": 3.24,
+      "pendienteCosto": false,
+      "aliasSku": [
+        "PTFBUR001",
+        "PFOTBUR001"
+      ],
+      "notas": "Slicer 2 piezas (PLA+ negro $17.986/kg · Elegoo): burbujas 68,98 g (22,94 m · 2 h 14 m · coste 1,38) + base 92,83 g (30,88 m · 2 h 7 m · coste 1,86) = 161,81 g · 53,82 m · 4 h 21 m. Fil ~$2.910 + luz ~$244 + bolsa $50 = costo ~$3.204 · PVP $6.000. PED-018 Gianni SIE · en impresión."
+    }
+  ],
+  "ideasImprimir": [
+    {
+      "id": "idea-llavero-colocolo",
+      "nombre": "Llaveros Colo-Colo",
+      "categoria": "llavero",
+      "estado": "idea",
+      "notas": "Hincha · posible alto volumen"
+    },
+    {
+      "id": "idea-llavero-u",
+      "nombre": "Llaveros de la U",
+      "categoria": "llavero",
+      "estado": "idea",
+      "notas": "Universidad de Chile"
+    },
+    {
+      "id": "idea-llavero-catolica",
+      "nombre": "Llaveros de la Católica",
+      "categoria": "llavero",
+      "estado": "idea",
+      "notas": "Universidad Católica"
+    },
+    {
+      "id": "idea-soporte-tablet",
+      "nombre": "Soporte tablet",
+      "categoria": "soporte",
+      "estado": "idea",
+      "notas": ""
+    },
+    {
+      "id": "idea-abrebotellas",
+      "nombre": "Abrebotellas",
+      "categoria": "util",
+      "estado": "idea",
+      "notas": "Cosito para abrir las botellas"
+    },
+    {
+      "id": "idea-pastillero",
+      "nombre": "Pastillero",
+      "categoria": "util",
+      "estado": "idea",
+      "notas": ""
+    },
+    {
+      "id": "idea-porta-fotos-burbuja",
+      "nombre": "Porta fotos burbuja",
+      "categoria": "deco",
+      "estado": "idea",
+      "notas": "SKU PFBURB001 · 2 piezas · costo ~$3.204 · PVP $6.000 · PED-018 Gianni en impresión"
     }
   ],
   "planAds": {
@@ -1573,6 +1864,11 @@
     ]
   },
   "bitacora": [
+    {
+      "id": "bit-gianni-honguito-016",
+      "fecha": "2026-08-11",
+      "texto": "PED-016 Gianni SIE · 1× Lámpara honguito (LMMUSH001) · .000 fiado · costo ~.797 · fecha pago por confirmar."
+    },
     {
       "id": "bit-fiados-012-013-2026-07-31",
       "fecha": "2026-07-31",
@@ -2028,8 +2324,8 @@
           "precioUnitarioClp": 4000,
           "costoUnitarioClp": 683.69,
           "filamento": "PLA+ negro",
-          "estado": "pendiente",
-          "listos": 0,
+          "estado": "listo",
+          "listos": 2,
           "enImpresion": 0
         }
       ],
@@ -2037,14 +2333,14 @@
       "descuentoClp": 0,
       "montoNeto": 8000,
       "costoTotal": 1367.38,
-      "estado": "pendiente",
-      "ventaId": null,
-      "fiado": true,
-      "fechaPagoEsperada": "2026-08-18",
-      "pagoNotas": "Paga el 18 de agosto",
-      "notas": "2× Soporte celular negro · fiado · paga 2026-08-18 · PVP $4.000/u · total $8.000",
+      "estado": "transferido",
+      "ventaId": "ven-gianni-soporte-022",
+      "fiado": false,
+      "pagoNotas": "Pagado · transferido a venta I000022",
+      "notas": "2× Soporte celular negro · transferido a venta I000022 · pagado $8.000 · SIE (Nico)",
       "socioRegistro": "Ambos",
-      "creado": "2026-07-28T15:40:00.000Z"
+      "creado": "2026-07-28T15:40:00.000Z",
+      "transferidoEn": "2026-08-12T00:30:00.000Z"
     },
     {
       "id": "ped-marcia-soporte-011",
@@ -2094,8 +2390,8 @@
           "precioUnitarioClp": 7000,
           "costoUnitarioClp": 2163.67,
           "filamento": "PLA morado pastel",
-          "estado": "pendiente",
-          "listos": 0,
+          "estado": "listo",
+          "listos": 1,
           "enImpresion": 0
         }
       ],
@@ -2103,13 +2399,14 @@
       "descuentoClp": 0,
       "montoNeto": 7000,
       "costoTotal": 2163.67,
-      "estado": "pendiente",
-      "ventaId": null,
-      "fiado": true,
-      "pagoNotas": "Fiado · fecha de pago por confirmar",
-      "notas": "1× Limpiador de brochas morado pastel · fiado · PVP $7.000 · fecha de pago por confirmar",
+      "estado": "transferido",
+      "ventaId": "ven-marcia-limpiador-023",
+      "fiado": false,
+      "pagoNotas": "Pagado · transferido a venta I000023",
+      "notas": "1× Limpiador de brochas morado pastel · transferido a venta I000023 · pagado $7.000 · SIE (Nico)",
       "socioRegistro": "Ambos",
-      "creado": "2026-07-31T00:30:00.000Z"
+      "creado": "2026-07-31T00:30:00.000Z",
+      "transferidoEn": "2026-08-12T00:30:00.000Z"
     },
     {
       "id": "ped-mel-soporte-013",
@@ -2208,6 +2505,104 @@
       "socioRegistro": "Ambos",
       "creado": "2026-07-31T19:00:00.000Z",
       "transferidoEn": "2026-07-31T19:00:00.000Z"
+    },
+    {
+      "id": "ped-gianni-honguito-016",
+      "numero": "PED-016",
+      "fecha": "2026-08-11",
+      "cliente": "Gianni SIE",
+      "clienteNombre": "Gianni",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "LMMUSH001",
+          "nombre": "Lámpara honguito",
+          "cantidad": 1,
+          "precioUnitarioClp": 16000,
+          "costoUnitarioClp": 9797,
+          "filamento": "PLA blanco",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 16000,
+      "descuentoClp": 0,
+      "montoNeto": 16000,
+      "estado": "listo",
+      "fiado": false,
+      "pagoNotas": "",
+      "notas": "1× Lámpara honguito · listo para entregar · PVP $16.000 · aún no cobrado · SIE (Nico)",
+      "socioRegistro": "Ambos",
+      "creado": "2026-08-11T22:28:18.388Z",
+      "costoTotal": 9797
+    },
+    {
+      "id": "ped-rebe-posalibro-017",
+      "numero": "PED-017",
+      "creado": "2026-08-12T00:39:26.644Z",
+      "fecha": "2026-08-11",
+      "cliente": "Rebe SIE",
+      "clienteNombre": "Rebe",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "estado": "listo",
+      "fiado": false,
+      "ventaId": null,
+      "montoBruto": 9000,
+      "descuentoClp": 0,
+      "montoNeto": 9000,
+      "costoTotal": 2609.52,
+      "pagoNotas": "",
+      "notas": "1× Posalibro Harry Potter · listo para entregar · PVP $9.000 · costo ~$2.610 · aún no cobrado · Rebe SIE (Nico)",
+      "socioRegistro": "Ambos",
+      "items": [
+        {
+          "sku": "PSHARR001",
+          "nombre": "Posalibro Harry Potter",
+          "cantidad": 1,
+          "precioUnitarioClp": 9000,
+          "costoUnitarioClp": 2609.52,
+          "filamento": "PLA+ negro",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ]
+    },
+    {
+      "id": "ped-gianni-porta-fotos-018",
+      "numero": "PED-018",
+      "fecha": "2026-08-11",
+      "cliente": "Gianni SIE",
+      "clienteNombre": "Gianni",
+      "clienteOrigen": "SIE",
+      "canal": "WhatsApp",
+      "estado": "en_impresion",
+      "fiado": false,
+      "ventaId": null,
+      "montoBruto": 6000,
+      "descuentoClp": 0,
+      "montoNeto": 6000,
+      "costoTotal": 3203.95,
+      "pagoNotas": "",
+      "notas": "1× Porta fotos burbuja · en impresión · PVP $6.000 · costo ~$3.204 · SIE (Nico)",
+      "socioRegistro": "Ambos",
+      "creado": "2026-08-12T01:11:00.000Z",
+      "items": [
+        {
+          "sku": "PFBURB001",
+          "nombre": "Porta fotos burbuja",
+          "cantidad": 1,
+          "precioUnitarioClp": 6000,
+          "costoUnitarioClp": 3203.95,
+          "filamento": "PLA+ negro",
+          "estado": "en_impresion",
+          "listos": 0,
+          "enImpresion": 1
+        }
+      ]
     }
   ]
 }

@@ -132,6 +132,8 @@ if not errorlevel 1 (
   if exist "scripts\force-imp-producto-limpiador-brochas.js" node scripts\force-imp-producto-limpiador-brochas.js >nul 2>&1
   if exist "scripts\force-imp-fiados-012-013.js" node scripts\force-imp-fiados-012-013.js >nul 2>&1
   if exist "scripts\force-imp-ventas-014-015-fiado-008.js" node scripts\force-imp-ventas-014-015-fiado-008.js >nul 2>&1
+  if exist "scripts\force-imp-ped-010-012-016-ventas.js" node scripts\force-imp-ped-010-012-016-ventas.js >nul 2>&1
+  if exist "scripts\force-imp-gastos-caja-ventas.js" node scripts\force-imp-gastos-caja-ventas.js >nul 2>&1
   if exist "scripts\force-imp-ped-007-anulado.js" node scripts\force-imp-ped-007-anulado.js >nul 2>&1
   if exist "scripts\force-imp-mel-013-venta.js" node scripts\force-imp-mel-013-venta.js >nul 2>&1
 )
