@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PRISA · Tabla Cobertura Nacional</title>
+  <style>
+    :root {
+      --header: #453d74;
+      --row-alt: #eef2f8;
+      --panel: #e9eef6;
+      --text: #4a4a5a;
+      --text-strong: #453d74;
+      --border: #cfd5e3;
+      --dot: #c5cad8;
+      --note: #8a93a8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 24px;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f5f8;
+      color: var(--text);
+    }
+
+    .tabla-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(69, 61, 116, 0.08);
+    }
+
+    table.cobertura {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .cobertura thead th {
+      background: var(--header);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 16px 10px;
+      border: 0;
+    }
+
+    .cobertura tbody tr.fila td {
+      text-align: center;
+      padding: 14px 10px;
+      font-size: 14px;
+      border-top: 1px solid #e8ebf2;
+      vertical-align: middle;
+      color: var(--text);
+    }
+
+    .cobertura tbody tr.fila:nth-child(4n + 1) { background: #fff; }
+    .cobertura tbody tr.fila:nth-child(4n + 3) { background: var(--row-alt); }
+    .cobertura tbody tr.fila.is-open { background: #fff; }
+
+    .cobertura thead th:not(:last-child),
+    .cobertura tbody tr.fila td:not(:last-child) {
+      border-right: 1px solid #e2e5ee;
+    }
+
+    .cobertura td.zona { text-transform: lowercase; font-weight: 400; }
+    .cobertura td.region { font-weight: 400; }
+    .cobertura td.despacho {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-strong);
+    }
+
+    .cobertura td.comuna { line-height: 1; }
+    .cobertura .tri {
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 9px solid var(--header);
+      transition: transform 0.2s ease;
+    }
+    /* Cerrado: flecha arriba (como tabla base). Abierto: flecha abajo */
+    .cobertura tr.fila:not(.is-open) .tri {
+      border-top: 0;
+      border-bottom: 9px solid var(--header);
+    }
+
+    .cobertura tr.fila { cursor: pointer; }
+    .cobertura tr.fila:hover td { background: rgba(69, 61, 116, 0.04); }
+    .cobertura tr.fila.is-open:hover td { background: #fff; }
+
+    .cobertura th:nth-child(1),
+    .cobertura td:nth-child(1) { width: 18%; }
+    .cobertura th:nth-child(2),
+    .cobertura td:nth-child(2) { width: 26%; }
+    .cobertura th:nth-child(3),
+    .cobertura td:nth-child(3) { width: 28%; }
+    .cobertura th:nth-child(4),
+    .cobertura td:nth-child(4) { width: 28%; }
+
+    /* ——— Panel acordeón (como Figma) ——— */
+    tr.detalle { display: none; }
+    tr.detalle.is-visible { display: table-row; }
+    tr.detalle > td {
+      padding: 0 10px 16px;
+      background: #fff;
+      border: 0;
+    }
+
+    .acordeon {
+      background: var(--panel);
+      border: 1px solid #d5dde9;
+      border-radius: 18px;
+      padding: 20px 22px 16px;
+      position: relative;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+    }
+
+    .acordeon__cerrar {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1.5px solid #1a1a1a;
+      background: transparent;
+      color: #1a1a1a;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      padding: 0 0 1px;
+    }
+    .acordeon__cerrar:hover { background: rgba(0,0,0,0.06); }
+
+    .acordeon__head {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 2px 40px 16px 2px;
+      border-bottom: 1.5px dashed #a8b3c9;
+      margin-bottom: 16px;
+    }
+
+    .acordeon__camion {
+      width: 78px;
+      height: 48px;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    .acordeon__titulo {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--header);
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+
+    .acordeon__card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #e4e8f0;
+    }
+
+    .acordeon__tabla {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    .acordeon__tabla thead th {
+      background: #fff !important;
+      color: var(--header) !important;
+      text-align: left;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px 20px;
+      border: 0;
+      border-bottom: 1.5px dashed #c8d0e0;
+    }
+    .acordeon__tabla thead th:first-child {
+      width: 40%;
+      border-right: 1.5px dashed #c8d0e0;
+    }
+    .acordeon__tabla tbody td {
+      text-align: left !important;
+      padding: 11px 20px;
+      font-size: 14px;
+      color: #5a6170;
+      border: 0;
+      border-top: 1px dashed #d5dce8;
+      background: #fff !important;
+      font-weight: 400;
+    }
+    .acordeon__tabla tbody td:first-child {
+      border-right: 1.5px dashed #d5dce8;
+    }
+    .acordeon__tabla tbody tr:first-child td {
+      border-top: 0;
+    }
+
+    .acordeon__nota {
+      margin: 14px 6px 2px;
+      font-size: 12px;
+      color: var(--note);
+      font-weight: 400;
+    }
+
+    .notas-abajo {
+      max-width: 960px;
+      margin: 28px auto 0;
+      padding: 0 4px;
+      color: #1e3a5f;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+    .notas-abajo h2 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e3a5f;
+    }
+    .notas-abajo p {
+      margin: 0 0 22px;
+      font-weight: 400;
+      color: #1e3a5f;
+    }
+    .notas-abajo p:last-child { margin-bottom: 0; }
+  </style>
+</head>
+<body>
+  <div class="tabla-wrap">
+    <table class="cobertura">
+      <thead>
+        <tr>
+          <th>ZONA</th>
+          <th>REGION</th>
+          <th>ZONA DE DESPACHO</th>
+          <th>DESPACHO POR COMUNA</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <section class="notas-abajo" aria-label="Tarifas y plazos">
+    <h2>Tarifas por Zona:</h2>
+    <p>
+      El cálculo se realizará directamente por el sitio en la etapa final del Checkout,
+      entregándose la tarifa de despacho considerando el PESO y la COMUNA DE DESTINO de los productos.
+    </p>
+    <h2>Plazos de entrega</h2>
+    <p>
+      El cálculo se realizará directamente por el sitio en la etapa final del Checkout,
+      considerándose el horario de consolidación de cada proveedor, el tiempo de preparación del pedido
+      y el tiempo de traslado por el proveedor logístico.
+    </p>
+  </section>
+
+  <script>
+    const FILAS = [
+      "ANTOFAGASTA",
+      "ARAUCANIA",
+      "BIO BIO",
+      "DEL MAULE",
+      "VALPARAISO",
+      "AYSEN",
+      "ARICA",
+      "ATACAMA",
+      "COQUIMBO",
+      "DE LOS RIOS",
+      "LOS LAGOS",
+      "MAGALLANES",
+      "ANTOFAGASTA",
+      "METROPOLITANA",
+      "ÑUBLE",
+      "O'HIGGINS",
+      "TARAPACA",
+    ];
+
+    const DETALLE = {
+      ANTOFAGASTA: {
+        titulo: "XV Region de Arica",
+        comunas: [
+          ["antofagasta", "4 días hábiles"],
+          ["Baquedano", "8 días hábiles"],
+          ["Mejillones", "6 días hábiles"],
+          ["Salar de Atacama", "7 días hábiles"],
+          ["Sierra gorda", "8 días hábiles"],
+          ["Taltal", "8 días hábiles"],
+          ["calama", "8 días hábiles"],
+          ["San pedro de atacama", "6 días hábiles"],
+          ["Maria elena", "7 días hábiles"],
+          ["Pedro de valdivia", "7 días hábiles"],
+          ["Tocopilla", "6 días hábiles"],
+        ],
+      },
+      ARICA: {
+        titulo: "XV Region de Arica",
+        comunas: [
+          ["Arica", "4 días hábiles"],
+          ["Camarones", "7 días hábiles"],
+          ["Putre", "8 días hábiles"],
+          ["General Lagos", "8 días hábiles"],
+        ],
+      },
+    };
+
+    const NOTA =
+      "* Por cualquier inconveniente Consulte con su Ejecutivo de Ventas los días de entrega";
+
+    const CAMION = `
+      <svg class="acordeon__camion" viewBox="0 0 120 72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="6" y="22" width="62" height="30" rx="4" fill="#d1202f"/>
+        <text x="37" y="42" text-anchor="middle" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing="0.5">PRISA</text>
+        <path d="M68 28h22l12 11v13H68V28z" fill="#5b6472"/>
+        <rect x="90" y="32" width="10" height="10" rx="1.5" fill="#9ec9f0"/>
+        <rect x="68" y="28" width="4" height="24" fill="#4a5360"/>
+        <circle cx="28" cy="56" r="9" fill="#2d3340"/>
+        <circle cx="28" cy="56" r="4" fill="#c5c9d1"/>
+        <circle cx="92" cy="56" r="9" fill="#2d3340"/>
+        <circle cx="92" cy="56" r="4" fill="#c5c9d1"/>
+        <rect x="10" y="18" width="18" height="6" rx="1" fill="#b01020"/>
+      </svg>`;
+
+    function esc(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function panelHtml(key) {
+      const data = DETALLE[key] || {
+        titulo: key,
+        comunas: [["—", "Consultar con Ejecutivo de Ventas"]],
+      };
+      const rows = data.comunas
+        .map(([c, t]) => `<tr><td>${esc(c)}</td><td>${esc(t)}</td></tr>`)
+        .join("");
+      return `
+        <div class="acordeon">
+          <button type="button" class="acordeon__cerrar" aria-label="Cerrar">×</button>
+          <div class="acordeon__head">
+            ${CAMION}
+            <h3 class="acordeon__titulo">${esc(data.titulo)}</h3>
+          </div>
+          <div class="acordeon__card">
+            <table class="acordeon__tabla">
+              <thead>
+                <tr>
+                  <th>Comuna</th>
+                  <th>Tiempo máximo estimado de entrega (días hábiles)</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+          <p class="acordeon__nota">${esc(NOTA)}</p>
+        </div>`;
+    }
+
+    const tbody = document.getElementById("tbody");
+    tbody.innerHTML = FILAS.map(
+      (zona) => `
+      <tr class="fila" tabindex="0" data-key="${esc(zona)}" aria-expanded="false">
+        <td class="zona">zonas norte</td>
+        <td class="region">Arica y Parinacota</td>
+        <td class="despacho">${esc(zona)}</td>
+        <td class="comuna"><span class="tri" aria-hidden="true"></span></td>
+      </tr>
+      <tr class="detalle">
+        <td colspan="4">${panelHtml(zona)}</td>
+      </tr>`
+    ).join("");
+
+    function cerrarTodo() {
+      tbody.querySelectorAll("tr.fila.is-open").forEach((tr) => {
+        tr.classList.remove("is-open");
+        tr.setAttribute("aria-expanded", "false");
+        const det = tr.nextElementSibling;
+        if (det) det.classList.remove("is-visible");
+      });
+    }
+
+    function abrir(fila) {
+      const abierta = fila.classList.contains("is-open");
+      cerrarTodo();
+      if (abierta) return;
+      fila.classList.add("is-open");
+      fila.setAttribute("aria-expanded", "true");
+      const det = fila.nextElementSibling;
+      if (det) det.classList.add("is-visible");
+    }
+
+    tbody.addEventListener("click", (e) => {
+      if (e.target.closest(".acordeon__cerrar")) {
+        e.preventDefault();
+        e.stopPropagation();
+        cerrarTodo();
+        return;
+      }
+      const fila = e.target.closest("tr.fila");
+      if (fila) abrir(fila);
+    });
+
+    tbody.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const fila = e.target.closest("tr.fila");
+      if (!fila) return;
+      e.preventDefault();
+      abrir(fila);
+    });
+
+    // Abrir la primera fila (ANTOFAGASTA) para que se vea el acordeón al cargar
+    const primera = tbody.querySelector("tr.fila");
+    if (primera) abrir(primera);
+  </script>
+</body>
+</html>
