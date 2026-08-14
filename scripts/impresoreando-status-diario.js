@@ -124,8 +124,16 @@ function pdfPageCount(pdfPath) {
   return m ? Number(m[1]) : 0;
 }
 
+function pdfPageHeightIn(pdfPath) {
+  const text = fs.readFileSync(pdfPath, 'latin1');
+  const m = text.match(/\/MediaBox\s*\[\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\]/);
+  if (!m) return 0;
+  return Number(m[4]) / 72;
+}
+
 function injectSinglePageCss(htmlPath, heightMm) {
-  const html = fs.readFileSync(htmlPath, 'utf8');
+  let html = fs.readFileSync(htmlPath, 'utf8');
+  html = html.replace(/<style id="imp-pdf-page">[\s\S]*?<\/style>\s*/i, '');
   const css = `<style id="imp-pdf-page">
 @page { size: 210mm ${Math.ceil(heightMm)}mm; margin: 6mm; }
 html, body { margin: 0; padding: 0; background: #f4efe4; }
@@ -154,7 +162,7 @@ async function htmlFileToPdfCdp(browser, htmlPath, pdfPath) {
       `--remote-debugging-port=${port}`,
       '--remote-allow-origins=*',
       `--user-data-dir=${profile}`,
-      fileUrl,
+      'about:blank',
     ],
     { stdio: 'ignore' }
   );
@@ -168,57 +176,82 @@ async function htmlFileToPdfCdp(browser, htmlPath, pdfPath) {
     await cdp.ready();
     await cdp.send('Page.enable');
     await cdp.send('Runtime.enable');
+    await cdp.send('Page.navigate', { url: fileUrl });
+    await sleep(700);
     try {
       await cdp.send('Emulation.setDeviceMetricsOverride', {
         width: 794,
-        height: 24000,
+        height: 4000,
         deviceScaleFactor: 1,
         mobile: false,
       });
     } catch (_) {
       /* ignore */
     }
-    try {
-      await cdp.send('Page.bringToFront');
-    } catch (_) {
-      /* ignore */
-    }
+    await sleep(400);
+    // Medir contenido real (.sheet). No confiar en viewport emulado alto.
+    const measured = await cdp.send('Runtime.evaluate', {
+      expression: `(() => {
+        const sheet = document.querySelector('.sheet');
+        if (sheet) {
+          const r = sheet.getBoundingClientRect();
+          return Math.ceil(r.height + r.top + window.scrollY + 16);
+        }
+        return Math.max(
+          document.documentElement.scrollHeight || 0,
+          document.body ? document.body.scrollHeight : 0,
+          2200
+        );
+      })()`,
+      returnByValue: true,
+    });
+    let heightPx = Number(measured && measured.result && measured.result.value) || 2200;
+    if (heightPx > 9000) heightPx = 3200;
+    const heightMm = Math.ceil((heightPx / 96) * 25.4) + 10;
+    const heightIn = Math.min(80, Math.max(4, heightMm / 25.4));
+    console.log(`PDF altura medida: ${heightPx}px → ${heightIn.toFixed(2)}" (${heightMm}mm)`);
+
+    // Fijar @page al alto real y recargar para que Chrome respete una sola hoja
+    injectSinglePageCss(htmlPath, heightMm);
+    await cdp.send('Page.reload', { ignoreCache: true });
     await sleep(900);
-    let heightPx = 0;
-    try {
-      const metrics = await cdp.send('Page.getLayoutMetrics');
-      heightPx = Number(
-        (metrics.cssContentSize && metrics.cssContentSize.height) ||
-          (metrics.contentSize && metrics.contentSize.height) ||
-          0
-      );
-    } catch (_) {
-      /* ignore */
-    }
-    if (!heightPx) {
-      const measured = await cdp.send('Runtime.evaluate', {
-        expression:
-          'Math.max(document.documentElement.scrollHeight, document.body.scrollHeight, document.documentElement.offsetHeight)',
-        returnByValue: true,
-      });
-      heightPx = Number(measured && measured.result && measured.result.value) || 2200;
-    }
-    const heightIn = Math.min(200, Math.max(4, heightPx / 96 + 0.18));
-    const printed = await cdp.send('Page.printToPDF', {
+
+    let printed = await cdp.send('Page.printToPDF', {
       printBackground: true,
       displayHeaderFooter: false,
-      preferCSSPageSize: false,
+      preferCSSPageSize: true,
       paperWidth: 8.27,
       paperHeight: heightIn,
-      marginTop: 0.2,
-      marginBottom: 0.12,
+      marginTop: 0.24,
+      marginBottom: 0.16,
       marginLeft: 0.32,
       marginRight: 0.32,
     });
-    cdp.close();
-    const buf = Buffer.from(printed.data, 'base64');
-    if (buf.length < 100) throw new Error('PDF CDP vacío');
+    let buf = Buffer.from(printed.data, 'base64');
     fs.writeFileSync(pdfPath, buf);
+    if (pdfPageCount(pdfPath) > 1 || pdfPageHeightIn(pdfPath) > 90) {
+      printed = await cdp.send('Page.printToPDF', {
+        printBackground: true,
+        displayHeaderFooter: false,
+        preferCSSPageSize: false,
+        paperWidth: 8.27,
+        paperHeight: heightIn,
+        marginTop: 0.24,
+        marginBottom: 0.16,
+        marginLeft: 0.32,
+        marginRight: 0.32,
+      });
+      buf = Buffer.from(printed.data, 'base64');
+      fs.writeFileSync(pdfPath, buf);
+    }
+    cdp.close();
+    if (buf.length < 100) throw new Error('PDF CDP vacío');
+    if (pdfPageCount(pdfPath) > 1) {
+      throw new Error(`CDP generó ${pdfPageCount(pdfPath)} páginas`);
+    }
+    if (pdfPageHeightIn(pdfPath) > 90) {
+      throw new Error(`CDP generó hoja de ${pdfPageHeightIn(pdfPath).toFixed(1)}"`);
+    }
   } finally {
     try {
       proc.kill();
@@ -234,9 +267,11 @@ async function htmlFileToPdfCdp(browser, htmlPath, pdfPath) {
   }
 }
 
-function htmlFileToPdfFallback(browser, htmlPath, pdfPath) {
+function htmlFileToPdfFallback(browser, htmlPath, pdfPath, heightMmOpt) {
   const html = fs.readFileSync(htmlPath, 'utf8');
-  injectSinglePageCss(htmlPath, estimatePageHeightMm(html));
+  const heightMm = Math.ceil(heightMmOpt || estimatePageHeightMm(html) * 1.35);
+  injectSinglePageCss(htmlPath, heightMm);
+  console.log(`PDF fallback @page ${heightMm}mm`);
   const fileUrl = 'file:///' + path.resolve(htmlPath).replace(/\\/g, '/');
   execFileSync(
     browser,
@@ -256,22 +291,37 @@ async function htmlFileToPdf(htmlPath, pdfPath) {
   if (!browser) {
     throw new Error('No se encontró Chrome ni Edge para generar el PDF');
   }
+  const html0 = fs.readFileSync(htmlPath, 'utf8');
+  const estimatedMm = Math.ceil(estimatePageHeightMm(html0) * 1.45);
   try {
     await htmlFileToPdfCdp(browser, htmlPath, pdfPath);
   } catch (e) {
-    console.error(`PDF CDP falló (${e.message || e}); usando fallback de una hoja alta…`);
-    htmlFileToPdfFallback(browser, htmlPath, pdfPath);
+    console.error(`PDF CDP falló (${e.message || e}); usando fallback…`);
+    htmlFileToPdfFallback(browser, htmlPath, pdfPath, Math.max(estimatedMm, 780));
   }
   if (!fs.existsSync(pdfPath) || fs.statSync(pdfPath).size < 100) {
     throw new Error('El PDF no se generó');
   }
-  if (pdfPageCount(pdfPath) > 1) {
-    const html = fs.readFileSync(htmlPath, 'utf8');
-    injectSinglePageCss(htmlPath, Math.ceil(estimatePageHeightMm(html) * 1.08));
-    htmlFileToPdfFallback(browser, htmlPath, pdfPath);
+  let pages = pdfPageCount(pdfPath);
+  let tall = pdfPageHeightIn(pdfPath);
+  if (pages > 1 || tall > 90) {
+    console.error(`PDF mal (${pages} pág, ${tall.toFixed(1)}"); forzando hoja ~${Math.max(estimatedMm, 780)}mm…`);
+    htmlFileToPdfFallback(browser, htmlPath, pdfPath, Math.max(estimatedMm, 780));
+    pages = pdfPageCount(pdfPath);
+    tall = pdfPageHeightIn(pdfPath);
   }
-  if (pdfPageCount(pdfPath) > 1) {
-    throw new Error(`El PDF sigue en ${pdfPageCount(pdfPath)} páginas`);
+  if (pages > 1) {
+    // Último recurso: hoja muy alta para absorber todo el contenido
+    htmlFileToPdfFallback(browser, htmlPath, pdfPath, 1100);
+    pages = pdfPageCount(pdfPath);
+    tall = pdfPageHeightIn(pdfPath);
+  }
+  console.log(`PDF final: ${pages} pág · ${tall.toFixed(2)}" · ${Math.round(fs.statSync(pdfPath).size / 1024)} KB`);
+  if (pages > 1) {
+    throw new Error(`El PDF sigue en ${pages} páginas`);
+  }
+  if (tall > 90) {
+    throw new Error(`El PDF sigue demasiado alto (${tall.toFixed(1)}")`);
   }
 }
 
@@ -576,6 +626,20 @@ function buildDigest(data, sourceFile) {
         · actualizado ${escapeHtml(String(actualizado))}
       </p>
 
+      <div style="background:#1f3d36;border:1px solid #2a564c;border-radius:12px;padding:16px 18px;margin-bottom:18px;color:#e8f5f0">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9ec9b8;margin-bottom:4px">Disponible ahora</div>
+        <div style="font-size:13px;font-weight:700;color:#c5e6d8;margin-bottom:6px">En la cuenta (Mercado Pago / ML)</div>
+        <div style="font-size:32px;font-weight:800;color:#fff;letter-spacing:-0.02em">${money(cajaMostrar)}</div>
+        <p style="margin:8px 0 0;font-size:13px;line-height:1.45;color:#b7d4c8">
+          Ventas <strong style="color:#fff">${money(ventas)}</strong>
+          − operación con caja <strong style="color:#fff">${money(reinversionVentas)}</strong>
+          = saldo que queda en la cuenta.
+          ${cajaDeclarado != null && Math.round(cajaDeclarado) !== Math.round(cajaTeorico)
+            ? `<br>Teórico ${money(cajaTeorico)} · declarado ML ${money(cajaDeclarado)}.`
+            : ''}
+        </p>
+      </div>
+
       <div style="background:#fff8ec;border:1px solid #e0d0b0;border-radius:12px;padding:16px 18px;margin-bottom:18px">
         <div style="font-size:13px;color:#7a5c28;font-weight:700;margin-bottom:6px">Pedidos</div>
         <p style="margin:0 0 10px;font-size:13px;color:#7a5c28">Listo y en impresión. Si se cobran los listos, suman ${money(montoListos)} a ventas.</p>
@@ -586,7 +650,7 @@ function buildDigest(data, sourceFile) {
         <div style="font-size:13px;color:#2f6f9f;font-weight:700;margin-bottom:8px">Recomendaciones de esta semana</div>
         <ol style="margin:0;padding-left:1.2rem;font-size:14px;line-height:1.5;color:#3b2a14">
           <li style="margin:0 0 8px"><strong>Subir contenido a Instagram</strong> (@impresoreando): 2–3 piezas esta semana (lun · mié · vie) o stories diarias. Mostrar lo que ya se vende o se está imprimiendo (lámpara honguito, posalibro Harry Potter, porta fotos burbuja) + 1 idea nueva. Foto/mockup producto, no ads Meta aún.</li>
-          <li style="margin:0 0 8px"><strong>Entregar y cobrar lo listo</strong> (detalle arriba en Pedidos): lámpara Gianni $16.000 y posalibro Rebe $9.000. Si se cobran, suman ${money(montoListos)} a ventas. El porta fotos de Gianni sigue en impresión.</li>
+          <li style="margin:0 0 8px"><strong>Entregar y cobrar lo listo</strong> (detalle arriba en Pedidos): lámpara Gianni $16.000. Si se cobra, suma ${money(montoListos)} a ventas. El porta fotos de Gianni sigue en impresión · posalibro Rebe ya cobrado $8.000.</li>
           <li><strong>Evento 3D Omnium · sábado 29 de agosto</strong> (faltan ${diasAOmnium} días; entrada ya comprada $16.100). Esta semana: decidir qué muestras llevar, imprimir un kit chico (bestsellers + 1–2 ideas nuevas) y armar lista de precios / catálogo.</li>
         </ol>
       </div>
@@ -629,7 +693,8 @@ function buildDigest(data, sourceFile) {
         <tr><td style="padding:8px 0;color:#7a5c28">Operación capital</td><td style="padding:8px 0;text-align:right;font-weight:700">${money(operacion)}</td></tr>
         <tr><td style="padding:8px 0;color:#7a5c28">Ventas contabilizadas</td><td style="padding:8px 0;text-align:right;font-weight:700;color:#3d8b6e">${money(ventas)}</td></tr>
         <tr><td style="padding:8px 0;color:#7a5c28">Operación (caja ventas)</td><td style="padding:8px 0;text-align:right;font-weight:700">${money(reinversionVentas)}</td></tr>
-        <tr><td style="padding:8px 0;color:#7a5c28">Caja (declarada / teórica)</td><td style="padding:8px 0;text-align:right;font-weight:700">${money(cajaMostrar)} / ${money(cajaTeorico)}</td></tr>
+        <tr><td style="padding:8px 0;color:#7a5c28">Saldo en cuenta (ML)</td><td style="padding:8px 0;text-align:right;font-weight:700;color:#3d8b6e">${money(cajaMostrar)}</td></tr>
+        <tr><td style="padding:8px 0;color:#7a5c28">Caja teórica (ventas − op.)</td><td style="padding:8px 0;text-align:right;font-weight:700">${money(cajaTeorico)}</td></tr>
         <tr><td style="padding:8px 0;color:#7a5c28">En impresión (en curso)</td><td style="padding:8px 0;text-align:right;font-weight:700">${pedidosEnImpresion.length}${detalleEnImpresion ? ` · ${escapeHtml(detalleEnImpresion)}` : ''} · ${money(montoEnImpresion)}</td></tr>
         <tr><td style="padding:8px 0;color:#7a5c28">Listos para entregar</td><td style="padding:8px 0;text-align:right;font-weight:700">${pedidosListos.length} · ${money(montoListos)}</td></tr>
         <tr><td style="padding:8px 0;color:#7a5c28">Meta ${metaPctObjetivo}% al ${fmtFechaCorta(fechaMeta30)}</td><td style="padding:8px 0;text-align:right;font-weight:700">${money(meta30Clp)} · faltan ${money(faltante30)}</td></tr>

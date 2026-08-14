@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
  * Reinversión de caja → tab Operación (no capital de socios):
- * soquetes $22.254 · filamento dorado/plateado $19.429 · insumos $6.381 · Cine/Hidalgo $41.936
- * + saldo de caja declarado $97.000.
+ * soquetes $22.254 · filamento dorado/plateado/transparente $42.970 (ML 12 ago)
+ * · insumos $23.493 · Cine/Hidalgo $41.936
+ * Caja = ventas − op → alinea con saldo ML (Rebe HP $8.000 + anuncio IG $920)
  *
  *   node scripts/force-imp-gastos-caja-ventas.js
  */
@@ -13,12 +14,23 @@ const ROOT = path.join(__dirname, '..');
 const SEED = path.join(ROOT, 'data', 'impresoreando-seed.json');
 const LIVE = path.join(ROOT, 'data', 'impresoreando-live.json');
 const FECHA = '2026-08-11';
+const FECHA_FIL = '2026-08-12';
 
 const OLD_GAS_IDS = [
   'gas-soquetes-ventas-22254',
   'gas-filamento-dorado-plateado-19429',
+  'gas-filamento-dorado-plateado-transparente-42970',
   'gas-insumos-ventas-6381',
+  'gas-insumos-ventas-24493',
+  'gas-insumos-ventas-23493',
   'gas-cine-hidalgo-41936',
+  'gas-anuncio-instagram-920',
+];
+
+const OLD_OP_IDS = [
+  'op-filamento-dorado-plateado-19429',
+  'op-insumos-ventas-6381',
+  'op-insumos-ventas-24493',
 ];
 
 const OPS = [
@@ -34,23 +46,25 @@ const OPS = [
     pagadoConVentas: true,
   },
   {
-    id: 'op-filamento-dorado-plateado-19429',
-    fecha: FECHA,
+    id: 'op-filamento-dorado-plateado-transparente-42970',
+    fecha: FECHA_FIL,
     categoria: 'filamento',
-    descripcion: 'Filamento dorado y plateado (operación · caja ventas)',
-    montoNeto: 19429,
-    notas: 'Reinversión de caja de ventas · no es capital de socios · nadie se debe.',
+    descripcion: 'Filamento dorado, plateado y transparente (operación · caja ventas)',
+    montoNeto: 42970,
+    notas:
+      'ML #2000014506093733 · 12 ago · 3 u. · Mercado Pago · reinversión de ganancias · no es capital de socios.',
     socioRegistro: 'Ambos',
     pagadoPor: 'Ventas',
     pagadoConVentas: true,
   },
   {
-    id: 'op-insumos-ventas-6381',
+    id: 'op-insumos-ventas-23493',
     fecha: FECHA,
     categoria: 'insumo',
     descripcion: 'Insumos (operación · caja ventas)',
-    montoNeto: 6381,
-    notas: 'Reinversión de caja · Insumos $6.381 · no es capital de socios.',
+    montoNeto: 23493,
+    notas:
+      'Reinversión de caja · Insumos $23.493 (ajuste tras Rebe HP cobrado $8.000 + anuncio IG) · no es capital de socios.',
     socioRegistro: 'Ambos',
     pagadoPor: 'Ventas',
     pagadoConVentas: true,
@@ -62,6 +76,17 @@ const OPS = [
     descripcion: 'Cine / Hidalgo (operación · caja ventas)',
     montoNeto: 41936,
     notas: 'Reinversión de caja · Cine / Hidalgo $41.936 · no es capital de socios.',
+    socioRegistro: 'Ambos',
+    pagadoPor: 'Ventas',
+    pagadoConVentas: true,
+  },
+  {
+    id: 'op-anuncio-instagram-920',
+    fecha: '2026-08-13',
+    categoria: 'ads',
+    descripcion: 'Anuncio Instagram (operación · caja ventas)',
+    montoNeto: 920,
+    notas: 'Pauta IG @impresoreando · $920 · pagado con caja de ventas · no es capital de socios.',
     socioRegistro: 'Ambos',
     pagadoPor: 'Ventas',
     pagadoConVentas: true,
@@ -81,11 +106,19 @@ function apply(d) {
   d.gastos = d.gastos.filter(
     (g) => g && !OLD_GAS_IDS.includes(g.id) && !OPS.some((o) => o.id === g.id)
   );
+  d.operacion = Array.isArray(d.operacion) ? d.operacion : [];
+  d.operacion = d.operacion.filter((o) => o && !OLD_OP_IDS.includes(o.id));
   for (const o of OPS) upsertOp(d, o);
+
+  const rein = (d.operacion || [])
+    .filter((o) => o && o.pagadoConVentas)
+    .reduce((s, o) => s + Number(o.montoNeto || 0), 0);
+  const ventas = (d.ventas || []).reduce((s, v) => s + Number(v.montoNeto || 0), 0);
+  const teorico = Math.max(0, ventas - rein);
   d.meta.caja = {
-    saldoDeclaradoClp: 97000,
-    fecha: FECHA,
-    nota: 'Saldo en mano declarado · sale de ventas, no de capital de socios',
+    saldoDeclaradoClp: teorico,
+    fecha: FECHA_FIL,
+    nota: 'Saldo teórico = ventas − operación pagada con ventas · actualizado tras filamento ML $42.970',
   };
   d.meta.actualizado = new Date().toISOString();
   return d;

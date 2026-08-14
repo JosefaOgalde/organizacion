@@ -29,8 +29,8 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 - Tab **Ideas** (`data.ideasImprimir`): llaveros Colo-Colo / la U / Católica · soporte tablet · abrebotellas · pastillero · porta fotos burbuja. Se puede agregar más desde el tab.
 - Gastos de **ambos** (= sociedad 50/50). Capital aportado = suma de gastos por `pagadoPor` (Josefa o Nicolás). Deuda Josefa → Nicolás = `50% gastos (sin `excluirDeuda`) − capital Josefa`.
 - **Spiderman $21.000** (`gas-diseno-spiderman`, `excluirDeuda: true`): cuenta en gastos/meta recuperar, **no** suma a la deuda Josefa→Nicolás.
-- **Operación pagada con ventas** (`data.operacion[]` + `pagadoConVentas: true`): soquetes $22.254 + filamento dorado/plateado $19.429 + **Insumos $6.381** + **Cine / Hidalgo $41.936**. Viven en tab **Operación / luz**, bajan la **caja** del Resumen, **no** suben meta/deuda entre socios.
-- **Caja / saldo:** `meta.caja.saldoDeclaradoClp` (hoy **$97.000**). Teórico = ventas − operación `pagadoConVentas`. Si hay diferencia, se muestra en Resumen.
+- **Operación pagada con ventas** (`data.operacion[]` + `pagadoConVentas: true`): soquetes $22.254 + **filamento dorado/plateado/transparente $42.970** (ML #2000014506093733 · 12 ago) + **Insumos $23.493** + **Cine / Hidalgo $41.936** + **Anuncio Instagram $920**. Viven en tab **Operación / luz**, bajan la **caja** del Resumen, **no** suben meta/deuda entre socios.
+- **Caja / saldo:** `meta.caja.saldoDeclaradoClp` (teórico = ventas − operación `pagadoConVentas`; con Rebe HP $8.000 ≈ **$63.427** alineado a ML). Si hay diferencia, se muestra en Resumen.
 - Compra 29 jul: **mueble esquinero EASY INTERNET $35.990** (`gas-mueble-esquinero-easy-35990`, TC ****7022 · Nicolás) + lote insumos (llaveros / filamento rosado / ganchos).
 - Compra 31 jul ML: **bolsas kraft ×100 $4.590 + enchufe WiFi 16A $9.989 + tira LED RGB 20 m $17.990 = $32.569** (`gas-ml-bolsas-enchufe-led-32569` · Nicolás · 50/50).
 - Evento 3D **Omnium 29 ago**: **1 entrada $16.100** (`gas-entrada-evento-3d-16100` · **pagó Josefa** · cuenta en «Capital que aportó» de Josefa).
@@ -73,7 +73,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-014 | Rebe SIE | 1× Alcancía chanchito `ALCHAN001` | **transferido** → I000017 $18.000 |
 | PED-015 | Cata SIE | 3× Llavero One Piece `LLONEPI001` | **transferido** → I000018 $5.000 |
 | PED-016 | Gianni SIE | 1× Lámpara honguito `LMMUSH001` | **listo** para entregar · PVP $16.000 · costo ~$9.797 · aún no venta |
-| PED-017 | Rebe SIE | 1× Posalibro Harry Potter `PSHARR001` | **listo** para entregar · PVP **$9.000** · costo ~$2.610 · aún no venta |
+| PED-017 | Rebe SIE | 1× Posalibro Harry Potter `PSHARR001` | **transferido** → I000024 **$8.000** |
 | PED-018 | Gianni SIE | 1× Porta fotos burbuja `PFBURB001` | **en impresión** · PVP **$6.000** · costo ~$3.204 |
 
 ### Ventas — ID correlativo + historial
@@ -109,6 +109,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000021 | Juan MKOF | 7.000 | Soporte celular Chimuelo |
 | I000022 | Gianni SIE | 8.000 | PED-010 2× Soporte celular negro |
 | I000023 | Marcia SIE | 7.000 | PED-012 Limpiador de brochas |
+| I000024 | Rebe SIE | 8.000 | PED-017 Posalibro Harry Potter |
 
 ### Clientes nuevos — nombre + origen (obligatorio)
 
@@ -211,7 +212,7 @@ Datos en `data.impresoras[]` (seed + live) y UI **Operación → Impresoras**. C
 | `ALCHAN001` | Alcancía chanchito | **315,88** | **12,15 (12 h 9 m)** | PLA rosado `$10.990/kg` · Elegoo · modelo 280,74 + sop 33,75 + purge 1,40 · 105,06 m · costo ~$4.202 · **PVP sug. $8.400** · diseño comprado **$13.000** en gastos (no en costo/u) · vendida Rebe **$18.000** (I000017) |
 | `SOPCHI001` | Soporte celular Chimuelo | **55,81** (modelo+sop+purga) | **2,68 (2 h 41 m)** | PLA+ negro `$17.986/kg` · Elegoo · modelo 32,95 + soportes 22,39 + **purga 0,47** · 18,56 m · coste slicer 1,12 · fil~$1.004 + luz~$150 + bolsa $50 · costo ~**$1.204** · **PVP sug. $2.400** |
 | `LMMUSH001` | Lámpara honguito | **285,50** | **12,93 (12 h 56 m)** | PLA blanco `$12.690/kg` · base 110,84 g (5 h 14 m) + pantalla 174,66 g (7 h 42 m) · fil~$3.623 + luz~$724 + bolsa $50 + **kit eléctrico $5.400** (pera 1400+cable 1100+enchufe 1000+soquete 1900) · costo ~**$9.797** · PVP sug. $19.600 · Gianni **listo** PED-016 **$16.000** (aún no venta) · alias `LAMHONG001` |
-| `PSHARR001` | Posalibro Harry Potter | **132,81** (modelo+sop+resto) | **3,05 (3 h 3 m)** | PLA+ negro primeros rollos `$17.986/kg` · Elegoo · modelo 119,68 + soportes 12,36 + interfaz 0,31 + resto/falda 0,46 · 44,17 m · coste slicer 2,66 · fil~$2.389 + luz~$171 + bolsa $50 · costo ~**$2.610** · **PVP $9.000** · Rebe SIE **listo** PED-017 · alias `ALHARR001` |
+| `PSHARR001` | Posalibro Harry Potter | **132,81** (modelo+sop+resto) | **3,05 (3 h 3 m)** | PLA+ negro primeros rollos `$17.986/kg` · Elegoo · modelo 119,68 + soportes 12,36 + interfaz 0,31 + resto/falda 0,46 · 44,17 m · coste slicer 2,66 · fil~$2.389 + luz~$171 + bolsa $50 · costo ~**$2.610** · PVP sug. $9.000 · **cobrado Rebe $8.000** (I000024 / PED-017) · alias `ALHARR001` |
 | `PFBURB001` | Porta fotos burbuja | **161,81** (2 piezas) | **4,35 (4 h 21 m)** | PLA+ negro `$17.986/kg` · Elegoo · burbujas 68,98 g (2 h 14 m) + base 92,83 g (2 h 7 m) · 53,82 m · fil~$2.910 + luz~$244 + bolsa $50 · costo ~**$3.204** · **PVP $6.000** · Gianni **en impresión** PED-018 · alias `PTFBUR001` |
 | `LLONEPI001` | Llavero One Piece | — | — | **pendiente costo** · 3× Cata SIE **$5.000** (I000018) · ~$1.667/u |
 

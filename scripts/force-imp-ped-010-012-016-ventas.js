@@ -2,7 +2,7 @@
 /**
  * PED-010 / PED-012 → ventas I000022 / I000023.
  * PED-016 honguito Gianni → listo para entregar (NO venta).
- * PED-017 posalibro Harry Potter Rebe SIE → listo para entregar.
+ * PED-017 posalibro Harry Potter Rebe SIE → venta I000024 $8.000.
  * PED-018 porta fotos burbuja Gianni → en impresión $6.000.
  *
  *   node scripts/force-imp-ped-010-012-016-ventas.js
@@ -15,7 +15,9 @@ const SEED = path.join(ROOT, 'data', 'impresoreando-seed.json');
 const LIVE = path.join(ROOT, 'data', 'impresoreando-live.json');
 const NOW = new Date().toISOString();
 const FECHA = '2026-08-11';
+const FECHA_017 = '2026-08-13';
 const TRANSFERIDO_EN = '2026-08-12T00:30:00.000Z';
+const TRANSFERIDO_017 = '2026-08-13T23:00:00.000Z';
 
 function rebuildClientesHistorial(d) {
   d.meta = d.meta && typeof d.meta === 'object' ? d.meta : {};
@@ -193,13 +195,12 @@ function apply(d) {
       enImpresion: 0,
     },
   ];
-  d.ventas = (d.ventas || []).filter(
-    (v) => v && v.id !== 'ven-gianni-honguito-024' && v.codigo !== 'I000024'
-  );
+  // Quitar venta errónea honguito→I000024 si existiera (I000024 es Rebe HP)
+  d.ventas = (d.ventas || []).filter((v) => v && v.id !== 'ven-gianni-honguito-024');
 
   d.productos = Array.isArray(d.productos) ? d.productos : [];
   const COSTO_HP = 2609.52; // 132,81 g PLA+ negro + 3 h 3 m + bolsa
-  const PRECIO_HP = 9000;
+  const PRECIO_HP = 8000;
   const prodHp = {
     id: 'prod-posalibro-harry-potter',
     sku: 'PSHARR001',
@@ -216,50 +217,37 @@ function apply(d) {
     minutosPintado: 0,
     unidadesMetal: 0,
     unidadesBolsa: 1,
-    precioVentaSugeridoClp: PRECIO_HP,
+    precioVentaSugeridoClp: 9000,
     costoSlicerRef: 2.66,
     pendienteCosto: false,
     aliasSku: ['ALHARR001', 'APHARR001'],
     notas:
-      'Slicer 1 ud (PLA+ negro primeros rollos): modelo 119,68 g (39,80 m) + soportes 12,36 g + interfaz 0,31 g + resto/falda 0,46 g = 132,81 g · 44,17 m · 3 h 3 m · coste slicer 2,66. PLA+ negro $17.986/kg · Elegoo. Fil ~$2.389 + luz ~$171 + bolsa $50 = costo ~$2.610 · PVP $9.000. PED-017 Rebe SIE · listo para entregar.',
+      'Slicer 1 ud (PLA+ negro primeros rollos): modelo 119,68 g (39,80 m) + soportes 12,36 g + interfaz 0,31 g + resto/falda 0,46 g = 132,81 g · 44,17 m · 3 h 3 m · coste slicer 2,66. PLA+ negro $17.986/kg · Elegoo. Fil ~$2.389 + luz ~$171 + bolsa $50 = costo ~$2.610 · PVP sug. $9.000 · cobrado Rebe $8.000 · PED-017 → I000024.',
   };
   const pi = d.productos.findIndex((p) => p && (p.id === prodHp.id || p.sku === 'PSHARR001'));
   if (pi < 0) d.productos.push(prodHp);
   else {
     const prev = d.productos[pi];
     d.productos[pi] = prev.editadoLocal
-      ? { ...prev, sku: prodHp.sku, nombre: prodHp.nombre, precioVentaSugeridoClp: PRECIO_HP }
+      ? { ...prev, sku: prodHp.sku, nombre: prodHp.nombre }
       : { ...prev, ...prodHp };
   }
 
-  let ped017 = d.pedidos.find(
-    (p) =>
-      p &&
-      (p.id === 'ped-rebe-posalibro-017' ||
-        p.id === 'ped-gianni-posalibro-017' ||
-        p.numero === 'PED-017')
-  );
-  if (!ped017) {
-    ped017 = { id: 'ped-rebe-posalibro-017', numero: 'PED-017', creado: NOW };
-    d.pedidos.push(ped017);
-  }
-  Object.assign(ped017, {
-    id: 'ped-rebe-posalibro-017',
-    fecha: FECHA,
+  transferir(d, {
+    pedId: 'ped-rebe-posalibro-017',
+    numero: 'PED-017',
+    venId: 'ven-rebe-posalibro-024',
+    codigo: 'I000024',
     cliente: 'Rebe SIE',
     clienteNombre: 'Rebe',
     clienteOrigen: 'SIE',
-    canal: 'WhatsApp',
-    estado: 'listo',
-    fiado: false,
-    ventaId: null,
-    montoBruto: PRECIO_HP,
-    descuentoClp: 0,
-    montoNeto: PRECIO_HP,
+    monto: PRECIO_HP,
     costoTotal: COSTO_HP,
-    pagoNotas: '',
-    notas: '1× Posalibro Harry Potter · listo para entregar · PVP $9.000 · costo ~$2.610 · aún no cobrado · Rebe SIE (Nico)',
-    socioRegistro: 'Ambos',
+    pagoNotas: 'Pagado · transferido a venta I000024',
+    notasPedido: '1× Posalibro Harry Potter · transferido a venta I000024 · pagado $8.000 · Rebe SIE (Nico)',
+    descripcion: 'PED-017 · 1× Posalibro Harry Potter · Rebe SIE',
+    notasVenta: 'Transferido desde PED-017 · 1× Posalibro Harry Potter · pagado $8.000',
+    pedidoBase: { fecha: FECHA, creado: '2026-08-12T00:39:26.644Z' },
     items: [
       {
         sku: 'PSHARR001',
@@ -274,8 +262,17 @@ function apply(d) {
       },
     ],
   });
-  delete ped017.fechaPagoEsperada;
-  delete ped017.transferidoEn;
+  const ped017 = d.pedidos.find((p) => p && (p.id === 'ped-rebe-posalibro-017' || p.numero === 'PED-017'));
+  if (ped017) {
+    ped017.transferidoEn = TRANSFERIDO_017;
+    ped017.id = 'ped-rebe-posalibro-017';
+  }
+  const ven024 = (d.ventas || []).find((v) => v && (v.id === 'ven-rebe-posalibro-024' || v.codigo === 'I000024'));
+  if (ven024) {
+    ven024.fecha = FECHA_017;
+    ven024.id = 'ven-rebe-posalibro-024';
+    ven024.pedidoId = 'ped-rebe-posalibro-017';
+  }
 
   const COSTO_BURB = 3203.95;
   const PRECIO_BURB = 6000;
@@ -349,7 +346,7 @@ function apply(d) {
     const n = Number(String(v.codigo || '').replace(/^I0*/, '') || 0);
     return Number.isFinite(n) ? Math.max(m, n) : m;
   }, 0);
-  d.meta.ventaSeq = Math.max(maxVen, 23);
+  d.meta.ventaSeq = Math.max(maxVen, 24);
   if (Number(d.meta.pedidoSeq || 0) < 18) d.meta.pedidoSeq = 18;
   d.meta.actualizado = NOW;
   rebuildClientesHistorial(d);
@@ -396,8 +393,12 @@ function main() {
     `· PED-016 ${p16?.estado} · PED-017 ${p17?.estado} · PED-018 ${p18?.estado}`,
     `· activos ${activos.map((p) => `${p.numero} ${p.estado}`).join(', ')}`
   );
-  if (p16?.estado === 'transferido' || ventas.some((v) => v.codigo === 'I000024')) {
-    console.error('ERROR: honguito sigue en venta');
+  if (p16?.estado === 'transferido') {
+    console.error('ERROR: honguito (PED-016) no debe ser venta');
+    process.exit(1);
+  }
+  if (p17?.estado !== 'transferido' || !ventas.some((v) => v.codigo === 'I000024' && v.cliente === 'Rebe SIE')) {
+    console.error('ERROR: PED-017 debe ser venta I000024 Rebe SIE');
     process.exit(1);
   }
 }

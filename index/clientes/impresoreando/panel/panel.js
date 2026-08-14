@@ -2724,23 +2724,25 @@
         pagadoConVentas: true,
       },
       {
-        id: 'op-filamento-dorado-plateado-19429',
-        fecha: '2026-08-11',
+        id: 'op-filamento-dorado-plateado-transparente-42970',
+        fecha: '2026-08-12',
         categoria: 'filamento',
-        descripcion: 'Filamento dorado y plateado (operación · caja ventas)',
-        montoNeto: 19429,
-        notas: 'Reinversión de caja de ventas · no es capital de socios · nadie se debe.',
+        descripcion: 'Filamento dorado, plateado y transparente (operación · caja ventas)',
+        montoNeto: 42970,
+        notas:
+          'ML #2000014506093733 · 12 ago · 3 u. · Mercado Pago · reinversión de ganancias · no es capital de socios.',
         socioRegistro: 'Ambos',
         pagadoPor: 'Ventas',
         pagadoConVentas: true,
       },
       {
-        id: 'op-insumos-ventas-6381',
+        id: 'op-insumos-ventas-23493',
         fecha: '2026-08-11',
         categoria: 'insumo',
         descripcion: 'Insumos (operación · caja ventas)',
-        montoNeto: 6381,
-        notas: 'Reinversión de caja · Insumos $6.381 · no es capital de socios.',
+        montoNeto: 23493,
+        notas:
+          'Reinversión de caja · Insumos $23.493 · no es capital de socios.',
         socioRegistro: 'Ambos',
         pagadoPor: 'Ventas',
         pagadoConVentas: true,
@@ -2756,17 +2758,40 @@
         pagadoPor: 'Ventas',
         pagadoConVentas: true,
       },
+      {
+        id: 'op-anuncio-instagram-920',
+        fecha: '2026-08-13',
+        categoria: 'ads',
+        descripcion: 'Anuncio Instagram (operación · caja ventas)',
+        montoNeto: 920,
+        notas: 'Pauta IG @impresoreando · $920 · pagado con caja de ventas · no es capital de socios.',
+        socioRegistro: 'Ambos',
+        pagadoPor: 'Ventas',
+        pagadoConVentas: true,
+      },
     ];
     const oldGastoIds = [
       'gas-soquetes-ventas-22254',
       'gas-filamento-dorado-plateado-19429',
+      'gas-filamento-dorado-plateado-transparente-42970',
       'gas-insumos-ventas-6381',
+      'gas-insumos-ventas-24493',
+      'gas-insumos-ventas-23493',
       'gas-cine-hidalgo-41936',
+      'gas-anuncio-instagram-920',
+    ];
+    const oldOpIds = [
+      'op-filamento-dorado-plateado-19429',
+      'op-insumos-ventas-6381',
+      'op-insumos-ventas-24493',
     ];
     let changed = false;
     const nGastosAntes = d.gastos.length;
     d.gastos = d.gastos.filter((g) => g && !oldGastoIds.includes(g.id) && !regs.some((r) => r.id === g.id));
     if (d.gastos.length !== nGastosAntes) changed = true;
+    const nOpAntes = d.operacion.length;
+    d.operacion = d.operacion.filter((o) => o && !oldOpIds.includes(o.id));
+    if (d.operacion.length !== nOpAntes) changed = true;
     for (const reg of regs) {
       const existing = d.operacion.find((o) => o && o.id === reg.id);
       if (!existing) {
@@ -2781,13 +2806,18 @@
         changed = true;
       }
     }
+    const reinOp = (d.operacion || [])
+      .filter((o) => o && (o.pagadoConVentas === true || /^ventas$/i.test(String(o.pagadoPor || ''))))
+      .reduce((s, o) => s + Number(o.montoNeto || 0), 0);
+    const ventasTot = (d.ventas || []).reduce((s, v) => s + Number(v.montoNeto || 0), 0);
+    const teorico = Math.max(0, ventasTot - reinOp);
     const caja = d.meta.caja && typeof d.meta.caja === 'object' ? d.meta.caja : {};
-    if (Number(caja.saldoDeclaradoClp) !== 97000 || caja.fecha !== '2026-08-11') {
+    if (Number(caja.saldoDeclaradoClp) !== teorico) {
       d.meta.caja = {
         ...caja,
-        saldoDeclaradoClp: 97000,
-        fecha: '2026-08-11',
-        nota: 'Saldo en mano declarado · sale de ventas, no de capital de socios',
+        saldoDeclaradoClp: teorico,
+        fecha: chileYmd(),
+        nota: 'Saldo en cuenta = ventas − operación pagada con ventas (ML / Mercado Pago)',
       };
       changed = true;
     }
@@ -3687,18 +3717,14 @@
     }
     d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
     const nVenAntes = d.ventas.length;
-    d.ventas = d.ventas.filter(
-      (v) => v && v.id !== 'ven-gianni-honguito-024' && v.codigo !== 'I000024'
-    );
+    d.ventas = d.ventas.filter((v) => v && v.id !== 'ven-gianni-honguito-024');
     if (d.ventas.length !== nVenAntes) changed = true;
-    if (Number(d.meta?.ventaSeq || 0) === 24) {
-      d.meta.ventaSeq = 23;
-      changed = true;
-    }
 
-    // PED-017 · Rebe SIE · Posalibro Harry Potter · LISTO para entregar (aún no venta)
+    // PED-017 · Rebe SIE · Posalibro Harry Potter → venta I000024 $8.000
     const id017 = 'ped-rebe-posalibro-017';
-    const precio017 = 9000;
+    const idVen017 = 'ven-rebe-posalibro-024';
+    const codigo017 = 'I000024';
+    const precio017 = 8000;
     const costo017 = 2609.52; // slicer PLA+ negro 132,81 g · 3 h 3 m + bolsa
     let ped017 = d.pedidos.find(
       (p) =>
@@ -3707,7 +3733,7 @@
         p.numero === 'PED-017'
     );
     const notas017 =
-      '1× Posalibro Harry Potter · listo para entregar · PVP $9.000 · costo ~$2.610 · aún no cobrado · Rebe SIE (Nico)';
+      '1× Posalibro Harry Potter · transferido a venta I000024 · pagado $8.000 · Rebe SIE (Nico)';
     if (!ped017) {
       ped017 = {
         id: id017,
@@ -3734,9 +3760,11 @@
         descuentoClp: 0,
         montoNeto: precio017,
         costoTotal: costo017,
-        estado: 'listo',
+        estado: 'transferido',
         fiado: false,
-        ventaId: null,
+        ventaId: idVen017,
+        transferidoEn: '2026-08-13T23:00:00.000Z',
+        pagoNotas: 'Pagado · transferido a venta I000024',
         notas: notas017,
         socioRegistro: 'Ambos',
         creado: new Date().toISOString(),
@@ -3758,23 +3786,22 @@
         ped017.clienteOrigen = 'SIE';
         changed = true;
       }
-      if (ped017.estado !== 'listo' || ped017.fiado || ped017.ventaId) {
-        ped017.estado = 'listo';
+      if (
+        ped017.estado !== 'transferido' ||
+        ped017.fiado ||
+        ped017.ventaId !== idVen017 ||
+        Number(ped017.montoNeto) !== precio017
+      ) {
+        ped017.estado = 'transferido';
         ped017.fiado = false;
         delete ped017.fechaPagoEsperada;
-        delete ped017.ventaId;
-        delete ped017.transferidoEn;
-        changed = true;
-      }
-      if (
-        Number(ped017.costoTotal) !== costo017 ||
-        Number(ped017.montoNeto) !== precio017 ||
-        ped017.notas !== notas017
-      ) {
+        ped017.ventaId = idVen017;
+        ped017.transferidoEn = ped017.transferidoEn || '2026-08-13T23:00:00.000Z';
         ped017.costoTotal = costo017;
         ped017.montoBruto = precio017;
         ped017.descuentoClp = 0;
         ped017.montoNeto = precio017;
+        ped017.pagoNotas = 'Pagado · transferido a venta I000024';
         ped017.notas = notas017;
         changed = true;
       }
@@ -3794,24 +3821,61 @@
         ];
         changed = true;
       } else {
-        const it = ped017.items[0];
-        if (
-          Number(it.precioUnitarioClp) !== precio017 ||
-          Number(it.costoUnitarioClp) !== costo017 ||
-          it.filamento !== 'PLA+ negro' ||
-          it.estado !== 'listo'
-        ) {
+        for (const it of ped017.items) {
           it.sku = 'PSHARR001';
           it.nombre = 'Posalibro Harry Potter';
           it.precioUnitarioClp = precio017;
           it.costoUnitarioClp = costo017;
-          it.filamento = 'PLA+ negro';
           it.estado = 'listo';
           it.listos = Number(it.cantidad || 1);
           it.enImpresion = 0;
-          changed = true;
         }
       }
+    }
+    let ven017 = d.ventas.find((v) => v && (v.id === idVen017 || v.codigo === codigo017));
+    const venta017 = {
+      id: idVen017,
+      codigo: codigo017,
+      fecha: '2026-08-13',
+      cliente: 'Rebe SIE',
+      clienteNombre: 'Rebe',
+      clienteOrigen: 'SIE',
+      descripcion: 'PED-017 · 1× Posalibro Harry Potter · Rebe SIE',
+      cantidad: 1,
+      montoBruto: precio017,
+      descuentoClp: 0,
+      montoNeto: precio017,
+      costoTotal: costo017,
+      canal: 'WhatsApp',
+      notas: 'Transferido desde PED-017 · 1× Posalibro Harry Potter · pagado $8.000',
+      socioRegistro: 'Ambos',
+      pedidoId: id017,
+      pedidoNumero: 'PED-017',
+      items: [
+        {
+          sku: 'PSHARR001',
+          nombre: 'Posalibro Harry Potter',
+          cantidad: 1,
+          precioUnitarioClp: precio017,
+          costoUnitarioClp: costo017,
+          filamento: 'PLA+ negro',
+        },
+      ],
+    };
+    if (!ven017) {
+      d.ventas.push(venta017);
+      changed = true;
+    } else if (
+      Number(ven017.montoNeto) !== precio017 ||
+      ven017.cliente !== 'Rebe SIE' ||
+      ven017.pedidoId !== id017
+    ) {
+      Object.assign(ven017, venta017);
+      changed = true;
+    }
+    if (Number(d.meta?.ventaSeq || 0) < 24) {
+      d.meta.ventaSeq = 24;
+      changed = true;
     }
 
     // PED-018 · Gianni SIE · Porta fotos burbuja · EN IMPRESIÓN
@@ -4856,7 +4920,19 @@
     const nVentas = (data.ventas || []).length;
     const nClientesHist = (data.meta?.clientesHistorial || []).length;
 
+    const cajaMostrar = cajaDeclarado != null ? cajaDeclarado : cajaTeorico;
+
     $('#tab-resumen').innerHTML = `
+      <div class="imp-cuenta" aria-label="Saldo en la cuenta">
+        <div class="imp-cuenta__eyebrow">Disponible ahora</div>
+        <div class="imp-cuenta__label">En la cuenta (Mercado Pago / ML)</div>
+        <div class="imp-cuenta__valor">${money(cajaMostrar)}</div>
+        <p class="imp-cuenta__meta">
+          Ventas <strong>${money(ventas)}</strong>
+          − operación con caja <strong>${money(reinversionVentas)}</strong>
+          = lo que te queda para gastar o reinvertir.
+        </p>
+      </div>
       <div class="imp-balance ${sinDeuda ? 'imp-balance--ok' : 'imp-balance--deuda'}">
         <div class="imp-balance__label">${sinDeuda ? 'Sin deuda de sociedad' : 'Para salir de deuda falta recuperar'}</div>
         <div class="imp-balance__valor">${money(saldoPendiente)}</div>
@@ -4918,14 +4994,14 @@
           }
         </p>
       </div>
-      <div class="imp-caja" aria-label="Saldo de caja de ventas">
-        <div class="imp-caja__label">Saldo en caja (dinero de ventas)</div>
-        <div class="imp-caja__valor">${money(cajaDeclarado != null ? cajaDeclarado : cajaTeorico)}</div>
+      <div class="imp-caja" aria-label="Detalle de caja de ventas">
+        <div class="imp-caja__label">Detalle · de qué salió la caja</div>
+        <div class="imp-caja__valor imp-caja__valor--sm">${money(cajaMostrar)}</div>
         <p class="imp-caja__meta">
           Ventas cobradas <strong>${money(ventas)}</strong>
           − operación (caja) <strong>${money(reinversionVentas)}</strong>
           = teórico <strong>${money(cajaTeorico)}</strong>
-          ${cajaDeclarado != null ? `· declarado <strong>${money(cajaDeclarado)}</strong>` : ''}
+          ${cajaDeclarado != null ? `· en cuenta <strong>${money(cajaDeclarado)}</strong>` : ''}
         </p>
         <ul class="imp-caja__lista">
           ${listaReinversion

@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Los gastos son de ambos (deuda 50/50), pero hasta ahora los ha pagado todos Nicolás. Josefa le debe el 50% del capital/gastos.",
-    "actualizado": "2026-08-12T01:29:47.865Z",
+    "actualizado": "2026-08-14T01:47:23.707Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás + Josefa",
@@ -30,7 +30,7 @@
       "baseDeudaClp": 1013648
     },
     "pedidoSeq": 18,
-    "ventaSeq": 23,
+    "ventaSeq": 24,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
       {
@@ -40,17 +40,19 @@
           "I000008",
           "I000012",
           "I000013",
-          "I000017"
+          "I000017",
+          "I000024"
         ],
         "ventaIds": [
           "ven-rebe-monster-007",
           "ven-rebe-stanley-008",
           "ven-rebe-soporte-012",
           "ven-rebe-dragon-013",
-          "ven-rebe-chanchito-017"
+          "ven-rebe-chanchito-017",
+          "ven-rebe-posalibro-024"
         ],
-        "totalNeto": 55000,
-        "compras": 5
+        "totalNeto": 63000,
+        "compras": 6
       },
       {
         "cliente": "Marcia SIE",
@@ -180,9 +182,9 @@
       }
     ],
     "caja": {
-      "saldoDeclaradoClp": 97000,
-      "fecha": "2026-08-11",
-      "nota": "Saldo en mano declarado · sale de ventas, no de capital de socios"
+      "saldoDeclaradoClp": 63427,
+      "fecha": "2026-08-12",
+      "nota": "Saldo teórico = ventas − operación pagada con ventas · actualizado tras filamento ML $42.970"
     }
   },
   "parametros": {
@@ -1264,6 +1266,35 @@
           "filamento": "PLA morado pastel"
         }
       ]
+    },
+    {
+      "id": "ven-rebe-posalibro-024",
+      "codigo": "I000024",
+      "fecha": "2026-08-13",
+      "cliente": "Rebe SIE",
+      "clienteNombre": "Rebe",
+      "clienteOrigen": "SIE",
+      "descripcion": "PED-017 · 1× Posalibro Harry Potter · Rebe SIE",
+      "cantidad": 1,
+      "montoBruto": 8000,
+      "descuentoClp": 0,
+      "montoNeto": 8000,
+      "costoTotal": 2609.52,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-017 · 1× Posalibro Harry Potter · pagado $8.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-rebe-posalibro-017",
+      "pedidoNumero": "PED-017",
+      "items": [
+        {
+          "sku": "PSHARR001",
+          "nombre": "Posalibro Harry Potter",
+          "cantidad": 1,
+          "precioUnitarioClp": 8000,
+          "costoUnitarioClp": 2609.52,
+          "filamento": "PLA+ negro"
+        }
+      ]
     }
   ],
   "operacion": [
@@ -1288,34 +1319,45 @@
       "pagadoConVentas": true
     },
     {
-      "id": "op-filamento-dorado-plateado-19429",
-      "fecha": "2026-08-11",
-      "categoria": "filamento",
-      "descripcion": "Filamento dorado y plateado (operación · caja ventas)",
-      "montoNeto": 19429,
-      "notas": "Reinversión de caja de ventas · no es capital de socios · nadie se debe.",
-      "socioRegistro": "Ambos",
-      "pagadoPor": "Ventas",
-      "pagadoConVentas": true
-    },
-    {
-      "id": "op-insumos-ventas-6381",
-      "fecha": "2026-08-11",
-      "categoria": "insumo",
-      "descripcion": "Insumos (operación · caja ventas)",
-      "montoNeto": 6381,
-      "notas": "Reinversión de caja · Insumos $6.381 · no es capital de socios.",
-      "socioRegistro": "Ambos",
-      "pagadoPor": "Ventas",
-      "pagadoConVentas": true
-    },
-    {
       "id": "op-cine-hidalgo-41936",
       "fecha": "2026-08-11",
       "categoria": "otro",
       "descripcion": "Cine / Hidalgo (operación · caja ventas)",
       "montoNeto": 41936,
       "notas": "Reinversión de caja · Cine / Hidalgo $41.936 · no es capital de socios.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Ventas",
+      "pagadoConVentas": true
+    },
+    {
+      "id": "op-filamento-dorado-plateado-transparente-42970",
+      "fecha": "2026-08-12",
+      "categoria": "filamento",
+      "descripcion": "Filamento dorado, plateado y transparente (operación · caja ventas)",
+      "montoNeto": 42970,
+      "notas": "ML #2000014506093733 · 12 ago · 3 u. · Mercado Pago · reinversión de ganancias · no es capital de socios.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Ventas",
+      "pagadoConVentas": true
+    },
+    {
+      "id": "op-anuncio-instagram-920",
+      "fecha": "2026-08-13",
+      "categoria": "ads",
+      "descripcion": "Anuncio Instagram (operación · caja ventas)",
+      "montoNeto": 920,
+      "notas": "Pauta IG @impresoreando · $920 · pagado con caja de ventas · no es capital de socios.",
+      "socioRegistro": "Ambos",
+      "pagadoPor": "Ventas",
+      "pagadoConVentas": true
+    },
+    {
+      "id": "op-insumos-ventas-23493",
+      "fecha": "2026-08-11",
+      "categoria": "insumo",
+      "descripcion": "Insumos (operación · caja ventas)",
+      "montoNeto": 23493,
+      "notas": "Reinversión de caja · Insumos $23.493 (ajuste tras Rebe HP cobrado $8.000 + anuncio IG) · no es capital de socios.",
       "socioRegistro": "Ambos",
       "pagadoPor": "Ventas",
       "pagadoConVentas": true
@@ -1756,7 +1798,7 @@
         "ALHARR001",
         "APHARR001"
       ],
-      "notas": "Slicer 1 ud (PLA+ negro primeros rollos): modelo 119,68 g (39,80 m) + soportes 12,36 g + interfaz 0,31 g + resto/falda 0,46 g = 132,81 g · 44,17 m · 3 h 3 m · coste slicer 2,66. PLA+ negro $17.986/kg · Elegoo. Fil ~$2.389 + luz ~$171 + bolsa $50 = costo ~$2.610 · PVP $9.000. PED-017 Rebe SIE · listo para entregar."
+      "notas": "Slicer 1 ud (PLA+ negro primeros rollos): modelo 119,68 g (39,80 m) + soportes 12,36 g + interfaz 0,31 g + resto/falda 0,46 g = 132,81 g · 44,17 m · 3 h 3 m · coste slicer 2,66. PLA+ negro $17.986/kg · Elegoo. Fil ~$2.389 + luz ~$171 + bolsa $50 = costo ~$2.610 · PVP sug. $9.000 · cobrado Rebe $8.000 · PED-017 → I000024."
     },
     {
       "id": "prod-porta-fotos-burbuja",
@@ -2547,29 +2589,30 @@
       "clienteNombre": "Rebe",
       "clienteOrigen": "SIE",
       "canal": "WhatsApp",
-      "estado": "listo",
+      "estado": "transferido",
       "fiado": false,
-      "ventaId": null,
-      "montoBruto": 9000,
+      "ventaId": "ven-rebe-posalibro-024",
+      "montoBruto": 8000,
       "descuentoClp": 0,
-      "montoNeto": 9000,
+      "montoNeto": 8000,
       "costoTotal": 2609.52,
-      "pagoNotas": "",
-      "notas": "1× Posalibro Harry Potter · listo para entregar · PVP $9.000 · costo ~$2.610 · aún no cobrado · Rebe SIE (Nico)",
+      "pagoNotas": "Pagado · transferido a venta I000024",
+      "notas": "1× Posalibro Harry Potter · transferido a venta I000024 · pagado $8.000 · Rebe SIE (Nico)",
       "socioRegistro": "Ambos",
       "items": [
         {
           "sku": "PSHARR001",
           "nombre": "Posalibro Harry Potter",
           "cantidad": 1,
-          "precioUnitarioClp": 9000,
+          "precioUnitarioClp": 8000,
           "costoUnitarioClp": 2609.52,
           "filamento": "PLA+ negro",
           "estado": "listo",
           "listos": 1,
           "enImpresion": 0
         }
-      ]
+      ],
+      "transferidoEn": "2026-08-13T23:00:00.000Z"
     },
     {
       "id": "ped-gianni-porta-fotos-018",
