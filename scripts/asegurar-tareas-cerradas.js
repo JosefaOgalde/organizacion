@@ -43,6 +43,12 @@ const CERRADAS = [
   'tarea-ecr-nl-agosto-portada-2026-07-17',
   'tarea-ecr-nl-agosto-carrusel-2026-07-17',
   'tarea-ecr-nl-agosto-video-2026-07-17',
+  'tarea-ecr-ecosistema-equipos-terreno-2026-07-24',
+  'tarea-ecr-et-copys-2026-07-24',
+  'tarea-ecr-et-portada-2026-07-24',
+  'tarea-ecr-et-carrusel-2026-07-24',
+  'tarea-ecr-et-video-2026-07-24',
+  'tarea-ecr-trade-marketing-mis-servicios-2026-07-28',
   // JM / ADL / TW
   'tarea-jm-novedades-mobile-actual',
   'tarea-dlat-edicion-diseno-2026-07-27',

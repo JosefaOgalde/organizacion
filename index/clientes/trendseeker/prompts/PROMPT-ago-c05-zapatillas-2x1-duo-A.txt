@@ -1,0 +1,40 @@
+PRODUCTO: Duo 2×1 · Travel Hunter (2 pares)
+Herramienta: Google Gemini VIDEO (Trendseeker)
+Promo: 2×1 zapatillas Hunter hasta domingo 16 ago
+Pares elegidos (NO verdes hombre · NO claras/shaded mujer):
+1) Travel Hombre Zesty Yellow · https://trendseeker.cl/producto/zapatillas-deportivas-travel-para-hombre-zesty-yellow/
+2) Travel Mujer Red · https://trendseeker.cl/producto/zapatillas-deportivas-travel-para-mujer-red/
+
+PRIMERO: subí a Gemini las fotos de producto de los links de imagen (abajo).
+
+CARACTERÍSTICAS (no inventar otras):
+- Hunter Travel · zapatilla urbana/deportiva
+- Empeine malla/nailon reciclado · vegano
+- Entresuela EVA reciclada + Ortholite
+- Suela caucho FSC · refuerzo TPU lluvia
+- Lengüeta con logo tricolor Hunter real del producto
+- Par A: amarillo Zesty Yellow (hombre)
+- Par B: rojo Red (mujer)
+
+VESTUARIO:
+- Planos product-first del calzado (puede ser bodegón o pies, sin cara)
+- Sin tipografía, sin logos inventados, sin UI
+
+---
+PROMPT PEGABLE (Gemini VIDEO)
+---
+
+Genera un VIDEO publicitario fotorrealista CORTO para una promo 2×1 de zapatillas Hunter. Usa las fotos de producto adjuntas como referencia OBLIGATORIA de DOS pares distintos:
+
+1) Hunter Travel hombre color Zesty Yellow (amarillo intenso exacto de las refs)
+2) Hunter Travel mujer color Red (rojo exacto de las refs)
+
+No rediseñes: misma silueta Travel, mismos materiales de malla/nailon, misma suela, misma lengüeta con logo tricolor real. PROHIBIDO usar verde musgo, blanco, shaded white o coral. Solo estos dos colores.
+
+Acción sugerida (montaje corto, 2–4 tomas):
+- Toma 1: close-up del par amarillo Zesty Yellow (lateral + detalle suela/lengüeta)
+- Toma 2: close-up del par rojo Red (lateral + detalle)
+- Toma 3: ambos pares juntos en bodegón limpio (piso/mesa neutra), product-first, como “elegí dos”
+- Toma 4 (opcional): pie con jeans/pantalón que deje ver bien cada zapatilla, sin cara
+
+Cámara: ángulos bajos o a altura del calzado, nítido, comercial. Ritmo dinámico de promo. Mood: lluvia suave o ambientación fresca urbana (sin tapar el producto). Sin tipografía, sin precios en pantalla, sin logos inventados.

@@ -1,0 +1,12 @@
+---
+description: Minimizar tokens en cada sesión de este repo
+alwaysApply: true
+---
+
+# Ahorro de tokens
+
+- Respuestas cortas en español. Sin re-leer el repo entero.
+- No abras `data/organizacion-live.json` ni respaldos completos. Usá `node scripts/consulta-organizacion.js` o la API `http://127.0.0.1:8000/api/organizacion`.
+- No leas PDFs, uploads, videos ni `AGENTS.md` salvo que la tarea lo pida.
+- Un cambio acotado por pedido. Preferí `.bat` / scripts existentes antes de inventar flujos.
+- Modelo preferido del usuario: Auto Cost o Composer 2.5 (sin Fast).

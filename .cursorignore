@@ -1,0 +1,24 @@
+﻿# No indexar / no meter en contexto (ahorra tokens)
+data/organizacion-live.json
+data/organizacion-live-antes-*.json
+data/organizacion-respaldo-*.json
+data/impresoreando-live.json
+!data/organizacion-respaldo-ejemplo.json
+!data/impresoreando-seed.json
+
+index/uploads/
+**/*.pdf
+**/*.mp4
+**/*.webm
+**/*.stl
+**/*.zip
+
+**/node_modules/
+backend/vendor/
+backend/database/*.sqlite
+backend/storage/
+backend/bootstrap/cache/
+
+**/.git/
+**/agent-transcripts/
+**/agent-tools/

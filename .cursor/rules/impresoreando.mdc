@@ -1,0 +1,15 @@
+---
+description: Impresoreando — panel socios (solo al tocar ese cliente)
+globs:
+  - index/clientes/impresoreando/**
+  - data/impresoreando*
+  - docs/impresoreando/**
+alwaysApply: false
+---
+
+# Impresoreando
+
+- Antes de código: `docs/impresoreando/CONTEXTO.md` (no reexplorar `panel.js`).
+- Live: `data/impresoreando-live.json` · API `/api/impresoreando`.
+- «pagado» = venta · «fiado» = pedido + tarea cobro. Cliente nuevo: nombre + origen (SIE/MKOF).
+- Preferí scripts `scripts/force-imp-*.js` / `RESTAURAR-IMPRESOREANDO.bat` antes de editar a mano el JSON.

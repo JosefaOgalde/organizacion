@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Talento TP Digital para Chile · Reporte de Impacto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --ink: #0f1722;
+      --green: #5d8a22;
+      --green-bright: #679927;
+      --green-soft: #e4efc7;
+      --gray: #f2f4f7;
+      --gray-line: #d4d8dd;
+      --yellow: #febc2e;
+      --muted: rgba(15, 23, 34, 0.72);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: #0f1722;
+      font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+    }
+    .deck {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .stage {
+      width: min(1280px, 96vw);
+      aspect-ratio: 16 / 9;
+      background: var(--bg);
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0,0,0,.45);
+    }
+    .slide {
+      display: none;
+      position: absolute;
+      inset: 0;
+      padding: 48px 56px 40px;
+      background: var(--bg);
+    }
+    .slide.active { display: block; }
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 18px;
+    }
+    h1 {
+      font-size: clamp(42px, 4.6vw, 64px);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 18px;
+    }
+    h2 {
+      font-size: clamp(28px, 3vw, 40px);
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    p, li { font-size: 17px; line-height: 1.45; color: var(--muted); }
+    .pill {
+      display: inline-block;
+      background: var(--green);
+      color: #fff;
+      border-radius: 12px;
+      padding: 6px 14px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    .quote {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border-left: 5px solid var(--green);
+      background: linear-gradient(90deg, var(--green-soft), #fff 70%);
+      border-radius: 0 14px 14px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ink);
+      font-style: italic;
+    }
+    .cols {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 36px;
+      height: calc(100% - 28px);
+      align-items: center;
+    }
+    .cols-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .cols-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .cols-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .visual {
+      position: relative;
+      height: 100%;
+      min-height: 420px;
+      display: grid;
+      place-items: center;
+    }
+    .photo {
+      width: 100%;
+      height: 86%;
+      border-radius: 24px;
+      background:
+        linear-gradient(145deg, rgba(93,138,34,.18), rgba(15,23,34,.55)),
+        radial-gradient(circle at 30% 20%, #e4efc7, transparent 40%),
+        linear-gradient(160deg, #1f3138, #0f1722);
+      box-shadow: 0 18px 40px rgba(15,23,34,.18);
+      position: relative;
+      overflow: hidden;
+    }
+    .photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(228,239,199,.55) 1.2px, transparent 1.4px);
+      background-size: 18px 18px;
+      opacity: .35;
+      mask-image: linear-gradient(120deg, transparent 20%, #000 70%);
+    }
+    .dotgrid {
+      position: absolute;
+      right: -10px;
+      top: 18px;
+      width: 58%;
+      height: 58%;
+      background-image: radial-gradient(circle, var(--green-soft) 1.6px, transparent 1.8px);
+      background-size: 16px 16px;
+      z-index: 0;
+      border-radius: 16px;
+    }
+    .float-card {
+      position: absolute;
+      left: 18px;
+      bottom: 28px;
+      width: min(340px, 86%);
+      background: #fff;
+      border-radius: 18px;
+      padding: 16px 18px;
+      box-shadow: 0 16px 40px rgba(15,23,34,.18);
+      z-index: 2;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--green);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      padding: 5px 10px;
+      margin-bottom: 8px;
+    }
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .stat-row div {
+      background: var(--gray);
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+    }
+    .stat-row strong {
+      display: block;
+      font-size: 16px;
+      color: var(--ink);
+      font-weight: 800;
+    }
+    .stat-row span {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      font-weight: 600;
+    }
+    .metric {
+      background: #fff;
+      border: 1px solid var(--gray-line);
+      border-radius: 18px;
+      padding: 20px 18px;
+      box-shadow: 0 10px 28px rgba(15,23,34,.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .metric::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 5px;
+      background: var(--green);
+    }
+    .metric .num {
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .metric .label {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--green);
+    }
+    .card {
+      background: linear-gradient(180deg, #fff, var(--gray));
+      border: 1px solid var(--gray-line);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 12px 30px rgba(15,23,34,.06);
+      height: 100%;
+    }
+    .card h3 { color: var(--ink); }
+    .card p, .card li { font-size: 15px; }
+    ul { padding-left: 18px; }
+    li { margin: 6px 0; }
+    .cta-row {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink);
+      color: #fff;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .link {
+      color: var(--green);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .footer {
+      position: absolute;
+      left: 56px;
+      right: 56px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .logo {
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .logo span { color: var(--green); }
+    .num-slide { color: var(--green); opacity: .55; font-weight: 700; }
+    .index-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 28px;
+      margin-top: 18px;
+    }
+    .index-list div {
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--gray);
+    }
+    .index-list strong {
+      color: var(--green);
+      font-size: 13px;
+      min-width: 28px;
+    }
+    .index-list span {
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .nav {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 20;
+      background: rgba(15,23,34,.88);
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      align-items: center;
+    }
+    .nav button {
+      border: 0;
+      background: #fff;
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .chip {
+      background: var(--green-soft);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .two-stack { display: grid; gap: 14px; }
+    .lead { font-size: 18px; color: var(--ink); font-weight: 500; margin-bottom: 12px; }
+    .small { font-size: 14px; }
+    .highlight { color: var(--ink); font-weight: 700; }
+    .split-top { margin-bottom: 8px; }
+    @media (max-width: 900px) {
+      .stage { aspect-ratio: auto; min-height: 70vh; }
+      .slide { position: relative; display: none; padding: 28px; }
+      .slide.active { display: block; }
+      .cols, .cols-2, .cols-3, .cols-4 { grid-template-columns: 1fr; }
+      .visual { min-height: 240px; }
+      .footer { position: static; margin-top: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <div class="stage" id="stage">
+
+      <!-- 01 PORTADA -->
+      <section class="slide active" data-i="1">
+        <div class="cols">
+          <div>
+            <div class="eyebrow">REPORTE DE IMPACTO · ABRIL–JULIO 2026</div>
+            <h1>Talento TP Digital<br><span class="pill">para Chile</span></h1>
+            <p class="lead">Capacitación en <span class="highlight">Inteligencia Artificial</span>, <span class="highlight">Automatización</span> y <span class="highlight">Competencias Financieras</span> para jóvenes de Enseñanza Media TP.</p>
+            <div class="quote">“El talento técnico-profesional no hay que salir a buscarlo: hay que prepararlo.”</div>
+            <div class="cta-row">
+              <div class="btn">Banco de Chile × Desafío Latam →</div>
+              <div class="link">Colegio Initec · Curicó</div>
+            </div>
+          </div>
+          <div class="visual">
+            <div class="dotgrid"></div>
+            <div class="photo"></div>
+            <div class="float-card">
+              <div class="badge">Caso de éxito</div>
+              <h3 style="font-size:22px;margin:0 0 4px">+85 estudiantes</h3>
+              <p class="small" style="margin:0">Primer ciclo · Initec Curicó · Región del Maule</p>
+              <div class="stat-row">
+                <div><strong>92,5%</strong><span>Aprobación</span></div>
+                <div><strong>202h</strong><span>Por alumno</span></div>
+                <div><strong>10/10</strong><span>Docentes</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><div class="logo"><span>{desafío}</span> latam_</div><div class="num-slide">01</div></div>
+      </section>
+
+      <!-- 02 ÍNDICE -->
+      <section class="slide" data-i="2">
+        <div class="eyebrow">AGENDA</div>
+        <h2>Lo que verás <span class="pill">hoy</span></h2>
+        <div class="index-list">
+          <div><strong>03</strong><span>El desafío</span></div>
+          <div><strong>04</strong><span>La respuesta del proyecto</span></div>
+          <div><strong>05</strong><span>Impacto en cifras</span></div>
+          <div><strong>06</strong><span>Resultados académicos</span></div>
+          <div><strong>07</strong><span>Impacto en las personas</span></div>
+          <div><strong>08</strong><span>Inclusión y ecosistema</span></div>
+          <div><strong>09</strong><span>Aprendizajes clave</span></div>
+          <div><strong>10</strong><span>Proyección y cierre</span></div>
+        </div>
+        <div class="footer"><div class="logo"><span>{desafío}</span> latam_</div><div class="num-slide">02</div></div>
+      </section>
+
+      <!-- 03 DESAFÍO -->
+      <section class="slide" data-i="3">
+        <div class="eyebrow">EL DESAFÍO</div>
+        <h2>Hay que <span class="pill">preparar</span> el talento TP</h2>
+        <p class="lead">La educación TP forma a jóvenes que se insertan temprano al trabajo, pero arrastra una brecha de competencias digitales frente a un mercado con IA, automatización y servicios financieros digitales.</p>
+        <div class="cols-3">
+          <div class="card">
+            <h3>Brecha</h3>
+            <p>Estudiantes de 3° y 4° medio TP egresan sin dominio de herramientas digitales, IA aplicada ni comprensión del sistema financiero.</p>
+          </div>
+          <div class="card">
+            <h3>Riesgo</h3>
+            <p>Jóvenes en desventaja competitiva desde el primer día, y una modalidad percibida como “segunda categoría”.</p>
+          </div>
+          <div class="card">
+            <h3>Oportunidad</h3>
+            <p>Una intervención acotada, aplicada y certificada por Banco de Chile puede cerrar la brecha antes del egreso.</p>
+          </div>
+        </div>
+        <div class="chips">
+          <div class="chip">Habilitador: Franquicia Tributaria SENCE</div>
+          <div class="chip">Sin costo para familias ni establecimientos</div>
+        </div>
+        <div class="footer"><div class="logo"><span>{desafío}</span> latam_</div><div class="num-slide">03</div></div>
+      </section>
+
+      <!-- 04 RESPUESTA -->
+      <section class="slide" data-i="4">
+        <div class="eyebrow">LA RESPUESTA</div>
+        <h2>Itinerario doble · <span class="pill">202 horas</span></h2>
+        <p class="lead">Banco de Chile y Desafío Latam diseñaron un itinerario complementario: e-learning + presencial en el propio liceo.</p>
+        <div class="cols-2">
+          <div class="card">
+            <div class="badge">E-learning · 150 h</div>
+            <h3>Transformación Digital con IA y Automatización</h3>
+            <p>100% asincrónico y autoinstructivo · Franquicia Tributaria SENCE (precontrato).</p>
+          </div>
+          <div class="card">
+            <div class="badge">Presencial · 52 h</div>
+            <h3>Cliente Digital en el Centro</h3>
+            <p>6 módulos a medida · bootcamp con ≥60% de práctica, casos reales y simulaciones.</p>
+          </div>
+        </div>
+        <div class="chips" style="margin-top:16px">
+          <div class="chip">Bienvenida 11 may</div>
+          <div class="chip">Cierre + diplomas 23 jul</div>
+          <div class="chip">BChile financia 100%</div>
+          <div class="chip">ADL: diseño · plataforma · docencia</div>
+        </div>
+        <div class="footer"><div class="logo"><span>{desafío}</span> latam_</div><div class="num-slide">04</div></div>
+      </section>
+
+      <!-- 05 CIFRAS -->
+      <section class="slide" data-i="5">
+        <div class="eyebrow">IMPACTO EN CIFRAS</div>
+        <h2>Resultados del <span class="pill">primer ciclo</span></h2>
+        <div class="cols-4">
+          <div class="metric"><div class="num">85</div><div class="label">Estudiantes formados</div></div>
+          <div class="metric"><div class="num">202</div><div class="label">Horas por estudiante</div></div>
+          <div class="metric"><div class="num">92,5%</div><div class="label">Tasa de aprobación</div></div>
+          <div class="metric"><div class="num">86,2%</div><div class="label">Asistencia promedio</div></div>
+        </div>
+        <div class="cols-2" style="margin-top:16px">
+          <div class="card">
+            <h3>Cobertura</h3>
+            <p>Colegio Initec · Curicó (Maule). Primer ciclo de un convenio proyectado a <span class="highlight">1.660 estudiantes</span> en 2026.</p>
+          </div>
+          <div class="card">
+            <h3>Satisfacción docente</h3>
+            <p><span class="highlight">10/10</span> global · 4,4/5 equipo administrativo ADL · 4,2/5 experiencia como facilitador.</p>
+          </div>
+        </div>
+        <div class="footer"><div class="logo"><span>{desafío}</span> latam_</div><div class="num-slide">05</div></div>
+      </section>
+
+      <!-- 06 ACADÉMICO -->
+      <section class="slide" data-i="6">
+        <div class="eyebrow">DESEMPEÑO ACADÉMICO</div>
+        <h2>Cuando se presentaron, <span class="pill">aprendieron</span></h2>
+        <div class="cols-2">
+          <div class="two-stack">
+            <div class="metric"><div class="num">8,66</div><div class="label">Nota promedio presencial</div></div>
+            <div class="metric"><div class="num">9,66</div><div class="label">Quizzes e-learning</div></div>
+          </div>
+          <div class="card">
+            <h3>Lectura clave</h3>
+            <ul>
+              <li><span class="highlight">Ningún estudiante reprobó por bajo rendimiento</span>: los 6 casos fueron por actividades pendientes.</li>
+              <li>Aprobación: <span class="highlight">97,4%</span> en 4° medio · <span class="highlight">87,8%</span> en 3° medio (base 80).</li>
+              <li>60% del grupo con nota final entre 9,0 y 10,0.</li>
+              <li>Proyecto Integrador: 9,83 (3°) y 9,67 (4°).</li>
+              <li>E-learning: 70,4% de finalización (69/98) · 73,8% avance promedio.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer"><div class="logo"><span>{desafío}</span> latam_</div><div class="num-slide">06</div></div>
+      </section>
+
+      <!-- 07 PERSONAS -->
+      <section class="slide" data-i="7">
+        <div class="eyebrow">IMPACTO EN LAS PERSONAS</div>
+        <h2>Competencias para el <span class="pill">primer empleo</span></h2>
+        <div class="cols-3">
+          <div class="card">
+            <h3>Digitales</h3>
+            <p>IA generativa (prompts CRTF, zero-shot / few-shot) y automatización no-code (Zapier, n8n, Make, Power Automate).</p>
+          </div>
+          <div class="card">
+            <h3>Financieras</h3>
+            <p>Sistema financiero chileno y reguladores, análisis con hojas de cálculo, venta consultiva y asesoría a clientes.</p>
+          </div>
+          <div class="card">
+            <h3>Personales</h3>
+            <p>Presupuesto, clasificación de gastos, ahorro y planes de salida de deudas con cifras concretas.</p>
+          </div>
+        </div>
+        <div class="quote" style="margin-top:18px">Cada estudiante egresa con diploma Banco de Chile × Desafío Latam y un proyecto integrador ante cliente simulado.</div>
+        <div class="footer"><div class="logo"><span>{desafío}</span> latam_</div><div class="num-slide">07</div></div>
+      </section>
+
+      <!-- 08 INCLUSIÓN + ECOSISTEMA -->
+      <section class="slide" data-i="8">
+        <div class="eyebrow">INCLUSIÓN · ECOSISTEMA</div>
+        <h2>Articulación que <span class="pill">escala</span></h2>
+        <div class="cols-2">
+          <div class="card">
+            <h3>Inclusión y equidad</h3>
+            <ul>
+              <li>Foco en liceos TP, segmento históricamente subvalorado.</li>
+              <li>Descentralización: Curicó, Región del Maule.</li>
+              <li>100% vía SENCE: sin barrera económica.</li>
+              <li>Seguimiento caso a caso de rezagados.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Comunidades y validación</h3>
+            <ul>
+              <li>Banca + OTEC digital + educación TP + Estado (SENCE).</li>
+              <li>Integrado al calendario escolar del liceo.</li>
+              <li>Certificación conjunta Banco de Chile – Desafío Latam.</li>
+              <li>Hitos con autoridades de las tres instituciones.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="chips">
+          <div class="chip">Bienvenida 11 may · registro profesional</div>
+          <div class="chip">Cierre 23 jul · diplomas</div>
+          <div class="chip">Difusión LinkedIn: por confirmar con BChile</div>
+        </div>
+        <div class="footer"><div class="logo"><span>{desafío}</span> latam_</div><div class="num-slide">08</div></div>
+      </section>
+
+      <!-- 09 APRENDIZAJES -->
+      <section class="slide" data-i="9">
+        <div class="eyebrow">APRENDIZAJES CLAVE</div>
+        <h2>Qué funcionó · qué <span class="pill">ajustar</span></h2>
+        <div class="cols-2">
+          <div class="card">
+            <div class="badge">Lo que funcionó</div>
+            <ul>
+              <li>Complementariedad e-learning + presencial.</li>
+              <li>Metodología práctica (≥60% de aula).</li>
+              <li>Coordinación sólida entre las 3 instituciones.</li>
+              <li>Seguimiento individualizado de rezagados.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="badge" style="background:#0f1722">Ajustar a futuro</div>
+            <ul>
+              <li>Anticipar calendario (asistencia 3° medio cayó a 17,9% al cierre).</li>
+              <li>Hitos intermedios en e-learning (29/98 no completaron).</li>
+              <li>Corregir rúbricas/formatos evaluativos.</li>
+              <li>Dinamizar Módulo 3 · mejorar LMS · encuesta a tiempo.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer"><div class="logo"><span>{desafío}</span> latam_</div><div class="num-slide">09</div></div>
+      </section>
+
+      <!-- 10 PROYECCIÓN + CIERRE -->
+      <section class="slide" data-i="10">
+        <div class="cols">
+          <div>
+            <div class="eyebrow">PROYECCIÓN · CIERRE</div>
+            <h2>Listos para <span class="pill">escalar</span></h2>
+            <p class="lead">Convenio 2026: <span class="highlight">1.660 estudiantes</span> — 1.500 en e-learning masivo y 160 en presencial (4 cohortes).</p>
+            <ul>
+              <li>Replicar en Initec con calendario corregido.</li>
+              <li>Extender a nuevas especialidades y liceos.</li>
+              <li>Webinars BChile, empleabilidad y comunidad virtual.</li>
+              <li>Modelo SENCE validado operativamente.</li>
+            </ul>
+            <div class="quote">Detrás de cada cifra hay un joven de Curicó que hoy usa IA, entiende el sistema financiero y llega a su primera entrevista con un diploma del Banco de Chile.</div>
+          </div>
+          <div class="visual">
+            <div class="dotgrid"></div>
+            <div class="photo"></div>
+            <div class="float-card">
+              <div class="badge">Next</div>
+              <h3 style="font-size:20px;margin:0 0 6px">1.660 estudiantes 2026</h3>
+              <p class="small" style="margin:0 0 10px">De un ciclo validado a la política de formación digital TP.</p>
+              <div class="btn" style="font-size:12px;padding:10px 14px">Escalar el modelo →</div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><div class="logo"><span>{desafío}</span> latam_</div><div class="num-slide">10</div></div>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="nav">
+    <button type="button" id="prev">←</button>
+    <span id="counter">1 / 10</span>
+    <button type="button" id="next">→</button>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    let i = 0;
+    const counter = document.getElementById('counter');
+    function show(n) {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+      counter.textContent = `${i + 1} / ${slides.length}`;
+    }
+    document.getElementById('prev').onclick = () => show(i - 1);
+    document.getElementById('next').onclick = () => show(i + 1);
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); show(i + 1); }
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
+      if (e.key === 'Home') show(0);
+      if (e.key === 'End') show(slides.length - 1);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+Reportabilidad y Comunicación de Impacto
+Talento TP Digital para Chile  ·  Banco de Chile  ·  Abril–Julio 2026
+Reporte de Impacto. Documento estratégico y evaluativo que analiza en profundidad los resultados del proyecto, evidencia su impacto en las personas y territorios, y genera aprendizajes para futuras intervenciones (rendición institucional y comercial, mejora continua, sustento para continuidad/escalamiento y posicionamiento estratégico).
+One Pager. Documento sintético, visual y comercial que permite comprender rápidamente el desafío, la respuesta y los principales resultados; sirve como lámina comercial, material de difusión y resumen ejecutivo.
+📣 Importante: los ítems de cada insumo pueden ajustarse según el proyecto. El contenido a continuación está extraído del Acta de Constitución del Proyecto y del Informe Final de Cierre del ciclo ejecutado en el Colegio Initec (Curicó).
+Reporte de Impacto
+Nombre del Proyecto
+Talento TP Digital para Chile — “Cliente Digital en el Centro” y “Transformación Digital con IA y Automatización”
+Cliente
+Banco de Chile (financista) — liceos técnico-profesionales y sus estudiantes como beneficiarios finales
+Ejecutor
+Desafío Latam — diseño instruccional, plataforma e-learning, docencia y coordinación
+Período de ejecución
+Abril a julio de 2026 — primer ciclo ejecutado en el Colegio Initec, sede Curicó (Región del Maule)
+Portada y Relato Central
+Frase conceptual o inspiradora que sintetice el propósito.
+Breve narrativa que conecte el proyecto con el cambio buscado.
+“El talento técnico-profesional no hay que salir a buscarlo: hay que prepararlo.”
+En los liceos técnico-profesionales de Chile hay miles de jóvenes que están a uno o dos años de entrar al mundo del trabajo, y que llegan a esa puerta sin las competencias digitales y financieras que hoy el mercado da por supuestas. Banco de Chile y Desafío Latam llevaron esa formación directamente al aula: inteligencia artificial, automatización, sistema financiero y asesoría al cliente enseñados en el propio liceo, sin costo para el estudiante ni para el establecimiento. El propósito de fondo es reposicionar la educación técnico-profesional como una vía formativa clave para el desarrollo del país.
+El Desafío
+Contexto territorial, social o sectorial.
+Brecha en la población objetivo.
+Riesgos de no intervenir.
+Oportunidades que el proyecto buscó habilitar.
+La educación técnico-profesional forma a una parte relevante de los jóvenes que se insertan tempranamente al mundo laboral, pero arrastra un déficit de valoración pública y una brecha concreta de competencias digitales frente a un mercado que ya opera con inteligencia artificial, automatización y servicios financieros digitales.
+Brecha: estudiantes de 3° y 4° medio TP que egresan sin dominio de herramientas digitales de productividad, IA aplicada ni comprensión del sistema financiero en el que van a trabajar.
+Riesgo de no intervenir: jóvenes que entran al mercado laboral en desventaja competitiva, y una modalidad educativa que sigue siendo percibida como una alternativa de segunda categoría.
+Oportunidad: una intervención formativa acotada, aplicada y certificada por una institución financiera de primer nivel puede cerrar esa brecha antes del egreso y, al mismo tiempo, resignificar el sello técnico-profesional.
+Habilitador: el financiamiento vía Franquicia Tributaria SENCE permite ejecutar el programa sin costo para las familias ni para los establecimientos.
+La Respuesta del Proyecto
+Enfoque de intervención.
+Componentes principales.
+Metodología.
+Rol de los actores involucrados.
+Banco de Chile y Desafío Latam diseñaron un itinerario formativo doble y complementario: un curso e-learning que entrega dominio de herramientas digitales e IA aplicada, y un programa presencial que aterriza esas competencias en el contexto financiero y de atención al cliente, dictado en el propio liceo.
+Componente e-learning: “Transformación Digital con IA y Automatización”, 150 horas, 100% asincrónico y autoinstructivo, con franquicia tributaria SENCE (modalidad precontrato).
+Componente presencial: “Cliente Digital en el Centro”, 52 horas en 6 módulos, contenido desarrollado a medida para este convenio.
+Metodología bootcamp de Desafío Latam: al menos el 60% de cada sesión destinado a práctica, casos reales y simulaciones, con quiz diagnóstico al inicio y su reaplicación en el cierre.
+Hitos institucionales: evento de bienvenida (11 de mayo) y ceremonia de cierre con entrega de diplomas certificados por Banco de Chile y Desafío Latam (23 de julio).
+Actores: Banco de Chile financia el 100% y define el foco estratégico; Desafío Latam aporta diseño, plataforma, cuerpo docente y reportería; el establecimiento aporta estudiantes, infraestructura y articulación con el calendario escolar.
+Impacto en Cifras
+Personas participantes/capacitadas.
+Territorios intervenidos.
+Indicadores de satisfacción o resultados relevantes.
+85
+Estudiantes formados
+202
+Horas de formación por estudiante
+92,5%
+Tasa de aprobación
+86,2%
+Asistencia promedio
+10/10
+Satisfacción del cuerpo docente
+Cobertura: Colegio Initec, sede Curicó (Región del Maule) — primer ciclo de un convenio proyectado a 1.660 estudiantes de liceos técnico-profesionales durante 2026.
+Aprobación por curso: 97,4% en 4° medio y 87,8% en 3° medio, sobre una base evaluable de 80 estudiantes.
+Desempeño académico: nota promedio general 8,66 en el programa presencial y 9,66 en los quizzes de la plataforma e-learning; el 60% del grupo obtuvo nota final entre 9,0 y 10,0.
+Componente e-learning: 70,4% de finalización (69 de 98 inscritos ante SENCE) y 73,8% de avance promedio de visualización de contenidos.
+Compromiso con el trabajo práctico: 52 estudiantes (65%) entregaron la totalidad de los seis desafíos y 70 de 80 entregaron cinco o más.
+Evaluación del equipo ejecutor por el cuerpo docente: 10/10 en satisfacción global, 4,4/5 al equipo administrativo de Desafío Latam y 4,2/5 a la experiencia como facilitador.
+Impacto en las Personas
+Cambios en aprendizajes.
+Desarrollo de habilidades técnicas o transversales.
+Proyección personal o laboral.
+Indicadores de percepción.
+El resultado más relevante no es la aprobación, sino su composición: ningún estudiante reprobó por bajo rendimiento académico. Los seis casos de reprobación corresponden a actividades pendientes, no a dificultades de contenido. Cuando el estudiante se presentó, aprendió y aprobó.
+Competencias digitales: uso de IA generativa como herramienta de trabajo (prompts con estructura CRTF, técnicas zero-shot y few-shot) y automatización de tareas con herramientas no-code (Zapier, n8n, Make, Power Automate), sin programar.
+Competencias financieras: comprensión del sistema financiero chileno y sus reguladores, análisis financiero con hojas de cálculo, venta consultiva y asesoría a clientes.
+Finanzas personales: elaboración de presupuesto, clasificación de gastos, estrategias de ahorro y diseño de planes de salida de deudas con cifras concretas.
+Progresión verificable del aprendizaje: las notas subieron a lo largo del programa y alcanzaron su punto más alto en el Proyecto Integrador (9,83 en 3° medio y 9,67 en 4° medio), justamente la evaluación que exige aplicar de forma combinada todo lo aprendido.
+Proyección laboral: cada estudiante egresa con un diploma certificado por Banco de Chile y Desafío Latam, y con un proyecto integrador presentado ante un cliente simulado.
+Voces del Territorio
+Testimonios breves de estudiantes, docentes/facilitadores y otros actores.
+Equipo docente
+La docente titular del programa destacó la claridad de los contenidos, el apoyo constante del equipo de coordinación y la motivación sostenida del grupo de estudiantes. — Carolina Herrera, docente
+El ayudante relevó el valor de ser parte del proceso de aprendizaje y de poder observar directamente el progreso de los estudiantes a lo largo de los seis módulos. — Braulio Matías, ayudante
+Contrapartes del convenio
+Las ceremonias de apertura y cierre contaron con la participación de Andrés Gallardo, CEO de Desafío Latam; Ximena Ormazabal, Gerente de Sucursal Curicó de Banco de Chile; Iván Salgado, Jefe de Plataforma de Servicios; y el equipo directivo del Colegio Initec, junto a los estudiantes de 3° y 4° medio y su cuerpo docente.
+Nota para Marketing: la encuesta de satisfacción a estudiantes no fue recibida al cierre de esta versión. Los testimonios directos de los participantes se incorporarán en una próxima actualización, una vez disponible ese material.
+Enfoque de Inclusión y Equidad
+Participación femenina.
+Inclusión de grupos prioritarios.
+Territorios históricamente postergados.
+El convenio se orienta deliberadamente a un grupo prioritario: estudiantes de liceos técnico-profesionales, un segmento históricamente subvalorado en el debate educativo y con menor acceso a formación digital avanzada antes de su inserción laboral.
+Descentralización territorial: el primer ciclo se ejecutó en Curicó, Región del Maule, fuera de la Región Metropolitana.
+Acceso sin barrera económica: el programa se financia 100% mediante Franquicia Tributaria SENCE, sin costo para el estudiante, su familia ni el establecimiento.
+Participación de especialidades administrativas y contables, con presencia femenina visible en el registro de ambos eventos institucionales.
+Acompañamiento diferenciado: seguimiento académico módulo a módulo y registro caso a caso de los estudiantes rezagados, para intervenir de forma dirigida antes del cierre.
+Nota para Marketing: el desglose por género no fue registrado en este ciclo; se recomienda incorporar esa medición en las próximas cohortes para reforzar la lectura de equidad.
+Conectando Comunidades y Ecosistema
+Articulación público–privada.
+Vinculación con sistemas educativos o sector productivo.
+Validación institucional.
+El proyecto articula a una institución financiera de primer nivel, un OTEC especializado en talento digital y el sistema de educación técnico-profesional, con el Estado como habilitador a través del instrumento de franquicia tributaria.
+Articulación público–privada: financiamiento privado canalizado mediante Franquicia Tributaria SENCE (códigos 6789117 y 6812166) hacia establecimientos educacionales.
+Vinculación con el sistema educativo: la formación se integró al calendario académico del liceo, coordinada con su equipo directivo y compatible con la jornada escolar.
+Vinculación con el sector productivo: los contenidos fueron diseñados en función de la realidad de la industria financiera, con certificación conjunta Banco de Chile – Desafío Latam.
+Validación institucional: presencia de autoridades de las tres instituciones en los hitos de apertura y cierre del programa.
+Aporte al ecosistema: el modelo queda validado y documentado como una ruta replicable de vinculación entre banca, formación digital y educación TP.
+Visibilidad y Amplificación del Impacto
+Presencia en medios.
+Alcance en redes sociales.
+Eventos o hitos relevantes.
+El ciclo generó dos hitos institucionales con registro profesional completo, hoy disponibles como material de difusión. La estrategia de comunicación pública está aún por activarse y constituye una oportunidad directa para el trabajo de Marketing.
+Evento de bienvenida (11 de mayo de 2026): lanzamiento oficial en el auditorio del Colegio Initec, con entrega del material “Talento TP” a cada estudiante y participación de autoridades de las tres instituciones.
+Ceremonia de cierre (23 de julio de 2026): reconocimiento a los estudiantes que completaron el itinerario y entrega de diplomas de certificación.
+Material disponible: registro fotográfico profesional de ambos eventos y registro audiovisual en video, alojados en las carpetas compartidas del proyecto.
+Redes sociales / LinkedIn: pendiente de confirmar con Banco de Chile la autorización para difundir, etiquetar al cliente y usar imagen del convenio.
+Activos pendientes: testimonios de estudiantes y piezas de campaña para acompañar el escalamiento del programa a nuevos liceos.
+Aprendizajes Clave
+Factores que facilitaron los resultados.
+Aspectos a ajustar en futuras versiones.
+Lo que funcionó
+La complementariedad de los dos cursos: el e-learning entregó herramientas y el presencial les dio contexto y aplicación, evitando que la formación quedara en lo abstracto.
+La metodología práctica: 60% del tiempo de aula en ejercicios y casos reales, lo que se refleja en que la evaluación más exigente fue también la mejor calificada.
+La coordinación entre las tres instituciones: ninguno de los problemas detectados durante la ejecución tuvo origen en la articulación entre las partes.
+El seguimiento individualizado de rezagados, que permitió intervenciones dirigidas antes del cierre.
+Qué ajustar a futuro
+Sostenimiento de la participación en 3° medio: la asistencia cayó a 17,9% en el módulo final, coincidiendo con el cierre del año escolar. Anticipar el calendario del programa es la corrección principal del próximo ciclo.
+Constancia en el e-learning: 29 de 98 inscritos no completaron el curso; se requieren hitos de control intermedios y recordatorios sistematizados.
+Revisión de instrumentos evaluativos: el equipo docente detectó errores en rúbricas y formatos de evaluación que deben corregirse antes de la siguiente cohorte.
+Dinamización del Módulo 3, identificado como el tramo de menor atractivo para los estudiantes.
+Mejora del LMS: fue el indicador peor evaluado por el cuerpo docente (4,0 de 5).
+Aplicación oportuna de la encuesta de satisfacción a estudiantes, para no perder la dimensión cualitativa del impacto.
+Proyección de Futuro
+Continuidad.
+Escalamiento.
+Replicabilidad.
+Continuidad inmediata: replicar el programa con las nuevas generaciones de 3° y 4° medio del Colegio Initec, incorporando las correcciones de calendario ya identificadas.
+Escalamiento comprometido: el convenio 2026 proyecta 1.660 estudiantes —1.500 en el programa e-learning masivo y 160 en el presencial, distribuidos en cuatro cohortes.
+Ampliación del alcance: extender el programa a otras especialidades técnico-profesionales y a nuevos liceos del país.
+Componentes por desplegar: cuatro webinars abiertos con invitados de Banco de Chile, talleres de empleabilidad y una comunidad virtual de participantes para sostener la vinculación entre hitos.
+Sostenibilidad financiera: el modelo de Franquicia Tributaria SENCE ya está validado operativamente y permite escalar sin costo para los beneficiarios.
+Ventaja del segundo ciclo: a diferencia de un convenio nuevo, esta alianza ya cuenta con una línea base conocida y un diagnóstico preciso de dónde se produce la deserción.
+Cierre Inspiracional
+Mensaje final que refuerce el aporte del proyecto a las personas y al territorio.
+El modelo está probado, el equipo está formado y los resultados hablan por sí solos. Detrás de cada cifra hay un joven de un liceo técnico-profesional de Curicó que hoy sabe usar inteligencia artificial en su trabajo, entiende cómo funciona el sistema financiero del país y llega a su primera entrevista laboral con un diploma del Banco de Chile en la mano. Eso es rebrandear la educación técnico-profesional: no con un discurso, sino con talento efectivamente preparado.
+One Pager
+Objetivo: síntesis estratégica, visual y comercial del proyecto — una lámina autónoma reutilizable en contextos comerciales, institucionales o de difusión.
+Enganche
+Frase conceptual o inspiradora.
+Breve bajada explicativa del sentido del proyecto.
+“El talento técnico-profesional no hay que salir a buscarlo: hay que prepararlo.”
+Formación en inteligencia artificial y competencias financieras llevada directamente al liceo técnico-profesional: jóvenes que egresan con herramientas reales para su primer empleo, certificados por Banco de Chile y Desafío Latam.
+El Desafío
+Contexto territorial o sectorial.
+Brecha principal.
+Riesgo de no intervenir.
+Miles de estudiantes técnico-profesionales egresan cada año sin las competencias digitales y financieras que el mercado ya da por supuestas. Esa brecha los deja en desventaja competitiva desde el primer día y refuerza la subvaloración de una modalidad educativa que el país necesita.
+La Respuesta
+Tipo de intervención.
+Principales acciones.
+Valor diferencial.
+Un itinerario formativo doble de 202 horas: 150 horas de e-learning en IA y automatización, más 52 horas presenciales de formación financiera y atención al cliente dictadas en el propio establecimiento, sin costo para el estudiante.
+Valor diferencial: metodología bootcamp con 60% de práctica + certificación conjunta con Banco de Chile + financiamiento 100% vía Franquicia Tributaria SENCE.
+Impacto en Cifras
+Participantes, resultados académicos y satisfacción — lectura rápida.
+85
+Estudiantes formados
+202
+Horas por estudiante
+92,5%
+Aprobación
+86,2%
+Asistencia
+10/10
+Satisfacción docente
+Nota promedio 8,66 en el programa presencial · 9,66 en la plataforma e-learning · 60% del grupo con nota final sobre 9,0 · ningún estudiante reprobado por bajo rendimiento.
+Beneficios del Proyecto
+Desarrollo de competencias.
+Mejora de oportunidades.
+Contribución al ecosistema. (viñetas breves)
+Competencias digitales aplicadas: IA generativa y automatización no-code para el trabajo real.
+Competencias financieras: sistema financiero chileno, análisis de datos, venta consultiva y finanzas personales.
+Certificación conjunta Banco de Chile – Desafío Latam como activo laboral concreto para el egresado.
+Modelo replicable y escalable a nuevas cohortes, especialidades y liceos del país.
+Argumento de impacto social medible y verificable para el financista.
+Visibilidad y Posicionamiento (si aplica)
+Presencia en medios.
+Eventos relevantes.
+Alcance en redes.
+Reconocimiento institucional.
+Dos hitos institucionales con registro fotográfico y audiovisual profesional disponible.
+Participación de autoridades de Banco de Chile, Desafío Latam y del establecimiento en ambas ceremonias.
+Difusión en redes / LinkedIn por confirmar con Banco de Chile.
+Respaldo institucional del convenio como sello de calidad ante nuevos liceos.
+Cierre Inspiracional
+Mensaje final que proyecte continuidad del impacto y valor estratégico.
+Un ciclo ejecutado íntegramente, un modelo validado y resultados que sostienen la decisión: las bases para escalar Talento TP Digital a los 1.660 estudiantes del convenio y convertirlo en la política de formación digital de la educación técnico-profesional chilena.

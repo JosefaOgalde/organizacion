@@ -126,12 +126,13 @@
       "nombre": "Tronwell",
       "abrev": "TW",
       "tipo": "freelance",
+      "activo": false,
       "color": "azul",
       "color_border": "#1E5AA8",
       "color_bg": "#D6E5F6",
       "color_text": "#143A6B",
       "agente": "Agente Tronwell",
-      "resumen": "Ajuste de textos y documentos Word"
+      "resumen": "Textos Word entregados — encargo cerrado"
     },
     {
       "id": "cli-herramientas",

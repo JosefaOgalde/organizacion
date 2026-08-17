@@ -266,16 +266,18 @@ window.CLIENTES_PORTAL = [
     nombre: 'Tronwell',
     abrev: 'TW',
     tipo: 'Freelance',
+    /** Encargo textos cerrado — portal: gris / sección inactivos */
+    activo: false,
     color: { border: '#1E5AA8', bg: '#D6E5F6', text: '#143A6B' },
     agente: 'Ajuste de textos',
-    resumen: 'Revisión y ajuste de documentos (Word) por encargo.',
+    resumen: 'Textos Word entregados. Encargo cerrado.',
     landing: {
       tagline: 'Textos claros, listos para publicar',
       entregables: ['Ajuste de textos', 'Revisión por documento', 'Entrega Word'],
       secciones: [
         {
           titulo: 'Ajustar textos (19 jul)',
-          texto: 'Madre + subtareas: Contacto.docx (✓) · curso adultos.docx (✓) · Home.docx (✓) · tutor ia.docx.'
+          texto: 'Madre + subtareas: Contacto.docx (✓) · curso adultos.docx (✓) · Home.docx (✓) · tutor ia.docx (✓). Encargo cerrado 17 ago 2026.'
         }
       ]
     }
@@ -303,7 +305,9 @@ window.CLIENTES_PORTAL = [
         codigo: 'TEND',
         nombre: 'Tendencias',
         archivo: 'Herramientas/Tendencias',
-        resumen: 'Tendencias virales de recetas Chile — TikTok, Instagram y YouTube Shorts.',
+        /** Herramienta interna lista — tarjeta Finalizado en landing HER */
+        activo: false,
+        resumen: 'Tendencias virales de recetas Chile — TikTok, Instagram y YouTube Shorts. Finalizada.',
         descripcion: 'Análisis de tendencias virales de recetas en Chile para apoyar decisiones de contenido y producto.',
         color: { border: '#2E7D6E', bg: '#DFF0EC', text: '#1A4A40' },
         identidad: {

@@ -1,0 +1,14 @@
+---
+description: ECR — Midjourney portadas y newsletter (solo al tocar ECR)
+globs:
+  - index/clientes/ecr/**
+alwaysApply: false
+---
+
+# ECR
+
+- Portada newsletter: **Midjourney** solo fondo (sin tipografía/logo/marca en el prompt).
+- Base: `index/clientes/ecr/newsletter/` — 3 opciones por artículo; bloquear ANTITEXT; no `--ar` al final.
+- Persistencia: `historial-portadas.json`, `HISTORIAL-PORTADAS.md`, `portadas-guardadas/`.
+- Scripts: `add-ecr-rutas-viernes.js`, `add-ecr-ecosistema-nl-agosto.js`.
+- No pegues JSON live; usá `consulta-organizacion.js cliente ecr`.

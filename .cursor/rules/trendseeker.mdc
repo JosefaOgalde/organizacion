@@ -1,0 +1,14 @@
+---
+description: Trendseeker — Gemini video/prompts (solo al tocar TS)
+globs:
+  - index/clientes/trendseeker/**
+alwaysApply: false
+---
+
+# Trendseeker (TS)
+
+- Prompts de producto/video: **Gemini** (nunca Midjourney).
+- Carpeta: `index/clientes/trendseeker/prompts/` (+ `copys/`, `indice.json`).
+- Scripts: `node scripts/add-ts-contenidos-7-12.js`, `generar-ts-prompts-contenidos-7-12.js`, `generar-ts-copys-contenidos-7-12.js`.
+- Videos de tarea: UI → subir; API `POST /api/tarea-archivo` → `index/uploads/` (gitignored).
+- No pegues JSON live completo; usá `consulta-organizacion.js cliente ts`.

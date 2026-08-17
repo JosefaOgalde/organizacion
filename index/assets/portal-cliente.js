@@ -700,13 +700,18 @@
           <h2>Proyectos</h2>
           <p>Cada proyecto tiene su propia landing e identidad visual.</p>
           <div class="portal-grid portal-grid--proyectos">
-            ${c.proyectos.map((p) => `
-              <a href="${hrefProyecto(p.archivo)}" class="portal-card"
+            ${c.proyectos.map((p) => {
+              const fin = p.activo === false;
+              const cls = fin ? 'portal-card portal-card--inactivo' : 'portal-card';
+              const tipo = fin ? `${p.codigo} · Finalizado` : p.codigo;
+              return `
+              <a href="${hrefProyecto(p.archivo)}" class="${cls}"
                  style="--card-border:${p.color.border};--card-bg:${p.color.bg};--card-text:${p.color.text}">
-                <div class="portal-card__tipo">${escapeHtml(p.codigo)}</div>
+                <div class="portal-card__tipo">${escapeHtml(tipo)}</div>
                 <h2 class="portal-card__nombre">${escapeHtml(p.nombre)}</h2>
                 <div class="portal-card__abrev">${escapeHtml(p.resumen)}</div>
-              </a>`).join('')}
+              </a>`;
+            }).join('')}
           </div>
           ${c.slug === 'herramientas' ? (() => {
             const tendHref = hrefProyecto('Herramientas/Tendencias.html');

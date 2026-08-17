@@ -3,7 +3,8 @@ window.HERRAMIENTAS_PROYECTOS = {
   TEND: {
     codigo: 'TEND',
     nombre: 'Tendencias',
-    descripcion: 'Tendencias virales de recetas en Chile — carga automática al entrar',
+    activo: false,
+    descripcion: 'Tendencias virales de recetas en Chile — herramienta finalizada (consulta / archivo)',
     cliente: 'Herramientas',
     identidadPdf: 'tendencias/identidad/manual-marca-tendencias.pdf',
     colores: {

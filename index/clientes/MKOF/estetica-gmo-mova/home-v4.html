@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grupo Making OF — Home (motion v4)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Georgia&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F7F3E7;
+  --cream-soft:#EFE9D8;
+  --dark:#0E2B22;
+  --dark-2:#123626;
+  --green:#8FC93A;
+  --green-soft:#B9E38A;
+  --teal:#4FA79A;
+  --text:#16261E;
+  --muted:#5C6B62;
+  --serif:'Georgia','Times New Roman',serif;
+  --sans:'Instrument Sans','Helvetica Neue',Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);color:var(--text);background:var(--cream);
+  line-height:1.5;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+img{max-width:100%;display:block;}
+.container{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+section,footer{position:relative;z-index:1;}
+header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid rgba(0,0,0,0.06);}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;max-width:1180px;margin:0 auto;}
+.logo{font-family:var(--serif);font-weight:700;font-size:18px;letter-spacing:0.5px;line-height:1.1;}
+.logo span{display:block;font-size:12px;font-weight:400;letter-spacing:2px;color:var(--muted);}
+.logo-svg{width:90px;height:auto;color:var(--dark);display:block;}
+.logo-svg path,.logo-svg polygon,.logo-svg polyline,.logo-svg rect{fill:currentColor;}
+footer .logo-svg{color:var(--cream-soft);}
+nav ul{display:flex;gap:28px;list-style:none;font-size:14px;font-weight:600;}
+nav ul li{position:relative;cursor:pointer;}
+.dropdown{display:none;position:absolute;top:28px;left:0;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;padding:8px 0;min-width:180px;}
+.dropdown li{padding:10px 16px;font-weight:400;}
+.dropdown li:hover{background:var(--cream-soft);}
+nav ul li:hover .dropdown{display:block;}
+.burger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;}
+.burger span{width:24px;height:2px;background:var(--dark);}
+.mobile-menu{display:none;flex-direction:column;gap:0;background:var(--cream);border-top:1px solid rgba(0,0,0,0.06);}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{padding:14px 24px;border-bottom:1px solid rgba(0,0,0,0.06);font-weight:600;font-size:14px;}
+
+.hero{display:grid;grid-template-columns:minmax(280px,0.92fr) 1.08fr;min-height:min(78vh,640px);width:100%;max-width:100vw;background:var(--dark);gap:0;column-gap:0;isolation:isolate;}
+.hero-left{background:var(--dark);color:var(--cream);display:flex;flex-direction:column;justify-content:center;padding:56px 40px 56px calc(max(0px,(100vw - 1180px)/2) + 28px);position:relative;overflow:visible;margin-right:-2px;z-index:1;}
+.hero-left::before,.hero-left::after{content:none;display:none;}
+.hero-blobs{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:visible;}
+.hero-blob{position:absolute;border-radius:50%;will-change:transform,opacity;}
+.hero-blob-a{width:220px;height:220px;top:56px;right:8%;background:rgba(143,201,58,0.2);animation:blobCycleA 7.5s ease-in-out infinite;}
+.hero-blob-b{width:140px;height:140px;bottom:56px;left:12%;background:rgba(79,167,154,0.22);animation:blobCycleB 7.5s ease-in-out infinite;}
+.hero-blob-c{width:96px;height:96px;top:46%;left:52%;background:rgba(79,140,90,0.2);animation:blobCycleC 7.5s ease-in-out infinite;}
+@keyframes blobCycleA{0%{opacity:1;transform:translate(0,0) scale(1);}20%{opacity:1;transform:translate(-14px,10px) scale(1.12);}38%{opacity:1;transform:translate(-8px,6px) scale(0.94);}48%{opacity:0;transform:translate(6px,-4px) scale(0.28);}58%{opacity:0;transform:translate(14px,8px) scale(0.22);}72%{opacity:1;transform:translate(-4px,3px) scale(0.58);}88%{opacity:1;transform:translate(-10px,8px) scale(1.08);}100%{opacity:1;transform:translate(0,0) scale(1);}}
+@keyframes blobCycleB{0%{opacity:1;transform:translate(0,0) scale(1);}18%{opacity:1;transform:translate(12px,-10px) scale(1.14);}36%{opacity:1;transform:translate(6px,-4px) scale(0.9);}50%{opacity:1;transform:translate(10px,-8px) scale(1.1);}68%{opacity:0.4;transform:translate(-6px,10px) scale(0.72);}82%{opacity:1;transform:translate(8px,-6px) scale(1.06);}100%{opacity:1;transform:translate(0,0) scale(1);}}
+@keyframes blobCycleC{0%,42%{opacity:0;transform:translate(10px,6px) scale(0.22);}52%{opacity:1;transform:translate(0,0) scale(0.55);}68%{opacity:1;transform:translate(-10px,8px) scale(1.12);}84%{opacity:1;transform:translate(6px,-6px) scale(0.88);}94%{opacity:0.4;transform:translate(12px,4px) scale(0.38);}100%{opacity:0;transform:translate(16px,6px) scale(0.18);}}
+@media(prefers-reduced-motion:reduce){.hero-blob{animation:none!important;opacity:0.85;transform:none;}}
+.hero-left h1,.hero-left h2,.hero-left p,.hero-left .cta-btn{max-width:420px;position:relative;z-index:1;}
+.hero-left h1{font-family:var(--serif);font-size:clamp(36px,4.5vw,48px);font-weight:800;line-height:1.08;letter-spacing:-0.5px;text-transform:uppercase;color:var(--cream);}
+.hero-left h2{font-family:var(--serif);font-size:clamp(22px,2.4vw,28px);font-weight:400;color:var(--green);margin-top:8px;font-style:italic;position:relative;z-index:1;}
+.hero-left p{font-size:15px;color:rgba(247,243,231,0.78);margin-top:18px;line-height:1.65;position:relative;z-index:1;}
+.hero-left p,.hero-left .cta-btn{max-width:420px;}
+.cta-btn{margin-top:28px;background:var(--green);color:var(--dark);border:none;padding:14px 26px;border-radius:30px;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .25s ease, background .25s ease;width:fit-content;position:relative;z-index:1;}
+.cta-btn:hover{background:var(--green-soft);color:var(--dark);transform:translateX(4px);}
+.hero{overflow:visible;}
+.hero-right{background:var(--dark);display:flex;align-items:stretch;justify-content:center;position:relative;padding:0;overflow:hidden;min-height:min(78vh,640px);margin-left:-2px;border:none;outline:none;box-shadow:none;}
+.hero-right::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--dark) 0%,transparent 28%);z-index:1;pointer-events:none;}
+.hero-right::after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;background:
+  radial-gradient(ellipse 55% 48% at 18% 100%, rgba(14,43,34,0.95) 0%, rgba(14,43,34,0.55) 35%, transparent 70%),
+  linear-gradient(180deg, transparent 58%, rgba(14,43,34,0.45) 78%, var(--dark) 100%);}
+.hero-video{width:100%;height:100%;min-height:min(78vh,640px);object-fit:cover;object-position:54% 28%;display:block;background:var(--dark);mix-blend-mode:screen;filter:invert(1) sepia(1) saturate(5.2) hue-rotate(52deg) brightness(1.22) contrast(1.08);transform:scale(1.22);transform-origin:center 30%;}
+.hero-chip{display:none!important;}
+.compass{display:none;}
+.compass::before{content:none;}
+.compass-center{display:none;}
+.compass-center svg{display:none;}
+.dot{display:none;}
+.dot-label{display:none;}
+.dot-label svg{display:none;}
+@keyframes counter-spin{from{rotate:0deg;}to{rotate:-360deg;}}
+@media(prefers-reduced-motion:reduce){.dot-label{animation:none;}}
+.hero-caption{display:none;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@media (prefers-reduced-motion: reduce){.compass{animation:none;}}
+
+.intro{padding:110px 24px 130px;max-width:none;width:100%;margin:0;text-align:center;font-size:17px;color:var(--text);opacity:1!important;transform:none!important;filter:none!important;background:var(--cream);}
+.intro p{max-width:760px;margin:0 auto;}
+.intro mark{background:linear-gradient(90deg,var(--green-soft),var(--green-soft));background-size:0% 100%;background-repeat:no-repeat;padding:0 3px;border-radius:2px;transition:background-size .7s cubic-bezier(.22,1,.36,1);box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+.intro.is-in mark{background-size:100% 100%;}
+.intro.is-in mark:nth-of-type(1){transition-delay:.1s;}
+.intro.is-in mark:nth-of-type(2){transition-delay:.35s;}
+.intro.is-in mark:nth-of-type(3){transition-delay:.6s;}
+.eyebrow{display:flex;align-items:center;justify-content:center;gap:12px;margin:56px auto 24px;color:var(--teal);font-size:12px;font-weight:700;letter-spacing:1px;}
+.eyebrow::before,.eyebrow::after{content:'';height:1px;width:44px;background:rgba(79,167,154,0.35);}
+
+.services-panel{background:var(--dark);color:var(--cream);border-radius:16px;padding:28px;max-width:900px;margin:0 auto 28px;text-align:center;font-weight:600;}
+.flip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:0 auto 20px;background:transparent;}
+.flip-grid .flip-card:nth-child(4){grid-column:1;}
+.flip-grid .flip-card:nth-child(5){grid-column:2;}
+.flip-card{perspective:1200px;height:180px;background:transparent;}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d;border-radius:14px;background:transparent;}
+.flip-card:hover .flip-inner,.flip-card:focus-within .flip-inner{transform:rotateY(180deg);}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;}
+.flip-front{background:var(--green);color:var(--dark);font-weight:700;cursor:pointer;}
+.flip-front svg{width:34px;height:34px;margin-bottom:10px;}
+.flip-back{background:var(--dark);color:var(--cream);font-weight:600;font-size:13px;line-height:1.4;transform:rotateY(180deg);}
+@media(max-width:900px){
+  .flip-grid{grid-template-columns:repeat(2,1fr);}
+  .flip-grid .flip-card:nth-child(4){grid-column:auto;}
+  .flip-grid .flip-card:nth-child(5){grid-column:auto;}
+}
+@media(max-width:560px){
+  .flip-grid{grid-template-columns:1fr;max-width:420px;}
+  .flip-grid .flip-card:nth-child(4),.flip-grid .flip-card:nth-child(5){grid-column:auto;}
+  .services-panel{max-width:420px;}
+  .servicios-intro{max-width:420px;padding:18px 24px;}
+  .bento{max-width:420px;}
+}
+@media(prefers-reduced-motion:reduce){.flip-inner{transition:none;}}
+
+.stats-band{background:var(--dark);color:#fff;padding:96px 28px;text-align:center;}
+.stats-band p{max-width:820px;margin:0 auto;font-size:clamp(16px,2.1vw,20px);line-height:1.65;font-weight:500;}
+.stats-band strong{color:var(--green);font-weight:700;}
+
+.logos{padding:96px 24px 100px;text-align:center;background:#fff;border-block:1px solid rgba(14,43,34,0.06);}
+.logos h3{font-family:var(--serif);font-size:clamp(28px,3.2vw,36px);font-weight:700;margin-bottom:48px;color:var(--dark);}
+.logo-row{display:flex;align-items:center;gap:56px;flex-wrap:wrap;opacity:0.85;filter:grayscale(1);}
+.logo-marquee{overflow:hidden;width:100%;padding:28px 0;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);}
+.logo-track{display:flex;align-items:center;gap:72px;width:max-content;animation:marquee 120s linear infinite;}
+.logo-marquee:hover .logo-track{animation-play-state:paused;}
+.logo-track img{height:58px;width:auto;max-width:160px;object-fit:contain;filter:grayscale(1);opacity:0.8;transition:opacity .25s ease, filter .25s ease, transform .3s ease;}
+.logo-marquee:hover .logo-track img{opacity:0.95;}
+.logo-track img:hover{filter:grayscale(0);opacity:1;transform:scale(1.06);}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@media(prefers-reduced-motion:reduce){.logo-track{animation:none;}}
+
+.servicios{padding:88px 24px 120px;text-align:center;background:var(--cream-soft);position:relative;}
+.servicios h2{font-family:var(--serif);font-size:clamp(30px,3.5vw,40px);font-weight:700;color:var(--dark);margin-bottom:8px;}
+.servicios-intro{background:transparent;border-radius:0;padding:0;max-width:720px;margin:18px auto 56px;font-size:17px;line-height:1.7;color:var(--text);border:none;}
+.servicios-intro mark{background:var(--green-soft);padding:0 3px;border-radius:2px;}
+
+.bento{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto;gap:18px;max-width:900px;margin:0 auto;text-align:left;}
+.bento-card{min-height:220px;cursor:pointer;border-radius:16px;}
+.bento-card.bento-large{grid-row:1 / 3;}
+.bento-card.bento-wide{grid-column:2 / 4;}
+.bento-inner{position:relative;width:100%;height:100%;min-height:220px;border-radius:16px;overflow:hidden;box-shadow:0 10px 28px rgba(14,43,34,0.08);transition:box-shadow .4s ease, transform .45s cubic-bezier(.34,1.4,.64,1);}
+.bento-card.bento-large .bento-inner{min-height:100%;}
+.bento-card:hover .bento-inner,
+.bento-card:focus-within .bento-inner{box-shadow:0 22px 48px rgba(14,43,34,0.18);transform:translateY(-6px);}
+.bento-face{position:absolute;inset:0;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;}
+.bento-front{justify-content:flex-end;padding:26px;color:#fff;background:linear-gradient(135deg,#2a4a36,#163528);}
+.bento-front img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;transform:scale(1.05);transition:transform .8s ease, filter .45s ease;filter:grayscale(0.2) sepia(0.65) saturate(1.45) hue-rotate(62deg) brightness(0.72) contrast(1.08);}
+.bento-card:hover .bento-front img,
+.bento-card:focus-within .bento-front img{transform:scale(1.12);filter:grayscale(0.12) sepia(0.7) saturate(1.55) hue-rotate(58deg) brightness(0.68) contrast(1.1);}
+.bento-front::before{content:'';position:absolute;inset:0;background:#145233;mix-blend-mode:multiply;opacity:0.5;z-index:1;transition:opacity .4s ease;}
+.bento-front::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,70,45,0.12) 0%,rgba(14,55,36,0.4) 42%,rgba(10,42,28,0.9) 100%);z-index:1;}
+.bento-card:hover .bento-front::before,
+.bento-card:focus-within .bento-front::before{opacity:0.62;}
+.bento-front svg,.bento-front h4,.bento-front p{position:relative;z-index:2;transition:opacity .35s ease, transform .45s cubic-bezier(.16,1,.3,1);}
+.bento-front svg{width:32px;height:32px;margin-bottom:14px;stroke:#fff;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4));}
+.bento-front h4{font-family:var(--serif);font-size:19px;font-weight:700;margin-bottom:6px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.45),0 2px 12px rgba(14,43,34,0.45);}
+.bento-front p{font-size:14px;font-style:italic;color:rgba(255,255,255,0.95);text-shadow:0 1px 2px rgba(0,0,0,0.4);line-height:1.45;}
+.bento-shine{display:none;}
+.bento-hint{display:none!important;}
+/* Detalle: panel que sube + texto en cascada */
+.bento-back{transform:none;backface-visibility:visible;justify-content:space-between;padding:26px;z-index:4;
+  background:linear-gradient(165deg,rgba(16,58,40,0.97) 0%,rgba(12,45,32,0.98) 55%,rgba(10,38,28,0.99) 100%);
+  color:#fff;translate:0 108%;opacity:0;
+  transition:translate .6s cubic-bezier(.16,1,.3,1), opacity .35s ease;}
+.bento-card:hover .bento-back,
+.bento-card:focus-within .bento-back{translate:0 0;opacity:1;}
+.bento-card:hover .bento-front svg,
+.bento-card:hover .bento-front h4,
+.bento-card:hover .bento-front p,
+.bento-card:focus-within .bento-front svg,
+.bento-card:focus-within .bento-front h4,
+.bento-card:focus-within .bento-front p{opacity:0;transform:translateY(-14px) scale(0.98);}
+.bento-back p{font-size:17px;font-weight:700;font-style:italic;line-height:1.35;color:#fff;
+  opacity:0;transform:translateY(22px);transition:opacity .4s ease .14s, transform .55s cubic-bezier(.16,1,.3,1) .14s;}
+.bento-card:hover .bento-back p,
+.bento-card:focus-within .bento-back p{opacity:1;transform:none;}
+.bento-more{align-self:flex-start;background:transparent;color:#fff;border:1.5px solid #fff;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;
+  opacity:0;transform:translateY(16px);transition:background .2s ease,color .2s ease, border-color .2s, transform .5s cubic-bezier(.16,1,.3,1) .22s, opacity .35s ease .22s;}
+.bento-card:hover .bento-more,
+.bento-card:focus-within .bento-more{opacity:1;transform:none;}
+.bento-more:hover{background:var(--green);color:var(--dark);border-color:var(--green);}
+@media(max-width:760px){
+  .bento{grid-template-columns:1fr;}
+  .bento-card.bento-large,.bento-card.bento-wide{grid-column:auto;grid-row:auto;}
+  .bento-card.bento-large .bento-inner{min-height:260px;}
+}
+
+.contacto{background:var(--dark);color:var(--cream);padding:110px 24px 120px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;}
+.contacto::before,.contacto::after{content:none;display:none;}
+.contacto .hero-blobs{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.contacto .hero-blob-a{top:8%;right:-4%;width:280px;height:280px;}
+.contacto .hero-blob-b{bottom:6%;left:-2%;width:180px;height:180px;}
+.contacto .hero-blob-c{top:58%;left:62%;width:120px;height:120px;}
+.contacto h2{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:700;line-height:1.25;color:var(--cream);max-width:720px;margin:0;position:relative;z-index:1;}
+.contacto h2 .accent{color:var(--green);}
+.contacto p{margin:22px auto 0;color:rgba(247,243,231,0.8);font-size:clamp(15px,1.6vw,18px);line-height:1.55;max-width:560px;font-weight:400;position:relative;z-index:1;}
+.contacto .contact-cta{margin-top:36px;display:inline-flex;align-items:center;justify-content:center;background:var(--green);color:var(--dark);border:none;padding:14px 36px;border-radius:999px;font-size:15px;font-weight:700;font-family:var(--sans);cursor:pointer;text-decoration:none;position:relative;z-index:1;overflow:hidden;transition:transform .3s cubic-bezier(.34,1.4,.64,1), background .25s ease, box-shadow .3s ease, color .25s ease;}
+.contacto .contact-cta::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.35) 50%,transparent 65%);transform:translateX(-120%);transition:none;}
+.contacto .contact-cta:hover{background:var(--green-soft);color:var(--dark);transform:translateY(-4px) scale(1.04);box-shadow:0 14px 36px rgba(143,201,58,0.35);}
+.contacto .contact-cta:hover::after{animation:ctaShine .7s ease;}
+@keyframes ctaShine{to{transform:translateX(120%);}}
+.form-card{display:none;}
+.form-card h3,.form-card input,.form-card textarea,.form-card button{display:none;}
+.form-msg{display:none!important;}
+.form-msg{font-size:13px;margin-top:10px;color:var(--green-soft);display:none;}
+
+.faq{padding:0;display:block;max-width:none;margin:0;width:100%;}
+.faq h2{font-family:var(--serif);font-size:clamp(28px,3.2vw,34px);font-weight:800;line-height:1.15;white-space:normal;}
+.faq-item{border-bottom:none;padding:0;cursor:pointer;}
+.faq-q{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px;}
+.faq-q span.plus{font-size:20px;transition:transform .25s ease;color:var(--dark);}
+.faq-item.open .faq-q span.plus{transform:rotate(45deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:14px;color:var(--muted);}
+.faq-item.open .faq-a{max-height:200px;padding-top:10px;}
+
+/* FAQ v4 — más atractivo */
+.faq-vanguard{background:linear-gradient(180deg,#F7F3E7 0%,#EAF3E2 55%,#F7F3E7 100%);color:var(--text);padding:100px 24px 120px;position:relative;overflow:hidden;}
+.faq-vanguard::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(143,201,58,0.16),transparent 68%);top:-120px;left:-140px;pointer-events:none;}
+.faq-vanguard::after{content:'';position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(79,167,154,0.12),transparent 70%);bottom:-80px;right:-100px;pointer-events:none;}
+.faq-shell{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:minmax(200px,0.9fr) minmax(0,1.5fr);gap:48px;align-items:start;position:relative;z-index:1;}
+.faq-head{position:sticky;top:100px;}
+.faq-kicker{font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--teal);margin-bottom:14px;}
+.faq-vanguard h2{color:var(--dark);margin:0 0 14px;font-size:clamp(30px,4vw,44px);}
+.faq-head p{color:var(--muted);font-size:14px;line-height:1.55;max-width:280px;margin:0;}
+.faq-rail{display:flex;flex-direction:column;gap:14px;min-width:0;}
+.faq-vanguard .faq-item{background:rgba(234,243,226,0.55);border:1px solid rgba(14,43,34,0.06);border-radius:20px;padding:0;overflow:hidden;position:relative;backdrop-filter:none;box-shadow:none;transition:border-color .3s ease, background .3s ease, transform .35s cubic-bezier(0.34,1.4,.64,1), box-shadow .35s ease;}
+.faq-vanguard .faq-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(180deg,var(--green-soft),var(--green));transition:width .3s ease;border-radius:20px 0 0 20px;}
+.faq-vanguard .faq-item:hover{border-color:rgba(143,201,58,0.4);transform:translateY(-3px);box-shadow:0 12px 28px rgba(14,43,34,0.06);background:rgba(234,243,226,0.85);}
+.faq-vanguard .faq-item:hover::before{width:5px;}
+.faq-vanguard .faq-item:hover .faq-q span.plus{background:var(--green);border-color:var(--green);color:var(--dark);transform:scale(1.08);box-shadow:0 0 0 6px rgba(143,201,58,0.12);}
+.faq-vanguard .faq-item.open{background:rgba(143,201,58,0.22);border-color:var(--green);box-shadow:0 14px 36px rgba(143,201,58,0.16);transform:none;}
+.faq-vanguard .faq-item.open::before{width:5px;}
+.faq-vanguard .faq-item.open:hover{transform:translateY(-2px);background:rgba(143,201,58,0.28);}
+.faq-vanguard .faq-item.open:hover .faq-q span.plus{transform:rotate(45deg) scale(1.08);}
+.faq-vanguard .faq-q{width:100%;background:none;border:0;color:var(--dark);text-align:left;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:22px 24px;font-family:var(--sans);font-weight:700;font-size:15px;line-height:1.35;transition:color .25s ease;}
+.faq-num{display:none!important;}
+.faq-vanguard .faq-q span.plus{width:34px;height:34px;border-radius:50%;border:1px solid rgba(14,43,34,0.12);display:grid;place-items:center;font-size:18px;color:var(--dark);flex-shrink:0;background:rgba(14,43,34,0.04);transition:transform .3s ease, background .3s ease, color .3s ease, border-color .3s ease, box-shadow .3s ease;}
+.faq-vanguard .faq-item.open .faq-q span.plus{transform:rotate(45deg);background:var(--green);color:var(--dark);border-color:var(--green);box-shadow:0 0 0 7px rgba(143,201,58,0.18);}
+.faq-vanguard .faq-item.open .faq-a{color:rgba(22,38,30,0.78);}
+.faq-vanguard .faq-a{max-height:0;overflow:hidden;opacity:0;padding:0 24px 0 24px;font-size:14px;line-height:1.65;color:var(--muted);transition:max-height .45s cubic-bezier(0.16,1,0.3,1), opacity .35s ease, padding .35s ease;}
+.faq-vanguard .faq-item.open .faq-a{max-height:280px;opacity:1;padding:0 24px 24px 24px;}
+@media(max-width:900px){
+  .faq-shell{grid-template-columns:1fr;gap:32px;}
+  .faq-head{position:static;}
+  .faq-vanguard .faq-q{grid-template-columns:1fr auto;padding:16px 16px;}
+  .faq-vanguard .faq-a,.faq-vanguard .faq-item.open .faq-a{padding-left:16px;padding-right:16px;}
+}
+
+footer{background:var(--dark);color:var(--cream-soft);padding:90px 24px 40px;}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:24px;max-width:1180px;margin:0 auto 30px;}
+.footer-grid h4{font-size:12px;letter-spacing:1px;color:var(--green);margin-bottom:14px;}
+.footer-grid ul{list-style:none;font-size:14px;display:flex;flex-direction:column;gap:8px;color:var(--cream-soft);}
+.footer-bottom{max-width:1180px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;font-size:12px;display:flex;justify-content:space-between;color:var(--muted);flex-wrap:wrap;gap:10px;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--dark);color:var(--cream);padding:14px 22px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.2);transform:translateY(20px);opacity:0;transition:all .3s ease;z-index:100;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;}
+  .hero-left{margin:0;max-width:100%;padding:40px 24px;}
+  .flip-grid{grid-template-columns:repeat(2,1fr);}
+  .flip-grid .flip-card:nth-child(4),.flip-grid .flip-card:nth-child(5){grid-column:auto;}
+  .contacto{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  nav ul{display:none;}
+  .burger{display:flex;}
+}
+</style>
+<link rel="stylesheet" href="gmo-home-motion-v4.css">
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo"><svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1256.8 488.9"><g><g id="Capa_1"><g><path d="M170.9,163.5h30.5v26.6c-4,3.8-8.5,6.6-13.5,8.4-5,1.8-10.6,2.7-16.9,2.7-9.2,0-17.1-1.8-23.6-5.4-6.6-3.6-11.6-8.8-15-15.6s-5.2-14.8-5.2-24.2,1.7-17.6,5-24.5c3.4-6.9,8.1-12.3,14.2-16.2s13.2-5.8,21.4-5.8,16.7,2.3,22.7,6.8c6,4.5,9.6,10.6,10.6,18.3h12.7c-.9-7.2-3.5-13.6-7.8-19s-9.8-9.8-16.4-12.9c-6.7-3.1-14.1-4.6-22.2-4.6s-19.6,2.5-27.6,7.4c-8,5-14.3,11.8-18.7,20.5-4.5,8.7-6.7,18.8-6.7,30.3s2.3,21.4,6.8,29.8c4.5,8.4,11,14.9,19.4,19.6,8.4,4.6,18.2,7,29.6,7s17.2-1.5,24.5-4.5c7.4-3,13.9-7.5,19.6-13.5v-42.4h-43.2v11.2Z"></path><path d="M279,162.2c8,0,14.7-1.3,20.3-3.9,5.6-2.6,9.8-6.3,12.8-11,2.9-4.7,4.4-10.2,4.4-16.5s-1.5-11.7-4.4-16.3c-2.9-4.6-7.2-8.2-12.8-10.8-5.6-2.6-12.3-3.9-20.3-3.9h-41.2v111.5h12.7v-49.1l52.7,49.1h19.2l-54.3-49.1h11ZM278.5,110.9c8.4,0,14.7,1.8,18.9,5.3,4.2,3.5,6.3,8.4,6.3,14.6s-2.1,11.3-6.4,14.9c-4.3,3.6-10.6,5.4-18.8,5.4h-28v-40.1h28Z"></path><path d="M409.1,166.6c0,11.3-2.6,19.9-7.7,25.8-5.2,5.9-12.6,8.9-22.5,8.9s-17-3-22.1-9c-5.2-6-7.7-14.6-7.7-25.7v-66.9h-12.7v66.3c0,14.8,3.7,26.3,11.2,34.5,7.5,8.2,17.9,12.3,31.4,12.3s24.1-4.1,31.6-12.3c7.5-8.2,11.3-19.6,11.3-34.3v-66.4h-12.7v66.9Z"></path><path d="M512.1,103.6c-5.6-2.6-12.3-3.9-20.3-3.9h-44.3v111.5h12.7v-46h31.6c8,0,14.7-1.3,20.3-4,5.6-2.7,9.8-6.5,12.8-11.4,2.9-4.9,4.4-10.8,4.4-17.6s-1.5-12.6-4.4-17.5c-2.9-4.9-7.2-8.6-12.8-11.2ZM510.1,148.4c-4.3,3.8-10.6,5.6-18.8,5.6h-31.1v-43.2h31.1c8.4,0,14.7,1.8,18.9,5.4,4.2,3.6,6.4,8.9,6.4,16s-2.1,12.4-6.4,16.2Z"></path><path d="M641.8,125.6c-4.5-8.6-10.8-15.3-18.8-20.1-8-4.9-17.2-7.3-27.6-7.3s-19.3,2.4-27.3,7.3c-8,4.9-14.3,11.6-18.8,20.1-4.5,8.6-6.8,18.4-6.8,29.4s1.3,16.1,4,23.1c2.6,7,6.3,13.1,11.1,18.4,4.7,5.2,10.3,9.2,16.8,12.1,6.5,2.8,13.6,4.3,21.3,4.3s14.7-1.4,21.2-4.3c6.5-2.8,12.1-6.8,16.9-12,4.7-5.2,8.4-11.3,11.1-18.3,2.6-7,4-14.7,4-23.1s-2.3-21-6.8-29.6ZM630.5,178.9c-3.4,7-8.1,12.5-14.2,16.5-6,4-13,6-21,6s-14.9-2-20.9-6c-6-4-10.7-9.4-14-16.4-3.4-7-5-15-5-24.1s1.7-16.9,5-23.6,8-12.1,13.9-15.9c6-3.8,13-5.7,21.1-5.7s15.1,1.9,21.1,5.7c6,3.8,10.7,9.1,14.1,16,3.4,6.8,5,14.7,5,23.5s-1.7,17-5.1,24Z"></path><g><polygon points="189.1 309 140.3 259.2 118.1 259.2 117.9 282.9 118.1 390.7 140.3 390.7 140.2 291.2 174.4 325.3 189.1 309"></polygon><polyline points="227.5 259.2 227.6 259.3 227.6 259.2 227.6 259.2 249.8 259.2 249.8 259.2 249.8 281.2 249.8 390.7 227.6 390.7 227.6 259.2"></polyline></g><polygon points="345.4 259.2 332.6 259.2 319.9 259.2 272.2 390.7 297.2 390.7 331.8 292.4 332.6 290.2 333.5 292.4 368.1 390.7 393.1 390.7 345.4 259.2"></polygon><polyline points="443.9 320 487.6 390.7 460.6 390.7 417.2 320 460.6 259.2 487.6 259.2 443.9 320"></polyline><polyline points="526.6 259.1 526.6 259.2 526.7 259.1 526.7 259.1 548.8 259.1 548.8 259.1 548.8 281.1 548.8 390.6 526.7 390.6 526.7 259.1"></polyline><polygon points="574.2 259.4 652.1 390.7 674.4 390.7 674.5 367 674.3 259.2 652.1 259.2 652.2 346.6 600.8 259.4 574.2 259.4"></polygon><path d="M788,318.8v19.2h24.3c-5.5,17.8-22.2,30.8-41.9,30.8s-43.8-19.6-43.8-43.8,19.6-43.8,43.8-43.8,8,.6,11.8,1.6l13.3-18.6c-7.7-3.2-16.2-4.9-25.1-4.9-36.3,0-65.8,29.5-65.8,65.8s29.4,65.8,65.8,65.8,58.4-22.7,64.5-52.8v-19.2s-46.9,0-46.9,0Z"></path><path d="M967.1,259.2c-36.3,0-65.8,29.4-65.8,65.8s29.4,65.8,65.8,65.8,65.8-29.4,65.8-65.8-29.4-65.8-65.8-65.8ZM967.1,368.8c-24.2,0-43.8-19.6-43.8-43.8s19.6-43.8,43.8-43.8,43.8,19.6,43.8,43.8-19.6,43.8-43.8,43.8Z"></path><g><polygon points="1069.7 302.9 1054.9 302.9 1054.9 390.7 1077.2 390.7 1077.2 325.1 1120.7 325.1 1120.7 302.9 1076.9 302.9 1069.7 302.9"></polygon><rect x="1054.9" y="259.2" width="87.7" height="21.9"></rect></g></g></g></g></svg></div>
+    <nav>
+      <ul>
+        <li>Servicios ▾
+          <ul class="dropdown">
+            <li>Estrategia 360°</li>
+            <li>Posicionamiento SEO</li>
+            <li>Paid Media</li>
+            <li>Content & Social</li>
+            <li>Productos Digitales</li>
+          </ul>
+        </li>
+        <li onclick="scrollToId('contacto')">Sobre nosotros</li>
+        <li onclick="scrollToId('contacto')">Contáctanos</li>
+        <li>Blog</li>
+      </ul>
+    </nav>
+    <button class="burger" id="burger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#">Servicios</a>
+    <a href="#" onclick="scrollToId('contacto')">Sobre nosotros</a>
+    <a href="#" onclick="scrollToId('contacto')">Contáctanos</a>
+    <a href="#">Blog</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-left" data-reveal="left">
+    <div class="hero-blobs" aria-hidden="true">
+      <span class="hero-blob hero-blob-a"></span>
+      <span class="hero-blob hero-blob-b"></span>
+      <span class="hero-blob hero-blob-c"></span>
+    </div>
+    <h1>Making OF,</h1>
+    <h2>Your next business partner</h2>
+    <p>Somos estrategas, especialistas en medios y desarrolladores que trabajan sobre los mismos datos.</p>
+    <button class="cta-btn" onclick="scrollToId('contacto')">Cuéntanos tu proyecto →</button>
+  </div>
+  <div class="hero-right">
+    <video class="hero-video" autoplay muted loop playsinline preload="auto">
+      <source src="https://grupomakingof.com/wp-content/uploads/2025/07/caras_mkof-video.mp4#t=3.5" type="video/mp4">
+    </video>
+  </div>
+</section>
+
+<section class="intro" data-reveal>
+  <p>Sin intermediarios ni reportes decorativos: <mark>cada acción se conecta con un objetivo de negocio</mark> y <mark>se mide de la misma forma todos los meses.</mark> Trabajamos con marcas grandes y con empresas que están recién escalando, y en los dos casos <mark>tratamos el presupuesto como si fuera nuestro.</mark></p>
+</section>
+
+<section class="process process-vanguard" data-reveal id="proceso">
+  <div class="process-bg" aria-hidden="true"></div>
+  <p class="process-kicker">Método</p>
+  <h2>Te acompañamos en</h2>
+  <p class="process-lead">Desarrollamos tu estrategia digital, presupuestos y estructuras; optimizando los recursos.</p>
+
+  <div class="flow flow-vanguard" data-stagger>
+    <svg class="flow-path" viewBox="0 0 1000 24" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#8FC93A" stop-opacity="0"/>
+          <stop offset="15%" stop-color="#8FC93A" stop-opacity="0.7"/>
+          <stop offset="85%" stop-color="#8FC93A" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#8FC93A" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path class="flow-path-track" d="M20 12 H980" />
+      <path class="flow-path-draw" d="M20 12 H980" />
+      <g class="flow-path-nodes" fill="#8FC93A">
+        <circle cx="200" cy="12" r="2.5"/>
+        <circle cx="400" cy="12" r="2.5"/>
+        <circle cx="600" cy="12" r="2.5"/>
+        <circle cx="800" cy="12" r="2.5"/>
+      </g>
+    </svg>
+
+    <article class="step" data-step="01" tabindex="0">
+      <div class="step-orb">
+        <span class="step-ring"></span>
+        <span class="step-core">Identificar</span>
+      </div>
+      <p class="step-desc">Detectamos oportunidades y focos de inversión.</p>
+    </article>
+
+    <article class="step" data-step="02" tabindex="0">
+      <div class="step-orb">
+        <span class="step-ring"></span>
+        <span class="step-core">Crear</span>
+      </div>
+      <p class="step-desc">Producimos piezas y contenidos alineados a la estrategia.</p>
+    </article>
+
+    <article class="step" data-step="03" tabindex="0">
+      <div class="step-orb">
+        <span class="step-ring"></span>
+        <span class="step-core">Definir</span>
+      </div>
+      <p class="step-desc">Fijamos el objetivo de negocio que guía la estrategia.</p>
+    </article>
+
+    <article class="step" data-step="04" tabindex="0">
+      <div class="step-orb">
+        <span class="step-ring"></span>
+        <span class="step-core">Analizar</span>
+      </div>
+      <p class="step-desc">Medimos resultados con datos, no supuestos.</p>
+    </article>
+
+    <article class="step" data-step="05" tabindex="0">
+      <div class="step-orb">
+        <span class="step-ring"></span>
+        <span class="step-core">Posicionar</span>
+      </div>
+      <p class="step-desc">Llevamos tu marca a los primeros lugares.</p>
+    </article>
+  </div>
+</section>
+
+<section class="logos" data-reveal>
+  <h3>Herramientas y certificaciones</h3>
+  <div class="logo-marquee">
+    <div class="logo-track">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/Emarketer_3b45b963e2.png" alt="eMarketer">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/Google_trends_21458e15c2.png" alt="Google Trends">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/looker_studio_4bca76ccb7.png" alt="Looker Studio">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/metricool_f7d5ff1f70.png" alt="Metricool">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/paxzu_en_google_partners_lead3_c9423ad5b1.png" alt="Google Partner">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/ahresh_aa16be424f.png" alt="Ahrefs">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/semrush_f9371a6e49.png" alt="Semrush">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/Analytics_a4089e58a1.png" alt="Google Analytics">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/09/adhesion_ccs.png" alt="CCS">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/Emarketer_3b45b963e2.png" alt="eMarketer">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/Google_trends_21458e15c2.png" alt="Google Trends">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/looker_studio_4bca76ccb7.png" alt="Looker Studio">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/metricool_f7d5ff1f70.png" alt="Metricool">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/paxzu_en_google_partners_lead3_c9423ad5b1.png" alt="Google Partner">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/ahresh_aa16be424f.png" alt="Ahrefs">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/semrush_f9371a6e49.png" alt="Semrush">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/07/Analytics_a4089e58a1.png" alt="Google Analytics">
+      <img src="https://grupomakingof.com/wp-content/uploads/2025/09/adhesion_ccs.png" alt="CCS">
+    </div>
+  </div>
+</section>
+
+<section class="stats-band" data-reveal="scale">
+  <p>Contamos con <strong>11 años de experiencia</strong> en la evolución del marketing digital, con un completo y dedicado equipo profesional, en Chile y en el extranjero, que nos permite dar una experiencia inmejorable en el aporte de valor a tu empresa.</p>
+</section>
+
+<section class="servicios" id="servicios" data-reveal>
+  <h2>Servicios</h2>
+  <p class="servicios-intro" data-reveal>Nos enfocamos en un servicio 360°, con <mark>desarrollo e implementación de estrategias digitales</mark>, <mark>análisis y gestión de datos e IA</mark>, <mark>medios y contenidos</mark>, <mark>tecnología y creatividad</mark>, asistidos con equipos especializados de alto rendimiento.</p>
+
+  <div class="bento" data-stagger>
+    <div class="bento-card bento-large" tabindex="0">
+      <div class="bento-inner">
+        <div class="bento-face bento-front">
+          <img src="img/bento-estrategia.png" alt="Equipo en reunión estratégica">
+          <span class="bento-shine" aria-hidden="true"></span>
+          <span class="bento-hint">Clic para más</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7l2.2 4.2L18 13l-3.8 1.8L12 19l-2.2-4.2L6 13l3.8-1.8z"/></svg>
+          <h4>Estrategia</h4>
+          <p>Transformamos datos y tendencias en la hoja de ruta para el crecimiento de tu negocio.</p>
+        </div>
+        <div class="bento-face bento-back">
+          <p>Estrategias de marketing y comunicaciones, data, tendencias e IA.</p>
+          <button class="bento-more" onclick="showToast('Preparando más información…')">Ver más</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bento-card bento-wide" tabindex="0">
+      <div class="bento-inner">
+        <div class="bento-face bento-front">
+          <img src="img/bento-seo.png" alt="Dashboard Google Search Console">
+          <span class="bento-shine" aria-hidden="true"></span>
+          <span class="bento-hint">Clic para más</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6"/><path d="M8 10a2 2 0 1 1 4 0"/><path d="M15 15l5 5"/><path d="M18.5 4.5c1.6 1.6 1.6 4.2 0 5.8" opacity="0.6"/></svg>
+          <h4>Posicionamiento SEO</h4>
+          <p>Construimos la autoridad de tu marca para que tus clientes te encuentren de forma orgánica y sostenible.</p>
+        </div>
+        <div class="bento-face bento-back">
+          <p>Aparece en los primeros resultados de Google y en las búsquedas en LLMs como ChatGPT y Gemini.</p>
+          <button class="bento-more" onclick="showToast('Preparando más información…')">Ver más</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bento-card" tabindex="0">
+      <div class="bento-inner">
+        <div class="bento-face bento-front">
+          <img src="img/bento-productos.png" alt="Workstation productos digitales">
+          <span class="bento-shine" aria-hidden="true"></span>
+          <span class="bento-hint">Clic para más</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>
+          <h4>Productos digitales</h4>
+          <p>Aceleramos tus resultados de negocio llevando tu mensaje a la audiencia correcta a través de medios pagados.</p>
+        </div>
+        <div class="bento-face bento-back">
+          <p>Maximizamos el retorno de tu inversión publicitaria (ROAS).</p>
+          <button class="bento-more" onclick="showToast('Preparando más información…')">Ver más</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bento-card" tabindex="0">
+      <div class="bento-inner">
+        <div class="bento-face bento-front">
+          <img src="img/bento-creatividad.png" alt="Diseño creativo con tablet">
+          <span class="bento-shine" aria-hidden="true"></span>
+          <span class="bento-hint">Clic para más</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H16a5 5 0 0 0 5-5c0-3.9-4-6-9-6z"/><circle cx="8" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="10" r="1" fill="currentColor" stroke="none"/></svg>
+          <h4>Creatividad y diseño</h4>
+          <p>Damos vida a tu estrategia creando experiencias digitales que impactan y conectan con tu audiencia.</p>
+        </div>
+        <div class="bento-face bento-back">
+          <p>Creamos e implementamos el brandformance de tu marca.</p>
+          <button class="bento-more" onclick="showToast('Preparando más información…')">Ver más</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contacto" id="contacto" data-reveal>
+  <div class="hero-blobs" aria-hidden="true">
+    <span class="hero-blob hero-blob-a"></span>
+    <span class="hero-blob hero-blob-b"></span>
+    <span class="hero-blob hero-blob-c"></span>
+  </div>
+  <h2>Somos partner en el logro de tus objetivos.</h2>
+  <p>En un trabajo en conjunto, te facilitamos el desarrollo de tus estrategias, acciones y mediciones.</p>
+  <a class="contact-cta" href="contactanos.html">Contáctanos</a>
+</section>
+
+<section class="faq faq-vanguard" data-reveal>
+  <div class="faq-shell">
+    <div class="faq-head">
+      <p class="faq-kicker">Dudas</p>
+      <h2>Preguntas frecuentes</h2>
+      <p>Si tu duda no está acá, escríbenos: respondemos en menos de 24 horas hábiles.</p>
+    </div>
+    <div id="faqList" class="faq-rail" data-stagger>
+      <article class="faq-item open">
+        <button type="button" class="faq-q"><span>¿Cuál es la mejor agencia de SEO en Chile?</span><span class="plus">+</span></button>
+        <div class="faq-a">Grupo Making OF se ha posicionado entre las mejores agencias gracias a su enfoque estratégico, años de experiencia in-housing, uso de IA aplicada al SEO y resultados medibles en posicionamiento orgánico y visibilidad digital.</div>
+      </article>
+      <article class="faq-item">
+        <button type="button" class="faq-q"><span>¿Para qué sirve una agencia de marketing digital?</span><span class="plus">+</span></button>
+        <div class="faq-a">Ordena la estrategia, ejecuta las acciones y mide los resultados en un mismo equipo, evitando reportes decorativos y desalineación entre áreas.</div>
+      </article>
+      <article class="faq-item">
+        <button type="button" class="faq-q"><span>¿En qué se especializa la agencia de marketing digital Grupo Making OF?</span><span class="plus">+</span></button>
+        <div class="faq-a">Estrategia digital, SEO, paid media, contenido y desarrollo de productos digitales, todo sobre una misma base de datos.</div>
+      </article>
+      <article class="faq-item">
+        <button type="button" class="faq-q"><span>¿Por qué es importante invertir en SEO para una empresa en Chile?</span><span class="plus">+</span></button>
+        <div class="faq-a">El SEO genera visibilidad sostenida en buscadores y en motores de IA, con un costo de adquisición menor en el tiempo frente a otros canales.</div>
+      </article>
+      <article class="faq-item">
+        <button type="button" class="faq-q"><span>¿Qué servicios ofrece Grupo Making OF?</span><span class="plus">+</span></button>
+        <div class="faq-a">Estrategia 360°, posicionamiento SEO, paid media, content & social y productos digitales.</div>
+      </article>
+      <article class="faq-item">
+        <button type="button" class="faq-q"><span>¿Cómo posicionar un sitio web en Google?</span><span class="plus">+</span></button>
+        <div class="faq-a">Con una base técnica sólida, contenido relevante para la audiencia y medición constante para ajustar la estrategia mes a mes.</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="logo"><svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1256.8 488.9"><g><g id="Capa_1"><g><path d="M170.9,163.5h30.5v26.6c-4,3.8-8.5,6.6-13.5,8.4-5,1.8-10.6,2.7-16.9,2.7-9.2,0-17.1-1.8-23.6-5.4-6.6-3.6-11.6-8.8-15-15.6s-5.2-14.8-5.2-24.2,1.7-17.6,5-24.5c3.4-6.9,8.1-12.3,14.2-16.2s13.2-5.8,21.4-5.8,16.7,2.3,22.7,6.8c6,4.5,9.6,10.6,10.6,18.3h12.7c-.9-7.2-3.5-13.6-7.8-19s-9.8-9.8-16.4-12.9c-6.7-3.1-14.1-4.6-22.2-4.6s-19.6,2.5-27.6,7.4c-8,5-14.3,11.8-18.7,20.5-4.5,8.7-6.7,18.8-6.7,30.3s2.3,21.4,6.8,29.8c4.5,8.4,11,14.9,19.4,19.6,8.4,4.6,18.2,7,29.6,7s17.2-1.5,24.5-4.5c7.4-3,13.9-7.5,19.6-13.5v-42.4h-43.2v11.2Z"></path><path d="M279,162.2c8,0,14.7-1.3,20.3-3.9,5.6-2.6,9.8-6.3,12.8-11,2.9-4.7,4.4-10.2,4.4-16.5s-1.5-11.7-4.4-16.3c-2.9-4.6-7.2-8.2-12.8-10.8-5.6-2.6-12.3-3.9-20.3-3.9h-41.2v111.5h12.7v-49.1l52.7,49.1h19.2l-54.3-49.1h11ZM278.5,110.9c8.4,0,14.7,1.8,18.9,5.3,4.2,3.5,6.3,8.4,6.3,14.6s-2.1,11.3-6.4,14.9c-4.3,3.6-10.6,5.4-18.8,5.4h-28v-40.1h28Z"></path><path d="M409.1,166.6c0,11.3-2.6,19.9-7.7,25.8-5.2,5.9-12.6,8.9-22.5,8.9s-17-3-22.1-9c-5.2-6-7.7-14.6-7.7-25.7v-66.9h-12.7v66.3c0,14.8,3.7,26.3,11.2,34.5,7.5,8.2,17.9,12.3,31.4,12.3s24.1-4.1,31.6-12.3c7.5-8.2,11.3-19.6,11.3-34.3v-66.4h-12.7v66.9Z"></path><path d="M512.1,103.6c-5.6-2.6-12.3-3.9-20.3-3.9h-44.3v111.5h12.7v-46h31.6c8,0,14.7-1.3,20.3-4,5.6-2.7,9.8-6.5,12.8-11.4,2.9-4.9,4.4-10.8,4.4-17.6s-1.5-12.6-4.4-17.5c-2.9-4.9-7.2-8.6-12.8-11.2ZM510.1,148.4c-4.3,3.8-10.6,5.6-18.8,5.6h-31.1v-43.2h31.1c8.4,0,14.7,1.8,18.9,5.4,4.2,3.6,6.4,8.9,6.4,16s-2.1,12.4-6.4,16.2Z"></path><path d="M641.8,125.6c-4.5-8.6-10.8-15.3-18.8-20.1-8-4.9-17.2-7.3-27.6-7.3s-19.3,2.4-27.3,7.3c-8,4.9-14.3,11.6-18.8,20.1-4.5,8.6-6.8,18.4-6.8,29.4s1.3,16.1,4,23.1c2.6,7,6.3,13.1,11.1,18.4,4.7,5.2,10.3,9.2,16.8,12.1,6.5,2.8,13.6,4.3,21.3,4.3s14.7-1.4,21.2-4.3c6.5-2.8,12.1-6.8,16.9-12,4.7-5.2,8.4-11.3,11.1-18.3,2.6-7,4-14.7,4-23.1s-2.3-21-6.8-29.6ZM630.5,178.9c-3.4,7-8.1,12.5-14.2,16.5-6,4-13,6-21,6s-14.9-2-20.9-6c-6-4-10.7-9.4-14-16.4-3.4-7-5-15-5-24.1s1.7-16.9,5-23.6,8-12.1,13.9-15.9c6-3.8,13-5.7,21.1-5.7s15.1,1.9,21.1,5.7c6,3.8,10.7,9.1,14.1,16,3.4,6.8,5,14.7,5,23.5s-1.7,17-5.1,24Z"></path><g><polygon points="189.1 309 140.3 259.2 118.1 259.2 117.9 282.9 118.1 390.7 140.3 390.7 140.2 291.2 174.4 325.3 189.1 309"></polygon><polyline points="227.5 259.2 227.6 259.3 227.6 259.2 227.6 259.2 249.8 259.2 249.8 259.2 249.8 281.2 249.8 390.7 227.6 390.7 227.6 259.2"></polyline></g><polygon points="345.4 259.2 332.6 259.2 319.9 259.2 272.2 390.7 297.2 390.7 331.8 292.4 332.6 290.2 333.5 292.4 368.1 390.7 393.1 390.7 345.4 259.2"></polygon><polyline points="443.9 320 487.6 390.7 460.6 390.7 417.2 320 460.6 259.2 487.6 259.2 443.9 320"></polyline><polyline points="526.6 259.1 526.6 259.2 526.7 259.1 526.7 259.1 548.8 259.1 548.8 259.1 548.8 281.1 548.8 390.6 526.7 390.6 526.7 259.1"></polyline><polygon points="574.2 259.4 652.1 390.7 674.4 390.7 674.5 367 674.3 259.2 652.1 259.2 652.2 346.6 600.8 259.4 574.2 259.4"></polygon><path d="M788,318.8v19.2h24.3c-5.5,17.8-22.2,30.8-41.9,30.8s-43.8-19.6-43.8-43.8,19.6-43.8,43.8-43.8,8,.6,11.8,1.6l13.3-18.6c-7.7-3.2-16.2-4.9-25.1-4.9-36.3,0-65.8,29.5-65.8,65.8s29.4,65.8,65.8,65.8,58.4-22.7,64.5-52.8v-19.2s-46.9,0-46.9,0Z"></path><path d="M967.1,259.2c-36.3,0-65.8,29.4-65.8,65.8s29.4,65.8,65.8,65.8,65.8-29.4,65.8-65.8-29.4-65.8-65.8-65.8ZM967.1,368.8c-24.2,0-43.8-19.6-43.8-43.8s19.6-43.8,43.8-43.8,43.8,19.6,43.8,43.8-19.6,43.8-43.8,43.8Z"></path><g><polygon points="1069.7 302.9 1054.9 302.9 1054.9 390.7 1077.2 390.7 1077.2 325.1 1120.7 325.1 1120.7 302.9 1076.9 302.9 1069.7 302.9"></polygon><rect x="1054.9" y="259.2" width="87.7" height="21.9"></rect></g></g></g></g></svg></div>
+      <p style="font-size:12px;color:var(--muted);margin-top:8px;">Your Next Business Partner</p>
+    </div>
+    <div>
+      <h4>Servicios</h4>
+      <ul><li>Estrategia 360°</li><li>Posicionamiento SEO</li><li>Paid Media</li><li>Content & Social</li><li>Productos Digitales</li></ul>
+    </div>
+    <div>
+      <h4>Grupo</h4>
+      <ul><li>MOF</li><li>Talk</li><li>Achs</li></ul>
+    </div>
+    <div>
+      <h4>Contacto</h4>
+      <ul><li>hola@grupomakingof.com</li><li>Santiago, Chile</li><li>LinkedIn →</li></ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Política de privacidad y protección de datos</span>
+    <span>Making OF SPA, 2026. Todos los derechos reservados.</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const burger = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobileMenu');
+burger.addEventListener('click', ()=> mobileMenu.classList.toggle('open'));
+
+function scrollToId(id){
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth'});
+  mobileMenu.classList.remove('open');
+}
+
+document.querySelectorAll('.faq-item').forEach(item=>{
+  item.querySelector('.faq-q').addEventListener('click', ()=>{
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!isOpen) item.classList.add('open');
+  });
+});
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=> t.classList.remove('show'), 2600);
+}
+
+document.getElementById('contactForm')?.addEventListener('submit', function(e){
+  e.preventDefault();
+  document.getElementById('formMsg').style.display='block';
+  this.reset();
+  showToast('Formulario enviado correctamente');
+});
+</script>
+
+<script src="gmo-home-motion-v4.js"></script>
+</body>
+</html>
