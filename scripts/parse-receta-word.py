@@ -11,6 +11,7 @@ Uso:
 """
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import sys
@@ -414,11 +415,29 @@ def construir_receta(texto: str, fuente: str) -> dict:
     return construir_receta_simple(texto, lines, fuente)
 
 
+def crear_parser_argumentos() -> argparse.ArgumentParser:
+    return argparse.ArgumentParser(
+        description="Parsea una receta Word o texto a JSON intermedio CRC.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""Ejemplos:
+  python3 scripts/parse-receta-word.py inbox/receta.docx
+  python3 scripts/parse-receta-word.py inbox/receta.docx --force
+
+La segunda forma es destructiva: --force reemplaza conjuntamente el JSON y el raw existentes.
+""",
+    )
+
+
 def main() -> int:
-    if len(sys.argv) < 2:
-        print("Uso: python3 scripts/parse-receta-word.py <archivo.docx|.txt>", file=sys.stderr)
-        return 2
-    src = Path(sys.argv[1]).expanduser().resolve()
+    parser = crear_parser_argumentos()
+    parser.add_argument("archivo", help="Archivo fuente .docx o .txt")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="DESTRUCTIVO: reemplaza conjuntamente <slug>.json y <slug>.raw.txt si alguno existe",
+    )
+    args = parser.parse_args()
+    src = Path(args.archivo).expanduser().resolve()
     if not src.exists():
         print(f"No existe: {src}", file=sys.stderr)
         return 1
@@ -435,13 +454,28 @@ def main() -> int:
 
     receta = construir_receta(texto, rel)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    # limpiar parseo fallido previo meta-titulo.*
-    for stale in OUT_DIR.glob("meta-titulo.*"):
-        stale.unlink(missing_ok=True)
 
     out = OUT_DIR / f"{receta['id']}.json"
-    out.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     raw_out = OUT_DIR / f"{receta['id']}.raw.txt"
+    existing_outputs = [path for path in (out, raw_out) if path.exists()]
+    if existing_outputs and not args.force:
+        print(
+            "Error: ya existe al menos una salida para esta receta: "
+            + ", ".join(path.name for path in existing_outputs),
+            file=sys.stderr,
+        )
+        print(
+            "No se escribió ningún archivo; JSON y raw se protegen como una unidad.",
+            file=sys.stderr,
+        )
+        print(
+            "Para reemplazar ambos de forma destructiva: "
+            "python3 scripts/parse-receta-word.py <archivo.docx|.txt> --force",
+            file=sys.stderr,
+        )
+        return 3
+
+    out.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     raw_out.write_text(texto + "\n", encoding="utf-8")
 
     print(f"OK → {out.relative_to(ROOT)}")
