@@ -40,14 +40,18 @@ header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid 
 footer .logo-svg{color:var(--cream-soft);}
 header nav > ul{display:flex;gap:28px;list-style:none;font-size:14px;font-weight:600;}
 header nav > ul > li{position:relative;cursor:pointer;}
-.has-drop{position:relative;}
-.dropdown--acc{display:none;position:absolute;top:100%;left:0;padding-top:14px;background:transparent;box-shadow:none;border-radius:0;min-width:240px;z-index:70;}
-.has-drop.is-open > .dropdown--acc,.has-drop:hover > .dropdown--acc,.has-drop:focus-within > .dropdown--acc{display:block;}
-.dropdown--acc-box{background:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;padding:8px;}
+.has-drop{position:relative;display:inline-block;flex:0 0 auto;}
+.dropdown--acc{display:none;position:absolute;top:100%;left:0;right:auto;padding-top:14px;background:transparent;box-shadow:none;border-radius:0;min-width:260px;z-index:80;}
+.has-drop.is-open > .dropdown--acc{display:block;}
+.dropdown--acc-box{background:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:2px;}
 .dropdown--acc details{border-radius:6px;}
-.dropdown--acc summary{list-style:none;cursor:pointer;padding:11px 12px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);}
+.dropdown--acc summary{list-style:none;cursor:pointer;padding:11px 12px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .dropdown--acc summary::-webkit-details-marker{display:none;}
+.dropdown--acc summary::after{content:'▾';font-size:10px;opacity:.55;flex-shrink:0;}
 .dropdown--acc details[open] summary{color:#5A7A28;}
+.dropdown--acc details[open] summary::after{content:'▴';}
+.dropdown--acc .acc-panel{display:none;}
+.dropdown--acc details[open] .acc-panel{display:block;}
 .dropdown--acc a{display:block;padding:8px 12px 8px 18px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
 .dropdown--acc a:hover{background:var(--cream-soft);}
 .burger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;}
@@ -1024,32 +1028,40 @@ html.is-pointer .gmo-site-spot {
         <li class="has-drop">Servicios ▾
           <div class="dropdown--acc">
             <div class="dropdown--acc-box">
-            <details name="svc-acc" open>
+            <details name="svc-acc">
               <summary>Estrategia</summary>
+              <div class="acc-panel">
               <a href="#servicios">Estrategia 360</a>
               <a href="#servicios">Tendencias de mercado</a>
               <a href="#servicios">Business Intelligence</a>
+              </div>
             </details>
             <details name="svc-acc">
               <summary>SEO &amp; GEO</summary>
+              <div class="acc-panel">
               <a href="#servicios">Estrategia SEO 360</a>
               <a href="#servicios">GEO: visibilidad IA</a>
               <a href="#servicios">Linkbuilding</a>
               <a href="#servicios">Contenido SEO</a>
+              </div>
             </details>
             <details name="svc-acc">
               <summary>Productos digitales</summary>
+              <div class="acc-panel">
               <a href="#servicios">Paid media</a>
               <a href="#servicios">Email marketing</a>
               <a href="#servicios">Content marketing</a>
               <a href="#servicios">Retail media</a>
               <a href="#servicios">Social media</a>
+              </div>
             </details>
             <details name="svc-acc">
               <summary>Creatividad y diseño</summary>
+              <div class="acc-panel">
               <a href="#servicios">Diseño y desarrollo web</a>
               <a href="#servicios">Producción de contenidos</a>
               <a href="#servicios">Campañas y activaciones</a>
+              </div>
             </details>
             </div>
           </div>
@@ -1407,8 +1419,15 @@ burger.addEventListener('click', ()=> mobileMenu.classList.toggle('open'));
   var drop = document.querySelector('.has-drop');
   if (!drop) return;
   var t;
+  drop.classList.remove('is-open');
   drop.addEventListener('mouseenter', function(){ clearTimeout(t); drop.classList.add('is-open'); });
-  drop.addEventListener('mouseleave', function(){ clearTimeout(t); t = setTimeout(function(){ drop.classList.remove('is-open'); }, 320); });
+  drop.addEventListener('mouseleave', function(){ clearTimeout(t); t = setTimeout(function(){ drop.classList.remove('is-open'); }, 200); });
+  drop.querySelectorAll('details').forEach(function(d){
+    d.addEventListener('toggle', function(){
+      if (!d.open) return;
+      drop.querySelectorAll('details').forEach(function(o){ if (o !== d) o.open = false; });
+    });
+  });
 })();
 
 function scrollToId(id){

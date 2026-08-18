@@ -41,9 +41,9 @@ header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid 
 footer .logo-svg{color:var(--cream-soft);}
 header nav > ul{display:flex;gap:28px;list-style:none;font-size:14px;font-weight:600;}
 header nav > ul > li{position:relative;cursor:pointer;}
-.has-drop{position:relative;}
-.dropdown--fly{display:none;position:absolute;top:100%;left:0;padding-top:14px;z-index:70;}
-.has-drop.is-open > .dropdown--fly,.has-drop:hover > .dropdown--fly,.has-drop:focus-within > .dropdown--fly{display:block;}
+.has-drop{position:relative;display:inline-block;flex:0 0 auto;}
+.dropdown--fly{display:none;position:absolute;top:100%;left:0;right:auto;padding-top:14px;z-index:70;}
+.has-drop.is-open > .dropdown--fly{display:block;}
 .fly-box{display:grid;grid-template-columns:minmax(200px,1fr) minmax(220px,1.1fr);min-width:min(460px,calc(100vw - 32px));background:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;overflow:hidden;}
 .fly-cats{list-style:none;margin:0;padding:8px 0;display:block;border-right:1px solid rgba(14,43,34,0.1);}
 .fly-cat{display:block;}
@@ -1202,15 +1202,15 @@ burger.addEventListener('click', ()=> mobileMenu.classList.toggle('open'));
   const cats = drop.querySelectorAll('.fly-cat');
   const panels = drop.querySelectorAll('.fly-sub');
   let t;
+  drop.classList.remove('is-open');
   function open(){ clearTimeout(t); drop.classList.add('is-open'); }
-  function closeSoon(){ clearTimeout(t); t = setTimeout(function(){ drop.classList.remove('is-open'); }, 320); }
+  function closeSoon(){ clearTimeout(t); t = setTimeout(function(){ drop.classList.remove('is-open'); }, 200); }
   function show(id){
     cats.forEach(function(c){ c.classList.toggle('is-on', c.getAttribute('data-fly') === id); });
     panels.forEach(function(p){ p.classList.toggle('is-on', p.getAttribute('data-fly') === id); });
   }
   drop.addEventListener('mouseenter', open);
   drop.addEventListener('mouseleave', closeSoon);
-  drop.addEventListener('focusin', open);
   cats.forEach(function(c){
     c.addEventListener('mouseenter', function(){ show(c.getAttribute('data-fly')); });
     var key = c.querySelector('.fly-key');
