@@ -53,6 +53,12 @@ python scripts\publicar-receta-cencosud.py index\clientes\Herramientas\carga-rec
 `--dry-run` = rellena / intenta borrador, **no publica**.  
 Cuando confíes: quita `--dry-run` o pon `CENCOSUD_BM_DRY_RUN=false` en `.env`.
 
+En modo publicación, el script bloquea antes de abrir el navegador si el JSON sigue en
+`estado: borrador`, tiene `camposFaltantes` o carece de título, descripción, ingredientes
+o pasos. También aborta si alguno de esos cuatro campos no logra rellenarse. El clic en
+**Publicar** deja el JSON en `estado: cargado`; solo una confirmación posterior en BM
+permite marcarlo como `publicado`.
+
 Si un campo no se rellena: edita `secrets/bm-selectores.json` (selectores) y reintenta. También puedes re-explorar con el formulario abierto.
 
 ## Agente Cursor
