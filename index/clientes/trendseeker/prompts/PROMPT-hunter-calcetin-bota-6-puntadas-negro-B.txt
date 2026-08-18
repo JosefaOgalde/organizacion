@@ -2,30 +2,20 @@ PRODUCTO: Hunter Calcetín Bota 6 Puntadas Negro
 SKU: UAS3036AAB-BLK
 Link: https://trendseeker.cl/producto/hunter-calcetin-bota-6-puntadas-1/
 Foto HD: https://trendseeker.cl/wp-content/uploads/2023/07/UAS3036AAB-BLK-1-princ.jpg
-Público: ADULTO (mujer u hombre)
-Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
-Escena fija: INVIERNO INTERIOR · calcetín héroe. Sin botas en cámara.
+Público: e-commerce (preferir SIN persona; si lifestyle, solo maniquí)
+Herramienta: Google Gemini VIDEO.
+Nota: Gemini puede rechazar videos con personas + calcetines. Preferir A (packshot). Esta B usa maniquí de escaparate, no persona real.
 
 CARACTERÍSTICAS (no inventar otras):
-- Calcetín Hunter NEGRO
-- Forro de vellón 100% poliéster en la pierna
-- Vuelta que se dobla; punto de ochos
-- Logo de marca en PVC
+- Calcetín Hunter NEGRO; vuelta doblada; punto de ochos; logo PVC
 - Negro mate fiel a las fotos
 
-VESTUARIO / MODELO:
-- Adulto, jeans/pantalón; pies solo en calcetín (piso de madera o alfombra)
-- Sin botas ni zapatos en el cuadro
-- Sin tipografía ni logos inventados
-
-CÓMO USAR EN GEMINI (VIDEO):
-1) Modo VIDEO. 2) Foto princ HD primero. 3) Pega este prompt.
-4) Si salen botas o calcetín liso: reitera solo calcetín, punto de ochos + logo PVC, SIN botas.
+CÓMO USAR: VIDEO + foto princ. Si rechaza personas: vuelve al prompt A.
 
 ---
-VERSIÓN B — Cualidades en movimiento · ajustarse el calcetín
+VERSIÓN B — Maniquí de tienda (no persona real)
 ---
 
-Crea un VIDEO comercial basándote estrictamente en las fotos adjuntas (calcetín Hunter 6 puntadas negro exacto). Escena: interior de invierno; alguien se pone o ajusta el calcetín (vuelta doblada), camina unos pasos EN CALCETINES. Cero botas, cero calzado.
+Genera un VIDEO comercial corto de vitrina / escaparate. No uses personas reales.
 
-OBLIGATORIO en cámara (sí o sí): vuelta doblada con punto de ochos nítido y logo Hunter en PVC. El calcetín negro es el único héroe. Manos ajustando la vuelta. No alterar diseño ni color. Sin calcetín liso, sin rojo, sin blanco, sin botas de agua.
+Un maniquí de tienda (plástico mate de escaparate, sin rostro detallado) muestra el par de calcetines Hunter 6 puntadas NEGROS exactos de las fotos. Estudio o vitrina iluminada. El producto es el héroe: punto de ochos, vuelta doblada, logo Hunter en PVC. Cámara lenta acercándose al calcetín. Sin botas, sin zapatos, sin pies humanos, sin dormitorio. Sin rediseñar el calcetín. Sin tipografía.

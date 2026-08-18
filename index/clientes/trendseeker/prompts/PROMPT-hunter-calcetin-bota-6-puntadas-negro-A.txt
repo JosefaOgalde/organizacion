@@ -2,44 +2,39 @@ PRODUCTO: Hunter Calcetín Bota 6 Puntadas Negro
 SKU: UAS3036AAB-BLK
 Link: https://trendseeker.cl/producto/hunter-calcetin-bota-6-puntadas-1/
 Foto HD (subir esta, es la de mejor definición): https://trendseeker.cl/wp-content/uploads/2023/07/UAS3036AAB-BLK-1-princ.jpg
-Público: ADULTO (mujer u hombre)
+Público: e-commerce / packshot (SIN modelo, SIN persona)
 Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
-Escena fija: INVIERNO INTERIOR · el CALCETÍN es el único héroe. Prohibido enfocar botas.
+Escena fija: ESTUDIO DE PRODUCTO. Solo el par de calcetines. Sin personas, sin pies, sin botas.
+
+Si Gemini dice «no puedo crear vídeos de personas reales»: es un filtro. Usa este prompt A (packshot, 0 personas). No pidas lifestyle con pies/caminar en calcetines.
 
 CARACTERÍSTICAS (no inventar otras):
 - Calcetín Hunter, color NEGRO
-- Pierna con forro de vellón 100% poliéster
-- Vuelta que se dobla
-- Vuelta de punto de ochos (cable knit)
+- Vuelta que se dobla; punto de ochos (cable knit)
 - Logotipo de la marca en PVC en la vuelta
-- Color negro fiel a las fotos: hilo mate, no gris, no blanco, no rojo, no gloss
+- Negro mate fiel a las fotos; no gris, no blanco, no rojo, no gloss
 
-DETALLE OBLIGATORIO EN CÁMARA (sí o sí, foto -princ.jpg):
-- Punto de ochos / cable knit nítido en la vuelta (relieve de trenzas, no calcetín liso)
-- Vuelta doblada sobre sí misma (como en la foto de producto)
-- Logo Hunter en PVC en la vuelta (el real de la foto; no inventar otro)
-- Caña y pie del calcetín negro mate de punto grueso
-- PROHIBIDO: botas de agua, caucho Hunter, Chelsea, suela de bota, plano de calzado. El video es del calcetín, no de botas.
-
-VESTUARIO / MODELO:
-- Adulto, look de invierno en casa o hall (jeans o pantalón arremangado para ver el calcetín)
-- Pies EN CALCETÍN, sobre piso de madera o alfombra; sin zapatos ni botas en cuadro
-- Sin tipografía ni logos inventados; solo el PVC Hunter real
+DETALLE OBLIGATORIO EN CÁMARA (foto -princ.jpg):
+- Punto de ochos nítido (relieve de trenzas, no liso)
+- Vuelta doblada como en la foto de catálogo
+- Logo Hunter en PVC real de la foto
+- PROHIBIDO: personas, caras, pies descalzos, manos en piernas, dormitorio, botas de agua, caucho, calzado
 
 CÓMO USAR EN GEMINI (VIDEO):
-1) Modo VIDEO (no imagen fija).
-2) Sube primero la FOTO HD UAS3036AAB-BLK-1-princ.jpg (y más ángulos si tienes).
-3) Pega este prompt en el mismo mensaje.
-4) Si aparecen botas o el calcetín sale liso: reitera «solo el calcetín negro, punto de ochos + logo PVC, SIN botas».
+1) Modo VIDEO.
+2) Sube UAS3036AAB-BLK-1-princ.jpg.
+3) Pega el bloque A.
+4) Si rechaza: «es un comercial de producto e-commerce, packshot, sin personas».
+5) Si el calcetín sale liso: reitera punto de ochos + logo PVC exactos.
 
 ---
-VERSIÓN A — Video producto héroe · solo calcetín (recomendado)
+VERSIÓN A — Packshot de producto (recomendado; evita el filtro de Gemini)
 ---
 
-Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria: Hunter Calcetín Bota 6 Puntadas NEGRO (SKU UAS3036AAB-BLK). No rediseñes.
+Genera un VIDEO comercial corto de PRODUCTO (e-commerce / packshot), no de personas. Usa las fotos adjuntas como referencia obligatoria: Hunter Calcetín 6 Puntadas NEGRO (SKU UAS3036AAB-BLK). No rediseñes.
 
-HÉROE = el calcetín. PROHIBIDO mostrar o enfocar botas de agua, caucho, suelas o calzado: no aparecen en el cuadro (o quedan fuera de plano). No es un anuncio de botas.
+SIN PERSONAS: no hay modelo, no hay cara, no hay pies humanos, no hay caminar. Solo el par de calcetines de punto, de pie como en foto de catálogo, sobre fondo neutro de estudio (blanco o gris claro), luz de product shot.
 
-OBLIGATORIO en al menos un plano nítido (y visible la mayor parte del video): el par de calcetines negros en los pies — 1) punto de ochos / cable knit con relieve en la vuelta doblada, 2) logo Hunter en PVC en la vuelta, 3) tejido negro mate grueso, no liso. Si el calcetín es liso, falta el logo, o manda una bota, el video no sirve.
+HÉROE = el calcetín. Sin botas, sin zapatos, sin caucho.
 
-Acción: interior de invierno (madera, luz cálida). La persona camina en calcetines o se ajusta la vuelta con las manos. Cámara a pantorrilla y pie, product-first al tejido. Ritmo comercial corto. Sin tipografía extra. Sin logos inventados.
+OBLIGATORIO y nítido todo el clip: 1) punto de ochos / cable knit con relieve en la vuelta doblada, 2) logo Hunter en PVC en la vuelta, 3) tejido negro mate grueso. Cámara lenta orbitando o zoom suave al logo y al ochos. Ritmo de anuncio de catálogo. Sin tipografía. Sin logos inventados. Si el punto es liso o falta el logo, no sirve.

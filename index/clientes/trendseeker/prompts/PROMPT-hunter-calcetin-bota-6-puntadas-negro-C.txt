@@ -2,30 +2,18 @@ PRODUCTO: Hunter Calcetín Bota 6 Puntadas Negro
 SKU: UAS3036AAB-BLK
 Link: https://trendseeker.cl/producto/hunter-calcetin-bota-6-puntadas-1/
 Foto HD: https://trendseeker.cl/wp-content/uploads/2023/07/UAS3036AAB-BLK-1-princ.jpg
-Público: ADULTO (mujer u hombre)
-Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
-Escena fija: INVIERNO · close-up del calcetín. Sin botas.
+Público: macro de tejido (0 personas)
+Herramienta: Google Gemini VIDEO.
 
 CARACTERÍSTICAS (no inventar otras):
-- Calcetín Hunter NEGRO
-- Forro de vellón 100% poliéster
-- Vuelta que se dobla; punto de ochos
-- Logo PVC
-- Negro mate fiel a las fotos
+- Calcetín Hunter NEGRO; punto de ochos; logo PVC; mate fiel a las fotos
 
-VESTUARIO / MODELO:
-- Adulto; solo tejido del calcetín a cámara
-- Sin tipografía ni logos inventados
-- Sin botas ni caucho en el encuadre
-
-CÓMO USAR EN GEMINI (VIDEO):
-1) Modo VIDEO. 2) Foto princ HD primero. 3) Pega este prompt.
-4) Si aparece una bota o no se lee el ochos: reitera close-up solo del calcetín, exacto de la foto princ.
+CÓMO USAR: VIDEO + foto princ. Si Gemini habla de personas: este prompt no pide personas.
 
 ---
-VERSIÓN C — Close-up de detalle · textura del calcetín
+VERSIÓN C — Macro de textura (solo tejido)
 ---
 
-Genera un VIDEO corto tipo close-up publicitario del Hunter Calcetín Bota 6 Puntadas negro. Luz suave de interior, invierno.
+Genera un VIDEO corto tipo macro comercial de tejido. Cero personas, cero cuerpo, cero pies, cero botas.
 
-PLANO HÉROE OBLIGATORIO (como la foto princ): encuadre SOLO a la vuelta y la caña del calcetín — punto de ochos / cable knit con relieve, logo Hunter en PVC, tejido negro mate grueso. Sin borde de bota, sin caucho, sin suela. Cámara lenta, product-first al punto. Si el tejido es liso, no se lee el logo, o entra una bota, el video no sirve. Sin rediseñar, sin otro color, sin logos inventados.
+El encuadre es solo la tela del Hunter Calcetín 6 Puntadas negro (fotos adjuntas): punto de ochos / cable knit con relieve, vuelta doblada, logo Hunter en PVC. Luz de estudio suave. Cámara lenta recorriendo las trenzas y el logo. Fondo desenfocado neutro. Si el punto es liso o no se lee el logo, no sirve. Sin rediseñar, sin otro color, sin tipografía, sin logos inventados.
