@@ -11,4 +11,4 @@ Instrucciones cortas. Detalle en los docs. **Pocos tokens:** `docs/cursor/AHORRA
 - **Trendseeker** → Gemini · `index/clientes/trendseeker/prompts/README.md`
 - **ECR** → Midjourney (fondo) · `index/clientes/ecr/newsletter/`
 - **JM** → pausado. No abrir salvo que retome. `index/clientes/joyasmercury/`
-- **Impresoreando** → `docs/impresoreando/CONTEXTO.md` (no `panel.js`/seed salvo bug)
+- **Impresoreando** → `docs/impresoreando/CONTEXTO.md` (no `panel.js`/seed salvo bug). Copy/posts: **nunca precios**.
