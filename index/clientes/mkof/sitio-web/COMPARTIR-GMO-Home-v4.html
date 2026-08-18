@@ -138,14 +138,14 @@ header nav > ul > li{position:relative;cursor:pointer;}
 .logos{padding:96px 24px 100px;text-align:center;background:#fff;border-block:1px solid rgba(14,43,34,0.06);}
 .logos h3{font-family:var(--serif);font-size:clamp(28px,3.2vw,36px);font-weight:700;margin-bottom:48px;color:var(--dark);}
 .logo-row{display:flex;align-items:center;gap:56px;flex-wrap:wrap;opacity:0.85;filter:grayscale(1);}
-.logo-marquee{overflow:hidden;width:100%;padding:28px 0;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);}
+.logo-marquee{overflow:hidden;width:100%;padding:28px 0;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);perspective:700px;}
 .logo-track{display:flex;align-items:center;gap:72px;width:max-content;animation:marquee 120s linear infinite;}
 .logo-marquee:hover .logo-track{animation-play-state:paused;}
-.logo-track img{height:58px;width:auto;max-width:160px;object-fit:contain;filter:grayscale(1);opacity:0.8;transition:opacity .25s ease, filter .25s ease, transform .3s ease;}
+.logo-track img{height:58px;width:auto;max-width:160px;object-fit:contain;filter:grayscale(1);opacity:0.8;transition:opacity .3s ease, filter .3s ease, transform .4s cubic-bezier(.34,1.4,.64,1);transform-style:preserve-3d;}
 .logo-marquee:hover .logo-track img{opacity:0.95;}
-.logo-track img:hover{filter:grayscale(0);opacity:1;transform:scale(1.06);}
+.logo-track img:hover{filter:grayscale(0) drop-shadow(10px 14px 12px rgba(14,43,34,0.2));opacity:1;transform:translateY(-6px) rotateY(-18deg) scale(1.12);}
 @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-@media(prefers-reduced-motion:reduce){.logo-track{animation:none;}}
+@media(prefers-reduced-motion:reduce){.logo-track{animation:none;}.logo-track img:hover{transform:scale(1.06);}}
 
 .servicios{padding:88px 24px 120px;text-align:center;background:var(--cream-soft);position:relative;}
 .servicios h2{font-family:var(--serif);font-size:clamp(30px,3.5vw,40px);font-weight:700;color:var(--dark);margin-bottom:8px;}

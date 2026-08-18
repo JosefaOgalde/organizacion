@@ -161,11 +161,16 @@ header nav > ul > li{position:relative;cursor:pointer;}
 .logo-marquee{overflow:hidden;width:100%;padding:28px 0;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);}
 .logo-track{display:flex;align-items:center;gap:72px;width:max-content;animation:marquee 70s linear infinite;}
 .logo-marquee:hover .logo-track{animation-play-state:paused;}
-.logo-track img{height:58px;width:auto;max-width:160px;object-fit:contain;filter:grayscale(1);opacity:0.8;transition:opacity .25s ease, filter .25s ease, transform .3s ease;}
+.logo-track img{height:58px;width:auto;max-width:160px;object-fit:contain;filter:grayscale(1);opacity:0.8;transition:opacity .25s ease, filter .25s ease;}
 .logo-marquee:hover .logo-track img{opacity:0.95;}
-.logo-track img:hover{filter:grayscale(0);opacity:1;transform:scale(1.06);}
+.logo-track img:hover{filter:grayscale(0);opacity:1;animation:logoBobV2 .7s ease-out 1;}
 @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-@media(prefers-reduced-motion:reduce){.logo-track{animation:none;}}
+@keyframes logoBobV2{
+  0%{transform:translateY(0) scale(1);}
+  40%{transform:translateY(-9px) scale(1.08);}
+  100%{transform:translateY(0) scale(1);}
+}
+@media(prefers-reduced-motion:reduce){.logo-track{animation:none;}.logo-track img:hover{animation:none;transform:scale(1.06);}}
 
 .servicios{padding:88px 24px 120px;text-align:center;background:var(--cream-soft);position:relative;}
 .servicios h2{font-family:var(--serif);font-size:clamp(30px,3.5vw,40px);font-weight:700;color:var(--dark);margin-bottom:8px;}
