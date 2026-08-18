@@ -61,6 +61,19 @@
       }
     },
     {
+      "id": "chelsea-commando-gris-palido",
+      "titulo": "Chelsea Commando Gris Pálido Mujer",
+      "archivo": "prompts/PROMPT-chelsea-commando-gris-palido-mujer-A.txt",
+      "descripcion": "VIDEO Gemini · MUJER · gris pálido mate (no gloss) · día de invierno con lluvia · producto héroe · TXT A/B/C · SKU WFS1018RMA-CAS.",
+      "productoUrl": "https://trendseeker.cl/producto/botas-chelsea-commando-para-mujer-gris-palido/",
+      "sku": "WFS1018RMA-CAS",
+      "archivos": {
+        "A": "prompts/PROMPT-chelsea-commando-gris-palido-mujer-A.txt",
+        "B": "prompts/PROMPT-chelsea-commando-gris-palido-mujer-B.txt",
+        "C": "prompts/PROMPT-chelsea-commando-gris-palido-mujer-C.txt"
+      }
+    },
+    {
       "id": "contenido-9-prompt",
       "titulo": "C9/12 · Botas de Agua Bajas Play Mujer Rojo",
       "archivo": "prompts/PROMPT-c09-play-bajas-rojo-mujer-A.txt",
