@@ -874,15 +874,7 @@ header.is-scrolled {
 .process-vanguard.is-in .flow-path-draw {
   stroke-dashoffset: 0;
 }
-.flow-path-nodes circle {
-  opacity: 0;
-  transition: opacity 0.45s ease;
-}
-.flow-vanguard.is-in .flow-path-nodes circle,
-.process-vanguard.is-in .flow-path-nodes circle {
-  opacity: 0.75;
-  transition-delay: 0.85s;
-}
+.flow-path-nodes{display:none;}
 .flow-vanguard .step {
   position: relative;
   z-index: 1;
@@ -971,48 +963,54 @@ header.is-scrolled {
   transition: opacity 0.35s ease, transform 0.4s var(--ease-spring), color 0.3s ease;
 }
 
-/* Hover / focus: active step expands, siblings dim */
+/* Hover / focus: el paso activo se destaca con más contraste */
 .flow-vanguard:hover .step,
 .flow-vanguard:focus-within .step {
-  filter: saturate(0.7) brightness(0.96);
-  transform: scale(0.96);
-  opacity: 0.72;
+  filter: saturate(0.55) brightness(0.94);
+  transform: scale(0.92);
+  opacity: 0.5;
 }
 .flow-vanguard .step:hover,
 .flow-vanguard .step:focus-visible,
 .flow-vanguard .step.is-hot {
   filter: none;
   opacity: 1;
-  transform: translateY(-10px) scale(1.04);
-  background: rgba(143, 201, 58, 0.08);
-  box-shadow: 0 18px 40px rgba(14, 43, 34, 0.1);
-  outline: none;
+  transform: translateY(-16px) scale(1.08);
+  background: rgba(143, 201, 58, 0.28);
+  box-shadow: 0 22px 48px rgba(14, 43, 34, 0.16);
+  outline: 2px solid var(--green);
+  outline-offset: 0;
 }
 .flow-vanguard .step:hover .step-ring,
 .flow-vanguard .step:focus-visible .step-ring,
 .flow-vanguard .step.is-hot .step-ring {
-  transform: scale(1.18) rotate(18deg);
-  border-color: var(--green-soft);
+  transform: scale(1.28) rotate(18deg);
+  border-color: var(--green);
+  border-width: 3px;
   opacity: 1;
   animation: ringPulse 1.4s ease-out infinite;
 }
 .flow-vanguard .step:hover .step-core,
 .flow-vanguard .step:focus-visible .step-core,
 .flow-vanguard .step.is-hot .step-core {
-  width: 112px;
-  height: 112px;
-  border-radius: 28px;
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
   background: #fff;
   color: var(--dark);
-  transform: rotate(-3deg);
-  box-shadow: 0 16px 36px rgba(143, 201, 58, 0.28);
+  border: 3px solid var(--green);
+  transform: none;
+  font-size: 13px;
+  box-shadow: 0 18px 40px rgba(143, 201, 58, 0.45);
 }
 .flow-vanguard .step:hover .step-desc,
 .flow-vanguard .step:focus-visible .step-desc,
 .flow-vanguard .step.is-hot .step-desc {
   opacity: 1;
   transform: none;
-  color: var(--text);
+  color: var(--dark);
+  font-size: 13px;
+  font-weight: 600;
 }
 @keyframes ringPulse {
   0% { box-shadow: 0 0 0 0 rgba(143, 201, 58, 0.35); }
@@ -1202,12 +1200,6 @@ html.is-pointer .gmo-site-spot {
       </defs>
       <path class="flow-path-track" d="M20 12 H980" />
       <path class="flow-path-draw" d="M20 12 H980" />
-      <g class="flow-path-nodes" fill="#8FC93A">
-        <circle cx="200" cy="12" r="2.5"/>
-        <circle cx="400" cy="12" r="2.5"/>
-        <circle cx="600" cy="12" r="2.5"/>
-        <circle cx="800" cy="12" r="2.5"/>
-      </g>
     </svg>
 
     <article class="step" data-step="01" tabindex="0">
