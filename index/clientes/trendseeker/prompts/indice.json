@@ -74,6 +74,19 @@
       }
     },
     {
+      "id": "chaqueta-impermeable-olive-green",
+      "titulo": "Chaqueta Impermeable Mujer Olive Green",
+      "archivo": "prompts/PROMPT-chaqueta-impermeable-olive-green-mujer-A.txt",
+      "descripcion": "VIDEO Gemini · MUJER · olive green · lluvia urbana · precio intermedio · TXT A/B/C · SKU WRO1345WAP-DOV.",
+      "productoUrl": "https://trendseeker.cl/producto/chaqueta-impermeable-mujer-olive-green/",
+      "sku": "WRO1345WAP-DOV",
+      "archivos": {
+        "A": "prompts/PROMPT-chaqueta-impermeable-olive-green-mujer-A.txt",
+        "B": "prompts/PROMPT-chaqueta-impermeable-olive-green-mujer-B.txt",
+        "C": "prompts/PROMPT-chaqueta-impermeable-olive-green-mujer-C.txt"
+      }
+    },
+    {
       "id": "contenido-9-prompt",
       "titulo": "C9/12 · Botas de Agua Bajas Play Mujer Rojo",
       "archivo": "prompts/PROMPT-c09-play-bajas-rojo-mujer-A.txt",

@@ -1,0 +1,41 @@
+PRODUCTO: Chaqueta Impermeable Mujer Olive Green (Hunter)
+SKU: WRO1345WAP-DOV
+Precio (ref. TrendSeeker): intermedio (~$184.990) — entre la plegable ligera (~$124.990) y las de lluvia WRO1400 (~$209.990)
+Link: https://trendseeker.cl/producto/chaqueta-impermeable-mujer-olive-green/
+Público: MUJER (adulta)
+Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
+Escena fija: DÍA CON LLUVIA. La chaqueta es el héroe; la lluvia demuestra impermeabilidad.
+
+CARACTERÍSTICAS (no inventar otras):
+- Hunter chaqueta impermeable para mujer, color OLIVE GREEN (verde oliva)
+- Completamente impermeable con costuras soldadas
+- Cierre con las franjas características de Hunter y solapa cortavientos con cierre a presión
+- Forro de malla (transpirabilidad)
+- Aberturas bajo los brazos y en la parte posterior para ventilación
+- Capucha con cierres a presión para ajustar la apertura
+- Cordón en la cintura para adaptar el ajuste
+- Bolsillos ribeteados con entrada inversa (anti-lluvia)
+- Puños ajustables con cierre a presión
+- Ajuste normal
+- Color y silueta fieles a las fotos: verde oliva Hunter, no negro, no rojo, no navy, no camuflaje
+
+VESTUARIO / MODELO:
+- Mujer adulta, look urbano de transición (jeans, botas o zapatillas; la chaqueta manda)
+- Capucha puesta o lista para subir; cierre visible
+- Sin tipografía ni logos inventados fuera de los del producto real (franjas Hunter del cierre sí)
+
+CÓMO USAR EN GEMINI (VIDEO):
+1) Modo VIDEO (no imagen fija).
+2) Sube primero las FOTOS DE PRODUCTO reales (frente, espalda, capucha, cierre, puños).
+3) Pega este prompt en el mismo mensaje.
+4) Si cambia el color o el corte: reitera «olive green Hunter exacto de las fotos, SKU WRO1345WAP-DOV».
+
+---
+VERSIÓN A — Video producto héroe · lluvia urbana (recomendado)
+---
+
+Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria: Chaqueta Impermeable Mujer Hunter OLIVE GREEN (costuras soldadas, solapa cortavientos con snaps, capucha con ajuste a presión, cordón de cintura, franjas Hunter en el cierre). No rediseñes: misma silueta, mismo verde oliva, mismos detalles. Prohibido: negro, rojo, navy, camuflaje, plumas, parka oversized que no coincida con las fotos.
+
+Acción: día de lluvia continua en ciudad. Una mujer camina con la capucha puesta; el agua resbala por el tejido olive green. Sube o ajusta el cierre; se ve la solapa cortavientos. La chaqueta es el héroe absoluto del plano. Gotas sobre hombros y capucha demuestran impermeabilidad. Ritmo comercial corto.
+
+Cámara: product-first (planos de torso/capucha/cierre, no solo cara). Calle mojada, cielo gris. Sin tipografía ni logos inventados.
