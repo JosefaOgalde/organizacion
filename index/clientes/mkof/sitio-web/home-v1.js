@@ -1,23 +1,61 @@
 (() => {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* Nav · dropdown servicios */
+  /* Nav · dropdown servicios (2 columnas, no se cierra al cruzar) */
+  const wrap = document.querySelector(".v1-menu__drop");
   const btn = document.getElementById("v1-svc");
   const list = document.getElementById("v1-svc-list");
-  if (btn && list) {
-    const close = () => {
-      list.hidden = true;
-      btn.setAttribute("aria-expanded", "false");
-    };
-    btn.addEventListener("click", (e) => {
+  const burger = document.getElementById("v1-burger");
+  const mobile = document.getElementById("v1-mobile");
+  let closeT;
+  function close() {
+    if (!list || !btn) return;
+    list.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+    wrap?.classList.remove("is-open");
+  }
+  function open() {
+    if (!list || !btn) return;
+    clearTimeout(closeT);
+    list.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+    wrap?.classList.add("is-open");
+  }
+  function closeSoon() {
+    clearTimeout(closeT);
+    closeT = setTimeout(close, 320);
+  }
+  if (btn && list && wrap) {
+    btn.addEventListener("click", function (e) {
       e.stopPropagation();
-      const open = list.hidden;
-      list.hidden = !open;
-      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      if (list.hidden) open();
+      else close();
     });
-    document.addEventListener("click", close);
-    document.addEventListener("keydown", (e) => {
+    wrap.addEventListener("mouseenter", open);
+    wrap.addEventListener("mouseleave", closeSoon);
+    document.addEventListener("click", function (e) {
+      if (!wrap.contains(e.target)) close();
+    });
+    document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") close();
+    });
+    list.querySelectorAll(".v1-fly__cats li").forEach(function (li) {
+      const id = li.getAttribute("data-fly");
+      li.addEventListener("mouseenter", function () {
+        list.querySelectorAll(".v1-fly__cats li").forEach(function (x) {
+          x.classList.toggle("is-on", x === li);
+        });
+        list.querySelectorAll(".v1-fly__panels ul").forEach(function (p) {
+          p.classList.toggle("is-on", p.getAttribute("data-fly") === id);
+        });
+      });
+    });
+  }
+  if (burger && mobile) {
+    burger.addEventListener("click", function () {
+      const on = mobile.hidden;
+      mobile.hidden = !on;
+      burger.setAttribute("aria-expanded", on ? "true" : "false");
     });
   }
 
