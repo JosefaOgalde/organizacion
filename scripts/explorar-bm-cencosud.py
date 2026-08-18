@@ -200,8 +200,8 @@ def sugerir_selectores(estructura: dict) -> dict:
         "btn_publicar": None,
         "nav_nueva_receta": None,
     }
-    rules = [
-        ("field_titulo", r"t[ií]tulo(?!\s*meta)|nombre\s*(de\s*)?receta|^title$"),
+    editorial_rules = [
+        ("field_titulo", r"t[ií]tulo|nombre\s*(de\s*)?receta|^title$"),
         ("field_descripcion", r"descripci[oó]n|bajada|intro|resumen|summary"),
         ("field_porciones", r"porcion|rinde|servings|personas"),
         ("field_dificultad", r"dificultad|nivel|difficulty"),
@@ -209,9 +209,12 @@ def sugerir_selectores(estructura: dict) -> dict:
         ("field_tags", r"tag|etiqueta|categor|palabra"),
         ("field_ingredientes", r"ingrediente"),
         ("field_pasos", r"paso|instrucci|preparaci[oó]n|c[oó]mo\s+prepar"),
-        ("field_meta_titulo", r"meta\s*t[ií]tulo|seo\s*title"),
-        ("field_meta_descripcion", r"meta\s*descripci|seo\s*desc"),
     ]
+    meta_rules = [
+        ("field_meta_titulo", r"(?:meta|seo)[\s_-]*(?:t[ií]tulo|title)"),
+        ("field_meta_descripcion", r"(?:meta|seo)[\s_-]*(?:descripci|desc)"),
+    ]
+    selectores_asignados = set()
     for field in estructura.get("fields") or []:
         blob = " ".join(
             filter(
@@ -228,19 +231,30 @@ def sugerir_selectores(estructura: dict) -> dict:
         sel = field.get("selectorSugerido")
         if not sel:
             continue
-        for key, pat in rules:
+        if sel in selectores_asignados:
+            continue
+        regla_meta = next(
+            ((key, pat) for key, pat in meta_rules if re.search(pat, blob, re.I)),
+            None,
+        )
+        reglas_candidatas = [regla_meta] if regla_meta else editorial_rules
+        for key, pat in reglas_candidatas:
             if mapa[key]:
                 continue
             if re.search(pat, blob, re.I):
                 mapa[key] = sel
+                selectores_asignados.add(sel)
+                break
     for btn in estructura.get("buttons") or []:
         t = (btn.get("text") or "").lower()
         sel = btn.get("selectorSugerido")
         if not sel:
             continue
-        if not mapa["btn_publicar"] and re.search(r"publicar|publish", t):
-            mapa["btn_publicar"] = sel
-        if not mapa["btn_guardar_borrador"] and re.search(r"guardar|borrador|save|draft", t):
+        es_publicar = re.search(r"publicar|publish", t)
+        if es_publicar:
+            if not mapa["btn_publicar"]:
+                mapa["btn_publicar"] = sel
+        elif not mapa["btn_guardar_borrador"] and re.search(r"guardar|borrador|save|draft", t):
             mapa["btn_guardar_borrador"] = sel
     for link in (estructura.get("linksReceta") or []) + (estructura.get("nav") or []):
         t = (link.get("text") or "").lower()

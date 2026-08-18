@@ -133,6 +133,99 @@ class ExplorarBmTests(unittest.TestCase):
             "field_pasos": "#pasos",
             "btn_publicar": "#publicar",
         }
+        self.estructura_meta_primero = {
+            "fields": [
+                {
+                    "label": "Meta título",
+                    "id": "meta-title",
+                    "selectorSugerido": "#meta-title",
+                },
+                {
+                    "label": "Meta descripción",
+                    "id": "meta-desc",
+                    "selectorSugerido": "#meta-desc",
+                },
+                {
+                    "label": "Título",
+                    "id": "titulo",
+                    "selectorSugerido": "#titulo",
+                },
+                {
+                    "label": "Descripción",
+                    "id": "desc",
+                    "selectorSugerido": "#desc",
+                },
+            ],
+            "buttons": [
+                {
+                    "text": "Guardar y publicar",
+                    "selectorSugerido": "#guardar-publicar",
+                }
+            ],
+        }
+
+    def test_sugerir_selectores_separa_meta_editoriales_aunque_meta_aparezca_primero(self):
+        mapa = self.modulo.sugerir_selectores(self.estructura_meta_primero)
+
+        selectores_campos = {
+            mapa["field_titulo"],
+            mapa["field_descripcion"],
+            mapa["field_meta_titulo"],
+            mapa["field_meta_descripcion"],
+        }
+        self.assertEqual(
+            {
+                "field_titulo": mapa["field_titulo"],
+                "field_descripcion": mapa["field_descripcion"],
+                "field_meta_titulo": mapa["field_meta_titulo"],
+                "field_meta_descripcion": mapa["field_meta_descripcion"],
+            },
+            {
+                "field_titulo": "#titulo",
+                "field_descripcion": "#desc",
+                "field_meta_titulo": "#meta-title",
+                "field_meta_descripcion": "#meta-desc",
+            },
+        )
+        self.assertEqual(len(selectores_campos), 4)
+
+    def test_dry_run_no_hace_click_en_boton_que_tambien_publica(self):
+        mapa = self.modulo.sugerir_selectores(self.estructura_meta_primero)
+        runtime = RuntimeFalso()
+
+        with contextlib.redirect_stdout(io.StringIO()):
+            resultado = self.modulo.fill_from_receta(
+                PageFalsa(runtime),
+                {
+                    **self.receta_valida,
+                    "seo": {
+                        "metaTitulo": "Título SEO",
+                        "metaDescripcion": "Descripción SEO",
+                    },
+                },
+                mapa,
+                dry_run=True,
+            )
+
+        self.assertTrue(resultado)
+        self.assertEqual(mapa["btn_publicar"], "#guardar-publicar")
+        self.assertIsNone(mapa["btn_guardar_borrador"])
+        self.assertEqual(runtime.clicks, [])
+
+    def test_sugerir_selectores_conserva_alias_seo_en_ingles(self):
+        estructura = {
+            "fields": [
+                {"label": "SEO Title", "selectorSugerido": "#seo-title"},
+                {"label": "SEO Description", "selectorSugerido": "#seo-description"},
+            ]
+        }
+
+        mapa = self.modulo.sugerir_selectores(estructura)
+
+        self.assertEqual(mapa["field_meta_titulo"], "#seo-title")
+        self.assertEqual(mapa["field_meta_descripcion"], "#seo-description")
+        self.assertIsNone(mapa["field_titulo"])
+        self.assertIsNone(mapa["field_descripcion"])
 
     def test_main_bloquea_borrador_antes_de_importar_playwright(self):
         receta = {
