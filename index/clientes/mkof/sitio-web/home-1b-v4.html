@@ -24,7 +24,38 @@
       <span class="nav4__name">Making Of</span>
     </a>
     <nav class="nav4__links" aria-label="Principal">
-      <a class="is-active" href="#manifiesto">Servicios</a>
+      <div class="nav4__dropwrap">
+        <button type="button" class="nav4__btn is-active" id="svc-toggle" aria-expanded="false" aria-controls="svc-drop">Servicios</button>
+        <div class="nav4__mega" id="svc-drop" hidden>
+          <div class="mega__col">
+            <p>Estrategia</p>
+            <a href="#casos">Estrategia 360</a>
+            <a href="#casos">Tendencias de mercado</a>
+            <a href="#casos">Business Intelligence</a>
+          </div>
+          <div class="mega__col">
+            <p>SEO &amp; GEO</p>
+            <a href="#casos">Estrategia SEO 360</a>
+            <a href="#casos">GEO: visibilidad IA</a>
+            <a href="#casos">Linkbuilding</a>
+            <a href="#casos">Contenido SEO</a>
+          </div>
+          <div class="mega__col">
+            <p>Productos digitales</p>
+            <a href="#casos">Paid media</a>
+            <a href="#casos">Email marketing</a>
+            <a href="#casos">Content marketing</a>
+            <a href="#casos">Retail media</a>
+            <a href="#casos">Social media</a>
+          </div>
+          <div class="mega__col">
+            <p>Creatividad y diseño</p>
+            <a href="#casos">Diseño y desarrollo web</a>
+            <a href="#casos">Producción de contenidos</a>
+            <a href="#casos">Campañas y activaciones</a>
+          </div>
+        </div>
+      </div>
       <a href="#casos">Casos</a>
       <a href="#manifiesto">Nosotros</a>
       <a href="#refs">Insights</a>
@@ -280,5 +311,29 @@
     <span>Grupo Making Of</span>
     <span>Your Next Business Partner · Santiago</span>
   </footer>
+  <script>
+    (function () {
+      var btn = document.getElementById("svc-toggle");
+      var mega = document.getElementById("svc-drop");
+      var wrap = document.querySelector(".nav4__dropwrap");
+      if (!btn || !mega || !wrap) return;
+      function close() {
+        mega.hidden = true;
+        btn.setAttribute("aria-expanded", "false");
+      }
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var open = mega.hidden;
+        mega.hidden = !open;
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      document.addEventListener("click", function (e) {
+        if (!wrap.contains(e.target)) close();
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") close();
+      });
+    })();
+  </script>
 </body>
 </html>
