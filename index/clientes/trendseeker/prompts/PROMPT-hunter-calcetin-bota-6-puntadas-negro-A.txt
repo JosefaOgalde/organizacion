@@ -1,0 +1,44 @@
+PRODUCTO: Hunter Calcetín Bota 6 Puntadas Negro
+SKU: UAS3036AAB-BLK
+Link: https://trendseeker.cl/producto/hunter-calcetin-bota-6-puntadas-1/
+Foto HD (subir esta, es la de mejor definición): https://trendseeker.cl/wp-content/uploads/2023/07/UAS3036AAB-BLK-1-princ.jpg
+Público: ADULTO (mujer u hombre)
+Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
+Escena fija: INVIERNO · calcetín héroe con bota Hunter Original alta. El calcetín se ve por encima del caña (vuelta doblada).
+
+CARACTERÍSTICAS (no inventar otras):
+- Calcetín para bota Hunter, color NEGRO
+- Pierna con forro de vellón 100% poliéster
+- Vuelta que se dobla
+- Vuelta de punto de ochos (cable knit)
+- Diseñados para botas de agua altas Original
+- Logotipo de la marca en PVC en la vuelta
+- Color negro fiel a las fotos: hilo mate, no gris, no blanco, no rojo, no gloss
+
+DETALLE OBLIGATORIO EN CÁMARA (sí o sí, foto -princ.jpg):
+- Punto de ochos / cable knit nítido en la vuelta (relieve de trenzas, no calcetín liso)
+- Vuelta doblada sobre el borde de la bota Original
+- Logo Hunter en PVC en la vuelta (el real de la foto; no inventar otro)
+- Caña de calcetín negro mate de punto grueso
+- La bota Original es SOPORTE (caucho Hunter alto); el héroe es el calcetín
+
+VESTUARIO / MODELO:
+- Adulto, look de invierno (jeans o pantalón; la pierna del calcetín asoma sobre la bota)
+- Sin piel de tobillo a la vista: el calcetín cubre
+- Sin tipografía ni logos inventados; solo el PVC Hunter real
+
+CÓMO USAR EN GEMINI (VIDEO):
+1) Modo VIDEO (no imagen fija).
+2) Sube primero la FOTO HD UAS3036AAB-BLK-1-princ.jpg (y más ángulos si tienes).
+3) Pega este prompt en el mismo mensaje.
+4) Si sale liso, rojo o sin logo: reitera «punto de ochos + logo PVC Hunter en la vuelta negra, exactos de la foto princ».
+
+---
+VERSIÓN A — Video producto héroe · calcetín + bota Original (recomendado)
+---
+
+Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria: Hunter Calcetín Bota 6 Puntadas NEGRO (SKU UAS3036AAB-BLK). No rediseñes.
+
+OBLIGATORIO en al menos un plano nítido (y visible la mayor parte del video): la vuelta del calcetín doblada sobre el borde de una bota Hunter Original alta — 1) punto de ochos / cable knit con relieve, 2) logo Hunter en PVC en la vuelta, 3) tejido negro mate grueso, no liso. Si el calcetín es liso o falta el logo, el video no sirve.
+
+Acción: interior de entrada o calle de invierno. La persona se ajusta o camina; el calcetín es el héroe a la altura de la pantorrilla/borde de bota. Cámara baja, product-first. Ritmo comercial corto. Sin tipografía extra. Sin logos inventados.
