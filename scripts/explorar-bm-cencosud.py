@@ -49,6 +49,8 @@ SESSION_PATH = SECRETS / "bm-session.json"
 ESTRUCTURA_PATH = SECRETS / "bm-estructura.json"
 SCREENSHOT_PATH = SECRETS / "bm-screenshot.png"
 MAPA_SELECTORES_PATH = SECRETS / "bm-selectores.json"
+CAMPOS_REQUERIDOS_PUBLICACION = ("titulo", "descripcion", "ingredientes", "pasos")
+CAMPOS_FALTANTES_NO_BLOQUEANTES = {"ingredientes.skuCencosud"}
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -74,6 +76,25 @@ def load_env(path: Path) -> dict[str, str]:
         if os.environ.get(k):
             data[k] = os.environ[k]
     return data
+
+
+def errores_prepublicacion(receta: dict) -> list[str]:
+    errores = []
+    if receta.get("estado") != "listo-para-cargar":
+        errores.append(f"estado={receta.get('estado')!s} (se requiere listo-para-cargar)")
+
+    campos_faltantes = [
+        str(campo)
+        for campo in receta.get("camposFaltantes") or []
+        if str(campo).strip() and str(campo) not in CAMPOS_FALTANTES_NO_BLOQUEANTES
+    ]
+    if campos_faltantes:
+        errores.append("camposFaltantes=" + ", ".join(campos_faltantes))
+
+    vacios = [campo for campo in CAMPOS_REQUERIDOS_PUBLICACION if not receta.get(campo)]
+    if vacios:
+        errores.append("campos requeridos vacíos=" + ", ".join(vacios))
+    return errores
 
 
 def dump_estructura(page) -> dict:
@@ -262,24 +283,28 @@ def try_login(page, env: dict) -> None:
         print(f"Login automático parcial falló ({e}). Continúa a mano en el navegador.")
 
 
-def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> None:
-    def fill(key: str, value: str | None) -> None:
+def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> bool:
+    resultados = {}
+
+    def fill(key: str, value: str | None) -> bool:
         sel = selectores.get(key)
-        if not sel or value is None:
-            return
+        if not sel or value is None or value == "":
+            return False
         try:
             loc = page.locator(sel).first
             if loc.count():
                 loc.fill(str(value))
                 print(f"  ✓ {key}")
+                return True
             else:
                 print(f"  ✗ {key} (no encontrado: {sel})")
         except Exception as e:
             print(f"  ✗ {key}: {e}")
+        return False
 
     print("Rellenando desde JSON…")
-    fill("field_titulo", receta.get("titulo"))
-    fill("field_descripcion", receta.get("descripcion"))
+    resultados["titulo"] = fill("field_titulo", receta.get("titulo"))
+    resultados["descripcion"] = fill("field_descripcion", receta.get("descripcion"))
     fill("field_porciones", receta.get("porciones"))
     fill("field_dificultad", receta.get("dificultad"))
     fill("field_tiempo", receta.get("tiempoTotal"))
@@ -302,11 +327,11 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> Non
             ).strip()
             for i in ings
         )
-        fill("field_ingredientes", texto_ing)
+        resultados["ingredientes"] = fill("field_ingredientes", texto_ing)
     pasos = receta.get("pasos") or []
     if pasos:
         texto_pas = "\n".join(f"{p.get('orden')}. {p.get('texto')}" for p in pasos)
-        fill("field_pasos", texto_pas)
+        resultados["pasos"] = fill("field_pasos", texto_pas)
 
     if dry_run:
         btn = selectores.get("btn_guardar_borrador")
@@ -318,13 +343,26 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> Non
                 print(f"No se pudo guardar borrador: {e}")
         else:
             print("Dry-run: sin selector de borrador; campos rellenados, sin publicar.")
+        return True
     else:
+        fallos_requeridos = [
+            campo for campo in CAMPOS_REQUERIDOS_PUBLICACION if not resultados.get(campo, False)
+        ]
+        if fallos_requeridos:
+            print(
+                "Publicación abortada: falló el rellenado de campos requeridos: "
+                + ", ".join(fallos_requeridos),
+                file=sys.stderr,
+            )
+            return False
         btn = selectores.get("btn_publicar")
         if btn:
             page.locator(btn).first.click()
-            print("Clic en publicar.")
+            print("Solicitud de publicación enviada; confirma el resultado en BM.")
+            return True
         else:
-            print("Sin selector btn_publicar.")
+            print("Sin selector btn_publicar.", file=sys.stderr)
+            return False
 
 
 def main() -> int:
@@ -334,6 +372,24 @@ def main() -> int:
     ap.add_argument("--reuse-session", action="store_true", help="Reutilizar secrets/bm-session.json si existe")
     ap.add_argument("--timeout-ms", type=int, default=300_000, help="Espera máxima login manual")
     args = ap.parse_args()
+
+    receta = None
+    if args.publish and not args.fill_json:
+        print("--publish requiere --fill-json.", file=sys.stderr)
+        return 2
+    if args.fill_json:
+        path = args.fill_json.expanduser().resolve()
+        if not path.exists():
+            print(f"No existe JSON: {path}", file=sys.stderr)
+            return 1
+        receta = json.loads(path.read_text(encoding="utf-8"))
+        if args.publish:
+            errores_preflight = errores_prepublicacion(receta)
+            if errores_preflight:
+                print("Publicación bloqueada antes de abrir el navegador:", file=sys.stderr)
+                for error in errores_preflight:
+                    print(f"  - {error}", file=sys.stderr)
+                return 3
 
     SECRETS.mkdir(parents=True, exist_ok=True)
     env = load_env(ENV_PATH)
@@ -360,6 +416,7 @@ def main() -> int:
     print("4) Vuelve aquí y pulsa ENTER para capturar la estructura.")
     print()
 
+    resultado = 0
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
         context_kwargs = {"viewport": {"width": 1400, "height": 900}}
@@ -411,13 +468,12 @@ def main() -> int:
             print(f"  {k}: {v}")
 
         if args.fill_json:
-            path = args.fill_json.expanduser().resolve()
-            if not path.exists():
-                print(f"No existe JSON: {path}", file=sys.stderr)
-                browser.close()
-                return 1
-            receta = json.loads(path.read_text(encoding="utf-8"))
-            fill_from_receta(page, receta, sugeridos, dry_run=dry_run)
+            carga_exitosa = fill_from_receta(page, receta, sugeridos, dry_run=dry_run)
+            if not carga_exitosa:
+                resultado = 4
+            elif args.publish:
+                receta["estado"] = "cargado"
+                path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
             print("\nRevisa la ventana del BM. Si faltó algún campo, edita secrets/bm-selectores.json y reintenta.")
             print("Pulsa ENTER para cerrar el navegador…")
             try:
@@ -431,7 +487,7 @@ def main() -> int:
         "\nSiguiente: revisa bm-estructura.json y ajusta bm-selectores.json.\n"
         "Luego: python3 scripts/publicar-receta-cencosud.py out/….json --headed"
     )
-    return 0
+    return resultado
 
 
 if __name__ == "__main__":
