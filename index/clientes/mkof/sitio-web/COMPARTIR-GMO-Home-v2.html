@@ -44,12 +44,15 @@ header nav > ul > li{position:relative;cursor:pointer;}
 .has-drop{position:relative;display:inline-block;flex:0 0 auto;}
 .dropdown--fly{display:none;position:absolute;top:100%;left:0;right:auto;padding-top:14px;z-index:70;}
 .has-drop.is-open > .dropdown--fly{display:block;}
-.fly-box{display:grid;grid-template-columns:minmax(200px,1fr) minmax(220px,1.1fr);min-width:min(460px,calc(100vw - 32px));background:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;overflow:hidden;}
-.fly-cats{list-style:none;margin:0;padding:8px 0;display:block;border-right:1px solid rgba(14,43,34,0.1);}
+.fly-box{display:grid;grid-template-columns:minmax(220px,1fr);min-width:min(240px,calc(100vw - 32px));background:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;overflow:hidden;}
+.fly-box.has-sub{grid-template-columns:minmax(200px,1fr) minmax(220px,1.1fr);min-width:min(460px,calc(100vw - 32px));}
+.fly-cats{list-style:none;margin:0;padding:8px 0;display:block;border-right:none;}
+.fly-box.has-sub .fly-cats{border-right:1px solid rgba(14,43,34,0.1);}
 .fly-cat{display:block;}
 .fly-key{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;border:0;background:none;cursor:pointer;padding:11px 16px;font:inherit;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);text-align:left;}
 .fly-cat.is-on .fly-key{color:#5A7A28;}
-.fly-panels{padding:8px 0;}
+.fly-panels{display:none;padding:8px 0;}
+.fly-box.has-sub .fly-panels{display:block;}
 .fly-sub{display:none;list-style:none;margin:0;padding:0;}
 .fly-sub.is-on{display:block;}
 .fly-sub a{display:block;padding:11px 16px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
@@ -104,8 +107,8 @@ header nav > ul > li{position:relative;cursor:pointer;}
 }
 .hero-blob-c.is-on{/* compat: el loop CSS ya controla la visibilidad */}
 .hero-left h1,.hero-left h2,.hero-left p,.hero-left .cta-btn{max-width:540px;position:relative;z-index:1;}
-.hero-left h1{font-family:var(--serif);font-size:clamp(36px,4.5vw,48px);font-weight:800;line-height:1.08;letter-spacing:-0.5px;text-transform:uppercase;color:var(--cream);}
-.hero-left h2{font-family:var(--sans);font-size:clamp(16px,1.7vw,20px);font-weight:600;color:var(--green);margin-top:10px;font-style:normal;text-transform:none;line-height:1.4;position:relative;z-index:1;max-width:540px;}
+.hero-left h1{font-family:var(--serif);font-size:clamp(36px,4.5vw,48px);font-weight:800;line-height:1.08;letter-spacing:-0.5px;text-transform:uppercase;color:var(--green-soft);margin-top:12px;}
+.hero-left h2,.hero-left .hero-lead{font-family:var(--sans);font-size:clamp(13px,1.35vw,15px);font-weight:400;font-style:italic;color:rgba(247,243,231,0.88);margin-top:0;text-transform:none;line-height:1.5;position:relative;z-index:1;max-width:540px;}
 .hero-left p{font-size:15px;color:rgba(247,243,231,0.78);margin-top:14px;line-height:1.65;position:relative;z-index:1;max-width:540px;}
 .hero-left p,.hero-left .cta-btn{max-width:540px;}
 .cta-btn{margin-top:28px;background:var(--green);color:var(--dark);border:none;padding:14px 26px;border-radius:30px;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .25s ease, background .25s ease;width:fit-content;position:relative;z-index:1;}
@@ -410,16 +413,18 @@ header.is-scrolled {
 .hero-left h1,
 .hero-left h2,
 .hero-left p,
+.hero-left .hero-lead,
 .hero-left .cta-btn {
   opacity: 0;
 }
 .hero-left h1 {
   transform: translateY(120%) rotate(4deg);
-  animation: slamUp 0.9s var(--ease-spring) 0.55s forwards;
+  animation: slamUp 0.9s var(--ease-spring) 0.72s forwards;
 }
-.hero-left h2 {
+.hero-left h2,
+.hero-left .hero-lead {
   transform: translateX(-40px) skewX(12deg);
-  animation: slamSkew 0.8s var(--ease-out-expo) 0.72s forwards;
+  animation: slamSkew 0.8s var(--ease-out-expo) 0.55s forwards;
 }
 .hero-left p {
   transform: translateY(30px);
@@ -857,13 +862,13 @@ header.is-scrolled {
           <div class="dropdown--fly">
             <div class="fly-box">
               <ul class="fly-cats">
-                <li class="fly-cat is-on" data-fly="est"><button type="button" class="fly-key">Estrategia <span aria-hidden="true">›</span></button></li>
+                <li class="fly-cat" data-fly="est"><button type="button" class="fly-key">Estrategia <span aria-hidden="true">›</span></button></li>
                 <li class="fly-cat" data-fly="seo"><button type="button" class="fly-key">SEO &amp; GEO <span aria-hidden="true">›</span></button></li>
                 <li class="fly-cat" data-fly="prod"><button type="button" class="fly-key">Productos digitales <span aria-hidden="true">›</span></button></li>
                 <li class="fly-cat" data-fly="crea"><button type="button" class="fly-key">Creatividad y diseño <span aria-hidden="true">›</span></button></li>
               </ul>
               <div class="fly-panels">
-                <ul class="fly-sub is-on" data-fly="est">
+                <ul class="fly-sub" data-fly="est">
                   <li><a href="#servicios">Estrategia 360</a></li>
                   <li><a href="#servicios">Tendencias de mercado</a></li>
                   <li><a href="#servicios">Business Intelligence</a></li>
@@ -929,8 +934,8 @@ header.is-scrolled {
       <span class="hero-blob hero-blob-b"></span>
       <span class="hero-blob hero-blob-c"></span>
     </div>
+    <p class="hero-lead">Somos una empresa de marketing digital cuyo foco es ser un partner estratégico permanente para nuestros clientes</p>
     <h1>Making OF,</h1>
-    <h2>Somos una empresa de marketing digital cuyo foco es ser un partner estratégico permanente para nuestros clientes</h2>
     <button class="cta-btn" onclick="scrollToId('contacto')">Cuéntanos tu proyecto →</button>
   </div>
   <div class="hero-right">
@@ -1201,13 +1206,20 @@ burger.addEventListener('click', ()=> mobileMenu.classList.toggle('open'));
   if (!drop) return;
   const cats = drop.querySelectorAll('.fly-cat');
   const panels = drop.querySelectorAll('.fly-sub');
+  const box = drop.querySelector('.fly-box');
   let t;
   drop.classList.remove('is-open');
   function open(){ clearTimeout(t); drop.classList.add('is-open'); }
-  function closeSoon(){ clearTimeout(t); t = setTimeout(function(){ drop.classList.remove('is-open'); }, 200); }
+  function hideSub(){
+    cats.forEach(function(c){ c.classList.remove('is-on'); });
+    panels.forEach(function(p){ p.classList.remove('is-on'); });
+    if (box) box.classList.remove('has-sub');
+  }
+  function closeSoon(){ clearTimeout(t); t = setTimeout(function(){ drop.classList.remove('is-open'); hideSub(); }, 200); }
   function show(id){
     cats.forEach(function(c){ c.classList.toggle('is-on', c.getAttribute('data-fly') === id); });
     panels.forEach(function(p){ p.classList.toggle('is-on', p.getAttribute('data-fly') === id); });
+    if (box) box.classList.add('has-sub');
   }
   drop.addEventListener('mouseenter', open);
   drop.addEventListener('mouseleave', closeSoon);
