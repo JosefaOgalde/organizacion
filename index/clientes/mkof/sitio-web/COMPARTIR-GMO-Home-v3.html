@@ -136,13 +136,15 @@ header nav > ul > li{position:relative;cursor:pointer;}
 .logo-track{display:flex;align-items:center;gap:72px;width:max-content;animation:marquee 70s linear infinite;}
 .logo-marquee:hover .logo-track{animation-play-state:paused;}
 .logo-track img{height:58px;width:auto;max-width:160px;object-fit:contain;filter:grayscale(1);opacity:0.8;transition:opacity .25s ease, filter .25s ease, transform .3s ease;}
-.logo-marquee:hover .logo-track img{opacity:1;filter:grayscale(0);animation:logoBob 1.15s ease-in-out infinite;}
-.logo-marquee:hover .logo-track img:nth-child(even){animation-delay:.2s;}
-.logo-marquee:hover .logo-track img:nth-child(3n){animation-delay:.4s;}
-.logo-track img:hover{filter:grayscale(0);opacity:1;transform:scale(1.08);}
+.logo-track img:hover{filter:grayscale(0);opacity:1;animation:logoBob .75s ease-out 1;}
 @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-@keyframes logoBob{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-8px) scale(1.06);}}
-@media(prefers-reduced-motion:reduce){.logo-track{animation:none;}.logo-marquee:hover .logo-track img{animation:none;}}
+@keyframes logoBob{
+  0%{transform:translateY(0) scale(1);}
+  35%{transform:translateY(-10px) scale(1.08);}
+  70%{transform:translateY(-3px) scale(1.03);}
+  100%{transform:translateY(0) scale(1);}
+}
+@media(prefers-reduced-motion:reduce){.logo-track{animation:none;}.logo-track img:hover{animation:none;transform:scale(1.06);}}
 
 .servicios{padding:88px 24px 120px;text-align:center;background:var(--cream-soft);position:relative;}
 .servicios h2{font-family:var(--serif);font-size:clamp(30px,3.5vw,40px);font-weight:700;color:var(--dark);margin-bottom:8px;}
@@ -163,7 +165,9 @@ header nav > ul > li{position:relative;cursor:pointer;}
 .bento-card:focus-within .bento-front img{transform:scale(1.1);
   filter:grayscale(0.1) sepia(0.78) saturate(1.65) hue-rotate(60deg) brightness(0.66) contrast(1.1);}
 .bento-front::before{content:'';position:absolute;inset:0;background:#145233;mix-blend-mode:multiply;opacity:0.55;z-index:1;transition:opacity .4s ease;}
-.bento-front::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,70,45,0.15) 0%,rgba(14,55,36,0.45) 40%,rgba(10,42,28,0.88) 100%);z-index:1;}
+.bento-front::after{content:'';position:absolute;inset:0;z-index:1;background:
+  radial-gradient(ellipse 78% 62% at 100% 0%, rgba(143,201,58,0.48) 0%, rgba(143,201,58,0.16) 36%, transparent 64%),
+  linear-gradient(180deg,rgba(18,70,45,0.15) 0%,rgba(14,55,36,0.45) 40%,rgba(10,42,28,0.88) 100%);}
 .bento-card:hover .bento-front::before,
 .bento-card:focus-within .bento-front::before{opacity:0.7;}
 .bento-front svg,.bento-front h4,.bento-front p{position:relative;z-index:2;transition:opacity .35s ease, transform .4s ease;}
