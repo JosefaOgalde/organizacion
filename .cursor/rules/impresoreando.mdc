@@ -1,0 +1,15 @@
+---
+description: Impresoreando — leer CONTEXTO, no reexplorar
+globs:
+  - index/clientes/impresoreando/**
+  - data/impresoreando-*.json
+  - scripts/*impresoreando*
+  - docs/impresoreando/**
+alwaysApply: false
+---
+
+# Impresoreando
+
+Antes de tocar: `docs/impresoreando/CONTEXTO.md`. **No** reexplorar `panel.js` ni seed salvo bug.
+
+Pedidos `PED-00n` · ventas `I00000n` · solo ventas bajan deuda · «pagado»=venta · «fiado»/paga el DD=pedido + tarea cobro · cliente nuevo: nombre + origen (SIE=Nico · MKOF=Josefa).

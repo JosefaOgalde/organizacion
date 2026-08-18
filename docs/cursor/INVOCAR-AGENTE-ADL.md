@@ -1,5 +1,7 @@
 # Invocar agente ADL · CLA en Cursor
 
+Chat corto: `@adl-cla` + la tarea. Tokens: `docs/cursor/AHORRAR-TOKENS.md`.
+
 ## Forma más rápida (3 clics)
 
 ```mermaid
