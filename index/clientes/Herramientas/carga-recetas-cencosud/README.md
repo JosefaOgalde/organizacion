@@ -24,6 +24,10 @@ copy TU-RECETA.docx index\clientes\Herramientas\carga-recetas-cencosud\inbox\
 python scripts\parse-receta-word.py index\clientes\Herramientas\carga-recetas-cencosud\inbox\TU-RECETA.docx
 ```
 
+Si ya existe el JSON o el `.raw.txt` del mismo título, el parser se detiene sin modificar
+ninguno para proteger SKUs y ediciones manuales. Solo usa `--force` si quieres reemplazar
+ambos archivos de forma destructiva.
+
 ### 2) Explorar BM (scraping/mapeo local)
 
 ```bat
@@ -63,6 +67,8 @@ permite marcarlo como `publicado`. Así, volver a ejecutar por accidente no dupl
 solicitud ya enviada.
 
 Si un campo no se rellena: edita `secrets/bm-selectores.json` (selectores) y reintenta. También puedes re-explorar con el formulario abierto.
+Los campos editoriales y SEO usan selectores distintos; un botón combinado
+«Guardar y publicar» nunca se usa como guardado de borrador en `--dry-run`.
 
 ## Agente Cursor
 
