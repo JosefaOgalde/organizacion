@@ -771,7 +771,7 @@ header.is-scrolled {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 14px;
-  min-height: 280px;
+  min-height: 320px;
   align-items: start;
   padding-top: 28px;
 }
@@ -780,7 +780,7 @@ header.is-scrolled {
   position: absolute;
   left: 6%;
   right: 6%;
-  top: calc(28px + 18px + 59px - 12px); /* padding flow + padding step + mitad orb - mitad svg */
+  top: calc(28px + 18px + 78px - 12px); /* padding flow + padding step + mitad orb - mitad svg */
   width: 88%;
   height: 24px;
   z-index: 0;
@@ -856,8 +856,8 @@ header.is-scrolled {
 }
 .step-orb {
   position: relative;
-  width: 118px;
-  height: 118px;
+  width: 156px;
+  height: 156px;
   display: grid;
   place-items: center;
   margin-bottom: 8px;
@@ -870,18 +870,18 @@ header.is-scrolled {
   transition: transform 0.55s var(--ease-spring), border-color 0.35s ease, opacity 0.35s ease;
 }
 .step-core {
-  width: 100px;
-  height: 100px;
+  width: 138px;
+  height: 138px;
   border-radius: 50%;
   background: var(--green);
   color: var(--dark);
   display: grid;
   place-items: center;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 800;
   text-align: center;
   line-height: 1.15;
-  padding: 12px 10px;
+  padding: 14px 12px;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
   transition:
     transform 0.5s var(--ease-spring),
@@ -893,10 +893,11 @@ header.is-scrolled {
     box-shadow 0.35s ease;
 }
 .step-desc {
-  max-width: 150px;
+  max-width: 180px;
   min-height: 3.2em;
   margin-top: 6px;
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 600;
   line-height: 1.45;
   color: rgba(255, 255, 255, 0.7);
   opacity: 0;
@@ -930,12 +931,14 @@ header.is-scrolled {
 .flow-vanguard .step:hover .step-core,
 .flow-vanguard .step:focus-visible .step-core,
 .flow-vanguard .step.is-hot .step-core {
-  width: 112px;
-  height: 112px;
+  width: 150px;
+  height: 150px;
   border-radius: 28px;
   background: var(--cream);
   color: var(--dark);
   transform: rotate(-3deg);
+  font-size: 17px;
+  font-weight: 800;
   box-shadow: 0 16px 36px rgba(143, 201, 58, 0.35);
 }
 .flow-vanguard .step:hover .step-desc,
@@ -944,9 +947,9 @@ header.is-scrolled {
   opacity: 1;
   transform: none;
   color: #fff;
-  font-weight: 400;
+  font-weight: 600;
 }
-.flow-vanguard .step-desc strong { font-weight: 700; }
+.flow-vanguard .step-desc strong { font-weight: 800; }
 @keyframes ringPulse {
   0% { box-shadow: 0 0 0 0 rgba(143, 201, 58, 0.35); }
   70% { box-shadow: 0 0 0 16px rgba(143, 201, 58, 0); }

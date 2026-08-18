@@ -974,19 +974,19 @@ header.is-scrolled {
   .process{padding:110px 48px 100px;text-align:center;font-family:'Helvetica Neue',Arial,sans-serif;background:var(--cream-soft);scroll-margin-top:88px;}
   .process h2{font-family:'Georgia','Times New Roman',serif;font-size:32px;font-weight:700;margin-bottom:16px;color:#1b2b20;position:relative;z-index:1;}
   .process p{max-width:500px;margin:0 auto 56px;color:#555;position:relative;z-index:1;}
-  .flow{position:relative;max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:160px;}
+  .flow{position:relative;max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:200px;}
   .flow-line{position:absolute;top:50%;left:4%;right:4%;height:2px;background:repeating-linear-gradient(90deg,#c7d9b8 0,#c7d9b8 8px,transparent 8px,transparent 16px);z-index:0;transform:translateY(-50%);}
   .step{position:relative;flex:1;display:flex;justify-content:center;z-index:1;}
-  .step-dot{width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#a8d95c 0%,#8bc34a 55%,#7ab336 100%);color:#0f2b1f;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11.5px;letter-spacing:0.01em;text-align:center;cursor:pointer;padding:14px 10px;line-height:1.15;box-sizing:border-box;border:2px solid rgba(255,255,255,0.35);box-shadow:0 10px 24px rgba(15,43,31,0.18),0 3px 8px rgba(15,43,31,0.12),inset 0 1px 0 rgba(255,255,255,0.35);transition:width .35s ease,height .35s ease,border-radius .35s ease,background .35s ease,color .35s ease,padding .35s ease,box-shadow .35s ease,transform .35s ease;position:relative;z-index:1;}
+  .step-dot{width:136px;height:136px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#a8d95c 0%,#8bc34a 55%,#7ab336 100%);color:#0f2b1f;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;letter-spacing:0.01em;text-align:center;cursor:pointer;padding:16px 12px;line-height:1.15;box-sizing:border-box;border:2px solid rgba(255,255,255,0.35);box-shadow:0 10px 24px rgba(15,43,31,0.18),0 3px 8px rgba(15,43,31,0.12),inset 0 1px 0 rgba(255,255,255,0.35);transition:width .35s ease,height .35s ease,border-radius .35s ease,background .35s ease,color .35s ease,padding .35s ease,box-shadow .35s ease,transform .35s ease;position:relative;z-index:1;}
   .step-dot::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(139,195,74,0.35);pointer-events:none;opacity:0.7;}
-  .step-dot span.label{display:block;max-width:100%;padding:0 2px;}
-  .step-dot span.desc{position:absolute;opacity:0;font-size:11px;font-weight:400;line-height:1.4;padding:0 14px;transition:opacity .2s ease .1s;}
-  .step:hover .step-dot{width:180px;height:auto;min-height:108px;border-radius:22px;background:#0f2b1f;color:#fff;box-shadow:0 16px 36px rgba(15,43,31,.32);padding:16px 10px;transform:translateY(-4px);}
+  .step-dot span.label{display:block;max-width:100%;padding:0 2px;font-weight:800;}
+  .step-dot span.desc{position:absolute;opacity:0;font-size:14px;font-weight:600;line-height:1.35;padding:0 16px;transition:opacity .2s ease .1s;}
+  .step:hover .step-dot{width:210px;height:auto;min-height:148px;border-radius:24px;background:#0f2b1f;color:#fff;box-shadow:0 16px 36px rgba(15,43,31,.32);padding:18px 12px;transform:translateY(-4px);}
   .step:hover .step-dot::after{opacity:0;}
   .step:hover .step-dot span.label{opacity:0;position:absolute;}
-  .step:hover .step-dot span.desc{opacity:1;position:relative;font-weight:400;}
-.step-dot span.desc strong{font-weight:700;}
-  @media(max-width:700px){.step-dot{width:84px;height:84px;font-size:10.5px;padding:12px 8px;}}
+  .step:hover .step-dot span.desc{opacity:1;position:relative;font-weight:600;}
+.step-dot span.desc strong{font-weight:800;}
+  @media(max-width:700px){.step-dot{width:112px;height:112px;font-size:13.5px;padding:12px 8px;}}
   </style>
   <h2>Te acompañamos en</h2>
   <p>Desarrollamos tu estrategia digital, presupuestos y estructuras; optimizando los recursos.</p>
