@@ -17,25 +17,35 @@ CARACTERÍSTICAS (no inventar otras):
 - Bolsillos ribeteados con entrada inversa (anti-lluvia)
 - Puños ajustables con cierre a presión
 - Ajuste normal
-- Color y silueta fieles a las fotos: verde oliva Hunter, no negro, no rojo, no navy, no camuflaje
+- Color y silueta fieles a las fotos: verde oliva / forest green mate, no negro, no rojo, no navy, no camuflaje
+
+DETALLE OBLIGATORIO EN CÁMARA (sí o sí, foto de referencia del costado/frente):
+- Parche rectangular HUNTER rojo y blanco COSIDO en vertical en el borde superior del bolsillo (logo real del producto; no inventar otro)
+- Cierre frontal grueso de plástico BLANCO (chunky white zipper) a lo largo del pecho
+- Solapa cortavientos con SNAPS metálicos oscuros / circular dark metal
+- Bolsillo ribeteado grande, levemente en ángulo, con snap en la esquina
+- Canal / costura horizontal de cintura (cordón interno)
+- Tejido mate, liso, tipo rainwear; luz suave, sin destellos de gloss
 
 VESTUARIO / MODELO:
 - Mujer adulta, look urbano de transición (jeans, botas o zapatillas; la chaqueta manda)
-- Capucha puesta o lista para subir; cierre visible
-- Sin tipografía ni logos inventados fuera de los del producto real (franjas Hunter del cierre sí)
+- Capucha puesta o lista para subir; el torso/bolsillo/cierre DEBEN verse de cerca
+- Sin tipografía extra ni logos inventados; solo el parche Hunter y las franjas del cierre reales
 
 CÓMO USAR EN GEMINI (VIDEO):
 1) Modo VIDEO (no imagen fija).
-2) Sube primero las FOTOS DE PRODUCTO reales (frente, espalda, capucha, cierre, puños).
+2) Sube primero las FOTOS DE PRODUCTO, incluida la toma del bolsillo + parche Hunter + zipper blanco + snaps.
 3) Pega este prompt en el mismo mensaje.
-4) Si cambia el color o el corte: reitera «olive green Hunter exacto de las fotos, SKU WRO1345WAP-DOV».
+4) Si no sale el parche o el zipper blanco: reitera «muéstrame el parche HUNTER rojo/blanco en el bolsillo y el cierre blanco chunky, exactos de la foto».
 
 ---
 VERSIÓN A — Video producto héroe · lluvia urbana (recomendado)
 ---
 
-Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria: Chaqueta Impermeable Mujer Hunter OLIVE GREEN (costuras soldadas, solapa cortavientos con snaps, capucha con ajuste a presión, cordón de cintura, franjas Hunter en el cierre). No rediseñes: misma silueta, mismo verde oliva, mismos detalles. Prohibido: negro, rojo, navy, camuflaje, plumas, parka oversized que no coincida con las fotos.
+Genera un VIDEO publicitario fotorrealista corto. Usa las fotos de producto adjuntas como referencia obligatoria: Chaqueta Impermeable Mujer Hunter OLIVE GREEN mate. No rediseñes.
 
-Acción: día de lluvia continua en ciudad. Una mujer camina con la capucha puesta; el agua resbala por el tejido olive green. Sube o ajusta el cierre; se ve la solapa cortavientos. La chaqueta es el héroe absoluto del plano. Gotas sobre hombros y capucha demuestran impermeabilidad. Ritmo comercial corto.
+OBLIGATORIO en al menos un plano nítido (y visible la mayor parte del video): el costado/frente de la chaqueta como en la foto de detalle — 1) parche vertical HUNTER rojo y blanco en el borde del bolsillo, 2) zipper chunky BLANCO, 3) snaps metálicos oscuros en la solapa cortavientos, 4) bolsillo ribeteado en ángulo con snap, 5) canal de cintura. Si falta el parche o el zipper blanco, el video no sirve.
 
-Cámara: product-first (planos de torso/capucha/cierre, no solo cara). Calle mojada, cielo gris. Sin tipografía ni logos inventados.
+Acción: día de lluvia continua en ciudad. Una mujer camina; el agua resbala por el olive green mate. Cámara baja/media al torso: se lee el parche Hunter, el zipper blanco y los snaps. Puede ajustar el cierre o meter la mano cerca del bolsillo para mostrar esos detalles. Ritmo comercial corto.
+
+Cámara: product-first al pecho/cintura, no solo cara. Calle mojada, cielo gris, luz suave. Sin tipografía extra. Sin logos inventados.
