@@ -153,7 +153,6 @@ class PublicarRecetaTests(unittest.TestCase):
                 patch.object(self.modulo, "load_env", return_value=env),
                 patch.object(self.modulo, "load_selectores", return_value=self.selectores),
                 patch.object(self.modulo, "SESSION_PATH", tmp_path / "session.json"),
-                patch.object(self.modulo, "DEBUG_LOG_PATH", tmp_path / "debug.log"),
                 patch.object(sys, "argv", argv),
                 patch.dict(sys.modules, runtime.modulos()),
                 contextlib.redirect_stdout(io.StringIO()),
@@ -168,6 +167,8 @@ class PublicarRecetaTests(unittest.TestCase):
         casos = [
             {**self.receta_valida, "estado": "borrador"},
             {**self.receta_valida, "camposFaltantes": ["descripcion"]},
+            {**self.receta_valida, "estado": "cargado"},
+            {**self.receta_valida, "estado": "publicado"},
         ]
 
         for receta in casos:
@@ -176,6 +177,18 @@ class PublicarRecetaTests(unittest.TestCase):
                 self.assertEqual(exit_code, 3)
                 self.assertEqual(runtime.lanzamientos, 0)
                 self.assertEqual(guardada["estado"], receta["estado"])
+
+    def test_sku_faltante_no_bloquea_publicacion(self):
+        receta = {
+            **self.receta_valida,
+            "camposFaltantes": ["ingredientes.skuCencosud"],
+        }
+
+        exit_code, runtime, guardada = self.ejecutar(receta)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(runtime.clicks, ["#publicar"])
+        self.assertEqual(guardada["estado"], "cargado")
 
     def test_publicacion_aborta_si_falla_rellenado_requerido(self):
         exit_code, runtime, guardada = self.ejecutar(
