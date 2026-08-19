@@ -5,6 +5,7 @@
 | Tecnología sin integración (NL 1 ago) | `COPY-tecnologia-sin-integracion.txt` ← versión enviada al cliente |
 | Equipos en terreno / ART 23 (NL 2 ago) | `COPY-equipos-en-terreno.txt` · espejo `../COPY-ART23-equipos-en-terreno.txt` |
 | Invertir en talento / ART 24 (NL 1 sep) | `COPY-invertir-en-talento.txt` |
+| Navidad empieza antes / ART 25 (NL 2 sep) | `COPY-navidad-empieza-antes.txt` |
 
 **Formato oficial:** [FORMATO-COPYS-ECR.md](./FORMATO-COPYS-ECR.md)
 
