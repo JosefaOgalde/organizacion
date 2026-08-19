@@ -19,6 +19,7 @@ No confundir con ECR: las portadas de newsletter ECR van en Midjourney (`index/c
 - `PROMPT-c08-chelsea-commando-negras-mujer-{A,B,C}.txt` — C8/12 Chelsea Commando negras: día de invierno con lluvia, producto héroe (video Gemini).
 - `PROMPT-c09-play-bajas-rojo-mujer-{A,B,C,D}.txt` — C9/12 Play bajas rojo: A tracking día · B umbral · C splash slow-mo · D cenital (escenas bien distintas).
 - `PROMPT-c11-gardener-corta-verde-oliva-{A,B,C}.txt` — C11/12 Gardener corto verde oliva (WFS2018RMA-DOC): invierno en huerto/jardín campestre; zona cavar + talón relieve (video Gemini).
+- `PROMPT-calcetines-hunter-bota-parche.txt` — Calcetines bota Hunter: video Gemini con parche PVC HUNTER obligatorio (no borrar / no tratarlo como watermark).
 - `indice.json` — índice visible en la landing del cliente.
 
 ## Copys de video

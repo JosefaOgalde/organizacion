@@ -3,6 +3,17 @@
   "nota": "Prompts Trendseeker Gemini VIDEO — cada contenido tiene TXT A/B/C editables por separado.",
   "items": [
     {
+      "id": "calcetines-hunter-bota-parche",
+      "titulo": "Calcetines bota Hunter · parche HUNTER",
+      "archivo": "prompts/PROMPT-calcetines-hunter-bota-parche.txt",
+      "descripcion": "VIDEO Gemini: calcetín bota rojo y/o negro 6 puntadas. El parche PVC HUNTER (blanco + letras negras) debe verse nítido en todos los frames; no tratarlo como watermark.",
+      "tipo": "video-gemini",
+      "productos": [
+        "https://trendseeker.cl/producto/hunter-calcetin-bota-rojo/",
+        "https://trendseeker.cl/producto/hunter-calcetin-bota-6-puntadas-1/"
+      ]
+    },
+    {
       "id": "banner-accesorios-hunter-40off",
       "titulo": "Banner · Accesorios Hunter 40% OFF",
       "archivo": "copys/COPY-banner-accesorios-hunter-40off.txt",
