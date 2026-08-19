@@ -1164,6 +1164,27 @@ html.is-pointer .gmo-site-spot {
 
 
 </style>
+<style>
+/* v5 · misma estructura del mock: caras a la izquierda, copy a la derecha */
+.hero{
+  grid-template-columns:1.12fr minmax(280px,0.88fr) !important;
+}
+.hero-right{
+  order:-1;
+}
+.hero-left{
+  padding:56px calc(max(0px,(100vw - 1180px)/2) + 40px) 56px 36px !important;
+  justify-content:center;
+}
+.hero-right::before{
+  background:linear-gradient(270deg,var(--dark) 0%,transparent 34%) !important;
+}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr !important;}
+  .hero-right{order:0;}
+  .hero-left{order:0;padding:40px 24px !important;}
+}
+</style>
 </head>
 <body>
 
