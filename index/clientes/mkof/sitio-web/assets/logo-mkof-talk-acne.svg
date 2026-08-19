@@ -1,35 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 206 186" role="img" aria-label="MKOF Talk Acne">
-  <g fill="#EFE9D8">
-    <rect x="16" y="14" width="7" height="42"/>
-    <rect x="45" y="14" width="7" height="42"/>
-    <polygon points="23,14 28,14 45,56 40,56"/>
-    <rect x="62" y="14" width="7" height="42"/>
-    <polygon points="74,35 98,14 98,23 80,35"/>
-    <polygon points="74,35 80,35 98,47 98,56"/>
-    <path fill-rule="evenodd" d="M108 14h36v42h-36zM115 21h22v28h-22z"/>
-    <rect x="154" y="14" width="7" height="42"/>
-    <rect x="154" y="14" width="36" height="7"/>
-    <rect x="154" y="31.5" width="27" height="7"/>
-    <rect x="2" y="89" width="16" height="8"/>
-    <rect x="16" y="72" width="36" height="7"/>
-    <rect x="30.5" y="72" width="7" height="42"/>
-    <polygon points="62,114 71,114 83.5,72 76.5,72"/>
-    <polygon points="98,114 89,114 76.5,72 83.5,72"/>
-    <rect x="108" y="72" width="7" height="42"/>
-    <rect x="108" y="107" width="36" height="7"/>
-    <rect x="154" y="72" width="7" height="42"/>
-    <polygon points="166,93 190,72 190,81 172,93"/>
-    <polygon points="166,93 172,93 190,105 190,114"/>
-    <polygon points="16,172 25,172 37.5,130 30.5,130"/>
-    <polygon points="52,172 43,172 30.5,130 37.5,130"/>
-    <rect x="62" y="130" width="36" height="7"/>
-    <rect x="62" y="130" width="7" height="42"/>
-    <rect x="62" y="165" width="36" height="7"/>
-    <rect x="108" y="130" width="7" height="42"/>
-    <rect x="137" y="130" width="7" height="42"/>
-    <polygon points="115,130 120,130 137,172 132,172"/>
-    <rect x="154" y="130" width="36" height="7"/>
-    <rect x="154" y="147.5" width="36" height="7"/>
-    <rect x="154" y="165" width="36" height="7"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 188 158" fill="#EFE9D8" aria-hidden="true">
+  <!-- MKOF -->
+  <rect x="2" y="4" width="7" height="40"/>
+  <rect x="36" y="4" width="7" height="40"/>
+  <polygon points="9,4 16,4 22.5,44 15.5,44"/>
+  <polygon points="36,4 29,4 22.5,44 29.5,44"/>
+  <rect x="52" y="4" width="7" height="40"/>
+  <polygon points="59,22 67,22 88,4 88,13"/>
+  <polygon points="59,22 67,22 88,44 88,35"/>
+  <path fill-rule="evenodd" d="M100 4h38v40h-38zM107 11h24v26h-24z"/>
+  <rect x="148" y="4" width="7" height="40"/>
+  <rect x="148" y="4" width="38" height="7"/>
+  <rect x="148" y="20.5" width="28" height="7"/>
+  <!-- -TALK -->
+  <rect x="2" y="74" width="14" height="7"/>
+  <rect x="22" y="62" width="38" height="7"/>
+  <rect x="37.5" y="62" width="7" height="40"/>
+  <polygon points="70,102 78,102 89,62 81,62"/>
+  <polygon points="108,102 100,102 89,62 97,62"/>
+  <rect x="118" y="62" width="7" height="40"/>
+  <rect x="118" y="95" width="34" height="7"/>
+  <rect x="160" y="62" width="7" height="40"/>
+  <polygon points="167,80 175,80 186,62 186,71"/>
+  <polygon points="167,80 175,80 186,102 186,93"/>
+  <!-- ACNE -->
+  <polygon points="10,154 18,154 29,114 21,114"/>
+  <polygon points="48,154 40,154 29,114 37,114"/>
+  <rect x="62" y="114" width="7" height="40"/>
+  <rect x="62" y="114" width="34" height="7"/>
+  <rect x="62" y="147" width="34" height="7"/>
+  <rect x="108" y="114" width="7" height="40"/>
+  <rect x="137" y="114" width="7" height="40"/>
+  <polygon points="115,114 122,114 137,154 130,154"/>
+  <rect x="152" y="114" width="34" height="7"/>
+  <rect x="152" y="130.5" width="34" height="7"/>
+  <rect x="152" y="147" width="34" height="7"/>
 </svg>
