@@ -153,13 +153,25 @@ header nav > ul > li{position:relative;cursor:pointer;}
 
 .intro{padding:110px 24px 130px;max-width:none;width:100%;margin:0;text-align:center;font-size:17px;color:var(--text);opacity:1!important;transform:none!important;filter:none!important;background:transparent;}
 .intro p{max-width:760px;margin:0 auto;}
-/* v5: mismo lima+negrita que v4, pintado de abajo hacia arriba (v4 es de izquierda a derecha) */
-.intro mark,.servicios-intro mark,.stats-band mark{background:linear-gradient(0deg,var(--green),var(--green));background-size:100% 0%;background-repeat:no-repeat;background-position:center bottom;padding:0 3px;border-radius:2px;font-weight:700;color:var(--text);box-decoration-break:clone;-webkit-box-decoration-break:clone;}
-.stats-band mark{color:#fff;}
+/* v5: lima+negrita; pintado de abajo hacia arriba (intro, servicios y 11 años) */
+.intro mark,.servicios-intro mark,.stats-band mark{
+  background-color:transparent;
+  background-image:linear-gradient(0deg,var(--green),var(--green));
+  background-size:100% 0.01%;
+  background-repeat:no-repeat;
+  background-position:center bottom;
+  padding:0 3px;
+  border-radius:2px;
+  font-weight:700;
+  color:var(--text);
+  box-decoration-break:clone;
+  -webkit-box-decoration-break:clone;
+}
+.stats-band mark{color:#fff;transition:color .35s ease;}
 .intro mark.is-filled,.servicios-intro mark.is-filled,.stats-band mark.is-filled{animation:introMarkRise 1.05s cubic-bezier(.2,.7,.2,1) forwards;}
 .stats-band mark.is-filled{color:var(--dark);}
 @keyframes introMarkRise{
-  0%{background-size:100% 0%;}
+  0%{background-size:100% 0.01%;}
   70%{background-size:100% 108%;}
   100%{background-size:100% 100%;}
 }
@@ -644,35 +656,6 @@ header.is-scrolled {
   margin: 0 auto;
   opacity: 1;
   transform: none;
-}
-.stats-band .w {
-  display: inline;
-  opacity: 0;
-  filter: blur(3px);
-  transform: translateY(0.3em);
-  transition:
-    opacity 0.22s ease,
-    filter 0.22s ease,
-    transform 0.25s var(--ease-out-expo);
-}
-.stats-band.is-words .w.is-on {
-  opacity: 1;
-  filter: none;
-  transform: none;
-}
-.stats-band strong .w {
-  color: inherit;
-}
-.stats-band:not(.is-ready) .w {
-  opacity: 1;
-  filter: none;
-  transform: none;
-}
-.stats-band.is-ready:not(.is-words) .w,
-.stats-band.is-ready.is-words .w:not(.is-on) {
-  opacity: 0;
-  filter: blur(3px);
-  transform: translateY(0.3em);
 }
 
 .logos,
@@ -1390,7 +1373,7 @@ html.is-pointer .gmo-site-spot {
   </div>
 </section>
 
-<section class="stats-band" data-reveal="scale">
+<section class="stats-band" data-reveal>
   <p>Contamos con <mark>11 años de experiencia</mark> en la evolución del marketing digital, con un completo y dedicado equipo profesional, en Chile y en el extranjero, que nos permite dar una experiencia inmejorable en el aporte de valor a tu empresa.</p>
 </section>
 
@@ -1673,11 +1656,15 @@ document.getElementById('contactForm')?.addEventListener('submit', function(e){
     if (!marks.length) return;
     root.dataset.marksPainted = '1';
     marks.forEach((m, i) => {
+      m.classList.remove('is-filled');
       if (instant) {
         m.classList.add('is-filled');
         return;
       }
-      window.setTimeout(() => m.classList.add('is-filled'), i * 320);
+      window.setTimeout(() => {
+        void m.offsetWidth;
+        m.classList.add('is-filled');
+      }, i * 320);
     });
   }
 
