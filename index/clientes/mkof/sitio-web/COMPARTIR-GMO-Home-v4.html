@@ -434,6 +434,20 @@ header.is-scrolled {
   transform: none !important;
   filter: none !important;
 }
+.process[data-reveal],
+.process[data-reveal].is-in {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  background: #fff !important;
+}
+.logos[data-reveal],
+.logos[data-reveal].is-in {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  background: #fff !important;
+}
 
 [data-reveal="left"] {
   transform: translateX(-80px) rotate(-4deg);
@@ -672,15 +686,7 @@ header.is-scrolled {
 }
 
 .logos {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.8s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
-}
-.logos.is-in {
-  opacity: 1;
-  transform: none;
-  filter: none;
-  will-change: auto;
+  background: #fff;
 }
 .logos.is-in .logo-marquee,
 .logos--clientes.is-in .logo-marquee {
@@ -1262,7 +1268,7 @@ html.is-pointer .gmo-site-spot {
 
 <section class="process" data-reveal id="proceso">
   <style>
-  .process{padding:110px 48px 100px;text-align:center;font-family:var(--sans);background:var(--cream-soft);scroll-margin-top:88px;}
+  .process{padding:110px 48px 100px;text-align:center;font-family:var(--sans);background:#fff;scroll-margin-top:88px;}
   .process h2{font-family:var(--serif);font-size:32px;font-weight:700;margin-bottom:16px;color:#1b2b20;position:relative;z-index:1;}
   .process p{max-width:500px;margin:0 auto 56px;color:#555;position:relative;z-index:1;}
   .flow{position:relative;max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:200px;}
