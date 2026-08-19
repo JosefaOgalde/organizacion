@@ -1690,13 +1690,24 @@ document.getElementById('contactForm')?.addEventListener('submit', function(e){
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
         entry.target.classList.add('is-in');
-        paintIfMarks(entry.target, false);
         io.unobserve(entry.target);
       });
     },
     { threshold: 0.1, rootMargin: '0px 0px -10% 0px' }
   );
   document.querySelectorAll(watch).forEach((el) => io.observe(el));
+
+  const markIo = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        paintIfMarks(entry.target, false);
+        markIo.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.45, rootMargin: '0px 0px -8% 0px' }
+  );
+  document.querySelectorAll('.intro, .servicios-intro, .stats-band').forEach((el) => markIo.observe(el));
 
   /* Video caras: salta frames iniciales raros del loop */
   const video = document.querySelector('.hero-video');
