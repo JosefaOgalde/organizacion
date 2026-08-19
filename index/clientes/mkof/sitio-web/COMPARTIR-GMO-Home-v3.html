@@ -456,7 +456,16 @@ header.is-scrolled {
   transform: none;
 }
 
-/* Hero: split + slam */
+/* Hero: split + slam — título visible si la animación no corre */
+.hero-left h1,
+.hero-left h2,
+.hero-left p,
+.hero-left .hero-lead,
+.hero-left .hero-partner,
+.hero-left .cta-btn {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
 .hero-left h1,
 .hero-left h2,
 .hero-left p,
@@ -474,6 +483,7 @@ header.is-scrolled {
 .hero-left .hero-partner {
   transform: translateX(-40px) skewX(12deg);
   animation: slamSkew 0.8s var(--ease-out-expo) 0.72s forwards;
+}
 }
 .hero-left p:not(.hero-lead):not(.hero-partner) {
   transform: translateY(30px);
