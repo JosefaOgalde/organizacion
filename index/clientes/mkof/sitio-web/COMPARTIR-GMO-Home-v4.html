@@ -753,13 +753,22 @@ header.is-scrolled {
   transform: none;
 }
 
-/* Contacto CTA centrado */
-.contacto[data-reveal] {
-  opacity: 0;
-  transform: translateY(40px) scale(0.98);
-  transition: opacity 0.8s var(--ease-out-expo), transform 0.85s var(--ease-spring);
-}
+/* Contacto: fondo verde siempre; no mostrar cream del body al scrollear */
+.contacto[data-reveal],
 .contacto[data-reveal].is-in {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  background: var(--dark);
+}
+.contacto h2,
+.contacto p {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+}
+.contacto.is-in h2,
+.contacto.is-in p {
   opacity: 1;
   transform: none;
 }
