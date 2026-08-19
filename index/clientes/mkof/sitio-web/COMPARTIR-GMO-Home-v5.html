@@ -47,15 +47,15 @@ header nav > ul{display:flex;gap:28px;list-style:none;font-size:14px;font-weight
 header nav > ul > li{position:relative;cursor:pointer;}
 .has-drop{position:static;}
 .has-drop.is-open,.has-drop:hover,.has-drop:focus-within{color:var(--dark);}
-/* Mega a la derecha, bajo el menú; el copy del banner queda más abajo para no tapar MAKING OF. */
-.dropdown--mega{display:grid;position:absolute;top:calc(100% + 6px);left:auto;right:16px;width:min(720px,calc(100vw - 32px));max-width:720px;margin:0;padding:18px 20px 20px;background:#fff;box-shadow:0 18px 48px rgba(14,43,34,0.16);border-radius:14px;z-index:70;grid-template-columns:repeat(4,minmax(140px,1fr));gap:10px 16px;border:2px solid var(--green);opacity:0;visibility:hidden;pointer-events:none;transform:translateY(14px) scale(.97);transform-origin:top right;transition:opacity .28s ease,transform .35s cubic-bezier(.34,1.4,.64,1),visibility .28s;}
+/* Mega compacto a la derecha: baja desde el nav pero se corta antes del MAKING OF centrado. */
+.dropdown--mega{display:grid;position:absolute;top:calc(100% + 4px);left:auto;right:16px;width:min(680px,calc(100vw - 32px));max-width:680px;max-height:calc(min(78vh,640px) * 0.5 - 88px);overflow:auto;margin:0;padding:8px 10px 10px;background:#fff;box-shadow:0 18px 48px rgba(14,43,34,0.16);border-radius:12px;z-index:70;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px 10px;border:2px solid var(--green);opacity:0;visibility:hidden;pointer-events:none;transform:translateY(10px) scale(.97);transform-origin:top right;transition:opacity .28s ease,transform .35s cubic-bezier(.34,1.4,.64,1),visibility .28s;}
 .has-drop.is-open > .dropdown--mega,.has-drop:hover > .dropdown--mega,.has-drop:focus-within > .dropdown--mega{opacity:1;visibility:visible;pointer-events:auto;transform:none;}
-.mega-col{padding:8px 10px;border-radius:12px;transition:background .25s ease;}
+.mega-col{padding:4px 6px;border-radius:8px;transition:background .25s ease;}
 .mega-col:hover{background:rgba(143,201,58,0.12);}
-.mega-col p{margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);}
-.mega-col a{display:block;padding:8px 12px;margin:0 -4px;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text);border-radius:8px;transition:background .2s ease,color .2s ease,transform .2s ease,box-shadow .2s ease;}
-.mega-col a:hover{background:var(--green);color:var(--dark);transform:translateX(6px);box-shadow:0 6px 16px rgba(143,201,58,0.35);}
-@media(max-width:900px){.dropdown--mega{grid-template-columns:1fr 1fr;width:min(520px,calc(100vw - 32px));left:auto;right:16px;}}
+.mega-col p{margin:0 0 4px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);}
+.mega-col a{display:block;padding:3px 6px;margin:0;font-size:11px;line-height:1.25;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text);border-radius:6px;transition:background .2s ease,color .2s ease,transform .2s ease,box-shadow .2s ease;}
+.mega-col a:hover{background:var(--green);color:var(--dark);transform:translateX(4px);box-shadow:0 4px 12px rgba(143,201,58,0.35);}
+@media(max-width:900px){.dropdown--mega{grid-template-columns:repeat(4,minmax(0,1fr));width:min(96vw,calc(100vw - 16px));right:8px;}}
 .burger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;}
 .burger span{width:24px;height:2px;background:var(--dark);}
 .mobile-menu{display:none;flex-direction:column;gap:0;background:var(--cream);border-top:1px solid rgba(0,0,0,0.06);}
@@ -1199,8 +1199,8 @@ html.is-pointer .gmo-site-spot {
   order:-1;
 }
 .hero-left{
-  padding:120px calc(max(0px,(100vw - 1180px)/2) + 40px) 72px 36px !important;
-  justify-content:flex-end;
+  padding:56px calc(max(0px,(100vw - 1180px)/2) + 40px) 56px 36px !important;
+  justify-content:center;
 }
 .hero-right::before{
   background:linear-gradient(270deg,var(--dark) 0%,transparent 34%) !important;
