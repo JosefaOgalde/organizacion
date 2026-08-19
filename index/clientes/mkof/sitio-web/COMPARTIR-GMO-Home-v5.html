@@ -1661,10 +1661,19 @@ document.getElementById('contactForm')?.addEventListener('submit', function(e){
         m.classList.add('is-filled');
         return;
       }
-      window.setTimeout(() => {
-        void m.offsetWidth;
-        m.classList.add('is-filled');
-      }, i * 320);
+      const mio = new IntersectionObserver(
+        (entries) => {
+          const hit = entries.some((e) => e.isIntersecting && e.intersectionRatio >= 0.55);
+          if (!hit) return;
+          mio.disconnect();
+          window.setTimeout(() => {
+            void m.offsetWidth;
+            m.classList.add('is-filled');
+          }, i * 320);
+        },
+        { threshold: [0.55, 0.8, 1] }
+      );
+      mio.observe(m);
     });
   }
 
@@ -1697,17 +1706,9 @@ document.getElementById('contactForm')?.addEventListener('submit', function(e){
   );
   document.querySelectorAll(watch).forEach((el) => io.observe(el));
 
-  const markIo = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        paintIfMarks(entry.target, false);
-        markIo.unobserve(entry.target);
-      });
-    },
-    { threshold: 0.45, rootMargin: '0px 0px -8% 0px' }
-  );
-  document.querySelectorAll('.intro, .servicios-intro, .stats-band').forEach((el) => markIo.observe(el));
+  document.querySelectorAll('.intro, .servicios-intro, .stats-band').forEach((el) => {
+    paintIfMarks(el, false);
+  });
 
   /* Video caras: salta frames iniciales raros del loop */
   const video = document.querySelector('.hero-video');
