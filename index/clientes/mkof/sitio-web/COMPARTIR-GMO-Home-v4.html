@@ -116,6 +116,15 @@ header nav > ul > li{position:relative;cursor:pointer;}
   z-index:1;
 }
 .hero-left .cta-btn{display:none!important;}
+.hero-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;position:relative;z-index:1;width:fit-content;max-width:100%;}
+.hero-pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  margin:0;padding:8px 18px;border-radius:999px;
+  border:1px solid rgba(247,243,231,0.72);
+  background:transparent;color:rgba(247,243,231,0.96);
+  font-family:var(--serif);font-size:clamp(12px,1.15vw,14px);font-weight:500;
+  letter-spacing:0.01em;line-height:1.2;white-space:nowrap;
+}
 
 .hero-left h2,.hero-left .hero-lead{font-family:var(--sans);font-size:clamp(13px,1.35vw,15px);font-weight:400;font-style:italic;color:rgba(247,243,231,0.88);margin-top:12px;text-transform:none;line-height:1.5;position:relative;z-index:1;max-width:min(640px,100%);}
 .hero-left .hero-partner{
@@ -513,6 +522,7 @@ header.is-scrolled {
 .hero-left p,
 .hero-left .hero-lead,
 .hero-left .hero-partner,
+.hero-left .hero-pills,
 .hero-left .cta-btn {
   opacity: 1;
 }
@@ -522,6 +532,7 @@ header.is-scrolled {
 .hero-left p,
 .hero-left .hero-lead,
 .hero-left .hero-partner,
+.hero-left .hero-pills,
 .hero-left .cta-btn {
   opacity: 0;
 }
@@ -534,6 +545,10 @@ header.is-scrolled {
 .hero-left .hero-partner {
   transform: translateX(-40px) skewX(12deg);
   animation: slamSkew 0.8s var(--ease-out-expo) 0.72s forwards;
+}
+.hero-left .hero-pills {
+  transform: translateY(18px);
+  animation: fadeClear 0.7s ease 0.95s forwards;
 }
 }
 .hero-left p:not(.hero-lead):not(.hero-partner) {
@@ -1254,6 +1269,10 @@ html.is-pointer .gmo-site-spot {
     </div>
     <h1>MAKING OF</h1>
     <p class="hero-partner">your next business partner</p>
+    <div class="hero-pills">
+      <span class="hero-pill">Estrategia + Data</span>
+      <span class="hero-pill">Creatividad + Performance</span>
+    </div>
   </div>
   <div class="hero-right">
     <video class="hero-video" autoplay muted loop playsinline preload="auto">
