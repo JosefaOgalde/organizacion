@@ -156,11 +156,8 @@ header nav > ul > li{position:relative;cursor:pointer;}
 
 .intro{padding:110px 24px 130px;max-width:none;width:100%;margin:0;text-align:center;font-size:17px;color:var(--text);opacity:1!important;transform:none!important;filter:none!important;background:#fff;}
 .intro p{max-width:760px;margin:0 auto;}
-.intro mark{background:linear-gradient(90deg,var(--green),var(--green));background-size:0% 100%;background-repeat:no-repeat;padding:0 3px;border-radius:2px;transition:background-size .7s cubic-bezier(.22,1,.36,1);box-decoration-break:clone;-webkit-box-decoration-break:clone;}
-.intro.is-in mark{background-size:100% 100%;}
-.intro.is-in mark:nth-of-type(1){transition-delay:.1s;}
-.intro.is-in mark:nth-of-type(2){transition-delay:.35s;}
-.intro.is-in mark:nth-of-type(3){transition-delay:.6s;}
+.intro mark{background:linear-gradient(90deg,var(--green),var(--green));background-size:0% 100%;background-repeat:no-repeat;background-position:left center;padding:0 3px;border-radius:2px;transition:background-size .75s cubic-bezier(.22,1,.36,1);box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+.intro mark.is-filled{background-size:100% 100%;}
 .eyebrow{display:flex;align-items:center;justify-content:center;gap:12px;margin:56px auto 24px;color:var(--teal);font-size:12px;font-weight:700;letter-spacing:1px;}
 .eyebrow::before,.eyebrow::after{content:'';height:1px;width:44px;background:rgba(79,167,154,0.35);}
 
@@ -1611,6 +1608,17 @@ document.getElementById('contactForm')?.addEventListener('submit', function(e){
   const watch =
     '[data-reveal], [data-stagger], .flow, .stats-band, .logos, .servicios, .bento, #faqList, .contacto, .flip-grid';
 
+  function paintIntroMarks(root, instant) {
+    const marks = root.querySelectorAll('mark');
+    marks.forEach((m, i) => {
+      if (instant) {
+        m.classList.add('is-filled');
+        return;
+      }
+      window.setTimeout(() => m.classList.add('is-filled'), i * 620);
+    });
+  }
+
   if (reduce) {
     document.querySelectorAll(watch).forEach((el) => el.classList.add('is-in'));
     const bandR = document.querySelector('.stats-band');
@@ -1618,6 +1626,8 @@ document.getElementById('contactForm')?.addEventListener('submit', function(e){
       bandR.classList.add('is-in', 'is-words', 'is-ready');
       bandR.querySelectorAll('.w').forEach((w) => w.classList.add('is-on'));
     }
+    const introR = document.querySelector('.intro');
+    if (introR) paintIntroMarks(introR, true);
     return;
   }
 
@@ -1626,10 +1636,11 @@ document.getElementById('contactForm')?.addEventListener('submit', function(e){
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
         entry.target.classList.add('is-in');
+        if (entry.target.classList.contains('intro')) paintIntroMarks(entry.target, false);
         io.unobserve(entry.target);
       });
     },
-    { threshold: 0.1, rootMargin: '0px 0px -10% 0px' }
+    { threshold: 0.28, rootMargin: '0px 0px -8% 0px' }
   );
   document.querySelectorAll(watch).forEach((el) => io.observe(el));
 
