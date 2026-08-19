@@ -1246,65 +1246,34 @@ html.is-pointer .gmo-site-spot {
   <p>Entendiendo sus necesidades y desafíos; adaptándonos continuamente para desarrollar, entregar e implementar <mark>soluciones adecuadas a la evolución de sus clientes y el mercado</mark>, agregando así <mark>valor medible a la marca.</mark></p>
 </section>
 
-<section class="process process-vanguard" data-reveal id="proceso">
-  <div class="process-bg" aria-hidden="true"></div>
-  <p class="process-kicker">Método</p>
+<section class="process" data-reveal id="proceso">
+  <style>
+  .process{padding:110px 48px 100px;text-align:center;font-family:'Helvetica Neue',Arial,sans-serif;background:var(--cream-soft);scroll-margin-top:88px;}
+  .process h2{font-family:'Georgia','Times New Roman',serif;font-size:32px;font-weight:700;margin-bottom:16px;color:#1b2b20;position:relative;z-index:1;}
+  .process p{max-width:500px;margin:0 auto 56px;color:#555;position:relative;z-index:1;}
+  .flow{position:relative;max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:200px;}
+  .flow-line{position:absolute;top:50%;left:4%;right:4%;height:2px;background:repeating-linear-gradient(90deg,#c7d9b8 0,#c7d9b8 8px,transparent 8px,transparent 16px);z-index:0;transform:translateY(-50%);}
+  .step{position:relative;flex:1;display:flex;justify-content:center;z-index:1;}
+  .step-dot{width:136px;height:136px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#a8d95c 0%,#8bc34a 55%,#7ab336 100%);color:#0f2b1f;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;letter-spacing:0.01em;text-align:center;cursor:pointer;padding:16px 12px;line-height:1.15;box-sizing:border-box;border:2px solid rgba(255,255,255,0.35);box-shadow:0 10px 24px rgba(15,43,31,0.18),0 3px 8px rgba(15,43,31,0.12),inset 0 1px 0 rgba(255,255,255,0.35);transition:width .35s ease,height .35s ease,border-radius .35s ease,background .35s ease,color .35s ease,padding .35s ease,box-shadow .35s ease,transform .35s ease;position:relative;z-index:1;}
+  .step-dot::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(139,195,74,0.35);pointer-events:none;opacity:0.7;}
+  .step-dot span.label{display:block;max-width:100%;padding:0 2px;font-weight:800;}
+  .step-dot span.desc{position:absolute;opacity:0;font-size:14px;font-weight:600;line-height:1.35;padding:0 16px;transition:opacity .2s ease .1s;}
+  .step:hover .step-dot{width:210px;height:auto;min-height:148px;border-radius:24px;background:#0f2b1f;color:#fff;box-shadow:0 16px 36px rgba(15,43,31,.32);padding:18px 12px;transform:translateY(-4px);}
+  .step:hover .step-dot::after{opacity:0;}
+  .step:hover .step-dot span.label{opacity:0;position:absolute;}
+  .step:hover .step-dot span.desc{opacity:1;position:relative;font-weight:600;}
+.step-dot span.desc strong{font-weight:800;color:var(--green);}
+  @media(max-width:700px){.step-dot{width:112px;height:112px;font-size:13.5px;padding:12px 8px;}}
+  </style>
   <h2>Te acompañamos en</h2>
-  <p class="process-lead">Desarrollamos tu estrategia digital, presupuestos y estructuras; optimizando los recursos.</p>
-
-  <div class="flow flow-vanguard" data-stagger>
-    <svg class="flow-path" viewBox="0 0 1000 24" preserveAspectRatio="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#8FC93A" stop-opacity="0"/>
-          <stop offset="15%" stop-color="#8FC93A" stop-opacity="0.7"/>
-          <stop offset="85%" stop-color="#8FC93A" stop-opacity="0.7"/>
-          <stop offset="100%" stop-color="#8FC93A" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      <path class="flow-path-track" d="M20 12 H980" />
-      <path class="flow-path-draw" d="M20 12 H980" />
-    </svg>
-
-    <article class="step" data-step="01" tabindex="0">
-      <div class="step-orb">
-        <span class="step-ring"></span>
-        <span class="step-core">Identificar</span>
-      </div>
-      <p class="step-desc">Detectamos <strong>oportunidades</strong> y <strong>focos de inversión</strong>.</p>
-    </article>
-
-    <article class="step" data-step="02" tabindex="0">
-      <div class="step-orb">
-        <span class="step-ring"></span>
-        <span class="step-core">Crear</span>
-      </div>
-      <p class="step-desc">Producimos <strong>piezas y contenidos</strong> alineados a la <strong>estrategia</strong>.</p>
-    </article>
-
-    <article class="step" data-step="03" tabindex="0">
-      <div class="step-orb">
-        <span class="step-ring"></span>
-        <span class="step-core">Definir</span>
-      </div>
-      <p class="step-desc">Fijamos el <strong>objetivo de negocio</strong> que guía la estrategia.</p>
-    </article>
-
-    <article class="step" data-step="04" tabindex="0">
-      <div class="step-orb">
-        <span class="step-ring"></span>
-        <span class="step-core">Analizar</span>
-      </div>
-      <p class="step-desc">Medimos <strong>resultados</strong> con <strong>datos</strong>, no supuestos.</p>
-    </article>
-
-    <article class="step" data-step="05" tabindex="0">
-      <div class="step-orb">
-        <span class="step-ring"></span>
-        <span class="step-core">Posicionar</span>
-      </div>
-      <p class="step-desc">Llevamos tu <strong>marca</strong> a los <strong>primeros lugares</strong>.</p>
-    </article>
+  <p>Desarrollamos tu estrategia digital, presupuestos y estructuras; optimizando los recursos.</p>
+  <div class="flow" data-stagger>
+    <div class="flow-line"></div>
+    <div class="step"><div class="step-dot"><span class="label">Identificar</span><span class="desc">Detectamos <strong>oportunidades</strong> y <strong>focos de inversión</strong>.</span></div></div>
+    <div class="step"><div class="step-dot"><span class="label">Crear</span><span class="desc">Producimos <strong>piezas y contenidos</strong> alineados a la <strong>estrategia</strong>.</span></div></div>
+    <div class="step"><div class="step-dot"><span class="label">Definir</span><span class="desc">Fijamos el <strong>objetivo de negocio</strong> que guía la estrategia.</span></div></div>
+    <div class="step"><div class="step-dot"><span class="label">Analizar</span><span class="desc">Medimos <strong>resultados</strong> con <strong>datos</strong>, no supuestos.</span></div></div>
+    <div class="step"><div class="step-dot"><span class="label">Posicionar</span><span class="desc">Llevamos tu <strong>marca</strong> a los <strong>primeros lugares</strong>.</span></div></div>
   </div>
 </section>
 
@@ -1753,31 +1722,6 @@ document.getElementById('contactForm')?.addEventListener('submit', function(e){
     });
   }
 
-  /* Process vanguard: magnetic orb + hot state */
-  const process = document.querySelector('.process-vanguard');
-  const flow = document.querySelector('.flow-vanguard');
-  if (process && flow && !reduce) {
-    process.addEventListener('pointerleave', () => {
-      flow.querySelectorAll('.step').forEach((s) => s.classList.remove('is-hot'));
-    });
-
-    flow.querySelectorAll('.step').forEach((step) => {
-      const orb = step.querySelector('.step-orb');
-      step.addEventListener('pointerenter', () => {
-        flow.querySelectorAll('.step').forEach((s) => s.classList.toggle('is-hot', s === step));
-      });
-      step.addEventListener('pointermove', (e) => {
-        if (!orb) return;
-        const r = step.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - 0.5;
-        const y = (e.clientY - r.top) / r.height - 0.5;
-        orb.style.transform = `translate(${x * 14}px, ${y * 14}px)`;
-      });
-      step.addEventListener('pointerleave', () => {
-        if (orb) orb.style.transform = '';
-      });
-    });
-  }
 })();
 
 </script>
