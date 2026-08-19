@@ -13,6 +13,7 @@ Instrucciones cortas para no duplicar contexto. El detalle vive en los docs enla
 - **Herramientas (HER)** → `@herramientas` · portal `index/clientes/herramientas/` · TEND `Herramientas/Tendencias.html` · **CRC** `Herramientas/Carga-recetas.html` (Word→BM Cencosud) · brief factibilidad SEO `Herramientas/carga-recetas-cencosud/BRIEF-FACTIBILIDAD-CRC-SEO.md` (evaluar con `@mova`) · feed `data/tendencias-comida-chile.json` · doc `docs/cursor/INVOCAR-AGENTE-HERRAMIENTAS.md`
 - **Trendseeker** → Gemini (producto/video). Ver `index/clientes/trendseeker/prompts/README.md`
 - **ECR portadas** → Midjourney (solo fondo). Ver `index/clientes/ecr/newsletter/`
+- **ECR 26 ago 2026 · 11:00:** el artículo NL 2 ago (equipos en terreno) ya debe estar publicado. Apenas escriba: entregar íntegro `index/clientes/ecr/newsletter/RECORDATORIO-26-AGO-PROGRAMAR-NL2.txt` (carrusel **28 ago** + video **31 ago**, copys y Drive). **Después de las 15:00:** preguntar si ya programó; si sí → ok; si no → reentregar el mismo TXT.
 - **Joyas Mercury** → pausado (archivos sí en GitHub para iPad/iPhone). No abrir salvo que la usuaria retome JM. Carpeta: `index/clientes/joyasmercury/` · OneDrive vía `ARCHIVAR-JOYAS-MERCURY.bat`
 
 ## Impresoreando
