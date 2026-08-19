@@ -196,7 +196,9 @@ header nav > ul > li{position:relative;cursor:pointer;}
 .logo-marquee:hover .logo-track img{opacity:0.95;}
 .logo-track img:hover{filter:grayscale(0);opacity:1;transform:translateY(-4px);box-shadow:0 8px 0 0 var(--green);animation:logoShineV5 .65s ease 1;}
 @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-.logos--clientes .logo-marquee{padding:12px 0;}
+.logos--clientes .logo-marquee{padding:18px 0;}
+.logos--clientes .logo-track{gap:132px;}
+.logos--clientes .logo-track img{margin:0 8px;}
 .logos--clientes .logo-track--right{animation-name:marqueeRight;}
 @keyframes marqueeRight{from{transform:translateX(-50%);}to{transform:translateX(0);}}
 @keyframes logoShineV5{
@@ -295,12 +297,11 @@ header nav > ul > li{position:relative;cursor:pointer;}
 .faq-item.open .faq-a{max-height:200px;padding-top:10px;}
 
 /* FAQ v4 — más atractivo */
-.faq-vanguard{background:linear-gradient(180deg,#F7F3E7 0%,#EAF3E2 55%,#F7F3E7 100%);color:var(--text);padding:100px 24px 120px;position:relative;overflow:hidden;}
-.faq-vanguard::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(143,201,58,0.16),transparent 68%);top:-120px;left:-140px;pointer-events:none;}
-.faq-vanguard::after{content:'';position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(79,167,154,0.12),transparent 70%);bottom:-80px;right:-100px;pointer-events:none;}
+.faq-vanguard{background:transparent;color:var(--text);padding:100px 24px 120px;position:relative;overflow:hidden;}
+.faq-vanguard::before,.faq-vanguard::after{content:none;display:none;}
 .faq-shell{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:minmax(200px,0.9fr) minmax(0,1.5fr);gap:48px;align-items:start;position:relative;z-index:1;}
 .faq-head{position:sticky;top:100px;}
-.faq-kicker{font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--teal);margin-bottom:14px;}
+.faq-kicker{display:none;}
 .faq-vanguard h2{color:var(--dark);margin:0 0 14px;font-size:clamp(30px,4vw,44px);}
 .faq-head p{color:var(--muted);font-size:14px;line-height:1.55;max-width:280px;margin:0;}
 .faq-rail{display:flex;flex-direction:column;gap:14px;min-width:0;}
@@ -775,10 +776,12 @@ header.is-scrolled {
   opacity: 0;
   transform: translateY(40px);
   transition: opacity 0.8s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
+  background: transparent !important;
 }
 .faq-vanguard[data-reveal].is-in {
   opacity: 1;
   transform: none;
+  background: transparent !important;
 }
 
 /* Contacto CTA centrado */
@@ -1518,7 +1521,6 @@ html.is-pointer .gmo-site-spot {
 <section class="faq faq-vanguard" data-reveal>
   <div class="faq-shell">
     <div class="faq-head">
-      <p class="faq-kicker">Dudas</p>
       <h2>Preguntas frecuentes</h2>
       <p>Si tu duda no está acá, escríbenos: respondemos en menos de 24 horas hábiles.</p>
     </div>
