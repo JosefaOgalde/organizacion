@@ -40,13 +40,25 @@ header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid 
 footer .logo-svg{color:var(--cream-soft);}
 header nav > ul{display:flex;gap:28px;list-style:none;font-size:14px;font-weight:600;}
 header nav > ul > li{position:relative;cursor:pointer;}
-.has-drop{position:static;}
-.dropdown--mega{display:none;position:absolute;top:100%;left:24px;right:24px;width:auto;max-width:1180px;margin:0 auto;padding:14px 22px 20px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,0.14);border-radius:10px;z-index:70;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 28px;}
-.has-drop.is-open > .dropdown--mega,.has-drop:hover > .dropdown--mega,.has-drop:focus-within > .dropdown--mega{display:grid;}
-.mega-col p{margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);}
-.mega-col a{display:block;padding:7px 0;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text);}
-.mega-col a:hover{color:#5A7A28;}
-@media(max-width:900px){.dropdown--mega{grid-template-columns:1fr 1fr;width:min(520px,calc(100vw - 32px));}}
+.has-drop{position:relative;display:inline-block;flex:0 0 auto;}
+.dropdown--fly{display:none;position:absolute;top:100%;left:0;right:auto;padding-top:14px;z-index:70;}
+.has-drop.is-open > .dropdown--fly{display:block;}
+.fly-box{display:grid;grid-template-columns:minmax(220px,1fr);min-width:min(240px,calc(100vw - 32px));background:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.12);border-radius:8px;overflow:hidden;}
+.fly-box.has-sub{grid-template-columns:minmax(210px,0.95fr) minmax(230px,1.15fr);min-width:min(480px,calc(100vw - 32px));}
+.fly-cats{list-style:none;margin:0;padding:8px 0;display:block;border-right:none;background:#fff;}
+.fly-box.has-sub .fly-cats{border-right:1px solid rgba(22,38,30,0.10);}
+.fly-cat{display:block;}
+.fly-key{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;border:0;background:none;cursor:pointer;padding:11px 16px;font:inherit;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);text-align:left;border-left:3px solid transparent;transition:background .15s ease,color .15s ease,border-color .15s ease;}
+.fly-key span{color:rgba(14,43,34,0.35);font-size:14px;line-height:1;}
+.fly-cat:hover .fly-key{background:#F0F1F3;}
+.fly-cat.is-on .fly-key{background:#D8DCE0;color:#1a1d20;border-left-color:#6B7280;}
+.fly-cat.is-on .fly-key span{color:#1a1d20;}
+.fly-panels{display:none;padding:8px 0;background:#E4E6EA;}
+.fly-box.has-sub .fly-panels{display:block;}
+.fly-sub{display:none;list-style:none;margin:0;padding:0;}
+.fly-sub.is-on{display:block;}
+.fly-sub a{display:block;padding:11px 18px;font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:#2C3238;border-left:3px solid transparent;}
+.fly-sub a:hover{background:#D0D4D9;border-left-color:#6B7280;font-weight:700;color:#1a1d20;}
 .burger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;}
 .burger span{width:24px;height:2px;background:var(--dark);}
 .mobile-menu{display:none;flex-direction:column;gap:0;background:var(--cream);border-top:1px solid rgba(0,0,0,0.06);}
@@ -1163,33 +1175,39 @@ html.is-pointer .gmo-site-spot {
     <nav>
       <ul>
         <li class="has-drop">Servicios ▾
-          <div class="dropdown--mega">
-            <div class="mega-col">
-              <p>Estrategia</p>
-              <a href="#servicios">Estrategia 360</a>
-              <a href="#servicios">Tendencias de mercado</a>
-              <a href="#servicios">Business Intelligence</a>
-            </div>
-            <div class="mega-col">
-              <p>SEO &amp; GEO</p>
-              <a href="#servicios">Estrategia SEO 360</a>
-              <a href="#servicios">GEO: visibilidad IA</a>
-              <a href="#servicios">Linkbuilding</a>
-              <a href="#servicios">Contenido SEO</a>
-            </div>
-            <div class="mega-col">
-              <p>Productos digitales</p>
-              <a href="#servicios">Paid media</a>
-              <a href="#servicios">Email marketing</a>
-              <a href="#servicios">Content marketing</a>
-              <a href="#servicios">Retail media</a>
-              <a href="#servicios">Social media</a>
-            </div>
-            <div class="mega-col">
-              <p>Creatividad y diseño</p>
-              <a href="#servicios">Diseño y desarrollo web</a>
-              <a href="#servicios">Producción de contenidos</a>
-              <a href="#servicios">Campañas y activaciones</a>
+          <div class="dropdown--fly">
+            <div class="fly-box">
+              <ul class="fly-cats">
+                <li class="fly-cat" data-fly="est"><button type="button" class="fly-key">Estrategia <span aria-hidden="true">›</span></button></li>
+                <li class="fly-cat" data-fly="seo"><button type="button" class="fly-key">SEO &amp; GEO <span aria-hidden="true">›</span></button></li>
+                <li class="fly-cat" data-fly="prod"><button type="button" class="fly-key">Productos digitales <span aria-hidden="true">›</span></button></li>
+                <li class="fly-cat" data-fly="crea"><button type="button" class="fly-key">Creatividad y diseño <span aria-hidden="true">›</span></button></li>
+              </ul>
+              <div class="fly-panels">
+                <ul class="fly-sub" data-fly="est">
+                  <li><a href="#servicios">Estrategia 360</a></li>
+                  <li><a href="#servicios">Tendencias de mercado</a></li>
+                  <li><a href="#servicios">Business Intelligence</a></li>
+                </ul>
+                <ul class="fly-sub" data-fly="seo">
+                  <li><a href="#servicios">Estrategia SEO 360</a></li>
+                  <li><a href="#servicios">GEO: visibilidad IA</a></li>
+                  <li><a href="#servicios">Linkbuilding</a></li>
+                  <li><a href="#servicios">Contenido SEO</a></li>
+                </ul>
+                <ul class="fly-sub" data-fly="prod">
+                  <li><a href="#servicios">Paid media</a></li>
+                  <li><a href="#servicios">Email marketing</a></li>
+                  <li><a href="#servicios">Content marketing</a></li>
+                  <li><a href="#servicios">Retail media</a></li>
+                  <li><a href="#servicios">Social media</a></li>
+                </ul>
+                <ul class="fly-sub" data-fly="crea">
+                  <li><a href="#servicios">Diseño y desarrollo web</a></li>
+                  <li><a href="#servicios">Producción de contenidos</a></li>
+                  <li><a href="#servicios">Campañas y activaciones</a></li>
+                </ul>
+              </div>
             </div>
           </div>
         </li>
@@ -1514,11 +1532,32 @@ const burger = document.getElementById('burger');
 const mobileMenu = document.getElementById('mobileMenu');
 burger.addEventListener('click', ()=> mobileMenu.classList.toggle('open'));
 (function(){
-  var drop = document.querySelector('.has-drop');
+  const drop = document.querySelector('.has-drop');
   if (!drop) return;
-  var t;
-  drop.addEventListener('mouseenter', function(){ clearTimeout(t); drop.classList.add('is-open'); });
-  drop.addEventListener('mouseleave', function(){ clearTimeout(t); t = setTimeout(function(){ drop.classList.remove('is-open'); }, 320); });
+  const cats = drop.querySelectorAll('.fly-cat');
+  const panels = drop.querySelectorAll('.fly-sub');
+  const box = drop.querySelector('.fly-box');
+  let t;
+  drop.classList.remove('is-open');
+  function open(){ clearTimeout(t); drop.classList.add('is-open'); }
+  function hideSub(){
+    cats.forEach(function(c){ c.classList.remove('is-on'); });
+    panels.forEach(function(p){ p.classList.remove('is-on'); });
+    if (box) box.classList.remove('has-sub');
+  }
+  function closeSoon(){ clearTimeout(t); t = setTimeout(function(){ drop.classList.remove('is-open'); hideSub(); }, 200); }
+  function show(id){
+    cats.forEach(function(c){ c.classList.toggle('is-on', c.getAttribute('data-fly') === id); });
+    panels.forEach(function(p){ p.classList.toggle('is-on', p.getAttribute('data-fly') === id); });
+    if (box) box.classList.add('has-sub');
+  }
+  drop.addEventListener('mouseenter', open);
+  drop.addEventListener('mouseleave', closeSoon);
+  cats.forEach(function(c){
+    c.addEventListener('mouseenter', function(){ show(c.getAttribute('data-fly')); });
+    var key = c.querySelector('.fly-key');
+    if (key) key.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); show(c.getAttribute('data-fly')); open(); });
+  });
 })();
 
 function scrollToId(id){
