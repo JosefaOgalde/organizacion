@@ -587,8 +587,12 @@ def main() -> int:
     print(f"URL: {base}")
     print("1) Se abre Chromium.")
     print("2) Inicia sesión (automático si .env tiene user/pass; si no, a mano / MFA).")
-    print("3) Navega hasta el formulario de NUEVA RECETA.")
-    print("4) Vuelve aquí y pulsa ENTER para capturar la estructura.")
+    print("3) Abre una receta en el Gestor de contenido (CMS).")
+    print("4) IMPORTANTE: el BM es por componentes. Haz clic en el LÁPIZ de")
+    print("   «Cabecera» (o el componente que quieras mapear) hasta ver inputs")
+    print("   editables (título, texto, etc.). No captures solo la lista vacía.")
+    print("5) Vuelve aquí y pulsa ENTER para capturar.")
+    print("6) El navegador NO se cierra solo: revisa y pulsa ENTER otra vez.")
     print()
 
     resultado = 0
@@ -604,8 +608,8 @@ def main() -> int:
         try_login(page, env)
 
         print(
-            "\n>>> Cuando veas el formulario de receta (o el menú interno del BM),\n"
-            "    pulsa ENTER en esta terminal para volcar la estructura…"
+            "\n>>> Abre el LÁPIZ del componente (Cabecera / Ingredientes / etc.)\n"
+            "    hasta ver campos editables. Luego pulsa ENTER aquí…"
         )
         try:
             input()
@@ -631,16 +635,41 @@ def main() -> int:
             sugeridos = prev
         MAPA_SELECTORES_PATH.write_text(json.dumps(sugeridos, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
+        utiles = sum(1 for v in sugeridos.values() if v)
         print(f"\nGuardado:")
         print(f"  estructura: {ESTRUCTURA_PATH.relative_to(ROOT)}")
         print(f"  selectores: {MAPA_SELECTORES_PATH.relative_to(ROOT)}")
         print(f"  screenshot: {SCREENSHOT_PATH.relative_to(ROOT)}")
         print(f"  sesión:     {SESSION_PATH.relative_to(ROOT)}")
-        print(f"\nCampos detectados: {len(estructura.get('fields') or [])}")
+        print(f"\nURL: {estructura.get('url')}")
+        print(f"Campos detectados: {len(estructura.get('fields') or [])}")
         print(f"Botones: {len(estructura.get('buttons') or [])}")
+        print(f"Selectores con valor: {utiles}/{len(sugeridos)}")
         print("Selectores sugeridos:")
         for k, v in sugeridos.items():
             print(f"  {k}: {v}")
+
+        # Diagnóstico corto de fields (ayuda si el CMS no expuso labels)
+        fields = estructura.get("fields") or []
+        if fields:
+            print("\nResumen fields capturados:")
+            for i, field in enumerate(fields[:20]):
+                print(
+                    "  [{i}] label={label!r} ph={ph!r} id={id!r}".format(
+                        i=i,
+                        label=(field.get("label") or "")[:70],
+                        ph=(field.get("placeholder") or "")[:40],
+                        id=field.get("id"),
+                    )
+                )
+
+        if utiles < 2:
+            print(
+                "\n⚠ Pocos selectores. Suele pasar si capturaste la lista de componentes\n"
+                "  vacíos («Edita este componente desde el lápiz») en vez del editor interno.\n"
+                "  Abre el lápiz de Cabecera / Lista Ingredientes y captura de nuevo.",
+                file=sys.stderr,
+            )
 
         if args.fill_json:
             carga_exitosa = fill_from_receta(page, receta, sugeridos, dry_run=dry_run)
@@ -650,17 +679,19 @@ def main() -> int:
                 receta["estado"] = "cargado"
                 path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
             print("\nRevisa la ventana del BM. Si faltó algún campo, edita secrets/bm-selectores.json y reintenta.")
-            print("Pulsa ENTER para cerrar el navegador…")
-            try:
-                input()
-            except EOFError:
-                page.wait_for_timeout(10_000)
+
+        print("\nPulsa ENTER para cerrar el navegador…")
+        try:
+            input()
+        except EOFError:
+            page.wait_for_timeout(10_000)
 
         browser.close()
 
     print(
-        "\nSiguiente: revisa bm-estructura.json y ajusta bm-selectores.json.\n"
-        "Luego: python3 scripts/publicar-receta-cencosud.py out/….json --headed"
+        "\nSiguiente: si los selectores están bien,\n"
+        "  python scripts\\publicar-receta-cencosud.py out\\….json --headed --dry-run\n"
+        "Si no: vuelve a explorar con el lápiz del componente abierto."
     )
     return resultado
 

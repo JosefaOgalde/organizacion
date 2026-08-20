@@ -5,15 +5,21 @@ Público de referencia: https://www.jumbo.cl/recetas
 
 ## Cómo mapear (local, con tu usuario)
 
-1. En tu PC: `python scripts/explorar-bm-cencosud.py`
+1. En tu PC: `python scripts/explorar-bm-cencosud.py --reuse-session`
 2. Login ADFS en la ventana (tu usuario; MFA si aplica).
-3. Abre el formulario de **nueva receta**.
-4. ENTER en la terminal → genera `secrets/bm-estructura.json` + `secrets/bm-selectores.json`.
-5. Revisa/ajusta selectores y prueba:
+3. Abre la receta en el **Gestor de contenido** (CMS por componentes).
+4. **No captures la lista vacía.** Haz clic en el **lápiz** de un componente
+   (p. ej. **Cabecera**, **Lista Ingredientes**, **Lista de Instrucciones**, **SEO HTML**)
+   hasta ver inputs editables.
+5. ENTER en la terminal → genera `secrets/bm-estructura.json` + `secrets/bm-selectores.json`.
+6. El navegador espera un segundo ENTER antes de cerrar.
+7. Revisa/ajusta selectores y prueba:
    `python scripts/publicar-receta-cencosud.py out/….json --headed --dry-run`
 
-No se scrapea desde un servidor en la nube: es **navegador local** con tus credenciales.
+El BM Jumbo no es un formulario plano: título, tags, ingredientes, pasos y SEO viven
+en componentes distintos. Puede hacer falta mapear **varios** editores (un capture por componente).
 
+No se scrapea desde un servidor en la nube: es **navegador local** con tus credenciales.
 ## Quién hace qué
 
 | Actor | Rol |
