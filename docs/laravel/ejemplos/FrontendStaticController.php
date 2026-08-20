@@ -58,6 +58,13 @@ class FrontendStaticController extends Controller
             abort(403);
         }
 
+        $sensitiveCrcPattern =
+            '#^index/clientes/herramientas/carga-recetas-cencosud/(?:[^/]+/)*(?:inbox|out|secrets)(?:/|$)#';
+        $requestedPath = strtolower(preg_replace('#/+#', '/', $path) ?? $path);
+        if (preg_match($sensitiveCrcPattern, $requestedPath)) {
+            abort(403);
+        }
+
         $root = realpath($this->rootPath());
         if ($root === false) {
             abort(404);
@@ -66,6 +73,13 @@ class FrontendStaticController extends Controller
         $full = $this->resolveFile($root, $path);
         if ($full === null) {
             abort(404);
+        }
+
+        $rootNorm = strtolower(rtrim(str_replace('\\', '/', $root), '/'));
+        $fullNorm = strtolower(str_replace('\\', '/', $full));
+        $relFromRoot = ltrim(substr($fullNorm, strlen($rootNorm)), '/');
+        if (preg_match($sensitiveCrcPattern, $relFromRoot)) {
+            abort(403);
         }
 
         $ext = strtolower(pathinfo($full, PATHINFO_EXTENSION));
