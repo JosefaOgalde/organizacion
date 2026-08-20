@@ -105,11 +105,34 @@ def dump_estructura(page) -> dict:
       const abs = (el) => {
         if (!el) return null;
         if (el.id) return '#' + CSS.escape(el.id);
+        const testId = el.getAttribute('data-testid') || el.getAttribute('data-cy') || el.getAttribute('data-test');
+        if (testId) return '[data-testid="' + testId.replace(/"/g, '\\\\"') + '"]';
         const name = el.getAttribute('name');
         if (name) return el.tagName.toLowerCase() + '[name="' + name.replace(/"/g, '\\\\"') + '"]';
         const aria = el.getAttribute('aria-label');
         if (aria) return el.tagName.toLowerCase() + '[aria-label="' + aria.replace(/"/g, '\\\\"') + '"]';
-        return null;
+        const ph = el.getAttribute('placeholder');
+        if (ph) return el.tagName.toLowerCase() + '[placeholder="' + ph.replace(/"/g, '\\\\"') + '"]';
+        // SPA sin id/name: ruta CSS corta con nth-of-type
+        const parts = [];
+        let cur = el;
+        for (let depth = 0; cur && cur.nodeType === 1 && depth < 7; depth++) {
+          let part = cur.tagName.toLowerCase();
+          if (cur.id) {
+            parts.unshift('#' + CSS.escape(cur.id));
+            break;
+          }
+          const parent = cur.parentElement;
+          if (parent) {
+            const siblings = Array.from(parent.children).filter((c) => c.tagName === cur.tagName);
+            if (siblings.length > 1) {
+              part += ':nth-of-type(' + (siblings.indexOf(cur) + 1) + ')';
+            }
+          }
+          parts.unshift(part);
+          cur = parent;
+        }
+        return parts.length ? parts.join(' > ') : null;
       };
       const fields = [];
       document.querySelectorAll('input, textarea, select, [contenteditable="true"]').forEach((el, i) => {
@@ -183,6 +206,53 @@ def dump_estructura(page) -> dict:
     )
 
 
+def selector_para_campo(field: dict) -> str | None:
+    """Selector usable por Playwright aunque el BM no exponga id/name."""
+    sel = field.get("selectorSugerido")
+    if sel:
+        return sel
+    tag = (field.get("tag") or "input").lower()
+    if field.get("id"):
+        return f"#{field['id']}"
+    if field.get("name"):
+        return f'{tag}[name="{field["name"]}"]'
+    if field.get("placeholder"):
+        ph = str(field["placeholder"]).replace('"', '\\"')
+        return f'{tag}[placeholder="{ph}"]'
+    if field.get("ariaLabel"):
+        aria = str(field["ariaLabel"]).replace('"', '\\"')
+        return f'{tag}[aria-label="{aria}"]'
+    label = clean_label(field.get("label"))
+    if label:
+        safe = label.replace('"', '\\"')[:90]
+        return (
+            'xpath=//label[contains(normalize-space(.), "'
+            + safe
+            + '")]/following::*[self::input or self::textarea or self::select or @contenteditable="true"][1]'
+        )
+    return None
+
+
+def clean_label(raw: str | None) -> str:
+    if not raw:
+        return ""
+    # Evita labels gigantes que incluyen el valor del input
+    text = re.sub(r"\s+", " ", str(raw)).strip()
+    return text[:90]
+
+
+def selector_para_boton(btn: dict) -> str | None:
+    sel = btn.get("selectorSugerido")
+    if sel:
+        return sel
+    if btn.get("id"):
+        return f"#{btn['id']}"
+    text = clean_label(btn.get("text"))
+    if text:
+        return f"text={json.dumps(text, ensure_ascii=False)}"
+    return None
+
+
 def sugerir_selectores(estructura: dict) -> dict:
     """Heurística: empareja labels con claves JSON CRC."""
     mapa = {
@@ -228,7 +298,7 @@ def sugerir_selectores(estructura: dict) -> dict:
                 ],
             )
         ).lower()
-        sel = field.get("selectorSugerido")
+        sel = selector_para_campo(field)
         if not sel:
             continue
         if sel in selectores_asignados:
@@ -247,7 +317,7 @@ def sugerir_selectores(estructura: dict) -> dict:
                 break
     for btn in estructura.get("buttons") or []:
         t = (btn.get("text") or "").lower()
-        sel = btn.get("selectorSugerido")
+        sel = selector_para_boton(btn)
         if not sel:
             continue
         es_publicar = re.search(r"publicar|publish", t)
@@ -264,6 +334,26 @@ def sugerir_selectores(estructura: dict) -> dict:
                 mapa["nav_nueva_receta"] = href
             break
     return mapa
+
+
+def remapear_desde_estructura() -> dict:
+    if not ESTRUCTURA_PATH.exists():
+        raise FileNotFoundError(ESTRUCTURA_PATH)
+    estructura = json.loads(ESTRUCTURA_PATH.read_text(encoding="utf-8"))
+    sugeridos = sugerir_selectores(estructura)
+    if MAPA_SELECTORES_PATH.exists():
+        prev = json.loads(MAPA_SELECTORES_PATH.read_text(encoding="utf-8"))
+        for k, v in sugeridos.items():
+            if v:
+                prev[k] = v
+            elif k not in prev:
+                prev[k] = v
+        sugeridos = prev
+    MAPA_SELECTORES_PATH.write_text(
+        json.dumps(sugeridos, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return sugeridos
 
 
 def try_login(page, env: dict) -> None:
@@ -384,8 +474,36 @@ def main() -> int:
     ap.add_argument("--fill-json", type=Path, help="Tras mapear, rellenar esta receta JSON")
     ap.add_argument("--publish", action="store_true", help="Permitir clic en Publicar (default: solo borrador/dry-run)")
     ap.add_argument("--reuse-session", action="store_true", help="Reutilizar secrets/bm-session.json si existe")
+    ap.add_argument(
+        "--remap",
+        action="store_true",
+        help="Solo regenera bm-selectores.json desde bm-estructura.json (sin abrir el navegador)",
+    )
     ap.add_argument("--timeout-ms", type=int, default=300_000, help="Espera máxima login manual")
     args = ap.parse_args()
+
+    if args.remap:
+        try:
+            sugeridos = remapear_desde_estructura()
+        except FileNotFoundError:
+            print(
+                f"No existe {ESTRUCTURA_PATH.relative_to(ROOT)}. Corre antes sin --remap.",
+                file=sys.stderr,
+            )
+            return 1
+        print(f"Selectores regenerados → {MAPA_SELECTORES_PATH.relative_to(ROOT)}")
+        utiles = sum(1 for v in sugeridos.values() if v)
+        print(f"Claves con valor: {utiles}/{len(sugeridos)}")
+        for k, v in sugeridos.items():
+            print(f"  {k}: {v}")
+        if utiles < 2:
+            print(
+                "\nAún hay pocos selectores. Abre bm-estructura.json y revisa si los fields traen label/placeholder.\n"
+                "Si capturaste una pantalla sin el formulario, vuelve a explorar con la ficha abierta.",
+                file=sys.stderr,
+            )
+            return 2
+        return 0
 
     receta = None
     if args.publish and not args.fill_json:

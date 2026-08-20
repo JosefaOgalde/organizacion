@@ -70,6 +70,13 @@ Si un campo no se rellena: edita `secrets/bm-selectores.json` (selectores) y rei
 Los campos editoriales y SEO usan selectores distintos; un botón combinado
 «Guardar y publicar» nunca se usa como guardado de borrador en `--dry-run`.
 
+Si tras explorar ves todos los selectores en `None` (BM sin id/name), regenera sin abrir el navegador:
+
+```bat
+python scripts\explorar-bm-cencosud.py --remap
+```
+
+(usa los labels de `bm-estructura.json`). Si sigue vacío, vuelve a explorar con el formulario de **Nueva receta** bien abierto.
 ## Pruebas automáticas (sin BM real)
 
 ```bat

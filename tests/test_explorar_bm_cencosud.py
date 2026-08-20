@@ -189,6 +189,42 @@ class ExplorarBmTests(unittest.TestCase):
         )
         self.assertEqual(len(selectores_campos), 4)
 
+    def test_sugerir_selectores_usa_label_si_no_hay_id_name(self):
+        estructura = {
+            "fields": [
+                {
+                    "tag": "input",
+                    "label": "Título de la receta",
+                    "placeholder": None,
+                    "ariaLabel": None,
+                    "name": None,
+                    "id": None,
+                    "selectorSugerido": None,
+                },
+                {
+                    "tag": "textarea",
+                    "label": "Descripción",
+                    "placeholder": None,
+                    "ariaLabel": None,
+                    "name": None,
+                    "id": None,
+                    "selectorSugerido": None,
+                },
+            ],
+            "buttons": [
+                {"text": "Guardar borrador", "selectorSugerido": None, "id": None},
+                {"text": "Publicar", "selectorSugerido": None, "id": None},
+            ],
+            "linksReceta": [],
+            "nav": [],
+        }
+        mapa = self.modulo.sugerir_selectores(estructura)
+        self.assertIn("xpath=", mapa["field_titulo"] or "")
+        self.assertIn("Título", mapa["field_titulo"] or "")
+        self.assertIn("xpath=", mapa["field_descripcion"] or "")
+        self.assertEqual(mapa["btn_guardar_borrador"], 'text="Guardar borrador"')
+        self.assertEqual(mapa["btn_publicar"], 'text="Publicar"')
+
     def test_dry_run_no_hace_click_en_boton_que_tambien_publica(self):
         mapa = self.modulo.sugerir_selectores(self.estructura_meta_primero)
         runtime = RuntimeFalso()
