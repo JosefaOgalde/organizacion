@@ -114,8 +114,9 @@ def parse_ingredientes(bloque: str) -> list[dict]:
             continue
         if line.lower() in ("ingredientes", "ingredientes:"):
             continue
+        # No usar "l" suelto como unidad: rompería "1 limón" → unidad=l, nombre=imón.
         m = re.match(
-            r"^(?P<cant>\d+[.,]?\d*)\s*(?P<unidad>kg|g|gr|ml|l|lt|cdas?|cdtas?|cucharaditas?|cucharadas?|tazas?|unidades?|u\.?)?\s*(?:de\s+)?(?P<nombre>.+)$",
+            r"^(?P<cant>\d+[.,]?\d*)\s*(?P<unidad>kg|g|gr|ml|lt|litros?|cdas?|cdtas?|cucharaditas?|cucharadas?|tazas?|unidades?|u\.?)?\s*(?:de\s+)?(?P<nombre>.+)$",
             line,
             re.I,
         )
@@ -161,9 +162,11 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str]]:
         line = raw.strip()
         if not line:
             continue
-        if re.match(r"(?i)^tips?\b", line):
+        if re.match(r"(?i)^(tips?\b|consejos?\b)", line):
             en_tips = True
-            # si el tip viene en la misma línea tras "Tips …"
+            resto = re.sub(r"(?i)^(tips?|consejos?)\b[:\s\-]*", "", line).strip()
+            if resto and not re.match(r"(?i)^(para\s+un|para\s+el|de\s+la)\b", resto):
+                tips.append(resto.lstrip("-•* ").strip())
             continue
         if en_tips:
             tips.append(line.lstrip("-•* ").strip())
@@ -193,13 +196,38 @@ def es_formato_jumbo(lines: list[str]) -> bool:
 
 def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
     meta_titulo = valor_despues_label(lines, ["meta título", "meta titulo"])
-    meta_desc = valor_despues_label(lines, ["meta descripción", "meta descripcion"])
+    # Jumbo a veces escribe solo "descripción:" (sin prefijo meta).
+    meta_desc = valor_despues_label(
+        lines,
+        ["meta descripción", "meta descripcion", "descripción", "descripcion"],
+    )
 
     # Título editorial: primera línea que no sea meta/foto/tags/barra
     titulo = None
+    skip_next_desc_value = False
     for ln in lines:
-        low = ln.lower()
-        if low.startswith("meta ") or low in ("meta título:", "meta titulo:", "meta descripción:", "meta descripcion:"):
+        low = ln.lower().strip()
+        if skip_next_desc_value:
+            skip_next_desc_value = False
+            continue
+        if low.startswith("meta ") or low in (
+            "meta título:",
+            "meta titulo:",
+            "meta descripción:",
+            "meta descripcion:",
+            "descripción:",
+            "descripcion:",
+            "descripción",
+            "descripcion",
+        ):
+            # Si el valor de descripción va en la línea siguiente, saltarla también.
+            if low in ("descripción:", "descripcion:", "descripción", "descripcion") or low.startswith(
+                "meta descripción"
+            ) or low.startswith("meta descripcion"):
+                if ":" in ln and not ln.split(":", 1)[1].strip():
+                    skip_next_desc_value = True
+                elif low in ("descripción", "descripcion"):
+                    skip_next_desc_value = True
             continue
         if low.startswith("texto alt:") or low.startswith("([foto])") or low == "[foto]":
             continue

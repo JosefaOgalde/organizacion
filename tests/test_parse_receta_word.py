@@ -141,6 +141,40 @@ class ParseRecetaWordTests(unittest.TestCase):
         self.assertIn("--force", help_text)
         self.assertIn("destructiva", help_text)
 
+    def test_jumbo_descripcion_sin_prefijo_meta_y_limon_y_consejos(self):
+        texto = (
+            "Meta título:\n"
+            "Salmón a la parrilla con salsa de palta | Recetas Jumbo\n"
+            "descripción:\n"
+            "Prepara salmón a la parrilla con una salsa de palta cremosa y limón.\n"
+            "Salmón a la parrilla con salsa de palta\n"
+            "([Foto])\n"
+            "Texto alt: Filete de salmón.\n"
+            "30 min | Fácil | 4 porciones\n"
+            "Tags: salmon, paltas\n"
+            "Ingredientes:\n"
+            "600 g de filete de salmón\n"
+            "1 limón\n"
+            "¿Cómo preparar salmón a la parrilla con salsa de palta?\n"
+            "Paso a paso:\n"
+            "Sazona el salmón: seca los filetes.\n"
+            "Cocina el salmón: ásalo 4 minutos.\n"
+            "Consejos para un salmón a la parrilla con salsa perfecto\n"
+            "Cocina el salmón por el lado de la piel.\n"
+            "Prepara la salsa justo antes de servir.\n"
+        )
+        lines = texto.splitlines()
+        self.assertTrue(self.modulo.es_formato_jumbo(lines))
+        receta = self.modulo.construir_receta_jumbo(lines, texto, "inbox/salmon.docx")
+        self.assertEqual(receta["titulo"], "Salmón a la parrilla con salsa de palta")
+        self.assertTrue(receta["descripcion"].startswith("Prepara salmón"))
+        limon = next(i for i in receta["ingredientes"] if "lim" in (i["nombre"] or "").lower())
+        self.assertEqual(limon["nombre"], "limón")
+        self.assertIsNone(limon["unidad"])
+        self.assertEqual(len(receta["pasos"]), 2)
+        self.assertEqual(len(receta["tips"]), 2)
+        self.assertEqual(receta["estado"], "listo-para-cargar")
+
 
 if __name__ == "__main__":
     unittest.main()
