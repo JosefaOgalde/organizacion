@@ -52,6 +52,51 @@ MAPA_SELECTORES_PATH = SECRETS / "bm-selectores.json"
 CAMPOS_REQUERIDOS_PUBLICACION = ("titulo", "descripcion", "ingredientes", "pasos")
 CAMPOS_FALTANTES_NO_BLOQUEANTES = {"ingredientes.skuCencosud"}
 
+# CMS Jumbo Recetas: cada bloque se edita con su lápiz (no es un formulario plano).
+COMPONENTES_CMS = (
+    {
+        "clave": "cabecera",
+        "lapiz_key": "lapiz_cabecera",
+        "aliases": ("Cabecera", "Header", "header"),
+        "campos": (
+            "field_titulo",
+            "field_descripcion",
+            "field_porciones",
+            "field_dificultad",
+            "field_tiempo",
+        ),
+    },
+    {
+        "clave": "tags",
+        "lapiz_key": "lapiz_tags",
+        "aliases": ("tags", "Tags"),
+        "campos": ("field_tags",),
+    },
+    {
+        "clave": "ingredientes",
+        "lapiz_key": "lapiz_ingredientes",
+        "aliases": ("Lista Ingredientes", "list_ingredients", "Ingredientes"),
+        "campos": ("field_ingredientes",),
+    },
+    {
+        "clave": "instrucciones",
+        "lapiz_key": "lapiz_instrucciones",
+        "aliases": (
+            "Lista de Instrucciones",
+            "Lista de instrucciones",
+            "list_instructions",
+            "Instrucciones",
+        ),
+        "campos": ("field_pasos",),
+    },
+    {
+        "clave": "seo",
+        "lapiz_key": "lapiz_seo",
+        "aliases": ("SEO HTML", "seo_html", "SEO HTML Bottom"),
+        "campos": ("field_meta_titulo", "field_meta_descripcion"),
+    },
+)
+
 
 def load_env(path: Path) -> dict[str, str]:
     data: dict[str, str] = {}
@@ -137,6 +182,19 @@ def dump_estructura(page) -> dict:
       const fields = [];
       document.querySelectorAll('input, textarea, select, [contenteditable="true"]').forEach((el, i) => {
         if (el.type === 'hidden' || el.type === 'password') return;
+        const st = window.getComputedStyle(el);
+        if (st.display === 'none' || st.visibility === 'hidden') return;
+        const rect = el.getBoundingClientRect();
+        if (rect.width < 1 && rect.height < 1) return;
+        // editor cerrado (ancestro display:none)
+        let p = el.parentElement;
+        let oculto = false;
+        while (p) {
+          const ps = window.getComputedStyle(p);
+          if (ps.display === 'none' || ps.visibility === 'hidden') { oculto = true; break; }
+          p = p.parentElement;
+        }
+        if (oculto) return;
         const id = el.id || '';
         let label = '';
         if (id) {
@@ -220,6 +278,302 @@ def dump_estructura(page) -> dict:
     )
 
 
+def contar_campos_editables(page) -> int:
+    return page.evaluate(
+        """() => [...document.querySelectorAll('input, textarea, select, [contenteditable="true"]')]
+          .filter((el) => {
+            if (el.type === 'hidden' || el.type === 'password' || el.disabled) return false;
+            const st = getComputedStyle(el);
+            if (st.display === 'none' || st.visibility === 'hidden') return false;
+            let p = el.parentElement;
+            while (p) {
+              const ps = getComputedStyle(p);
+              if (ps.display === 'none' || ps.visibility === 'hidden') return false;
+              p = p.parentElement;
+            }
+            const r = el.getBoundingClientRect();
+            return r.width > 0 || r.height > 0;
+          }).length"""
+    )
+
+
+def listar_componentes_cms(page) -> list[dict]:
+    """Detecta bloques del Gestor de contenido (Cabecera, tags, listas, SEO…)."""
+    aliases_flat = []
+    for comp in COMPONENTES_CMS:
+        for alias in comp["aliases"]:
+            aliases_flat.append({"clave": comp["clave"], "alias": alias})
+    return page.evaluate(
+        """(aliasesFlat) => {
+      const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+      const norm = (s) => clean(s).toLowerCase();
+      const found = [];
+      const seen = new Set();
+      const nodes = Array.from(
+        document.querySelectorAll(
+          '[data-component], [data-type], [class*="component"], [class*="Component"], section, article, li, div'
+        )
+      );
+      for (const el of nodes) {
+        const dataName = clean(el.getAttribute('data-component') || el.getAttribute('data-type') || '');
+        const titleEl = el.querySelector(
+          '.bloque-nombre, [class*="title"], [class*="Title"], [class*="name"], h1, h2, h3, h4, h5, strong'
+        );
+        const titleText = clean(titleEl ? titleEl.innerText : '');
+        const ownText = clean(el.childNodes && el.childNodes.length
+          ? Array.from(el.childNodes).filter((n) => n.nodeType === 3).map((n) => n.textContent).join(' ')
+          : '');
+        const blob = norm([dataName, titleText, ownText].filter(Boolean).join(' | '));
+        if (!blob || blob.length > 120) continue;
+        for (const item of aliasesFlat) {
+          const a = norm(item.alias);
+          if (!(blob === a || blob.startsWith(a + ' ') || blob.endsWith(' ' + a) || titleText && norm(titleText) === a || dataName && norm(dataName) === a)) {
+            continue;
+          }
+          if (seen.has(item.clave)) break;
+          const editBtn = el.querySelector(
+            'button.btn-lapiz, button[aria-label*="Editar" i], button[aria-label*="edit" i], button[title*="Editar" i], button[title*="edit" i], [data-testid*="edit" i], [aria-label*="lápiz" i], [aria-label*="lapiz" i]'
+          );
+          let lapizSelector = null;
+          if (editBtn) {
+            if (editBtn.id) lapizSelector = '#' + CSS.escape(editBtn.id);
+            else if (editBtn.getAttribute('aria-label')) {
+              lapizSelector = 'button[aria-label="' + editBtn.getAttribute('aria-label').replace(/"/g, '\\\\"') + '"]';
+            }
+          }
+          if (!lapizSelector) {
+            const acciones = el.querySelector('.acciones-bloque, [class*="action"], [class*="toolbar"], [class*="controls"]');
+            const firstBtn = (acciones || el).querySelector('button, [role="button"]');
+            if (firstBtn && firstBtn.getAttribute('aria-label')) {
+              lapizSelector = 'button[aria-label="' + firstBtn.getAttribute('aria-label').replace(/"/g, '\\\\"') + '"]';
+            }
+          }
+          found.push({
+            clave: item.clave,
+            alias: item.alias,
+            texto: titleText || dataName || item.alias,
+            lapizSelector,
+            tieneLapiz: !!(editBtn || lapizSelector),
+          });
+          seen.add(item.clave);
+          break;
+        }
+      }
+      return found;
+    }""",
+        aliases_flat,
+    )
+
+
+def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
+    """Hace clic en el lápiz del componente. No requiere acción manual."""
+    if selector_guardado:
+        try:
+            loc = page.locator(selector_guardado).first
+            if loc.count():
+                loc.click(timeout=5_000)
+                page.wait_for_timeout(600)
+                return True
+        except Exception:
+            pass
+
+    comp = next((c for c in COMPONENTES_CMS if c["clave"] == clave), None)
+    if not comp:
+        return False
+
+    aliases = list(comp["aliases"])
+    clicked = page.evaluate(
+        """(aliases) => {
+      const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+      const norm = (s) => clean(s).toLowerCase();
+      const wanted = aliases.map(norm);
+      const blocks = Array.from(
+        document.querySelectorAll('[data-component], [data-type], section, article, div, li')
+      );
+      for (const el of blocks) {
+        const dataName = clean(el.getAttribute('data-component') || el.getAttribute('data-type') || '');
+        const titleEl = el.querySelector(
+          '.bloque-nombre, [class*="title"], [class*="Title"], [class*="name"], h1, h2, h3, h4, h5, strong'
+        );
+        const titleText = clean(titleEl ? titleEl.innerText : '');
+        const hit = wanted.some((w) => norm(dataName) === w || norm(titleText) === w);
+        if (!hit) continue;
+        const editBtn = el.querySelector(
+          'button.btn-lapiz, button[aria-label*="Editar" i], button[aria-label*="edit" i], button[title*="Editar" i], button[title*="edit" i], [data-testid*="edit" i]'
+        );
+        if (editBtn) {
+          editBtn.click();
+          return true;
+        }
+        const acciones = el.querySelector('.acciones-bloque, [class*="action"], [class*="toolbar"], [class*="controls"]');
+        const firstBtn = (acciones || el).querySelector('button, [role="button"]');
+        if (firstBtn) {
+          firstBtn.click();
+          return true;
+        }
+      }
+      // Fallback: texto exacto del alias + botón Editar cercano
+      for (const alias of aliases) {
+        const nodes = Array.from(document.querySelectorAll('div, span, p, h1, h2, h3, h4, strong, label'));
+        const title = nodes.find((n) => norm(n.innerText) === norm(alias) && (n.innerText || '').length < 60);
+        if (!title) continue;
+        let cur = title;
+        for (let i = 0; i < 8 && cur; i++) {
+          const btn = cur.querySelector(
+            'button.btn-lapiz, button[aria-label*="Editar" i], button[aria-label*="edit" i], button[title*="Editar" i]'
+          ) || (cur.querySelector('.acciones-bloque, [class*="action"]') || cur).querySelector('button');
+          if (btn) {
+            btn.click();
+            return true;
+          }
+          cur = cur.parentElement;
+        }
+      }
+      return false;
+    }""",
+        aliases,
+    )
+    if clicked:
+        page.wait_for_timeout(700)
+    return bool(clicked)
+
+
+def cerrar_editor_componente(page) -> None:
+    """Intenta salir del editor del componente (Cerrar / Escape / Volver)."""
+    for sel in (
+        "button:has-text('Cerrar')",
+        "button:has-text('Cancelar')",
+        "button:has-text('Volver')",
+        "button[aria-label*='Cerrar' i]",
+        "button[aria-label*='Close' i]",
+        "[data-testid*='close' i]",
+    ):
+        try:
+            loc = page.locator(sel).first
+            if loc.count() and loc.is_visible():
+                loc.click(timeout=2_000)
+                page.wait_for_timeout(400)
+                return
+        except Exception:
+            pass
+    try:
+        page.keyboard.press("Escape")
+        page.wait_for_timeout(400)
+    except Exception:
+        pass
+
+
+def capturar_cms_por_componentes(page) -> tuple[dict, dict]:
+    """
+    Abre solo el lápiz de cada componente CRC, vuelca campos y fusiona selectores.
+    La usuaria no debe hacer clic en los lápices.
+    """
+    antes = contar_campos_editables(page)
+    componentes_vistos = listar_componentes_cms(page)
+    print(f"Componentes CMS detectados: {len(componentes_vistos)}")
+    for c in componentes_vistos:
+        print(f"  · {c.get('clave')}: {c.get('texto')!r} lapiz={c.get('lapizSelector')}")
+
+    merged_fields: list[dict] = []
+    merged_buttons: list[dict] = []
+    por_componente: dict[str, dict] = {}
+    lapices: dict[str, str | None] = {}
+    urls = []
+
+    # Si ya hay muchos campos (formulario plano / editor ya abierto), capturar una vez.
+    if antes >= 6 and not componentes_vistos:
+        estructura = dump_estructura(page)
+        return estructura, sugerir_selectores(estructura)
+
+    orden = [c["clave"] for c in COMPONENTES_CMS]
+    if componentes_vistos:
+        # Mantener orden CRC pero solo los detectados + intentar los faltantes igual
+        detectados = {c["clave"] for c in componentes_vistos}
+        orden = [k for k in orden if k in detectados] + [k for k in orden if k not in detectados]
+
+    for clave in orden:
+        meta = next(c for c in COMPONENTES_CMS if c["clave"] == clave)
+        visto = next((c for c in componentes_vistos if c["clave"] == clave), None)
+        sel_lapiz = (visto or {}).get("lapizSelector")
+        print(f"\n→ Abriendo lápiz «{clave}»…")
+        ok = abrir_lapiz_componente(page, clave, sel_lapiz)
+        if not ok:
+            print(f"  ✗ No se encontró lápiz para {clave}")
+            lapices[meta["lapiz_key"]] = sel_lapiz
+            continue
+        page.wait_for_timeout(500)
+        despues = contar_campos_editables(page)
+        if despues <= 0:
+            print(f"  ✗ Lápiz clicado pero sin inputs editables ({clave})")
+        estructura = dump_estructura(page)
+        fields = estructura.get("fields") or []
+        for f in fields:
+            f = dict(f)
+            f["componente"] = clave
+            merged_fields.append(f)
+        for b in estructura.get("buttons") or []:
+            b = dict(b)
+            b["componente"] = clave
+            merged_buttons.append(b)
+        por_componente[clave] = {
+            "fields": len(fields),
+            "url": estructura.get("url"),
+            "aliases": list(meta["aliases"]),
+        }
+        if estructura.get("url"):
+            urls.append(estructura["url"])
+        # Preferir selector de lápiz detectado o el que funcionó
+        if sel_lapiz:
+            lapices[meta["lapiz_key"]] = sel_lapiz
+        else:
+            # Re-listar tras abrir por si ahora hay aria-label estable
+            relist = listar_componentes_cms(page)
+            rel = next((c for c in relist if c["clave"] == clave), None)
+            lapices[meta["lapiz_key"]] = (rel or {}).get("lapizSelector") or sel_lapiz
+        print(f"  ✓ {clave}: {len(fields)} campos (editables≈{despues})")
+        cerrar_editor_componente(page)
+
+    # Botones globales (Guardar / Publicar) en la vista de lista
+    estructura_lista = dump_estructura(page)
+    for b in estructura_lista.get("buttons") or []:
+        b = dict(b)
+        b["componente"] = "global"
+        merged_buttons.append(b)
+
+    estructura_final = {
+        "url": (urls[-1] if urls else estructura_lista.get("url")),
+        "title": estructura_lista.get("title"),
+        "fields": merged_fields,
+        "buttons": merged_buttons[:120],
+        "linksReceta": estructura_lista.get("linksReceta") or [],
+        "nav": estructura_lista.get("nav") or [],
+        "cms": {
+            "modo": "componentes",
+            "componentesDetectados": componentes_vistos,
+            "porComponente": por_componente,
+            "autoLapiz": True,
+        },
+    }
+    sugeridos = sugerir_selectores(estructura_final)
+    for k, v in lapices.items():
+        if v:
+            sugeridos[k] = v
+        elif k not in sugeridos:
+            sugeridos[k] = v
+    return estructura_final, sugeridos
+
+
+def abrir_componente_para_campos(page, selectores: dict, keys_campo: tuple[str, ...] | list[str]) -> bool:
+    """Abre el lápiz del componente que contiene alguno de los campos indicados."""
+    for comp in COMPONENTES_CMS:
+        if not any(k in comp["campos"] for k in keys_campo):
+            continue
+        lapiz = selectores.get(comp["lapiz_key"])
+        if abrir_lapiz_componente(page, comp["clave"], lapiz):
+            return True
+    return False
+
+
 def selector_para_campo(field: dict) -> str | None:
     """Selector usable por Playwright aunque el BM no exponga id/name."""
     sel = field.get("selectorSugerido")
@@ -283,6 +637,11 @@ def sugerir_selectores(estructura: dict) -> dict:
         "btn_guardar_borrador": None,
         "btn_publicar": None,
         "nav_nueva_receta": None,
+        "lapiz_cabecera": None,
+        "lapiz_tags": None,
+        "lapiz_ingredientes": None,
+        "lapiz_instrucciones": None,
+        "lapiz_seo": None,
     }
     editorial_rules = [
         ("field_titulo", r"t[ií]tulo|nombre\s*(de\s*)?receta|^title$"),
@@ -440,7 +799,14 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         try:
             loc = page.locator(sel).first
             if loc.count():
-                loc.fill(str(value))
+                tag = loc.evaluate("el => el.tagName.toLowerCase()")
+                if tag == "select":
+                    try:
+                        loc.select_option(label=str(value))
+                    except Exception:
+                        loc.select_option(value=str(value))
+                else:
+                    loc.fill(str(value))
                 print(f"  ✓ {key}")
                 return True
             else:
@@ -449,17 +815,44 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
             print(f"  ✗ {key}: {e}")
         return False
 
-    print("Rellenando desde JSON…")
-    resultados["titulo"] = fill("field_titulo", receta.get("titulo"))
-    resultados["descripcion"] = fill("field_descripcion", receta.get("descripcion"))
-    fill("field_porciones", receta.get("porciones"))
-    fill("field_dificultad", receta.get("dificultad"))
-    fill("field_tiempo", receta.get("tiempoTotal"))
-    fill("field_tags", ", ".join(receta.get("categorias") or []))
-    seo = receta.get("seo") or {}
-    fill("field_meta_titulo", seo.get("metaTitulo"))
-    fill("field_meta_descripcion", seo.get("metaDescripcion"))
+    def fill_grupo(clave_comp: str, pares: list[tuple[str, str | None]]) -> None:
+        pares_ok = [(k, v) for k, v in pares if v is not None and v != ""]
+        if not pares_ok:
+            return
+        meta = next((c for c in COMPONENTES_CMS if c["clave"] == clave_comp), None)
+        lapiz_key = meta["lapiz_key"] if meta else f"lapiz_{clave_comp}"
+        print(f"  [CMS] Abriendo componente «{clave_comp}»…")
+        abierto = abrir_lapiz_componente(page, clave_comp, selectores.get(lapiz_key))
+        if not abierto:
+            abierto = abrir_componente_para_campos(page, selectores, [k for k, _ in pares_ok])
+        if not abierto:
+            print(f"  · Sin lápiz para {clave_comp}; intento relleno en vista actual.")
+        for key, value in pares_ok:
+            ok = fill(key, value)
+            if key == "field_titulo":
+                resultados["titulo"] = ok
+            elif key == "field_descripcion":
+                resultados["descripcion"] = ok
+            elif key == "field_ingredientes":
+                resultados["ingredientes"] = ok
+            elif key == "field_pasos":
+                resultados["pasos"] = ok
+        cerrar_editor_componente(page)
+
+    print("Rellenando desde JSON (abriendo lápices automáticamente)…")
+    fill_grupo(
+        "cabecera",
+        [
+            ("field_titulo", receta.get("titulo")),
+            ("field_descripcion", receta.get("descripcion")),
+            ("field_porciones", receta.get("porciones")),
+            ("field_dificultad", receta.get("dificultad")),
+            ("field_tiempo", receta.get("tiempoTotal")),
+        ],
+    )
+    fill_grupo("tags", [("field_tags", ", ".join(receta.get("categorias") or []))])
     ings = receta.get("ingredientes") or []
+    texto_ing = None
     if ings:
         texto_ing = "\n".join(
             " ".join(
@@ -474,11 +867,20 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
             ).strip()
             for i in ings
         )
-        resultados["ingredientes"] = fill("field_ingredientes", texto_ing)
+    fill_grupo("ingredientes", [("field_ingredientes", texto_ing)])
     pasos = receta.get("pasos") or []
+    texto_pas = None
     if pasos:
         texto_pas = "\n".join(f"{p.get('orden')}. {p.get('texto')}" for p in pasos)
-        resultados["pasos"] = fill("field_pasos", texto_pas)
+    fill_grupo("instrucciones", [("field_pasos", texto_pas)])
+    seo = receta.get("seo") or {}
+    fill_grupo(
+        "seo",
+        [
+            ("field_meta_titulo", seo.get("metaTitulo")),
+            ("field_meta_descripcion", seo.get("metaDescripcion")),
+        ],
+    )
 
     if dry_run:
         btn = selectores.get("btn_guardar_borrador")
@@ -521,6 +923,11 @@ def main() -> int:
         "--remap",
         action="store_true",
         help="Solo regenera bm-selectores.json desde bm-estructura.json (sin abrir el navegador)",
+    )
+    ap.add_argument(
+        "--no-auto-lapiz",
+        action="store_true",
+        help="No abrir lápices automáticamente (solo captura la vista actual)",
     )
     ap.add_argument("--timeout-ms", type=int, default=300_000, help="Espera máxima login manual")
     args = ap.parse_args()
@@ -587,12 +994,12 @@ def main() -> int:
     print(f"URL: {base}")
     print("1) Se abre Chromium.")
     print("2) Inicia sesión (automático si .env tiene user/pass; si no, a mano / MFA).")
-    print("3) Abre una receta en el Gestor de contenido (CMS).")
-    print("4) IMPORTANTE: el BM es por componentes. Haz clic en el LÁPIZ de")
-    print("   «Cabecera» (o el componente que quieras mapear) hasta ver inputs")
-    print("   editables (título, texto, etc.). No captures solo la lista vacía.")
-    print("5) Vuelve aquí y pulsa ENTER para capturar.")
-    print("6) El navegador NO se cierra solo: revisa y pulsa ENTER otra vez.")
+    print("3) Abre la receta en el Gestor de contenido (lista de componentes).")
+    print("4) Vuelve aquí y pulsa ENTER.")
+    print("5) El scraping abre SOLO cada lápiz (Cabecera, tags, ingredientes,")
+    print("   instrucciones, SEO), captura campos y cierra el editor.")
+    print("6) Tú no debes hacer clic en los lápices.")
+    print("7) El navegador NO se cierra solo: revisa y pulsa ENTER otra vez.")
     print()
 
     resultado = 0
@@ -608,8 +1015,8 @@ def main() -> int:
         try_login(page, env)
 
         print(
-            "\n>>> Abre el LÁPIZ del componente (Cabecera / Ingredientes / etc.)\n"
-            "    hasta ver campos editables. Luego pulsa ENTER aquí…"
+            "\n>>> Deja abierta la receta en el CMS (lista de componentes).\n"
+            "    NO hace falta tocar los lápices. Pulsa ENTER aquí…"
         )
         try:
             input()
@@ -617,18 +1024,23 @@ def main() -> int:
             print("Sin TTY: esperando 60s para que completes login/navegación…")
             page.wait_for_timeout(60_000)
 
-        estructura = dump_estructura(page)
+        if args.no_auto_lapiz:
+            estructura = dump_estructura(page)
+            sugeridos = sugerir_selectores(estructura)
+        else:
+            print("\nAbriendo lápices automáticamente…")
+            estructura, sugeridos = capturar_cms_por_componentes(page)
+
         estructura["capturadoEn"] = datetime.now(timezone.utc).isoformat()
         ESTRUCTURA_PATH.write_text(json.dumps(estructura, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         page.screenshot(path=str(SCREENSHOT_PATH), full_page=True)
         context.storage_state(path=str(SESSION_PATH))
 
-        sugeridos = sugerir_selectores(estructura)
         # fusionar con mapa previo si existe
         if MAPA_SELECTORES_PATH.exists():
             prev = json.loads(MAPA_SELECTORES_PATH.read_text(encoding="utf-8"))
             for k, v in sugeridos.items():
-                if v and not prev.get(k):
+                if v:
                     prev[k] = v
                 elif k not in prev:
                     prev[k] = v
@@ -653,22 +1065,28 @@ def main() -> int:
         fields = estructura.get("fields") or []
         if fields:
             print("\nResumen fields capturados:")
-            for i, field in enumerate(fields[:20]):
+            for i, field in enumerate(fields[:30]):
                 print(
-                    "  [{i}] label={label!r} ph={ph!r} id={id!r}".format(
+                    "  [{i}] comp={comp!r} label={label!r} ph={ph!r} id={id!r}".format(
                         i=i,
+                        comp=field.get("componente"),
                         label=(field.get("label") or "")[:70],
                         ph=(field.get("placeholder") or "")[:40],
                         id=field.get("id"),
                     )
                 )
 
+        cms_info = (estructura.get("cms") or {}) if isinstance(estructura.get("cms"), dict) else {}
         if utiles < 2:
             print(
-                "\n⚠ Pocos selectores. Suele pasar si capturaste la lista de componentes\n"
-                "  vacíos («Edita este componente desde el lápiz») en vez del editor interno.\n"
-                "  Abre el lápiz de Cabecera / Lista Ingredientes y captura de nuevo.",
+                "\n⚠ Pocos selectores. Revisa que la receta esté abierta en el Gestor\n"
+                "  de contenido y vuelve a explorar (el script abre los lápices solo).\n"
+                "  Si el DOM del BM cambió, avisa para ajustar detectores.",
                 file=sys.stderr,
+            )
+        elif cms_info.get("autoLapiz"):
+            print(
+                f"\n✓ Captura CMS por componentes ({len(cms_info.get('porComponente') or {})} editores)."
             )
 
         if args.fill_json:
@@ -691,7 +1109,7 @@ def main() -> int:
     print(
         "\nSiguiente: si los selectores están bien,\n"
         "  python scripts\\publicar-receta-cencosud.py out\\….json --headed --dry-run\n"
-        "Si no: vuelve a explorar con el lápiz del componente abierto."
+        "El publicador también abre los lápices solo al rellenar."
     )
     return resultado
 

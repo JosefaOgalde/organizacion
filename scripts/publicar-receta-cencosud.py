@@ -11,10 +11,14 @@ Uso:
   python3 scripts/publicar-receta-cencosud.py \\
     index/clientes/Herramientas/carga-recetas-cencosud/out/anticuchos-de-verduras-con-chimichurri.json \\
     --headed --dry-run
+
+El BM Jumbo es CMS por componentes: este script abre cada lápiz solo
+(Cabecera, tags, ingredientes, instrucciones, SEO) antes de rellenar.
 """
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
 import sys
@@ -28,6 +32,14 @@ SESSION_PATH = SECRETS / "bm-session.json"
 MAPA_SELECTORES_PATH = SECRETS / "bm-selectores.json"
 CAMPOS_REQUERIDOS_PUBLICACION = ("titulo", "descripcion", "ingredientes", "pasos")
 CAMPOS_FALTANTES_NO_BLOQUEANTES = {"ingredientes.skuCencosud"}
+EXPLORAR_PATH = ROOT / "scripts/explorar-bm-cencosud.py"
+
+
+def _cargar_explorar():
+    spec = importlib.util.spec_from_file_location("explorar_bm_cencosud", EXPLORAR_PATH)
+    modulo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modulo)
+    return modulo
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -137,8 +149,9 @@ def main() -> int:
         print(
             "\nAún no hay selectores útiles en secrets/bm-selectores.json.\n"
             "En TU PC corre primero:\n"
-            "  python3 scripts/explorar-bm-cencosud.py\n"
-            "Inicia sesión, abre el formulario de receta, pulsa ENTER en la terminal.",
+            "  python3 scripts/explorar-bm-cencosud.py --reuse-session\n"
+            "Inicia sesión, abre la receta en el CMS y pulsa ENTER\n"
+            "(el script abre los lápices solo).",
             file=sys.stderr,
         )
         return 2
@@ -148,6 +161,8 @@ def main() -> int:
     except ImportError:
         print("Instala: pip install playwright && playwright install chromium", file=sys.stderr)
         return 1
+
+    explorar = _cargar_explorar()
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=not headed)
@@ -169,87 +184,17 @@ def main() -> int:
                 except Exception:
                     print(f"No se pudo navegar con nav_nueva_receta={nav}")
 
-        print("Rellenando…")
-        resultados = {}
-        resultados["titulo"] = fill(page, selectores.get("field_titulo"), receta.get("titulo"), "titulo")
-        resultados["descripcion"] = fill(
-            page, selectores.get("field_descripcion"), receta.get("descripcion"), "descripcion"
-        )
-        resultados["porciones"] = fill(
-            page, selectores.get("field_porciones"), receta.get("porciones"), "porciones"
-        )
-        resultados["dificultad"] = fill(
-            page, selectores.get("field_dificultad"), receta.get("dificultad"), "dificultad"
-        )
-        resultados["tiempo"] = fill(
-            page, selectores.get("field_tiempo"), receta.get("tiempoTotal"), "tiempo"
-        )
-        resultados["tags"] = fill(
-            page,
-            selectores.get("field_tags"),
-            ", ".join(receta.get("categorias") or []),
-            "tags",
-        )
-        seo = receta.get("seo") or {}
-        resultados["meta_titulo"] = fill(
-            page, selectores.get("field_meta_titulo"), seo.get("metaTitulo"), "meta_titulo"
-        )
-        resultados["meta_descripcion"] = fill(
-            page, selectores.get("field_meta_descripcion"), seo.get("metaDescripcion"), "meta_descripcion"
-        )
-
-        ings = receta.get("ingredientes") or []
-        if ings:
-            texto_ing = "\n".join(
-                " ".join(
-                    filter(
-                        None,
-                        [str(i.get("cantidad") or ""), str(i.get("unidad") or ""), str(i.get("nombre") or "")],
-                    )
-                ).strip()
-                for i in ings
-            )
-            resultados["ingredientes"] = fill(
-                page, selectores.get("field_ingredientes"), texto_ing, "ingredientes"
-            )
-
-        pasos = receta.get("pasos") or []
-        if pasos:
-            texto_pas = "\n".join(f"{p.get('orden')}. {p.get('texto')}" for p in pasos)
-            resultados["pasos"] = fill(page, selectores.get("field_pasos"), texto_pas, "pasos")
-
+        print("Rellenando (abriendo lápices del CMS automáticamente)…")
+        carga_ok = explorar.fill_from_receta(page, receta, selectores, dry_run=dry)
         resultado = 0
         if dry:
-            btn = selectores.get("btn_guardar_borrador")
-            if btn:
-                try:
-                    page.locator(btn).first.click()
-                    print("Dry-run: clic guardar borrador.")
-                    receta["estado"] = "cargado"
-                except Exception as e:
-                    print(f"Dry-run: no se pudo guardar borrador ({e}). Revisa la ventana.")
-            else:
-                print("Dry-run: campos rellenados; sin selector de borrador. Revisa la ventana y guarda a mano si hace falta.")
+            if carga_ok:
+                receta["estado"] = "cargado"
         else:
-            fallos_requeridos = [
-                campo for campo in CAMPOS_REQUERIDOS_PUBLICACION if not resultados.get(campo, False)
-            ]
-            if fallos_requeridos:
-                print(
-                    "Publicación abortada: falló el rellenado de campos requeridos: "
-                    + ", ".join(fallos_requeridos),
-                    file=sys.stderr,
-                )
+            if not carga_ok:
                 resultado = 4
             else:
-                btn = selectores.get("btn_publicar")
-                if not btn:
-                    print("Sin btn_publicar en bm-selectores.json", file=sys.stderr)
-                    resultado = 4
-                else:
-                    page.locator(btn).first.click()
-                    print("Solicitud de publicación enviada; confirma el resultado en BM.")
-                    receta["estado"] = "cargado"
+                receta["estado"] = "cargado"
 
         path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         context.storage_state(path=str(SESSION_PATH))

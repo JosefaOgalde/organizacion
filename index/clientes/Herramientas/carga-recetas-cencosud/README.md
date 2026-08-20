@@ -31,21 +31,22 @@ ambos archivos de forma destructiva.
 ### 2) Explorar BM (scraping/mapeo local)
 
 ```bat
-python scripts\explorar-bm-cencosud.py
+python scripts\explorar-bm-cencosud.py --reuse-session
 ```
 
 1. Se abre Chromium en tu pantalla.  
 2. Entras con tu usuario (a mano si pide MFA).  
-3. Navegas hasta **Nueva receta** / el formulario.  
+3. Abres la **receta** en el Gestor de contenido (lista de componentes).  
 4. Vuelves a la terminal y pulsas **ENTER**.  
+5. **No toques los lápices:** el script los abre solo (Cabecera, tags, ingredientes, instrucciones, SEO), captura campos y cierra cada editor.
 
 Se guardan (solo local, gitignored):
 
 | Archivo | Qué es |
 |---------|--------|
 | `secrets/bm-session.json` | Sesión (cookies) |
-| `secrets/bm-estructura.json` | Campos/botones detectados |
-| `secrets/bm-selectores.json` | Mapa para rellenar |
+| `secrets/bm-estructura.json` | Campos/botones detectados (por componente) |
+| `secrets/bm-selectores.json` | Mapa para rellenar + `lapiz_*` |
 | `secrets/bm-screenshot.png` | Captura |
 
 ### 3) Completar la info en la interfaz
@@ -66,7 +67,7 @@ cuatro campos no logra rellenarse. El clic en
 permite marcarlo como `publicado`. Así, volver a ejecutar por accidente no duplica una
 solicitud ya enviada.
 
-Si un campo no se rellena: edita `secrets/bm-selectores.json` (selectores) y reintenta. También puedes re-explorar con el formulario abierto.
+Si un campo no se rellena: edita `secrets/bm-selectores.json` (selectores) y reintenta. También puedes re-explorar con la receta abierta en el CMS (sin clic en lápices).
 Los campos editoriales y SEO usan selectores distintos; un botón combinado
 «Guardar y publicar» nunca se usa como guardado de borrador en `--dry-run`.
 
@@ -76,7 +77,7 @@ Si tras explorar ves todos los selectores en `None` (BM sin id/name), regenera s
 python scripts\explorar-bm-cencosud.py --remap
 ```
 
-(usa los labels de `bm-estructura.json`). Si sigue vacío, vuelve a explorar con el formulario de **Nueva receta** bien abierto.
+(usa los labels de `bm-estructura.json`). Si sigue vacío, vuelve a explorar con la ficha de la receta abierta en el Gestor de contenido.
 ## Pruebas automáticas (sin BM real)
 
 ```bat
@@ -85,7 +86,7 @@ playwright install chromium
 python -m unittest discover -s tests -v
 ```
 
-Incluye un HTML fixture (`tests/fixtures/bm-formulario-receta.html`) para probar mapeo de selectores y relleno dry-run **sin login ADFS**. La exploración real del BM sigue siendo solo en tu PC.
+Incluye HTML fixtures (`bm-formulario-receta.html` y `bm-cms-componentes.html`) para probar mapeo, auto-lápiz del CMS y relleno dry-run **sin login ADFS**. La exploración real del BM sigue siendo solo en tu PC.
 ## Carpetas
 
 | Ruta | Uso |

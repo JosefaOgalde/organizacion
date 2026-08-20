@@ -2,8 +2,6 @@
 from __future__ import annotations
 
 import importlib.util
-import json
-import tempfile
 import unittest
 from pathlib import Path
 
@@ -13,6 +11,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT_PATH = ROOT / "scripts/explorar-bm-cencosud.py"
 FIXTURE = Path(__file__).resolve().parent / "fixtures/bm-formulario-receta.html"
+FIXTURE_CMS = Path(__file__).resolve().parent / "fixtures/bm-cms-componentes.html"
 PUBLICAR_PATH = ROOT / "scripts/publicar-receta-cencosud.py"
 
 
@@ -28,6 +27,30 @@ def cargar_publicar():
     modulo = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(modulo)
     return modulo
+
+
+RECETA_DEMO = {
+    "titulo": "Anticuchos de verduras",
+    "descripcion": "Brochetas vegetales con chimichurri.",
+    "porciones": "4",
+    "dificultad": "Fácil",
+    "tiempoTotal": "35 min",
+    "categorias": ["Vegetariana", "Chilena"],
+    "ingredientes": [
+        {"cantidad": "2", "unidad": "u", "nombre": "zapallos italianos"},
+        {"cantidad": "1", "unidad": "taza", "nombre": "chimichurri"},
+    ],
+    "pasos": [
+        {"orden": 1, "texto": "Corta las verduras."},
+        {"orden": 2, "texto": "Arma los anticuchos y ásalos."},
+    ],
+    "seo": {
+        "metaTitulo": "Anticuchos de verduras | Jumbo",
+        "metaDescripcion": "Receta fácil de anticuchos vegetales.",
+    },
+    "estado": "listo-para-cargar",
+    "camposFaltantes": [],
+}
 
 
 class ScrapingFixtureBmTests(unittest.TestCase):
@@ -76,28 +99,7 @@ class ScrapingFixtureBmTests(unittest.TestCase):
     def test_relleno_dry_run_sobre_fixture(self):
         explorar = cargar_explorar()
         publicar = cargar_publicar()
-        receta = {
-            "titulo": "Anticuchos de verduras",
-            "descripcion": "Brochetas vegetales con chimichurri.",
-            "porciones": "4",
-            "dificultad": "Fácil",
-            "tiempoTotal": "35 min",
-            "categorias": ["Vegetariana", "Chilena"],
-            "ingredientes": [
-                {"cantidad": "2", "unidad": "u", "nombre": "zapallos italianos"},
-                {"cantidad": "1", "unidad": "taza", "nombre": "chimichurri"},
-            ],
-            "pasos": [
-                {"orden": 1, "texto": "Corta las verduras."},
-                {"orden": 2, "texto": "Arma los anticuchos y ásalos."},
-            ],
-            "seo": {
-                "metaTitulo": "Anticuchos de verduras | Jumbo",
-                "metaDescripcion": "Receta fácil de anticuchos vegetales.",
-            },
-            "estado": "listo-para-cargar",
-            "camposFaltantes": [],
-        }
+        receta = dict(RECETA_DEMO)
 
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
@@ -122,6 +124,76 @@ class ScrapingFixtureBmTests(unittest.TestCase):
             # valores quedaron en el DOM
             self.assertEqual(page.input_value("#titulo"), receta["titulo"])
             self.assertEqual(page.input_value("#descripcion"), receta["descripcion"])
+            browser.close()
+
+
+class ScrapingCmsComponentesTests(unittest.TestCase):
+    """El scraping debe abrir los lápices solo; la usuaria no hace clic."""
+
+    @classmethod
+    def setUpClass(cls):
+        if not FIXTURE_CMS.exists():
+            raise unittest.SkipTest(f"Falta fixture CMS: {FIXTURE_CMS}")
+
+    def test_auto_lapiz_captura_todos_los_campos(self):
+        explorar = cargar_explorar()
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(FIXTURE_CMS.as_uri())
+
+            # Vista inicial: componentes vacíos, sin inputs visibles
+            self.assertEqual(explorar.contar_campos_editables(page), 0)
+
+            comps = explorar.listar_componentes_cms(page)
+            claves = {c["clave"] for c in comps}
+            self.assertIn("cabecera", claves)
+            self.assertIn("ingredientes", claves)
+            self.assertIn("seo", claves)
+
+            estructura, mapa = explorar.capturar_cms_por_componentes(page)
+            browser.close()
+
+        self.assertTrue((estructura.get("cms") or {}).get("autoLapiz"))
+        self.assertGreaterEqual(len(estructura.get("fields") or []), 8)
+        componentes_field = {f.get("componente") for f in estructura["fields"]}
+        self.assertIn("cabecera", componentes_field)
+        self.assertIn("ingredientes", componentes_field)
+        self.assertIn("instrucciones", componentes_field)
+        self.assertIn("seo", componentes_field)
+
+        for clave in (
+            "field_titulo",
+            "field_descripcion",
+            "field_tags",
+            "field_ingredientes",
+            "field_pasos",
+            "field_meta_titulo",
+            "field_meta_descripcion",
+            "lapiz_cabecera",
+            "lapiz_ingredientes",
+            "lapiz_seo",
+            "btn_guardar_borrador",
+            "btn_publicar",
+        ):
+            self.assertTrue(mapa.get(clave), f"falta selector para {clave}: {mapa}")
+
+    def test_relleno_abre_lapices_sin_clic_manual(self):
+        explorar = cargar_explorar()
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(FIXTURE_CMS.as_uri())
+            _, mapa = explorar.capturar_cms_por_componentes(page)
+
+            ok = explorar.fill_from_receta(page, dict(RECETA_DEMO), mapa, dry_run=True)
+            self.assertTrue(ok)
+            self.assertEqual(page.input_value("#titulo"), RECETA_DEMO["titulo"])
+            self.assertEqual(page.input_value("#descripcion"), RECETA_DEMO["descripcion"])
+            self.assertIn("zapallos", page.input_value("#ingredientes"))
+            self.assertIn("Corta las verduras", page.input_value("#pasos"))
+            self.assertEqual(page.input_value("#meta-titulo"), RECETA_DEMO["seo"]["metaTitulo"])
+            self.assertEqual(page.locator("#estado").inner_text(), "borrador-ok")
             browser.close()
 
 
