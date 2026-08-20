@@ -1,0 +1,97 @@
+/* Banners · caras y animaciones — página de comparación */
+
+.bc {
+  margin: 0;
+  font-family: "Instrument Sans", system-ui, sans-serif;
+  color: #091914;
+  background: #f4f1ea;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bc a {
+  color: #0f555c;
+}
+
+.bc-top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 1rem 1.25rem 1.1rem;
+  background: color-mix(in srgb, #fbf6eb 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(19, 52, 41, 0.12);
+}
+
+.bc-top > a:first-child {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.bc-top h1 {
+  margin: 0.45rem 0 0.25rem;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+.bc-top p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: #2a5a49;
+  max-width: 40rem;
+}
+
+.bc-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.85rem;
+}
+
+.bc-nav a {
+  display: inline-flex;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: #133429;
+  color: #fbf6eb;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+}
+
+.bc-nav a:hover {
+  background: #2a5a49;
+}
+
+.bc-block {
+  border-bottom: 1px solid rgba(19, 52, 41, 0.14);
+  background: #fff;
+}
+
+.bc-tag {
+  margin: 0;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #133429;
+  background: #ebe9c2;
+  border-bottom: 1px solid rgba(19, 52, 41, 0.1);
+}
+
+.bc-tag a {
+  text-transform: none;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.bc-frame {
+  display: block;
+  width: 100%;
+  min-height: 28rem;
+  border: 0;
+  background: #fbf6eb;
+}
