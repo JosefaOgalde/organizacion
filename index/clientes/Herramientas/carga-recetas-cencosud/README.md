@@ -70,13 +70,15 @@ Si un campo no se rellena: edita `secrets/bm-selectores.json` (selectores) y rei
 Los campos editoriales y SEO usan selectores distintos; un botón combinado
 «Guardar y publicar» nunca se usa como guardado de borrador en `--dry-run`.
 
-## Agente Cursor
+## Pruebas automáticas (sin BM real)
 
-```
-@herramientas
-Cliente Herramientas · Proyecto CRC
+```bat
+pip install playwright
+playwright install chromium
+python -m unittest discover -s tests -v
 ```
 
+Incluye un HTML fixture (`tests/fixtures/bm-formulario-receta.html`) para probar mapeo de selectores y relleno dry-run **sin login ADFS**. La exploración real del BM sigue siendo solo en tu PC.
 ## Carpetas
 
 | Ruta | Uso |
