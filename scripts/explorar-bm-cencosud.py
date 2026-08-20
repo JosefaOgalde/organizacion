@@ -148,12 +148,25 @@ def dump_estructura(page) -> dict:
           if (wrap) label = clean(wrap.innerText);
         }
         if (!label) {
-          const prev = el.closest('div, td, li, section, form');
+          const prev = el.closest('div, td, li, section, form, [class*="field"], [class*="Field"], [class*="form"]');
           if (prev) {
-            const lab2 = prev.querySelector('label, .label, [class*="label"], legend');
+            const lab2 = prev.querySelector('label, .label, [class*="label"], [class*="Label"], legend, span, p, div');
             if (lab2) label = clean(lab2.innerText);
           }
         }
+        if (!label) {
+          const prevSib = el.previousElementSibling;
+          if (prevSib) label = clean(prevSib.innerText);
+        }
+        if (!label) {
+          const parent = el.parentElement;
+          if (parent) {
+            const clone = parent.cloneNode(true);
+            clone.querySelectorAll('input, textarea, select, button').forEach((n) => n.remove());
+            label = clean(clone.innerText);
+          }
+        }
+        const className = (el.className && typeof el.className === 'string') ? el.className.slice(0, 120) : '';
         fields.push({
           index: i,
           tag: el.tagName.toLowerCase(),
@@ -162,6 +175,7 @@ def dump_estructura(page) -> dict:
           name: el.getAttribute('name'),
           placeholder: el.getAttribute('placeholder'),
           ariaLabel: el.getAttribute('aria-label'),
+          className: className || null,
           label,
           selectorSugerido: abs(el),
           disabled: !!el.disabled,
@@ -295,6 +309,7 @@ def sugerir_selectores(estructura: dict) -> dict:
                     field.get("ariaLabel"),
                     field.get("name"),
                     field.get("id"),
+                    field.get("className"),
                 ],
             )
         ).lower()
@@ -340,6 +355,34 @@ def remapear_desde_estructura() -> dict:
     if not ESTRUCTURA_PATH.exists():
         raise FileNotFoundError(ESTRUCTURA_PATH)
     estructura = json.loads(ESTRUCTURA_PATH.read_text(encoding="utf-8"))
+    fields = estructura.get("fields") or []
+    buttons = estructura.get("buttons") or []
+    print(f"URL capturada: {estructura.get('url')}")
+    print(f"Título página: {estructura.get('title')}")
+    print(f"Fields en estructura: {len(fields)} · Botones: {len(buttons)}")
+    if fields:
+        print("Resumen fields (label / placeholder / name / id / selector):")
+        for i, field in enumerate(fields[:40]):
+            print(
+                "  [{i}] label={label!r} ph={ph!r} name={name!r} id={id!r} sel={sel!r}".format(
+                    i=i,
+                    label=(field.get("label") or "")[:80],
+                    ph=(field.get("placeholder") or "")[:40],
+                    name=field.get("name"),
+                    id=field.get("id"),
+                    sel=(field.get("selectorSugerido") or "")[:60],
+                )
+            )
+    if buttons:
+        print("Resumen botones (text / sel):")
+        for i, btn in enumerate(buttons[:30]):
+            print(
+                "  [{i}] text={text!r} sel={sel!r}".format(
+                    i=i,
+                    text=(btn.get("text") or "")[:80],
+                    sel=(btn.get("selectorSugerido") or "")[:60],
+                )
+            )
     sugeridos = sugerir_selectores(estructura)
     if MAPA_SELECTORES_PATH.exists():
         prev = json.loads(MAPA_SELECTORES_PATH.read_text(encoding="utf-8"))
