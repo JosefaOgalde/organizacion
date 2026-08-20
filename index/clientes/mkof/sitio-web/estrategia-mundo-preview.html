@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estrategia · mundo mesh · MKOF</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #091914;
+      --mid: #2a5a49;
+      --cream: #fbf6eb;
+      --sand: #ebe9c2;
+    }
+    body {
+      margin: 0;
+      font-family: "Instrument Sans", system-ui, sans-serif;
+      color: var(--ink);
+      background: #f4f1ea;
+    }
+    a { color: #0f555c; }
+    .top {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(19,52,41,.12);
+      background: color-mix(in srgb, var(--cream) 92%, transparent);
+    }
+    .top h1 { margin: .4rem 0 .2rem; font-size: 1.35rem; }
+    .top p { margin: 0; color: var(--mid); max-width: 40rem; line-height: 1.45; font-size: .95rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      padding: 1.5rem;
+      max-width: 72rem;
+      margin: 0 auto;
+    }
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+    figure {
+      margin: 0;
+      background: #fff;
+      border: 1px solid rgba(19,52,41,.1);
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+    figcaption {
+      padding: .75rem 1rem;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      background: var(--sand);
+      border-bottom: 1px solid rgba(19,52,41,.1);
+    }
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #f7f2e4;
+    }
+    .card-demo {
+      max-width: 72rem;
+      margin: 0 auto 2.5rem;
+      padding: 0 1.5rem;
+    }
+    .card-demo h2 {
+      font-size: 1rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+    .card {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      max-width: 22rem;
+      padding: 1.25rem;
+      background: #93c64a;
+      border-radius: 1rem;
+      color: var(--ink);
+    }
+    .card img {
+      width: 4.5rem;
+      height: 4.5rem;
+      object-fit: cover;
+      border-radius: .75rem;
+      background: #f7f2e4;
+      flex: none;
+    }
+    .card h3 { margin: 0 0 .35rem; font-size: 1.05rem; }
+    .card p { margin: 0; font-size: .88rem; line-height: 1.45; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <a href="./">← Sitio web MKOF</a>
+    <h1>Estrategia · mundo (sigue caras V5)</h1>
+    <p>
+      Misma firma visual que <strong>caras-mesh</strong> (líneas + puntos, verdes/beige/mint).
+      El de estrategia se lee como mundo / esfera de conexiones.
+    </p>
+  </header>
+
+  <div class="grid">
+    <figure>
+      <figcaption>Referencia · caras V5 (probado)</figcaption>
+      <img src="assets/caras-mesh.svg" alt="Caras mesh Making Of" width="520" height="420">
+    </figure>
+    <figure>
+      <figcaption>Nuevo · Estrategia mundo mesh</figcaption>
+      <img src="assets/estrategia-mundo-mesh.svg" alt="Estrategia mundo mesh Making Of" width="520" height="420">
+    </figure>
+  </div>
+
+  <section class="card-demo">
+    <h2>En tarjeta de servicios</h2>
+    <article class="card">
+      <img src="assets/estrategia-mundo-mesh.svg" alt="">
+      <div>
+        <h3>Estrategia</h3>
+        <p>Transformamos datos y tendencias en la hoja de ruta para el crecimiento de tu negocio.</p>
+      </div>
+    </article>
+  </section>
+</body>
+</html>
