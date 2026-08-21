@@ -46,6 +46,21 @@ def polar(cx, cy, ang, r):
     return (cx + math.cos(ang) * r, cy + math.sin(ang) * r)
 
 
+def cubic_pts(a, c1, c2, b, n=8):
+    pts = []
+    for i in range(n):
+        t = i / n
+        u = 1.0 - t
+        x = u * u * u * a[0] + 3 * u * u * t * c1[0] + 3 * u * t * t * c2[0] + t * t * t * b[0]
+        y = u * u * u * a[1] + 3 * u * u * t * c1[1] + 3 * u * t * t * c2[1] + t * t * t * b[1]
+        pts.append((x, y))
+    return pts
+
+
+def svg_xy(x, y, s=1.26):
+    return (CX + (x - 260.0) * s, CY + (y - 198.0) * s)
+
+
 def densify_open(a, b, step):
     d = dist(a, b)
     steps = max(1, int(round(d / step)))
@@ -811,7 +826,85 @@ def ico_desarrollo():
     return g
 
 
+def ico_caras():
+    """Dos perfiles enfrentados + nodo central, como caras-mesh.svg."""
+    g = G()
+
+    def face(cubics):
+        poly = []
+        for a, c1, c2, b in cubics:
+            poly.extend(cubic_pts(svg_xy(*a), svg_xy(*c1), svg_xy(*c2), svg_xy(*b), 7))
+        g.loop(poly, 16, fill=True)
+
+    face(
+        [
+            ((188, 70), (155, 95), (132, 140), (138, 185)),
+            ((138, 185), (142, 220), (155, 245), (168, 268)),
+            ((168, 268), (175, 280), (172, 295), (160, 308)),
+            ((160, 308), (175, 300), (190, 288), (198, 272)),
+            ((198, 272), (210, 290), (225, 305), (235, 318)),
+            ((235, 318), (242, 290), (248, 255), (245, 220)),
+            ((245, 220), (242, 175), (225, 115), (188, 70)),
+        ]
+    )
+    face(
+        [
+            ((332, 68), (365, 93), (388, 138), (382, 183)),
+            ((382, 183), (378, 218), (365, 243), (352, 266)),
+            ((352, 266), (345, 278), (348, 293), (360, 306)),
+            ((360, 306), (345, 298), (330, 286), (322, 270)),
+            ((322, 270), (310, 288), (295, 303), (285, 316)),
+            ((285, 316), (278, 288), (272, 253), (275, 218)),
+            ((275, 218), (278, 173), (295, 113), (332, 68)),
+        ]
+    )
+    # ojos
+    g.circ(*svg_xy(200, 175), 8, 8, "core", fill=True)
+    g.circ(*svg_xy(320, 173), 8, 8, "core", fill=True)
+    # malla al hub, como el SVG
+    for a, c1, c2, b in (
+        ((170, 150), (210, 180), (230, 190), (260, 200)),
+        ((350, 145), (310, 175), (290, 190), (260, 200)),
+        ((175, 250), (210, 235), (235, 215), (260, 200)),
+        ((345, 245), (310, 230), (285, 215), (260, 200)),
+    ):
+        g.lines([svg_xy(*a), svg_xy(*c1), svg_xy(*c2), svg_xy(*b)], 16, "tick")
+    g.line(svg_xy(260, 200), svg_xy(260, 330), 16, "tick")
+    g.hub_at(*svg_xy(260, 200))
+    return g
+
+
+def ico_mundo():
+    """Globo con meridianos y paralelos visibles (misma familia que alcance-global)."""
+    g = G()
+    R = 168
+    g.circ(CX, CY, R, 36, fill=False)
+    for lon in (-1.05, -0.52, 0.0, 0.52, 1.05):
+        pts = []
+        for i in range(18):
+            lat = -math.pi / 2 + math.pi * i / 17
+            x = CX + R * math.cos(lat) * math.sin(lon)
+            y = CY + R * math.sin(lat)
+            pts.append((x, y))
+        g.lines(pts, 18, "tick")
+    for lat in (-0.85, -0.42, 0.0, 0.42, 0.85):
+        pts = []
+        for i in range(22):
+            lon = -math.pi / 2 + math.pi * i / 21
+            rr = R * math.cos(lat)
+            x = CX + rr * math.sin(lon)
+            y = CY + R * math.sin(lat)
+            if math.hypot(x - CX, y - CY) <= R + 2:
+                pts.append((x, y))
+        if len(pts) > 3:
+            g.lines(pts, 18, "tick")
+    g.hub_at()
+    return g
+
+
 ICONS = {
+    "caras": ico_caras,
+    "mundo": ico_mundo,
     "diana-objetivo": ico_diana,
     "caballo-ajedrez": ico_caballo,
     "ciclo-360": ico_ciclo360,
