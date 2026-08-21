@@ -26,6 +26,8 @@ SECRETS = CRC / "secrets"
 ENV_PATH = SECRETS / ".env"
 SESSION_PATH = SECRETS / "bm-session.json"
 MAPA_SELECTORES_PATH = SECRETS / "bm-selectores.json"
+CAMPOS_REQUERIDOS_PUBLICACION = ("titulo", "descripcion", "ingredientes", "pasos")
+CAMPOS_FALTANTES_NO_BLOQUEANTES = {"ingredientes.skuCencosud"}
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -54,6 +56,25 @@ def load_selectores() -> dict:
     if MAPA_SELECTORES_PATH.exists():
         return json.loads(MAPA_SELECTORES_PATH.read_text(encoding="utf-8"))
     return {}
+
+
+def errores_prepublicacion(receta: dict) -> list[str]:
+    errores = []
+    if receta.get("estado") != "listo-para-cargar":
+        errores.append(f"estado={receta.get('estado')!s} (se requiere listo-para-cargar)")
+
+    campos_faltantes = [
+        str(campo)
+        for campo in receta.get("camposFaltantes") or []
+        if str(campo).strip() and str(campo) not in CAMPOS_FALTANTES_NO_BLOQUEANTES
+    ]
+    if campos_faltantes:
+        errores.append("camposFaltantes=" + ", ".join(campos_faltantes))
+
+    vacios = [campo for campo in CAMPOS_REQUERIDOS_PUBLICACION if not receta.get(campo)]
+    if vacios:
+        errores.append("campos requeridos vacíos=" + ", ".join(vacios))
+    return errores
 
 
 def fill(page, sel: str | None, value, label: str) -> bool:
@@ -99,11 +120,17 @@ def main() -> int:
     base_url = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/")
     dry = args.dry_run or env.get("CENCOSUD_BM_DRY_RUN", "true").lower() in ("1", "true", "yes")
     headed = args.headed or env.get("CENCOSUD_BM_HEADED", "true").lower() in ("1", "true", "yes")
+    errores_preflight = [] if dry else errores_prepublicacion(receta)
 
     print("=== Carga CRC → BM ===")
     print(f"receta:  {receta.get('titulo')}")
     print(f"estado:  {receta.get('estado')}")
     print(f"dry_run: {dry} · headed: {headed}")
+    if errores_preflight:
+        print("Publicación bloqueada antes de abrir el navegador:", file=sys.stderr)
+        for error in errores_preflight:
+            print(f"  - {error}", file=sys.stderr)
+        return 3
 
     utiles = {k: v for k, v in selectores.items() if v}
     if len(utiles) < 2:
@@ -143,20 +170,33 @@ def main() -> int:
                     print(f"No se pudo navegar con nav_nueva_receta={nav}")
 
         print("Rellenando…")
-        fill(page, selectores.get("field_titulo"), receta.get("titulo"), "titulo")
-        fill(page, selectores.get("field_descripcion"), receta.get("descripcion"), "descripcion")
-        fill(page, selectores.get("field_porciones"), receta.get("porciones"), "porciones")
-        fill(page, selectores.get("field_dificultad"), receta.get("dificultad"), "dificultad")
-        fill(page, selectores.get("field_tiempo"), receta.get("tiempoTotal"), "tiempo")
-        fill(
+        resultados = {}
+        resultados["titulo"] = fill(page, selectores.get("field_titulo"), receta.get("titulo"), "titulo")
+        resultados["descripcion"] = fill(
+            page, selectores.get("field_descripcion"), receta.get("descripcion"), "descripcion"
+        )
+        resultados["porciones"] = fill(
+            page, selectores.get("field_porciones"), receta.get("porciones"), "porciones"
+        )
+        resultados["dificultad"] = fill(
+            page, selectores.get("field_dificultad"), receta.get("dificultad"), "dificultad"
+        )
+        resultados["tiempo"] = fill(
+            page, selectores.get("field_tiempo"), receta.get("tiempoTotal"), "tiempo"
+        )
+        resultados["tags"] = fill(
             page,
             selectores.get("field_tags"),
             ", ".join(receta.get("categorias") or []),
             "tags",
         )
         seo = receta.get("seo") or {}
-        fill(page, selectores.get("field_meta_titulo"), seo.get("metaTitulo"), "meta_titulo")
-        fill(page, selectores.get("field_meta_descripcion"), seo.get("metaDescripcion"), "meta_descripcion")
+        resultados["meta_titulo"] = fill(
+            page, selectores.get("field_meta_titulo"), seo.get("metaTitulo"), "meta_titulo"
+        )
+        resultados["meta_descripcion"] = fill(
+            page, selectores.get("field_meta_descripcion"), seo.get("metaDescripcion"), "meta_descripcion"
+        )
 
         ings = receta.get("ingredientes") or []
         if ings:
@@ -169,13 +209,16 @@ def main() -> int:
                 ).strip()
                 for i in ings
             )
-            fill(page, selectores.get("field_ingredientes"), texto_ing, "ingredientes")
+            resultados["ingredientes"] = fill(
+                page, selectores.get("field_ingredientes"), texto_ing, "ingredientes"
+            )
 
         pasos = receta.get("pasos") or []
         if pasos:
             texto_pas = "\n".join(f"{p.get('orden')}. {p.get('texto')}" for p in pasos)
-            fill(page, selectores.get("field_pasos"), texto_pas, "pasos")
+            resultados["pasos"] = fill(page, selectores.get("field_pasos"), texto_pas, "pasos")
 
+        resultado = 0
         if dry:
             btn = selectores.get("btn_guardar_borrador")
             if btn:
@@ -188,13 +231,25 @@ def main() -> int:
             else:
                 print("Dry-run: campos rellenados; sin selector de borrador. Revisa la ventana y guarda a mano si hace falta.")
         else:
-            btn = selectores.get("btn_publicar")
-            if not btn:
-                print("Sin btn_publicar en bm-selectores.json", file=sys.stderr)
+            fallos_requeridos = [
+                campo for campo in CAMPOS_REQUERIDOS_PUBLICACION if not resultados.get(campo, False)
+            ]
+            if fallos_requeridos:
+                print(
+                    "Publicación abortada: falló el rellenado de campos requeridos: "
+                    + ", ".join(fallos_requeridos),
+                    file=sys.stderr,
+                )
+                resultado = 4
             else:
-                page.locator(btn).first.click()
-                print("Publicado (según flujo BM).")
-                receta["estado"] = "publicado"
+                btn = selectores.get("btn_publicar")
+                if not btn:
+                    print("Sin btn_publicar en bm-selectores.json", file=sys.stderr)
+                    resultado = 4
+                else:
+                    page.locator(btn).first.click()
+                    print("Solicitud de publicación enviada; confirma el resultado en BM.")
+                    receta["estado"] = "cargado"
 
         path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         context.storage_state(path=str(SESSION_PATH))
@@ -207,7 +262,7 @@ def main() -> int:
                 page.wait_for_timeout(15_000)
         browser.close()
 
-    return 0
+    return resultado
 
 
 if __name__ == "__main__":

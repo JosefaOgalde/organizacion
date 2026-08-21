@@ -24,6 +24,10 @@ copy TU-RECETA.docx index\clientes\Herramientas\carga-recetas-cencosud\inbox\
 python scripts\parse-receta-word.py index\clientes\Herramientas\carga-recetas-cencosud\inbox\TU-RECETA.docx
 ```
 
+Si ya existe el JSON o el `.raw.txt` del mismo título, el parser se detiene sin modificar
+ninguno para proteger SKUs y ediciones manuales. Solo usa `--force` si quieres reemplazar
+ambos archivos de forma destructiva.
+
 ### 2) Explorar BM (scraping/mapeo local)
 
 ```bat
@@ -53,7 +57,18 @@ python scripts\publicar-receta-cencosud.py index\clientes\Herramientas\carga-rec
 `--dry-run` = rellena / intenta borrador, **no publica**.  
 Cuando confíes: quita `--dry-run` o pon `CENCOSUD_BM_DRY_RUN=false` en `.env`.
 
+En modo publicación, tanto el publicador como `explorar-bm-cencosud.py --publish` solo
+aceptan JSON en `estado: listo-para-cargar`. Bloquean antes de abrir el navegador si hay
+`camposFaltantes` bloqueantes o faltan título, descripción, ingredientes o pasos
+(`ingredientes.skuCencosud` sigue siendo opcional). También abortan si alguno de esos
+cuatro campos no logra rellenarse. El clic en
+**Publicar** deja el JSON en `estado: cargado`; solo una confirmación posterior en BM
+permite marcarlo como `publicado`. Así, volver a ejecutar por accidente no duplica una
+solicitud ya enviada.
+
 Si un campo no se rellena: edita `secrets/bm-selectores.json` (selectores) y reintenta. También puedes re-explorar con el formulario abierto.
+Los campos editoriales y SEO usan selectores distintos; un botón combinado
+«Guardar y publicar» nunca se usa como guardado de borrador en `--dry-run`.
 
 ## Agente Cursor
 
