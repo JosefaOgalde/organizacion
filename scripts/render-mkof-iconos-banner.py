@@ -6,7 +6,8 @@ armado fluido, jitter bajo para que la figura no se pierda.
 
 Verde neon / negro · bucle 16s · 798x570. Solo videos.
 
-  python3 scripts/render-mkof-iconos-banner.py --preview --icon diana-objetivo
+  python3 scripts/render-mkof-iconos-banner.py --style v2
+  python3 scripts/render-mkof-iconos-banner.py --preview --style v2 --icon caras
   python3 scripts/render-mkof-iconos-banner.py --icons diana-objetivo,caballo-ajedrez
   python3 scripts/render-mkof-iconos-banner.py
 """
@@ -29,6 +30,8 @@ CX, CY = W / 2.0, H / 2.0 - 6
 
 LINE, LINE_FAR = (70, 200, 55), (28, 95, 26)
 NODE, NODE_DIM, GLOW = (163, 255, 96), (55, 130, 42), (35, 85, 22)
+WASH = (10, 42, 18)
+STYLE = "v1"
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUT_DIR = os.path.join(ROOT, "index/clientes/mkof/sitio-web/assets/banner-verde")
@@ -166,6 +169,59 @@ class G:
         self.add((CX if x is None else x, CY if y is None else y), "hub")
 
 
+def offset_poly(pts, width, closed=True):
+    n = len(pts)
+    if n < 2:
+        return list(pts)
+    cx = sum(p[0] for p in pts) / n
+    cy = sum(p[1] for p in pts) / n
+    out = []
+    for i in range(n):
+        p0 = pts[i - 1] if closed or i else pts[0]
+        p1 = pts[i]
+        p2 = pts[(i + 1) % n] if closed or i < n - 1 else pts[-1]
+        e1 = (p1[0] - p0[0], p1[1] - p0[1])
+        e2 = (p2[0] - p1[0], p2[1] - p1[1])
+        n1 = (-e1[1], e1[0])
+        l1 = math.hypot(*n1) or 1
+        n1 = (n1[0] / l1, n1[1] / l1)
+        n2 = (-e2[1], e2[0])
+        l2 = math.hypot(*n2) or 1
+        n2 = (n2[0] / l2, n2[1] / l2)
+        nx, ny = n1[0] + n2[0], n1[1] + n2[1]
+        ln = math.hypot(nx, ny) or 1
+        nx, ny = nx / ln, ny / ln
+        cand = (p1[0] + nx * width, p1[1] + ny * width)
+        if math.hypot(cand[0] - cx, cand[1] - cy) > math.hypot(p1[0] - cx, p1[1] - cy):
+            cand = (p1[0] - nx * width, p1[1] - ny * width)
+        out.append(cand)
+    return out
+
+
+def thicken_geometry(g):
+    """Cinta de borde (contorno + offset + travesaños), como el cuerpo de las caras."""
+    originals = list(g.chains)
+    for idx, closed in originals:
+        if len(idx) < 6:
+            continue
+        pts = [g.pts[i] for i in idx]
+        length = sum(dist(pts[i], pts[(i + 1) % len(pts) if closed else min(i + 1, len(pts) - 1)]) for i in range(len(pts) - (0 if closed else 1)))
+        if length < 55:
+            continue
+        if closed:
+            inner = offset_poly(pts, 10, True)
+            inner_idx = g._chain(inner, "rim", True)
+            rung = 2
+            m = min(len(idx), len(inner_idx))
+            for i in range(0, m, rung):
+                g.line(g.pts[idx[i]], g.pts[inner_idx[i]], 11, "tick")
+        else:
+            left = offset_poly(pts, 7, False)
+            right = offset_poly(pts, -7, False)
+            ribbon = left + list(reversed(right))
+            g._chain(ribbon, "rim", True)
+
+
 def far_enough(g, p, min_d):
     md2 = min_d * min_d
     for q in g.pts:
@@ -175,10 +231,14 @@ def far_enough(g, p, min_d):
 
 
 def stamp_fill(g):
+    dense = STYLE == "v2"
+    disk_div = 620 if dense else 980
+    poly_div = 520 if dense else 900
+    max_n = 55 if dense else 38
     for cx, cy, r in g.disks:
         area = math.pi * r * r
-        gap = 14 if r < 48 else 18
-        n = max(5, min(36, int(area / 980)))
+        gap = 12 if (dense or r < 48) else 18
+        n = max(5, min(max_n, int(area / disk_div)))
         added = 0
         tries = 0
         while added < n and tries < n * 18:
@@ -194,8 +254,8 @@ def stamp_fill(g):
         ys = [p[1] for p in poly]
         minx, maxx, miny, maxy = min(xs), max(xs), min(ys), max(ys)
         area = max(80.0, (maxx - minx) * (maxy - miny) * 0.50)
-        gap = 14 if area < 14000 else 18
-        n = max(6, min(38, int(area / 900)))
+        gap = 12 if dense or area < 14000 else 18
+        n = max(8, min(max_n, int(area / poly_div)))
         added = 0
         tries = 0
         while added < n and tries < n * 20:
@@ -957,7 +1017,10 @@ def sizes_for(kinds):
         elif k == "needle":
             sizes.append(random.choice([2.6, 3.2, 3.8]))
         elif k == "rim":
-            sizes.append(random.choice([2.1, 2.5, 2.9, 3.3]))
+            if STYLE == "v2":
+                sizes.append(random.choice([3.4, 4.0, 4.8, 5.4]))
+            else:
+                sizes.append(random.choice([2.1, 2.5, 2.9, 3.3]))
         elif k == "fill":
             sizes.append(random.choice([1.7, 2.1, 2.5]))
         elif k == "float":
@@ -1063,6 +1126,8 @@ KIND_LAG = {
 def prepare(name):
     random.seed(21 + sum(map(ord, name)) % 90)
     g = ICONS[name]()
+    if STYLE == "v2":
+        thicken_geometry(g)
     stamp_fill(g)
     floaters(g)
     pts, kinds, chains = g.pts, g.kinds, g.chains
@@ -1102,10 +1167,10 @@ def prepare(name):
             a, b = idx[i], idx[(i + 1) % m]
             chain_set.add((a, b) if a < b else (b, a))
     print(f"{name}: nodes {n} edges {len(edges)} chains {len(chains)} { {k: kinds.count(k) for k in sorted(set(kinds))} }")
-    return pts, kinds, sizes, phases, scatter, edges, chain_set
+    return pts, kinds, sizes, phases, scatter, edges, chain_set, chains
 
 
-def render_frame(t, pts, kinds, sizes, phases, scatter, edges, chain_set):
+def render_frame(t, pts, kinds, sizes, phases, scatter, edges, chain_set, chains):
     n = len(pts)
     form = form_amount(t)
     layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -1132,6 +1197,27 @@ def render_frame(t, pts, kinds, sizes, phases, scatter, edges, chain_set):
         sy = H / 2 + (sy - H / 2) * push
         pos.append((sx + (tx - sx) * lu, sy + (ty - sy) * lu))
 
+    if STYLE == "v2" and form > 0.18:
+        body_a = int((48 + 28 * hold) * form)
+        for idx, closed in chains:
+            if not closed or len(idx) < 8:
+                continue
+            ring = [pos[i] for i in idx]
+            uu = min(locals_u[i] for i in idx[:: max(1, len(idx) // 8)])
+            if uu < 0.25:
+                continue
+            draw.polygon(ring, fill=(*WASH, int(body_a * uu)))
+
+    pulse_u = (t * 0.32) % 1.0 if STYLE == "v2" else None
+    pulse_idx = {}
+    if pulse_u is not None:
+        for idx, closed in chains:
+            if not closed or len(idx) < 10:
+                continue
+            k = int(pulse_u * len(idx)) % len(idx)
+            for d in range(-2, 3):
+                pulse_idx[idx[(k + d) % len(idx)]] = 1.0 - abs(d) * 0.28
+
     for a, b in edges:
         uu = min(locals_u[a], locals_u[b])
         if uu < 0.12:
@@ -1148,9 +1234,9 @@ def render_frame(t, pts, kinds, sizes, phases, scatter, edges, chain_set):
         depth = 1 - min(1, math.hypot((xa + xb) / 2 - CX, (ya + yb) / 2 - CY) / 340)
         if is_chain:
             depth = max(depth, 0.88)
-            boost = 1.55
+            boost = 1.7 if STYLE == "v2" else 1.55
         elif kinds[a] == "fill" or kinds[b] == "fill":
-            boost = 0.58
+            boost = 0.7 if STYLE == "v2" else 0.58
         else:
             boost = 0.9
         alpha = int((55 + 165 * depth) * uu * boost)
@@ -1159,7 +1245,11 @@ def render_frame(t, pts, kinds, sizes, phases, scatter, edges, chain_set):
         r = int(LINE_FAR[0] + (LINE[0] - LINE_FAR[0]) * depth)
         gv = int(LINE_FAR[1] + (LINE[1] - LINE_FAR[1]) * depth)
         bl = int(LINE_FAR[2] + (LINE[2] - LINE_FAR[2]) * depth)
-        draw.line([(xa, ya), (xb, yb)], fill=(r, gv, bl, min(235, alpha)), width=2 if is_chain else 1)
+        if STYLE == "v2" and is_chain:
+            draw.line([(xa, ya), (xb, yb)], fill=(r, gv, bl, min(90, alpha // 2)), width=7)
+            draw.line([(xa, ya), (xb, yb)], fill=(r, gv, bl, min(245, alpha)), width=4)
+        else:
+            draw.line([(xa, ya), (xb, yb)], fill=(r, gv, bl, min(235, alpha)), width=2 if is_chain else 1)
 
     glow = {"hub", "rim", "core", "needle", "tick"}
     for i in sorted(range(n), key=lambda i: (1 if kinds[i] == "hub" else 0, -sizes[i])):
@@ -1167,23 +1257,26 @@ def render_frame(t, pts, kinds, sizes, phases, scatter, edges, chain_set):
         if uu < 0.03:
             continue
         x, y = pos[i]
-        rad = sizes[i] * (0.4 + 0.6 * uu)
+        pulse = pulse_idx.get(i, 0.0)
+        rad = sizes[i] * (0.4 + 0.6 * uu) * (1.0 + 0.55 * pulse)
         if kinds[i] in glow:
-            box = clamp_ell(x, y, rad * 2.2)
+            box = clamp_ell(x, y, rad * (2.8 if pulse else 2.2))
             if box:
-                draw.ellipse(box, fill=(*GLOW, int(36 * uu)))
+                ga = int((36 + 70 * pulse) * uu)
+                draw.ellipse(box, fill=(*GLOW, ga))
         box = clamp_ell(x, y, rad)
         if box:
             col = NODE if kinds[i] != "float" else NODE_DIM
-            draw.ellipse(box, fill=(*col, min(255, int(215 * uu))))
+            draw.ellipse(box, fill=(*col, min(255, int((215 + 40 * pulse) * uu))))
 
     if "hub" in kinds:
         i = kinds.index("hub")
         if locals_u[i] > 0.22:
             x, y = pos[i]
             a = locals_u[i]
-            draw.ellipse([x - 6.2, y - 6.2, x + 6.2, y + 6.2], fill=(9, 25, 20, int(255 * a)))
-            draw.ellipse([x - 3.2, y - 3.2, x + 3.2, y + 3.2], fill=(*NODE, int(255 * a)))
+            hr = 8.4 if STYLE == "v2" else 6.2
+            draw.ellipse([x - hr, y - hr, x + hr, y + hr], fill=(9, 25, 20, int(255 * a)))
+            draw.ellipse([x - hr * 0.52, y - hr * 0.52, x + hr * 0.52, y + hr * 0.52], fill=(*NODE, int(255 * a)))
 
     base = Image.new("RGBA", (W, H), (0, 0, 0, 255))
     return Image.alpha_composite(base, layer).convert("RGB")
@@ -1238,12 +1331,15 @@ def render_video(name, mp4_path):
 
 
 def main():
+    global STYLE
     p = argparse.ArgumentParser()
     p.add_argument("--preview", action="store_true")
     p.add_argument("--icon", default="")
     p.add_argument("--icons", default="")
+    p.add_argument("--style", default="v1", choices=("v1", "v2"))
     p.add_argument("--out-dir", default=OUT_DIR)
     args = p.parse_args()
+    STYLE = args.style
     names = list(ICONS)
     if args.icon:
         names = [args.icon]
@@ -1255,11 +1351,12 @@ def main():
         print("available", ", ".join(ICONS))
         return 1
     os.makedirs(args.out_dir, exist_ok=True)
+    suffix = "" if STYLE == "v1" else "-v2"
     for name in names:
         if args.preview:
-            render_preview(name, f"/tmp/mkof-ico-{name}.png")
+            render_preview(name, f"/tmp/mkof-ico-{name}{suffix}.png")
         else:
-            render_video(name, os.path.join(args.out_dir, f"{name}.mp4"))
+            render_video(name, os.path.join(args.out_dir, f"{name}{suffix}.mp4"))
     return 0
 
 
