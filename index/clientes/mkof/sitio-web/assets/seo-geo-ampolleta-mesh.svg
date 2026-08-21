@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" fill="none" role="img" aria-label="SEO y GEO · ampolleta Making Of">
+  <defs>
+    <radialGradient id="meshBg" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#F7F2E4"/>
+      <stop offset="100%" stop-color="#D8D3A4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glass" cx="38%" cy="28%" r="70%">
+      <stop offset="0%" stop-color="#6BA894"/>
+      <stop offset="45%" stop-color="#2A5A49"/>
+      <stop offset="100%" stop-color="#091914"/>
+    </radialGradient>
+    <linearGradient id="baseG" x1="220" y1="300" x2="300" y2="390">
+      <stop offset="0%" stop-color="#56742A"/>
+      <stop offset="100%" stop-color="#091914"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#091914" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+  <rect width="520" height="420" fill="url(#meshBg)"/>
+  <g fill="#56742A" fill-opacity="0.28">
+    <circle cx="260" cy="70" r="3"/><circle cx="190" cy="105" r="2.4"/><circle cx="330" cy="102" r="2.4"/>
+    <circle cx="150" cy="200" r="2.2"/><circle cx="370" cy="195" r="2.2"/>
+    <circle cx="260" cy="355" r="2.8"/>
+  </g>
+  <g stroke="#418870" stroke-opacity="0.5" stroke-width="1.55" fill="none">
+    <path d="M190 105 C220 155 240 185 260 210"/>
+    <path d="M330 102 C300 155 280 185 260 210"/>
+    <path d="M150 200 C195 205 230 208 260 210"/>
+    <path d="M370 195 C325 205 290 208 260 210"/>
+    <path d="M260 210 L260 355"/>
+  </g>
+  <g filter="url(#soft)">
+    <!-- cristal -->
+    <ellipse cx="260" cy="175" rx="88" ry="100" fill="url(#glass)"/>
+    <ellipse cx="260" cy="175" rx="88" ry="100" fill="none" stroke="#56742A" stroke-opacity="0.4" stroke-width="2"/>
+    <ellipse cx="235" cy="140" rx="28" ry="20" fill="#FBF6EB" fill-opacity="0.12"/>
+    <!-- filament -->
+    <path d="M238 230 C232 190 240 145 260 128 C280 145 288 190 282 230" stroke="#99EADA" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M245 245 L238 200 M275 245 L282 200" stroke="#418870" stroke-width="2.2" fill="none"/>
+    <!-- neck -->
+    <path d="M220 260 L300 260 L292 290 L228 290 Z" fill="#133429" fill-opacity="0.55"/>
+    <!-- screw base -->
+    <path d="M228 290 L292 290 L286 360 L234 360 Z" fill="url(#baseG)"/>
+    <path d="M234 308 H286 M236 322 H284 M238 336 H282 M240 350 H280" stroke="#F7F2E4" stroke-opacity="0.25" stroke-width="2"/>
+    <ellipse cx="260" cy="372" rx="16" ry="10" fill="#091914"/>
+  </g>
+  <circle cx="245" cy="150" r="2.6" fill="#F7F2E4" fill-opacity="0.5"/>
+  <circle cx="280" cy="160" r="2.4" fill="#99EADA" fill-opacity="0.55"/>
+  <circle cx="260" cy="128" r="4" fill="#99EADA"/>
+  <circle cx="260" cy="210" r="10" fill="#091914"/>
+  <circle cx="260" cy="210" r="5" fill="#99EADA"/>
+</svg>
