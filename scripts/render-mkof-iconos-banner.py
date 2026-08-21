@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Lote de iconos mesh MKOF — misma receta que caras / mundo / lupa / brujula:
-plexus verde neon sobre negro, bucle 16s armar/desarmar, 798x570.
+Lote de iconos mesh MKOF — estética caras / mundo / lupa:
+malla llena (no solo contorno), cadenas estructurales para rectas y curvas,
+armado fluido, jitter bajo para que la figura no se pierda.
 
-Solo videos. No HTML.
+Verde neon / negro · bucle 16s · 798x570. Solo videos.
 
   python3 scripts/render-mkof-iconos-banner.py --preview --icon diana-objetivo
   python3 scripts/render-mkof-iconos-banner.py --icons diana-objetivo,caballo-ajedrez
@@ -33,727 +34,780 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUT_DIR = os.path.join(ROOT, "index/clientes/mkof/sitio-web/assets/banner-verde")
 
 
-class G:
-    def __init__(self):
-        self.pts: list[tuple[float, float]] = []
-        self.kinds: list[str] = []
-
-    def add(self, p, kind="rim"):
-        self.pts.append((float(p[0]), float(p[1])))
-        self.kinds.append(kind)
-
-    def many(self, pts, kind="rim"):
-        for p in pts:
-            self.add(p, kind)
-
-
 def along(a, b, u):
     return (a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u)
 
 
-def densify_line(a, b, step):
-    dist = math.hypot(b[0] - a[0], b[1] - a[1])
-    steps = max(1, int(dist / step))
-    return [along(a, b, k / steps) for k in range(steps)]
-
-
-def densify_closed(poly, step):
-    out = []
-    n = len(poly)
-    for i in range(n):
-        out.extend(densify_line(poly[i], poly[(i + 1) % n], step))
-    return out
+def dist(a, b):
+    return math.hypot(b[0] - a[0], b[1] - a[1])
 
 
 def polar(cx, cy, ang, r):
     return (cx + math.cos(ang) * r, cy + math.sin(ang) * r)
 
 
-def circle(g, cx, cy, r, n=40, kind="rim"):
+def densify_open(a, b, step):
+    d = dist(a, b)
+    steps = max(1, int(round(d / step)))
+    return [along(a, b, k / steps) for k in range(steps + 1)]
+
+
+def densify_closed(poly, step):
+    out = []
+    n = len(poly)
     for i in range(n):
-        g.add(polar(cx, cy, 2 * math.pi * i / n, r), kind)
+        out.extend(densify_open(poly[i], poly[(i + 1) % n], step)[:-1])
+    return out
 
 
-def polyline(g, pts, step=8, kind="rim"):
-    for i in range(len(pts) - 1):
-        g.many(densify_line(pts[i], pts[i + 1], step), kind)
+def pip(p, poly):
+    x, y = p
+    inside = False
+    n = len(poly)
+    j = n - 1
+    for i in range(n):
+        xi, yi = poly[i]
+        xj, yj = poly[j]
+        if (yi > y) != (yj > y):
+            t = (y - yi) / (yj - yi + 1e-12)
+            if x < xi + t * (xj - xi):
+                inside = not inside
+        j = i
+    return inside
 
 
-def poly(g, pts, step=8, kind="rim"):
-    g.many(densify_closed(pts, step), kind)
-
-
-def rect(g, x, y, w, h, step=8, kind="rim"):
-    poly(g, [(x, y), (x + w, y), (x + w, y + h), (x, y + h)], step, kind)
-
-
-def arrow(g, a, b, head=22, kind="needle"):
-    polyline(g, [a, b], 8, kind)
-    ang = math.atan2(b[1] - a[1], b[0] - a[0])
-    for da in (2.55, -2.55):
-        p = (b[0] + math.cos(ang + da) * head, b[1] + math.sin(ang + da) * head)
-        polyline(g, [b, p], 7, kind)
-
-
-def star5(g, cx, cy, r_out, r_in, kind="core"):
+def rrect_pts(x, y, w, h, r=18, n_arc=5):
+    r = min(r, w / 2.0, h / 2.0)
+    corners = (
+        (x + r, y + r, math.pi, 1.5 * math.pi),
+        (x + w - r, y + r, -0.5 * math.pi, 0.0),
+        (x + w - r, y + h - r, 0.0, 0.5 * math.pi),
+        (x + r, y + h - r, 0.5 * math.pi, math.pi),
+    )
     pts = []
-    for i in range(10):
-        r = r_out if i % 2 == 0 else r_in
-        pts.append(polar(cx, cy, -math.pi / 2 + i * math.pi / 5, r))
-    poly(g, pts, 6, kind)
+    for cx, cy, a0, a1 in corners:
+        for i in range(n_arc + 1):
+            a = a0 + (a1 - a0) * i / n_arc
+            pts.append((cx + math.cos(a) * r, cy + math.sin(a) * r))
+    return pts
 
 
-def person(g, x, y, s=1.0, kind="rim"):
-    circle(g, x, y - 28 * s, 14 * s, 12, kind)
-    poly(
-        g,
+class G:
+    def __init__(self):
+        self.pts: list[tuple[float, float]] = []
+        self.kinds: list[str] = []
+        self.chains: list[tuple[list[int], bool]] = []
+        self.disks: list[tuple[float, float, float]] = []
+        self.polys: list[list[tuple[float, float]]] = []
+
+    def add(self, p, kind="rim"):
+        self.pts.append((float(p[0]), float(p[1])))
+        self.kinds.append(kind)
+        return len(self.pts) - 1
+
+    def _chain(self, pts, kind, closed):
+        if len(pts) < 2:
+            return []
+        idx = [self.add(p, kind) for p in pts]
+        self.chains.append((idx, closed))
+        return idx
+
+    def line(self, a, b, step=20, kind="rim"):
+        return self._chain(densify_open(a, b, step), kind, False)
+
+    def lines(self, pts, step=20, kind="rim"):
+        acc = []
+        for i in range(len(pts) - 1):
+            acc.extend(densify_open(pts[i], pts[i + 1], step)[:-1])
+        acc.append(pts[-1])
+        return self._chain(acc, kind, False)
+
+    def loop(self, pts, step=20, kind="rim", fill=True):
+        acc = densify_closed(pts, step)
+        idx = self._chain(acc, kind, True)
+        if fill and len(pts) >= 3:
+            self.polys.append([(float(p[0]), float(p[1])) for p in pts])
+        return idx
+
+    def circ(self, cx, cy, r, n=28, kind="rim", fill=True):
+        pts = [polar(cx, cy, 2 * math.pi * i / n, r) for i in range(n)]
+        idx = self._chain(pts, kind, True)
+        if fill:
+            self.disks.append((cx, cy, r))
+        return idx
+
+    def rrect(self, x, y, w, h, r=18, step=20, kind="rim", fill=True):
+        return self.loop(rrect_pts(x, y, w, h, r), step, kind, fill)
+
+    def chevron(self, a, b, head=20, kind="needle"):
+        self.line(a, b, 14, kind)
+        ang = math.atan2(b[1] - a[1], b[0] - a[0])
+        p1 = (b[0] + math.cos(ang + 2.65) * head, b[1] + math.sin(ang + 2.65) * head)
+        p2 = (b[0] + math.cos(ang - 2.65) * head, b[1] + math.sin(ang - 2.65) * head)
+        self.line(p1, b, 11, kind)
+        self.line(p2, b, 11, kind)
+
+    def hub_at(self, x=None, y=None):
+        self.add((CX if x is None else x, CY if y is None else y), "hub")
+
+
+def far_enough(g, p, min_d):
+    md2 = min_d * min_d
+    for q in g.pts:
+        if (p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 < md2:
+            return False
+    return True
+
+
+def stamp_fill(g):
+    for cx, cy, r in g.disks:
+        area = math.pi * r * r
+        gap = 14 if r < 48 else 18
+        n = max(5, min(36, int(area / 980)))
+        added = 0
+        tries = 0
+        while added < n and tries < n * 18:
+            tries += 1
+            a = random.uniform(0, 2 * math.pi)
+            rr = r * math.sqrt(random.random()) * 0.78
+            p = (cx + math.cos(a) * rr, cy + math.sin(a) * rr)
+            if far_enough(g, p, gap):
+                g.add(p, "fill")
+                added += 1
+    for poly in g.polys:
+        xs = [p[0] for p in poly]
+        ys = [p[1] for p in poly]
+        minx, maxx, miny, maxy = min(xs), max(xs), min(ys), max(ys)
+        area = max(80.0, (maxx - minx) * (maxy - miny) * 0.50)
+        gap = 14 if area < 14000 else 18
+        n = max(6, min(38, int(area / 900)))
+        added = 0
+        tries = 0
+        while added < n and tries < n * 20:
+            tries += 1
+            p = (random.uniform(minx, maxx), random.uniform(miny, maxy))
+            if pip(p, poly) and far_enough(g, p, gap):
+                g.add(p, "fill")
+                added += 1
+
+
+def floaters(g, n=6):
+    for _ in range(n):
+        a = random.uniform(-0.45, math.pi + 0.45)
+        r = random.uniform(235, 285)
+        p = (CX + math.cos(a) * r, CY + math.sin(a) * r * 0.78)
+        if far_enough(g, p, 48):
+            g.add(p, "float")
+
+
+def person(g, x, y, s=1.0):
+    g.circ(x, y - 30 * s, 15 * s, 14, fill=True)
+    g.loop(
         [
-            (x - 22 * s, y + 38 * s),
-            (x - 16 * s, y - 4 * s),
-            (x + 16 * s, y - 4 * s),
-            (x + 22 * s, y + 38 * s),
+            (x - 24 * s, y + 42 * s),
+            (x - 16 * s, y - 6 * s),
+            (x + 16 * s, y - 6 * s),
+            (x + 24 * s, y + 42 * s),
         ],
-        7,
-        kind,
+        12,
+        fill=True,
     )
 
 
-def floaters(g, n=8, r0=230, r1=280):
-    for _ in range(n):
-        a = random.uniform(-0.5, math.pi + 0.5)
-        r = random.uniform(r0, r1)
-        g.add((CX + math.cos(a) * r, CY + math.sin(a) * r * 0.78), "float")
+def pin_poly(cx, cy, r=90, drop=95):
+    # Arco largo (izq → arriba → der) y punta abajo, sin hueco.
+    pts = []
+    for i in range(30):
+        a = math.radians(135) + math.radians(270) * i / 29
+        pts.append(polar(cx, cy, a, r))
+    pts.append((cx, cy + r + drop))
+    return pts
 
 
-def hub(g, x=None, y=None):
-    g.add((CX if x is None else x, CY if y is None else y), "hub")
-
-
-def dedup(pts, kinds, min_d):
-    final, fk = [], []
-    for p, k in zip(pts, kinds):
-        md = min_d.get(k, 48)
-        if k == "hub" or all((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 > md for q in final):
-            final.append(p)
-            fk.append(k)
-    return final, fk
-
-
-MIN_D = {
-    "rim": 38,
-    "tick": 28,
-    "core": 26,
-    "needle": 22,
-    "pivot": 16,
-    "hub": 0,
-    "float": 55,
-}
+def window(g, x, y, w, h, r=16):
+    g.rrect(x, y, w, h, r, 18, fill=False)
+    g.line((x + 10, y + 36), (x + w - 10, y + 36), 16, "tick")
+    for dx in (18, 38, 58):
+        g.circ(x + dx, y + 18, 4.5, 6, "core", fill=False)
 
 
 # ---------- siluetas ----------
 def ico_diana():
     g = G()
-    circle(g, CX, CY, 155, 48, "rim")
-    circle(g, CX, CY, 95, 34, "tick")
-    circle(g, CX, CY, 40, 18, "core")
-    # flecha gruesa desde esquina, no aguja de brujula
-    a, b = (CX + 175, CY - 175), (CX + 18, CY - 8)
-    polyline(g, [a, b], 7, "needle")
-    polyline(g, [(a[0] - 14, a[1] - 8), (b[0] - 8, b[1] - 6)], 7, "needle")
-    polyline(g, [(a[0] + 8, a[1] + 14), (b[0] + 6, b[1] + 8)], 7, "needle")
-    arrow(g, (CX + 70, CY - 70), b, 28, "needle")
-    hub(g)
-    floaters(g)
+    g.circ(CX, CY, 148, 32, fill=False)
+    g.circ(CX, CY, 92, 24, "tick", fill=False)
+    g.circ(CX, CY, 36, 14, "core", fill=True)
+    g.chevron((CX + 168, CY - 168), (CX + 22, CY - 10), 24)
+    g.hub_at()
     return g
 
 
 def ico_caballo():
     g = G()
-    # Pieza de caballo mirando a la izquierda: oreja aguda, hocico, peana ancha.
     box = [
-        (0.46, 0.00),  # punta oreja
+        (0.46, 0.00),
         (0.58, 0.10),
-        (0.54, 0.18),  # nuca
-        (0.40, 0.22),  # frente
-        (0.18, 0.30),  # puente
-        (0.02, 0.38),  # hocico
+        (0.54, 0.18),
+        (0.40, 0.22),
+        (0.18, 0.30),
+        (0.02, 0.38),
         (0.04, 0.50),
-        (0.20, 0.52),  # boca
+        (0.20, 0.52),
         (0.34, 0.50),
-        (0.40, 0.60),  # quijada
-        (0.28, 0.74),  # pecho
+        (0.40, 0.60),
+        (0.28, 0.74),
         (0.16, 0.86),
         (0.10, 0.88),
-        (0.06, 0.98),  # peana izq
-        (0.94, 0.98),  # peana der
+        (0.06, 0.98),
+        (0.94, 0.98),
         (0.90, 0.88),
-        (0.78, 0.84),  # anca
+        (0.78, 0.84),
         (0.74, 0.62),
-        (0.66, 0.40),  # crin
+        (0.66, 0.40),
         (0.60, 0.22),
         (0.54, 0.08),
     ]
     sx, sy = 310, 370
     ox, oy = CX - sx * 0.50, CY - sy * 0.50
-    poly(g, [(ox + x * sx, oy + y * sy) for x, y in box], 6, "rim")
-    # peana extra (doble linea) para que no se lea como patas
-    polyline(g, [(ox + 0.12 * sx, oy + 0.90 * sy), (ox + 0.88 * sx, oy + 0.90 * sy)], 7, "tick")
-    g.add((ox + 0.28 * sx, oy + 0.34 * sy), "core")  # ojo
-    hub(g, ox + 0.52 * sx, oy + 0.58 * sy)
-    floaters(g)
+    poly = [(ox + x * sx, oy + y * sy) for x, y in box]
+    g.loop(poly, 12, fill=True)
+    g.line((ox + 0.14 * sx, oy + 0.90 * sy), (ox + 0.86 * sx, oy + 0.90 * sy), 14, "tick")
+    g.circ(ox + 0.28 * sx, oy + 0.34 * sy, 7, 8, "core", fill=False)
+    g.hub_at(ox + 0.52 * sx, oy + 0.58 * sy)
     return g
 
 
 def ico_ciclo360():
     g = G()
-    circle(g, CX, CY, 28, 14, "pivot")
-    r_in, r_out = 108, 148
+    g.circ(CX, CY, 26, 14, "core", fill=True)
+    r_in, r_out = 100, 148
     for i in range(3):
         a0 = -math.pi / 2 + i * 2 * math.pi / 3
         outer, inner = [], []
-        for k in range(12):
-            ang = a0 + 1.55 * k / 11
+        for k in range(14):
+            ang = a0 + 1.45 * k / 13
             outer.append(polar(CX, CY, ang, r_out))
             inner.append(polar(CX, CY, ang, r_in))
-        polyline(g, outer, 7, "rim")
-        polyline(g, inner, 7, "rim")
-        # cabeza de flecha
-        tip = polar(CX, CY, a0 + 1.55, (r_in + r_out) / 2)
-        left = polar(CX, CY, a0 + 1.35, r_out + 18)
-        right = polar(CX, CY, a0 + 1.35, r_in - 18)
-        poly(g, [tip, left, right], 6, "needle")
-    hub(g)
-    floaters(g)
+        g.lines(outer, 12)
+        g.lines(inner, 12)
+        for k in (2, 6, 10):
+            g.line(inner[k], outer[k], 14, "fill")
+        tip = polar(CX, CY, a0 + 1.45, (r_in + r_out) / 2)
+        left = polar(CX, CY, a0 + 1.28, r_out + 10)
+        right = polar(CX, CY, a0 + 1.28, r_in - 10)
+        g.line(left, tip, 11, "needle")
+        g.line(right, tip, 11, "needle")
+    g.hub_at()
     return g
 
 
 def ico_tendencias():
     g = G()
-    polyline(g, [(CX - 170, CY + 130), (CX - 170, CY - 140), (CX - 170, CY + 130), (CX + 180, CY + 130)], 8, "tick")
+    g.line((CX - 175, CY + 125), (CX - 175, CY - 135), 14, "tick")
+    g.line((CX - 175, CY + 125), (CX + 185, CY + 125), 14, "tick")
     nodes = [
-        (CX - 140, CY + 90),
-        (CX - 50, CY + 20),
-        (CX + 30, CY + 50),
-        (CX + 120, CY - 80),
-        (CX + 170, CY - 120),
+        (CX - 145, CY + 85),
+        (CX - 55, CY + 15),
+        (CX + 25, CY + 45),
+        (CX + 115, CY - 75),
+        (CX + 165, CY - 118),
     ]
-    polyline(g, nodes, 8, "rim")
+    g.lines(nodes, 13)
     for p in nodes:
-        g.add(p, "core")
-    arrow(g, nodes[-2], (nodes[-1][0] + 18, nodes[-1][1] - 18), 18, "needle")
-    hub(g, *nodes[2])
-    floaters(g)
+        g.circ(p[0], p[1], 9, 10, "core", fill=True)
+    g.chevron(nodes[-2], (nodes[-1][0] + 16, nodes[-1][1] - 16), 16)
+    g.hub_at(*nodes[2])
     return g
 
 
 def ico_oportunidades():
     g = G()
-    # pin
-    pin = []
-    for i in range(20):
-        a = math.pi * 1.15 + (math.pi * 1.7) * i / 19
-        pin.append(polar(CX, CY - 40, a, 78))
-    pin.append((CX, CY + 150))
-    poly(g, pin, 7, "rim")
-    circle(g, CX, CY - 48, 28, 16, "core")
-    star5(g, CX + 90, CY - 110, 22, 9, "needle")
-    star5(g, CX + 130, CY - 40, 16, 7, "needle")
-    hub(g, CX, CY - 48)
-    floaters(g)
+    g.loop(pin_poly(CX - 20, CY - 36, 78, 88), 12, fill=True)
+    g.circ(CX - 20, CY - 36, 26, 16, "core", fill=True)
+    for p in ((CX + 95, CY - 115), (CX + 125, CY - 40)):
+        g.circ(p[0], p[1], 12, 10, "needle", fill=True)
+        for k in range(4):
+            a = -math.pi / 2 + k * math.pi / 2
+            g.line(polar(p[0], p[1], a, 16), polar(p[0], p[1], a, 28), 10, "needle")
+    g.hub_at(CX - 20, CY - 36)
     return g
 
 
 def ico_crecimiento():
     g = G()
-    polyline(g, [(CX - 160, CY + 130), (CX - 160, CY - 130)], 8, "tick")
-    polyline(g, [(CX - 160, CY + 130), (CX + 180, CY + 130)], 8, "tick")
-    bars = [(CX - 110, 70), (CX - 20, 120), (CX + 70, 180)]
-    for x, h in bars:
-        rect(g, x, CY + 130 - h, 50, h, 7, "rim")
-    arrow(g, (CX - 90, CY + 40), (CX + 150, CY - 120), 22, "needle")
-    hub(g, CX + 70, CY + 40)
-    floaters(g)
+    g.line((CX - 170, CY + 130), (CX - 170, CY - 130), 14, "tick")
+    g.line((CX - 170, CY + 130), (CX + 185, CY + 130), 14, "tick")
+    for x, h in ((CX - 115, 75), (CX - 25, 125), (CX + 65, 185)):
+        g.rrect(x, CY + 130 - h, 52, h, 8, 12, fill=True)
+    g.chevron((CX - 95, CY + 35), (CX + 155, CY - 125), 20)
+    g.hub_at(CX + 65, CY + 35)
     return g
 
 
 def ico_dashboard():
     g = G()
-    rect(g, CX - 190, CY - 140, 380, 280, 8, "rim")
-    polyline(g, [(CX - 190, CY - 100), (CX + 190, CY - 100)], 8, "tick")
-    for x in (-160, -130, -100):
-        circle(g, CX + x, CY - 120, 6, 8, "core")
-    circle(g, CX - 80, CY + 20, 55, 28, "rim")
-    polyline(g, [(CX - 80, CY + 20), (CX - 80, CY - 25), polar(CX - 80, CY + 20, -0.6, 50)], 7, "needle")
-    for i, h in enumerate((50, 80, 110)):
-        rect(g, CX + 40 + i * 42, CY + 90 - h, 28, h, 6, "tick")
-    hub(g, CX - 80, CY + 20)
-    floaters(g)
+    window(g, CX - 195, CY - 145, 390, 290, 18)
+    g.circ(CX - 80, CY + 25, 58, 28, fill=True)
+    g.line((CX - 80, CY + 25), polar(CX - 80, CY + 25, -0.7, 48), 12, "needle")
+    for i, h in enumerate((52, 82, 112)):
+        g.rrect(CX + 40 + i * 44, CY + 95 - h, 30, h, 6, 11, "tick", fill=True)
+    g.hub_at(CX - 80, CY + 25)
     return g
 
 
 def ico_analisis_datos():
     g = G()
-    circle(g, CX, CY, 150, 48, "rim")
-    polyline(g, [(CX, CY - 150), (CX, CY + 150)], 8, "tick")
-    polyline(g, [(CX - 150, CY), (CX + 150, CY)], 8, "tick")
-    nodes = [(CX - 90, CY + 20), (CX - 20, CY - 40), (CX + 70, CY + 10), (CX + 110, CY - 70)]
-    polyline(g, nodes, 8, "needle")
+    g.circ(CX, CY, 148, 32, fill=False)
+    g.line((CX, CY - 148), (CX, CY + 148), 15, "tick")
+    g.line((CX - 148, CY), (CX + 148, CY), 15, "tick")
+    nodes = [(CX - 85, CY + 18), (CX - 15, CY - 42), (CX + 70, CY + 8), (CX + 108, CY - 68)]
+    g.lines(nodes, 13, "needle")
     for p in nodes:
-        g.add(p, "core")
-    hub(g)
-    floaters(g)
+        g.circ(p[0], p[1], 8, 9, "core", fill=True)
+    g.hub_at()
     return g
 
 
 def ico_inteligencia():
     g = G()
-    # sobre + mini grafico
-    poly(g, [(CX - 140, CY - 20), (CX, CY + 70), (CX + 140, CY - 20), (CX + 140, CY + 110), (CX - 140, CY + 110)], 8, "rim")
-    polyline(g, [(CX - 140, CY - 20), (CX, CY - 120), (CX + 140, CY - 20)], 8, "tick")
-    polyline(g, [(CX - 70, CY + 70), (CX - 20, CY + 30), (CX + 20, CY + 50), (CX + 70, CY + 10)], 7, "needle")
-    hub(g, CX, CY + 20)
-    floaters(g)
+    g.loop(
+        [
+            (CX - 145, CY - 18),
+            (CX, CY + 72),
+            (CX + 145, CY - 18),
+            (CX + 145, CY + 115),
+            (CX - 145, CY + 115),
+        ],
+        13,
+        fill=True,
+    )
+    g.lines([(CX - 145, CY - 18), (CX, CY - 125), (CX + 145, CY - 18)], 13, "tick")
+    g.lines([(CX - 70, CY + 70), (CX - 20, CY + 28), (CX + 20, CY + 50), (CX + 70, CY + 8)], 12, "needle")
+    g.hub_at(CX, CY + 20)
     return g
 
 
 def ico_ubicacion():
     g = G()
-    pin = []
-    for i in range(22):
-        a = math.pi * 1.12 + (math.pi * 1.76) * i / 21
-        pin.append(polar(CX, CY - 50, a, 92))
-    pin.append((CX, CY + 165))
-    poly(g, pin, 7, "rim")
-    circle(g, CX, CY - 58, 34, 18, "core")
-    hub(g, CX, CY - 58)
-    floaters(g)
+    g.loop(pin_poly(CX, CY - 48, 88, 92), 12, fill=True)
+    g.circ(CX, CY - 48, 30, 16, "core", fill=True)
+    g.hub_at(CX, CY - 48)
     return g
 
 
 def ico_alcance_global():
     g = G()
-    circle(g, CX, CY, 150, 48, "rim")
-    for ry in (48, 0, -48):
-        # elipses paralelos
-        pts = [polar(CX, CY + ry * 0.15, a, 150 * math.cos(abs(ry) / 220)) for a in [i * 0.22 for i in range(29)]]
-        # meridianos / paralelos simples
-    for i in range(-2, 3):
+    R = 148
+    g.circ(CX, CY, R, 32, fill=False)
+    for lon in (-0.75, 0.0, 0.75):
         pts = []
-        for t in range(24):
-            ang = math.pi * (t / 23 - 0.5)
-            x = CX + math.sin(ang) * 150 * math.cos(i * 0.45)
-            y = CY + math.cos(ang) * 150
+        for i in range(16):
+            lat = -math.pi / 2 + math.pi * i / 15
+            x = CX + R * math.cos(lat) * math.sin(lon)
+            y = CY + R * math.sin(lat)
             pts.append((x, y))
-        polyline(g, pts, 9, "tick")
-    for i in range(-2, 3):
+        g.lines(pts, 18, "tick")
+    for lat in (-0.55, 0.0, 0.55):
         pts = []
-        for t in range(32):
-            ang = 2 * math.pi * t / 31
-            x = CX + math.cos(ang) * 150
-            y = CY + math.sin(ang) * (42 + abs(i) * 8) + i * 36
-            if math.hypot(x - CX, y - CY) <= 152:
+        for i in range(20):
+            lon = -math.pi / 2 + math.pi * i / 19
+            rr = R * math.cos(lat)
+            x = CX + rr * math.sin(lon)
+            y = CY + R * math.sin(lat)
+            if math.hypot(x - CX, y - CY) <= R + 2:
                 pts.append((x, y))
-        if len(pts) > 2:
-            polyline(g, pts, 10, "tick")
-    hub(g)
-    floaters(g)
+        if len(pts) > 3:
+            g.lines(pts, 18, "tick")
+    g.hub_at()
     return g
 
 
 def ico_vision():
     g = G()
-    # almendra
     eye = []
-    for i in range(24):
-        a = math.pi + math.pi * i / 23
-        eye.append((CX + math.cos(a) * 160, CY + math.sin(a) * 70))
-    for i in range(24):
-        a = math.pi * i / 23
-        eye.append((CX + math.cos(a) * 160, CY - math.sin(a) * 70))
-    poly(g, eye, 7, "rim")
-    circle(g, CX, CY, 48, 22, "core")
-    hub(g)
-    # circuito a la derecha
-    for p in [(CX + 90, CY - 30), (CX + 130, CY), (CX + 90, CY + 30), (CX + 160, CY - 50), (CX + 170, CY + 40)]:
-        g.add(p, "needle")
-    polyline(g, [(CX + 48, CY), (CX + 90, CY - 30), (CX + 160, CY - 50)], 8, "tick")
-    polyline(g, [(CX + 48, CY), (CX + 90, CY + 30), (CX + 170, CY + 40)], 8, "tick")
-    floaters(g)
+    for i in range(36):
+        a = 2 * math.pi * i / 36
+        eye.append((CX + math.cos(a) * 168, CY + math.sin(a) * 72))
+    g.loop(eye, 12, fill=True)
+    g.circ(CX, CY, 44, 20, "core", fill=True)
+    g.circ(CX + 6, CY - 4, 12, 10, "core", fill=True)
+    g.hub_at()
     return g
 
 
 def ico_presencia_ia():
     g = G()
-    circle(g, CX - 20, CY, 130, 44, "rim")
-    for i in range(-1, 2):
+    g.circ(CX - 18, CY, 128, 42, fill=True)
+    for lon in (-0.55, 0.0, 0.55):
         pts = []
-        for t in range(20):
-            ang = math.pi * (t / 19 - 0.5)
-            pts.append((CX - 20 + math.sin(ang) * 130, CY + math.cos(ang) * 130))
-        polyline(g, pts, 10, "tick")
-    # chip
-    rect(g, CX + 90, CY + 70, 70, 54, 6, "needle")
-    polyline(g, [(CX + 102, CY + 88), (CX + 148, CY + 106)], 6, "core")
-    hub(g, CX - 20, CY)
-    floaters(g)
+        for i in range(18):
+            lat = -math.pi / 2 + math.pi * i / 17
+            x = CX - 18 + 128 * math.cos(lat) * math.sin(lon)
+            y = CY + 128 * math.sin(lat)
+            pts.append((x, y))
+        g.lines(pts, 14, "tick")
+    g.rrect(CX + 88, CY + 68, 78, 56, 10, 12, "needle", fill=True)
+    g.line((CX + 102, CY + 88), (CX + 152, CY + 88), 12, "core")
+    g.line((CX + 102, CY + 106), (CX + 140, CY + 106), 12, "core")
+    g.hub_at(CX - 18, CY)
     return g
 
 
 def ico_conexion():
     g = G()
-    # dos eslabones
-    def link(cx, cy, rot):
-        ca, sa = math.cos(rot), math.sin(rot)
-        pts = []
-        for i in range(28):
-            a = 2 * math.pi * i / 28
-            x, y = 70 * math.cos(a), 38 * math.sin(a)
-            pts.append((cx + ca * x - sa * y, cy + sa * x + ca * y))
-        poly(g, pts, 7, "rim")
 
-    link(CX - 50, CY - 18, 0.7)
-    link(CX + 50, CY + 18, 0.7)
-    hub(g)
-    floaters(g)
+    def link(cx, cy, rot, rx=74, ry=38):
+        ca, sa = math.cos(rot), math.sin(rot)
+        for rx_, ry_, k in ((rx, ry, "rim"), (rx - 16, ry - 14, "tick")):
+            pts = []
+            for i in range(32):
+                a = 2 * math.pi * i / 32
+                x, y = rx_ * math.cos(a), ry_ * math.sin(a)
+                pts.append((cx + ca * x - sa * y, cy + sa * x + ca * y))
+            g.loop(pts, 11, k, fill=False)
+        for i in range(0, 32, 4):
+            a = 2 * math.pi * i / 32
+            p0 = (cx + ca * (rx * math.cos(a)) - sa * (ry * math.sin(a)), cy + sa * (rx * math.cos(a)) + ca * (ry * math.sin(a)))
+            p1 = (
+                cx + ca * ((rx - 16) * math.cos(a)) - sa * ((ry - 14) * math.sin(a)),
+                cy + sa * ((rx - 16) * math.cos(a)) + ca * ((ry - 14) * math.sin(a)),
+            )
+            g.line(p0, p1, 11, "fill")
+
+    link(CX - 52, CY - 16, 0.7)
+    link(CX + 52, CY + 16, 0.7)
+    g.hub_at()
     return g
 
 
 def ico_red_enlaces():
     g = G()
-    sats = []
+    g.circ(CX, CY, 34, 16, fill=True)
     for i in range(5):
         a = -math.pi / 2 + i * 2 * math.pi / 5
-        p = polar(CX, CY, a, 145)
-        sats.append(p)
-        circle(g, p[0], p[1], 18, 12, "core")
-        polyline(g, [(CX, CY), p], 8, "tick")
-    circle(g, CX, CY, 36, 18, "rim")
-    hub(g)
-    floaters(g)
+        p = polar(CX, CY, a, 148)
+        g.circ(p[0], p[1], 20, 12, "core", fill=True)
+        g.line((CX, CY), p, 14, "tick")
+    g.hub_at()
     return g
 
 
 def ico_enlaces_eficientes():
     g = G()
-    rect(g, CX - 170, CY - 130, 340, 260, 8, "rim")
-    polyline(g, [(CX - 170, CY - 90), (CX + 170, CY - 90)], 8, "tick")
+    window(g, CX - 175, CY - 135, 350, 270, 16)
+
     def link(cx, cy, rot):
         ca, sa = math.cos(rot), math.sin(rot)
         pts = []
         for i in range(24):
             a = 2 * math.pi * i / 24
-            x, y = 55 * math.cos(a), 28 * math.sin(a)
+            x, y = 58 * math.cos(a), 28 * math.sin(a)
             pts.append((cx + ca * x - sa * y, cy + sa * x + ca * y))
-        poly(g, pts, 7, "needle")
+        g.loop(pts, 12, "needle", fill=False)
 
-    link(CX - 30, CY + 20, 0.65)
-    link(CX + 35, CY + 40, 0.65)
-    hub(g, CX, CY + 30)
-    floaters(g)
+    link(CX - 28, CY + 28, 0.65)
+    link(CX + 38, CY + 48, 0.65)
+    g.hub_at(CX, CY + 35)
     return g
 
 
 def ico_analisis_contenido():
     g = G()
-    rect(g, CX - 150, CY - 140, 180, 240, 8, "rim")
+    g.rrect(CX - 165, CY - 145, 190, 250, 14, 13, fill=True)
     for i in range(4):
-        y = CY - 80 + i * 36
-        polyline(g, [(CX - 130, y), (CX - 10, y)], 8, "tick")
-    circle(g, CX + 90, CY + 40, 88, 36, "needle")
-    polyline(g, [(CX + 150, CY + 100), (CX + 200, CY + 150)], 7, "needle")
-    hub(g, CX + 90, CY + 40)
-    floaters(g)
+        y = CY - 85 + i * 38
+        g.line((CX - 145, y), (CX - 5, y), 14, "tick")
+    g.circ(CX + 95, CY + 35, 82, 32, "needle", fill=True)
+    g.line((CX + 152, CY + 92), (CX + 200, CY + 142), 13, "needle")
+    g.hub_at(CX + 95, CY + 35)
     return g
 
 
 def ico_optimizacion():
     g = G()
-    offsets = [(-40, -30), (0, 0), (40, 30)]
-    for i, (dx, dy) in enumerate(offsets):
-        rect(g, CX - 90 + dx, CY - 120 + dy, 160, 200, 8, "rim" if i < 2 else "needle")
-    hub(g, CX + 20, CY + 10)
-    floaters(g)
+    for dx, dy, k in ((-38, -28, "rim"), (0, 0, "tick"), (38, 28, "needle")):
+        g.rrect(CX - 95 + dx, CY - 125 + dy, 170, 210, 14, 13, k, fill=True)
+    g.hub_at(CX + 18, CY + 8)
     return g
 
 
 def ico_rendimiento_seo():
     g = G()
-    rect(g, CX - 160, CY - 140, 200, 250, 8, "rim")
+    g.rrect(CX - 170, CY - 145, 205, 255, 14, 13, fill=True)
     for i in range(3):
-        polyline(g, [(CX - 140, CY - 70 + i * 40), (CX + 10, CY - 70 + i * 40)], 8, "tick")
-    circle(g, CX + 80, CY + 50, 80, 32, "needle")
-    polyline(g, [(CX + 135, CY + 105), (CX + 185, CY + 155)], 7, "needle")
-    # llave simple dentro de la lupa
-    polyline(g, [(CX + 55, CY + 50), (CX + 105, CY + 50)], 6, "core")
-    circle(g, CX + 50, CY + 50, 12, 10, "core")
-    hub(g, CX + 80, CY + 50)
-    floaters(g)
+        y = CY - 75 + i * 42
+        g.line((CX - 150, y), (CX + 5, y), 14, "tick")
+    g.circ(CX + 85, CY + 48, 78, 30, "needle", fill=True)
+    g.line((CX + 140, CY + 102), (CX + 188, CY + 152), 13, "needle")
+    g.hub_at(CX + 85, CY + 48)
     return g
 
 
 def ico_plataforma():
     g = G()
-    rect(g, CX - 170, CY - 120, 340, 200, 8, "rim")
-    polyline(g, [(CX - 170, CY - 80), (CX + 170, CY - 80)], 8, "tick")
-    poly(g, [(CX - 90, CY + 80), (CX + 90, CY + 80), (CX + 130, CY + 130), (CX - 130, CY + 130)], 8, "needle")
-    hub(g, CX, CY)
-    floaters(g)
+    g.rrect(CX - 175, CY - 130, 350, 210, 16, 13, fill=True)
+    g.line((CX - 165, CY - 88), (CX + 165, CY - 88), 15, "tick")
+    g.loop(
+        [(CX - 70, CY + 85), (CX + 70, CY + 85), (CX + 115, CY + 145), (CX - 115, CY + 145)],
+        13,
+        "needle",
+        fill=True,
+    )
+    g.hub_at()
     return g
 
 
 def ico_soluciones():
     g = G()
-    # nube
-    circle(g, CX - 70, CY + 10, 70, 28, "rim")
-    circle(g, CX + 10, CY - 30, 90, 34, "rim")
-    circle(g, CX + 80, CY + 15, 62, 26, "rim")
-    polyline(g, [(CX - 70, CY + 70), (CX + 80, CY + 70)], 8, "rim")
-    arrow(g, (CX, CY + 40), (CX, CY - 80), 20, "needle")
-    hub(g, CX + 10, CY - 10)
-    floaters(g)
+    g.circ(CX - 72, CY + 12, 72, 28, fill=True)
+    g.circ(CX + 8, CY - 32, 92, 34, fill=True)
+    g.circ(CX + 82, CY + 16, 64, 26, fill=True)
+    g.chevron((CX + 8, CY + 28), (CX + 8, CY - 95), 18)
+    g.hub_at(CX + 8, CY - 8)
     return g
 
 
 def ico_infraestructura():
     g = G()
-    circle(g, CX - 60, CY - 20, 60, 24, "rim")
-    circle(g, CX + 20, CY - 50, 80, 30, "rim")
-    circle(g, CX + 80, CY - 10, 52, 22, "rim")
-    polyline(g, [(CX - 60, CY + 32), (CX + 80, CY + 32)], 8, "rim")
-    for i, x in enumerate((-90, 0, 90)):
-        p = (CX + x, CY + 130)
-        circle(g, p[0], p[1], 16, 10, "core")
-        polyline(g, [(CX + x * 0.3, CY + 40), p], 8, "tick")
-    hub(g, CX + 10, CY - 20)
-    floaters(g)
+    g.circ(CX - 62, CY - 22, 62, 26, fill=True)
+    g.circ(CX + 18, CY - 52, 82, 32, fill=True)
+    g.circ(CX + 82, CY - 12, 54, 22, fill=True)
+    for x in (-95, 0, 95):
+        p = (CX + x, CY + 138)
+        g.circ(p[0], p[1], 16, 10, "core", fill=True)
+        g.line((CX + x * 0.28, CY + 28), p, 14, "tick")
+    g.hub_at(CX + 10, CY - 22)
     return g
 
 
 def ico_anuncios():
     g = G()
-    # megafono: cono
-    poly(g, [(CX - 40, CY - 55), (CX + 130, CY - 110), (CX + 130, CY + 110), (CX - 40, CY + 55)], 7, "rim")
-    circle(g, CX - 70, CY, 42, 20, "tick")
-    polyline(g, [(CX - 40, CY + 20), (CX - 20, CY + 120)], 7, "needle")
-    hub(g, CX + 20, CY)
-    floaters(g)
+    g.loop(
+        [(CX - 48, CY - 52), (CX + 128, CY - 108), (CX + 128, CY + 108), (CX - 48, CY + 52)],
+        12,
+        fill=True,
+    )
+    g.circ(CX - 78, CY, 40, 18, "tick", fill=True)
+    g.line((CX - 42, CY + 22), (CX - 18, CY + 118), 13, "needle")
+    for i, r in enumerate((152, 176, 200)):
+        pts = [polar(CX + 128, CY, -0.55 + 1.1 * k / 8, r) for k in range(9)]
+        g.lines(pts, 22, "rim")
+    g.hub_at(CX + 20, CY)
     return g
 
 
 def ico_publicidad():
     g = G()
-    rect(g, CX - 180, CY - 130, 360, 260, 8, "rim")
-    polyline(g, [(CX - 180, CY - 90), (CX + 180, CY - 90)], 8, "tick")
-    rect(g, CX - 70, CY - 40, 90, 50, 6, "needle")
-    poly(g, [(CX - 55, CY - 15), (CX - 15, CY), (CX - 55, CY + 15)], 6, "core")
-    rect(g, CX + 40, CY + 40, 80, 28, 6, "tick")
-    hub(g)
-    floaters(g)
+    window(g, CX - 185, CY - 135, 370, 270, 16)
+    g.rrect(CX - 70, CY - 28, 88, 48, 8, 11, "needle", fill=True)
+    g.rrect(CX + 40, CY + 48, 86, 30, 8, 11, "tick", fill=True)
+    g.hub_at()
     return g
 
 
 def ico_roi():
     g = G()
-    for i, h in enumerate((70, 120, 170)):
-        rect(g, CX - 130 + i * 70, CY + 110 - h, 48, h, 7, "rim")
-    arrow(g, (CX - 80, CY + 20), (CX + 150, CY - 110), 22, "needle")
-    circle(g, CX + 160, CY - 130, 28, 14, "core")
-    hub(g, CX + 10, CY + 20)
-    floaters(g)
+    for i, h in enumerate((75, 125, 175)):
+        g.rrect(CX - 135 + i * 72, CY + 115 - h, 50, h, 8, 12, fill=True)
+    g.chevron((CX - 85, CY + 18), (CX + 145, CY - 108), 20)
+    g.circ(CX + 162, CY - 128, 26, 14, "core", fill=True)
+    g.hub_at(CX + 10, CY + 18)
     return g
 
 
 def ico_campanas():
     g = G()
-    poly(g, [(CX - 90, CY - 50), (CX + 40, CY - 100), (CX + 40, CY + 100), (CX - 90, CY + 50)], 7, "rim")
-    circle(g, CX - 120, CY, 36, 16, "tick")
-    for i, ang in enumerate((-0.5, 0.0, 0.5)):
-        p = polar(CX + 80, CY, ang, 90)
-        circle(g, p[0], p[1], 16, 10, "core")
-        polyline(g, [(CX + 40, CY), p], 8, "needle")
-    hub(g, CX - 20, CY)
-    floaters(g)
+    g.loop(
+        [(CX - 95, CY - 48), (CX + 38, CY - 98), (CX + 38, CY + 98), (CX - 95, CY + 48)],
+        12,
+        fill=True,
+    )
+    g.circ(CX - 122, CY, 34, 16, "tick", fill=True)
+    for ang in (-0.5, 0.0, 0.5):
+        p = polar(CX + 70, CY, ang, 95)
+        g.circ(p[0], p[1], 16, 10, "core", fill=True)
+        g.line((CX + 38, CY), p, 14, "needle")
+    g.hub_at(CX - 20, CY)
     return g
 
 
 def ico_email():
     g = G()
-    rect(g, CX - 160, CY - 90, 320, 200, 8, "rim")
-    polyline(g, [(CX - 160, CY - 90), (CX, CY + 40), (CX + 160, CY - 90)], 8, "tick")
-    hub(g, CX, CY + 10)
-    floaters(g)
+    g.rrect(CX - 165, CY - 95, 330, 205, 16, 13, fill=True)
+    g.lines([(CX - 165, CY - 95), (CX, CY + 38), (CX + 165, CY - 95)], 13, "tick")
+    g.hub_at(CX, CY + 8)
     return g
 
 
 def ico_envio():
     g = G()
-    # avion de papel
-    poly(g, [(CX - 140, CY + 40), (CX + 160, CY - 20), (CX - 40, CY + 10)], 7, "rim")
-    poly(g, [(CX - 140, CY + 40), (CX + 160, CY - 20), (CX - 20, CY + 80)], 7, "tick")
-    polyline(g, [(CX - 40, CY + 10), (CX - 20, CY + 80)], 7, "needle")
-    hub(g, CX + 20, CY)
-    floaters(g)
+    g.loop([(CX - 150, CY + 42), (CX + 168, CY - 28), (CX - 28, CY + 8)], 12, fill=True)
+    g.loop([(CX - 150, CY + 42), (CX + 168, CY - 28), (CX - 12, CY + 88)], 12, "tick", fill=True)
+    g.line((CX - 28, CY + 8), (CX - 12, CY + 88), 13, "needle")
+    g.hub_at(CX + 20, CY)
     return g
 
 
 def ico_contenido():
     g = G()
-    rect(g, CX - 110, CY - 150, 220, 300, 8, "rim")
-    polyline(g, [(CX - 80, CY - 80), (CX + 80, CY - 80)], 8, "tick")
-    polyline(g, [(CX - 80, CY - 30), (CX + 80, CY - 30)], 8, "tick")
-    polyline(g, [(CX - 80, CY + 20), (CX + 40, CY + 20)], 8, "tick")
-    rect(g, CX - 80, CY + 60, 90, 60, 7, "core")
-    hub(g)
-    floaters(g)
+    g.rrect(CX - 115, CY - 155, 230, 310, 16, 13, fill=True)
+    g.rrect(CX - 82, CY - 115, 100, 70, 8, 12, "core", fill=True)
+    for y in (-20, 22, 64):
+        g.line((CX - 82, CY + y), (CX + 78, CY + y), 14, "tick")
+    g.hub_at()
     return g
 
 
 def ico_ecosistema():
     g = G()
-    for dx, dy, k in ((-50, -40, "rim"), (0, 0, "tick"), (50, 40, "needle")):
-        rect(g, CX - 90 + dx, CY - 130 + dy, 170, 220, 8, k)
-    hub(g, CX + 20, CY)
-    floaters(g)
+    for dx, dy, k in ((-48, -38, "rim"), (0, 0, "tick"), (48, 38, "needle")):
+        g.rrect(CX - 95 + dx, CY - 135 + dy, 175, 225, 14, 13, k, fill=True)
+    g.hub_at(CX + 18, CY)
     return g
 
 
 def ico_tienda():
     g = G()
-    rect(g, CX - 140, CY - 20, 280, 170, 8, "rim")
-    poly(g, [(CX - 170, CY - 20), (CX - 140, CY - 90), (CX + 140, CY - 90), (CX + 170, CY - 20)], 7, "needle")
-    rect(g, CX - 40, CY + 40, 80, 110, 7, "tick")
-    hub(g, CX, CY + 20)
-    floaters(g)
+    g.rrect(CX - 145, CY - 18, 290, 175, 12, 13, fill=True)
+    g.loop(
+        [(CX - 175, CY - 18), (CX - 145, CY - 95), (CX + 145, CY - 95), (CX + 175, CY - 18)],
+        12,
+        "needle",
+        fill=True,
+    )
+    g.rrect(CX - 38, CY + 42, 76, 115, 8, 12, "tick", fill=True)
+    g.hub_at(CX, CY + 18)
     return g
 
 
 def ico_comunidad():
     g = G()
-    person(g, CX, CY - 10, 1.05, "rim")
-    person(g, CX - 110, CY + 30, 0.85, "tick")
-    person(g, CX + 110, CY + 30, 0.85, "tick")
-    hub(g, CX, CY - 38)
-    floaters(g)
+    person(g, CX, CY - 12, 1.08)
+    person(g, CX - 115, CY + 28, 0.86)
+    person(g, CX + 115, CY + 28, 0.86)
+    g.hub_at(CX, CY - 42)
     return g
 
 
 def ico_diseno():
     g = G()
-    circle(g, CX, CY - 50, 95, 36, "rim")
-    poly(g, [(CX - 40, CY + 40), (CX + 40, CY + 40), (CX + 32, CY + 150), (CX - 32, CY + 150)], 7, "tick")
-    polyline(g, [(CX - 22, CY + 80), (CX + 22, CY + 80)], 6, "core")
-    polyline(g, [(CX - 22, CY + 110), (CX + 22, CY + 110)], 6, "core")
-    for i in range(8):
-        a = -math.pi / 2 + i * math.pi / 4
-        polyline(g, [polar(CX, CY - 50, a, 105), polar(CX, CY - 50, a, 128)], 6, "needle")
-    hub(g, CX, CY - 50)
-    floaters(g)
+    g.circ(CX, CY - 52, 92, 34, fill=True)
+    g.loop(
+        [(CX - 38, CY + 38), (CX + 38, CY + 38), (CX + 30, CY + 152), (CX - 30, CY + 152)],
+        12,
+        "tick",
+        fill=True,
+    )
+    g.line((CX - 20, CY + 78), (CX + 20, CY + 78), 12, "core")
+    g.line((CX - 20, CY + 108), (CX + 20, CY + 108), 12, "core")
+    for i in range(6):
+        a = -math.pi / 2 + i * math.pi / 3
+        g.line(polar(CX, CY - 52, a, 102), polar(CX, CY - 52, a, 124), 11, "needle")
+    g.hub_at(CX, CY - 52)
     return g
 
 
 def ico_conversacion():
     g = G()
-    poly(
-        g,
+    g.loop(
         [
-            (CX - 150, CY - 90),
-            (CX + 20, CY - 90),
-            (CX + 20, CY + 30),
-            (CX - 40, CY + 30),
-            (CX - 80, CY + 80),
-            (CX - 70, CY + 30),
-            (CX - 150, CY + 30),
+            (CX - 155, CY - 95),
+            (CX + 15, CY - 95),
+            (CX + 15, CY + 22),
+            (CX - 42, CY + 22),
+            (CX - 82, CY + 78),
+            (CX - 72, CY + 22),
+            (CX - 155, CY + 22),
         ],
-        7,
-        "rim",
+        12,
+        fill=True,
     )
-    poly(
-        g,
+    g.loop(
         [
-            (CX - 10, CY - 10),
-            (CX + 160, CY - 10),
-            (CX + 160, CY + 100),
-            (CX + 90, CY + 100),
-            (CX + 120, CY + 150),
-            (CX + 50, CY + 100),
-            (CX - 10, CY + 100),
+            (CX - 8, CY - 8),
+            (CX + 162, CY - 8),
+            (CX + 162, CY + 98),
+            (CX + 88, CY + 98),
+            (CX + 118, CY + 148),
+            (CX + 48, CY + 98),
+            (CX - 8, CY + 98),
         ],
-        7,
+        12,
         "needle",
+        fill=True,
     )
-    hub(g, CX - 60, CY - 30)
-    floaters(g)
+    g.hub_at(CX - 60, CY - 32)
     return g
 
 
 def ico_ventas():
     g = G()
-    # bolsa
-    poly(g, [(CX - 90, CY - 20), (CX + 90, CY - 20), (CX + 75, CY + 150), (CX - 75, CY + 150)], 7, "rim")
-    polyline(g, [(CX - 40, CY - 20), (CX - 40, CY - 70), (CX + 40, CY - 70), (CX + 40, CY - 20)], 7, "tick")
-    circle(g, CX, CY + 50, 22, 12, "core")
-    hub(g, CX, CY + 50)
-    floaters(g)
+    g.loop(
+        [(CX - 92, CY - 18), (CX + 92, CY - 18), (CX + 76, CY + 155), (CX - 76, CY + 155)],
+        12,
+        fill=True,
+    )
+    g.lines([(CX - 38, CY - 18), (CX - 38, CY - 72), (CX + 38, CY - 72), (CX + 38, CY - 18)], 13, "tick")
+    g.circ(CX, CY + 52, 20, 12, "core", fill=True)
+    g.hub_at(CX, CY + 52)
     return g
 
 
 def ico_experiencia():
     g = G()
-    poly(g, [(CX - 120, CY - 10), (CX - 20, CY - 10), (CX - 30, CY + 140), (CX - 110, CY + 140)], 7, "rim")
-    polyline(g, [(CX - 95, CY - 10), (CX - 95, CY - 55), (CX - 45, CY - 55), (CX - 45, CY - 10)], 7, "tick")
-    for i, h in enumerate((50, 80, 110)):
-        rect(g, CX + 20 + i * 48, CY + 130 - h, 34, h, 6, "needle")
-    hub(g, CX - 70, CY + 50)
-    floaters(g)
+    g.loop(
+        [(CX - 125, CY - 8), (CX - 18, CY - 8), (CX - 28, CY + 145), (CX - 115, CY + 145)],
+        12,
+        fill=True,
+    )
+    g.lines([(CX - 98, CY - 8), (CX - 98, CY - 55), (CX - 45, CY - 55), (CX - 45, CY - 8)], 13, "tick")
+    for i, h in enumerate((55, 85, 115)):
+        g.rrect(CX + 18 + i * 50, CY + 135 - h, 36, h, 6, 11, "needle", fill=True)
+    g.hub_at(CX - 72, CY + 52)
     return g
 
 
 def ico_paleta():
     g = G()
-    # silueta de paleta (ovalo con pulgar)
     pal = []
-    for i in range(32):
-        a = 2 * math.pi * i / 32
-        r = 150 if not (0.15 < i / 32 < 0.28) else 95
-        pal.append(polar(CX + 10, CY, a, r))
-    poly(g, pal, 7, "rim")
-    for p, k in [
-        ((CX - 40, CY - 40), "core"),
-        ((CX + 30, CY - 50), "needle"),
-        ((CX + 50, CY + 20), "tick"),
-        ((CX - 20, CY + 50), "core"),
-    ]:
-        circle(g, p[0], p[1], 16, 10, k)
-    polyline(g, [(CX + 80, CY + 80), (CX + 160, CY - 90)], 7, "needle")
-    hub(g)
-    floaters(g)
+    for i in range(36):
+        a = 2 * math.pi * i / 36
+        u = i / 36
+        r = 78 if 0.12 < u < 0.34 else 152
+        pal.append(polar(CX + 8, CY, a, r))
+    g.loop(pal, 12, fill=True)
+    for p, k in (
+        ((CX - 42, CY - 42), "core"),
+        ((CX + 32, CY - 52), "needle"),
+        ((CX + 52, CY + 22), "tick"),
+        ((CX - 22, CY + 52), "core"),
+    ):
+        g.circ(p[0], p[1], 16, 10, k, fill=True)
+    g.line((CX + 78, CY + 78), (CX + 162, CY - 92), 13, "needle")
+    g.hub_at()
     return g
 
 
 def ico_sitio_web():
     g = G()
-    rect(g, CX - 180, CY - 130, 360, 240, 8, "rim")
-    polyline(g, [(CX - 180, CY - 90), (CX + 180, CY - 90)], 8, "tick")
-    for x in (-150, -120, -90):
-        circle(g, CX + x, CY - 110, 6, 8, "core")
-    rect(g, CX - 140, CY - 50, 120, 80, 7, "needle")
-    polyline(g, [(CX + 20, CY - 30), (CX + 140, CY - 30)], 7, "tick")
-    polyline(g, [(CX + 20, CY + 10), (CX + 110, CY + 10)], 7, "tick")
-    hub(g)
-    floaters(g)
+    window(g, CX - 185, CY - 140, 370, 255, 16)
+    g.rrect(CX - 150, CY - 55, 130, 88, 10, 12, "needle", fill=True)
+    g.line((CX + 12, CY - 28), (CX + 150, CY - 28), 14, "tick")
+    g.line((CX + 12, CY + 12), (CX + 118, CY + 12), 14, "tick")
+    g.line((CX + 12, CY + 52), (CX + 98, CY + 52), 14, "tick")
+    g.hub_at()
     return g
 
 
 def ico_desarrollo():
     g = G()
-    rect(g, CX - 180, CY - 130, 360, 250, 8, "rim")
-    polyline(g, [(CX - 180, CY - 90), (CX + 180, CY - 90)], 8, "tick")
-    # < / >
-    polyline(g, [(CX - 40, CY - 30), (CX - 110, CY + 30), (CX - 40, CY + 90)], 7, "needle")
-    polyline(g, [(CX + 40, CY - 30), (CX + 110, CY + 30), (CX + 40, CY + 90)], 7, "needle")
-    polyline(g, [(CX + 10, CY - 10), (CX - 10, CY + 70)], 7, "core")
-    hub(g, CX, CY + 30)
-    floaters(g)
+    window(g, CX - 185, CY - 140, 370, 265, 16)
+    g.lines([(CX - 48, CY - 38), (CX - 128, CY + 28), (CX - 48, CY + 94)], 12, "needle")
+    g.lines([(CX + 48, CY - 38), (CX + 128, CY + 28), (CX + 48, CY + 94)], 12, "needle")
+    g.line((CX + 16, CY - 12), (CX - 16, CY + 70), 12, "core")
+    g.lines([(CX - 40, CY - 32), (CX - 118, CY + 28), (CX - 40, CY + 88)], 12, "needle")
+    g.lines([(CX + 40, CY - 32), (CX + 118, CY + 28), (CX + 40, CY + 88)], 12, "needle")
+    g.hub_at(CX, CY + 32)
     return g
 
 
@@ -804,49 +858,64 @@ def sizes_for(kinds):
     sizes = []
     for k in kinds:
         if k == "hub":
-            sizes.append(7.4)
+            sizes.append(6.8)
         elif k == "core":
-            sizes.append(random.choice([3.0, 3.6, 4.4]))
+            sizes.append(random.choice([2.8, 3.4, 4.0]))
         elif k == "needle":
-            sizes.append(random.choice([2.8, 3.4, 4.2]))
+            sizes.append(random.choice([2.6, 3.2, 3.8]))
         elif k == "rim":
-            sizes.append(random.choice([2.6, 3.1, 3.8, 4.5]))
+            sizes.append(random.choice([2.1, 2.5, 2.9, 3.3]))
+        elif k == "fill":
+            sizes.append(random.choice([1.7, 2.1, 2.5]))
         elif k == "float":
-            sizes.append(random.choice([1.7, 2.1, 2.6]))
+            sizes.append(random.choice([1.6, 2.0, 2.4]))
         else:
-            sizes.append(random.choice([2.2, 2.8, 3.4]))
+            sizes.append(random.choice([2.2, 2.7, 3.2]))
     return sizes
 
 
-def build_edges(pts, kinds):
+def build_edges(pts, kinds, chains):
     n = len(pts)
     edges = set()
+
+    def add(i, j):
+        if i == j:
+            return
+        a, b = (i, j) if i < j else (j, i)
+        edges.add((a, b))
+
+    for idx, closed in chains:
+        m = len(idx)
+        last = m if closed else m - 1
+        for i in range(last):
+            add(idx[i], idx[(i + 1) % m])
+
+    fill_like = {"fill", "core", "rim", "needle"}
     for i in range(n):
-        dists = sorted(
-            (((pts[i][0] - pts[j][0]) ** 2 + (pts[i][1] - pts[j][1]) ** 2), j)
-            for j in range(n)
-            if i != j
-        )
-        if kinds[i] == "rim":
-            max_deg, lim = 7, 68**2
-        elif kinds[i] in ("needle", "core", "tick", "pivot"):
-            max_deg, lim = 6, 62**2
-        elif kinds[i] == "float":
-            max_deg, lim = 2, 48**2
-        elif kinds[i] == "hub":
-            max_deg, lim = 6, 42**2
-        else:
-            max_deg, lim = 5, 64**2
+        if kinds[i] == "float":
+            dists = sorted(
+                ((dist(pts[i], pts[j]), j) for j in range(n) if i != j and kinds[j] == "float")
+            )
+            for d, j in dists[:2]:
+                if d < 48:
+                    add(i, j)
+            continue
+        if kinds[i] not in fill_like:
+            continue
+        dists = sorted(((dist(pts[i], pts[j]), j) for j in range(n) if i != j))
+        cap = 4 if kinds[i] == "fill" else 2
+        lim = 48 if kinds[i] == "fill" else 36
         c = 0
-        for d2, j in dists:
-            if d2 > lim:
+        for d, j in dists:
+            if d > lim:
                 break
-            if kinds[i] == "float" and kinds[j] != "float":
+            if kinds[j] in ("float", "hub", "tick"):
                 continue
-            a, b = (i, j) if i < j else (j, i)
-            edges.add((a, b))
+            if kinds[i] != "fill" and kinds[j] != "fill":
+                continue
+            add(i, j)
             c += 1
-            if c >= max_deg:
+            if c >= cap:
                 break
     return list(edges)
 
@@ -867,14 +936,16 @@ def ease_io(u):
 
 
 def form_amount(t):
-    if t < 0.35:
+    # Armado más lento y suave para poder leer la figura mientras aparece.
+    if t < 0.28:
         return 0.0
-    if t < 3.8:
-        return ease_out((t - 0.35) / 3.45)
-    if t < 10.2:
+    if t < 5.4:
+        u = (t - 0.28) / 5.12
+        return 0.40 * ease_out(u) + 0.60 * ease_io(u)
+    if t < 11.1:
         return 1.0
-    if t < 14.9:
-        return 1.0 - ease_in((t - 10.2) / 4.7)
+    if t < 15.35:
+        return 1.0 - ease_io((t - 11.1) / 4.25)
     return 0.0
 
 
@@ -885,83 +956,119 @@ def clamp_ell(sx, sy, r):
     return [sx - r, sy - r, sx + r, sy + r]
 
 
+KIND_LAG = {
+    "rim": 0.00,
+    "tick": 0.01,
+    "needle": 0.02,
+    "core": 0.02,
+    "hub": 0.03,
+    "fill": 0.05,
+    "float": 0.12,
+}
+
+
 def prepare(name):
     random.seed(21 + sum(map(ord, name)) % 90)
-    geom = ICONS[name]()
-    pts, kinds = dedup(geom.pts, geom.kinds, MIN_D)
+    g = ICONS[name]()
+    stamp_fill(g)
+    floaters(g)
+    pts, kinds, chains = g.pts, g.kinds, g.chains
     n = len(pts)
     sizes = sizes_for(kinds)
-    phases = [
-        (random.random() * math.pi * 2, random.uniform(0.5, 1.25), random.uniform(0.25, 0.9))
-        for _ in range(n)
-    ]
+    phases = []
+    for k in kinds:
+        ph = random.random() * math.pi * 2
+        if k == "rim":
+            phases.append((ph, random.uniform(0.28, 0.48), random.uniform(0.05, 0.12)))
+        elif k == "fill":
+            phases.append((ph, random.uniform(0.36, 0.62), random.uniform(0.12, 0.26)))
+        elif k == "float":
+            phases.append((ph, random.uniform(0.40, 0.72), random.uniform(0.28, 0.55)))
+        else:
+            phases.append((ph, random.uniform(0.30, 0.52), random.uniform(0.07, 0.16)))
     scatter = []
-    for _ in range(n):
-        ang = random.random() * math.pi * 2
-        dist = random.uniform(270, 450)
-        scatter.append((W / 2 + math.cos(ang) * dist, H / 2 + math.sin(ang) * dist * 0.72))
-    edges = build_edges(pts, kinds)
-    prio = {"rim": 0, "tick": 1, "core": 2, "needle": 3, "pivot": 4, "hub": 5, "float": 6}
-    order = sorted(range(n), key=lambda i: (prio.get(kinds[i], 9), i))
-    rank = [0] * n
-    for r, i in enumerate(order):
-        rank[i] = r
-    print(f"{name}: nodes {n} edges {len(edges)} { {k: kinds.count(k) for k in sorted(set(kinds))} }")
-    return pts, kinds, sizes, phases, scatter, edges, rank
+    for i in range(n):
+        if kinds[i] == "float":
+            ang = random.random() * math.pi * 2
+            d0 = random.uniform(260, 410)
+            scatter.append((CX + math.cos(ang) * d0, CY + math.sin(ang) * d0 * 0.72))
+            continue
+        # Condensa desde una copia un poco más grande de la misma silueta
+        # (se lee la figura mientras se arma, como las caras).
+        vx, vy = pts[i][0] - CX, pts[i][1] - CY
+        scale = random.uniform(1.48, 2.05)
+        jit = random.uniform(-0.10, 0.10)
+        ca, sa = math.cos(jit), math.sin(jit)
+        scatter.append((CX + (ca * vx - sa * vy) * scale, CY + (sa * vx + ca * vy) * scale * 0.98))
+    edges = build_edges(pts, kinds, chains)
+    chain_set = set()
+    for idx, closed in chains:
+        m = len(idx)
+        last = m if closed else m - 1
+        for i in range(last):
+            a, b = idx[i], idx[(i + 1) % m]
+            chain_set.add((a, b) if a < b else (b, a))
+    print(f"{name}: nodes {n} edges {len(edges)} chains {len(chains)} { {k: kinds.count(k) for k in sorted(set(kinds))} }")
+    return pts, kinds, sizes, phases, scatter, edges, chain_set
 
 
-def render_frame(t, pts, kinds, sizes, phases, scatter, edges, rank):
+def render_frame(t, pts, kinds, sizes, phases, scatter, edges, chain_set):
     n = len(pts)
     form = form_amount(t)
     layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer, "RGBA")
-    breath = 1.0 + (0.012 * math.sin(t * 1.1) if form > 0.75 else 0)
+    hold = 1.0 if form > 0.72 else max(0.0, (form - 0.45) / 0.27)
+    breath = 1.0 + 0.016 * math.sin(t * 0.85) * hold
     locals_u, pos = [], []
     for i in range(n):
-        if t < 10.2:
-            thr = rank[i] / max(1, n - 1)
-            lu = ease_io(max(0, min(1, form * 1.12 - thr * 0.28)))
-        else:
-            lu = form
+        lag = KIND_LAG.get(kinds[i], 0.04)
+        lu = ease_io(max(0.0, min(1.0, form * 1.06 - lag)))
         locals_u.append(lu)
         ph, freq, amp = phases[i]
         tx, ty = pts[i]
         if kinds[i] != "float":
             tx = CX + (tx - CX) * breath
             ty = CY + (ty - CY) * breath
-        if form > 0.55 and kinds[i] not in ("hub", "pivot"):
-            tx += amp * math.sin(t * freq * 1.55 + ph)
-            ty += amp * 0.65 * math.cos(t * freq * 1.25 + ph)
+        if form > 0.62 and kinds[i] != "hub":
+            j = amp * hold
+            tx += j * math.sin(t * freq + ph)
+            ty += j * 0.62 * math.cos(t * freq * 0.9 + ph)
         sx, sy = scatter[i]
-        push = 1.0 + 0.45 * (1 - form) if t >= 10.2 else 1.0
+        push = 1.0 + 0.35 * (1 - form) if t >= 11.1 else 1.0
         sx = W / 2 + (sx - W / 2) * push
         sy = H / 2 + (sy - H / 2) * push
         pos.append((sx + (tx - sx) * lu, sy + (ty - sy) * lu))
 
-    sil = {"rim", "tick", "core", "needle", "pivot"}
     for a, b in edges:
         uu = min(locals_u[a], locals_u[b])
-        if uu < 0.38:
+        if uu < 0.12:
             continue
         xa, ya = pos[a]
         xb, yb = pos[b]
-        if (xa - xb) ** 2 + (ya - yb) ** 2 > 88**2:
+        key = (a, b) if a < b else (b, a)
+        is_chain = key in chain_set
+        span2 = (xa - xb) ** 2 + (ya - yb) ** 2
+        if not is_chain and span2 > 72**2:
+            continue
+        if is_chain and span2 > 170**2:
             continue
         depth = 1 - min(1, math.hypot((xa + xb) / 2 - CX, (ya + yb) / 2 - CY) / 340)
-        if kinds[a] in sil or kinds[b] in sil:
-            depth = max(depth, 0.82)
-            boost = 1.25
+        if is_chain:
+            depth = max(depth, 0.88)
+            boost = 1.55
+        elif kinds[a] == "fill" or kinds[b] == "fill":
+            boost = 0.58
         else:
-            boost = 1.0
-        alpha = int((55 + 145 * depth) * uu * uu * boost)
+            boost = 0.9
+        alpha = int((55 + 165 * depth) * uu * boost)
         if alpha < 8:
             continue
         r = int(LINE_FAR[0] + (LINE[0] - LINE_FAR[0]) * depth)
         gv = int(LINE_FAR[1] + (LINE[1] - LINE_FAR[1]) * depth)
         bl = int(LINE_FAR[2] + (LINE[2] - LINE_FAR[2]) * depth)
-        draw.line([(xa, ya), (xb, yb)], fill=(r, gv, bl, min(230, alpha)), width=1)
+        draw.line([(xa, ya), (xb, yb)], fill=(r, gv, bl, min(235, alpha)), width=2 if is_chain else 1)
 
-    glow = {"hub", "rim", "core", "needle", "tick", "pivot"}
+    glow = {"hub", "rim", "core", "needle", "tick"}
     for i in sorted(range(n), key=lambda i: (1 if kinds[i] == "hub" else 0, -sizes[i])):
         uu = locals_u[i]
         if uu < 0.03:
@@ -969,21 +1076,21 @@ def render_frame(t, pts, kinds, sizes, phases, scatter, edges, rank):
         x, y = pos[i]
         rad = sizes[i] * (0.4 + 0.6 * uu)
         if kinds[i] in glow:
-            box = clamp_ell(x, y, rad * 2.3)
+            box = clamp_ell(x, y, rad * 2.2)
             if box:
-                draw.ellipse(box, fill=(*GLOW, int(40 * uu)))
+                draw.ellipse(box, fill=(*GLOW, int(36 * uu)))
         box = clamp_ell(x, y, rad)
         if box:
             col = NODE if kinds[i] != "float" else NODE_DIM
-            draw.ellipse(box, fill=(*col, min(255, int(210 * uu))))
+            draw.ellipse(box, fill=(*col, min(255, int(215 * uu))))
 
     if "hub" in kinds:
         i = kinds.index("hub")
-        if locals_u[i] > 0.25:
+        if locals_u[i] > 0.22:
             x, y = pos[i]
             a = locals_u[i]
-            draw.ellipse([x - 7, y - 7, x + 7, y + 7], fill=(9, 25, 20, int(255 * a)))
-            draw.ellipse([x - 3.6, y - 3.6, x + 3.6, y + 3.6], fill=(*NODE, int(255 * a)))
+            draw.ellipse([x - 6.2, y - 6.2, x + 6.2, y + 6.2], fill=(9, 25, 20, int(255 * a)))
+            draw.ellipse([x - 3.2, y - 3.2, x + 3.2, y + 3.2], fill=(*NODE, int(255 * a)))
 
     base = Image.new("RGBA", (W, H), (0, 0, 0, 255))
     return Image.alpha_composite(base, layer).convert("RGB")
@@ -991,7 +1098,7 @@ def render_frame(t, pts, kinds, sizes, phases, scatter, edges, rank):
 
 def render_preview(name, out_path):
     data = prepare(name)
-    img = render_frame(6.5, *data)
+    img = render_frame(7.2, *data)
     os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     img.save(out_path)
     print("preview", out_path)
