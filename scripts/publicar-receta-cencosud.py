@@ -208,6 +208,18 @@ def main() -> int:
                 except Exception:
                     print(f"No se pudo navegar con nav_nueva_receta={nav}")
 
+        if headed and sys.stdin.isatty():
+            print(
+                "\n>>> En Chromium abre la receta en el Gestor de contenido\n"
+                "    (lista de bloques: Cabecera, tags, Lista Ingredientes…).\n"
+                "    NO entres a «Edición de Lista Ingredientes».\n"
+                "    Cuando la veas, pulsa ENTER aquí para rellenar.\n"
+            )
+            try:
+                input()
+            except EOFError:
+                page.wait_for_timeout(5_000)
+
         print("Rellenando (abriendo lápices del CMS automáticamente)…")
         carga_ok = explorar.fill_from_receta(page, receta, selectores, dry_run=dry)
         resultado = 0

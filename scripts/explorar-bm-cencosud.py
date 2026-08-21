@@ -917,8 +917,16 @@ def asignar_campos_item(fields: list[dict], item: dict, tipo: str) -> list[tuple
     return asignados
 
 
+def selector_es_generico(sel: str | None) -> bool:
+    """El placeholder 'Dale un valor' aparece en muchos inputs; no sirve como mapa."""
+    if not sel:
+        return False
+    bajo = sel.lower()
+    return "dale un valor" in bajo or sel.strip() in ('input[placeholder="Dale un valor"]',)
+
+
 def _fill_locator(page, sel: str, value) -> bool:
-    if not sel or value is None or value == "":
+    if not sel or value is None or value == "" or selector_es_generico(sel):
         return False
     try:
         loc = page.locator(sel).first
@@ -1057,6 +1065,8 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         if value is None or value == "":
             return False
         sel = selectores.get(key)
+        if selector_es_generico(sel):
+            sel = None
         if sel and _fill_locator(page, sel, value):
             print(f"  ✓ {key}")
             return True
@@ -1142,16 +1152,27 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         ],
     )
 
+    llenados = sum(1 for v in resultados.values() if v)
+    if llenados == 0:
+        print(
+            "\nNo se rellenó ningún campo.\n"
+            "En Chromium deja abierta la receta en el Gestor de contenido\n"
+            "(bloques Cabecera / tags / Lista Ingredientes / Instrucciones / SEO).\n"
+            "No entres a «Edición de Lista…». Luego reintenta.",
+            file=sys.stderr,
+        )
+        return False
+
     if dry_run:
         btn = selectores.get("btn_guardar_borrador")
-        if btn:
+        if btn and not selector_es_generico(btn):
             try:
-                page.locator(btn).first.click()
+                page.locator(btn).first.click(timeout=5_000)
                 print("Clic en guardar borrador (dry-run).")
             except Exception as e:
                 print(f"No se pudo guardar borrador: {e}")
         else:
-            print("Dry-run: sin selector de borrador; campos rellenados, sin publicar.")
+            print("Dry-run: campos rellenados; guarda a mano en el BM si hace falta.")
         return True
     else:
         fallos_requeridos = [

@@ -51,7 +51,7 @@ class LocatorFalso:
     def select_option(self, **_kwargs):
         return None
 
-    def click(self):
+    def click(self, **_kwargs):
         self.runtime.clicks.append(self.selector)
 
 
