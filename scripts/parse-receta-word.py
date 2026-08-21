@@ -15,6 +15,7 @@ import argparse
 import json
 import re
 import sys
+import unicodedata
 import zipfile
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
@@ -53,6 +54,22 @@ def slugify(s: str) -> str:
     s = re.sub(r"ñ", "n", s)
     s = re.sub(r"[^a-z0-9]+", "-", s).strip("-")
     return s[:80] or "receta"
+
+
+def sin_tildes(s: str) -> str:
+    return (
+        unicodedata.normalize("NFKD", s)
+        .encode("ascii", "ignore")
+        .decode("ascii")
+    )
+
+
+def normalizar_dificultad(valor: str | None) -> str | None:
+    """El schema usa el enum sin tildes: 'facil', 'media', 'dificil'…"""
+    if not valor:
+        return None
+    limpio = re.sub(r"\s+", " ", sin_tildes(str(valor)).lower()).strip()
+    return limpio or None
 
 
 def valor_despues_label(lines: list[str], labels: list[str]) -> str | None:
@@ -96,7 +113,7 @@ def parse_barra_info(texto: str) -> dict:
         )
     if m:
         out["tiempoTotal"] = m.group(1).strip()
-        out["dificultad"] = m.group(2).strip().lower()
+        out["dificultad"] = normalizar_dificultad(m.group(2))
         out["porciones"] = m.group(3).strip()
     return out
 
@@ -373,9 +390,7 @@ def construir_receta_simple(texto: str, lines: list[str], fuente: str) -> dict:
     )
     t_coc = meta_linea(texto, ["tiempo de cocción", "tiempo de coccion", "cocción", "coccion"])
     t_tot = meta_linea(texto, ["tiempo total", "total"])
-    dificultad = meta_linea(texto, ["dificultad", "nivel"])
-    if dificultad:
-        dificultad = dificultad.lower().strip()
+    dificultad = normalizar_dificultad(meta_linea(texto, ["dificultad", "nivel"]))
     categorias = parse_lista_csv(meta_linea(texto, ["categorías", "categorias", "categoría", "categoria", "tags"]))
     ocasiones = parse_lista_csv(meta_linea(texto, ["ocasiones", "ocasión", "ocasion"]))
 

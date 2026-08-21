@@ -9,7 +9,9 @@ from pathlib import Path
 from unittest.mock import patch
 
 
-SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts/parse-receta-word.py"
+ROOT = Path(__file__).resolve().parents[1]
+SCRIPT_PATH = ROOT / "scripts/parse-receta-word.py"
+SCHEMA_PATH = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud/schema-receta.json"
 
 
 def cargar_modulo():
@@ -174,6 +176,34 @@ class ParseRecetaWordTests(unittest.TestCase):
         self.assertEqual(len(receta["pasos"]), 2)
         self.assertEqual(len(receta["tips"]), 2)
         self.assertEqual(receta["estado"], "listo-para-cargar")
+
+    def test_dificultad_usa_el_enum_sin_tildes_del_schema(self):
+        texto_jumbo = (
+            "Meta título:\n"
+            "Papas al horno | Recetas Jumbo\n"
+            "Papas al horno\n"
+            "35 min | Fácil | 4 porciones\n"
+            "Tags: Cena\n"
+            "Ingredientes:\n"
+            "1 kg papas\n"
+            "Paso a paso:\n"
+            "Cocinar las papas.\n"
+        )
+        enum_schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))["properties"]["dificultad"]["enum"]
+
+        jumbo = self.modulo.construir_receta_jumbo(
+            texto_jumbo.splitlines(), texto_jumbo, "inbox/papas.docx"
+        )
+        simple = self.modulo.construir_receta_simple(
+            self.TEXTO,
+            [ln for ln in self.TEXTO.splitlines() if ln.strip()],
+            "inbox/receta.txt",
+        )
+
+        self.assertEqual(jumbo["dificultad"], "facil")
+        self.assertEqual(simple["dificultad"], "facil")
+        self.assertIn(jumbo["dificultad"], enum_schema)
+        self.assertIn(simple["dificultad"], enum_schema)
 
 
 if __name__ == "__main__":
