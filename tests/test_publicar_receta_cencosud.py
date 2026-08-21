@@ -32,6 +32,9 @@ class LocatorFalso:
     def count(self):
         return 0 if self.selector in self.runtime.selectores_ausentes else 1
 
+    def is_visible(self):
+        return self.selector in self.runtime.selectores_visibles
+
     def evaluate(self, _script):
         return "input"
 
@@ -41,16 +44,38 @@ class LocatorFalso:
     def select_option(self, **_kwargs):
         return None
 
-    def click(self):
+    def click(self, **_kwargs):
         self.runtime.clicks.append(self.selector)
+
+
+class TecladoFalso:
+    def __init__(self, runtime):
+        self.runtime = runtime
+
+    def press(self, tecla):
+        self.runtime.teclas.append(tecla)
 
 
 class PageFalsa:
     def __init__(self, runtime):
         self.runtime = runtime
+        self.keyboard = TecladoFalso(runtime)
 
     def locator(self, selector):
         return LocatorFalso(self.runtime, selector)
+
+    def evaluate(self, _script, arg=None):
+        """Sin DOM real: la respuesta depende del argumento que pasa el módulo.
+
+        sin argumento → conteo de campos editables
+        lista de dicts → componentes del CMS detectados
+        lista de alias → si el lápiz se pudo abrir
+        """
+        if arg is None:
+            return self.runtime.campos_editables
+        if arg and isinstance(arg[0], dict):
+            return list(self.runtime.componentes_cms)
+        return self.runtime.lapiz_abre
 
     def goto(self, *_args, **_kwargs):
         return None
@@ -107,9 +132,22 @@ class GestorPlaywrightFalso:
 
 
 class RuntimeFalso:
-    def __init__(self, selectores_ausentes=()):
+    def __init__(
+        self,
+        selectores_ausentes=(),
+        *,
+        componentes_cms=(),
+        campos_editables=8,
+        lapiz_abre=True,
+        selectores_visibles=(),
+    ):
         self.selectores_ausentes = set(selectores_ausentes)
+        self.selectores_visibles = set(selectores_visibles)
+        self.componentes_cms = list(componentes_cms)
+        self.campos_editables = campos_editables
+        self.lapiz_abre = lapiz_abre
         self.clicks = []
+        self.teclas = []
         self.lanzamientos = 0
 
     def modulos(self):
