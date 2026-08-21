@@ -59,10 +59,6 @@ def densify_closed(poly, step: float) -> list[tuple[float, float]]:
     return out
 
 
-def in_disk(x, y, r) -> bool:
-    return math.hypot(x - CX, y - CY) <= r
-
-
 def build_points(seed: int = 34):
     random.seed(seed)
     pts: list[tuple[float, float]] = []
@@ -122,44 +118,35 @@ def build_points(seed: int = 34):
             pts.append(q)
             kinds.append("tick")
 
-    # 6) Rosa de 4 puntas: N larga, S corta, E/O medias — lectura de brujula
+    # 6) Rosa de 4 puntas: SOLO contorno, hueco negro entre brazos (centro legible)
     n_tip = polar(-math.pi / 2, 118)
-    s_tip = polar(math.pi / 2, 78)
-    e_tip = polar(0.0, 72)
-    w_tip = polar(math.pi, 72)
-    n_l, n_r = (CX - 26, CY + 8), (CX + 26, CY + 8)
-    s_l, s_r = (CX - 16, CY - 6), (CX + 16, CY - 6)
-    e_t, e_b = (CX - 6, CY - 14), (CX - 6, CY + 14)
-    w_t, w_b = (CX + 6, CY - 14), (CX + 6, CY + 14)
+    s_tip = polar(math.pi / 2, 76)
+    e_tip = polar(0.0, 66)
+    w_tip = polar(math.pi, 66)
+    n_l, n_r = (CX - 13, CY - 28), (CX + 13, CY - 28)
+    s_l, s_r = (CX - 9, CY + 28), (CX + 9, CY + 28)
+    e_t, e_b = (CX + 28, CY - 9), (CX + 28, CY + 9)
+    w_t, w_b = (CX - 28, CY - 9), (CX - 28, CY + 9)
 
-    def fill_tri(tip, a, b, n_fill, kind="needle"):
-        for q in densify_closed([tip, a, b], step=8):
+    def outline_tri(tip, a, b, step=5.5):
+        for q in densify_closed([tip, a, b], step=step):
             pts.append(q)
-            kinds.append(kind)
-        for _ in range(n_fill):
-            u = random.random()
-            v = random.random() * (1 - u)
-            x = tip[0] + (a[0] - tip[0]) * u + (b[0] - tip[0]) * v
-            y = tip[1] + (a[1] - tip[1]) * u + (b[1] - tip[1]) * v
-            pts.append((x, y))
-            kinds.append(kind)
+            kinds.append("needle")
+        # una sola costilla al eje, sin relleno
+        mid = along(a, b, 0.5)
+        for q in densify_line(tip, mid, step=8):
+            pts.append(q)
+            kinds.append("needle")
 
-    fill_tri(n_tip, n_l, n_r, 16, "needle")
-    fill_tri(s_tip, s_l, s_r, 8, "needle")
-    fill_tri(e_tip, e_t, e_b, 7, "needle")
-    fill_tri(w_tip, w_t, w_b, 7, "needle")
+    outline_tri(n_tip, n_l, n_r)
+    outline_tri(s_tip, s_l, s_r)
+    outline_tri(e_tip, e_t, e_b)
+    outline_tri(w_tip, w_t, w_b)
 
-    # 7) Interior ralo (no debe leerse como globo)
-    for _ in range(22):
-        a = random.uniform(0, 2 * math.pi)
-        r = math.sqrt(random.random()) * (R_IN - 36)
-        x, y = polar(a, r)
-        # evitar el eje de la aguja
-        if abs(x - CX) < 22:
-            continue
-        if in_disk(x, y, R_IN - 28):
-            pts.append((x, y))
-            kinds.append("glass")
+    # 7) Anillo del pivote — circulo vacio, separado de la rosa
+    for i in range(18):
+        pts.append(polar(2 * math.pi * i / 18, 22))
+        kinds.append("pivot")
 
     # 8) Hub
     pts.append((CX, CY))
@@ -175,9 +162,9 @@ def build_points(seed: int = 34):
     min_d = {
         "rim": 42,
         "tick": 30,
-        "core": 28,
-        "needle": 32,
-        "glass": 70,
+        "core": 26,
+        "needle": 16,
+        "pivot": 14,
         "hub": 0,
         "float": 55,
     }
@@ -194,11 +181,13 @@ def sizes_for(kinds: list[str]) -> list[float]:
     sizes = []
     for k in kinds:
         if k == "hub":
-            sizes.append(6.4)
+            sizes.append(8.2)
+        elif k == "pivot":
+            sizes.append(random.choice([2.8, 3.2, 3.8]))
         elif k == "core":
             sizes.append(random.choice([3.2, 3.8, 4.4, 5.0]))
         elif k == "needle":
-            sizes.append(random.choice([2.6, 3.2, 3.8, 4.4]))
+            sizes.append(random.choice([3.2, 3.8, 4.6, 5.2]))
         elif k == "tick":
             sizes.append(random.choice([2.4, 2.9, 3.5, 4.0]))
         elif k == "rim":
@@ -212,6 +201,16 @@ def sizes_for(kinds: list[str]) -> list[float]:
 
 def build_edges(pts, kinds):
     n = len(pts)
+    # El centro (aguja + pivote) no se ata al aro: asi se lee nítido.
+    family = {
+        "needle": "center",
+        "pivot": "center",
+        "hub": "center",
+        "rim": "bezel",
+        "tick": "bezel",
+        "core": "bezel",
+        "float": "float",
+    }
     edges = set()
     for i in range(n):
         dists = sorted(
@@ -221,16 +220,22 @@ def build_edges(pts, kinds):
         )
         if kinds[i] == "rim":
             max_deg, lim = 7, 68**2
-        elif kinds[i] in ("needle", "tick", "core"):
-            max_deg, lim = 6, 70**2
+        elif kinds[i] in ("needle", "pivot"):
+            max_deg, lim = 6, 52**2
+        elif kinds[i] in ("tick", "core"):
+            max_deg, lim = 6, 64**2
+        elif kinds[i] == "hub":
+            max_deg, lim = 8, 36**2
         elif kinds[i] == "float":
             max_deg, lim = 2, 48**2
         else:
-            max_deg, lim = 5, 68**2
+            max_deg, lim = 5, 62**2
         c = 0
         for d2, j in dists:
             if d2 > lim:
                 break
+            if family.get(kinds[i]) != family.get(kinds[j]):
+                continue
             a, b = (i, j) if i < j else (j, i)
             edges.add((a, b))
             c += 1
@@ -297,8 +302,8 @@ def render_frame(t, pts, kinds, sizes, phases, scatter, edges, rank, locals_only
         if kinds[i] != "float":
             tx = CX + (tx - CX) * breath
             ty = CY + (ty - CY) * breath
-        if form > 0.55 and kinds[i] != "hub":
-            wiggle = 0.45 if kinds[i] in ("needle", "core") else amp
+        if form > 0.55 and kinds[i] not in ("hub", "pivot"):
+            wiggle = 0.18 if kinds[i] == "needle" else amp
             tx += wiggle * math.sin(t * freq * 1.55 + ph)
             ty += wiggle * 0.65 * math.cos(t * freq * 1.25 + ph)
         sx, sy = scatter[i]
@@ -308,7 +313,7 @@ def render_frame(t, pts, kinds, sizes, phases, scatter, edges, rank, locals_only
         sy = cy + (sy - cy) * push
         pos.append((sx + (tx - sx) * lu, sy + (ty - sy) * lu))
 
-    sil = {"rim", "tick", "core", "needle"}
+    sil = {"rim", "tick", "core", "needle", "pivot"}
     for a, b in edges:
         uu = min(locals_u[a], locals_u[b])
         if uu < 0.38:
@@ -321,22 +326,23 @@ def render_frame(t, pts, kinds, sizes, phases, scatter, edges, rank, locals_only
         dist = math.hypot(midx - CX, midy - CY)
         depth = 1 - min(1, dist / 340)
         if kinds[a] in sil or kinds[b] in sil:
-            depth = max(depth, 0.80)
+            depth = max(depth, 0.84)
             boost = 1.28
         else:
             boost = 1.0
-        if kinds[a] in ("needle", "core") or kinds[b] in ("needle", "core"):
-            boost *= 1.12
+        if kinds[a] in ("needle", "pivot", "hub") or kinds[b] in ("needle", "pivot", "hub"):
+            boost *= 1.22
+            depth = max(depth, 0.92)
         alpha = int((55 + 145 * depth) * uu * uu * boost)
         if alpha < 8:
             continue
         r = int(LINE_FAR[0] + (LINE[0] - LINE_FAR[0]) * depth)
         g = int(LINE_FAR[1] + (LINE[1] - LINE_FAR[1]) * depth)
         bl = int(LINE_FAR[2] + (LINE[2] - LINE_FAR[2]) * depth)
-        draw.line([(xa, ya), (xb, yb)], fill=(r, g, bl, min(225, alpha)), width=1)
+        draw.line([(xa, ya), (xb, yb)], fill=(r, g, bl, min(235, alpha)), width=1)
 
-    glow_kinds = ("hub", "rim", "core", "needle", "tick")
-    for i in sorted(range(n), key=lambda i: (0 if kinds[i] == "hub" else 1, -sizes[i])):
+    glow_kinds = ("hub", "rim", "core", "needle", "tick", "pivot")
+    for i in sorted(range(n), key=lambda i: (1 if kinds[i] == "hub" else 0, -sizes[i])):
         uu = locals_u[i]
         if uu < 0.03:
             continue
@@ -355,8 +361,10 @@ def render_frame(t, pts, kinds, sizes, phases, scatter, edges, rank, locals_only
     i = kinds.index("hub")
     if locals_u[i] > 0.25:
         x, y = pos[i]
-        draw.ellipse([x - 5, y - 5, x + 5, y + 5], fill=(9, 25, 20, int(255 * locals_u[i])))
-        draw.ellipse([x - 2.8, y - 2.8, x + 2.8, y + 2.8], fill=(*NODE, int(255 * locals_u[i])))
+        a = locals_u[i]
+        draw.ellipse([x - 9, y - 9, x + 9, y + 9], fill=(9, 25, 20, int(255 * a)))
+        draw.ellipse([x - 5.2, y - 5.2, x + 5.2, y + 5.2], fill=(*NODE, int(255 * a)))
+        draw.ellipse([x - 2.2, y - 2.2, x + 2.2, y + 2.2], fill=(9, 25, 20, int(220 * a)))
 
     base = Image.new("RGBA", (W, H), (0, 0, 0, 255))
     composed = Image.alpha_composite(base, layer).convert("RGB")
@@ -386,8 +394,8 @@ def prepare():
         "tick": 1,
         "core": 2,
         "needle": 3,
-        "hub": 4,
-        "glass": 5,
+        "pivot": 4,
+        "hub": 5,
         "float": 6,
     }
     order_build = sorted(range(n), key=lambda i: (prio.get(kinds[i], 9), i))
