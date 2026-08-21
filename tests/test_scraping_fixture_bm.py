@@ -193,7 +193,23 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             self.assertIn("zapallos", page.input_value("#ingredientes"))
             self.assertIn("Corta las verduras", page.input_value("#pasos"))
             self.assertEqual(page.input_value("#meta-titulo"), RECETA_DEMO["seo"]["metaTitulo"])
+            self.assertEqual(page.input_value("#dificultad"), "facil")
             self.assertEqual(page.locator("#estado").inner_text(), "borrador-ok")
+            browser.close()
+
+    def test_dificultad_sin_tilde_calza_con_la_opcion_del_bm(self):
+        """El parser entrega «facil» y el desplegable del BM muestra «Fácil»."""
+        explorar = cargar_explorar()
+        receta = {**RECETA_DEMO, "dificultad": "facil"}
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(FIXTURE_CMS.as_uri())
+            _, mapa = explorar.capturar_cms_por_componentes(page)
+
+            self.assertTrue(explorar.fill_from_receta(page, receta, mapa, dry_run=True))
+            self.assertEqual(page.input_value("#dificultad"), "facil")
             browser.close()
 
 

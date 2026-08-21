@@ -38,6 +38,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -96,6 +97,36 @@ COMPONENTES_CMS = (
         "campos": ("field_meta_titulo", "field_meta_descripcion"),
     },
 )
+
+
+def comparable(texto: str) -> str:
+    sin_tildes = unicodedata.normalize("NFKD", str(texto)).encode("ascii", "ignore").decode("ascii")
+    return re.sub(r"\s+", " ", sin_tildes).strip().lower()
+
+
+def seleccionar_opcion(loc, valor: str) -> bool:
+    """Elige la opción del <select> ignorando tildes y mayúsculas.
+
+    El Word trae «Fácil» y el BM puede exponer «facil» (o al revés), así que se
+    comparan las opciones reales antes de pedir la selección a Playwright.
+    """
+    try:
+        opciones = loc.evaluate(
+            "el => Array.from(el.options || []).map((o) => ({ value: o.value, texto: o.textContent }))"
+        )
+    except Exception:
+        opciones = None
+    objetivo = comparable(valor)
+    for opcion in opciones or []:
+        for candidato in (opcion.get("texto"), opcion.get("value")):
+            if candidato and comparable(candidato) == objetivo:
+                loc.select_option(value=opcion.get("value"))
+                return True
+    try:
+        loc.select_option(label=valor, timeout=3_000)
+        return True
+    except Exception:
+        return False
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -801,10 +832,9 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
             if loc.count():
                 tag = loc.evaluate("el => el.tagName.toLowerCase()")
                 if tag == "select":
-                    try:
-                        loc.select_option(label=str(value))
-                    except Exception:
-                        loc.select_option(value=str(value))
+                    if not seleccionar_opcion(loc, str(value)):
+                        print(f"  ✗ {key}: sin opción equivalente a {value!r}")
+                        return False
                 else:
                     loc.fill(str(value))
                 print(f"  ✓ {key}")
