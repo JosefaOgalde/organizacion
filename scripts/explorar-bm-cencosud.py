@@ -20,7 +20,7 @@ Uso (en tu máquina, carpeta del repo):
   python3 scripts/explorar-bm-cencosud.py
 
 Flujo:
-  - Abre https://business-manager.ecomm.cencosud.com/
+  - Abre el Gestor de contenido de recetas Jumbo (view-manager)
   - Si ADFS pide interacción: inicia sesión TÚ en la ventana
   - Cuando estés dentro, navega hasta «Nueva receta» (o el formulario)
   - Vuelve a la terminal y pulsa ENTER → guarda estructura + screenshot
@@ -1256,7 +1256,7 @@ def main() -> int:
 
     SECRETS.mkdir(parents=True, exist_ok=True)
     env = load_env(ENV_PATH)
-    base = env.get("CENCOSUD_BM_URL") or "https://business-manager.ecomm.cencosud.com/"
+    base = _RUTAS.url_inicio_bm(env)
     dry_run = not args.publish
 
     if not ENV_PATH.exists():
@@ -1277,8 +1277,8 @@ def main() -> int:
     print(f"URL: {base}")
     print("1) Se abre Chromium.")
     print("2) Inicia sesión (automático si .env tiene user/pass; si no, a mano / MFA).")
-    print("3) Abre la receta en el Gestor de contenido (lista de componentes).")
-    print("4) Vuelve aquí y pulsa ENTER.")
+    print("3) Quedas en el Gestor de recetas (view-manager). Abre la receta o Nueva receta.")
+    print("4) Debes ver bloques Cabecera / tags / Lista Ingredientes. Pulsa ENTER.")
     print("5) El scraping abre SOLO cada lápiz (Cabecera, tags, ingredientes,")
     print("   instrucciones, SEO), captura campos y cierra el editor.")
     print("6) Tú no debes hacer clic en los lápices.")
@@ -1298,8 +1298,8 @@ def main() -> int:
         try_login(page, env)
 
         print(
-            "\n>>> Deja abierta la receta en el CMS (lista de componentes).\n"
-            "    NO hace falta tocar los lápices. Pulsa ENTER aquí…"
+            "\n>>> Estás en el Gestor de recetas. Abre la ficha (bloques Cabecera…).\n"
+            "    NO entres a «Edición de Lista». NO toques los lápices. ENTER aquí…"
         )
         try:
             input()

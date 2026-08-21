@@ -13,6 +13,19 @@ BASES_CLIENTES = (
     "index/clientes/Herramientas",
     "index/clientes/herramientas",
 )
+BM_HOME = "https://business-manager.ecomm.cencosud.com/"
+BM_CMS_RECETAS = (
+    "https://business-manager.ecomm.cencosud.com/cms/projects/"
+    "6597f023fdc664839ccd2a37/view-manager"
+)
+
+
+def url_inicio_bm(env: dict | None = None) -> str:
+    """Gestor de contenido de recetas Jumbo (no el home del BM)."""
+    raw = ((env or {}).get("CENCOSUD_BM_URL") or "").strip()
+    if not raw or raw.rstrip("/") == BM_HOME.rstrip("/"):
+        return BM_CMS_RECETAS
+    return raw.rstrip("/")
 
 
 def resolver_crc(root: Path) -> Path:

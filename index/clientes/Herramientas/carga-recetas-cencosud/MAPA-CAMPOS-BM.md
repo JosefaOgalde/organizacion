@@ -1,6 +1,6 @@
 # Mapa de campos · Word → JSON → Business Manager Cencosud
 
-Destino: https://business-manager.ecomm.cencosud.com/  
+Destino (inicio): https://business-manager.ecomm.cencosud.com/cms/projects/6597f023fdc664839ccd2a37/view-manager  
 Público de referencia: https://www.jumbo.cl/recetas
 
 ## Cómo mapear (local, con tu usuario)

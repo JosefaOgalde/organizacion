@@ -34,7 +34,14 @@ class CrcRutasTests(unittest.TestCase):
             (crc / "secret").mkdir(parents=True)
             self.assertEqual(self.rutas.resolver_secrets(crc), crc / "secret")
 
-    def test_json_mas_reciente(self):
+    def test_url_inicio_usa_gestor_de_recetas(self):
+        self.assertIn("view-manager", self.rutas.url_inicio_bm({}))
+        self.assertIn(
+            "view-manager",
+            self.rutas.url_inicio_bm({"CENCOSUD_BM_URL": "https://business-manager.ecomm.cencosud.com/"}),
+        )
+        custom = "https://business-manager.ecomm.cencosud.com/cms/otra"
+        self.assertEqual(self.rutas.url_inicio_bm({"CENCOSUD_BM_URL": custom}), custom)
         with tempfile.TemporaryDirectory() as tmp:
             crc = Path(tmp)
             out = crc / "out"

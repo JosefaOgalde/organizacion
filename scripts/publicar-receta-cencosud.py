@@ -152,7 +152,7 @@ def main() -> int:
     receta = json.loads(path.read_text(encoding="utf-8"))
     env = load_env(ENV_PATH)
     selectores = load_selectores()
-    base_url = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/")
+    base_url = _RUTAS.url_inicio_bm(env)
     dry = args.dry_run or env.get("CENCOSUD_BM_DRY_RUN", "true").lower() in ("1", "true", "yes")
     headed = args.headed or env.get("CENCOSUD_BM_HEADED", "true").lower() in ("1", "true", "yes")
     errores_preflight = [] if dry else errores_prepublicacion(receta)
@@ -210,10 +210,11 @@ def main() -> int:
 
         if headed and sys.stdin.isatty():
             print(
-                "\n>>> En Chromium abre la receta en el Gestor de contenido\n"
-                "    (lista de bloques: Cabecera, tags, Lista Ingredientes…).\n"
-                "    NO entres a «Edición de Lista Ingredientes».\n"
-                "    Cuando la veas, pulsa ENTER aquí para rellenar.\n"
+            "\n>>> Chromium abre el Gestor de contenido de recetas.\n"
+            "    Elige la receta (o Nueva receta) en esa lista.\n"
+            "    Debes ver los bloques: Cabecera, tags, Lista Ingredientes…\n"
+            "    NO entres a «Edición de Lista Ingredientes».\n"
+            "    Cuando la veas, pulsa ENTER aquí para rellenar.\n"
             )
             try:
                 input()
