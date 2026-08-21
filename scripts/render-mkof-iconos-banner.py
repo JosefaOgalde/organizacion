@@ -169,35 +169,37 @@ def ico_diana():
 
 def ico_caballo():
     g = G()
-    # perfil de caballo a la izquierda: oreja, hocico, pecho, peana
+    # Pieza de caballo mirando a la izquierda: oreja aguda, hocico, peana ancha.
     box = [
-        (0.56, 0.02),  # punta oreja
-        (0.68, 0.14),
-        (0.60, 0.20),  # frente
-        (0.74, 0.26),
-        (0.92, 0.36),  # hocico
-        (0.94, 0.46),
-        (0.80, 0.48),  # boca
-        (0.70, 0.46),
-        (0.62, 0.56),  # cuello
-        (0.54, 0.70),
-        (0.40, 0.82),  # pecho
+        (0.46, 0.00),  # punta oreja
+        (0.58, 0.10),
+        (0.54, 0.18),  # nuca
+        (0.40, 0.22),  # frente
+        (0.18, 0.30),  # puente
+        (0.02, 0.38),  # hocico
+        (0.04, 0.50),
+        (0.20, 0.52),  # boca
+        (0.34, 0.50),
+        (0.40, 0.60),  # quijada
+        (0.28, 0.74),  # pecho
         (0.16, 0.86),
-        (0.14, 0.98),  # peana izq
-        (0.88, 0.98),
-        (0.88, 0.86),
-        (0.72, 0.82),
-        (0.64, 0.68),
-        (0.58, 0.48),
-        (0.50, 0.30),  # crin
-        (0.46, 0.14),
-        (0.50, 0.04),
+        (0.10, 0.88),
+        (0.06, 0.98),  # peana izq
+        (0.94, 0.98),  # peana der
+        (0.90, 0.88),
+        (0.78, 0.84),  # anca
+        (0.74, 0.62),
+        (0.66, 0.40),  # crin
+        (0.60, 0.22),
+        (0.54, 0.08),
     ]
-    sx, sy = 300, 360
-    ox, oy = CX - sx * 0.52, CY - sy * 0.50
+    sx, sy = 310, 370
+    ox, oy = CX - sx * 0.50, CY - sy * 0.50
     poly(g, [(ox + x * sx, oy + y * sy) for x, y in box], 6, "rim")
-    g.add((ox + 0.70 * sx, oy + 0.34 * sy), "core")  # ojo
-    hub(g, ox + 0.58 * sx, oy + 0.58 * sy)
+    # peana extra (doble linea) para que no se lea como patas
+    polyline(g, [(ox + 0.12 * sx, oy + 0.90 * sy), (ox + 0.88 * sx, oy + 0.90 * sy)], 7, "tick")
+    g.add((ox + 0.28 * sx, oy + 0.34 * sy), "core")  # ojo
+    hub(g, ox + 0.52 * sx, oy + 0.58 * sy)
     floaters(g)
     return g
 
