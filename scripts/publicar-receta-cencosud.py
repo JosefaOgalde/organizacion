@@ -11,21 +11,46 @@ Uso:
   python3 scripts/publicar-receta-cencosud.py \\
     index/clientes/Herramientas/carga-recetas-cencosud/out/anticuchos-de-verduras-con-chimichurri.json \\
     --headed --dry-run
+
+El BM Jumbo es CMS por componentes: este script abre cada lápiz solo
+(Cabecera, tags, ingredientes, instrucciones, SEO) antes de rellenar.
 """
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CRC = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud"
-SECRETS = CRC / "secrets"
+EXPLORAR_PATH = ROOT / "scripts/explorar-bm-cencosud.py"
+
+
+def _crc_rutas():
+    path = Path(__file__).resolve().parent / "crc_rutas.py"
+    spec = importlib.util.spec_from_file_location("crc_rutas_pub", path)
+    modulo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modulo)
+    return modulo
+
+
+_RUTAS = _crc_rutas()
+CRC = _RUTAS.resolver_crc(ROOT)
+SECRETS = _RUTAS.resolver_secrets(CRC)
 ENV_PATH = SECRETS / ".env"
 SESSION_PATH = SECRETS / "bm-session.json"
 MAPA_SELECTORES_PATH = SECRETS / "bm-selectores.json"
+CAMPOS_REQUERIDOS_PUBLICACION = ("titulo", "descripcion", "ingredientes", "pasos")
+CAMPOS_FALTANTES_NO_BLOQUEANTES = {"ingredientes.skuCencosud"}
+
+
+def _cargar_explorar():
+    spec = importlib.util.spec_from_file_location("explorar_bm_cencosud", EXPLORAR_PATH)
+    modulo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modulo)
+    return modulo
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -56,6 +81,25 @@ def load_selectores() -> dict:
     return {}
 
 
+def errores_prepublicacion(receta: dict) -> list[str]:
+    errores = []
+    if receta.get("estado") != "listo-para-cargar":
+        errores.append(f"estado={receta.get('estado')!s} (se requiere listo-para-cargar)")
+
+    campos_faltantes = [
+        str(campo)
+        for campo in receta.get("camposFaltantes") or []
+        if str(campo).strip() and str(campo) not in CAMPOS_FALTANTES_NO_BLOQUEANTES
+    ]
+    if campos_faltantes:
+        errores.append("camposFaltantes=" + ", ".join(campos_faltantes))
+
+    vacios = [campo for campo in CAMPOS_REQUERIDOS_PUBLICACION if not receta.get(campo)]
+    if vacios:
+        errores.append("campos requeridos vacíos=" + ", ".join(vacios))
+    return errores
+
+
 def fill(page, sel: str | None, value, label: str) -> bool:
     if not sel or value is None or value == "":
         print(f"  · omitido {label}")
@@ -82,13 +126,25 @@ def fill(page, sel: str | None, value, label: str) -> bool:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Cargar receta JSON en Business Manager Cencosud")
-    ap.add_argument("json_path", type=Path, help="Ruta al JSON en out/")
+    ap.add_argument("json_path", nargs="?", type=Path, help="Ruta al JSON en out/ (si omites, usa el más reciente)")
     ap.add_argument("--dry-run", action="store_true", help="No publicar; intentar guardar borrador")
     ap.add_argument("--headed", action="store_true", help="Navegador visible (recomendado)")
     ap.add_argument("--no-session", action="store_true", help="No reutilizar bm-session.json")
     args = ap.parse_args()
 
-    path = args.json_path.expanduser().resolve()
+    if args.json_path:
+        path = args.json_path.expanduser().resolve()
+    else:
+        path = _RUTAS.json_mas_reciente(CRC)
+        if path:
+            print(f"JSON más reciente: {path}")
+        else:
+            print(
+                "No hay JSON en out/. Primero:\n"
+                "  python scripts\\parse-receta-word.py inbox\\TU-RECETA.docx",
+                file=sys.stderr,
+            )
+            return 1
     if not path.exists():
         print(f"No existe JSON: {path}", file=sys.stderr)
         return 1
@@ -99,19 +155,27 @@ def main() -> int:
     base_url = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/")
     dry = args.dry_run or env.get("CENCOSUD_BM_DRY_RUN", "true").lower() in ("1", "true", "yes")
     headed = args.headed or env.get("CENCOSUD_BM_HEADED", "true").lower() in ("1", "true", "yes")
+    errores_preflight = [] if dry else errores_prepublicacion(receta)
 
     print("=== Carga CRC → BM ===")
+    print(f"carpeta: {CRC}")
     print(f"receta:  {receta.get('titulo')}")
     print(f"estado:  {receta.get('estado')}")
     print(f"dry_run: {dry} · headed: {headed}")
+    if errores_preflight:
+        print("Publicación bloqueada antes de abrir el navegador:", file=sys.stderr)
+        for error in errores_preflight:
+            print(f"  - {error}", file=sys.stderr)
+        return 3
 
     utiles = {k: v for k, v in selectores.items() if v}
     if len(utiles) < 2:
         print(
             "\nAún no hay selectores útiles en secrets/bm-selectores.json.\n"
             "En TU PC corre primero:\n"
-            "  python3 scripts/explorar-bm-cencosud.py\n"
-            "Inicia sesión, abre el formulario de receta, pulsa ENTER en la terminal.",
+            "  python3 scripts/explorar-bm-cencosud.py --reuse-session\n"
+            "Inicia sesión, abre la receta en el CMS y pulsa ENTER\n"
+            "(el script abre los lápices solo).",
             file=sys.stderr,
         )
         return 2
@@ -121,6 +185,8 @@ def main() -> int:
     except ImportError:
         print("Instala: pip install playwright && playwright install chromium", file=sys.stderr)
         return 1
+
+    explorar = _cargar_explorar()
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=not headed)
@@ -142,59 +208,17 @@ def main() -> int:
                 except Exception:
                     print(f"No se pudo navegar con nav_nueva_receta={nav}")
 
-        print("Rellenando…")
-        fill(page, selectores.get("field_titulo"), receta.get("titulo"), "titulo")
-        fill(page, selectores.get("field_descripcion"), receta.get("descripcion"), "descripcion")
-        fill(page, selectores.get("field_porciones"), receta.get("porciones"), "porciones")
-        fill(page, selectores.get("field_dificultad"), receta.get("dificultad"), "dificultad")
-        fill(page, selectores.get("field_tiempo"), receta.get("tiempoTotal"), "tiempo")
-        fill(
-            page,
-            selectores.get("field_tags"),
-            ", ".join(receta.get("categorias") or []),
-            "tags",
-        )
-        seo = receta.get("seo") or {}
-        fill(page, selectores.get("field_meta_titulo"), seo.get("metaTitulo"), "meta_titulo")
-        fill(page, selectores.get("field_meta_descripcion"), seo.get("metaDescripcion"), "meta_descripcion")
-
-        ings = receta.get("ingredientes") or []
-        if ings:
-            texto_ing = "\n".join(
-                " ".join(
-                    filter(
-                        None,
-                        [str(i.get("cantidad") or ""), str(i.get("unidad") or ""), str(i.get("nombre") or "")],
-                    )
-                ).strip()
-                for i in ings
-            )
-            fill(page, selectores.get("field_ingredientes"), texto_ing, "ingredientes")
-
-        pasos = receta.get("pasos") or []
-        if pasos:
-            texto_pas = "\n".join(f"{p.get('orden')}. {p.get('texto')}" for p in pasos)
-            fill(page, selectores.get("field_pasos"), texto_pas, "pasos")
-
+        print("Rellenando (abriendo lápices del CMS automáticamente)…")
+        carga_ok = explorar.fill_from_receta(page, receta, selectores, dry_run=dry)
+        resultado = 0
         if dry:
-            btn = selectores.get("btn_guardar_borrador")
-            if btn:
-                try:
-                    page.locator(btn).first.click()
-                    print("Dry-run: clic guardar borrador.")
-                    receta["estado"] = "cargado"
-                except Exception as e:
-                    print(f"Dry-run: no se pudo guardar borrador ({e}). Revisa la ventana.")
-            else:
-                print("Dry-run: campos rellenados; sin selector de borrador. Revisa la ventana y guarda a mano si hace falta.")
+            if carga_ok:
+                receta["estado"] = "cargado"
         else:
-            btn = selectores.get("btn_publicar")
-            if not btn:
-                print("Sin btn_publicar en bm-selectores.json", file=sys.stderr)
+            if not carga_ok:
+                resultado = 4
             else:
-                page.locator(btn).first.click()
-                print("Publicado (según flujo BM).")
-                receta["estado"] = "publicado"
+                receta["estado"] = "cargado"
 
         path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         context.storage_state(path=str(SESSION_PATH))
@@ -207,7 +231,7 @@ def main() -> int:
                 page.wait_for_timeout(15_000)
         browser.close()
 
-    return 0
+    return resultado
 
 
 if __name__ == "__main__":
