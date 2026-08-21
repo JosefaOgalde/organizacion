@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" fill="none" role="img" aria-label="SEO y GEO · radar Making Of">
+  <defs>
+    <radialGradient id="meshBg" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#F7F2E4"/>
+      <stop offset="100%" stop-color="#D8D3A4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="radarFill" cx="40%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#6BA894" stop-opacity="0.35"/>
+      <stop offset="55%" stop-color="#2A5A49" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#091914" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#091914" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+  <rect width="520" height="420" fill="url(#meshBg)"/>
+  <g fill="#56742A" fill-opacity="0.28">
+    <circle cx="260" cy="70" r="3"/><circle cx="200" cy="100" r="2.4"/><circle cx="320" cy="98" r="2.4"/>
+    <circle cx="160" cy="180" r="2.2"/><circle cx="360" cy="175" r="2.2"/>
+    <circle cx="180" cy="280" r="2.2"/><circle cx="340" cy="275" r="2.2"/>
+    <circle cx="260" cy="340" r="2.8"/>
+  </g>
+  <g stroke="#418870" stroke-opacity="0.45" stroke-width="1.5" fill="none">
+    <path d="M200 100 C230 150 245 180 260 210"/>
+    <path d="M320 98 C290 150 275 180 260 210"/>
+    <path d="M160 180 C200 190 230 200 260 210"/>
+    <path d="M360 175 C320 190 290 200 260 210"/>
+    <path d="M260 210 L260 340"/>
+  </g>
+  <g filter="url(#soft)" transform="translate(260 210)">
+    <circle r="118" fill="url(#radarFill)"/>
+    <g stroke="#2A5A49" stroke-opacity="0.55" stroke-width="1.6" fill="none">
+      <ellipse rx="118" ry="90"/>
+      <ellipse rx="88" ry="67"/>
+      <ellipse rx="58" ry="44"/>
+      <ellipse rx="28" ry="21"/>
+      <line x1="0" y1="-90" x2="0" y2="90"/>
+      <line x1="-118" y1="0" x2="118" y2="0"/>
+      <line x1="-83" y1="-63" x2="83" y2="63"/>
+      <line x1="83" y1="-63" x2="-83" y2="63"/>
+    </g>
+    <!-- blips -->
+    <circle cx="-48" cy="-28" r="5" fill="#99EADA"/>
+    <circle cx="62" cy="-18" r="4.2" fill="#C8C28A"/>
+    <circle cx="40" cy="48" r="4.8" fill="#99EADA"/>
+    <circle cx="-70" cy="35" r="3.8" fill="#F7F2E4" fill-opacity="0.7"/>
+    <circle cx="0" cy="0" r="10" fill="#091914"/>
+    <circle cx="0" cy="0" r="5" fill="#99EADA"/>
+  </g>
+</svg>
