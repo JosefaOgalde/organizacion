@@ -96,6 +96,15 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         pares = self.explorar.asignar_campos_item(fields, item, "instrucciones")
         self.assertEqual(pares, [("texto", "#paso", "Mezclar el chimichurri.")])
 
+    def test_normalizar_dificultad_facil(self):
+        self.assertEqual(self.explorar.normalizar_dificultad_bm("fácil"), "Fácil")
+        self.assertEqual(self.explorar.normalizar_dificultad_bm("Fácil"), "Fácil")
+        self.assertEqual(self.explorar.normalizar_dificultad_bm("facil"), "Fácil")
+        self.assertEqual(
+            self.explorar.normalizar_dificultad_bm("absolutamente dificil"),
+            "Absolutamente difícil",
+        )
+
     def test_linea_ingrediente_completa(self):
         linea = self.explorar.linea_ingrediente(
             {"cantidad": "200", "unidad": "g", "nombre": "choclo"}

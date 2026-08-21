@@ -39,6 +39,26 @@ OUT_DIR = CRC / "out"
 W_NS = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
 
 
+def extraer_imagenes_docx(path: Path, dest_dir: Path) -> list[Path]:
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    guardadas: list[Path] = []
+    try:
+        with zipfile.ZipFile(path) as zf:
+            for i, name in enumerate(
+                [n for n in zf.namelist() if n.startswith("word/media/")],
+                1,
+            ):
+                ext = Path(name).suffix.lower() or ".bin"
+                if ext not in {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"}:
+                    continue
+                out = dest_dir / f"portada-{i}{ext}"
+                out.write_bytes(zf.read(name))
+                guardadas.append(out)
+    except Exception:
+        return []
+    return guardadas
+
+
 def texto_desde_docx(path: Path) -> str:
     with zipfile.ZipFile(path) as zf:
         xml = zf.read("word/document.xml")
@@ -494,6 +514,24 @@ def main() -> int:
 
     receta = construir_receta(texto, rel)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    if src.suffix.lower() == ".docx":
+        media_dir = OUT_DIR / "media" / receta["id"]
+        guardadas = extraer_imagenes_docx(src, media_dir)
+        if guardadas:
+            alt = ""
+            for im in receta.get("imagenes") or []:
+                if im.get("alt"):
+                    alt = im["alt"]
+                    break
+            receta["imagenes"] = [
+                {
+                    "rutaLocal": str(p.relative_to(ROOT)),
+                    "alt": alt,
+                    "rol": "portada" if i == 0 else "otra",
+                }
+                for i, p in enumerate(guardadas)
+            ]
+            print(f"imagenes: {len(guardadas)}")
 
     out = OUT_DIR / f"{receta['id']}.json"
     raw_out = OUT_DIR / f"{receta['id']}.raw.txt"

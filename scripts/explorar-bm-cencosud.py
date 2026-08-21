@@ -39,6 +39,7 @@ import json
 import os
 import re
 import sys
+import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -76,6 +77,7 @@ COMPONENTES_CMS = (
             "field_porciones",
             "field_dificultad",
             "field_tiempo",
+            "field_alt",
         ),
     },
     {
@@ -378,13 +380,13 @@ def listar_componentes_cms(page) -> list[dict]:
 
 
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
-    """Hace clic en el lápiz del componente. No requiere acción manual."""
-    if selector_guardado:
+    """Clic en el lápiz (icono del medio: basura · lápiz · historial). Nunca el basurero."""
+    if selector_guardado and not selector_es_generico(selector_guardado):
         try:
             loc = page.locator(selector_guardado).first
             if loc.count():
                 loc.click(timeout=5_000)
-                page.wait_for_timeout(600)
+                _esperar_editor(page)
                 return True
         except Exception:
             pass
@@ -392,73 +394,125 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     comp = next((c for c in COMPONENTES_CMS if c["clave"] == clave), None)
     if not comp:
         return False
-
     aliases = list(comp["aliases"])
-    clicked = page.evaluate(
-        """(aliases) => {
-      const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
-      const norm = (s) => clean(s).toLowerCase();
-      const wanted = aliases.map(norm);
-      const blocks = Array.from(
-        document.querySelectorAll('[data-component], [data-type], section, article, div, li')
-      );
-      for (const el of blocks) {
-        const dataName = clean(el.getAttribute('data-component') || el.getAttribute('data-type') || '');
-        const titleEl = el.querySelector(
-          '.bloque-nombre, [class*="title"], [class*="Title"], [class*="name"], h1, h2, h3, h4, h5, strong'
-        );
-        const titleText = clean(titleEl ? titleEl.innerText : '');
-        const hit = wanted.some((w) => norm(dataName) === w || norm(titleText) === w);
-        if (!hit) continue;
-        const editBtn = el.querySelector(
-          'button.btn-lapiz, button[aria-label*="Editar" i], button[aria-label*="edit" i], button[title*="Editar" i], button[title*="edit" i], [data-testid*="edit" i]'
-        );
-        if (editBtn) {
-          editBtn.click();
-          return true;
-        }
-        const acciones = el.querySelector('.acciones-bloque, [class*="action"], [class*="toolbar"], [class*="controls"]');
-        const firstBtn = (acciones || el).querySelector('button, [role="button"]');
-        if (firstBtn) {
-          firstBtn.click();
-          return true;
-        }
-      }
-      // Fallback: texto exacto del alias + botón Editar cercano
-      for (const alias of aliases) {
-        const nodes = Array.from(document.querySelectorAll('div, span, p, h1, h2, h3, h4, strong, label'));
-        const title = nodes.find((n) => norm(n.innerText) === norm(alias) && (n.innerText || '').length < 60);
-        if (!title) continue;
-        let cur = title;
-        for (let i = 0; i < 8 && cur; i++) {
-          const btn = cur.querySelector(
-            'button.btn-lapiz, button[aria-label*="Editar" i], button[aria-label*="edit" i], button[title*="Editar" i]'
-          ) || (cur.querySelector('.acciones-bloque, [class*="action"]') || cur).querySelector('button');
-          if (btn) {
-            btn.click();
-            return true;
-          }
-          cur = cur.parentElement;
-        }
-      }
-      return false;
-    }""",
-        aliases,
-    )
+
+    if _clic_lapiz_por_fila(page, aliases):
+        _esperar_editor(page)
+        return True
+
+    clicked = page.evaluate(JS_CLIC_LAPIZ, aliases)
     if clicked:
-        page.wait_for_timeout(700)
-    return bool(clicked)
+        _esperar_editor(page)
+        return True
+    return False
+
+
+def _esperar_editor(page) -> None:
+    try:
+        page.wait_for_timeout(800)
+        page.wait_for_selector("input:visible, textarea:visible, select:visible", timeout=4_000)
+    except Exception:
+        try:
+            page.wait_for_timeout(700)
+        except Exception:
+            pass
+
+
+def _clic_lapiz_por_fila(page, aliases: list[str]) -> bool:
+    get_by_text = getattr(page, "get_by_text", None)
+    if not get_by_text:
+        return False
+    for alias in aliases:
+        try:
+            titulo = get_by_text(alias, exact=True)
+            if hasattr(titulo, "count") and titulo.count() == 0:
+                continue
+            fila = titulo.locator("xpath=ancestor::*[count(.//button)>=2][1]")
+            edit = fila.locator(
+                "button[aria-label*='Editar' i], button[title*='Editar' i], "
+                "button[aria-label*='edit' i], button[title*='edit' i], "
+                "button[aria-label*='lápiz' i], button[aria-label*='lapiz' i]"
+            )
+            if edit.count():
+                edit.first.click(timeout=3_000)
+                return True
+            botones = fila.locator("button")
+            n = botones.count()
+            if n >= 3:
+                botones.nth(1).click(timeout=3_000)
+                return True
+            if n == 2:
+                botones.nth(1).click(timeout=3_000)
+                return True
+        except Exception:
+            continue
+    return False
+
+
+JS_CLIC_LAPIZ = """(aliases) => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const norm = (s) => clean(s).toLowerCase();
+  const wanted = aliases.map(norm);
+  const esIcono = (b) => {
+    const r = b.getBoundingClientRect();
+    const txt = clean(b.innerText || b.textContent || '');
+    return r.width > 0 && r.height > 0 && r.width <= 64 && txt.length <= 3;
+  };
+  const blobBtn = (b) => [
+    b.getAttribute('aria-label') || '',
+    b.getAttribute('title') || '',
+    b.getAttribute('data-testid') || '',
+    b.className || '',
+    b.innerHTML || '',
+  ].join(' ');
+  const esBasura = (b) => /trash|delete|eliminar|borrar|remove/i.test(blobBtn(b));
+  const esHistorial = (b) => /clock|history|historial|time|version/i.test(blobBtn(b));
+  const esLapiz = (b) => /edit|editar|pencil|lápiz|lapiz|create/i.test(blobBtn(b));
+
+  const nodos = Array.from(document.querySelectorAll('div, section, article, li, h2, h3, h4, h5, span, p, strong'));
+  for (const el of nodos) {
+    const linea = norm((el.innerText || '').split('\\n')[0]);
+    if (!wanted.some((w) => linea === w || linea.startsWith(w + ' '))) continue;
+    if ((el.innerText || '').length > 220) continue;
+    let cur = el;
+    for (let d = 0; d < 12 && cur; d++) {
+      const iconos = Array.from(cur.querySelectorAll('button, [role="button"]')).filter(esIcono);
+      if (iconos.length >= 2) {
+        const lapiz = iconos.find(esLapiz) && !esBasura(iconos.find(esLapiz)) ? iconos.find(esLapiz) : null;
+        const candidato = lapiz || iconos.filter((b) => !esBasura(b) && !esHistorial(b))[0] || (iconos.length >= 3 ? iconos[1] : null);
+        if (candidato && !esBasura(candidato)) {
+          candidato.click();
+          return true;
+        }
+      }
+      cur = cur.parentElement;
+    }
+  }
+  return false;
+}"""
 
 
 def cerrar_editor_componente(page) -> None:
-    """Intenta salir del editor del componente (Cerrar / Escape / Volver)."""
+    """Guarda el editor del lápiz y vuelve al lienzo (no Publicar)."""
+    for sel in (
+        "button:has-text('Guardar')",
+        "button:has-text('Aplicar')",
+        "button:has-text('Listo')",
+        "button:has-text('Done')",
+    ):
+        try:
+            loc = page.locator(sel).first
+            if loc.count() and loc.is_visible():
+                loc.click(timeout=2_500)
+                page.wait_for_timeout(500)
+                return
+        except Exception:
+            pass
     for sel in (
         "button:has-text('Cerrar')",
-        "button:has-text('Cancelar')",
         "button:has-text('Volver')",
         "button[aria-label*='Cerrar' i]",
         "button[aria-label*='Close' i]",
-        "[data-testid*='close' i]",
     ):
         try:
             loc = page.locator(sel).first
@@ -820,7 +874,165 @@ ETIQUETAS_CAMPO = {
     "field_tips": re.compile(r"tips?|consejos?", re.I),
     "field_meta_titulo": re.compile(r"meta\s*t[ií]tulo|seo title", re.I),
     "field_meta_descripcion": re.compile(r"meta\s*descripci[oó]n|seo desc", re.I),
+    "field_alt": re.compile(r"texto alt|alt\s*text|alternativa|atributo alt", re.I),
 }
+DIFICULTAD_BM = {
+    "muy facil": "Muy Fácil",
+    "muy fácil": "Muy Fácil",
+    "facil": "Fácil",
+    "fácil": "Fácil",
+    "moderado": "Moderado",
+    "media": "Moderado",
+    "medio": "Moderado",
+    "intermedio": "Intermedio",
+    "dificil": "Difícil",
+    "difícil": "Difícil",
+    "muy dificil": "Muy Difícil",
+    "muy difícil": "Muy Difícil",
+    "absurdamente dificil": "Absolutamente difícil",
+    "absolutamente dificil": "Absolutamente difícil",
+    "absolutamente difícil": "Absolutamente difícil",
+}
+
+
+def normalizar_dificultad_bm(valor: str | None) -> str | None:
+    if valor is None or str(valor).strip() == "":
+        return None
+    crudo = str(valor).strip()
+    clave = crudo.lower()
+    clave = (
+        clave.replace("á", "a")
+        .replace("é", "e")
+        .replace("í", "i")
+        .replace("ó", "o")
+        .replace("ú", "u")
+    )
+    for k, etiqueta in DIFICULTAD_BM.items():
+        k_norm = (
+            k.replace("á", "a")
+            .replace("é", "e")
+            .replace("í", "i")
+            .replace("ó", "o")
+            .replace("ú", "u")
+        )
+        if clave == k_norm:
+            return etiqueta
+    return crudo
+
+
+def elegir_dificultad(page, valor: str | None) -> bool:
+    etiqueta = normalizar_dificultad_bm(valor)
+    if not etiqueta:
+        return False
+    try:
+        loc = page.locator("select").first
+        if loc.count():
+            try:
+                loc.select_option(label=etiqueta)
+            except Exception:
+                loc.select_option(value=etiqueta)
+            print(f"  ✓ field_dificultad → {etiqueta}")
+            return True
+    except Exception:
+        pass
+    try:
+        fields = dump_estructura(page).get("fields") or []
+    except Exception:
+        fields = []
+    for field in fields:
+        if not re.search(r"dificultad|nivel", blob_campo(field), re.I):
+            continue
+        sel = field.get("selectorSugerido")
+        if sel and _fill_locator(page, sel, etiqueta):
+            return True
+    try:
+        combo = page.get_by_text("Dificultad", exact=False).first
+        combo.click(timeout=3_000)
+        page.wait_for_timeout(250)
+        opcion = page.get_by_text(etiqueta, exact=True).last
+        opcion.click(timeout=3_000)
+        print(f"  ✓ field_dificultad → {etiqueta}")
+        return True
+    except Exception:
+        try:
+            page.locator(f"text={etiqueta}").last.click(timeout=2_000)
+            print(f"  ✓ field_dificultad → {etiqueta}")
+            return True
+        except Exception:
+            return False
+
+
+def alt_portada(receta: dict) -> str | None:
+    for im in receta.get("imagenes") or []:
+        alt = (im.get("alt") or "").strip()
+        if alt:
+            return alt
+    return None
+
+
+def ruta_imagen_portada(receta: dict) -> Path | None:
+    for im in receta.get("imagenes") or []:
+        raw = im.get("rutaLocal") or ""
+        if not raw:
+            continue
+        p = Path(raw)
+        if not p.is_absolute():
+            p = ROOT / p
+        if p.exists():
+            return p
+    out = CRC / "out"
+    if out.is_dir():
+        for pat in ("*.jpg", "*.jpeg", "*.png", "*.webp"):
+            hits = sorted(out.glob(pat))
+            if hits:
+                return hits[0]
+    fuente = receta.get("fuenteWord") or ""
+    if fuente.lower().endswith(".docx"):
+        p = Path(fuente)
+        if not p.is_absolute():
+            p = ROOT / p
+        if p.exists():
+            dest = CRC / "out" / "media"
+            guardadas = extraer_imagenes_docx(p, dest)
+            if guardadas:
+                return guardadas[0]
+    return None
+
+
+def extraer_imagenes_docx(path: Path, dest_dir: Path) -> list[Path]:
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    guardadas: list[Path] = []
+    try:
+        with zipfile.ZipFile(path) as zf:
+            medias = [n for n in zf.namelist() if n.startswith("word/media/")]
+            for i, name in enumerate(medias, 1):
+                ext = Path(name).suffix.lower() or ".bin"
+                if ext not in {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"}:
+                    continue
+                out = dest_dir / f"portada-{i}{ext}"
+                out.write_bytes(zf.read(name))
+                guardadas.append(out)
+    except Exception:
+        return []
+    return guardadas
+
+
+def subir_imagen_portada(page, receta: dict) -> bool:
+    ruta = ruta_imagen_portada(receta)
+    if not ruta:
+        return False
+    try:
+        loc = page.locator("input[type='file']").first
+        if not loc.count():
+            return False
+        loc.set_input_files(str(ruta))
+        print(f"  ✓ imagen portada ({ruta.name})")
+        return True
+    except Exception as e:
+        print(f"  ✗ imagen portada: {e}")
+        return False
+
+
 BOTONES_AGREGAR = (
     "button:has-text('Agregar')",
     "button:has-text('Añadir')",
@@ -1065,6 +1277,11 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         if value is None or value == "":
             return False
         sel = selectores.get(key)
+        if key == "field_dificultad":
+            if elegir_dificultad(page, str(value)):
+                return True
+            print("  ✗ field_dificultad")
+            return False
         if selector_es_generico(sel):
             sel = None
         if sel and _fill_locator(page, sel, value):
@@ -1101,20 +1318,21 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         cerrar_editor_componente(page)
         return ok_keys
 
-    print("Rellenando desde JSON (lápices + acordeones, todos los campos del Word)…")
-    cabecera = fill_grupo(
-        "cabecera",
-        [
-            ("field_titulo", receta.get("titulo")),
-            ("field_descripcion", receta.get("descripcion")),
-            ("field_porciones", receta.get("porciones")),
-            ("field_dificultad", receta.get("dificultad")),
-            ("field_tiempo", receta.get("tiempoTotal")),
-            ("field_tiempo_prep", receta.get("tiempoPreparacion")),
-            ("field_tiempo_coccion", receta.get("tiempoCoccion")),
-            ("field_tips", "\n".join(receta.get("tips") or [])),
-        ],
-    )
+    print("Rellenando desde JSON (lápiz de cada bloque + acordeones)…")
+    abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"])
+    cabecera = {
+        "field_titulo": fill("field_titulo", receta.get("titulo")),
+        "field_descripcion": fill("field_descripcion", receta.get("descripcion")),
+        "field_porciones": fill("field_porciones", receta.get("porciones")),
+        "field_dificultad": fill("field_dificultad", receta.get("dificultad")),
+        "field_tiempo": fill("field_tiempo", receta.get("tiempoTotal")),
+        "field_tiempo_prep": fill("field_tiempo_prep", receta.get("tiempoPreparacion")),
+        "field_tiempo_coccion": fill("field_tiempo_coccion", receta.get("tiempoCoccion")),
+        "field_tips": fill("field_tips", "\n".join(receta.get("tips") or [])),
+        "field_alt": fill("field_alt", alt_portada(receta)),
+    }
+    subir_imagen_portada(page, receta)
+    cerrar_editor_componente(page)
     resultados["titulo"] = cabecera.get("field_titulo", False)
     resultados["descripcion"] = cabecera.get("field_descripcion", False)
 
