@@ -831,7 +831,7 @@ class JsIngredienteExactoTests(unittest.TestCase):
             page = browser.new_page()
             page.goto(html.as_uri())
             n = page.evaluate(self.explorar.JS_CONTAR_INGREDIENTES_INTERNOS)
-            self.assertEqual(n, 3)
+            self.assertEqual(n, 3, "wrappers «Ingrediente Dale un valor» no deben contar")
             for i, texto in enumerate(lineas):
                 out = page.evaluate(
                     self.explorar.JS_FOCO_INGREDIENTE,
