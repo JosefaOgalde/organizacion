@@ -924,6 +924,27 @@ class ExplorarBmTests(unittest.TestCase):
 
         self.assertFalse(self.modulo._locator_es_link(LocTag()))
 
+    def test_escribe_tag_entre_tag_y_link(self):
+        self.assertIn("crcBandaTag", self.modulo.JS_FOCO_CAJA_TAG)
+        self.assertIn("crcInputEnBanda", self.modulo.JS_LEER_CAJA_TAG)
+        self.assertIn("buscado", self.modulo.JS_LINK_TIENE_TEXTO)
+
+        class Pagina:
+            def evaluate(self, script, arg=None):
+                texto = str(script)
+                if "buscado" in texto:
+                    return False
+                if "crcSetReact" in texto and isinstance(arg, dict):
+                    return {"ok": True, "wrote": arg.get("valor"), "tag": "input"}
+                if "crcInputEnBanda" in texto:
+                    return {"ok": True, "value": "salmon"}
+                return {"ok": False, "value": ""}
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        self.assertTrue(self.modulo.escribir_tag_entre_labels(Pagina(), 0, "salmon"))
+
     def test_editor_por_campos_detecta_cabecera(self):
         class Pagina:
             def evaluate(self, script, *_args):

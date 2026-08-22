@@ -3078,7 +3078,10 @@ JS_MARCAR_CAMPOS_TAG = """() => {
         .filter((el) => el.getBoundingClientRect().top >= labR.top - 8)
         .filter((el) => {
           const r = el.getBoundingClientRect();
-          return r.top - labR.bottom < 90 && Math.abs(r.left - labR.left) < 80;
+          const links = [...document.querySelectorAll('label, p, span, strong')].filter(esLabelLink);
+          const nextLink = links.find((l) => l.getBoundingClientRect().top > labR.bottom - 2);
+          const limite = nextLink ? nextLink.getBoundingClientRect().top : labR.bottom + 90;
+          return r.top - labR.bottom < 90 && r.bottom <= limite + 4 && Math.abs(r.left - labR.left) < 120;
         });
       if (cand.length) input = cand[0];
       node = node.parentElement;
@@ -3149,6 +3152,50 @@ JS_CONTAR_ITEMS_FORMULARIO = """() => {
     if (m && linea.length < 40) nums.add(m[1]);
   }
   return nums.size;
+}"""
+
+JS_CRC_LABELS_TAG_LINK = """function crcLabelsTagLink() {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const lineaDe = (el) => clean((el.innerText || el.textContent || '')).split(/El (dato|valor)/i)[0].replace(/\\*/g, ' ').trim();
+  const esCorto = (el, re) => {
+    const linea = lineaDe(el);
+    return re.test(linea) && linea.length < 14;
+  };
+  const uniq = (els) => {
+    const seen = [];
+    for (const el of els) {
+      const r = el.getBoundingClientRect();
+      if (r.width < 4 || r.height < 4 || r.left < 200) continue;
+      if (seen.some((o) => Math.abs(o.getBoundingClientRect().top - r.top) < 6 && Math.abs(o.getBoundingClientRect().left - r.left) < 6)) continue;
+      seen.push(el);
+    }
+    return seen.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  };
+  const tags = uniq([...document.querySelectorAll('label, legend, p, span, strong, div')].filter((el) => esCorto(el, /^Tag$/i)));
+  const links = uniq([...document.querySelectorAll('label, legend, p, span, strong, div')].filter((el) => esCorto(el, /^Link$|^Enlace$|^URL$/i)));
+  return { tags, links };
+}
+function crcBandaTag(indice) {
+  const { tags, links } = crcLabelsTagLink();
+  const lab = tags[indice];
+  if (!lab) return null;
+  const labR = lab.getBoundingClientRect();
+  const link = links.find((l) => l.getBoundingClientRect().top > labR.bottom - 2);
+  const linkTop = link ? link.getBoundingClientRect().top : labR.bottom + 52;
+  return { lab, labR, link, top: labR.bottom + 4, bottom: linkTop - 2, left: labR.left };
+}
+function crcInputEnBanda(banda) {
+  if (!banda) return null;
+  const els = [...document.querySelectorAll('input, textarea, [role="textbox"], [contenteditable="true"]')];
+  const hits = els.filter((el) => {
+    const r = el.getBoundingClientRect();
+    const tipo = (el.type || 'text').toLowerCase();
+    if (['hidden', 'checkbox', 'radio', 'file', 'url', 'submit', 'button'].includes(tipo)) return false;
+    if (r.left < 200 || r.width < 8 || r.height < 8) return false;
+    return r.top >= banda.labR.top && r.bottom <= banda.bottom + 8;
+  });
+  hits.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  return hits[0] || null;
 }"""
 
 
@@ -3249,6 +3296,68 @@ JS_CRC_SET_REACT = """function crcSetReact(el, v) {
   el.dispatchEvent(new Event('change', { bubbles: true }));
   return String(el.value != null ? el.value : (el.textContent || ''));
 }"""
+
+JS_FOCO_CAJA_TAG = (
+    "(args) => {\n"
+    + JS_CRC_SET_REACT
+    + "\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  const indice = args.indice;
+  const valor = args.valor == null ? '' : String(args.valor);
+  const banda = crcBandaTag(indice);
+  if (!banda) return { ok: false, reason: 'sin-label-tag' };
+  const x = banda.left + 90;
+  const y = Math.max(banda.top + 10, Math.min((banda.top + banda.bottom) / 2, banda.bottom - 6));
+  let el = crcInputEnBanda(banda);
+  if (!el) {
+    try { el = document.elementFromPoint(x, y); } catch (e) { el = null; }
+  }
+  if (!el) return { ok: false, reason: 'sin-caja', x, y };
+  try { el.click(); } catch (e) {}
+  try { el.focus(); } catch (e) {}
+  let wrote = '';
+  const tag = (el.tagName || '').toLowerCase();
+  if (valor && (tag === 'input' || tag === 'textarea' || (el.getAttribute && el.getAttribute('role') === 'textbox'))) {
+    wrote = crcSetReact(el, valor);
+  }
+  return { ok: true, tag, wrote, x, y };
+}"""
+)
+
+JS_LEER_CAJA_TAG = (
+    "(indice) => {\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  const banda = crcBandaTag(indice);
+  const el = crcInputEnBanda(banda);
+  if (!el) return { ok: false, value: '' };
+  return { ok: true, value: String(el.value || el.textContent || '') };
+}"""
+)
+
+JS_LINK_TIENE_TEXTO = (
+    "(texto) => {\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  const buscado = String(texto || '').trim().toLowerCase();
+  if (!buscado) return false;
+  const { links } = crcLabelsTagLink();
+  for (const lab of links) {
+    const labR = lab.getBoundingClientRect();
+    let node = lab;
+    for (let i = 0; i < 5 && node; i++) {
+      const hit = Array.from(node.querySelectorAll('input, textarea')).find((el) => {
+        const r = el.getBoundingClientRect();
+        return r.top >= labR.top - 4 && r.top - labR.bottom < 80;
+      });
+      if (hit && String(hit.value || '').trim().toLowerCase() === buscado) return true;
+      node = node.parentElement;
+    }
+  }
+  return false;
+}"""
+)
 
 JS_CRC_FIND_TITULO = """function crcFindTitulo() {
   const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
@@ -4019,6 +4128,50 @@ def asegurar_n_items_tags(page, n: int) -> int:
     return actuales
 
 
+def _tag_quedo_en_caja(fr, indice: int, valor: str) -> bool:
+    try:
+        leido = fr.evaluate(JS_LEER_CAJA_TAG, indice)
+    except Exception:
+        return False
+    if not (isinstance(leido, dict) and _valor_quedo(str(leido.get("value") or ""), valor)):
+        return False
+    try:
+        if fr.evaluate(JS_LINK_TIENE_TEXTO, valor):
+            return False
+    except Exception:
+        pass
+    return True
+
+
+def escribir_tag_entre_labels(page, indice: int, valor: str) -> bool:
+    """Clic en la caja entre «Tag *» y «Link» y teclea. No usa el input Link."""
+    if not valor:
+        return False
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_FOCO_CAJA_TAG, {"indice": indice, "valor": valor})
+        except Exception:
+            continue
+        if not isinstance(out, dict) or not out.get("ok"):
+            continue
+        kb = getattr(page, "keyboard", None)
+        try:
+            if kb is not None and hasattr(kb, "type"):
+                kb.press("Control+a")
+                kb.press("Backspace")
+                kb.type(str(valor), delay=16)
+            page.wait_for_timeout(180)
+        except Exception:
+            pass
+        if _tag_quedo_en_caja(fr, indice, valor):
+            return True
+        if _valor_quedo(str((out or {}).get("wrote") or ""), valor) and _tag_quedo_en_caja(
+            fr, indice, valor
+        ):
+            return True
+    return False
+
+
 def rellenar_items_formulario(page, valores: list[str]) -> int:
     """Rellena Formulario Ítem 1..N, campo Tag* (nunca Link)."""
     valores = [v for v in valores if v]
@@ -4027,28 +4180,31 @@ def rellenar_items_formulario(page, valores: list[str]) -> int:
     asegurar_n_items_tags(page, len(valores))
     fr, marcados = _marcar_items_formulario(page)
     contexto = fr or page
+    print(f"  · Cajas Tag* detectadas: {marcados}")
     llenados = 0
     for i, valor in enumerate(valores):
-        ok = False
-        try:
-            loc = contexto.locator(f'[data-crc-tag-hit="{i}"]')
-            if not (hasattr(loc, "count") and loc.count()):
-                loc = contexto.locator(f'[data-crc-item-hit="{i}"]')
-            item = loc.first if hasattr(loc, "first") else loc
-            if hasattr(loc, "count") and loc.count():
-                if _locator_es_link(item):
-                    ok = False
-                elif escribir_valor(page, item, valor):
-                    ok = True
-                elif _tipear_teclado(page, item, valor):
-                    ok = True
-        except Exception:
-            ok = False
+        ok = escribir_tag_entre_labels(page, i, valor)
+        if not ok:
+            try:
+                loc = contexto.locator(f'[data-crc-tag-hit="{i}"]')
+                if not (hasattr(loc, "count") and loc.count()):
+                    loc = contexto.locator(f'[data-crc-item-hit="{i}"]')
+                item = loc.first if hasattr(loc, "first") else loc
+                if hasattr(loc, "count") and loc.count() and not _locator_es_link(item):
+                    if escribir_valor(page, item, valor) or _tipear_teclado(page, item, valor):
+                        ok = True
+                        for frame in _frames_pagina(page):
+                            if frame.evaluate(JS_LINK_TIENE_TEXTO, valor):
+                                ok = False
+                                limpiar_links_que_no_son_url(page)
+                                break
+            except Exception:
+                ok = False
         if ok:
             print(f"  ✓ tag[{i}] → {valor}")
             llenados += 1
         else:
-            print(f"  ✗ tag[{i}]")
+            print(f"  ✗ tag[{i}] (no pude escribir en Tag*)")
     return llenados
 
 
