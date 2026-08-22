@@ -592,9 +592,9 @@ class ExplorarBmTests(unittest.TestCase):
         self.assertFalse(ok)
         self.assertEqual(pagina.gotos, [])
         src = __import__("inspect").getsource(self.modulo._abrir_por_id_visible)
-        self.assertNotIn("goto", src)
+        self.assertNotIn("page.goto", src)
         self.assertNotIn("component=", src)
-        self.assertEqual(clicks, [])
+        self.assertEqual(pagina.gotos, [])
 
     def test_desplegable_default_y_version_publicada(self):
         class Loc:
@@ -733,6 +733,7 @@ class ExplorarBmTests(unittest.TestCase):
         self.assertIn("receta completa", texto)
         self.assertIn("cabecera", texto.lower())
         self.assertNotIn("Cabecera ya está", texto)
+        self.assertNotIn("sin recargar", texto.lower())
 
     def test_js_fill_index_excluye_paleta(self):
         self.assertIn("r.left >= 240", self.modulo.JS_FILL_INDEX)

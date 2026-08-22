@@ -177,7 +177,7 @@ def esperar_ficha_en_lienzo(page, *, headed: bool = True) -> str:
     """Tras ENTER: si Chromium está en Proyectos o el Gestor vacío, pedir la receta."""
     url_ficha = url_actual(page)
     if en_vista_default_cms(page):
-        print("  · Vista default con los bloques. Me quedo aquí (no recargo).")
+        print("  · Default con los 5 bloques. Empiezo a completar Cabecera.")
         return url_ficha
     if not es_lista_proyectos_cms(url_ficha) and not gestor_sin_ficha(url_ficha):
         return url_ficha
@@ -735,6 +735,70 @@ def _clic_svg_bloque_vacio(page, index: int) -> bool:
         return False
 
 
+def _clic_titulo_bloque(page, aliases: list[str]) -> bool:
+    """Clic en el título del bloque en el lienzo (Cabecera, tags…), no en la paleta."""
+    get_by_text = getattr(page, "get_by_text", None)
+    if not get_by_text:
+        return False
+    y_min = _y_bajo_barra_vistas(page)
+    for alias in aliases:
+        try:
+            loc = get_by_text(alias, exact=True)
+            n = loc.count() if hasattr(loc, "count") else 0
+        except Exception:
+            continue
+        for i in range(n):
+            item = loc.nth(i)
+            box = _bounding_box(item)
+            if box is None or float(box.get("x") or 0) < 220:
+                continue
+            if float(box.get("y") or 0) < y_min:
+                continue
+            try:
+                item.click(timeout=3_000)
+                return True
+            except Exception:
+                continue
+    return False
+
+
+def _clic_placeholder_texto(page, index: int) -> bool:
+    """Clic en el texto vacío del N-ésimo bloque para abrir el editor."""
+    get_by_text = getattr(page, "get_by_text", None)
+    if not get_by_text:
+        return False
+    try:
+        try:
+            hints = get_by_text("Edita este componente vacío desde el lápiz", exact=False)
+        except TypeError:
+            hints = get_by_text("Edita este componente vacío desde el lápiz")
+        n = hints.count() if hasattr(hints, "count") else 0
+    except Exception:
+        return False
+    cards: list[tuple[float, object]] = []
+    for i in range(n):
+        item = hints.nth(i)
+        box = _bounding_box(item)
+        if box is None or float(box.get("x") or 0) < 80:
+            continue
+        cards.append((float(box["y"]), item))
+    cards.sort(key=lambda p: p[0])
+    uniq: list[object] = []
+    ys: list[float] = []
+    for y, item in cards:
+        if any(abs(y - uy) < 16 for uy in ys):
+            continue
+        ys.append(y)
+        uniq.append(item)
+    if index < 0 or index >= len(uniq):
+        return False
+    try:
+        uniq[index].click(timeout=3_000)
+        return True
+    except Exception:
+        return False
+
+
 def _contar_placeholder_vacio(page) -> int:
     get_by_text = getattr(page, "get_by_text", None)
     if not get_by_text:
@@ -826,11 +890,16 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     ids = recoger_ids_componentes(page)
     if ids:
         print("  · IDs lienzo: " + " ".join(f"{k}={v}" for k, v in ids.items()))
+    print(f"  · Completando «{clave}»: abro el lápiz y escribo los campos…")
     if avisar_si_salio_de_default(page):
         return False
     if intentar(_clic_editar_indice(page, idx)):
         return True
     if intentar(_clic_svg_bloque_vacio(page, idx)):
+        return True
+    if intentar(_clic_titulo_bloque(page, aliases)):
+        return True
+    if intentar(_clic_placeholder_texto(page, idx)):
         return True
     comp_id = ids.get(clave)
     if comp_id and _abrir_por_id_visible(page, clave, comp_id):
@@ -1083,7 +1152,7 @@ JS_CLIC_LAPIZ = """(payload) => {
   };
 
   const hints = [];
-  for (const el of Array.from(document.querySelectorAll('*'))) {
+  for (const el of Array.from(document.querySelectorAll('div, section, article, span, p, li'))) {
     const own = textoDe(el);
     if (!/Edita este componente vac/i.test(own)) continue;
     if (own.length > 420) continue;
@@ -1443,10 +1512,9 @@ JS_CLIC_BLOQUE_ID = """(compId) => {
 
 
 def _abrir_por_id_visible(page, clave: str, comp_id: str) -> bool:
-    """Clic en el bloque del lienzo (id a3e7ad…). Nunca recarga ni toca default."""
+    """Clic en el id del bloque y su lápiz. No navega: eso saca default."""
     if not comp_id:
         return False
-    print(f"  · Clic en bloque «{clave}» id={comp_id} (sin recargar)")
     y_min = _y_bajo_barra_vistas(page)
     get_by_text = getattr(page, "get_by_text", None)
     if get_by_text:
@@ -1460,6 +1528,12 @@ def _abrir_por_id_visible(page, clave: str, comp_id: str) -> bool:
             box = _bounding_box(item)
             if box is None or float(box.get("x") or 0) < 80:
                 continue
+            try:
+                item.click(timeout=2_500)
+                if _editor_confirmado(page, clave):
+                    return True
+            except Exception:
+                pass
             try:
                 edit = item.locator(
                     "xpath=ancestor::*[contains(., 'Editar')][1]"
@@ -1477,9 +1551,6 @@ def _abrir_por_id_visible(page, clave: str, comp_id: str) -> bool:
                             return True
             except Exception:
                 continue
-    clicked = _eval_en_frames(page, JS_CLIC_BLOQUE_ID, comp_id)
-    if resultado_clic_lapiz_ok(clicked) and _editor_confirmado(page, clave):
-        return True
     return False
 
 
@@ -3491,7 +3562,7 @@ def fill_from_receta(
         return False
     if gestor_sin_ficha(url_ficha) or en_vista_default_cms(page):
         print(
-            "  · Me quedo en la vista default (no recargo ni toco el desplegable)."
+            "  · Completando los 5 bloques (Cabecera → tags → ingredientes → pasos → SEO)."
         )
 
     def fill(key: str, value: str | None) -> bool:
