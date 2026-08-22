@@ -524,6 +524,7 @@ def listar_componentes_cms(page) -> list[dict]:
 
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
     """Clic en el lápiz del lienzo (icono del medio). Nunca paleta ni basurero."""
+    limpiar_busca_paleta(page)
     resolver_modal_cambios(page)
     if selector_guardado and not selector_es_generico(selector_guardado):
         try:
@@ -583,12 +584,11 @@ def _clic_lapiz_por_fila(page, aliases: list[str]) -> bool:
                 continue
             for i in range(n_tit):
                 item = titulo.nth(i) if hasattr(titulo, "nth") else titulo
-                if not caja_en_lienzo(_bounding_box(item)):
-                    # Sin box (tests) solo usamos el primer match.
-                    if _bounding_box(item) is None and i > 0:
-                        continue
-                    if _bounding_box(item) is not None:
-                        continue
+                box = _bounding_box(item)
+                if box is None:
+                    continue
+                if not caja_en_lienzo(box):
+                    continue
                 fila = item.locator(
                     "xpath=ancestor::*[count(.//button)>=2 and count(.//button)<=6][1]"
                 )
@@ -820,22 +820,105 @@ def sigue_dato_requerido(page) -> bool:
     return isinstance(t, str) and "el dato es requerido" in t.lower()
 
 
+def url_tiene_vista_receta(url: str | None) -> bool:
+    """True si la URL es la ficha de UNA receta (/view-manager/view/…), no el Gestor vacío."""
+    return bool(url and re.search(r"view-manager/view/", url))
+
+
+def _limpiar_url_editor(url: str) -> str:
+    limpio = re.sub(r"#.*$", "", url)
+    limpio = re.sub(
+        r"/(?:edit|edicion|edici[oó]n)(?:/.*)?$",
+        "",
+        limpio,
+        flags=re.I,
+    )
+    return limpio.rstrip("/")
+
+
 def url_lienzo_receta(url: str | None, url_ficha: str | None = None) -> str | None:
-    """URL del Gestor (5 bloques), nunca la lista de Proyectos."""
-    for raw in (url_ficha, url):
+    """URL de la misma receta (conserva /view/id). Nunca baja a /view-manager pelado."""
+    candidatos: list[str] = []
+    for raw in (url, url_ficha):
         if not raw or es_lista_proyectos_cms(raw):
             continue
         if "view-manager" not in raw:
             continue
-        limpio = re.sub(r"#.*$", "", raw)
-        limpio = re.sub(
-            r"/(?:edit|edicion|edici[oó]n|component)(?:/.*)?$",
-            "",
-            limpio,
-            flags=re.I,
-        )
-        return limpio.rstrip("/")
-    return None
+        candidatos.append(_limpiar_url_editor(raw))
+    for c in candidatos:
+        if url_tiene_vista_receta(c):
+            return c
+    return candidatos[0] if candidatos else None
+
+
+def lienzo_con_bloques_cms(page) -> bool:
+    """True si se ven los bloques del Gestor (Cabecera + tags), no un formulario plano."""
+    try:
+        t = page.evaluate("() => (document.body && document.body.innerText) || ''")
+    except Exception:
+        return False
+    if not isinstance(t, str):
+        return False
+    return bool(
+        re.search(r"cabecera", t, re.I)
+        and re.search(r"\btags\b", t, re.I)
+        and editor_actual(page) is None
+    )
+
+
+JS_BLOQUE_VACIO = """(aliases) => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const wanted = (aliases || []).map((s) => clean(s).toLowerCase());
+  const nodos = [...document.querySelectorAll('div, section, article, li, h2, h3, h4')];
+  for (const el of nodos) {
+    const r = el.getBoundingClientRect();
+    if (r.left < 240 || r.width < 80) continue;
+    const crudo = clean(el.innerText || '');
+    const linea = crudo.split('\\n')[0].toLowerCase();
+    if (!wanted.some((w) => linea === w || linea.startsWith(w + ' '))) continue;
+    if (crudo.length > 400) continue;
+    return /edita este componente vac[ií]o/i.test(crudo);
+  }
+  return null;
+}"""
+
+
+def bloque_componente_vacio(page, aliases: list[str]) -> bool | None:
+    """True = bloque vacío; False = ya tiene contenido; None = no lo vi."""
+    try:
+        return page.evaluate(JS_BLOQUE_VACIO, list(aliases))
+    except Exception:
+        return None
+
+
+JS_LIMPIAR_BUSCA_PALETA = """() => {
+  const inputs = [...document.querySelectorAll('input')].filter((el) => {
+    const r = el.getBoundingClientRect();
+    return r.left < 240 && r.width > 40 && r.height > 10;
+  });
+  let n = 0;
+  for (const el of inputs) {
+    if (!el.value) continue;
+    const proto = HTMLInputElement.prototype;
+    const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+    if (desc && desc.set) desc.set.call(el, '');
+    else el.value = '';
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    n += 1;
+  }
+  return n;
+}"""
+
+
+def limpiar_busca_paleta(page) -> None:
+    try:
+        n = page.evaluate(JS_LIMPIAR_BUSCA_PALETA)
+        if n:
+            print("  · Limpié la búsqueda de la paleta (no escribir ahí).")
+            page.wait_for_timeout(250)
+    except Exception:
+        pass
 
 
 def esperar_lienzo_bloques(page, intentos: int = 12) -> bool:
@@ -873,7 +956,12 @@ def volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
         print("  · Volví al lienzo (5 bloques)")
         esperar_lienzo_bloques(page)
         return True
-    destino = url_lienzo_receta(url_actual(page), url_ficha)
+    actual = url_actual(page)
+    destino = url_lienzo_receta(actual, url_ficha)
+    if url_tiene_vista_receta(actual) and destino and not url_tiene_vista_receta(destino):
+        destino = url_lienzo_receta(actual, None)
+    if url_tiene_vista_receta(actual) and destino and not url_tiene_vista_receta(destino):
+        destino = None
     if destino and hasattr(page, "goto"):
         try:
             print("  · Vuelvo al Gestor de la receta…")
@@ -2015,7 +2103,7 @@ JS_MARCAR_POR_LABEL = """(args) => {
     const st = getComputedStyle(el);
     if (st.display === 'none' || st.visibility === 'hidden') return false;
     const r = el.getBoundingClientRect();
-    return r.width > 0 && r.height > 0;
+    return r.width > 0 && r.height > 0 && r.left >= 240;
   };
   const esControl = (el) => {
     if (!el || !visibles(el)) return false;
@@ -2220,7 +2308,7 @@ JS_MARCAR_INPUTS_ITEM = """() => {
     const st = getComputedStyle(el);
     if (st.display === 'none' || st.visibility === 'hidden') return false;
     const r = el.getBoundingClientRect();
-    return r.width > 0 && r.height > 0;
+    return r.width > 0 && r.height > 0 && r.left >= 240;
   };
   const esControl = (el) => {
     if (!el || !visibles(el)) return false;
@@ -2691,6 +2779,9 @@ def fill_from_receta(
             print(f"  · Estoy en Edición de {actual}, no en {clave_comp}. No relleno aquí.")
             return False
         if not abierto and actual is None:
+            if lienzo_con_bloques_cms(page):
+                print(f"  · Sin lápiz para {clave_comp}; no relleno en el lienzo.")
+                return False
             if any(selectores.get(k) for k in keys_campo):
                 print(f"  · Sin lápiz para {clave_comp}; intento relleno en vista actual.")
                 return True
@@ -2716,7 +2807,15 @@ def fill_from_receta(
         return ok_keys
 
     print("Rellenando desde JSON (lápiz de cada bloque + acordeones)…")
-    if abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
+    cabecera_ya = (
+        editor_actual(page) is None
+        and bloque_componente_vacio(page, ["Cabecera", "cabecera", "Header"]) is False
+    )
+    if cabecera_ya:
+        print("  · Cabecera ya está en el lienzo; no la relleno de nuevo.")
+        resultados["titulo"] = True
+        resultados["descripcion"] = True
+    elif abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
         cabecera = {
             "field_titulo": fill("field_titulo", receta.get("titulo")),
             "field_descripcion": fill("field_descripcion", receta.get("descripcion")),
@@ -2760,7 +2859,7 @@ def fill_from_receta(
         if n_ing:
             resultados["ingredientes"] = True
             print(f"  ✓ ingredientes: {n_ing}/{len(ings)} ítems de acordeón")
-        elif editor_actual(page) is None:
+        elif editor_actual(page) is None and not lienzo_con_bloques_cms(page):
             resultados["ingredientes"] = fill(
                 "field_ingredientes",
                 "\n".join(linea_ingrediente(i) for i in ings if linea_ingrediente(i)),

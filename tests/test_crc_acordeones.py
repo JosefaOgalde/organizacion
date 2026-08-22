@@ -385,6 +385,22 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             )
         )
 
+    def test_url_lienzo_conserva_view_de_la_receta(self):
+        vista = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager/view/salmon123"
+        )
+        corta = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager"
+        )
+        self.assertTrue(self.explorar.url_tiene_vista_receta(vista))
+        self.assertFalse(self.explorar.url_tiene_vista_receta(corta))
+        self.assertEqual(
+            self.explorar.url_lienzo_receta(vista + "/edit", corta),
+            vista,
+        )
+
     def test_volver_al_lienzo_tras_guardado(self):
         ficha = (
             "https://business-manager.ecomm.cencosud.com/cms/projects/"
@@ -433,6 +449,11 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertTrue(self.explorar.volver_al_lienzo(pagina, ficha))
         self.assertEqual(pagina.gotos, [ficha])
         self.assertIsNone(self.explorar.editor_actual(pagina))
+
+    def test_js_no_rellena_paleta_izquierda(self):
+        self.assertIn("r.left >= 240", self.explorar.JS_MARCAR_POR_LABEL)
+        self.assertIn("r.left < 240", self.explorar.JS_LIMPIAR_BUSCA_PALETA)
+        self.assertIn("view-manager/view/", self.explorar.url_tiene_vista_receta.__doc__ or "view-manager/view/")
 
     def test_js_volver_no_clica_proyectos(self):
         js = self.explorar.JS_VOLVER_AL_LIENZO
