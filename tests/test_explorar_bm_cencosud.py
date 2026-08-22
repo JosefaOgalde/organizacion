@@ -474,9 +474,16 @@ class ExplorarBmTests(unittest.TestCase):
         self.assertIn("paleta", js.lower())
         self.assertIn("left < 240", js)
         self.assertIn("Edita este componente", js)
-        self.assertIn("primerLapiz", js)
+        self.assertIn("elementFromPoint", js)
         self.assertNotIn("iconos[1]", js)
         self.assertNotRegex(js, r"esLapiz = \(b\) => /[^/]*create")
+
+    def test_resultado_clic_lapiz_ok(self):
+        self.assertTrue(self.modulo.resultado_clic_lapiz_ok(True))
+        self.assertTrue(self.modulo.resultado_clic_lapiz_ok({"ok": True}))
+        self.assertFalse(self.modulo.resultado_clic_lapiz_ok({"ok": False, "n": 5}))
+        self.assertFalse(self.modulo.resultado_clic_lapiz_ok([]))
+        self.assertFalse(self.modulo.resultado_clic_lapiz_ok(None))
 
     def test_clic_lapiz_por_fila_salta_paleta(self):
         runtime = RuntimeFalso()
@@ -485,6 +492,28 @@ class ExplorarBmTests(unittest.TestCase):
         pagina = PaginaTextos({"Cabecera": [paleta, lienzo]})
         self.assertTrue(self.modulo._clic_lapiz_por_fila(pagina, ["Cabecera"]))
         self.assertEqual(runtime.clicks, ["edit-lienzo-cabecera"])
+
+    def test_clic_lapiz_placeholder_usa_orden_vertical(self):
+        runtime = RuntimeFalso()
+        cab = NodoCms(runtime, "cab", {"x": 400, "y": 120, "width": 520, "height": 70}, 0)
+        tags = NodoCms(runtime, "tags", {"x": 400, "y": 220, "width": 520, "height": 70}, 0)
+
+        class Mouse:
+            def click(self, x, y):
+                runtime.clicks.append((round(x), round(y)))
+
+        class Pagina:
+            def __init__(self):
+                self.mouse = Mouse()
+
+            def get_by_text(self, _texto, exact=True):
+                return GrupoTextos([cab, tags])
+
+        self.assertTrue(self.modulo._clic_lapiz_placeholder(Pagina(), 0))
+        self.assertEqual(runtime.clicks, [(886, 140)])
+        runtime.clicks.clear()
+        self.assertTrue(self.modulo._clic_lapiz_placeholder(Pagina(), 1))
+        self.assertEqual(runtime.clicks, [(886, 240)])
 
 
 class NodoCms:

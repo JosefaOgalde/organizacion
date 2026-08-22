@@ -527,8 +527,39 @@ def listar_componentes_cms(page) -> list[dict]:
     )
 
 
+def resultado_clic_lapiz_ok(result) -> bool:
+    if result is True:
+        return True
+    return isinstance(result, dict) and bool(result.get("ok"))
+
+
+def _frames_pagina(page) -> list:
+    frames = [page]
+    try:
+        extra = list(getattr(page, "frames", None) or [])
+    except Exception:
+        extra = []
+    for fr in extra:
+        if fr is not None and fr not in frames:
+            frames.append(fr)
+    return frames
+
+
+def _eval_en_frames(page, script, arg=None):
+    ultimo = None
+    for fr in _frames_pagina(page):
+        try:
+            ultimo = fr.evaluate(script, arg) if arg is not None else fr.evaluate(script)
+        except Exception as e:
+            ultimo = {"ok": False, "error": str(e)}
+            continue
+        if resultado_clic_lapiz_ok(ultimo):
+            return ultimo
+    return ultimo
+
+
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
-    """Clic en el lápiz del lienzo (primer icono a la derecha). Nunca paleta ni basurero."""
+    """Clic en el lápiz del lienzo (icono derecho del bloque). Nunca paleta ni basurero."""
     limpiar_busca_paleta(page)
     resolver_modal_cambios(page)
     if selector_guardado and not selector_es_generico(selector_guardado):
@@ -543,13 +574,18 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     if not comp:
         return False
     aliases = list(comp["aliases"])
+    idx = next(i for i, c in enumerate(COMPONENTES_CMS) if c["clave"] == clave)
+    payload = {"aliases": aliases, "index": idx}
 
     if _clic_lapiz_por_fila(page, aliases):
         _esperar_editor(page)
         return True
+    if _clic_lapiz_placeholder(page, idx):
+        _esperar_editor(page)
+        return True
 
-    clicked = page.evaluate(JS_CLIC_LAPIZ, aliases)
-    if clicked:
+    clicked = _eval_en_frames(page, JS_CLIC_LAPIZ, payload)
+    if resultado_clic_lapiz_ok(clicked):
         _esperar_editor(page)
         return True
     try:
@@ -559,10 +595,22 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     if _clic_lapiz_por_fila(page, aliases):
         _esperar_editor(page)
         return True
-    clicked = page.evaluate(JS_CLIC_LAPIZ, aliases)
-    if clicked:
+    if _clic_lapiz_placeholder(page, idx):
         _esperar_editor(page)
         return True
+    clicked = _eval_en_frames(page, JS_CLIC_LAPIZ, payload)
+    if resultado_clic_lapiz_ok(clicked):
+        _esperar_editor(page)
+        return True
+    if isinstance(clicked, dict):
+        titulos = clicked.get("titulos") or []
+        print(
+            f"  · Bloques vistos: {clicked.get('n', 0)} {titulos}"
+            + (f" ({clicked.get('error')})" if clicked.get("error") else "")
+        )
+        if _clic_lapiz_por_punto(page, clicked):
+            _esperar_editor(page)
+            return True
     return False
 
 
@@ -595,7 +643,10 @@ def _clic_lapiz_por_fila(page, aliases: list[str]) -> bool:
                 if not caja_en_lienzo(box):
                     continue
                 fila = item.locator(
-                    "xpath=ancestor::*[count(.//button)>=2 and count(.//button)<=6][1]"
+                    "xpath=ancestor::*["
+                    "count(.//button)>=1 and count(.//button)<=8"
+                    " or count(.//svg)>=1"
+                    "][1]"
                 )
                 if hasattr(fila, "count") and fila.count() == 0:
                     continue
@@ -623,6 +674,68 @@ def _clic_lapiz_por_fila(page, aliases: list[str]) -> bool:
     return False
 
 
+def _clic_lapiz_placeholder(page, index: int) -> bool:
+    """Lápiz del N-ésimo bloque vacío («Edita este componente vacío»), de arriba a abajo."""
+    get_by_text = getattr(page, "get_by_text", None)
+    mouse = getattr(page, "mouse", None)
+    if not get_by_text or not mouse:
+        return False
+    cards: list[tuple[float, dict]] = []
+    for texto in (
+        "Edita este componente vacío desde el lápiz",
+        "Edita este componente vacío",
+    ):
+        try:
+            hints = get_by_text(texto)
+            n = hints.count() if hasattr(hints, "count") else 0
+        except Exception:
+            continue
+        for i in range(n):
+            item = hints.nth(i)
+            box = _bounding_box(item)
+            if box is None or not caja_en_lienzo(box):
+                continue
+            cards.append((float(box["y"]), box))
+        if cards:
+            break
+    if not cards:
+        return False
+    cards.sort(key=lambda p: p[0])
+    uniq: list[dict] = []
+    for _y, box in cards:
+        if any(abs(box["y"] - u["y"]) < 16 for u in uniq):
+            continue
+        uniq.append(box)
+    if index < 0 or index >= len(uniq):
+        return False
+    box = uniq[index]
+    x = float(box["x"]) + float(box["width"]) - 34
+    y = float(box["y"]) + min(20.0, float(box["height"]) / 3)
+    try:
+        mouse.click(x, y)
+        return True
+    except Exception:
+        return False
+
+
+def _clic_lapiz_por_punto(page, info: dict) -> bool:
+    mouse = getattr(page, "mouse", None)
+    if not mouse:
+        return False
+    try:
+        x = float(info.get("x") or 0)
+        y = float(info.get("y") or 0)
+    except (TypeError, ValueError):
+        return False
+    if x < LIENZO_MIN_X or y < 40:
+        return False
+    try:
+        mouse.click(x, y)
+        return True
+    except Exception:
+        return False
+
+
 def clic_locator_en_lienzo_desde(loc) -> bool:
     try:
         n = loc.count()
@@ -639,33 +752,20 @@ def clic_locator_en_lienzo_desde(loc) -> bool:
     return False
 
 
-JS_CLIC_LAPIZ = """(aliases) => {
+JS_CLIC_LAPIZ = """(payload) => {
   const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
   const norm = (s) => clean(s).toLowerCase();
   const textoDe = (el) => clean(el.innerText || el.textContent || '');
+  const aliases = Array.isArray(payload) ? payload : ((payload && payload.aliases) || []);
+  const index = Array.isArray(payload) ? -1 : Number(payload && payload.index);
   const wanted = aliases.map(norm);
-  const enChrome = (el) => {
-    const r0 = el.getBoundingClientRect();
-    if (r0.left >= 240 && r0.top > 64) return false;
-    let n = el;
-    while (n && n !== document.body) {
-      const tag = (n.tagName || '').toLowerCase();
-      const cls = String(n.className || '');
-      const role = (n.getAttribute && n.getAttribute('role')) || '';
-      const lab = (n.getAttribute && (n.getAttribute('aria-label') || '')) || '';
-      if (tag === 'nav' || tag === 'header' || tag === 'aside') return true;
-      if (/breadcrumb|sidebar|drawer|palette|paleta/i.test(cls + ' ' + role + ' ' + lab)) return true;
-      n = n.parentElement;
-    }
-    return false;
-  };
   const enPaleta = (el) => {
     const r0 = el.getBoundingClientRect();
     if (r0.left < 240) return true;
     let n = el;
     while (n && n !== document.body) {
       const lab = (n.getAttribute && (n.getAttribute('aria-label') || '')) || '';
-      const t = textoDe(n).slice(0, 60);
+      const t = textoDe(n).slice(0, 80);
       if (/paleta de componentes/i.test(lab) || /^paleta de componentes/i.test(t)) {
         const r = n.getBoundingClientRect();
         if (r.left < 280 && r.width < 480) return true;
@@ -674,84 +774,87 @@ JS_CLIC_LAPIZ = """(aliases) => {
     }
     return false;
   };
-  const esIcono = (b) => {
-    const r = b.getBoundingClientRect();
-    const txt = textoDe(b);
-    return r.width > 0 && r.height > 0 && r.width <= 64 && r.height <= 64 && txt.length <= 3;
-  };
   const blobBtn = (b) => [
     b.getAttribute('aria-label') || '',
     b.getAttribute('title') || '',
     b.getAttribute('data-testid') || '',
-    b.className || '',
+    String(b.className || ''),
     b.innerHTML || '',
   ].join(' ');
   const esBasura = (b) => /trash|delete|eliminar|borrar|remove/i.test(blobBtn(b));
   const esHistorial = (b) => /clock|history|historial|time|version/i.test(blobBtn(b));
   const esLapiz = (b) => /edit|editar|pencil|lápiz|lapiz/i.test(blobBtn(b)) && !/create/i.test(blobBtn(b));
-  const primerLapiz = (iconos) => {
-    const named = iconos.find((b) => esLapiz(b) && !esBasura(b));
-    if (named) return named;
-    return iconos.find((b) => !esBasura(b) && !esHistorial(b)) || null;
-  };
   const tituloDe = (crudo) => norm((crudo || '').split('\\n')[0]);
   const coincide = (linea) => wanted.some((w) => linea === w || linea.startsWith(w + ' '));
-  const clickFila = (cur, iconos) => {
-    const candidato = primerLapiz(iconos);
-    if (!candidato || esBasura(candidato)) return false;
-    try { cur.scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (e) {}
-    candidato.click();
-    return true;
+  const disparar = (el) => {
+    try {
+      el.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true, cancelable: true, view: window }));
+      el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+      el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+      el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+      if (typeof el.click === 'function') el.click();
+      return true;
+    } catch (e) {
+      return false;
+    }
   };
 
-  const vacios = [];
+  const brutos = [];
   for (const el of Array.from(document.querySelectorAll('div, section, article, li'))) {
     const r = el.getBoundingClientRect();
-    if (r.left < 240 || r.width < 160 || r.width > 1400) continue;
-    if (enChrome(el) || enPaleta(el)) continue;
+    if (r.left < 240 || r.top < 56) continue;
+    if (r.width < 220 || r.width > 1200) continue;
+    if (r.height < 40 || r.height > 320) continue;
+    if (enPaleta(el)) continue;
     const crudo = textoDe(el);
-    if (!/Edita este componente vac/i.test(crudo)) continue;
-    if (crudo.length > 500) continue;
-    if (!coincide(tituloDe(crudo))) continue;
-    const iconos = Array.from(el.querySelectorAll('button, [role="button"]')).filter(esIcono);
-    if (iconos.length >= 1) vacios.push({ el, iconos, w: r.width });
-  }
-  vacios.sort((a, b) => a.w - b.w);
-  for (const v of vacios) {
-    if (clickFila(v.el, v.iconos)) return true;
-  }
-
-  const nodos = Array.from(document.querySelectorAll(
-    'div, section, article, li, h2, h3, h4, h5, h6, span, p, strong'
-  ));
-  const candidatos = [];
-  for (const el of nodos) {
-    const crudo = el.innerText || el.textContent || '';
+    if (crudo.length > 700) continue;
+    const vacio = /Edita este componente vac/i.test(crudo);
     const linea = tituloDe(crudo);
-    if (!coincide(linea)) continue;
-    if (crudo.length > 400) continue;
-    if (enChrome(el) || enPaleta(el)) continue;
-    let cur = el;
-    for (let d = 0; d < 10 && cur && cur !== document.body; d++) {
-      const cr = cur.getBoundingClientRect();
-      if (cr.left < 240 || cr.width > 1400) {
-        cur = cur.parentElement;
-        continue;
-      }
-      const iconos = Array.from(cur.querySelectorAll('button, [role="button"]')).filter(esIcono);
-      if (iconos.length >= 1 && iconos.length <= 8) {
-        const vacio = /Edita este componente/i.test(cur.innerText || cur.textContent || '') ? 10 : 0;
-        candidatos.push({ cur, iconos, score: vacio + iconos.length + (cr.left > 280 ? 2 : 0) });
-        break;
-      }
-      cur = cur.parentElement;
+    if (!vacio && !coincide(linea)) continue;
+    brutos.push({ el, r, linea, vacio, h: r.height, w: r.width });
+  }
+  brutos.sort((a, b) => a.r.top - b.r.top || a.h - b.h || a.w - b.w);
+  const uniq = [];
+  for (const t of brutos) {
+    if (uniq.some((u) => Math.abs(u.r.top - t.r.top) < 18)) continue;
+    uniq.push(t);
+  }
+  const titulos = uniq.map((t) => t.linea);
+  let chosen = uniq.find((t) => coincide(t.linea));
+  if (!chosen && index >= 0 && uniq[index]) chosen = uniq[index];
+  if (!chosen) return { ok: false, n: uniq.length, titulos };
+
+  try { chosen.el.scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (e) {}
+  const r2 = chosen.el.getBoundingClientRect();
+  const hits = [];
+  for (const el of chosen.el.querySelectorAll('button, [role="button"], a, svg, i, span, div, img')) {
+    const b = el.getBoundingClientRect();
+    if (b.width < 8 || b.height < 8 || b.width > 72 || b.height > 72) continue;
+    if (b.left < r2.right - 110) continue;
+    if (b.top < r2.top - 10 || b.bottom > r2.bottom + 10) continue;
+    if (esBasura(el) || esHistorial(el)) continue;
+    hits.push({
+      el,
+      x: b.left,
+      y: b.top,
+      area: b.width * b.height,
+      lapiz: esLapiz(el) ? 0 : 1,
+    });
+  }
+  hits.sort((a, b) => a.lapiz - b.lapiz || a.x - b.x || a.area - b.area);
+  if (hits[0] && disparar(hits[0].el)) {
+    return { ok: true, via: 'icono', n: uniq.length, titulos };
+  }
+  const x = r2.right - 34;
+  const y = r2.top + Math.min(22, Math.max(12, r2.height / 3));
+  const hit = document.elementFromPoint(x, y);
+  if (hit && !enPaleta(hit)) {
+    const alvo = hit.closest('button, [role="button"], a, svg, [class*="icon"]') || hit;
+    if (!esBasura(alvo) && disparar(alvo)) {
+      return { ok: true, via: 'punto', n: uniq.length, titulos, x, y };
     }
   }
-  candidatos.sort((a, b) => b.score - a.score);
-  for (const c of candidatos) {
-    if (clickFila(c.cur, c.iconos)) return true;
-  }
-  return false;
+  return { ok: false, n: uniq.length, titulos, x, y };
 }"""
 
 
