@@ -551,6 +551,116 @@ def resultado_clic_lapiz_ok(result) -> bool:
     return isinstance(result, dict) and bool(result.get("ok"))
 
 
+def _y_bajo_barra_vistas(page) -> float:
+    """Debajo de default / Resolución. Un clic más arriba saca la vista."""
+    y_min = 88.0
+    get_by_text = getattr(page, "get_by_text", None)
+    if not get_by_text:
+        return y_min
+    for texto, exacto in (
+        ("default", True),
+        ("Resolución", True),
+        ("Zona de trabajo", True),
+        ("Versión publicada", False),
+    ):
+        try:
+            try:
+                loc = get_by_text(texto, exact=exacto)
+            except TypeError:
+                loc = get_by_text(texto)
+            n = loc.count() if hasattr(loc, "count") else 0
+        except Exception:
+            continue
+        for i in range(min(n, 4)):
+            box = _bounding_box(loc.nth(i))
+            if not box:
+                continue
+            top = float(box.get("y") or 0)
+            alto = float(box.get("height") or 0)
+            if top > 150 or alto > 48:
+                continue
+            y_min = max(y_min, top + alto + 8)
+    return y_min
+
+
+def desplegable_vista_default(page) -> bool | None:
+    """True si el combo de vistas dice default. False si está vacío (otra vista)."""
+    get_by_text = getattr(page, "get_by_text", None)
+    if not get_by_text:
+        return None
+    try:
+        loc = get_by_text("default", exact=True)
+        n = loc.count() if hasattr(loc, "count") else 0
+    except Exception:
+        n = 0
+    for i in range(min(n, 6)):
+        box = _bounding_box(loc.nth(i))
+        if not box:
+            continue
+        if float(box.get("y") or 0) <= 150 and float(box.get("height") or 0) <= 48:
+            return True
+    try:
+        pub = get_by_text("Versión publicada", exact=False).count()
+    except Exception:
+        pub = 0
+    if pub:
+        return False
+    return None
+
+
+def avisar_si_salio_de_default(page) -> bool:
+    """True = ya no estamos en default; no seguir (la cabecera llena queda atrás)."""
+    if desplegable_vista_default(page) is not False:
+        return False
+    print(
+        "\n  · El desplegable de vistas NO está en «default».\n"
+        "    La cabecera (título y foto) vive en default: si lo sacás,\n"
+        "    BM muestra otra vista vacía. No se borra; no se ve.\n"
+        "    Poné el desplegable otra vez en default y reintentá.\n",
+        file=sys.stderr,
+    )
+    return True
+
+
+def _clic_editar_indice(page, index: int) -> bool:
+    """Clic en el «Editar» del N-ésimo bloque, debajo de la barra default."""
+    get_by_text = getattr(page, "get_by_text", None)
+    if not get_by_text:
+        return False
+    y_min = _y_bajo_barra_vistas(page)
+    try:
+        loc = get_by_text("Editar", exact=True)
+        n = loc.count() if hasattr(loc, "count") else 0
+    except Exception:
+        return False
+    filas: list[tuple[float, object]] = []
+    for i in range(n):
+        item = loc.nth(i)
+        box = _bounding_box(item)
+        if box is None:
+            continue
+        if float(box.get("x") or 0) < 200:
+            continue
+        if float(box.get("y") or 0) < y_min:
+            continue
+        if float(box.get("height") or 0) > 40:
+            continue
+        filas.append((float(box["y"]), item))
+    filas.sort(key=lambda p: p[0])
+    uniq: list[tuple[float, object]] = []
+    for y, item in filas:
+        if any(abs(y - uy) < 14 for uy, _ in uniq):
+            continue
+        uniq.append((y, item))
+    if index < 0 or index >= len(uniq):
+        return False
+    try:
+        uniq[index][1].click(timeout=3_000)
+        return True
+    except Exception:
+        return False
+
+
 def _contar_placeholder_vacio(page) -> int:
     get_by_text = getattr(page, "get_by_text", None)
     if not get_by_text:
@@ -638,6 +748,10 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     ids = recoger_ids_componentes(page)
     if ids:
         print("  · IDs lienzo: " + " ".join(f"{k}={v}" for k, v in ids.items()))
+    if avisar_si_salio_de_default(page):
+        return False
+    if intentar(_clic_editar_indice(page, idx)):
+        return True
     comp_id = ids.get(clave)
     if comp_id and _abrir_por_id_visible(page, clave, comp_id):
         return True
@@ -712,6 +826,14 @@ def _clic_lapiz_por_fila(page, aliases: list[str]) -> bool:
                     continue
                 if _bounding_box(fila) is not None and not caja_en_lienzo(_bounding_box(fila)):
                     continue
+                get_edit = getattr(fila, "get_by_text", None)
+                if get_edit:
+                    try:
+                        txt = get_edit("Editar", exact=True)
+                        if txt.count() and clic_locator_en_lienzo_desde(txt):
+                            return True
+                    except Exception:
+                        pass
                 edit = fila.locator(
                     "button[aria-label*='Editar' i], button[title*='Editar' i], "
                     "button[aria-label*='edit' i], button[title*='edit' i], "
@@ -777,8 +899,11 @@ def _clic_lapiz_placeholder(page, index: int) -> bool:
     if index < 0 or index >= len(uniq):
         return False
     box = uniq[index]
+    y_min = _y_bajo_barra_vistas(page)
     x = float(box["x"]) + float(box["width"]) - 34
-    y = float(box["y"]) + min(20.0, float(box["height"]) / 3)
+    y = max(y_min, float(box["y"]) + min(20.0, float(box["height"]) / 3))
+    if y < y_min:
+        return False
     try:
         mouse.click(x, y)
         return True
@@ -829,6 +954,14 @@ JS_CLIC_LAPIZ = """(payload) => {
   const wanted = aliases.map(norm);
   const hayPaleta = /paleta de componentes/i.test(textoDe(document.body));
   const minLeft = hayPaleta ? 200 : 0;
+  let yBarra = 88;
+  for (const el of document.querySelectorAll('*')) {
+    const t = textoDe(el);
+    if (!/^(default|resoluci[oó]n|zona de trabajo)$/i.test(t)) continue;
+    const rb = el.getBoundingClientRect();
+    if (rb.top > 150 || rb.height > 48 || rb.height < 8) continue;
+    yBarra = Math.max(yBarra, rb.bottom + 8);
+  }
   const enPaleta = (el) => {
     const r0 = el.getBoundingClientRect();
     if (hayPaleta && r0.left < minLeft) return true;
@@ -887,6 +1020,8 @@ JS_CLIC_LAPIZ = """(payload) => {
       const pr = p.getBoundingClientRect();
       const pt = textoDe(p);
       if (enPaleta(p)) break;
+      if (/\\bcabecera\\b/i.test(pt) && /\\btags\\b/i.test(pt)) break;
+      if (/\\bdefault\\b/i.test(pt) && /resoluci[oó]n|zona de trabajo/i.test(pt)) break;
       if (pr.width > 160 && pr.width < 2400 && pt.length < 900) {
         card = p;
         if (pr.width >= 260) break;
@@ -912,9 +1047,15 @@ JS_CLIC_LAPIZ = """(payload) => {
     brutos.push({ el, r, linea, vacio, h: r.height, w: r.width });
   }
   brutos.sort((a, b) => a.r.top - b.r.top || a.h - b.h || a.w - b.w);
+  const idDe = (el) => {
+    const m = textoDe(el).match(/\\b([a-f0-9]{6})\\b/i);
+    return m ? m[1].toLowerCase() : '';
+  };
   const uniq = [];
   for (const t of brutos) {
-    if (uniq.some((u) => Math.abs(u.r.top - t.r.top) < 18)) continue;
+    const id = idDe(t.el);
+    if (id && uniq.some((u) => idDe(u.el) === id)) continue;
+    if (!id && uniq.some((u) => Math.abs(u.r.top - t.r.top) < 18)) continue;
     uniq.push(t);
   }
   const titulos = uniq.map((t) => t.linea);
@@ -924,12 +1065,19 @@ JS_CLIC_LAPIZ = """(payload) => {
 
   try { chosen.el.scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (e) {}
   const r2 = chosen.el.getBoundingClientRect();
+  for (const el of chosen.el.querySelectorAll('*')) {
+    const t = textoDe(el);
+    if (!/^editar$/i.test(t)) continue;
+    const b = el.getBoundingClientRect();
+    if (b.top < yBarra || b.left < 200 || enPaleta(el)) continue;
+    if (disparar(el)) return { ok: true, via: 'editar', n: uniq.length, titulos };
+  }
   const hits = [];
   for (const el of chosen.el.querySelectorAll('button, [role="button"], a, svg, i, span, div, img')) {
     const b = el.getBoundingClientRect();
     if (b.width < 8 || b.height < 8 || b.width > 72 || b.height > 72) continue;
     if (b.left < r2.right - 110) continue;
-    if (b.top < r2.top - 10 || b.bottom > r2.bottom + 10) continue;
+    if (b.top < Math.max(yBarra, r2.top - 10) || b.bottom > r2.bottom + 10) continue;
     if (esBasura(el) || esHistorial(el)) continue;
     hits.push({
       el,
@@ -944,7 +1092,7 @@ JS_CLIC_LAPIZ = """(payload) => {
     return { ok: true, via: 'icono', n: uniq.length, titulos };
   }
   const x = r2.right - 34;
-  const y = r2.top + Math.min(22, Math.max(12, r2.height / 3));
+  const y = Math.max(yBarra + 4, r2.top + Math.min(22, Math.max(12, r2.height / 3)));
   const hit = document.elementFromPoint(x, y);
   if (hit && !enPaleta(hit)) {
     const alvo = hit.closest('button, [role="button"], a, svg, [class*="icon"]') || hit;
@@ -1118,6 +1266,14 @@ JS_CLIC_BLOQUE_ID = """(compId) => {
   if (!id) return { ok: false };
   const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
   const hayPaleta = /paleta de componentes/i.test(document.body.innerText || '');
+  let yBarra = 88;
+  for (const el of document.querySelectorAll('*')) {
+    const t = clean(el.innerText || '');
+    if (!/^(default|resoluci[oó]n|zona de trabajo)$/i.test(t)) continue;
+    const rb = el.getBoundingClientRect();
+    if (rb.top > 150 || rb.height > 48 || rb.height < 8) continue;
+    yBarra = Math.max(yBarra, rb.bottom + 8);
+  }
   const blobBtn = (b) => [
     b.getAttribute('aria-label') || '',
     b.getAttribute('title') || '',
@@ -1169,12 +1325,19 @@ JS_CLIC_BLOQUE_ID = """(compId) => {
   }
   try { card.scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (e) {}
   const r2 = card.getBoundingClientRect();
+  for (const el of card.querySelectorAll('*')) {
+    const t = clean(el.innerText || '');
+    if (!/^editar$/i.test(t)) continue;
+    const b = el.getBoundingClientRect();
+    if (b.top < yBarra || b.left < 200) continue;
+    if (disparar(el)) return { ok: true, via: 'id-editar' };
+  }
   const hits = [];
   for (const el of card.querySelectorAll('button, [role="button"], a, svg, i, span, div, img')) {
     const b = el.getBoundingClientRect();
     if (b.width < 8 || b.height < 8 || b.width > 72 || b.height > 72) continue;
     if (b.left < r2.right - 110) continue;
-    if (b.top < r2.top - 10 || b.bottom > r2.top + 44) continue;
+    if (b.top < Math.max(yBarra, r2.top - 10) || b.bottom > r2.top + 44) continue;
     if (esBasura(el) || esHistorial(el)) continue;
     const lab = clean((el.innerText || el.getAttribute('aria-label') || ''));
     if (/^default$/i.test(lab) || /resoluci[oó]n|zona de trabajo/i.test(lab)) continue;
@@ -1185,7 +1348,7 @@ JS_CLIC_BLOQUE_ID = """(compId) => {
     return { ok: true, via: 'id-icono' };
   }
   const x = r2.right - 36;
-  const y = r2.top + Math.min(20, Math.max(12, r2.height / 4));
+  const y = Math.max(yBarra + 4, r2.top + Math.min(20, Math.max(12, r2.height / 4)));
   const hit = document.elementFromPoint(x, y);
   const alvo = hit && (hit.closest('svg, button, [role="button"], [class*="icon"]') || hit);
   const txtHit = clean((alvo && (alvo.innerText || alvo.getAttribute('aria-label'))) || '');
@@ -1200,16 +1363,13 @@ JS_CLIC_BLOQUE_ID = """(compId) => {
 
 
 def _abrir_por_id_visible(page, clave: str, comp_id: str) -> bool:
-    """Clic en el bloque del lienzo (id a3e7ad…). Nunca recarga la página."""
+    """Clic en el bloque del lienzo (id a3e7ad…). Nunca recarga ni toca default."""
     if not comp_id:
         return False
     print(f"  · Clic en bloque «{clave}» id={comp_id} (sin recargar)")
-    clicked = _eval_en_frames(page, JS_CLIC_BLOQUE_ID, comp_id)
-    if resultado_clic_lapiz_ok(clicked) and _editor_confirmado(page, clave):
-        return True
+    y_min = _y_bajo_barra_vistas(page)
     get_by_text = getattr(page, "get_by_text", None)
-    mouse = getattr(page, "mouse", None)
-    if get_by_text and mouse:
+    if get_by_text:
         try:
             loc = get_by_text(comp_id, exact=True)
             n = loc.count() if hasattr(loc, "count") else 0
@@ -1220,26 +1380,26 @@ def _abrir_por_id_visible(page, clave: str, comp_id: str) -> bool:
             box = _bounding_box(item)
             if box is None or float(box.get("x") or 0) < 80:
                 continue
-            fbox = None
             try:
-                anc = item.locator("xpath=ancestor::*[count(.//svg)>=1][1]")
-                cand = _bounding_box(anc)
-                if cand and float(cand.get("width") or 0) >= 180:
-                    fbox = cand
-            except Exception:
-                fbox = None
-            target = fbox or box
-            x = float(target["x"]) + float(target["width"]) - 36
-            y = float(target["y"]) + min(20.0, max(12.0, float(target.get("height") or 24) / 4))
-            if fbox is None:
-                x = float(box["x"]) + float(box["width"]) + 28
-                y = float(box["y"]) + float(box["height"]) / 2
-            try:
-                mouse.click(x, y)
-                if _editor_confirmado(page, clave):
-                    return True
+                edit = item.locator(
+                    "xpath=ancestor::*[contains(., 'Editar')][1]"
+                    "//*[normalize-space()='Editar']"
+                )
+                if hasattr(edit, "count") and edit.count():
+                    ebox = _bounding_box(edit.first if hasattr(edit, "first") else edit)
+                    if (
+                        ebox
+                        and float(ebox.get("y") or 0) >= y_min
+                        and float(ebox.get("x") or 0) >= 200
+                    ):
+                        edit.first.click(timeout=3_000)
+                        if _editor_confirmado(page, clave):
+                            return True
             except Exception:
                 continue
+    clicked = _eval_en_frames(page, JS_CLIC_BLOQUE_ID, comp_id)
+    if resultado_clic_lapiz_ok(clicked) and _editor_confirmado(page, clave):
+        return True
     return False
 
 
@@ -3229,6 +3389,8 @@ def fill_from_receta(
             "No pulses la paleta izquierda.",
             file=sys.stderr,
         )
+        return False
+    if avisar_si_salio_de_default(page):
         return False
     if gestor_sin_ficha(url_ficha) or en_vista_default_cms(page):
         print(

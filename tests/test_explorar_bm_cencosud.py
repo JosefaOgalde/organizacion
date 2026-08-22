@@ -591,11 +591,65 @@ class ExplorarBmTests(unittest.TestCase):
             ok = self.modulo._abrir_por_id_visible(pagina, "cabecera", "a3e7ad")
         self.assertFalse(ok)
         self.assertEqual(pagina.gotos, [])
-        self.assertEqual(pagina.last_text, "a3e7ad")
-        self.assertEqual(len(clicks), 1)
         src = __import__("inspect").getsource(self.modulo._abrir_por_id_visible)
         self.assertNotIn("goto", src)
         self.assertNotIn("component=", src)
+        self.assertEqual(clicks, [])
+
+    def test_desplegable_default_y_version_publicada(self):
+        class Loc:
+            def __init__(self, items):
+                self.items = items
+
+            def count(self):
+                return len(self.items)
+
+            def nth(self, i):
+                return self.items[i]
+
+        class Nodo:
+            def __init__(self, box):
+                self._box = box
+
+            def bounding_box(self):
+                return self._box
+
+        class ConDefault:
+            def get_by_text(self, texto, exact=True):
+                if texto == "default":
+                    return Loc([Nodo({"x": 260, "y": 72, "width": 80, "height": 24})])
+                return Loc([])
+
+        class SoloPublicada:
+            def get_by_text(self, texto, exact=True):
+                if "publicada" in texto.lower():
+                    return Loc([Nodo({"x": 260, "y": 90, "width": 120, "height": 18})])
+                return Loc([])
+
+        self.assertTrue(self.modulo.desplegable_vista_default(ConDefault()))
+        self.assertFalse(self.modulo.desplegable_vista_default(SoloPublicada()))
+        self.assertTrue(self.modulo.avisar_si_salio_de_default(SoloPublicada()))
+        self.assertFalse(self.modulo.avisar_si_salio_de_default(ConDefault()))
+
+    def test_clic_editar_indice_bajo_la_barra(self):
+        runtime = RuntimeFalso()
+        barra = NodoCms(runtime, "default", {"x": 260, "y": 70, "width": 70, "height": 22}, 0)
+        cab = NodoCms(runtime, "editar-cab", {"x": 820, "y": 160, "width": 48, "height": 18}, 0)
+        tags = NodoCms(runtime, "editar-tags", {"x": 820, "y": 260, "width": 48, "height": 18}, 0)
+
+        class Pagina:
+            def get_by_text(self, texto, exact=True):
+                if texto == "default":
+                    return GrupoTextos([barra])
+                if texto == "Editar":
+                    return GrupoTextos([cab, tags])
+                return GrupoTextos([])
+
+        self.assertTrue(self.modulo._clic_editar_indice(Pagina(), 0))
+        self.assertEqual(runtime.clicks, ["editar-cab"])
+        runtime.clicks.clear()
+        self.assertTrue(self.modulo._clic_editar_indice(Pagina(), 1))
+        self.assertEqual(runtime.clicks, ["editar-tags"])
 
     def test_editor_por_campos_detecta_cabecera(self):
         class Pagina:
@@ -670,12 +724,16 @@ class ExplorarBmTests(unittest.TestCase):
         self.assertIn("hayPaleta", js)
         self.assertIn("Edita este componente", js)
         self.assertIn("elementFromPoint", js)
+        self.assertIn("yBarra", js)
+        self.assertIn("^editar$", js)
+        self.assertIn("[a-f0-9]{6}", js)
         self.assertNotIn("iconos[1]", js)
         self.assertNotRegex(js, r"esLapiz = \(b\) => /[^/]*create")
 
     def test_js_clic_bloque_id_no_recarga(self):
         js = self.modulo.JS_CLIC_BLOQUE_ID
         self.assertIn("id-icono", js)
+        self.assertIn("id-editar", js)
         self.assertIn("esBasura", js)
         self.assertIn("default", js)
         self.assertIn("zona de trabajo", js)
