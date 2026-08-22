@@ -688,6 +688,165 @@ class ExplorarBmTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             self.assertTrue(self.modulo.pedir_lapiz_a_mano(Pagina(), "cabecera"))
 
+    def test_titulo_no_ok_si_sigue_dale_un_valor(self):
+        self.assertFalse(self.modulo._valor_quedo("", "Salmón a la parrilla"))
+        self.assertFalse(self.modulo._valor_quedo("Dale un valor", "Salmón a la parrilla"))
+        self.assertTrue(self.modulo._valor_quedo(None, "Salmón"))
+        self.assertTrue(
+            self.modulo._valor_quedo(
+                "Salmón a la parrilla con salsa de palta",
+                "Salmón a la parrilla con salsa de palta",
+            )
+        )
+
+        class LocVacio:
+            def fill(self, *_a, **_k):
+                return None
+
+            def click(self, **_k):
+                return None
+
+            def input_value(self):
+                return ""
+
+            def bounding_box(self):
+                return {"x": 400, "y": 200, "width": 280, "height": 36}
+
+            def evaluate(self, *_a, **_k):
+                return ""
+
+        self.assertFalse(
+            self.modulo.escribir_valor(
+                object(), LocVacio(), "Salmón a la parrilla con salsa de palta"
+            )
+        )
+
+        class LocTitulo:
+            def __init__(self):
+                self.val = ""
+
+            def count(self):
+                return 1
+
+            def nth(self, _i):
+                return self
+
+            def fill(self, v, **_k):
+                self.val = v
+
+            def click(self, **_k):
+                return None
+
+            def input_value(self):
+                return self.val
+
+            def bounding_box(self):
+                return {"x": 400, "y": 220, "width": 300, "height": 36}
+
+            def evaluate(self, *_a, **_k):
+                return self.val
+
+        loc = LocTitulo()
+
+        class Pagina:
+            def get_by_placeholder(self, _p, exact=False):
+                return loc
+
+            def evaluate(self, script, *_args):
+                return {"ok": False, "value": ""}
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        self.assertTrue(
+            self.modulo.rellenar_titulo_cabecera(
+                Pagina(), "Salmón a la parrilla con salsa de palta"
+            )
+        )
+        self.assertEqual(loc.val, "Salmón a la parrilla con salsa de palta")
+
+        class LocReact:
+            def __init__(self):
+                self.val = ""
+
+            def fill(self, *_a, **_k):
+                return None
+
+            def click(self, **_k):
+                return None
+
+            def input_value(self):
+                return self.val
+
+            def bounding_box(self):
+                return {"x": 400, "y": 200, "width": 280, "height": 36}
+
+            def evaluate(self, _script, arg=None):
+                if arg is not None:
+                    self.val = str(arg)
+                    return arg
+                return self.val
+
+        self.assertTrue(
+            self.modulo.escribir_valor(
+                object(), LocReact(), "Salmón a la parrilla con salsa de palta"
+            )
+        )
+
+    def test_titulo_js_react_en_frame(self):
+        self.assertIn("_valueTracker", self.modulo.JS_CRC_SET_REACT)
+        self.assertIn("crcFindTitulo", self.modulo.JS_ESCRIBIR_TITULO_CABECERA)
+        self.assertIn("dale un valor", self.modulo.JS_CRC_FIND_TITULO)
+
+        class Pagina:
+            def evaluate(self, script, arg=None):
+                texto = str(script)
+                if "crcSetReact" in texto and arg:
+                    return {"ok": True, "value": arg}
+                if "crcFindTitulo" in texto:
+                    return {"ok": True, "value": "Salmón a la parrilla con salsa de palta"}
+                return {"ok": False, "value": ""}
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        self.assertTrue(
+            self.modulo.rellenar_titulo_cabecera(
+                Pagina(), "Salmón a la parrilla con salsa de palta"
+            )
+        )
+
+    def test_fill_titulo_no_declara_ok_con_label_bm(self):
+        runtime = RuntimeFalso()
+        url = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager/view/abc123"
+        )
+
+        class Pagina(PageFalsa):
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "h1,h2,h3" in texto:
+                    return "Edición de Cabecera"
+                if "innerText" in texto:
+                    return "Edición de Cabecera Título Duración Dificultad Porciones"
+                return super().evaluate(script, *_args)
+
+        pagina = Pagina(runtime)
+        pagina.url = url
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.modulo.fill_from_receta(
+                pagina,
+                self.receta_valida,
+                self.selectores,
+                dry_run=True,
+                url_ficha=url,
+            )
+        texto = buf.getvalue()
+        self.assertNotIn("field_titulo (label BM)", texto)
+        self.assertIn("field_titulo", texto)
+
     def test_pedir_lapiz_a_mano_sin_tty_no_espera(self):
         class Pagina:
             def evaluate(self, *_args):

@@ -1373,11 +1373,7 @@ def parece_guardado_ok(page) -> bool:
 
 
 def sigue_dato_requerido(page) -> bool:
-    try:
-        t = page.evaluate("() => (document.body && document.body.innerText) || ''")
-    except Exception:
-        return False
-    return isinstance(t, str) and "el dato es requerido" in t.lower()
+    return "el dato es requerido" in texto_cuerpo(page).lower()
 
 
 JS_IDS_BLOQUES = """() => {
@@ -3024,6 +3020,9 @@ JS_FILL_INDEX = """([index, value]) => {
   }
   const proto = (el.tagName || '').toLowerCase() === 'textarea' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
   const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+  const last = el.value;
+  const tracker = el._valueTracker;
+  if (tracker && tracker.setValue) tracker.setValue(last == null ? '' : String(last));
   if (desc && desc.set) desc.set.call(el, v);
   else if (el.getAttribute('contenteditable') === 'true') el.textContent = v;
   else el.value = v;
@@ -3031,6 +3030,155 @@ JS_FILL_INDEX = """([index, value]) => {
   el.dispatchEvent(new Event('change', { bubbles: true }));
   return true;
 }"""
+
+
+def _leer_valor(loc) -> str | None:
+    """Lee input_value. None = no se pudo leer (no inventar con evaluate)."""
+    try:
+        if hasattr(loc, "input_value"):
+            return (loc.input_value() or "").strip()
+    except Exception:
+        return None
+    return None
+
+
+def _valor_quedo(leido: str | None, esperado: str) -> bool:
+    if leido is None:
+        return True
+    bajo = leido.lower()
+    if not leido or bajo in {"dale un valor", "ingresa un valor", "ingresa"}:
+        return False
+    exp = (esperado or "").strip()
+    return exp.lower() in bajo or bajo in exp.lower()
+
+
+# React 16/17: fill() de Playwright no actualiza el state; hay que pasar por el setter nativo + _valueTracker.
+JS_CRC_SET_REACT = """function crcSetReact(el, v) {
+  if (!el) return '';
+  v = String(v);
+  const tag = (el.tagName || '').toLowerCase();
+  try { el.focus(); } catch (e) {}
+  if (tag === 'select') {
+    const opt = [...el.options].find((o) => (o.text || '').trim() === v || o.value === v);
+    el.value = opt ? opt.value : v;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    return String(el.value || '');
+  }
+  if (el.getAttribute && el.getAttribute('contenteditable') === 'true') {
+    el.textContent = v;
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, data: v, inputType: 'insertText' }));
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    return String(el.textContent || '');
+  }
+  const proto = tag === 'textarea' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+  const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+  const last = el.value;
+  const tracker = el._valueTracker;
+  if (tracker && tracker.setValue) tracker.setValue(last == null ? '' : String(last));
+  if (desc && desc.set) desc.set.call(el, v);
+  else el.value = v;
+  const ev = new Event('input', { bubbles: true });
+  ev.simulated = true;
+  try {
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true, data: v, inputType: 'insertText' }));
+  } catch (e) {}
+  el.dispatchEvent(ev);
+  el.dispatchEvent(new Event('change', { bubbles: true }));
+  try { el.blur(); } catch (e) {}
+  return String(el.value != null ? el.value : (el.textContent || ''));
+}"""
+
+JS_CRC_FIND_TITULO = """function crcFindTitulo() {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const visibles = (el) => {
+    if (!el) return false;
+    const st = getComputedStyle(el);
+    if (st.display === 'none' || st.visibility === 'hidden') return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && r.height > 0 && r.left >= 240;
+  };
+  const esInputTexto = (el) => {
+    if (!el || !visibles(el)) return false;
+    const tag = (el.tagName || '').toLowerCase();
+    if (tag === 'textarea') return true;
+    if (tag === 'input') {
+      const t = (el.type || 'text').toLowerCase();
+      return ['text', 'search', '', 'url', 'tel'].includes(t);
+    }
+    return el.getAttribute('contenteditable') === 'true';
+  };
+  const esTituloCabecera = (crudo) => {
+    if (!crudo || crudo.length > 90) return false;
+    if (/meta\\s*t[ií]tulo|t[ií]tulo de la secci/i.test(crudo)) return false;
+    const linea = crudo.split(' El dato')[0].replace(/\\*$/, '').trim();
+    return /^T[ií]tulo$/i.test(linea);
+  };
+  const controlCerca = (lab) => {
+    const htmlFor = lab.getAttribute && lab.getAttribute('for');
+    if (htmlFor) {
+      const byId = document.getElementById(htmlFor);
+      if (esInputTexto(byId)) return byId;
+    }
+    const box = lab.closest('[class*="field"], [class*="Field"], [class*="form"], [class*="Form"], li, section, div');
+    if (box) {
+      const hit = Array.from(box.querySelectorAll('input, textarea, [contenteditable="true"]')).find(esInputTexto);
+      if (hit) return hit;
+    }
+    let sib = lab.nextElementSibling;
+    for (let i = 0; i < 6 && sib; i++) {
+      if (esInputTexto(sib)) return sib;
+      const inner = Array.from(sib.querySelectorAll('input, textarea')).find(esInputTexto);
+      if (inner) return inner;
+      sib = sib.nextElementSibling;
+    }
+    return null;
+  };
+  const nodos = document.querySelectorAll('label, legend, p, span, div, h2, h3, h4, h5');
+  for (const lab of nodos) {
+    const crudo = clean(lab.innerText || lab.textContent || '');
+    if (!esTituloCabecera(crudo)) continue;
+    const input = controlCerca(lab);
+    if (input) return input;
+  }
+  const vacios = Array.from(document.querySelectorAll('input, textarea')).filter((el) => {
+    if (!esInputTexto(el)) return false;
+    const ph = (el.getAttribute('placeholder') || '').toLowerCase();
+    const val = String(el.value || '').trim().toLowerCase();
+    return ph.includes('dale un valor') && (!val || val === 'dale un valor');
+  });
+  vacios.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  return vacios[0] || null;
+}"""
+
+JS_ESCRIBIR_NATIVO = (
+    "(el, v) => {\n"
+    + JS_CRC_SET_REACT
+    + "\n  return crcSetReact(el, String(v));\n}"
+)
+
+JS_ESCRIBIR_TITULO_CABECERA = (
+    "(v) => {\n"
+    + JS_CRC_SET_REACT
+    + "\n"
+    + JS_CRC_FIND_TITULO
+    + """
+  const el = crcFindTitulo();
+  if (!el) return { ok: false, value: '' };
+  const value = crcSetReact(el, String(v));
+  return { ok: true, value: String(value || '') };
+}"""
+)
+
+JS_LEER_TITULO_CABECERA = (
+    "() => {\n"
+    + JS_CRC_FIND_TITULO
+    + """
+  const el = crcFindTitulo();
+  if (!el) return { ok: false, value: '' };
+  return { ok: true, value: String(el.value || el.textContent || '') };
+}"""
+)
 
 
 def escribir_valor(page, loc, value) -> bool:
@@ -3048,41 +3196,97 @@ def escribir_valor(page, loc, value) -> bool:
         except (TypeError, ValueError):
             pass
     try:
+        loc.click(timeout=2_000)
+    except Exception:
+        pass
+    try:
         loc.fill(texto, timeout=3_000)
-        return True
     except TypeError:
         try:
             loc.fill(texto)
-            return True
         except Exception:
             pass
     except Exception:
         pass
-    try:
-        loc.evaluate(
-            """(el, v) => {
-              const tag = (el.tagName || '').toLowerCase();
-              if (tag === 'select') {
-                const opt = [...el.options].find((o) => (o.text || '').trim() === v || o.value === v);
-                el.value = opt ? opt.value : v;
-              } else if (el.getAttribute('contenteditable') === 'true') {
-                el.textContent = v;
-              } else {
-                const proto = tag === 'textarea' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
-                const desc = Object.getOwnPropertyDescriptor(proto, 'value');
-                if (desc && desc.set) desc.set.call(el, v);
-                else el.value = v;
-              }
-              el.dispatchEvent(new Event('input', { bubbles: true }));
-              el.dispatchEvent(new Event('change', { bubbles: true }));
-            }""",
-            texto,
-        )
+    if _valor_quedo(_leer_valor(loc), texto):
         return True
-    except TypeError:
-        return False
+    try:
+        loc.evaluate(JS_ESCRIBIR_NATIVO, texto)
+    except Exception:
+        pass
+    if _valor_quedo(_leer_valor(loc), texto):
+        return True
+    try:
+        loc.click(timeout=2_000)
+        if hasattr(loc, "press"):
+            loc.press("Control+a")
+        if hasattr(loc, "press_sequentially"):
+            loc.press_sequentially(texto, delay=12)
+        elif hasattr(loc, "type"):
+            loc.type(texto, delay=12)
+    except Exception:
+        pass
+    return _valor_quedo(_leer_valor(loc), texto)
+
+
+def _titulo_escrito_en_frame(fr, value: str) -> bool:
+    try:
+        out = fr.evaluate(JS_ESCRIBIR_TITULO_CABECERA, value)
     except Exception:
         return False
+    if not isinstance(out, dict) or not out.get("ok"):
+        return False
+    if _valor_quedo(str(out.get("value") or ""), value):
+        return True
+    return False
+
+
+def _titulo_sigue_en_frame(fr, value: str) -> bool:
+    try:
+        out = fr.evaluate(JS_LEER_TITULO_CABECERA)
+    except Exception:
+        return False
+    return isinstance(out, dict) and out.get("ok") and _valor_quedo(
+        str(out.get("value") or ""), value
+    )
+
+
+def rellenar_titulo_cabecera(page, value) -> bool:
+    """Título* vacío («Dale un valor» / dato requerido), no otro Título."""
+    if not value:
+        return False
+    texto = str(value)
+    for fr in _frames_pagina(page):
+        if not _titulo_escrito_en_frame(fr, texto):
+            continue
+        try:
+            page.wait_for_timeout(180)
+        except Exception:
+            pass
+        if _titulo_sigue_en_frame(fr, texto):
+            return True
+    for fr in _frames_pagina(page):
+        get_by_placeholder = getattr(fr, "get_by_placeholder", None)
+        if not get_by_placeholder:
+            continue
+        try:
+            loc = get_by_placeholder(re.compile(r"Dale un valor", re.I))
+            n = loc.count() if hasattr(loc, "count") else 0
+        except Exception:
+            n = 0
+        for i in range(min(n, 8)):
+            item = loc.nth(i)
+            box = _bounding_box(item)
+            if box is not None and float(box.get("x") or 0) < LIENZO_MIN_X:
+                continue
+            leido = _leer_valor(item)
+            if leido and leido.lower() not in {"", "dale un valor"}:
+                continue
+            if escribir_valor(page, item, texto) and _valor_quedo(_leer_valor(item), texto):
+                return True
+    return rellenar_por_label(
+        page, r"^Título\b", texto, excluir=r"título de la sección|meta"
+    )
 
 
 def fill_por_indice_visible(page, index, value) -> bool:
@@ -3602,6 +3806,15 @@ def fill_from_receta(
         sel = selectores.get(key)
         if key == "field_dificultad":
             return elegir_dificultad(page, str(value))
+        if key == "field_titulo":
+            if rellenar_titulo_cabecera(page, value):
+                print(f"  ✓ field_titulo → {value}")
+                return True
+            if sel and not selector_es_generico(sel) and _fill_locator(page, sel, value):
+                print(f"  ✓ {key}")
+                return True
+            print("  ✗ field_titulo (el input sigue en «Dale un valor»)")
+            return False
         if selector_es_generico(sel):
             sel = None
         label_dir = LABELS_EDITOR_BM.get(key)
@@ -3694,6 +3907,9 @@ def fill_from_receta(
             "field_tiempo": fill("field_tiempo", duracion_receta(receta)),
             "field_alt": fill("field_alt", alt_portada(receta)),
         }
+        if sigue_dato_requerido(page):
+            print("  · Título sigue vacío (dato requerido). Lo escribo otra vez.")
+            cabecera["field_titulo"] = fill("field_titulo", receta.get("titulo"))
         subir_imagen_portada(page, receta)
         try:
             page.wait_for_timeout(800)
