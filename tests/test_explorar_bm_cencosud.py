@@ -896,6 +896,34 @@ class ExplorarBmTests(unittest.TestCase):
         self.assertEqual(self.modulo.editor_actual(Pagina()), "tags")
         self.assertEqual(self.modulo.editor_por_campos(Pagina()), "tags")
 
+    def test_tags_no_se_escriben_en_link(self):
+        self.assertIn("data-crc-tag-hit", self.modulo.JS_MARCAR_CAMPOS_TAG)
+        self.assertIn("esLabelLink", self.modulo.JS_MARCAR_CAMPOS_TAG)
+        self.assertIn("tipo === 'url'", self.modulo.JS_MARCAR_CAMPOS_TAG)
+        self.assertIn("Link", self.modulo.JS_LIMPIAR_LINKS_NO_URL)
+        self.assertIn("reEx.test(linea)", self.modulo.JS_MARCAR_POR_LABEL)
+        self.assertNotIn("reEx.test(crudo)", self.modulo.JS_MARCAR_POR_LABEL)
+        src = self.modulo.fill_lista_tags.__code__.co_consts
+        self.assertTrue(any(isinstance(c, str) and "nunca en Link" in c for c in src))
+
+        class LocLink:
+            def get_attribute(self, name):
+                return "url" if name == "type" else None
+
+            def evaluate(self, *_a, **_k):
+                return True
+
+        self.assertTrue(self.modulo._locator_es_link(LocLink()))
+
+        class LocTag:
+            def get_attribute(self, _name):
+                return None
+
+            def evaluate(self, *_a, **_k):
+                return False
+
+        self.assertFalse(self.modulo._locator_es_link(LocTag()))
+
     def test_editor_por_campos_detecta_cabecera(self):
         class Pagina:
             def evaluate(self, script, *_args):

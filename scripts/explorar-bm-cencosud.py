@@ -2985,16 +2985,34 @@ JS_MARCAR_POR_LABEL = """(args) => {
   for (const lab of nodos) {
     const crudo = (lab.innerText || lab.textContent || '').replace(/\\s+/g, ' ').trim();
     if (!crudo || crudo.length > 90) continue;
-    const linea = crudo.split(' El dato')[0].replace(/\\*$/, '').trim();
-    if (!re.test(linea) && !re.test(crudo)) continue;
-    if (reEx && (reEx.test(linea) || reEx.test(crudo))) continue;
+    const linea = crudo.split(/El (dato|valor)/i)[0].replace(/\\*/g, ' ').replace(/\\s+/g, ' ').trim();
+    if (linea.length > 40) continue;
+    if (!re.test(linea)) continue;
+    if (reEx && reEx.test(linea)) continue;
+    const labR = lab.getBoundingClientRect();
+    const inputEsLink = (el) => {
+      if (!el) return false;
+      if ((el.type || '').toLowerCase() === 'url') return true;
+      let n = el;
+      for (let i = 0; i < 5 && n; i++) {
+        const t = (n.innerText || '').split('\\n')[0].replace(/\\*/g, ' ').trim();
+        if (/^Link$|^Enlace$|^URL$/i.test(t) && t.length < 20) return true;
+        n = n.parentElement;
+      }
+      return false;
+    };
     let input = null;
     const htmlFor = lab.getAttribute && lab.getAttribute('for');
     if (htmlFor) input = document.getElementById(htmlFor);
-    if (!esControl(input)) {
+    if (!esControl(input) || inputEsLink(input)) {
       const box = lab.closest('[class*="field"], [class*="Field"], [class*="form"], [class*="Form"], li, section, div');
       if (box) {
-        input = Array.from(box.querySelectorAll('input, textarea, select, [contenteditable="true"], [role="combobox"]')).find(esControl) || null;
+        const cand = Array.from(box.querySelectorAll('input, textarea, select, [contenteditable="true"], [role="combobox"], [role="textbox"]'))
+          .filter(esControl)
+          .filter((el) => !inputEsLink(el))
+          .filter((el) => el.getBoundingClientRect().top >= labR.top - 12);
+        cand.sort((a, b) => Math.abs(a.getBoundingClientRect().top - labR.bottom) - Math.abs(b.getBoundingClientRect().top - labR.bottom));
+        input = cand[0] || null;
       }
     }
     if (!esControl(input)) {
@@ -3006,11 +3024,131 @@ JS_MARCAR_POR_LABEL = """(args) => {
       }
     }
     if (!esControl(input) || seen.has(input)) continue;
+    if (inputEsLink(input) && /link|enlace|url/i.test(excluir || '')) continue;
     seen.add(input);
     input.setAttribute('data-crc-label-hit', String(n));
     n += 1;
   }
   return n;
+}"""
+
+JS_MARCAR_CAMPOS_TAG = """() => {
+  document.querySelectorAll('[data-crc-tag-hit]').forEach((el) => el.removeAttribute('data-crc-tag-hit'));
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const visibles = (el) => {
+    if (!el) return false;
+    const st = getComputedStyle(el);
+    if (st.display === 'none' || st.visibility === 'hidden') return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && r.height > 0 && r.left >= 240;
+  };
+  const esControl = (el) => {
+    if (!el || !visibles(el)) return false;
+    const tag = (el.tagName || '').toLowerCase();
+    const tipo = (el.type || 'text').toLowerCase();
+    if (tipo === 'url') return false;
+    if (tag === 'textarea') return true;
+    if (tag === 'input') return !['hidden', 'checkbox', 'radio', 'file', 'submit', 'button'].includes(tipo);
+    return el.getAttribute('contenteditable') === 'true' || (el.getAttribute('role') || '') === 'textbox';
+  };
+  const lineaDe = (el) => clean((el.innerText || el.textContent || '')).split(' El dato')[0].replace(/\\*/g, ' ').trim();
+  const esLabelTag = (el) => {
+    const linea = lineaDe(el).split('\\n')[0].trim();
+    return /^Tag$/i.test(linea) && linea.length < 12;
+  };
+  const esLabelLink = (el) => /^Link$|^Enlace$|^URL$/i.test(lineaDe(el).split('\\n')[0].trim());
+  const nodos = [...document.querySelectorAll('label, legend, p, span, div, strong')]
+    .filter(esLabelTag)
+    .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  const seen = new Set();
+  let n = 0;
+  for (const lab of nodos) {
+    const labR = lab.getBoundingClientRect();
+    let input = null;
+    const htmlFor = lab.getAttribute && lab.getAttribute('for');
+    if (htmlFor) {
+      const byId = document.getElementById(htmlFor);
+      if (esControl(byId)) input = byId;
+    }
+    let node = lab;
+    for (let i = 0; i < 8 && node && !input; i++) {
+      const cand = Array.from(node.querySelectorAll('input, textarea, [role="textbox"]'))
+        .filter(esControl)
+        .filter((el) => !seen.has(el))
+        .filter((el) => el.getBoundingClientRect().top >= labR.top - 8)
+        .filter((el) => {
+          const r = el.getBoundingClientRect();
+          return r.top - labR.bottom < 90 && Math.abs(r.left - labR.left) < 80;
+        });
+      if (cand.length) input = cand[0];
+      node = node.parentElement;
+    }
+    if (!input || seen.has(input)) continue;
+    let wrap = input.parentElement;
+    let esLink = (input.type || '').toLowerCase() === 'url';
+    for (let i = 0; i < 4 && wrap && !esLink; i++) {
+      if ([...wrap.querySelectorAll('label, p, span, legend')].some(esLabelLink)
+          && ![...wrap.querySelectorAll('label, p, span, legend')].some(esLabelTag)) {
+        esLink = true;
+      }
+      wrap = wrap.parentElement;
+    }
+    if (esLink) continue;
+    seen.add(input);
+    input.setAttribute('data-crc-tag-hit', String(n));
+    n += 1;
+  }
+  return n;
+}"""
+
+JS_LIMPIAR_LINKS_NO_URL = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const visibles = (el) => {
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && r.height > 0 && r.left >= 200;
+  };
+  const lineaDe = (el) => clean((el.innerText || '')).split(' El dato')[0].replace(/\\*/g, ' ').trim().split('\\n')[0];
+  let n = 0;
+  const labs = [...document.querySelectorAll('label, legend, p, span, strong')].filter((el) => /^Link$|^Enlace$|^URL$/i.test(lineaDe(el)));
+  for (const lab of labs) {
+    const labR = lab.getBoundingClientRect();
+    let node = lab;
+    let input = null;
+    for (let i = 0; i < 6 && node && !input; i++) {
+      input = Array.from(node.querySelectorAll('input, textarea')).find((el) => {
+        if (!visibles(el)) return false;
+        const r = el.getBoundingClientRect();
+        return r.top >= labR.top - 8 && r.top - labR.bottom < 90;
+      }) || null;
+      node = node.parentElement;
+    }
+    if (!input) continue;
+    const val = String(input.value || '').trim();
+    if (!val) continue;
+    if (/^https?:\\/\\//i.test(val) || /\\.[a-z]{2,}(\\/|$)/i.test(val)) continue;
+    const proto = HTMLInputElement.prototype;
+    const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+    const tracker = input._valueTracker;
+    if (tracker && tracker.setValue) tracker.setValue(val);
+    if (desc && desc.set) desc.set.call(input, '');
+    else input.value = '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    n += 1;
+  }
+  return n;
+}"""
+
+JS_CONTAR_ITEMS_FORMULARIO = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const nums = new Set();
+  for (const el of document.querySelectorAll('h1,h2,h3,h4,h5,p,div,legend,span')) {
+    const linea = clean(el.innerText || '').split('\\n')[0];
+    const m = linea.match(/^formulario ítem\\s+(\\d+)$/i);
+    if (m && linea.length < 40) nums.add(m[1]);
+  }
+  return nums.size;
 }"""
 
 
@@ -3557,18 +3695,59 @@ def fill_por_indice_visible(page, index, value) -> bool:
         return False
 
 
+def _locator_es_link(loc) -> bool:
+    """True si el control es el campo Link/URL del ítem de tags."""
+    try:
+        tipo = (loc.get_attribute("type") or "").lower()
+        nombre = " ".join(
+            filter(
+                None,
+                (
+                    loc.get_attribute("name"),
+                    loc.get_attribute("placeholder"),
+                    loc.get_attribute("aria-label"),
+                ),
+            )
+        )
+    except Exception:
+        tipo, nombre = "", ""
+    if tipo == "url" or re.search(r"\b(link|url|href|enlace)\b", nombre, re.I):
+        return True
+    try:
+        return bool(
+            loc.evaluate(
+                """el => {
+                  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+                  const r = el.getBoundingClientRect();
+                  if ((el.type || '').toLowerCase() === 'url') return true;
+                  const labs = [...document.querySelectorAll('label, p, span, legend, strong')];
+                  return labs.some((l) => {
+                    const linea = clean(l.innerText || '').split(' El dato')[0].replace(/\\*/g, ' ').trim();
+                    if (!/^Link$|^Enlace$|^URL$/i.test(linea)) return false;
+                    const b = l.getBoundingClientRect();
+                    return r.top >= b.top - 8 && r.top - b.bottom < 90 && Math.abs(r.left - b.left) < 80;
+                  });
+                }"""
+            )
+        )
+    except Exception:
+        return False
+
+
 def rellenar_por_label(page, patron: str, value, *, nth: int = 0, excluir: str | None = None) -> bool:
     """Rellena el input junto a la etiqueta visible, aunque el placeholder sea «Dale un valor»."""
     if value is None or value == "" or not patron:
         return False
+    evita_link = bool(excluir and re.search(r"link|enlace|url", excluir, re.I))
     for fr in _frames_pagina(page):
         get_by_label = getattr(fr, "get_by_label", None)
-        if get_by_label:
+        if get_by_label and not evita_link:
             try:
                 loc = get_by_label(re.compile(patron, re.I))
                 n = loc.count() if hasattr(loc, "count") else 1
                 if n and nth < n:
-                    if escribir_valor(page, loc.nth(nth) if hasattr(loc, "nth") else loc, value):
+                    item = loc.nth(nth) if hasattr(loc, "nth") else loc
+                    if not _locator_es_link(item) and escribir_valor(page, item, value):
                         return True
             except Exception:
                 pass
@@ -3584,7 +3763,10 @@ def rellenar_por_label(page, patron: str, value, *, nth: int = 0, excluir: str |
             continue
         try:
             loc = fr.locator(f'[data-crc-label-hit="{nth}"]')
-            if escribir_valor(page, loc.first if hasattr(loc, "first") else loc, value):
+            item = loc.first if hasattr(loc, "first") else loc
+            if evita_link and _locator_es_link(item):
+                continue
+            if escribir_valor(page, item, value):
                 return True
         except Exception:
             continue
@@ -3735,13 +3917,44 @@ JS_DUPLICAR_ULTIMO_ITEM = """() => {
   return false;
 }"""
 
+JS_BORRAR_ULTIMO_ITEM = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const heads = [...document.querySelectorAll('h1,h2,h3,h4,h5,p,div,legend,span')].filter((el) => {
+    const linea = clean(el.innerText || '').split('\\n')[0];
+    return /^formulario ítem\\s+\\d+/i.test(linea) && linea.length < 60;
+  });
+  const h = heads[heads.length - 1];
+  if (!h) return false;
+  let box = h.parentElement;
+  for (let i = 0; i < 6 && box && box !== document.body; i++) {
+    const r = box.getBoundingClientRect();
+    if (r.height > 80 && r.width > 200) break;
+    box = box.parentElement;
+  }
+  if (!box) return false;
+  const textoDe = (el) => (
+    (el.getAttribute('aria-label') || '') + ' ' + (el.getAttribute('title') || '') + ' ' + (el.innerText || '')
+  ).toLowerCase();
+  const candidatos = [...box.querySelectorAll('button, [role="button"], [aria-label], [title]')];
+  const del = candidatos.find((el) => /elimina|delete|trash|basura|borrar/.test(textoDe(el)) && !/duplic|clone/.test(textoDe(el)));
+  if (del) { (del.closest('button, [role="button"]') || del).click(); return 'borrar'; }
+  return false;
+}"""
+
 
 def _marcar_items_formulario(page) -> tuple[object | None, int]:
     for fr in _frames_pagina(page):
         try:
-            n = int(fr.evaluate(JS_MARCAR_INPUTS_ITEM) or 0)
+            n = int(fr.evaluate(JS_MARCAR_CAMPOS_TAG) or 0)
         except (TypeError, ValueError):
             continue
+        except Exception:
+            continue
+        if n:
+            return fr, n
+    for fr in _frames_pagina(page):
+        try:
+            n = int(fr.evaluate(JS_MARCAR_INPUTS_ITEM) or 0)
         except Exception:
             continue
         if n:
@@ -3749,12 +3962,35 @@ def _marcar_items_formulario(page) -> tuple[object | None, int]:
     return None, 0
 
 
+def _contar_items_formulario(page) -> int:
+    for fr in _frames_pagina(page):
+        try:
+            n = int(fr.evaluate(JS_CONTAR_ITEMS_FORMULARIO) or 0)
+        except Exception:
+            continue
+        if n:
+            return n
+    _, n = _marcar_items_formulario(page)
+    return n
+
+
+def limpiar_links_que_no_son_url(page) -> int:
+    total = 0
+    for fr in _frames_pagina(page):
+        try:
+            n = int(fr.evaluate(JS_LIMPIAR_LINKS_NO_URL) or 0)
+        except Exception:
+            continue
+        if n:
+            print(f"  · Limpié {n} Link que no era URL (el tag iba ahí).")
+            total += n
+    return total
+
+
 def asegurar_n_items_tags(page, n: int) -> int:
-    _, actuales = _marcar_items_formulario(page)
-    if actuales < 1:
-        actuales = contar_por_label(page, r"^Tag\b", excluir=r"link|enlace")
+    actuales = _contar_items_formulario(page)
     intentos = 0
-    while actuales < n and intentos < n + 4:
+    while actuales < n and intentos < n + 2:
         if not click_agregar_item(page, preferir_ultimo=True):
             break
         intentos += 1
@@ -3762,9 +3998,24 @@ def asegurar_n_items_tags(page, n: int) -> int:
             page.wait_for_timeout(350)
         except Exception:
             pass
-        _, actuales = _marcar_items_formulario(page)
-        if actuales < 1:
-            actuales = contar_por_label(page, r"^Tag\b", excluir=r"link|enlace")
+        actuales = _contar_items_formulario(page)
+    while actuales > n and intentos < 8:
+        borrado = False
+        for fr in _frames_pagina(page):
+            try:
+                if fr.evaluate(JS_BORRAR_ULTIMO_ITEM):
+                    borrado = True
+                    break
+            except Exception:
+                continue
+        if not borrado:
+            break
+        intentos += 1
+        try:
+            page.wait_for_timeout(300)
+        except Exception:
+            pass
+        actuales = _contar_items_formulario(page)
     return actuales
 
 
@@ -3780,10 +4031,14 @@ def rellenar_items_formulario(page, valores: list[str]) -> int:
     for i, valor in enumerate(valores):
         ok = False
         try:
-            loc = contexto.locator(f'[data-crc-item-hit="{i}"]')
+            loc = contexto.locator(f'[data-crc-tag-hit="{i}"]')
+            if not (hasattr(loc, "count") and loc.count()):
+                loc = contexto.locator(f'[data-crc-item-hit="{i}"]')
             item = loc.first if hasattr(loc, "first") else loc
             if hasattr(loc, "count") and loc.count():
-                if escribir_valor(page, item, valor):
+                if _locator_es_link(item):
+                    ok = False
+                elif escribir_valor(page, item, valor):
                     ok = True
                 elif _tipear_teclado(page, item, valor):
                     ok = True
@@ -3805,13 +4060,17 @@ def fill_lista_tags(page, tags: list[str]) -> int:
     if not tags:
         return 0
     print("  · tags del Word: " + ", ".join(tags))
+    print("  · Escribo en Tag* (nunca en Link).")
+    limpiar_links_que_no_son_url(page)
     asegurar_n_items_tags(page, len(tags))
-    excluir = r"título de la sección|ingrediente|meta|descripci|link|enlace"
-    for patron in (r"^Tag\b", r"^(tags?|etiquetas?)\b", r"^nombre\b", r"^valor\b"):
-        n = fill_repetidos_por_label(page, patron, tags, excluir=excluir)
-        if n:
-            return n
-    return rellenar_items_formulario(page, tags)
+    n = rellenar_items_formulario(page, tags)
+    if n:
+        limpiar_links_que_no_son_url(page)
+        return n
+    excluir = r"título de la sección|ingrediente|meta|descripci|link|enlace|url"
+    n = fill_repetidos_por_label(page, r"^Tag$", tags, excluir=excluir)
+    limpiar_links_que_no_son_url(page)
+    return n
 
 
 def fill_inputs_texto_en_orden(page, valores: list[str]) -> int:
