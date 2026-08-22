@@ -265,7 +265,11 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIn("expandir_item_ingrediente", src_item)
         self.assertIn("crcCabezalesIngrediente", self.explorar.JS_EXPANDIR_ITEM_INGREDIENTE)
         self.assertIn("crcCajasIngrediente", self.explorar.JS_FOCO_INGREDIENTE)
+        self.assertIn("crcInputsIngredienteVisibles", self.explorar.JS_FOCO_INGREDIENTE)
         self.assertIn("crcEsLabelIngredienteExacto", self.explorar.JS_FOCO_INGREDIENTE)
+        self.assertIn("crcExpandirTodosItems", self.explorar.JS_EXPANDIR_TODOS_ITEMS)
+        self.assertIn("tienes un borrador", self.explorar.JS_RESOLVER_BORRADOR.lower())
+        self.assertIn("No pude escribir los ingredientes", src)
         self.assertIn("interno", self.explorar.JS_CLICK_AGREGAR_INGREDIENTE)
         self.assertIn("Agregar nuevo ítem", " ".join(self.explorar.BOTONES_AGREGAR))
 
@@ -830,6 +834,15 @@ class JsIngredienteExactoTests(unittest.TestCase):
             browser = pw.chromium.launch(headless=True)
             page = browser.new_page()
             page.goto(html.as_uri())
+            self.assertEqual(
+                page.evaluate(self.explorar.JS_CONTAR_INGREDIENTES_INTERNOS),
+                0,
+                "cerrado no debe ver Ingrediente*",
+            )
+            self.assertEqual(page.evaluate(self.explorar.JS_RESOLVER_BORRADOR), "retomar")
+            self.assertEqual(page.locator("#borrador").count(), 0)
+            abierto = page.evaluate(self.explorar.JS_EXPANDIR_TODOS_ITEMS)
+            self.assertGreaterEqual(abierto.get("cajas"), 3, abierto)
             n = page.evaluate(self.explorar.JS_CONTAR_INGREDIENTES_INTERNOS)
             self.assertEqual(n, 3, "wrappers «Ingrediente Dale un valor» no deben contar")
             for i, texto in enumerate(lineas):
@@ -843,6 +856,33 @@ class JsIngredienteExactoTests(unittest.TestCase):
                 """() => [...document.querySelectorAll('input[id^="ing-"]')].map((el) => el.value)"""
             )
             self.assertEqual(valores, lineas)
+            browser.close()
+
+    def test_fill_lista_retoma_borrador_abre_y_escribe(self):
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError:
+            self.skipTest("playwright no instalado")
+        html = (
+            Path(__file__).resolve().parent / "fixtures" / "bm-lista-ingredientes.html"
+        )
+        items = [
+            {"linea": "600 g de filete de salmón"},
+            {"linea": "2 paltas"},
+            {"linea": "1 limón"},
+        ]
+        with sync_playwright() as pw:
+            browser = pw.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(html.as_uri())
+            n = self.explorar.fill_lista_acordeones(page, items, "ingredientes")
+            self.assertEqual(n, 3)
+            valores = page.evaluate(
+                """() => [...document.querySelectorAll('input[id^="ing-"]')].map((el) => el.value)"""
+            )
+            self.assertEqual(valores, [it["linea"] for it in items])
+            titulo = page.evaluate("() => document.getElementById('titulo-seccion').value")
+            self.assertEqual(titulo, "Ingredientes")
             browser.close()
 
 

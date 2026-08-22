@@ -3518,7 +3518,6 @@ function crcEsLabelIngredienteExacto(el) {
   if (!/^Ingrediente$/i.test(crcEtiquetaIngrediente(el))) return false;
   const r = el.getBoundingClientRect();
   if (r.width < 4 || r.height < 4 || r.left < 40) return false;
-  if (r.height > 48) return false;
   if (r.width * r.height > 12000) return false;
   return true;
 }
@@ -3582,6 +3581,55 @@ function crcCabezalesIngrediente() {
     heads.push(h);
   }
   return heads;
+}
+function crcCercaTituloSeccion(el) {
+  if (!el) return false;
+  const r = el.getBoundingClientRect();
+  return crcDeepAll('label, legend, p, span, strong', document).some((l) => {
+    if (!/^Título de la sección$/i.test(crcEtiquetaIngrediente(l))) return false;
+    const b = l.getBoundingClientRect();
+    return r.top >= b.top - 8 && r.top < b.bottom + 90;
+  });
+}
+function crcInputsIngredienteVisibles() {
+  const via = crcCajasIngrediente();
+  if (via.length) return via.map((c) => c.el);
+  const inputs = crcDeepAll('input, textarea, [role="textbox"]', document).filter((el) => {
+    if (!crcEsCajaTexto(el) || crcEsLinkCaja(el)) return false;
+    const tipo = (el.type || 'text').toLowerCase();
+    if (['checkbox', 'radio', 'hidden', 'file'].includes(tipo)) return false;
+    if (crcCercaTituloSeccion(el)) return false;
+    return true;
+  });
+  inputs.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  return inputs;
+}
+function crcExpandirTodosItems() {
+  let clicks = 0;
+  const clickHead = (h) => {
+    let exp = h.closest && h.closest('[aria-expanded]');
+    if (!exp) {
+      let n = h;
+      for (let i = 0; i < 8 && n && !exp; i++) {
+        if (n.getAttribute && n.getAttribute('aria-expanded') != null) exp = n;
+        else exp = n.querySelector && n.querySelector('[aria-expanded]');
+        n = n.parentElement;
+      }
+    }
+    const ya = exp && String(exp.getAttribute('aria-expanded') || '') === 'true';
+    if (ya) return;
+    const chevron = (exp && exp.querySelector && exp.querySelector('[class*="chevron"], [class*="arrow"], svg')) || null;
+    try { (exp || h).click(); clicks += 1; } catch (e) {}
+    if (chevron && chevron !== exp) { try { chevron.click(); clicks += 1; } catch (e) {} }
+    if (!exp) { try { h.click(); } catch (e) {} }
+  };
+  for (const h of crcTodosCabezalesItem()) clickHead(h);
+  for (const el of document.querySelectorAll('[aria-expanded="false"]')) {
+    const r = el.getBoundingClientRect();
+    if (r.left < 40 || r.width < 8 || r.height < 8) continue;
+    try { el.click(); clicks += 1; } catch (e) {}
+  }
+  return { clicks, heads: crcTodosCabezalesItem().length, cajas: crcInputsIngredienteVisibles().length };
 }"""
 
 JS_MARCAR_TAGS_POR_ITEM = (
@@ -3674,9 +3722,47 @@ JS_CONTAR_INGREDIENTES_INTERNOS = (
     "() => {\n"
     + JS_CRC_LABELS_TAG_LINK
     + """
-  return crcCajasIngrediente().length;
+  return crcInputsIngredienteVisibles().length;
 }"""
 )
+
+JS_EXPANDIR_TODOS_ITEMS = (
+    "() => {\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  return crcExpandirTodosItems();
+}"""
+)
+
+JS_RESOLVER_BORRADOR = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const cuerpo = (document.body && document.body.innerText) || '';
+  if (!/tienes un borrador/i.test(cuerpo)) return false;
+  const cajas = [...document.querySelectorAll('div, section, aside, p, span')].filter((el) => {
+    const t = clean(el.innerText || '');
+    return /tienes un borrador/i.test(t) && t.length < 240;
+  });
+  cajas.sort((a, b) => clean(a.innerText || '').length - clean(b.innerText || '').length);
+  const box = cajas[0] || document.body;
+  const nodos = [...box.querySelectorAll('button, [role="button"], a, span, i, svg')];
+  const textoDe = (el) => clean(
+    (el.getAttribute && (el.getAttribute('aria-label') || el.getAttribute('title') || '')) + ' ' + (el.innerText || el.textContent || '')
+  );
+  const ok = nodos.find((el) => {
+    const t = textoDe(el);
+    return /retomar|resume|aceptar|aplicar/i.test(t) || /^(✓|✔|☑)$/.test(t);
+  });
+  if (ok) {
+    (ok.closest('button, [role="button"], a') || ok).click();
+    return 'retomar';
+  }
+  const icons = nodos.filter((el) => {
+    const r = el.getBoundingClientRect();
+    return r.width > 6 && r.height > 6 && r.width < 52 && r.height < 52;
+  });
+  if (icons[0]) { icons[0].click(); return 'icono'; }
+  return false;
+}"""
 
 JS_LEER_INGREDIENTE = (
     "(indice) => {\n"
@@ -3795,9 +3881,8 @@ JS_FOCO_INGREDIENTE = (
     + """
   const indice = args.indice;
   const valor = args.valor == null ? '' : String(args.valor);
-  const cajas = crcCajasIngrediente();
-  const caja = cajas[indice];
-  const el = caja && caja.el;
+  const cajas = crcInputsIngredienteVisibles();
+  const el = cajas[indice];
   if (!el) return { ok: false, reason: 'sin-caja', n: cajas.length };
   if (el.setAttribute) el.setAttribute('data-crc-ing-hit', String(indice));
   try { el.click(); } catch (e) {}
@@ -5252,6 +5337,82 @@ def _contar_ingredientes_internos(page) -> int:
     return 0
 
 
+def resolver_borrador_editor(page) -> bool:
+    """El aviso «Tienes un borrador» tapa el formulario; retomar con ✓."""
+    if "tienes un borrador" not in texto_cuerpo(page).lower():
+        return False
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_RESOLVER_BORRADOR)
+        except Exception:
+            out = None
+        if out:
+            print(f"  · Borrador: retomo ({out})")
+            try:
+                page.wait_for_timeout(700)
+            except Exception:
+                pass
+            return True
+        get_by_text = getattr(fr, "get_by_text", None)
+        if not get_by_text:
+            continue
+        try:
+            aviso = get_by_text(re.compile(r"Tienes un borrador", re.I))
+            if hasattr(aviso, "count") and aviso.count():
+                for pat in (r"^[✓✔]$", r"retomar", r"^✓"):
+                    loc = aviso.locator("xpath=ancestor::*[1]").get_by_text(
+                        re.compile(pat, re.I)
+                    )
+                    if loc.count():
+                        loc.first.click(timeout=2_000)
+                        print("  · Borrador: retomo (clic ✓)")
+                        page.wait_for_timeout(700)
+                        return True
+        except Exception:
+            continue
+    return False
+
+
+def expandir_todos_items_formulario(page) -> dict:
+    """Abre todos los «Formulario Ítem N» (sección + ingredientes). Si están cerrados no hay Ingrediente*."""
+    ultimo = {"clicks": 0, "heads": 0, "cajas": 0}
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_EXPANDIR_TODOS_ITEMS)
+        except Exception:
+            out = None
+        if isinstance(out, dict):
+            ultimo = out
+            try:
+                page.wait_for_timeout(400)
+            except Exception:
+                pass
+    if _contar_ingredientes_internos(page) > 0:
+        return ultimo
+    for nro in range(1, 4):
+        for fr in _frames_pagina(page):
+            get_by_text = getattr(fr, "get_by_text", None)
+            if not get_by_text:
+                continue
+            try:
+                loc = get_by_text(re.compile(rf"^Formulario Ítem\s+{nro}$", re.I))
+                if hasattr(loc, "count") and loc.count():
+                    loc.first.click(timeout=1_500)
+                    page.wait_for_timeout(250)
+                    if _contar_ingredientes_internos(page) > 0:
+                        return ultimo
+            except Exception:
+                continue
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_EXPANDIR_TODOS_ITEMS)
+        except Exception:
+            out = None
+        if isinstance(out, dict):
+            ultimo = out
+    return ultimo
+
+
 def click_agregar_ingrediente_interno(page) -> bool:
     """Pulsa el + Agregar de la lista Ingredientes (el de arriba), no el de una sección nueva."""
     for fr in _frames_pagina(page):
@@ -5282,17 +5443,20 @@ def click_agregar_ingrediente_interno(page) -> bool:
 def asegurar_n_ingredientes(page, n: int) -> int:
     actuales = _contar_ingredientes_internos(page)
     if actuales == 0:
+        expandir_todos_items_formulario(page)
         expandir_item_formulario(page, 0)
         try:
-            page.wait_for_timeout(300)
+            page.wait_for_timeout(400)
         except Exception:
             pass
         actuales = _contar_ingredientes_internos(page)
+        print(f"  · Tras abrir acordeones: {actuales} Ingrediente* visibles")
     intentos = 0
     while actuales < n and intentos < n + 2:
         if not click_agregar_ingrediente_interno(page):
             break
         intentos += 1
+        expandir_todos_items_formulario(page)
         actuales = _contar_ingredientes_internos(page)
     return actuales
 
@@ -5338,6 +5502,19 @@ def escribir_ingrediente_asterisco(page, indice: int, valor: str) -> bool:
                 return True
         except Exception:
             pass
+        get_by_label = getattr(fr, "get_by_label", None)
+        if get_by_label:
+            try:
+                loc = get_by_label(re.compile(r"^Ingrediente(\s*\*)?$", re.I))
+                n = loc.count() if hasattr(loc, "count") else 0
+                if n and indice < n:
+                    item = loc.nth(indice)
+                    if escribir_valor(page, item, valor, exigir_lienzo=False) or _tipear_teclado(
+                        page, item, valor
+                    ):
+                        return True
+            except Exception:
+                pass
     return rellenar_por_label(
         page,
         r"^Ingrediente$",
@@ -5373,6 +5550,12 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
     if not items:
         return 0
     if tipo == "ingredientes":
+        resolver_borrador_editor(page)
+        info = expandir_todos_items_formulario(page)
+        print(
+            f"  · Abro Formulario Ítem (cerrado no hay Ingrediente*): "
+            f"cabezales={info.get('heads')} cajas={info.get('cajas')}"
+        )
         rellenar_por_label(
             page,
             r"Título de la sección",
@@ -5380,6 +5563,7 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
             nth=0,
         )
         print("  · Completo la lista interna Ingrediente* (no una sección nueva).")
+        expandir_todos_items_formulario(page)
         asegurar_n_ingredientes(page, len(items))
         llenados_dir = 0
         for i, item in enumerate(items):
@@ -5600,7 +5784,10 @@ def fill_from_receta(
         if n_ing_abierto:
             resultados["ingredientes"] = True
             print(f"  ✓ ingredientes: {n_ing_abierto}/{len(ings_abiertos)} ítems")
-        guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+        else:
+            print("  · No pude escribir los ingredientes. No pulso Volver ni abro otro bloque.")
+            return False
     if editor_actual(page) is None and bloque_ya_cargado(page, "cabecera"):
         print("  · Cabecera ya tiene contenido en el lienzo. Sigo con tags e ingredientes.")
         resultados["titulo"] = True
@@ -5665,12 +5852,16 @@ def fill_from_receta(
         if n_ing:
             resultados["ingredientes"] = True
             print(f"  ✓ ingredientes: {n_ing}/{len(ings)} ítems de acordeón")
+            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
         elif editor_actual(page) is None and not lienzo_con_bloques_cms(page):
             resultados["ingredientes"] = fill(
                 "field_ingredientes",
                 "\n".join(linea_ingrediente(i) for i in ings if linea_ingrediente(i)),
             )
-        guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+        else:
+            print("  · No pude escribir los ingredientes. No pulso Volver ni abro otro bloque.")
+            return bool(sum(1 for v in resultados.values() if v))
     else:
         resultados.setdefault("ingredientes", False)
 
