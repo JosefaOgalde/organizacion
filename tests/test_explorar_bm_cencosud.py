@@ -627,8 +627,8 @@ class ExplorarBmTests(unittest.TestCase):
                 return Loc([])
 
         self.assertTrue(self.modulo.desplegable_vista_default(ConDefault()))
-        self.assertFalse(self.modulo.desplegable_vista_default(SoloPublicada()))
-        self.assertTrue(self.modulo.avisar_si_salio_de_default(SoloPublicada()))
+        self.assertIsNone(self.modulo.desplegable_vista_default(SoloPublicada()))
+        self.assertFalse(self.modulo.avisar_si_salio_de_default(SoloPublicada()))
         self.assertFalse(self.modulo.avisar_si_salio_de_default(ConDefault()))
 
     def test_clic_editar_indice_bajo_la_barra(self):
@@ -650,6 +650,30 @@ class ExplorarBmTests(unittest.TestCase):
         runtime.clicks.clear()
         self.assertTrue(self.modulo._clic_editar_indice(Pagina(), 1))
         self.assertEqual(runtime.clicks, ["editar-tags"])
+
+    def test_editor_en_iframe_aunque_el_chrome_diga_proyectos(self):
+        class FrameEditor:
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "h1,h2,h3" in texto:
+                    return "Edición de Cabecera"
+                if "innerText" in texto:
+                    return "Edición de Cabecera Título Duración Dificultad Porciones"
+                return ""
+
+        class Pagina:
+            def __init__(self):
+                self.frames = [FrameEditor()]
+
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "h1,h2,h3" in texto:
+                    return "Recetas_Jumbo | web"
+                if "innerText" in texto:
+                    return "Proyectos JUMBO Versión publicada default"
+                return ""
+
+        self.assertEqual(self.modulo.editor_actual(Pagina()), "cabecera")
 
     def test_editor_por_campos_detecta_cabecera(self):
         class Pagina:

@@ -584,7 +584,11 @@ def _y_bajo_barra_vistas(page) -> float:
 
 
 def desplegable_vista_default(page) -> bool | None:
-    """True si el combo de vistas dice default. False si está vacío (otra vista)."""
+    """True si estamos en default. «Versión publicada» es solo la etiqueta del combo."""
+    if _contar_placeholder_vacio(page) >= 3:
+        return True
+    if recoger_ids_componentes(page):
+        return True
     get_by_text = getattr(page, "get_by_text", None)
     if not get_by_text:
         return None
@@ -597,19 +601,17 @@ def desplegable_vista_default(page) -> bool | None:
         box = _bounding_box(loc.nth(i))
         if not box:
             continue
-        if float(box.get("y") or 0) <= 150 and float(box.get("height") or 0) <= 48:
+        if float(box.get("height") or 0) <= 48:
             return True
-    try:
-        pub = get_by_text("Versión publicada", exact=False).count()
-    except Exception:
-        pub = 0
-    if pub:
-        return False
     return None
 
 
 def avisar_si_salio_de_default(page) -> bool:
-    """True = ya no estamos en default; no seguir (la cabecera llena queda atrás)."""
+    """True = no hay lienzo default ni editor; no seguir."""
+    if _contar_placeholder_vacio(page) >= 3 or recoger_ids_componentes(page):
+        return False
+    if editor_actual(page) is not None:
+        return False
     if desplegable_vista_default(page) is not False:
         return False
     print(
@@ -661,6 +663,78 @@ def _clic_editar_indice(page, index: int) -> bool:
         return False
 
 
+def _clic_svg_bloque_vacio(page, index: int) -> bool:
+    """Lápiz SVG del N-ésimo «Edita este componente vacío», no el texto del centro."""
+    get_by_text = getattr(page, "get_by_text", None)
+    if not get_by_text:
+        return False
+    y_min = _y_bajo_barra_vistas(page)
+    try:
+        try:
+            hints = get_by_text("Edita este componente vacío desde el lápiz", exact=False)
+        except TypeError:
+            hints = get_by_text("Edita este componente vacío desde el lápiz")
+        n = hints.count() if hasattr(hints, "count") else 0
+    except Exception:
+        n = 0
+    if n == 0:
+        return False
+    cards: list[tuple[float, object, dict]] = []
+    for i in range(n):
+        item = hints.nth(i)
+        box = _bounding_box(item)
+        if box is None or float(box.get("x") or 0) < 80:
+            continue
+        cards.append((float(box["y"]), item, box))
+    cards.sort(key=lambda p: p[0])
+    uniq: list[tuple[float, object, dict]] = []
+    for y, item, box in cards:
+        if any(abs(y - uy) < 16 for uy, _, _ in uniq):
+            continue
+        uniq.append((y, item, box))
+    if index < 0 or index >= len(uniq):
+        return False
+    item, box = uniq[index][1], uniq[index][2]
+    try:
+        fila = item.locator("xpath=ancestor::*[count(.//svg)>=1][1]")
+        svgs = fila.locator("svg")
+        ns = svgs.count() if hasattr(svgs, "count") else 0
+        derechos: list[tuple[float, object]] = []
+        cx = float(box["x"]) + float(box.get("width") or 0) * 0.4
+        for j in range(min(ns, 16)):
+            nodo = svgs.nth(j)
+            sbox = _bounding_box(nodo)
+            if not sbox:
+                continue
+            if float(sbox.get("y") or 0) < y_min:
+                continue
+            if not (8 <= float(sbox.get("width") or 0) <= 40):
+                continue
+            if not (8 <= float(sbox.get("height") or 0) <= 40):
+                continue
+            if float(sbox["x"]) < cx:
+                continue
+            derechos.append((float(sbox["x"]), nodo))
+        derechos.sort(key=lambda p: p[0])
+        if derechos:
+            derechos[0][1].click(timeout=3_000)
+            return True
+    except Exception:
+        pass
+    mouse = getattr(page, "mouse", None)
+    if not mouse:
+        return False
+    try:
+        fila = item.locator("xpath=ancestor::*[contains(., 'Id:')][1]")
+        fbox = _bounding_box(fila) or box
+        x = float(fbox["x"]) + float(fbox["width"]) - 40
+        y = max(y_min, float(fbox["y"]) + 16)
+        mouse.click(x, y)
+        return True
+    except Exception:
+        return False
+
+
 def _contar_placeholder_vacio(page) -> int:
     get_by_text = getattr(page, "get_by_text", None)
     if not get_by_text:
@@ -702,12 +776,16 @@ def _eval_en_frames(page, script, arg=None):
 def _editor_confirmado(page, clave: str) -> bool:
     _esperar_editor(page)
     if editor_actual(page) == clave:
+        print(f"  · Editor «{clave}» abierto")
         return True
     try:
-        page.wait_for_timeout(700)
+        page.wait_for_timeout(900)
     except Exception:
         pass
-    return editor_actual(page) == clave
+    if editor_actual(page) == clave:
+        print(f"  · Editor «{clave}» abierto")
+        return True
+    return False
 
 
 def _restaurar_si_lienzo_perdido(page, url_antes: str | None) -> None:
@@ -751,6 +829,8 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     if avisar_si_salio_de_default(page):
         return False
     if intentar(_clic_editar_indice(page, idx)):
+        return True
+    if intentar(_clic_svg_bloque_vacio(page, idx)):
         return True
     comp_id = ids.get(clave)
     if comp_id and _abrir_por_id_visible(page, clave, comp_id):
@@ -2093,38 +2173,44 @@ TITULOS_EDITOR = {
 }
 
 
+JS_TEXTO_EDITOR = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const hs = [...document.querySelectorAll('h1,h2,h3,h4')]
+    .map((el) => clean(el.innerText))
+    .filter(Boolean);
+  const extra = clean(document.body && document.body.innerText)
+    .split('\\n')
+    .map((s) => s.trim())
+    .filter((s) => /edici[oó]n de|editar /i.test(s))
+    .slice(0, 10);
+  return [document.title || '', ...hs, ...extra].join(' | ');
+}"""
+
+
+def _textos_por_frame(page, script: str) -> list[str]:
+    partes: list[str] = []
+    for fr in _frames_pagina(page):
+        try:
+            raw = fr.evaluate(script)
+        except Exception:
+            continue
+        if isinstance(raw, str) and raw.strip():
+            partes.append(raw)
+    return partes
+
+
 def texto_cuerpo(page) -> str:
-    try:
-        raw = page.evaluate("() => (document.body && document.body.innerText) || ''")
-    except Exception:
-        return ""
-    return raw if isinstance(raw, str) else ""
+    return "\n".join(
+        _textos_por_frame(page, "() => (document.body && document.body.innerText) || ''")
+    )
 
 
 def texto_editor(page) -> str:
-    try:
-        raw = page.evaluate(
-            """() => {
-              const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
-              const hs = [...document.querySelectorAll('h1,h2,h3,h4')]
-                .map((el) => clean(el.innerText))
-                .filter(Boolean);
-              const extra = clean(document.body && document.body.innerText)
-                .split('\\n')
-                .map((s) => s.trim())
-                .filter((s) => /edici[oó]n de|editar /i.test(s))
-                .slice(0, 10);
-              return [document.title || '', ...hs, ...extra].join(' | ');
-            }"""
-        )
-    except Exception:
-        return ""
-    return raw if isinstance(raw, str) else ""
+    return " | ".join(_textos_por_frame(page, JS_TEXTO_EDITOR))
 
 
-def editor_por_campos(page) -> str | None:
-    """El panel del BM a veces no pone «Edición de …» en un h1."""
-    t = texto_cuerpo(page).lower()
+def _editor_por_texto(t: str) -> str | None:
+    t = (t or "").lower()
     if not t or len(t) < 20:
         return None
     if "edita este componente vac" in t and "dificultad" not in t:
@@ -2141,6 +2227,17 @@ def editor_por_campos(page) -> str | None:
         return "seo"
     if re.search(r"\btags?\b", t) and ("agregar" in t or "etiqueta" in t) and "dificultad" not in t:
         return "tags"
+    return None
+
+
+def editor_por_campos(page) -> str | None:
+    """El panel del BM a veces no pone «Edición de …» en un h1. Mira cada iframe."""
+    for t in _textos_por_frame(
+        page, "() => (document.body && document.body.innerText) || ''"
+    ):
+        clave = _editor_por_texto(t)
+        if clave:
+            return clave
     return None
 
 
