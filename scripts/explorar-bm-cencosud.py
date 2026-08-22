@@ -558,14 +558,52 @@ def _eval_en_frames(page, script, arg=None):
     return ultimo
 
 
+def _editor_confirmado(page, clave: str) -> bool:
+    _esperar_editor(page)
+    if editor_actual(page) == clave:
+        return True
+    try:
+        page.wait_for_timeout(700)
+    except Exception:
+        pass
+    return editor_actual(page) == clave
+
+
+def _restaurar_si_lienzo_perdido(page, url_antes: str | None) -> None:
+    if editor_actual(page) or lienzo_con_bloques_cms(page):
+        return
+    if not url_antes or not hasattr(page, "goto"):
+        return
+    print("  · El lienzo se fue (página en blanco). Vuelvo a la ficha.")
+    try:
+        page.goto(url_antes, wait_until="domcontentloaded", timeout=60_000)
+        page.wait_for_timeout(800)
+    except TypeError:
+        try:
+            page.goto(url_antes)
+        except Exception:
+            pass
+    except Exception:
+        pass
+
+
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
-    """Clic en el lápiz del lienzo (icono derecho del bloque). Nunca paleta ni basurero."""
+    """Clic en el lápiz. Solo True si aparece «Edición de …» de ese bloque."""
     limpiar_busca_paleta(page)
     resolver_modal_cambios(page)
+    url_antes = url_actual(page)
+
+    def intentar(ok_clic: bool) -> bool:
+        if not ok_clic:
+            return False
+        if _editor_confirmado(page, clave):
+            return True
+        _restaurar_si_lienzo_perdido(page, url_antes)
+        return False
+
     if selector_guardado and not selector_es_generico(selector_guardado):
         try:
-            if clic_locator_en_lienzo(page, selector_guardado):
-                _esperar_editor(page)
+            if intentar(clic_locator_en_lienzo(page, selector_guardado)):
                 return True
         except Exception:
             pass
@@ -577,30 +615,24 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     idx = next(i for i, c in enumerate(COMPONENTES_CMS) if c["clave"] == clave)
     payload = {"aliases": aliases, "index": idx}
 
-    if _clic_lapiz_por_fila(page, aliases):
-        _esperar_editor(page)
+    if intentar(_clic_lapiz_por_fila(page, aliases)):
         return True
-    if _clic_lapiz_placeholder(page, idx):
-        _esperar_editor(page)
+    if intentar(_clic_lapiz_placeholder(page, idx)):
         return True
 
     clicked = _eval_en_frames(page, JS_CLIC_LAPIZ, payload)
-    if resultado_clic_lapiz_ok(clicked):
-        _esperar_editor(page)
+    if intentar(resultado_clic_lapiz_ok(clicked)):
         return True
     try:
         page.wait_for_timeout(700)
     except Exception:
         pass
-    if _clic_lapiz_por_fila(page, aliases):
-        _esperar_editor(page)
+    if intentar(_clic_lapiz_por_fila(page, aliases)):
         return True
-    if _clic_lapiz_placeholder(page, idx):
-        _esperar_editor(page)
+    if intentar(_clic_lapiz_placeholder(page, idx)):
         return True
     clicked = _eval_en_frames(page, JS_CLIC_LAPIZ, payload)
-    if resultado_clic_lapiz_ok(clicked):
-        _esperar_editor(page)
+    if intentar(resultado_clic_lapiz_ok(clicked)):
         return True
     if isinstance(clicked, dict):
         titulos = clicked.get("titulos") or []
@@ -608,8 +640,7 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
             f"  · Bloques vistos: {clicked.get('n', 0)} {titulos}"
             + (f" ({clicked.get('error')})" if clicked.get("error") else "")
         )
-        if _clic_lapiz_por_punto(page, clicked):
-            _esperar_editor(page)
+        if intentar(_clic_lapiz_por_punto(page, clicked)):
             return True
     return False
 
@@ -1623,24 +1654,47 @@ def duracion_receta(receta: dict) -> str | None:
 
 
 TITULOS_EDITOR = {
-    "cabecera": re.compile(r"edici[oó]n de\s+(cabecera|header)", re.I),
-    "tags": re.compile(r"edici[oó]n de\s+(lista\s+)?(tags?|etiquetas?)", re.I),
-    "ingredientes": re.compile(r"edici[oó]n de\s+lista\s+ingredientes|list_ingredients", re.I),
-    "instrucciones": re.compile(
-        r"edici[oó]n de\s+lista\s+de\s+instrucciones|list_instructions", re.I
+    "cabecera": re.compile(
+        r"edici[oó]n de\s+(cabecera|header)|editar\s+(la\s+)?(cabecera|header)", re.I
     ),
-    "seo": re.compile(r"edici[oó]n de\s+seo", re.I),
+    "tags": re.compile(
+        r"edici[oó]n de\s+(lista\s+)?(tags?|etiquetas?)|editar\s+(lista\s+)?(tags?|etiquetas?)",
+        re.I,
+    ),
+    "ingredientes": re.compile(
+        r"edici[oó]n de\s+lista\s+ingredientes|editar\s+lista\s+ingredientes|list_ingredients",
+        re.I,
+    ),
+    "instrucciones": re.compile(
+        r"edici[oó]n de\s+lista\s+de\s+instrucciones|editar\s+lista\s+de\s+instrucciones|list_instructions",
+        re.I,
+    ),
+    "seo": re.compile(r"edici[oó]n de\s+seo|editar\s+seo", re.I),
 }
+
+
+def texto_cuerpo(page) -> str:
+    try:
+        raw = page.evaluate("() => (document.body && document.body.innerText) || ''")
+    except Exception:
+        return ""
+    return raw if isinstance(raw, str) else ""
 
 
 def texto_editor(page) -> str:
     try:
         raw = page.evaluate(
             """() => {
-              const hs = [...document.querySelectorAll('h1,h2,h3')]
-                .map((el) => (el.innerText || '').replace(/\\s+/g, ' ').trim())
+              const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+              const hs = [...document.querySelectorAll('h1,h2,h3,h4')]
+                .map((el) => clean(el.innerText))
                 .filter(Boolean);
-              return [document.title || '', ...hs].join(' | ');
+              const extra = clean(document.body && document.body.innerText)
+                .split('\\n')
+                .map((s) => s.trim())
+                .filter((s) => /edici[oó]n de|editar /i.test(s))
+                .slice(0, 10);
+              return [document.title || '', ...hs, ...extra].join(' | ');
             }"""
         )
     except Exception:
@@ -1658,11 +1712,21 @@ def editor_actual(page) -> str | None:
     return None
 
 
+def parece_cms_vacio(page) -> bool:
+    """Chrome del BM sin lienzo de 5 bloques ni editor (página en blanco)."""
+    if editor_actual(page) or lienzo_con_bloques_cms(page):
+        return False
+    t = texto_cuerpo(page).lower()
+    if not t:
+        return False
+    return "proyectos" in t or "business-manager" in t or "jumbo" in t
+
+
 def puede_rellenar_editor(page, clave: str) -> bool:
-    """No escribir tags/ingredientes si seguimos en Edición de Cabecera."""
+    """Solo escribir si el lápiz abrió ese editor. Nunca a ciegas en el lienzo."""
     actual = editor_actual(page)
     if actual is None:
-        return True
+        return not lienzo_con_bloques_cms(page) and not parece_cms_vacio(page)
     return actual == clave
 
 
@@ -2935,8 +2999,15 @@ def fill_from_receta(
         if restaurar_ficha_si_salio(page, url_ficha):
             abierto = False
         actual = editor_actual(page)
+        if actual == clave_comp:
+            return True
         if actual and actual != clave_comp:
             print(f"  · Estoy en Edición de {actual}, no en {clave_comp}. No relleno aquí.")
+            return False
+        if parece_cms_vacio(page):
+            print(
+                f"  · La página está en blanco o sin editor. No relleno «{clave_comp}» a ciegas."
+            )
             return False
         if not abierto and actual is None:
             if lienzo_con_bloques_cms(page):

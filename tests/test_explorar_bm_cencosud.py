@@ -376,6 +376,40 @@ class ExplorarBmTests(unittest.TestCase):
         self.assertEqual(runtime.clicks, ["#publicar"])
         self.assertEqual(guardada["estado"], "cargado")
 
+    def test_fill_no_rellena_pagina_en_blanco(self):
+        runtime = RuntimeFalso()
+
+        class Pagina(PageFalsa):
+            url = (
+                "https://business-manager.ecomm.cencosud.com/cms/projects/"
+                "6597f023fdc664839ccd2a37/view-manager/view/660f47f182f32694e4a6e2a4"
+            )
+
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "h1,h2,h3" in texto:
+                    return "CMS | Proyectos"
+                if "innerText" in texto:
+                    return "CMS Proyectos JUMBO Chile PRODUCTION"
+                return super().evaluate(script, *_args)
+
+        with (
+            contextlib.redirect_stdout(io.StringIO()),
+            contextlib.redirect_stderr(io.StringIO()),
+        ):
+            resultado = self.modulo.fill_from_receta(
+                Pagina(runtime),
+                self.receta_valida,
+                self.selectores,
+                dry_run=True,
+                url_ficha=Pagina.url,
+            )
+        self.assertFalse(resultado)
+        self.assertEqual(runtime.clicks, [])
+        self.assertTrue(
+            self.modulo.parece_cms_vacio(Pagina(RuntimeFalso()))
+        )
+
     def test_fill_no_rellena_si_esta_en_lista_proyectos(self):
         runtime = RuntimeFalso()
         with (
