@@ -2,6 +2,14 @@
 
 Automatiza **tu** Word → completar ficha → [Business Manager](https://business-manager.ecomm.cencosud.com/) en **tu PC**. El cliente no cambia su flujo.
 
+## Un clic
+
+Arrastra el Word encima de **`CARGAR-RECETA-BM.bat`** (raíz del repo). Hace los tres pasos
+seguidos: copia el Word a `inbox/`, genera el JSON, y —si respondes `S`— abre el BM para
+mapear y rellenar en dry-run. Si ya había un JSON de esa receta, pregunta antes de pisarlo.
+
+Los comandos sueltos, por si prefieres ir paso a paso:
+
 ## Qué se hace en tu máquina (no en la nube)
 
 El login ADFS y el MFA solo funcionan bien **en tu computador**, con navegador visible. No hace falta otra “máquina virtual”: es tu Windows + esta carpeta del repo.
