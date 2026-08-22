@@ -59,6 +59,7 @@ SECRETS = _RUTAS.resolver_secrets(CRC)
 ENV_PATH = SECRETS / ".env"
 SESSION_PATH = SECRETS / "bm-session.json"
 ESTRUCTURA_PATH = SECRETS / "bm-estructura.json"
+DIAGNOSTICO_PATH = SECRETS / "bm-diagnostico.json"
 SCREENSHOT_PATH = SECRETS / "bm-screenshot.png"
 MAPA_SELECTORES_PATH = SECRETS / "bm-selectores.json"
 CAMPOS_REQUERIDOS_PUBLICACION = ("titulo", "descripcion", "ingredientes", "pasos")
@@ -443,9 +444,40 @@ def dump_estructura(page) -> dict:
     )
 
 
-def contar_campos_editables(page) -> int:
-    return page.evaluate(
-        """() => [...document.querySelectorAll('input, textarea, select, [contenteditable="true"]')]
+def frames_unicos(page) -> list:
+    """Frames a inspeccionar. `page.frames` ya incluye el principal.
+
+    El lienzo del Gestor vive en un iframe: si solo se mira el documento
+    principal, los 5 bloques no existen para el script.
+    """
+    try:
+        frames = [fr for fr in (getattr(page, "frames", None) or []) if fr is not None]
+    except Exception:
+        frames = []
+    return frames or [page]
+
+
+def es_frame_principal(page, frame) -> bool:
+    if frame is page:
+        return True
+    try:
+        return frame is page.main_frame
+    except Exception:
+        return False
+
+
+def evaluar_en_cada_frame(page, script, arg=None) -> list[tuple]:
+    """(frame, resultado) por cada frame que respondió sin error."""
+    salida = []
+    for fr in frames_unicos(page):
+        try:
+            salida.append((fr, fr.evaluate(script, arg) if arg is not None else fr.evaluate(script)))
+        except Exception:
+            continue
+    return salida
+
+
+JS_CONTAR_EDITABLES = """() => [...document.querySelectorAll('input, textarea, select, [contenteditable="true"]')]
           .filter((el) => {
             if (el.type === 'hidden' || el.type === 'password' || el.disabled) return false;
             const st = getComputedStyle(el);
@@ -459,17 +491,20 @@ def contar_campos_editables(page) -> int:
             const r = el.getBoundingClientRect();
             return r.width > 0 || r.height > 0;
           }).length"""
-    )
 
 
-def listar_componentes_cms(page) -> list[dict]:
-    """Detecta bloques del Gestor de contenido (Cabecera, tags, listas, SEO…)."""
-    aliases_flat = []
-    for comp in COMPONENTES_CMS:
-        for alias in comp["aliases"]:
-            aliases_flat.append({"clave": comp["clave"], "alias": alias})
-    return page.evaluate(
-        """(aliasesFlat) => {
+def contar_campos_editables(page) -> int:
+    total = 0
+    for _fr, n in evaluar_en_cada_frame(page, JS_CONTAR_EDITABLES):
+        if isinstance(n, bool) or not isinstance(n, (int, float)):
+            continue
+        total += int(n)
+    return total
+
+
+JS_LISTAR_COMPONENTES = """(payload) => {
+      const aliasesFlat = payload.aliasesFlat || [];
+      const filtrarPaleta = !!payload.filtrarPaleta;
       const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
       const norm = (s) => clean(s).toLowerCase();
       const enChrome = (el) => {
@@ -494,7 +529,9 @@ def listar_componentes_cms(page) -> list[dict]:
       );
       for (const el of nodes) {
         const box = el.getBoundingClientRect();
-        if (box.left < 240 || enChrome(el)) continue;
+        // La paleta solo existe en el documento principal: dentro del iframe
+        // del lienzo las coordenadas parten en 0 y este filtro descartaria todo.
+        if ((filtrarPaleta && box.left < 240) || enChrome(el)) continue;
         const dataName = clean(el.getAttribute('data-component') || el.getAttribute('data-type') || '');
         const titleEl = el.querySelector(
           '.bloque-nombre, [class*="title"], [class*="Title"], [class*="name"], h1, h2, h3, h4, h5, strong'
@@ -540,9 +577,143 @@ def listar_componentes_cms(page) -> list[dict]:
         }
       }
       return found;
-    }""",
-        aliases_flat,
-    )
+    }"""
+
+
+JS_DIAGNOSTICO_FRAME = """() => {
+      const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim().slice(0, 160);
+      const caja = (el) => {
+        const r = el.getBoundingClientRect();
+        return { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height) };
+      };
+      const etiqueta = (el) => {
+        if (el.id) {
+          const lab = document.querySelector('label[for="' + CSS.escape(el.id) + '"]');
+          if (lab) return clean(lab.innerText);
+        }
+        const envoltorio = el.closest('label');
+        if (envoltorio) return clean(envoltorio.innerText);
+        const cerca = el.closest('div, td, li, section, form');
+        const lab2 = cerca && cerca.querySelector('label, legend, [class*="label"]');
+        return lab2 ? clean(lab2.innerText) : '';
+      };
+      const campos = [];
+      document.querySelectorAll('input, textarea, select, [contenteditable="true"]').forEach((el) => {
+        if (el.type === 'hidden' || el.type === 'password') return;
+        campos.push({
+          tag: el.tagName.toLowerCase(),
+          type: el.type || (el.getAttribute('contenteditable') ? 'contenteditable' : ''),
+          id: el.id || null,
+          name: el.getAttribute('name'),
+          placeholder: el.getAttribute('placeholder'),
+          ariaLabel: el.getAttribute('aria-label'),
+          testId: el.getAttribute('data-testid') || el.getAttribute('data-cy') || null,
+          clase: clean(String(el.className || '')),
+          label: etiqueta(el),
+          requerido: !!el.required,
+          deshabilitado: !!el.disabled,
+          caja: caja(el),
+        });
+      });
+      const botones = [];
+      document.querySelectorAll('button, [role="button"], a[role="button"], input[type="submit"]').forEach((el) => {
+        botones.push({
+          texto: clean(el.innerText || el.value || ''),
+          ariaLabel: el.getAttribute('aria-label'),
+          title: el.getAttribute('title'),
+          id: el.id || null,
+          testId: el.getAttribute('data-testid') || null,
+          clase: clean(String(el.className || '')),
+          caja: caja(el),
+        });
+      });
+      const SEL_LAPIZ =
+        'button[aria-label*="Editar" i], button[title*="Editar" i], button[class*="lapiz" i], [data-testid*="edit" i]';
+      const bloques = [];
+      document.querySelectorAll('[data-component], [data-type], section, article, li, div').forEach((el) => {
+        const dataName = clean(el.getAttribute('data-component') || el.getAttribute('data-type') || '');
+        const lapiz = el.querySelector(SEL_LAPIZ);
+        if (!dataName) {
+          // Sin data-*, quedarse con el bloque más pequeño que contiene el lápiz.
+          if (!lapiz) return;
+          const anidado = Array.from(el.children).some((h) => h.querySelector(SEL_LAPIZ) || h.matches(SEL_LAPIZ));
+          if (anidado) return;
+        }
+        const tituloEl = el.querySelector(
+          '[class*="title"], [class*="name"], [class*="nombre"], h1, h2, h3, h4, strong'
+        );
+        let titulo = clean(tituloEl ? tituloEl.innerText : '');
+        if (!titulo) {
+          titulo = clean((el.innerText || '').split('\\n').find((l) => l.trim()) || '');
+        }
+        if (!dataName && !titulo) return;
+        bloques.push({
+          dataName: dataName || null,
+          titulo: titulo || null,
+          lapizAriaLabel: lapiz ? lapiz.getAttribute('aria-label') : null,
+          lapizClase: lapiz ? clean(String(lapiz.className || '')) : null,
+          caja: caja(el),
+        });
+      });
+      return {
+        titulo: document.title,
+        campos: campos.slice(0, 150),
+        botones: botones.slice(0, 150),
+        bloques: bloques.slice(0, 80),
+        totales: { campos: campos.length, botones: botones.length, bloques: bloques.length },
+      };
+    }"""
+
+
+def dump_diagnostico_frames(page) -> dict:
+    """Radiografía de cada frame: permite escribir selectores sin adivinar el DOM."""
+    frames = []
+    for fr in frames_unicos(page):
+        info = {
+            "url": getattr(fr, "url", None),
+            "nombre": getattr(fr, "name", None),
+            "principal": es_frame_principal(page, fr),
+        }
+        try:
+            info.update(fr.evaluate(JS_DIAGNOSTICO_FRAME) or {})
+        except Exception as e:
+            info["error"] = str(e)
+        frames.append(info)
+    return {
+        "capturadoEn": datetime.now(timezone.utc).isoformat(),
+        "urlPagina": url_actual(page),
+        "frames": frames,
+    }
+
+
+def listar_componentes_cms(page) -> list[dict]:
+    """Detecta los bloques del Gestor de contenido (Cabecera, tags, listas, SEO…).
+
+    Recorre todos los frames porque el lienzo del BM es un iframe.
+    """
+    aliases_flat = []
+    for comp in COMPONENTES_CMS:
+        for alias in comp["aliases"]:
+            aliases_flat.append({"clave": comp["clave"], "alias": alias})
+
+    encontrados: list[dict] = []
+    vistos: set[str] = set()
+    for frame in frames_unicos(page):
+        principal = es_frame_principal(page, frame)
+        payload = {"aliasesFlat": aliases_flat, "filtrarPaleta": principal}
+        try:
+            parciales = frame.evaluate(JS_LISTAR_COMPONENTES, payload)
+        except Exception:
+            continue
+        for comp in parciales or []:
+            clave = comp.get("clave")
+            if not clave or clave in vistos:
+                continue
+            vistos.add(clave)
+            comp = dict(comp)
+            comp["frameUrl"] = None if principal else getattr(frame, "url", None)
+            encontrados.append(comp)
+    return encontrados
 
 
 def resultado_clic_lapiz_ok(result) -> bool:
@@ -6775,6 +6946,10 @@ def main() -> int:
 
         estructura["capturadoEn"] = datetime.now(timezone.utc).isoformat()
         ESTRUCTURA_PATH.write_text(json.dumps(estructura, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        DIAGNOSTICO_PATH.write_text(
+            json.dumps(dump_diagnostico_frames(page), ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
         page.screenshot(path=str(SCREENSHOT_PATH), full_page=True)
         context.storage_state(path=str(SESSION_PATH))
 
@@ -6795,6 +6970,12 @@ def main() -> int:
         print(f"  selectores: {MAPA_SELECTORES_PATH.relative_to(ROOT)}")
         print(f"  screenshot: {SCREENSHOT_PATH.relative_to(ROOT)}")
         print(f"  sesión:     {SESSION_PATH.relative_to(ROOT)}")
+        print(f"  diagnóstico: {DIAGNOSTICO_PATH.relative_to(ROOT)}")
+        print(
+            "  ↑ este último es el que sirve para ajustar selectores: trae los campos\n"
+            "    y botones de cada frame. No lleva contraseñas ni cookies\n"
+            "    (esas están solo en bm-session.json, que no se comparte)."
+        )
         print(f"\nURL: {estructura.get('url')}")
         print(f"Campos detectados: {len(estructura.get('fields') or [])}")
         print(f"Botones: {len(estructura.get('buttons') or [])}")

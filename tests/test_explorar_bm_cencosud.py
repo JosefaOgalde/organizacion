@@ -363,6 +363,7 @@ class ExplorarBmTests(unittest.TestCase):
                 patch.object(self.modulo, "ENV_PATH", env_path),
                 patch.object(self.modulo, "SESSION_PATH", secrets_path / "session.json"),
                 patch.object(self.modulo, "ESTRUCTURA_PATH", secrets_path / "estructura.json"),
+                patch.object(self.modulo, "DIAGNOSTICO_PATH", secrets_path / "diagnostico.json"),
                 patch.object(self.modulo, "SCREENSHOT_PATH", secrets_path / "screenshot.png"),
                 patch.object(self.modulo, "MAPA_SELECTORES_PATH", secrets_path / "selectores.json"),
                 patch("builtins.input", return_value=""),
