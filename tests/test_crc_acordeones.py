@@ -300,6 +300,16 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             self.explorar.titulo_lista_instrucciones(),
             "Paso a paso",
         )
+        html = self.explorar.html_pasos(
+            [
+                {"texto": "Sazona el salmón: Seca los filetes."},
+                {"texto": "Consejo: Cocina el salmón por el lado de la piel."},
+            ]
+        )
+        self.assertIn("<strong>Sazona el salmón:</strong>", html)
+        self.assertIn("Consejos", html)
+        self.assertIn("html", self.explorar.JS_ACTIVAR_HTML_PASO.lower())
+        self.assertIn("script", self.explorar.JS_ACTIVAR_HTML_PASO.lower())
         items = self.explorar.items_instrucciones(
             [{"orden": 1, "texto": "Sazona el salmón: Seca los filetes."}],
             ["Cocina el salmón por el lado de la piel."],
@@ -954,10 +964,12 @@ class JsIngredienteExactoTests(unittest.TestCase):
                 page.evaluate("() => document.getElementById('titulo-lista').value"),
                 "Paso a paso",
             )
-            valores = page.evaluate(
-                """() => [...document.querySelectorAll('textarea[id^="paso-"]')].map((el) => el.value)"""
+            self.assertTrue(
+                page.evaluate("() => document.getElementById('html-script').checked")
             )
-            self.assertEqual(valores, [it["texto"] for it in items])
+            html = page.evaluate("() => document.getElementById('paso-html').value")
+            self.assertIn("<strong>Sazona el salmón:</strong>", html)
+            self.assertIn("Prepara la salsa de palta", html)
             browser.close()
 
 

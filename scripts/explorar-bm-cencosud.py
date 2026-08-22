@@ -3794,6 +3794,43 @@ JS_RESOLVER_BORRADOR = """() => {
   return false;
 }"""
 
+JS_ACTIVAR_HTML_PASO = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const textoDe = (el) => clean(
+    (el.getAttribute && (el.getAttribute('aria-label') || el.getAttribute('title') || '')) + ' ' + (el.innerText || el.textContent || '')
+  );
+  const visibles = (el) => {
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 6 && r.height > 6 && r.left >= 20;
+  };
+  const nodos = [...document.querySelectorAll('label, span, div, p, button, [role="switch"], [role="checkbox"]')].filter(visibles);
+  const lab = nodos.find((el) => {
+    const t = clean((el.innerText || '').split('\\n')[0]);
+    return /html\\s*\\+\\s*script/i.test(t) && t.length < 48;
+  });
+  let via = '';
+  if (lab) {
+    const box = lab.closest('label, div, span') || lab;
+    const sw = box.querySelector('input[type="checkbox"], [role="switch"], [role="checkbox"]')
+      || (lab.parentElement && lab.parentElement.querySelector('input[type="checkbox"], [role="switch"]'));
+    if (sw) {
+      const on = !!(sw.checked || sw.getAttribute('aria-checked') === 'true' || sw.classList.contains('checked') || sw.classList.contains('active'));
+      if (!on) { sw.click(); via = 'toggle'; }
+      else via = 'ya-on';
+    } else {
+      lab.click();
+      via = 'label';
+    }
+  }
+  const code = [...document.querySelectorAll('button, [role="button"], span, i, a')].filter(visibles).find((el) => {
+    const t = textoDe(el);
+    return /source|c[oó]digo|html source|source code/i.test(t) || t.includes('</>') || t === '</>' || t === '<>';
+  });
+  if (code) { code.click(); via = via ? via + '+source' : 'source'; }
+  return via || false;
+}"""
+
 JS_LEER_INGREDIENTE = (
     "(indice) => {\n"
     + JS_CRC_LABELS_TAG_LINK
@@ -3902,6 +3939,93 @@ JS_CRC_SET_REACT = """function crcSetReact(el, v) {
   el.dispatchEvent(new Event('change', { bubbles: true }));
   return String(el.value != null ? el.value : (el.textContent || ''));
 }"""
+
+JS_ESCRIBIR_TITULO_LISTA = (
+    "(valor) => {\n"
+    + JS_CRC_SET_REACT
+    + "\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  const v = String(valor || '');
+  const labs = crcDeepAll('label, legend, p, span, strong', document).filter((el) => {
+    const t = crcEtiquetaIngrediente(el);
+    const r = el.getBoundingClientRect();
+    return /^Título$/i.test(t) && r.width > 4 && r.height > 4 && r.left >= 20;
+  });
+  labs.sort((a, b) => (a.getBoundingClientRect().width * a.getBoundingClientRect().height) - (b.getBoundingClientRect().width * b.getBoundingClientRect().height));
+  const lab = labs[0];
+  let el = crcInputDeLabelIng(lab);
+  if (!el) {
+    el = crcDeepAll('input, textarea, [role="textbox"]', document).find((c) => {
+      if (!crcEsCajaTexto(c)) return false;
+      return crcCercaTituloLista(c);
+    }) || null;
+  }
+  if (!el) return { ok: false, reason: 'sin-titulo' };
+  const wrote = crcSetReact(el, v);
+  return { ok: true, wrote };
+}"""
+)
+
+JS_ESCRIBIR_PASO_HTML = (
+    "(html) => {\n"
+    + JS_CRC_SET_REACT
+    + "\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  const v = String(html || '');
+  const esPaso = (t) => /^Paso a [Pp]aso$/i.test(t);
+  const labs = crcDeepAll('label, legend, p, span, strong, h3, h4', document).filter((el) => {
+    const t = crcEtiquetaIngrediente(el);
+    const r = el.getBoundingClientRect();
+    return esPaso(t) && r.width > 4 && r.height > 4 && r.left >= 20;
+  });
+  const lab = labs.sort((a, b) => (a.getBoundingClientRect().width * a.getBoundingClientRect().height) - (b.getBoundingClientRect().width * b.getBoundingClientRect().height))[0];
+  const labR = lab ? lab.getBoundingClientRect() : { top: 0, bottom: 200 };
+  const enRango = (el) => {
+    const r = el.getBoundingClientRect();
+    return r.width > 20 && r.height > 12 && r.left >= 20 && r.top >= labR.top - 20;
+  };
+  let el = null;
+  const textareas = crcDeepAll('textarea', document).filter((c) => {
+    try {
+      const st = getComputedStyle(c);
+      if (st.display === 'none' || st.visibility === 'hidden') return false;
+    } catch (e) {}
+    return enRango(c);
+  });
+  if (textareas.length) el = textareas[textareas.length - 1];
+  if (!el) {
+    el = crcDeepAll('input, [role="textbox"], [contenteditable="true"]', document).find((c) => {
+      if (crcCercaTituloLista(c)) return false;
+      return crcEsCajaTexto(c) && enRango(c);
+    }) || null;
+  }
+  if (!el) {
+    for (const ifr of document.querySelectorAll('iframe')) {
+      try {
+        const doc = ifr.contentDocument;
+        const body = doc && doc.body;
+        if (body && (body.getAttribute('contenteditable') === 'true' || doc.designMode === 'on')) {
+          body.innerHTML = v;
+          return { ok: true, wrote: body.innerHTML, via: 'iframe' };
+        }
+        const ta = doc && doc.querySelector('textarea');
+        if (ta) { crcSetReact(ta, v); return { ok: true, wrote: String(ta.value || ''), via: 'iframe-ta' }; }
+      } catch (e) {}
+    }
+  }
+  if (!el) return { ok: false, reason: 'sin-paso' };
+  if (el.getAttribute && el.getAttribute('contenteditable') === 'true') {
+    el.innerHTML = v;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    return { ok: true, wrote: el.innerHTML, via: 'ce' };
+  }
+  const wrote = crcSetReact(el, v);
+  return { ok: true, wrote, via: 'caja' };
+}"""
+)
 
 JS_CONTAR_INSTRUCCIONES_INTERNAS = (
     "() => {\n"
@@ -5210,6 +5334,39 @@ def titulo_lista_instrucciones(receta: dict | None = None) -> str:
     return "Paso a paso"
 
 
+def _esc_html(texto: str) -> str:
+    return (
+        (texto or "")
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
+
+
+def html_pasos(items: list[dict]) -> str:
+    """HTML para el editor «Paso a Paso» (modo HTML + Script)."""
+    pasos: list[str] = []
+    consejos: list[str] = []
+    for it in items or []:
+        texto = linea_paso(it)
+        if not texto:
+            continue
+        if re.match(r"(?i)^consejo\b", texto):
+            consejos.append(re.sub(r"(?i)^consejo:\s*", "", texto).strip())
+            continue
+        tit, cuerpo = partir_paso(texto)
+        if tit:
+            pasos.append(f"<p><strong>{_esc_html(tit)}:</strong> {_esc_html(cuerpo)}</p>")
+        else:
+            pasos.append(f"<p>{_esc_html(texto)}</p>")
+    html = "\n".join(pasos)
+    if consejos:
+        lis = "".join(f"<li>{_esc_html(c)}</li>" for c in consejos)
+        html += f"\n<p><strong>Consejos</strong></p>\n<ul>{lis}</ul>"
+    return html.strip()
+
+
 def valores_desde_item(item: dict, tipo: str) -> dict[str, str]:
     if tipo == "ingredientes":
         return {
@@ -5422,6 +5579,127 @@ def _contar_ingredientes_internos(page) -> int:
         if n:
             return n
     return 0
+
+
+def activar_html_paso_a_paso(page) -> str | None:
+    """Enciende «HTML + Script» y/o el </> del editor Paso a Paso."""
+    ultimo = None
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_ACTIVAR_HTML_PASO)
+        except Exception:
+            out = None
+        if out:
+            ultimo = str(out)
+            try:
+                page.wait_for_timeout(400)
+            except Exception:
+                pass
+            continue
+        get_by_text = getattr(fr, "get_by_text", None)
+        if get_by_text:
+            try:
+                loc = get_by_text(re.compile(r"HTML\s*\+\s*Script", re.I))
+                if hasattr(loc, "count") and loc.count():
+                    loc.first.click(timeout=2_000)
+                    ultimo = ultimo or "html-script"
+                    page.wait_for_timeout(300)
+            except Exception:
+                pass
+            try:
+                loc = get_by_text(re.compile(r"</>|source|c[oó]digo", re.I))
+                if hasattr(loc, "count") and loc.count():
+                    loc.last.click(timeout=1_500)
+                    ultimo = (ultimo or "") + "+source"
+            except Exception:
+                pass
+        locator = getattr(fr, "locator", None)
+        if locator:
+            for sel in (
+                'button[aria-label*="HTML" i]',
+                'button[title*="HTML" i]',
+                'button[aria-label*="source" i]',
+                '[role="switch"]',
+            ):
+                try:
+                    loc = locator(sel)
+                    if loc.count():
+                        loc.last.click(timeout=1_500)
+                        ultimo = ultimo or "switch"
+                except Exception:
+                    continue
+    if ultimo:
+        print(f"  · Modo HTML del Paso a Paso: {ultimo}")
+    return ultimo
+
+
+def escribir_titulo_lista_instrucciones(page, valor: str) -> bool:
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_ESCRIBIR_TITULO_LISTA, valor)
+        except Exception:
+            out = None
+        if isinstance(out, dict) and _valor_quedo(str(out.get("wrote") or ""), valor):
+            return True
+        get_by_label = getattr(fr, "get_by_label", None)
+        if get_by_label:
+            try:
+                loc = get_by_label(re.compile(r"^Título(\s*\*)?$", re.I))
+                if loc.count():
+                    if escribir_valor(page, loc.first, valor, exigir_lienzo=False):
+                        return True
+            except Exception:
+                pass
+    return rellenar_por_label(
+        page,
+        r"^Título$",
+        valor,
+        nth=0,
+        excluir=r"meta|sección|cabecera|ingrediente",
+        usar_get_by_label=False,
+    )
+
+
+def escribir_paso_a_paso_html(page, html: str) -> bool:
+    if not html:
+        return False
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_ESCRIBIR_PASO_HTML, html)
+        except Exception:
+            out = None
+        if isinstance(out, dict) and out.get("ok") and (
+            _valor_quedo(str(out.get("wrote") or ""), html)
+            or "<p>" in str(out.get("wrote") or "")
+            or "<strong>" in str(out.get("wrote") or "")
+        ):
+            return True
+        get_by_label = getattr(fr, "get_by_label", None)
+        if get_by_label:
+            try:
+                loc = get_by_label(re.compile(r"^Paso a [Pp]aso(\s*\*)?$", re.I))
+                if loc.count():
+                    if escribir_valor(page, loc.first, html, exigir_lienzo=False):
+                        return True
+            except Exception:
+                pass
+        locator = getattr(fr, "locator", None)
+        if locator:
+            try:
+                tas = locator("textarea")
+                n = tas.count() if hasattr(tas, "count") else 0
+                for i in range(n):
+                    item = tas.nth(i)
+                    try:
+                        if hasattr(item, "is_visible") and not item.is_visible():
+                            continue
+                    except Exception:
+                        pass
+                    if escribir_valor(page, item, html, exigir_lienzo=False):
+                        return True
+            except Exception:
+                pass
+    return False
 
 
 def resolver_borrador_editor(page) -> bool:
@@ -5762,21 +6040,17 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
             f"  · Abro Formulario Ítem (Título* es requerido): "
             f"cabezales={info.get('heads')} inst={info.get('inst')}"
         )
-        if not rellenar_por_label(
-            page,
-            r"^Título$",
-            titulo_lista_instrucciones(),
-            nth=0,
-            excluir=r"meta|sección|cabecera|ingrediente",
-        ):
-            rellenar_por_label(
-                page,
-                r"^Título",
-                titulo_lista_instrucciones(),
-                nth=0,
-                excluir=r"meta|sección|cabecera|ingrediente",
-            )
-        print("  · Título de la lista → Paso a paso. Completo las instrucciones internas.")
+        titulo = titulo_lista_instrucciones()
+        if escribir_titulo_lista_instrucciones(page, titulo):
+            print(f"  ✓ Título de la lista → {titulo}")
+        else:
+            print("  · No pude escribir Título* (sigo con Paso a Paso en HTML).")
+        html = html_pasos(items)
+        activar_html_paso_a_paso(page)
+        if html and escribir_paso_a_paso_html(page, html):
+            print("  ✓ Paso a Paso (HTML) con los pasos del Word")
+            return max(1, len([it for it in items if linea_paso(it)]))
+        print("  · El HTML no quedó. Intento ítem a ítem.")
         expandir_todos_items_formulario(page)
         lineas = [linea_paso(it) for it in items if linea_paso(it)]
         asegurar_n_instrucciones(page, len(lineas))
@@ -5788,7 +6062,7 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
             return llenados_dir
         n_lab = fill_repetidos_por_label(
             page,
-            r"^(Instrucci|Paso|Descripción|Texto)\b",
+            r"^(Instrucci|Paso|Descripción|Texto|Paso a Paso)\b",
             lineas,
         )
         if n_lab:
