@@ -1282,39 +1282,72 @@ JS_CLIC_LAPIZ = """(payload) => {
 }"""
 
 
+JS_CLICK_GUARDAR = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const visibles = (el) => {
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 8 && r.height > 8;
+  };
+  const nodos = [...document.querySelectorAll('button, [role="button"], a')].filter(visibles);
+  const btn = nodos.find((el) => {
+    const t = clean(
+      (el.innerText || '') + ' ' + (el.getAttribute('aria-label') || '') + ' ' + (el.getAttribute('title') || '')
+    );
+    if (/publicar|acepto/i.test(t)) return false;
+    return /^(guardar|save|aplicar)$/i.test(t) || /^guardar\\b/i.test(t);
+  });
+  if (btn) { btn.click(); return 'guardar'; }
+  return false;
+}"""
+
+
 def _clic_guardar_editor(page) -> bool:
-    for sel in (
-        "button:has-text('Guardar')",
-        "[role='button']:has-text('Guardar')",
-        "button[type='submit']",
-        "button:has-text('Aplicar')",
-        "button:has-text('Listo')",
-        "button:has-text('Done')",
-    ):
+    for fr in _frames_pagina(page):
         try:
-            loc = page.locator(sel)
-            n = loc.count()
-            for i in range(n):
-                btn = loc.nth(i)
-                visible = True
-                try:
-                    visible = btn.is_visible()
-                except Exception:
-                    visible = True
-                if not visible:
-                    continue
-                txt = ""
-                try:
-                    txt = (btn.inner_text() or "").lower()
-                except Exception:
-                    txt = ""
-                if "publicar" in txt:
-                    continue
-                btn.click(timeout=2_500)
-                page.wait_for_timeout(600)
+            if fr.evaluate(JS_CLICK_GUARDAR) == "guardar":
+                print("  · Clic en Guardar")
+                page.wait_for_timeout(700)
                 return True
         except Exception:
             continue
+    for fr in _frames_pagina(page):
+        locator = getattr(fr, "locator", None)
+        if not locator:
+            continue
+        for sel in (
+            "button:has-text('Guardar')",
+            "[role='button']:has-text('Guardar')",
+            "button[type='submit']",
+            "button:has-text('Aplicar')",
+            "button:has-text('Listo')",
+            "button:has-text('Done')",
+        ):
+            try:
+                loc = locator(sel)
+                n = loc.count()
+                for i in range(n):
+                    btn = loc.nth(i)
+                    visible = True
+                    try:
+                        visible = btn.is_visible()
+                    except Exception:
+                        visible = True
+                    if not visible:
+                        continue
+                    txt = ""
+                    try:
+                        txt = (btn.inner_text() or "").lower()
+                    except Exception:
+                        txt = ""
+                    if "publicar" in txt or "acepto" in txt:
+                        continue
+                    btn.click(timeout=2_500)
+                    print("  · Clic en Guardar")
+                    page.wait_for_timeout(700)
+                    return True
+            except Exception:
+                continue
     return False
 
 
@@ -1407,11 +1440,7 @@ JS_SIGUE_REQUERIDO_VISIBLE = """() => {
 
 
 def parece_guardado_ok(page) -> bool:
-    try:
-        t = page.evaluate("() => (document.body && document.body.innerText) || ''")
-    except Exception:
-        return False
-    return isinstance(t, str) and bool(re.search(r"guardado satisfactoriamente", t, re.I))
+    return bool(re.search(r"guardado satisfactoriamente", texto_cuerpo(page), re.I))
 
 
 def sigue_dato_requerido(page) -> bool:
@@ -1710,10 +1739,17 @@ JS_BLOQUE_VACIO = """(aliases) => {
 
 def bloque_componente_vacio(page, aliases: list[str]) -> bool | None:
     """True = bloque vacío; False = ya tiene contenido; None = no lo vi."""
-    try:
-        return page.evaluate(JS_BLOQUE_VACIO, list(aliases))
-    except Exception:
-        return None
+    ultimo = None
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_BLOQUE_VACIO, list(aliases))
+        except Exception:
+            continue
+        if out is False:
+            return False
+        if out is True:
+            ultimo = True
+    return ultimo
 
 
 JS_LIMPIAR_BUSCA_PALETA = """() => {
@@ -1870,30 +1906,51 @@ def volver_al_lienzo(page, url_ficha: str | None = None, *, confirmar_salida: bo
     return editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page))
 
 
+def guardar_editor_persistente(page) -> bool:
+    """Pulsa Guardar hasta ver el aviso. Nunca «Sí, acepto» (eso descarta)."""
+    if _hay_modal_sin_guardar(page):
+        print("  · Modal abierto: Cancelar para no perder lo escrito.")
+        resolver_modal_cambios(page, salir=False)
+    for _intento in range(3):
+        _clic_guardar_editor(page)
+        try:
+            page.wait_for_timeout(800)
+        except Exception:
+            pass
+        if parece_guardado_ok(page):
+            print("  · Guardado satisfactoriamente")
+            return True
+        if editor_actual(page) is None:
+            return True
+    return parece_guardado_ok(page)
+
+
 def guardar_y_volver_al_lienzo(
     page, url_ficha: str | None = None, *, forzar_salida: bool = False
 ) -> bool:
-    """Guarda el editor y pulsa Volver a los 5 bloques. Si no sale, no abre el siguiente."""
-    cerrar_editor_componente(page)
+    """Guarda de verdad y recién ahí pulsa Volver. «Sí, acepto» vacía el bloque."""
+    if _hay_modal_sin_guardar(page):
+        print("  · Modal abierto: Cancelar para no perder lo escrito.")
+        resolver_modal_cambios(page, salir=False)
+    guardar_editor_persistente(page)
     try:
         page.wait_for_timeout(400)
     except Exception:
         pass
     if editor_actual(page) is None:
         return True
-    resolver_modal_cambios(page, salir=forzar_salida)
-    if _clic_guardar_editor(page):
-        try:
-            page.wait_for_timeout(500)
-        except Exception:
-            pass
-    if editor_actual(page) is None:
-        return True
     puede_salir = forzar_salida or parece_guardado_ok(page) or not sigue_dato_requerido(page)
-    if forzar_salida:
-        print("  · Pulso Volver para seguir con el siguiente bloque.")
-    if puede_salir:
-        if volver_al_lienzo(page, url_ficha, confirmar_salida=forzar_salida):
+    if not puede_salir:
+        print(f"  · Sigo en Edición de {editor_actual(page)}; no abro otro bloque.")
+        return False
+    print("  · Guardé. Pulso Volver (sin Sí, acepto).")
+    if volver_al_lienzo(page, url_ficha, confirmar_salida=False):
+        if _hay_modal_sin_guardar(page):
+            print("  · Salió el modal: Cancelar, Guardar otra vez y Volver.")
+            resolver_modal_cambios(page, salir=False)
+            guardar_editor_persistente(page)
+            volver_al_lienzo(page, url_ficha, confirmar_salida=False)
+        if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
             return True
     if url_ficha:
         restaurar_ficha_si_salio(page, url_ficha)
@@ -5152,10 +5209,10 @@ def fill_from_receta(
     print("Rellenando la receta completa (lápiz de cada bloque, Cabecera incluida)…")
     print(f"  · Textos «Edita este componente» visibles: {_contar_placeholder_vacio(page)}")
     if _hay_modal_sin_guardar(page):
-        print("  · Modal de cambios. Pulso Sí, acepto.")
-        resolver_modal_cambios(page, salir=True)
+        print("  · Modal abierto: Cancelar (Sí, acepto borra los tags).")
+        resolver_modal_cambios(page, salir=False)
         try:
-            page.wait_for_timeout(600)
+            page.wait_for_timeout(400)
         except Exception:
             pass
     if editor_actual(page) == "tags":
@@ -5164,7 +5221,7 @@ def fill_from_receta(
         if n_tags_abierto:
             print(f"  ✓ tags: {n_tags_abierto}/{len(tags_desde_receta(receta))}")
         else:
-            print("  · Tags en pantalla. Pulso Volver para el siguiente bloque.")
+            print("  · Tags en pantalla. Los guardo para que el bloque quede cargado.")
         guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
     if abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
         cabecera = {
@@ -5207,6 +5264,16 @@ def fill_from_receta(
         if n_tags:
             print(f"  ✓ tags: {n_tags}/{len(cats)}")
         guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+        vacio_tags = bloque_componente_vacio(page, ["tags", "Tags"])
+        if vacio_tags:
+            print("  · El bloque tags sigue vacío. Lo abro, guardo y vuelvo.")
+            if abrir_grupo("tags", ["field_tags"]) and puede_rellenar_editor(page, "tags"):
+                fill_lista_tags(page, cats)
+                guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            vacio_tags = bloque_componente_vacio(page, ["tags", "Tags"])
+        if vacio_tags is False:
+            print("  ✓ Bloque tags cargado en el lienzo")
+            resultados["tags"] = True
 
     ings = receta.get("ingredientes") or []
     if abrir_grupo("ingredientes", ["field_ingredientes"]) and puede_rellenar_editor(
