@@ -82,7 +82,7 @@ COMPONENTES_CMS = (
     {
         "clave": "tags",
         "lapiz_key": "lapiz_tags",
-        "aliases": ("tags", "Tags"),
+        "aliases": ("tags", "Tags", "TAGS", "etiquetas", "Etiquetas"),
         "campos": ("field_tags",),
     },
     {
@@ -546,6 +546,17 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     if clicked:
         _esperar_editor(page)
         return True
+    try:
+        page.wait_for_timeout(700)
+    except Exception:
+        pass
+    if _clic_lapiz_por_fila(page, aliases):
+        _esperar_editor(page)
+        return True
+    clicked = page.evaluate(JS_CLIC_LAPIZ, aliases)
+    if clicked:
+        _esperar_editor(page)
+        return True
     return False
 
 
@@ -702,6 +713,7 @@ JS_CLIC_LAPIZ = """(aliases) => {
       || c.iconos.filter((b) => !esBasura(b) && !esHistorial(b))[0]
       || (c.iconos.length >= 3 ? c.iconos[1] : null);
     if (candidato && !esBasura(candidato)) {
+      try { c.cur.scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (e) {}
       candidato.click();
       return true;
     }
@@ -826,6 +838,27 @@ def url_lienzo_receta(url: str | None, url_ficha: str | None = None) -> str | No
     return None
 
 
+def esperar_lienzo_bloques(page, intentos: int = 12) -> bool:
+    """Espera a ver Cabecera + tags en el lienzo antes de buscar lápices."""
+    for _ in range(intentos):
+        try:
+            t = page.evaluate("() => (document.body && document.body.innerText) || ''")
+        except Exception:
+            t = ""
+        if (
+            isinstance(t, str)
+            and re.search(r"cabecera", t, re.I)
+            and re.search(r"\btags\b", t, re.I)
+            and editor_actual(page) is None
+        ):
+            return True
+        try:
+            page.wait_for_timeout(300)
+        except Exception:
+            break
+    return editor_actual(page) is None
+
+
 def volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
     """Sale de «Edición de Cabecera» al lienzo. No toca Proyectos ni la paleta."""
     if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
@@ -838,6 +871,7 @@ def volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
     resolver_modal_cambios(page)
     if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
         print("  · Volví al lienzo (5 bloques)")
+        esperar_lienzo_bloques(page)
         return True
     destino = url_lienzo_receta(url_actual(page), url_ficha)
     if destino and hasattr(page, "goto"):
@@ -860,6 +894,7 @@ def volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
                 pass
         if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
             print("  · Volví al lienzo (5 bloques)")
+            esperar_lienzo_bloques(page)
             return True
     return editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page))
 
@@ -1354,7 +1389,7 @@ def duracion_receta(receta: dict) -> str | None:
 
 TITULOS_EDITOR = {
     "cabecera": re.compile(r"edici[oó]n de\s+(cabecera|header)", re.I),
-    "tags": re.compile(r"edici[oó]n de\s+tags", re.I),
+    "tags": re.compile(r"edici[oó]n de\s+(lista\s+)?(tags?|etiquetas?)", re.I),
     "ingredientes": re.compile(r"edici[oó]n de\s+lista\s+ingredientes|list_ingredients", re.I),
     "instrucciones": re.compile(
         r"edici[oó]n de\s+lista\s+de\s+instrucciones|list_instructions", re.I
@@ -2172,14 +2207,110 @@ def asegurar_n_campos_label(page, patron: str, n: int, *, excluir: str | None = 
     return actuales
 
 
+def tags_desde_receta(receta: dict) -> list[str]:
+    """Tags del Word: «salmon, recetas a la parrilla, paltas, …»."""
+    return [str(c).strip() for c in (receta.get("categorias") or []) if str(c).strip()]
+
+
+JS_MARCAR_INPUTS_ITEM = """() => {
+  document.querySelectorAll('[data-crc-item-hit]').forEach((el) => el.removeAttribute('data-crc-item-hit'));
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const visibles = (el) => {
+    if (!el) return false;
+    const st = getComputedStyle(el);
+    if (st.display === 'none' || st.visibility === 'hidden') return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && r.height > 0;
+  };
+  const esControl = (el) => {
+    if (!el || !visibles(el)) return false;
+    const tag = (el.tagName || '').toLowerCase();
+    if (tag === 'textarea') return true;
+    if (tag === 'input') {
+      const t = (el.type || 'text').toLowerCase();
+      return !['hidden', 'checkbox', 'radio', 'file', 'submit', 'button'].includes(t);
+    }
+    return false;
+  };
+  const tituloSeccion = (el) => {
+    let n = el;
+    for (let i = 0; i < 6 && n; i++) {
+      const t = clean(n.innerText || '');
+      if (/t[ií]tulo de la secci/i.test(t) && t.length < 80) return true;
+      n = n.parentElement;
+    }
+    return false;
+  };
+  const heads = [...document.querySelectorAll('h1,h2,h3,h4,h5,p,div,legend,span')].filter((el) => {
+    const linea = clean(el.innerText || '').split('\\n')[0];
+    return /^formulario ítem\\s+\\d+/i.test(linea) && linea.length < 60;
+  });
+  let n = 0;
+  const seen = new Set();
+  for (const h of heads) {
+    let box = h.parentElement;
+    let input = null;
+    for (let i = 0; i < 8 && box && !input; i++) {
+      const cand = [...box.querySelectorAll('input, textarea')].filter((el) => esControl(el) && !tituloSeccion(el) && !seen.has(el));
+      if (cand.length) input = cand[0];
+      box = box.parentElement;
+    }
+    if (input) {
+      seen.add(input);
+      input.setAttribute('data-crc-item-hit', String(n));
+      n += 1;
+    }
+  }
+  return n;
+}"""
+
+
+def rellenar_items_formulario(page, valores: list[str]) -> int:
+    """Rellena Formulario Ítem 1..N (no «Título de la sección»)."""
+    valores = [v for v in valores if v]
+    if not valores:
+        return 0
+    asegurar_n_campos_label(page, r"^(tags?|etiquetas?|nombre|valor|ingrediente)\b", len(valores), excluir=r"título de la sección|meta")
+    try:
+        marcados = page.evaluate(JS_MARCAR_INPUTS_ITEM)
+    except Exception:
+        marcados = 0
+    while int(marcados or 0) < len(valores):
+        if not click_agregar_item(page, preferir_ultimo=True):
+            break
+        try:
+            page.wait_for_timeout(300)
+            marcados = page.evaluate(JS_MARCAR_INPUTS_ITEM)
+        except Exception:
+            break
+    llenados = 0
+    for i, valor in enumerate(valores):
+        try:
+            loc = page.locator(f'[data-crc-item-hit="{i}"]')
+            if loc.count() and escribir_valor(page, loc.first, valor):
+                print(f"  ✓ tag[{i}] → {valor}")
+                llenados += 1
+                continue
+        except Exception:
+            pass
+        print(f"  ✗ tag[{i}]")
+    return llenados
+
+
 def fill_lista_tags(page, tags: list[str]) -> int:
-    if not puede_rellenar_editor(page, "tags"):
+    if editor_actual(page) != "tags":
         print("  · No relleno tags: no estoy en Edición de tags.")
         return 0
     tags = [t.strip() for t in tags if t and str(t).strip()]
     if not tags:
         return 0
-    return fill_repetidos_por_label(page, r"^(tag|etiqueta|nombre|valor)\b", tags)
+    print("  · tags del Word: " + ", ".join(tags))
+    excluir = r"título de la sección|ingrediente|meta|descripci"
+    for patron in (r"^(tags?|etiquetas?)\b", r"^nombre\b", r"^valor\b"):
+        n = fill_repetidos_por_label(page, patron, tags, excluir=excluir)
+        if n:
+            return n
+    return rellenar_items_formulario(page, tags)
 
 
 def fill_inputs_texto_en_orden(page, valores: list[str]) -> int:
@@ -2288,7 +2419,12 @@ def asignar_campos_item(fields: list[dict], item: dict, tipo: str) -> list[tuple
         tomar(lambda f: bool(re.search(r"nota|tip", blob_campo(f), re.I)), "notas")
         for rol in ("nombre", "cantidad", "unidad"):
             if rol in valores and not any(a[0] == rol for a in asignados):
-                tomar(lambda f: True, rol)
+                tomar(
+                    lambda f: not re.search(
+                        r"t[ií]tulo de la secci", blob_campo(f), re.I
+                    ),
+                    rol,
+                )
     else:
         tomar(lambda f: f.get("tag") == "textarea" or bool(LABEL_PASO.search(blob_campo(f))), "texto")
         tomar(lambda f: bool(LABEL_ORDEN.search(blob_campo(f))), "orden")
@@ -2536,6 +2672,8 @@ def fill_from_receta(
         lapiz_key = meta["lapiz_key"] if meta else f"lapiz_{clave_comp}"
         print(f"  [CMS] Abriendo componente «{clave_comp}»…")
         actual = editor_actual(page)
+        if actual is None and clave_comp != "cabecera":
+            esperar_lienzo_bloques(page)
         if actual and actual != clave_comp:
             print(f"  · Sigo en Edición de {actual}; guardo antes de abrir «{clave_comp}».")
             if not guardar_y_volver_al_lienzo(page, url_ficha):
@@ -2553,8 +2691,11 @@ def fill_from_receta(
             print(f"  · Estoy en Edición de {actual}, no en {clave_comp}. No relleno aquí.")
             return False
         if not abierto and actual is None:
-            print(f"  · Sin lápiz para {clave_comp}; intento relleno en vista actual.")
-            return True
+            if any(selectores.get(k) for k in keys_campo):
+                print(f"  · Sin lápiz para {clave_comp}; intento relleno en vista actual.")
+                return True
+            print(f"  · Sin lápiz para {clave_comp}; no relleno en el lienzo.")
+            return False
         if not abierto:
             print(f"  · Sin lápiz para {clave_comp}; no relleno en otra pantalla.")
             return False
@@ -2604,9 +2745,9 @@ def fill_from_receta(
         resultados["titulo"] = False
         resultados["descripcion"] = False
 
-    cats = receta.get("categorias") or []
+    cats = tags_desde_receta(receta)
     if abrir_grupo("tags", ["field_tags"]) and puede_rellenar_editor(page, "tags"):
-        n_tags = fill_lista_tags(page, [str(c) for c in cats])
+        n_tags = fill_lista_tags(page, cats)
         if n_tags:
             print(f"  ✓ tags: {n_tags}/{len(cats)}")
         guardar_y_volver_al_lienzo(page, url_ficha)

@@ -165,6 +165,59 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIsNone(self.explorar.numero_campo_bm("0"))
         self.assertEqual(self.explorar.duracion_receta({"tiempoTotal": "30 min"}), "30")
 
+    def test_tags_desde_el_word(self):
+        self.assertEqual(
+            self.explorar.tags_desde_receta(
+                {
+                    "categorias": [
+                        "salmon",
+                        "recetas a la parrilla",
+                        "paltas",
+                        "recetas saludables",
+                        "pescado",
+                        "almuerzo",
+                    ]
+                }
+            ),
+            [
+                "salmon",
+                "recetas a la parrilla",
+                "paltas",
+                "recetas saludables",
+                "pescado",
+                "almuerzo",
+            ],
+        )
+
+    def test_no_rellena_tags_en_el_lienzo(self):
+        class Pagina:
+            def evaluate(self, script, *_args):
+                if "h1,h2,h3" in str(script):
+                    return "Recetas_Jumbo | web"
+                return ""
+
+        self.assertIsNone(self.explorar.editor_actual(Pagina()))
+        self.assertEqual(self.explorar.fill_lista_tags(Pagina(), ["salmon"]), 0)
+
+    def test_ingrediente_no_usa_titulo_de_seccion(self):
+        fields = [
+            {
+                "label": "Título de la sección",
+                "selectorSugerido": "#sec",
+                "tag": "input",
+            },
+            {
+                "label": "Ingrediente *",
+                "selectorSugerido": "#ing",
+                "tag": "input",
+            },
+        ]
+        pares = self.explorar.asignar_campos_item(
+            fields, {"nombre": "Pimienta a gusto"}, "ingredientes"
+        )
+        self.assertEqual(pares[0][2], "Pimienta a gusto")
+        self.assertEqual(pares[0][1], "#ing")
+
     def test_no_rellena_ingredientes_si_sigue_en_cabecera(self):
         class Pagina:
             def evaluate(self, script, *_args):

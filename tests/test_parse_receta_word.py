@@ -175,6 +175,19 @@ class ParseRecetaWordTests(unittest.TestCase):
         self.assertEqual(len(receta["pasos"]), 2)
         self.assertEqual(len(receta["tips"]), 2)
         self.assertEqual(receta["estado"], "listo-para-cargar")
+        self.assertEqual(
+            self.modulo.parse_lista_csv(
+                "salmon, recetas a la parrilla, paltas, recetas saludables, pescado, almuerzo"
+            ),
+            [
+                "salmon",
+                "recetas a la parrilla",
+                "paltas",
+                "recetas saludables",
+                "pescado",
+                "almuerzo",
+            ],
+        )
 
     def test_extrae_png_aunque_el_word_la_guarde_como_bin(self):
         png = b"\x89PNG\r\n\x1a\n" + b"\x00" * 16
