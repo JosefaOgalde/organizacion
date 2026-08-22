@@ -248,11 +248,12 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         src = inspect.getsource(self.explorar.fill_from_receta)
         src_fill = inspect.getsource(self.explorar.fill_lista_acordeones)
         src_item = inspect.getsource(self.explorar.rellenar_item_ingrediente)
-        src_agregar = inspect.getsource(self.explorar.click_agregar_item)
         self.assertIn("Ya estoy en Lista Ingredientes", src)
         self.assertIn("rellenar_item_ingrediente", src_fill)
-        self.assertIn("expandir_item_formulario", src_item)
-        self.assertIn("Agregar nuevo", src_agregar)
+        self.assertIn("asegurar_n_ingredientes", src_fill)
+        self.assertIn("expandir_item_ingrediente", src_item)
+        self.assertIn("crcCabezalesIngrediente", self.explorar.JS_EXPANDIR_ITEM_INGREDIENTE)
+        self.assertIn("interno", self.explorar.JS_CLICK_AGREGAR_INGREDIENTE)
         self.assertIn("Agregar nuevo ítem", " ".join(self.explorar.BOTONES_AGREGAR))
 
         class Pagina:

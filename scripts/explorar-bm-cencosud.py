@@ -3470,6 +3470,55 @@ function crcCajasDelItem(indice) {
   const tag = cajas.find((el) => !crcEsLinkCaja(el)) || null;
   const link = cajas.find((el) => el !== tag && crcEsLinkCaja(el)) || cajas.find((el) => el !== tag) || null;
   return { tag, link, n: cajas.length, reason: tag ? 'ok' : 'sin-caja' };
+}
+function crcLineaCorta(el) {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  return clean((el.innerText || el.textContent || '')).split(/El (dato|valor)/i)[0].replace(/\\*/g, ' ').trim().split('\\n')[0];
+}
+function crcTodosCabezalesItem() {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const out = [];
+  for (const el of document.querySelectorAll('h1,h2,h3,h4,h5,p,div,legend,span,button,[role="button"]')) {
+    const linea = clean(el.innerText || '').split('\\n')[0];
+    if (!/^formulario ítem\\s+\\d+$/i.test(linea) || linea.length > 40) continue;
+    const r = el.getBoundingClientRect();
+    if (r.left < 40 || r.width < 16 || r.height < 8) continue;
+    if (out.some((o) => Math.abs(o.getBoundingClientRect().top - r.top) < 8 && Math.abs(o.getBoundingClientRect().left - r.left) < 8)) continue;
+    out.push(el);
+  }
+  return out.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+}
+function crcEsCabezalIngrediente(h) {
+  const hR = h.getBoundingClientRect();
+  let box = h.parentElement;
+  for (let i = 0; i < 12 && box; i++) {
+    const labs = [...box.querySelectorAll('label, legend, p, span, strong')];
+    let labIng = null;
+    let labTit = null;
+    for (const lab of labs) {
+      const t = crcLineaCorta(lab).split(/\\s+Dale/i)[0].trim();
+      const r = lab.getBoundingClientRect();
+      if (r.width < 4 || r.height < 4) continue;
+      if (/^Ingrediente$/i.test(t) || (/^Ingrediente\\b/i.test(t) && t.length < 16)) {
+        if (r.top >= hR.top - 6) labIng = lab;
+      }
+      if (/^Título de la sección/i.test(t)) labTit = lab;
+    }
+    if (labIng) {
+      if (labTit) {
+        const tR = labTit.getBoundingClientRect();
+        if (hR.bottom <= tR.top + 10) return false;
+        if (hR.top > tR.bottom - 4) return true;
+      } else {
+        return true;
+      }
+    }
+    box = box.parentElement;
+  }
+  return false;
+}
+function crcCabezalesIngrediente() {
+  return crcTodosCabezalesItem().filter(crcEsCabezalIngrediente);
 }"""
 
 JS_MARCAR_TAGS_POR_ITEM = (
@@ -3514,6 +3563,65 @@ JS_EXPANDIR_ITEM_FORMULARIO = (
     try { h.click(); } catch (e) {}
   }
   return { ok: true, n: heads.length, expanded: true };
+}"""
+)
+
+JS_EXPANDIR_ITEM_INGREDIENTE = (
+    "(indice) => {\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  const heads = crcCabezalesIngrediente();
+  const h = heads[indice];
+  if (!h) return { ok: false, n: heads.length, reason: 'sin-cabezal-ing' };
+  let exp = h.closest && h.closest('[aria-expanded]');
+  if (!exp) {
+    let n = h;
+    for (let i = 0; i < 8 && n && !exp; i++) {
+      if (n.getAttribute && n.getAttribute('aria-expanded') != null) exp = n;
+      else exp = n.querySelector && n.querySelector('[aria-expanded]');
+      n = n.parentElement;
+    }
+  }
+  const ya = exp && String(exp.getAttribute('aria-expanded') || '') === 'true';
+  if (!ya) {
+    const chevron = (exp && exp.querySelector && exp.querySelector('[class*="chevron"], [class*="arrow"], svg')) || null;
+    try { (exp || h).click(); } catch (e) {}
+    if (chevron && chevron !== exp) { try { chevron.click(); } catch (e) {} }
+    try { h.click(); } catch (e) {}
+  }
+  return { ok: true, n: heads.length, expanded: true };
+}"""
+)
+
+JS_CLICK_AGREGAR_INGREDIENTE = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const btns = [...document.querySelectorAll('button, [role="button"], a')].filter((el) => {
+    const t = clean(el.innerText || '');
+    const r = el.getBoundingClientRect();
+    return /agregar nuevo [ií]tem/i.test(t) && r.width > 8 && r.height > 8 && r.left >= 40;
+  });
+  btns.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  if (!btns.length) return false;
+  const btn = btns[0];
+  btn.click();
+  return btns.length >= 2 ? 'interno' : 'unico';
+}"""
+
+JS_CONTAR_INGREDIENTES_INTERNOS = (
+    "() => {\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  return crcCabezalesIngrediente().length;
+}"""
+)
+
+JS_LEER_INGREDIENTE = (
+    "(indice) => {\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  const hit = document.querySelector('[data-crc-ing-hit=\"' + String(indice) + '\"]');
+  if (hit) return { ok: true, value: String(hit.value || hit.textContent || '') };
+  return { ok: false, value: '' };
 }"""
 )
 
@@ -3615,6 +3723,47 @@ JS_CRC_SET_REACT = """function crcSetReact(el, v) {
   el.dispatchEvent(new Event('change', { bubbles: true }));
   return String(el.value != null ? el.value : (el.textContent || ''));
 }"""
+
+JS_FOCO_INGREDIENTE = (
+    "(args) => {\n"
+    + JS_CRC_SET_REACT
+    + "\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  const indice = args.indice;
+  const valor = args.valor == null ? '' : String(args.valor);
+  const heads = crcCabezalesIngrediente();
+  const h = heads[indice];
+  const top0 = h ? h.getBoundingClientRect().bottom - 8 : 0;
+  const limit = heads[indice + 1] ? heads[indice + 1].getBoundingClientRect().top : (h ? h.getBoundingClientRect().bottom + 420 : 9999);
+  const labs = crcDeepAll('label, legend, p, span, strong', document).filter((el) => {
+    const t = crcLineaCorta(el).split(/\\s+Dale/i)[0].trim();
+    const r = el.getBoundingClientRect();
+    return (/^Ingrediente$/i.test(t) || (/^Ingrediente\\b/i.test(t) && t.length < 16))
+      && r.top >= top0 && r.top < limit && r.width > 4;
+  });
+  const lab = labs[0];
+  let el = null;
+  if (lab) {
+    const labR = lab.getBoundingClientRect();
+    let node = lab;
+    for (let i = 0; i < 8 && node && !el; i++) {
+      el = crcDeepAll('input, textarea, [role="textbox"]', node).find((c) => {
+        if (!crcEsCajaTexto(c)) return false;
+        const r = c.getBoundingClientRect();
+        return r.top >= labR.top - 8 && r.top < labR.bottom + 90;
+      }) || null;
+      node = node.parentElement;
+    }
+  }
+  if (!el) return { ok: false, reason: 'sin-caja', n: heads.length };
+  if (el.setAttribute) el.setAttribute('data-crc-ing-hit', String(indice));
+  try { el.click(); } catch (e) {}
+  try { el.focus(); } catch (e) {}
+  const wrote = valor ? crcSetReact(el, valor) : '';
+  return { ok: true, wrote, n: heads.length };
+}"""
+)
 
 JS_FOCO_CAJA_TAG = (
     "(args) => {\n"
@@ -5029,34 +5178,122 @@ def asegurar_filas_lista(page, n: int) -> int:
     return actuales
 
 
-def rellenar_item_ingrediente(page, indice: int, item: dict) -> bool:
-    """Despliega Formulario Ítem N y escribe Ingrediente* (línea del Word)."""
-    print(f"  · Despliego Formulario Ítem {indice + 1}…")
-    if not expandir_item_formulario(page, indice):
-        print(f"  ✗ ingredientes[{indice}]: no pude abrir el acordeón")
+def _contar_ingredientes_internos(page) -> int:
+    for fr in _frames_pagina(page):
+        try:
+            n = int(fr.evaluate(JS_CONTAR_INGREDIENTES_INTERNOS) or 0)
+        except Exception:
+            continue
+        if n:
+            return n
+    return 0
+
+
+def click_agregar_ingrediente_interno(page) -> bool:
+    """Pulsa el + Agregar de la lista Ingredientes (el de arriba), no el de una sección nueva."""
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_CLICK_AGREGAR_INGREDIENTE)
+        except Exception:
+            out = None
+        if out:
+            try:
+                page.wait_for_timeout(350)
+            except Exception:
+                pass
+            return True
+        get_by_text = getattr(fr, "get_by_text", None)
+        if get_by_text:
+            try:
+                loc = get_by_text(re.compile(r"Agregar nuevo [ií]tem", re.I))
+                n = loc.count() if hasattr(loc, "count") else 0
+                if n:
+                    (loc.first if n >= 2 else loc.last).click(timeout=2_000)
+                    page.wait_for_timeout(350)
+                    return True
+            except Exception:
+                pass
+    return False
+
+
+def asegurar_n_ingredientes(page, n: int) -> int:
+    actuales = _contar_ingredientes_internos(page)
+    if actuales == 0:
+        expandir_item_formulario(page, 0)
+        try:
+            page.wait_for_timeout(300)
+        except Exception:
+            pass
+        actuales = _contar_ingredientes_internos(page)
+    intentos = 0
+    while actuales < n and intentos < n + 2:
+        if not click_agregar_ingrediente_interno(page):
+            break
+        intentos += 1
+        actuales = _contar_ingredientes_internos(page)
+    return actuales
+
+
+def expandir_item_ingrediente(page, indice: int) -> bool:
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_EXPANDIR_ITEM_INGREDIENTE, indice)
+        except Exception:
+            out = None
+        if isinstance(out, dict) and out.get("ok"):
+            try:
+                page.wait_for_timeout(350)
+            except Exception:
+                pass
+            return True
+    return expandir_item_formulario(page, indice)
+
+
+def escribir_ingrediente_asterisco(page, indice: int, valor: str) -> bool:
+    if not valor:
         return False
-    linea = linea_ingrediente(item)
-    nombre = (item.get("nombre") or "").strip()
-    cantidad = str(item.get("cantidad") or "").strip()
-    unidad = (item.get("unidad") or "").strip()
-    texto = linea or nombre
-    if not texto:
-        return False
-    ok = False
-    if rellenar_por_label(
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_FOCO_INGREDIENTE, {"indice": indice, "valor": valor})
+        except Exception:
+            out = None
+        if isinstance(out, dict) and _valor_quedo(str(out.get("wrote") or ""), valor):
+            return True
+        try:
+            loc = fr.locator(f'[data-crc-ing-hit="{indice}"]')
+            if hasattr(loc, "count") and loc.count():
+                item = loc.first if hasattr(loc, "first") else loc
+                if escribir_valor(page, item, valor, exigir_lienzo=False) or _tipear_teclado(
+                    page, item, valor
+                ):
+                    return True
+        except Exception:
+            pass
+        try:
+            leido = fr.evaluate(JS_LEER_INGREDIENTE, indice)
+            if isinstance(leido, dict) and _valor_quedo(str(leido.get("value") or ""), valor):
+                return True
+        except Exception:
+            pass
+    return rellenar_por_label(
         page,
         r"^Ingrediente\b",
-        texto,
+        valor,
         nth=indice,
         excluir=r"título de la sección|lista",
-    ):
-        ok = True
-    elif escribir_tag_entre_labels(page, indice, texto):
-        ok = True
-    if cantidad:
-        rellenar_por_label(page, r"^Cantidad\b", cantidad, nth=indice)
-    if unidad:
-        rellenar_por_label(page, r"^Unidad\b", unidad, nth=indice)
+    )
+
+
+def rellenar_item_ingrediente(page, indice: int, item: dict) -> bool:
+    """Despliega el ítem interno (Ingrediente*) y escribe la línea del Word."""
+    print(f"  · Despliego Ingrediente {indice + 1}…")
+    if not expandir_item_ingrediente(page, indice):
+        print(f"  ✗ ingredientes[{indice}]: no pude abrir el acordeón interno")
+        return False
+    texto = linea_ingrediente(item) or (item.get("nombre") or "").strip()
+    if not texto:
+        return False
+    ok = escribir_ingrediente_asterisco(page, indice, texto)
     if ok:
         print(f"  ✓ ingredientes[{indice}] → {texto}")
     else:
@@ -5079,7 +5316,8 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
             "Ingredientes",
             nth=0,
         )
-        asegurar_n_items_tags(page, len(items))
+        print("  · Completo la lista interna Ingrediente* (no una sección nueva).")
+        asegurar_n_ingredientes(page, len(items))
         llenados_dir = 0
         for i, item in enumerate(items):
             if rellenar_item_ingrediente(page, i, item):
