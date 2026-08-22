@@ -11,9 +11,11 @@ Uso:
 """
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import sys
+import unicodedata
 import zipfile
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
@@ -52,6 +54,22 @@ def slugify(s: str) -> str:
     s = re.sub(r"ñ", "n", s)
     s = re.sub(r"[^a-z0-9]+", "-", s).strip("-")
     return s[:80] or "receta"
+
+
+def sin_tildes(s: str) -> str:
+    return (
+        unicodedata.normalize("NFKD", s)
+        .encode("ascii", "ignore")
+        .decode("ascii")
+    )
+
+
+def normalizar_dificultad(valor: str | None) -> str | None:
+    """El schema usa el enum sin tildes: 'facil', 'media', 'dificil'…"""
+    if not valor:
+        return None
+    limpio = re.sub(r"\s+", " ", sin_tildes(str(valor)).lower()).strip()
+    return limpio or None
 
 
 def valor_despues_label(lines: list[str], labels: list[str]) -> str | None:
@@ -95,7 +113,7 @@ def parse_barra_info(texto: str) -> dict:
         )
     if m:
         out["tiempoTotal"] = m.group(1).strip()
-        out["dificultad"] = m.group(2).strip().lower()
+        out["dificultad"] = normalizar_dificultad(m.group(2))
         out["porciones"] = m.group(3).strip()
     return out
 
@@ -113,8 +131,9 @@ def parse_ingredientes(bloque: str) -> list[dict]:
             continue
         if line.lower() in ("ingredientes", "ingredientes:"):
             continue
+        # No usar "l" suelto como unidad: rompería "1 limón" → unidad=l, nombre=imón.
         m = re.match(
-            r"^(?P<cant>\d+[.,]?\d*)\s*(?P<unidad>kg|g|gr|ml|l|lt|cdas?|cdtas?|cucharaditas?|cucharadas?|tazas?|unidades?|u\.?)?\s*(?:de\s+)?(?P<nombre>.+)$",
+            r"^(?P<cant>\d+[.,]?\d*)\s*(?P<unidad>kg|g|gr|ml|lt|litros?|cdas?|cdtas?|cucharaditas?|cucharadas?|tazas?|unidades?|u\.?)?\s*(?:de\s+)?(?P<nombre>.+)$",
             line,
             re.I,
         )
@@ -160,9 +179,14 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str]]:
         line = raw.strip()
         if not line:
             continue
-        if re.match(r"(?i)^tips?\b", line):
+        encabezado = re.match(r"(?i)^(tips?|consejos?)\b\s*(?P<sep>[:\-–])?\s*(?P<resto>.*)$", line)
+        if encabezado:
             en_tips = True
-            # si el tip viene en la misma línea tras "Tips …"
+            # «Tips: deja reposar» trae el consejo en la misma línea;
+            # «Tips para unos anticuchos perfectos» es solo el título de la sección.
+            resto = (encabezado.group("resto") or "").strip()
+            if resto and encabezado.group("sep"):
+                tips.append(resto.lstrip("-•* ").strip())
             continue
         if en_tips:
             tips.append(line.lstrip("-•* ").strip())
@@ -192,13 +216,38 @@ def es_formato_jumbo(lines: list[str]) -> bool:
 
 def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
     meta_titulo = valor_despues_label(lines, ["meta título", "meta titulo"])
-    meta_desc = valor_despues_label(lines, ["meta descripción", "meta descripcion"])
+    # Jumbo a veces escribe solo "descripción:" (sin prefijo meta).
+    meta_desc = valor_despues_label(
+        lines,
+        ["meta descripción", "meta descripcion", "descripción", "descripcion"],
+    )
 
     # Título editorial: primera línea que no sea meta/foto/tags/barra
     titulo = None
+    skip_next_desc_value = False
     for ln in lines:
-        low = ln.lower()
-        if low.startswith("meta ") or low in ("meta título:", "meta titulo:", "meta descripción:", "meta descripcion:"):
+        low = ln.lower().strip()
+        if skip_next_desc_value:
+            skip_next_desc_value = False
+            continue
+        if low.startswith("meta ") or low in (
+            "meta título:",
+            "meta titulo:",
+            "meta descripción:",
+            "meta descripcion:",
+            "descripción:",
+            "descripcion:",
+            "descripción",
+            "descripcion",
+        ):
+            # Si el valor de descripción va en la línea siguiente, saltarla también.
+            if low in ("descripción:", "descripcion:", "descripción", "descripcion") or low.startswith(
+                "meta descripción"
+            ) or low.startswith("meta descripcion"):
+                if ":" in ln and not ln.split(":", 1)[1].strip():
+                    skip_next_desc_value = True
+                elif low in ("descripción", "descripcion"):
+                    skip_next_desc_value = True
             continue
         if low.startswith("texto alt:") or low.startswith("([foto])") or low == "[foto]":
             continue
@@ -344,9 +393,7 @@ def construir_receta_simple(texto: str, lines: list[str], fuente: str) -> dict:
     )
     t_coc = meta_linea(texto, ["tiempo de cocción", "tiempo de coccion", "cocción", "coccion"])
     t_tot = meta_linea(texto, ["tiempo total", "total"])
-    dificultad = meta_linea(texto, ["dificultad", "nivel"])
-    if dificultad:
-        dificultad = dificultad.lower().strip()
+    dificultad = normalizar_dificultad(meta_linea(texto, ["dificultad", "nivel"]))
     categorias = parse_lista_csv(meta_linea(texto, ["categorías", "categorias", "categoría", "categoria", "tags"]))
     ocasiones = parse_lista_csv(meta_linea(texto, ["ocasiones", "ocasión", "ocasion"]))
 
@@ -414,11 +461,29 @@ def construir_receta(texto: str, fuente: str) -> dict:
     return construir_receta_simple(texto, lines, fuente)
 
 
+def crear_parser_argumentos() -> argparse.ArgumentParser:
+    return argparse.ArgumentParser(
+        description="Parsea una receta Word o texto a JSON intermedio CRC.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""Ejemplos:
+  python3 scripts/parse-receta-word.py inbox/receta.docx
+  python3 scripts/parse-receta-word.py inbox/receta.docx --force
+
+La segunda forma es destructiva: --force reemplaza conjuntamente el JSON y el raw existentes.
+""",
+    )
+
+
 def main() -> int:
-    if len(sys.argv) < 2:
-        print("Uso: python3 scripts/parse-receta-word.py <archivo.docx|.txt>", file=sys.stderr)
-        return 2
-    src = Path(sys.argv[1]).expanduser().resolve()
+    parser = crear_parser_argumentos()
+    parser.add_argument("archivo", help="Archivo fuente .docx o .txt")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="DESTRUCTIVO: reemplaza conjuntamente <slug>.json y <slug>.raw.txt si alguno existe",
+    )
+    args = parser.parse_args()
+    src = Path(args.archivo).expanduser().resolve()
     if not src.exists():
         print(f"No existe: {src}", file=sys.stderr)
         return 1
@@ -435,13 +500,28 @@ def main() -> int:
 
     receta = construir_receta(texto, rel)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    # limpiar parseo fallido previo meta-titulo.*
-    for stale in OUT_DIR.glob("meta-titulo.*"):
-        stale.unlink(missing_ok=True)
 
     out = OUT_DIR / f"{receta['id']}.json"
-    out.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     raw_out = OUT_DIR / f"{receta['id']}.raw.txt"
+    existing_outputs = [path for path in (out, raw_out) if path.exists()]
+    if existing_outputs and not args.force:
+        print(
+            "Error: ya existe al menos una salida para esta receta: "
+            + ", ".join(path.name for path in existing_outputs),
+            file=sys.stderr,
+        )
+        print(
+            "No se escribió ningún archivo; JSON y raw se protegen como una unidad.",
+            file=sys.stderr,
+        )
+        print(
+            "Para reemplazar ambos de forma destructiva: "
+            "python3 scripts/parse-receta-word.py <archivo.docx|.txt> --force",
+            file=sys.stderr,
+        )
+        return 3
+
+    out.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     raw_out.write_text(texto + "\n", encoding="utf-8")
 
     print(f"OK → {out.relative_to(ROOT)}")
