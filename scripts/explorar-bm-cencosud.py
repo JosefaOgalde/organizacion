@@ -138,11 +138,15 @@ def es_lista_proyectos_cms(url: str | None) -> bool:
     return "/cms/projects" in u
 
 
+def _url_sin_query(url: str | None) -> str:
+    return (url or "").split("#")[0].split("?")[0].rstrip("/")
+
+
 def salio_de_la_ficha(actual: str | None, url_ficha: str | None) -> bool:
     if not url_ficha or not actual:
         return False
-    a = actual.split("#")[0].rstrip("/")
-    f = url_ficha.split("#")[0].rstrip("/")
+    a = _url_sin_query(actual)
+    f = _url_sin_query(url_ficha)
     if a == f:
         return False
     if es_lista_proyectos_cms(actual):
@@ -631,7 +635,7 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     if ids:
         print("  · IDs lienzo: " + " ".join(f"{k}={v}" for k, v in ids.items()))
     comp_id = ids.get(clave)
-    if comp_id and _abrir_por_query_componente(page, clave, comp_id, url_antes):
+    if comp_id and _abrir_por_id_visible(page, clave, comp_id):
         return True
 
     if intentar(_clic_lapiz_por_fila(page, aliases)):
@@ -1105,26 +1109,124 @@ def url_con_componente(url: str | None, comp_id: str) -> str | None:
     return f"{base}?component={comp_id}"
 
 
-def _abrir_por_query_componente(page, clave: str, comp_id: str, url_antes: str | None) -> bool:
-    destino = url_con_componente(url_actual(page) or url_antes, comp_id)
-    if not destino or not hasattr(page, "goto"):
+JS_CLIC_BLOQUE_ID = """(compId) => {
+  const id = String(compId || '').toLowerCase();
+  if (!id) return { ok: false };
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const hayPaleta = /paleta de componentes/i.test(document.body.innerText || '');
+  const blobBtn = (b) => [
+    b.getAttribute('aria-label') || '',
+    b.getAttribute('title') || '',
+    b.getAttribute('data-testid') || '',
+    String(b.className || ''),
+    b.innerHTML || '',
+  ].join(' ');
+  const esBasura = (b) => /trash|delete|eliminar|borrar|remove/i.test(blobBtn(b));
+  const esHistorial = (b) => /clock|history|historial|time|version/i.test(blobBtn(b));
+  const esLapiz = (b) => /edit|editar|pencil|lápiz|lapiz/i.test(blobBtn(b)) && !/create/i.test(blobBtn(b));
+  const disparar = (el) => {
+    try {
+      el.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true, cancelable: true, view: window }));
+      el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+      el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+      el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+      if (typeof el.click === 'function') el.click();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+  let nodo = null;
+  for (const el of document.querySelectorAll('*')) {
+    const t = clean(el.innerText || '');
+    if (t.toLowerCase() !== id) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 8 || r.height < 8) continue;
+    if (hayPaleta && r.left < 200) continue;
+    nodo = el;
+    break;
+  }
+  if (!nodo) return { ok: false, motivo: 'sin-id' };
+  let card = nodo;
+  for (let i = 0; i < 10 && card.parentElement; i++) {
+    const p = card.parentElement;
+    const pr = p.getBoundingClientRect();
+    const pt = clean(p.innerText || '');
+    if (hayPaleta && pr.left < 200) break;
+    if (pr.width > 180 && pr.width < 2400 && pr.height > 36 && pr.height < 500 && pt.length < 900) {
+      card = p;
+      if (pr.width >= 260) break;
+    } else {
+      break;
+    }
+  }
+  try { card.scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (e) {}
+  const r2 = card.getBoundingClientRect();
+  const hits = [];
+  for (const el of card.querySelectorAll('button, [role="button"], a, svg, i, span, div, img')) {
+    const b = el.getBoundingClientRect();
+    if (b.width < 8 || b.height < 8 || b.width > 72 || b.height > 72) continue;
+    if (b.left < r2.right - 110) continue;
+    if (b.top < r2.top - 10 || b.bottom > r2.top + 44) continue;
+    if (esBasura(el) || esHistorial(el)) continue;
+    hits.push({ el, x: b.left, lapiz: esLapiz(el) ? 0 : 1 });
+  }
+  hits.sort((a, b) => a.lapiz - b.lapiz || a.x - b.x);
+  if (hits[0] && disparar(hits[0].el)) {
+    return { ok: true, via: 'id-icono' };
+  }
+  const x = r2.right - 36;
+  const y = r2.top + Math.min(20, Math.max(12, r2.height / 4));
+  const hit = document.elementFromPoint(x, y);
+  if (hit && disparar(hit.closest('svg, button, [role="button"], [class*="icon"]') || hit)) {
+    return { ok: true, via: 'id-punto', x, y };
+  }
+  return { ok: false, via: 'id', x, y };
+}"""
+
+
+def _abrir_por_id_visible(page, clave: str, comp_id: str) -> bool:
+    """Clic en el bloque del lienzo (id a3e7ad…). Nunca recarga la página."""
+    if not comp_id:
         return False
-    print(f"  · Abro «{clave}» con ?component={comp_id}")
-    try:
-        page.goto(destino, wait_until="domcontentloaded", timeout=60_000)
-    except TypeError:
+    print(f"  · Clic en bloque «{clave}» id={comp_id} (sin recargar)")
+    clicked = _eval_en_frames(page, JS_CLIC_BLOQUE_ID, comp_id)
+    if resultado_clic_lapiz_ok(clicked) and _editor_confirmado(page, clave):
+        return True
+    get_by_text = getattr(page, "get_by_text", None)
+    mouse = getattr(page, "mouse", None)
+    if get_by_text and mouse:
         try:
-            page.goto(destino)
+            loc = get_by_text(comp_id, exact=True)
+            n = loc.count() if hasattr(loc, "count") else 0
         except Exception:
-            return False
-    except Exception as e:
-        print(f"  · No pude abrir ?component={comp_id}: {e}")
-        return False
-    try:
-        page.wait_for_timeout(900)
-    except Exception:
-        pass
-    return _editor_confirmado(page, clave)
+            n = 0
+        for i in range(n):
+            item = loc.nth(i)
+            box = _bounding_box(item)
+            if box is None or float(box.get("x") or 0) < 80:
+                continue
+            fbox = None
+            try:
+                anc = item.locator("xpath=ancestor::*[count(.//svg)>=1][1]")
+                cand = _bounding_box(anc)
+                if cand and float(cand.get("width") or 0) >= 180:
+                    fbox = cand
+            except Exception:
+                fbox = None
+            target = fbox or box
+            x = float(target["x"]) + float(target["width"]) - 36
+            y = float(target["y"]) + min(20.0, max(12.0, float(target.get("height") or 24) / 4))
+            if fbox is None:
+                x = float(box["x"]) + float(box["width"]) + 28
+                y = float(box["y"]) + float(box["height"]) / 2
+            try:
+                mouse.click(x, y)
+                if _editor_confirmado(page, clave):
+                    return True
+            except Exception:
+                continue
+    return False
 
 
 def url_tiene_vista_receta(url: str | None) -> bool:
@@ -1166,18 +1268,24 @@ def url_lienzo_receta(url: str | None, url_ficha: str | None = None) -> str | No
 
 
 def lienzo_con_bloques_cms(page) -> bool:
-    """True si se ven los bloques del Gestor (Cabecera + tags), no un formulario plano."""
+    """True si se ven los bloques del Gestor (Cabecera + tags), no un formulario plano.
+
+    Los 5 bloques viven en un iframe: Playwright los ve; innerText del frame
+    principal solo muestra el chrome (Proyectos / JUMBO).
+    """
+    if editor_actual(page) is not None:
+        return False
+    if _contar_placeholder_vacio(page) >= 1:
+        return True
+    if recoger_ids_componentes(page):
+        return True
     try:
         t = page.evaluate("() => (document.body && document.body.innerText) || ''")
     except Exception:
         return False
     if not isinstance(t, str):
         return False
-    return bool(
-        re.search(r"cabecera", t, re.I)
-        and re.search(r"\btags\b", t, re.I)
-        and editor_actual(page) is None
-    )
+    return bool(re.search(r"cabecera", t, re.I) and re.search(r"\btags\b", t, re.I))
 
 
 JS_BLOQUE_VACIO = """(aliases) => {
@@ -1242,17 +1350,10 @@ def limpiar_busca_paleta(page) -> None:
 def esperar_lienzo_bloques(page, intentos: int = 12) -> bool:
     """Espera a ver Cabecera + tags en el lienzo antes de buscar lápices."""
     for _ in range(intentos):
-        try:
-            t = page.evaluate("() => (document.body && document.body.innerText) || ''")
-        except Exception:
-            t = ""
-        if (
-            isinstance(t, str)
-            and re.search(r"cabecera", t, re.I)
-            and re.search(r"\btags\b", t, re.I)
-            and editor_actual(page) is None
-        ):
+        if lienzo_con_bloques_cms(page):
             return True
+        if editor_actual(page) is not None:
+            return False
         try:
             page.wait_for_timeout(300)
         except Exception:
@@ -1876,6 +1977,10 @@ def editor_actual(page) -> str | None:
 def parece_cms_vacio(page) -> bool:
     """Chrome del BM sin lienzo de 5 bloques ni editor (página en blanco)."""
     if editor_actual(page) or lienzo_con_bloques_cms(page):
+        return False
+    if _contar_placeholder_vacio(page) >= 3:
+        return False
+    if len(recoger_ids_componentes(page)) >= 3:
         return False
     t = texto_cuerpo(page).lower()
     if not t:

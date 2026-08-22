@@ -272,6 +272,9 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertFalse(self.explorar.es_lista_proyectos_cms(ficha))
         self.assertTrue(self.explorar.salio_de_la_ficha(proyectos, ficha))
         self.assertFalse(self.explorar.salio_de_la_ficha(ficha, ficha))
+        self.assertFalse(
+            self.explorar.salio_de_la_ficha(ficha + "?component=a3e7ad", ficha)
+        )
 
         class PaginaFicha:
             url = ficha

@@ -461,6 +461,78 @@ class ExplorarBmTests(unittest.TestCase):
         )
         self.assertIsNone(self.modulo.url_con_componente("https://example.com", "a3e7ad"))
 
+    def test_no_parece_cms_vacio_si_hay_cinco_bloques_en_iframe(self):
+        """El chrome del frame principal dice Proyectos; el lienzo está en iframe."""
+
+        class Loc:
+            def count(self):
+                return 5
+
+        class Pagina:
+            def get_by_text(self, _texto, exact=False):
+                return Loc()
+
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "h1,h2,h3" in texto:
+                    return "Recetas_Jumbo | web"
+                if "innerText" in texto:
+                    return "Proyectos\nJUMBO\nRecetas_Jumbo"
+                return []
+
+        pagina = Pagina()
+        self.assertTrue(self.modulo.lienzo_con_bloques_cms(pagina))
+        self.assertFalse(self.modulo.parece_cms_vacio(pagina))
+
+    def test_abrir_por_id_visible_nunca_recarga(self):
+        clicks = []
+
+        class Loc:
+            def count(self):
+                return 1
+
+            def nth(self, _i):
+                return self
+
+            def bounding_box(self):
+                return {"x": 420, "y": 140, "width": 48, "height": 16}
+
+            def locator(self, _sel):
+                return self
+
+        class Mouse:
+            def click(self, x, y):
+                clicks.append((round(x), round(y)))
+
+        class Pagina:
+            def __init__(self):
+                self.gotos = []
+                self.mouse = Mouse()
+
+            def get_by_text(self, texto, exact=True):
+                self.last_text = texto
+                return Loc()
+
+            def goto(self, url, **_kwargs):
+                self.gotos.append(url)
+
+            def evaluate(self, script, *_args):
+                return "Proyectos JUMBO"
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        pagina = Pagina()
+        with contextlib.redirect_stdout(io.StringIO()):
+            ok = self.modulo._abrir_por_id_visible(pagina, "cabecera", "a3e7ad")
+        self.assertFalse(ok)
+        self.assertEqual(pagina.gotos, [])
+        self.assertEqual(pagina.last_text, "a3e7ad")
+        self.assertEqual(len(clicks), 1)
+        src = __import__("inspect").getsource(self.modulo._abrir_por_id_visible)
+        self.assertNotIn("goto", src)
+        self.assertNotIn("component=", src)
+
     def test_editor_por_campos_detecta_cabecera(self):
         class Pagina:
             def evaluate(self, script, *_args):
@@ -536,6 +608,13 @@ class ExplorarBmTests(unittest.TestCase):
         self.assertIn("elementFromPoint", js)
         self.assertNotIn("iconos[1]", js)
         self.assertNotRegex(js, r"esLapiz = \(b\) => /[^/]*create")
+
+    def test_js_clic_bloque_id_no_recarga(self):
+        js = self.modulo.JS_CLIC_BLOQUE_ID
+        self.assertIn("id-icono", js)
+        self.assertIn("esBasura", js)
+        self.assertNotIn("location.href", js)
+        self.assertNotIn("location.assign", js)
 
     def test_resultado_clic_lapiz_ok(self):
         self.assertTrue(self.modulo.resultado_clic_lapiz_ok(True))
