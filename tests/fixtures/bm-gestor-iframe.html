@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>BM Cencosud · Gestor de contenido (fixture con iframe)</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; background: #f6f7f9; }
+    .barra { padding: 8px 16px; border-bottom: 1px solid #ddd; background: #fff; }
+    .barra select { margin-right: 16px; }
+    .cuerpo { display: flex; }
+    /* La paleta ocupa los primeros 240px, igual que en el BM real. */
+    aside.paleta { width: 240px; padding: 8px; background: #fff; border-right: 1px solid #ddd; }
+    aside.paleta input { width: 90%; }
+    aside.paleta li { list-style: none; border: 1px solid #eee; padding: 6px; margin: 4px 0; font-size: 13px; }
+    .lienzo { flex: 1; }
+    iframe { width: 100%; height: 700px; border: 0; }
+  </style>
+</head>
+<body>
+  <div class="barra">
+    <span>CMS &gt; Proyectos &gt; Vistas &gt; Gestor de contenido</span>
+  </div>
+  <div class="barra">
+    <select id="version"><option>default</option></select>
+    <label for="resolucion">Resolución</label>
+    <select id="resolucion"><option>Zona de trabajo</option></select>
+    <span>Versión publicada</span>
+  </div>
+  <div class="cuerpo">
+    <aside class="paleta" aria-label="Paleta de componentes">
+      <input id="buscar-componente" placeholder="Ingrese un nombre" />
+      <ul>
+        <li>Banner rentable</li>
+        <li>Cabecera</li>
+        <li>header</li>
+        <li>Ingredientes</li>
+        <li>Instrucciones</li>
+        <li>Lista de Instrucciones</li>
+        <li>Lista Ingredientes</li>
+        <li>Recomendados para llevar</li>
+        <li>SEO HTML</li>
+        <li>tags</li>
+      </ul>
+    </aside>
+    <div class="lienzo">
+      <iframe id="lienzo" title="Zona de trabajo" src="bm-gestor-lienzo.html"></iframe>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Lienzo del Gestor (fixture)</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; background: #fff; }
+    .bloque { border: 2px dashed #c44; margin: 14px; padding: 12px 14px 18px; }
+    .bloque-head { display: flex; justify-content: space-between; align-items: center; }
+    .bloque-nombre { font-weight: 700; }
+    .bloque-id { color: #888; font-size: 11px; font-family: monospace; }
+    .acciones-bloque button { width: 30px; height: 30px; }
+    .vacio { color: #a33; text-align: center; padding: 24px 8px; }
+    .editor { display: none; border-top: 1px solid #ddd; margin-top: 10px; padding-top: 10px; }
+    .editor.abierto { display: block; }
+    .bloque.editando { border-style: solid; border-color: #2a6; }
+    .bloque.editando .vacio { display: none; }
+    label { display: block; font-weight: 600; margin: 10px 0 4px; }
+    input, textarea { width: 90%; padding: 6px; }
+  </style>
+</head>
+<body>
+  <section class="bloque" data-component="Cabecera" id="comp-cabecera">
+    <div class="bloque-head">
+      <div>
+        <div class="bloque-nombre">Cabecera</div>
+        <div class="bloque-id">f2c27c · Header</div>
+      </div>
+      <div class="acciones-bloque">
+        <button type="button" class="btn-lapiz" aria-label="Editar Cabecera" title="Editar">&#9998;</button>
+        <button type="button" aria-label="Eliminar Cabecera">&#128465;</button>
+      </div>
+    </div>
+    <div class="vacio">Edita este componente vacío desde el lápiz</div>
+    <div class="editor">
+      <label for="titulo">Título de la receta</label>
+      <input id="titulo" name="titulo" />
+      <label for="descripcion">Descripción</label>
+      <textarea id="descripcion" name="descripcion"></textarea>
+    </div>
+  </section>
+
+  <section class="bloque" data-component="tags" id="comp-tags">
+    <div class="bloque-head">
+      <div>
+        <div class="bloque-nombre">tags</div>
+        <div class="bloque-id">83a404 · Tags</div>
+      </div>
+      <div class="acciones-bloque">
+        <button type="button" class="btn-lapiz" aria-label="Editar tags" title="Editar">&#9998;</button>
+      </div>
+    </div>
+    <div class="vacio">Edita este componente vacío desde el lápiz</div>
+    <div class="editor">
+      <label for="tag1">Tag *</label>
+      <input id="tag1" name="tag1" />
+    </div>
+  </section>
+
+  <section class="bloque" data-component="Lista Ingredientes" id="comp-ingredientes">
+    <div class="bloque-head">
+      <div>
+        <div class="bloque-nombre">Lista Ingredientes</div>
+        <div class="bloque-id">f9174e · list_ingredients</div>
+      </div>
+      <div class="acciones-bloque">
+        <button type="button" class="btn-lapiz" aria-label="Editar Lista Ingredientes" title="Editar">&#9998;</button>
+      </div>
+    </div>
+    <div class="vacio">Edita este componente vacío desde el lápiz</div>
+    <div class="editor">
+      <label for="ingredientes">Ingrediente *</label>
+      <textarea id="ingredientes" name="ingredientes"></textarea>
+    </div>
+  </section>
+
+  <section class="bloque" data-component="Lista de Instrucciones" id="comp-instrucciones">
+    <div class="bloque-head">
+      <div>
+        <div class="bloque-nombre">Lista de Instrucciones</div>
+        <div class="bloque-id">6d31cb · list_instructions</div>
+      </div>
+      <div class="acciones-bloque">
+        <button type="button" class="btn-lapiz" aria-label="Editar Lista de Instrucciones" title="Editar">&#9998;</button>
+      </div>
+    </div>
+    <div class="vacio">Edita este componente vacío desde el lápiz</div>
+    <div class="editor">
+      <label for="pasos">Paso a Paso *</label>
+      <textarea id="pasos" name="pasos"></textarea>
+    </div>
+  </section>
+
+  <section class="bloque" data-component="SEO HTML" id="comp-seo">
+    <div class="bloque-head">
+      <div>
+        <div class="bloque-nombre">SEO HTML</div>
+        <div class="bloque-id">6327db · seo_html</div>
+      </div>
+      <div class="acciones-bloque">
+        <button type="button" class="btn-lapiz" aria-label="Editar SEO HTML" title="Editar">&#9998;</button>
+      </div>
+    </div>
+    <div class="vacio">Edita este componente vacío desde el lápiz</div>
+    <div class="editor">
+      <label for="seo-content">content *</label>
+      <textarea id="seo-content" name="content"></textarea>
+    </div>
+  </section>
+
+  <script>
+    document.querySelectorAll('.btn-lapiz').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var bloque = btn.closest('.bloque');
+        document.querySelectorAll('.bloque').forEach(function (b) {
+          b.classList.remove('editando');
+          b.querySelector('.editor').classList.remove('abierto');
+        });
+        bloque.classList.add('editando');
+        bloque.querySelector('.editor').classList.add('abierto');
+      });
+    });
+  </script>
+</body>
+</html>

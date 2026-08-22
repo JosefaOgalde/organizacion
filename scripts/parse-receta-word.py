@@ -15,6 +15,7 @@ import argparse
 import json
 import re
 import sys
+import unicodedata
 import zipfile
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
@@ -129,6 +130,18 @@ def slugify(s: str) -> str:
     return s[:80] or "receta"
 
 
+def sin_tildes(s: str) -> str:
+    return unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode("ascii")
+
+
+def normalizar_dificultad(valor: str | None) -> str | None:
+    """El schema y el desplegable del BM usan el enum sin tildes: facil, media…"""
+    if not valor:
+        return None
+    limpio = re.sub(r"\s+", " ", sin_tildes(valor).lower()).strip()
+    return limpio or None
+
+
 def valor_despues_label(lines: list[str], labels: list[str]) -> str | None:
     """Si la línea es 'Label:' toma el resto o la línea siguiente."""
     labs = [l.lower() for l in labels]
@@ -170,7 +183,7 @@ def parse_barra_info(texto: str) -> dict:
         )
     if m:
         out["tiempoTotal"] = m.group(1).strip()
-        out["dificultad"] = m.group(2).strip().lower()
+        out["dificultad"] = normalizar_dificultad(m.group(2))
         out["porciones"] = m.group(3).strip()
     return out
 
@@ -239,14 +252,15 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
         line = raw.strip()
         if not line:
             continue
-        if re.match(r"(?i)^(tips?\b|consejos?\b)", line):
+        encabezado = re.match(r"(?i)^(tips?|consejos?)\b\s*(?P<sep>[:\-–])?\s*(?P<resto>.*)$", line)
+        if encabezado:
             en_tips = True
-            resto = re.sub(r"(?i)^(tips?|consejos?)\b[:\s\-]*", "", line).strip()
-            if resto and re.match(r"(?i)^(para\s+un|para\s+el|de\s+la)\b", resto):
-                tips_titulo = line.strip()
-            elif resto:
+            # «Tips: deja reposar» trae el consejo en la misma línea;
+            # «Tips para unos anticuchos perfectos» es el título de la sección.
+            resto = (encabezado.group("resto") or "").strip()
+            if resto and encabezado.group("sep"):
                 tips.append(resto.lstrip("-•* ").strip())
-            elif re.match(r"(?i)^consejos?\b", line):
+            else:
                 tips_titulo = line.strip()
             continue
         if en_tips:
@@ -455,9 +469,7 @@ def construir_receta_simple(texto: str, lines: list[str], fuente: str) -> dict:
     )
     t_coc = meta_linea(texto, ["tiempo de cocción", "tiempo de coccion", "cocción", "coccion"])
     t_tot = meta_linea(texto, ["tiempo total", "total"])
-    dificultad = meta_linea(texto, ["dificultad", "nivel"])
-    if dificultad:
-        dificultad = dificultad.lower().strip()
+    dificultad = normalizar_dificultad(meta_linea(texto, ["dificultad", "nivel"]))
     categorias = parse_lista_csv(meta_linea(texto, ["categorías", "categorias", "categoría", "categoria", "tags"]))
     ocasiones = parse_lista_csv(meta_linea(texto, ["ocasiones", "ocasión", "ocasion"]))
 

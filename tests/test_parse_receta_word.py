@@ -10,7 +10,9 @@ from pathlib import Path
 from unittest.mock import patch
 
 
-SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts/parse-receta-word.py"
+ROOT = Path(__file__).resolve().parents[1]
+SCRIPT_PATH = ROOT / "scripts/parse-receta-word.py"
+SCHEMA_PATH = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud/schema-receta.json"
 
 
 def cargar_modulo():
@@ -181,6 +183,7 @@ class ParseRecetaWordTests(unittest.TestCase):
             receta["tipsTitulo"],
             "Consejos para un salmón a la parrilla con salsa perfecto",
         )
+        self.assertEqual(receta["dificultad"], "facil")
         self.assertEqual(receta["estado"], "listo-para-cargar")
         self.assertEqual(
             self.modulo.parse_lista_csv(
@@ -254,6 +257,49 @@ class ParseRecetaWordTests(unittest.TestCase):
             self.assertTrue(receta["imagenes"][0]["rutaLocal"].endswith("portada-enlace.jpg"))
             self.assertEqual(receta["imagenes"][0]["urlFuente"], "https://cdn.ejemplo.cl/salmon.jpg")
             self.assertEqual(receta["imagenes"][0]["textoEnlace"], "Foto")
+
+    def test_titulo_de_la_seccion_tips_no_se_guarda_como_tip(self):
+        bloque = (
+            "Arma las brochetas y ásalas.\n"
+            "Tips para unos anticuchos de verduras perfectos\n"
+            "Remoja los palos de madera 30 minutos.\n"
+            "Prefiere verduras firmes.\n"
+        )
+        pasos, tips, tips_titulo = self.modulo.parse_pasos_jumbo(bloque)
+
+        self.assertEqual(len(pasos), 1)
+        self.assertEqual(tips_titulo, "Tips para unos anticuchos de verduras perfectos")
+        self.assertEqual(
+            tips,
+            ["Remoja los palos de madera 30 minutos.", "Prefiere verduras firmes."],
+        )
+
+    def test_tip_en_la_misma_linea_del_encabezado_si_hay_dos_puntos(self):
+        _, tips, tips_titulo = self.modulo.parse_pasos_jumbo("Tip: deja reposar el chimichurri.\n")
+
+        self.assertEqual(tips, ["deja reposar el chimichurri."])
+        self.assertEqual(tips_titulo, "")
+
+    def test_dificultad_usa_el_enum_sin_tildes_del_schema(self):
+        texto_jumbo = (
+            "Meta título:\n"
+            "Papas al horno | Recetas Jumbo\n"
+            "Papas al horno\n"
+            "35 min | Fácil | 4 porciones\n"
+            "Tags: Cena\n"
+            "Ingredientes:\n"
+            "1 kg papas\n"
+            "Paso a paso:\n"
+            "Cocinar las papas.\n"
+        )
+        enum_schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))["properties"]["dificultad"]["enum"]
+
+        jumbo = self.modulo.construir_receta_jumbo(
+            texto_jumbo.splitlines(), texto_jumbo, "inbox/papas.docx"
+        )
+
+        self.assertEqual(jumbo["dificultad"], "facil")
+        self.assertIn(jumbo["dificultad"], enum_schema)
 
 
 if __name__ == "__main__":
