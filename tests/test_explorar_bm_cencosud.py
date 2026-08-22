@@ -450,6 +450,31 @@ class ExplorarBmTests(unittest.TestCase):
             self.assertTrue(self.modulo.restaurar_ficha_si_salio(pagina, ficha))
         self.assertEqual(pagina.gotos, [ficha])
 
+    def test_url_con_componente_abre_editor(self):
+        vista = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager/view/abc123"
+        )
+        self.assertEqual(
+            self.modulo.url_con_componente(vista, "a3e7ad"),
+            vista + "?component=a3e7ad",
+        )
+        self.assertIsNone(self.modulo.url_con_componente("https://example.com", "a3e7ad"))
+
+    def test_editor_por_campos_detecta_cabecera(self):
+        class Pagina:
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "h1,h2,h3" in texto:
+                    return "Recetas_Jumbo | web"
+                if "innerText" in texto:
+                    return "Título Duración Dificultad Porciones Imagen"
+                return ""
+
+        pagina = Pagina()
+        self.assertEqual(self.modulo.editor_por_campos(pagina), "cabecera")
+        self.assertEqual(self.modulo.editor_actual(pagina), "cabecera")
+
     def test_url_lienzo_conserva_vista_y_no_baja_al_gestor_vacio(self):
         vista = (
             "https://business-manager.ecomm.cencosud.com/cms/projects/"

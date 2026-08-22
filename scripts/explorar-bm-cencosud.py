@@ -627,6 +627,12 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     aliases = list(comp["aliases"])
     idx = next(i for i, c in enumerate(COMPONENTES_CMS) if c["clave"] == clave)
     payload = {"aliases": aliases, "index": idx}
+    ids = recoger_ids_componentes(page)
+    if ids:
+        print("  · IDs lienzo: " + " ".join(f"{k}={v}" for k, v in ids.items()))
+    comp_id = ids.get(clave)
+    if comp_id and _abrir_por_query_componente(page, clave, comp_id, url_antes):
+        return True
 
     if intentar(_clic_lapiz_por_fila(page, aliases)):
         return True
@@ -1038,6 +1044,87 @@ def sigue_dato_requerido(page) -> bool:
     except Exception:
         return False
     return isinstance(t, str) and "el dato es requerido" in t.lower()
+
+
+JS_IDS_BLOQUES = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const hayPaleta = /paleta de componentes/i.test(document.body.innerText || '');
+  const pares = [
+    ['cabecera', /\\bcabecera\\b/i],
+    ['tags', /\\btags?\\b/i],
+    ['ingredientes', /ingredientes/i],
+    ['instrucciones', /instrucciones/i],
+    ['seo', /seo\\s*html|\\bseo\\b/i],
+  ];
+  const seen = new Map();
+  for (const el of document.querySelectorAll('*')) {
+    const t = clean(el.innerText || '');
+    if (t.length < 4 || t.length > 220) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 16 || r.height < 8) continue;
+    if (hayPaleta && r.left < 200) continue;
+    const m = t.match(/\\b([a-f0-9]{6})\\b/i);
+    if (!m) continue;
+    const id = m[1].toLowerCase();
+    for (const [clave, pat] of pares) {
+      if (!pat.test(t)) continue;
+      const prev = seen.get(clave);
+      if (!prev || r.top < prev.y) seen.set(clave, { clave, id, y: r.top });
+      break;
+    }
+  }
+  return [...seen.values()].map(({ clave, id }) => ({ clave, id }));
+}"""
+
+
+def recoger_ids_componentes(page) -> dict[str, str]:
+    ids: dict[str, str] = {}
+    for fr in _frames_pagina(page):
+        try:
+            filas = fr.evaluate(JS_IDS_BLOQUES)
+        except Exception:
+            continue
+        if not isinstance(filas, list):
+            continue
+        for fila in filas:
+            if not isinstance(fila, dict):
+                continue
+            clave = str(fila.get("clave") or "")
+            cid = str(fila.get("id") or "").lower()
+            if clave and re.fullmatch(r"[a-f0-9]{6}", cid):
+                ids.setdefault(clave, cid)
+    return ids
+
+
+def url_con_componente(url: str | None, comp_id: str) -> str | None:
+    if not url or not comp_id:
+        return None
+    base = url.split("#")[0].split("?")[0].rstrip("/")
+    if "view-manager" not in base:
+        return None
+    return f"{base}?component={comp_id}"
+
+
+def _abrir_por_query_componente(page, clave: str, comp_id: str, url_antes: str | None) -> bool:
+    destino = url_con_componente(url_actual(page) or url_antes, comp_id)
+    if not destino or not hasattr(page, "goto"):
+        return False
+    print(f"  · Abro «{clave}» con ?component={comp_id}")
+    try:
+        page.goto(destino, wait_until="domcontentloaded", timeout=60_000)
+    except TypeError:
+        try:
+            page.goto(destino)
+        except Exception:
+            return False
+    except Exception as e:
+        print(f"  · No pude abrir ?component={comp_id}: {e}")
+        return False
+    try:
+        page.wait_for_timeout(900)
+    except Exception:
+        pass
+    return _editor_confirmado(page, clave)
 
 
 def url_tiene_vista_receta(url: str | None) -> bool:
@@ -1755,14 +1842,35 @@ def texto_editor(page) -> str:
     return raw if isinstance(raw, str) else ""
 
 
+def editor_por_campos(page) -> str | None:
+    """El panel del BM a veces no pone «Edición de …» en un h1."""
+    t = texto_cuerpo(page).lower()
+    if not t or len(t) < 20:
+        return None
+    if "edita este componente vac" in t and "dificultad" not in t:
+        return None
+    if "dificultad" in t and ("duración" in t or "duracion" in t) and "porciones" in t:
+        return "cabecera"
+    if re.search(r"ingrediente\s*\*", t) and ("cantidad" in t or "unidad" in t):
+        return "ingredientes"
+    if "instrucci" in t and ("paso" in t or "agregar" in t) and "dificultad" not in t:
+        return "instrucciones"
+    if ("meta título" in t or "meta titulo" in t or "seo title" in t) and (
+        "meta descripción" in t or "meta descripcion" in t or "seo desc" in t
+    ):
+        return "seo"
+    if re.search(r"\btags?\b", t) and ("agregar" in t or "etiqueta" in t) and "dificultad" not in t:
+        return "tags"
+    return None
+
+
 def editor_actual(page) -> str | None:
     t = texto_editor(page)
-    if not t:
-        return None
-    for clave, pat in TITULOS_EDITOR.items():
-        if pat.search(t):
-            return clave
-    return None
+    if t:
+        for clave, pat in TITULOS_EDITOR.items():
+            if pat.search(t):
+                return clave
+    return editor_por_campos(page)
 
 
 def parece_cms_vacio(page) -> bool:
