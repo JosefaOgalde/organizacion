@@ -376,6 +376,148 @@ class ExplorarBmTests(unittest.TestCase):
         self.assertEqual(runtime.clicks, ["#publicar"])
         self.assertEqual(guardada["estado"], "cargado")
 
+    def test_fill_no_rellena_si_esta_en_lista_proyectos(self):
+        runtime = RuntimeFalso()
+        with (
+            contextlib.redirect_stdout(io.StringIO()),
+            contextlib.redirect_stderr(io.StringIO()),
+        ):
+            resultado = self.modulo.fill_from_receta(
+                PageFalsa(runtime),
+                self.receta_valida,
+                self.selectores,
+                dry_run=True,
+                url_ficha="https://business-manager.ecomm.cencosud.com/cms/projects",
+            )
+        self.assertFalse(resultado)
+        self.assertEqual(runtime.clicks, [])
+
+    def test_restaurar_ficha_vuelve_desde_proyectos(self):
+        ficha = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager"
+        )
+
+        class Pagina:
+            url = "https://business-manager.ecomm.cencosud.com/cms/projects"
+
+            def __init__(self):
+                self.gotos = []
+
+            def goto(self, url, **_kwargs):
+                self.gotos.append(url)
+                self.url = url
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        pagina = Pagina()
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertTrue(self.modulo.restaurar_ficha_si_salio(pagina, ficha))
+        self.assertEqual(pagina.gotos, [ficha])
+
+    def test_js_clic_lapiz_excluye_paleta(self):
+        js = self.modulo.JS_CLIC_LAPIZ
+        self.assertIn("paleta", js.lower())
+        self.assertIn("left < 240", js)
+        self.assertIn("Edita este componente", js)
+        self.assertNotRegex(js, r"esLapiz = \(b\) => /[^/]*create")
+
+    def test_clic_lapiz_por_fila_salta_paleta(self):
+        runtime = RuntimeFalso()
+        paleta = NodoCms(runtime, "paleta-cabecera", {"x": 48, "width": 160, "height": 22}, 2)
+        lienzo = NodoCms(runtime, "lienzo-cabecera", {"x": 380, "width": 240, "height": 24}, 3)
+        pagina = PaginaTextos({"Cabecera": [paleta, lienzo]})
+        self.assertTrue(self.modulo._clic_lapiz_por_fila(pagina, ["Cabecera"]))
+        self.assertEqual(runtime.clicks, ["edit-lienzo-cabecera"])
+
+
+class NodoCms:
+    def __init__(self, runtime, nombre, box, n_botones):
+        self.runtime = runtime
+        self.nombre = nombre
+        self._box = box
+        self.n_botones = n_botones
+
+    def bounding_box(self):
+        return self._box
+
+    def locator(self, selector):
+        if "xpath=ancestor" in selector:
+            return FilaCms(self)
+        if "Editar" in selector or "edit" in selector or "lápiz" in selector or "lapiz" in selector:
+            return GrupoBotones(self.runtime, f"edit-{self.nombre}", 1, self._box)
+        if selector == "button":
+            return GrupoBotones(self.runtime, f"btn-{self.nombre}", self.n_botones, self._box)
+        return GrupoBotones(self.runtime, selector, 0, self._box)
+
+    def click(self, **_kwargs):
+        self.runtime.clicks.append(self.nombre)
+
+    def nth(self, _i):
+        return self
+
+    def count(self):
+        return 1
+
+
+class FilaCms:
+    def __init__(self, nodo):
+        self.nodo = nodo
+
+    def bounding_box(self):
+        box = dict(self.nodo._box)
+        box["width"] = max(box.get("width") or 0, 400)
+        return box
+
+    def locator(self, selector):
+        return self.nodo.locator(selector)
+
+    def count(self):
+        return 1
+
+
+class GrupoBotones:
+    def __init__(self, runtime, nombre, n, box):
+        self.runtime = runtime
+        self.nombre = nombre
+        self.n = n
+        self._box = box
+
+    def count(self):
+        return self.n
+
+    def first(self):
+        return self
+
+    def nth(self, _i):
+        return self
+
+    def bounding_box(self):
+        return self._box
+
+    def click(self, **_kwargs):
+        self.runtime.clicks.append(self.nombre)
+
+
+class PaginaTextos:
+    def __init__(self, por_texto):
+        self.por_texto = por_texto
+
+    def get_by_text(self, alias, exact=True):
+        return GrupoTextos(self.por_texto.get(alias, []))
+
+
+class GrupoTextos:
+    def __init__(self, items):
+        self.items = items
+
+    def count(self):
+        return len(self.items)
+
+    def nth(self, i):
+        return self.items[i]
+
 
 if __name__ == "__main__":
     unittest.main()

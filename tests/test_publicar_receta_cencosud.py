@@ -58,6 +58,7 @@ class LocatorFalso:
 class PageFalsa:
     def __init__(self, runtime):
         self.runtime = runtime
+        self.url = ""
 
     def locator(self, selector):
         return LocatorFalso(self.runtime, selector)
@@ -72,8 +73,9 @@ class PageFalsa:
             return 0
         return {"fields": [], "buttons": [], "linksReceta": [], "nav": []}
 
-    def goto(self, *_args, **_kwargs):
-        return None
+    def goto(self, url, *_args, **_kwargs):
+        self.runtime.gotos.append(url)
+        self.url = url
 
     def wait_for_timeout(self, _milliseconds):
         return None
@@ -130,6 +132,7 @@ class RuntimeFalso:
     def __init__(self, selectores_ausentes=()):
         self.selectores_ausentes = set(selectores_ausentes)
         self.clicks = []
+        self.gotos = []
         self.lanzamientos = 0
 
     def modulos(self):
@@ -239,6 +242,14 @@ class PublicarRecetaTests(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertEqual(runtime.clicks, ["#borrador"])
         self.assertEqual(guardada["estado"], "cargado")
+
+    def test_no_sigue_nav_nueva_receta_hacia_proyectos(self):
+        self.selectores["nav_nueva_receta"] = "/cms/projects"
+        exit_code, runtime, _guardada = self.ejecutar(self.receta_valida, args=("--dry-run",))
+        self.assertEqual(exit_code, 0)
+        self.assertFalse(
+            any(str(url).rstrip("/").endswith("/cms/projects") for url in runtime.gotos)
+        )
 
 
 if __name__ == "__main__":

@@ -42,6 +42,22 @@ class CrcRutasTests(unittest.TestCase):
         )
         custom = "https://business-manager.ecomm.cencosud.com/cms/otra"
         self.assertEqual(self.rutas.url_inicio_bm({"CENCOSUD_BM_URL": custom}), custom)
+        self.assertIn(
+            "view-manager",
+            self.rutas.url_inicio_bm(
+                {"CENCOSUD_BM_URL": "https://business-manager.ecomm.cencosud.com/cms/projects"}
+            ),
+        )
+        self.assertTrue(
+            self.rutas.url_inicio_bm(
+                {
+                    "CENCOSUD_BM_URL": (
+                        "https://business-manager.ecomm.cencosud.com/cms/projects/"
+                        "6597f023fdc664839ccd2a37"
+                    )
+                }
+            ).endswith("view-manager"),
+        )
         with tempfile.TemporaryDirectory() as tmp:
             crc = Path(tmp)
             out = crc / "out"
@@ -110,6 +126,30 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             {"cantidad": "200", "unidad": "g", "nombre": "choclo"}
         )
         self.assertEqual(linea, "200 g choclo")
+
+    def test_caja_en_lienzo_ignora_paleta_izquierda(self):
+        self.assertFalse(self.explorar.caja_en_lienzo({"x": 40, "width": 180, "height": 24}))
+        self.assertTrue(self.explorar.caja_en_lienzo({"x": 360, "width": 220, "height": 28}))
+        self.assertFalse(self.explorar.caja_en_lienzo(None))
+
+    def test_lista_proyectos_no_es_ficha(self):
+        proyectos = "https://business-manager.ecomm.cencosud.com/cms/projects"
+        ficha = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager"
+        )
+        self.assertTrue(self.explorar.es_lista_proyectos_cms(proyectos))
+        self.assertFalse(self.explorar.es_lista_proyectos_cms(ficha))
+        self.assertTrue(self.explorar.salio_de_la_ficha(proyectos, ficha))
+        self.assertFalse(self.explorar.salio_de_la_ficha(ficha, ficha))
+
+        class PaginaFicha:
+            url = ficha
+
+        self.assertEqual(
+            self.explorar.esperar_ficha_en_lienzo(PaginaFicha(), headed=False),
+            ficha,
+        )
 
 
 if __name__ == "__main__":

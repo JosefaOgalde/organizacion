@@ -111,6 +111,135 @@ COMPONENTES_CMS = (
     },
 )
 
+# El lienzo de la receta está al centro. A la izquierda está la paleta
+# («Cabecera», «tags»…): un clic ahí saca a /cms/projects.
+LIENZO_MIN_X = 240
+
+MENSAJE_ENTER_FICHA = (
+    "\n>>> En Chromium abre la receta (la que ya existe) hasta ver\n"
+    "    los 5 bloques del CENTRO: Cabecera / tags / Ingredientes /\n"
+    "    Instrucciones / SEO.\n"
+    "    NO pulses la paleta izquierda (esos mismos nombres).\n"
+    "    NO pulses «Proyectos» ni el breadcrumb.\n"
+    "    NO entres a «Edición de Lista…».\n"
+    "    Cuando veas los 5 bloques, pulsa ENTER aquí.\n"
+)
+
+
+def url_actual(page) -> str:
+    return (getattr(page, "url", None) or "") if page is not None else ""
+
+
+def es_lista_proyectos_cms(url: str | None) -> bool:
+    """Lista «Proyectos en JUMBO», no el Gestor de una receta."""
+    u = url or ""
+    if "view-manager" in u:
+        return False
+    return "/cms/projects" in u
+
+
+def salio_de_la_ficha(actual: str | None, url_ficha: str | None) -> bool:
+    if not url_ficha or not actual:
+        return False
+    a = actual.split("#")[0].rstrip("/")
+    f = url_ficha.split("#")[0].rstrip("/")
+    if a == f:
+        return False
+    if es_lista_proyectos_cms(actual):
+        return True
+    return "view-manager" in url_ficha and "view-manager" not in actual
+
+
+def caja_en_lienzo(box: dict | None, *, min_x: float = LIENZO_MIN_X) -> bool:
+    """True si el nodo está en el lienzo central, no en la paleta izquierda."""
+    if not box:
+        return False
+    try:
+        x = float(box.get("x") or 0)
+        w = float(box.get("width") or 0)
+        h = float(box.get("height") or 0)
+    except (TypeError, ValueError):
+        return False
+    return x >= min_x and w >= 20 and h >= 8
+
+
+def esperar_ficha_en_lienzo(page, *, headed: bool = True) -> str:
+    """Tras ENTER: si Chromium está en Proyectos, pedir de nuevo la receta."""
+    url_ficha = url_actual(page)
+    if not es_lista_proyectos_cms(url_ficha):
+        return url_ficha
+    print(
+        "\n>>> Chromium está en «Proyectos en JUMBO», no en la receta.\n"
+        "    Entrá otra vez a Recetas_Jumbo → la receta (5 bloques al centro).\n"
+        "    No pulses la paleta izquierda. ENTER cuando la veas.\n"
+    )
+    if headed and sys.stdin.isatty():
+        try:
+            input()
+        except EOFError:
+            try:
+                page.wait_for_timeout(8_000)
+            except Exception:
+                pass
+    return url_actual(page)
+
+
+def restaurar_ficha_si_salio(page, url_ficha: str | None) -> bool:
+    """Si un clic nos mandó a Proyectos, volver a la receta ya abierta."""
+    if not url_ficha or page is None:
+        return False
+    actual = url_actual(page)
+    if not salio_de_la_ficha(actual, url_ficha):
+        return False
+    print("  · El navegador salió de la receta; vuelvo a la ficha abierta.")
+    try:
+        page.goto(url_ficha, wait_until="domcontentloaded", timeout=60_000)
+        try:
+            page.wait_for_timeout(400)
+        except Exception:
+            pass
+        return True
+    except Exception as e:
+        print(f"  · No pude volver a la ficha: {e}")
+        return False
+
+
+def _bounding_box(loc) -> dict | None:
+    if loc is None or not hasattr(loc, "bounding_box"):
+        return None
+    try:
+        return loc.bounding_box()
+    except Exception:
+        return None
+
+
+def clic_locator_en_lienzo(page, selector: str, timeout: int = 5_000) -> bool:
+    """Clic del primer match que esté en el lienzo (nunca la paleta)."""
+    if not selector:
+        return False
+    try:
+        loc = page.locator(selector)
+    except Exception:
+        return False
+    try:
+        n = loc.count()
+    except Exception:
+        n = 1
+    if n == 0:
+        return False
+    for i in range(min(max(n, 1), 16)):
+        item = loc.nth(i) if hasattr(loc, "nth") else loc
+        box = _bounding_box(item)
+        if box is None:
+            if i == 0:
+                item.click(timeout=timeout)
+                return True
+            continue
+        if caja_en_lienzo(box):
+            item.click(timeout=timeout)
+            return True
+    return False
+
 
 def load_env(path: Path) -> dict[str, str]:
     data: dict[str, str] = {}
@@ -321,6 +450,19 @@ def listar_componentes_cms(page) -> list[dict]:
         """(aliasesFlat) => {
       const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
       const norm = (s) => clean(s).toLowerCase();
+      const enChrome = (el) => {
+        let n = el;
+        while (n && n !== document.body) {
+          const tag = (n.tagName || '').toLowerCase();
+          const cls = String(n.className || '');
+          const role = (n.getAttribute && n.getAttribute('role')) || '';
+          const lab = (n.getAttribute && (n.getAttribute('aria-label') || '')) || '';
+          if (tag === 'nav' || tag === 'header' || tag === 'aside') return true;
+          if (/breadcrumb|sidebar|drawer|palette|paleta/i.test(cls + ' ' + role + ' ' + lab)) return true;
+          n = n.parentElement;
+        }
+        return false;
+      };
       const found = [];
       const seen = new Set();
       const nodes = Array.from(
@@ -329,6 +471,8 @@ def listar_componentes_cms(page) -> list[dict]:
         )
       );
       for (const el of nodes) {
+        const box = el.getBoundingClientRect();
+        if (box.left < 240 || enChrome(el)) continue;
         const dataName = clean(el.getAttribute('data-component') || el.getAttribute('data-type') || '');
         const titleEl = el.querySelector(
           '.bloque-nombre, [class*="title"], [class*="Title"], [class*="name"], h1, h2, h3, h4, h5, strong'
@@ -380,12 +524,10 @@ def listar_componentes_cms(page) -> list[dict]:
 
 
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
-    """Clic en el lápiz (icono del medio: basura · lápiz · historial). Nunca el basurero."""
+    """Clic en el lápiz del lienzo (icono del medio). Nunca paleta ni basurero."""
     if selector_guardado and not selector_es_generico(selector_guardado):
         try:
-            loc = page.locator(selector_guardado).first
-            if loc.count():
-                loc.click(timeout=5_000)
+            if clic_locator_en_lienzo(page, selector_guardado):
                 _esperar_editor(page)
                 return True
         except Exception:
@@ -425,38 +567,96 @@ def _clic_lapiz_por_fila(page, aliases: list[str]) -> bool:
     for alias in aliases:
         try:
             titulo = get_by_text(alias, exact=True)
-            if hasattr(titulo, "count") and titulo.count() == 0:
+            n_tit = titulo.count() if hasattr(titulo, "count") else 1
+            if n_tit == 0:
                 continue
-            fila = titulo.locator("xpath=ancestor::*[count(.//button)>=2][1]")
-            edit = fila.locator(
-                "button[aria-label*='Editar' i], button[title*='Editar' i], "
-                "button[aria-label*='edit' i], button[title*='edit' i], "
-                "button[aria-label*='lápiz' i], button[aria-label*='lapiz' i]"
-            )
-            if edit.count():
-                edit.first.click(timeout=3_000)
-                return True
-            botones = fila.locator("button")
-            n = botones.count()
-            if n >= 3:
-                botones.nth(1).click(timeout=3_000)
-                return True
-            if n == 2:
-                botones.nth(1).click(timeout=3_000)
-                return True
+            for i in range(n_tit):
+                item = titulo.nth(i) if hasattr(titulo, "nth") else titulo
+                if not caja_en_lienzo(_bounding_box(item)):
+                    # Sin box (tests) solo usamos el primer match.
+                    if _bounding_box(item) is None and i > 0:
+                        continue
+                    if _bounding_box(item) is not None:
+                        continue
+                fila = item.locator(
+                    "xpath=ancestor::*[count(.//button)>=2 and count(.//button)<=6][1]"
+                )
+                if hasattr(fila, "count") and fila.count() == 0:
+                    continue
+                if _bounding_box(fila) is not None and not caja_en_lienzo(_bounding_box(fila)):
+                    continue
+                edit = fila.locator(
+                    "button[aria-label*='Editar' i], button[title*='Editar' i], "
+                    "button[aria-label*='edit' i], button[title*='edit' i], "
+                    "button[aria-label*='lápiz' i], button[aria-label*='lapiz' i]"
+                )
+                if edit.count():
+                    if clic_locator_en_lienzo_desde(edit):
+                        return True
+                    edit.first.click(timeout=3_000)
+                    return True
+                botones = fila.locator("button")
+                n = botones.count()
+                if n >= 2:
+                    medio = 1 if n >= 3 else 1
+                    botones.nth(medio).click(timeout=3_000)
+                    return True
         except Exception:
             continue
+    return False
+
+
+def clic_locator_en_lienzo_desde(loc) -> bool:
+    try:
+        n = loc.count()
+    except Exception:
+        return False
+    for i in range(min(n, 8)):
+        item = loc.nth(i)
+        box = _bounding_box(item)
+        if box is None or caja_en_lienzo(box):
+            item.click(timeout=3_000)
+            return True
     return False
 
 
 JS_CLIC_LAPIZ = """(aliases) => {
   const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
   const norm = (s) => clean(s).toLowerCase();
+  const textoDe = (el) => clean(el.innerText || el.textContent || '');
   const wanted = aliases.map(norm);
+  const enChrome = (el) => {
+    let n = el;
+    while (n && n !== document.body) {
+      const tag = (n.tagName || '').toLowerCase();
+      const cls = String(n.className || '');
+      const role = (n.getAttribute && n.getAttribute('role')) || '';
+      const lab = (n.getAttribute && (n.getAttribute('aria-label') || '')) || '';
+      if (tag === 'nav' || tag === 'header' || tag === 'aside') return true;
+      if (/breadcrumb|sidebar|drawer|palette|paleta/i.test(cls + ' ' + role + ' ' + lab)) return true;
+      n = n.parentElement;
+    }
+    return false;
+  };
+  const enPaleta = (el) => {
+    const r0 = el.getBoundingClientRect();
+    if (r0.left < 240) return true;
+    let n = el;
+    while (n && n !== document.body) {
+      const lab = (n.getAttribute && (n.getAttribute('aria-label') || '')) || '';
+      const t = textoDe(n).slice(0, 60);
+      if (/paleta de componentes/i.test(lab) || /^paleta de componentes/i.test(t)) {
+        const r = n.getBoundingClientRect();
+        if (r.left < 280 && r.width < 480) return true;
+      }
+      n = n.parentElement;
+    }
+    return false;
+  };
   const esIcono = (b) => {
     const r = b.getBoundingClientRect();
-    const txt = clean(b.innerText || b.textContent || '');
-    return r.width > 0 && r.height > 0 && r.width <= 64 && txt.length <= 3;
+    const txt = textoDe(b);
+    return r.width > 0 && r.height > 0 && r.width <= 64 && r.height <= 64 && txt.length <= 3;
   };
   const blobBtn = (b) => [
     b.getAttribute('aria-label') || '',
@@ -467,25 +667,43 @@ JS_CLIC_LAPIZ = """(aliases) => {
   ].join(' ');
   const esBasura = (b) => /trash|delete|eliminar|borrar|remove/i.test(blobBtn(b));
   const esHistorial = (b) => /clock|history|historial|time|version/i.test(blobBtn(b));
-  const esLapiz = (b) => /edit|editar|pencil|lápiz|lapiz|create/i.test(blobBtn(b));
+  const esLapiz = (b) => /edit|editar|pencil|lápiz|lapiz/i.test(blobBtn(b)) && !/create/i.test(blobBtn(b));
 
-  const nodos = Array.from(document.querySelectorAll('div, section, article, li, h2, h3, h4, h5, span, p, strong'));
+  const nodos = Array.from(document.querySelectorAll(
+    'div, section, article, li, h2, h3, h4, h5, h6, span, p, strong'
+  ));
+  const candidatos = [];
   for (const el of nodos) {
-    const linea = norm((el.innerText || '').split('\\n')[0]);
+    const crudo = el.innerText || el.textContent || '';
+    const linea = norm(crudo.split('\\n')[0]);
     if (!wanted.some((w) => linea === w || linea.startsWith(w + ' '))) continue;
-    if ((el.innerText || '').length > 220) continue;
+    if (crudo.length > 220) continue;
+    if (enChrome(el) || enPaleta(el)) continue;
     let cur = el;
-    for (let d = 0; d < 12 && cur; d++) {
+    for (let d = 0; d < 10 && cur && cur !== document.body; d++) {
+      const cr = cur.getBoundingClientRect();
+      if (cr.left < 240 || cr.width > 1400) {
+        cur = cur.parentElement;
+        continue;
+      }
       const iconos = Array.from(cur.querySelectorAll('button, [role="button"]')).filter(esIcono);
-      if (iconos.length >= 2) {
-        const lapiz = iconos.find(esLapiz) && !esBasura(iconos.find(esLapiz)) ? iconos.find(esLapiz) : null;
-        const candidato = lapiz || iconos.filter((b) => !esBasura(b) && !esHistorial(b))[0] || (iconos.length >= 3 ? iconos[1] : null);
-        if (candidato && !esBasura(candidato)) {
-          candidato.click();
-          return true;
-        }
+      if (iconos.length >= 2 && iconos.length <= 6) {
+        const vacio = /Edita este componente/i.test(cur.innerText || cur.textContent || '') ? 10 : 0;
+        candidatos.push({ cur, iconos, score: vacio + iconos.length + (cr.left > 280 ? 2 : 0) });
+        break;
       }
       cur = cur.parentElement;
+    }
+  }
+  candidatos.sort((a, b) => b.score - a.score);
+  for (const c of candidatos) {
+    const lapiz = c.iconos.find((b) => esLapiz(b) && !esBasura(b));
+    const candidato = lapiz
+      || c.iconos.filter((b) => !esBasura(b) && !esHistorial(b))[0]
+      || (c.iconos.length >= 3 ? c.iconos[1] : null);
+    if (candidato && !esBasura(candidato)) {
+      candidato.click();
+      return true;
     }
   }
   return false;
@@ -534,6 +752,7 @@ def capturar_cms_por_componentes(page) -> tuple[dict, dict]:
     Abre solo el lápiz de cada componente CRC, vuelca campos y fusiona selectores.
     La usuaria no debe hacer clic en los lápices.
     """
+    url_ficha = url_actual(page)
     antes = contar_campos_editables(page)
     componentes_vistos = listar_componentes_cms(page)
     print(f"Componentes CMS detectados: {len(componentes_vistos)}")
@@ -563,6 +782,8 @@ def capturar_cms_por_componentes(page) -> tuple[dict, dict]:
         sel_lapiz = (visto or {}).get("lapizSelector")
         print(f"\n→ Abriendo lápiz «{clave}»…")
         ok = abrir_lapiz_componente(page, clave, sel_lapiz)
+        if restaurar_ficha_si_salio(page, url_ficha):
+            ok = False
         if not ok:
             print(f"  ✗ No se encontró lápiz para {clave}")
             lapices[meta["lapiz_key"]] = sel_lapiz
@@ -946,8 +1167,19 @@ def elegir_dificultad(page, valor: str | None) -> bool:
         if sel and _fill_locator(page, sel, etiqueta):
             return True
     try:
-        combo = page.get_by_text("Dificultad", exact=False).first
-        combo.click(timeout=3_000)
+        combo = page.get_by_text("Dificultad", exact=False)
+        n_combo = combo.count() if hasattr(combo, "count") else 1
+        pulsado = False
+        for i in range(min(n_combo, 8)):
+            item = combo.nth(i) if hasattr(combo, "nth") else combo
+            box = _bounding_box(item)
+            if box is not None and not caja_en_lienzo(box):
+                continue
+            item.click(timeout=3_000)
+            pulsado = True
+            break
+        if not pulsado:
+            raise RuntimeError("Dificultad no está en el lienzo")
         page.wait_for_timeout(250)
         opcion = page.get_by_text(etiqueta, exact=True).last
         opcion.click(timeout=3_000)
@@ -1270,8 +1502,19 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
     return llenados
 
 
-def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> bool:
+def fill_from_receta(
+    page, receta: dict, selectores: dict, dry_run: bool, url_ficha: str | None = None
+) -> bool:
     resultados = {}
+    url_ficha = url_ficha or url_actual(page)
+    if es_lista_proyectos_cms(url_ficha):
+        print(
+            "\nChromium está en «Proyectos en JUMBO», no en la receta.\n"
+            "Abre Recetas_Jumbo → la receta (5 bloques al centro) y reintenta.\n"
+            "No pulses la paleta izquierda.",
+            file=sys.stderr,
+        )
+        return False
 
     def fill(key: str, value: str | None) -> bool:
         if value is None or value == "":
@@ -1302,8 +1545,12 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         lapiz_key = meta["lapiz_key"] if meta else f"lapiz_{clave_comp}"
         print(f"  [CMS] Abriendo componente «{clave_comp}»…")
         abierto = abrir_lapiz_componente(page, clave_comp, selectores.get(lapiz_key))
+        if restaurar_ficha_si_salio(page, url_ficha):
+            abierto = False
         if not abierto:
             abierto = abrir_componente_para_campos(page, selectores, keys_campo)
+        if restaurar_ficha_si_salio(page, url_ficha):
+            abierto = False
         if not abierto:
             print(f"  · Sin lápiz para {clave_comp}; intento relleno en vista actual.")
 
@@ -1375,8 +1622,8 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         print(
             "\nNo se rellenó ningún campo.\n"
             "En Chromium deja abierta la receta en el Gestor de contenido\n"
-            "(bloques Cabecera / tags / Lista Ingredientes / Instrucciones / SEO).\n"
-            "No entres a «Edición de Lista…». Luego reintenta.",
+            "(5 bloques al CENTRO: Cabecera / tags / Ingredientes / Instrucciones / SEO).\n"
+            "No pulses la paleta izquierda ni «Proyectos». No entres a «Edición de Lista…».",
             file=sys.stderr,
         )
         return False
@@ -1495,8 +1742,8 @@ def main() -> int:
     print(f"URL: {base}")
     print("1) Se abre Chromium.")
     print("2) Inicia sesión (automático si .env tiene user/pass; si no, a mano / MFA).")
-    print("3) Quedas en el Gestor de recetas (view-manager). Abre la receta o Nueva receta.")
-    print("4) Debes ver bloques Cabecera / tags / Lista Ingredientes. Pulsa ENTER.")
+    print("3) Quedas en el Gestor de recetas (view-manager). Abre la receta que ya existe.")
+    print("4) Debes ver los 5 bloques al CENTRO (no la paleta). Pulsa ENTER.")
     print("5) El scraping abre SOLO cada lápiz (Cabecera, tags, ingredientes,")
     print("   instrucciones, SEO), captura campos y cierra el editor.")
     print("6) Tú no debes hacer clic en los lápices.")
@@ -1515,15 +1762,13 @@ def main() -> int:
         page.goto(base, wait_until="domcontentloaded")
         try_login(page, env)
 
-        print(
-            "\n>>> Estás en el Gestor de recetas. Abre la ficha (bloques Cabecera…).\n"
-            "    NO entres a «Edición de Lista». NO toques los lápices. ENTER aquí…"
-        )
+        print(MENSAJE_ENTER_FICHA)
         try:
             input()
         except EOFError:
             print("Sin TTY: esperando 60s para que completes login/navegación…")
             page.wait_for_timeout(60_000)
+        url_ficha = esperar_ficha_en_lienzo(page, headed=True)
 
         if args.no_auto_lapiz:
             estructura = dump_estructura(page)
@@ -1591,7 +1836,9 @@ def main() -> int:
             )
 
         if args.fill_json:
-            carga_exitosa = fill_from_receta(page, receta, sugeridos, dry_run=dry_run)
+            carga_exitosa = fill_from_receta(
+                page, receta, sugeridos, dry_run=dry_run, url_ficha=url_ficha
+            )
             if not carga_exitosa:
                 resultado = 4
             elif args.publish:

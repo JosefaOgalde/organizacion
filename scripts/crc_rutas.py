@@ -21,11 +21,17 @@ BM_CMS_RECETAS = (
 
 
 def url_inicio_bm(env: dict | None = None) -> str:
-    """Gestor de contenido de recetas Jumbo (no el home del BM)."""
+    """Gestor de contenido de recetas Jumbo (no el home ni la lista de proyectos)."""
     raw = ((env or {}).get("CENCOSUD_BM_URL") or "").strip()
     if not raw or raw.rstrip("/") == BM_HOME.rstrip("/"):
         return BM_CMS_RECETAS
-    return raw.rstrip("/")
+    cleaned = raw.rstrip("/")
+    # «Proyectos en JUMBO» (/cms/projects) no es el lienzo de la receta.
+    if cleaned.endswith("/cms/projects"):
+        return BM_CMS_RECETAS
+    if "/cms/projects/" in cleaned and "view-manager" not in cleaned:
+        return cleaned + "/view-manager"
+    return cleaned
 
 
 def resolver_crc(root: Path) -> Path:

@@ -198,31 +198,21 @@ def main() -> int:
         page = context.new_page()
         page.goto(base_url, wait_until="domcontentloaded")
 
-        nav = selectores.get("nav_nueva_receta")
-        if nav:
-            if str(nav).startswith("http") or str(nav).startswith("/"):
-                page.goto(nav if str(nav).startswith("http") else base_url.rstrip("/") + str(nav))
-            else:
-                try:
-                    page.locator(nav).first.click()
-                except Exception:
-                    print(f"No se pudo navegar con nav_nueva_receta={nav}")
+        # La receta ya existe: la abre la usuaria. No clicar nav_nueva_receta
+        # (un href o el texto «Cabecera» de la paleta saca a /cms/projects).
 
         if headed and sys.stdin.isatty():
-            print(
-            "\n>>> Chromium abre el Gestor de contenido de recetas.\n"
-            "    Elige la receta (o Nueva receta) en esa lista.\n"
-            "    Debes ver los bloques: Cabecera, tags, Lista Ingredientes…\n"
-            "    NO entres a «Edición de Lista Ingredientes».\n"
-            "    Cuando la veas, pulsa ENTER aquí para rellenar.\n"
-            )
+            print(explorar.MENSAJE_ENTER_FICHA)
             try:
                 input()
             except EOFError:
                 page.wait_for_timeout(5_000)
+        url_ficha = explorar.esperar_ficha_en_lienzo(page, headed=headed)
 
-        print("Rellenando (abriendo lápices del CMS automáticamente)…")
-        carga_ok = explorar.fill_from_receta(page, receta, selectores, dry_run=dry)
+        print("Rellenando (solo lápices del lienzo; no toco la paleta)…")
+        carga_ok = explorar.fill_from_receta(
+            page, receta, selectores, dry_run=dry, url_ficha=url_ficha
+        )
         resultado = 0
         if dry:
             if carga_ok:
