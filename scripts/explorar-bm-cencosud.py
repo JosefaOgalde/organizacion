@@ -602,12 +602,10 @@ def _editor_confirmado(page, clave: str) -> bool:
 
 def _restaurar_si_lienzo_perdido(page, url_antes: str | None) -> None:
     """No recarga: un goto saca la vista default."""
-    if en_vista_default_cms(page):
+    if en_vista_default_cms(page) or not url_antes:
         return
     if es_lista_proyectos_cms(url_actual(page)):
         print("  · Caí en Proyectos. No recargo; volvé a la receta (default) a mano.")
-        return
-    _ = url_antes
 
 
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
