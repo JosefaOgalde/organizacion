@@ -945,6 +945,21 @@ class ExplorarBmTests(unittest.TestCase):
 
         self.assertTrue(self.modulo.escribir_tag_entre_labels(Pagina(), 0, "salmon"))
 
+    def test_despliega_formulario_item_antes_de_tag(self):
+        self.assertIn("crcCabezalesItem", self.modulo.JS_EXPANDIR_ITEM_FORMULARIO)
+        self.assertIn("aria-expanded", self.modulo.JS_EXPANDIR_ITEM_FORMULARIO)
+
+        class Pagina:
+            def evaluate(self, script, arg=None):
+                if "crcCabezalesItem" in str(script):
+                    return {"ok": True, "n": 6, "expanded": True}
+                return False
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        self.assertTrue(self.modulo.expandir_item_formulario(Pagina(), 0))
+
     def test_editor_por_campos_detecta_cabecera(self):
         class Pagina:
             def evaluate(self, script, *_args):

@@ -3159,7 +3159,8 @@ JS_CRC_LABELS_TAG_LINK = """function crcLabelsTagLink() {
   const lineaDe = (el) => clean((el.innerText || el.textContent || '')).split(/El (dato|valor)/i)[0].replace(/\\*/g, ' ').trim();
   const esCorto = (el, re) => {
     const linea = lineaDe(el);
-    return re.test(linea) && linea.length < 14;
+    const primera = linea.split(/\\s+Dale/i)[0].trim();
+    return (re.test(primera) || re.test(linea)) && primera.length < 20;
   };
   const uniq = (els) => {
     const seen = [];
@@ -3174,6 +3175,21 @@ JS_CRC_LABELS_TAG_LINK = """function crcLabelsTagLink() {
   const tags = uniq([...document.querySelectorAll('label, legend, p, span, strong, div')].filter((el) => esCorto(el, /^Tag$/i)));
   const links = uniq([...document.querySelectorAll('label, legend, p, span, strong, div')].filter((el) => esCorto(el, /^Link$|^Enlace$|^URL$/i)));
   return { tags, links };
+}
+function crcCabezalesItem() {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const map = new Map();
+  for (const el of document.querySelectorAll('h1,h2,h3,h4,h5,p,div,legend,span,button,[role="button"]')) {
+    const linea = clean(el.innerText || '').split('\\n')[0];
+    const m = linea.match(/^formulario ítem\\s+(\\d+)$/i);
+    if (!m || linea.length > 40) continue;
+    const num = parseInt(m[1], 10);
+    const r = el.getBoundingClientRect();
+    if (r.left < 200 || r.width < 16 || r.height < 8) continue;
+    const prev = map.get(num);
+    if (!prev || r.height < prev.getBoundingClientRect().height) map.set(num, el);
+  }
+  return [...map.entries()].sort((a, b) => a[0] - b[0]).map((e) => e[1]);
 }
 function crcBandaTag(indice) {
   const { tags, links } = crcLabelsTagLink();
@@ -3197,6 +3213,33 @@ function crcInputEnBanda(banda) {
   hits.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
   return hits[0] || null;
 }"""
+
+JS_EXPANDIR_ITEM_FORMULARIO = (
+    "(indice) => {\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  const heads = crcCabezalesItem();
+  const h = heads[indice];
+  if (!h) return { ok: false, n: heads.length, reason: 'sin-cabezal' };
+  let exp = h.closest && h.closest('[aria-expanded]');
+  if (!exp) {
+    let n = h;
+    for (let i = 0; i < 8 && n && !exp; i++) {
+      if (n.getAttribute && n.getAttribute('aria-expanded') != null) exp = n;
+      else exp = n.querySelector && n.querySelector('[aria-expanded]');
+      n = n.parentElement;
+    }
+  }
+  const ya = exp && String(exp.getAttribute('aria-expanded') || '') === 'true';
+  if (!ya) {
+    const chevron = (exp && exp.querySelector && exp.querySelector('[class*="chevron"], [class*="arrow"], svg')) || null;
+    try { (exp || h).click(); } catch (e) {}
+    if (chevron && chevron !== exp) { try { chevron.click(); } catch (e) {} }
+    try { h.click(); } catch (e) {}
+  }
+  return { ok: true, n: heads.length, expanded: true };
+}"""
+)
 
 
 JS_FILL_INDEX = """([index, value]) => {
@@ -4143,6 +4186,39 @@ def _tag_quedo_en_caja(fr, indice: int, valor: str) -> bool:
     return True
 
 
+def expandir_item_formulario(page, indice: int) -> bool:
+    """Abre «Formulario Ítem N» (acordeón). Sin esto Tag* no existe en el DOM."""
+    nro = indice + 1
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_EXPANDIR_ITEM_FORMULARIO, indice)
+        except Exception:
+            out = None
+        if isinstance(out, dict) and out.get("ok"):
+            try:
+                page.wait_for_timeout(400)
+            except Exception:
+                pass
+            return True
+        get_by_text = getattr(fr, "get_by_text", None)
+        if get_by_text:
+            try:
+                loc = get_by_text(re.compile(rf"Formulario Ítem\s+{nro}\b", re.I))
+                if hasattr(loc, "count") and loc.count():
+                    loc.first.click(timeout=2_500)
+                    page.wait_for_timeout(400)
+                    return True
+            except Exception:
+                pass
+    if expandir_acordeon(page, indice):
+        try:
+            page.wait_for_timeout(400)
+        except Exception:
+            pass
+        return True
+    return False
+
+
 def escribir_tag_entre_labels(page, indice: int, valor: str) -> bool:
     """Clic en la caja entre «Tag *» y «Link» y teclea. No usa el input Link."""
     if not valor:
@@ -4180,15 +4256,21 @@ def rellenar_items_formulario(page, valores: list[str]) -> int:
     asegurar_n_items_tags(page, len(valores))
     fr, marcados = _marcar_items_formulario(page)
     contexto = fr or page
-    print(f"  · Cajas Tag* detectadas: {marcados}")
+    print(f"  · Cajas Tag* visibles ahora: {marcados} (despliego cada ítem)")
     llenados = 0
     for i, valor in enumerate(valores):
-        ok = escribir_tag_entre_labels(page, i, valor)
+        print(f"  · Despliego Formulario Ítem {i + 1}…")
+        if not expandir_item_formulario(page, i):
+            print(f"  ✗ tag[{i}]: no pude abrir el acordeón")
+            continue
+        fr, _ = _marcar_items_formulario(page)
+        contexto = fr or page
+        ok = escribir_tag_entre_labels(page, 0, valor)
         if not ok:
             try:
-                loc = contexto.locator(f'[data-crc-tag-hit="{i}"]')
+                loc = contexto.locator(f'[data-crc-tag-hit="0"]')
                 if not (hasattr(loc, "count") and loc.count()):
-                    loc = contexto.locator(f'[data-crc-item-hit="{i}"]')
+                    loc = contexto.locator(f'[data-crc-item-hit="0"]')
                 item = loc.first if hasattr(loc, "first") else loc
                 if hasattr(loc, "count") and loc.count() and not _locator_es_link(item):
                     if escribir_valor(page, item, valor) or _tipear_teclado(page, item, valor):
