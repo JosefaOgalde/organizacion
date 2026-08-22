@@ -143,15 +143,10 @@ def _url_sin_query(url: str | None) -> str:
 
 
 def salio_de_la_ficha(actual: str | None, url_ficha: str | None) -> bool:
+    """Solo la lista Proyectos. El editor del lápiz no es salir de default."""
     if not url_ficha or not actual:
         return False
-    a = _url_sin_query(actual)
-    f = _url_sin_query(url_ficha)
-    if a == f:
-        return False
-    if es_lista_proyectos_cms(actual):
-        return True
-    return "view-manager" in url_ficha and "view-manager" not in actual
+    return es_lista_proyectos_cms(actual)
 
 
 def caja_en_lienzo(box: dict | None, *, min_x: float = LIENZO_MIN_X) -> bool:
@@ -167,16 +162,30 @@ def caja_en_lienzo(box: dict | None, *, min_x: float = LIENZO_MIN_X) -> bool:
     return x >= min_x and w >= 20 and h >= 8
 
 
+def en_vista_default_cms(page) -> bool:
+    """True si seguimos en la vista default: 5 bloques o el editor del lápiz."""
+    if editor_actual(page) is not None:
+        return True
+    if _contar_placeholder_vacio(page) >= 1:
+        return True
+    if recoger_ids_componentes(page):
+        return True
+    return lienzo_con_bloques_cms(page)
+
+
 def esperar_ficha_en_lienzo(page, *, headed: bool = True) -> str:
     """Tras ENTER: si Chromium está en Proyectos o el Gestor vacío, pedir la receta."""
     url_ficha = url_actual(page)
+    if en_vista_default_cms(page):
+        print("  · Vista default con los bloques. Me quedo aquí (no recargo).")
+        return url_ficha
     if not es_lista_proyectos_cms(url_ficha) and not gestor_sin_ficha(url_ficha):
         return url_ficha
     if gestor_sin_ficha(url_ficha):
         print(
             "\n>>> Chromium está en el Gestor (sin /view/id).\n"
             "    Entrá a Recetas_Jumbo → la receta (5 bloques al centro).\n"
-            "    Pueden estar vacíos: se recargan todos. ENTER cuando los veas.\n"
+            "    Dejá el desplegable en «default». ENTER cuando los veas.\n"
         )
     else:
         print(
@@ -196,13 +205,18 @@ def esperar_ficha_en_lienzo(page, *, headed: bool = True) -> str:
 
 
 def restaurar_ficha_si_salio(page, url_ficha: str | None) -> bool:
-    """Si un clic nos mandó a Proyectos, volver a la receta ya abierta."""
+    """Solo si caímos en Proyectos. Nunca recarga la vista default."""
     if not url_ficha or page is None:
+        return False
+    if en_vista_default_cms(page):
         return False
     actual = url_actual(page)
     if not salio_de_la_ficha(actual, url_ficha):
         return False
-    print("  · El navegador salió de la receta; vuelvo a la ficha abierta.")
+    if not url_tiene_vista_receta(url_ficha):
+        print("  · Estoy en Proyectos. No recargo el Gestor pelado ni salgo de default.")
+        return False
+    print("  · El navegador salió a Proyectos; vuelvo a la ficha (vista default).")
     try:
         page.goto(url_ficha, wait_until="domcontentloaded", timeout=60_000)
         try:
@@ -587,21 +601,13 @@ def _editor_confirmado(page, clave: str) -> bool:
 
 
 def _restaurar_si_lienzo_perdido(page, url_antes: str | None) -> None:
-    if editor_actual(page) or lienzo_con_bloques_cms(page):
+    """No recarga: un goto saca la vista default."""
+    if en_vista_default_cms(page):
         return
-    if not url_antes or not hasattr(page, "goto"):
+    if es_lista_proyectos_cms(url_actual(page)):
+        print("  · Caí en Proyectos. No recargo; volvé a la receta (default) a mano.")
         return
-    print("  · El lienzo se fue (página en blanco). Vuelvo a la ficha.")
-    try:
-        page.goto(url_antes, wait_until="domcontentloaded", timeout=60_000)
-        page.wait_for_timeout(800)
-    except TypeError:
-        try:
-            page.goto(url_antes)
-        except Exception:
-            pass
-    except Exception:
-        pass
+    _ = url_antes
 
 
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
@@ -1153,6 +1159,9 @@ JS_CLIC_BLOQUE_ID = """(compId) => {
     const pr = p.getBoundingClientRect();
     const pt = clean(p.innerText || '');
     if (hayPaleta && pr.left < 200) break;
+    if (/\\bcabecera\\b/i.test(pt) && /\\btags\\b/i.test(pt)) break;
+    if (/\\bdefault\\b/i.test(pt) && /resoluci[oó]n|zona de trabajo/i.test(pt)) break;
+    if (/gestor de contenido/i.test(pt) && pr.height > 220) break;
     if (pr.width > 180 && pr.width < 2400 && pr.height > 36 && pr.height < 500 && pt.length < 900) {
       card = p;
       if (pr.width >= 260) break;
@@ -1169,6 +1178,8 @@ JS_CLIC_BLOQUE_ID = """(compId) => {
     if (b.left < r2.right - 110) continue;
     if (b.top < r2.top - 10 || b.bottom > r2.top + 44) continue;
     if (esBasura(el) || esHistorial(el)) continue;
+    const lab = clean((el.innerText || el.getAttribute('aria-label') || ''));
+    if (/^default$/i.test(lab) || /resoluci[oó]n|zona de trabajo/i.test(lab)) continue;
     hits.push({ el, x: b.left, lapiz: esLapiz(el) ? 0 : 1 });
   }
   hits.sort((a, b) => a.lapiz - b.lapiz || a.x - b.x);
@@ -1178,7 +1189,12 @@ JS_CLIC_BLOQUE_ID = """(compId) => {
   const x = r2.right - 36;
   const y = r2.top + Math.min(20, Math.max(12, r2.height / 4));
   const hit = document.elementFromPoint(x, y);
-  if (hit && disparar(hit.closest('svg, button, [role="button"], [class*="icon"]') || hit)) {
+  const alvo = hit && (hit.closest('svg, button, [role="button"], [class*="icon"]') || hit);
+  const txtHit = clean((alvo && (alvo.innerText || alvo.getAttribute('aria-label'))) || '');
+  if (/^default$/i.test(txtHit) || /resoluci[oó]n|zona de trabajo/i.test(txtHit)) {
+    return { ok: false, motivo: 'vista-default', x, y };
+  }
+  if (alvo && disparar(alvo)) {
     return { ok: true, via: 'id-punto', x, y };
   }
   return { ok: false, via: 'id', x, y };
@@ -1381,6 +1397,8 @@ def volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
         destino = url_lienzo_receta(actual, None)
     if url_tiene_vista_receta(actual) and destino and not url_tiene_vista_receta(destino):
         destino = None
+    if destino and not url_tiene_vista_receta(destino):
+        destino = None
     if destino and hasattr(page, "goto"):
         try:
             print("  · Vuelvo al Gestor de la receta…")
@@ -1394,7 +1412,10 @@ def volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
                 pass
         except Exception:
             pass
-        if es_lista_proyectos_cms(url_actual(page)) and url_ficha and not es_lista_proyectos_cms(url_ficha):
+        if (
+            es_lista_proyectos_cms(url_actual(page))
+            and url_tiene_vista_receta(url_ficha)
+        ):
             try:
                 page.goto(url_ficha, wait_until="domcontentloaded", timeout=60_000)
             except Exception:
@@ -3211,9 +3232,9 @@ def fill_from_receta(
             file=sys.stderr,
         )
         return False
-    if gestor_sin_ficha(url_ficha):
+    if gestor_sin_ficha(url_ficha) or en_vista_default_cms(page):
         print(
-            "  · URL sin /view/id. No navego al Gestor pelado; trabajo en esta vista."
+            "  · Me quedo en la vista default (no recargo ni toco el desplegable)."
         )
 
     def fill(key: str, value: str | None) -> bool:

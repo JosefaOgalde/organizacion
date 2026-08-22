@@ -275,6 +275,9 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertFalse(
             self.explorar.salio_de_la_ficha(ficha + "?component=a3e7ad", ficha)
         )
+        self.assertFalse(
+            self.explorar.salio_de_la_ficha(ficha + "/edit", ficha),
+        )
 
         class PaginaFicha:
             url = ficha

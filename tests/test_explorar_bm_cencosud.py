@@ -429,7 +429,7 @@ class ExplorarBmTests(unittest.TestCase):
     def test_restaurar_ficha_vuelve_desde_proyectos(self):
         ficha = (
             "https://business-manager.ecomm.cencosud.com/cms/projects/"
-            "6597f023fdc664839ccd2a37/view-manager"
+            "6597f023fdc664839ccd2a37/view-manager/view/abc123"
         )
 
         class Pagina:
@@ -449,6 +449,70 @@ class ExplorarBmTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             self.assertTrue(self.modulo.restaurar_ficha_si_salio(pagina, ficha))
         self.assertEqual(pagina.gotos, [ficha])
+
+    def test_restaurar_no_recarga_si_sigue_en_default(self):
+        ficha = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager"
+        )
+
+        class Loc:
+            def count(self):
+                return 5
+
+        class Pagina:
+            url = ficha
+
+            def __init__(self):
+                self.gotos = []
+
+            def get_by_text(self, _texto, exact=False):
+                return Loc()
+
+            def goto(self, url, **_kwargs):
+                self.gotos.append(url)
+
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "innerText" in texto:
+                    return "Proyectos\nJUMBO\ndefault\nResolución"
+                return []
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        pagina = Pagina()
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertFalse(self.modulo.restaurar_ficha_si_salio(pagina, ficha))
+            self.assertEqual(
+                self.modulo.esperar_ficha_en_lienzo(pagina, headed=False),
+                ficha,
+            )
+        self.assertEqual(pagina.gotos, [])
+        self.assertTrue(self.modulo.en_vista_default_cms(pagina))
+
+    def test_restaurar_no_recarga_gestor_pelado(self):
+        gestor = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager"
+        )
+
+        class Pagina:
+            url = "https://business-manager.ecomm.cencosud.com/cms/projects"
+
+            def __init__(self):
+                self.gotos = []
+
+            def goto(self, url, **_kwargs):
+                self.gotos.append(url)
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        pagina = Pagina()
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertFalse(self.modulo.restaurar_ficha_si_salio(pagina, gestor))
+        self.assertEqual(pagina.gotos, [])
 
     def test_url_con_componente_abre_editor(self):
         vista = (
@@ -613,6 +677,8 @@ class ExplorarBmTests(unittest.TestCase):
         js = self.modulo.JS_CLIC_BLOQUE_ID
         self.assertIn("id-icono", js)
         self.assertIn("esBasura", js)
+        self.assertIn("default", js)
+        self.assertIn("zona de trabajo", js)
         self.assertNotIn("location.href", js)
         self.assertNotIn("location.assign", js)
 
