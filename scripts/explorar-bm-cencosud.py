@@ -3196,10 +3196,6 @@ def escribir_valor(page, loc, value) -> bool:
         except (TypeError, ValueError):
             pass
     try:
-        loc.click(timeout=2_000)
-    except Exception:
-        pass
-    try:
         loc.fill(texto, timeout=3_000)
     except TypeError:
         try:
@@ -3314,7 +3310,11 @@ def rellenar_por_label(page, patron: str, value, *, nth: int = 0, excluir: str |
         marcados = page.evaluate(JS_MARCAR_POR_LABEL, {"patron": patron, "excluir": excluir or ""})
     except Exception:
         marcados = 0
-    if not marcados or nth >= int(marcados):
+    try:
+        marcados = int(marcados)
+    except (TypeError, ValueError):
+        marcados = 0
+    if not marcados or nth >= marcados:
         return False
     try:
         loc = page.locator(f'[data-crc-label-hit="{nth}"]')
