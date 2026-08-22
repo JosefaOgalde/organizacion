@@ -4104,8 +4104,18 @@ JS_ESCRIBIR_PASO_HTML = (
     });
     if (textareas.length) ta = textareas[textareas.length - 1];
   }
+  const enSeccionPaso = (c) => {
+    if (!lab) return false;
+    let node = lab;
+    for (let i = 0; i < 8 && node; i++) {
+      if (node.contains && node !== lab && node.contains(c)) return true;
+      node = node.parentElement;
+    }
+    return false;
+  };
   const ce = crcDeepAll('[contenteditable="true"], [role="textbox"]', document).find((c) => {
     if (crcCercaTituloLista(c)) return false;
+    if (enSeccionPaso(c)) return true;
     const r = c.getBoundingClientRect();
     return r.width > 20 && r.height > 12 && r.left >= 20 && r.top >= labR.top - 20;
   }) || null;
