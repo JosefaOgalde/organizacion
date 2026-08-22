@@ -3045,11 +3045,20 @@ def _leer_valor(loc) -> str | None:
 def _valor_quedo(leido: str | None, esperado: str) -> bool:
     if leido is None:
         return True
-    bajo = leido.lower()
+    bajo = leido.lower().strip()
     if not leido or bajo in {"dale un valor", "ingresa un valor", "ingresa"}:
         return False
     exp = (esperado or "").strip()
-    return exp.lower() in bajo or bajo in exp.lower()
+    if not exp:
+        return False
+    if bajo == exp.lower():
+        return True
+    try:
+        return float(bajo.replace(",", ".")) == float(exp.replace(",", "."))
+    except ValueError:
+        pass
+    # «0» no es un prefijo válido de «30»; el texto largo sí puede contener el esperado.
+    return exp.lower() in bajo and len(bajo) >= len(exp) * 0.5
 
 
 # React 16/17: fill() de Playwright no actualiza el state; hay que pasar por el setter nativo + _valueTracker.
@@ -3085,7 +3094,6 @@ JS_CRC_SET_REACT = """function crcSetReact(el, v) {
   } catch (e) {}
   el.dispatchEvent(ev);
   el.dispatchEvent(new Event('change', { bubbles: true }));
-  try { el.blur(); } catch (e) {}
   return String(el.value != null ? el.value : (el.textContent || ''));
 }"""
 
@@ -3093,59 +3101,84 @@ JS_CRC_FIND_TITULO = """function crcFindTitulo() {
   const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
   const visibles = (el) => {
     if (!el) return false;
-    const st = getComputedStyle(el);
-    if (st.display === 'none' || st.visibility === 'hidden') return false;
+    try {
+      const st = getComputedStyle(el);
+      if (st.display === 'none' || st.visibility === 'hidden') return false;
+    } catch (e) {}
     const r = el.getBoundingClientRect();
-    return r.width > 0 && r.height > 0 && r.left >= 240;
+    return r.width > 4 && r.height > 8 && r.left >= 200;
+  };
+  const deepAll = (sel) => {
+    const out = [];
+    const walk = (root) => {
+      if (!root || !root.querySelectorAll) return;
+      out.push(...root.querySelectorAll(sel));
+      root.querySelectorAll('*').forEach((n) => { if (n.shadowRoot) walk(n.shadowRoot); });
+    };
+    walk(document);
+    return out;
   };
   const esInputTexto = (el) => {
     if (!el || !visibles(el)) return false;
     const tag = (el.tagName || '').toLowerCase();
-    if (tag === 'textarea') return true;
-    if (tag === 'input') {
-      const t = (el.type || 'text').toLowerCase();
-      return ['text', 'search', '', 'url', 'tel'].includes(t);
-    }
-    return el.getAttribute('contenteditable') === 'true';
+    const role = (el.getAttribute('role') || '').toLowerCase();
+    const tipo = (el.type || 'text').toLowerCase();
+    if (['hidden', 'checkbox', 'radio', 'file', 'submit', 'button', 'number', 'range'].includes(tipo)) return false;
+    if (tag === 'textarea' || tag === 'input') return true;
+    if (el.getAttribute('contenteditable') === 'true') return true;
+    if (role === 'textbox' || role === 'searchbox') return true;
+    return false;
   };
   const esTituloCabecera = (crudo) => {
-    if (!crudo || crudo.length > 90) return false;
+    if (!crudo) return false;
     if (/meta\\s*t[ií]tulo|t[ií]tulo de la secci/i.test(crudo)) return false;
-    const linea = crudo.split(' El dato')[0].replace(/\\*$/, '').trim();
-    return /^T[ií]tulo$/i.test(linea);
+    const linea = crudo.split(/El dato/i)[0].replace(/\\*/g, ' ').replace(/\\s+/g, ' ').trim();
+    return /^T[ií]tulo(\\s+Dale un valor)?$/i.test(linea);
   };
-  const controlCerca = (lab) => {
+  const controlDesde = (lab) => {
     const htmlFor = lab.getAttribute && lab.getAttribute('for');
     if (htmlFor) {
       const byId = document.getElementById(htmlFor);
       if (esInputTexto(byId)) return byId;
     }
-    const box = lab.closest('[class*="field"], [class*="Field"], [class*="form"], [class*="Form"], li, section, div');
-    if (box) {
-      const hit = Array.from(box.querySelectorAll('input, textarea, [contenteditable="true"]')).find(esInputTexto);
-      if (hit) return hit;
+    const labR = lab.getBoundingClientRect();
+    let node = lab;
+    for (let i = 0; i < 10 && node; i++) {
+      const hits = Array.from(node.querySelectorAll('input, textarea, [contenteditable="true"], [role="textbox"]'))
+        .filter(esInputTexto)
+        .filter((el) => el.getBoundingClientRect().top >= labR.top - 12);
+      hits.sort((a, b) => {
+        const da = Math.abs(a.getBoundingClientRect().top - labR.bottom);
+        const db = Math.abs(b.getBoundingClientRect().top - labR.bottom);
+        return da - db;
+      });
+      if (hits.length) return hits[0];
+      node = node.parentElement;
     }
     let sib = lab.nextElementSibling;
-    for (let i = 0; i < 6 && sib; i++) {
+    for (let i = 0; i < 8 && sib; i++) {
       if (esInputTexto(sib)) return sib;
-      const inner = Array.from(sib.querySelectorAll('input, textarea')).find(esInputTexto);
+      const inner = Array.from(sib.querySelectorAll('input, textarea, [role="textbox"]')).find(esInputTexto);
       if (inner) return inner;
       sib = sib.nextElementSibling;
     }
     return null;
   };
-  const nodos = document.querySelectorAll('label, legend, p, span, div, h2, h3, h4, h5');
-  for (const lab of nodos) {
-    const crudo = clean(lab.innerText || lab.textContent || '');
-    if (!esTituloCabecera(crudo)) continue;
-    const input = controlCerca(lab);
+  const nodos = deepAll('label, legend, p, span, div, h2, h3, h4, h5, strong')
+    .map((el) => ({ el, t: clean(el.innerText || el.textContent || '') }))
+    .filter((x) => esTituloCabecera(x.t))
+    .sort((a, b) => a.t.length - b.t.length);
+  for (const { el: lab } of nodos) {
+    const input = controlDesde(lab);
     if (input) return input;
   }
-  const vacios = Array.from(document.querySelectorAll('input, textarea')).filter((el) => {
+  const vacios = deepAll('input, textarea, [role="textbox"], [contenteditable="true"]').filter((el) => {
     if (!esInputTexto(el)) return false;
     const ph = (el.getAttribute('placeholder') || '').toLowerCase();
     const val = String(el.value || '').trim().toLowerCase();
-    return ph.includes('dale un valor') && (!val || val === 'dale un valor');
+    const txt = clean(el.innerText || '').toLowerCase();
+    const vacio = !val || val === 'dale un valor';
+    return vacio && (ph.includes('dale un valor') || txt === 'dale un valor');
   });
   vacios.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
   return vacios[0] || null;
@@ -3177,6 +3210,103 @@ JS_LEER_TITULO_CABECERA = (
   const el = crcFindTitulo();
   if (!el) return { ok: false, value: '' };
   return { ok: true, value: String(el.value || el.textContent || '') };
+}"""
+)
+
+JS_MARCAR_TITULO = (
+    "() => {\n"
+    + JS_CRC_FIND_TITULO
+    + """
+  document.querySelectorAll('[data-crc-titulo]').forEach((el) => el.removeAttribute('data-crc-titulo'));
+  const el = crcFindTitulo();
+  if (!el) return { ok: false };
+  el.setAttribute('data-crc-titulo', '1');
+  try { el.click(); } catch (e) {}
+  try { el.focus(); } catch (e) {}
+  return { ok: true, tag: (el.tagName || '').toLowerCase() };
+}"""
+)
+
+JS_CRC_FIND_NUMERO = """function crcFindNumero(patron) {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const re = new RegExp(patron, 'i');
+  const visibles = (el) => {
+    if (!el) return false;
+    try {
+      const st = getComputedStyle(el);
+      if (st.display === 'none' || st.visibility === 'hidden') return false;
+    } catch (e) {}
+    const r = el.getBoundingClientRect();
+    return r.width > 4 && r.height > 8 && r.left >= 200;
+  };
+  const esNumero = (el) => {
+    if (!el || !visibles(el)) return false;
+    const tag = (el.tagName || '').toLowerCase();
+    const tipo = (el.type || 'text').toLowerCase();
+    if (['hidden', 'checkbox', 'radio', 'file', 'submit', 'button'].includes(tipo)) return false;
+    if (tag === 'input' || tag === 'textarea') return true;
+    if (el.getAttribute('contenteditable') === 'true') return true;
+    if ((el.getAttribute('role') || '') === 'textbox') return true;
+    return false;
+  };
+  const esLabel = (crudo) => {
+    if (!crudo || crudo.length > 80) return false;
+    const linea = crudo.split(/El (dato|valor)/i)[0].replace(/\\*/g, ' ').replace(/\\s+/g, ' ').trim();
+    return re.test(linea) && linea.length < 40;
+  };
+  const nodos = [...document.querySelectorAll('label, legend, p, span, div, h2, h3, strong')]
+    .map((el) => ({ el, t: clean(el.innerText || el.textContent || '') }))
+    .filter((x) => esLabel(x.t))
+    .sort((a, b) => a.t.length - b.t.length);
+  for (const { el: lab } of nodos) {
+    const labR = lab.getBoundingClientRect();
+    let node = lab;
+    for (let i = 0; i < 10 && node; i++) {
+      const hits = Array.from(node.querySelectorAll('input, textarea, [role="textbox"]'))
+        .filter(esNumero)
+        .filter((el) => el.getBoundingClientRect().top >= labR.top - 12);
+      hits.sort((a, b) => Math.abs(a.getBoundingClientRect().top - labR.bottom) - Math.abs(b.getBoundingClientRect().top - labR.bottom));
+      if (hits.length) return hits[0];
+      node = node.parentElement;
+    }
+  }
+  return null;
+}"""
+
+JS_ESCRIBIR_NUMERO = (
+    "(args) => {\n"
+    + JS_CRC_SET_REACT
+    + "\n"
+    + JS_CRC_FIND_NUMERO
+    + """
+  const el = crcFindNumero(args.patron);
+  if (!el) return { ok: false, value: '' };
+  const value = crcSetReact(el, String(args.valor));
+  return { ok: true, value: String(value || '') };
+}"""
+)
+
+JS_LEER_NUMERO = (
+    "(patron) => {\n"
+    + JS_CRC_FIND_NUMERO
+    + """
+  const el = crcFindNumero(patron);
+  if (!el) return { ok: false, value: '' };
+  return { ok: true, value: String(el.value || el.textContent || '') };
+}"""
+)
+
+JS_MARCAR_NUMERO = (
+    "(patron) => {\n"
+    + JS_CRC_FIND_NUMERO
+    + """
+  document.querySelectorAll('[data-crc-numero]').forEach((el) => el.removeAttribute('data-crc-numero'));
+  const el = crcFindNumero(patron);
+  if (!el) return { ok: false };
+  el.setAttribute('data-crc-numero', '1');
+  try { el.click(); } catch (e) {}
+  try { el.focus(); } catch (e) {}
+  return { ok: true };
 }"""
 )
 
@@ -3225,6 +3355,44 @@ def escribir_valor(page, loc, value) -> bool:
     return _valor_quedo(_leer_valor(loc), texto)
 
 
+def _tipear_teclado(page, loc, texto: str) -> bool:
+    """Teclea de verdad: el BM React ignora fill() en Título y a veces deja Duración en 0."""
+    if loc is None or not texto:
+        return False
+    try:
+        loc.click(timeout=2_000)
+    except TypeError:
+        try:
+            loc.click()
+        except Exception:
+            return False
+    except Exception:
+        return False
+    try:
+        if hasattr(loc, "press"):
+            loc.press("Control+a")
+            loc.press("Backspace")
+    except Exception:
+        pass
+    kb = getattr(page, "keyboard", None)
+    try:
+        if kb is not None and hasattr(kb, "type"):
+            kb.type(texto, delay=18)
+        elif hasattr(loc, "press_sequentially"):
+            loc.press_sequentially(texto, delay=18)
+        elif hasattr(loc, "type"):
+            loc.type(texto, delay=18)
+        else:
+            return False
+    except Exception:
+        return False
+    try:
+        page.wait_for_timeout(200)
+    except Exception:
+        pass
+    return _valor_quedo(_leer_valor(loc), texto)
+
+
 def _titulo_escrito_en_frame(fr, value: str) -> bool:
     try:
         out = fr.evaluate(JS_ESCRIBIR_TITULO_CABECERA, value)
@@ -3247,6 +3415,26 @@ def _titulo_sigue_en_frame(fr, value: str) -> bool:
     )
 
 
+def _locators_titulo(fr) -> list:
+    locs = []
+    if hasattr(fr, "get_by_role"):
+        try:
+            locs.append(fr.get_by_role("textbox", name=re.compile(r"^T[ií]tulo", re.I)))
+        except Exception:
+            pass
+    if hasattr(fr, "get_by_label"):
+        try:
+            locs.append(fr.get_by_label(re.compile(r"^T[ií]tulo", re.I)))
+        except Exception:
+            pass
+    if hasattr(fr, "get_by_placeholder"):
+        try:
+            locs.append(fr.get_by_placeholder(re.compile(r"Dale un valor", re.I)))
+        except Exception:
+            pass
+    return locs
+
+
 def rellenar_titulo_cabecera(page, value) -> bool:
     """Título* vacío («Dale un valor» / dato requerido), no otro Título."""
     if not value:
@@ -3262,27 +3450,89 @@ def rellenar_titulo_cabecera(page, value) -> bool:
         if _titulo_sigue_en_frame(fr, texto):
             return True
     for fr in _frames_pagina(page):
-        get_by_placeholder = getattr(fr, "get_by_placeholder", None)
-        if not get_by_placeholder:
+        for loc in _locators_titulo(fr):
+            try:
+                n = loc.count() if hasattr(loc, "count") else 0
+            except Exception:
+                n = 0
+            for i in range(min(n, 8)):
+                item = loc.nth(i) if hasattr(loc, "nth") else loc
+                box = _bounding_box(item)
+                if box is not None and float(box.get("x") or 0) < LIENZO_MIN_X:
+                    continue
+                leido = _leer_valor(item)
+                if leido and leido.lower() not in {"", "dale un valor"}:
+                    continue
+                if escribir_valor(page, item, texto) and _valor_quedo(_leer_valor(item), texto):
+                    return True
+                if _tipear_teclado(page, item, texto) and (
+                    _valor_quedo(_leer_valor(item), texto) or _titulo_sigue_en_frame(fr, texto)
+                ):
+                    return True
+    for fr in _frames_pagina(page):
+        try:
+            marcado = fr.evaluate(JS_MARCAR_TITULO)
+        except Exception:
+            marcado = None
+        if not (isinstance(marcado, dict) and marcado.get("ok")):
             continue
         try:
-            loc = get_by_placeholder(re.compile(r"Dale un valor", re.I))
-            n = loc.count() if hasattr(loc, "count") else 0
-        except Exception:
-            n = 0
-        for i in range(min(n, 8)):
-            item = loc.nth(i)
-            box = _bounding_box(item)
-            if box is not None and float(box.get("x") or 0) < LIENZO_MIN_X:
-                continue
-            leido = _leer_valor(item)
-            if leido and leido.lower() not in {"", "dale un valor"}:
-                continue
-            if escribir_valor(page, item, texto) and _valor_quedo(_leer_valor(item), texto):
+            loc = fr.locator('[data-crc-titulo="1"]')
+            item = loc.first if hasattr(loc, "first") else loc
+            if _tipear_teclado(page, item, texto) and (
+                _valor_quedo(_leer_valor(item), texto) or _titulo_sigue_en_frame(fr, texto)
+            ):
                 return True
-    return rellenar_por_label(
+        except Exception:
+            pass
+    if rellenar_por_label(
         page, r"^Título\b", texto, excluir=r"título de la sección|meta"
-    )
+    ):
+        return True
+    return any(_titulo_sigue_en_frame(fr, texto) for fr in _frames_pagina(page))
+
+
+def sigue_duracion_invalida(page) -> bool:
+    t = texto_cuerpo(page).lower()
+    return "inferior al mínimo" in t or "inferior al minimo" in t
+
+
+def rellenar_numero_cabecera(page, patron: str, value) -> bool:
+    """Duración/porciones: el BM muestra 0 si fill() no actualiza React."""
+    if value is None or str(value).strip() == "":
+        return False
+    texto = str(numero_campo_bm(value) or value)
+    if texto.strip() in {"", "0"}:
+        return False
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_ESCRIBIR_NUMERO, {"patron": patron, "valor": texto})
+        except Exception:
+            out = None
+        if isinstance(out, dict) and out.get("ok") and _valor_quedo(str(out.get("value") or ""), texto):
+            try:
+                page.wait_for_timeout(150)
+            except Exception:
+                pass
+            try:
+                leido = fr.evaluate(JS_LEER_NUMERO, patron)
+            except Exception:
+                leido = None
+            if isinstance(leido, dict) and _valor_quedo(str(leido.get("value") or ""), texto):
+                return True
+        try:
+            marcado = fr.evaluate(JS_MARCAR_NUMERO, patron)
+        except Exception:
+            marcado = None
+        if isinstance(marcado, dict) and marcado.get("ok"):
+            try:
+                loc = fr.locator('[data-crc-numero="1"]')
+                item = loc.first if hasattr(loc, "first") else loc
+                if _tipear_teclado(page, item, texto) and _valor_quedo(_leer_valor(item), texto):
+                    return True
+            except Exception:
+                pass
+    return rellenar_por_label(page, patron, texto)
 
 
 def fill_por_indice_visible(page, index, value) -> bool:
@@ -3296,31 +3546,34 @@ def rellenar_por_label(page, patron: str, value, *, nth: int = 0, excluir: str |
     """Rellena el input junto a la etiqueta visible, aunque el placeholder sea «Dale un valor»."""
     if value is None or value == "" or not patron:
         return False
-    get_by_label = getattr(page, "get_by_label", None)
-    if get_by_label:
+    for fr in _frames_pagina(page):
+        get_by_label = getattr(fr, "get_by_label", None)
+        if get_by_label:
+            try:
+                loc = get_by_label(re.compile(patron, re.I))
+                n = loc.count() if hasattr(loc, "count") else 1
+                if n and nth < n:
+                    if escribir_valor(page, loc.nth(nth) if hasattr(loc, "nth") else loc, value):
+                        return True
+            except Exception:
+                pass
         try:
-            loc = get_by_label(re.compile(patron, re.I))
-            n = loc.count() if hasattr(loc, "count") else 1
-            if n and nth < n:
-                if escribir_valor(page, loc.nth(nth) if hasattr(loc, "nth") else loc, value):
-                    return True
+            marcados = fr.evaluate(JS_MARCAR_POR_LABEL, {"patron": patron, "excluir": excluir or ""})
         except Exception:
-            pass
-    try:
-        marcados = page.evaluate(JS_MARCAR_POR_LABEL, {"patron": patron, "excluir": excluir or ""})
-    except Exception:
-        marcados = 0
-    try:
-        marcados = int(marcados)
-    except (TypeError, ValueError):
-        marcados = 0
-    if not marcados or nth >= marcados:
-        return False
-    try:
-        loc = page.locator(f'[data-crc-label-hit="{nth}"]')
-        return escribir_valor(page, loc.first if hasattr(loc, "first") else loc, value)
-    except Exception:
-        return False
+            marcados = 0
+        try:
+            marcados = int(marcados)
+        except (TypeError, ValueError):
+            marcados = 0
+        if not marcados or nth >= marcados:
+            continue
+        try:
+            loc = fr.locator(f'[data-crc-label-hit="{nth}"]')
+            if escribir_valor(page, loc.first if hasattr(loc, "first") else loc, value):
+                return True
+        except Exception:
+            continue
+    return False
 
 
 def contar_por_label(page, patron: str, excluir: str | None = None) -> int:
@@ -3815,6 +4068,11 @@ def fill_from_receta(
                 return True
             print("  ✗ field_titulo (el input sigue en «Dale un valor»)")
             return False
+        if key in ("field_tiempo", "field_porciones", "field_tiempo_prep", "field_tiempo_coccion"):
+            patron_n = LABELS_EDITOR_BM.get(key) or r"^Duración\b"
+            if rellenar_numero_cabecera(page, patron_n, value):
+                print(f"  ✓ {key} → {value}")
+                return True
         if selector_es_generico(sel):
             sel = None
         label_dir = LABELS_EDITOR_BM.get(key)
@@ -3910,6 +4168,9 @@ def fill_from_receta(
         if sigue_dato_requerido(page):
             print("  · Título sigue vacío (dato requerido). Lo escribo otra vez.")
             cabecera["field_titulo"] = fill("field_titulo", receta.get("titulo"))
+        if sigue_duracion_invalida(page):
+            print("  · Duración quedó en 0. Escribo 30 (o el tiempo del Word).")
+            cabecera["field_tiempo"] = fill("field_tiempo", duracion_receta(receta) or "30")
         subir_imagen_portada(page, receta)
         try:
             page.wait_for_timeout(800)

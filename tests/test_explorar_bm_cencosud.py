@@ -691,6 +691,8 @@ class ExplorarBmTests(unittest.TestCase):
     def test_titulo_no_ok_si_sigue_dale_un_valor(self):
         self.assertFalse(self.modulo._valor_quedo("", "Salmón a la parrilla"))
         self.assertFalse(self.modulo._valor_quedo("Dale un valor", "Salmón a la parrilla"))
+        self.assertFalse(self.modulo._valor_quedo("0", "30"))
+        self.assertTrue(self.modulo._valor_quedo("30", "30"))
         self.assertTrue(self.modulo._valor_quedo(None, "Salmón"))
         self.assertTrue(
             self.modulo._valor_quedo(
@@ -797,6 +799,9 @@ class ExplorarBmTests(unittest.TestCase):
         self.assertIn("_valueTracker", self.modulo.JS_CRC_SET_REACT)
         self.assertIn("crcFindTitulo", self.modulo.JS_ESCRIBIR_TITULO_CABECERA)
         self.assertIn("dale un valor", self.modulo.JS_CRC_FIND_TITULO)
+        self.assertIn("Dale un valor", self.modulo.JS_CRC_FIND_TITULO)
+        self.assertIn("role", self.modulo.JS_CRC_FIND_TITULO)
+        self.assertIn("crcFindNumero", self.modulo.JS_ESCRIBIR_NUMERO)
 
         class Pagina:
             def evaluate(self, script, arg=None):
@@ -815,6 +820,18 @@ class ExplorarBmTests(unittest.TestCase):
                 Pagina(), "Salmón a la parrilla con salsa de palta"
             )
         )
+
+    def test_duracion_cero_no_es_treinta(self):
+        self.assertFalse(self.modulo._valor_quedo("0", "30"))
+
+        class Pagina:
+            def evaluate(self, script, *_args):
+                if "innerText" in str(script):
+                    return "Duración El valor es inferior al mínimo: 1"
+                return ""
+
+        self.assertTrue(self.modulo.sigue_duracion_invalida(Pagina()))
+        self.assertFalse(self.modulo.rellenar_numero_cabecera(Pagina(), r"^Duración\b", "0"))
 
     def test_fill_titulo_no_declara_ok_con_label_bm(self):
         runtime = RuntimeFalso()
