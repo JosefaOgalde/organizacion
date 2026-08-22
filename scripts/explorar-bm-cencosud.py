@@ -115,13 +115,10 @@ COMPONENTES_CMS = (
 LIENZO_MIN_X = 240
 
 MENSAJE_ENTER_FICHA = (
-    "\n>>> En Chromium abre la receta YA guardada (no una ficha vacía).\n"
-    "    Los 5 bloques van al CENTRO: Cabecera / tags / Ingredientes /\n"
-    "    Instrucciones / SEO.\n"
-    "    Si la Cabecera YA tiene título/foto (no dice «componente vacío»),\n"
-    "    déjala así: el script no la toca y sigue con tags.\n"
-    "    Si ves 5 bloques VACÍOS, no es esa ficha: volvé a Recetas_Jumbo\n"
-    "    → la receta hasta la vista donde Cabecera ya está llena.\n"
+    "\n>>> En Chromium abre la receta (5 bloques al CENTRO):\n"
+    "    Cabecera / tags / Ingredientes / Instrucciones / SEO.\n"
+    "    Da igual si están vacíos: el script recarga TODOS desde el lápiz\n"
+    "    (primer icono a la derecha de cada bloque, no el basurero).\n"
     "    NO pulses la paleta izquierda (esos mismos nombres).\n"
     "    NO pulses «Proyectos» ni el breadcrumb.\n"
     "    NO entres a «Edición de Lista…».\n"
@@ -173,10 +170,9 @@ def esperar_ficha_en_lienzo(page, *, headed: bool = True) -> str:
         return url_ficha
     if gestor_sin_ficha(url_ficha):
         print(
-            "\n>>> Chromium está en el Gestor vacío (sin /view/id), no en la receta guardada.\n"
-            "    Entrá a Recetas_Jumbo → la receta. Si la Cabecera ya tenía título/foto,\n"
-            "    usá ESA vista (no una Cabecera que diga «componente vacío»).\n"
-            "    No pulses la paleta izquierda. ENTER cuando la veas.\n"
+            "\n>>> Chromium está en el Gestor (sin /view/id).\n"
+            "    Entrá a Recetas_Jumbo → la receta (5 bloques al centro).\n"
+            "    Pueden estar vacíos: se recargan todos. ENTER cuando los veas.\n"
         )
     else:
         print(
@@ -532,7 +528,7 @@ def listar_componentes_cms(page) -> list[dict]:
 
 
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
-    """Clic en el lápiz del lienzo (icono del medio). Nunca paleta ni basurero."""
+    """Clic en el lápiz del lienzo (primer icono a la derecha). Nunca paleta ni basurero."""
     limpiar_busca_paleta(page)
     resolver_modal_cambios(page)
     if selector_guardado and not selector_es_generico(selector_guardado):
@@ -616,9 +612,8 @@ def _clic_lapiz_por_fila(page, aliases: list[str]) -> bool:
                     continue
                 botones = fila.locator("button")
                 n = botones.count()
-                if n >= 2:
-                    medio = 1 if n >= 3 else 1
-                    btn = botones.nth(medio)
+                if n >= 1:
+                    btn = botones.nth(0)
                     if not caja_en_lienzo(_bounding_box(btn)):
                         continue
                     btn.click(timeout=3_000)
@@ -650,6 +645,8 @@ JS_CLIC_LAPIZ = """(aliases) => {
   const textoDe = (el) => clean(el.innerText || el.textContent || '');
   const wanted = aliases.map(norm);
   const enChrome = (el) => {
+    const r0 = el.getBoundingClientRect();
+    if (r0.left >= 240 && r0.top > 64) return false;
     let n = el;
     while (n && n !== document.body) {
       const tag = (n.tagName || '').toLowerCase();
@@ -692,6 +689,37 @@ JS_CLIC_LAPIZ = """(aliases) => {
   const esBasura = (b) => /trash|delete|eliminar|borrar|remove/i.test(blobBtn(b));
   const esHistorial = (b) => /clock|history|historial|time|version/i.test(blobBtn(b));
   const esLapiz = (b) => /edit|editar|pencil|lápiz|lapiz/i.test(blobBtn(b)) && !/create/i.test(blobBtn(b));
+  const primerLapiz = (iconos) => {
+    const named = iconos.find((b) => esLapiz(b) && !esBasura(b));
+    if (named) return named;
+    return iconos.find((b) => !esBasura(b) && !esHistorial(b)) || null;
+  };
+  const tituloDe = (crudo) => norm((crudo || '').split('\\n')[0]);
+  const coincide = (linea) => wanted.some((w) => linea === w || linea.startsWith(w + ' '));
+  const clickFila = (cur, iconos) => {
+    const candidato = primerLapiz(iconos);
+    if (!candidato || esBasura(candidato)) return false;
+    try { cur.scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (e) {}
+    candidato.click();
+    return true;
+  };
+
+  const vacios = [];
+  for (const el of Array.from(document.querySelectorAll('div, section, article, li'))) {
+    const r = el.getBoundingClientRect();
+    if (r.left < 240 || r.width < 160 || r.width > 1400) continue;
+    if (enChrome(el) || enPaleta(el)) continue;
+    const crudo = textoDe(el);
+    if (!/Edita este componente vac/i.test(crudo)) continue;
+    if (crudo.length > 500) continue;
+    if (!coincide(tituloDe(crudo))) continue;
+    const iconos = Array.from(el.querySelectorAll('button, [role="button"]')).filter(esIcono);
+    if (iconos.length >= 1) vacios.push({ el, iconos, w: r.width });
+  }
+  vacios.sort((a, b) => a.w - b.w);
+  for (const v of vacios) {
+    if (clickFila(v.el, v.iconos)) return true;
+  }
 
   const nodos = Array.from(document.querySelectorAll(
     'div, section, article, li, h2, h3, h4, h5, h6, span, p, strong'
@@ -699,9 +727,9 @@ JS_CLIC_LAPIZ = """(aliases) => {
   const candidatos = [];
   for (const el of nodos) {
     const crudo = el.innerText || el.textContent || '';
-    const linea = norm(crudo.split('\\n')[0]);
-    if (!wanted.some((w) => linea === w || linea.startsWith(w + ' '))) continue;
-    if (crudo.length > 220) continue;
+    const linea = tituloDe(crudo);
+    if (!coincide(linea)) continue;
+    if (crudo.length > 400) continue;
     if (enChrome(el) || enPaleta(el)) continue;
     let cur = el;
     for (let d = 0; d < 10 && cur && cur !== document.body; d++) {
@@ -711,7 +739,7 @@ JS_CLIC_LAPIZ = """(aliases) => {
         continue;
       }
       const iconos = Array.from(cur.querySelectorAll('button, [role="button"]')).filter(esIcono);
-      if (iconos.length >= 2 && iconos.length <= 6) {
+      if (iconos.length >= 1 && iconos.length <= 8) {
         const vacio = /Edita este componente/i.test(cur.innerText || cur.textContent || '') ? 10 : 0;
         candidatos.push({ cur, iconos, score: vacio + iconos.length + (cr.left > 280 ? 2 : 0) });
         break;
@@ -721,15 +749,7 @@ JS_CLIC_LAPIZ = """(aliases) => {
   }
   candidatos.sort((a, b) => b.score - a.score);
   for (const c of candidatos) {
-    const lapiz = c.iconos.find((b) => esLapiz(b) && !esBasura(b));
-    const candidato = lapiz
-      || c.iconos.filter((b) => !esBasura(b) && !esHistorial(b))[0]
-      || (c.iconos.length >= 3 ? c.iconos[1] : null);
-    if (candidato && !esBasura(candidato)) {
-      try { c.cur.scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (e) {}
-      candidato.click();
-      return true;
-    }
+    if (clickFila(c.cur, c.iconos)) return true;
   }
   return false;
 }"""
@@ -2753,14 +2773,14 @@ def fill_from_receta(
         print(
             "\nChromium está en «Proyectos en JUMBO», no en la receta.\n"
             "Abre Recetas_Jumbo → la receta (5 bloques al centro) y reintenta.\n"
-            "Si ves 5 bloques vacíos, no es la ficha guardada.\n"
+            "Los 5 bloques van al centro (pueden estar vacíos).\n"
             "No pulses la paleta izquierda.",
             file=sys.stderr,
         )
         return False
     if gestor_sin_ficha(url_ficha):
         print(
-            "  · URL sin /view/id (Gestor pelado). No navego ahí: perdería la Cabecera."
+            "  · URL sin /view/id. No navego al Gestor pelado; trabajo en esta vista."
         )
 
     def fill(key: str, value: str | None) -> bool:
@@ -2797,7 +2817,7 @@ def fill_from_receta(
         lapiz_key = meta["lapiz_key"] if meta else f"lapiz_{clave_comp}"
         print(f"  [CMS] Abriendo componente «{clave_comp}»…")
         actual = editor_actual(page)
-        if actual is None and clave_comp != "cabecera":
+        if actual is None:
             esperar_lienzo_bloques(page)
         if actual and actual != clave_comp:
             print(f"  · Sigo en Edición de {actual}; guardo antes de abrir «{clave_comp}».")
@@ -2843,16 +2863,8 @@ def fill_from_receta(
         guardar_y_volver_al_lienzo(page, url_ficha)
         return ok_keys
 
-    print("Rellenando desde JSON (lápiz de cada bloque + acordeones)…")
-    cabecera_ya = (
-        editor_actual(page) is None
-        and bloque_componente_vacio(page, ["Cabecera", "cabecera", "Header"]) is False
-    )
-    if cabecera_ya:
-        print("  · Cabecera ya está en el lienzo; no la relleno de nuevo.")
-        resultados["titulo"] = True
-        resultados["descripcion"] = True
-    elif abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
+    print("Rellenando la receta completa (lápiz de cada bloque, Cabecera incluida)…")
+    if abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
         cabecera = {
             "field_titulo": fill("field_titulo", receta.get("titulo")),
             "field_descripcion": fill("field_descripcion", receta.get("descripcion")),

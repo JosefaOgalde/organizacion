@@ -435,34 +435,31 @@ class ExplorarBmTests(unittest.TestCase):
         self.assertNotIn("component=", destino)
         self.assertIsNone(self.modulo.url_lienzo_receta(gestor, gestor))
 
-    def test_fill_salta_cabecera_si_ya_tiene_contenido(self):
+    def test_fill_siempre_recarga_cabecera(self):
         runtime = RuntimeFalso()
-        llamadas = {"cabecera": 0}
+        url = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager/view/abc123"
+        )
 
         class Pagina(PageFalsa):
-            url = (
-                "https://business-manager.ecomm.cencosud.com/cms/projects/"
-                "6597f023fdc664839ccd2a37/view-manager/view/abc123"
-            )
+            pass
 
-            def evaluate(self, script, *_args):
-                texto = str(script)
-                if "edita este componente vac" in texto.lower():
-                    llamadas["cabecera"] += 1
-                    return False
-                return super().evaluate(script, *_args)
-
+        pagina = Pagina(runtime)
+        pagina.url = url
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
             self.modulo.fill_from_receta(
-                Pagina(runtime),
+                pagina,
                 self.receta_valida,
                 self.selectores,
                 dry_run=True,
-                url_ficha=Pagina.url,
+                url_ficha=url,
             )
-        self.assertGreaterEqual(llamadas["cabecera"], 1)
-        self.assertIn("Cabecera ya está", buf.getvalue())
+        texto = buf.getvalue()
+        self.assertIn("receta completa", texto)
+        self.assertIn("cabecera", texto.lower())
+        self.assertNotIn("Cabecera ya está", texto)
 
     def test_js_fill_index_excluye_paleta(self):
         self.assertIn("r.left >= 240", self.modulo.JS_FILL_INDEX)
@@ -477,6 +474,8 @@ class ExplorarBmTests(unittest.TestCase):
         self.assertIn("paleta", js.lower())
         self.assertIn("left < 240", js)
         self.assertIn("Edita este componente", js)
+        self.assertIn("primerLapiz", js)
+        self.assertNotIn("iconos[1]", js)
         self.assertNotRegex(js, r"esLapiz = \(b\) => /[^/]*create")
 
     def test_clic_lapiz_por_fila_salta_paleta(self):
