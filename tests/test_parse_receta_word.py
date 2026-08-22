@@ -177,6 +177,10 @@ class ParseRecetaWordTests(unittest.TestCase):
         self.assertEqual(salmon["unidad"], "g")
         self.assertEqual(len(receta["pasos"]), 2)
         self.assertEqual(len(receta["tips"]), 2)
+        self.assertEqual(
+            receta["tipsTitulo"],
+            "Consejos para un salmón a la parrilla con salsa perfecto",
+        )
         self.assertEqual(receta["estado"], "listo-para-cargar")
         self.assertEqual(
             self.modulo.parse_lista_csv(

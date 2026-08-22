@@ -271,7 +271,9 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIn("tienes un borrador", self.explorar.JS_RESOLVER_BORRADOR.lower())
         self.assertIn("No pude escribir los ingredientes", src)
         self.assertIn("Ya estoy en Lista de Instrucciones", src)
+        self.assertIn("Ya estoy en SEO HTML", src)
         self.assertIn("No pude escribir las instrucciones", src)
+        self.assertIn("No pude escribir SEO HTML", src)
         self.assertIn("crcInputsInstruccionVisibles", self.explorar.JS_FOCO_INSTRUCCION)
         self.assertIn("interno", self.explorar.JS_CLICK_AGREGAR_INGREDIENTE)
         self.assertIn("Agregar nuevo ítem", " ".join(self.explorar.BOTONES_AGREGAR))
@@ -342,6 +344,33 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertEqual(self.explorar.editor_actual(pagina), "instrucciones")
         self.assertTrue(self.explorar.puede_rellenar_editor(pagina, "instrucciones"))
         self.assertFalse(self.explorar.puede_rellenar_editor(pagina, "ingredientes"))
+        receta_seo = {
+            "id": "salmon_a_la_parrilla_palta",
+            "titulo": "Salmón a la parrilla con salsa de palta",
+            "tipsTitulo": "Consejos para un salmón a la parrilla con salsa perfecto",
+            "tips": [
+                "Cocina el salmón principalmente por el lado de la piel.",
+            ],
+        }
+        seo_html = self.explorar.html_seo_consejos(receta_seo)
+        self.assertIn("<h2>Consejos para un salmón a la parrilla con salsa perfecto</h2>", seo_html)
+        self.assertIn("<ul>", seo_html)
+        self.assertIn("<li>", seo_html)
+        self.assertIn("calor residual", seo_html)
+        self.assertNotIn("&lt;h2", seo_html)
+        self.assertTrue(self.explorar.parece_html(seo_html))
+        self.assertTrue(self.explorar.html_quedo_con_etiquetas(seo_html, seo_html))
+        self.assertIn("content", self.explorar.JS_ESCRIBIR_PASO_HTML)
+
+        class PaginaSeo:
+            def evaluate(self, script, *_args):
+                if "h1,h2,h3" in str(script):
+                    return "Edición de SEO HTML | Recetas_Jumbo | Formulario seo_html | content *"
+                return ""
+
+        pagina_seo = PaginaSeo()
+        self.assertEqual(self.explorar.editor_actual(pagina_seo), "seo")
+        self.assertTrue(self.explorar.puede_rellenar_editor(pagina_seo, "seo"))
 
     def test_ingrediente_label_asterisco(self):
         fields = [
@@ -1027,6 +1056,36 @@ class JsIngredienteExactoTests(unittest.TestCase):
             self.assertIn("<p>", ta)
             self.assertIn("<strong>Sazona el salmón:</strong>", ta)
             self.assertNotIn("&lt;p&gt;", ta)
+            browser.close()
+
+    def test_rellena_seo_html_con_etiquetas(self):
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError:
+            self.skipTest("playwright no instalado")
+        fixture = Path(__file__).resolve().parent / "fixtures" / "bm-seo-html.html"
+        receta = {
+            "id": "salmon_a_la_parrilla_palta",
+            "titulo": "Salmón a la parrilla con salsa de palta",
+        }
+        with sync_playwright() as pw:
+            browser = pw.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(fixture.as_uri())
+            self.assertEqual(self.explorar.editor_actual(page), "seo")
+            self.assertTrue(self.explorar.rellenar_seo_html(page, receta))
+            self.assertTrue(
+                page.evaluate("() => document.getElementById('html-script').checked")
+            )
+            html = page.evaluate("() => document.getElementById('seo-content').value")
+            self.assertIn("<h2>Consejos para un salmón a la parrilla con salsa perfecto</h2>", html)
+            self.assertIn("<li>", html)
+            self.assertIn("calor residual", html)
+            self.assertNotIn("&lt;h2", html)
+            self.assertGreaterEqual(
+                page.evaluate("() => document.querySelectorAll('#wysiwyg h2').length"),
+                1,
+            )
             browser.close()
 
 

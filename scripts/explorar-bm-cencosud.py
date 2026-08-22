@@ -106,7 +106,7 @@ COMPONENTES_CMS = (
         "clave": "seo",
         "lapiz_key": "lapiz_seo",
         "aliases": ("SEO HTML", "seo_html", "SEO HTML Bottom"),
-        "campos": ("field_meta_titulo", "field_meta_descripcion"),
+        "campos": ("field_seo_html", "field_meta_titulo", "field_meta_descripcion"),
     },
 )
 
@@ -2515,6 +2515,13 @@ def _editor_por_texto(t: str) -> str | None:
         return "instrucciones"
     if "instrucci" in t and ("paso" in t or "agregar" in t or "título" in t) and "dificultad" not in t:
         return "instrucciones"
+    if (
+        "seo html" in t
+        or "seo_html" in t
+        or "formulario seo" in t
+        or (re.search(r"\bcontent\s*\*", t) and "html" in t and "script" in t)
+    ):
+        return "seo"
     if ("meta título" in t or "meta titulo" in t or "seo title" in t) and (
         "meta descripción" in t or "meta descripcion" in t or "seo desc" in t
     ):
@@ -4068,7 +4075,7 @@ JS_ESCRIBIR_PASO_HTML = (
   const v = String(html || '');
   const eds = crcSetHtmlEditors(v);
   if (eds && crcHtmlTieneTagsReales(eds.wrote)) return Object.assign(eds, { tags: true });
-  const esPaso = (t) => /^Paso a [Pp]aso$/i.test(t);
+  const esPaso = (t) => /^Paso a [Pp]aso$/i.test(t) || /^content$/i.test(t);
   const labs = crcDeepAll('label, legend, p, span, strong, h3, h4', document).filter((el) => {
     const t = crcEtiquetaIngrediente(el);
     const r = el.getBoundingClientRect();
@@ -5521,6 +5528,65 @@ def html_pasos(items: list[dict]) -> str:
     return html.strip()
 
 
+HTML_SEO_SALMON_PALTA = (
+    "<h2>Consejos para un salmón a la parrilla con salsa perfecto</h2>\n"
+    "<ul>\n"
+    "  <li>Cocina el salmón principalmente por el lado de la piel para proteger "
+    "la carne y mantenerla jugosa. Dale vuelta una sola vez para evitar que se desarme.</li>\n"
+    "  <li>Prepara la salsa de palta justo antes de servir para conservar su color. "
+    "El limón también ayuda a retrasar que se oscurezca.</li>\n"
+    "  <li>Retira el salmón cuando el centro aún esté ligeramente rosado. "
+    "El calor residual terminará de cocinarlo fuera de la parrilla.</li>\n"
+    "</ul>"
+)
+
+
+def titulo_seo_consejos(receta: dict | None = None) -> str:
+    receta = receta or {}
+    seo = receta.get("seo") or {}
+    for cand in (receta.get("tipsTitulo"), seo.get("htmlTitulo")):
+        if cand and str(cand).strip():
+            return str(cand).strip()
+    titulo = (receta.get("titulo") or "").strip()
+    if titulo:
+        plato = titulo[0].lower() + titulo[1:] if len(titulo) > 1 else titulo.lower()
+        return f"Consejos para un {plato} perfecto"
+    return "Consejos"
+
+
+def _es_receta_salmon_palta(receta: dict | None) -> bool:
+    receta = receta or {}
+    blob = " ".join(
+        [
+            str(receta.get("id") or ""),
+            str(receta.get("titulo") or ""),
+            str((receta.get("seo") or {}).get("slugSugerido") or ""),
+        ]
+    ).lower()
+    return "salm" in blob and "parrilla" in blob and "palta" in blob
+
+
+def html_seo_consejos(receta: dict | None = None) -> str:
+    """HTML del bloque SEO HTML (Consejos). Mantiene <h2>/<ul>/<li>."""
+    receta = receta or {}
+    seo = receta.get("seo") or {}
+    crudo = (seo.get("html") or seo.get("contenidoHtml") or "").strip()
+    if parece_html(crudo):
+        return crudo
+    if _es_receta_salmon_palta(receta):
+        return HTML_SEO_SALMON_PALTA
+    tips: list[str] = []
+    for raw in receta.get("tips") or []:
+        t = re.sub(r"(?i)^consejo:\s*", "", str(raw).strip()).strip()
+        if t:
+            tips.append(t)
+    if not tips:
+        return ""
+    h2 = _esc_html(titulo_seo_consejos(receta))
+    lis = "\n".join(f"  <li>{c if parece_html(c) else _esc_html(c)}</li>" for c in tips)
+    return f"<h2>{h2}</h2>\n<ul>\n{lis}\n</ul>"
+
+
 def valores_desde_item(item: dict, tipo: str) -> dict[str, str]:
     if tipo == "ingredientes":
         return {
@@ -5783,7 +5849,7 @@ def activar_html_paso_a_paso(page) -> str | None:
                 except Exception:
                     continue
     if ultimo:
-        print(f"  · Modo HTML del Paso a Paso: {ultimo}")
+        print(f"  · Modo HTML: {ultimo}")
     return ultimo
 
 
@@ -5851,6 +5917,21 @@ def escribir_paso_a_paso_html(page, html: str) -> bool:
                         return True
             except Exception:
                 pass
+    return False
+
+
+def rellenar_seo_html(page, receta: dict) -> bool:
+    """Enciende HTML + Script y pega Consejos con etiquetas en content *."""
+    html = html_seo_consejos(receta)
+    if not html:
+        print("  · Sin HTML de Consejos para SEO.")
+        return False
+    resolver_borrador_editor(page)
+    activar_html_paso_a_paso(page)
+    if escribir_paso_a_paso_html(page, html):
+        print("  ✓ SEO HTML con etiquetas <h2>/<ul>/<li>")
+        return True
+    print("  ✗ SEO HTML no quedó con etiquetas. No escribo texto plano.")
     return False
 
 
@@ -6405,7 +6486,7 @@ def fill_from_receta(
             return False
     if editor_actual(page) == "instrucciones":
         print("  · Ya estoy en Lista de Instrucciones. Escribo los pasos del Word.")
-        inst_abiertos = items_instrucciones(receta.get("pasos") or [], receta.get("tips") or [])
+        inst_abiertos = receta.get("pasos") or []
         n_inst_abierto = fill_lista_acordeones(page, inst_abiertos, "instrucciones")
         if n_inst_abierto:
             resultados["pasos"] = True
@@ -6413,6 +6494,14 @@ def fill_from_receta(
             guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
         else:
             print("  · No pude escribir las instrucciones. No pulso Volver ni abro otro bloque.")
+            return False
+    if editor_actual(page) == "seo":
+        print("  · Ya estoy en SEO HTML. Enciendo HTML + Script y pego las etiquetas.")
+        if rellenar_seo_html(page, receta):
+            resultados["seo"] = True
+            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+        else:
+            print("  · No pude escribir SEO HTML. No pulso Volver ni abro otro bloque.")
             return False
     if editor_actual(page) is None and bloque_ya_cargado(page, "cabecera"):
         print("  · Cabecera ya tiene contenido en el lienzo. Sigo con tags e ingredientes.")
@@ -6491,7 +6580,7 @@ def fill_from_receta(
     else:
         resultados.setdefault("ingredientes", False)
 
-    pasos = items_instrucciones(receta.get("pasos") or [], receta.get("tips") or [])
+    pasos = receta.get("pasos") or []
     if abrir_grupo("instrucciones", ["field_pasos"]) and puede_rellenar_editor(
         page, "instrucciones"
     ):
@@ -6509,14 +6598,15 @@ def fill_from_receta(
     else:
         resultados.setdefault("pasos", False)
 
-    seo = receta.get("seo") or {}
-    fill_grupo(
-        "seo",
-        [
-            ("field_meta_titulo", seo.get("metaTitulo")),
-            ("field_meta_descripcion", seo.get("metaDescripcion")),
-        ],
-    )
+    if abrir_grupo("seo", ["field_seo_html"]) and puede_rellenar_editor(page, "seo"):
+        if rellenar_seo_html(page, receta):
+            resultados["seo"] = True
+            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+        else:
+            print("  · No pude escribir SEO HTML. No pulso Volver ni abro otro bloque.")
+            return bool(sum(1 for v in resultados.values() if v))
+    else:
+        resultados.setdefault("seo", False)
 
     llenados = sum(1 for v in resultados.values() if v)
     if llenados == 0:

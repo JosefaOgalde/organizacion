@@ -229,10 +229,11 @@ def null_str():
     return None
 
 
-def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str]]:
-    """Separa pasos reales de tips."""
+def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
+    """Separa pasos reales de tips. El encabezado «Consejos para…» queda en tips_titulo."""
     pasos: list[dict] = []
     tips: list[str] = []
+    tips_titulo = ""
     en_tips = False
     for raw in bloque.splitlines():
         line = raw.strip()
@@ -241,8 +242,12 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str]]:
         if re.match(r"(?i)^(tips?\b|consejos?\b)", line):
             en_tips = True
             resto = re.sub(r"(?i)^(tips?|consejos?)\b[:\s\-]*", "", line).strip()
-            if resto and not re.match(r"(?i)^(para\s+un|para\s+el|de\s+la)\b", resto):
+            if resto and re.match(r"(?i)^(para\s+un|para\s+el|de\s+la)\b", resto):
+                tips_titulo = line.strip()
+            elif resto:
                 tips.append(resto.lstrip("-•* ").strip())
+            elif re.match(r"(?i)^consejos?\b", line):
+                tips_titulo = line.strip()
             continue
         if en_tips:
             tips.append(line.lstrip("-•* ").strip())
@@ -256,7 +261,7 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str]]:
         if re.match(r"(?i)^¿?c[oó]mo preparar", line):
             continue
         pasos.append({"orden": len(pasos) + 1, "texto": line})
-    return pasos, tips
+    return pasos, tips, tips_titulo
 
 
 def parse_lista_csv(valor: str | None) -> list[str]:
@@ -352,7 +357,7 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
     pas_bloque = m_pas.group(1).strip() if m_pas else ""
     # si quedó el encabezado "Paso a paso" dentro, limpiar
     pas_bloque = re.sub(r"(?im)^paso a paso\s*:?\s*\n?", "", pas_bloque).strip()
-    pasos, tips = parse_pasos_jumbo(pas_bloque)
+    pasos, tips, tips_titulo = parse_pasos_jumbo(pas_bloque)
 
     faltantes: list[str] = []
     if not titulo:
@@ -406,6 +411,7 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
         "ingredientes": ingredientes,
         "pasos": pasos,
         "tips": tips,
+        "tipsTitulo": tips_titulo,
         "imagenes": imagenes,
         "seo": {
             "metaTitulo": seo_titulo,
@@ -440,7 +446,7 @@ def construir_receta_simple(texto: str, lines: list[str], fuente: str) -> dict:
     )
     pas_bloque = m_pas.group(1).strip() if m_pas else ""
     ingredientes = parse_ingredientes(ing_bloque)
-    pasos, tips = parse_pasos_jumbo(pas_bloque)
+    pasos, tips, tips_titulo = parse_pasos_jumbo(pas_bloque)
 
     porciones = meta_linea(texto, ["porciones", "rinde", "servings"])
     t_prep = meta_linea(
@@ -493,6 +499,7 @@ def construir_receta_simple(texto: str, lines: list[str], fuente: str) -> dict:
         "ingredientes": ingredientes,
         "pasos": pasos,
         "tips": tips,
+        "tipsTitulo": tips_titulo,
         "imagenes": [],
         "seo": {
             "metaTitulo": titulo,
