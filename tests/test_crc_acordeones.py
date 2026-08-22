@@ -127,6 +127,38 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         )
         self.assertEqual(linea, "200 g choclo")
 
+    def test_numero_campo_bm_duracion_y_porciones(self):
+        self.assertEqual(self.explorar.numero_campo_bm("30 min"), "30")
+        self.assertEqual(self.explorar.numero_campo_bm("4 porciones"), "4")
+        self.assertEqual(self.explorar.numero_campo_bm("1.2 kg"), "1.2")
+        self.assertIsNone(self.explorar.numero_campo_bm(""))
+
+    def test_label_titulo_no_confunde_seccion_ni_meta(self):
+        self.assertTrue(
+            self.explorar.label_coincide_campo("field_titulo", "Título El dato es requerido")
+        )
+        self.assertFalse(
+            self.explorar.label_coincide_campo("field_titulo", "Título de la sección")
+        )
+        self.assertFalse(self.explorar.label_coincide_campo("field_titulo", "Meta título"))
+        self.assertTrue(self.explorar.label_coincide_campo("field_tiempo", "Duración"))
+
+    def test_ingrediente_label_asterisco(self):
+        fields = [
+            {
+                "label": "Ingrediente * El dato es requerido",
+                "placeholder": "Dale un valor",
+                "selectorSugerido": 'input[placeholder="Dale un valor"]',
+                "tag": "input",
+                "index": 3,
+            }
+        ]
+        item = {"nombre": "filete de salmón", "cantidad": "600", "unidad": "g"}
+        pares = self.explorar.asignar_campos_item(fields, item, "ingredientes")
+        self.assertEqual(pares[0][0], "nombre")
+        self.assertEqual(pares[0][2], "filete de salmón")
+        self.assertEqual(self.explorar.linea_ingrediente(item), "600 g filete de salmón")
+
     def test_caja_en_lienzo_ignora_paleta_izquierda(self):
         self.assertFalse(self.explorar.caja_en_lienzo({"x": 40, "width": 180, "height": 24}))
         self.assertTrue(self.explorar.caja_en_lienzo({"x": 360, "width": 220, "height": 28}))

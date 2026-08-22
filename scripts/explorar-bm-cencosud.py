@@ -525,6 +525,7 @@ def listar_componentes_cms(page) -> list[dict]:
 
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
     """Clic en el lápiz del lienzo (icono del medio). Nunca paleta ni basurero."""
+    resolver_modal_cambios(page)
     if selector_guardado and not selector_es_generico(selector_guardado):
         try:
             if clic_locator_en_lienzo(page, selector_guardado):
@@ -712,18 +713,29 @@ JS_CLIC_LAPIZ = """(aliases) => {
 
 def cerrar_editor_componente(page) -> None:
     """Guarda el editor del lápiz y vuelve al lienzo (no Publicar)."""
+    resolver_modal_cambios(page)
     for sel in (
         "button:has-text('Guardar')",
+        "[role='button']:has-text('Guardar')",
         "button:has-text('Aplicar')",
         "button:has-text('Listo')",
         "button:has-text('Done')",
     ):
         try:
-            loc = page.locator(sel).first
-            if loc.count() and loc.is_visible():
-                loc.click(timeout=2_500)
-                page.wait_for_timeout(500)
-                return
+            loc = page.locator(sel)
+            n = loc.count()
+            for i in range(n):
+                btn = loc.nth(i)
+                visible = True
+                try:
+                    visible = btn.is_visible()
+                except Exception:
+                    visible = True
+                if visible:
+                    btn.click(timeout=2_500)
+                    page.wait_for_timeout(500)
+                    resolver_modal_cambios(page)
+                    return
         except Exception:
             pass
     for sel in (
@@ -737,14 +749,11 @@ def cerrar_editor_componente(page) -> None:
             if loc.count() and loc.is_visible():
                 loc.click(timeout=2_000)
                 page.wait_for_timeout(400)
+                resolver_modal_cambios(page)
                 return
         except Exception:
             pass
-    try:
-        page.keyboard.press("Escape")
-        page.wait_for_timeout(400)
-    except Exception:
-        pass
+    # No Escape: en el BM abre «Tienes cambios sin guardar».
 
 
 def capturar_cms_por_componentes(page) -> tuple[dict, dict]:
@@ -1084,7 +1093,7 @@ LABEL_PASO = re.compile(r"paso|instrucci|descripci[oó]n|texto|c[oó]mo", re.I)
 LABEL_ORDEN = re.compile(r"orden|n[uú]mero|^#\s*$|order", re.I)
 PLACEHOLDER_VACIO = re.compile(r"dale un valor|ingresa|escribe", re.I)
 ETIQUETAS_CAMPO = {
-    "field_titulo": re.compile(r"t[ií]tulo de la receta|^t[ií]tulo$|nombre de la receta", re.I),
+    "field_titulo": re.compile(r"t[ií]tulo", re.I),
     "field_descripcion": re.compile(r"descripci[oó]n|bajada|intro|resumen", re.I),
     "field_porciones": re.compile(r"porcion|rinde|servings|personas", re.I),
     "field_dificultad": re.compile(r"dificultad|nivel|difficulty", re.I),
@@ -1096,6 +1105,17 @@ ETIQUETAS_CAMPO = {
     "field_meta_titulo": re.compile(r"meta\s*t[ií]tulo|seo title", re.I),
     "field_meta_descripcion": re.compile(r"meta\s*descripci[oó]n|seo desc", re.I),
     "field_alt": re.compile(r"texto alt|alt\s*text|alternativa|atributo alt", re.I),
+}
+# Etiquetas exactas del editor BM Jumbo (Edición de Cabecera / tags / listas).
+LABELS_EDITOR_BM = {
+    "field_titulo": r"^Título\b",
+    "field_descripcion": r"^Descripción\b",
+    "field_porciones": r"^Porciones\b",
+    "field_tiempo": r"^Duración\b",
+    "field_dificultad": r"^Dificultad\b",
+    "field_alt": r"^(Texto alt|Alt)\b",
+    "field_meta_titulo": r"Meta\s*título|SEO Title",
+    "field_meta_descripcion": r"Meta\s*descripción|SEO Desc",
 }
 DIFICULTAD_BM = {
     "muy facil": "Muy Fácil",
@@ -1141,6 +1161,43 @@ def normalizar_dificultad_bm(valor: str | None) -> str | None:
     return crudo
 
 
+def esta_en_editor_componente(page) -> bool:
+    u = url_actual(page)
+    if re.search(r"edici[oó]n|edicion|/edit|component", u, re.I):
+        return True
+    get_by_text = getattr(page, "get_by_text", None)
+    if not get_by_text:
+        return False
+    try:
+        loc = get_by_text(re.compile(r"Edición de", re.I))
+        return bool(hasattr(loc, "count") and loc.count())
+    except Exception:
+        return False
+
+
+def label_coincide_campo(key: str, blob: str) -> bool:
+    """Evita mezclar Título de cabecera con «Título de la sección» o meta SEO."""
+    b = blob or ""
+    if key == "field_titulo":
+        if re.search(r"meta\s*t[ií]tulo|t[ií]tulo de la secci", b, re.I):
+            return False
+        return bool(re.search(r"t[ií]tulo", b, re.I))
+    if key == "field_descripcion":
+        if re.search(r"meta\s*descripci", b, re.I):
+            return False
+        return bool(re.search(r"descripci[oó]n|bajada|intro|resumen", b, re.I))
+    patron = ETIQUETAS_CAMPO.get(key)
+    return bool(patron and patron.search(b))
+
+
+def numero_campo_bm(valor: str | None) -> str | None:
+    """Duración/porciones del BM piden número: '30 min' → '30', '4 porciones' → '4'."""
+    if valor is None or str(valor).strip() == "":
+        return None
+    m = re.search(r"\d+[.,]?\d*", str(valor))
+    return m.group(0).replace(",", ".") if m else None
+
+
 def elegir_dificultad(page, valor: str | None) -> bool:
     etiqueta = normalizar_dificultad_bm(valor)
     if not etiqueta:
@@ -1156,16 +1213,18 @@ def elegir_dificultad(page, valor: str | None) -> bool:
             return True
     except Exception:
         pass
-    try:
-        fields = dump_estructura(page).get("fields") or []
-    except Exception:
-        fields = []
+    fields = campos_visibles(page)
     for field in fields:
         if not re.search(r"dificultad|nivel", blob_campo(field), re.I):
             continue
         sel = field.get("selectorSugerido")
-        if sel and _fill_locator(page, sel, etiqueta):
+        if sel and not selector_es_generico(sel) and _fill_locator(page, sel, etiqueta):
+            print(f"  ✓ field_dificultad → {etiqueta}")
             return True
+        if field.get("index") is not None and fill_por_indice_visible(page, field["index"], etiqueta):
+            print(f"  ✓ field_dificultad → {etiqueta}")
+            return True
+    en_editor = esta_en_editor_componente(page)
     try:
         combo = page.get_by_text("Dificultad", exact=False)
         n_combo = combo.count() if hasattr(combo, "count") else 1
@@ -1173,13 +1232,13 @@ def elegir_dificultad(page, valor: str | None) -> bool:
         for i in range(min(n_combo, 8)):
             item = combo.nth(i) if hasattr(combo, "nth") else combo
             box = _bounding_box(item)
-            if box is not None and not caja_en_lienzo(box):
+            if box is not None and not en_editor and not caja_en_lienzo(box):
                 continue
             item.click(timeout=3_000)
             pulsado = True
             break
         if not pulsado:
-            raise RuntimeError("Dificultad no está en el lienzo")
+            raise RuntimeError("Dificultad no está visible")
         page.wait_for_timeout(250)
         opcion = page.get_by_text(etiqueta, exact=True).last
         opcion.click(timeout=3_000)
@@ -1254,10 +1313,10 @@ def subir_imagen_portada(page, receta: dict) -> bool:
     if not ruta:
         return False
     try:
-        loc = page.locator("input[type='file']").first
+        loc = page.locator("input[type='file']")
         if not loc.count():
             return False
-        loc.set_input_files(str(ruta))
+        loc.first.set_input_files(str(ruta))
         print(f"  ✓ imagen portada ({ruta.name})")
         return True
     except Exception as e:
@@ -1301,6 +1360,274 @@ def linea_ingrediente(item: dict) -> str:
             ],
         )
     ).strip()
+
+
+JS_MARCAR_POR_LABEL = """(args) => {
+  const patron = args.patron;
+  const excluir = args.excluir || '';
+  const re = new RegExp(patron, 'i');
+  const reEx = excluir ? new RegExp(excluir, 'i') : null;
+  document.querySelectorAll('[data-crc-label-hit]').forEach((el) => el.removeAttribute('data-crc-label-hit'));
+  const visibles = (el) => {
+    if (!el) return false;
+    const st = getComputedStyle(el);
+    if (st.display === 'none' || st.visibility === 'hidden') return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && r.height > 0;
+  };
+  const esControl = (el) => {
+    if (!el || !visibles(el)) return false;
+    const tag = (el.tagName || '').toLowerCase();
+    if (tag === 'textarea' || tag === 'select') return true;
+    if (tag === 'input') {
+      const t = (el.type || 'text').toLowerCase();
+      return !['hidden', 'checkbox', 'radio', 'file', 'submit', 'button'].includes(t);
+    }
+    return el.getAttribute('contenteditable') === 'true' || el.getAttribute('role') === 'combobox';
+  };
+  const seen = new Set();
+  let n = 0;
+  const nodos = document.querySelectorAll('label, legend, p, span, div, h2, h3, h4, h5');
+  for (const lab of nodos) {
+    const crudo = (lab.innerText || lab.textContent || '').replace(/\\s+/g, ' ').trim();
+    if (!crudo || crudo.length > 90) continue;
+    const linea = crudo.split(' El dato')[0].replace(/\\*$/, '').trim();
+    if (!re.test(linea) && !re.test(crudo)) continue;
+    if (reEx && (reEx.test(linea) || reEx.test(crudo))) continue;
+    let input = null;
+    const htmlFor = lab.getAttribute && lab.getAttribute('for');
+    if (htmlFor) input = document.getElementById(htmlFor);
+    if (!esControl(input)) {
+      const box = lab.closest('[class*="field"], [class*="Field"], [class*="form"], [class*="Form"], li, section, div');
+      if (box) {
+        input = Array.from(box.querySelectorAll('input, textarea, select, [contenteditable="true"], [role="combobox"]')).find(esControl) || null;
+      }
+    }
+    if (!esControl(input)) {
+      let sib = lab.nextElementSibling;
+      for (let i = 0; i < 6 && sib && !esControl(input); i++) {
+        if (esControl(sib)) input = sib;
+        else input = Array.from(sib.querySelectorAll('input, textarea, select')).find(esControl) || null;
+        sib = sib.nextElementSibling;
+      }
+    }
+    if (!esControl(input) || seen.has(input)) continue;
+    seen.add(input);
+    input.setAttribute('data-crc-label-hit', String(n));
+    n += 1;
+  }
+  return n;
+}"""
+
+
+JS_FILL_INDEX = """([index, value]) => {
+  const els = [...document.querySelectorAll('input, textarea, select, [contenteditable="true"]')].filter((el) => {
+    if (el.type === 'hidden' || el.type === 'password' || el.disabled) return false;
+    const st = getComputedStyle(el);
+    if (st.display === 'none' || st.visibility === 'hidden') return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 0 || r.height > 0;
+  });
+  const el = els[index];
+  if (!el) return false;
+  const v = String(value);
+  if ((el.tagName || '').toLowerCase() === 'select') {
+    const opt = [...el.options].find((o) => (o.text || '').trim() === v || o.value === v);
+    if (opt) el.value = opt.value;
+    else el.value = v;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    return true;
+  }
+  const proto = (el.tagName || '').toLowerCase() === 'textarea' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+  const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+  if (desc && desc.set) desc.set.call(el, v);
+  else if (el.getAttribute('contenteditable') === 'true') el.textContent = v;
+  else el.value = v;
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+  el.dispatchEvent(new Event('change', { bubbles: true }));
+  return true;
+}"""
+
+
+def escribir_valor(page, loc, value) -> bool:
+    if loc is None or value is None or value == "":
+        return False
+    texto = str(value)
+    try:
+        loc.fill(texto, timeout=3_000)
+        return True
+    except TypeError:
+        try:
+            loc.fill(texto)
+            return True
+        except Exception:
+            pass
+    except Exception:
+        pass
+    try:
+        loc.evaluate(
+            """(el, v) => {
+              const tag = (el.tagName || '').toLowerCase();
+              if (tag === 'select') {
+                const opt = [...el.options].find((o) => (o.text || '').trim() === v || o.value === v);
+                el.value = opt ? opt.value : v;
+              } else if (el.getAttribute('contenteditable') === 'true') {
+                el.textContent = v;
+              } else {
+                const proto = tag === 'textarea' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+                const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+                if (desc && desc.set) desc.set.call(el, v);
+                else el.value = v;
+              }
+              el.dispatchEvent(new Event('input', { bubbles: true }));
+              el.dispatchEvent(new Event('change', { bubbles: true }));
+            }""",
+            texto,
+        )
+        return True
+    except TypeError:
+        return False
+    except Exception:
+        return False
+
+
+def fill_por_indice_visible(page, index, value) -> bool:
+    try:
+        return bool(page.evaluate(JS_FILL_INDEX, [int(index), str(value)]))
+    except Exception:
+        return False
+
+
+def rellenar_por_label(page, patron: str, value, *, nth: int = 0, excluir: str | None = None) -> bool:
+    """Rellena el input junto a la etiqueta visible, aunque el placeholder sea «Dale un valor»."""
+    if value is None or value == "" or not patron:
+        return False
+    get_by_label = getattr(page, "get_by_label", None)
+    if get_by_label:
+        try:
+            loc = get_by_label(re.compile(patron, re.I))
+            n = loc.count() if hasattr(loc, "count") else 1
+            if n and nth < n:
+                if escribir_valor(page, loc.nth(nth) if hasattr(loc, "nth") else loc, value):
+                    return True
+        except Exception:
+            pass
+    try:
+        marcados = page.evaluate(JS_MARCAR_POR_LABEL, {"patron": patron, "excluir": excluir or ""})
+    except Exception:
+        marcados = 0
+    if not marcados or nth >= int(marcados):
+        return False
+    try:
+        loc = page.locator(f'[data-crc-label-hit="{nth}"]')
+        return escribir_valor(page, loc.first if hasattr(loc, "first") else loc, value)
+    except Exception:
+        return False
+
+
+def contar_por_label(page, patron: str, excluir: str | None = None) -> int:
+    try:
+        return int(page.evaluate(JS_MARCAR_POR_LABEL, {"patron": patron, "excluir": excluir or ""}) or 0)
+    except Exception:
+        return 0
+
+
+def fill_repetidos_por_label(page, patron: str, valores: list[str], *, excluir: str | None = None) -> int:
+    valores = [v for v in valores if v]
+    if not valores:
+        return 0
+    asegurar_n_campos_label(page, patron, len(valores), excluir=excluir)
+    llenados = 0
+    for i, valor in enumerate(valores):
+        if rellenar_por_label(page, patron, valor, nth=i, excluir=excluir):
+            llenados += 1
+            print(f"  ✓ ítem[{i}] ({patron}) → {valor[:60]}")
+        else:
+            print(f"  ✗ ítem[{i}] ({patron})")
+    return llenados
+
+
+def asegurar_n_campos_label(page, patron: str, n: int, *, excluir: str | None = None) -> int:
+    actuales = contar_por_label(page, patron, excluir=excluir)
+    intentos = 0
+    while actuales < n and intentos < n + 4:
+        if not click_agregar_item(page, preferir_ultimo=True):
+            break
+        intentos += 1
+        try:
+            page.wait_for_timeout(300)
+        except Exception:
+            pass
+        actuales = contar_por_label(page, patron, excluir=excluir)
+    return actuales
+
+
+def fill_lista_tags(page, tags: list[str]) -> int:
+    tags = [t.strip() for t in tags if t and str(t).strip()]
+    if not tags:
+        return 0
+    n = fill_repetidos_por_label(page, r"^(tag|etiqueta|nombre|valor)\b", tags)
+    if n:
+        return n
+    return fill_inputs_texto_en_orden(page, tags)
+
+
+def fill_inputs_texto_en_orden(page, valores: list[str]) -> int:
+    """Rellena inputs de texto visibles (placeholder «Dale un valor») en orden."""
+    valores = [v for v in valores if v]
+    if not valores:
+        return 0
+    try:
+        loc = page.locator(
+            'input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]), textarea'
+        )
+        n = loc.count()
+    except Exception:
+        return 0
+    llenados = 0
+    for i in range(n):
+        if llenados >= len(valores):
+            break
+        item = loc.nth(i)
+        try:
+            if hasattr(item, "is_visible") and not item.is_visible():
+                continue
+            tipo = ""
+            try:
+                tipo = (item.get_attribute("type") or "").lower()
+            except Exception:
+                tipo = ""
+            if tipo in {"checkbox", "radio", "file", "hidden", "submit"}:
+                continue
+            if escribir_valor(page, item, valores[llenados]):
+                print(f"  ✓ texto[{llenados}] → {valores[llenados][:60]}")
+                llenados += 1
+        except Exception:
+            continue
+    return llenados
+
+
+def resolver_modal_cambios(page) -> bool:
+    """Si aparece «Tienes cambios sin guardar», Cancelar para no perder el editor."""
+    get_by_text = getattr(page, "get_by_text", None)
+    try:
+        if get_by_text:
+            aviso = get_by_text("Tienes cambios sin guardar", exact=False)
+            if hasattr(aviso, "count") and aviso.count() == 0:
+                return False
+        for sel in (
+            "button:has-text('Cancelar')",
+            "[role='button']:has-text('Cancelar')",
+        ):
+            loc = page.locator(sel)
+            if loc.count():
+                loc.last.click(timeout=2_000)
+                page.wait_for_timeout(250)
+                return True
+    except Exception:
+        return False
+    return False
 
 
 def texto_pasos(pasos: list[dict]) -> str:
@@ -1370,41 +1697,47 @@ def selector_es_generico(sel: str | None) -> bool:
 
 
 def _fill_locator(page, sel: str, value) -> bool:
-    if not sel or value is None or value == "" or selector_es_generico(sel):
+    if not sel or value is None or value == "":
+        return False
+    if selector_es_generico(sel):
         return False
     try:
         loc = page.locator(sel).first
         if not loc.count():
             return False
-        tag = "input"
-        try:
-            tag = loc.evaluate("el => el.tagName.toLowerCase()")
-        except Exception:
-            pass
-        if tag == "select":
-            try:
-                loc.select_option(label=str(value))
-            except Exception:
-                loc.select_option(value=str(value))
-        else:
-            loc.fill(str(value))
-        return True
+        return escribir_valor(page, loc, value)
     except Exception:
         return False
 
 
-def fill_por_etiqueta(page, patron: re.Pattern, value) -> bool:
+def campos_visibles(page) -> list[dict]:
+    try:
+        estructura = dump_estructura(page)
+    except Exception:
+        return []
+    if not isinstance(estructura, dict):
+        return []
+    return list(estructura.get("fields") or [])
+
+
+def fill_por_etiqueta(page, patron: re.Pattern, value, *, key: str | None = None) -> bool:
     if value is None or value == "":
         return False
-    try:
-        fields = dump_estructura(page).get("fields") or []
-    except Exception:
-        return False
+    fields = campos_visibles(page)
     for field in fields:
-        if patron.search(blob_campo(field) or ""):
-            sel = field.get("selectorSugerido")
-            if sel and _fill_locator(page, sel, value):
-                return True
+        blob = blob_campo(field) or ""
+        if key and not label_coincide_campo(key, blob):
+            continue
+        if not key and not patron.search(blob):
+            continue
+        sel = field.get("selectorSugerido")
+        if sel and not selector_es_generico(sel) and _fill_locator(page, sel, value):
+            return True
+        idx = field.get("index")
+        if idx is not None and fill_por_indice_visible(page, idx, value):
+            return True
+    if rellenar_por_label(page, patron.pattern, value):
+        return True
     return False
 
 
@@ -1434,12 +1767,13 @@ def expandir_acordeon(page, indice: int) -> bool:
         return False
 
 
-def click_agregar_item(page) -> bool:
+def click_agregar_item(page, preferir_ultimo: bool = False) -> bool:
     for sel in BOTONES_AGREGAR:
         try:
             loc = page.locator(sel)
             total = loc.count()
-            for i in range(total):
+            indices = range(total - 1, -1, -1) if preferir_ultimo else range(total)
+            for i in indices:
                 btn = loc.nth(i)
                 visible = True
                 try:
@@ -1470,31 +1804,70 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
     """Rellena 'Edición de Lista Ingredientes/Instrucciones' ítem a ítem."""
     if not items:
         return 0
+    if tipo == "ingredientes":
+        rellenar_por_label(
+            page,
+            r"Título de la sección",
+            "Ingredientes",
+            nth=0,
+        )
+        lineas = [linea_ingrediente(it) for it in items if linea_ingrediente(it)]
+        n_lab = fill_repetidos_por_label(
+            page,
+            r"^Ingrediente\b",
+            lineas,
+            excluir=r"título de la sección|lista",
+        )
+        if n_lab:
+            return n_lab
+    else:
+        textos = [(p.get("texto") or "").strip() for p in items if (p.get("texto") or "").strip()]
+        n_lab = fill_repetidos_por_label(
+            page,
+            r"^(Instrucci|Paso|Descripción|Texto)\b",
+            textos,
+        )
+        if n_lab:
+            return n_lab
+
     n_acc = contar_acordeones(page)
     if n_acc <= 0:
-        return 0
-    asegurar_filas_lista(page, len(items))
+        asegurar_filas_lista(page, len(items))
+        n_acc = contar_acordeones(page)
+    else:
+        asegurar_filas_lista(page, len(items))
     llenados = 0
     for i, item in enumerate(items):
-        if not expandir_acordeon(page, i):
+        if n_acc and not expandir_acordeon(page, i):
             print(f"  ✗ {tipo}[{i}]: no hay acordeón")
             continue
         try:
             page.wait_for_timeout(250)
         except Exception:
             pass
-        try:
-            fields = dump_estructura(page).get("fields") or []
-        except Exception:
-            fields = []
+        fields = campos_visibles(page)
         pares = asignar_campos_item(fields, item, tipo)
+        if tipo == "ingredientes" and not any(a[0] == "nombre" for a in pares):
+            linea = linea_ingrediente(item)
+            if linea:
+                pares = [("nombre", "", linea)] + pares
         ok_item = False
         for rol, sel, valor in pares:
-            if _fill_locator(page, sel, valor):
+            if sel and not selector_es_generico(sel) and _fill_locator(page, sel, valor):
                 print(f"  ✓ {tipo}[{i}].{rol}")
                 ok_item = True
-            else:
-                print(f"  ✗ {tipo}[{i}].{rol} ({sel})")
+                continue
+            field = next((f for f in fields if f.get("selectorSugerido") == sel), None)
+            if field and field.get("index") is not None and fill_por_indice_visible(page, field["index"], valor):
+                print(f"  ✓ {tipo}[{i}].{rol} (índice)")
+                ok_item = True
+                continue
+            patron = r"^Ingrediente\b" if tipo == "ingredientes" and rol == "nombre" else ""
+            if patron and rellenar_por_label(page, patron, valor, nth=i):
+                print(f"  ✓ {tipo}[{i}].{rol} (etiqueta)")
+                ok_item = True
+                continue
+            print(f"  ✗ {tipo}[{i}].{rol} ({sel or 'sin selector'})")
         if ok_item:
             llenados += 1
         else:
@@ -1519,6 +1892,8 @@ def fill_from_receta(
     def fill(key: str, value: str | None) -> bool:
         if value is None or value == "":
             return False
+        if key in ("field_tiempo", "field_porciones", "field_tiempo_prep", "field_tiempo_coccion"):
+            value = numero_campo_bm(value) or value
         sel = selectores.get(key)
         if key == "field_dificultad":
             if elegir_dificultad(page, str(value)):
@@ -1527,11 +1902,17 @@ def fill_from_receta(
             return False
         if selector_es_generico(sel):
             sel = None
+        label_dir = LABELS_EDITOR_BM.get(key)
+        if label_dir and rellenar_por_label(
+            page, label_dir, value, excluir=r"título de la sección|meta"
+        ):
+            print(f"  ✓ {key} (label BM)")
+            return True
         if sel and _fill_locator(page, sel, value):
             print(f"  ✓ {key}")
             return True
         patron = ETIQUETAS_CAMPO.get(key)
-        if patron and fill_por_etiqueta(page, patron, value):
+        if patron and fill_por_etiqueta(page, patron, value, key=key):
             print(f"  ✓ {key} (por etiqueta)")
             return True
         if sel:
@@ -1583,7 +1964,14 @@ def fill_from_receta(
     resultados["titulo"] = cabecera.get("field_titulo", False)
     resultados["descripcion"] = cabecera.get("field_descripcion", False)
 
-    fill_grupo("tags", [("field_tags", ", ".join(receta.get("categorias") or []))])
+    abrir_grupo("tags", ["field_tags"])
+    cats = receta.get("categorias") or []
+    n_tags = fill_lista_tags(page, [str(c) for c in cats])
+    if n_tags:
+        print(f"  ✓ tags: {n_tags}/{len(cats)}")
+    else:
+        fill("field_tags", ", ".join(str(c) for c in cats))
+    cerrar_editor_componente(page)
 
     ings = receta.get("ingredientes") or []
     abrir_grupo("ingredientes", ["field_ingredientes"])
@@ -1630,14 +2018,19 @@ def fill_from_receta(
 
     if dry_run:
         btn = selectores.get("btn_guardar_borrador")
-        if btn and not selector_es_generico(btn):
+        ambiguo = not btn or selector_es_generico(btn) or str(btn).strip() in (
+            'text="Guardar"',
+            "text=Guardar",
+            'button:has-text("Guardar")',
+        )
+        if btn and not ambiguo:
             try:
                 page.locator(btn).first.click(timeout=5_000)
                 print("Clic en guardar borrador (dry-run).")
             except Exception as e:
                 print(f"No se pudo guardar borrador: {e}")
         else:
-            print("Dry-run: campos rellenados; guarda a mano en el BM si hace falta.")
+            print("Dry-run: cada editor se guardó con su lápiz. No publico.")
         return True
     else:
         fallos_requeridos = [
