@@ -1,3 +1,4 @@
+import email.message
 import importlib.util
 import os
 import tempfile
@@ -15,6 +16,33 @@ def cargar(path, nombre):
     modulo = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(modulo)
     return modulo
+
+
+def docx_con_enlace_foto(dest: Path, url: str, texto: str = "Foto") -> Path:
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    doc = f"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+            xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <w:body>
+    <w:p>
+      <w:r><w:t>([</w:t></w:r>
+      <w:hyperlink r:id="rId5" w:history="1">
+        <w:r><w:t>{texto}</w:t></w:r>
+      </w:hyperlink>
+      <w:r><w:t>])</w:t></w:r>
+    </w:p>
+  </w:body>
+</w:document>"""
+    rels = f"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId5"
+    Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"
+    Target="{url}" TargetMode="External"/>
+</Relationships>"""
+    with zipfile.ZipFile(dest, "w") as zf:
+        zf.writestr("word/document.xml", doc)
+        zf.writestr("word/_rels/document.xml.rels", rels)
+    return dest
 
 
 class CrcRutasTests(unittest.TestCase):
@@ -290,6 +318,38 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             self.assertEqual(extraida.read_bytes()[:8], png[:8])
             self.assertEqual(extraida.suffix, ".png")
 
+    def test_ruta_imagen_baja_enlace_celeste_foto(self):
+        jpeg = b"\xff\xd8\xff\xe0" + b"\x00" * 20
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            crc = root / "crc"
+            (crc / "out" / "media").mkdir(parents=True)
+            docx = docx_con_enlace_foto(
+                root / "Downloads" / "salmon.docx",
+                "https://cdn.ejemplo.cl/salmon.jpg",
+            )
+            bajada = crc / "out" / "media" / "otra" / "portada-enlace.jpg"
+
+            def fake_dl(url, dest_dir, stem="portada-enlace", **_kwargs):
+                dest_dir.mkdir(parents=True, exist_ok=True)
+                out = dest_dir / f"{stem}.jpg"
+                out.write_bytes(jpeg)
+                return out
+
+            with patch.object(self.explorar, "ROOT", root), patch.object(
+                self.explorar, "CRC", crc
+            ), patch.object(self.explorar._RUTAS, "descargar_imagen_url", fake_dl):
+                hallada = self.explorar.ruta_imagen_portada(
+                    {
+                        "id": "otra",
+                        "fuenteWord": str(docx),
+                        "imagenes": [{"rutaLocal": "", "alt": "Filete"}],
+                    }
+                )
+            self.assertIsNotNone(hallada)
+            self.assertEqual(hallada.read_bytes()[:3], b"\xff\xd8\xff")
+            self.assertTrue(hallada.name.startswith("portada-enlace"))
+
     def test_ext_por_magic_y_omitidas_emf(self):
         rutas = self.explorar._RUTAS
         self.assertEqual(rutas.ext_por_magic(b"\xff\xd8\xff\xe0" + b"\x00" * 12), ".jpg")
@@ -322,6 +382,86 @@ class CrcRutasFotoTests(unittest.TestCase):
             nombres = [p.name for p in cands]
             self.assertIn("Salmón a la parrilla con salsa de palta.docx", nombres)
             self.assertTrue(any("Downloads" in str(p) or "Descargas" in str(p) for p in cands))
+
+    def test_extrae_enlace_celeste_foto(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            docx = docx_con_enlace_foto(
+                Path(tmp) / "salmon.docx",
+                "https://cdn.ejemplo.cl/salmon.jpg",
+            )
+            enlaces = self.rutas.extraer_enlaces_docx(docx)
+            textos = [e["texto"] for e in enlaces]
+            self.assertIn("Foto", textos)
+            elegido = self.rutas.elegir_enlace_foto(enlaces)
+            self.assertEqual(elegido["url"], "https://cdn.ejemplo.cl/salmon.jpg")
+            self.assertEqual(elegido["texto"], "Foto")
+
+    def test_elige_foto_y_no_otro_hipervinculo(self):
+        enlaces = [
+            {"texto": "Ingredientes", "url": "https://ejemplo.cl/ings"},
+            {"texto": "Foto", "url": "https://cdn.ejemplo.cl/portada.png"},
+        ]
+        self.assertEqual(
+            self.rutas.elegir_enlace_foto(enlaces)["url"],
+            "https://cdn.ejemplo.cl/portada.png",
+        )
+
+    def test_url_descarga_drive_y_dropbox(self):
+        self.assertEqual(
+            self.rutas.url_descarga_directa(
+                "https://drive.google.com/file/d/ABC123/view?usp=sharing"
+            ),
+            "https://drive.google.com/uc?export=download&id=ABC123",
+        )
+        self.assertIn(
+            "dl=1",
+            self.rutas.url_descarga_directa("https://www.dropbox.com/s/xx/f.jpg?dl=0"),
+        )
+
+    def test_descarga_enlace_foto_a_jpg(self):
+        jpeg = b"\xff\xd8\xff\xe0" + b"\x00" * 20
+
+        class Resp:
+            def __init__(self):
+                self.headers = email.message.EmailMessage()
+                self.headers["Content-Type"] = "image/jpeg"
+
+            def read(self):
+                return jpeg
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp) / "media"
+            with patch.object(self.rutas.urllib.request, "urlopen", return_value=Resp()):
+                out = self.rutas.descargar_imagen_url("https://cdn.ejemplo.cl/x", dest)
+            self.assertIsNotNone(out)
+            self.assertEqual(out.suffix, ".jpg")
+            self.assertEqual(out.read_bytes()[:3], b"\xff\xd8\xff")
+
+    def test_asegurar_foto_desde_word_con_enlace(self):
+        jpeg = b"\xff\xd8\xff\xe0" + b"\x00" * 20
+        with tempfile.TemporaryDirectory() as tmp:
+            docx = docx_con_enlace_foto(
+                Path(tmp) / "receta.docx",
+                "https://cdn.ejemplo.cl/salmon.jpg",
+            )
+            dest = Path(tmp) / "out"
+            with patch.object(
+                self.rutas,
+                "descargar_imagen_url",
+                return_value=dest / "portada-enlace.jpg",
+            ) as mock_dl:
+                (dest / "portada-enlace.jpg").parent.mkdir(parents=True, exist_ok=True)
+                (dest / "portada-enlace.jpg").write_bytes(jpeg)
+                path, url = self.rutas.asegurar_foto_desde_enlace(docx, dest, {})
+            self.assertEqual(url, "https://cdn.ejemplo.cl/salmon.jpg")
+            self.assertEqual(path.name, "portada-enlace.jpg")
+            mock_dl.assert_called()
 
 
 if __name__ == "__main__":

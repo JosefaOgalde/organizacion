@@ -192,6 +192,49 @@ class ParseRecetaWordTests(unittest.TestCase):
             self.assertEqual(guardadas[0].read_bytes()[:8], png[:8])
             self.assertTrue(any("emf" in o for o in omitidas))
 
+    def test_adjuntar_foto_usa_enlace_celeste(self):
+        jpeg = b"\xff\xd8\xff\xe0" + b"\x00" * 20
+        receta = {
+            "id": "salmon",
+            "imagenes": [{"rutaLocal": "", "alt": "Filete de salmón."}],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            docx = root / "receta.docx"
+            doc = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+            xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <w:body>
+    <w:p>
+      <w:hyperlink r:id="rId5"><w:r><w:t>Foto</w:t></w:r></w:hyperlink>
+    </w:p>
+  </w:body>
+</w:document>"""
+            rels = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId5"
+    Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"
+    Target="https://cdn.ejemplo.cl/salmon.jpg" TargetMode="External"/>
+</Relationships>"""
+            with zipfile.ZipFile(docx, "w") as zf:
+                zf.writestr("word/document.xml", doc)
+                zf.writestr("word/_rels/document.xml.rels", rels)
+            media = root / "media"
+
+            def fake_dl(url, dest_dir, stem="portada-enlace", **_kwargs):
+                dest_dir.mkdir(parents=True, exist_ok=True)
+                out = dest_dir / f"{stem}.jpg"
+                out.write_bytes(jpeg)
+                return out
+
+            with patch.object(self.modulo, "ROOT", root), patch.object(
+                self.modulo._RUTAS, "descargar_imagen_url", fake_dl
+            ):
+                self.modulo.adjuntar_foto_portada(receta, docx, media)
+            self.assertTrue(receta["imagenes"][0]["rutaLocal"].endswith("portada-enlace.jpg"))
+            self.assertEqual(receta["imagenes"][0]["urlFuente"], "https://cdn.ejemplo.cl/salmon.jpg")
+            self.assertEqual(receta["imagenes"][0]["textoEnlace"], "Foto")
+
 
 if __name__ == "__main__":
     unittest.main()

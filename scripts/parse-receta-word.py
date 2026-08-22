@@ -45,6 +45,62 @@ def extraer_imagenes_docx(
     return _RUTAS.extraer_imagenes_docx(path, dest_dir, omitidas)
 
 
+def extraer_enlaces_docx(path: Path) -> list[dict]:
+    return _RUTAS.extraer_enlaces_docx(path)
+
+
+def adjuntar_foto_portada(receta: dict, src: Path, media_dir: Path) -> None:
+    """Prioriza el enlace celeste «Foto» del Word; si no, word/media embebido."""
+    alt = ""
+    for im in receta.get("imagenes") or []:
+        if im.get("alt"):
+            alt = im["alt"]
+            break
+    enlace = _RUTAS.elegir_enlace_foto(extraer_enlaces_docx(src))
+    url = (enlace or {}).get("url") or ""
+    guardada = None
+    if url:
+        print(f"enlace Foto: {url}")
+        guardada = _RUTAS.descargar_imagen_url(url, media_dir)
+        if guardada:
+            print(f"imagenes: 1 (enlace Foto → {guardada.name})")
+    if not guardada:
+        omitidas: list[str] = []
+        embebidas = extraer_imagenes_docx(src, media_dir, omitidas)
+        if embebidas:
+            guardada = embebidas[0]
+            print(f"imagenes: {len(embebidas)}")
+        elif omitidas:
+            print("word/media omitidas:", ", ".join(omitidas))
+    if guardada:
+        try:
+            rel = str(guardada.relative_to(ROOT))
+        except ValueError:
+            rel = str(guardada)
+        receta["imagenes"] = [
+            {
+                "rutaLocal": rel,
+                "urlFuente": url,
+                "alt": alt,
+                "rol": "portada",
+                "textoEnlace": (enlace or {}).get("texto") or "",
+            }
+        ]
+        return
+    if url:
+        receta["imagenes"] = [
+            {
+                "rutaLocal": "",
+                "urlFuente": url,
+                "alt": alt,
+                "rol": "portada",
+                "textoEnlace": (enlace or {}).get("texto") or "Foto",
+                "nota": "Enlace Foto del Word; no se pudo descargar aún",
+            }
+        ]
+        print("imagenes: 0 (enlace Foto pendiente de descarga)")
+
+
 def texto_desde_docx(path: Path) -> str:
     with zipfile.ZipFile(path) as zf:
         xml = zf.read("word/document.xml")
@@ -501,23 +557,7 @@ def main() -> int:
     receta = construir_receta(texto, rel)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     if src.suffix.lower() == ".docx":
-        media_dir = OUT_DIR / "media" / receta["id"]
-        guardadas = extraer_imagenes_docx(src, media_dir)
-        if guardadas:
-            alt = ""
-            for im in receta.get("imagenes") or []:
-                if im.get("alt"):
-                    alt = im["alt"]
-                    break
-            receta["imagenes"] = [
-                {
-                    "rutaLocal": str(p.relative_to(ROOT)),
-                    "alt": alt,
-                    "rol": "portada" if i == 0 else "otra",
-                }
-                for i, p in enumerate(guardadas)
-            ]
-            print(f"imagenes: {len(guardadas)}")
+        adjuntar_foto_portada(receta, src, OUT_DIR / "media" / receta["id"])
 
     out = OUT_DIR / f"{receta['id']}.json"
     raw_out = OUT_DIR / f"{receta['id']}.raw.txt"

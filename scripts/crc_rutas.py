@@ -3,8 +3,13 @@
 from __future__ import annotations
 
 import os
+import re
+import urllib.error
+import urllib.request
+import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
+from urllib.parse import urlparse, parse_qs
 
 EXT_RASTER_BM = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"}
 
@@ -158,3 +163,194 @@ def candidatos_docx_fuente(receta: dict, root: Path, crc: Path) -> list[Path]:
         seen.add(clave)
         unicos.append(p)
     return unicos
+
+
+W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+R_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+REL_PKG = "http://schemas.openxmlformats.org/package/2006/relationships"
+REL_HYPERLINK = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"
+)
+REL_IMAGE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+
+
+def url_http(url: str) -> bool:
+    return (url or "").strip().lower().startswith(("http://", "https://"))
+
+
+def url_descarga_directa(url: str) -> str:
+    """Reescribe Drive/Dropbox a un GET que suela devolver el archivo."""
+    u = (url or "").strip()
+    if not u:
+        return u
+    m = re.search(r"drive\.google\.com/file/d/([^/]+)", u)
+    if m:
+        return f"https://drive.google.com/uc?export=download&id={m.group(1)}"
+    parsed = urlparse(u)
+    if "drive.google.com" in parsed.netloc:
+        ids = parse_qs(parsed.query).get("id") or []
+        if ids:
+            return f"https://drive.google.com/uc?export=download&id={ids[0]}"
+    if "dropbox.com" in parsed.netloc:
+        if "dl=0" in u:
+            return u.replace("dl=0", "dl=1")
+        sep = "&" if parsed.query else "?"
+        return u + sep + "dl=1"
+    return u
+
+
+def elegir_enlace_foto(enlaces: list[dict]) -> dict | None:
+    """El enlace celeste «Foto» del Word Jumbo; si no, la primera URL de imagen."""
+    if not enlaces:
+        return None
+    for e in enlaces:
+        if re.search(r"foto", (e.get("texto") or ""), re.I):
+            return e
+    for e in enlaces:
+        path = urlparse(e.get("url") or "").path.lower()
+        if any(path.endswith(ext) for ext in EXT_RASTER_BM):
+            return e
+    return enlaces[0]
+
+
+def extraer_enlaces_docx(path: Path) -> list[dict]:
+    """URLs del .docx: w:hyperlink (texto Foto), campos HYPERLINK e imágenes externas."""
+    try:
+        with zipfile.ZipFile(path) as zf:
+            doc = ET.fromstring(zf.read("word/document.xml"))
+            rels_map: dict[str, dict[str, str]] = {}
+            rels_name = "word/_rels/document.xml.rels"
+            if rels_name in zf.namelist():
+                rels = ET.fromstring(zf.read(rels_name))
+                for rel in rels:
+                    rid = rel.get("Id")
+                    if not rid:
+                        continue
+                    rels_map[rid] = {
+                        "target": rel.get("Target") or "",
+                        "type": rel.get("Type") or "",
+                        "mode": (rel.get("TargetMode") or "").lower(),
+                    }
+    except Exception:
+        return []
+
+    enlaces: list[dict] = []
+    w = f"{{{W_NS}}}"
+    r = f"{{{R_NS}}}"
+    for h in doc.findall(f".//{w}hyperlink"):
+        rid = h.get(f"{r}id")
+        textos = [t.text for t in h.findall(f".//{w}t") if t.text]
+        texto = "".join(textos).strip()
+        url = (rels_map.get(rid or "") or {}).get("target") or ""
+        if url_http(url):
+            enlaces.append({"texto": texto, "url": url, "origen": "hyperlink"})
+    for instr in doc.findall(f".//{w}instrText"):
+        raw = instr.text or ""
+        m = re.search(r'HYPERLINK\s+"([^"]+)"', raw, re.I)
+        if m and url_http(m.group(1)):
+            enlaces.append({"texto": "", "url": m.group(1).strip(), "origen": "campo"})
+    for info in rels_map.values():
+        url = info.get("target") or ""
+        tipo = info.get("type") or ""
+        if not url_http(url):
+            continue
+        if REL_HYPERLINK in tipo or (
+            REL_IMAGE in tipo and info.get("mode") == "external"
+        ):
+            if not any(e["url"] == url for e in enlaces):
+                enlaces.append({"texto": "", "url": url, "origen": "rel-externo"})
+    return enlaces
+
+
+def _primera_og_image(html: bytes) -> str | None:
+    text = html.decode("utf-8", errors="ignore")
+    m = re.search(
+        r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)',
+        text,
+        re.I,
+    )
+    if m:
+        return m.group(1).strip()
+    m = re.search(
+        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+        text,
+        re.I,
+    )
+    return m.group(1).strip() if m else None
+
+
+def descargar_imagen_url(
+    url: str, dest_dir: Path, stem: str = "portada-enlace", *, _desde_html: bool = False
+) -> Path | None:
+    if not url_http(url):
+        return None
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    directa = url_descarga_directa(url)
+    req = urllib.request.Request(
+        directa,
+        headers={
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            ),
+            "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            data = resp.read()
+            ctype = ""
+            headers = getattr(resp, "headers", None)
+            if headers is not None and hasattr(headers, "get_content_type"):
+                ctype = headers.get_content_type() or ""
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError):
+        return None
+    ext = ext_por_magic(data)
+    if not ext and ctype.startswith("image/"):
+        ext = {
+            "image/jpeg": ".jpg",
+            "image/jpg": ".jpg",
+            "image/png": ".png",
+            "image/gif": ".gif",
+            "image/webp": ".webp",
+            "image/bmp": ".bmp",
+        }.get(ctype)
+    if ext in EXT_RASTER_BM:
+        out = dest_dir / f"{stem}{ext}"
+        out.write_bytes(data)
+        return out
+    if not _desde_html and (
+        (ctype or "").startswith("text/html") or data.lstrip()[:15].lower().startswith(b"<!doctype html")
+        or data.lstrip()[:6].lower().startswith(b"<html")
+    ):
+        og = _primera_og_image(data)
+        if og and og != url:
+            return descargar_imagen_url(og, dest_dir, stem, _desde_html=True)
+    return None
+
+
+def asegurar_foto_desde_enlace(
+    docx: Path | None, dest_dir: Path, receta: dict | None = None
+) -> tuple[Path | None, str | None]:
+    """Baja el enlace Foto del Word (o urlFuente del JSON). Devuelve (archivo, url)."""
+    candidatos: list[str] = []
+    if receta:
+        for im in receta.get("imagenes") or []:
+            u = (im.get("urlFuente") or im.get("url") or "").strip()
+            if u:
+                candidatos.append(u)
+    if docx and docx.exists():
+        enlace = elegir_enlace_foto(extraer_enlaces_docx(docx))
+        if enlace and enlace.get("url"):
+            candidatos.insert(0, enlace["url"])
+    vistos: set[str] = set()
+    ultima: str | None = None
+    for url in candidatos:
+        if url in vistos or not url_http(url):
+            continue
+        vistos.add(url)
+        ultima = url
+        path = descargar_imagen_url(url, dest_dir)
+        if path:
+            return path, url
+    return None, ultima

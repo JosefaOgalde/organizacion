@@ -1520,12 +1520,16 @@ def ruta_imagen_portada(receta: dict) -> Path | None:
             p = ROOT / p
         if p.exists() and p.is_file():
             return p
+    dest = CRC / "out" / "media" / (receta.get("id") or "portada")
+    docx = resolver_docx_fuente(receta)
+    bajada, url = _RUTAS.asegurar_foto_desde_enlace(docx, dest, receta)
+    if bajada:
+        print(f"  · foto del enlace Foto → {bajada.name}" + (f" ({url})" if url else ""))
+        return bajada
     hallada = _buscar_foto_en_carpetas(receta)
     if hallada:
         return hallada
-    docx = resolver_docx_fuente(receta)
     if docx:
-        dest = CRC / "out" / "media" / (receta.get("id") or "portada")
         guardadas = extraer_imagenes_docx(docx, dest)
         if guardadas:
             return guardadas[0]
@@ -1537,17 +1541,28 @@ def _log_sin_foto(receta: dict) -> None:
     fuente = receta.get("fuenteWord") or "(sin fuenteWord en el JSON)"
     print(f"    fuenteWord: {fuente}")
     docx = resolver_docx_fuente(receta)
-    if not docx:
+    urls = [
+        (im.get("urlFuente") or im.get("url") or "").strip()
+        for im in (receta.get("imagenes") or [])
+        if (im.get("urlFuente") or im.get("url") or "").strip()
+    ]
+    if docx:
+        print(f"    Word hallado: {docx}")
+        enlace = _RUTAS.elegir_enlace_foto(_RUTAS.extraer_enlaces_docx(docx))
+        if enlace and enlace.get("url"):
+            urls.insert(0, enlace["url"])
+        omitidas: list[str] = []
+        dest = CRC / "out" / "media" / (receta.get("id") or "portada")
+        extraer_imagenes_docx(docx, dest, omitidas)
+        if omitidas:
+            print(f"    word/media omitidas: {', '.join(omitidas)}")
+    elif not urls:
         print("    no hallé el .docx (Downloads / inbox / --force)")
-        return
-    print(f"    Word hallado: {docx}")
-    omitidas: list[str] = []
-    dest = CRC / "out" / "media" / (receta.get("id") or "portada")
-    extraer_imagenes_docx(docx, dest, omitidas)
-    if omitidas:
-        print(f"    word/media omitidas: {', '.join(omitidas)}")
-    else:
-        print("    word/media sin jpg/png (foto enlazada o solo alt en el Word)")
+    if urls:
+        print(f"    enlace Foto: {urls[0]}")
+        print("    no pude bajar esa URL (¿pide login o no es una imagen?)")
+    elif docx:
+        print("    el Word no tiene el enlace celeste «Foto»")
 
 
 JS_MARCAR_FILE_IMAGEN = """() => {
