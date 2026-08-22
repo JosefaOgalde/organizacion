@@ -1609,11 +1609,168 @@ JS_CLICK_DROPZONE_IMAGEN = """() => {
 }"""
 
 
-def subir_imagen_portada(page, receta: dict) -> bool:
-    ruta = ruta_imagen_portada(receta)
-    if not ruta:
-        _log_sin_foto(receta)
+JS_HAY_MODAL_MEDIA = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const visibles = (el) => {
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 8 && r.height > 8;
+  };
+  const botones = [...document.querySelectorAll('button, [role="button"]')].filter(visibles);
+  const hayConfirmar = botones.some((el) => /^Confirmar$/i.test(clean(el.innerText || el.getAttribute('aria-label') || '')));
+  const txt = clean(document.body.innerText || '');
+  return hayConfirmar && /Mi Equipo|portada-enlace|Selecciona|imagen/i.test(txt);
+}"""
+
+
+JS_ACTIVAR_TAB_MI_EQUIPO = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const tabs = [...document.querySelectorAll('button, [role="tab"], a, div')];
+  const tab = tabs.find((el) => {
+    const t = clean(el.innerText || '');
+    return /^Mi Equipo$/i.test(t) && t.length < 40;
+  });
+  if (!tab) return false;
+  tab.click();
+  return true;
+}"""
+
+
+JS_SELECCIONAR_THUMB_IMAGEN = """(nombre) => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const wanted = clean(nombre || '').toLowerCase();
+  const stem = wanted.replace(/\\.[a-z0-9]+$/, '');
+  const visibles = (el) => {
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 8 && r.height > 8;
+  };
+  const roots = [...document.querySelectorAll('[role="dialog"], [class*="modal"], [class*="Modal"], [class*="overlay"], [class*="picker"], [class*="Media"]')];
+  const scope = roots.find((el) => /Confirmar|Mi Equipo/i.test(el.innerText || '')) || document.body;
+  const nodos = [...scope.querySelectorAll('img, figure, button, [role="button"], [class*="thumb"], [class*="card"], [class*="item"], div, span, p')];
+  let hit = nodos.find((el) => {
+    if (!visibles(el)) return false;
+    const t = clean(
+      el.innerText || el.getAttribute('alt') || el.getAttribute('title') || el.getAttribute('aria-label') || ''
+    ).toLowerCase();
+    return t && (t.includes(wanted) || (stem && t.includes(stem)));
+  });
+  if (!hit) hit = [...scope.querySelectorAll('img')].find(visibles) || null;
+  if (!hit) return false;
+  hit.click();
+  return true;
+}"""
+
+
+JS_CLICK_CONFIRMAR_IMAGEN = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const visibles = (el) => {
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 8 && r.height > 8 && !el.disabled;
+  };
+  const roots = [...document.querySelectorAll('[role="dialog"], [class*="modal"], [class*="Modal"], [class*="overlay"], [class*="picker"]')];
+  const scope = roots.find((el) => /Confirmar/i.test(el.innerText || '')) || document.body;
+  const botones = [...scope.querySelectorAll('button, [role="button"], a')].filter(visibles);
+  const btn = botones.find((el) => /^Confirmar$/i.test(clean(el.innerText || el.getAttribute('aria-label') || '')));
+  if (!btn) return false;
+  btn.click();
+  return true;
+}"""
+
+
+def _hay_modal_media(page) -> bool:
+    try:
+        return page.evaluate(JS_HAY_MODAL_MEDIA) is True
+    except Exception:
         return False
+
+
+def _esperar_modal_media(page, intentos: int = 10) -> bool:
+    for _ in range(intentos):
+        if _hay_modal_media(page):
+            return True
+        try:
+            page.wait_for_timeout(250)
+        except Exception:
+            break
+    return _hay_modal_media(page)
+
+
+def _clic_confirmar_playwright(page) -> bool:
+    get_by_role = getattr(page, "get_by_role", None)
+    if get_by_role:
+        try:
+            loc = get_by_role("button", name=re.compile(r"^Confirmar$", re.I))
+            if hasattr(loc, "count") and loc.count():
+                loc.last.click(timeout=2_500)
+                return True
+        except Exception:
+            pass
+    try:
+        loc = page.locator("button:has-text('Confirmar')")
+        n = loc.count() if hasattr(loc, "count") else 0
+        if n:
+            loc.last.click(timeout=2_500)
+            return True
+    except Exception:
+        pass
+    return False
+
+
+def confirmar_imagen_en_modal(page, nombre: str) -> bool:
+    """En el picker de BM: pestaña Mi Equipo → miniatura → Confirmar."""
+    if not _esperar_modal_media(page):
+        return True
+    try:
+        page.evaluate(JS_ACTIVAR_TAB_MI_EQUIPO)
+        page.wait_for_timeout(200)
+    except Exception:
+        pass
+    try:
+        if page.evaluate(JS_SELECCIONAR_THUMB_IMAGEN, nombre) is True:
+            print(f"  · seleccioné {nombre}")
+    except Exception:
+        pass
+    get_by_text = getattr(page, "get_by_text", None)
+    if get_by_text:
+        try:
+            loc = get_by_text(nombre, exact=False)
+            if hasattr(loc, "count") and loc.count():
+                loc.last.click(timeout=2_000)
+                print(f"  · seleccioné {nombre}")
+        except Exception:
+            pass
+    try:
+        page.wait_for_timeout(300)
+    except Exception:
+        pass
+    for _ in range(4):
+        try:
+            if page.evaluate(JS_CLICK_CONFIRMAR_IMAGEN) is True:
+                print("  ✓ Confirmar imagen")
+                page.wait_for_timeout(700)
+                return True
+        except Exception:
+            pass
+        if _clic_confirmar_playwright(page):
+            print("  ✓ Confirmar imagen")
+            try:
+                page.wait_for_timeout(700)
+            except Exception:
+                pass
+            return True
+        try:
+            page.wait_for_timeout(250)
+        except Exception:
+            break
+    if _hay_modal_media(page):
+        print("  ✗ modal de imagen: no pude pulsar Confirmar")
+        return False
+    return True
+
+
+def _aplicar_archivo_imagen(page, ruta: Path) -> bool:
     try:
         n = page.evaluate(JS_MARCAR_FILE_IMAGEN)
     except Exception:
@@ -1624,7 +1781,6 @@ def subir_imagen_portada(page, receta: dict) -> bool:
             setter = getattr(loc.first if hasattr(loc, "first") else loc, "set_input_files", None)
             if setter:
                 setter(str(ruta))
-                print(f"  ✓ imagen portada ({ruta.name})")
                 return True
         except Exception as e:
             print(f"  · input file: {e}")
@@ -1635,7 +1791,6 @@ def subir_imagen_portada(page, receta: dict) -> bool:
                 page.evaluate(JS_CLICK_DROPZONE_IMAGEN)
             chooser = fc_info.value
             chooser.set_files(str(ruta))
-            print(f"  ✓ imagen portada ({ruta.name}, file chooser)")
             return True
         except Exception:
             pass
@@ -1643,13 +1798,25 @@ def subir_imagen_portada(page, receta: dict) -> bool:
         loc = page.locator("input[type='file']")
         if loc.count():
             loc.first.set_input_files(str(ruta))
-            print(f"  ✓ imagen portada ({ruta.name})")
             return True
     except Exception as e:
         print(f"  ✗ imagen portada: {e}")
         return False
-    print(f"  ✗ imagen portada: sin input file ({ruta.name})")
     return False
+
+
+def subir_imagen_portada(page, receta: dict) -> bool:
+    ruta = ruta_imagen_portada(receta)
+    if not ruta:
+        _log_sin_foto(receta)
+        return False
+    if not _aplicar_archivo_imagen(page, ruta):
+        print(f"  ✗ imagen portada: sin input file ({ruta.name})")
+        return False
+    if not confirmar_imagen_en_modal(page, ruta.name):
+        return False
+    print(f"  ✓ imagen portada ({ruta.name})")
+    return True
 
 
 BOTONES_AGREGAR = (

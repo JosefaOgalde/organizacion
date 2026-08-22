@@ -318,6 +318,43 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             self.assertEqual(extraida.read_bytes()[:8], png[:8])
             self.assertEqual(extraida.suffix, ".png")
 
+    def test_js_modal_imagen_pide_confirmar(self):
+        js = self.explorar.JS_CLICK_CONFIRMAR_IMAGEN
+        self.assertIn("Confirmar", js)
+        self.assertIn("Mi Equipo", self.explorar.JS_ACTIVAR_TAB_MI_EQUIPO)
+        self.assertIn("portada-enlace", self.explorar.JS_HAY_MODAL_MEDIA)
+
+    def test_confirmar_imagen_selecciona_y_confirma(self):
+        class Pagina:
+            def __init__(self):
+                self.pasos = []
+
+            def evaluate(self, script, *args):
+                texto = str(script)
+                if "hayConfirmar" in texto or "Mi Equipo|portada-enlace" in texto:
+                    self.pasos.append("modal")
+                    return True
+                if "Mi Equipo" in texto and "tab" in texto.lower():
+                    self.pasos.append("tab")
+                    return True
+                if "thumb" in texto.lower() or "stem" in texto:
+                    self.pasos.append(("thumb", args[0] if args else None))
+                    return True
+                if "Confirmar" in texto and "btn.click" in texto:
+                    self.pasos.append("confirmar")
+                    return True
+                return False
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        pagina = Pagina()
+        self.assertTrue(
+            self.explorar.confirmar_imagen_en_modal(pagina, "portada-enlace.png")
+        )
+        self.assertIn("confirmar", pagina.pasos)
+        self.assertIn(("thumb", "portada-enlace.png"), pagina.pasos)
+
     def test_ruta_imagen_baja_enlace_celeste_foto(self):
         jpeg = b"\xff\xd8\xff\xe0" + b"\x00" * 20
         with tempfile.TemporaryDirectory() as tmp:
