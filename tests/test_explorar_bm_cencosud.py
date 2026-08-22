@@ -1,7 +1,12 @@
 import contextlib
+import html as html_lib
 import importlib.util
+import inspect
 import io
 import json
+import re
+import shutil
+import subprocess
 import sys
 import tempfile
 import types
@@ -944,6 +949,131 @@ class ExplorarBmTests(unittest.TestCase):
                 return None
 
         self.assertTrue(self.modulo.escribir_tag_entre_labels(Pagina(), 0, "salmon"))
+
+    def test_rellena_tag_del_item_abierto_no_siempre_el_primero(self):
+        src = inspect.getsource(self.modulo.rellenar_items_formulario)
+        self.assertIn("escribir_tag_entre_labels(page, i, valor)", src)
+        self.assertNotIn("escribir_tag_entre_labels(page, 0, valor)", src)
+        self.assertIn("crcCajasDelItem", self.modulo.JS_FOCO_CAJA_TAG)
+        self.assertIn("crcCajasDelItem", self.modulo.JS_LEER_CAJA_TAG)
+        self.assertIn("crcCajasDelItem", self.modulo.JS_MARCAR_TAGS_POR_ITEM)
+        self.assertIn("exigir_lienzo", inspect.signature(self.modulo.escribir_valor).parameters)
+
+        class LocTag:
+            def __init__(self):
+                self.val = ""
+
+            def fill(self, v, **_k):
+                self.val = v
+
+            def click(self, **_k):
+                return None
+
+            def input_value(self):
+                return self.val
+
+            def bounding_box(self):
+                return {"x": 120, "y": 200, "width": 280, "height": 36}
+
+            def get_attribute(self, _n):
+                return None
+
+            def evaluate(self, *_a, **_k):
+                return False
+
+        loc = LocTag()
+        self.assertTrue(
+            self.modulo.escribir_valor(object(), loc, "salmon", exigir_lienzo=False)
+        )
+        self.assertEqual(loc.val, "salmon")
+
+        vistos = []
+
+        class PaginaIndice:
+            def evaluate(self, script, arg=None):
+                if isinstance(arg, dict) and "indice" in arg:
+                    vistos.append(arg["indice"])
+                    return {"ok": True, "wrote": arg.get("valor"), "tag": "input"}
+                texto = str(script)
+                if "buscado" in texto:
+                    return False
+                if "crcInputEnBanda" in texto or "crcCajasDelItem" in texto:
+                    return {"ok": True, "value": arg if isinstance(arg, str) else "paltas"}
+                return {"ok": False, "value": ""}
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        self.assertTrue(self.modulo.escribir_tag_entre_labels(PaginaIndice(), 2, "paltas"))
+        self.assertEqual(vistos, [2])
+
+    def test_js_completa_tag_de_cada_item_y_deja_link_vacio(self):
+        """El primer input de cada acordeón abierto recibe el tag; Link queda vacío."""
+        chrome = (
+            shutil.which("google-chrome")
+            or shutil.which("google-chrome-stable")
+            or shutil.which("chromium")
+        )
+        if not chrome:
+            self.skipTest("chrome no está en PATH")
+        html = f"""<!doctype html>
+<html><body>
+<section style="margin-left:80px;width:520px;font-family:sans-serif">
+  <h2>Formulario Tags</h2>
+  <article>
+    <div>Formulario Ítem 1</div>
+    <label>Tag *</label><input id="t0" placeholder="Dale un valor">
+    <label>Link</label><input id="l0" placeholder="Dale un valor">
+  </article>
+  <article>
+    <div>Formulario Ítem 2</div>
+    <label>Tag *</label><input id="t1" placeholder="Dale un valor">
+    <label>Link</label><input id="l1" placeholder="Dale un valor">
+  </article>
+</section>
+<script>
+const foco = {self.modulo.JS_FOCO_CAJA_TAG};
+const leer = {self.modulo.JS_LEER_CAJA_TAG};
+foco({{indice: 0, valor: "salmon"}});
+foco({{indice: 1, valor: "paltas"}});
+document.body.dataset.out = JSON.stringify({{
+  t0: document.getElementById("t0").value,
+  l0: document.getElementById("l0").value,
+  t1: document.getElementById("t1").value,
+  l1: document.getElementById("l1").value,
+  r0: leer(0),
+  r1: leer(1)
+}});
+</script>
+</body></html>"""
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "tags.html"
+            path.write_text(html, encoding="utf-8")
+            proc = subprocess.run(
+                [
+                    chrome,
+                    "--headless=new",
+                    "--disable-gpu",
+                    "--no-sandbox",
+                    "--virtual-time-budget=2000",
+                    "--dump-dom",
+                    path.as_uri(),
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+        self.assertEqual(proc.returncode, 0, proc.stderr[-400:])
+        match = re.search(r'data-out="([^"]+)"', proc.stdout)
+        self.assertIsNotNone(match, proc.stdout[-800:])
+        out = json.loads(html_lib.unescape(match.group(1)))
+        self.assertEqual(out["t0"], "salmon")
+        self.assertEqual(out["t1"], "paltas")
+        self.assertEqual(out["l0"], "")
+        self.assertEqual(out["l1"], "")
+        self.assertEqual(out["r0"]["value"], "salmon")
+        self.assertEqual(out["r1"]["value"], "paltas")
 
     def test_despliega_formulario_item_antes_de_tag(self):
         self.assertIn("crcCabezalesItem", self.modulo.JS_EXPANDIR_ITEM_FORMULARIO)
