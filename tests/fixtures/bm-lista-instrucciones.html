@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Edición de Lista de Instrucciones</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; }
+    .editor { margin-left: 280px; width: 640px; }
+    .seccion { border: 1px solid #ccc; padding: 12px; }
+    .item { margin: 12px 0; padding: 8px; border: 1px dashed #fa0; }
+    label { display: block; font-size: 14px; height: 20px; width: 180px; }
+    input, textarea { display: block; width: 500px; margin-top: 4px; }
+    .cabezal { cursor: pointer; font-weight: 600; padding: 8px 0; }
+    .error { color: #b45309; }
+  </style>
+</head>
+<body>
+  <h1>Edición de Lista de Instrucciones</h1>
+  <div class="editor">
+    <p>Formulario list_Instructions</p>
+    <label><input type="checkbox" checked /> Activo</label>
+    <div class="seccion">
+      <div id="head-sec" class="cabezal" aria-expanded="true">Formulario Ítem 1</div>
+      <div id="body-sec">
+        <label for="titulo-lista">Título *</label>
+        <input id="titulo-lista" placeholder="Dale un valor" />
+        <p class="error">El dato es requerido</p>
+        <p>Lista de instrucciones</p>
+        <div class="item">
+          <div id="head-1" class="cabezal" aria-expanded="false">Formulario Ítem 1</div>
+          <div id="body-1" hidden>
+            <label for="paso-0">Instrucción *</label>
+            <textarea id="paso-0" placeholder="Dale un valor"></textarea>
+          </div>
+        </div>
+        <button type="button" id="add-interno">+ Agregar nuevo ítem</button>
+      </div>
+    </div>
+    <button type="button" id="add-seccion">+ Agregar nuevo ítem</button>
+  </div>
+  <script>
+    let nPasos = 1;
+    document.getElementById("head-1").addEventListener("click", function () {
+      const abierto = this.getAttribute("aria-expanded") === "true";
+      this.setAttribute("aria-expanded", abierto ? "false" : "true");
+      document.getElementById("body-1").hidden = abierto;
+    });
+    document.getElementById("add-interno").addEventListener("click", function () {
+      const idx = nPasos;
+      nPasos += 1;
+      const wrap = document.createElement("div");
+      wrap.className = "item";
+      wrap.innerHTML =
+        '<div class="cabezal" aria-expanded="true">Formulario Ítem ' + (idx + 1) + "</div>" +
+        '<label for="paso-' + idx + '">Instrucción *</label>' +
+        '<textarea id="paso-' + idx + '" placeholder="Dale un valor"></textarea>';
+      this.parentElement.insertBefore(wrap, this);
+    });
+  </script>
+</body>
+</html>

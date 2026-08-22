@@ -270,6 +270,9 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIn("crcExpandirTodosItems", self.explorar.JS_EXPANDIR_TODOS_ITEMS)
         self.assertIn("tienes un borrador", self.explorar.JS_RESOLVER_BORRADOR.lower())
         self.assertIn("No pude escribir los ingredientes", src)
+        self.assertIn("Ya estoy en Lista de Instrucciones", src)
+        self.assertIn("No pude escribir las instrucciones", src)
+        self.assertIn("crcInputsInstruccionVisibles", self.explorar.JS_FOCO_INSTRUCCION)
         self.assertIn("interno", self.explorar.JS_CLICK_AGREGAR_INGREDIENTE)
         self.assertIn("Agregar nuevo ítem", " ".join(self.explorar.BOTONES_AGREGAR))
 
@@ -282,6 +285,38 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         pagina = Pagina()
         self.assertEqual(self.explorar.editor_actual(pagina), "ingredientes")
         self.assertTrue(self.explorar.puede_rellenar_editor(pagina, "ingredientes"))
+
+    def test_rellena_instrucciones_si_ya_estoy_en_la_lista(self):
+        self.assertEqual(
+            self.explorar.partir_paso(
+                "Sazona el salmón: Seca los filetes de pescado con papel absorbente."
+            ),
+            (
+                "Sazona el salmón",
+                "Seca los filetes de pescado con papel absorbente.",
+            ),
+        )
+        self.assertEqual(
+            self.explorar.titulo_lista_instrucciones(),
+            "Paso a paso",
+        )
+        items = self.explorar.items_instrucciones(
+            [{"orden": 1, "texto": "Sazona el salmón: Seca los filetes."}],
+            ["Cocina el salmón por el lado de la piel."],
+        )
+        self.assertEqual(len(items), 2)
+        self.assertTrue(items[1]["texto"].startswith("Consejo:"))
+
+        class Pagina:
+            def evaluate(self, script, *_args):
+                if "h1,h2,h3" in str(script):
+                    return "Edición de Lista de Instrucciones | Recetas_Jumbo"
+                return ""
+
+        pagina = Pagina()
+        self.assertEqual(self.explorar.editor_actual(pagina), "instrucciones")
+        self.assertTrue(self.explorar.puede_rellenar_editor(pagina, "instrucciones"))
+        self.assertFalse(self.explorar.puede_rellenar_editor(pagina, "ingredientes"))
 
     def test_ingrediente_label_asterisco(self):
         fields = [
@@ -883,6 +918,46 @@ class JsIngredienteExactoTests(unittest.TestCase):
             self.assertEqual(valores, [it["linea"] for it in items])
             titulo = page.evaluate("() => document.getElementById('titulo-seccion').value")
             self.assertEqual(titulo, "Ingredientes")
+            browser.close()
+
+    def test_fill_lista_instrucciones_titulo_y_pasos(self):
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError:
+            self.skipTest("playwright no instalado")
+        html = (
+            Path(__file__).resolve().parent / "fixtures" / "bm-lista-instrucciones.html"
+        )
+        items = [
+            {
+                "orden": 1,
+                "texto": (
+                    "Sazona el salmón: Seca los filetes de pescado con papel "
+                    "absorbente y úntalos con la mitad del aceite de oliva."
+                ),
+            },
+            {
+                "orden": 2,
+                "texto": (
+                    "Prepara la salsa de palta: Muele la pulpa de las paltas "
+                    "con un tenedor hasta obtener una textura cremosa."
+                ),
+            },
+        ]
+        with sync_playwright() as pw:
+            browser = pw.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(html.as_uri())
+            n = self.explorar.fill_lista_acordeones(page, items, "instrucciones")
+            self.assertEqual(n, 2)
+            self.assertEqual(
+                page.evaluate("() => document.getElementById('titulo-lista').value"),
+                "Paso a paso",
+            )
+            valores = page.evaluate(
+                """() => [...document.querySelectorAll('textarea[id^="paso-"]')].map((el) => el.value)"""
+            )
+            self.assertEqual(valores, [it["texto"] for it in items])
             browser.close()
 
 

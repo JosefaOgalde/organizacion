@@ -2509,7 +2509,11 @@ def _editor_por_texto(t: str) -> str | None:
         return "ingredientes"
     if "list_ingredients" in t and "formulario ítem" in t:
         return "ingredientes"
-    if "instrucci" in t and ("paso" in t or "agregar" in t) and "dificultad" not in t:
+    if "list_instructions" in t or (
+        "lista de instrucciones" in t and "formulario ítem" in t
+    ):
+        return "instrucciones"
+    if "instrucci" in t and ("paso" in t or "agregar" in t or "título" in t) and "dificultad" not in t:
         return "instrucciones"
     if ("meta título" in t or "meta titulo" in t or "seo title" in t) and (
         "meta descripción" in t or "meta descripcion" in t or "seo desc" in t
@@ -3604,6 +3608,27 @@ function crcInputsIngredienteVisibles() {
   inputs.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
   return inputs;
 }
+function crcCercaTituloLista(el) {
+  if (!el) return false;
+  const r = el.getBoundingClientRect();
+  return crcDeepAll('label, legend, p, span, strong', document).some((l) => {
+    const t = crcEtiquetaIngrediente(l);
+    if (!/^Título$/i.test(t) && !/^Título de la sección$/i.test(t)) return false;
+    const b = l.getBoundingClientRect();
+    return r.top >= b.top - 8 && r.top < b.bottom + 90;
+  });
+}
+function crcInputsInstruccionVisibles() {
+  const inputs = crcDeepAll('input, textarea, [role="textbox"]', document).filter((el) => {
+    if (!crcEsCajaTexto(el) || crcEsLinkCaja(el)) return false;
+    const tipo = (el.type || 'text').toLowerCase();
+    if (['checkbox', 'radio', 'hidden', 'file'].includes(tipo)) return false;
+    if (crcCercaTituloLista(el) || crcCercaTituloSeccion(el)) return false;
+    return true;
+  });
+  inputs.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  return inputs;
+}
 function crcExpandirTodosItems() {
   let clicks = 0;
   const clickHead = (h) => {
@@ -3629,7 +3654,12 @@ function crcExpandirTodosItems() {
     if (r.left < 40 || r.width < 8 || r.height < 8) continue;
     try { el.click(); clicks += 1; } catch (e) {}
   }
-  return { clicks, heads: crcTodosCabezalesItem().length, cajas: crcInputsIngredienteVisibles().length };
+  return {
+    clicks,
+    heads: crcTodosCabezalesItem().length,
+    cajas: crcInputsIngredienteVisibles().length,
+    inst: crcInputsInstruccionVisibles().length,
+  };
 }"""
 
 JS_MARCAR_TAGS_POR_ITEM = (
@@ -3872,6 +3902,33 @@ JS_CRC_SET_REACT = """function crcSetReact(el, v) {
   el.dispatchEvent(new Event('change', { bubbles: true }));
   return String(el.value != null ? el.value : (el.textContent || ''));
 }"""
+
+JS_CONTAR_INSTRUCCIONES_INTERNAS = (
+    "() => {\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  return crcInputsInstruccionVisibles().length;
+}"""
+)
+
+JS_FOCO_INSTRUCCION = (
+    "(args) => {\n"
+    + JS_CRC_SET_REACT
+    + "\n"
+    + JS_CRC_LABELS_TAG_LINK
+    + """
+  const indice = args.indice;
+  const valor = args.valor == null ? '' : String(args.valor);
+  const cajas = crcInputsInstruccionVisibles();
+  const el = cajas[indice];
+  if (!el) return { ok: false, reason: 'sin-caja', n: cajas.length };
+  if (el.setAttribute) el.setAttribute('data-crc-inst-hit', String(indice));
+  try { el.click(); } catch (e) {}
+  try { el.focus(); } catch (e) {}
+  const wrote = valor ? crcSetReact(el, valor) : '';
+  return { ok: true, wrote, n: cajas.length };
+}"""
+)
 
 JS_FOCO_INGREDIENTE = (
     "(args) => {\n"
@@ -4539,7 +4596,7 @@ def asegurar_n_campos_label(page, patron: str, n: int, *, excluir: str | None = 
     actuales = contar_por_label(page, patron, excluir=excluir)
     intentos = 0
     while actuales < n and intentos < n + 4:
-        es_ing = bool(re.search(r"^Ingrediente\$", patron or ""))
+        es_ing = bool(re.search(r"^Ingrediente\$|Instrucci|Paso|Descripci", patron or ""))
         ok_add = (
             click_agregar_ingrediente_interno(page)
             if es_ing
@@ -5123,6 +5180,36 @@ def texto_pasos(pasos: list[dict]) -> str:
     return "\n".join(f"{p.get('orden')}. {p.get('texto')}" for p in pasos if p.get("texto"))
 
 
+def partir_paso(texto: str) -> tuple[str, str]:
+    """«Sazona el salmón: Seca los filetes…» → título + cuerpo."""
+    crudo = (texto or "").strip()
+    m = re.match(r"^([^:]{3,70}):\s+(.+)$", crudo, re.S)
+    if m:
+        return m.group(1).strip(), m.group(2).strip()
+    return "", crudo
+
+
+def linea_paso(item: dict) -> str:
+    return (item.get("texto") or "").strip()
+
+
+def items_instrucciones(pasos: list[dict], tips: list | None = None) -> list[dict]:
+    """Pasos del Word + consejos al final (misma lista interna)."""
+    out = [p for p in (pasos or []) if linea_paso(p)]
+    for raw in tips or []:
+        tip = str(raw).strip()
+        if not tip:
+            continue
+        if not re.match(r"(?i)^consejo\b", tip):
+            tip = f"Consejo: {tip}"
+        out.append({"orden": len(out) + 1, "texto": tip})
+    return out
+
+
+def titulo_lista_instrucciones(receta: dict | None = None) -> str:
+    return "Paso a paso"
+
+
 def valores_desde_item(item: dict, tipo: str) -> dict[str, str]:
     if tipo == "ingredientes":
         return {
@@ -5525,6 +5612,94 @@ def escribir_ingrediente_asterisco(page, indice: int, valor: str) -> bool:
     )
 
 
+def _contar_instrucciones_internas(page) -> int:
+    for fr in _frames_pagina(page):
+        try:
+            n = int(fr.evaluate(JS_CONTAR_INSTRUCCIONES_INTERNAS) or 0)
+        except Exception:
+            continue
+        if n:
+            return n
+    return 0
+
+
+def asegurar_n_instrucciones(page, n: int) -> int:
+    actuales = _contar_instrucciones_internas(page)
+    if actuales == 0:
+        expandir_todos_items_formulario(page)
+        expandir_item_formulario(page, 0)
+        try:
+            page.wait_for_timeout(400)
+        except Exception:
+            pass
+        actuales = _contar_instrucciones_internas(page)
+        print(f"  · Tras abrir acordeones: {actuales} instrucciones visibles")
+    intentos = 0
+    while actuales < n and intentos < n + 2:
+        if not click_agregar_ingrediente_interno(page):
+            break
+        intentos += 1
+        expandir_todos_items_formulario(page)
+        actuales = _contar_instrucciones_internas(page)
+    return actuales
+
+
+def escribir_instruccion_interna(page, indice: int, valor: str) -> bool:
+    if not valor:
+        return False
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_FOCO_INSTRUCCION, {"indice": indice, "valor": valor})
+        except Exception:
+            out = None
+        if isinstance(out, dict) and _valor_quedo(str(out.get("wrote") or ""), valor):
+            return True
+        try:
+            loc = fr.locator(f'[data-crc-inst-hit="{indice}"]')
+            if hasattr(loc, "count") and loc.count():
+                item = loc.first if hasattr(loc, "first") else loc
+                if escribir_valor(page, item, valor, exigir_lienzo=False) or _tipear_teclado(
+                    page, item, valor
+                ):
+                    return True
+        except Exception:
+            pass
+        get_by_label = getattr(fr, "get_by_label", None)
+        if get_by_label:
+            try:
+                loc = get_by_label(
+                    re.compile(r"^(Instrucci[oó]n|Paso|Descripci[oó]n|Texto)(\s*\*)?$", re.I)
+                )
+                n = loc.count() if hasattr(loc, "count") else 0
+                if n and indice < n:
+                    item = loc.nth(indice)
+                    if escribir_valor(page, item, valor, exigir_lienzo=False) or _tipear_teclado(
+                        page, item, valor
+                    ):
+                        return True
+            except Exception:
+                pass
+    return rellenar_por_label(
+        page,
+        r"^(Instrucci|Paso|Descripción|Texto)\b",
+        valor,
+        nth=indice,
+        excluir=r"título|meta|lista de instrucciones",
+        usar_get_by_label=False,
+    )
+
+
+def rellenar_item_instruccion(page, indice: int, texto: str) -> bool:
+    print(f"  · Despliego Instrucción {indice + 1}…")
+    expandir_item_ingrediente(page, indice) or expandir_item_formulario(page, indice)
+    ok = escribir_instruccion_interna(page, indice, texto)
+    if ok:
+        print(f"  ✓ instrucciones[{indice}] → {texto[:70]}")
+    else:
+        print(f"  ✗ instrucciones[{indice}] (no pude escribir el paso)")
+    return ok
+
+
 def rellenar_item_ingrediente(page, indice: int, item: dict) -> bool:
     """Despliega el ítem interno (Ingrediente*) y escribe la línea del Word."""
     print(f"  · Despliego Ingrediente {indice + 1}…")
@@ -5581,11 +5756,40 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
         if n_lab:
             return n_lab
     else:
-        textos = [(p.get("texto") or "").strip() for p in items if (p.get("texto") or "").strip()]
+        resolver_borrador_editor(page)
+        info = expandir_todos_items_formulario(page)
+        print(
+            f"  · Abro Formulario Ítem (Título* es requerido): "
+            f"cabezales={info.get('heads')} inst={info.get('inst')}"
+        )
+        if not rellenar_por_label(
+            page,
+            r"^Título$",
+            titulo_lista_instrucciones(),
+            nth=0,
+            excluir=r"meta|sección|cabecera|ingrediente",
+        ):
+            rellenar_por_label(
+                page,
+                r"^Título",
+                titulo_lista_instrucciones(),
+                nth=0,
+                excluir=r"meta|sección|cabecera|ingrediente",
+            )
+        print("  · Título de la lista → Paso a paso. Completo las instrucciones internas.")
+        expandir_todos_items_formulario(page)
+        lineas = [linea_paso(it) for it in items if linea_paso(it)]
+        asegurar_n_instrucciones(page, len(lineas))
+        llenados_dir = 0
+        for i, texto in enumerate(lineas):
+            if rellenar_item_instruccion(page, i, texto):
+                llenados_dir += 1
+        if llenados_dir:
+            return llenados_dir
         n_lab = fill_repetidos_por_label(
             page,
             r"^(Instrucci|Paso|Descripción|Texto)\b",
-            textos,
+            lineas,
         )
         if n_lab:
             return n_lab
@@ -5788,6 +5992,17 @@ def fill_from_receta(
         else:
             print("  · No pude escribir los ingredientes. No pulso Volver ni abro otro bloque.")
             return False
+    if editor_actual(page) == "instrucciones":
+        print("  · Ya estoy en Lista de Instrucciones. Escribo los pasos del Word.")
+        inst_abiertos = items_instrucciones(receta.get("pasos") or [], receta.get("tips") or [])
+        n_inst_abierto = fill_lista_acordeones(page, inst_abiertos, "instrucciones")
+        if n_inst_abierto:
+            resultados["pasos"] = True
+            print(f"  ✓ pasos: {n_inst_abierto}/{len(inst_abiertos)} ítems")
+            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+        else:
+            print("  · No pude escribir las instrucciones. No pulso Volver ni abro otro bloque.")
+            return False
     if editor_actual(page) is None and bloque_ya_cargado(page, "cabecera"):
         print("  · Cabecera ya tiene contenido en el lienzo. Sigo con tags e ingredientes.")
         resultados["titulo"] = True
@@ -5865,7 +6080,7 @@ def fill_from_receta(
     else:
         resultados.setdefault("ingredientes", False)
 
-    pasos = receta.get("pasos") or []
+    pasos = items_instrucciones(receta.get("pasos") or [], receta.get("tips") or [])
     if abrir_grupo("instrucciones", ["field_pasos"]) and puede_rellenar_editor(
         page, "instrucciones"
     ):
@@ -5873,9 +6088,13 @@ def fill_from_receta(
         if n_pas:
             resultados["pasos"] = True
             print(f"  ✓ pasos: {n_pas}/{len(pasos)} ítems de acordeón")
+            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
         elif editor_actual(page) is None:
             resultados["pasos"] = fill("field_pasos", texto_pasos(pasos))
-        guardar_y_volver_al_lienzo(page, url_ficha)
+            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+        else:
+            print("  · No pude escribir las instrucciones. No pulso Volver ni abro otro bloque.")
+            return bool(sum(1 for v in resultados.values() if v))
     else:
         resultados.setdefault("pasos", False)
 
