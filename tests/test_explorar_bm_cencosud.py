@@ -874,6 +874,28 @@ class ExplorarBmTests(unittest.TestCase):
                 self.modulo.pedir_lapiz_a_mano(Pagina(), "cabecera", headed=False)
             )
 
+    def test_editor_detecta_formulario_tags(self):
+        self.assertRegex("Formulario Tags", self.modulo.TITULOS_EDITOR["tags"])
+        self.assertIn("formulario tags", self.modulo.JS_TEXTO_EDITOR.lower())
+        self.assertIn("Duplicar", " ".join(self.modulo.BOTONES_AGREGAR))
+        self.assertIn("esTag", self.modulo.JS_MARCAR_INPUTS_ITEM)
+        self.assertIn("Link", self.modulo.JS_MARCAR_INPUTS_ITEM)
+
+        class Pagina:
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "h1,h2,h3" in texto:
+                    return "Formulario Tags"
+                if "innerText" in texto:
+                    return (
+                        "Formulario Tags Arreglo Formulario Ítem 1 "
+                        "Tag * Dale un valor El dato es requerido Link"
+                    )
+                return ""
+
+        self.assertEqual(self.modulo.editor_actual(Pagina()), "tags")
+        self.assertEqual(self.modulo.editor_por_campos(Pagina()), "tags")
+
     def test_editor_por_campos_detecta_cabecera(self):
         class Pagina:
             def evaluate(self, script, *_args):

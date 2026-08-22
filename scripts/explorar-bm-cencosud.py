@@ -2254,7 +2254,9 @@ TITULOS_EDITOR = {
         r"edici[oó]n de\s+(cabecera|header)|editar\s+(la\s+)?(cabecera|header)", re.I
     ),
     "tags": re.compile(
-        r"edici[oó]n de\s+(lista\s+)?(tags?|etiquetas?)|editar\s+(lista\s+)?(tags?|etiquetas?)",
+        r"edici[oó]n de\s+(lista\s+)?(tags?|etiquetas?)"
+        r"|editar\s+(lista\s+)?(tags?|etiquetas?)"
+        r"|formulario\s+tags?",
         re.I,
     ),
     "ingredientes": re.compile(
@@ -2277,7 +2279,7 @@ JS_TEXTO_EDITOR = """() => {
   const extra = clean(document.body && document.body.innerText)
     .split('\\n')
     .map((s) => s.trim())
-    .filter((s) => /edici[oó]n de|editar /i.test(s))
+    .filter((s) => /edici[oó]n de|editar |formulario tags/i.test(s))
     .slice(0, 10);
   return [document.title || '', ...hs, ...extra].join(' | ');
 }"""
@@ -2322,6 +2324,15 @@ def _editor_por_texto(t: str) -> str | None:
     ):
         return "seo"
     if re.search(r"\btags?\b", t) and ("agregar" in t or "etiqueta" in t) and "dificultad" not in t:
+        return "tags"
+    if (
+        "dificultad" not in t
+        and (
+            "formulario tags" in t
+            or (re.search(r"\btag\s*\*", t) and "link" in t)
+            or (re.search(r"\btags?\b", t) and ("arreglo" in t or "formulario ítem" in t or "formulario item" in t))
+        )
+    ):
         return "tags"
     return None
 
@@ -2911,6 +2922,10 @@ BOTONES_AGREGAR = (
     "[aria-label*='Agregar' i]",
     "[aria-label*='Añadir' i]",
     "[aria-label*='Add' i]",
+    "[aria-label*='Duplicar' i]",
+    "[aria-label*='Duplicate' i]",
+    "[title*='Duplicar' i]",
+    "[title*='Duplicate' i]",
 )
 
 
@@ -3626,15 +3641,37 @@ JS_MARCAR_INPUTS_ITEM = """() => {
     const st = getComputedStyle(el);
     if (st.display === 'none' || st.visibility === 'hidden') return false;
     const r = el.getBoundingClientRect();
-    return r.width > 0 && r.height > 0 && r.left >= 240;
+    return r.width > 0 && r.height > 0 && r.left >= 200;
   };
   const esControl = (el) => {
     if (!el || !visibles(el)) return false;
     const tag = (el.tagName || '').toLowerCase();
+    const role = (el.getAttribute('role') || '').toLowerCase();
     if (tag === 'textarea') return true;
     if (tag === 'input') {
       const t = (el.type || 'text').toLowerCase();
       return !['hidden', 'checkbox', 'radio', 'file', 'submit', 'button'].includes(t);
+    }
+    return el.getAttribute('contenteditable') === 'true' || role === 'textbox';
+  };
+  const lineaLabel = (el) => clean((el.innerText || el.textContent || '')).split(' El dato')[0].replace(/\\*/g, ' ').trim();
+  const esLink = (el) => {
+    let n = el;
+    for (let i = 0; i < 6 && n; i++) {
+      const labs = [...n.querySelectorAll('label, p, span, legend')].map(lineaLabel);
+      if (labs.some((t) => /^Link$|^Enlace$/i.test(t))) {
+        const tagLabs = labs.filter((t) => /^Tag$/i.test(t));
+        if (!tagLabs.length) return true;
+      }
+      n = n.parentElement;
+    }
+    return false;
+  };
+  const esTag = (el) => {
+    let n = el;
+    for (let i = 0; i < 6 && n; i++) {
+      if ([...n.querySelectorAll('label, p, span, legend')].some((l) => /^Tag$/i.test(lineaLabel(l)))) return true;
+      n = n.parentElement;
     }
     return false;
   };
@@ -3657,8 +3694,12 @@ JS_MARCAR_INPUTS_ITEM = """() => {
     let box = h.parentElement;
     let input = null;
     for (let i = 0; i < 8 && box && !input; i++) {
-      const cand = [...box.querySelectorAll('input, textarea')].filter((el) => esControl(el) && !tituloSeccion(el) && !seen.has(el));
-      if (cand.length) input = cand[0];
+      const cand = [...box.querySelectorAll('input, textarea, [role="textbox"]')].filter((el) => (
+        esControl(el) && !tituloSeccion(el) && !seen.has(el) && (esTag(el) || !esLink(el))
+      ));
+      const tags = cand.filter(esTag);
+      if (tags.length) input = tags[0];
+      else if (cand.length) input = cand[0];
       box = box.parentElement;
     }
     if (input) {
@@ -3670,36 +3711,89 @@ JS_MARCAR_INPUTS_ITEM = """() => {
   return n;
 }"""
 
+JS_DUPLICAR_ULTIMO_ITEM = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const heads = [...document.querySelectorAll('h1,h2,h3,h4,h5,p,div,legend,span')].filter((el) => {
+    const linea = clean(el.innerText || '').split('\\n')[0];
+    return /^formulario ítem\\s+\\d+/i.test(linea) && linea.length < 60;
+  });
+  const h = heads[heads.length - 1];
+  if (!h) return false;
+  let box = h.parentElement;
+  for (let i = 0; i < 6 && box && box !== document.body; i++) {
+    const r = box.getBoundingClientRect();
+    if (r.height > 80 && r.width > 200) break;
+    box = box.parentElement;
+  }
+  if (!box) return false;
+  const textoDe = (el) => (
+    (el.getAttribute('aria-label') || '') + ' ' + (el.getAttribute('title') || '') + ' ' + (el.innerText || '')
+  ).toLowerCase();
+  const candidatos = [...box.querySelectorAll('button, [role="button"], [aria-label], [title]')];
+  const dup = candidatos.find((el) => /duplic|clone|copiar|copy/.test(textoDe(el)) && !/elimina|delete|trash|basura|borrar/.test(textoDe(el)));
+  if (dup) { (dup.closest('button, [role="button"]') || dup).click(); return 'duplicar'; }
+  return false;
+}"""
+
+
+def _marcar_items_formulario(page) -> tuple[object | None, int]:
+    for fr in _frames_pagina(page):
+        try:
+            n = int(fr.evaluate(JS_MARCAR_INPUTS_ITEM) or 0)
+        except (TypeError, ValueError):
+            continue
+        except Exception:
+            continue
+        if n:
+            return fr, n
+    return None, 0
+
+
+def asegurar_n_items_tags(page, n: int) -> int:
+    _, actuales = _marcar_items_formulario(page)
+    if actuales < 1:
+        actuales = contar_por_label(page, r"^Tag\b", excluir=r"link|enlace")
+    intentos = 0
+    while actuales < n and intentos < n + 4:
+        if not click_agregar_item(page, preferir_ultimo=True):
+            break
+        intentos += 1
+        try:
+            page.wait_for_timeout(350)
+        except Exception:
+            pass
+        _, actuales = _marcar_items_formulario(page)
+        if actuales < 1:
+            actuales = contar_por_label(page, r"^Tag\b", excluir=r"link|enlace")
+    return actuales
+
 
 def rellenar_items_formulario(page, valores: list[str]) -> int:
-    """Rellena Formulario Ítem 1..N (no «Título de la sección»)."""
+    """Rellena Formulario Ítem 1..N, campo Tag* (nunca Link)."""
     valores = [v for v in valores if v]
     if not valores:
         return 0
-    asegurar_n_campos_label(page, r"^(tags?|etiquetas?|nombre|valor|ingrediente)\b", len(valores), excluir=r"título de la sección|meta")
-    try:
-        marcados = page.evaluate(JS_MARCAR_INPUTS_ITEM)
-    except Exception:
-        marcados = 0
-    while int(marcados or 0) < len(valores):
-        if not click_agregar_item(page, preferir_ultimo=True):
-            break
-        try:
-            page.wait_for_timeout(300)
-            marcados = page.evaluate(JS_MARCAR_INPUTS_ITEM)
-        except Exception:
-            break
+    asegurar_n_items_tags(page, len(valores))
+    fr, marcados = _marcar_items_formulario(page)
+    contexto = fr or page
     llenados = 0
     for i, valor in enumerate(valores):
+        ok = False
         try:
-            loc = page.locator(f'[data-crc-item-hit="{i}"]')
-            if loc.count() and escribir_valor(page, loc.first, valor):
-                print(f"  ✓ tag[{i}] → {valor}")
-                llenados += 1
-                continue
+            loc = contexto.locator(f'[data-crc-item-hit="{i}"]')
+            item = loc.first if hasattr(loc, "first") else loc
+            if hasattr(loc, "count") and loc.count():
+                if escribir_valor(page, item, valor):
+                    ok = True
+                elif _tipear_teclado(page, item, valor):
+                    ok = True
         except Exception:
-            pass
-        print(f"  ✗ tag[{i}]")
+            ok = False
+        if ok:
+            print(f"  ✓ tag[{i}] → {valor}")
+            llenados += 1
+        else:
+            print(f"  ✗ tag[{i}]")
     return llenados
 
 
@@ -3711,8 +3805,9 @@ def fill_lista_tags(page, tags: list[str]) -> int:
     if not tags:
         return 0
     print("  · tags del Word: " + ", ".join(tags))
-    excluir = r"título de la sección|ingrediente|meta|descripci"
-    for patron in (r"^(tags?|etiquetas?)\b", r"^nombre\b", r"^valor\b"):
+    asegurar_n_items_tags(page, len(tags))
+    excluir = r"título de la sección|ingrediente|meta|descripci|link|enlace"
+    for patron in (r"^Tag\b", r"^(tags?|etiquetas?)\b", r"^nombre\b", r"^valor\b"):
         n = fill_repetidos_por_label(page, patron, tags, excluir=excluir)
         if n:
             return n
@@ -3937,6 +4032,17 @@ def click_agregar_item(page, preferir_ultimo: bool = False) -> bool:
                     return True
         except Exception:
             continue
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_DUPLICAR_ULTIMO_ITEM)
+        except Exception:
+            continue
+        if out:
+            try:
+                page.wait_for_timeout(350)
+            except Exception:
+                pass
+            return True
     return False
 
 
@@ -4154,6 +4260,12 @@ def fill_from_receta(
 
     print("Rellenando la receta completa (lápiz de cada bloque, Cabecera incluida)…")
     print(f"  · Textos «Edita este componente» visibles: {_contar_placeholder_vacio(page)}")
+    if editor_actual(page) == "tags":
+        print("  · Ya estoy en Formulario Tags. Escribo las etiquetas del Word.")
+        n_tags_abierto = fill_lista_tags(page, tags_desde_receta(receta))
+        if n_tags_abierto:
+            print(f"  ✓ tags: {n_tags_abierto}/{len(tags_desde_receta(receta))}")
+        guardar_y_volver_al_lienzo(page, url_ficha)
     if abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
         cabecera = {
             "field_titulo": fill("field_titulo", receta.get("titulo")),
