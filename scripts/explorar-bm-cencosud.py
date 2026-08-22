@@ -115,9 +115,13 @@ COMPONENTES_CMS = (
 LIENZO_MIN_X = 240
 
 MENSAJE_ENTER_FICHA = (
-    "\n>>> En Chromium abre la receta (la que ya existe) hasta ver\n"
-    "    los 5 bloques del CENTRO: Cabecera / tags / Ingredientes /\n"
+    "\n>>> En Chromium abre la receta YA guardada (no una ficha vacía).\n"
+    "    Los 5 bloques van al CENTRO: Cabecera / tags / Ingredientes /\n"
     "    Instrucciones / SEO.\n"
+    "    Si la Cabecera YA tiene título/foto (no dice «componente vacío»),\n"
+    "    déjala así: el script no la toca y sigue con tags.\n"
+    "    Si ves 5 bloques VACÍOS, no es esa ficha: volvé a Recetas_Jumbo\n"
+    "    → la receta hasta la vista donde Cabecera ya está llena.\n"
     "    NO pulses la paleta izquierda (esos mismos nombres).\n"
     "    NO pulses «Proyectos» ni el breadcrumb.\n"
     "    NO entres a «Edición de Lista…».\n"
@@ -163,15 +167,23 @@ def caja_en_lienzo(box: dict | None, *, min_x: float = LIENZO_MIN_X) -> bool:
 
 
 def esperar_ficha_en_lienzo(page, *, headed: bool = True) -> str:
-    """Tras ENTER: si Chromium está en Proyectos, pedir de nuevo la receta."""
+    """Tras ENTER: si Chromium está en Proyectos o el Gestor vacío, pedir la receta."""
     url_ficha = url_actual(page)
-    if not es_lista_proyectos_cms(url_ficha):
+    if not es_lista_proyectos_cms(url_ficha) and not gestor_sin_ficha(url_ficha):
         return url_ficha
-    print(
-        "\n>>> Chromium está en «Proyectos en JUMBO», no en la receta.\n"
-        "    Entrá otra vez a Recetas_Jumbo → la receta (5 bloques al centro).\n"
-        "    No pulses la paleta izquierda. ENTER cuando la veas.\n"
-    )
+    if gestor_sin_ficha(url_ficha):
+        print(
+            "\n>>> Chromium está en el Gestor vacío (sin /view/id), no en la receta guardada.\n"
+            "    Entrá a Recetas_Jumbo → la receta. Si la Cabecera ya tenía título/foto,\n"
+            "    usá ESA vista (no una Cabecera que diga «componente vacío»).\n"
+            "    No pulses la paleta izquierda. ENTER cuando la veas.\n"
+        )
+    else:
+        print(
+            "\n>>> Chromium está en «Proyectos en JUMBO», no en la receta.\n"
+            "    Entrá otra vez a Recetas_Jumbo → la receta (5 bloques al centro).\n"
+            "    No pulses la paleta izquierda. ENTER cuando la veas.\n"
+        )
     if headed and sys.stdin.isatty():
         try:
             input()
@@ -230,9 +242,6 @@ def clic_locator_en_lienzo(page, selector: str, timeout: int = 5_000) -> bool:
         item = loc.nth(i) if hasattr(loc, "nth") else loc
         box = _bounding_box(item)
         if box is None:
-            if i == 0:
-                item.click(timeout=timeout)
-                return True
             continue
         if caja_en_lienzo(box):
             item.click(timeout=timeout)
@@ -604,13 +613,15 @@ def _clic_lapiz_por_fila(page, aliases: list[str]) -> bool:
                 if edit.count():
                     if clic_locator_en_lienzo_desde(edit):
                         return True
-                    edit.first.click(timeout=3_000)
-                    return True
+                    continue
                 botones = fila.locator("button")
                 n = botones.count()
                 if n >= 2:
                     medio = 1 if n >= 3 else 1
-                    botones.nth(medio).click(timeout=3_000)
+                    btn = botones.nth(medio)
+                    if not caja_en_lienzo(_bounding_box(btn)):
+                        continue
+                    btn.click(timeout=3_000)
                     return True
         except Exception:
             continue
@@ -625,7 +636,9 @@ def clic_locator_en_lienzo_desde(loc) -> bool:
     for i in range(min(n, 8)):
         item = loc.nth(i)
         box = _bounding_box(item)
-        if box is None or caja_en_lienzo(box):
+        if box is None:
+            continue
+        if caja_en_lienzo(box):
             item.click(timeout=3_000)
             return True
     return False
@@ -825,8 +838,15 @@ def url_tiene_vista_receta(url: str | None) -> bool:
     return bool(url and re.search(r"view-manager/view/", url))
 
 
+def gestor_sin_ficha(url: str | None) -> bool:
+    """Gestor del proyecto sin /view/{id}: lienzo vacío, no la receta guardada."""
+    u = url or ""
+    return "view-manager" in u and not url_tiene_vista_receta(u)
+
+
 def _limpiar_url_editor(url: str) -> str:
     limpio = re.sub(r"#.*$", "", url)
+    limpio = limpio.split("?")[0]
     limpio = re.sub(
         r"/(?:edit|edicion|edici[oó]n)(?:/.*)?$",
         "",
@@ -848,7 +868,7 @@ def url_lienzo_receta(url: str | None, url_ficha: str | None = None) -> str | No
     for c in candidatos:
         if url_tiene_vista_receta(c):
             return c
-    return candidatos[0] if candidatos else None
+    return None
 
 
 def lienzo_con_bloques_cms(page) -> bool:
@@ -870,6 +890,8 @@ JS_BLOQUE_VACIO = """(aliases) => {
   const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
   const wanted = (aliases || []).map((s) => clean(s).toLowerCase());
   const nodos = [...document.querySelectorAll('div, section, article, li, h2, h3, h4')];
+  let vi = false;
+  let algunoLleno = false;
   for (const el of nodos) {
     const r = el.getBoundingClientRect();
     if (r.left < 240 || r.width < 80) continue;
@@ -877,9 +899,11 @@ JS_BLOQUE_VACIO = """(aliases) => {
     const linea = crudo.split('\\n')[0].toLowerCase();
     if (!wanted.some((w) => linea === w || linea.startsWith(w + ' '))) continue;
     if (crudo.length > 400) continue;
-    return /edita este componente vac[ií]o/i.test(crudo);
+    vi = true;
+    if (!/edita este componente vac[ií]o/i.test(crudo)) algunoLleno = true;
   }
-  return null;
+  if (!vi) return null;
+  return !algunoLleno;
 }"""
 
 
@@ -2156,7 +2180,7 @@ JS_FILL_INDEX = """([index, value]) => {
     const st = getComputedStyle(el);
     if (st.display === 'none' || st.visibility === 'hidden') return false;
     const r = el.getBoundingClientRect();
-    return r.width > 0 || r.height > 0;
+    return r.left >= 240 && (r.width > 0 || r.height > 0);
   });
   const el = els[index];
   if (!el) return false;
@@ -2186,6 +2210,14 @@ def escribir_valor(page, loc, value) -> bool:
     texto = str(value)
     if texto.strip().lower() in {"dale un valor", "ingresa un valor", "ingresa", "0"}:
         return False
+    box = _bounding_box(loc)
+    if box is not None:
+        try:
+            if float(box.get("x") or 0) < LIENZO_MIN_X:
+                print("  · No escribo en la paleta.")
+                return False
+        except (TypeError, ValueError):
+            pass
     try:
         loc.fill(texto, timeout=3_000)
         return True
@@ -2721,10 +2753,15 @@ def fill_from_receta(
         print(
             "\nChromium está en «Proyectos en JUMBO», no en la receta.\n"
             "Abre Recetas_Jumbo → la receta (5 bloques al centro) y reintenta.\n"
+            "Si ves 5 bloques vacíos, no es la ficha guardada.\n"
             "No pulses la paleta izquierda.",
             file=sys.stderr,
         )
         return False
+    if gestor_sin_ficha(url_ficha):
+        print(
+            "  · URL sin /view/id (Gestor pelado). No navego ahí: perdería la Cabecera."
+        )
 
     def fill(key: str, value: str | None) -> bool:
         if value is None or value == "":

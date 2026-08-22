@@ -377,7 +377,7 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             "6597f023fdc664839ccd2a37/view-manager"
         )
         editor = ficha + "/edit"
-        self.assertEqual(self.explorar.url_lienzo_receta(editor, ficha), ficha)
+        self.assertIsNone(self.explorar.url_lienzo_receta(editor, ficha))
         self.assertIsNone(
             self.explorar.url_lienzo_receta(
                 "https://business-manager.ecomm.cencosud.com/cms/projects",
@@ -404,7 +404,7 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
     def test_volver_al_lienzo_tras_guardado(self):
         ficha = (
             "https://business-manager.ecomm.cencosud.com/cms/projects/"
-            "6597f023fdc664839ccd2a37/view-manager"
+            "6597f023fdc664839ccd2a37/view-manager/view/salmon123"
         )
 
         class Pagina:

@@ -416,6 +416,62 @@ class ExplorarBmTests(unittest.TestCase):
             self.assertTrue(self.modulo.restaurar_ficha_si_salio(pagina, ficha))
         self.assertEqual(pagina.gotos, [ficha])
 
+    def test_url_lienzo_conserva_vista_y_no_baja_al_gestor_vacio(self):
+        vista = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager/view/abc123?component=e45e7e"
+        )
+        gestor = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager"
+        )
+        self.assertTrue(self.modulo.url_tiene_vista_receta(vista))
+        self.assertFalse(self.modulo.url_tiene_vista_receta(gestor))
+        self.assertTrue(self.modulo.gestor_sin_ficha(gestor))
+        self.assertFalse(self.modulo.gestor_sin_ficha(vista))
+        destino = self.modulo.url_lienzo_receta(vista, gestor)
+        self.assertIsNotNone(destino)
+        self.assertIn("/view/abc123", destino)
+        self.assertNotIn("component=", destino)
+        self.assertIsNone(self.modulo.url_lienzo_receta(gestor, gestor))
+
+    def test_fill_salta_cabecera_si_ya_tiene_contenido(self):
+        runtime = RuntimeFalso()
+        llamadas = {"cabecera": 0}
+
+        class Pagina(PageFalsa):
+            url = (
+                "https://business-manager.ecomm.cencosud.com/cms/projects/"
+                "6597f023fdc664839ccd2a37/view-manager/view/abc123"
+            )
+
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "edita este componente vac" in texto.lower():
+                    llamadas["cabecera"] += 1
+                    return False
+                return super().evaluate(script, *_args)
+
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.modulo.fill_from_receta(
+                Pagina(runtime),
+                self.receta_valida,
+                self.selectores,
+                dry_run=True,
+                url_ficha=Pagina.url,
+            )
+        self.assertGreaterEqual(llamadas["cabecera"], 1)
+        self.assertIn("Cabecera ya está", buf.getvalue())
+
+    def test_js_fill_index_excluye_paleta(self):
+        self.assertIn("r.left >= 240", self.modulo.JS_FILL_INDEX)
+
+    def test_js_bloque_vacio_prioriza_cabecera_llena(self):
+        js = self.modulo.JS_BLOQUE_VACIO
+        self.assertIn("algunoLleno", js)
+        self.assertIn("return !algunoLleno", js)
+
     def test_js_clic_lapiz_excluye_paleta(self):
         js = self.modulo.JS_CLIC_LAPIZ
         self.assertIn("paleta", js.lower())
