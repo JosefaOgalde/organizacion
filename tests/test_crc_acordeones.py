@@ -132,6 +132,21 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertEqual(self.explorar.numero_campo_bm("4 porciones"), "4")
         self.assertEqual(self.explorar.numero_campo_bm("1.2 kg"), "1.2")
         self.assertIsNone(self.explorar.numero_campo_bm(""))
+        self.assertIsNone(self.explorar.numero_campo_bm("0"))
+        self.assertEqual(self.explorar.duracion_receta({"tiempoTotal": "30 min"}), "30")
+
+    def test_no_rellena_ingredientes_si_sigue_en_cabecera(self):
+        class Pagina:
+            def evaluate(self, script, *_args):
+                if "h1,h2,h3" in str(script):
+                    return "Edición de Cabecera | Recetas_Jumbo"
+                return ""
+
+        pagina = Pagina()
+        self.assertEqual(self.explorar.editor_actual(pagina), "cabecera")
+        self.assertFalse(self.explorar.puede_rellenar_editor(pagina, "tags"))
+        self.assertFalse(self.explorar.puede_rellenar_editor(pagina, "ingredientes"))
+        self.assertTrue(self.explorar.puede_rellenar_editor(pagina, "cabecera"))
 
     def test_label_titulo_no_confunde_seccion_ni_meta(self):
         self.assertTrue(

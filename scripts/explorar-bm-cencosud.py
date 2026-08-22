@@ -711,12 +711,11 @@ JS_CLIC_LAPIZ = """(aliases) => {
 }"""
 
 
-def cerrar_editor_componente(page) -> None:
-    """Guarda el editor del lápiz y vuelve al lienzo (no Publicar)."""
-    resolver_modal_cambios(page)
+def _clic_guardar_editor(page) -> bool:
     for sel in (
         "button:has-text('Guardar')",
         "[role='button']:has-text('Guardar')",
+        "button[type='submit']",
         "button:has-text('Aplicar')",
         "button:has-text('Listo')",
         "button:has-text('Done')",
@@ -731,29 +730,55 @@ def cerrar_editor_componente(page) -> None:
                     visible = btn.is_visible()
                 except Exception:
                     visible = True
-                if visible:
-                    btn.click(timeout=2_500)
-                    page.wait_for_timeout(500)
-                    resolver_modal_cambios(page)
-                    return
+                if not visible:
+                    continue
+                txt = ""
+                try:
+                    txt = (btn.inner_text() or "").lower()
+                except Exception:
+                    txt = ""
+                if "publicar" in txt:
+                    continue
+                btn.click(timeout=2_500)
+                page.wait_for_timeout(600)
+                return True
         except Exception:
-            pass
-    for sel in (
-        "button:has-text('Cerrar')",
-        "button:has-text('Volver')",
-        "button[aria-label*='Cerrar' i]",
-        "button[aria-label*='Close' i]",
-    ):
+            continue
+    return False
+
+
+def cerrar_editor_componente(page) -> None:
+    """Guarda el editor del lápiz y vuelve al lienzo. Nunca «Sí, acepto» ni Volver."""
+    resolver_modal_cambios(page)
+    _clic_guardar_editor(page)
+    resolver_modal_cambios(page)
+    _clic_guardar_editor(page)
+
+
+def guardar_y_volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
+    """Cierra el editor actual. Si sigue en Cabecera, no pasar al siguiente bloque."""
+    cerrar_editor_componente(page)
+    try:
+        page.wait_for_timeout(400)
+    except Exception:
+        pass
+    actual = editor_actual(page)
+    if actual is None:
+        return True
+    resolver_modal_cambios(page)
+    if _clic_guardar_editor(page):
         try:
-            loc = page.locator(sel).first
-            if loc.count() and loc.is_visible():
-                loc.click(timeout=2_000)
-                page.wait_for_timeout(400)
-                resolver_modal_cambios(page)
-                return
+            page.wait_for_timeout(500)
         except Exception:
             pass
-    # No Escape: en el BM abre «Tienes cambios sin guardar».
+    if editor_actual(page) is None:
+        return True
+    if url_ficha:
+        restaurar_ficha_si_salio(page, url_ficha)
+        if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
+            return True
+    print(f"  · Sigo en Edición de {editor_actual(page)}; no abro otro bloque.")
+    return False
 
 
 def capturar_cms_por_componentes(page) -> tuple[dict, dict]:
@@ -1190,18 +1215,105 @@ def label_coincide_campo(key: str, blob: str) -> bool:
     return bool(patron and patron.search(b))
 
 
-def numero_campo_bm(valor: str | None) -> str | None:
-    """Duración/porciones del BM piden número: '30 min' → '30', '4 porciones' → '4'."""
+def numero_campo_bm(valor: str | None, *, minimo: float = 1) -> str | None:
+    """Duración/porciones del BM piden número ≥ 1: '30 min' → '30'. Nunca 0."""
     if valor is None or str(valor).strip() == "":
         return None
     m = re.search(r"\d+[.,]?\d*", str(valor))
-    return m.group(0).replace(",", ".") if m else None
+    if not m:
+        return None
+    try:
+        n = float(m.group(0).replace(",", "."))
+    except ValueError:
+        return None
+    if n < minimo:
+        return None
+    if n == int(n):
+        return str(int(n))
+    return str(n).replace(",", ".")
+
+
+def duracion_receta(receta: dict) -> str | None:
+    for clave in ("tiempoTotal", "tiempoPreparacion", "tiempoCoccion"):
+        n = numero_campo_bm(receta.get(clave))
+        if n:
+            return n
+    return None
+
+
+TITULOS_EDITOR = {
+    "cabecera": re.compile(r"edici[oó]n de\s+(cabecera|header)", re.I),
+    "tags": re.compile(r"edici[oó]n de\s+tags", re.I),
+    "ingredientes": re.compile(r"edici[oó]n de\s+lista\s+ingredientes|list_ingredients", re.I),
+    "instrucciones": re.compile(
+        r"edici[oó]n de\s+lista\s+de\s+instrucciones|list_instructions", re.I
+    ),
+    "seo": re.compile(r"edici[oó]n de\s+seo", re.I),
+}
+
+
+def texto_editor(page) -> str:
+    try:
+        raw = page.evaluate(
+            """() => {
+              const hs = [...document.querySelectorAll('h1,h2,h3')]
+                .map((el) => (el.innerText || '').replace(/\\s+/g, ' ').trim())
+                .filter(Boolean);
+              return [document.title || '', ...hs].join(' | ');
+            }"""
+        )
+    except Exception:
+        return ""
+    return raw if isinstance(raw, str) else ""
+
+
+def editor_actual(page) -> str | None:
+    t = texto_editor(page)
+    if not t:
+        return None
+    for clave, pat in TITULOS_EDITOR.items():
+        if pat.search(t):
+            return clave
+    return None
+
+
+def puede_rellenar_editor(page, clave: str) -> bool:
+    """No escribir tags/ingredientes si seguimos en Edición de Cabecera."""
+    actual = editor_actual(page)
+    if actual is None:
+        return True
+    return actual == clave
+
+
+JS_ABRIR_COMBO_DIFICULTAD = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const nodos = [...document.querySelectorAll('label, p, span, div, legend')];
+  let lab = null;
+  for (const el of nodos) {
+    const t = clean(el.innerText || el.textContent || '');
+    const linea = t.split(' El dato')[0].replace(/\\*$/, '').trim();
+    if (/^Dificultad$/i.test(linea) && t.length < 50) { lab = el; break; }
+  }
+  if (!lab) return false;
+  const box = lab.closest('[class*="field"], [class*="Field"], [class*="form"], [class*="Form"], div');
+  const control = box && box.querySelector(
+    'select, [role="combobox"], [aria-haspopup="listbox"], [class*="select"], [class*="dropdown"], input'
+  );
+  if (control) { control.click(); return true; }
+  lab.click();
+  return true;
+}"""
 
 
 def elegir_dificultad(page, valor: str | None) -> bool:
     etiqueta = normalizar_dificultad_bm(valor)
     if not etiqueta:
         return False
+    try:
+        page.evaluate(JS_ABRIR_COMBO_DIFICULTAD)
+        page.wait_for_timeout(300)
+    except Exception:
+        pass
     try:
         loc = page.locator("select").first
         if loc.count():
@@ -1213,44 +1325,21 @@ def elegir_dificultad(page, valor: str | None) -> bool:
             return True
     except Exception:
         pass
-    fields = campos_visibles(page)
-    for field in fields:
-        if not re.search(r"dificultad|nivel", blob_campo(field), re.I):
-            continue
-        sel = field.get("selectorSugerido")
-        if sel and not selector_es_generico(sel) and _fill_locator(page, sel, etiqueta):
-            print(f"  ✓ field_dificultad → {etiqueta}")
-            return True
-        if field.get("index") is not None and fill_por_indice_visible(page, field["index"], etiqueta):
-            print(f"  ✓ field_dificultad → {etiqueta}")
-            return True
-    en_editor = esta_en_editor_componente(page)
-    try:
-        combo = page.get_by_text("Dificultad", exact=False)
-        n_combo = combo.count() if hasattr(combo, "count") else 1
-        pulsado = False
-        for i in range(min(n_combo, 8)):
-            item = combo.nth(i) if hasattr(combo, "nth") else combo
-            box = _bounding_box(item)
-            if box is not None and not en_editor and not caja_en_lienzo(box):
-                continue
-            item.click(timeout=3_000)
-            pulsado = True
-            break
-        if not pulsado:
-            raise RuntimeError("Dificultad no está visible")
-        page.wait_for_timeout(250)
-        opcion = page.get_by_text(etiqueta, exact=True).last
-        opcion.click(timeout=3_000)
-        print(f"  ✓ field_dificultad → {etiqueta}")
-        return True
-    except Exception:
+    for sel in (
+        f'[role="option"]:has-text("{etiqueta}")',
+        f"text={etiqueta}",
+    ):
         try:
-            page.locator(f"text={etiqueta}").last.click(timeout=2_000)
+            loc = page.locator(sel)
+            n = loc.count()
+            if not n:
+                continue
+            loc.last.click(timeout=2_500)
             print(f"  ✓ field_dificultad → {etiqueta}")
             return True
         except Exception:
-            return False
+            continue
+    return False
 
 
 def alt_portada(receta: dict) -> str | None:
@@ -1273,10 +1362,13 @@ def ruta_imagen_portada(receta: dict) -> Path | None:
             return p
     out = CRC / "out"
     if out.is_dir():
-        for pat in ("*.jpg", "*.jpeg", "*.png", "*.webp"):
-            hits = sorted(out.glob(pat))
-            if hits:
-                return hits[0]
+        for carpeta in (out, out / "media"):
+            if not carpeta.is_dir():
+                continue
+            for pat in ("*.jpg", "*.jpeg", "*.png", "*.webp"):
+                hits = sorted(carpeta.rglob(pat) if carpeta != out else carpeta.glob(pat))
+                if hits:
+                    return hits[0]
     fuente = receta.get("fuenteWord") or ""
     if fuente.lower().endswith(".docx"):
         p = Path(fuente)
@@ -1311,17 +1403,17 @@ def extraer_imagenes_docx(path: Path, dest_dir: Path) -> list[Path]:
 def subir_imagen_portada(page, receta: dict) -> bool:
     ruta = ruta_imagen_portada(receta)
     if not ruta:
+        print("  · sin archivo de foto (¿parse --force del Word?)")
         return False
     try:
         loc = page.locator("input[type='file']")
-        if not loc.count():
-            return False
-        loc.first.set_input_files(str(ruta))
-        print(f"  ✓ imagen portada ({ruta.name})")
-        return True
+        if loc.count():
+            loc.first.set_input_files(str(ruta))
+            print(f"  ✓ imagen portada ({ruta.name})")
+            return True
     except Exception as e:
         print(f"  ✗ imagen portada: {e}")
-        return False
+    return False
 
 
 BOTONES_AGREGAR = (
@@ -1454,6 +1546,8 @@ def escribir_valor(page, loc, value) -> bool:
     if loc is None or value is None or value == "":
         return False
     texto = str(value)
+    if texto.strip().lower() in {"dale un valor", "ingresa un valor", "ingresa", "0"}:
+        return False
     try:
         loc.fill(texto, timeout=3_000)
         return True
@@ -1564,13 +1658,13 @@ def asegurar_n_campos_label(page, patron: str, n: int, *, excluir: str | None = 
 
 
 def fill_lista_tags(page, tags: list[str]) -> int:
+    if not puede_rellenar_editor(page, "tags"):
+        print("  · No relleno tags: no estoy en Edición de tags.")
+        return 0
     tags = [t.strip() for t in tags if t and str(t).strip()]
     if not tags:
         return 0
-    n = fill_repetidos_por_label(page, r"^(tag|etiqueta|nombre|valor)\b", tags)
-    if n:
-        return n
-    return fill_inputs_texto_en_orden(page, tags)
+    return fill_repetidos_por_label(page, r"^(tag|etiqueta|nombre|valor)\b", tags)
 
 
 def fill_inputs_texto_en_orden(page, valores: list[str]) -> int:
@@ -1802,6 +1896,10 @@ def asegurar_filas_lista(page, n: int) -> int:
 
 def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
     """Rellena 'Edición de Lista Ingredientes/Instrucciones' ítem a ítem."""
+    clave = "ingredientes" if tipo == "ingredientes" else "instrucciones"
+    if not puede_rellenar_editor(page, clave):
+        print(f"  · No relleno {tipo}: no estoy en su editor (sigo en {editor_actual(page)}).")
+        return 0
     if not items:
         return 0
     if tipo == "ingredientes":
@@ -1921,10 +2019,16 @@ def fill_from_receta(
             print(f"  · omitido {key} (sin selector ni etiqueta)")
         return False
 
-    def abrir_grupo(clave_comp: str, keys_campo: list[str]) -> None:
+    def abrir_grupo(clave_comp: str, keys_campo: list[str]) -> bool:
         meta = next((c for c in COMPONENTES_CMS if c["clave"] == clave_comp), None)
         lapiz_key = meta["lapiz_key"] if meta else f"lapiz_{clave_comp}"
         print(f"  [CMS] Abriendo componente «{clave_comp}»…")
+        actual = editor_actual(page)
+        if actual and actual != clave_comp:
+            print(f"  · Sigo en Edición de {actual}; guardo antes de abrir «{clave_comp}».")
+            if not guardar_y_volver_al_lienzo(page, url_ficha):
+                print(f"  · No salgo de {actual}: no relleno «{clave_comp}» en el header.")
+                return False
         abierto = abrir_lapiz_componente(page, clave_comp, selectores.get(lapiz_key))
         if restaurar_ficha_si_salio(page, url_ficha):
             abierto = False
@@ -1932,69 +2036,95 @@ def fill_from_receta(
             abierto = abrir_componente_para_campos(page, selectores, keys_campo)
         if restaurar_ficha_si_salio(page, url_ficha):
             abierto = False
-        if not abierto:
+        actual = editor_actual(page)
+        if actual and actual != clave_comp:
+            print(f"  · Estoy en Edición de {actual}, no en {clave_comp}. No relleno aquí.")
+            return False
+        if not abierto and actual is None:
             print(f"  · Sin lápiz para {clave_comp}; intento relleno en vista actual.")
+            return True
+        if not abierto:
+            print(f"  · Sin lápiz para {clave_comp}; no relleno en otra pantalla.")
+            return False
+        return True
 
     def fill_grupo(clave_comp: str, pares: list[tuple[str, str | None]]) -> dict[str, bool]:
         pares_ok = [(k, v) for k, v in pares if v is not None and v != ""]
         if not pares_ok:
             return {}
-        abrir_grupo(clave_comp, [k for k, _ in pares_ok])
+        if not abrir_grupo(clave_comp, [k for k, _ in pares_ok]):
+            return {}
+        if not puede_rellenar_editor(page, clave_comp):
+            return {}
         ok_keys = {}
         for key, value in pares_ok:
             ok_keys[key] = fill(key, value)
-        cerrar_editor_componente(page)
+        guardar_y_volver_al_lienzo(page, url_ficha)
         return ok_keys
 
     print("Rellenando desde JSON (lápiz de cada bloque + acordeones)…")
-    abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"])
-    cabecera = {
-        "field_titulo": fill("field_titulo", receta.get("titulo")),
-        "field_descripcion": fill("field_descripcion", receta.get("descripcion")),
-        "field_porciones": fill("field_porciones", receta.get("porciones")),
-        "field_dificultad": fill("field_dificultad", receta.get("dificultad")),
-        "field_tiempo": fill("field_tiempo", receta.get("tiempoTotal")),
-        "field_tiempo_prep": fill("field_tiempo_prep", receta.get("tiempoPreparacion")),
-        "field_tiempo_coccion": fill("field_tiempo_coccion", receta.get("tiempoCoccion")),
-        "field_tips": fill("field_tips", "\n".join(receta.get("tips") or [])),
-        "field_alt": fill("field_alt", alt_portada(receta)),
-    }
-    subir_imagen_portada(page, receta)
-    cerrar_editor_componente(page)
-    resultados["titulo"] = cabecera.get("field_titulo", False)
-    resultados["descripcion"] = cabecera.get("field_descripcion", False)
-
-    abrir_grupo("tags", ["field_tags"])
-    cats = receta.get("categorias") or []
-    n_tags = fill_lista_tags(page, [str(c) for c in cats])
-    if n_tags:
-        print(f"  ✓ tags: {n_tags}/{len(cats)}")
+    if abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
+        cabecera = {
+            "field_titulo": fill("field_titulo", receta.get("titulo")),
+            "field_descripcion": fill("field_descripcion", receta.get("descripcion")),
+            "field_porciones": fill(
+                "field_porciones", numero_campo_bm(receta.get("porciones"))
+            ),
+            "field_dificultad": fill("field_dificultad", receta.get("dificultad")),
+            "field_tiempo": fill("field_tiempo", duracion_receta(receta)),
+            "field_alt": fill("field_alt", alt_portada(receta)),
+        }
+        subir_imagen_portada(page, receta)
+        if not guardar_y_volver_al_lienzo(page, url_ficha):
+            print("  · Cabecera incompleta o sin Guardar. Me detengo aquí.")
+            resultados["titulo"] = cabecera.get("field_titulo", False)
+            resultados["descripcion"] = cabecera.get("field_descripcion", False)
+            llenados = sum(1 for v in resultados.values() if v)
+            return llenados > 0
+        resultados["titulo"] = cabecera.get("field_titulo", False)
+        resultados["descripcion"] = cabecera.get("field_descripcion", False)
     else:
-        fill("field_tags", ", ".join(str(c) for c in cats))
-    cerrar_editor_componente(page)
+        cabecera = {}
+        resultados["titulo"] = False
+        resultados["descripcion"] = False
+
+    cats = receta.get("categorias") or []
+    if abrir_grupo("tags", ["field_tags"]) and puede_rellenar_editor(page, "tags"):
+        n_tags = fill_lista_tags(page, [str(c) for c in cats])
+        if n_tags:
+            print(f"  ✓ tags: {n_tags}/{len(cats)}")
+        guardar_y_volver_al_lienzo(page, url_ficha)
 
     ings = receta.get("ingredientes") or []
-    abrir_grupo("ingredientes", ["field_ingredientes"])
-    n_ing = fill_lista_acordeones(page, ings, "ingredientes")
-    if n_ing:
-        resultados["ingredientes"] = True
-        print(f"  ✓ ingredientes: {n_ing}/{len(ings)} ítems de acordeón")
+    if abrir_grupo("ingredientes", ["field_ingredientes"]) and puede_rellenar_editor(
+        page, "ingredientes"
+    ):
+        n_ing = fill_lista_acordeones(page, ings, "ingredientes")
+        if n_ing:
+            resultados["ingredientes"] = True
+            print(f"  ✓ ingredientes: {n_ing}/{len(ings)} ítems de acordeón")
+        elif editor_actual(page) is None:
+            resultados["ingredientes"] = fill(
+                "field_ingredientes",
+                "\n".join(linea_ingrediente(i) for i in ings if linea_ingrediente(i)),
+            )
+        guardar_y_volver_al_lienzo(page, url_ficha)
     else:
-        resultados["ingredientes"] = fill(
-            "field_ingredientes",
-            "\n".join(linea_ingrediente(i) for i in ings if linea_ingrediente(i)),
-        )
-    cerrar_editor_componente(page)
+        resultados.setdefault("ingredientes", False)
 
     pasos = receta.get("pasos") or []
-    abrir_grupo("instrucciones", ["field_pasos"])
-    n_pas = fill_lista_acordeones(page, pasos, "instrucciones")
-    if n_pas:
-        resultados["pasos"] = True
-        print(f"  ✓ pasos: {n_pas}/{len(pasos)} ítems de acordeón")
+    if abrir_grupo("instrucciones", ["field_pasos"]) and puede_rellenar_editor(
+        page, "instrucciones"
+    ):
+        n_pas = fill_lista_acordeones(page, pasos, "instrucciones")
+        if n_pas:
+            resultados["pasos"] = True
+            print(f"  ✓ pasos: {n_pas}/{len(pasos)} ítems de acordeón")
+        elif editor_actual(page) is None:
+            resultados["pasos"] = fill("field_pasos", texto_pasos(pasos))
+        guardar_y_volver_al_lienzo(page, url_ficha)
     else:
-        resultados["pasos"] = fill("field_pasos", texto_pasos(pasos))
-    cerrar_editor_componente(page)
+        resultados.setdefault("pasos", False)
 
     seo = receta.get("seo") or {}
     fill_grupo(
