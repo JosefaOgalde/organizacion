@@ -696,6 +696,12 @@ def _clic_svg_bloque_vacio(page, index: int) -> bool:
         return False
     item, box = uniq[index][1], uniq[index][2]
     try:
+        if hasattr(item, "hover"):
+            item.hover(timeout=2_000)
+            page.wait_for_timeout(250)
+    except Exception:
+        pass
+    try:
         fila = item.locator("xpath=ancestor::*[count(.//svg)>=1][1]")
         svgs = fila.locator("svg")
         ns = svgs.count() if hasattr(svgs, "count") else 0
@@ -934,7 +940,30 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
         )
         if intentar(_clic_lapiz_por_punto(page, clicked)):
             return True
-    return False
+    return pedir_lapiz_a_mano(page, clave)
+
+
+def pedir_lapiz_a_mano(page, clave: str, *, headed: bool = True) -> bool:
+    """Si el clic no abre el editor, la usuaria pulsa el lápiz y seguimos rellenando."""
+    if editor_actual(page) == clave:
+        print(f"  · Editor «{clave}» abierto")
+        return True
+    nombre = next(
+        (c["aliases"][0] for c in COMPONENTES_CMS if c["clave"] == clave),
+        clave,
+    )
+    if not headed or not sys.stdin.isatty():
+        return False
+    print(
+        f"\n>>> Para COMPLETAR «{nombre}»: en el Chromium de Python\n"
+        f"    un clic en el LÁPIZ a la derecha de ese bloque (centro, no la paleta).\n"
+        f"    ENTER aquí cuando veas el formulario de {nombre}.\n"
+    )
+    try:
+        input()
+    except EOFError:
+        return editor_actual(page) == clave
+    return _editor_confirmado(page, clave)
 
 
 def _esperar_editor(page) -> None:

@@ -675,6 +675,29 @@ class ExplorarBmTests(unittest.TestCase):
 
         self.assertEqual(self.modulo.editor_actual(Pagina()), "cabecera")
 
+    def test_pedir_lapiz_a_mano_si_el_editor_ya_esta(self):
+        class Pagina:
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "h1,h2,h3" in texto:
+                    return "Edición de Cabecera"
+                if "innerText" in texto:
+                    return "Edición de Cabecera Título Duración Dificultad Porciones"
+                return ""
+
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertTrue(self.modulo.pedir_lapiz_a_mano(Pagina(), "cabecera"))
+
+    def test_pedir_lapiz_a_mano_sin_tty_no_espera(self):
+        class Pagina:
+            def evaluate(self, *_args):
+                return "Proyectos JUMBO"
+
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertFalse(
+                self.modulo.pedir_lapiz_a_mano(Pagina(), "cabecera", headed=False)
+            )
+
     def test_editor_por_campos_detecta_cabecera(self):
         class Pagina:
             def evaluate(self, script, *_args):
