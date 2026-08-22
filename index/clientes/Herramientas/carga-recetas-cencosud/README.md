@@ -44,16 +44,17 @@ Se guardan (solo local, gitignored):
 | `secrets/bm-selectores.json` | Mapa para rellenar |
 | `secrets/bm-screenshot.png` | Captura |
 
-### 3) Completar la info en la interfaz
+### 3) Completar todos los campos del documento
 
 ```bat
-python scripts\publicar-receta-cencosud.py index\clientes\Herramientas\carga-recetas-cencosud\out\anticuchos-de-verduras-con-chimichurri.json --headed --dry-run
+python scripts\bm_fill_acordeones.py --headed --dry-run
 ```
 
-`--dry-run` = rellena / intenta borrador, **no publica**.  
-Cuando confíes: quita `--dry-run` o pon `CENCOSUD_BM_DRY_RUN=false` en `.env`.
+Abre cada lápiz del CMS y rellena **acordeones** (ingredientes y pasos) ítem a ítem, más título, tiempos, tags y SEO del JSON. `--dry-run` = no publica. Cuando esté bien:
 
-Si un campo no se rellena: edita `secrets/bm-selectores.json` (selectores) y reintenta. También puedes re-explorar con el formulario abierto.
+```bat
+python scripts\bm_fill_acordeones.py --publish
+```
 
 ## Agente Cursor
 

@@ -11,6 +11,7 @@ Uso:
 """
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import sys
@@ -18,12 +19,86 @@ import zipfile
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
+import importlib.util
 
 ROOT = Path(__file__).resolve().parents[1]
-CRC = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud"
+
+
+def _crc_rutas():
+    path = Path(__file__).resolve().parent / "crc_rutas.py"
+    spec = importlib.util.spec_from_file_location("crc_rutas_parse", path)
+    modulo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modulo)
+    return modulo
+
+
+_RUTAS = _crc_rutas()
+CRC = _RUTAS.resolver_crc(ROOT)
 OUT_DIR = CRC / "out"
 
 W_NS = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+
+
+def extraer_imagenes_docx(
+    path: Path, dest_dir: Path, omitidas: list[str] | None = None
+) -> list[Path]:
+    return _RUTAS.extraer_imagenes_docx(path, dest_dir, omitidas)
+
+
+def extraer_enlaces_docx(path: Path) -> list[dict]:
+    return _RUTAS.extraer_enlaces_docx(path)
+
+
+def adjuntar_foto_portada(receta: dict, src: Path, media_dir: Path) -> None:
+    """Prioriza el enlace celeste «Foto» del Word; si no, word/media embebido."""
+    alt = ""
+    for im in receta.get("imagenes") or []:
+        if im.get("alt"):
+            alt = im["alt"]
+            break
+    enlace = _RUTAS.elegir_enlace_foto(extraer_enlaces_docx(src))
+    url = (enlace or {}).get("url") or ""
+    guardada = None
+    if url:
+        print(f"enlace Foto: {url}")
+        guardada = _RUTAS.descargar_imagen_url(url, media_dir)
+        if guardada:
+            print(f"imagenes: 1 (enlace Foto → {guardada.name})")
+    if not guardada:
+        omitidas: list[str] = []
+        embebidas = extraer_imagenes_docx(src, media_dir, omitidas)
+        if embebidas:
+            guardada = embebidas[0]
+            print(f"imagenes: {len(embebidas)}")
+        elif omitidas:
+            print("word/media omitidas:", ", ".join(omitidas))
+    if guardada:
+        try:
+            rel = str(guardada.relative_to(ROOT))
+        except ValueError:
+            rel = str(guardada)
+        receta["imagenes"] = [
+            {
+                "rutaLocal": rel,
+                "urlFuente": url,
+                "alt": alt,
+                "rol": "portada",
+                "textoEnlace": (enlace or {}).get("texto") or "",
+            }
+        ]
+        return
+    if url:
+        receta["imagenes"] = [
+            {
+                "rutaLocal": "",
+                "urlFuente": url,
+                "alt": alt,
+                "rol": "portada",
+                "textoEnlace": (enlace or {}).get("texto") or "Foto",
+                "nota": "Enlace Foto del Word; no se pudo descargar aún",
+            }
+        ]
+        print("imagenes: 0 (enlace Foto pendiente de descarga)")
 
 
 def texto_desde_docx(path: Path) -> str:
@@ -113,8 +188,9 @@ def parse_ingredientes(bloque: str) -> list[dict]:
             continue
         if line.lower() in ("ingredientes", "ingredientes:"):
             continue
+        # No usar "l" suelto como unidad: rompería "1 limón" → unidad=l, nombre=imón.
         m = re.match(
-            r"^(?P<cant>\d+[.,]?\d*)\s*(?P<unidad>kg|g|gr|ml|l|lt|cdas?|cdtas?|cucharaditas?|cucharadas?|tazas?|unidades?|u\.?)?\s*(?:de\s+)?(?P<nombre>.+)$",
+            r"^(?P<cant>\d+[.,]?\d*)\s*(?P<unidad>kg|g|gr|ml|lt|litros?|cdas?|cdtas?|cucharaditas?|cucharadas?|tazas?|unidades?|u\.?)?\s*(?:de\s+)?(?P<nombre>.+)$",
             line,
             re.I,
         )
@@ -130,6 +206,7 @@ def parse_ingredientes(bloque: str) -> list[dict]:
                     "nombre": nombre,
                     "cantidad": m.group("cant"),
                     "unidad": unidad,
+                    "linea": line,
                     "skuCencosud": None,
                     "notas": None,
                 }
@@ -140,6 +217,7 @@ def parse_ingredientes(bloque: str) -> list[dict]:
                     "nombre": line,
                     "cantidad": None,
                     "unidad": null_str(),
+                    "linea": line,
                     "skuCencosud": None,
                     "notas": None,
                 }
@@ -151,18 +229,25 @@ def null_str():
     return None
 
 
-def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str]]:
-    """Separa pasos reales de tips."""
+def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
+    """Separa pasos reales de tips. El encabezado «Consejos para…» queda en tips_titulo."""
     pasos: list[dict] = []
     tips: list[str] = []
+    tips_titulo = ""
     en_tips = False
     for raw in bloque.splitlines():
         line = raw.strip()
         if not line:
             continue
-        if re.match(r"(?i)^tips?\b", line):
+        if re.match(r"(?i)^(tips?\b|consejos?\b)", line):
             en_tips = True
-            # si el tip viene en la misma línea tras "Tips …"
+            resto = re.sub(r"(?i)^(tips?|consejos?)\b[:\s\-]*", "", line).strip()
+            if resto and re.match(r"(?i)^(para\s+un|para\s+el|de\s+la)\b", resto):
+                tips_titulo = line.strip()
+            elif resto:
+                tips.append(resto.lstrip("-•* ").strip())
+            elif re.match(r"(?i)^consejos?\b", line):
+                tips_titulo = line.strip()
             continue
         if en_tips:
             tips.append(line.lstrip("-•* ").strip())
@@ -176,7 +261,7 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str]]:
         if re.match(r"(?i)^¿?c[oó]mo preparar", line):
             continue
         pasos.append({"orden": len(pasos) + 1, "texto": line})
-    return pasos, tips
+    return pasos, tips, tips_titulo
 
 
 def parse_lista_csv(valor: str | None) -> list[str]:
@@ -192,13 +277,38 @@ def es_formato_jumbo(lines: list[str]) -> bool:
 
 def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
     meta_titulo = valor_despues_label(lines, ["meta título", "meta titulo"])
-    meta_desc = valor_despues_label(lines, ["meta descripción", "meta descripcion"])
+    # Jumbo a veces escribe solo "descripción:" (sin prefijo meta).
+    meta_desc = valor_despues_label(
+        lines,
+        ["meta descripción", "meta descripcion", "descripción", "descripcion"],
+    )
 
     # Título editorial: primera línea que no sea meta/foto/tags/barra
     titulo = None
+    skip_next_desc_value = False
     for ln in lines:
-        low = ln.lower()
-        if low.startswith("meta ") or low in ("meta título:", "meta titulo:", "meta descripción:", "meta descripcion:"):
+        low = ln.lower().strip()
+        if skip_next_desc_value:
+            skip_next_desc_value = False
+            continue
+        if low.startswith("meta ") or low in (
+            "meta título:",
+            "meta titulo:",
+            "meta descripción:",
+            "meta descripcion:",
+            "descripción:",
+            "descripcion:",
+            "descripción",
+            "descripcion",
+        ):
+            # Si el valor de descripción va en la línea siguiente, saltarla también.
+            if low in ("descripción:", "descripcion:", "descripción", "descripcion") or low.startswith(
+                "meta descripción"
+            ) or low.startswith("meta descripcion"):
+                if ":" in ln and not ln.split(":", 1)[1].strip():
+                    skip_next_desc_value = True
+                elif low in ("descripción", "descripcion"):
+                    skip_next_desc_value = True
             continue
         if low.startswith("texto alt:") or low.startswith("([foto])") or low == "[foto]":
             continue
@@ -247,7 +357,7 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
     pas_bloque = m_pas.group(1).strip() if m_pas else ""
     # si quedó el encabezado "Paso a paso" dentro, limpiar
     pas_bloque = re.sub(r"(?im)^paso a paso\s*:?\s*\n?", "", pas_bloque).strip()
-    pasos, tips = parse_pasos_jumbo(pas_bloque)
+    pasos, tips, tips_titulo = parse_pasos_jumbo(pas_bloque)
 
     faltantes: list[str] = []
     if not titulo:
@@ -301,6 +411,7 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
         "ingredientes": ingredientes,
         "pasos": pasos,
         "tips": tips,
+        "tipsTitulo": tips_titulo,
         "imagenes": imagenes,
         "seo": {
             "metaTitulo": seo_titulo,
@@ -335,7 +446,7 @@ def construir_receta_simple(texto: str, lines: list[str], fuente: str) -> dict:
     )
     pas_bloque = m_pas.group(1).strip() if m_pas else ""
     ingredientes = parse_ingredientes(ing_bloque)
-    pasos, tips = parse_pasos_jumbo(pas_bloque)
+    pasos, tips, tips_titulo = parse_pasos_jumbo(pas_bloque)
 
     porciones = meta_linea(texto, ["porciones", "rinde", "servings"])
     t_prep = meta_linea(
@@ -388,6 +499,7 @@ def construir_receta_simple(texto: str, lines: list[str], fuente: str) -> dict:
         "ingredientes": ingredientes,
         "pasos": pasos,
         "tips": tips,
+        "tipsTitulo": tips_titulo,
         "imagenes": [],
         "seo": {
             "metaTitulo": titulo,
@@ -414,11 +526,29 @@ def construir_receta(texto: str, fuente: str) -> dict:
     return construir_receta_simple(texto, lines, fuente)
 
 
+def crear_parser_argumentos() -> argparse.ArgumentParser:
+    return argparse.ArgumentParser(
+        description="Parsea una receta Word o texto a JSON intermedio CRC.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""Ejemplos:
+  python3 scripts/parse-receta-word.py inbox/receta.docx
+  python3 scripts/parse-receta-word.py inbox/receta.docx --force
+
+La segunda forma es destructiva: --force reemplaza conjuntamente el JSON y el raw existentes.
+""",
+    )
+
+
 def main() -> int:
-    if len(sys.argv) < 2:
-        print("Uso: python3 scripts/parse-receta-word.py <archivo.docx|.txt>", file=sys.stderr)
-        return 2
-    src = Path(sys.argv[1]).expanduser().resolve()
+    parser = crear_parser_argumentos()
+    parser.add_argument("archivo", help="Archivo fuente .docx o .txt")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="DESTRUCTIVO: reemplaza conjuntamente <slug>.json y <slug>.raw.txt si alguno existe",
+    )
+    args = parser.parse_args()
+    src = Path(args.archivo).expanduser().resolve()
     if not src.exists():
         print(f"No existe: {src}", file=sys.stderr)
         return 1
@@ -435,13 +565,30 @@ def main() -> int:
 
     receta = construir_receta(texto, rel)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    # limpiar parseo fallido previo meta-titulo.*
-    for stale in OUT_DIR.glob("meta-titulo.*"):
-        stale.unlink(missing_ok=True)
+    if src.suffix.lower() == ".docx":
+        adjuntar_foto_portada(receta, src, OUT_DIR / "media" / receta["id"])
 
     out = OUT_DIR / f"{receta['id']}.json"
-    out.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     raw_out = OUT_DIR / f"{receta['id']}.raw.txt"
+    existing_outputs = [path for path in (out, raw_out) if path.exists()]
+    if existing_outputs and not args.force:
+        print(
+            "Error: ya existe al menos una salida para esta receta: "
+            + ", ".join(path.name for path in existing_outputs),
+            file=sys.stderr,
+        )
+        print(
+            "No se escribió ningún archivo; JSON y raw se protegen como una unidad.",
+            file=sys.stderr,
+        )
+        print(
+            "Para reemplazar ambos de forma destructiva: "
+            "python3 scripts/parse-receta-word.py <archivo.docx|.txt> --force",
+            file=sys.stderr,
+        )
+        return 3
+
+    out.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     raw_out.write_text(texto + "\n", encoding="utf-8")
 
     print(f"OK → {out.relative_to(ROOT)}")

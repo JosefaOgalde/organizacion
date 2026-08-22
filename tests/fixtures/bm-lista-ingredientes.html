@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Edición de Lista Ingredientes</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; }
+    .editor { margin-left: 280px; width: 640px; }
+    .banner { background: #dbeafe; padding: 8px 12px; margin: 8px 280px; }
+    .seccion { border: 1px solid #ccc; padding: 12px; }
+    .item { margin: 12px 0; padding: 8px; border: 1px dashed #fa0; }
+    label { display: block; font-size: 14px; height: 20px; width: 140px; }
+    .wrap { padding: 8px; }
+    input { display: block; width: 400px; height: 28px; margin-top: 4px; }
+    .cabezal { cursor: pointer; font-weight: 600; padding: 8px 0; }
+  </style>
+</head>
+<body>
+  <h1>Edición de Lista Ingredientes</h1>
+  <div id="borrador" class="banner">
+    Tienes un borrador. ¿Deseas retomarlo?
+    <button id="retomar" type="button">✓</button>
+    <button id="descartar" type="button">X</button>
+  </div>
+  <div class="editor">
+    <p>Formulario list_ingredients</p>
+    <div class="seccion">
+      <div id="head-sec" class="cabezal" aria-expanded="false">Formulario Ítem 1</div>
+      <div id="body-sec" hidden>
+        <label>Título de la sección</label>
+        <input id="titulo-seccion" placeholder="Dale un valor" />
+        <p>Ingredientes</p>
+        <div class="item">
+          <div>Formulario Ítem 1</div>
+          <div class="wrap" style="min-height: 120px; width: 520px;">
+            <span>Ingrediente Dale un valor</span>
+            <p>Ingrediente Dale un valor</p>
+            <label for="ing-0">Ingrediente *</label>
+            <input id="ing-0" placeholder="Dale un valor" />
+          </div>
+        </div>
+        <div class="item">
+          <div>Formulario Ítem 2</div>
+          <div class="wrap" style="min-height: 120px; width: 520px;">
+            <span>Ingrediente Dale un valor</span>
+            <p>Ingrediente Dale un valor</p>
+            <label for="ing-1">Ingrediente *</label>
+            <input id="ing-1" placeholder="Dale un valor" />
+          </div>
+        </div>
+        <div class="item">
+          <div>Formulario Ítem 3</div>
+          <div class="wrap" style="min-height: 120px; width: 520px;">
+            <span>Ingrediente Dale un valor</span>
+            <p>Ingrediente Dale un valor</p>
+            <label for="ing-2">Ingrediente *</label>
+            <input id="ing-2" placeholder="Dale un valor" />
+          </div>
+        </div>
+        <button type="button" id="add-interno">+ Agregar nuevo ítem</button>
+      </div>
+    </div>
+    <button type="button" id="add-seccion">+ Agregar nuevo ítem</button>
+  </div>
+  <script>
+    document.getElementById("head-sec").addEventListener("click", function () {
+      const abierto = this.getAttribute("aria-expanded") === "true";
+      this.setAttribute("aria-expanded", abierto ? "false" : "true");
+      document.getElementById("body-sec").hidden = abierto;
+    });
+    document.getElementById("retomar").addEventListener("click", function () {
+      document.getElementById("borrador").remove();
+    });
+  </script>
+</body>
+</html>

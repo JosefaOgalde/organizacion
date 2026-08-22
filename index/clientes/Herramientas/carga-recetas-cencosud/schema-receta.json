@@ -68,7 +68,8 @@
       "properties": {
         "metaTitulo": { "type": ["string", "null"] },
         "metaDescripcion": { "type": ["string", "null"] },
-        "slugSugerido": { "type": ["string", "null"] }
+        "slugSugerido": { "type": ["string", "null"] },
+        "html": { "type": ["string", "null"], "description": "HTML crudo del bloque SEO HTML (Consejos)" }
       }
     },
     "camposFaltantes": {
