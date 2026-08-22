@@ -177,6 +177,26 @@ class ParseRecetaWordTests(unittest.TestCase):
         self.assertEqual(len(receta["tips"]), 2)
         self.assertEqual(receta["estado"], "listo-para-cargar")
 
+    def test_titulo_de_la_seccion_tips_no_se_guarda_como_tip(self):
+        bloque = (
+            "Arma las brochetas y ásalas.\n"
+            "Tips para unos anticuchos de verduras perfectos\n"
+            "Remoja los palos de madera 30 minutos.\n"
+            "Prefiere verduras firmes.\n"
+        )
+        pasos, tips = self.modulo.parse_pasos_jumbo(bloque)
+
+        self.assertEqual(len(pasos), 1)
+        self.assertEqual(
+            tips,
+            ["Remoja los palos de madera 30 minutos.", "Prefiere verduras firmes."],
+        )
+
+    def test_tip_en_la_misma_linea_del_encabezado_si_hay_dos_puntos(self):
+        _, tips = self.modulo.parse_pasos_jumbo("Tip: deja reposar el chimichurri.\n")
+
+        self.assertEqual(tips, ["deja reposar el chimichurri."])
+
     def test_dificultad_usa_el_enum_sin_tildes_del_schema(self):
         texto_jumbo = (
             "Meta título:\n"

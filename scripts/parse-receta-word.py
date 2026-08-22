@@ -179,10 +179,13 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str]]:
         line = raw.strip()
         if not line:
             continue
-        if re.match(r"(?i)^(tips?\b|consejos?\b)", line):
+        encabezado = re.match(r"(?i)^(tips?|consejos?)\b\s*(?P<sep>[:\-–])?\s*(?P<resto>.*)$", line)
+        if encabezado:
             en_tips = True
-            resto = re.sub(r"(?i)^(tips?|consejos?)\b[:\s\-]*", "", line).strip()
-            if resto and not re.match(r"(?i)^(para\s+un|para\s+el|de\s+la)\b", resto):
+            # «Tips: deja reposar» trae el consejo en la misma línea;
+            # «Tips para unos anticuchos perfectos» es solo el título de la sección.
+            resto = (encabezado.group("resto") or "").strip()
+            if resto and encabezado.group("sep"):
                 tips.append(resto.lstrip("-•* ").strip())
             continue
         if en_tips:
