@@ -3904,10 +3904,102 @@ def _valor_quedo(leido: str | None, esperado: str) -> bool:
     return exp.lower() in bajo and len(bajo) >= len(exp) * 0.5
 
 
+# HTML crudo (Paso a Paso): nunca textContent ni entidades &lt;p&gt;.
+JS_CRC_SET_HTML = """function crcPareceHtml(s) {
+  s = String(s || '');
+  return /<(p|strong|ul|li|ol|br|em|h[1-6]|div|b|i)\\b/i.test(s);
+}
+function crcHtmlTieneTagsReales(s) {
+  s = String(s || '');
+  if (!s) return false;
+  if (/&lt;(p|strong|ul|li)\\b/i.test(s) && !/<(p|strong|ul|li)\\b/i.test(s)) return false;
+  return /<(p|strong|ul|li|ol|br|em|h[1-6]|div|b|i)\\b/i.test(s);
+}
+function crcLeerHtml(el) {
+  if (!el) return '';
+  const tag = (el.tagName || '').toLowerCase();
+  if (tag === 'textarea' || tag === 'input') return String(el.value || '');
+  const ce = el.getAttribute && el.getAttribute('contenteditable');
+  if (ce && ce !== 'false' && ce !== 'plaintext-only') return String(el.innerHTML || '');
+  if (el.isContentEditable) return String(el.innerHTML || '');
+  return String(el.value || el.innerHTML || '');
+}
+function crcSetHtmlEditors(html) {
+  html = String(html || '');
+  try {
+    const tm = window.tinymce || window.tinyMCE;
+    if (tm) {
+      const eds = tm.editors || [];
+      for (let i = 0; i < eds.length; i++) {
+        if (eds[i] && eds[i].setContent) {
+          eds[i].setContent(html);
+          return { ok: true, wrote: String((eds[i].getContent && eds[i].getContent()) || html), via: 'tinymce' };
+        }
+      }
+    }
+  } catch (e) {}
+  try {
+    if (window.CKEDITOR && window.CKEDITOR.instances) {
+      for (const name in window.CKEDITOR.instances) {
+        const ed = window.CKEDITOR.instances[name];
+        if (ed && ed.setData) {
+          ed.setData(html);
+          return { ok: true, wrote: String((ed.getData && ed.getData()) || html), via: 'ckeditor' };
+        }
+      }
+    }
+  } catch (e) {}
+  return null;
+}
+function crcSetHtml(el, html) {
+  if (!el) return '';
+  html = String(html);
+  const tag = (el.tagName || '').toLowerCase();
+  try { el.focus(); } catch (e) {}
+  try {
+    const tm = window.tinymce || window.tinyMCE;
+    const id = el.id || '';
+    const ed = tm && tm.get && id ? tm.get(id) : null;
+    if (ed && ed.setContent) {
+      ed.setContent(html);
+      return String((ed.getContent && ed.getContent()) || html);
+    }
+  } catch (e) {}
+  if (tag === 'textarea' || tag === 'input') {
+    const proto = tag === 'textarea' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+    const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+    const last = el.value;
+    const tracker = el._valueTracker;
+    if (tracker && tracker.setValue) tracker.setValue(last == null ? '' : String(last));
+    if (desc && desc.set) desc.set.call(el, html);
+    else el.value = html;
+    try {
+      el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true, data: html, inputType: 'insertFromPaste' }));
+    } catch (e) {}
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    return String(el.value || '');
+  }
+  const ce = el.getAttribute && el.getAttribute('contenteditable');
+  if ((ce && ce !== 'false' && ce !== 'plaintext-only') || el.isContentEditable) {
+    try { el.innerHTML = html; } catch (e) { return ''; }
+    try {
+      el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertFromPaste', data: html }));
+    } catch (e) {
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    return String(el.innerHTML || '');
+  }
+  return '';
+}
+"""
+
 # React 16/17: fill() de Playwright no actualiza el state; hay que pasar por el setter nativo + _valueTracker.
-JS_CRC_SET_REACT = """function crcSetReact(el, v) {
+JS_CRC_SET_REACT = JS_CRC_SET_HTML + """function crcSetReact(el, v) {
   if (!el) return '';
   v = String(v);
+  if (crcPareceHtml(v)) return crcSetHtml(el, v);
   const tag = (el.tagName || '').toLowerCase();
   try { el.focus(); } catch (e) {}
   if (tag === 'select') {
@@ -3974,6 +4066,8 @@ JS_ESCRIBIR_PASO_HTML = (
     + JS_CRC_LABELS_TAG_LINK
     + """
   const v = String(html || '');
+  const eds = crcSetHtmlEditors(v);
+  if (eds && crcHtmlTieneTagsReales(eds.wrote)) return Object.assign(eds, { tags: true });
   const esPaso = (t) => /^Paso a [Pp]aso$/i.test(t);
   const labs = crcDeepAll('label, legend, p, span, strong, h3, h4', document).filter((el) => {
     const t = crcEtiquetaIngrediente(el);
@@ -3982,48 +4076,68 @@ JS_ESCRIBIR_PASO_HTML = (
   });
   const lab = labs.sort((a, b) => (a.getBoundingClientRect().width * a.getBoundingClientRect().height) - (b.getBoundingClientRect().width * b.getBoundingClientRect().height))[0];
   const labR = lab ? lab.getBoundingClientRect() : { top: 0, bottom: 200 };
-  const enRango = (el) => {
-    const r = el.getBoundingClientRect();
-    return r.width > 20 && r.height > 12 && r.left >= 20 && r.top >= labR.top - 20;
-  };
-  let el = null;
-  const textareas = crcDeepAll('textarea', document).filter((c) => {
-    try {
-      const st = getComputedStyle(c);
-      if (st.display === 'none' || st.visibility === 'hidden') return false;
-    } catch (e) {}
-    return enRango(c);
-  });
-  if (textareas.length) el = textareas[textareas.length - 1];
-  if (!el) {
-    el = crcDeepAll('input, [role="textbox"], [contenteditable="true"]', document).find((c) => {
-      if (crcCercaTituloLista(c)) return false;
-      return crcEsCajaTexto(c) && enRango(c);
-    }) || null;
+  let ta = null;
+  if (lab) {
+    const htmlFor = lab.getAttribute && lab.getAttribute('for');
+    if (htmlFor) {
+      const byId = document.getElementById(htmlFor);
+      if (byId && (byId.tagName || '').toLowerCase() === 'textarea') ta = byId;
+    }
+    if (!ta) {
+      let node = lab;
+      for (let i = 0; i < 8 && node && !ta; i++) {
+        const hit = crcDeepAll('textarea', node).find((c) => !crcCercaTituloLista(c));
+        if (hit) ta = hit;
+        node = node.parentElement;
+      }
+    }
   }
-  if (!el) {
+  if (!ta) {
+    const textareas = crcDeepAll('textarea', document).filter((c) => {
+      if (crcCercaTituloLista(c)) return false;
+      const r = c.getBoundingClientRect();
+      try {
+        const st = getComputedStyle(c);
+        if (st.display === 'none' || st.visibility === 'hidden' || c.hidden) return !!lab;
+      } catch (e) {}
+      return r.left >= 20 && r.top >= labR.top - 20;
+    });
+    if (textareas.length) ta = textareas[textareas.length - 1];
+  }
+  const ce = crcDeepAll('[contenteditable="true"], [role="textbox"]', document).find((c) => {
+    if (crcCercaTituloLista(c)) return false;
+    const r = c.getBoundingClientRect();
+    return r.width > 20 && r.height > 12 && r.left >= 20 && r.top >= labR.top - 20;
+  }) || null;
+  if (!ta && !ce) {
     for (const ifr of document.querySelectorAll('iframe')) {
       try {
         const doc = ifr.contentDocument;
         const body = doc && doc.body;
         if (body && (body.getAttribute('contenteditable') === 'true' || doc.designMode === 'on')) {
           body.innerHTML = v;
-          return { ok: true, wrote: body.innerHTML, via: 'iframe' };
+          const wrote = String(body.innerHTML || '');
+          return { ok: crcHtmlTieneTagsReales(wrote), wrote, via: 'iframe', tags: crcHtmlTieneTagsReales(wrote) };
         }
-        const ta = doc && doc.querySelector('textarea');
-        if (ta) { crcSetReact(ta, v); return { ok: true, wrote: String(ta.value || ''), via: 'iframe-ta' }; }
+        const ifTa = doc && doc.querySelector('textarea');
+        if (ifTa) {
+          const wrote = crcSetHtml(ifTa, v);
+          return { ok: crcHtmlTieneTagsReales(wrote), wrote, via: 'iframe-ta', tags: crcHtmlTieneTagsReales(wrote) };
+        }
       } catch (e) {}
     }
   }
-  if (!el) return { ok: false, reason: 'sin-paso' };
-  if (el.getAttribute && el.getAttribute('contenteditable') === 'true') {
-    el.innerHTML = v;
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    el.dispatchEvent(new Event('change', { bubbles: true }));
-    return { ok: true, wrote: el.innerHTML, via: 'ce' };
+  if (!ta && !ce) return { ok: false, reason: 'sin-paso', wrote: '', tags: false };
+  let wrote = '';
+  let via = '';
+  if (ta) { wrote = crcSetHtml(ta, v); via = 'ta'; }
+  if (ce) {
+    const wce = crcSetHtml(ce, v);
+    via = via ? via + '+ce' : 'ce';
+    if (!wrote) wrote = wce;
   }
-  const wrote = crcSetReact(el, v);
-  return { ok: true, wrote, via: 'caja' };
+  const tags = crcHtmlTieneTagsReales(wrote);
+  return { ok: tags, wrote, via, tags };
 }"""
 )
 
@@ -5344,16 +5458,46 @@ def _esc_html(texto: str) -> str:
     )
 
 
+_HTML_TAG_RE = re.compile(r"<(p|strong|ul|li|ol|br\s*/?|em|h[1-6]|div|b|i)\b", re.I)
+_HTML_ESCAPED_RE = re.compile(r"&lt;(p|strong|ul|li|ol|br|em|h[1-6]|div|b|i)\b", re.I)
+
+
+def parece_html(texto: str | None) -> bool:
+    """True si el texto ya trae etiquetas reales (no &lt;p&gt;)."""
+    s = texto or ""
+    if not s or _HTML_ESCAPED_RE.search(s):
+        return False
+    return bool(_HTML_TAG_RE.search(s))
+
+
+def html_quedo_con_etiquetas(escrito: str | None, original: str | None = None) -> bool:
+    """El campo tiene <p>/<strong> de verdad, no entidades escapadas."""
+    s = escrito or ""
+    if not s:
+        return False
+    if _HTML_ESCAPED_RE.search(s) and not _HTML_TAG_RE.search(s):
+        return False
+    if _HTML_TAG_RE.search(s):
+        return True
+    if original and parece_html(original):
+        return False
+    return False
+
+
 def html_pasos(items: list[dict]) -> str:
-    """HTML para el editor «Paso a Paso» (modo HTML + Script)."""
+    """HTML para el editor «Paso a Paso» (modo HTML + Script). No reescapa tags."""
     pasos: list[str] = []
     consejos: list[str] = []
     for it in items or []:
         texto = linea_paso(it)
         if not texto:
             continue
+        if parece_html(texto):
+            pasos.append(texto.strip())
+            continue
         if re.match(r"(?i)^consejo\b", texto):
-            consejos.append(re.sub(r"(?i)^consejo:\s*", "", texto).strip())
+            cuerpo = re.sub(r"(?i)^consejo:\s*", "", texto).strip()
+            consejos.append(cuerpo if parece_html(cuerpo) else _esc_html(cuerpo))
             continue
         tit, cuerpo = partir_paso(texto)
         if tit:
@@ -5362,7 +5506,7 @@ def html_pasos(items: list[dict]) -> str:
             pasos.append(f"<p>{_esc_html(texto)}</p>")
     html = "\n".join(pasos)
     if consejos:
-        lis = "".join(f"<li>{_esc_html(c)}</li>" for c in consejos)
+        lis = "".join(f"<li>{c}</li>" for c in consejos)
         html += f"\n<p><strong>Consejos</strong></p>\n<ul>{lis}</ul>"
     return html.strip()
 
@@ -5661,6 +5805,7 @@ def escribir_titulo_lista_instrucciones(page, valor: str) -> bool:
 
 
 def escribir_paso_a_paso_html(page, html: str) -> bool:
+    """Pega HTML crudo. Falla si las etiquetas se escaparon o se perdieron."""
     if not html:
         return False
     for fr in _frames_pagina(page):
@@ -5668,21 +5813,9 @@ def escribir_paso_a_paso_html(page, html: str) -> bool:
             out = fr.evaluate(JS_ESCRIBIR_PASO_HTML, html)
         except Exception:
             out = None
-        if isinstance(out, dict) and out.get("ok") and (
-            _valor_quedo(str(out.get("wrote") or ""), html)
-            or "<p>" in str(out.get("wrote") or "")
-            or "<strong>" in str(out.get("wrote") or "")
-        ):
+        wrote = str(out.get("wrote") or "") if isinstance(out, dict) else ""
+        if isinstance(out, dict) and out.get("ok") and html_quedo_con_etiquetas(wrote, html):
             return True
-        get_by_label = getattr(fr, "get_by_label", None)
-        if get_by_label:
-            try:
-                loc = get_by_label(re.compile(r"^Paso a [Pp]aso(\s*\*)?$", re.I))
-                if loc.count():
-                    if escribir_valor(page, loc.first, html, exigir_lienzo=False):
-                        return True
-            except Exception:
-                pass
         locator = getattr(fr, "locator", None)
         if locator:
             try:
@@ -5691,11 +5824,20 @@ def escribir_paso_a_paso_html(page, html: str) -> bool:
                 for i in range(n):
                     item = tas.nth(i)
                     try:
-                        if hasattr(item, "is_visible") and not item.is_visible():
-                            continue
+                        item.fill(html, timeout=3_000)
                     except Exception:
-                        pass
-                    if escribir_valor(page, item, html, exigir_lienzo=False):
+                        try:
+                            item.evaluate(JS_ESCRIBIR_NATIVO, html)
+                        except Exception:
+                            continue
+                    leido = _leer_valor(item)
+                    if html_quedo_con_etiquetas(leido, html):
+                        return True
+                    try:
+                        item.evaluate(JS_ESCRIBIR_NATIVO, html)
+                    except Exception:
+                        continue
+                    if html_quedo_con_etiquetas(_leer_valor(item), html):
                         return True
             except Exception:
                 pass
@@ -6048,25 +6190,10 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
         html = html_pasos(items)
         activar_html_paso_a_paso(page)
         if html and escribir_paso_a_paso_html(page, html):
-            print("  ✓ Paso a Paso (HTML) con los pasos del Word")
+            print("  ✓ Paso a Paso (HTML) con etiquetas <p>/<strong>")
             return max(1, len([it for it in items if linea_paso(it)]))
-        print("  · El HTML no quedó. Intento ítem a ítem.")
-        expandir_todos_items_formulario(page)
-        lineas = [linea_paso(it) for it in items if linea_paso(it)]
-        asegurar_n_instrucciones(page, len(lineas))
-        llenados_dir = 0
-        for i, texto in enumerate(lineas):
-            if rellenar_item_instruccion(page, i, texto):
-                llenados_dir += 1
-        if llenados_dir:
-            return llenados_dir
-        n_lab = fill_repetidos_por_label(
-            page,
-            r"^(Instrucci|Paso|Descripción|Texto|Paso a Paso)\b",
-            lineas,
-        )
-        if n_lab:
-            return n_lab
+        print("  ✗ Paso a Paso no quedó con etiquetas HTML. No escribo texto plano.")
+        return 0
 
     n_acc = contar_acordeones(page)
     if n_acc <= 0:

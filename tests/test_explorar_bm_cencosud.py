@@ -798,6 +798,8 @@ class ExplorarBmTests(unittest.TestCase):
 
     def test_titulo_js_react_en_frame(self):
         self.assertIn("_valueTracker", self.modulo.JS_CRC_SET_REACT)
+        self.assertIn("crcSetHtml", self.modulo.JS_CRC_SET_REACT)
+        self.assertIn("crcPareceHtml", self.modulo.JS_CRC_SET_REACT)
         self.assertIn("crcFindTitulo", self.modulo.JS_ESCRIBIR_TITULO_CABECERA)
         self.assertIn("dale un valor", self.modulo.JS_CRC_FIND_TITULO)
         self.assertIn("Dale un valor", self.modulo.JS_CRC_FIND_TITULO)

@@ -308,6 +308,21 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         )
         self.assertIn("<strong>Sazona el salmón:</strong>", html)
         self.assertIn("Consejos", html)
+        self.assertNotIn("&lt;p&gt;", html)
+        self.assertNotIn("&lt;strong", html)
+        ya_html = "<p><strong>Sazona el salmón:</strong> Seca los filetes.</p>"
+        self.assertEqual(self.explorar.html_pasos([{"texto": ya_html}]), ya_html)
+        self.assertTrue(self.explorar.parece_html(ya_html))
+        self.assertFalse(self.explorar.parece_html("&lt;p&gt;Sazona&lt;/p&gt;"))
+        self.assertTrue(self.explorar.html_quedo_con_etiquetas(ya_html, ya_html))
+        self.assertFalse(
+            self.explorar.html_quedo_con_etiquetas("&lt;p&gt;Sazona&lt;/p&gt;", ya_html)
+        )
+        self.assertIn("crcSetHtml", self.explorar.JS_ESCRIBIR_PASO_HTML)
+        self.assertIn("crcHtmlTieneTagsReales", self.explorar.JS_ESCRIBIR_PASO_HTML)
+        src_fill = inspect.getsource(self.explorar.fill_lista_acordeones)
+        self.assertIn("etiquetas", src_fill)
+        self.assertNotIn("Intento ítem a ítem", src_fill)
         self.assertIn("html", self.explorar.JS_ACTIVAR_HTML_PASO.lower())
         self.assertIn("script", self.explorar.JS_ACTIVAR_HTML_PASO.lower())
         items = self.explorar.items_instrucciones(
@@ -970,6 +985,48 @@ class JsIngredienteExactoTests(unittest.TestCase):
             html = page.evaluate("() => document.getElementById('paso-html').value")
             self.assertIn("<strong>Sazona el salmón:</strong>", html)
             self.assertIn("Prepara la salsa de palta", html)
+            self.assertNotIn("&lt;p&gt;", html)
+            self.assertNotIn("&lt;strong", html)
+            self.assertGreaterEqual(
+                page.evaluate("() => document.querySelectorAll('#wysiwyg strong').length"),
+                1,
+            )
+            browser.close()
+
+    def test_paso_html_mantiene_etiquetas_en_contenteditable(self):
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError:
+            self.skipTest("playwright no instalado")
+        fixture = (
+            Path(__file__).resolve().parent / "fixtures" / "bm-lista-instrucciones.html"
+        )
+        crudo = "<p><strong>Sazona el salmón:</strong> Seca los filetes.</p>"
+        with sync_playwright() as pw:
+            browser = pw.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(fixture.as_uri())
+            wrote = page.evaluate(
+                "([sel, v]) => { "
+                + self.explorar.JS_CRC_SET_REACT
+                + " return crcSetReact(document.querySelector(sel), v); }",
+                ["#wysiwyg", crudo],
+            )
+            self.assertIn("<strong>", wrote)
+            self.assertNotIn("&lt;strong", wrote)
+            self.assertEqual(
+                page.evaluate("() => document.querySelectorAll('#wysiwyg strong').length"),
+                1,
+            )
+            out = page.evaluate(self.explorar.JS_ESCRIBIR_PASO_HTML, crudo)
+            self.assertTrue(out.get("ok"), out)
+            self.assertTrue(out.get("tags"), out)
+            self.assertIn("<strong>", str(out.get("wrote") or ""))
+            self.assertNotIn("&lt;p&gt;", str(out.get("wrote") or ""))
+            ta = page.evaluate("() => document.getElementById('paso-html').value")
+            self.assertIn("<p>", ta)
+            self.assertIn("<strong>Sazona el salmón:</strong>", ta)
+            self.assertNotIn("&lt;p&gt;", ta)
             browser.close()
 
 
