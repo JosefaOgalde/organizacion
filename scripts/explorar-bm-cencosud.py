@@ -747,22 +747,131 @@ def _clic_guardar_editor(page) -> bool:
 
 
 def cerrar_editor_componente(page) -> None:
-    """Guarda el editor del lápiz y vuelve al lienzo. Nunca «Sí, acepto» ni Volver."""
+    """Guarda el editor del lápiz. Nunca «Sí, acepto»."""
     resolver_modal_cambios(page)
     _clic_guardar_editor(page)
     resolver_modal_cambios(page)
     _clic_guardar_editor(page)
+
+
+JS_VOLVER_AL_LIENZO = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const visibles = (el) => {
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 6 && r.height > 6;
+  };
+  const esProyectos = (el) => {
+    const t = clean(el.innerText || el.getAttribute('aria-label') || '');
+    const href = el.getAttribute('href') || '';
+    if (/view-manager/i.test(href)) return false;
+    return /proyectos/i.test(t) || /\\/cms\\/projects\\/?$/i.test(href);
+  };
+  const nodos = [...document.querySelectorAll('button, [role="button"], a')].filter(visibles);
+  const back = nodos.find((el) => {
+    if (esProyectos(el)) return false;
+    const lab = clean(
+      el.innerText || el.getAttribute('aria-label') || el.getAttribute('title') || ''
+    );
+    if (/publicar/i.test(lab)) return false;
+    return /^(volver|atrás|atras|back|cerrar|close)$/i.test(lab)
+      || /volver|atrás|atras|arrow.?back|chevron.?left/i.test(
+        el.getAttribute('aria-label') || el.getAttribute('title') || ''
+      );
+  });
+  if (back) { back.click(); return 'back'; }
+  const crumbs = [...document.querySelectorAll('nav a, [class*="breadcrumb"] a, [class*="Breadcrumb"] a')].filter(visibles);
+  const gestor = crumbs.find((el) => {
+    if (esProyectos(el)) return false;
+    const t = clean(el.innerText || '');
+    const href = el.getAttribute('href') || '';
+    return /gestor|view-manager|contenido/i.test(t + ' ' + href);
+  });
+  if (gestor) { gestor.click(); return 'gestor'; }
+  return false;
+}"""
+
+
+def parece_guardado_ok(page) -> bool:
+    try:
+        t = page.evaluate("() => (document.body && document.body.innerText) || ''")
+    except Exception:
+        return False
+    return isinstance(t, str) and bool(re.search(r"guardado satisfactoriamente", t, re.I))
+
+
+def sigue_dato_requerido(page) -> bool:
+    try:
+        t = page.evaluate("() => (document.body && document.body.innerText) || ''")
+    except Exception:
+        return False
+    return isinstance(t, str) and "el dato es requerido" in t.lower()
+
+
+def url_lienzo_receta(url: str | None, url_ficha: str | None = None) -> str | None:
+    """URL del Gestor (5 bloques), nunca la lista de Proyectos."""
+    for raw in (url_ficha, url):
+        if not raw or es_lista_proyectos_cms(raw):
+            continue
+        if "view-manager" not in raw:
+            continue
+        limpio = re.sub(r"#.*$", "", raw)
+        limpio = re.sub(
+            r"/(?:edit|edicion|edici[oó]n|component)(?:/.*)?$",
+            "",
+            limpio,
+            flags=re.I,
+        )
+        return limpio.rstrip("/")
+    return None
+
+
+def volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
+    """Sale de «Edición de Cabecera» al lienzo. No toca Proyectos ni la paleta."""
+    if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
+        return True
+    try:
+        page.evaluate(JS_VOLVER_AL_LIENZO)
+        page.wait_for_timeout(500)
+    except Exception:
+        pass
+    resolver_modal_cambios(page)
+    if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
+        print("  · Volví al lienzo (5 bloques)")
+        return True
+    destino = url_lienzo_receta(url_actual(page), url_ficha)
+    if destino and hasattr(page, "goto"):
+        try:
+            print("  · Vuelvo al Gestor de la receta…")
+            page.goto(destino, wait_until="domcontentloaded", timeout=60_000)
+            page.wait_for_timeout(500)
+        except TypeError:
+            try:
+                page.goto(destino)
+                page.wait_for_timeout(500)
+            except Exception:
+                pass
+        except Exception:
+            pass
+        if es_lista_proyectos_cms(url_actual(page)) and url_ficha and not es_lista_proyectos_cms(url_ficha):
+            try:
+                page.goto(url_ficha, wait_until="domcontentloaded", timeout=60_000)
+            except Exception:
+                pass
+        if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
+            print("  · Volví al lienzo (5 bloques)")
+            return True
+    return editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page))
 
 
 def guardar_y_volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
-    """Cierra el editor actual. Si sigue en Cabecera, no pasar al siguiente bloque."""
+    """Guarda el editor y vuelve a los 5 bloques. Si no sale, no abre el siguiente."""
     cerrar_editor_componente(page)
     try:
         page.wait_for_timeout(400)
     except Exception:
         pass
-    actual = editor_actual(page)
-    if actual is None:
+    if editor_actual(page) is None:
         return True
     resolver_modal_cambios(page)
     if _clic_guardar_editor(page):
@@ -772,6 +881,9 @@ def guardar_y_volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
             pass
     if editor_actual(page) is None:
         return True
+    if parece_guardado_ok(page) or not sigue_dato_requerido(page):
+        if volver_al_lienzo(page, url_ficha):
+            return True
     if url_ficha:
         restaurar_ficha_si_salio(page, url_ficha)
         if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
@@ -2480,7 +2592,7 @@ def fill_from_receta(
         except Exception:
             pass
         if not guardar_y_volver_al_lienzo(page, url_ficha):
-            print("  · Cabecera incompleta o sin Guardar. Me detengo aquí.")
+            print("  · Cabecera incompleta o no pude volver al lienzo. Me detengo aquí.")
             resultados["titulo"] = cabecera.get("field_titulo", False)
             resultados["descripcion"] = cabecera.get("field_descripcion", False)
             llenados = sum(1 for v in resultados.values() if v)

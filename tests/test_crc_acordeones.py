@@ -318,6 +318,75 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             self.assertEqual(extraida.read_bytes()[:8], png[:8])
             self.assertEqual(extraida.suffix, ".png")
 
+    def test_url_lienzo_no_es_lista_proyectos(self):
+        ficha = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager"
+        )
+        editor = ficha + "/edit"
+        self.assertEqual(self.explorar.url_lienzo_receta(editor, ficha), ficha)
+        self.assertIsNone(
+            self.explorar.url_lienzo_receta(
+                "https://business-manager.ecomm.cencosud.com/cms/projects",
+                None,
+            )
+        )
+
+    def test_volver_al_lienzo_tras_guardado(self):
+        ficha = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager"
+        )
+
+        class Pagina:
+            def __init__(self):
+                self.url = ficha + "/edit"
+                self.titulo = "Edición de Cabecera | Recetas_Jumbo"
+                self.gotos = []
+
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "h1,h2,h3" in texto:
+                    return self.titulo
+                if "innerText" in texto and "querySelectorAll" not in texto:
+                    return "Guardado satisfactoriamente. No olvides de publicar"
+                if "volver" in texto.lower() or "Gestor" in texto:
+                    return False
+                return ""
+
+            def goto(self, url, **_kwargs):
+                self.gotos.append(url)
+                self.url = url
+                self.titulo = "Recetas_Jumbo | web"
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+            def locator(self, _sel):
+                class Vacio:
+                    def count(self):
+                        return 0
+
+                    def last(self):
+                        return self
+
+                    def click(self, **_k):
+                        return None
+
+                return Vacio()
+
+        pagina = Pagina()
+        self.assertTrue(self.explorar.parece_guardado_ok(pagina))
+        self.assertTrue(self.explorar.volver_al_lienzo(pagina, ficha))
+        self.assertEqual(pagina.gotos, [ficha])
+        self.assertIsNone(self.explorar.editor_actual(pagina))
+
+    def test_js_volver_no_clica_proyectos(self):
+        js = self.explorar.JS_VOLVER_AL_LIENZO
+        self.assertIn("proyectos", js.lower())
+        self.assertIn("view-manager", js)
+        self.assertIn("volver", js.lower())
+
     def test_js_modal_imagen_pide_confirmar(self):
         js = self.explorar.JS_CLICK_CONFIRMAR_IMAGEN
         self.assertIn("Confirmar", js)
