@@ -244,6 +244,27 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertFalse(self.explorar.label_coincide_campo("field_titulo", "Meta título"))
         self.assertTrue(self.explorar.label_coincide_campo("field_tiempo", "Duración"))
 
+    def test_rellena_ingredientes_si_ya_estoy_en_la_lista(self):
+        src = inspect.getsource(self.explorar.fill_from_receta)
+        src_fill = inspect.getsource(self.explorar.fill_lista_acordeones)
+        src_item = inspect.getsource(self.explorar.rellenar_item_ingrediente)
+        src_agregar = inspect.getsource(self.explorar.click_agregar_item)
+        self.assertIn("Ya estoy en Lista Ingredientes", src)
+        self.assertIn("rellenar_item_ingrediente", src_fill)
+        self.assertIn("expandir_item_formulario", src_item)
+        self.assertIn("Agregar nuevo", src_agregar)
+        self.assertIn("Agregar nuevo ítem", " ".join(self.explorar.BOTONES_AGREGAR))
+
+        class Pagina:
+            def evaluate(self, script, *_args):
+                if "h1,h2,h3" in str(script):
+                    return "Edición de Lista Ingredientes | Recetas_Jumbo"
+                return ""
+
+        pagina = Pagina()
+        self.assertEqual(self.explorar.editor_actual(pagina), "ingredientes")
+        self.assertTrue(self.explorar.puede_rellenar_editor(pagina, "ingredientes"))
+
     def test_ingrediente_label_asterisco(self):
         fields = [
             {

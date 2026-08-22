@@ -3086,6 +3086,9 @@ def subir_imagen_portada(page, receta: dict) -> bool:
 
 
 BOTONES_AGREGAR = (
+    "button:has-text('Agregar nuevo ítem')",
+    "button:has-text('Agregar nuevo item')",
+    "[role='button']:has-text('Agregar nuevo ítem')",
     "button:has-text('Agregar')",
     "button:has-text('Añadir')",
     "button:has-text('Add')",
@@ -4936,17 +4939,23 @@ def fill_por_etiqueta(page, patron: re.Pattern, value, *, key: str | None = None
 
 
 def contar_acordeones(page) -> int:
-    try:
-        n = page.evaluate("() => document.querySelectorAll('[aria-expanded]').length")
-        return int(n or 0)
-    except Exception:
-        return 0
+    n_items = _contar_items_formulario(page)
+    if n_items:
+        return n_items
+    for fr in _frames_pagina(page):
+        try:
+            n = fr.evaluate("() => document.querySelectorAll('[aria-expanded]').length")
+        except Exception:
+            continue
+        if n:
+            return int(n)
+    return 0
 
 
 def expandir_acordeon(page, indice: int) -> bool:
-    try:
-        return bool(
-            page.evaluate(
+    for fr in _frames_pagina(page):
+        try:
+            ok = fr.evaluate(
                 """(i) => {
                   const nodes = [...document.querySelectorAll('[aria-expanded]')];
                   const el = nodes[i];
@@ -4956,35 +4965,50 @@ def expandir_acordeon(page, indice: int) -> bool:
                 }""",
                 indice,
             )
-        )
-    except Exception:
-        return False
+        except Exception:
+            ok = False
+        if ok:
+            return True
+    return False
 
 
 def click_agregar_item(page, preferir_ultimo: bool = False) -> bool:
-    for sel in BOTONES_AGREGAR:
-        try:
-            loc = page.locator(sel)
-            total = loc.count()
-            indices = range(total - 1, -1, -1) if preferir_ultimo else range(total)
-            for i in indices:
-                btn = loc.nth(i)
-                visible = True
-                try:
-                    visible = btn.is_visible()
-                except Exception:
-                    visible = True
-                if visible:
-                    btn.click(timeout=2_000)
+    for fr in _frames_pagina(page):
+        get_by_text = getattr(fr, "get_by_text", None)
+        if get_by_text:
+            try:
+                loc = get_by_text(re.compile(r"Agregar nuevo [ií]tem", re.I))
+                if hasattr(loc, "count") and loc.count():
+                    loc.last.click(timeout=2_000)
                     page.wait_for_timeout(350)
                     return True
-        except Exception:
+            except Exception:
+                pass
+        locator = getattr(fr, "locator", None)
+        if not locator:
             continue
-    for fr in _frames_pagina(page):
+        for sel in BOTONES_AGREGAR:
+            try:
+                loc = locator(sel)
+                total = loc.count()
+                indices = range(total - 1, -1, -1) if preferir_ultimo else range(total)
+                for i in indices:
+                    btn = loc.nth(i)
+                    visible = True
+                    try:
+                        visible = btn.is_visible()
+                    except Exception:
+                        visible = True
+                    if visible:
+                        btn.click(timeout=2_000)
+                        page.wait_for_timeout(350)
+                        return True
+            except Exception:
+                continue
         try:
             out = fr.evaluate(JS_DUPLICAR_ULTIMO_ITEM)
         except Exception:
-            continue
+            out = None
         if out:
             try:
                 page.wait_for_timeout(350)
@@ -5005,6 +5029,41 @@ def asegurar_filas_lista(page, n: int) -> int:
     return actuales
 
 
+def rellenar_item_ingrediente(page, indice: int, item: dict) -> bool:
+    """Despliega Formulario Ítem N y escribe Ingrediente* (línea del Word)."""
+    print(f"  · Despliego Formulario Ítem {indice + 1}…")
+    if not expandir_item_formulario(page, indice):
+        print(f"  ✗ ingredientes[{indice}]: no pude abrir el acordeón")
+        return False
+    linea = linea_ingrediente(item)
+    nombre = (item.get("nombre") or "").strip()
+    cantidad = str(item.get("cantidad") or "").strip()
+    unidad = (item.get("unidad") or "").strip()
+    texto = linea or nombre
+    if not texto:
+        return False
+    ok = False
+    if rellenar_por_label(
+        page,
+        r"^Ingrediente\b",
+        texto,
+        nth=indice,
+        excluir=r"título de la sección|lista",
+    ):
+        ok = True
+    elif escribir_tag_entre_labels(page, indice, texto):
+        ok = True
+    if cantidad:
+        rellenar_por_label(page, r"^Cantidad\b", cantidad, nth=indice)
+    if unidad:
+        rellenar_por_label(page, r"^Unidad\b", unidad, nth=indice)
+    if ok:
+        print(f"  ✓ ingredientes[{indice}] → {texto}")
+    else:
+        print(f"  ✗ ingredientes[{indice}] (no pude escribir en Ingrediente*)")
+    return ok
+
+
 def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
     """Rellena 'Edición de Lista Ingredientes/Instrucciones' ítem a ítem."""
     clave = "ingredientes" if tipo == "ingredientes" else "instrucciones"
@@ -5020,6 +5079,13 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
             "Ingredientes",
             nth=0,
         )
+        asegurar_n_items_tags(page, len(items))
+        llenados_dir = 0
+        for i, item in enumerate(items):
+            if rellenar_item_ingrediente(page, i, item):
+                llenados_dir += 1
+        if llenados_dir:
+            return llenados_dir
         lineas = [linea_ingrediente(it) for it in items if linea_ingrediente(it)]
         n_lab = fill_repetidos_por_label(
             page,
@@ -5223,6 +5289,14 @@ def fill_from_receta(
         else:
             print("  · Tags en pantalla. Los guardo para que el bloque quede cargado.")
         guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+    if editor_actual(page) == "ingredientes":
+        print("  · Ya estoy en Lista Ingredientes. Escribo los del Word.")
+        ings_abiertos = receta.get("ingredientes") or []
+        n_ing_abierto = fill_lista_acordeones(page, ings_abiertos, "ingredientes")
+        if n_ing_abierto:
+            resultados["ingredientes"] = True
+            print(f"  ✓ ingredientes: {n_ing_abierto}/{len(ings_abiertos)} ítems")
+        guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
     if abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
         cabecera = {
             "field_titulo": fill("field_titulo", receta.get("titulo")),
@@ -5288,7 +5362,7 @@ def fill_from_receta(
                 "field_ingredientes",
                 "\n".join(linea_ingrediente(i) for i in ings if linea_ingrediente(i)),
             )
-        guardar_y_volver_al_lienzo(page, url_ficha)
+        guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
     else:
         resultados.setdefault("ingredientes", False)
 
