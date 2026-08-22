@@ -1,5 +1,6 @@
 import email.message
 import importlib.util
+import inspect
 import os
 import tempfile
 import unittest
@@ -456,6 +457,65 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertEqual(pagina.gotos, [ficha])
         self.assertIsNone(self.explorar.editor_actual(pagina))
 
+        class PaginaTags:
+            def __init__(self):
+                self.url = ficha + "/edit"
+                self.titulo = "Edición de tags | Recetas_Jumbo"
+                self.volver = 0
+
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "flecha" in texto or ("volver" in texto.lower() and "Edici" in texto):
+                    self.volver += 1
+                    self.titulo = "Recetas_Jumbo | web"
+                    self.url = ficha
+                    return "flecha"
+                if "h1,h2,h3" in texto:
+                    return self.titulo
+                if "innerHeight" in texto:
+                    return "Edición de tags" in self.titulo
+                if "innerText" in texto:
+                    if "Edición de tags" in self.titulo:
+                        return "Formulario Tags El dato es requerido"
+                    return "Cabecera tags Ingredientes Instrucciones SEO"
+                return ""
+
+            def goto(self, url, **_kwargs):
+                self.url = url
+                self.titulo = "Recetas_Jumbo | web"
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+            def locator(self, _sel):
+                class Vacio:
+                    def count(self):
+                        return 0
+
+                    def last(self):
+                        return self
+
+                    def click(self, **_k):
+                        return None
+
+                    def nth(self, _i):
+                        return self
+
+                    def is_visible(self):
+                        return False
+
+                    def inner_text(self):
+                        return ""
+
+                return Vacio()
+
+        tags = PaginaTags()
+        self.assertTrue(
+            self.explorar.guardar_y_volver_al_lienzo(tags, ficha, forzar_salida=True)
+        )
+        self.assertGreaterEqual(tags.volver, 1)
+        self.assertIsNone(self.explorar.editor_actual(tags))
+
     def test_js_no_rellena_paleta_izquierda(self):
         self.assertIn("r.left >= 240", self.explorar.JS_MARCAR_POR_LABEL)
         self.assertIn("r.left < 240", self.explorar.JS_LIMPIAR_BUSCA_PALETA)
@@ -466,6 +526,20 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIn("proyectos", js.lower())
         self.assertIn("view-manager", js)
         self.assertIn("volver", js.lower())
+        self.assertIn("flecha", js)
+        self.assertIn("Edici", js)
+        self.assertIn("El dato es requerido", self.explorar.JS_SIGUE_REQUERIDO_VISIBLE)
+
+    def test_guardar_tags_fuerza_volver_al_siguiente(self):
+        src_guardar = inspect.getsource(self.explorar.guardar_y_volver_al_lienzo)
+        src_fill = inspect.getsource(self.explorar.fill_from_receta)
+        src_modal = inspect.getsource(self.explorar.resolver_modal_cambios)
+        src_volver = inspect.getsource(self.explorar.volver_al_lienzo)
+        self.assertIn("forzar_salida", src_guardar)
+        self.assertIn("_clic_flecha_volver", src_volver)
+        self.assertIn("forzar_salida=True", src_fill)
+        self.assertIn("salir", src_modal)
+        self.assertIn("Guardar", src_modal)
 
     def test_js_modal_imagen_pide_confirmar(self):
         js = self.explorar.JS_CLICK_CONFIRMAR_IMAGEN

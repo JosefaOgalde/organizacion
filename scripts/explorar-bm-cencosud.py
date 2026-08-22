@@ -1352,6 +1352,30 @@ JS_VOLVER_AL_LIENZO = """() => {
       );
   });
   if (back) { back.click(); return 'back'; }
+  const titulos = [...document.querySelectorAll('h1,h2,h3,h4,p,div,span')].filter((el) => {
+    const linea = clean(el.innerText || '').split('\\n')[0];
+    return /^Edici[oó]n de /i.test(linea) && linea.length < 80 && visibles(el);
+  });
+  titulos.sort((a, b) => a.getBoundingClientRect().height - b.getBoundingClientRect().height);
+  const h = titulos[0];
+  if (h) {
+    const hR = h.getBoundingClientRect();
+    const cands = [...document.querySelectorAll('button, [role="button"], a, svg')].filter((el) => {
+      if (!visibles(el)) return false;
+      const wrap = (el.closest && el.closest('a, button, [role="button"]')) || el;
+      if (esProyectos(wrap) || esProyectos(el)) return false;
+      const r = el.getBoundingClientRect();
+      const mid = (r.top + r.bottom) / 2;
+      const midH = (hR.top + hR.bottom) / 2;
+      return r.right <= hR.left + 14 && r.left >= 4 && Math.abs(mid - midH) < 40;
+    });
+    cands.sort((a, b) => b.getBoundingClientRect().right - a.getBoundingClientRect().right);
+    if (cands[0]) {
+      const clickable = (cands[0].closest && cands[0].closest('button, [role="button"], a')) || cands[0];
+      clickable.click();
+      return 'flecha';
+    }
+  }
   const crumbs = [...document.querySelectorAll('nav a, [class*="breadcrumb"] a, [class*="Breadcrumb"] a')].filter(visibles);
   const gestor = crumbs.find((el) => {
     if (esProyectos(el)) return false;
@@ -1360,6 +1384,24 @@ JS_VOLVER_AL_LIENZO = """() => {
     return /gestor|view-manager|contenido/i.test(t + ' ' + href);
   });
   if (gestor) { gestor.click(); return 'gestor'; }
+  return false;
+}"""
+
+JS_SIGUE_REQUERIDO_VISIBLE = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const vh = window.innerHeight || 800;
+  for (const el of document.querySelectorAll('p, span, div, label, small, li')) {
+    const linea = clean(el.innerText || '').split('\\n')[0];
+    if (!/^El dato es requerido$/i.test(linea) || linea.length > 40) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 4 || r.height < 4) continue;
+    if (r.bottom < 0 || r.top > vh) continue;
+    try {
+      const st = getComputedStyle(el);
+      if (st.display === 'none' || st.visibility === 'hidden') continue;
+    } catch (e) {}
+    return true;
+  }
   return false;
 }"""
 
@@ -1373,7 +1415,14 @@ def parece_guardado_ok(page) -> bool:
 
 
 def sigue_dato_requerido(page) -> bool:
-    return "el dato es requerido" in texto_cuerpo(page).lower()
+    """True solo si el error «El dato es requerido» está visible en pantalla."""
+    for fr in _frames_pagina(page):
+        try:
+            if fr.evaluate(JS_SIGUE_REQUERIDO_VISIBLE):
+                return True
+        except Exception:
+            continue
+    return False
 
 
 JS_IDS_BLOQUES = """() => {
@@ -1711,16 +1760,71 @@ def esperar_lienzo_bloques(page, intentos: int = 12) -> bool:
     return editor_actual(page) is None
 
 
-def volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
-    """Sale de «Edición de Cabecera» al lienzo. No toca Proyectos ni la paleta."""
+def _clic_flecha_volver(page) -> bool:
+    """Pulsa la flecha Volver (a menudo un icono sin texto, dentro del iframe)."""
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_VOLVER_AL_LIENZO)
+        except Exception:
+            out = None
+        if out in {"back", "flecha", "gestor"} or out is True:
+            return True
+        get_by_role = getattr(fr, "get_by_role", None)
+        if get_by_role:
+            try:
+                loc = get_by_role("button", name=re.compile(r"volver|atrás|atras|back", re.I))
+                if hasattr(loc, "count") and loc.count():
+                    loc.first.click(timeout=2_000)
+                    return True
+            except Exception:
+                pass
+        locator = getattr(fr, "locator", None)
+        if locator:
+            try:
+                loc = locator(
+                    '[aria-label*="volver" i], [title*="volver" i], '
+                    '[aria-label*="atrás" i], [aria-label*="back" i]'
+                )
+                if hasattr(loc, "count") and loc.count():
+                    loc.first.click(timeout=2_000)
+                    return True
+            except Exception:
+                pass
+        get_by_text = getattr(fr, "get_by_text", None)
+        if get_by_text:
+            try:
+                loc = get_by_text(re.compile(r"^Gestor$", re.I))
+                if hasattr(loc, "count") and loc.count():
+                    loc.first.click(timeout=2_000)
+                    return True
+            except Exception:
+                pass
+            try:
+                titulo = get_by_text(re.compile(r"^Edici[oó]n de ", re.I))
+                if hasattr(titulo, "count") and titulo.count():
+                    box = titulo.first.bounding_box() if hasattr(titulo.first, "bounding_box") else None
+                    mouse = getattr(fr, "mouse", None) or getattr(page, "mouse", None)
+                    if box and mouse and hasattr(mouse, "click"):
+                        mouse.click(float(box["x"]) - 28, float(box["y"]) + float(box.get("height") or 20) / 2)
+                        return True
+            except Exception:
+                pass
+    return False
+
+
+def volver_al_lienzo(page, url_ficha: str | None = None, *, confirmar_salida: bool = False) -> bool:
+    """Sale del editor (flecha Volver) al lienzo. No toca Proyectos ni la paleta."""
     if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
         return True
+    _clic_flecha_volver(page)
     try:
-        page.evaluate(JS_VOLVER_AL_LIENZO)
         page.wait_for_timeout(500)
     except Exception:
         pass
-    resolver_modal_cambios(page)
+    if confirmar_salida:
+        resolver_modal_cambios(page, salir=True)
+    else:
+        resolver_modal_cambios(page)
     if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
         print("  · Volví al lienzo (5 bloques)")
         esperar_lienzo_bloques(page)
@@ -1761,8 +1865,10 @@ def volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
     return editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page))
 
 
-def guardar_y_volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
-    """Guarda el editor y vuelve a los 5 bloques. Si no sale, no abre el siguiente."""
+def guardar_y_volver_al_lienzo(
+    page, url_ficha: str | None = None, *, forzar_salida: bool = False
+) -> bool:
+    """Guarda el editor y pulsa Volver a los 5 bloques. Si no sale, no abre el siguiente."""
     cerrar_editor_componente(page)
     try:
         page.wait_for_timeout(400)
@@ -1770,7 +1876,7 @@ def guardar_y_volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
         pass
     if editor_actual(page) is None:
         return True
-    resolver_modal_cambios(page)
+    resolver_modal_cambios(page, salir=forzar_salida)
     if _clic_guardar_editor(page):
         try:
             page.wait_for_timeout(500)
@@ -1778,8 +1884,11 @@ def guardar_y_volver_al_lienzo(page, url_ficha: str | None = None) -> bool:
             pass
     if editor_actual(page) is None:
         return True
-    if parece_guardado_ok(page) or not sigue_dato_requerido(page):
-        if volver_al_lienzo(page, url_ficha):
+    puede_salir = forzar_salida or parece_guardado_ok(page) or not sigue_dato_requerido(page)
+    if forzar_salida:
+        print("  · Pulso Volver para seguir con el siguiente bloque.")
+    if puede_salir:
+        if volver_al_lienzo(page, url_ficha, confirmar_salida=forzar_salida):
             return True
     if url_ficha:
         restaurar_ficha_si_salio(page, url_ficha)
@@ -4488,6 +4597,15 @@ def rellenar_items_formulario(page, valores: list[str]) -> int:
                     pass
                 if ok:
                     break
+        if not ok:
+            for loc in _locators_tag_item(contexto, i):
+                if _locator_es_link(loc):
+                    continue
+                if _valor_quedo(_leer_valor(loc), valor):
+                    ok = True
+                    break
+            if not ok and _tag_quedo_en_caja(contexto, i, valor):
+                ok = True
         if ok:
             print(f"  ✓ tag[{i}] → {valor}")
             llenados += 1
@@ -4552,23 +4670,43 @@ def fill_inputs_texto_en_orden(page, valores: list[str]) -> int:
     return llenados
 
 
-def resolver_modal_cambios(page) -> bool:
-    """Si aparece «Tienes cambios sin guardar», Cancelar para no perder el editor."""
+def resolver_modal_cambios(page, *, salir: bool = False) -> bool:
+    """Modal «Tienes cambios sin guardar»: Cancelar si hay que quedarse; Guardar si hay que salir."""
     get_by_text = getattr(page, "get_by_text", None)
     try:
         if get_by_text:
             aviso = get_by_text("Tienes cambios sin guardar", exact=False)
             if hasattr(aviso, "count") and aviso.count() == 0:
                 return False
-        for sel in (
-            "button:has-text('Cancelar')",
-            "[role='button']:has-text('Cancelar')",
-        ):
+        botones = (
+            (
+                "button:has-text('Guardar')",
+                "[role='button']:has-text('Guardar')",
+                "button:has-text('Aceptar')",
+                "[role='button']:has-text('Aceptar')",
+                "button:has-text('Salir')",
+            )
+            if salir
+            else (
+                "button:has-text('Cancelar')",
+                "[role='button']:has-text('Cancelar')",
+            )
+        )
+        for sel in botones:
             loc = page.locator(sel)
-            if loc.count():
-                loc.last.click(timeout=2_000)
-                page.wait_for_timeout(250)
-                return True
+            if not loc.count():
+                continue
+            btn = loc.last
+            txt = ""
+            try:
+                txt = (btn.inner_text() or "").lower()
+            except Exception:
+                txt = ""
+            if "publicar" in txt:
+                continue
+            btn.click(timeout=2_000)
+            page.wait_for_timeout(250)
+            return True
     except Exception:
         return False
     return False
@@ -4911,8 +5049,8 @@ def fill_from_receta(
         if actual is None:
             esperar_lienzo_bloques(page)
         if actual and actual != clave_comp:
-            print(f"  · Sigo en Edición de {actual}; guardo antes de abrir «{clave_comp}».")
-            if not guardar_y_volver_al_lienzo(page, url_ficha):
+            print(f"  · Sigo en Edición de {actual}; pulso Volver antes de abrir «{clave_comp}».")
+            if not guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True):
                 print(f"  · No salgo de {actual}: no relleno «{clave_comp}» en el header.")
                 return False
         abierto = abrir_lapiz_componente(page, clave_comp, selectores.get(lapiz_key))
@@ -4968,7 +5106,9 @@ def fill_from_receta(
         n_tags_abierto = fill_lista_tags(page, tags_desde_receta(receta))
         if n_tags_abierto:
             print(f"  ✓ tags: {n_tags_abierto}/{len(tags_desde_receta(receta))}")
-        guardar_y_volver_al_lienzo(page, url_ficha)
+        else:
+            print("  · Tags en pantalla. Pulso Volver para el siguiente bloque.")
+        guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
     if abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
         cabecera = {
             "field_titulo": fill("field_titulo", receta.get("titulo")),
@@ -5009,7 +5149,7 @@ def fill_from_receta(
         n_tags = fill_lista_tags(page, cats)
         if n_tags:
             print(f"  ✓ tags: {n_tags}/{len(cats)}")
-        guardar_y_volver_al_lienzo(page, url_ficha)
+        guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
 
     ings = receta.get("ingredientes") or []
     if abrir_grupo("ingredientes", ["field_ingredientes"]) and puede_rellenar_editor(
