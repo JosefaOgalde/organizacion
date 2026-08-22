@@ -1,6 +1,8 @@
+import contextlib
 import email.message
 import importlib.util
 import inspect
+import io
 import os
 import tempfile
 import unittest
@@ -539,7 +541,28 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIn("_clic_flecha_volver", src_volver)
         self.assertIn("forzar_salida=True", src_fill)
         self.assertIn("salir", src_modal)
-        self.assertIn("Guardar", src_modal)
+        self.assertIn("acepto", src_modal.lower())
+        self.assertIn("acepto", self.explorar.JS_CLICK_SI_ACEPTO.lower())
+        self.assertIn("tienes cambios sin guardar", self.explorar.JS_CLICK_SI_ACEPTO.lower())
+
+        class PaginaModal:
+            def __init__(self):
+                self.clicks = []
+
+            def evaluate(self, script, *_args):
+                texto = str(script).lower()
+                if "acepto" in texto and "tienes cambios" in texto:
+                    self.clicks.append("si-acepto")
+                    return "si-acepto"
+                return False
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        modal = PaginaModal()
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertTrue(self.explorar.resolver_modal_cambios(modal, salir=True))
+        self.assertEqual(modal.clicks, ["si-acepto"])
 
     def test_js_modal_imagen_pide_confirmar(self):
         js = self.explorar.JS_CLICK_CONFIRMAR_IMAGEN

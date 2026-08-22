@@ -1319,7 +1319,7 @@ def _clic_guardar_editor(page) -> bool:
 
 
 def cerrar_editor_componente(page) -> None:
-    """Guarda el editor del lápiz. Nunca «Sí, acepto»."""
+    """Guarda el editor del lápiz. Si aparece el modal, Cancelar (aún no es hora de salir)."""
     resolver_modal_cambios(page)
     _clic_guardar_editor(page)
     resolver_modal_cambios(page)
@@ -1818,11 +1818,16 @@ def volver_al_lienzo(page, url_ficha: str | None = None, *, confirmar_salida: bo
         return True
     _clic_flecha_volver(page)
     try:
-        page.wait_for_timeout(500)
+        page.wait_for_timeout(700)
     except Exception:
         pass
     if confirmar_salida:
-        resolver_modal_cambios(page, salir=True)
+        if not resolver_modal_cambios(page, salir=True):
+            try:
+                page.wait_for_timeout(400)
+            except Exception:
+                pass
+            resolver_modal_cambios(page, salir=True)
     else:
         resolver_modal_cambios(page)
     if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
@@ -4670,41 +4675,86 @@ def fill_inputs_texto_en_orden(page, valores: list[str]) -> int:
     return llenados
 
 
+JS_CLICK_SI_ACEPTO = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const visibles = (el) => {
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 8 && r.height > 8;
+  };
+  const cuerpo = (document.body && document.body.innerText) || '';
+  if (!/tienes cambios sin guardar/i.test(cuerpo)) return false;
+  const nodos = [...document.querySelectorAll('button, [role="button"], a')].filter(visibles);
+  const si = nodos.find((el) => {
+    const t = clean(el.innerText || el.textContent || el.getAttribute('aria-label') || '');
+    return /^s[ií],?\\s*acepto$/i.test(t);
+  });
+  if (si) { si.click(); return 'si-acepto'; }
+  return false;
+}"""
+
+
+def _hay_modal_sin_guardar(page) -> bool:
+    return "tienes cambios sin guardar" in texto_cuerpo(page).lower()
+
+
 def resolver_modal_cambios(page, *, salir: bool = False) -> bool:
-    """Modal «Tienes cambios sin guardar»: Cancelar si hay que quedarse; Guardar si hay que salir."""
+    """Modal «Tienes cambios sin guardar»: Cancelar para quedarse; «Sí, acepto» para volver al lienzo."""
+    if salir:
+        for fr in _frames_pagina(page):
+            try:
+                if fr.evaluate(JS_CLICK_SI_ACEPTO) == "si-acepto":
+                    print("  · Modal: Sí, acepto")
+                    page.wait_for_timeout(400)
+                    return True
+            except Exception:
+                continue
+        for fr in _frames_pagina(page):
+            get_by_text = getattr(fr, "get_by_text", None)
+            if not get_by_text:
+                continue
+            try:
+                loc = get_by_text(re.compile(r"s[ií],?\s*acepto", re.I))
+                if hasattr(loc, "count") and loc.count():
+                    loc.last.click(timeout=2_000)
+                    print("  · Modal: Sí, acepto")
+                    page.wait_for_timeout(400)
+                    return True
+            except Exception:
+                continue
+            locator = getattr(fr, "locator", None)
+            if not locator:
+                continue
+            for sel in (
+                "button:has-text('Sí, acepto')",
+                "button:has-text('Si, acepto')",
+                "[role='button']:has-text('Sí, acepto')",
+                "[role='button']:has-text('Si, acepto')",
+            ):
+                try:
+                    loc = locator(sel)
+                    if loc.count():
+                        loc.last.click(timeout=2_000)
+                        print("  · Modal: Sí, acepto")
+                        page.wait_for_timeout(400)
+                        return True
+                except Exception:
+                    continue
+        return False
     get_by_text = getattr(page, "get_by_text", None)
     try:
         if get_by_text:
             aviso = get_by_text("Tienes cambios sin guardar", exact=False)
             if hasattr(aviso, "count") and aviso.count() == 0:
                 return False
-        botones = (
-            (
-                "button:has-text('Guardar')",
-                "[role='button']:has-text('Guardar')",
-                "button:has-text('Aceptar')",
-                "[role='button']:has-text('Aceptar')",
-                "button:has-text('Salir')",
-            )
-            if salir
-            else (
-                "button:has-text('Cancelar')",
-                "[role='button']:has-text('Cancelar')",
-            )
-        )
-        for sel in botones:
+        for sel in (
+            "button:has-text('Cancelar')",
+            "[role='button']:has-text('Cancelar')",
+        ):
             loc = page.locator(sel)
             if not loc.count():
                 continue
-            btn = loc.last
-            txt = ""
-            try:
-                txt = (btn.inner_text() or "").lower()
-            except Exception:
-                txt = ""
-            if "publicar" in txt:
-                continue
-            btn.click(timeout=2_000)
+            loc.last.click(timeout=2_000)
             page.wait_for_timeout(250)
             return True
     except Exception:
@@ -5101,6 +5151,13 @@ def fill_from_receta(
 
     print("Rellenando la receta completa (lápiz de cada bloque, Cabecera incluida)…")
     print(f"  · Textos «Edita este componente» visibles: {_contar_placeholder_vacio(page)}")
+    if _hay_modal_sin_guardar(page):
+        print("  · Modal de cambios. Pulso Sí, acepto.")
+        resolver_modal_cambios(page, salir=True)
+        try:
+            page.wait_for_timeout(600)
+        except Exception:
+            pass
     if editor_actual(page) == "tags":
         print("  · Ya estoy en Formulario Tags. Escribo las etiquetas del Word.")
         n_tags_abierto = fill_lista_tags(page, tags_desde_receta(receta))
