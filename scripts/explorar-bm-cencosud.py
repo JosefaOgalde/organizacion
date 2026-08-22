@@ -533,6 +533,19 @@ def resultado_clic_lapiz_ok(result) -> bool:
     return isinstance(result, dict) and bool(result.get("ok"))
 
 
+def _contar_placeholder_vacio(page) -> int:
+    get_by_text = getattr(page, "get_by_text", None)
+    if not get_by_text:
+        return -1
+    try:
+        try:
+            return int(get_by_text("Edita este componente", exact=False).count())
+        except TypeError:
+            return int(get_by_text("Edita este componente").count())
+    except Exception:
+        return -1
+
+
 def _frames_pagina(page) -> list:
     frames = [page]
     try:
@@ -636,8 +649,10 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
         return True
     if isinstance(clicked, dict):
         titulos = clicked.get("titulos") or []
+        n_ph = _contar_placeholder_vacio(page)
         print(
             f"  · Bloques vistos: {clicked.get('n', 0)} {titulos}"
+            f" | textos vacíos: {n_ph}"
             + (f" ({clicked.get('error')})" if clicked.get("error") else "")
         )
         if intentar(_clic_lapiz_por_punto(page, clicked)):
@@ -717,14 +732,22 @@ def _clic_lapiz_placeholder(page, index: int) -> bool:
         "Edita este componente vacío",
     ):
         try:
-            hints = get_by_text(texto)
+            try:
+                hints = get_by_text(texto, exact=False)
+            except TypeError:
+                hints = get_by_text(texto)
             n = hints.count() if hasattr(hints, "count") else 0
         except Exception:
             continue
         for i in range(n):
             item = hints.nth(i)
             box = _bounding_box(item)
-            if box is None or not caja_en_lienzo(box):
+            if box is None:
+                continue
+            try:
+                if float(box.get("x") or 0) < 80:
+                    continue
+            except (TypeError, ValueError):
                 continue
             cards.append((float(box["y"]), box))
         if cards:
@@ -758,7 +781,7 @@ def _clic_lapiz_por_punto(page, info: dict) -> bool:
         y = float(info.get("y") or 0)
     except (TypeError, ValueError):
         return False
-    if x < LIENZO_MIN_X or y < 40:
+    if x < 80 or y < 40:
         return False
     try:
         mouse.click(x, y)
@@ -790,9 +813,11 @@ JS_CLIC_LAPIZ = """(payload) => {
   const aliases = Array.isArray(payload) ? payload : ((payload && payload.aliases) || []);
   const index = Array.isArray(payload) ? -1 : Number(payload && payload.index);
   const wanted = aliases.map(norm);
+  const hayPaleta = /paleta de componentes/i.test(textoDe(document.body));
+  const minLeft = hayPaleta ? 200 : 0;
   const enPaleta = (el) => {
     const r0 = el.getBoundingClientRect();
-    if (r0.left < 240) return true;
+    if (hayPaleta && r0.left < minLeft) return true;
     let n = el;
     while (n && n !== document.body) {
       const lab = (n.getAttribute && (n.getAttribute('aria-label') || '')) || '';
@@ -830,15 +855,43 @@ JS_CLIC_LAPIZ = """(payload) => {
     }
   };
 
-  const brutos = [];
+  const hints = [];
+  for (const el of Array.from(document.querySelectorAll('*'))) {
+    const own = textoDe(el);
+    if (!/Edita este componente vac/i.test(own)) continue;
+    if (own.length > 420) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 30 || r.height < 12) continue;
+    if (enPaleta(el)) continue;
+    hints.push({ el, r, own });
+  }
+  const innermost = hints.filter((h) => !hints.some((o) => o.el !== h.el && h.el.contains(o.el)));
+  const brutos = innermost.map((h) => {
+    let card = h.el;
+    for (let i = 0; i < 8 && card.parentElement; i++) {
+      const p = card.parentElement;
+      const pr = p.getBoundingClientRect();
+      const pt = textoDe(p);
+      if (enPaleta(p)) break;
+      if (pr.width > 160 && pr.width < 2400 && pt.length < 900) {
+        card = p;
+        if (pr.width >= 260) break;
+      } else {
+        break;
+      }
+    }
+    const crudo = textoDe(card);
+    const r = card.getBoundingClientRect();
+    return { el: card, r, linea: tituloDe(crudo), vacio: true, h: r.height, w: r.width };
+  });
   for (const el of Array.from(document.querySelectorAll('div, section, article, li'))) {
     const r = el.getBoundingClientRect();
-    if (r.left < 240 || r.top < 56) continue;
-    if (r.width < 220 || r.width > 1200) continue;
-    if (r.height < 40 || r.height > 320) continue;
+    if (r.left < minLeft || r.top < 20) continue;
+    if (r.width < 80 || r.width > 2400) continue;
+    if (r.height < 24 || r.height > 800) continue;
     if (enPaleta(el)) continue;
     const crudo = textoDe(el);
-    if (crudo.length > 700) continue;
+    if (crudo.length > 2000) continue;
     const vacio = /Edita este componente vac/i.test(crudo);
     const linea = tituloDe(crudo);
     if (!vacio && !coincide(linea)) continue;
@@ -3038,6 +3091,7 @@ def fill_from_receta(
         return ok_keys
 
     print("Rellenando la receta completa (lápiz de cada bloque, Cabecera incluida)…")
+    print(f"  · Textos «Edita este componente» visibles: {_contar_placeholder_vacio(page)}")
     if abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
         cabecera = {
             "field_titulo": fill("field_titulo", receta.get("titulo")),

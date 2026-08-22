@@ -506,7 +506,7 @@ class ExplorarBmTests(unittest.TestCase):
     def test_js_clic_lapiz_excluye_paleta(self):
         js = self.modulo.JS_CLIC_LAPIZ
         self.assertIn("paleta", js.lower())
-        self.assertIn("left < 240", js)
+        self.assertIn("hayPaleta", js)
         self.assertIn("Edita este componente", js)
         self.assertIn("elementFromPoint", js)
         self.assertNotIn("iconos[1]", js)
