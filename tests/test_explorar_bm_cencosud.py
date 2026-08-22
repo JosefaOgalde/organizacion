@@ -1018,6 +1018,23 @@ class ExplorarBmTests(unittest.TestCase):
 
         self.assertTrue(self.modulo.expandir_item_formulario(Pagina(), 0))
 
+    def test_editor_por_campos_detecta_lista_ingredientes_sin_cantidad(self):
+        class Pagina:
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "h1,h2,h3" in texto:
+                    return "Recetas_Jumbo | web"
+                if "innerText" in texto:
+                    return (
+                        "Formulario list_ingredients Activo Items Formulario Ítem 1 "
+                        "Título de la sección Ingrediente * Dale un valor"
+                    )
+                return ""
+
+        pagina = Pagina()
+        self.assertEqual(self.modulo.editor_por_campos(pagina), "ingredientes")
+        self.assertEqual(self.modulo.editor_actual(pagina), "ingredientes")
+
     def test_editor_por_campos_detecta_cabecera(self):
         class Pagina:
             def evaluate(self, script, *_args):

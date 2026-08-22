@@ -206,6 +206,7 @@ def parse_ingredientes(bloque: str) -> list[dict]:
                     "nombre": nombre,
                     "cantidad": m.group("cant"),
                     "unidad": unidad,
+                    "linea": line,
                     "skuCencosud": None,
                     "notas": None,
                 }
@@ -216,6 +217,7 @@ def parse_ingredientes(bloque: str) -> list[dict]:
                     "nombre": line,
                     "cantidad": None,
                     "unidad": null_str(),
+                    "linea": line,
                     "skuCencosud": None,
                     "notas": None,
                 }

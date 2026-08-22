@@ -943,6 +943,16 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     return pedir_lapiz_a_mano(page, clave)
 
 
+def aliases_componente(clave: str) -> list[str]:
+    meta = next((c for c in COMPONENTES_CMS if c["clave"] == clave), None)
+    return list(meta["aliases"]) if meta else [clave]
+
+
+def bloque_ya_cargado(page, clave: str) -> bool:
+    """True si el bloque del lienzo ya muestra contenido (no «Edita este componente vacío»)."""
+    return bloque_componente_vacio(page, aliases_componente(clave)) is False
+
+
 def pedir_lapiz_a_mano(page, clave: str, *, headed: bool = True) -> bool:
     """Si el clic no abre el editor, la usuaria pulsa el lápiz y seguimos rellenando."""
     if editor_actual(page) == clave:
@@ -952,6 +962,9 @@ def pedir_lapiz_a_mano(page, clave: str, *, headed: bool = True) -> bool:
         (c["aliases"][0] for c in COMPONENTES_CMS if c["clave"] == clave),
         clave,
     )
+    if editor_actual(page) is None and bloque_ya_cargado(page, clave):
+        print(f"  · «{nombre}» ya está cargada. No pido el lápiz.")
+        return False
     if not headed or not sys.stdin.isatty():
         return False
     print(
@@ -2486,7 +2499,15 @@ def _editor_por_texto(t: str) -> str | None:
         return None
     if "dificultad" in t and ("duración" in t or "duracion" in t) and "porciones" in t:
         return "cabecera"
-    if re.search(r"ingrediente\s*\*", t) and ("cantidad" in t or "unidad" in t):
+    if re.search(r"ingrediente\s*\*", t) and (
+        "cantidad" in t
+        or "unidad" in t
+        or "título de la sección" in t
+        or "titulo de la seccion" in t
+        or "list_ingredients" in t
+    ):
+        return "ingredientes"
+    if "list_ingredients" in t and "formulario ítem" in t:
         return "ingredientes"
     if "instrucci" in t and ("paso" in t or "agregar" in t) and "dificultad" not in t:
         return "instrucciones"
@@ -3118,16 +3139,18 @@ def blob_campo(field: dict) -> str:
 
 
 def linea_ingrediente(item: dict) -> str:
-    return " ".join(
-        filter(
-            None,
-            [
-                str(item.get("cantidad") or "").strip(),
-                str(item.get("unidad") or "").strip(),
-                str(item.get("nombre") or "").strip(),
-            ],
-        )
-    ).strip()
+    """Línea tal cual el Word. Si no hay `linea`, arma cantidad + unidad + de + nombre."""
+    cruda = str(item.get("linea") or "").strip()
+    if cruda:
+        return cruda
+    cant = str(item.get("cantidad") or "").strip()
+    unidad = str(item.get("unidad") or "").strip()
+    nombre = str(item.get("nombre") or "").strip()
+    if cant and unidad and nombre:
+        if nombre.lower().startswith("de "):
+            return f"{cant} {unidad} {nombre}"
+        return f"{cant} {unidad} de {nombre}"
+    return " ".join(filter(None, [cant, unidad, nombre])).strip()
 
 
 JS_MARCAR_POR_LABEL = """(args) => {
@@ -3488,37 +3511,77 @@ function crcTodosCabezalesItem() {
   }
   return out.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
 }
-function crcEsCabezalIngrediente(h) {
-  const hR = h.getBoundingClientRect();
-  let box = h.parentElement;
-  for (let i = 0; i < 12 && box; i++) {
-    const labs = [...box.querySelectorAll('label, legend, p, span, strong')];
-    let labIng = null;
-    let labTit = null;
-    for (const lab of labs) {
-      const t = crcLineaCorta(lab).split(/\\s+Dale/i)[0].trim();
-      const r = lab.getBoundingClientRect();
-      if (r.width < 4 || r.height < 4) continue;
-      if (/^Ingrediente$/i.test(t) || (/^Ingrediente\\b/i.test(t) && t.length < 16)) {
-        if (r.top >= hR.top - 6) labIng = lab;
-      }
-      if (/^Título de la sección/i.test(t)) labTit = lab;
-    }
-    if (labIng) {
-      if (labTit) {
-        const tR = labTit.getBoundingClientRect();
-        if (hR.bottom <= tR.top + 10) return false;
-        if (hR.top > tR.bottom - 4) return true;
-      } else {
-        return true;
-      }
-    }
-    box = box.parentElement;
+function crcEtiquetaIngrediente(el) {
+  return crcLineaCorta(el).split(/\\s+Dale/i)[0].trim();
+}
+function crcEsLabelIngredienteExacto(el) {
+  if (!/^Ingrediente$/i.test(crcEtiquetaIngrediente(el))) return false;
+  const r = el.getBoundingClientRect();
+  if (r.width < 4 || r.height < 4 || r.left < 40) return false;
+  if (r.height > 48) return false;
+  if (r.width * r.height > 12000) return false;
+  return true;
+}
+function crcInputDeLabelIng(lab) {
+  const labR = lab.getBoundingClientRect();
+  const htmlFor = lab.getAttribute && lab.getAttribute('for');
+  if (htmlFor) {
+    const el = document.getElementById(htmlFor);
+    if (crcEsCajaTexto(el)) return el;
   }
-  return false;
+  let node = lab;
+  for (let i = 0; i < 8 && node; i++) {
+    const hit = crcDeepAll('input, textarea, [role="textbox"]', node).find((c) => {
+      if (!crcEsCajaTexto(c)) return false;
+      const r = c.getBoundingClientRect();
+      return r.top >= labR.top - 8 && r.top < labR.bottom + 90;
+    });
+    if (hit) return hit;
+    node = node.parentElement;
+  }
+  return null;
+}
+function crcCajasIngrediente() {
+  const labs = crcDeepAll('label, legend, p, span, strong', document)
+    .filter(crcEsLabelIngredienteExacto)
+    .sort((a, b) => {
+      const ar = a.getBoundingClientRect();
+      const br = b.getBoundingClientRect();
+      const aa = ar.width * ar.height;
+      const ba = br.width * br.height;
+      if (Math.abs(ar.top - br.top) < 8) return aa - ba;
+      return ar.top - br.top;
+    });
+  const seen = new Set();
+  const out = [];
+  for (const lab of labs) {
+    const el = crcInputDeLabelIng(lab);
+    if (!el || seen.has(el)) continue;
+    seen.add(el);
+    out.push({ lab, el });
+  }
+  out.sort((a, b) => a.lab.getBoundingClientRect().top - b.lab.getBoundingClientRect().top);
+  return out;
+}
+function crcCabezalSobreCaja(el) {
+  if (!el) return null;
+  const top = el.getBoundingClientRect().top;
+  const heads = crcTodosCabezalesItem().filter((h) => h.getBoundingClientRect().bottom <= top + 8);
+  return heads.length ? heads[heads.length - 1] : null;
+}
+function crcEsCabezalIngrediente(h) {
+  return crcCajasIngrediente().some((c) => crcCabezalSobreCaja(c.el) === h);
 }
 function crcCabezalesIngrediente() {
-  return crcTodosCabezalesItem().filter(crcEsCabezalIngrediente);
+  const heads = [];
+  const seen = new Set();
+  for (const c of crcCajasIngrediente()) {
+    const h = crcCabezalSobreCaja(c.el) || c.lab;
+    if (seen.has(h)) continue;
+    seen.add(h);
+    heads.push(h);
+  }
+  return heads;
 }"""
 
 JS_MARCAR_TAGS_POR_ITEM = (
@@ -3611,7 +3674,7 @@ JS_CONTAR_INGREDIENTES_INTERNOS = (
     "() => {\n"
     + JS_CRC_LABELS_TAG_LINK
     + """
-  return crcCabezalesIngrediente().length;
+  return crcCajasIngrediente().length;
 }"""
 )
 
@@ -3732,36 +3795,15 @@ JS_FOCO_INGREDIENTE = (
     + """
   const indice = args.indice;
   const valor = args.valor == null ? '' : String(args.valor);
-  const heads = crcCabezalesIngrediente();
-  const h = heads[indice];
-  const top0 = h ? h.getBoundingClientRect().bottom - 8 : 0;
-  const limit = heads[indice + 1] ? heads[indice + 1].getBoundingClientRect().top : (h ? h.getBoundingClientRect().bottom + 420 : 9999);
-  const labs = crcDeepAll('label, legend, p, span, strong', document).filter((el) => {
-    const t = crcLineaCorta(el).split(/\\s+Dale/i)[0].trim();
-    const r = el.getBoundingClientRect();
-    return (/^Ingrediente$/i.test(t) || (/^Ingrediente\\b/i.test(t) && t.length < 16))
-      && r.top >= top0 && r.top < limit && r.width > 4;
-  });
-  const lab = labs[0];
-  let el = null;
-  if (lab) {
-    const labR = lab.getBoundingClientRect();
-    let node = lab;
-    for (let i = 0; i < 8 && node && !el; i++) {
-      el = crcDeepAll('input, textarea, [role="textbox"]', node).find((c) => {
-        if (!crcEsCajaTexto(c)) return false;
-        const r = c.getBoundingClientRect();
-        return r.top >= labR.top - 8 && r.top < labR.bottom + 90;
-      }) || null;
-      node = node.parentElement;
-    }
-  }
-  if (!el) return { ok: false, reason: 'sin-caja', n: heads.length };
+  const cajas = crcCajasIngrediente();
+  const caja = cajas[indice];
+  const el = caja && caja.el;
+  if (!el) return { ok: false, reason: 'sin-caja', n: cajas.length };
   if (el.setAttribute) el.setAttribute('data-crc-ing-hit', String(indice));
   try { el.click(); } catch (e) {}
   try { el.focus(); } catch (e) {}
   const wrote = valor ? crcSetReact(el, valor) : '';
-  return { ok: true, wrote, n: heads.length };
+  return { ok: true, wrote, n: cajas.length };
 }"""
 )
 
@@ -4332,14 +4374,22 @@ def _locator_es_link(loc) -> bool:
         return False
 
 
-def rellenar_por_label(page, patron: str, value, *, nth: int = 0, excluir: str | None = None) -> bool:
+def rellenar_por_label(
+    page,
+    patron: str,
+    value,
+    *,
+    nth: int = 0,
+    excluir: str | None = None,
+    usar_get_by_label: bool = True,
+) -> bool:
     """Rellena el input junto a la etiqueta visible, aunque el placeholder sea «Dale un valor»."""
     if value is None or value == "" or not patron:
         return False
     evita_link = bool(excluir and re.search(r"link|enlace|url", excluir, re.I))
     for fr in _frames_pagina(page):
         get_by_label = getattr(fr, "get_by_label", None)
-        if get_by_label and not evita_link:
+        if get_by_label and not evita_link and usar_get_by_label:
             try:
                 loc = get_by_label(re.compile(patron, re.I))
                 n = loc.count() if hasattr(loc, "count") else 1
@@ -4385,7 +4435,14 @@ def fill_repetidos_por_label(page, patron: str, valores: list[str], *, excluir: 
     asegurar_n_campos_label(page, patron, len(valores), excluir=excluir)
     llenados = 0
     for i, valor in enumerate(valores):
-        if rellenar_por_label(page, patron, valor, nth=i, excluir=excluir):
+        if rellenar_por_label(
+            page,
+            patron,
+            valor,
+            nth=i,
+            excluir=excluir,
+            usar_get_by_label=not bool(re.search(r"^Ingrediente\$", patron or "")),
+        ):
             llenados += 1
             print(f"  ✓ ítem[{i}] ({patron}) → {valor[:60]}")
         else:
@@ -4397,7 +4454,13 @@ def asegurar_n_campos_label(page, patron: str, n: int, *, excluir: str | None = 
     actuales = contar_por_label(page, patron, excluir=excluir)
     intentos = 0
     while actuales < n and intentos < n + 4:
-        if not click_agregar_item(page, preferir_ultimo=True):
+        es_ing = bool(re.search(r"^Ingrediente\$", patron or ""))
+        ok_add = (
+            click_agregar_ingrediente_interno(page)
+            if es_ing
+            else click_agregar_item(page, preferir_ultimo=True)
+        )
+        if not ok_add:
             break
         intentos += 1
         try:
@@ -5277,10 +5340,11 @@ def escribir_ingrediente_asterisco(page, indice: int, valor: str) -> bool:
             pass
     return rellenar_por_label(
         page,
-        r"^Ingrediente\b",
+        r"^Ingrediente$",
         valor,
         nth=indice,
-        excluir=r"título de la sección|lista",
+        excluir=r"título de la sección|lista|ingredientes",
+        usar_get_by_label=False,
     )
 
 
@@ -5288,8 +5352,7 @@ def rellenar_item_ingrediente(page, indice: int, item: dict) -> bool:
     """Despliega el ítem interno (Ingrediente*) y escribe la línea del Word."""
     print(f"  · Despliego Ingrediente {indice + 1}…")
     if not expandir_item_ingrediente(page, indice):
-        print(f"  ✗ ingredientes[{indice}]: no pude abrir el acordeón interno")
-        return False
+        print(f"  · ingredientes[{indice}]: sigo aunque no abrí el acordeón")
     texto = linea_ingrediente(item) or (item.get("nombre") or "").strip()
     if not texto:
         return False
@@ -5327,9 +5390,9 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
         lineas = [linea_ingrediente(it) for it in items if linea_ingrediente(it)]
         n_lab = fill_repetidos_por_label(
             page,
-            r"^Ingrediente\b",
+            r"^Ingrediente$",
             lineas,
-            excluir=r"título de la sección|lista",
+            excluir=r"título de la sección|lista|ingredientes",
         )
         if n_lab:
             return n_lab
@@ -5375,7 +5438,7 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
                 print(f"  ✓ {tipo}[{i}].{rol} (índice)")
                 ok_item = True
                 continue
-            patron = r"^Ingrediente\b" if tipo == "ingredientes" and rol == "nombre" else ""
+            patron = r"^Ingrediente$" if tipo == "ingredientes" and rol == "nombre" else ""
             if patron and rellenar_por_label(page, patron, valor, nth=i):
                 print(f"  ✓ {tipo}[{i}].{rol} (etiqueta)")
                 ok_item = True
@@ -5459,6 +5522,9 @@ def fill_from_receta(
         actual = editor_actual(page)
         if actual is None:
             esperar_lienzo_bloques(page)
+        if actual is None and bloque_ya_cargado(page, clave_comp):
+            print(f"  · Bloque «{clave_comp}» ya tiene contenido. No pido el lápiz.")
+            return False
         if actual and actual != clave_comp:
             print(f"  · Sigo en Edición de {actual}; pulso Volver antes de abrir «{clave_comp}».")
             if not guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True):
@@ -5535,7 +5601,11 @@ def fill_from_receta(
             resultados["ingredientes"] = True
             print(f"  ✓ ingredientes: {n_ing_abierto}/{len(ings_abiertos)} ítems")
         guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
-    if abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
+    if editor_actual(page) is None and bloque_ya_cargado(page, "cabecera"):
+        print("  · Cabecera ya tiene contenido en el lienzo. Sigo con tags e ingredientes.")
+        resultados["titulo"] = True
+        resultados["descripcion"] = True
+    elif abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
         cabecera = {
             "field_titulo": fill("field_titulo", receta.get("titulo")),
             "field_descripcion": fill("field_descripcion", receta.get("descripcion")),

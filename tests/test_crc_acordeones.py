@@ -158,7 +158,18 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         linea = self.explorar.linea_ingrediente(
             {"cantidad": "200", "unidad": "g", "nombre": "choclo"}
         )
-        self.assertEqual(linea, "200 g choclo")
+        self.assertEqual(linea, "200 g de choclo")
+        self.assertEqual(
+            self.explorar.linea_ingrediente(
+                {
+                    "cantidad": "600",
+                    "unidad": "g",
+                    "nombre": "filete de salmón",
+                    "linea": "600 g de filete de salmón",
+                }
+            ),
+            "600 g de filete de salmón",
+        )
 
     def test_numero_campo_bm_duracion_y_porciones(self):
         self.assertEqual(self.explorar.numero_campo_bm("30 min"), "30")
@@ -253,6 +264,8 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIn("asegurar_n_ingredientes", src_fill)
         self.assertIn("expandir_item_ingrediente", src_item)
         self.assertIn("crcCabezalesIngrediente", self.explorar.JS_EXPANDIR_ITEM_INGREDIENTE)
+        self.assertIn("crcCajasIngrediente", self.explorar.JS_FOCO_INGREDIENTE)
+        self.assertIn("crcEsLabelIngredienteExacto", self.explorar.JS_FOCO_INGREDIENTE)
         self.assertIn("interno", self.explorar.JS_CLICK_AGREGAR_INGREDIENTE)
         self.assertIn("Agregar nuevo ítem", " ".join(self.explorar.BOTONES_AGREGAR))
 
@@ -280,7 +293,7 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         pares = self.explorar.asignar_campos_item(fields, item, "ingredientes")
         self.assertEqual(pares[0][0], "nombre")
         self.assertEqual(pares[0][2], "filete de salmón")
-        self.assertEqual(self.explorar.linea_ingrediente(item), "600 g filete de salmón")
+        self.assertEqual(self.explorar.linea_ingrediente(item), "600 g de filete de salmón")
 
     def test_caja_en_lienzo_ignora_paleta_izquierda(self):
         self.assertFalse(self.explorar.caja_en_lienzo({"x": 40, "width": 180, "height": 24}))
@@ -540,6 +553,26 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertGreaterEqual(tags.volver, 1)
         self.assertIsNone(self.explorar.editor_actual(tags))
 
+    def test_no_pide_lapiz_si_cabecera_ya_esta_cargada(self):
+        src = inspect.getsource(self.explorar.fill_from_receta)
+        src_pedir = inspect.getsource(self.explorar.pedir_lapiz_a_mano)
+        self.assertIn("Cabecera ya tiene contenido", src)
+        self.assertIn("bloque_ya_cargado", src_pedir)
+        self.assertIn("No pido el lápiz", src_pedir)
+
+        class Pagina:
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "h1,h2,h3" in texto:
+                    return "Recetas_Jumbo | web"
+                if "edita este componente vac" in texto.lower() or "wanted" in texto:
+                    return False
+                return ""
+
+        pagina = Pagina()
+        self.assertTrue(self.explorar.bloque_ya_cargado(pagina, "cabecera"))
+        self.assertFalse(self.explorar.pedir_lapiz_a_mano(pagina, "cabecera"))
+
     def test_js_no_rellena_paleta_izquierda(self):
         self.assertIn("r.left >= 240", self.explorar.JS_MARCAR_POR_LABEL)
         self.assertIn("r.left < 240", self.explorar.JS_LIMPIAR_BUSCA_PALETA)
@@ -773,6 +806,44 @@ class CrcRutasFotoTests(unittest.TestCase):
             self.assertEqual(url, "https://cdn.ejemplo.cl/salmon.jpg")
             self.assertEqual(path.name, "portada-enlace.jpg")
             mock_dl.assert_called()
+
+
+class JsIngredienteExactoTests(unittest.TestCase):
+    def setUp(self):
+        self.explorar = cargar(EXPLORAR_PATH, "explorar_bm_ing_js")
+
+    def test_js_escribe_los_tres_ingrediente_asterisco(self):
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError:
+            self.skipTest("playwright no instalado")
+        html = (
+            Path(__file__).resolve().parent / "fixtures" / "bm-lista-ingredientes.html"
+        )
+        self.assertTrue(html.is_file())
+        lineas = [
+            "600 g de filete de salmón",
+            "2 paltas",
+            "1 limón",
+        ]
+        with sync_playwright() as pw:
+            browser = pw.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(html.as_uri())
+            n = page.evaluate(self.explorar.JS_CONTAR_INGREDIENTES_INTERNOS)
+            self.assertEqual(n, 3)
+            for i, texto in enumerate(lineas):
+                out = page.evaluate(
+                    self.explorar.JS_FOCO_INGREDIENTE,
+                    {"indice": i, "valor": texto},
+                )
+                self.assertTrue(out.get("ok"), out)
+                self.assertEqual(out.get("wrote"), texto)
+            valores = page.evaluate(
+                """() => [...document.querySelectorAll('input[id^="ing-"]')].map((el) => el.value)"""
+            )
+            self.assertEqual(valores, lineas)
+            browser.close()
 
 
 if __name__ == "__main__":

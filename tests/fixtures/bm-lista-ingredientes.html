@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Edición de Lista Ingredientes</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; }
+    .editor { margin-left: 280px; width: 640px; }
+    .seccion { border: 1px solid #ccc; padding: 12px; }
+    .item { margin: 12px 0; padding: 8px; border: 1px dashed #fa0; }
+    label { display: block; font-size: 14px; height: 20px; width: 140px; }
+    .wrap { padding: 8px; }
+    input { display: block; width: 400px; height: 28px; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Edición de Lista Ingredientes</h1>
+  <div class="editor">
+    <p>Formulario list_ingredients</p>
+    <div class="seccion">
+      <div>Formulario Ítem 1</div>
+      <label>Título de la sección</label>
+      <input id="titulo-seccion" placeholder="Dale un valor" />
+      <p>Ingredientes</p>
+      <div class="item">
+        <div>Formulario Ítem 1</div>
+        <div class="wrap">
+          <label for="ing-0">Ingrediente *</label>
+          <input id="ing-0" placeholder="Dale un valor" />
+        </div>
+      </div>
+      <div class="item">
+        <div>Formulario Ítem 2</div>
+        <div class="wrap">
+          <label for="ing-1">Ingrediente *</label>
+          <input id="ing-1" placeholder="Dale un valor" />
+        </div>
+      </div>
+      <div class="item">
+        <div>Formulario Ítem 3</div>
+        <div class="wrap">
+          <label for="ing-2">Ingrediente *</label>
+          <input id="ing-2" placeholder="Dale un valor" />
+        </div>
+      </div>
+      <button type="button" id="add-interno">+ Agregar nuevo ítem</button>
+    </div>
+    <button type="button" id="add-seccion">+ Agregar nuevo ítem</button>
+  </div>
+</body>
+</html>
