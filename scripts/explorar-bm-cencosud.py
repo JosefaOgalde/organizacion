@@ -39,7 +39,6 @@ import json
 import os
 import re
 import sys
-import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -1287,22 +1286,145 @@ def puede_rellenar_editor(page, clave: str) -> bool:
 
 JS_ABRIR_COMBO_DIFICULTAD = """() => {
   const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
-  const nodos = [...document.querySelectorAll('label, p, span, div, legend')];
+  const visibles = (el) => {
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 8 && r.height > 8;
+  };
+  const esControl = (el) => {
+    if (!el || !visibles(el)) return false;
+    const tag = (el.tagName || '').toLowerCase();
+    const role = (el.getAttribute('role') || '').toLowerCase();
+    const cls = String(el.className || '').toLowerCase();
+    const aria = (el.getAttribute('aria-haspopup') || '').toLowerCase();
+    if (tag === 'select') return true;
+    if (role === 'combobox' || role === 'listbox' || role === 'button') return true;
+    if (aria === 'listbox' || aria === 'true' || aria === 'menu') return true;
+    if (cls.includes('select') || cls.includes('dropdown') || cls.includes('combo')) return true;
+    return false;
+  };
+  const nodos = [...document.querySelectorAll('label, p, span, legend, h2, h3, h4, div')];
   let lab = null;
   for (const el of nodos) {
     const t = clean(el.innerText || el.textContent || '');
     const linea = t.split(' El dato')[0].replace(/\\*$/, '').trim();
-    if (/^Dificultad$/i.test(linea) && t.length < 50) { lab = el; break; }
+    if (/^Dificultad$/i.test(linea) && t.length < 80) { lab = el; break; }
   }
-  if (!lab) return false;
-  const box = lab.closest('[class*="field"], [class*="Field"], [class*="form"], [class*="Form"], div');
-  const control = box && box.querySelector(
-    'select, [role="combobox"], [aria-haspopup="listbox"], [class*="select"], [class*="dropdown"], input'
-  );
-  if (control) { control.click(); return true; }
-  lab.click();
+  if (!lab) return { ok: false, via: 'sin-label' };
+  const query = 'select, [role="combobox"], [aria-haspopup], [class*="select"], [class*="dropdown"], [class*="combo"], button, input';
+  let control = null;
+  let node = lab.parentElement;
+  for (let i = 0; i < 10 && node && !control; i++) {
+    const found = [...node.querySelectorAll(query)].filter((el) => el !== lab && visibles(el));
+    control = found.find(esControl) || found.find((el) => el.tagName && el.tagName.toLowerCase() !== 'label') || null;
+    node = node.parentElement;
+  }
+  if (!control) {
+    let sib = lab.nextElementSibling;
+    for (let i = 0; i < 8 && sib && !control; i++) {
+      if (esControl(sib)) control = sib;
+      else {
+        const inner = [...sib.querySelectorAll(query)].find((el) => visibles(el));
+        if (inner) control = inner;
+        else if (visibles(sib) && (sib.tagName || '').toLowerCase() !== 'p') control = sib;
+      }
+      sib = sib.nextElementSibling;
+    }
+  }
+  if (!control) {
+    const r = lab.getBoundingClientRect();
+    const puntos = [
+      [r.left + Math.min(140, Math.max(24, r.width / 2)), r.bottom + 20],
+      [r.left + 80, r.bottom + 40],
+      [r.right + 36, r.top + r.height / 2],
+    ];
+    for (const [x, y] of puntos) {
+      const el = document.elementFromPoint(x, y);
+      if (el && el !== lab && !lab.contains(el)) { control = el; break; }
+    }
+  }
+  if (!control) {
+    lab.click();
+    return { ok: true, via: 'label' };
+  }
+  control.click();
+  return { ok: true, via: (control.tagName || '') + ':' + (control.getAttribute('role') || '') };
+}"""
+
+
+JS_CLICK_OPCION_EXACTA = """(etiqueta) => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const wanted = clean(etiqueta);
+  if (!wanted) return false;
+  const nodos = [...document.querySelectorAll(
+    '[role="option"], [role="menuitem"], li, [class*="option"], [class*="menu"] *, [class*="listbox"] *'
+  )];
+  const hits = nodos.filter((el) => {
+    const t = clean(el.innerText || el.textContent || '');
+    return t === wanted;
+  });
+  hits.sort((a, b) => {
+    const ra = a.getBoundingClientRect();
+    const rb = b.getBoundingClientRect();
+    return (ra.width * ra.height) - (rb.width * rb.height);
+  });
+  if (!hits.length) return false;
+  hits[0].click();
   return true;
 }"""
+
+
+def opcion_dificultad_exacta(visibles: list[str], etiqueta: str) -> str | None:
+    """Elige 'Fácil' y no un contenedor 'Muy Fácil'."""
+    wanted = (etiqueta or "").strip()
+    if not wanted:
+        return None
+    for texto in visibles:
+        if (texto or "").strip() == wanted:
+            return wanted
+    return None
+
+
+def _clic_opcion_dificultad(page, etiqueta: str) -> bool:
+    try:
+        ok = page.evaluate(JS_CLICK_OPCION_EXACTA, etiqueta)
+        if ok is True:
+            return True
+    except Exception:
+        pass
+    get_by_role = getattr(page, "get_by_role", None)
+    if get_by_role:
+        try:
+            loc = get_by_role("option", name=etiqueta, exact=True)
+            if hasattr(loc, "count") and loc.count():
+                loc.first.click(timeout=2_500)
+                return True
+        except TypeError:
+            try:
+                loc = get_by_role("option", name=etiqueta)
+                if hasattr(loc, "count") and loc.count():
+                    loc.first.click(timeout=2_500)
+                    return True
+            except Exception:
+                pass
+        except Exception:
+            pass
+    try:
+        loc = page.locator(f'[role="option"]')
+        n = loc.count() if hasattr(loc, "count") else 0
+        for i in range(n):
+            item = loc.nth(i)
+            txt = ""
+            try:
+                txt = (item.inner_text() or "").strip()
+            except Exception:
+                continue
+            if opcion_dificultad_exacta([txt], etiqueta):
+                item.click(timeout=2_500)
+                return True
+    except Exception:
+        pass
+    return False
 
 
 def elegir_dificultad(page, valor: str | None) -> bool:
@@ -1311,7 +1433,7 @@ def elegir_dificultad(page, valor: str | None) -> bool:
         return False
     try:
         page.evaluate(JS_ABRIR_COMBO_DIFICULTAD)
-        page.wait_for_timeout(300)
+        page.wait_for_timeout(450)
     except Exception:
         pass
     try:
@@ -1325,20 +1447,10 @@ def elegir_dificultad(page, valor: str | None) -> bool:
             return True
     except Exception:
         pass
-    for sel in (
-        f'[role="option"]:has-text("{etiqueta}")',
-        f"text={etiqueta}",
-    ):
-        try:
-            loc = page.locator(sel)
-            n = loc.count()
-            if not n:
-                continue
-            loc.last.click(timeout=2_500)
-            print(f"  ✓ field_dificultad → {etiqueta}")
-            return True
-        except Exception:
-            continue
+    if _clic_opcion_dificultad(page, etiqueta):
+        print(f"  ✓ field_dificultad → {etiqueta}")
+        return True
+    print(f"  ✗ field_dificultad (combo no eligió «{etiqueta}»)")
     return False
 
 
@@ -1350,6 +1462,54 @@ def alt_portada(receta: dict) -> str | None:
     return None
 
 
+def extraer_imagenes_docx(
+    path: Path, dest_dir: Path, omitidas: list[str] | None = None
+) -> list[Path]:
+    return _RUTAS.extraer_imagenes_docx(path, dest_dir, omitidas)
+
+
+def resolver_docx_fuente(receta: dict) -> Path | None:
+    for p in _RUTAS.candidatos_docx_fuente(receta, ROOT, CRC):
+        if p.exists() and p.is_file() and p.suffix.lower() == ".docx":
+            return p
+    return None
+
+
+def _fotos_en(carpeta: Path, *, recursivo: bool = False) -> list[Path]:
+    if not carpeta.is_dir():
+        return []
+    hits: list[Path] = []
+    for ext in _RUTAS.EXT_RASTER_BM:
+        patron = f"*{ext}"
+        hits.extend(carpeta.rglob(patron) if recursivo else carpeta.glob(patron))
+    return sorted({p.resolve() for p in hits if p.is_file()})
+
+
+def _buscar_foto_en_carpetas(receta: dict) -> Path | None:
+    rid = (receta.get("id") or "").strip().lower()
+    media_id = CRC / "out" / "media" / (receta.get("id") or "")
+    propias = _fotos_en(media_id)
+    if propias:
+        return propias[0]
+    media = CRC / "out" / "media"
+    en_media = _fotos_en(media, recursivo=True)
+    if rid:
+        preferidas = [p for p in en_media if rid in p.as_posix().lower()]
+        if preferidas:
+            return preferidas[0]
+    elif en_media:
+        return en_media[0]
+    if not rid:
+        return None
+    for carpeta in _RUTAS.carpetas_busqueda_foto(ROOT, CRC):
+        if carpeta == media or carpeta == CRC / "out":
+            continue
+        for foto in _fotos_en(carpeta):
+            if rid in foto.name.lower():
+                return foto
+    return None
+
+
 def ruta_imagen_portada(receta: dict) -> Path | None:
     for im in receta.get("imagenes") or []:
         raw = im.get("rutaLocal") or ""
@@ -1358,53 +1518,112 @@ def ruta_imagen_portada(receta: dict) -> Path | None:
         p = Path(raw)
         if not p.is_absolute():
             p = ROOT / p
-        if p.exists():
+        if p.exists() and p.is_file():
             return p
-    out = CRC / "out"
-    if out.is_dir():
-        for carpeta in (out, out / "media"):
-            if not carpeta.is_dir():
-                continue
-            for pat in ("*.jpg", "*.jpeg", "*.png", "*.webp"):
-                hits = sorted(carpeta.rglob(pat) if carpeta != out else carpeta.glob(pat))
-                if hits:
-                    return hits[0]
-    fuente = receta.get("fuenteWord") or ""
-    if fuente.lower().endswith(".docx"):
-        p = Path(fuente)
-        if not p.is_absolute():
-            p = ROOT / p
-        if p.exists():
-            dest = CRC / "out" / "media"
-            guardadas = extraer_imagenes_docx(p, dest)
-            if guardadas:
-                return guardadas[0]
+    hallada = _buscar_foto_en_carpetas(receta)
+    if hallada:
+        return hallada
+    docx = resolver_docx_fuente(receta)
+    if docx:
+        dest = CRC / "out" / "media" / (receta.get("id") or "portada")
+        guardadas = extraer_imagenes_docx(docx, dest)
+        if guardadas:
+            return guardadas[0]
     return None
 
 
-def extraer_imagenes_docx(path: Path, dest_dir: Path) -> list[Path]:
-    dest_dir.mkdir(parents=True, exist_ok=True)
-    guardadas: list[Path] = []
-    try:
-        with zipfile.ZipFile(path) as zf:
-            medias = [n for n in zf.namelist() if n.startswith("word/media/")]
-            for i, name in enumerate(medias, 1):
-                ext = Path(name).suffix.lower() or ".bin"
-                if ext not in {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"}:
-                    continue
-                out = dest_dir / f"portada-{i}{ext}"
-                out.write_bytes(zf.read(name))
-                guardadas.append(out)
-    except Exception:
-        return []
-    return guardadas
+def _log_sin_foto(receta: dict) -> None:
+    print("  · sin archivo de foto")
+    fuente = receta.get("fuenteWord") or "(sin fuenteWord en el JSON)"
+    print(f"    fuenteWord: {fuente}")
+    docx = resolver_docx_fuente(receta)
+    if not docx:
+        print("    no hallé el .docx (Downloads / inbox / --force)")
+        return
+    print(f"    Word hallado: {docx}")
+    omitidas: list[str] = []
+    dest = CRC / "out" / "media" / (receta.get("id") or "portada")
+    extraer_imagenes_docx(docx, dest, omitidas)
+    if omitidas:
+        print(f"    word/media omitidas: {', '.join(omitidas)}")
+    else:
+        print("    word/media sin jpg/png (foto enlazada o solo alt en el Word)")
+
+
+JS_MARCAR_FILE_IMAGEN = """() => {
+  document.querySelectorAll('[data-crc-file-hit]').forEach((el) => el.removeAttribute('data-crc-file-hit'));
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const nodos = [...document.querySelectorAll('label, p, span, legend, h2, h3, h4, div')];
+  let lab = null;
+  for (const el of nodos) {
+    const t = clean(el.innerText || el.textContent || '');
+    const linea = t.split(' El dato')[0].replace(/\\*$/, '').trim();
+    if (/^Imagen$/i.test(linea) && t.length < 80) { lab = el; break; }
+  }
+  let inputs = [];
+  if (lab) {
+    let node = lab;
+    for (let i = 0; i < 10 && node; i++) {
+      inputs = [...node.querySelectorAll('input[type="file"]')];
+      if (inputs.length) break;
+      node = node.parentElement;
+    }
+  }
+  if (!inputs.length) inputs = [...document.querySelectorAll('input[type="file"]')];
+  inputs.forEach((el, i) => el.setAttribute('data-crc-file-hit', String(i)));
+  return inputs.length;
+}"""
+
+
+JS_CLICK_DROPZONE_IMAGEN = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const nodos = [...document.querySelectorAll('label, p, span, legend, h2, h3, h4, div, button')];
+  let lab = null;
+  for (const el of nodos) {
+    const t = clean(el.innerText || el.textContent || '');
+    const linea = t.split(' El dato')[0].replace(/\\*$/, '').trim();
+    if (/^Imagen$/i.test(linea) && t.length < 80) { lab = el; break; }
+  }
+  if (!lab) return false;
+  const r = lab.getBoundingClientRect();
+  const el = document.elementFromPoint(r.left + 80, r.bottom + 40)
+    || lab.nextElementSibling
+    || lab;
+  if (el) el.click();
+  return true;
+}"""
 
 
 def subir_imagen_portada(page, receta: dict) -> bool:
     ruta = ruta_imagen_portada(receta)
     if not ruta:
-        print("  · sin archivo de foto (¿parse --force del Word?)")
+        _log_sin_foto(receta)
         return False
+    try:
+        n = page.evaluate(JS_MARCAR_FILE_IMAGEN)
+    except Exception:
+        n = 0
+    if n:
+        try:
+            loc = page.locator('[data-crc-file-hit="0"]')
+            setter = getattr(loc.first if hasattr(loc, "first") else loc, "set_input_files", None)
+            if setter:
+                setter(str(ruta))
+                print(f"  ✓ imagen portada ({ruta.name})")
+                return True
+        except Exception as e:
+            print(f"  · input file: {e}")
+    expect = getattr(page, "expect_file_chooser", None)
+    if expect:
+        try:
+            with expect(timeout=4_000) as fc_info:
+                page.evaluate(JS_CLICK_DROPZONE_IMAGEN)
+            chooser = fc_info.value
+            chooser.set_files(str(ruta))
+            print(f"  ✓ imagen portada ({ruta.name}, file chooser)")
+            return True
+        except Exception:
+            pass
     try:
         loc = page.locator("input[type='file']")
         if loc.count():
@@ -1413,6 +1632,8 @@ def subir_imagen_portada(page, receta: dict) -> bool:
             return True
     except Exception as e:
         print(f"  ✗ imagen portada: {e}")
+        return False
+    print(f"  ✗ imagen portada: sin input file ({ruta.name})")
     return False
 
 
@@ -1994,10 +2215,7 @@ def fill_from_receta(
             value = numero_campo_bm(value) or value
         sel = selectores.get(key)
         if key == "field_dificultad":
-            if elegir_dificultad(page, str(value)):
-                return True
-            print("  ✗ field_dificultad")
-            return False
+            return elegir_dificultad(page, str(value))
         if selector_es_generico(sel):
             sel = None
         label_dir = LABELS_EDITOR_BM.get(key)
@@ -2075,6 +2293,10 @@ def fill_from_receta(
             "field_alt": fill("field_alt", alt_portada(receta)),
         }
         subir_imagen_portada(page, receta)
+        try:
+            page.wait_for_timeout(800)
+        except Exception:
+            pass
         if not guardar_y_volver_al_lienzo(page, url_ficha):
             print("  · Cabecera incompleta o sin Guardar. Me detengo aquí.")
             resultados["titulo"] = cabecera.get("field_titulo", False)

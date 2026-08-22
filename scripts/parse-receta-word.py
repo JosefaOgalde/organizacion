@@ -39,24 +39,10 @@ OUT_DIR = CRC / "out"
 W_NS = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
 
 
-def extraer_imagenes_docx(path: Path, dest_dir: Path) -> list[Path]:
-    dest_dir.mkdir(parents=True, exist_ok=True)
-    guardadas: list[Path] = []
-    try:
-        with zipfile.ZipFile(path) as zf:
-            for i, name in enumerate(
-                [n for n in zf.namelist() if n.startswith("word/media/")],
-                1,
-            ):
-                ext = Path(name).suffix.lower() or ".bin"
-                if ext not in {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"}:
-                    continue
-                out = dest_dir / f"portada-{i}{ext}"
-                out.write_bytes(zf.read(name))
-                guardadas.append(out)
-    except Exception:
-        return []
-    return guardadas
+def extraer_imagenes_docx(
+    path: Path, dest_dir: Path, omitidas: list[str] | None = None
+) -> list[Path]:
+    return _RUTAS.extraer_imagenes_docx(path, dest_dir, omitidas)
 
 
 def texto_desde_docx(path: Path) -> str:

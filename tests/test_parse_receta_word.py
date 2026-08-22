@@ -5,6 +5,7 @@ import json
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -174,6 +175,22 @@ class ParseRecetaWordTests(unittest.TestCase):
         self.assertEqual(len(receta["pasos"]), 2)
         self.assertEqual(len(receta["tips"]), 2)
         self.assertEqual(receta["estado"], "listo-para-cargar")
+
+    def test_extrae_png_aunque_el_word_la_guarde_como_bin(self):
+        png = b"\x89PNG\r\n\x1a\n" + b"\x00" * 16
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp) / "media"
+            docx = Path(tmp) / "receta.docx"
+            with zipfile.ZipFile(docx, "w") as zf:
+                zf.writestr("word/document.xml", "<w:document/>")
+                zf.writestr("word/media/image1.bin", png)
+                zf.writestr("word/media/ole.emf", b"\x01\x00\x00\x00" + b"\x00" * 12)
+            omitidas: list[str] = []
+            guardadas = self.modulo.extraer_imagenes_docx(docx, dest, omitidas)
+            self.assertEqual(len(guardadas), 1)
+            self.assertEqual(guardadas[0].suffix, ".png")
+            self.assertEqual(guardadas[0].read_bytes()[:8], png[:8])
+            self.assertTrue(any("emf" in o for o in omitidas))
 
 
 if __name__ == "__main__":
