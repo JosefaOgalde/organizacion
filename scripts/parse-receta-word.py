@@ -114,13 +114,19 @@ def parse_ingredientes(bloque: str) -> list[dict]:
         if line.lower() in ("ingredientes", "ingredientes:"):
             continue
         m = re.match(
-            r"^(?P<cant>\d+[.,]?\d*)\s*(?P<unidad>kg|g|gr|ml|l|lt|cdas?|cdtas?|cucharaditas?|cucharadas?|tazas?|unidades?|u\.?)?\s*(?:de\s+)?(?P<nombre>.+)$",
+            r"^(?P<cant>\d+[.,]?\d*)\s*(?P<resto>.+)$",
             line,
             re.I,
         )
         if m:
-            nombre = m.group("nombre").strip()
-            unidad = m.group("unidad")
+            resto = m.group("resto").strip()
+            unidad_match = re.match(
+                r"^(?P<unidad>kg|g|gr|ml|l|lt|cdas?|cdtas?|cucharaditas?|cucharadas?|tazas?|unidad(?:es)?|u\.?)(?=\s|$)\s*(?:de\s+)?(?P<nombre>.+)$",
+                resto,
+                re.I,
+            )
+            nombre = unidad_match.group("nombre").strip() if unidad_match else resto
+            unidad = unidad_match.group("unidad") if unidad_match else None
             if unidad:
                 unidad = unidad.lower()
                 if unidad == "gr":
