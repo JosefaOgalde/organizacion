@@ -118,11 +118,8 @@ LIENZO_MIN_X = 240
 MENSAJE_ENTER_FICHA = (
     "\n>>> En Chromium abre la receta (5 bloques al CENTRO):\n"
     "    Cabecera / tags / Ingredientes / Instrucciones / SEO.\n"
-    "    Da igual si están vacíos: el script recarga TODOS desde el lápiz\n"
-    "    (primer icono a la derecha de cada bloque, no el basurero).\n"
-    "    NO pulses la paleta izquierda (esos mismos nombres).\n"
-    "    NO pulses «Proyectos» ni el breadcrumb.\n"
-    "    NO entres a «Edición de Lista…».\n"
+    "    El script abre cada lápiz solo (icono a la derecha de cada bloque).\n"
+    "    NO pulses la paleta izquierda ni «Proyectos».\n"
     "    Cuando veas los 5 bloques, pulsa ENTER aquí.\n"
 )
 
@@ -797,119 +794,20 @@ def avisar_si_salio_de_default(page) -> bool:
 
 def _clic_editar_indice(page, index: int) -> bool:
     """Clic en el «Editar» del N-ésimo bloque, debajo de la barra default."""
-    get_by_text = getattr(page, "get_by_text", None)
-    if not get_by_text:
-        return False
     y_min = _y_bajo_barra_vistas(page)
-    try:
-        loc = get_by_text("Editar", exact=True)
-        n = loc.count() if hasattr(loc, "count") else 0
-    except Exception:
-        return False
-    filas: list[tuple[float, object]] = []
-    for i in range(n):
-        item = loc.nth(i)
-        box = _bounding_box(item)
-        if box is None:
-            continue
-        if float(box.get("x") or 0) < 200:
-            continue
-        if float(box.get("y") or 0) < y_min:
-            continue
-        if float(box.get("height") or 0) > 40:
-            continue
-        filas.append((float(box["y"]), item))
-    filas.sort(key=lambda p: p[0])
-    uniq: list[tuple[float, object]] = []
-    for y, item in filas:
-        if any(abs(y - uy) < 14 for uy, _ in uniq):
-            continue
-        uniq.append((y, item))
-    if index < 0 or index >= len(uniq):
-        return False
-    try:
-        uniq[index][1].click(timeout=3_000)
-        return True
-    except Exception:
-        return False
+    for fr in frames_unicos(page):
+        if _clic_editar_indice_en_frame(page, fr, index, y_min=y_min):
+            return True
+    return False
 
 
 def _clic_svg_bloque_vacio(page, index: int) -> bool:
     """Lápiz SVG del N-ésimo «Edita este componente vacío», no el texto del centro."""
-    get_by_text = getattr(page, "get_by_text", None)
-    if not get_by_text:
-        return False
     y_min = _y_bajo_barra_vistas(page)
-    try:
-        try:
-            hints = get_by_text("Edita este componente vacío desde el lápiz", exact=False)
-        except TypeError:
-            hints = get_by_text("Edita este componente vacío desde el lápiz")
-        n = hints.count() if hasattr(hints, "count") else 0
-    except Exception:
-        n = 0
-    if n == 0:
-        return False
-    cards: list[tuple[float, object, dict]] = []
-    for i in range(n):
-        item = hints.nth(i)
-        box = _bounding_box(item)
-        if box is None or float(box.get("x") or 0) < 80:
-            continue
-        cards.append((float(box["y"]), item, box))
-    cards.sort(key=lambda p: p[0])
-    uniq: list[tuple[float, object, dict]] = []
-    for y, item, box in cards:
-        if any(abs(y - uy) < 16 for uy, _, _ in uniq):
-            continue
-        uniq.append((y, item, box))
-    if index < 0 or index >= len(uniq):
-        return False
-    item, box = uniq[index][1], uniq[index][2]
-    try:
-        if hasattr(item, "hover"):
-            item.hover(timeout=2_000)
-            page.wait_for_timeout(250)
-    except Exception:
-        pass
-    try:
-        fila = item.locator("xpath=ancestor::*[count(.//svg)>=1][1]")
-        svgs = fila.locator("svg")
-        ns = svgs.count() if hasattr(svgs, "count") else 0
-        derechos: list[tuple[float, object]] = []
-        cx = float(box["x"]) + float(box.get("width") or 0) * 0.4
-        for j in range(min(ns, 16)):
-            nodo = svgs.nth(j)
-            sbox = _bounding_box(nodo)
-            if not sbox:
-                continue
-            if float(sbox.get("y") or 0) < y_min:
-                continue
-            if not (8 <= float(sbox.get("width") or 0) <= 40):
-                continue
-            if not (8 <= float(sbox.get("height") or 0) <= 40):
-                continue
-            if float(sbox["x"]) < cx:
-                continue
-            derechos.append((float(sbox["x"]), nodo))
-        derechos.sort(key=lambda p: p[0])
-        if derechos:
-            derechos[0][1].click(timeout=3_000)
+    for fr in frames_unicos(page):
+        if _clic_svg_bloque_vacio_en_frame(page, fr, index, y_min=y_min):
             return True
-    except Exception:
-        pass
-    mouse = getattr(page, "mouse", None)
-    if not mouse:
-        return False
-    try:
-        fila = item.locator("xpath=ancestor::*[contains(., 'Id:')][1]")
-        fbox = _bounding_box(fila) or box
-        x = float(fbox["x"]) + float(fbox["width"]) - 40
-        y = max(y_min, float(fbox["y"]) + 16)
-        mouse.click(x, y)
-        return True
-    except Exception:
-        return False
+    return False
 
 
 def _clic_titulo_bloque(page, aliases: list[str]) -> bool:
@@ -1016,16 +914,15 @@ def _eval_en_frames(page, script, arg=None):
 
 def _editor_confirmado(page, clave: str) -> bool:
     _esperar_editor(page)
-    if editor_actual(page) == clave:
-        print(f"  · Editor «{clave}» abierto")
-        return True
-    try:
-        page.wait_for_timeout(900)
-    except Exception:
-        pass
-    if editor_actual(page) == clave:
-        print(f"  · Editor «{clave}» abierto")
-        return True
+    for ms in (0, 350, 500, 800, 1200, 1800, 2500):
+        if ms:
+            try:
+                page.wait_for_timeout(ms)
+            except Exception:
+                pass
+        if editor_actual(page) == clave:
+            print(f"  · Editor «{clave}» abierto")
+            return True
     return False
 
 
@@ -1071,6 +968,8 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     if avisar_si_salio_de_default(page):
         return False
     comp_id = ids.get(clave)
+    if intentar(_clic_lapiz_playwright(page, clave, comp_id, aliases, idx)):
+        return True
     if comp_id:
         clicked = _eval_en_frames(page, JS_CLIC_BLOQUE_ID, comp_id)
         if intentar(resultado_clic_lapiz_ok(clicked)):
@@ -1115,7 +1014,11 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
         )
         if intentar(_clic_lapiz_por_punto(page, clicked)):
             return True
-    return pedir_lapiz_a_mano(page, clave)
+    if intentar(_clic_lapiz_playwright(page, clave, comp_id, aliases, idx)):
+        return True
+    return pedir_lapiz_a_mano(
+        page, clave, comp_id=comp_id, aliases=aliases, idx=idx
+    )
 
 
 def aliases_componente(clave: str) -> list[str]:
@@ -1128,8 +1031,16 @@ def bloque_ya_cargado(page, clave: str) -> bool:
     return bloque_componente_vacio(page, aliases_componente(clave)) is False
 
 
-def pedir_lapiz_a_mano(page, clave: str, *, headed: bool = True) -> bool:
-    """Si el clic no abre el editor, la usuaria pulsa el lápiz y seguimos rellenando."""
+def pedir_lapiz_a_mano(
+    page,
+    clave: str,
+    *,
+    headed: bool = True,
+    comp_id: str | None = None,
+    aliases: list[str] | None = None,
+    idx: int | None = None,
+) -> bool:
+    """Último recurso: reintenta el lápiz automático (no pedir clic manual salvo CRC_PEDIR_LAPIZ=1)."""
     if editor_actual(page) == clave:
         print(f"  · Editor «{clave}» abierto")
         return True
@@ -1140,7 +1051,23 @@ def pedir_lapiz_a_mano(page, clave: str, *, headed: bool = True) -> bool:
     if editor_actual(page) is None and bloque_ya_cargado(page, clave):
         print(f"  · «{nombre}» ya está cargada. No pido el lápiz.")
         return False
-    if not headed or not sys.stdin.isatty():
+    if aliases is None:
+        aliases = aliases_componente(clave)
+    if idx is None:
+        idx = next(i for i, c in enumerate(COMPONENTES_CMS) if c["clave"] == clave)
+    if comp_id is None:
+        comp_id = recoger_ids_componentes(page).get(clave)
+    for intento in range(3):
+        if _clic_lapiz_playwright(page, clave, comp_id, aliases, idx) and _editor_confirmado(
+            page, clave
+        ):
+            return True
+        try:
+            page.wait_for_timeout(450 + intento * 350)
+        except Exception:
+            pass
+    print(f"  ✗ No pude abrir el lápiz de «{nombre}» automáticamente.")
+    if not headed or not sys.stdin.isatty() or os.environ.get("CRC_PEDIR_LAPIZ") != "1":
         return False
     print(
         f"\n>>> Para COMPLETAR «{nombre}»: en el Chromium de Python\n"
@@ -1155,18 +1082,207 @@ def pedir_lapiz_a_mano(page, clave: str, *, headed: bool = True) -> bool:
 
 
 def _esperar_editor(page) -> None:
-    try:
-        page.wait_for_timeout(800)
-        page.wait_for_selector("input:visible, textarea:visible, select:visible", timeout=4_000)
-    except Exception:
+    for fr in frames_unicos(page):
         try:
-            page.wait_for_timeout(700)
+            fr.wait_for_selector(
+                "input:visible, textarea:visible, select:visible, [contenteditable='true']",
+                timeout=3_500,
+            )
+            return
+        except Exception:
+            continue
+    try:
+        page.wait_for_timeout(600)
+    except Exception:
+        pass
+
+
+def _lapiz_en_card(loc_card, page) -> bool:
+    """Clic en lápiz/Editar de una tarjeta de bloque (Playwright, con force)."""
+    for sel in (
+        "button[aria-label*='Editar' i]",
+        "button[title*='Editar' i]",
+        "button[aria-label*='edit' i]",
+        "button[aria-label*='lápiz' i]",
+        "button[aria-label*='lapiz' i]",
+        "button[class*='lapiz' i]",
+        "button:has(svg)",
+    ):
+        try:
+            btns = loc_card.locator(sel)
+            n = btns.count() if hasattr(btns, "count") else 0
+        except Exception:
+            n = 0
+        for i in range(min(n, 6)):
+            item = btns.nth(i)
+            box = _bounding_box(item)
+            if box is None or not caja_en_lienzo(box):
+                continue
+            try:
+                if hasattr(item, "scroll_into_view_if_needed"):
+                    item.scroll_into_view_if_needed(timeout=2_000)
+            except Exception:
+                pass
+            for force in (False, True):
+                try:
+                    item.click(timeout=4_000, force=force)
+                    return True
+                except Exception:
+                    continue
+    get_by_text = getattr(loc_card, "get_by_text", None)
+    if get_by_text:
+        try:
+            edit = get_by_text("Editar", exact=True)
+            if clic_locator_en_lienzo_desde(edit):
+                return True
         except Exception:
             pass
+    return False
+
+
+def _card_desde_texto(fr, texto: str, *, y_min: float):
+    get_by_text = getattr(fr, "get_by_text", None)
+    if not get_by_text:
+        return None
+    try:
+        loc = get_by_text(texto, exact=True)
+        n = loc.count() if hasattr(loc, "count") else 0
+    except Exception:
+        return None
+    for i in range(n):
+        item = loc.nth(i)
+        box = _bounding_box(item)
+        if box is None or not caja_en_lienzo(box):
+            continue
+        if float(box.get("y") or 0) < y_min:
+            continue
+        try:
+            card = item.locator("xpath=ancestor::*[count(.//button)>=1][1]")
+            if hasattr(card, "count") and card.count():
+                return card.first if hasattr(card, "first") else card
+        except Exception:
+            pass
+    return None
+
+
+def _clic_editar_indice_en_frame(page, fr, index: int, *, y_min: float) -> bool:
+    get_by_text = getattr(fr, "get_by_text", None)
+    if not get_by_text:
+        return False
+    try:
+        loc = get_by_text("Editar", exact=True)
+        n = loc.count() if hasattr(loc, "count") else 0
+    except Exception:
+        return False
+    filas: list[tuple[float, object]] = []
+    for i in range(n):
+        item = loc.nth(i)
+        box = _bounding_box(item)
+        if box is None or float(box.get("x") or 0) < 200:
+            continue
+        if float(box.get("y") or 0) < y_min:
+            continue
+        if float(box.get("height") or 0) > 40:
+            continue
+        filas.append((float(box["y"]), item))
+    filas.sort(key=lambda p: p[0])
+    uniq: list[tuple[float, object]] = []
+    for y, item in filas:
+        if any(abs(y - uy) < 14 for uy, _ in uniq):
+            continue
+        uniq.append((y, item))
+    if index < 0 or index >= len(uniq):
+        return False
+    try:
+        uniq[index][1].click(timeout=4_000)
+        return True
+    except Exception:
+        return False
+
+
+def _clic_svg_bloque_vacio_en_frame(page, fr, index: int, *, y_min: float) -> bool:
+    get_by_text = getattr(fr, "get_by_text", None)
+    if not get_by_text:
+        return False
+    try:
+        try:
+            hints = get_by_text("Edita este componente vacío desde el lápiz", exact=False)
+        except TypeError:
+            hints = get_by_text("Edita este componente vacío desde el lápiz")
+        n = hints.count() if hasattr(hints, "count") else 0
+    except Exception:
+        n = 0
+    if n == 0:
+        return False
+    cards: list[tuple[float, object, dict]] = []
+    for i in range(n):
+        item = hints.nth(i)
+        box = _bounding_box(item)
+        if box is None or float(box.get("x") or 0) < 80:
+            continue
+        if float(box.get("y") or 0) < y_min:
+            continue
+        cards.append((float(box["y"]), item, box))
+    cards.sort(key=lambda p: p[0])
+    uniq: list[tuple[float, object, dict]] = []
+    for y, item, box in cards:
+        if any(abs(y - uy) < 16 for uy, _, _ in uniq):
+            continue
+        uniq.append((y, item, box))
+    if index < 0 or index >= len(uniq):
+        return False
+    item, box = uniq[index][1], uniq[index][2]
+    try:
+        if hasattr(item, "hover"):
+            item.hover(timeout=2_000)
+            page.wait_for_timeout(250)
+    except Exception:
+        pass
+    try:
+        fila = item.locator("xpath=ancestor::*[count(.//svg)>=1][1]")
+        svgs = fila.locator("svg")
+        if svgs.count():
+            svgs.last.click(timeout=3_000)
+            return True
+    except Exception:
+        pass
+    try:
+        page.mouse.click(float(box["x"]) + float(box["width"]) - 28, float(box["y"]) + 14)
+        return True
+    except Exception:
+        return False
+
+
+def _clic_lapiz_playwright(
+    page, clave: str, comp_id: str | None, aliases: list[str], idx: int
+) -> bool:
+    """Clic lápiz vía Playwright en cada frame (el lienzo suele ser un iframe)."""
+    y_min = _y_bajo_barra_vistas(page)
+    for fr in frames_unicos(page):
+        if comp_id:
+            card = _card_desde_texto(fr, comp_id, y_min=y_min)
+            if card is not None and _lapiz_en_card(card, page):
+                return True
+        for alias in aliases:
+            card = _card_desde_texto(fr, alias, y_min=y_min)
+            if card is not None and _lapiz_en_card(card, page):
+                return True
+        if _clic_editar_indice_en_frame(page, fr, idx, y_min=y_min):
+            return True
+        if _clic_svg_bloque_vacio_en_frame(page, fr, idx, y_min=y_min):
+            return True
+    return False
 
 
 def _clic_lapiz_por_fila(page, aliases: list[str]) -> bool:
-    get_by_text = getattr(page, "get_by_text", None)
+    for fr in frames_unicos(page):
+        if _clic_lapiz_por_fila_en_frame(page, fr, aliases):
+            return True
+    return False
+
+
+def _clic_lapiz_por_fila_en_frame(page, fr, aliases: list[str]) -> bool:
+    get_by_text = getattr(fr, "get_by_text", None)
     if not get_by_text:
         return False
     for alias in aliases:
