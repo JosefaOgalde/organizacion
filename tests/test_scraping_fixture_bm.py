@@ -204,6 +204,34 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             )
             browser.close()
 
+    def test_rellena_tags_expandido_bm_real(self):
+        """BM real: ítems expandidos visibles (sin acordeón cerrado)."""
+        explorar = cargar_explorar()
+        fixture = Path(__file__).resolve().parent / "fixtures/bm-formulario-tags-expandido.html"
+        tags = ["salmon", "pescado", "almuerzo"]
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(fixture.as_uri())
+            self.assertTrue(explorar._rellenar_tags_bm(page, tags))
+            self.assertEqual(page.locator(".campo-tag").count(), 3)
+            for i, t in enumerate(tags):
+                self.assertEqual(page.input_value(f"#tag-{i + 1}"), t)
+                self.assertEqual(page.input_value(f"#link-{i + 1}"), "")
+            browser.close()
+
+    def test_salir_tags_volver_confirma_guardar(self):
+        explorar = cargar_explorar()
+        fixture = Path(__file__).resolve().parent / "fixtures/bm-formulario-tags-expandido.html"
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(fixture.as_uri())
+            explorar._rellenar_tags_bm(page, ["salmon"])
+            explorar._salir_edicion_tags_si_aplica(page)
+            self.assertEqual(page.locator("#vista").inner_text(), "canvas")
+            browser.close()
+
     def test_rellena_tags_chip_enter(self):
         explorar = cargar_explorar()
         fixture = Path(__file__).resolve().parent / "fixtures/bm-formulario-tags.html"

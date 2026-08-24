@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Edición de componente · tags</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 820px; margin: 24px auto; }
+    .banner { background: #e8f4ff; border: 1px solid #9cf; padding: 10px 12px; margin: 12px 0; }
+    .toolbar { display: flex; gap: 12px; margin-bottom: 16px; }
+    .form-item-bm { border: 1px solid #ddd; padding: 12px 14px; margin: 10px 0; background: #fafafa; }
+    .form-item-bm h4 { margin: 0 0 10px; font-size: 0.95rem; }
+    .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    label { display: block; font-weight: 600; margin-bottom: 4px; }
+    .req { color: #b00020; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; }
+    .error { color: #b00020; font-size: 0.85rem; }
+    #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.35); align-items: center; justify-content: center; }
+    #modal.open { display: flex; }
+    .dialog { background: #fff; padding: 20px 24px; border-radius: 8px; max-width: 420px; }
+    .dialog-actions { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button type="button" id="btn-volver">Volver</button>
+  </div>
+  <h1>Edición de tags</h1>
+  <div class="banner">Los siguientes campos podrían tener valores precargados. Favor de validar y guardar.</div>
+  <h2>Formulario Tags</h2>
+  <div class="arreglo" id="arreglo">
+    <strong>Arreglo</strong>
+    <div id="items"></div>
+    <button type="button" id="btn-agregar">+ Agregar nuevo ítem</button>
+  </div>
+  <p id="vista">editor-tags</p>
+
+  <div id="modal" role="dialog" aria-modal="true">
+    <div class="dialog">
+      <p id="modal-text">Tienes cambios sin guardar. ¿Deseas guardar la información?</p>
+      <div class="dialog-actions">
+        <button type="button" id="btn-cancelar">Cancelar</button>
+        <button type="button" id="btn-aceptar">Sí, acepto</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let n = 0;
+    const itemsEl = document.getElementById('items');
+
+    function addItem() {
+      n += 1;
+      const idx = n;
+      const wrap = document.createElement('div');
+      wrap.className = 'form-item-bm';
+      wrap.dataset.item = String(idx);
+      wrap.innerHTML =
+        '<h4>Formulario Ítem ' + idx + '</h4>' +
+        '<div class="fila">' +
+          '<div>' +
+            '<label for="tag-' + idx + '">Tag <span class="req">*</span></label>' +
+            '<input id="tag-' + idx + '" class="campo-tag" type="text" placeholder="Dale un valor">' +
+            '<div class="error tag-error" hidden>El dato es requerido</div>' +
+          '</div>' +
+          '<div>' +
+            '<label for="link-' + idx + '">Link</label>' +
+            '<input id="link-' + idx + '" class="campo-link" type="text" placeholder="Dale un valor">' +
+          '</div>' +
+        '</div>';
+      itemsEl.appendChild(wrap);
+    }
+
+    document.getElementById('btn-agregar').addEventListener('click', () => addItem());
+    addItem();
+
+    document.getElementById('btn-volver').addEventListener('click', () => {
+      document.getElementById('modal').classList.add('open');
+    });
+    document.getElementById('btn-cancelar').addEventListener('click', () => {
+      document.getElementById('modal').classList.remove('open');
+    });
+    document.getElementById('btn-aceptar').addEventListener('click', () => {
+      document.getElementById('modal').classList.remove('open');
+      document.getElementById('vista').textContent = 'canvas';
+    });
+  </script>
+</body>
+</html>
