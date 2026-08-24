@@ -1548,9 +1548,6 @@ def _forzar_vuelta_al_canvas(page) -> None:
         print("  · Aún en Formulario Tags → Volver y guardar…", flush=True)
         _salir_edicion_tags_si_aplica(page)
         _esperar_canvas_tras_tags(page)
-        if contar_campos_editables(page) > 0:
-            cerrar_editor_componente(page, guardar=True)
-            _esperar_canvas_tras_tags(page)
     try:
         if page.get_by_text(re.compile(r"Edici[oó]n de Cabecera|Formulario Header", re.I)).count():
             print("  · Aún en Cabecera → Volver…", flush=True)
@@ -3148,25 +3145,43 @@ def _locators_tag_arreglo_ordenados(page) -> list:
     return uniq
 
 
+_CONTAR_ITEMS_TAGS_JS = r"""() => {
+  const clean = (s) => (s || '').replace(/\s+/g, ' ').trim();
+  const seen = new Set();
+  for (const el of document.querySelectorAll(
+    'button, [role="button"], summary, h3, h4, h5, div, span, label'
+  )) {
+    const t = clean(el.innerText);
+    if (t.length > 56) continue;
+    const m = t.match(/^Formulario\s+[ÍI]tem\s+(\d+)\s*$/i);
+    if (m) seen.add(parseInt(m[1], 10));
+  }
+  if (!seen.size) return 0;
+  return Math.max(...seen);
+}"""
+
+
 def _contar_items_estructural_tags(page) -> int:
     """Cuántos Formulario Ítem hay (aunque el acordeón esté cerrado)."""
+    mejor = 0
+    for target in _targets_page_y_frames(page):
+        try:
+            n = int(target.evaluate(_CONTAR_ITEMS_TAGS_JS) or 0)
+            if n > mejor:
+                mejor = n
+        except Exception:
+            pass
+        try:
+            n = target.locator(".acordeon, .form-item-bm, mat-expansion-panel").count()
+            if n > mejor:
+                mejor = n
+        except Exception:
+            pass
+    if mejor:
+        return mejor
     headers = _headers_formulario_item_tags(page)
     if headers:
         return max(int(h.get("n") or 0) for h in headers)
-    for target in _targets_page_y_frames(page):
-        for sel in (".acordeon", ".form-item-bm", "[class*='form-item']"):
-            try:
-                n = target.locator(sel).count()
-                if n:
-                    return n
-            except Exception:
-                continue
-        try:
-            n = target.get_by_text(re.compile(r"Formulario\s+[ÍI]tem\s+\d+", re.I)).count()
-            if n:
-                return n
-        except Exception:
-            continue
     return 0
 
 
@@ -3559,68 +3574,135 @@ _ITEM_TAG_ACORDEON_JS = r"""(args) => {
 
 
 def _rellenar_item_tag_acordeon(page, n_item: int, tag: str) -> bool:
-    """Abre Formulario Ítem N, escribe Tag* (no Link). Flujo BM real."""
+    """Abre Formulario Ítem N, escribe Tag* con teclado (React BM) y Tab."""
     print(f"  · Abro Formulario Ítem {n_item}…", flush=True)
+    cre = re.compile(rf"^Formulario\s+[ÍI]tem\s+{n_item}\s*$", re.I)
+    cre_loose = re.compile(rf"Formulario\s+[ÍI]tem\s+{n_item}\b", re.I)
+
+    for target in _targets_page_y_frames(page):
+        try:
+            header = target.get_by_text(cre)
+            if not header.count():
+                header = target.get_by_text(cre_loose)
+            if not header.count():
+                continue
+            h = None
+            for j in range(min(header.count(), 10)):
+                cand = header.nth(j)
+                txt = (cand.inner_text() or "").strip()
+                if len(txt) > 48:
+                    continue
+                if cre.match(txt) or cre_loose.search(txt):
+                    h = cand
+                    if cre.match(txt):
+                        break
+            if h is None:
+                continue
+            h.scroll_into_view_if_needed(timeout=2000)
+            h.click(timeout=2500)
+            page.wait_for_timeout(600)
+            block = h.locator(
+                "xpath=ancestor::*[contains(@class,'acordeon') or contains(@class,'form-item')][1]"
+            )
+            if not block.count():
+                block = h.locator("xpath=ancestor::*[.//input][1]")
+            inp = None
+            for sel in (
+                "xpath=.//label[contains(.,'Tag') and not(contains(.,'Link'))]/following::input[1]",
+                "input[data-field='tag']",
+                "input.campo-tag",
+            ):
+                loc = block.locator(sel).first
+                if loc.count():
+                    inp = loc
+                    break
+            if inp is None or not inp.count():
+                dale = block.locator("input[placeholder*='Dale un valor' i]").first
+                if dale.count():
+                    inp = dale
+            if inp is None or not inp.count():
+                continue
+            inp.click(timeout=2000)
+            inp.fill(tag, timeout=4000)
+            try:
+                inp.press("Tab")
+            except Exception:
+                pass
+            page.wait_for_timeout(400)
+            try:
+                got = (inp.input_value() or "").strip()
+            except Exception:
+                got = ""
+            if got == tag.strip():
+                print(f"  ✓ tag ítem {n_item} → «{tag}» (Tag confirmado en input)", flush=True)
+                return True
+        except Exception:
+            continue
+
     for target in _targets_page_y_frames(page):
         try:
             res = target.evaluate(_ITEM_TAG_ACORDEON_JS, {"n": n_item, "tag": tag}) or {}
             page.wait_for_timeout(500)
             if res.get("ok"):
                 print(
-                    f"  ✓ tag ítem {n_item} → «{tag}» (acordeón abierto, campo Tag)",
+                    f"  ✓ tag ítem {n_item} → «{tag}» (fallback JS)",
                     flush=True,
                 )
                 return True
         except Exception:
             continue
+    return False
 
-    cre = re.compile(rf"^Formulario\s+[ÍI]tem\s+{n_item}\s*$", re.I)
+
+def _verificar_tags_en_formulario(page, tags: list[str]) -> bool:
+    """Comprueba que los Tag* tienen valor antes de Volver."""
+    esperados = [t.strip() for t in tags if t.strip()]
+    leidos: list[str] = []
     for target in _targets_page_y_frames(page):
         try:
-            header = target.get_by_text(cre)
-            if not header.count():
-                header = target.get_by_text(
-                    re.compile(rf"Formulario\s+[ÍI]tem\s+{n_item}\b", re.I)
-                )
-            if not header.count():
-                continue
-            h = header.first
-            for j in range(min(header.count(), 6)):
-                cand = header.nth(j)
-                txt = (cand.inner_text() or "").strip()
-                if len(txt) > 48:
-                    continue
-                h = cand
+            vals = target.evaluate(
+                r"""(n) => {
+                  const clean = s => (s||'').replace(/\s+/g,' ').trim();
+                  const out = [];
+                  const seen = new Set();
+                  for (const el of document.querySelectorAll(
+                    'button, [role="button"], div, span, h3, h4'
+                  )) {
+                    const m = clean(el.innerText).match(/^Formulario\s+[ÍI]tem\s+(\d+)\s*$/i);
+                    if (!m) continue;
+                    const num = parseInt(m[1], 10);
+                    if (seen.has(num)) continue;
+                    seen.add(num);
+                    let root = el.closest('.acordeon, .form-item-bm, mat-expansion-panel, div');
+                    if (!root) root = el.parentElement;
+                    let val = '';
+                    for (let i = 0; i < 10 && root; i++) {
+                      const inputs = [...root.querySelectorAll('input:not([type=hidden])')];
+                      if (inputs.length) {
+                        inputs.sort((a,b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
+                        val = (inputs[0].value || '').trim();
+                        break;
+                      }
+                      root = root.parentElement;
+                    }
+                    out.push({ n: num, val });
+                  }
+                  out.sort((a,b) => a.n - b.n);
+                  return out.map(x => x.val);
+                }"""
+            ) or []
+            if vals:
+                leidos = [str(v) for v in vals if v]
                 break
-            h.scroll_into_view_if_needed(timeout=2000)
-            h.click(timeout=2500)
-            page.wait_for_timeout(550)
-            block = h.locator(
-                "xpath=ancestor::*[contains(@class,'acordeon') or contains(@class,'form-item')][1]"
-            )
-            if not block.count():
-                block = h.locator("xpath=ancestor::*[.//input][1]")
-            for sel in (
-                "xpath=.//label[contains(.,'Tag') and not(contains(.,'Link'))]/following::input[1]",
-                "input[data-field='tag']",
-                "input.campo-tag",
-            ):
-                inp = block.locator(sel).first
-                if inp.count() and _rellenar_un_campo_tag(inp, tag):
-                    print(
-                        f"  ✓ tag ítem {n_item} → «{tag}» (acordeón + Tag)",
-                        flush=True,
-                    )
-                    return True
-            dale = block.locator("input[placeholder*='Dale un valor' i]")
-            if dale.count() and _rellenar_un_campo_tag(dale.first, tag):
-                print(
-                    f"  ✓ tag ítem {n_item} → «{tag}» (placeholder Dale un valor)",
-                    flush=True,
-                )
-                return True
         except Exception:
             continue
+    if len(leidos) >= len(esperados) and leidos[: len(esperados)] == esperados:
+        print(f"  · Verificación Tag*: {len(leidos)} valores en el formulario.", flush=True)
+        return True
+    print(
+        f"  · AVISO: Tag* en formulario {leidos[:8]!r} ≠ esperado {esperados!r}",
+        flush=True,
+    )
     return False
 
 
@@ -3654,20 +3736,25 @@ def _rellenar_tags_bm(page, tags: list[str]) -> bool:
     print(f"  · Tags a cargar ({len(tags)}): {', '.join(tags)}", flush=True)
     page.wait_for_timeout(400)
 
+    n_existentes = _contar_items_formulario_tags(page)
+    if n_existentes:
+        print(f"  · Arreglo tags: {n_existentes} Formulario Ítem(s) ya en pantalla.", flush=True)
+
     ok_count = 0
     for i, tag in enumerate(tags):
         n_item = i + 1
-        while _contar_items_formulario_tags(page) < n_item:
+        if _contar_items_formulario_tags(page) < n_item:
             if not _click_agregar_item_tags(page):
                 print(
                     f"  ✗ No pude agregar Formulario Ítem {n_item} para «{tag}»",
                     flush=True,
                 )
-                break
         if _rellenar_item_tag_acordeon(page, n_item, tag):
             ok_count += 1
         else:
             print(f"  ✗ no encontré campo Tag en Formulario Ítem {n_item}", flush=True)
+
+    _verificar_tags_en_formulario(page, tags)
 
     if ok_count == 0:
         print("  ✗ field_tags: no pude rellenar el arreglo", flush=True)
@@ -3992,8 +4079,12 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
                 _esperar_canvas_tras_tags(page)
                 # Fixture CMS (#tags): no hay Volver; BM real ya guardó con el popup
                 if not _en_editor_tags(page) and contar_campos_editables(page) > 0:
-                    cerrar_editor_componente(page, guardar=True)
-                    _esperar_canvas_tras_tags(page)
+                    try:
+                        if page.locator("#tags, [data-editor='tags'] input").count():
+                            cerrar_editor_componente(page, guardar=True)
+                            _esperar_canvas_tras_tags(page)
+                    except Exception:
+                        pass
             else:
                 cerrar_editor_componente(page, guardar=True)
                 if clave_comp == "cabecera":
