@@ -230,12 +230,12 @@ def main() -> int:
         intentar_buscar_vista(page, str(receta.get("titulo") or ""))
 
         print(
-            "\n>>> Estás en el Administrador de vistas (Recetas_Jumbo).\n"
-            "    1) Busca la receta (ej. Salmón) y ábrela (clic en la tarjeta / Detalles).\n"
-            "    2) Entra al editor de la vista hasta ver los bloques:\n"
-            "       Cabecera / tags / Lista Ingredientes / Instrucciones / SEO.\n"
-            "    3) Vuelve aquí y pulsa ENTER para que el script rellene.\n"
-            "    (No toques los lápices; el scraping los abre solo.)\n"
+            "\n>>> Se abre una ventana NUEVA en el Administrador de vistas.\n"
+            "    En ESA misma ventana (no en otra pestaña):\n"
+            "    1) Busca la receta (ej. Salmón) y ábrela.\n"
+            "    2) Entra al editor hasta ver Cabecera / tags / listas / SEO.\n"
+            "    3) Quédate ahí y pulsa ENTER aquí para rellenar.\n"
+            "    El script NO debe sacarte con «Volver»; si pasa, avísame.\n"
         )
 
         comps: list = []

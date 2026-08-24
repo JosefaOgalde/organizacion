@@ -575,17 +575,28 @@ def guardar_editor_componente(page) -> bool:
 
 
 def cerrar_editor_componente(page, *, guardar: bool = False) -> None:
-    """Sale del editor. Si guardar=True, intenta Guardar/Aplicar antes (relleno de receta)."""
+    """Cierra el editor del componente sin salir de la ficha de la receta.
+
+    Nunca hace clic en «Volver»: en el BM eso te saca al Administrador de vistas.
+    """
     if guardar:
-        if not guardar_editor_componente(page):
-            print(
-                "  · No vi botón Guardar en el editor; intento cerrar igual "
-                "(revisa en BM si el componente pidió guardar).",
-                flush=True,
-            )
+        if guardar_editor_componente(page):
+            return
+        print(
+            "  · No vi botón Guardar en el editor; pruebo Escape "
+            "(sin Volver, para no salir de la receta).",
+            flush=True,
+        )
+        try:
+            page.keyboard.press("Escape")
+            page.wait_for_timeout(500)
+        except Exception:
+            pass
+        return
+
+    # Solo mapeo: Escape / Cerrar de modal (nunca Volver)
     for sel in (
         "button:has-text('Cerrar')",
-        "button:has-text('Volver')",
         "button[aria-label*='Cerrar' i]",
         "button[aria-label*='Close' i]",
         "[data-testid*='close' i]",
@@ -594,19 +605,21 @@ def cerrar_editor_componente(page, *, guardar: bool = False) -> None:
             loc = page.locator(sel)
             for i in range(loc.count()):
                 btn = loc.nth(i)
-                if btn.is_visible():
-                    btn.click(timeout=2_000)
-                    page.wait_for_timeout(400)
-                    return
+                if not btn.is_visible():
+                    continue
+                txt = (btn.inner_text() or "").lower()
+                if "volver" in txt:
+                    continue
+                btn.click(timeout=2_000)
+                page.wait_for_timeout(400)
+                return
         except Exception:
             pass
-    # Escape solo si no pedimos guardar (mapeo); al rellenar evita descartar
-    if not guardar:
-        try:
-            page.keyboard.press("Escape")
-            page.wait_for_timeout(400)
-        except Exception:
-            pass
+    try:
+        page.keyboard.press("Escape")
+        page.wait_for_timeout(400)
+    except Exception:
+        pass
 
 
 def capturar_cms_por_componentes(page) -> tuple[dict, dict]:
