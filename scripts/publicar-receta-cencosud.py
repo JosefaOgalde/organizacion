@@ -56,6 +56,7 @@ def load_env(path: Path) -> dict[str, str]:
         "CENCOSUD_BM_USER",
         "CENCOSUD_BM_PASSWORD",
         "CENCOSUD_BM_URL",
+        "CENCOSUD_BM_VIEW_MANAGER_URL",
         "CENCOSUD_BM_BANDERA",
         "CENCOSUD_BM_HEADED",
         "CENCOSUD_BM_DRY_RUN",
@@ -124,6 +125,42 @@ def refrescar_lapices_desde_pagina(explorar, page, selectores: dict) -> list[dic
     return comps
 
 
+def intentar_buscar_vista(page, titulo: str) -> None:
+    """En el Administrador de vistas, escribe el título en «Busca alguna vista»."""
+    if not titulo:
+        return
+    for sel in (
+        'input[placeholder*="Busca alguna vista" i]',
+        'input[placeholder*="Busca" i]',
+        'input[type="search"]',
+        'input[aria-label*="Busca" i]',
+    ):
+        try:
+            loc = page.locator(sel).first
+            if loc.count() and loc.is_visible():
+                loc.fill(titulo)
+                print(f"Búsqueda prellenada: {titulo!r}")
+                # Intentar Aplicar filtros
+                for btn_sel in (
+                    "button:has-text('Aplicar filtros')",
+                    "button:has-text('Aplicar')",
+                ):
+                    btn = page.locator(btn_sel).first
+                    if btn.count() and btn.is_visible():
+                        btn.click()
+                        page.wait_for_timeout(1200)
+                        print("Clic en Aplicar filtros.")
+                        return
+                try:
+                    loc.press("Enter")
+                    page.wait_for_timeout(800)
+                except Exception:
+                    pass
+                return
+        except Exception:
+            continue
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Cargar receta JSON en Business Manager Cencosud")
     ap.add_argument("json_path", type=Path, help="Ruta al JSON en out/")
@@ -141,6 +178,9 @@ def main() -> int:
     env = load_env(ENV_PATH)
     selectores = load_selectores()
     base_url = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/")
+    view_manager_url = env.get("CENCOSUD_BM_VIEW_MANAGER_URL") or (
+        "https://business-manager.ecomm.cencosud.com/cms/projects/6597f023fdc664839ccd2a37/view-manager"
+    )
     dry = args.dry_run or env.get("CENCOSUD_BM_DRY_RUN", "true").lower() in ("1", "true", "yes")
     headed = args.headed or env.get("CENCOSUD_BM_HEADED", "true").lower() in ("1", "true", "yes")
     errores_preflight = [] if dry else errores_prepublicacion(receta)
@@ -183,24 +223,19 @@ def main() -> int:
             print(f"Sesión: {SESSION_PATH}")
         context = browser.new_context(**ctx_kwargs)
         page = context.new_page()
-        page.goto(base_url, wait_until="domcontentloaded")
-
-        nav = selectores.get("nav_nueva_receta")
-        if nav:
-            if str(nav).startswith("http") or str(nav).startswith("/"):
-                page.goto(nav if str(nav).startswith("http") else base_url.rstrip("/") + str(nav))
-            else:
-                try:
-                    page.locator(nav).first.click()
-                except Exception:
-                    print(f"No se pudo navegar con nav_nueva_receta={nav}")
+        # Flujo acordado: aterrizar en Administrador de vistas para buscar la receta a mano
+        page.goto(view_manager_url, wait_until="domcontentloaded")
+        print(f"Administrador de vistas: {view_manager_url}")
+        page.wait_for_timeout(1500)
+        intentar_buscar_vista(page, str(receta.get("titulo") or ""))
 
         print(
-            "\n>>> IMPORTANTE: en el navegador abre la RECETA en el Gestor de contenido\n"
-            "    (debes ver bloques Cabecera / tags / Lista Ingredientes / SEO).\n"
-            "    URL suele tener view-manager o similar.\n"
-            "    NO hace falta tocar los lápices.\n"
-            "    Cuando la veas, pulsa ENTER aquí para rellenar…\n"
+            "\n>>> Estás en el Administrador de vistas (Recetas_Jumbo).\n"
+            "    1) Busca la receta (ej. Salmón) y ábrela (clic en la tarjeta / Detalles).\n"
+            "    2) Entra al editor de la vista hasta ver los bloques:\n"
+            "       Cabecera / tags / Lista Ingredientes / Instrucciones / SEO.\n"
+            "    3) Vuelve aquí y pulsa ENTER para que el script rellene.\n"
+            "    (No toques los lápices; el scraping los abre solo.)\n"
         )
 
         comps: list = []

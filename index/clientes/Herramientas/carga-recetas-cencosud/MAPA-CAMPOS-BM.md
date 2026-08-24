@@ -7,23 +7,20 @@ Público de referencia: https://www.jumbo.cl/recetas
 
 1. En tu PC: `python scripts/explorar-bm-cencosud.py --reuse-session`
 2. Login ADFS en la ventana (tu usuario; MFA si aplica).
-3. Abre la receta en el **Gestor de contenido** (CMS por componentes).
-4. Pulsa **ENTER** en la terminal. **No hagas clic en los lápices.**
-5. El scraping abre solo cada lápiz (Cabecera, tags, Lista Ingredientes,
-   Lista de Instrucciones, SEO HTML), captura inputs y cierra el editor.
-6. Genera `secrets/bm-estructura.json` + `secrets/bm-selectores.json`
+3. El script te deja en el **Administrador de vistas** (Recetas_Jumbo).
+4. Busca la receta a mano, ábrela hasta ver **Cabecera / tags / listas / SEO**.
+5. Pulsa **ENTER** en la terminal. **No hagas clic en los lápices.**
+6. El scraping abre solo cada lápiz, captura inputs y cierra el editor.
+7. Genera `secrets/bm-estructura.json` + `secrets/bm-selectores.json`
    (incluye `lapiz_*` por componente).
-7. El navegador espera un segundo ENTER antes de cerrar.
-8. Prueba **relleno** (esto sí escribe la receta; explorar solo mapea):
+8. El navegador espera un segundo ENTER antes de cerrar.
+9. Prueba **relleno** (esto sí escribe la receta; explorar solo mapea):
    `python scripts/publicar-receta-cencosud.py out/….json --headed --dry-run`
+   (también aterriza en el Administrador de vistas para que busques y abras la ficha).
 
-El BM Jumbo no es un formulario plano: título, tags, ingredientes, pasos y SEO viven
-en componentes distintos. El explorador y el publicador abren esos lápices
-automáticamente. Tras rellenar cada componente, el script **guarda** el editor
-(antes solo cerraba y el BM perdía la info).
+URL de vistas (configurable en `secrets/.env`):
+`CENCOSUD_BM_VIEW_MANAGER_URL=https://business-manager.ecomm.cencosud.com/cms/projects/6597f023fdc664839ccd2a37/view-manager`
 
-**Importante:** `explorar-bm-cencosud.py` sin `--fill-json` solo captura selectores;
-no carga el Word/JSON. Para demo de carga usa `publicar-receta-cencosud.py … --dry-run`.
 
 Opcional: `--no-auto-lapiz` solo captura la vista actual (diagnóstico).
 

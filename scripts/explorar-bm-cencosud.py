@@ -111,6 +111,7 @@ def load_env(path: Path) -> dict[str, str]:
         "CENCOSUD_BM_USER",
         "CENCOSUD_BM_PASSWORD",
         "CENCOSUD_BM_URL",
+        "CENCOSUD_BM_VIEW_MANAGER_URL",
         "CENCOSUD_BM_BANDERA",
         "CENCOSUD_BM_HEADED",
         "CENCOSUD_BM_DRY_RUN",
@@ -1153,14 +1154,18 @@ def main() -> int:
         print("Instala: pip install playwright && playwright install chromium", file=sys.stderr)
         return 1
 
+    view_manager = env.get("CENCOSUD_BM_VIEW_MANAGER_URL") or (
+        "https://business-manager.ecomm.cencosud.com/cms/projects/6597f023fdc664839ccd2a37/view-manager"
+    )
+
     print("=== Exploración BM Cencosud (local) ===")
     print(f"URL: {base}")
-    print("1) Se abre Chromium.")
+    print(f"Vistas: {view_manager}")
+    print("1) Se abre Chromium en el Administrador de vistas.")
     print("2) Inicia sesión (automático si .env tiene user/pass; si no, a mano / MFA).")
-    print("3) Abre la receta en el Gestor de contenido (lista de componentes).")
+    print("3) Busca la receta, ábrela hasta ver Cabecera/tags/listas/SEO.")
     print("4) Vuelve aquí y pulsa ENTER.")
-    print("5) El scraping abre SOLO cada lápiz (Cabecera, tags, ingredientes,")
-    print("   instrucciones, SEO), captura campos y cierra el editor.")
+    print("5) El scraping abre SOLO cada lápiz, captura campos y guarda selectores.")
     print("6) Tú no debes hacer clic en los lápices.")
     print("7) El navegador NO se cierra solo: revisa y pulsa ENTER otra vez.")
     print()
@@ -1174,12 +1179,16 @@ def main() -> int:
             print(f"Reusando sesión: {SESSION_PATH}")
         context = browser.new_context(**context_kwargs)
         page = context.new_page()
-        page.goto(base, wait_until="domcontentloaded")
+        page.goto(view_manager, wait_until="domcontentloaded")
         try_login(page, env)
+        # Tras login ADFS a veces vuelve al home: forzar view-manager
+        if "view-manager" not in (page.url or ""):
+            page.goto(view_manager, wait_until="domcontentloaded")
 
         print(
-            "\n>>> Deja abierta la receta en el CMS (lista de componentes).\n"
-            "    NO hace falta tocar los lápices. Pulsa ENTER aquí…"
+            "\n>>> Estás en el Administrador de vistas.\n"
+            "    Busca y abre la receta hasta ver los bloques del CMS,\n"
+            "    luego pulsa ENTER aquí (sin tocar lápices)…"
         )
         try:
             input()
