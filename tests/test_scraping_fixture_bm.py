@@ -220,15 +220,19 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             page = browser.new_page()
             page.goto(fixture.as_uri())
             self.assertTrue(explorar._rellenar_tags_bm(page, tags))
-            chips = page.locator(".chip").all_inner_texts()
-            chips_norm = [c.replace("×", "").strip().lower() for c in chips]
-            for t in tags:
-                self.assertIn(t.lower(), chips_norm, f"faltaba chip {t!r}: {chips_norm}")
+            # 6 ítems del arreglo; valores solo en Tag, Link vacío
+            self.assertEqual(page.locator(".campo-tag").count(), 6)
+            for i, t in enumerate(tags):
+                self.assertEqual(page.input_value(f"#tag-{i + 1}"), t)
+                self.assertEqual(page.input_value(f"#link-{i + 1}"), "")
             page.locator("#btn-guardar").click()
             estado = page.locator("#estado").inner_text()
             self.assertTrue(estado.startswith("guardado:"))
-            for t in tags:
-                self.assertIn(t, estado)
+            import json as _json
+
+            payload = _json.loads(estado.split("guardado:", 1)[1])
+            self.assertEqual(payload["tags"], tags)
+            self.assertEqual(payload["links"], ["", "", "", "", "", ""])
             browser.close()
 
     def test_lista_tags_desde_receta_salmon(self):

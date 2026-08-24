@@ -4,74 +4,102 @@
   <meta charset="UTF-8">
   <title>Edición de tags · Recetas_Jumbo</title>
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 520px; margin: 24px auto; }
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 24px auto; }
     h1 { font-size: 1.15rem; }
-    label { display: block; font-weight: 600; margin: 12px 0 6px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; min-height: 28px; }
-    .chip {
-      background: #e8f1ff; border: 1px solid #8ab; border-radius: 999px;
-      padding: 4px 10px; font-size: 0.85rem;
-    }
-    .chip button { border: none; background: none; cursor: pointer; margin-left: 4px; }
-    #tag-input {
-      width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc;
-    }
+    .banner { background: #e8f4ff; border: 1px solid #9cf; padding: 10px 12px; margin: 12px 0; }
+    .arreglo { border: 1px solid #ddd; padding: 12px; margin-top: 12px; }
+    .item { border: 1px dashed #c44; padding: 12px; margin: 10px 0; background: #fff; }
+    .item h3 { margin: 0 0 10px; font-size: 0.95rem; }
+    .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    label { display: block; font-weight: 600; margin-bottom: 4px; }
+    .req { color: #b00020; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; }
+    input.err { border-color: #b00020; }
+    .err-msg { color: #b00020; font-size: 0.85rem; margin-top: 4px; }
     #estado { margin-top: 14px; min-height: 1.2em; }
   </style>
 </head>
 <body>
+  <button type="button" id="volver">Volver</button>
   <h1>Edición de tags</h1>
-  <p>Componente tags · Recetas_Jumbo | web</p>
+  <p>Estás en el proyecto Recetas_jumbo | web · Vista: salmon_a_la_parrilla_palta</p>
+  <div class="banner">Los siguientes campos podrían tener valores precargados. Favor de validar y guardar.</div>
 
-  <label for="tag-input">Tags *</label>
-  <div class="chips" id="chips" aria-label="Tags seleccionados"></div>
-  <input id="tag-input" name="tags" type="text" placeholder="Escribe un tag y pulsa Enter" autocomplete="off">
+  <h2>Formulario Tags</h2>
+  <div class="arreglo" id="arreglo">
+    <strong>Arreglo</strong>
+    <div id="items"></div>
+    <p>
+      <button type="button" id="btn-agregar">Agregar ítem</button>
+    </p>
+  </div>
+
   <p style="margin-top:16px">
     <button type="button" id="btn-guardar">Guardar</button>
   </p>
   <p id="estado"></p>
 
   <script>
-    const chips = document.getElementById('chips');
-    const input = document.getElementById('tag-input');
-    const tags = [];
+    let n = 0;
+    const itemsEl = document.getElementById('items');
 
-    function render() {
-      chips.innerHTML = '';
-      tags.forEach((t, idx) => {
-        const el = document.createElement('span');
-        el.className = 'chip';
-        el.textContent = t;
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.textContent = '×';
-        btn.addEventListener('click', () => {
-          tags.splice(idx, 1);
-          render();
-        });
-        el.appendChild(btn);
-        chips.appendChild(el);
+    function addItem(prefillTag) {
+      n += 1;
+      const idx = n;
+      const wrap = document.createElement('div');
+      wrap.className = 'item';
+      wrap.dataset.item = String(idx);
+      wrap.innerHTML =
+        '<h3>Formulario Ítem ' + idx + '</h3>' +
+        '<div class="fila">' +
+          '<div>' +
+            '<label for="tag-' + idx + '">Tag <span class="req">*</span></label>' +
+            '<input id="tag-' + idx + '" class="campo-tag" name="tag-' + idx + '" type="text" placeholder="Dale un valor" data-field="tag">' +
+            '<div class="err-msg" id="err-' + idx + '" hidden>El dato es requerido</div>' +
+          '</div>' +
+          '<div>' +
+            '<label for="link-' + idx + '">Link</label>' +
+            '<input id="link-' + idx + '" class="campo-link" name="link-' + idx + '" type="text" placeholder="Dale un valor" data-field="link">' +
+          '</div>' +
+        '</div>';
+      itemsEl.appendChild(wrap);
+      const tagInput = wrap.querySelector('.campo-tag');
+      if (prefillTag) tagInput.value = prefillTag;
+      tagInput.addEventListener('input', () => {
+        document.getElementById('err-' + idx).hidden = !!tagInput.value.trim();
+        tagInput.classList.toggle('err', !tagInput.value.trim());
       });
+      return tagInput;
     }
 
-    function addTag(raw) {
-      const t = (raw || '').trim().replace(/,$/, '');
-      if (!t) return;
-      if (tags.some((x) => x.toLowerCase() === t.toLowerCase())) return;
-      tags.push(t);
-      render();
-    }
-
-    input.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Enter' || ev.key === 'Tab' || ev.key === ',') {
-        ev.preventDefault();
-        addTag(input.value);
-        input.value = '';
-      }
-    });
+    document.getElementById('btn-agregar').addEventListener('click', () => addItem());
+    // BM real arranca con 1 ítem vacío
+    addItem();
 
     document.getElementById('btn-guardar').addEventListener('click', () => {
-      document.getElementById('estado').textContent = 'guardado:' + JSON.stringify(tags);
+      const tags = [];
+      const links = [];
+      let ok = true;
+      document.querySelectorAll('.item').forEach((item) => {
+        const tag = item.querySelector('.campo-tag');
+        const link = item.querySelector('.campo-link');
+        const err = item.querySelector('.err-msg');
+        if (!tag.value.trim()) {
+          ok = false;
+          err.hidden = false;
+          tag.classList.add('err');
+        } else {
+          tags.push(tag.value.trim());
+          links.push((link.value || '').trim());
+        }
+      });
+      if (!ok) {
+        document.getElementById('estado').textContent = 'error-requeridos';
+        return;
+      }
+      // Guardamos tags y links por separado para asserts
+      document.getElementById('estado').textContent =
+        'guardado:' + JSON.stringify({ tags, links });
     });
   </script>
 </body>

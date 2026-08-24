@@ -2639,174 +2639,251 @@ def lista_tags_desde_receta(receta: dict) -> list[str]:
     return out
 
 
-def _localizar_input_tags(page):
-    """Devuelve un locator del input/combobox de tags, o None."""
+def _es_input_link_no_tag(node) -> bool:
+    """True si el input es el campo Link/URL (no debe llevar el valor del tag)."""
+    try:
+        meta = node.evaluate(
+            """el => {
+              const bits = [
+                el.getAttribute('name') || '',
+                el.id || '',
+                el.getAttribute('aria-label') || '',
+                el.getAttribute('data-field') || '',
+                el.className || ''
+              ];
+              if (el.id) {
+                const l = document.querySelector('label[for="' + el.id + '"]');
+                if (l) bits.push(l.innerText || '');
+              }
+              let p = el.parentElement;
+              for (let i = 0; i < 3 && p; i++) {
+                const lbl = p.querySelector(':scope > label, label');
+                if (lbl) { bits.push(lbl.innerText || ''); break; }
+                p = p.parentElement;
+              }
+              const blob = bits.join(' ').toLowerCase().replace(/\\s+/g, ' ');
+              const isLink = /(?:^|\\b)(link|url|href|enlace)(?:\\b|$)/.test(blob);
+              const isTag = /(?:^|\\b)(tags?|etiqueta)(?:\\b|$)/.test(blob);
+              return { isLink, isTag, blob };
+            }"""
+        )
+    except Exception:
+        return False
+    if meta.get("isTag"):
+        return False
+    return bool(meta.get("isLink"))
+
+
+def _inputs_campo_tag(page) -> list:
+    """Inputs del campo Tag* dentro del Arreglo (excluye Link)."""
+    encontrados = []
     for target in _targets_page_y_frames(page):
-        for pat in LABELS_POR_CAMPO.get("field_tags") or ():
-            cre = re.compile(pat, re.I)
-            try:
-                lab = target.get_by_label(cre)
-                for i in range(min(lab.count(), 4)):
-                    node = lab.nth(i)
-                    try:
-                        tag = (node.evaluate("el => (el.tagName||'').toLowerCase()") or "").lower()
-                        role = (node.get_attribute("role") or "").lower()
-                        tipo = (node.get_attribute("type") or "").lower()
-                    except Exception:
-                        continue
-                    if tipo in ("hidden", "checkbox", "radio", "file", "button", "submit"):
-                        continue
-                    if tag in ("input", "textarea") or role in ("textbox", "combobox", "searchbox"):
-                        return node
-            except Exception:
-                pass
-            try:
-                txt = target.get_by_text(cre)
-                if not txt.count():
-                    continue
-                cont = txt.first.locator(
-                    "xpath=ancestor::*[.//input or .//*[@role='combobox' or @role='textbox']][1]"
-                )
-                handle = cont.locator(
-                    "input:not([type='hidden']):not([type='checkbox']):not([type='file']), "
-                    "[role='combobox'], [role='textbox']"
-                )
-                if handle.count():
-                    return handle.first
-            except Exception:
-                pass
-        for sel in (
-            "input[placeholder*='tag' i]",
-            "input[placeholder*='etiqueta' i]",
-            "input[placeholder*='añadir' i]",
-            "input[placeholder*='agregar' i]",
-            "input[name*='tag' i]",
-            "input[id*='tag' i]",
-            "[role='combobox']",
-            "[class*='tag' i] input",
-            "[class*='chip' i] input",
+        # 1) get_by_label('Tag') exacto / con asterisco
+        for cre in (
+            re.compile(r"^Tag\s*\*?$", re.I),
+            re.compile(r"^Tags?\s*\*?$", re.I),
+            re.compile(r"^Etiqueta\s*\*?$", re.I),
         ):
             try:
-                loc = target.locator(sel)
-                for i in range(min(loc.count(), 6)):
-                    node = loc.nth(i)
+                labs = target.get_by_label(cre)
+                for i in range(min(labs.count(), 20)):
+                    node = labs.nth(i)
                     try:
                         if not node.is_visible():
                             continue
+                        tipo = (node.get_attribute("type") or "").lower()
+                        if tipo in ("hidden", "checkbox", "radio", "file", "button"):
+                            continue
+                        if _es_input_link_no_tag(node):
+                            continue
                     except Exception:
                         continue
-                    return node
+                    encontrados.append(node)
             except Exception:
                 continue
-    return None
-
-
-def _tags_visibles_en_editor(page) -> str:
-    """Texto del editor tags (chips + inputs) para verificar carga."""
-    blobs: list[str] = []
-    for target in _targets_page_y_frames(page):
+        # 2) Labels «Tag *» → input hermano (placeholder Dale un valor)
         try:
-            blobs.append(target.inner_text("body")[:4000])
+            labels = target.get_by_text(re.compile(r"^Tag\s*\*?$", re.I))
+            for i in range(min(labels.count(), 20)):
+                lab = labels.nth(i)
+                try:
+                    cont = lab.locator(
+                        "xpath=ancestor::*[.//input][1]"
+                    )
+                    handle = cont.locator(
+                        "input:not([type='hidden']):not([type='checkbox']):not([type='file'])"
+                    )
+                    for j in range(min(handle.count(), 4)):
+                        node = handle.nth(j)
+                        if not node.is_visible():
+                            continue
+                        if _es_input_link_no_tag(node):
+                            continue
+                        # Preferir el más cercano al label Tag
+                        encontrados.append(node)
+                        break
+                except Exception:
+                    continue
         except Exception:
+            pass
+        # 3) data-field=tag / name^=tag
+        for sel in (
+            "input[data-field='tag']",
+            "input.campo-tag",
+            "input[name^='tag' i]",
+            "input[id^='tag' i]",
+        ):
+            try:
+                locs = target.locator(sel)
+                for i in range(min(locs.count(), 20)):
+                    node = locs.nth(i)
+                    try:
+                        if node.is_visible() and not _es_input_link_no_tag(node):
+                            encontrados.append(node)
+                    except Exception:
+                        continue
+            except Exception:
+                continue
+    # Deduplicar por posición
+    uniq = []
+    seen = set()
+    for node in encontrados:
+        try:
+            box = node.bounding_box()
+            key = (
+                round(box["x"], 1) if box else id(node),
+                round(box["y"], 1) if box else 0,
+            )
+        except Exception:
+            key = id(node)
+        if key in seen:
             continue
-    return "\n".join(blobs).lower()
+        seen.add(key)
+        uniq.append(node)
+    return uniq
+
+
+def _click_agregar_item_tags(page) -> bool:
+    """Pulsa Agregar / Añadir ítem del arreglo de tags."""
+    antes = len(_inputs_campo_tag(page))
+    patrones = (
+        re.compile(r"Agregar(\s+ítem|\s+item|\s+opci[oó]n)?", re.I),
+        re.compile(r"Añadir(\s+ítem|\s+item|\s+opci[oó]n)?", re.I),
+        re.compile(r"Add(\s+item|\s+option)?", re.I),
+        re.compile(r"^\+$"),
+    )
+    for target in _targets_page_y_frames(page):
+        for cre in patrones:
+            for role in ("button", "link"):
+                try:
+                    btns = target.get_by_role(role, name=cre)
+                    for i in range(min(btns.count(), 8)):
+                        btn = btns.nth(i)
+                        try:
+                            if not btn.is_visible():
+                                continue
+                            txt = (btn.inner_text() or "").lower()
+                            if "guardar" in txt or "save" in txt or "volver" in txt:
+                                continue
+                            btn.click(timeout=2500)
+                            page.wait_for_timeout(500)
+                            if len(_inputs_campo_tag(page)) > antes:
+                                print("  · Agregué ítem al arreglo de tags", flush=True)
+                                return True
+                            # A veces el DOM tarda
+                            page.wait_for_timeout(400)
+                            if len(_inputs_campo_tag(page)) > antes:
+                                print("  · Agregué ítem al arreglo de tags", flush=True)
+                                return True
+                        except Exception:
+                            continue
+                except Exception:
+                    continue
+        # Fallback por texto visible
+        for sel in (
+            "button:has-text('Agregar')",
+            "button:has-text('Añadir')",
+            "button:has-text('Add')",
+            "[role='button']:has-text('Agregar')",
+            "a:has-text('Agregar')",
+        ):
+            try:
+                btn = target.locator(sel).first
+                if btn.count() and btn.is_visible():
+                    btn.click(timeout=2500)
+                    page.wait_for_timeout(500)
+                    if len(_inputs_campo_tag(page)) > antes:
+                        print("  · Agregué ítem al arreglo de tags", flush=True)
+                        return True
+            except Exception:
+                continue
+    return False
+
+
+def _rellenar_un_campo_tag(node, valor: str) -> bool:
+    """Escribe solo en el input Tag (nunca Link)."""
+    if _es_input_link_no_tag(node):
+        return False
+    return _rellenar_locator(node, valor)
 
 
 def _rellenar_tags_bm(page, tags: list[str]) -> bool:
-    """Rellena el componente tags: preferir chips (tag + Enter) uno a uno."""
+    """Formulario Tags BM: Arreglo de ítems; cada uno tiene Tag* + Link (Link vacío)."""
     tags = [t.strip() for t in tags if t and str(t).strip()]
     if not tags:
         print("  · Sin tags en el JSON (categorias[])", flush=True)
         return False
 
     print(f"  · Tags a cargar ({len(tags)}): {', '.join(tags)}", flush=True)
-    inp = _localizar_input_tags(page)
-    if inp is None:
-        # Último recurso: primer input texto visible del editor
-        for target in _targets_page_y_frames(page):
-            try:
-                cand = target.locator(
-                    "input[type='text']:visible, input:not([type]):visible, "
-                    "[role='textbox']:visible, [role='combobox']:visible"
-                )
-                if cand.count():
-                    inp = cand.first
-                    break
-            except Exception:
-                continue
-    if inp is None:
-        print("  ✗ field_tags: no encontré input de Tags", flush=True)
-        return False
+    page.wait_for_timeout(400)
 
     ok_count = 0
-    for tag in tags:
+    for i, tag in enumerate(tags):
+        inputs = _inputs_campo_tag(page)
+        # ¿Hace falta un ítem nuevo?
+        while len(inputs) <= i:
+            if not _click_agregar_item_tags(page):
+                print(
+                    f"  ✗ No pude agregar Formulario Ítem {i + 1} para «{tag}»",
+                    flush=True,
+                )
+                break
+            inputs = _inputs_campo_tag(page)
+        inputs = _inputs_campo_tag(page)
+        if len(inputs) <= i:
+            continue
+        node = inputs[i]
         try:
-            inp.click(timeout=2500)
-            page.wait_for_timeout(150)
-            # Limpiar restos del intento anterior
-            try:
-                inp.fill("")
-            except Exception:
+            if _rellenar_un_campo_tag(node, tag):
+                # Verificar que Link del mismo ítem siga vacío
                 try:
-                    inp.press("Control+a")
-                    inp.press("Backspace")
+                    item = node.locator(
+                        "xpath=ancestor::*[contains(., 'Formulario') or contains(@class,'item')][1]"
+                    )
+                    link = item.locator(
+                        "input[data-field='link'], input.campo-link, "
+                        "xpath=.//label[contains(.,'Link') or contains(.,'URL')]/following::input[1]"
+                    )
+                    if link.count():
+                        lv = (link.first.input_value() or "").strip()
+                        if lv and lv.lower() == tag.lower():
+                            link.first.fill("")
+                            print(f"  · Limpié Link (no debe llevar el tag)", flush=True)
                 except Exception:
                     pass
-            inp.type(tag, delay=15)
-            page.wait_for_timeout(200)
-            # Autocomplete: si aparece opción exacta, clic
-            elegido = False
-            cre = re.compile(rf"^{re.escape(tag)}$", re.I)
-            for target in _targets_page_y_frames(page):
-                try:
-                    opt = target.get_by_role("option", name=cre)
-                    if opt.count() and opt.first.is_visible():
-                        opt.first.click(timeout=2000)
-                        elegido = True
-                        break
-                except Exception:
-                    continue
-            if not elegido:
-                # Chip típico: Enter o coma
-                for key in ("Enter", "Tab", ","):
-                    try:
-                        if key == ",":
-                            inp.type(",", delay=10)
-                        else:
-                            inp.press(key)
-                        page.wait_for_timeout(280)
-                        break
-                    except Exception:
-                        continue
-            page.wait_for_timeout(200)
-            blob = _tags_visibles_en_editor(page)
-            if tag.lower() in blob:
                 ok_count += 1
-                print(f"  ✓ tag «{tag}»", flush=True)
+                print(f"  ✓ tag ítem {i + 1} → «{tag}» (campo Tag, no Link)", flush=True)
             else:
-                # Aún puede haberse creado el chip fuera del body scrapeable
-                ok_count += 1
-                print(f"  · tag «{tag}» enviado (Enter); verifica chip en BM", flush=True)
+                print(f"  ✗ no pude escribir «{tag}» en Tag del ítem {i + 1}", flush=True)
         except Exception as exc:
             print(f"  · Falló tag «{tag}»: {exc}", flush=True)
-            continue
 
-    # Fallback: pegar todos juntos por si el campo es textarea libre
     if ok_count == 0:
-        junto = ", ".join(tags)
-        try:
-            if _rellenar_locator(inp, junto):
-                print(f"  ✓ field_tags (texto único: {junto[:80]}…)", flush=True)
-                return True
-        except Exception:
-            pass
-        print("  ✗ field_tags: no pude cargar las etiquetas", flush=True)
+        print("  ✗ field_tags: no encontré campos Tag del arreglo", flush=True)
         return False
 
-    blob = _tags_visibles_en_editor(page)
-    hallados = sum(1 for t in tags if t.lower() in blob)
-    print(f"  ✓ field_tags ({ok_count}/{len(tags)} enviados; {hallados} visibles en editor)", flush=True)
-    return ok_count > 0
+    print(f"  ✓ field_tags ({ok_count}/{len(tags)} ítems en el arreglo)", flush=True)
+    return ok_count == len(tags) or ok_count > 0
 
 
 def _esperar_canvas_tras_cabecera(page) -> None:
