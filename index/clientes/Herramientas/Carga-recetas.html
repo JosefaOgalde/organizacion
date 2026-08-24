@@ -40,8 +40,8 @@
     <h1>Scraping local → completar BM</h1>
     <p>
       Se hace <strong>en tu PC</strong> con tu usuario de
-      <a href="https://business-manager.ecomm.cencosud.com/" target="_blank" rel="noopener">Business Manager</a>.
-      No hace falta otra máquina: Chromium se abre en tu pantalla (ADFS / MFA a mano si pide).
+      <a href="https://business-manager.ecomm.cencosud.com/cms/projects/6597f023fdc664839ccd2a37/view-manager" target="_blank" rel="noopener">Business Manager · Gestor de recetas</a>.
+      Chromium arranca en esa pantalla (ADFS / MFA a mano si pide).
     </p>
     <ol class="crc-steps">
       <li>
@@ -55,13 +55,18 @@
       </li>
       <li>
         <strong>2. Explorar / mapear el formulario (con tu login)</strong>
-        <code>python scripts/explorar-bm-cencosud.py</code><br>
-        Entras en la ventana → abres «Nueva receta» → ENTER en la terminal.
+        <code>python scripts/explorar-bm-cencosud.py --reuse-session</code><br>
+        Entras en la ventana → abres la receta en el CMS → ENTER.<br>
+        <strong>No toques los lápices:</strong> el scraping los abre solo.
       </li>
       <li>
-        <strong>3. Completar la información en la interfaz</strong>
-        <code>python scripts/publicar-receta-cencosud.py …/out/receta.json --headed --dry-run</code><br>
-        Revisa en el BM; cuando esté bien, publica (sin <code>--dry-run</code>).
+        <strong>3. Completar TODOS los campos del Word en el BM</strong>
+        Con Chromium ya logueado:<br>
+        <code>python scripts/bm_fill_acordeones.py</code><br>
+        o <code>python scripts/publicar-receta-cencosud.py --headed --dry-run</code><br>
+        Abre cada lápiz (Cabecera, tags, ingredientes, pasos, SEO) y rellena
+        los acordeones ítem a ítem según el JSON del documento. Revisa; para
+        publicar de verdad: <code>python scripts/bm_fill_acordeones.py --publish</code>
       </li>
     </ol>
     <p class="crc-note">
