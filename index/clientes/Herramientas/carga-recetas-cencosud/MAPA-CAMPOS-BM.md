@@ -63,3 +63,5 @@ No se scrapea desde un servidor en la nube: es **navegador local** con tus crede
 3. Selectores revisados en `bm-selectores.json` (campos + `lapiz_*`).
 4. Prueba `--dry-run` antes de publicar.
 5. Nunca commits de `secrets/.env` ni `bm-session.json`.
+6. Durante el relleno: **no cierres Chromium** ni uses **Ctrl+C** a mitad
+   (provoca `TargetClosedError`). El script ya no pulsa Escape si no ve Guardar.

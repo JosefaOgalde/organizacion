@@ -143,10 +143,15 @@ def errores_prepublicacion(receta: dict) -> list[str]:
     return errores
 
 
-def dump_estructura(page) -> dict:
-    """Extrae campos visibles de la página actual (sin datos sensibles de valor)."""
-    return page.evaluate(
-        """() => {
+# Selectores de controles editables (incluye editores rich-text y role=textbox).
+_CAMPOS_EDITABLES_CSS = (
+    'input, textarea, select, [contenteditable="true"], [contenteditable=""], '
+    '[role="textbox"], .ql-editor, [data-slate-editor="true"], .ProseMirror'
+)
+
+_DUMP_ESTRUCTURA_JS = """() => {
+      const FIELD_CSS = 'input, textarea, select, [contenteditable="true"], [contenteditable=""], '
+        + '[role="textbox"], .ql-editor, [data-slate-editor="true"], .ProseMirror';
       const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim().slice(0, 200);
       const abs = (el) => {
         if (!el) return null;
@@ -159,7 +164,23 @@ def dump_estructura(page) -> dict:
         if (aria) return el.tagName.toLowerCase() + '[aria-label="' + aria.replace(/"/g, '\\\\"') + '"]';
         const ph = el.getAttribute('placeholder');
         if (ph) return el.tagName.toLowerCase() + '[placeholder="' + ph.replace(/"/g, '\\\\"') + '"]';
-        // SPA sin id/name: ruta CSS corta con nth-of-type
+        const role = el.getAttribute('role');
+        if (role === 'textbox') {
+          const parts = [];
+          let cur = el;
+          for (let depth = 0; cur && cur.nodeType === 1 && depth < 7; depth++) {
+            let part = cur.tagName.toLowerCase();
+            if (cur.id) { parts.unshift('#' + CSS.escape(cur.id)); break; }
+            const parent = cur.parentElement;
+            if (parent) {
+              const siblings = Array.from(parent.children).filter((c) => c.tagName === cur.tagName);
+              if (siblings.length > 1) part += ':nth-of-type(' + (siblings.indexOf(cur) + 1) + ')';
+            }
+            parts.unshift(part);
+            cur = parent;
+          }
+          return parts.length ? parts.join(' > ') : '[role="textbox"]';
+        }
         const parts = [];
         let cur = el;
         for (let depth = 0; cur && cur.nodeType === 1 && depth < 7; depth++) {
@@ -180,22 +201,23 @@ def dump_estructura(page) -> dict:
         }
         return parts.length ? parts.join(' > ') : null;
       };
-      const fields = [];
-      document.querySelectorAll('input, textarea, select, [contenteditable="true"]').forEach((el, i) => {
-        if (el.type === 'hidden' || el.type === 'password') return;
+      const visible = (el) => {
+        if (el.type === 'hidden' || el.type === 'password') return false;
+        if (el.disabled) return false;
         const st = window.getComputedStyle(el);
-        if (st.display === 'none' || st.visibility === 'hidden') return;
-        const rect = el.getBoundingClientRect();
-        if (rect.width < 1 && rect.height < 1) return;
-        // editor cerrado (ancestro display:none)
+        if (st.display === 'none' || st.visibility === 'hidden') return false;
         let p = el.parentElement;
-        let oculto = false;
         while (p) {
           const ps = window.getComputedStyle(p);
-          if (ps.display === 'none' || ps.visibility === 'hidden') { oculto = true; break; }
+          if (ps.display === 'none' || ps.visibility === 'hidden') return false;
           p = p.parentElement;
         }
-        if (oculto) return;
+        const rect = el.getBoundingClientRect();
+        return rect.width >= 1 || rect.height >= 1;
+      };
+      const fields = [];
+      document.querySelectorAll(FIELD_CSS).forEach((el, i) => {
+        if (!visible(el)) return;
         const id = el.id || '';
         let label = '';
         if (id) {
@@ -207,9 +229,9 @@ def dump_estructura(page) -> dict:
           if (wrap) label = clean(wrap.innerText);
         }
         if (!label) {
-          const prev = el.closest('div, td, li, section, form, [class*="field"], [class*="Field"], [class*="form"]');
+          const prev = el.closest('div, td, li, section, form, [class*="field"], [class*="Field"], [class*="form"], [class*="Form"]');
           if (prev) {
-            const lab2 = prev.querySelector('label, .label, [class*="label"], [class*="Label"], legend, span, p, div');
+            const lab2 = prev.querySelector('label, .label, [class*="label"], [class*="Label"], legend, span, p, div, h1, h2, h3, h4');
             if (lab2) label = clean(lab2.innerText);
           }
         }
@@ -226,10 +248,12 @@ def dump_estructura(page) -> dict:
           }
         }
         const className = (el.className && typeof el.className === 'string') ? el.className.slice(0, 120) : '';
+        const isCe = !!(el.isContentEditable || el.getAttribute('contenteditable') === 'true'
+          || el.getAttribute('role') === 'textbox' || (el.classList && (el.classList.contains('ql-editor') || el.classList.contains('ProseMirror'))));
         fields.push({
           index: i,
           tag: el.tagName.toLowerCase(),
-          type: el.type || (el.getAttribute('contenteditable') ? 'contenteditable' : ''),
+          type: el.type || (isCe ? 'contenteditable' : ''),
           id: id || null,
           name: el.getAttribute('name'),
           placeholder: el.getAttribute('placeholder'),
@@ -242,14 +266,15 @@ def dump_estructura(page) -> dict:
         });
       });
       const buttons = [];
-      document.querySelectorAll('button, a[role="button"], input[type="submit"], input[type="button"]').forEach((el, i) => {
-        const text = clean(el.innerText || el.value || '');
+      document.querySelectorAll('button, a[role="button"], input[type="submit"], input[type="button"], [role="button"]').forEach((el, i) => {
+        const text = clean(el.innerText || el.value || el.getAttribute('aria-label') || el.getAttribute('title') || '');
         if (!text) return;
         buttons.push({
           index: i,
           tag: el.tagName.toLowerCase(),
           text,
           id: el.id || null,
+          ariaLabel: el.getAttribute('aria-label'),
           selectorSugerido: abs(el) || (text ? 'text=' + JSON.stringify(text) : null)
         });
       });
@@ -276,13 +301,11 @@ def dump_estructura(page) -> dict:
         nav: nav.slice(0, 60)
       };
     }"""
-    )
 
-
-def contar_campos_editables(page) -> int:
-    return page.evaluate(
-        """() => [...document.querySelectorAll('input, textarea, select, [contenteditable="true"]')]
-          .filter((el) => {
+_CONTAR_CAMPOS_JS = """() => {
+      const FIELD_CSS = 'input, textarea, select, [contenteditable="true"], [contenteditable=""], '
+        + '[role="textbox"], .ql-editor, [data-slate-editor="true"], .ProseMirror';
+      return [...document.querySelectorAll(FIELD_CSS)].filter((el) => {
             if (el.type === 'hidden' || el.type === 'password' || el.disabled) return false;
             const st = getComputedStyle(el);
             if (st.display === 'none' || st.visibility === 'hidden') return false;
@@ -294,8 +317,88 @@ def contar_campos_editables(page) -> int:
             }
             const r = el.getBoundingClientRect();
             return r.width > 0 || r.height > 0;
-          }).length"""
-    )
+          }).length;
+    }"""
+
+
+def _targets_page_y_frames(page) -> list:
+    """Página + iframes (BM a menudo monta el editor en un frame)."""
+    out = [page]
+    try:
+        for fr in page.frames:
+            if fr is page.main_frame:
+                continue
+            try:
+                if fr.is_detached():
+                    continue
+            except Exception:
+                continue
+            out.append(fr)
+    except Exception:
+        pass
+    return out
+
+
+def pagina_viva(page) -> bool:
+    try:
+        return bool(page) and not page.is_closed()
+    except Exception:
+        return False
+
+
+def dump_estructura(page) -> dict:
+    """Extrae campos visibles de la página y de todos los iframes."""
+    merged: dict = {
+        "url": "",
+        "title": "",
+        "fields": [],
+        "buttons": [],
+        "linksReceta": [],
+        "nav": [],
+    }
+    try:
+        merged["url"] = page.url
+        merged["title"] = page.title()
+    except Exception:
+        pass
+    for ti, target in enumerate(_targets_page_y_frames(page)):
+        try:
+            part = target.evaluate(_DUMP_ESTRUCTURA_JS)
+        except Exception:
+            continue
+        if ti == 0:
+            merged["url"] = part.get("url") or merged["url"]
+            merged["title"] = part.get("title") or merged["title"]
+        frame_url = ""
+        try:
+            frame_url = target.url
+        except Exception:
+            pass
+        for f in part.get("fields") or []:
+            f = dict(f)
+            f["frameIndex"] = ti
+            f["frameUrl"] = frame_url
+            merged["fields"].append(f)
+        for b in part.get("buttons") or []:
+            b = dict(b)
+            b["frameIndex"] = ti
+            merged["buttons"].append(b)
+        merged["linksReceta"].extend(part.get("linksReceta") or [])
+        merged["nav"].extend(part.get("nav") or [])
+    merged["buttons"] = merged["buttons"][:120]
+    merged["linksReceta"] = merged["linksReceta"][:40]
+    merged["nav"] = merged["nav"][:60]
+    return merged
+
+
+def contar_campos_editables(page) -> int:
+    total = 0
+    for target in _targets_page_y_frames(page):
+        try:
+            total += int(target.evaluate(_CONTAR_CAMPOS_JS) or 0)
+        except Exception:
+            continue
+    return total
 
 
 def listar_componentes_cms(page) -> list[dict]:
@@ -581,35 +684,81 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
 
 def guardar_editor_componente(page) -> bool:
     """Guarda el editor del componente abierto (antes de cerrar). Sin esto el BM pierde los datos."""
-    for sel in (
+    if not pagina_viva(page):
+        return False
+    sels = (
         "button:has-text('Guardar')",
         "button:has-text('Save')",
         "button:has-text('Aplicar')",
         "button:has-text('Confirmar')",
         "button:has-text('Aceptar')",
         "button:has-text('Done')",
+        "button:has-text('Actualizar')",
+        "button:has-text('Update')",
         "button[aria-label*='Guardar' i]",
         "button[aria-label*='Save' i]",
+        "[aria-label*='Guardar' i]",
+        "[aria-label*='Save' i]",
+        "[title*='Guardar' i]",
+        "[title*='Save' i]",
         "[data-testid*='save' i]",
         "button.btn-guardar-editor",
-    ):
-        try:
-            loc = page.locator(sel)
-            n = loc.count()
-            for i in range(n):
-                btn = loc.nth(i)
-                if not btn.is_visible():
-                    continue
-                txt = (btn.inner_text() or "").lower()
-                # Evitar «Guardar y publicar» / borrador global en el editor de componente
-                if "publicar" in txt or "publish" in txt or "borrador" in txt or "draft" in txt:
-                    continue
-                btn.click(timeout=3_000)
-                page.wait_for_timeout(700)
-                print("  ✓ Guardado editor del componente")
-                return True
-        except Exception:
-            pass
+    )
+    for target in _targets_page_y_frames(page):
+        for sel in sels:
+            try:
+                loc = target.locator(sel)
+                n = loc.count()
+                for i in range(n):
+                    btn = loc.nth(i)
+                    if not btn.is_visible():
+                        continue
+                    txt = (
+                        (btn.inner_text() or "")
+                        + " "
+                        + (btn.get_attribute("aria-label") or "")
+                        + " "
+                        + (btn.get_attribute("title") or "")
+                    ).lower()
+                    # Evitar «Guardar y publicar» / borrador global en el editor de componente
+                    if "publicar" in txt or "publish" in txt:
+                        continue
+                    if re.search(r"\bborrador\b|\bdraft\b", txt) and "guardar" not in txt and "save" not in txt:
+                        continue
+                    btn.click(timeout=3_000)
+                    page.wait_for_timeout(700)
+                    print("  ✓ Guardado editor del componente")
+                    return True
+            except Exception:
+                continue
+    return False
+
+
+def _cerrar_solo_modal(page) -> bool:
+    """Cierra modal/drawer con botón Cerrar (nunca Volver ni Escape)."""
+    for target in _targets_page_y_frames(page):
+        for sel in (
+            "button:has-text('Cerrar')",
+            "button:has-text('Close')",
+            "button:has-text('Cancelar')",
+            "button[aria-label*='Cerrar' i]",
+            "button[aria-label*='Close' i]",
+            "[data-testid*='close' i]",
+        ):
+            try:
+                loc = target.locator(sel)
+                for i in range(loc.count()):
+                    btn = loc.nth(i)
+                    if not btn.is_visible():
+                        continue
+                    txt = (btn.inner_text() or "").lower()
+                    if "volver" in txt or "back" in txt:
+                        continue
+                    btn.click(timeout=2_000)
+                    page.wait_for_timeout(400)
+                    return True
+            except Exception:
+                continue
     return False
 
 
@@ -617,43 +766,26 @@ def cerrar_editor_componente(page, *, guardar: bool = False) -> None:
     """Cierra el editor del componente sin salir de la ficha de la receta.
 
     Nunca hace clic en «Volver»: en el BM eso te saca al Administrador de vistas.
+    En modo relleno (guardar=True) tampoco usa Escape: en el BM real a veces
+    cierra la ficha / el Chromium de Playwright (TargetClosedError).
     """
+    if not pagina_viva(page):
+        return
     if guardar:
         if guardar_editor_componente(page):
             return
         print(
-            "  · No vi botón Guardar en el editor; pruebo Escape "
-            "(sin Volver, para no salir de la receta).",
+            "  · No vi botón Guardar en el editor. "
+            "NO pulso Escape (puede cerrar la ficha/navegador). "
+            "Intento «Cerrar» o dejo el editor abierto.",
             flush=True,
         )
-        try:
-            page.keyboard.press("Escape")
-            page.wait_for_timeout(500)
-        except Exception:
-            pass
+        _cerrar_solo_modal(page)
         return
 
-    # Solo mapeo: Escape / Cerrar de modal (nunca Volver)
-    for sel in (
-        "button:has-text('Cerrar')",
-        "button[aria-label*='Cerrar' i]",
-        "button[aria-label*='Close' i]",
-        "[data-testid*='close' i]",
-    ):
-        try:
-            loc = page.locator(sel)
-            for i in range(loc.count()):
-                btn = loc.nth(i)
-                if not btn.is_visible():
-                    continue
-                txt = (btn.inner_text() or "").lower()
-                if "volver" in txt:
-                    continue
-                btn.click(timeout=2_000)
-                page.wait_for_timeout(400)
-                return
-        except Exception:
-            pass
+    # Solo mapeo: Cerrar de modal; Escape solo como último recurso del mapeo
+    if _cerrar_solo_modal(page):
+        return
     try:
         page.keyboard.press("Escape")
         page.wait_for_timeout(400)
@@ -842,14 +974,14 @@ def sugerir_selectores(estructura: dict) -> dict:
         "lapiz_seo": None,
     }
     editorial_rules = [
-        ("field_titulo", r"t[ií]tulo|nombre\s*(de\s*)?receta|^title$"),
-        ("field_descripcion", r"descripci[oó]n|bajada|intro|resumen|summary"),
-        ("field_porciones", r"porcion|rinde|servings|personas"),
-        ("field_dificultad", r"dificultad|nivel|difficulty"),
-        ("field_tiempo", r"tiempo|duraci[oó]n|minutos|prep"),
-        ("field_tags", r"tag|etiqueta|categor|palabra"),
+        ("field_titulo", r"t[ií]tulo|nombre\s*(de\s*)?(la\s*)?receta|^title$|headline|recipe\s*name|heading"),
+        ("field_descripcion", r"descripci[oó]n|bajada|intro|resumen|summary|excerpt|lead|subt[ií]tulo|subtitle"),
+        ("field_porciones", r"porcion|rinde|servings|personas|rendimiento|yield|comensales"),
+        ("field_dificultad", r"dificultad|nivel|difficulty|complejidad"),
+        ("field_tiempo", r"tiempo|duraci[oó]n|minutos|prep|cook\s*time|total\s*time|cocci[oó]n"),
+        ("field_tags", r"tag|etiqueta|categor|palabra|keyword|chip"),
         ("field_ingredientes", r"ingrediente"),
-        ("field_pasos", r"paso|instrucci|preparaci[oó]n|c[oó]mo\s+prepar"),
+        ("field_pasos", r"paso|instrucci|preparaci[oó]n|c[oó]mo\s+prepar|method|directions"),
     ]
     meta_rules = [
         ("field_meta_titulo", r"(?:meta|seo)[\s_-]*(?:t[ií]tulo|title)"),
@@ -993,13 +1125,123 @@ def try_login(page, env: dict) -> None:
         print(f"Login automático parcial falló ({e}). Continúa a mano en el navegador.")
 
 
+def _es_target_cerrado(exc: BaseException) -> bool:
+    nombre = type(exc).__name__
+    msg = str(exc).lower()
+    return "TargetClosed" in nombre or "has been closed" in msg or "target closed" in msg
+
+
+def _rellenar_locator(loc, value: str) -> bool:
+    """Rellena input/textarea/select/contenteditable con varios fallbacks."""
+    valor = str(value)
+    try:
+        tag = (loc.evaluate("el => el.tagName.toLowerCase()") or "").lower()
+        tipo = loc.evaluate(
+            """el => ({
+              ce: !!(el.isContentEditable || el.getAttribute('contenteditable') === 'true'
+                || el.getAttribute('role') === 'textbox'
+                || (el.classList && (el.classList.contains('ql-editor') || el.classList.contains('ProseMirror')))),
+              type: el.type || ''
+            })"""
+        )
+    except Exception:
+        tag, tipo = "", {"ce": False, "type": ""}
+
+    if tag == "select":
+        try:
+            loc.select_option(label=valor)
+            return True
+        except Exception:
+            try:
+                loc.select_option(value=valor)
+                return True
+            except Exception:
+                return False
+
+    if tipo.get("ce") or tag in ("div", "p", "span"):
+        try:
+            loc.click(timeout=2_000)
+            loc.evaluate(
+                """(el, v) => {
+                  el.focus();
+                  if (el.isContentEditable || el.getAttribute('contenteditable') === 'true'
+                      || el.getAttribute('role') === 'textbox') {
+                    el.textContent = '';
+                    el.innerText = v;
+                    el.dispatchEvent(new InputEvent('input', { bubbles: true, data: v }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                    return;
+                  }
+                  el.value = v;
+                  el.dispatchEvent(new Event('input', { bubbles: true }));
+                  el.dispatchEvent(new Event('change', { bubbles: true }));
+                }""",
+                valor,
+            )
+            return True
+        except Exception:
+            pass
+
+    try:
+        loc.fill(valor, timeout=4_000)
+        return True
+    except Exception:
+        pass
+    try:
+        loc.click(timeout=2_000)
+        loc.press("Control+a")
+        loc.type(valor, delay=2)
+        return True
+    except Exception:
+        pass
+    try:
+        loc.evaluate(
+            """(el, v) => {
+              el.focus();
+              el.value = v;
+              el.dispatchEvent(new Event('input', { bubbles: true }));
+              el.dispatchEvent(new Event('change', { bubbles: true }));
+            }""",
+            valor,
+        )
+        return True
+    except Exception:
+        return False
+
+
 def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores: dict) -> dict[str, bool]:
     """Tras abrir un lápiz, mapea campos visibles y rellena."""
     outs: dict[str, bool] = {}
+    if not pagina_viva(page):
+        print("  · Navegador/página cerrado: no puedo rellenar.", flush=True)
+        return outs
+
     if contar_campos_editables(page) <= 0:
-        page.wait_for_timeout(700)
+        page.wait_for_timeout(1200)
+    if contar_campos_editables(page) <= 0:
+        page.wait_for_timeout(1500)
+
     estructura = dump_estructura(page)
     vivos = sugerir_selectores(estructura)
+    fields = estructura.get("fields") or []
+    if fields:
+        print(f"  · Editor vivo: {len(fields)} campo(s) detectado(s)", flush=True)
+        for i, f in enumerate(fields[:12]):
+            print(
+                "    [{i}] label={label!r} ph={ph!r} name={name!r} tag={tag} fr={fr}".format(
+                    i=i,
+                    label=(f.get("label") or "")[:60],
+                    ph=(f.get("placeholder") or "")[:40],
+                    name=f.get("name"),
+                    tag=f.get("tag"),
+                    fr=f.get("frameIndex"),
+                ),
+                flush=True,
+            )
+    else:
+        print("  · Editor vivo: 0 campos (¿panel/iframe aún sin inputs?)", flush=True)
+
+    targets = _targets_page_y_frames(page)
     for key, value in pares:
         if value is None or value == "":
             continue
@@ -1009,47 +1251,81 @@ def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores
             print(f"  ✗ {key} (sin selector vivo ni guardado)")
             continue
         filled = False
-        for target in [page] + list(page.frames):
+        for target in targets:
             try:
                 loc = target.locator(sel).first
                 if not loc.count():
                     continue
-                tag = loc.evaluate("el => el.tagName.toLowerCase()")
-                if tag == "select":
-                    try:
-                        loc.select_option(label=str(value))
-                    except Exception:
-                        loc.select_option(value=str(value))
-                else:
-                    loc.fill(str(value))
-                filled = True
-                selectores[key] = sel
-                break
-            except Exception:
+                if _rellenar_locator(loc, str(value)):
+                    filled = True
+                    selectores[key] = sel
+                    break
+            except Exception as exc:
+                if _es_target_cerrado(exc):
+                    print("  · Página/navegador cerrado durante el relleno.", flush=True)
+                    outs[key] = False
+                    return outs
                 continue
         outs[key] = filled
         print(f"  {'✓' if filled else '✗'} {key}" + ("" if filled else f" ({sel})"))
 
-    if not any(outs.values()):
+    pendientes = [(k, v) for k, v in pares if v and not outs.get(k)]
+    if pendientes and pagina_viva(page):
+        css_areas = (
+            "textarea:visible, [contenteditable='true']:visible, [contenteditable='']:visible, "
+            "input[type='text']:visible, input:not([type]):visible, input[type='search']:visible, "
+            "input[type='number']:visible, [role='textbox']:visible, .ql-editor:visible, "
+            ".ProseMirror:visible, select:visible"
+        )
+        orden_pos = [
+            "field_titulo",
+            "field_descripcion",
+            "field_porciones",
+            "field_dificultad",
+            "field_tiempo",
+            "field_tags",
+            "field_ingredientes",
+            "field_pasos",
+            "field_meta_titulo",
+            "field_meta_descripcion",
+        ]
         try:
-            areas = page.locator("textarea:visible, [contenteditable='true']:visible, input[type='text']:visible")
-            n = min(areas.count(), 8)
-            if n == 1 and len(pares) == 1:
-                areas.first.fill(str(pares[0][1]))
-                outs[pares[0][0]] = True
-                print(f"  ✓ {pares[0][0]} (fallback único campo)")
-            elif n >= 1:
-                for key, value in pares:
-                    if not value:
-                        continue
-                    if key == "field_titulo":
-                        areas.nth(0).fill(str(value)); outs[key] = True; print(f"  ✓ {key} (fallback)")
-                    elif key in ("field_descripcion", "field_meta_descripcion") and n >= 2:
-                        areas.nth(1).fill(str(value)); outs[key] = True; print(f"  ✓ {key} (fallback)")
-                    elif key in ("field_ingredientes", "field_pasos", "field_tags"):
-                        areas.nth(n - 1).fill(str(value)); outs[key] = True; print(f"  ✓ {key} (fallback)")
-        except Exception:
-            pass
+            mejor_target = page
+            mejor_n = 0
+            for target in targets:
+                try:
+                    n = target.locator(css_areas).count()
+                    if n > mejor_n:
+                        mejor_n = n
+                        mejor_target = target
+                except Exception:
+                    continue
+            areas = mejor_target.locator(css_areas)
+            n = min(areas.count(), 12)
+            if n >= 1:
+                keys_grupo = [k for k, _ in pares if k in orden_pos]
+                for key, value in pendientes:
+                    if key not in orden_pos:
+                        idx = n - 1
+                    else:
+                        try:
+                            idx = keys_grupo.index(key)
+                        except ValueError:
+                            idx = 0
+                    if idx >= n:
+                        idx = n - 1
+                    try:
+                        if _rellenar_locator(areas.nth(idx), str(value)):
+                            outs[key] = True
+                            print(f"  ✓ {key} (fallback posicional #{idx})")
+                    except Exception as exc:
+                        if _es_target_cerrado(exc):
+                            print("  · Página/navegador cerrado durante fallback.", flush=True)
+                            return outs
+        except Exception as exc:
+            if _es_target_cerrado(exc):
+                print("  · Página/navegador cerrado durante fallback.", flush=True)
+                return outs
     return outs
 
 
@@ -1060,20 +1336,36 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         pares_ok = [(k, v) for k, v in pares if v is not None and v != ""]
         if not pares_ok:
             return 0
+        if not pagina_viva(page):
+            print("  · Navegador cerrado: aborto relleno.", flush=True)
+            return 0
         meta = next((c for c in COMPONENTES_CMS if c["clave"] == clave_comp), None)
         lapiz_key = meta["lapiz_key"] if meta else f"lapiz_{clave_comp}"
         print(f"  [CMS] Abriendo componente «{clave_comp}»…")
-        abierto = abrir_lapiz_componente(page, clave_comp, selectores.get(lapiz_key))
-        if not abierto:
-            abierto = abrir_componente_para_campos(page, selectores, [k for k, _ in pares_ok])
-        if not abierto:
-            print(f"  · No pude abrir el lápiz de «{clave_comp}».")
-            return 0
-        for _ in range(20):
-            if contar_campos_editables(page) > 0:
-                break
-            page.wait_for_timeout(250)
-        vivos = rellenar_con_dump_vivo(page, pares_ok, selectores)
+        try:
+            abierto = abrir_lapiz_componente(page, clave_comp, selectores.get(lapiz_key))
+            if not abierto:
+                abierto = abrir_componente_para_campos(page, selectores, [k for k, _ in pares_ok])
+            if not abierto:
+                print(f"  · No pude abrir el lápiz de «{clave_comp}».")
+                return 0
+            for _ in range(28):
+                if not pagina_viva(page):
+                    return 0
+                if contar_campos_editables(page) > 0:
+                    break
+                page.wait_for_timeout(250)
+            vivos = rellenar_con_dump_vivo(page, pares_ok, selectores)
+        except Exception as exc:
+            if _es_target_cerrado(exc):
+                print(
+                    "\n✗ El navegador o la ficha se cerró a mitad del relleno "
+                    "(TargetClosedError). No cierres Chromium ni uses Ctrl+C "
+                    "hasta que termine el script.\n",
+                    flush=True,
+                )
+                return 0
+            raise
         ok_grupo = 0
         for key, ok in vivos.items():
             if key == "field_titulo":
@@ -1085,22 +1377,25 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
             elif key == "field_pasos":
                 resultados["pasos"] = ok
             ok_grupo += int(bool(ok))
-        cerrar_editor_componente(page, guardar=True)
+        if pagina_viva(page):
+            cerrar_editor_componente(page, guardar=True)
         return ok_grupo
 
     print("Rellenando desde JSON (abriendo lápices automáticamente)…")
     total_ok = 0
-    total_ok += fill_grupo(
-        "cabecera",
-        [
-            ("field_titulo", receta.get("titulo")),
-            ("field_descripcion", receta.get("descripcion")),
-            ("field_porciones", receta.get("porciones")),
-            ("field_dificultad", receta.get("dificultad")),
-            ("field_tiempo", receta.get("tiempoTotal")),
-        ],
-    )
-    total_ok += fill_grupo("tags", [("field_tags", ", ".join(receta.get("categorias") or []))])
+    grupos = [
+        (
+            "cabecera",
+            [
+                ("field_titulo", receta.get("titulo")),
+                ("field_descripcion", receta.get("descripcion")),
+                ("field_porciones", receta.get("porciones")),
+                ("field_dificultad", receta.get("dificultad")),
+                ("field_tiempo", receta.get("tiempoTotal")),
+            ],
+        ),
+        ("tags", [("field_tags", ", ".join(receta.get("categorias") or []))]),
+    ]
     ings = receta.get("ingredientes") or []
     texto_ing = None
     if ings:
@@ -1117,20 +1412,28 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
             ).strip()
             for i in ings
         )
-    total_ok += fill_grupo("ingredientes", [("field_ingredientes", texto_ing)])
+    grupos.append(("ingredientes", [("field_ingredientes", texto_ing)]))
     pasos = receta.get("pasos") or []
     texto_pas = None
     if pasos:
         texto_pas = "\n".join(f"{p.get('orden')}. {p.get('texto')}" for p in pasos)
-    total_ok += fill_grupo("instrucciones", [("field_pasos", texto_pas)])
+    grupos.append(("instrucciones", [("field_pasos", texto_pas)]))
     seo = receta.get("seo") or {}
-    total_ok += fill_grupo(
-        "seo",
-        [
-            ("field_meta_titulo", seo.get("metaTitulo")),
-            ("field_meta_descripcion", seo.get("metaDescripcion")),
-        ],
+    grupos.append(
+        (
+            "seo",
+            [
+                ("field_meta_titulo", seo.get("metaTitulo")),
+                ("field_meta_descripcion", seo.get("metaDescripcion")),
+            ],
+        )
     )
+
+    for clave, pares in grupos:
+        if not pagina_viva(page):
+            print("Carga incompleta: el navegador se cerró antes de terminar.", file=sys.stderr)
+            return False
+        total_ok += fill_grupo(clave, pares)
 
     fallos_requeridos = [
         campo for campo in CAMPOS_REQUERIDOS_PUBLICACION if not resultados.get(campo, False)
@@ -1154,6 +1457,7 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         return True
     print("Sin selector btn_publicar.", file=sys.stderr)
     return False
+
 
 
 

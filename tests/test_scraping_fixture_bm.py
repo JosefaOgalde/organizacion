@@ -201,6 +201,47 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             )
             browser.close()
 
+    def test_fallback_posicional_con_labels_debiles(self):
+        explorar = cargar_explorar()
+        fixture = Path(__file__).resolve().parent / "fixtures/bm-editor-labels-debiles.html"
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(fixture.as_uri())
+            outs = explorar.rellenar_con_dump_vivo(
+                page,
+                [
+                    ("field_titulo", "Salmón a la parrilla"),
+                    ("field_descripcion", "Con salsa de palta"),
+                    ("field_porciones", "4"),
+                    ("field_dificultad", "Fácil"),
+                    ("field_tiempo", "35 min"),
+                ],
+                {},
+            )
+            self.assertTrue(outs.get("field_titulo"))
+            self.assertTrue(outs.get("field_descripcion"))
+            self.assertEqual(page.input_value("#c1"), "Salmón a la parrilla")
+            self.assertEqual(page.input_value("#c2"), "Con salsa de palta")
+            self.assertEqual(page.input_value("#c3"), "4")
+            browser.close()
+
+    def test_dump_y_conteo_en_iframe(self):
+        explorar = cargar_explorar()
+        fixture = Path(__file__).resolve().parent / "fixtures/bm-editor-en-iframe.html"
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(fixture.as_uri())
+            page.wait_for_selector("iframe#cms")
+            page.frame_locator("iframe#cms").locator("#c1").wait_for()
+            n = explorar.contar_campos_editables(page)
+            self.assertGreaterEqual(n, 5, f"esperaba campos del iframe, n={n}")
+            estructura = explorar.dump_estructura(page)
+            frames = {f.get("frameIndex") for f in estructura.get("fields") or []}
+            self.assertTrue(any(fi and fi > 0 for fi in frames), estructura.get("fields"))
+            browser.close()
+
 
 if __name__ == "__main__":
     unittest.main()
