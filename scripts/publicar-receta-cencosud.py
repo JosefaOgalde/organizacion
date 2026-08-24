@@ -177,6 +177,16 @@ def main() -> int:
     receta = json.loads(path.read_text(encoding="utf-8"))
     env = load_env(ENV_PATH)
     selectores = load_selectores()
+    # Si el JSON no trae imagenes[].url, se completa desde ([Foto]) del Word
+    explorar_previo = _cargar_explorar()
+    url_foto = explorar_previo.enriquecer_imagen_desde_word(receta)
+    if url_foto:
+        # Persistir en el JSON local para la próxima corrida
+        try:
+            path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            print(f"JSON actualizado con URL de Foto → {path.name}")
+        except Exception:
+            pass
     base_url = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/")
     view_manager_url = env.get("CENCOSUD_BM_VIEW_MANAGER_URL") or (
         "https://business-manager.ecomm.cencosud.com/cms/projects/6597f023fdc664839ccd2a37/view-manager"
@@ -212,7 +222,7 @@ def main() -> int:
         print("Instala: pip install playwright && playwright install chromium", file=sys.stderr)
         return 1
 
-    explorar = _cargar_explorar()
+    explorar = explorar_previo
     resultado = 0
 
     with sync_playwright() as p:

@@ -149,6 +149,93 @@ def url_imagen_portada(receta: dict) -> str | None:
     return None
 
 
+def enriquecer_imagen_desde_word(receta: dict) -> str | None:
+    """Si el JSON no trae url de foto, la lee del hipervínculo ([Foto]) del .docx.
+
+    Así no hace falta reparsear a mano cuando el Word ya tiene el link de Drive.
+    """
+    ya = url_imagen_portada(receta)
+    if ya:
+        return ya
+
+    candidatos: list[Path] = []
+    fuente = (receta.get("fuenteWord") or "").strip()
+    if fuente:
+        p = Path(fuente)
+        if not p.is_absolute():
+            p = ROOT / p
+        candidatos.append(p)
+    # Nombre típico en inbox
+    titulo = (receta.get("titulo") or receta.get("id") or "").strip()
+    inbox = CRC / "inbox"
+    if inbox.is_dir():
+        for docx in inbox.glob("*.docx"):
+            low = docx.name.lower()
+            if "salmon" in low or "salmón" in low.replace("ó", "o"):
+                candidatos.append(docx)
+            elif titulo and slugify_simple(titulo)[:20] in low.replace(" ", "-"):
+                candidatos.append(docx)
+
+    # Import lazy del parser
+    try:
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "parse_receta_word", ROOT / "scripts/parse-receta-word.py"
+        )
+        mod = importlib.util.module_from_spec(spec)
+        assert spec.loader is not None
+        spec.loader.exec_module(mod)
+    except Exception as exc:
+        print(f"  · No pude cargar parse-receta-word ({exc})", flush=True)
+        return None
+
+    vistos = set()
+    for docx in candidatos:
+        key = str(docx.resolve()) if docx.exists() else None
+        if not key or key in vistos:
+            continue
+        vistos.add(key)
+        try:
+            url = mod.url_foto_portada(docx)
+        except Exception:
+            url = None
+        if not url:
+            continue
+        imgs = list(receta.get("imagenes") or [])
+        if imgs and isinstance(imgs[0], dict):
+            imgs[0]["url"] = url
+            imgs[0]["nota"] = "URL de ([Foto]) leída del Word al publicar"
+        else:
+            imgs = [
+                {
+                    "rutaLocal": "",
+                    "url": url,
+                    "alt": "",
+                    "rol": "portada",
+                    "nota": "URL de ([Foto]) leída del Word al publicar",
+                }
+            ]
+        receta["imagenes"] = imgs
+        print(f"  · Foto desde Word ({docx.name}): {url[:90]}", flush=True)
+        return url
+    return None
+
+
+def slugify_simple(s: str) -> str:
+    s = s.lower().strip()
+    for a, b in (
+        ("á", "a"),
+        ("é", "e"),
+        ("í", "i"),
+        ("ó", "o"),
+        ("ú", "u"),
+        ("ñ", "n"),
+    ):
+        s = s.replace(a, b)
+    return re.sub(r"[^a-z0-9]+", "-", s).strip("-")
+
+
 def ruta_imagen_local(receta: dict) -> str | None:
     for img in receta.get("imagenes") or []:
         if not isinstance(img, dict):
@@ -1646,41 +1733,74 @@ def _descargar_url_imagen(url: str, dest_dir: Path) -> Path | None:
 
 def _click_opcion_lista(page, textos: list[str]) -> bool:
     """Clic en una opción de listbox/menú (dropdown custom BM)."""
+    page.wait_for_timeout(300)
     for texto in textos:
         if not texto:
             continue
-        cre = re.compile(rf"^{re.escape(texto)}$", re.I)
+        cre_exact = re.compile(rf"^{re.escape(texto)}$")
+        cre_i = re.compile(rf"^{re.escape(texto)}$", re.I)
         for target in _targets_page_y_frames(page):
+            for container_sel in (
+                '[role="listbox"]',
+                '[role="menu"]',
+                '[class*="Menu" i]',
+                '[class*="dropdown" i]',
+                '[class*="Select" i]',
+                '[class*="popover" i]',
+            ):
+                try:
+                    cont = target.locator(container_sel).last
+                    if not cont.count():
+                        continue
+                    try:
+                        if not cont.is_visible():
+                            continue
+                    except Exception:
+                        pass
+                    opt = cont.get_by_text(cre_exact)
+                    if not opt.count():
+                        opt = cont.get_by_text(cre_i)
+                    if opt.count():
+                        opt.first.click(timeout=2500, force=True)
+                        page.wait_for_timeout(400)
+                        return True
+                    for role in ("option", "menuitem", "listitem"):
+                        o2 = cont.get_by_role(role, name=cre_i)
+                        if o2.count():
+                            o2.first.click(timeout=2500, force=True)
+                            page.wait_for_timeout(400)
+                            return True
+                except Exception:
+                    continue
             for role in ("option", "menuitem", "treeitem", "listitem"):
                 try:
-                    opt = target.get_by_role(role, name=cre)
-                    n = min(opt.count(), 6)
-                    for i in range(n):
+                    opt = target.get_by_role(role, name=cre_i)
+                    for i in range(min(opt.count(), 8)):
                         node = opt.nth(i)
-                        if not node.is_visible():
-                            continue
-                        node.click(timeout=2500)
-                        page.wait_for_timeout(350)
+                        try:
+                            if not node.is_visible():
+                                continue
+                        except Exception:
+                            pass
+                        node.click(timeout=2500, force=True)
+                        page.wait_for_timeout(400)
                         return True
                 except Exception:
                     continue
             try:
-                # Texto exacto visible en portal/popover
-                loc = target.get_by_text(cre)
-                n = min(loc.count(), 8)
-                for i in range(n):
+                loc = target.get_by_text(cre_exact)
+                for i in range(min(loc.count(), 10)):
                     node = loc.nth(i)
-                    if not node.is_visible():
-                        continue
-                    # Evitar el label del campo
                     try:
+                        if not node.is_visible():
+                            continue
                         tag = (node.evaluate("el => (el.tagName||'').toLowerCase()") or "").lower()
-                        if tag in ("label", "h1", "h2", "h3"):
+                        if tag in ("label", "h1", "h2", "h3", "legend"):
                             continue
                     except Exception:
                         pass
-                    node.click(timeout=2500)
-                    page.wait_for_timeout(350)
+                    node.click(timeout=2500, force=True)
+                    page.wait_for_timeout(400)
                     return True
             except Exception:
                 continue
@@ -1764,11 +1884,8 @@ def _seleccionar_dificultad_bm(page, valor: str) -> bool:
     opciones = candidatas_dificultad_bm(valor)
     if not opciones:
         return False
-    # Si ya hay un select nativo
     for target in _targets_page_y_frames(page):
         try:
-            sel = target.locator("select").filter(has=target.locator("option"))
-            # buscar select cerca de dificultad
             labs = target.get_by_label(re.compile(r"^Dificultad", re.I))
             if labs.count():
                 node = labs.first
@@ -1777,28 +1894,72 @@ def _seleccionar_dificultad_bm(page, valor: str) -> bool:
                     for op in opciones:
                         try:
                             node.select_option(label=op)
+                            print(f"  ✓ field_dificultad → {op}", flush=True)
                             return True
                         except Exception:
                             continue
         except Exception:
             pass
 
-    if not _abrir_control_dificultad(page):
-        print("  · No pude abrir el dropdown Dificultad", flush=True)
-        return False
-    if _click_opcion_lista(page, opciones):
-        print(f"  ✓ field_dificultad → {opciones[0]}", flush=True)
-        return True
-    # Reintento: teclado
-    try:
-        page.keyboard.type(opciones[0][:12], delay=40)
-        page.keyboard.press("Enter")
+    for _intento in range(3):
+        if not _abrir_control_dificultad(page):
+            print("  · No pude abrir el dropdown Dificultad", flush=True)
+            continue
         page.wait_for_timeout(400)
-        print(f"  ✓ field_dificultad (teclado) → {opciones[0]}", flush=True)
-        return True
-    except Exception:
-        pass
-    print(f"  ✗ field_dificultad (no encontré opción {opciones[0]!r})", flush=True)
+        try:
+            visibles = page.locator('[role="option"], [role="menuitem"]').all_inner_texts()
+            if visibles:
+                print(f"  · Opciones Dificultad visibles: {visibles[:10]!r}", flush=True)
+        except Exception:
+            pass
+        if _click_opcion_lista(page, opciones):
+            print(f"  ✓ field_dificultad → {opciones[0]}", flush=True)
+            return True
+        # Navegar con flechas: Muy Fácil (0) → Fácil (1) si aplica
+        try:
+            page.keyboard.press("Home")
+            page.wait_for_timeout(120)
+            # Contar: si la primera opción visible es Muy Fácil, bajar 1
+            first = ""
+            try:
+                opts = page.locator('[role="option"]')
+                if opts.count():
+                    first = (opts.first.inner_text() or "").strip().lower()
+            except Exception:
+                pass
+            downs = 1 if "muy" in first else 0
+            if opciones[0].lower() == "fácil" or opciones[0].lower() == "facil":
+                downs = 1 if "muy" in first else 0
+            for _ in range(downs):
+                page.keyboard.press("ArrowDown")
+                page.wait_for_timeout(100)
+            page.keyboard.press("Enter")
+            page.wait_for_timeout(450)
+            # No damos por bueno el teclado a ciegas: mirar si desapareció el error o hay texto
+            try:
+                body = page.inner_text("body")
+                if opciones[0] in body and body.count("El dato es requerido") <= body.count("Dificultad"):
+                    # débil — mejor comprobar el combo
+                    pass
+            except Exception:
+                pass
+            # Si tras Enter las opciones ya no están, asumimos selección
+            still_open = False
+            try:
+                still_open = page.locator('[role="listbox"]').is_visible()
+            except Exception:
+                still_open = False
+            if not still_open and _click_opcion_lista.__name__:
+                # re-check: si no hay listbox, probablemente cerró al elegir
+                print(f"  · Intenté flechas para {opciones[0]!r} (verifica en pantalla)", flush=True)
+        except Exception:
+            pass
+
+    print(
+        f"  ✗ field_dificultad: no quedó seleccionada {opciones[0]!r}. "
+        "Ábrela a mano y elige Fácil.",
+        flush=True,
+    )
     return False
 
 
@@ -2196,6 +2357,8 @@ def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores
 
 def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> bool:
     resultados = {}
+    # Asegura URL de ([Foto]) aunque el JSON local sea viejo
+    enriquecer_imagen_desde_word(receta)
 
     def fill_grupo(clave_comp: str, pares: list[tuple[str, str | None]]) -> int:
         pares_ok = [(k, v) for k, v in pares if v is not None and v != ""]

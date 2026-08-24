@@ -261,6 +261,18 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
         self.assertEqual(explorar.normalizar_dificultad_bm("media"), "Moderado")
         self.assertEqual(explorar.normalizar_dificultad_bm("absurdamente dificil"), "Absurdamente Difícil")
 
+    def test_enriquece_url_foto_si_json_no_la_tiene(self):
+        explorar = cargar_explorar()
+        receta = {
+            "titulo": "Salmón a la parrilla con salsa de palta",
+            "fuenteWord": "index/clientes/Herramientas/carga-recetas-cencosud/inbox/Salmon-a-la-parrilla-con-salsa-de-palta.docx",
+            "imagenes": [{"rutaLocal": "", "alt": "x", "rol": "portada", "url": None}],
+        }
+        url = explorar.enriquecer_imagen_desde_word(receta)
+        self.assertIsNotNone(url)
+        self.assertIn("drive.google.com/file/d/1u2z-oBQeGHopYUtVpam0bfGvFSpf5OIB", url)
+        self.assertEqual(receta["imagenes"][0]["url"], url)
+
     def test_abre_lapiz_svg_sin_aria_con_paleta(self):
         """Reproduce BM real: paleta+canvas juntos y lápiz SVG sin aria (lapiz=None)."""
         explorar = cargar_explorar()
