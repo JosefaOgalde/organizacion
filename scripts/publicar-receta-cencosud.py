@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -54,6 +55,73 @@ def load_selectores() -> dict:
     if MAPA_SELECTORES_PATH.exists():
         return json.loads(MAPA_SELECTORES_PATH.read_text(encoding="utf-8"))
     return {}
+
+
+def fill_tags(page, selectores: dict, categorias: list) -> bool:
+    tags = [str(t).strip() for t in (categorias or []) if str(t).strip()]
+    if not tags:
+        print("  · omitido tags")
+        return False
+    try:
+        abrir = selectores.get("btn_tags_abrir") or selectores.get("field_tags")
+        inp_sel = selectores.get("field_tags_input")
+        guardar = selectores.get("btn_tags_guardar")
+
+        if abrir:
+            loc = page.locator(abrir).first
+            if loc.count():
+                kind = loc.evaluate(
+                    "el => ({ tag: el.tagName.toLowerCase(), type: el.type || '', role: el.getAttribute('role') || '' })"
+                )
+                is_trigger = kind["tag"] in ("button", "a") or kind["role"] == "button"
+                is_trigger = is_trigger or (kind["tag"] == "input" and kind["type"] in ("button", "submit"))
+                if is_trigger or (kind["tag"] not in ("input", "textarea", "select") and not inp_sel):
+                    loc.click()
+                    page.wait_for_timeout(600)
+
+        modal = page.locator(
+            '[role="dialog"]:visible, .modal:visible, [class*="Modal"]:visible, [class*="modal"]:visible'
+        ).first
+        scope = modal if modal.count() else page
+
+        inp = scope.locator(inp_sel).first if inp_sel else scope.locator(
+            'input[type="text"], input:not([type]), textarea, [contenteditable="true"]'
+        ).first
+        if inp.count() and inp.is_visible():
+            for tag in tags:
+                inp.click()
+                inp.fill(tag)
+                page.keyboard.press("Enter")
+                page.wait_for_timeout(250)
+                opt = scope.get_by_text(tag, exact=True).first
+                if opt.count() and opt.is_visible():
+                    try:
+                        opt.click()
+                    except Exception:
+                        pass
+        elif abrir:
+            fill(page, abrir, ", ".join(tags), "tags")
+            return True
+
+        saved = False
+        if guardar:
+            btn = scope.locator(guardar).first
+            if btn.count():
+                btn.click()
+                saved = True
+        if not saved:
+            for pat in (r"guardar", r"aceptar", r"confirmar", r"aplicar", r"^ok$", r"save"):
+                btn = scope.get_by_role("button", name=re.compile(pat, re.I)).first
+                if btn.count() and btn.is_visible():
+                    btn.click()
+                    saved = True
+                    break
+        print(f"  {'✓' if saved else '!'} tags ({len(tags)})" + ("" if saved else " — confirma en el popup"))
+        page.wait_for_timeout(400)
+        return saved
+    except Exception as e:
+        print(f"  ✗ tags: {e}")
+        return False
 
 
 def fill(page, sel: str | None, value, label: str) -> bool:
@@ -148,12 +216,7 @@ def main() -> int:
         fill(page, selectores.get("field_porciones"), receta.get("porciones"), "porciones")
         fill(page, selectores.get("field_dificultad"), receta.get("dificultad"), "dificultad")
         fill(page, selectores.get("field_tiempo"), receta.get("tiempoTotal"), "tiempo")
-        fill(
-            page,
-            selectores.get("field_tags"),
-            ", ".join(receta.get("categorias") or []),
-            "tags",
-        )
+        fill_tags(page, selectores, receta.get("categorias") or [])
         seo = receta.get("seo") or {}
         fill(page, selectores.get("field_meta_titulo"), seo.get("metaTitulo"), "meta_titulo")
         fill(page, selectores.get("field_meta_descripcion"), seo.get("metaDescripcion"), "meta_descripcion")
