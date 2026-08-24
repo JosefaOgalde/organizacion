@@ -8,30 +8,34 @@
     h1 { font-size: 1.15rem; }
     .banner { background: #e8f4ff; border: 1px solid #9cf; padding: 10px 12px; margin: 12px 0; }
     .arreglo { border: 1px solid #ddd; padding: 12px; margin-top: 12px; }
-    .item { border: 1px dashed #c44; padding: 12px; margin: 10px 0; background: #fff; }
-    .item h3 { margin: 0 0 10px; font-size: 0.95rem; }
+    .acordeon { border: 1px solid #ccc; margin: 8px 0; background: #fafafa; }
+    .acordeon-header {
+      display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+      cursor: pointer; user-select: none; font-weight: 600; border: none;
+      width: 100%; text-align: left; background: #f0f0f0;
+    }
+    .acordeon-header .drag { color: #888; letter-spacing: -2px; }
+    .acordeon-panel { display: none; padding: 12px 14px 16px; border-top: 1px solid #ddd; background: #fff; }
+    .acordeon.abierto .acordeon-panel { display: block; }
     .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     label { display: block; font-weight: 600; margin-bottom: 4px; }
     .req { color: #b00020; }
     input { width: 100%; padding: 8px; box-sizing: border-box; }
-    input.err { border-color: #b00020; }
-    .err-msg { color: #b00020; font-size: 0.85rem; margin-top: 4px; }
     #estado { margin-top: 14px; min-height: 1.2em; }
+    #btn-agregar { margin-top: 10px; padding: 8px 14px; cursor: pointer; }
   </style>
 </head>
 <body>
-  <button type="button" id="volver">Volver</button>
   <h1>Edición de tags</h1>
   <p>Estás en el proyecto Recetas_jumbo | web · Vista: salmon_a_la_parrilla_palta</p>
   <div class="banner">Los siguientes campos podrían tener valores precargados. Favor de validar y guardar.</div>
 
   <h2>Formulario Tags</h2>
+  <label><input type="checkbox" checked disabled> Activo</label>
   <div class="arreglo" id="arreglo">
     <strong>Arreglo</strong>
     <div id="items"></div>
-    <p>
-      <button type="button" id="btn-agregar">Agregar ítem</button>
-    </p>
+    <button type="button" id="btn-agregar">+ Agregar nuevo ítem</button>
   </div>
 
   <p style="margin-top:16px">
@@ -43,61 +47,64 @@
     let n = 0;
     const itemsEl = document.getElementById('items');
 
+    function toggleAcordeon(btn) {
+      const wrap = btn.closest('.acordeon');
+      const open = wrap.classList.toggle('abierto');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
     function addItem(prefillTag) {
       n += 1;
       const idx = n;
       const wrap = document.createElement('div');
-      wrap.className = 'item';
+      wrap.className = 'acordeon';
       wrap.dataset.item = String(idx);
       wrap.innerHTML =
-        '<h3>Formulario Ítem ' + idx + '</h3>' +
-        '<div class="fila">' +
-          '<div>' +
-            '<label for="tag-' + idx + '">Tag <span class="req">*</span></label>' +
-            '<input id="tag-' + idx + '" class="campo-tag" name="tag-' + idx + '" type="text" placeholder="Dale un valor" data-field="tag">' +
-            '<div class="err-msg" id="err-' + idx + '" hidden>El dato es requerido</div>' +
-          '</div>' +
-          '<div>' +
-            '<label for="link-' + idx + '">Link</label>' +
-            '<input id="link-' + idx + '" class="campo-link" name="link-' + idx + '" type="text" placeholder="Dale un valor" data-field="link">' +
+        '<button type="button" class="acordeon-header" aria-expanded="false">' +
+          '<span class="drag">⋮⋮</span> Formulario Ítem ' + idx +
+        '</button>' +
+        '<div class="acordeon-panel">' +
+          '<div class="fila">' +
+            '<div>' +
+              '<label for="tag-' + idx + '">Tag <span class="req">*</span></label>' +
+              '<input id="tag-' + idx + '" class="campo-tag" name="tag-' + idx + '" type="text" placeholder="Dale un valor" data-field="tag">' +
+            '</div>' +
+            '<div>' +
+              '<label for="link-' + idx + '">Link</label>' +
+              '<input id="link-' + idx + '" class="campo-link" name="link-' + idx + '" type="text" placeholder="Dale un valor" data-field="link">' +
+            '</div>' +
           '</div>' +
         '</div>';
       itemsEl.appendChild(wrap);
+      const header = wrap.querySelector('.acordeon-header');
+      header.addEventListener('click', () => toggleAcordeon(header));
       const tagInput = wrap.querySelector('.campo-tag');
-      if (prefillTag) tagInput.value = prefillTag;
-      tagInput.addEventListener('input', () => {
-        document.getElementById('err-' + idx).hidden = !!tagInput.value.trim();
-        tagInput.classList.toggle('err', !tagInput.value.trim());
-      });
+      if (prefillTag) {
+        wrap.classList.add('abierto');
+        header.setAttribute('aria-expanded', 'true');
+        tagInput.value = prefillTag;
+      }
       return tagInput;
     }
 
     document.getElementById('btn-agregar').addEventListener('click', () => addItem());
-    // BM real arranca con 1 ítem vacío
     addItem();
 
     document.getElementById('btn-guardar').addEventListener('click', () => {
       const tags = [];
       const links = [];
-      let ok = true;
-      document.querySelectorAll('.item').forEach((item) => {
+      document.querySelectorAll('.acordeon').forEach((item) => {
         const tag = item.querySelector('.campo-tag');
         const link = item.querySelector('.campo-link');
-        const err = item.querySelector('.err-msg');
-        if (!tag.value.trim()) {
-          ok = false;
-          err.hidden = false;
-          tag.classList.add('err');
-        } else {
+        if (tag && tag.value.trim()) {
           tags.push(tag.value.trim());
           links.push((link.value || '').trim());
         }
       });
-      if (!ok) {
+      if (!tags.length) {
         document.getElementById('estado').textContent = 'error-requeridos';
         return;
       }
-      // Guardamos tags y links por separado para asserts
       document.getElementById('estado').textContent =
         'guardado:' + JSON.stringify({ tags, links });
     });
