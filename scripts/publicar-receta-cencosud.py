@@ -125,12 +125,13 @@ def _volver_al_canvas(page) -> None:
 
 def _esperar_usuario_acepte_popup(page) -> None:
     page.wait_for_timeout(500)
-    print("\n  >>> Haz clic en «Sí, acepto» (botón azul) en el navegador.")
-    print("  >>> Cuando el bloque tags quede guardado, pulsa ENTER aquí…")
+    print("\n  >>> 1) Haz clic en «Volver» si aún estás en el formulario tags")
+    print("  >>> 2) En el popup azul, clic en «Sí, acepto»")
+    print("  >>> 3) Cuando el bloque tags quede guardado en el canvas, pulsa ENTER aquí…")
     try:
         input()
     except EOFError:
-        for _ in range(180):
+        for _ in range(300):
             if not page.locator("text=/cambios sin guardar/i").count():
                 break
             page.wait_for_timeout(1000)
@@ -207,8 +208,8 @@ def fill_tags(page, selectores: dict, categorias: list) -> bool:
 
         scope = _scope_editor(page)
         if not _guardar_formulario_tags(page, scope):
-            print("  ! tags: sin botón Guardar en el formulario (intento Volver igual)")
-        _volver_al_canvas(page)
+            print("  ! tags: sin botón Guardar (revisa y guarda a mano)")
+        print("  tags listos en el formulario — no hago clic en «Sí, acepto»")
         _esperar_usuario_acepte_popup(page)
         page.wait_for_timeout(500)
 
@@ -251,7 +252,7 @@ def main() -> int:
     ap.add_argument("json_path", type=Path, help="Ruta al JSON en out/")
     ap.add_argument("--dry-run", action="store_true", help="No publicar; intentar guardar borrador")
     ap.add_argument("--headed", action="store_true", help="Navegador visible (recomendado)")
-    ap.add_argument("--no-session", action="store_true", help="No reutilizar bm-session.json")
+    ap.add_argument("--continuar", action="store_true", help="Tras confirmar tags, seguir con ingredientes/pasos (default: solo tags y parar)")
     args = ap.parse_args()
 
     path = args.json_path.expanduser().resolve()
@@ -315,17 +316,29 @@ def main() -> int:
         fill(page, selectores.get("field_dificultad"), receta.get("dificultad"), "dificultad")
         fill(page, selectores.get("field_tiempo"), receta.get("tiempoTotal"), "tiempo")
         categorias = receta.get("categorias") or []
-        if categorias and not fill_tags(page, selectores, categorias):
-            print("\nSTOP: tags no guardados → no se cargan ingredientes ni pasos.", file=sys.stderr)
-            context.storage_state(path=str(SESSION_PATH))
-            if headed:
-                print("Corrige tags en el BM y vuelve a correr el script. ENTER…")
-                try:
-                    input()
-                except EOFError:
-                    page.wait_for_timeout(15_000)
-            browser.close()
-            return 3
+        if categorias:
+            if not fill_tags(page, selectores, categorias):
+                print("\nSTOP: tags no guardados.", file=sys.stderr)
+                context.storage_state(path=str(SESSION_PATH))
+                if headed:
+                    try:
+                        input("ENTER…")
+                    except EOFError:
+                        page.wait_for_timeout(15_000)
+                browser.close()
+                return 3
+            if not args.continuar:
+                print("\n=== FIN — solo tags ===")
+                print("No sigo a ingredientes. Cuando quieras continuar:")
+                print(f'  python scripts\\publicar-receta-cencosud.py "{path}" --headed --continuar')
+                context.storage_state(path=str(SESSION_PATH))
+                if headed:
+                    try:
+                        input("\nENTER para cerrar…")
+                    except EOFError:
+                        page.wait_for_timeout(15_000)
+                browser.close()
+                return 0
         seo = receta.get("seo") or {}
         fill(page, selectores.get("field_meta_titulo"), seo.get("metaTitulo"), "meta_titulo")
         fill(page, selectores.get("field_meta_descripcion"), seo.get("metaDescripcion"), "meta_descripcion")
