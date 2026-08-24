@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 """
-Rellena / publica una receta JSON en Business Manager Cencosud (local).
+Rellena receta JSON en Business Manager Cencosud (local).
 
-Requisitos previos (en TU PC):
-  1. secrets/.env con usuario (y opcionalmente password)
-  2. Habiendo corrido: python3 scripts/explorar-bm-cencosud.py
-     → genera secrets/bm-selectores.json y bm-session.json
+Uso tags (default — PARA después de cargar tags):
+  python scripts\\publicar-receta-cencosud.py out\\receta.json --headed
 
-Uso:
-  python3 scripts/publicar-receta-cencosud.py \\
-    index/clientes/Herramientas/carga-recetas-cencosud/out/anticuchos-de-verduras-con-chimichurri.json \\
-    --headed --dry-run
+Siguiente paso (ingredientes, pasos, seo) solo si tags ya guardados:
+  python scripts\\publicar-receta-cencosud.py out\\receta.json --headed --continuar
 """
 from __future__ import annotations
 
@@ -20,6 +16,8 @@ import os
 import re
 import sys
 from pathlib import Path
+
+CRC_VERSION = "2026-08-24-tags-pausa"
 
 ROOT = Path(__file__).resolve().parents[1]
 CRC = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud"
@@ -57,6 +55,14 @@ def load_selectores() -> dict:
     return {}
 
 
+def pausa_usuario(msg: str) -> None:
+    print(msg)
+    try:
+        input()
+    except EOFError:
+        pass
+
+
 def _scope_editor(page):
     for sel in (
         '[role="dialog"]:visible',
@@ -69,6 +75,34 @@ def _scope_editor(page):
         if loc.count():
             return loc
     return page
+
+
+def _abrir_lapiz_componente(page, nombre: str) -> bool:
+    ok = page.evaluate(
+        """(nombre) => {
+      const vacio = /componente vac[ií]o|edita este componente/i;
+      const want = nombre.toLowerCase();
+      for (const el of document.querySelectorAll('div, section, article, li')) {
+        const lines = (el.innerText || '').split('\\n').map(s => s.trim()).filter(Boolean);
+        if (!lines.length || lines[0].toLowerCase() !== want) continue;
+        const root = el.closest('[class*="component"], [class*="block"], [class*="module"], [class*="widget"]') || el.parentElement;
+        if (!root) continue;
+        for (const b of root.querySelectorAll('button, a[role="button"], [role="button"]')) {
+          const hint = ((b.getAttribute('aria-label') || '') + ' ' + (b.title || '') + ' ' + (b.className || '')).toLowerCase();
+          if (hint.includes('edit') || hint.includes('ditar') || hint.includes('lápiz') || hint.includes('lapiz') || hint.includes('pencil')) {
+            b.click();
+            return true;
+          }
+        }
+        const btn = root.querySelector('button, a[role="button"]');
+        if (btn) { btn.click(); return true; }
+      }
+      return false;
+    }""",
+        nombre,
+    )
+    page.wait_for_timeout(700)
+    return bool(ok)
 
 
 def _agregar_tag_repeater(page, scope, tag: str) -> bool:
@@ -93,78 +127,8 @@ def _agregar_tag_repeater(page, scope, tag: str) -> bool:
     inp.fill(tag)
     page.wait_for_timeout(200)
     page.keyboard.press("Enter")
-    page.wait_for_timeout(200)
-
-    for pat in (r"agregar.*arreglo", r"agregar.*tag", r"confirmar", r"aceptar"):
-        btn = scope.get_by_role("button", name=re.compile(pat, re.I)).first
-        if btn.count() and btn.is_visible():
-            btn.click()
-            page.wait_for_timeout(300)
-            break
+    page.wait_for_timeout(250)
     return True
-
-
-def _guardar_formulario_tags(page, scope) -> bool:
-    for pat in (r"^guardar$", r"guardar cambios", r"save", r"aplicar"):
-        btn = scope.get_by_role("button", name=re.compile(pat, re.I)).first
-        if btn.count() and btn.is_visible():
-            btn.click()
-            page.wait_for_timeout(700)
-            return True
-    return False
-
-
-def _volver_al_canvas(page) -> None:
-    for pat in (r"volver", r"regresar", r"back"):
-        btn = page.get_by_role("button", name=re.compile(pat, re.I)).first
-        if btn.count() and btn.is_visible():
-            btn.click()
-            page.wait_for_timeout(500)
-            return
-
-
-def _esperar_usuario_acepte_popup(page) -> None:
-    page.wait_for_timeout(500)
-    print("\n  >>> 1) Haz clic en «Volver» si aún estás en el formulario tags")
-    print("  >>> 2) En el popup azul, clic en «Sí, acepto»")
-    print("  >>> 3) Cuando el bloque tags quede guardado en el canvas, pulsa ENTER aquí…")
-    try:
-        input()
-    except EOFError:
-        for _ in range(300):
-            if not page.locator("text=/cambios sin guardar/i").count():
-                break
-            page.wait_for_timeout(1000)
-
-
-def _abrir_editor_tags(page, selectores: dict) -> None:
-    if selectores.get("btn_tags_abrir"):
-        page.locator(selectores["btn_tags_abrir"]).first.click()
-        page.wait_for_timeout(600)
-        return
-    page.evaluate(
-        """() => {
-      const vacio = /componente vac[ií]o|edita este componente/i;
-      for (const el of document.querySelectorAll('div, section, article, li')) {
-        const lines = (el.innerText || '').split('\\n').map(s => s.trim()).filter(Boolean);
-        if (!lines.length || lines[0].toLowerCase() !== 'tags') continue;
-        if (!vacio.test(el.innerText || '')) continue;
-        const root = el.closest('[class*="component"], [class*="block"], [class*="module"], [class*="widget"]') || el.parentElement;
-        if (!root) continue;
-        for (const b of root.querySelectorAll('button, a[role="button"], [role="button"]')) {
-          const hint = ((b.getAttribute('aria-label') || '') + ' ' + (b.title || '') + ' ' + (b.className || '')).toLowerCase();
-          if (hint.includes('edit') || hint.includes('ditar') || hint.includes('lápiz') || hint.includes('lapiz') || hint.includes('pencil')) {
-            b.click();
-            return;
-          }
-        }
-        const btn = root.querySelector('button, a[role="button"]');
-        if (btn) btn.click();
-        return;
-      }
-    }"""
-    )
-    page.wait_for_timeout(600)
 
 
 def _tags_guardados(page, tags: list[str]) -> bool:
@@ -187,40 +151,40 @@ def _tags_guardados(page, tags: list[str]) -> bool:
 def fill_tags(page, selectores: dict, categorias: list) -> bool:
     tags = [str(t).strip() for t in (categorias or []) if str(t).strip()]
     if not tags:
-        print("  · omitido tags")
+        print("  · sin tags en JSON")
         return True
-    try:
-        print(f"  tags a cargar ({len(tags)}): {', '.join(tags)}")
-        _abrir_editor_tags(page, selectores)
-        scope = _scope_editor(page)
 
-        ok_items = 0
-        for i, tag in enumerate(tags, 1):
-            if _agregar_tag_repeater(page, scope, tag):
-                ok_items += 1
-                print(f"    · item {i}: {tag}")
-            else:
-                print(f"    ✗ item {i}: no pude agregar «{tag}»")
-
-        if ok_items == 0:
-            print("  ✗ tags: ningún ítem en el repetidor Tag*")
-            return False
-
-        scope = _scope_editor(page)
-        if not _guardar_formulario_tags(page, scope):
-            print("  ! tags: sin botón Guardar (revisa y guarda a mano)")
-        print("  tags listos en el formulario — no hago clic en «Sí, acepto»")
-        _esperar_usuario_acepte_popup(page)
-        page.wait_for_timeout(500)
-
-        ok = _tags_guardados(page, tags)
-        print(f"  {'✓' if ok else '✗'} tags en canvas ({ok_items}/{len(tags)} ítems)")
-        if not ok:
-            print("  ✗ el bloque tags sigue vacío en la zona de trabajo")
-        return ok
-    except Exception as e:
-        print(f"  ✗ tags: {e}")
+    print(f"[CMS] Abriendo componente «tags»…")
+    if selectores.get("btn_tags_abrir"):
+        page.locator(selectores["btn_tags_abrir"]).first.click()
+        page.wait_for_timeout(700)
+    elif not _abrir_lapiz_componente(page, "tags"):
+        print("  ✗ no pude abrir el lápiz de «tags»")
         return False
+    else:
+        print("  lápiz OK «tags»")
+
+    print(f"  tags a cargar ({len(tags)}): {', '.join(tags)}")
+    scope = _scope_editor(page)
+    ok_items = 0
+    for i, tag in enumerate(tags, 1):
+        if _agregar_tag_repeater(page, scope, tag):
+            ok_items += 1
+            print(f"    · item {i}: {tag}")
+        else:
+            print(f"    ✗ item {i}: «{tag}»")
+
+    if ok_items == 0:
+        return False
+
+    print("\n  === PARA AQUÍ ===")
+    print("  El script NO hace clic en Volver ni en «Sí, acepto».")
+    print("  Tú: Guardar (si hace falta) → Volver → «Sí, acepto» en el popup azul.")
+    pausa_usuario("  Cuando el bloque tags ya NO diga «componente vacío», pulsa ENTER…")
+
+    ok = _tags_guardados(page, tags)
+    print(f"  {'✓' if ok else '✗'} tags en canvas ({ok_items}/{len(tags)})")
+    return ok
 
 
 def fill(page, sel: str | None, value, label: str) -> bool:
@@ -250,9 +214,10 @@ def fill(page, sel: str | None, value, label: str) -> bool:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Cargar receta JSON en Business Manager Cencosud")
     ap.add_argument("json_path", type=Path, help="Ruta al JSON en out/")
-    ap.add_argument("--dry-run", action="store_true", help="No publicar; intentar guardar borrador")
+    ap.add_argument("--dry-run", action="store_true", help="No publicar al final")
     ap.add_argument("--headed", action="store_true", help="Navegador visible (recomendado)")
-    ap.add_argument("--continuar", action="store_true", help="Tras confirmar tags, seguir con ingredientes/pasos (default: solo tags y parar)")
+    ap.add_argument("--continuar", action="store_true", help="Tags ya guardados → ingredientes/pasos/seo")
+    ap.add_argument("--no-session", action="store_true", help="No reutilizar bm-session.json")
     args = ap.parse_args()
 
     path = args.json_path.expanduser().resolve()
@@ -267,21 +232,10 @@ def main() -> int:
     dry = args.dry_run or env.get("CENCOSUD_BM_DRY_RUN", "true").lower() in ("1", "true", "yes")
     headed = args.headed or env.get("CENCOSUD_BM_HEADED", "true").lower() in ("1", "true", "yes")
 
-    print("=== Carga CRC → BM ===")
+    print(f"=== Carga CRC → BM · script {CRC_VERSION} ===")
     print(f"receta:  {receta.get('titulo')}")
-    print(f"estado:  {receta.get('estado')}")
+    print(f"modo:    {'continuar (ingredientes+)' if args.continuar else 'SOLO TAGS — para al terminar'}")
     print(f"dry_run: {dry} · headed: {headed}")
-
-    utiles = {k: v for k, v in selectores.items() if v}
-    if len(utiles) < 2:
-        print(
-            "\nAún no hay selectores útiles en secrets/bm-selectores.json.\n"
-            "En TU PC corre primero:\n"
-            "  python3 scripts/explorar-bm-cencosud.py\n"
-            "Inicia sesión, abre el formulario de receta, pulsa ENTER en la terminal.",
-            file=sys.stderr,
-        )
-        return 2
 
     try:
         from playwright.sync_api import sync_playwright
@@ -294,102 +248,62 @@ def main() -> int:
         ctx_kwargs = {"viewport": {"width": 1400, "height": 900}}
         if not args.no_session and SESSION_PATH.exists():
             ctx_kwargs["storage_state"] = str(SESSION_PATH)
-            print(f"Sesión: {SESSION_PATH}")
         context = browser.new_context(**ctx_kwargs)
         page = context.new_page()
         page.goto(base_url, wait_until="domcontentloaded")
 
-        nav = selectores.get("nav_nueva_receta")
-        if nav:
-            if str(nav).startswith("http") or str(nav).startswith("/"):
-                page.goto(nav if str(nav).startswith("http") else base_url.rstrip("/") + str(nav))
-            else:
-                try:
-                    page.locator(nav).first.click()
-                except Exception:
-                    print(f"No se pudo navegar con nav_nueva_receta={nav}")
+        pausa_usuario(
+            "\n1) Abre la receta en el BM (zona de trabajo: cabecera, tags, ingredientes…)\n"
+            "2) Pulsa ENTER aquí para empezar…"
+        )
 
-        print("Rellenando…")
-        fill(page, selectores.get("field_titulo"), receta.get("titulo"), "titulo")
-        fill(page, selectores.get("field_descripcion"), receta.get("descripcion"), "descripcion")
-        fill(page, selectores.get("field_porciones"), receta.get("porciones"), "porciones")
-        fill(page, selectores.get("field_dificultad"), receta.get("dificultad"), "dificultad")
-        fill(page, selectores.get("field_tiempo"), receta.get("tiempoTotal"), "tiempo")
-        categorias = receta.get("categorias") or []
-        if categorias:
-            if not fill_tags(page, selectores, categorias):
-                print("\nSTOP: tags no guardados.", file=sys.stderr)
-                context.storage_state(path=str(SESSION_PATH))
-                if headed:
-                    try:
-                        input("ENTER…")
-                    except EOFError:
-                        page.wait_for_timeout(15_000)
-                browser.close()
-                return 3
-            if not args.continuar:
-                print("\n=== FIN — solo tags ===")
-                print("No sigo a ingredientes. Cuando quieras continuar:")
+        if not args.continuar:
+            categorias = receta.get("categorias") or []
+            ok = fill_tags(page, selectores, categorias)
+            context.storage_state(path=str(SESSION_PATH))
+            if ok:
+                print("\n=== FIN — tags OK ===")
+                print("Para ingredientes después:")
                 print(f'  python scripts\\publicar-receta-cencosud.py "{path}" --headed --continuar')
-                context.storage_state(path=str(SESSION_PATH))
-                if headed:
-                    try:
-                        input("\nENTER para cerrar…")
-                    except EOFError:
-                        page.wait_for_timeout(15_000)
-                browser.close()
-                return 0
+            else:
+                print("\n=== FIN — tags NO guardados ===", file=sys.stderr)
+            pausa_usuario("ENTER para cerrar…")
+            browser.close()
+            return 0 if ok else 3
+
+        # --continuar: ingredientes, instrucciones, seo (tags ya hechos a mano)
+        print("[CMS] Modo continuar — asumo tags ya guardados en el canvas.")
+        if _abrir_lapiz_componente(page, "ingredientes"):
+            print("  lápiz OK «ingredientes»")
+            scope = _scope_editor(page)
+            ings = receta.get("ingredientes") or []
+            if ings:
+                texto_ing = "\n".join(
+                    " ".join(
+                        filter(
+                            None,
+                            [str(i.get("cantidad") or ""), str(i.get("unidad") or ""), str(i.get("nombre") or "")],
+                        )
+                    ).strip()
+                    for i in ings
+                )
+                fill(page, selectores.get("field_ingredientes"), texto_ing, "ingredientes")
+            pausa_usuario("Revisa ingredientes, guarda/volver, ENTER…")
+
+        if _abrir_lapiz_componente(page, "instrucciones") or _abrir_lapiz_componente(page, "lista de instrucciones"):
+            pasos = receta.get("pasos") or []
+            if pasos:
+                texto_pas = "\n".join(f"{p.get('orden')}. {p.get('texto')}" for p in pasos)
+                fill(page, selectores.get("field_pasos"), texto_pas, "pasos")
+            pausa_usuario("Revisa instrucciones, ENTER…")
+
         seo = receta.get("seo") or {}
-        fill(page, selectores.get("field_meta_titulo"), seo.get("metaTitulo"), "meta_titulo")
-        fill(page, selectores.get("field_meta_descripcion"), seo.get("metaDescripcion"), "meta_descripcion")
+        if _abrir_lapiz_componente(page, "seo"):
+            fill(page, selectores.get("field_meta_titulo"), seo.get("metaTitulo"), "meta_titulo")
+            fill(page, selectores.get("field_meta_descripcion"), seo.get("metaDescripcion"), "meta_descripcion")
 
-        ings = receta.get("ingredientes") or []
-        if ings:
-            texto_ing = "\n".join(
-                " ".join(
-                    filter(
-                        None,
-                        [str(i.get("cantidad") or ""), str(i.get("unidad") or ""), str(i.get("nombre") or "")],
-                    )
-                ).strip()
-                for i in ings
-            )
-            fill(page, selectores.get("field_ingredientes"), texto_ing, "ingredientes")
-
-        pasos = receta.get("pasos") or []
-        if pasos:
-            texto_pas = "\n".join(f"{p.get('orden')}. {p.get('texto')}" for p in pasos)
-            fill(page, selectores.get("field_pasos"), texto_pas, "pasos")
-
-        if dry:
-            btn = selectores.get("btn_guardar_borrador")
-            if btn:
-                try:
-                    page.locator(btn).first.click()
-                    print("Dry-run: clic guardar borrador.")
-                    receta["estado"] = "cargado"
-                except Exception as e:
-                    print(f"Dry-run: no se pudo guardar borrador ({e}). Revisa la ventana.")
-            else:
-                print("Dry-run: campos rellenados; sin selector de borrador. Revisa la ventana y guarda a mano si hace falta.")
-        else:
-            btn = selectores.get("btn_publicar")
-            if not btn:
-                print("Sin btn_publicar en bm-selectores.json", file=sys.stderr)
-            else:
-                page.locator(btn).first.click()
-                print("Publicado (según flujo BM).")
-                receta["estado"] = "publicado"
-
-        path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         context.storage_state(path=str(SESSION_PATH))
-
-        if headed:
-            print("\nRevisa el BM. ENTER para cerrar…")
-            try:
-                input()
-            except EOFError:
-                page.wait_for_timeout(15_000)
+        pausa_usuario("\nListo. ENTER para cerrar…")
         browser.close()
 
     return 0
