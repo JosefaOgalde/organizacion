@@ -57,27 +57,59 @@ def load_selectores() -> dict:
     return {}
 
 
+def _abrir_editor_tags(page, selectores: dict) -> None:
+    if selectores.get("btn_tags_abrir"):
+        page.locator(selectores["btn_tags_abrir"]).first.click()
+        page.wait_for_timeout(600)
+        return
+    page.evaluate(
+        """() => {
+      const vacio = /componente vac[ií]o|edita este componente/i;
+      for (const el of document.querySelectorAll('div, section, article, li')) {
+        const lines = (el.innerText || '').split('\\n').map(s => s.trim()).filter(Boolean);
+        if (!lines.length || lines[0].toLowerCase() !== 'tags') continue;
+        if (!vacio.test(el.innerText || '')) continue;
+        const root = el.closest('[class*="component"], [class*="block"], [class*="module"], [class*="widget"]') || el.parentElement;
+        if (!root) continue;
+        for (const b of root.querySelectorAll('button, a[role="button"], [role="button"]')) {
+          const hint = ((b.getAttribute('aria-label') || '') + ' ' + (b.title || '') + ' ' + (b.className || '')).toLowerCase();
+          if (hint.includes('edit') || hint.includes('ditar') || hint.includes('lápiz') || hint.includes('lapiz') || hint.includes('pencil')) {
+            b.click();
+            return;
+          }
+        }
+        const btn = root.querySelector('button, a[role="button"]');
+        if (btn) btn.click();
+        return;
+      }
+    }"""
+    )
+    page.wait_for_timeout(600)
+
+
+def _tags_guardados(page) -> bool:
+    return page.evaluate(
+        """() => {
+      const vacio = /componente vac[ií]o|edita este componente/i;
+      for (const el of document.querySelectorAll('div, section, article, li')) {
+        const lines = (el.innerText || '').split('\\n').map(s => s.trim()).filter(Boolean);
+        if (!lines.length || lines[0].toLowerCase() !== 'tags') continue;
+        return !vacio.test(el.innerText || '');
+      }
+      return false;
+    }"""
+    )
+
+
 def fill_tags(page, selectores: dict, categorias: list) -> bool:
     tags = [str(t).strip() for t in (categorias or []) if str(t).strip()]
     if not tags:
         print("  · omitido tags")
-        return False
+        return True
     try:
-        abrir = selectores.get("btn_tags_abrir") or selectores.get("field_tags")
-        inp_sel = selectores.get("field_tags_input")
+        _abrir_editor_tags(page, selectores)
+        inp_sel = selectores.get("field_tags_input") or selectores.get("field_tags")
         guardar = selectores.get("btn_tags_guardar")
-
-        if abrir:
-            loc = page.locator(abrir).first
-            if loc.count():
-                kind = loc.evaluate(
-                    "el => ({ tag: el.tagName.toLowerCase(), type: el.type || '', role: el.getAttribute('role') || '' })"
-                )
-                is_trigger = kind["tag"] in ("button", "a") or kind["role"] == "button"
-                is_trigger = is_trigger or (kind["tag"] == "input" and kind["type"] in ("button", "submit"))
-                if is_trigger or (kind["tag"] not in ("input", "textarea", "select") and not inp_sel):
-                    loc.click()
-                    page.wait_for_timeout(600)
 
         modal = page.locator(
             '[role="dialog"]:visible, .modal:visible, [class*="Modal"]:visible, [class*="modal"]:visible'
@@ -87,21 +119,21 @@ def fill_tags(page, selectores: dict, categorias: list) -> bool:
         inp = scope.locator(inp_sel).first if inp_sel else scope.locator(
             'input[type="text"], input:not([type]), textarea, [contenteditable="true"]'
         ).first
-        if inp.count() and inp.is_visible():
-            for tag in tags:
-                inp.click()
-                inp.fill(tag)
-                page.keyboard.press("Enter")
-                page.wait_for_timeout(250)
-                opt = scope.get_by_text(tag, exact=True).first
-                if opt.count() and opt.is_visible():
-                    try:
-                        opt.click()
-                    except Exception:
-                        pass
-        elif abrir:
-            fill(page, abrir, ", ".join(tags), "tags")
-            return True
+        if not inp.count() or not inp.is_visible():
+            print("  ✗ tags: no hay input en el popup")
+            return False
+
+        for tag in tags:
+            inp.click()
+            inp.fill(tag)
+            page.keyboard.press("Enter")
+            page.wait_for_timeout(250)
+            opt = scope.get_by_text(tag, exact=True).first
+            if opt.count() and opt.is_visible():
+                try:
+                    opt.click()
+                except Exception:
+                    pass
 
         saved = False
         if guardar:
@@ -116,9 +148,10 @@ def fill_tags(page, selectores: dict, categorias: list) -> bool:
                     btn.click()
                     saved = True
                     break
-        print(f"  {'✓' if saved else '!'} tags ({len(tags)})" + ("" if saved else " — confirma en el popup"))
-        page.wait_for_timeout(400)
-        return saved
+        page.wait_for_timeout(800)
+        ok = saved and _tags_guardados(page)
+        print(f"  {'✓' if ok else '✗'} tags ({len(tags)})")
+        return ok
     except Exception as e:
         print(f"  ✗ tags: {e}")
         return False
@@ -216,7 +249,18 @@ def main() -> int:
         fill(page, selectores.get("field_porciones"), receta.get("porciones"), "porciones")
         fill(page, selectores.get("field_dificultad"), receta.get("dificultad"), "dificultad")
         fill(page, selectores.get("field_tiempo"), receta.get("tiempoTotal"), "tiempo")
-        fill_tags(page, selectores, receta.get("categorias") or [])
+        categorias = receta.get("categorias") or []
+        if categorias and not fill_tags(page, selectores, categorias):
+            print("\nSTOP: tags no guardados → no se cargan ingredientes ni pasos.", file=sys.stderr)
+            context.storage_state(path=str(SESSION_PATH))
+            if headed:
+                print("Corrige tags en el BM y vuelve a correr el script. ENTER…")
+                try:
+                    input()
+                except EOFError:
+                    page.wait_for_timeout(15_000)
+            browser.close()
+            return 3
         seo = receta.get("seo") or {}
         fill(page, selectores.get("field_meta_titulo"), seo.get("metaTitulo"), "meta_titulo")
         fill(page, selectores.get("field_meta_descripcion"), seo.get("metaDescripcion"), "meta_descripcion")
