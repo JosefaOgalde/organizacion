@@ -92,10 +92,6 @@ def normalizar_dificultad(valor: str | None) -> str | None:
 def parse_barra_info(texto: str) -> dict:
     """Ej: '35 min | Fácil | 4 porciones'"""
     out: dict = {}
-    # region agent log
-    with open("/opt/cursor/logs/debug.log", "a", encoding="utf-8") as _debug_log:
-        _debug_log.write(json.dumps({"hypothesisId": "D", "location": "scripts/parse-receta-word.py:parse_barra_info:entry", "message": "entrada barra info", "data": {"textoLength": len(texto), "pipeCount": texto.count("|")}, "timestamp": int(datetime.now(timezone.utc).timestamp() * 1000)}, ensure_ascii=False) + "\n")
-    # endregion
     m = re.search(
         r"(?im)^\s*(\d+\s*(?:min|mins|minutos?|h|hs|horas?)(?:\s*\d+\s*min)?)\s*\|\s*([^|]+?)\s*\|\s*(\d+)\s*porciones?\s*$",
         texto,
@@ -105,18 +101,10 @@ def parse_barra_info(texto: str) -> dict:
             r"(?im)(\d+\s*min)\s*\|\s*([^|]+?)\s*\|\s*(\d+)\s*porciones?",
             texto,
         )
-    # region agent log
-    with open("/opt/cursor/logs/debug.log", "a", encoding="utf-8") as _debug_log:
-        _debug_log.write(json.dumps({"hypothesisId": "D", "location": "scripts/parse-receta-word.py:parse_barra_info:match", "message": "resultado regex barra", "data": {"matched": bool(m), "rawDifficulty": m.group(2).strip() if m else None}, "timestamp": int(datetime.now(timezone.utc).timestamp() * 1000)}, ensure_ascii=False) + "\n")
-    # endregion
     if m:
         out["tiempoTotal"] = m.group(1).strip()
         out["dificultad"] = normalizar_dificultad(m.group(2))
         out["porciones"] = m.group(3).strip()
-    # region agent log
-    with open("/opt/cursor/logs/debug.log", "a", encoding="utf-8") as _debug_log:
-        _debug_log.write(json.dumps({"hypothesisId": "D", "location": "scripts/parse-receta-word.py:parse_barra_info:exit", "message": "salida barra normalizada", "data": {"difficulty": out.get("dificultad"), "schemaCompatible": out.get("dificultad") in {"muy facil", "facil", "media", "dificil", "absurdamente dificil", None}}, "timestamp": int(datetime.now(timezone.utc).timestamp() * 1000)}, ensure_ascii=False) + "\n")
-    # endregion
     return out
 
 
@@ -176,25 +164,12 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str]]:
     pasos: list[dict] = []
     tips: list[str] = []
     en_tips = False
-    # region agent log
-    with open("/opt/cursor/logs/debug.log", "a", encoding="utf-8") as _debug_log:
-        _debug_log.write(json.dumps({"hypothesisId": "A,B,C", "location": "scripts/parse-receta-word.py:parse_pasos_jumbo:entry", "message": "entrada pasos", "data": {"lineCount": len(bloque.splitlines())}, "timestamp": int(datetime.now(timezone.utc).timestamp() * 1000)}, ensure_ascii=False) + "\n")
-    # endregion
-    for line_index, raw in enumerate(bloque.splitlines(), start=1):
+    for raw in bloque.splitlines():
         line = raw.strip()
         if not line:
             continue
-        # region agent log
-        with open("/opt/cursor/logs/debug.log", "a", encoding="utf-8") as _debug_log:
-            _debug_log.write(json.dumps({"hypothesisId": "A,B", "location": "scripts/parse-receta-word.py:parse_pasos_jumbo:line", "message": "clasificacion previa de linea", "data": {"index": line_index, "line": line[:160], "enTipsAntes": en_tips, "tipPrefix": bool(re.match(r"(?i)^tips?\b", line)), "numbered": bool(re.match(r"^\d+[\).\:\-]\s*", line))}, "timestamp": int(datetime.now(timezone.utc).timestamp() * 1000)}, ensure_ascii=False) + "\n")
-        # endregion
         if re.match(r"(?i)^tips?\s*:?\s*$", line):
             en_tips = True
-            # region agent log
-            with open("/opt/cursor/logs/debug.log", "a", encoding="utf-8") as _debug_log:
-                _tip_match = re.match(r"(?i)^tips?\b", line)
-                _debug_log.write(json.dumps({"hypothesisId": "A,C", "location": "scripts/parse-receta-word.py:parse_pasos_jumbo:tip-branch", "message": "rama de encabezado tip", "data": {"index": line_index, "matchedPrefix": _tip_match.group(0) if _tip_match else None, "inlineRemainder": line[_tip_match.end():].lstrip(" :.-") if _tip_match else None, "enTipsDespues": en_tips}, "timestamp": int(datetime.now(timezone.utc).timestamp() * 1000)}, ensure_ascii=False) + "\n")
-            # endregion
             continue
         tip_inline = re.match(r"(?i)^tips?\s*:\s*(.+)$", line)
         if tip_inline:
@@ -212,10 +187,6 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str]]:
         if re.match(r"(?i)^¿?c[oó]mo preparar", line):
             continue
         pasos.append({"orden": len(pasos) + 1, "texto": line})
-    # region agent log
-    with open("/opt/cursor/logs/debug.log", "a", encoding="utf-8") as _debug_log:
-        _debug_log.write(json.dumps({"hypothesisId": "B,C", "location": "scripts/parse-receta-word.py:parse_pasos_jumbo:exit", "message": "salida pasos y tips", "data": {"pasos": pasos, "tips": tips, "enTipsFinal": en_tips}, "timestamp": int(datetime.now(timezone.utc).timestamp() * 1000)}, ensure_ascii=False) + "\n")
-    # endregion
     return pasos, tips
 
 
@@ -309,10 +280,6 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
 
     faltantes_bloqueantes = [f for f in faltantes if f != "ingredientes.skuCencosud"]
     estado = "listo-para-cargar" if not faltantes_bloqueantes else "borrador"
-    # region agent log
-    with open("/opt/cursor/logs/debug.log", "a", encoding="utf-8") as _debug_log:
-        _debug_log.write(json.dumps({"hypothesisId": "E", "location": "scripts/parse-receta-word.py:construir_receta_jumbo:readiness", "message": "evaluacion de campos faltantes", "data": {"difficulty": barra.get("dificultad"), "difficultyTruthy": bool(barra.get("dificultad")), "difficultyListedMissing": "dificultad" in faltantes, "estado": estado}, "timestamp": int(datetime.now(timezone.utc).timestamp() * 1000)}, ensure_ascii=False) + "\n")
-    # endregion
 
     sid = slugify(titulo or "receta")
     seo_titulo = meta_titulo or titulo
