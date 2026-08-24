@@ -123,16 +123,17 @@ def _volver_al_canvas(page) -> None:
             return
 
 
-def _confirmar_si_acepto(page) -> bool:
-    dlg = page.locator('text=/cambios sin guardar/i')
-    if not dlg.count():
-        return False
-    btn = page.get_by_role("button", name=re.compile(r"s[ií],\s*acepto", re.I)).first
-    if btn.count() and btn.is_visible():
-        btn.click()
-        page.wait_for_timeout(900)
-        return True
-    return False
+def _esperar_usuario_acepte_popup(page) -> None:
+    page.wait_for_timeout(500)
+    print("\n  >>> Haz clic en «Sí, acepto» (botón azul) en el navegador.")
+    print("  >>> Cuando el bloque tags quede guardado, pulsa ENTER aquí…")
+    try:
+        input()
+    except EOFError:
+        for _ in range(180):
+            if not page.locator("text=/cambios sin guardar/i").count():
+                break
+            page.wait_for_timeout(1000)
 
 
 def _abrir_editor_tags(page, selectores: dict) -> None:
@@ -208,8 +209,8 @@ def fill_tags(page, selectores: dict, categorias: list) -> bool:
         if not _guardar_formulario_tags(page, scope):
             print("  ! tags: sin botón Guardar en el formulario (intento Volver igual)")
         _volver_al_canvas(page)
-        _confirmar_si_acepto(page)
-        page.wait_for_timeout(1000)
+        _esperar_usuario_acepte_popup(page)
+        page.wait_for_timeout(500)
 
         ok = _tags_guardados(page, tags)
         print(f"  {'✓' if ok else '✗'} tags en canvas ({ok_items}/{len(tags)} ítems)")
