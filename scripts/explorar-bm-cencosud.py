@@ -52,6 +52,86 @@ MAPA_SELECTORES_PATH = SECRETS / "bm-selectores.json"
 CAMPOS_REQUERIDOS_PUBLICACION = ("titulo", "descripcion", "ingredientes", "pasos")
 CAMPOS_FALTANTES_NO_BLOQUEANTES = {"ingredientes.skuCencosud"}
 
+# Labels del Formulario Header (Edición de Cabecera) en BM Jumbo.
+LABELS_POR_CAMPO: dict[str, tuple[str, ...]] = {
+    "field_titulo": (r"^T[ií]tulo(\s+de\s+la\s+receta)?\s*\*?$", r"^Title\s*\*?$"),
+    "field_dificultad": (r"^Dificultad\s*\*?$", r"^Difficulty\s*\*?$"),
+    "field_tiempo": (
+        r"^Duraci[oó]n\s*\*?$",
+        r"^Duration\s*\*?$",
+        r"^Tiempo(\s*total)?\s*\*?$",
+    ),
+    "field_porciones": (r"^Porciones\s*\*?$", r"^Servings\s*\*?$", r"^Rinde\s*\*?$"),
+    "field_descripcion": (r"^Descripci[oó]n\s*\*?$", r"^Bajada\s*\*?$", r"^Summary\s*\*?$"),
+    "field_imagen": (r"^Imagen\s*\*?$", r"^Image\s*\*?$", r"^Foto\s*\*?$", r"^Portada\s*\*?$"),
+    "field_tags": (r"^Tags?\s*/?\s*(categor[ií]as?)?\s*\*?$", r"^Etiquetas?\s*\*?$"),
+    "field_ingredientes": (r"^Ingredientes?\s*\*?$", r"^Lista\s+Ingredientes?\s*\*?$"),
+    "field_pasos": (
+        r"^Pasos?(\s+de\s+preparaci[oó]n)?\s*\*?$",
+        r"^Instrucciones?\s*\*?$",
+        r"^Lista\s+de\s+Instrucciones?\s*\*?$",
+    ),
+    "field_meta_titulo": (r"^Meta\s*t[ií]tulo(\s*\(SEO\))?\s*\*?$",),
+    "field_meta_descripcion": (r"^Meta\s*descripci[oó]n(\s*\(SEO\))?\s*\*?$",),
+}
+
+
+def minutos_desde_tiempo(valor) -> str | None:
+    """BM Duración exige number: '30 min' → '30'."""
+    if valor is None or valor == "":
+        return None
+    if isinstance(valor, (int, float)):
+        return str(int(valor))
+    m = re.search(r"(\d+)", str(valor))
+    return m.group(1) if m else None
+
+
+def normalizar_dificultad_bm(valor: str | None) -> str | None:
+    """Normaliza 'fácil' → etiqueta típica del select BM."""
+    if not valor:
+        return None
+    raw = str(valor).strip().lower()
+    raw = (
+        raw.replace("á", "a")
+        .replace("é", "e")
+        .replace("í", "i")
+        .replace("ó", "o")
+        .replace("ú", "u")
+    )
+    mapa = {
+        "muy facil": "Muy fácil",
+        "facil": "Fácil",
+        "media": "Media",
+        "medio": "Media",
+        "dificil": "Difícil",
+        "absurdamente dificil": "Difícil",
+    }
+    return mapa.get(raw) or str(valor).strip().capitalize()
+
+
+def url_imagen_portada(receta: dict) -> str | None:
+    for img in receta.get("imagenes") or []:
+        if not isinstance(img, dict):
+            continue
+        url = (img.get("url") or "").strip()
+        if url:
+            return url
+        ruta = (img.get("rutaLocal") or "").strip()
+        if ruta.startswith("http"):
+            return ruta
+    return None
+
+
+def ruta_imagen_local(receta: dict) -> str | None:
+    for img in receta.get("imagenes") or []:
+        if not isinstance(img, dict):
+            continue
+        ruta = (img.get("rutaLocal") or "").strip()
+        if ruta and not ruta.startswith("http") and Path(ruta).expanduser().exists():
+            return str(Path(ruta).expanduser().resolve())
+    return None
+
+
 # CMS Jumbo Recetas: cada bloque se edita con su lápiz (no es un formulario plano).
 COMPONENTES_CMS = (
     {
@@ -60,10 +140,10 @@ COMPONENTES_CMS = (
         "aliases": ("Cabecera", "Header", "header"),
         "campos": (
             "field_titulo",
-            "field_descripcion",
-            "field_porciones",
             "field_dificultad",
             "field_tiempo",
+            "field_porciones",
+            "field_imagen",
         ),
     },
     {
@@ -858,6 +938,8 @@ def guardar_editor_componente(page) -> bool:
         "button:has-text('Done')",
         "button:has-text('Actualizar')",
         "button:has-text('Update')",
+        "button[type='submit']",
+        "form button[type='submit']",
         "button[aria-label*='Guardar' i]",
         "button[aria-label*='Save' i]",
         "[aria-label*='Guardar' i]",
@@ -923,6 +1005,43 @@ def _cerrar_solo_modal(page) -> bool:
             except Exception:
                 continue
     return False
+
+
+def _salir_edicion_cabecera_si_aplica(page) -> None:
+    """Tras guardar el Formulario Header, volver al canvas de la receta.
+
+    En «Edición de Cabecera» el Volver regresa al gestor de contenido (no al
+    Administrador de vistas). Sin esto no se pueden abrir tags/ingredientes.
+    """
+    if not pagina_viva(page):
+        return
+    try:
+        titulo = (page.title() or "") + " " + (page.locator("h1, h2").first.inner_text(timeout=1000) or "")
+    except Exception:
+        titulo = ""
+    blob = titulo.lower()
+    if "edición de cabecera" not in blob and "edicion de cabecera" not in blob and "formulario header" not in blob:
+        # También detectar por heading visible
+        try:
+            if not page.get_by_text(re.compile(r"Edici[oó]n de Cabecera|Formulario Header", re.I)).count():
+                return
+        except Exception:
+            return
+    for sel in (
+        "button:has-text('Volver')",
+        "a:has-text('Volver')",
+        "[aria-label*='Volver' i]",
+        "button:has-text('Back')",
+    ):
+        try:
+            loc = page.locator(sel).first
+            if loc.count() and loc.is_visible():
+                loc.click(timeout=3000)
+                page.wait_for_timeout(1200)
+                print("  · Volví del Formulario Header al canvas de la receta.", flush=True)
+                return
+        except Exception:
+            continue
 
 
 def cerrar_editor_componente(page, *, guardar: bool = False) -> None:
@@ -1122,6 +1241,7 @@ def sugerir_selectores(estructura: dict) -> dict:
         "field_porciones": None,
         "field_dificultad": None,
         "field_tiempo": None,
+        "field_imagen": None,
         "field_tags": None,
         "field_ingredientes": None,
         "field_pasos": None,
@@ -1137,11 +1257,13 @@ def sugerir_selectores(estructura: dict) -> dict:
         "lapiz_seo": None,
     }
     editorial_rules = [
-        ("field_titulo", r"t[ií]tulo|nombre\s*(de\s*)?(la\s*)?receta|^title$|headline|recipe\s*name|heading"),
+        ("field_titulo", r"(^|\b)t[ií]tulo(\b|\s*\*)|nombre\s*(de\s*)?(la\s*)?receta|^title$|headline|recipe\s*name"),
         ("field_descripcion", r"descripci[oó]n|bajada|intro|resumen|summary|excerpt|lead|subt[ií]tulo|subtitle"),
         ("field_porciones", r"porcion|rinde|servings|personas|rendimiento|yield|comensales"),
         ("field_dificultad", r"dificultad|nivel|difficulty|complejidad"),
-        ("field_tiempo", r"tiempo|duraci[oó]n|minutos|prep|cook\s*time|total\s*time|cocci[oó]n"),
+        # Duración del Formulario Header (number) — priorizar sobre "tiempo" genérico
+        ("field_tiempo", r"duraci[oó]n|duration|tiempo\s*total|cook\s*time|total\s*time|minutos|cocci[oó]n|(^|\b)tiempo(\b)"),
+        ("field_imagen", r"imagen|image|foto|portada|upload|subir\s*(una\s*)?imagen|arrastr"),
         ("field_tags", r"tag|etiqueta|categor|palabra|keyword|chip"),
         ("field_ingredientes", r"ingrediente"),
         ("field_pasos", r"paso|instrucci|preparaci[oó]n|c[oó]mo\s+prepar|method|directions"),
@@ -1152,11 +1274,19 @@ def sugerir_selectores(estructura: dict) -> dict:
     ]
     selectores_asignados = set()
     for field in estructura.get("fields") or []:
+        # Labels BM a veces concatenan el error de validación; quedarse con la cabeza corta.
+        label_raw = field.get("label") or ""
+        label_corto = re.split(
+            r"\b(must be|el dato|required|requerido|type, but)\b",
+            label_raw,
+            maxsplit=1,
+            flags=re.I,
+        )[0].strip()
         blob = " ".join(
             filter(
                 None,
                 [
-                    field.get("label"),
+                    label_corto,
                     field.get("placeholder"),
                     field.get("ariaLabel"),
                     field.get("name"),
@@ -1176,7 +1306,7 @@ def sugerir_selectores(estructura: dict) -> dict:
         )
         reglas_candidatas = [regla_meta] if regla_meta else editorial_rules
         for key, pat in reglas_candidatas:
-            if mapa[key]:
+            if not key or mapa.get(key):
                 continue
             if re.search(pat, blob, re.I):
                 mapa[key] = sel
@@ -1298,17 +1428,29 @@ def _rellenar_locator(loc, value: str) -> bool:
     """Rellena input/textarea/select/contenteditable con varios fallbacks."""
     valor = str(value)
     try:
-        tag = (loc.evaluate("el => el.tagName.toLowerCase()") or "").lower()
-        tipo = loc.evaluate(
+        meta = loc.evaluate(
             """el => ({
+              tag: (el.tagName || '').toLowerCase(),
+              role: el.getAttribute('role') || '',
+              type: el.type || '',
               ce: !!(el.isContentEditable || el.getAttribute('contenteditable') === 'true'
                 || el.getAttribute('role') === 'textbox'
-                || (el.classList && (el.classList.contains('ql-editor') || el.classList.contains('ProseMirror')))),
-              type: el.type || ''
+                || (el.classList && (el.classList.contains('ql-editor') || el.classList.contains('ProseMirror'))))
             })"""
         )
+        tag = (meta.get("tag") or "").lower()
+        tipo = {"ce": meta.get("ce"), "type": meta.get("type") or ""}
+        role = (meta.get("role") or "").lower()
     except Exception:
-        tag, tipo = "", {"ce": False, "type": ""}
+        tag, tipo, role = "", {"ce": False, "type": ""}, ""
+
+    # Nunca tratar botones/iconos como campos (p.ej. aria-label «Editar Lista Ingredientes»)
+    if tag in ("button", "a", "svg", "img") and not tipo.get("ce") and role not in (
+        "textbox",
+        "combobox",
+        "searchbox",
+    ):
+        return False
 
     if tag == "select":
         try:
@@ -1357,19 +1499,198 @@ def _rellenar_locator(loc, value: str) -> bool:
         return True
     except Exception:
         pass
+    if tag in ("input", "textarea") or role in ("textbox", "combobox", "searchbox"):
+        try:
+            loc.evaluate(
+                """(el, v) => {
+                  el.focus();
+                  el.value = v;
+                  el.dispatchEvent(new Event('input', { bubbles: true }));
+                  el.dispatchEvent(new Event('change', { bubbles: true }));
+                }""",
+                valor,
+            )
+            return True
+        except Exception:
+            return False
+    return False
+
+
+
+def _descargar_url_imagen(url: str, dest_dir: Path) -> Path | None:
+    """Descarga imagen (Drive uc?export=download) para input[type=file] del BM."""
+    import urllib.request
+
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    file_id = None
+    m = re.search(r"/file/d/([^/]+)", url)
+    if m:
+        file_id = m.group(1)
+    download = (
+        f"https://drive.google.com/uc?export=download&id={file_id}" if file_id else url
+    )
+    dest = dest_dir / f"crc-portada-{file_id or 'img'}.jpg"
     try:
-        loc.evaluate(
-            """(el, v) => {
-              el.focus();
-              el.value = v;
-              el.dispatchEvent(new Event('input', { bubbles: true }));
-              el.dispatchEvent(new Event('change', { bubbles: true }));
-            }""",
-            valor,
+        req = urllib.request.Request(
+            download,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; CRC-organizacion/1.0)"},
         )
-        return True
-    except Exception:
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            data = resp.read()
+            ctype = (resp.headers.get("Content-Type") or "").lower()
+        if len(data) < 500:
+            print(f"  · descarga imagen demasiado pequeña ({len(data)} bytes)", flush=True)
+            return None
+        if "text/html" in ctype and b"<html" in data[:200].lower():
+            print("  · Drive devolvió HTML (¿permiso/vista previa?). Sube la foto a mano.", flush=True)
+            return None
+        if "png" in ctype:
+            dest = dest.with_suffix(".png")
+        elif "webp" in ctype:
+            dest = dest.with_suffix(".webp")
+        dest.write_bytes(data)
+        print(f"  · imagen descargada → {dest.name} ({len(data)} bytes)", flush=True)
+        return dest
+    except Exception as exc:
+        print(f"  · no pude descargar imagen ({exc})", flush=True)
+        return None
+
+
+def _rellenar_por_label(page, key: str, value: str) -> bool:
+    """Rellena por label visible del Formulario Header (más fiable que CSS frágil)."""
+    pats = LABELS_POR_CAMPO.get(key) or ()
+    if not pats or value is None or value == "":
         return False
+    targets = _targets_page_y_frames(page)
+    for pat in pats:
+        cre = re.compile(pat, re.I)
+        for target in targets:
+            try:
+                loc = target.get_by_label(cre)
+                # Elegir input/textarea/select; ignorar botones «Editar Lista …»
+                elegido = None
+                for i in range(min(loc.count(), 8)):
+                    cand = loc.nth(i)
+                    try:
+                        tag = (cand.evaluate("el => (el.tagName || '').toLowerCase()") or "").lower()
+                        role = (cand.get_attribute("role") or "").lower()
+                        tipo = (cand.get_attribute("type") or "").lower()
+                    except Exception:
+                        continue
+                    if tag == "button" or tipo in ("button", "submit", "checkbox", "radio", "file"):
+                        continue
+                    if tag in ("input", "textarea", "select") or role in (
+                        "textbox",
+                        "combobox",
+                        "searchbox",
+                        "listbox",
+                    ):
+                        elegido = cand
+                        break
+                if elegido is None:
+                    lab = target.get_by_text(cre, exact=True)
+                    if not lab.count():
+                        continue
+                    container = lab.first.locator(
+                        "xpath=ancestor::*[.//input or .//textarea or .//select or .//*[@role='combobox' or @role='textbox']][1]"
+                    )
+                    handle = container.locator(
+                        "input:not([type='hidden']):not([type='checkbox']):not([type='file']):not([type='button']):not([type='submit']), "
+                        "textarea, select, [role='combobox'], [role='textbox']"
+                    )
+                    if not handle.count():
+                        continue
+                    elegido = handle.first
+                node = elegido
+                if not node.count():
+                    continue
+                tag = ""
+                try:
+                    tag = (node.evaluate("el => (el.tagName || '').toLowerCase()") or "").lower()
+                    role = node.get_attribute("role") or ""
+                    tipo = (node.get_attribute("type") or "").lower()
+                except Exception:
+                    role, tipo = "", ""
+                if key == "field_dificultad" or tag == "select" or role == "combobox":
+                    # Select nativo
+                    if tag == "select":
+                        for candidato in (value, value.lower(), value.capitalize()):
+                            try:
+                                node.select_option(label=candidato)
+                                return True
+                            except Exception:
+                                try:
+                                    node.select_option(value=candidato)
+                                    return True
+                                except Exception:
+                                    continue
+                    # Combobox / lista custom: clic + opción
+                    try:
+                        node.click(timeout=2500)
+                        page.wait_for_timeout(400)
+                        opt = target.get_by_role("option", name=re.compile(re.escape(value), re.I))
+                        if opt.count():
+                            opt.first.click(timeout=2500)
+                            return True
+                        # Texto de opción suelto
+                        opt2 = target.get_by_text(re.compile(rf"^{re.escape(value)}$", re.I))
+                        if opt2.count():
+                            opt2.first.click(timeout=2500)
+                            return True
+                    except Exception:
+                        pass
+                if tipo == "number" or key == "field_tiempo":
+                    solo = minutos_desde_tiempo(value) or re.sub(r"[^\d.]", "", str(value))
+                    if not solo:
+                        continue
+                    if _rellenar_locator(node, solo):
+                        return True
+                    continue
+                if _rellenar_locator(node, str(value)):
+                    return True
+            except Exception:
+                continue
+    return False
+
+
+def _rellenar_imagen(page, receta: dict) -> bool:
+    """Sube portada: archivo local o descarga desde URL (Drive del Word)."""
+    local = ruta_imagen_local(receta)
+    url = url_imagen_portada(receta)
+    archivo: Path | None = Path(local) if local else None
+    if not archivo and url:
+        print(f"  · URL portada: {url[:80]}…", flush=True)
+        archivo = _descargar_url_imagen(url, Path("/tmp/crc-imagenes"))
+    if not archivo or not archivo.exists():
+        if url:
+            print(
+                "  · No pude preparar el archivo de imagen. "
+                "Sube a mano el link de ([Foto]) del Word en BM.",
+                flush=True,
+            )
+        return False
+
+    for target in _targets_page_y_frames(page):
+        try:
+            files = target.locator("input[type='file']")
+            n = min(files.count(), 4)
+            for i in range(n):
+                try:
+                    files.nth(i).set_input_files(str(archivo))
+                    page.wait_for_timeout(1200)
+                    print(f"  ✓ field_imagen (archivo {archivo.name})", flush=True)
+                    return True
+                except Exception:
+                    continue
+        except Exception:
+            continue
+    # Fallback: campo URL de texto
+    if url and _rellenar_por_label(page, "field_imagen", url):
+        print("  ✓ field_imagen (URL en campo de texto)", flush=True)
+        return True
+    print("  ✗ field_imagen (sin input file visible)", flush=True)
+    return False
+
 
 
 def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores: dict) -> dict[str, bool]:
@@ -1408,6 +1729,15 @@ def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores
     for key, value in pares:
         if value is None or value == "":
             continue
+        if key == "field_imagen":
+            # Se rellena con archivo/URL vía _rellenar_imagen (no texto plano)
+            outs[key] = False
+            continue
+        # 1) Por label del Formulario Header (Título / Dificultad / Duración / Porciones)
+        if _rellenar_por_label(page, key, str(value)):
+            outs[key] = True
+            print(f"  ✓ {key} (por label)")
+            continue
         sel = vivos.get(key) or selectores.get(key)
         if not sel:
             outs[key] = False
@@ -1419,7 +1749,11 @@ def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores
                 loc = target.locator(sel).first
                 if not loc.count():
                     continue
-                if _rellenar_locator(loc, str(value)):
+                # Duración: forzar solo dígitos si el selector apunta a number
+                val = str(value)
+                if key == "field_tiempo":
+                    val = minutos_desde_tiempo(value) or val
+                if _rellenar_locator(loc, val):
                     filled = True
                     selectores[key] = sel
                     break
@@ -1432,7 +1766,7 @@ def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores
         outs[key] = filled
         print(f"  {'✓' if filled else '✗'} {key}" + ("" if filled else f" ({sel})"))
 
-    pendientes = [(k, v) for k, v in pares if v and not outs.get(k)]
+    pendientes = [(k, v) for k, v in pares if v and not outs.get(k) and k != "field_imagen"]
     if pendientes and pagina_viva(page):
         css_areas = (
             "textarea:visible, [contenteditable='true']:visible, [contenteditable='']:visible, "
@@ -1440,12 +1774,13 @@ def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores
             "input[type='number']:visible, [role='textbox']:visible, .ql-editor:visible, "
             ".ProseMirror:visible, select:visible"
         )
+        # Orden real Formulario Header BM: Título → Dificultad → Duración → Porciones
         orden_pos = [
             "field_titulo",
-            "field_descripcion",
-            "field_porciones",
             "field_dificultad",
             "field_tiempo",
+            "field_porciones",
+            "field_descripcion",
             "field_tags",
             "field_ingredientes",
             "field_pasos",
@@ -1478,7 +1813,10 @@ def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores
                     if idx >= n:
                         idx = n - 1
                     try:
-                        if _rellenar_locator(areas.nth(idx), str(value)):
+                        val = str(value)
+                        if key == "field_tiempo":
+                            val = minutos_desde_tiempo(value) or val
+                        if _rellenar_locator(areas.nth(idx), val):
                             outs[key] = True
                             print(f"  ✓ {key} (fallback posicional #{idx})")
                     except Exception as exc:
@@ -1519,6 +1857,10 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
                     break
                 page.wait_for_timeout(250)
             vivos = rellenar_con_dump_vivo(page, pares_ok, selectores)
+            if clave_comp == "cabecera" and pagina_viva(page):
+                if _rellenar_imagen(page, receta):
+                    vivos["field_imagen"] = True
+                    resultados["imagen"] = True
         except Exception as exc:
             if _es_target_cerrado(exc):
                 print(
@@ -1542,19 +1884,25 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
             ok_grupo += int(bool(ok))
         if pagina_viva(page):
             cerrar_editor_componente(page, guardar=True)
+            if clave_comp == "cabecera":
+                _salir_edicion_cabecera_si_aplica(page)
         return ok_grupo
 
     print("Rellenando desde JSON (abriendo lápices automáticamente)…")
+    # Formulario Header no tiene «Descripción»; si viene en el JSON no bloqueamos la carga.
+    if receta.get("descripcion"):
+        resultados["descripcion"] = True
     total_ok = 0
     grupos = [
         (
             "cabecera",
             [
                 ("field_titulo", receta.get("titulo")),
-                ("field_descripcion", receta.get("descripcion")),
-                ("field_porciones", receta.get("porciones")),
-                ("field_dificultad", receta.get("dificultad")),
-                ("field_tiempo", receta.get("tiempoTotal")),
+                # Formulario Header BM: Dificultad / Duración (número) / Porciones
+                # (no hay campo Descripción en Cabecera)
+                ("field_dificultad", normalizar_dificultad_bm(receta.get("dificultad"))),
+                ("field_tiempo", minutos_desde_tiempo(receta.get("tiempoTotal"))),
+                ("field_porciones", str(receta.get("porciones")) if receta.get("porciones") is not None else None),
             ],
         ),
         ("tags", [("field_tags", ", ".join(receta.get("categorias") or []))]),

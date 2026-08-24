@@ -40,8 +40,9 @@ No se scrapea desde un servidor en la nube: es **navegador local** con tus crede
 | `titulo` | Título editorial | `field_titulo` (comp. Cabecera) |
 | `descripcion` / meta desc | Meta descripción | `field_descripcion` |
 | `porciones` | Barra `N porciones` | `field_porciones` |
-| `tiempoTotal` | Barra `35 min` | `field_tiempo` |
+| `tiempoTotal` | Barra `35 min` | `field_tiempo` → **Duración** (solo número, ej. `30`) |
 | `dificultad` | Barra `Fácil` | `field_dificultad` |
+| `imagenes[].url` | Link `([Foto])` del Word (Drive) | `field_imagen` (sube archivo si se puede descargar) |
 | `categorias[]` | Tags | `field_tags` |
 | `ingredientes[]` | Lista | `field_ingredientes` |
 | `pasos[]` | Paso a paso | `field_pasos` |

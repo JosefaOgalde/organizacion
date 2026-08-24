@@ -43,6 +43,54 @@ def texto_desde_docx(path: Path) -> str:
     return "\n".join(lines)
 
 
+def hiperlinks_docx(path: Path) -> list[dict[str, str]]:
+    """Extrae hipervínculos externos del .docx (texto visible + URL)."""
+    rels_ns = {"r": "http://schemas.openxmlformats.org/package/2006/relationships"}
+    doc_ns = {
+        "w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+        "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+    }
+    out: list[dict[str, str]] = []
+    try:
+        with zipfile.ZipFile(path) as zf:
+            rels_root = ET.fromstring(zf.read("word/_rels/document.xml.rels"))
+            id_a_url: dict[str, str] = {}
+            for rel in rels_root.findall("r:Relationship", rels_ns):
+                if (rel.get("TargetMode") or "") != "External":
+                    continue
+                rid = rel.get("Id") or ""
+                target = rel.get("Target") or ""
+                if rid and target.startswith("http"):
+                    id_a_url[rid] = target
+            doc_root = ET.fromstring(zf.read("word/document.xml"))
+            for hl in doc_root.findall(".//w:hyperlink", doc_ns):
+                rid = hl.get("{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id")
+                if not rid or rid not in id_a_url:
+                    continue
+                texto = "".join(
+                    (t.text or "") for t in hl.findall(".//w:t", doc_ns)
+                ).strip()
+                out.append({"texto": texto, "url": id_a_url[rid]})
+    except Exception:
+        return out
+    return out
+
+
+def url_foto_portada(path: Path | None, hiperlinks: list[dict[str, str]] | None = None) -> str | None:
+    """Prioriza el link de ([Foto]) / Drive; si no, el primer Drive del doc."""
+    links = hiperlinks if hiperlinks is not None else (hiperlinks_docx(path) if path else [])
+    for item in links:
+        texto = (item.get("texto") or "").strip().lower()
+        url = item.get("url") or ""
+        if texto in ("foto", "imagen", "image", "portada") or "foto" in texto:
+            return url
+    for item in links:
+        url = item.get("url") or ""
+        if "drive.google.com" in url or "dropbox.com" in url or "/image" in url.lower():
+            return url
+    return None
+
+
 def slugify(s: str) -> str:
     s = s.lower().strip()
     s = re.sub(r"[áàäâ]", "a", s)
@@ -194,7 +242,13 @@ def es_formato_jumbo(lines: list[str]) -> bool:
     return "meta título" in head or "meta titulo" in head or "meta descripción" in head or "meta descripcion" in head
 
 
-def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
+def construir_receta_jumbo(
+    lines: list[str],
+    texto: str,
+    fuente: str,
+    *,
+    docx_path: Path | None = None,
+) -> dict:
     meta_titulo = valor_despues_label(lines, ["meta título", "meta titulo"])
     # Jumbo a veces escribe solo "descripción:" (sin prefijo meta).
     meta_desc = valor_despues_label(
@@ -304,13 +358,19 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
     seo_desc = meta_desc or desc
 
     imagenes = []
-    if alt:
+    url_foto = url_foto_portada(docx_path) if docx_path else None
+    if alt or url_foto:
         imagenes.append(
             {
                 "rutaLocal": "",
-                "alt": alt,
+                "url": url_foto,
+                "alt": alt or "",
                 "rol": "portada",
-                "nota": "Foto referenciada en Word; adjuntar archivo al cargar en BM",
+                "nota": (
+                    "URL de ([Foto]) en el Word"
+                    if url_foto
+                    else "Foto referenciada en Word; adjuntar archivo al cargar en BM"
+                ),
             }
         )
 
@@ -436,10 +496,10 @@ def construir_receta_simple(texto: str, lines: list[str], fuente: str) -> dict:
     }
 
 
-def construir_receta(texto: str, fuente: str) -> dict:
+def construir_receta(texto: str, fuente: str, *, docx_path: Path | None = None) -> dict:
     lines = [ln.strip() for ln in texto.splitlines() if ln.strip()]
     if es_formato_jumbo(lines):
-        return construir_receta_jumbo(lines, texto, fuente)
+        return construir_receta_jumbo(lines, texto, fuente, docx_path=docx_path)
     return construir_receta_simple(texto, lines, fuente)
 
 
@@ -480,7 +540,11 @@ def main() -> int:
     except ValueError:
         rel = str(src)
 
-    receta = construir_receta(texto, rel)
+    receta = construir_receta(
+        texto,
+        rel,
+        docx_path=src if src.suffix.lower() == ".docx" else None,
+    )
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     out = OUT_DIR / f"{receta['id']}.json"

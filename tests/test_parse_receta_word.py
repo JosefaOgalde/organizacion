@@ -175,6 +175,26 @@ class ParseRecetaWordTests(unittest.TestCase):
         self.assertEqual(len(receta["tips"]), 2)
         self.assertEqual(receta["estado"], "listo-para-cargar")
 
+    def test_extrae_url_foto_drive_del_docx_salmon(self):
+        docx = (
+            Path(__file__).resolve().parents[1]
+            / "index/clientes/Herramientas/carga-recetas-cencosud/inbox"
+            / "Salmon-a-la-parrilla-con-salsa-de-palta.docx"
+        )
+        if not docx.exists():
+            self.skipTest("Falta Word de salmón en inbox")
+        url = self.modulo.url_foto_portada(docx)
+        self.assertIsNotNone(url)
+        self.assertIn("drive.google.com", url)
+        texto = self.modulo.texto_desde_docx(docx)
+        receta = self.modulo.construir_receta(
+            texto,
+            "inbox/salmon.docx",
+            docx_path=docx,
+        )
+        self.assertTrue(receta["imagenes"])
+        self.assertEqual(receta["imagenes"][0].get("url"), url)
+
 
 if __name__ == "__main__":
     unittest.main()
