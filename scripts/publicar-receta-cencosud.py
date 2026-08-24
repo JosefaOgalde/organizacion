@@ -17,7 +17,7 @@ import re
 import sys
 from pathlib import Path
 
-CRC_VERSION = "2026-08-24-tags-v7"
+CRC_VERSION = "2026-08-24-tags-v8"
 
 ROOT = Path(__file__).resolve().parents[1]
 CRC = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud"
@@ -109,8 +109,10 @@ def en_formulario_tags(page) -> bool:
     return page.evaluate(
         """() => {
       const t = document.body.innerText || '';
-      return /formulario tags|edici[oó]n de tags/i.test(t)
-        || (/\/edit\\/component/i.test(location.href) && /tag/i.test(t + document.title));
+      const href = location.href || '';
+      if (/formulario tags|edici[oó]n de tags/i.test(t)) return true;
+      if (href.includes('/edit/component') && /tag/i.test(t + document.title)) return true;
+      return false;
     }"""
     )
 
@@ -167,56 +169,103 @@ def _agregar_item_arreglo(page) -> bool:
     return _click_btn(page, (r"agregar\s*item", r"agregar\s*ítem", r"agregar", r"añadir"))
 
 
-def _rellenar_item_tag(page, n: int, tag: str) -> bool:
-    """Un Tag* por Formulario Ítem N (no reutilizar .last global)."""
-    ok = page.evaluate(
-        """([n, tag]) => {
-      const want = new RegExp('^Formulario\\\\s+Í?tem\\\\s+' + n + '\\\\s*$', 'i');
-      const headers = [...document.querySelectorAll('div, section, article, li, button, a, span, h3, h4')]
-        .filter(el => want.test((el.innerText || '').trim()));
-      const header = headers[0];
-      if (!header) return false;
-      header.scrollIntoView({ block: 'center' });
-      header.click();
-      let root = header.parentElement;
-      for (let d = 0; d < 8 && root; d++) {
-        const inputs = [...root.querySelectorAll('input:not([type=checkbox]):not([type=hidden]):not([type=radio])')]
-          .filter(i => i.offsetParent !== null);
-        if (inputs.length) {
-          const inp = inputs[inputs.length - 1];
-          inp.focus();
-          inp.value = tag;
-          inp.dispatchEvent(new Event('input', { bubbles: true }));
-          inp.dispatchEvent(new Event('change', { bubbles: true }));
-          inp.dispatchEvent(new Event('blur', { bubbles: true }));
-          return true;
-        }
-        root = root.parentElement;
-      }
-      return false;
-    }""",
-        [n, tag],
-    )
-    page.wait_for_timeout(400)
-    if ok:
-        return True
+def _header_item(page, n: int):
+    pat = re.compile(rf"^Formulario\s+Í?tem\s+{n}\s*$", re.I)
+    for loc in (
+        page.get_by_role("button", name=pat),
+        page.get_by_text(pat),
+    ):
+        if loc.count():
+            return loc.first
+    return page.get_by_text(pat).first
 
-    # Playwright fallback
-    header = page.get_by_text(re.compile(rf"^Formulario\s+Í?tem\s+{n}\s*$", re.I)).first
+
+def _expandir_item(page, n: int) -> bool:
+    header = _header_item(page, n)
     if not header.count():
         return False
-    header.scroll_into_view_if_needed()
-    header.click()
-    page.wait_for_timeout(400)
-    panel = header.locator("xpath=ancestor::div[1]")
-    inp = panel.get_by_label(re.compile(r"^Tag\s*\*?$", re.I)).first
-    if not inp.count():
-        inp = panel.locator('input:visible:not([type="checkbox"])').first
+    try:
+        header.scroll_into_view_if_needed(timeout=8000)
+        header.click(timeout=5000)
+        page.wait_for_timeout(450)
+        return True
+    except Exception:
+        return False
+
+
+def _input_tag_item(page, n: int):
+    """Input Tag* del ítem N (1-based). Usa el n-ésimo label «Tag» visible."""
+    header = _header_item(page, n)
+    if header.count():
+        panel = header.locator(
+            "xpath=ancestor::*[self::div or self::section or self::li or self::article]"
+            "[.//input][1]"
+        )
+        if panel.count():
+            inp = panel.get_by_label(re.compile(r"^Tag\s*\*?$", re.I)).first
+            if inp.count():
+                return inp
+            inp = panel.locator(
+                'input:visible:not([type="checkbox"]):not([type="hidden"]):not([type="radio"])'
+            ).last
+            if inp.count():
+                return inp
+
+    all_tags = page.get_by_label(re.compile(r"^Tag\s*\*?$", re.I))
+    if all_tags.count() >= n:
+        return all_tags.nth(n - 1)
+    return page.locator("input:visible").nth(n - 1)
+
+
+def _escribir_input_angular(page, inp, value: str) -> bool:
+    """Escribe y verifica que Angular registró el valor (no basta con inp.value en JS)."""
+    value = value.strip()
+    for _ in range(3):
+        try:
+            inp.scroll_into_view_if_needed(timeout=8000)
+            inp.click(timeout=5000)
+            page.wait_for_timeout(120)
+            inp.press("Control+a")
+            inp.press("Backspace")
+            page.wait_for_timeout(80)
+            inp.press_sequentially(value, delay=20)
+            page.wait_for_timeout(180)
+            inp.press("Tab")
+            page.wait_for_timeout(280)
+            if inp.input_value().strip() == value:
+                return True
+            inp.click()
+            inp.fill(value)
+            inp.dispatch_event("input")
+            inp.dispatch_event("change")
+            inp.press("Tab")
+            page.wait_for_timeout(280)
+            if inp.input_value().strip() == value:
+                return True
+        except Exception:
+            page.wait_for_timeout(350)
+    return False
+
+
+def _rellenar_item_tag(page, n: int, tag: str) -> bool:
+    """Un Tag* por Formulario Ítem N; verifica input_value() tras escribir."""
+    _expandir_item(page, n)
+    inp = _input_tag_item(page, n)
     if not inp.count():
         return False
-    inp.fill(tag)
-    page.wait_for_timeout(300)
-    return True
+    return _escribir_input_angular(page, inp, tag)
+
+
+def _tags_en_formulario(page, tags: list[str]) -> int:
+    """Cuántos Tag* del formulario coinciden con lo esperado (orden 1..n)."""
+    inputs = page.get_by_label(re.compile(r"^Tag\s*\*?$", re.I))
+    ok = 0
+    for i, esperado in enumerate(tags):
+        if i >= inputs.count():
+            break
+        if inputs.nth(i).input_value().strip() == esperado.strip():
+            ok += 1
+    return ok
 
 
 def _tags_en_canvas(page, tags: list[str]) -> bool:
@@ -249,17 +298,17 @@ def fill_tags(page, selectores: dict, categorias: list) -> bool:
             page.locator(selectores["btn_tags_abrir"]).first.click()
             page.wait_for_timeout(1000)
         elif not _abrir_lapiz_tags(page):
-            print("  ✗ no encontré el lápiz de tags")
-            return False
+            print("  ! no encontré el lápiz — si ya ves «Edición de tags», sigo")
         else:
             print("  ✓ lápiz tags")
         page.wait_for_timeout(1000)
-        if not en_formulario_tags(page):
-            print("  ✗ no abrió «Edición de tags»")
-            return False
+
+    if not en_formulario_tags(page):
+        print("  ✗ no estoy en «Edición de tags» / Formulario Tags")
+        return False
+    print("  ✓ formulario tags abierto")
 
     print(f"[2] Cargo {len(tags)} tags (1 ítem = 1 tag):")
-    ok = 0
     for i, tag in enumerate(tags):
         n = i + 1
         if i > 0:
@@ -267,15 +316,21 @@ def fill_tags(page, selectores: dict, categorias: list) -> bool:
                 print(f"  ✗ ítem {n}: sin «Agregar item»")
                 break
             page.wait_for_timeout(700)
+
+    ok = 0
+    for i, tag in enumerate(tags):
+        n = i + 1
         if _rellenar_item_tag(page, n, tag):
             ok += 1
             print(f"  ✓ ítem {n}: {tag}")
         else:
             print(f"  ✗ ítem {n}: falló «{tag}»")
 
-    if ok < len(tags):
-        print(f"  ✗ incompleto ({ok}/{len(tags)}) — NO guardo")
+    verificado = _tags_en_formulario(page, tags)
+    if verificado < len(tags):
+        print(f"  ✗ verificación formulario: {verificado}/{len(tags)} — NO guardo")
         return False
+    ok = verificado
 
     # 3) Guardar formulario
     print("[3] Guardar formulario tags…")
@@ -348,9 +403,19 @@ def main() -> int:
         context = browser.new_context(**ctx)
         page = context.new_page()
 
-        navegar_a_canvas(page, env, selectores, receta)
+        if not args.continuar and env.get("CENCOSUD_BM_TAGS_URL"):
+            url = env["CENCOSUD_BM_TAGS_URL"]
+            if url.startswith("/"):
+                base = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/").rstrip("/")
+                url = base + url
+            print(f"  → tags directo: {url[:100]}…")
+            page.goto(url, wait_until="domcontentloaded", timeout=120_000)
+            page.wait_for_timeout(2500)
+        else:
+            navegar_a_canvas(page, env, selectores, receta)
+
         if not en_zona_trabajo(page) and not en_formulario_tags(page):
-            pausa_usuario("Abre la zona de trabajo del salmón en Chromium y pulsa ENTER…")
+            pausa_usuario("Abre la zona de trabajo o «Edición de tags» en Chromium y pulsa ENTER…")
 
         if not args.continuar:
             ok = fill_tags(page, selectores, receta.get("categorias") or [])
