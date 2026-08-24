@@ -14,12 +14,16 @@ Público de referencia: https://www.jumbo.cl/recetas
 6. Genera `secrets/bm-estructura.json` + `secrets/bm-selectores.json`
    (incluye `lapiz_*` por componente).
 7. El navegador espera un segundo ENTER antes de cerrar.
-8. Prueba:
+8. Prueba **relleno** (esto sí escribe la receta; explorar solo mapea):
    `python scripts/publicar-receta-cencosud.py out/….json --headed --dry-run`
 
 El BM Jumbo no es un formulario plano: título, tags, ingredientes, pasos y SEO viven
 en componentes distintos. El explorador y el publicador abren esos lápices
-automáticamente.
+automáticamente. Tras rellenar cada componente, el script **guarda** el editor
+(antes solo cerraba y el BM perdía la info).
+
+**Importante:** `explorar-bm-cencosud.py` sin `--fill-json` solo captura selectores;
+no carga el Word/JSON. Para demo de carga usa `publicar-receta-cencosud.py … --dry-run`.
 
 Opcional: `--no-auto-lapiz` solo captura la vista actual (diagnóstico).
 

@@ -80,6 +80,7 @@
       <label for="tiempo">Tiempo total</label>
       <input id="tiempo" name="tiempo" type="text" placeholder="35 min">
       <div class="editor-acciones">
+        <button type="button" class="btn-guardar-editor">Guardar</button>
         <button type="button" class="btn-cerrar-editor">Cerrar</button>
       </div>
     </div>
@@ -102,6 +103,7 @@
       <label for="tags">Tags / categorías</label>
       <input id="tags" name="tags" type="text">
       <div class="editor-acciones">
+        <button type="button" class="btn-guardar-editor">Guardar</button>
         <button type="button" class="btn-cerrar-editor">Cerrar</button>
       </div>
     </div>
@@ -124,6 +126,7 @@
       <label for="ingredientes">Ingredientes</label>
       <textarea id="ingredientes" name="ingredientes" rows="5"></textarea>
       <div class="editor-acciones">
+        <button type="button" class="btn-guardar-editor">Guardar</button>
         <button type="button" class="btn-cerrar-editor">Cerrar</button>
       </div>
     </div>
@@ -146,6 +149,7 @@
       <label for="pasos">Pasos de preparación</label>
       <textarea id="pasos" name="pasos" rows="5"></textarea>
       <div class="editor-acciones">
+        <button type="button" class="btn-guardar-editor">Guardar</button>
         <button type="button" class="btn-cerrar-editor">Cerrar</button>
       </div>
     </div>
@@ -170,6 +174,7 @@
       <label for="meta-descripcion">Meta descripción (SEO)</label>
       <textarea id="meta-descripcion" name="metaDescripcion" rows="2"></textarea>
       <div class="editor-acciones">
+        <button type="button" class="btn-guardar-editor">Guardar</button>
         <button type="button" class="btn-cerrar-editor">Cerrar</button>
       </div>
     </div>
@@ -194,6 +199,12 @@
         bloque.classList.add('editando');
         editor.classList.add('abierto');
         document.getElementById('estado').textContent = 'editando:' + (bloque.dataset.component || '');
+      });
+      bloque.querySelectorAll('.btn-guardar-editor').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.getElementById('estado').textContent = 'guardado:' + (bloque.dataset.component || '');
+          cerrarTodos();
+        });
       });
       bloque.querySelectorAll('.btn-cerrar-editor').forEach((btn) => {
         btn.addEventListener('click', () => {

@@ -438,29 +438,73 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     return bool(clicked)
 
 
-def cerrar_editor_componente(page) -> None:
-    """Intenta salir del editor del componente (Cerrar / Escape / Volver)."""
+def guardar_editor_componente(page) -> bool:
+    """Guarda el editor del componente abierto (antes de cerrar). Sin esto el BM pierde los datos."""
+    for sel in (
+        "button:has-text('Guardar')",
+        "button:has-text('Save')",
+        "button:has-text('Aplicar')",
+        "button:has-text('Confirmar')",
+        "button:has-text('Aceptar')",
+        "button:has-text('Done')",
+        "button[aria-label*='Guardar' i]",
+        "button[aria-label*='Save' i]",
+        "[data-testid*='save' i]",
+        "button.btn-guardar-editor",
+    ):
+        try:
+            loc = page.locator(sel)
+            n = loc.count()
+            for i in range(n):
+                btn = loc.nth(i)
+                if not btn.is_visible():
+                    continue
+                txt = (btn.inner_text() or "").lower()
+                # Evitar «Guardar y publicar» / borrador global en el editor de componente
+                if "publicar" in txt or "publish" in txt or "borrador" in txt or "draft" in txt:
+                    continue
+                btn.click(timeout=3_000)
+                page.wait_for_timeout(700)
+                print("  ✓ Guardado editor del componente")
+                return True
+        except Exception:
+            pass
+    return False
+
+
+def cerrar_editor_componente(page, *, guardar: bool = False) -> None:
+    """Sale del editor. Si guardar=True, intenta Guardar/Aplicar antes (relleno de receta)."""
+    if guardar:
+        if not guardar_editor_componente(page):
+            print(
+                "  · No vi botón Guardar en el editor; intento cerrar igual "
+                "(revisa en BM si el componente pidió guardar).",
+                flush=True,
+            )
     for sel in (
         "button:has-text('Cerrar')",
-        "button:has-text('Cancelar')",
         "button:has-text('Volver')",
         "button[aria-label*='Cerrar' i]",
         "button[aria-label*='Close' i]",
         "[data-testid*='close' i]",
     ):
         try:
-            loc = page.locator(sel).first
-            if loc.count() and loc.is_visible():
-                loc.click(timeout=2_000)
-                page.wait_for_timeout(400)
-                return
+            loc = page.locator(sel)
+            for i in range(loc.count()):
+                btn = loc.nth(i)
+                if btn.is_visible():
+                    btn.click(timeout=2_000)
+                    page.wait_for_timeout(400)
+                    return
         except Exception:
             pass
-    try:
-        page.keyboard.press("Escape")
-        page.wait_for_timeout(400)
-    except Exception:
-        pass
+    # Escape solo si no pedimos guardar (mapeo); al rellenar evita descartar
+    if not guardar:
+        try:
+            page.keyboard.press("Escape")
+            page.wait_for_timeout(400)
+        except Exception:
+            pass
 
 
 def capturar_cms_por_componentes(page) -> tuple[dict, dict]:
@@ -698,7 +742,13 @@ def sugerir_selectores(estructura: dict) -> dict:
         if es_publicar:
             if not mapa["btn_publicar"]:
                 mapa["btn_publicar"] = sel
-        elif not mapa["btn_guardar_borrador"] and re.search(r"guardar|borrador|save|draft", t):
+        elif re.search(r"borrador|draft", t):
+            # Solo borrador/draft globales — no el «Guardar» del editor de cada componente
+            if not mapa["btn_guardar_borrador"]:
+                mapa["btn_guardar_borrador"] = sel
+        elif not mapa["btn_guardar_borrador"] and re.search(
+            r"guardar\s+(cambios|ficha|receta)|save\s+(changes|recipe)", t
+        ):
             mapa["btn_guardar_borrador"] = sel
     for link in (estructura.get("linksReceta") or []) + (estructura.get("nav") or []):
         t = (link.get("text") or "").lower()
@@ -837,7 +887,8 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
                 resultados["ingredientes"] = ok
             elif key == "field_pasos":
                 resultados["pasos"] = ok
-        cerrar_editor_componente(page)
+        # Importante: guardar el componente; Cerrar/Escape sin guardar pierde la info en BM
+        cerrar_editor_componente(page, guardar=True)
 
     print("Rellenando desde JSON (abriendo lápices automáticamente)…")
     fill_grupo(
@@ -886,12 +937,29 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         btn = selectores.get("btn_guardar_borrador")
         if btn:
             try:
-                page.locator(btn).first.click()
-                print("Clic en guardar borrador (dry-run).")
+                loc = page.locator(btn).first
+                if loc.count() and loc.is_visible():
+                    loc.click(timeout=5_000)
+                    print("Clic en guardar borrador (dry-run).")
+                else:
+                    # Fallback: texto visible global
+                    alt = page.get_by_role("button", name=re.compile(r"guardar\s+borrador|save\s+draft", re.I))
+                    if alt.count():
+                        alt.first.click(timeout=5_000)
+                        print("Clic en guardar borrador (fallback texto).")
+                    else:
+                        print(
+                            "Dry-run: selector de borrador no visible; "
+                            "componentes ya se guardaron uno a uno."
+                        )
             except Exception as e:
-                print(f"No se pudo guardar borrador: {e}")
+                print(f"No se pudo guardar borrador global: {e}")
+                print("Los componentes individuales ya intentaron Guardar.")
         else:
-            print("Dry-run: sin selector de borrador; campos rellenados, sin publicar.")
+            print(
+                "Dry-run: sin selector de borrador global; "
+                "cada componente se guardó al cerrar el editor."
+            )
         return True
     else:
         fallos_requeridos = [

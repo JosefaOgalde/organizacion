@@ -49,13 +49,15 @@ Se guardan (solo local, gitignored):
 | `secrets/bm-selectores.json` | Mapa para rellenar + `lapiz_*` |
 | `secrets/bm-screenshot.png` | Captura |
 
-### 3) Completar la info en la interfaz
+### 3) Completar la info en la interfaz (relleno + guardar)
+
+`explorar` solo mapea. Para **cargar** la receta:
 
 ```bat
 python scripts\publicar-receta-cencosud.py index\clientes\Herramientas\carga-recetas-cencosud\out\anticuchos-de-verduras-con-chimichurri.json --headed --dry-run
 ```
 
-`--dry-run` = rellena / intenta borrador, **no publica**.  
+`--dry-run` = rellena cada componente, **guarda** el editor y intenta borrador; **no publica**.  
 Cuando confíes: quita `--dry-run` o pon `CENCOSUD_BM_DRY_RUN=false` en `.env`.
 
 En modo publicación, tanto el publicador como `explorar-bm-cencosud.py --publish` solo
