@@ -17,7 +17,7 @@ import re
 import sys
 from pathlib import Path
 
-CRC_VERSION = "2026-08-24-tags-pausa"
+CRC_VERSION = "2026-08-24-tags-v2"
 
 ROOT = Path(__file__).resolve().parents[1]
 CRC = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud"
@@ -78,31 +78,67 @@ def _scope_editor(page):
 
 
 def _abrir_lapiz_componente(page, nombre: str) -> bool:
+    want = nombre.lower()
+
+    # 1) Bloque en ZONA DE TRABAJO (no paleta izquierda): tiene «tags» + «componente vacío» o «Id:»
     ok = page.evaluate(
-        """(nombre) => {
+        """(want) => {
       const vacio = /componente vac[ií]o|edita este componente/i;
-      const want = nombre.toLowerCase();
-      for (const el of document.querySelectorAll('div, section, article, li')) {
-        const lines = (el.innerText || '').split('\\n').map(s => s.trim()).filter(Boolean);
-        if (!lines.length || lines[0].toLowerCase() !== want) continue;
-        const root = el.closest('[class*="component"], [class*="block"], [class*="module"], [class*="widget"]') || el.parentElement;
-        if (!root) continue;
-        for (const b of root.querySelectorAll('button, a[role="button"], [role="button"]')) {
-          const hint = ((b.getAttribute('aria-label') || '') + ' ' + (b.title || '') + ' ' + (b.className || '')).toLowerCase();
-          if (hint.includes('edit') || hint.includes('ditar') || hint.includes('lápiz') || hint.includes('lapiz') || hint.includes('pencil')) {
-            b.click();
-            return true;
-          }
+      const idPat = /Id:\\s*[a-f0-9]{4,}/i;
+      const isPalette = (el) => {
+        let n = el;
+        while (n) {
+          const c = (n.className || '') + ' ' + (n.getAttribute('class') || '');
+          const t = (n.innerText || '').slice(0, 80).toLowerCase();
+          if (/paleta|palette|sidebar|components-list/i.test(c)) return true;
+          if (/paleta de componentes/i.test(t)) return true;
+          if (n.tagName === 'ASIDE') return true;
+          n = n.parentElement;
         }
-        const btn = root.querySelector('button, a[role="button"]');
-        if (btn) { btn.click(); return true; }
+        return false;
+      };
+      const candidates = [];
+      for (const el of document.querySelectorAll('div, section, article')) {
+        if (isPalette(el)) continue;
+        const t = el.innerText || '';
+        if (!vacio.test(t) && !idPat.test(t)) continue;
+        const lines = t.split('\\n').map(s => s.trim()).filter(Boolean);
+        if (!lines.some(l => l.toLowerCase() === want)) continue;
+        candidates.push(el);
       }
+      candidates.sort((a, b) => (a.innerText || '').length - (b.innerText || '').length);
+      const root = candidates[0];
+      if (!root) return false;
+      const buttons = [...root.querySelectorAll('button, a[role="button"], [role="button"]')]
+        .filter(b => b.offsetParent !== null);
+      for (const b of buttons) {
+        const hint = ((b.getAttribute('aria-label') || '') + ' ' + (b.title || '') + ' ' + (b.className || '')).toLowerCase();
+        if (/edit|ditar|lápiz|lapiz|pencil/.test(hint)) { b.click(); return true; }
+      }
+      if (buttons[0]) { buttons[0].click(); return true; }
       return false;
     }""",
-        nombre,
+        want,
     )
     page.wait_for_timeout(700)
-    return bool(ok)
+    if ok:
+        return True
+
+    # 2) Playwright: bloque con «componente vacío» + título exacto
+    bloque = (
+        page.locator("div, section, article")
+        .filter(has_text=re.compile(r"componente vac[ií]o", re.I))
+        .filter(has=page.get_by_text(nombre, exact=True))
+        .last
+    )
+    if bloque.count():
+        lapiz = bloque.locator("button, [role='button']").first
+        if lapiz.count() and lapiz.is_visible():
+            lapiz.click()
+            page.wait_for_timeout(700)
+            return True
+
+    return False
 
 
 def _agregar_tag_repeater(page, scope, tag: str) -> bool:
@@ -154,15 +190,23 @@ def fill_tags(page, selectores: dict, categorias: list) -> bool:
         print("  · sin tags en JSON")
         return True
 
-    print(f"[CMS] Abriendo componente «tags»…")
+    print(f"[CMS] Abriendo componente «tags» en la zona de trabajo…")
+    abierto = False
     if selectores.get("btn_tags_abrir"):
-        page.locator(selectores["btn_tags_abrir"]).first.click()
-        page.wait_for_timeout(700)
-    elif not _abrir_lapiz_componente(page, "tags"):
-        print("  ✗ no pude abrir el lápiz de «tags»")
+        loc = page.locator(selectores["btn_tags_abrir"]).first
+        if loc.count():
+            try:
+                loc.click()
+                page.wait_for_timeout(700)
+                abierto = True
+            except Exception:
+                pass
+    if not abierto:
+        abierto = _abrir_lapiz_componente(page, "tags")
+    if not abierto:
+        print("  ✗ no pude abrir el lápiz de «tags» (¿estás en la zona de trabajo?)")
         return False
-    else:
-        print("  lápiz OK «tags»")
+    print("  lápiz OK «tags»")
 
     print(f"  tags a cargar ({len(tags)}): {', '.join(tags)}")
     scope = _scope_editor(page)
@@ -228,7 +272,6 @@ def main() -> int:
     receta = json.loads(path.read_text(encoding="utf-8"))
     env = load_env(ENV_PATH)
     selectores = load_selectores()
-    base_url = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/")
     dry = args.dry_run or env.get("CENCOSUD_BM_DRY_RUN", "true").lower() in ("1", "true", "yes")
     headed = args.headed or env.get("CENCOSUD_BM_HEADED", "true").lower() in ("1", "true", "yes")
 
@@ -250,11 +293,11 @@ def main() -> int:
             ctx_kwargs["storage_state"] = str(SESSION_PATH)
         context = browser.new_context(**ctx_kwargs)
         page = context.new_page()
-        page.goto(base_url, wait_until="domcontentloaded")
 
         pausa_usuario(
-            "\n1) Abre la receta en el BM (zona de trabajo: cabecera, tags, ingredientes…)\n"
-            "2) Pulsa ENTER aquí para empezar…"
+            "\n1) En ESTA ventana de Chromium: abre la receta hasta ver la ZONA DE TRABAJO\n"
+            "   (bloques: cabecera, tags, ingredientes…)\n"
+            "2) Pulsa ENTER aquí (no navego a otra URL)…"
         )
 
         if not args.continuar:
