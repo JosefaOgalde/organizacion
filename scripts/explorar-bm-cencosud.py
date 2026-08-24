@@ -2089,6 +2089,45 @@ def volver_al_lienzo(page, url_ficha: str | None = None, *, confirmar_salida: bo
     return editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page))
 
 
+def aviso_modal_descarta() -> None:
+    print("\n" + "=" * 58)
+    print("  POPUP «Tienes cambios sin guardar»")
+    print("  · NO «Sí, acepto» → eso BORRA los tags del formulario.")
+    print("  · Sí: «Cancelar» → botón «Guardar» → flecha «Volver».")
+    print("=" * 58 + "\n")
+
+
+def finalizar_editor_tags(page, url_ficha: str | None, tags: list[str]) -> bool:
+    """Guardar formulario tags y volver al lienzo sin descartar."""
+    tags = [t.strip() for t in tags if t and str(t).strip()]
+    if not tags:
+        return True
+    ok = _contar_tags_ok(page, tags)
+    if ok < len(tags):
+        print(f"  ✗ tags incompletos ({ok}/{len(tags)}) — no guardo")
+        return False
+    asegurar_n_items_tags(page, len(tags))
+    aviso_modal_descarta()
+    if not guardar_editor_persistente(page):
+        print("  ! No apareció «guardado satisfactoriamente». Pulsa Guardar a mano y reintenta.")
+        return False
+    if _hay_modal_sin_guardar(page):
+        resolver_modal_cambios(page, salir=False)
+        guardar_editor_persistente(page)
+    print("  · Formulario tags guardado. Pulso Volver (sin «Sí, acepto»)…")
+    volver_al_lienzo(page, url_ficha, confirmar_salida=False)
+    if _hay_modal_sin_guardar(page):
+        aviso_modal_descarta()
+        resolver_modal_cambios(page, salir=False)
+        print("  · Quedaste en el editor: Guardar otra vez y luego Volver.")
+        return False
+    if bloque_componente_vacio(page, ["tags", "Tags"]) is not False:
+        print("  · El bloque tags en el lienzo sigue vacío — abre el lápiz y revisa.")
+        return False
+    print("  ✓ Bloque tags cargado en el lienzo")
+    return True
+
+
 def guardar_editor_persistente(page) -> bool:
     """Pulsa Guardar hasta ver el aviso. Nunca «Sí, acepto» (eso descarta)."""
     if _hay_modal_sin_guardar(page):
@@ -6674,8 +6713,9 @@ def fill_from_receta(
         cats_abierto = tags_desde_receta(receta)
         n_tags_abierto = fill_lista_tags(page, cats_abierto)
         if n_tags_abierto >= len(cats_abierto):
-            print(f"  ✓ tags: {n_tags_abierto}/{len(cats_abierto)}")
-            guardar_y_volver_al_lienzo(page, url_ficha)
+            print(f"  ✓ tags escritos: {n_tags_abierto}/{len(cats_abierto)}")
+            if not finalizar_editor_tags(page, url_ficha, cats_abierto):
+                return False
         else:
             print(f"  ✗ tags incompletos ({n_tags_abierto}/{len(cats_abierto)}) — NO guardo")
             return False
@@ -6752,21 +6792,14 @@ def fill_from_receta(
     if abrir_grupo("tags", ["field_tags"]) and puede_rellenar_editor(page, "tags"):
         n_tags = fill_lista_tags(page, cats)
         if n_tags >= len(cats):
-            print(f"  ✓ tags: {n_tags}/{len(cats)}")
-            guardar_y_volver_al_lienzo(page, url_ficha)
+            print(f"  ✓ tags escritos: {n_tags}/{len(cats)}")
+            if finalizar_editor_tags(page, url_ficha, cats):
+                resultados["tags"] = True
+            else:
+                return False
         else:
             print(f"  ✗ tags incompletos ({n_tags}/{len(cats)}) — NO guardo ni Volver")
             return False
-        vacio_tags = bloque_componente_vacio(page, ["tags", "Tags"])
-        if vacio_tags:
-            print("  · El bloque tags sigue vacío. Lo abro, guardo y vuelvo.")
-            if abrir_grupo("tags", ["field_tags"]) and puede_rellenar_editor(page, "tags"):
-                fill_lista_tags(page, cats)
-                guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
-            vacio_tags = bloque_componente_vacio(page, ["tags", "Tags"])
-        if vacio_tags is False:
-            print("  ✓ Bloque tags cargado en el lienzo")
-            resultados["tags"] = True
 
     ings = receta.get("ingredientes") or []
     if abrir_grupo("ingredientes", ["field_ingredientes"]) and puede_rellenar_editor(
