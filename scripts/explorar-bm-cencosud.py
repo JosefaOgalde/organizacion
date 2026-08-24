@@ -3148,21 +3148,63 @@ def _locators_tag_arreglo_ordenados(page) -> list:
 _CONTAR_ITEMS_TAGS_JS = r"""() => {
   const clean = (s) => (s || '').replace(/\s+/g, ' ').trim();
   const seen = new Set();
+  const tieneCampoTag = (root) => {
+    if (!root) return false;
+    return !!root.querySelector(
+      "input[data-field='tag'], input.campo-tag, label[for*='tag' i], mat-label, label"
+    );
+  };
+  const enArregloTags = (el) => {
+    if (el.closest('.sidebar, aside, nav, [role="complementary"]')) return false;
+    if (el.closest('#arreglo, .arreglo, #items, .form-item-bm, [class*="arreglo-tags" i], [data-section="arreglo"]')) return true;
+    const arregloRoot = document.querySelector('#arreglo, .arreglo, #items, [data-section="arreglo"]');
+    if (arregloRoot && arregloRoot.contains(el)) return true;
+    let p = el;
+    for (let i = 0; i < 14 && p; i++) {
+      if (p.id === 'arreglo') return true;
+      const cls = (p.className || '').toString().toLowerCase();
+      if (/\\barreglo\\b/.test(cls)) return true;
+      for (const head of p.querySelectorAll(':scope > strong, :scope > h3, :scope > h4, :scope > legend')) {
+        if (/^arreglo\\s*$/i.test(clean(head.innerText))) return true;
+      }
+      if (p.tagName === 'BODY' || p.tagName === 'HTML') break;
+      p = p.parentElement;
+    }
+    return false;
+  };
   for (const el of document.querySelectorAll(
     'button, [role="button"], summary, h3, h4, h5, div, span, label'
   )) {
     const t = clean(el.innerText);
     if (t.length > 56) continue;
-    const m = t.match(/^Formulario\s+[ÍI]tem\s+(\d+)\s*$/i);
-    if (m) seen.add(parseInt(m[1], 10));
+    const m = t.match(/Formulario\s+[ÍI]tem\s+(\d+)\s*$/i);
+    if (!m) continue;
+    let root = el.closest(
+      '.acordeon, .form-item-bm, mat-expansion-panel, [class*="accordion-item" i], [class*="expansion-panel" i]'
+    );
+    if (!root) {
+      root = el.parentElement;
+      for (let d = 0; d < 8 && root; d++) {
+        if (tieneCampoTag(root)) break;
+        root = root.parentElement;
+      }
+    }
+    if (!tieneCampoTag(root)) continue;
+    if (!enArregloTags(el)) continue;
+    seen.add(parseInt(m[1], 10));
   }
   if (!seen.size) return 0;
-  return Math.max(...seen);
+  let max = 0;
+  for (let i = 1; i <= Math.max(...seen); i++) {
+    if (seen.has(i)) max = i;
+    else break;
+  }
+  return max;
 }"""
 
 
 def _contar_items_estructural_tags(page) -> int:
-    """Cuántos Formulario Ítem hay (aunque el acordeón esté cerrado)."""
+    """Cuántos Formulario Ítem hay en el arreglo tags (1..N consecutivos)."""
     mejor = 0
     for target in _targets_page_y_frames(page):
         try:
@@ -3171,18 +3213,118 @@ def _contar_items_estructural_tags(page) -> int:
                 mejor = n
         except Exception:
             pass
-        try:
-            n = target.locator(".acordeon, .form-item-bm, mat-expansion-panel").count()
-            if n > mejor:
-                mejor = n
-        except Exception:
-            pass
     if mejor:
         return mejor
     headers = _headers_formulario_item_tags(page)
     if headers:
-        return max(int(h.get("n") or 0) for h in headers)
+        nums = sorted(int(h.get("n") or 0) for h in headers if h.get("n"))
+        max_consec = 0
+        for i, num in enumerate(nums, start=1):
+            if num == i:
+                max_consec = num
+            else:
+                break
+        return max_consec or (nums[-1] if nums else 0)
     return 0
+
+
+_EN_ARREGLO_TAGS_JS = r"""el => {
+  const clean = (s) => (s || '').replace(/\s+/g, ' ').trim();
+  if (el.closest('.sidebar, aside, nav, [role="complementary"]')) return false;
+  if (el.closest('#arreglo, .arreglo, #items, .form-item-bm, [class*="arreglo-tags" i], [data-section="arreglo"]')) return true;
+  const arregloRoot = document.querySelector('#arreglo, .arreglo, #items, [data-section="arreglo"]');
+  if (arregloRoot && arregloRoot.contains(el)) return true;
+  let p = el;
+  for (let i = 0; i < 14 && p; i++) {
+    if (p.id === 'arreglo') return true;
+    const cls = (p.className || '').toString().toLowerCase();
+    if (/\barreglo\b/.test(cls)) return true;
+    for (const head of p.querySelectorAll(':scope > strong, :scope > h3, :scope > h4, :scope > legend')) {
+      if (/^arreglo\s*$/i.test(clean(head.innerText))) return true;
+    }
+    if (p.tagName === 'BODY' || p.tagName === 'HTML') break;
+    p = p.parentElement;
+  }
+  return false;
+}"""
+
+
+def _locator_en_arreglo_tags(locator) -> bool:
+    try:
+        return bool(locator.first.evaluate(_EN_ARREGLO_TAGS_JS))
+    except Exception:
+        try:
+            return bool(locator.evaluate(_EN_ARREGLO_TAGS_JS))
+        except Exception:
+            return False
+
+
+def _existe_formulario_item_n(page, n_item: int) -> bool:
+    """¿Existe Formulario Ítem N en el arreglo de tags (no un panel ajeno del BM)?"""
+    for target in _targets_page_y_frames(page):
+        try:
+            ok = target.evaluate(
+                r"""(n) => {
+                  const clean = s => (s||'').replace(/\s+/g,' ').trim();
+                  const re = new RegExp('Formulario\\s+[ÍI]tem\\s+' + n + '\\s*$', 'i');
+                  const enArreglo = (el) => {
+                    if (el.closest('.sidebar, aside, nav, [role="complementary"]')) return false;
+                    if (el.closest('#arreglo, .arreglo, [class*="arreglo-tags" i], [data-section="arreglo"]')) return true;
+                    const arregloRoot = document.querySelector('#arreglo, .arreglo, [data-section="arreglo"]');
+                    if (arregloRoot && arregloRoot.contains(el)) return true;
+                    let p = el;
+                    for (let i = 0; i < 14 && p; i++) {
+                      if (p.id === 'arreglo') return true;
+                      const cls = (p.className || '').toString().toLowerCase();
+                      if (/\\barreglo\\b/.test(cls)) return true;
+                      for (const head of p.querySelectorAll(':scope > strong, :scope > h3, :scope > h4, :scope > legend')) {
+                        if (/^arreglo\\s*$/i.test(clean(head.innerText))) return true;
+                      }
+                      if (p.tagName === 'BODY' || p.tagName === 'HTML') break;
+                      p = p.parentElement;
+                    }
+                    return false;
+                  };
+                  for (const el of document.querySelectorAll(
+                    'button, [role="button"], summary, h3, h4, h5, div, span, label'
+                  )) {
+                    const t = clean(el.innerText);
+                    if (!re.test(t) || t.length > 56) continue;
+                    if (!enArreglo(el)) continue;
+                    let root = el.closest('.acordeon, .form-item-bm, mat-expansion-panel, div');
+                    if (!root) root = el.parentElement;
+                    for (let d = 0; d < 8 && root; d++) {
+                      if (root.querySelector("input[data-field='tag'], input.campo-tag, label")) return true;
+                      root = root.parentElement;
+                    }
+                  }
+                  return false;
+                }""",
+                n_item,
+            )
+            if ok:
+                return True
+        except Exception:
+            continue
+    return False
+
+
+def _asegurar_formulario_item_n(page, n_item: int) -> bool:
+    """Garantiza que exista Formulario Ítem N (clic en Agregar si falta)."""
+    if _existe_formulario_item_n(page, n_item):
+        return True
+    while _contar_items_estructural_tags(page) < n_item:
+        if not _click_agregar_item_tags(page):
+            return False
+        page.wait_for_timeout(400)
+        if _existe_formulario_item_n(page, n_item):
+            return True
+    if _existe_formulario_item_n(page, n_item):
+        return True
+    if not _click_agregar_item_tags(page):
+        return False
+    page.wait_for_timeout(400)
+    return _existe_formulario_item_n(page, n_item)
 
 
 def _headers_formulario_item_tags(page) -> list[dict]:
@@ -3587,14 +3729,33 @@ _ITEM_TAG_ACORDEON_JS = r"""(args) => {
   const n = args.n;
   const tagVal = args.tag;
   const clean = (s) => (s || '').replace(/\s+/g, ' ').trim();
-  const reExact = new RegExp('^Formulario\\s+[ÍI]tem\\s+' + n + '\\s*$', 'i');
+  const reExact = new RegExp('Formulario\\s+[ÍI]tem\\s+' + n + '\\s*$', 'i');
   const reLoose = new RegExp('Formulario\\s+[ÍI]tem\\s+' + n + '\\b', 'i');
+  const enArreglo = (el) => {
+    if (el.closest('.sidebar, aside, nav, [role="complementary"]')) return false;
+    if (el.closest('#arreglo, .arreglo, #items, .form-item-bm, [class*="arreglo-tags" i], [data-section="arreglo"]')) return true;
+    const arregloRoot = document.querySelector('#arreglo, .arreglo, #items, [data-section="arreglo"]');
+    if (arregloRoot && arregloRoot.contains(el)) return true;
+    let p = el;
+    for (let i = 0; i < 14 && p; i++) {
+      if (p.id === 'arreglo') return true;
+      const cls = (p.className || '').toString().toLowerCase();
+      if (/\\barreglo\\b/.test(cls)) return true;
+      for (const head of p.querySelectorAll(':scope > strong, :scope > h3, :scope > h4, :scope > legend')) {
+        if (/^arreglo\\s*$/i.test(clean(head.innerText))) return true;
+      }
+      if (p.tagName === 'BODY' || p.tagName === 'HTML') break;
+      p = p.parentElement;
+    }
+    return false;
+  };
   let header = null;
   for (const el of document.querySelectorAll(
     'button, [role="button"], summary, h3, h4, h5, div, span, label, a'
   )) {
     const raw = clean(el.innerText);
     if (raw.length > 56) continue;
+    if (!enArreglo(el)) continue;
     if (reExact.test(raw)) { header = el; break; }
     if (!header && raw.length < 36 && reLoose.test(raw)) header = el;
   }
@@ -3667,7 +3828,7 @@ _ITEM_TAG_ACORDEON_JS = r"""(args) => {
 def _rellenar_item_tag_acordeon(page, n_item: int, tag: str) -> bool:
     """Abre Formulario Ítem N, escribe Tag* con teclado (React BM) y Tab."""
     print(f"  · Abro Formulario Ítem {n_item}…", flush=True)
-    cre = re.compile(rf"^Formulario\s+[ÍI]tem\s+{n_item}\s*$", re.I)
+    cre = re.compile(rf"Formulario\s+[ÍI]tem\s+{n_item}\s*$", re.I)
     cre_loose = re.compile(rf"Formulario\s+[ÍI]tem\s+{n_item}\b", re.I)
 
     for target in _targets_page_y_frames(page):
@@ -3683,13 +3844,19 @@ def _rellenar_item_tag_acordeon(page, n_item: int, tag: str) -> bool:
                 txt = (cand.inner_text() or "").strip()
                 if len(txt) > 48:
                     continue
-                if cre.match(txt) or cre_loose.search(txt):
-                    h = cand
-                    if cre.match(txt):
-                        break
+                if not cre.search(txt):
+                    continue
+                if not _locator_en_arreglo_tags(cand):
+                    continue
+                h = cand
+                if cre.search(txt) and txt.strip().endswith(str(n_item)):
+                    break
             if h is None:
                 continue
-            h.scroll_into_view_if_needed(timeout=2000)
+            try:
+                h.scroll_into_view_if_needed(timeout=2500)
+            except Exception:
+                pass
             h.click(timeout=2500)
             page.wait_for_timeout(600)
             block = h.locator(
@@ -3771,6 +3938,24 @@ def _verificar_tags_en_formulario(page, tags: list[str]) -> bool:
                   const clean = s => (s||'').replace(/\s+/g,' ').trim();
                   const out = [];
                   const seen = new Set();
+                  const enArreglo = (el) => {
+                    if (el.closest('.sidebar, aside, nav, [role="complementary"]')) return false;
+                    if (el.closest('#arreglo, .arreglo, [class*="arreglo-tags" i], [data-section="arreglo"]')) return true;
+                    const arregloRoot = document.querySelector('#arreglo, .arreglo, [data-section="arreglo"]');
+                    if (arregloRoot && arregloRoot.contains(el)) return true;
+                    let p = el;
+                    for (let i = 0; i < 14 && p; i++) {
+                      if (p.id === 'arreglo') return true;
+                      const cls = (p.className || '').toString().toLowerCase();
+                      if (/\\barreglo\\b/.test(cls)) return true;
+                      for (const head of p.querySelectorAll(':scope > strong, :scope > h3, :scope > h4, :scope > legend')) {
+                        if (/^arreglo\\s*$/i.test(clean(head.innerText))) return true;
+                      }
+                      if (p.tagName === 'BODY' || p.tagName === 'HTML') break;
+                      p = p.parentElement;
+                    }
+                    return false;
+                  };
                   const tagVal = (root) => {
                     for (const lab of root.querySelectorAll('label, mat-label, span')) {
                       const t = clean(lab.innerText);
@@ -3785,8 +3970,9 @@ def _verificar_tags_en_formulario(page, tags: list[str]) -> bool:
                   for (const el of document.querySelectorAll(
                     'button, [role="button"], div, span, h3, h4'
                   )) {
-                    const m = clean(el.innerText).match(/^Formulario\s+[ÍI]tem\s+(\d+)\s*$/i);
+                    const m = clean(el.innerText).match(/Formulario\s+[ÍI]tem\s+(\d+)\s*$/i);
                     if (!m) continue;
+                    if (!enArreglo(el)) continue;
                     const num = parseInt(m[1], 10);
                     if (seen.has(num)) continue;
                     seen.add(num);
@@ -3857,16 +4043,23 @@ def _rellenar_tags_bm(page, tags: list[str]) -> bool:
     ok_count = 0
     for i, tag in enumerate(tags):
         n_item = i + 1
-        if _contar_items_formulario_tags(page) < n_item:
-            if not _click_agregar_item_tags(page):
-                print(
-                    f"  ✗ No pude agregar Formulario Ítem {n_item} para «{tag}»",
-                    flush=True,
-                )
-        if _rellenar_item_tag_acordeon(page, n_item, tag):
-            ok_count += 1
-        else:
-            print(f"  ✗ no encontré campo Tag en Formulario Ítem {n_item}", flush=True)
+        if not _asegurar_formulario_item_n(page, n_item):
+            print(
+                f"  ✗ No pude crear Formulario Ítem {n_item} para «{tag}»",
+                flush=True,
+            )
+        filled = False
+        for intento in range(3):
+            if _rellenar_item_tag_acordeon(page, n_item, tag):
+                filled = True
+                ok_count += 1
+                break
+            page.wait_for_timeout(350)
+        if not filled:
+            print(
+                f"  ✗ no encontré campo Tag en Formulario Ítem {n_item} («{tag}»)",
+                flush=True,
+            )
 
     _verificar_tags_en_formulario(page, tags)
 

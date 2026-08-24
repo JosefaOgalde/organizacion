@@ -290,6 +290,28 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             self.assertEqual(payload["links"], ["", "", "", "", "", ""])
             browser.close()
 
+    def test_rellena_tags_con_decoy_paneles_bm(self):
+        """BM real: paneles/decoy «Formulario Ítem 5» fuera del arreglo no bloquean ítem 5."""
+        explorar = cargar_explorar()
+        fixture = Path(__file__).resolve().parent / "fixtures/bm-formulario-tags-decoy.html"
+        tags = [
+            "salmon",
+            "recetas a la parrilla",
+            "paltas",
+            "recetas saludables",
+            "pescado",
+            "almuerzo",
+        ]
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(fixture.as_uri())
+            self.assertTrue(explorar._rellenar_tags_bm(page, tags))
+            for i, t in enumerate(tags):
+                self.assertEqual(page.input_value(f"#tag-{i + 1}"), t, f"tag ítem {i + 1}")
+                self.assertEqual(page.input_value(f"#link-{i + 1}"), "")
+            browser.close()
+
     def test_lista_tags_desde_receta_salmon(self):
         explorar = cargar_explorar()
         receta = {
