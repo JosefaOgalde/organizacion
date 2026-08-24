@@ -327,7 +327,7 @@ def main() -> int:
 
         if not args.continuar:
             ok = fill_tags(page, selectores, receta.get("categorias") or [])
-            browser.contexts[0].storage_state(path=str(SESSION_PATH))
+            context.storage_state(path=str(SESSION_PATH))
             if ok:
                 print("\n=== TAGS OK ===")
                 print(f'python scripts\\publicar-receta-cencosud.py "{path}" --headed --continuar')
