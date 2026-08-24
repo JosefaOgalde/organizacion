@@ -1070,6 +1070,11 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     print(f"  · Completando «{clave}»: abro el lápiz y escribo los campos…")
     if avisar_si_salio_de_default(page):
         return False
+    comp_id = ids.get(clave)
+    if comp_id:
+        clicked = _eval_en_frames(page, JS_CLIC_BLOQUE_ID, comp_id)
+        if intentar(resultado_clic_lapiz_ok(clicked)):
+            return True
     if intentar(_clic_editar_indice(page, idx)):
         return True
     if intentar(_clic_svg_bloque_vacio(page, idx)):
@@ -1078,7 +1083,6 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
         return True
     if intentar(_clic_placeholder_texto(page, idx)):
         return True
-    comp_id = ids.get(clave)
     if comp_id and _abrir_por_id_visible(page, clave, comp_id):
         return True
 
@@ -1799,28 +1803,27 @@ JS_CLIC_BLOQUE_ID = """(compId) => {
 
 
 def _abrir_por_id_visible(page, clave: str, comp_id: str) -> bool:
-    """Clic en el id del bloque y su lápiz. No navega: eso saca default."""
+    """Clic en el id del bloque y su lápiz (incluye iframe del lienzo)."""
     if not comp_id:
         return False
+    clicked = _eval_en_frames(page, JS_CLIC_BLOQUE_ID, comp_id)
+    if resultado_clic_lapiz_ok(clicked) and _editor_confirmado(page, clave):
+        return True
     y_min = _y_bajo_barra_vistas(page)
-    get_by_text = getattr(page, "get_by_text", None)
-    if get_by_text:
+    for fr in _frames_pagina(page):
+        get_by_text = getattr(fr, "get_by_text", None)
+        if not get_by_text:
+            continue
         try:
             loc = get_by_text(comp_id, exact=True)
             n = loc.count() if hasattr(loc, "count") else 0
         except Exception:
-            n = 0
+            continue
         for i in range(n):
             item = loc.nth(i)
             box = _bounding_box(item)
-            if box is None or float(box.get("x") or 0) < 80:
+            if box is None or float(box.get("x") or 0) < 40:
                 continue
-            try:
-                item.click(timeout=2_500)
-                if _editor_confirmado(page, clave):
-                    return True
-            except Exception:
-                pass
             try:
                 edit = item.locator(
                     "xpath=ancestor::*[contains(., 'Editar')][1]"
@@ -1828,16 +1831,12 @@ def _abrir_por_id_visible(page, clave: str, comp_id: str) -> bool:
                 )
                 if hasattr(edit, "count") and edit.count():
                     ebox = _bounding_box(edit.first if hasattr(edit, "first") else edit)
-                    if (
-                        ebox
-                        and float(ebox.get("y") or 0) >= y_min
-                        and float(ebox.get("x") or 0) >= 200
-                    ):
+                    if ebox and float(ebox.get("y") or 0) >= y_min:
                         edit.first.click(timeout=3_000)
                         if _editor_confirmado(page, clave):
                             return True
             except Exception:
-                continue
+                pass
     return False
 
 
@@ -3551,7 +3550,7 @@ JS_CRC_LABELS_TAG_LINK = """function crcLabelsTagLink() {
     }
     return seen.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
   };
-  const tags = uniq([...document.querySelectorAll('label, legend, p, span, strong, div')].filter((el) => esCorto(el, /^Tag$/i)));
+  const tags = uniq([...document.querySelectorAll('label, legend, p, span, strong, div')].filter((el) => esCorto(el, /^Tag\\s*\\*?$/i)));
   const links = uniq([...document.querySelectorAll('label, legend, p, span, strong, div')].filter((el) => esCorto(el, /^Link$|^Enlace$|^URL$/i)));
   return { tags, links };
 }
@@ -3581,12 +3580,14 @@ function crcBandaTag(indice) {
 }
 function crcInputEnBanda(banda) {
   if (!banda) return null;
+  const hayPaleta = /paleta de componentes/i.test((document.body && document.body.innerText) || '');
+  const minLeft = hayPaleta ? 200 : 40;
   const els = [...document.querySelectorAll('input, textarea, [role="textbox"], [contenteditable="true"]')];
   const hits = els.filter((el) => {
     const r = el.getBoundingClientRect();
     const tipo = (el.type || 'text').toLowerCase();
     if (['hidden', 'checkbox', 'radio', 'file', 'url', 'submit', 'button'].includes(tipo)) return false;
-    if (r.left < 200 || r.width < 8 || r.height < 8) return false;
+    if (r.left < minLeft || r.width < 8 || r.height < 8) return false;
     return r.top >= banda.labR.top && r.bottom <= banda.bottom + 8;
   });
   hits.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
@@ -5459,6 +5460,14 @@ def rellenar_items_formulario(page, valores: list[str]) -> int:
     return llenados
 
 
+def _contar_tags_ok(page, tags: list[str]) -> int:
+    return sum(
+        1
+        for i, t in enumerate(tags)
+        if any(_tag_quedo_en_caja(fr, i, t) for fr in _frames_pagina(page))
+    )
+
+
 def fill_lista_tags(page, tags: list[str]) -> int:
     if editor_actual(page) != "tags":
         print("  · No relleno tags: no estoy en Edición de tags.")
@@ -5471,13 +5480,37 @@ def fill_lista_tags(page, tags: list[str]) -> int:
     limpiar_links_que_no_son_url(page)
     asegurar_n_items_tags(page, len(tags))
     n = rellenar_items_formulario(page, tags)
-    if n:
+    if n < len(tags):
+        print(f"  · Reintento Tag* vía placeholder ({n}/{len(tags)})…")
+        for i, tag in enumerate(tags):
+            ya = any(_tag_quedo_en_caja(fr, i, tag) for fr in _frames_pagina(page))
+            if ya:
+                n = max(n, i + 1)
+                continue
+            expandir_item_formulario(page, i)
+            for fr in _frames_pagina(page):
+                locator = getattr(fr, "locator", None)
+                if not locator:
+                    continue
+                try:
+                    loc = locator('input[placeholder*="valor" i]:visible')
+                    idx = i * 2 if _locator_count(loc) >= (i + 1) * 2 else i
+                    if _locator_count(loc) <= idx:
+                        continue
+                    if _escribir_en_caja_tag(page, loc.nth(idx), tag):
+                        print(f"  ✓ tag[{i}] → {tag} (placeholder)")
+                        n += 1
+                        break
+                except Exception:
+                    continue
+    verificados = _contar_tags_ok(page, tags)
+    if verificados:
         limpiar_links_que_no_son_url(page)
-        return n
+        return verificados
     excluir = r"título de la sección|ingrediente|meta|descripci|link|enlace|url"
-    n = fill_repetidos_por_label(page, r"^Tag$", tags, excluir=excluir)
+    fill_repetidos_por_label(page, r"^Tag$", tags, excluir=excluir)
     limpiar_links_que_no_son_url(page)
-    return n
+    return _contar_tags_ok(page, tags)
 
 
 def fill_inputs_texto_en_orden(page, valores: list[str]) -> int:
@@ -6638,12 +6671,14 @@ def fill_from_receta(
             pass
     if editor_actual(page) == "tags":
         print("  · Ya estoy en Formulario Tags. Escribo las etiquetas del Word.")
-        n_tags_abierto = fill_lista_tags(page, tags_desde_receta(receta))
-        if n_tags_abierto:
-            print(f"  ✓ tags: {n_tags_abierto}/{len(tags_desde_receta(receta))}")
+        cats_abierto = tags_desde_receta(receta)
+        n_tags_abierto = fill_lista_tags(page, cats_abierto)
+        if n_tags_abierto >= len(cats_abierto):
+            print(f"  ✓ tags: {n_tags_abierto}/{len(cats_abierto)}")
+            guardar_y_volver_al_lienzo(page, url_ficha)
         else:
-            print("  · Tags en pantalla. Los guardo para que el bloque quede cargado.")
-        guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            print(f"  ✗ tags incompletos ({n_tags_abierto}/{len(cats_abierto)}) — NO guardo")
+            return False
     if editor_actual(page) == "ingredientes":
         print("  · Ya estoy en Lista Ingredientes. Escribo los del Word.")
         ings_abiertos = receta.get("ingredientes") or []
@@ -6716,9 +6751,12 @@ def fill_from_receta(
     cats = tags_desde_receta(receta)
     if abrir_grupo("tags", ["field_tags"]) and puede_rellenar_editor(page, "tags"):
         n_tags = fill_lista_tags(page, cats)
-        if n_tags:
+        if n_tags >= len(cats):
             print(f"  ✓ tags: {n_tags}/{len(cats)}")
-        guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            guardar_y_volver_al_lienzo(page, url_ficha)
+        else:
+            print(f"  ✗ tags incompletos ({n_tags}/{len(cats)}) — NO guardo ni Volver")
+            return False
         vacio_tags = bloque_componente_vacio(page, ["tags", "Tags"])
         if vacio_tags:
             print("  · El bloque tags sigue vacío. Lo abro, guardo y vuelvo.")
