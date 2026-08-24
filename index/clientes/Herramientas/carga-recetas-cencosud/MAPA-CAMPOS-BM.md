@@ -31,7 +31,7 @@ No se scrapea desde un servidor en la nube: es **navegador local** con tus crede
 | `porciones` | Barra `N porciones` | `field_porciones` |
 | `tiempoTotal` | Barra `35 min` | `field_tiempo` |
 | `dificultad` | Barra `Fácil` | `field_dificultad` |
-| `categorias[]` | Tags | `field_tags` |
+| `categorias[]` | Tags | lápiz → rellenar Tag* → **Guardar** → **Volver** (popup: **Cancelar**, nunca «Sí, acepto») |
 | `ingredientes[]` | Lista | `field_ingredientes` |
 | `pasos[]` | Paso a paso | `field_pasos` |
 | `seo.metaTitulo` | Meta título | `field_meta_titulo` |
