@@ -385,7 +385,20 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIn("<h2>Consejos para un salmón a la parrilla con salsa perfecto</h2>", seo_html)
         self.assertIn("<ul>", seo_html)
         self.assertIn("<li>", seo_html)
-        self.assertIn("calor residual", seo_html)
+        self.assertIn("lado de la piel", seo_html)
+        salmon_tips = {
+            "titulo": "Salmón a la parrilla con salsa de palta",
+            "tipsTitulo": "Consejos para un salmón a la parrilla con salsa perfecto",
+            "tips": [
+                "Cocina el salmón principalmente por el lado de la piel para proteger la carne y mantenerla jugosa. Dale vuelta una sola vez para evitar que se desarme.",
+                "Prepara la salsa de palta justo antes de servir para conservar su color. El limón también ayuda a retrasar que se oscurezca.",
+                "Retira el salmón cuando el centro aún esté ligeramente rosado. El calor residual terminará de cocinarlo fuera de la parrilla.",
+            ],
+        }
+        seo_salmon = self.explorar.html_seo_consejos(salmon_tips)
+        self.assertEqual(seo_salmon.count("<li>"), 3)
+        self.assertIn("salsa de palta justo antes", seo_salmon)
+        self.assertIn("calor residual", seo_salmon)
         self.assertNotIn("&lt;h2", seo_html)
         self.assertTrue(self.explorar.parece_html(seo_html))
         self.assertTrue(self.explorar.html_quedo_con_etiquetas(seo_html, seo_html))

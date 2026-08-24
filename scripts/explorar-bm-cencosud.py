@@ -2163,6 +2163,37 @@ def finalizar_editor_instrucciones(page, url_ficha: str | None, html: str) -> bo
     return True
 
 
+def finalizar_editor_seo(page, url_ficha: str | None, html: str) -> bool:
+    """Guardar bloque SEO HTML y volver al lienzo."""
+    if not (html or "").strip():
+        print("  ✗ Sin HTML SEO — no guardo")
+        return False
+    ok = _paso_html_verificado(page, html)
+    if not ok:
+        if sigue_dato_requerido(page):
+            print("  ✗ SEO HTML incompleto — no guardo")
+            return False
+        print("  · Verificación SEO leyó poco; guardo igual (sin «dato requerido» visible).")
+    if not guardar_editor_persistente(page):
+        print("  ! No apareció «guardado satisfactoriamente». Pulsa Guardar a mano y reintenta.")
+        return False
+    if _hay_modal_sin_guardar(page):
+        resolver_modal_cambios(page, salir=False)
+        guardar_editor_persistente(page)
+    print("  · SEO HTML guardado. Pulso Volver (sin «Sí, acepto»)…")
+    volver_al_lienzo(page, url_ficha, confirmar_salida=False)
+    if _hay_modal_sin_guardar(page):
+        aviso_modal_descarta()
+        resolver_modal_cambios(page, salir=False)
+        print("  · Quedaste en el editor: Guardar otra vez y luego Volver.")
+        return False
+    if bloque_componente_vacio(page, ["seo", "SEO", "SEO HTML"]) is not False:
+        print("  · El bloque SEO en el lienzo sigue vacío — abre el lápiz y revisa.")
+        return False
+    print("  ✓ Bloque SEO HTML cargado en el lienzo")
+    return True
+
+
 def guardar_editor_persistente(page) -> bool:
     """Pulsa Guardar hasta ver el aviso. Nunca «Sí, acepto» (eso descarta)."""
     if _hay_modal_sin_guardar(page):
@@ -5911,18 +5942,18 @@ def html_seo_consejos(receta: dict | None = None) -> str:
     crudo = (seo.get("html") or seo.get("contenidoHtml") or "").strip()
     if parece_html(crudo):
         return crudo
-    if _es_receta_salmon_palta(receta):
-        return HTML_SEO_SALMON_PALTA
     tips: list[str] = []
     for raw in receta.get("tips") or []:
         t = re.sub(r"(?i)^consejo:\s*", "", str(raw).strip()).strip()
         if t:
             tips.append(t)
-    if not tips:
-        return ""
-    h2 = _esc_html(titulo_seo_consejos(receta))
-    lis = "\n".join(f"  <li>{c if parece_html(c) else _esc_html(c)}</li>" for c in tips)
-    return f"<h2>{h2}</h2>\n<ul>\n{lis}\n</ul>"
+    if tips:
+        h2 = _esc_html(titulo_seo_consejos(receta))
+        lis = "\n".join(f"  <li>{c if parece_html(c) else _esc_html(c)}</li>" for c in tips)
+        return f"<h2>{h2}</h2>\n<ul>\n{lis}\n</ul>"
+    if _es_receta_salmon_palta(receta):
+        return HTML_SEO_SALMON_PALTA
+    return ""
 
 
 def valores_desde_item(item: dict, tipo: str) -> dict[str, str]:
@@ -6313,10 +6344,15 @@ def rellenar_seo_html(page, receta: dict) -> bool:
     if not html:
         print("  · Sin HTML de Consejos para SEO.")
         return False
+    n_li = html.lower().count("<li>")
+    print(f"  · SEO HTML ({len(html)} caracteres, {n_li} consejos)")
     resolver_borrador_editor(page)
     activar_html_paso_a_paso(page)
     if escribir_paso_a_paso_html(page, html):
         print("  ✓ SEO HTML con etiquetas <h2>/<ul>/<li>")
+        return True
+    if not sigue_dato_requerido(page):
+        print("  · SEO HTML pegado; verificación falló pero confío en escritura.")
         return True
     print("  ✗ SEO HTML no quedó con etiquetas. No escribo texto plano.")
     return False
@@ -6898,9 +6934,11 @@ def fill_from_receta(
             return False
     if editor_actual(page) == "seo":
         print("  · Ya estoy en SEO HTML. Enciendo HTML + Script y pego las etiquetas.")
+        html_seo = html_seo_consejos(receta)
         if rellenar_seo_html(page, receta):
             resultados["seo"] = True
-            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            if not finalizar_editor_seo(page, url_ficha, html_seo):
+                return False
         else:
             print("  · No pude escribir SEO HTML. No pulso Volver ni abro otro bloque.")
             return False
@@ -6998,9 +7036,11 @@ def fill_from_receta(
         resultados.setdefault("pasos", False)
 
     if abrir_grupo("seo", ["field_seo_html"]) and puede_rellenar_editor(page, "seo"):
+        html_seo = html_seo_consejos(receta)
         if rellenar_seo_html(page, receta):
             resultados["seo"] = True
-            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            if not finalizar_editor_seo(page, url_ficha, html_seo):
+                return False
         else:
             print("  · No pude escribir SEO HTML. No pulso Volver ni abro otro bloque.")
             return bool(sum(1 for v in resultados.values() if v))
