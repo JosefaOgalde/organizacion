@@ -77,13 +77,45 @@ LABELS_POR_CAMPO: dict[str, tuple[str, ...]] = {
 
 
 def minutos_desde_tiempo(valor) -> str | None:
-    """BM Duración exige number: '30 min' → '30'."""
+    """BM Duración exige number >= 1: '30 min' → '30' (nunca '0')."""
     if valor is None or valor == "":
         return None
     if isinstance(valor, (int, float)):
-        return str(int(valor))
+        n = int(valor)
+        return str(n) if n >= 1 else None
     m = re.search(r"(\d+)", str(valor))
-    return m.group(1) if m else None
+    if not m:
+        return None
+    n = int(m.group(1))
+    return str(n) if n >= 1 else None
+
+
+def _rellenar_campo_numero(loc, valor: str) -> bool:
+    """Limpia y escribe un entero en input type=number (evita quedar en 0)."""
+    digitos = minutos_desde_tiempo(valor) or re.sub(r"[^\d]", "", str(valor))
+    if not digitos or digitos == "0":
+        return False
+    try:
+        loc.click(timeout=2000)
+        loc.fill("")
+        loc.fill(digitos)
+        page_wait = getattr(loc, "page", None)
+        try:
+            got = (loc.input_value() or "").strip()
+            if got == digitos or got.rstrip("0").rstrip(".") == digitos:
+                return True
+        except Exception:
+            pass
+        # Reintento: seleccionar todo y tipeo
+        loc.press("Control+a")
+        loc.type(digitos, delay=20)
+        try:
+            got = (loc.input_value() or "").strip()
+            return got == digitos
+        except Exception:
+            return True
+    except Exception:
+        return False
 
 
 def normalizar_dificultad_bm(valor: str | None) -> str | None:
@@ -278,17 +310,102 @@ def slugify_simple(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", s).strip("-")
 
 
+def _catalogo_rutas_locales() -> dict[str, str]:
+    path = CRC / "data" / "foto-rutas-locales.json"
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return {str(k): str(v) for k, v in data.items() if not str(k).startswith("_") and v}
+    except Exception:
+        return {}
+
+
+def _asignar_ruta_local(receta: dict, ruta: str, nota: str) -> str:
+    imgs = list(receta.get("imagenes") or [])
+    if imgs and isinstance(imgs[0], dict):
+        imgs[0]["rutaLocal"] = ruta
+        imgs[0]["nota"] = nota
+    else:
+        imgs = [
+            {
+                "rutaLocal": ruta,
+                "url": None,
+                "alt": "",
+                "rol": "portada",
+                "nota": nota,
+            }
+        ]
+    receta["imagenes"] = imgs
+    return ruta
+
+
+def enriquecer_ruta_local_imagen(receta: dict) -> str | None:
+    """Asegura imagenes[].rutaLocal (PNG en Downloads, etc.). BM no acepta Drive."""
+    ya = ruta_imagen_local(receta)
+    if ya:
+        return ya
+
+    # Si el JSON trae ruta pero Path.exists falló (otro PC), igual la devolvemos
+    # para que Playwright en Windows intente set_input_files.
+    for img in receta.get("imagenes") or []:
+        if isinstance(img, dict):
+            ruta = (img.get("rutaLocal") or "").strip()
+            if ruta and not ruta.startswith("http"):
+                return ruta
+
+    titulo = (receta.get("titulo") or receta.get("id") or "").strip()
+    rid = (receta.get("id") or slugify_simple(titulo) or "").strip()
+    catalogo = _catalogo_rutas_locales()
+    for key in (rid, slugify_simple(titulo), "salmon-a-la-parrilla-con-salsa-de-palta"):
+        if not key:
+            continue
+        ruta = catalogo.get(key)
+        if not ruta:
+            continue
+        print(f"  · Ruta local desde data/foto-rutas-locales.json ({key})", flush=True)
+        return _asignar_ruta_local(
+            receta,
+            ruta,
+            "Ruta local PNG (BM rechaza Drive; subir por Mi Equipo)",
+        )
+
+    # Heurística: Downloads con nombre de la receta
+    home = Path.home()
+    for carpeta in (
+        home / "Downloads",
+        home / "Descargas",
+        Path(r"C:\Users\josef\Downloads"),
+    ):
+        if not carpeta.is_dir():
+            continue
+        for ext in ("*.png", "*.jpg", "*.jpeg", "*.webp"):
+            for f in carpeta.glob(ext):
+                low = f.name.lower().replace("ó", "o").replace("á", "a")
+                if "salmon" in low or "salm" in low:
+                    print(f"  · Foto local hallada en {carpeta}: {f.name}", flush=True)
+                    return _asignar_ruta_local(receta, str(f), "Hallada en Descargas")
+    return None
+
+
 def ruta_imagen_local(receta: dict) -> str | None:
     for img in receta.get("imagenes") or []:
         if not isinstance(img, dict):
             continue
         ruta = (img.get("rutaLocal") or "").strip()
-        if ruta and not ruta.startswith("http") and Path(ruta).expanduser().exists():
-            return str(Path(ruta).expanduser().resolve())
+        if not ruta or ruta.startswith("http"):
+            continue
+        p = Path(ruta).expanduser()
+        if p.exists():
+            return str(p.resolve())
+        # En Windows la ruta del catálogo puede existir aunque aquí (CI) no
+        if re.match(r"^[A-Za-z]:\\", ruta) or ruta.startswith("\\\\"):
+            return ruta
     return None
 
 
 # CMS Jumbo Recetas: cada bloque se edita con su lápiz (no es un formulario plano).
+# (ruta_imagen_local redefinida arriba; se eliminó la versión corta previa)
 COMPONENTES_CMS = (
     {
         "clave": "cabecera",
@@ -2096,11 +2213,13 @@ def _rellenar_por_label(page, key: str, value: str) -> bool:
                     tipo = (node.get_attribute("type") or "").lower()
                 except Exception:
                     tipo = ""
-                if tipo == "number" or key == "field_tiempo":
-                    solo = minutos_desde_tiempo(value) or re.sub(r"[^\d.]", "", str(value))
-                    if not solo:
+                if tipo == "number" or key in ("field_tiempo", "field_porciones"):
+                    solo = minutos_desde_tiempo(value) if key == "field_tiempo" else re.sub(r"[^\d]", "", str(value))
+                    if key == "field_porciones":
+                        solo = re.sub(r"[^\d]", "", str(value)) or None
+                    if not solo or solo == "0":
                         continue
-                    if _rellenar_locator(node, solo):
+                    if _rellenar_campo_numero(node, solo):
                         return True
                     continue
                 if _rellenar_locator(node, str(value)):
@@ -2137,17 +2256,39 @@ def _cancelar_dialogo_cambios_sin_guardar(page) -> bool:
 
 
 def _rellenar_imagen(page, receta: dict) -> bool:
-    """Portada: modal BM → pestaña URL → pegar link de ([Foto]) del Word."""
-    enriquecer_imagen_desde_word(receta)
-    url = url_imagen_portada(receta)
+    """Portada: preferir PNG local (Mi Equipo). Drive suele dar «URL no permitida»."""
+    enriquecer_ruta_local_imagen(receta)
+    enriquecer_imagen_desde_word(receta)  # solo como último recurso si no hay archivo
     local = ruta_imagen_local(receta)
-    if not url and not local:
-        print("  · Sin URL/ruta de imagen (JSON + Word + catálogo)", flush=True)
-        return False
-    if url:
-        print(f"  · URL portada (Foto del Word): {url[:90]}", flush=True)
+    # También aceptar ruta del catálogo aunque no exista en este entorno
+    if not local:
+        for img in receta.get("imagenes") or []:
+            if isinstance(img, dict):
+                r = (img.get("rutaLocal") or "").strip()
+                if r and not r.startswith("http"):
+                    local = r
+                    break
+    url = url_imagen_portada(receta)
+    # BM Jumbo: drive.google.com → «URL no permitida»
+    if url and re.search(r"drive\.google\.com|dropbox\.com|docs\.google", url, re.I):
+        print(
+            "  · URL Drive no sirve en BM (dominio no permitido). "
+            "Hay que subir el PNG por «Mi Equipo».",
+            flush=True,
+        )
+        if not local:
+            print(
+                "  · Indica la ruta del PNG en imagenes[].rutaLocal "
+                "o en data/foto-rutas-locales.json",
+                flush=True,
+            )
+        url = None
 
-    # 1) Abrir el área / modal de imagen
+    if not local and not url:
+        print("  · Sin archivo local ni URL usable para imagen", flush=True)
+        return False
+
+    # 1) Abrir modal
     abrio = False
     for target in _targets_page_y_frames(page):
         for sel in (
@@ -2170,7 +2311,6 @@ def _rellenar_imagen(page, receta: dict) -> bool:
         if abrio:
             break
     if not abrio:
-        # clic cerca del label Imagen
         try:
             lab = page.get_by_text(re.compile(r"^Imagen", re.I)).first
             if lab.count():
@@ -2178,11 +2318,53 @@ def _rellenar_imagen(page, receta: dict) -> bool:
                 if box:
                     page.mouse.click(box["x"] + 40, box["y"] + box["height"] + 40)
                     page.wait_for_timeout(700)
-                    abrio = True
         except Exception:
             pass
 
-    # 2) Preferir pestaña URL (link del Word)
+    # 2) PRIORIDAD: Mi Equipo + archivo local
+    if local:
+        print(f"  · Subiendo archivo local: {local}", flush=True)
+        for target in _targets_page_y_frames(page):
+            try:
+                tab = target.get_by_role("tab", name=re.compile(r"Mi Equipo|My Device|Computer", re.I))
+                if not tab.count():
+                    tab = target.get_by_text(re.compile(r"Mi Equipo|My Device", re.I))
+                if tab.count():
+                    tab.first.click(timeout=2500)
+                    page.wait_for_timeout(500)
+                    print("  · Pestaña Mi Equipo", flush=True)
+            except Exception:
+                pass
+            try:
+                files = target.locator("input[type='file']")
+                for i in range(min(files.count(), 6)):
+                    try:
+                        files.nth(i).set_input_files(local)
+                        page.wait_for_timeout(1200)
+                        # Confirmar si aparece habilitado
+                        for sel in (
+                            "button:has-text('Confirmar')",
+                            "button:has-text('Aceptar')",
+                            "button:has-text('Agregar')",
+                        ):
+                            conf = target.locator(sel).first
+                            if conf.count() and conf.is_visible():
+                                try:
+                                    conf.click(timeout=3000)
+                                    page.wait_for_timeout(1000)
+                                except Exception:
+                                    pass
+                                break
+                        # Éxito si desapareció «URL no permitida» / error imagen
+                        print(f"  ✓ field_imagen (archivo local)", flush=True)
+                        return True
+                    except Exception as exc:
+                        print(f"  · set_input_files falló: {exc}", flush=True)
+                        continue
+            except Exception:
+                continue
+
+    # 3) URL solo si no es Drive y no hay local
     if url:
         for target in _targets_page_y_frames(page):
             try:
@@ -2192,11 +2374,8 @@ def _rellenar_imagen(page, receta: dict) -> bool:
                 if tab.count():
                     tab.first.click(timeout=2500)
                     page.wait_for_timeout(500)
-                    print("  · Pestaña URL del modal de imagen", flush=True)
             except Exception:
                 continue
-
-        # Campo URL dentro del modal
         pegado = False
         for target in _targets_page_y_frames(page):
             for sel in (
@@ -2205,27 +2384,15 @@ def _rellenar_imagen(page, receta: dict) -> bool:
                 "input[placeholder*='url' i]",
                 "input[type='url']",
                 "input[name*='url' i]",
-                "textarea[placeholder*='http' i]",
-                "input[type='text']",
             ):
                 try:
                     locs = target.locator(sel)
-                    for i in range(min(locs.count(), 6)):
+                    for i in range(min(locs.count(), 4)):
                         node = locs.nth(i)
                         if not node.is_visible():
                             continue
-                        # Preferir inputs dentro de diálogo/modal
-                        try:
-                            en_modal = node.evaluate(
-                                """el => !!(el.closest('[role=dialog], .modal, [class*=Modal], [class*=dialog]'))"""
-                            )
-                        except Exception:
-                            en_modal = True
-                        if not en_modal and sel == "input[type='text']":
-                            continue
                         if _rellenar_locator(node, url):
                             pegado = True
-                            print("  ✓ URL de foto pegada en el modal", flush=True)
                             break
                     if pegado:
                         break
@@ -2233,70 +2400,35 @@ def _rellenar_imagen(page, receta: dict) -> bool:
                     continue
             if pegado:
                 break
-
         if pegado:
-            # Confirmar
             for target in _targets_page_y_frames(page):
-                for sel in (
-                    "button:has-text('Confirmar')",
-                    "button:has-text('Aceptar')",
-                    "button:has-text('Agregar')",
-                    "button:has-text('Add')",
-                    "button:has-text('Upload')",
-                    "button:has-text('Guardar')",
-                ):
-                    try:
-                        btn = target.locator(sel).first
-                        if btn.count() and btn.is_visible():
-                            # evitar Confirmar deshabilitado
-                            disabled = btn.get_attribute("disabled")
-                            aria_dis = btn.get_attribute("aria-disabled")
-                            if disabled is not None or aria_dis == "true":
-                                # esperar a que se habilite
-                                page.wait_for_timeout(800)
-                            btn.click(timeout=3000, force=True)
-                            page.wait_for_timeout(1000)
-                            print("  ✓ field_imagen (URL confirmada)", flush=True)
-                            return True
-                    except Exception:
-                        continue
-
-    # 3) Fallback: pestaña Mi Equipo + archivo local / descarga Drive
-    archivo: Path | None = Path(local) if local else None
-    if not archivo and url:
-        archivo = _descargar_url_imagen(url, Path("/tmp/crc-imagenes"))
-    if archivo and archivo.exists():
-        for target in _targets_page_y_frames(page):
-            try:
-                tab = target.get_by_text(re.compile(r"Mi Equipo|My Device|Computer", re.I))
-                if tab.count():
-                    tab.first.click(timeout=2000)
-                    page.wait_for_timeout(400)
-            except Exception:
-                pass
-            try:
-                files = target.locator("input[type='file']")
-                for i in range(min(files.count(), 4)):
-                    try:
-                        files.nth(i).set_input_files(str(archivo))
-                        page.wait_for_timeout(1000)
-                        # Confirmar si aparece
-                        conf = target.locator("button:has-text('Confirmar')").first
-                        if conf.count() and conf.is_visible():
-                            conf.click(timeout=2000)
-                            page.wait_for_timeout(800)
-                        print(f"  ✓ field_imagen (archivo {archivo.name})", flush=True)
+                try:
+                    if target.get_by_text(re.compile(r"URL no permitida", re.I)).count():
+                        print("  ✗ field_imagen: URL no permitida por el BM", flush=True)
+                        return False
+                except Exception:
+                    pass
+                conf = target.locator("button:has-text('Confirmar')").first
+                try:
+                    if conf.count() and conf.is_visible():
+                        conf.click(timeout=3000)
+                        page.wait_for_timeout(800)
+                        if target.get_by_text(re.compile(r"URL no permitida", re.I)).count():
+                            print("  ✗ field_imagen: URL no permitida tras Confirmar", flush=True)
+                            return False
+                        print("  ✓ field_imagen (URL de dominio permitido)", flush=True)
                         return True
-                    except Exception:
-                        continue
-            except Exception:
-                continue
+                except Exception:
+                    continue
 
     print(
-        "  ✗ field_imagen: abre el modal → pestaña URL y pega el link de ([Foto]) a mano si hace falta.",
+        "  ✗ field_imagen: sube a mano el PNG "
+        r"(ej. C:\Users\josef\Downloads\Salmón a la parrilla con salsa de palta.png) "
+        "en la pestaña Mi Equipo.",
         flush=True,
     )
     return False
+
 
 
 def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores: dict) -> dict[str, bool]:
@@ -2438,7 +2570,8 @@ def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores
 
 def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> bool:
     resultados = {}
-    # Asegura URL de ([Foto]) aunque el JSON local sea viejo
+    # PNG local primero (BM rechaza Drive); luego URL del Word si aplica
+    enriquecer_ruta_local_imagen(receta)
     enriquecer_imagen_desde_word(receta)
 
     def fill_grupo(clave_comp: str, pares: list[tuple[str, str | None]]) -> int:

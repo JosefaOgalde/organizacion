@@ -87,8 +87,9 @@
         <input type="file" id="file-img" accept="image/*">
       </div>
       <div class="panel" id="panel-url">
-        <label for="url-img">URL</label>
+        <label for="url-img">URL pública</label>
         <input id="url-img" type="text" placeholder="https://…">
+        <div class="err" id="err-url" hidden></div>
       </div>
       <p style="margin-top:12px;text-align:center">
         <button type="button" id="btn-confirmar-img" disabled>Confirmar</button>
@@ -137,12 +138,35 @@
     });
     const urlImg = document.getElementById('url-img');
     const btnConf = document.getElementById('btn-confirmar-img');
+    const fileImg = document.getElementById('file-img');
     urlImg.addEventListener('input', () => {
-      btnConf.disabled = !urlImg.value.trim();
+      const v = urlImg.value.trim();
+      btnConf.disabled = !v;
+      if (/drive\.google\.com/i.test(v)) {
+        document.getElementById('err-url').hidden = false;
+        document.getElementById('err-url').textContent = 'URL no permitida';
+        btnConf.disabled = true;
+      } else {
+        document.getElementById('err-url').hidden = true;
+      }
+    });
+    fileImg.addEventListener('change', () => {
+      btnConf.disabled = !fileImg.files.length;
+      document.getElementById('err-url').hidden = true;
     });
     btnConf.addEventListener('click', () => {
-      document.getElementById('imagen-url').value = urlImg.value.trim();
-      document.getElementById('drop-img').textContent = 'Imagen OK: ' + urlImg.value.trim().slice(0, 40);
+      if (fileImg.files.length) {
+        document.getElementById('imagen-url').value = 'file:' + fileImg.files[0].name;
+        document.getElementById('drop-img').textContent = 'Imagen OK: ' + fileImg.files[0].name;
+      } else {
+        const v = urlImg.value.trim();
+        if (/drive\.google\.com/i.test(v)) {
+          document.getElementById('err-url').hidden = false;
+          return;
+        }
+        document.getElementById('imagen-url').value = v;
+        document.getElementById('drop-img').textContent = 'Imagen OK: ' + v.slice(0, 40);
+      }
       document.getElementById('err-img').hidden = true;
       modal.classList.remove('abierto');
       dirty = true;

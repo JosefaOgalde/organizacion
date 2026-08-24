@@ -177,14 +177,16 @@ def main() -> int:
     receta = json.loads(path.read_text(encoding="utf-8"))
     env = load_env(ENV_PATH)
     selectores = load_selectores()
-    # Si el JSON no trae imagenes[].url, se completa desde ([Foto]) del Word
     explorar_previo = _cargar_explorar()
+    # Preferir PNG local (Downloads); Drive no lo acepta el BM
+    ruta_local = explorar_previo.enriquecer_ruta_local_imagen(receta)
     url_foto = explorar_previo.enriquecer_imagen_desde_word(receta)
-    if url_foto:
-        # Persistir en el JSON local para la próxima corrida
+    if ruta_local or url_foto:
         try:
             path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-            print(f"JSON actualizado con URL de Foto → {path.name}")
+            print(f"JSON actualizado con imagen → {path.name}")
+            if ruta_local:
+                print(f"  rutaLocal: {ruta_local}")
         except Exception:
             pass
     base_url = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/")

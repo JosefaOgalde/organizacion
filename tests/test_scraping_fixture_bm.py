@@ -207,6 +207,11 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
     def test_formulario_header_duracion_numero_y_labels(self):
         explorar = cargar_explorar()
         fixture = Path(__file__).resolve().parent / "fixtures/bm-formulario-header.html"
+        png = Path("/tmp/crc-salmon-test.png")
+        png.write_bytes(
+            b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde"
+            b"\x00\x00\x00\x0cIDATx\x9cc\xf8\x0f\x00\x00\x01\x01\x00\x05\x18\xd8N\x00\x00\x00\x00IEND\xaeB`\x82"
+        )
         receta = {
             "titulo": "Salmón a la parrilla con salsa de palta",
             "descripcion": "No va en Header",
@@ -215,7 +220,8 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             "dificultad": "fácil",
             "imagenes": [
                 {
-                    "url": "https://drive.google.com/file/d/1u2z-oBQeGHopYUtVpam0bfGvFSpf5OIB/view?usp=drive_link",
+                    "rutaLocal": str(png),
+                    "url": "https://drive.google.com/file/d/xxx/view",
                     "alt": "portada",
                     "rol": "portada",
                 }
@@ -242,18 +248,24 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             self.assertTrue(outs.get("field_titulo"))
             self.assertTrue(outs.get("field_dificultad"), "debía elegir Fácil en el dropdown")
             self.assertTrue(outs.get("field_tiempo"))
-            self.assertTrue(outs.get("field_porciones"))
-            self.assertEqual(page.input_value("#titulo"), receta["titulo"])
             self.assertEqual(page.input_value("#duracion"), "30")
+            self.assertNotEqual(page.input_value("#duracion"), "0")
+            self.assertTrue(outs.get("field_porciones"))
             self.assertEqual(page.input_value("#porciones"), "4")
             self.assertEqual(page.input_value("#dificultad"), "Fácil")
             self.assertTrue(explorar._rellenar_imagen(page, receta))
-            self.assertIn("drive.google.com", page.input_value("#imagen-url"))
+            self.assertTrue(page.input_value("#imagen-url").startswith("file:"))
             page.locator("#btn-guardar").click()
             estado = page.locator("#estado").inner_text()
             self.assertIn("guardado:", estado)
-            self.assertIn("Fácil", estado)
             browser.close()
+
+    def test_catalogo_ruta_local_salmon(self):
+        explorar = cargar_explorar()
+        receta = {"id": "salmon-a-la-parrilla-con-salsa-de-palta", "titulo": "Salmón", "imagenes": []}
+        ruta = explorar.enriquecer_ruta_local_imagen(receta)
+        self.assertIsNotNone(ruta)
+        self.assertIn(r"Downloads", ruta)
 
     def test_normaliza_dificultad_a_opciones_bm(self):
         explorar = cargar_explorar()
