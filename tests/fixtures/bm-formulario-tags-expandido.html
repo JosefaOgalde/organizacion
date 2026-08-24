@@ -80,6 +80,11 @@
       document.getElementById('modal').classList.remove('open');
     });
     document.getElementById('btn-aceptar').addEventListener('click', () => {
+      const tags = [];
+      document.querySelectorAll('.campo-tag').forEach((el) => {
+        if (el.value.trim()) tags.push(el.value.trim());
+      });
+      sessionStorage.setItem('tags-guardados', JSON.stringify(tags));
       document.getElementById('modal').classList.remove('open');
       document.getElementById('vista').textContent = 'canvas';
     });

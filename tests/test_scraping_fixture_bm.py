@@ -245,13 +245,18 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
     def test_salir_tags_volver_confirma_guardar(self):
         explorar = cargar_explorar()
         fixture = Path(__file__).resolve().parent / "fixtures/bm-formulario-tags-expandido.html"
+        tags = ["salmon", "pescado"]
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
             page.goto(fixture.as_uri())
-            explorar._rellenar_tags_bm(page, ["salmon"])
+            explorar._rellenar_tags_bm(page, tags)
             explorar._salir_edicion_tags_si_aplica(page)
             self.assertEqual(page.locator("#vista").inner_text(), "canvas")
+            import json as _json
+
+            guardados = _json.loads(page.evaluate("sessionStorage.getItem('tags-guardados')") or "[]")
+            self.assertEqual(guardados, tags)
             browser.close()
 
     def test_rellena_tags_chip_enter(self):

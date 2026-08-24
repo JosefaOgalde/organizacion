@@ -1561,11 +1561,13 @@ def _forzar_vuelta_al_canvas(page) -> None:
 
 
 def _salir_edicion_tags_si_aplica(page) -> None:
-    """Tras rellenar tags: Volver al canvas y confirmar guardar en el popup."""
+    """Tras rellenar tags: commit → Volver → modal Sí, acepto → canvas."""
     if not pagina_viva(page):
         return
     if not _en_editor_tags(page):
         return
+
+    _commit_tags_bm(page)
 
     for target in _targets_page_y_frames(page):
         for sel in (
@@ -1579,15 +1581,25 @@ def _salir_edicion_tags_si_aplica(page) -> None:
                 if not (loc.count() and loc.is_visible()):
                     continue
                 loc.click(timeout=3000)
-                page.wait_for_timeout(800)
-                if _confirmar_dialogo_guardar_al_volver(page):
-                    page.wait_for_timeout(600)
-                elif _cancelar_dialogo_cambios_sin_guardar(page):
-                    guardar_editor_componente(page)
-                    loc.click(timeout=3000)
-                    page.wait_for_timeout(800)
-                    _confirmar_dialogo_guardar_al_volver(page)
-                print("  · Volví del Formulario Tags al canvas de la receta.", flush=True)
+                confirmo = False
+                for _ in range(20):
+                    page.wait_for_timeout(300)
+                    if _confirmar_dialogo_guardar_al_volver(page, timeout_ms=800):
+                        confirmo = True
+                        break
+                    if not _en_editor_tags(page):
+                        confirmo = True
+                        break
+                if not confirmo and _locator_dialogo_guardar(page):
+                    _confirmar_dialogo_guardar_al_volver(page, timeout_ms=2000)
+                page.wait_for_timeout(900)
+                if not _en_editor_tags(page):
+                    print("  · Volví del Formulario Tags al canvas (tags guardados).", flush=True)
+                    return
+                print(
+                    "  · Tras Volver sigo en Tags; ¿aceptaste guardar en el popup?",
+                    flush=True,
+                )
                 return
             except Exception:
                 continue
@@ -2515,43 +2527,93 @@ def _rellenar_por_label(page, key: str, value: str) -> bool:
     return False
 
 
-def _confirmar_dialogo_guardar_al_volver(page) -> bool:
-    """Popup al pulsar Volver: «¿guardar cambios?» → Sí / Aceptar / Guardar."""
+def _locator_dialogo_guardar(page):
+    """Modal visible «¿guardar cambios?» (no el banner azul del formulario)."""
     for target in _targets_page_y_frames(page):
-        try:
-            if not target.get_by_text(
-                re.compile(
-                    r"guardar|cambios sin guardar|unsaved|desea continuar|quieres guardar",
-                    re.I,
-                )
-            ).count():
-                continue
-        except Exception:
-            continue
         for sel in (
-            "button:has-text('Si, acepto')",
-            "button:has-text('Sí, acepto')",
-            "button:has-text('Si')",
-            "button:has-text('Sí')",
-            "button:has-text('Aceptar')",
-            "button:has-text('Guardar')",
-            "button:has-text('Yes')",
-            "button:has-text('Save')",
+            "[role='dialog']",
+            "mat-dialog-container",
+            "[class*='MatDialog' i]",
+            "[class*='modal' i][class*='show' i]",
+            "[class*='modal' i].open",
+            "#modal.open",
+            "[class*='dialog' i]",
         ):
             try:
-                btn = target.locator(sel).first
-                if not (btn.count() and btn.is_visible()):
-                    continue
-                txt = (btn.inner_text() or "").lower()
-                if "cancel" in txt or txt.strip() in ("no", "cerrar"):
-                    continue
-                btn.click(timeout=2500)
-                page.wait_for_timeout(700)
-                print("  · Diálogo al Volver: confirmé guardar", flush=True)
-                return True
+                loc = target.locator(sel)
+                for i in range(min(loc.count(), 8)):
+                    dlg = loc.nth(i)
+                    try:
+                        if not dlg.is_visible():
+                            continue
+                    except Exception:
+                        continue
+                    txt = (dlg.inner_text() or "").lower()
+                    if re.search(
+                        r"cambios sin guardar|desea guardar|guardar la informaci|"
+                        r"unsaved changes|quieres guardar|desea continuar",
+                        txt,
+                    ):
+                        return dlg
+                    if sel == "#modal.open" or "role='dialog'" in sel:
+                        if re.search(r"guardar|acepto|continuar", txt):
+                            return dlg
             except Exception:
                 continue
+    return None
+
+
+def _confirmar_dialogo_guardar_al_volver(page, timeout_ms: int = 5000) -> bool:
+    """Popup real al pulsar Volver → Sí, acepto / Aceptar (solo dentro del modal)."""
+    restantes = max(1, timeout_ms // 250)
+    for _ in range(restantes):
+        dlg = _locator_dialogo_guardar(page)
+        if dlg is not None:
+            preferidos = (
+                "button:has-text('Sí, acepto')",
+                "button:has-text('Si, acepto')",
+                "button:has-text('Sí acepto')",
+                "button:has-text('Si acepto')",
+                "[role='button']:has-text('Sí, acepto')",
+                "button:has-text('Aceptar')",
+                "button:has-text('Guardar')",
+                "button:has-text('Sí')",
+                "button:has-text('Si')",
+                "button:has-text('Yes')",
+            )
+            for sel in preferidos:
+                try:
+                    btn = dlg.locator(sel).first
+                    if not (btn.count() and btn.is_visible()):
+                        continue
+                    txt = (btn.inner_text() or "").lower()
+                    if "cancel" in txt or txt.strip() in ("no", "cerrar"):
+                        continue
+                    btn.click(timeout=2500)
+                    page.wait_for_timeout(1200)
+                    print("  · Diálogo al Volver: confirmé guardar (Sí, acepto)", flush=True)
+                    return True
+                except Exception:
+                    continue
+        page.wait_for_timeout(250)
     return False
+
+
+def _commit_tags_bm(page) -> None:
+    """Marca los Tag* como tocados (React BM) antes de Volver."""
+    js = r"""() => {
+      const sels = 'input[placeholder*="Dale" i], input.campo-tag, .acordeon input, mat-form-field input';
+      document.querySelectorAll(sels).forEach((el) => {
+        el.dispatchEvent(new Event('blur', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    }"""
+    for target in _targets_page_y_frames(page):
+        try:
+            target.evaluate(js)
+        except Exception:
+            continue
+    page.wait_for_timeout(400)
 
 
 def _cancelar_dialogo_cambios_sin_guardar(page) -> bool:
@@ -3926,10 +3988,10 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
                 ok_grupo += 1
         if pagina_viva(page):
             if clave_comp == "tags":
-                # Tags BM real: Volver + popup. Si no aplica (fixture CMS), cerrar como otros.
                 _salir_edicion_tags_si_aplica(page)
                 _esperar_canvas_tras_tags(page)
-                if contar_campos_editables(page) > 0:
+                # Fixture CMS (#tags): no hay Volver; BM real ya guardó con el popup
+                if not _en_editor_tags(page) and contar_campos_editables(page) > 0:
                     cerrar_editor_componente(page, guardar=True)
                     _esperar_canvas_tras_tags(page)
             else:
