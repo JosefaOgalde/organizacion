@@ -17,7 +17,7 @@ import re
 import sys
 from pathlib import Path
 
-CRC_VERSION = "2026-08-24-tags-v2"
+CRC_VERSION = "2026-08-24-tags-v3"
 
 ROOT = Path(__file__).resolve().parents[1]
 CRC = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud"
@@ -43,6 +43,7 @@ def load_env(path: Path) -> dict[str, str]:
         "CENCOSUD_BM_BANDERA",
         "CENCOSUD_BM_HEADED",
         "CENCOSUD_BM_DRY_RUN",
+        "CENCOSUD_BM_RECETA_URL",
     ):
         if os.environ.get(k):
             data[k] = os.environ[k]
@@ -53,6 +54,54 @@ def load_selectores() -> dict:
     if MAPA_SELECTORES_PATH.exists():
         return json.loads(MAPA_SELECTORES_PATH.read_text(encoding="utf-8"))
     return {}
+
+
+ESTRUCTURA_PATH = SECRETS / "bm-estructura.json"
+
+
+def navegar_a_editor(page, env: dict, selectores: dict, receta: dict) -> str:
+    """Abre la URL ya mapeada (bm-estructura / bm-selectores / .env)."""
+    base = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/").rstrip("/")
+    candidatos: list[str] = []
+
+    if env.get("CENCOSUD_BM_RECETA_URL"):
+        candidatos.append(env["CENCOSUD_BM_RECETA_URL"])
+
+    for src in (selectores, receta):
+        for k in ("url_editor", "url_editor_receta", "receta_editor_url", "bmUrl", "urlEditor"):
+            v = src.get(k)
+            if v:
+                candidatos.append(str(v))
+
+    if ESTRUCTURA_PATH.exists():
+        try:
+            u = json.loads(ESTRUCTURA_PATH.read_text(encoding="utf-8")).get("url")
+            if u:
+                candidatos.append(str(u))
+        except Exception:
+            pass
+
+    nav = selectores.get("nav_nueva_receta")
+    if nav and str(nav).startswith("http"):
+        candidatos.append(str(nav))
+
+    url = candidatos[0] if candidatos else f"{base}/"
+    if url.startswith("/"):
+        url = base + url
+
+    print(f"  → {url}")
+    page.goto(url, wait_until="domcontentloaded", timeout=120_000)
+    page.wait_for_timeout(2000)
+    return url
+
+
+def en_zona_trabajo(page) -> bool:
+    return page.evaluate(
+        """() => {
+      const t = document.body.innerText || '';
+      return /zona de trabajo/i.test(t) && /tags/i.test(t) && /componente vac[ií]o|cabecera|ingredientes/i.test(t);
+    }"""
+    )
 
 
 def pausa_usuario(msg: str) -> None:
@@ -291,14 +340,15 @@ def main() -> int:
         ctx_kwargs = {"viewport": {"width": 1400, "height": 900}}
         if not args.no_session and SESSION_PATH.exists():
             ctx_kwargs["storage_state"] = str(SESSION_PATH)
+            print(f"  sesión: {SESSION_PATH.name}")
         context = browser.new_context(**ctx_kwargs)
         page = context.new_page()
 
-        pausa_usuario(
-            "\n1) En ESTA ventana de Chromium: abre la receta hasta ver la ZONA DE TRABAJO\n"
-            "   (bloques: cabecera, tags, ingredientes…)\n"
-            "2) Pulsa ENTER aquí (no navego a otra URL)…"
-        )
+        navegar_a_editor(page, env, selectores, receta)
+        if not en_zona_trabajo(page):
+            pausa_usuario(
+                "\nNo veo la zona de trabajo. Abre la receta (salmon) en el BM y pulsa ENTER…"
+            )
 
         if not args.continuar:
             categorias = receta.get("categorias") or []
