@@ -3491,6 +3491,98 @@ def _rellenar_un_campo_tag(node, valor: str) -> bool:
     return _rellenar_locator(node, valor)
 
 
+def _resolver_input_tag_en_bloque(block):
+    """Input Tag* del Formulario Ítem — nunca Link/URL."""
+    if block is None:
+        return None
+    for cre in (re.compile(r"^Tag\s*\*?\s*$", re.I),):
+        try:
+            by_label = block.get_by_label(cre)
+            for i in range(min(by_label.count(), 4)):
+                node = by_label.nth(i)
+                if _es_input_link_no_tag(node):
+                    continue
+                try:
+                    if node.is_visible():
+                        return node
+                except Exception:
+                    return node
+        except Exception:
+            pass
+        try:
+            labs = block.get_by_text(cre, exact=True)
+            for i in range(min(labs.count(), 4)):
+                lab = labs.nth(i)
+                parent = lab.locator("xpath=ancestor::div[1]")
+                for _ in range(4):
+                    if not parent.count():
+                        break
+                    inp = parent.locator(
+                        "xpath=.//input[not(@type='hidden') and not(@type='checkbox')]"
+                    ).first
+                    if inp.count() and not _es_input_link_no_tag(inp):
+                        try:
+                            if inp.is_visible():
+                                return inp
+                        except Exception:
+                            return inp
+                    parent = parent.locator("xpath=parent::*")
+        except Exception:
+            pass
+    for sel in (
+        "input[data-field='tag']",
+        "input.campo-tag",
+        "xpath=.//label[contains(normalize-space(.),'Tag') and not(contains(.,'Link'))]/..//input",
+        "xpath=.//span[contains(normalize-space(.),'Tag') and not(contains(.,'Link'))]/ancestor::div[1]//input",
+    ):
+        try:
+            inp = block.locator(sel).first
+            if inp.count() and not _es_input_link_no_tag(inp):
+                return inp
+        except Exception:
+            continue
+    return None
+
+
+def _limpiar_link_en_bloque(block) -> None:
+    """Link/URL del ítem siempre vacío (CRC: categoría va solo en Tag)."""
+    if block is None:
+        return
+    for cre in (re.compile(r"^Link\s*$", re.I), re.compile(r"^URL\s*$", re.I)):
+        try:
+            loc = block.get_by_label(cre)
+            for i in range(min(loc.count(), 2)):
+                loc.nth(i).fill("")
+        except Exception:
+            pass
+    for sel in ("input[data-field='link']", "input.campo-link", "input[name*='link' i]"):
+        try:
+            loc = block.locator(sel)
+            for i in range(min(loc.count(), 2)):
+                loc.nth(i).fill("")
+        except Exception:
+            pass
+
+
+def _leer_valor_link_en_bloque(block) -> str:
+    if block is None:
+        return ""
+    for cre in (re.compile(r"^Link\s*$", re.I),):
+        try:
+            loc = block.get_by_label(cre)
+            if loc.count():
+                return (loc.first.input_value() or "").strip()
+        except Exception:
+            pass
+    try:
+        loc = block.locator("input[data-field='link'], input.campo-link").first
+        if loc.count():
+            return (loc.input_value() or "").strip()
+    except Exception:
+        pass
+    return ""
+
+
 _ITEM_TAG_ACORDEON_JS = r"""(args) => {
   const n = args.n;
   const tagVal = args.tag;
@@ -3525,30 +3617,23 @@ _ITEM_TAG_ACORDEON_JS = r"""(args) => {
     el.dispatchEvent(new Event('blur', { bubbles: true }));
   };
   const pickTagInput = (root) => {
-    const inputs = [...root.querySelectorAll(
-      'input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), textarea, [role="textbox"]'
-    )].filter(isVis);
-    if (!inputs.length) return null;
-    inputs.sort((a, b) => {
-      const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
-      return ra.top - rb.top || ra.left - rb.left;
-    });
-    for (const inp of inputs) {
-      let lt = '';
-      if (inp.id) {
-        const lab = root.querySelector('label[for="' + inp.id + '"]');
-        if (lab) lt = clean(lab.innerText).toLowerCase();
+    for (const lab of root.querySelectorAll('label, mat-label, span')) {
+      const t = clean(lab.innerText);
+      if (!/^tag\s*\*?\s*$/i.test(t)) continue;
+      if (/link|url|href|enlace/i.test(t)) continue;
+      const col = lab.closest('mat-form-field, div, section') || lab.parentElement;
+      if (col) {
+        const inp = col.querySelector('input:not([type="hidden"]):not([type="checkbox"])');
+        if (inp) return inp;
       }
-      const wrap = inp.closest('mat-form-field, [class*="field" i], div') || inp.parentElement;
-      if (wrap) {
-        for (const s of wrap.querySelectorAll('label, mat-label, span')) {
-          const t = clean(s.innerText).toLowerCase();
-          if (/^tag\b/.test(t)) return inp;
-        }
+      if (lab.htmlFor) {
+        const byId = document.getElementById(lab.htmlFor);
+        if (byId) return byId;
       }
-      if (/^tag\b/.test(lt)) return inp;
     }
-    return inputs[0];
+    const tagged = root.querySelector("input[data-field='tag'], input.campo-tag");
+    if (tagged) return tagged;
+    return null;
   };
   let root = header.closest(
     '.acordeon, .form-item-bm, mat-expansion-panel, [class*="expansion-panel" i], [class*="accordion-item" i]'
@@ -3569,6 +3654,12 @@ _ITEM_TAG_ACORDEON_JS = r"""(args) => {
   const tagInp = pickTagInput(root);
   if (!tagInp) return { ok: false, why: 'sin input Tag' };
   setNative(tagInp, tagVal);
+  root.querySelectorAll("input[data-field='link'], input.campo-link").forEach((el) => {
+    const desc = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+    if (desc && desc.set) desc.set.call(el, '');
+    else el.value = '';
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  });
   return { ok: true, written: tagInp.value || tagVal };
 }"""
 
@@ -3606,22 +3697,12 @@ def _rellenar_item_tag_acordeon(page, n_item: int, tag: str) -> bool:
             )
             if not block.count():
                 block = h.locator("xpath=ancestor::*[.//input][1]")
-            inp = None
-            for sel in (
-                "xpath=.//label[contains(.,'Tag') and not(contains(.,'Link'))]/following::input[1]",
-                "input[data-field='tag']",
-                "input.campo-tag",
-            ):
-                loc = block.locator(sel).first
-                if loc.count():
-                    inp = loc
-                    break
-            if inp is None or not inp.count():
-                dale = block.locator("input[placeholder*='Dale un valor' i]").first
-                if dale.count():
-                    inp = dale
-            if inp is None or not inp.count():
+            if not block.count():
+                block = h.locator("xpath=ancestor::*[.//input][1]")
+            inp = _resolver_input_tag_en_bloque(block)
+            if inp is None:
                 continue
+            _limpiar_link_en_bloque(block)
             inp.click(timeout=2000)
             inp.fill(tag, timeout=4000)
             try:
@@ -3629,13 +3710,38 @@ def _rellenar_item_tag_acordeon(page, n_item: int, tag: str) -> bool:
             except Exception:
                 pass
             page.wait_for_timeout(400)
+            got = ""
             try:
                 got = (inp.input_value() or "").strip()
             except Exception:
-                got = ""
-            if got == tag.strip():
-                print(f"  ✓ tag ítem {n_item} → «{tag}» (Tag confirmado en input)", flush=True)
+                pass
+            link_val = _leer_valor_link_en_bloque(block)
+            if link_val and link_val == tag.strip():
+                print(
+                    f"  · ítem {n_item}: valor fue a Link; limpio URL y reescribo Tag",
+                    flush=True,
+                )
+                _limpiar_link_en_bloque(block)
+                inp = _resolver_input_tag_en_bloque(block)
+                if inp is not None:
+                    inp.click(timeout=2000)
+                    inp.fill(tag, timeout=4000)
+                    inp.press("Tab")
+                    page.wait_for_timeout(300)
+                    got = (inp.input_value() or "").strip()
+            _limpiar_link_en_bloque(block)
+            link_val = _leer_valor_link_en_bloque(block)
+            if got == tag.strip() and not link_val:
+                print(
+                    f"  ✓ tag ítem {n_item} → «{tag}» (Tag*, Link vacío)",
+                    flush=True,
+                )
                 return True
+            if got == tag.strip() and link_val:
+                print(
+                    f"  ✗ ítem {n_item}: Tag OK pero Link tiene «{link_val}»",
+                    flush=True,
+                )
         except Exception:
             continue
 
@@ -3661,10 +3767,21 @@ def _verificar_tags_en_formulario(page, tags: list[str]) -> bool:
     for target in _targets_page_y_frames(page):
         try:
             vals = target.evaluate(
-                r"""(n) => {
+                r"""() => {
                   const clean = s => (s||'').replace(/\s+/g,' ').trim();
                   const out = [];
                   const seen = new Set();
+                  const tagVal = (root) => {
+                    for (const lab of root.querySelectorAll('label, mat-label, span')) {
+                      const t = clean(lab.innerText);
+                      if (!/^tag\s*\*?\s*$/i.test(t)) continue;
+                      const col = lab.closest('mat-form-field, div') || lab.parentElement;
+                      const inp = col && col.querySelector('input:not([type=hidden])');
+                      if (inp) return (inp.value || '').trim();
+                    }
+                    const inp = root.querySelector("input[data-field='tag'], input.campo-tag");
+                    return inp ? (inp.value || '').trim() : '';
+                  };
                   for (const el of document.querySelectorAll(
                     'button, [role="button"], div, span, h3, h4'
                   )) {
@@ -3675,17 +3792,14 @@ def _verificar_tags_en_formulario(page, tags: list[str]) -> bool:
                     seen.add(num);
                     let root = el.closest('.acordeon, .form-item-bm, mat-expansion-panel, div');
                     if (!root) root = el.parentElement;
-                    let val = '';
                     for (let i = 0; i < 10 && root; i++) {
-                      const inputs = [...root.querySelectorAll('input:not([type=hidden])')];
-                      if (inputs.length) {
-                        inputs.sort((a,b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
-                        val = (inputs[0].value || '').trim();
+                      const v = tagVal(root);
+                      if (v !== undefined && root.querySelector('input')) {
+                        out.push({ n: num, val: v });
                         break;
                       }
                       root = root.parentElement;
                     }
-                    out.push({ n: num, val });
                   }
                   out.sort((a,b) => a.n - b.n);
                   return out.map(x => x.val);
