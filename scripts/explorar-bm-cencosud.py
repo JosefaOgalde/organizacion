@@ -859,16 +859,15 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
                     loc.fill(str(value))
                 print(f"  ✓ {key}")
                 return True
-            else:
-                print(f"  ✗ {key} (no encontrado: {sel})")
+            print(f"  ✗ {key} (no encontrado: {sel})")
         except Exception as e:
             print(f"  ✗ {key}: {e}")
         return False
 
-    def fill_grupo(clave_comp: str, pares: list[tuple[str, str | None]]) -> None:
+    def fill_grupo(clave_comp: str, pares: list[tuple[str, str | None]]) -> int:
         pares_ok = [(k, v) for k, v in pares if v is not None and v != ""]
         if not pares_ok:
-            return
+            return 0
         meta = next((c for c in COMPONENTES_CMS if c["clave"] == clave_comp), None)
         lapiz_key = meta["lapiz_key"] if meta else f"lapiz_{clave_comp}"
         print(f"  [CMS] Abriendo componente «{clave_comp}»…")
@@ -877,6 +876,7 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
             abierto = abrir_componente_para_campos(page, selectores, [k for k, _ in pares_ok])
         if not abierto:
             print(f"  · Sin lápiz para {clave_comp}; intento relleno en vista actual.")
+        ok_grupo = 0
         for key, value in pares_ok:
             ok = fill(key, value)
             if key == "field_titulo":
@@ -887,11 +887,19 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
                 resultados["ingredientes"] = ok
             elif key == "field_pasos":
                 resultados["pasos"] = ok
-        # Importante: guardar el componente; Cerrar/Escape sin guardar pierde la info en BM
-        cerrar_editor_componente(page, guardar=True)
+            ok_grupo += int(bool(ok))
+        if abierto or ok_grupo:
+            cerrar_editor_componente(page, guardar=True)
+        else:
+            print(
+                f"  ✗ «{clave_comp}»: sin lápiz ni campos — abre la ficha en el "
+                "Gestor de contenido (bloques Cabecera/tags/listas/SEO) y reintenta."
+            )
+        return ok_grupo
 
     print("Rellenando desde JSON (abriendo lápices automáticamente)…")
-    fill_grupo(
+    total_ok = 0
+    total_ok += fill_grupo(
         "cabecera",
         [
             ("field_titulo", receta.get("titulo")),
@@ -901,7 +909,7 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
             ("field_tiempo", receta.get("tiempoTotal")),
         ],
     )
-    fill_grupo("tags", [("field_tags", ", ".join(receta.get("categorias") or []))])
+    total_ok += fill_grupo("tags", [("field_tags", ", ".join(receta.get("categorias") or []))])
     ings = receta.get("ingredientes") or []
     texto_ing = None
     if ings:
@@ -918,20 +926,36 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
             ).strip()
             for i in ings
         )
-    fill_grupo("ingredientes", [("field_ingredientes", texto_ing)])
+    total_ok += fill_grupo("ingredientes", [("field_ingredientes", texto_ing)])
     pasos = receta.get("pasos") or []
     texto_pas = None
     if pasos:
         texto_pas = "\n".join(f"{p.get('orden')}. {p.get('texto')}" for p in pasos)
-    fill_grupo("instrucciones", [("field_pasos", texto_pas)])
+    total_ok += fill_grupo("instrucciones", [("field_pasos", texto_pas)])
     seo = receta.get("seo") or {}
-    fill_grupo(
+    total_ok += fill_grupo(
         "seo",
         [
             ("field_meta_titulo", seo.get("metaTitulo")),
             ("field_meta_descripcion", seo.get("metaDescripcion")),
         ],
     )
+
+    fallos_requeridos = [
+        campo for campo in CAMPOS_REQUERIDOS_PUBLICACION if not resultados.get(campo, False)
+    ]
+    if fallos_requeridos or total_ok == 0:
+        print(
+            "Carga incompleta: no se rellenaron campos requeridos: "
+            + (", ".join(fallos_requeridos) if fallos_requeridos else "(ningún campo)"),
+            file=sys.stderr,
+        )
+        print(
+            "Tip: deja abierta la receta en el CMS (lista de componentes) "
+            "antes de que el script rellene.",
+            file=sys.stderr,
+        )
+        return False
 
     if dry_run:
         btn = selectores.get("btn_guardar_borrador")
@@ -942,44 +966,33 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
                     loc.click(timeout=5_000)
                     print("Clic en guardar borrador (dry-run).")
                 else:
-                    # Fallback: texto visible global
-                    alt = page.get_by_role("button", name=re.compile(r"guardar\s+borrador|save\s+draft", re.I))
+                    alt = page.get_by_role(
+                        "button", name=re.compile(r"guardar\s+borrador|save\s+draft", re.I)
+                    )
                     if alt.count():
                         alt.first.click(timeout=5_000)
                         print("Clic en guardar borrador (fallback texto).")
                     else:
                         print(
-                            "Dry-run: selector de borrador no visible; "
+                            "Dry-run: sin borrador global visible; "
                             "componentes ya se guardaron uno a uno."
                         )
             except Exception as e:
                 print(f"No se pudo guardar borrador global: {e}")
-                print("Los componentes individuales ya intentaron Guardar.")
         else:
             print(
                 "Dry-run: sin selector de borrador global; "
                 "cada componente se guardó al cerrar el editor."
             )
         return True
-    else:
-        fallos_requeridos = [
-            campo for campo in CAMPOS_REQUERIDOS_PUBLICACION if not resultados.get(campo, False)
-        ]
-        if fallos_requeridos:
-            print(
-                "Publicación abortada: falló el rellenado de campos requeridos: "
-                + ", ".join(fallos_requeridos),
-                file=sys.stderr,
-            )
-            return False
-        btn = selectores.get("btn_publicar")
-        if btn:
-            page.locator(btn).first.click()
-            print("Solicitud de publicación enviada; confirma el resultado en BM.")
-            return True
-        else:
-            print("Sin selector btn_publicar.", file=sys.stderr)
-            return False
+
+    btn = selectores.get("btn_publicar")
+    if btn:
+        page.locator(btn).first.click()
+        print("Solicitud de publicación enviada; confirma el resultado en BM.")
+        return True
+    print("Sin selector btn_publicar.", file=sys.stderr)
+    return False
 
 
 def main() -> int:

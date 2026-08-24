@@ -12,8 +12,9 @@ Uso:
     index/clientes/Herramientas/carga-recetas-cencosud/out/anticuchos-de-verduras-con-chimichurri.json \\
     --headed --dry-run
 
-El BM Jumbo es CMS por componentes: este script abre cada lápiz solo
-(Cabecera, tags, ingredientes, instrucciones, SEO) antes de rellenar.
+El BM Jumbo es CMS por componentes: este script espera a que abras la ficha,
+luego abre cada lápiz solo (Cabecera, tags, ingredientes, instrucciones, SEO)
+y guarda cada editor.
 """
 from __future__ import annotations
 
@@ -113,6 +114,16 @@ def fill(page, sel: str | None, value, label: str) -> bool:
         return False
 
 
+def refrescar_lapices_desde_pagina(explorar, page, selectores: dict) -> list[dict]:
+    comps = explorar.listar_componentes_cms(page)
+    clave_a_lapiz = {c["clave"]: c["lapiz_key"] for c in explorar.COMPONENTES_CMS}
+    for c in comps:
+        key = clave_a_lapiz.get(c.get("clave"))
+        if key and c.get("lapizSelector"):
+            selectores[key] = c["lapizSelector"]
+    return comps
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Cargar receta JSON en Business Manager Cencosud")
     ap.add_argument("json_path", type=Path, help="Ruta al JSON en out/")
@@ -149,9 +160,8 @@ def main() -> int:
         print(
             "\nAún no hay selectores útiles en secrets/bm-selectores.json.\n"
             "En TU PC corre primero:\n"
-            "  python3 scripts/explorar-bm-cencosud.py --reuse-session\n"
-            "Inicia sesión, abre la receta en el CMS y pulsa ENTER\n"
-            "(el script abre los lápices solo).",
+            "  python scripts\\explorar-bm-cencosud.py --reuse-session\n"
+            "Abre la receta en el CMS (bloques Cabecera/tags/…) y pulsa ENTER.",
             file=sys.stderr,
         )
         return 2
@@ -163,6 +173,7 @@ def main() -> int:
         return 1
 
     explorar = _cargar_explorar()
+    resultado = 0
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=not headed)
@@ -184,17 +195,61 @@ def main() -> int:
                 except Exception:
                     print(f"No se pudo navegar con nav_nueva_receta={nav}")
 
+        print(
+            "\n>>> IMPORTANTE: en el navegador abre la RECETA en el Gestor de contenido\n"
+            "    (lista de bloques Cabecera / tags / Lista Ingredientes / …).\n"
+            "    NO hace falta tocar los lápices.\n"
+            "    Cuando la veas, pulsa ENTER aquí para rellenar…\n"
+        )
+        try:
+            input()
+        except EOFError:
+            print("Sin TTY: esperando 45s…")
+            page.wait_for_timeout(45_000)
+
+        comps = refrescar_lapices_desde_pagina(explorar, page, selectores)
+        print(f"Componentes detectados ahora: {len(comps)}")
+        for c in comps:
+            print(f"  · {c.get('clave')}: {c.get('texto')!r} lapiz={c.get('lapizSelector')}")
+
+        if len(comps) < 2:
+            print(
+                "\nNo veo los bloques del CMS. No se rellenó nada.\n"
+                "Abre la ficha de la receta (view-manager / componentes) y vuelve a correr.",
+                file=sys.stderr,
+            )
+            resultado = 5
+            if headed:
+                print("\nENTER para cerrar el navegador…")
+                try:
+                    input()
+                except EOFError:
+                    page.wait_for_timeout(10_000)
+            browser.close()
+            return resultado
+
+        # Persistir lápices detectados para el próximo run
+        MAPA_SELECTORES_PATH.write_text(
+            json.dumps(selectores, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
         print("Rellenando (abriendo lápices del CMS automáticamente)…")
         carga_ok = explorar.fill_from_receta(page, receta, selectores, dry_run=dry)
-        resultado = 0
-        if dry:
-            if carga_ok:
-                receta["estado"] = "cargado"
+        if not carga_ok:
+            resultado = 4
+            print(
+                "\nLa carga NO se completó. Revisa selectores o vuelve a explorar "
+                "con la ficha abierta:\n"
+                "  python scripts\\explorar-bm-cencosud.py --reuse-session",
+                file=sys.stderr,
+            )
+        elif dry:
+            # dry-run exitoso: no marcar cargado si preferimos dejar listo-para-cargar
+            # Mantener listo-para-cargar para poder reintentar; solo marcar cargado en publish
+            print("Dry-run OK: revisa en el BM que los campos quedaron guardados.")
         else:
-            if not carga_ok:
-                resultado = 4
-            else:
-                receta["estado"] = "cargado"
+            receta["estado"] = "cargado"
 
         path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         context.storage_state(path=str(SESSION_PATH))
