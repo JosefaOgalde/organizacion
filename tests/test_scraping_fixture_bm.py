@@ -201,6 +201,33 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             )
             browser.close()
 
+    def test_abre_lapiz_svg_sin_aria_con_paleta(self):
+        """Reproduce BM real: paleta+canvas juntos y lápiz SVG sin aria (lapiz=None)."""
+        explorar = cargar_explorar()
+        fixture = Path(__file__).resolve().parent / "fixtures/bm-cms-paleta-svg.html"
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(fixture.as_uri())
+            page.set_viewport_size({"width": 1100, "height": 800})
+
+            comps = explorar.listar_componentes_cms(page)
+            claves = {c["clave"] for c in comps}
+            self.assertIn("cabecera", claves)
+            self.assertIn("tags", claves)
+
+            # Aunque el selector aria sea None, debe abrir el editor del canvas
+            ok = explorar.abrir_lapiz_componente(page, "cabecera", None)
+            self.assertTrue(ok, "debía abrir Cabecera vía SVG/hint del canvas")
+            self.assertGreater(explorar.contar_campos_editables(page), 0)
+            self.assertEqual(page.locator("#estado").inner_text(), "editando:cabecera")
+
+            page.locator("button.btn-guardar-editor").first.click()
+            ok_tags = explorar.abrir_lapiz_componente(page, "tags", None)
+            self.assertTrue(ok_tags)
+            self.assertEqual(page.locator("#estado").inner_text(), "editando:tags")
+            browser.close()
+
     def test_fallback_posicional_con_labels_debiles(self):
         explorar = cargar_explorar()
         fixture = Path(__file__).resolve().parent / "fixtures/bm-editor-labels-debiles.html"

@@ -65,3 +65,5 @@ No se scrapea desde un servidor en la nube: es **navegador local** con tus crede
 5. Nunca commits de `secrets/.env` ni `bm-session.json`.
 6. Durante el relleno: **no cierres Chromium** ni uses **Ctrl+C** a mitad
    (provoca `TargetClosedError`). El script ya no pulsa Escape si no ve Guardar.
+7. Si ves `lapiz=None` pero componentes detectados: normal en BM (SVG sin aria).
+   El script abre por el mensaje «Edita este componente vacío…» + clic en iconos.

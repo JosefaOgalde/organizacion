@@ -505,6 +505,36 @@ def listar_componentes_cms(page) -> list[dict]:
         }
       });
 
+      // 3) Canvas por hint «Edita este componente…» (BM real: lápiz sin aria → absSel null)
+      const hints = Array.from(document.querySelectorAll('div, span, p, li, section'))
+        .filter((el) => /edita este componente/i.test(el.innerText || '')
+          && (el.innerText || '').length < 180);
+      for (const hint of hints) {
+        let block = hint;
+        for (let i = 0; i < 10 && block && block.parentElement; i++) {
+          const r = block.getBoundingClientRect();
+          if (r.height >= 48 && r.width >= 160 && r.height < window.innerHeight * 0.85) break;
+          block = block.parentElement;
+        }
+        const blockText = clean(block.innerText || '').slice(0, 300);
+        const nblock = norm(blockText);
+        for (const item of aliasesFlat) {
+          if (seen.has(item.clave)) continue;
+          const a = norm(item.alias);
+          if (!(nblock.includes(a))) continue;
+          const editBtn = pickLapiz(block);
+          found.push({
+            clave: item.clave,
+            alias: item.alias,
+            texto: item.alias,
+            lapizSelector: absSel(editBtn),
+            tieneLapiz: true,
+            viaHintVacio: true,
+          });
+          seen.add(item.clave);
+        }
+      }
+
       return found;
     }"""
 
@@ -535,16 +565,59 @@ def listar_componentes_cms(page) -> list[dict]:
     return merged
 
 
+def _contar_botones_guardar(page) -> int:
+    n = 0
+    for target in _targets_page_y_frames(page):
+        for sel in (
+            "button:has-text('Guardar')",
+            "button:has-text('Save')",
+            "button:has-text('Aplicar')",
+            "button.btn-guardar-editor",
+            "[aria-label*='Guardar' i]",
+            "[aria-label*='Save' i]",
+        ):
+            try:
+                loc = target.locator(sel)
+                for i in range(min(loc.count(), 8)):
+                    if loc.nth(i).is_visible():
+                        n += 1
+            except Exception:
+                continue
+    return n
+
+
+def _senal_editor_abierto(page, antes_campos: int, antes_guardar: int) -> bool:
+    """True si aparecieron inputs o un botón Guardar del editor."""
+    try:
+        if contar_campos_editables(page) > antes_campos:
+            return True
+        if _contar_botones_guardar(page) > antes_guardar:
+            return True
+    except Exception:
+        return False
+    return False
+
+
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
-    """Clic en el lápiz del bloque del canvas (no el de la paleta izquierda)."""
+    """Clic en el lápiz del bloque del canvas (no el de la paleta izquierda).
+
+    En el BM real los lápices suelen ser SVG sin aria-label (lapiz=None).
+    Anclar por el mensaje «Edita este componente vacío…» evita confundir
+    con la Paleta de componentes (un ancestro grande también contiene ese texto).
+    """
+    if not pagina_viva(page):
+        return False
+
     if selector_guardado:
-        for target in [page] + list(page.frames):
+        for target in _targets_page_y_frames(page):
             try:
                 loc = target.locator(selector_guardado).first
                 if loc.count():
+                    antes_c = contar_campos_editables(page)
+                    antes_g = _contar_botones_guardar(page)
                     loc.click(timeout=4_000, force=True)
-                    page.wait_for_timeout(900)
-                    if contar_campos_editables(page) > 0:
+                    page.wait_for_timeout(1100)
+                    if _senal_editor_abierto(page, antes_c, antes_g):
                         return True
             except Exception:
                 pass
@@ -554,132 +627,222 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
         return False
     aliases = list(comp["aliases"])
 
-    # Encuentra títulos en el canvas: prioriza bloques con «Edita este componente vacío»
-    # y descarta la «Paleta de componentes».
-    find_js = """(aliases) => {
+    # Bloques del canvas: deben contener el hint vacío + el nombre del componente.
+    # No usar «¿está bajo Paleta?» por innerText de ancestros (el layout entero
+    # incluye paleta+canvas y falsos positivos mataban todos los candidatos).
+    find_blocks_js = """(aliases) => {
       const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
       const norm = (s) => clean(s).toLowerCase();
       const wanted = aliases.map(norm);
-      const inPalette = (el) => {
-        let cur = el;
-        for (let i = 0; i < 14 && cur; i++) {
-          const t = norm(cur.innerText || '').slice(0, 80);
-          const cls = (typeof cur.className === 'string' ? cur.className : '').toLowerCase();
-          if (t.includes('paleta de componentes') || cls.includes('palette') || cls.includes('sidebar')) return true;
-          cur = cur.parentElement;
-        }
-        return false;
+      const matchesAlias = (text) => {
+        const t = norm(text);
+        return wanted.some((w) => {
+          if (!w) return false;
+          if (t === w) return true;
+          // p.ej. "Id: 10f8ed · Cabecera" / "Cabecera Header"
+          if (t.includes(w)) return true;
+          return false;
+        });
       };
-      const hasEmptyHint = (el) => {
-        let cur = el;
-        for (let i = 0; i < 10 && cur; i++) {
-          const t = norm(cur.innerText || '');
-          if (t.includes('edita este componente')) return true;
-          cur = cur.parentElement;
-        }
-        return false;
+      const isTinyClickable = (n) => {
+        const r = n.getBoundingClientRect();
+        if (r.width < 8 || r.height < 8 || r.width > 72 || r.height > 72) return false;
+        const st = getComputedStyle(n);
+        if (st.display === 'none' || st.visibility === 'hidden' || st.pointerEvents === 'none') return false;
+        return true;
       };
       const out = [];
-      const nodes = Array.from(document.querySelectorAll('div, span, p, li, h1, h2, h3, h4, strong, label'));
-      for (const el of nodes) {
-        const direct = clean(Array.from(el.childNodes).filter(n => n.nodeType === 3).map(n => n.textContent).join(' '));
-        const full = clean(el.innerText || '');
-        const label = direct || (full.length <= 40 ? full : '');
-        if (!label || label.length > 48) continue;
-        if (!wanted.some((w) => norm(label) === w)) continue;
-        if (inPalette(el)) continue;
-        const r = el.getBoundingClientRect();
-        if (r.width < 1 || r.height < 1) continue;
+      const hints = Array.from(document.querySelectorAll('div, span, p, li, section, article, button, a'))
+        .filter((el) => /edita este componente/i.test(el.innerText || '')
+          && (el.innerText || '').length < 180);
+
+      for (const hint of hints) {
+        // Subir a un bloque de tamaño razonable (tarjeta del componente)
+        let block = hint;
+        for (let i = 0; i < 12 && block && block.parentElement; i++) {
+          const r = block.getBoundingClientRect();
+          const parent = block.parentElement;
+          const pr = parent.getBoundingClientRect();
+          // Preferir el contenedor que aún es una tarjeta, no toda la página
+          if (r.height >= 48 && r.width >= 160 && r.height < window.innerHeight * 0.85) {
+            if (pr.height > window.innerHeight * 0.9 || pr.width > window.innerWidth * 0.95) break;
+            // Si el padre ya es enorme, quedarnos
+            if (pr.height > r.height * 3 && pr.height > 500) break;
+          }
+          block = parent;
+        }
+        const blockText = clean(block.innerText || '').slice(0, 400);
+        if (!matchesAlias(blockText)) continue;
+        // Evitar nodos de la paleta: la paleta NO tiene el hint vacío
+        // (ya filtramos por hint). Además descartar si está muy a la izquierda
+        // y el bloque es estrecho típico de sidebar (< 340px) SIN hint propio…
+        const br = block.getBoundingClientRect();
+        if (br.width < 40 || br.height < 30) continue;
+
+        // Iconos de acción: franja superior del bloque, de derecha a izquierda
+        const topBand = br.top + Math.min(72, Math.max(36, br.height * 0.35));
+        const icons = Array.from(block.querySelectorAll('button, [role="button"], a, svg, [class*="icon" i], [class*="Icon" i], span, div'))
+          .filter((n) => {
+            if (!isTinyClickable(n)) return false;
+            const r = n.getBoundingClientRect();
+            return r.top >= br.top - 4 && r.top <= topBand && r.left >= br.left - 4 && r.right <= br.right + 4;
+          })
+          .map((n) => {
+            const r = n.getBoundingClientRect();
+            const tag = n.tagName.toLowerCase();
+            const aria = (n.getAttribute('aria-label') || n.getAttribute('title') || '').toLowerCase();
+            let score = r.left; // preferir derecha
+            if (/edit|editar|lápiz|lapiz|pencil|modify/.test(aria)) score += 5000;
+            if (tag === 'button' || n.getAttribute('role') === 'button') score += 200;
+            if (tag === 'svg' || n.querySelector('svg')) score += 80;
+            return { x: r.left + r.width / 2, y: r.top + r.height / 2, score, aria };
+          })
+          .sort((a, b) => b.score - a.score);
+
+        // También el centro del hint (a veces el vacío abre el editor)
+        const hr = hint.getBoundingClientRect();
         out.push({
-          x: r.left + r.width / 2,
-          y: r.top + r.height / 2,
-          score: (hasEmptyHint(el) ? 1000 : 0) + r.left, // canvas a la derecha > paleta
-          text: label,
+          text: blockText.slice(0, 80),
+          block: { x: br.left, y: br.top, w: br.width, h: br.height },
+          hint: { x: hr.left + hr.width / 2, y: hr.top + hr.height / 2 },
+          icons: icons.slice(0, 8),
         });
       }
-      out.sort((a, b) => b.score - a.score);
-      return out.slice(0, 6);
+      // Deduplicar por posición de bloque
+      const uniq = [];
+      for (const item of out) {
+        const dup = uniq.some((u) => Math.abs(u.block.x - item.block.x) < 8 && Math.abs(u.block.y - item.block.y) < 8);
+        if (!dup) uniq.push(item);
+      }
+      return uniq.slice(0, 4);
     }"""
 
-    click_at_js = """({x, y, iconIndex}) => {
-      const el = document.elementFromPoint(x, y);
-      if (!el) return false;
-      // Subir al bloque del canvas
-      let block = el;
-      for (let i = 0; i < 12 && block; i++) {
-        const t = (block.innerText || '');
-        if (/edita este componente/i.test(t) || t.length > 20) break;
-        block = block.parentElement;
-      }
-      block = block || el;
-      const isSmall = (n) => {
-        const r = n.getBoundingClientRect();
-        return r.width > 8 && r.height > 8 && r.width < 72 && r.height < 72;
-      };
-      const icons = Array.from(block.querySelectorAll('button, [role="button"], svg, a, span, div'))
-        .filter(isSmall)
-        .sort((a, b) => {
-          const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
-          if (Math.abs(ra.top - rb.top) > 8) return ra.top - rb.top;
-          return ra.left - rb.left;
-        });
-      const pick = icons[iconIndex] || icons[0];
-      if (!pick) {
-        // Clic en el área vacía del bloque (a veces abre el editor)
-        const hint = Array.from(block.querySelectorAll('div, span, p'))
-          .find((n) => /edita este componente/i.test(n.innerText || ''));
-        if (hint) { hint.click(); return true; }
-        block.click();
-        return true;
-      }
-      const n = pick.tagName.toLowerCase() === 'svg'
-        ? (pick.closest('button, [role="button"], a, div, span') || pick.parentElement)
-        : pick;
-      n.click();
-      return true;
-    }"""
-
-    targets = [page] + [f for f in page.frames if f != page.main_frame]
+    targets = _targets_page_y_frames(page)
     for target in targets:
         try:
-            candidates = target.evaluate(find_js, aliases)
+            blocks = target.evaluate(find_blocks_js, aliases)
         except Exception:
             continue
-        if not candidates:
+        if not blocks:
             continue
-        print(f"    · candidatos canvas «{clave}»: {[(c.get('text'), int(c.get('score', 0))) for c in candidates[:3]]}")
-        for cand in candidates:
-            for icon_i in (0, 1, 2):
+        print(
+            f"    · bloques canvas «{clave}»: "
+            + str([(b.get("text", "")[:40], len(b.get("icons") or [])) for b in blocks[:3]]),
+            flush=True,
+        )
+        for block in blocks:
+            # 1) Clic en iconos (lápiz) de la franja superior
+            for icon in (block.get("icons") or [])[:6]:
                 try:
-                    antes = contar_campos_editables(page)
-                    ok_click = target.evaluate(
-                        click_at_js,
-                        {"x": cand["x"], "y": cand["y"], "iconIndex": icon_i},
-                    )
-                    if not ok_click:
-                        continue
-                    page.wait_for_timeout(1000)
-                    despues = contar_campos_editables(page)
-                    if despues > antes:
-                        print(f"    · lápiz OK «{clave}» (icono {icon_i}, campos {antes}→{despues})")
+                    antes_c = contar_campos_editables(page)
+                    antes_g = _contar_botones_guardar(page)
+                    # mouse.click es más fiable que element.click con SVG/overlay
+                    page.mouse.click(icon["x"], icon["y"])
+                    page.wait_for_timeout(1100)
+                    if _senal_editor_abierto(page, antes_c, antes_g):
+                        print(
+                            f"    · lápiz OK «{clave}» (mouse {int(icon['x'])},{int(icon['y'])})",
+                            flush=True,
+                        )
+                        return True
+                    # Doble clic por si el BM lo exige
+                    page.mouse.dblclick(icon["x"], icon["y"])
+                    page.wait_for_timeout(900)
+                    if _senal_editor_abierto(page, antes_c, antes_g):
+                        print(f"    · lápiz OK «{clave}» (doble clic)", flush=True)
                         return True
                 except Exception:
                     continue
-            # Intento: clic directo en el texto «Edita este componente…» del mismo bloque
-            try:
-                hint = target.get_by_text(re.compile(r"Edita este componente", re.I))
-                # Preferir el hint más cercano al candidato
-                if hint.count():
-                    hint.first.click(timeout=2000)
-                    page.wait_for_timeout(1000)
-                    if contar_campos_editables(page) > 0:
-                        print(f"    · editor abierto vía mensaje vacío «{clave}»")
-                        return True
-            except Exception:
-                pass
 
-    print(f"    · no abrí editor de «{clave}» (¿lápiz del canvas?)")
+            # 2) Clic en el mensaje «Edita este componente…» de ESTE bloque
+            hint = block.get("hint") or {}
+            if hint.get("x") is not None:
+                try:
+                    antes_c = contar_campos_editables(page)
+                    antes_g = _contar_botones_guardar(page)
+                    page.mouse.click(hint["x"], hint["y"])
+                    page.wait_for_timeout(1100)
+                    if _senal_editor_abierto(page, antes_c, antes_g):
+                        print(f"    · editor abierto vía hint vacío «{clave}»", flush=True)
+                        return True
+                except Exception:
+                    pass
+
+            # 3) Clic Playwright por texto del alias dentro del viewport del bloque
+            try:
+                br = block.get("block") or {}
+                for alias in aliases:
+                    loc = target.get_by_text(alias, exact=True)
+                    n = min(loc.count(), 6)
+                    for i in range(n):
+                        box = loc.nth(i).bounding_box()
+                        if not box:
+                            continue
+                        # Debe caer dentro / cerca del bloque canvas
+                        if br.get("x") is not None:
+                            if box["x"] + box["width"] < br["x"] - 20:
+                                continue
+                            if box["x"] > br["x"] + br.get("w", 0) + 20:
+                                continue
+                        # Buscar botón pequeño a la derecha del título
+                        cx = box["x"] + br.get("w", 200) - 48
+                        cy = box["y"] + box["height"] / 2
+                        antes_c = contar_campos_editables(page)
+                        antes_g = _contar_botones_guardar(page)
+                        page.mouse.click(cx, cy)
+                        page.wait_for_timeout(1000)
+                        if _senal_editor_abierto(page, antes_c, antes_g):
+                            print(f"    · lápiz OK «{clave}» (derecha del título)", flush=True)
+                            return True
+            except Exception:
+                continue
+
+    # Último recurso: get_by_text del hint + alias en página (sin filtro de paleta roto)
+    try:
+        for target in targets:
+            hints = target.get_by_text(re.compile(r"Edita este componente", re.I))
+            hn = min(hints.count(), 10)
+            for i in range(hn):
+                h = hints.nth(i)
+                try:
+                    # Contenedor padre: ¿menciona el alias?
+                    parent_txt = h.evaluate(
+                        """el => {
+                          let p = el;
+                          for (let i = 0; i < 8 && p; i++) {
+                            const t = (p.innerText || '').replace(/\\s+/g, ' ');
+                            if (t.length > 20 && t.length < 600) return t;
+                            p = p.parentElement;
+                          }
+                          return (el.innerText || '');
+                        }"""
+                    ).lower()
+                    if not any(a.lower() in parent_txt for a in aliases):
+                        continue
+                    box = h.bounding_box()
+                    if not box:
+                        continue
+                    antes_c = contar_campos_editables(page)
+                    antes_g = _contar_botones_guardar(page)
+                    # Clic arriba-derecha del hint (zona típica de iconos del bloque)
+                    page.mouse.click(box["x"] + min(box["width"] - 24, 280), box["y"] - 28)
+                    page.wait_for_timeout(1100)
+                    if _senal_editor_abierto(page, antes_c, antes_g):
+                        print(f"    · lápiz OK «{clave}» (zona superior al hint)", flush=True)
+                        return True
+                    h.click(timeout=2000)
+                    page.wait_for_timeout(1000)
+                    if _senal_editor_abierto(page, antes_c, antes_g):
+                        print(f"    · editor abierto clic hint «{clave}»", flush=True)
+                        return True
+                except Exception:
+                    continue
+    except Exception:
+        pass
+
+    print(f"    · no abrí editor de «{clave}» (¿lápiz del canvas?)", flush=True)
     return False
+
 
 
 def guardar_editor_componente(page) -> bool:

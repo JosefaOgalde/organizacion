@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>BM · Paleta + canvas (lápiz SVG sin aria)</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, sans-serif; display: flex; min-height: 100vh; background: #eef0f3; }
+    aside.paleta {
+      width: 260px; background: #fff; border-right: 1px solid #ccc; padding: 12px;
+      flex-shrink: 0;
+    }
+    aside.paleta h2 { font-size: 0.95rem; margin: 0 0 10px; }
+    .paleta-item {
+      padding: 8px 10px; margin: 4px 0; border: 1px solid #ddd; background: #fafafa;
+      cursor: grab; font-size: 0.9rem;
+    }
+    main.canvas { flex: 1; padding: 16px 20px; }
+    main.canvas h1 { font-size: 1.15rem; margin: 0 0 4px; }
+    .meta { color: #666; font-size: 0.85rem; margin-bottom: 16px; }
+    .bloque {
+      background: #fff; border: 2px dashed #c44; margin: 14px 0; padding: 10px 12px 16px;
+      position: relative; min-height: 110px;
+    }
+    .bloque-head { display: flex; justify-content: space-between; align-items: flex-start; }
+    .bloque-id { color: #888; font-size: 0.75rem; font-family: monospace; }
+    .bloque-nombre { font-weight: 700; font-size: 0.95rem; }
+    .acciones { display: flex; gap: 4px; }
+    /* Lápiz real BM: SVG sin aria-label / sin button.btn-lapiz */
+    .icon-hit {
+      width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;
+      border: 1px solid #ddd; background: #f7f7f7; cursor: pointer; border-radius: 3px;
+    }
+    .icon-hit svg { width: 14px; height: 14px; pointer-events: none; }
+    .vacio { color: #a33; font-size: 0.9rem; padding: 22px 8px; text-align: center; }
+    .editor { display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid #ddd; }
+    .editor.abierto { display: block; }
+    .bloque.editando { border-style: solid; border-color: #2a6; }
+    .bloque.editando .vacio { display: none; }
+    label { display: block; font-weight: 600; margin: 10px 0 4px; }
+    input, textarea { width: 100%; padding: 8px; }
+    #estado { margin-top: 12px; min-height: 1.2em; }
+  </style>
+</head>
+<body>
+  <!-- Contenedor raíz que incluye PALETA + CANVAS (rompe el filtro inPalette por innerText) -->
+  <div id="app-root">
+    <aside class="paleta" id="paleta">
+      <h2>Paleta de componentes</h2>
+      <div class="paleta-item">Banner rentable</div>
+      <div class="paleta-item">Cabecera</div>
+      <div class="paleta-item">Ingredientes</div>
+      <div class="paleta-item">Instrucciones</div>
+      <div class="paleta-item">Lista de Instrucciones</div>
+      <div class="paleta-item">Lista Ingredientes</div>
+      <div class="paleta-item">SEO HTML</div>
+      <div class="paleta-item">tags</div>
+    </aside>
+    <main class="canvas" id="canvas">
+      <h1>Salmón a la parrilla con salsa de palta</h1>
+      <p class="meta">Estás en el proyecto Recetas_jumbo | web</p>
+
+      <section class="bloque" id="comp-cabecera">
+        <div class="bloque-head">
+          <div>
+            <div class="bloque-id">Id: 10f8ed</div>
+            <div class="bloque-nombre">Cabecera</div>
+          </div>
+          <div class="acciones">
+            <div class="icon-hit" data-edit="cabecera" title="">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
+            <div class="icon-hit" data-trash="1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="vacio">Edita este componente vacío desde el lápiz</div>
+        <div class="editor" data-editor="cabecera">
+          <label for="titulo">Título</label>
+          <input id="titulo" name="titulo" type="text">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" name="descripcion" rows="2"></textarea>
+          <button type="button" class="btn-guardar-editor">Guardar</button>
+        </div>
+      </section>
+
+      <section class="bloque" id="comp-tags">
+        <div class="bloque-head">
+          <div>
+            <div class="bloque-id">Id: 48a601</div>
+            <div class="bloque-nombre">tags</div>
+          </div>
+          <div class="acciones">
+            <div class="icon-hit" data-edit="tags">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
+            <div class="icon-hit" data-trash="1"><svg viewBox="0 0 24 24"><path d="M3 6h18"/></svg></div>
+          </div>
+        </div>
+        <div class="vacio">Edita este componente vacío desde el lápiz</div>
+        <div class="editor" data-editor="tags">
+          <label for="tags">Tags</label>
+          <input id="tags" name="tags" type="text">
+          <button type="button" class="btn-guardar-editor">Guardar</button>
+        </div>
+      </section>
+
+      <section class="bloque" id="comp-ings">
+        <div class="bloque-head">
+          <div>
+            <div class="bloque-id">Id: 20bf2b</div>
+            <div class="bloque-nombre">Lista Ingredientes</div>
+          </div>
+          <div class="acciones">
+            <div class="icon-hit" data-edit="ingredientes">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
+            <div class="icon-hit" data-trash="1"><svg viewBox="0 0 24 24"><path d="M3 6h18"/></svg></div>
+          </div>
+        </div>
+        <div class="vacio">Edita este componente vacío desde el lápiz</div>
+        <div class="editor" data-editor="ingredientes">
+          <label for="ingredientes">Ingredientes</label>
+          <textarea id="ingredientes" name="ingredientes" rows="3"></textarea>
+          <button type="button" class="btn-guardar-editor">Guardar</button>
+        </div>
+      </section>
+
+      <p id="estado"></p>
+    </main>
+  </div>
+  <script>
+    function cerrarTodos() {
+      document.querySelectorAll('.bloque').forEach((b) => b.classList.remove('editando'));
+      document.querySelectorAll('.editor').forEach((e) => e.classList.remove('abierto'));
+    }
+    document.querySelectorAll('.icon-hit[data-edit]').forEach((btn) => {
+      btn.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const key = btn.getAttribute('data-edit');
+        cerrarTodos();
+        const bloque = btn.closest('.bloque');
+        bloque.classList.add('editando');
+        bloque.querySelector('.editor').classList.add('abierto');
+        document.getElementById('estado').textContent = 'editando:' + key;
+      });
+    });
+    document.querySelectorAll('.btn-guardar-editor').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const bloque = btn.closest('.bloque');
+        document.getElementById('estado').textContent = 'guardado:' + (bloque.querySelector('[data-edit]')?.getAttribute('data-edit') || '');
+        cerrarTodos();
+      });
+    });
+  </script>
+</body>
+</html>
