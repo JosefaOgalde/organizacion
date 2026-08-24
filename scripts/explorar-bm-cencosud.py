@@ -3414,6 +3414,154 @@ def _rellenar_un_campo_tag(node, valor: str) -> bool:
     return _rellenar_locator(node, valor)
 
 
+_ITEM_TAG_ACORDEON_JS = r"""(args) => {
+  const n = args.n;
+  const tagVal = args.tag;
+  const clean = (s) => (s || '').replace(/\s+/g, ' ').trim();
+  const reExact = new RegExp('^Formulario\\s+[ÍI]tem\\s+' + n + '\\s*$', 'i');
+  const reLoose = new RegExp('Formulario\\s+[ÍI]tem\\s+' + n + '\\b', 'i');
+  let header = null;
+  for (const el of document.querySelectorAll(
+    'button, [role="button"], summary, h3, h4, h5, div, span, label, a'
+  )) {
+    const raw = clean(el.innerText);
+    if (raw.length > 56) continue;
+    if (reExact.test(raw)) { header = el; break; }
+    if (!header && raw.length < 36 && reLoose.test(raw)) header = el;
+  }
+  if (!header) return { ok: false, why: 'sin cabecera' };
+  header.scrollIntoView({ block: 'center' });
+  header.click();
+  const isVis = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 3 || r.height < 3) return false;
+    const st = getComputedStyle(el);
+    return st.display !== 'none' && st.visibility !== 'hidden';
+  };
+  const setNative = (el, v) => {
+    el.focus();
+    const desc = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+    if (desc && desc.set) desc.set.call(el, v);
+    else el.value = v;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    el.dispatchEvent(new Event('blur', { bubbles: true }));
+  };
+  const pickTagInput = (root) => {
+    const inputs = [...root.querySelectorAll(
+      'input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), textarea, [role="textbox"]'
+    )].filter(isVis);
+    if (!inputs.length) return null;
+    inputs.sort((a, b) => {
+      const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      return ra.top - rb.top || ra.left - rb.left;
+    });
+    for (const inp of inputs) {
+      let lt = '';
+      if (inp.id) {
+        const lab = root.querySelector('label[for="' + inp.id + '"]');
+        if (lab) lt = clean(lab.innerText).toLowerCase();
+      }
+      const wrap = inp.closest('mat-form-field, [class*="field" i], div') || inp.parentElement;
+      if (wrap) {
+        for (const s of wrap.querySelectorAll('label, mat-label, span')) {
+          const t = clean(s.innerText).toLowerCase();
+          if (/^tag\b/.test(t)) return inp;
+        }
+      }
+      if (/^tag\b/.test(lt)) return inp;
+    }
+    return inputs[0];
+  };
+  let root = header.closest(
+    '.acordeon, .form-item-bm, mat-expansion-panel, [class*="expansion-panel" i], [class*="accordion-item" i]'
+  );
+  if (!root) {
+    let el = header.parentElement;
+    for (let depth = 0; depth < 8 && el; depth++) {
+      const inputs = el.querySelectorAll('input:not([type="hidden"])');
+      const t = clean(el.innerText);
+      if (inputs.length >= 1 && inputs.length <= 4 && reLoose.test(t) && t.length < 320) {
+        root = el;
+        break;
+      }
+      el = el.parentElement;
+    }
+  }
+  if (!root) return { ok: false, why: 'sin panel' };
+  const tagInp = pickTagInput(root);
+  if (!tagInp) return { ok: false, why: 'sin input Tag' };
+  setNative(tagInp, tagVal);
+  return { ok: true, written: tagInp.value || tagVal };
+}"""
+
+
+def _rellenar_item_tag_acordeon(page, n_item: int, tag: str) -> bool:
+    """Abre Formulario Ítem N, escribe Tag* (no Link). Flujo BM real."""
+    print(f"  · Abro Formulario Ítem {n_item}…", flush=True)
+    for target in _targets_page_y_frames(page):
+        try:
+            res = target.evaluate(_ITEM_TAG_ACORDEON_JS, {"n": n_item, "tag": tag}) or {}
+            page.wait_for_timeout(500)
+            if res.get("ok"):
+                print(
+                    f"  ✓ tag ítem {n_item} → «{tag}» (acordeón abierto, campo Tag)",
+                    flush=True,
+                )
+                return True
+        except Exception:
+            continue
+
+    cre = re.compile(rf"^Formulario\s+[ÍI]tem\s+{n_item}\s*$", re.I)
+    for target in _targets_page_y_frames(page):
+        try:
+            header = target.get_by_text(cre)
+            if not header.count():
+                header = target.get_by_text(
+                    re.compile(rf"Formulario\s+[ÍI]tem\s+{n_item}\b", re.I)
+                )
+            if not header.count():
+                continue
+            h = header.first
+            for j in range(min(header.count(), 6)):
+                cand = header.nth(j)
+                txt = (cand.inner_text() or "").strip()
+                if len(txt) > 48:
+                    continue
+                h = cand
+                break
+            h.scroll_into_view_if_needed(timeout=2000)
+            h.click(timeout=2500)
+            page.wait_for_timeout(550)
+            block = h.locator(
+                "xpath=ancestor::*[contains(@class,'acordeon') or contains(@class,'form-item')][1]"
+            )
+            if not block.count():
+                block = h.locator("xpath=ancestor::*[.//input][1]")
+            for sel in (
+                "xpath=.//label[contains(.,'Tag') and not(contains(.,'Link'))]/following::input[1]",
+                "input[data-field='tag']",
+                "input.campo-tag",
+            ):
+                inp = block.locator(sel).first
+                if inp.count() and _rellenar_un_campo_tag(inp, tag):
+                    print(
+                        f"  ✓ tag ítem {n_item} → «{tag}» (acordeón + Tag)",
+                        flush=True,
+                    )
+                    return True
+            dale = block.locator("input[placeholder*='Dale un valor' i]")
+            if dale.count() and _rellenar_un_campo_tag(dale.first, tag):
+                print(
+                    f"  ✓ tag ítem {n_item} → «{tag}» (placeholder Dale un valor)",
+                    flush=True,
+                )
+                return True
+        except Exception:
+            continue
+    return False
+
+
 def _rellenar_tags_via_js(page, tags: list[str]) -> tuple[int, list[str]]:
     """Relleno directo en DOM (React/Material BM). Devuelve (ok_count, tags_restantes)."""
     tags = [t.strip() for t in tags if t and str(t).strip()]
@@ -3435,24 +3583,18 @@ def _rellenar_tags_via_js(page, tags: list[str]) -> tuple[int, list[str]]:
 
 
 def _rellenar_tags_bm(page, tags: list[str]) -> bool:
-    """Formulario Tags BM: Tag* en cada ítem (Link vacío) → Volver guarda."""
+    """Formulario Tags: por cada ítem → abrir acordeón → Tag* → siguiente. Al final Volver."""
     tags = [t.strip() for t in tags if t and str(t).strip()]
     if not tags:
         print("  · Sin tags en el JSON (categorias[])", flush=True)
         return False
 
     print(f"  · Tags a cargar ({len(tags)}): {', '.join(tags)}", flush=True)
-    page.wait_for_timeout(500)
+    page.wait_for_timeout(400)
 
-    ok_count, pendientes = _rellenar_tags_via_js(page, tags)
-    if ok_count >= len(tags):
-        print(f"  ✓ field_tags ({ok_count}/{len(tags)} ítems en el arreglo)", flush=True)
-        return True
-
-    tags_rest = pendientes if pendientes else tags
-    offset = ok_count
-    for i, tag in enumerate(tags_rest):
-        n_item = offset + i + 1
+    ok_count = 0
+    for i, tag in enumerate(tags):
+        n_item = i + 1
         while _contar_items_formulario_tags(page) < n_item:
             if not _click_agregar_item_tags(page):
                 print(
@@ -3460,65 +3602,17 @@ def _rellenar_tags_bm(page, tags: list[str]) -> bool:
                     flush=True,
                 )
                 break
-        _abrir_acordeon_item_tags(page, n_item - 1)
-
-        node = _input_tag_en_item_tags(page, n_item)
-        if node is None:
-            page.wait_for_timeout(400)
-            _abrir_acordeon_item_tags(page, n_item - 1)
-            node = _input_tag_en_item_tags(page, n_item)
-
-        if node is None:
-            # Último recurso: clic en placeholder «Dale un valor» por fila
-            try:
-                for target in _targets_page_y_frames(page):
-                    dale = target.locator("input[placeholder*='Dale un valor' i]")
-                    idx = (n_item - 1) * 2
-                    if dale.count() > idx:
-                        node = dale.nth(idx)
-            except Exception:
-                node = None
-
-        if node is None:
+        if _rellenar_item_tag_acordeon(page, n_item, tag):
+            ok_count += 1
+        else:
             print(f"  ✗ no encontré campo Tag en Formulario Ítem {n_item}", flush=True)
-            continue
-
-        try:
-            node.scroll_into_view_if_needed(timeout=2000)
-        except Exception:
-            pass
-
-        try:
-            if _rellenar_un_campo_tag(node, tag):
-                try:
-                    block = _bloque_acordeon_tags(page, n_item - 1)
-                    if block is not None:
-                        link = block.locator(
-                            "input[data-field='link'], input.campo-link, "
-                            "xpath=.//label[contains(.,'Link') or contains(.,'URL')]/following::input[1]"
-                        )
-                        if link.count():
-                            lv = (link.first.input_value() or "").strip()
-                            if lv:
-                                link.first.fill("")
-                except Exception:
-                    pass
-                ok_count += 1
-                print(
-                    f"  ✓ tag ítem {n_item} → «{tag}» (campo Tag, no Link)",
-                    flush=True,
-                )
-            else:
-                print(f"  ✗ no pude escribir «{tag}» en Tag del ítem {n_item}", flush=True)
-        except Exception as exc:
-            print(f"  · Falló tag «{tag}»: {exc}", flush=True)
 
     if ok_count == 0:
         print("  ✗ field_tags: no pude rellenar el arreglo", flush=True)
         return False
 
     print(f"  ✓ field_tags ({ok_count}/{len(tags)} ítems en el arreglo)", flush=True)
-    return ok_count == len(tags) or ok_count > 0
+    return ok_count >= len(tags) or ok_count > 0
 
 
 def _esperar_canvas_tras_cabecera(page) -> None:
