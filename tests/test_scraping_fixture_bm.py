@@ -255,9 +255,34 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             self.assertEqual(page.input_value("#dificultad"), "Fácil")
             self.assertTrue(explorar._rellenar_imagen(page, receta))
             self.assertTrue(page.input_value("#imagen-url").startswith("file:"))
+            # Tras imagen, reparar por si Duración se pisó
+            explorar._asegurar_cabecera_bm(page, "Fácil", "30", "4")
+            self.assertEqual(page.input_value("#duracion"), "30")
+            self.assertEqual(page.input_value("#dificultad"), "Fácil")
             page.locator("#btn-guardar").click()
             estado = page.locator("#estado").inner_text()
             self.assertIn("guardado:", estado)
+            browser.close()
+
+    def test_dificultad_no_pisa_duracion_con_fallback(self):
+        """Regresión: escribir «Fácil» en number dejaba Duración=0."""
+        explorar = cargar_explorar()
+        fixture = Path(__file__).resolve().parent / "fixtures/bm-formulario-header.html"
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(fixture.as_uri())
+            page.fill("#titulo", "Salmón")
+            page.fill("#duracion", "30")
+            page.fill("#porciones", "4")
+            # Simula lo que hacía el bug: fill no numérico en Duración
+            page.locator("#duracion").evaluate(
+                """el => { el.value = ''; el.dispatchEvent(new Event('input', {bubbles:true})); }"""
+            )
+            explorar._asegurar_cabecera_bm(page, "Fácil", "30", "4")
+            self.assertEqual(page.input_value("#duracion"), "30")
+            self.assertEqual(page.input_value("#dificultad"), "Fácil")
+            self.assertEqual(page.input_value("#porciones"), "4")
             browser.close()
 
     def test_catalogo_ruta_local_salmon(self):
