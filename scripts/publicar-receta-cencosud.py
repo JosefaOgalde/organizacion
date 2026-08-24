@@ -3,10 +3,9 @@
 CRC — Carga recetas en Business Manager Cencosud (local).
 
 Solo tags (cabecera ya OK en el canvas):
-  python scripts\\publicar-receta-cencosud.py out\\receta.json --headed
+  python scripts\\publicar-receta-cencosud.py out\\receta.json
 
-Ingredientes / pasos / SEO (después):
-  python scripts\\publicar-receta-cencosud.py out\\receta.json --headed --continuar
+El navegador se abre visible por defecto. Sin ventana: --headless
 """
 from __future__ import annotations
 
@@ -17,7 +16,7 @@ import re
 import sys
 from pathlib import Path
 
-CRC_VERSION = "2026-08-24-tags-v9"
+CRC_VERSION = "2026-08-24-tags-v10"
 
 ROOT = Path(__file__).resolve().parents[1]
 CRC = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud"
@@ -66,6 +65,20 @@ def pausa_usuario(msg: str) -> None:
         pass
 
 
+def navegar_a_tags_o_canvas(page, env: dict, selectores: dict, receta: dict) -> str:
+    """Abre el BM: URL de tags si está en .env; si no, zona de trabajo (canvas)."""
+    if env.get("CENCOSUD_BM_TAGS_URL"):
+        base = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/").rstrip("/")
+        url = env["CENCOSUD_BM_TAGS_URL"]
+        if url.startswith("/"):
+            url = base + url
+        print(f"  → tags: {url[:100]}…")
+        page.goto(url, wait_until="domcontentloaded", timeout=120_000)
+        page.wait_for_timeout(2500)
+        return url
+    return navegar_a_canvas(page, env, selectores, receta)
+
+
 def navegar_a_canvas(page, env: dict, selectores: dict, receta: dict) -> str:
     """Zona de trabajo (cabecera + tags + …). No abre el editor de tags."""
     base = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/").rstrip("/")
@@ -94,6 +107,15 @@ def navegar_a_canvas(page, env: dict, selectores: dict, receta: dict) -> str:
     page.goto(url, wait_until="domcontentloaded", timeout=120_000)
     page.wait_for_timeout(2500)
     return url
+
+
+def _resolver_headed(args, env: dict) -> bool:
+    """CRC es interactivo: navegador visible salvo --headless o CENCOSUD_BM_HEADED=false."""
+    if getattr(args, "headless", False):
+        return False
+    if env.get("CENCOSUD_BM_HEADED", "").lower() in ("0", "false", "no"):
+        return False
+    return True
 
 
 def en_zona_trabajo(page) -> bool:
@@ -386,10 +408,10 @@ def fill(page, sel: str | None, value, label: str) -> bool:
 def main() -> int:
     ap = argparse.ArgumentParser(description="CRC — Business Manager Cencosud")
     ap.add_argument("json_path", type=Path)
-    ap.add_argument("--headed", action="store_true")
+    ap.add_argument("--headed", action="store_true", help="(legacy) Igual que default: navegador visible")
+    ap.add_argument("--headless", action="store_true", help="Sin ventana de navegador")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--continuar", action="store_true", help="Tags OK → ingredientes/pasos/seo")
-    ap.add_argument("--ya-en-tags", action="store_true", help="No navegar; abre tú «Edición de tags» y ENTER")
     ap.add_argument("--no-session", action="store_true")
     args = ap.parse_args()
 
@@ -401,11 +423,12 @@ def main() -> int:
     receta = json.loads(path.read_text(encoding="utf-8"))
     env = load_env(ENV_PATH)
     selectores = load_selectores()
-    headed = args.headed or env.get("CENCOSUD_BM_HEADED", "true").lower() in ("1", "true", "yes")
+    headed = _resolver_headed(args, env)
 
     print(f"=== CRC · {CRC_VERSION} ===")
     print(f"receta: {receta.get('titulo')}")
     print(f"modo:   {'continuar' if args.continuar else 'SOLO TAGS'}")
+    print(f"browser: {'VISIBLE (Chromium)' if headed else 'headless'}")
 
     try:
         from playwright.sync_api import sync_playwright
@@ -414,29 +437,29 @@ def main() -> int:
         return 1
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=not headed)
+        print("Abriendo Chromium…")
+        try:
+            browser = p.chromium.launch(
+                headless=not headed,
+                args=["--start-maximized"] if headed else [],
+            )
+        except Exception as e:
+            print(f"✗ No pude abrir Chromium: {e}", file=sys.stderr)
+            print("  Prueba: playwright install chromium", file=sys.stderr)
+            return 1
         ctx: dict = {"viewport": {"width": 1400, "height": 900}}
         if not args.no_session and SESSION_PATH.exists():
             ctx["storage_state"] = str(SESSION_PATH)
         context = browser.new_context(**ctx)
         page = context.new_page()
 
-        if args.ya_en_tags:
-            print("  · --ya-en-tags: abre «Edición de tags» en Chromium…")
-            pausa_usuario("     Cuando veas el formulario, pulsa ENTER…")
-        elif not args.continuar and env.get("CENCOSUD_BM_TAGS_URL"):
-            url = env["CENCOSUD_BM_TAGS_URL"]
-            if url.startswith("/"):
-                base = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/").rstrip("/")
-                url = base + url
-            print(f"  → tags directo: {url[:100]}…")
-            page.goto(url, wait_until="domcontentloaded", timeout=120_000)
-            page.wait_for_timeout(2500)
-        else:
+        if args.continuar:
             navegar_a_canvas(page, env, selectores, receta)
+        else:
+            navegar_a_tags_o_canvas(page, env, selectores, receta)
 
         if not en_zona_trabajo(page) and not en_formulario_tags(page):
-            pausa_usuario("Abre «Edición de tags» (o zona de trabajo) en Chromium y pulsa ENTER…")
+            pausa_usuario("Si no cargó la receta/tags, ábrelo en Chromium y pulsa ENTER…")
 
         if not args.continuar:
             ok = fill_tags(page, selectores, receta.get("categorias") or [])
