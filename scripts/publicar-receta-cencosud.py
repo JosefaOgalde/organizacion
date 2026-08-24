@@ -17,7 +17,7 @@ import re
 import sys
 from pathlib import Path
 
-CRC_VERSION = "2026-08-24-tags-v4"
+CRC_VERSION = "2026-08-24-tags-v5"
 
 ROOT = Path(__file__).resolve().parents[1]
 CRC = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud"
@@ -44,6 +44,7 @@ def load_env(path: Path) -> dict[str, str]:
         "CENCOSUD_BM_HEADED",
         "CENCOSUD_BM_DRY_RUN",
         "CENCOSUD_BM_RECETA_URL",
+        "CENCOSUD_BM_TAGS_URL",
     ):
         if os.environ.get(k):
             data[k] = os.environ[k]
@@ -63,6 +64,13 @@ def navegar_a_editor(page, env: dict, selectores: dict, receta: dict) -> str:
     """Abre la URL ya mapeada (bm-estructura / bm-selectores / .env)."""
     base = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/").rstrip("/")
     candidatos: list[str] = []
+
+    if env.get("CENCOSUD_BM_TAGS_URL"):
+        candidatos.insert(0, env["CENCOSUD_BM_TAGS_URL"])
+
+    for k in ("url_editor_tags", "url_tags"):
+        if selectores.get(k):
+            candidatos.insert(0, str(selectores[k]))
 
     if env.get("CENCOSUD_BM_RECETA_URL"):
         candidatos.append(env["CENCOSUD_BM_RECETA_URL"])
@@ -100,8 +108,9 @@ def en_formulario_tags(page) -> bool:
         """() => {
       const t = document.body.innerText || '';
       const u = location.href;
-      return (/edici[oó]n de tags|formulario tags/i.test(t) || /\\/edit\\/component/i.test(u))
-        && (/arreglo|tag\\*|formulario.{0,12}(ítem|item)/i.test(t));
+      if (/formulario tags|edici[oó]n de tags/i.test(t)) return true;
+      if (/\\/edit\\/component/i.test(u) && /tag/i.test(t + document.title)) return true;
+      return false;
     }"""
     )
 
@@ -205,43 +214,61 @@ def _abrir_lapiz_componente(page, nombre: str) -> bool:
     return False
 
 
+def _abrir_item_arreglo(page, n: int) -> None:
+    for pat in (
+        rf"Formulario\s+Ítem\s+{n}",
+        rf"Formulario\s+Item\s+{n}",
+        rf"Formulario\s+ítem\s+{n}",
+    ):
+        item = page.get_by_text(re.compile(pat, re.I)).first
+        if item.count():
+            item.click()
+            page.wait_for_timeout(700)
+            return
+    loc = page.get_by_text(re.compile(rf"Formulario\s+Í?tem\s+{n}|ítem\s+{n}|item\s+{n}", re.I)).first
+    if loc.count():
+        loc.click()
+        page.wait_for_timeout(700)
+
+
+def _escribir_tag(page, tag: str) -> bool:
+    candidatos = [
+        page.get_by_label(re.compile(r"tag\*?", re.I)).last,
+        page.locator('input[name*="tag" i]:visible').last,
+        page.locator('input:visible:not([type="checkbox"]):not([type="hidden"])').last,
+    ]
+    for loc in candidatos:
+        if not loc.count():
+            continue
+        try:
+            loc.wait_for(state="visible", timeout=5000)
+            loc.click(timeout=3000)
+            loc.fill(tag, timeout=5000)
+            page.wait_for_timeout(200)
+            return True
+        except Exception:
+            try:
+                loc.click(force=True, timeout=2000)
+                page.keyboard.press("Control+a")
+                page.keyboard.type(tag, delay=30)
+                page.wait_for_timeout(200)
+                return True
+            except Exception:
+                continue
+    return False
+
+
 def _agregar_tag_repeater(page, scope, tag: str, indice: int) -> bool:
-  # ítem 1 ya existe; del 2 en adelante «Agregar item»
     if indice > 0:
-        for pat in (r"agregar\s*item", r"agregar", r"añadir", r"add\s*item"):
+        for pat in (r"agregar\s*item", r"agregar", r"añadir"):
             btn = page.get_by_role("button", name=re.compile(pat, re.I)).first
             if btn.count() and btn.is_visible():
                 btn.click()
-                page.wait_for_timeout(400)
+                page.wait_for_timeout(500)
                 break
 
-    n = indice + 1
-    for pat in (rf"formulario\s*ítem\s*{n}", rf"formulario\s*item\s*{n}", rf"ítem\s*{n}", rf"item\s*{n}"):
-        item = page.get_by_text(re.compile(pat, re.I)).first
-        if item.count() and item.is_visible():
-            try:
-                item.click()
-                page.wait_for_timeout(300)
-            except Exception:
-                pass
-            break
-
-    inp = page.get_by_label(re.compile(r"tag\*?", re.I)).last
-    if not inp.count():
-        inp = page.locator(
-            'input[name*="tag" i]:visible, input[id*="tag" i]:visible, textarea[name*="tag" i]:visible'
-        ).last
-    if not inp.count():
-        inp = scope.locator('input:visible, textarea:visible').last
-    if not inp.count():
-        return False
-
-    inp.click()
-    inp.fill(tag)
-    page.wait_for_timeout(200)
-    page.keyboard.press("Tab")
-    page.wait_for_timeout(250)
-    return True
+    _abrir_item_arreglo(page, indice + 1)
+    return _escribir_tag(page, tag)
 
 
 def _tags_guardados(page, tags: list[str]) -> bool:
@@ -378,10 +405,10 @@ def main() -> int:
         page = context.new_page()
 
         navegar_a_editor(page, env, selectores, receta)
-        if not en_zona_trabajo(page):
-            pausa_usuario(
-                "\nNo veo la zona de trabajo. Abre la receta (salmon) en el BM y pulsa ENTER…"
-            )
+        if en_formulario_tags(page):
+            print("  detectado: Edición de tags")
+        elif en_zona_trabajo(page):
+            print("  detectado: zona de trabajo")
 
         if not args.continuar:
             categorias = receta.get("categorias") or []
