@@ -57,6 +57,84 @@ def load_selectores() -> dict:
     return {}
 
 
+def _scope_editor(page):
+    for sel in (
+        '[role="dialog"]:visible',
+        '[class*="drawer"]:visible',
+        '[class*="panel"]:visible',
+        '[class*="sidebar"]:visible',
+        'form:visible',
+    ):
+        loc = page.locator(sel).first
+        if loc.count():
+            return loc
+    return page
+
+
+def _agregar_tag_repeater(page, scope, tag: str) -> bool:
+    for pat in (r"agregar\s*item", r"agregar", r"añadir", r"add\s*item"):
+        btn = scope.get_by_role("button", name=re.compile(pat, re.I)).first
+        if btn.count() and btn.is_visible():
+            btn.click()
+            page.wait_for_timeout(350)
+            break
+
+    inp = scope.get_by_label(re.compile(r"tag\*?", re.I)).last
+    if not inp.count():
+        inp = scope.locator(
+            'input[name*="tag" i]:visible, input[id*="tag" i]:visible, textarea[name*="tag" i]:visible'
+        ).last
+    if not inp.count():
+        inp = scope.locator('input:visible, textarea:visible, [contenteditable="true"]:visible').last
+    if not inp.count():
+        return False
+
+    inp.click()
+    inp.fill(tag)
+    page.wait_for_timeout(200)
+    page.keyboard.press("Enter")
+    page.wait_for_timeout(200)
+
+    for pat in (r"agregar.*arreglo", r"agregar.*tag", r"confirmar", r"aceptar"):
+        btn = scope.get_by_role("button", name=re.compile(pat, re.I)).first
+        if btn.count() and btn.is_visible():
+            btn.click()
+            page.wait_for_timeout(300)
+            break
+    return True
+
+
+def _guardar_formulario_tags(page, scope) -> bool:
+    for pat in (r"^guardar$", r"guardar cambios", r"save", r"aplicar"):
+        btn = scope.get_by_role("button", name=re.compile(pat, re.I)).first
+        if btn.count() and btn.is_visible():
+            btn.click()
+            page.wait_for_timeout(700)
+            return True
+    return False
+
+
+def _volver_al_canvas(page) -> None:
+    for pat in (r"volver", r"regresar", r"back"):
+        btn = page.get_by_role("button", name=re.compile(pat, re.I)).first
+        if btn.count() and btn.is_visible():
+            btn.click()
+            page.wait_for_timeout(500)
+            return
+
+
+def _confirmar_si_acepto(page) -> bool:
+    dlg = page.locator('text=/cambios sin guardar/i')
+    if not dlg.count():
+        return False
+    btn = page.get_by_role("button", name=re.compile(r"s[ií],\s*acepto", re.I)).first
+    if btn.count() and btn.is_visible():
+        btn.click()
+        page.wait_for_timeout(900)
+        return True
+    return False
+
+
 def _abrir_editor_tags(page, selectores: dict) -> None:
     if selectores.get("btn_tags_abrir"):
         page.locator(selectores["btn_tags_abrir"]).first.click()
@@ -87,17 +165,20 @@ def _abrir_editor_tags(page, selectores: dict) -> None:
     page.wait_for_timeout(600)
 
 
-def _tags_guardados(page) -> bool:
+def _tags_guardados(page, tags: list[str]) -> bool:
     return page.evaluate(
-        """() => {
+        """(expected) => {
       const vacio = /componente vac[ií]o|edita este componente/i;
       for (const el of document.querySelectorAll('div, section, article, li')) {
         const lines = (el.innerText || '').split('\\n').map(s => s.trim()).filter(Boolean);
         if (!lines.length || lines[0].toLowerCase() !== 'tags') continue;
-        return !vacio.test(el.innerText || '');
+        const text = (el.innerText || '').toLowerCase();
+        if (vacio.test(el.innerText || '')) return false;
+        return expected.some(t => text.includes(String(t).toLowerCase()));
       }
       return false;
-    }"""
+    }""",
+        tags,
     )
 
 
@@ -107,58 +188,33 @@ def fill_tags(page, selectores: dict, categorias: list) -> bool:
         print("  · omitido tags")
         return True
     try:
+        print(f"  tags a cargar ({len(tags)}): {', '.join(tags)}")
         _abrir_editor_tags(page, selectores)
-        inp_sel = selectores.get("field_tags_input") or selectores.get("field_tags")
-        guardar = selectores.get("btn_tags_guardar")
+        scope = _scope_editor(page)
 
-        modal = page.locator(
-            '[role="dialog"]:visible, .modal:visible, [class*="Modal"]:visible, [class*="modal"]:visible'
-        ).first
-        scope = modal if modal.count() else page
+        ok_items = 0
+        for i, tag in enumerate(tags, 1):
+            if _agregar_tag_repeater(page, scope, tag):
+                ok_items += 1
+                print(f"    · item {i}: {tag}")
+            else:
+                print(f"    ✗ item {i}: no pude agregar «{tag}»")
 
-        inp = scope.locator(inp_sel).first if inp_sel else scope.locator(
-            'input[type="text"], input:not([type]), textarea, [contenteditable="true"]'
-        ).first
-        if not inp.count() or not inp.is_visible():
-            print("  ✗ tags: no hay input en el popup")
+        if ok_items == 0:
+            print("  ✗ tags: ningún ítem en el repetidor Tag*")
             return False
 
-        for tag in tags:
-            inp.click()
-            inp.fill(tag)
-            page.keyboard.press("Enter")
-            page.wait_for_timeout(250)
-            opt = scope.get_by_text(tag, exact=True).first
-            if opt.count() and opt.is_visible():
-                try:
-                    opt.click()
-                except Exception:
-                    pass
+        scope = _scope_editor(page)
+        if not _guardar_formulario_tags(page, scope):
+            print("  ! tags: sin botón Guardar en el formulario (intento Volver igual)")
+        _volver_al_canvas(page)
+        _confirmar_si_acepto(page)
+        page.wait_for_timeout(1000)
 
-        saved = False
-        if guardar:
-            btn = scope.locator(guardar).first
-            if btn.count():
-                btn.click()
-                saved = True
-        if not saved:
-            for pat in (r"s[ií],\s*acepto", r"^acepto$", r"guardar", r"aceptar", r"confirmar", r"aplicar", r"^ok$", r"save"):
-                btn = scope.get_by_role("button", name=re.compile(pat, re.I)).first
-                if btn.count() and btn.is_visible():
-                    btn.click()
-                    saved = True
-                    break
-        # BM: popup «Tienes cambios sin guardar» → botón azul «Sí, acepto»
-        if not saved or page.locator('text=/cambios sin guardar/i').count():
-            for pat in (r"s[ií],\s*acepto", r"^acepto$"):
-                btn = page.get_by_role("button", name=re.compile(pat, re.I)).first
-                if btn.count() and btn.is_visible():
-                    btn.click()
-                    saved = True
-                    break
-        page.wait_for_timeout(800)
-        ok = saved and _tags_guardados(page)
-        print(f"  {'✓' if ok else '✗'} tags ({len(tags)})")
+        ok = _tags_guardados(page, tags)
+        print(f"  {'✓' if ok else '✗'} tags en canvas ({ok_items}/{len(tags)} ítems)")
+        if not ok:
+            print("  ✗ el bloque tags sigue vacío en la zona de trabajo")
         return ok
     except Exception as e:
         print(f"  ✗ tags: {e}")
