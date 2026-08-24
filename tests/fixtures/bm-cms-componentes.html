@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>BM Cencosud · Fixture CMS por componentes (pruebas CRC)</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 880px; margin: 24px auto; padding: 0 16px; background: #f6f7f9; }
+    h1 { font-size: 1.1rem; margin-bottom: 8px; }
+    .meta { color: #555; font-size: 0.9rem; margin-bottom: 20px; }
+    .bloque {
+      background: #fff;
+      border: 2px dashed #c44;
+      margin: 14px 0;
+      padding: 12px 14px 18px;
+      position: relative;
+    }
+    .bloque-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .bloque-nombre { font-weight: 700; font-size: 0.95rem; }
+    .bloque-id { color: #888; font-size: 0.75rem; font-family: monospace; }
+    .acciones-bloque { display: flex; gap: 6px; }
+    .acciones-bloque button {
+      width: 32px; height: 32px; border: 1px solid #ccc; background: #fafafa;
+      cursor: pointer; border-radius: 4px; font-size: 14px; line-height: 1;
+    }
+    .acciones-bloque button:hover { background: #eee; }
+    .vacio { color: #a33; font-size: 0.9rem; padding: 28px 8px; text-align: center; }
+    .editor {
+      display: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+    }
+    .editor.abierto { display: block; }
+    .bloque.editando { border-style: solid; border-color: #2a6; }
+    .bloque.editando .vacio { display: none; }
+    label { display: block; font-weight: 600; margin: 12px 0 4px; }
+    input, textarea, select { width: 100%; box-sizing: border-box; padding: 8px; }
+    .editor-acciones { margin-top: 12px; display: flex; gap: 8px; }
+    .editor-acciones button { padding: 8px 12px; cursor: pointer; font-weight: 600; }
+    #estado { margin-top: 16px; min-height: 1.2em; }
+  </style>
+</head>
+<body>
+  <h1>Salmón a la parrilla con salsa de palta</h1>
+  <p class="meta">Recetas_Jumbo | web · Gestor de contenido (fixture)</p>
+
+  <section class="bloque" data-component="Cabecera" data-type="Header" id="comp-cabecera">
+    <div class="bloque-head">
+      <div>
+        <div class="bloque-nombre">Cabecera</div>
+        <div class="bloque-id">e45e7e · Header</div>
+      </div>
+      <div class="acciones-bloque">
+        <button type="button" class="btn-lapiz" aria-label="Editar Cabecera" title="Editar">✎</button>
+        <button type="button" aria-label="Eliminar" title="Eliminar">🗑</button>
+        <button type="button" aria-label="Más opciones" title="Más">⋮</button>
+      </div>
+    </div>
+    <div class="vacio">Edita este componente vacío desde el lápiz</div>
+    <div class="editor" data-editor="cabecera">
+      <label for="titulo">Título de la receta</label>
+      <input id="titulo" name="titulo" type="text">
+      <label for="descripcion">Descripción</label>
+      <textarea id="descripcion" name="descripcion" rows="3"></textarea>
+      <label for="porciones">Porciones</label>
+      <input id="porciones" name="porciones" type="text">
+      <label for="dificultad">Dificultad</label>
+      <select id="dificultad" name="dificultad">
+        <option value="">—</option>
+        <option value="facil">Fácil</option>
+        <option value="media">Media</option>
+        <option value="dificil">Difícil</option>
+      </select>
+      <label for="tiempo">Tiempo total</label>
+      <input id="tiempo" name="tiempo" type="text" placeholder="35 min">
+      <div class="editor-acciones">
+        <button type="button" class="btn-guardar-editor">Guardar</button>
+        <button type="button" class="btn-cerrar-editor">Cerrar</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque" data-component="tags" data-type="Tags" id="comp-tags">
+    <div class="bloque-head">
+      <div>
+        <div class="bloque-nombre">tags</div>
+        <div class="bloque-id">d54250 · Tags</div>
+      </div>
+      <div class="acciones-bloque">
+        <button type="button" class="btn-lapiz" aria-label="Editar tags" title="Editar">✎</button>
+        <button type="button" aria-label="Eliminar" title="Eliminar">🗑</button>
+        <button type="button" aria-label="Más opciones" title="Más">⋮</button>
+      </div>
+    </div>
+    <div class="vacio">Edita este componente vacío desde el lápiz</div>
+    <div class="editor" data-editor="tags">
+      <label for="tags">Tags / categorías</label>
+      <input id="tags" name="tags" type="text">
+      <div class="editor-acciones">
+        <button type="button" class="btn-guardar-editor">Guardar</button>
+        <button type="button" class="btn-cerrar-editor">Cerrar</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque" data-component="Lista Ingredientes" data-type="list_ingredients" id="comp-ingredientes">
+    <div class="bloque-head">
+      <div>
+        <div class="bloque-nombre">Lista Ingredientes</div>
+        <div class="bloque-id">dbeeca · list_ingredients</div>
+      </div>
+      <div class="acciones-bloque">
+        <button type="button" class="btn-lapiz" aria-label="Editar Lista Ingredientes" title="Editar">✎</button>
+        <button type="button" aria-label="Eliminar" title="Eliminar">🗑</button>
+        <button type="button" aria-label="Más opciones" title="Más">⋮</button>
+      </div>
+    </div>
+    <div class="vacio">Edita este componente vacío desde el lápiz</div>
+    <div class="editor" data-editor="ingredientes">
+      <label for="ingredientes">Ingredientes</label>
+      <textarea id="ingredientes" name="ingredientes" rows="5"></textarea>
+      <div class="editor-acciones">
+        <button type="button" class="btn-guardar-editor">Guardar</button>
+        <button type="button" class="btn-cerrar-editor">Cerrar</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque" data-component="Lista de Instrucciones" data-type="list_instructions" id="comp-instrucciones">
+    <div class="bloque-head">
+      <div>
+        <div class="bloque-nombre">Lista de Instrucciones</div>
+        <div class="bloque-id">1463f6 · list_instructions</div>
+      </div>
+      <div class="acciones-bloque">
+        <button type="button" class="btn-lapiz" aria-label="Editar Lista de Instrucciones" title="Editar">✎</button>
+        <button type="button" aria-label="Eliminar" title="Eliminar">🗑</button>
+        <button type="button" aria-label="Más opciones" title="Más">⋮</button>
+      </div>
+    </div>
+    <div class="vacio">Edita este componente vacío desde el lápiz</div>
+    <div class="editor" data-editor="instrucciones">
+      <label for="pasos">Pasos de preparación</label>
+      <textarea id="pasos" name="pasos" rows="5"></textarea>
+      <div class="editor-acciones">
+        <button type="button" class="btn-guardar-editor">Guardar</button>
+        <button type="button" class="btn-cerrar-editor">Cerrar</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque" data-component="SEO HTML" data-type="seo_html" id="comp-seo">
+    <div class="bloque-head">
+      <div>
+        <div class="bloque-nombre">SEO HTML</div>
+        <div class="bloque-id">374679 · seo_html</div>
+      </div>
+      <div class="acciones-bloque">
+        <button type="button" class="btn-lapiz" aria-label="Editar SEO HTML" title="Editar">✎</button>
+        <button type="button" aria-label="Eliminar" title="Eliminar">🗑</button>
+        <button type="button" aria-label="Más opciones" title="Más">⋮</button>
+      </div>
+    </div>
+    <div class="vacio">Edita este componente vacío desde el lápiz</div>
+    <div class="editor" data-editor="seo">
+      <label for="meta-titulo">Meta título (SEO)</label>
+      <input id="meta-titulo" name="metaTitulo" type="text">
+      <label for="meta-descripcion">Meta descripción (SEO)</label>
+      <textarea id="meta-descripcion" name="metaDescripcion" rows="2"></textarea>
+      <div class="editor-acciones">
+        <button type="button" class="btn-guardar-editor">Guardar</button>
+        <button type="button" class="btn-cerrar-editor">Cerrar</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="acciones-globales" style="margin-top:20px;display:flex;gap:12px;">
+    <button type="button" id="btn-borrador">Guardar borrador</button>
+    <button type="button" id="btn-publicar">Publicar</button>
+  </div>
+  <p id="estado" aria-live="polite"></p>
+
+  <script>
+    function cerrarTodos() {
+      document.querySelectorAll('.bloque').forEach((b) => b.classList.remove('editando'));
+      document.querySelectorAll('.editor').forEach((e) => e.classList.remove('abierto'));
+    }
+    document.querySelectorAll('.bloque').forEach((bloque) => {
+      const lapiz = bloque.querySelector('.btn-lapiz');
+      const editor = bloque.querySelector('.editor');
+      lapiz.addEventListener('click', () => {
+        cerrarTodos();
+        bloque.classList.add('editando');
+        editor.classList.add('abierto');
+        document.getElementById('estado').textContent = 'editando:' + (bloque.dataset.component || '');
+      });
+      bloque.querySelectorAll('.btn-guardar-editor').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.getElementById('estado').textContent = 'guardado:' + (bloque.dataset.component || '');
+          cerrarTodos();
+        });
+      });
+      bloque.querySelectorAll('.btn-cerrar-editor').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          cerrarTodos();
+          document.getElementById('estado').textContent = 'cerrado';
+        });
+      });
+    });
+    document.getElementById('btn-borrador').addEventListener('click', () => {
+      document.getElementById('estado').textContent = 'borrador-ok';
+    });
+    document.getElementById('btn-publicar').addEventListener('click', () => {
+      document.getElementById('estado').textContent = 'publicado-ok';
+    });
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') {
+        cerrarTodos();
+        document.getElementById('estado').textContent = 'cerrado';
+      }
+    });
+  </script>
+</body>
+</html>

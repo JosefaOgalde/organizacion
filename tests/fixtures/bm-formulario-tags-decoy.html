@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Edición de tags · decoy panels</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 24px auto; }
+    .sidebar { float: right; width: 180px; border: 1px solid #ccc; padding: 8px; margin-left: 12px; }
+    .arreglo { border: 1px solid #ddd; padding: 12px; margin-top: 12px; }
+    .acordeon { border: 1px solid #ccc; margin: 8px 0; background: #fafafa; }
+    .acordeon-header {
+      display: flex; padding: 10px 12px; cursor: pointer; font-weight: 600;
+      border: none; width: 100%; text-align: left; background: #f0f0f0;
+    }
+    .acordeon-panel { display: none; padding: 12px; border-top: 1px solid #ddd; }
+    .acordeon.abierto .acordeon-panel { display: block; }
+    label { display: block; font-weight: 600; margin-bottom: 4px; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; }
+    mat-expansion-panel { display: block; border: 1px solid #eee; margin: 6px 0; padding: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Edición de tags</h1>
+  <div class="sidebar">
+    <p>Otros paneles BM (decoy)</p>
+    <mat-expansion-panel>Formulario Ítem 5</mat-expansion-panel>
+    <mat-expansion-panel>Formulario Ítem 6</mat-expansion-panel>
+    <mat-expansion-panel>Opciones avanzadas</mat-expansion-panel>
+  </div>
+
+  <h2>Formulario Tags</h2>
+  <div class="arreglo" id="arreglo">
+    <strong>Arreglo</strong>
+    <div id="items"></div>
+    <button type="button" id="btn-agregar">+ Agregar nuevo ítem</button>
+  </div>
+
+  <script>
+    let n = 0;
+    const itemsEl = document.getElementById('items');
+    function toggleAcordeon(btn) {
+      const wrap = btn.closest('.acordeon');
+      wrap.classList.toggle('abierto');
+      btn.setAttribute('aria-expanded', wrap.classList.contains('abierto') ? 'true' : 'false');
+    }
+    function addItem() {
+      n += 1;
+      const idx = n;
+      const wrap = document.createElement('div');
+      wrap.className = 'acordeon';
+      wrap.innerHTML =
+        '<button type="button" class="acordeon-header" aria-expanded="false">' +
+          'Formulario Ítem ' + idx +
+        '</button>' +
+        '<div class="acordeon-panel">' +
+          '<label for="tag-' + idx + '">Tag <span>*</span></label>' +
+          '<input id="tag-' + idx + '" class="campo-tag" data-field="tag" placeholder="Dale un valor">' +
+          '<label for="link-' + idx + '">Link</label>' +
+          '<input id="link-' + idx + '" class="campo-link" data-field="link" placeholder="Dale un valor">' +
+        '</div>';
+      itemsEl.appendChild(wrap);
+      wrap.querySelector('.acordeon-header').addEventListener('click', function () {
+        toggleAcordeon(this);
+      });
+    }
+    document.getElementById('btn-agregar').addEventListener('click', addItem);
+    addItem();
+    addItem();
+    addItem();
+    addItem();
+  </script>
+</body>
+</html>

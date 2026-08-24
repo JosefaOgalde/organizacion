@@ -11,6 +11,7 @@ Uso:
 """
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import sys
@@ -40,6 +41,54 @@ def texto_desde_docx(path: Path) -> str:
         if line:
             lines.append(line)
     return "\n".join(lines)
+
+
+def hiperlinks_docx(path: Path) -> list[dict[str, str]]:
+    """Extrae hipervínculos externos del .docx (texto visible + URL)."""
+    rels_ns = {"r": "http://schemas.openxmlformats.org/package/2006/relationships"}
+    doc_ns = {
+        "w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+        "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+    }
+    out: list[dict[str, str]] = []
+    try:
+        with zipfile.ZipFile(path) as zf:
+            rels_root = ET.fromstring(zf.read("word/_rels/document.xml.rels"))
+            id_a_url: dict[str, str] = {}
+            for rel in rels_root.findall("r:Relationship", rels_ns):
+                if (rel.get("TargetMode") or "") != "External":
+                    continue
+                rid = rel.get("Id") or ""
+                target = rel.get("Target") or ""
+                if rid and target.startswith("http"):
+                    id_a_url[rid] = target
+            doc_root = ET.fromstring(zf.read("word/document.xml"))
+            for hl in doc_root.findall(".//w:hyperlink", doc_ns):
+                rid = hl.get("{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id")
+                if not rid or rid not in id_a_url:
+                    continue
+                texto = "".join(
+                    (t.text or "") for t in hl.findall(".//w:t", doc_ns)
+                ).strip()
+                out.append({"texto": texto, "url": id_a_url[rid]})
+    except Exception:
+        return out
+    return out
+
+
+def url_foto_portada(path: Path | None, hiperlinks: list[dict[str, str]] | None = None) -> str | None:
+    """Prioriza el link de ([Foto]) / Drive; si no, el primer Drive del doc."""
+    links = hiperlinks if hiperlinks is not None else (hiperlinks_docx(path) if path else [])
+    for item in links:
+        texto = (item.get("texto") or "").strip().lower()
+        url = item.get("url") or ""
+        if texto in ("foto", "imagen", "image", "portada") or "foto" in texto:
+            return url
+    for item in links:
+        url = item.get("url") or ""
+        if "drive.google.com" in url or "dropbox.com" in url or "/image" in url.lower():
+            return url
+    return None
 
 
 def slugify(s: str) -> str:
@@ -113,8 +162,9 @@ def parse_ingredientes(bloque: str) -> list[dict]:
             continue
         if line.lower() in ("ingredientes", "ingredientes:"):
             continue
+        # No usar "l" suelto como unidad: rompería "1 limón" → unidad=l, nombre=imón.
         m = re.match(
-            r"^(?P<cant>\d+[.,]?\d*)\s*(?P<unidad>kg|g|gr|ml|l|lt|cdas?|cdtas?|cucharaditas?|cucharadas?|tazas?|unidades?|u\.?)?\s*(?:de\s+)?(?P<nombre>.+)$",
+            r"^(?P<cant>\d+[.,]?\d*)\s*(?P<unidad>kg|g|gr|ml|lt|litros?|cdas?|cdtas?|cucharaditas?|cucharadas?|tazas?|unidades?|u\.?)?\s*(?:de\s+)?(?P<nombre>.+)$",
             line,
             re.I,
         )
@@ -160,9 +210,11 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str]]:
         line = raw.strip()
         if not line:
             continue
-        if re.match(r"(?i)^tips?\b", line):
+        if re.match(r"(?i)^(tips?\b|consejos?\b)", line):
             en_tips = True
-            # si el tip viene en la misma línea tras "Tips …"
+            resto = re.sub(r"(?i)^(tips?|consejos?)\b[:\s\-]*", "", line).strip()
+            if resto and not re.match(r"(?i)^(para\s+un|para\s+el|de\s+la)\b", resto):
+                tips.append(resto.lstrip("-•* ").strip())
             continue
         if en_tips:
             tips.append(line.lstrip("-•* ").strip())
@@ -190,15 +242,46 @@ def es_formato_jumbo(lines: list[str]) -> bool:
     return "meta título" in head or "meta titulo" in head or "meta descripción" in head or "meta descripcion" in head
 
 
-def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
+def construir_receta_jumbo(
+    lines: list[str],
+    texto: str,
+    fuente: str,
+    *,
+    docx_path: Path | None = None,
+) -> dict:
     meta_titulo = valor_despues_label(lines, ["meta título", "meta titulo"])
-    meta_desc = valor_despues_label(lines, ["meta descripción", "meta descripcion"])
+    # Jumbo a veces escribe solo "descripción:" (sin prefijo meta).
+    meta_desc = valor_despues_label(
+        lines,
+        ["meta descripción", "meta descripcion", "descripción", "descripcion"],
+    )
 
     # Título editorial: primera línea que no sea meta/foto/tags/barra
     titulo = None
+    skip_next_desc_value = False
     for ln in lines:
-        low = ln.lower()
-        if low.startswith("meta ") or low in ("meta título:", "meta titulo:", "meta descripción:", "meta descripcion:"):
+        low = ln.lower().strip()
+        if skip_next_desc_value:
+            skip_next_desc_value = False
+            continue
+        if low.startswith("meta ") or low in (
+            "meta título:",
+            "meta titulo:",
+            "meta descripción:",
+            "meta descripcion:",
+            "descripción:",
+            "descripcion:",
+            "descripción",
+            "descripcion",
+        ):
+            # Si el valor de descripción va en la línea siguiente, saltarla también.
+            if low in ("descripción:", "descripcion:", "descripción", "descripcion") or low.startswith(
+                "meta descripción"
+            ) or low.startswith("meta descripcion"):
+                if ":" in ln and not ln.split(":", 1)[1].strip():
+                    skip_next_desc_value = True
+                elif low in ("descripción", "descripcion"):
+                    skip_next_desc_value = True
             continue
         if low.startswith("texto alt:") or low.startswith("([foto])") or low == "[foto]":
             continue
@@ -275,13 +358,19 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
     seo_desc = meta_desc or desc
 
     imagenes = []
-    if alt:
+    url_foto = url_foto_portada(docx_path) if docx_path else None
+    if alt or url_foto:
         imagenes.append(
             {
                 "rutaLocal": "",
-                "alt": alt,
+                "url": url_foto,
+                "alt": alt or "",
                 "rol": "portada",
-                "nota": "Foto referenciada en Word; adjuntar archivo al cargar en BM",
+                "nota": (
+                    "URL de ([Foto]) en el Word"
+                    if url_foto
+                    else "Foto referenciada en Word; adjuntar archivo al cargar en BM"
+                ),
             }
         )
 
@@ -407,18 +496,36 @@ def construir_receta_simple(texto: str, lines: list[str], fuente: str) -> dict:
     }
 
 
-def construir_receta(texto: str, fuente: str) -> dict:
+def construir_receta(texto: str, fuente: str, *, docx_path: Path | None = None) -> dict:
     lines = [ln.strip() for ln in texto.splitlines() if ln.strip()]
     if es_formato_jumbo(lines):
-        return construir_receta_jumbo(lines, texto, fuente)
+        return construir_receta_jumbo(lines, texto, fuente, docx_path=docx_path)
     return construir_receta_simple(texto, lines, fuente)
 
 
+def crear_parser_argumentos() -> argparse.ArgumentParser:
+    return argparse.ArgumentParser(
+        description="Parsea una receta Word o texto a JSON intermedio CRC.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""Ejemplos:
+  python3 scripts/parse-receta-word.py inbox/receta.docx
+  python3 scripts/parse-receta-word.py inbox/receta.docx --force
+
+La segunda forma es destructiva: --force reemplaza conjuntamente el JSON y el raw existentes.
+""",
+    )
+
+
 def main() -> int:
-    if len(sys.argv) < 2:
-        print("Uso: python3 scripts/parse-receta-word.py <archivo.docx|.txt>", file=sys.stderr)
-        return 2
-    src = Path(sys.argv[1]).expanduser().resolve()
+    parser = crear_parser_argumentos()
+    parser.add_argument("archivo", help="Archivo fuente .docx o .txt")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="DESTRUCTIVO: reemplaza conjuntamente <slug>.json y <slug>.raw.txt si alguno existe",
+    )
+    args = parser.parse_args()
+    src = Path(args.archivo).expanduser().resolve()
     if not src.exists():
         print(f"No existe: {src}", file=sys.stderr)
         return 1
@@ -433,15 +540,34 @@ def main() -> int:
     except ValueError:
         rel = str(src)
 
-    receta = construir_receta(texto, rel)
+    receta = construir_receta(
+        texto,
+        rel,
+        docx_path=src if src.suffix.lower() == ".docx" else None,
+    )
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    # limpiar parseo fallido previo meta-titulo.*
-    for stale in OUT_DIR.glob("meta-titulo.*"):
-        stale.unlink(missing_ok=True)
 
     out = OUT_DIR / f"{receta['id']}.json"
-    out.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     raw_out = OUT_DIR / f"{receta['id']}.raw.txt"
+    existing_outputs = [path for path in (out, raw_out) if path.exists()]
+    if existing_outputs and not args.force:
+        print(
+            "Error: ya existe al menos una salida para esta receta: "
+            + ", ".join(path.name for path in existing_outputs),
+            file=sys.stderr,
+        )
+        print(
+            "No se escribió ningún archivo; JSON y raw se protegen como una unidad.",
+            file=sys.stderr,
+        )
+        print(
+            "Para reemplazar ambos de forma destructiva: "
+            "python3 scripts/parse-receta-word.py <archivo.docx|.txt> --force",
+            file=sys.stderr,
+        )
+        return 3
+
+    out.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     raw_out.write_text(texto + "\n", encoding="utf-8")
 
     print(f"OK → {out.relative_to(ROOT)}")

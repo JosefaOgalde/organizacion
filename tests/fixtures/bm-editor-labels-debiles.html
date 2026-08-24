@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>BM · editor Cabecera labels débiles</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 24px auto; }
+    .campo { margin: 12px 0; }
+    input, textarea, select { width: 100%; padding: 8px; box-sizing: border-box; }
+    /* Labels genéricos que no matchean título/descripción */
+    .hint { color: #888; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+  <h1>Editor Cabecera (labels débiles)</h1>
+  <div class="campo">
+    <div class="hint">Campo 1</div>
+    <input id="c1" type="text">
+  </div>
+  <div class="campo">
+    <div class="hint">Campo 2</div>
+    <textarea id="c2" rows="3"></textarea>
+  </div>
+  <div class="campo">
+    <div class="hint">Campo 3</div>
+    <input id="c3" type="text">
+  </div>
+  <div class="campo">
+    <div class="hint">Campo 4</div>
+    <select id="c4">
+      <option value="">—</option>
+      <option value="facil">Fácil</option>
+    </select>
+  </div>
+  <div class="campo">
+    <div class="hint">Campo 5</div>
+    <input id="c5" type="text">
+  </div>
+  <button type="button" id="guardar" class="btn-guardar-editor">Guardar</button>
+  <p id="estado"></p>
+  <script>
+    document.getElementById('guardar').addEventListener('click', () => {
+      document.getElementById('estado').textContent = 'guardado';
+    });
+  </script>
+</body>
+</html>

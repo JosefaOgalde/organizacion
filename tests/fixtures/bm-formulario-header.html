@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Edición de Cabecera · Recetas_Jumbo</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 560px; margin: 24px auto; }
+    h1 { font-size: 1.2rem; }
+    label { display: block; font-weight: 600; margin: 14px 0 4px; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; }
+    .combo {
+      border: 1px solid #c44; padding: 8px 10px; cursor: pointer; background: #fff;
+      min-height: 38px;
+    }
+    .lista {
+      display: none; border: 1px solid #c44; margin-top: 2px; background: #fff;
+      max-height: 180px; overflow: auto;
+    }
+    .lista.abierta { display: block; }
+    .lista div { padding: 8px 10px; cursor: pointer; }
+    .lista div:hover, .lista div.sel { background: #cfe8ff; }
+    .err { color: #b00020; font-size: 0.85rem; }
+    .drop {
+      border: 2px dashed #aaa; padding: 28px; text-align: center; color: #666; margin-top: 8px;
+      cursor: pointer;
+    }
+    .modal {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.35);
+      align-items: center; justify-content: center;
+    }
+    .modal.abierto { display: flex; }
+    .modal-box { background: #fff; padding: 20px; width: 420px; border-radius: 8px; }
+    .tabs { display: flex; gap: 16px; margin-bottom: 12px; }
+    .tabs button { background: none; border: none; padding: 6px 0; cursor: pointer; font-weight: 600; }
+    .tabs button.activa { border-bottom: 2px solid #06c; color: #06c; }
+    .panel { display: none; }
+    .panel.activo { display: block; }
+  </style>
+</head>
+<body>
+  <button type="button" id="volver">Volver</button>
+  <h1>Edición de Cabecera</h1>
+  <p>Formulario Header · Recetas_Jumbo | web</p>
+
+  <label for="titulo">Título *</label>
+  <input id="titulo" name="titulo" type="text">
+
+  <label id="lab-dif">Dificultad *</label>
+  <div class="combo" id="dif-combo" role="combobox" aria-label="Dificultad" tabindex="0">Seleccionar…</div>
+  <div class="lista" id="dif-lista" role="listbox">
+    <div role="option">Muy Fácil</div>
+    <div role="option">Fácil</div>
+    <div role="option">Moderado</div>
+    <div role="option">Intermedio</div>
+    <div role="option">Difícil</div>
+    <div role="option">Muy Difícil</div>
+    <div role="option">Absurdamente Difícil</div>
+  </div>
+  <div class="err" id="err-dif" hidden>El dato es requerido</div>
+  <input type="hidden" id="dificultad" name="dificultad" value="">
+
+  <label for="duracion">Duración</label>
+  <input id="duracion" name="duration" type="number">
+
+  <label for="porciones">Porciones</label>
+  <input id="porciones" name="porciones" type="number">
+
+  <label>Imagen *</label>
+  <div class="drop" id="drop-img">Arrastra o haz click para subir una imagen…</div>
+  <input type="hidden" id="imagen-url" value="">
+  <div class="err" id="err-img" hidden>El dato es requerido</div>
+
+  <p style="margin-top:16px">
+    <button type="button" id="btn-guardar">Guardar</button>
+  </p>
+  <p id="estado"></p>
+
+  <div class="modal" id="modal-img">
+    <div class="modal-box">
+      <div class="tabs">
+        <button type="button" class="activa" data-tab="equipo">Mi Equipo</button>
+        <button type="button" data-tab="url">URL</button>
+      </div>
+      <div class="panel activo" id="panel-equipo">
+        <p>Arrastra o haz click para subir una imagen</p>
+        <button type="button">Cargar archivo</button>
+        <input type="file" id="file-img" accept="image/*">
+      </div>
+      <div class="panel" id="panel-url">
+        <label for="url-img">URL pública</label>
+        <input id="url-img" type="text" placeholder="https://…">
+        <div class="err" id="err-url" hidden></div>
+      </div>
+      <p style="margin-top:12px;text-align:center">
+        <button type="button" id="btn-confirmar-img" disabled>Confirmar</button>
+      </p>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-unsaved">
+    <div class="modal-box">
+      <p>Tienes cambios sin guardar. ¿Desea continuar?</p>
+      <button type="button" id="btn-cancel-unsaved">Cancelar</button>
+      <button type="button" id="btn-accept-unsaved">Si, acepto</button>
+    </div>
+  </div>
+
+  <script>
+    let dirty = false;
+    const combo = document.getElementById('dif-combo');
+    const lista = document.getElementById('dif-lista');
+    const hiddenDif = document.getElementById('dificultad');
+    combo.addEventListener('click', () => lista.classList.toggle('abierta'));
+    lista.querySelectorAll('[role=option]').forEach((opt) => {
+      opt.addEventListener('click', () => {
+        hiddenDif.value = opt.textContent.trim();
+        combo.textContent = opt.textContent.trim();
+        lista.classList.remove('abierta');
+        document.getElementById('err-dif').hidden = true;
+        dirty = true;
+      });
+    });
+    ['titulo','duracion','porciones'].forEach((id) => {
+      document.getElementById(id).addEventListener('input', () => { dirty = true; });
+    });
+
+    const modal = document.getElementById('modal-img');
+    document.getElementById('drop-img').addEventListener('click', () => {
+      modal.classList.add('abierto');
+    });
+    document.querySelectorAll('.tabs button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tabs button').forEach((b) => b.classList.remove('activa'));
+        btn.classList.add('activa');
+        document.querySelectorAll('.panel').forEach((p) => p.classList.remove('activo'));
+        document.getElementById(btn.dataset.tab === 'url' ? 'panel-url' : 'panel-equipo').classList.add('activo');
+      });
+    });
+    const urlImg = document.getElementById('url-img');
+    const btnConf = document.getElementById('btn-confirmar-img');
+    const fileImg = document.getElementById('file-img');
+    urlImg.addEventListener('input', () => {
+      const v = urlImg.value.trim();
+      btnConf.disabled = !v;
+      if (/drive\.google\.com/i.test(v)) {
+        document.getElementById('err-url').hidden = false;
+        document.getElementById('err-url').textContent = 'URL no permitida';
+        btnConf.disabled = true;
+      } else {
+        document.getElementById('err-url').hidden = true;
+      }
+    });
+    fileImg.addEventListener('change', () => {
+      btnConf.disabled = !fileImg.files.length;
+      document.getElementById('err-url').hidden = true;
+    });
+    btnConf.addEventListener('click', () => {
+      if (fileImg.files.length) {
+        document.getElementById('imagen-url').value = 'file:' + fileImg.files[0].name;
+        document.getElementById('drop-img').textContent = 'Imagen OK: ' + fileImg.files[0].name;
+      } else {
+        const v = urlImg.value.trim();
+        if (/drive\.google\.com/i.test(v)) {
+          document.getElementById('err-url').hidden = false;
+          return;
+        }
+        document.getElementById('imagen-url').value = v;
+        document.getElementById('drop-img').textContent = 'Imagen OK: ' + v.slice(0, 40);
+      }
+      document.getElementById('err-img').hidden = true;
+      modal.classList.remove('abierto');
+      dirty = true;
+    });
+
+    document.getElementById('btn-guardar').addEventListener('click', () => {
+      if (!hiddenDif.value) {
+        document.getElementById('err-dif').hidden = false;
+        document.getElementById('estado').textContent = 'error-dificultad';
+        return;
+      }
+      if (!document.getElementById('imagen-url').value) {
+        document.getElementById('err-img').hidden = false;
+        document.getElementById('estado').textContent = 'error-imagen';
+        return;
+      }
+      dirty = false;
+      document.getElementById('estado').textContent = 'guardado:' + JSON.stringify({
+        titulo: document.getElementById('titulo').value,
+        dificultad: hiddenDif.value,
+        duracion: document.getElementById('duracion').value,
+        porciones: document.getElementById('porciones').value,
+        imagen: document.getElementById('imagen-url').value
+      });
+    });
+
+    document.getElementById('volver').addEventListener('click', () => {
+      if (dirty) {
+        document.getElementById('modal-unsaved').classList.add('abierto');
+        return;
+      }
+      document.getElementById('estado').textContent = 'volvio';
+    });
+    document.getElementById('btn-cancel-unsaved').addEventListener('click', () => {
+      document.getElementById('modal-unsaved').classList.remove('abierto');
+    });
+    document.getElementById('btn-accept-unsaved').addEventListener('click', () => {
+      dirty = false;
+      document.getElementById('modal-unsaved').classList.remove('abierto');
+      document.getElementById('estado').textContent = 'volvio-sin-guardar';
+    });
+  </script>
+</body>
+</html>

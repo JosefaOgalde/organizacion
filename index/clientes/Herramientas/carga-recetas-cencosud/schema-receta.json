@@ -58,6 +58,10 @@
         "type": "object",
         "properties": {
           "rutaLocal": { "type": "string" },
+          "url": {
+            "type": ["string", "null"],
+            "description": "URL de la foto (p.ej. Google Drive en ([Foto]) del Word)"
+          },
           "alt": { "type": "string" },
           "rol": { "type": "string", "enum": ["portada", "paso", "ingrediente", "otra"] }
         }

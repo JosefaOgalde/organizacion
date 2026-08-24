@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Edición de tags · Recetas_Jumbo</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 24px auto; }
+    h1 { font-size: 1.15rem; }
+    .banner { background: #e8f4ff; border: 1px solid #9cf; padding: 10px 12px; margin: 12px 0; }
+    .arreglo { border: 1px solid #ddd; padding: 12px; margin-top: 12px; }
+    .acordeon { border: 1px solid #ccc; margin: 8px 0; background: #fafafa; }
+    .acordeon-header {
+      display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+      cursor: pointer; user-select: none; font-weight: 600; border: none;
+      width: 100%; text-align: left; background: #f0f0f0;
+    }
+    .acordeon-header .drag { color: #888; letter-spacing: -2px; }
+    .acordeon-panel { display: none; padding: 12px 14px 16px; border-top: 1px solid #ddd; background: #fff; }
+    .acordeon.abierto .acordeon-panel { display: block; }
+    .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    label { display: block; font-weight: 600; margin-bottom: 4px; }
+    .req { color: #b00020; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; }
+    #estado { margin-top: 14px; min-height: 1.2em; }
+    #btn-agregar { margin-top: 10px; padding: 8px 14px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Edición de tags</h1>
+  <p>Estás en el proyecto Recetas_jumbo | web · Vista: salmon_a_la_parrilla_palta</p>
+  <div class="banner">Los siguientes campos podrían tener valores precargados. Favor de validar y guardar.</div>
+
+  <h2>Formulario Tags</h2>
+  <label><input type="checkbox" checked disabled> Activo</label>
+  <div class="arreglo" id="arreglo">
+    <strong>Arreglo</strong>
+    <div id="items"></div>
+    <button type="button" id="btn-agregar">+ Agregar nuevo ítem</button>
+  </div>
+
+  <p style="margin-top:16px">
+    <button type="button" id="btn-guardar">Guardar</button>
+  </p>
+  <p id="estado"></p>
+
+  <script>
+    let n = 0;
+    const itemsEl = document.getElementById('items');
+
+    function toggleAcordeon(btn) {
+      const wrap = btn.closest('.acordeon');
+      const open = wrap.classList.toggle('abierto');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    function addItem(prefillTag) {
+      n += 1;
+      const idx = n;
+      const wrap = document.createElement('div');
+      wrap.className = 'acordeon';
+      wrap.dataset.item = String(idx);
+      wrap.innerHTML =
+        '<button type="button" class="acordeon-header" aria-expanded="false">' +
+          '<span class="drag">⋮⋮</span> Formulario Ítem ' + idx +
+        '</button>' +
+        '<div class="acordeon-panel">' +
+          '<div class="fila">' +
+            '<div>' +
+              '<label for="tag-' + idx + '">Tag <span class="req">*</span></label>' +
+              '<input id="tag-' + idx + '" class="campo-tag" name="tag-' + idx + '" type="text" placeholder="Dale un valor" data-field="tag">' +
+            '</div>' +
+            '<div>' +
+              '<label for="link-' + idx + '">Link</label>' +
+              '<input id="link-' + idx + '" class="campo-link" name="link-' + idx + '" type="text" placeholder="Dale un valor" data-field="link">' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      itemsEl.appendChild(wrap);
+      const header = wrap.querySelector('.acordeon-header');
+      header.addEventListener('click', () => toggleAcordeon(header));
+      const tagInput = wrap.querySelector('.campo-tag');
+      if (prefillTag) {
+        wrap.classList.add('abierto');
+        header.setAttribute('aria-expanded', 'true');
+        tagInput.value = prefillTag;
+      }
+      return tagInput;
+    }
+
+    document.getElementById('btn-agregar').addEventListener('click', () => addItem());
+    addItem();
+
+    document.getElementById('btn-guardar').addEventListener('click', () => {
+      const tags = [];
+      const links = [];
+      document.querySelectorAll('.acordeon').forEach((item) => {
+        const tag = item.querySelector('.campo-tag');
+        const link = item.querySelector('.campo-link');
+        if (tag && tag.value.trim()) {
+          tags.push(tag.value.trim());
+          links.push((link.value || '').trim());
+        }
+      });
+      if (!tags.length) {
+        document.getElementById('estado').textContent = 'error-requeridos';
+        return;
+      }
+      document.getElementById('estado').textContent =
+        'guardado:' + JSON.stringify({ tags, links });
+    });
+  </script>
+</body>
+</html>

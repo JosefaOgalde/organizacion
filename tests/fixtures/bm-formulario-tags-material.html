@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Edición de componente · tags</title>
+  <style>
+    body { font-family: Roboto, system-ui, sans-serif; max-width: 820px; margin: 24px auto; }
+    .banner { background: #e8f4ff; border: 1px solid #9cf; padding: 10px 12px; margin: 12px 0; }
+    .form-item-bm { border: 1px solid #e0e0e0; padding: 16px; margin: 12px 0; border-radius: 4px; }
+    .form-item-bm h4 { margin: 0 0 12px; font-weight: 500; }
+    .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    mat-form-field, .mat-form-field { display: block; }
+    .mat-label { font-size: 12px; color: #666; display: block; margin-bottom: 4px; }
+    .req { color: #b00020; }
+    input { width: 100%; padding: 10px 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    .error { color: #b00020; font-size: 12px; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Edición de componente</h1>
+  <h2>Formulario Tags</h2>
+  <div class="banner">Los siguientes campos podrían tener valores precargados. Favor de validar y guardar.</div>
+  <div id="items"></div>
+  <button type="button" id="btn-agregar">+ Agregar nuevo ítem</button>
+  <script>
+    let n = 0;
+    const itemsEl = document.getElementById('items');
+    function addItem() {
+      n += 1;
+      const idx = n;
+      const wrap = document.createElement('div');
+      wrap.className = 'form-item-bm';
+      wrap.innerHTML =
+        '<h4>Formulario Ítem ' + idx + '</h4>' +
+        '<div class="fila">' +
+          '<mat-form-field>' +
+            '<span class="mat-label">Tag <span class="req">*</span></span>' +
+            '<input id="tag-' + idx + '" type="text" placeholder="Dale un valor">' +
+            '<div class="error" hidden>El dato es requerido</div>' +
+          '</mat-form-field>' +
+          '<mat-form-field>' +
+            '<span class="mat-label">Link</span>' +
+            '<input id="link-' + idx + '" type="text" placeholder="Dale un valor">' +
+          '</mat-form-field>' +
+        '</div>';
+      itemsEl.appendChild(wrap);
+    }
+    document.getElementById('btn-agregar').addEventListener('click', addItem);
+    for (let i = 0; i < 6; i++) addItem();
+  </script>
+</body>
+</html>
