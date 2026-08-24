@@ -213,7 +213,13 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             "porciones": "4",
             "tiempoTotal": "30 min",
             "dificultad": "fácil",
-            "imagenes": [],
+            "imagenes": [
+                {
+                    "url": "https://drive.google.com/file/d/1u2z-oBQeGHopYUtVpam0bfGvFSpf5OIB/view?usp=drive_link",
+                    "alt": "portada",
+                    "rol": "portada",
+                }
+            ],
             "categorias": [],
             "ingredientes": [{"nombre": "x", "cantidad": "1"}],
             "pasos": [{"orden": 1, "texto": "y"}],
@@ -234,16 +240,26 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
                 {},
             )
             self.assertTrue(outs.get("field_titulo"))
-            self.assertTrue(outs.get("field_dificultad"))
+            self.assertTrue(outs.get("field_dificultad"), "debía elegir Fácil en el dropdown")
             self.assertTrue(outs.get("field_tiempo"))
             self.assertTrue(outs.get("field_porciones"))
             self.assertEqual(page.input_value("#titulo"), receta["titulo"])
             self.assertEqual(page.input_value("#duracion"), "30")
             self.assertEqual(page.input_value("#porciones"), "4")
-            self.assertEqual(page.input_value("#dificultad"), "facil")
-            page.locator("button[type='submit']").click()
-            self.assertIn("guardado:", page.locator("#estado").inner_text())
+            self.assertEqual(page.input_value("#dificultad"), "Fácil")
+            self.assertTrue(explorar._rellenar_imagen(page, receta))
+            self.assertIn("drive.google.com", page.input_value("#imagen-url"))
+            page.locator("#btn-guardar").click()
+            estado = page.locator("#estado").inner_text()
+            self.assertIn("guardado:", estado)
+            self.assertIn("Fácil", estado)
             browser.close()
+
+    def test_normaliza_dificultad_a_opciones_bm(self):
+        explorar = cargar_explorar()
+        self.assertEqual(explorar.normalizar_dificultad_bm("fácil"), "Fácil")
+        self.assertEqual(explorar.normalizar_dificultad_bm("media"), "Moderado")
+        self.assertEqual(explorar.normalizar_dificultad_bm("absurdamente dificil"), "Absurdamente Difícil")
 
     def test_abre_lapiz_svg_sin_aria_con_paleta(self):
         """Reproduce BM real: paleta+canvas juntos y lápiz SVG sin aria (lapiz=None)."""

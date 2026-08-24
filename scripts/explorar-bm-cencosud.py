@@ -87,7 +87,11 @@ def minutos_desde_tiempo(valor) -> str | None:
 
 
 def normalizar_dificultad_bm(valor: str | None) -> str | None:
-    """Normaliza 'fácil' → etiqueta típica del select BM."""
+    """Normaliza al texto exacto del dropdown BM Jumbo.
+
+    Opciones reales observadas:
+      Muy Fácil | Fácil | Moderado | Intermedio | Difícil | Muy Difícil | Absurdamente Difícil
+    """
     if not valor:
         return None
     raw = str(valor).strip().lower()
@@ -99,14 +103,37 @@ def normalizar_dificultad_bm(valor: str | None) -> str | None:
         .replace("ú", "u")
     )
     mapa = {
-        "muy facil": "Muy fácil",
+        "muy facil": "Muy Fácil",
         "facil": "Fácil",
-        "media": "Media",
-        "medio": "Media",
+        "moderado": "Moderado",
+        "media": "Moderado",
+        "medio": "Moderado",
+        "intermedio": "Intermedio",
         "dificil": "Difícil",
-        "absurdamente dificil": "Difícil",
+        "muy dificil": "Muy Difícil",
+        "absurdamente dificil": "Absurdamente Difícil",
     }
-    return mapa.get(raw) or str(valor).strip().capitalize()
+    return mapa.get(raw) or str(valor).strip()
+
+
+def candidatas_dificultad_bm(valor: str | None) -> list[str]:
+    """Variantes a probar al hacer clic en la opción del listado."""
+    principal = normalizar_dificultad_bm(valor)
+    if not principal:
+        return []
+    out = [principal]
+    # Sin tilde / capitalización alternativa
+    sin = (
+        principal.replace("á", "a")
+        .replace("é", "e")
+        .replace("í", "i")
+        .replace("ó", "o")
+        .replace("ú", "u")
+    )
+    for v in (sin, principal.lower(), principal.upper(), principal.capitalize()):
+        if v not in out:
+            out.append(v)
+    return out
 
 
 def url_imagen_portada(receta: dict) -> str | None:
@@ -929,6 +956,12 @@ def guardar_editor_componente(page) -> bool:
     """Guarda el editor del componente abierto (antes de cerrar). Sin esto el BM pierde los datos."""
     if not pagina_viva(page):
         return False
+    # Scroll abajo/arriba: el CTA a veces está fuera de vista en Formulario Header
+    try:
+        page.keyboard.press("End")
+        page.wait_for_timeout(200)
+    except Exception:
+        pass
     sels = (
         "button:has-text('Guardar')",
         "button:has-text('Save')",
@@ -938,6 +971,8 @@ def guardar_editor_componente(page) -> bool:
         "button:has-text('Done')",
         "button:has-text('Actualizar')",
         "button:has-text('Update')",
+        "button:has-text('Guardar cambios')",
+        "button:has-text('Save changes')",
         "button[type='submit']",
         "form button[type='submit']",
         "button[aria-label*='Guardar' i]",
@@ -948,6 +983,10 @@ def guardar_editor_componente(page) -> bool:
         "[title*='Save' i]",
         "[data-testid*='save' i]",
         "button.btn-guardar-editor",
+        # CTA primario típico en barra superior del BM
+        "header button:visible",
+        "[class*='toolbar' i] button:visible",
+        "[class*='actions' i] button:visible",
     )
     for target in _targets_page_y_frames(page):
         for sel in sels:
@@ -965,17 +1004,34 @@ def guardar_editor_componente(page) -> bool:
                         + " "
                         + (btn.get_attribute("title") or "")
                     ).lower()
-                    # Evitar «Guardar y publicar» / borrador global en el editor de componente
+                    # Evitar «Guardar y publicar» / borrador global / «Si, acepto»
                     if "publicar" in txt or "publish" in txt:
+                        continue
+                    if "acepto" in txt or "continuar" in txt and "sin guardar" in txt:
                         continue
                     if re.search(r"\bborrador\b|\bdraft\b", txt) and "guardar" not in txt and "save" not in txt:
                         continue
+                    # En toolbar genérica exigir que diga guardar/save/aplicar
+                    if sel.startswith("header ") or "toolbar" in sel or "actions" in sel:
+                        if not re.search(r"guardar|save|aplicar|actualizar|confirm|accept|done", txt):
+                            continue
+                    try:
+                        btn.scroll_into_view_if_needed(timeout=1500)
+                    except Exception:
+                        pass
                     btn.click(timeout=3_000)
-                    page.wait_for_timeout(700)
-                    print("  ✓ Guardado editor del componente")
+                    page.wait_for_timeout(900)
+                    print("  ✓ Guardado editor del componente", flush=True)
                     return True
             except Exception:
                 continue
+    # Último recurso: Ctrl+S
+    try:
+        page.keyboard.press("Control+s")
+        page.wait_for_timeout(800)
+        print("  · Intenté Ctrl+S para guardar", flush=True)
+    except Exception:
+        pass
     return False
 
 
@@ -1012,6 +1068,7 @@ def _salir_edicion_cabecera_si_aplica(page) -> None:
 
     En «Edición de Cabecera» el Volver regresa al gestor de contenido (no al
     Administrador de vistas). Sin esto no se pueden abrir tags/ingredientes.
+    Si sale el diálogo «cambios sin guardar», Cancelar y reintentar Guardar.
     """
     if not pagina_viva(page):
         return
@@ -1020,13 +1077,20 @@ def _salir_edicion_cabecera_si_aplica(page) -> None:
     except Exception:
         titulo = ""
     blob = titulo.lower()
-    if "edición de cabecera" not in blob and "edicion de cabecera" not in blob and "formulario header" not in blob:
-        # También detectar por heading visible
+    en_cabecera = (
+        "edición de cabecera" in blob
+        or "edicion de cabecera" in blob
+        or "formulario header" in blob
+    )
+    if not en_cabecera:
         try:
             if not page.get_by_text(re.compile(r"Edici[oó]n de Cabecera|Formulario Header", re.I)).count():
                 return
         except Exception:
             return
+
+    # Asegurar guardado antes de Volver
+    guardo = guardar_editor_componente(page)
     for sel in (
         "button:has-text('Volver')",
         "a:has-text('Volver')",
@@ -1035,11 +1099,35 @@ def _salir_edicion_cabecera_si_aplica(page) -> None:
     ):
         try:
             loc = page.locator(sel).first
-            if loc.count() and loc.is_visible():
-                loc.click(timeout=3000)
-                page.wait_for_timeout(1200)
-                print("  · Volví del Formulario Header al canvas de la receta.", flush=True)
-                return
+            if not (loc.count() and loc.is_visible()):
+                continue
+            loc.click(timeout=3000)
+            page.wait_for_timeout(800)
+            # Si aparece «cambios sin guardar», NO aceptar — cancelar y guardar
+            if _cancelar_dialogo_cambios_sin_guardar(page):
+                if not guardo:
+                    guardo = guardar_editor_componente(page)
+                if guardo:
+                    loc.click(timeout=3000)
+                    page.wait_for_timeout(1000)
+                    # Si sigue el diálogo, no forzar
+                    if page.get_by_text(re.compile(r"cambios sin guardar", re.I)).count():
+                        _cancelar_dialogo_cambios_sin_guardar(page)
+                        print(
+                            "  · Aún hay cambios sin guardar (¿Dificultad/Imagen?). "
+                            "Completa a mano y Guardar antes de Volver.",
+                            flush=True,
+                        )
+                        return
+                else:
+                    print(
+                        "  · No encontré Guardar; me quedo en Cabecera "
+                        "(no descarto cambios).",
+                        flush=True,
+                    )
+                    return
+            print("  · Volví del Formulario Header al canvas de la receta.", flush=True)
+            return
         except Exception:
             continue
 
@@ -1556,8 +1644,168 @@ def _descargar_url_imagen(url: str, dest_dir: Path) -> Path | None:
         return None
 
 
+def _click_opcion_lista(page, textos: list[str]) -> bool:
+    """Clic en una opción de listbox/menú (dropdown custom BM)."""
+    for texto in textos:
+        if not texto:
+            continue
+        cre = re.compile(rf"^{re.escape(texto)}$", re.I)
+        for target in _targets_page_y_frames(page):
+            for role in ("option", "menuitem", "treeitem", "listitem"):
+                try:
+                    opt = target.get_by_role(role, name=cre)
+                    n = min(opt.count(), 6)
+                    for i in range(n):
+                        node = opt.nth(i)
+                        if not node.is_visible():
+                            continue
+                        node.click(timeout=2500)
+                        page.wait_for_timeout(350)
+                        return True
+                except Exception:
+                    continue
+            try:
+                # Texto exacto visible en portal/popover
+                loc = target.get_by_text(cre)
+                n = min(loc.count(), 8)
+                for i in range(n):
+                    node = loc.nth(i)
+                    if not node.is_visible():
+                        continue
+                    # Evitar el label del campo
+                    try:
+                        tag = (node.evaluate("el => (el.tagName||'').toLowerCase()") or "").lower()
+                        if tag in ("label", "h1", "h2", "h3"):
+                            continue
+                    except Exception:
+                        pass
+                    node.click(timeout=2500)
+                    page.wait_for_timeout(350)
+                    return True
+            except Exception:
+                continue
+    return False
+
+
+def _abrir_control_dificultad(page) -> bool:
+    """Abre el dropdown Dificultad (a menudo no es <select> nativo)."""
+    for target in _targets_page_y_frames(page):
+        # 1) label asociado
+        try:
+            lab = target.get_by_label(re.compile(r"^Dificultad", re.I))
+            for i in range(min(lab.count(), 4)):
+                node = lab.nth(i)
+                try:
+                    tag = (node.evaluate("el => (el.tagName||'').toLowerCase()") or "").lower()
+                    if tag == "button":
+                        continue
+                except Exception:
+                    pass
+                try:
+                    node.click(timeout=2500)
+                    page.wait_for_timeout(450)
+                    return True
+                except Exception:
+                    continue
+        except Exception:
+            pass
+        # 2) clic en el texto «Dificultad *» y luego en el control hermano
+        try:
+            lab = target.get_by_text(re.compile(r"^Dificultad", re.I))
+            if lab.count():
+                lab.first.click(timeout=2000)
+                page.wait_for_timeout(200)
+                # control típico debajo / al lado
+                box = lab.first.bounding_box()
+                if box:
+                    page.mouse.click(box["x"] + min(box["width"], 120), box["y"] + box["height"] + 22)
+                    page.wait_for_timeout(450)
+                    return True
+        except Exception:
+            pass
+        # 3) combobox / listbox cerca de Dificultad
+        try:
+            for role in ("combobox", "listbox", "button"):
+                locs = target.get_by_role(role)
+                for i in range(min(locs.count(), 10)):
+                    node = locs.nth(i)
+                    try:
+                        near = node.evaluate(
+                            """el => {
+                              const own = ((el.getAttribute('aria-label')||'') + ' ' + (el.innerText||'')).toLowerCase();
+                              if (own.includes('dificultad')) return true;
+                              let p = el.parentElement;
+                              for (let i=0;i<5 && p;i++) {
+                                if (/dificultad/i.test((p.innerText||'').slice(0,120))) return true;
+                                p = p.parentElement;
+                              }
+                              return false;
+                            }"""
+                        )
+                    except Exception:
+                        near = False
+                    if not near:
+                        aria = (node.get_attribute("aria-label") or "") + " " + (node.get_attribute("name") or "")
+                        if not re.search(r"dificultad", aria, re.I):
+                            continue
+                    try:
+                        node.click(timeout=2000)
+                        page.wait_for_timeout(450)
+                        return True
+                    except Exception:
+                        continue
+        except Exception:
+            pass
+    return False
+
+
+def _seleccionar_dificultad_bm(page, valor: str) -> bool:
+    """Abre el dropdown y elige la opción exacta (Fácil, Moderado, …)."""
+    opciones = candidatas_dificultad_bm(valor)
+    if not opciones:
+        return False
+    # Si ya hay un select nativo
+    for target in _targets_page_y_frames(page):
+        try:
+            sel = target.locator("select").filter(has=target.locator("option"))
+            # buscar select cerca de dificultad
+            labs = target.get_by_label(re.compile(r"^Dificultad", re.I))
+            if labs.count():
+                node = labs.first
+                tag = (node.evaluate("el => el.tagName.toLowerCase()") or "")
+                if tag == "select":
+                    for op in opciones:
+                        try:
+                            node.select_option(label=op)
+                            return True
+                        except Exception:
+                            continue
+        except Exception:
+            pass
+
+    if not _abrir_control_dificultad(page):
+        print("  · No pude abrir el dropdown Dificultad", flush=True)
+        return False
+    if _click_opcion_lista(page, opciones):
+        print(f"  ✓ field_dificultad → {opciones[0]}", flush=True)
+        return True
+    # Reintento: teclado
+    try:
+        page.keyboard.type(opciones[0][:12], delay=40)
+        page.keyboard.press("Enter")
+        page.wait_for_timeout(400)
+        print(f"  ✓ field_dificultad (teclado) → {opciones[0]}", flush=True)
+        return True
+    except Exception:
+        pass
+    print(f"  ✗ field_dificultad (no encontré opción {opciones[0]!r})", flush=True)
+    return False
+
+
 def _rellenar_por_label(page, key: str, value: str) -> bool:
     """Rellena por label visible del Formulario Header (más fiable que CSS frágil)."""
+    if key == "field_dificultad":
+        return _seleccionar_dificultad_bm(page, str(value))
     pats = LABELS_POR_CAMPO.get(key) or ()
     if not pats or value is None or value == "":
         return False
@@ -1567,7 +1815,6 @@ def _rellenar_por_label(page, key: str, value: str) -> bool:
         for target in targets:
             try:
                 loc = target.get_by_label(cre)
-                # Elegir input/textarea/select; ignorar botones «Editar Lista …»
                 elegido = None
                 for i in range(min(loc.count(), 8)):
                     cand = loc.nth(i)
@@ -1604,41 +1851,10 @@ def _rellenar_por_label(page, key: str, value: str) -> bool:
                 node = elegido
                 if not node.count():
                     continue
-                tag = ""
                 try:
-                    tag = (node.evaluate("el => (el.tagName || '').toLowerCase()") or "").lower()
-                    role = node.get_attribute("role") or ""
                     tipo = (node.get_attribute("type") or "").lower()
                 except Exception:
-                    role, tipo = "", ""
-                if key == "field_dificultad" or tag == "select" or role == "combobox":
-                    # Select nativo
-                    if tag == "select":
-                        for candidato in (value, value.lower(), value.capitalize()):
-                            try:
-                                node.select_option(label=candidato)
-                                return True
-                            except Exception:
-                                try:
-                                    node.select_option(value=candidato)
-                                    return True
-                                except Exception:
-                                    continue
-                    # Combobox / lista custom: clic + opción
-                    try:
-                        node.click(timeout=2500)
-                        page.wait_for_timeout(400)
-                        opt = target.get_by_role("option", name=re.compile(re.escape(value), re.I))
-                        if opt.count():
-                            opt.first.click(timeout=2500)
-                            return True
-                        # Texto de opción suelto
-                        opt2 = target.get_by_text(re.compile(rf"^{re.escape(value)}$", re.I))
-                        if opt2.count():
-                            opt2.first.click(timeout=2500)
-                            return True
-                    except Exception:
-                        pass
+                    tipo = ""
                 if tipo == "number" or key == "field_tiempo":
                     solo = minutos_desde_tiempo(value) or re.sub(r"[^\d.]", "", str(value))
                     if not solo:
@@ -1653,44 +1869,192 @@ def _rellenar_por_label(page, key: str, value: str) -> bool:
     return False
 
 
-def _rellenar_imagen(page, receta: dict) -> bool:
-    """Sube portada: archivo local o descarga desde URL (Drive del Word)."""
-    local = ruta_imagen_local(receta)
-    url = url_imagen_portada(receta)
-    archivo: Path | None = Path(local) if local else None
-    if not archivo and url:
-        print(f"  · URL portada: {url[:80]}…", flush=True)
-        archivo = _descargar_url_imagen(url, Path("/tmp/crc-imagenes"))
-    if not archivo or not archivo.exists():
-        if url:
-            print(
-                "  · No pude preparar el archivo de imagen. "
-                "Sube a mano el link de ([Foto]) del Word en BM.",
-                flush=True,
-            )
-        return False
-
+def _cancelar_dialogo_cambios_sin_guardar(page) -> bool:
+    """Si aparece «Tienes cambios sin guardar», pulsa Cancelar (no descartar)."""
     for target in _targets_page_y_frames(page):
         try:
-            files = target.locator("input[type='file']")
-            n = min(files.count(), 4)
-            for i in range(n):
-                try:
-                    files.nth(i).set_input_files(str(archivo))
-                    page.wait_for_timeout(1200)
-                    print(f"  ✓ field_imagen (archivo {archivo.name})", flush=True)
-                    return True
-                except Exception:
-                    continue
+            if not target.get_by_text(re.compile(r"cambios sin guardar|unsaved changes", re.I)).count():
+                continue
         except Exception:
             continue
-    # Fallback: campo URL de texto
-    if url and _rellenar_por_label(page, "field_imagen", url):
-        print("  ✓ field_imagen (URL en campo de texto)", flush=True)
-        return True
-    print("  ✗ field_imagen (sin input file visible)", flush=True)
+        for sel in (
+            "button:has-text('Cancelar')",
+            "button:has-text('Cancel')",
+            "button:has-text('No')",
+        ):
+            try:
+                btn = target.locator(sel).first
+                if btn.count() and btn.is_visible():
+                    btn.click(timeout=2000)
+                    page.wait_for_timeout(400)
+                    print("  · Diálogo «cambios sin guardar»: Cancelar", flush=True)
+                    return True
+            except Exception:
+                continue
+        # NUNCA «Si, acepto» — perdería Título/Duración
     return False
 
+
+def _rellenar_imagen(page, receta: dict) -> bool:
+    """Portada: modal BM → pestaña URL → pegar link de ([Foto]) del Word."""
+    url = url_imagen_portada(receta)
+    local = ruta_imagen_local(receta)
+    if not url and not local:
+        print("  · Sin URL/ruta de imagen en el JSON", flush=True)
+        return False
+    if url:
+        print(f"  · URL portada (Foto del Word): {url[:90]}", flush=True)
+
+    # 1) Abrir el área / modal de imagen
+    abrio = False
+    for target in _targets_page_y_frames(page):
+        for sel in (
+            "text=Arrastra o haz click para subir",
+            "text=Arrastra o haz click para subir una imagen",
+            "button:has-text('Cargar archivo')",
+            "button:has-text('Subir')",
+            "[class*='upload' i]",
+            "label:has-text('Imagen')",
+        ):
+            try:
+                loc = target.locator(sel).first
+                if loc.count() and loc.is_visible():
+                    loc.click(timeout=2500)
+                    page.wait_for_timeout(700)
+                    abrio = True
+                    break
+            except Exception:
+                continue
+        if abrio:
+            break
+    if not abrio:
+        # clic cerca del label Imagen
+        try:
+            lab = page.get_by_text(re.compile(r"^Imagen", re.I)).first
+            if lab.count():
+                box = lab.bounding_box()
+                if box:
+                    page.mouse.click(box["x"] + 40, box["y"] + box["height"] + 40)
+                    page.wait_for_timeout(700)
+                    abrio = True
+        except Exception:
+            pass
+
+    # 2) Preferir pestaña URL (link del Word)
+    if url:
+        for target in _targets_page_y_frames(page):
+            try:
+                tab = target.get_by_role("tab", name=re.compile(r"^URL$", re.I))
+                if not tab.count():
+                    tab = target.get_by_text(re.compile(r"^URL$", re.I))
+                if tab.count():
+                    tab.first.click(timeout=2500)
+                    page.wait_for_timeout(500)
+                    print("  · Pestaña URL del modal de imagen", flush=True)
+            except Exception:
+                continue
+
+        # Campo URL dentro del modal
+        pegado = False
+        for target in _targets_page_y_frames(page):
+            for sel in (
+                "input[placeholder*='http' i]",
+                "input[placeholder*='URL' i]",
+                "input[placeholder*='url' i]",
+                "input[type='url']",
+                "input[name*='url' i]",
+                "textarea[placeholder*='http' i]",
+                "input[type='text']",
+            ):
+                try:
+                    locs = target.locator(sel)
+                    for i in range(min(locs.count(), 6)):
+                        node = locs.nth(i)
+                        if not node.is_visible():
+                            continue
+                        # Preferir inputs dentro de diálogo/modal
+                        try:
+                            en_modal = node.evaluate(
+                                """el => !!(el.closest('[role=dialog], .modal, [class*=Modal], [class*=dialog]'))"""
+                            )
+                        except Exception:
+                            en_modal = True
+                        if not en_modal and sel == "input[type='text']":
+                            continue
+                        if _rellenar_locator(node, url):
+                            pegado = True
+                            print("  ✓ URL de foto pegada en el modal", flush=True)
+                            break
+                    if pegado:
+                        break
+                except Exception:
+                    continue
+            if pegado:
+                break
+
+        if pegado:
+            # Confirmar
+            for target in _targets_page_y_frames(page):
+                for sel in (
+                    "button:has-text('Confirmar')",
+                    "button:has-text('Aceptar')",
+                    "button:has-text('Agregar')",
+                    "button:has-text('Add')",
+                    "button:has-text('Upload')",
+                    "button:has-text('Guardar')",
+                ):
+                    try:
+                        btn = target.locator(sel).first
+                        if btn.count() and btn.is_visible():
+                            # evitar Confirmar deshabilitado
+                            disabled = btn.get_attribute("disabled")
+                            aria_dis = btn.get_attribute("aria-disabled")
+                            if disabled is not None or aria_dis == "true":
+                                # esperar a que se habilite
+                                page.wait_for_timeout(800)
+                            btn.click(timeout=3000, force=True)
+                            page.wait_for_timeout(1000)
+                            print("  ✓ field_imagen (URL confirmada)", flush=True)
+                            return True
+                    except Exception:
+                        continue
+
+    # 3) Fallback: pestaña Mi Equipo + archivo local / descarga Drive
+    archivo: Path | None = Path(local) if local else None
+    if not archivo and url:
+        archivo = _descargar_url_imagen(url, Path("/tmp/crc-imagenes"))
+    if archivo and archivo.exists():
+        for target in _targets_page_y_frames(page):
+            try:
+                tab = target.get_by_text(re.compile(r"Mi Equipo|My Device|Computer", re.I))
+                if tab.count():
+                    tab.first.click(timeout=2000)
+                    page.wait_for_timeout(400)
+            except Exception:
+                pass
+            try:
+                files = target.locator("input[type='file']")
+                for i in range(min(files.count(), 4)):
+                    try:
+                        files.nth(i).set_input_files(str(archivo))
+                        page.wait_for_timeout(1000)
+                        # Confirmar si aparece
+                        conf = target.locator("button:has-text('Confirmar')").first
+                        if conf.count() and conf.is_visible():
+                            conf.click(timeout=2000)
+                            page.wait_for_timeout(800)
+                        print(f"  ✓ field_imagen (archivo {archivo.name})", flush=True)
+                        return True
+                    except Exception:
+                        continue
+            except Exception:
+                continue
+
+    print(
+        "  ✗ field_imagen: abre el modal → pestaña URL y pega el link de ([Foto]) a mano si hace falta.",
+        flush=True,
+    )
+    return False
 
 
 def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores: dict) -> dict[str, bool]:

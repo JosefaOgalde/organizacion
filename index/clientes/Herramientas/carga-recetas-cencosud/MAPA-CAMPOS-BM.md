@@ -68,3 +68,6 @@ No se scrapea desde un servidor en la nube: es **navegador local** con tus crede
    (provoca `TargetClosedError`). El script ya no pulsa Escape si no ve Guardar.
 7. Si ves `lapiz=None` pero componentes detectados: normal en BM (SVG sin aria).
    El script abre por el mensaje «Edita este componente vacío…» + clic en iconos.
+8. **Dificultad** BM: `Fácil` / `Moderado` / `Intermedio` / … (dropdown custom).
+9. **Imagen**: modal → pestaña **URL** → pegar link de `([Foto])` del Word (Drive).
+10. Si sale «cambios sin guardar», el script pulsa **Cancelar** (nunca «Si, acepto»).
