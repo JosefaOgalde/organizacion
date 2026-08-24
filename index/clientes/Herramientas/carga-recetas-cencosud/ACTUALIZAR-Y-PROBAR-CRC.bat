@@ -1,6 +1,5 @@
 @echo off
 chcp 65001 >nul
-REM Un clic: desbloquea git, trae rama CRC y lanza la prueba del salmon.
 cd /d "%~dp0..\..\..\..\"
 title CRC — actualizar rama y probar
 
@@ -9,29 +8,30 @@ echo  === Actualizar cursor/crc-scraping-bm-78d6 ===
 echo  Carpeta: %CD%
 echo.
 
+call "%~dp0DESBLOQUEAR-GIT-CRC.bat"
+if errorlevel 1 exit /b 1
+
 set GIT_TERMINAL_PROMPT=0
 
-if exist ".git\refs\remotes\origin\cursor\crc-scraping-bm-78d6.lock" (
-  echo  Borrando lock git...
-  del /f /q ".git\refs\remotes\origin\cursor\crc-scraping-bm-78d6.lock"
-)
-
-git fetch origin cursor/crc-scraping-bm-78d6 2>nul
+git fetch origin cursor/crc-scraping-bm-78d6
 if errorlevel 1 (
-  echo  Fetch fallo; limpio ref remota y reintento...
+  echo  Fetch fallo; limpio ref remota...
   git update-ref -d refs/remotes/origin/cursor/crc-scraping-bm-78d6 2>nul
+  call "%~dp0DESBLOQUEAR-GIT-CRC.bat"
   git fetch origin cursor/crc-scraping-bm-78d6
   if errorlevel 1 (
-    echo.
-    echo  [ERROR] git fetch sigue fallando. Cierra Cursor/GitHub Desktop
-    echo  y vuelve a ejecutar este .bat
-    echo.
+    echo  [ERROR] git fetch sigue fallando.
     pause
     exit /b 1
   )
 )
 
-git checkout cursor/crc-scraping-bm-78d6 2>nul
+git checkout -f cursor/crc-scraping-bm-78d6
+if errorlevel 1 (
+  call "%~dp0DESBLOQUEAR-GIT-CRC.bat"
+  git checkout -f cursor/crc-scraping-bm-78d6
+)
+
 git reset --hard origin/cursor/crc-scraping-bm-78d6
 if errorlevel 1 (
   echo  [ERROR] reset fallo
@@ -45,12 +45,12 @@ echo.
 
 set JSON=index\clientes\Herramientas\carga-recetas-cencosud\out\salmon-a-la-parrilla-con-salsa-de-palta.json
 if not exist "%JSON%" (
-  echo  [AVISO] Falta el JSON. Genera la receta desde el Word primero.
+  echo  [AVISO] Falta el JSON del salmon en out\
   pause
   exit /b 1
 )
 
-echo  === Publicar receta (dry-run, navegador visible) ===
+echo  === Publicar receta (dry-run) ===
 python scripts\publicar-receta-cencosud.py "%JSON%" --headed --dry-run
 echo.
 pause
