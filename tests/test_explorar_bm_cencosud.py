@@ -949,6 +949,43 @@ class ExplorarBmTests(unittest.TestCase):
 
         self.assertTrue(self.modulo.escribir_tag_entre_labels(Pagina(), 0, "salmon"))
 
+    def test_contar_tags_ok_prefiere_playwright(self):
+        src = inspect.getsource(self.modulo._tag_quedo_en_caja)
+        self.assertIn("_leer_tag_item_playwright", src)
+        src_fill = inspect.getsource(self.modulo.fill_lista_tags)
+        self.assertIn(r"^Tag\s*\*?$", src_fill)
+        self.assertIn("confío en escritura", src_fill)
+
+    def test_fill_lista_tags_confia_en_escritura_sin_verificacion_js(self):
+        class Pagina:
+            def evaluate(self, script, *_a):
+                texto = str(script)
+                if "h1,h2,h3" in texto:
+                    return "Formulario Tags"
+                if "SIGUE_REQUERIDO" in texto or "dato es requerido" in texto.lower():
+                    return False
+                return False
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        orig_rellenar = self.modulo.rellenar_items_formulario
+        orig_contar = self.modulo._contar_tags_ok
+        orig_limpiar = self.modulo.limpiar_links_que_no_son_url
+        orig_sigue = self.modulo.sigue_dato_requerido
+        try:
+            self.modulo.rellenar_items_formulario = lambda _p, tags: len(tags)
+            self.modulo._contar_tags_ok = lambda _p, _t: 0
+            self.modulo.limpiar_links_que_no_son_url = lambda _p: None
+            self.modulo.sigue_dato_requerido = lambda _p: False
+            tags = ["salmon", "paltas", "almuerzo"]
+            self.assertEqual(self.modulo.fill_lista_tags(Pagina(), tags), 3)
+        finally:
+            self.modulo.rellenar_items_formulario = orig_rellenar
+            self.modulo._contar_tags_ok = orig_contar
+            self.modulo.limpiar_links_que_no_son_url = orig_limpiar
+            self.modulo.sigue_dato_requerido = orig_sigue
+
     def test_rellena_tag_del_item_abierto_no_siempre_el_primero(self):
         src = inspect.getsource(self.modulo.rellenar_items_formulario)
         self.assertIn("escribir_tag_entre_labels(page, i, valor)", src)

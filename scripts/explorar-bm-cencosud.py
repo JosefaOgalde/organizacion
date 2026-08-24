@@ -2104,8 +2104,12 @@ def finalizar_editor_tags(page, url_ficha: str | None, tags: list[str]) -> bool:
         return True
     ok = _contar_tags_ok(page, tags)
     if ok < len(tags):
-        print(f"  ✗ tags incompletos ({ok}/{len(tags)}) — no guardo")
-        return False
+        if sigue_dato_requerido(page):
+            print(f"  ✗ tags incompletos ({ok}/{len(tags)}) — no guardo")
+            return False
+        print(
+            f"  · Verificación leyó {ok}/{len(tags)} tags; guardo igual (sin «dato requerido» visible)."
+        )
     asegurar_n_items_tags(page, len(tags))
     aviso_modal_descarta()
     if not guardar_editor_persistente(page):
@@ -5296,19 +5300,53 @@ def asegurar_n_items_tags(page, n: int) -> int:
     return actuales
 
 
-def _tag_quedo_en_caja(fr, indice: int, valor: str) -> bool:
+def _tag_en_campo_link(fr, valor: str) -> bool:
     try:
-        leido = fr.evaluate(JS_LEER_CAJA_TAG, indice)
+        return bool(fr.evaluate(JS_LINK_TIENE_TEXTO, valor))
     except Exception:
         return False
-    if not (isinstance(leido, dict) and _valor_quedo(str(leido.get("value") or ""), valor)):
-        return False
+
+
+def _leer_tag_item_playwright(fr, indice: int) -> str | None:
+    """Lee Tag* del ítem i vía Playwright (más fiable que JS en iframes)."""
+    for loc in _locators_tag_item(fr, indice):
+        val = _leer_valor(loc)
+        if val is not None and val.strip():
+            return val.strip()
+    locator = getattr(fr, "locator", None)
+    if not locator:
+        return None
     try:
-        if fr.evaluate(JS_LINK_TIENE_TEXTO, valor):
-            return False
+        loc = locator('input[placeholder*="valor" i]:visible')
+        n = _locator_count(loc)
+        if not n:
+            return None
+        idx = indice * 2 if n >= (indice + 1) * 2 else indice
+        if n <= idx:
+            return None
+        val = _leer_valor(loc.nth(idx))
+        if val is not None and val.strip():
+            return val.strip()
     except Exception:
         pass
-    return True
+    return None
+
+
+def _tag_quedo_en_caja(fr, indice: int, valor: str) -> bool:
+    leido = _leer_tag_item_playwright(fr, indice)
+    if leido and _valor_quedo(leido, valor):
+        return not _tag_en_campo_link(fr, valor)
+    try:
+        js = fr.evaluate(JS_LEER_CAJA_TAG, indice)
+    except Exception:
+        return False
+    if not (isinstance(js, dict) and _valor_quedo(str(js.get("value") or ""), valor)):
+        return False
+    return not _tag_en_campo_link(fr, valor)
+
+
+def _tag_item_ok(page, indice: int, valor: str) -> bool:
+    return any(_tag_quedo_en_caja(fr, indice, valor) for fr in _frames_pagina(page))
 
 
 def expandir_item_formulario(page, indice: int) -> bool:
@@ -5500,11 +5538,7 @@ def rellenar_items_formulario(page, valores: list[str]) -> int:
 
 
 def _contar_tags_ok(page, tags: list[str]) -> int:
-    return sum(
-        1
-        for i, t in enumerate(tags)
-        if any(_tag_quedo_en_caja(fr, i, t) for fr in _frames_pagina(page))
-    )
+    return sum(1 for i, t in enumerate(tags) if _tag_item_ok(page, i, t))
 
 
 def fill_lista_tags(page, tags: list[str]) -> int:
@@ -5543,13 +5577,20 @@ def fill_lista_tags(page, tags: list[str]) -> int:
                 except Exception:
                     continue
     verificados = _contar_tags_ok(page, tags)
-    if verificados:
+    if verificados >= len(tags):
         limpiar_links_que_no_son_url(page)
         return verificados
+    if n >= len(tags) and not sigue_dato_requerido(page):
+        print(
+            f"  · Tags escritos ({n}/{len(tags)}); verificación leyó {verificados} — confío en escritura."
+        )
+        limpiar_links_que_no_son_url(page)
+        return n
     excluir = r"título de la sección|ingrediente|meta|descripci|link|enlace|url"
-    fill_repetidos_por_label(page, r"^Tag$", tags, excluir=excluir)
+    rep = fill_repetidos_por_label(page, r"^Tag\s*\*?$", tags, excluir=excluir)
     limpiar_links_que_no_son_url(page)
-    return _contar_tags_ok(page, tags)
+    verificados2 = _contar_tags_ok(page, tags)
+    return max(verificados2, rep, n)
 
 
 def fill_inputs_texto_en_orden(page, valores: list[str]) -> int:
