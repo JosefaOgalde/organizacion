@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Rellena receta JSON en Business Manager Cencosud (local).
+CRC — Carga recetas en Business Manager Cencosud (local).
 
-Uso tags (default — PARA después de cargar tags):
+Solo tags (cabecera ya OK en el canvas):
   python scripts\\publicar-receta-cencosud.py out\\receta.json --headed
 
-Siguiente paso (ingredientes, pasos, seo) solo si tags ya guardados:
+Ingredientes / pasos / SEO (después):
   python scripts\\publicar-receta-cencosud.py out\\receta.json --headed --continuar
 """
 from __future__ import annotations
@@ -17,7 +17,7 @@ import re
 import sys
 from pathlib import Path
 
-CRC_VERSION = "2026-08-24-tags-v5"
+CRC_VERSION = "2026-08-24-tags-v6"
 
 ROOT = Path(__file__).resolve().parents[1]
 CRC = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud"
@@ -25,6 +25,7 @@ SECRETS = CRC / "secrets"
 ENV_PATH = SECRETS / ".env"
 SESSION_PATH = SECRETS / "bm-session.json"
 MAPA_SELECTORES_PATH = SECRETS / "bm-selectores.json"
+ESTRUCTURA_PATH = SECRETS / "bm-estructura.json"
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -57,77 +58,6 @@ def load_selectores() -> dict:
     return {}
 
 
-ESTRUCTURA_PATH = SECRETS / "bm-estructura.json"
-
-
-def navegar_a_editor(page, env: dict, selectores: dict, receta: dict) -> str:
-    """Abre la URL ya mapeada (bm-estructura / bm-selectores / .env)."""
-    base = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/").rstrip("/")
-    candidatos: list[str] = []
-
-    if env.get("CENCOSUD_BM_TAGS_URL"):
-        candidatos.insert(0, env["CENCOSUD_BM_TAGS_URL"])
-
-    for k in ("url_editor_tags", "url_tags"):
-        if selectores.get(k):
-            candidatos.insert(0, str(selectores[k]))
-
-    if env.get("CENCOSUD_BM_RECETA_URL"):
-        candidatos.append(env["CENCOSUD_BM_RECETA_URL"])
-
-    for src in (selectores, receta):
-        for k in ("url_editor", "url_editor_receta", "receta_editor_url", "bmUrl", "urlEditor"):
-            v = src.get(k)
-            if v:
-                candidatos.append(str(v))
-
-    if ESTRUCTURA_PATH.exists():
-        try:
-            u = json.loads(ESTRUCTURA_PATH.read_text(encoding="utf-8")).get("url")
-            if u:
-                candidatos.append(str(u))
-        except Exception:
-            pass
-
-    nav = selectores.get("nav_nueva_receta")
-    if nav and str(nav).startswith("http"):
-        candidatos.append(str(nav))
-
-    url = candidatos[0] if candidatos else f"{base}/"
-    if url.startswith("/"):
-        url = base + url
-
-    print(f"  → {url}")
-    page.goto(url, wait_until="domcontentloaded", timeout=120_000)
-    page.wait_for_timeout(2000)
-    return url
-
-
-def en_formulario_tags(page) -> bool:
-    return page.evaluate(
-        """() => {
-      const t = document.body.innerText || '';
-      const u = location.href;
-      if (/formulario tags|edici[oó]n de tags/i.test(t)) return true;
-      if (/\\/edit\\/component/i.test(u) && /tag/i.test(t + document.title)) return true;
-      return false;
-    }"""
-    )
-
-
-def listo_para_tags(page) -> bool:
-    return en_zona_trabajo(page) or en_formulario_tags(page)
-
-
-def en_zona_trabajo(page) -> bool:
-    return page.evaluate(
-        """() => {
-      const t = document.body.innerText || '';
-      return /zona de trabajo/i.test(t) && /tags/i.test(t) && /componente vac[ií]o|cabecera|ingredientes/i.test(t);
-    }"""
-    )
-
-
 def pausa_usuario(msg: str) -> None:
     print(msg)
     try:
@@ -136,35 +66,63 @@ def pausa_usuario(msg: str) -> None:
         pass
 
 
-def _scope_editor(page):
-    for sel in (
-        '[role="dialog"]:visible',
-        '[class*="drawer"]:visible',
-        '[class*="panel"]:visible',
-        '[class*="sidebar"]:visible',
-        'form:visible',
-    ):
-        loc = page.locator(sel).first
-        if loc.count():
-            return loc
-    return page
+def navegar_a_canvas(page, env: dict, selectores: dict, receta: dict) -> str:
+    """Zona de trabajo (cabecera + tags + …). No abre el editor de tags."""
+    base = env.get("CENCOSUD_BM_URL", "https://business-manager.ecomm.cencosud.com/").rstrip("/")
+    candidatos: list[str] = []
+
+    if env.get("CENCOSUD_BM_RECETA_URL"):
+        candidatos.append(env["CENCOSUD_BM_RECETA_URL"])
+
+    for k in ("url_canvas", "url_editor_receta", "url_editor", "receta_editor_url", "bmUrl", "urlEditor"):
+        v = selectores.get(k) or receta.get(k)
+        if v:
+            candidatos.append(str(v))
+
+    if ESTRUCTURA_PATH.exists():
+        try:
+            u = str(json.loads(ESTRUCTURA_PATH.read_text(encoding="utf-8")).get("url") or "")
+            if u and "/edit/component" not in u:
+                candidatos.append(u)
+        except Exception:
+            pass
+
+    url = candidatos[0] if candidatos else f"{base}/"
+    if url.startswith("/"):
+        url = base + url
+    print(f"  → canvas: {url[:100]}…")
+    page.goto(url, wait_until="domcontentloaded", timeout=120_000)
+    page.wait_for_timeout(2500)
+    return url
 
 
-def _abrir_lapiz_componente(page, nombre: str) -> bool:
-    want = nombre.lower()
+def en_zona_trabajo(page) -> bool:
+    return page.evaluate(
+        """() => {
+      const t = document.body.innerText || '';
+      return /zona de trabajo/i.test(t) && /tags/i.test(t);
+    }"""
+    )
 
-    # 1) Bloque en ZONA DE TRABAJO (no paleta izquierda): tiene «tags» + «componente vacío» o «Id:»
+
+def en_formulario_tags(page) -> bool:
+    return page.evaluate(
+        """() => {
+      const t = document.body.innerText || '';
+      return /formulario tags|edici[oó]n de tags/i.test(t)
+        || (/\/edit\\/component/i.test(location.href) && /tag/i.test(t + document.title));
+    }"""
+    )
+
+
+def _abrir_lapiz_tags(page) -> bool:
     ok = page.evaluate(
-        """(want) => {
-      const vacio = /componente vac[ií]o|edita este componente/i;
-      const idPat = /Id:\\s*[a-f0-9]{4,}/i;
+        """() => {
       const isPalette = (el) => {
         let n = el;
         while (n) {
           const c = (n.className || '') + ' ' + (n.getAttribute('class') || '');
-          const t = (n.innerText || '').slice(0, 80).toLowerCase();
-          if (/paleta|palette|sidebar|components-list/i.test(c)) return true;
-          if (/paleta de componentes/i.test(t)) return true;
+          if (/paleta|palette|sidebar/i.test(c)) return true;
           if (n.tagName === 'ASIDE') return true;
           n = n.parentElement;
         }
@@ -174,112 +132,75 @@ def _abrir_lapiz_componente(page, nombre: str) -> bool:
       for (const el of document.querySelectorAll('div, section, article')) {
         if (isPalette(el)) continue;
         const t = el.innerText || '';
-        if (!vacio.test(t) && !idPat.test(t)) continue;
         const lines = t.split('\\n').map(s => s.trim()).filter(Boolean);
-        if (!lines.some(l => l.toLowerCase() === want)) continue;
+        if (!lines.some(l => l.toLowerCase() === 'tags')) continue;
+        if (!/componente vac[ií]o|edita este componente|Id:\\s*[a-f0-9]{4,}/i.test(t)) continue;
         candidates.push(el);
       }
       candidates.sort((a, b) => (a.innerText || '').length - (b.innerText || '').length);
       const root = candidates[0];
       if (!root) return false;
-      const buttons = [...root.querySelectorAll('button, a[role="button"], [role="button"]')]
-        .filter(b => b.offsetParent !== null);
+      const buttons = [...root.querySelectorAll('button, [role="button"]')].filter(b => b.offsetParent);
       for (const b of buttons) {
-        const hint = ((b.getAttribute('aria-label') || '') + ' ' + (b.title || '') + ' ' + (b.className || '')).toLowerCase();
-        if (/edit|ditar|lápiz|lapiz|pencil/.test(hint)) { b.click(); return true; }
+        const h = ((b.getAttribute('aria-label') || '') + ' ' + (b.title || '') + ' ' + (b.className || '')).toLowerCase();
+        if (/edit|ditar|lápiz|lapiz|pencil/.test(h)) { b.click(); return true; }
       }
       if (buttons[0]) { buttons[0].click(); return true; }
       return false;
-    }""",
-        want,
+    }"""
     )
-    page.wait_for_timeout(700)
-    if ok:
-        return True
+    page.wait_for_timeout(1000)
+    return bool(ok)
 
-    # 2) Playwright: bloque con «componente vacío» + título exacto
-    bloque = (
-        page.locator("div, section, article")
-        .filter(has_text=re.compile(r"componente vac[ií]o", re.I))
-        .filter(has=page.get_by_text(nombre, exact=True))
-        .last
-    )
-    if bloque.count():
-        lapiz = bloque.locator("button, [role='button']").first
-        if lapiz.count() and lapiz.is_visible():
-            lapiz.click()
-            page.wait_for_timeout(700)
+
+def _click_btn(page, patrones: tuple[str, ...]) -> bool:
+    for pat in patrones:
+        btn = page.get_by_role("button", name=re.compile(pat, re.I)).first
+        if btn.count() and btn.is_visible():
+            btn.click()
+            page.wait_for_timeout(600)
             return True
-
     return False
 
 
-def _abrir_item_arreglo(page, n: int) -> None:
-    for pat in (
-        rf"Formulario\s+Ítem\s+{n}",
-        rf"Formulario\s+Item\s+{n}",
-        rf"Formulario\s+ítem\s+{n}",
-    ):
-        item = page.get_by_text(re.compile(pat, re.I)).first
-        if item.count():
-            item.click()
-            page.wait_for_timeout(700)
+def _abrir_item(page, n: int) -> None:
+    for pat in (rf"Formulario\s+Ítem\s+{n}", rf"Formulario\s+Item\s+{n}"):
+        loc = page.get_by_text(re.compile(pat, re.I)).first
+        if loc.count():
+            loc.click()
+            page.wait_for_timeout(600)
             return
-    loc = page.get_by_text(re.compile(rf"Formulario\s+Í?tem\s+{n}|ítem\s+{n}|item\s+{n}", re.I)).first
-    if loc.count():
-        loc.click()
-        page.wait_for_timeout(700)
 
 
-def _escribir_tag(page, tag: str) -> bool:
-    candidatos = [
-        page.get_by_label(re.compile(r"tag\*?", re.I)).last,
-        page.locator('input[name*="tag" i]:visible').last,
+def _escribir_tag(page, valor: str) -> bool:
+    for loc in (
+        page.get_by_label(re.compile(r"^tag\*?$", re.I)).last,
+        page.get_by_label(re.compile(r"tag", re.I)).last,
         page.locator('input:visible:not([type="checkbox"]):not([type="hidden"])').last,
-    ]
-    for loc in candidatos:
+    ):
         if not loc.count():
             continue
         try:
-            loc.wait_for(state="visible", timeout=5000)
-            loc.click(timeout=3000)
-            loc.fill(tag, timeout=5000)
-            page.wait_for_timeout(200)
+            loc.wait_for(state="visible", timeout=8000)
+            loc.click()
+            loc.fill(valor)
+            page.keyboard.press("Tab")
+            page.wait_for_timeout(300)
             return True
         except Exception:
-            try:
-                loc.click(force=True, timeout=2000)
-                page.keyboard.press("Control+a")
-                page.keyboard.type(tag, delay=30)
-                page.wait_for_timeout(200)
-                return True
-            except Exception:
-                continue
+            continue
     return False
 
 
-def _agregar_tag_repeater(page, scope, tag: str, indice: int) -> bool:
-    if indice > 0:
-        for pat in (r"agregar\s*item", r"agregar", r"añadir"):
-            btn = page.get_by_role("button", name=re.compile(pat, re.I)).first
-            if btn.count() and btn.is_visible():
-                btn.click()
-                page.wait_for_timeout(500)
-                break
-
-    _abrir_item_arreglo(page, indice + 1)
-    return _escribir_tag(page, tag)
-
-
-def _tags_guardados(page, tags: list[str]) -> bool:
+def _tags_en_canvas(page, tags: list[str]) -> bool:
     return page.evaluate(
         """(expected) => {
       const vacio = /componente vac[ií]o|edita este componente/i;
-      for (const el of document.querySelectorAll('div, section, article, li')) {
+      for (const el of document.querySelectorAll('div, section, article')) {
         const lines = (el.innerText || '').split('\\n').map(s => s.trim()).filter(Boolean);
         if (!lines.length || lines[0].toLowerCase() !== 'tags') continue;
-        const text = (el.innerText || '').toLowerCase();
         if (vacio.test(el.innerText || '')) return false;
+        const text = (el.innerText || '').toLowerCase();
         return expected.some(t => text.includes(String(t).toLowerCase()));
       }
       return false;
@@ -294,182 +215,130 @@ def fill_tags(page, selectores: dict, categorias: list) -> bool:
         print("  · sin tags en JSON")
         return True
 
-    if en_formulario_tags(page):
-        print("  ya en «Edición de tags» — relleno directo (sin lápiz)")
-    elif en_zona_trabajo(page):
-        print("[CMS] Abriendo lápiz «tags» en zona de trabajo…")
-        abierto = False
+    # 1) Abrir bloque tags desde canvas (cabecera ya OK)
+    if not en_formulario_tags(page):
+        print("[1] Abro lápiz del bloque «tags» en zona de trabajo…")
         if selectores.get("btn_tags_abrir"):
-            loc = page.locator(selectores["btn_tags_abrir"]).first
-            if loc.count():
-                try:
-                    loc.click()
-                    page.wait_for_timeout(700)
-                    abierto = True
-                except Exception:
-                    pass
-        if not abierto:
-            abierto = _abrir_lapiz_componente(page, "tags")
-        if not abierto:
-            print("  ✗ no pude abrir el lápiz de «tags»")
+            page.locator(selectores["btn_tags_abrir"]).first.click()
+            page.wait_for_timeout(1000)
+        elif not _abrir_lapiz_tags(page):
+            print("  ✗ no encontré el lápiz de tags")
             return False
-        print("  lápiz OK «tags»")
-    else:
-        print("  aviso: no detecté zona de trabajo ni formulario tags; intento rellenar igual")
-
-    print(f"  tags a cargar ({len(tags)}): {', '.join(tags)}")
-    scope = page
-    ok_items = 0
-    for i, tag in enumerate(tags):
-        if _agregar_tag_repeater(page, scope, tag, i):
-            ok_items += 1
-            print(f"    · item {i + 1}: {tag}")
         else:
-            print(f"    ✗ item {i + 1}: «{tag}»")
+            print("  ✓ lápiz tags")
+        page.wait_for_timeout(1000)
+        if not en_formulario_tags(page):
+            print("  ✗ no abrió «Edición de tags»")
+            return False
 
-    if ok_items == 0:
+    print(f"[2] Cargo {len(tags)} tags del documento:")
+    ok = 0
+    for i, tag in enumerate(tags):
+        n = i + 1
+        if i > 0:
+            if not _click_btn(page, (r"agregar\s*item", r"agregar", r"añadir")):
+                print(f"  ✗ item {n}: sin botón Agregar item")
+                continue
+            page.wait_for_timeout(500)
+        _abrir_item(page, n)
+        if _escribir_tag(page, tag):
+            ok += 1
+            print(f"  ✓ item {n}: {tag}")
+        else:
+            print(f"  ✗ item {n}: no pude escribir «{tag}»")
+
+    if ok == 0:
         return False
 
-    print("\n  === PARA AQUÍ ===")
-    print("  El script NO hace clic en Volver ni en «Sí, acepto».")
-    print("  Tú: Guardar (si hace falta) → Volver → «Sí, acepto» en el popup azul.")
-    pausa_usuario("  Cuando guardaste y volviste al canvas, pulsa ENTER…")
+    # 3) Guardar formulario
+    print("[3] Guardar formulario tags…")
+    _click_btn(page, (r"^guardar$", r"guardar cambios", r"save"))
 
-    if en_formulario_tags(page):
-        print(f"  ✓ {ok_items}/{len(tags)} tags en el formulario (tú: Guardar → Volver → Sí acepto)")
-        return ok_items == len(tags)
+    # 4) Volver al canvas (abre popup)
+    print("[4] Volver al canvas…")
+    if not _click_btn(page, (r"volver", r"regresar", r"back")):
+        print("  ! no encontré Volver — hazlo a mano")
 
-    ok = _tags_guardados(page, tags)
-    print(f"  {'✓' if ok else '✗'} tags en canvas ({ok_items}/{len(tags)})")
-    return ok
+    page.wait_for_timeout(800)
+
+    # 5) Popup azul — tú confirmas
+    print("\n[5] POPUP: haz clic en «Sí, acepto» (azul).")
+    pausa_usuario("     Cuando el bloque tags en el canvas ya NO diga «vacío», pulsa ENTER…")
+
+    guardado = _tags_en_canvas(page, tags)
+    print(f"  {'✓' if guardado else '✗'} tags guardados en canvas ({ok}/{len(tags)})")
+    return guardado
 
 
 def fill(page, sel: str | None, value, label: str) -> bool:
     if not sel or value is None or value == "":
-        print(f"  · omitido {label}")
         return False
     try:
         loc = page.locator(sel).first
-        if not loc.count():
-            print(f"  ✗ {label}: no hay nodo {sel}")
-            return False
-        tag = loc.evaluate("el => el.tagName.toLowerCase()")
-        if tag == "select":
-            try:
-                loc.select_option(label=str(value))
-            except Exception:
-                loc.select_option(value=str(value))
-        else:
+        if loc.count():
             loc.fill(str(value))
-        print(f"  ✓ {label}")
-        return True
+            print(f"  ✓ {label}")
+            return True
     except Exception as e:
         print(f"  ✗ {label}: {e}")
-        return False
+    return False
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Cargar receta JSON en Business Manager Cencosud")
-    ap.add_argument("json_path", type=Path, help="Ruta al JSON en out/")
-    ap.add_argument("--dry-run", action="store_true", help="No publicar al final")
-    ap.add_argument("--headed", action="store_true", help="Navegador visible (recomendado)")
-    ap.add_argument("--continuar", action="store_true", help="Tags ya guardados → ingredientes/pasos/seo")
-    ap.add_argument("--ya-en-tags", action="store_true", help="No navegar: abre Edición de tags en Chromium y ENTER")
-    ap.add_argument("--no-session", action="store_true", help="No reutilizar bm-session.json")
+    ap = argparse.ArgumentParser(description="CRC — Business Manager Cencosud")
+    ap.add_argument("json_path", type=Path)
+    ap.add_argument("--headed", action="store_true")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--continuar", action="store_true", help="Tags OK → ingredientes/pasos/seo")
+    ap.add_argument("--no-session", action="store_true")
     args = ap.parse_args()
 
     path = args.json_path.expanduser().resolve()
     if not path.exists():
-        print(f"No existe JSON: {path}", file=sys.stderr)
+        print(f"No existe: {path}", file=sys.stderr)
         return 1
 
     receta = json.loads(path.read_text(encoding="utf-8"))
     env = load_env(ENV_PATH)
     selectores = load_selectores()
-    dry = args.dry_run or env.get("CENCOSUD_BM_DRY_RUN", "true").lower() in ("1", "true", "yes")
     headed = args.headed or env.get("CENCOSUD_BM_HEADED", "true").lower() in ("1", "true", "yes")
 
-    print(f"=== Carga CRC → BM · script {CRC_VERSION} ===")
-    print(f"receta:  {receta.get('titulo')}")
-    print(f"modo:    {'continuar (ingredientes+)' if args.continuar else 'SOLO TAGS — para al terminar'}")
-    print(f"dry_run: {dry} · headed: {headed}")
+    print(f"=== CRC · {CRC_VERSION} ===")
+    print(f"receta: {receta.get('titulo')}")
+    print(f"modo:   {'continuar' if args.continuar else 'SOLO TAGS'}")
 
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
-        print("Instala: pip install playwright && playwright install chromium", file=sys.stderr)
+        print("pip install playwright && playwright install chromium", file=sys.stderr)
         return 1
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=not headed)
-        ctx_kwargs = {"viewport": {"width": 1400, "height": 900}}
+        ctx: dict = {"viewport": {"width": 1400, "height": 900}}
         if not args.no_session and SESSION_PATH.exists():
-            ctx_kwargs["storage_state"] = str(SESSION_PATH)
-            print(f"  sesión: {SESSION_PATH.name}")
-        context = browser.new_context(**ctx_kwargs)
+            ctx["storage_state"] = str(SESSION_PATH)
+        context = browser.new_context(**ctx)
         page = context.new_page()
 
-        if args.ya_en_tags:
-            pausa_usuario(
-                "\nAbre «Edición de tags» del salmón en ESTA ventana Chromium y pulsa ENTER…"
-            )
-        else:
-            navegar_a_editor(page, env, selectores, receta)
-
-        if en_formulario_tags(page):
-            print("  detectado: Edición de tags")
-        elif en_zona_trabajo(page):
-            print("  detectado: zona de trabajo")
+        navegar_a_canvas(page, env, selectores, receta)
+        if not en_zona_trabajo(page) and not en_formulario_tags(page):
+            pausa_usuario("Abre la zona de trabajo del salmón en Chromium y pulsa ENTER…")
 
         if not args.continuar:
-            categorias = receta.get("categorias") or []
-            ok = fill_tags(page, selectores, categorias)
-            context.storage_state(path=str(SESSION_PATH))
+            ok = fill_tags(page, selectores, receta.get("categorias") or [])
+            browser.contexts[0].storage_state(path=str(SESSION_PATH))
             if ok:
-                print("\n=== FIN — tags OK ===")
-                print("Para ingredientes después:")
-                print(f'  python scripts\\publicar-receta-cencosud.py "{path}" --headed --continuar')
-            else:
-                print("\n=== FIN — tags NO guardados ===", file=sys.stderr)
+                print("\n=== TAGS OK ===")
+                print(f'python scripts\\publicar-receta-cencosud.py "{path}" --headed --continuar')
             pausa_usuario("ENTER para cerrar…")
             browser.close()
             return 0 if ok else 3
 
-        # --continuar: ingredientes, instrucciones, seo (tags ya hechos a mano)
-        print("[CMS] Modo continuar — asumo tags ya guardados en el canvas.")
-        if _abrir_lapiz_componente(page, "ingredientes"):
-            print("  lápiz OK «ingredientes»")
-            scope = _scope_editor(page)
-            ings = receta.get("ingredientes") or []
-            if ings:
-                texto_ing = "\n".join(
-                    " ".join(
-                        filter(
-                            None,
-                            [str(i.get("cantidad") or ""), str(i.get("unidad") or ""), str(i.get("nombre") or "")],
-                        )
-                    ).strip()
-                    for i in ings
-                )
-                fill(page, selectores.get("field_ingredientes"), texto_ing, "ingredientes")
-            pausa_usuario("Revisa ingredientes, guarda/volver, ENTER…")
-
-        if _abrir_lapiz_componente(page, "instrucciones") or _abrir_lapiz_componente(page, "lista de instrucciones"):
-            pasos = receta.get("pasos") or []
-            if pasos:
-                texto_pas = "\n".join(f"{p.get('orden')}. {p.get('texto')}" for p in pasos)
-                fill(page, selectores.get("field_pasos"), texto_pas, "pasos")
-            pausa_usuario("Revisa instrucciones, ENTER…")
-
-        seo = receta.get("seo") or {}
-        if _abrir_lapiz_componente(page, "seo"):
-            fill(page, selectores.get("field_meta_titulo"), seo.get("metaTitulo"), "meta_titulo")
-            fill(page, selectores.get("field_meta_descripcion"), seo.get("metaDescripcion"), "meta_descripcion")
-
-        context.storage_state(path=str(SESSION_PATH))
-        pausa_usuario("\nListo. ENTER para cerrar…")
+        # continuar: ingredientes, etc.
+        print("[CMS] ingredientes / instrucciones / seo — manual por ahora")
+        pausa_usuario("ENTER…")
         browser.close()
-
     return 0
 
 
