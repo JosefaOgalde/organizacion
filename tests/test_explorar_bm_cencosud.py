@@ -753,7 +753,10 @@ class ExplorarBmTests(unittest.TestCase):
         loc = LocTitulo()
 
         class Pagina:
-            def get_by_placeholder(self, _p, exact=False):
+            def get_by_label(self, _p, exact=False):
+                return loc
+
+            def locator(self, _sel):
                 return loc
 
             def evaluate(self, script, *_args):
