@@ -17,7 +17,7 @@ import re
 import sys
 from pathlib import Path
 
-CRC_VERSION = "2026-08-24-tags-v3"
+CRC_VERSION = "2026-08-24-tags-v4"
 
 ROOT = Path(__file__).resolve().parents[1]
 CRC = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud"
@@ -93,6 +93,21 @@ def navegar_a_editor(page, env: dict, selectores: dict, receta: dict) -> str:
     page.goto(url, wait_until="domcontentloaded", timeout=120_000)
     page.wait_for_timeout(2000)
     return url
+
+
+def en_formulario_tags(page) -> bool:
+    return page.evaluate(
+        """() => {
+      const t = document.body.innerText || '';
+      const u = location.href;
+      return (/edici[oó]n de tags|formulario tags/i.test(t) || /\\/edit\\/component/i.test(u))
+        && (/arreglo|tag\\*|formulario.{0,12}(ítem|item)/i.test(t));
+    }"""
+    )
+
+
+def listo_para_tags(page) -> bool:
+    return en_zona_trabajo(page) or en_formulario_tags(page)
 
 
 def en_zona_trabajo(page) -> bool:
@@ -190,28 +205,41 @@ def _abrir_lapiz_componente(page, nombre: str) -> bool:
     return False
 
 
-def _agregar_tag_repeater(page, scope, tag: str) -> bool:
-    for pat in (r"agregar\s*item", r"agregar", r"añadir", r"add\s*item"):
-        btn = scope.get_by_role("button", name=re.compile(pat, re.I)).first
-        if btn.count() and btn.is_visible():
-            btn.click()
-            page.wait_for_timeout(350)
+def _agregar_tag_repeater(page, scope, tag: str, indice: int) -> bool:
+  # ítem 1 ya existe; del 2 en adelante «Agregar item»
+    if indice > 0:
+        for pat in (r"agregar\s*item", r"agregar", r"añadir", r"add\s*item"):
+            btn = page.get_by_role("button", name=re.compile(pat, re.I)).first
+            if btn.count() and btn.is_visible():
+                btn.click()
+                page.wait_for_timeout(400)
+                break
+
+    n = indice + 1
+    for pat in (rf"formulario\s*ítem\s*{n}", rf"formulario\s*item\s*{n}", rf"ítem\s*{n}", rf"item\s*{n}"):
+        item = page.get_by_text(re.compile(pat, re.I)).first
+        if item.count() and item.is_visible():
+            try:
+                item.click()
+                page.wait_for_timeout(300)
+            except Exception:
+                pass
             break
 
-    inp = scope.get_by_label(re.compile(r"tag\*?", re.I)).last
+    inp = page.get_by_label(re.compile(r"tag\*?", re.I)).last
     if not inp.count():
-        inp = scope.locator(
+        inp = page.locator(
             'input[name*="tag" i]:visible, input[id*="tag" i]:visible, textarea[name*="tag" i]:visible'
         ).last
     if not inp.count():
-        inp = scope.locator('input:visible, textarea:visible, [contenteditable="true"]:visible').last
+        inp = scope.locator('input:visible, textarea:visible').last
     if not inp.count():
         return False
 
     inp.click()
     inp.fill(tag)
     page.wait_for_timeout(200)
-    page.keyboard.press("Enter")
+    page.keyboard.press("Tab")
     page.wait_for_timeout(250)
     return True
 
@@ -239,33 +267,38 @@ def fill_tags(page, selectores: dict, categorias: list) -> bool:
         print("  · sin tags en JSON")
         return True
 
-    print(f"[CMS] Abriendo componente «tags» en la zona de trabajo…")
-    abierto = False
-    if selectores.get("btn_tags_abrir"):
-        loc = page.locator(selectores["btn_tags_abrir"]).first
-        if loc.count():
-            try:
-                loc.click()
-                page.wait_for_timeout(700)
-                abierto = True
-            except Exception:
-                pass
-    if not abierto:
-        abierto = _abrir_lapiz_componente(page, "tags")
-    if not abierto:
-        print("  ✗ no pude abrir el lápiz de «tags» (¿estás en la zona de trabajo?)")
-        return False
-    print("  lápiz OK «tags»")
+    if en_formulario_tags(page):
+        print("  ya en «Edición de tags» — relleno directo (sin lápiz)")
+    elif en_zona_trabajo(page):
+        print("[CMS] Abriendo lápiz «tags» en zona de trabajo…")
+        abierto = False
+        if selectores.get("btn_tags_abrir"):
+            loc = page.locator(selectores["btn_tags_abrir"]).first
+            if loc.count():
+                try:
+                    loc.click()
+                    page.wait_for_timeout(700)
+                    abierto = True
+                except Exception:
+                    pass
+        if not abierto:
+            abierto = _abrir_lapiz_componente(page, "tags")
+        if not abierto:
+            print("  ✗ no pude abrir el lápiz de «tags»")
+            return False
+        print("  lápiz OK «tags»")
+    else:
+        print("  aviso: no detecté zona de trabajo ni formulario tags; intento rellenar igual")
 
     print(f"  tags a cargar ({len(tags)}): {', '.join(tags)}")
-    scope = _scope_editor(page)
+    scope = page
     ok_items = 0
-    for i, tag in enumerate(tags, 1):
-        if _agregar_tag_repeater(page, scope, tag):
+    for i, tag in enumerate(tags):
+        if _agregar_tag_repeater(page, scope, tag, i):
             ok_items += 1
-            print(f"    · item {i}: {tag}")
+            print(f"    · item {i + 1}: {tag}")
         else:
-            print(f"    ✗ item {i}: «{tag}»")
+            print(f"    ✗ item {i + 1}: «{tag}»")
 
     if ok_items == 0:
         return False
