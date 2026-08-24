@@ -273,6 +273,18 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
         self.assertIn("drive.google.com/file/d/1u2z-oBQeGHopYUtVpam0bfGvFSpf5OIB", url)
         self.assertEqual(receta["imagenes"][0]["url"], url)
 
+    def test_enriquece_url_desde_catalogo_sin_word(self):
+        explorar = cargar_explorar()
+        receta = {
+            "id": "salmon-a-la-parrilla-con-salsa-de-palta",
+            "titulo": "Salmón a la parrilla con salsa de palta",
+            "fuenteWord": "inbox/no-existe.docx",
+            "imagenes": [],
+        }
+        url = explorar.enriquecer_imagen_desde_word(receta)
+        self.assertIsNotNone(url)
+        self.assertIn("drive.google.com", url)
+
     def test_abre_lapiz_svg_sin_aria_con_paleta(self):
         """Reproduce BM real: paleta+canvas juntos y lápiz SVG sin aria (lapiz=None)."""
         explorar = cargar_explorar()

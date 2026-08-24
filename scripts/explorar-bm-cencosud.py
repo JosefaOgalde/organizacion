@@ -149,10 +149,40 @@ def url_imagen_portada(receta: dict) -> str | None:
     return None
 
 
+def _asignar_url_imagen(receta: dict, url: str, nota: str) -> str:
+    imgs = list(receta.get("imagenes") or [])
+    if imgs and isinstance(imgs[0], dict):
+        imgs[0]["url"] = url
+        imgs[0]["nota"] = nota
+    else:
+        imgs = [
+            {
+                "rutaLocal": "",
+                "url": url,
+                "alt": "",
+                "rol": "portada",
+                "nota": nota,
+            }
+        ]
+    receta["imagenes"] = imgs
+    return url
+
+
+def _catalogo_foto_urls() -> dict[str, str]:
+    path = CRC / "data" / "foto-urls.json"
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return {str(k): str(v) for k, v in data.items() if not str(k).startswith("_") and v}
+    except Exception:
+        return {}
+
+
 def enriquecer_imagen_desde_word(receta: dict) -> str | None:
     """Si el JSON no trae url de foto, la lee del hipervínculo ([Foto]) del .docx.
 
-    Así no hace falta reparsear a mano cuando el Word ya tiene el link de Drive.
+    Busca el Word en inbox/, ruta fuenteWord, y catálogo data/foto-urls.json.
     """
     ya = url_imagen_portada(receta)
     if ya:
@@ -165,18 +195,28 @@ def enriquecer_imagen_desde_word(receta: dict) -> str | None:
         if not p.is_absolute():
             p = ROOT / p
         candidatos.append(p)
-    # Nombre típico en inbox
+        # Windows a veces guarda ruta con mayúsculas distintas
+        candidatos.append(CRC / "inbox" / Path(fuente).name)
+
     titulo = (receta.get("titulo") or receta.get("id") or "").strip()
+    rid = (receta.get("id") or slugify_simple(titulo) or "").strip()
     inbox = CRC / "inbox"
     if inbox.is_dir():
-        for docx in inbox.glob("*.docx"):
-            low = docx.name.lower()
-            if "salmon" in low or "salmón" in low.replace("ó", "o"):
+        for docx in sorted(inbox.glob("*.docx")):
+            low = docx.name.lower().replace("ó", "o").replace("á", "a")
+            if "salmon" in low or "salm" in low:
                 candidatos.append(docx)
-            elif titulo and slugify_simple(titulo)[:20] in low.replace(" ", "-"):
+            elif rid and rid[:18] in low.replace(" ", "-").replace("_", "-"):
                 candidatos.append(docx)
+            elif titulo and slugify_simple(titulo)[:18] in low.replace(" ", "-"):
+                candidatos.append(docx)
+        # Cualquier docx si solo hay uno
+        todos = list(inbox.glob("*.docx"))
+        if len(todos) == 1:
+            candidatos.append(todos[0])
 
     # Import lazy del parser
+    mod = None
     try:
         import importlib.util
 
@@ -188,37 +228,39 @@ def enriquecer_imagen_desde_word(receta: dict) -> str | None:
         spec.loader.exec_module(mod)
     except Exception as exc:
         print(f"  · No pude cargar parse-receta-word ({exc})", flush=True)
-        return None
 
-    vistos = set()
-    for docx in candidatos:
-        key = str(docx.resolve()) if docx.exists() else None
-        if not key or key in vistos:
+    vistos: set[str] = set()
+    if mod:
+        for docx in candidatos:
+            if not docx.exists():
+                continue
+            key = str(docx.resolve())
+            if key in vistos:
+                continue
+            vistos.add(key)
+            try:
+                url = mod.url_foto_portada(docx)
+            except Exception:
+                url = None
+            if not url:
+                continue
+            print(f"  · Foto desde Word ({docx.name}): {url[:90]}", flush=True)
+            return _asignar_url_imagen(receta, url, "URL de ([Foto]) leída del Word al publicar")
+
+    # Catálogo versionado (fallback si el inbox local no tiene el .docx)
+    catalogo = _catalogo_foto_urls()
+    for key in (rid, slugify_simple(titulo), "salmon-a-la-parrilla-con-salsa-de-palta"):
+        if not key:
             continue
-        vistos.add(key)
-        try:
-            url = mod.url_foto_portada(docx)
-        except Exception:
-            url = None
-        if not url:
-            continue
-        imgs = list(receta.get("imagenes") or [])
-        if imgs and isinstance(imgs[0], dict):
-            imgs[0]["url"] = url
-            imgs[0]["nota"] = "URL de ([Foto]) leída del Word al publicar"
-        else:
-            imgs = [
-                {
-                    "rutaLocal": "",
-                    "url": url,
-                    "alt": "",
-                    "rol": "portada",
-                    "nota": "URL de ([Foto]) leída del Word al publicar",
-                }
-            ]
-        receta["imagenes"] = imgs
-        print(f"  · Foto desde Word ({docx.name}): {url[:90]}", flush=True)
-        return url
+        url = catalogo.get(key)
+        if url:
+            print(f"  · Foto desde catálogo data/foto-urls.json ({key})", flush=True)
+            return _asignar_url_imagen(receta, url, "URL desde data/foto-urls.json")
+
+    print(
+        "  · No hallé URL de Foto (ni en JSON, ni Word en inbox/, ni catálogo).",
+        flush=True,
+    )
     return None
 
 
@@ -1112,6 +1154,44 @@ def guardar_editor_componente(page) -> bool:
                     return True
             except Exception:
                 continue
+    # Barrido: cualquier botón visible cuyo texto sugiera guardar
+    for target in _targets_page_y_frames(page):
+        try:
+            botones = target.locator("button:visible, [role='button']:visible, a:visible")
+            n = min(botones.count(), 40)
+            print(f"  · Botones visibles al buscar Guardar: {n}", flush=True)
+            for i in range(n):
+                btn = botones.nth(i)
+                try:
+                    txt = (
+                        (btn.inner_text() or "")
+                        + " "
+                        + (btn.get_attribute("aria-label") or "")
+                        + " "
+                        + (btn.get_attribute("title") or "")
+                    ).strip()
+                except Exception:
+                    continue
+                low = txt.lower()
+                if not low or len(low) > 60:
+                    continue
+                if re.search(r"publicar|publish|acepto|cancel|cerrar|close|volver|back|eliminar|delete", low):
+                    continue
+                if re.search(r"guardar|save|aplicar|actualizar|update|confirm|aceptar(?!o)", low):
+                    try:
+                        print(f"  · Pruebo botón Guardar candidato: {txt!r}", flush=True)
+                        btn.scroll_into_view_if_needed(timeout=1000)
+                        btn.click(timeout=3000)
+                        page.wait_for_timeout(900)
+                        print("  ✓ Guardado editor del componente", flush=True)
+                        return True
+                    except Exception:
+                        continue
+                # Log candidatos cortos (diagnóstico)
+                if i < 12 and txt:
+                    print(f"    · btn[{i}]={txt!r}", flush=True)
+        except Exception:
+            continue
     # Último recurso: Ctrl+S
     try:
         page.keyboard.press("Control+s")
@@ -2058,10 +2138,11 @@ def _cancelar_dialogo_cambios_sin_guardar(page) -> bool:
 
 def _rellenar_imagen(page, receta: dict) -> bool:
     """Portada: modal BM → pestaña URL → pegar link de ([Foto]) del Word."""
+    enriquecer_imagen_desde_word(receta)
     url = url_imagen_portada(receta)
     local = ruta_imagen_local(receta)
     if not url and not local:
-        print("  · Sin URL/ruta de imagen en el JSON", flush=True)
+        print("  · Sin URL/ruta de imagen (JSON + Word + catálogo)", flush=True)
         return False
     if url:
         print(f"  · URL portada (Foto del Word): {url[:90]}", flush=True)
