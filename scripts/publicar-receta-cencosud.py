@@ -197,30 +197,97 @@ def main() -> int:
 
         print(
             "\n>>> IMPORTANTE: en el navegador abre la RECETA en el Gestor de contenido\n"
-            "    (lista de bloques Cabecera / tags / Lista Ingredientes / …).\n"
+            "    (debes ver bloques Cabecera / tags / Lista Ingredientes / SEO).\n"
+            "    URL suele tener view-manager o similar.\n"
             "    NO hace falta tocar los lápices.\n"
             "    Cuando la veas, pulsa ENTER aquí para rellenar…\n"
         )
-        try:
-            input()
-        except EOFError:
-            print("Sin TTY: esperando 45s…")
-            page.wait_for_timeout(45_000)
 
-        comps = refrescar_lapices_desde_pagina(explorar, page, selectores)
-        print(f"Componentes detectados ahora: {len(comps)}")
-        for c in comps:
-            print(f"  · {c.get('clave')}: {c.get('texto')!r} lapiz={c.get('lapizSelector')}")
+        comps: list = []
+        for intento in range(1, 4):
+            try:
+                input()
+            except EOFError:
+                print("Sin TTY: esperando 45s…")
+                page.wait_for_timeout(45_000)
+
+            comps = refrescar_lapices_desde_pagina(explorar, page, selectores)
+            print(f"Componentes detectados ahora: {len(comps)} (intento {intento}/3)")
+            for c in comps:
+                print(f"  · {c.get('clave')}: {c.get('texto')!r} lapiz={c.get('lapizSelector')}")
+
+            if len(comps) >= 2:
+                break
+
+            # Diagnóstico para entender el DOM real del BM
+            try:
+                diag = {
+                    "url": page.url,
+                    "title": page.title(),
+                    "frames": [{"url": f.url, "name": f.name} for f in page.frames],
+                    "hints": page.evaluate(
+                        """() => {
+                      const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+                      const texts = [];
+                      document.querySelectorAll('div, span, p, li, h1, h2, h3, strong').forEach((el) => {
+                        const t = clean(el.innerText);
+                        if (t && t.length < 40 && /cabecera|tags|ingrediente|instruccion|seo|header/i.test(t)) {
+                          texts.push(t);
+                        }
+                      });
+                      return [...new Set(texts)].slice(0, 40);
+                    }"""
+                    ),
+                }
+                # hints por frame
+                frame_hints = []
+                for fr in page.frames:
+                    try:
+                        ht = fr.evaluate(
+                            """() => {
+                          const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+                          const texts = [];
+                          document.querySelectorAll('div, span, p, li, strong, h1, h2, h3').forEach((el) => {
+                            const t = clean(el.innerText);
+                            if (t && t.length < 40 && /cabecera|tags|ingrediente|instruccion|seo|header/i.test(t)) {
+                              texts.push(t);
+                            }
+                          });
+                          return [...new Set(texts)].slice(0, 30);
+                        }"""
+                        )
+                        if ht:
+                            frame_hints.append({"url": fr.url, "hints": ht})
+                    except Exception:
+                        pass
+                diag["frameHints"] = frame_hints
+                diag_path = SECRETS / "bm-diagnostico-cms.json"
+                diag_path.write_text(json.dumps(diag, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+                page.screenshot(path=str(SECRETS / "bm-diagnostico-cms.png"), full_page=True)
+                print(f"Diagnóstico guardado en {diag_path.relative_to(ROOT)}")
+                if diag.get("hints"):
+                    print("Textos cortos sospechosos en página:", diag["hints"][:15])
+                for fh in frame_hints:
+                    print(f"  frame {fh['url'][:60]}… → {fh['hints'][:10]}")
+            except Exception as e:
+                print(f"No se pudo escribir diagnóstico: {e}")
+
+            if intento < 3:
+                print(
+                    "\nAún no veo Cabecera/tags/listas. Deja la ficha de componentes visible\n"
+                    "y pulsa ENTER otra vez (sin cerrar el navegador)…"
+                )
 
         if len(comps) < 2:
             print(
-                "\nNo veo los bloques del CMS. No se rellenó nada.\n"
-                "Abre la ficha de la receta (view-manager / componentes) y vuelve a correr.",
+                "\nNo veo los bloques del CMS tras 3 intentos. No se rellenó nada.\n"
+                "Revisa secrets/bm-diagnostico-cms.png y bm-diagnostico-cms.json\n"
+                "y dime qué ves en la pantalla (o mándame esa captura).",
                 file=sys.stderr,
             )
             resultado = 5
             if headed:
-                print("\nENTER para cerrar el navegador…")
+                print("\nEl navegador sigue abierto. ENTER para cerrar…")
                 try:
                     input()
                 except EOFError:
@@ -245,8 +312,6 @@ def main() -> int:
                 file=sys.stderr,
             )
         elif dry:
-            # dry-run exitoso: no marcar cargado si preferimos dejar listo-para-cargar
-            # Mantener listo-para-cargar para poder reintentar; solo marcar cargado en publish
             print("Dry-run OK: revisa en el BM que los campos quedaron guardados.")
         else:
             receta["estado"] = "cargado"

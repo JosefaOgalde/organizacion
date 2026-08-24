@@ -298,71 +298,137 @@ def contar_campos_editables(page) -> int:
 
 
 def listar_componentes_cms(page) -> list[dict]:
-    """Detecta bloques del Gestor de contenido (Cabecera, tags, listas, SEO…)."""
+    """Detecta bloques del Gestor de contenido (Cabecera, tags, listas, SEO…).
+
+    Busca en la página y en iframes (el BM a menudo monta el CMS en un frame).
+    """
     aliases_flat = []
     for comp in COMPONENTES_CMS:
         for alias in comp["aliases"]:
             aliases_flat.append({"clave": comp["clave"], "alias": alias})
-    return page.evaluate(
-        """(aliasesFlat) => {
+
+    js = """(aliasesFlat) => {
       const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
       const norm = (s) => clean(s).toLowerCase();
       const found = [];
       const seen = new Set();
-      const nodes = Array.from(
-        document.querySelectorAll(
-          '[data-component], [data-type], [class*="component"], [class*="Component"], section, article, li, div'
-        )
-      );
-      for (const el of nodes) {
-        const dataName = clean(el.getAttribute('data-component') || el.getAttribute('data-type') || '');
-        const titleEl = el.querySelector(
-          '.bloque-nombre, [class*="title"], [class*="Title"], [class*="name"], h1, h2, h3, h4, h5, strong'
+
+      const pickLapiz = (root) => {
+        const editBtn = root.querySelector(
+          'button.btn-lapiz, button[aria-label*="Editar" i], button[aria-label*="edit" i], button[title*="Editar" i], button[title*="edit" i], [data-testid*="edit" i], [aria-label*="lápiz" i], [aria-label*="lapiz" i], button[aria-label*="pencil" i]'
         );
-        const titleText = clean(titleEl ? titleEl.innerText : '');
-        const ownText = clean(el.childNodes && el.childNodes.length
-          ? Array.from(el.childNodes).filter((n) => n.nodeType === 3).map((n) => n.textContent).join(' ')
-          : '');
-        const blob = norm([dataName, titleText, ownText].filter(Boolean).join(' | '));
-        if (!blob || blob.length > 120) continue;
+        if (editBtn) return editBtn;
+        // Iconos tipicos: primer boton de un grupo de 2-4 botones junto al titulo
+        const buttons = Array.from(root.querySelectorAll('button, [role="button"]'))
+          .filter((b) => {
+            const st = getComputedStyle(b);
+            if (st.display === 'none' || st.visibility === 'hidden') return false;
+            const r = b.getBoundingClientRect();
+            return r.width > 0 && r.height > 0 && r.width < 64 && r.height < 64;
+          });
+        return buttons[0] || null;
+      };
+
+      const absSel = (el) => {
+        if (!el) return null;
+        if (el.id) return '#' + CSS.escape(el.id);
+        const aria = el.getAttribute('aria-label');
+        if (aria) return el.tagName.toLowerCase() + '[aria-label="' + aria.replace(/"/g, '\\\\"') + '"]';
+        const title = el.getAttribute('title');
+        if (title) return el.tagName.toLowerCase() + '[title="' + title.replace(/"/g, '\\\\"') + '"]';
+        return null;
+      };
+
+      // 1) Nodos cuyo texto corto coincide con un alias (Cabecera, tags, …)
+      const candidates = Array.from(document.querySelectorAll('div, span, p, li, section, article, h1, h2, h3, h4, h5, strong, label, button'));
+      for (const el of candidates) {
+        // Solo texto propio corto (evita contenedores gigantes)
+        const direct = clean(
+          Array.from(el.childNodes)
+            .filter((n) => n.nodeType === 3)
+            .map((n) => n.textContent)
+            .join(' ')
+        );
+        const full = clean(el.innerText || '');
+        const label = direct || (full.length <= 40 ? full : '');
+        if (!label || label.length > 48) continue;
+        const nlabel = norm(label);
+        // Ignorar mensajes vacios del canvas
+        if (/edita este componente/i.test(nlabel)) continue;
+
         for (const item of aliasesFlat) {
           const a = norm(item.alias);
-          if (!(blob === a || blob.startsWith(a + ' ') || blob.endsWith(' ' + a) || titleText && norm(titleText) === a || dataName && norm(dataName) === a)) {
-            continue;
-          }
+          if (!(nlabel === a || nlabel.startsWith(a + ' ·') || nlabel.startsWith(a + ' |'))) continue;
           if (seen.has(item.clave)) break;
-          const editBtn = el.querySelector(
-            'button.btn-lapiz, button[aria-label*="Editar" i], button[aria-label*="edit" i], button[title*="Editar" i], button[title*="edit" i], [data-testid*="edit" i], [aria-label*="lápiz" i], [aria-label*="lapiz" i]'
-          );
-          let lapizSelector = null;
-          if (editBtn) {
-            if (editBtn.id) lapizSelector = '#' + CSS.escape(editBtn.id);
-            else if (editBtn.getAttribute('aria-label')) {
-              lapizSelector = 'button[aria-label="' + editBtn.getAttribute('aria-label').replace(/"/g, '\\\\"') + '"]';
-            }
-          }
-          if (!lapizSelector) {
-            const acciones = el.querySelector('.acciones-bloque, [class*="action"], [class*="toolbar"], [class*="controls"]');
-            const firstBtn = (acciones || el).querySelector('button, [role="button"]');
-            if (firstBtn && firstBtn.getAttribute('aria-label')) {
-              lapizSelector = 'button[aria-label="' + firstBtn.getAttribute('aria-label').replace(/"/g, '\\\\"') + '"]';
-            }
+
+          // Subir hasta un bloque que tenga botones de accion
+          let block = el;
+          let editBtn = null;
+          for (let i = 0; i < 10 && block; i++) {
+            editBtn = pickLapiz(block);
+            const btns = block.querySelectorAll('button, [role="button"]');
+            if (editBtn || btns.length >= 2) break;
+            block = block.parentElement;
           }
           found.push({
             clave: item.clave,
             alias: item.alias,
-            texto: titleText || dataName || item.alias,
-            lapizSelector,
-            tieneLapiz: !!(editBtn || lapizSelector),
+            texto: label,
+            lapizSelector: absSel(editBtn),
+            tieneLapiz: !!editBtn,
           });
           seen.add(item.clave);
           break;
         }
       }
+
+      // 2) data-component / data-type
+      document.querySelectorAll('[data-component], [data-type]').forEach((el) => {
+        const dataName = clean(el.getAttribute('data-component') || el.getAttribute('data-type') || '');
+        if (!dataName) return;
+        for (const item of aliasesFlat) {
+          if (norm(dataName) !== norm(item.alias)) continue;
+          if (seen.has(item.clave)) return;
+          const editBtn = pickLapiz(el);
+          found.push({
+            clave: item.clave,
+            alias: item.alias,
+            texto: dataName,
+            lapizSelector: absSel(editBtn),
+            tieneLapiz: !!editBtn,
+          });
+          seen.add(item.clave);
+        }
+      });
+
       return found;
-    }""",
-        aliases_flat,
-    )
+    }"""
+
+    merged: list[dict] = []
+    seen = set()
+    frames = []
+    try:
+        frames = list(page.frames)
+    except Exception:
+        frames = []
+    targets = [page] + [f for f in frames if f != page.main_frame]
+
+    for target in targets:
+        try:
+            partial = target.evaluate(js, aliases_flat)
+        except Exception:
+            continue
+        for item in partial or []:
+            if item.get("clave") in seen:
+                continue
+            item = dict(item)
+            try:
+                item["frameUrl"] = target.url
+            except Exception:
+                item["frameUrl"] = None
+            merged.append(item)
+            seen.add(item["clave"])
+    return merged
 
 
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
@@ -370,10 +436,20 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
     if selector_guardado:
         try:
             loc = page.locator(selector_guardado).first
-            if loc.count():
+            if loc.count() and loc.is_visible():
                 loc.click(timeout=5_000)
                 page.wait_for_timeout(600)
                 return True
+        except Exception:
+            pass
+        # Probar el mismo selector en iframes
+        try:
+            for frame in page.frames:
+                loc = frame.locator(selector_guardado).first
+                if loc.count():
+                    loc.click(timeout=5_000)
+                    page.wait_for_timeout(600)
+                    return True
         except Exception:
             pass
 
@@ -382,46 +458,38 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
         return False
 
     aliases = list(comp["aliases"])
-    clicked = page.evaluate(
-        """(aliases) => {
+    js_click = """(aliases) => {
       const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
       const norm = (s) => clean(s).toLowerCase();
       const wanted = aliases.map(norm);
-      const blocks = Array.from(
-        document.querySelectorAll('[data-component], [data-type], section, article, div, li')
-      );
-      for (const el of blocks) {
-        const dataName = clean(el.getAttribute('data-component') || el.getAttribute('data-type') || '');
-        const titleEl = el.querySelector(
-          '.bloque-nombre, [class*="title"], [class*="Title"], [class*="name"], h1, h2, h3, h4, h5, strong'
-        );
-        const titleText = clean(titleEl ? titleEl.innerText : '');
-        const hit = wanted.some((w) => norm(dataName) === w || norm(titleText) === w);
-        if (!hit) continue;
-        const editBtn = el.querySelector(
+
+      const pickLapiz = (root) => {
+        const editBtn = root.querySelector(
           'button.btn-lapiz, button[aria-label*="Editar" i], button[aria-label*="edit" i], button[title*="Editar" i], button[title*="edit" i], [data-testid*="edit" i]'
         );
-        if (editBtn) {
-          editBtn.click();
-          return true;
-        }
-        const acciones = el.querySelector('.acciones-bloque, [class*="action"], [class*="toolbar"], [class*="controls"]');
-        const firstBtn = (acciones || el).querySelector('button, [role="button"]');
-        if (firstBtn) {
-          firstBtn.click();
-          return true;
-        }
-      }
-      // Fallback: texto exacto del alias + botón Editar cercano
-      for (const alias of aliases) {
-        const nodes = Array.from(document.querySelectorAll('div, span, p, h1, h2, h3, h4, strong, label'));
-        const title = nodes.find((n) => norm(n.innerText) === norm(alias) && (n.innerText || '').length < 60);
-        if (!title) continue;
-        let cur = title;
-        for (let i = 0; i < 8 && cur; i++) {
-          const btn = cur.querySelector(
-            'button.btn-lapiz, button[aria-label*="Editar" i], button[aria-label*="edit" i], button[title*="Editar" i]'
-          ) || (cur.querySelector('.acciones-bloque, [class*="action"]') || cur).querySelector('button');
+        if (editBtn) return editBtn;
+        const buttons = Array.from(root.querySelectorAll('button, [role="button"]'))
+          .filter((b) => {
+            const r = b.getBoundingClientRect();
+            return r.width > 0 && r.height > 0 && r.width < 64 && r.height < 64;
+          });
+        return buttons[0] || null;
+      };
+
+      const nodes = Array.from(document.querySelectorAll('div, span, p, li, h1, h2, h3, h4, strong, label, section, article'));
+      for (const el of nodes) {
+        const direct = clean(
+          Array.from(el.childNodes).filter((n) => n.nodeType === 3).map((n) => n.textContent).join(' ')
+        );
+        const full = clean(el.innerText || '');
+        const label = direct || (full.length <= 40 ? full : '');
+        if (!label) continue;
+        const nlabel = norm(label);
+        if (!wanted.some((w) => nlabel === w || nlabel.startsWith(w + ' ·') || nlabel.startsWith(w + ' |'))) continue;
+
+        let cur = el;
+        for (let i = 0; i < 10 && cur; i++) {
+          const btn = pickLapiz(cur);
           if (btn) {
             btn.click();
             return true;
@@ -429,13 +497,27 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
           cur = cur.parentElement;
         }
       }
+
+      // data-type / data-component
+      for (const el of document.querySelectorAll('[data-component], [data-type]')) {
+        const dataName = norm(el.getAttribute('data-component') || el.getAttribute('data-type') || '');
+        if (!wanted.includes(dataName)) continue;
+        const btn = pickLapiz(el);
+        if (btn) { btn.click(); return true; }
+      }
       return false;
-    }""",
-        aliases,
-    )
-    if clicked:
-        page.wait_for_timeout(700)
-    return bool(clicked)
+    }"""
+
+    targets = [page] + [f for f in page.frames if f != page.main_frame]
+    for target in targets:
+        try:
+            clicked = target.evaluate(js_click, aliases)
+        except Exception:
+            continue
+        if clicked:
+            page.wait_for_timeout(700)
+            return True
+    return False
 
 
 def guardar_editor_componente(page) -> bool:
