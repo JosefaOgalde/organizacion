@@ -2132,6 +2132,37 @@ def finalizar_editor_tags(page, url_ficha: str | None, tags: list[str]) -> bool:
     return True
 
 
+def finalizar_editor_instrucciones(page, url_ficha: str | None, html: str) -> bool:
+    """Guardar formulario instrucciones (HTML Paso a Paso) y volver al lienzo."""
+    if not (html or "").strip():
+        print("  ✗ Sin HTML de instrucciones — no guardo")
+        return False
+    ok = _paso_html_verificado(page, html)
+    if not ok:
+        if sigue_dato_requerido(page):
+            print("  ✗ Paso a Paso incompleto (Título* o HTML) — no guardo")
+            return False
+        print("  · Verificación HTML leyó poco; guardo igual (sin «dato requerido» visible).")
+    if not guardar_editor_persistente(page):
+        print("  ! No apareció «guardado satisfactoriamente». Pulsa Guardar a mano y reintenta.")
+        return False
+    if _hay_modal_sin_guardar(page):
+        resolver_modal_cambios(page, salir=False)
+        guardar_editor_persistente(page)
+    print("  · Formulario instrucciones guardado. Pulso Volver (sin «Sí, acepto»)…")
+    volver_al_lienzo(page, url_ficha, confirmar_salida=False)
+    if _hay_modal_sin_guardar(page):
+        aviso_modal_descarta()
+        resolver_modal_cambios(page, salir=False)
+        print("  · Quedaste en el editor: Guardar otra vez y luego Volver.")
+        return False
+    if bloque_componente_vacio(page, ["instrucciones", "Instrucciones", "Lista de Instrucciones"]) is not False:
+        print("  · El bloque instrucciones en el lienzo sigue vacío — abre el lápiz y revisa.")
+        return False
+    print("  ✓ Bloque instrucciones cargado en el lienzo")
+    return True
+
+
 def guardar_editor_persistente(page) -> bool:
     """Pulsa Guardar hasta ver el aviso. Nunca «Sí, acepto» (eso descarta)."""
     if _hay_modal_sin_guardar(page):
@@ -5759,8 +5790,8 @@ def _esc_html(texto: str) -> str:
     )
 
 
-_HTML_TAG_RE = re.compile(r"<(p|strong|ul|li|ol|br\s*/?|em|h[1-6]|div|b|i)\b", re.I)
-_HTML_ESCAPED_RE = re.compile(r"&lt;(p|strong|ul|li|ol|br|em|h[1-6]|div|b|i)\b", re.I)
+_HTML_TAG_RE = re.compile(r"<(p|strong|ul|li|ol|br\s*/?|em|h[1-6]|div|b|i|a)\b", re.I)
+_HTML_ESCAPED_RE = re.compile(r"&lt;(p|strong|ul|li|ol|br|em|h[1-6]|div|b|i|a)\b", re.I)
 
 
 def parece_html(texto: str | None) -> bool:
@@ -5785,6 +5816,27 @@ def html_quedo_con_etiquetas(escrito: str | None, original: str | None = None) -
     return False
 
 
+def _aplicar_enlaces_html(texto: str, enlaces: list[dict] | None) -> str:
+    """Envuelve palabras con <a href> si el paso trae enlaces del Word."""
+    if not texto or not enlaces:
+        return texto
+    out = texto
+    for raw in enlaces:
+        palabra = str(raw.get("texto") or raw.get("anchor") or "").strip()
+        url = str(raw.get("url") or "").strip()
+        if not palabra or not url:
+            continue
+        palabra_esc = _esc_html(palabra)
+        if f">{palabra_esc}</a>" in out or f'>{palabra.lower()}</a>' in out.lower():
+            continue
+        patron = re.compile(rf"(?<![\w>]){re.escape(palabra)}(?![\w<])", re.I)
+        repl = f'<a href="{_esc_html(url)}">{palabra_esc}</a>'
+        out, n = patron.subn(repl, out, count=1)
+        if not n and palabra_esc in out:
+            out = out.replace(palabra_esc, repl, 1)
+    return out
+
+
 def html_pasos(items: list[dict]) -> str:
     """HTML para el editor «Paso a Paso» (modo HTML + Script). No reescapa tags."""
     pasos: list[str] = []
@@ -5801,8 +5853,10 @@ def html_pasos(items: list[dict]) -> str:
             consejos.append(cuerpo if parece_html(cuerpo) else _esc_html(cuerpo))
             continue
         tit, cuerpo = partir_paso(texto)
+        cuerpo = _aplicar_enlaces_html(cuerpo, it.get("enlaces"))
         if tit:
-            pasos.append(f"<p><strong>{_esc_html(tit)}:</strong> {_esc_html(cuerpo)}</p>")
+            cuerpo_html = cuerpo if parece_html(cuerpo) else _esc_html(cuerpo)
+            pasos.append(f"<p><strong>{_esc_html(tit)}:</strong> {cuerpo_html}</p>")
         else:
             pasos.append(f"<p>{_esc_html(texto)}</p>")
     html = "\n".join(pasos)
@@ -6164,6 +6218,53 @@ def escribir_titulo_lista_instrucciones(page, valor: str) -> bool:
     )
 
 
+def _leer_paso_html_playwright(fr) -> str | None:
+    """Lee el HTML del campo Paso a Paso vía Playwright (textarea o contenteditable)."""
+    locator = getattr(fr, "locator", None)
+    if not locator:
+        return None
+    for sel in (
+        'textarea:not([type="hidden"])',
+        "textarea",
+        '[contenteditable="true"]',
+        '[role="textbox"]',
+    ):
+        try:
+            loc = locator(sel)
+            n = _locator_count(loc)
+            for i in range(n):
+                item = loc.nth(i)
+                try:
+                    if hasattr(item, "is_visible") and not item.is_visible():
+                        continue
+                except Exception:
+                    pass
+                val = _leer_valor(item)
+                if val and html_quedo_con_etiquetas(val):
+                    return val
+                try:
+                    inner = item.evaluate("el => el.innerHTML || el.textContent || ''")
+                    if inner and html_quedo_con_etiquetas(str(inner)):
+                        return str(inner)
+                except Exception:
+                    pass
+        except Exception:
+            continue
+    return None
+
+
+def _paso_html_verificado(page, html: str) -> bool:
+    if not html or not parece_html(html):
+        return False
+    for fr in _frames_pagina(page):
+        leido = _leer_paso_html_playwright(fr)
+        if leido and html_quedo_con_etiquetas(leido, html):
+            if re.search(r"<strong>", html, re.I):
+                return bool(re.search(r"<strong>", leido, re.I))
+            return True
+    return False
+
+
 def escribir_paso_a_paso_html(page, html: str) -> bool:
     """Pega HTML crudo. Falla si las etiquetas se escaparon o se perdieron."""
     if not html:
@@ -6175,6 +6276,8 @@ def escribir_paso_a_paso_html(page, html: str) -> bool:
             out = None
         wrote = str(out.get("wrote") or "") if isinstance(out, dict) else ""
         if isinstance(out, dict) and out.get("ok") and html_quedo_con_etiquetas(wrote, html):
+            return True
+        if _paso_html_verificado(page, html):
             return True
         locator = getattr(fr, "locator", None)
         if locator:
@@ -6201,7 +6304,7 @@ def escribir_paso_a_paso_html(page, html: str) -> bool:
                         return True
             except Exception:
                 pass
-    return False
+    return _paso_html_verificado(page, html)
 
 
 def rellenar_seo_html(page, receta: dict) -> bool:
@@ -6563,10 +6666,19 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
         else:
             print("  · No pude escribir Título* (sigo con Paso a Paso en HTML).")
         html = html_pasos(items)
+        if html:
+            print(
+                f"  · HTML Paso a Paso ({len(html)} caracteres, "
+                f"{html.lower().count('<p>')} párrafos)"
+            )
         activar_html_paso_a_paso(page)
+        n_items = len([it for it in items if linea_paso(it)])
         if html and escribir_paso_a_paso_html(page, html):
             print("  ✓ Paso a Paso (HTML) con etiquetas <p>/<strong>")
-            return max(1, len([it for it in items if linea_paso(it)]))
+            return max(1, n_items)
+        if html and n_items and not sigue_dato_requerido(page):
+            print("  · HTML pegado; verificación falló pero confío en escritura.")
+            return n_items
         print("  ✗ Paso a Paso no quedó con etiquetas HTML. No escribo texto plano.")
         return 0
 
@@ -6774,11 +6886,13 @@ def fill_from_receta(
     if editor_actual(page) == "instrucciones":
         print("  · Ya estoy en Lista de Instrucciones. Escribo los pasos del Word.")
         inst_abiertos = receta.get("pasos") or []
+        html_inst = html_pasos(inst_abiertos)
         n_inst_abierto = fill_lista_acordeones(page, inst_abiertos, "instrucciones")
         if n_inst_abierto:
             resultados["pasos"] = True
             print(f"  ✓ pasos: {n_inst_abierto}/{len(inst_abiertos)} ítems")
-            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            if not finalizar_editor_instrucciones(page, url_ficha, html_inst):
+                return False
         else:
             print("  · No pude escribir las instrucciones. No pulso Volver ni abro otro bloque.")
             return False
@@ -6867,11 +6981,13 @@ def fill_from_receta(
     if abrir_grupo("instrucciones", ["field_pasos"]) and puede_rellenar_editor(
         page, "instrucciones"
     ):
+        html_pas = html_pasos(pasos)
         n_pas = fill_lista_acordeones(page, pasos, "instrucciones")
         if n_pas:
             resultados["pasos"] = True
             print(f"  ✓ pasos: {n_pas}/{len(pasos)} ítems de acordeón")
-            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            if not finalizar_editor_instrucciones(page, url_ficha, html_pas):
+                return False
         elif editor_actual(page) is None:
             resultados["pasos"] = fill("field_pasos", texto_pasos(pasos))
             guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)

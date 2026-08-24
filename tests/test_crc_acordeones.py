@@ -312,6 +312,35 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIn("Consejos", html)
         self.assertNotIn("&lt;p&gt;", html)
         self.assertNotIn("&lt;strong", html)
+        html_enlaces = self.explorar.html_pasos(
+            [
+                {
+                    "texto": "Sazona el salmón: Seca los filetes de pescado con papel absorbente.",
+                    "enlaces": [{"texto": "pescado", "url": "https://www.jumbo.cl/pescado"}],
+                }
+            ]
+        )
+        self.assertIn('<a href="https://www.jumbo.cl/pescado">pescado</a>', html_enlaces)
+        salmon = self.explorar.html_pasos(
+            [
+                {
+                    "orden": 1,
+                    "texto": (
+                        "Sazona el salmón: Seca los filetes de pescado con papel "
+                        "absorbente y úntalos con la mitad del aceite de oliva."
+                    ),
+                },
+                {
+                    "orden": 6,
+                    "texto": (
+                        "Termina la receta: Acomoda el salmón en los platos y agrega "
+                        "una buena cucharada de salsa de palta."
+                    ),
+                },
+            ]
+        )
+        self.assertEqual(salmon.lower().count("<p>"), 2)
+        self.assertIn("Termina la receta", salmon)
         ya_html = "<p><strong>Sazona el salmón:</strong> Seca los filetes.</p>"
         self.assertEqual(self.explorar.html_pasos([{"texto": ya_html}]), ya_html)
         self.assertTrue(self.explorar.parece_html(ya_html))
