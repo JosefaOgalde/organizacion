@@ -2353,6 +2353,9 @@ def _rellenar_por_label(page, key: str, value: str) -> bool:
     """Rellena por label visible del Formulario Header (más fiable que CSS frágil)."""
     if key == "field_dificultad":
         return _seleccionar_dificultad_bm(page, str(value))
+    if key == "field_tags":
+        tags = [t.strip() for t in re.split(r"\s*,\s*", str(value)) if t.strip()]
+        return _rellenar_tags_bm(page, tags)
     pats = LABELS_POR_CAMPO.get(key) or ()
     if not pats or value is None or value == "":
         return False
@@ -2620,6 +2623,224 @@ def _rellenar_imagen(page, receta: dict) -> bool:
 
 
 
+def lista_tags_desde_receta(receta: dict) -> list[str]:
+    """Tags del Word (`categorias[]`) listos para el componente tags del BM."""
+    out: list[str] = []
+    seen: set[str] = set()
+    for raw in receta.get("categorias") or []:
+        t = str(raw or "").strip()
+        if not t:
+            continue
+        key = t.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(t)
+    return out
+
+
+def _localizar_input_tags(page):
+    """Devuelve un locator del input/combobox de tags, o None."""
+    for target in _targets_page_y_frames(page):
+        for pat in LABELS_POR_CAMPO.get("field_tags") or ():
+            cre = re.compile(pat, re.I)
+            try:
+                lab = target.get_by_label(cre)
+                for i in range(min(lab.count(), 4)):
+                    node = lab.nth(i)
+                    try:
+                        tag = (node.evaluate("el => (el.tagName||'').toLowerCase()") or "").lower()
+                        role = (node.get_attribute("role") or "").lower()
+                        tipo = (node.get_attribute("type") or "").lower()
+                    except Exception:
+                        continue
+                    if tipo in ("hidden", "checkbox", "radio", "file", "button", "submit"):
+                        continue
+                    if tag in ("input", "textarea") or role in ("textbox", "combobox", "searchbox"):
+                        return node
+            except Exception:
+                pass
+            try:
+                txt = target.get_by_text(cre)
+                if not txt.count():
+                    continue
+                cont = txt.first.locator(
+                    "xpath=ancestor::*[.//input or .//*[@role='combobox' or @role='textbox']][1]"
+                )
+                handle = cont.locator(
+                    "input:not([type='hidden']):not([type='checkbox']):not([type='file']), "
+                    "[role='combobox'], [role='textbox']"
+                )
+                if handle.count():
+                    return handle.first
+            except Exception:
+                pass
+        for sel in (
+            "input[placeholder*='tag' i]",
+            "input[placeholder*='etiqueta' i]",
+            "input[placeholder*='añadir' i]",
+            "input[placeholder*='agregar' i]",
+            "input[name*='tag' i]",
+            "input[id*='tag' i]",
+            "[role='combobox']",
+            "[class*='tag' i] input",
+            "[class*='chip' i] input",
+        ):
+            try:
+                loc = target.locator(sel)
+                for i in range(min(loc.count(), 6)):
+                    node = loc.nth(i)
+                    try:
+                        if not node.is_visible():
+                            continue
+                    except Exception:
+                        continue
+                    return node
+            except Exception:
+                continue
+    return None
+
+
+def _tags_visibles_en_editor(page) -> str:
+    """Texto del editor tags (chips + inputs) para verificar carga."""
+    blobs: list[str] = []
+    for target in _targets_page_y_frames(page):
+        try:
+            blobs.append(target.inner_text("body")[:4000])
+        except Exception:
+            continue
+    return "\n".join(blobs).lower()
+
+
+def _rellenar_tags_bm(page, tags: list[str]) -> bool:
+    """Rellena el componente tags: preferir chips (tag + Enter) uno a uno."""
+    tags = [t.strip() for t in tags if t and str(t).strip()]
+    if not tags:
+        print("  · Sin tags en el JSON (categorias[])", flush=True)
+        return False
+
+    print(f"  · Tags a cargar ({len(tags)}): {', '.join(tags)}", flush=True)
+    inp = _localizar_input_tags(page)
+    if inp is None:
+        # Último recurso: primer input texto visible del editor
+        for target in _targets_page_y_frames(page):
+            try:
+                cand = target.locator(
+                    "input[type='text']:visible, input:not([type]):visible, "
+                    "[role='textbox']:visible, [role='combobox']:visible"
+                )
+                if cand.count():
+                    inp = cand.first
+                    break
+            except Exception:
+                continue
+    if inp is None:
+        print("  ✗ field_tags: no encontré input de Tags", flush=True)
+        return False
+
+    ok_count = 0
+    for tag in tags:
+        try:
+            inp.click(timeout=2500)
+            page.wait_for_timeout(150)
+            # Limpiar restos del intento anterior
+            try:
+                inp.fill("")
+            except Exception:
+                try:
+                    inp.press("Control+a")
+                    inp.press("Backspace")
+                except Exception:
+                    pass
+            inp.type(tag, delay=15)
+            page.wait_for_timeout(200)
+            # Autocomplete: si aparece opción exacta, clic
+            elegido = False
+            cre = re.compile(rf"^{re.escape(tag)}$", re.I)
+            for target in _targets_page_y_frames(page):
+                try:
+                    opt = target.get_by_role("option", name=cre)
+                    if opt.count() and opt.first.is_visible():
+                        opt.first.click(timeout=2000)
+                        elegido = True
+                        break
+                except Exception:
+                    continue
+            if not elegido:
+                # Chip típico: Enter o coma
+                for key in ("Enter", "Tab", ","):
+                    try:
+                        if key == ",":
+                            inp.type(",", delay=10)
+                        else:
+                            inp.press(key)
+                        page.wait_for_timeout(280)
+                        break
+                    except Exception:
+                        continue
+            page.wait_for_timeout(200)
+            blob = _tags_visibles_en_editor(page)
+            if tag.lower() in blob:
+                ok_count += 1
+                print(f"  ✓ tag «{tag}»", flush=True)
+            else:
+                # Aún puede haberse creado el chip fuera del body scrapeable
+                ok_count += 1
+                print(f"  · tag «{tag}» enviado (Enter); verifica chip en BM", flush=True)
+        except Exception as exc:
+            print(f"  · Falló tag «{tag}»: {exc}", flush=True)
+            continue
+
+    # Fallback: pegar todos juntos por si el campo es textarea libre
+    if ok_count == 0:
+        junto = ", ".join(tags)
+        try:
+            if _rellenar_locator(inp, junto):
+                print(f"  ✓ field_tags (texto único: {junto[:80]}…)", flush=True)
+                return True
+        except Exception:
+            pass
+        print("  ✗ field_tags: no pude cargar las etiquetas", flush=True)
+        return False
+
+    blob = _tags_visibles_en_editor(page)
+    hallados = sum(1 for t in tags if t.lower() in blob)
+    print(f"  ✓ field_tags ({ok_count}/{len(tags)} enviados; {hallados} visibles en editor)", flush=True)
+    return ok_count > 0
+
+
+def _esperar_canvas_tras_cabecera(page) -> None:
+    """Tras Volver del Header, esperar a ver bloques del canvas (tags, etc.)."""
+    if not pagina_viva(page):
+        return
+    for _ in range(20):
+        try:
+            # Ya no estamos en Edición de Cabecera
+            if page.get_by_text(re.compile(r"Edici[oó]n de Cabecera", re.I)).count():
+                page.wait_for_timeout(300)
+                continue
+        except Exception:
+            pass
+        try:
+            comps = listar_componentes_cms(page)
+            if any(c.get("clave") == "tags" for c in comps):
+                print("  · Canvas listo (detecté bloque tags).", flush=True)
+                return
+            if len(comps) >= 2:
+                print(f"  · Canvas listo ({len(comps)} componentes).", flush=True)
+                return
+        except Exception:
+            pass
+        # Hint vacío típico del canvas
+        try:
+            if page.get_by_text(re.compile(r"Edita este componente", re.I)).count():
+                return
+        except Exception:
+            pass
+        page.wait_for_timeout(350)
+    print("  · Sigo sin ver el canvas tras Cabecera; intento tags igual.", flush=True)
+
+
 def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores: dict) -> dict[str, bool]:
     """Tras abrir un lápiz, mapea campos visibles y rellena."""
     outs: dict[str, bool] = {}
@@ -2660,6 +2881,11 @@ def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores
             # Se rellena con archivo/URL vía _rellenar_imagen (no texto plano)
             outs[key] = False
             continue
+        if key == "field_tags":
+            # Chip/autocomplete: no pegar todo como un solo string ciego
+            tags = [t.strip() for t in re.split(r"\s*,\s*", str(value)) if t.strip()]
+            outs[key] = _rellenar_tags_bm(page, tags)
+            continue
         # 1) Por label del Formulario Header (Título / Dificultad / Duración / Porciones)
         if _rellenar_por_label(page, key, str(value)):
             outs[key] = True
@@ -2695,10 +2921,11 @@ def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores
 
     # NUNCA fallback posicional para Dificultad: el combo custom no está en
     # input/select, y escribir «Fácil» en Duración (number) la deja en 0.
+    # Tampoco field_tags (chips).
     pendientes = [
         (k, v)
         for k, v in pares
-        if v and not outs.get(k) and k not in ("field_imagen", "field_dificultad")
+        if v and not outs.get(k) and k not in ("field_imagen", "field_dificultad", "field_tags")
     ]
     if pendientes and pagina_viva(page):
         css_areas = (
@@ -2863,15 +3090,24 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
                 resultados["titulo"] = ok
             elif key == "field_descripcion":
                 resultados["descripcion"] = ok
+            elif key == "field_tags":
+                resultados["tags"] = ok
             elif key == "field_ingredientes":
                 resultados["ingredientes"] = ok
             elif key == "field_pasos":
                 resultados["pasos"] = ok
             ok_grupo += int(bool(ok))
+        if clave_comp == "tags" and pagina_viva(page) and not vivos.get("field_tags"):
+            # Segundo intento dedicado (por si el dump no mapeó el label)
+            if _rellenar_tags_bm(page, lista_tags_desde_receta(receta)):
+                vivos["field_tags"] = True
+                resultados["tags"] = True
+                ok_grupo += 1
         if pagina_viva(page):
             cerrar_editor_componente(page, guardar=True)
             if clave_comp == "cabecera":
                 _salir_edicion_cabecera_si_aplica(page)
+                _esperar_canvas_tras_cabecera(page)
         return ok_grupo
 
     print("Rellenando desde JSON (abriendo lápices automáticamente)…")
@@ -2879,6 +3115,7 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
     if receta.get("descripcion"):
         resultados["descripcion"] = True
     total_ok = 0
+    tags_lista = lista_tags_desde_receta(receta)
     grupos = [
         (
             "cabecera",
@@ -2891,7 +3128,7 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
                 ("field_porciones", str(receta.get("porciones")) if receta.get("porciones") is not None else None),
             ],
         ),
-        ("tags", [("field_tags", ", ".join(receta.get("categorias") or []))]),
+        ("tags", [("field_tags", ", ".join(tags_lista) if tags_lista else None)]),
     ]
     ings = receta.get("ingredientes") or []
     texto_ing = None

@@ -204,6 +204,52 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             )
             browser.close()
 
+    def test_rellena_tags_chip_enter(self):
+        explorar = cargar_explorar()
+        fixture = Path(__file__).resolve().parent / "fixtures/bm-formulario-tags.html"
+        tags = [
+            "salmon",
+            "recetas a la parrilla",
+            "paltas",
+            "recetas saludables",
+            "pescado",
+            "almuerzo",
+        ]
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(fixture.as_uri())
+            self.assertTrue(explorar._rellenar_tags_bm(page, tags))
+            chips = page.locator(".chip").all_inner_texts()
+            chips_norm = [c.replace("×", "").strip().lower() for c in chips]
+            for t in tags:
+                self.assertIn(t.lower(), chips_norm, f"faltaba chip {t!r}: {chips_norm}")
+            page.locator("#btn-guardar").click()
+            estado = page.locator("#estado").inner_text()
+            self.assertTrue(estado.startswith("guardado:"))
+            for t in tags:
+                self.assertIn(t, estado)
+            browser.close()
+
+    def test_lista_tags_desde_receta_salmon(self):
+        explorar = cargar_explorar()
+        receta = {
+            "categorias": [
+                "salmon",
+                "recetas a la parrilla",
+                "paltas",
+                "recetas saludables",
+                "pescado",
+                "almuerzo",
+            ]
+        }
+        self.assertEqual(explorar.lista_tags_desde_receta(receta), receta["categorias"])
+        # dedupe
+        self.assertEqual(
+            explorar.lista_tags_desde_receta({"categorias": ["Salmon", "salmon", "pescado"]}),
+            ["Salmon", "pescado"],
+        )
+
     def test_formulario_header_duracion_numero_y_labels(self):
         explorar = cargar_explorar()
         fixture = Path(__file__).resolve().parent / "fixtures/bm-formulario-header.html"
