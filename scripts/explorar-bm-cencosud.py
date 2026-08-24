@@ -1566,6 +1566,31 @@ def _salir_edicion_tags_si_aplica(page) -> None:
                 continue
 
 
+def _esperar_canvas_tras_tags(page) -> None:
+    """Tras Volver del Formulario Tags, esperar bloques del canvas."""
+    if not pagina_viva(page):
+        return
+    for _ in range(24):
+        try:
+            if page.get_by_text(re.compile(r"Edici[oó]n de tags|Formulario Tags", re.I)).count():
+                page.wait_for_timeout(300)
+                continue
+        except Exception:
+            pass
+        try:
+            comps = listar_componentes_cms(page)
+            if any(c.get("clave") in ("ingredientes", "instrucciones", "seo") for c in comps):
+                print("  · Canvas listo tras tags (detecté más componentes).", flush=True)
+                return
+            if len(comps) >= 2:
+                print(f"  · Canvas listo tras tags ({len(comps)} componentes).", flush=True)
+                return
+        except Exception:
+            pass
+        page.wait_for_timeout(350)
+    print("  · Sigo en editor tras tags; intento siguiente componente igual.", flush=True)
+
+
 def cerrar_editor_componente(page, *, guardar: bool = False) -> None:
     """Cierra el editor del componente sin salir de la ficha de la receta.
 
@@ -3647,12 +3672,18 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
                 resultados["tags"] = True
                 ok_grupo += 1
         if pagina_viva(page):
-            cerrar_editor_componente(page, guardar=True)
-            if clave_comp == "cabecera":
-                _salir_edicion_cabecera_si_aplica(page)
-                _esperar_canvas_tras_cabecera(page)
-            elif clave_comp == "tags":
+            if clave_comp == "tags":
+                # Tags BM real: Volver + popup. Si no aplica (fixture CMS), cerrar como otros.
                 _salir_edicion_tags_si_aplica(page)
+                _esperar_canvas_tras_tags(page)
+                if contar_campos_editables(page) > 0:
+                    cerrar_editor_componente(page, guardar=True)
+                    _esperar_canvas_tras_tags(page)
+            else:
+                cerrar_editor_componente(page, guardar=True)
+                if clave_comp == "cabecera":
+                    _salir_edicion_cabecera_si_aplica(page)
+                    _esperar_canvas_tras_cabecera(page)
         return ok_grupo
 
     print("Rellenando desde JSON (abriendo lápices automáticamente)…")
