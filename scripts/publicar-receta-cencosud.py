@@ -333,7 +333,11 @@ def fill_tags(page, selectores: dict, categorias: list) -> bool:
     print("\n  === PARA AQUÍ ===")
     print("  El script NO hace clic en Volver ni en «Sí, acepto».")
     print("  Tú: Guardar (si hace falta) → Volver → «Sí, acepto» en el popup azul.")
-    pausa_usuario("  Cuando el bloque tags ya NO diga «componente vacío», pulsa ENTER…")
+    pausa_usuario("  Cuando guardaste y volviste al canvas, pulsa ENTER…")
+
+    if en_formulario_tags(page):
+        print(f"  ✓ {ok_items}/{len(tags)} tags en el formulario (tú: Guardar → Volver → Sí acepto)")
+        return ok_items == len(tags)
 
     ok = _tags_guardados(page, tags)
     print(f"  {'✓' if ok else '✗'} tags en canvas ({ok_items}/{len(tags)})")
@@ -370,6 +374,7 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true", help="No publicar al final")
     ap.add_argument("--headed", action="store_true", help="Navegador visible (recomendado)")
     ap.add_argument("--continuar", action="store_true", help="Tags ya guardados → ingredientes/pasos/seo")
+    ap.add_argument("--ya-en-tags", action="store_true", help="No navegar: abre Edición de tags en Chromium y ENTER")
     ap.add_argument("--no-session", action="store_true", help="No reutilizar bm-session.json")
     args = ap.parse_args()
 
@@ -404,7 +409,13 @@ def main() -> int:
         context = browser.new_context(**ctx_kwargs)
         page = context.new_page()
 
-        navegar_a_editor(page, env, selectores, receta)
+        if args.ya_en_tags:
+            pausa_usuario(
+                "\nAbre «Edición de tags» del salmón en ESTA ventana Chromium y pulsa ENTER…"
+            )
+        else:
+            navegar_a_editor(page, env, selectores, receta)
+
         if en_formulario_tags(page):
             print("  detectado: Edición de tags")
         elif en_zona_trabajo(page):
