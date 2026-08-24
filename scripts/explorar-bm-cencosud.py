@@ -2194,6 +2194,42 @@ def finalizar_editor_seo(page, url_ficha: str | None, html: str) -> bool:
     return True
 
 
+def finalizar_editor_cabecera(
+    page, url_ficha: str | None, receta: dict, *, titulo_ok: bool | None = None
+) -> bool:
+    """Guardar cabecera asegurando que Título* quedó antes de Volver."""
+    titulo = (receta.get("titulo") or "").strip()
+    if titulo:
+        ok = titulo_ok if titulo_ok is not None else _titulo_cabecera_ok(page, titulo)
+        if not ok:
+            ok = asegurar_titulo_cabecera(page, titulo)
+        if not ok and sigue_dato_requerido(page):
+            print(f"  ✗ Título «{titulo}» no quedó en Cabecera — no guardo")
+            return False
+        if not ok:
+            print("  · Título no verificado; guardo igual (sin «dato requerido» visible).")
+        elif sigue_dato_requerido(page) and not titulo_ok:
+            print("  · Título sigue marcado requerido. Reintento antes de Guardar…")
+            if not asegurar_titulo_cabecera(page, titulo) and sigue_dato_requerido(page):
+                print("  ✗ No pude fijar el título — no guardo")
+                return False
+    if not guardar_editor_persistente(page):
+        print("  ! No apareció «guardado satisfactoriamente». Pulsa Guardar a mano y reintenta.")
+        return False
+    if _hay_modal_sin_guardar(page):
+        resolver_modal_cambios(page, salir=False)
+        guardar_editor_persistente(page)
+    print("  · Cabecera guardada. Pulso Volver (sin «Sí, acepto»)…")
+    volver_al_lienzo(page, url_ficha, confirmar_salida=False)
+    if _hay_modal_sin_guardar(page):
+        aviso_modal_descarta()
+        resolver_modal_cambios(page, salir=False)
+        print("  · Quedaste en Cabecera: Guardar otra vez y luego Volver.")
+        return False
+    print("  ✓ Bloque cabecera cargado en el lienzo")
+    return True
+
+
 def guardar_editor_persistente(page) -> bool:
     """Pulsa Guardar hasta ver el aviso. Nunca «Sí, acepto» (eso descarta)."""
     if _hay_modal_sin_guardar(page):
@@ -4600,7 +4636,7 @@ JS_CRC_FIND_TITULO = """function crcFindTitulo() {
     if (!crudo) return false;
     if (/meta\\s*t[ií]tulo|t[ií]tulo de la secci/i.test(crudo)) return false;
     const linea = crudo.split(/El dato/i)[0].replace(/\\*/g, ' ').replace(/\\s+/g, ' ').trim();
-    return /^T[ií]tulo(\\s+Dale un valor)?$/i.test(linea);
+    return /^T[ií]tulo(\\s*\\*?)?(\\s+Dale un valor)?$/i.test(linea);
   };
   const controlDesde = (lab) => {
     const htmlFor = lab.getAttribute && lab.getAttribute('for');
@@ -4665,7 +4701,15 @@ JS_ESCRIBIR_TITULO_CABECERA = (
     + """
   const el = crcFindTitulo();
   if (!el) return { ok: false, value: '' };
-  const value = crcSetReact(el, String(v));
+  let value = crcSetReact(el, String(v));
+  if (String(el.value || el.textContent || '') !== String(v)) {
+    try {
+      el.focus();
+      document.execCommand('selectAll', false, null);
+      document.execCommand('insertText', false, String(v));
+      value = String(el.value || el.textContent || value || '');
+    } catch (e) {}
+  }
   return { ok: true, value: String(value || '') };
 }"""
 )
@@ -4900,6 +4944,72 @@ def _locators_titulo(fr) -> list:
         except Exception:
             pass
     return locs
+
+
+def _leer_titulo_playwright(fr) -> str | None:
+    """Lee Título* de cabecera vía Playwright (más fiable que solo JS)."""
+    for loc in _locators_titulo(fr):
+        try:
+            n = loc.count() if hasattr(loc, "count") else 1
+        except Exception:
+            n = 1
+        for i in range(min(n, 8)):
+            item = loc.nth(i) if hasattr(loc, "nth") else loc
+            box = _bounding_box(item)
+            if box is not None and float(box.get("x") or 0) < LIENZO_MIN_X:
+                continue
+            val = _leer_valor(item)
+            if val and val.lower() not in {"", "dale un valor", "ingresa un valor"}:
+                return val.strip()
+    locator = getattr(fr, "locator", None)
+    if locator:
+        try:
+            loc = locator('[data-crc-titulo="1"]')
+            if _locator_count(loc):
+                item = loc.first if hasattr(loc, "first") else loc
+                val = _leer_valor(item)
+                if val and val.lower() not in {"", "dale un valor"}:
+                    return val.strip()
+        except Exception:
+            pass
+    return None
+
+
+def _titulo_cabecera_ok(page, value: str) -> bool:
+    texto = (value or "").strip()
+    if not texto:
+        return False
+    for fr in _frames_pagina(page):
+        leido = _leer_titulo_playwright(fr)
+        if leido and _valor_quedo(leido, texto):
+            return True
+        if _titulo_sigue_en_frame(fr, texto):
+            return True
+    return False
+
+
+def asegurar_titulo_cabecera(page, value) -> bool:
+    """Escribe Título* y verifica con Playwright (la foto a veces lo borra)."""
+    if not value:
+        return False
+    texto = str(value).strip()
+    for _ in range(3):
+        if _titulo_cabecera_ok(page, texto):
+            return True
+        if rellenar_titulo_cabecera(page, texto):
+            try:
+                page.wait_for_timeout(220)
+            except Exception:
+                pass
+            if _titulo_cabecera_ok(page, texto):
+                return True
+            if not sigue_dato_requerido(page):
+                return True
+        try:
+            page.wait_for_timeout(280)
+        except Exception:
+            pass
+    return _titulo_cabecera_ok(page, texto)
 
 
 def rellenar_titulo_cabecera(page, value) -> bool:
@@ -6793,11 +6903,15 @@ def fill_from_receta(
         if key == "field_dificultad":
             return elegir_dificultad(page, str(value))
         if key == "field_titulo":
-            if rellenar_titulo_cabecera(page, value):
+            ok = asegurar_titulo_cabecera(page, value)
+            if not ok and sel and not selector_es_generico(sel):
+                ok = _fill_locator(page, sel, value)
+            if not ok and rellenar_por_label(
+                page, r"^Título\b", value, excluir=r"título de la sección|meta"
+            ):
+                ok = True
+            if ok:
                 print(f"  ✓ field_titulo → {value}")
-                return True
-            if sel and not selector_es_generico(sel) and _fill_locator(page, sel, value):
-                print(f"  ✓ {key}")
                 return True
             print("  ✗ field_titulo (el input sigue en «Dale un valor»)")
             return False
@@ -6897,6 +7011,34 @@ def fill_from_receta(
             page.wait_for_timeout(400)
         except Exception:
             pass
+    if editor_actual(page) == "cabecera":
+        print("  · Ya estoy en Cabecera. Aseguro título y guardo.")
+        titulo = (receta.get("titulo") or "").strip()
+        cabecera_abierta = {
+            "field_titulo": fill("field_titulo", titulo) if titulo else False,
+            "field_descripcion": fill("field_descripcion", receta.get("descripcion")),
+            "field_porciones": fill(
+                "field_porciones", numero_campo_bm(receta.get("porciones"))
+            ),
+            "field_dificultad": fill("field_dificultad", receta.get("dificultad")),
+            "field_tiempo": fill("field_tiempo", duracion_receta(receta)),
+            "field_alt": fill("field_alt", alt_portada(receta)),
+        }
+        if sigue_duracion_invalida(page):
+            cabecera_abierta["field_tiempo"] = fill(
+                "field_tiempo", duracion_receta(receta) or "30"
+            )
+        subir_imagen_portada(page, receta)
+        if titulo:
+            cabecera_abierta["field_titulo"] = (
+                fill("field_titulo", titulo) or asegurar_titulo_cabecera(page, titulo)
+            )
+        if not finalizar_editor_cabecera(
+            page, url_ficha, receta, titulo_ok=cabecera_abierta.get("field_titulo")
+        ):
+            return False
+        resultados["titulo"] = cabecera_abierta.get("field_titulo", False)
+        resultados["descripcion"] = cabecera_abierta.get("field_descripcion", False)
     if editor_actual(page) == "tags":
         print("  · Ya estoy en Formulario Tags. Escribo las etiquetas del Word.")
         cats_abierto = tags_desde_receta(receta)
@@ -6943,12 +7085,23 @@ def fill_from_receta(
             print("  · No pude escribir SEO HTML. No pulso Volver ni abro otro bloque.")
             return False
     if editor_actual(page) is None and bloque_ya_cargado(page, "cabecera"):
-        print("  · Cabecera ya tiene contenido en el lienzo. Sigo con tags e ingredientes.")
-        resultados["titulo"] = True
-        resultados["descripcion"] = True
+        titulo = (receta.get("titulo") or "").strip()
+        if titulo and abrir_lapiz_componente(page, "cabecera", selectores.get("lapiz_cabecera")):
+            print("  · Cabecera cargada: reviso Título* por si quedó vacío.")
+            if not _titulo_cabecera_ok(page, titulo):
+                asegurar_titulo_cabecera(page, titulo)
+                if not finalizar_editor_cabecera(page, url_ficha, receta):
+                    return False
+            else:
+                print("  · Título ya está en Cabecera.")
+                volver_al_lienzo(page, url_ficha, confirmar_salida=False)
+            resultados["titulo"] = _titulo_cabecera_ok(page, titulo)
+            resultados["descripcion"] = True
+        else:
+            print("  · Cabecera ya tiene contenido en el lienzo. Sigo con tags e ingredientes.")
+            resultados["descripcion"] = True
     elif abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
         cabecera = {
-            "field_titulo": fill("field_titulo", receta.get("titulo")),
             "field_descripcion": fill("field_descripcion", receta.get("descripcion")),
             "field_porciones": fill(
                 "field_porciones", numero_campo_bm(receta.get("porciones"))
@@ -6957,9 +7110,8 @@ def fill_from_receta(
             "field_tiempo": fill("field_tiempo", duracion_receta(receta)),
             "field_alt": fill("field_alt", alt_portada(receta)),
         }
-        if sigue_dato_requerido(page):
-            print("  · Título sigue vacío (dato requerido). Lo escribo otra vez.")
-            cabecera["field_titulo"] = fill("field_titulo", receta.get("titulo"))
+        titulo = (receta.get("titulo") or "").strip()
+        cabecera["field_titulo"] = fill("field_titulo", titulo) if titulo else False
         if sigue_duracion_invalida(page):
             print("  · Duración quedó en 0. Escribo 30 (o el tiempo del Word).")
             cabecera["field_tiempo"] = fill("field_tiempo", duracion_receta(receta) or "30")
@@ -6968,7 +7120,13 @@ def fill_from_receta(
             page.wait_for_timeout(800)
         except Exception:
             pass
-        if not guardar_y_volver_al_lienzo(page, url_ficha):
+        if titulo:
+            cabecera["field_titulo"] = (
+                fill("field_titulo", titulo) or asegurar_titulo_cabecera(page, titulo)
+            )
+        if not finalizar_editor_cabecera(
+            page, url_ficha, receta, titulo_ok=cabecera.get("field_titulo")
+        ):
             print("  · Cabecera incompleta o no pude volver al lienzo. Me detengo aquí.")
             resultados["titulo"] = cabecera.get("field_titulo", False)
             resultados["descripcion"] = cabecera.get("field_descripcion", False)
