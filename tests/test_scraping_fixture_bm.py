@@ -204,6 +204,28 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             )
             browser.close()
 
+    def test_rellena_tags_material_bm_real(self):
+        """BM Cencosud: mat-label + placeholder Dale un valor (sin label HTML)."""
+        explorar = cargar_explorar()
+        fixture = Path(__file__).resolve().parent / "fixtures/bm-formulario-tags-material.html"
+        tags = [
+            "salmon",
+            "recetas a la parrilla",
+            "paltas",
+            "recetas saludables",
+            "pescado",
+            "almuerzo",
+        ]
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(fixture.as_uri())
+            self.assertTrue(explorar._rellenar_tags_bm(page, tags))
+            for i, t in enumerate(tags):
+                self.assertEqual(page.input_value(f"#tag-{i + 1}"), t)
+                self.assertEqual(page.input_value(f"#link-{i + 1}"), "")
+            browser.close()
+
     def test_rellena_tags_expandido_bm_real(self):
         """BM real: ítems expandidos visibles (sin acordeón cerrado)."""
         explorar = cargar_explorar()

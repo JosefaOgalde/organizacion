@@ -1539,7 +1539,6 @@ def _salir_edicion_tags_si_aplica(page) -> None:
     if not en_tags:
         return
 
-    guardar_editor_componente(page)
     for target in _targets_page_y_frames(page):
         for sel in (
             "button:has-text('Volver')",
@@ -2782,96 +2781,186 @@ def _es_input_link_no_tag(node) -> bool:
 
 _TAG_INPUTS_JS = r"""() => {
   const clean = (s) => (s || '').replace(/\s+/g, ' ').trim();
-  const isTagLabel = (t) => /^tags?\s*\*?\s*$/i.test(clean(t));
-  const isLinkLabel = (t) => /^(link|url|href|enlace)\s*\*?\s*$/i.test(clean(t));
-  const visible = (el) => {
-    if (!el || el.offsetParent === null) return false;
+  const isTagText = (t) => /^tags?\s*\*?\s*$/i.test(clean(t));
+  const isLinkText = (t) => /^(link|url|href|enlace)\s*\*?\s*$/i.test(clean(t));
+  const isVisible = (el) => {
+    if (!el || !(el instanceof Element)) return false;
     const r = el.getBoundingClientRect();
-    return r.width > 6 && r.height > 6;
+    if (r.width < 3 || r.height < 3) return false;
+    const st = getComputedStyle(el);
+    if (st.display === 'none' || st.visibility === 'hidden') return false;
+    if (parseFloat(st.opacity || '1') < 0.05) return false;
+    return true;
+  };
+  const labelFor = (inp, scope) => {
+    if (inp.id) {
+      const l = (scope || document).querySelector('label[for="' + inp.id + '"]');
+      if (l) return clean(l.innerText);
+    }
+    let p = inp.parentElement;
+    for (let i = 0; i < 8 && p; i++) {
+      const labs = p.querySelectorAll('label, mat-label, [class*="label" i], span, div');
+      for (const lab of labs) {
+        const t = clean(lab.innerText);
+        if (t.length > 0 && t.length < 16 && (isTagText(t) || isLinkText(t))) return t;
+      }
+      p = p.parentElement;
+    }
+    return '';
+  };
+  const isLinkInput = (inp) => {
+    const bits = [
+      inp.name || '', inp.id || '', inp.getAttribute('aria-label') || '',
+      inp.placeholder || '', labelFor(inp)
+    ].join(' ').toLowerCase();
+    return /\blink\b|\burl\b|\bhref\b|\benlace\b/.test(bits) && !/\btag\b/.test(bits);
   };
   const pushInput = (inp, rows, seen) => {
-    if (!visible(inp)) return;
+    if (!isVisible(inp) || isLinkInput(inp)) return;
     const r = inp.getBoundingClientRect();
     const key = Math.round(r.top) + ',' + Math.round(r.left);
     if (seen.has(key)) return;
     seen.add(key);
-    rows.push({
-      y: r.top,
-      x: r.left,
-      id: inp.id || '',
-      name: inp.name || '',
-      placeholder: inp.getAttribute('placeholder') || '',
+    rows.push({ y: r.top, x: r.left, id: inp.id || '', name: inp.name || '',
+      placeholder: inp.getAttribute('placeholder') || '' });
+  };
+  const walk = (root, visit) => {
+    visit(root);
+    root.querySelectorAll('*').forEach((el) => {
+      if (el.shadowRoot) walk(el.shadowRoot, visit);
     });
   };
   const rows = [];
   const seen = new Set();
-
-  for (const lab of document.querySelectorAll('label')) {
-    const t = clean(lab.innerText);
-    if (!isTagLabel(t)) continue;
-    let inp = null;
-    if (lab.htmlFor) inp = document.getElementById(lab.htmlFor);
-    if (!inp) inp = lab.parentElement && lab.parentElement.querySelector(
-      'input:not([type="hidden"]):not([type="checkbox"])'
-    );
-    if (!inp) {
-      let sib = lab.nextElementSibling;
-      for (let i = 0; i < 4 && sib; i++) {
-        if (sib.matches && sib.matches('input:not([type="hidden"])')) {
-          inp = sib;
+  const visitRoot = (root) => {
+    root.querySelectorAll('label, mat-label, span, div, p').forEach((el) => {
+      const t = clean(el.innerText);
+      if (!isTagText(t)) return;
+      let block = el.closest('mat-form-field, [class*="form-field" i], [class*="field" i], div, section, fieldset, li');
+      if (!block) block = el.parentElement;
+      if (!block) return;
+      const inp = block.querySelector('input:not([type="hidden"]):not([type="checkbox"]), textarea, [role="textbox"]');
+      if (inp) pushInput(inp, rows, seen);
+    });
+    const dale = [...root.querySelectorAll('input, textarea')].filter(isVisible);
+    const pairs = dale.filter((inp) => {
+      const ph = (inp.getAttribute('placeholder') || '').toLowerCase();
+      return ph.includes('dale') || ph.includes('valor');
+    });
+    pairs.sort((a, b) => {
+      const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      return ra.top - rb.top || ra.left - rb.left;
+    });
+    if (pairs.length >= 2) {
+      const lineas = [];
+      for (const inp of pairs) {
+        const r = inp.getBoundingClientRect();
+        let row = lineas.find((x) => Math.abs(x.top - r.top) < 18);
+        if (!row) { row = { top: r.top, items: [] }; lineas.push(row); }
+        row.items.push({ inp, left: r.left });
+      }
+      lineas.sort((a, b) => a.top - b.top);
+      for (const row of lineas) {
+        row.items.sort((a, b) => a.left - b.left);
+        if (row.items.length) pushInput(row.items[0].inp, rows, seen);
+      }
+    }
+    if (!rows.length) {
+      const reItem = /Formulario\s+[ÍI]tem\s+(\d+)/i;
+      root.querySelectorAll('button, [role="button"], summary, h3, h4, h5, div, span, label').forEach((el) => {
+        const raw = clean(el.innerText);
+        const m = raw.match(reItem);
+        if (!m || raw.length > 64) return;
+        let block = el.closest('[class*="item" i], [class*="accordion" i], [class*="array" i], section, fieldset, details, li, mat-expansion-panel, div');
+        if (!block) block = el.parentElement && el.parentElement.parentElement;
+        if (!block) return;
+        for (const cand of block.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"]), textarea, [role="textbox"]')) {
+          if (!isVisible(cand) || isLinkInput(cand)) continue;
+          pushInput(cand, rows, seen);
           break;
         }
-        const nested = sib.querySelector && sib.querySelector('input:not([type="hidden"])');
-        if (nested) { inp = nested; break; }
-        sib = sib.nextElementSibling;
-      }
+      });
     }
-    if (!inp) {
-      const block = lab.closest('div, section, fieldset, form, li');
-      if (block) {
-        for (const cand of block.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"])')) {
-          const lt = clean((block.querySelector('label[for="' + cand.id + '"]') || {}).innerText || '');
-          if (isLinkLabel(lt)) continue;
-          if (isTagLabel(lt) || !inp) inp = cand;
-          if (isTagLabel(lt)) break;
-        }
-      }
-    }
-    if (inp) pushInput(inp, rows, seen);
-  }
-
-  if (!rows.length) {
-    const reItem = /Formulario\s+[ÍI]tem\s+(\d+)/i;
-    for (const el of document.querySelectorAll(
-      'button, [role="button"], summary, h3, h4, h5, div, span, label'
-    )) {
-      const raw = clean(el.innerText);
-      const m = raw.match(reItem);
-      if (!m || raw.length > 64) continue;
-      let block = el.closest('[class*="item" i], [class*="accordion" i], [class*="array" i], section, fieldset, details, li');
-      if (!block) block = el.parentElement && el.parentElement.parentElement;
-      if (!block) continue;
-      let tagInp = null;
-      for (const cand of block.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"])')) {
-        if (!visible(cand)) continue;
-        const lt = clean((block.querySelector('label[for="' + cand.id + '"]') || {}).innerText || '');
-        if (isLinkLabel(lt)) continue;
-        if (isTagLabel(lt)) { tagInp = cand; break; }
-        if (!tagInp) tagInp = cand;
-      }
-      if (tagInp) pushInput(tagInp, rows, seen);
-    }
-  }
-
-  if (!rows.length) {
-    const dale = [...document.querySelectorAll(
-      'input[placeholder*="Dale un valor" i], input[placeholder*="valor" i]'
-    )].filter(visible);
-    for (let i = 0; i < dale.length; i += 2) pushInput(dale[i], rows, seen);
-  }
-
+  };
+  walk(document, visitRoot);
   rows.sort((a, b) => a.y - b.y || a.x - b.x);
   return rows;
+}"""
+
+_FILL_TAGS_JS = r"""(tags) => {
+  const clean = (s) => (s || '').replace(/\s+/g, ' ').trim();
+  const isTagText = (t) => /^tags?\s*\*?\s*$/i.test(clean(t));
+  const isVisible = (el) => {
+    if (!el || !(el instanceof Element)) return false;
+    const r = el.getBoundingClientRect();
+    if (r.width < 3 || r.height < 3) return false;
+    const st = getComputedStyle(el);
+    return st.display !== 'none' && st.visibility !== 'hidden' && parseFloat(st.opacity || '1') > 0.05;
+  };
+  const setNative = (el, v) => {
+    el.focus();
+    const proto = el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+    const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+    if (desc && desc.set) desc.set.call(el, v);
+    else el.value = v;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    el.dispatchEvent(new Event('blur', { bubbles: true }));
+  };
+  const isLinkInput = (inp) => {
+    const bits = [inp.name, inp.id, inp.getAttribute('aria-label'), inp.placeholder, ''];
+    let p = inp.parentElement;
+    for (let i = 0; i < 6 && p; i++) {
+      bits.push(p.innerText || '');
+      p = p.parentElement;
+    }
+    const blob = bits.join(' ').toLowerCase();
+    return /\blink\b|\burl\b|\bhref\b|\benlace\b/.test(blob) && !/\btag\b/.test(blob.slice(0, 48));
+  };
+  const tagInputs = [];
+  const seen = new Set();
+  const add = (inp) => {
+    if (!inp || !isVisible(inp) || isLinkInput(inp)) return;
+    const r = inp.getBoundingClientRect();
+    const k = Math.round(r.top) + ',' + Math.round(r.left);
+    if (seen.has(k)) return;
+    seen.add(k);
+    tagInputs.push({ inp, y: r.top, x: r.left });
+  };
+  document.querySelectorAll('label, mat-label, span, div, p').forEach((el) => {
+    if (!isTagText(clean(el.innerText))) return;
+    const block = el.closest('mat-form-field, [class*="form-field" i], [class*="field" i], div, section') || el.parentElement;
+    if (!block) return;
+    const inp = block.querySelector('input, textarea, [role="textbox"]');
+    if (inp) add(inp);
+  });
+  const dale = [...document.querySelectorAll('input, textarea')].filter((el) => {
+    if (!isVisible(el)) return false;
+    const ph = (el.getAttribute('placeholder') || '').toLowerCase();
+    return ph.includes('dale') || ph.includes('valor');
+  });
+  dale.sort((a, b) => {
+    const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+    return ra.top - rb.top || ra.left - rb.left;
+  });
+  if (dale.length >= 2) {
+    const lineas = [];
+    for (const inp of dale) {
+      const r = inp.getBoundingClientRect();
+      let row = lineas.find((x) => Math.abs(x.top - r.top) < 18);
+      if (!row) { row = { top: r.top, items: [] }; lineas.push(row); }
+      row.items.push({ inp, left: r.left });
+    }
+    lineas.sort((a, b) => a.top - b.top);
+    for (const row of lineas) add(row.items.sort((a, b) => a.left - b.left)[0].inp);
+  }
+  tagInputs.sort((a, b) => a.y - b.y || a.x - b.x);
+  const filled = [];
+  for (let i = 0; i < tags.length && i < tagInputs.length; i++) {
+    setNative(tagInputs[i].inp, tags[i]);
+    filled.push(tags[i]);
+  }
+  return { filled, found: tagInputs.length };
 }"""
 
 
@@ -3297,8 +3386,28 @@ def _rellenar_un_campo_tag(node, valor: str) -> bool:
     return _rellenar_locator(node, valor)
 
 
+def _rellenar_tags_via_js(page, tags: list[str]) -> tuple[int, list[str]]:
+    """Relleno directo en DOM (React/Material BM). Devuelve (ok_count, tags_restantes)."""
+    tags = [t.strip() for t in tags if t and str(t).strip()]
+    if not tags:
+        return 0, []
+    for target in _targets_page_y_frames(page):
+        try:
+            res = target.evaluate(_FILL_TAGS_JS, tags) or {}
+        except Exception:
+            continue
+        filled = res.get("filled") or []
+        if not filled:
+            continue
+        for i, val in enumerate(filled):
+            print(f"  ✓ tag ítem {i + 1} → «{val}» (JS directo, Tag no Link)", flush=True)
+        restantes = tags[len(filled) :]
+        return len(filled), restantes
+    return 0, tags
+
+
 def _rellenar_tags_bm(page, tags: list[str]) -> bool:
-    """Formulario Tags BM: abrir ítem si hace falta → Tag* (Link vacío)."""
+    """Formulario Tags BM: Tag* en cada ítem (Link vacío) → Volver guarda."""
     tags = [t.strip() for t in tags if t and str(t).strip()]
     if not tags:
         print("  · Sin tags en el JSON (categorias[])", flush=True)
@@ -3307,9 +3416,15 @@ def _rellenar_tags_bm(page, tags: list[str]) -> bool:
     print(f"  · Tags a cargar ({len(tags)}): {', '.join(tags)}", flush=True)
     page.wait_for_timeout(500)
 
-    ok_count = 0
-    for i, tag in enumerate(tags):
-        n_item = i + 1
+    ok_count, pendientes = _rellenar_tags_via_js(page, tags)
+    if ok_count >= len(tags):
+        print(f"  ✓ field_tags ({ok_count}/{len(tags)} ítems en el arreglo)", flush=True)
+        return True
+
+    tags_rest = pendientes if pendientes else tags
+    offset = ok_count
+    for i, tag in enumerate(tags_rest):
+        n_item = offset + i + 1
         while _contar_items_formulario_tags(page) < n_item:
             if not _click_agregar_item_tags(page):
                 print(
@@ -3317,13 +3432,24 @@ def _rellenar_tags_bm(page, tags: list[str]) -> bool:
                     flush=True,
                 )
                 break
-        _abrir_acordeon_item_tags(page, i)
+        _abrir_acordeon_item_tags(page, n_item - 1)
 
         node = _input_tag_en_item_tags(page, n_item)
         if node is None:
             page.wait_for_timeout(400)
-            _abrir_acordeon_item_tags(page, i)
+            _abrir_acordeon_item_tags(page, n_item - 1)
             node = _input_tag_en_item_tags(page, n_item)
+
+        if node is None:
+            # Último recurso: clic en placeholder «Dale un valor» por fila
+            try:
+                for target in _targets_page_y_frames(page):
+                    dale = target.locator("input[placeholder*='Dale un valor' i]")
+                    idx = (n_item - 1) * 2
+                    if dale.count() > idx:
+                        node = dale.nth(idx)
+            except Exception:
+                node = None
 
         if node is None:
             print(f"  ✗ no encontré campo Tag en Formulario Ítem {n_item}", flush=True)
@@ -3337,7 +3463,7 @@ def _rellenar_tags_bm(page, tags: list[str]) -> bool:
         try:
             if _rellenar_un_campo_tag(node, tag):
                 try:
-                    block = _bloque_acordeon_tags(page, i)
+                    block = _bloque_acordeon_tags(page, n_item - 1)
                     if block is not None:
                         link = block.locator(
                             "input[data-field='link'], input.campo-link, "
