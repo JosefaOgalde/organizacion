@@ -433,15 +433,16 @@ def listar_componentes_cms(page) -> list[dict]:
 
 
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
-    """Hace clic en el lápiz del componente (icono SVG/div clickable en BM real)."""
+    """Clic en el lápiz del bloque del canvas (no el de la paleta izquierda)."""
     if selector_guardado:
         for target in [page] + list(page.frames):
             try:
                 loc = target.locator(selector_guardado).first
                 if loc.count():
                     loc.click(timeout=4_000, force=True)
-                    page.wait_for_timeout(800)
-                    return True
+                    page.wait_for_timeout(900)
+                    if contar_campos_editables(page) > 0:
+                        return True
             except Exception:
                 pass
 
@@ -450,93 +451,131 @@ def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = Non
         return False
     aliases = list(comp["aliases"])
 
-    click_js = """(el) => {
-      const isSmall = (n) => {
-        if (!n || n.nodeType !== 1) return false;
-        const r = n.getBoundingClientRect();
-        if (r.width < 8 || r.height < 8 || r.width > 72 || r.height > 72) return false;
-        const tag = n.tagName.toLowerCase();
-        const role = (n.getAttribute('role') || '').toLowerCase();
-        const cls = (typeof n.className === 'string' ? n.className : '').toLowerCase();
-        if (tag === 'button' || role === 'button' || tag === 'svg') return true;
-        if (cls.includes('edit') || cls.includes('pencil') || cls.includes('icon') || cls.includes('action')) return true;
-        return getComputedStyle(n).cursor === 'pointer';
+    # Encuentra títulos en el canvas: prioriza bloques con «Edita este componente vacío»
+    # y descarta la «Paleta de componentes».
+    find_js = """(aliases) => {
+      const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+      const norm = (s) => clean(s).toLowerCase();
+      const wanted = aliases.map(norm);
+      const inPalette = (el) => {
+        let cur = el;
+        for (let i = 0; i < 14 && cur; i++) {
+          const t = norm(cur.innerText || '').slice(0, 80);
+          const cls = (typeof cur.className === 'string' ? cur.className : '').toLowerCase();
+          if (t.includes('paleta de componentes') || cls.includes('palette') || cls.includes('sidebar')) return true;
+          cur = cur.parentElement;
+        }
+        return false;
       };
-      const collect = (root) => Array.from(root.querySelectorAll('button, [role="button"], svg, a, span, div'))
+      const hasEmptyHint = (el) => {
+        let cur = el;
+        for (let i = 0; i < 10 && cur; i++) {
+          const t = norm(cur.innerText || '');
+          if (t.includes('edita este componente')) return true;
+          cur = cur.parentElement;
+        }
+        return false;
+      };
+      const out = [];
+      const nodes = Array.from(document.querySelectorAll('div, span, p, li, h1, h2, h3, h4, strong, label'));
+      for (const el of nodes) {
+        const direct = clean(Array.from(el.childNodes).filter(n => n.nodeType === 3).map(n => n.textContent).join(' '));
+        const full = clean(el.innerText || '');
+        const label = direct || (full.length <= 40 ? full : '');
+        if (!label || label.length > 48) continue;
+        if (!wanted.some((w) => norm(label) === w)) continue;
+        if (inPalette(el)) continue;
+        const r = el.getBoundingClientRect();
+        if (r.width < 1 || r.height < 1) continue;
+        out.push({
+          x: r.left + r.width / 2,
+          y: r.top + r.height / 2,
+          score: (hasEmptyHint(el) ? 1000 : 0) + r.left, // canvas a la derecha > paleta
+          text: label,
+        });
+      }
+      out.sort((a, b) => b.score - a.score);
+      return out.slice(0, 6);
+    }"""
+
+    click_at_js = """({x, y, iconIndex}) => {
+      const el = document.elementFromPoint(x, y);
+      if (!el) return false;
+      // Subir al bloque del canvas
+      let block = el;
+      for (let i = 0; i < 12 && block; i++) {
+        const t = (block.innerText || '');
+        if (/edita este componente/i.test(t) || t.length > 20) break;
+        block = block.parentElement;
+      }
+      block = block || el;
+      const isSmall = (n) => {
+        const r = n.getBoundingClientRect();
+        return r.width > 8 && r.height > 8 && r.width < 72 && r.height < 72;
+      };
+      const icons = Array.from(block.querySelectorAll('button, [role="button"], svg, a, span, div'))
         .filter(isSmall)
         .sort((a, b) => {
           const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
           if (Math.abs(ra.top - rb.top) > 8) return ra.top - rb.top;
           return ra.left - rb.left;
         });
-      let cur = el;
-      for (let d = 0; d < 12 && cur; d++) {
-        const kids = collect(cur);
-        for (const k of kids.slice(0, 3)) {
-          const n = k.tagName.toLowerCase() === 'svg' ? (k.closest('button, [role="button"], a, div, span') || k.parentElement) : k;
-          try { n.click(); return true; } catch (e) {}
-        }
-        cur = cur.parentElement;
+      const pick = icons[iconIndex] || icons[0];
+      if (!pick) {
+        // Clic en el área vacía del bloque (a veces abre el editor)
+        const hint = Array.from(block.querySelectorAll('div, span, p'))
+          .find((n) => /edita este componente/i.test(n.innerText || ''));
+        if (hint) { hint.click(); return true; }
+        block.click();
+        return true;
       }
-      return false;
+      const n = pick.tagName.toLowerCase() === 'svg'
+        ? (pick.closest('button, [role="button"], a, div, span') || pick.parentElement)
+        : pick;
+      n.click();
+      return true;
     }"""
 
-    for alias in aliases:
-        for target in [page] + [f for f in page.frames if f != page.main_frame]:
-            try:
-                loc = target.get_by_text(alias, exact=True)
-                count = loc.count()
-            except Exception:
-                continue
-            for i in range(min(count, 5)):
-                try:
-                    title = loc.nth(i)
-                    if not title.is_visible():
-                        continue
-                    if title.evaluate(click_js):
-                        page.wait_for_timeout(900)
-                        if contar_campos_editables(page) > 0:
-                            return True
-                        # probar segundo icono del mismo bloque
-                        page.wait_for_timeout(200)
-                except Exception:
-                    continue
-
-    js_click = """(aliases) => {
-      const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
-      const norm = (s) => clean(s).toLowerCase();
-      const wanted = aliases.map(norm);
-      const nodes = Array.from(document.querySelectorAll('div, span, p, li, h1, h2, h3, h4, strong, label'));
-      for (const el of nodes) {
-        const t = clean(el.innerText || '');
-        if (!t || t.length > 48) continue;
-        if (!wanted.some((w) => norm(t) === w)) continue;
-        let cur = el;
-        for (let i = 0; i < 12 && cur; i++) {
-          const candidates = Array.from(cur.querySelectorAll('button, [role="button"], svg, [class*="icon" i]'))
-            .filter((n) => {
-              const r = n.getBoundingClientRect();
-              return r.width > 8 && r.height > 8 && r.width < 72 && r.height < 72;
-            });
-          if (candidates.length) {
-            const n = candidates[0].tagName.toLowerCase() === 'svg'
-              ? (candidates[0].closest('button, [role="button"], a, div, span') || candidates[0].parentElement)
-              : candidates[0];
-            n.click();
-            return true;
-          }
-          cur = cur.parentElement;
-        }
-      }
-      return false;
-    }"""
-    for target in [page] + list(page.frames):
+    targets = [page] + [f for f in page.frames if f != page.main_frame]
+    for target in targets:
         try:
-            if target.evaluate(js_click, aliases):
-                page.wait_for_timeout(900)
-                return True
+            candidates = target.evaluate(find_js, aliases)
         except Exception:
             continue
+        if not candidates:
+            continue
+        print(f"    · candidatos canvas «{clave}»: {[(c.get('text'), int(c.get('score', 0))) for c in candidates[:3]]}")
+        for cand in candidates:
+            for icon_i in (0, 1, 2):
+                try:
+                    antes = contar_campos_editables(page)
+                    ok_click = target.evaluate(
+                        click_at_js,
+                        {"x": cand["x"], "y": cand["y"], "iconIndex": icon_i},
+                    )
+                    if not ok_click:
+                        continue
+                    page.wait_for_timeout(1000)
+                    despues = contar_campos_editables(page)
+                    if despues > antes:
+                        print(f"    · lápiz OK «{clave}» (icono {icon_i}, campos {antes}→{despues})")
+                        return True
+                except Exception:
+                    continue
+            # Intento: clic directo en el texto «Edita este componente…» del mismo bloque
+            try:
+                hint = target.get_by_text(re.compile(r"Edita este componente", re.I))
+                # Preferir el hint más cercano al candidato
+                if hint.count():
+                    hint.first.click(timeout=2000)
+                    page.wait_for_timeout(1000)
+                    if contar_campos_editables(page) > 0:
+                        print(f"    · editor abierto vía mensaje vacío «{clave}»")
+                        return True
+            except Exception:
+                pass
+
+    print(f"    · no abrí editor de «{clave}» (¿lápiz del canvas?)")
     return False
 
 
