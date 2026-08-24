@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Edición de SEO HTML</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; }
+    .editor { margin-left: 80px; width: 640px; }
+    label { display: block; font-size: 14px; height: 20px; width: 180px; }
+    textarea { display: block; width: 500px; margin-top: 4px; }
+    .toolbar { margin: 8px 0; }
+    .error { color: #b45309; }
+  </style>
+</head>
+<body>
+  <h1>Edición de SEO HTML</h1>
+  <div class="editor">
+    <p>Formulario seo_html</p>
+    <p>Los siguientes campos podrían tener valores precargados. Favor de validar y guardar.</p>
+    <label for="seo-content">content *</label>
+    <div class="toolbar">
+      <label>HTML + Script <input type="checkbox" id="html-script" /></label>
+      <button id="btn-source" type="button">&lt;/&gt;</button>
+    </div>
+    <div id="wysiwyg" contenteditable="true" style="min-height: 80px; border: 1px solid #ccc;"></div>
+    <textarea id="seo-content" hidden placeholder="Dale un valor"></textarea>
+    <p class="error">El dato es requerido</p>
+    <label><input type="checkbox" checked /> Booleano</label>
+  </div>
+  <script>
+    function showHtml() {
+      document.getElementById("wysiwyg").hidden = true;
+      const ta = document.getElementById("seo-content");
+      ta.hidden = false;
+    }
+    document.getElementById("html-script").addEventListener("change", function () {
+      if (this.checked) showHtml();
+    });
+    document.getElementById("btn-source").addEventListener("click", showHtml);
+  </script>
+</body>
+</html>
