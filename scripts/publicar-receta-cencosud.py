@@ -163,33 +163,60 @@ def _click_btn(page, patrones: tuple[str, ...]) -> bool:
     return False
 
 
-def _abrir_item(page, n: int) -> None:
-    for pat in (rf"Formulario\s+Ítem\s+{n}", rf"Formulario\s+Item\s+{n}"):
-        loc = page.get_by_text(re.compile(pat, re.I)).first
-        if loc.count():
-            loc.click()
-            page.wait_for_timeout(600)
-            return
+def _agregar_item_arreglo(page) -> bool:
+    return _click_btn(page, (r"agregar\s*item", r"agregar\s*ítem", r"agregar", r"añadir"))
 
 
-def _escribir_tag(page, valor: str) -> bool:
-    for loc in (
-        page.get_by_label(re.compile(r"^tag\*?$", re.I)).last,
-        page.get_by_label(re.compile(r"tag", re.I)).last,
-        page.locator('input:visible:not([type="checkbox"]):not([type="hidden"])').last,
-    ):
-        if not loc.count():
-            continue
-        try:
-            loc.wait_for(state="visible", timeout=8000)
-            loc.click()
-            loc.fill(valor)
-            page.keyboard.press("Tab")
-            page.wait_for_timeout(300)
-            return True
-        except Exception:
-            continue
-    return False
+def _rellenar_item_tag(page, n: int, tag: str) -> bool:
+    """Un Tag* por Formulario Ítem N (no reutilizar .last global)."""
+    ok = page.evaluate(
+        """([n, tag]) => {
+      const want = new RegExp('^Formulario\\\\s+Í?tem\\\\s+' + n + '\\\\s*$', 'i');
+      const headers = [...document.querySelectorAll('div, section, article, li, button, a, span, h3, h4')]
+        .filter(el => want.test((el.innerText || '').trim()));
+      const header = headers[0];
+      if (!header) return false;
+      header.scrollIntoView({ block: 'center' });
+      header.click();
+      let root = header.parentElement;
+      for (let d = 0; d < 8 && root; d++) {
+        const inputs = [...root.querySelectorAll('input:not([type=checkbox]):not([type=hidden]):not([type=radio])')]
+          .filter(i => i.offsetParent !== null);
+        if (inputs.length) {
+          const inp = inputs[inputs.length - 1];
+          inp.focus();
+          inp.value = tag;
+          inp.dispatchEvent(new Event('input', { bubbles: true }));
+          inp.dispatchEvent(new Event('change', { bubbles: true }));
+          inp.dispatchEvent(new Event('blur', { bubbles: true }));
+          return true;
+        }
+        root = root.parentElement;
+      }
+      return false;
+    }""",
+        [n, tag],
+    )
+    page.wait_for_timeout(400)
+    if ok:
+        return True
+
+    # Playwright fallback
+    header = page.get_by_text(re.compile(rf"^Formulario\s+Í?tem\s+{n}\s*$", re.I)).first
+    if not header.count():
+        return False
+    header.scroll_into_view_if_needed()
+    header.click()
+    page.wait_for_timeout(400)
+    panel = header.locator("xpath=ancestor::div[1]")
+    inp = panel.get_by_label(re.compile(r"^Tag\s*\*?$", re.I)).first
+    if not inp.count():
+        inp = panel.locator('input:visible:not([type="checkbox"])').first
+    if not inp.count():
+        return False
+    inp.fill(tag)
+    page.wait_for_timeout(300)
+    return True
 
 
 def _tags_en_canvas(page, tags: list[str]) -> bool:
@@ -231,23 +258,23 @@ def fill_tags(page, selectores: dict, categorias: list) -> bool:
             print("  ✗ no abrió «Edición de tags»")
             return False
 
-    print(f"[2] Cargo {len(tags)} tags del documento:")
+    print(f"[2] Cargo {len(tags)} tags (1 ítem = 1 tag):")
     ok = 0
     for i, tag in enumerate(tags):
         n = i + 1
         if i > 0:
-            if not _click_btn(page, (r"agregar\s*item", r"agregar", r"añadir")):
-                print(f"  ✗ item {n}: sin botón Agregar item")
-                continue
-            page.wait_for_timeout(500)
-        _abrir_item(page, n)
-        if _escribir_tag(page, tag):
+            if not _agregar_item_arreglo(page):
+                print(f"  ✗ ítem {n}: sin «Agregar item»")
+                break
+            page.wait_for_timeout(700)
+        if _rellenar_item_tag(page, n, tag):
             ok += 1
-            print(f"  ✓ item {n}: {tag}")
+            print(f"  ✓ ítem {n}: {tag}")
         else:
-            print(f"  ✗ item {n}: no pude escribir «{tag}»")
+            print(f"  ✗ ítem {n}: falló «{tag}»")
 
-    if ok == 0:
+    if ok < len(tags):
+        print(f"  ✗ incompleto ({ok}/{len(tags)}) — NO guardo")
         return False
 
     # 3) Guardar formulario
