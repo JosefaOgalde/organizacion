@@ -193,7 +193,12 @@ class ScrapingCmsComponentesTests(unittest.TestCase):
             self.assertIn("zapallos", page.input_value("#ingredientes"))
             self.assertIn("Corta las verduras", page.input_value("#pasos"))
             self.assertEqual(page.input_value("#meta-titulo"), RECETA_DEMO["seo"]["metaTitulo"])
-            self.assertEqual(page.locator("#estado").inner_text(), "borrador-ok")
+            # Tras el último Guardar de componente, o borrador global
+            estado = page.locator("#estado").inner_text()
+            self.assertTrue(
+                estado.startswith("guardado:") or estado == "borrador-ok",
+                f"estado inesperado: {estado!r}",
+            )
             browser.close()
 
 

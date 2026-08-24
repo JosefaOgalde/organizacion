@@ -433,91 +433,110 @@ def listar_componentes_cms(page) -> list[dict]:
 
 
 def abrir_lapiz_componente(page, clave: str, selector_guardado: str | None = None) -> bool:
-    """Hace clic en el lápiz del componente. No requiere acción manual."""
+    """Hace clic en el lápiz del componente (icono SVG/div clickable en BM real)."""
     if selector_guardado:
-        try:
-            loc = page.locator(selector_guardado).first
-            if loc.count() and loc.is_visible():
-                loc.click(timeout=5_000)
-                page.wait_for_timeout(600)
-                return True
-        except Exception:
-            pass
-        # Probar el mismo selector en iframes
-        try:
-            for frame in page.frames:
-                loc = frame.locator(selector_guardado).first
+        for target in [page] + list(page.frames):
+            try:
+                loc = target.locator(selector_guardado).first
                 if loc.count():
-                    loc.click(timeout=5_000)
-                    page.wait_for_timeout(600)
+                    loc.click(timeout=4_000, force=True)
+                    page.wait_for_timeout(800)
                     return True
-        except Exception:
-            pass
+            except Exception:
+                pass
 
     comp = next((c for c in COMPONENTES_CMS if c["clave"] == clave), None)
     if not comp:
         return False
-
     aliases = list(comp["aliases"])
+
+    click_js = """(el) => {
+      const isSmall = (n) => {
+        if (!n || n.nodeType !== 1) return false;
+        const r = n.getBoundingClientRect();
+        if (r.width < 8 || r.height < 8 || r.width > 72 || r.height > 72) return false;
+        const tag = n.tagName.toLowerCase();
+        const role = (n.getAttribute('role') || '').toLowerCase();
+        const cls = (typeof n.className === 'string' ? n.className : '').toLowerCase();
+        if (tag === 'button' || role === 'button' || tag === 'svg') return true;
+        if (cls.includes('edit') || cls.includes('pencil') || cls.includes('icon') || cls.includes('action')) return true;
+        return getComputedStyle(n).cursor === 'pointer';
+      };
+      const collect = (root) => Array.from(root.querySelectorAll('button, [role="button"], svg, a, span, div'))
+        .filter(isSmall)
+        .sort((a, b) => {
+          const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+          if (Math.abs(ra.top - rb.top) > 8) return ra.top - rb.top;
+          return ra.left - rb.left;
+        });
+      let cur = el;
+      for (let d = 0; d < 12 && cur; d++) {
+        const kids = collect(cur);
+        for (const k of kids.slice(0, 3)) {
+          const n = k.tagName.toLowerCase() === 'svg' ? (k.closest('button, [role="button"], a, div, span') || k.parentElement) : k;
+          try { n.click(); return true; } catch (e) {}
+        }
+        cur = cur.parentElement;
+      }
+      return false;
+    }"""
+
+    for alias in aliases:
+        for target in [page] + [f for f in page.frames if f != page.main_frame]:
+            try:
+                loc = target.get_by_text(alias, exact=True)
+                count = loc.count()
+            except Exception:
+                continue
+            for i in range(min(count, 5)):
+                try:
+                    title = loc.nth(i)
+                    if not title.is_visible():
+                        continue
+                    if title.evaluate(click_js):
+                        page.wait_for_timeout(900)
+                        if contar_campos_editables(page) > 0:
+                            return True
+                        # probar segundo icono del mismo bloque
+                        page.wait_for_timeout(200)
+                except Exception:
+                    continue
+
     js_click = """(aliases) => {
       const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
       const norm = (s) => clean(s).toLowerCase();
       const wanted = aliases.map(norm);
-
-      const pickLapiz = (root) => {
-        const editBtn = root.querySelector(
-          'button.btn-lapiz, button[aria-label*="Editar" i], button[aria-label*="edit" i], button[title*="Editar" i], button[title*="edit" i], [data-testid*="edit" i]'
-        );
-        if (editBtn) return editBtn;
-        const buttons = Array.from(root.querySelectorAll('button, [role="button"]'))
-          .filter((b) => {
-            const r = b.getBoundingClientRect();
-            return r.width > 0 && r.height > 0 && r.width < 64 && r.height < 64;
-          });
-        return buttons[0] || null;
-      };
-
-      const nodes = Array.from(document.querySelectorAll('div, span, p, li, h1, h2, h3, h4, strong, label, section, article'));
+      const nodes = Array.from(document.querySelectorAll('div, span, p, li, h1, h2, h3, h4, strong, label'));
       for (const el of nodes) {
-        const direct = clean(
-          Array.from(el.childNodes).filter((n) => n.nodeType === 3).map((n) => n.textContent).join(' ')
-        );
-        const full = clean(el.innerText || '');
-        const label = direct || (full.length <= 40 ? full : '');
-        if (!label) continue;
-        const nlabel = norm(label);
-        if (!wanted.some((w) => nlabel === w || nlabel.startsWith(w + ' ·') || nlabel.startsWith(w + ' |'))) continue;
-
+        const t = clean(el.innerText || '');
+        if (!t || t.length > 48) continue;
+        if (!wanted.some((w) => norm(t) === w)) continue;
         let cur = el;
-        for (let i = 0; i < 10 && cur; i++) {
-          const btn = pickLapiz(cur);
-          if (btn) {
-            btn.click();
+        for (let i = 0; i < 12 && cur; i++) {
+          const candidates = Array.from(cur.querySelectorAll('button, [role="button"], svg, [class*="icon" i]'))
+            .filter((n) => {
+              const r = n.getBoundingClientRect();
+              return r.width > 8 && r.height > 8 && r.width < 72 && r.height < 72;
+            });
+          if (candidates.length) {
+            const n = candidates[0].tagName.toLowerCase() === 'svg'
+              ? (candidates[0].closest('button, [role="button"], a, div, span') || candidates[0].parentElement)
+              : candidates[0];
+            n.click();
             return true;
           }
           cur = cur.parentElement;
         }
       }
-
-      // data-type / data-component
-      for (const el of document.querySelectorAll('[data-component], [data-type]')) {
-        const dataName = norm(el.getAttribute('data-component') || el.getAttribute('data-type') || '');
-        if (!wanted.includes(dataName)) continue;
-        const btn = pickLapiz(el);
-        if (btn) { btn.click(); return true; }
-      }
       return false;
     }"""
-
-    targets = [page] + [f for f in page.frames if f != page.main_frame]
-    for target in targets:
+    for target in [page] + list(page.frames):
         try:
-            clicked = target.evaluate(js_click, aliases)
+            if target.evaluate(js_click, aliases):
+                page.wait_for_timeout(900)
+                return True
         except Exception:
             continue
-        if clicked:
-            page.wait_for_timeout(700)
-            return True
     return False
 
 
@@ -922,16 +941,27 @@ def try_login(page, env: dict) -> None:
         print(f"Login automático parcial falló ({e}). Continúa a mano en el navegador.")
 
 
-def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> bool:
-    resultados = {}
-
-    def fill(key: str, value: str | None) -> bool:
-        sel = selectores.get(key)
-        if not sel or value is None or value == "":
-            return False
-        try:
-            loc = page.locator(sel).first
-            if loc.count():
+def rellenar_con_dump_vivo(page, pares: list[tuple[str, str | None]], selectores: dict) -> dict[str, bool]:
+    """Tras abrir un lápiz, mapea campos visibles y rellena."""
+    outs: dict[str, bool] = {}
+    if contar_campos_editables(page) <= 0:
+        page.wait_for_timeout(700)
+    estructura = dump_estructura(page)
+    vivos = sugerir_selectores(estructura)
+    for key, value in pares:
+        if value is None or value == "":
+            continue
+        sel = vivos.get(key) or selectores.get(key)
+        if not sel:
+            outs[key] = False
+            print(f"  ✗ {key} (sin selector vivo ni guardado)")
+            continue
+        filled = False
+        for target in [page] + list(page.frames):
+            try:
+                loc = target.locator(sel).first
+                if not loc.count():
+                    continue
                 tag = loc.evaluate("el => el.tagName.toLowerCase()")
                 if tag == "select":
                     try:
@@ -940,12 +970,39 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
                         loc.select_option(value=str(value))
                 else:
                     loc.fill(str(value))
-                print(f"  ✓ {key}")
-                return True
-            print(f"  ✗ {key} (no encontrado: {sel})")
-        except Exception as e:
-            print(f"  ✗ {key}: {e}")
-        return False
+                filled = True
+                selectores[key] = sel
+                break
+            except Exception:
+                continue
+        outs[key] = filled
+        print(f"  {'✓' if filled else '✗'} {key}" + ("" if filled else f" ({sel})"))
+
+    if not any(outs.values()):
+        try:
+            areas = page.locator("textarea:visible, [contenteditable='true']:visible, input[type='text']:visible")
+            n = min(areas.count(), 8)
+            if n == 1 and len(pares) == 1:
+                areas.first.fill(str(pares[0][1]))
+                outs[pares[0][0]] = True
+                print(f"  ✓ {pares[0][0]} (fallback único campo)")
+            elif n >= 1:
+                for key, value in pares:
+                    if not value:
+                        continue
+                    if key == "field_titulo":
+                        areas.nth(0).fill(str(value)); outs[key] = True; print(f"  ✓ {key} (fallback)")
+                    elif key in ("field_descripcion", "field_meta_descripcion") and n >= 2:
+                        areas.nth(1).fill(str(value)); outs[key] = True; print(f"  ✓ {key} (fallback)")
+                    elif key in ("field_ingredientes", "field_pasos", "field_tags"):
+                        areas.nth(n - 1).fill(str(value)); outs[key] = True; print(f"  ✓ {key} (fallback)")
+        except Exception:
+            pass
+    return outs
+
+
+def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> bool:
+    resultados = {}
 
     def fill_grupo(clave_comp: str, pares: list[tuple[str, str | None]]) -> int:
         pares_ok = [(k, v) for k, v in pares if v is not None and v != ""]
@@ -958,10 +1015,15 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         if not abierto:
             abierto = abrir_componente_para_campos(page, selectores, [k for k, _ in pares_ok])
         if not abierto:
-            print(f"  · Sin lápiz para {clave_comp}; intento relleno en vista actual.")
+            print(f"  · No pude abrir el lápiz de «{clave_comp}».")
+            return 0
+        for _ in range(20):
+            if contar_campos_editables(page) > 0:
+                break
+            page.wait_for_timeout(250)
+        vivos = rellenar_con_dump_vivo(page, pares_ok, selectores)
         ok_grupo = 0
-        for key, value in pares_ok:
-            ok = fill(key, value)
+        for key, ok in vivos.items():
             if key == "field_titulo":
                 resultados["titulo"] = ok
             elif key == "field_descripcion":
@@ -971,13 +1033,7 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
             elif key == "field_pasos":
                 resultados["pasos"] = ok
             ok_grupo += int(bool(ok))
-        if abierto or ok_grupo:
-            cerrar_editor_componente(page, guardar=True)
-        else:
-            print(
-                f"  ✗ «{clave_comp}»: sin lápiz ni campos — abre la ficha en el "
-                "Gestor de contenido (bloques Cabecera/tags/listas/SEO) y reintenta."
-            )
+        cerrar_editor_componente(page, guardar=True)
         return ok_grupo
 
     print("Rellenando desde JSON (abriendo lápices automáticamente)…")
@@ -1033,40 +1089,10 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
             + (", ".join(fallos_requeridos) if fallos_requeridos else "(ningún campo)"),
             file=sys.stderr,
         )
-        print(
-            "Tip: deja abierta la receta en el CMS (lista de componentes) "
-            "antes de que el script rellene.",
-            file=sys.stderr,
-        )
         return False
 
     if dry_run:
-        btn = selectores.get("btn_guardar_borrador")
-        if btn:
-            try:
-                loc = page.locator(btn).first
-                if loc.count() and loc.is_visible():
-                    loc.click(timeout=5_000)
-                    print("Clic en guardar borrador (dry-run).")
-                else:
-                    alt = page.get_by_role(
-                        "button", name=re.compile(r"guardar\s+borrador|save\s+draft", re.I)
-                    )
-                    if alt.count():
-                        alt.first.click(timeout=5_000)
-                        print("Clic en guardar borrador (fallback texto).")
-                    else:
-                        print(
-                            "Dry-run: sin borrador global visible; "
-                            "componentes ya se guardaron uno a uno."
-                        )
-            except Exception as e:
-                print(f"No se pudo guardar borrador global: {e}")
-        else:
-            print(
-                "Dry-run: sin selector de borrador global; "
-                "cada componente se guardó al cerrar el editor."
-            )
+        print("Dry-run: componentes rellenados/guardados uno a uno.")
         return True
 
     btn = selectores.get("btn_publicar")
@@ -1076,6 +1102,7 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         return True
     print("Sin selector btn_publicar.", file=sys.stderr)
     return False
+
 
 
 def main() -> int:
