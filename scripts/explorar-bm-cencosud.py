@@ -1524,19 +1524,47 @@ def _salir_edicion_cabecera_si_aplica(page) -> None:
             continue
 
 
+def _en_editor_tags(page) -> bool:
+    """¿Seguimos en el Formulario Tags / arreglo Tag* del BM?"""
+    for target in _targets_page_y_frames(page):
+        try:
+            if target.get_by_text(re.compile(r"Formulario Tags|Edici[oó]n de tags|Edici[oó]n de componente", re.I)).count():
+                if target.get_by_text(re.compile(r"Formulario\s+[ÍI]tem\s+\d+", re.I)).count():
+                    return True
+                if target.locator("input[placeholder*='Dale un valor' i]").count() >= 2:
+                    return True
+            if target.get_by_text(re.compile(r"Formulario Tags", re.I)).count():
+                return True
+        except Exception:
+            continue
+    return False
+
+
+def _forzar_vuelta_al_canvas(page) -> None:
+    """Si un editor quedó abierto, volver al canvas antes del siguiente lápiz."""
+    if not pagina_viva(page):
+        return
+    if _en_editor_tags(page):
+        print("  · Aún en Formulario Tags → Volver y guardar…", flush=True)
+        _salir_edicion_tags_si_aplica(page)
+        _esperar_canvas_tras_tags(page)
+        if contar_campos_editables(page) > 0:
+            cerrar_editor_componente(page, guardar=True)
+            _esperar_canvas_tras_tags(page)
+    try:
+        if page.get_by_text(re.compile(r"Edici[oó]n de Cabecera|Formulario Header", re.I)).count():
+            print("  · Aún en Cabecera → Volver…", flush=True)
+            _salir_edicion_cabecera_si_aplica(page)
+            _esperar_canvas_tras_cabecera(page)
+    except Exception:
+        pass
+
+
 def _salir_edicion_tags_si_aplica(page) -> None:
     """Tras rellenar tags: Volver al canvas y confirmar guardar en el popup."""
     if not pagina_viva(page):
         return
-    en_tags = False
-    for target in _targets_page_y_frames(page):
-        try:
-            if target.get_by_text(re.compile(r"Edici[oó]n de tags|Formulario Tags", re.I)).count():
-                en_tags = True
-                break
-        except Exception:
-            continue
-    if not en_tags:
+    if not _en_editor_tags(page):
         return
 
     for target in _targets_page_y_frames(page):
@@ -3735,10 +3763,15 @@ def fill_from_receta(page, receta: dict, selectores: dict, dry_run: bool) -> boo
         meta = next((c for c in COMPONENTES_CMS if c["clave"] == clave_comp), None)
         lapiz_key = meta["lapiz_key"] if meta else f"lapiz_{clave_comp}"
         print(f"  [CMS] Abriendo componente «{clave_comp}»…")
+        _forzar_vuelta_al_canvas(page)
         try:
             abierto = abrir_lapiz_componente(page, clave_comp, selectores.get(lapiz_key))
             if not abierto:
                 abierto = abrir_componente_para_campos(page, selectores, [k for k, _ in pares_ok])
+            if not abierto:
+                _forzar_vuelta_al_canvas(page)
+                page.wait_for_timeout(600)
+                abierto = abrir_lapiz_componente(page, clave_comp, selectores.get(lapiz_key))
             if not abierto:
                 print(f"  · No pude abrir el lápiz de «{clave_comp}».")
                 return 0
