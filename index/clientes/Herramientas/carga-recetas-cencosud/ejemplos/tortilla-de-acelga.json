@@ -1,0 +1,72 @@
+{
+  "id": "tortilla-de-acelga",
+  "titulo": "Tortilla de acelga",
+  "preguntaPreparacion": "¿Cómo preparar tortilla de acelga?",
+  "descripcion": "Prepara una tortilla de acelga esponjosa y nutritiva, con cebolla y huevo, perfecta para aprovechar ingredientes sencillos y preparar una comida casera.",
+  "porciones": 4,
+  "tiempoTotal": "30 min",
+  "dificultad": "facil",
+  "categorias": [
+    "tortillas",
+    "acelga",
+    "huevo",
+    "vegetariano",
+    "almuerzo",
+    "verduras"
+  ],
+  "ingredientes": [
+    { "nombre": "1 atado de acelga" },
+    { "nombre": "5 huevos" },
+    { "nombre": "1 cebolla" },
+    { "nombre": "2 dientes de ajo" },
+    { "nombre": "30 ml de aceite de canola" },
+    { "nombre": "Sal" },
+    { "nombre": "Pimienta a gusto" }
+  ],
+  "pasos": [
+    {
+      "orden": 1,
+      "texto": "Limpia la acelga: Lava bien las hojas de acelga y sepáralas de los tallos. Después pica las hojas en tiras y los tallos en trozos pequeños, ya que necesitan un poco más de cocción por ser más firmes."
+    },
+    {
+      "orden": 2,
+      "texto": "Sofríe la base: Pica la cebolla en cubos pequeños y el ajo finamente. Calienta el aceite en una sartén a fuego medio y sofríe la cebolla durante 4 minutos, hasta que esté transparente, luego incorpora el ajo por un minuto más."
+    },
+    {
+      "orden": 3,
+      "texto": "Cocina la acelga: Agrega los tallos a la sartén y cocínalos un par de minutos, después suma las hojas picadas. Cocina revolviendo durante 5 minutos, hasta que la acelga pierda volumen y se ablande por completo."
+    },
+    {
+      "orden": 4,
+      "texto": "Escurre y enfría: Retira la acelga de la sartén y déjala enfriar unos minutos, escurriendo el exceso de líquido. Este paso es importante para que la tortilla no quede aguada y logre cuajar de manera pareja."
+    },
+    {
+      "orden": 5,
+      "texto": "Bate los huevos: En un bowl, bate los huevos con sal y pimienta hasta que queden bien integrados. Luego agrega la acelga sofrida y fría, y mezcla con cuidado para repartir las verduras de forma uniforme en el huevo."
+    },
+    {
+      "orden": 6,
+      "texto": "Cuaja la tortilla: Vierte la mezcla en la sartén con un poco de aceite a fuego medio y cocina durante 5 minutos por lado. Ayúdate de un plato para darla vuelta con cuidado, hasta que quede dorada y cuajada. Puedes servirla tibia o fría."
+    }
+  ],
+  "tipsTitulo": "Consigue una tortilla de acelga esponjosa",
+  "tips": [
+    "Escurre muy bien la acelga después de cocinarla para quitar el exceso de agua y evitar que la tortilla quede húmeda en el centro.",
+    "Cocina la tortilla a fuego medio para que se dore de manera pareja y quede bien cocida por dentro.",
+    "Puedes agregar queso rallado o un poco de cebollín a la mezcla para darle más sabor y variar la receta."
+  ],
+  "seo": {
+    "metaTitulo": "Tortilla de acelga | Recetas Jumbo",
+    "metaDescripcion": "Prepara una tortilla de acelga esponjosa y nutritiva, con cebolla y huevo, perfecta para aprovechar ingredientes sencillos y preparar una comida casera."
+  },
+  "imagenes": [
+    {
+      "alt": "Tortilla de acelga cortada en trozos sobre una tabla de madera.",
+      "rol": "portada",
+      "urlFuente": "https://drive.google.com/file/d/1Z1lAFcb864iYNPN2yMt8yXcoLsyKtaNq/view",
+      "nota": "Descargar de Drive y subir manualmente en Cabecera si el script no baja la foto."
+    }
+  ],
+  "estado": "listo-para-cargar",
+  "camposFaltantes": ["ingredientes.skuCencosud"]
+}

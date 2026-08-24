@@ -5927,8 +5927,21 @@ def items_instrucciones(pasos: list[dict], tips: list | None = None) -> list[dic
     return out
 
 
+def pregunta_preparacion(receta: dict | None = None) -> str:
+    """Pregunta H3 del bloque instrucciones: «¿Cómo preparar …?»."""
+    receta = receta or {}
+    explicita = receta.get("preguntaPreparacion") or receta.get("tituloInstrucciones")
+    if explicita and str(explicita).strip():
+        return str(explicita).strip()
+    titulo = (receta.get("titulo") or "").strip()
+    if not titulo:
+        return "¿Cómo preparar esta receta?"
+    plato = titulo[0].lower() + titulo[1:] if len(titulo) > 1 else titulo.lower()
+    return f"¿Cómo preparar {plato}?"
+
+
 def titulo_lista_instrucciones(receta: dict | None = None) -> str:
-    return "Paso a paso"
+    return pregunta_preparacion(receta)
 
 
 def _esc_html(texto: str) -> str:
@@ -5988,7 +6001,7 @@ def _aplicar_enlaces_html(texto: str, enlaces: list[dict] | None) -> str:
     return out
 
 
-def html_pasos(items: list[dict]) -> str:
+def html_pasos(items: list[dict], receta: dict | None = None) -> str:
     """HTML para el editor «Paso a Paso» (modo HTML + Script). No reescapa tags."""
     pasos: list[str] = []
     consejos: list[str] = []
@@ -6014,6 +6027,10 @@ def html_pasos(items: list[dict]) -> str:
     if consejos:
         lis = "".join(f"<li>{c}</li>" for c in consejos)
         html += f"\n<p><strong>Consejos</strong></p>\n<ul>{lis}</ul>"
+    pregunta = pregunta_preparacion(receta) if receta else ""
+    if pregunta:
+        h3 = f"<h3>{_esc_html(pregunta)}</h3>"
+        html = f"{h3}\n{html}" if html else h3
     return html.strip()
 
 
@@ -6770,7 +6787,9 @@ def rellenar_item_ingrediente(page, indice: int, item: dict) -> bool:
     return ok
 
 
-def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
+def fill_lista_acordeones(
+    page, items: list[dict], tipo: str, receta: dict | None = None
+) -> int:
     """Rellena 'Edición de Lista Ingredientes/Instrucciones' ítem a ítem."""
     clave = "ingredientes" if tipo == "ingredientes" else "instrucciones"
     if not puede_rellenar_editor(page, clave):
@@ -6816,12 +6835,12 @@ def fill_lista_acordeones(page, items: list[dict], tipo: str) -> int:
             f"  · Abro Formulario Ítem (Título* es requerido): "
             f"cabezales={info.get('heads')} inst={info.get('inst')}"
         )
-        titulo = titulo_lista_instrucciones()
+        titulo = titulo_lista_instrucciones(receta)
         if escribir_titulo_lista_instrucciones(page, titulo):
             print(f"  ✓ Título de la lista → {titulo}")
         else:
-            print("  · No pude escribir Título* (sigo con Paso a Paso en HTML).")
-        html = html_pasos(items)
+            print("  · No pude escribir Título* (sigo con HTML en Paso a Paso).")
+        html = html_pasos(items, receta)
         if html:
             print(
                 f"  · HTML Paso a Paso ({len(html)} caracteres, "
@@ -7086,8 +7105,8 @@ def fill_from_receta(
     if editor_actual(page) == "instrucciones":
         print("  · Ya estoy en Lista de Instrucciones. Escribo los pasos del Word.")
         inst_abiertos = receta.get("pasos") or []
-        html_inst = html_pasos(inst_abiertos)
-        n_inst_abierto = fill_lista_acordeones(page, inst_abiertos, "instrucciones")
+        html_inst = html_pasos(inst_abiertos, receta)
+        n_inst_abierto = fill_lista_acordeones(page, inst_abiertos, "instrucciones", receta)
         if n_inst_abierto:
             resultados["pasos"] = True
             print(f"  ✓ pasos: {n_inst_abierto}/{len(inst_abiertos)} ítems")
@@ -7211,8 +7230,8 @@ def fill_from_receta(
     if abrir_grupo("instrucciones", ["field_pasos"]) and puede_rellenar_editor(
         page, "instrucciones"
     ):
-        html_pas = html_pasos(pasos)
-        n_pas = fill_lista_acordeones(page, pasos, "instrucciones")
+        html_pas = html_pasos(pasos, receta)
+        n_pas = fill_lista_acordeones(page, pasos, "instrucciones", receta)
         if n_pas:
             resultados["pasos"] = True
             print(f"  ✓ pasos: {n_pas}/{len(pasos)} ítems de acordeón")

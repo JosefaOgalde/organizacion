@@ -299,15 +299,18 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             ),
         )
         self.assertEqual(
-            self.explorar.titulo_lista_instrucciones(),
-            "Paso a paso",
+            self.explorar.titulo_lista_instrucciones({"titulo": "Salmón a la parrilla con salsa de palta"}),
+            "¿Cómo preparar salmón a la parrilla con salsa de palta?",
         )
+        receta_salmon = {"titulo": "Salmón a la parrilla con salsa de palta"}
         html = self.explorar.html_pasos(
             [
                 {"texto": "Sazona el salmón: Seca los filetes."},
                 {"texto": "Consejo: Cocina el salmón por el lado de la piel."},
-            ]
+            ],
+            receta_salmon,
         )
+        self.assertIn("<h3>¿Cómo preparar salmón a la parrilla con salsa de palta?</h3>", html)
         self.assertIn("<strong>Sazona el salmón:</strong>", html)
         self.assertIn("Consejos", html)
         self.assertNotIn("&lt;p&gt;", html)
@@ -1043,24 +1046,26 @@ class JsIngredienteExactoTests(unittest.TestCase):
                 ),
             },
         ]
+        receta = {"titulo": "Salmón a la parrilla con salsa de palta"}
         with sync_playwright() as pw:
             browser = pw.chromium.launch(headless=True)
             page = browser.new_page()
             page.goto(html.as_uri())
-            n = self.explorar.fill_lista_acordeones(page, items, "instrucciones")
+            n = self.explorar.fill_lista_acordeones(page, items, "instrucciones", receta)
             self.assertEqual(n, 2)
             self.assertEqual(
                 page.evaluate("() => document.getElementById('titulo-lista').value"),
-                "Paso a paso",
+                "¿Cómo preparar salmón a la parrilla con salsa de palta?",
             )
             self.assertTrue(
                 page.evaluate("() => document.getElementById('html-script').checked")
             )
-            html = page.evaluate("() => document.getElementById('paso-html').value")
-            self.assertIn("<strong>Sazona el salmón:</strong>", html)
-            self.assertIn("Prepara la salsa de palta", html)
-            self.assertNotIn("&lt;p&gt;", html)
-            self.assertNotIn("&lt;strong", html)
+            html_out = page.evaluate("() => document.getElementById('paso-html').value")
+            self.assertIn("<h3>¿Cómo preparar salmón a la parrilla con salsa de palta?</h3>", html_out)
+            self.assertIn("<strong>Sazona el salmón:</strong>", html_out)
+            self.assertIn("Prepara la salsa de palta", html_out)
+            self.assertNotIn("&lt;p&gt;", html_out)
+            self.assertNotIn("&lt;strong", html_out)
             self.assertGreaterEqual(
                 page.evaluate("() => document.querySelectorAll('#wysiwyg strong').length"),
                 1,
