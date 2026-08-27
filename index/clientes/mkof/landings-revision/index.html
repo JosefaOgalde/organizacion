@@ -408,7 +408,7 @@
       })
       .catch((err) => {
         $('#title').textContent = 'No se pudo cargar data.json';
-        $('#workspace').innerHTML = `<div class="empty">Abre esta carpeta con un servidor local (no file://).<br/>Ejemplo: <code>python3 -m http.server 8765</code><br/>Error: ${escapeHtml(err.message)}</div>`;
+        $('#workspace').innerHTML = `<div class="empty">Abre con el servidor :8000 (no file://).<br/>En Windows: <code>ABRIR-LANDINGS-MKOF.bat</code> o<br/><code>http://127.0.0.1:8000/index/clientes/mkof/landings-revision/</code><br/>Error: ${escapeHtml(err.message)}</div>`;
       });
   </script>
 </body>
