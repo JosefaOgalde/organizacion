@@ -828,6 +828,43 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             self.assertTrue(self.explorar.resolver_modal_cambios(modal, salir=True))
         self.assertEqual(modal.clicks, ["si-acepto"])
 
+    def test_tags_guardados_se_reabren_y_verifican(self):
+        class Pagina:
+            def wait_for_timeout(self, _ms):
+                return None
+
+        pagina = Pagina()
+        tags = ["once", "pan casero"]
+        with (
+            patch.object(self.explorar, "abrir_lapiz_componente", return_value=True),
+            patch.object(self.explorar, "_contar_tags_ok", return_value=len(tags)),
+            patch.object(self.explorar, "volver_al_lienzo", return_value=True) as volver,
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            self.assertTrue(
+                self.explorar.verificar_tags_guardados(pagina, "https://bm/receta", tags)
+            )
+        volver.assert_called_once()
+
+        with (
+            patch.object(self.explorar, "abrir_lapiz_componente", return_value=True),
+            patch.object(self.explorar, "_contar_tags_ok", return_value=1),
+            patch.object(self.explorar, "volver_al_lienzo") as volver,
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            self.assertFalse(
+                self.explorar.verificar_tags_guardados(pagina, "https://bm/receta", tags)
+            )
+        volver.assert_not_called()
+
+    def test_exploracion_cierra_editores_sin_guardar(self):
+        src_cerrar = inspect.getsource(self.explorar.cerrar_editor_componente)
+        src_captura = inspect.getsource(self.explorar.capturar_cms_por_componentes)
+        self.assertIn("volver_al_lienzo", src_cerrar)
+        self.assertNotIn("_clic_guardar_editor", src_cerrar)
+        self.assertNotIn("guardar_editor_persistente", src_cerrar)
+        self.assertIn("cerrar_editor_componente(page, url_ficha)", src_captura)
+
     def test_js_modal_imagen_pide_confirmar(self):
         js = self.explorar.JS_CLICK_CONFIRMAR_IMAGEN
         self.assertIn("Confirmar", js)

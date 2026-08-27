@@ -1655,12 +1655,11 @@ def _clic_guardar_editor(page) -> bool:
     return False
 
 
-def cerrar_editor_componente(page) -> None:
-    """Guarda el editor del lápiz. Si aparece el modal, Cancelar (aún no es hora de salir)."""
-    resolver_modal_cambios(page)
-    _clic_guardar_editor(page)
-    resolver_modal_cambios(page)
-    _clic_guardar_editor(page)
+def cerrar_editor_componente(page, url_ficha: str | None = None) -> bool:
+    """Cierra un editor abierto solo para inspección, sin persistir cambios."""
+    if _hay_modal_sin_guardar(page):
+        resolver_modal_cambios(page, salir=False)
+    return volver_al_lienzo(page, url_ficha, confirmar_salida=False)
 
 
 JS_VOLVER_AL_LIENZO = """() => {
@@ -2220,12 +2219,8 @@ def finalizar_editor_tags(page, url_ficha: str | None, tags: list[str]) -> bool:
         return True
     ok = _contar_tags_ok(page, tags)
     if ok < len(tags):
-        if sigue_dato_requerido(page):
-            print(f"  ✗ tags incompletos ({ok}/{len(tags)}) — no guardo")
-            return False
-        print(
-            f"  · Verificación leyó {ok}/{len(tags)} tags; guardo igual (sin «dato requerido» visible)."
-        )
+        print(f"  ✗ tags no verificados ({ok}/{len(tags)}) — no guardo")
+        return False
     asegurar_n_items_tags(page, len(tags))
     aviso_modal_descarta()
     if not guardar_editor_persistente(page):
@@ -2244,7 +2239,28 @@ def finalizar_editor_tags(page, url_ficha: str | None, tags: list[str]) -> bool:
     if bloque_componente_vacio(page, ["tags", "Tags"]) is not False:
         print("  · El bloque tags en el lienzo sigue vacío — abre el lápiz y revisa.")
         return False
+    if not verificar_tags_guardados(page, url_ficha, tags):
+        return False
     print("  ✓ Bloque tags cargado en el lienzo")
+    return True
+
+
+def verificar_tags_guardados(page, url_ficha: str | None, tags: list[str]) -> bool:
+    """Reabre tags y confirma que el BM persistió exactamente los valores esperados."""
+    if not abrir_lapiz_componente(page, "tags"):
+        print("  ✗ No pude reabrir tags para verificar el guardado.")
+        return False
+    try:
+        page.wait_for_timeout(500)
+    except Exception:
+        pass
+    ok = _contar_tags_ok(page, tags)
+    if ok < len(tags):
+        print(f"  ✗ El BM persistió solo {ok}/{len(tags)} tags; dejo el editor abierto.")
+        return False
+    if not volver_al_lienzo(page, url_ficha, confirmar_salida=False):
+        print("  ✗ Tags verificados, pero no pude volver al lienzo.")
+        return False
     return True
 
 
@@ -2471,7 +2487,7 @@ def capturar_cms_por_componentes(page) -> tuple[dict, dict]:
             rel = next((c for c in relist if c["clave"] == clave), None)
             lapices[meta["lapiz_key"]] = (rel or {}).get("lapizSelector") or sel_lapiz
         print(f"  ✓ {clave}: {len(fields)} campos (editables≈{despues})")
-        cerrar_editor_componente(page)
+        cerrar_editor_componente(page, url_ficha)
 
     # Botones globales (Guardar / Publicar) en la vista de lista
     estructura_lista = dump_estructura(page)
@@ -5878,17 +5894,11 @@ def fill_lista_tags(page, tags: list[str]) -> int:
     if verificados >= len(tags):
         limpiar_links_que_no_son_url(page)
         return verificados
-    if n >= len(tags) and not sigue_dato_requerido(page):
-        print(
-            f"  · Tags escritos ({n}/{len(tags)}); verificación leyó {verificados} — confío en escritura."
-        )
-        limpiar_links_que_no_son_url(page)
-        return n
     excluir = r"título de la sección|ingrediente|meta|descripci|link|enlace|url"
-    rep = fill_repetidos_por_label(page, r"^Tag\s*\*?$", tags, excluir=excluir)
+    fill_repetidos_por_label(page, r"^Tag\s*\*?$", tags, excluir=excluir)
     limpiar_links_que_no_son_url(page)
     verificados2 = _contar_tags_ok(page, tags)
-    return max(verificados2, rep, n)
+    return verificados2
 
 
 def fill_inputs_texto_en_orden(page, valores: list[str]) -> int:

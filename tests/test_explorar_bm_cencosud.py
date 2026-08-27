@@ -957,9 +957,9 @@ class ExplorarBmTests(unittest.TestCase):
         self.assertIn("_leer_tag_item_playwright", src)
         src_fill = inspect.getsource(self.modulo.fill_lista_tags)
         self.assertIn(r"^Tag\s*\*?$", src_fill)
-        self.assertIn("confío en escritura", src_fill)
+        self.assertNotIn("confío en escritura", src_fill)
 
-    def test_fill_lista_tags_confia_en_escritura_sin_verificacion_js(self):
+    def test_fill_lista_tags_rechaza_escritura_sin_verificacion(self):
         class Pagina:
             def evaluate(self, script, *_a):
                 texto = str(script)
@@ -982,7 +982,7 @@ class ExplorarBmTests(unittest.TestCase):
             self.modulo.limpiar_links_que_no_son_url = lambda _p: None
             self.modulo.sigue_dato_requerido = lambda _p: False
             tags = ["salmon", "paltas", "almuerzo"]
-            self.assertEqual(self.modulo.fill_lista_tags(Pagina(), tags), 3)
+            self.assertEqual(self.modulo.fill_lista_tags(Pagina(), tags), 0)
         finally:
             self.modulo.rellenar_items_formulario = orig_rellenar
             self.modulo._contar_tags_ok = orig_contar
