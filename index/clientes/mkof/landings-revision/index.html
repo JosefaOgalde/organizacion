@@ -222,6 +222,7 @@
     </main>
   </div>
 
+  <script src="data.js"></script>
   <script>
     const STORAGE_KEY = 'mkof-landings-revision-v1';
     let pages = [];
@@ -399,17 +400,17 @@
       e.target.value = '';
     });
 
-    fetch('data.json')
-      .then((r) => r.json())
-      .then((data) => {
-        pages = data;
-        buildNav();
-        selectPage(pages[0].id);
-      })
-      .catch((err) => {
-        $('#title').textContent = 'No se pudo cargar data.json';
-        $('#workspace').innerHTML = `<div class="empty">Abre con el servidor :8000 (no file://).<br/>En Windows: <code>ABRIR-LANDINGS-MKOF.bat</code> o<br/><code>http://127.0.0.1:8000/index/clientes/mkof/landings-revision/</code><br/>Error: ${escapeHtml(err.message)}</div>`;
-      });
+    function boot() {
+      pages = Array.isArray(window.MKOF_LANDINGS) ? window.MKOF_LANDINGS : [];
+      if (!pages.length) {
+        $('#title').textContent = 'No se pudo cargar data.js';
+        $('#workspace').innerHTML = `<div class="empty">Falta <code>data.js</code> junto a este HTML.<br/>Trae la branch <code>cursor/arbol-animacion-3ba0</code> y abre otra vez <code>index.html</code>.</div>`;
+        return;
+      }
+      buildNav();
+      selectPage(pages[0].id);
+    }
+    boot();
   </script>
 </body>
 </html>
