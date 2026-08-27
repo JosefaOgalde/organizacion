@@ -214,10 +214,7 @@ def main() -> int:
             page, receta, selectores, dry_run=dry, url_ficha=url_ficha
         )
         resultado = 0
-        if dry:
-            if carga_ok:
-                receta["estado"] = "cargado"
-        else:
+        if not dry:
             if not carga_ok:
                 resultado = 4
             else:

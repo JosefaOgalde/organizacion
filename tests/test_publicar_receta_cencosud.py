@@ -143,6 +143,26 @@ class RuntimeFalso:
         return {"playwright": paquete, "playwright.sync_api": sync_api}
 
 
+class ExplorarFalso:
+    MENSAJE_ENTER_FICHA = ""
+
+    def __init__(self, runtime):
+        self.runtime = runtime
+
+    def esperar_ficha_en_lienzo(self, page, *, headed):
+        return page.url
+
+    def fill_from_receta(self, page, receta, selectores, dry_run, url_ficha):
+        if dry_run:
+            page.locator(selectores["btn_guardar_borrador"]).first.click()
+            return True
+        requeridos = ("field_titulo", "field_descripcion", "field_ingredientes", "field_pasos")
+        if any(selectores[campo] in self.runtime.selectores_ausentes for campo in requeridos):
+            return False
+        page.locator(selectores["btn_publicar"]).first.click()
+        return True
+
+
 class PublicarRecetaTests(unittest.TestCase):
     def setUp(self):
         self.modulo = cargar_modulo()
@@ -176,6 +196,7 @@ class PublicarRecetaTests(unittest.TestCase):
                 patch.object(self.modulo, "load_env", return_value=env),
                 patch.object(self.modulo, "load_selectores", return_value=self.selectores),
                 patch.object(self.modulo, "SESSION_PATH", tmp_path / "session.json"),
+                patch.object(self.modulo, "_cargar_explorar", return_value=ExplorarFalso(runtime)),
                 patch.object(sys, "argv", argv),
                 patch.dict(sys.modules, runtime.modulos()),
                 contextlib.redirect_stdout(io.StringIO()),
@@ -241,7 +262,18 @@ class PublicarRecetaTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 0)
         self.assertEqual(runtime.clicks, ["#borrador"])
-        self.assertEqual(guardada["estado"], "cargado")
+        self.assertEqual(guardada["estado"], "borrador")
+
+    def test_dry_run_deja_receta_lista_para_publicar(self):
+        exit_code, runtime, guardada = self.ejecutar(
+            self.receta_valida,
+            args=("--dry-run",),
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(runtime.clicks, ["#borrador"])
+        self.assertEqual(guardada["estado"], "listo-para-cargar")
+        self.assertEqual(self.modulo.errores_prepublicacion(guardada), [])
 
     def test_no_sigue_nav_nueva_receta_hacia_proyectos(self):
         self.selectores["nav_nueva_receta"] = "/cms/projects"
