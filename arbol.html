@@ -78,7 +78,7 @@
     scatterMax: 2.10,
 
     treeBaseY: -1.65,
-    treeTopY: 2.42
+    treeTopY: 2.50
   };
 
   CFG.cycleDuration =
@@ -476,216 +476,271 @@
   }
 
   // ============================================================
-  // FOLLAJE — cono denso continuo (silueta de árbol unificada)
+  // FOLLAJE — capas apiladas rellenas (silueta continua, sin cono hueco)
+  // Un cono vacío se ve como dos elipses desconectadas con la cámara oblicua.
   // ============================================================
-  const foliageRings = [];
-  const foliageLevels = 18;
-  const foliageSegs = 16;
-  const foliageStartY = 0.18;
-  const foliageEndY = 2.42;
+  const foliageLayers = [
+    { y: 0.22, r: 1.05, group: "branches" },
+    { y: 0.48, r: 0.98, group: "branches" },
+    { y: 0.72, r: 0.90, group: "branches" },
+    { y: 0.96, r: 0.80, group: "branches" },
+    { y: 1.18, r: 0.70, group: "branches" },
+    { y: 1.40, r: 0.58, group: "branches" },
+    { y: 1.60, r: 0.48, group: "canopy" },
+    { y: 1.80, r: 0.38, group: "canopy" },
+    { y: 1.98, r: 0.28, group: "canopy" },
+    { y: 2.14, r: 0.18, group: "canopy" },
+    { y: 2.28, r: 0.10, group: "canopy" },
+    { y: 2.40, r: 0.045, group: "canopy" }
+  ];
 
-  function foliageRadiusAt(t) {
-    // Triángulo clásico: ancho en la base del follaje, punta arriba.
-    // Una leve “cintura” evita aspecto de bola.
-    const taper = Math.pow(1 - t, 0.92);
-    const wave = 1 + Math.sin(t * Math.PI * 2.6) * 0.055;
-    return Math.max(0.045, 1.08 * taper * wave);
+  const foliageSegs = 14;
+  const foliageRings = [];
+  const foliageCenters = [];
+
+  function trunkIndexAtY(y) {
+    return Math.round(
+      clamp(
+        (y - trunkStartY) / (trunkEndY - trunkStartY),
+        0,
+        1
+      ) * (trunkRings.length - 1)
+    );
   }
 
-  for (let lv = 0; lv < foliageLevels; lv++) {
-    const t = lv / (foliageLevels - 1);
-    const y = lerp(foliageStartY, foliageEndY, t);
-    const radius = foliageRadiusAt(t) * (1 + gauss() * 0.012);
-
-    // Altura manda el timing; grupo solo matiza un poco.
-    const group = t < 0.28 ? "branches" : (t < 0.72 ? "branches" : "canopy");
+  for (let lv = 0; lv < foliageLayers.length; lv++) {
+    const spec = foliageLayers[lv];
     const ring = [];
+    const wave = 1 + Math.sin(lv * 1.1) * 0.04;
 
+    const center = addVertex(
+      v3(gauss() * 0.012, spec.y + gauss() * 0.008, gauss() * 0.012),
+      spec.group,
+      {
+        depthAmp: 0.001,
+        swayAmp: rand(0.004, 0.012),
+        visibleNode: rnd() < 0.55
+      }
+    );
+    foliageCenters.push(center);
+
+    // Anillo exterior
     for (let i = 0; i < foliageSegs; i++) {
-      const ang = (i / foliageSegs) * Math.PI * 2 + gauss() * 0.012;
-      const puff = 1 + Math.sin(ang * 3.0 + lv * 0.55) * 0.055;
+      const ang = (i / foliageSegs) * Math.PI * 2 + gauss() * 0.010;
+      const puff = 1 + Math.sin(ang * 2.8 + lv) * 0.05;
+      const rr = spec.r * wave * puff;
 
       ring.push(addVertex(
         v3(
-          Math.cos(ang) * radius * puff,
-          y + gauss() * 0.012,
-          Math.sin(ang) * radius * puff
+          Math.cos(ang) * rr,
+          spec.y + gauss() * 0.010,
+          Math.sin(ang) * rr
         ),
-        group,
+        spec.group,
         {
-          depthAmp: rand(0.002, 0.007),
-          swayAmp: rand(0.006, 0.018),
-          visibleNode: rnd() < (0.34 + (1 - t) * 0.12)
+          depthAmp: rand(0.002, 0.006),
+          swayAmp: rand(0.006, 0.016),
+          visibleNode: rnd() < 0.40
         }
       ));
     }
 
+    // Anillo interior (relleno — evita lectura de “dos elipses”)
+    const inner = [];
+    for (let i = 0; i < foliageSegs; i++) {
+      const ang = (i / foliageSegs) * Math.PI * 2 + 0.2;
+      const rr = spec.r * wave * 0.52;
+
+      inner.push(addVertex(
+        v3(
+          Math.cos(ang) * rr,
+          spec.y + gauss() * 0.008,
+          Math.sin(ang) * rr
+        ),
+        spec.group,
+        {
+          depthAmp: rand(0.001, 0.005),
+          swayAmp: rand(0.005, 0.014),
+          visibleNode: rnd() < 0.36
+        }
+      ));
+    }
+
+    // Radios centro → interior → exterior
+    for (let i = 0; i < foliageSegs; i++) {
+      const j = (i + 1) % foliageSegs;
+
+      addEdge(center, inner[i], {
+        structure: i % 2 === 0,
+        alpha: rand(0.40, 0.68)
+      });
+      addEdge(inner[i], ring[i], {
+        structure: true,
+        alpha: rand(0.48, 0.78)
+      });
+      addEdge(ring[i], ring[j], {
+        structure: i % 2 === 0,
+        alpha: rand(0.42, 0.70)
+      });
+      addEdge(inner[i], inner[j], {
+        alpha: rand(0.28, 0.52)
+      });
+      addEdge(inner[i], ring[j], {
+        alpha: rand(0.22, 0.44)
+      });
+    }
+
+    // Anclar capa al tronco
+    const tIdx = trunkIndexAtY(spec.y);
+    for (let i = 0; i < trunkSegs; i += 1) {
+      addEdge(
+        trunkRings[tIdx][i],
+        ring[Math.floor(i * foliageSegs / trunkSegs)],
+        {
+          structure: i % 2 === 0,
+          alpha: rand(0.40, 0.72)
+        }
+      );
+      addEdge(
+        trunkRings[tIdx][i],
+        inner[Math.floor(i * foliageSegs / trunkSegs)],
+        { alpha: rand(0.24, 0.48) }
+      );
+    }
+    addEdge(trunkRings[tIdx][0], center, { structure: true, alpha: 0.70 });
+
     foliageRings.push(ring);
+
+    // Guardar inner para conectar capas
+    ring._inner = inner;
+    ring._center = center;
   }
 
   const tip = addVertex(
-    v3(0, foliageEndY + 0.06, 0),
+    v3(0, 2.48, 0),
     "canopy",
     { depthAmp: 0.001, visibleNode: true }
   );
 
-  // Malla densa del cono (estructura visible en casi todos los meridanos)
+  // Conectar capas consecutivas (meridianos + diagonales)
   for (let lv = 0; lv < foliageRings.length - 1; lv++) {
     const a = foliageRings[lv];
     const b = foliageRings[lv + 1];
 
-    for (let i = 0; i < a.length; i++) {
-      const j = (i + 1) % a.length;
-      const k = (i + 2) % a.length;
+    addEdge(a._center, b._center, { structure: true, alpha: 0.72 });
+
+    for (let i = 0; i < foliageSegs; i++) {
+      const j = (i + 1) % foliageSegs;
 
       addEdge(a[i], b[i], {
         structure: true,
-        alpha: rand(0.52, 0.80)
+        alpha: rand(0.50, 0.80)
       });
-
-      addEdge(a[i], a[j], {
-        structure: lv % 2 === 0 || i % 2 === 0,
-        alpha: rand(0.38, 0.66)
-      });
-
       addEdge(a[i], b[j], {
         structure: i % 3 === 0,
+        alpha: rand(0.32, 0.58)
+      });
+      addEdge(a._inner[i], b._inner[i], {
         alpha: rand(0.30, 0.56)
       });
-
-      if (i % 2 === 0) {
-        addEdge(a[i], b[k], { alpha: rand(0.20, 0.40) });
-      }
+      addEdge(a._inner[i], b[i], {
+        alpha: rand(0.22, 0.44)
+      });
     }
   }
 
+  // Cúspide
+  const topRing = foliageRings[foliageRings.length - 1];
   for (let i = 0; i < foliageSegs; i++) {
-    addEdge(
-      foliageRings[foliageRings.length - 1][i],
-      tip,
-      { structure: i % 2 === 0, alpha: rand(0.48, 0.76) }
-    );
+    addEdge(topRing[i], tip, {
+      structure: i % 2 === 0,
+      alpha: rand(0.50, 0.78)
+    });
   }
+  addEdge(topRing._center, tip, { structure: true, alpha: 0.84 });
 
-  // Radios tronco→follaje en TODOS los niveles solapados (rellena el hueco)
-  for (let lv = 0; lv < foliageRings.length; lv++) {
-    const y = lerp(foliageStartY, foliageEndY, lv / (foliageRings.length - 1));
-    const trunkIdx = Math.round(
-      clamp(
-        (y - trunkStartY) / (trunkEndY - trunkStartY),
-        0,
-        1
-      ) * (trunkRings.length - 1)
-    );
-
-    for (let i = 0; i < trunkSegs; i++) {
-      const foliageI = Math.floor(i * foliageSegs / trunkSegs);
-      addEdge(
-        trunkRings[trunkIdx][i],
-        foliageRings[lv][foliageI],
-        {
-          structure: lv % 2 === 0 && i % 2 === 0,
-          alpha: rand(0.36, 0.68)
-        }
-      );
-    }
-  }
-
-  // Ramas radiales cortas (lectura de árbol / densidad media)
-  for (let b = 0; b < 14; b++) {
-    const y = lerp(0.35, 2.05, b / 13);
-    const ang = (b / 14) * Math.PI * 2 + rand(-0.18, 0.18);
-    const tH = clamp((y - foliageStartY) / (foliageEndY - foliageStartY), 0, 1);
-    const reach = foliageRadiusAt(tH) * rand(0.78, 0.98);
-    const segs = 5;
+  // Ramas radiales cortas entre capas (densidad / lectura de árbol)
+  for (let b = 0; b < 12; b++) {
+    const y = lerp(0.35, 2.10, b / 11);
+    const ang = (b / 12) * Math.PI * 2 + rand(-0.15, 0.15);
+    const layerT = clamp((y - 0.22) / (2.40 - 0.22), 0, 1);
+    const reach = lerp(1.05, 0.12, Math.pow(layerT, 0.85)) * rand(0.75, 0.95);
+    const segs = 4;
     let prev = null;
 
-    const trunkIdx = Math.round(
-      clamp(
-        (y - trunkStartY) / (trunkEndY - trunkStartY),
-        0,
-        1
-      ) * (trunkRings.length - 1)
-    );
-    const attach = trunkRings[trunkIdx][b % trunkSegs];
+    const attach = trunkRings[trunkIndexAtY(y)][b % trunkSegs];
 
     for (let s = 1; s <= segs; s++) {
       const t = s / segs;
       const id = addVertex(
         v3(
           Math.cos(ang) * reach * t,
-          y + t * 0.12 * (1 - tH) + gauss() * 0.008,
+          y + t * 0.08 + gauss() * 0.006,
           Math.sin(ang) * reach * t
         ),
-        t < 0.6 ? "branches" : "canopy",
+        t < 0.55 ? "branches" : "canopy",
         {
           depthAmp: rand(0.001, 0.005),
-          swayAmp: rand(0.006, 0.016),
-          visibleNode: rnd() < 0.40
+          swayAmp: rand(0.005, 0.014),
+          visibleNode: rnd() < 0.42
         }
       );
 
       if (s === 1) {
-        addEdge(attach, id, { structure: true, alpha: 0.78 });
+        addEdge(attach, id, { structure: true, alpha: 0.76 });
       } else {
         addEdge(prev, id, {
-          structure: s === segs || s === 2,
-          alpha: rand(0.40, 0.70)
+          structure: s === segs,
+          alpha: rand(0.38, 0.68)
         });
       }
-
       prev = id;
     }
   }
 
-  // Volumen interior del cono (nodos + diagonales)
-  for (let i = 0; i < 36; i++) {
-    const t = rand(0.05, 0.94);
-    const y = lerp(foliageStartY, foliageEndY, t);
-    const maxR = foliageRadiusAt(t);
+  // Relleno volumétrico entre capas
+  for (let i = 0; i < 40; i++) {
+    const t = rand(0.04, 0.96);
+    const y = lerp(0.22, 2.40, t);
+    const maxR = lerp(1.05, 0.08, Math.pow(t, 0.85));
     const a = rand(0, Math.PI * 2);
-    const rr = rand(0.05, maxR * 0.88);
+    const rr = rand(0.04, maxR * 0.90);
 
     const id = addVertex(
       v3(
         Math.cos(a) * rr,
-        y + gauss() * 0.016,
+        y + gauss() * 0.014,
         Math.sin(a) * rr
       ),
       t < 0.55 ? "branches" : "canopy",
       {
-        depthAmp: rand(0.002, 0.006),
-        visibleNode: rnd() < 0.50
+        depthAmp: rand(0.001, 0.005),
+        visibleNode: rnd() < 0.48
       }
     );
 
-    const nearLv = Math.floor(t * (foliageRings.length - 1));
+    const nearLv = Math.min(
+      foliageRings.length - 1,
+      Math.floor(t * foliageRings.length)
+    );
     addEdge(
       id,
       foliageRings[nearLv][Math.floor(rand(0, foliageSegs))],
-      { alpha: rand(0.22, 0.44) }
-    );
-
-    const trunkIdx = Math.round(
-      clamp(
-        (y - trunkStartY) / (trunkEndY - trunkStartY),
-        0,
-        1
-      ) * (trunkRings.length - 1)
+      { alpha: rand(0.24, 0.48) }
     );
     addEdge(
       id,
-      trunkRings[trunkIdx][Math.floor(rand(0, trunkSegs))],
-      { alpha: rand(0.18, 0.38) }
+      trunkRings[trunkIndexAtY(y)][Math.floor(rand(0, trunkSegs))],
+      { alpha: rand(0.18, 0.40) }
     );
   }
 
   // Espina hasta la cúspide
-  addEdge(core[core.length - 1], tip, { structure: true, alpha: 0.82 });
+  addEdge(core[core.length - 1], tip, { structure: true, alpha: 0.86 });
   addEdge(
     trunkRings[trunkRings.length - 1][0],
     tip,
-    { structure: true, alpha: 0.70 }
+    { structure: true, alpha: 0.74 }
   );
 
   // ============================================================
@@ -818,9 +873,9 @@
       speedFactor = lerp(0.68, 0.16, smoothstep(cycleState.phaseT));
     }
 
-    const ax = -0.52 + Math.sin(t * 0.000095) * 0.040;
+    const ax = -0.28 + Math.sin(t * 0.000095) * 0.030;
     const ay = 0.38 + t * CFG.globalRotationSpeed * speedFactor;
-    const az = 0.08 + Math.sin(t * 0.00007) * 0.022;
+    const az = 0.05 + Math.sin(t * 0.00007) * 0.018;
 
     return matMul(
       rotZ(az),
