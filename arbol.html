@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Árbol 3D — estética caritas — construcción raíces a copa</title>
+<title>Árbol 3D — burbuja tierna — construcción raíces a copa</title>
 <style>
   html, body {
     margin: 0;
@@ -33,18 +33,18 @@
   "use strict";
 
   const CFG = {
-    seed: 2026082715,
+    seed: 2026082718,
 
     bg: "#0E2B22",
 
-    buildDuration: 6200,
-    holdDuration: 19000,
-    disperseDuration: 3400,
+    buildDuration: 5800,
+    holdDuration: 18200,
+    disperseDuration: 3200,
 
-    cameraZ: 8.6,
-    focal: 6.1,
-    objectScale: 0.96,
-    globalRotationSpeed: 0.000095,
+    cameraZ: 8.4,
+    focal: 6.0,
+    objectScale: 0.98,
+    globalRotationSpeed: 0.000088,
 
     innerLine: "#2C7526",
     structureLine: "#4FB62E",
@@ -54,31 +54,31 @@
     innerLineWidth: 0.8,
     structureLineWidth: 1.0,
 
-    visibleNodeRatio: 0.30,
+    visibleNodeRatio: 0.32,
 
-    tinyRatio: 0.42,
+    tinyRatio: 0.44,
     smallRatio: 0.30,
-    mediumRatio: 0.20,
+    mediumRatio: 0.18,
     largeRatio: 0.08,
 
-    tinyRadius: [0.75, 1.25],
-    smallRadius: [1.4, 2.05],
-    mediumRadius: [2.6, 3.55],
-    largeRadius: [4.4, 5.5],
+    tinyRadius: [0.72, 1.22],
+    smallRadius: [1.35, 2.0],
+    mediumRadius: [2.5, 3.45],
+    largeRadius: [4.2, 5.4],
 
-    blinkMinPause: 950,
-    blinkMaxPause: 5200,
-    blinkCloseMin: 80,
-    blinkCloseMax: 145,
-    blinkOpenMin: 280,
-    blinkOpenMax: 560,
+    blinkMinPause: 900,
+    blinkMaxPause: 5100,
+    blinkCloseMin: 75,
+    blinkCloseMax: 140,
+    blinkOpenMin: 270,
+    blinkOpenMax: 540,
     blinkMinimumScale: 0.04,
 
-    scatterMin: 0.65,
-    scatterMax: 2.10,
+    scatterMin: 0.62,
+    scatterMax: 2.05,
 
-    treeBaseY: -1.65,
-    treeTopY: 1.78
+    treeBaseY: -1.05,
+    treeTopY: 1.62
   };
 
   CFG.cycleDuration =
@@ -101,36 +101,36 @@
   }
 
   const rnd = mulberry32(CFG.seed);
-  const rand = (a=0,b=1) => a + (b-a)*rnd();
+  const rand = (a = 0, b = 1) => a + (b - a) * rnd();
 
   function gauss() {
-    return (rnd()+rnd()+rnd()+rnd()+rnd()+rnd()-3)/1.45;
+    return (rnd() + rnd() + rnd() + rnd() + rnd() + rnd() - 3) / 1.45;
   }
 
-  const clamp = (v,a,b) => Math.max(a, Math.min(b,v));
-  const lerp = (a,b,t) => a + (b-a)*t;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
 
   function smoothstep(t) {
-    t = clamp(t,0,1);
-    return t*t*(3-2*t);
+    t = clamp(t, 0, 1);
+    return t * t * (3 - 2 * t);
   }
 
   function easeOutCubic(t) {
-    t = clamp(t,0,1);
-    return 1 - Math.pow(1-t,3);
+    t = clamp(t, 0, 1);
+    return 1 - Math.pow(1 - t, 3);
   }
 
   function easeInCubic(t) {
-    t = clamp(t,0,1);
-    return t*t*t;
+    t = clamp(t, 0, 1);
+    return t * t * t;
   }
 
   function hexToRgb(hex) {
-    const v = hex.replace("#","");
+    const v = hex.replace("#", "");
     return [
-      parseInt(v.slice(0,2),16),
-      parseInt(v.slice(2,4),16),
-      parseInt(v.slice(4,6),16)
+      parseInt(v.slice(0, 2), 16),
+      parseInt(v.slice(2, 4), 16),
+      parseInt(v.slice(4, 6), 16)
     ];
   }
 
@@ -141,72 +141,72 @@
     backNode: hexToRgb(CFG.backNode)
   };
 
-  function rgba(rgb,a) {
+  function rgba(rgb, a) {
     return `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`;
   }
 
-  function mixRGB(a,b,t) {
+  function mixRGB(a, b, t) {
     return [
-      Math.round(lerp(a[0],b[0],t)),
-      Math.round(lerp(a[1],b[1],t)),
-      Math.round(lerp(a[2],b[2],t))
+      Math.round(lerp(a[0], b[0], t)),
+      Math.round(lerp(a[1], b[1], t)),
+      Math.round(lerp(a[2], b[2], t))
     ];
   }
 
-  function v3(x,y,z) {
-    return {x,y,z};
+  function v3(x, y, z) {
+    return { x, y, z };
   }
 
-  function addV(a,b) {
-    return v3(a.x+b.x,a.y+b.y,a.z+b.z);
+  function addV(a, b) {
+    return v3(a.x + b.x, a.y + b.y, a.z + b.z);
   }
 
-  function scaleV(v,s) {
-    return v3(v.x*s,v.y*s,v.z*s);
+  function scaleV(v, s) {
+    return v3(v.x * s, v.y * s, v.z * s);
   }
 
   function lengthV(v) {
-    return Math.hypot(v.x,v.y,v.z);
+    return Math.hypot(v.x, v.y, v.z);
   }
 
   function normalizeV(v) {
     const l = lengthV(v) || 1;
-    return scaleV(v,1/l);
+    return scaleV(v, 1 / l);
   }
 
   function rotX(a) {
-    const c=Math.cos(a),s=Math.sin(a);
-    return [[1,0,0],[0,c,-s],[0,s,c]];
+    const c = Math.cos(a), s = Math.sin(a);
+    return [[1, 0, 0], [0, c, -s], [0, s, c]];
   }
 
   function rotY(a) {
-    const c=Math.cos(a),s=Math.sin(a);
-    return [[c,0,s],[0,1,0],[-s,0,c]];
+    const c = Math.cos(a), s = Math.sin(a);
+    return [[c, 0, s], [0, 1, 0], [-s, 0, c]];
   }
 
   function rotZ(a) {
-    const c=Math.cos(a),s=Math.sin(a);
-    return [[c,-s,0],[s,c,0],[0,0,1]];
+    const c = Math.cos(a), s = Math.sin(a);
+    return [[c, -s, 0], [s, c, 0], [0, 0, 1]];
   }
 
-  function matMul(A,B) {
-    const R = [[0,0,0],[0,0,0],[0,0,0]];
-    for (let r=0;r<3;r++) {
-      for (let c=0;c<3;c++) {
+  function matMul(A, B) {
+    const R = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
         R[r][c] =
-          A[r][0]*B[0][c] +
-          A[r][1]*B[1][c] +
-          A[r][2]*B[2][c];
+          A[r][0] * B[0][c] +
+          A[r][1] * B[1][c] +
+          A[r][2] * B[2][c];
       }
     }
     return R;
   }
 
-  function matVec(M,v) {
+  function matVec(M, v) {
     return v3(
-      M[0][0]*v.x + M[0][1]*v.y + M[0][2]*v.z,
-      M[1][0]*v.x + M[1][1]*v.y + M[1][2]*v.z,
-      M[2][0]*v.x + M[2][1]*v.y + M[2][2]*v.z
+      M[0][0] * v.x + M[0][1] * v.y + M[0][2] * v.z,
+      M[1][0] * v.x + M[1][1] * v.y + M[1][2] * v.z,
+      M[2][0] * v.x + M[2][1] * v.y + M[2][2] * v.z
     );
   }
 
@@ -214,17 +214,17 @@
     const local = t % CFG.cycleDuration;
 
     if (local < CFG.buildDuration) {
-      return { phase:"build", local, phaseT:local/CFG.buildDuration };
+      return { phase: "build", local, phaseT: local / CFG.buildDuration };
     }
 
     const holdStart = CFG.buildDuration;
     const holdEnd = holdStart + CFG.holdDuration;
 
     if (local < holdEnd) {
-      return { phase:"hold", local:local-holdStart, phaseT:(local-holdStart)/CFG.holdDuration };
+      return { phase: "hold", local: local - holdStart, phaseT: (local - holdStart) / CFG.holdDuration };
     }
 
-    return { phase:"disperse", local:local-holdEnd, phaseT:(local-holdEnd)/CFG.disperseDuration };
+    return { phase: "disperse", local: local - holdEnd, phaseT: (local - holdEnd) / CFG.disperseDuration };
   }
 
   const vertices = [];
@@ -252,44 +252,42 @@
   function stageTiming(group, y) {
     const h = heightProgress(y);
 
-    // Construcción de abajo hacia arriba por altura.
-    // Offsets de grupo mínimos: evita huecos temporales entre tronco y copa.
     let groupOffset = 0;
     if (group === "roots") groupOffset = 0;
-    else if (group === "trunk") groupOffset = 90;
-    else if (group === "branches") groupOffset = 160;
-    else groupOffset = 220;
+    else if (group === "trunk") groupOffset = 80;
+    else if (group === "branches") groupOffset = 200;
+    else groupOffset = 340;
 
-    const inBase = groupOffset + h * 3200 + rand(0, 160);
+    const inBase = groupOffset + h * 3000 + rand(0, 140);
 
     return {
       inBase,
-      inSpread: group === "roots" ? 420 : 520,
-      outBase: (1 - h) * 2600 + groupOffset * 0.25 + rand(0, 360),
-      outSpread: 640
+      inSpread: group === "roots" ? 380 : 480,
+      outBase: (1 - h) * 2400 + groupOffset * 0.22 + rand(0, 320),
+      outSpread: 600
     };
   }
 
   function randomScatter(group) {
     let dir = v3(gauss(), gauss(), gauss());
-    if (lengthV(dir) < 0.15) dir = v3(0.4, -0.8, 0.5);
+    if (lengthV(dir) < 0.15) dir = v3(0.35, -0.75, 0.45);
     dir = normalizeV(dir);
 
     let min = CFG.scatterMin;
     let max = CFG.scatterMax;
 
     if (group === "roots") {
-      min *= 0.55;
-      max *= 0.75;
+      min *= 0.50;
+      max *= 0.70;
     } else if (group === "trunk") {
-      min *= 0.65;
-      max *= 0.85;
+      min *= 0.60;
+      max *= 0.82;
     }
 
     return scaleV(dir, rand(min, max));
   }
 
-  function addVertex(pos, group, meta={}) {
+  function addVertex(pos, group, meta = {}) {
     const visibleNode =
       meta.visibleNode !== undefined
         ? meta.visibleNode
@@ -312,10 +310,10 @@
       scatter: randomScatter(group),
 
       buildDelay: timing.inBase + rand(0, timing.inSpread),
-      buildTravel: rand(900, 1650),
+      buildTravel: rand(850, 1550),
 
       outDelay: timing.outBase + rand(0, timing.outSpread),
-      outTravel: rand(900, 1500),
+      outTravel: rand(850, 1450),
 
       depthPhase: rand(0, Math.PI * 2),
       depthAmp: meta.depthAmp ?? rand(0.0015, 0.008),
@@ -327,13 +325,13 @@
       blinkScale: 1,
       blinkStart: 0,
       blinkDuration: 0,
-      nextBlink: rand(300, CFG.blinkMaxPause)
+      nextBlink: rand(280, CFG.blinkMaxPause)
     });
 
     return vertices.length - 1;
   }
 
-  function addEdge(a, b, meta={}) {
+  function addEdge(a, b, meta = {}) {
     if (a === b) return;
     edges.push({
       a, b,
@@ -343,33 +341,34 @@
   }
 
   // ============================================================
-  // TRONCO — corto y grueso (proporción infantil ~1:2 con la copa)
+  // TRONCO — cortito y regordete (estilo icono amigable)
   // ============================================================
   const trunkRings = [];
-  const trunkSegs = 10;
-  const trunkLevels = 10;
-  const trunkStartY = -0.42;
-  const trunkEndY = 0.22;
+  const trunkSegs = 9;
+  const trunkLevels = 7;
+  const trunkStartY = -0.38;
+  const trunkEndY = 0.08;
+  const trunkLeanX = 0.04;
 
   for (let lv = 0; lv < trunkLevels; lv++) {
     const t = lv / (trunkLevels - 1);
     const y = lerp(trunkStartY, trunkEndY, t);
-    const finalR = lerp(0.34, 0.22, Math.pow(t, 0.55)) * (1 + gauss() * 0.010);
+    const finalR = lerp(0.36, 0.24, Math.pow(t, 0.62)) * (1 + gauss() * 0.008);
     const ring = [];
 
     for (let i = 0; i < trunkSegs; i++) {
-      const ang = (i / trunkSegs) * Math.PI * 2 + gauss() * 0.008;
+      const ang = (i / trunkSegs) * Math.PI * 2 + gauss() * 0.006;
       ring.push(addVertex(
         v3(
-          Math.cos(ang) * finalR,
-          y + gauss() * 0.010,
+          trunkLeanX * t + Math.cos(ang) * finalR,
+          y + gauss() * 0.008,
           Math.sin(ang) * finalR
         ),
         "trunk",
         {
           depthAmp: rand(0.001, 0.004),
-          swayAmp: rand(0.002, 0.009),
-          visibleNode: rnd() < 0.42
+          swayAmp: rand(0.002, 0.008),
+          visibleNode: rnd() < 0.40
         }
       ));
     }
@@ -384,355 +383,282 @@
     for (let i = 0; i < a.length; i++) {
       const j = (i + 1) % a.length;
 
-      addEdge(a[i], b[i], {
-        structure: true,
-        alpha: rand(0.55, 0.82)
-      });
+      addEdge(a[i], b[i], { structure: true, alpha: rand(0.52, 0.80) });
+      addEdge(a[i], a[j], { structure: i % 2 === 0, alpha: rand(0.32, 0.56) });
+      addEdge(a[i], b[j], { alpha: rand(0.26, 0.48) });
 
-      addEdge(a[i], a[j], {
-        structure: i % 2 === 0,
-        alpha: rand(0.34, 0.58)
-      });
-
-      addEdge(a[i], b[j], { alpha: rand(0.28, 0.50) });
-
-      if (rnd() > 0.40) {
-        addEdge(a[j], b[i], { alpha: rand(0.22, 0.42) });
+      if (rnd() > 0.45) {
+        addEdge(a[j], b[i], { alpha: rand(0.20, 0.40) });
       }
     }
   }
 
-  // Núcleo interno del tronco (espina corta, no atraviesa la copa)
   const core = [];
-  for (let i = 0; i < 8; i++) {
-    const t = i / 7;
+  for (let i = 0; i < 6; i++) {
+    const t = i / 5;
     core.push(addVertex(
-      v3(gauss() * 0.012, lerp(-0.36, 0.28, t), gauss() * 0.012),
+      v3(
+        trunkLeanX * t + gauss() * 0.010,
+        lerp(-0.34, 0.12, t),
+        gauss() * 0.010
+      ),
       "trunk",
-      { depthAmp: 0.001, visibleNode: rnd() < 0.48 }
+      { depthAmp: 0.001, visibleNode: rnd() < 0.46 }
     ));
   }
 
   for (let i = 0; i < core.length - 1; i++) {
-    addEdge(core[i], core[i + 1], { structure: true, alpha: 0.78 });
+    addEdge(core[i], core[i + 1], { structure: true, alpha: 0.76 });
   }
 
   // ============================================================
-  // RAÍCES — pequeñas y discretas (no selva)
+  // RAÍCES — mini nubecitas (3 nubs discretos)
   // ============================================================
-  const rootCount = 5;
-  const rootAttachY = trunkStartY + 0.02;
+  const rootSpecs = [
+    { ang: 0.35, reach: 0.22 },
+    { ang: 2.45, reach: 0.20 },
+    { ang: 4.55, reach: 0.19 }
+  ];
+  const rootAttachY = trunkStartY + 0.01;
 
-  for (let r = 0; r < rootCount; r++) {
-    const baseAngle = (r / rootCount) * Math.PI * 2 + gauss() * 0.08;
-    const segments = 4 + Math.floor(rand(0, 2));
+  for (const spec of rootSpecs) {
+    const attach = trunkRings[0][Math.floor(spec.ang * trunkSegs / (Math.PI * 2)) % trunkSegs];
     const chain = [];
-    const attach = trunkRings[0][Math.floor(r * trunkSegs / rootCount) % trunkSegs];
 
-    for (let s = 0; s <= segments; s++) {
-      const t = s / segments;
-      const spread = lerp(0.06, 0.28 + rand(0, 0.08), t);
-      const dip = lerp(0, 0.32 + rand(0, 0.10), t * t);
-      const twist = Math.sin(t * Math.PI * 1.1 + r * 0.5) * 0.06;
+    for (let s = 0; s <= 2; s++) {
+      const t = s / 2;
+      const spread = lerp(0.04, spec.reach, t);
+      const dip = lerp(0, 0.18 + rand(0, 0.06), t * t);
 
       chain.push(addVertex(
         v3(
-          Math.cos(baseAngle + twist) * spread,
-          rootAttachY - dip + gauss() * 0.010,
-          Math.sin(baseAngle + twist) * spread
+          trunkLeanX * 0.1 + Math.cos(spec.ang) * spread,
+          rootAttachY - dip + gauss() * 0.008,
+          Math.sin(spec.ang) * spread
         ),
         "roots",
         {
           depthAmp: rand(0.001, 0.003),
-          swayAmp: rand(0.004, 0.009),
-          visibleNode: rnd() < 0.38
-        }
-      ));
-    }
-
-    addEdge(attach, chain[0], { structure: true, alpha: 0.80 });
-
-    for (let s = 0; s < chain.length - 1; s++) {
-      addEdge(chain[s], chain[s + 1], {
-        structure: s === 0 || s >= chain.length - 2,
-        alpha: rand(0.44, 0.76)
-      });
-    }
-  }
-
-  // Anillo radical compacto bajo el tronco
-  for (let i = 0; i < trunkSegs; i += 2) {
-    const j = (i + 2) % trunkSegs;
-    const a = trunkRings[0][i];
-    const b = trunkRings[0][j];
-    const mid = addVertex(
-      v3(
-        Math.cos((i + 1) / trunkSegs * Math.PI * 2) * 0.18,
-        rootAttachY - 0.10 + gauss() * 0.006,
-        Math.sin((i + 1) / trunkSegs * Math.PI * 2) * 0.18
-      ),
-      "roots",
-      { depthAmp: 0.001, visibleNode: rnd() < 0.40 }
-    );
-    addEdge(a, mid, { structure: true, alpha: 0.66 });
-    addEdge(b, mid, { alpha: 0.50 });
-  }
-
-  // ============================================================
-  // FOLLAJE — cúpula redonda tipo nube (no cono de pino)
-  // Silueta ancha, base hinchada, cúspide redondeada sin punta.
-  // ============================================================
-  const foliageLayers = [
-    { y: 0.18, r: 0.58, group: "branches" },
-    { y: 0.38, r: 0.82, group: "branches" },
-    { y: 0.56, r: 1.02, group: "branches" },
-    { y: 0.74, r: 1.18, group: "canopy" },
-    { y: 0.92, r: 1.22, group: "canopy" },
-    { y: 1.10, r: 1.16, group: "canopy" },
-    { y: 1.28, r: 0.98, group: "canopy" },
-    { y: 1.44, r: 0.78, group: "canopy" },
-    { y: 1.58, r: 0.52, group: "canopy" },
-    { y: 1.68, r: 0.30, group: "canopy" },
-    { y: 1.74, r: 0.16, group: "canopy" }
-  ];
-
-  const foliageSegs = 14;
-  const foliageRings = [];
-  const foliageCenters = [];
-
-  function trunkIndexAtY(y) {
-    return Math.round(
-      clamp(
-        (y - trunkStartY) / (trunkEndY - trunkStartY),
-        0,
-        1
-      ) * (trunkRings.length - 1)
-    );
-  }
-
-  for (let lv = 0; lv < foliageLayers.length; lv++) {
-    const spec = foliageLayers[lv];
-    const ring = [];
-    const wave = 1 + Math.sin(lv * 0.95) * 0.07;
-
-    const center = addVertex(
-      v3(gauss() * 0.012, spec.y + gauss() * 0.008, gauss() * 0.012),
-      spec.group,
-      {
-        depthAmp: 0.001,
-        swayAmp: rand(0.004, 0.012),
-        visibleNode: rnd() < 0.55
-      }
-    );
-    foliageCenters.push(center);
-
-    // Anillo exterior
-    for (let i = 0; i < foliageSegs; i++) {
-      const ang = (i / foliageSegs) * Math.PI * 2 + gauss() * 0.010;
-      const puff = 1 + Math.sin(ang * 0.9 + lv * 0.6) * 0.10 + Math.sin(ang * 2.2 + lv) * 0.04;
-      const rr = spec.r * wave * puff;
-
-      ring.push(addVertex(
-        v3(
-          Math.cos(ang) * rr,
-          spec.y + gauss() * 0.010,
-          Math.sin(ang) * rr
-        ),
-        spec.group,
-        {
-          depthAmp: rand(0.002, 0.006),
-          swayAmp: rand(0.006, 0.016),
-          visibleNode: rnd() < 0.40
-        }
-      ));
-    }
-
-    // Anillo interior (relleno — evita lectura de “dos elipses”)
-    const inner = [];
-    for (let i = 0; i < foliageSegs; i++) {
-      const ang = (i / foliageSegs) * Math.PI * 2 + 0.2;
-      const rr = spec.r * wave * 0.52;
-
-      inner.push(addVertex(
-        v3(
-          Math.cos(ang) * rr,
-          spec.y + gauss() * 0.008,
-          Math.sin(ang) * rr
-        ),
-        spec.group,
-        {
-          depthAmp: rand(0.001, 0.005),
-          swayAmp: rand(0.005, 0.014),
+          swayAmp: rand(0.003, 0.008),
           visibleNode: rnd() < 0.36
         }
       ));
     }
 
-    // Radios centro → interior → exterior
-    for (let i = 0; i < foliageSegs; i++) {
-      const j = (i + 1) % foliageSegs;
+    addEdge(attach, chain[0], { structure: true, alpha: 0.78 });
 
-      addEdge(center, inner[i], {
-        structure: i % 2 === 0,
-        alpha: rand(0.40, 0.68)
-      });
-      addEdge(inner[i], ring[i], {
-        structure: true,
-        alpha: rand(0.48, 0.78)
-      });
-      addEdge(ring[i], ring[j], {
-        structure: i % 2 === 0,
-        alpha: rand(0.42, 0.70)
-      });
-      addEdge(inner[i], inner[j], {
-        alpha: rand(0.28, 0.52)
-      });
-      addEdge(inner[i], ring[j], {
-        alpha: rand(0.22, 0.44)
+    for (let s = 0; s < chain.length - 1; s++) {
+      addEdge(chain[s], chain[s + 1], {
+        structure: s === 0,
+        alpha: rand(0.42, 0.72)
       });
     }
+  }
 
-    // Anclar capa al tronco
-    const tIdx = trunkIndexAtY(spec.y);
-    for (let i = 0; i < trunkSegs; i += 1) {
-      addEdge(
-        trunkRings[tIdx][i],
-        ring[Math.floor(i * foliageSegs / trunkSegs)],
-        {
-          structure: i % 2 === 0,
-          alpha: rand(0.40, 0.72)
+  // ============================================================
+  // BURBUJAS DE COPA — dos nubes tiernas (lollipop + gorro)
+  // Silueta: tronco bajo + globo grande + gorro redondo más chico
+  // ============================================================
+  function buildBubble(cx, cy, cz, rx, ry, rz, group, latRings, lonSegs) {
+    const rings = [];
+    const centers = [];
+
+    for (let lat = 0; lat <= latRings; lat++) {
+      const v = lat / latRings;
+      const phi = v * Math.PI;
+      const ringY = cy + Math.cos(phi) * ry;
+      const ringScale = Math.sin(phi);
+      const ring = [];
+
+      if (lat > 0 && lat < latRings) {
+        centers.push(addVertex(
+          v3(cx + gauss() * 0.008, ringY + gauss() * 0.006, cz + gauss() * 0.008),
+          group,
+          { depthAmp: 0.001, swayAmp: rand(0.004, 0.010), visibleNode: rnd() < 0.52 }
+        ));
+      }
+
+      for (let lon = 0; lon < lonSegs; lon++) {
+        const theta = (lon / lonSegs) * Math.PI * 2;
+        const wobble =
+          1 +
+          Math.sin(theta * 2.1 + lat * 0.7) * 0.06 +
+          Math.cos(theta * 3.3 + lat * 1.1) * 0.03;
+
+        ring.push(addVertex(
+          v3(
+            cx + Math.cos(theta) * rx * ringScale * wobble,
+            ringY + gauss() * 0.008,
+            cz + Math.sin(theta) * rz * ringScale * wobble
+          ),
+          group,
+          {
+            depthAmp: rand(0.002, 0.006),
+            swayAmp: rand(0.005, 0.014),
+            visibleNode: rnd() < 0.38
+          }
+        ));
+      }
+
+      rings.push(ring);
+    }
+
+    for (let lat = 0; lat < rings.length; lat++) {
+      const ring = rings[lat];
+      const centerIdx = lat > 0 && lat < rings.length - 1 ? centers[lat - 1] : null;
+
+      for (let lon = 0; lon < lonSegs; lon++) {
+        const j = (lon + 1) % lonSegs;
+
+        addEdge(ring[lon], ring[j], {
+          structure: lon % 2 === 0,
+          alpha: rand(0.40, 0.70)
+        });
+
+        if (centerIdx !== null && lon % 2 === 0) {
+          addEdge(centerIdx, ring[lon], {
+            structure: true,
+            alpha: rand(0.44, 0.72)
+          });
         }
-      );
-      addEdge(
-        trunkRings[tIdx][i],
-        inner[Math.floor(i * foliageSegs / trunkSegs)],
-        { alpha: rand(0.24, 0.48) }
-      );
+
+        if (lat < rings.length - 1) {
+          const below = rings[lat + 1];
+          addEdge(ring[lon], below[lon], {
+            structure: true,
+            alpha: rand(0.48, 0.78)
+          });
+          addEdge(ring[lon], below[j], {
+            alpha: rand(0.24, 0.46)
+          });
+        }
+      }
     }
-    addEdge(trunkRings[tIdx][0], center, { structure: true, alpha: 0.70 });
 
-    foliageRings.push(ring);
+    const pole = addVertex(
+      v3(cx + gauss() * 0.006, cy + gauss() * 0.006, cz + gauss() * 0.006),
+      group,
+      { depthAmp: 0.001, visibleNode: rnd() < 0.58 }
+    );
 
-    // Guardar inner para conectar capas
-    ring._inner = inner;
-    ring._center = center;
-  }
-
-  // Conectar capas consecutivas (meridianos + diagonales)
-  for (let lv = 0; lv < foliageRings.length - 1; lv++) {
-    const a = foliageRings[lv];
-    const b = foliageRings[lv + 1];
-
-    addEdge(a._center, b._center, { structure: true, alpha: 0.72 });
-
-    for (let i = 0; i < foliageSegs; i++) {
-      const j = (i + 1) % foliageSegs;
-
-      addEdge(a[i], b[i], {
+    for (let lon = 0; lon < lonSegs; lon += 2) {
+      addEdge(pole, rings[Math.floor(rings.length * 0.45)][lon], {
         structure: true,
-        alpha: rand(0.50, 0.80)
-      });
-      addEdge(a[i], b[j], {
-        structure: i % 3 === 0,
-        alpha: rand(0.32, 0.58)
-      });
-      addEdge(a._inner[i], b._inner[i], {
-        alpha: rand(0.30, 0.56)
-      });
-      addEdge(a._inner[i], b[i], {
-        alpha: rand(0.22, 0.44)
+        alpha: rand(0.38, 0.64)
       });
     }
+
+    return { rings, pole, cx, cy, cz };
   }
 
-  // 3 ramitas laterales cortas que curvan suavemente hacia afuera
-  const sideBranches = [
-    { y: 0.42, ang: 0.55, reach: 0.62, droop: 0.06 },
-    { y: 0.68, ang: 2.35, reach: 0.58, droop: 0.04 },
-    { y: 0.88, ang: 4.10, reach: 0.48, droop: 0.02 }
+  const lowerBubble = buildBubble(
+    0.06, 0.62, 0.02,
+    1.02, 0.78, 0.94,
+    "canopy",
+    8, 13
+  );
+
+  const upperBubble = buildBubble(
+    0.14, 1.22, -0.04,
+    0.68, 0.58, 0.62,
+    "canopy",
+    6, 11
+  );
+
+  addEdge(lowerBubble.pole, upperBubble.pole, { structure: true, alpha: 0.74 });
+
+  for (let i = 0; i < lowerBubble.rings[lowerBubble.rings.length - 1].length; i += 2) {
+    const a = lowerBubble.rings[lowerBubble.rings.length - 1][i];
+    const b = upperBubble.rings[1][Math.floor(i * upperBubble.rings[1].length / lowerBubble.rings[lowerBubble.rings.length - 1].length)];
+    addEdge(a, b, { structure: i % 4 === 0, alpha: rand(0.36, 0.62) });
+  }
+
+  // ============================================================
+  // RAMITAS CURVAS — 3 arcos juguetones hacia la burbuja inferior
+  // ============================================================
+  const branchArcs = [
+    { y0: 0.02, ang: 0.72, bulge: 0.38, reach: 0.88 },
+    { y0: 0.04, ang: 2.55, bulge: 0.32, reach: 0.82 },
+    { y0: 0.06, ang: 4.35, bulge: 0.28, reach: 0.74 }
   ];
 
-  for (const br of sideBranches) {
-    const segs = 3;
-    let prev = trunkRings[trunkIndexAtY(br.y)][Math.floor(br.ang * trunkSegs / (Math.PI * 2)) % trunkSegs];
+  const trunkTopRing = trunkRings[trunkRings.length - 1];
+
+  for (const arc of branchArcs) {
+    const startIdx = Math.floor(arc.ang * trunkSegs / (Math.PI * 2)) % trunkSegs;
+    let prev = trunkTopRing[startIdx];
+    const segs = 4;
 
     for (let s = 1; s <= segs; s++) {
       const t = s / segs;
-      const curve = Math.sin(t * Math.PI * 0.5) * 0.18;
+      const curve = Math.sin(t * Math.PI) * arc.bulge;
+      const r = arc.reach * t;
+      const y = lerp(arc.y0, lowerBubble.cy - 0.12, t * t);
+
       const id = addVertex(
         v3(
-          Math.cos(br.ang + curve) * br.reach * t,
-          br.y - br.droop * t * t + gauss() * 0.005,
-          Math.sin(br.ang + curve) * br.reach * t
+          trunkLeanX + Math.cos(arc.ang + curve) * r,
+          y + gauss() * 0.005,
+          Math.sin(arc.ang + curve) * r * 0.92
         ),
         s < 2 ? "branches" : "canopy",
         {
           depthAmp: rand(0.001, 0.004),
-          swayAmp: rand(0.005, 0.012),
-          visibleNode: rnd() < 0.44
+          swayAmp: rand(0.006, 0.013),
+          visibleNode: rnd() < 0.42
         }
       );
 
       addEdge(prev, id, {
         structure: s === 1 || s === segs,
-        alpha: rand(0.42, 0.72)
+        alpha: rand(0.40, 0.70)
       });
+
+      if (s === segs) {
+        const target = lowerBubble.rings[Math.floor(lowerBubble.rings.length * 0.55)][
+          Math.floor(arc.ang * lowerBubble.rings[0].length / (Math.PI * 2)) % lowerBubble.rings[0].length
+        ];
+        addEdge(id, target, { structure: true, alpha: 0.68 });
+      }
+
       prev = id;
     }
   }
 
-  // Relleno volumétrico entre capas (domo hinchado)
-  for (let i = 0; i < 36; i++) {
-    const t = rand(0.06, 0.94);
-    const y = lerp(0.16, 1.72, t);
-    const domeT = clamp((y - 0.16) / (1.72 - 0.16), 0, 1);
-    const maxR = 1.24 * Math.sin(domeT * Math.PI) * (0.88 + 0.12 * Math.cos(domeT * Math.PI * 0.5));
-    const a = rand(0, Math.PI * 2);
-    const rr = rand(0.04, maxR * 0.90);
+  addEdge(core[core.length - 1], lowerBubble.pole, { structure: true, alpha: 0.76 });
+  addEdge(trunkTopRing[0], lowerBubble.pole, { structure: true, alpha: 0.70 });
+
+  // Relleno suave dentro de las burbujas
+  for (let i = 0; i < 28; i++) {
+    const useUpper = rnd() < 0.38;
+    const bubble = useUpper ? upperBubble : lowerBubble;
+    const bx = bubble.cx;
+    const by = bubble.cy;
+    const brx = useUpper ? 0.68 : 1.02;
+    const bry = useUpper ? 0.58 : 0.78;
+    const brz = useUpper ? 0.62 : 0.94;
+
+    const u = rand(0, Math.PI * 2);
+    const v = Math.acos(lerp(1, -1, rnd()));
+    const puff = 0.55 + rnd() * 0.38;
 
     const id = addVertex(
       v3(
-        Math.cos(a) * rr,
-        y + gauss() * 0.014,
-        Math.sin(a) * rr
+        bx + Math.sin(v) * Math.cos(u) * brx * puff,
+        by + Math.cos(v) * bry * puff,
+        bubble.cz + Math.sin(v) * Math.sin(u) * brz * puff
       ),
-      t < 0.55 ? "branches" : "canopy",
-      {
-        depthAmp: rand(0.001, 0.005),
-        visibleNode: rnd() < 0.48
-      }
+      "canopy",
+      { depthAmp: rand(0.001, 0.005), visibleNode: rnd() < 0.46 }
     );
 
-    const nearLv = Math.min(
-      foliageRings.length - 1,
-      Math.floor(t * foliageRings.length)
-    );
-    addEdge(
-      id,
-      foliageRings[nearLv][Math.floor(rand(0, foliageSegs))],
-      { alpha: rand(0.24, 0.48) }
-    );
-    addEdge(
-      id,
-      trunkRings[trunkIndexAtY(y)][Math.floor(rand(0, trunkSegs))],
-      { alpha: rand(0.18, 0.40) }
-    );
+    const ring = bubble.rings[Math.floor(rand(2, bubble.rings.length - 2))];
+    addEdge(id, ring[Math.floor(rand(0, ring.length))], { alpha: rand(0.22, 0.44) });
+    addEdge(id, bubble.pole, { alpha: rand(0.18, 0.36) });
   }
 
-  // Tronco → base de copa (sin espina puntiaguda)
-  addEdge(
-    core[core.length - 1],
-    foliageCenters[0],
-    { structure: true, alpha: 0.78 }
-  );
-  addEdge(
-    trunkRings[trunkRings.length - 1][0],
-    foliageCenters[0],
-    { structure: true, alpha: 0.72 }
-  );
-
   // ============================================================
-  // PROGRESO DE FORMACIÓN
+  // PROGRESO DE FORMACIÓN / DISPERSIÓN
   // ============================================================
   function buildProgress(v, cycleState) {
     if (cycleState.phase === "hold") return 1;
@@ -781,9 +707,6 @@
     return smoothstep(clamp((f - 0.44) / 0.46, 0, 1));
   }
 
-  // ============================================================
-  // PESTAÑEO
-  // ============================================================
   function scheduleNextBlink(v, t) {
     v.nextBlink = t + rand(CFG.blinkMinPause, CFG.blinkMaxPause);
   }
@@ -836,18 +759,15 @@
     }
   }
 
-  // ============================================================
-  // MOVIMIENTO VIVO — balanceo suave en hold
-  // ============================================================
   function liveOffset(v, cycleState) {
     if (cycleState.phase !== "hold") return v3(0, 0, 0);
 
     const tt = cycleState.local * 0.001;
     const h = v.height;
 
-    const swayX = Math.sin(tt * 0.42 + v.swayPhase) * v.swayAmp * (0.4 + h * 0.9);
-    const swayZ = Math.cos(tt * 0.36 + v.swayPhase * 1.17) * v.swayAmp * (0.4 + h * 0.9);
-    const swayY = Math.sin(tt * 0.58 + v.swayPhase * 0.62) * v.swayAmp * 0.18;
+    const swayX = Math.sin(tt * 0.40 + v.swayPhase) * v.swayAmp * (0.35 + h * 0.95);
+    const swayZ = Math.cos(tt * 0.34 + v.swayPhase * 1.13) * v.swayAmp * (0.35 + h * 0.95);
+    const swayY = Math.sin(tt * 0.55 + v.swayPhase * 0.58) * v.swayAmp * 0.16;
 
     return v3(swayX, swayY, swayZ);
   }
@@ -856,14 +776,14 @@
     let speedFactor = 1;
 
     if (cycleState.phase === "build") {
-      speedFactor = lerp(0.18, 0.68, smoothstep(cycleState.phaseT));
+      speedFactor = lerp(0.16, 0.65, smoothstep(cycleState.phaseT));
     } else if (cycleState.phase === "disperse") {
-      speedFactor = lerp(0.68, 0.16, smoothstep(cycleState.phaseT));
+      speedFactor = lerp(0.65, 0.14, smoothstep(cycleState.phaseT));
     }
 
-    const ax = -0.28 + Math.sin(t * 0.000095) * 0.030;
-    const ay = 0.38 + t * CFG.globalRotationSpeed * speedFactor;
-    const az = 0.05 + Math.sin(t * 0.00007) * 0.018;
+    const ax = -0.24 + Math.sin(t * 0.00009) * 0.028;
+    const ay = 0.36 + t * CFG.globalRotationSpeed * speedFactor;
+    const az = 0.04 + Math.sin(t * 0.000065) * 0.016;
 
     return matMul(
       rotZ(az),
