@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Árbol 3D — estética caritas — construcción raíces a copa</title>
+<style>
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0E2B22;
+  }
+
+  body {
+    display: grid;
+    place-items: center;
+  }
+
+  canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+  }
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+
+<script>
+(() => {
+  "use strict";
+
+  const CFG = {
+    seed: 2026082715,
+
+    bg: "#0E2B22",
+
+    buildDuration: 5200,
+    holdDuration: 19000,
+    disperseDuration: 3400,
+
+    cameraZ: 8.4,
+    focal: 6.1,
+    objectScale: 1.0,
+    globalRotationSpeed: 0.000095,
+
+    innerLine: "#2C7526",
+    structureLine: "#4FB62E",
+    frontNode: "#EFF6EA",
+    backNode: "#7F998A",
+
+    innerLineWidth: 0.8,
+    structureLineWidth: 1.0,
+
+    visibleNodeRatio: 0.30,
+
+    tinyRatio: 0.42,
+    smallRatio: 0.30,
+    mediumRatio: 0.20,
+    largeRatio: 0.08,
+
+    tinyRadius: [0.75, 1.25],
+    smallRadius: [1.4, 2.05],
+    mediumRadius: [2.6, 3.55],
+    largeRadius: [4.4, 5.5],
+
+    blinkMinPause: 950,
+    blinkMaxPause: 5200,
+    blinkCloseMin: 80,
+    blinkCloseMax: 145,
+    blinkOpenMin: 280,
+    blinkOpenMax: 560,
+    blinkMinimumScale: 0.04,
+
+    scatterMin: 0.50,
+    scatterMax: 1.75,
+
+    treeBaseY: -1.65,
+    treeTopY: 2.35
+  };
+
+  CFG.cycleDuration =
+    CFG.buildDuration +
+    CFG.holdDuration +
+    CFG.disperseDuration;
+
+  const canvas = document.getElementById("scene");
+  const ctx = canvas.getContext("2d", { alpha: false });
+
+  let W = 1, H = 1, DPR = 1;
+
+  function mulberry32(seed) {
+    return function() {
+      let t = seed += 0x6D2B79F5;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  const rnd = mulberry32(CFG.seed);
+  const rand = (a=0,b=1) => a + (b-a)*rnd();
+
+  function gauss() {
+    return (rnd()+rnd()+rnd()+rnd()+rnd()+rnd()-3)/1.45;
+  }
+
+  const clamp = (v,a,b) => Math.max(a, Math.min(b,v));
+  const lerp = (a,b,t) => a + (b-a)*t;
+
+  function smoothstep(t) {
+    t = clamp(t,0,1);
+    return t*t*(3-2*t);
+  }
+
+  function easeOutCubic(t) {
+    t = clamp(t,0,1);
+    return 1 - Math.pow(1-t,3);
+  }
+
+  function easeInCubic(t) {
+    t = clamp(t,0,1);
+    return t*t*t;
+  }
+
+  function hexToRgb(hex) {
+    const v = hex.replace("#","");
+    return [
+      parseInt(v.slice(0,2),16),
+      parseInt(v.slice(2,4),16),
+      parseInt(v.slice(4,6),16)
+    ];
+  }
+
+  const RGB = {
+    innerLine: hexToRgb(CFG.innerLine),
+    structureLine: hexToRgb(CFG.structureLine),
+    frontNode: hexToRgb(CFG.frontNode),
+    backNode: hexToRgb(CFG.backNode)
+  };
+
+  function rgba(rgb,a) {
+    return `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`;
+  }
+
+  function mixRGB(a,b,t) {
+    return [
+      Math.round(lerp(a[0],b[0],t)),
+      Math.round(lerp(a[1],b[1],t)),
+      Math.round(lerp(a[2],b[2],t))
+    ];
+  }
+
+  function v3(x,y,z) {
+    return {x,y,z};
+  }
+
+  function addV(a,b) {
+    return v3(a.x+b.x,a.y+b.y,a.z+b.z);
+  }
+
+  function scaleV(v,s) {
+    return v3(v.x*s,v.y*s,v.z*s);
+  }
+
+  function lengthV(v) {
+    return Math.hypot(v.x,v.y,v.z);
+  }
+
+  function normalizeV(v) {
+    const l = lengthV(v) || 1;
+    return scaleV(v,1/l);
+  }
+
+  function rotX(a) {
+    const c=Math.cos(a),s=Math.sin(a);
+    return [[1,0,0],[0,c,-s],[0,s,c]];
+  }
+
+  function rotY(a) {
+    const c=Math.cos(a),s=Math.sin(a);
+    return [[c,0,s],[0,1,0],[-s,0,c]];
+  }
+
+  function rotZ(a) {
+    const c=Math.cos(a),s=Math.sin(a);
+    return [[c,-s,0],[s,c,0],[0,0,1]];
+  }
+
+  function matMul(A,B) {
+    const R = [[0,0,0],[0,0,0],[0,0,0]];
+    for (let r=0;r<3;r++) {
+      for (let c=0;c<3;c++) {
+        R[r][c] =
+          A[r][0]*B[0][c] +
+          A[r][1]*B[1][c] +
+          A[r][2]*B[2][c];
+      }
+    }
+    return R;
+  }
+
+  function matVec(M,v) {
+    return v3(
+      M[0][0]*v.x + M[0][1]*v.y + M[0][2]*v.z,
+      M[1][0]*v.x + M[1][1]*v.y + M[1][2]*v.z,
+      M[2][0]*v.x + M[2][1]*v.y + M[2][2]*v.z
+    );
+  }
+
+  function getCycleState(t) {
+    const local = t % CFG.cycleDuration;
+
+    if (local < CFG.buildDuration) {
+      return { phase:"build", local, phaseT:local/CFG.buildDuration };
+    }
+
+    const holdStart = CFG.buildDuration;
+    const holdEnd = holdStart + CFG.holdDuration;
+
+    if (local < holdEnd) {
+      return { phase:"hold", local:local-holdStart, phaseT:(local-holdStart)/CFG.holdDuration };
+    }
+
+    return { phase:"disperse", local:local-holdEnd, phaseT:(local-holdEnd)/CFG.disperseDuration };
+  }
+
+  const vertices = [];
+  const edges = [];
+
+  function heightProgress(y) {
+    return clamp((y - CFG.treeBaseY) / (CFG.treeTopY - CFG.treeBaseY), 0, 1);
+  }
+
+  function chooseSizeClass() {
+    const r = rnd();
+    if (r < CFG.tinyRatio) return "tiny";
+    if (r < CFG.tinyRatio + CFG.smallRatio) return "small";
+    if (r < CFG.tinyRatio + CFG.smallRatio + CFG.mediumRatio) return "medium";
+    return "large";
+  }
+
+  function radiusForClass(c) {
+    if (c === "tiny") return rand(...CFG.tinyRadius);
+    if (c === "small") return rand(...CFG.smallRadius);
+    if (c === "medium") return rand(...CFG.mediumRadius);
+    return rand(...CFG.largeRadius);
+  }
+
+  function stageTiming(group, y) {
+    const h = heightProgress(y);
+
+    // Construcción estrictamente de abajo hacia arriba:
+    // raíces → tronco → ramas → copa.
+    // La altura (h) es el factor principal; cada grupo suma un pequeño offset.
+    let groupOffset = 0;
+    if (group === "roots") groupOffset = 0;
+    else if (group === "trunk") groupOffset = 180;
+    else if (group === "branches") groupOffset = 420;
+    else groupOffset = 680;
+
+    const inBase = groupOffset + h * 3400 + rand(0, 280);
+
+    return {
+      inBase,
+      inSpread: group === "roots" ? 480 : 620,
+      outBase: (1 - h) * 2400 + groupOffset * 0.35 + rand(0, 420),
+      outSpread: 680
+    };
+  }
+
+  function randomScatter(group) {
+    let dir = v3(gauss(), gauss(), gauss());
+    if (lengthV(dir) < 0.15) dir = v3(0.4, -0.8, 0.5);
+    dir = normalizeV(dir);
+
+    let min = CFG.scatterMin;
+    let max = CFG.scatterMax;
+
+    if (group === "roots") {
+      min *= 0.55;
+      max *= 0.75;
+    } else if (group === "trunk") {
+      min *= 0.65;
+      max *= 0.85;
+    }
+
+    return scaleV(dir, rand(min, max));
+  }
+
+  function addVertex(pos, group, meta={}) {
+    const visibleNode =
+      meta.visibleNode !== undefined
+        ? meta.visibleNode
+        : rnd() < CFG.visibleNodeRatio;
+
+    const sizeClass = visibleNode ? chooseSizeClass() : null;
+    const baseRadius = visibleNode ? radiusForClass(sizeClass) : 0;
+    const timing = stageTiming(group, pos.y);
+
+    vertices.push({
+      base: pos,
+      group,
+      height: heightProgress(pos.y),
+
+      visibleNode,
+      sizeClass,
+      baseRadius,
+      targetRadius: baseRadius,
+
+      scatter: randomScatter(group),
+
+      buildDelay: timing.inBase + rand(0, timing.inSpread),
+      buildTravel: rand(900, 1650),
+
+      outDelay: timing.outBase + rand(0, timing.outSpread),
+      outTravel: rand(900, 1500),
+
+      depthPhase: rand(0, Math.PI * 2),
+      depthAmp: meta.depthAmp ?? rand(0.0015, 0.008),
+
+      swayAmp: meta.swayAmp ?? rand(0.004, 0.018),
+      swayPhase: meta.swayPhase ?? rand(0, Math.PI * 2),
+
+      blinkState: "idle",
+      blinkScale: 1,
+      blinkStart: 0,
+      blinkDuration: 0,
+      nextBlink: rand(300, CFG.blinkMaxPause)
+    });
+
+    return vertices.length - 1;
+  }
+
+  function addEdge(a, b, meta={}) {
+    if (a === b) return;
+    edges.push({
+      a, b,
+      structure: !!meta.structure,
+      alpha: meta.alpha ?? rand(0.30, 0.68)
+    });
+  }
+
+  // ============================================================
+  // RAÍCES
+  // ============================================================
+  const rootCount = 7;
+
+  for (let r = 0; r < rootCount; r++) {
+    const baseAngle = (r / rootCount) * Math.PI * 2 + gauss() * 0.12;
+    const segments = 6 + Math.floor(rand(0, 3));
+    const chain = [];
+
+    for (let s = 0; s <= segments; s++) {
+      const t = s / segments;
+      const spread = lerp(0.08, 0.72 + rand(0, 0.28), t);
+      const dip = lerp(0, 0.55 + rand(0, 0.22), t * t);
+      const twist = Math.sin(t * Math.PI * 1.4 + r * 0.7) * 0.12;
+
+      chain.push(addVertex(
+        v3(
+          Math.cos(baseAngle + twist) * spread,
+          CFG.treeBaseY - dip + gauss() * 0.015,
+          Math.sin(baseAngle + twist) * spread
+        ),
+        "roots",
+        { depthAmp: rand(0.001, 0.004), swayAmp: rand(0.006, 0.014) }
+      ));
+    }
+
+    for (let s = 0; s < chain.length - 1; s++) {
+      addEdge(chain[s], chain[s + 1], {
+        structure: s === 0 || s >= chain.length - 2,
+        alpha: rand(0.42, 0.78)
+      });
+    }
+
+    if (chain.length > 3 && rnd() > 0.35) {
+      const forkAt = Math.floor(chain.length * rand(0.45, 0.72));
+      const forkLen = 3 + Math.floor(rand(0, 2));
+      let prev = chain[forkAt];
+
+      for (let f = 1; f <= forkLen; f++) {
+        const ft = f / forkLen;
+        const ang = baseAngle + (rnd() < 0.5 ? -1 : 1) * (0.35 + ft * 0.45);
+        const id = addVertex(
+          v3(
+            Math.cos(ang) * (0.35 + ft * 0.42),
+            CFG.treeBaseY - 0.18 - ft * 0.28 + gauss() * 0.012,
+            Math.sin(ang) * (0.35 + ft * 0.42)
+          ),
+          "roots",
+          { depthAmp: 0.001, swayAmp: 0.005 }
+        );
+
+        addEdge(prev, id, { alpha: rand(0.28, 0.52) });
+        prev = id;
+      }
+    }
+  }
+
+  // ============================================================
+  // TRONCO
+  // ============================================================
+  const trunkRings = [];
+  const trunkSegs = 10;
+  const trunkLevels = 14;
+
+  for (let lv = 0; lv < trunkLevels; lv++) {
+    const t = lv / (trunkLevels - 1);
+    const y = lerp(-0.35, 1.55, t);
+    const radius = lerp(0.22, 0.10, Math.pow(t, 0.82)) * (1 + gauss() * 0.018);
+    const ring = [];
+
+    for (let i = 0; i < trunkSegs; i++) {
+      const ang = (i / trunkSegs) * Math.PI * 2 + gauss() * 0.010;
+      ring.push(addVertex(
+        v3(
+          Math.cos(ang) * radius,
+          y + gauss() * 0.012,
+          Math.sin(ang) * radius
+        ),
+        "trunk",
+        { depthAmp: rand(0.001, 0.005), swayAmp: rand(0.003, 0.010) }
+      ));
+    }
+
+    trunkRings.push(ring);
+  }
+
+  for (let lv = 0; lv < trunkRings.length - 1; lv++) {
+    const a = trunkRings[lv];
+    const b = trunkRings[lv + 1];
+
+    for (let i = 0; i < a.length; i++) {
+      const j = (i + 1) % a.length;
+
+      addEdge(a[i], b[i], {
+        structure: i % 2 === 0,
+        alpha: rand(0.38, 0.66)
+      });
+
+      addEdge(a[i], a[j], {
+        alpha: rand(0.24, 0.50)
+      });
+
+      if (rnd() > 0.22) {
+        addEdge(a[i], b[j], { alpha: rand(0.22, 0.44) });
+      }
+    }
+  }
+
+  // Núcleo interno del tronco
+  const core = [];
+  for (let i = 0; i < 9; i++) {
+    const t = i / 8;
+    core.push(addVertex(
+      v3(gauss() * 0.018, lerp(-0.28, 1.48, t), gauss() * 0.018),
+      "trunk",
+      { depthAmp: 0.001, visibleNode: rnd() < 0.38 }
+    ));
+  }
+
+  for (let i = 0; i < core.length - 1; i++) {
+    addEdge(core[i], core[i + 1], { structure: true, alpha: 0.72 });
+  }
+
+  // ============================================================
+  // RAMAS
+  // ============================================================
+  const branchSpecs = [
+    { y: 0.55, angle: 0.35, len: 0.95, elev: 0.42 },
+    { y: 0.72, angle: 2.10, len: 0.88, elev: 0.38 },
+    { y: 0.95, angle: 4.05, len: 1.05, elev: 0.48 },
+    { y: 1.08, angle: 5.40, len: 0.92, elev: 0.44 },
+    { y: 1.22, angle: 1.05, len: 0.82, elev: 0.36 },
+    { y: 1.35, angle: 3.55, len: 0.78, elev: 0.34 },
+    { y: 1.48, angle: 0.95, len: 0.68, elev: 0.30 },
+    { y: 1.58, angle: 2.85, len: 0.62, elev: 0.28 }
+  ];
+
+  function buildBranch(startY, angle, length, elev, depth = 0) {
+    const segments = 5 + Math.floor(rand(0, 2));
+    const chain = [];
+    let prev = null;
+
+    for (let s = 0; s <= segments; s++) {
+      const t = s / segments;
+      const reach = length * t;
+      const rise = elev * t * (1 - t * 0.35);
+      const wobble = Math.sin(t * Math.PI * 1.6) * 0.06 * (1 - t * 0.4);
+
+      const id = addVertex(
+        v3(
+          Math.cos(angle + wobble) * (0.12 + reach),
+          startY + rise + gauss() * 0.010,
+          Math.sin(angle + wobble) * (0.12 + reach)
+        ),
+        "branches",
+        { depthAmp: rand(0.001, 0.006), swayAmp: rand(0.008, 0.020) }
+      );
+
+      chain.push(id);
+
+      if (prev !== null) {
+        addEdge(prev, id, {
+          structure: s <= 1 || s >= segments - 1,
+          alpha: rand(0.36, 0.72)
+        });
+      }
+
+      prev = id;
+    }
+
+    if (depth < 1 && rnd() > 0.30) {
+      const forkAt = Math.floor(chain.length * rand(0.55, 0.82));
+      const end = vertices[chain[forkAt]];
+      buildBranch(
+        end.base.y,
+        angle + (rnd() < 0.5 ? -1 : 1) * rand(0.45, 0.85),
+        length * rand(0.42, 0.62),
+        elev * rand(0.55, 0.75),
+        depth + 1
+      );
+    }
+
+    return chain;
+  }
+
+  for (const spec of branchSpecs) {
+    const trunkIdx = Math.round(
+      clamp((spec.y + 0.35) / 1.9, 0, 1) * (trunkRings.length - 1)
+    );
+    const attach = trunkRings[trunkIdx][Math.floor(rand(0, trunkSegs))];
+    const chain = buildBranch(spec.y, spec.angle, spec.len, spec.elev);
+    addEdge(attach, chain[0], { structure: true, alpha: 0.78 });
+  }
+
+  // ============================================================
+  // COPA
+  // ============================================================
+  const canopyCenterY = 2.05;
+  const canopyLayers = 8;
+  const canopySegs = 16;
+
+  const canopyRings = [];
+
+  for (let lv = 0; lv < canopyLayers; lv++) {
+    const t = lv / (canopyLayers - 1);
+    const y = lerp(1.62, 2.38, t);
+    const radius = Math.sin(t * Math.PI) * (0.95 + rand(0, 0.12)) * (1 - t * 0.18);
+    const ring = [];
+
+    for (let i = 0; i < canopySegs; i++) {
+      const ang = (i / canopySegs) * Math.PI * 2 + gauss() * 0.018;
+      const puff = 1 + Math.sin(ang * 3 + lv * 0.8) * 0.08;
+
+      ring.push(addVertex(
+        v3(
+          Math.cos(ang) * radius * puff,
+          y + gauss() * 0.018,
+          Math.sin(ang) * radius * puff
+        ),
+        "canopy",
+        { depthAmp: rand(0.002, 0.009), swayAmp: rand(0.010, 0.024) }
+      ));
+    }
+
+    canopyRings.push(ring);
+  }
+
+  const canopyPole = addVertex(
+    v3(0, canopyCenterY + 0.18, 0),
+    "canopy",
+    { depthAmp: 0.001, visibleNode: rnd() < 0.55 }
+  );
+
+  for (let lv = 0; lv < canopyRings.length - 1; lv++) {
+    const a = canopyRings[lv];
+    const b = canopyRings[lv + 1];
+
+    for (let i = 0; i < a.length; i++) {
+      const j = (i + 1) % a.length;
+      const k = (i + 2) % a.length;
+
+      addEdge(a[i], b[i], {
+        structure: i % 3 === 0,
+        alpha: rand(0.34, 0.62)
+      });
+
+      addEdge(a[i], a[j], {
+        structure: lv === 0 || lv === canopyRings.length - 2,
+        alpha: rand(0.28, 0.54)
+      });
+
+      if (rnd() > 0.18) {
+        addEdge(a[i], b[j], { alpha: rand(0.20, 0.42) });
+      }
+
+      if (rnd() > 0.72 && lv > 1) {
+        addEdge(a[i], b[k], { alpha: rand(0.16, 0.34) });
+      }
+    }
+  }
+
+  for (let i = 0; i < canopyRings[canopyRings.length - 1].length; i++) {
+    if (i % 2 === 0) {
+      addEdge(canopyRings[canopyRings.length - 1][i], canopyPole, {
+        alpha: rand(0.24, 0.48)
+      });
+    }
+  }
+
+  // Conectar copa al tronco
+  const trunkTop = trunkRings[trunkRings.length - 1];
+  for (let i = 0; i < 4; i++) {
+    addEdge(trunkTop[i * 2], canopyRings[0][i * 4], {
+      structure: true,
+      alpha: rand(0.52, 0.76)
+    });
+  }
+
+  // Volumen interior de la copa
+  for (let i = 0; i < 18; i++) {
+    const a = rand(0, Math.PI * 2);
+    const rr = rand(0.12, 0.62);
+    const yy = lerp(1.72, 2.28, rand(0, 1));
+
+    const id = addVertex(
+      v3(
+        Math.cos(a) * rr,
+        yy + gauss() * 0.02,
+        Math.sin(a) * rr
+      ),
+      "canopy",
+      { depthAmp: rand(0.002, 0.007), visibleNode: rnd() < 0.42 }
+    );
+
+    const near = canopyRings[Math.floor(rand(2, canopyRings.length))];
+    addEdge(id, near[Math.floor(rand(0, near.length))], { alpha: rand(0.18, 0.38) });
+  }
+
+  // ============================================================
+  // PROGRESO DE FORMACIÓN
+  // ============================================================
+  function buildProgress(v, cycleState) {
+    if (cycleState.phase === "hold") return 1;
+    if (cycleState.phase === "disperse") return 1;
+
+    const u = clamp(
+      (cycleState.local - v.buildDelay) / v.buildTravel,
+      0, 1
+    );
+
+    return easeOutCubic(u);
+  }
+
+  function outProgress(v, cycleState) {
+    if (cycleState.phase !== "disperse") return 0;
+
+    const u = clamp(
+      (cycleState.local - v.outDelay) / v.outTravel,
+      0, 1
+    );
+
+    return easeInCubic(u);
+  }
+
+  function formation(v, cycleState) {
+    if (cycleState.phase === "build") return buildProgress(v, cycleState);
+    if (cycleState.phase === "hold") return 1;
+    return 1 - outProgress(v, cycleState);
+  }
+
+  function vertexVisibility(v, cycleState) {
+    if (cycleState.phase === "build") {
+      const f = buildProgress(v, cycleState);
+      return lerp(0.18, 1, smoothstep(f));
+    }
+    if (cycleState.phase === "hold") return 1;
+    const o = outProgress(v, cycleState);
+    return lerp(1, 0.06, smoothstep(o));
+  }
+
+  function edgeVisibility(a, b, cycleState) {
+    const f = Math.min(
+      formation(a, cycleState),
+      formation(b, cycleState)
+    );
+    return smoothstep(clamp((f - 0.44) / 0.46, 0, 1));
+  }
+
+  // ============================================================
+  // PESTAÑEO
+  // ============================================================
+  function scheduleNextBlink(v, t) {
+    v.nextBlink = t + rand(CFG.blinkMinPause, CFG.blinkMaxPause);
+  }
+
+  function chooseNewSize(v) {
+    v.sizeClass = chooseSizeClass();
+    v.targetRadius = radiusForClass(v.sizeClass);
+  }
+
+  function updateBlink(v, t, cycleState) {
+    if (!v.visibleNode) return;
+
+    v.baseRadius += (v.targetRadius - v.baseRadius) * 0.022;
+
+    if (cycleState.phase !== "hold") {
+      v.blinkScale = 1;
+      return;
+    }
+
+    if (v.blinkState === "idle") {
+      v.blinkScale = 1;
+      if (t >= v.nextBlink) {
+        v.blinkState = "closing";
+        v.blinkStart = t;
+        v.blinkDuration = rand(CFG.blinkCloseMin, CFG.blinkCloseMax);
+      }
+      return;
+    }
+
+    if (v.blinkState === "closing") {
+      const u = clamp((t - v.blinkStart) / v.blinkDuration, 0, 1);
+      v.blinkScale = lerp(1, CFG.blinkMinimumScale, smoothstep(u));
+
+      if (u >= 1) {
+        chooseNewSize(v);
+        v.blinkState = "opening";
+        v.blinkStart = t;
+        v.blinkDuration = rand(CFG.blinkOpenMin, CFG.blinkOpenMax);
+      }
+      return;
+    }
+
+    const u = clamp((t - v.blinkStart) / v.blinkDuration, 0, 1);
+    v.blinkScale = lerp(CFG.blinkMinimumScale, 1, easeOutCubic(u));
+
+    if (u >= 1) {
+      v.blinkState = "idle";
+      v.blinkScale = 1;
+      scheduleNextBlink(v, t);
+    }
+  }
+
+  // ============================================================
+  // MOVIMIENTO VIVO — balanceo suave en hold
+  // ============================================================
+  function liveOffset(v, cycleState) {
+    if (cycleState.phase !== "hold") return v3(0, 0, 0);
+
+    const tt = cycleState.local * 0.001;
+    const h = v.height;
+
+    const swayX = Math.sin(tt * 0.42 + v.swayPhase) * v.swayAmp * (0.4 + h * 0.9);
+    const swayZ = Math.cos(tt * 0.36 + v.swayPhase * 1.17) * v.swayAmp * (0.4 + h * 0.9);
+    const swayY = Math.sin(tt * 0.58 + v.swayPhase * 0.62) * v.swayAmp * 0.18;
+
+    return v3(swayX, swayY, swayZ);
+  }
+
+  function globalRotation(t, cycleState) {
+    let speedFactor = 1;
+
+    if (cycleState.phase === "build") {
+      speedFactor = lerp(0.18, 0.68, smoothstep(cycleState.phaseT));
+    } else if (cycleState.phase === "disperse") {
+      speedFactor = lerp(0.68, 0.16, smoothstep(cycleState.phaseT));
+    }
+
+    const ax = -0.52 + Math.sin(t * 0.000095) * 0.040;
+    const ay = 0.38 + t * CFG.globalRotationSpeed * speedFactor;
+    const az = 0.08 + Math.sin(t * 0.00007) * 0.022;
+
+    return matMul(
+      rotZ(az),
+      matMul(rotX(ax), rotY(ay))
+    );
+  }
+
+  function project(p) {
+    const zCam = CFG.cameraZ - p.z;
+    const perspective = CFG.focal / zCam;
+    const S = Math.min(W, H) * 0.205 * CFG.objectScale;
+
+    return {
+      x: W * 0.50 + p.x * S * perspective,
+      y: H * 0.50 + p.y * S * perspective,
+      z: p.z,
+      perspective
+    };
+  }
+
+  function buildFrame(t, cycleState) {
+    const G = globalRotation(t, cycleState);
+    const transformed = new Array(vertices.length);
+    let minZ = Infinity;
+    let maxZ = -Infinity;
+
+    for (let i = 0; i < vertices.length; i++) {
+      const v = vertices[i];
+
+      const breathe =
+        Math.sin(t * 0.00034 + v.depthPhase) * v.depthAmp +
+        Math.sin(t * 0.00013 + v.depthPhase * 1.31) * v.depthAmp * 0.20;
+
+      const live = liveOffset(v, cycleState);
+
+      const finalPos = v3(
+        v.base.x + live.x,
+        v.base.y + live.y,
+        v.base.z + breathe + live.z
+      );
+
+      const scattered = addV(finalPos, v.scatter);
+      const f = formation(v, cycleState);
+
+      const localNow = v3(
+        lerp(scattered.x, finalPos.x, f),
+        lerp(scattered.y, finalPos.y, f),
+        lerp(scattered.z, finalPos.z, f)
+      );
+
+      const world = matVec(G, localNow);
+      const screen = project(world);
+
+      transformed[i] = {
+        world,
+        screen,
+        formation: f,
+        visibility: vertexVisibility(v, cycleState)
+      };
+
+      minZ = Math.min(minZ, world.z);
+      maxZ = Math.max(maxZ, world.z);
+    }
+
+    return { transformed, minZ, maxZ };
+  }
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.max(1, window.innerWidth);
+    H = Math.max(1, window.innerHeight);
+
+    canvas.width = Math.floor(W * DPR);
+    canvas.height = Math.floor(H * DPR);
+
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
+
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+
+  addEventListener("resize", resize, { passive: true });
+  resize();
+
+  function render(t) {
+    ctx.fillStyle = CFG.bg;
+    ctx.fillRect(0, 0, W, H);
+
+    const cycleState = getCycleState(t);
+    const frame = buildFrame(t, cycleState);
+    const minZ = frame.minZ;
+    const maxZ = frame.maxZ;
+
+    const edgeDraw = [];
+
+    for (const e of edges) {
+      const lv = edgeVisibility(
+        vertices[e.a],
+        vertices[e.b],
+        cycleState
+      );
+
+      if (lv <= 0.002) continue;
+
+      const a = frame.transformed[e.a];
+      const b = frame.transformed[e.b];
+
+      edgeDraw.push({
+        e,
+        a,
+        b,
+        alpha: e.alpha * lv,
+        z: (a.world.z + b.world.z) * 0.5
+      });
+    }
+
+    edgeDraw.sort((A, B) => A.z - B.z);
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    for (const item of edgeDraw) {
+      const depth = clamp((item.z - minZ) / (maxZ - minZ || 1), 0, 1);
+      const rgb = item.e.structure ? RGB.structureLine : RGB.innerLine;
+
+      const alpha =
+        lerp(
+          item.e.structure ? 0.24 : 0.14,
+          item.e.structure ? 0.84 : 0.54,
+          Math.pow(depth, 1.08)
+        ) * item.alpha;
+
+      ctx.beginPath();
+      ctx.moveTo(item.a.screen.x, item.a.screen.y);
+      ctx.lineTo(item.b.screen.x, item.b.screen.y);
+      ctx.strokeStyle = rgba(rgb, clamp(alpha, 0, 1));
+      ctx.lineWidth = item.e.structure
+        ? CFG.structureLineWidth
+        : CFG.innerLineWidth;
+      ctx.stroke();
+    }
+
+    const nodeDraw = [];
+
+    for (let i = 0; i < vertices.length; i++) {
+      const v = vertices[i];
+      if (!v.visibleNode) continue;
+
+      const tr = frame.transformed[i];
+      nodeDraw.push({ i, v, tr, z: tr.world.z });
+    }
+
+    nodeDraw.sort((A, B) => A.z - B.z);
+
+    for (const item of nodeDraw) {
+      const v = item.v;
+      updateBlink(v, t, cycleState);
+
+      const depth = clamp((item.z - minZ) / (maxZ - minZ || 1), 0, 1);
+      const color = mixRGB(RGB.backNode, RGB.frontNode, depth);
+
+      const alpha =
+        lerp(0.46, 0.97, Math.pow(depth, 1.06)) * item.tr.visibility;
+
+      const radius =
+        v.baseRadius *
+        v.blinkScale *
+        lerp(0.82, 1.08, depth) *
+        lerp(0.72, 1, item.tr.formation);
+
+      ctx.beginPath();
+      ctx.arc(
+        item.tr.screen.x,
+        item.tr.screen.y,
+        Math.max(0.04, radius),
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fillStyle = rgba(color, clamp(alpha, 0, 1));
+      ctx.fill();
+    }
+
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
+})();
+</script>
+</body>
+</html>
