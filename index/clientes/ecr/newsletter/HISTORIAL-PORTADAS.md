@@ -1,5 +1,13 @@
 # Historial de portadas Midjourney (solo fondo)
 
+## NL 1 sep — Invertir en talento (2026-08-27)
+
+- Artículo: **Invertir en talento antes de fin de año: una decisión estratégica**
+- Mundos: **I** · **C** · **K**
+- Archivo: [portadas-guardadas/NL1-sep-invertir-en-talento-prompts.md](./portadas-guardadas/NL1-sep-invertir-en-talento-prompts.md)
+
+---
+
 ## NL 1 ago — prompts Midjourney v5 (2026-07-21)
 
 - Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
