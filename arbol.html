@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Árbol 3D — burbuja tierna — construcción raíces a copa</title>
+<title>Árbol 3D — silueta clásica cute — raíces a copa</title>
 <style>
   html, body {
     margin: 0;
@@ -41,9 +41,9 @@
     holdDuration: 18200,
     disperseDuration: 3200,
 
-    cameraZ: 8.4,
-    focal: 6.0,
-    objectScale: 0.98,
+    cameraZ: 8.6,
+    focal: 6.1,
+    objectScale: 0.92,
     globalRotationSpeed: 0.000088,
 
     innerLine: "#2C7526",
@@ -77,8 +77,8 @@
     scatterMin: 0.62,
     scatterMax: 2.05,
 
-    treeBaseY: -1.05,
-    treeTopY: 1.62
+    treeBaseY: -1.55,
+    treeTopY: 1.95
   };
 
   CFG.cycleDuration =
@@ -341,34 +341,38 @@
   }
 
   // ============================================================
-  // TRONCO — cortito y regordete (estilo icono amigable)
+  // SILUETA CLÁSICA DE ÁRBOL (emoji 🌳)
+  // Tronco visible + ramas + una sola copa redonda con base plana
   // ============================================================
+
+  // --- TRONCO (cilindro claro, proporciones leíbles) ---
   const trunkRings = [];
-  const trunkSegs = 9;
-  const trunkLevels = 7;
-  const trunkStartY = -0.38;
-  const trunkEndY = 0.08;
-  const trunkLeanX = 0.04;
+  const trunkSegs = 8;
+  const trunkLevels = 12;
+  const trunkStartY = -1.15;
+  const trunkEndY = 0.42;
+  const trunkLeanX = 0.03;
 
   for (let lv = 0; lv < trunkLevels; lv++) {
     const t = lv / (trunkLevels - 1);
     const y = lerp(trunkStartY, trunkEndY, t);
-    const finalR = lerp(0.36, 0.24, Math.pow(t, 0.62)) * (1 + gauss() * 0.008);
+    // Más grueso abajo, se afina un poco hacia la copa
+    const finalR = lerp(0.22, 0.14, Math.pow(t, 0.75)) * (1 + gauss() * 0.010);
     const ring = [];
 
     for (let i = 0; i < trunkSegs; i++) {
-      const ang = (i / trunkSegs) * Math.PI * 2 + gauss() * 0.006;
+      const ang = (i / trunkSegs) * Math.PI * 2 + gauss() * 0.008;
       ring.push(addVertex(
         v3(
           trunkLeanX * t + Math.cos(ang) * finalR,
-          y + gauss() * 0.008,
+          y + gauss() * 0.010,
           Math.sin(ang) * finalR
         ),
         "trunk",
         {
           depthAmp: rand(0.001, 0.004),
-          swayAmp: rand(0.002, 0.008),
-          visibleNode: rnd() < 0.40
+          swayAmp: rand(0.002, 0.007),
+          visibleNode: rnd() < 0.42
         }
       ));
     }
@@ -383,278 +387,298 @@
     for (let i = 0; i < a.length; i++) {
       const j = (i + 1) % a.length;
 
-      addEdge(a[i], b[i], { structure: true, alpha: rand(0.52, 0.80) });
-      addEdge(a[i], a[j], { structure: i % 2 === 0, alpha: rand(0.32, 0.56) });
+      addEdge(a[i], b[i], { structure: true, alpha: rand(0.55, 0.84) });
+      addEdge(a[i], a[j], { structure: i % 2 === 0, alpha: rand(0.34, 0.58) });
       addEdge(a[i], b[j], { alpha: rand(0.26, 0.48) });
-
-      if (rnd() > 0.45) {
-        addEdge(a[j], b[i], { alpha: rand(0.20, 0.40) });
-      }
     }
   }
 
   const core = [];
-  for (let i = 0; i < 6; i++) {
-    const t = i / 5;
+  for (let i = 0; i < 10; i++) {
+    const t = i / 9;
     core.push(addVertex(
       v3(
         trunkLeanX * t + gauss() * 0.010,
-        lerp(-0.34, 0.12, t),
+        lerp(trunkStartY + 0.04, trunkEndY + 0.08, t),
         gauss() * 0.010
       ),
       "trunk",
-      { depthAmp: 0.001, visibleNode: rnd() < 0.46 }
+      { depthAmp: 0.001, visibleNode: rnd() < 0.50 }
     ));
   }
 
   for (let i = 0; i < core.length - 1; i++) {
-    addEdge(core[i], core[i + 1], { structure: true, alpha: 0.76 });
+    addEdge(core[i], core[i + 1], { structure: true, alpha: 0.80 });
   }
 
-  // ============================================================
-  // RAÍCES — mini nubecitas (3 nubs discretos)
-  // ============================================================
+  // --- RAÍCES (5, discretas, ancladas a la base) ---
   const rootSpecs = [
-    { ang: 0.35, reach: 0.22 },
-    { ang: 2.45, reach: 0.20 },
-    { ang: 4.55, reach: 0.19 }
+    { ang: 0.20, reach: 0.48 },
+    { ang: 1.35, reach: 0.42 },
+    { ang: 2.55, reach: 0.50 },
+    { ang: 3.90, reach: 0.44 },
+    { ang: 5.20, reach: 0.40 }
   ];
-  const rootAttachY = trunkStartY + 0.01;
 
   for (const spec of rootSpecs) {
-    const attach = trunkRings[0][Math.floor(spec.ang * trunkSegs / (Math.PI * 2)) % trunkSegs];
-    const chain = [];
-
-    for (let s = 0; s <= 2; s++) {
-      const t = s / 2;
-      const spread = lerp(0.04, spec.reach, t);
-      const dip = lerp(0, 0.18 + rand(0, 0.06), t * t);
-
-      chain.push(addVertex(
-        v3(
-          trunkLeanX * 0.1 + Math.cos(spec.ang) * spread,
-          rootAttachY - dip + gauss() * 0.008,
-          Math.sin(spec.ang) * spread
-        ),
-        "roots",
-        {
-          depthAmp: rand(0.001, 0.003),
-          swayAmp: rand(0.003, 0.008),
-          visibleNode: rnd() < 0.36
-        }
-      ));
-    }
-
-    addEdge(attach, chain[0], { structure: true, alpha: 0.78 });
-
-    for (let s = 0; s < chain.length - 1; s++) {
-      addEdge(chain[s], chain[s + 1], {
-        structure: s === 0,
-        alpha: rand(0.42, 0.72)
-      });
-    }
-  }
-
-  // ============================================================
-  // BURBUJAS DE COPA — dos nubes tiernas (lollipop + gorro)
-  // Silueta: tronco bajo + globo grande + gorro redondo más chico
-  // ============================================================
-  function buildBubble(cx, cy, cz, rx, ry, rz, group, latRings, lonSegs) {
-    const rings = [];
-    const centers = [];
-
-    for (let lat = 0; lat <= latRings; lat++) {
-      const v = lat / latRings;
-      const phi = v * Math.PI;
-      const ringY = cy + Math.cos(phi) * ry;
-      const ringScale = Math.sin(phi);
-      const ring = [];
-
-      if (lat > 0 && lat < latRings) {
-        centers.push(addVertex(
-          v3(cx + gauss() * 0.008, ringY + gauss() * 0.006, cz + gauss() * 0.008),
-          group,
-          { depthAmp: 0.001, swayAmp: rand(0.004, 0.010), visibleNode: rnd() < 0.52 }
-        ));
-      }
-
-      for (let lon = 0; lon < lonSegs; lon++) {
-        const theta = (lon / lonSegs) * Math.PI * 2;
-        const wobble =
-          1 +
-          Math.sin(theta * 2.1 + lat * 0.7) * 0.06 +
-          Math.cos(theta * 3.3 + lat * 1.1) * 0.03;
-
-        ring.push(addVertex(
-          v3(
-            cx + Math.cos(theta) * rx * ringScale * wobble,
-            ringY + gauss() * 0.008,
-            cz + Math.sin(theta) * rz * ringScale * wobble
-          ),
-          group,
-          {
-            depthAmp: rand(0.002, 0.006),
-            swayAmp: rand(0.005, 0.014),
-            visibleNode: rnd() < 0.38
-          }
-        ));
-      }
-
-      rings.push(ring);
-    }
-
-    for (let lat = 0; lat < rings.length; lat++) {
-      const ring = rings[lat];
-      const centerIdx = lat > 0 && lat < rings.length - 1 ? centers[lat - 1] : null;
-
-      for (let lon = 0; lon < lonSegs; lon++) {
-        const j = (lon + 1) % lonSegs;
-
-        addEdge(ring[lon], ring[j], {
-          structure: lon % 2 === 0,
-          alpha: rand(0.40, 0.70)
-        });
-
-        if (centerIdx !== null && lon % 2 === 0) {
-          addEdge(centerIdx, ring[lon], {
-            structure: true,
-            alpha: rand(0.44, 0.72)
-          });
-        }
-
-        if (lat < rings.length - 1) {
-          const below = rings[lat + 1];
-          addEdge(ring[lon], below[lon], {
-            structure: true,
-            alpha: rand(0.48, 0.78)
-          });
-          addEdge(ring[lon], below[j], {
-            alpha: rand(0.24, 0.46)
-          });
-        }
-      }
-    }
-
-    const pole = addVertex(
-      v3(cx + gauss() * 0.006, cy + gauss() * 0.006, cz + gauss() * 0.006),
-      group,
-      { depthAmp: 0.001, visibleNode: rnd() < 0.58 }
-    );
-
-    for (let lon = 0; lon < lonSegs; lon += 2) {
-      addEdge(pole, rings[Math.floor(rings.length * 0.45)][lon], {
-        structure: true,
-        alpha: rand(0.38, 0.64)
-      });
-    }
-
-    return { rings, pole, cx, cy, cz };
-  }
-
-  const lowerBubble = buildBubble(
-    0.06, 0.62, 0.02,
-    1.02, 0.78, 0.94,
-    "canopy",
-    8, 13
-  );
-
-  const upperBubble = buildBubble(
-    0.14, 1.22, -0.04,
-    0.68, 0.58, 0.62,
-    "canopy",
-    6, 11
-  );
-
-  addEdge(lowerBubble.pole, upperBubble.pole, { structure: true, alpha: 0.74 });
-
-  for (let i = 0; i < lowerBubble.rings[lowerBubble.rings.length - 1].length; i += 2) {
-    const a = lowerBubble.rings[lowerBubble.rings.length - 1][i];
-    const b = upperBubble.rings[1][Math.floor(i * upperBubble.rings[1].length / lowerBubble.rings[lowerBubble.rings.length - 1].length)];
-    addEdge(a, b, { structure: i % 4 === 0, alpha: rand(0.36, 0.62) });
-  }
-
-  // ============================================================
-  // RAMITAS CURVAS — 3 arcos juguetones hacia la burbuja inferior
-  // ============================================================
-  const branchArcs = [
-    { y0: 0.02, ang: 0.72, bulge: 0.38, reach: 0.88 },
-    { y0: 0.04, ang: 2.55, bulge: 0.32, reach: 0.82 },
-    { y0: 0.06, ang: 4.35, bulge: 0.28, reach: 0.74 }
-  ];
-
-  const trunkTopRing = trunkRings[trunkRings.length - 1];
-
-  for (const arc of branchArcs) {
-    const startIdx = Math.floor(arc.ang * trunkSegs / (Math.PI * 2)) % trunkSegs;
-    let prev = trunkTopRing[startIdx];
+    const attach = trunkRings[0][
+      Math.floor((spec.ang / (Math.PI * 2)) * trunkSegs) % trunkSegs
+    ];
+    let prev = attach;
     const segs = 4;
 
     for (let s = 1; s <= segs; s++) {
       const t = s / segs;
-      const curve = Math.sin(t * Math.PI) * arc.bulge;
-      const r = arc.reach * t;
-      const y = lerp(arc.y0, lowerBubble.cy - 0.12, t * t);
+      const spread = lerp(0.10, spec.reach, t);
+      const dip = lerp(0.02, 0.28, t * t);
+      const twist = Math.sin(t * Math.PI) * 0.18;
 
       const id = addVertex(
         v3(
-          trunkLeanX + Math.cos(arc.ang + curve) * r,
-          y + gauss() * 0.005,
-          Math.sin(arc.ang + curve) * r * 0.92
+          Math.cos(spec.ang + twist) * spread,
+          trunkStartY - dip + gauss() * 0.008,
+          Math.sin(spec.ang + twist) * spread
         ),
-        s < 2 ? "branches" : "canopy",
+        "roots",
         {
-          depthAmp: rand(0.001, 0.004),
-          swayAmp: rand(0.006, 0.013),
-          visibleNode: rnd() < 0.42
+          depthAmp: rand(0.001, 0.003),
+          swayAmp: rand(0.003, 0.009),
+          visibleNode: rnd() < 0.38
         }
       );
 
       addEdge(prev, id, {
         structure: s === 1 || s === segs,
-        alpha: rand(0.40, 0.70)
+        alpha: rand(0.46, 0.78)
       });
-
-      if (s === segs) {
-        const target = lowerBubble.rings[Math.floor(lowerBubble.rings.length * 0.55)][
-          Math.floor(arc.ang * lowerBubble.rings[0].length / (Math.PI * 2)) % lowerBubble.rings[0].length
-        ];
-        addEdge(id, target, { structure: true, alpha: 0.68 });
-      }
-
       prev = id;
     }
   }
 
-  addEdge(core[core.length - 1], lowerBubble.pole, { structure: true, alpha: 0.76 });
-  addEdge(trunkTopRing[0], lowerBubble.pole, { structure: true, alpha: 0.70 });
+  // --- COPA: una nube elíptica con base plana (silueta de árbol) ---
+  // Perfil vertical: ancha y plana abajo, redondeada arriba (no cono).
+  const canopyCX = 0.04;
+  const canopyCY = 1.05;
+  const canopyCZ = 0.0;
+  const canopyRX = 1.22;
+  const canopyRY = 0.92;
+  const canopyRZ = 1.10;
 
-  // Relleno suave dentro de las burbujas
-  for (let i = 0; i < 28; i++) {
-    const useUpper = rnd() < 0.38;
-    const bubble = useUpper ? upperBubble : lowerBubble;
-    const bx = bubble.cx;
-    const by = bubble.cy;
-    const brx = useUpper ? 0.68 : 1.02;
-    const bry = useUpper ? 0.58 : 0.78;
-    const brz = useUpper ? 0.62 : 0.94;
+  const canopyRings = [];
+  const canopyLayers = 9;
+  const canopySegs = 16;
 
-    const u = rand(0, Math.PI * 2);
-    const v = Math.acos(lerp(1, -1, rnd()));
-    const puff = 0.55 + rnd() * 0.38;
+  function canopyRadiusAt(t) {
+    // t=0 base (plana y ancha), t=1 cúspide redonda
+    // Mitad inferior casi constante; mitad superior semielipse.
+    if (t < 0.22) {
+      return lerp(0.92, 1.0, t / 0.22);
+    }
+    const u = (t - 0.22) / 0.78;
+    return Math.sqrt(Math.max(0, 1 - u * u));
+  }
+
+  for (let lv = 0; lv < canopyLayers; lv++) {
+    const t = lv / (canopyLayers - 1);
+    const y = lerp(0.38, 1.88, t);
+    const scale = canopyRadiusAt(t);
+    const rx = canopyRX * scale;
+    const rz = canopyRZ * scale;
+    const ring = [];
+
+    for (let i = 0; i < canopySegs; i++) {
+      const ang = (i / canopySegs) * Math.PI * 2 + gauss() * 0.014;
+      const puff =
+        1 +
+        Math.sin(ang * 2.4 + lv * 0.55) * 0.07 +
+        Math.cos(ang * 3.1 + lv) * 0.035;
+
+      ring.push(addVertex(
+        v3(
+          canopyCX + Math.cos(ang) * rx * puff,
+          y + gauss() * 0.014,
+          canopyCZ + Math.sin(ang) * rz * puff
+        ),
+        "canopy",
+        {
+          depthAmp: rand(0.002, 0.007),
+          swayAmp: rand(0.008, 0.018),
+          visibleNode: rnd() < 0.36
+        }
+      ));
+    }
+
+    canopyRings.push(ring);
+  }
+
+  const canopyTip = addVertex(
+    v3(canopyCX, 1.95, canopyCZ),
+    "canopy",
+    { depthAmp: 0.001, visibleNode: rnd() < 0.62 }
+  );
+
+  const canopyCore = addVertex(
+    v3(canopyCX, canopyCY, canopyCZ),
+    "canopy",
+    { depthAmp: 0.001, visibleNode: rnd() < 0.55 }
+  );
+
+  for (let lv = 0; lv < canopyRings.length - 1; lv++) {
+    const a = canopyRings[lv];
+    const b = canopyRings[lv + 1];
+
+    for (let i = 0; i < a.length; i++) {
+      const j = (i + 1) % a.length;
+
+      addEdge(a[i], a[j], {
+        structure: lv === 0 || lv === canopyRings.length - 2,
+        alpha: rand(0.34, 0.62)
+      });
+
+      addEdge(a[i], b[i], {
+        structure: i % 2 === 0,
+        alpha: rand(0.40, 0.72)
+      });
+
+      addEdge(a[i], b[j], { alpha: rand(0.22, 0.46) });
+    }
+  }
+
+  for (let i = 0; i < canopySegs; i++) {
+    if (i % 2 === 0) {
+      addEdge(canopyRings[canopyRings.length - 1][i], canopyTip, {
+        structure: true,
+        alpha: rand(0.42, 0.70)
+      });
+    }
+    if (i % 3 === 0) {
+      addEdge(canopyRings[Math.floor(canopyLayers * 0.45)][i], canopyCore, {
+        alpha: rand(0.28, 0.52)
+      });
+    }
+  }
+
+  // Contorno de base plana (lectura clara de “copa sobre tronco”)
+  const baseRing = canopyRings[0];
+  for (let i = 0; i < baseRing.length; i++) {
+    const j = (i + 1) % baseRing.length;
+    addEdge(baseRing[i], baseRing[j], { structure: true, alpha: 0.82 });
+  }
+
+  // Unir tronco a la base de la copa
+  const trunkTop = trunkRings[trunkRings.length - 1];
+  for (let i = 0; i < trunkSegs; i++) {
+    const ci = Math.floor(i * canopySegs / trunkSegs);
+    addEdge(trunkTop[i], baseRing[ci], {
+      structure: true,
+      alpha: rand(0.58, 0.84)
+    });
+  }
+
+  addEdge(core[core.length - 1], canopyCore, { structure: true, alpha: 0.78 });
+  addEdge(canopyCore, canopyTip, { structure: true, alpha: 0.70 });
+
+  // --- RAMAS: salen del tronco medio-alto y entran a la copa ---
+  const branchTips = [];
+  const branchSpecs = [
+    { trunkLv: 7, ang: 0.55, len: 0.95, rise: 0.55 },
+    { trunkLv: 7, ang: 2.75, len: 0.90, rise: 0.50 },
+    { trunkLv: 8, ang: 1.65, len: 0.82, rise: 0.62 },
+    { trunkLv: 8, ang: 4.55, len: 0.88, rise: 0.58 },
+    { trunkLv: 9, ang: 0.20, len: 0.72, rise: 0.48 },
+    { trunkLv: 9, ang: 3.40, len: 0.78, rise: 0.52 },
+    { trunkLv: 10, ang: 5.40, len: 0.65, rise: 0.42 },
+    { trunkLv: 10, ang: 2.10, len: 0.68, rise: 0.45 }
+  ];
+
+  for (const spec of branchSpecs) {
+    const attach = trunkRings[spec.trunkLv][
+      Math.floor((spec.ang / (Math.PI * 2)) * trunkSegs) % trunkSegs
+    ];
+    let prev = attach;
+    const segs = 5;
+    const tipY = vertices[attach].base.y + spec.rise;
+
+    for (let s = 1; s <= segs; s++) {
+      const t = s / segs;
+      const reach = spec.len * t;
+      const elev = spec.rise * (0.35 + 0.65 * t);
+      const wobble = Math.sin(t * Math.PI * 1.3) * 0.10;
+
+      const id = addVertex(
+        v3(
+          trunkLeanX + Math.cos(spec.ang + wobble) * (0.14 + reach),
+          vertices[attach].base.y + elev + gauss() * 0.008,
+          Math.sin(spec.ang + wobble) * (0.14 + reach)
+        ),
+        t < 0.55 ? "branches" : "canopy",
+        {
+          depthAmp: rand(0.001, 0.005),
+          swayAmp: rand(0.007, 0.016),
+          visibleNode: rnd() < 0.44
+        }
+      );
+
+      addEdge(prev, id, {
+        structure: s === 1 || s >= segs - 1,
+        alpha: rand(0.42, 0.76)
+      });
+      prev = id;
+    }
+
+    branchTips.push(prev);
+
+    // Conectar punta a anillo cercano de la copa
+    const tip = vertices[prev].base;
+    let best = 0;
+    let bestD = Infinity;
+    for (let lv = 2; lv < canopyRings.length - 1; lv++) {
+      for (let i = 0; i < canopySegs; i++) {
+        const p = vertices[canopyRings[lv][i]].base;
+        const d =
+          (p.x - tip.x) * (p.x - tip.x) +
+          (p.y - tip.y) * (p.y - tip.y) +
+          (p.z - tip.z) * (p.z - tip.z);
+        if (d < bestD) {
+          bestD = d;
+          best = canopyRings[lv][i];
+        }
+      }
+    }
+    addEdge(prev, best, { structure: true, alpha: 0.68 });
+  }
+
+  // Relleno interior de la copa (volumen, no silueta extra)
+  for (let i = 0; i < 36; i++) {
+    const t = rand(0.08, 0.92);
+    const scale = canopyRadiusAt(t) * rand(0.15, 0.72);
+    const ang = rand(0, Math.PI * 2);
+    const y = lerp(0.42, 1.82, t);
 
     const id = addVertex(
       v3(
-        bx + Math.sin(v) * Math.cos(u) * brx * puff,
-        by + Math.cos(v) * bry * puff,
-        bubble.cz + Math.sin(v) * Math.sin(u) * brz * puff
+        canopyCX + Math.cos(ang) * canopyRX * scale,
+        y + gauss() * 0.02,
+        canopyCZ + Math.sin(ang) * canopyRZ * scale
       ),
       "canopy",
-      { depthAmp: rand(0.001, 0.005), visibleNode: rnd() < 0.46 }
+      { depthAmp: rand(0.001, 0.006), visibleNode: rnd() < 0.48 }
     );
 
-    const ring = bubble.rings[Math.floor(rand(2, bubble.rings.length - 2))];
-    addEdge(id, ring[Math.floor(rand(0, ring.length))], { alpha: rand(0.22, 0.44) });
-    addEdge(id, bubble.pole, { alpha: rand(0.18, 0.36) });
+    const lv = Math.floor(t * (canopyLayers - 1));
+    addEdge(
+      id,
+      canopyRings[lv][Math.floor(rand(0, canopySegs))],
+      { alpha: rand(0.18, 0.40) }
+    );
+
+    if (rnd() > 0.45 && branchTips.length) {
+      addEdge(
+        id,
+        branchTips[Math.floor(rand(0, branchTips.length))],
+        { alpha: rand(0.16, 0.34) }
+      );
+    }
   }
 
   // ============================================================
