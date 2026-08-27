@@ -78,7 +78,7 @@
     scatterMax: 2.10,
 
     treeBaseY: -1.65,
-    treeTopY: 2.50
+    treeTopY: 1.78
   };
 
   CFG.cycleDuration =
@@ -343,18 +343,18 @@
   }
 
   // ============================================================
-  // TRONCO — columna continua hasta cerca de la cúspide
+  // TRONCO — corto y grueso (proporción infantil ~1:2 con la copa)
   // ============================================================
   const trunkRings = [];
   const trunkSegs = 10;
-  const trunkLevels = 22;
-  const trunkStartY = -0.38;
-  const trunkEndY = 2.28;
+  const trunkLevels = 10;
+  const trunkStartY = -0.42;
+  const trunkEndY = 0.22;
 
   for (let lv = 0; lv < trunkLevels; lv++) {
     const t = lv / (trunkLevels - 1);
     const y = lerp(trunkStartY, trunkEndY, t);
-    const finalR = lerp(0.24, 0.055, Math.pow(t, 0.72)) * (1 + gauss() * 0.012);
+    const finalR = lerp(0.34, 0.22, Math.pow(t, 0.55)) * (1 + gauss() * 0.010);
     const ring = [];
 
     for (let i = 0; i < trunkSegs; i++) {
@@ -402,12 +402,12 @@
     }
   }
 
-  // Núcleo interno del tronco (espina hasta la punta)
+  // Núcleo interno del tronco (espina corta, no atraviesa la copa)
   const core = [];
-  for (let i = 0; i < 16; i++) {
-    const t = i / 15;
+  for (let i = 0; i < 8; i++) {
+    const t = i / 7;
     core.push(addVertex(
-      v3(gauss() * 0.014, lerp(-0.30, 2.42, t), gauss() * 0.014),
+      v3(gauss() * 0.012, lerp(-0.36, 0.28, t), gauss() * 0.012),
       "trunk",
       { depthAmp: 0.001, visibleNode: rnd() < 0.48 }
     ));
@@ -418,108 +418,82 @@
   }
 
   // ============================================================
-  // RAÍCES — ancladas a la base del tronco
+  // RAÍCES — pequeñas y discretas (no selva)
   // ============================================================
-  const rootCount = 8;
+  const rootCount = 5;
   const rootAttachY = trunkStartY + 0.02;
 
   for (let r = 0; r < rootCount; r++) {
-    const baseAngle = (r / rootCount) * Math.PI * 2 + gauss() * 0.10;
-    const segments = 7 + Math.floor(rand(0, 3));
+    const baseAngle = (r / rootCount) * Math.PI * 2 + gauss() * 0.08;
+    const segments = 4 + Math.floor(rand(0, 2));
     const chain = [];
-    const attach = trunkRings[0][r % trunkSegs];
+    const attach = trunkRings[0][Math.floor(r * trunkSegs / rootCount) % trunkSegs];
 
     for (let s = 0; s <= segments; s++) {
       const t = s / segments;
-      const spread = lerp(0.10, 0.78 + rand(0, 0.22), t);
-      const dip = lerp(0, 0.85 + rand(0, 0.18), t * t);
-      const twist = Math.sin(t * Math.PI * 1.4 + r * 0.7) * 0.12;
+      const spread = lerp(0.06, 0.28 + rand(0, 0.08), t);
+      const dip = lerp(0, 0.32 + rand(0, 0.10), t * t);
+      const twist = Math.sin(t * Math.PI * 1.1 + r * 0.5) * 0.06;
 
       chain.push(addVertex(
         v3(
           Math.cos(baseAngle + twist) * spread,
-          rootAttachY - dip + gauss() * 0.012,
+          rootAttachY - dip + gauss() * 0.010,
           Math.sin(baseAngle + twist) * spread
         ),
         "roots",
         {
-          depthAmp: rand(0.001, 0.004),
-          swayAmp: rand(0.005, 0.012),
-          visibleNode: rnd() < 0.40
+          depthAmp: rand(0.001, 0.003),
+          swayAmp: rand(0.004, 0.009),
+          visibleNode: rnd() < 0.38
         }
       ));
     }
 
-    addEdge(attach, chain[0], { structure: true, alpha: 0.82 });
+    addEdge(attach, chain[0], { structure: true, alpha: 0.80 });
 
     for (let s = 0; s < chain.length - 1; s++) {
       addEdge(chain[s], chain[s + 1], {
         structure: s === 0 || s >= chain.length - 2,
-        alpha: rand(0.46, 0.80)
+        alpha: rand(0.44, 0.76)
       });
-    }
-
-    if (chain.length > 3 && rnd() > 0.30) {
-      const forkAt = Math.floor(chain.length * rand(0.40, 0.70));
-      const forkLen = 3 + Math.floor(rand(0, 2));
-      let prev = chain[forkAt];
-
-      for (let f = 1; f <= forkLen; f++) {
-        const ft = f / forkLen;
-        const ang = baseAngle + (rnd() < 0.5 ? -1 : 1) * (0.35 + ft * 0.45);
-        const id = addVertex(
-          v3(
-            Math.cos(ang) * (0.32 + ft * 0.48),
-            rootAttachY - 0.22 - ft * 0.42 + gauss() * 0.010,
-            Math.sin(ang) * (0.32 + ft * 0.48)
-          ),
-          "roots",
-          { depthAmp: 0.001, swayAmp: 0.005, visibleNode: rnd() < 0.35 }
-        );
-
-        addEdge(prev, id, { alpha: rand(0.30, 0.56) });
-        prev = id;
-      }
     }
   }
 
-  // Malla de corona radical bajo el tronco
-  for (let i = 0; i < trunkSegs; i++) {
-    const j = (i + 1) % trunkSegs;
+  // Anillo radical compacto bajo el tronco
+  for (let i = 0; i < trunkSegs; i += 2) {
+    const j = (i + 2) % trunkSegs;
     const a = trunkRings[0][i];
     const b = trunkRings[0][j];
     const mid = addVertex(
       v3(
-        Math.cos((i + 0.5) / trunkSegs * Math.PI * 2) * 0.38,
-        rootAttachY - 0.18 + gauss() * 0.008,
-        Math.sin((i + 0.5) / trunkSegs * Math.PI * 2) * 0.38
+        Math.cos((i + 1) / trunkSegs * Math.PI * 2) * 0.18,
+        rootAttachY - 0.10 + gauss() * 0.006,
+        Math.sin((i + 1) / trunkSegs * Math.PI * 2) * 0.18
       ),
       "roots",
-      { depthAmp: 0.001, visibleNode: rnd() < 0.45 }
+      { depthAmp: 0.001, visibleNode: rnd() < 0.40 }
     );
-    addEdge(a, mid, { structure: true, alpha: 0.70 });
-    addEdge(b, mid, { alpha: 0.55 });
-    addEdge(a, b, { alpha: 0.40 });
+    addEdge(a, mid, { structure: true, alpha: 0.66 });
+    addEdge(b, mid, { alpha: 0.50 });
   }
 
   // ============================================================
-  // FOLLAJE — capas apiladas rellenas (silueta continua, sin cono hueco)
-  // Un cono vacío se ve como dos elipses desconectadas con la cámara oblicua.
+  // FOLLAJE — cúpula redonda tipo nube (no cono de pino)
+  // Silueta ancha, base hinchada, cúspide redondeada sin punta.
   // ============================================================
   const foliageLayers = [
-    { y: 0.05, r: 0.72, group: "branches" },
-    { y: 0.28, r: 1.02, group: "branches" },
-    { y: 0.52, r: 0.96, group: "branches" },
-    { y: 0.74, r: 0.88, group: "branches" },
-    { y: 0.96, r: 0.78, group: "branches" },
-    { y: 1.18, r: 0.68, group: "branches" },
-    { y: 1.40, r: 0.56, group: "branches" },
-    { y: 1.60, r: 0.46, group: "canopy" },
-    { y: 1.80, r: 0.36, group: "canopy" },
-    { y: 1.98, r: 0.26, group: "canopy" },
-    { y: 2.14, r: 0.16, group: "canopy" },
-    { y: 2.28, r: 0.09, group: "canopy" },
-    { y: 2.40, r: 0.04, group: "canopy" }
+    { y: 0.18, r: 0.58, group: "branches" },
+    { y: 0.38, r: 0.82, group: "branches" },
+    { y: 0.56, r: 1.02, group: "branches" },
+    { y: 0.74, r: 1.18, group: "canopy" },
+    { y: 0.92, r: 1.22, group: "canopy" },
+    { y: 1.10, r: 1.16, group: "canopy" },
+    { y: 1.28, r: 0.98, group: "canopy" },
+    { y: 1.44, r: 0.78, group: "canopy" },
+    { y: 1.58, r: 0.52, group: "canopy" },
+    { y: 1.68, r: 0.30, group: "canopy" },
+    { y: 1.74, r: 0.16, group: "canopy" }
   ];
 
   const foliageSegs = 14;
@@ -539,7 +513,7 @@
   for (let lv = 0; lv < foliageLayers.length; lv++) {
     const spec = foliageLayers[lv];
     const ring = [];
-    const wave = 1 + Math.sin(lv * 1.1) * 0.04;
+    const wave = 1 + Math.sin(lv * 0.95) * 0.07;
 
     const center = addVertex(
       v3(gauss() * 0.012, spec.y + gauss() * 0.008, gauss() * 0.012),
@@ -555,7 +529,7 @@
     // Anillo exterior
     for (let i = 0; i < foliageSegs; i++) {
       const ang = (i / foliageSegs) * Math.PI * 2 + gauss() * 0.010;
-      const puff = 1 + Math.sin(ang * 2.8 + lv) * 0.05;
+      const puff = 1 + Math.sin(ang * 0.9 + lv * 0.6) * 0.10 + Math.sin(ang * 2.2 + lv) * 0.04;
       const rr = spec.r * wave * puff;
 
       ring.push(addVertex(
@@ -644,12 +618,6 @@
     ring._center = center;
   }
 
-  const tip = addVertex(
-    v3(0, 2.48, 0),
-    "canopy",
-    { depthAmp: 0.001, visibleNode: true }
-  );
-
   // Conectar capas consecutivas (meridianos + diagonales)
   for (let lv = 0; lv < foliageRings.length - 1; lv++) {
     const a = foliageRings[lv];
@@ -677,60 +645,48 @@
     }
   }
 
-  // Cúspide
-  const topRing = foliageRings[foliageRings.length - 1];
-  for (let i = 0; i < foliageSegs; i++) {
-    addEdge(topRing[i], tip, {
-      structure: i % 2 === 0,
-      alpha: rand(0.50, 0.78)
-    });
-  }
-  addEdge(topRing._center, tip, { structure: true, alpha: 0.84 });
+  // 3 ramitas laterales cortas que curvan suavemente hacia afuera
+  const sideBranches = [
+    { y: 0.42, ang: 0.55, reach: 0.62, droop: 0.06 },
+    { y: 0.68, ang: 2.35, reach: 0.58, droop: 0.04 },
+    { y: 0.88, ang: 4.10, reach: 0.48, droop: 0.02 }
+  ];
 
-  // Ramas radiales cortas entre capas (densidad / lectura de árbol)
-  for (let b = 0; b < 12; b++) {
-    const y = lerp(0.35, 2.10, b / 11);
-    const ang = (b / 12) * Math.PI * 2 + rand(-0.15, 0.15);
-    const layerT = clamp((y - 0.22) / (2.40 - 0.22), 0, 1);
-    const reach = lerp(1.05, 0.12, Math.pow(layerT, 0.85)) * rand(0.75, 0.95);
-    const segs = 4;
-    let prev = null;
-
-    const attach = trunkRings[trunkIndexAtY(y)][b % trunkSegs];
+  for (const br of sideBranches) {
+    const segs = 3;
+    let prev = trunkRings[trunkIndexAtY(br.y)][Math.floor(br.ang * trunkSegs / (Math.PI * 2)) % trunkSegs];
 
     for (let s = 1; s <= segs; s++) {
       const t = s / segs;
+      const curve = Math.sin(t * Math.PI * 0.5) * 0.18;
       const id = addVertex(
         v3(
-          Math.cos(ang) * reach * t,
-          y + t * 0.08 + gauss() * 0.006,
-          Math.sin(ang) * reach * t
+          Math.cos(br.ang + curve) * br.reach * t,
+          br.y - br.droop * t * t + gauss() * 0.005,
+          Math.sin(br.ang + curve) * br.reach * t
         ),
-        t < 0.55 ? "branches" : "canopy",
+        s < 2 ? "branches" : "canopy",
         {
-          depthAmp: rand(0.001, 0.005),
-          swayAmp: rand(0.005, 0.014),
-          visibleNode: rnd() < 0.42
+          depthAmp: rand(0.001, 0.004),
+          swayAmp: rand(0.005, 0.012),
+          visibleNode: rnd() < 0.44
         }
       );
 
-      if (s === 1) {
-        addEdge(attach, id, { structure: true, alpha: 0.76 });
-      } else {
-        addEdge(prev, id, {
-          structure: s === segs,
-          alpha: rand(0.38, 0.68)
-        });
-      }
+      addEdge(prev, id, {
+        structure: s === 1 || s === segs,
+        alpha: rand(0.42, 0.72)
+      });
       prev = id;
     }
   }
 
-  // Relleno volumétrico entre capas
-  for (let i = 0; i < 40; i++) {
-    const t = rand(0.04, 0.96);
-    const y = lerp(0.22, 2.40, t);
-    const maxR = lerp(1.05, 0.08, Math.pow(t, 0.85));
+  // Relleno volumétrico entre capas (domo hinchado)
+  for (let i = 0; i < 36; i++) {
+    const t = rand(0.06, 0.94);
+    const y = lerp(0.16, 1.72, t);
+    const domeT = clamp((y - 0.16) / (1.72 - 0.16), 0, 1);
+    const maxR = 1.24 * Math.sin(domeT * Math.PI) * (0.88 + 0.12 * Math.cos(domeT * Math.PI * 0.5));
     const a = rand(0, Math.PI * 2);
     const rr = rand(0.04, maxR * 0.90);
 
@@ -763,12 +719,16 @@
     );
   }
 
-  // Espina hasta la cúspide
-  addEdge(core[core.length - 1], tip, { structure: true, alpha: 0.86 });
+  // Tronco → base de copa (sin espina puntiaguda)
+  addEdge(
+    core[core.length - 1],
+    foliageCenters[0],
+    { structure: true, alpha: 0.78 }
+  );
   addEdge(
     trunkRings[trunkRings.length - 1][0],
-    tip,
-    { structure: true, alpha: 0.74 }
+    foliageCenters[0],
+    { structure: true, alpha: 0.72 }
   );
 
   // ============================================================
