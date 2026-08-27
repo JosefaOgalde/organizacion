@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Árbol 3D — silueta clásica cute — raíces a copa</title>
+<title>Árbol 3D — raíces y copa nube — estética caritas</title>
 <style>
   html, body {
     margin: 0;
@@ -77,8 +77,8 @@
     scatterMin: 0.62,
     scatterMax: 2.05,
 
-    treeBaseY: -1.55,
-    treeTopY: 1.95
+    treeBaseY: -1.35,
+    treeTopY: 2.05
   };
 
   CFG.cycleDuration =
@@ -341,27 +341,26 @@
   }
 
   // ============================================================
-  // SILUETA CLÁSICA DE ÁRBOL (emoji 🌳)
-  // Tronco visible + ramas + una sola copa redonda con base plana
+  // ÁRBOL CON RAÍCES (anti-hongo)
+  // Raíces anchas y visibles · tronco · ramas que se abren ·
+  // copa nube irregular (base festoneada, NO plato plano)
   // ============================================================
 
-  // --- TRONCO (cilindro claro, proporciones leíbles) ---
   const trunkRings = [];
   const trunkSegs = 8;
-  const trunkLevels = 12;
-  const trunkStartY = -1.15;
-  const trunkEndY = 0.42;
-  const trunkLeanX = 0.03;
+  const trunkLevels = 14;
+  const trunkStartY = -0.55;
+  const trunkEndY = 0.85;
+  const trunkLeanX = 0.025;
 
   for (let lv = 0; lv < trunkLevels; lv++) {
     const t = lv / (trunkLevels - 1);
     const y = lerp(trunkStartY, trunkEndY, t);
-    // Más grueso abajo, se afina un poco hacia la copa
-    const finalR = lerp(0.22, 0.14, Math.pow(t, 0.75)) * (1 + gauss() * 0.010);
+    const finalR = lerp(0.20, 0.11, Math.pow(t, 0.7)) * (1 + gauss() * 0.012);
     const ring = [];
 
     for (let i = 0; i < trunkSegs; i++) {
-      const ang = (i / trunkSegs) * Math.PI * 2 + gauss() * 0.008;
+      const ang = (i / trunkSegs) * Math.PI * 2 + gauss() * 0.010;
       ring.push(addVertex(
         v3(
           trunkLeanX * t + Math.cos(ang) * finalR,
@@ -372,7 +371,7 @@
         {
           depthAmp: rand(0.001, 0.004),
           swayAmp: rand(0.002, 0.007),
-          visibleNode: rnd() < 0.42
+          visibleNode: rnd() < 0.44
         }
       ));
     }
@@ -386,300 +385,336 @@
 
     for (let i = 0; i < a.length; i++) {
       const j = (i + 1) % a.length;
-
       addEdge(a[i], b[i], { structure: true, alpha: rand(0.55, 0.84) });
-      addEdge(a[i], a[j], { structure: i % 2 === 0, alpha: rand(0.34, 0.58) });
-      addEdge(a[i], b[j], { alpha: rand(0.26, 0.48) });
+      addEdge(a[i], a[j], { structure: i % 2 === 0, alpha: rand(0.32, 0.56) });
+      addEdge(a[i], b[j], { alpha: rand(0.24, 0.46) });
     }
   }
 
   const core = [];
-  for (let i = 0; i < 10; i++) {
-    const t = i / 9;
+  for (let i = 0; i < 12; i++) {
+    const t = i / 11;
     core.push(addVertex(
       v3(
         trunkLeanX * t + gauss() * 0.010,
-        lerp(trunkStartY + 0.04, trunkEndY + 0.08, t),
+        lerp(trunkStartY, trunkEndY + 0.15, t),
         gauss() * 0.010
       ),
       "trunk",
-      { depthAmp: 0.001, visibleNode: rnd() < 0.50 }
+      { depthAmp: 0.001, visibleNode: rnd() < 0.52 }
     ));
   }
 
   for (let i = 0; i < core.length - 1; i++) {
-    addEdge(core[i], core[i + 1], { structure: true, alpha: 0.80 });
+    addEdge(core[i], core[i + 1], { structure: true, alpha: 0.82 });
   }
 
-  // --- RAÍCES (5, discretas, ancladas a la base) ---
-  const rootSpecs = [
-    { ang: 0.20, reach: 0.48 },
-    { ang: 1.35, reach: 0.42 },
-    { ang: 2.55, reach: 0.50 },
-    { ang: 3.90, reach: 0.44 },
-    { ang: 5.20, reach: 0.40 }
-  ];
+  // --- RAÍCES PROMINENTES (clave para no leerse como hongo) ---
+  const rootAngles = [0.15, 0.95, 1.75, 2.55, 3.35, 4.15, 5.0, 5.75];
+  const rootTips = [];
 
-  for (const spec of rootSpecs) {
-    const attach = trunkRings[0][
-      Math.floor((spec.ang / (Math.PI * 2)) * trunkSegs) % trunkSegs
-    ];
-    let prev = attach;
-    const segs = 4;
+  for (let ri = 0; ri < rootAngles.length; ri++) {
+    const ang0 = rootAngles[ri] + gauss() * 0.06;
+    const segs = 5 + Math.floor(rand(0, 2));
+    const maxReach = 0.72 + rand(0, 0.28);
+    let prev = trunkRings[0][ri % trunkSegs];
+    const chain = [prev];
 
     for (let s = 1; s <= segs; s++) {
       const t = s / segs;
-      const spread = lerp(0.10, spec.reach, t);
-      const dip = lerp(0.02, 0.28, t * t);
-      const twist = Math.sin(t * Math.PI) * 0.18;
+      const spread = lerp(0.12, maxReach, Math.pow(t, 0.85));
+      const dip = lerp(0.05, 0.55 + rand(0, 0.18), t * t);
+      const twist = Math.sin(t * Math.PI * 1.3) * 0.22 * (ri % 2 ? 1 : -1);
 
       const id = addVertex(
         v3(
-          Math.cos(spec.ang + twist) * spread,
-          trunkStartY - dip + gauss() * 0.008,
-          Math.sin(spec.ang + twist) * spread
+          Math.cos(ang0 + twist) * spread,
+          trunkStartY - dip + gauss() * 0.010,
+          Math.sin(ang0 + twist) * spread
         ),
         "roots",
         {
-          depthAmp: rand(0.001, 0.003),
-          swayAmp: rand(0.003, 0.009),
-          visibleNode: rnd() < 0.38
+          depthAmp: rand(0.001, 0.004),
+          swayAmp: rand(0.004, 0.010),
+          visibleNode: rnd() < 0.40
+        }
+      );
+
+      addEdge(prev, id, {
+        structure: true,
+        alpha: rand(0.55, 0.88)
+      });
+
+      // Diagonal de refuerzo hacia el tronco
+      if (s === 1 || s === 2) {
+        addEdge(trunkRings[0][(ri + 1) % trunkSegs], id, {
+          alpha: rand(0.28, 0.50)
+        });
+      }
+
+      chain.push(id);
+      prev = id;
+    }
+
+    rootTips.push(prev);
+
+    // Bifurcación secundaria (raicilla)
+    if (chain.length > 3 && rnd() > 0.25) {
+      const forkFrom = chain[Math.floor(chain.length * 0.55)];
+      const base = vertices[forkFrom].base;
+      let fp = forkFrom;
+
+      for (let f = 1; f <= 3; f++) {
+        const ft = f / 3;
+        const fang = ang0 + (ri % 2 ? 1 : -1) * (0.45 + ft * 0.35);
+
+        const id = addVertex(
+          v3(
+            Math.cos(fang) * (lengthV(v3(base.x, 0, base.z)) + ft * 0.28),
+            base.y - ft * 0.22 + gauss() * 0.008,
+            Math.sin(fang) * (lengthV(v3(base.x, 0, base.z)) + ft * 0.28)
+          ),
+          "roots",
+          {
+            depthAmp: 0.001,
+            swayAmp: 0.005,
+            visibleNode: rnd() < 0.34
+          }
+        );
+
+        addEdge(fp, id, {
+          structure: f === 3,
+          alpha: rand(0.36, 0.62)
+        });
+        fp = id;
+      }
+    }
+  }
+
+  // Anillo de suelo entre raíces (lectura de "base del árbol")
+  for (let i = 0; i < rootTips.length; i++) {
+    const a = rootTips[i];
+    const b = rootTips[(i + 1) % rootTips.length];
+    if (rnd() > 0.35) {
+      addEdge(a, b, { alpha: rand(0.18, 0.36) });
+    }
+  }
+
+  // --- RAMAS PRINCIPALES (rompen la lectura de "sombrero") ---
+  const branchTips = [];
+  const branchSpecs = [
+    { lv: 6, ang: 0.40, len: 0.85, rise: 0.55 },
+    { lv: 6, ang: 2.30, len: 0.80, rise: 0.50 },
+    { lv: 7, ang: 3.90, len: 0.92, rise: 0.62 },
+    { lv: 7, ang: 5.40, len: 0.78, rise: 0.48 },
+    { lv: 8, ang: 1.20, len: 0.95, rise: 0.70 },
+    { lv: 8, ang: 4.50, len: 0.88, rise: 0.65 },
+    { lv: 9, ang: 0.90, len: 0.72, rise: 0.58 },
+    { lv: 9, ang: 2.80, len: 0.75, rise: 0.60 },
+    { lv: 10, ang: 5.00, len: 0.68, rise: 0.55 },
+    { lv: 11, ang: 1.70, len: 0.55, rise: 0.48 },
+    { lv: 11, ang: 4.10, len: 0.58, rise: 0.50 }
+  ];
+
+  function growBranch(attachIdx, ang, len, rise, depth) {
+    let prev = attachIdx;
+    const startY = vertices[attachIdx].base.y;
+    const segs = depth === 0 ? 5 : 3;
+    const tipIds = [];
+
+    for (let s = 1; s <= segs; s++) {
+      const t = s / segs;
+      const reach = len * t * (depth === 0 ? 1 : 0.72);
+      const elev = rise * (0.25 + 0.75 * t);
+      const wobble = Math.sin(t * Math.PI * 1.4 + depth) * 0.12;
+
+      const id = addVertex(
+        v3(
+          trunkLeanX + Math.cos(ang + wobble) * (0.12 + reach),
+          startY + elev + gauss() * 0.010,
+          Math.sin(ang + wobble) * (0.12 + reach)
+        ),
+        depth === 0 && t < 0.7 ? "branches" : "canopy",
+        {
+          depthAmp: rand(0.001, 0.005),
+          swayAmp: rand(0.008, 0.018),
+          visibleNode: rnd() < 0.46
         }
       );
 
       addEdge(prev, id, {
         structure: s === 1 || s === segs,
-        alpha: rand(0.46, 0.78)
+        alpha: rand(0.48, 0.80)
       });
+
+      tipIds.push(id);
       prev = id;
     }
-  }
 
-  // --- COPA: una nube elíptica con base plana (silueta de árbol) ---
-  // Perfil vertical: ancha y plana abajo, redondeada arriba (no cono).
-  const canopyCX = 0.04;
-  const canopyCY = 1.05;
-  const canopyCZ = 0.0;
-  const canopyRX = 1.22;
-  const canopyRY = 0.92;
-  const canopyRZ = 1.10;
-
-  const canopyRings = [];
-  const canopyLayers = 9;
-  const canopySegs = 16;
-
-  function canopyRadiusAt(t) {
-    // t=0 base (plana y ancha), t=1 cúspide redonda
-    // Mitad inferior casi constante; mitad superior semielipse.
-    if (t < 0.22) {
-      return lerp(0.92, 1.0, t / 0.22);
+    if (depth === 0 && rnd() > 0.35) {
+      const forkAt = tipIds[Math.floor(tipIds.length * 0.55)];
+      growBranch(
+        forkAt,
+        ang + (rnd() < 0.5 ? -1 : 1) * rand(0.40, 0.75),
+        len * rand(0.40, 0.58),
+        rise * rand(0.45, 0.65),
+        1
+      );
     }
-    const u = (t - 0.22) / 0.78;
-    return Math.sqrt(Math.max(0, 1 - u * u));
+
+    branchTips.push(prev);
+    return prev;
   }
 
-  for (let lv = 0; lv < canopyLayers; lv++) {
-    const t = lv / (canopyLayers - 1);
-    const y = lerp(0.38, 1.88, t);
-    const scale = canopyRadiusAt(t);
-    const rx = canopyRX * scale;
-    const rz = canopyRZ * scale;
-    const ring = [];
+  for (const spec of branchSpecs) {
+    const attach = trunkRings[spec.lv][
+      Math.floor((spec.ang / (Math.PI * 2)) * trunkSegs) % trunkSegs
+    ];
+    growBranch(attach, spec.ang, spec.len, spec.rise, 0);
+  }
 
-    for (let i = 0; i < canopySegs; i++) {
-      const ang = (i / canopySegs) * Math.PI * 2 + gauss() * 0.014;
-      const puff =
-        1 +
-        Math.sin(ang * 2.4 + lv * 0.55) * 0.07 +
-        Math.cos(ang * 3.1 + lv) * 0.035;
+  // --- COPA NUBE: lóbulos irregulares (NO plato de hongo) ---
+  // Base festoneada: más baja en los bordes, más alta al centro
+  // = follaje que cuelga, opuesto al sombrero de hongo
+  const canopyNodes = [];
 
-      ring.push(addVertex(
+  function addCanopyBlob(cx, cy, cz, rx, ry, rz, count) {
+    const ids = [];
+
+    for (let i = 0; i < count; i++) {
+      const u = rand(0, Math.PI * 2);
+      const v = Math.acos(lerp(0.15, -1, Math.pow(rnd(), 0.85)));
+      const puff = 0.55 + rnd() * 0.45;
+
+      // Empuja el hemisferio inferior hacia abajo en los bordes
+      let y = cy + Math.cos(v) * ry * puff;
+      const radial = Math.sin(v);
+      if (Math.cos(v) < 0.15) {
+        y -= radial * radial * 0.22;
+      }
+
+      const id = addVertex(
         v3(
-          canopyCX + Math.cos(ang) * rx * puff,
-          y + gauss() * 0.014,
-          canopyCZ + Math.sin(ang) * rz * puff
+          cx + Math.sin(v) * Math.cos(u) * rx * puff,
+          y + gauss() * 0.02,
+          cz + Math.sin(v) * Math.sin(u) * rz * puff
         ),
         "canopy",
         {
           depthAmp: rand(0.002, 0.007),
-          swayAmp: rand(0.008, 0.018),
-          visibleNode: rnd() < 0.36
-        }
-      ));
-    }
-
-    canopyRings.push(ring);
-  }
-
-  const canopyTip = addVertex(
-    v3(canopyCX, 1.95, canopyCZ),
-    "canopy",
-    { depthAmp: 0.001, visibleNode: rnd() < 0.62 }
-  );
-
-  const canopyCore = addVertex(
-    v3(canopyCX, canopyCY, canopyCZ),
-    "canopy",
-    { depthAmp: 0.001, visibleNode: rnd() < 0.55 }
-  );
-
-  for (let lv = 0; lv < canopyRings.length - 1; lv++) {
-    const a = canopyRings[lv];
-    const b = canopyRings[lv + 1];
-
-    for (let i = 0; i < a.length; i++) {
-      const j = (i + 1) % a.length;
-
-      addEdge(a[i], a[j], {
-        structure: lv === 0 || lv === canopyRings.length - 2,
-        alpha: rand(0.34, 0.62)
-      });
-
-      addEdge(a[i], b[i], {
-        structure: i % 2 === 0,
-        alpha: rand(0.40, 0.72)
-      });
-
-      addEdge(a[i], b[j], { alpha: rand(0.22, 0.46) });
-    }
-  }
-
-  for (let i = 0; i < canopySegs; i++) {
-    if (i % 2 === 0) {
-      addEdge(canopyRings[canopyRings.length - 1][i], canopyTip, {
-        structure: true,
-        alpha: rand(0.42, 0.70)
-      });
-    }
-    if (i % 3 === 0) {
-      addEdge(canopyRings[Math.floor(canopyLayers * 0.45)][i], canopyCore, {
-        alpha: rand(0.28, 0.52)
-      });
-    }
-  }
-
-  // Contorno de base plana (lectura clara de “copa sobre tronco”)
-  const baseRing = canopyRings[0];
-  for (let i = 0; i < baseRing.length; i++) {
-    const j = (i + 1) % baseRing.length;
-    addEdge(baseRing[i], baseRing[j], { structure: true, alpha: 0.82 });
-  }
-
-  // Unir tronco a la base de la copa
-  const trunkTop = trunkRings[trunkRings.length - 1];
-  for (let i = 0; i < trunkSegs; i++) {
-    const ci = Math.floor(i * canopySegs / trunkSegs);
-    addEdge(trunkTop[i], baseRing[ci], {
-      structure: true,
-      alpha: rand(0.58, 0.84)
-    });
-  }
-
-  addEdge(core[core.length - 1], canopyCore, { structure: true, alpha: 0.78 });
-  addEdge(canopyCore, canopyTip, { structure: true, alpha: 0.70 });
-
-  // --- RAMAS: salen del tronco medio-alto y entran a la copa ---
-  const branchTips = [];
-  const branchSpecs = [
-    { trunkLv: 7, ang: 0.55, len: 0.95, rise: 0.55 },
-    { trunkLv: 7, ang: 2.75, len: 0.90, rise: 0.50 },
-    { trunkLv: 8, ang: 1.65, len: 0.82, rise: 0.62 },
-    { trunkLv: 8, ang: 4.55, len: 0.88, rise: 0.58 },
-    { trunkLv: 9, ang: 0.20, len: 0.72, rise: 0.48 },
-    { trunkLv: 9, ang: 3.40, len: 0.78, rise: 0.52 },
-    { trunkLv: 10, ang: 5.40, len: 0.65, rise: 0.42 },
-    { trunkLv: 10, ang: 2.10, len: 0.68, rise: 0.45 }
-  ];
-
-  for (const spec of branchSpecs) {
-    const attach = trunkRings[spec.trunkLv][
-      Math.floor((spec.ang / (Math.PI * 2)) * trunkSegs) % trunkSegs
-    ];
-    let prev = attach;
-    const segs = 5;
-    const tipY = vertices[attach].base.y + spec.rise;
-
-    for (let s = 1; s <= segs; s++) {
-      const t = s / segs;
-      const reach = spec.len * t;
-      const elev = spec.rise * (0.35 + 0.65 * t);
-      const wobble = Math.sin(t * Math.PI * 1.3) * 0.10;
-
-      const id = addVertex(
-        v3(
-          trunkLeanX + Math.cos(spec.ang + wobble) * (0.14 + reach),
-          vertices[attach].base.y + elev + gauss() * 0.008,
-          Math.sin(spec.ang + wobble) * (0.14 + reach)
-        ),
-        t < 0.55 ? "branches" : "canopy",
-        {
-          depthAmp: rand(0.001, 0.005),
-          swayAmp: rand(0.007, 0.016),
-          visibleNode: rnd() < 0.44
+          swayAmp: rand(0.010, 0.020),
+          visibleNode: rnd() < 0.38
         }
       );
 
-      addEdge(prev, id, {
-        structure: s === 1 || s >= segs - 1,
-        alpha: rand(0.42, 0.76)
-      });
-      prev = id;
+      ids.push(id);
+      canopyNodes.push(id);
     }
 
-    branchTips.push(prev);
+    // Triangulación local del lóbulo
+    for (let i = 0; i < ids.length; i++) {
+      const A = vertices[ids[i]].base;
+      const near = [];
 
-    // Conectar punta a anillo cercano de la copa
-    const tip = vertices[prev].base;
-    let best = 0;
-    let bestD = Infinity;
-    for (let lv = 2; lv < canopyRings.length - 1; lv++) {
-      for (let i = 0; i < canopySegs; i++) {
-        const p = vertices[canopyRings[lv][i]].base;
-        const d =
-          (p.x - tip.x) * (p.x - tip.x) +
-          (p.y - tip.y) * (p.y - tip.y) +
-          (p.z - tip.z) * (p.z - tip.z);
-        if (d < bestD) {
-          bestD = d;
-          best = canopyRings[lv][i];
+      for (let j = 0; j < ids.length; j++) {
+        if (i === j) continue;
+        const B = vertices[ids[j]].base;
+        const d = Math.hypot(A.x - B.x, A.y - B.y, A.z - B.z);
+        near.push({ j: ids[j], d });
+      }
+
+      near.sort((a, b) => a.d - b.d);
+      const take = Math.min(3, near.length);
+
+      for (let k = 0; k < take; k++) {
+        if (near[k].d < 0.55 && rnd() > 0.25) {
+          addEdge(ids[i], near[k].j, {
+            structure: k === 0 && rnd() > 0.5,
+            alpha: rand(0.28, 0.58)
+          });
         }
       }
     }
-    addEdge(prev, best, { structure: true, alpha: 0.68 });
+
+    return ids;
   }
 
-  // Relleno interior de la copa (volumen, no silueta extra)
-  for (let i = 0; i < 36; i++) {
-    const t = rand(0.08, 0.92);
-    const scale = canopyRadiusAt(t) * rand(0.15, 0.72);
-    const ang = rand(0, Math.PI * 2);
-    const y = lerp(0.42, 1.82, t);
+  // 4 lóbulos superpuestos = nube orgánica, no domo único
+  const blobA = addCanopyBlob(0.05, 1.35, 0.02, 0.95, 0.72, 0.88, 34);
+  const blobB = addCanopyBlob(-0.55, 1.15, 0.20, 0.62, 0.55, 0.58, 22);
+  const blobC = addCanopyBlob(0.62, 1.18, -0.15, 0.58, 0.52, 0.55, 22);
+  const blobD = addCanopyBlob(0.10, 1.65, 0.05, 0.55, 0.48, 0.50, 18);
 
-    const id = addVertex(
+  // Contorno irregular inferior (festones) — NO anillo plano
+  const scallops = 10;
+  const scallopIds = [];
+
+  for (let i = 0; i < scallops; i++) {
+    const ang = (i / scallops) * Math.PI * 2;
+    const r = 0.78 + Math.sin(ang * 3) * 0.18 + rand(0, 0.08);
+    // Bordes más bajos = follaje colgante
+    const y = 0.72 + Math.sin(ang * 2.5) * 0.10 - 0.08;
+
+    scallopIds.push(addVertex(
       v3(
-        canopyCX + Math.cos(ang) * canopyRX * scale,
-        y + gauss() * 0.02,
-        canopyCZ + Math.sin(ang) * canopyRZ * scale
+        Math.cos(ang) * r,
+        y + gauss() * 0.015,
+        Math.sin(ang) * r
       ),
       "canopy",
-      { depthAmp: rand(0.001, 0.006), visibleNode: rnd() < 0.48 }
-    );
+      {
+        depthAmp: rand(0.001, 0.004),
+        swayAmp: rand(0.008, 0.015),
+        visibleNode: rnd() < 0.42
+      }
+    ));
+  }
 
-    const lv = Math.floor(t * (canopyLayers - 1));
-    addEdge(
-      id,
-      canopyRings[lv][Math.floor(rand(0, canopySegs))],
-      { alpha: rand(0.18, 0.40) }
-    );
+  for (let i = 0; i < scallops; i++) {
+    addEdge(scallopIds[i], scallopIds[(i + 1) % scallops], {
+      structure: true,
+      alpha: rand(0.40, 0.68)
+    });
 
-    if (rnd() > 0.45 && branchTips.length) {
-      addEdge(
-        id,
-        branchTips[Math.floor(rand(0, branchTips.length))],
-        { alpha: rand(0.16, 0.34) }
-      );
+    // Sube hacia el interior (no queda plano como hongo)
+    if (i % 2 === 0) {
+      addEdge(scallopIds[i], blobA[i % blobA.length], {
+        alpha: rand(0.30, 0.52)
+      });
     }
   }
+
+  // Conectar puntas de ramas a la copa
+  for (const tip of branchTips) {
+    const T = vertices[tip].base;
+    let best = canopyNodes[0];
+    let bestD = Infinity;
+
+    for (const cid of canopyNodes) {
+      const C = vertices[cid].base;
+      const d = Math.hypot(T.x - C.x, T.y - C.y, T.z - C.z);
+      if (d < bestD) {
+        bestD = d;
+        best = cid;
+      }
+    }
+
+    if (bestD < 1.2) {
+      addEdge(tip, best, { structure: true, alpha: rand(0.48, 0.76) });
+    }
+  }
+
+  // Unir tronco alto a scallops / copa (transición orgánica)
+  for (let i = 0; i < trunkSegs; i++) {
+    addEdge(
+      trunkRings[trunkRings.length - 1][i],
+      scallopIds[Math.floor(i * scallops / trunkSegs)],
+      { structure: i % 2 === 0, alpha: rand(0.42, 0.70) }
+    );
+  }
+
+  addEdge(core[core.length - 1], blobD[0], { structure: true, alpha: 0.72 });
+  addEdge(core[core.length - 1], blobA[0], { alpha: 0.55 });
 
   // ============================================================
   // PROGRESO DE FORMACIÓN / DISPERSIÓN
