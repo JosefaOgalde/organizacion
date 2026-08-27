@@ -343,64 +343,6 @@
   }
 
   // ============================================================
-  // RAÍCES
-  // ============================================================
-  const rootCount = 7;
-
-  for (let r = 0; r < rootCount; r++) {
-    const baseAngle = (r / rootCount) * Math.PI * 2 + gauss() * 0.12;
-    const segments = 6 + Math.floor(rand(0, 3));
-    const chain = [];
-
-    for (let s = 0; s <= segments; s++) {
-      const t = s / segments;
-      const spread = lerp(0.08, 0.72 + rand(0, 0.28), t);
-      const dip = lerp(0, 0.55 + rand(0, 0.22), t * t);
-      const twist = Math.sin(t * Math.PI * 1.4 + r * 0.7) * 0.12;
-
-      chain.push(addVertex(
-        v3(
-          Math.cos(baseAngle + twist) * spread,
-          CFG.treeBaseY - dip + gauss() * 0.015,
-          Math.sin(baseAngle + twist) * spread
-        ),
-        "roots",
-        { depthAmp: rand(0.001, 0.004), swayAmp: rand(0.006, 0.014) }
-      ));
-    }
-
-    for (let s = 0; s < chain.length - 1; s++) {
-      addEdge(chain[s], chain[s + 1], {
-        structure: s === 0 || s >= chain.length - 2,
-        alpha: rand(0.42, 0.78)
-      });
-    }
-
-    if (chain.length > 3 && rnd() > 0.35) {
-      const forkAt = Math.floor(chain.length * rand(0.45, 0.72));
-      const forkLen = 3 + Math.floor(rand(0, 2));
-      let prev = chain[forkAt];
-
-      for (let f = 1; f <= forkLen; f++) {
-        const ft = f / forkLen;
-        const ang = baseAngle + (rnd() < 0.5 ? -1 : 1) * (0.35 + ft * 0.45);
-        const id = addVertex(
-          v3(
-            Math.cos(ang) * (0.35 + ft * 0.42),
-            CFG.treeBaseY - 0.18 - ft * 0.28 + gauss() * 0.012,
-            Math.sin(ang) * (0.35 + ft * 0.42)
-          ),
-          "roots",
-          { depthAmp: 0.001, swayAmp: 0.005 }
-        );
-
-        addEdge(prev, id, { alpha: rand(0.28, 0.52) });
-        prev = id;
-      }
-    }
-  }
-
-  // ============================================================
   // TRONCO — columna continua hasta cerca de la cúspide
   // ============================================================
   const trunkRings = [];
@@ -476,22 +418,108 @@
   }
 
   // ============================================================
+  // RAÍCES — ancladas a la base del tronco
+  // ============================================================
+  const rootCount = 8;
+  const rootAttachY = trunkStartY + 0.02;
+
+  for (let r = 0; r < rootCount; r++) {
+    const baseAngle = (r / rootCount) * Math.PI * 2 + gauss() * 0.10;
+    const segments = 7 + Math.floor(rand(0, 3));
+    const chain = [];
+    const attach = trunkRings[0][r % trunkSegs];
+
+    for (let s = 0; s <= segments; s++) {
+      const t = s / segments;
+      const spread = lerp(0.10, 0.78 + rand(0, 0.22), t);
+      const dip = lerp(0, 0.85 + rand(0, 0.18), t * t);
+      const twist = Math.sin(t * Math.PI * 1.4 + r * 0.7) * 0.12;
+
+      chain.push(addVertex(
+        v3(
+          Math.cos(baseAngle + twist) * spread,
+          rootAttachY - dip + gauss() * 0.012,
+          Math.sin(baseAngle + twist) * spread
+        ),
+        "roots",
+        {
+          depthAmp: rand(0.001, 0.004),
+          swayAmp: rand(0.005, 0.012),
+          visibleNode: rnd() < 0.40
+        }
+      ));
+    }
+
+    addEdge(attach, chain[0], { structure: true, alpha: 0.82 });
+
+    for (let s = 0; s < chain.length - 1; s++) {
+      addEdge(chain[s], chain[s + 1], {
+        structure: s === 0 || s >= chain.length - 2,
+        alpha: rand(0.46, 0.80)
+      });
+    }
+
+    if (chain.length > 3 && rnd() > 0.30) {
+      const forkAt = Math.floor(chain.length * rand(0.40, 0.70));
+      const forkLen = 3 + Math.floor(rand(0, 2));
+      let prev = chain[forkAt];
+
+      for (let f = 1; f <= forkLen; f++) {
+        const ft = f / forkLen;
+        const ang = baseAngle + (rnd() < 0.5 ? -1 : 1) * (0.35 + ft * 0.45);
+        const id = addVertex(
+          v3(
+            Math.cos(ang) * (0.32 + ft * 0.48),
+            rootAttachY - 0.22 - ft * 0.42 + gauss() * 0.010,
+            Math.sin(ang) * (0.32 + ft * 0.48)
+          ),
+          "roots",
+          { depthAmp: 0.001, swayAmp: 0.005, visibleNode: rnd() < 0.35 }
+        );
+
+        addEdge(prev, id, { alpha: rand(0.30, 0.56) });
+        prev = id;
+      }
+    }
+  }
+
+  // Malla de corona radical bajo el tronco
+  for (let i = 0; i < trunkSegs; i++) {
+    const j = (i + 1) % trunkSegs;
+    const a = trunkRings[0][i];
+    const b = trunkRings[0][j];
+    const mid = addVertex(
+      v3(
+        Math.cos((i + 0.5) / trunkSegs * Math.PI * 2) * 0.38,
+        rootAttachY - 0.18 + gauss() * 0.008,
+        Math.sin((i + 0.5) / trunkSegs * Math.PI * 2) * 0.38
+      ),
+      "roots",
+      { depthAmp: 0.001, visibleNode: rnd() < 0.45 }
+    );
+    addEdge(a, mid, { structure: true, alpha: 0.70 });
+    addEdge(b, mid, { alpha: 0.55 });
+    addEdge(a, b, { alpha: 0.40 });
+  }
+
+  // ============================================================
   // FOLLAJE — capas apiladas rellenas (silueta continua, sin cono hueco)
   // Un cono vacío se ve como dos elipses desconectadas con la cámara oblicua.
   // ============================================================
   const foliageLayers = [
-    { y: 0.22, r: 1.05, group: "branches" },
-    { y: 0.48, r: 0.98, group: "branches" },
-    { y: 0.72, r: 0.90, group: "branches" },
-    { y: 0.96, r: 0.80, group: "branches" },
-    { y: 1.18, r: 0.70, group: "branches" },
-    { y: 1.40, r: 0.58, group: "branches" },
-    { y: 1.60, r: 0.48, group: "canopy" },
-    { y: 1.80, r: 0.38, group: "canopy" },
-    { y: 1.98, r: 0.28, group: "canopy" },
-    { y: 2.14, r: 0.18, group: "canopy" },
-    { y: 2.28, r: 0.10, group: "canopy" },
-    { y: 2.40, r: 0.045, group: "canopy" }
+    { y: 0.05, r: 0.72, group: "branches" },
+    { y: 0.28, r: 1.02, group: "branches" },
+    { y: 0.52, r: 0.96, group: "branches" },
+    { y: 0.74, r: 0.88, group: "branches" },
+    { y: 0.96, r: 0.78, group: "branches" },
+    { y: 1.18, r: 0.68, group: "branches" },
+    { y: 1.40, r: 0.56, group: "branches" },
+    { y: 1.60, r: 0.46, group: "canopy" },
+    { y: 1.80, r: 0.36, group: "canopy" },
+    { y: 1.98, r: 0.26, group: "canopy" },
+    { y: 2.14, r: 0.16, group: "canopy" },
+    { y: 2.28, r: 0.09, group: "canopy" },
+    { y: 2.40, r: 0.04, group: "canopy" }
   ];
 
   const foliageSegs = 14;
@@ -890,7 +918,7 @@
 
     return {
       x: W * 0.50 + p.x * S * perspective,
-      y: H * 0.50 + p.y * S * perspective,
+      y: H * 0.52 - p.y * S * perspective,
       z: p.z,
       perspective
     };
