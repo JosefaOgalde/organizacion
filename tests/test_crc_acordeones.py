@@ -269,10 +269,10 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIn("crcEsLabelIngredienteExacto", self.explorar.JS_FOCO_INGREDIENTE)
         self.assertIn("crcExpandirTodosItems", self.explorar.JS_EXPANDIR_TODOS_ITEMS)
         self.assertIn("tienes un borrador", self.explorar.JS_RESOLVER_BORRADOR.lower())
-        self.assertIn("No pude escribir los ingredientes", src)
+        self.assertIn("Ingredientes incompletos", src)
         self.assertIn("Ya estoy en Lista de Instrucciones", src)
         self.assertIn("Ya estoy en SEO HTML", src)
-        self.assertIn("No pude escribir las instrucciones", src)
+        self.assertIn("Instrucciones incompletas", src)
         self.assertIn("No pude escribir SEO HTML", src)
         self.assertIn("crcInputsInstruccionVisibles", self.explorar.JS_FOCO_INSTRUCCION)
         self.assertIn("interno", self.explorar.JS_CLICK_AGREGAR_INGREDIENTE)
@@ -691,10 +691,10 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertGreaterEqual(tags.volver, 1)
         self.assertIsNone(self.explorar.editor_actual(tags))
 
-    def test_no_pide_lapiz_si_cabecera_ya_esta_cargada(self):
+    def test_bloques_cargados_se_abren_para_validarlos(self):
         src = inspect.getsource(self.explorar.fill_from_receta)
         src_pedir = inspect.getsource(self.explorar.pedir_lapiz_a_mano)
-        self.assertIn("Cabecera ya tiene contenido", src)
+        self.assertIn("ya tiene contenido; lo abro para validarlo", src)
         self.assertIn("bloque_ya_cargado", src_pedir)
         self.assertIn("No pido el lápiz", src_pedir)
 
@@ -710,6 +710,68 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         pagina = Pagina()
         self.assertTrue(self.explorar.bloque_ya_cargado(pagina, "cabecera"))
         self.assertFalse(self.explorar.pedir_lapiz_a_mano(pagina, "cabecera"))
+
+    def test_ingredientes_incompletos_o_no_guardados_devuelven_error(self):
+        ficha = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager/view/receta123"
+        )
+
+        class Pagina:
+            url = ficha
+
+        receta = {
+            "titulo": "Receta",
+            "descripcion": "Descripción",
+            "ingredientes": [{"nombre": "Uno"}, {"nombre": "Dos"}],
+            "pasos": [{"orden": 1, "texto": "Preparar"}],
+        }
+
+        comunes = (
+            patch.object(self.explorar, "es_lista_proyectos_cms", return_value=False),
+            patch.object(self.explorar, "avisar_si_salio_de_default", return_value=False),
+            patch.object(self.explorar, "gestor_sin_ficha", return_value=False),
+            patch.object(self.explorar, "en_vista_default_cms", return_value=False),
+            patch.object(self.explorar, "_contar_placeholder_vacio", return_value=0),
+            patch.object(self.explorar, "_hay_modal_sin_guardar", return_value=False),
+            patch.object(self.explorar, "editor_actual", return_value="ingredientes"),
+        )
+
+        with contextlib.ExitStack() as stack:
+            for parche in comunes:
+                stack.enter_context(parche)
+            stack.enter_context(
+                patch.object(self.explorar, "fill_lista_acordeones", return_value=1)
+            )
+            guardar = stack.enter_context(
+                patch.object(self.explorar, "guardar_y_volver_al_lienzo")
+            )
+            with contextlib.redirect_stdout(io.StringIO()):
+                resultado = self.explorar.fill_from_receta(Pagina(), receta, {}, dry_run=False)
+        self.assertFalse(resultado)
+        guardar.assert_not_called()
+
+        with contextlib.ExitStack() as stack:
+            for parche in comunes:
+                stack.enter_context(parche)
+            stack.enter_context(
+                patch.object(self.explorar, "fill_lista_acordeones", return_value=2)
+            )
+            stack.enter_context(
+                patch.object(
+                    self.explorar,
+                    "guardar_y_volver_al_lienzo",
+                    return_value=False,
+                )
+            )
+            with contextlib.redirect_stdout(io.StringIO()):
+                resultado = self.explorar.fill_from_receta(Pagina(), receta, {}, dry_run=False)
+        self.assertFalse(resultado)
+
+    def test_carga_parcial_nunca_devuelve_exito(self):
+        src = inspect.getsource(self.explorar.fill_from_receta)
+        self.assertNotIn("return llenados > 0", src)
+        self.assertNotIn("return bool(sum(", src)
 
     def test_js_no_rellena_paleta_izquierda(self):
         self.assertIn("r.left >= 240", self.explorar.JS_MARCAR_POR_LABEL)
