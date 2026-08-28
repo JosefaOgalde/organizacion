@@ -464,7 +464,7 @@
             };
           });
           writeStore(store);
-          if (currentId) selectPage(currentId);
+          if (currentId) selectPage(currentId, { persistBefore: false });
           alert('Importación lista.');
         } catch (e) {
           alert('No se pudo importar el JSON: ' + e.message);
