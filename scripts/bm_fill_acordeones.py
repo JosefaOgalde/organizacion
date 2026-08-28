@@ -12,11 +12,19 @@ Dry-run por defecto (no publica). Para publicar: --publish
 from __future__ import annotations
 
 import importlib.util
+import os
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLICAR = ROOT / "scripts/publicar-receta-cencosud.py"
+
+
+def _cargar_publicador():
+    spec = importlib.util.spec_from_file_location("publicar_receta_cencosud", PUBLICAR)
+    modulo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modulo)
+    return modulo
 
 
 def main() -> int:
@@ -32,11 +40,21 @@ def main() -> int:
         argv.append("--dry-run")
     argv.extend(flags)
 
-    spec = importlib.util.spec_from_file_location("publicar_receta_cencosud", PUBLICAR)
-    modulo = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(modulo)
+    modulo = _cargar_publicador()
     sys.argv = argv
-    return modulo.main()
+    dry_run_anterior = os.environ.get("CENCOSUD_BM_DRY_RUN")
+    if publicar:
+        # La opción explícita del wrapper debe prevalecer sobre el default
+        # seguro (`true`) y sobre el valor conservador guardado en .env.
+        os.environ["CENCOSUD_BM_DRY_RUN"] = "false"
+    try:
+        return modulo.main()
+    finally:
+        if publicar:
+            if dry_run_anterior is None:
+                os.environ.pop("CENCOSUD_BM_DRY_RUN", None)
+            else:
+                os.environ["CENCOSUD_BM_DRY_RUN"] = dry_run_anterior
 
 
 if __name__ == "__main__":
