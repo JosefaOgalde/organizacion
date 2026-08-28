@@ -100,6 +100,41 @@
       color: var(--green-2);
       font-size: 12px;
     }
+    .topbar-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .version-switch {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .version-switch label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .version-switch select {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .version-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: var(--green);
+      margin-left: 6px;
+      vertical-align: middle;
+    }
     .actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .actions button, .actions label.btn {
       border: 1px solid var(--line);
@@ -138,10 +173,23 @@
       overflow: hidden;
       box-shadow: 0 8px 24px rgba(14,43,34,.08);
     }
-    .shot-wrap img {
+    .shot-wrap img,
+    .shot-wrap iframe {
       display: block;
       width: 100%;
       height: auto;
+      border: 0;
+      background: #fff;
+    }
+    .shot-wrap iframe {
+      min-height: 72vh;
+      height: 72vh;
+    }
+    .shot-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin: 0 0 8px;
+      line-height: 1.35;
     }
     .edit-pane {
       background: var(--panel);
@@ -205,8 +253,15 @@
     </aside>
     <main>
       <div class="topbar">
-        <div>
-          <h2 id="title">Cargando…</h2>
+        <div class="topbar-meta">
+          <h2 id="title"><span id="pageTitle">Cargando…</span><span class="version-badge" id="versionBadge"></span></h2>
+          <div class="version-switch">
+            <label for="versionSelect">Versión</label>
+            <select id="versionSelect" aria-label="Versión de textos">
+              <option value="v1">V1 · Sitio actual</option>
+              <option value="v2">V2 · Beta 2026 (mkof-beta-2026)</option>
+            </select>
+          </div>
           <a id="liveLink" href="#" target="_blank" rel="noopener">Abrir en vivo</a>
         </div>
         <div class="actions">
@@ -223,20 +278,50 @@
   </div>
 
   <script src="data.js"></script>
+  <script src="data-v2.js"></script>
   <script>
-    const STORAGE_KEY = 'mkof-landings-revision-v1';
+    const VERSION_KEY = 'mkof-landings-revision-version';
+    let currentVersion = 'v1';
     let pages = [];
     let currentId = null;
     let saveTimer = null;
 
     const $ = (sel) => document.querySelector(sel);
 
+    function storageKey() {
+      return `mkof-landings-revision-${currentVersion}`;
+    }
+
     function loadStore() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+      try { return JSON.parse(localStorage.getItem(storageKey()) || '{}'); }
       catch { return {}; }
     }
     function writeStore(store) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+      localStorage.setItem(storageKey(), JSON.stringify(store));
+    }
+
+    function getDatasets() {
+      return {
+        v1: Array.isArray(window.MKOF_LANDINGS) ? window.MKOF_LANDINGS : [],
+        v2: Array.isArray(window.MKOF_LANDINGS_V2) ? window.MKOF_LANDINGS_V2 : [],
+      };
+    }
+
+    function loadPagesForVersion(version) {
+      const datasets = getDatasets();
+      return datasets[version] || [];
+    }
+
+    function urlLabel(url) {
+      return String(url || '')
+        .replace('https://grupomakingof.com/mkof-beta-2026', '/mkof-beta-2026')
+        .replace('https://grupomakingof.com', '');
+    }
+
+    function updateVersionBadge() {
+      const badge = $('#versionBadge');
+      if (!badge) return;
+      badge.textContent = currentVersion === 'v2' ? 'Beta 2026' : 'Sitio actual';
     }
     function getPageEdits(id) {
       return loadStore()[id] || {};
@@ -263,7 +348,7 @@
         btn.type = 'button';
         btn.className = 'nav-item' + (p.id === currentId ? ' active' : '');
         btn.dataset.id = p.id;
-        btn.innerHTML = `<span>${p.title}</span><span class="url">${p.url.replace('https://grupomakingof.com','')}</span>`;
+        btn.innerHTML = `<span>${p.title}</span><span class="url">${urlLabel(p.url)}</span>`;
         btn.addEventListener('click', () => selectPage(p.id));
         nav.appendChild(btn);
       });
@@ -280,16 +365,25 @@
       const text = edits.text != null ? edits.text : page.text;
       const comments = edits.comments != null ? edits.comments : (page.comments || '');
 
-      $('#title').textContent = page.title;
+      $('#pageTitle').textContent = page.title;
+      updateVersionBadge();
       const link = $('#liveLink');
       link.href = page.url;
       link.textContent = page.url;
 
+      const useLivePreview = page.preview === 'live' || currentVersion === 'v2';
+      const shotHtml = useLivePreview
+        ? `<p class="shot-note">Vista del beta en vivo. Si no carga aquí, usa <b>Abrir en vivo</b>.</p>
+           <div class="shot-wrap">
+             <iframe src="${page.url}" title="Beta ${page.title}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+           </div>`
+        : `<div class="shot-wrap">
+             <img src="${page.shot}" alt="Captura de ${page.title}" loading="lazy" />
+           </div>`;
+
       $('#workspace').innerHTML = `
         <section class="shot-pane">
-          <div class="shot-wrap">
-            <img src="${page.shot}" alt="Captura de ${page.title}" loading="lazy" />
-          </div>
+          ${shotHtml}
         </section>
         <section class="edit-pane">
           <div class="hint">Edita el texto de la landing o deja comentarios para el equipo. Usa <b>Guardar</b> o espera el autoguardado.</div>
@@ -349,7 +443,7 @@
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'mkof-landings-revision.json';
+      a.download = `mkof-landings-revision-${currentVersion}.json`;
       a.click();
       URL.revokeObjectURL(a.href);
     }
@@ -400,11 +494,36 @@
       e.target.value = '';
     });
 
-    function boot() {
-      pages = Array.isArray(window.MKOF_LANDINGS) ? window.MKOF_LANDINGS : [];
+    function switchVersion(nextVersion) {
+      if (nextVersion === currentVersion) return;
+      persistCurrentFields();
+      currentVersion = nextVersion;
+      localStorage.setItem(VERSION_KEY, currentVersion);
+      pages = loadPagesForVersion(currentVersion);
       if (!pages.length) {
-        $('#title').textContent = 'No se pudo cargar data.js';
-        $('#workspace').innerHTML = `<div class="empty">Falta <code>data.js</code> junto a este HTML.<br/>Trae la branch <code>cursor/arbol-animacion-3ba0</code> y abre otra vez <code>index.html</code>.</div>`;
+        $('#pageTitle').textContent = 'No se pudo cargar la versión';
+        updateVersionBadge();
+        $('#workspace').innerHTML = `<div class="empty">Falta <code>data${currentVersion === 'v2' ? '-v2' : ''}.js</code> junto a este HTML.</div>`;
+        return;
+      }
+      const keepId = currentId && pages.some((p) => p.id === currentId) ? currentId : pages[0].id;
+      buildNav();
+      selectPage(keepId);
+    }
+
+    $('#versionSelect').addEventListener('change', (e) => {
+      switchVersion(e.target.value);
+    });
+
+    function boot() {
+      currentVersion = localStorage.getItem(VERSION_KEY) || 'v1';
+      if (!['v1', 'v2'].includes(currentVersion)) currentVersion = 'v1';
+      $('#versionSelect').value = currentVersion;
+      pages = loadPagesForVersion(currentVersion);
+      if (!pages.length) {
+        $('#pageTitle').textContent = 'No se pudo cargar data.js';
+        updateVersionBadge();
+        $('#workspace').innerHTML = `<div class="empty">Falta <code>data.js</code> y/o <code>data-v2.js</code> junto a este HTML.</div>`;
         return;
       }
       buildNav();
