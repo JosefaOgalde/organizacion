@@ -354,9 +354,9 @@
       });
     }
 
-    function selectPage(id) {
-      // persist current fields before switching
-      persistCurrentFields();
+    function selectPage(id, opts = {}) {
+      const { persistBefore = true } = opts;
+      if (persistBefore) persistCurrentFields();
       currentId = id;
       const page = pages.find((p) => p.id === id);
       if (!page) return;
@@ -371,6 +371,7 @@
       link.href = page.url;
       link.textContent = page.url;
 
+      const versionLabel = currentVersion === 'v2' ? 'Beta 2026' : 'Sitio actual';
       const useLivePreview = page.preview === 'live' || currentVersion === 'v2';
       const shotHtml = useLivePreview
         ? `<p class="shot-note">Vista del beta en vivo. Si no carga aquí, usa <b>Abrir en vivo</b>.</p>
@@ -386,7 +387,7 @@
           ${shotHtml}
         </section>
         <section class="edit-pane">
-          <div class="hint">Edita el texto de la landing o deja comentarios para el equipo. Usa <b>Guardar</b> o espera el autoguardado.</div>
+          <div class="hint">Textos de <b>${versionLabel}</b> · edita o deja comentarios. Usa <b>Guardar</b> o espera el autoguardado.</div>
           <div class="field">
             <label for="textArea">Texto / copy (editable)</label>
             <textarea id="textArea" spellcheck="true">${escapeHtml(text)}</textarea>
@@ -474,11 +475,12 @@
 
     function resetPage() {
       if (!currentId) return;
-      if (!confirm('¿Restablecer texto y comentarios de esta página a la versión original?')) return;
+      const label = currentVersion === 'v2' ? 'Beta 2026' : 'sitio actual';
+      if (!confirm(`¿Restablecer texto y comentarios de esta página al original de ${label}?`)) return;
       const store = loadStore();
       delete store[currentId];
       writeStore(store);
-      selectPage(currentId);
+      selectPage(currentId, { persistBefore: false });
     }
 
     $('#btnSave').addEventListener('click', () => {
@@ -508,7 +510,7 @@
       }
       const keepId = currentId && pages.some((p) => p.id === currentId) ? currentId : pages[0].id;
       buildNav();
-      selectPage(keepId);
+      selectPage(keepId, { persistBefore: false });
     }
 
     $('#versionSelect').addEventListener('change', (e) => {
@@ -527,7 +529,7 @@
         return;
       }
       buildNav();
-      selectPage(pages[0].id);
+      selectPage(pages[0].id, { persistBefore: false });
     }
     boot();
   </script>
