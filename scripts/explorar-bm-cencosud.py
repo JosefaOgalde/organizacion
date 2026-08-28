@@ -7327,6 +7327,12 @@ def fill_from_receta(
         else:
             print(f"  ✗ tags incompletos ({n_tags}/{len(cats)}) — NO guardo ni Volver")
             return False
+    if cats and not resultados.get("tags"):
+        print(
+            "  ✗ Los tags del JSON no quedaron cargados. No publico.",
+            file=sys.stderr,
+        )
+        return False
 
     ings = receta.get("ingredientes") or []
     if abrir_grupo("ingredientes", ["field_ingredientes"]) and puede_rellenar_editor(

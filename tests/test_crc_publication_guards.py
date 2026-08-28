@@ -1,5 +1,6 @@
 import contextlib
 import importlib.util
+import inspect
 import io
 import unittest
 from pathlib import Path
@@ -90,6 +91,16 @@ class CrcPublicationGuardsTests(unittest.TestCase):
 
         self.assertFalse(pagina.modal)
         self.assertEqual(pagina.clicks, ["cancelar-iframe"])
+
+    def test_tags_del_json_son_postcondicion_antes_de_ingredientes(self):
+        src = inspect.getsource(self.explorar.fill_from_receta)
+        guard = 'if cats and not resultados.get("tags"):'
+        self.assertIn(guard, src)
+        self.assertLess(
+            src.index(guard),
+            src.index('ings = receta.get("ingredientes")'),
+        )
+        self.assertIn("Los tags del JSON no quedaron cargados. No publico.", src)
 
 
 if __name__ == "__main__":
