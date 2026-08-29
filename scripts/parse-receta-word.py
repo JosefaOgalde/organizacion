@@ -577,9 +577,6 @@ def main() -> int:
 
     receta = construir_receta(texto, rel)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    if src.suffix.lower() == ".docx":
-        adjuntar_foto_portada(receta, src, OUT_DIR / "media" / receta["id"])
-
     out = OUT_DIR / f"{receta['id']}.json"
     raw_out = OUT_DIR / f"{receta['id']}.raw.txt"
     existing_outputs = [path for path in (out, raw_out) if path.exists()]
@@ -599,6 +596,9 @@ def main() -> int:
             file=sys.stderr,
         )
         return 3
+
+    if src.suffix.lower() == ".docx":
+        adjuntar_foto_portada(receta, src, OUT_DIR / "media" / receta["id"])
 
     out.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     raw_out.write_text(texto + "\n", encoding="utf-8")
