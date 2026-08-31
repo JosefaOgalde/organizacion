@@ -98,6 +98,7 @@
     if (asegurarGastoEntradaEvento3d16100(d)) changed = true;
     if (asegurarMelVenta020(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
+    if (asegurarRetiroCajaInsumos176000(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
     if (asegurarPedidosImpresosYNaves(d)) changed = true;
     if (asegurarSkusProductos(d)) changed = true;
@@ -2221,6 +2222,42 @@
     return changed;
   }
 
+  /** Retiro de caja → insumos: vacía la caja (ventas − retiros). No suma a gastos de socios. */
+  function asegurarRetiroCajaInsumos176000(d) {
+    d.retirosCaja = Array.isArray(d.retirosCaja) ? d.retirosCaja : [];
+    const id = 'retiro-caja-insumos-176000';
+    const seed = {
+      id,
+      fecha: '2026-08-31',
+      montoNeto: 176000,
+      descripcion: 'Retiro de caja para insumos',
+      notas:
+        'Se sacó de caja todo lo cobrado en ventas ($176.000) para comprar insumos. Caja = ventas − retiros → $0. No suma a gastos de socios (no es capital nuevo).',
+      socioRegistro: 'Ambos',
+      motivo: 'insumos',
+    };
+    const i = d.retirosCaja.findIndex((r) => r && r.id === id);
+    if (i < 0) {
+      d.retirosCaja.push(seed);
+      return true;
+    }
+    const cur = d.retirosCaja[i];
+    if (Number(cur.montoNeto) !== 176000 || cur.motivo !== 'insumos') {
+      d.retirosCaja[i] = { ...cur, ...seed };
+      return true;
+    }
+    return false;
+  }
+
+  function totalRetirosCaja(d) {
+    return (d.retirosCaja || []).reduce((a, r) => a + Number(r?.montoNeto || 0), 0);
+  }
+
+  /** Efectivo disponible: ventas cobradas − retiros (p. ej. insumos). */
+  function cajaActual(d) {
+    return Math.max(0, sum(d.ventas) - totalRetirosCaja(d));
+  }
+
   /** Compras 29 jul 2026 — llaveros, filamento rosado, ganchos aros, mueble esquinero EASY. Sociedad 50/50 · pagó Nicolás. */
   function asegurarGastosCompras20260729(d) {
     d.gastos = Array.isArray(d.gastos) ? d.gastos : [];
@@ -3863,6 +3900,8 @@
       pedidoActivo(p.estado || 'pendiente')
     );
     const montoPedidosPend = pedidosActivos.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
+    const retirosCaja = totalRetirosCaja(data);
+    const caja = Math.max(0, ventas - retirosCaja);
     /** Barra inferior: ventas contabilizadas + pedidos pendientes (pipeline de recupero). */
     const ventasMasPedidos = ventas + montoPedidosPend;
     const denom = Math.max(metaRecuperar, ventas, ventasMasPedidos, 1);
@@ -3968,9 +4007,15 @@
       <div class="imp-grid">
         <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
         <div class="imp-kpi imp-kpi--ok"><span>Ventas (contabilizadas)</span><strong>${money(ventas)}</strong></div>
+        <div class="imp-kpi ${caja > 0 ? 'imp-kpi--ok' : ''}"><span>Caja (ventas − retiros)</span><strong>${money(caja)}</strong></div>
         <div class="imp-kpi"><span>Pedidos activos</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
         <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
       </div>
+      ${
+        retirosCaja > 0
+          ? `<p class="imp-muted" style="margin-top:-0.25rem">Retiros de caja: <strong>${money(retirosCaja)}</strong> (insumos). La caja no baja la deuda de socios.</p>`
+          : ''
+      }
       <div class="imp-card">
         <h2>Costos de producto (resumen)</h2>
         <p class="imp-muted">Mismos costo y precio que en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>. Si no hay precio manual, se sugiere <strong>+${pctMarkup}%</strong> sobre el costo.</p>

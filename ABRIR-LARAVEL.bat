@@ -135,6 +135,7 @@ if not errorlevel 1 (
   if exist "scripts\force-imp-ped-007-anulado.js" node scripts\force-imp-ped-007-anulado.js >nul 2>&1
   if exist "scripts\force-imp-mel-013-venta.js" node scripts\force-imp-mel-013-venta.js >nul 2>&1
   if exist "scripts\force-imp-ventas-021-022.js" node scripts\force-imp-ventas-021-022.js >nul 2>&1
+  if exist "scripts\force-imp-caja-cero-insumos.js" node scripts\force-imp-caja-cero-insumos.js >nul 2>&1
 )
 
 echo  1^) SQLite + API Laravel...

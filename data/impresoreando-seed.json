@@ -17,7 +17,7 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Los gastos son de ambos (deuda 50/50), pero hasta ahora los ha pagado todos Nicolás. Josefa le debe el 50% del capital/gastos.",
-    "actualizado": "2026-08-31T23:10:00.000Z",
+    "actualizado": "2026-08-31T23:33:43.512Z",
     "version": 1,
     "capital": {
       "aportadoPor": "Nicolás",
@@ -2374,6 +2374,17 @@
       "socioRegistro": "Ambos",
       "creado": "2026-08-31T23:05:00.000Z",
       "transferidoEn": "2026-08-31T23:05:00.000Z"
+    }
+  ],
+  "retirosCaja": [
+    {
+      "id": "retiro-caja-insumos-176000",
+      "fecha": "2026-08-31",
+      "montoNeto": 176000,
+      "descripcion": "Retiro de caja para insumos",
+      "notas": "Se sacó de caja todo lo cobrado en ventas ($176.000) para comprar insumos. Caja = ventas − retiros → $0. No suma a gastos de socios (no es capital nuevo).",
+      "socioRegistro": "Ambos",
+      "motivo": "insumos"
     }
   ]
 }

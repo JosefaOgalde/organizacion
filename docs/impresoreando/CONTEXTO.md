@@ -12,7 +12,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Seed (repo) | `data/impresoreando-seed.json` |
 | Live (gitignored) | `data/impresoreando-live.json` |
 | API | `GET/POST /api/impresoreando` · `POST /api/impresoreando/venta` en `scripts/organizacion-server.js` |
-| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre `scripts/sync-impresoreando-seed-a-live.js` + `force-imp-fiados-012-013.js` + `force-imp-ventas-014-015-fiado-008.js` + `force-imp-ventas-021-022.js` para meter PED/productos/ventas nuevos del seed en el live local. Si no ves fiados/ventas nuevas: `node scripts/force-imp-ventas-014-015-fiado-008.js` y/o `node scripts/force-imp-ventas-021-022.js` y recarga Pedidos/Ventas. |
+| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre `scripts/sync-impresoreando-seed-a-live.js` + `force-imp-fiados-012-013.js` + `force-imp-ventas-014-015-fiado-008.js` + `force-imp-ventas-021-022.js` + `force-imp-caja-cero-insumos.js` para meter PED/productos/ventas/caja del seed en el live local. Si no ves fiados/ventas nuevas: `node scripts/force-imp-ventas-014-015-fiado-008.js` y/o `node scripts/force-imp-ventas-021-022.js` y/o `node scripts/force-imp-caja-cero-insumos.js` y recarga Pedidos/Ventas/Resumen. |
 | Landing | `http://127.0.0.1:8000/index/clientes/impresoreando/` · CTA **Resumen 50/50** · logo `identidad/logo-impresoreando.png` |
 | Panel / Resumen | `http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen` |
 | Panel / Redes | `…/panel/?tab=redes` — campaña IG (junto a Bitácora) |
@@ -32,6 +32,7 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 - Evento 3D 29 ago: **1 entrada $16.100** (`gas-entrada-evento-3d-16100` · **pagó Josefa** · cuenta en «Capital que aportó» de Josefa).
 - `metaRecuperar = gastos + operación`
 - `saldoPendiente = max(0, meta − ventas)` — solo **ventas** bajan deuda
+- **Caja** = `ventas − retirosCaja` (efectivo disponible). Retiro 31 ago: **$176.000 a insumos** (`retiro-caja-insumos-176000`) → caja **$0**. Los retiros **no** suman a gastos de socios ni a la meta.
 - `% progreso = ventas / meta`
 - Barras UI: (1) progreso % · (2) gastos vs ventas · (3) **ventas + pedidos pendientes** (pipeline verde+azul; debajo el **% proyectado** = `(ventas+pedidos)/meta`; pedidos aún no bajan deuda)
 - KPI pedidos activos = suma `montoNeto` de pedidos en `pendiente|listo|en_impresion`
