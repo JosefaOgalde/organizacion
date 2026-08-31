@@ -1022,6 +1022,29 @@ class JsIngredienteExactoTests(unittest.TestCase):
             self.assertEqual(titulo, "Ingredientes")
             browser.close()
 
+    def test_fill_lista_elimina_ingredientes_sobrantes_de_una_receta_existente(self):
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError:
+            self.skipTest("playwright no instalado")
+        html = (
+            Path(__file__).resolve().parent / "fixtures" / "bm-lista-ingredientes.html"
+        )
+        items = [{"linea": "1 taza de harina"}]
+        with sync_playwright() as pw:
+            browser = pw.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(html.as_uri())
+            n = self.explorar.fill_lista_acordeones(page, items, "ingredientes")
+            self.assertEqual(n, 1)
+            self.assertEqual(
+                page.evaluate(
+                    "() => [...document.querySelectorAll('input[id^=\"ing-\"]')].map((el) => el.value)"
+                ),
+                ["1 taza de harina"],
+            )
+            browser.close()
+
     def test_fill_lista_instrucciones_titulo_y_pasos(self):
         try:
             from playwright.sync_api import sync_playwright
