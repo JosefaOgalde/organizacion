@@ -99,6 +99,8 @@
     if (asegurarMelVenta020(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
     if (asegurarRetiroCajaInsumos176000(d)) changed = true;
+    if (asegurarVentaPedroBob023(d)) changed = true;
+    if (asegurarDeudaJosefa330000(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
     if (asegurarPedidosImpresosYNaves(d)) changed = true;
     if (asegurarSkusProductos(d)) changed = true;
@@ -121,18 +123,34 @@
       else capitalNicolas += monto;
     }
     const mitad = Math.round(capitalNeto * 0.5);
-    const deudaJosefaClp = Math.max(0, mitad - Math.round(capitalJosefa));
     const cap = d.meta.capital && typeof d.meta.capital === 'object' ? d.meta.capital : {};
+    const abonosDeuda = Number(cap.abonosDeudaJosefaClp || 0);
+    const deudaCalculada = Math.max(0, mitad - Math.round(capitalJosefa) - abonosDeuda);
+    const deudaJosefaClp =
+      cap.deudaJosefaManual && cap.deudaJosefaClp != null
+        ? Math.max(0, Number(cap.deudaJosefaClp))
+        : deudaCalculada;
     const nextCap = {
       aportadoPor: capitalJosefa > 0 ? 'Nicolás + Josefa' : 'Nicolás',
       aportadoJosefaClp: Math.round(capitalJosefa),
       aportadoNicolasClp: Math.round(capitalNicolas),
       deudaPctJosefa: 50,
       montoNetoClp: capitalNeto,
+      abonosDeudaJosefaClp: abonosDeuda,
       deudaJosefaClp,
-      nota:
-        capitalJosefa > 0
-          ? `Sociedad 50/50. Nicolás aportó ${Math.round(capitalNicolas).toLocaleString('es-CL')} y Josefa ${Math.round(capitalJosefa).toLocaleString('es-CL')}. Josefa debe el 50% de los gastos menos lo que ya pagó.`
+      deudaJosefaManual: !!cap.deudaJosefaManual,
+      nota: cap.deudaJosefaManual
+        ? String(
+            cap.nota ||
+              `Deuda Josefa → Nicolás fijada en $${deudaJosefaClp.toLocaleString('es-CL')}` +
+                (abonosDeuda
+                  ? ` (abono $${abonosDeuda.toLocaleString('es-CL')} ya pagado a Nicolás).`
+                  : '.')
+          )
+        : capitalJosefa > 0
+          ? `Sociedad 50/50. Nicolás aportó ${Math.round(capitalNicolas).toLocaleString('es-CL')} y Josefa ${Math.round(capitalJosefa).toLocaleString('es-CL')}. Josefa debe el 50% de los gastos menos lo que ya pagó` +
+            (abonosDeuda ? ` menos abonos $${abonosDeuda.toLocaleString('es-CL')}` : '') +
+            '.'
           : 'Nicolás puso el capital. «Ambos» = sociedad 50/50 (Josefa debe el 50% a Nicolás).',
     };
     if (
@@ -141,6 +159,8 @@
       Number(cap.montoNetoClp) !== nextCap.montoNetoClp ||
       Number(cap.aportadoJosefaClp || 0) !== nextCap.aportadoJosefaClp ||
       Number(cap.aportadoNicolasClp || 0) !== nextCap.aportadoNicolasClp ||
+      Number(cap.abonosDeudaJosefaClp || 0) !== nextCap.abonosDeudaJosefaClp ||
+      !!cap.deudaJosefaManual !== nextCap.deudaJosefaManual ||
       cap.nota !== nextCap.nota
     ) {
       d.meta.capital = { ...cap, ...nextCap };
@@ -1947,6 +1967,35 @@
           },
         ],
       },
+      {
+        id: 'ven-pedro-bob-023',
+        codigo: 'I000023',
+        fecha: '2026-08-31',
+        cliente: 'Pedro MKOF',
+        clienteNombre: 'Pedro',
+        clienteOrigen: 'MKOF',
+        descripcion: 'PED-018 · 1× Porta Bob Esponja · Pedro MKOF',
+        cantidad: 1,
+        montoBruto: 7000,
+        descuentoClp: 0,
+        montoNeto: 7000,
+        costoTotal: 998.17,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-018 · 1× Porta Bob Esponja · pagado $7.000 · MKOF (Josefa)',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-pedro-bob-018',
+        pedidoNumero: 'PED-018',
+        items: [
+          {
+            sku: 'PTBOBES001',
+            nombre: 'Porta Bob Esponja',
+            cantidad: 1,
+            precioUnitarioClp: 7000,
+            costoUnitarioClp: 998.17,
+            filamento: 'multicolor',
+          },
+        ],
+      },
     ];
 
     let changed = false;
@@ -2092,6 +2141,19 @@
         itemCantidad: 2,
         itemSku: 'LLNORUE001',
         itemNombre: 'Llavero Noruega',
+      },
+      {
+        pedId: 'ped-pedro-bob-018',
+        numero: 'PED-018',
+        ventaId: 'ven-pedro-bob-023',
+        cliente: 'Pedro MKOF',
+        montoNeto: 7000,
+        notas: '1× Porta Bob Esponja · transferido a venta I000023 · pagado $7.000 · MKOF (Josefa)',
+        transferidoEn: '2026-08-31T23:30:00.000Z',
+        itemPrecioUnitarioClp: 7000,
+        itemCantidad: 1,
+        itemSku: 'PTBOBES001',
+        itemNombre: 'Porta Bob Esponja',
       },
     ];
     for (const t of transfers) {
@@ -2256,6 +2318,146 @@
   /** Efectivo disponible: ventas cobradas − retiros (p. ej. insumos). */
   function cajaActual(d) {
     return Math.max(0, sum(d.ventas) - totalRetirosCaja(d));
+  }
+
+  /** PED-018 Pedro MKOF · Porta Bob Esponja · pagado → I000023 $7.000 */
+  function asegurarVentaPedroBob023(d) {
+    d.pedidos = Array.isArray(d.pedidos) ? d.pedidos : [];
+    d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
+    d.meta = d.meta && typeof d.meta === 'object' ? d.meta : {};
+    let changed = false;
+    const pedId = 'ped-pedro-bob-018';
+    const venId = 'ven-pedro-bob-023';
+    const codigo = 'I000023';
+    const costo = 998.17;
+    const monto = 7000;
+    let ped = d.pedidos.find((p) => p && (p.id === pedId || p.numero === 'PED-018'));
+    if (!ped) {
+      ped = {
+        id: pedId,
+        numero: 'PED-018',
+        fecha: '2026-08-31',
+        cliente: 'Pedro MKOF',
+        clienteNombre: 'Pedro',
+        clienteOrigen: 'MKOF',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'PTBOBES001',
+            nombre: 'Porta Bob Esponja',
+            cantidad: 1,
+            precioUnitarioClp: monto,
+            costoUnitarioClp: costo,
+            filamento: 'multicolor',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: monto,
+        descuentoClp: 0,
+        montoNeto: monto,
+        costoTotal: costo,
+        estado: 'transferido',
+        ventaId: venId,
+        notas: '1× Porta Bob Esponja · transferido a venta I000023 · pagado $7.000 · MKOF (Josefa)',
+        socioRegistro: 'Ambos',
+        creado: '2026-08-31T23:30:00.000Z',
+        fiado: false,
+        transferidoEn: '2026-08-31T23:30:00.000Z',
+      };
+      d.pedidos.push(ped);
+      changed = true;
+    } else {
+      if (ped.estado !== 'transferido' || ped.ventaId !== venId || Number(ped.montoNeto) !== monto) {
+        ped.estado = 'transferido';
+        ped.fiado = false;
+        ped.ventaId = venId;
+        ped.montoNeto = monto;
+        ped.montoBruto = monto;
+        ped.cliente = 'Pedro MKOF';
+        ped.clienteNombre = 'Pedro';
+        ped.clienteOrigen = 'MKOF';
+        ped.notas =
+          '1× Porta Bob Esponja · transferido a venta I000023 · pagado $7.000 · MKOF (Josefa)';
+        ped.transferidoEn = ped.transferidoEn || '2026-08-31T23:30:00.000Z';
+        changed = true;
+      }
+    }
+    const venta = {
+      id: venId,
+      codigo,
+      fecha: '2026-08-31',
+      cliente: 'Pedro MKOF',
+      clienteNombre: 'Pedro',
+      clienteOrigen: 'MKOF',
+      descripcion: 'PED-018 · 1× Porta Bob Esponja · Pedro MKOF',
+      cantidad: 1,
+      montoBruto: monto,
+      descuentoClp: 0,
+      montoNeto: monto,
+      costoTotal: costo,
+      canal: 'WhatsApp',
+      notas: 'Transferido desde PED-018 · 1× Porta Bob Esponja · pagado $7.000 · MKOF (Josefa)',
+      socioRegistro: 'Ambos',
+      pedidoId: pedId,
+      pedidoNumero: 'PED-018',
+      items: [
+        {
+          sku: 'PTBOBES001',
+          nombre: 'Porta Bob Esponja',
+          cantidad: 1,
+          precioUnitarioClp: monto,
+          costoUnitarioClp: costo,
+          filamento: 'multicolor',
+        },
+      ],
+    };
+    const vi = d.ventas.findIndex((v) => v && (v.id === venId || v.codigo === codigo));
+    if (vi < 0) {
+      d.ventas.push(venta);
+      changed = true;
+    } else if (
+      d.ventas[vi].cliente !== 'Pedro MKOF' ||
+      Number(d.ventas[vi].montoNeto) !== monto ||
+      d.ventas[vi].codigo !== codigo
+    ) {
+      d.ventas[vi] = { ...d.ventas[vi], ...venta };
+      changed = true;
+    }
+    if (Number(d.meta.ventaSeq || 0) < 23) {
+      d.meta.ventaSeq = 23;
+      changed = true;
+    }
+    if (Number(d.meta.pedidoSeq || 0) < 18) {
+      d.meta.pedidoSeq = 18;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /** Deuda Josefa → Nicolás fijada en $330.000 (abono $100.000 ya pagado a Nicolás). */
+  function asegurarDeudaJosefa330000(d) {
+    d.meta = d.meta && typeof d.meta === 'object' ? d.meta : {};
+    const cap = d.meta.capital && typeof d.meta.capital === 'object' ? d.meta.capital : {};
+    const next = {
+      ...cap,
+      abonosDeudaJosefaClp: 100000,
+      deudaJosefaClp: 330000,
+      deudaJosefaManual: true,
+      nota:
+        'Abono $100.000 ya pagado a Nicolás. Deuda Josefa → Nicolás fijada en $330.000 (manual).',
+    };
+    if (
+      Number(cap.deudaJosefaClp) !== 330000 ||
+      Number(cap.abonosDeudaJosefaClp) !== 100000 ||
+      !cap.deudaJosefaManual ||
+      cap.nota !== next.nota
+    ) {
+      d.meta.capital = next;
+      return true;
+    }
+    return false;
   }
 
   /** Compras 29 jul 2026 — llaveros, filamento rosado, ganchos aros, mueble esquinero EASY. Sociedad 50/50 · pagó Nicolás. */
@@ -4037,8 +4239,9 @@
             <li><span>Su 50% de los gastos</span><strong>${money(cadaUnoGastos)}</strong></li>
             <li><span>Su 50% del resultado</span><strong class="${cadaUnoResultado >= 0 ? 'is-ok' : 'is-warn'}">${money(cadaUnoResultado)}</strong></li>
             <li><span>Capital que aportó</span><strong>${money(capitalJosefa)}</strong></li>
+            ${Number(cap.abonosDeudaJosefaClp || 0) > 0 ? `<li><span>Abono ya pagado a Nicolás</span><strong>${money(cap.abonosDeudaJosefaClp)}</strong></li>` : ''}
           </ul>
-          <p class="imp-socio__nota">Le corresponde el 50% de los gastos; ya aportó ${money(capitalJosefa)} · saldo a Nicolás ${money(deuda)}.</p>
+          <p class="imp-socio__nota">${cap.deudaJosefaManual ? `Deuda fijada en ${money(deuda)}${Number(cap.abonosDeudaJosefaClp || 0) > 0 ? ` (abono ${money(cap.abonosDeudaJosefaClp)} ya pagado a Nicolás)` : ''}.` : `Le corresponde el 50% de los gastos; ya aportó ${money(capitalJosefa)} · saldo a Nicolás ${money(deuda)}.`}</p>
         </article>
         <article class="imp-socio imp-socio--nicolas">
           <header class="imp-socio__head">
@@ -4050,8 +4253,9 @@
             <li><span>Su 50% de los gastos</span><strong>${money(cadaUnoGastos)}</strong></li>
             <li><span>Su 50% del resultado</span><strong class="${cadaUnoResultado >= 0 ? 'is-ok' : 'is-warn'}">${money(cadaUnoResultado)}</strong></li>
             <li><span>Capital que aportó</span><strong>${money(capitalNicolas)}</strong></li>
+            ${Number(cap.abonosDeudaJosefaClp || 0) > 0 ? `<li><span>Abono recibido de Josefa</span><strong>${money(cap.abonosDeudaJosefaClp)}</strong></li>` : ''}
           </ul>
-          <p class="imp-socio__nota">Aportó ${money(capitalNicolas)}. Tiene por cobrar de Josefa ${money(deuda)}.</p>
+          <p class="imp-socio__nota">${cap.deudaJosefaManual ? `Por cobrar de Josefa ${money(deuda)}${Number(cap.abonosDeudaJosefaClp || 0) > 0 ? ` (ya recibió abono ${money(cap.abonosDeudaJosefaClp)})` : ''}.` : `Aportó ${money(capitalNicolas)}. Tiene por cobrar de Josefa ${money(deuda)}.`}</p>
         </article>
       </div>
       <div class="imp-charts">
