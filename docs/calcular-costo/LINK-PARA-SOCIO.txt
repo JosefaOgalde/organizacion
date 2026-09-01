@@ -1,0 +1,26 @@
+Impresoreando — link para compartir el estimador (socio / otro PC)
+
+============================================================
+USA ESTE LINK AHORA (funciona sin activar Pages):
+============================================================
+
+https://htmlpreview.github.io/?https://github.com/JosefaOgalde/organizacion/blob/cursor/imp-calcular-costo-imagen-6079/docs/calcular-costo/index.html
+
+Cópialo y envíalo por WhatsApp.
+
+NO uses todavía:
+https://josefaogalde.github.io/organizacion/calcular-costo/
+(ese da 404 hasta activar GitHub Pages una vez)
+
+============================================================
+Para dejar el link corto definitivo (una sola vez):
+============================================================
+
+1) Entra a https://github.com/JosefaOgalde/organizacion/settings/pages
+2) Build and deployment → Source: GitHub Actions
+3) Guarda
+4) Mergea el PR #199 a main (o deja que corra el workflow)
+5) Espera 1–2 minutos y prueba:
+   https://josefaogalde.github.io/organizacion/calcular-costo/
+
+============================================================
