@@ -52,7 +52,6 @@
     @media (max-width: 720px) {
       .logo-desktop { display: none; }
       .logo-mobile { display: block; }
-      .top .shell { justify-content: space-between; }
       .nav-link { font-size: 0.9rem; }
     }
     .nav-link {
@@ -283,7 +282,6 @@
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script>
     (function () {
       const money = (n) =>
@@ -294,12 +292,17 @@
         });
       const round2 = (n) => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
 
-      // Defaults: Centauri + PLA+ $17.986 · sin metal · sin bolsa · +100%
       const KG = 17986;
       const TARIFA = 200;
       const KW = 0.28;
       const MARGEN = 100;
       const LABEL = 'Centauri Carbon 2';
+
+      const TESS_CDNS = [
+        'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js',
+        'https://unpkg.com/tesseract.js@5/dist/tesseract.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js',
+      ];
 
       const drop = document.getElementById('drop');
       const dropCopy = document.getElementById('drop-copy');
@@ -312,6 +315,36 @@
       let objectUrl = null;
       let readToken = 0;
       let lastEstimado = null;
+      let tessPromise = null;
+
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = src;
+          s.async = true;
+          s.onload = () => resolve(src);
+          s.onerror = () => reject(new Error('fail ' + src));
+          document.head.appendChild(s);
+        });
+      }
+
+      function ensureTesseract() {
+        if (window.Tesseract) return Promise.resolve(window.Tesseract);
+        if (tessPromise) return tessPromise;
+        tessPromise = (async () => {
+          let lastErr = null;
+          for (const src of TESS_CDNS) {
+            try {
+              await loadScript(src);
+              if (window.Tesseract) return window.Tesseract;
+            } catch (e) {
+              lastErr = e;
+            }
+          }
+          throw lastErr || new Error('Tesseract no disponible');
+        })();
+        return tessPromise;
+      }
 
       function parseSlicerText(raw) {
         const norm = String(raw || '').replace(/\r/g, '\n');
@@ -325,6 +358,11 @@
           if (m) gramos = parseFloat(m[1].replace(',', '.'));
         }
         if (!gramos) {
+          // Prefer values near "filamento" / filament panel
+          const near = norm.match(/filamento[\s\S]{0,220}?(\d+[.,]\d+)\s*g\b/i);
+          if (near) gramos = parseFloat(near[1].replace(',', '.'));
+        }
+        if (!gramos) {
           const grams = [...norm.matchAll(/(\d+[.,]\d+)\s*g\b/gi)].map((m) =>
             parseFloat(m[1].replace(',', '.'))
           );
@@ -332,13 +370,26 @@
         }
 
         let horas = null;
-        const totalTime =
-          norm.match(/tiempo\s*total[^\n]{0,80}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i) ||
-          norm.match(/tiempo\s*de\s*impresi[oó]n[^\n]{0,80}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i) ||
-          norm.match(/total[^\n]{0,40}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i);
-        if (totalTime) {
-          horas = round2(Number(totalTime[1]) + Number(totalTime[2]) / 60);
+        const hms =
+          norm.match(/tiempo\s*total[^\n]{0,100}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i) ||
+          norm.match(/tiempo\s*de\s*impresi[oó]n[^\n]{0,100}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i) ||
+          norm.match(/total[^\n]{0,60}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i);
+        if (hms) {
+          horas = round2(Number(hms[1]) + Number(hms[2]) / 60);
         } else {
+          // Solo minutos + segundos: 43m 58s / 43 min 58 s
+          const ms =
+            norm.match(/tiempo\s*total[^\n]{0,100}?(\d+)\s*m(?:in)?[^\d]{0,8}(\d+)\s*s/i) ||
+            norm.match(/tiempo\s*estimado[^\n]{0,100}?(\d+)\s*m(?:in)?[^\d]{0,8}(\d+)\s*s/i) ||
+            norm.match(/(\d+)\s*m(?:in)?[^\d]{0,8}(\d+)\s*s/i);
+          if (ms) {
+            horas = round2((Number(ms[1]) + Number(ms[2]) / 60) / 60);
+          } else {
+            const onlyMin = norm.match(/tiempo\s*total[^\n]{0,80}?(\d+)\s*m(?:in)?\b/i);
+            if (onlyMin) horas = round2(Number(onlyMin[1]) / 60);
+          }
+        }
+        if (!horas) {
           const times = [...norm.matchAll(/(\d+)\s*h[^\d]{0,8}(\d+)\s*m/gi)].map((m) =>
             round2(Number(m[1]) + Number(m[2]) / 60)
           );
@@ -393,15 +444,30 @@
       }
 
       async function leerYCalcular(img) {
-        if (!img || !img.src || !window.Tesseract) {
+        if (!img || !img.src) {
           status.className = 'status err';
-          status.textContent = 'No se pudo iniciar la lectura de la imagen.';
+          status.textContent = 'No hay imagen para leer.';
           return;
         }
+
         const token = ++readToken;
         result.hidden = true;
         btnCopy.disabled = true;
         lastEstimado = null;
+        status.className = 'status busy';
+        status.textContent = 'Preparando lectura de la captura…';
+
+        try {
+          await ensureTesseract();
+        } catch {
+          if (token !== readToken) return;
+          status.className = 'status err';
+          status.textContent =
+            'No se pudo cargar el lector de imagen (internet/CDN). Revisa la conexión y vuelve a intentar.';
+          return;
+        }
+
+        if (token !== readToken) return;
         status.className = 'status busy';
         status.textContent = 'Leyendo gramos y tiempo de la captura…';
 
@@ -415,7 +481,7 @@
           if (!(parsed.gramos > 0) || !(parsed.horas > 0)) {
             status.className = 'status err';
             status.textContent =
-              'No pudimos leer gramos y tiempo. Sube una captura donde se vea Total (g) y Tiempo total.';
+              'No pudimos leer gramos y tiempo. Usa una captura donde se vea Total (g) y el tiempo (ej. 43m 58s).';
             return;
           }
           mostrarEstimado(parsed.gramos, parsed.horas);
@@ -518,6 +584,9 @@
           }
         }
       });
+
+      // Precarga el lector en segundo plano
+      ensureTesseract().catch(() => {});
     })();
   </script>
 </body>
