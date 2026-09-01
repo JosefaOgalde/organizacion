@@ -8,7 +8,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 |-----|--------|
 | UI panel | `index/clientes/impresoreando/panel/` → `panel.js` · `panel.css` · `index.html` |
 | Calcular costo (imagen) | `index/clientes/impresoreando/calcular-costo/` · **Estimador público** · `http://127.0.0.1:8000/index/clientes/impresoreando/calcular-costo/` · flujo: **imagen slicer → gramos/horas → estimado** (costo + precio sugerido). Compartir: `ABRIR-CALCULAR-COSTO-PUBLICO.bat`. |
-| Logo | `identidad/logo-impresoreando.png` (wordmark proporción correcta) · ver `IDENTIDAD.md` · bump `?v=imp-logo-20260728` |
+| Logo | **Oficial = el que entrega la usuaria** · `identidad/logo-impresoreando-entregado-20260901.png` (fuente) · UI `logo-impresoreando.png` / `logo-ima2.png` · ver `IDENTIDAD.md` · bump `?v=imp-logo-20260901`. No inventar con IA. |
 | Venta rápida | `…/panel/venta/` |
 | Seed (repo) | `data/impresoreando-seed.json` |
 | Live (gitignored) | `data/impresoreando-live.json` |
