@@ -270,7 +270,6 @@
       font-size: 0.88rem;
       line-height: 1.45;
     }
-    .status.reading { background: #eef3fb; border-color: #b8cce8; color: #2a4a7a; }
     .badge-est {
       display: inline-block;
       margin-left: 0.35rem;
@@ -297,9 +296,8 @@
   <main class="shell">
     <h1>Estimador de costo 3D <span class="badge-est">estimado</span></h1>
     <p class="lead">
-      <strong>1.</strong> Sube la captura del slicer (Orca, Bambu, Elegoo…).
-      <strong>2.</strong> Completa gramos y horas que aparecen en la imagen.
-      <strong>3.</strong> Recibe un <strong>estimado</strong> de costo y precio sugerido.
+      Completa <strong>gramos</strong> y <strong>horas</strong> del slicer y recibe un
+      <strong>estimado</strong> de costo y precio sugerido. Puedes adjuntar la captura si quieres.
     </p>
     <p class="disclaimer">
       Los valores son <strong>estimados</strong> según filamento, tiempo e insumos.
@@ -314,7 +312,7 @@
 
     <div class="grid">
       <section class="card">
-        <h2>1. Imagen del slicer (obligatoria)</h2>
+        <h2>1. Imagen del slicer (opcional)</h2>
         <div class="drop" id="drop" tabindex="0" role="button" aria-label="Subir o pegar imagen del slicer">
           <div class="drop-copy" id="drop-copy">
             <strong>Sube la captura del slicer</strong><br />
@@ -327,8 +325,8 @@
           <button type="button" id="btn-fill-demo">Probar con ejemplo</button>
         </div>
         <p class="hint">
-          Al subir la captura, intentamos leer <strong>Total → gramos</strong> y
-          <strong>Tiempo total → horas</strong> solos. Si no se detectan, complétalos a mano.
+          Opcional: sube la captura como referencia. El estimado sale del formulario
+          (gramos, horas, impresora y $/kg).
         </p>
       </section>
 
@@ -386,12 +384,11 @@
             <button type="button" class="primary" id="btn-copy-est">Copiar estimado</button>
           </div>
         </div>
-        <p class="status" id="status">Sube la imagen del slicer y completa gramos + horas para ver el estimado.</p>
+        <p class="status" id="status">Completa gramos y horas para ver el estimado.</p>
       </section>
     </div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script>
     (function () {
       const money = (n) =>
@@ -420,87 +417,6 @@
       let objectUrl = null;
       let hasImage = false;
       let lastEstimado = null;
-      let readToken = 0;
-
-      function parseSlicerText(raw) {
-        const norm = String(raw || '').replace(/\r/g, '\n');
-        let gramos = null;
-
-        const totalLine = norm
-          .split('\n')
-          .find((line) => /total/i.test(line) && /\d/.test(line) && /g\b/i.test(line));
-        if (totalLine) {
-          const m = totalLine.match(/(\d+[.,]\d+)\s*g\b/i);
-          if (m) gramos = parseFloat(m[1].replace(',', '.'));
-        }
-        if (!gramos) {
-          const grams = [...norm.matchAll(/(\d+[.,]\d+)\s*g\b/gi)].map((m) =>
-            parseFloat(m[1].replace(',', '.'))
-          );
-          if (grams.length) gramos = Math.max(...grams);
-        }
-
-        let horas = null;
-        const totalTime =
-          norm.match(/tiempo\s*total[^\n]{0,80}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i) ||
-          norm.match(/total[^\n]{0,40}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i);
-        if (totalTime) {
-          horas = round2(Number(totalTime[1]) + Number(totalTime[2]) / 60);
-        } else {
-          const times = [...norm.matchAll(/(\d+)\s*h[^\d]{0,8}(\d+)\s*m/gi)].map((m) =>
-            round2(Number(m[1]) + Number(m[2]) / 60)
-          );
-          if (times.length) horas = Math.max(...times);
-        }
-
-        return { gramos, horas };
-      }
-
-      function setField(name, value) {
-        const el = form.elements.namedItem(name);
-        if (!el || value == null || !(value > 0)) return false;
-        el.value = String(value);
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-        return true;
-      }
-
-      async function leerCaptura(img) {
-        if (!img || !img.src || !window.Tesseract) return;
-        const token = ++readToken;
-        status.className = 'status reading';
-        status.textContent = 'Leyendo gramos y tiempo de la captura…';
-
-        try {
-          const { data } = await Tesseract.recognize(img.src, 'spa+eng', {
-            logger: () => {},
-          });
-          if (token !== readToken) return;
-
-          const parsed = parseSlicerText(data.text || '');
-          const filledG = setField('gramos', parsed.gramos);
-          const filledH = setField('horas', parsed.horas);
-
-          if (filledG || filledH) {
-            status.className = 'status ok';
-            status.textContent =
-              'Detectado en la captura' +
-              (filledG ? ': ' + parsed.gramos + ' g' : '') +
-              (filledH ? ' · ' + parsed.horas + ' h' : '') +
-              '. Revisa impresora y filamento si hace falta.';
-          } else {
-            status.className = 'status';
-            status.textContent =
-              'Imagen lista. No pudimos leer los números: completa Total (gramos) y Tiempo total (horas).';
-          }
-          calcular();
-        } catch {
-          if (token !== readToken) return;
-          status.className = 'status';
-          status.textContent =
-            'Imagen lista. Completa gramos (Total) y horas (Tiempo total) a mano.';
-          calcular();
-        }
-      }
 
       function kgActual() {
         if (filamentoKg.value === 'custom') return Number(form.filamentoCustom.value || 0);
@@ -516,17 +432,12 @@
         const argolla = form.argolla.checked ? 50 : 0;
         const bolsa = form.bolsa.checked ? 50 : 0;
 
-        if (!hasImage) {
-          result.hidden = true;
-          status.className = 'status';
-          status.textContent = 'Primero sube la captura del slicer para calcular el estimado.';
-          return;
-        }
-
         if (!(gramos > 0) || !(horas >= 0) || !(kg > 0)) {
           result.hidden = true;
           status.className = 'status';
-          status.textContent = 'Completa gramos, horas y $/kg para ver el estimado.';
+          status.textContent = hasImage
+            ? 'Completa gramos, horas y $/kg para ver el estimado.'
+            : 'Completa gramos, horas y $/kg (la imagen del slicer es opcional).';
           return;
         }
 
@@ -617,8 +528,9 @@
         img.src = objectUrl;
         btnClear.disabled = false;
         hasImage = true;
-        img.onload = () => leerCaptura(img);
-        if (img.complete) leerCaptura(img);
+        status.className = 'status ok';
+        status.textContent = 'Imagen lista. Completa gramos y horas para ver el estimado.';
+        calcular();
       }
 
       function clearImage() {
@@ -626,7 +538,6 @@
         objectUrl = null;
         hasImage = false;
         lastEstimado = null;
-        readToken++;
         drop.classList.remove('has-img');
         dropCopy.hidden = false;
         const img = drop.querySelector('img');
