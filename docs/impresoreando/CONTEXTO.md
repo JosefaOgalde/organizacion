@@ -146,7 +146,10 @@ Defaults al estimar (salvo que indiquen otra cosa):
 
 Entregar como **estimado** (costo/u + precio sugerido). Decir que es aproximado. Si no hay SKU y piden guardar, crear en Costos.
 
-**HTML público:** `…/impresoreando/calcular-costo/` — solo pegar/arrastrar imagen → OCR → estimado (sin campos editables; sin metal ni bolsa). Link 4G: `ABRIR-CALCULAR-COSTO-PUBLICO.bat`.
+**HTML público (GitHub):** `docs/calcular-costo/` → link fijo para socios:
+`https://josefaogalde.github.io/organizacion/calcular-costo/`
+(CDN inmediato: `https://cdn.jsdelivr.net/gh/JosefaOgalde/organizacion@main/docs/calcular-costo/`).
+Local: `…/impresoreando/calcular-costo/` · 4G temporal: `ABRIR-CALCULAR-COSTO-PUBLICO.bat`.
 
 ## Productos / costos
 
