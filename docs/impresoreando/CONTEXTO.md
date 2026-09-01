@@ -137,17 +137,16 @@ Reglas al crear:
 
 ### «calcular costo producto impresoreando»
 
-**Siempre pedir la imagen** (captura slicer o foto clara del resumen con gramos/tiempo). Sin imagen, no cerrar el estimado.
+**Siempre pedir la imagen** (captura slicer). Flujo: imagen → leer g/h → entregar estimado. **No pedir formulario.**
 
-Si no vienen en la imagen, pedir:
+Defaults al estimar (salvo que indiquen otra cosa):
+- impresora **Centauri** · PLA+ negro/rojo **$17.986/kg** · margen **+100%**
+- **sin argolla metal** · **sin bolsa**
+- Si piden metal/bolsa/Ender/otro $/kg, ahí sí sumarlos
 
-- gramos de filamento · horas de impresión · tipo/color y $/kg (o usar tabla PLA+ negro/rojo $17.986, amarillo/café $16.829, blanco $12.690)
-- **qué impresora:** «nueva»/Elegoo Centauri (default) o «antigua»/Ender 3 V2 Neo Sprite Neo (otro filamento)
-- si lleva argolla metal (+$50) o bolsa
+Entregar como **estimado** (costo/u + precio sugerido). Decir que es aproximado. Si no hay SKU y piden guardar, crear en Costos.
 
-Calcular con la fórmula del panel y **entregar como estimado** (costo/u + precio sugerido +margen 100% si no indican otro). Decir explícitamente que es aproximado y puede variar. Si es Ender, usar perfil `imp-ender-3-v2-neo`. Si no hay SKU, generarlo. Si piden guardar producto, crear/actualizar en Costos con `impresoraId`.
-
-**HTML público:** `…/impresoreando/calcular-costo/` — cualquiera con el link puede subir imagen + completar g/h → estimado + botón copiar. Misma fórmula Centauri/Ender. Link 4G: `ABRIR-CALCULAR-COSTO-PUBLICO.bat`.
+**HTML público:** `…/impresoreando/calcular-costo/` — solo pegar/arrastrar imagen → OCR → estimado (sin campos editables; sin metal ni bolsa). Link 4G: `ABRIR-CALCULAR-COSTO-PUBLICO.bat`.
 
 ## Productos / costos
 
