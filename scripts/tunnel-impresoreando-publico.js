@@ -67,7 +67,7 @@ function printLinks(base) {
   console.log('  Registrar venta: ' + b + PATHS.venta);
   console.log('  Panel socios:    ' + b + PATHS.panel);
   console.log('  ==============================================');
-  console.log('  Dejá esta ventana abierta mientras usen el link.');
+  console.log('  Deja esta ventana abierta mientras usen el link.');
   console.log('  No uses localhost en el celular.');
   console.log('');
 }

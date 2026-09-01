@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Impresoreando · Estimador de costo 3D</title>
-  <meta name="description" content="Subí la captura de tu slicer y obtené un estimado de costo y precio sugerido para impresión 3D." />
+  <meta name="description" content="Sube la captura de tu slicer y obtén un estimado de costo y precio sugerido para impresión 3D." />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <style>
     :root {
@@ -296,9 +296,9 @@
   <main class="shell">
     <h1>Estimador de costo 3D <span class="badge-est">estimado</span></h1>
     <p class="lead">
-      <strong>1.</strong> Subí la captura del slicer (Orca, Bambu, Elegoo…).
-      <strong>2.</strong> Completá gramos y horas que aparecen en la imagen.
-      <strong>3.</strong> Recibí un <strong>estimado</strong> de costo y precio sugerido.
+      <strong>1.</strong> Sube la captura del slicer (Orca, Bambu, Elegoo…).
+      <strong>2.</strong> Completa gramos y horas que aparecen en la imagen.
+      <strong>3.</strong> Recibe un <strong>estimado</strong> de costo y precio sugerido.
     </p>
     <p class="disclaimer">
       Los valores son <strong>estimados</strong> según filamento, tiempo e insumos.
@@ -306,9 +306,9 @@
     </p>
     <details class="share-admin">
       <summary>Compartir este link (socios / taller)</summary>
-      En la PC con Laravel (:8000), ejecutá <code>ABRIR-CALCULAR-COSTO-PUBLICO.bat</code>
-      y enviá el link <code>…loca.lt/…/calcular-costo/</code> por WhatsApp.
-      Misma WiFi: <span id="share-lan">consultá <code>/api/acceso</code> → <code>lanCosto</code>.</span>
+      En la PC con Laravel (:8000), ejecuta <code>ABRIR-CALCULAR-COSTO-PUBLICO.bat</code>
+      y envía el link <code>…loca.lt/…/calcular-costo/</code> por WhatsApp.
+      Misma WiFi: <span id="share-lan">consulta <code>/api/acceso</code> → <code>lanCosto</code>.</span>
     </details>
 
     <div class="grid">
@@ -316,8 +316,8 @@
         <h2>1. Imagen del slicer (obligatoria)</h2>
         <div class="drop" id="drop" tabindex="0" role="button" aria-label="Subir o pegar imagen del slicer">
           <div class="drop-copy" id="drop-copy">
-            <strong>Subí la captura del slicer</strong><br />
-            tocá para elegir · arrastrá · o pegá (Ctrl+V)
+            <strong>Sube la captura del slicer</strong><br />
+            toca para elegir · arrastra · o pega (Ctrl+V)
           </div>
           <input id="file" type="file" accept="image/*" capture="environment" />
         </div>
@@ -385,7 +385,7 @@
             <button type="button" class="primary" id="btn-copy-est">Copiar estimado</button>
           </div>
         </div>
-        <p class="status" id="status">Subí la imagen del slicer y completá gramos + horas para ver el estimado.</p>
+        <p class="status" id="status">Sube la imagen del slicer y completa gramos + horas para ver el estimado.</p>
       </section>
     </div>
   </main>
@@ -436,14 +436,14 @@
         if (!hasImage) {
           result.hidden = true;
           status.className = 'status';
-          status.textContent = 'Primero subí la captura del slicer para calcular el estimado.';
+          status.textContent = 'Primero sube la captura del slicer para calcular el estimado.';
           return;
         }
 
         if (!(gramos > 0) || !(horas >= 0) || !(kg > 0)) {
           result.hidden = true;
           status.className = 'status';
-          status.textContent = 'Completá gramos, horas y $/kg para ver el estimado.';
+          status.textContent = 'Completa gramos, horas y $/kg para ver el estimado.';
           return;
         }
 
@@ -536,7 +536,7 @@
         hasImage = true;
         status.className = 'status ok';
         status.textContent =
-          'Imagen lista. Completá gramos y horas que ves en la captura para el estimado.';
+          'Imagen lista. Completa gramos y horas que ves en la captura para el estimado.';
         calcular();
       }
 
@@ -638,7 +638,7 @@
         try {
           await navigator.clipboard.writeText(text);
           status.className = 'status ok';
-          status.textContent = 'Estimado copiado. Pegalo en WhatsApp u otro chat.';
+          status.textContent = 'Estimado copiado. Pégalo en WhatsApp u otro chat.';
         } catch {
           window.prompt('Copiá este estimado:', text);
         }

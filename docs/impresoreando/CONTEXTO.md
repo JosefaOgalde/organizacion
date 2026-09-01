@@ -1,6 +1,6 @@
 # Impresoreando — contexto único (leer esto; no reexplorar el repo)
 
-Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás 50/50**.
+Negocio impresiones 3D · **español de Chile** (tú; no voseo argentino) · Instagram @impresoreando · socios **Josefa + Nicolás 50/50**.
 
 ## Archivos / API
 
@@ -226,10 +226,10 @@ ENVIAR-STATUS-IMPRESOREANDO.bat
 
 `localhost` en el teléfono **no** funciona.
 - **Misma WiFi:** IP de `GET /api/acceso` → `lanCosto[]` / `lan[]`.
-- **Cualquier red / 4G:** con `ABRIR-LARAVEL.bat` abierto (:8000), ejecutá:
+- **Cualquier red / 4G:** con `ABRIR-LARAVEL.bat` abierto (:8000), ejecuta:
   - **Calcular costo:** `ABRIR-CALCULAR-COSTO-PUBLICO.bat` → link `https://….loca.lt/index/clientes/impresoreando/calcular-costo/`
   - **Registrar venta:** `ABRIR-VENTA-PUBLICA.bat` → link `…/panel/venta/`
-  Dejá la ventana del túnel abierta mientras usen el link.
+  Deja la ventana del túnel abierta mientras usen el link.
 
 ## RFID handheld (tarjetas) — vigente
 
