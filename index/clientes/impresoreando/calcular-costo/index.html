@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Impresoreando · Calcular costo desde imagen</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <style>
+    :root {
+      --border: #d4b06a;
+      --bg: #faf6eb;
+      --text: #7a5c28;
+      --ink: #2a2114;
+      --card: #fffdf7;
+      --muted: #8a7350;
+      --ok: #2f7a4e;
+      --accent: #c47a3a;
+      --max: 920px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: linear-gradient(180deg, var(--bg), #f3eee0 45%, #eee8d8);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    .top {
+      background: var(--card);
+      border-bottom: 2px solid var(--border);
+    }
+    .shell {
+      width: min(100% - 2rem, var(--max));
+      margin: 0 auto;
+    }
+    .top .shell {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.9rem 0;
+    }
+    .logo {
+      height: 48px;
+      width: auto;
+      display: block;
+    }
+    .nav-link {
+      color: var(--text);
+      font-weight: 650;
+      text-decoration: none;
+    }
+    .nav-link:hover { text-decoration: underline; }
+    main.shell { padding: 1.25rem 0 2.5rem; }
+    h1 {
+      margin: 0 0 0.35rem;
+      font-size: clamp(1.35rem, 3vw, 1.75rem);
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .lead {
+      margin: 0 0 1.25rem;
+      color: var(--muted);
+      line-height: 1.45;
+      max-width: 42rem;
+    }
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+    @media (min-width: 760px) {
+      .grid { grid-template-columns: 1.05fr 0.95fr; align-items: start; }
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid #e6d7b0;
+      border-radius: 14px;
+      padding: 1rem 1.05rem 1.15rem;
+    }
+    .card h2 {
+      margin: 0 0 0.65rem;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+    .drop {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      min-height: 220px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 1rem;
+      background: #fff;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .drop.is-over { border-color: var(--accent); background: #fff8ee; }
+    .drop.has-img { padding: 0; min-height: 260px; }
+    .drop img {
+      display: block;
+      width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      background: #1a1510;
+    }
+    .drop-copy { color: var(--muted); line-height: 1.4; pointer-events: none; }
+    .drop-copy strong { color: var(--text); }
+    .drop input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    button {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 0.5rem 0.85rem;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    button.primary {
+      background: #7a5c28;
+      border-color: #7a5c28;
+      color: #fff;
+    }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .hint {
+      margin: 0.65rem 0 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .form { display: grid; gap: 0.65rem; }
+    label {
+      display: grid;
+      gap: 0.25rem;
+      font-size: 0.88rem;
+      color: var(--text);
+      font-weight: 650;
+    }
+    input, select {
+      width: 100%;
+      border: 1px solid #e0d0a8;
+      border-radius: 10px;
+      padding: 0.55rem 0.65rem;
+      font: inherit;
+      color: var(--ink);
+      background: #fff;
+    }
+    .row2 {
+      display: grid;
+      gap: 0.65rem;
+      grid-template-columns: 1fr 1fr;
+    }
+    .checks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.1rem;
+    }
+    .checks label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .checks input { width: auto; }
+    .result {
+      margin-top: 0.85rem;
+      border-top: 1px solid #eee3c8;
+      padding-top: 0.85rem;
+    }
+    .kpi {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem;
+      margin-bottom: 0.75rem;
+    }
+    .kpi div {
+      background: #fff;
+      border: 1px solid #eee3c8;
+      border-radius: 12px;
+      padding: 0.7rem 0.75rem;
+    }
+    .kpi span {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.15rem;
+    }
+    .kpi strong {
+      font-size: 1.25rem;
+      color: var(--ok);
+    }
+    .kpi .muted strong { color: var(--ink); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.4rem 0.2rem;
+      border-bottom: 1px solid #f0e6cc;
+    }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .total-row td { font-weight: 700; border-bottom: 0; padding-top: 0.55rem; }
+    .status {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      background: #fff8ee;
+      border: 1px solid #ead7a8;
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    .status.ok { background: #eef7f0; border-color: #b7d8c2; color: var(--ok); }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="shell">
+      <a class="nav-link" href="../">← Impresoreando</a>
+      <img class="logo" src="../identidad/logo-impresoreando.png" alt="Impresoreando" width="220" height="48" />
+      <a class="nav-link" href="../panel/?tab=costos">Panel costos</a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <h1>Calcular costo desde imagen</h1>
+    <p class="lead">
+      Subí o pegá la captura del slicer (Orca / Bambu / Elegoo). Completá gramos y horas
+      (o pedime en el chat que los lea de la imagen) y te entrega el costo Impresoreando
+      con Centauri / Ender, argolla y bolsa.
+    </p>
+
+    <div class="grid">
+      <section class="card">
+        <h2>1. Imagen del slicer</h2>
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="Subir o pegar imagen del slicer">
+          <div class="drop-copy" id="drop-copy">
+            <strong>Soltá la imagen aquí</strong><br />
+            o hacé clic · también Ctrl+V para pegar
+          </div>
+          <input id="file" type="file" accept="image/*" />
+        </div>
+        <div class="actions">
+          <button type="button" id="btn-clear" disabled>Quitar imagen</button>
+          <button type="button" class="primary" id="btn-fill-demo">Ejemplo números</button>
+        </div>
+        <p class="hint">
+          En Cursor: pegá la misma imagen en el chat y pedí «costo Impresoreando» —
+          el agente lee gramos/horas y te arma el desglose con esta misma fórmula.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>2. Datos de impresión</h2>
+        <form class="form" id="form" autocomplete="off">
+          <label>Nombre / pieza
+            <input name="nombre" placeholder="Ej. Porta Bob Esponja" />
+          </label>
+          <div class="row2">
+            <label>Gramos filamento
+              <input name="gramos" type="number" min="0" step="0.01" placeholder="54.30" required />
+            </label>
+            <label>Horas impresión
+              <input name="horas" type="number" min="0" step="0.01" placeholder="1.60" required />
+            </label>
+          </div>
+          <label>Impresora
+            <select name="impresora">
+              <option value="centauri">Nueva · Elegoo Centauri Carbon 2</option>
+              <option value="ender">Antigua · Ender 3 V2 Neo (Sprite)</option>
+            </select>
+          </label>
+          <label>$ / kg filamento
+            <select name="filamentoKg" id="filamentoKg">
+              <option value="17986">PLA+ negro / rojo · $17.986</option>
+              <option value="16829">PLA amarillo / café · $16.829</option>
+              <option value="12690">PLA blanco · $12.690</option>
+              <option value="10990">PLA rosado · $10.990</option>
+              <option value="custom">Otro (escribir abajo)</option>
+            </select>
+          </label>
+          <label id="filamentoCustomWrap" hidden>$ / kg personalizado
+            <input name="filamentoCustom" type="number" min="0" step="1" placeholder="17986" />
+          </label>
+          <div class="checks">
+            <label><input type="checkbox" name="argolla" /> Argolla metal (+$50)</label>
+            <label><input type="checkbox" name="bolsa" checked /> Bolsa (+$50)</label>
+          </div>
+          <label>Margen objetivo %
+            <input name="margen" type="number" min="0" step="1" value="100" />
+          </label>
+        </form>
+
+        <div class="result" id="result" hidden>
+          <div class="kpi">
+            <div class="muted"><span>Costo / unidad</span><strong id="out-costo">$0</strong></div>
+            <div><span>PVP sugerido</span><strong id="out-pvp">$0</strong></div>
+          </div>
+          <table>
+            <thead><tr><th>Concepto</th><th class="num">CLP</th></tr></thead>
+            <tbody id="out-rows"></tbody>
+          </table>
+        </div>
+        <p class="status" id="status">Subí la imagen y completá gramos + horas para ver el costo.</p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const money = (n) =>
+        Number(n || 0).toLocaleString('es-CL', {
+          style: 'currency',
+          currency: 'CLP',
+          maximumFractionDigits: 0,
+        });
+      const round2 = (n) => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
+
+      const PERFILES = {
+        centauri: { tarifa: 200, kw: 0.28, recargo: 0, label: 'Centauri Carbon 2' },
+        ender: { tarifa: 200, kw: 0.16, recargo: 1000, label: 'Ender 3 V2 Neo' },
+      };
+
+      const drop = document.getElementById('drop');
+      const dropCopy = document.getElementById('drop-copy');
+      const fileInput = document.getElementById('file');
+      const btnClear = document.getElementById('btn-clear');
+      const form = document.getElementById('form');
+      const filamentoKg = document.getElementById('filamentoKg');
+      const customWrap = document.getElementById('filamentoCustomWrap');
+      const result = document.getElementById('result');
+      const status = document.getElementById('status');
+      let objectUrl = null;
+
+      function kgActual() {
+        if (filamentoKg.value === 'custom') return Number(form.filamentoCustom.value || 0);
+        return Number(filamentoKg.value || 0);
+      }
+
+      function calcular() {
+        const gramos = Number(form.gramos.value || 0);
+        const horas = Number(form.horas.value || 0);
+        const perfil = PERFILES[form.impresora.value] || PERFILES.centauri;
+        const kg = kgActual();
+        const margen = Number(form.margen.value || 0);
+        const argolla = form.argolla.checked ? 50 : 0;
+        const bolsa = form.bolsa.checked ? 50 : 0;
+
+        if (!(gramos > 0) || !(horas >= 0) || !(kg > 0)) {
+          result.hidden = true;
+          status.className = 'status';
+          status.textContent = 'Completá gramos, horas y $/kg para calcular.';
+          return;
+        }
+
+        const filamento = round2((gramos / 1000) * kg);
+        const luz = round2(horas * perfil.tarifa * perfil.kw);
+        const recargo = Number(perfil.recargo || 0);
+        const costo = round2(filamento + luz + argolla + bolsa + recargo);
+        const pvp = Math.round(costo * (1 + margen / 100));
+
+        const rows = [
+          ['Filamento (' + gramos + ' g × ' + money(kg) + '/kg)', filamento],
+          ['Luz (' + horas + ' h · ' + perfil.label + ')', luz],
+        ];
+        if (recargo > 0) rows.push(['Recargo perfil Ender', recargo]);
+        if (argolla > 0) rows.push(['Argolla metal', argolla]);
+        if (bolsa > 0) rows.push(['Bolsa', bolsa]);
+        rows.push(['Total costo / u', costo]);
+
+        document.getElementById('out-costo').textContent = money(costo);
+        document.getElementById('out-pvp').textContent = money(pvp);
+        document.getElementById('out-rows').innerHTML = rows
+          .map((r, i) => {
+            const last = i === rows.length - 1;
+            return (
+              '<tr class="' +
+              (last ? 'total-row' : '') +
+              '"><td>' +
+              r[0] +
+              '</td><td class="num">' +
+              money(r[1]) +
+              '</td></tr>'
+            );
+          })
+          .join('');
+
+        result.hidden = false;
+        status.className = 'status ok';
+        const nombre = String(form.nombre.value || 'Pieza').trim() || 'Pieza';
+        status.textContent =
+          nombre +
+          ' · costo ' +
+          money(costo) +
+          ' · PVP sugerido (+' +
+          margen +
+          '%) ' +
+          money(pvp) +
+          '.';
+      }
+
+      function setImage(file) {
+        if (!file || !String(file.type || '').startsWith('image/')) return;
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        objectUrl = URL.createObjectURL(file);
+        drop.classList.add('has-img');
+        dropCopy.hidden = true;
+        let img = drop.querySelector('img');
+        if (!img) {
+          img = document.createElement('img');
+          img.alt = 'Captura slicer';
+          drop.insertBefore(img, fileInput);
+        }
+        img.src = objectUrl;
+        btnClear.disabled = false;
+        status.className = 'status';
+        status.textContent =
+          'Imagen cargada. Completá gramos y horas (o pedíselo al agente en el chat).';
+      }
+
+      function clearImage() {
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        objectUrl = null;
+        drop.classList.remove('has-img');
+        dropCopy.hidden = false;
+        const img = drop.querySelector('img');
+        if (img) img.remove();
+        fileInput.value = '';
+        btnClear.disabled = true;
+      }
+
+      fileInput.addEventListener('change', () => {
+        const f = fileInput.files && fileInput.files[0];
+        if (f) setImage(f);
+      });
+      btnClear.addEventListener('click', clearImage);
+
+      ['dragenter', 'dragover'].forEach((ev) => {
+        drop.addEventListener(ev, (e) => {
+          e.preventDefault();
+          drop.classList.add('is-over');
+        });
+      });
+      ['dragleave', 'drop'].forEach((ev) => {
+        drop.addEventListener(ev, (e) => {
+          e.preventDefault();
+          drop.classList.remove('is-over');
+        });
+      });
+      drop.addEventListener('drop', (e) => {
+        const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (f) setImage(f);
+      });
+
+      window.addEventListener('paste', (e) => {
+        const items = e.clipboardData && e.clipboardData.items;
+        if (!items) return;
+        for (const it of items) {
+          if (it.type && it.type.startsWith('image/')) {
+            const f = it.getAsFile();
+            if (f) setImage(f);
+            break;
+          }
+        }
+      });
+
+      filamentoKg.addEventListener('change', () => {
+        customWrap.hidden = filamentoKg.value !== 'custom';
+        calcular();
+      });
+      form.addEventListener('input', calcular);
+      form.addEventListener('change', calcular);
+
+      document.getElementById('btn-fill-demo').addEventListener('click', () => {
+        const set = (name, val, type) => {
+          const el = form.elements.namedItem(name);
+          if (!el) return;
+          if (type === 'check') el.checked = !!val;
+          else el.value = String(val);
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+        };
+        set('nombre', 'Porta Bob Esponja');
+        set('gramos', '54.30');
+        set('horas', '1.60');
+        set('impresora', 'centauri');
+        set('filamentoKg', '17986');
+        customWrap.hidden = true;
+        set('argolla', false, 'check');
+        set('bolsa', true, 'check');
+        set('margen', '100');
+        calcular();
+      });
+    })();
+  </script>
+</body>
+</html>

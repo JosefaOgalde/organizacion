@@ -7,6 +7,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Qué | Dónde |
 |-----|--------|
 | UI panel | `index/clientes/impresoreando/panel/` → `panel.js` · `panel.css` · `index.html` |
+| Calcular costo (imagen) | `index/clientes/impresoreando/calcular-costo/` · `http://127.0.0.1:8000/index/clientes/impresoreando/calcular-costo/` · subir/pegar captura slicer + gramos/horas → costo/PVP (misma fórmula). En chat: pegar imagen y pedir costo; el agente lee g/h y calcula. |
 | Logo | `identidad/logo-impresoreando.png` (wordmark proporción correcta) · ver `IDENTIDAD.md` · bump `?v=imp-logo-20260728` |
 | Venta rápida | `…/panel/venta/` |
 | Seed (repo) | `data/impresoreando-seed.json` |
@@ -143,6 +144,8 @@ Responder **pidiendo la imagen** (foto del producto / captura slicer) y, si no v
 - si lleva argolla metal (+$50) o bolsa
 
 Calcular con la fórmula del panel y devolver costo/u + PVP sugerido (+margen 100% si no indican otro). Si es Ender, usar perfil `imp-ender-3-v2-neo` (recargo + consumo propios; $/kg del otro filamento si lo dan). Si no hay SKU, generarlo. Si piden guardar producto, crear/actualizar en Costos con `impresoraId`.
+
+**HTML local:** `…/impresoreando/calcular-costo/` — subir/pegar captura + completar g/h (o que el agente los lea de la imagen en el chat). Misma fórmula Centauri/Ender.
 
 ## Productos / costos
 
