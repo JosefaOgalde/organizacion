@@ -265,8 +265,13 @@
   }
 
   function cuandoFuentesListas(fn) {
-    if (document.fonts?.ready) document.fonts.ready.then(fn);
-    else fn();
+    const ready = document.fonts?.ready;
+    if (!ready) {
+      fn();
+      return;
+    }
+    const limite = new Promise((resolve) => setTimeout(resolve, 1500));
+    Promise.race([ready, limite]).then(fn);
   }
 
   window.ADL_FF_CERT = {
@@ -288,11 +293,11 @@
         <h1>${escapeHtml(proyecto.nombre)}</h1>
         <p class="ff-hero__meta">${escapeHtml(proyecto.programa)} · identidad ADL · ${W} × ${H} px · compatible Empieza / Proyecto</p>
         <p class="ff-hero__links">
-          <a href="formacion-facilitadores/identidad/fondo-lms-1123x794.svg">Fondo LMS (SVG)</a>
+          <a href="identidad/fondo-lms-1123x794.svg">Fondo LMS (SVG)</a>
           ·
-          <a href="formacion-facilitadores/identidad/plantilla-certificado-1123x794.svg">Maqueta con datos</a>
+          <a href="identidad/plantilla-certificado-1123x794.svg">Maqueta con datos</a>
           ·
-          <a href="formacion-facilitadores/identidad/ESPECIFICACION-LMS.md">Especificación de campos</a>
+          <a href="identidad/ESPECIFICACION-LMS.md">Especificación de campos</a>
         </p>
       </header>
 

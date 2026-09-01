@@ -235,7 +235,7 @@ window.CLIENTES_PORTAL = [
       {
         codigo: 'FF',
         nombre: 'Formación para Facilitadores',
-        archivo: 'DesafioLatam/Formacion-Facilitadores',
+        archivo: 'DesafioLatam/formacion-facilitadores',
         resumen: 'Certificado de aprobación 1123×794 px para emisión en LMS Empieza / Proyecto.',
         color: { border: '#0F2E81', bg: '#f5f7fb', text: '#0F2E81' },
         identidad: {

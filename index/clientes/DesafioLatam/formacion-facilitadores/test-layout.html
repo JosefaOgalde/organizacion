@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>ff-layout-pending</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&display=swap" rel="stylesheet">
 </head>
 <body>
   <pre id="out">running…</pre>
@@ -13,7 +12,12 @@
     (async function () {
       const out = document.getElementById('out');
       try {
-        if (document.fonts?.ready) await document.fonts.ready;
+        if (document.fonts?.ready) {
+          await Promise.race([
+            document.fonts.ready,
+            new Promise((resolve) => setTimeout(resolve, 1500))
+          ]);
+        }
         const api = window.ADL_FF_CERT;
         if (!api) throw new Error('ADL_FF_CERT no disponible');
         const ctx = document.createElement('canvas').getContext('2d');

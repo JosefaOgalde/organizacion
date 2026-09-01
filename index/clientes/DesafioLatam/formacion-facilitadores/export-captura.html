@@ -32,9 +32,11 @@
       function draw() {
         api.dibujarCertificado(canvas, datos);
         document.title = 'ff-export-ready';
+        document.documentElement.setAttribute('data-ready', '1');
       }
-      if (document.fonts?.ready) document.fonts.ready.then(draw);
-      else draw();
+      const ready = document.fonts?.ready;
+      const limite = new Promise((resolve) => setTimeout(resolve, 1500));
+      Promise.race([ready || Promise.resolve(), limite]).then(draw);
     })();
   </script>
 </body>

@@ -4,7 +4,7 @@ Plantilla digital para acreditar la aprobación de la **Formación para Facilita
 
 ## Cómo se usa
 
-1. Abrir `Formacion-Facilitadores.html` en Laravel (`http://127.0.0.1:8000/…`).
+1. Abrir http://127.0.0.1:8000/index/clientes/DesafioLatam/formacion-facilitadores/
 2. Revisar la maqueta y probar nombres cortos / extensos.
 3. Descargar **PNG fondo LMS** para subir a la plataforma (sin nombre ni fecha).
 4. Posicionar los overlays según `identidad/ESPECIFICACION-LMS.md`.
