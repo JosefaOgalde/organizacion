@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Impresoreando · Calcular costo desde imagen</title>
+  <title>Impresoreando · Estimador de costo 3D</title>
+  <meta name="description" content="Subí la captura de tu slicer y obtené un estimado de costo y precio sugerido para impresión 3D." />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <style>
     :root {
@@ -228,6 +229,59 @@
       line-height: 1.4;
     }
     .status.ok { background: #eef7f0; border-color: #b7d8c2; color: var(--ok); }
+    .share {
+      margin: 0 0 1.15rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid #d8ecdf;
+      background: #f3faf5;
+      color: #2f5c4a;
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+    .share code {
+      display: inline-block;
+      margin-top: 0.25rem;
+      font-size: 0.86rem;
+      word-break: break-all;
+    }
+    .share-admin {
+      margin: 0 0 1.15rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 10px;
+      border: 1px dashed #d4b06a;
+      background: #fffdf7;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.45;
+    }
+    .share-admin summary {
+      cursor: pointer;
+      font-weight: 650;
+      color: var(--text);
+    }
+    .disclaimer {
+      margin: 0 0 1rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid #ead7a8;
+      background: #fff8ee;
+      color: var(--text);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+    .badge-est {
+      display: inline-block;
+      margin-left: 0.35rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      background: #eef7f0;
+      border: 1px solid #b7d8c2;
+      color: var(--ok);
+      font-size: 0.72rem;
+      font-weight: 700;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
@@ -235,35 +289,45 @@
     <div class="shell">
       <a class="nav-link" href="../">← Impresoreando</a>
       <img class="logo" src="../identidad/logo-impresoreando.png" alt="Impresoreando" width="220" height="48" />
-      <a class="nav-link" href="../panel/?tab=costos">Panel costos</a>
+      <a class="nav-link" href="https://www.instagram.com/impresoreando/" target="_blank" rel="noopener">Instagram</a>
     </div>
   </header>
 
   <main class="shell">
-    <h1>Calcular costo desde imagen</h1>
+    <h1>Estimador de costo 3D <span class="badge-est">estimado</span></h1>
     <p class="lead">
-      Subí o pegá la captura del slicer (Orca / Bambu / Elegoo). Completá gramos y horas
-      (o pedime en el chat que los lea de la imagen) y te entrega el costo Impresoreando
-      con Centauri / Ender, argolla y bolsa.
+      <strong>1.</strong> Subí la captura del slicer (Orca, Bambu, Elegoo…).
+      <strong>2.</strong> Completá gramos y horas que aparecen en la imagen.
+      <strong>3.</strong> Recibí un <strong>estimado</strong> de costo y precio sugerido.
     </p>
+    <p class="disclaimer">
+      Los valores son <strong>estimados</strong> según filamento, tiempo e insumos.
+      El precio final puede variar por acabado, cantidad, urgencia o cambios al imprimir.
+    </p>
+    <details class="share-admin">
+      <summary>Compartir este link (socios / taller)</summary>
+      En la PC con Laravel (:8000), ejecutá <code>ABRIR-CALCULAR-COSTO-PUBLICO.bat</code>
+      y enviá el link <code>…loca.lt/…/calcular-costo/</code> por WhatsApp.
+      Misma WiFi: <span id="share-lan">consultá <code>/api/acceso</code> → <code>lanCosto</code>.</span>
+    </details>
 
     <div class="grid">
       <section class="card">
-        <h2>1. Imagen del slicer</h2>
+        <h2>1. Imagen del slicer (obligatoria)</h2>
         <div class="drop" id="drop" tabindex="0" role="button" aria-label="Subir o pegar imagen del slicer">
           <div class="drop-copy" id="drop-copy">
-            <strong>Soltá la imagen aquí</strong><br />
-            o hacé clic · también Ctrl+V para pegar
+            <strong>Subí la captura del slicer</strong><br />
+            tocá para elegir · arrastrá · o pegá (Ctrl+V)
           </div>
-          <input id="file" type="file" accept="image/*" />
+          <input id="file" type="file" accept="image/*" capture="environment" />
         </div>
         <div class="actions">
           <button type="button" id="btn-clear" disabled>Quitar imagen</button>
-          <button type="button" class="primary" id="btn-fill-demo">Ejemplo números</button>
+          <button type="button" id="btn-fill-demo">Probar con ejemplo</button>
         </div>
         <p class="hint">
-          En Cursor: pegá la misma imagen en el chat y pedí «costo Impresoreando» —
-          el agente lee gramos/horas y te arma el desglose con esta misma fórmula.
+          En la captura buscá <strong>gramos de filamento</strong> y <strong>tiempo de impresión</strong>.
+          Si no los ves claros, pedí otra captura con el resumen del slicer.
         </p>
       </section>
 
@@ -310,15 +374,18 @@
 
         <div class="result" id="result" hidden>
           <div class="kpi">
-            <div class="muted"><span>Costo / unidad</span><strong id="out-costo">$0</strong></div>
-            <div><span>PVP sugerido</span><strong id="out-pvp">$0</strong></div>
+            <div class="muted"><span>Costo estimado / u</span><strong id="out-costo">$0</strong></div>
+            <div><span>Precio sugerido (est.)</span><strong id="out-pvp">$0</strong></div>
           </div>
           <table>
             <thead><tr><th>Concepto</th><th class="num">CLP</th></tr></thead>
             <tbody id="out-rows"></tbody>
           </table>
+          <div class="actions" style="margin-top:0.75rem">
+            <button type="button" class="primary" id="btn-copy-est">Copiar estimado</button>
+          </div>
         </div>
-        <p class="status" id="status">Subí la imagen y completá gramos + horas para ver el costo.</p>
+        <p class="status" id="status">Subí la imagen del slicer y completá gramos + horas para ver el estimado.</p>
       </section>
     </div>
   </main>
@@ -347,7 +414,10 @@
       const customWrap = document.getElementById('filamentoCustomWrap');
       const result = document.getElementById('result');
       const status = document.getElementById('status');
+      const btnCopyEst = document.getElementById('btn-copy-est');
       let objectUrl = null;
+      let hasImage = false;
+      let lastEstimado = null;
 
       function kgActual() {
         if (filamentoKg.value === 'custom') return Number(form.filamentoCustom.value || 0);
@@ -363,10 +433,17 @@
         const argolla = form.argolla.checked ? 50 : 0;
         const bolsa = form.bolsa.checked ? 50 : 0;
 
+        if (!hasImage) {
+          result.hidden = true;
+          status.className = 'status';
+          status.textContent = 'Primero subí la captura del slicer para calcular el estimado.';
+          return;
+        }
+
         if (!(gramos > 0) || !(horas >= 0) || !(kg > 0)) {
           result.hidden = true;
           status.className = 'status';
-          status.textContent = 'Completá gramos, horas y $/kg para calcular.';
+          status.textContent = 'Completá gramos, horas y $/kg para ver el estimado.';
           return;
         }
 
@@ -383,7 +460,7 @@
         if (recargo > 0) rows.push(['Recargo perfil Ender', recargo]);
         if (argolla > 0) rows.push(['Argolla metal', argolla]);
         if (bolsa > 0) rows.push(['Bolsa', bolsa]);
-        rows.push(['Total costo / u', costo]);
+        rows.push(['Total costo estimado / u', costo]);
 
         document.getElementById('out-costo').textContent = money(costo);
         document.getElementById('out-pvp').textContent = money(pvp);
@@ -402,18 +479,44 @@
           })
           .join('');
 
+        const nombre = String(form.nombre.value || 'Pieza').trim() || 'Pieza';
+        lastEstimado = {
+          nombre,
+          gramos,
+          horas,
+          perfil: perfil.label,
+          costo,
+          pvp,
+          margen,
+          rows,
+        };
+
         result.hidden = false;
         status.className = 'status ok';
-        const nombre = String(form.nombre.value || 'Pieza').trim() || 'Pieza';
         status.textContent =
+          'Estimado · ' +
           nombre +
-          ' · costo ' +
+          ' · costo ~' +
           money(costo) +
-          ' · PVP sugerido (+' +
-          margen +
-          '%) ' +
+          ' · precio sugerido ~' +
           money(pvp) +
-          '.';
+          ' (+' +
+          margen +
+          '%).';
+      }
+
+      function textoEstimado() {
+        if (!lastEstimado) return '';
+        const e = lastEstimado;
+        const lines = [
+          'Impresoreando · estimado 3D',
+          e.nombre,
+          e.gramos + ' g · ' + e.horas + ' h · ' + e.perfil,
+          'Costo estimado: ' + money(e.costo),
+          'Precio sugerido: ' + money(e.pvp),
+          'Valores aproximados; el precio final puede variar.',
+        ];
+        return lines.join('\n');
       }
 
       function setImage(file) {
@@ -430,20 +533,25 @@
         }
         img.src = objectUrl;
         btnClear.disabled = false;
-        status.className = 'status';
+        hasImage = true;
+        status.className = 'status ok';
         status.textContent =
-          'Imagen cargada. Completá gramos y horas (o pedíselo al agente en el chat).';
+          'Imagen lista. Completá gramos y horas que ves en la captura para el estimado.';
+        calcular();
       }
 
       function clearImage() {
         if (objectUrl) URL.revokeObjectURL(objectUrl);
         objectUrl = null;
+        hasImage = false;
+        lastEstimado = null;
         drop.classList.remove('has-img');
         dropCopy.hidden = false;
         const img = drop.querySelector('img');
         if (img) img.remove();
         fileInput.value = '';
         btnClear.disabled = true;
+        calcular();
       }
 
       fileInput.addEventListener('change', () => {
@@ -489,6 +597,21 @@
       form.addEventListener('change', calcular);
 
       document.getElementById('btn-fill-demo').addEventListener('click', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 420;
+        canvas.height = 220;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#1a1510';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#f3eee0';
+        ctx.font = '600 18px Segoe UI, system-ui, sans-serif';
+        ctx.fillText('Ejemplo slicer · Impresoreando', 24, 48);
+        ctx.font = '16px Segoe UI, system-ui, sans-serif';
+        ctx.fillText('Filamento: 54,30 g', 24, 96);
+        ctx.fillText('Tiempo: 1 h 36 m (1,60 h)', 24, 128);
+        canvas.toBlob((blob) => {
+          if (blob) setImage(new File([blob], 'ejemplo-slicer.png', { type: 'image/png' }));
+        }, 'image/png');
         const set = (name, val, type) => {
           const el = form.elements.namedItem(name);
           if (!el) return;
@@ -508,6 +631,33 @@
         set('margen', '100');
         calcular();
       });
+
+      btnCopyEst.addEventListener('click', async () => {
+        const text = textoEstimado();
+        if (!text) return;
+        try {
+          await navigator.clipboard.writeText(text);
+          status.className = 'status ok';
+          status.textContent = 'Estimado copiado. Pegalo en WhatsApp u otro chat.';
+        } catch {
+          window.prompt('Copiá este estimado:', text);
+        }
+      });
+
+      fetch('/api/acceso')
+        .then((r) => r.json())
+        .then((j) => {
+          const el = document.getElementById('share-lan');
+          if (!el) return;
+          const urls = j.lanCosto || [];
+          if (urls.length) {
+            el.innerHTML =
+              'Misma WiFi: <code>' +
+              urls.map((u) => u).join('</code> · <code>') +
+              '</code>';
+          }
+        })
+        .catch(() => {});
     })();
   </script>
 </body>

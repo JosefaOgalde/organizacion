@@ -7,7 +7,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Qué | Dónde |
 |-----|--------|
 | UI panel | `index/clientes/impresoreando/panel/` → `panel.js` · `panel.css` · `index.html` |
-| Calcular costo (imagen) | `index/clientes/impresoreando/calcular-costo/` · `http://127.0.0.1:8000/index/clientes/impresoreando/calcular-costo/` · subir/pegar captura slicer + gramos/horas → costo/PVP (misma fórmula). En chat: pegar imagen y pedir costo; el agente lee g/h y calcula. |
+| Calcular costo (imagen) | `index/clientes/impresoreando/calcular-costo/` · **Estimador público** · `http://127.0.0.1:8000/index/clientes/impresoreando/calcular-costo/` · flujo: **imagen slicer → gramos/horas → estimado** (costo + precio sugerido). Compartir: `ABRIR-CALCULAR-COSTO-PUBLICO.bat`. |
 | Logo | `identidad/logo-impresoreando.png` (wordmark proporción correcta) · ver `IDENTIDAD.md` · bump `?v=imp-logo-20260728` |
 | Venta rápida | `…/panel/venta/` |
 | Seed (repo) | `data/impresoreando-seed.json` |
@@ -137,15 +137,17 @@ Reglas al crear:
 
 ### «calcular costo producto impresoreando»
 
-Responder **pidiendo la imagen** (foto del producto / captura slicer) y, si no viene en la imagen:
+**Siempre pedir la imagen** (captura slicer o foto clara del resumen con gramos/tiempo). Sin imagen, no cerrar el estimado.
+
+Si no vienen en la imagen, pedir:
 
 - gramos de filamento · horas de impresión · tipo/color y $/kg (o usar tabla PLA+ negro/rojo $17.986, amarillo/café $16.829, blanco $12.690)
 - **qué impresora:** «nueva»/Elegoo Centauri (default) o «antigua»/Ender 3 V2 Neo Sprite Neo (otro filamento)
 - si lleva argolla metal (+$50) o bolsa
 
-Calcular con la fórmula del panel y devolver costo/u + PVP sugerido (+margen 100% si no indican otro). Si es Ender, usar perfil `imp-ender-3-v2-neo` (recargo + consumo propios; $/kg del otro filamento si lo dan). Si no hay SKU, generarlo. Si piden guardar producto, crear/actualizar en Costos con `impresoraId`.
+Calcular con la fórmula del panel y **entregar como estimado** (costo/u + precio sugerido +margen 100% si no indican otro). Decir explícitamente que es aproximado y puede variar. Si es Ender, usar perfil `imp-ender-3-v2-neo`. Si no hay SKU, generarlo. Si piden guardar producto, crear/actualizar en Costos con `impresoraId`.
 
-**HTML local:** `…/impresoreando/calcular-costo/` — subir/pegar captura + completar g/h (o que el agente los lea de la imagen en el chat). Misma fórmula Centauri/Ender.
+**HTML público:** `…/impresoreando/calcular-costo/` — cualquiera con el link puede subir imagen + completar g/h → estimado + botón copiar. Misma fórmula Centauri/Ender. Link 4G: `ABRIR-CALCULAR-COSTO-PUBLICO.bat`.
 
 ## Productos / costos
 
@@ -222,7 +224,12 @@ ENVIAR-STATUS-IMPRESOREANDO.bat
 
 ## Celular / red
 
-`localhost` en el teléfono **no** funciona. Misma WiFi → IP de `GET /api/acceso` → `lan[]`. Fuera → `ABRIR-VENTA-PUBLICA.bat` (loca.lt) con `ABRIR-LARAVEL.bat` abierto (:8000).
+`localhost` en el teléfono **no** funciona.
+- **Misma WiFi:** IP de `GET /api/acceso` → `lanCosto[]` / `lan[]`.
+- **Cualquier red / 4G:** con `ABRIR-LARAVEL.bat` abierto (:8000), ejecutá:
+  - **Calcular costo:** `ABRIR-CALCULAR-COSTO-PUBLICO.bat` → link `https://….loca.lt/index/clientes/impresoreando/calcular-costo/`
+  - **Registrar venta:** `ABRIR-VENTA-PUBLICA.bat` → link `…/panel/venta/`
+  Dejá la ventana del túnel abierta mientras usen el link.
 
 ## RFID handheld (tarjetas) — vigente
 

@@ -99,15 +99,19 @@ function lanAddresses() {
 
 function accesoInfo() {
   const lan = lanAddresses();
+  const costoPath = '/index/clientes/impresoreando/calcular-costo/';
   return {
     port: PORT,
     host: RUNTIME_HOST,
     ventaPath: VENTA_PATH,
+    costoPath,
     localhost: `http://localhost:${PORT}${VENTA_PATH}`,
+    localhostCosto: `http://localhost:${PORT}${costoPath}`,
     lan: lan.map((ip) => `http://${ip}:${PORT}${VENTA_PATH}`),
+    lanCosto: lan.map((ip) => `http://${ip}:${PORT}${costoPath}`),
     panelLan: lan.map((ip) => `http://${ip}:${PORT}/index/clientes/impresoreando/panel/`),
     hint:
-      'localhost solo funciona en esta PC. En el celular usa la IP de la WiFi o ABRIR-VENTA-PUBLICA.bat para un link de cualquier lugar.',
+      'localhost solo funciona en esta PC. Misma WiFi: usá lanCosto / lan. Cualquier red/4G: ABRIR-CALCULAR-COSTO-PUBLICO.bat o ABRIR-VENTA-PUBLICA.bat.',
   };
 }
 
