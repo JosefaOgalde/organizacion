@@ -1,0 +1,50 @@
+{
+  "id": "nombre-receta-slug",
+  "bloques": {
+    "cabecera": {
+      "titulo": "Título editorial de la receta",
+      "descripcion": "Bajada / intro (meta descripción editorial)",
+      "porciones": 4,
+      "tiempoTotal": "30 min",
+      "dificultad": "facil",
+      "textoAlt": "Descripción de la foto para accesibilidad",
+      "fotoUrl": ""
+    },
+    "tags": {
+      "etiquetas": [
+        "etiqueta-1",
+        "etiqueta-2",
+        "etiqueta-3"
+      ]
+    },
+    "ingredientes": {
+      "items": [
+        { "nombre": "1 ingrediente con cantidad en la misma línea" },
+        { "nombre": "Otro ingrediente" }
+      ]
+    },
+    "instrucciones": {
+      "pregunta": "¿Cómo preparar nombre de la receta?",
+      "pasos": [
+        {
+          "orden": 1,
+          "texto": "Título del paso: Descripción del paso en prosa."
+        },
+        {
+          "orden": 2,
+          "texto": "Segundo paso…"
+        }
+      ]
+    },
+    "seo": {
+      "metaTitulo": "Título | Recetas Jumbo",
+      "metaDescripcion": "Misma bajada o variante SEO (máx. ~155 caracteres).",
+      "consejosTitulo": "Consejos para un plato perfecto",
+      "consejos": [
+        "Primer consejo práctico.",
+        "Segundo consejo.",
+        "Tercer consejo."
+      ]
+    }
+  }
+}
