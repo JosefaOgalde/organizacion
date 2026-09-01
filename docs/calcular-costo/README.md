@@ -1,26 +1,23 @@
 # Estimador de costo Impresoreando (público)
 
-Página estática para compartir con socios / celular **sin** Laravel ni túnel.
+Comparte **uno** de estos links con tu socio (no hace falta Laravel ni túnel).
 
-## Links
+## Link para abrir ya (recomendado mientras activan Pages)
 
-Cuando GitHub Pages esté activo:
+https://htmlpreview.github.io/?https://github.com/JosefaOgalde/organizacion/blob/cursor/imp-calcular-costo-imagen-6079/docs/calcular-costo/index.html
 
-- https://josefaogalde.github.io/organizacion/calcular-costo/
+## Link definitivo (GitHub Pages)
 
-Mientras tanto (CDN, funciona al instante tras el push):
+Cuando actives Pages y merges a `main`:
 
-- https://cdn.jsdelivr.net/gh/JosefaOgalde/organizacion@main/docs/calcular-costo/
+https://josefaogalde.github.io/organizacion/calcular-costo/
 
-## Activar Pages (una vez)
+### Activar una sola vez
+1. Repo → **Settings** → **Pages**
+2. Source: **GitHub Actions**
+3. Mergear el PR / push a `main`
+4. Esperar el workflow verde
 
-En el repo GitHub → **Settings → Pages**:
-
-1. Source: **GitHub Actions** (o carpeta `/docs` en `main`)
-2. Guardar
-
-O deja que el workflow `.github/workflows/pages-calcular-costo.yml` publique al hacer push.
-
-## Uso
-
-Pegar/arrastrar captura del slicer → estimado (PLA+ $17.986/kg · Centauri · +100% · sin metal ni bolsa).
+## Qué hace
+Pegar/arrastrar captura del slicer → estimado  
+PLA+ $17.986/kg · Centauri · +100% · sin metal ni bolsa
