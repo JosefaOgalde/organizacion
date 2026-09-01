@@ -231,6 +231,24 @@ window.CLIENTES_PORTAL = [
           'Prompts por slide',
           'Identidad ADL oficial'
         ]
+      },
+      {
+        codigo: 'FF',
+        nombre: 'Formación para Facilitadores',
+        archivo: 'DesafioLatam/Formacion-Facilitadores',
+        resumen: 'Certificado de aprobación 1123×794 px para emisión en LMS Empieza / Proyecto.',
+        color: { border: '#0F2E81', bg: '#f5f7fb', text: '#0F2E81' },
+        identidad: {
+          primario: '#729E2E',
+          secundario: '#0F2E81',
+          acento: '#FFCD56',
+          fondo: '#FFFFFF'
+        },
+        entregables: [
+          'Plantilla horizontal',
+          'Fondo LMS sin campos variables',
+          'Zonas para nombre, formación, fecha e ID'
+        ]
       }
     ]
   },

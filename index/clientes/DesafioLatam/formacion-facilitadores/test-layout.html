@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>ff-layout-pending</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <pre id="out">running…</pre>
+  <script src="../../../assets/adl-proyectos-data.js"></script>
+  <script src="../../../assets/adl-ff-certificados.js"></script>
+  <script>
+    (async function () {
+      const out = document.getElementById('out');
+      try {
+        if (document.fonts?.ready) await document.fonts.ready;
+        const api = window.ADL_FF_CERT;
+        if (!api) throw new Error('ADL_FF_CERT no disponible');
+        const ctx = document.createElement('canvas').getContext('2d');
+        const maxW = api.ZONAS.nombre.w - 20;
+        const nombres = [
+          'Ana Díaz',
+          'Camila Vicencio Miranda',
+          'María Fernanda de la Cruz González Sepúlveda'
+        ];
+        const fallos = [];
+        nombres.forEach((nombre) => {
+          const { size, lines } = api.layoutNombre(ctx, nombre, maxW, 2);
+          if (lines.length > 2) fallos.push(`${nombre}: más de 2 líneas`);
+          ctx.font = `800 ${size}px Inter, "Helvetica Neue", sans-serif`;
+          lines.forEach((linea) => {
+            const w = ctx.measureText(linea).width;
+            if (w > maxW) fallos.push(`${nombre}: "${linea}" mide ${Math.round(w)}px > ${maxW}`);
+          });
+        });
+        if (fallos.length) {
+          document.title = 'ff-layout-fail';
+          out.textContent = 'FAIL\n' + fallos.join('\n');
+        } else {
+          document.title = 'ff-layout-pass';
+          out.textContent = 'PASS\n' + nombres.join('\n');
+        }
+      } catch (err) {
+        document.title = 'ff-layout-fail';
+        out.textContent = 'FAIL\n' + err.message;
+      }
+    })();
+  </script>
+</body>
+</html>

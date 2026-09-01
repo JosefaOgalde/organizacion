@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Export certificado FF</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <canvas id="out" width="1123" height="794"></canvas>
+  <script src="../../../assets/adl-proyectos-data.js"></script>
+  <script src="../../../assets/adl-ff-certificados.js"></script>
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const canvas = document.getElementById('out');
+      const api = window.ADL_FF_CERT;
+      const modo = params.get('modo') || 'maqueta';
+      const datos = {
+        nombre: params.get('nombre') || 'María Fernanda González Sepúlveda',
+        formacion: params.get('formacion') || 'Formación para Facilitadores',
+        fecha: params.get('fecha') || '1 de septiembre de 2026',
+        codigo: params.get('codigo') || '41773',
+        soloFondo: modo === 'fondo',
+        mostrarZonas: modo === 'zonas'
+      };
+      function draw() {
+        api.dibujarCertificado(canvas, datos);
+        document.title = 'ff-export-ready';
+      }
+      if (document.fonts?.ready) document.fonts.ready.then(draw);
+      else draw();
+    })();
+  </script>
+</body>
+</html>
