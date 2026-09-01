@@ -223,11 +223,22 @@ if not errorlevel 1 (
 )
 
 echo.
-echo  Arrancando servidor unificado http://127.0.0.1:8000 ...
+echo  Arrancando servidor unificado en :8000 ^(LAN + localhost^)...
 echo  ^(estaticos del repo + API Laravel /api/*^)
-start "Organizacion · 8000" cmd /k "cd /d "%~dp0" && "%PHP_EXE%" -S 127.0.0.1:8000 scripts\servidor-unificado-8000.php"
+echo  Escucha en 0.0.0.0 para celular en la misma WiFi.
+REM 0.0.0.0 = acepta 127.0.0.1 y la IP WiFi ^(ej. 192.168.0.16^)
+start "Organizacion · 8000" cmd /k "cd /d "%~dp0" && "%PHP_EXE%" -S 0.0.0.0:8000 scripts\servidor-unificado-8000.php"
 timeout /t 2 >nul
 set "YA_CORRE=0"
+echo.
+echo  PC:     http://127.0.0.1:8000/index/clientes/impresoreando/calcular-costo/
+for /f "tokens=2 delims=:" %%A in ('ipconfig ^| findstr /R /C:"IPv4"') do (
+  for /f "tokens=* delims= " %%B in ("%%A") do (
+    echo  Celular misma WiFi: http://%%B:8000/index/clientes/impresoreando/calcular-costo/
+  )
+)
+echo  4G / otra red: ABRIR-CALCULAR-COSTO-PUBLICO.bat
+echo.
 
 if /I "%MODO%"=="sin-nav" goto :fin_urls
 if /I "%MODO%"=="sin-navegador" goto :fin_urls
