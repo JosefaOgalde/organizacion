@@ -3,7 +3,8 @@
  * Servidor único :8000 — estáticos del repo + API Laravel.
  *
  * Uso (desde la raíz organizacion/):
- *   php -S 127.0.0.1:8000 scripts/servidor-unificado-8000.php
+ *   php -S 0.0.0.0:8000 scripts/servidor-unificado-8000.php
+ *   (0.0.0.0 = localhost + celular en la misma WiFi; 127.0.0.1 = solo esta PC)
  *
  * - /api/*     → backend/public/index.php (Laravel + SQLite)
  * - resto      → archivos del repo (index/, index.html, …) con index.html en carpetas
