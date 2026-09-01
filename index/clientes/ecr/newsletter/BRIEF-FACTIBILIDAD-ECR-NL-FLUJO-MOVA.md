@@ -251,8 +251,8 @@ Opciones de veredicto:
 
 1. Veredicto (tabla anterior).  
 2. Top 3 riesgos no cubiertos en este brief.  
-3. Dueño de mantenimiento (rol ECR-CM vs HER vs MOVA catálogo).  
-4. Recomendación: ¿entra en catálogo MOVA (p. ej. operaciones de contenido) o queda 100 % bajo cliente ECR?
+3. Dueño de mantenimiento (rol ECR-CM / agente Cursor / operadora).  
+4. Recomendación: qué automatizar en Fase 1 vs dejar manual (copys, portada, carrusel, video).
 
 ---
 
@@ -291,8 +291,9 @@ Entregar: veredicto (sección 9) + riesgos + dueño mantenimiento + recomendaci�
 | UI portada | `http://127.0.0.1:8000/index/clientes/ecr/` |
 | JS generador | `newsletter/ecr-portada-prompt.js` |
 | Tareas madre NL | `scripts/renombrar-ecr-madres-articulos.js` |
-| Agente MOVA | `@mova` · `docs/cursor/INVOCAR-AGENTE-MOVA.md` |
-| Brief modelo (estructura) | `index/clientes/Herramientas/carga-recetas-cencosud/BRIEF-FACTIBILIDAD-CRC-SEO.md` |
+| Portal ECR | `index/clientes/ecr/index.html` |
+| Agente MOVA (evaluación) | `@mova` · `docs/cursor/INVOCAR-AGENTE-MOVA.md` |
+| Cliente / rol organizador | `cli-ecr` · `rol-ecr-cm` |
 
 ---
 
