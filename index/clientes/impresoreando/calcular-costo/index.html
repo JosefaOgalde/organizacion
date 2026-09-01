@@ -43,6 +43,18 @@
       padding: 0.9rem 0;
     }
     .logo { height: 48px; width: auto; display: block; }
+    .logo-mobile {
+      display: none;
+      height: 52px;
+      width: 52px;
+      object-fit: contain;
+    }
+    @media (max-width: 720px) {
+      .logo-desktop { display: none; }
+      .logo-mobile { display: block; }
+      .top .shell { justify-content: space-between; }
+      .nav-link { font-size: 0.9rem; }
+    }
     .nav-link {
       color: var(--text);
       font-weight: 650;
@@ -212,7 +224,20 @@
   <header class="top">
     <div class="shell">
       <a class="nav-link" href="../">← Impresoreando</a>
-      <img class="logo" src="/index/clientes/impresoreando/identidad/logo-impresoreando.png?v=imp-logo-20260901" alt="Impresoreando" width="220" height="48" />
+      <img
+        class="logo logo-desktop"
+        src="/index/clientes/impresoreando/identidad/logo-impresoreando.png?v=imp-logo-20260901"
+        alt="Impresoreando"
+        width="220"
+        height="48"
+      />
+      <img
+        class="logo logo-mobile"
+        src="/index/clientes/impresoreando/identidad/icono-gato-mobile.png?v=imp-gato-20260901b"
+        alt="Impresoreando"
+        width="52"
+        height="52"
+      />
       <a class="nav-link" href="https://www.instagram.com/impresoreando/" target="_blank" rel="noopener">Instagram</a>
     </div>
   </header>

@@ -5,6 +5,8 @@
 | Archivo | Uso |
 |---------|-----|
 | `logo-impresoreando.png` | **Marca oficial en UI** (wordmark navy + naranja · fondo blanco · `?v=imp-logo-20260901`) |
+| `icono-gato-mobile.png` | **Logo mobile** (gato · entregado 2026-09-01 · `?v=imp-gato-20260901`) · estimador en celular |
+| `icono-gato-impresoreando.png` | Misma arte del gato (alias) |
 | `logo-ima2.png` | Alias del oficial (mismo archivo) · panel, venta, catálogo |
 | `logo-impresoreando-claro.png` / `logo-marca.png` / `logo-oficial.png` | Misma arte oficial |
 | `logo-impresoreando-transparente.png` | Wordmark con fondo transparente |
