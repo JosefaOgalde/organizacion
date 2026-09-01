@@ -270,6 +270,7 @@
       font-size: 0.88rem;
       line-height: 1.45;
     }
+    .status.reading { background: #eef3fb; border-color: #b8cce8; color: #2a4a7a; }
     .badge-est {
       display: inline-block;
       margin-left: 0.35rem;
@@ -326,8 +327,8 @@
           <button type="button" id="btn-fill-demo">Probar con ejemplo</button>
         </div>
         <p class="hint">
-          En la captura buscá <strong>gramos de filamento</strong> y <strong>tiempo de impresión</strong>.
-          Si no los ves claros, pedí otra captura con el resumen del slicer.
+          Al subir la captura, intentamos leer <strong>Total → gramos</strong> y
+          <strong>Tiempo total → horas</strong> solos. Si no se detectan, complétalos a mano.
         </p>
       </section>
 
@@ -390,6 +391,7 @@
     </div>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script>
     (function () {
       const money = (n) =>
@@ -418,6 +420,87 @@
       let objectUrl = null;
       let hasImage = false;
       let lastEstimado = null;
+      let readToken = 0;
+
+      function parseSlicerText(raw) {
+        const norm = String(raw || '').replace(/\r/g, '\n');
+        let gramos = null;
+
+        const totalLine = norm
+          .split('\n')
+          .find((line) => /total/i.test(line) && /\d/.test(line) && /g\b/i.test(line));
+        if (totalLine) {
+          const m = totalLine.match(/(\d+[.,]\d+)\s*g\b/i);
+          if (m) gramos = parseFloat(m[1].replace(',', '.'));
+        }
+        if (!gramos) {
+          const grams = [...norm.matchAll(/(\d+[.,]\d+)\s*g\b/gi)].map((m) =>
+            parseFloat(m[1].replace(',', '.'))
+          );
+          if (grams.length) gramos = Math.max(...grams);
+        }
+
+        let horas = null;
+        const totalTime =
+          norm.match(/tiempo\s*total[^\n]{0,80}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i) ||
+          norm.match(/total[^\n]{0,40}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i);
+        if (totalTime) {
+          horas = round2(Number(totalTime[1]) + Number(totalTime[2]) / 60);
+        } else {
+          const times = [...norm.matchAll(/(\d+)\s*h[^\d]{0,8}(\d+)\s*m/gi)].map((m) =>
+            round2(Number(m[1]) + Number(m[2]) / 60)
+          );
+          if (times.length) horas = Math.max(...times);
+        }
+
+        return { gramos, horas };
+      }
+
+      function setField(name, value) {
+        const el = form.elements.namedItem(name);
+        if (!el || value == null || !(value > 0)) return false;
+        el.value = String(value);
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        return true;
+      }
+
+      async function leerCaptura(img) {
+        if (!img || !img.src || !window.Tesseract) return;
+        const token = ++readToken;
+        status.className = 'status reading';
+        status.textContent = 'Leyendo gramos y tiempo de la captura…';
+
+        try {
+          const { data } = await Tesseract.recognize(img.src, 'spa+eng', {
+            logger: () => {},
+          });
+          if (token !== readToken) return;
+
+          const parsed = parseSlicerText(data.text || '');
+          const filledG = setField('gramos', parsed.gramos);
+          const filledH = setField('horas', parsed.horas);
+
+          if (filledG || filledH) {
+            status.className = 'status ok';
+            status.textContent =
+              'Detectado en la captura' +
+              (filledG ? ': ' + parsed.gramos + ' g' : '') +
+              (filledH ? ' · ' + parsed.horas + ' h' : '') +
+              '. Revisa impresora y filamento si hace falta.';
+          } else {
+            status.className = 'status';
+            status.textContent =
+              'Imagen lista. No pudimos leer los números: completa Total (gramos) y Tiempo total (horas).';
+          }
+          calcular();
+        } catch {
+          if (token !== readToken) return;
+          status.className = 'status';
+          status.textContent =
+            'Imagen lista. Completa gramos (Total) y horas (Tiempo total) a mano.';
+          calcular();
+        }
+      }
 
       function kgActual() {
         if (filamentoKg.value === 'custom') return Number(form.filamentoCustom.value || 0);
@@ -534,10 +617,8 @@
         img.src = objectUrl;
         btnClear.disabled = false;
         hasImage = true;
-        status.className = 'status ok';
-        status.textContent =
-          'Imagen lista. Completa gramos y horas que ves en la captura para el estimado.';
-        calcular();
+        img.onload = () => leerCaptura(img);
+        if (img.complete) leerCaptura(img);
       }
 
       function clearImage() {
@@ -545,6 +626,7 @@
         objectUrl = null;
         hasImage = false;
         lastEstimado = null;
+        readToken++;
         drop.classList.remove('has-img');
         dropCopy.hidden = false;
         const img = drop.querySelector('img');
@@ -640,7 +722,7 @@
           status.className = 'status ok';
           status.textContent = 'Estimado copiado. Pégalo en WhatsApp u otro chat.';
         } catch {
-          window.prompt('Copiá este estimado:', text);
+          window.prompt('Copia este estimado:', text);
         }
       });
 
