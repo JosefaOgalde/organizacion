@@ -1,5 +1,33 @@
 # Historial de portadas Midjourney (solo fondo)
 
+## NL 1 sep — Invertir en talento (2026-08-27)
+
+- Artículo: **Invertir en talento antes de fin de año: una decisión estratégica** (NL 1 sep · ART 24)
+- Ranking del texto: **C** (20) · **D** (6) · **O** (5)
+- Composición: ~70% cielo azure vacío · escena en franja inferior (~30%)
+- Archivo: [portadas-guardadas/NL1-sep-invertir-en-talento-prompts.md](./portadas-guardadas/NL1-sep-invertir-en-talento-prompts.md)
+- Word/TXT: [articulos/ART24-invertir-en-talento.docx](./articulos/ART24-invertir-en-talento.docx)
+
+### Opción 1 · C — Liderazgo preparando al equipo (~70% cielo)
+
+```
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: extreme low-horizon composition — the upper 70 percent of the frame is only a vast empty unmarked sky block in soft medium azure-blue, muted sky-blue, and light steel-blue tonalities with a gentle vertical gradient, completely clear of figures screens glow furniture and objects, reserved for later text overlay. All activity compressed into the bottom 30 percent near the lower edge like a thin ground strip. In that lower strip only: a stylized faceless woman leader in teal-navy clothing with warm orange accents stands in profile as the clear protagonist, facing a compact group of diverse faceless teammates around a low training table with blank glowing tablets and unlabeled amber geometric skill-path blocks; thin warm-orange light threads connect the leader to each teammate as one capability layer confined entirely to the lower strip; deep teal ground plane; soft even lighting; absolutely no vans trucks or fleet vehicles anywhere, thematic mood: strategic investment in people as operational strength before year-end pressure, leadership preparing teams instead of postponing learning, critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only; upper sky must remain completely empty and clear for text
+```
+
+### Opción 2 · D — Datos y herramientas como capacidad (~70% cielo)
+
+```
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: extreme low-horizon composition — the upper 70 percent of the frame is only a vast empty unmarked sky block in soft medium azure-blue, muted sky-blue, and light steel-blue tonalities with a gentle vertical gradient, completely clear of figures screens glow furniture and objects, reserved for later text overlay. All activity compressed into the bottom 30 percent near the lower edge like a thin ground strip. In that lower strip only: a low editorial data-learning desk in deep teal and navy where two stylized faceless professionals study unlabeled abstract chart panels and glowing orange data cubes; blank screens show only geometric shapes not characters; thin amber analysis threads link cubes, screens, and people into one applied-skills layer kept entirely in the lower strip; reflective polished floor; absolutely no vans trucks or fleet vehicles anywhere, thematic mood: data literacy and digital tools as applied capability so decisions become faster not a separate analytics layer, critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only; upper sky must remain completely empty and clear for text
+```
+
+### Opción 3 · O — Aprendizaje conectado / IA aplicada (~70% cielo)
+
+```
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: extreme low-horizon composition — the upper 70 percent of the frame is only a vast empty unmarked sky block in soft medium azure-blue, muted sky-blue, and light steel-blue tonalities with a gentle vertical gradient, completely clear of figures screens glow furniture and objects, reserved for later text overlay. All activity compressed into the bottom 30 percent near the lower edge like a thin ground strip. In that lower strip only: a soft peach neural form kept very low near the ground, with deep teal network lines and warm orange nodes weaving around a small circle of faceless learners holding blank devices; the network stays inside the bottom strip and never rises into the sky; calm professional glow; absolutely no vans trucks or fleet vehicles anywhere, thematic mood: applied machine learning and continuous learning as the new training standard, people growing through connected knowledge, critical: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only; upper sky must remain completely empty and clear for text
+```
+
+---
+
 ## NL 1 ago — prompts Midjourney v5 (2026-07-21)
 
 - Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
@@ -135,7 +163,13 @@ ANTITEXT: keep all vehicle body panels, doors, and surfaces completely blank and
 
 ---
 
-Actualizado: 2026-07-21
+Actualizado: 2026-08-27
+
+## NL 1 sep — Invertir en talento (2026-08-27)
+
+- Artículo: **Invertir en talento antes de fin de año: una decisión estratégica**
+- Mundos: **C** · **D** · **O** (~70% cielo azure)
+- Archivo: [portadas-guardadas/NL1-sep-invertir-en-talento-prompts.md](./portadas-guardadas/NL1-sep-invertir-en-talento-prompts.md)
 
 ## NL 1 ago — prompts Midjourney v5 (2026-07-21)
 
