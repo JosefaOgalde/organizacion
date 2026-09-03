@@ -50,8 +50,14 @@
         Copia <code>carga-recetas-cencosud/secrets/env.example</code> → <code>secrets/.env</code> y pon tu usuario.
       </li>
       <li>
-        <strong>1. Word en inbox + parse</strong>
+        <strong>1a. Word en inbox + parse</strong>
         <code>python scripts/parse-receta-word.py …/inbox/archivo.docx</code>
+      </li>
+      <li>
+        <strong>1b. O JSON de 5 bloques (cualquier receta)</strong>
+        Copia <code>bloques-receta.template.json</code> → <code>bloques/mi-receta.json</code><br>
+        <code>python scripts/expandir-bloques-receta.py bloques/mi-receta.json</code><br>
+        Guía: <code>carga-recetas-cencosud/BLOQUES-RECETA.md</code>
       </li>
       <li>
         <strong>2. Explorar / mapear el formulario (con tu login)</strong>

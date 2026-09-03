@@ -1,0 +1,71 @@
+{
+  "id": "churrascas",
+  "bloques": {
+    "cabecera": {
+      "titulo": "Churrascas",
+      "descripcion": "Aprende a hacer churrascas caseras doradas y suaves, con una textura perfecta para acompañar el desayuno o la once. Un pan a la plancha tradicional chileno.",
+      "porciones": 6,
+      "tiempoTotal": "40 min",
+      "dificultad": "facil",
+      "textoAlt": "Churrascas doradas apiladas en un plato, algunas abiertas con mantequilla.",
+      "fotoUrl": "https://drive.google.com/file/d/1XYkz5ZUCSBeUuOW2YNo5RgpBQgFAA9h6/view"
+    },
+    "tags": {
+      "etiquetas": [
+        "once",
+        "pan casero",
+        "recetas chilenas",
+        "manteca",
+        "pan a la plancha"
+      ]
+    },
+    "ingredientes": {
+      "items": [
+        { "nombre": "500 g de harina" },
+        { "nombre": "100 g de manteca" },
+        { "nombre": "250 ml de agua tibia" },
+        { "nombre": "1 cucharadita de sal" },
+        { "nombre": "1 cucharadita de polvos de hornear" }
+      ]
+    },
+    "instrucciones": {
+      "pregunta": "¿Cómo preparar churrascas?",
+      "pasos": [
+        {
+          "orden": 1,
+          "texto": "Mezcla los secos: En un bowl grande, junta la harina con la sal y los polvos de hornear. Revuelve para que todo quede bien repartido, ya que una mezcla pareja de los ingredientes secos ayuda a que las churrascas suban de forma uniforme."
+        },
+        {
+          "orden": 2,
+          "texto": "Incorpora la manteca: Agrega la manteca a temperatura ambiente y únela con la harina usando las manos, hasta obtener una textura arenosa. Este paso reparte la grasa en la masa y da a las churrascas su clásica textura suave."
+        },
+        {
+          "orden": 3,
+          "texto": "Forma la masa: Vierte el agua tibia de a poco mientras unes la mezcla, hasta formar una masa suave que no se pegue en las manos. Amasa durante unos minutos sobre la mesa, solo hasta que quede lisa y homogénea."
+        },
+        {
+          "orden": 4,
+          "texto": "Reposa y divide: Deja reposar la masa tapada durante 15 minutos para que se relaje. Después divídela en porciones iguales y forma bolitas, que luego estirarás para dar forma a cada pan antes de cocinarlo."
+        },
+        {
+          "orden": 5,
+          "texto": "Estira: Estira cada bolita con un uslero sobre una superficie enharinada, hasta dejar discos de medio centímetro de grosor. Pínchalas con un tenedor por ambos lados para que no se inflen demasiado al cocinarse."
+        },
+        {
+          "orden": 6,
+          "texto": "Cocina a la plancha: Calienta una plancha o sartén a fuego medio y cocínalas durante 3 a 4 minutos por lado, hasta que estén doradas y cocidas por dentro. Sírvelas tibias, abiertas al medio con mantequilla o mermelada."
+        }
+      ]
+    },
+    "seo": {
+      "metaTitulo": "Churrascas | Recetas Jumbo",
+      "metaDescripcion": "Aprende a hacer churrascas caseras doradas y suaves, con una textura perfecta para acompañar el desayuno o la once. Un pan a la plancha tradicional chileno.",
+      "consejosTitulo": "Para que queden más suaves",
+      "consejos": [
+        "Usa agua tibia al preparar la masa para que la manteca se integre mejor y queden más suaves.",
+        "Pincha las churrascas con un tenedor antes de cocinarlas para evitar que se inflen y conseguir una cocción más pareja.",
+        "Cocínalas a fuego medio para que se doren de manera uniforme sin quemarse por fuera ni quedar crudas al centro."
+      ]
+    }
+  }
+}

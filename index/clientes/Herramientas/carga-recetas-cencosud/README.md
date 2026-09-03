@@ -24,6 +24,16 @@ copy TU-RECETA.docx index\clientes\Herramientas\carga-recetas-cencosud\inbox\
 python scripts\parse-receta-word.py index\clientes\Herramientas\carga-recetas-cencosud\inbox\TU-RECETA.docx
 ```
 
+**Alternativa — solo 5 bloques BM (cualquier receta):**
+
+```bat
+copy bloques-receta.template.json bloques\mi-receta.json
+REM Edita cabecera · tags · ingredientes · instrucciones · seo
+python scripts\expandir-bloques-receta.py bloques\mi-receta.json
+```
+
+Ver `BLOQUES-RECETA.md`.
+
 ### 2) Explorar BM (scraping/mapeo local)
 
 ```bat

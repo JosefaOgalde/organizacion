@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema-bloques-receta-cencosud.json",
+  "title": "CRC — 5 bloques BM (editable por receta)",
+  "description": "Solo los 5 bloques del lienzo Jumbo. Expandir con scripts/expandir-bloques-receta.py",
+  "type": "object",
+  "required": ["id", "bloques"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Slug de la receta (ej. churrascas)"
+    },
+    "bloques": {
+      "type": "object",
+      "required": ["cabecera", "tags", "ingredientes", "instrucciones", "seo"],
+      "properties": {
+        "cabecera": {
+          "type": "object",
+          "required": ["titulo", "descripcion", "porciones", "tiempoTotal", "dificultad"],
+          "properties": {
+            "titulo": { "type": "string" },
+            "descripcion": { "type": "string" },
+            "porciones": { "type": ["integer", "string"] },
+            "tiempoTotal": { "type": "string" },
+            "dificultad": {
+              "type": "string",
+              "enum": ["muy facil", "facil", "media", "dificil", "absurdamente dificil"]
+            },
+            "textoAlt": { "type": "string" },
+            "fotoUrl": { "type": "string" }
+          }
+        },
+        "tags": {
+          "type": "object",
+          "required": ["etiquetas"],
+          "properties": {
+            "etiquetas": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
+            }
+          }
+        },
+        "ingredientes": {
+          "type": "object",
+          "required": ["items"],
+          "properties": {
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["nombre"],
+                "properties": {
+                  "nombre": { "type": "string" }
+                }
+              },
+              "minItems": 1
+            }
+          }
+        },
+        "instrucciones": {
+          "type": "object",
+          "required": ["pasos"],
+          "properties": {
+            "pregunta": { "type": "string" },
+            "pasos": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["orden", "texto"],
+                "properties": {
+                  "orden": { "type": "integer" },
+                  "texto": { "type": "string" }
+                }
+              },
+              "minItems": 1
+            }
+          }
+        },
+        "seo": {
+          "type": "object",
+          "required": ["metaTitulo", "metaDescripcion", "consejos"],
+          "properties": {
+            "metaTitulo": { "type": "string" },
+            "metaDescripcion": { "type": "string" },
+            "consejosTitulo": { "type": "string" },
+            "consejos": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

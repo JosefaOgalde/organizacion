@@ -150,6 +150,24 @@ def main() -> int:
         return 1
 
     receta = json.loads(path.read_text(encoding="utf-8"))
+    try:
+        from expandir_bloques_receta import es_formato_bloques, expandir_bloques
+    except ImportError:
+        import importlib.util
+
+        exp_path = ROOT / "scripts" / "expandir-bloques-receta.py"
+        spec = importlib.util.spec_from_file_location("expandir_bloques_receta", exp_path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        es_formato_bloques = mod.es_formato_bloques
+        expandir_bloques = mod.expandir_bloques
+    if es_formato_bloques(receta):
+        try:
+            rel = str(path.relative_to(ROOT))
+        except ValueError:
+            rel = str(path)
+        receta = expandir_bloques(receta, fuente=rel)
+        print("Formato: 5 bloques → receta expandida")
     env = load_env(ENV_PATH)
     selectores = load_selectores()
     base_url = _RUTAS.url_inicio_bm(env)
