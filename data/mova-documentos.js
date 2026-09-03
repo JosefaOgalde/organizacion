@@ -2,7 +2,7 @@
  * Catálogo MOVA — ver en HTML (editable en repo); PDF/PPT solo para exportar.
  */
 window.MOVA_DOCUMENTOS = {
-  version: '4.2',
+  version: '4.3',
   baseMkof: '../../../mkof/',
   baseData: '../../../../../data/',
   categorias: [
@@ -229,6 +229,29 @@ window.MOVA_DOCUMENTOS = {
           verHtml: 'mysql-nodo-n8n.html',
           pptx: 'MOVA-Nodo-MySQL-n8n.pptx',
           editar: 'mkof-mysql-nodo-guia.js'
+        }
+      ]
+    },
+    {
+      id: 'contenido-ecr',
+      titulo: 'Operaciones de contenido · ECR-NL',
+      items: [
+        {
+          id: 'ecr-nl-flujo',
+          titulo: 'ECR-NL — Flujo newsletter (HTML + JSON)',
+          descripcion: 'Copys → Portada → Carrusel → Video · playbook MOVA · reduce costos',
+          hito: 'ECR-NL',
+          fecha: '1 sep 2026',
+          externo: '../ecr-nl/',
+          editar: 'index/clientes/MKOF/MOVA/ecr-nl/ecr-nl-flujo.json'
+        },
+        {
+          id: 'ecr-nl-evaluacion',
+          titulo: 'ECR-NL — Ficha evaluación comité',
+          descripcion: 'Veredicto congelado 45% · condición avance · métricas v1',
+          hito: 'ECR-NL',
+          fecha: '1 sep 2026',
+          editar: 'index/clientes/MKOF/MOVA/documentos/ECR-NL-EVALUACION.md'
         }
       ]
     },

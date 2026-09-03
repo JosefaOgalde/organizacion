@@ -1,0 +1,140 @@
+{
+  "codigo": "ECR-NL",
+  "nombre": "Flujo newsletter ECR (Copys → Portada → Carrusel → Video)",
+  "cliente": "ECR GROUP",
+  "clienteId": "cli-ecr",
+  "rolId": "rol-ecr-cm",
+  "ambito": "MOVA · operaciones de contenido LinkedIn",
+  "version": "1.0.0",
+  "estadoProyecto": "propuesta",
+  "veredictoComite": {
+    "fecha": "2026-09-01",
+    "cuadrante": "proyecto_mayor",
+    "esfuerzo": 5,
+    "impacto": 8,
+    "reduceCosto": true,
+    "aumentaIngreso": false,
+    "escalable": true,
+    "scorePrincipios": 45,
+    "veredicto": "congelado",
+    "condicionAvance": "Reducir dependencia humana en etapas críticas + métricas claras de autonomía y escalabilidad (HTML+JSON en MOVA)."
+  },
+  "valor": {
+    "tipo": "reduce_costos_operacionales",
+    "resumen": "Centraliza en MOVA el pipeline ECR: menos horas por NL, menos retrabajo y reglas versionadas en JSON."
+  },
+  "metricas": {
+    "baselineHrsPorNl": { "min": 6, "max": 10 },
+    "metaV1HrsPorNl": 4,
+    "metaV2HrsPorNl": 3,
+    "ahorroHrsPorNl": { "min": 4, "max": 8 },
+    "cadencia": "~1 NL/mes",
+    "kpis": [
+      "tiempo por etapa (copys / portada / carrusel / video)",
+      "rondas de aprobación cliente por etapa",
+      "% campos rellenados sin edición manual en copys"
+    ]
+  },
+  "fases": [
+    {
+      "id": "v1",
+      "nombre": "Copys + Portada + JSON/estados",
+      "automatiza": ["copys A/B", "3 prompts portada", "persistencia JSON"],
+      "humano": ["Tito slides", "Midjourney", "Canva", "OK cliente"]
+    },
+    {
+      "id": "v2",
+      "nombre": "Prompts carrusel",
+      "automatiza": ["matriz composiciones", "prompts slides 2–7"],
+      "humano": ["textos Tito", "Midjourney", "Canva", "OK cliente"]
+    },
+    {
+      "id": "v3",
+      "nombre": "Video asistido",
+      "automatiza": ["checklist animación"],
+      "humano": ["montaje Canva", "OK cliente"]
+    }
+  ],
+  "etapas": [
+    {
+      "id": "copys",
+      "orden": 1,
+      "nombre": "Copys",
+      "entrada": "Artículo aprobado (PDF/DOCX/TXT)",
+      "salida": "TXT Feed A/B · Carrusel COPY A/B · Video A/B",
+      "gate": "aprobacion_cliente",
+      "agente": true,
+      "reglasRef": "index/clientes/ecr/newsletter/copys/FORMATO-COPYS-ECR.md",
+      "camposSalida": ["feedA", "feedB", "carruselA", "carruselB", "videoA", "videoB"]
+    },
+    {
+      "id": "portada",
+      "orden": 2,
+      "nombre": "Portada Midjourney",
+      "entrada": "Artículo + copys aprobados",
+      "salida": "3 prompts Midjourney (solo fondo)",
+      "gate": "aprobacion_cliente",
+      "agente": true,
+      "reglasRef": "index/clientes/ecr/newsletter/BASE-ESTILO-PORTADAS.md",
+      "uiRef": "index/clientes/ecr/index.html",
+      "camposSalida": ["promptOpcion1", "promptOpcion2", "promptOpcion3"]
+    },
+    {
+      "id": "carrusel",
+      "orden": 3,
+      "nombre": "Backgrounds carrusel",
+      "entrada": "Textos slides (Tito) + identidad visual",
+      "salida": "Prompts MJ slides 2–7 (composiciones distintas)",
+      "gate": "aprobacion_cliente",
+      "agente": true,
+      "dependenciaHumana": "tito_textos_slides",
+      "camposSalida": ["promptsSlides"]
+    },
+    {
+      "id": "video",
+      "orden": 4,
+      "nombre": "Video",
+      "entrada": "Carrusel aprobado en Canva + copy video A/B",
+      "salida": "MP4 LinkedIn (carrusel animado)",
+      "gate": "aprobacion_cliente",
+      "agente": false,
+      "nota": "Video = carrusel animado; copy ya viene de etapa 1"
+    }
+  ],
+  "roles": {
+    "aprobaciones": "Josefa / cliente ECR",
+    "agente": "Cursor · rol ECR-CM",
+    "textosSlides": "Tito",
+    "operacion": "Operadora MJ + Canva + publicación",
+    "duenoMantenimiento": "rol-ecr-cm"
+  },
+  "fueraDeAlcance": [
+    "Reescribir el artículo largo",
+    "Generar imágenes dentro de Cursor",
+    "Publicar en LinkedIn",
+    "Sustituir a Tito en textos de slides",
+    "APIs Midjourney/Canva en v1"
+  ],
+  "rutasRepo": {
+    "brief": "index/clientes/ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.md",
+    "briefPdf": "index/clientes/ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.pdf",
+    "formatoCopys": "index/clientes/ecr/newsletter/copys/FORMATO-COPYS-ECR.md",
+    "basePortadas": "index/clientes/ecr/newsletter/BASE-ESTILO-PORTADAS.md",
+    "uiPortada": "index/clientes/ecr/index.html",
+    "htmlMova": "index/clientes/MKOF/MOVA/ecr-nl/index.html",
+    "jsonMova": "index/clientes/MKOF/MOVA/ecr-nl/ecr-nl-flujo.json"
+  },
+  "newsletters": [],
+  "plantillaNewsletter": {
+    "id": "nl-YYYY-MM-n",
+    "titulo": "",
+    "articuloArchivo": "",
+    "estado": "borrador",
+    "etapas": {
+      "copys": { "estado": "pendiente", "aprobadoEn": null, "archivo": null },
+      "portada": { "estado": "pendiente", "aprobadoEn": null, "archivo": null },
+      "carrusel": { "estado": "pendiente", "aprobadoEn": null, "archivo": null, "textosTito": null },
+      "video": { "estado": "pendiente", "aprobadoEn": null, "archivo": null }
+    }
+  }
+}

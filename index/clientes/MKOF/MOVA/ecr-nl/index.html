@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECR-NL · Flujo newsletter · MOVA</title>
+  <link rel="stylesheet" href="../../../../assets/portal.css?v=layout-w1">
+  <style>
+    .ecrnl { max-width: 52rem; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; color: #1E2638; }
+    .ecrnl h1 { font-size: 1.65rem; margin: 0 0 0.25rem; }
+    .ecrnl .code { font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: #5A6A8A; }
+    .ecrnl .lead { line-height: 1.55; color: #2a3348; margin: 0.75rem 0 1.25rem; }
+    .ecrnl-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+      gap: 0.65rem;
+      margin-bottom: 1.5rem;
+    }
+    .ecrnl-meta article {
+      background: #EEF1F7;
+      border-left: 3px solid #3D4A6B;
+      padding: 0.7rem 0.85rem;
+    }
+    .ecrnl-meta strong { display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: #5A6A8A; }
+    .ecrnl-meta span { font-size: 0.95rem; font-weight: 600; }
+    .ecrnl-meta .ok { color: #1a7f37; }
+    .ecrnl-meta .warn { color: #bf3f00; }
+    .ecrnl h2 { font-size: 1.15rem; margin: 1.6rem 0 0.65rem; }
+    .ecrnl-etapas { list-style: none; padding: 0; margin: 0; }
+    .ecrnl-etapas li {
+      border: 1px solid #d5dbe8;
+      background: #fff;
+      padding: 0.95rem 1rem;
+      margin-bottom: 0.65rem;
+    }
+    .ecrnl-etapas .ord {
+      display: inline-block;
+      width: 1.5rem; height: 1.5rem;
+      border-radius: 50%;
+      background: #3D4A6B; color: #fff;
+      text-align: center; line-height: 1.5rem;
+      font-size: 0.8rem; font-weight: 700;
+      margin-right: 0.45rem;
+    }
+    .ecrnl-etapas h3 { display: inline; font-size: 1rem; margin: 0; }
+    .ecrnl-etapas p { margin: 0.4rem 0 0; font-size: 0.9rem; color: #2a3348; line-height: 1.45; }
+    .ecrnl-etapas .gate {
+      display: inline-block; margin-top: 0.45rem;
+      font-size: 0.75rem; font-weight: 600;
+      background: #F7F3EA; color: #8a6419;
+      padding: 0.15rem 0.45rem;
+    }
+    .ecrnl-fases { display: grid; gap: 0.65rem; }
+    @media (min-width: 640px) { .ecrnl-fases { grid-template-columns: repeat(3, 1fr); } }
+    .ecrnl-fases article {
+      background: #f7f9fc; border: 1px solid #d5dbe8; padding: 0.85rem;
+      font-size: 0.88rem; line-height: 1.4;
+    }
+    .ecrnl-fases h3 { margin: 0 0 0.35rem; font-size: 0.95rem; }
+    .ecrnl-note {
+      margin-top: 1.5rem; padding: 0.9rem 1rem;
+      background: #F7F3EA; border-left: 3px solid #C4962A; font-size: 0.9rem;
+    }
+    .ecrnl a { color: #0F2E81; }
+    .ecrnl-err { color: #cf222e; padding: 1rem; background: #fff0f0; }
+  </style>
+</head>
+<body class="portal-page--light" data-cliente-slug="mkof" data-proyecto-codigo="MOVA">
+  <header class="portal-header portal-header--themed">
+    <nav class="portal-nav">
+      <a href="../../MOVA.html">← Proyecto MOVA</a>
+      <span aria-hidden="true"> · </span>
+      <a href="../../../ecr/">Portal ECR</a>
+    </nav>
+  </header>
+  <main class="ecrnl">
+    <p class="code">MOVA · ECR-NL</p>
+    <div id="ecrnl-root">
+      <p>Cargando flujo…</p>
+    </div>
+  </main>
+  <script>
+    (function () {
+      const root = document.getElementById('ecrnl-root');
+      const URL_JSON = 'ecr-nl-flujo.json';
+
+      function esc(s) {
+        return String(s ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function render(d) {
+        const v = d.veredictoComite || {};
+        const m = d.metricas || {};
+        const etapas = (d.etapas || [])
+          .map(
+            (e) => `<li>
+              <span class="ord">${esc(e.orden)}</span>
+              <h3>${esc(e.nombre)}</h3>
+              <p><strong>Entra:</strong> ${esc(e.entrada)}<br>
+              <strong>Sale:</strong> ${esc(e.salida)}</p>
+              <span class="gate">Gate: ${esc(e.gate)}</span>
+              ${e.dependenciaHumana ? `<span class="gate">Depende: ${esc(e.dependenciaHumana)}</span>` : ''}
+            </li>`
+          )
+          .join('');
+
+        const fases = (d.fases || [])
+          .map(
+            (f) => `<article>
+              <h3>${esc(f.id.toUpperCase())} · ${esc(f.nombre)}</h3>
+              <p><strong>Automatiza:</strong> ${esc((f.automatiza || []).join(', '))}</p>
+              <p><strong>Humano:</strong> ${esc((f.humano || []).join(', '))}</p>
+            </article>`
+          )
+          .join('');
+
+        const verdClass = String(v.veredicto || '').toLowerCase() === 'congelado' ? 'warn' : 'ok';
+
+        root.innerHTML = `
+          <h1>${esc(d.nombre)}</h1>
+          <p class="lead">${esc(d.valor?.resumen || '')}</p>
+
+          <div class="ecrnl-meta">
+            <article><strong>Código</strong><span>${esc(d.codigo)}</span></article>
+            <article><strong>Estado</strong><span>${esc(d.estadoProyecto)}</span></article>
+            <article><strong>Comité</strong><span class="${verdClass}">${esc(v.veredicto)} · ${esc(v.scorePrincipios)}%</span></article>
+            <article><strong>Impacto / Esfuerzo</strong><span>${esc(v.impacto)}/10 · ${esc(v.esfuerzo)}/10</span></article>
+            <article><strong>Valor</strong><span>Reduce costos</span></article>
+            <article><strong>Meta v1</strong><span>≤ ${esc(m.metaV1HrsPorNl)} hrs/NL</span></article>
+          </div>
+
+          <h2>Etapas (gates cliente)</h2>
+          <ol class="ecrnl-etapas">${etapas}</ol>
+
+          <h2>Fases de automatización</h2>
+          <div class="ecrnl-fases">${fases}</div>
+
+          <h2>Métricas</h2>
+          <p class="lead">
+            Baseline: ${esc(m.baselineHrsPorNl?.min)}–${esc(m.baselineHrsPorNl?.max)} hrs/NL ·
+            Meta v1: ≤ ${esc(m.metaV1HrsPorNl)} hrs ·
+            Meta v2: ≤ ${esc(m.metaV2HrsPorNl)} hrs ·
+            Ahorro: ${esc(m.ahorroHrsPorNl?.min)}–${esc(m.ahorroHrsPorNl?.max)} hrs/NL
+          </p>
+          <ul>${(m.kpis || []).map((k) => `<li>${esc(k)}</li>`).join('')}</ul>
+
+          <div class="ecrnl-note">
+            <strong>Condición de avance (comité):</strong> ${esc(v.condicionAvance)}<br><br>
+            <strong>Brief:</strong>
+            <a href="../../../ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.md">Markdown</a>
+            ·
+            <a href="../../../ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.pdf">PDF</a>
+            ·
+            <strong>JSON:</strong> <code>ecr-nl-flujo.json</code>
+          </div>
+        `;
+      }
+
+      fetch(URL_JSON)
+        .then((r) => {
+          if (!r.ok) throw new Error('No se pudo cargar ' + URL_JSON);
+          return r.json();
+        })
+        .then(render)
+        .catch((err) => {
+          root.innerHTML = `<p class="ecrnl-err">${esc(err.message)}. Abre con servidor Laravel (:8000), no file://</p>`;
+        });
+    })();
+  </script>
+  <script src="../../../../assets/file-protocol-banner.js"></script>
+  <script src="../../../../assets/portal-theme.js"></script>
+  <script src="../../../../assets/portal-theme-auto.js"></script>
+</body>
+</html>
