@@ -1,0 +1,261 @@
+{
+  "codigo": "ECR-NL",
+  "nombre": "Flujo newsletter ECR (Copys → Portada → Carrusel → Video)",
+  "cliente": "ECR GROUP",
+  "clienteId": "cli-ecr",
+  "rolId": "rol-ecr-cm",
+  "responsable": "Josefa Ogalde",
+  "ambito": "MOVA · operaciones de contenido LinkedIn",
+  "version": "2.0.0",
+  "estadoProyecto": "reevaluacion",
+  "briefRef": "index/clientes/ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.md",
+  "veredictoComite": {
+    "fecha": "2026-09-01",
+    "cuadrante": "proyecto_mayor",
+    "esfuerzo": 5,
+    "impacto": 8,
+    "reduceCosto": true,
+    "aumentaIngreso": false,
+    "escalable": true,
+    "scorePrincipios": 45,
+    "veredicto": "congelado",
+    "condicionAvance": "Reducir dependencia humana en etapas críticas + métricas claras. Brief v2 responde con autonomía parcial, consolidado JSON y KPIs numéricos.",
+    "reevaluacionSolicitada": "2026-09-03"
+  },
+  "valor": {
+    "tipo": "reduce_costos_operacionales",
+    "resumen": "Capa autónoma de producción (copys + prompts + estados en consolidado JSON). MJ/Canva/VB humano acotado. Observaciones solo si aplica."
+  },
+  "autonomiaDefinicion": "El sistema produce sin redacción humana los entregables de texto/prompt y persiste estado. No opera Midjourney/Canva/LinkedIn sin persona en v1.",
+  "reglaObservaciones": "correcciones_solo_si_aplica",
+  "metricas": {
+    "baselineHrsPorNl": { "min": 6, "max": 10 },
+    "metaV1HrsPorNl": 4,
+    "metaV2HrsPorNl": 3,
+    "ahorroHrsPorNl": { "min": 4, "max": 8 },
+    "roiAnualClpEstimado1NlMes": 720000,
+    "cadencia": "~1 NL/mes (escalable a 2–4 sin rediseño)",
+    "kpis": [
+      "hrsReales por NL",
+      "rondasAjuste por etapa",
+      "vb timestamps interno/externo",
+      "% etapas con estado en JSON"
+    ]
+  },
+  "tcoV1": {
+    "infraNueva": 0,
+    "apisNuevas": 0,
+    "licenciasExtras": 0,
+    "desarrolloSemanas": { "min": 2, "max": 4 },
+    "mantenimientoHrsMes": 2,
+    "herramientasExistentes": ["Cursor", "Midjourney", "Canva"]
+  },
+  "fases": [
+    {
+      "id": "v1",
+      "nombre": "Consolidado + Copys + Portada + VB condicional",
+      "automatiza": [
+        "copys A/B",
+        "3 prompts portada",
+        "estados consolidado JSON",
+        "observaciones solo si aplica"
+      ],
+      "humano": ["MJ pegar prompt", "Canva logo/texto", "VB Tito/Vale", "VB cliente"]
+    },
+    {
+      "id": "v2",
+      "nombre": "Carrusel asistido",
+      "automatiza": [
+        "prompts slides composiciones distintas",
+        "borrador textos slides desde artículo"
+      ],
+      "humano": ["Tito QA textos", "MJ", "Canva", "VB"]
+    },
+    {
+      "id": "v3",
+      "nombre": "Video asistido + publicar",
+      "automatiza": ["checklist animación"],
+      "humano": ["Canva motion", "programar LinkedIn"]
+    }
+  ],
+  "recorridoOperativo": [
+    {
+      "paso": 1,
+      "nombre": "Fechas + Copys",
+      "automatizable": true,
+      "detalle": "Proponer fechas publicación y generar/enviar copys"
+    },
+    {
+      "paso": 2,
+      "nombre": "OK cliente externo",
+      "automatizable": false,
+      "gate": true
+    },
+    {
+      "paso": 3,
+      "nombre": "Fondo portada Midjourney",
+      "automatizable": "asistido",
+      "detalle": "Agente genera prompt; humano ejecuta en MJ"
+    },
+    {
+      "paso": 4,
+      "nombre": "Logo y texto portada Canva",
+      "automatizable": false
+    },
+    {
+      "paso": 5,
+      "nombre": "VB interno Tito/Vale",
+      "automatizable": false,
+      "observaciones": "solo_si_aplica"
+    },
+    {
+      "paso": 6,
+      "nombre": "VB cliente externo",
+      "automatizable": false,
+      "gate": true,
+      "observaciones": "solo_si_aplica"
+    },
+    {
+      "paso": 7,
+      "nombre": "Armar carrusel",
+      "subpasos": [
+        "Fondos/backgrounds Midjourney",
+        "Agregar textos y logo Canva"
+      ],
+      "automatizable": "asistido"
+    },
+    {
+      "paso": 8,
+      "nombre": "VB interno + VB externo carrusel",
+      "automatizable": false,
+      "observaciones": "solo_si_aplica"
+    },
+    {
+      "paso": 9,
+      "nombre": "Animar video + programar publicar",
+      "automatizable": "checklist"
+    }
+  ],
+  "validacionChecklist": [
+    "1. Cliente — fechas (yo) + copys (yo)",
+    "2. Diseño — portada + textos/logos",
+    "3. VB cliente interno — observaciones solo si aplica",
+    "4. VB cliente externo",
+    "5. Crear carrusel",
+    "6. VB interna",
+    "7. VB externa",
+    "8. Animación carrusel (video)",
+    "9. Publicar"
+  ],
+  "consolidadoColumnas": [
+    { "campo": "mes", "dueno": "editora_cm" },
+    { "campo": "nlNumero", "dueno": "editora_cm" },
+    { "campo": "tituloArticulo", "dueno": "editora_cm" },
+    { "campo": "fechaPublicacionPropuesta", "dueno": "agente_sugiere_editora_confirma" },
+    { "campo": "copysArchivo", "dueno": "agente" },
+    { "campo": "vbCopysExterno", "dueno": "cliente" },
+    { "campo": "portadaPrompt", "dueno": "agente" },
+    { "campo": "portadaAsset", "dueno": "operadora" },
+    { "campo": "vbPortadaInterno", "dueno": "tito_vale" },
+    { "campo": "vbPortadaExterno", "dueno": "cliente" },
+    { "campo": "carruselPrompts", "dueno": "agente" },
+    { "campo": "carruselAsset", "dueno": "operadora" },
+    { "campo": "vbCarruselInterno", "dueno": "tito_vale" },
+    { "campo": "vbCarruselExterno", "dueno": "cliente" },
+    { "campo": "videoAsset", "dueno": "operadora" },
+    { "campo": "publicadoEn", "dueno": "operadora" },
+    { "campo": "observaciones", "dueno": "quien_observa", "regla": "solo_si_aplica" },
+    { "campo": "hrsReales", "dueno": "sistema" },
+    { "campo": "rondasAjuste", "dueno": "sistema" }
+  ],
+  "etapas": [
+    {
+      "id": "copys",
+      "orden": 1,
+      "nombre": "Copys",
+      "entrada": "Artículo aprobado (PDF/DOCX/TXT)",
+      "salida": "TXT Feed A/B · Carrusel COPY A/B · Video A/B",
+      "gate": "aprobacion_cliente",
+      "agente": true,
+      "reglasRef": "index/clientes/ecr/newsletter/copys/FORMATO-COPYS-ECR.md"
+    },
+    {
+      "id": "portada",
+      "orden": 2,
+      "nombre": "Portada Midjourney + Canva",
+      "entrada": "Artículo + copys aprobados",
+      "salida": "3 prompts + portada armada",
+      "gate": "vb_interno_luego_externo",
+      "agente": true,
+      "observaciones": "solo_si_aplica",
+      "reglasRef": "index/clientes/ecr/newsletter/BASE-ESTILO-PORTADAS.md"
+    },
+    {
+      "id": "carrusel",
+      "orden": 3,
+      "nombre": "Carrusel",
+      "entrada": "Portada OK + textos slides",
+      "salida": "Fondos MJ + carrusel Canva",
+      "gate": "vb_interno_luego_externo",
+      "agente": true,
+      "observaciones": "solo_si_aplica",
+      "fase": "v2"
+    },
+    {
+      "id": "video",
+      "orden": 4,
+      "nombre": "Video + publicar",
+      "entrada": "Carrusel aprobado",
+      "salida": "MP4 + post programado",
+      "gate": "publicado",
+      "agente": false,
+      "fase": "v3"
+    }
+  ],
+  "roles": {
+    "aprobacionesExternas": "Cliente ECR",
+    "aprobacionesInternas": "Tito / Vale",
+    "agente": "Cursor · rol ECR-CM",
+    "operacion": "Operadora MJ + Canva + publicación",
+    "duenoMantenimiento": "Josefa Ogalde · rol-ecr-cm"
+  },
+  "fueraDeAlcance": [
+    "Reescribir el artículo largo",
+    "API Midjourney/Canva en v1",
+    "Publicar LinkedIn sin humano",
+    "Sustituir VB de marca del cliente"
+  ],
+  "rutasRepo": {
+    "brief": "index/clientes/ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.md",
+    "briefPdf": "index/clientes/ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.pdf",
+    "htmlMova": "index/clientes/MKOF/MOVA/ecr-nl/index.html",
+    "jsonMova": "index/clientes/MKOF/MOVA/ecr-nl/ecr-nl-flujo.json"
+  },
+  "newsletters": [],
+  "plantillaNewsletter": {
+    "id": "nl-YYYY-MM-n",
+    "titulo": "",
+    "articuloArchivo": "",
+    "fechaPublicacionPropuesta": null,
+    "estado": "borrador",
+    "hrsReales": null,
+    "rondasAjuste": 0,
+    "observaciones": [],
+    "etapas": {
+      "copys": { "estado": "pendiente", "vbExternoEn": null, "archivo": null },
+      "portada": {
+        "estado": "pendiente",
+        "vbInternoEn": null,
+        "vbExternoEn": null,
+        "archivo": null
+      },
+      "carrusel": {
+        "estado": "pendiente",
+        "vbInternoEn": null,
+        "vbExternoEn": null,
+        "archivo": null
+      },
+      "video": { "estado": "pendiente", "publicadoEn": null, "archivo": null }
+    }
+  }
+}
