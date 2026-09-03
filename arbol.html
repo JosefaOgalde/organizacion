@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Árbol 3D — raíces y copa nube — estética caritas</title>
+<style>
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0E2B22;
+  }
+
+  body {
+    display: grid;
+    place-items: center;
+  }
+
+  canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+  }
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+
+<script>
+(() => {
+  "use strict";
+
+  const CFG = {
+    seed: 2026082718,
+
+    bg: "#0E2B22",
+
+    buildDuration: 5800,
+    holdDuration: 18200,
+    disperseDuration: 3200,
+
+    cameraZ: 8.6,
+    focal: 6.1,
+    objectScale: 0.92,
+    globalRotationSpeed: 0.000088,
+
+    innerLine: "#2C7526",
+    structureLine: "#4FB62E",
+    frontNode: "#EFF6EA",
+    backNode: "#7F998A",
+
+    innerLineWidth: 0.8,
+    structureLineWidth: 1.0,
+
+    visibleNodeRatio: 0.32,
+
+    tinyRatio: 0.44,
+    smallRatio: 0.30,
+    mediumRatio: 0.18,
+    largeRatio: 0.08,
+
+    tinyRadius: [0.72, 1.22],
+    smallRadius: [1.35, 2.0],
+    mediumRadius: [2.5, 3.45],
+    largeRadius: [4.2, 5.4],
+
+    blinkMinPause: 900,
+    blinkMaxPause: 5100,
+    blinkCloseMin: 75,
+    blinkCloseMax: 140,
+    blinkOpenMin: 270,
+    blinkOpenMax: 540,
+    blinkMinimumScale: 0.04,
+
+    scatterMin: 0.62,
+    scatterMax: 2.05,
+
+    treeBaseY: -1.35,
+    treeTopY: 2.05
+  };
+
+  CFG.cycleDuration =
+    CFG.buildDuration +
+    CFG.holdDuration +
+    CFG.disperseDuration;
+
+  const canvas = document.getElementById("scene");
+  const ctx = canvas.getContext("2d", { alpha: false });
+
+  let W = 1, H = 1, DPR = 1;
+
+  function mulberry32(seed) {
+    return function() {
+      let t = seed += 0x6D2B79F5;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  const rnd = mulberry32(CFG.seed);
+  const rand = (a = 0, b = 1) => a + (b - a) * rnd();
+
+  function gauss() {
+    return (rnd() + rnd() + rnd() + rnd() + rnd() + rnd() - 3) / 1.45;
+  }
+
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  function smoothstep(t) {
+    t = clamp(t, 0, 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  function easeOutCubic(t) {
+    t = clamp(t, 0, 1);
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function easeInCubic(t) {
+    t = clamp(t, 0, 1);
+    return t * t * t;
+  }
+
+  function hexToRgb(hex) {
+    const v = hex.replace("#", "");
+    return [
+      parseInt(v.slice(0, 2), 16),
+      parseInt(v.slice(2, 4), 16),
+      parseInt(v.slice(4, 6), 16)
+    ];
+  }
+
+  const RGB = {
+    innerLine: hexToRgb(CFG.innerLine),
+    structureLine: hexToRgb(CFG.structureLine),
+    frontNode: hexToRgb(CFG.frontNode),
+    backNode: hexToRgb(CFG.backNode)
+  };
+
+  function rgba(rgb, a) {
+    return `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`;
+  }
+
+  function mixRGB(a, b, t) {
+    return [
+      Math.round(lerp(a[0], b[0], t)),
+      Math.round(lerp(a[1], b[1], t)),
+      Math.round(lerp(a[2], b[2], t))
+    ];
+  }
+
+  function v3(x, y, z) {
+    return { x, y, z };
+  }
+
+  function addV(a, b) {
+    return v3(a.x + b.x, a.y + b.y, a.z + b.z);
+  }
+
+  function scaleV(v, s) {
+    return v3(v.x * s, v.y * s, v.z * s);
+  }
+
+  function lengthV(v) {
+    return Math.hypot(v.x, v.y, v.z);
+  }
+
+  function normalizeV(v) {
+    const l = lengthV(v) || 1;
+    return scaleV(v, 1 / l);
+  }
+
+  function rotX(a) {
+    const c = Math.cos(a), s = Math.sin(a);
+    return [[1, 0, 0], [0, c, -s], [0, s, c]];
+  }
+
+  function rotY(a) {
+    const c = Math.cos(a), s = Math.sin(a);
+    return [[c, 0, s], [0, 1, 0], [-s, 0, c]];
+  }
+
+  function rotZ(a) {
+    const c = Math.cos(a), s = Math.sin(a);
+    return [[c, -s, 0], [s, c, 0], [0, 0, 1]];
+  }
+
+  function matMul(A, B) {
+    const R = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        R[r][c] =
+          A[r][0] * B[0][c] +
+          A[r][1] * B[1][c] +
+          A[r][2] * B[2][c];
+      }
+    }
+    return R;
+  }
+
+  function matVec(M, v) {
+    return v3(
+      M[0][0] * v.x + M[0][1] * v.y + M[0][2] * v.z,
+      M[1][0] * v.x + M[1][1] * v.y + M[1][2] * v.z,
+      M[2][0] * v.x + M[2][1] * v.y + M[2][2] * v.z
+    );
+  }
+
+  function getCycleState(t) {
+    const local = t % CFG.cycleDuration;
+
+    if (local < CFG.buildDuration) {
+      return { phase: "build", local, phaseT: local / CFG.buildDuration };
+    }
+
+    const holdStart = CFG.buildDuration;
+    const holdEnd = holdStart + CFG.holdDuration;
+
+    if (local < holdEnd) {
+      return { phase: "hold", local: local - holdStart, phaseT: (local - holdStart) / CFG.holdDuration };
+    }
+
+    return { phase: "disperse", local: local - holdEnd, phaseT: (local - holdEnd) / CFG.disperseDuration };
+  }
+
+  const vertices = [];
+  const edges = [];
+
+  function heightProgress(y) {
+    return clamp((y - CFG.treeBaseY) / (CFG.treeTopY - CFG.treeBaseY), 0, 1);
+  }
+
+  function chooseSizeClass() {
+    const r = rnd();
+    if (r < CFG.tinyRatio) return "tiny";
+    if (r < CFG.tinyRatio + CFG.smallRatio) return "small";
+    if (r < CFG.tinyRatio + CFG.smallRatio + CFG.mediumRatio) return "medium";
+    return "large";
+  }
+
+  function radiusForClass(c) {
+    if (c === "tiny") return rand(...CFG.tinyRadius);
+    if (c === "small") return rand(...CFG.smallRadius);
+    if (c === "medium") return rand(...CFG.mediumRadius);
+    return rand(...CFG.largeRadius);
+  }
+
+  function stageTiming(group, y) {
+    const h = heightProgress(y);
+
+    let groupOffset = 0;
+    if (group === "roots") groupOffset = 0;
+    else if (group === "trunk") groupOffset = 80;
+    else if (group === "branches") groupOffset = 200;
+    else groupOffset = 340;
+
+    const inBase = groupOffset + h * 3000 + rand(0, 140);
+
+    return {
+      inBase,
+      inSpread: group === "roots" ? 380 : 480,
+      outBase: (1 - h) * 2400 + groupOffset * 0.22 + rand(0, 320),
+      outSpread: 600
+    };
+  }
+
+  function randomScatter(group) {
+    let dir = v3(gauss(), gauss(), gauss());
+    if (lengthV(dir) < 0.15) dir = v3(0.35, -0.75, 0.45);
+    dir = normalizeV(dir);
+
+    let min = CFG.scatterMin;
+    let max = CFG.scatterMax;
+
+    if (group === "roots") {
+      min *= 0.50;
+      max *= 0.70;
+    } else if (group === "trunk") {
+      min *= 0.60;
+      max *= 0.82;
+    }
+
+    return scaleV(dir, rand(min, max));
+  }
+
+  function addVertex(pos, group, meta = {}) {
+    const visibleNode =
+      meta.visibleNode !== undefined
+        ? meta.visibleNode
+        : rnd() < CFG.visibleNodeRatio;
+
+    const sizeClass = visibleNode ? chooseSizeClass() : null;
+    const baseRadius = visibleNode ? radiusForClass(sizeClass) : 0;
+    const timing = stageTiming(group, pos.y);
+
+    vertices.push({
+      base: pos,
+      group,
+      height: heightProgress(pos.y),
+
+      visibleNode,
+      sizeClass,
+      baseRadius,
+      targetRadius: baseRadius,
+
+      scatter: randomScatter(group),
+
+      buildDelay: timing.inBase + rand(0, timing.inSpread),
+      buildTravel: rand(850, 1550),
+
+      outDelay: timing.outBase + rand(0, timing.outSpread),
+      outTravel: rand(850, 1450),
+
+      depthPhase: rand(0, Math.PI * 2),
+      depthAmp: meta.depthAmp ?? rand(0.0015, 0.008),
+
+      swayAmp: meta.swayAmp ?? rand(0.004, 0.018),
+      swayPhase: meta.swayPhase ?? rand(0, Math.PI * 2),
+
+      blinkState: "idle",
+      blinkScale: 1,
+      blinkStart: 0,
+      blinkDuration: 0,
+      nextBlink: rand(280, CFG.blinkMaxPause)
+    });
+
+    return vertices.length - 1;
+  }
+
+  function addEdge(a, b, meta = {}) {
+    if (a === b) return;
+    edges.push({
+      a, b,
+      structure: !!meta.structure,
+      alpha: meta.alpha ?? rand(0.30, 0.68)
+    });
+  }
+
+  // ============================================================
+  // ÁRBOL CON RAÍCES (anti-hongo)
+  // Raíces anchas y visibles · tronco · ramas que se abren ·
+  // copa nube irregular (base festoneada, NO plato plano)
+  // ============================================================
+
+  const trunkRings = [];
+  const trunkSegs = 8;
+  const trunkLevels = 14;
+  const trunkStartY = -0.55;
+  const trunkEndY = 0.85;
+  const trunkLeanX = 0.025;
+
+  for (let lv = 0; lv < trunkLevels; lv++) {
+    const t = lv / (trunkLevels - 1);
+    const y = lerp(trunkStartY, trunkEndY, t);
+    const finalR = lerp(0.20, 0.11, Math.pow(t, 0.7)) * (1 + gauss() * 0.012);
+    const ring = [];
+
+    for (let i = 0; i < trunkSegs; i++) {
+      const ang = (i / trunkSegs) * Math.PI * 2 + gauss() * 0.010;
+      ring.push(addVertex(
+        v3(
+          trunkLeanX * t + Math.cos(ang) * finalR,
+          y + gauss() * 0.010,
+          Math.sin(ang) * finalR
+        ),
+        "trunk",
+        {
+          depthAmp: rand(0.001, 0.004),
+          swayAmp: rand(0.002, 0.007),
+          visibleNode: rnd() < 0.44
+        }
+      ));
+    }
+
+    trunkRings.push(ring);
+  }
+
+  for (let lv = 0; lv < trunkRings.length - 1; lv++) {
+    const a = trunkRings[lv];
+    const b = trunkRings[lv + 1];
+
+    for (let i = 0; i < a.length; i++) {
+      const j = (i + 1) % a.length;
+      addEdge(a[i], b[i], { structure: true, alpha: rand(0.55, 0.84) });
+      addEdge(a[i], a[j], { structure: i % 2 === 0, alpha: rand(0.32, 0.56) });
+      addEdge(a[i], b[j], { alpha: rand(0.24, 0.46) });
+    }
+  }
+
+  const core = [];
+  for (let i = 0; i < 12; i++) {
+    const t = i / 11;
+    core.push(addVertex(
+      v3(
+        trunkLeanX * t + gauss() * 0.010,
+        lerp(trunkStartY, trunkEndY + 0.15, t),
+        gauss() * 0.010
+      ),
+      "trunk",
+      { depthAmp: 0.001, visibleNode: rnd() < 0.52 }
+    ));
+  }
+
+  for (let i = 0; i < core.length - 1; i++) {
+    addEdge(core[i], core[i + 1], { structure: true, alpha: 0.82 });
+  }
+
+  // --- RAÍCES PROMINENTES (clave para no leerse como hongo) ---
+  const rootAngles = [0.15, 0.95, 1.75, 2.55, 3.35, 4.15, 5.0, 5.75];
+  const rootTips = [];
+
+  for (let ri = 0; ri < rootAngles.length; ri++) {
+    const ang0 = rootAngles[ri] + gauss() * 0.06;
+    const segs = 5 + Math.floor(rand(0, 2));
+    const maxReach = 0.72 + rand(0, 0.28);
+    let prev = trunkRings[0][ri % trunkSegs];
+    const chain = [prev];
+
+    for (let s = 1; s <= segs; s++) {
+      const t = s / segs;
+      const spread = lerp(0.12, maxReach, Math.pow(t, 0.85));
+      const dip = lerp(0.05, 0.55 + rand(0, 0.18), t * t);
+      const twist = Math.sin(t * Math.PI * 1.3) * 0.22 * (ri % 2 ? 1 : -1);
+
+      const id = addVertex(
+        v3(
+          Math.cos(ang0 + twist) * spread,
+          trunkStartY - dip + gauss() * 0.010,
+          Math.sin(ang0 + twist) * spread
+        ),
+        "roots",
+        {
+          depthAmp: rand(0.001, 0.004),
+          swayAmp: rand(0.004, 0.010),
+          visibleNode: rnd() < 0.40
+        }
+      );
+
+      addEdge(prev, id, {
+        structure: true,
+        alpha: rand(0.55, 0.88)
+      });
+
+      // Diagonal de refuerzo hacia el tronco
+      if (s === 1 || s === 2) {
+        addEdge(trunkRings[0][(ri + 1) % trunkSegs], id, {
+          alpha: rand(0.28, 0.50)
+        });
+      }
+
+      chain.push(id);
+      prev = id;
+    }
+
+    rootTips.push(prev);
+
+    // Bifurcación secundaria (raicilla)
+    if (chain.length > 3 && rnd() > 0.25) {
+      const forkFrom = chain[Math.floor(chain.length * 0.55)];
+      const base = vertices[forkFrom].base;
+      let fp = forkFrom;
+
+      for (let f = 1; f <= 3; f++) {
+        const ft = f / 3;
+        const fang = ang0 + (ri % 2 ? 1 : -1) * (0.45 + ft * 0.35);
+
+        const id = addVertex(
+          v3(
+            Math.cos(fang) * (lengthV(v3(base.x, 0, base.z)) + ft * 0.28),
+            base.y - ft * 0.22 + gauss() * 0.008,
+            Math.sin(fang) * (lengthV(v3(base.x, 0, base.z)) + ft * 0.28)
+          ),
+          "roots",
+          {
+            depthAmp: 0.001,
+            swayAmp: 0.005,
+            visibleNode: rnd() < 0.34
+          }
+        );
+
+        addEdge(fp, id, {
+          structure: f === 3,
+          alpha: rand(0.36, 0.62)
+        });
+        fp = id;
+      }
+    }
+  }
+
+  // Anillo de suelo entre raíces (lectura de "base del árbol")
+  for (let i = 0; i < rootTips.length; i++) {
+    const a = rootTips[i];
+    const b = rootTips[(i + 1) % rootTips.length];
+    if (rnd() > 0.35) {
+      addEdge(a, b, { alpha: rand(0.18, 0.36) });
+    }
+  }
+
+  // --- RAMAS PRINCIPALES (rompen la lectura de "sombrero") ---
+  const branchTips = [];
+  const branchSpecs = [
+    { lv: 6, ang: 0.40, len: 0.85, rise: 0.55 },
+    { lv: 6, ang: 2.30, len: 0.80, rise: 0.50 },
+    { lv: 7, ang: 3.90, len: 0.92, rise: 0.62 },
+    { lv: 7, ang: 5.40, len: 0.78, rise: 0.48 },
+    { lv: 8, ang: 1.20, len: 0.95, rise: 0.70 },
+    { lv: 8, ang: 4.50, len: 0.88, rise: 0.65 },
+    { lv: 9, ang: 0.90, len: 0.72, rise: 0.58 },
+    { lv: 9, ang: 2.80, len: 0.75, rise: 0.60 },
+    { lv: 10, ang: 5.00, len: 0.68, rise: 0.55 },
+    { lv: 11, ang: 1.70, len: 0.55, rise: 0.48 },
+    { lv: 11, ang: 4.10, len: 0.58, rise: 0.50 }
+  ];
+
+  function growBranch(attachIdx, ang, len, rise, depth) {
+    let prev = attachIdx;
+    const startY = vertices[attachIdx].base.y;
+    const segs = depth === 0 ? 5 : 3;
+    const tipIds = [];
+
+    for (let s = 1; s <= segs; s++) {
+      const t = s / segs;
+      const reach = len * t * (depth === 0 ? 1 : 0.72);
+      const elev = rise * (0.25 + 0.75 * t);
+      const wobble = Math.sin(t * Math.PI * 1.4 + depth) * 0.12;
+
+      const id = addVertex(
+        v3(
+          trunkLeanX + Math.cos(ang + wobble) * (0.12 + reach),
+          startY + elev + gauss() * 0.010,
+          Math.sin(ang + wobble) * (0.12 + reach)
+        ),
+        depth === 0 && t < 0.7 ? "branches" : "canopy",
+        {
+          depthAmp: rand(0.001, 0.005),
+          swayAmp: rand(0.008, 0.018),
+          visibleNode: rnd() < 0.46
+        }
+      );
+
+      addEdge(prev, id, {
+        structure: s === 1 || s === segs,
+        alpha: rand(0.48, 0.80)
+      });
+
+      tipIds.push(id);
+      prev = id;
+    }
+
+    if (depth === 0 && rnd() > 0.35) {
+      const forkAt = tipIds[Math.floor(tipIds.length * 0.55)];
+      growBranch(
+        forkAt,
+        ang + (rnd() < 0.5 ? -1 : 1) * rand(0.40, 0.75),
+        len * rand(0.40, 0.58),
+        rise * rand(0.45, 0.65),
+        1
+      );
+    }
+
+    branchTips.push(prev);
+    return prev;
+  }
+
+  for (const spec of branchSpecs) {
+    const attach = trunkRings[spec.lv][
+      Math.floor((spec.ang / (Math.PI * 2)) * trunkSegs) % trunkSegs
+    ];
+    growBranch(attach, spec.ang, spec.len, spec.rise, 0);
+  }
+
+  // --- COPA NUBE: lóbulos irregulares (NO plato de hongo) ---
+  // Base festoneada: más baja en los bordes, más alta al centro
+  // = follaje que cuelga, opuesto al sombrero de hongo
+  const canopyNodes = [];
+
+  function addCanopyBlob(cx, cy, cz, rx, ry, rz, count) {
+    const ids = [];
+
+    for (let i = 0; i < count; i++) {
+      const u = rand(0, Math.PI * 2);
+      const v = Math.acos(lerp(0.15, -1, Math.pow(rnd(), 0.85)));
+      const puff = 0.55 + rnd() * 0.45;
+
+      // Empuja el hemisferio inferior hacia abajo en los bordes
+      let y = cy + Math.cos(v) * ry * puff;
+      const radial = Math.sin(v);
+      if (Math.cos(v) < 0.15) {
+        y -= radial * radial * 0.22;
+      }
+
+      const id = addVertex(
+        v3(
+          cx + Math.sin(v) * Math.cos(u) * rx * puff,
+          y + gauss() * 0.02,
+          cz + Math.sin(v) * Math.sin(u) * rz * puff
+        ),
+        "canopy",
+        {
+          depthAmp: rand(0.002, 0.007),
+          swayAmp: rand(0.010, 0.020),
+          visibleNode: rnd() < 0.38
+        }
+      );
+
+      ids.push(id);
+      canopyNodes.push(id);
+    }
+
+    // Triangulación local del lóbulo
+    for (let i = 0; i < ids.length; i++) {
+      const A = vertices[ids[i]].base;
+      const near = [];
+
+      for (let j = 0; j < ids.length; j++) {
+        if (i === j) continue;
+        const B = vertices[ids[j]].base;
+        const d = Math.hypot(A.x - B.x, A.y - B.y, A.z - B.z);
+        near.push({ j: ids[j], d });
+      }
+
+      near.sort((a, b) => a.d - b.d);
+      const take = Math.min(3, near.length);
+
+      for (let k = 0; k < take; k++) {
+        if (near[k].d < 0.55 && rnd() > 0.25) {
+          addEdge(ids[i], near[k].j, {
+            structure: k === 0 && rnd() > 0.5,
+            alpha: rand(0.28, 0.58)
+          });
+        }
+      }
+    }
+
+    return ids;
+  }
+
+  // 4 lóbulos superpuestos = nube orgánica, no domo único
+  const blobA = addCanopyBlob(0.05, 1.35, 0.02, 0.95, 0.72, 0.88, 34);
+  const blobB = addCanopyBlob(-0.55, 1.15, 0.20, 0.62, 0.55, 0.58, 22);
+  const blobC = addCanopyBlob(0.62, 1.18, -0.15, 0.58, 0.52, 0.55, 22);
+  const blobD = addCanopyBlob(0.10, 1.65, 0.05, 0.55, 0.48, 0.50, 18);
+
+  // Contorno irregular inferior (festones) — NO anillo plano
+  const scallops = 10;
+  const scallopIds = [];
+
+  for (let i = 0; i < scallops; i++) {
+    const ang = (i / scallops) * Math.PI * 2;
+    const r = 0.78 + Math.sin(ang * 3) * 0.18 + rand(0, 0.08);
+    // Bordes más bajos = follaje colgante
+    const y = 0.72 + Math.sin(ang * 2.5) * 0.10 - 0.08;
+
+    scallopIds.push(addVertex(
+      v3(
+        Math.cos(ang) * r,
+        y + gauss() * 0.015,
+        Math.sin(ang) * r
+      ),
+      "canopy",
+      {
+        depthAmp: rand(0.001, 0.004),
+        swayAmp: rand(0.008, 0.015),
+        visibleNode: rnd() < 0.42
+      }
+    ));
+  }
+
+  for (let i = 0; i < scallops; i++) {
+    addEdge(scallopIds[i], scallopIds[(i + 1) % scallops], {
+      structure: true,
+      alpha: rand(0.40, 0.68)
+    });
+
+    // Sube hacia el interior (no queda plano como hongo)
+    if (i % 2 === 0) {
+      addEdge(scallopIds[i], blobA[i % blobA.length], {
+        alpha: rand(0.30, 0.52)
+      });
+    }
+  }
+
+  // Conectar puntas de ramas a la copa
+  for (const tip of branchTips) {
+    const T = vertices[tip].base;
+    let best = canopyNodes[0];
+    let bestD = Infinity;
+
+    for (const cid of canopyNodes) {
+      const C = vertices[cid].base;
+      const d = Math.hypot(T.x - C.x, T.y - C.y, T.z - C.z);
+      if (d < bestD) {
+        bestD = d;
+        best = cid;
+      }
+    }
+
+    if (bestD < 1.2) {
+      addEdge(tip, best, { structure: true, alpha: rand(0.48, 0.76) });
+    }
+  }
+
+  // Unir tronco alto a scallops / copa (transición orgánica)
+  for (let i = 0; i < trunkSegs; i++) {
+    addEdge(
+      trunkRings[trunkRings.length - 1][i],
+      scallopIds[Math.floor(i * scallops / trunkSegs)],
+      { structure: i % 2 === 0, alpha: rand(0.42, 0.70) }
+    );
+  }
+
+  addEdge(core[core.length - 1], blobD[0], { structure: true, alpha: 0.72 });
+  addEdge(core[core.length - 1], blobA[0], { alpha: 0.55 });
+
+  // ============================================================
+  // PROGRESO DE FORMACIÓN / DISPERSIÓN
+  // ============================================================
+  function buildProgress(v, cycleState) {
+    if (cycleState.phase === "hold") return 1;
+    if (cycleState.phase === "disperse") return 1;
+
+    const u = clamp(
+      (cycleState.local - v.buildDelay) / v.buildTravel,
+      0, 1
+    );
+
+    return easeOutCubic(u);
+  }
+
+  function outProgress(v, cycleState) {
+    if (cycleState.phase !== "disperse") return 0;
+
+    const u = clamp(
+      (cycleState.local - v.outDelay) / v.outTravel,
+      0, 1
+    );
+
+    return easeInCubic(u);
+  }
+
+  function formation(v, cycleState) {
+    if (cycleState.phase === "build") return buildProgress(v, cycleState);
+    if (cycleState.phase === "hold") return 1;
+    return 1 - outProgress(v, cycleState);
+  }
+
+  function vertexVisibility(v, cycleState) {
+    if (cycleState.phase === "build") {
+      const f = buildProgress(v, cycleState);
+      return lerp(0.18, 1, smoothstep(f));
+    }
+    if (cycleState.phase === "hold") return 1;
+    const o = outProgress(v, cycleState);
+    return lerp(1, 0.06, smoothstep(o));
+  }
+
+  function edgeVisibility(a, b, cycleState) {
+    const f = Math.min(
+      formation(a, cycleState),
+      formation(b, cycleState)
+    );
+    return smoothstep(clamp((f - 0.44) / 0.46, 0, 1));
+  }
+
+  function scheduleNextBlink(v, t) {
+    v.nextBlink = t + rand(CFG.blinkMinPause, CFG.blinkMaxPause);
+  }
+
+  function chooseNewSize(v) {
+    v.sizeClass = chooseSizeClass();
+    v.targetRadius = radiusForClass(v.sizeClass);
+  }
+
+  function updateBlink(v, t, cycleState) {
+    if (!v.visibleNode) return;
+
+    v.baseRadius += (v.targetRadius - v.baseRadius) * 0.022;
+
+    if (cycleState.phase !== "hold") {
+      v.blinkScale = 1;
+      return;
+    }
+
+    if (v.blinkState === "idle") {
+      v.blinkScale = 1;
+      if (t >= v.nextBlink) {
+        v.blinkState = "closing";
+        v.blinkStart = t;
+        v.blinkDuration = rand(CFG.blinkCloseMin, CFG.blinkCloseMax);
+      }
+      return;
+    }
+
+    if (v.blinkState === "closing") {
+      const u = clamp((t - v.blinkStart) / v.blinkDuration, 0, 1);
+      v.blinkScale = lerp(1, CFG.blinkMinimumScale, smoothstep(u));
+
+      if (u >= 1) {
+        chooseNewSize(v);
+        v.blinkState = "opening";
+        v.blinkStart = t;
+        v.blinkDuration = rand(CFG.blinkOpenMin, CFG.blinkOpenMax);
+      }
+      return;
+    }
+
+    const u = clamp((t - v.blinkStart) / v.blinkDuration, 0, 1);
+    v.blinkScale = lerp(CFG.blinkMinimumScale, 1, easeOutCubic(u));
+
+    if (u >= 1) {
+      v.blinkState = "idle";
+      v.blinkScale = 1;
+      scheduleNextBlink(v, t);
+    }
+  }
+
+  function liveOffset(v, cycleState) {
+    if (cycleState.phase !== "hold") return v3(0, 0, 0);
+
+    const tt = cycleState.local * 0.001;
+    const h = v.height;
+
+    const swayX = Math.sin(tt * 0.40 + v.swayPhase) * v.swayAmp * (0.35 + h * 0.95);
+    const swayZ = Math.cos(tt * 0.34 + v.swayPhase * 1.13) * v.swayAmp * (0.35 + h * 0.95);
+    const swayY = Math.sin(tt * 0.55 + v.swayPhase * 0.58) * v.swayAmp * 0.16;
+
+    return v3(swayX, swayY, swayZ);
+  }
+
+  function globalRotation(t, cycleState) {
+    let speedFactor = 1;
+
+    if (cycleState.phase === "build") {
+      speedFactor = lerp(0.16, 0.65, smoothstep(cycleState.phaseT));
+    } else if (cycleState.phase === "disperse") {
+      speedFactor = lerp(0.65, 0.14, smoothstep(cycleState.phaseT));
+    }
+
+    const ax = -0.24 + Math.sin(t * 0.00009) * 0.028;
+    const ay = 0.36 + t * CFG.globalRotationSpeed * speedFactor;
+    const az = 0.04 + Math.sin(t * 0.000065) * 0.016;
+
+    return matMul(
+      rotZ(az),
+      matMul(rotX(ax), rotY(ay))
+    );
+  }
+
+  function project(p) {
+    const zCam = CFG.cameraZ - p.z;
+    const perspective = CFG.focal / zCam;
+    const S = Math.min(W, H) * 0.205 * CFG.objectScale;
+
+    return {
+      x: W * 0.50 + p.x * S * perspective,
+      y: H * 0.52 - p.y * S * perspective,
+      z: p.z,
+      perspective
+    };
+  }
+
+  function buildFrame(t, cycleState) {
+    const G = globalRotation(t, cycleState);
+    const transformed = new Array(vertices.length);
+    let minZ = Infinity;
+    let maxZ = -Infinity;
+
+    for (let i = 0; i < vertices.length; i++) {
+      const v = vertices[i];
+
+      const breathe =
+        Math.sin(t * 0.00034 + v.depthPhase) * v.depthAmp +
+        Math.sin(t * 0.00013 + v.depthPhase * 1.31) * v.depthAmp * 0.20;
+
+      const live = liveOffset(v, cycleState);
+
+      const finalPos = v3(
+        v.base.x + live.x,
+        v.base.y + live.y,
+        v.base.z + breathe + live.z
+      );
+
+      const scattered = addV(finalPos, v.scatter);
+      const f = formation(v, cycleState);
+
+      const localNow = v3(
+        lerp(scattered.x, finalPos.x, f),
+        lerp(scattered.y, finalPos.y, f),
+        lerp(scattered.z, finalPos.z, f)
+      );
+
+      const world = matVec(G, localNow);
+      const screen = project(world);
+
+      transformed[i] = {
+        world,
+        screen,
+        formation: f,
+        visibility: vertexVisibility(v, cycleState)
+      };
+
+      minZ = Math.min(minZ, world.z);
+      maxZ = Math.max(maxZ, world.z);
+    }
+
+    return { transformed, minZ, maxZ };
+  }
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.max(1, window.innerWidth);
+    H = Math.max(1, window.innerHeight);
+
+    canvas.width = Math.floor(W * DPR);
+    canvas.height = Math.floor(H * DPR);
+
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
+
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+
+  addEventListener("resize", resize, { passive: true });
+  resize();
+
+  function render(t) {
+    ctx.fillStyle = CFG.bg;
+    ctx.fillRect(0, 0, W, H);
+
+    const cycleState = getCycleState(t);
+    const frame = buildFrame(t, cycleState);
+    const minZ = frame.minZ;
+    const maxZ = frame.maxZ;
+
+    const edgeDraw = [];
+
+    for (const e of edges) {
+      const lv = edgeVisibility(
+        vertices[e.a],
+        vertices[e.b],
+        cycleState
+      );
+
+      if (lv <= 0.002) continue;
+
+      const a = frame.transformed[e.a];
+      const b = frame.transformed[e.b];
+
+      edgeDraw.push({
+        e,
+        a,
+        b,
+        alpha: e.alpha * lv,
+        z: (a.world.z + b.world.z) * 0.5
+      });
+    }
+
+    edgeDraw.sort((A, B) => A.z - B.z);
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    for (const item of edgeDraw) {
+      const depth = clamp((item.z - minZ) / (maxZ - minZ || 1), 0, 1);
+      const rgb = item.e.structure ? RGB.structureLine : RGB.innerLine;
+
+      const alpha =
+        lerp(
+          item.e.structure ? 0.24 : 0.14,
+          item.e.structure ? 0.84 : 0.54,
+          Math.pow(depth, 1.08)
+        ) * item.alpha;
+
+      ctx.beginPath();
+      ctx.moveTo(item.a.screen.x, item.a.screen.y);
+      ctx.lineTo(item.b.screen.x, item.b.screen.y);
+      ctx.strokeStyle = rgba(rgb, clamp(alpha, 0, 1));
+      ctx.lineWidth = item.e.structure
+        ? CFG.structureLineWidth
+        : CFG.innerLineWidth;
+      ctx.stroke();
+    }
+
+    const nodeDraw = [];
+
+    for (let i = 0; i < vertices.length; i++) {
+      const v = vertices[i];
+      if (!v.visibleNode) continue;
+
+      const tr = frame.transformed[i];
+      nodeDraw.push({ i, v, tr, z: tr.world.z });
+    }
+
+    nodeDraw.sort((A, B) => A.z - B.z);
+
+    for (const item of nodeDraw) {
+      const v = item.v;
+      updateBlink(v, t, cycleState);
+
+      const depth = clamp((item.z - minZ) / (maxZ - minZ || 1), 0, 1);
+      const color = mixRGB(RGB.backNode, RGB.frontNode, depth);
+
+      const alpha =
+        lerp(0.46, 0.97, Math.pow(depth, 1.06)) * item.tr.visibility;
+
+      const radius =
+        v.baseRadius *
+        v.blinkScale *
+        lerp(0.82, 1.08, depth) *
+        lerp(0.72, 1, item.tr.formation);
+
+      ctx.beginPath();
+      ctx.arc(
+        item.tr.screen.x,
+        item.tr.screen.y,
+        Math.max(0.04, radius),
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fillStyle = rgba(color, clamp(alpha, 0, 1));
+      ctx.fill();
+    }
+
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
+})();
+</script>
+</body>
+</html>
