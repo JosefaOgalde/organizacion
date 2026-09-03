@@ -1,21 +1,5 @@
 # Brief de factibilidad · ECR-NL v2 (MOVA)
 
-**Código:** ECR-NL  
-**Nombre:** Automatización del flujo de newsletters LinkedIn — ECR GROUP  
-**Ámbito:** MOVA · operaciones de contenido (HTML + JSON)  
-**Fecha:** 2026-09-03 · **Versión brief:** 2.0  
-**Responsable / dueño:** Josefa Ogalde · `rol-ecr-cm` · mantenimiento JSON/HTML MOVA  
-**Tipo:** Automatización de *asistente operativo* (no bot end-to-end sin humano)  
-**Valor comité:** ✂️ Reduce costos operacionales  
-**Escalable:** ✅ Sí — crece en volumen sin rediseño (nuevo NL = nuevo registro JSON)
-
-**Entregable MOVA (ya en repo):**
-- HTML: `index/clientes/MKOF/MOVA/ecr-nl/index.html`
-- JSON: `index/clientes/MKOF/MOVA/ecr-nl/ecr-nl-flujo.json`
-- URL: `http://127.0.0.1:8000/index/clientes/MKOF/MOVA/ecr-nl/`
-
----
-
 ## 1. Resumen ejecutivo
 
 Cada newsletter ECR hoy recorre un flujo manual (mapeado en papel operativo):
