@@ -24,3 +24,4 @@ No confundir con ECR: las portadas de newsletter ECR van en Midjourney (`index/c
 ## Copys de video
 Carpeta hermana: `../copys/`
 - `COPY-botas-hunter-rojo-militar-video.txt` — características de ficha + 3 versiones de copy (tarea #04). Subir el MP4 en la tarea con **+ Subir video**.
+- `COPY-chaqueta-portal-gore-tex-video.txt` — características de ficha + copy A + fusión B+C · SKU 10212-001 · [Portal Gore-Tex](https://trendseeker.cl/producto/chaqueta-de-vadeo-portal-gore-tex/).

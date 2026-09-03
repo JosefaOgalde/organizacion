@@ -8,6 +8,8 @@
 
 C11/12: `COPY-c11-gardener-corta-verde-oliva-{A,B,C}.txt` · SKU WFS2018RMA-DOC · [bota-corta-garden](https://trendseeker.cl/producto/bota-corta-garden/)
 
+Chaqueta Portal Gore-Tex: `COPY-chaqueta-portal-gore-tex-video.txt` · SKU 10212-001 · [chaqueta-de-vadeo-portal-gore-tex](https://trendseeker.cl/producto/chaqueta-de-vadeo-portal-gore-tex/)
+
 Ejemplo de estructura:
 ```
 [línea de contexto + emojis]
