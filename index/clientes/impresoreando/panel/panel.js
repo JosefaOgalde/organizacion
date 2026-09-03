@@ -89,6 +89,8 @@
     if (asegurarProductoLimpiadorBrochas(d)) changed = true;
     if (asegurarProductoAlcanciaChanchito(d)) changed = true;
     if (asegurarProductoSoporteCelularChimuelo(d)) changed = true;
+    if (asegurarProductoJuegoDinosaurios(d)) changed = true;
+    if (asegurarProductoLlaveroNoruega(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
@@ -96,6 +98,9 @@
     if (asegurarGastoEntradaEvento3d16100(d)) changed = true;
     if (asegurarMelVenta020(d)) changed = true;
     if (asegurarVentasSeed(d)) changed = true;
+    if (asegurarRetiroCajaInsumos176000(d)) changed = true;
+    if (asegurarVentaPedroBob023(d)) changed = true;
+    if (asegurarDeudaJosefa330000(d)) changed = true;
     if (asegurarPedidos(d)) changed = true;
     if (asegurarPedidosImpresosYNaves(d)) changed = true;
     if (asegurarSkusProductos(d)) changed = true;
@@ -118,18 +123,34 @@
       else capitalNicolas += monto;
     }
     const mitad = Math.round(capitalNeto * 0.5);
-    const deudaJosefaClp = Math.max(0, mitad - Math.round(capitalJosefa));
     const cap = d.meta.capital && typeof d.meta.capital === 'object' ? d.meta.capital : {};
+    const abonosDeuda = Number(cap.abonosDeudaJosefaClp || 0);
+    const deudaCalculada = Math.max(0, mitad - Math.round(capitalJosefa) - abonosDeuda);
+    const deudaJosefaClp =
+      cap.deudaJosefaManual && cap.deudaJosefaClp != null
+        ? Math.max(0, Number(cap.deudaJosefaClp))
+        : deudaCalculada;
     const nextCap = {
       aportadoPor: capitalJosefa > 0 ? 'Nicolás + Josefa' : 'Nicolás',
       aportadoJosefaClp: Math.round(capitalJosefa),
       aportadoNicolasClp: Math.round(capitalNicolas),
       deudaPctJosefa: 50,
       montoNetoClp: capitalNeto,
+      abonosDeudaJosefaClp: abonosDeuda,
       deudaJosefaClp,
-      nota:
-        capitalJosefa > 0
-          ? `Sociedad 50/50. Nicolás aportó ${Math.round(capitalNicolas).toLocaleString('es-CL')} y Josefa ${Math.round(capitalJosefa).toLocaleString('es-CL')}. Josefa debe el 50% de los gastos menos lo que ya pagó.`
+      deudaJosefaManual: !!cap.deudaJosefaManual,
+      nota: cap.deudaJosefaManual
+        ? String(
+            cap.nota ||
+              `Deuda Josefa → Nicolás fijada en $${deudaJosefaClp.toLocaleString('es-CL')}` +
+                (abonosDeuda
+                  ? ` (abono $${abonosDeuda.toLocaleString('es-CL')} ya pagado a Nicolás).`
+                  : '.')
+          )
+        : capitalJosefa > 0
+          ? `Sociedad 50/50. Nicolás aportó ${Math.round(capitalNicolas).toLocaleString('es-CL')} y Josefa ${Math.round(capitalJosefa).toLocaleString('es-CL')}. Josefa debe el 50% de los gastos menos lo que ya pagó` +
+            (abonosDeuda ? ` menos abonos $${abonosDeuda.toLocaleString('es-CL')}` : '') +
+            '.'
           : 'Nicolás puso el capital. «Ambos» = sociedad 50/50 (Josefa debe el 50% a Nicolás).',
     };
     if (
@@ -138,6 +159,8 @@
       Number(cap.montoNetoClp) !== nextCap.montoNetoClp ||
       Number(cap.aportadoJosefaClp || 0) !== nextCap.aportadoJosefaClp ||
       Number(cap.aportadoNicolasClp || 0) !== nextCap.aportadoNicolasClp ||
+      Number(cap.abonosDeudaJosefaClp || 0) !== nextCap.abonosDeudaJosefaClp ||
+      !!cap.deudaJosefaManual !== nextCap.deudaJosefaManual ||
       cap.nota !== nextCap.nota
     ) {
       d.meta.capital = { ...cap, ...nextCap };
@@ -1262,16 +1285,77 @@
     return changed;
   }
 
+  function asegurarProductoJuegoDinosaurios(d) {
+    return upsertProductoSeed(d, 'prod-juego-dinosaurios', {
+      sku: 'JGDINO001',
+      nombre: 'Juego Dinosaurios',
+      activo: true,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 7000,
+      pendienteCosto: true,
+      notas:
+        '1 ud cobrada a Ines Quintero $7.000 (I000021). Costo pendiente (sin imagen slicer). Origen QUINTERO (no SIE ni MKOF).',
+    });
+  }
+
+  function asegurarProductoLlaveroNoruega(d) {
+    return upsertProductoSeed(d, 'prod-llavero-noruega', {
+      sku: 'LLNORUE001',
+      nombre: 'Llavero Noruega',
+      activo: true,
+      unidadesMetal: 1,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 2000,
+      pendienteCosto: true,
+      notas:
+        '2 uds cobradas a Patito $4.000 total ($2.000/u, I000022). Costo pendiente (sin imagen slicer). Argolla metal típica de llavero.',
+    });
+  }
+
   function formatearCodigoVenta(n) {
     return `I${String(n).padStart(6, '0')}`;
   }
 
-  /** Nombre + origen: SIE = trabajo Nicolás · MKOF = trabajo Josefa. No auto-poner SIE. */
+  /** Orígenes: SIE = Nico · MKOF = Josefa · QUINTERO = Quintero (no es trabajo SIE/MKOF). */
+  const ORIGENES_CLIENTE = ['SIE', 'MKOF', 'QUINTERO'];
+
+  function origenClienteValido(origen) {
+    const o = String(origen || '').trim().toUpperCase();
+    return ORIGENES_CLIENTE.includes(o) ? o : '';
+  }
+
+  function optsOrigenCliente(selected, { requiredPlaceholder } = {}) {
+    const sel = origenClienteValido(selected);
+    const first = requiredPlaceholder
+      ? `<option value="">Elegir…</option>`
+      : '';
+    return (
+      first +
+      ORIGENES_CLIENTE.map((o) => {
+        const label =
+          o === 'SIE'
+            ? 'SIE · trabajo Nicolás'
+            : o === 'MKOF'
+              ? 'MKOF · trabajo Josefa'
+              : 'QUINTERO · Quintero (no SIE/MKOF)';
+        return `<option value="${o}"${sel === o ? ' selected' : ''}>${label}</option>`;
+      }).join('')
+    );
+  }
+
+  /** Token visible: SIE/MKOF en mayúsculas; Quintero como lugar (no acrónimo). */
+  function tokenOrigenDisplay(origen) {
+    const o = origenClienteValido(origen);
+    if (o === 'QUINTERO') return 'Quintero';
+    return o;
+  }
+
+  /** Nombre + origen. No auto-poner SIE. Quintero es origen propio. */
   function formatearClienteImp(nombre, segundoNombre, origen) {
     const n = String(nombre || '').trim();
     const s = String(segundoNombre || '').trim();
-    const o = String(origen || '').trim().toUpperCase();
-    const origenOk = o === 'SIE' || o === 'MKOF' ? o : '';
+    const origenOk = tokenOrigenDisplay(origen);
     const parts = [n, s, origenOk].filter(Boolean);
     return parts.join(' ');
   }
@@ -1290,19 +1374,20 @@
   }
 
   function labelOrigenCliente(origen) {
-    const o = String(origen || '').toUpperCase();
+    const o = origenClienteValido(origen);
     if (o === 'SIE') return 'SIE · trabajo Nicolás';
     if (o === 'MKOF') return 'MKOF · trabajo Josefa';
+    if (o === 'QUINTERO') return 'QUINTERO · Quintero (no SIE/MKOF)';
     return '';
   }
 
-  /** Separa "María José MKOF" → { nombre, segundoNombre, origen } (origen al final si es SIE/MKOF). */
+  /** Separa "María José MKOF" / "Ines Quintero" → { nombre, segundoNombre, origen }. */
   function parseClienteImp(cliente, meta) {
     if (meta && (meta.clienteNombre || meta.clienteOrigen)) {
       return {
         nombre: String(meta.clienteNombre || '').trim(),
         segundoNombre: String(meta.clienteSegundoNombre || '').trim(),
-        origen: String(meta.clienteOrigen || '').trim().toUpperCase(),
+        origen: origenClienteValido(meta.clienteOrigen),
       };
     }
     const parts = String(cliente || '')
@@ -1311,7 +1396,7 @@
       .filter(Boolean);
     if (!parts.length) return { nombre: '', segundoNombre: '', origen: '' };
     const last = parts[parts.length - 1].toUpperCase();
-    if (last === 'SIE' || last === 'MKOF') {
+    if (ORIGENES_CLIENTE.includes(last)) {
       const nameParts = parts.slice(0, -1);
       return {
         nombre: nameParts[0] || '',
@@ -1824,6 +1909,93 @@
           },
         ],
       },
+      {
+        id: 'ven-ines-dinos-021',
+        codigo: 'I000021',
+        fecha: '2026-08-31',
+        cliente: 'Ines Quintero',
+        clienteNombre: 'Ines',
+        clienteOrigen: 'QUINTERO',
+        descripcion: 'PED-016 · 1× Juego Dinosaurios · Ines Quintero',
+        cantidad: 1,
+        montoBruto: 7000,
+        descuentoClp: 0,
+        montoNeto: 7000,
+        costoTotal: 0,
+        canal: '',
+        notas: 'Transferido desde PED-016 · 1× Juego Dinosaurios · pagado $7.000 · origen Quintero (no SIE ni MKOF)',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-ines-juego-dinos-016',
+        pedidoNumero: 'PED-016',
+        items: [
+          {
+            sku: 'JGDINO001',
+            nombre: 'Juego Dinosaurios',
+            cantidad: 1,
+            precioUnitarioClp: 7000,
+            costoUnitarioClp: 0,
+            filamento: '',
+          },
+        ],
+      },
+      {
+        id: 'ven-patito-noruega-022',
+        codigo: 'I000022',
+        fecha: '2026-08-31',
+        cliente: 'Patito',
+        clienteNombre: 'Patito',
+        clienteOrigen: '',
+        descripcion: 'PED-017 · 2× Llavero Noruega · Patito',
+        cantidad: 2,
+        montoBruto: 4000,
+        descuentoClp: 0,
+        montoNeto: 4000,
+        costoTotal: 0,
+        canal: '',
+        notas: 'Transferido desde PED-017 · 2× Llavero Noruega · pagado $4.000',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-patito-noruega-017',
+        pedidoNumero: 'PED-017',
+        items: [
+          {
+            sku: 'LLNORUE001',
+            nombre: 'Llavero Noruega',
+            cantidad: 2,
+            precioUnitarioClp: 2000,
+            costoUnitarioClp: 0,
+            filamento: '',
+          },
+        ],
+      },
+      {
+        id: 'ven-pedro-bob-023',
+        codigo: 'I000023',
+        fecha: '2026-08-31',
+        cliente: 'Pedro MKOF',
+        clienteNombre: 'Pedro',
+        clienteOrigen: 'MKOF',
+        descripcion: 'PED-018 · 1× Porta Bob Esponja · Pedro MKOF',
+        cantidad: 1,
+        montoBruto: 7000,
+        descuentoClp: 0,
+        montoNeto: 7000,
+        costoTotal: 998.17,
+        canal: 'WhatsApp',
+        notas: 'Transferido desde PED-018 · 1× Porta Bob Esponja · pagado $7.000 · MKOF (Josefa)',
+        socioRegistro: 'Ambos',
+        pedidoId: 'ped-pedro-bob-018',
+        pedidoNumero: 'PED-018',
+        items: [
+          {
+            sku: 'PTBOBES001',
+            nombre: 'Porta Bob Esponja',
+            cantidad: 1,
+            precioUnitarioClp: 7000,
+            costoUnitarioClp: 998.17,
+            filamento: 'multicolor',
+          },
+        ],
+      },
     ];
 
     let changed = false;
@@ -1943,6 +2115,45 @@
         itemFilamento: 'PLA morado',
         itemSku: 'SOPCEL001',
         itemNombre: 'Soporte celular',
+      },
+      {
+        pedId: 'ped-ines-juego-dinos-016',
+        numero: 'PED-016',
+        ventaId: 'ven-ines-dinos-021',
+        cliente: 'Ines Quintero',
+        montoNeto: 7000,
+        notas: '1× Juego Dinosaurios · transferido a venta I000021 · pagado $7.000 · Quintero (no SIE ni MKOF)',
+        transferidoEn: '2026-08-31T23:00:00.000Z',
+        itemPrecioUnitarioClp: 7000,
+        itemCantidad: 1,
+        itemSku: 'JGDINO001',
+        itemNombre: 'Juego Dinosaurios',
+      },
+      {
+        pedId: 'ped-patito-noruega-017',
+        numero: 'PED-017',
+        ventaId: 'ven-patito-noruega-022',
+        cliente: 'Patito',
+        montoNeto: 4000,
+        notas: '2× Llavero Noruega · transferido a venta I000022 · pagado $4.000',
+        transferidoEn: '2026-08-31T23:05:00.000Z',
+        itemPrecioUnitarioClp: 2000,
+        itemCantidad: 2,
+        itemSku: 'LLNORUE001',
+        itemNombre: 'Llavero Noruega',
+      },
+      {
+        pedId: 'ped-pedro-bob-018',
+        numero: 'PED-018',
+        ventaId: 'ven-pedro-bob-023',
+        cliente: 'Pedro MKOF',
+        montoNeto: 7000,
+        notas: '1× Porta Bob Esponja · transferido a venta I000023 · pagado $7.000 · MKOF (Josefa)',
+        transferidoEn: '2026-08-31T23:30:00.000Z',
+        itemPrecioUnitarioClp: 7000,
+        itemCantidad: 1,
+        itemSku: 'PTBOBES001',
+        itemNombre: 'Porta Bob Esponja',
       },
     ];
     for (const t of transfers) {
@@ -2071,6 +2282,182 @@
     d.meta.ventaCodigoPrefijo = 'I';
     rebuildClientesHistorial(d);
     return changed;
+  }
+
+  /** Retiro de caja → insumos: vacía la caja (ventas − retiros). No suma a gastos de socios. */
+  function asegurarRetiroCajaInsumos176000(d) {
+    d.retirosCaja = Array.isArray(d.retirosCaja) ? d.retirosCaja : [];
+    const id = 'retiro-caja-insumos-176000';
+    const seed = {
+      id,
+      fecha: '2026-08-31',
+      montoNeto: 176000,
+      descripcion: 'Retiro de caja para insumos',
+      notas:
+        'Se sacó de caja todo lo cobrado en ventas ($176.000) para comprar insumos. Caja = ventas − retiros → $0. No suma a gastos de socios (no es capital nuevo).',
+      socioRegistro: 'Ambos',
+      motivo: 'insumos',
+    };
+    const i = d.retirosCaja.findIndex((r) => r && r.id === id);
+    if (i < 0) {
+      d.retirosCaja.push(seed);
+      return true;
+    }
+    const cur = d.retirosCaja[i];
+    if (Number(cur.montoNeto) !== 176000 || cur.motivo !== 'insumos') {
+      d.retirosCaja[i] = { ...cur, ...seed };
+      return true;
+    }
+    return false;
+  }
+
+  function totalRetirosCaja(d) {
+    return (d.retirosCaja || []).reduce((a, r) => a + Number(r?.montoNeto || 0), 0);
+  }
+
+  /** Efectivo disponible: ventas cobradas − retiros (p. ej. insumos). */
+  function cajaActual(d) {
+    return Math.max(0, sum(d.ventas) - totalRetirosCaja(d));
+  }
+
+  /** PED-018 Pedro MKOF · Porta Bob Esponja · pagado → I000023 $7.000 */
+  function asegurarVentaPedroBob023(d) {
+    d.pedidos = Array.isArray(d.pedidos) ? d.pedidos : [];
+    d.ventas = Array.isArray(d.ventas) ? d.ventas : [];
+    d.meta = d.meta && typeof d.meta === 'object' ? d.meta : {};
+    let changed = false;
+    const pedId = 'ped-pedro-bob-018';
+    const venId = 'ven-pedro-bob-023';
+    const codigo = 'I000023';
+    const costo = 998.17;
+    const monto = 7000;
+    let ped = d.pedidos.find((p) => p && (p.id === pedId || p.numero === 'PED-018'));
+    if (!ped) {
+      ped = {
+        id: pedId,
+        numero: 'PED-018',
+        fecha: '2026-08-31',
+        cliente: 'Pedro MKOF',
+        clienteNombre: 'Pedro',
+        clienteOrigen: 'MKOF',
+        canal: 'WhatsApp',
+        items: [
+          {
+            sku: 'PTBOBES001',
+            nombre: 'Porta Bob Esponja',
+            cantidad: 1,
+            precioUnitarioClp: monto,
+            costoUnitarioClp: costo,
+            filamento: 'multicolor',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: monto,
+        descuentoClp: 0,
+        montoNeto: monto,
+        costoTotal: costo,
+        estado: 'transferido',
+        ventaId: venId,
+        notas: '1× Porta Bob Esponja · transferido a venta I000023 · pagado $7.000 · MKOF (Josefa)',
+        socioRegistro: 'Ambos',
+        creado: '2026-08-31T23:30:00.000Z',
+        fiado: false,
+        transferidoEn: '2026-08-31T23:30:00.000Z',
+      };
+      d.pedidos.push(ped);
+      changed = true;
+    } else {
+      if (ped.estado !== 'transferido' || ped.ventaId !== venId || Number(ped.montoNeto) !== monto) {
+        ped.estado = 'transferido';
+        ped.fiado = false;
+        ped.ventaId = venId;
+        ped.montoNeto = monto;
+        ped.montoBruto = monto;
+        ped.cliente = 'Pedro MKOF';
+        ped.clienteNombre = 'Pedro';
+        ped.clienteOrigen = 'MKOF';
+        ped.notas =
+          '1× Porta Bob Esponja · transferido a venta I000023 · pagado $7.000 · MKOF (Josefa)';
+        ped.transferidoEn = ped.transferidoEn || '2026-08-31T23:30:00.000Z';
+        changed = true;
+      }
+    }
+    const venta = {
+      id: venId,
+      codigo,
+      fecha: '2026-08-31',
+      cliente: 'Pedro MKOF',
+      clienteNombre: 'Pedro',
+      clienteOrigen: 'MKOF',
+      descripcion: 'PED-018 · 1× Porta Bob Esponja · Pedro MKOF',
+      cantidad: 1,
+      montoBruto: monto,
+      descuentoClp: 0,
+      montoNeto: monto,
+      costoTotal: costo,
+      canal: 'WhatsApp',
+      notas: 'Transferido desde PED-018 · 1× Porta Bob Esponja · pagado $7.000 · MKOF (Josefa)',
+      socioRegistro: 'Ambos',
+      pedidoId: pedId,
+      pedidoNumero: 'PED-018',
+      items: [
+        {
+          sku: 'PTBOBES001',
+          nombre: 'Porta Bob Esponja',
+          cantidad: 1,
+          precioUnitarioClp: monto,
+          costoUnitarioClp: costo,
+          filamento: 'multicolor',
+        },
+      ],
+    };
+    const vi = d.ventas.findIndex((v) => v && (v.id === venId || v.codigo === codigo));
+    if (vi < 0) {
+      d.ventas.push(venta);
+      changed = true;
+    } else if (
+      d.ventas[vi].cliente !== 'Pedro MKOF' ||
+      Number(d.ventas[vi].montoNeto) !== monto ||
+      d.ventas[vi].codigo !== codigo
+    ) {
+      d.ventas[vi] = { ...d.ventas[vi], ...venta };
+      changed = true;
+    }
+    if (Number(d.meta.ventaSeq || 0) < 23) {
+      d.meta.ventaSeq = 23;
+      changed = true;
+    }
+    if (Number(d.meta.pedidoSeq || 0) < 18) {
+      d.meta.pedidoSeq = 18;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /** Deuda Josefa → Nicolás fijada en $330.000 (abono $100.000 ya pagado a Nicolás). */
+  function asegurarDeudaJosefa330000(d) {
+    d.meta = d.meta && typeof d.meta === 'object' ? d.meta : {};
+    const cap = d.meta.capital && typeof d.meta.capital === 'object' ? d.meta.capital : {};
+    const next = {
+      ...cap,
+      abonosDeudaJosefaClp: 100000,
+      deudaJosefaClp: 330000,
+      deudaJosefaManual: true,
+      nota:
+        'Abono $100.000 ya pagado a Nicolás. Deuda Josefa → Nicolás fijada en $330.000 (manual).',
+    };
+    if (
+      Number(cap.deudaJosefaClp) !== 330000 ||
+      Number(cap.abonosDeudaJosefaClp) !== 100000 ||
+      !cap.deudaJosefaManual ||
+      cap.nota !== next.nota
+    ) {
+      d.meta.capital = next;
+      return true;
+    }
+    return false;
   }
 
   /** Compras 29 jul 2026 — llaveros, filamento rosado, ganchos aros, mueble esquinero EASY. Sociedad 50/50 · pagó Nicolás. */
@@ -3006,6 +3393,83 @@
       changed = true;
     }
 
+    // PED-016 · Ines Quintero · 1× Juego Dinosaurios · transferido I000021 $7.000 (pagado)
+    const id016 = 'ped-ines-juego-dinos-016';
+    if (!d.pedidos.some((p) => p.id === id016 || p.numero === 'PED-016')) {
+      d.pedidos.push({
+        id: id016,
+        numero: 'PED-016',
+        fecha: '2026-08-31',
+        cliente: 'Ines Quintero',
+        clienteNombre: 'Ines',
+        clienteOrigen: 'QUINTERO',
+        canal: '',
+        items: [
+          {
+            sku: 'JGDINO001',
+            nombre: 'Juego Dinosaurios',
+            cantidad: 1,
+            precioUnitarioClp: 7000,
+            costoUnitarioClp: 0,
+            filamento: '',
+            estado: 'listo',
+            listos: 1,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: 7000,
+        descuentoClp: 0,
+        montoNeto: 7000,
+        costoTotal: 0,
+        estado: 'transferido',
+        ventaId: 'ven-ines-dinos-021',
+        notas:
+          '1× Juego Dinosaurios · transferido a venta I000021 · pagado $7.000 · Quintero (no SIE ni MKOF)',
+        socioRegistro: 'Ambos',
+        creado: '2026-08-31T23:00:00.000Z',
+        transferidoEn: '2026-08-31T23:00:00.000Z',
+      });
+      changed = true;
+    }
+
+    // PED-017 · Patito · 2× Llavero Noruega · transferido I000022 $4.000 (pagado)
+    const id017 = 'ped-patito-noruega-017';
+    if (!d.pedidos.some((p) => p.id === id017 || p.numero === 'PED-017')) {
+      d.pedidos.push({
+        id: id017,
+        numero: 'PED-017',
+        fecha: '2026-08-31',
+        cliente: 'Patito',
+        clienteNombre: 'Patito',
+        clienteOrigen: '',
+        canal: '',
+        items: [
+          {
+            sku: 'LLNORUE001',
+            nombre: 'Llavero Noruega',
+            cantidad: 2,
+            precioUnitarioClp: 2000,
+            costoUnitarioClp: 0,
+            filamento: '',
+            estado: 'listo',
+            listos: 2,
+            enImpresion: 0,
+          },
+        ],
+        montoBruto: 4000,
+        descuentoClp: 0,
+        montoNeto: 4000,
+        costoTotal: 0,
+        estado: 'transferido',
+        ventaId: 'ven-patito-noruega-022',
+        notas: '2× Llavero Noruega · transferido a venta I000022 · pagado $4.000',
+        socioRegistro: 'Ambos',
+        creado: '2026-08-31T23:05:00.000Z',
+        transferidoEn: '2026-08-31T23:05:00.000Z',
+      });
+      changed = true;
+    }
+
     const maxNum = d.pedidos.reduce((m, p) => {
       const n = Number(String(p.numero || '').replace(/\D/g, '')) || 0;
       return Math.max(m, n);
@@ -3215,7 +3679,9 @@
     if (/nave/.test(t) && /vert/.test(t)) return 'NAVEVERT';
     if (/llavero/.test(t) && /ranger|escudo/.test(t)) return 'LLRANGER';
     if (/llavero/.test(t) && /lipstick|stanley|standley/.test(t)) return 'LLSTANDL';
-    if (/llavero/.test(t) && /(pesa|kettlebell|rusa)/.test(t)) return 'LLPESRU';
+    if (/llavero/.test(t) && /noruega/.test(t)) return 'LLNORUE';
+    if (/llavero/.test(t) && /one\s*piece|onepiece/.test(t)) return 'LLONEPI';
+    if (/dinosaur/.test(t)) return 'JGDINO';
     if (/soporte/.test(t) && /celular|telefono|tel[eé]fono|phone/.test(t)) return 'SOPCEL';
     if (/soporte/.test(t)) return 'SOPCEL';
     if (/drag[oó]n/.test(t)) return 'DRAGON';
@@ -3275,6 +3741,8 @@
       'prod-torreon': { sku: 'TORREON001', nombre: 'Torreón' },
       'prod-limpiador-brochas': { sku: 'LMBROC001', nombre: 'Limpiador de brochas' },
       'prod-alcancia-chanchito': { sku: 'ALCHAN001', nombre: 'Alcancía chanchito' },
+      'prod-juego-dinosaurios': { sku: 'JGDINO001', nombre: 'Juego Dinosaurios' },
+      'prod-llavero-noruega': { sku: 'LLNORUE001', nombre: 'Llavero Noruega' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',
@@ -3634,6 +4102,8 @@
       pedidoActivo(p.estado || 'pendiente')
     );
     const montoPedidosPend = pedidosActivos.reduce((a, p) => a + Number(p.montoNeto || 0), 0);
+    const retirosCaja = totalRetirosCaja(data);
+    const caja = Math.max(0, ventas - retirosCaja);
     /** Barra inferior: ventas contabilizadas + pedidos pendientes (pipeline de recupero). */
     const ventasMasPedidos = ventas + montoPedidosPend;
     const denom = Math.max(metaRecuperar, ventas, ventasMasPedidos, 1);
@@ -3739,9 +4209,15 @@
       <div class="imp-grid">
         <div class="imp-kpi"><span>Gastos totales (ambos)</span><strong>${money(gastos)}</strong></div>
         <div class="imp-kpi imp-kpi--ok"><span>Ventas (contabilizadas)</span><strong>${money(ventas)}</strong></div>
+        <div class="imp-kpi ${caja > 0 ? 'imp-kpi--ok' : ''}"><span>Caja (ventas − retiros)</span><strong>${money(caja)}</strong></div>
         <div class="imp-kpi"><span>Pedidos activos</span><strong>${pedidosActivos.length} · ${money(montoPedidosPend)}</strong></div>
         <div class="imp-kpi ${resultado >= 0 ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Resultado (ventas − gastos)</span><strong>${money(resultado)}</strong></div>
       </div>
+      ${
+        retirosCaja > 0
+          ? `<p class="imp-muted" style="margin-top:-0.25rem">Retiros de caja: <strong>${money(retirosCaja)}</strong> (insumos). La caja no baja la deuda de socios.</p>`
+          : ''
+      }
       <div class="imp-card">
         <h2>Costos de producto (resumen)</h2>
         <p class="imp-muted">Mismos costo y precio que en <button type="button" class="imp-linkish" data-goto-tab="costos">Costos producto</button>. Si no hay precio manual, se sugiere <strong>+${pctMarkup}%</strong> sobre el costo.</p>
@@ -3763,8 +4239,9 @@
             <li><span>Su 50% de los gastos</span><strong>${money(cadaUnoGastos)}</strong></li>
             <li><span>Su 50% del resultado</span><strong class="${cadaUnoResultado >= 0 ? 'is-ok' : 'is-warn'}">${money(cadaUnoResultado)}</strong></li>
             <li><span>Capital que aportó</span><strong>${money(capitalJosefa)}</strong></li>
+            ${Number(cap.abonosDeudaJosefaClp || 0) > 0 ? `<li><span>Abono ya pagado a Nicolás</span><strong>${money(cap.abonosDeudaJosefaClp)}</strong></li>` : ''}
           </ul>
-          <p class="imp-socio__nota">Le corresponde el 50% de los gastos; ya aportó ${money(capitalJosefa)} · saldo a Nicolás ${money(deuda)}.</p>
+          <p class="imp-socio__nota">${cap.deudaJosefaManual ? `Deuda fijada en ${money(deuda)}${Number(cap.abonosDeudaJosefaClp || 0) > 0 ? ` (abono ${money(cap.abonosDeudaJosefaClp)} ya pagado a Nicolás)` : ''}.` : `Le corresponde el 50% de los gastos; ya aportó ${money(capitalJosefa)} · saldo a Nicolás ${money(deuda)}.`}</p>
         </article>
         <article class="imp-socio imp-socio--nicolas">
           <header class="imp-socio__head">
@@ -3776,8 +4253,9 @@
             <li><span>Su 50% de los gastos</span><strong>${money(cadaUnoGastos)}</strong></li>
             <li><span>Su 50% del resultado</span><strong class="${cadaUnoResultado >= 0 ? 'is-ok' : 'is-warn'}">${money(cadaUnoResultado)}</strong></li>
             <li><span>Capital que aportó</span><strong>${money(capitalNicolas)}</strong></li>
+            ${Number(cap.abonosDeudaJosefaClp || 0) > 0 ? `<li><span>Abono recibido de Josefa</span><strong>${money(cap.abonosDeudaJosefaClp)}</strong></li>` : ''}
           </ul>
-          <p class="imp-socio__nota">Aportó ${money(capitalNicolas)}. Tiene por cobrar de Josefa ${money(deuda)}.</p>
+          <p class="imp-socio__nota">${cap.deudaJosefaManual ? `Por cobrar de Josefa ${money(deuda)}${Number(cap.abonosDeudaJosefaClp || 0) > 0 ? ` (ya recibió abono ${money(cap.abonosDeudaJosefaClp)})` : ''}.` : `Aportó ${money(capitalNicolas)}. Tiene por cobrar de Josefa ${money(deuda)}.`}</p>
         </article>
       </div>
       <div class="imp-charts">
@@ -4137,7 +4615,7 @@
     if (cn || co) {
       pedidoEditDraft.clienteNombre = cn;
       pedidoEditDraft.clienteSegundoNombre = cs || undefined;
-      pedidoEditDraft.clienteOrigen = co === 'SIE' || co === 'MKOF' ? co : '';
+      pedidoEditDraft.clienteOrigen = origenClienteValido(co);
       pedidoEditDraft.cliente = formatearClienteImp(cn, cs, pedidoEditDraft.clienteOrigen);
     } else {
       pedidoEditDraft.cliente = String(fd.get('cliente') || '').trim();
@@ -4202,15 +4680,13 @@
     const cliParsed = parseClienteImp(ped.cliente, ped);
     body.innerHTML = `
       <form class="imp-form" id="form-editar-pedido">
-        <p class="imp-muted">Nombre + origen (SIE = Nico · MKOF = Josefa). Precio venta/u se puede subir. El estado también está en Resumen.</p>
+        <p class="imp-muted">Nombre + origen (SIE = Nico · MKOF = Josefa · QUINTERO = Quintero). Precio venta/u se puede subir. El estado también está en Resumen.</p>
         <label>Fecha<input name="fecha" type="date" required value="${escapeHtml(ped.fecha || today())}" /></label>
         <label>Nombre<input name="clienteNombre" value="${escapeHtml(cliParsed.nombre)}" required /></label>
         <label>Segundo nombre<input name="clienteSegundoNombre" value="${escapeHtml(cliParsed.segundoNombre)}" placeholder="Opcional" /></label>
         <label>Origen
           <select name="clienteOrigen" required>
-            <option value="">Elegir…</option>
-            <option value="SIE"${cliParsed.origen === 'SIE' ? ' selected' : ''}>SIE · trabajo Nicolás</option>
-            <option value="MKOF"${cliParsed.origen === 'MKOF' ? ' selected' : ''}>MKOF · trabajo Josefa</option>
+            ${optsOrigenCliente(cliParsed.origen, { requiredPlaceholder: true })}
           </select>
         </label>
         <label>Canal<input name="canal" value="${escapeHtml(ped.canal || '')}" /></label>
@@ -4621,16 +5097,14 @@
       </div>
       <div class="imp-card">
         <h3>Nuevo pedido</h3>
-        <p class="imp-muted">Mínimo: <strong>nombre</strong> + <strong>origen</strong> (SIE = trabajo Nicolás · MKOF = trabajo Josefa). Segundo nombre opcional. Precio venta se puede subir a mano.</p>
+        <p class="imp-muted">Mínimo: <strong>nombre</strong> + <strong>origen</strong> (SIE = Nico · MKOF = Josefa · QUINTERO = Quintero). Segundo nombre opcional. Precio venta se puede subir a mano. No auto-poner SIE.</p>
         <form class="imp-form" id="form-pedido">
           <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
           <label>Nombre<input name="clienteNombre" required placeholder="Ej. Rebe" /></label>
           <label>Segundo nombre<input name="clienteSegundoNombre" placeholder="Opcional" /></label>
           <label>Origen (dónde viene)
             <select name="clienteOrigen" required>
-              <option value="">Elegir…</option>
-              <option value="SIE">SIE · trabajo Nicolás</option>
-              <option value="MKOF">MKOF · trabajo Josefa</option>
+              ${optsOrigenCliente('', { requiredPlaceholder: true })}
             </select>
           </label>
           <label>Producto (SKU)
@@ -4731,8 +5205,8 @@
         setStatus('Falta el nombre del cliente', 'warn');
         return;
       }
-      if (clienteOrigen !== 'SIE' && clienteOrigen !== 'MKOF') {
-        setStatus('Elige origen: SIE (Nico) o MKOF (Josefa)', 'warn');
+      if (!origenClienteValido(clienteOrigen)) {
+        setStatus('Elige origen: SIE (Nico), MKOF (Josefa) o QUINTERO', 'warn');
         return;
       }
       const cliente = formatearClienteImp(clienteNombre, clienteSegundoNombre, clienteOrigen);
@@ -4900,8 +5374,7 @@
       .filter(Boolean);
     if (!parts.length) return '';
     const last = parts[parts.length - 1].toUpperCase();
-    if (last === 'SIE' || last === 'MKOF') return last;
-    return '';
+    return origenClienteValido(last);
   }
 
   function ventaPasaFiltros(v) {
@@ -5035,6 +5508,7 @@
               <option value=""${ventasFiltroOrigen === '' ? ' selected' : ''}>Todos</option>
               <option value="SIE"${ventasFiltroOrigen === 'SIE' ? ' selected' : ''}>SIE (Nico)</option>
               <option value="MKOF"${ventasFiltroOrigen === 'MKOF' ? ' selected' : ''}>MKOF (Josefa)</option>
+              <option value="QUINTERO"${ventasFiltroOrigen === 'QUINTERO' ? ' selected' : ''}>QUINTERO</option>
             </select>
           </label>
           <label>Buscar
@@ -5050,7 +5524,7 @@
       </div>
       <div class="imp-card">
         <h2>Ventas contabilizadas (${money(hayFiltro ? totalFiltrado : totalGlobal)})</h2>
-        <p class="imp-muted">ID correlativo: primera = <strong>I000001 Tito MKOF</strong>. Clientes nuevos = <strong>nombre + origen</strong> (SIE = Nico · MKOF = Josefa); no se auto-agrega SIE.</p>
+        <p class="imp-muted">ID correlativo: primera = <strong>I000001 Tito MKOF</strong>. Clientes nuevos = <strong>nombre + origen</strong> (SIE = Nico · MKOF = Josefa · QUINTERO = Quintero); no se auto-agrega SIE.</p>
         <div class="imp-table-wrap">
           <table class="imp-table">
             <thead><tr><th>ID / Fecha</th><th>Cliente / detalle</th><th>Cant.</th><th>Total</th><th>Canal</th><th></th></tr></thead>
@@ -5073,7 +5547,7 @@
         <p class="imp-muted">Úsalo solo si no pasaste por Pedidos. Prefiere Pedidos → Transferir a venta. Se asigna el siguiente ID I00000n.</p>
         <form class="imp-form" id="form-venta">
           <label>Fecha<input name="fecha" type="date" required value="${today()}" /></label>
-          <label>Cliente<input name="cliente" required placeholder="Nombre ORIGEN · ej. Ana MKOF" /></label>
+          <label>Cliente<input name="cliente" required placeholder="Nombre ORIGEN · ej. Ana MKOF / Ines Quintero" /></label>
           <label>Descripción<input name="descripcion" required placeholder="Llavero x3" /></label>
           <label>Cantidad<input name="cantidad" type="number" min="1" value="1" /></label>
           <label>Total cobrado CLP<input name="montoNeto" type="number" required /></label>

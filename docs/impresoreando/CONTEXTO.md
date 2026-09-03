@@ -12,7 +12,7 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | Seed (repo) | `data/impresoreando-seed.json` |
 | Live (gitignored) | `data/impresoreando-live.json` |
 | API | `GET/POST /api/impresoreando` · `POST /api/impresoreando/venta` en `scripts/organizacion-server.js` |
-| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre `scripts/sync-impresoreando-seed-a-live.js` + `force-imp-fiados-012-013.js` + `force-imp-ventas-014-015-fiado-008.js` para meter PED/productos/ventas nuevos del seed en el live local. Si no ves fiados/ventas nuevas: `node scripts/force-imp-ventas-014-015-fiado-008.js` y recarga Pedidos/Ventas. |
+| Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre `scripts/sync-impresoreando-seed-a-live.js` + `force-imp-fiados-012-013.js` + `force-imp-ventas-014-015-fiado-008.js` + `force-imp-ventas-021-022.js` + `force-imp-caja-cero-insumos.js` + `force-imp-pedro-023-deuda-330.js` para meter PED/productos/ventas/caja/deuda del seed en el live local. Si falta algo: `node scripts/force-imp-pedro-023-deuda-330.js` y recarga. |
 | Landing | `http://127.0.0.1:8000/index/clientes/impresoreando/` · CTA **Resumen 50/50** · logo `identidad/logo-impresoreando.png` |
 | Panel / Resumen | `http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen` |
 | Panel / Redes | `…/panel/?tab=redes` — campaña IG (junto a Bitácora) |
@@ -26,12 +26,13 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 ## Deuda / resumen
 
 - Tab Resumen: vista **general** (totales, conteos, barras, socios). El **detalle de ventas** (IDs, ítems, descuentos, historial) solo en tab **Ventas**.
-- Gastos de **ambos** (= sociedad 50/50). Capital aportado = suma de gastos por `pagadoPor` (Josefa o Nicolás). Deuda Josefa → Nicolás = `50% gastos − capital Josefa`.
+- Gastos de **ambos** (= sociedad 50/50). Capital aportado = suma de gastos por `pagadoPor` (Josefa o Nicolás). Deuda Josefa → Nicolás = `50% gastos − capital Josefa − abonos` (o valor **manual** si `deudaJosefaManual`). Vigente: **abono $100.000 ya pagado a Nicolás** · deuda fijada en **$330.000**.
 - Compra 29 jul: **mueble esquinero EASY INTERNET $35.990** (`gas-mueble-esquinero-easy-35990`, TC ****7022 · Nicolás) + lote insumos (llaveros / filamento rosado / ganchos).
 - Compra 31 jul ML: **bolsas kraft ×100 $4.590 + enchufe WiFi 16A $9.989 + tira LED RGB 20 m $17.990 = $32.569** (`gas-ml-bolsas-enchufe-led-32569` · Nicolás · 50/50).
 - Evento 3D 29 ago: **1 entrada $16.100** (`gas-entrada-evento-3d-16100` · **pagó Josefa** · cuenta en «Capital que aportó» de Josefa).
 - `metaRecuperar = gastos + operación`
 - `saldoPendiente = max(0, meta − ventas)` — solo **ventas** bajan deuda
+- **Caja** = `ventas − retirosCaja` (efectivo disponible). Retiro 31 ago: **$176.000 a insumos** (`retiro-caja-insumos-176000`). Los retiros **no** suman a gastos de socios ni a la meta.
 - `% progreso = ventas / meta`
 - Barras UI: (1) progreso % · (2) gastos vs ventas · (3) **ventas + pedidos pendientes** (pipeline verde+azul; debajo el **% proyectado** = `(ventas+pedidos)/meta`; pedidos aún no bajan deuda)
 - KPI pedidos activos = suma `montoNeto` de pedidos en `pendiente|listo|en_impresion`
@@ -67,13 +68,16 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | PED-013 | Mel MKOF | 1× Soporte celular negro `SOPCEL001` | **transferido** → I000020 $4.000 |
 | PED-014 | Rebe SIE | 1× Alcancía chanchito `ALCHAN001` | **transferido** → I000017 $18.000 |
 | PED-015 | Cata SIE | 3× Llavero One Piece `LLONEPI001` | **transferido** → I000018 $5.000 |
+| PED-016 | Ines Quintero | 1× Juego Dinosaurios `JGDINO001` | **transferido** → I000021 $7.000 |
+| PED-017 | Patito | 2× Llavero Noruega `LLNORUE001` | **transferido** → I000022 $4.000 |
+| PED-018 | Pedro MKOF | 1× Porta Bob Esponja `PTBOBES001` | **transferido** → I000023 $7.000 |
 
 ### Ventas — ID correlativo + historial
 
 - Cada venta tiene `codigo` `I000001…` (`meta.ventaSeq`). **Primera registrada = I000001 · Tito MKOF**.
 - Clientes históricos ya migrados (no re-etiquetar): Tito MKOF · Gianni/Juan/Cata/Marcia/Rebe SIE.
 - `meta.clientesHistorial[]` agrupa compras repetidas. UI: tab Ventas + bloque Historial.
-- **Filtro por cliente** (tab Ventas): select Cliente · Origen (SIE/MKOF) · buscar texto; clic en fila del historial filtra sus compras; muestra total filtrado.
+- **Filtro por cliente** (tab Ventas): select Cliente · Origen (SIE/MKOF/QUINTERO) · buscar texto; clic en fila del historial filtra sus compras; muestra total filtrado.
 - Al transferir / venta directa: `nextVentaCodigo` + `rebuildClientesHistorial`.
 
 | Código | Cliente | Monto | Notas |
@@ -98,6 +102,9 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 | I000018 | Cata SIE | 5.000 | PED-015 3× Llavero One Piece |
 | I000019 | Juan MKOF | 7.000 | PED-008 Porta Bob Esponja |
 | I000020 | Mel MKOF | 4.000 | PED-013 Soporte celular negro |
+| I000021 | Ines Quintero | 7.000 | PED-016 Juego Dinosaurios · **no** SIE ni MKOF |
+| I000022 | Patito | 4.000 | PED-017 2× Llavero Noruega |
+| I000023 | Pedro MKOF | 7.000 | PED-018 Porta Bob Esponja |
 
 ### Clientes nuevos — nombre + origen (obligatorio)
 
@@ -107,9 +114,10 @@ Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. P
 2. **Origen / dónde viene** (segundo parámetro):
    - **SIE** = trabajo de **Nicolás**
    - **MKOF** = trabajo de **Josefa**
+   - **QUINTERO** = Quintero (no es SIE ni MKOF; ej. Ines)
 
-Display: `Nombre [SegundoNombre] ORIGEN` → ej. `Rebe SIE`, `María José MKOF`.  
-Campos pedido/venta: `clienteNombre`, `clienteSegundoNombre?`, `clienteOrigen` (`SIE`|`MKOF`) + `cliente` (string compuesto para historial).
+Display: `Nombre [SegundoNombre] ORIGEN` → ej. `Rebe SIE`, `María José MKOF`, `Ines Quintero`.  
+Campos pedido/venta: `clienteNombre`, `clienteSegundoNombre?`, `clienteOrigen` (`SIE`|`MKOF`|`QUINTERO`) + `cliente` (string compuesto para historial).
 
 ## Flujos de chat (agente) — frases gatillo
 
@@ -118,7 +126,7 @@ Campos pedido/venta: `clienteNombre`, `clienteSegundoNombre?`, `clienteOrigen` (
 Responder **pidiendo estos datos** (no crear a ciegas). Mínimo nombre + origen:
 
 1. **Nombre** (y segundo nombre si hay)
-2. **Origen:** SIE (Nico) o MKOF (Josefa)
+2. **Origen:** SIE (Nico), MKOF (Josefa) o QUINTERO
 3. **Ítems:** producto, cantidad, color/filamento
 4. **Precio venta/u** o total (ajustable; puede ser más caro que el sugerido)
 5. **Canal** (WhatsApp / Instagram / feria) — opcional
@@ -199,6 +207,8 @@ Datos en `data.impresoras[]` (seed + live) y UI **Operación → Impresoras**. C
 | `ALCHAN001` | Alcancía chanchito | **315,88** | **12,15 (12 h 9 m)** | PLA rosado `$10.990/kg` · Elegoo · modelo 280,74 + sop 33,75 + purge 1,40 · 105,06 m · costo ~$4.202 · **PVP sug. $8.400** · diseño comprado **$13.000** en gastos (no en costo/u) · vendida Rebe **$18.000** (I000017) |
 | `SOPCHI001` | Soporte celular Chimuelo | **55,81** (modelo+sop+purga) | **2,68 (2 h 41 m)** | PLA+ negro `$17.986/kg` · Elegoo · modelo 32,95 + soportes 22,39 + **purga 0,47** · 18,56 m · coste slicer 1,12 · fil~$1.004 + luz~$150 + bolsa $50 · costo ~**$1.204** · **PVP sug. $2.400** |
 | `LLONEPI001` | Llavero One Piece | — | — | **pendiente costo** · 3× Cata SIE **$5.000** (I000018) · ~$1.667/u |
+| `JGDINO001` | Juego Dinosaurios | — | — | **pendiente costo** · 1× Ines Quintero **$7.000** (I000021) |
+| `LLNORUE001` | Llavero Noruega | — | — | **pendiente costo** · 2× Patito **$4.000** (I000022) · $2.000/u · argolla metal |
 
 **Resumen 50/50:** la tabla «Costos de producto» usa el mismo costo/precio que Costos producto (precio manual si hay; si no, +margen). Al guardar un producto se marca `editadoLocal` y se refresca el resumen.
 
@@ -234,7 +244,7 @@ Solo si hay módulo CAM + base USB/CH340. Guía: `docs/impresoreando/ESP32-CAM.m
 ## Cómo atender un pedido nuevo (checklist agente)
 
 1. Leer **este archivo** (no explorar panel.js salvo bug concreto).
-2. Frase gatillo → **pedir nombre + origen (SIE/MKOF)** y el resto; no inventar ni auto-poner SIE.
+2. Frase gatillo → **pedir nombre + origen (SIE/MKOF/QUINTERO)** y el resto; no inventar ni auto-poner SIE.
 3. Sin SKU → generar. Sin costo → pedir imagen y calcular producto.
 4. Pedido en live/seed: `cliente` compuesto, ítems SKU×cant, costo/u, precio venta/u (ajustable), estado.
 5. Estado del pedido debe verse en **Resumen** (tabla de status) y en Pedidos.

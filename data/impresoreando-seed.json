@@ -17,17 +17,21 @@
       }
     ],
     "notas": "Emprendimiento 3D · sociedad 50/50 Josefa + Nicolás. Los gastos son de ambos (deuda 50/50), pero hasta ahora los ha pagado todos Nicolás. Josefa le debe el 50% del capital/gastos.",
-    "actualizado": "2026-07-31T23:00:07.473Z",
+    "actualizado": "2026-08-31T23:39:44.362Z",
     "version": 1,
     "capital": {
-      "aportadoPor": "Nicolás",
+      "aportadoPor": "Nicolás + Josefa",
       "deudaPctJosefa": 50,
-      "nota": "Nicolás puso el capital y, hasta ahora, ha pagado todos los gastos. «Ambos» = sociedad 50/50 (Josefa debe el 50% a Nicolás), no que Josefa haya pagado.",
-      "montoNetoClp": 915989,
-      "deudaJosefaClp": 457995
+      "nota": "Abono $100.000 ya pagado a Nicolás. Deuda Josefa → Nicolás fijada en $330.000 (manual).",
+      "montoNetoClp": 1013648,
+      "deudaJosefaClp": 330000,
+      "aportadoJosefaClp": 16100,
+      "aportadoNicolasClp": 997548,
+      "abonosDeudaJosefaClp": 100000,
+      "deudaJosefaManual": true
     },
-    "pedidoSeq": 15,
-    "ventaSeq": 20,
+    "pedidoSeq": 18,
+    "ventaSeq": 23,
     "ventaCodigoPrefijo": "I",
     "clientesHistorial": [
       {
@@ -78,6 +82,28 @@
         "compras": 2
       },
       {
+        "cliente": "Juan SIE",
+        "ventaCodigos": [
+          "I000003"
+        ],
+        "ventaIds": [
+          "ven-juan-naves-003"
+        ],
+        "totalNeto": 15000,
+        "compras": 1
+      },
+      {
+        "cliente": "Tito MKOF",
+        "ventaCodigos": [
+          "I000001"
+        ],
+        "ventaIds": [
+          "ven-mrpqov4c"
+        ],
+        "totalNeto": 15000,
+        "compras": 1
+      },
+      {
         "cliente": "Marcia SIE",
         "ventaCodigos": [
           "I000005",
@@ -93,56 +119,23 @@
         "compras": 3
       },
       {
-        "cliente": "Ele SIE",
-        "ventaCodigos": [
-          "I000014"
-        ],
-        "ventaIds": [
-          "ven-ele-pesa-014"
-        ],
-        "totalNeto": 5000,
-        "compras": 1
-      },
-      {
-        "cliente": "Juan SIE",
-        "ventaCodigos": [
-          "I000003"
-        ],
-        "ventaIds": [
-          "ven-juan-naves-003"
-        ],
-        "totalNeto": 15000,
-        "compras": 1
-      },
-      {
-        "cliente": "María Paz SIE",
-        "ventaCodigos": [
-          "I000011"
-        ],
-        "ventaIds": [
-          "ven-maria-paz-soporte-011"
-        ],
-        "totalNeto": 4000,
-        "compras": 1
-      },
-      {
-        "cliente": "Tito MKOF",
-        "ventaCodigos": [
-          "I000001"
-        ],
-        "ventaIds": [
-          "ven-mrpqov4c"
-        ],
-        "totalNeto": 15000,
-        "compras": 1
-      },
-      {
         "cliente": "Fabian MKOF",
         "ventaCodigos": [
           "I000016"
         ],
         "ventaIds": [
           "ven-fabian-bob-016"
+        ],
+        "totalNeto": 7000,
+        "compras": 1
+      },
+      {
+        "cliente": "Ines Quintero",
+        "ventaCodigos": [
+          "I000021"
+        ],
+        "ventaIds": [
+          "ven-ines-dinos-021"
         ],
         "totalNeto": 7000,
         "compras": 1
@@ -159,12 +152,56 @@
         "compras": 1
       },
       {
+        "cliente": "Pedro MKOF",
+        "ventaCodigos": [
+          "I000023"
+        ],
+        "ventaIds": [
+          "ven-pedro-bob-023"
+        ],
+        "totalNeto": 7000,
+        "compras": 1
+      },
+      {
+        "cliente": "Ele SIE",
+        "ventaCodigos": [
+          "I000014"
+        ],
+        "ventaIds": [
+          "ven-ele-pesa-014"
+        ],
+        "totalNeto": 5000,
+        "compras": 1
+      },
+      {
+        "cliente": "María Paz SIE",
+        "ventaCodigos": [
+          "I000011"
+        ],
+        "ventaIds": [
+          "ven-maria-paz-soporte-011"
+        ],
+        "totalNeto": 4000,
+        "compras": 1
+      },
+      {
         "cliente": "Mel MKOF",
         "ventaCodigos": [
           "I000020"
         ],
         "ventaIds": [
           "ven-mel-soporte-020"
+        ],
+        "totalNeto": 4000,
+        "compras": 1
+      },
+      {
+        "cliente": "Patito",
+        "ventaCodigos": [
+          "I000022"
+        ],
+        "ventaIds": [
+          "ven-patito-noruega-022"
         ],
         "totalNeto": 4000,
         "compras": 1
@@ -1143,6 +1180,93 @@
           "filamento": "PLA+ negro"
         }
       ]
+    },
+    {
+      "id": "ven-ines-dinos-021",
+      "codigo": "I000021",
+      "fecha": "2026-08-31",
+      "cliente": "Ines Quintero",
+      "clienteNombre": "Ines",
+      "clienteOrigen": "QUINTERO",
+      "descripcion": "PED-016 · 1× Juego Dinosaurios · Ines Quintero",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 0,
+      "canal": "",
+      "notas": "Transferido desde PED-016 · 1× Juego Dinosaurios · pagado $7.000 · origen Quintero (no SIE ni MKOF)",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-ines-juego-dinos-016",
+      "pedidoNumero": "PED-016",
+      "items": [
+        {
+          "sku": "JGDINO001",
+          "nombre": "Juego Dinosaurios",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 0,
+          "filamento": ""
+        }
+      ]
+    },
+    {
+      "id": "ven-patito-noruega-022",
+      "codigo": "I000022",
+      "fecha": "2026-08-31",
+      "cliente": "Patito",
+      "clienteNombre": "Patito",
+      "clienteOrigen": "",
+      "descripcion": "PED-017 · 2× Llavero Noruega · Patito",
+      "cantidad": 2,
+      "montoBruto": 4000,
+      "descuentoClp": 0,
+      "montoNeto": 4000,
+      "costoTotal": 0,
+      "canal": "",
+      "notas": "Transferido desde PED-017 · 2× Llavero Noruega · pagado $4.000",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-patito-noruega-017",
+      "pedidoNumero": "PED-017",
+      "items": [
+        {
+          "sku": "LLNORUE001",
+          "nombre": "Llavero Noruega",
+          "cantidad": 2,
+          "precioUnitarioClp": 2000,
+          "costoUnitarioClp": 0,
+          "filamento": ""
+        }
+      ]
+    },
+    {
+      "id": "ven-pedro-bob-023",
+      "codigo": "I000023",
+      "fecha": "2026-08-31",
+      "cliente": "Pedro MKOF",
+      "clienteNombre": "Pedro",
+      "clienteOrigen": "MKOF",
+      "descripcion": "PED-018 · 1× Porta Bob Esponja · Pedro MKOF",
+      "cantidad": 1,
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 998.17,
+      "canal": "WhatsApp",
+      "notas": "Transferido desde PED-018 · 1× Porta Bob Esponja · pagado $7.000 · MKOF (Josefa)",
+      "socioRegistro": "Ambos",
+      "pedidoId": "ped-pedro-bob-018",
+      "pedidoNumero": "PED-018",
+      "items": [
+        {
+          "sku": "PTBOBES001",
+          "nombre": "Porta Bob Esponja",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 998.17,
+          "filamento": "multicolor"
+        }
+      ]
     }
   ],
   "operacion": [
@@ -1542,6 +1666,28 @@
       "precioVentaSugeridoClp": 1667,
       "pendienteCosto": true,
       "notas": "3 uds cobradas a Cata SIE $5.000 total ($1.667/u). Costo pendiente (sin imagen slicer)."
+    },
+    {
+      "id": "prod-juego-dinosaurios",
+      "sku": "JGDINO001",
+      "nombre": "Juego Dinosaurios",
+      "activo": true,
+      "unidadesMetal": 0,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 7000,
+      "pendienteCosto": true,
+      "notas": "1 ud cobrada a Ines Quintero $7.000 (I000021). Costo pendiente (sin imagen slicer). Origen QUINTERO (no SIE ni MKOF)."
+    },
+    {
+      "id": "prod-llavero-noruega",
+      "sku": "LLNORUE001",
+      "nombre": "Llavero Noruega",
+      "activo": true,
+      "unidadesMetal": 1,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 2000,
+      "pendienteCosto": true,
+      "notas": "2 uds cobradas a Patito $4.000 total ($2.000/u, I000022). Costo pendiente (sin imagen slicer). Argolla metal típica de llavero."
     }
   ],
   "planAds": {
@@ -2208,6 +2354,114 @@
       "socioRegistro": "Ambos",
       "creado": "2026-07-31T19:00:00.000Z",
       "transferidoEn": "2026-07-31T19:00:00.000Z"
+    },
+    {
+      "id": "ped-ines-juego-dinos-016",
+      "numero": "PED-016",
+      "fecha": "2026-08-31",
+      "cliente": "Ines Quintero",
+      "clienteNombre": "Ines",
+      "clienteOrigen": "QUINTERO",
+      "canal": "",
+      "items": [
+        {
+          "sku": "JGDINO001",
+          "nombre": "Juego Dinosaurios",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 0,
+          "filamento": "",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 0,
+      "estado": "transferido",
+      "ventaId": "ven-ines-dinos-021",
+      "notas": "1× Juego Dinosaurios · transferido a venta I000021 · pagado $7.000 · Quintero (no SIE ni MKOF)",
+      "socioRegistro": "Ambos",
+      "creado": "2026-08-31T23:00:00.000Z",
+      "transferidoEn": "2026-08-31T23:00:00.000Z"
+    },
+    {
+      "id": "ped-patito-noruega-017",
+      "numero": "PED-017",
+      "fecha": "2026-08-31",
+      "cliente": "Patito",
+      "clienteNombre": "Patito",
+      "clienteOrigen": "",
+      "canal": "",
+      "items": [
+        {
+          "sku": "LLNORUE001",
+          "nombre": "Llavero Noruega",
+          "cantidad": 2,
+          "precioUnitarioClp": 2000,
+          "costoUnitarioClp": 0,
+          "filamento": "",
+          "estado": "listo",
+          "listos": 2,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 4000,
+      "descuentoClp": 0,
+      "montoNeto": 4000,
+      "costoTotal": 0,
+      "estado": "transferido",
+      "ventaId": "ven-patito-noruega-022",
+      "notas": "2× Llavero Noruega · transferido a venta I000022 · pagado $4.000",
+      "socioRegistro": "Ambos",
+      "creado": "2026-08-31T23:05:00.000Z",
+      "transferidoEn": "2026-08-31T23:05:00.000Z"
+    },
+    {
+      "id": "ped-pedro-bob-018",
+      "numero": "PED-018",
+      "fecha": "2026-08-31",
+      "cliente": "Pedro MKOF",
+      "clienteNombre": "Pedro",
+      "clienteOrigen": "MKOF",
+      "canal": "WhatsApp",
+      "items": [
+        {
+          "sku": "PTBOBES001",
+          "nombre": "Porta Bob Esponja",
+          "cantidad": 1,
+          "precioUnitarioClp": 7000,
+          "costoUnitarioClp": 998.17,
+          "filamento": "multicolor",
+          "estado": "listo",
+          "listos": 1,
+          "enImpresion": 0
+        }
+      ],
+      "montoBruto": 7000,
+      "descuentoClp": 0,
+      "montoNeto": 7000,
+      "costoTotal": 998.17,
+      "estado": "transferido",
+      "ventaId": "ven-pedro-bob-023",
+      "notas": "1× Porta Bob Esponja · transferido a venta I000023 · pagado $7.000 · MKOF (Josefa)",
+      "socioRegistro": "Ambos",
+      "creado": "2026-08-31T23:30:00.000Z",
+      "fiado": false,
+      "transferidoEn": "2026-08-31T23:30:00.000Z"
+    }
+  ],
+  "retirosCaja": [
+    {
+      "id": "retiro-caja-insumos-176000",
+      "fecha": "2026-08-31",
+      "montoNeto": 176000,
+      "descripcion": "Retiro de caja para insumos",
+      "notas": "Se sacó de caja todo lo cobrado en ventas ($176.000) para comprar insumos. Caja = ventas − retiros → $0. No suma a gastos de socios (no es capital nuevo).",
+      "socioRegistro": "Ambos",
+      "motivo": "insumos"
     }
   ]
 }
