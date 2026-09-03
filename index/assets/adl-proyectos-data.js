@@ -110,5 +110,24 @@ window.ADL_PROYECTOS = {
     slides: 15,
     territorio: 'Región de Antofagasta',
     anio: 2026
+  },
+  FF: {
+    codigo: 'FF',
+    nombre: 'Formación para Facilitadores',
+    programa: 'Formación para Facilitadores',
+    cliente: 'Desafío Latam',
+    carpeta: 'formacion-facilitadores',
+    canvas: { ancho: 1123, alto: 794 },
+    colores: {
+      primario: '#729E2E',
+      secundario: '#0F2E81',
+      acento: '#FFCD56',
+      naranja: '#E9501D',
+      fondo: '#FFFFFF',
+      texto: '#0F2E81'
+    },
+    tipografia: 'Uni Neue',
+    lms: ['Empieza', 'Proyecto'],
+    entregable: 'Plantilla de certificado digital horizontal para emisión automatizada'
   }
 };
