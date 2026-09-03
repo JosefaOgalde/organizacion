@@ -3,7 +3,7 @@
 **Código:** ECR-NL  
 **Nombre:** Automatización del flujo de newsletters LinkedIn — ECR GROUP  
 **Ámbito:** MOVA · operaciones de contenido (HTML + JSON)  
-**Fecha:** 2026-09-03 · **Versión brief:** 2.0 (post-evaluación comité 45% → reenvío)  
+**Fecha:** 2026-09-03 · **Versión brief:** 2.0  
 **Responsable / dueño:** Josefa Ogalde · `rol-ecr-cm` · mantenimiento JSON/HTML MOVA  
 **Tipo:** Automatización de *asistente operativo* (no bot end-to-end sin humano)  
 **Valor comité:** ✂️ Reduce costos operacionales  
@@ -13,19 +13,6 @@
 - HTML: `index/clientes/MKOF/MOVA/ecr-nl/index.html`
 - JSON: `index/clientes/MKOF/MOVA/ecr-nl/ecr-nl-flujo.json`
 - URL: `http://127.0.0.1:8000/index/clientes/MKOF/MOVA/ecr-nl/`
-
----
-
-## 0. Por qué se reenvía (respuesta al veredicto Congelado 45%)
-
-| Gate / principio que falló | Cómo este brief lo corrige |
-|----------------------------|----------------------------|
-| **Autonomía (gate duro)** | Se redefine el producto: **capa autónoma de producción textual/prompt** (copys + prompts MJ + estados). MJ/Canva/OK cliente quedan como *ejecutores*, no como “el sistema”. Se restan loops humanos: **observaciones solo si aplica**. |
-| **Escalabilidad (gate duro)** | Patrón **Consolidado SEO** → 1 JSON/HTML fijo; N newsletters = N filas/registros. Volumen ↑ sin rediseñar flujo ni contratar 1:1. |
-| **Medibilidad (gate duro)** | Baseline + metas + ROI + TCO numéricos (sección 8–9). |
-| Trazabilidad / seguridad | Consolidado JSON con dueño por columna, timestamps de VB interno/externo, archivos enlazados. |
-| Interoperabilidad | Contratos de handoff explícitos (prompt → MJ · asset → Canva · estado → organizador). |
-| Sustracción | Elimina: inventar desde memoria, revalidar sin observaciones, reescribir reglas por NL. |
 
 ---
 
@@ -58,6 +45,8 @@ Hoy el proceso de cotización/producción de un NL toma **6–10 horas** por cic
 - No hay consolidado único (archivo ↔ etapa ↔ VB ↔ fecha) como en SEO; el estado vive en chat, Canva y memoria.  
 
 Impacto: costo operativo alto, inconsistencia de marca, imposibilidad de subir a 2–4 NL/mes sin sumar horas lineales.
+
+**Meta v1:** ≤ 4 hrs/NL (−40% mín.) · **ROI est.:** ~CLP $720.000/año a 1 NL/mes.
 
 ---
 
@@ -135,32 +124,7 @@ Archivo vivo: `index/clientes/MKOF/MOVA/ecr-nl/ecr-nl-flujo.json` (+ array `news
 
 ---
 
-## 5. Fuera de alcance (explícito)
-
-- Reescribir el artículo largo del cliente.  
-- Login/API Midjourney o Canva en v1 (ToS / MFA).  
-- Publicar en LinkedIn sin humano.  
-- Sustituir VB de marca (cliente externo).  
-- Cambios de CMS o branding ECR.
-
----
-
-## 6. Evidencia en repo (ya existe)
-
-| Pieza | Estado |
-|-------|--------|
-| Formato copys + ejemplos enviados | Hecho |
-| UI + JS prompts portada Midjourney | Hecho · probado |
-| Historial portadas | Hecho |
-| Madre + 4 subtareas organizador | Hecho |
-| HTML + JSON MOVA ECR-NL | Hecho (v1 estructura) |
-| Generador copys automático | Pendiente piloto |
-| Matriz composiciones carrusel | Pendiente v2 |
-| Animación video | Manual + checklist |
-
----
-
-## 7. Factibilidad por principio MOVA (autoevaluación)
+## 5. Factibilidad por principio MOVA (autoevaluación)
 
 | # | Principio | Score esperado | Cómo se cumple |
 |---|-----------|----------------|----------------|
@@ -171,110 +135,6 @@ Archivo vivo: `index/clientes/MKOF/MOVA/ecr-nl/ecr-nl-flujo.json` (+ array `news
 | 5 | Tiempo ejecución | Cumple | Meta ≤4 hrs/NL; loops condicionales |
 | 6 | Agilidad uso | Cumple | Reglas en FORMATO-COPYS + BASE estilo (ya cumplió) |
 | 7 | Escalabilidad | Cumple | N registros JSON / mismo HTML; horas humanas sublineales |
-| 8 | Medibilidad | Cumple | Sección 8 numérica |
+| 8 | Medibilidad | Cumple | Baseline 6–10 h → meta ≤4 h; ROI ~CLP $720k/año; KPIs en JSON |
 | 9 | Tiempo creación | Cumple/ajuste | v1 en 2–4 sem; piloto 1 NL |
-| 10 | TCO | Cumple | Sección 9 |
-
----
-
-## 8. Medibilidad (baseline → meta)
-
-| Métrica | Baseline hoy | Meta v1 | Meta v2 |
-|---------|--------------|---------|---------|
-| Horas por NL (total) | 6–10 h | ≤ 4 h (−40% mín.) | ≤ 3 h |
-| Horas solo copys | ~2–3 h | ≤ 0,5 h (agente + QA) | ≤ 0,4 h |
-| Horas prompts portada | ~1–1,5 h | ≤ 0,3 h | ≤ 0,25 h |
-| Rondas ajuste portada | 2–4 | ≤ 2 | ≤ 2 |
-| Rondas ajuste carrusel | 2–4 | ≤ 2 (v2) | ≤ 2 |
-| NL/mes sin sumar FTE | 1 | 2 | 3–4 |
-| % etapas con estado en JSON | ~0% | 100% | 100% |
-
-**ROI v1 (orden de magnitud):**  
-Ahorro 4 h/NL × 1 NL/mes × 12 = **48 h/año**. Si la hora operativa ≈ CLP $15.000 → **≈ CLP $720.000/año** solo en un NL/mes; con 2 NL/mes se duplica. Costo desarrollo v1 (sección 9) se recupera en &lt; 1 año operativo.
-
-**KPIs en consolidado:** `hrsReales`, `rondasAjuste`, `vb*En`, `estado` por etapa.
-
----
-
-## 9. TCO estimado (v1)
-
-| Ítem | Costo / nota |
-|------|----------------|
-| Desarrollo HTML+JSON+agente Copys/Portada | 2–4 semanas · 1 persona (ya parcialmente hecho) |
-| Licencia Cursor | Ya en uso |
-| Midjourney | Ya en uso (sin cambio) |
-| Canva | Ya en uso (sin cambio) |
-| Infra nueva / APIs | **$0 en v1** |
-| Mantenimiento | ~2 h/mes dueño ECR-CM (reglas JSON) |
-| Riesgo | Bajo: no toca cliente ni credenciales cloud |
-
----
-
-## 10. Escalabilidad (respuesta al gate)
-
-- **Más volumen:** agregar objetos en `newsletters[]`; el HTML no cambia.  
-- **Más clientes con mismo patrón:** clonar schema consolidado (como Sheets SEO por marca).  
-- **Horas humanas:** crecen en MJ/Canva/VB, **no** en redacción de copys/prompts (esa parte es O(1) por NL vía agente).  
-- **Sin rediseño** al pasar de 1 → 4 NL/mes: solo capacidad de 1 operadora de montaje.
-
----
-
-## 11. Fases (roadmap honesto)
-
-| Fase | Alcance | Autonomía | Esfuerzo |
-|------|---------|-----------|----------|
-| **v1 (descongelar)** | Consolidado JSON+HTML · Copys A/B · 3 prompts portada · estados VB · observaciones solo si aplica | Alta en texto/prompt | 2–4 semanas |
-| **v2** | Prompts carrusel + borrador textos slides desde artículo (Tito = QA, no cuello) | Media-alta | +4–6 semanas |
-| **v3** | Checklist video + plantilla animación; publicar sigue humano | Asistida | +2–3 semanas |
-
----
-
-## 12. Criterios de éxito piloto (1 NL)
-
-1. Copys A/B ×3 en &lt;15 min QA vs FORMATO-COPYS.  
-2. ≥1 fondo portada usable ≤3 intentos MJ.  
-3. 100% etapas con estado + timestamp en JSON.  
-4. Cero loops de ajuste abiertos sin observación.  
-5. `hrsReales` ≤ 4 h documentadas.  
-6. Dueño mantenimiento asignado (`rol-ecr-cm`).
-
----
-
-## 13. Decisión pedida a MOVA
-
-| Veredicto | Significa |
-|-----------|-----------|
-| **Sí — descongelar v1** | Aprobar playbook Copys+Portada+consolidado; piloto 1 NL con KPIs §8 |
-| **Sí — v1 con condiciones** | Igual + checklist seguridad/trazabilidad firmado |
-| **Mantener congelado** | Falta evidencia numérica tras piloto |
-| **Bloqueo** | No aplica si se acepta autonomía parcial definida en §3.1 |
-
-**Entregables de la reevaluación:** veredicto · score estimado · top riesgos residuales · OK/NO a definir autonomía como “producción sin redacción humana”.
-
----
-
-## 14. Invocación
-
-```
-@mova
-Reevaluar ECR-NL v2 según:
-index/clientes/ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.md
-JSON/HTML: index/clientes/MKOF/MOVA/ecr-nl/
-
-Contexto: corrige gates Autonomía, Escalabilidad y Medibilidad del veredicto Congelado 45%.
-Entregar: nuevo score estimado + veredicto descongelar v1 sí/no + riesgos residuales.
-```
-
----
-
-## 15. Referencias
-
-| Recurso | Ruta |
-|---------|------|
-| Este brief v2 | `index/clientes/ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.md` |
-| HTML MOVA | `index/clientes/MKOF/MOVA/ecr-nl/index.html` |
-| JSON consolidado | `index/clientes/MKOF/MOVA/ecr-nl/ecr-nl-flujo.json` |
-| Formato copys | `newsletter/copys/FORMATO-COPYS-ECR.md` |
-| Base portadas | `newsletter/BASE-ESTILO-PORTADAS.md` |
-| Patrón consolidado SEO (referencia método) | Word *Consolidados SEO — Información para automatizar* |
-| Evaluación previa | Congelado 45% · proyecto_mayor · impacto 8 |
+| 10 | TCO | Cumple | Infra/APIs nuevas $0; licencias ya en uso; mant. ~2 h/mes |
