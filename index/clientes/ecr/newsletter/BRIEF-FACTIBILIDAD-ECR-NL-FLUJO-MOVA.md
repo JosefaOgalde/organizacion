@@ -1,304 +1,280 @@
-# Brief de factibilidad · Flujo newsletter ECR (Copys → Portada → Carrusel → Video)
+# Brief de factibilidad · ECR-NL v2 (MOVA)
 
 **Código:** ECR-NL  
-**Ámbito:** Cliente **ECR GROUP** · ecosistema LinkedIn newsletter (NL mensual)  
-**Fecha:** 2026-09-01  
-**Estado:** flujo operativo parcialmente documentado; automatización con agente **propuesta**, no implementada end-to-end  
-**Evaluación sugerida:** `@mova`  
-**Operación diaria:** agente Cursor (rol ECR-CM) + herramientas externas (Midjourney, Canva)
+**Nombre:** Automatización del flujo de newsletters LinkedIn — ECR GROUP  
+**Ámbito:** MOVA · operaciones de contenido (HTML + JSON)  
+**Fecha:** 2026-09-03 · **Versión brief:** 2.0 (post-evaluación comité 45% → reenvío)  
+**Responsable / dueño:** Josefa Ogalde · `rol-ecr-cm` · mantenimiento JSON/HTML MOVA  
+**Tipo:** Automatización de *asistente operativo* (no bot end-to-end sin humano)  
+**Valor comité:** ✂️ Reduce costos operacionales  
+**Escalable:** ✅ Sí — crece en volumen sin rediseño (nuevo NL = nuevo registro JSON)
+
+**Entregable MOVA (ya en repo):**
+- HTML: `index/clientes/MKOF/MOVA/ecr-nl/index.html`
+- JSON: `index/clientes/MKOF/MOVA/ecr-nl/ecr-nl-flujo.json`
+- URL: `http://127.0.0.1:8000/index/clientes/MKOF/MOVA/ecr-nl/`
+
+---
+
+## 0. Por qué se reenvía (respuesta al veredicto Congelado 45%)
+
+| Gate / principio que falló | Cómo este brief lo corrige |
+|----------------------------|----------------------------|
+| **Autonomía (gate duro)** | Se redefine el producto: **capa autónoma de producción textual/prompt** (copys + prompts MJ + estados). MJ/Canva/OK cliente quedan como *ejecutores*, no como “el sistema”. Se restan loops humanos: **observaciones solo si aplica**. |
+| **Escalabilidad (gate duro)** | Patrón **Consolidado SEO** → 1 JSON/HTML fijo; N newsletters = N filas/registros. Volumen ↑ sin rediseñar flujo ni contratar 1:1. |
+| **Medibilidad (gate duro)** | Baseline + metas + ROI + TCO numéricos (sección 8–9). |
+| Trazabilidad / seguridad | Consolidado JSON con dueño por columna, timestamps de VB interno/externo, archivos enlazados. |
+| Interoperabilidad | Contratos de handoff explícitos (prompt → MJ · asset → Canva · estado → organizador). |
+| Sustracción | Elimina: inventar desde memoria, revalidar sin observaciones, reescribir reglas por NL. |
 
 ---
 
 ## 1. Resumen ejecutivo
 
-Proponemos formalizar y, donde sea viable, **automatizar con agente Cursor** el pipeline mensual de cada newsletter ECR a partir del **artículo ya aprobado por el cliente**:
+Cada newsletter ECR hoy recorre un flujo manual (mapeado en papel operativo):
 
-| Etapa | Entrada | Salida del agente / equipo | Gate |
-|-------|---------|----------------------------|------|
-| **1 · Copys** | PDF/DOCX/TXT del artículo aprobado | TXT con **Feed A/B**, **Carrusel COPY A/B** y **Video A/B** (emojis + hashtags; línea vacía para link) | Aprobación cliente |
-| **2 · Portada** | Artículo + copys aprobados | **3 prompts Midjourney** (solo fondo; sin texto/logo) | Aprobación cliente |
-| **3 · Carrusel** | Textos de slides (**Tito**) + identidad visual | **N prompts Midjourney** (backgrounds slides 2–7; composiciones distintas) | Aprobación cliente |
-| **4 · Video** | Carrusel aprobado en Canva | Guía / assets para **animar el carrusel** (video = carrusel animado) | Aprobación cliente |
+1. Proponer fechas + enviar copys  
+2. OK cliente externo  
+3. Fondo portada Midjourney  
+4. Logo + texto en Canva  
+5. Validación interna (Tito/Vale) → externa (ajustes **solo si aplica**)  
+6. Armar carrusel (fondos MJ + textos/logo Canva)  
+7. Validación interna → externa (ajustes **solo si aplica**)  
+8. Animar video (carrusel) + programar / publicar  
 
-El cliente **no cambia** su proceso editorial: sigue entregando el artículo final. Nosotros convertimos ese insumo en piezas LinkedIn con **revisiones explícitas entre etapas** (no se avanza sin OK).
+**Propuesta:** formalizar ese recorrido en **MOVA (HTML + JSON consolidado)** y automatizar con agente Cursor todo lo que es *producción repetible de texto y prompts*, dejando humanos solo donde la herramienta externa o la marca lo exigen.
 
-**Pregunta a MOVA:** ¿Es factible y deseable escalar este flujo como **playbook automatizable** (agente + repo + organizador), con dueño de mantenimiento y criterios de calidad medibles?
-
----
-
-## 2. Problema (dolor real)
-
-| Hoy | Impacto |
-|-----|---------|
-| Cada NL repite el mismo tipo de entregables (copys ×3 formatos ×2 versiones, portada, 6–7 slides, video) | Tiempo de redacción y coordinación alto por ciclo |
-| Reglas de formato (emojis distintos por NL, CTAs no repetidos, A/B editorial vs punch) viven en docs + memoria | Riesgo de inconsistencia entre newsletters |
-| Prompts Midjourney requieren ADN visual estricto (sin texto, sin hex, composiciones variadas en carrusel) | Iteraciones manuales; slides 2–7 a veces “parecidas” a la portada o fuera de identidad |
-| Textos de slides del carrusel los entrega **Tito** en una etapa distinta a los copys | Dependencia humana clara; el agente no puede inventar slides sin ese insumo |
-| Video = carrusel animado | El cuello de botella pasa de creativo (MJ) a montaje (Canva) + animación |
-| Tareas en organizador ya modelan madre + 4 subtareas, pero la ejecución es manual | Falta trazabilidad automática archivo ↔ subtarea ↔ aprobación |
-
-No es un problema de “falta de artículo”: el cliente **ya aprueba el contenido**. El cuello de botella es la **producción repetitiva** de piezas derivadas con calidad de marca y gates de aprobación.
+**Pregunta a MOVA:** ¿Descongelar ECR-NL como playbook v1 (Copys + Portada + consolidado estados) con métricas y autonomía parcial demostrable, y roadmap v2–v3 para carrusel/video?
 
 ---
 
-## 3. Flujo propuesto (detalle)
+## 2. Problema concreto
+
+Hoy el proceso de cotización/producción de un NL toma **6–10 horas** por ciclo porque:
+
+- Copys Feed/Carrusel/Video × A/B se escriben a mano con reglas en la cabeza (emojis/CTAs no repetir).  
+- Prompts Midjourney se arman caso a caso; slides del carrusel a menudo salen “parecidas” a la portada.  
+- Validaciones interna/externa se repiten aunque **no haya observaciones**.  
+- No hay consolidado único (archivo ↔ etapa ↔ VB ↔ fecha) como en SEO; el estado vive en chat, Canva y memoria.  
+
+Impacto: costo operativo alto, inconsistencia de marca, imposibilidad de subir a 2–4 NL/mes sin sumar horas lineales.
+
+---
+
+## 3. Flujo real (mapa de automatización)
+
+Fuente: recorrido operativo en pizarra (imagen 1) + lista de validación (imagen 2).
 
 ```
-[Artículo aprobado PDF/DOCX/TXT]
-           │
-           ▼
-┌──────────────────────────────────────┐
-│ ETAPA 1 · COPYS                      │
-│ Agente: Feed A/B + Carrusel A/B +    │
-│         Video A/B (FORMATO-COPYS)    │
-└──────────────────────────────────────┘
-           │ OK cliente
-           ▼
-┌──────────────────────────────────────┐
-│ ETAPA 2 · PORTADA (Midjourney)       │
-│ Agente: 3 prompts fondo (BASE+scene) │
-│ Humano: generar en MJ → Canva título │
-└──────────────────────────────────────┘
-           │ OK cliente
-           ▼
-┌──────────────────────────────────────┐
-│ ETAPA 3 · CARRUSEL                   │
-│ Tito: textos slides 1–7              │
-│ Agente: prompts MJ por slide (2–7)   │
-│ Humano: armar carrusel en Canva      │
-└──────────────────────────────────────┘
-           │ OK cliente
-           ▼
-┌──────────────────────────────────────┐
-│ ETAPA 4 · VIDEO                      │
-│ Animar carrusel aprobado             │
-│ Copy video ya entregado en Etapa 1   │
-└──────────────────────────────────────┘
+[1] Fechas publicación + Copys          ← AUTOMATIZABLE (agente + plantilla)
+        ↓
+[2] OK cliente externo                  ← HUMANO (gate obligatorio)
+        ↓
+[3] Fondo portada Midjourney            ← ASISTIDO (agente genera prompt; humano pega en MJ)
+[4] Logo + texto Canva                  ← HUMANO (montaje marca)
+        ↓
+[5] VB interno Tito/Vale                ← HUMANO corto
+    Observaciones → SOLO SI APLICA      ← regla de sustracción
+[6] VB externo                          ← HUMANO (gate)
+        ↓
+[7] Carrusel: fondos MJ + textos Canva  ← ASISTIDO prompts / HUMANO montaje
+[8] VB interno → VB externo             ← igual; observaciones solo si aplica
+        ↓
+[9] Animar video + programar publicar   ← CHECKLIST asistido / HUMANO Canva + LinkedIn
 ```
 
-### 3.1 Etapa 1 — Copys
+### 3.1 Qué se automatiza vs qué queda humano (honesto)
 
-**Entrada:** artículo aprobado (mismo archivo que usará portada).  
-**Salida:** un `.txt` por artículo en `index/clientes/ecr/newsletter/copys/`.
+| Paso | Automatiza MOVA/agente | Humano |
+|------|------------------------|--------|
+| 1.1 Fechas | Sugerir calendario NL en consolidado | Confirmar |
+| 1.2 Copys | Generar Feed/Carrusel/Video A/B + emojis/hashtags | QA &lt;15 min |
+| 3 Portada fondo | 3 prompts MJ (BASE+scene+ANTITEXT) | Pegar en MJ, elegir 1 |
+| 4 Logo/texto | — | Canva |
+| 5–6 / 8 Validaciones | Registrar estado + observaciones en JSON | Tito/Vale / cliente |
+| 7 Carrusel fondos | Prompts por slide (composiciones distintas) | MJ + Canva |
+| 7 Textos slides | Borrador desde artículo (v2); Tito valida | Tito/Vale |
+| 9 Video + publicar | Checklist duración/transiciones | Canva + LinkedIn |
 
-Estructura obligatoria (ver `copys/FORMATO-COPYS-ECR.md`):
+**Autonomía (definición que pide el gate):**  
+> El sistema produce **sin redacción humana** los entregables de texto/prompt y **persiste estado** sin depender de memoria. No pretende operar Midjourney/Canva/LinkedIn sin persona en v1.
 
-- **1) FEED** — invitación a leer · versión A (narrativa) · versión B (punch)
-- **2) CARRUSEL — COPY** (solo post que acompaña el carrusel; **no** listar slides)
-- **3) VIDEO** — versión A y B
+### 3.2 Regla de validación (imagen 2)
 
-Reglas de calidad:
+Checklist fijo de 9 pasos. Las **observaciones/correcciones solo existen si aplica**:
 
-- Marca `ECR GROUP®️` / `#ECRGroup`
-- 2–4 hashtags por copy
-- **Emojis distintos** respecto al NL anterior (paleta alineada al tema)
-- **CTAs distintos** respecto al NL anterior (no repetir “Léelo completo aquí”, “Desliza…”, etc.)
-- Línea vacía para pegar link (sin placeholder `[LINK]`)
+- Si VB interno = OK → no se abre loop de ajustes.  
+- Si hay observación → se registra en consolidado (`observaciones[]`) con dueño y se reabre **solo** la etapa afectada (no todo el NL).  
+- VB externo no se pide dos veces si no hubo cambios.
 
-Referencia enviada al cliente: `copys/COPY-tecnologia-sin-integracion.txt`.
-
-### 3.2 Etapa 2 — Portada Midjourney
-
-**Entrada:** artículo (PDF/DOCX/TXT).  
-**Salida:** 3 opciones de prompt listas para copiar.
-
-Reglas (ver `BASE-ESTILO-PORTADAS.md`, `PROMPT-MIDJOURNEY-PORTADA.md`):
-
-- Solo **fondo**; tipografía y logo van en Canva después
-- Bloque `BASE` + escena en inglés + `ANTITEXT` (cero texto/logos en imagen)
-- **No** incluir `--ar`, `--v`, `--style`, `--no` en el prompt
-- **No** pegar hex, marcas ni título del artículo en español (MJ los dibuja)
-- UI existente: `http://127.0.0.1:8000/index/clientes/ecr/` → sección Portada Midjourney (`ecr-portada-prompt.js`)
-
-Persistencia: `historial-portadas.json`, `HISTORIAL-PORTADAS.md`, `portadas-guardadas/`.
-
-### 3.3 Etapa 3 — Backgrounds carrusel
-
-**Entrada crítica adicional:** textos de cada slide entregados por **Tito** (no derivables solo del artículo largo).  
-**Salida:** prompts Midjourney por slide (típicamente slides **2–7**; slide 1 = portada ya aprobada).
-
-Reglas aprendidas (NL1 sep — iteración cliente):
-
-- Cada slide debe tener **composición distinta** (split vertical, diagonal, radial, close-up, banda central, túnel/perspectiva, etc.)
-- Metáforas alineadas a **capacitación digital / talento / LMS** cuando el tema lo pide
-- Misma BASE + ANTITEXT que portada; **no** repetir la escena de portada en slide 2
-- Sin laptops genéricos / coworking stock si el feedback cliente pide identidad sectorial
-
-**Fuera de alcance del agente en esta etapa:** redactar el copy dentro de cada slide (eso es Tito + Canva).
-
-### 3.4 Etapa 4 — Video
-
-**Definición acordada en repo:** video = **carrusel animado** (`scripts/renombrar-ecr-madres-articulos.js` → subtarea tipo `video`).
-
-**Entrada:** carrusel final en Canva + copy video A/B (ya aprobado en etapa 1).  
-**Salida:** MP4 para LinkedIn; copy video ya listo para publicar.
-
-El agente puede apoyar con checklist de animación (duración por slide, transiciones, safe zones), pero la ejecución hoy es **manual en Canva** u otra herramienta de motion.
+Esto baja tiempo de ciclo (principio Tiempo de ejecución / Tiempo de creación).
 
 ---
 
-## 4. Fuera de alcance (explícito)
+## 4. Modelo Consolidado (inspirado en SEO)
 
-- Redactar o reescribir el **artículo largo** (solo piezas derivadas).
-- Generar imágenes dentro de Cursor (Midjourney es externo; el agente entrega prompts).
-- Publicar en LinkedIn (humano pega link + copy).
-- Sustituir a **Tito** en textos de slides del carrusel.
-- Pedir al cliente cambios de CMS, branding oficial ECR o plantillas Canva corporativas.
-- Automatizar login/API de Midjourney o Canva sin evaluación de ToS y MFA.
+El área SEO estructura el trabajo con **consolidados** (hojas históricas + hojas mes/año + columnas con dueño + tickets VB). ECR-NL aplica el mismo patrón en **JSON** (fuente de verdad MOVA), no en Sheets sueltos.
 
----
+### 4.1 Consolidado ECR-NL (por año)
 
-## 5. Qué existe ya en el repo (evidencia)
+| Campo | Dueño | Uso |
+|-------|-------|-----|
+| `id` / `mes` / `nlNumero` | Editora CM | Identidad del ciclo |
+| `tituloArticulo` / `articuloArchivo` | Editora | Insumo aprobado |
+| `fechaPublicacionPropuesta` | Editora (agente sugiere) | Paso 1.1 |
+| `copysArchivo` + `vbCopysExterno` | Agente / Cliente | Paso 1–2 |
+| `portadaPrompt` / `portadaAsset` / `vbPortadaInterno` / `vbPortadaExterno` | Agente / Tito-Vale / Cliente | Pasos 3–6 |
+| `carruselPrompts[]` / `carruselAsset` / `vbCarruselInterno` / `vbCarruselExterno` | Agente / Tito-Vale / Cliente | Pasos 7–8 |
+| `videoAsset` / `publicadoEn` / `urlLinkedIn` | Operadora | Paso 9 |
+| `observaciones[]` | Quien observa | **Solo si aplica** |
+| `hrsReales` / `rondasAjuste` | Sistema | Medición |
 
-| Pieza | Ubicación | Estado |
-|-------|-----------|--------|
-| Formato copys oficial | `newsletter/copys/FORMATO-COPYS-ECR.md` | Hecho |
-| Copys reales NL1–NL2 | `copys/COPY-tecnologia-sin-integracion.txt`, `COPY-equipos-en-terreno.txt` | Hecho · enviados |
-| ADN visual portadas | `newsletter/BASE-ESTILO-PORTADAS.md` | Hecho |
-| Generador prompts portada | `newsletter/ecr-portada-prompt.js` + landing `ecr/index.html` | Hecho · probado |
-| Historial portadas | `HISTORIAL-PORTADAS.md`, `portadas-guardadas/` | Hecho |
-| Artículos fuente | `newsletter/articulos/` | Hecho (2 NL) |
-| Modelo tareas organizador | Madre + subtareas Copys · Portada · Carrusel · Video | Hecho (`renombrar-ecr-madres-articulos.js`) |
-| Prompts carrusel NL1 sep | Iterados en chat; **no** guardados aún en repo | Pendiente opcional |
-| Generador automático copys | — | **No existe** |
-| Generador automático prompts carrusel | — | **No existe** |
-| Pipeline animación video | — | **Manual** |
+Administración de estructura: **dueño ECR-CM** (igual que editora SEO en consolidados). Cambios de schema = commit en repo, no chat.
+
+Archivo vivo: `index/clientes/MKOF/MOVA/ecr-nl/ecr-nl-flujo.json` (+ array `newsletters[]`).
 
 ---
 
-## 6. Análisis de factibilidad
+## 5. Fuera de alcance (explícito)
 
-### 6.1 Factibilidad técnica (agente + repo)
-
-| Factor | Evaluación | Notas |
-|--------|------------|-------|
-| Leer PDF/DOCX/TXT del artículo | **Alta** | Ya implementado en `ecr-portada-prompt.js` (pdf.js + mammoth) |
-| Generar copys A/B según plantilla | **Alta–media** | LLM + reglas en `FORMATO-COPYS-ECR.md`; requiere QA humano y memoria de NL anterior |
-| Generar 3 prompts portada | **Alta** | UI + heurística de mundos A–P ya operativa |
-| Generar prompts carrusel por slide | **Media** | Necesita textos Tito + tabla de composiciones; riesgo de repetición visual |
-| Persistir entregables en rutas estándar | **Alta** | Convención `copys/`, `portadas-guardadas/`, `articulos/` |
-| Vincular subtareas organizador ↔ archivos | **Media** | Campos `entregableArchivo` existen; falta botón “marcar etapa” automático |
-| Animar video automáticamente | **Baja** | Canva/motion manual; posible solo asistencia con checklist |
-
-### 6.2 Factibilidad operativa
-
-- **Roles claros:** Josefa/cliente (aprobaciones) · agente (copys + prompts) · Tito (textos slides) · operadora (MJ + Canva + publicación).
-- **Gates de aprobación** encajan con CM agencia; no conviene “big bang” (entregar todo junto).
-- **Cadencia:** ~1 NL/mes → volumen bajo pero alto detalle por pieza.
-- **Mantenimiento:** reglas de emojis/CTAs cambian por NL; hace falta **historial** consultable (último COPY + últimos prompts).
-
-### 6.3 Factibilidad creativa / marca
-
-| Riesgo creativo | Mitigación |
-|-----------------|------------|
-| Copys genéricos o CTAs repetidos | Checklist vs NL anterior; bloquear frases en prompt del agente |
-| Slides carrusel homogéneas | Matriz de composiciones obligatoria (6 layouts distintos) |
-| Texto accidental en imágenes MJ | BASE + ANTITEXT; revisión visual antes de enviar a cliente |
-| Desalineación slide vs mensaje Tito | Prompt carrusel debe citar **idea** del slide, no el texto literal ES |
-
-### 6.4 Riesgos y mitigaciones
-
-| Riesgo | Mitigación |
-|--------|------------|
-| Cliente rechaza copys | Etapa 1 aislada; iterar solo TXT |
-| Portada OK pero carrusel “no transmite identidad” | Brief visual por vertical (ej. capacitación digital); composiciones distintas |
-| Tito entrega slides tarde | No iniciar etapa 3 hasta insumo; organizador bloquea subtarea |
-| Agente inventa slides | Prohibido en reglas; solo COPY de acompañamiento en etapa 1 |
-| Pérdida de contexto entre sesiones Cursor | Guardar siempre en repo; madre NL con slug + archivos |
-| Midjourney ignora anti-texto | Regenerar; no enviar al cliente sin QA visual |
+- Reescribir el artículo largo del cliente.  
+- Login/API Midjourney o Canva en v1 (ToS / MFA).  
+- Publicar en LinkedIn sin humano.  
+- Sustituir VB de marca (cliente externo).  
+- Cambios de CMS o branding ECR.
 
 ---
 
-## 7. Criterios de éxito del piloto (propuesta)
+## 6. Evidencia en repo (ya existe)
 
-1. **Copys:** 1 artículo → TXT con 6 bloques (3 formatos × A/B) que pase checklist `FORMATO-COPYS-ECR.md` sin edición mayor (< 15 min QA).  
-2. **Portada:** 3 prompts generados; ≥ 1 fondo usable sin texto spurious tras ≤ 3 iteraciones MJ.  
-3. **Carrusel:** 6 prompts con composiciones **todas distintas**; feedback cliente ≥ “aceptable” en primera o segunda ronda.  
-4. **Video:** carrusel animado publicable en LinkedIn usando copy ya aprobado.  
-5. **Trazabilidad:** madre NL en organizador con archivos enlazados en cada subtarea.  
-6. **Tiempo:** reducción perceptible vs ciclo NL1–NL2 manual (registrar antes/después en 1 NL piloto).
-
----
-
-## 8. Esfuerzo relativo (sin calendarios)
-
-| Bloque | Invasividad | Dependencias |
-|--------|-------------|--------------|
-| Documentar playbook agente (regla `.mdc` o skill ECR-NL) | Baja | Este brief aprobado |
-| Generador copys asistido (prompt + plantilla) | Media | Artículo + historial NL anterior |
-| Extender UI portada → export copys | Media | API Laravel o script Node |
-| Módulo prompts carrusel (matriz composiciones) | Media–alta | Textos Tito + feedback NL1 sep |
-| Integración organizador (estados por etapa) | Media | `organizacion-live.json` |
-| Automatización video | Alta / posiblemente no | Canva API limitada; manual viable |
+| Pieza | Estado |
+|-------|--------|
+| Formato copys + ejemplos enviados | Hecho |
+| UI + JS prompts portada Midjourney | Hecho · probado |
+| Historial portadas | Hecho |
+| Madre + 4 subtareas organizador | Hecho |
+| HTML + JSON MOVA ECR-NL | Hecho (v1 estructura) |
+| Generador copys automático | Pendiente piloto |
+| Matriz composiciones carrusel | Pendiente v2 |
+| Animación video | Manual + checklist |
 
 ---
 
-## 9. Decisión pedida a MOVA
+## 7. Factibilidad por principio MOVA (autoevaluación)
 
-**¿Aprobar el flujo ECR-NL como playbook operativo automatizable** (agente Cursor + repo + organizador), con gates cliente entre etapas?
+| # | Principio | Score esperado | Cómo se cumple |
+|---|-----------|----------------|----------------|
+| 1 | Sustracción | Cumple | Menos memoria, menos loops sin observación, un consolidado |
+| 2 | Seguridad info | Cumple/ajuste | Estados y archivos en repo; sin credenciales en JSON; VB con timestamp |
+| 3 | Interoperabilidad | Cumple/ajuste | Contratos prompt/asset/estado; no API opaca en v1 |
+| 4 | Autonomía | Cumple parcial | Autonomía de *producción* (texto/prompt/estado); ejecución MJ/Canva humana acotada |
+| 5 | Tiempo ejecución | Cumple | Meta ≤4 hrs/NL; loops condicionales |
+| 6 | Agilidad uso | Cumple | Reglas en FORMATO-COPYS + BASE estilo (ya cumplió) |
+| 7 | Escalabilidad | Cumple | N registros JSON / mismo HTML; horas humanas sublineales |
+| 8 | Medibilidad | Cumple | Sección 8 numérica |
+| 9 | Tiempo creación | Cumple/ajuste | v1 en 2–4 sem; piloto 1 NL |
+| 10 | TCO | Cumple | Sección 9 |
 
-Opciones de veredicto:
+---
+
+## 8. Medibilidad (baseline → meta)
+
+| Métrica | Baseline hoy | Meta v1 | Meta v2 |
+|---------|--------------|---------|---------|
+| Horas por NL (total) | 6–10 h | ≤ 4 h (−40% mín.) | ≤ 3 h |
+| Horas solo copys | ~2–3 h | ≤ 0,5 h (agente + QA) | ≤ 0,4 h |
+| Horas prompts portada | ~1–1,5 h | ≤ 0,3 h | ≤ 0,25 h |
+| Rondas ajuste portada | 2–4 | ≤ 2 | ≤ 2 |
+| Rondas ajuste carrusel | 2–4 | ≤ 2 (v2) | ≤ 2 |
+| NL/mes sin sumar FTE | 1 | 2 | 3–4 |
+| % etapas con estado en JSON | ~0% | 100% | 100% |
+
+**ROI v1 (orden de magnitud):**  
+Ahorro 4 h/NL × 1 NL/mes × 12 = **48 h/año**. Si la hora operativa ≈ CLP $15.000 → **≈ CLP $720.000/año** solo en un NL/mes; con 2 NL/mes se duplica. Costo desarrollo v1 (sección 9) se recupera en &lt; 1 año operativo.
+
+**KPIs en consolidado:** `hrsReales`, `rondasAjuste`, `vb*En`, `estado` por etapa.
+
+---
+
+## 9. TCO estimado (v1)
+
+| Ítem | Costo / nota |
+|------|----------------|
+| Desarrollo HTML+JSON+agente Copys/Portada | 2–4 semanas · 1 persona (ya parcialmente hecho) |
+| Licencia Cursor | Ya en uso |
+| Midjourney | Ya en uso (sin cambio) |
+| Canva | Ya en uso (sin cambio) |
+| Infra nueva / APIs | **$0 en v1** |
+| Mantenimiento | ~2 h/mes dueño ECR-CM (reglas JSON) |
+| Riesgo | Bajo: no toca cliente ni credenciales cloud |
+
+---
+
+## 10. Escalabilidad (respuesta al gate)
+
+- **Más volumen:** agregar objetos en `newsletters[]`; el HTML no cambia.  
+- **Más clientes con mismo patrón:** clonar schema consolidado (como Sheets SEO por marca).  
+- **Horas humanas:** crecen en MJ/Canva/VB, **no** en redacción de copys/prompts (esa parte es O(1) por NL vía agente).  
+- **Sin rediseño** al pasar de 1 → 4 NL/mes: solo capacidad de 1 operadora de montaje.
+
+---
+
+## 11. Fases (roadmap honesto)
+
+| Fase | Alcance | Autonomía | Esfuerzo |
+|------|---------|-----------|----------|
+| **v1 (descongelar)** | Consolidado JSON+HTML · Copys A/B · 3 prompts portada · estados VB · observaciones solo si aplica | Alta en texto/prompt | 2–4 semanas |
+| **v2** | Prompts carrusel + borrador textos slides desde artículo (Tito = QA, no cuello) | Media-alta | +4–6 semanas |
+| **v3** | Checklist video + plantilla animación; publicar sigue humano | Asistida | +2–3 semanas |
+
+---
+
+## 12. Criterios de éxito piloto (1 NL)
+
+1. Copys A/B ×3 en &lt;15 min QA vs FORMATO-COPYS.  
+2. ≥1 fondo portada usable ≤3 intentos MJ.  
+3. 100% etapas con estado + timestamp en JSON.  
+4. Cero loops de ajuste abiertos sin observación.  
+5. `hrsReales` ≤ 4 h documentadas.  
+6. Dueño mantenimiento asignado (`rol-ecr-cm`).
+
+---
+
+## 13. Decisión pedida a MOVA
 
 | Veredicto | Significa |
 |-----------|-----------|
-| **Sí — playbook completo** | Regla agente + docs + UI mínima; piloto 1 NL con métricas sección 7 |
-| **Sí — por fases** | Fase 1 solo Copys+Portada (ya casi listo); Fase 2 carrusel; Fase 3 video manual |
-| **Sí — solo documentación** | Mantener ejecución manual; MOVA valida criterios de calidad |
-| **No por ahora** | Sigue ad hoc; no invertir en generadores |
-| **Bloqueo** | Riesgo marca/cliente / dependencia Tito no resoluble |
+| **Sí — descongelar v1** | Aprobar playbook Copys+Portada+consolidado; piloto 1 NL con KPIs §8 |
+| **Sí — v1 con condiciones** | Igual + checklist seguridad/trazabilidad firmado |
+| **Mantener congelado** | Falta evidencia numérica tras piloto |
+| **Bloqueo** | No aplica si se acepta autonomía parcial definida en §3.1 |
 
-**Entregables esperados de la evaluación MOVA:**
-
-1. Veredicto (tabla anterior).  
-2. Top 3 riesgos no cubiertos en este brief.  
-3. Dueño de mantenimiento (rol ECR-CM / agente Cursor / operadora).  
-4. Recomendación: qué automatizar en Fase 1 vs dejar manual (copys, portada, carrusel, video).
+**Entregables de la reevaluación:** veredicto · score estimado · top riesgos residuales · OK/NO a definir autonomía como “producción sin redacción humana”.
 
 ---
 
-## 10. Preguntas abiertas (para MOVA, no para el cliente)
-
-1. ¿El agente debe **memorizar** emojis/CTAs del NL anterior automáticamente (leer último COPY) o basta checklist humano?  
-2. ¿Conviene un **skill** `@ecr` dedicado vs ampliar agente general con reglas en repo?  
-3. ¿Los prompts carrusel deben vivir en la misma UI que portada o en Markdown versionado por NL?  
-4. ¿Qué nivel de automatización del **video** es realista (Canva vs After Effects vs solo checklist)?  
-5. ¿Cómo registrar **aprobación cliente** (campo en organizador, comentario, fecha)?  
-6. ¿MOVA audita calidad de copys (tono, claims) o solo factibilidad del pipeline?
-
----
-
-## 11. Invocación sugerida
+## 14. Invocación
 
 ```
 @mova
-Evaluar flujo newsletter ECR según:
+Reevaluar ECR-NL v2 según:
 index/clientes/ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.md
+JSON/HTML: index/clientes/MKOF/MOVA/ecr-nl/
 
-Entregar: veredicto (sección 9) + riesgos + dueño mantenimiento + recomendación por fases.
+Contexto: corrige gates Autonomía, Escalabilidad y Medibilidad del veredicto Congelado 45%.
+Entregar: nuevo score estimado + veredicto descongelar v1 sí/no + riesgos residuales.
 ```
 
 ---
 
-## 12. Referencias rápidas
+## 15. Referencias
 
 | Recurso | Ruta |
 |---------|------|
-| Este brief | `index/clientes/ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.md` |
+| Este brief v2 | `index/clientes/ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.md` |
+| HTML MOVA | `index/clientes/MKOF/MOVA/ecr-nl/index.html` |
+| JSON consolidado | `index/clientes/MKOF/MOVA/ecr-nl/ecr-nl-flujo.json` |
 | Formato copys | `newsletter/copys/FORMATO-COPYS-ECR.md` |
-| Ejemplo copys cliente | `newsletter/copys/COPY-tecnologia-sin-integracion.txt` |
-| Base estilo portadas | `newsletter/BASE-ESTILO-PORTADAS.md` |
-| Prompt portada | `newsletter/PROMPT-MIDJOURNEY-PORTADA.md` |
-| UI portada | `http://127.0.0.1:8000/index/clientes/ecr/` |
-| JS generador | `newsletter/ecr-portada-prompt.js` |
-| Tareas madre NL | `scripts/renombrar-ecr-madres-articulos.js` |
-| Portal ECR | `index/clientes/ecr/index.html` |
-| Agente MOVA (evaluación) | `@mova` · `docs/cursor/INVOCAR-AGENTE-MOVA.md` |
-| Cliente / rol organizador | `cli-ecr` · `rol-ecr-cm` |
-
----
-
-## 13. Recomendación preliminar (equipo ECR)
-
-**Factible como flujo secuencial con gates**, con mayor madurez en **Etapa 1–2** (copys + portada) que en **Etapa 3–4** (carrusel depende de Tito; video manual).
-
-**Siguiente paso si MOVA aprueba por fases:** piloto con el próximo artículo aprobado — agente entrega copys + 3 prompts portada; tras OK, Tito entrega slides y agente genera pack prompts carrusel guardado en `portadas-guardadas/NL{n}-{mes}-carrusel-prompts.md`.
+| Base portadas | `newsletter/BASE-ESTILO-PORTADAS.md` |
+| Patrón consolidado SEO (referencia método) | Word *Consolidados SEO — Información para automatizar* |
+| Evaluación previa | Congelado 45% · proyecto_mayor · impacto 8 |

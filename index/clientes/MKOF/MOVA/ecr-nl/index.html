@@ -95,23 +95,25 @@
       function render(d) {
         const v = d.veredictoComite || {};
         const m = d.metricas || {};
-        const etapas = (d.etapas || [])
-          .map(
-            (e) => `<li>
-              <span class="ord">${esc(e.orden)}</span>
-              <h3>${esc(e.nombre)}</h3>
-              <p><strong>Entra:</strong> ${esc(e.entrada)}<br>
-              <strong>Sale:</strong> ${esc(e.salida)}</p>
-              <span class="gate">Gate: ${esc(e.gate)}</span>
-              ${e.dependenciaHumana ? `<span class="gate">Depende: ${esc(e.dependenciaHumana)}</span>` : ''}
-            </li>`
-          )
+        const recorrido = (d.recorridoOperativo || [])
+          .map((p) => {
+            const auto =
+              p.automatizable === true
+                ? 'AUTO'
+                : p.automatizable === 'asistido' || p.automatizable === 'checklist'
+                  ? 'ASISTIDO'
+                  : 'HUMANO';
+            return `<li><span class="ord">${esc(p.paso)}</span><h3>${esc(p.nombre)}</h3>
+              <p>${esc(p.detalle || (p.subpasos || []).join(' · ') || '')}</p>
+              <span class="gate">${auto}${p.observaciones === 'solo_si_aplica' ? ' · obs. solo si aplica' : ''}</span>
+            </li>`;
+          })
           .join('');
 
         const fases = (d.fases || [])
           .map(
             (f) => `<article>
-              <h3>${esc(f.id.toUpperCase())} · ${esc(f.nombre)}</h3>
+              <h3>${esc((f.id || '').toUpperCase())} · ${esc(f.nombre)}</h3>
               <p><strong>Automatiza:</strong> ${esc((f.automatiza || []).join(', '))}</p>
               <p><strong>Humano:</strong> ${esc((f.humano || []).join(', '))}</p>
             </article>`
@@ -123,20 +125,23 @@
         root.innerHTML = `
           <h1>${esc(d.nombre)}</h1>
           <p class="lead">${esc(d.valor?.resumen || '')}</p>
+          <p class="lead"><strong>Autonomía:</strong> ${esc(d.autonomiaDefinicion || '')}</p>
 
           <div class="ecrnl-meta">
-            <article><strong>Código</strong><span>${esc(d.codigo)}</span></article>
-            <article><strong>Estado</strong><span>${esc(d.estadoProyecto)}</span></article>
+            <article><strong>Código</strong><span>${esc(d.codigo)} · v${esc(d.version)}</span></article>
+            <article><strong>Responsable</strong><span>${esc(d.responsable || d.roles?.duenoMantenimiento || '')}</span></article>
             <article><strong>Comité</strong><span class="${verdClass}">${esc(v.veredicto)} · ${esc(v.scorePrincipios)}%</span></article>
             <article><strong>Impacto / Esfuerzo</strong><span>${esc(v.impacto)}/10 · ${esc(v.esfuerzo)}/10</span></article>
             <article><strong>Valor</strong><span>Reduce costos</span></article>
             <article><strong>Meta v1</strong><span>≤ ${esc(m.metaV1HrsPorNl)} hrs/NL</span></article>
+            <article><strong>ROI est. 1 NL/mes</strong><span>CLP $${esc(m.roiAnualClpEstimado1NlMes)}</span></article>
+            <article><strong>TCO infra v1</strong><span>CLP $0 APIs nuevas</span></article>
           </div>
 
-          <h2>Etapas (gates cliente)</h2>
-          <ol class="ecrnl-etapas">${etapas}</ol>
+          <h2>Recorrido operativo (qué se automatiza)</h2>
+          <ol class="ecrnl-etapas">${recorrido}</ol>
 
-          <h2>Fases de automatización</h2>
+          <h2>Fases</h2>
           <div class="ecrnl-fases">${fases}</div>
 
           <h2>Métricas</h2>
@@ -144,13 +149,13 @@
             Baseline: ${esc(m.baselineHrsPorNl?.min)}–${esc(m.baselineHrsPorNl?.max)} hrs/NL ·
             Meta v1: ≤ ${esc(m.metaV1HrsPorNl)} hrs ·
             Meta v2: ≤ ${esc(m.metaV2HrsPorNl)} hrs ·
-            Ahorro: ${esc(m.ahorroHrsPorNl?.min)}–${esc(m.ahorroHrsPorNl?.max)} hrs/NL
+            Regla: <strong>observaciones solo si aplica</strong>
           </p>
           <ul>${(m.kpis || []).map((k) => `<li>${esc(k)}</li>`).join('')}</ul>
 
           <div class="ecrnl-note">
             <strong>Condición de avance (comité):</strong> ${esc(v.condicionAvance)}<br><br>
-            <strong>Brief:</strong>
+            <strong>Brief v2:</strong>
             <a href="../../../ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.md">Markdown</a>
             ·
             <a href="../../../ecr/newsletter/BRIEF-FACTIBILIDAD-ECR-NL-FLUJO-MOVA.pdf">PDF</a>
