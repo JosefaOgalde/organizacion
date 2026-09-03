@@ -553,6 +553,20 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             self.assertEqual(extraida.read_bytes()[:8], png[:8])
             self.assertEqual(extraida.suffix, ".png")
 
+    def test_buscar_foto_no_toma_media_de_id_parcial(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            crc = Path(tmp) / "crc"
+            ajena = crc / "out" / "media" / "salmon-al-horno" / "portada.jpg"
+            ajena.parent.mkdir(parents=True)
+            ajena.write_bytes(b"foto-ajena")
+
+            with patch.object(self.explorar, "CRC", crc), patch.object(
+                self.explorar._RUTAS, "carpetas_busqueda_foto", return_value=[]
+            ):
+                hallada = self.explorar._buscar_foto_en_carpetas({"id": "sal"})
+
+            self.assertIsNone(hallada)
+
     def test_url_lienzo_no_es_lista_proyectos(self):
         ficha = (
             "https://business-manager.ecomm.cencosud.com/cms/projects/"
