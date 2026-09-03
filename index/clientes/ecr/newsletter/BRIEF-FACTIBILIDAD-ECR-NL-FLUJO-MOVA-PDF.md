@@ -1,5 +1,3 @@
-# Brief de factibilidad · ECR-NL v2 (MOVA)
-
 ## 1. Resumen ejecutivo
 
 Cada newsletter ECR hoy recorre un flujo manual (mapeado en papel operativo):
