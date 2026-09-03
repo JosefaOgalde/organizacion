@@ -1,5 +1,12 @@
 # Historial de portadas Midjourney (solo fondo)
 
+## NL 1 sep — ⏳ pendiente (brief abierto 2026-08-27)
+
+- Artículo: **por definir** — falta el PDF/DOCX o el título + ángulo.
+- Brief de entrada (qué se necesita + defaults heredados de v5): [portadas-guardadas/NL-2026-09-01-brief-portada.md](./portadas-guardadas/NL-2026-09-01-brief-portada.md)
+
+---
+
 ## NL 1 ago — prompts Midjourney v5 (2026-07-21)
 
 - Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
