@@ -1,0 +1,649 @@
+MAKING OF — Textos versión 1 (sitio actual)
+Fuente: index/clientes/mkof/landings-revision/data.json
+Total landings: 23
+
+
+################################################################################
+GRUPO: GENERAL
+################################################################################
+
+================================================================================
+LANDING 01: Home
+ID: home
+URL: https://grupomakingof.com/
+================================================================================
+
+# MAKING OF, your next business partner
+### Definir
+### Crear
+### Analizar
+### Posicionar
+### Identificar
+#### Herramientas y certificaciones
+#### SERVICIOS
+### Estrategia
+### Estrategias de marketing y comunicaciones, data, tendencias e IA.
+Ver más
+### Posicionamiento SEO
+### Aparece en los primeros resultados de Google y en las búsquedas en LLMs como ChatGPT y Gemini
+Ver más
+### Productos Digitales
+Ver más
+### Creatividad y Diseño
+### Creamos e implementamos el brandformance de tu marca
+Ver más
+#### Algunos clientes y partners
+### Somos partner en el logro de tus objetivos.
+En un trabajo en conjunto, te facilitamos el desarrollo de tus estrategias, acciones y mediciones.
+Contáctanos
+#### Preguntas frecuentes
+Grupo Making OF se ha posicionado entre las mejores gracias a su enfoque estratégico, años de experiencia en linkbuilding, uso de IA aplicada al SEO y resultados medibles en posicionamiento orgánico y visibilidad digital.
+linkbuilding
+SEO
+
+--------------------------------------------------------------------------------
+
+
+################################################################################
+GRUPO: ESTRATEGIA
+################################################################################
+
+================================================================================
+LANDING 02: Estrategia
+ID: estrategia
+URL: https://grupomakingof.com/estrategia/
+================================================================================
+
+# Estrategia
+En Making OF generamos un diagnóstico y un diseño de trabajo que une la consultoría, el desarrollo de estrategias ( marketing, comunicación, marca, digitales, etc) y la implementación de las mismas en el tiempo; identificamos tendencias de mercado y soluciones de BI para guiar cada paso con datos precisos y proyecciones claras. Nuestro enfoque está diseñado para optimizar recursos, detectar oportunidades y construir planes de acción que impulsen el crecimiento sostenible de tu empresa, con Kpi medibles y controles correspondientes. Acompañamos participativamente en la implementación.
+#### Servicios de estrategia
+### Estrategia 360
+### Tendencias de Mercado
+### Business de Intelligence
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 03: Estrategia 360
+ID: estrategia-360
+URL: https://grupomakingof.com/estrategia-360/
+================================================================================
+
+# Estrategia 360°
+Diseñamos estrategias de negocios, marketing, marca, comunicaciones y sostenibilidad, a través de consultorías personalizadas lideradas por equipos expertos y multidisciplinarios.
+Analizamos su mercado y situación de la empresa para identificar oportunidades y amenazas. Luego establecemos objetivos y planes de acción con KPI’s accionables y medibles a través de herramientas de control y reportería.
+## Estrategia de negocios
+Desarrollamos planes de negocio que impulsan tus ventas y eficiencia Creamos planes de negocios adaptados a tus necesidades y objetivos. Nos sumergimos en tu negocio para rescatar insights, que en conjunto con el análisis del mercado y nuestra experiencia con visión innovadora, nos permitan crear e implementar estrategias sólidas para hacer frente a la competencia.
+## Estrategia de marketing
+Potenciamos tu crecimiento con planes de marketing accionables, medibles y centrados en resultados. Integramos data, estrategia, creatividad y automatización para atraer, convertir y fidelizar a tus clientes en cada punto de contacto online.
+## Estrategia de marca y comunicaciones
+Construimos marcas relevantes y coherentes en todos los canales digitales y offline Creamos estrategias que reflejando los valores y objetivos de tu empresa en forma diferenciada, logren tener una conexión sólida con los clientes. El secreto de una marca relevante y que perdura en el tiempo, es una buena estrategia de marca que guía sus acciones y le permite conectar en el lugar y forma indicados con su público objetivo.
+## Estrategia de Sostenibilidad
+Integramos impacto social y ambiental en tu negocio y comunicación. Diseñamos planes de sostenibilidad alineados con los valores de tu marca, integrando impacto social, ambiental y de gobernanza en tu estrategia de negocio y comunicación.
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 04: Tendencias de mercado
+ID: tendencias-de-mercado
+URL: https://grupomakingof.com/tendencias-de-mercado/
+================================================================================
+
+# Tendencias de mercado
+Identificamos y analizamos tendencias de marketing globales, locales y de tu industria, las contextualizamos para tu negocio y te las presentamos periódicamente para inspirar decisiones estratégicas.
+Reportes periódicos que ofrecen una visión detallada de las nuevas tendencias de marketing y del consumidor aplicadas a tu industria.
+Talleres que constan de dos módulos en los que se exponen las nuevas tendencias, tanto globales como locales, para posteriormente realizar una dinámica con el fin de comprender sus dolores y necesidades y a partir de ellas desarrollar un plan de acciones concretas tomando como oportunidades las nuevas tendencias de Marketing.
+En este módulo profundizamos en las fuerzas más disruptivas que están remodelando el marketing a nivel mundial, regional y local. Además de dedicar un espacio únicamente a analizar el impacto directo que tienen en la industria de tu negocio.
+Es un espacio interactivo y colaborativo para la reflexión interna y el diagnóstico estratégico. Aquí nos enfocamos en: Identificar puntos de dolor y oportunidades / Espacio para sesión de ideación y reflexión / Desarrollo del plan de acción.
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 05: Business Intelligence
+ID: business-intelligence
+URL: https://grupomakingof.com/business-intelligence/
+================================================================================
+
+- Business Intelligence: Gestión y análisis de data | Making OF Ir al contenido Business Intelligence Análisis, minería, visualización y gestión de datos, para ayudar a las marcas a tomar decisiones basadas en información relevante. Beneficios Generamos valor para tu empresa al generar datos relevantes y conocimiento del cliente, ayudando a tomar decisiones estratégicas y más rentables. Caracterización de la base de datos en base a variables demográficas de los clientes y su comportamiento transaccional.
+- Segmentación de clientes-con uso de modelos estadísticos que se adaptan a la necesidad del cliente.
+- Definición e implementación de estrategia-en base a los hallazgos de la caracterización y segmentación.
+- Evaluación continua de todas las acciones-propuestas e implementadas para mejorar el rendimiento del negocio.
+## Detalles del servicio
+Caracterización de la base de datos
+Segmentación de clientes
+Definición e implementación de estrategia
+Evaluación continua de todas las acciones
+## ¿Cuáles son los beneficios de una estrategia de BI?
+Decisiones basadas en datos y preferencias de clientes
+Incrementa los ingresos y reduce los costos
+Mejora la satisfacción de tus clientes
+A través de la implementación de estrategias adecuadas de gestión y análisis de datos relevantes.
+
+--------------------------------------------------------------------------------
+
+
+################################################################################
+GRUPO: SEO & GEO
+################################################################################
+
+================================================================================
+LANDING 06: SEO & GEO
+ID: seo
+URL: https://grupomakingof.com/seo/
+================================================================================
+
+# Agencia de SEO y GEO Nº1 en Chile
+Logramos que tus clientes te encuentren más rápido.
+Premio por Optimización de sitio
+años trabajando linkbuilding
+años creando estrategias de posicionamiento
+de palabras posicionadas en top 10
+medios de comunicación
+## SEO, el mejor camino para adelantarse a tu competencia
+Para no perder oportunidades de tráfico y que tus clientes pasen de largo sin saber que estás ahí, te ayudamos a conocer qué es lo que realmente buscan, mostrarles el camino claro hacia tu sitio y mejorar tu posicionamiento y estar un paso adelante de tu competencia, obteniendo así eficiencias en inversión y mejores beneficios a largo plazo. Desde las implementaciones técnicas, pasando por el keyword research y llegando a la conversión, estamos enfocados en posicionar tu sitio en los primeros lugares cuando los usuarios hacen búsquedas que se relacionan con los productos y servicios que ofreces. Con nuestro servicio de posicionamiento SEO , optimizamos tu contenido con herramientas y técnicas avanzadas.
+#### Servicios de SEO
+### Estrategia SEO 360
+### Link Building
+### Contenidos SEO
+### GEO: Visibilidad IA
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 07: Estrategia SEO 360
+ID: estrategia-seo-360
+URL: https://grupomakingof.com/estrategia-seo-360/
+================================================================================
+
+## Estrategia SEO 360°
+En Making OF construimos estrategias integrales que impulsen visibilidad, autoridad y conversiones. Analizamos tu industria, estudiamos a tu competencia y optimizamos cada aspecto técnico, estructural y de contenido para que tu marca destaque en los resultados de búsqueda.
+## ¿Cómo lo hacemos?
+Diagnóstico del sitio
+Objetivos y KPI’s
+Keyword research
+Estrategia e implementación
+Dashboard y reportería en línea
+## Nuestros servicios
+### Auditoría SEO
+Hacemos un diagnóstico claro y detallado del estado orgánico actual de tu sitio
+### SEO Técnico
+Con lo obtenido en la Auditoría se definen los aspectos técnicos a corregir
+### Contenidos SEO
+Para posicionar tu sitio en búsquedas de un potencial cliente y aumentar su retención en tu sitio web
+### SEO On page
+Optimizamos la metadata y estructura de cada página de tu sitio web usando las palabras claves correctas
+### Linkbuilding
+Fortalecemos la autoridad de tu sitio mediante estrategias de generación de enlaces entrantes
+### SEO Local
+Nos encargamos de que tu empresa aparezca en los resultados de búsqueda locales
+### Blog SEO
+Trabajamos en una estrategia de blog y redactamos artículos de calidad
+## Preguntas frecuentes
+Es el proceso de optimizar tu sitio web para aumentar la visibilidad, posicionamiento y tráfico orgánico de tu sitio en los resultados de búsqueda de Google y otros motores.
+Para aparecer en Google, es fundamental que tu sitio web esté optimizado para los motores de búsqueda (SEO). Debes asegurarte de que Google pueda rastrear e indexar tu sitio.
+El tráfico orgánico es una fuente de tráfico de largo plazo y la más confiable.
+El SEO mejora la visibilidad de tu sitio web de forma orgánica, es decir, sin pagar por anuncios, mediante la optimización del contenido, la estructura del sitio y otros factores técnicos. En cambio, el SEM implica invertir en publicidad pagada, como los anuncios de Google Ads, para aparecer en los primeros resultados de búsqueda.
+Dependiendo del tamaño del sitio y el nivel de profundidad, nos demoramos aproximadamente 10 días hábiles.
+Trabajamos en informes detallados en cada paso de la estrategia y mostramos un dashboard en línea, en los que podrás revisar métricas como tráfico orgánico, posiciones de palabras clave, clics e impresiones, backlinks, autoridad del dominio, entre otras.
+¿Estás listo para el siguiente paso?
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 08: GEO: Visibilidad IA
+ID: geo-visibilidad-ia
+URL: https://grupomakingof.com/geo-visibilidad-ia/
+================================================================================
+
+## Estrategia GEO 360°
+Hoy, las decisiones ya no comienzan en Google. Comienzan en motores de inteligencia artificial.
+En Grupo Making Of diseñamos estrategias de Generative Engine Optimization (GEO) para posicionar tu marca en buscadores generativos, donde los usuarios ya no buscan enlaces, sino respuestas .
+El Generative Engine Optimization (GEO) es la evolución del SEO en un entorno dominado por la inteligencia artificial.
+Mientras el SEO tradicional optimiza sitios para aparecer en rankings, GEO optimiza tu presencia para ser mencionado, citado y recomendado directamente en respuestas generadas por IA .
+Así como el SEO 360 integra múltiples dimensiones del marketing digital para mejorar visibilidad, GEO amplía ese enfoque hacia los nuevos motores conversacionales, donde la autoridad, la estructura de contenido y la confiabilidad son clave.
+## ¿Cómo lo hacemos?
+Diagnóstico de presencia en IA
+Estructura técnica óptima
+Generación de contenido citable (AEO)
+Autoridad digital y señales externas
+Integración SEO + GEO + Data
+Medición y evolución continua
+## El cambio ya ocurrió
+Los usuarios hoy:
+### Hacen preguntas en lenguaje natural
+### Esperan respuestas inmediatas
+### Confían en la IA para tomar decisiones
+Esto redefine completamente el funnel.
+Si tu marca no está presente en esas respuestas, pierde visibilidad en el momento más crítico: la intención .
+## Preguntas frecuentes
+El GEO es la optimización de tu presencia digital para aparecer en respuestas generadas por inteligencia artificial como ChatGPT, Gemini o buscadores con IA, más allá de los resultados tradicionales.
+El SEO busca posicionar tu sitio en rankings de buscadores, mientras que el GEO optimiza tu marca para ser mencionada directamente en respuestas generadas por IA.
+Si tu negocio depende de visibilidad digital, generación de leads o posicionamiento de marca, el GEO es clave para no perder presencia en los nuevos entornos de búsqueda.
+Al igual que el SEO, el GEO es una estrategia progresiva. Sin embargo, puede generar señales tempranas de visibilidad en semanas, dependiendo del nivel de optimización y autoridad actual.
+No. El GEO complementa al SEO. Ambos trabajan juntos para maximizar tu visibilidad en buscadores tradicionales y motores de inteligencia artificial.
+Medimos visibilidad en motores de IA, menciones de marca, presencia en respuestas generativas y su impacto en tráfico, leads y posicionamiento estratégico.
+¿Estás listo para el siguiente paso?
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 09: Linkbuilding
+ID: linkbuilding
+URL: https://grupomakingof.com/linkbuilding/
+================================================================================
+
+- Linkbuilding: Backlinks con tráfico de calidad | Making OF Ir al contenido Linkbuilding: Obtención de backlinks Beneficios Una estrategia de linkbuilding bien planificada permite mejorar el rendimiento orgánico de tu sitio, aumentar su c redibilidad ante Google y atraer tráfico de calidad desde otras fuentes. Además, fortalece el posicionamiento de palabras clave estratégicas al impulsar las páginas más relevantes de tu sitio. ¿Cómo lo hacemos? Trabajamos con +10.000 medios nacionales e internacionales.
+- Elegimos las keywords que son más importantes para su negocio y medimos el impacto.
+- Elegimos los medios según el objetivo SEO, priorizando la coherencia semántica y la calidad del enlace.
+- Creamos contenidos optimizados en formato SEO que integran de forma natural el enlace hacia tu sitio, respetando las mejores prácticas de Google.
+- Ajustamos la estrategia en función de los resultados, para que el linkbuilding siga contribuyendo al crecimiento orgánico a lo largo del tiempo.
+## Beneficios del Linkbuilding
+Aumento de la autoridad del dominio (DA)
+Más tráfico orgánico calificado
+Aumento del posicionamiento de palabras clave
+Mayor visibilidad frente a la competencia
+Fortalecimiento de la marca en medios digitales
+Potencia tu estrategia SEO con enlaces que realmente suman.
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 10: Contenido SEO
+ID: contenido-seo
+URL: https://grupomakingof.com/contenido-seo/
+================================================================================
+
+- Contenido SEO: Tráfico y visibilidad en tu marca | Making OF Ir al contenido Redacción de textos SEO Generación de contenidos optimizados para buscadores, que responden a la intención de búsqueda, integran palabras clave estratégicas y ayudan a posicionar tus páginas en los primeros resultados de Google, en base a un keyword research. Beneficios Objetivos de la optimización de contenidos Una estrategia de redacción SEO bien ejecutada mejora la visibilidad orgánica de tu sitio, fortalece el posicionamiento de tus productos o servicios clave y atrae tráfico calificado. Además, permite mejorar métricas como el tiempo en sitio, el CTR y la tasa de conversión, gracias a contenidos que informan, conectan y convencen ¿Cómo lo hacemos? Investigamos las palabras clave con mayor potencial para tu negocio, considerando volumen de búsqueda, dificultad y oportunidad competitiva.
+- Desarrollamos estructuras de contenido claras, jerarquizadas y orientadas a la experiencia del lector.
+- Redactamos textos originales, naturales y coherentes con la voz de tu marca, integrando las keywords de forma fluida.
+- Optimizamos cada contenido con buenas prácticas de SEO on page: títulos, meta descripciones, subtítulos, interlinking y llamadas a la acción.
+## Beneficios de la Redacción SEO
+Mejor posicionamiento de tus páginas clave
+Aumento del tráfico orgánico
+Mayor tiempo de permanencia y menor tasa de rebot
+Contenidos alineados con tu estrategia comercial
+Potencia tu estrategia SEO con enlaces que realmente suman.
+
+--------------------------------------------------------------------------------
+
+
+################################################################################
+GRUPO: PRODUCTOS DIGITALES
+################################################################################
+
+================================================================================
+LANDING 11: Productos digitales
+ID: productos-digitales
+URL: https://grupomakingof.com/productos-digitales/
+================================================================================
+
+# Productos Digitales
+Llegar a la audiencia correcta requiere una estrategia que integre todos los puntos de contacto de forma coherente y efectiva. En Making OF diseñamos y gestionamos planes de acción que combinan las distintas plataformas digitales y sociales para maximizar tu alcance y conversión. Con un enfoque basado en datos, optimizamos cada canal para que trabaje en sinergia, asegurando campañas medibles, rentables y alineadas con los objetivos de tu marca. Generamos ingresos adicionales donde solo habían gastos.
+#### Servicios de Productos Digitales
+### Paid Media
+### Email Marketing
+### Content Marketing
+### Retail Media
+### Social Media
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 12: Paid Media
+ID: paid-media
+URL: https://grupomakingof.com/paid-media/
+================================================================================
+
+# Paid Media
+Estrategias de pauta digital orientadas al logro de objetivos: aumentar tu visibilidad, performance y conversión. Con foco en resultados medibles.
+## ¿Cómo lo hacemos?
+### DIAGNÓSTICO DE MARCA
+• Análisis de presencia digital actual. • Análisis de competencia.
+### PLANIFICACIÓN Y PROYECCIÓN
+• Plan de medios • Proyección de KPI’S (ingresos, ROAS, CPA, ticket promedio, etc). • Recomendación de gráficas con el fin de generar los mejores resultados.
+### IMPLEMENTACIÓN
+• Puesta en marcha del plan de medios propuesto y de las recomendaciones entregadas mes a mes.
+### OPTIMIZACIÓN CONTINUA
+• Monitoreamos resultados de forma periódica. • Realizamos A/B testing para encontrar los mejores resultados.
+### ANÁLISIS EN TIEMPO REAL CON LOOKER STUDIO
+• Utilizamos looker studio para visualizar y analizar los resultados de las campañas en tiempo real.
+### DASHBOARD PERSONALIZADO
+• Conectamos todas las plataformas para que puedas monitorear permanentemente, en forma clara y sencilla los KPI´s relevantes y los resultados de tus acciones.
+#### Preguntas frecuentes
+El Paid Media engloba todas las campañas publicitarias pagadas en canales digitales, como Google, redes sociales o medios online. Permite llegar rápidamente a audiencias específicas, generar visibilidad inmediata y potenciar las ventas con una inversión controlada.
+Mientras el tráfico orgánico se obtiene de forma gratuita a través de posicionamiento SEO y contenido, el Paid Media asegura una exposición inmediata mediante anuncios pagados. Es ideal para impulsar resultados en el corto plazo o campañas puntuales.
+El presupuesto depende del sector, el objetivo y la competencia. En MKoF recomendamos definirlo estratégicamente para garantizar suficiente alcance y optimización, partiendo desde montos que permitan una segmentación efectiva.
+Podemos activar campañas en Google Ads, Meta (Facebook e Instagram), LinkedIn, TikTok, YouTube, marketplaces y medios digitales especializados, seleccionando los canales más adecuados según tu público y objetivos.
+En la mayoría de los casos, las campañas comienzan a generar tráfico y conversiones desde los primeros días. Sin embargo, la optimización constante permite mejorar los resultados y el retorno de inversión en el mediano plazo.
+Medimos indicadores como impresiones, clics, CTR, conversiones, costo por adquisición (CPA) y retorno de la inversión (ROAS). Esto nos permite ajustar la estrategia y maximizar el impacto de cada campaña.
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 13: Email Marketing
+ID: email-marketing
+URL: https://grupomakingof.com/email-marketing/
+================================================================================
+
+# E-mail Marketing
+Diseñamos, redactamos y automatizamos campañas de email marketing pensadas para llegar en el momento justo y con el mensaje adecuado. En Making OF creamos estrategias personalizadas que impulsan la interacción, fortalecen el vínculo con tu público objetivo y convierten cada envío en una oportunidad de negocio.
+## ¿Cómo lo hacemos?
+Trabajamos tu Base de Datos
+Definimos la estrategia comunicacional
+Creación de contenidos y envío de email marketing
+Seguimiento y reportería
+## Beneficios del E-MAIL Marketing
+Capturar y nutrir nuevos leads
+Conversión y ventas
+Fidelización y engagement
+Retención y reactivación
+Branding y relación con el cliente
+#### Preguntas frecuentes
+El email marketing es uno de los canales más efectivos para mantener una comunicación directa con tu audiencia, fomentar la fidelización y generar conversiones. Permite segmentar mensajes, personalizar ofertas y medir resultados de forma precisa.
+Sí. Integramos las campañas de email con acciones de Paid Media, Content Marketing, Retail Media y redes sociales, para que cada canal refuerce el impacto de los demás y se logre un ecosistema digital coherente.
+Analizamos métricas clave como tasas de apertura, clics, conversiones y más. Estos datos nos permiten optimizar futuras campañas y mejorar constantemente los resultados, visualizándolos a través de nuestros dashboard personalizados.
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 14: Content Marketing
+ID: content-marketing
+URL: https://grupomakingof.com/content-marketing/
+================================================================================
+
+# Content Marketing
+Combinamos relaciones públicas tradicionales con estrategias digitales avanzadas (Branding, SEO, marketing de contenidos y redes sociales) para ofrecer un enfoque integral que impulse la visibilidad de tu empresa en medios y fortalezca su posicionamiento online con contenido estratégico.
+Nuestro objetivo es aumentar el reconocimiento de tu marca y generar mayor alcance, lecturas y tráfico cualificado mediante contenido orgánico relevante y de valor. Para lograrlo, diseñamos estrategias personalizadas adaptadas a cada medio y audiencia.
+## PR Digital
+Para empresas que buscan mejorar su visibilidad, reputación y posicionamiento en medios digitales y redes sociales. Generamos contenido estratégico en distintos formatos, como notas editoriales, publicaciones en redes, reels y stories, asegurando un impacto efectivo en el público objetivo.
+## Brand Linking Estratégico
+Ideal para marcas que desean aumentar su tráfico orgánico y mejorar su posicionamiento SEO. Creamos contenido con enlaces en medios digitales relevantes para fortalecer la autoridad y presencia online de tu ecommerce o plataforma digital.
+## Gestión de Convenios de Contenido
+Para empresas con acuerdos vigentes con medios de comunicación que necesitan un experto en administración y ejecución de estos convenios. Optimizamos la implementación para asegurar el mejor impacto y retorno de inversión.
+## Beneficios del Content Marketing
+Aumento de la conciencia y visibilidad de la marca
+Fortalecimiento de la reputación y credibilidad.
+Mayor engagement con tu audiencia objetivo.
+Mejora el posicionamiento SEO de tu sitio web.
+Generación de tráfico cualificado.
+Medición precisa del impacto de tus estrategias.
+## ¿Cómo lo hacemos?
+Conectamos marcas con audiencias masivas y de alto valor a través de noticias, reportajes, entrevistas, videos y menciones en medios digitales y redes sociales. Implementamos estrategias personalizadas para garantizar resultados medibles y sostenibles.
+Contenido atractivo y relevante.
+Más de 80 medios de comunicación.
+Interacción con segmento objetivo.
+Seguimiento del contenido publicado.
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 15: Retail Media
+ID: retail-media
+URL: https://grupomakingof.com/retail-media/
+================================================================================
+
+Retail Media
+Estrategias y soluciones para activar una nueva fuente de ingresos en tu negocio
+Beneficios
+¿Cómo lo hacemos?
+AI Store
+Transformamos tu espacio físico en un entorno inteligente.
+Mejora el posicionamiento de tu marca con contenido orgánico y cautiva a tu audiencia objetivo
+Generar contenido editorial, atractivo y eficiente, es una combinación muy exitosa. ¡Escríbenos!
+Ver más
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 16: Social Media
+ID: social-media
+URL: https://grupomakingof.com/social-media/
+================================================================================
+
+# Social Media
+Gestión estratégica de redes sociales para fortalecer la presencia de marca, aumentar la comunidad y generar interacción con tu audiencia.
+## Estrategia
+### DIAGNÓSTICO
+Análisis de redes y sus contenidos, diagnóstico de la competencia y detección de brechas. Análisis de redes y sus contenidos, diagnóstico de la competencia y detección de brechas.
+### DEFINICIÓN DE ESTRATEGIA
+Identificar pilares a comunicar, contenido estratégico para mantener y aumentar la comunidad.
+### CREACIÓN CONTENIDOS
+Definir grilla mensual con temáticas y formatos por plataforma.
+### MONITOREO
+Revisión de interacciones y SAC. Responder preguntas frecuentes y derivar al área correspondiente.
+### REPORTES Y RECOMENDACIONES
+Revisión de resultados y recomendaciones en base a KPI’s definidos como meta.
+### DASHBOARD PERSONALIZADO
+Conectamos todas las plataformas para que puedas monitorear permanentemente, en forma clara y sencilla los KPI´s relevantes y los resultados de tus acciones.
+#### Preguntas frecuentes
+Una estrategia clara en redes sociales permite fortalecer la presencia de tu marca, conectar con tu audiencia ideal y generar engagement. Además, ayuda a transmitir mensajes coherentes y alcanzar objetivos comerciales de forma planificada.
+Depende de tu público y objetivos. En MKOF analizamos el perfil de tu audiencia para recomendar las plataformas más efectivas, como Instagram, Facebook, LinkedIn, TikTok o YouTube, priorizando aquellas con mayor potencial de conversión.
+El contenido que mejor funciona es el que combina valor, relevancia y creatividad. Esto incluye publicaciones visuales atractivas, videos cortos, historias interactivas, transmisiones en vivo y mensajes que generen conversación.
+La frecuencia ideal varía según la plataforma y la estrategia. Lo importante es mantener una presencia constante sin saturar, asegurando que cada publicación aporte valor y esté alineada con la identidad de tu marca.
+Analizamos métricas como alcance, interacciones, clics, crecimiento de la comunidad y conversiones. Estos datos nos permiten optimizar las acciones y asegurar que cada esfuerzo contribuya a tus objetivos de negocio.
+
+--------------------------------------------------------------------------------
+
+
+################################################################################
+GRUPO: CREATIVIDAD Y DISEÑO
+################################################################################
+
+================================================================================
+LANDING 17: Creatividad y Diseño
+ID: creatividad-y-diseno
+URL: https://grupomakingof.com/creatividad-y-diseno/
+================================================================================
+
+# Creatividad y Diseño
+Ideas que Transforman tu Negocio
+En Making OF, la creatividad es el motor que da vida a la estrategia. No se trata solo de crear diseños atractivos o campañas ingeniosas; se trata de encontrar soluciones inteligentes a problemas de negocio complejos. Fusionamos el pensamiento estratégico con una ejecución visual y técnica impecable para crear experiencias que capturan la atención, comunican con claridad y, sobre todo, generan resultados. Creemos que una gran idea es el diferenciador más poderoso. Es la que convierte a un visitante en cliente, a un cliente en un embajador y a una marca en un referente de su industria.
+#### Explora Nuestros Servicios
+### Diseño y Desarrollo Web
+Creamos plataformas que no solo se ven increíbles, sino que funcionan como tu mejor vendedora.
+### Producción de contenidos
+Artículos, guías y videos que atraen tráfico cualificado y construyen comunidad.
+### Campañas y Activaciones
+Creamos experiencias memorables que conectan con la audiencia.
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 18: Diseño y Desarrollo Web
+ID: diseno-y-desarrollo-web
+URL: https://grupomakingof.com/diseno-y-desarrollo-web/
+================================================================================
+
+# Diseño y Desarrollo Web
+Creamos sitios web a la medida, centrados en la experiencia de usuario (UX) y optimizados para convertir visitantes en clientes.
+## Un sitio que se ajusta a tus necesidades
+Un diseño atractivo es solo el comienzo. Para competir en el entorno digital actual, necesitas un sitio web que sea rápido, intuitivo, adaptable a cualquier dispositivo y, sobre todo, que esté construido sobre una base técnica sólida que facilite su posicionamiento en Google. Un sitio web sin estrategia, es una vitrina en una calle sin salida. Nosotros unimos creatividad y técnica para construir plataformas web que no solo representan la esencia de tu marca, sino que también cumplen objetivos de negocio claros.
+## ¿Cómo lo hacemos?
+Cada proyecto es impulsado por la experiencia conjunta de un equipo interdisciplinario, capaz de trabajar en tu comunicación e imagen, integrando diseño, tecnología, creatividad y estrategia.
+### DIAGNÓSTICO Y ESTRATEGIA
+Analizamos tu negocio, tu competencia y tu público objetivo para definir la estructura, funcionalidades y el enfoque visual más efectivos.
+### DISEÑO UX/UI
+Creamos prototipos y diseños centrados en el usuario, asegurando una navegación lógica y una experiencia memorable que guíe a la conversión.
+### DESARROLLO A MEDIDA
+Nuestro equipo de desarrollo traduce el diseño en un sitio web robusto, seguro y escalable.
+### OPTIMIZACIÓN Y SEO TÉCNICO
+Implementamos desde el inicio las mejores prácticas de SEO técnico para asegurar una correcta indexación, velocidad de carga óptima y una base sólida para futuras estrategias de posicionamiento.
+### LANZAMIENTO Y SEGUIMIENTO
+Te acompañamos en el lanzamiento de tu nuevo sitio y te ofrecemos dashboards para medir los resultados clave desde el primer día.
+## Nuestros Servicios de Diseño y Desarrollo Web
+### Sitios Web Corporativos
+Diseñamos y desarrollamos el principal activo digital de tu marca, comunicando tu propuesta de valor de manera clara y profesional.
+### E-commerce y Tiendas Online
+Creamos plataformas de venta online optimizadas para la conversión, con integraciones de pago, logística y una gestión sencilla para tu equipo.
+### Landing Pages de Conversión
+Desarrollamos páginas de aterrizaje específicas para tus campañas, enfocadas 100% en maximizar la captación de leads o ventas.
+### Mantenimiento y Soporte Web
+Tu proyecto online merece un equipo experto que entienda tus objetivos.
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 19: Producción de contenidos
+ID: produccion-de-contenidos
+URL: https://grupomakingof.com/produccion-de-contenidos/
+================================================================================
+
+# Producción y Desarrollo de Contenidos
+## Creamos historias que tu audiencia quiere escuchar.
+Desarrollamos estrategias de contenido que no solo atraen tráfico cualificado, sino que construyen autoridad de marca y fomentan la lealtad de tus clientes.
+## ¿Cómo lo hacemos?
+Transformamos tus objetivos de negocio en contenido valioso y coherente.
+### ESTRATEGIA Y BUYER PERSONA
+Investigamos a fondo a tu audiencia para definir sus necesidades e intereses. Creamos un plan de contenidos y un calendario editorial alineado con los pilares de tu marca.
+### CREACIÓN DE CONTENIDO MULTIFORMATO
+Producimos artículos de blog, ebooks, casos de estudio, infografías, guiones para videos y copys para redes sociales. Todo redactado con técnicas de storytelling y optimizado para SEO.
+### DISTRIBUCIÓN Y DIFUSIÓN
+Planificamos cómo y dónde se distribuirá el contenido para alcanzar a la audiencia correcta en el momento adecuado, maximizando su impacto.
+### MEDICIÓN Y OPTIMIZACIÓN
+Analizamos métricas clave como el engagement, tráfico generado, leads captados y conversiones para optimizar la estrategia continuamente y demostrar el retorno de la inversión.
+## Beneficios del marketing de contenidos
+### Aumento del tráfico orgánico y la visibilidad de marca
+### Generación de leads cualificados y oportunidades de venta
+### Fortalecimiento de la confianza y credibilidad de tu marca
+### Mejora del engagement y creación de una comunidad fiel
+### Posicionamiento como líder de opinión en tu sector
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 20: Campañas y activaciones
+ID: campanas-y-activaciones
+URL: https://grupomakingof.com/campanas-y-activaciones/
+================================================================================
+
+# Campañas y Activaciones
+Diseñamos y ejecutamos campañas creativas que capturan la atención, generan conversación y movilizan a tu audiencia. Creamos experiencias de marca memorables que logran resultados medibles, tanto en el mundo digital como en el físico.
+## Nuestro Proceso Creativo y de Ejecución
+### BRIEFING Y CONCEPTUALIZACIÓN
+Partimos de tus objetivos para generar un concepto creativo potente, una idea central que dé vida a la campaña en todos sus puntos de contacto.
+### ESTRATEGIA 360
+Definimos el ecosistema de medios y acciones (digitales y/o presenciales) donde vivirá la campaña, asegurando un mensaje coherente e integrado.
+### PRODUCCIÓN Y DESARROLLO
+Nuestro equipo se encarga de dar vida a las ideas: desde el diseño de piezas gráficas y la producción audiovisual, hasta el desarrollo de landing pages o la logística de una activación.
+### LANZAMIENTO Y MONITORIZACIÓN
+Ejecutamos y supervisamos la campaña en tiempo real, optimizando las acciones para maximizar el rendimiento y el presupuesto.
+### ANÁLISIS DE RESULTADOS
+Entregamos informes detallados que miden el impacto real de la campaña en base a los KPIs definidos: alcance, interacción, leads, ventas y retorno de la inversión.
+### DASHBOARD PERSONALIZADO
+Conectamos todas las plataformas para que puedas monitorear permanentemente, en forma clara y sencilla los KPI´s relevantes y los resultados de tus acciones.
+## Tipos de campañas y activaciones
+### Campañas de Lanzamiento
+Creamos la expectación y el impacto necesarios para el lanzamiento de tu nuevo producto, servicio o marca.
+### Campañas Creativas 360°
+Integramos medios online y offline para una comunicación potente y de gran alcance.
+### Activaciones de Marca
+Generamos experiencias interactivas que conectan directamente con tu público objetivo.
+### Campañas de Performance
+Enfocamos la creatividad en la consecución de objetivos específicos de conversión, como la captación de leads o la venta directa.
+
+--------------------------------------------------------------------------------
+
+
+################################################################################
+GRUPO: EMPRESA
+################################################################################
+
+================================================================================
+LANDING 21: Sobre nosotros
+ID: sobre-nosotros
+URL: https://grupomakingof.com/sobre-nosotros/
+================================================================================
+
+# Your Next Business Partner
+Somos un equipo  multiprofesional que capitaliza un proceso continuo de experiencia, conocimiento y desarrollo de más de 11 años en el marketing y comunicaciones digital.
+## ¿Cómo trabajamos?
+## 1. Pensamiento estrátegico y ejecución táctica​
+Acompañamos permanentemente a nuestros clientes desde la formulación de objetivos y estrategias hasta su implementación, con definición y control de KPI’s y elaboración reportería consolidada, según requerimientos de cada negocio.
+## 2. Equipo a la vanguardia con los últimos avances y multidisciplinario
+Integramos equipos con variadas experiencias y permanente actualización de sus conocimientos, que aportan diferentes miradas generando un enriquecedor valor al desarrollo del brandformance que entregamos.
+## 3. Buscamos relaciones de largo plazo
+Ser PARTNER y acompañar en las diferentes etapas del negocio nuestra prioridad, generamos una relación cercana con nuestros clientes, ser una extensión de sus equipos, lo que nos permite estar en constante búsqueda de VALOR para nuestros clientes.
+## 4. Resultados en base a performance
+Nos importa la optimización y resultados, por lo cual establecemos todas nuestras acciones con asociación a KPI y sus controles, para obtener resultados medibles y cuantificables; generamos reportería, recomendación y cambios, en un proceso continuo
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 22: Contacto
+ID: contacto
+URL: https://grupomakingof.com/contacto/
+================================================================================
+
+# ¡Estamos aquí para aportar valor!
+## ¡Hablemos!
+Déjanos tus datos y te contactaremos
+*Obligatorio
+Enviar
+Estamos a tu disposición para ayudarte con tus dudas o consultas
+En Making OF queremos acompañar a las empresas a avanzar en el mundo digital
+Nuestro equipo está listo para ayudar contacto@mkof.cl
++569 9327 4663 Lun - Jue 9:15 - 18:00 Vie 9:15 - 17:00 hrs
+
+--------------------------------------------------------------------------------
+
+================================================================================
+LANDING 23: Blog
+ID: blog
+URL: https://grupomakingof.com/blog/
+================================================================================
+
+## Bienvenidos al blog de Making OF
+Acá encontrarás todo lo que nos inspira y nos mantiene a la vanguardia: las últimas tendencias digitales, análisis y consejos prácticos para tu marca.
+Desde el SEO que te posiciona, hasta la creatividad que engancha, aquí encontrarás información valiosa y relevante para potenciar tu negocio.
+Making OF, your next business partner
+## ÚLTIMOS POST
+### SEO vs GEO: ¿Cuáles son sus diferencias y por qué hoy deben trabajar juntos?
+SEO vs GEO: ¿Cuáles son sus diferencias y por qué hoy deben trabajar juntos?
+Abril 1, 2026
+Ver Más
+### Google refuerza la visibilidad de los enlaces en AI Overviews: ¿Qué significa esto?
+Google refuerza la visibilidad de los enlaces en AI Overviews: ¿Qué significa esto?
+Abril 1, 2026
+Ver Más
+### Crea una campaña de email marketing efectiva para tu tienda online con MKOF
+Crea una campaña de email marketing efectiva para tu tienda online con MKOF
+Enero 29, 2026
+Ver Más
+### Gana visibilidad con creatividad: ¿Por qué diseñar tu web con posicionamiento SEO incluido?
+Gana visibilidad con creatividad: ¿Por qué diseñar tu web con posicionamiento SEO incluido?
+Enero 29, 2026
+Ver Más
+### SEO vs SEM: La convergencia impulsada por IA que redefine el posicionamiento web
+SEO vs SEM: La convergencia impulsada por IA que redefine el posicionamiento web
+Diciembre 2, 2025
+Ver Más
+### ¿Qué es el Content Marketing?: Una guía para aplicarlo en tu marca
+¿Qué es el Content Marketing?: Una guía para aplicarlo en tu marca
+Diciembre 2, 2025
+Ver Más
+### Grupo Making OF se integra como nuevo socio de la Cámara de Comercio de Santiago
+Grupo Making OF se integra como nuevo socio de la Cámara de Comercio de Santiago
+Noviembre 18, 2025
+Ver Más
+### ¿Cuál es la mejor agencia de SEO? 6 aspectos clave
+¿Cuál es la mejor agencia de SEO? 6 aspectos clave
+Noviembre 17, 2025
+Ver Más
+### 6 áreas que deben tener las mejores agencias de marketing en Chile
+6 áreas que deben tener las mejores agencias de marketing en Chile
+Noviembre 17, 2025
+Ver Más
+### Marketing digital qué es y cómo funciona: La guía completa para entenderlo
+Marketing digital qué es y cómo funciona: La guía completa para entenderlo
+Octubre 1, 2025
+Ver Más
+### Diferencia entre branded content y marketing de contenidos: Qué debes saber
+Diferencia entre branded content y marketing de contenidos: Qué debes saber
+Octubre 1, 2025
+Ver Más
+### Agencia SEO de posicionamiento web: La clave para destacar en Google
+Agencia SEO de posicionamiento web: La clave para destacar en Google
+Octubre 1, 2025
+Ver Más
+
+--------------------------------------------------------------------------------
