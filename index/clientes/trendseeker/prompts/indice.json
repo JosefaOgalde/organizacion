@@ -33,6 +33,15 @@
       "productoUrl": "https://trendseeker.cl/producto/botas-de-agua-bajas-para-mujer-rojo-militar/"
     },
     {
+      "id": "chaqueta-portal-gore-tex-copy-video",
+      "titulo": "Copy video · Chaqueta Portal Gore-Tex Black",
+      "archivo": "copys/COPY-chaqueta-portal-gore-tex-video.txt",
+      "descripcion": "Características de ficha + 3 copys (A/B/C). SKU 10212-001 · Grundéns Portal GORE-TEX.",
+      "sku": "10212-001",
+      "productoUrl": "https://trendseeker.cl/producto/chaqueta-de-vadeo-portal-gore-tex/"
+    },
+
+    {
       "id": "contenido-7-prompt",
       "titulo": "C7/12 · Zapatilla Travel Trainer Black Hombre",
       "archivo": "prompts/PROMPT-c07-travel-trainer-black-hombre-A.txt",
