@@ -1,22 +1,26 @@
 #!/usr/bin/env python3
 """
-Parsea un Word (.docx) o texto de receta → JSON intermedio CRC.
+Parsea un Word (.docx), PDF Jumbo o texto de receta → JSON intermedio CRC.
 
 Soporta:
   - Formato Jumbo (Meta título / Meta descripción / "35 min | Fácil | 4 porciones" / Tags / Paso a paso)
+  - PDF exportado desde el Word Jumbo (Maremoto.pdf y equivalentes)
   - Formato simple etiquetado (Título:, Ingredientes:, Pasos:)
 
 Uso:
   python3 scripts/parse-receta-word.py index/clientes/Herramientas/carga-recetas-cencosud/inbox/receta.docx
+  python3 scripts/parse-receta-word.py index/clientes/Herramientas/carga-recetas-cencosud/inbox/Maremoto.pdf
 """
 from __future__ import annotations
 
 import argparse
 import json
 import re
+import shutil
 import sys
 import unicodedata
 import zipfile
+import zlib
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
@@ -48,6 +52,72 @@ def extraer_imagenes_docx(
 
 def extraer_enlaces_docx(path: Path) -> list[dict]:
     return _RUTAS.extraer_enlaces_docx(path)
+
+
+def hipervinculos_producto_docx(path: Path) -> list[dict]:
+    """Enlaces Jumbo del .docx (texto ancla + url), sin el de «Foto» a Drive."""
+    out: list[dict] = []
+    vistos: set[tuple[str, str]] = set()
+    for raw in extraer_enlaces_docx(path):
+        texto = str(raw.get("texto") or "").strip()
+        url = str(raw.get("url") or "").strip()
+        if not texto or not url:
+            continue
+        if "jumbo.cl" not in url.lower():
+            continue
+        if texto.lower() in {"foto", "imagen", "portada"}:
+            continue
+        clave = (texto.lower(), url)
+        if clave in vistos:
+            continue
+        vistos.add(clave)
+        out.append({"texto": texto, "url": url})
+    return out
+
+
+def aplicar_hipervinculos_a_pasos(receta: dict, hipervinculos: list[dict]) -> None:
+    """Pega anclas del Word en cada paso cuyo texto contiene la palabra enlazada."""
+    if not hipervinculos:
+        return
+    catalogo = list(receta.get("enlacesProductos") or [])
+    for hv in hipervinculos:
+        url = hv["url"]
+        ya = False
+        for item in catalogo:
+            if isinstance(item, dict) and item.get("url") == url and item.get("texto") == hv["texto"]:
+                ya = True
+                break
+            if isinstance(item, str) and item == url:
+                ya = True
+                break
+        if not ya:
+            catalogo.append({"texto": hv["texto"], "url": url})
+    receta["enlacesProductos"] = catalogo
+
+    for paso in receta.get("pasos") or []:
+        cuerpo = str(paso.get("texto") or "")
+        if not cuerpo:
+            continue
+        cuerpo_l = cuerpo.lower()
+        ya = list(paso.get("enlaces") or [])
+        vistos = {
+            (str(e.get("texto") or "").lower(), str(e.get("url") or ""))
+            for e in ya
+        }
+        for hv in hipervinculos:
+            palabra = hv["texto"]
+            url = hv["url"]
+            if palabra.lower() not in cuerpo_l:
+                continue
+            clave = (palabra.lower(), url)
+            if clave in vistos:
+                continue
+            ya.append({"texto": palabra, "url": url})
+            vistos.add(clave)
+        if ya:
+            paso["enlaces"] = sorted(
+                ya, key=lambda e: len(str(e.get("texto") or "")), reverse=True
+            )
 
 
 def adjuntar_foto_portada(receta: dict, src: Path, media_dir: Path) -> None:
@@ -102,6 +172,64 @@ def adjuntar_foto_portada(receta: dict, src: Path, media_dir: Path) -> None:
         print("imagenes: 0 (enlace Foto pendiente de descarga)")
 
 
+def adjuntar_foto_local(receta: dict, src: Path, media_dir: Path) -> None:
+    """Copia Maremoto.png (u otra portada) desde Descargas / inbox / ruta del PDF."""
+    nombres: list[str] = []
+    rutas: list[Path] = []
+    for im in receta.get("imagenes") or []:
+        for k in ("rutaOrigen", "rutaLocal"):
+            crudo = (im.get(k) or "").strip().strip('"').strip("'")
+            if not crudo or crudo.lower().startswith("http"):
+                continue
+            p = Path(crudo)
+            nombres.append(p.name)
+            rutas.append(p)
+            rutas.append(Path(crudo.replace("\\", "/")))
+    nombres.append(f"{src.stem}.png")
+    nombres.append(f"{src.stem}.jpg")
+    nombres.append(f"{src.stem}.jpeg")
+    nombres.append(f"{src.stem}.webp")
+    for carpeta in _RUTAS.carpetas_busqueda_foto(ROOT, CRC):
+        for nombre in nombres:
+            if nombre:
+                rutas.append(carpeta / nombre)
+    rutas.append(src.with_suffix(".png"))
+    vistos: set[str] = set()
+    for cand in rutas:
+        clave = str(cand)
+        if clave in vistos:
+            continue
+        vistos.add(clave)
+        if not cand.is_file():
+            continue
+        media_dir.mkdir(parents=True, exist_ok=True)
+        dest = media_dir / cand.name
+        if cand.resolve() != dest.resolve():
+            shutil.copy2(cand, dest)
+        try:
+            rel = str(dest.relative_to(ROOT))
+        except ValueError:
+            rel = str(dest)
+        alt = ""
+        for im in receta.get("imagenes") or []:
+            if im.get("alt"):
+                alt = im["alt"]
+                break
+        receta["imagenes"] = [
+            {
+                "rutaLocal": rel,
+                "rutaOrigen": str(cand),
+                "urlFuente": "",
+                "alt": alt,
+                "rol": "portada",
+                "nota": f"Copiada desde {cand.name}",
+            }
+        ]
+        print(f"imagenes: 1 (local → {dest.name})")
+        return
+    print("imagenes: 0 (Foto local no encontrada en inbox/Descargas)")
+
+
 def texto_desde_docx(path: Path) -> str:
     with zipfile.ZipFile(path) as zf:
         xml = zf.read("word/document.xml")
@@ -116,6 +244,238 @@ def texto_desde_docx(path: Path) -> str:
         if line:
             lines.append(line)
     return "\n".join(lines)
+
+
+def _iter_pdf_streams(data: bytes):
+    i = 0
+    while True:
+        s = data.find(b"stream", i)
+        if s < 0:
+            break
+        dict_start = data.rfind(b"<<", 0, s)
+        hdr = data[dict_start:s] if dict_start >= 0 else b""
+        p = s + 6
+        if data[p : p + 2] == b"\r\n":
+            p += 2
+        elif p < len(data) and data[p : p + 1] in (b"\n", b"\r"):
+            p += 1
+        e = data.find(b"endstream", p)
+        blob = data[p:e] if e >= 0 else data[p:]
+        decoded = blob
+        if b"/FlateDecode" in hdr:
+            try:
+                decoded = zlib.decompress(blob.strip(b"\r\n"))
+            except Exception:
+                try:
+                    decoded = zlib.decompress(blob)
+                except Exception:
+                    decoded = blob
+        yield hdr, decoded
+        i = e + 9 if e >= 0 else s + 6
+
+
+def _utf16be_hex(h: str) -> str:
+    b = bytes.fromhex(h)
+    if b.startswith(b"\xfe\xff"):
+        b = b[2:]
+    if not b:
+        return ""
+    return b.decode("utf-16-be", errors="replace")
+
+
+def _parse_tounicode_cmap(text: str) -> dict[int, str]:
+    mapping: dict[int, str] = {}
+    for m in re.finditer(r"beginbfchar(.*?)endbfchar", text, re.S):
+        for src, dst in re.findall(r"<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>", m.group(1)):
+            mapping[int(src, 16)] = _utf16be_hex(dst)
+    for m in re.finditer(r"beginbfrange(.*?)endbfrange", text, re.S):
+        body = m.group(1)
+        for a, b, dst in re.findall(
+            r"<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>", body
+        ):
+            start, end = int(a, 16), int(b, 16)
+            base = bytes.fromhex(dst)
+            if base.startswith(b"\xfe\xff"):
+                base = base[2:]
+            width = len(base)
+            val = int.from_bytes(base, "big")
+            for i, cid in enumerate(range(start, end + 1)):
+                mapping[cid] = (val + i).to_bytes(width, "big").decode(
+                    "utf-16-be", errors="replace"
+                )
+        for a, _b, arr in re.findall(
+            r"<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>\s*\[([^\]]+)\]", body
+        ):
+            dests = re.findall(r"<([0-9A-Fa-f]+)>", arr)
+            start = int(a, 16)
+            for i, dst in enumerate(dests):
+                mapping[start + i] = _utf16be_hex(dst)
+    return mapping
+
+
+def _etiquetas_pdf(decoded: bytes, cmap: dict[int, str]) -> list[tuple[str | None, str]]:
+    text = decoded.decode("latin-1", errors="replace")
+    token_re = re.compile(
+        r"/([A-Za-z][A-Za-z0-9]*)\s*(<<(?:[^<>]|<[^>]*>)*>>)?\s*BDC"
+        r"|EMC"
+        r"|<([0-9A-Fa-f]+)>\s*Tj"
+    )
+    paras: list[tuple[str | None, str]] = []
+    buf: list[str] = []
+    tag: str | None = None
+
+    def flush() -> None:
+        nonlocal buf, tag
+        if not buf:
+            return
+        s = "".join(buf).replace("\u200b", "").strip()
+        if s:
+            paras.append((tag, s))
+        buf = []
+
+    for m in token_re.finditer(text):
+        if m.group(1):
+            flush()
+            tag = m.group(1)
+        elif m.group(0).startswith("EMC"):
+            flush()
+            tag = None
+        elif m.group(3):
+            ch = cmap.get(int(m.group(3), 16), "")
+            if ch:
+                buf.append(ch)
+    flush()
+    return paras
+
+
+def unir_fragmentos_pdf(parts: list[str]) -> str:
+    if not parts:
+        return ""
+    out: list[str] = []
+    for p in parts:
+        p = re.sub(r"\s+", " ", p).strip()
+        if not p:
+            continue
+        if not out:
+            out.append(p)
+            continue
+        prev = out[-1]
+        if p.startswith((")", ",", ".", ";", ":", "/", "?")) or prev.endswith(
+            ("(", "/", "-", ":")
+        ):
+            out[-1] = prev + p
+        else:
+            out.append(p)
+    return re.sub(r"\s+", " ", " ".join(out)).strip()
+
+
+def reconstruir_texto_pdf(paras: list[tuple[str | None, str]]) -> str:
+    lines: list[str] = []
+    span_buf: list[str] = []
+    pending_bullet = False
+    split_pasos = re.compile(
+        r"(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÜÑ¿][^:]{1,60}:\s)"
+    )
+
+    def flush_spans() -> None:
+        nonlocal span_buf
+        if not span_buf:
+            return
+        text = unir_fragmentos_pdf(span_buf)
+        span_buf = []
+        if not text:
+            return
+        for chunk in split_pasos.split(text):
+            chunk = chunk.strip()
+            if chunk:
+                lines.append(chunk)
+
+    for tag, s in paras:
+        if tag == "Span":
+            span_buf.append(s)
+            continue
+        flush_spans()
+        raw = re.sub(r"\s+", " ", s).strip()
+        if not raw or re.match(r"(?i)^--\s*\d+\s+of\s+\d+\s*--$", raw):
+            continue
+        if tag == "LI" and raw in {"●", "•", "-", "*"}:
+            pending_bullet = True
+            continue
+        if pending_bullet:
+            lines.append(f"● {raw}")
+            pending_bullet = False
+            continue
+        lines.append(raw)
+    flush_spans()
+    return "\n".join(lines).strip() + "\n"
+
+
+def extraer_uris_pdf(data: bytes) -> list[str]:
+    """URLs de anotaciones /URI del PDF Jumbo (a veces no van en el texto ToUnicode)."""
+    vistos: list[str] = []
+    for m in re.finditer(rb"/URI\s*\(([^)]+)\)", data or b""):
+        url = m.group(1).decode("latin-1", errors="replace").strip().rstrip(".,;:\"'")
+        if url.startswith("http") and url not in vistos:
+            vistos.append(url)
+    if not vistos:
+        for m in re.finditer(rb"https?://[^\s\)>\]\(]+", data or b""):
+            url = m.group(0).decode("latin-1", errors="replace").rstrip(".,;:\"'")
+            if url not in vistos:
+                vistos.append(url)
+    return vistos
+
+
+def rellenar_urls_vacias(texto: str, urls: list[str]) -> str:
+    """Completa placeholders «(url:)» vacíos con las URIs del PDF, en orden."""
+    if not texto or not urls:
+        return texto
+    idx = 0
+
+    def _repl(_m: re.Match) -> str:
+        nonlocal idx
+        if idx >= len(urls):
+            return _m.group(0)
+        u = urls[idx]
+        idx += 1
+        return f"(url:{u})"
+
+    return re.sub(r"\(\s*url:\s*\)", _repl, texto, flags=re.I)
+
+
+def texto_desde_pdf(path: Path) -> str:
+    """Extrae texto de un PDF Jumbo (ToUnicode + bloques BDC/EMC) sin dependencias."""
+    data = path.read_bytes()
+    if not data.startswith(b"%PDF"):
+        raise ValueError(f"No es un PDF: {path}")
+    cmaps: list[str] = []
+    contents: list[bytes] = []
+    for _hdr, decoded in _iter_pdf_streams(data):
+        if b"begincmap" in decoded:
+            cmaps.append(decoded.decode("latin-1", errors="replace"))
+        elif b"Tj" in decoded and b"/CIDInit" not in decoded and b"glyf" not in decoded[:80]:
+            contents.append(decoded)
+    cmap: dict[int, str] = {}
+    for cmap_txt in cmaps:
+        cmap.update(_parse_tounicode_cmap(cmap_txt))
+    paras: list[tuple[str | None, str]] = []
+    for decoded in contents:
+        paras.extend(_etiquetas_pdf(decoded, cmap))
+    if paras:
+        texto = reconstruir_texto_pdf(paras)
+    else:
+        chars: list[str] = []
+        for decoded in contents:
+            for h in re.findall(rb"<([0-9A-Fa-f]+)>\s*Tj", decoded):
+                chars.append(cmap.get(int(h, 16), ""))
+        blob = "".join(chars)
+        blob = re.sub(
+            r"(?<!^)(?=(?:Meta t[íi]tulo:|Meta descripci[oó]n:|Texto alt:|Tags:|"
+            r"Ingredientes:|¿C[oó]mo preparar|Foto:|As[íi] queda))",
+            "\n",
+            blob,
+        )
+        texto = (blob.strip() + "\n") if blob.strip() else ""
+    return rellenar_urls_vacias(texto, extraer_uris_pdf(data))
 
 
 def slugify(s: str) -> str:
@@ -188,13 +548,90 @@ def parse_barra_info(texto: str) -> dict:
     return out
 
 
+def sin_vineta(line: str) -> str:
+    return re.sub(r"^[\s\-–•*●·▪◦]+", "", line or "").strip()
+
+
+def extraer_urls(texto: str) -> list[str]:
+    vistos: list[str] = []
+    for url in re.findall(r"https?://[^\s)\]>]+", texto or ""):
+        url = url.rstrip(".,;:\"'")
+        if url not in vistos:
+            vistos.append(url)
+    return vistos
+
+
+def extraer_enlaces_inline(texto: str) -> list[dict]:
+    """Jumbo: «vino (url:…) pipeño» o «yoghurt natural (url:…)» → anclas cortas BM."""
+    out: list[dict] = []
+    stop = {
+        "el", "la", "los", "las", "un", "una", "de", "del", "con", "y", "o", "a", "en", "al",
+        "lo", "le", "se", "su", "sus", "mi", "tu", "toda", "todo", "todas", "todos",
+        "bate", "cubre", "agrega", "suma", "mezcla", "vierte", "incorpora",
+    }
+    pat = re.compile(
+        r"(?:([A-Za-zÁÉÍÓÚáéíóúÑñüÜ][\wÁÉÍÓÚáéíóúÑñüÜ\-]*)\s+)?"
+        r"([A-Za-zÁÉÍÓÚáéíóúÑñüÜ][\wÁÉÍÓÚáéíóúÑñüÜ\-]*)"
+        r"\s*\(\s*url:\s*(https?://[^\s)]+)\s*\)\s*"
+        r"([^\n.,;:!?]*)",
+        re.I,
+    )
+    vistos: set[tuple[str, str]] = set()
+    for m in pat.finditer(texto or ""):
+        prev = (m.group(1) or "").strip()
+        palabra = (m.group(2) or "").strip()
+        url = m.group(3).rstrip(".,;:\"'")
+        despues = (m.group(4) or "").strip()
+        if not palabra or not url:
+            continue
+        candidatos: list[str] = []
+        if prev and prev.lower() not in stop:
+            candidatos.append(f"{prev} {palabra}")
+            candidatos.append(prev)
+        candidatos.append(palabra)
+        cont = re.match(
+            r"^(?:(de\s+[\wÁÉÍÓÚáéíóúÑñüÜ\-]+)|([\wÁÉÍÓÚáéíóúÑñüÜ\-]+))",
+            despues,
+            re.I,
+        )
+        if cont and not prev:
+            cola = (cont.group(1) or cont.group(2) or "").strip()
+            if cola:
+                candidatos.insert(0, f"{palabra} {cola}")
+        for ancla in candidatos:
+            clave = (ancla.lower(), url)
+            if not ancla or clave in vistos:
+                continue
+            vistos.add(clave)
+            out.append({"texto": ancla, "url": url})
+    return out
+
+
+def limpiar_urls_en_texto(texto: str) -> str:
+    """Quita '(url: https://…)' del Word/PDF exportado; deja la prosa editorial."""
+    s = re.sub(r"\(\s*url:\s*https?://[^\s)]+\s*\)", " ", texto or "", flags=re.I)
+    s = re.sub(r"\(\s*url:\s*\)", " ", s, flags=re.I)
+    s = re.sub(r"https?://[^\s)\]>]+", " ", s)
+    # Restos tipo «sal ( )» cuando el PDF trae url vacía.
+    s = re.sub(r"\(\s*\)", " ", s)
+    s = re.sub(r"\s+([,.;:!?])", r"\1", s)
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def _es_pregunta_preparacion(line: str) -> bool:
+    return bool(
+        re.match(r"(?i)^¿?c[oó]mo\s+(preparar|hacer|armar|cocinar)\b", line or "")
+    )
+
+
 def parse_ingredientes(bloque: str) -> list[dict]:
     items = []
     stop = re.compile(
-        r"(?i)^(¿?c[oó]mo preparar|paso a paso|tips?\b|preparaci[oó]n\b)",
+        r"(?i)^(¿?c[oó]mo\s+(preparar|hacer|armar|cocinar)|paso a paso|tips?\b|"
+        r"as[íi]\s+queda\b|peque[ñn]os\s+detalles\b|preparaci[oó]n\b)",
     )
     for raw in bloque.splitlines():
-        line = raw.strip().lstrip("-•*").strip()
+        line = sin_vineta(raw)
         if not line or stop.match(line):
             if stop.match(line or ""):
                 break
@@ -242,39 +679,91 @@ def null_str():
     return None
 
 
+def _linea_parece_nuevo_paso(line: str) -> bool:
+    """True si «Acción: cuerpo…» (título corto + dos puntos)."""
+    return bool(re.match(r"^[^:\n]{2,80}:\s+\S", line or ""))
+
+
 def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
-    """Separa pasos reales de tips. El encabezado «Consejos para…» queda en tips_titulo."""
+    """Separa pasos reales de tips. El encabezado «Consejos para…» / «Así queda…» queda en tips_titulo."""
     pasos: list[dict] = []
     tips: list[str] = []
     tips_titulo = ""
     en_tips = False
+    encabezado_re = re.compile(
+        r"(?i)^(?P<title>tips?|consejos?|trucos?|as[íi]\s+queda\b.*|para\b.*|"
+        r"peque[ñn][ao]s?\s+\w+.*|consigue\b.*|logra\b.*|"
+        r"sorprende\b.*|hazl[ao]s?\b.*)"
+        r"\s*(?P<sep>[:\-–])?\s*(?P<resto>.*)$"
+    )
     for raw in bloque.splitlines():
         line = raw.strip()
         if not line:
             continue
-        encabezado = re.match(r"(?i)^(tips?|consejos?)\b\s*(?P<sep>[:\-–])?\s*(?P<resto>.*)$", line)
-        if encabezado:
+        # Ya en tips: no reinterpretar «Para…» como nuevo encabezado.
+        if en_tips:
+            tips.append(sin_vineta(line))
+            continue
+        encabezado = encabezado_re.match(line)
+        es_seccion_tips = bool(
+            re.match(r"(?i)^(tips?|consejos?|trucos?)\b", line)
+            or re.match(r"(?i)^as[íi]\s+queda\b", line)
+            or (
+                re.match(r"(?i)^para\b", line)
+                and not _linea_parece_nuevo_paso(line)
+                # Título corto de sección; no un consejo largo que empieza con «Para».
+                and len(line) <= 72
+                and not re.search(r"[.!?]", line)
+            )
+            or re.match(r"(?i)^peque[ñn][ao]s?\s+\w+", line)
+            or re.match(r"(?i)^consigue\b", line)
+            or re.match(r"(?i)^logra\b", line)
+            or re.match(r"(?i)^sorprende\b", line)
+            or re.match(r"(?i)^hazl[ao]s?\b", line)
+        )
+        if encabezado and es_seccion_tips:
             en_tips = True
-            # «Tips: deja reposar» trae el consejo en la misma línea;
-            # «Tips para unos anticuchos perfectos» es el título de la sección.
             resto = (encabezado.group("resto") or "").strip()
             if resto and encabezado.group("sep"):
-                tips.append(resto.lstrip("-•* ").strip())
+                tips.append(sin_vineta(resto))
             else:
                 tips_titulo = line.strip()
             continue
-        if en_tips:
-            tips.append(line.lstrip("-•* ").strip())
-            continue
         line = re.sub(r"^\d+[\).\:\-]\s*", "", line)
-        line = line.lstrip("-•*").strip()
+        line = sin_vineta(line)
         if not line:
             continue
         if re.match(r"(?i)^paso a paso\s*:?\s*$", line):
             continue
-        if re.match(r"(?i)^¿?c[oó]mo preparar", line):
+        if _es_pregunta_preparacion(line):
             continue
-        pasos.append({"orden": len(pasos) + 1, "texto": line})
+        enlaces = extraer_enlaces_inline(line)
+        line = limpiar_urls_en_texto(line)
+        if not line:
+            continue
+        # Continuación de párrafo partido por el PDF (sin «Título:»).
+        if pasos and not _linea_parece_nuevo_paso(line):
+            prev = pasos[-1]
+            prev["texto"] = f"{prev['texto']} {line}".strip()
+            if enlaces:
+                ya = prev.setdefault("enlaces", [])
+                vistos = {(e.get("texto"), e.get("url")) for e in ya}
+                for e in enlaces:
+                    clave = (e.get("texto"), e.get("url"))
+                    if clave not in vistos:
+                        ya.append(e)
+                        vistos.add(clave)
+                prev["enlaces"] = sorted(
+                    ya, key=lambda e: len(str(e.get("texto") or "")), reverse=True
+                )
+            continue
+        paso: dict = {"orden": len(pasos) + 1, "texto": line}
+        if enlaces:
+            # Anclas largas primero para el HTML del BM.
+            paso["enlaces"] = sorted(
+                enlaces, key=lambda e: len(str(e.get("texto") or "")), reverse=True
+            )
+        pasos.append(paso)
     return pasos, tips, tips_titulo
 
 
@@ -326,6 +815,8 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
             continue
         if low.startswith("texto alt:") or low.startswith("([foto])") or low == "[foto]":
             continue
+        if low.startswith("foto:"):
+            continue
         if low.startswith("tags:"):
             continue
         if re.match(r"(?i)^\d+\s*min\s*\|", ln):
@@ -347,15 +838,26 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
 
     desc = meta_desc or ""
     alt = valor_despues_label(lines, ["texto alt"]) or meta_linea(texto, ["texto alt", "alt"])
+    foto_origen = valor_despues_label(lines, ["foto"]) or meta_linea(texto, ["foto"])
+    if foto_origen:
+        foto_origen = foto_origen.strip().strip('"').strip("'")
+    pregunta = None
+    m_preg = re.search(
+        r"(?im)^(¿?c[oó]mo\s+(?:preparar|hacer|armar|cocinar)[^\n]+)",
+        texto,
+    )
+    if m_preg:
+        pregunta = m_preg.group(1).strip()
+    enlaces = extraer_urls(texto)
 
     barra = parse_barra_info(texto)
     tags_line = meta_linea(texto, ["tags", "etiquetas"]) or valor_despues_label(lines, ["tags", "etiquetas"])
     categorias = parse_lista_csv(tags_line)
 
-    # Ingredientes: desde "Ingredientes" hasta "¿Cómo preparar" / "Paso a paso"
+    # Ingredientes: desde "Ingredientes" hasta "¿Cómo preparar/hacer" / "Paso a paso"
     ing_bloque = ""
     m_ing = re.search(
-        r"(?is)^\s*ingredientes?\s*:?\s*\n(.*?)(?=\n\s*(?:¿?c[oó]mo preparar|paso a paso)\b)",
+        r"(?is)^\s*ingredientes?\s*:?\s*\n(.*?)(?=\n\s*(?:¿?c[oó]mo\s+(?:preparar|hacer|armar|cocinar)|paso a paso)\b)",
         texto,
         re.M,
     )
@@ -363,9 +865,11 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
         ing_bloque = m_ing.group(1).strip()
     ingredientes = parse_ingredientes(ing_bloque)
 
-    # Pasos
+    # Pasos (anclar al inicio de línea: la meta desc también dice «cómo preparar…»)
     m_pas = re.search(
-        r"(?is)(?:paso a paso\s*:?\s*\n|¿?c[oó]mo preparar[^\n]*\n(?:paso a paso\s*:?\s*\n)?)(.*)\Z",
+        r"(?is)(?:^|\n)\s*(?:paso a paso\s*:?\s*\n|"
+        r"¿?c[oó]mo\s+(?:preparar|hacer|armar|cocinar)[^\n]*\n"
+        r"(?:paso a paso\s*:?\s*\n)?)(.*)\Z",
         texto,
     )
     pas_bloque = m_pas.group(1).strip() if m_pas else ""
@@ -399,20 +903,27 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
     seo_desc = meta_desc or desc
 
     imagenes = []
-    if alt:
+    if alt or foto_origen:
+        nota = "Foto referenciada en Word/PDF; adjuntar archivo al cargar en BM"
+        if foto_origen and not foto_origen.lower().startswith("http"):
+            nota = f"Foto local: {foto_origen}. En tu PC se busca en Descargas / inbox."
         imagenes.append(
             {
                 "rutaLocal": "",
-                "alt": alt,
+                "rutaOrigen": foto_origen or "",
+                "urlFuente": foto_origen if (foto_origen or "").lower().startswith("http") else "",
+                "alt": alt or "",
                 "rol": "portada",
-                "nota": "Foto referenciada en Word; adjuntar archivo al cargar en BM",
+                "nota": nota,
             }
         )
+
+    formato = "jumbo-pdf" if str(fuente).lower().endswith(".pdf") else "jumbo-word"
 
     return {
         "id": sid,
         "fuenteWord": fuente,
-        "formatoOrigen": "jumbo-word",
+        "formatoOrigen": formato,
         "titulo": titulo,
         "descripcion": desc,
         "porciones": barra.get("porciones"),
@@ -424,6 +935,8 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
         "ocasiones": [],
         "ingredientes": ingredientes,
         "pasos": pasos,
+        "preguntaPreparacion": pregunta,
+        "enlacesProductos": enlaces,
         "tips": tips,
         "tipsTitulo": tips_titulo,
         "imagenes": imagenes,
@@ -540,20 +1053,25 @@ def construir_receta(texto: str, fuente: str) -> dict:
 
 def crear_parser_argumentos() -> argparse.ArgumentParser:
     return argparse.ArgumentParser(
-        description="Parsea una receta Word o texto a JSON intermedio CRC.",
+        description="Parsea una receta Word, PDF Jumbo o texto a JSON intermedio CRC.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""Ejemplos:
   python3 scripts/parse-receta-word.py inbox/receta.docx
+  python3 scripts/parse-receta-word.py inbox/Maremoto.pdf
   python3 scripts/parse-receta-word.py inbox/receta.docx --force
 
-La segunda forma es destructiva: --force reemplaza conjuntamente el JSON y el raw existentes.
+La forma con --force es destructiva: reemplaza conjuntamente el JSON y el raw existentes.
+
+Scraping BM (en TU PC, con login):
+  python3 scripts/explorar-bm-cencosud.py --reuse-session
+  python3 scripts/publicar-receta-cencosud.py out/maremoto.json --headed --dry-run
 """,
     )
 
 
 def main() -> int:
     parser = crear_parser_argumentos()
-    parser.add_argument("archivo", help="Archivo fuente .docx o .txt")
+    parser.add_argument("archivo", help="Archivo fuente .docx, .pdf o .txt")
     parser.add_argument(
         "--force",
         action="store_true",
@@ -565,8 +1083,14 @@ def main() -> int:
         print(f"No existe: {src}", file=sys.stderr)
         return 1
 
-    if src.suffix.lower() == ".docx":
+    suf = src.suffix.lower()
+    if suf == ".docx":
         texto = texto_desde_docx(src)
+    elif suf == ".pdf":
+        texto = texto_desde_pdf(src)
+        if not texto.strip():
+            print(f"No se pudo leer texto del PDF: {src}", file=sys.stderr)
+            return 1
     else:
         texto = src.read_text(encoding="utf-8")
 
@@ -577,8 +1101,12 @@ def main() -> int:
 
     receta = construir_receta(texto, rel)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    if src.suffix.lower() == ".docx":
-        adjuntar_foto_portada(receta, src, OUT_DIR / "media" / receta["id"])
+    media_dir = OUT_DIR / "media" / receta["id"]
+    if suf == ".docx":
+        aplicar_hipervinculos_a_pasos(receta, hipervinculos_producto_docx(src))
+        adjuntar_foto_portada(receta, src, media_dir)
+    elif suf == ".pdf":
+        adjuntar_foto_local(receta, src, media_dir)
 
     out = OUT_DIR / f"{receta['id']}.json"
     raw_out = OUT_DIR / f"{receta['id']}.raw.txt"
@@ -595,7 +1123,7 @@ def main() -> int:
         )
         print(
             "Para reemplazar ambos de forma destructiva: "
-            "python3 scripts/parse-receta-word.py <archivo.docx|.txt> --force",
+            "python3 scripts/parse-receta-word.py <archivo.docx|.pdf|.txt> --force",
             file=sys.stderr,
         )
         return 3
@@ -609,6 +1137,9 @@ def main() -> int:
     if receta["camposFaltantes"]:
         print("camposFaltantes:", ", ".join(receta["camposFaltantes"]))
     print(f"ingredientes: {len(receta.get('ingredientes') or [])} · pasos: {len(receta.get('pasos') or [])}")
+    print("Siguiente (en tu PC):")
+    print("  python scripts\\explorar-bm-cencosud.py --reuse-session")
+    print(f"  python scripts\\publicar-receta-cencosud.py {out.relative_to(ROOT)} --headed --dry-run")
     return 0
 
 

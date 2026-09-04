@@ -302,5 +302,170 @@ class ParseRecetaWordTests(unittest.TestCase):
         self.assertIn(jumbo["dificultad"], enum_schema)
 
 
+    def test_maremoto_jumbo_reconstruido(self):
+        texto = (
+            "Meta título:\n"
+            "Maremoto | Recetas Jumbo\n"
+            "Meta descripción:\n"
+            "Prepara un maremoto chileno con vino pipeño, helado de piña y licor de menta. "
+            "Un trago dulce y refrescante, ideal para las Fiestas Patrias.\n"
+            "Maremoto\n"
+            'Foto: "C:\\Users\\josef\\Downloads\\Maremoto.png"\n'
+            "Texto alt: Vaso largo de maremoto, sobre una mesa de madera.\n"
+            "10 min | Fácil | 4 porciones\n"
+            "Tags: trago chileno, vino pipeño, helado de piña, fiestas patrias, recetas para el 18, vino\n"
+            "Ingredientes:\n"
+            "● 750 ml de vino pipeño\n"
+            "● 400 g de helado de piña\n"
+            "● 60 ml de licor de menta\n"
+            "● Hielo a gusto\n"
+            "¿Cómo preparar maremoto?\n"
+            "Enfría los ingredientes: Mantén el vino (url: "
+            "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos) pipeño bien frío.\n"
+            "Agrega el helado: Coloca una generosa bola de helado (url: "
+            "https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres) de piña.\n"
+            "Vierte el pipeño: Agrega el vino pipeño bien frío.\n"
+            "Termina con la menta: Añade un chorrito de licor (url: "
+            "https://www.jumbo.cl/licores-bebidas-y-aguas/licores-y-spritz) de menta.\n"
+            "Así queda mucho mejor\n"
+            "● Usa un pipeño bien frío para que el helado se mantenga firme.\n"
+            "● Agrega solo un chorrito de licor de menta.\n"
+            "● Disfrútalo apenas esté listo.\n"
+        )
+        receta = self.modulo.construir_receta(texto, "inbox/Maremoto.pdf")
+        self.assertEqual(receta["titulo"], "Maremoto")
+        self.assertTrue(receta["descripcion"].startswith("Prepara un maremoto"))
+        self.assertEqual(receta["porciones"], "4")
+        self.assertEqual(receta["tiempoTotal"], "10 min")
+        self.assertEqual(receta["dificultad"], "facil")
+        self.assertEqual(receta["estado"], "listo-para-cargar")
+        self.assertEqual(len(receta["ingredientes"]), 4)
+        pipeño = receta["ingredientes"][0]
+        self.assertEqual(pipeño["cantidad"], "750")
+        self.assertEqual(pipeño["unidad"], "ml")
+        self.assertIn("pipeño", pipeño["nombre"])
+        self.assertEqual(len(receta["pasos"]), 4)
+        self.assertNotIn("url:", receta["pasos"][0]["texto"].lower())
+        self.assertNotIn("http", receta["pasos"][0]["texto"].lower())
+        self.assertIn("vino pipeño", receta["pasos"][0]["texto"])
+        self.assertEqual(receta["tipsTitulo"], "Así queda mucho mejor")
+        self.assertEqual(len(receta["tips"]), 3)
+        self.assertEqual(receta["preguntaPreparacion"], "¿Cómo preparar maremoto?")
+        self.assertEqual(receta["formatoOrigen"], "jumbo-pdf")
+        self.assertTrue(any("jumbo.cl" in u for u in receta["enlacesProductos"]))
+        self.assertIn("Maremoto.png", receta["imagenes"][0]["rutaOrigen"])
+        enlaces_p1 = receta["pasos"][0].get("enlaces") or []
+        self.assertTrue(any("vinos" in (e.get("url") or "") for e in enlaces_p1))
+        self.assertTrue(
+            any("vino" in (e.get("texto") or "").lower() for e in enlaces_p1)
+        )
+        enlaces_p2 = receta["pasos"][1].get("enlaces") or []
+        self.assertTrue(any("helado" in (e.get("url") or "") for e in enlaces_p2))
+        enlaces_p4 = receta["pasos"][3].get("enlaces") or []
+        self.assertTrue(any("licor" in (e.get("url") or "") for e in enlaces_p4))
+
+    def test_unir_fragmentos_pdf_urls_y_pasos(self):
+        paras = [
+            ("Span", "Enfría los ingredientes: Mantén el"),
+            ("Span", "vino"),
+            ("Span", "(url:"),
+            ("Span", "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos"),
+            ("Span", ") pipeño bien frío en el refrigerador."),
+            ("Span", "Agrega el helado: Coloca una bola de helado."),
+            ("H2", "Así queda mucho mejor"),
+            ("LI", "●"),
+            (None, "Usa un pipeño bien frío."),
+        ]
+        texto = self.modulo.reconstruir_texto_pdf(paras)
+        self.assertIn("vino (url:https://www.jumbo.cl/licores-bebidas-y-aguas/vinos) pipeño", texto)
+        self.assertIn("Así queda mucho mejor", texto)
+        pasos, tips, tips_titulo = self.modulo.parse_pasos_jumbo(texto)
+        self.assertEqual(len(pasos), 2)
+        self.assertIn("vino pipeño", pasos[0]["texto"])
+        self.assertNotIn("http", pasos[0]["texto"].lower())
+        self.assertEqual(tips_titulo, "Así queda mucho mejor")
+        self.assertEqual(tips, ["Usa un pipeño bien frío."])
+
+    def test_texto_desde_pdf_maremoto_si_hay_fixture(self):
+        fixture = ROOT / "tests/fixtures/crc/Maremoto.pdf"
+        inbox = ROOT / "index/clientes/Herramientas/carga-recetas-cencosud/inbox/Maremoto.pdf"
+        src = fixture if fixture.exists() else inbox
+        if not src.exists():
+            self.skipTest("No hay Maremoto.pdf de prueba")
+        texto = self.modulo.texto_desde_pdf(src)
+        receta = self.modulo.construir_receta(texto, str(src))
+        self.assertIn("Meta título", texto)
+        self.assertEqual(receta["titulo"], "Maremoto")
+        self.assertGreaterEqual(len(receta["ingredientes"]), 4)
+        self.assertGreaterEqual(len(receta["pasos"]), 4)
+        self.assertEqual(receta["tipsTitulo"], "Así queda mucho mejor")
+        self.assertEqual(receta["estado"], "listo-para-cargar")
+
+    def test_torta_yogurt_pdf_uris_y_tips(self):
+        fixture = ROOT / "tests/fixtures/crc/Torta-de-yogurt.pdf"
+        if not fixture.exists():
+            self.skipTest("No hay Torta-de-yogurt.pdf de prueba")
+        texto = self.modulo.texto_desde_pdf(fixture)
+        self.assertIn("(url:https://www.jumbo.cl/", texto)
+        self.assertNotIn("(url:)", texto)
+        receta = self.modulo.construir_receta(texto, str(fixture))
+        self.assertEqual(receta["titulo"], "Torta de yogurt")
+        self.assertEqual(receta["preguntaPreparacion"], "¿Cómo preparar torta de yogurt?")
+        self.assertEqual(len(receta["pasos"]), 6)
+        self.assertEqual(receta["tipsTitulo"], "Para una torta que se sostenga bien")
+        self.assertEqual(len(receta["tips"]), 3)
+        self.assertEqual(len(receta["ingredientes"]), 14)
+        # Anclas cortas del PDF (yoghurt / crema / torta)
+        textos_enlace = [
+            e.get("texto")
+            for p in receta["pasos"]
+            for e in (p.get("enlaces") or [])
+        ]
+        self.assertTrue(any(t and t.lower() == "yoghurt" for t in textos_enlace))
+        self.assertTrue(any(t and t.lower() == "crema" for t in textos_enlace))
+        self.assertTrue(any(t and t.lower() == "torta" for t in textos_enlace))
+        self.assertEqual(receta["estado"], "listo-para-cargar")
+
+    def test_salsa_verde_como_hacer_y_tips(self):
+        fixture = ROOT / "tests/fixtures/crc/Salsa-verde.pdf"
+        if not fixture.exists():
+            self.skipTest("No hay Salsa-verde.pdf de prueba")
+        texto = self.modulo.texto_desde_pdf(fixture)
+        receta = self.modulo.construir_receta(texto, str(fixture))
+        self.assertEqual(receta["titulo"], "Salsa verde")
+        self.assertEqual(receta["preguntaPreparacion"], "¿Cómo hacer salsa verde?")
+        self.assertEqual(len(receta["ingredientes"]), 8)
+        self.assertEqual(len(receta["pasos"]), 4)
+        self.assertEqual(
+            receta["tipsTitulo"], "Pequeños detalles que hacen la diferencia"
+        )
+        self.assertEqual(len(receta["tips"]), 3)
+        # No debe colarse la meta desc («Descubre cómo preparar…») en los pasos.
+        self.assertFalse(
+            any("Descubre cómo preparar" in (p.get("texto") or "") for p in receta["pasos"])
+        )
+        textos_enlace = [
+            e.get("texto")
+            for p in receta["pasos"]
+            for e in (p.get("enlaces") or [])
+        ]
+        self.assertTrue(any(t and t.lower() == "salsa" for t in textos_enlace))
+        self.assertTrue(any(t and t.lower() == "oliva" for t in textos_enlace))
+        self.assertEqual(receta["estado"], "listo-para-cargar")
+
+    def test_rellenar_urls_vacias(self):
+        out = self.modulo.rellenar_urls_vacias(
+            "el yoghurt natural (url:) y la crema (url:)",
+            [
+                "https://www.jumbo.cl/yoghurt",
+                "https://www.jumbo.cl/cremas",
+            ],
+        )
+        self.assertIn("(url:https://www.jumbo.cl/yoghurt)", out)
+        self.assertIn("(url:https://www.jumbo.cl/cremas)", out)
+        self.assertNotIn("(url:)", out)
+
+
 if __name__ == "__main__":
     unittest.main()
+

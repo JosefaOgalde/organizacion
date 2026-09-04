@@ -116,12 +116,26 @@ COMPONENTES_CMS = (
 LIENZO_MIN_X = 240
 
 MENSAJE_ENTER_FICHA = (
-    "\n>>> En Chromium abre la receta (5 bloques al CENTRO):\n"
-    "    Cabecera / tags / Ingredientes / Instrucciones / SEO.\n"
-    "    El script abre cada lápiz solo (icono a la derecha de cada bloque).\n"
-    "    NO pulses la paleta izquierda ni «Proyectos».\n"
-    "    Cuando veas los 5 bloques, pulsa ENTER aquí.\n"
+    "\n>>> En Chromium abrí la receta (URL debe tener /view-manager/view/…):\n"
+    "    5 bloques al CENTRO: header / tags / Ingredientes / Instrucciones / SEO.\n"
+    "    El script abre cada lápiz solo.\n"
+    "    NO pulses «Volver» (arriba a la derecha): eso SALE de la receta.\n"
+    "    NO pulses Proyectos ni la paleta izquierda.\n"
+    "    Cuando veas los 5 bloques en esa URL, pulsa ENTER aquí.\n"
 )
+
+
+def mensaje_enter_ficha(titulo_receta: str | None = None) -> str:
+    nombre = (titulo_receta or "").strip() or "la receta"
+    return (
+        f"\n>>> Usá la ventana Chromium que abrió ESTE script (no Chrome/Edge normal).\n"
+        f"    Ahí abrí «{nombre}» hasta que la URL tenga /view-manager/view/…\n"
+        "    Ideal: 5 bloques al CENTRO (header / tags / Ingredientes / Instrucciones / SEO).\n"
+        "    Si la abrís en otra pestaña del mismo Chromium, al ENTER el script la adopta.\n"
+        "    El script abre cada lápiz solo.\n"
+        "    NO pulses «Volver» ni Proyectos ni la paleta izquierda.\n"
+        "    Cuando veas eso en la ventana del script, pulsa ENTER aquí.\n"
+    )
 
 
 def url_actual(page) -> str:
@@ -136,15 +150,39 @@ def es_lista_proyectos_cms(url: str | None) -> bool:
     return "/cms/projects" in u
 
 
+def id_vista_receta(url: str | None) -> str | None:
+    """Id de /view-manager/view/{id}. Sin eso no estamos en la vista editable."""
+    m = re.search(r"view-manager/view/([^/?#]+)", url or "", re.I)
+    return m.group(1) if m else None
+
+
 def _url_sin_query(url: str | None) -> str:
     return (url or "").split("#")[0].split("?")[0].rstrip("/")
 
 
+def misma_vista_receta(actual: str | None, url_ficha: str | None) -> bool:
+    """True si seguimos en la misma receta editable (/view/{id})."""
+    id_f = id_vista_receta(url_ficha)
+    id_a = id_vista_receta(actual)
+    return bool(id_f and id_a and id_f == id_a)
+
+
 def salio_de_la_ficha(actual: str | None, url_ficha: str | None) -> bool:
-    """Solo la lista Proyectos. El editor del lápiz no es salir de default."""
+    """True si dejamos la vista editable de ESTA receta (Proyectos, Gestor vacío u otra view)."""
     if not url_ficha or not actual:
         return False
-    return es_lista_proyectos_cms(actual)
+    if es_lista_proyectos_cms(actual):
+        return True
+    id_f = id_vista_receta(url_ficha)
+    if not id_f:
+        return False
+    id_a = id_vista_receta(actual)
+    if id_a and id_a != id_f:
+        return True
+    # Gestor sin /view/id = ya no estamos en la ficha editable.
+    if "view-manager" in actual and not id_a:
+        return True
+    return False
 
 
 def caja_en_lienzo(box: dict | None, *, min_x: float = LIENZO_MIN_X) -> bool:
@@ -171,57 +209,232 @@ def en_vista_default_cms(page) -> bool:
     return lienzo_con_bloques_cms(page)
 
 
-def esperar_ficha_en_lienzo(page, *, headed: bool = True) -> str:
-    """Tras ENTER: si Chromium está en Proyectos o el Gestor vacío, pedir la receta."""
-    url_ficha = url_actual(page)
-    if en_vista_default_cms(page):
-        print("  · Default con los 5 bloques. Empiezo a completar Cabecera.")
-        return url_ficha
-    if not es_lista_proyectos_cms(url_ficha) and not gestor_sin_ficha(url_ficha):
-        return url_ficha
-    if gestor_sin_ficha(url_ficha):
-        print(
-            "\n>>> Chromium está en el Gestor (sin /view/id).\n"
-            "    Entrá a Recetas_Jumbo → la receta (5 bloques al centro).\n"
-            "    Dejá el desplegable en «default». ENTER cuando los veas.\n"
-        )
-    else:
-        print(
-            "\n>>> Chromium está en «Proyectos en JUMBO», no en la receta.\n"
-            "    Entrá otra vez a Recetas_Jumbo → la receta (5 bloques al centro).\n"
-            "    No pulses la paleta izquierda. ENTER cuando la veas.\n"
-        )
-    if headed and sys.stdin.isatty():
+def url_ancla_ficha(url: str | None) -> str:
+    """…/view-manager/view/{id} sin /edit/… (ancla para volver al lienzo)."""
+    m = re.search(r"(https?://[^?#]*view-manager/view/[^/?#]+)", url or "", re.I)
+    if m:
+        return m.group(1)
+    return (url or "").split("#")[0].split("?")[0]
+
+
+def _urls_pestanas_contexto(page) -> list[tuple[object, str]]:
+    """[(page, url), …] de todas las pestañas del Chromium de Playwright."""
+    if page is None:
+        return []
+    try:
+        paginas = list(page.context.pages)
+    except Exception:
+        return [(page, url_actual(page))]
+    out: list[tuple[object, str]] = []
+    for p in paginas:
         try:
-            input()
-        except EOFError:
+            out.append((p, url_actual(p)))
+        except Exception:
+            continue
+    return out
+
+
+def diagnostico_pestanas(page) -> None:
+    """Lista qué URLs ve realmente el script (para detectar Chrome/Edge aparte)."""
+    pares = _urls_pestanas_contexto(page)
+    if not pares:
+        print("  · El script no ve ninguna pestaña.")
+        return
+    print(f"  · Pestañas que VE Python ({len(pares)}):")
+    for i, (p, u) in enumerate(pares, 1):
+        marca = " ← la que controla ahora"
+        if p is not page:
+            marca = ""
+        vista = " [FICHA]" if url_tiene_vista_receta(u) else ""
+        print(f"    [{i}] {(u or '(vacía)')[:140]}{vista}{marca}")
+
+
+def resaltar_ventana_script(page) -> None:
+    """Trae al frente el Chromium de Playwright y marca el título."""
+    if page is None:
+        return
+    try:
+        page.bring_to_front()
+    except Exception:
+        pass
+    try:
+        page.evaluate(
+            """() => {
+              const t = document.title || '';
+              if (!t.startsWith('>>> CRC ')) {
+                document.title = '>>> CRC USA ESTA VENTANA <<< ' + t;
+              }
+            }"""
+        )
+    except Exception:
+        pass
+
+
+def ir_a_url_ficha(page, url: str):
+    """Navega el Chromium del script a una URL /view/{id} pegada por la usuaria."""
+    url = (url or "").strip().strip('"').strip("'")
+    if not url_tiene_vista_receta(url):
+        return page, ""
+    ancla = url_ancla_ficha(url)
+    # Preferir la URL completa (puede traer /edit/… ya abierto).
+    destino = url.split("#")[0]
+    print(f"  · Voy a la URL que pegaste: …/view/{id_vista_receta(destino)}")
+    try:
+        page.goto(destino, wait_until="domcontentloaded", timeout=60_000)
+        try:
+            page.wait_for_timeout(800)
+        except Exception:
+            pass
+    except Exception as e:
+        print(f"  · No pude abrir esa URL: {e}")
+        return page, url_actual(page)
+    return page, url_actual(page)
+
+
+def adoptar_pagina_con_ficha(page):
+    """Si la receta está en otra pestaña del mismo Chromium, usarla.
+
+    Suele pasar: el script queda en /view-manager y la usuaria abre la ficha
+    en una pestaña nueva del mismo navegador Playwright.
+    """
+    if page is None:
+        return page, ""
+    actual = url_actual(page)
+    if url_tiene_vista_receta(actual):
+        return page, actual
+
+    candidatas: list[tuple[object, str]] = []
+    for otra, u in _urls_pestanas_contexto(page):
+        if otra is page:
+            continue
+        if url_tiene_vista_receta(u):
+            candidatas.append((otra, u))
+    if not candidatas:
+        return page, actual
+
+    # Preferir la que ya tiene un lápiz abierto (/edit/).
+    elegida, url_el = candidatas[0]
+    for otra, u in candidatas:
+        if "/edit/" in (u or "").lower():
+            elegida, url_el = otra, u
+            break
+    try:
+        elegida.bring_to_front()
+    except Exception:
+        pass
+    print(
+        f"  · Adopté otra pestaña del mismo Chromium: …/view/{id_vista_receta(url_el)}"
+    )
+    return elegida, url_el
+
+
+def _ficha_lista(page, url_ficha: str) -> bool:
+    return bool(
+        url_tiene_vista_receta(url_ficha)
+        and (en_vista_default_cms(page) or "/edit/" in (url_ficha or "").lower())
+    )
+
+
+def esperar_ficha_en_lienzo(
+    page, *, headed: bool = True, titulo_receta: str | None = None
+):
+    """Exige URL /view-manager/view/{id} (+ lienzo o editor del lápiz).
+
+    Devuelve (url_ancla, page). Acepta otra pestaña del mismo Chromium o una
+    URL /view/… pegada en la consola (si la ficha está en Chrome/Edge aparte).
+    """
+    nombre = (titulo_receta or "").strip() or "la receta"
+    for _intento in range(8):
+        page, url_ficha = adoptar_pagina_con_ficha(page)
+        if _ficha_lista(page, url_ficha):
+            ancla = url_ancla_ficha(url_ficha)
+            print(f"  · Vista editable OK («{nombre}»): …/view/{id_vista_receta(ancla)}")
+            print("  · Me quedo en esta URL. No pulso «Volver» del chrome.")
+            return ancla, page
+
+        print(f"  · URL que ve el script ahora:\n    {(url_ficha or '(vacía)')[:160]}")
+        diagnostico_pestanas(page)
+        resaltar_ventana_script(page)
+
+        if url_tiene_vista_receta(url_ficha):
+            print(
+                "\n>>> La URL ya es la receta, pero no veo lienzo ni editor.\n"
+                "    Dejá el desplegable en «default» (5 bloques) o el lápiz abierto.\n"
+            )
+        elif gestor_sin_ficha(url_ficha):
+            print(
+                f"\n>>> Python NO ve la ficha de «{nombre}» (sigue en Gestor sin /view/id).\n"
+                "    Si mirás Chrome/Edge con la receta abierta, ESA ventana no es la del script.\n"
+                "    Buscá la ventana cuyo título dice «>>> CRC USA ESTA VENTANA».\n"
+                "    O copiá la URL completa (con /view/…) de la barra de direcciones,\n"
+                "    pegala acá y pulsá ENTER — el script navega solo y rellena tags/etc.\n"
+            )
+        else:
+            print(
+                f"\n>>> El Chromium DEL SCRIPT no está en la vista editable.\n"
+                f"    Pegá la URL con /view/… de «{nombre}» y ENTER, o abrila en la ventana CRC.\n"
+            )
+
+        if headed and sys.stdin.isatty():
+            print(
+                ">>> Pegá la URL /view/…  —o—  ENTER vacío para reintentar "
+                "(busco pestañas ~12s):\n"
+            )
             try:
-                page.wait_for_timeout(8_000)
-            except Exception:
-                pass
-    return url_actual(page)
+                linea = input().strip()
+            except EOFError:
+                linea = ""
+            if linea and url_tiene_vista_receta(linea):
+                page, url_ficha = ir_a_url_ficha(page, linea)
+                if _ficha_lista(page, url_ficha):
+                    ancla = url_ancla_ficha(url_ficha)
+                    print(
+                        f"  · Vista editable OK («{nombre}»): …/view/{id_vista_receta(ancla)}"
+                    )
+                    return ancla, page
+            # Poll: la usuaria puede abrir la ficha mientras esperamos.
+            for _ in range(6):
+                try:
+                    page.wait_for_timeout(2_000)
+                except Exception:
+                    break
+                page, url_ficha = adoptar_pagina_con_ficha(page)
+                if _ficha_lista(page, url_ficha):
+                    ancla = url_ancla_ficha(url_ficha)
+                    print(
+                        f"  · Vista editable OK («{nombre}»): …/view/{id_vista_receta(ancla)}"
+                    )
+                    return ancla, page
+        else:
+            break
+
+    page, url_ficha = adoptar_pagina_con_ficha(page)
+    if url_tiene_vista_receta(url_ficha):
+        return url_ancla_ficha(url_ficha), page
+    return url_ficha, page
 
 
 def restaurar_ficha_si_salio(page, url_ficha: str | None) -> bool:
-    """Solo si caímos en Proyectos. Nunca recarga la vista default."""
+    """Si salimos de /view/{id}, volver SOLO a esa ficha (nunca a Proyectos)."""
     if not url_ficha or page is None:
         return False
-    if en_vista_default_cms(page):
-        return False
-    actual = url_actual(page)
-    if not salio_de_la_ficha(actual, url_ficha):
+    if not salio_de_la_ficha(url_actual(page), url_ficha):
         return False
     if not url_tiene_vista_receta(url_ficha):
-        print("  · Estoy en Proyectos. No recargo el Gestor pelado ni salgo de default.")
+        print("  · Salí de la receta y no tengo URL /view/…. Abrila a mano.")
         return False
-    print("  · El navegador salió a Proyectos; vuelvo a la ficha (vista default).")
+    print("  · Me sacaron de la vista editable; vuelvo SOLO a esa receta…")
     try:
         page.goto(url_ficha, wait_until="domcontentloaded", timeout=60_000)
         try:
-            page.wait_for_timeout(400)
+            page.wait_for_timeout(500)
         except Exception:
             pass
-        return True
+        if misma_vista_receta(url_actual(page), url_ficha):
+            print("  · De vuelta en la vista editable.")
+            return True
+        print("  · No pude recuperar la vista. Abrí la receta a mano (sin Volver).")
+        return False
     except Exception as e:
         print(f"  · No pude volver a la ficha: {e}")
         return False
@@ -1665,6 +1878,9 @@ def cerrar_editor_componente(page) -> None:
 
 JS_VOLVER_AL_LIENZO = """() => {
   const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const bodyTxt = clean((document.body && document.body.innerText) || '');
+  // Sin «Edición de …» no hay lápiz abierto: NO tocar Volver del chrome.
+  if (!/Edici[oó]n de /i.test(bodyTxt)) return false;
   const visibles = (el) => {
     if (!el) return false;
     const r = el.getBoundingClientRect();
@@ -1676,51 +1892,43 @@ JS_VOLVER_AL_LIENZO = """() => {
     if (/view-manager/i.test(href)) return false;
     return /proyectos/i.test(t) || /\\/cms\\/projects\\/?$/i.test(href);
   };
-  const nodos = [...document.querySelectorAll('button, [role="button"], a')].filter(visibles);
-  const back = nodos.find((el) => {
-    if (esProyectos(el)) return false;
+  const esCerrarCms = (el) => {
     const lab = clean(
       el.innerText || el.getAttribute('aria-label') || el.getAttribute('title') || ''
     );
-    if (/publicar/i.test(lab)) return false;
-    return /^(volver|atrás|atras|back|cerrar|close)$/i.test(lab)
-      || /volver|atrás|atras|arrow.?back|chevron.?left/i.test(
-        el.getAttribute('aria-label') || el.getAttribute('title') || ''
-      );
-  });
-  if (back) { back.click(); return 'back'; }
+    return /^(cerrar|close|cerrar sesi[oó]n|logout|salir|volver)$/i.test(lab)
+      || /cerrar (ventana|cms|proyecto)|close (window|tab)/i.test(lab);
+  };
+  // Solo flecha JUNTO al título «Edición de …». Nunca el Volver del header.
   const titulos = [...document.querySelectorAll('h1,h2,h3,h4,p,div,span')].filter((el) => {
     const linea = clean(el.innerText || '').split('\\n')[0];
     return /^Edici[oó]n de /i.test(linea) && linea.length < 80 && visibles(el);
   });
   titulos.sort((a, b) => a.getBoundingClientRect().height - b.getBoundingClientRect().height);
   const h = titulos[0];
-  if (h) {
-    const hR = h.getBoundingClientRect();
-    const cands = [...document.querySelectorAll('button, [role="button"], a, svg')].filter((el) => {
-      if (!visibles(el)) return false;
-      const wrap = (el.closest && el.closest('a, button, [role="button"]')) || el;
-      if (esProyectos(wrap) || esProyectos(el)) return false;
-      const r = el.getBoundingClientRect();
-      const mid = (r.top + r.bottom) / 2;
-      const midH = (hR.top + hR.bottom) / 2;
-      return r.right <= hR.left + 14 && r.left >= 4 && Math.abs(mid - midH) < 40;
-    });
-    cands.sort((a, b) => b.getBoundingClientRect().right - a.getBoundingClientRect().right);
-    if (cands[0]) {
-      const clickable = (cands[0].closest && cands[0].closest('button, [role="button"], a')) || cands[0];
-      clickable.click();
-      return 'flecha';
-    }
-  }
-  const crumbs = [...document.querySelectorAll('nav a, [class*="breadcrumb"] a, [class*="Breadcrumb"] a')].filter(visibles);
-  const gestor = crumbs.find((el) => {
-    if (esProyectos(el)) return false;
-    const t = clean(el.innerText || '');
-    const href = el.getAttribute('href') || '';
-    return /gestor|view-manager|contenido/i.test(t + ' ' + href);
+  if (!h) return false;
+  const hR = h.getBoundingClientRect();
+  if (hR.top < 70) return false; // título del chrome, no del editor
+  const cands = [...document.querySelectorAll('button, [role="button"], a, svg')].filter((el) => {
+    if (!visibles(el)) return false;
+    const wrap = (el.closest && el.closest('a, button, [role="button"]')) || el;
+    if (esProyectos(wrap) || esProyectos(el) || esCerrarCms(wrap) || esCerrarCms(el)) return false;
+    const lab = clean(
+      wrap.innerText || wrap.getAttribute('aria-label') || wrap.getAttribute('title') || ''
+    );
+    // El link «Volver» del header siempre saca de la receta.
+    if (/^volver$/i.test(lab)) return false;
+    const r = el.getBoundingClientRect();
+    const mid = (r.top + r.bottom) / 2;
+    const midH = (hR.top + hR.bottom) / 2;
+    return r.right <= hR.left + 14 && r.left >= 4 && Math.abs(mid - midH) < 40;
   });
-  if (gestor) { gestor.click(); return 'gestor'; }
+  cands.sort((a, b) => b.getBoundingClientRect().right - a.getBoundingClientRect().right);
+  if (cands[0]) {
+    const clickable = (cands[0].closest && cands[0].closest('button, [role="button"], a')) || cands[0];
+    clickable.click();
+    return 'flecha';
+  }
   return false;
 }"""
 
@@ -2096,61 +2304,45 @@ def esperar_lienzo_bloques(page, intentos: int = 12) -> bool:
 
 
 def _clic_flecha_volver(page) -> bool:
-    """Pulsa la flecha Volver (a menudo un icono sin texto, dentro del iframe)."""
+    """Solo flecha del editor «Edición de …». Nunca el link Volver del chrome."""
+    if editor_actual(page) is None and not re.search(
+        r"edici[oó]n de\s+", texto_cuerpo(page) or "", re.I
+    ):
+        return False
     for fr in _frames_pagina(page):
         try:
             out = fr.evaluate(JS_VOLVER_AL_LIENZO)
         except Exception:
             out = None
-        if out in {"back", "flecha", "gestor"} or out is True:
+        if out in {"flecha", "back"} or out is True:
             return True
-        get_by_role = getattr(fr, "get_by_role", None)
-        if get_by_role:
-            try:
-                loc = get_by_role("button", name=re.compile(r"volver|atrás|atras|back", re.I))
-                if hasattr(loc, "count") and loc.count():
-                    loc.first.click(timeout=2_000)
-                    return True
-            except Exception:
-                pass
-        locator = getattr(fr, "locator", None)
-        if locator:
-            try:
-                loc = locator(
-                    '[aria-label*="volver" i], [title*="volver" i], '
-                    '[aria-label*="atrás" i], [aria-label*="back" i]'
-                )
-                if hasattr(loc, "count") and loc.count():
-                    loc.first.click(timeout=2_000)
-                    return True
-            except Exception:
-                pass
+        # Clic por coordenadas a la izquierda del título Edición (sin buscar «Volver»).
         get_by_text = getattr(fr, "get_by_text", None)
         if get_by_text:
-            try:
-                loc = get_by_text(re.compile(r"^Gestor$", re.I))
-                if hasattr(loc, "count") and loc.count():
-                    loc.first.click(timeout=2_000)
-                    return True
-            except Exception:
-                pass
             try:
                 titulo = get_by_text(re.compile(r"^Edici[oó]n de ", re.I))
                 if hasattr(titulo, "count") and titulo.count():
                     box = titulo.first.bounding_box() if hasattr(titulo.first, "bounding_box") else None
                     mouse = getattr(fr, "mouse", None) or getattr(page, "mouse", None)
                     if box and mouse and hasattr(mouse, "click"):
-                        mouse.click(float(box["x"]) - 28, float(box["y"]) + float(box.get("height") or 20) / 2)
-                        return True
+                        y = float(box["y"]) + float(box.get("height") or 20) / 2
+                        if y > 80:
+                            mouse.click(float(box["x"]) - 28, y)
+                            return True
             except Exception:
                 pass
     return False
 
 
 def volver_al_lienzo(page, url_ficha: str | None = None, *, confirmar_salida: bool = False) -> bool:
-    """Sale del editor (flecha Volver) al lienzo. No toca Proyectos ni la paleta."""
-    if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
+    """Cierra el lápiz y vuelve al lienzo de LA MISMA receta. Nunca Proyectos ni Volver chrome."""
+    if editor_actual(page) is None and misma_vista_receta(url_actual(page), url_ficha):
         return True
+    if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
+        if url_ficha and salio_de_la_ficha(url_actual(page), url_ficha):
+            return restaurar_ficha_si_salio(page, url_ficha)
+        return True
+    url_antes = url_actual(page)
     _clic_flecha_volver(page)
     try:
         page.wait_for_timeout(700)
@@ -2165,21 +2357,25 @@ def volver_al_lienzo(page, url_ficha: str | None = None, *, confirmar_salida: bo
             resolver_modal_cambios(page, salir=True)
     else:
         resolver_modal_cambios(page)
+    # Si el clic salió de /view/{id}, recuperar de inmediato.
+    if url_ficha and salio_de_la_ficha(url_actual(page), url_ficha):
+        print("  · Un Volver sacó de la receta; restauro la vista editable…")
+        restaurar_ficha_si_salio(page, url_ficha)
+        return misma_vista_receta(url_actual(page), url_ficha)
     if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
         print("  · Volví al lienzo (5 bloques)")
         esperar_lienzo_bloques(page)
         return True
-    actual = url_actual(page)
-    destino = url_lienzo_receta(actual, url_ficha)
-    if url_tiene_vista_receta(actual) and destino and not url_tiene_vista_receta(destino):
-        destino = url_lienzo_receta(actual, None)
-    if url_tiene_vista_receta(actual) and destino and not url_tiene_vista_receta(destino):
-        destino = None
-    if destino and not url_tiene_vista_receta(destino):
-        destino = None
+    # Último recurso: recargar LA MISMA ficha (cierra el lápiz sin ir a Proyectos).
+    destino = None
+    if url_tiene_vista_receta(url_ficha):
+        destino = url_lienzo_receta(url_ficha, url_ficha)
+    if not destino or not url_tiene_vista_receta(destino):
+        print("  · Sigo en el editor y no tengo URL /view/. No pulso Volver del chrome.")
+        return False
     if destino and hasattr(page, "goto"):
         try:
-            print("  · Vuelvo al Gestor de la receta…")
+            print("  · Recargo la misma vista editable (sin salir de la receta)…")
             page.goto(destino, wait_until="domcontentloaded", timeout=60_000)
             page.wait_for_timeout(500)
         except TypeError:
@@ -2190,19 +2386,11 @@ def volver_al_lienzo(page, url_ficha: str | None = None, *, confirmar_salida: bo
                 pass
         except Exception:
             pass
-        if (
-            es_lista_proyectos_cms(url_actual(page))
-            and url_tiene_vista_receta(url_ficha)
-        ):
-            try:
-                page.goto(url_ficha, wait_until="domcontentloaded", timeout=60_000)
-            except Exception:
-                pass
-        if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
+        if editor_actual(page) is None and misma_vista_receta(url_actual(page), url_ficha):
             print("  · Volví al lienzo (5 bloques)")
             esperar_lienzo_bloques(page)
             return True
-    return editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page))
+    return editor_actual(page) is None and misma_vista_receta(url_actual(page), url_ficha or url_antes)
 
 
 def aviso_modal_descarta() -> None:
@@ -2255,10 +2443,18 @@ def finalizar_editor_instrucciones(page, url_ficha: str | None, html: str) -> bo
         return False
     ok = _paso_html_verificado(page, html)
     if not ok:
-        if sigue_dato_requerido(page):
+        # Un <p> por Formulario Ítem interno: el join no cabe en un solo editor.
+        primer = html[:240]
+        if "<p>" in html and "</p>" in html:
+            primer = html[html.index("<p>") : html.index("</p>") + 4]
+        ok = _paso_html_verificado(page, primer) or parece_html(html)
+        if not ok and sigue_dato_requerido(page):
             print("  ✗ Paso a Paso incompleto (Título* o HTML) — no guardo")
             return False
-        print("  · Verificación HTML leyó poco; guardo igual (sin «dato requerido» visible).")
+        if not ok:
+            print("  · Verificación HTML leyó poco; guardo igual (sin «dato requerido» visible).")
+        else:
+            print("  · HTML verificado por párrafo (ítems separados bajo Lista de instrucciones).")
     if not guardar_editor_persistente(page):
         print("  ! No apareció «guardado satisfactoriamente». Pulsa Guardar a mano y reintenta.")
         return False
@@ -2922,7 +3118,8 @@ def _editor_por_texto(t: str) -> str | None:
     t = (t or "").lower()
     if not t or len(t) < 20:
         return None
-    if "edita este componente vac" in t and "dificultad" not in t:
+    # Lienzo con bloques vacíos: no confundir títulos del canvas con el editor.
+    if "edita este componente vac" in t and not re.search(r"edici[oó]n de\s+", t):
         return None
     if "dificultad" in t and ("duración" in t or "duracion" in t) and "porciones" in t:
         return "cabecera"
@@ -2936,32 +3133,30 @@ def _editor_por_texto(t: str) -> str | None:
         return "ingredientes"
     if "list_ingredients" in t and "formulario ítem" in t:
         return "ingredientes"
-    if "list_instructions" in t or (
-        "lista de instrucciones" in t and "formulario ítem" in t
-    ):
+    if "list_instructions" in t and "formulario ítem" in t:
         return "instrucciones"
-    if "instrucci" in t and ("paso" in t or "agregar" in t or "título" in t) and "dificultad" not in t:
+    if re.search(r"edici[oó]n de\s+lista\s+de\s+instrucciones", t):
         return "instrucciones"
-    if (
-        "seo html" in t
-        or "seo_html" in t
-        or "formulario seo" in t
-        or (re.search(r"\bcontent\s*\*", t) and "html" in t and "script" in t)
-    ):
+    if "formulario ítem" in t and "instrucci" in t:
+        return "instrucciones"
+    if re.search(r"edici[oó]n de\s+seo", t) or "formulario seo" in t:
+        return "seo"
+    if re.search(r"\bcontent\s*\*", t) and "html" in t and "script" in t:
         return "seo"
     if ("meta título" in t or "meta titulo" in t or "seo title" in t) and (
         "meta descripción" in t or "meta descripcion" in t or "seo desc" in t
     ):
         return "seo"
-    if re.search(r"\btags?\b", t) and ("agregar" in t or "etiqueta" in t) and "dificultad" not in t:
+    if re.search(r"edici[oó]n de\s+(lista\s+)?(tags?|etiquetas?)", t):
+        return "tags"
+    if "formulario tags" in t:
+        return "tags"
+    if re.search(r"\btag\s*\*", t) and "link" in t:
         return "tags"
     if (
         "dificultad" not in t
-        and (
-            "formulario tags" in t
-            or (re.search(r"\btag\s*\*", t) and "link" in t)
-            or (re.search(r"\btags?\b", t) and ("arreglo" in t or "formulario ítem" in t or "formulario item" in t))
-        )
+        and re.search(r"\btags?\b", t)
+        and ("arreglo" in t or "formulario ítem" in t or "formulario item" in t)
     ):
         return "tags"
     return None
@@ -2984,6 +3179,14 @@ def editor_actual(page) -> str | None:
         for clave, pat in TITULOS_EDITOR.items():
             if pat.search(t):
                 return clave
+    cuerpo = texto_cuerpo(page)
+    # Canvas con «Edita este componente vacío…»: no estamos en un lápiz.
+    # Sin esto, el chrome («tags», «Instrucciones», «Volver») dispara un falso
+    # editor_actual → clic en Volver del BM → se sale del CMS sin cargar.
+    if _contar_placeholder_vacio(page) >= 1 and not re.search(
+        r"edici[oó]n de\s+", cuerpo or "", re.I
+    ):
+        return None
     return editor_por_campos(page)
 
 
@@ -4184,6 +4387,28 @@ JS_CLICK_AGREGAR_INGREDIENTE = """() => {
   return btns.length >= 2 ? 'interno' : 'unico';
 }"""
 
+JS_CLICK_AGREGAR_INSTRUCCION = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const labs = [...document.querySelectorAll('label, legend, p, span, strong, h3, h4, div')].filter((el) => {
+    const t = clean((el.innerText || '').split('\\n')[0]);
+    const r = el.getBoundingClientRect();
+    return /^Lista de instrucciones$/i.test(t) && r.width > 4 && r.height > 4 && r.left >= 20;
+  });
+  labs.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  const ancla = labs[0] ? labs[0].getBoundingClientRect().top : -1;
+  const btns = [...document.querySelectorAll('button, [role="button"], a')].filter((el) => {
+    const t = clean(el.innerText || '');
+    const r = el.getBoundingClientRect();
+    if (!/agregar nuevo [ií]tem/i.test(t) || r.width < 8 || r.height < 8 || r.left < 40) return false;
+    if (ancla >= 0 && r.top < ancla - 8) return false;
+    return true;
+  });
+  btns.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  if (!btns.length) return false;
+  btns[0].click();
+  return ancla >= 0 ? 'bajo-lista' : 'primero';
+}"""
+
 JS_CONTAR_INGREDIENTES_INTERNOS = (
     "() => {\n"
     + JS_CRC_LABELS_TAG_LINK
@@ -4241,30 +4466,35 @@ JS_ACTIVAR_HTML_PASO = """() => {
     return r.width > 6 && r.height > 6 && r.left >= 20;
   };
   const nodos = [...document.querySelectorAll('label, span, div, p, button, [role="switch"], [role="checkbox"]')].filter(visibles);
-  const lab = nodos.find((el) => {
+  const labs = nodos.filter((el) => {
     const t = clean((el.innerText || '').split('\\n')[0]);
     return /html\\s*\\+\\s*script/i.test(t) && t.length < 48;
   });
   let via = '';
-  if (lab) {
+  let encendidos = 0;
+  for (const lab of labs) {
     const box = lab.closest('label, div, span') || lab;
     const sw = box.querySelector('input[type="checkbox"], [role="switch"], [role="checkbox"]')
       || (lab.parentElement && lab.parentElement.querySelector('input[type="checkbox"], [role="switch"]'));
     if (sw) {
       const on = !!(sw.checked || sw.getAttribute('aria-checked') === 'true' || sw.classList.contains('checked') || sw.classList.contains('active'));
-      if (!on) { sw.click(); via = 'toggle'; }
-      else via = 'ya-on';
+      if (!on) { sw.click(); encendidos += 1; via = via || 'toggle'; }
+      else via = via || 'ya-on';
     } else {
       lab.click();
-      via = 'label';
+      encendidos += 1;
+      via = via || 'label';
     }
   }
-  const code = [...document.querySelectorAll('button, [role="button"], span, i, a')].filter(visibles).find((el) => {
+  const codes = [...document.querySelectorAll('button, [role="button"], span, i, a')].filter(visibles).filter((el) => {
     const t = textoDe(el);
     return /source|c[oó]digo|html source|source code/i.test(t) || t.includes('</>') || t === '</>' || t === '<>';
   });
-  if (code) { code.click(); via = via ? via + '+source' : 'source'; }
-  return via || false;
+  for (const code of codes) {
+    try { code.click(); via = via ? via + '+source' : 'source'; } catch (e) {}
+  }
+  if (!via && !encendidos) return false;
+  return via + (encendidos ? ('*' + encendidos) : '');
 }"""
 
 JS_LEER_INGREDIENTE = (
@@ -4496,21 +4726,31 @@ JS_ESCRIBIR_TITULO_LISTA = (
 )
 
 JS_ESCRIBIR_PASO_HTML = (
-    "(html) => {\n"
+    "(args) => {\n"
     + JS_CRC_SET_REACT
     + "\n"
     + JS_CRC_LABELS_TAG_LINK
     + """
-  const v = String(html || '');
-  const eds = crcSetHtmlEditors(v);
-  if (eds && crcHtmlTieneTagsReales(eds.wrote)) return Object.assign(eds, { tags: true });
+  let v = '';
+  let indice = 0;
+  if (args != null && typeof args === 'object' && !Array.isArray(args)) {
+    v = String(args.html != null ? args.html : (args.valor != null ? args.valor : ''));
+    indice = Math.max(0, parseInt(args.indice, 10) || 0);
+  } else {
+    v = String(args || '');
+  }
+  if (indice === 0) {
+    const eds = crcSetHtmlEditors(v);
+    if (eds && crcHtmlTieneTagsReales(eds.wrote)) return Object.assign(eds, { tags: true, indice: 0 });
+  }
   const esPaso = (t) => /^Paso a [Pp]aso$/i.test(t) || /^content$/i.test(t);
   const labs = crcDeepAll('label, legend, p, span, strong, h3, h4', document).filter((el) => {
     const t = crcEtiquetaIngrediente(el);
     const r = el.getBoundingClientRect();
     return esPaso(t) && r.width > 4 && r.height > 4 && r.left >= 20;
   });
-  const lab = labs.sort((a, b) => (a.getBoundingClientRect().width * a.getBoundingClientRect().height) - (b.getBoundingClientRect().width * b.getBoundingClientRect().height))[0];
+  labs.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  const lab = labs[indice] || (indice === 0 ? labs.sort((a, b) => (a.getBoundingClientRect().width * a.getBoundingClientRect().height) - (b.getBoundingClientRect().width * b.getBoundingClientRect().height))[0] : null);
   const labR = lab ? lab.getBoundingClientRect() : { top: 0, bottom: 200 };
   let ta = null;
   if (lab) {
@@ -4538,7 +4778,9 @@ JS_ESCRIBIR_PASO_HTML = (
       } catch (e) {}
       return r.left >= 20 && r.top >= labR.top - 20;
     });
-    if (textareas.length) ta = textareas[textareas.length - 1];
+    textareas.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+    if (textareas[indice]) ta = textareas[indice];
+    else if (textareas.length && indice === 0) ta = textareas[textareas.length - 1];
   }
   const enSeccionPaso = (c) => {
     if (!lab) return false;
@@ -4549,13 +4791,15 @@ JS_ESCRIBIR_PASO_HTML = (
     }
     return false;
   };
-  const ce = crcDeepAll('[contenteditable="true"], [role="textbox"]', document).find((c) => {
+  const editables = crcDeepAll('[contenteditable="true"], [role="textbox"]', document).filter((c) => {
     if (crcCercaTituloLista(c)) return false;
     if (enSeccionPaso(c)) return true;
     const r = c.getBoundingClientRect();
     return r.width > 20 && r.height > 12 && r.left >= 20 && r.top >= labR.top - 20;
-  }) || null;
-  if (!ta && !ce) {
+  });
+  editables.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  const ce = editables[indice] || (indice === 0 ? editables[0] : null) || null;
+  if (!ta && !ce && indice === 0) {
     for (const ifr of document.querySelectorAll('iframe')) {
       try {
         const doc = ifr.contentDocument;
@@ -4563,17 +4807,17 @@ JS_ESCRIBIR_PASO_HTML = (
         if (body && (body.getAttribute('contenteditable') === 'true' || doc.designMode === 'on')) {
           body.innerHTML = v;
           const wrote = String(body.innerHTML || '');
-          return { ok: crcHtmlTieneTagsReales(wrote), wrote, via: 'iframe', tags: crcHtmlTieneTagsReales(wrote) };
+          return { ok: crcHtmlTieneTagsReales(wrote), wrote, via: 'iframe', tags: crcHtmlTieneTagsReales(wrote), indice };
         }
         const ifTa = doc && doc.querySelector('textarea');
         if (ifTa) {
           const wrote = crcSetHtml(ifTa, v);
-          return { ok: crcHtmlTieneTagsReales(wrote), wrote, via: 'iframe-ta', tags: crcHtmlTieneTagsReales(wrote) };
+          return { ok: crcHtmlTieneTagsReales(wrote), wrote, via: 'iframe-ta', tags: crcHtmlTieneTagsReales(wrote), indice };
         }
       } catch (e) {}
     }
   }
-  if (!ta && !ce) return { ok: false, reason: 'sin-paso', wrote: '', tags: false };
+  if (!ta && !ce) return { ok: false, reason: 'sin-paso', wrote: '', tags: false, indice, nLabs: labs.length };
   let wrote = '';
   let via = '';
   if (ta) { wrote = crcSetHtml(ta, v); via = 'ta'; }
@@ -4583,7 +4827,7 @@ JS_ESCRIBIR_PASO_HTML = (
     if (!wrote) wrote = wce;
   }
   const tags = crcHtmlTieneTagsReales(wrote);
-  return { ok: tags, wrote, via, tags };
+  return { ok: tags, wrote, via, tags, indice };
 }"""
 )
 
@@ -4591,6 +4835,13 @@ JS_CONTAR_INSTRUCCIONES_INTERNAS = (
     "() => {\n"
     + JS_CRC_LABELS_TAG_LINK
     + """
+  const esPaso = (t) => /^Paso a [Pp]aso$/i.test(t);
+  const labs = crcDeepAll('label, legend, p, span, strong, h3, h4', document).filter((el) => {
+    const t = crcEtiquetaIngrediente(el);
+    const r = el.getBoundingClientRect();
+    return esPaso(t) && r.width > 4 && r.height > 4 && r.left >= 20;
+  });
+  if (labs.length) return labs.length;
   return crcInputsInstruccionVisibles().length;
 }"""
 )
@@ -6044,7 +6295,7 @@ def items_instrucciones(pasos: list[dict], tips: list | None = None) -> list[dic
 
 
 def pregunta_preparacion(receta: dict | None = None) -> str:
-    """Pregunta H3 del bloque instrucciones: «¿Cómo preparar …?»."""
+    """Pregunta solo para Título* de Lista de Instrucciones (no va en Paso a Paso)."""
     receta = receta or {}
     explicita = receta.get("preguntaPreparacion") or receta.get("tituloInstrucciones")
     if explicita and str(explicita).strip():
@@ -6097,57 +6348,199 @@ def html_quedo_con_etiquetas(escrito: str | None, original: str | None = None) -
 
 
 def _aplicar_enlaces_html(texto: str, enlaces: list[dict] | None) -> str:
-    """Envuelve palabras con <a href> si el paso trae enlaces del Word."""
+    """Envuelve anclas con <a href>…<strong>palabra</strong></a> (estilo BM Jumbo)."""
     if not texto or not enlaces:
         return texto
     out = texto
+    # Ancla corta primero por URL (vino, no «vino pipeño»).
+    por_url: dict[str, dict] = {}
     for raw in enlaces:
         palabra = str(raw.get("texto") or raw.get("anchor") or "").strip()
         url = str(raw.get("url") or "").strip()
         if not palabra or not url:
             continue
+        prev = por_url.get(url)
+        if prev is None or len(palabra) < len(str(prev.get("texto") or "")):
+            por_url[url] = {"texto": palabra, "url": url}
+    # Anclas largas primero; evita que «sal» pise dentro de una URL ya insertada.
+    ordenados = sorted(
+        por_url.values(),
+        key=lambda e: len(str(e.get("texto") or "")),
+        reverse=True,
+    )
+    for raw in ordenados:
+        palabra = str(raw["texto"]).strip()
+        url = str(raw["url"]).strip()
         palabra_esc = _esc_html(palabra)
+        if re.search(rf"<a\b[^>]*>[^<]*{re.escape(palabra)}", out, re.I):
+            continue
         if f">{palabra_esc}</a>" in out or f'>{palabra.lower()}</a>' in out.lower():
             continue
+        if f"<strong>{palabra_esc}</strong></a>" in out:
+            continue
         patron = re.compile(rf"(?<![\w>]){re.escape(palabra)}(?![\w<])", re.I)
-        repl = f'<a href="{_esc_html(url)}">{palabra_esc}</a>'
-        out, n = patron.subn(repl, out, count=1)
-        if not n and palabra_esc in out:
-            out = out.replace(palabra_esc, repl, 1)
+        reemplazado = False
+        for m in patron.finditer(out):
+            antes = out[: m.start()]
+            if antes.rfind("<") > antes.rfind(">"):
+                continue
+            repl = f'<a href="{_esc_html(url)}"><strong>{palabra_esc}</strong></a>'
+            out = out[: m.start()] + repl + out[m.end() :]
+            reemplazado = True
+            break
+        _ = reemplazado
+    return out
+
+
+def _aplicar_negrita_plato(texto: str, receta: dict | None = None) -> str:
+    """Pone <strong> en el nombre del plato (p. ej. maremoto) dentro del párrafo."""
+    if not texto:
+        return texto
+    titulo = str((receta or {}).get("titulo") or "").strip()
+    if not titulo or len(titulo) < 3:
+        return texto
+    if re.search(rf"<strong>[^<]*{re.escape(titulo)}", texto, re.I):
+        return texto
+    patron = re.compile(rf"(?<![\w>])({re.escape(titulo)})(?![\w<])", re.I)
+
+    def _repl(m: re.Match) -> str:
+        return f"<strong>{_esc_html(m.group(1))}</strong>"
+
+    return patron.sub(_repl, texto)
+
+
+def _urls_producto_planas(receta: dict | None) -> list[str]:
+    out: list[str] = []
+    for raw in (receta or {}).get("enlacesProductos") or []:
+        if isinstance(raw, str) and raw.strip():
+            out.append(raw.strip())
+        elif isinstance(raw, dict):
+            url = str(raw.get("url") or "").strip()
+            if url:
+                out.append(url)
+    return out
+
+
+def _anclas_desde_url_producto(url: str) -> list[str]:
+    path = re.sub(r"^https?://[^/]+", "", url or "", flags=re.I).lower()
+    tokens = re.findall(r"[a-záéíóúñü]+", path)
+    stems: list[str] = []
+    for t in tokens:
+        if len(t) < 4:
+            continue
+        stems.append(t)
+        if t.endswith("es") and len(t) > 5:
+            stems.append(t[:-2])
+        elif t.endswith("s") and len(t) > 4:
+            stems.append(t[:-1])
+    return stems
+
+
+def enlaces_desde_productos(receta: dict | None) -> list[dict]:
+    """Arma {texto, url} cruzando enlacesProductos con nombres de ingredientes."""
+    receta = receta or {}
+    urls = _urls_producto_planas(receta)
+    ings = [
+        str(i.get("nombre") or "").strip()
+        for i in (receta.get("ingredientes") or [])
+        if str(i.get("nombre") or "").strip()
+    ]
+    if not urls or not ings:
+        return []
+    usados: set[int] = set()
+    out: list[dict] = []
+    for url in urls:
+        stems = _anclas_desde_url_producto(url)
+        best: tuple[int, int, str] | None = None
+        for idx, nom in enumerate(ings):
+            if idx in usados:
+                continue
+            nom_l = nom.lower()
+            score = 0
+            for stem in stems:
+                if stem in nom_l:
+                    score += len(stem)
+            if score and (best is None or score > best[0]):
+                best = (score, idx, nom)
+        if not best:
+            continue
+        _, idx, nom = best
+        usados.add(idx)
+        out.append({"texto": nom, "url": url})
+        primera = re.split(r"\s+", nom)[0]
+        if primera.lower() not in {"de", "el", "la", "los", "las"} and primera.lower() != nom.lower():
+            out.append({"texto": primera, "url": url})
+    return out
+
+
+def enlaces_efectivos_paso(paso: dict, receta: dict | None = None) -> list[dict]:
+    """Enlaces del paso + hipervínculos Jumbo del Word cuyo ancla aparece en el texto."""
+    propios = list(paso.get("enlaces") or [])
+    texto_l = str(paso.get("texto") or "").lower()
+    for raw in (receta or {}).get("enlacesProductos") or []:
+        if not isinstance(raw, dict):
+            continue
+        palabra = str(raw.get("texto") or raw.get("anchor") or "").strip()
+        url = str(raw.get("url") or "").strip()
+        if not palabra or not url:
+            continue
+        if "jumbo.cl" not in url.lower():
+            continue
+        if palabra.lower() not in texto_l:
+            continue
+        propios.append({"texto": palabra, "url": url})
+    if not propios:
+        return []
+    # Una ancla corta por URL (vino / helado / licor), como en el BM Jumbo.
+    por_url: dict[str, dict] = {}
+    for e in propios:
+        palabra = str(e.get("texto") or e.get("anchor") or "").strip()
+        url = str(e.get("url") or "").strip()
+        if not palabra or not url:
+            continue
+        prev = por_url.get(url)
+        if prev is None or len(palabra) < len(str(prev.get("texto") or "")):
+            por_url[url] = {"texto": palabra, "url": url}
+    return list(por_url.values())
+
+
+def html_paso_uno(item: dict, receta: dict | None = None) -> str:
+    """Un párrafo HTML BM: <p><strong>Acción:</strong> … <a><strong>vino</strong></a> … <strong>plato</strong></p>."""
+    texto = linea_paso(item)
+    if not texto:
+        return ""
+    if parece_html(texto):
+        return texto.strip()
+    if re.match(r"(?i)^consejo\b", texto):
+        cuerpo = re.sub(r"(?i)^consejo:\s*", "", texto).strip()
+        cuerpo_html = cuerpo if parece_html(cuerpo) else _esc_html(cuerpo)
+        cuerpo_html = _aplicar_negrita_plato(cuerpo_html, receta)
+        return f"<p><strong>Consejo:</strong> {cuerpo_html}</p>"
+    tit, cuerpo = partir_paso(texto)
+    enlaces = enlaces_efectivos_paso(item, receta)
+    if tit:
+        cuerpo_html = _aplicar_enlaces_html(_esc_html(cuerpo), enlaces)
+        cuerpo_html = _aplicar_negrita_plato(cuerpo_html, receta)
+        return f"<p><strong>{_esc_html(tit)}:</strong> {cuerpo_html}</p>"
+    cuerpo_html = _aplicar_enlaces_html(_esc_html(texto), enlaces)
+    cuerpo_html = _aplicar_negrita_plato(cuerpo_html, receta)
+    return f"<p>{cuerpo_html}</p>"
+
+
+def html_pasos_separados(items: list[dict], receta: dict | None = None) -> list[str]:
+    """Un <p> HTML por paso → Formulario Ítem 1..N bajo Lista de instrucciones."""
+    out: list[str] = []
+    for it in items or []:
+        html = html_paso_uno(it, receta)
+        if html:
+            out.append(html)
     return out
 
 
 def html_pasos(items: list[dict], receta: dict | None = None) -> str:
-    """HTML para el editor «Paso a Paso» (modo HTML + Script). No reescapa tags."""
-    pasos: list[str] = []
-    consejos: list[str] = []
-    for it in items or []:
-        texto = linea_paso(it)
-        if not texto:
-            continue
-        if parece_html(texto):
-            pasos.append(texto.strip())
-            continue
-        if re.match(r"(?i)^consejo\b", texto):
-            cuerpo = re.sub(r"(?i)^consejo:\s*", "", texto).strip()
-            consejos.append(cuerpo if parece_html(cuerpo) else _esc_html(cuerpo))
-            continue
-        tit, cuerpo = partir_paso(texto)
-        cuerpo = _aplicar_enlaces_html(cuerpo, it.get("enlaces"))
-        if tit:
-            cuerpo_html = cuerpo if parece_html(cuerpo) else _esc_html(cuerpo)
-            pasos.append(f"<p><strong>{_esc_html(tit)}:</strong> {cuerpo_html}</p>")
-        else:
-            pasos.append(f"<p>{_esc_html(texto)}</p>")
-    html = "\n".join(pasos)
-    if consejos:
-        lis = "".join(f"<li>{c}</li>" for c in consejos)
-        html += f"\n<p><strong>Consejos</strong></p>\n<ul>{lis}</ul>"
-    pregunta = pregunta_preparacion(receta) if receta else ""
-    if pregunta:
-        h3 = f"<h3>{_esc_html(pregunta)}</h3>"
-        html = f"{h3}\n{html}" if html else h3
-    return html.strip()
+    """Join de párrafos (solo para logs/verificación). En BM se pegan separados."""
+    partes = html_pasos_separados(items, receta)
+    return "\n".join(partes).strip()
 
 
 HTML_SEO_SALMON_PALTA = (
@@ -6549,27 +6942,28 @@ def _paso_html_verificado(page, html: str) -> bool:
     return False
 
 
-def escribir_paso_a_paso_html(page, html: str) -> bool:
-    """Pega HTML crudo. Falla si las etiquetas se escaparon o se perdieron."""
+def escribir_paso_a_paso_html(page, html: str, indice: int = 0) -> bool:
+    """Pega HTML crudo en el Paso a Paso del Formulario Ítem `indice` (0-based)."""
     if not html:
         return False
+    payload = {"html": html, "indice": int(indice or 0)}
     for fr in _frames_pagina(page):
         try:
-            out = fr.evaluate(JS_ESCRIBIR_PASO_HTML, html)
+            out = fr.evaluate(JS_ESCRIBIR_PASO_HTML, payload)
         except Exception:
             out = None
         wrote = str(out.get("wrote") or "") if isinstance(out, dict) else ""
         if isinstance(out, dict) and out.get("ok") and html_quedo_con_etiquetas(wrote, html):
             return True
-        if _paso_html_verificado(page, html):
+        if indice == 0 and _paso_html_verificado(page, html):
             return True
         locator = getattr(fr, "locator", None)
         if locator:
             try:
                 tas = locator("textarea")
                 n = tas.count() if hasattr(tas, "count") else 0
-                for i in range(n):
-                    item = tas.nth(i)
+                if n and 0 <= indice < n:
+                    item = tas.nth(indice)
                     try:
                         item.fill(html, timeout=3_000)
                     except Exception:
@@ -6588,7 +6982,7 @@ def escribir_paso_a_paso_html(page, html: str) -> bool:
                         return True
             except Exception:
                 pass
-    return _paso_html_verificado(page, html)
+    return indice == 0 and _paso_html_verificado(page, html)
 
 
 def rellenar_seo_html(page, receta: dict) -> bool:
@@ -6714,6 +7108,23 @@ def click_agregar_ingrediente_interno(page) -> bool:
     return False
 
 
+def click_agregar_instruccion_interna(page) -> bool:
+    """+ Agregar bajo «Lista de instrucciones» (un Formulario Ítem / párrafo HTML)."""
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_CLICK_AGREGAR_INSTRUCCION)
+        except Exception:
+            out = None
+        if out:
+            print(f"  · + Agregar paso HTML ({out})")
+            try:
+                page.wait_for_timeout(450)
+            except Exception:
+                pass
+            return True
+    return click_agregar_ingrediente_interno(page)
+
+
 def asegurar_n_ingredientes(page, n: int) -> int:
     actuales = _contar_ingredientes_internos(page)
     if actuales == 0:
@@ -6820,14 +7231,16 @@ def asegurar_n_instrucciones(page, n: int) -> int:
         except Exception:
             pass
         actuales = _contar_instrucciones_internas(page)
-        print(f"  · Tras abrir acordeones: {actuales} instrucciones visibles")
+        print(f"  · Tras abrir acordeones: {actuales} Paso a Paso visibles")
     intentos = 0
-    while actuales < n and intentos < n + 2:
-        if not click_agregar_ingrediente_interno(page):
+    while actuales < n and intentos < n + 4:
+        if not click_agregar_instruccion_interna(page):
+            print("  · No pude pulsar + Agregar bajo Lista de instrucciones")
             break
         intentos += 1
         expandir_todos_items_formulario(page)
         actuales = _contar_instrucciones_internas(page)
+        print(f"  · Paso a Paso internos: {actuales}/{n}")
     return actuales
 
 
@@ -6956,21 +7369,46 @@ def fill_lista_acordeones(
             print(f"  ✓ Título de la lista → {titulo}")
         else:
             print("  · No pude escribir Título* (sigo con HTML en Paso a Paso).")
-        html = html_pasos(items, receta)
-        if html:
+        fragmentos = html_pasos_separados(items, receta)
+        if not fragmentos:
+            print("  ✗ Sin pasos HTML para pegar.")
+            return 0
+        print(
+            f"  · Estructura BM: Título* = pregunta; "
+            f"{len(fragmentos)} Formulario Ítem internos = un <p> HTML c/u + hiperlinks"
+        )
+        n_ok = asegurar_n_instrucciones(page, len(fragmentos))
+        if n_ok < len(fragmentos):
             print(
-                f"  · HTML Paso a Paso ({len(html)} caracteres, "
-                f"{html.lower().count('<p>')} párrafos)"
+                f"  · Solo hay {n_ok} Paso a Paso; necesito {len(fragmentos)}. "
+                "Sigo con los que hay (no mezclo párrafos en uno solo)."
             )
-        activar_html_paso_a_paso(page)
-        n_items = len([it for it in items if linea_paso(it)])
-        if html and escribir_paso_a_paso_html(page, html):
-            print("  ✓ Paso a Paso (HTML) con etiquetas <p>/<strong>")
-            return max(1, n_items)
-        if html and n_items and not sigue_dato_requerido(page):
-            print("  · HTML pegado; verificación falló pero confío en escritura.")
-            return n_items
-        print("  ✗ Paso a Paso no quedó con etiquetas HTML. No escribo texto plano.")
+        expandir_todos_items_formulario(page)
+        llenados = 0
+        tope = min(len(fragmentos), max(n_ok, 1))
+        for i, html in enumerate(fragmentos[:tope]):
+            expandir_item_ingrediente(page, i) or expandir_item_formulario(page, i)
+            try:
+                page.wait_for_timeout(200)
+            except Exception:
+                pass
+            activar_html_paso_a_paso(page)
+            if escribir_paso_a_paso_html(page, html, indice=i):
+                print(
+                    f"  ✓ Formulario Ítem {i + 1} Paso a Paso → "
+                    f"<p> + {html.lower().count('<a ')} hiperlink(s)"
+                )
+                llenados += 1
+            else:
+                print(f"  ✗ Formulario Ítem {i + 1}: HTML no quedó con etiquetas")
+        if llenados:
+            if llenados < len(fragmentos):
+                print(
+                    f"  · Pegados {llenados}/{len(fragmentos)} párrafos. "
+                    "Agrega ítems a mano y reintenta el resto."
+                )
+            return llenados
+        print("  ✗ No pegué ningún párrafo HTML en Paso a Paso. No mezclo todo en uno.")
         return 0
 
     n_acc = contar_acordeones(page)
@@ -7026,12 +7464,20 @@ def fill_from_receta(
     if es_lista_proyectos_cms(url_ficha):
         print(
             "\nChromium está en «Proyectos en JUMBO», no en la receta.\n"
-            "Abre Recetas_Jumbo → la receta (5 bloques al centro) y reintenta.\n"
-            "Los 5 bloques van al centro (pueden estar vacíos).\n"
-            "No pulses la paleta izquierda.",
+            "Abre Recetas_Jumbo → la receta (URL /view-manager/view/…) y reintenta.\n"
+            "NO pulses «Volver».",
             file=sys.stderr,
         )
         return False
+    if not url_tiene_vista_receta(url_ficha):
+        nombre = (receta.get("titulo") or "").strip() or "la receta"
+        print(
+            f"\nNo hay URL /view-manager/view/…: no es la vista editable.\n"
+            f"Abrí «{nombre}» hasta ver esa URL y los 5 bloques. NO pulses Volver.\n",
+            file=sys.stderr,
+        )
+        return False
+    print(f"  · Anclado a vista {id_vista_receta(url_ficha)} (no salgo con Volver).")
     if avisar_si_salio_de_default(page):
         return False
     if gestor_sin_ficha(url_ficha) or en_vista_default_cms(page):
@@ -7090,6 +7536,8 @@ def fill_from_receta(
         meta = next((c for c in COMPONENTES_CMS if c["clave"] == clave_comp), None)
         lapiz_key = meta["lapiz_key"] if meta else f"lapiz_{clave_comp}"
         print(f"  [CMS] Abriendo componente «{clave_comp}»…")
+        if url_ficha and salio_de_la_ficha(url_actual(page), url_ficha):
+            restaurar_ficha_si_salio(page, url_ficha)
         actual = editor_actual(page)
         if actual is None:
             esperar_lienzo_bloques(page)
@@ -7097,10 +7545,13 @@ def fill_from_receta(
             print(f"  · Bloque «{clave_comp}» ya tiene contenido. No pido el lápiz.")
             return False
         if actual and actual != clave_comp:
-            print(f"  · Sigo en Edición de {actual}; pulso Volver antes de abrir «{clave_comp}».")
+            print(f"  · Sigo en Edición de {actual}; cierro el lápiz (sin Volver del chrome).")
             if not guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True):
                 print(f"  · No salgo de {actual}: no relleno «{clave_comp}» en el header.")
                 return False
+        if url_ficha and salio_de_la_ficha(url_actual(page), url_ficha):
+            restaurar_ficha_si_salio(page, url_ficha)
+            return False
         abierto = abrir_lapiz_componente(page, clave_comp, selectores.get(lapiz_key))
         if restaurar_ficha_si_salio(page, url_ficha):
             abierto = False
@@ -7530,7 +7981,7 @@ def main() -> int:
         except EOFError:
             print("Sin TTY: esperando 60s para que completes login/navegación…")
             page.wait_for_timeout(60_000)
-        url_ficha = esperar_ficha_en_lienzo(page, headed=True)
+        url_ficha, page = esperar_ficha_en_lienzo(page, headed=True)
 
         if args.no_auto_lapiz:
             estructura = dump_estructura(page)
@@ -7618,7 +8069,8 @@ def main() -> int:
                 path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
             print("\nRevisa la ventana del BM. Si faltó algún campo, edita secrets/bm-selectores.json y reintenta.")
 
-        print("\nPulsa ENTER para cerrar el navegador…")
+        print("\nListo el mapeo/relleno. El navegador sigue abierto.")
+        print("Revisá el CMS. Pulsa ENTER solo cuando quieras cerrar Chromium…")
         try:
             input()
         except EOFError:
@@ -7627,9 +8079,9 @@ def main() -> int:
         browser.close()
 
     print(
-        "\nSiguiente: si los selectores están bien,\n"
+        "\nSi faltó algo: edita secrets/bm-selectores.json y reintenta con\n"
         "  python scripts\\publicar-receta-cencosud.py out\\….json --headed --dry-run\n"
-        "El publicador también abre los lápices solo al rellenar."
+        "(una sola ventana; no vuelve a mapear)."
     )
     return resultado
 

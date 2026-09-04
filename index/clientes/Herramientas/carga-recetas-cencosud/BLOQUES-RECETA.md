@@ -40,3 +40,13 @@ Valores válidos: `muy facil` · `facil` · `media` · `dificil` · `absurdament
 ## Ejemplo mínimo
 
 Ver `ejemplos/churrascas-bloques.json`.
+
+## Payload real del CMS (post-carga)
+
+Tras cargar en BM, el JSON de la vista queda con `component`: `cabecera` → `tags` → `list_ingredients` → `list_instructions` → `seo_html`.
+
+Referencia cargada: `ejemplos/torta-de-yogurt-bm-view.json` (+ bloques CRC en `ejemplos/torta-de-yogurt-bloques.json`).
+
+- `complexity`: `"5"` = Difícil · `duration` / `servings` = números
+- Instrucciones: `group[0].title` = pregunta; cada `instruction` = un `<p>` HTML
+- SEO: `seo_html.content` = `<h2>` + `<ul>` de tips

@@ -310,11 +310,22 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             ],
             receta_salmon,
         )
-        self.assertIn("<h3>¿Cómo preparar salmón a la parrilla con salsa de palta?</h3>", html)
-        self.assertIn("<strong>Sazona el salmón:</strong>", html)
-        self.assertIn("Consejos", html)
+        self.assertNotIn("<h3>", html)
+        self.assertNotIn("¿Cómo preparar", html)
+        self.assertIn("<p>", html)
+        self.assertIn("<p><strong>Sazona el salmón:</strong>", html)
+        self.assertIn("<strong>Consejo:</strong>", html)
         self.assertNotIn("&lt;p&gt;", html)
         self.assertNotIn("&lt;strong", html)
+        partes = self.explorar.html_pasos_separados(
+            [
+                {"texto": "Sazona el salmón: Seca los filetes."},
+                {"texto": "Consejo: Cocina el salmón por el lado de la piel."},
+            ],
+            receta_salmon,
+        )
+        self.assertEqual(len(partes), 2)
+        self.assertTrue(all(p.startswith("<p>") and p.endswith("</p>") for p in partes))
         html_enlaces = self.explorar.html_pasos(
             [
                 {
@@ -323,7 +334,7 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
                 }
             ]
         )
-        self.assertIn('<a href="https://www.jumbo.cl/pescado">pescado</a>', html_enlaces)
+        self.assertIn('<a href="https://www.jumbo.cl/pescado"><strong>pescado</strong></a>', html_enlaces)
         salmon = self.explorar.html_pasos(
             [
                 {
@@ -343,6 +354,11 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             ]
         )
         self.assertEqual(salmon.lower().count("<p>"), 2)
+        self.assertEqual(len(self.explorar.html_pasos_separados([
+            {"texto": "Sazona el salmón: Seca los filetes."},
+            {"texto": "Termina la receta: Acomoda el salmón."},
+        ])), 2)
+        self.assertIn("<p>", salmon)
         self.assertIn("Termina la receta", salmon)
         ya_html = "<p><strong>Sazona el salmón:</strong> Seca los filetes.</p>"
         self.assertEqual(self.explorar.html_pasos([{"texto": ya_html}]), ya_html)
@@ -352,6 +368,103 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertFalse(
             self.explorar.html_quedo_con_etiquetas("&lt;p&gt;Sazona&lt;/p&gt;", ya_html)
         )
+        maremoto_html = self.explorar.html_pasos(
+            [
+                {
+                    "texto": (
+                        "Enfría los ingredientes: Mantén el vino pipeño bien frío "
+                        "en el refrigerador y el helado de piña firme. Así, el maremoto se mantiene frío."
+                    ),
+                    "enlaces": [
+                        {
+                            "texto": "vino pipeño",
+                            "url": "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos",
+                        },
+                        {
+                            "texto": "vino",
+                            "url": "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos",
+                        },
+                    ],
+                },
+                {
+                    "texto": (
+                        "Agrega el helado: Coloca una generosa bola de helado de piña."
+                    ),
+                    "enlaces": [
+                        {
+                            "texto": "helado de piña",
+                            "url": "https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres",
+                        },
+                        {
+                            "texto": "helado",
+                            "url": "https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres",
+                        },
+                    ],
+                },
+            ],
+            {
+                "titulo": "Maremoto",
+                "preguntaPreparacion": "¿Cómo preparar maremoto?",
+            },
+        )
+        self.assertNotIn("¿Cómo preparar maremoto?", maremoto_html)
+        self.assertEqual(maremoto_html.lower().count("<p>"), 2)
+        self.assertIn(
+            '<a href="https://www.jumbo.cl/licores-bebidas-y-aguas/vinos"><strong>vino</strong></a>',
+            maremoto_html,
+        )
+        self.assertIn(
+            '<a href="https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres"><strong>helado</strong></a>',
+            maremoto_html,
+        )
+        self.assertIn("<strong>maremoto</strong>", maremoto_html)
+        self.assertNotIn(">vino pipeño</a>", maremoto_html)
+        uno = self.explorar.html_paso_uno(
+            {
+                "texto": (
+                    "Enfría los ingredientes: Mantén el vino pipeño bien frío "
+                    "en el refrigerador. Así, el maremoto se mantiene frío."
+                ),
+                "enlaces": [
+                    {
+                        "texto": "vino",
+                        "url": "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos",
+                    }
+                ],
+            },
+            {"titulo": "Maremoto"},
+        )
+        self.assertEqual(
+            uno,
+            (
+                "<p><strong>Enfría los ingredientes:</strong> Mantén el "
+                '<a href="https://www.jumbo.cl/licores-bebidas-y-aguas/vinos"><strong>vino</strong></a> '
+                "pipeño bien frío en el refrigerador. Así, el "
+                "<strong>maremoto</strong> se mantiene frío.</p>"
+            ),
+        )
+        # Paso sin enlaces del PDF: no inventar hiperlinks
+        sin_link = self.explorar.html_paso_uno(
+            {
+                "texto": (
+                    "Vierte el pipeño: Agrega el vino pipeño bien frío, "
+                    "dejándolo caer suavemente por un costado sobre el helado."
+                )
+            },
+            {
+                "titulo": "Maremoto",
+                "enlacesProductos": [
+                    "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos",
+                    "https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres",
+                ],
+                "ingredientes": [
+                    {"nombre": "vino pipeño"},
+                    {"nombre": "helado de piña"},
+                ],
+            },
+        )
+        self.assertNotIn("<a ", sin_link)
+        self.assertIn("<p><strong>Vierte el pipeño:</strong>", sin_link)
         self.assertIn("crcSetHtml", self.explorar.JS_ESCRIBIR_PASO_HTML)
         self.assertIn("crcHtmlTieneTagsReales", self.explorar.JS_ESCRIBIR_PASO_HTML)
         src_fill = inspect.getsource(self.explorar.fill_lista_acordeones)
@@ -458,9 +571,82 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         class PaginaFicha:
             url = ficha
 
+        url_ok, page_ok = self.explorar.esperar_ficha_en_lienzo(
+            PaginaFicha(), headed=False
+        )
+        self.assertEqual(url_ok, ficha)
+        self.assertIsInstance(page_ok, PaginaFicha)
+
+    def test_adopta_pestana_con_view_id(self):
+        gestor = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager"
+        )
+        ficha = gestor + "/view/6a9b1fd3523988ff99534d29/edit/component_abc"
+
+        class Ctx:
+            def __init__(self, pages):
+                self.pages = pages
+
+        class Pagina:
+            def __init__(self, url, ctx=None):
+                self.url = url
+                self.context = ctx
+                self.frente = False
+
+            def bring_to_front(self):
+                self.frente = True
+
+        p_gestor = Pagina(gestor)
+        p_ficha = Pagina(ficha)
+        ctx = Ctx([p_gestor, p_ficha])
+        p_gestor.context = ctx
+        p_ficha.context = ctx
+
+        page, url = self.explorar.adoptar_pagina_con_ficha(p_gestor)
+        self.assertIs(page, p_ficha)
+        self.assertEqual(url, ficha)
+        self.assertTrue(p_ficha.frente)
         self.assertEqual(
-            self.explorar.esperar_ficha_en_lienzo(PaginaFicha(), headed=False),
-            ficha,
+            self.explorar.url_ancla_ficha(ficha),
+            gestor + "/view/6a9b1fd3523988ff99534d29",
+        )
+
+        with contextlib.redirect_stdout(io.StringIO()):
+            ancla, page2 = self.explorar.esperar_ficha_en_lienzo(
+                p_gestor, headed=False, titulo_receta="Torta de yogurt"
+            )
+        self.assertEqual(ancla, gestor + "/view/6a9b1fd3523988ff99534d29")
+        self.assertIs(page2, p_ficha)
+
+    def test_ir_a_url_ficha_pega_view_id(self):
+        gestor = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager"
+        )
+        ficha = gestor + "/view/6a9b1fd3523988ff99534d29/edit/component_tags"
+
+        class Pagina:
+            def __init__(self):
+                self.url = gestor
+                self.gotos = []
+
+            def goto(self, url, **_kwargs):
+                self.gotos.append(url)
+                self.url = url
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        p = Pagina()
+        with contextlib.redirect_stdout(io.StringIO()):
+            page, url = self.explorar.ir_a_url_ficha(p, ficha)
+        self.assertIs(page, p)
+        self.assertEqual(p.gotos, [ficha])
+        self.assertTrue(self.explorar.url_tiene_vista_receta(url))
+        self.assertEqual(
+            self.explorar.url_ancla_ficha(url),
+            gestor + "/view/6a9b1fd3523988ff99534d29",
         )
 
     def test_opcion_dificultad_no_confunde_muy_facil(self):
@@ -651,7 +837,7 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
                     return "Edición de tags" in self.titulo
                 if "innerText" in texto:
                     if "Edición de tags" in self.titulo:
-                        return "Formulario Tags El dato es requerido"
+                        return "Edición de tags Formulario Tags Tag* Link"
                     return "Cabecera tags Ingredientes Instrucciones SEO"
                 return ""
 
@@ -720,10 +906,74 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         js = self.explorar.JS_VOLVER_AL_LIENZO
         self.assertIn("proyectos", js.lower())
         self.assertIn("view-manager", js)
-        self.assertIn("volver", js.lower())
         self.assertIn("flecha", js)
         self.assertIn("Edici", js)
+        self.assertIn("esCerrarCms", js)
+        self.assertIn("Edici[oó]n de", js)
+        self.assertIn("/^volver$/i", js)
+        self.assertNotIn("return 'back'", js)
+        self.assertNotIn("return 'gestor'", js)
         self.assertIn("El dato es requerido", self.explorar.JS_SIGUE_REQUERIDO_VISIBLE)
+
+    def test_lienzo_vacio_no_es_editor_ni_dispara_volver(self):
+        """Los 5 bloques vacíos del canvas no deben verse como «Edición de…»."""
+        canvas = (
+            "Recetas_Jumbo | web\nVolver\nProyectos\nPaleta de componentes\n"
+            "header\nc4539d\nEdita este componente vacío desde el lápiz\n"
+            "tags\n960ac0\nEdita este componente vacío desde el lápiz\n"
+            "Lista Ingredientes\n0e11e1\nEdita este componente vacío desde el lápiz\n"
+            "Lista de Instrucciones\n857118\nEdita este componente vacío desde el lápiz\n"
+            "SEO HTML\ne78640\nEdita este componente vacío desde el lápiz\n"
+            "Agregar\nHistorial\n"
+        )
+        chrome = "Proyectos en JUMBO\ntags\nAgregar\nLista de Instrucciones\nVolver\n"
+
+        self.assertIsNone(self.explorar._editor_por_texto(canvas))
+        self.assertIsNone(self.explorar._editor_por_texto(chrome))
+
+        class PaginaCanvas:
+            def evaluate(self, script, *_a):
+                s = str(script)
+                if "Edici" in s and "innerText" in s and "querySelectorAll" in s:
+                    return "header tags Lista Ingredientes"
+                if "document.body" in s:
+                    return canvas
+                return ""
+
+            def get_by_text(self, *_a, **_k):
+                class Loc:
+                    def count(self):
+                        return 5
+
+                return Loc()
+
+        self.assertIsNone(self.explorar.editor_actual(PaginaCanvas()))
+        self.assertIn("Edici[oó]n de", self.explorar.JS_VOLVER_AL_LIENZO)
+
+    def test_salio_de_la_ficha_si_pierde_view_id(self):
+        ficha = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager/view/6a9aff2a523988ff994d9891"
+        )
+        gestor = ficha.rsplit("/view/", 1)[0]
+        proyectos = "https://business-manager.ecomm.cencosud.com/cms/projects"
+        self.assertEqual(self.explorar.id_vista_receta(ficha), "6a9aff2a523988ff994d9891")
+        self.assertTrue(self.explorar.misma_vista_receta(ficha + "/edit", ficha))
+        self.assertTrue(self.explorar.salio_de_la_ficha(gestor, ficha))
+        self.assertTrue(self.explorar.salio_de_la_ficha(proyectos, ficha))
+        self.assertFalse(self.explorar.salio_de_la_ficha(ficha, ficha))
+
+    def test_clic_flecha_nunca_busca_volver_por_rol(self):
+        src = inspect.getsource(self.explorar._clic_flecha_volver)
+        self.assertNotIn("get_by_role", src)
+        self.assertNotIn("Gestor", src)
+        self.assertIn("Edici", src)
+
+    def test_volver_al_lienzo_no_recarga_si_sigue_en_ficha(self):
+        src = inspect.getsource(self.explorar.volver_al_lienzo)
+        self.assertIn("misma vista editable", src.lower())
+        self.assertIn("url_tiene_vista_receta(url_ficha)", src)
+        self.assertIn("restaurar_ficha_si_salio", src)
 
     def test_guardar_tags_fuerza_volver_al_siguiente(self):
         src_guardar = inspect.getsource(self.explorar.guardar_y_volver_al_lienzo)
@@ -1058,17 +1308,27 @@ class JsIngredienteExactoTests(unittest.TestCase):
                 "¿Cómo preparar salmón a la parrilla con salsa de palta?",
             )
             self.assertTrue(
-                page.evaluate("() => document.getElementById('html-script').checked")
+                page.evaluate(
+                    "() => [...document.querySelectorAll('.html-script')].every((el) => el.checked)"
+                )
             )
-            html_out = page.evaluate("() => document.getElementById('paso-html').value")
-            self.assertIn("<h3>¿Cómo preparar salmón a la parrilla con salsa de palta?</h3>", html_out)
-            self.assertIn("<strong>Sazona el salmón:</strong>", html_out)
-            self.assertIn("Prepara la salsa de palta", html_out)
-            self.assertNotIn("&lt;p&gt;", html_out)
-            self.assertNotIn("&lt;strong", html_out)
+            html0 = page.evaluate("() => document.getElementById('paso-html-0').value")
+            html1 = page.evaluate("() => document.getElementById('paso-html-1').value")
+            self.assertNotIn("<h3>", html0)
+            self.assertNotIn("¿Cómo preparar", html0)
+            self.assertIn("<p>", html0)
+            self.assertIn("<p><strong>Sazona el salmón:</strong>", html0)
+            self.assertIn("<p><strong>Prepara la salsa de palta:</strong>", html1)
+            self.assertNotIn("Prepara la salsa", html0)
+            self.assertNotIn("&lt;p&gt;", html0)
+            self.assertNotIn("&lt;strong", html0)
             self.assertGreaterEqual(
-                page.evaluate("() => document.querySelectorAll('#wysiwyg strong').length"),
+                page.evaluate("() => document.querySelectorAll('.wysiwyg strong').length"),
                 1,
+            )
+            self.assertGreaterEqual(
+                page.evaluate("() => document.querySelectorAll('[data-paso]').length"),
+                2,
             )
             browser.close()
 
@@ -1089,12 +1349,12 @@ class JsIngredienteExactoTests(unittest.TestCase):
                 "([sel, v]) => { "
                 + self.explorar.JS_CRC_SET_REACT
                 + " return crcSetReact(document.querySelector(sel), v); }",
-                ["#wysiwyg", crudo],
+                [".wysiwyg", crudo],
             )
             self.assertIn("<strong>", wrote)
             self.assertNotIn("&lt;strong", wrote)
             self.assertEqual(
-                page.evaluate("() => document.querySelectorAll('#wysiwyg strong').length"),
+                page.evaluate("() => document.querySelectorAll('.wysiwyg strong').length"),
                 1,
             )
             out = page.evaluate(self.explorar.JS_ESCRIBIR_PASO_HTML, crudo)
@@ -1102,7 +1362,7 @@ class JsIngredienteExactoTests(unittest.TestCase):
             self.assertTrue(out.get("tags"), out)
             self.assertIn("<strong>", str(out.get("wrote") or ""))
             self.assertNotIn("&lt;p&gt;", str(out.get("wrote") or ""))
-            ta = page.evaluate("() => document.getElementById('paso-html').value")
+            ta = page.evaluate("() => document.getElementById('paso-html-0').value")
             self.assertIn("<p>", ta)
             self.assertIn("<strong>Sazona el salmón:</strong>", ta)
             self.assertNotIn("&lt;p&gt;", ta)

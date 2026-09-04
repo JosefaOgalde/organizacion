@@ -41,7 +41,7 @@
     <p>
       Se hace <strong>en tu PC</strong> con tu usuario de
       <a href="https://business-manager.ecomm.cencosud.com/" target="_blank" rel="noopener">Business Manager</a>.
-      No hace falta otra máquina: Chromium se abre en tu pantalla (ADFS / MFA a mano si pide).
+      Acepta Word o PDF Jumbo (ej. <code>Maremoto.pdf</code>). Chromium se abre en tu pantalla (ADFS / MFA a mano si pide).
     </p>
     <ol class="crc-steps">
       <li>
@@ -50,8 +50,13 @@
         Copia <code>carga-recetas-cencosud/secrets/env.example</code> → <code>secrets/.env</code> y pon tu usuario.
       </li>
       <li>
-        <strong>1a. Word en inbox + parse</strong>
-        <code>python scripts/parse-receta-word.py …/inbox/archivo.docx</code>
+        <strong>Un clic</strong>
+        Arrastra el Word o PDF a <code>CARGAR-RECETA-BM.bat</code> (raíz del repo).<br>
+        Ejemplo: <code>CARGAR-RECETA-BM.bat "%USERPROFILE%\Downloads\Maremoto.pdf"</code>
+      </li>
+      <li>
+        <strong>1a. Parse Word o PDF Jumbo</strong>
+        <code>python scripts/parse-receta-word.py …/inbox/Maremoto.pdf</code>
       </li>
       <li>
         <strong>1b. O JSON de 5 bloques (cualquier receta)</strong>
@@ -60,13 +65,13 @@
         Guía: <code>carga-recetas-cencosud/BLOQUES-RECETA.md</code>
       </li>
       <li>
-        <strong>2. Explorar / mapear el formulario (con tu login)</strong>
-        <code>python scripts/explorar-bm-cencosud.py</code><br>
-        Entras en la ventana → abres «Nueva receta» → ENTER en la terminal.
+        <strong>2. Scraping / mapear el formulario (con tu login)</strong>
+        <code>python scripts/explorar-bm-cencosud.py --reuse-session</code><br>
+        Entras en la ventana → abres la receta (5 bloques al centro) → ENTER en la terminal.
       </li>
       <li>
         <strong>3. Completar la información en la interfaz</strong>
-        <code>python scripts/publicar-receta-cencosud.py …/out/receta.json --headed --dry-run</code><br>
+        <code>python scripts/publicar-receta-cencosud.py …/out/maremoto.json --headed --dry-run</code><br>
         Revisa en el BM; cuando esté bien, publica (sin <code>--dry-run</code>).
       </li>
     </ol>

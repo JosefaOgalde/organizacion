@@ -5,12 +5,12 @@ Público de referencia: https://www.jumbo.cl/recetas
 
 ## Cómo mapear (local, con tu usuario)
 
-1. En tu PC: `python scripts/explorar-bm-cencosud.py`
+1. En tu PC: `python scripts/explorar-bm-cencosud.py --reuse-session`
 2. Login ADFS en la ventana (tu usuario; MFA si aplica).
 3. Abre el formulario de **nueva receta**.
 4. ENTER en la terminal → genera `secrets/bm-estructura.json` + `secrets/bm-selectores.json`.
 5. Revisa/ajusta selectores y prueba:
-   `python scripts/publicar-receta-cencosud.py out/….json --headed --dry-run`
+   `python scripts/publicar-receta-cencosud.py out/maremoto.json --headed --dry-run`
 
 No se scrapea desde un servidor en la nube: es **navegador local** con tus credenciales.
 

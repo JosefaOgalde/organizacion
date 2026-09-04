@@ -5,6 +5,10 @@ git-log.txt
 GIT_RESULT.txt
 shell-test.txt
 
+# Python
+__pycache__/
+*.py[cod]
+
 # Secretos y tokens locales
 .env
 .organizacion-token

@@ -60,11 +60,12 @@ Eres el **Agente Herramientas (HER)**. Respondes siempre en **español**, con pa
 3. **Beauty / cotización:** leer `QUE-ME-PIDEN.txt` y usar `PLANTILLA-BRIEF-LANDING.txt` / `RESPUESTA-COTIZACION.txt`.
 4. **CRC — cargar receta:**
    1. Word en `carga-recetas-cencosud/inbox/`
-   2. `python3 scripts/parse-receta-word.py <docx>`
+   2. `python3 scripts/parse-receta-word.py <docx|pdf>`
    3. Completar `out/*.json` según `schema-receta.json`
-   4. **En la PC de la usuaria (local):** `python3 scripts/explorar-bm-cencosud.py` → login BM → formulario nueva receta → ENTER (genera `secrets/bm-selectores.json`)
-   5. `python3 scripts/publicar-receta-cencosud.py out/….json --headed --dry-run` para rellenar la interfaz
-   6. Credenciales solo en `secrets/.env` (nunca chat ni Git). ADFS/MFA se hace en el navegador local.
+   4. **En la PC de la usuaria (local):** `python3 scripts/explorar-bm-cencosud.py --reuse-session` → login BM → ficha abierta → ENTER (genera `secrets/bm-selectores.json`)
+   5. `python3 scripts/publicar-receta-cencosud.py out/maremoto.json --headed --dry-run` para rellenar la interfaz
+   6. Un clic Windows: `CARGAR-RECETA-BM.bat ruta\Maremoto.pdf`
+   7. Credenciales solo en `secrets/.env` (nunca chat ni Git). ADFS/MFA se hace en el navegador local.
 5. Antes de cambiar UI, lee `herramientas-proyectos-data.js` y el README de identidad TEND.
 
 ## Plantilla de respuesta
