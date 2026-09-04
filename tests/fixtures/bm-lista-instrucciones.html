@@ -7,6 +7,7 @@
     body { margin: 0; font-family: sans-serif; }
     .editor { margin-left: 80px; width: 640px; }
     .seccion { border: 1px solid #ccc; padding: 12px; }
+    .item-paso { border: 1px dashed #bbb; margin: 8px 0; padding: 8px; }
     label { display: block; font-size: 14px; height: 20px; width: 180px; }
     input, textarea { display: block; width: 500px; margin-top: 4px; }
     .toolbar { margin: 8px 0; }
@@ -24,27 +25,56 @@
       <input id="titulo-lista" placeholder="Dale un valor" />
       <p class="error">El dato es requerido</p>
       <p>Lista de instrucciones</p>
-      <div>Formulario Ítem 1</div>
-      <label for="paso-html">Paso a Paso *</label>
-      <div class="toolbar">
-        <label>HTML + Script <input type="checkbox" id="html-script" /></label>
-        <button id="btn-source" type="button">&lt;/&gt;</button>
+      <div id="lista-pasos">
+        <div class="item-paso" data-paso="0">
+          <div>Formulario Ítem 1</div>
+          <label for="paso-html-0">Paso a Paso *</label>
+          <div class="toolbar">
+            <label>HTML + Script <input type="checkbox" class="html-script" /></label>
+            <button class="btn-source" type="button">&lt;/&gt;</button>
+          </div>
+          <div class="wysiwyg" contenteditable="true" style="min-height: 40px; border: 1px solid #ccc;"></div>
+          <textarea id="paso-html-0" class="paso-html" hidden placeholder="Dale un valor"></textarea>
+        </div>
       </div>
-      <div id="wysiwyg" contenteditable="true" style="min-height: 80px; border: 1px solid #ccc;"></div>
-      <textarea id="paso-html" hidden placeholder="Dale un valor"></textarea>
+      <button id="btn-agregar" type="button">+ Agregar nuevo ítem</button>
     </div>
-    <button type="button">+ Agregar nuevo ítem</button>
   </div>
   <script>
-    function showHtml() {
-      document.getElementById("wysiwyg").hidden = true;
-      const ta = document.getElementById("paso-html");
-      ta.hidden = false;
+    let nPasos = 1;
+    function bindItem(root) {
+      const sw = root.querySelector(".html-script");
+      const btn = root.querySelector(".btn-source");
+      const wys = root.querySelector(".wysiwyg");
+      const ta = root.querySelector(".paso-html");
+      function showHtml() {
+        wys.hidden = true;
+        ta.hidden = false;
+      }
+      sw.addEventListener("change", function () {
+        if (this.checked) showHtml();
+      });
+      btn.addEventListener("click", showHtml);
     }
-    document.getElementById("html-script").addEventListener("change", function () {
-      if (this.checked) showHtml();
+    bindItem(document.querySelector('[data-paso="0"]'));
+    document.getElementById("btn-agregar").addEventListener("click", function () {
+      const idx = nPasos;
+      nPasos += 1;
+      const wrap = document.createElement("div");
+      wrap.className = "item-paso";
+      wrap.setAttribute("data-paso", String(idx));
+      wrap.innerHTML =
+        "<div>Formulario Ítem " + (idx + 1) + "</div>" +
+        '<label for="paso-html-' + idx + '">Paso a Paso *</label>' +
+        '<div class="toolbar">' +
+        '<label>HTML + Script <input type="checkbox" class="html-script" /></label>' +
+        '<button class="btn-source" type="button">&lt;/&gt;</button>' +
+        "</div>" +
+        '<div class="wysiwyg" contenteditable="true" style="min-height: 40px; border: 1px solid #ccc;"></div>' +
+        '<textarea id="paso-html-' + idx + '" class="paso-html" hidden placeholder="Dale un valor"></textarea>';
+      document.getElementById("lista-pasos").appendChild(wrap);
+      bindItem(wrap);
     });
-    document.getElementById("btn-source").addEventListener("click", showHtml);
   </script>
 </body>
 </html>

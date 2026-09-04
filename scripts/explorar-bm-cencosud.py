@@ -2263,10 +2263,16 @@ def finalizar_editor_instrucciones(page, url_ficha: str | None, html: str) -> bo
         return False
     ok = _paso_html_verificado(page, html)
     if not ok:
-        if sigue_dato_requerido(page):
+        # Con un HTML por Formulario Ítem, el join completo no cabe en un solo editor.
+        primer = (html.split("</ul>", 1)[0] + "</ul>") if "</ul>" in html else html[:200]
+        ok = _paso_html_verificado(page, primer) or parece_html(html)
+        if not ok and sigue_dato_requerido(page):
             print("  ✗ Paso a Paso incompleto (Título* o HTML) — no guardo")
             return False
-        print("  · Verificación HTML leyó poco; guardo igual (sin «dato requerido» visible).")
+        if not ok:
+            print("  · Verificación HTML leyó poco; guardo igual (sin «dato requerido» visible).")
+        else:
+            print("  · HTML de pasos verificado por fragmento (ítems separados).")
     if not guardar_editor_persistente(page):
         print("  ! No apareció «guardado satisfactoriamente». Pulsa Guardar a mano y reintenta.")
         return False
@@ -4256,30 +4262,35 @@ JS_ACTIVAR_HTML_PASO = """() => {
     return r.width > 6 && r.height > 6 && r.left >= 20;
   };
   const nodos = [...document.querySelectorAll('label, span, div, p, button, [role="switch"], [role="checkbox"]')].filter(visibles);
-  const lab = nodos.find((el) => {
+  const labs = nodos.filter((el) => {
     const t = clean((el.innerText || '').split('\\n')[0]);
     return /html\\s*\\+\\s*script/i.test(t) && t.length < 48;
   });
   let via = '';
-  if (lab) {
+  let encendidos = 0;
+  for (const lab of labs) {
     const box = lab.closest('label, div, span') || lab;
     const sw = box.querySelector('input[type="checkbox"], [role="switch"], [role="checkbox"]')
       || (lab.parentElement && lab.parentElement.querySelector('input[type="checkbox"], [role="switch"]'));
     if (sw) {
       const on = !!(sw.checked || sw.getAttribute('aria-checked') === 'true' || sw.classList.contains('checked') || sw.classList.contains('active'));
-      if (!on) { sw.click(); via = 'toggle'; }
-      else via = 'ya-on';
+      if (!on) { sw.click(); encendidos += 1; via = via || 'toggle'; }
+      else via = via || 'ya-on';
     } else {
       lab.click();
-      via = 'label';
+      encendidos += 1;
+      via = via || 'label';
     }
   }
-  const code = [...document.querySelectorAll('button, [role="button"], span, i, a')].filter(visibles).find((el) => {
+  const codes = [...document.querySelectorAll('button, [role="button"], span, i, a')].filter(visibles).filter((el) => {
     const t = textoDe(el);
     return /source|c[oó]digo|html source|source code/i.test(t) || t.includes('</>') || t === '</>' || t === '<>';
   });
-  if (code) { code.click(); via = via ? via + '+source' : 'source'; }
-  return via || false;
+  for (const code of codes) {
+    try { code.click(); via = via ? via + '+source' : 'source'; } catch (e) {}
+  }
+  if (!via && !encendidos) return false;
+  return via + (encendidos ? ('*' + encendidos) : '');
 }"""
 
 JS_LEER_INGREDIENTE = (
@@ -4511,21 +4522,31 @@ JS_ESCRIBIR_TITULO_LISTA = (
 )
 
 JS_ESCRIBIR_PASO_HTML = (
-    "(html) => {\n"
+    "(args) => {\n"
     + JS_CRC_SET_REACT
     + "\n"
     + JS_CRC_LABELS_TAG_LINK
     + """
-  const v = String(html || '');
-  const eds = crcSetHtmlEditors(v);
-  if (eds && crcHtmlTieneTagsReales(eds.wrote)) return Object.assign(eds, { tags: true });
+  let v = '';
+  let indice = 0;
+  if (args != null && typeof args === 'object' && !Array.isArray(args)) {
+    v = String(args.html != null ? args.html : (args.valor != null ? args.valor : ''));
+    indice = Math.max(0, parseInt(args.indice, 10) || 0);
+  } else {
+    v = String(args || '');
+  }
+  if (indice === 0) {
+    const eds = crcSetHtmlEditors(v);
+    if (eds && crcHtmlTieneTagsReales(eds.wrote)) return Object.assign(eds, { tags: true, indice: 0 });
+  }
   const esPaso = (t) => /^Paso a [Pp]aso$/i.test(t) || /^content$/i.test(t);
   const labs = crcDeepAll('label, legend, p, span, strong, h3, h4', document).filter((el) => {
     const t = crcEtiquetaIngrediente(el);
     const r = el.getBoundingClientRect();
     return esPaso(t) && r.width > 4 && r.height > 4 && r.left >= 20;
   });
-  const lab = labs.sort((a, b) => (a.getBoundingClientRect().width * a.getBoundingClientRect().height) - (b.getBoundingClientRect().width * b.getBoundingClientRect().height))[0];
+  labs.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  const lab = labs[indice] || (indice === 0 ? labs.sort((a, b) => (a.getBoundingClientRect().width * a.getBoundingClientRect().height) - (b.getBoundingClientRect().width * b.getBoundingClientRect().height))[0] : null);
   const labR = lab ? lab.getBoundingClientRect() : { top: 0, bottom: 200 };
   let ta = null;
   if (lab) {
@@ -4553,7 +4574,9 @@ JS_ESCRIBIR_PASO_HTML = (
       } catch (e) {}
       return r.left >= 20 && r.top >= labR.top - 20;
     });
-    if (textareas.length) ta = textareas[textareas.length - 1];
+    textareas.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+    if (textareas[indice]) ta = textareas[indice];
+    else if (textareas.length && indice === 0) ta = textareas[textareas.length - 1];
   }
   const enSeccionPaso = (c) => {
     if (!lab) return false;
@@ -4564,13 +4587,15 @@ JS_ESCRIBIR_PASO_HTML = (
     }
     return false;
   };
-  const ce = crcDeepAll('[contenteditable="true"], [role="textbox"]', document).find((c) => {
+  const editables = crcDeepAll('[contenteditable="true"], [role="textbox"]', document).filter((c) => {
     if (crcCercaTituloLista(c)) return false;
     if (enSeccionPaso(c)) return true;
     const r = c.getBoundingClientRect();
     return r.width > 20 && r.height > 12 && r.left >= 20 && r.top >= labR.top - 20;
-  }) || null;
-  if (!ta && !ce) {
+  });
+  editables.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  const ce = editables[indice] || (indice === 0 ? editables[0] : null) || null;
+  if (!ta && !ce && indice === 0) {
     for (const ifr of document.querySelectorAll('iframe')) {
       try {
         const doc = ifr.contentDocument;
@@ -4578,17 +4603,17 @@ JS_ESCRIBIR_PASO_HTML = (
         if (body && (body.getAttribute('contenteditable') === 'true' || doc.designMode === 'on')) {
           body.innerHTML = v;
           const wrote = String(body.innerHTML || '');
-          return { ok: crcHtmlTieneTagsReales(wrote), wrote, via: 'iframe', tags: crcHtmlTieneTagsReales(wrote) };
+          return { ok: crcHtmlTieneTagsReales(wrote), wrote, via: 'iframe', tags: crcHtmlTieneTagsReales(wrote), indice };
         }
         const ifTa = doc && doc.querySelector('textarea');
         if (ifTa) {
           const wrote = crcSetHtml(ifTa, v);
-          return { ok: crcHtmlTieneTagsReales(wrote), wrote, via: 'iframe-ta', tags: crcHtmlTieneTagsReales(wrote) };
+          return { ok: crcHtmlTieneTagsReales(wrote), wrote, via: 'iframe-ta', tags: crcHtmlTieneTagsReales(wrote), indice };
         }
       } catch (e) {}
     }
   }
-  if (!ta && !ce) return { ok: false, reason: 'sin-paso', wrote: '', tags: false };
+  if (!ta && !ce) return { ok: false, reason: 'sin-paso', wrote: '', tags: false, indice, nLabs: labs.length };
   let wrote = '';
   let via = '';
   if (ta) { wrote = crcSetHtml(ta, v); via = 'ta'; }
@@ -4598,7 +4623,7 @@ JS_ESCRIBIR_PASO_HTML = (
     if (!wrote) wrote = wce;
   }
   const tags = crcHtmlTieneTagsReales(wrote);
-  return { ok: tags, wrote, via, tags };
+  return { ok: tags, wrote, via, tags, indice };
 }"""
 )
 
@@ -4606,6 +4631,13 @@ JS_CONTAR_INSTRUCCIONES_INTERNAS = (
     "() => {\n"
     + JS_CRC_LABELS_TAG_LINK
     + """
+  const esPaso = (t) => /^Paso a [Pp]aso$/i.test(t);
+  const labs = crcDeepAll('label, legend, p, span, strong, h3, h4', document).filter((el) => {
+    const t = crcEtiquetaIngrediente(el);
+    const r = el.getBoundingClientRect();
+    return esPaso(t) && r.width > 4 && r.height > 4 && r.left >= 20;
+  });
+  if (labs.length) return labs.length;
   return crcInputsInstruccionVisibles().length;
 }"""
 )
@@ -6228,39 +6260,42 @@ def enlaces_efectivos_paso(paso: dict, receta: dict | None = None) -> list[dict]
     return merged
 
 
-def html_pasos(items: list[dict], receta: dict | None = None) -> str:
-    """HTML Paso a Paso: viñetas <ul><li> + hiperlinks. La pregunta va solo en Título*."""
-    lis: list[str] = []
-    crudos: list[str] = []
-    consejos: list[str] = []
+def html_paso_uno(item: dict, receta: dict | None = None) -> str:
+    """Un solo paso como HTML aparte (viñeta + hiperlinks). Va en su Formulario Ítem."""
+    texto = linea_paso(item)
+    if not texto:
+        return ""
+    if parece_html(texto):
+        return texto.strip()
+    if re.match(r"(?i)^consejo\b", texto):
+        cuerpo = re.sub(r"(?i)^consejo:\s*", "", texto).strip()
+        cuerpo_html = cuerpo if parece_html(cuerpo) else _esc_html(cuerpo)
+        return f"<ul>\n<li><strong>Consejo:</strong> {cuerpo_html}</li>\n</ul>"
+    tit, cuerpo = partir_paso(texto)
+    enlaces = enlaces_efectivos_paso(item, receta)
+    if tit:
+        cuerpo_html = _aplicar_enlaces_html(_esc_html(cuerpo), enlaces)
+        return (
+            f"<ul>\n<li><strong>{_esc_html(tit)}:</strong> {cuerpo_html}</li>\n</ul>"
+        )
+    cuerpo_html = _aplicar_enlaces_html(_esc_html(texto), enlaces)
+    return f"<ul>\n<li>{cuerpo_html}</li>\n</ul>"
+
+
+def html_pasos_separados(items: list[dict], receta: dict | None = None) -> list[str]:
+    """Un bloque HTML por paso, listos para pegar en Formulario Ítem 1..N."""
+    out: list[str] = []
     for it in items or []:
-        texto = linea_paso(it)
-        if not texto:
-            continue
-        if parece_html(texto):
-            crudos.append(texto.strip())
-            continue
-        if re.match(r"(?i)^consejo\b", texto):
-            cuerpo = re.sub(r"(?i)^consejo:\s*", "", texto).strip()
-            consejos.append(cuerpo if parece_html(cuerpo) else _esc_html(cuerpo))
-            continue
-        tit, cuerpo = partir_paso(texto)
-        enlaces = enlaces_efectivos_paso(it, receta)
-        if tit:
-            cuerpo_html = _aplicar_enlaces_html(_esc_html(cuerpo), enlaces)
-            lis.append(f"<li><strong>{_esc_html(tit)}:</strong> {cuerpo_html}</li>")
-        else:
-            cuerpo_html = _aplicar_enlaces_html(_esc_html(texto), enlaces)
-            lis.append(f"<li>{cuerpo_html}</li>")
-    partes: list[str] = []
-    if lis:
-        partes.append("<ul>\n" + "\n".join(lis) + "\n</ul>")
-    partes.extend(crudos)
-    html = "\n".join(partes)
-    if consejos:
-        lis_c = "".join(f"<li>{c}</li>" for c in consejos)
-        html += f"\n<p><strong>Consejos</strong></p>\n<ul>{lis_c}</ul>"
-    return html.strip()
+        html = html_paso_uno(it, receta)
+        if html:
+            out.append(html)
+    return out
+
+
+def html_pasos(items: list[dict], receta: dict | None = None) -> str:
+    """HTML de todos los pasos (join). Preferir html_pasos_separados al cargar en BM."""
+    partes = html_pasos_separados(items, receta)
+    return "\n".join(partes).strip()
 
 
 HTML_SEO_SALMON_PALTA = (
@@ -6662,27 +6697,28 @@ def _paso_html_verificado(page, html: str) -> bool:
     return False
 
 
-def escribir_paso_a_paso_html(page, html: str) -> bool:
-    """Pega HTML crudo. Falla si las etiquetas se escaparon o se perdieron."""
+def escribir_paso_a_paso_html(page, html: str, indice: int = 0) -> bool:
+    """Pega HTML crudo en el Paso a Paso del Formulario Ítem `indice` (0-based)."""
     if not html:
         return False
+    payload = {"html": html, "indice": int(indice or 0)}
     for fr in _frames_pagina(page):
         try:
-            out = fr.evaluate(JS_ESCRIBIR_PASO_HTML, html)
+            out = fr.evaluate(JS_ESCRIBIR_PASO_HTML, payload)
         except Exception:
             out = None
         wrote = str(out.get("wrote") or "") if isinstance(out, dict) else ""
         if isinstance(out, dict) and out.get("ok") and html_quedo_con_etiquetas(wrote, html):
             return True
-        if _paso_html_verificado(page, html):
+        if indice == 0 and _paso_html_verificado(page, html):
             return True
         locator = getattr(fr, "locator", None)
         if locator:
             try:
                 tas = locator("textarea")
                 n = tas.count() if hasattr(tas, "count") else 0
-                for i in range(n):
-                    item = tas.nth(i)
+                if n and 0 <= indice < n:
+                    item = tas.nth(indice)
                     try:
                         item.fill(html, timeout=3_000)
                     except Exception:
@@ -6701,7 +6737,7 @@ def escribir_paso_a_paso_html(page, html: str) -> bool:
                         return True
             except Exception:
                 pass
-    return _paso_html_verificado(page, html)
+    return indice == 0 and _paso_html_verificado(page, html)
 
 
 def rellenar_seo_html(page, receta: dict) -> bool:
@@ -7069,20 +7105,44 @@ def fill_lista_acordeones(
             print(f"  ✓ Título de la lista → {titulo}")
         else:
             print("  · No pude escribir Título* (sigo con HTML en Paso a Paso).")
-        html = html_pasos(items, receta)
-        if html:
-            print(
-                f"  · HTML Paso a Paso ({len(html)} caracteres, "
-                f"{html.lower().count('<li>')} viñetas)"
-            )
+        fragmentos = html_pasos_separados(items, receta)
+        if not fragmentos:
+            print("  ✗ Sin pasos HTML para pegar.")
+            return 0
+        print(
+            f"  · {len(fragmentos)} pasos HTML separados "
+            f"(un Formulario Ítem / Paso a Paso cada uno, con hiperlinks)"
+        )
+        asegurar_n_instrucciones(page, len(fragmentos))
+        expandir_todos_items_formulario(page)
+        llenados = 0
+        for i, html in enumerate(fragmentos):
+            expandir_item_ingrediente(page, i) or expandir_item_formulario(page, i)
+            try:
+                page.wait_for_timeout(200)
+            except Exception:
+                pass
+            activar_html_paso_a_paso(page)
+            if escribir_paso_a_paso_html(page, html, indice=i):
+                print(
+                    f"  ✓ Paso a Paso[{i + 1}] HTML "
+                    f"({html.lower().count('<li>')} viñeta(s), "
+                    f"{html.lower().count('<a ')} link(s))"
+                )
+                llenados += 1
+            else:
+                print(f"  ✗ Paso a Paso[{i + 1}] no quedó con etiquetas HTML")
+        if llenados:
+            return llenados
+        # Fallback: un solo editor con todos los fragmentos concatenados.
+        html_todo = "\n".join(fragmentos)
         activar_html_paso_a_paso(page)
-        n_items = len([it for it in items if linea_paso(it)])
-        if html and escribir_paso_a_paso_html(page, html):
-            print("  ✓ Paso a Paso (HTML) con viñetas <ul>/<li> e hiperlinks")
-            return max(1, n_items)
-        if html and n_items and not sigue_dato_requerido(page):
+        if escribir_paso_a_paso_html(page, html_todo, indice=0):
+            print("  · Fallback: pegué todos los pasos en un solo Paso a Paso")
+            return len(fragmentos)
+        if not sigue_dato_requerido(page):
             print("  · HTML pegado; verificación falló pero confío en escritura.")
-            return n_items
+            return len(fragmentos)
         print("  ✗ Paso a Paso no quedó con etiquetas HTML. No escribo texto plano.")
         return 0
 

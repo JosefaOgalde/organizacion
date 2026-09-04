@@ -314,9 +314,18 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertNotIn("¿Cómo preparar", html)
         self.assertIn("<ul>", html)
         self.assertIn("<li><strong>Sazona el salmón:</strong>", html)
-        self.assertIn("Consejos", html)
+        self.assertIn("<strong>Consejo:</strong>", html)
         self.assertNotIn("&lt;p&gt;", html)
         self.assertNotIn("&lt;strong", html)
+        partes = self.explorar.html_pasos_separados(
+            [
+                {"texto": "Sazona el salmón: Seca los filetes."},
+                {"texto": "Consejo: Cocina el salmón por el lado de la piel."},
+            ],
+            receta_salmon,
+        )
+        self.assertEqual(len(partes), 2)
+        self.assertTrue(all("<ul>" in p for p in partes))
         html_enlaces = self.explorar.html_pasos(
             [
                 {
@@ -345,6 +354,10 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             ]
         )
         self.assertEqual(salmon.lower().count("<li>"), 2)
+        self.assertEqual(len(self.explorar.html_pasos_separados([
+            {"texto": "Sazona el salmón: Seca los filetes."},
+            {"texto": "Termina la receta: Acomoda el salmón."},
+        ])), 2)
         self.assertIn("<ul>", salmon)
         self.assertIn("Termina la receta", salmon)
         ya_html = "<p><strong>Sazona el salmón:</strong> Seca los filetes.</p>"
@@ -388,6 +401,42 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         )
         self.assertNotIn("¿Cómo preparar maremoto?", maremoto_html)
         self.assertEqual(maremoto_html.lower().count("<li>"), 2)
+        self.assertEqual(
+            len(
+                self.explorar.html_pasos_separados(
+                    [
+                        {
+                            "texto": (
+                                "Enfría los ingredientes: Mantén el vino pipeño bien frío "
+                                "en el refrigerador y el helado de piña firme."
+                            ),
+                            "enlaces": [
+                                {
+                                    "texto": "vino pipeño",
+                                    "url": "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos",
+                                }
+                            ],
+                        },
+                        {
+                            "texto": (
+                                "Agrega el helado: Coloca una generosa bola de helado de piña."
+                            ),
+                            "enlaces": [
+                                {
+                                    "texto": "helado de piña",
+                                    "url": "https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres",
+                                }
+                            ],
+                        },
+                    ],
+                    {
+                        "titulo": "Maremoto",
+                        "preguntaPreparacion": "¿Cómo preparar maremoto?",
+                    },
+                )
+            ),
+            2,
+        )
         self.assertIn(
             '<a href="https://www.jumbo.cl/licores-bebidas-y-aguas/vinos">vino pipeño</a>',
             maremoto_html,
@@ -1166,22 +1215,26 @@ class JsIngredienteExactoTests(unittest.TestCase):
                 "¿Cómo preparar salmón a la parrilla con salsa de palta?",
             )
             self.assertTrue(
-                page.evaluate("() => document.getElementById('html-script').checked")
+                page.evaluate(
+                    "() => [...document.querySelectorAll('.html-script')].every((el) => el.checked)"
+                )
             )
-            html_out = page.evaluate("() => document.getElementById('paso-html').value")
-            self.assertNotIn("<h3>", html_out)
-            self.assertNotIn("¿Cómo preparar", html_out)
-            self.assertIn("<ul>", html_out)
-            self.assertIn("<li><strong>Sazona el salmón:</strong>", html_out)
-            self.assertIn("Prepara la salsa de palta", html_out)
-            self.assertNotIn("&lt;p&gt;", html_out)
-            self.assertNotIn("&lt;strong", html_out)
+            html0 = page.evaluate("() => document.getElementById('paso-html-0').value")
+            html1 = page.evaluate("() => document.getElementById('paso-html-1').value")
+            self.assertNotIn("<h3>", html0)
+            self.assertNotIn("¿Cómo preparar", html0)
+            self.assertIn("<ul>", html0)
+            self.assertIn("<li><strong>Sazona el salmón:</strong>", html0)
+            self.assertIn("<li><strong>Prepara la salsa de palta:</strong>", html1)
+            self.assertNotIn("Prepara la salsa", html0)
+            self.assertNotIn("&lt;p&gt;", html0)
+            self.assertNotIn("&lt;strong", html0)
             self.assertGreaterEqual(
-                page.evaluate("() => document.querySelectorAll('#wysiwyg strong').length"),
+                page.evaluate("() => document.querySelectorAll('.wysiwyg strong').length"),
                 1,
             )
             self.assertGreaterEqual(
-                page.evaluate("() => document.querySelectorAll('#wysiwyg li').length"),
+                page.evaluate("() => document.querySelectorAll('[data-paso]').length"),
                 2,
             )
             browser.close()
@@ -1203,12 +1256,12 @@ class JsIngredienteExactoTests(unittest.TestCase):
                 "([sel, v]) => { "
                 + self.explorar.JS_CRC_SET_REACT
                 + " return crcSetReact(document.querySelector(sel), v); }",
-                ["#wysiwyg", crudo],
+                [".wysiwyg", crudo],
             )
             self.assertIn("<strong>", wrote)
             self.assertNotIn("&lt;strong", wrote)
             self.assertEqual(
-                page.evaluate("() => document.querySelectorAll('#wysiwyg strong').length"),
+                page.evaluate("() => document.querySelectorAll('.wysiwyg strong').length"),
                 1,
             )
             out = page.evaluate(self.explorar.JS_ESCRIBIR_PASO_HTML, crudo)
@@ -1216,7 +1269,7 @@ class JsIngredienteExactoTests(unittest.TestCase):
             self.assertTrue(out.get("tags"), out)
             self.assertIn("<strong>", str(out.get("wrote") or ""))
             self.assertNotIn("&lt;p&gt;", str(out.get("wrote") or ""))
-            ta = page.evaluate("() => document.getElementById('paso-html').value")
+            ta = page.evaluate("() => document.getElementById('paso-html-0').value")
             self.assertIn("<p>", ta)
             self.assertIn("<strong>Sazona el salmón:</strong>", ta)
             self.assertNotIn("&lt;p&gt;", ta)
