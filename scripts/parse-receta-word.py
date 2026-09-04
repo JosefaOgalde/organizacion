@@ -691,8 +691,8 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
     tips_titulo = ""
     en_tips = False
     encabezado_re = re.compile(
-        r"(?i)^(?P<title>tips?|consejos?|as[íi]\s+queda\b.*|para que\b.*|"
-        r"para (?:un|una)\b.*|peque[ñn]os\s+detalles\b.*)"
+        r"(?i)^(?P<title>tips?|consejos?|trucos?|as[íi]\s+queda\b.*|para que\b.*|"
+        r"para (?:un|una)\b.*|peque[ñn]os\s+detalles\b.*|consigue\b.*|logra\b.*)"
         r"\s*(?P<sep>[:\-–])?\s*(?P<resto>.*)$"
     )
     for raw in bloque.splitlines():
@@ -701,11 +701,13 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
             continue
         encabezado = encabezado_re.match(line)
         es_seccion_tips = bool(
-            re.match(r"(?i)^(tips?|consejos?)\b", line)
+            re.match(r"(?i)^(tips?|consejos?|trucos?)\b", line)
             or re.match(r"(?i)^as[íi]\s+queda\b", line)
             or re.match(r"(?i)^para que\b", line)
             or re.match(r"(?i)^para (?:un|una)\b", line)
             or re.match(r"(?i)^peque[ñn]os\s+detalles\b", line)
+            or re.match(r"(?i)^consigue\b", line)
+            or re.match(r"(?i)^logra\b", line)
         )
         if encabezado and es_seccion_tips:
             en_tips = True
