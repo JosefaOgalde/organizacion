@@ -217,6 +217,80 @@ def url_ancla_ficha(url: str | None) -> str:
     return (url or "").split("#")[0].split("?")[0]
 
 
+def _urls_pestanas_contexto(page) -> list[tuple[object, str]]:
+    """[(page, url), …] de todas las pestañas del Chromium de Playwright."""
+    if page is None:
+        return []
+    try:
+        paginas = list(page.context.pages)
+    except Exception:
+        return [(page, url_actual(page))]
+    out: list[tuple[object, str]] = []
+    for p in paginas:
+        try:
+            out.append((p, url_actual(p)))
+        except Exception:
+            continue
+    return out
+
+
+def diagnostico_pestanas(page) -> None:
+    """Lista qué URLs ve realmente el script (para detectar Chrome/Edge aparte)."""
+    pares = _urls_pestanas_contexto(page)
+    if not pares:
+        print("  · El script no ve ninguna pestaña.")
+        return
+    print(f"  · Pestañas que VE Python ({len(pares)}):")
+    for i, (p, u) in enumerate(pares, 1):
+        marca = " ← la que controla ahora"
+        if p is not page:
+            marca = ""
+        vista = " [FICHA]" if url_tiene_vista_receta(u) else ""
+        print(f"    [{i}] {(u or '(vacía)')[:140]}{vista}{marca}")
+
+
+def resaltar_ventana_script(page) -> None:
+    """Trae al frente el Chromium de Playwright y marca el título."""
+    if page is None:
+        return
+    try:
+        page.bring_to_front()
+    except Exception:
+        pass
+    try:
+        page.evaluate(
+            """() => {
+              const t = document.title || '';
+              if (!t.startsWith('>>> CRC ')) {
+                document.title = '>>> CRC USA ESTA VENTANA <<< ' + t;
+              }
+            }"""
+        )
+    except Exception:
+        pass
+
+
+def ir_a_url_ficha(page, url: str):
+    """Navega el Chromium del script a una URL /view/{id} pegada por la usuaria."""
+    url = (url or "").strip().strip('"').strip("'")
+    if not url_tiene_vista_receta(url):
+        return page, ""
+    ancla = url_ancla_ficha(url)
+    # Preferir la URL completa (puede traer /edit/… ya abierto).
+    destino = url.split("#")[0]
+    print(f"  · Voy a la URL que pegaste: …/view/{id_vista_receta(destino)}")
+    try:
+        page.goto(destino, wait_until="domcontentloaded", timeout=60_000)
+        try:
+            page.wait_for_timeout(800)
+        except Exception:
+            pass
+    except Exception as e:
+        print(f"  · No pude abrir esa URL: {e}")
+        return page, url_actual(page)
+    return page, url_actual(page)
+
+
 def adoptar_pagina_con_ficha(page):
     """Si la receta está en otra pestaña del mismo Chromium, usarla.
 
@@ -228,19 +302,10 @@ def adoptar_pagina_con_ficha(page):
     actual = url_actual(page)
     if url_tiene_vista_receta(actual):
         return page, actual
-    try:
-        ctx = page.context
-        paginas = list(ctx.pages)
-    except Exception:
-        return page, actual
 
     candidatas: list[tuple[object, str]] = []
-    for otra in paginas:
+    for otra, u in _urls_pestanas_contexto(page):
         if otra is page:
-            continue
-        try:
-            u = url_actual(otra)
-        except Exception:
             continue
         if url_tiene_vista_receta(u):
             candidatas.append((otra, u))
@@ -263,55 +328,86 @@ def adoptar_pagina_con_ficha(page):
     return elegida, url_el
 
 
+def _ficha_lista(page, url_ficha: str) -> bool:
+    return bool(
+        url_tiene_vista_receta(url_ficha)
+        and (en_vista_default_cms(page) or "/edit/" in (url_ficha or "").lower())
+    )
+
+
 def esperar_ficha_en_lienzo(
     page, *, headed: bool = True, titulo_receta: str | None = None
 ):
-    """Tras ENTER: exige URL /view-manager/view/{id} (+ lienzo o editor del lápiz).
+    """Exige URL /view-manager/view/{id} (+ lienzo o editor del lápiz).
 
-    Devuelve (url_ancla, page). ``page`` puede ser otra pestaña del mismo contexto
-    si la ficha se abrió aparte del Gestor.
+    Devuelve (url_ancla, page). Acepta otra pestaña del mismo Chromium o una
+    URL /view/… pegada en la consola (si la ficha está en Chrome/Edge aparte).
     """
     nombre = (titulo_receta or "").strip() or "la receta"
-    for _intento in range(6):
+    for _intento in range(8):
         page, url_ficha = adoptar_pagina_con_ficha(page)
-        # Ya en /view/{id} (lienzo de 5 bloques O edición de un componente).
-        if url_tiene_vista_receta(url_ficha) and (
-            en_vista_default_cms(page) or "/edit/" in (url_ficha or "").lower()
-        ):
+        if _ficha_lista(page, url_ficha):
             ancla = url_ancla_ficha(url_ficha)
             print(f"  · Vista editable OK («{nombre}»): …/view/{id_vista_receta(ancla)}")
             print("  · Me quedo en esta URL. No pulso «Volver» del chrome.")
             return ancla, page
+
         print(f"  · URL que ve el script ahora:\n    {(url_ficha or '(vacía)')[:160]}")
+        diagnostico_pestanas(page)
+        resaltar_ventana_script(page)
+
         if url_tiene_vista_receta(url_ficha):
             print(
                 "\n>>> La URL ya es la receta, pero no veo lienzo ni editor.\n"
-                "    Dejá el desplegable en «default» (5 bloques) o el lápiz abierto, y ENTER.\n"
+                "    Dejá el desplegable en «default» (5 bloques) o el lápiz abierto.\n"
             )
         elif gestor_sin_ficha(url_ficha):
             print(
-                f"\n>>> El Chromium DEL SCRIPT está en el Gestor SIN /view/id.\n"
-                f"    Ojo: debe ser la ventana Chromium que abrió Python (no Chrome/Edge normal).\n"
-                f"    Ahí abrí «{nombre}» (misma ventana u otra pestaña) hasta /view-manager/view/…\n"
-                "    Si ya está en otra pestaña del mismo Chromium, solo ENTER: el script la adopta.\n"
-                "    NO pulses Volver.\n"
+                f"\n>>> Python NO ve la ficha de «{nombre}» (sigue en Gestor sin /view/id).\n"
+                "    Si mirás Chrome/Edge con la receta abierta, ESA ventana no es la del script.\n"
+                "    Buscá la ventana cuyo título dice «>>> CRC USA ESTA VENTANA».\n"
+                "    O copiá la URL completa (con /view/…) de la barra de direcciones,\n"
+                "    pegala acá y pulsá ENTER — el script navega solo y rellena tags/etc.\n"
             )
         else:
             print(
                 f"\n>>> El Chromium DEL SCRIPT no está en la vista editable.\n"
-                f"    En ESA ventana: Recetas_Jumbo → «{nombre}» (URL con /view/…).\n"
-                "    NO pulses «Volver» ni Proyectos.\n"
+                f"    Pegá la URL con /view/… de «{nombre}» y ENTER, o abrila en la ventana CRC.\n"
             )
+
         if headed and sys.stdin.isatty():
+            print(
+                ">>> Pegá la URL /view/…  —o—  ENTER vacío para reintentar "
+                "(busco pestañas ~12s):\n"
+            )
             try:
-                input()
+                linea = input().strip()
             except EOFError:
+                linea = ""
+            if linea and url_tiene_vista_receta(linea):
+                page, url_ficha = ir_a_url_ficha(page, linea)
+                if _ficha_lista(page, url_ficha):
+                    ancla = url_ancla_ficha(url_ficha)
+                    print(
+                        f"  · Vista editable OK («{nombre}»): …/view/{id_vista_receta(ancla)}"
+                    )
+                    return ancla, page
+            # Poll: la usuaria puede abrir la ficha mientras esperamos.
+            for _ in range(6):
                 try:
-                    page.wait_for_timeout(8_000)
+                    page.wait_for_timeout(2_000)
                 except Exception:
-                    pass
+                    break
+                page, url_ficha = adoptar_pagina_con_ficha(page)
+                if _ficha_lista(page, url_ficha):
+                    ancla = url_ancla_ficha(url_ficha)
+                    print(
+                        f"  · Vista editable OK («{nombre}»): …/view/{id_vista_receta(ancla)}"
+                    )
+                    return ancla, page
         else:
             break
+
     page, url_ficha = adoptar_pagina_con_ficha(page)
     if url_tiene_vista_receta(url_ficha):
         return url_ancla_ficha(url_ficha), page

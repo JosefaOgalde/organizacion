@@ -619,6 +619,36 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertEqual(ancla, gestor + "/view/6a9b1fd3523988ff99534d29")
         self.assertIs(page2, p_ficha)
 
+    def test_ir_a_url_ficha_pega_view_id(self):
+        gestor = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager"
+        )
+        ficha = gestor + "/view/6a9b1fd3523988ff99534d29/edit/component_tags"
+
+        class Pagina:
+            def __init__(self):
+                self.url = gestor
+                self.gotos = []
+
+            def goto(self, url, **_kwargs):
+                self.gotos.append(url)
+                self.url = url
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        p = Pagina()
+        with contextlib.redirect_stdout(io.StringIO()):
+            page, url = self.explorar.ir_a_url_ficha(p, ficha)
+        self.assertIs(page, p)
+        self.assertEqual(p.gotos, [ficha])
+        self.assertTrue(self.explorar.url_tiene_vista_receta(url))
+        self.assertEqual(
+            self.explorar.url_ancla_ficha(url),
+            gestor + "/view/6a9b1fd3523988ff99534d29",
+        )
+
     def test_opcion_dificultad_no_confunde_muy_facil(self):
         self.assertEqual(
             self.explorar.opcion_dificultad_exacta(
