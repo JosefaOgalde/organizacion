@@ -3212,20 +3212,13 @@ def _fotos_en(carpeta: Path, *, recursivo: bool = False) -> list[Path]:
 
 def _buscar_foto_en_carpetas(receta: dict) -> Path | None:
     rid = (receta.get("id") or "").strip().lower()
+    if not rid:
+        return None
     media_id = CRC / "out" / "media" / (receta.get("id") or "")
-    propias = _fotos_en(media_id)
+    propias = _fotos_en(media_id, recursivo=True)
     if propias:
         return propias[0]
     media = CRC / "out" / "media"
-    en_media = _fotos_en(media, recursivo=True)
-    if rid:
-        preferidas = [p for p in en_media if rid in p.as_posix().lower()]
-        if preferidas:
-            return preferidas[0]
-    elif en_media:
-        return en_media[0]
-    if not rid:
-        return None
     for carpeta in _RUTAS.carpetas_busqueda_foto(ROOT, CRC):
         if carpeta == media or carpeta == CRC / "out":
             continue
@@ -3380,7 +3373,6 @@ JS_SELECCIONAR_THUMB_IMAGEN = """(nombre) => {
     ).toLowerCase();
     return t && (t.includes(wanted) || (stem && t.includes(stem)));
   });
-  if (!hit) hit = [...scope.querySelectorAll('img')].find(visibles) || null;
   if (!hit) return false;
   hit.click();
   return true;
@@ -3452,20 +3444,26 @@ def confirmar_imagen_en_modal(page, nombre: str) -> bool:
         page.wait_for_timeout(200)
     except Exception:
         pass
+    seleccionada = False
     try:
         if page.evaluate(JS_SELECCIONAR_THUMB_IMAGEN, nombre) is True:
             print(f"  · seleccioné {nombre}")
+            seleccionada = True
     except Exception:
         pass
     get_by_text = getattr(page, "get_by_text", None)
-    if get_by_text:
+    if get_by_text and not seleccionada:
         try:
             loc = get_by_text(nombre, exact=False)
             if hasattr(loc, "count") and loc.count():
                 loc.last.click(timeout=2_000)
                 print(f"  · seleccioné {nombre}")
+                seleccionada = True
         except Exception:
             pass
+    if not seleccionada:
+        print(f"  ✗ modal de imagen: no hallé la miniatura {nombre}")
+        return False
     try:
         page.wait_for_timeout(300)
     except Exception:

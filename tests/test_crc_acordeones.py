@@ -553,6 +553,20 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             self.assertEqual(extraida.read_bytes()[:8], png[:8])
             self.assertEqual(extraida.suffix, ".png")
 
+    def test_buscar_foto_no_toma_media_de_id_parcial(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            crc = Path(tmp) / "crc"
+            ajena = crc / "out" / "media" / "salmon-al-horno" / "portada.jpg"
+            ajena.parent.mkdir(parents=True)
+            ajena.write_bytes(b"foto-ajena")
+
+            with patch.object(self.explorar, "CRC", crc), patch.object(
+                self.explorar._RUTAS, "carpetas_busqueda_foto", return_value=[]
+            ):
+                hallada = self.explorar._buscar_foto_en_carpetas({"id": "sal"})
+
+            self.assertIsNone(hallada)
+
     def test_url_lienzo_no_es_lista_proyectos(self):
         ficha = (
             "https://business-manager.ecomm.cencosud.com/cms/projects/"
@@ -771,6 +785,10 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIn("Confirmar", js)
         self.assertIn("Mi Equipo", self.explorar.JS_ACTIVAR_TAB_MI_EQUIPO)
         self.assertIn("portada-enlace", self.explorar.JS_HAY_MODAL_MEDIA)
+        self.assertNotIn(
+            "querySelectorAll('img')].find(visibles)",
+            self.explorar.JS_SELECCIONAR_THUMB_IMAGEN,
+        )
 
     def test_confirmar_imagen_selecciona_y_confirma(self):
         class Pagina:
@@ -802,6 +820,39 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         )
         self.assertIn("confirmar", pagina.pasos)
         self.assertIn(("thumb", "portada-enlace.png"), pagina.pasos)
+
+    def test_confirmar_imagen_no_confirma_si_no_halla_archivo(self):
+        class Pagina:
+            def __init__(self):
+                self.pasos = []
+
+            def evaluate(self, script, *_args):
+                texto = str(script)
+                if "hayConfirmar" in texto or "Mi Equipo|portada-enlace" in texto:
+                    return True
+                if "Mi Equipo" in texto and "tab" in texto.lower():
+                    self.pasos.append("tab")
+                    return True
+                if "thumb" in texto.lower() or "stem" in texto:
+                    self.pasos.append("sin-miniatura")
+                    return False
+                if "Confirmar" in texto and "btn.click" in texto:
+                    self.pasos.append("confirmar")
+                    return True
+                return False
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        pagina = Pagina()
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertFalse(
+                self.explorar.confirmar_imagen_en_modal(
+                    pagina, "portada-no-disponible.png"
+                )
+            )
+        self.assertIn("sin-miniatura", pagina.pasos)
+        self.assertNotIn("confirmar", pagina.pasos)
 
     def test_ruta_imagen_baja_enlace_celeste_foto(self):
         jpeg = b"\xff\xd8\xff\xe0" + b"\x00" * 20
