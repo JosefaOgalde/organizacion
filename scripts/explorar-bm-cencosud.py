@@ -6362,7 +6362,13 @@ def _aplicar_enlaces_html(texto: str, enlaces: list[dict] | None) -> str:
         prev = por_url.get(url)
         if prev is None or len(palabra) < len(str(prev.get("texto") or "")):
             por_url[url] = {"texto": palabra, "url": url}
-    for raw in por_url.values():
+    # Anclas largas primero; evita que «sal» pise dentro de una URL ya insertada.
+    ordenados = sorted(
+        por_url.values(),
+        key=lambda e: len(str(e.get("texto") or "")),
+        reverse=True,
+    )
+    for raw in ordenados:
         palabra = str(raw["texto"]).strip()
         url = str(raw["url"]).strip()
         palabra_esc = _esc_html(palabra)
@@ -6373,8 +6379,15 @@ def _aplicar_enlaces_html(texto: str, enlaces: list[dict] | None) -> str:
         if f"<strong>{palabra_esc}</strong></a>" in out:
             continue
         patron = re.compile(rf"(?<![\w>]){re.escape(palabra)}(?![\w<])", re.I)
-        repl = f'<a href="{_esc_html(url)}"><strong>{palabra_esc}</strong></a>'
-        out, _n = patron.subn(repl, out, count=1)
+
+        def _repl(m: re.Match, _url: str = url, _pe: str = palabra_esc) -> str:
+            # No reemplazar dentro de atributos HTML (href, etc.).
+            antes = out[: m.start()]
+            if antes.rfind("<") > antes.rfind(">"):
+                return m.group(0)
+            return f'<a href="{_esc_html(_url)}"><strong>{_pe}</strong></a>'
+
+        out, _n = patron.subn(_repl, out, count=1)
     return out
 
 
