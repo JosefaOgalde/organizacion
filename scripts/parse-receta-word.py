@@ -546,14 +546,23 @@ def limpiar_urls_en_texto(texto: str) -> str:
     s = re.sub(r"\(\s*url:\s*https?://[^\s)]+\s*\)", " ", texto or "", flags=re.I)
     s = re.sub(r"\(\s*url:\s*\)", " ", s, flags=re.I)
     s = re.sub(r"https?://[^\s)\]>]+", " ", s)
+    # Restos tipo «sal ( )» cuando el PDF trae url vacía.
+    s = re.sub(r"\(\s*\)", " ", s)
     s = re.sub(r"\s+([,.;:!?])", r"\1", s)
     return re.sub(r"\s+", " ", s).strip()
+
+
+def _es_pregunta_preparacion(line: str) -> bool:
+    return bool(
+        re.match(r"(?i)^¿?c[oó]mo\s+(preparar|hacer|armar|cocinar)\b", line or "")
+    )
 
 
 def parse_ingredientes(bloque: str) -> list[dict]:
     items = []
     stop = re.compile(
-        r"(?i)^(¿?c[oó]mo preparar|paso a paso|tips?\b|as[íi]\s+queda\b|preparaci[oó]n\b)",
+        r"(?i)^(¿?c[oó]mo\s+(preparar|hacer|armar|cocinar)|paso a paso|tips?\b|"
+        r"as[íi]\s+queda\b|peque[ñn]os\s+detalles\b|preparaci[oó]n\b)",
     )
     for raw in bloque.splitlines():
         line = sin_vineta(raw)
@@ -604,6 +613,11 @@ def null_str():
     return None
 
 
+def _linea_parece_nuevo_paso(line: str) -> bool:
+    """True si «Acción: cuerpo…» (título corto + dos puntos)."""
+    return bool(re.match(r"^[^:\n]{2,80}:\s+\S", line or ""))
+
+
 def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
     """Separa pasos reales de tips. El encabezado «Consejos para…» / «Así queda…» queda en tips_titulo."""
     pasos: list[dict] = []
@@ -612,7 +626,7 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
     en_tips = False
     encabezado_re = re.compile(
         r"(?i)^(?P<title>tips?|consejos?|as[íi]\s+queda\b.*|para que queden?\b.*|"
-        r"para (?:un|una)\b.*)"
+        r"para (?:un|una)\b.*|peque[ñn]os\s+detalles\b.*)"
         r"\s*(?P<sep>[:\-–])?\s*(?P<resto>.*)$"
     )
     for raw in bloque.splitlines():
@@ -625,6 +639,7 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
             or re.match(r"(?i)^as[íi]\s+queda\b", line)
             or re.match(r"(?i)^para que queden?\b", line)
             or re.match(r"(?i)^para (?:un|una)\b", line)
+            or re.match(r"(?i)^peque[ñn]os\s+detalles\b", line)
         )
         if encabezado and es_seccion_tips:
             en_tips = True
@@ -643,18 +658,35 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
             continue
         if re.match(r"(?i)^paso a paso\s*:?\s*$", line):
             continue
-        if re.match(r"(?i)^¿?c[oó]mo preparar", line):
+        if _es_pregunta_preparacion(line):
             continue
         enlaces = extraer_enlaces_inline(line)
         line = limpiar_urls_en_texto(line)
-        if line:
-            paso: dict = {"orden": len(pasos) + 1, "texto": line}
+        if not line:
+            continue
+        # Continuación de párrafo partido por el PDF (sin «Título:»).
+        if pasos and not _linea_parece_nuevo_paso(line):
+            prev = pasos[-1]
+            prev["texto"] = f"{prev['texto']} {line}".strip()
             if enlaces:
-                # Anclas largas primero para el HTML del BM.
-                paso["enlaces"] = sorted(
-                    enlaces, key=lambda e: len(str(e.get("texto") or "")), reverse=True
+                ya = prev.setdefault("enlaces", [])
+                vistos = {(e.get("texto"), e.get("url")) for e in ya}
+                for e in enlaces:
+                    clave = (e.get("texto"), e.get("url"))
+                    if clave not in vistos:
+                        ya.append(e)
+                        vistos.add(clave)
+                prev["enlaces"] = sorted(
+                    ya, key=lambda e: len(str(e.get("texto") or "")), reverse=True
                 )
-            pasos.append(paso)
+            continue
+        paso: dict = {"orden": len(pasos) + 1, "texto": line}
+        if enlaces:
+            # Anclas largas primero para el HTML del BM.
+            paso["enlaces"] = sorted(
+                enlaces, key=lambda e: len(str(e.get("texto") or "")), reverse=True
+            )
+        pasos.append(paso)
     return pasos, tips, tips_titulo
 
 
@@ -733,7 +765,10 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
     if foto_origen:
         foto_origen = foto_origen.strip().strip('"').strip("'")
     pregunta = None
-    m_preg = re.search(r"(?im)^(¿?c[oó]mo preparar[^\n]+)", texto)
+    m_preg = re.search(
+        r"(?im)^(¿?c[oó]mo\s+(?:preparar|hacer|armar|cocinar)[^\n]+)",
+        texto,
+    )
     if m_preg:
         pregunta = m_preg.group(1).strip()
     enlaces = extraer_urls(texto)
@@ -742,10 +777,10 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
     tags_line = meta_linea(texto, ["tags", "etiquetas"]) or valor_despues_label(lines, ["tags", "etiquetas"])
     categorias = parse_lista_csv(tags_line)
 
-    # Ingredientes: desde "Ingredientes" hasta "¿Cómo preparar" / "Paso a paso"
+    # Ingredientes: desde "Ingredientes" hasta "¿Cómo preparar/hacer" / "Paso a paso"
     ing_bloque = ""
     m_ing = re.search(
-        r"(?is)^\s*ingredientes?\s*:?\s*\n(.*?)(?=\n\s*(?:¿?c[oó]mo preparar|paso a paso)\b)",
+        r"(?is)^\s*ingredientes?\s*:?\s*\n(.*?)(?=\n\s*(?:¿?c[oó]mo\s+(?:preparar|hacer|armar|cocinar)|paso a paso)\b)",
         texto,
         re.M,
     )
@@ -753,9 +788,11 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
         ing_bloque = m_ing.group(1).strip()
     ingredientes = parse_ingredientes(ing_bloque)
 
-    # Pasos
+    # Pasos (anclar al inicio de línea: la meta desc también dice «cómo preparar…»)
     m_pas = re.search(
-        r"(?is)(?:paso a paso\s*:?\s*\n|¿?c[oó]mo preparar[^\n]*\n(?:paso a paso\s*:?\s*\n)?)(.*)\Z",
+        r"(?is)(?:^|\n)\s*(?:paso a paso\s*:?\s*\n|"
+        r"¿?c[oó]mo\s+(?:preparar|hacer|armar|cocinar)[^\n]*\n"
+        r"(?:paso a paso\s*:?\s*\n)?)(.*)\Z",
         texto,
     )
     pas_bloque = m_pas.group(1).strip() if m_pas else ""

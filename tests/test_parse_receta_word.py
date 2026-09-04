@@ -426,6 +426,33 @@ class ParseRecetaWordTests(unittest.TestCase):
         self.assertTrue(any(t and t.lower() == "torta" for t in textos_enlace))
         self.assertEqual(receta["estado"], "listo-para-cargar")
 
+    def test_salsa_verde_como_hacer_y_tips(self):
+        fixture = ROOT / "tests/fixtures/crc/Salsa-verde.pdf"
+        if not fixture.exists():
+            self.skipTest("No hay Salsa-verde.pdf de prueba")
+        texto = self.modulo.texto_desde_pdf(fixture)
+        receta = self.modulo.construir_receta(texto, str(fixture))
+        self.assertEqual(receta["titulo"], "Salsa verde")
+        self.assertEqual(receta["preguntaPreparacion"], "¿Cómo hacer salsa verde?")
+        self.assertEqual(len(receta["ingredientes"]), 8)
+        self.assertEqual(len(receta["pasos"]), 4)
+        self.assertEqual(
+            receta["tipsTitulo"], "Pequeños detalles que hacen la diferencia"
+        )
+        self.assertEqual(len(receta["tips"]), 3)
+        # No debe colarse la meta desc («Descubre cómo preparar…») en los pasos.
+        self.assertFalse(
+            any("Descubre cómo preparar" in (p.get("texto") or "") for p in receta["pasos"])
+        )
+        textos_enlace = [
+            e.get("texto")
+            for p in receta["pasos"]
+            for e in (p.get("enlaces") or [])
+        ]
+        self.assertTrue(any(t and t.lower() == "salsa" for t in textos_enlace))
+        self.assertTrue(any(t and t.lower() == "oliva" for t in textos_enlace))
+        self.assertEqual(receta["estado"], "listo-para-cargar")
+
     def test_rellenar_urls_vacias(self):
         out = self.modulo.rellenar_urls_vacias(
             "el yoghurt natural (url:) y la crema (url:)",
