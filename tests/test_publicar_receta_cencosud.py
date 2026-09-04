@@ -230,6 +230,31 @@ class PublicarRecetaTests(unittest.TestCase):
         self.assertEqual(runtime.clicks, ["#publicar"])
         self.assertEqual(guardada["estado"], "cargado")
 
+    def test_receta_expandida_conserva_correcciones_manuales(self):
+        receta = {
+            **self.receta_valida,
+            "formatoOrigen": "bloques-json",
+            "descripcion": "Descripción corregida manualmente",
+            "bloques": {
+                "cabecera": {
+                    "titulo": "Receta segura",
+                    "descripcion": "Descripción obsoleta de los bloques",
+                    "porciones": 4,
+                    "dificultad": "facil",
+                },
+                "tags": {"etiquetas": ["cena"]},
+                "ingredientes": {"items": [{"nombre": "Ingrediente"}]},
+                "instrucciones": {"pasos": [{"orden": 1, "texto": "Preparar"}]},
+                "seo": {},
+            },
+        }
+
+        exit_code, runtime, guardada = self.ejecutar(receta)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(runtime.lanzamientos, 1)
+        self.assertEqual(guardada["descripcion"], "Descripción corregida manualmente")
+
     def test_dry_run_conserva_flujo_de_borrador(self):
         receta = {
             **self.receta_valida,

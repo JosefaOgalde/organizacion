@@ -52,6 +52,10 @@ def slugify(s: str) -> str:
 
 
 def es_formato_bloques(doc: dict) -> bool:
+    # La receta expandida conserva ``bloques`` como trazabilidad, pero sus
+    # campos superiores pueden contener correcciones manuales y son canónicos.
+    if doc.get("formatoOrigen") == "bloques-json":
+        return False
     bloques = doc.get("bloques")
     if not isinstance(bloques, dict):
         return False
@@ -154,7 +158,11 @@ def expandir_bloques(doc: dict, *, fuente: str = "") -> dict:
     meta_titulo = (seo_b.get("metaTitulo") or titulo or "").strip()
     meta_desc = (seo_b.get("metaDescripcion") or descripcion or "").strip()
 
-    sid = (doc.get("id") or slugify(titulo)).strip() or slugify(titulo)
+    sid = str(doc.get("id") or slugify(titulo)).strip() or slugify(titulo)
+    if len(sid) > 80 or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", sid):
+        raise ValueError(
+            "id inválido: usa un slug de hasta 80 caracteres (letras minúsculas, números y guiones)"
+        )
     if not pregunta and titulo:
         plato = titulo[0].lower() + titulo[1:] if len(titulo) > 1 else titulo.lower()
         pregunta = f"¿Cómo preparar {plato}?"

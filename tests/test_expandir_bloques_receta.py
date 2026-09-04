@@ -33,6 +33,13 @@ class TestExpandirBloques(unittest.TestCase):
         with self.assertRaises(ValueError):
             mod.expandir_bloques({"titulo": "Solo titulo"})
 
+    def test_rechaza_id_que_escapa_del_directorio_de_salida(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["id"] = "../../../../../data/organizacion-live"
+
+        with self.assertRaisesRegex(ValueError, "id inválido"):
+            mod.expandir_bloques(doc)
+
 
 if __name__ == "__main__":
     unittest.main()
