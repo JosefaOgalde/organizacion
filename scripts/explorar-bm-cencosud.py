@@ -211,29 +211,34 @@ def en_vista_default_cms(page) -> bool:
 def esperar_ficha_en_lienzo(
     page, *, headed: bool = True, titulo_receta: str | None = None
 ) -> str:
-    """Tras ENTER: exige URL /view-manager/view/{id} + los 5 bloques. No seguir sin eso."""
+    """Tras ENTER: exige URL /view-manager/view/{id} (+ lienzo o editor del lápiz)."""
     nombre = (titulo_receta or "").strip() or "la receta"
     for _intento in range(6):
         url_ficha = url_actual(page)
-        if url_tiene_vista_receta(url_ficha) and en_vista_default_cms(page):
+        # Ya en /view/{id} (lienzo de 5 bloques O edición de un componente).
+        if url_tiene_vista_receta(url_ficha) and (
+            en_vista_default_cms(page) or "/edit/" in (url_ficha or "").lower()
+        ):
             print(f"  · Vista editable OK («{nombre}»): …/view/{id_vista_receta(url_ficha)}")
             print("  · Me quedo en esta URL. No pulso «Volver» del chrome.")
             return url_ficha
+        print(f"  · URL que ve el script ahora:\n    {(url_ficha or '(vacía)')[:160]}")
         if url_tiene_vista_receta(url_ficha):
             print(
-                "\n>>> La URL es la receta, pero no veo los 5 bloques.\n"
-                "    Dejá el desplegable en «default» y ENTER.\n"
+                "\n>>> La URL ya es la receta, pero no veo lienzo ni editor.\n"
+                "    Dejá el desplegable en «default» (5 bloques) o el lápiz abierto, y ENTER.\n"
             )
         elif gestor_sin_ficha(url_ficha):
             print(
-                f"\n>>> Estás en el Gestor SIN /view/id (vista no editable).\n"
-                f"    Abrí «{nombre}» hasta que la URL tenga\n"
-                "    /view-manager/view/…. NO pulses Volver.\n"
+                f"\n>>> El Chromium DEL SCRIPT está en el Gestor SIN /view/id.\n"
+                f"    Ojo: debe ser la ventana Chromium que abrió Python (no Chrome/Edge normal).\n"
+                f"    Ahí abrí «{nombre}» hasta que la URL tenga /view-manager/view/…\n"
+                "    NO pulses Volver.\n"
             )
         else:
             print(
-                f"\n>>> No estás en la vista editable de la receta.\n"
-                f"    Entrá a Recetas_Jumbo → «{nombre}» (URL con /view/…).\n"
+                f"\n>>> El Chromium DEL SCRIPT no está en la vista editable.\n"
+                f"    En ESA ventana: Recetas_Jumbo → «{nombre}» (URL con /view/…).\n"
                 "    NO pulses «Volver» ni Proyectos.\n"
             )
         if headed and sys.stdin.isatty():
