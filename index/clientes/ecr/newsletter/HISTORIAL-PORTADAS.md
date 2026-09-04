@@ -181,5 +181,16 @@ Actualizado: 2026-07-21
 
 - Madre ECR **24-jul**: `[ECR] NL 2 ago · Equipos en terreno`
 - Artículo: [articulos/ART23-equipos-en-terreno.docx](./articulos/ART23-equipos-en-terreno.docx)
-- Mundos: F · C · M
-- Archivo prompts: [portadas-guardadas/ART23-equipos-en-terreno.md](./portadas-guardadas/ART23-equipos-en-terreno.md)
+- Copys: [copys/COPY-equipos-en-terreno.txt](./copys/COPY-equipos-en-terreno.txt)
+- Mundos portada (wide): F · C · M
+- Archivo prompts portada: [portadas-guardadas/ART23-equipos-en-terreno.md](./portadas-guardadas/ART23-equipos-en-terreno.md)
+- Carrusel 8 slides + fondos MJ cuadrados: [carruseles/CARRUSEL-NL2-ago-equipos-en-terreno.md](./carruseles/CARRUSEL-NL2-ago-equipos-en-terreno.md) · [carruseles/PROMPTS-FONDOS-CUADRADOS-NL2-ago.md](./carruseles/PROMPTS-FONDOS-CUADRADOS-NL2-ago.md)
+- Video (= carrusel animado): [carruseles/VIDEO-NL2-ago-equipos-en-terreno.md](./carruseles/VIDEO-NL2-ago-equipos-en-terreno.md)
+- **4 conceptos → 4 fondos:** [portadas-guardadas/ART23-4-conceptos-fondos.md](./portadas-guardadas/ART23-4-conceptos-fondos.md)
+- **2 fondos v2** (sin flota/autos · tono positivo · azul ECR `#0285e2`): [portadas-guardadas/ART23-2-fondos-v2-sin-flota.md](./portadas-guardadas/ART23-2-fondos-v2-sin-flota.md)
+- **2 fondos v3** (solo adultos · título “ajustar a tiempo” más explícito): [portadas-guardadas/ART23-2-fondos-v3-solo-adultos.md](./portadas-guardadas/ART23-2-fondos-v3-solo-adultos.md)
+- **1 fondo v4** (composición dual isométrica · distinta a los huddles): [portadas-guardadas/ART23-1-fondo-v4-composicion-dual.md](./portadas-guardadas/ART23-1-fondo-v4-composicion-dual.md)
+- **1 fondo v5** (vista superior mapa de sala · solo adultos): [portadas-guardadas/ART23-1-fondo-v5-vista-superior.md](./portadas-guardadas/ART23-1-fondo-v5-vista-superior.md)
+- **1 fondo v6** (acción: cubrir ausencia al instante · friso lateral): [portadas-guardadas/ART23-1-fondo-v6-cobertura-ausencia.md](./portadas-guardadas/ART23-1-fondo-v6-cobertura-ausencia.md)
+- **2 fondos v7** (estilo Memphis/red más rico, acercar a refs): [portadas-guardadas/ART23-2-fondos-v7-estilo-referencia.md](./portadas-guardadas/ART23-2-fondos-v7-estilo-referencia.md)
+- **2 fondos v8** (Memphis/red · prioridad mid-day + asistencia en vivo): [portadas-guardadas/ART23-2-fondos-v8-memphis-acciones.md](./portadas-guardadas/ART23-2-fondos-v8-memphis-acciones.md)

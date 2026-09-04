@@ -114,6 +114,6 @@ No abrir Joyas Mercury en redes hasta retomar el cliente.
 
 1. Importar este respaldo en el PC: `ABRIR-LARAVEL.bat restaurar` (o `IMPORTAR-RESPALDO` del JSON 31-jul).  
 2. Hoy/mañana: cerrar lo abierto de **ECR NL 1 ago** si falta.  
-3. Preparar **ECR NL 2 ago (3 ago)** — empezar por Copys + Portada.  
+3. Ejecutar **ECR NL 2 ago** — Copys listos · Portada prompts listos · Carrusel/Video guiones en `index/clientes/ecr/newsletter/carruseles/` (armar Canva + Midjourney).  
 4. Impresoreando: terminar pieza bulldog IG y programar 3 posts de la semana.  
 5. TS: barrer C7–C12 y marcar qué falta solo en **Programar**.  
