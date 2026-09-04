@@ -1,45 +1,47 @@
 @echo off
 chcp 65001 >nul
-setlocal
+setlocal EnableExtensions
 cd /d "%~dp0"
-title CRC · Cargar receta en Business Manager
+title CRC - Cargar receta en Business Manager
 
 set "CRC=index\clientes\Herramientas\carga-recetas-cencosud"
 set "INBOX=%CRC%\inbox"
 set "OUT=%CRC%\out"
+set "SECRETS=%CRC%\secrets"
+set "ENV_EXAMPLE=%SECRETS%\env.example"
 
 echo.
 echo  ========================================
-echo   CRC · CARGAR RECETA EN BUSINESS MANAGER
+echo   CRC - CARGAR RECETA EN BUSINESS MANAGER
 echo  ========================================
 echo.
 
-if "%~1"=="" (
-  echo  Arrastra el Word o PDF de la receta encima de este .bat
-  echo  o ejecutalo asi:
-  echo     CARGAR-RECETA-BM.bat "C:\Users\josef\Downloads\Maremoto.pdf"
-  echo.
-  pause
-  exit /b 1
-)
+if not "%~1"=="" goto :tiene_archivo
+echo  Arrastra el Word o PDF de la receta encima de este .bat
+echo  o ejecutalo asi:
+echo     CARGAR-RECETA-BM.bat "C:\Users\josef\Downloads\Maremoto.pdf"
+echo.
+pause
+exit /b 1
 
+:tiene_archivo
 where python >nul 2>&1
-if errorlevel 1 (
-  echo  No se encontro python. Instala Python 3 y marca "Add to PATH".
-  pause
-  exit /b 1
-)
+if not errorlevel 1 goto :tiene_python
+echo  No se encontro python. Instala Python 3 y marca "Add to PATH".
+pause
+exit /b 1
 
+:tiene_python
 if not exist "%INBOX%" mkdir "%INBOX%"
 copy /y "%~1" "%INBOX%\" >nul 2>&1
 set "FUENTE=%INBOX%\%~nx1"
-if not exist "%FUENTE%" (
-  echo  No se pudo copiar "%~1" a %INBOX%
-  pause
-  exit /b 1
-)
+if exist "%FUENTE%" goto :fuente_ok
+echo  No se pudo copiar "%~1" a %INBOX%
+pause
+exit /b 1
 
-echo  PASO 1 · Word/PDF -^> JSON
+:fuente_ok
+echo  PASO 1 - Word/PDF -^> JSON
 echo.
 python scripts\parse-receta-word.py "%FUENTE%"
 if errorlevel 3 goto :ya_existe
@@ -58,8 +60,10 @@ if errorlevel 1 goto :error_parse
 :json_listo
 set "JSON="
 for /f "delims=" %%A in ('dir /b /a-d /o-d "%OUT%\*.json" 2^>nul') do if not defined JSON set "JSON=%OUT%\%%A"
-if not defined JSON goto :error_parse
+if defined JSON goto :json_ok
+goto :error_parse
 
+:json_ok
 echo.
 echo  JSON de la receta: %JSON%
 echo  Revisalo si quieres antes de seguir (los SKU no vienen en el documento).
@@ -73,13 +77,17 @@ echo  Preparando Playwright (solo tarda la primera vez)...
 python -m pip install --quiet playwright
 python -m playwright install chromium
 
-if not exist "%CRC%\secrets\.env" (
-  if exist "%CRC%\secrets\env.example" copy /y "%CRC%\secrets\env.example" "%CRC%\secrets\.env" >nul
-  echo  Crea/edita %CRC%\secrets\.env con CENCOSUD_BM_USER (nunca lo pegues en el chat).
-)
+REM scripts CRC leen secrets\.env; evitamos "if exist ...\.env (" que rompe CMD
+if not exist "%SECRETS%" mkdir "%SECRETS%"
+if exist "%SECRETS%\.env" goto :env_listo
+if not exist "%ENV_EXAMPLE%" goto :env_aviso
+copy /y "%ENV_EXAMPLE%" "%SECRETS%\.env" >nul 2>&1
+:env_aviso
+echo  Crea/edita %SECRETS%\.env con CENCOSUD_BM_USER (nunca lo pegues en el chat).
+:env_listo
 
 echo.
-echo  PASO 2 · scraping / mapeo del CMS con tu login
+echo  PASO 2 - scraping / mapeo del CMS con tu login
 echo  1) Inicia sesion en la ventana que se abre (ADFS / MFA a mano).
 echo  2) Abre la receta en el Gestor de contenido (5 bloques al centro).
 echo  3) Vuelve aqui y pulsa ENTER. NO toques los lapices: se abren solos.
@@ -88,7 +96,7 @@ python scripts\explorar-bm-cencosud.py --reuse-session
 if errorlevel 1 goto :error_bm
 
 echo.
-echo  PASO 3 · rellenar la receta (dry-run: no publica)
+echo  PASO 3 - rellenar la receta (dry-run: no publica)
 echo.
 python scripts\publicar-receta-cencosud.py "%JSON%" --headed --dry-run
 if errorlevel 1 goto :error_bm
@@ -106,7 +114,7 @@ exit /b 1
 :error_bm
 echo.
 echo  [ERROR] Fallo el paso contra el Business Manager.
-echo  Si faltaron campos, revisa %CRC%\secrets\bm-selectores.json
+echo  Si faltaron campos, revisa %SECRETS%\bm-selectores.json
 echo  y vuelve a correr este .bat.
 pause
 exit /b 1
