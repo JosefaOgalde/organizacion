@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" fill="none" role="img" aria-label="SEO y GEO - lupa Making Of">
+  <defs>
+    <radialGradient id="meshBg" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#F7F2E4"/>
+      <stop offset="100%" stop-color="#D8D3A4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glassFill" cx="36%" cy="28%" r="72%">
+      <stop offset="0%" stop-color="#6BA894" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#2A5A49" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#091914" stop-opacity="0.55"/>
+    </radialGradient>
+    <linearGradient id="rimFill" x1="80" y1="40" x2="360" y2="300">
+      <stop offset="0%" stop-color="#C8C28A"/>
+      <stop offset="45%" stop-color="#56742A"/>
+      <stop offset="100%" stop-color="#133429"/>
+    </linearGradient>
+    <linearGradient id="handleFill" x1="300" y1="240" x2="470" y2="390">
+      <stop offset="0%" stop-color="#C8C28A"/>
+      <stop offset="40%" stop-color="#56742A"/>
+      <stop offset="100%" stop-color="#133429"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#091914" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect width="520" height="420" fill="url(#meshBg)"/>
+
+  <!-- Malla de puntos (firma caras / mundo) -->
+  <g fill="#56742A" fill-opacity="0.28">
+    <circle cx="260" cy="68" r="3"/>
+    <circle cx="190" cy="100" r="2.5"/><circle cx="330" cy="96" r="2.5"/>
+    <circle cx="145" cy="175" r="2.2"/><circle cx="380" cy="160" r="2.2"/>
+    <circle cx="155" cy="280" r="2.2"/><circle cx="400" cy="250" r="2.2"/>
+    <circle cx="230" cy="350" r="2.5"/><circle cx="320" cy="345" r="2.5"/>
+    <circle cx="260" cy="372" r="2.8"/>
+  </g>
+  <g stroke="#418870" stroke-opacity="0.55" stroke-width="1.6" fill="none">
+    <path d="M190 100 C215 135 222 155 228 168"/>
+    <path d="M330 96 C300 135 255 155 228 168"/>
+    <path d="M145 175 C185 172 210 170 228 168"/>
+    <path d="M380 160 C320 165 270 168 228 168"/>
+    <path d="M228 168 L260 350"/>
+  </g>
+
+  <g filter="url(#soft)">
+    <!-- Aro -->
+    <circle cx="228" cy="168" r="100" fill="none" stroke="url(#rimFill)" stroke-width="20"/>
+    <!-- Cristal -->
+    <circle cx="228" cy="168" r="88" fill="url(#glassFill)"/>
+    <ellipse cx="200" cy="136" rx="34" ry="22" fill="#FBF6EB" fill-opacity="0.18"/>
+    <!-- Malla interior del cristal -->
+    <g stroke="#F7F2E4" stroke-opacity="0.28" stroke-width="1.3" fill="none">
+      <path d="M175 140 L210 118 L248 136 L258 172 L232 198 L196 190 L168 160 Z"/>
+      <path d="M196 154 L226 136 L250 168"/>
+      <path d="M212 124 L224 170 L206 196"/>
+    </g>
+    <!-- Virola + mango -->
+    <path d="M282 224 L316 256 L304 270 L270 238 Z" fill="#133429" fill-opacity="0.55"/>
+    <path d="M306 248 L430 358 L408 376 L286 268 Z" fill="url(#handleFill)"/>
+    <g stroke="#F7F2E4" stroke-opacity="0.28" stroke-width="2">
+      <path d="M318 266 L338 284"/>
+      <path d="M334 280 L354 298"/>
+      <path d="M350 294 L370 312"/>
+      <path d="M366 308 L386 326"/>
+    </g>
+    <ellipse cx="424" cy="372" rx="15" ry="11" transform="rotate(42 424 372)" fill="#091914"/>
+  </g>
+
+  <!-- Nodos sobre el cristal -->
+  <circle cx="196" cy="122" r="2.8" fill="#F7F2E4" fill-opacity="0.5"/>
+  <circle cx="258" cy="132" r="2.5" fill="#99EADA" fill-opacity="0.6"/>
+  <circle cx="214" cy="188" r="2.4" fill="#C8C28A" fill-opacity="0.55"/>
+  <circle cx="244" cy="168" r="2.6" fill="#F7F2E4" fill-opacity="0.45"/>
+  <!-- Nodo mint central (firma caras) -->
+  <circle cx="228" cy="168" r="10" fill="#091914"/>
+  <circle cx="228" cy="168" r="5" fill="#99EADA"/>
+</svg>
