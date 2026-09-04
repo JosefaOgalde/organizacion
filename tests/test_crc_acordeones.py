@@ -310,8 +310,10 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             ],
             receta_salmon,
         )
-        self.assertIn("<h3>¿Cómo preparar salmón a la parrilla con salsa de palta?</h3>", html)
-        self.assertIn("<strong>Sazona el salmón:</strong>", html)
+        self.assertNotIn("<h3>", html)
+        self.assertNotIn("¿Cómo preparar", html)
+        self.assertIn("<ul>", html)
+        self.assertIn("<li><strong>Sazona el salmón:</strong>", html)
         self.assertIn("Consejos", html)
         self.assertNotIn("&lt;p&gt;", html)
         self.assertNotIn("&lt;strong", html)
@@ -342,7 +344,8 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
                 },
             ]
         )
-        self.assertEqual(salmon.lower().count("<p>"), 2)
+        self.assertEqual(salmon.lower().count("<li>"), 2)
+        self.assertIn("<ul>", salmon)
         self.assertIn("Termina la receta", salmon)
         ya_html = "<p><strong>Sazona el salmón:</strong> Seca los filetes.</p>"
         self.assertEqual(self.explorar.html_pasos([{"texto": ya_html}]), ya_html)
@@ -351,6 +354,47 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertTrue(self.explorar.html_quedo_con_etiquetas(ya_html, ya_html))
         self.assertFalse(
             self.explorar.html_quedo_con_etiquetas("&lt;p&gt;Sazona&lt;/p&gt;", ya_html)
+        )
+        maremoto_html = self.explorar.html_pasos(
+            [
+                {
+                    "texto": (
+                        "Enfría los ingredientes: Mantén el vino pipeño bien frío "
+                        "en el refrigerador y el helado de piña firme."
+                    ),
+                    "enlaces": [
+                        {
+                            "texto": "vino pipeño",
+                            "url": "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos",
+                        }
+                    ],
+                },
+                {
+                    "texto": (
+                        "Agrega el helado: Coloca una generosa bola de helado de piña."
+                    ),
+                    "enlaces": [
+                        {
+                            "texto": "helado de piña",
+                            "url": "https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres",
+                        }
+                    ],
+                },
+            ],
+            {
+                "titulo": "Maremoto",
+                "preguntaPreparacion": "¿Cómo preparar maremoto?",
+            },
+        )
+        self.assertNotIn("¿Cómo preparar maremoto?", maremoto_html)
+        self.assertEqual(maremoto_html.lower().count("<li>"), 2)
+        self.assertIn(
+            '<a href="https://www.jumbo.cl/licores-bebidas-y-aguas/vinos">vino pipeño</a>',
+            maremoto_html,
+        )
+        self.assertIn(
+            '<a href="https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres">helado de piña</a>',
+            maremoto_html,
         )
         self.assertIn("crcSetHtml", self.explorar.JS_ESCRIBIR_PASO_HTML)
         self.assertIn("crcHtmlTieneTagsReales", self.explorar.JS_ESCRIBIR_PASO_HTML)
@@ -1125,14 +1169,20 @@ class JsIngredienteExactoTests(unittest.TestCase):
                 page.evaluate("() => document.getElementById('html-script').checked")
             )
             html_out = page.evaluate("() => document.getElementById('paso-html').value")
-            self.assertIn("<h3>¿Cómo preparar salmón a la parrilla con salsa de palta?</h3>", html_out)
-            self.assertIn("<strong>Sazona el salmón:</strong>", html_out)
+            self.assertNotIn("<h3>", html_out)
+            self.assertNotIn("¿Cómo preparar", html_out)
+            self.assertIn("<ul>", html_out)
+            self.assertIn("<li><strong>Sazona el salmón:</strong>", html_out)
             self.assertIn("Prepara la salsa de palta", html_out)
             self.assertNotIn("&lt;p&gt;", html_out)
             self.assertNotIn("&lt;strong", html_out)
             self.assertGreaterEqual(
                 page.evaluate("() => document.querySelectorAll('#wysiwyg strong').length"),
                 1,
+            )
+            self.assertGreaterEqual(
+                page.evaluate("() => document.querySelectorAll('#wysiwyg li').length"),
+                2,
             )
             browser.close()
 

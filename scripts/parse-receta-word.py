@@ -461,6 +461,39 @@ def extraer_urls(texto: str) -> list[str]:
     return vistos
 
 
+def extraer_enlaces_inline(texto: str) -> list[dict]:
+    """Jumbo: «vino (url:https://…) pipeño» → anclas «vino pipeño» y «vino»."""
+    out: list[dict] = []
+    pat = re.compile(
+        r"([A-Za-zÁÉÍÓÚáéíóúÑñüÜ][\wÁÉÍÓÚáéíóúÑñüÜ\-]*)"
+        r"\s*\(\s*url:\s*(https?://[^\s)]+)\s*\)\s*"
+        r"([^\n.,;:!?]*)",
+        re.I,
+    )
+    vistos: set[tuple[str, str]] = set()
+    for m in pat.finditer(texto or ""):
+        antes = m.group(1)
+        url = m.group(2).rstrip(".,;:\"'")
+        despues = (m.group(3) or "").strip()
+        ancla = antes
+        cont = re.match(
+            r"^(?:(de\s+[\wÁÉÍÓÚáéíóúÑñüÜ\-]+)|([\wÁÉÍÓÚáéíóúÑñüÜ\-]+))",
+            despues,
+            re.I,
+        )
+        if cont:
+            cola = (cont.group(1) or cont.group(2) or "").strip()
+            if cola:
+                ancla = f"{antes} {cola}".strip()
+        for palabra in (ancla, antes):
+            clave = (palabra.lower(), url)
+            if not palabra or clave in vistos:
+                continue
+            vistos.add(clave)
+            out.append({"texto": palabra, "url": url})
+    return out
+
+
 def limpiar_urls_en_texto(texto: str) -> str:
     """Quita '(url: https://…)' del Word/PDF exportado; deja la prosa editorial."""
     s = re.sub(r"\(\s*url:\s*https?://[^\s)]+\s*\)", " ", texto or "", flags=re.I)
@@ -561,9 +594,16 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
             continue
         if re.match(r"(?i)^¿?c[oó]mo preparar", line):
             continue
+        enlaces = extraer_enlaces_inline(line)
         line = limpiar_urls_en_texto(line)
         if line:
-            pasos.append({"orden": len(pasos) + 1, "texto": line})
+            paso: dict = {"orden": len(pasos) + 1, "texto": line}
+            if enlaces:
+                # Anclas largas primero para el HTML del BM.
+                paso["enlaces"] = sorted(
+                    enlaces, key=lambda e: len(str(e.get("texto") or "")), reverse=True
+                )
+            pasos.append(paso)
     return pasos, tips, tips_titulo
 
 

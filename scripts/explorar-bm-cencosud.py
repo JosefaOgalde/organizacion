@@ -6059,7 +6059,7 @@ def items_instrucciones(pasos: list[dict], tips: list | None = None) -> list[dic
 
 
 def pregunta_preparacion(receta: dict | None = None) -> str:
-    """Pregunta H3 del bloque instrucciones: «¿Cómo preparar …?»."""
+    """Pregunta solo para Título* de Lista de Instrucciones (no va en Paso a Paso)."""
     receta = receta or {}
     explicita = receta.get("preguntaPreparacion") or receta.get("tituloInstrucciones")
     if explicita and str(explicita).strip():
@@ -6112,56 +6112,154 @@ def html_quedo_con_etiquetas(escrito: str | None, original: str | None = None) -
 
 
 def _aplicar_enlaces_html(texto: str, enlaces: list[dict] | None) -> str:
-    """Envuelve palabras con <a href> si el paso trae enlaces del Word."""
+    """Envuelve palabras con <a href> si el paso trae enlaces del Word/PDF."""
     if not texto or not enlaces:
         return texto
     out = texto
-    for raw in enlaces:
+    ordenados = sorted(
+        enlaces,
+        key=lambda raw: len(str(raw.get("texto") or raw.get("anchor") or "")),
+        reverse=True,
+    )
+    for raw in ordenados:
         palabra = str(raw.get("texto") or raw.get("anchor") or "").strip()
         url = str(raw.get("url") or "").strip()
         if not palabra or not url:
             continue
         palabra_esc = _esc_html(palabra)
+        # Ya envuelta, o forma parte de un ancla más larga ya linkeada.
+        if re.search(rf"<a\b[^>]*>[^<]*{re.escape(palabra)}", out, re.I):
+            continue
         if f">{palabra_esc}</a>" in out or f'>{palabra.lower()}</a>' in out.lower():
             continue
+        # No usar replace ingenuo: rompería «vino» dentro de href «…/vinos».
         patron = re.compile(rf"(?<![\w>]){re.escape(palabra)}(?![\w<])", re.I)
         repl = f'<a href="{_esc_html(url)}">{palabra_esc}</a>'
-        out, n = patron.subn(repl, out, count=1)
-        if not n and palabra_esc in out:
-            out = out.replace(palabra_esc, repl, 1)
+        out, _n = patron.subn(repl, out, count=1)
     return out
 
 
+def _urls_producto_planas(receta: dict | None) -> list[str]:
+    out: list[str] = []
+    for raw in (receta or {}).get("enlacesProductos") or []:
+        if isinstance(raw, str) and raw.strip():
+            out.append(raw.strip())
+        elif isinstance(raw, dict):
+            url = str(raw.get("url") or "").strip()
+            if url:
+                out.append(url)
+    return out
+
+
+def _anclas_desde_url_producto(url: str) -> list[str]:
+    path = re.sub(r"^https?://[^/]+", "", url or "", flags=re.I).lower()
+    tokens = re.findall(r"[a-záéíóúñü]+", path)
+    stems: list[str] = []
+    for t in tokens:
+        if len(t) < 4:
+            continue
+        stems.append(t)
+        if t.endswith("es") and len(t) > 5:
+            stems.append(t[:-2])
+        elif t.endswith("s") and len(t) > 4:
+            stems.append(t[:-1])
+    return stems
+
+
+def enlaces_desde_productos(receta: dict | None) -> list[dict]:
+    """Arma {texto, url} cruzando enlacesProductos con nombres de ingredientes."""
+    receta = receta or {}
+    urls = _urls_producto_planas(receta)
+    ings = [
+        str(i.get("nombre") or "").strip()
+        for i in (receta.get("ingredientes") or [])
+        if str(i.get("nombre") or "").strip()
+    ]
+    if not urls or not ings:
+        return []
+    usados: set[int] = set()
+    out: list[dict] = []
+    for url in urls:
+        stems = _anclas_desde_url_producto(url)
+        best: tuple[int, int, str] | None = None
+        for idx, nom in enumerate(ings):
+            if idx in usados:
+                continue
+            nom_l = nom.lower()
+            score = 0
+            for stem in stems:
+                if stem in nom_l:
+                    score += len(stem)
+            if score and (best is None or score > best[0]):
+                best = (score, idx, nom)
+        if not best:
+            continue
+        _, idx, nom = best
+        usados.add(idx)
+        out.append({"texto": nom, "url": url})
+        primera = re.split(r"\s+", nom)[0]
+        if primera.lower() not in {"de", "el", "la", "los", "las"} and primera.lower() != nom.lower():
+            out.append({"texto": primera, "url": url})
+    return out
+
+
+def enlaces_efectivos_paso(paso: dict, receta: dict | None = None) -> list[dict]:
+    """Une enlaces del paso con productos Jumbo que aparecen en el texto."""
+    texto = linea_paso(paso)
+    if not texto:
+        return []
+    merged: list[dict] = []
+    vistos: set[tuple[str, str]] = set()
+    for fuente in (paso.get("enlaces") or [], enlaces_desde_productos(receta)):
+        for e in fuente or []:
+            palabra = str(e.get("texto") or e.get("anchor") or "").strip()
+            url = str(e.get("url") or "").strip()
+            if not palabra or not url:
+                continue
+            if not re.search(
+                rf"(?i)(?<![\w>]){re.escape(palabra)}(?![\w<])", texto
+            ):
+                continue
+            clave = (palabra.lower(), url)
+            if clave in vistos:
+                continue
+            vistos.add(clave)
+            merged.append({"texto": palabra, "url": url})
+    return merged
+
+
 def html_pasos(items: list[dict], receta: dict | None = None) -> str:
-    """HTML para el editor «Paso a Paso» (modo HTML + Script). No reescapa tags."""
-    pasos: list[str] = []
+    """HTML Paso a Paso: viñetas <ul><li> + hiperlinks. La pregunta va solo en Título*."""
+    lis: list[str] = []
+    crudos: list[str] = []
     consejos: list[str] = []
     for it in items or []:
         texto = linea_paso(it)
         if not texto:
             continue
         if parece_html(texto):
-            pasos.append(texto.strip())
+            crudos.append(texto.strip())
             continue
         if re.match(r"(?i)^consejo\b", texto):
             cuerpo = re.sub(r"(?i)^consejo:\s*", "", texto).strip()
             consejos.append(cuerpo if parece_html(cuerpo) else _esc_html(cuerpo))
             continue
         tit, cuerpo = partir_paso(texto)
-        cuerpo = _aplicar_enlaces_html(cuerpo, it.get("enlaces"))
+        enlaces = enlaces_efectivos_paso(it, receta)
         if tit:
-            cuerpo_html = cuerpo if parece_html(cuerpo) else _esc_html(cuerpo)
-            pasos.append(f"<p><strong>{_esc_html(tit)}:</strong> {cuerpo_html}</p>")
+            cuerpo_html = _aplicar_enlaces_html(_esc_html(cuerpo), enlaces)
+            lis.append(f"<li><strong>{_esc_html(tit)}:</strong> {cuerpo_html}</li>")
         else:
-            pasos.append(f"<p>{_esc_html(texto)}</p>")
-    html = "\n".join(pasos)
+            cuerpo_html = _aplicar_enlaces_html(_esc_html(texto), enlaces)
+            lis.append(f"<li>{cuerpo_html}</li>")
+    partes: list[str] = []
+    if lis:
+        partes.append("<ul>\n" + "\n".join(lis) + "\n</ul>")
+    partes.extend(crudos)
+    html = "\n".join(partes)
     if consejos:
-        lis = "".join(f"<li>{c}</li>" for c in consejos)
-        html += f"\n<p><strong>Consejos</strong></p>\n<ul>{lis}</ul>"
-    pregunta = pregunta_preparacion(receta) if receta else ""
-    if pregunta:
-        h3 = f"<h3>{_esc_html(pregunta)}</h3>"
-        html = f"{h3}\n{html}" if html else h3
+        lis_c = "".join(f"<li>{c}</li>" for c in consejos)
+        html += f"\n<p><strong>Consejos</strong></p>\n<ul>{lis_c}</ul>"
     return html.strip()
 
 
@@ -6975,12 +7073,12 @@ def fill_lista_acordeones(
         if html:
             print(
                 f"  · HTML Paso a Paso ({len(html)} caracteres, "
-                f"{html.lower().count('<p>')} párrafos)"
+                f"{html.lower().count('<li>')} viñetas)"
             )
         activar_html_paso_a_paso(page)
         n_items = len([it for it in items if linea_paso(it)])
         if html and escribir_paso_a_paso_html(page, html):
-            print("  ✓ Paso a Paso (HTML) con etiquetas <p>/<strong>")
+            print("  ✓ Paso a Paso (HTML) con viñetas <ul>/<li> e hiperlinks")
             return max(1, n_items)
         if html and n_items and not sigue_dato_requerido(page):
             print("  · HTML pegado; verificación falló pero confío en escritura.")

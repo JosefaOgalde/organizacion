@@ -322,9 +322,11 @@ class ParseRecetaWordTests(unittest.TestCase):
             "¿Cómo preparar maremoto?\n"
             "Enfría los ingredientes: Mantén el vino (url: "
             "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos) pipeño bien frío.\n"
-            "Agrega el helado: Coloca una generosa bola de helado de piña.\n"
+            "Agrega el helado: Coloca una generosa bola de helado (url: "
+            "https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres) de piña.\n"
             "Vierte el pipeño: Agrega el vino pipeño bien frío.\n"
-            "Termina con la menta: Añade un chorrito de licor de menta.\n"
+            "Termina con la menta: Añade un chorrito de licor (url: "
+            "https://www.jumbo.cl/licores-bebidas-y-aguas/licores-y-spritz) de menta.\n"
             "Así queda mucho mejor\n"
             "● Usa un pipeño bien frío para que el helado se mantenga firme.\n"
             "● Agrega solo un chorrito de licor de menta.\n"
@@ -352,6 +354,15 @@ class ParseRecetaWordTests(unittest.TestCase):
         self.assertEqual(receta["formatoOrigen"], "jumbo-pdf")
         self.assertTrue(any("jumbo.cl" in u for u in receta["enlacesProductos"]))
         self.assertIn("Maremoto.png", receta["imagenes"][0]["rutaOrigen"])
+        enlaces_p1 = receta["pasos"][0].get("enlaces") or []
+        self.assertTrue(any("vinos" in (e.get("url") or "") for e in enlaces_p1))
+        self.assertTrue(
+            any("vino" in (e.get("texto") or "").lower() for e in enlaces_p1)
+        )
+        enlaces_p2 = receta["pasos"][1].get("enlaces") or []
+        self.assertTrue(any("helado" in (e.get("url") or "") for e in enlaces_p2))
+        enlaces_p4 = receta["pasos"][3].get("enlaces") or []
+        self.assertTrue(any("licor" in (e.get("url") or "") for e in enlaces_p4))
 
     def test_unir_fragmentos_pdf_urls_y_pasos(self):
         paras = [
