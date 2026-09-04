@@ -89,6 +89,8 @@
     if (asegurarProductoLimpiadorBrochas(d)) changed = true;
     if (asegurarProductoAlcanciaChanchito(d)) changed = true;
     if (asegurarProductoSoporteCelularChimuelo(d)) changed = true;
+    if (asegurarProductoApoyaLibrosHarryPotter(d)) changed = true;
+    if (asegurarProductoLamparaMushroom(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
@@ -583,6 +585,22 @@
   const COSTO_PLA_BLANCO_KG = 12690; // PLA blanco Elegoo (ML)
   const COSTO_PLA_ROJO_KG = 17986; // PLA+ Rojo Elegoo (#312435)
   const COSTO_PLA_ROSADO_KG = 10990; // Filamento rosado 1kg (compra 29 jul)
+
+  /** Kit eléctrico por lámpara (siempre al costo/u). Pera + cable + enchufe + soquete. */
+  const KIT_LAMPARA_ELECTRICO = {
+    peraClp: 1400,
+    cableClp: 1100,
+    enchufeClp: 1000,
+    soqueteClp: 1900,
+  };
+  function totalKitLamparaElectricoClp() {
+    return (
+      KIT_LAMPARA_ELECTRICO.peraClp +
+      KIT_LAMPARA_ELECTRICO.cableClp +
+      KIT_LAMPARA_ELECTRICO.enchufeClp +
+      KIT_LAMPARA_ELECTRICO.soqueteClp
+    ); // 5400
+  }
 
   /**
    * Upsert que pisa parámetros slicer del seed (respeta precioVenta si ya > 0).
@@ -1254,6 +1272,148 @@
     if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
       Object.assign(existing, seed);
       return true;
+    }
+    if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
+      existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /**
+   * Apoya libros Harry Potter — slicer Orca/Elegoo · 3 h 3 m · PLA+ negro · Centauri.
+   * Soft seed: no pisa g/h/$ si ya hay edición local.
+   */
+  function seedApoyaLibrosHarryPotter() {
+    const filamentoModeloGramos = 119.68; // 39,80 m
+    const filamentoSoportesGramos = 12.36; // 4,11 m
+    const filamentoPurgeGramos = 0.77; // falda/interfaz residual (total − modelo − soportes)
+    const filamentoGramos = round2(
+      filamentoModeloGramos + filamentoSoportesGramos + filamentoPurgeGramos
+    ); // 132,81 g · 44,17 m
+    const horasImpresion = round2((3 * 60 + 3) / 60); // 3 h 3 m → 3,05 h
+    // fil 2388,72 + luz 170,80 + bolsa 50 = 2609,52 → PVP +100% $5.200
+    return {
+      sku: 'APHARRY001',
+      nombre: 'Apoya libros Harry Potter',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoModeloGramos,
+      filamentoSoportesGramos,
+      filamentoPurgeGramos,
+      filamentoMetros: 44.17,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 5200,
+      costoSlicerRef: 2.66,
+      pendienteCosto: false,
+      notas:
+        `Slicer 1 ud (todo al costo): modelo ${filamentoModeloGramos} g (39,80 m) + soportes ${filamentoSoportesGramos} g (4,11 m) + falda/otros ${filamentoPurgeGramos} g = ${filamentoGramos} g · 44,17 m · 3 h 3 m · coste slicer 2,66. PLA+ negro $17.986/kg · Elegoo Centauri. Fil ~$2.389 + luz ~$171 + bolsa $50 = costo ~$2.610 · PVP sugerido $5.200.`,
+    };
+  }
+
+  function asegurarProductoApoyaLibrosHarryPotter(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-apoya-libros-harry-potter';
+    const seed = seedApoyaLibrosHarryPotter();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
+      existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /**
+   * Lámpara mushroom (Zen Glow) — base + pantalla · PLA blanco · Elegoo + kit eléctrico fijo.
+   * Soft seed: no pisa g/h/$ si ya hay edición local.
+   */
+  function seedLamparaMushroom() {
+    // Base Zen Glow Base.stl: 110,84 g · 5 h 14 m · modelo 110,38 · coste slicer 2,22
+    // Pantalla Zen Glow Modern Table Lamp.stl: 174,66 g · 7 h 42 m · modelo 174,19 · coste slicer 3,49
+    const filamentoModeloGramos = round2(110.38 + 174.19); // 284,57
+    const filamentoSoportesGramos = 0;
+    const filamentoPurgeGramos = round2(0.46 + 0.47); // falda/otros base+pantalla → 0,93
+    const filamentoGramos = round2(
+      filamentoModeloGramos + filamentoSoportesGramos + filamentoPurgeGramos
+    ); // 285,50 g
+    const horasImpresion = round2((5 * 60 + 14 + 7 * 60 + 42) / 60); // 12 h 56 m → 12,93 h
+    const costoExtrasClp = totalKitLamparaElectricoClp(); // pera+cable+enchufe+soquete
+    // fil 3622,99 + luz 724,08 + bolsa 50 + extras 5400 = 9797,07 → PVP +100% $19.600
+    return {
+      sku: 'LMMUSH001',
+      nombre: 'Lámpara mushroom',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoModeloGramos,
+      filamentoSoportesGramos,
+      filamentoPurgeGramos,
+      filamentoMetros: round2(36.87 + 58.09), // 94,96
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_BLANCO_KG,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      costoExtrasClp,
+      extrasDetalle:
+        `Kit eléctrico lámpara: pera $${KIT_LAMPARA_ELECTRICO.peraClp} · cable $${KIT_LAMPARA_ELECTRICO.cableClp} · enchufe $${KIT_LAMPARA_ELECTRICO.enchufeClp} · soquete $${KIT_LAMPARA_ELECTRICO.soqueteClp}`,
+      precioVentaSugeridoClp: 19600,
+      costoSlicerRef: round2(2.22 + 3.49), // 5,71
+      pendienteCosto: false,
+      notas:
+        `2 piezas Elegoo PLA blanco $12.690/kg: base 110,84 g / 5 h 14 m (modelo 110,38) + pantalla 174,66 g / 7 h 42 m (modelo 174,19) = ${filamentoGramos} g · 94,96 m · 12 h 56 m · coste slicer 5,71. Kit eléctrico siempre (lámpara): pera $1.400 + cable $1.100 + enchufe $1.000 + soquete $1.900 = $${costoExtrasClp}. Fil ~$3.623 + luz ~$724 + bolsa $50 + eléctricos $${costoExtrasClp} = costo ~$9.797 · PVP sugerido $19.600.`,
+    };
+  }
+
+  function asegurarProductoLamparaMushroom(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-lampara-mushroom';
+    const seed = seedLamparaMushroom();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    // Lámparas: asegurar kit eléctrico si falta
+    if (!(Number(existing.costoExtrasClp) > 0)) {
+      existing.costoExtrasClp = seed.costoExtrasClp;
+      existing.extrasDetalle = seed.extrasDetalle;
+      changed = true;
     }
     if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
       existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
@@ -3085,9 +3245,10 @@
     const luz = Number(prod.horasImpresion || 0) * tarifa * consumo;
     const bolsa = Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 50);
     const metal = Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0);
+    const extras = Number(prod.costoExtrasClp || 0);
     const recargoProd = Number(prod.recargoImpresoraAntiguaClp || 0);
     const recargo = recargoProd > 0 ? recargoProd : Number(imp.recargoFijoClp || 0);
-    return round2(fil + luz + bolsa + metal + recargo);
+    return round2(fil + luz + bolsa + metal + extras + recargo);
   }
 
   function asegurarProductoPortacompletoPerroBulldog(d) {
@@ -3222,6 +3383,10 @@
     if (/torre[oó]n|torreon/.test(t)) return 'TORREON';
     if (/alcanc[ií]a|chanchito|cerdito|piggy/.test(t)) return 'ALCHAN';
     if (/limpiador|secador/.test(t) && /brocha/.test(t)) return 'LMBROC';
+    if (/apoya|bookend/.test(t) && /harry|potter/.test(t)) return 'APHARRY';
+    if (/apoya\s*libros?|sujetalibros?|bookend/.test(t)) return 'APLIB';
+    if (/l[aá]mpara/.test(t) && /mushroom|hongo|zen|glow/.test(t)) return 'LMMUSH';
+    if (/l[aá]mpara/.test(t)) return 'LAMP';
     if (/porta\s*lata/.test(t)) return 'PLATA';
     if (/llavero/.test(t)) return 'LLAV';
     if (/figura|souvenir/.test(t)) return 'FIG';
@@ -3275,6 +3440,9 @@
       'prod-torreon': { sku: 'TORREON001', nombre: 'Torreón' },
       'prod-limpiador-brochas': { sku: 'LMBROC001', nombre: 'Limpiador de brochas' },
       'prod-alcancia-chanchito': { sku: 'ALCHAN001', nombre: 'Alcancía chanchito' },
+      'prod-soporte-celular-chimuelo': { sku: 'SOPCHI001', nombre: 'Soporte celular Chimuelo' },
+      'prod-apoya-libros-harry-potter': { sku: 'APHARRY001', nombre: 'Apoya libros Harry Potter' },
+      'prod-lampara-mushroom': { sku: 'LMMUSH001', nombre: 'Lámpara mushroom' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',
@@ -3393,6 +3561,7 @@
     'minutosPintado',
     'unidadesMetal',
     'unidadesBolsa',
+    'costoExtrasClp',
     'precioVentaSugeridoClp',
     'costoSlicerRef',
   ];
@@ -3437,17 +3606,19 @@
     );
     const metal = round2(Number(prod.unidadesMetal || 0) * Number(p.costoAnilloMetalLlaveroClp || 0));
     const bolsa = round2(Number(prod.unidadesBolsa || 0) * Number(p.costoBolsaEntregaClp || 0));
+    const extras = round2(Number(prod.costoExtrasClp || 0));
     const recargoProd = Number(prod.recargoImpresoraAntiguaClp || 0);
     const recargoPerfil = Number(imp?.recargoFijoClp || 0);
     // Si el producto ya trae recargo explícito, no duplicar el del perfil.
     const recargo = round2(recargoProd > 0 ? recargoProd : recargoPerfil);
-    const total = round2(filamento + luz + pintado + metal + bolsa + recargo);
+    const total = round2(filamento + luz + pintado + metal + bolsa + extras + recargo);
     return {
       filamento,
       luz,
       pintado,
       metal,
       bolsa,
+      extras,
       recargo,
       total,
       gramos: round2(gramos),
@@ -3479,6 +3650,7 @@
       minutosPintado: round2(fd.get('minutosPintado') || 0),
       unidadesMetal: round2(fd.get('unidadesMetal') || 0),
       unidadesBolsa: round2(fd.get('unidadesBolsa') || 0),
+      costoExtrasClp: round2(fd.get('costoExtrasClp') || 0),
       precioVentaSugeridoClp: round2(fd.get('precioVentaSugeridoClp') || 0),
       costoSlicerRef: round2(fd.get('costoSlicerRef') || 0),
       impresoraId: String(fd.get('impresoraId') || '').trim() || impresoraDefault()?.id || '',
@@ -3495,6 +3667,10 @@
       Number(c.recargo) > 0
         ? `<div class="imp-kpi"><span>Recargo impresora</span><strong>${money(c.recargo)}</strong></div>`
         : '';
+    const extrasHtml =
+      Number(c.extras) > 0
+        ? `<div class="imp-kpi"><span>Extras (eléctricos / otros)</span><strong>${money(c.extras)}</strong></div>`
+        : '';
     const impLbl = c.impresoraNombre
       ? `<p class="imp-muted" style="margin:0 0 0.35rem">Impresora: <strong>${escapeHtml(c.impresoraNombre)}</strong></p>`
       : '';
@@ -3507,6 +3683,7 @@
         <div class="imp-kpi"><span>Pintado / MO</span><strong>${money(c.pintado)}</strong></div>
         <div class="imp-kpi"><span>Metal</span><strong>${money(c.metal)}</strong></div>
         <div class="imp-kpi"><span>Bolsa</span><strong>${money(c.bolsa)}</strong></div>
+        ${extrasHtml}
         <div class="imp-kpi"><span>Costo unitario</span><strong>${money(c.total)}</strong></div>
         <div class="imp-kpi imp-kpi--accent"><span>Precio sugerido (+${pctObj}% sobre costo)</span><strong>${money(sugerido)}</strong></div>
         <div class="imp-kpi ${markupReal == null ? '' : markupReal >= pctObj ? 'imp-kpi--ok' : 'imp-kpi--warn'}"><span>Markup real sobre costo</span><strong>${markupReal == null ? '—' : `${markupReal.toFixed(0)}%`}</strong></div>
@@ -5378,6 +5555,7 @@
       minutosPintado: round2(fd.get('m')),
       unidadesMetal: round2(fd.get('metal')),
       unidadesBolsa: round2(fd.get('bolsa')),
+      costoExtrasClp: round2(fd.get('extras') || 0),
     };
     const c = costoProducto(prod);
     const sugerido = Math.round(precioSugeridoDesdeCosto(c.total) / 10) * 10;
@@ -5395,6 +5573,7 @@
       minutosPintado: Number(fd.get('minutosPintado')),
       unidadesMetal: Number(fd.get('unidadesMetal')),
       unidadesBolsa: Number(fd.get('unidadesBolsa')),
+      costoExtrasClp: Number(fd.get('costoExtrasClp') || 0),
     };
     return { prod, c: costoProducto(prod) };
   }
@@ -5405,7 +5584,7 @@
     if (!est || !leido) return;
     est.innerHTML = `Costo estimado: <strong>${money(leido.c.total)}</strong>
       · Filamento ${money(leido.c.filamento)} · Luz ${money(leido.c.luz)} · Pintado ${money(leido.c.pintado)}
-      · Metal ${money(leido.c.metal)} · Bolsa ${money(leido.c.bolsa)}`;
+      · Metal ${money(leido.c.metal)} · Bolsa ${money(leido.c.bolsa)}${Number(leido.c.extras) > 0 ? ` · Extras ${money(leido.c.extras)}` : ''}`;
   }
 
   function cerrarModalProducto() {
@@ -5436,6 +5615,8 @@
     modal.querySelector('[name=minutosPintado]').value = num2(calc.prod.minutosPintado);
     modal.querySelector('[name=unidadesMetal]').value = num2(calc.prod.unidadesMetal);
     modal.querySelector('[name=unidadesBolsa]').value = num2(calc.prod.unidadesBolsa);
+    const extrasInput = modal.querySelector('[name=costoExtrasClp]');
+    if (extrasInput) extrasInput.value = num2(calc.prod.costoExtrasClp || 0);
     modal.querySelector('[name=precioVentaSugeridoClp]').value = num2(calc.sugerido);
     modal.querySelector('[name=notas]').value =
       `Desde calculadora · modelo ${calc.prod.filamentoModeloGramos}g + soportes ${calc.prod.filamentoSoportesGramos}g + purge ${calc.prod.filamentoPurgeGramos}g · costo est. ${Math.round(calc.c.total)} CLP`;
@@ -5515,6 +5696,7 @@
                 <label>Minutos pintado / MO<input name="minutosPintado" type="number" min="0" step="0.01" value="${num2(prod.minutosPintado || 0)}" /></label>
                 <label>Unidades metal<input name="unidadesMetal" type="number" min="0" step="0.01" value="${num2(prod.unidadesMetal || 0)}" /></label>
                 <label>Bolsas<input name="unidadesBolsa" type="number" min="0" step="0.01" value="${num2(prod.unidadesBolsa || 0)}" /></label>
+                <label>Extras CLP (eléctricos / otros)<input name="costoExtrasClp" type="number" min="0" step="1" value="${num2(prod.costoExtrasClp || 0)}" title="Lámparas: pera+cable+enchufe+soquete = $5.400" /></label>
                 <label>Precio venta público (CLP)<input name="precioVentaSugeridoClp" type="number" min="0" step="0.01" value="${prod.precioVentaSugeridoClp ? num2(prod.precioVentaSugeridoClp) : ''}" placeholder="Ej. 8990.00" /></label>
                 <label>Coste slicer (ref.)<input name="costoSlicerRef" type="number" min="0" step="0.01" value="${num2(prod.costoSlicerRef || 0)}" title="Valor que muestra el slicer; no es CLP" /></label>
                 <label class="imp-form-span">Notas<textarea name="notas" rows="2">${escapeHtml(prod.notas || '')}</textarea></label>
@@ -5562,6 +5744,7 @@
           <label>Minutos pintado<input name="m" type="number" value="0" /></label>
           <label>Unidades metal<input name="metal" type="number" value="0" /></label>
           <label>Bolsas<input name="bolsa" type="number" value="1" /></label>
+          <label>Extras CLP<input name="extras" type="number" min="0" step="1" value="0" title="Lámparas: $5400 kit eléctrico" /></label>
         </form>
         <div class="imp-calc-live" id="calc-pieza-live">Calculando…</div>
         <div class="imp-form-actions" style="margin-top:0.75rem">
@@ -5586,14 +5769,16 @@
         minutosPintado: Number(fd.get('m')),
         unidadesMetal: Number(fd.get('metal')),
         unidadesBolsa: Number(fd.get('bolsa')),
+        costoExtrasClp: Number(fd.get('extras') || 0),
       };
       const c = costoProducto(prod);
       const sugerido = precioSugeridoDesdeCosto(c.total);
       const pctObj = Number(p.margenObjetivoPct ?? 100);
       const recargoTxt = Number(c.recargo) > 0 ? ` · Recargo ${money(c.recargo)}` : '';
+      const extrasTxt = Number(c.extras) > 0 ? ` · Extras ${money(c.extras)}` : '';
       el.innerHTML = `
           Total filamento <strong>${g.toFixed(2)} g</strong>
-          · Filamento ${money(c.filamento)} · Luz ${money(c.luz)}${recargoTxt} · Pintado ${money(c.pintado)} · Metal ${money(c.metal)} · Bolsa ${money(c.bolsa)}
+          · Filamento ${money(c.filamento)} · Luz ${money(c.luz)}${recargoTxt} · Pintado ${money(c.pintado)} · Metal ${money(c.metal)} · Bolsa ${money(c.bolsa)}${extrasTxt}
           <br><strong>Costo unitario: ${money(c.total)}</strong> · precio sugerido (+${pctObj}% sobre costo): <strong>${money(sugerido)}</strong>
           <div class="imp-muted" style="margin-top:0.35rem">Impresora: <strong>${escapeHtml(c.impresoraNombre || '—')}</strong> · luz/h ${money(costoHoraImpresora(prod.impresoraId))}</div>`;
       form.dataset.calcSnapshot = JSON.stringify({ ...prod, sugerido, c });
@@ -5691,6 +5876,7 @@
           minutosPintado: leido.minutosPintado,
           unidadesMetal: leido.unidadesMetal,
           unidadesBolsa: leido.unidadesBolsa,
+          costoExtrasClp: leido.costoExtrasClp,
           precioVentaSugeridoClp: leido.precioVentaSugeridoClp,
           costoSlicerRef: leido.costoSlicerRef,
           notas: leido.notas,
@@ -6013,6 +6199,7 @@
       minutosPintado: round2(fd.get('minutosPintado')),
       unidadesMetal: round2(fd.get('unidadesMetal')),
       unidadesBolsa: round2(fd.get('unidadesBolsa')),
+      costoExtrasClp: round2(fd.get('costoExtrasClp') || 0),
       precioVentaSugeridoClp: round2(fd.get('precioVentaSugeridoClp') || 0),
       costoSlicerRef: round2(calcDraft?.costoSlicerRef ?? 0),
       notas: String(fd.get('notas') || '').trim(),
