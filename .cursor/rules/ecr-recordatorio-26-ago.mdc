@@ -1,0 +1,28 @@
+---
+description: ECR 26 ago 2026 — entregar recordatorio de programar carrusel/video NL2
+alwaysApply: true
+---
+
+# ECR · 26 de agosto de 2026 (una sola fecha)
+
+Si **hoy no es 2026-08-26**, ignora esta regla por completo.
+
+## Apenas escriba (11:00 en adelante)
+
+Entrega **íntegro** (sin resumir los copys) el archivo:
+
+`index/clientes/ecr/newsletter/RECORDATORIO-26-AGO-PROGRAMAR-NL2.txt`
+
+Contexto: el **artículo** NL 2 ago (Equipos en terreno) **ya debe estar publicado**. Este día se programa:
+
+1. **Carrusel** → 28 de agosto · copy + Drive imágenes en el TXT
+2. **Video** → 31 de agosto · copy + Drive video en el TXT
+
+## Después de las 15:00 el mismo 26
+
+Si todavía no confirmó que programó, pregunta:
+
+«¿Ya programaste el carrusel del 28 y el video del 31?»
+
+- **Sí** → ok. No reenviar el recordatorio.
+- **No** → vuelve a pegar el contenido completo del mismo TXT (copys + ambos links de Drive).
