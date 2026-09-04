@@ -225,7 +225,7 @@ def main() -> int:
                 input()
             except EOFError:
                 page.wait_for_timeout(5_000)
-        url_ficha = explorar.esperar_ficha_en_lienzo(
+        url_ficha, page = explorar.esperar_ficha_en_lienzo(
             page, headed=headed, titulo_receta=receta.get("titulo")
         )
 

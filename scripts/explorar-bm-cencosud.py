@@ -131,6 +131,7 @@ def mensaje_enter_ficha(titulo_receta: str | None = None) -> str:
         f"\n>>> Usá la ventana Chromium que abrió ESTE script (no Chrome/Edge normal).\n"
         f"    Ahí abrí «{nombre}» hasta que la URL tenga /view-manager/view/…\n"
         "    Ideal: 5 bloques al CENTRO (header / tags / Ingredientes / Instrucciones / SEO).\n"
+        "    Si la abrís en otra pestaña del mismo Chromium, al ENTER el script la adopta.\n"
         "    El script abre cada lápiz solo.\n"
         "    NO pulses «Volver» ni Proyectos ni la paleta izquierda.\n"
         "    Cuando veas eso en la ventana del script, pulsa ENTER aquí.\n"
@@ -208,20 +209,79 @@ def en_vista_default_cms(page) -> bool:
     return lienzo_con_bloques_cms(page)
 
 
+def url_ancla_ficha(url: str | None) -> str:
+    """…/view-manager/view/{id} sin /edit/… (ancla para volver al lienzo)."""
+    m = re.search(r"(https?://[^?#]*view-manager/view/[^/?#]+)", url or "", re.I)
+    if m:
+        return m.group(1)
+    return (url or "").split("#")[0].split("?")[0]
+
+
+def adoptar_pagina_con_ficha(page):
+    """Si la receta está en otra pestaña del mismo Chromium, usarla.
+
+    Suele pasar: el script queda en /view-manager y la usuaria abre la ficha
+    en una pestaña nueva del mismo navegador Playwright.
+    """
+    if page is None:
+        return page, ""
+    actual = url_actual(page)
+    if url_tiene_vista_receta(actual):
+        return page, actual
+    try:
+        ctx = page.context
+        paginas = list(ctx.pages)
+    except Exception:
+        return page, actual
+
+    candidatas: list[tuple[object, str]] = []
+    for otra in paginas:
+        if otra is page:
+            continue
+        try:
+            u = url_actual(otra)
+        except Exception:
+            continue
+        if url_tiene_vista_receta(u):
+            candidatas.append((otra, u))
+    if not candidatas:
+        return page, actual
+
+    # Preferir la que ya tiene un lápiz abierto (/edit/).
+    elegida, url_el = candidatas[0]
+    for otra, u in candidatas:
+        if "/edit/" in (u or "").lower():
+            elegida, url_el = otra, u
+            break
+    try:
+        elegida.bring_to_front()
+    except Exception:
+        pass
+    print(
+        f"  · Adopté otra pestaña del mismo Chromium: …/view/{id_vista_receta(url_el)}"
+    )
+    return elegida, url_el
+
+
 def esperar_ficha_en_lienzo(
     page, *, headed: bool = True, titulo_receta: str | None = None
-) -> str:
-    """Tras ENTER: exige URL /view-manager/view/{id} (+ lienzo o editor del lápiz)."""
+):
+    """Tras ENTER: exige URL /view-manager/view/{id} (+ lienzo o editor del lápiz).
+
+    Devuelve (url_ancla, page). ``page`` puede ser otra pestaña del mismo contexto
+    si la ficha se abrió aparte del Gestor.
+    """
     nombre = (titulo_receta or "").strip() or "la receta"
     for _intento in range(6):
-        url_ficha = url_actual(page)
+        page, url_ficha = adoptar_pagina_con_ficha(page)
         # Ya en /view/{id} (lienzo de 5 bloques O edición de un componente).
         if url_tiene_vista_receta(url_ficha) and (
             en_vista_default_cms(page) or "/edit/" in (url_ficha or "").lower()
         ):
-            print(f"  · Vista editable OK («{nombre}»): …/view/{id_vista_receta(url_ficha)}")
+            ancla = url_ancla_ficha(url_ficha)
+            print(f"  · Vista editable OK («{nombre}»): …/view/{id_vista_receta(ancla)}")
             print("  · Me quedo en esta URL. No pulso «Volver» del chrome.")
-            return url_ficha
+            return ancla, page
         print(f"  · URL que ve el script ahora:\n    {(url_ficha or '(vacía)')[:160]}")
         if url_tiene_vista_receta(url_ficha):
             print(
@@ -232,7 +292,8 @@ def esperar_ficha_en_lienzo(
             print(
                 f"\n>>> El Chromium DEL SCRIPT está en el Gestor SIN /view/id.\n"
                 f"    Ojo: debe ser la ventana Chromium que abrió Python (no Chrome/Edge normal).\n"
-                f"    Ahí abrí «{nombre}» hasta que la URL tenga /view-manager/view/…\n"
+                f"    Ahí abrí «{nombre}» (misma ventana u otra pestaña) hasta /view-manager/view/…\n"
+                "    Si ya está en otra pestaña del mismo Chromium, solo ENTER: el script la adopta.\n"
                 "    NO pulses Volver.\n"
             )
         else:
@@ -251,7 +312,10 @@ def esperar_ficha_en_lienzo(
                     pass
         else:
             break
-    return url_actual(page)
+    page, url_ficha = adoptar_pagina_con_ficha(page)
+    if url_tiene_vista_receta(url_ficha):
+        return url_ancla_ficha(url_ficha), page
+    return url_ficha, page
 
 
 def restaurar_ficha_si_salio(page, url_ficha: str | None) -> bool:
@@ -7795,7 +7859,7 @@ def main() -> int:
         except EOFError:
             print("Sin TTY: esperando 60s para que completes login/navegación…")
             page.wait_for_timeout(60_000)
-        url_ficha = esperar_ficha_en_lienzo(page, headed=True)
+        url_ficha, page = esperar_ficha_en_lienzo(page, headed=True)
 
         if args.no_auto_lapiz:
             estructura = dump_estructura(page)

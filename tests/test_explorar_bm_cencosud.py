@@ -486,10 +486,11 @@ class ExplorarBmTests(unittest.TestCase):
         pagina = Pagina()
         with contextlib.redirect_stdout(io.StringIO()):
             self.assertFalse(self.modulo.restaurar_ficha_si_salio(pagina, ficha))
-            self.assertEqual(
-                self.modulo.esperar_ficha_en_lienzo(pagina, headed=False),
-                ficha,
+            url_ok, page_ok = self.modulo.esperar_ficha_en_lienzo(
+                pagina, headed=False
             )
+            self.assertEqual(url_ok, ficha)
+            self.assertIs(page_ok, pagina)
         self.assertEqual(pagina.gotos, [])
         self.assertTrue(self.modulo.en_vista_default_cms(pagina))
 

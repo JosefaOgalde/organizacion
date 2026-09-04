@@ -571,10 +571,53 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         class PaginaFicha:
             url = ficha
 
-        self.assertEqual(
-            self.explorar.esperar_ficha_en_lienzo(PaginaFicha(), headed=False),
-            ficha,
+        url_ok, page_ok = self.explorar.esperar_ficha_en_lienzo(
+            PaginaFicha(), headed=False
         )
+        self.assertEqual(url_ok, ficha)
+        self.assertIsInstance(page_ok, PaginaFicha)
+
+    def test_adopta_pestana_con_view_id(self):
+        gestor = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager"
+        )
+        ficha = gestor + "/view/6a9b1fd3523988ff99534d29/edit/component_abc"
+
+        class Ctx:
+            def __init__(self, pages):
+                self.pages = pages
+
+        class Pagina:
+            def __init__(self, url, ctx=None):
+                self.url = url
+                self.context = ctx
+                self.frente = False
+
+            def bring_to_front(self):
+                self.frente = True
+
+        p_gestor = Pagina(gestor)
+        p_ficha = Pagina(ficha)
+        ctx = Ctx([p_gestor, p_ficha])
+        p_gestor.context = ctx
+        p_ficha.context = ctx
+
+        page, url = self.explorar.adoptar_pagina_con_ficha(p_gestor)
+        self.assertIs(page, p_ficha)
+        self.assertEqual(url, ficha)
+        self.assertTrue(p_ficha.frente)
+        self.assertEqual(
+            self.explorar.url_ancla_ficha(ficha),
+            gestor + "/view/6a9b1fd3523988ff99534d29",
+        )
+
+        with contextlib.redirect_stdout(io.StringIO()):
+            ancla, page2 = self.explorar.esperar_ficha_en_lienzo(
+                p_gestor, headed=False, titulo_receta="Torta de yogurt"
+            )
+        self.assertEqual(ancla, gestor + "/view/6a9b1fd3523988ff99534d29")
+        self.assertIs(page2, p_ficha)
 
     def test_opcion_dificultad_no_confunde_muy_facil(self):
         self.assertEqual(
