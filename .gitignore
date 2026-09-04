@@ -23,13 +23,14 @@ data/impresoreando-status-ultimo.html
 index/uploads/
 
 # CRC — Word de entrada, salidas y secretos locales
-index/clientes/Herramientas/carga-recetas-cencosud/inbox/*
-!index/clientes/Herramientas/carga-recetas-cencosud/inbox/.gitkeep
-index/clientes/Herramientas/carga-recetas-cencosud/out/*
-!index/clientes/Herramientas/carga-recetas-cencosud/out/.gitkeep
-index/clientes/Herramientas/carga-recetas-cencosud/secrets/*
-!index/clientes/Herramientas/carga-recetas-cencosud/secrets/env.example
-!index/clientes/Herramientas/carga-recetas-cencosud/secrets/.gitkeep
+# Cubre ambos nombres admitidos por crc_rutas.py y secret/secrets.
+index/clientes/[Hh]erramientas/*recetas*/inbox/*
+!index/clientes/[Hh]erramientas/*recetas*/inbox/.gitkeep
+index/clientes/[Hh]erramientas/*recetas*/out/*
+!index/clientes/[Hh]erramientas/*recetas*/out/.gitkeep
+index/clientes/[Hh]erramientas/*recetas*/secret*/*
+!index/clientes/[Hh]erramientas/*recetas*/secret*/env.example
+!index/clientes/[Hh]erramientas/*recetas*/secret*/.gitkeep
 
 
 # Excepción: plantilla vacía sin PII (sí puede ir al repo)
