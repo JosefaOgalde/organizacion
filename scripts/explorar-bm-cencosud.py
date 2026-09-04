@@ -6168,31 +6168,51 @@ def html_quedo_con_etiquetas(escrito: str | None, original: str | None = None) -
 
 
 def _aplicar_enlaces_html(texto: str, enlaces: list[dict] | None) -> str:
-    """Envuelve palabras con <a href> si el paso trae enlaces del Word/PDF."""
+    """Envuelve anclas con <a href>…<strong>palabra</strong></a> (estilo BM Jumbo)."""
     if not texto or not enlaces:
         return texto
     out = texto
-    ordenados = sorted(
-        enlaces,
-        key=lambda raw: len(str(raw.get("texto") or raw.get("anchor") or "")),
-        reverse=True,
-    )
-    for raw in ordenados:
+    # Ancla corta primero por URL (vino, no «vino pipeño»).
+    por_url: dict[str, dict] = {}
+    for raw in enlaces:
         palabra = str(raw.get("texto") or raw.get("anchor") or "").strip()
         url = str(raw.get("url") or "").strip()
         if not palabra or not url:
             continue
+        prev = por_url.get(url)
+        if prev is None or len(palabra) < len(str(prev.get("texto") or "")):
+            por_url[url] = {"texto": palabra, "url": url}
+    for raw in por_url.values():
+        palabra = str(raw["texto"]).strip()
+        url = str(raw["url"]).strip()
         palabra_esc = _esc_html(palabra)
-        # Ya envuelta, o forma parte de un ancla más larga ya linkeada.
         if re.search(rf"<a\b[^>]*>[^<]*{re.escape(palabra)}", out, re.I):
             continue
         if f">{palabra_esc}</a>" in out or f'>{palabra.lower()}</a>' in out.lower():
             continue
-        # No usar replace ingenuo: rompería «vino» dentro de href «…/vinos».
+        if f"<strong>{palabra_esc}</strong></a>" in out:
+            continue
         patron = re.compile(rf"(?<![\w>]){re.escape(palabra)}(?![\w<])", re.I)
-        repl = f'<a href="{_esc_html(url)}">{palabra_esc}</a>'
+        repl = f'<a href="{_esc_html(url)}"><strong>{palabra_esc}</strong></a>'
         out, _n = patron.subn(repl, out, count=1)
     return out
+
+
+def _aplicar_negrita_plato(texto: str, receta: dict | None = None) -> str:
+    """Pone <strong> en el nombre del plato (p. ej. maremoto) dentro del párrafo."""
+    if not texto:
+        return texto
+    titulo = str((receta or {}).get("titulo") or "").strip()
+    if not titulo or len(titulo) < 3:
+        return texto
+    if re.search(rf"<strong>[^<]*{re.escape(titulo)}", texto, re.I):
+        return texto
+    patron = re.compile(rf"(?<![\w>])({re.escape(titulo)})(?![\w<])", re.I)
+
+    def _repl(m: re.Match) -> str:
+        return f"<strong>{_esc_html(m.group(1))}</strong>"
+
+    return patron.sub(_repl, texto)
 
 
 def _urls_producto_planas(receta: dict | None) -> list[str]:
@@ -6260,32 +6280,26 @@ def enlaces_desde_productos(receta: dict | None) -> list[dict]:
 
 
 def enlaces_efectivos_paso(paso: dict, receta: dict | None = None) -> list[dict]:
-    """Une enlaces del paso con productos Jumbo que aparecen en el texto."""
-    texto = linea_paso(paso)
-    if not texto:
+    """Solo enlaces del propio paso (PDF/Word). No inventar links en pasos sin ancla."""
+    del receta  # reserved for futuros mapeos; no mezclar productos en todos los pasos
+    propios = list(paso.get("enlaces") or [])
+    if not propios:
         return []
-    merged: list[dict] = []
-    vistos: set[tuple[str, str]] = set()
-    for fuente in (paso.get("enlaces") or [], enlaces_desde_productos(receta)):
-        for e in fuente or []:
-            palabra = str(e.get("texto") or e.get("anchor") or "").strip()
-            url = str(e.get("url") or "").strip()
-            if not palabra or not url:
-                continue
-            if not re.search(
-                rf"(?i)(?<![\w>]){re.escape(palabra)}(?![\w<])", texto
-            ):
-                continue
-            clave = (palabra.lower(), url)
-            if clave in vistos:
-                continue
-            vistos.add(clave)
-            merged.append({"texto": palabra, "url": url})
-    return merged
+    # Una ancla corta por URL (vino / helado / licor), como en el BM Jumbo.
+    por_url: dict[str, dict] = {}
+    for e in propios:
+        palabra = str(e.get("texto") or e.get("anchor") or "").strip()
+        url = str(e.get("url") or "").strip()
+        if not palabra or not url:
+            continue
+        prev = por_url.get(url)
+        if prev is None or len(palabra) < len(str(prev.get("texto") or "")):
+            por_url[url] = {"texto": palabra, "url": url}
+    return list(por_url.values())
 
 
 def html_paso_uno(item: dict, receta: dict | None = None) -> str:
-    """Un párrafo HTML con hiperlinks para un Formulario Ítem interno de la lista."""
+    """Un párrafo HTML BM: <p><strong>Acción:</strong> … <a><strong>vino</strong></a> … <strong>plato</strong></p>."""
     texto = linea_paso(item)
     if not texto:
         return ""
@@ -6294,13 +6308,16 @@ def html_paso_uno(item: dict, receta: dict | None = None) -> str:
     if re.match(r"(?i)^consejo\b", texto):
         cuerpo = re.sub(r"(?i)^consejo:\s*", "", texto).strip()
         cuerpo_html = cuerpo if parece_html(cuerpo) else _esc_html(cuerpo)
+        cuerpo_html = _aplicar_negrita_plato(cuerpo_html, receta)
         return f"<p><strong>Consejo:</strong> {cuerpo_html}</p>"
     tit, cuerpo = partir_paso(texto)
     enlaces = enlaces_efectivos_paso(item, receta)
     if tit:
         cuerpo_html = _aplicar_enlaces_html(_esc_html(cuerpo), enlaces)
+        cuerpo_html = _aplicar_negrita_plato(cuerpo_html, receta)
         return f"<p><strong>{_esc_html(tit)}:</strong> {cuerpo_html}</p>"
     cuerpo_html = _aplicar_enlaces_html(_esc_html(texto), enlaces)
+    cuerpo_html = _aplicar_negrita_plato(cuerpo_html, receta)
     return f"<p>{cuerpo_html}</p>"
 
 

@@ -334,7 +334,7 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
                 }
             ]
         )
-        self.assertIn('<a href="https://www.jumbo.cl/pescado">pescado</a>', html_enlaces)
+        self.assertIn('<a href="https://www.jumbo.cl/pescado"><strong>pescado</strong></a>', html_enlaces)
         salmon = self.explorar.html_pasos(
             [
                 {
@@ -373,13 +373,17 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
                 {
                     "texto": (
                         "Enfría los ingredientes: Mantén el vino pipeño bien frío "
-                        "en el refrigerador y el helado de piña firme."
+                        "en el refrigerador y el helado de piña firme. Así, el maremoto se mantiene frío."
                     ),
                     "enlaces": [
                         {
                             "texto": "vino pipeño",
                             "url": "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos",
-                        }
+                        },
+                        {
+                            "texto": "vino",
+                            "url": "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos",
+                        },
                     ],
                 },
                 {
@@ -390,7 +394,11 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
                         {
                             "texto": "helado de piña",
                             "url": "https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres",
-                        }
+                        },
+                        {
+                            "texto": "helado",
+                            "url": "https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres",
+                        },
                     ],
                 },
             ],
@@ -401,67 +409,62 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         )
         self.assertNotIn("¿Cómo preparar maremoto?", maremoto_html)
         self.assertEqual(maremoto_html.lower().count("<p>"), 2)
-        self.assertEqual(
-            len(
-                self.explorar.html_pasos_separados(
-                    [
-                        {
-                            "texto": (
-                                "Enfría los ingredientes: Mantén el vino pipeño bien frío "
-                                "en el refrigerador y el helado de piña firme."
-                            ),
-                            "enlaces": [
-                                {
-                                    "texto": "vino pipeño",
-                                    "url": "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos",
-                                }
-                            ],
-                        },
-                        {
-                            "texto": (
-                                "Agrega el helado: Coloca una generosa bola de helado de piña."
-                            ),
-                            "enlaces": [
-                                {
-                                    "texto": "helado de piña",
-                                    "url": "https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres",
-                                }
-                            ],
-                        },
-                    ],
-                    {
-                        "titulo": "Maremoto",
-                        "preguntaPreparacion": "¿Cómo preparar maremoto?",
-                    },
-                )
-            ),
-            2,
+        self.assertIn(
+            '<a href="https://www.jumbo.cl/licores-bebidas-y-aguas/vinos"><strong>vino</strong></a>',
+            maremoto_html,
         )
+        self.assertIn(
+            '<a href="https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres"><strong>helado</strong></a>',
+            maremoto_html,
+        )
+        self.assertIn("<strong>maremoto</strong>", maremoto_html)
+        self.assertNotIn(">vino pipeño</a>", maremoto_html)
         uno = self.explorar.html_paso_uno(
             {
                 "texto": (
                     "Enfría los ingredientes: Mantén el vino pipeño bien frío "
-                    "en el refrigerador y el helado de piña firme."
+                    "en el refrigerador. Así, el maremoto se mantiene frío."
                 ),
                 "enlaces": [
                     {
-                        "texto": "vino pipeño",
+                        "texto": "vino",
                         "url": "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos",
                     }
                 ],
-            }
+            },
+            {"titulo": "Maremoto"},
         )
-        self.assertTrue(uno.startswith("<p>"))
-        self.assertTrue(uno.endswith("</p>"))
-        self.assertNotIn("<ul>", uno)
-        self.assertIn(
-            '<a href="https://www.jumbo.cl/licores-bebidas-y-aguas/vinos">vino pipeño</a>',
-            maremoto_html,
+        self.assertEqual(
+            uno,
+            (
+                "<p><strong>Enfría los ingredientes:</strong> Mantén el "
+                '<a href="https://www.jumbo.cl/licores-bebidas-y-aguas/vinos"><strong>vino</strong></a> '
+                "pipeño bien frío en el refrigerador. Así, el "
+                "<strong>maremoto</strong> se mantiene frío.</p>"
+            ),
         )
-        self.assertIn(
-            '<a href="https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres">helado de piña</a>',
-            maremoto_html,
+        # Paso sin enlaces del PDF: no inventar hiperlinks
+        sin_link = self.explorar.html_paso_uno(
+            {
+                "texto": (
+                    "Vierte el pipeño: Agrega el vino pipeño bien frío, "
+                    "dejándolo caer suavemente por un costado sobre el helado."
+                )
+            },
+            {
+                "titulo": "Maremoto",
+                "enlacesProductos": [
+                    "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos",
+                    "https://www.jumbo.cl/lacteos-huevos-y-congelados/helados-y-postres",
+                ],
+                "ingredientes": [
+                    {"nombre": "vino pipeño"},
+                    {"nombre": "helado de piña"},
+                ],
+            },
         )
+        self.assertNotIn("<a ", sin_link)
+        self.assertIn("<p><strong>Vierte el pipeño:</strong>", sin_link)
         self.assertIn("crcSetHtml", self.explorar.JS_ESCRIBIR_PASO_HTML)
         self.assertIn("crcHtmlTieneTagsReales", self.explorar.JS_ESCRIBIR_PASO_HTML)
         src_fill = inspect.getsource(self.explorar.fill_lista_acordeones)
