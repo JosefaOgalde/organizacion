@@ -700,6 +700,10 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
         line = raw.strip()
         if not line:
             continue
+        # Ya en tips: no reinterpretar «Para…» como nuevo encabezado.
+        if en_tips:
+            tips.append(sin_vineta(line))
+            continue
         encabezado = encabezado_re.match(line)
         es_seccion_tips = bool(
             re.match(r"(?i)^(tips?|consejos?|trucos?)\b", line)
@@ -707,6 +711,9 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
             or (
                 re.match(r"(?i)^para\b", line)
                 and not _linea_parece_nuevo_paso(line)
+                # Título corto de sección; no un consejo largo que empieza con «Para».
+                and len(line) <= 72
+                and not re.search(r"[.!?]", line)
             )
             or re.match(r"(?i)^peque[ñn][ao]s?\s+\w+", line)
             or re.match(r"(?i)^consigue\b", line)
@@ -721,9 +728,6 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
                 tips.append(sin_vineta(resto))
             else:
                 tips_titulo = line.strip()
-            continue
-        if en_tips:
-            tips.append(sin_vineta(line))
             continue
         line = re.sub(r"^\d+[\).\:\-]\s*", "", line)
         line = sin_vineta(line)
