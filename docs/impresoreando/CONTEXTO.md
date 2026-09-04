@@ -23,6 +23,10 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 
 Tras cambiar UI: bump `?v=` de `panel.js` / `panel.css` en `panel/index.html`. Persistencia siempre vía API (live), no solo localStorage.
 
+## Redes / copy público
+
+**Nunca poner precios** en posts, stories, reels, copys ni prompts de IG (`$`, PVP, “desde”, ofertas con monto). CTA = DM / a pedido. Precios y costos solo en el panel (Pedidos/Ventas/Costos).
+
 ## Deuda / resumen
 
 - Tab Resumen: vista **general** (totales, conteos, barras, socios). El **detalle de ventas** (IDs, ítems, descuentos, historial) solo en tab **Ventas**.

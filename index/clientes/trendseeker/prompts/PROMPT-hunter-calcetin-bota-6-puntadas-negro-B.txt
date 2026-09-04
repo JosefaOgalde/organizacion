@@ -1,0 +1,21 @@
+PRODUCTO: Hunter Calcetín Bota 6 Puntadas Negro
+SKU: UAS3036AAB-BLK
+Link: https://trendseeker.cl/producto/hunter-calcetin-bota-6-puntadas-1/
+Foto HD: https://trendseeker.cl/wp-content/uploads/2023/07/UAS3036AAB-BLK-1-princ.jpg
+Público: e-commerce (preferir SIN persona; si lifestyle, solo maniquí)
+Herramienta: Google Gemini VIDEO.
+Nota: Gemini puede rechazar videos con personas + calcetines. Preferir A (packshot). Esta B usa maniquí de escaparate, no persona real.
+
+CARACTERÍSTICAS (no inventar otras):
+- Calcetín Hunter NEGRO; vuelta doblada; punto de ochos; logo PVC
+- Negro mate fiel a las fotos
+
+CÓMO USAR: VIDEO + foto princ. Si rechaza personas: vuelve al prompt A.
+
+---
+VERSIÓN B — Maniquí de tienda (no persona real)
+---
+
+Genera un VIDEO comercial corto de vitrina / escaparate. No uses personas reales.
+
+Un maniquí de tienda (plástico mate de escaparate, sin rostro detallado) muestra el par de calcetines Hunter 6 puntadas NEGROS exactos de las fotos. Estudio o vitrina iluminada. El producto es el héroe: punto de ochos, vuelta doblada, logo Hunter en PVC. Cámara lenta acercándose al calcetín. Sin botas, sin zapatos, sin pies humanos, sin dormitorio. Sin rediseñar el calcetín. Sin tipografía.

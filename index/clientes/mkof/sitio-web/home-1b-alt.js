@@ -142,6 +142,15 @@
         closeDrop();
       });
     });
+    drop.querySelectorAll(".fly__key").forEach(function (key) {
+      key.addEventListener("click", function (e) {
+        e.stopPropagation();
+        drop.querySelectorAll(".fly__cat").forEach(function (cat) {
+          cat.classList.remove("is-on");
+        });
+        key.closest(".fly__cat").classList.add("is-on");
+      });
+    });
   }
 
   render(0);

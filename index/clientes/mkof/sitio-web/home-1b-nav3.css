@@ -92,6 +92,45 @@
   right: auto;
 }
 
+/* Acordeón: una familia abierta a la vez */
+.home-nav3 .menu__drop--acc {
+  min-width: 17.5rem;
+  padding: 0.35rem;
+  gap: 0.15rem;
+}
+
+.home-nav3 .menu__drop--acc details {
+  border-radius: 0.55rem;
+}
+
+.home-nav3 .menu__drop--acc summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 0.7rem 0.8rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.home-nav3 .menu__drop--acc summary::-webkit-details-marker {
+  display: none;
+}
+
+.home-nav3 .menu__drop--acc details[open] summary {
+  color: var(--mint-deep);
+}
+
+.home-nav3 .menu__drop--acc details a {
+  display: block;
+  padding: 0.45rem 0.8rem 0.45rem 1.15rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .home-nav3 .menu__cta {
   display: inline-flex;
   align-items: center;

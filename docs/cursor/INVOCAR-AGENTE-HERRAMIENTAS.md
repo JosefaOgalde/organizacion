@@ -1,5 +1,7 @@
 # Invocar agente Herramientas (HER)
 
+Chat corto: `@herramientas` + la tarea. No pegues Word/JSON/secretos. Tokens: `docs/cursor/AHORRAR-TOKENS.md`.
+
 Herramientas es el **laboratorio interno**: Tendencias recetas Chile (TEND), ideación beauty → landing, y **carga de recetas a Business Manager Cencosud (CRC)**.
 
 ## Forma más rápida

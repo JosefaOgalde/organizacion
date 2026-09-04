@@ -1,0 +1,13 @@
+PRODUCTO: Soporte celular Chimuelo · SKU SOPCHI001
+Colores = foto 3 (negro FDM + ojos lima). Set Impresoreando: crema / navy / rim naranja.
+Sin logo. Si Gemini rechaza manos/personas, usa este bloque.
+
+---
+VERSIÓN B — Packshot multiángulo (0 personas)
+---
+
+Genera un VIDEO comercial corto de PRODUCTO, sin personas y sin manos. Vertical 9:16. Fotos adjuntas: soporte Chimuelo exacto de la foto 3 (PLA negro azabache, líneas de capa FDM, ojos lima ácido). No rediseñes.
+
+Set Impresoreando: mesa crema #f7f1e6, fondo navy desenfocado #163a6b, rim light naranja filament #f07a28. Sin texto, sin logo.
+
+Cámara orbita y corta planos: 3/4 vacío · frente · perfil de la cola en S · tres cuartos con un smartphone ya apoyado (pantalla apagada, aparece solo, nadie lo pone) · cenital. Héroe = el dragón impreso. Si cambia el negro o los ojos, no sirve.

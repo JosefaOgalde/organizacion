@@ -1,0 +1,38 @@
+PRODUCTO: Botas Chelsea Commando Para Mujer Gris Pálido
+SKU: WFS1018RMA-CAS
+Link: https://trendseeker.cl/producto/botas-chelsea-commando-para-mujer-gris-palido/
+Público: MUJER (adulta)
+Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
+Escena fija: DÍA DE INVIERNO CON LLUVIA. El producto es el héroe; la lluvia demuestra waterproof.
+
+CARACTERÍSTICAS (no inventar otras):
+- Hunter Chelsea Commando / militar para mujer en GRIS PÁLIDO (cinder / pale grey)
+- Acabado MATE de caucho (NO brillantes, NO gloss, NO negras)
+- 100% waterproof
+- Caucho natural vulcanizado con certificado FSC (vegano certificado)
+- Hechas a mano
+- Forro y plantilla de poliéster reciclado
+- Suela moldeada con patrón Hunter Original
+- Fuelles laterales elásticos y lengüeta de nylon
+- Perfil más alto (+15 mm) que la Chelsea Original clásica
+- Color gris pálido fiel a las fotos
+
+VESTUARIO / MODELO:
+- Mujer adulta, look de invierno urbano
+- Jeans o pantalón metidos DENTRO de las botas para que se vea la caña Commando
+- Sin piel expuesta en tobillos/pantorrillas
+- Sin tipografía ni logos inventados fuera de los del producto real
+
+CÓMO USAR EN GEMINI (VIDEO):
+1) Modo VIDEO (no imagen fija).
+2) Sube primero las FOTOS DE PRODUCTO reales.
+3) Pega este prompt en el mismo mensaje.
+4) Si Gemini cambia el color: reitera gris pálido mate exacto de las fotos.
+
+---
+VERSIÓN B — Video cualidades en movimiento · invierno con lluvia
+---
+
+Crea un VIDEO comercial basándote estrictamente en las fotos de producto adjuntas (Chelsea Commando gris pálido Hunter exactas, caucho mate). Escena: día de invierno con lluvia torrencial / intensa. Mujer a mitad de zancada cruzando un charco o piso inundado con seguridad.
+
+Obligatorio: jeans metidos dentro de las botas; cero piel en tobillos. Destaca en movimiento: el gris pálido mate con gotas (no gloss negro), fuelles laterales elásticos, suela Hunter Original haciendo tracción en piso mojado, perfil alto Commando. El calzado domina el cuadro; fondo urbano invernal con lluvia y bokeh, secundario. No alterar el diseño ni el color.

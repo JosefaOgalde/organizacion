@@ -31,6 +31,7 @@ CAMPANA REDES IMPRESOREANDO:
   (si el preview de Cursor queda blanco, usa Chrome/Edge)
 
 No hace falta pegar rutas del JSON ni preguntarle al agente.
+Cursor (pocos tokens): docs/cursor/AHORRAR-TOKENS.md
 
 SI GIT DICE "diverged" / pull bloqueado / no ves Redes:
   Pegá en la consola:

@@ -1,0 +1,19 @@
+PRODUCTO: Hunter Calcetín Bota 6 Puntadas Negro
+SKU: UAS3036AAB-BLK
+Link: https://trendseeker.cl/producto/hunter-calcetin-bota-6-puntadas-1/
+Foto HD: https://trendseeker.cl/wp-content/uploads/2023/07/UAS3036AAB-BLK-1-princ.jpg
+Público: macro de tejido (0 personas)
+Herramienta: Google Gemini VIDEO.
+
+CARACTERÍSTICAS (no inventar otras):
+- Calcetín Hunter NEGRO; punto de ochos; logo PVC; mate fiel a las fotos
+
+CÓMO USAR: VIDEO + foto princ. Si Gemini habla de personas: este prompt no pide personas.
+
+---
+VERSIÓN C — Macro de textura (solo tejido)
+---
+
+Genera un VIDEO corto tipo macro comercial de tejido. Cero personas, cero cuerpo, cero pies, cero botas.
+
+El encuadre es solo la tela del Hunter Calcetín 6 Puntadas negro (fotos adjuntas): punto de ochos / cable knit con relieve, vuelta doblada, logo Hunter en PVC. Luz de estudio suave. Cámara lenta recorriendo las trenzas y el logo. Fondo desenfocado neutro. Si el punto es liso o no se lee el logo, no sirve. Sin rediseñar, sin otro color, sin tipografía, sin logos inventados.

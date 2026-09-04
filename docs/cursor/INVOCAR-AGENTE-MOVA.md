@@ -1,5 +1,7 @@
 # Invocar agente MOVA (proyecto MKOF)
 
+Chat corto: `@mova` + la tarea. Tokens: `docs/cursor/AHORRAR-TOKENS.md`.
+
 MOVA es un **subproyecto de MKOF**, no un cliente aparte.
 
 ## Forma más rápida

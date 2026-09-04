@@ -1,0 +1,17 @@
+# No indexar (ahorra tokens / contexto)
+*.pdf
+*.zip
+*.mp4
+*.woff
+*.woff2
+
+index/uploads/
+index/clientes/**/catalogo/export/
+
+data/organizacion-respaldo-*.json
+data/impresoreando-live.json
+data/organizacion-live.json
+data/impresoreando-status-ultimo.html
+
+backend/vendor/
+node_modules/

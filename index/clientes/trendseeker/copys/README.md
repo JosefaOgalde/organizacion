@@ -7,6 +7,8 @@
 4. Link de shop + hashtags.
 
 C11/12: `COPY-c11-gardener-corta-verde-oliva-{A,B,C}.txt` · SKU WFS2018RMA-DOC · [bota-corta-garden](https://trendseeker.cl/producto/bota-corta-garden/)
+Chelsea Commando gris pálido: `COPY-chelsea-commando-gris-palido-mujer-instagram.txt` · SKU WFS1018RMA-CAS
+Chaqueta Olive Green: `COPY-chaqueta-impermeable-olive-green-mujer-instagram.txt` · SKU WRO1345WAP-DOV
 
 Ejemplo de estructura:
 ```

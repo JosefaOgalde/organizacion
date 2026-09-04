@@ -1,0 +1,45 @@
+PRODUCTO: Soporte celular Chimuelo (Toothless)
+SKU: SOPCHI001
+Marca: Impresoreando (@impresoreando) — NO generar el logo (se pone después en Canva/IG)
+Herramienta: Google Gemini VIDEO (o imagen si el video falla)
+Fotos: subir las 3 referencias. COLORES DEL SOPORTE = foto 3 (mesa de madera): PLA negro azabache mate con líneas de capa FDM, ojos lima ácido.
+
+IDENTIDAD IMPRESOREANDO (set, no el dragón):
+- Fondo / set: crema #f7f1e6 (como catálogo 1080×1350)
+- Acento de luz: naranja filament #f07a28 (rim light suave, no pintar el dragón de naranja)
+- Fondo detrás: navy #163a6b desenfocado o pared navy suave
+- Tipografía Nunito / look catálogo: limpio, producto héroe, a pedido
+- Sin wordmark, sin texto, sin @impresoreando en el video
+
+FIDELIDAD PIEZA (foto 3):
+- Dragón pequeño agazapado, 4 patas, alas chicas, cola en S alta = respaldo del celular
+- Negro sólido semi-mate, estrías FDM visibles (impresión 3D real, no resina lisa, no CGI brillante)
+- Ojos lima/verde ácido con pupila de hendidura y un poco de blanco
+- NO gris charcoal de las otras fotos, NO ojos neón glow, NO pintar de otro color
+
+PROHIBIDO:
+- Logo Impresoreando / tipografía
+- Cambiar el modelo (alas enormes, sentado, otro dragón)
+- Enfoque en un celular de marca con logos legibles (pantalla apagada o bloqueada, sin UI)
+
+CÓMO USAR:
+1) Modo VIDEO. 2) Sube las 3 fotos (prioridad foto 3 para color). 3) Pega el bloque A.
+4) Si Gemini rechaza personas: usa B (solo producto, sin manos).
+5) Formato mental IG: 9:16 (1080×1920) o 4:5.
+
+---
+VERSIÓN A — Uso real + distintos planos (recomendado)
+---
+
+Genera un VIDEO comercial corto de producto 3D-print, estética Impresoreando (set crema, luz naranja filament, fondo navy suave). Formato vertical 9:16. Usa las fotos adjuntas: el soporte ES el de la foto 3 — PLA negro azabache con líneas de capa, ojos lima ácido. No rediseñes. No pongas logo ni texto.
+
+SIN CARA: solo manos anónimas (muñecas abajo) en un demo e-commerce. No es contenido íntimo; es un unboxing de soporte de celular.
+
+Secuencia de planos (todos en el mismo clip, cortes limpios):
+1) 3/4 lateral: soporte VACÍO — se lee la cola en S, alas, cabeza y ojos lima.
+2) Plano medio: unas manos colocan con cuidado un smartphone (pantalla apagada, sin logos) en vertical; el borde inferior apoya entre las patas delanteras y la cabeza; la cola sostiene la parte de atrás.
+3) Frente: el dragón «sostiene» el celular; se ven cabeza, patas y ojos lima debajo de la pantalla.
+4) 3/4 trasero: cómo la cola curva sujeta el teléfono.
+5) Cenital breve: silueta del dragón + teléfono.
+
+Héroe = el soporte negro FDM, no el teléfono. Luz suave de estudio + rim naranja #f07a28. Superficie crema #f7f1e6. Ritmo de catálogo IG. Si el dragón sale gris, brilloso o de otro color, no sirve.

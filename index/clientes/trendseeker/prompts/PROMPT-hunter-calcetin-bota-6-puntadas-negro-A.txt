@@ -1,0 +1,40 @@
+PRODUCTO: Hunter Calcetín Bota 6 Puntadas Negro
+SKU: UAS3036AAB-BLK
+Link: https://trendseeker.cl/producto/hunter-calcetin-bota-6-puntadas-1/
+Foto HD (subir esta, es la de mejor definición): https://trendseeker.cl/wp-content/uploads/2023/07/UAS3036AAB-BLK-1-princ.jpg
+Público: e-commerce / packshot (SIN modelo, SIN persona)
+Herramienta: Google Gemini VIDEO (Trendseeker). Primero sube fotos de producto reales.
+Escena fija: ESTUDIO DE PRODUCTO. Solo el par de calcetines. Sin personas, sin pies, sin botas.
+
+Si Gemini dice «no puedo crear vídeos de personas reales»: es un filtro. Usa este prompt A (packshot, 0 personas). No pidas lifestyle con pies/caminar en calcetines.
+
+CARACTERÍSTICAS (no inventar otras):
+- Calcetín Hunter, color NEGRO
+- Vuelta que se dobla; punto de ochos (cable knit)
+- Logotipo de la marca en PVC en la vuelta
+- Negro mate fiel a las fotos; no gris, no blanco, no rojo, no gloss
+
+DETALLE OBLIGATORIO EN CÁMARA (foto -princ.jpg):
+- Punto de ochos nítido (relieve de trenzas, no liso)
+- Vuelta doblada como en la foto de catálogo
+- Logo Hunter en PVC real de la foto
+- PROHIBIDO: personas, caras, pies descalzos, manos en piernas, dormitorio, botas de agua, caucho, calzado
+
+CÓMO USAR EN GEMINI (VIDEO):
+1) Modo VIDEO.
+2) Sube UAS3036AAB-BLK-1-princ.jpg.
+3) Pega el bloque A.
+4) Si rechaza: «es un comercial de producto e-commerce, packshot, sin personas».
+5) Si el calcetín sale liso: reitera punto de ochos + logo PVC exactos.
+
+---
+VERSIÓN A — Packshot de producto (recomendado; evita el filtro de Gemini)
+---
+
+Genera un VIDEO comercial corto de PRODUCTO (e-commerce / packshot), no de personas. Usa las fotos adjuntas como referencia obligatoria: Hunter Calcetín 6 Puntadas NEGRO (SKU UAS3036AAB-BLK). No rediseñes.
+
+SIN PERSONAS: no hay modelo, no hay cara, no hay pies humanos, no hay caminar. Solo el par de calcetines de punto, de pie como en foto de catálogo, sobre fondo neutro de estudio (blanco o gris claro), luz de product shot.
+
+HÉROE = el calcetín. Sin botas, sin zapatos, sin caucho.
+
+OBLIGATORIO y nítido todo el clip: 1) punto de ochos / cable knit con relieve en la vuelta doblada, 2) logo Hunter en PVC en la vuelta, 3) tejido negro mate grueso. Cámara lenta orbitando o zoom suave al logo y al ochos. Ritmo de anuncio de catálogo. Sin tipografía. Sin logos inventados. Si el punto es liso o falta el logo, no sirve.

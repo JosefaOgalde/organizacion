@@ -61,6 +61,46 @@
       }
     },
     {
+      "id": "chelsea-commando-gris-palido",
+      "titulo": "Chelsea Commando Gris Pálido Mujer",
+      "archivo": "prompts/PROMPT-chelsea-commando-gris-palido-mujer-A.txt",
+      "descripcion": "VIDEO Gemini · MUJER · gris pálido mate (no gloss) · día de invierno con lluvia · producto héroe · TXT A/B/C · SKU WFS1018RMA-CAS.",
+      "productoUrl": "https://trendseeker.cl/producto/botas-chelsea-commando-para-mujer-gris-palido/",
+      "sku": "WFS1018RMA-CAS",
+      "archivos": {
+        "A": "prompts/PROMPT-chelsea-commando-gris-palido-mujer-A.txt",
+        "B": "prompts/PROMPT-chelsea-commando-gris-palido-mujer-B.txt",
+        "C": "prompts/PROMPT-chelsea-commando-gris-palido-mujer-C.txt"
+      }
+    },
+    {
+      "id": "chaqueta-impermeable-olive-green",
+      "titulo": "Chaqueta Impermeable Mujer Olive Green",
+      "archivo": "prompts/PROMPT-chaqueta-impermeable-olive-green-mujer-A.txt",
+      "descripcion": "VIDEO Gemini · MUJER · olive green · lluvia urbana · precio intermedio · TXT A/B/C · SKU WRO1345WAP-DOV.",
+      "productoUrl": "https://trendseeker.cl/producto/chaqueta-impermeable-mujer-olive-green/",
+      "sku": "WRO1345WAP-DOV",
+      "archivos": {
+        "A": "prompts/PROMPT-chaqueta-impermeable-olive-green-mujer-A.txt",
+        "B": "prompts/PROMPT-chaqueta-impermeable-olive-green-mujer-B.txt",
+        "C": "prompts/PROMPT-chaqueta-impermeable-olive-green-mujer-C.txt"
+      }
+    },
+    {
+      "id": "hunter-calcetin-bota-6-puntadas-negro",
+      "titulo": "Hunter Calcetín Bota 6 Puntadas Negro",
+      "archivo": "prompts/PROMPT-hunter-calcetin-bota-6-puntadas-negro-A.txt",
+      "descripcion": "VIDEO Gemini · PACKSHOT (sin personas: Gemini filtra pies/calcetines) · calcetín negro héroe · punto de ochos + logo PVC · TXT A/B/C · SKU UAS3036AAB-BLK.",
+      "productoUrl": "https://trendseeker.cl/producto/hunter-calcetin-bota-6-puntadas-1/",
+      "sku": "UAS3036AAB-BLK",
+      "fotoHd": "https://trendseeker.cl/wp-content/uploads/2023/07/UAS3036AAB-BLK-1-princ.jpg",
+      "archivos": {
+        "A": "prompts/PROMPT-hunter-calcetin-bota-6-puntadas-negro-A.txt",
+        "B": "prompts/PROMPT-hunter-calcetin-bota-6-puntadas-negro-B.txt",
+        "C": "prompts/PROMPT-hunter-calcetin-bota-6-puntadas-negro-C.txt"
+      }
+    },
+    {
       "id": "contenido-9-prompt",
       "titulo": "C9/12 · Botas de Agua Bajas Play Mujer Rojo",
       "archivo": "prompts/PROMPT-c09-play-bajas-rojo-mujer-A.txt",

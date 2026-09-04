@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home-v1.css?v=4">
+  <link rel="stylesheet" href="home-v1.css?v=5">
 </head>
 <body class="v1">
   <header class="v1-nav">
@@ -21,17 +21,70 @@
           SERVICIOS <span aria-hidden="true">▾</span>
         </button>
         <div class="v1-menu__list" id="v1-svc-list" hidden>
-          <a href="#servicios">Estrategia</a>
-          <a href="#servicios">SEO &amp; LLMs</a>
-          <a href="#servicios">Productos Digitales</a>
-          <a href="#servicios">Creatividad y Diseño</a>
+          <div class="v1-fly">
+            <ul class="v1-fly__cats">
+              <li class="is-on" data-fly="est"><button type="button">Estrategia <span aria-hidden="true">›</span></button></li>
+              <li data-fly="seo"><button type="button">SEO &amp; GEO <span aria-hidden="true">›</span></button></li>
+              <li data-fly="prod"><button type="button">Productos digitales <span aria-hidden="true">›</span></button></li>
+              <li data-fly="crea"><button type="button">Creatividad y diseño <span aria-hidden="true">›</span></button></li>
+            </ul>
+            <div class="v1-fly__panels">
+              <ul class="is-on" data-fly="est">
+                <li><a href="#servicios">Estrategia 360</a></li>
+                <li><a href="#servicios">Tendencias de mercado</a></li>
+                <li><a href="#servicios">Business Intelligence</a></li>
+              </ul>
+              <ul data-fly="seo">
+                <li><a href="#servicios">Estrategia SEO 360</a></li>
+                <li><a href="#servicios">GEO: visibilidad IA</a></li>
+                <li><a href="#servicios">Linkbuilding</a></li>
+                <li><a href="#servicios">Contenido SEO</a></li>
+              </ul>
+              <ul data-fly="prod">
+                <li><a href="#servicios">Paid media</a></li>
+                <li><a href="#servicios">Email marketing</a></li>
+                <li><a href="#servicios">Content marketing</a></li>
+                <li><a href="#servicios">Retail media</a></li>
+                <li><a href="#servicios">Social media</a></li>
+              </ul>
+              <ul data-fly="crea">
+                <li><a href="#servicios">Diseño y desarrollo web</a></li>
+                <li><a href="#servicios">Producción de contenidos</a></li>
+                <li><a href="#servicios">Campañas y activaciones</a></li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
       <a href="#nosotros">SOBRE NOSOTROS</a>
       <a href="#contacto">CONTÁCTANOS</a>
       <a href="#faq">BLOG</a>
     </nav>
+    <button type="button" class="v1-burger" id="v1-burger" aria-label="Abrir menú" aria-expanded="false"><span></span><span></span><span></span></button>
   </header>
+  <div class="v1-mobile" id="v1-mobile" hidden>
+    <details>
+      <summary>Servicios</summary>
+      <a href="#servicios">Estrategia 360</a>
+      <a href="#servicios">Tendencias de mercado</a>
+      <a href="#servicios">Business Intelligence</a>
+      <a href="#servicios">Estrategia SEO 360</a>
+      <a href="#servicios">GEO: visibilidad IA</a>
+      <a href="#servicios">Linkbuilding</a>
+      <a href="#servicios">Contenido SEO</a>
+      <a href="#servicios">Paid media</a>
+      <a href="#servicios">Email marketing</a>
+      <a href="#servicios">Content marketing</a>
+      <a href="#servicios">Retail media</a>
+      <a href="#servicios">Social media</a>
+      <a href="#servicios">Diseño y desarrollo web</a>
+      <a href="#servicios">Producción de contenidos</a>
+      <a href="#servicios">Campañas y activaciones</a>
+    </details>
+    <a href="#nosotros">Sobre nosotros</a>
+    <a href="#contacto">Contáctanos</a>
+    <a href="#faq">Blog</a>
+  </div>
 
   <main>
     <!-- HERO -->

@@ -1,66 +1,19 @@
 ---
-description: Agentes por cliente — organización trabajo (TS, ECR, JM, ADL, etc.)
+description: Agentes por cliente — organización (rama madre)
 globs:
-  - index/**
   - app.js
-  - data/**
+  - index.html
+  - index/clientes.html
+  - docs/AGENTES-RAMAS-MADRE.md
+  - docs/GUIA-PREGUNTAS-POR-CLIENTE.md
 alwaysApply: false
 ---
 
 # Organización — agentes por cliente
 
-Responde en **español**. El repo es un organizador + portal de clientes.
+Español. Trabajo de cliente en rama `cursor/<proyecto>-…` → PR a `main`. Doc: `docs/AGENTES-RAMAS-MADRE.md`.
 
-## Rama madre vs ramas agente
+Invocar: `@organizacion-clientes` · `@herramientas` · `@adl-cla` · `@mova` · Agente TS / ECR / JM / MKOF.
 
-| Tipo | Rama | Rol |
-|------|------|-----|
-| **Madre** | `main` | Agente Organización — calendario, portal, `app.js` |
-| **Hija** | `cursor/<proyecto>-d6a1` | Cada cliente/encargo (JM, CLA, CChC, MOVA…) |
-
-El trabajo de cliente va en **rama agente** y se fusiona a `main` con PR al terminar. Ver `docs/AGENTES-RAMAS-MADRE.md`.
-
-## Invocar agente específico
-
-El usuario puede decir:
-
-- `@organizacion-clientes` → organizador / rama madre
-- `@herramientas` → utilidades HER / Tendencias (TEND) / beauty landing
-- `@adl-cla` o archivos en `DesafioLatam/CLA` → certificados Caja Los Andes
-- **ADL · CChC** → `DesafioLatam/CChC-Alfabetizacion/reporte-impacto/` · rama `cursor/cchc-reporte-prompts-90d6`
-- `Agente Trendseeker` → CM + WordPress, manual marca
-- `Agente ECR` → newsletter + blog Elementor
-- `Agente JM` → WooCommerce Joyas Mercury Fase 2
-- `Agente MKOF` → Gantt y planificación
-
-## Enlace por defecto (siempre clientes, no organizador)
-
-Con `ABRIR-LARAVEL.bat` en puerto **8000**:
-
-| Qué | URL |
-|-----|-----|
-| **Entrada portal** | http://127.0.0.1:8000/index/clientes/ |
-| MKOF | http://127.0.0.1:8000/index/clientes/mkof/ |
-| **MOVA** (subproyecto MKOF) | http://127.0.0.1:8000/index/clientes/MKOF/MOVA |
-| MOVA · auditoría charlas | http://127.0.0.1:8000/index/clientes/MKOF/MOVA/auditoria-charlas/ |
-
-MOVA está en **main** (portal + hub). Arranque: **`ABRIR-LARAVEL.bat`**.
-
-## Rutas portal (otros clientes)
-
-| Cliente | Ficha |
-|---------|--------|
-| Listado | `index/clientes.html` |
-| Herramientas (HER) | `index/clientes/herramientas/` · TEND: `Herramientas/Tendencias.html` |
-| ADL | `index/clientes/Desafio-Latam.html` |
-| ADL → CLA | `index/clientes/DesafioLatam/CLA.html` |
-| ADL → CChC | `index/clientes/DesafioLatam/CChC-Alfabetizacion/reporte-impacto/` |
-
-## Datos
-
-- Respaldo local: `data/organizacion-respaldo-*.json` (no subir a Git — ver `docs/SEGURIDAD.md`)
-- API local: `http://127.0.0.1:8000/api/clientes` (Laravel en `backend/`)
-
-## Guía completa
-
-Ver `docs/GUIA-PREGUNTAS-POR-CLIENTE.md`
+Portal: `http://127.0.0.1:8000/index/clientes/` · `ABRIR-LARAVEL.bat`. Preguntas: `docs/GUIA-PREGUNTAS-POR-CLIENTE.md`.
+Live/respaldo: no subir PII (`docs/SEGURIDAD.md`).

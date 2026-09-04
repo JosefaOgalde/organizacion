@@ -76,14 +76,14 @@ Madre NL → **Copys** → **Portada Midjourney (3 opciones, solo fondo)** → *
 1. **Producto hero** — 1080×1920 (ej. Porta completos bulldog ya en tarea 27-jul)  
 2. **Prueba social** — pedido entregado / “se fue a…” (sin datos sensibles)  
 3. **Proceso** — time-lapse impresora / filamento / mesa  
-4. **Oferta suave** — precio + CTA WhatsApp  
+4. **Oferta suave** — CTA DM (sin precio)  
 
 ### Calendario tipo (semana)
 | Día | Formato | Ejemplo |
 |-----|---------|---------|
 | Lun | Reel/carrusel producto | Soporte celular / Bob / Bulldog |
 | Mié | Story proceso + CTA | “¿Cuál pedís?” |
-| Vie | Post estático catálogo | 1 SKU + precio |
+| Vie | Post estático catálogo | 1 SKU · a pedido · DM |
 
 Pendiente explícito en org: `[IMP] Pieza IG Porta completos bulldog 1080×1920`.
 
