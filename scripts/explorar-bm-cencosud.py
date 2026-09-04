@@ -6379,15 +6379,16 @@ def _aplicar_enlaces_html(texto: str, enlaces: list[dict] | None) -> str:
         if f"<strong>{palabra_esc}</strong></a>" in out:
             continue
         patron = re.compile(rf"(?<![\w>]){re.escape(palabra)}(?![\w<])", re.I)
-
-        def _repl(m: re.Match, _url: str = url, _pe: str = palabra_esc) -> str:
-            # No reemplazar dentro de atributos HTML (href, etc.).
+        reemplazado = False
+        for m in patron.finditer(out):
             antes = out[: m.start()]
             if antes.rfind("<") > antes.rfind(">"):
-                return m.group(0)
-            return f'<a href="{_esc_html(_url)}"><strong>{_pe}</strong></a>'
-
-        out, _n = patron.subn(_repl, out, count=1)
+                continue
+            repl = f'<a href="{_esc_html(url)}"><strong>{palabra_esc}</strong></a>'
+            out = out[: m.start()] + repl + out[m.end() :]
+            reemplazado = True
+            break
+        _ = reemplazado
     return out
 
 
