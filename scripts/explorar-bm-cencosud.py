@@ -1665,6 +1665,9 @@ def cerrar_editor_componente(page) -> None:
 
 JS_VOLVER_AL_LIENZO = """() => {
   const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const bodyTxt = clean((document.body && document.body.innerText) || '');
+  // Sin «Edición de …» el Volver del chrome sale del CMS (no del lápiz).
+  if (!/Edici[oó]n de /i.test(bodyTxt)) return false;
   const visibles = (el) => {
     if (!el) return false;
     const r = el.getBoundingClientRect();
@@ -1698,8 +1701,7 @@ JS_VOLVER_AL_LIENZO = """() => {
       );
   };
   const nodos = [...document.querySelectorAll('button, [role="button"], a')].filter(visibles);
-  const back = nodos.find(esVolverEditor);
-  if (back) { back.click(); return 'back'; }
+  // Preferir flecha junto a «Edición de …»; el Volver del header saca del CMS.
   const titulos = [...document.querySelectorAll('h1,h2,h3,h4,p,div,span')].filter((el) => {
     const linea = clean(el.innerText || '').split('\\n')[0];
     return /^Edici[oó]n de /i.test(linea) && linea.length < 80 && visibles(el);
@@ -1724,6 +1726,8 @@ JS_VOLVER_AL_LIENZO = """() => {
       return 'flecha';
     }
   }
+  const back = nodos.find(esVolverEditor);
+  if (back) { back.click(); return 'back'; }
   const crumbs = [...document.querySelectorAll('nav a, [class*="breadcrumb"] a, [class*="Breadcrumb"] a')].filter(visibles);
   const gestor = crumbs.find((el) => {
     if (esProyectos(el) || esCerrarCms(el)) return false;
@@ -2926,7 +2930,8 @@ def _editor_por_texto(t: str) -> str | None:
     t = (t or "").lower()
     if not t or len(t) < 20:
         return None
-    if "edita este componente vac" in t and "dificultad" not in t:
+    # Lienzo con bloques vacíos: no confundir títulos del canvas con el editor.
+    if "edita este componente vac" in t and not re.search(r"edici[oó]n de\s+", t):
         return None
     if "dificultad" in t and ("duración" in t or "duracion" in t) and "porciones" in t:
         return "cabecera"
@@ -2940,32 +2945,30 @@ def _editor_por_texto(t: str) -> str | None:
         return "ingredientes"
     if "list_ingredients" in t and "formulario ítem" in t:
         return "ingredientes"
-    if "list_instructions" in t or (
-        "lista de instrucciones" in t and "formulario ítem" in t
-    ):
+    if "list_instructions" in t and "formulario ítem" in t:
         return "instrucciones"
-    if "instrucci" in t and ("paso" in t or "agregar" in t or "título" in t) and "dificultad" not in t:
+    if re.search(r"edici[oó]n de\s+lista\s+de\s+instrucciones", t):
         return "instrucciones"
-    if (
-        "seo html" in t
-        or "seo_html" in t
-        or "formulario seo" in t
-        or (re.search(r"\bcontent\s*\*", t) and "html" in t and "script" in t)
-    ):
+    if "formulario ítem" in t and "instrucci" in t:
+        return "instrucciones"
+    if re.search(r"edici[oó]n de\s+seo", t) or "formulario seo" in t:
+        return "seo"
+    if re.search(r"\bcontent\s*\*", t) and "html" in t and "script" in t:
         return "seo"
     if ("meta título" in t or "meta titulo" in t or "seo title" in t) and (
         "meta descripción" in t or "meta descripcion" in t or "seo desc" in t
     ):
         return "seo"
-    if re.search(r"\btags?\b", t) and ("agregar" in t or "etiqueta" in t) and "dificultad" not in t:
+    if re.search(r"edici[oó]n de\s+(lista\s+)?(tags?|etiquetas?)", t):
+        return "tags"
+    if "formulario tags" in t:
+        return "tags"
+    if re.search(r"\btag\s*\*", t) and "link" in t:
         return "tags"
     if (
         "dificultad" not in t
-        and (
-            "formulario tags" in t
-            or (re.search(r"\btag\s*\*", t) and "link" in t)
-            or (re.search(r"\btags?\b", t) and ("arreglo" in t or "formulario ítem" in t or "formulario item" in t))
-        )
+        and re.search(r"\btags?\b", t)
+        and ("arreglo" in t or "formulario ítem" in t or "formulario item" in t)
     ):
         return "tags"
     return None
@@ -2988,6 +2991,14 @@ def editor_actual(page) -> str | None:
         for clave, pat in TITULOS_EDITOR.items():
             if pat.search(t):
                 return clave
+    cuerpo = texto_cuerpo(page)
+    # Canvas con «Edita este componente vacío…»: no estamos en un lápiz.
+    # Sin esto, el chrome («tags», «Instrucciones», «Volver») dispara un falso
+    # editor_actual → clic en Volver del BM → se sale del CMS sin cargar.
+    if _contar_placeholder_vacio(page) >= 1 and not re.search(
+        r"edici[oó]n de\s+", cuerpo or "", re.I
+    ):
+        return None
     return editor_por_campos(page)
 
 

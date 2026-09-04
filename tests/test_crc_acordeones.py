@@ -724,8 +724,44 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIn("flecha", js)
         self.assertIn("Edici", js)
         self.assertIn("esCerrarCms", js)
+        self.assertIn("Edici[oó]n de", js)
         self.assertNotRegex(js, r"\^\(volver\|atrás\|atras\|back\|cerrar\|close\)\$")
         self.assertIn("El dato es requerido", self.explorar.JS_SIGUE_REQUERIDO_VISIBLE)
+
+    def test_lienzo_vacio_no_es_editor_ni_dispara_volver(self):
+        """Los 5 bloques vacíos del canvas no deben verse como «Edición de…»."""
+        canvas = (
+            "Recetas_Jumbo | web\nVolver\nProyectos\nPaleta de componentes\n"
+            "header\nc4539d\nEdita este componente vacío desde el lápiz\n"
+            "tags\n960ac0\nEdita este componente vacío desde el lápiz\n"
+            "Lista Ingredientes\n0e11e1\nEdita este componente vacío desde el lápiz\n"
+            "Lista de Instrucciones\n857118\nEdita este componente vacío desde el lápiz\n"
+            "SEO HTML\ne78640\nEdita este componente vacío desde el lápiz\n"
+            "Agregar\nHistorial\n"
+        )
+        chrome = "Proyectos en JUMBO\ntags\nAgregar\nLista de Instrucciones\nVolver\n"
+
+        self.assertIsNone(self.explorar._editor_por_texto(canvas))
+        self.assertIsNone(self.explorar._editor_por_texto(chrome))
+
+        class PaginaCanvas:
+            def evaluate(self, script, *_a):
+                s = str(script)
+                if "Edici" in s and "innerText" in s and "querySelectorAll" in s:
+                    return "header tags Lista Ingredientes"
+                if "document.body" in s:
+                    return canvas
+                return ""
+
+            def get_by_text(self, *_a, **_k):
+                class Loc:
+                    def count(self):
+                        return 5
+
+                return Loc()
+
+        self.assertIsNone(self.explorar.editor_actual(PaginaCanvas()))
+        self.assertIn("Edici[oó]n de", self.explorar.JS_VOLVER_AL_LIENZO)
 
     def test_volver_al_lienzo_no_recarga_si_sigue_en_ficha(self):
         src = inspect.getsource(self.explorar.volver_al_lienzo)
