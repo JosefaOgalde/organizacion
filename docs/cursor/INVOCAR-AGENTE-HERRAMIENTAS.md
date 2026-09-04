@@ -59,16 +59,18 @@ cp index/clientes/Herramientas/carga-recetas-cencosud/secrets/env.example \
    index/clientes/Herramientas/carga-recetas-cencosud/secrets/.env
 # Edita .env con tu usuario (nunca lo pegues en el chat)
 
-# Parse Word
-python3 scripts/parse-receta-word.py index/clientes/Herramientas/carga-recetas-cencosud/inbox/TU.docx
+# Parse Word o PDF Jumbo
+python3 scripts/parse-receta-word.py index/clientes/Herramientas/carga-recetas-cencosud/inbox/Maremoto.pdf
 
-# Mapear estructura del BM (abre Chromium; tú entras; vas a Nueva receta; ENTER)
-python3 scripts/explorar-bm-cencosud.py
+# Mapear estructura del BM (abre Chromium; tú entras; abres la receta; ENTER)
+python3 scripts/explorar-bm-cencosud.py --reuse-session
 
 # Rellenar interfaz (dry-run = no publicar)
 python3 scripts/publicar-receta-cencosud.py \
-  index/clientes/Herramientas/carga-recetas-cencosud/out/TU.json --headed --dry-run
+  index/clientes/Herramientas/carga-recetas-cencosud/out/maremoto.json --headed --dry-run
 ```
+
+Un clic en Windows: `CARGAR-RECETA-BM.bat "C:\Users\josef\Downloads\Maremoto.pdf"`
 
 Docs: `carga-recetas-cencosud/README.md` · `MAPA-CAMPOS-BM.md`
 
