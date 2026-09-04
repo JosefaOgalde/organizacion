@@ -125,6 +125,18 @@ MENSAJE_ENTER_FICHA = (
 )
 
 
+def mensaje_enter_ficha(titulo_receta: str | None = None) -> str:
+    nombre = (titulo_receta or "").strip() or "la receta"
+    return (
+        f"\n>>> En Chromium abrí «{nombre}» (URL debe tener /view-manager/view/…):\n"
+        "    5 bloques al CENTRO: header / tags / Ingredientes / Instrucciones / SEO.\n"
+        "    El script abre cada lápiz solo.\n"
+        "    NO pulses «Volver» (arriba a la derecha): eso SALE de la receta.\n"
+        "    NO pulses Proyectos ni la paleta izquierda.\n"
+        "    Cuando veas los 5 bloques en esa URL, pulsa ENTER aquí.\n"
+    )
+
+
 def url_actual(page) -> str:
     return (getattr(page, "url", None) or "") if page is not None else ""
 
@@ -196,12 +208,15 @@ def en_vista_default_cms(page) -> bool:
     return lienzo_con_bloques_cms(page)
 
 
-def esperar_ficha_en_lienzo(page, *, headed: bool = True) -> str:
+def esperar_ficha_en_lienzo(
+    page, *, headed: bool = True, titulo_receta: str | None = None
+) -> str:
     """Tras ENTER: exige URL /view-manager/view/{id} + los 5 bloques. No seguir sin eso."""
+    nombre = (titulo_receta or "").strip() or "la receta"
     for _intento in range(6):
         url_ficha = url_actual(page)
         if url_tiene_vista_receta(url_ficha) and en_vista_default_cms(page):
-            print(f"  · Vista editable OK: …/view/{id_vista_receta(url_ficha)}")
+            print(f"  · Vista editable OK («{nombre}»): …/view/{id_vista_receta(url_ficha)}")
             print("  · Me quedo en esta URL. No pulso «Volver» del chrome.")
             return url_ficha
         if url_tiene_vista_receta(url_ficha):
@@ -211,14 +226,14 @@ def esperar_ficha_en_lienzo(page, *, headed: bool = True) -> str:
             )
         elif gestor_sin_ficha(url_ficha):
             print(
-                "\n>>> Estás en el Gestor SIN /view/id (vista no editable).\n"
-                "    Abrí la receta Maremoto hasta que la URL tenga\n"
+                f"\n>>> Estás en el Gestor SIN /view/id (vista no editable).\n"
+                f"    Abrí «{nombre}» hasta que la URL tenga\n"
                 "    /view-manager/view/…. NO pulses Volver.\n"
             )
         else:
             print(
-                "\n>>> No estás en la vista editable de la receta.\n"
-                "    Entrá a Recetas_Jumbo → Maremoto (URL con /view/…).\n"
+                f"\n>>> No estás en la vista editable de la receta.\n"
+                f"    Entrá a Recetas_Jumbo → «{nombre}» (URL con /view/…).\n"
                 "    NO pulses «Volver» ni Proyectos.\n"
             )
         if headed and sys.stdin.isatty():
@@ -7264,9 +7279,10 @@ def fill_from_receta(
         )
         return False
     if not url_tiene_vista_receta(url_ficha):
+        nombre = (receta.get("titulo") or "").strip() or "la receta"
         print(
-            "\nNo hay URL /view-manager/view/…: no es la vista editable.\n"
-            "Abrí Maremoto hasta ver esa URL y los 5 bloques. NO pulses Volver.\n",
+            f"\nNo hay URL /view-manager/view/…: no es la vista editable.\n"
+            f"Abrí «{nombre}» hasta ver esa URL y los 5 bloques. NO pulses Volver.\n",
             file=sys.stderr,
         )
         return False

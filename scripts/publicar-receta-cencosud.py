@@ -220,12 +220,14 @@ def main() -> int:
         # (un href o el texto «Cabecera» de la paleta saca a /cms/projects).
 
         if headed and sys.stdin.isatty():
-            print(explorar.MENSAJE_ENTER_FICHA)
+            print(explorar.mensaje_enter_ficha(receta.get("titulo")))
             try:
                 input()
             except EOFError:
                 page.wait_for_timeout(5_000)
-        url_ficha = explorar.esperar_ficha_en_lienzo(page, headed=headed)
+        url_ficha = explorar.esperar_ficha_en_lienzo(
+            page, headed=headed, titulo_receta=receta.get("titulo")
+        )
 
         print("Rellenando (solo lápices del lienzo; no toco la paleta)…")
         carga_ok = explorar.fill_from_receta(
