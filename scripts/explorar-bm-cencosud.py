@@ -6460,9 +6460,21 @@ def enlaces_desde_productos(receta: dict | None) -> list[dict]:
 
 
 def enlaces_efectivos_paso(paso: dict, receta: dict | None = None) -> list[dict]:
-    """Solo enlaces del propio paso (PDF/Word). No inventar links en pasos sin ancla."""
-    del receta  # reserved for futuros mapeos; no mezclar productos en todos los pasos
+    """Enlaces del paso + hipervínculos Jumbo del Word cuyo ancla aparece en el texto."""
     propios = list(paso.get("enlaces") or [])
+    texto_l = str(paso.get("texto") or "").lower()
+    for raw in (receta or {}).get("enlacesProductos") or []:
+        if not isinstance(raw, dict):
+            continue
+        palabra = str(raw.get("texto") or raw.get("anchor") or "").strip()
+        url = str(raw.get("url") or "").strip()
+        if not palabra or not url:
+            continue
+        if "jumbo.cl" not in url.lower():
+            continue
+        if palabra.lower() not in texto_l:
+            continue
+        propios.append({"texto": palabra, "url": url})
     if not propios:
         return []
     # Una ancla corta por URL (vino / helado / licor), como en el BM Jumbo.

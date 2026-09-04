@@ -54,6 +54,72 @@ def extraer_enlaces_docx(path: Path) -> list[dict]:
     return _RUTAS.extraer_enlaces_docx(path)
 
 
+def hipervinculos_producto_docx(path: Path) -> list[dict]:
+    """Enlaces Jumbo del .docx (texto ancla + url), sin el de «Foto» a Drive."""
+    out: list[dict] = []
+    vistos: set[tuple[str, str]] = set()
+    for raw in extraer_enlaces_docx(path):
+        texto = str(raw.get("texto") or "").strip()
+        url = str(raw.get("url") or "").strip()
+        if not texto or not url:
+            continue
+        if "jumbo.cl" not in url.lower():
+            continue
+        if texto.lower() in {"foto", "imagen", "portada"}:
+            continue
+        clave = (texto.lower(), url)
+        if clave in vistos:
+            continue
+        vistos.add(clave)
+        out.append({"texto": texto, "url": url})
+    return out
+
+
+def aplicar_hipervinculos_a_pasos(receta: dict, hipervinculos: list[dict]) -> None:
+    """Pega anclas del Word en cada paso cuyo texto contiene la palabra enlazada."""
+    if not hipervinculos:
+        return
+    catalogo = list(receta.get("enlacesProductos") or [])
+    for hv in hipervinculos:
+        url = hv["url"]
+        ya = False
+        for item in catalogo:
+            if isinstance(item, dict) and item.get("url") == url and item.get("texto") == hv["texto"]:
+                ya = True
+                break
+            if isinstance(item, str) and item == url:
+                ya = True
+                break
+        if not ya:
+            catalogo.append({"texto": hv["texto"], "url": url})
+    receta["enlacesProductos"] = catalogo
+
+    for paso in receta.get("pasos") or []:
+        cuerpo = str(paso.get("texto") or "")
+        if not cuerpo:
+            continue
+        cuerpo_l = cuerpo.lower()
+        ya = list(paso.get("enlaces") or [])
+        vistos = {
+            (str(e.get("texto") or "").lower(), str(e.get("url") or ""))
+            for e in ya
+        }
+        for hv in hipervinculos:
+            palabra = hv["texto"]
+            url = hv["url"]
+            if palabra.lower() not in cuerpo_l:
+                continue
+            clave = (palabra.lower(), url)
+            if clave in vistos:
+                continue
+            ya.append({"texto": palabra, "url": url})
+            vistos.add(clave)
+        if ya:
+            paso["enlaces"] = sorted(
+                ya, key=lambda e: len(str(e.get("texto") or "")), reverse=True
+            )
+
+
 def adjuntar_foto_portada(receta: dict, src: Path, media_dir: Path) -> None:
     """Prioriza el enlace celeste «Foto» del Word; si no, word/media embebido."""
     alt = ""
@@ -1026,6 +1092,7 @@ def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     media_dir = OUT_DIR / "media" / receta["id"]
     if suf == ".docx":
+        aplicar_hipervinculos_a_pasos(receta, hipervinculos_producto_docx(src))
         adjuntar_foto_portada(receta, src, media_dir)
     elif suf == ".pdf":
         adjuntar_foto_local(receta, src, media_dir)
