@@ -312,8 +312,8 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         )
         self.assertNotIn("<h3>", html)
         self.assertNotIn("¿Cómo preparar", html)
-        self.assertIn("<ul>", html)
-        self.assertIn("<li><strong>Sazona el salmón:</strong>", html)
+        self.assertIn("<p>", html)
+        self.assertIn("<p><strong>Sazona el salmón:</strong>", html)
         self.assertIn("<strong>Consejo:</strong>", html)
         self.assertNotIn("&lt;p&gt;", html)
         self.assertNotIn("&lt;strong", html)
@@ -325,7 +325,7 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             receta_salmon,
         )
         self.assertEqual(len(partes), 2)
-        self.assertTrue(all("<ul>" in p for p in partes))
+        self.assertTrue(all(p.startswith("<p>") and p.endswith("</p>") for p in partes))
         html_enlaces = self.explorar.html_pasos(
             [
                 {
@@ -353,12 +353,12 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
                 },
             ]
         )
-        self.assertEqual(salmon.lower().count("<li>"), 2)
+        self.assertEqual(salmon.lower().count("<p>"), 2)
         self.assertEqual(len(self.explorar.html_pasos_separados([
             {"texto": "Sazona el salmón: Seca los filetes."},
             {"texto": "Termina la receta: Acomoda el salmón."},
         ])), 2)
-        self.assertIn("<ul>", salmon)
+        self.assertIn("<p>", salmon)
         self.assertIn("Termina la receta", salmon)
         ya_html = "<p><strong>Sazona el salmón:</strong> Seca los filetes.</p>"
         self.assertEqual(self.explorar.html_pasos([{"texto": ya_html}]), ya_html)
@@ -400,7 +400,7 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             },
         )
         self.assertNotIn("¿Cómo preparar maremoto?", maremoto_html)
-        self.assertEqual(maremoto_html.lower().count("<li>"), 2)
+        self.assertEqual(maremoto_html.lower().count("<p>"), 2)
         self.assertEqual(
             len(
                 self.explorar.html_pasos_separados(
@@ -437,6 +437,23 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
             ),
             2,
         )
+        uno = self.explorar.html_paso_uno(
+            {
+                "texto": (
+                    "Enfría los ingredientes: Mantén el vino pipeño bien frío "
+                    "en el refrigerador y el helado de piña firme."
+                ),
+                "enlaces": [
+                    {
+                        "texto": "vino pipeño",
+                        "url": "https://www.jumbo.cl/licores-bebidas-y-aguas/vinos",
+                    }
+                ],
+            }
+        )
+        self.assertTrue(uno.startswith("<p>"))
+        self.assertTrue(uno.endswith("</p>"))
+        self.assertNotIn("<ul>", uno)
         self.assertIn(
             '<a href="https://www.jumbo.cl/licores-bebidas-y-aguas/vinos">vino pipeño</a>',
             maremoto_html,
@@ -1223,9 +1240,9 @@ class JsIngredienteExactoTests(unittest.TestCase):
             html1 = page.evaluate("() => document.getElementById('paso-html-1').value")
             self.assertNotIn("<h3>", html0)
             self.assertNotIn("¿Cómo preparar", html0)
-            self.assertIn("<ul>", html0)
-            self.assertIn("<li><strong>Sazona el salmón:</strong>", html0)
-            self.assertIn("<li><strong>Prepara la salsa de palta:</strong>", html1)
+            self.assertIn("<p>", html0)
+            self.assertIn("<p><strong>Sazona el salmón:</strong>", html0)
+            self.assertIn("<p><strong>Prepara la salsa de palta:</strong>", html1)
             self.assertNotIn("Prepara la salsa", html0)
             self.assertNotIn("&lt;p&gt;", html0)
             self.assertNotIn("&lt;strong", html0)

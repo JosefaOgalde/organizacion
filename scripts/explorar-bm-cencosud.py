@@ -2263,8 +2263,10 @@ def finalizar_editor_instrucciones(page, url_ficha: str | None, html: str) -> bo
         return False
     ok = _paso_html_verificado(page, html)
     if not ok:
-        # Con un HTML por Formulario Ítem, el join completo no cabe en un solo editor.
-        primer = (html.split("</ul>", 1)[0] + "</ul>") if "</ul>" in html else html[:200]
+        # Un <p> por Formulario Ítem interno: el join no cabe en un solo editor.
+        primer = html[:240]
+        if "<p>" in html and "</p>" in html:
+            primer = html[html.index("<p>") : html.index("</p>") + 4]
         ok = _paso_html_verificado(page, primer) or parece_html(html)
         if not ok and sigue_dato_requerido(page):
             print("  ✗ Paso a Paso incompleto (Título* o HTML) — no guardo")
@@ -2272,7 +2274,7 @@ def finalizar_editor_instrucciones(page, url_ficha: str | None, html: str) -> bo
         if not ok:
             print("  · Verificación HTML leyó poco; guardo igual (sin «dato requerido» visible).")
         else:
-            print("  · HTML de pasos verificado por fragmento (ítems separados).")
+            print("  · HTML verificado por párrafo (ítems separados bajo Lista de instrucciones).")
     if not guardar_editor_persistente(page):
         print("  ! No apareció «guardado satisfactoriamente». Pulsa Guardar a mano y reintenta.")
         return False
@@ -4203,6 +4205,28 @@ JS_CLICK_AGREGAR_INGREDIENTE = """() => {
   const btn = btns[0];
   btn.click();
   return btns.length >= 2 ? 'interno' : 'unico';
+}"""
+
+JS_CLICK_AGREGAR_INSTRUCCION = """() => {
+  const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const labs = [...document.querySelectorAll('label, legend, p, span, strong, h3, h4, div')].filter((el) => {
+    const t = clean((el.innerText || '').split('\\n')[0]);
+    const r = el.getBoundingClientRect();
+    return /^Lista de instrucciones$/i.test(t) && r.width > 4 && r.height > 4 && r.left >= 20;
+  });
+  labs.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  const ancla = labs[0] ? labs[0].getBoundingClientRect().top : -1;
+  const btns = [...document.querySelectorAll('button, [role="button"], a')].filter((el) => {
+    const t = clean(el.innerText || '');
+    const r = el.getBoundingClientRect();
+    if (!/agregar nuevo [ií]tem/i.test(t) || r.width < 8 || r.height < 8 || r.left < 40) return false;
+    if (ancla >= 0 && r.top < ancla - 8) return false;
+    return true;
+  });
+  btns.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  if (!btns.length) return false;
+  btns[0].click();
+  return ancla >= 0 ? 'bajo-lista' : 'primero';
 }"""
 
 JS_CONTAR_INGREDIENTES_INTERNOS = (
@@ -6261,7 +6285,7 @@ def enlaces_efectivos_paso(paso: dict, receta: dict | None = None) -> list[dict]
 
 
 def html_paso_uno(item: dict, receta: dict | None = None) -> str:
-    """Un solo paso como HTML aparte (viñeta + hiperlinks). Va en su Formulario Ítem."""
+    """Un párrafo HTML con hiperlinks para un Formulario Ítem interno de la lista."""
     texto = linea_paso(item)
     if not texto:
         return ""
@@ -6270,20 +6294,18 @@ def html_paso_uno(item: dict, receta: dict | None = None) -> str:
     if re.match(r"(?i)^consejo\b", texto):
         cuerpo = re.sub(r"(?i)^consejo:\s*", "", texto).strip()
         cuerpo_html = cuerpo if parece_html(cuerpo) else _esc_html(cuerpo)
-        return f"<ul>\n<li><strong>Consejo:</strong> {cuerpo_html}</li>\n</ul>"
+        return f"<p><strong>Consejo:</strong> {cuerpo_html}</p>"
     tit, cuerpo = partir_paso(texto)
     enlaces = enlaces_efectivos_paso(item, receta)
     if tit:
         cuerpo_html = _aplicar_enlaces_html(_esc_html(cuerpo), enlaces)
-        return (
-            f"<ul>\n<li><strong>{_esc_html(tit)}:</strong> {cuerpo_html}</li>\n</ul>"
-        )
+        return f"<p><strong>{_esc_html(tit)}:</strong> {cuerpo_html}</p>"
     cuerpo_html = _aplicar_enlaces_html(_esc_html(texto), enlaces)
-    return f"<ul>\n<li>{cuerpo_html}</li>\n</ul>"
+    return f"<p>{cuerpo_html}</p>"
 
 
 def html_pasos_separados(items: list[dict], receta: dict | None = None) -> list[str]:
-    """Un bloque HTML por paso, listos para pegar en Formulario Ítem 1..N."""
+    """Un <p> HTML por paso → Formulario Ítem 1..N bajo Lista de instrucciones."""
     out: list[str] = []
     for it in items or []:
         html = html_paso_uno(it, receta)
@@ -6293,7 +6315,7 @@ def html_pasos_separados(items: list[dict], receta: dict | None = None) -> list[
 
 
 def html_pasos(items: list[dict], receta: dict | None = None) -> str:
-    """HTML de todos los pasos (join). Preferir html_pasos_separados al cargar en BM."""
+    """Join de párrafos (solo para logs/verificación). En BM se pegan separados."""
     partes = html_pasos_separados(items, receta)
     return "\n".join(partes).strip()
 
@@ -6863,6 +6885,23 @@ def click_agregar_ingrediente_interno(page) -> bool:
     return False
 
 
+def click_agregar_instruccion_interna(page) -> bool:
+    """+ Agregar bajo «Lista de instrucciones» (un Formulario Ítem / párrafo HTML)."""
+    for fr in _frames_pagina(page):
+        try:
+            out = fr.evaluate(JS_CLICK_AGREGAR_INSTRUCCION)
+        except Exception:
+            out = None
+        if out:
+            print(f"  · + Agregar paso HTML ({out})")
+            try:
+                page.wait_for_timeout(450)
+            except Exception:
+                pass
+            return True
+    return click_agregar_ingrediente_interno(page)
+
+
 def asegurar_n_ingredientes(page, n: int) -> int:
     actuales = _contar_ingredientes_internos(page)
     if actuales == 0:
@@ -6969,14 +7008,16 @@ def asegurar_n_instrucciones(page, n: int) -> int:
         except Exception:
             pass
         actuales = _contar_instrucciones_internas(page)
-        print(f"  · Tras abrir acordeones: {actuales} instrucciones visibles")
+        print(f"  · Tras abrir acordeones: {actuales} Paso a Paso visibles")
     intentos = 0
-    while actuales < n and intentos < n + 2:
-        if not click_agregar_ingrediente_interno(page):
+    while actuales < n and intentos < n + 4:
+        if not click_agregar_instruccion_interna(page):
+            print("  · No pude pulsar + Agregar bajo Lista de instrucciones")
             break
         intentos += 1
         expandir_todos_items_formulario(page)
         actuales = _contar_instrucciones_internas(page)
+        print(f"  · Paso a Paso internos: {actuales}/{n}")
     return actuales
 
 
@@ -7110,13 +7151,19 @@ def fill_lista_acordeones(
             print("  ✗ Sin pasos HTML para pegar.")
             return 0
         print(
-            f"  · {len(fragmentos)} pasos HTML separados "
-            f"(un Formulario Ítem / Paso a Paso cada uno, con hiperlinks)"
+            f"  · Estructura BM: Título* = pregunta; "
+            f"{len(fragmentos)} Formulario Ítem internos = un <p> HTML c/u + hiperlinks"
         )
-        asegurar_n_instrucciones(page, len(fragmentos))
+        n_ok = asegurar_n_instrucciones(page, len(fragmentos))
+        if n_ok < len(fragmentos):
+            print(
+                f"  · Solo hay {n_ok} Paso a Paso; necesito {len(fragmentos)}. "
+                "Sigo con los que hay (no mezclo párrafos en uno solo)."
+            )
         expandir_todos_items_formulario(page)
         llenados = 0
-        for i, html in enumerate(fragmentos):
+        tope = min(len(fragmentos), max(n_ok, 1))
+        for i, html in enumerate(fragmentos[:tope]):
             expandir_item_ingrediente(page, i) or expandir_item_formulario(page, i)
             try:
                 page.wait_for_timeout(200)
@@ -7125,25 +7172,20 @@ def fill_lista_acordeones(
             activar_html_paso_a_paso(page)
             if escribir_paso_a_paso_html(page, html, indice=i):
                 print(
-                    f"  ✓ Paso a Paso[{i + 1}] HTML "
-                    f"({html.lower().count('<li>')} viñeta(s), "
-                    f"{html.lower().count('<a ')} link(s))"
+                    f"  ✓ Formulario Ítem {i + 1} Paso a Paso → "
+                    f"<p> + {html.lower().count('<a ')} hiperlink(s)"
                 )
                 llenados += 1
             else:
-                print(f"  ✗ Paso a Paso[{i + 1}] no quedó con etiquetas HTML")
+                print(f"  ✗ Formulario Ítem {i + 1}: HTML no quedó con etiquetas")
         if llenados:
+            if llenados < len(fragmentos):
+                print(
+                    f"  · Pegados {llenados}/{len(fragmentos)} párrafos. "
+                    "Agrega ítems a mano y reintenta el resto."
+                )
             return llenados
-        # Fallback: un solo editor con todos los fragmentos concatenados.
-        html_todo = "\n".join(fragmentos)
-        activar_html_paso_a_paso(page)
-        if escribir_paso_a_paso_html(page, html_todo, indice=0):
-            print("  · Fallback: pegué todos los pasos en un solo Paso a Paso")
-            return len(fragmentos)
-        if not sigue_dato_requerido(page):
-            print("  · HTML pegado; verificación falló pero confío en escritura.")
-            return len(fragmentos)
-        print("  ✗ Paso a Paso no quedó con etiquetas HTML. No escribo texto plano.")
+        print("  ✗ No pegué ningún párrafo HTML en Paso a Paso. No mezclo todo en uno.")
         return 0
 
     n_acc = contar_acordeones(page)
