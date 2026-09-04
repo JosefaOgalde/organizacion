@@ -128,12 +128,12 @@ MENSAJE_ENTER_FICHA = (
 def mensaje_enter_ficha(titulo_receta: str | None = None) -> str:
     nombre = (titulo_receta or "").strip() or "la receta"
     return (
-        f"\n>>> En Chromium abrí «{nombre}» (URL debe tener /view-manager/view/…):\n"
-        "    5 bloques al CENTRO: header / tags / Ingredientes / Instrucciones / SEO.\n"
+        f"\n>>> Usá la ventana Chromium que abrió ESTE script (no Chrome/Edge normal).\n"
+        f"    Ahí abrí «{nombre}» hasta que la URL tenga /view-manager/view/…\n"
+        "    Ideal: 5 bloques al CENTRO (header / tags / Ingredientes / Instrucciones / SEO).\n"
         "    El script abre cada lápiz solo.\n"
-        "    NO pulses «Volver» (arriba a la derecha): eso SALE de la receta.\n"
-        "    NO pulses Proyectos ni la paleta izquierda.\n"
-        "    Cuando veas los 5 bloques en esa URL, pulsa ENTER aquí.\n"
+        "    NO pulses «Volver» ni Proyectos ni la paleta izquierda.\n"
+        "    Cuando veas eso en la ventana del script, pulsa ENTER aquí.\n"
     )
 
 
