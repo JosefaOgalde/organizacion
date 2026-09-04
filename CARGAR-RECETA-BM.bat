@@ -87,20 +87,25 @@ echo  Crea/edita %SECRETS%\.env con CENCOSUD_BM_USER (nunca lo pegues en el chat
 :env_listo
 
 echo.
-echo  PASO 2 - scraping / mapeo del CMS con tu login
-echo  1) Inicia sesion en la ventana que se abre (ADFS / MFA a mano).
-echo  2) Abre la receta en el Gestor de contenido (5 bloques al centro).
-echo  3) Vuelve aqui y pulsa ENTER. NO toques los lapices: se abren solos.
+echo  PASO 2 - UNA sola ventana Chromium (mapear + rellenar)
+echo  1) Inicia sesion (ADFS / MFA a mano).
+echo  2) Abre la receta (5 bloques al centro). NO pulses Proyectos ni la paleta.
+echo  3) Vuelve aqui y pulsa ENTER. Los lapices se abren solos.
+echo  4) El navegador NO se cierra hasta que pulses ENTER al final.
 echo.
-python scripts\explorar-bm-cencosud.py --reuse-session
-if errorlevel 1 goto :error_bm
 
-echo.
-echo  PASO 3 - rellenar la receta (dry-run: no publica)
-echo.
+REM Si ya hay selectores, solo rellenar (no re-explorar ni cerrar a mitad).
+if exist "%SECRETS%\bm-selectores.json" goto :solo_rellenar
+python scripts\explorar-bm-cencosud.py --reuse-session --fill-json "%JSON%"
+if errorlevel 1 goto :error_bm
+goto :bm_ok
+
+:solo_rellenar
+echo  Selectores ya existen: relleno directo (sin cerrar y reabrir).
 python scripts\publicar-receta-cencosud.py "%JSON%" --headed --dry-run
 if errorlevel 1 goto :error_bm
 
+:bm_ok
 echo.
 echo  Listo. Revisa la receta en el BM y publicala tu misma si quedo bien.
 goto :fin

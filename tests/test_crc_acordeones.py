@@ -723,7 +723,15 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIn("volver", js.lower())
         self.assertIn("flecha", js)
         self.assertIn("Edici", js)
+        self.assertIn("esCerrarCms", js)
+        self.assertNotRegex(js, r"\^\(volver\|atrás\|atras\|back\|cerrar\|close\)\$")
         self.assertIn("El dato es requerido", self.explorar.JS_SIGUE_REQUERIDO_VISIBLE)
+
+    def test_volver_al_lienzo_no_recarga_si_sigue_en_ficha(self):
+        src = inspect.getsource(self.explorar.volver_al_lienzo)
+        self.assertIn("Caí en Proyectos", src)
+        self.assertIn("url_tiene_vista_receta(url_ficha)", src)
+        self.assertIn("Nunca ir a /cms/projects", src)
 
     def test_guardar_tags_fuerza_volver_al_siguiente(self):
         src_guardar = inspect.getsource(self.explorar.guardar_y_volver_al_lienzo)

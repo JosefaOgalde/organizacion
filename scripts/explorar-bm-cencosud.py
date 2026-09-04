@@ -1676,18 +1676,29 @@ JS_VOLVER_AL_LIENZO = """() => {
     if (/view-manager/i.test(href)) return false;
     return /proyectos/i.test(t) || /\\/cms\\/projects\\/?$/i.test(href);
   };
-  const nodos = [...document.querySelectorAll('button, [role="button"], a')].filter(visibles);
-  const back = nodos.find((el) => {
-    if (esProyectos(el)) return false;
+  // Nunca «cerrar/close»: en el chrome del BM cierra todo el CMS.
+  const esCerrarCms = (el) => {
     const lab = clean(
       el.innerText || el.getAttribute('aria-label') || el.getAttribute('title') || ''
     );
-    if (/publicar/i.test(lab)) return false;
-    return /^(volver|atrás|atras|back|cerrar|close)$/i.test(lab)
+    return /^(cerrar|close|cerrar sesi[oó]n|logout|salir)$/i.test(lab)
+      || /cerrar (ventana|cms|proyecto)|close (window|tab)/i.test(lab);
+  };
+  const esVolverEditor = (el) => {
+    if (esProyectos(el) || esCerrarCms(el)) return false;
+    const lab = clean(
+      el.innerText || el.getAttribute('aria-label') || el.getAttribute('title') || ''
+    );
+    if (/publicar|proyectos|cerrar|close/i.test(lab) && !/volver|atrás|atras|back/i.test(lab)) {
+      return false;
+    }
+    return /^(volver|atrás|atras|back)$/i.test(lab)
       || /volver|atrás|atras|arrow.?back|chevron.?left/i.test(
         el.getAttribute('aria-label') || el.getAttribute('title') || ''
       );
-  });
+  };
+  const nodos = [...document.querySelectorAll('button, [role="button"], a')].filter(visibles);
+  const back = nodos.find(esVolverEditor);
   if (back) { back.click(); return 'back'; }
   const titulos = [...document.querySelectorAll('h1,h2,h3,h4,p,div,span')].filter((el) => {
     const linea = clean(el.innerText || '').split('\\n')[0];
@@ -1700,7 +1711,7 @@ JS_VOLVER_AL_LIENZO = """() => {
     const cands = [...document.querySelectorAll('button, [role="button"], a, svg')].filter((el) => {
       if (!visibles(el)) return false;
       const wrap = (el.closest && el.closest('a, button, [role="button"]')) || el;
-      if (esProyectos(wrap) || esProyectos(el)) return false;
+      if (esProyectos(wrap) || esProyectos(el) || esCerrarCms(wrap) || esCerrarCms(el)) return false;
       const r = el.getBoundingClientRect();
       const mid = (r.top + r.bottom) / 2;
       const midH = (hR.top + hR.bottom) / 2;
@@ -1715,7 +1726,7 @@ JS_VOLVER_AL_LIENZO = """() => {
   }
   const crumbs = [...document.querySelectorAll('nav a, [class*="breadcrumb"] a, [class*="Breadcrumb"] a')].filter(visibles);
   const gestor = crumbs.find((el) => {
-    if (esProyectos(el)) return false;
+    if (esProyectos(el) || esCerrarCms(el)) return false;
     const t = clean(el.innerText || '');
     const href = el.getAttribute('href') || '';
     return /gestor|view-manager|contenido/i.test(t + ' ' + href);
@@ -2170,13 +2181,14 @@ def volver_al_lienzo(page, url_ficha: str | None = None, *, confirmar_salida: bo
         esperar_lienzo_bloques(page)
         return True
     actual = url_actual(page)
-    destino = url_lienzo_receta(actual, url_ficha)
-    if url_tiene_vista_receta(actual) and destino and not url_tiene_vista_receta(destino):
-        destino = url_lienzo_receta(actual, None)
-    if url_tiene_vista_receta(actual) and destino and not url_tiene_vista_receta(destino):
-        destino = None
-    if destino and not url_tiene_vista_receta(destino):
-        destino = None
+    # Solo recargar la ficha conocida. Nunca ir a /cms/projects ni al Gestor pelado.
+    destino = None
+    if url_tiene_vista_receta(url_ficha):
+        destino = url_lienzo_receta(url_ficha, url_ficha)
+    if not destino or not url_tiene_vista_receta(destino):
+        if es_lista_proyectos_cms(actual):
+            print("  · Caí en Proyectos. No recargo el Gestor; abrí la receta a mano.")
+        return False
     if destino and hasattr(page, "goto"):
         try:
             print("  · Vuelvo al Gestor de la receta…")
@@ -2190,14 +2202,6 @@ def volver_al_lienzo(page, url_ficha: str | None = None, *, confirmar_salida: bo
                 pass
         except Exception:
             pass
-        if (
-            es_lista_proyectos_cms(url_actual(page))
-            and url_tiene_vista_receta(url_ficha)
-        ):
-            try:
-                page.goto(url_ficha, wait_until="domcontentloaded", timeout=60_000)
-            except Exception:
-                pass
         if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
             print("  · Volví al lienzo (5 bloques)")
             esperar_lienzo_bloques(page)
@@ -7618,7 +7622,8 @@ def main() -> int:
                 path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
             print("\nRevisa la ventana del BM. Si faltó algún campo, edita secrets/bm-selectores.json y reintenta.")
 
-        print("\nPulsa ENTER para cerrar el navegador…")
+        print("\nListo el mapeo/relleno. El navegador sigue abierto.")
+        print("Revisá el CMS. Pulsa ENTER solo cuando quieras cerrar Chromium…")
         try:
             input()
         except EOFError:
@@ -7627,9 +7632,9 @@ def main() -> int:
         browser.close()
 
     print(
-        "\nSiguiente: si los selectores están bien,\n"
+        "\nSi faltó algo: edita secrets/bm-selectores.json y reintenta con\n"
         "  python scripts\\publicar-receta-cencosud.py out\\….json --headed --dry-run\n"
-        "El publicador también abre los lápices solo al rellenar."
+        "(una sola ventana; no vuelve a mapear)."
     )
     return resultado
 
