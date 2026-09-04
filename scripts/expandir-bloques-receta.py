@@ -52,6 +52,10 @@ def slugify(s: str) -> str:
 
 
 def es_formato_bloques(doc: dict) -> bool:
+    # La receta expandida conserva ``bloques`` como trazabilidad, pero sus
+    # campos superiores pueden contener correcciones manuales y son canónicos.
+    if doc.get("formatoOrigen") == "bloques-json":
+        return False
     bloques = doc.get("bloques")
     if not isinstance(bloques, dict):
         return False
