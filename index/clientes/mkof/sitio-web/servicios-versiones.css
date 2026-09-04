@@ -63,6 +63,20 @@
 
 .sv-ico { width: 2.75rem; height: 2.75rem; display: block; }
 .sv-ico svg { width: 100%; height: 100%; display: block; }
+.sv-ico--mesh {
+  width: 3.5rem;
+  height: 2.85rem;
+  overflow: hidden;
+  border-radius: 0.55rem;
+  background: #f7f2e4;
+}
+.sv-ico--mesh img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
 
 /* ========== A · BENTO (mockup) ========== */
 .sa {

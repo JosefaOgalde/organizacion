@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banner · V1 · mark spinning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../home-v1.css?v=4">
+  <style>
+    html, body { margin: 0; }
+    body { overflow-x: hidden; }
+    /* sin sticky header del home: solo el banner */
+    .site-header, .top, .nav4, .v1-nav { display: none !important; }
+  </style>
+</head>
+<body class="v1">
+<!-- HERO -->
+    <section class="v1-hero" id="hero">
+      <div class="v1-hero__copy">
+        <h1>
+          <span class="v1-hero__brand">Making Of,</span>
+          <span class="v1-hero__partner">your next business partner</span>
+        </h1>
+        <a class="v1-btn v1-btn--ink" href="#contacto">Cuéntanos tu proyecto →</a>
+      </div>
+      <aside class="v1-hero__visual" aria-label="Estrategia, datos y creatividad">
+        <div class="v1-hero__panel">
+          <svg class="v1-hero__mark" viewBox="0 0 280 280" fill="none" aria-hidden="true">
+            <circle cx="140" cy="140" r="118" fill="#E8E2B8"/>
+            <circle cx="140" cy="140" r="96" stroke="#2A5A49" stroke-width="2" opacity="0.45"/>
+            <circle cx="140" cy="140" r="68" stroke="#418870" stroke-width="1.5" opacity="0.4"/>
+            <circle cx="140" cy="46" r="8" fill="#133429"/>
+            <circle cx="234" cy="140" r="8" fill="#2A5A49"/>
+            <circle cx="140" cy="234" r="8" fill="#133429"/>
+            <circle cx="46" cy="140" r="8" fill="#2A5A49"/>
+            <circle cx="140" cy="140" r="34" fill="#091914"/>
+            <path d="M140 112 L147 135 L170 140 L147 145 L140 168 L133 145 L110 140 L133 135 Z" fill="#FBF6EB"/>
+            <circle cx="140" cy="140" r="5" fill="#418870"/>
+          </svg>
+          <p>Estrategia · datos · creatividad</p>
+        </div>
+      </aside>
+    </section>
+</body>
+</html>

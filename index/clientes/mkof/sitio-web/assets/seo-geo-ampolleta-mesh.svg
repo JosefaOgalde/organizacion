@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" fill="none" role="img" aria-label="SEO y GEO · ampolleta Making Of">
+  <defs>
+    <radialGradient id="meshBg" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#F7F2E4"/>
+      <stop offset="100%" stop-color="#D8D3A4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glassFill" cx="36%" cy="28%" r="72%">
+      <stop offset="0%" stop-color="#6BA894"/>
+      <stop offset="42%" stop-color="#2A5A49"/>
+      <stop offset="100%" stop-color="#091914"/>
+    </radialGradient>
+    <linearGradient id="baseFill" x1="220" y1="290" x2="310" y2="390">
+      <stop offset="0%" stop-color="#C8C28A"/>
+      <stop offset="40%" stop-color="#56742A"/>
+      <stop offset="100%" stop-color="#133429"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#091914" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+  <rect width="520" height="420" fill="url(#meshBg)"/>
+  <!-- malla de puntos (firma caras/mundo) -->
+  <g fill="#56742A" fill-opacity="0.28">
+    <circle cx="260" cy="68" r="3"/><circle cx="200" cy="100" r="2.5"/><circle cx="320" cy="98" r="2.5"/>
+    <circle cx="160" cy="170" r="2.2"/><circle cx="360" cy="165" r="2.2"/>
+    <circle cx="175" cy="280" r="2.2"/><circle cx="345" cy="275" r="2.2"/>
+    <circle cx="260" cy="350" r="2.8"/>
+  </g>
+  <g stroke="#418870" stroke-opacity="0.55" stroke-width="1.6" fill="none">
+    <path d="M200 100 C225 150 245 180 260 205"/>
+    <path d="M320 98 C295 150 275 180 260 205"/>
+    <path d="M160 170 C200 185 230 198 260 205"/>
+    <path d="M360 165 C320 185 290 198 260 205"/>
+    <path d="M260 205 L260 350"/>
+  </g>
+  <g filter="url(#soft)">
+    <!-- cristal -->
+    <ellipse cx="260" cy="168" rx="92" ry="102" fill="url(#glassFill)"/>
+    <ellipse cx="260" cy="168" rx="92" ry="102" fill="none" stroke="#56742A" stroke-opacity="0.4" stroke-width="2"/>
+    <ellipse cx="232" cy="130" rx="30" ry="20" fill="#FBF6EB" fill-opacity="0.12"/>
+    <!-- malla interior hint -->
+    <g stroke="#F7F2E4" stroke-opacity="0.22" stroke-width="1.3" fill="none">
+      <path d="M200 140 L240 110 L280 125 L300 165 L270 200 L230 195 L200 160 Z"/>
+      <path d="M220 175 L260 145 L290 180"/>
+      <path d="M245 120 L255 170 L235 200"/>
+    </g>
+    <!-- cuello -->
+    <path d="M218 255 L302 255 L294 285 L226 285 Z" fill="#133429" fill-opacity="0.5"/>
+    <!-- base rosca -->
+    <path d="M226 285 L294 285 L288 365 L232 365 Z" fill="url(#baseFill)"/>
+    <g stroke="#F7F2E4" stroke-opacity="0.28" stroke-width="2">
+      <path d="M232 305 H288"/><path d="M234 322 H286"/><path d="M236 339 H284"/><path d="M238 355 H282"/>
+    </g>
+    <ellipse cx="260" cy="378" rx="15" ry="10" fill="#091914"/>
+  </g>
+  <!-- nodos -->
+  <circle cx="230" cy="115" r="2.8" fill="#F7F2E4" fill-opacity="0.5"/>
+  <circle cx="295" cy="125" r="2.5" fill="#99EADA" fill-opacity="0.6"/>
+  <circle cx="250" cy="195" r="2.4" fill="#C8C28A" fill-opacity="0.55"/>
+  <circle cx="275" cy="175" r="2.6" fill="#F7F2E4" fill-opacity="0.45"/>
+  <!-- nodo mint central (firma caras) -->
+  <circle cx="260" cy="205" r="10" fill="#091914"/>
+  <circle cx="260" cy="205" r="5" fill="#99EADA"/>
+</svg>
