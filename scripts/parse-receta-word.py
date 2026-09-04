@@ -625,7 +625,7 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
     tips_titulo = ""
     en_tips = False
     encabezado_re = re.compile(
-        r"(?i)^(?P<title>tips?|consejos?|as[íi]\s+queda\b.*|para que queden?\b.*|"
+        r"(?i)^(?P<title>tips?|consejos?|as[íi]\s+queda\b.*|para que\b.*|"
         r"para (?:un|una)\b.*|peque[ñn]os\s+detalles\b.*)"
         r"\s*(?P<sep>[:\-–])?\s*(?P<resto>.*)$"
     )
@@ -637,7 +637,7 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
         es_seccion_tips = bool(
             re.match(r"(?i)^(tips?|consejos?)\b", line)
             or re.match(r"(?i)^as[íi]\s+queda\b", line)
-            or re.match(r"(?i)^para que queden?\b", line)
+            or re.match(r"(?i)^para que\b", line)
             or re.match(r"(?i)^para (?:un|una)\b", line)
             or re.match(r"(?i)^peque[ñn]os\s+detalles\b", line)
         )
