@@ -1,0 +1,109 @@
+{
+  "id": "torta-de-yogurt",
+  "bloques": {
+    "cabecera": {
+      "titulo": "Torta de yogurt",
+      "descripcion": "Prepara una torta de yogurt armada en capas, con bizcocho esponjoso, crema de yogurt y frutillas. Un postre fresco y original para celebrar en grande.",
+      "porciones": 10,
+      "tiempoTotal": "80 min",
+      "dificultad": "dificil",
+      "textoAlt": "Torta de yogurt en capas rellena con crema y frutillas, decorada por encima.",
+      "fotoUrl": "https://cl-jumbo-recipes-cms.ecomm.cencosud.com/cms/cl/Recetas_Jumbo/view_version/6a9b1fd4523988ff99534d2b/bc12b228-6d18-4d8a-84ed-354e65cec5bc-bd2a7092df764933983182de856af0ae.png"
+    },
+    "tags": {
+      "etiquetas": [
+        "tortas",
+        "recetas dulces",
+        "reposteria",
+        "yoghurt",
+        "postres",
+        "frutas"
+      ]
+    },
+    "ingredientes": {
+      "items": [
+        {
+          "nombre": "300 g de harina"
+        },
+        {
+          "nombre": "200 g de azúcar"
+        },
+        {
+          "nombre": "4 huevos"
+        },
+        {
+          "nombre": "180 g de compota de manzana"
+        },
+        {
+          "nombre": "150 g de yoghurt natural"
+        },
+        {
+          "nombre": "1 limón"
+        },
+        {
+          "nombre": "10 g de polvos de hornear"
+        },
+        {
+          "nombre": "5 ml de esencia de vainilla"
+        },
+        {
+          "nombre": "1 pizca de sal"
+        },
+        {
+          "nombre": "400 ml de crema para batir"
+        },
+        {
+          "nombre": "250 g de yogurt griego"
+        },
+        {
+          "nombre": "60 g de azúcar flor"
+        },
+        {
+          "nombre": "400 g de frutillas"
+        },
+        {
+          "nombre": "100 g de mermelada de frutilla"
+        }
+      ]
+    },
+    "instrucciones": {
+      "pregunta": "¿Cómo preparar torta de yogurt?",
+      "pasos": [
+        {
+          "orden": 1,
+          "texto": "<p><strong>Prepara el molde y el horno:</strong> Precalienta el horno a 180 °C y enmanteca un molde redondo, cubriendo el fondo con papel mantequilla. De esta forma el bizcocho se desmoldará con facilidad una vez cocido.</p>"
+        },
+        {
+          "orden": 2,
+          "texto": "<p><strong>Prepara la masa del bizcocho:</strong> Bate los huevos con el azúcar durante 4 minutos, hasta que la mezcla se aclare y aumente su volumen. Después incorpora el puré de manzana, el <a href=\"https://www.jumbo.cl/lacteos-huevos-y-congelados/yoghurt/yoghurt-natural-y-griego\"><strong>yoghurt</strong></a> natural, la esencia de vainilla y la ralladura del limón, y mezcla hasta integrar.</p>"
+        },
+        {
+          "orden": 3,
+          "texto": "<p><strong>Suma los secos y hornea:</strong> Tamiza la harina con los polvos de hornear y la sal, y agrégalos con movimientos envolventes hasta que no queden grumos. Luego vierte la masa en el molde y hornea durante 40 a 45 minutos, hasta que un palillo salga limpio.</p>"
+        },
+        {
+          "orden": 4,
+          "texto": "<p><strong>Prepara la crema de yogurt:</strong> Bate la <a href=\"https://www.jumbo.cl/despensa/harinas-postres-y-reposteria/cremas\"><strong>crema</strong></a> bien fría con el azúcar flor hasta que forme picos firmes, cuidando de no batir en exceso. A continuación, incorpora el yogurt griego con movimientos suaves y envolventes, para lograr una crema estable y con un toque ácido.</p>"
+        },
+        {
+          "orden": 5,
+          "texto": "<p><strong>Corta y rellena el bizcocho:</strong> Una vez frío, corta el bizcocho en dos o tres discos parejos con un cuchillo de sierra. Luego pincela cada capa con la mermelada de frutilla diluida en un poco de agua, cubre con crema de yoghurt y reparte frutillas picadas.</p>"
+        },
+        {
+          "orden": 6,
+          "texto": "<p><strong>Arma y decora:</strong> Apila las capas rellenas y cubre toda la <a href=\"https://www.jumbo.cl/panaderia-y-pasteleria/pasteleria/tortas\"><strong>torta</strong></a> con el resto de la crema de yoghurt, alisando la superficie con una espátula. Por último, decora con frutillas enteras o en mitades y lleva al refrigerador al menos 1 hora antes de servir.</p>"
+        }
+      ]
+    },
+    "seo": {
+      "metaTitulo": "Torta de yogurt | Recetas Jumbo",
+      "metaDescripcion": "Prepara una torta de yogurt armada en capas, con bizcocho esponjoso, crema de yogurt y frutillas. Un postre fresco y original para celebrar en grande.",
+      "consejosTitulo": "Para una torta que se sostenga bien",
+      "consejos": [
+        "Deja enfriar por completo el bizcocho antes de cortarlo en capas. Si todavía está tibio, la crema puede derretirse y será más difícil mantener la torta firme.",
+        "Mantén la crema y el yogurt griego bien fríos antes de preparar el relleno. Así la mezcla tendrá mejor cuerpo y será más fácil de distribuir entre las capas.",
+        "El puré de manzana mantiene el bizcocho húmedo y suave. También puedes reemplazarlo por plátano maduro molido en la misma cantidad."
+      ]
+    }
+  }
+}
