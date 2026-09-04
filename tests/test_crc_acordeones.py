@@ -651,7 +651,7 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
                     return "Edición de tags" in self.titulo
                 if "innerText" in texto:
                     if "Edición de tags" in self.titulo:
-                        return "Formulario Tags El dato es requerido"
+                        return "Edición de tags Formulario Tags Tag* Link"
                     return "Cabecera tags Ingredientes Instrucciones SEO"
                 return ""
 
@@ -720,12 +720,13 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         js = self.explorar.JS_VOLVER_AL_LIENZO
         self.assertIn("proyectos", js.lower())
         self.assertIn("view-manager", js)
-        self.assertIn("volver", js.lower())
         self.assertIn("flecha", js)
         self.assertIn("Edici", js)
         self.assertIn("esCerrarCms", js)
         self.assertIn("Edici[oó]n de", js)
-        self.assertNotRegex(js, r"\^\(volver\|atrás\|atras\|back\|cerrar\|close\)\$")
+        self.assertIn("/^volver$/i", js)
+        self.assertNotIn("return 'back'", js)
+        self.assertNotIn("return 'gestor'", js)
         self.assertIn("El dato es requerido", self.explorar.JS_SIGUE_REQUERIDO_VISIBLE)
 
     def test_lienzo_vacio_no_es_editor_ni_dispara_volver(self):
@@ -763,11 +764,30 @@ class AsignarCamposAcordeonTests(unittest.TestCase):
         self.assertIsNone(self.explorar.editor_actual(PaginaCanvas()))
         self.assertIn("Edici[oó]n de", self.explorar.JS_VOLVER_AL_LIENZO)
 
+    def test_salio_de_la_ficha_si_pierde_view_id(self):
+        ficha = (
+            "https://business-manager.ecomm.cencosud.com/cms/projects/"
+            "6597f023fdc664839ccd2a37/view-manager/view/6a9aff2a523988ff994d9891"
+        )
+        gestor = ficha.rsplit("/view/", 1)[0]
+        proyectos = "https://business-manager.ecomm.cencosud.com/cms/projects"
+        self.assertEqual(self.explorar.id_vista_receta(ficha), "6a9aff2a523988ff994d9891")
+        self.assertTrue(self.explorar.misma_vista_receta(ficha + "/edit", ficha))
+        self.assertTrue(self.explorar.salio_de_la_ficha(gestor, ficha))
+        self.assertTrue(self.explorar.salio_de_la_ficha(proyectos, ficha))
+        self.assertFalse(self.explorar.salio_de_la_ficha(ficha, ficha))
+
+    def test_clic_flecha_nunca_busca_volver_por_rol(self):
+        src = inspect.getsource(self.explorar._clic_flecha_volver)
+        self.assertNotIn("get_by_role", src)
+        self.assertNotIn("Gestor", src)
+        self.assertIn("Edici", src)
+
     def test_volver_al_lienzo_no_recarga_si_sigue_en_ficha(self):
         src = inspect.getsource(self.explorar.volver_al_lienzo)
-        self.assertIn("Caí en Proyectos", src)
+        self.assertIn("misma vista editable", src.lower())
         self.assertIn("url_tiene_vista_receta(url_ficha)", src)
-        self.assertIn("Nunca ir a /cms/projects", src)
+        self.assertIn("restaurar_ficha_si_salio", src)
 
     def test_guardar_tags_fuerza_volver_al_siguiente(self):
         src_guardar = inspect.getsource(self.explorar.guardar_y_volver_al_lienzo)

@@ -116,11 +116,12 @@ COMPONENTES_CMS = (
 LIENZO_MIN_X = 240
 
 MENSAJE_ENTER_FICHA = (
-    "\n>>> En Chromium abre la receta (5 bloques al CENTRO):\n"
-    "    Cabecera / tags / Ingredientes / Instrucciones / SEO.\n"
-    "    El script abre cada lápiz solo (icono a la derecha de cada bloque).\n"
-    "    NO pulses la paleta izquierda ni «Proyectos».\n"
-    "    Cuando veas los 5 bloques, pulsa ENTER aquí.\n"
+    "\n>>> En Chromium abrí la receta (URL debe tener /view-manager/view/…):\n"
+    "    5 bloques al CENTRO: header / tags / Ingredientes / Instrucciones / SEO.\n"
+    "    El script abre cada lápiz solo.\n"
+    "    NO pulses «Volver» (arriba a la derecha): eso SALE de la receta.\n"
+    "    NO pulses Proyectos ni la paleta izquierda.\n"
+    "    Cuando veas los 5 bloques en esa URL, pulsa ENTER aquí.\n"
 )
 
 
@@ -136,15 +137,39 @@ def es_lista_proyectos_cms(url: str | None) -> bool:
     return "/cms/projects" in u
 
 
+def id_vista_receta(url: str | None) -> str | None:
+    """Id de /view-manager/view/{id}. Sin eso no estamos en la vista editable."""
+    m = re.search(r"view-manager/view/([^/?#]+)", url or "", re.I)
+    return m.group(1) if m else None
+
+
 def _url_sin_query(url: str | None) -> str:
     return (url or "").split("#")[0].split("?")[0].rstrip("/")
 
 
+def misma_vista_receta(actual: str | None, url_ficha: str | None) -> bool:
+    """True si seguimos en la misma receta editable (/view/{id})."""
+    id_f = id_vista_receta(url_ficha)
+    id_a = id_vista_receta(actual)
+    return bool(id_f and id_a and id_f == id_a)
+
+
 def salio_de_la_ficha(actual: str | None, url_ficha: str | None) -> bool:
-    """Solo la lista Proyectos. El editor del lápiz no es salir de default."""
+    """True si dejamos la vista editable de ESTA receta (Proyectos, Gestor vacío u otra view)."""
     if not url_ficha or not actual:
         return False
-    return es_lista_proyectos_cms(actual)
+    if es_lista_proyectos_cms(actual):
+        return True
+    id_f = id_vista_receta(url_ficha)
+    if not id_f:
+        return False
+    id_a = id_vista_receta(actual)
+    if id_a and id_a != id_f:
+        return True
+    # Gestor sin /view/id = ya no estamos en la ficha editable.
+    if "view-manager" in actual and not id_a:
+        return True
+    return False
 
 
 def caja_en_lienzo(box: dict | None, *, min_x: float = LIENZO_MIN_X) -> bool:
@@ -172,56 +197,64 @@ def en_vista_default_cms(page) -> bool:
 
 
 def esperar_ficha_en_lienzo(page, *, headed: bool = True) -> str:
-    """Tras ENTER: si Chromium está en Proyectos o el Gestor vacío, pedir la receta."""
-    url_ficha = url_actual(page)
-    if en_vista_default_cms(page):
-        print("  · Default con los 5 bloques. Empiezo a completar Cabecera.")
-        return url_ficha
-    if not es_lista_proyectos_cms(url_ficha) and not gestor_sin_ficha(url_ficha):
-        return url_ficha
-    if gestor_sin_ficha(url_ficha):
-        print(
-            "\n>>> Chromium está en el Gestor (sin /view/id).\n"
-            "    Entrá a Recetas_Jumbo → la receta (5 bloques al centro).\n"
-            "    Dejá el desplegable en «default». ENTER cuando los veas.\n"
-        )
-    else:
-        print(
-            "\n>>> Chromium está en «Proyectos en JUMBO», no en la receta.\n"
-            "    Entrá otra vez a Recetas_Jumbo → la receta (5 bloques al centro).\n"
-            "    No pulses la paleta izquierda. ENTER cuando la veas.\n"
-        )
-    if headed and sys.stdin.isatty():
-        try:
-            input()
-        except EOFError:
+    """Tras ENTER: exige URL /view-manager/view/{id} + los 5 bloques. No seguir sin eso."""
+    for _intento in range(6):
+        url_ficha = url_actual(page)
+        if url_tiene_vista_receta(url_ficha) and en_vista_default_cms(page):
+            print(f"  · Vista editable OK: …/view/{id_vista_receta(url_ficha)}")
+            print("  · Me quedo en esta URL. No pulso «Volver» del chrome.")
+            return url_ficha
+        if url_tiene_vista_receta(url_ficha):
+            print(
+                "\n>>> La URL es la receta, pero no veo los 5 bloques.\n"
+                "    Dejá el desplegable en «default» y ENTER.\n"
+            )
+        elif gestor_sin_ficha(url_ficha):
+            print(
+                "\n>>> Estás en el Gestor SIN /view/id (vista no editable).\n"
+                "    Abrí la receta Maremoto hasta que la URL tenga\n"
+                "    /view-manager/view/…. NO pulses Volver.\n"
+            )
+        else:
+            print(
+                "\n>>> No estás en la vista editable de la receta.\n"
+                "    Entrá a Recetas_Jumbo → Maremoto (URL con /view/…).\n"
+                "    NO pulses «Volver» ni Proyectos.\n"
+            )
+        if headed and sys.stdin.isatty():
             try:
-                page.wait_for_timeout(8_000)
-            except Exception:
-                pass
+                input()
+            except EOFError:
+                try:
+                    page.wait_for_timeout(8_000)
+                except Exception:
+                    pass
+        else:
+            break
     return url_actual(page)
 
 
 def restaurar_ficha_si_salio(page, url_ficha: str | None) -> bool:
-    """Solo si caímos en Proyectos. Nunca recarga la vista default."""
+    """Si salimos de /view/{id}, volver SOLO a esa ficha (nunca a Proyectos)."""
     if not url_ficha or page is None:
         return False
-    if en_vista_default_cms(page):
-        return False
-    actual = url_actual(page)
-    if not salio_de_la_ficha(actual, url_ficha):
+    if not salio_de_la_ficha(url_actual(page), url_ficha):
         return False
     if not url_tiene_vista_receta(url_ficha):
-        print("  · Estoy en Proyectos. No recargo el Gestor pelado ni salgo de default.")
+        print("  · Salí de la receta y no tengo URL /view/…. Abrila a mano.")
         return False
-    print("  · El navegador salió a Proyectos; vuelvo a la ficha (vista default).")
+    print("  · Me sacaron de la vista editable; vuelvo SOLO a esa receta…")
     try:
         page.goto(url_ficha, wait_until="domcontentloaded", timeout=60_000)
         try:
-            page.wait_for_timeout(400)
+            page.wait_for_timeout(500)
         except Exception:
             pass
-        return True
+        if misma_vista_receta(url_actual(page), url_ficha):
+            print("  · De vuelta en la vista editable.")
+            return True
+        print("  · No pude recuperar la vista. Abrí la receta a mano (sin Volver).")
+        return False
     except Exception as e:
         print(f"  · No pude volver a la ficha: {e}")
         return False
@@ -1666,7 +1699,7 @@ def cerrar_editor_componente(page) -> None:
 JS_VOLVER_AL_LIENZO = """() => {
   const clean = (s) => (s || '').replace(/\\s+/g, ' ').trim();
   const bodyTxt = clean((document.body && document.body.innerText) || '');
-  // Sin «Edición de …» el Volver del chrome sale del CMS (no del lápiz).
+  // Sin «Edición de …» no hay lápiz abierto: NO tocar Volver del chrome.
   if (!/Edici[oó]n de /i.test(bodyTxt)) return false;
   const visibles = (el) => {
     if (!el) return false;
@@ -1679,63 +1712,43 @@ JS_VOLVER_AL_LIENZO = """() => {
     if (/view-manager/i.test(href)) return false;
     return /proyectos/i.test(t) || /\\/cms\\/projects\\/?$/i.test(href);
   };
-  // Nunca «cerrar/close»: en el chrome del BM cierra todo el CMS.
   const esCerrarCms = (el) => {
     const lab = clean(
       el.innerText || el.getAttribute('aria-label') || el.getAttribute('title') || ''
     );
-    return /^(cerrar|close|cerrar sesi[oó]n|logout|salir)$/i.test(lab)
+    return /^(cerrar|close|cerrar sesi[oó]n|logout|salir|volver)$/i.test(lab)
       || /cerrar (ventana|cms|proyecto)|close (window|tab)/i.test(lab);
   };
-  const esVolverEditor = (el) => {
-    if (esProyectos(el) || esCerrarCms(el)) return false;
-    const lab = clean(
-      el.innerText || el.getAttribute('aria-label') || el.getAttribute('title') || ''
-    );
-    if (/publicar|proyectos|cerrar|close/i.test(lab) && !/volver|atrás|atras|back/i.test(lab)) {
-      return false;
-    }
-    return /^(volver|atrás|atras|back)$/i.test(lab)
-      || /volver|atrás|atras|arrow.?back|chevron.?left/i.test(
-        el.getAttribute('aria-label') || el.getAttribute('title') || ''
-      );
-  };
-  const nodos = [...document.querySelectorAll('button, [role="button"], a')].filter(visibles);
-  // Preferir flecha junto a «Edición de …»; el Volver del header saca del CMS.
+  // Solo flecha JUNTO al título «Edición de …». Nunca el Volver del header.
   const titulos = [...document.querySelectorAll('h1,h2,h3,h4,p,div,span')].filter((el) => {
     const linea = clean(el.innerText || '').split('\\n')[0];
     return /^Edici[oó]n de /i.test(linea) && linea.length < 80 && visibles(el);
   });
   titulos.sort((a, b) => a.getBoundingClientRect().height - b.getBoundingClientRect().height);
   const h = titulos[0];
-  if (h) {
-    const hR = h.getBoundingClientRect();
-    const cands = [...document.querySelectorAll('button, [role="button"], a, svg')].filter((el) => {
-      if (!visibles(el)) return false;
-      const wrap = (el.closest && el.closest('a, button, [role="button"]')) || el;
-      if (esProyectos(wrap) || esProyectos(el) || esCerrarCms(wrap) || esCerrarCms(el)) return false;
-      const r = el.getBoundingClientRect();
-      const mid = (r.top + r.bottom) / 2;
-      const midH = (hR.top + hR.bottom) / 2;
-      return r.right <= hR.left + 14 && r.left >= 4 && Math.abs(mid - midH) < 40;
-    });
-    cands.sort((a, b) => b.getBoundingClientRect().right - a.getBoundingClientRect().right);
-    if (cands[0]) {
-      const clickable = (cands[0].closest && cands[0].closest('button, [role="button"], a')) || cands[0];
-      clickable.click();
-      return 'flecha';
-    }
-  }
-  const back = nodos.find(esVolverEditor);
-  if (back) { back.click(); return 'back'; }
-  const crumbs = [...document.querySelectorAll('nav a, [class*="breadcrumb"] a, [class*="Breadcrumb"] a')].filter(visibles);
-  const gestor = crumbs.find((el) => {
-    if (esProyectos(el) || esCerrarCms(el)) return false;
-    const t = clean(el.innerText || '');
-    const href = el.getAttribute('href') || '';
-    return /gestor|view-manager|contenido/i.test(t + ' ' + href);
+  if (!h) return false;
+  const hR = h.getBoundingClientRect();
+  if (hR.top < 70) return false; // título del chrome, no del editor
+  const cands = [...document.querySelectorAll('button, [role="button"], a, svg')].filter((el) => {
+    if (!visibles(el)) return false;
+    const wrap = (el.closest && el.closest('a, button, [role="button"]')) || el;
+    if (esProyectos(wrap) || esProyectos(el) || esCerrarCms(wrap) || esCerrarCms(el)) return false;
+    const lab = clean(
+      wrap.innerText || wrap.getAttribute('aria-label') || wrap.getAttribute('title') || ''
+    );
+    // El link «Volver» del header siempre saca de la receta.
+    if (/^volver$/i.test(lab)) return false;
+    const r = el.getBoundingClientRect();
+    const mid = (r.top + r.bottom) / 2;
+    const midH = (hR.top + hR.bottom) / 2;
+    return r.right <= hR.left + 14 && r.left >= 4 && Math.abs(mid - midH) < 40;
   });
-  if (gestor) { gestor.click(); return 'gestor'; }
+  cands.sort((a, b) => b.getBoundingClientRect().right - a.getBoundingClientRect().right);
+  if (cands[0]) {
+    const clickable = (cands[0].closest && cands[0].closest('button, [role="button"], a')) || cands[0];
+    clickable.click();
+    return 'flecha';
+  }
   return false;
 }"""
 
@@ -2111,61 +2124,45 @@ def esperar_lienzo_bloques(page, intentos: int = 12) -> bool:
 
 
 def _clic_flecha_volver(page) -> bool:
-    """Pulsa la flecha Volver (a menudo un icono sin texto, dentro del iframe)."""
+    """Solo flecha del editor «Edición de …». Nunca el link Volver del chrome."""
+    if editor_actual(page) is None and not re.search(
+        r"edici[oó]n de\s+", texto_cuerpo(page) or "", re.I
+    ):
+        return False
     for fr in _frames_pagina(page):
         try:
             out = fr.evaluate(JS_VOLVER_AL_LIENZO)
         except Exception:
             out = None
-        if out in {"back", "flecha", "gestor"} or out is True:
+        if out in {"flecha", "back"} or out is True:
             return True
-        get_by_role = getattr(fr, "get_by_role", None)
-        if get_by_role:
-            try:
-                loc = get_by_role("button", name=re.compile(r"volver|atrás|atras|back", re.I))
-                if hasattr(loc, "count") and loc.count():
-                    loc.first.click(timeout=2_000)
-                    return True
-            except Exception:
-                pass
-        locator = getattr(fr, "locator", None)
-        if locator:
-            try:
-                loc = locator(
-                    '[aria-label*="volver" i], [title*="volver" i], '
-                    '[aria-label*="atrás" i], [aria-label*="back" i]'
-                )
-                if hasattr(loc, "count") and loc.count():
-                    loc.first.click(timeout=2_000)
-                    return True
-            except Exception:
-                pass
+        # Clic por coordenadas a la izquierda del título Edición (sin buscar «Volver»).
         get_by_text = getattr(fr, "get_by_text", None)
         if get_by_text:
-            try:
-                loc = get_by_text(re.compile(r"^Gestor$", re.I))
-                if hasattr(loc, "count") and loc.count():
-                    loc.first.click(timeout=2_000)
-                    return True
-            except Exception:
-                pass
             try:
                 titulo = get_by_text(re.compile(r"^Edici[oó]n de ", re.I))
                 if hasattr(titulo, "count") and titulo.count():
                     box = titulo.first.bounding_box() if hasattr(titulo.first, "bounding_box") else None
                     mouse = getattr(fr, "mouse", None) or getattr(page, "mouse", None)
                     if box and mouse and hasattr(mouse, "click"):
-                        mouse.click(float(box["x"]) - 28, float(box["y"]) + float(box.get("height") or 20) / 2)
-                        return True
+                        y = float(box["y"]) + float(box.get("height") or 20) / 2
+                        if y > 80:
+                            mouse.click(float(box["x"]) - 28, y)
+                            return True
             except Exception:
                 pass
     return False
 
 
 def volver_al_lienzo(page, url_ficha: str | None = None, *, confirmar_salida: bool = False) -> bool:
-    """Sale del editor (flecha Volver) al lienzo. No toca Proyectos ni la paleta."""
-    if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
+    """Cierra el lápiz y vuelve al lienzo de LA MISMA receta. Nunca Proyectos ni Volver chrome."""
+    if editor_actual(page) is None and misma_vista_receta(url_actual(page), url_ficha):
         return True
+    if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
+        if url_ficha and salio_de_la_ficha(url_actual(page), url_ficha):
+            return restaurar_ficha_si_salio(page, url_ficha)
+        return True
+    url_antes = url_actual(page)
     _clic_flecha_volver(page)
     try:
         page.wait_for_timeout(700)
@@ -2180,22 +2177,25 @@ def volver_al_lienzo(page, url_ficha: str | None = None, *, confirmar_salida: bo
             resolver_modal_cambios(page, salir=True)
     else:
         resolver_modal_cambios(page)
+    # Si el clic salió de /view/{id}, recuperar de inmediato.
+    if url_ficha and salio_de_la_ficha(url_actual(page), url_ficha):
+        print("  · Un Volver sacó de la receta; restauro la vista editable…")
+        restaurar_ficha_si_salio(page, url_ficha)
+        return misma_vista_receta(url_actual(page), url_ficha)
     if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
         print("  · Volví al lienzo (5 bloques)")
         esperar_lienzo_bloques(page)
         return True
-    actual = url_actual(page)
-    # Solo recargar la ficha conocida. Nunca ir a /cms/projects ni al Gestor pelado.
+    # Último recurso: recargar LA MISMA ficha (cierra el lápiz sin ir a Proyectos).
     destino = None
     if url_tiene_vista_receta(url_ficha):
         destino = url_lienzo_receta(url_ficha, url_ficha)
     if not destino or not url_tiene_vista_receta(destino):
-        if es_lista_proyectos_cms(actual):
-            print("  · Caí en Proyectos. No recargo el Gestor; abrí la receta a mano.")
+        print("  · Sigo en el editor y no tengo URL /view/. No pulso Volver del chrome.")
         return False
     if destino and hasattr(page, "goto"):
         try:
-            print("  · Vuelvo al Gestor de la receta…")
+            print("  · Recargo la misma vista editable (sin salir de la receta)…")
             page.goto(destino, wait_until="domcontentloaded", timeout=60_000)
             page.wait_for_timeout(500)
         except TypeError:
@@ -2206,11 +2206,11 @@ def volver_al_lienzo(page, url_ficha: str | None = None, *, confirmar_salida: bo
                 pass
         except Exception:
             pass
-        if editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page)):
+        if editor_actual(page) is None and misma_vista_receta(url_actual(page), url_ficha):
             print("  · Volví al lienzo (5 bloques)")
             esperar_lienzo_bloques(page)
             return True
-    return editor_actual(page) is None and not es_lista_proyectos_cms(url_actual(page))
+    return editor_actual(page) is None and misma_vista_receta(url_actual(page), url_ficha or url_antes)
 
 
 def aviso_modal_descarta() -> None:
@@ -7041,12 +7041,19 @@ def fill_from_receta(
     if es_lista_proyectos_cms(url_ficha):
         print(
             "\nChromium está en «Proyectos en JUMBO», no en la receta.\n"
-            "Abre Recetas_Jumbo → la receta (5 bloques al centro) y reintenta.\n"
-            "Los 5 bloques van al centro (pueden estar vacíos).\n"
-            "No pulses la paleta izquierda.",
+            "Abre Recetas_Jumbo → la receta (URL /view-manager/view/…) y reintenta.\n"
+            "NO pulses «Volver».",
             file=sys.stderr,
         )
         return False
+    if not url_tiene_vista_receta(url_ficha):
+        print(
+            "\nNo hay URL /view-manager/view/…: no es la vista editable.\n"
+            "Abrí Maremoto hasta ver esa URL y los 5 bloques. NO pulses Volver.\n",
+            file=sys.stderr,
+        )
+        return False
+    print(f"  · Anclado a vista {id_vista_receta(url_ficha)} (no salgo con Volver).")
     if avisar_si_salio_de_default(page):
         return False
     if gestor_sin_ficha(url_ficha) or en_vista_default_cms(page):
@@ -7105,6 +7112,8 @@ def fill_from_receta(
         meta = next((c for c in COMPONENTES_CMS if c["clave"] == clave_comp), None)
         lapiz_key = meta["lapiz_key"] if meta else f"lapiz_{clave_comp}"
         print(f"  [CMS] Abriendo componente «{clave_comp}»…")
+        if url_ficha and salio_de_la_ficha(url_actual(page), url_ficha):
+            restaurar_ficha_si_salio(page, url_ficha)
         actual = editor_actual(page)
         if actual is None:
             esperar_lienzo_bloques(page)
@@ -7112,10 +7121,13 @@ def fill_from_receta(
             print(f"  · Bloque «{clave_comp}» ya tiene contenido. No pido el lápiz.")
             return False
         if actual and actual != clave_comp:
-            print(f"  · Sigo en Edición de {actual}; pulso Volver antes de abrir «{clave_comp}».")
+            print(f"  · Sigo en Edición de {actual}; cierro el lápiz (sin Volver del chrome).")
             if not guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True):
                 print(f"  · No salgo de {actual}: no relleno «{clave_comp}» en el header.")
                 return False
+        if url_ficha and salio_de_la_ficha(url_actual(page), url_ficha):
+            restaurar_ficha_si_salio(page, url_ficha)
+            return False
         abierto = abrir_lapiz_componente(page, clave_comp, selectores.get(lapiz_key))
         if restaurar_ficha_si_salio(page, url_ficha):
             abierto = False
