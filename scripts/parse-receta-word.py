@@ -692,7 +692,7 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
     en_tips = False
     encabezado_re = re.compile(
         r"(?i)^(?P<title>tips?|consejos?|trucos?|as[íi]\s+queda\b.*|para\b.*|"
-        r"peque[ñn]os\s+detalles\b.*|consigue\b.*|logra\b.*|"
+        r"peque[ñn][ao]s?\s+\w+.*|consigue\b.*|logra\b.*|"
         r"sorprende\b.*|hazl[ao]s?\b.*)"
         r"\s*(?P<sep>[:\-–])?\s*(?P<resto>.*)$"
     )
@@ -708,7 +708,7 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
                 re.match(r"(?i)^para\b", line)
                 and not _linea_parece_nuevo_paso(line)
             )
-            or re.match(r"(?i)^peque[ñn]os\s+detalles\b", line)
+            or re.match(r"(?i)^peque[ñn][ao]s?\s+\w+", line)
             or re.match(r"(?i)^consigue\b", line)
             or re.match(r"(?i)^logra\b", line)
             or re.match(r"(?i)^sorprende\b", line)
