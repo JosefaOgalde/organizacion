@@ -344,6 +344,38 @@ def reconstruir_texto_pdf(paras: list[tuple[str | None, str]]) -> str:
     return "\n".join(lines).strip() + "\n"
 
 
+def extraer_uris_pdf(data: bytes) -> list[str]:
+    """URLs de anotaciones /URI del PDF Jumbo (a veces no van en el texto ToUnicode)."""
+    vistos: list[str] = []
+    for m in re.finditer(rb"/URI\s*\(([^)]+)\)", data or b""):
+        url = m.group(1).decode("latin-1", errors="replace").strip().rstrip(".,;:\"'")
+        if url.startswith("http") and url not in vistos:
+            vistos.append(url)
+    if not vistos:
+        for m in re.finditer(rb"https?://[^\s\)>\]\(]+", data or b""):
+            url = m.group(0).decode("latin-1", errors="replace").rstrip(".,;:\"'")
+            if url not in vistos:
+                vistos.append(url)
+    return vistos
+
+
+def rellenar_urls_vacias(texto: str, urls: list[str]) -> str:
+    """Completa placeholders «(url:)» vacíos con las URIs del PDF, en orden."""
+    if not texto or not urls:
+        return texto
+    idx = 0
+
+    def _repl(_m: re.Match) -> str:
+        nonlocal idx
+        if idx >= len(urls):
+            return _m.group(0)
+        u = urls[idx]
+        idx += 1
+        return f"(url:{u})"
+
+    return re.sub(r"\(\s*url:\s*\)", _repl, texto, flags=re.I)
+
+
 def texto_desde_pdf(path: Path) -> str:
     """Extrae texto de un PDF Jumbo (ToUnicode + bloques BDC/EMC) sin dependencias."""
     data = path.read_bytes()
@@ -363,19 +395,21 @@ def texto_desde_pdf(path: Path) -> str:
     for decoded in contents:
         paras.extend(_etiquetas_pdf(decoded, cmap))
     if paras:
-        return reconstruir_texto_pdf(paras)
-    chars: list[str] = []
-    for decoded in contents:
-        for h in re.findall(rb"<([0-9A-Fa-f]+)>\s*Tj", decoded):
-            chars.append(cmap.get(int(h, 16), ""))
-    blob = "".join(chars)
-    blob = re.sub(
-        r"(?<!^)(?=(?:Meta t[íi]tulo:|Meta descripci[oó]n:|Texto alt:|Tags:|"
-        r"Ingredientes:|¿C[oó]mo preparar|Foto:|As[íi] queda))",
-        "\n",
-        blob,
-    )
-    return (blob.strip() + "\n") if blob.strip() else ""
+        texto = reconstruir_texto_pdf(paras)
+    else:
+        chars: list[str] = []
+        for decoded in contents:
+            for h in re.findall(rb"<([0-9A-Fa-f]+)>\s*Tj", decoded):
+                chars.append(cmap.get(int(h, 16), ""))
+        blob = "".join(chars)
+        blob = re.sub(
+            r"(?<!^)(?=(?:Meta t[íi]tulo:|Meta descripci[oó]n:|Texto alt:|Tags:|"
+            r"Ingredientes:|¿C[oó]mo preparar|Foto:|As[íi] queda))",
+            "\n",
+            blob,
+        )
+        texto = (blob.strip() + "\n") if blob.strip() else ""
+    return rellenar_urls_vacias(texto, extraer_uris_pdf(data))
 
 
 def slugify(s: str) -> str:
@@ -462,9 +496,15 @@ def extraer_urls(texto: str) -> list[str]:
 
 
 def extraer_enlaces_inline(texto: str) -> list[dict]:
-    """Jumbo: «vino (url:https://…) pipeño» → anclas «vino pipeño» y «vino»."""
+    """Jumbo: «vino (url:…) pipeño» o «yoghurt natural (url:…)» → anclas cortas BM."""
     out: list[dict] = []
+    stop = {
+        "el", "la", "los", "las", "un", "una", "de", "del", "con", "y", "o", "a", "en", "al",
+        "lo", "le", "se", "su", "sus", "mi", "tu", "toda", "todo", "todas", "todos",
+        "bate", "cubre", "agrega", "suma", "mezcla", "vierte", "incorpora",
+    }
     pat = re.compile(
+        r"(?:([A-Za-zÁÉÍÓÚáéíóúÑñüÜ][\wÁÉÍÓÚáéíóúÑñüÜ\-]*)\s+)?"
         r"([A-Za-zÁÉÍÓÚáéíóúÑñüÜ][\wÁÉÍÓÚáéíóúÑñüÜ\-]*)"
         r"\s*\(\s*url:\s*(https?://[^\s)]+)\s*\)\s*"
         r"([^\n.,;:!?]*)",
@@ -472,32 +512,41 @@ def extraer_enlaces_inline(texto: str) -> list[dict]:
     )
     vistos: set[tuple[str, str]] = set()
     for m in pat.finditer(texto or ""):
-        antes = m.group(1)
-        url = m.group(2).rstrip(".,;:\"'")
-        despues = (m.group(3) or "").strip()
-        ancla = antes
+        prev = (m.group(1) or "").strip()
+        palabra = (m.group(2) or "").strip()
+        url = m.group(3).rstrip(".,;:\"'")
+        despues = (m.group(4) or "").strip()
+        if not palabra or not url:
+            continue
+        candidatos: list[str] = []
+        if prev and prev.lower() not in stop:
+            candidatos.append(f"{prev} {palabra}")
+            candidatos.append(prev)
+        candidatos.append(palabra)
         cont = re.match(
             r"^(?:(de\s+[\wÁÉÍÓÚáéíóúÑñüÜ\-]+)|([\wÁÉÍÓÚáéíóúÑñüÜ\-]+))",
             despues,
             re.I,
         )
-        if cont:
+        if cont and not prev:
             cola = (cont.group(1) or cont.group(2) or "").strip()
             if cola:
-                ancla = f"{antes} {cola}".strip()
-        for palabra in (ancla, antes):
-            clave = (palabra.lower(), url)
-            if not palabra or clave in vistos:
+                candidatos.insert(0, f"{palabra} {cola}")
+        for ancla in candidatos:
+            clave = (ancla.lower(), url)
+            if not ancla or clave in vistos:
                 continue
             vistos.add(clave)
-            out.append({"texto": palabra, "url": url})
+            out.append({"texto": ancla, "url": url})
     return out
 
 
 def limpiar_urls_en_texto(texto: str) -> str:
     """Quita '(url: https://…)' del Word/PDF exportado; deja la prosa editorial."""
     s = re.sub(r"\(\s*url:\s*https?://[^\s)]+\s*\)", " ", texto or "", flags=re.I)
+    s = re.sub(r"\(\s*url:\s*\)", " ", s, flags=re.I)
     s = re.sub(r"https?://[^\s)\]>]+", " ", s)
+    s = re.sub(r"\s+([,.;:!?])", r"\1", s)
     return re.sub(r"\s+", " ", s).strip()
 
 
@@ -562,7 +611,8 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
     tips_titulo = ""
     en_tips = False
     encabezado_re = re.compile(
-        r"(?i)^(?P<title>tips?|consejos?|as[íi]\s+queda\b.*|para que queden?\b.*)"
+        r"(?i)^(?P<title>tips?|consejos?|as[íi]\s+queda\b.*|para que queden?\b.*|"
+        r"para (?:un|una)\b.*)"
         r"\s*(?P<sep>[:\-–])?\s*(?P<resto>.*)$"
     )
     for raw in bloque.splitlines():
@@ -574,6 +624,7 @@ def parse_pasos_jumbo(bloque: str) -> tuple[list[dict], list[str], str]:
             re.match(r"(?i)^(tips?|consejos?)\b", line)
             or re.match(r"(?i)^as[íi]\s+queda\b", line)
             or re.match(r"(?i)^para que queden?\b", line)
+            or re.match(r"(?i)^para (?:un|una)\b", line)
         )
         if encabezado and es_seccion_tips:
             en_tips = True

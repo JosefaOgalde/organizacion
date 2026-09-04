@@ -401,6 +401,43 @@ class ParseRecetaWordTests(unittest.TestCase):
         self.assertEqual(receta["tipsTitulo"], "Así queda mucho mejor")
         self.assertEqual(receta["estado"], "listo-para-cargar")
 
+    def test_torta_yogurt_pdf_uris_y_tips(self):
+        fixture = ROOT / "tests/fixtures/crc/Torta-de-yogurt.pdf"
+        if not fixture.exists():
+            self.skipTest("No hay Torta-de-yogurt.pdf de prueba")
+        texto = self.modulo.texto_desde_pdf(fixture)
+        self.assertIn("(url:https://www.jumbo.cl/", texto)
+        self.assertNotIn("(url:)", texto)
+        receta = self.modulo.construir_receta(texto, str(fixture))
+        self.assertEqual(receta["titulo"], "Torta de yogurt")
+        self.assertEqual(receta["preguntaPreparacion"], "¿Cómo preparar torta de yogurt?")
+        self.assertEqual(len(receta["pasos"]), 6)
+        self.assertEqual(receta["tipsTitulo"], "Para una torta que se sostenga bien")
+        self.assertEqual(len(receta["tips"]), 3)
+        self.assertEqual(len(receta["ingredientes"]), 14)
+        # Anclas cortas del PDF (yoghurt / crema / torta)
+        textos_enlace = [
+            e.get("texto")
+            for p in receta["pasos"]
+            for e in (p.get("enlaces") or [])
+        ]
+        self.assertTrue(any(t and t.lower() == "yoghurt" for t in textos_enlace))
+        self.assertTrue(any(t and t.lower() == "crema" for t in textos_enlace))
+        self.assertTrue(any(t and t.lower() == "torta" for t in textos_enlace))
+        self.assertEqual(receta["estado"], "listo-para-cargar")
+
+    def test_rellenar_urls_vacias(self):
+        out = self.modulo.rellenar_urls_vacias(
+            "el yoghurt natural (url:) y la crema (url:)",
+            [
+                "https://www.jumbo.cl/yoghurt",
+                "https://www.jumbo.cl/cremas",
+            ],
+        )
+        self.assertIn("(url:https://www.jumbo.cl/yoghurt)", out)
+        self.assertIn("(url:https://www.jumbo.cl/cremas)", out)
+        self.assertNotIn("(url:)", out)
+
 
 if __name__ == "__main__":
     unittest.main()
