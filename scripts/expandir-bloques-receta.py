@@ -141,8 +141,10 @@ def expandir_bloques(doc: dict, *, fuente: str = "") -> dict:
     porciones = cab.get("porciones")
     tiempo_total = (cab.get("tiempoTotal") or cab.get("tiempo") or "").strip() or None
     dificultad = (cab.get("dificultad") or "").strip().lower() or None
-    if dificultad and dificultad not in DIFICULTADES:
+    if dificultad:
         dificultad = re.sub(r"\s+", " ", dificultad.replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u"))
+        if dificultad not in DIFICULTADES:
+            dificultad = None
     alt = (cab.get("textoAlt") or cab.get("alt") or cab.get("altImagen") or "").strip()
     foto_url = (cab.get("fotoUrl") or cab.get("urlFoto") or "").strip()
 
