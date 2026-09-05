@@ -33,6 +33,16 @@ class TestExpandirBloques(unittest.TestCase):
         with self.assertRaises(ValueError):
             mod.expandir_bloques({"titulo": "Solo titulo"})
 
+    def test_dificultad_desconocida_deja_receta_en_borrador(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["bloques"]["cabecera"]["dificultad"] = "super facil"
+
+        receta = mod.expandir_bloques(doc)
+
+        self.assertIsNone(receta["dificultad"])
+        self.assertIn("dificultad", receta["camposFaltantes"])
+        self.assertEqual(receta["estado"], "borrador")
+
 
 if __name__ == "__main__":
     unittest.main()
