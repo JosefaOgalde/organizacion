@@ -93,6 +93,41 @@ class ParseRecetaWordTests(unittest.TestCase):
             self.assertIn("--force", stderr)
             self.assertIn("No se escribió ningún archivo", stderr)
 
+    def test_segundo_parse_sin_force_preserva_imagen_existente(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            src = root / "inbox" / "receta.docx"
+            src.parent.mkdir()
+            document_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p><w:r><w:t>Título: Receta segura</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Descripción: Una receta de prueba</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Ingredientes:</w:t></w:r></w:p>
+    <w:p><w:r><w:t>1 kg papas</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Pasos:</w:t></w:r></w:p>
+    <w:p><w:r><w:t>1. Cocinar las papas</w:t></w:r></w:p>
+  </w:body>
+</w:document>"""
+            imagen_nueva = b"\x89PNG\r\n\x1a\nimagen-nueva"
+            with zipfile.ZipFile(src, "w") as zf:
+                zf.writestr("word/document.xml", document_xml)
+                zf.writestr("word/media/image1.png", imagen_nueva)
+
+            out_dir = root / "out"
+            out_dir.mkdir()
+            (out_dir / "receta-segura.json").write_text("edición manual", encoding="utf-8")
+            imagen_existente = out_dir / "media" / "receta-segura" / "portada-1.png"
+            imagen_existente.parent.mkdir(parents=True)
+            contenido_original = b"\x89PNG\r\n\x1a\nportada-curada"
+            imagen_existente.write_bytes(contenido_original)
+
+            exit_code, _, stderr = self.ejecutar(root, src)
+
+            self.assertEqual(exit_code, 3)
+            self.assertEqual(imagen_existente.read_bytes(), contenido_original)
+            self.assertIn("No se escribió ningún archivo", stderr)
+
     def test_force_reemplaza_json_y_raw(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
