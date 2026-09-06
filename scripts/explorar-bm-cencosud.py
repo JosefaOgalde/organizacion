@@ -1655,12 +1655,11 @@ def _clic_guardar_editor(page) -> bool:
     return False
 
 
-def cerrar_editor_componente(page) -> None:
-    """Guarda el editor del lápiz. Si aparece el modal, Cancelar (aún no es hora de salir)."""
-    resolver_modal_cambios(page)
-    _clic_guardar_editor(page)
-    resolver_modal_cambios(page)
-    _clic_guardar_editor(page)
+def cerrar_editor_componente(page, url_ficha: str | None = None) -> bool:
+    """Cierra un editor abierto solo para inspección, sin persistir cambios."""
+    if _hay_modal_sin_guardar(page):
+        resolver_modal_cambios(page, salir=False)
+    return volver_al_lienzo(page, url_ficha, confirmar_salida=False)
 
 
 JS_VOLVER_AL_LIENZO = """() => {
@@ -2220,12 +2219,8 @@ def finalizar_editor_tags(page, url_ficha: str | None, tags: list[str]) -> bool:
         return True
     ok = _contar_tags_ok(page, tags)
     if ok < len(tags):
-        if sigue_dato_requerido(page):
-            print(f"  ✗ tags incompletos ({ok}/{len(tags)}) — no guardo")
-            return False
-        print(
-            f"  · Verificación leyó {ok}/{len(tags)} tags; guardo igual (sin «dato requerido» visible)."
-        )
+        print(f"  ✗ tags no verificados ({ok}/{len(tags)}) — no guardo")
+        return False
     asegurar_n_items_tags(page, len(tags))
     aviso_modal_descarta()
     if not guardar_editor_persistente(page):
@@ -2244,7 +2239,28 @@ def finalizar_editor_tags(page, url_ficha: str | None, tags: list[str]) -> bool:
     if bloque_componente_vacio(page, ["tags", "Tags"]) is not False:
         print("  · El bloque tags en el lienzo sigue vacío — abre el lápiz y revisa.")
         return False
+    if not verificar_tags_guardados(page, url_ficha, tags):
+        return False
     print("  ✓ Bloque tags cargado en el lienzo")
+    return True
+
+
+def verificar_tags_guardados(page, url_ficha: str | None, tags: list[str]) -> bool:
+    """Reabre tags y confirma que el BM persistió exactamente los valores esperados."""
+    if not abrir_lapiz_componente(page, "tags"):
+        print("  ✗ No pude reabrir tags para verificar el guardado.")
+        return False
+    try:
+        page.wait_for_timeout(500)
+    except Exception:
+        pass
+    ok = _contar_tags_ok(page, tags)
+    if ok < len(tags):
+        print(f"  ✗ El BM persistió solo {ok}/{len(tags)} tags; dejo el editor abierto.")
+        return False
+    if not volver_al_lienzo(page, url_ficha, confirmar_salida=False):
+        print("  ✗ Tags verificados, pero no pude volver al lienzo.")
+        return False
     return True
 
 
@@ -2471,7 +2487,7 @@ def capturar_cms_por_componentes(page) -> tuple[dict, dict]:
             rel = next((c for c in relist if c["clave"] == clave), None)
             lapices[meta["lapiz_key"]] = (rel or {}).get("lapizSelector") or sel_lapiz
         print(f"  ✓ {clave}: {len(fields)} campos (editables≈{despues})")
-        cerrar_editor_componente(page)
+        cerrar_editor_componente(page, url_ficha)
 
     # Botones globales (Guardar / Publicar) en la vista de lista
     estructura_lista = dump_estructura(page)
@@ -5878,17 +5894,11 @@ def fill_lista_tags(page, tags: list[str]) -> int:
     if verificados >= len(tags):
         limpiar_links_que_no_son_url(page)
         return verificados
-    if n >= len(tags) and not sigue_dato_requerido(page):
-        print(
-            f"  · Tags escritos ({n}/{len(tags)}); verificación leyó {verificados} — confío en escritura."
-        )
-        limpiar_links_que_no_son_url(page)
-        return n
     excluir = r"título de la sección|ingrediente|meta|descripci|link|enlace|url"
-    rep = fill_repetidos_por_label(page, r"^Tag\s*\*?$", tags, excluir=excluir)
+    fill_repetidos_por_label(page, r"^Tag\s*\*?$", tags, excluir=excluir)
     limpiar_links_que_no_son_url(page)
     verificados2 = _contar_tags_ok(page, tags)
-    return max(verificados2, rep, n)
+    return verificados2
 
 
 def fill_inputs_texto_en_orden(page, valores: list[str]) -> int:
@@ -7094,8 +7104,7 @@ def fill_from_receta(
         if actual is None:
             esperar_lienzo_bloques(page)
         if actual is None and bloque_ya_cargado(page, clave_comp):
-            print(f"  · Bloque «{clave_comp}» ya tiene contenido. No pido el lápiz.")
-            return False
+            print(f"  · Bloque «{clave_comp}» ya tiene contenido; lo abro para validarlo.")
         if actual and actual != clave_comp:
             print(f"  · Sigo en Edición de {actual}; pulso Volver antes de abrir «{clave_comp}».")
             if not guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True):
@@ -7211,25 +7220,33 @@ def fill_from_receta(
         print("  · Ya estoy en Lista Ingredientes. Escribo los del Word.")
         ings_abiertos = receta.get("ingredientes") or []
         n_ing_abierto = fill_lista_acordeones(page, ings_abiertos, "ingredientes")
-        if n_ing_abierto:
-            resultados["ingredientes"] = True
+        if n_ing_abierto >= len(ings_abiertos):
             print(f"  ✓ ingredientes: {n_ing_abierto}/{len(ings_abiertos)} ítems")
-            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            if not guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True):
+                print("  ✗ Ingredientes escritos, pero no pude confirmar el guardado.")
+                return False
+            resultados["ingredientes"] = True
         else:
-            print("  · No pude escribir los ingredientes. No pulso Volver ni abro otro bloque.")
+            print(
+                f"  · Ingredientes incompletos ({n_ing_abierto}/{len(ings_abiertos)}). "
+                "No pulso Volver ni abro otro bloque."
+            )
             return False
     if editor_actual(page) == "instrucciones":
         print("  · Ya estoy en Lista de Instrucciones. Escribo los pasos del Word.")
         inst_abiertos = receta.get("pasos") or []
         html_inst = html_pasos(inst_abiertos, receta)
         n_inst_abierto = fill_lista_acordeones(page, inst_abiertos, "instrucciones", receta)
-        if n_inst_abierto:
+        if n_inst_abierto >= len(inst_abiertos):
             resultados["pasos"] = True
             print(f"  ✓ pasos: {n_inst_abierto}/{len(inst_abiertos)} ítems")
             if not finalizar_editor_instrucciones(page, url_ficha, html_inst):
                 return False
         else:
-            print("  · No pude escribir las instrucciones. No pulso Volver ni abro otro bloque.")
+            print(
+                f"  · Instrucciones incompletas ({n_inst_abierto}/{len(inst_abiertos)}). "
+                "No pulso Volver ni abro otro bloque."
+            )
             return False
     if editor_actual(page) == "seo":
         print("  · Ya estoy en SEO HTML. Enciendo HTML + Script y pego las etiquetas.")
@@ -7244,22 +7261,25 @@ def fill_from_receta(
     if editor_actual(page) is None and bloque_ya_cargado(page, "cabecera"):
         titulo = (receta.get("titulo") or "").strip()
         if titulo and abrir_lapiz_componente(page, "cabecera", selectores.get("lapiz_cabecera")):
-            print("  · Cabecera cargada: reviso Título* por si quedó vacío.")
-            if not _titulo_cabecera_ok(page, titulo):
+            print("  · Cabecera cargada: vuelvo a validar Título* y Descripción.")
+            ok_tit = _titulo_cabecera_ok(page, titulo)
+            if not ok_tit:
                 print(f"  · Cabecera: Título* → {titulo}")
                 ok_tit = asegurar_titulo_cabecera(page, titulo)
                 if ok_tit:
                     print(f"  ✓ field_titulo → {titulo}")
-                if not finalizar_editor_cabecera(page, url_ficha, receta, titulo_ok=ok_tit):
-                    return False
-            else:
-                print("  · Título ya está en Cabecera.")
-                volver_al_lienzo(page, url_ficha, confirmar_salida=False)
-            resultados["titulo"] = _titulo_cabecera_ok(page, titulo)
+            ok_desc = fill("field_descripcion", receta.get("descripcion"))
+            if not ok_tit or not ok_desc:
+                print("  ✗ La cabecera existente no coincide con el JSON. No publico.")
+                return False
+            if not finalizar_editor_cabecera(page, url_ficha, receta, titulo_ok=ok_tit):
+                return False
+            resultados["titulo"] = True
             resultados["descripcion"] = True
         else:
-            print("  · Cabecera ya tiene contenido en el lienzo. Sigo con tags e ingredientes.")
-            resultados["descripcion"] = True
+            print("  · Cabecera con contenido, pero no pude abrirla para validarla.")
+            resultados["titulo"] = False
+            resultados["descripcion"] = False
     elif abrir_grupo("cabecera", ["field_titulo", "field_descripcion", "field_dificultad"]):
         titulo = (receta.get("titulo") or "").strip()
         cabecera: dict[str, bool] = {}
@@ -7297,10 +7317,7 @@ def fill_from_receta(
             page, url_ficha, receta, titulo_ok=cabecera.get("field_titulo")
         ):
             print("  · Cabecera incompleta o no pude volver al lienzo. Me detengo aquí.")
-            resultados["titulo"] = cabecera.get("field_titulo", False)
-            resultados["descripcion"] = cabecera.get("field_descripcion", False)
-            llenados = sum(1 for v in resultados.values() if v)
-            return llenados > 0
+            return False
         resultados["titulo"] = cabecera.get("field_titulo", False)
         resultados["descripcion"] = cabecera.get("field_descripcion", False)
     else:
@@ -7326,19 +7343,28 @@ def fill_from_receta(
         page, "ingredientes"
     ):
         n_ing = fill_lista_acordeones(page, ings, "ingredientes")
-        if n_ing:
-            resultados["ingredientes"] = True
+        if n_ing >= len(ings):
             print(f"  ✓ ingredientes: {n_ing}/{len(ings)} ítems de acordeón")
-            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            if not guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True):
+                print("  ✗ Ingredientes escritos, pero no pude confirmar el guardado.")
+                return False
+            resultados["ingredientes"] = True
         elif editor_actual(page) is None and not lienzo_con_bloques_cms(page):
             resultados["ingredientes"] = fill(
                 "field_ingredientes",
                 "\n".join(linea_ingrediente(i) for i in ings if linea_ingrediente(i)),
             )
-            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            if not resultados["ingredientes"] or not guardar_y_volver_al_lienzo(
+                page, url_ficha, forzar_salida=True
+            ):
+                print("  ✗ No pude completar y guardar los ingredientes.")
+                return False
         else:
-            print("  · No pude escribir los ingredientes. No pulso Volver ni abro otro bloque.")
-            return bool(sum(1 for v in resultados.values() if v))
+            print(
+                f"  · Ingredientes incompletos ({n_ing}/{len(ings)}). "
+                "No pulso Volver ni abro otro bloque."
+            )
+            return False
     else:
         resultados.setdefault("ingredientes", False)
 
@@ -7348,17 +7374,24 @@ def fill_from_receta(
     ):
         html_pas = html_pasos(pasos, receta)
         n_pas = fill_lista_acordeones(page, pasos, "instrucciones", receta)
-        if n_pas:
+        if n_pas >= len(pasos):
             resultados["pasos"] = True
             print(f"  ✓ pasos: {n_pas}/{len(pasos)} ítems de acordeón")
             if not finalizar_editor_instrucciones(page, url_ficha, html_pas):
                 return False
         elif editor_actual(page) is None:
             resultados["pasos"] = fill("field_pasos", texto_pasos(pasos))
-            guardar_y_volver_al_lienzo(page, url_ficha, forzar_salida=True)
+            if not resultados["pasos"] or not guardar_y_volver_al_lienzo(
+                page, url_ficha, forzar_salida=True
+            ):
+                print("  ✗ No pude completar y guardar las instrucciones.")
+                return False
         else:
-            print("  · No pude escribir las instrucciones. No pulso Volver ni abro otro bloque.")
-            return bool(sum(1 for v in resultados.values() if v))
+            print(
+                f"  · Instrucciones incompletas ({n_pas}/{len(pasos)}). "
+                "No pulso Volver ni abro otro bloque."
+            )
+            return False
     else:
         resultados.setdefault("pasos", False)
 
@@ -7370,7 +7403,7 @@ def fill_from_receta(
                 return False
         else:
             print("  · No pude escribir SEO HTML. No pulso Volver ni abro otro bloque.")
-            return bool(sum(1 for v in resultados.values() if v))
+            return False
     else:
         resultados.setdefault("seo", False)
 
