@@ -2226,7 +2226,6 @@ def finalizar_editor_tags(page, url_ficha: str | None, tags: list[str]) -> bool:
         print(
             f"  · Verificación leyó {ok}/{len(tags)} tags; guardo igual (sin «dato requerido» visible)."
         )
-    asegurar_n_items_tags(page, len(tags))
     aviso_modal_descarta()
     if not guardar_editor_persistente(page):
         print("  ! No apareció «guardado satisfactoriamente». Pulsa Guardar a mano y reintenta.")

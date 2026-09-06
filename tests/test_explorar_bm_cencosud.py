@@ -989,6 +989,38 @@ class ExplorarBmTests(unittest.TestCase):
             self.modulo.limpiar_links_que_no_son_url = orig_limpiar
             self.modulo.sigue_dato_requerido = orig_sigue
 
+    def test_finalizar_tags_no_borra_fila_rellena_si_conteo_dom_esta_inflado(self):
+        tags = ["salmon", "paltas", "almuerzo"]
+        filas_rellenadas = list(tags)
+        conteos = iter([4, 2])
+
+        class FrameConBorrado:
+            def evaluate(self, script, *_args):
+                if script == self_modulo.JS_BORRAR_ULTIMO_ITEM:
+                    filas_rellenadas.pop()
+                    return True
+                return False
+
+        class Pagina:
+            frames = [FrameConBorrado()]
+
+            def wait_for_timeout(self, _ms):
+                return None
+
+        self_modulo = self.modulo
+        with (
+            patch.object(self.modulo, "_contar_tags_ok", return_value=len(tags)),
+            patch.object(self.modulo, "_contar_items_formulario", side_effect=lambda _p: next(conteos)),
+            patch.object(self.modulo, "guardar_editor_persistente", return_value=True),
+            patch.object(self.modulo, "_hay_modal_sin_guardar", return_value=False),
+            patch.object(self.modulo, "volver_al_lienzo"),
+            patch.object(self.modulo, "bloque_componente_vacio", return_value=False),
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            self.assertTrue(self.modulo.finalizar_editor_tags(Pagina(), None, tags))
+
+        self.assertEqual(filas_rellenadas, tags)
+
     def test_rellena_tag_del_item_abierto_no_siempre_el_primero(self):
         src = inspect.getsource(self.modulo.rellenar_items_formulario)
         self.assertIn("escribir_tag_entre_labels(page, i, valor)", src)

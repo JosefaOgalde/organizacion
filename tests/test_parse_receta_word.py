@@ -171,6 +171,7 @@ class ParseRecetaWordTests(unittest.TestCase):
         receta = self.modulo.construir_receta_jumbo(lines, texto, "inbox/salmon.docx")
         self.assertEqual(receta["titulo"], "Salmón a la parrilla con salsa de palta")
         self.assertTrue(receta["descripcion"].startswith("Prepara salmón"))
+        self.assertEqual(receta["seo"]["metaDescripcion"], receta["descripcion"])
         limon = next(i for i in receta["ingredientes"] if "lim" in (i["nombre"] or "").lower())
         self.assertEqual(limon["nombre"], "limón")
         self.assertIsNone(limon["unidad"])
@@ -198,6 +199,47 @@ class ParseRecetaWordTests(unittest.TestCase):
                 "almuerzo",
             ],
         )
+
+    def test_jumbo_separa_meta_descripcion_de_bajada_editorial_al_ejecutar_parser(self):
+        texto = (
+            "Meta título:\n"
+            "Papas doradas | Recetas Jumbo\n"
+            "Meta descripción:\n"
+            "Texto breve para buscadores.\n"
+            "Descripción:\n"
+            "Bajada editorial completa para presentar la receta.\n"
+            "Papas doradas\n"
+            "35 min | Fácil | 4 porciones\n"
+            "Tags: Cena\n"
+            "Ingredientes:\n"
+            "1 kg papas\n"
+            "Paso a paso:\n"
+            "Cocinar las papas.\n"
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            src = root / "inbox" / "papas.docx"
+            src.parent.mkdir()
+            document_xml = (
+                '<?xml version="1.0" encoding="UTF-8"?>'
+                '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+                "<w:body>"
+                + "".join(f"<w:p><w:r><w:t>{line}</w:t></w:r></w:p>" for line in texto.splitlines())
+                + "</w:body></w:document>"
+            )
+            with zipfile.ZipFile(src, "w") as zf:
+                zf.writestr("word/document.xml", document_xml)
+
+            with patch.object(self.modulo, "adjuntar_foto_portada"):
+                exit_code, _, stderr = self.ejecutar(root, src)
+            receta = json.loads((root / "out" / "papas-doradas.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(exit_code, 0, stderr)
+        self.assertEqual(
+            receta["descripcion"],
+            "Bajada editorial completa para presentar la receta.",
+        )
+        self.assertEqual(receta["seo"]["metaDescripcion"], "Texto breve para buscadores.")
 
     def test_extrae_png_aunque_el_word_la_guarde_como_bin(self):
         png = b"\x89PNG\r\n\x1a\n" + b"\x00" * 16

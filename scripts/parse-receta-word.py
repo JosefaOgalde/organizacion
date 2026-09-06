@@ -291,11 +291,12 @@ def es_formato_jumbo(lines: list[str]) -> bool:
 
 def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
     meta_titulo = valor_despues_label(lines, ["meta título", "meta titulo"])
-    # Jumbo a veces escribe solo "descripción:" (sin prefijo meta).
     meta_desc = valor_despues_label(
         lines,
-        ["meta descripción", "meta descripcion", "descripción", "descripcion"],
+        ["meta descripción", "meta descripcion"],
     )
+    # Jumbo puede traer una bajada editorial distinta o solo uno de ambos campos.
+    desc_editorial = valor_despues_label(lines, ["descripción", "descripcion"])
 
     # Título editorial: primera línea que no sea meta/foto/tags/barra
     titulo = None
@@ -345,7 +346,7 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
     if not titulo and meta_titulo:
         titulo = re.sub(r"\s*\|\s*Recetas Jumbo\s*$", "", meta_titulo, flags=re.I).strip()
 
-    desc = meta_desc or ""
+    desc = desc_editorial or meta_desc or ""
     alt = valor_despues_label(lines, ["texto alt"]) or meta_linea(texto, ["texto alt", "alt"])
 
     barra = parse_barra_info(texto)
