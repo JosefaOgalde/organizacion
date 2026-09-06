@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GMO Home · mock motion (estructura real + dinámica MOVA)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --verde: #93C64A;
+      --verde-bar: #a8d45a;
+      --verde-card: #9fd24f;
+      --ink: #1a1f1c;
+      --muted: #5a6b5e;
+      --beige: #ebe6d4;
+      --soft: #f3f8ec;
+      --header: #eef6e2;
+      --dark: #1e3a2a;
+      --white: #fff;
+      --line: #dde6d6;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Instrument Sans", sans-serif;
+      color: var(--ink);
+      background: var(--white);
+      line-height: 1.45;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* Header = estructura GMO */
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: var(--header);
+    }
+    .logo {
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      font-size: 1.15rem;
+      text-transform: uppercase;
+    }
+    .logo span { letter-spacing: -0.08em; }
+    .nav {
+      display: flex;
+      gap: 28px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .nav a:hover { color: var(--verde); }
+    .bar {
+      background: var(--verde-bar);
+      color: #fff;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 8px 48px;
+    }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      align-items: center;
+      padding: 48px 48px 56px;
+      position: relative;
+      min-height: 420px;
+    }
+    .plexus-wrap {
+      position: relative;
+      height: 340px;
+      border-radius: 8px;
+    }
+    #plexus {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+      padding-left: 8px;
+    }
+    .blob {
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      right: -40px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: radial-gradient(circle, rgba(147,198,74,0.45) 0%, rgba(147,198,74,0.12) 42%, transparent 70%);
+      animation: breathe 7s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: translateY(-50%) scale(1); opacity: 0.9; }
+      50% { transform: translateY(-52%) scale(1.08); opacity: 1; }
+    }
+    .hero h1 {
+      position: relative;
+      margin: 0;
+      font-size: clamp(2rem, 3.8vw, 3rem);
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+      max-width: 11em;
+      animation: rise 0.9s ease both;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateX(24px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .float-dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--verde);
+      box-shadow: 0 0 0 6px rgba(147,198,74,0.2);
+      animation: bob 4.5s ease-in-out infinite;
+    }
+    .float-dot.d1 { top: 18%; left: 8%; animation-delay: 0s; }
+    .float-dot.d2 { top: 62%; left: 42%; animation-delay: 1.2s; width: 7px; height: 7px; }
+    .float-dot.d3 { top: 28%; right: 12%; animation-delay: 0.6s; width: 8px; height: 8px; }
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 48px 48px; }
+
+    .about {
+      background: var(--beige);
+      border-radius: 10px;
+      padding: 28px 32px;
+      color: #2a322a;
+      font-size: 1.02rem;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .about.in { opacity: 1; transform: none; }
+    .about strong { font-weight: 700; }
+
+    .pillars-head {
+      display: inline-block;
+      margin: 40px 0 18px;
+      background: #cfe8c4;
+      color: #1e3a2a;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: 0.6s ease;
+    }
+    .pillars-head.in { opacity: 1; transform: none; }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+    }
+    .pillar {
+      background: var(--verde-card);
+      border-radius: 14px;
+      min-height: 150px;
+      padding: 22px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.05rem;
+      box-shadow: 0 10px 24px rgba(111,163,46,0.18);
+      opacity: 0;
+      transform: translateY(28px) scale(0.96);
+      transition: opacity 0.55s ease, transform 0.55s ease, box-shadow 0.2s;
+    }
+    .pillar.in { opacity: 1; transform: none; }
+    .pillar:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 16px 32px rgba(111,163,46,0.28);
+    }
+    .pillar svg { width: 48px; height: 48px; stroke: #fff; fill: none; stroke-width: 1.6; }
+    .pillar:nth-child(1) { transition-delay: 0.05s; }
+    .pillar:nth-child(2) { transition-delay: 0.12s; }
+    .pillar:nth-child(3) { transition-delay: 0.19s; }
+    .pillar:nth-child(4) { transition-delay: 0.26s; }
+    .pillar:nth-child(5) { transition-delay: 0.33s; }
+
+    .exp {
+      margin: 48px -48px 0;
+      background: var(--dark);
+      color: #fff;
+      padding: 36px 48px;
+      font-size: 1.15rem;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: 0.7s ease;
+    }
+    .exp.in { opacity: 1; transform: none; }
+    .exp em { color: var(--verde); font-style: normal; font-weight: 700; }
+
+    .tools { padding: 48px 0 24px; }
+    .tools h2 { margin: 0 0 20px; font-size: 1.35rem; }
+    .marquee {
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    }
+    .marquee-track {
+      display: flex;
+      gap: 36px;
+      width: max-content;
+      animation: scroll 28s linear infinite;
+      align-items: center;
+    }
+    .marquee-track span {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: var(--soft);
+      white-space: nowrap;
+    }
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .svc-sec { padding: 24px 0 56px; }
+    .svc-sec h2 {
+      text-align: center;
+      letter-spacing: 0.08em;
+      font-size: 1.1rem;
+      margin: 0 0 18px;
+    }
+    .svc-intro {
+      background: var(--beige);
+      border-radius: 10px;
+      padding: 22px 28px;
+      margin-bottom: 22px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: 0.7s ease;
+    }
+    .svc-intro.in { opacity: 1; transform: none; }
+    .bento {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 14px;
+    }
+    .bento a {
+      background: var(--verde-card);
+      border-radius: 16px;
+      padding: 22px;
+      color: #163018;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.55s ease, transform 0.55s ease, box-shadow 0.2s;
+      box-shadow: 0 8px 20px rgba(111,163,46,0.15);
+    }
+    .bento a.in { opacity: 1; transform: none; }
+    .bento a:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 30px rgba(111,163,46,0.28);
+    }
+    .bento .tall { grid-row: span 2; min-height: 300px; }
+    .bento .wide { grid-column: span 2; }
+    .bento h3 { margin: 0; font-size: 1.2rem; }
+    .bento p { margin: 8px 0 0; font-size: 0.92rem; opacity: 0.85; }
+    .ico {
+      width: 42px; height: 42px;
+      border: 1.5px solid rgba(255,255,255,0.7);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .note {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+      padding: 0 48px 40px;
+    }
+
+    @media (max-width: 900px) {
+      .top, .bar, .hero, .wrap, .note, .exp { padding-left: 22px; padding-right: 22px; }
+      .hero { grid-template-columns: 1fr; }
+      .pillars { grid-template-columns: 1fr 1fr; }
+      .bento { grid-template-columns: 1fr; }
+      .bento .tall, .bento .wide { grid-row: auto; grid-column: auto; min-height: 140px; }
+      .nav { gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .blob, .float-dot, .marquee-track, .hero h1 { animation: none; }
+      .about, .pillars-head, .pillar, .exp, .svc-intro, .bento a {
+        opacity: 1; transform: none; transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <a class="logo" href="mock-gmo-mova.html">GRUPO <span>M</span>AKING OF</a>
+    <nav class="nav">
+      <a href="mock-gmo-mova.html#servicios">Servicios ▾</a>
+      <a href="sobre-nosotros.html">Sobre nosotros</a>
+      <a href="contactanos.html">Contáctanos</a>
+      <a href="blog.html">Blog</a>
+    </nav>
+  </header>
+  <div class="bar">Inicio</div>
+
+  <section class="hero">
+    <div class="plexus-wrap">
+      <canvas id="plexus" aria-hidden="true"></canvas>
+      <span class="float-dot d1"></span>
+      <span class="float-dot d2"></span>
+    </div>
+    <div class="hero-copy">
+      <div class="blob"></div>
+      <span class="float-dot d3"></span>
+      <h1>MAKING OF, your next business partner</h1>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <p class="about reveal">Somos una empresa de <strong>marketing digital</strong> cuyo foco es ser un <strong>partner estratégico</strong> permanente para nuestros clientes, entendiendo sus necesidades y desafíos, adaptándonos continuamente para desarrollar, entregar e implementar soluciones adecuadas a la evolución de sus clientes y el mercado, agregando así <strong>valor medible</strong> a la marca.</p>
+
+    <div class="pillars-head reveal">Te acompañamos en:</div>
+    <div class="pillars">
+      <div class="pillar reveal">
+        <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="10"/><path d="M24 8v4M24 36v4M8 24h4M36 24h4M12 12l3 3M33 33l3 3M12 36l3-3M33 15l3-3"/></svg>
+        Definir
+      </div>
+      <div class="pillar reveal">
+        <svg viewBox="0 0 48 48"><path d="M14 30c6-14 14-14 20 0"/><path d="M28 18l6-8 2 8 8 2-8 2-2 8-6-8-8-2z"/></svg>
+        Crear
+      </div>
+      <div class="pillar reveal">
+        <svg viewBox="0 0 48 48"><path d="M24 24l14-6A16 16 0 1 1 24 8z"/><path d="M24 24l10 12"/></svg>
+        Analizar
+      </div>
+      <div class="pillar reveal">
+        <svg viewBox="0 0 48 48"><rect x="10" y="12" width="28" height="20" rx="2"/><path d="M16 36h16M24 32v4"/><circle cx="20" cy="22" r="3"/><path d="M28 18v8"/></svg>
+        Posicionar
+      </div>
+      <div class="pillar reveal">
+        <svg viewBox="0 0 48 48"><rect x="14" y="10" width="20" height="28" rx="2"/><path d="M18 18h12M18 24h12M18 30h8"/></svg>
+        Identificar
+      </div>
+    </div>
+  </div>
+
+  <div class="exp reveal">Contamos con <em>11 años de experiencia</em> en la evolución del marketing digital, con un completo y dedicado equipo profesional, en Chile y en el extranjero.</div>
+
+  <div class="wrap">
+    <section class="tools">
+      <h2>Herramientas y certificaciones</h2>
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <span>ChatGPT 4o</span><span>Looker Studio</span><span>Metricool</span><span>Ahrefs</span><span>GA4</span><span>Semrush</span><span>Screaming Frog</span><span>Asana</span><span>Ranktank</span><span>Google Trends</span>
+          <span>ChatGPT 4o</span><span>Looker Studio</span><span>Metricool</span><span>Ahrefs</span><span>GA4</span><span>Semrush</span><span>Screaming Frog</span><span>Asana</span><span>Ranktank</span><span>Google Trends</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="svc-sec" id="servicios">
+      <h2>SERVICIOS</h2>
+      <p class="svc-intro reveal">Nos enfocamos en un servicio 360°, con desarrollo e implementación de estrategias digitales, análisis y gestión de datos e IA, medios y contenidos, tecnología y creatividad.</p>
+      <div class="bento">
+        <a class="tall reveal" href="estrategia.html">
+          <span class="ico">♟</span>
+          <div>
+            <h3>Estrategia</h3>
+            <p>Transformamos datos y tendencias en la hoja de ruta para el crecimiento de tu negocio.</p>
+          </div>
+        </a>
+        <a class="wide reveal" href="seo-geo.html">
+          <span class="ico">⌕</span>
+          <div>
+            <h3>Posicionamiento SEO</h3>
+            <p>Construimos la autoridad de tu marca para que tus clientes te encuentren de forma orgánica y sostenible.</p>
+          </div>
+        </a>
+        <a class="reveal" href="productos-digitales.html">
+          <span class="ico">✎</span>
+          <div>
+            <h3>Productos digitales</h3>
+            <p>Medios pagados y audiencia correcta.</p>
+          </div>
+        </a>
+        <a class="reveal" href="creatividad-diseno.html">
+          <span class="ico">◇</span>
+          <div>
+            <h3>Creatividad y diseño</h3>
+            <p>Experiencias que impactan y conectan.</p>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <p class="note">Mock motion · misma estructura/copy GMO · dinámica tipo MOVA (plexus vivo, reveal al scroll, marquee, hover). Concept estático: evidencia/gmo-home-mova-motion-concept.png</p>
+
+  <script>
+    /* Plexus animado (dos perfiles) — movimiento continuo tipo widget MOVA */
+    (function () {
+      const canvas = document.getElementById('plexus');
+      const ctx = canvas.getContext('2d');
+      let w, h, nodes = [], raf;
+
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        w = canvas.width = Math.floor(rect.width * devicePixelRatio);
+        h = canvas.height = Math.floor(rect.height * devicePixelRatio);
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+        ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+        build();
+      }
+
+      function profilePoints(cx, facing) {
+        const pts = [];
+        const R = Math.min(w, h) / devicePixelRatio * 0.38;
+        for (let i = 0; i < 42; i++) {
+          const t = i / 41;
+          const ang = facing > 0
+            ? (-Math.PI * 0.55 + t * Math.PI * 1.15)
+            : (Math.PI * 0.55 - t * Math.PI * 1.15);
+          const nose = Math.sin(t * Math.PI) * 0.18 * R * facing;
+          const r = R * (0.72 + 0.18 * Math.sin(t * Math.PI));
+          pts.push({
+            bx: cx + Math.cos(ang) * r + nose,
+            by: h / devicePixelRatio * 0.52 + Math.sin(ang) * r * 1.15,
+            ox: (Math.random() - 0.5) * 10,
+            oy: (Math.random() - 0.5) * 10,
+            ph: Math.random() * Math.PI * 2,
+            sp: 0.4 + Math.random() * 0.8
+          });
+        }
+        /* interior fill */
+        for (let i = 0; i < 28; i++) {
+          const a = Math.random() * Math.PI * 2;
+          const rr = Math.random() * R * 0.55;
+          pts.push({
+            bx: cx + Math.cos(a) * rr * facing * 0.35 + Math.cos(a) * rr,
+            by: h / devicePixelRatio * 0.5 + Math.sin(a) * rr,
+            ox: (Math.random() - 0.5) * 14,
+            oy: (Math.random() - 0.5) * 14,
+            ph: Math.random() * Math.PI * 2,
+            sp: 0.5 + Math.random() * 1.1
+          });
+        }
+        return pts;
+      }
+
+      function build() {
+        const cw = w / devicePixelRatio;
+        nodes = profilePoints(cw * 0.32, 1).concat(profilePoints(cw * 0.68, -1));
+      }
+
+      function draw(t) {
+        const cw = w / devicePixelRatio;
+        const ch = h / devicePixelRatio;
+        ctx.clearRect(0, 0, cw, ch);
+        const time = t * 0.001;
+        const pts = nodes.map(n => ({
+          x: n.bx + Math.sin(time * n.sp + n.ph) * 5 + n.ox * 0.15,
+          y: n.by + Math.cos(time * n.sp * 0.9 + n.ph) * 5 + n.oy * 0.15
+        }));
+
+        for (let i = 0; i < pts.length; i++) {
+          for (let j = i + 1; j < pts.length; j++) {
+            const dx = pts[i].x - pts[j].x;
+            const dy = pts[i].y - pts[j].y;
+            const d = Math.hypot(dx, dy);
+            if (d < 58) {
+              ctx.strokeStyle = `rgba(30,58,42,${(1 - d / 58) * 0.45})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(pts[i].x, pts[i].y);
+              ctx.lineTo(pts[j].x, pts[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+        pts.forEach((p, i) => {
+          const pulse = 1.6 + Math.sin(time * 2 + i) * 0.5;
+          ctx.fillStyle = i % 7 === 0 ? '#93C64A' : '#1e3a2a';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, pulse, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        raf = requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      raf = requestAnimationFrame(draw);
+    })();
+
+    /* Reveal al scroll */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>
