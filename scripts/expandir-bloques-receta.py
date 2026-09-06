@@ -71,7 +71,7 @@ def _lista_tags(tags_bloque) -> list[str]:
     return []
 
 
-def _lista_ingredientes(ing_bloque) -> list[dict]:
+def _lista_ingredientes(ing_bloque) -> tuple[list[dict], set[str]]:
     if isinstance(ing_bloque, list):
         items = ing_bloque
     elif isinstance(ing_bloque, dict):
@@ -79,13 +79,19 @@ def _lista_ingredientes(ing_bloque) -> list[dict]:
     else:
         items = []
     out: list[dict] = []
+    errores: set[str] = set()
+    if not isinstance(items, list):
+        return out, {"ingredientes.nombre"}
     for item in items:
         if isinstance(item, str):
             nombre = item.strip()
             if nombre:
                 out.append({"nombre": nombre, "cantidad": None, "unidad": None, "skuCencosud": None, "notas": None})
+            else:
+                errores.add("ingredientes.nombre")
         elif isinstance(item, dict):
-            nombre = (item.get("nombre") or item.get("linea") or "").strip()
+            nombre_raw = item.get("nombre") or item.get("linea") or ""
+            nombre = nombre_raw.strip() if isinstance(nombre_raw, str) else ""
             if nombre:
                 out.append(
                     {
@@ -96,10 +102,14 @@ def _lista_ingredientes(ing_bloque) -> list[dict]:
                         "notas": item.get("notas"),
                     }
                 )
-    return out
+            else:
+                errores.add("ingredientes.nombre")
+        else:
+            errores.add("ingredientes.nombre")
+    return out, errores
 
 
-def _lista_pasos(inst_bloque) -> tuple[list[dict], str]:
+def _lista_pasos(inst_bloque) -> tuple[list[dict], str, set[str]]:
     pregunta = ""
     raw_pasos: list = []
     if isinstance(inst_bloque, dict):
@@ -108,17 +118,27 @@ def _lista_pasos(inst_bloque) -> tuple[list[dict], str]:
     elif isinstance(inst_bloque, list):
         raw_pasos = inst_bloque
     pasos: list[dict] = []
+    errores: set[str] = set()
+    if not isinstance(raw_pasos, list):
+        return pasos, pregunta, {"pasos.texto"}
     for i, item in enumerate(raw_pasos, 1):
         if isinstance(item, str):
             texto = item.strip()
             if texto:
                 pasos.append({"orden": i, "texto": texto})
+            else:
+                errores.add("pasos.texto")
         elif isinstance(item, dict):
-            texto = (item.get("texto") or item.get("descripcion") or "").strip()
+            texto_raw = item.get("texto") or item.get("descripcion") or ""
+            texto = texto_raw.strip() if isinstance(texto_raw, str) else ""
             if texto:
                 orden = item.get("orden") or i
                 pasos.append({"orden": int(orden), "texto": texto})
-    return pasos, pregunta
+            else:
+                errores.add("pasos.texto")
+        else:
+            errores.add("pasos.texto")
+    return pasos, pregunta, errores
 
 
 def _lista_consejos(seo_bloque: dict) -> tuple[str, list[str]]:
@@ -147,8 +167,8 @@ def expandir_bloques(doc: dict, *, fuente: str = "") -> dict:
     foto_url = (cab.get("fotoUrl") or cab.get("urlFoto") or "").strip()
 
     categorias = _lista_tags(bloques.get("tags"))
-    ingredientes = _lista_ingredientes(bloques.get("ingredientes"))
-    pasos, pregunta = _lista_pasos(bloques.get("instrucciones"))
+    ingredientes, errores_ingredientes = _lista_ingredientes(bloques.get("ingredientes"))
+    pasos, pregunta, errores_pasos = _lista_pasos(bloques.get("instrucciones"))
     tips_titulo, tips = _lista_consejos(seo_b)
 
     meta_titulo = (seo_b.get("metaTitulo") or titulo or "").strip()
@@ -176,6 +196,7 @@ def expandir_bloques(doc: dict, *, fuente: str = "") -> dict:
         faltantes.append("categorias")
     if any(i.get("skuCencosud") is None for i in ingredientes):
         faltantes.append("ingredientes.skuCencosud")
+    faltantes.extend(sorted(errores_ingredientes | errores_pasos))
 
     faltantes_bloqueantes = [f for f in faltantes if f != "ingredientes.skuCencosud"]
     estado = "listo-para-cargar" if not faltantes_bloqueantes else "borrador"
