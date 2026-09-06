@@ -1,5 +1,54 @@
 # Historial de portadas Midjourney (solo fondo)
 
+## NL 1 ago — Imagen 3 v2 (2026-07-22) · más notoria
+
+- Texto Canva: «Cuando los sistemas no conversan entre sí, las decisiones llegan tarde y la operación pierde agilidad.»
+- Señal visual: islas + cable cortado · decisor congelado · flujo detenido · alerta tarde
+- Archivo: [portadas-guardadas/NL1-ago-imagen-3-sistemas-no-conversan-v2.md](./portadas-guardadas/NL1-ago-imagen-3-sistemas-no-conversan-v2.md)
+
+### Imagen 3 v2
+
+```
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: extreme low-horizon composition — the upper 70 percent of the frame is only a vast empty unmarked soft cream-to-pale-teal flat sky block with gentle mist, completely clear, reserved for later text overlay. Bottom 30 percent only, very readable visual story in three beats: LEFT island — one tall blank glowing screen alone; RIGHT island — another blank glowing screen alone, wide empty gap between them; a broken warm-orange data cable or snapped light filament hangs in the gap so the two systems clearly do not talk; CENTER-BOTTOM a stylized faceless decision-maker frozen mid-choice looking back and forth between the isolated screens; FAR RIGHT a short teal operational conveyor or path completely stalled with faceless workers stopped mid-stride; behind everyone a soft orange alert pulse appears too late, lagging behind the frozen action; sparse, high-contrast, no clutter, thematic mood: when systems do not converse decisions arrive late and the operation loses agility — disconnection delay and stalled work must be obvious at a glance, critical ANTITEXT: zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero clocks with digits, zero UI labels; screens are blank unlabeled shapes only; upper sky remains completely empty and clear for text
+```
+
+## NL 1 ago — Imagen 3 actualizada (2026-07-22)
+
+- Artículo: **Tecnología sin integración**
+- Texto Canva (no MJ): «Cuando los sistemas no conversan entre sí, las decisiones llegan tarde y la operación pierde agilidad.»
+- Archivo: [portadas-guardadas/NL1-ago-imagen-3-sistemas-no-conversan.md](./portadas-guardadas/NL1-ago-imagen-3-sistemas-no-conversan.md)
+
+### Imagen 3 · Sistemas desconectados (~70% cielo)
+
+```
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: extreme low-horizon composition — the upper 70 percent of the frame is only a vast empty unmarked soft cream-to-pale-teal flat sky block with gentle mist, completely clear, reserved for later text overlay. Bottom 30 percent only: a sparse clear scene showing disconnected systems — two or three unlabeled glowing screens or app panels standing apart with a visible gap between them, no connecting light thread crossing the gap, broken or missing amber link; a stylized faceless operator looks between them with delayed posture while a short teal operational path ahead stalls or moves slowly; one soft orange alert glow arrives late behind the action; uncluttered, minimal props, thematic mood: when systems do not talk to each other decisions arrive late and the operation loses agility — isolation instead of integration, critical ANTITEXT: zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero UI labels; screens are blank unlabeled shapes only; upper sky remains completely empty and clear for text
+```
+
+## NL 1 ago — Prompt 5 (2026-07-22)
+
+- Artículo: **Tecnología sin integración**
+- Texto Canva (no MJ): «Cuando la tecnología impulsa la operación, los resultados cambian.»
+- Pedido: menos elementos; ilustración asociada a ese mensaje
+- Archivo: [portadas-guardadas/NL1-ago-prompt-5-tecnologia-impulsa-operacion.md](./portadas-guardadas/NL1-ago-prompt-5-tecnologia-impulsa-operacion.md)
+
+### Prompt 5 · Tech impulsa operación (escena simple · ~70% cielo)
+
+```
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: extreme low-horizon composition — the upper 70 percent of the frame is only a vast empty unmarked soft cream-to-pale-teal flat sky block with gentle mist, completely clear, reserved for later text overlay. Bottom 30 percent only: one simple scene — a blank glowing tablet or screen on the left sends a single continuous warm-orange light ribbon into a clean teal operational path on the right where one or two stylized faceless workers move forward with purpose; the orange ribbon is the clear force pushing the operation ahead; sparse, uncluttered, generous empty space, no crowd of panels, no racks, no vans, no dashboards floating everywhere, thematic mood: when technology drives the operation, results change — one signal powering real work, critical ANTITEXT: zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero UI labels; screens and devices are blank unlabeled shapes only; upper sky remains completely empty and clear for text
+```
+
+## NL 1 ago — Imagen 4 actualizada (2026-07-22)
+
+- Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
+- Pedido: imagen 4 = **conexión de personas, procesos y tecnología**
+- Archivo: [portadas-guardadas/NL1-ago-imagen-4-personas-procesos-tecnologia.md](./portadas-guardadas/NL1-ago-imagen-4-personas-procesos-tecnologia.md)
+
+### Imagen 4 · Personas + procesos + tecnología (~70% cielo)
+
+```
+Pure editorial flat-vector BACKGROUND ILLUSTRATION ONLY, glyphless and anepigraphic, modern corporate illustration with depth, stylized faceless characters, clean geometric shapes, warm orange and amber accents with deep teal and navy, large empty unmarked negative space as blank sky or solid color block, polished professional composition, wide landscape, scene: extreme low-horizon composition — the upper 70 percent of the frame is only a vast empty unmarked soft cream-to-pale-teal flat sky block with gentle mist, completely clear of figures panels screens glow and objects, reserved for later text overlay. All meaning compressed into the bottom 30 percent near the lower edge. In that lower strip only: three connected hubs forming one continuous system — left: a small group of stylized faceless people collaborating (people); center: an abstract unbroken process flow of teal geometric stations linked like a workflow loop with warm-orange arrows of motion (processes); right: unlabeled glowing digital panels devices and soft amber data threads (technology). Thin continuous amber-orange light filaments weave the three hubs together so people processes and technology visibly connect as one integrated operating system, soft rim light, reflective floor strip, thematic mood: connection of people processes and technology as the real driver of efficiency — integration not isolated tools, critical ANTITEXT: the entire image has zero text of any language, zero letters, zero numbers, zero hex codes, zero logos, zero wordmarks, zero watermarks, zero captions, zero street signs with writing, zero UI labels; every vehicle has solid blank unmarked side panels with no graphics, no fleet names, no slogans; walls boxes screens and maps are unlabeled abstract shapes only; upper sky must remain completely empty and clear for text
+```
+
 ## NL 1 ago — prompts Midjourney v5 (2026-07-21)
 
 - Artículo: **Tecnología sin integración: el principal freno de la eficiencia**
