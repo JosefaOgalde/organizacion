@@ -33,6 +33,19 @@ class TestExpandirBloques(unittest.TestCase):
         with self.assertRaises(ValueError):
             mod.expandir_bloques({"titulo": "Solo titulo"})
 
+    def test_filas_invalidas_no_dejan_publicar_una_receta_truncada(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["bloques"]["ingredientes"]["items"].append({"nombte": "Sal"})
+        doc["bloques"]["instrucciones"]["pasos"].append(
+            {"orden": 7, "textp": "Dejar reposar"}
+        )
+
+        receta = mod.expandir_bloques(doc)
+
+        self.assertEqual(receta["estado"], "borrador")
+        self.assertIn("ingredientes.nombre", receta["camposFaltantes"])
+        self.assertIn("pasos.texto", receta["camposFaltantes"])
+
 
 if __name__ == "__main__":
     unittest.main()
