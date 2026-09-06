@@ -6423,6 +6423,17 @@ def _contar_ingredientes_internos(page) -> int:
     return 0
 
 
+def borrar_ultimo_item_formulario(page) -> bool:
+    for fr in _frames_pagina(page):
+        try:
+            if fr.evaluate(JS_BORRAR_ULTIMO_ITEM):
+                page.wait_for_timeout(300)
+                return True
+        except Exception:
+            continue
+    return False
+
+
 def activar_html_paso_a_paso(page) -> str | None:
     """Enciende «HTML + Script» y/o el </> del editor Paso a Paso."""
     ultimo = None
@@ -6732,6 +6743,14 @@ def asegurar_n_ingredientes(page, n: int) -> int:
         intentos += 1
         expandir_todos_items_formulario(page)
         actuales = _contar_ingredientes_internos(page)
+    while actuales > n:
+        anteriores = actuales
+        if not borrar_ultimo_item_formulario(page):
+            break
+        expandir_todos_items_formulario(page)
+        actuales = _contar_ingredientes_internos(page)
+        if actuales >= anteriores:
+            break
     return actuales
 
 
@@ -6928,7 +6947,13 @@ def fill_lista_acordeones(
         )
         print("  · Completo la lista interna Ingrediente* (no una sección nueva).")
         expandir_todos_items_formulario(page)
-        asegurar_n_ingredientes(page, len(items))
+        n_ingredientes = asegurar_n_ingredientes(page, len(items))
+        if n_ingredientes != len(items):
+            print(
+                f"  ✗ La lista conserva {n_ingredientes} filas; "
+                f"se requieren exactamente {len(items)}."
+            )
+            return 0
         llenados_dir = 0
         for i, item in enumerate(items):
             if rellenar_item_ingrediente(page, i, item):

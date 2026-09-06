@@ -37,6 +37,7 @@
             <p>Ingrediente Dale un valor</p>
             <label for="ing-0">Ingrediente *</label>
             <input id="ing-0" placeholder="Dale un valor" />
+            <button type="button" aria-label="Eliminar ingrediente">Eliminar</button>
           </div>
         </div>
         <div class="item">
@@ -45,7 +46,8 @@
             <span>Ingrediente Dale un valor</span>
             <p>Ingrediente Dale un valor</p>
             <label for="ing-1">Ingrediente *</label>
-            <input id="ing-1" placeholder="Dale un valor" />
+            <input id="ing-1" value="Ingrediente antiguo 2" placeholder="Dale un valor" />
+            <button type="button" aria-label="Eliminar ingrediente">Eliminar</button>
           </div>
         </div>
         <div class="item">
@@ -54,7 +56,8 @@
             <span>Ingrediente Dale un valor</span>
             <p>Ingrediente Dale un valor</p>
             <label for="ing-2">Ingrediente *</label>
-            <input id="ing-2" placeholder="Dale un valor" />
+            <input id="ing-2" value="Ingrediente antiguo 3" placeholder="Dale un valor" />
+            <button type="button" aria-label="Eliminar ingrediente">Eliminar</button>
           </div>
         </div>
         <button type="button" id="add-interno">+ Agregar nuevo ítem</button>
@@ -70,6 +73,11 @@
     });
     document.getElementById("retomar").addEventListener("click", function () {
       document.getElementById("borrador").remove();
+    });
+    document.querySelectorAll(".item button").forEach(function (button) {
+      button.addEventListener("click", function () {
+        button.closest(".item").remove();
+      });
     });
   </script>
 </body>
