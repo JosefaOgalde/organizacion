@@ -6727,6 +6727,7 @@ function renderCalendarioMes() {
 
   const primerDia = new Date(y, m, 1);
   const inicioGrid = inicioSemana(primerDia);
+  const mesCompacto = esViewportMesCompacto();
 
   let html = DIAS_CORTOS.map(d => `<div class="mes-cabecera">${d}</div>`).join('');
   // Fuera del for: se usa también al final para classList (antes tiraba ReferenceError y rompía Semana/clics).
