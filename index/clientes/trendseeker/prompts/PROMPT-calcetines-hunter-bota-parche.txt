@@ -1,0 +1,55 @@
+PRODUCTO: Calcetines bota Hunter (parche HUNTER en PVC — no se puede borrar)
+SKU: UAS3000AAA-MLR (rojo) · UAS3036AAB-BLK (negro 6 puntadas)
+Links:
+- https://trendseeker.cl/producto/hunter-calcetin-bota-rojo/
+- https://trendseeker.cl/producto/hunter-calcetin-bota-6-puntadas-1/
+Herramienta: Google Gemini VIDEO. Primero sube las FOTOS DE PRODUCTO reales (el parche tiene que verse en esas fotos).
+
+POR QUÉ FALLÓ EL VIDEO ANTERIOR
+Gemini suele tratar la palabra HUNTER del parche como “texto/marca de agua” y la limpia. Este prompt obliga a dejar el parche como parte física del producto, nítido y legible en todos los frames.
+
+EL PARCHE (copiar tal cual; no inventar otro logo)
+Es un parche rectangular de PVC centrado en la VUELTA DOBLADA del calcetín (frente, mirando a cámara):
+- Fondo blanco
+- La palabra HUNTER en negro, mayúsculas, bold, una sola línea, perfectamente centrada
+- Calcetín ROJO: borde fino negro alrededor del rectángulo blanco
+- Calcetín NEGRO cable-knit / 6 puntadas: borde ROJO grueso alrededor del rectángulo blanco
+No deformar, no desenfocar, no recortar, no tapar con la mano/pantalón, no sustituir por un óvalo vacío, no “limpiar” la tela.
+
+CÓMO USAR
+1) Gemini → modo VIDEO (no imagen fija).
+2) Adjunta primero las fotos de producto donde se vea el parche de frente.
+3) Pega el bloque de abajo en el mismo mensaje.
+4) Si el video sale sin parche, no regenere a ciegas: pega el bloque «SI BORRA EL PARCHE».
+
+---
+PEGAR EN GEMINI (prompt completo)
+---
+
+Generate a short photorealistic commercial VIDEO. The attached photos are the mandatory product reference. Do not redesign the socks.
+
+PRODUCT (must match the photos exactly):
+Hunter tall boot socks worn with Hunter Original-style tall rain boots. The sock cuff is folded over the top rim of the boot, facing the camera. The knit, color, thickness and fold of the sock must match the attached stills (red boot sock and/or black cable-knit 6-stitch boot sock, whichever photos are attached).
+
+CRITICAL — ON-PRODUCT LOGO PATCH (do not treat this as a watermark or as on-screen text):
+On the FRONT of the folded cuff there is a physical PVC brand badge sewn/applied to the fabric. It is a real part of the garment and must remain identical in EVERY frame:
+- white rectangular badge
+- the word HUNTER in bold black uppercase letters, one line, sharp and readable
+- red sock: thin black border around the white rectangle
+- black cable-knit sock: thick red border around the white rectangle
+Keep this patch locked to the fabric as it moves. Do not inpaint it out. Do not blur it. Do not morph the letters. Do not replace it with a blank patch, a circle, a hunter-green shape, or empty knit. Do not cover it. If the camera moves, the patch stays on the cuff and stays legible.
+
+ACTION:
+A person puts on or adjusts Hunter rain boots in a realistic entryway / rainy-day interior. The hero is the sock cuff folded over the boot. Include at least one slow close-up (1–2 seconds) of the HUNTER PVC patch filling the frame, in focus, matching the attached photos, then a slightly wider shot of both boots with both patches still visible and facing camera.
+
+CAMERA:
+Low angle or cuff-height, product-first, sharp. No added typography, no subtitles, no watermarks, no extra logos besides the real PVC HUNTER patch that is already on the socks. Short cinematic commercial, 5–8 seconds.
+
+NEGATIVE:
+Do not remove brand marks from the product. Do not “clean” the cuff. Do not generate generic socks without the HUNTER badge.
+
+---
+SI BORRA EL PARCHE (segundo mensaje, mismo chat, mismas fotos)
+---
+
+The previous video deleted the HUNTER logo. That logo is a physical PVC patch on the sock cuff, not a watermark. Regenerate the same shot: folded cuff facing camera, white rectangular badge with bold black HUNTER letters fully visible and sharp in every frame (red sock = thin black border; black cable-knit sock = thick red border). Do not inpaint or smooth away the text. Hold a close-up of the patch.
