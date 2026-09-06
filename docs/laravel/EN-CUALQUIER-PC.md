@@ -22,13 +22,10 @@ Para no duplicar datos ni dejar info en cachés distintas, **siempre** el mismo 
 La entrega actual está en **`main`**.
 
 ### Opción recomendada (un solo doble clic)
-**`EMPEZAR-AQUI.bat`** (o `TRAER-CAMBIOS.bat`) → `git pull` en main + restaura el calendario desde Descargas + abre Laravel.
+**`EMPEZAR-AQUI.bat`** (o `TRAER-CAMBIOS.bat`) → `git pull` en main + conserva el calendario local + abre Laravel.
 
 **Para no buscarlos:** una vez, doble clic en **`CREAR-ACCESOS-ESCRITORIO.bat`**.  
 Quedan 4 iconos en el Escritorio; el del día a día es **«1. Organizacion - Empezar aqui»**.
-
-No hace falta pegar la ruta del JSON: Windows ya sabe tu carpeta  
-(`C:\Users\Josefa Ogalde\Downloads\…` vía `%USERPROFILE%\Downloads`).
 
 Guía corta en la raíz del repo: `00-LEEME-INICIO.txt` (aparece arriba en el Explorador).
 
@@ -37,7 +34,7 @@ Guía corta en la raíz del repo: `00-LEEME-INICIO.txt` (aparece arriba en el Ex
 cd "C:\Users\Josefa Ogalde\organizacion"
 git checkout main
 git pull origin main
-ABRIR-LARAVEL.bat restaurar
+ABRIR-LARAVEL.bat
 ```
 
 Abre solo (con `?disco=1`):
