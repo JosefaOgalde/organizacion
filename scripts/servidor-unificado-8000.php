@@ -497,6 +497,14 @@ if (in_array($uri, $impRedesUris, true)) {
 
 // --- Estáticos del repo ---
 $rel = $uri === '/' ? 'index.html' : ltrim(str_replace('\\', '/', $uri), '/');
+$sensitiveCrcPattern =
+    '#^index/clientes/herramientas/carga-recetas-cencosud/(?:[^/]+/)*(?:inbox|out|secrets)(?:/|$)#';
+$requestedRel = strtolower(preg_replace('#/+#', '/', $rel) ?? $rel);
+if (preg_match($sensitiveCrcPattern, $requestedRel)) {
+    http_response_code(403);
+    echo "403\n";
+    return true;
+}
 if ($rel === '' || str_ends_with($rel, '/')) {
     $rel = trim($rel, '/') === '' ? 'index.html' : trim($rel, '/') . '/index.html';
 }
@@ -547,6 +555,7 @@ if (preg_match('#(^|/)\.git(/|$)#', $relFromRoot)
     || preg_match('#(^|/)backend(/|$)#', $relFromRoot)
     || preg_match('#(^|/)node_modules(/|$)#', $relFromRoot)
     || preg_match('#(^|/)\.env$#', $relFromRoot)
+    || preg_match($sensitiveCrcPattern, $relFromRoot)
     || str_contains($relFromRoot, 'organizacion-live.json')
     || str_contains($relFromRoot, 'impresoreando-live.json')
 ) {
