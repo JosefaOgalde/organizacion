@@ -4584,10 +4584,15 @@ function htmlEntregableTarea(tarea) {
       <div class="tarea-detalle__entregable tarea-detalle__entregable--prompt" data-entregable="copys-txt">
         <div class="tarea-detalle__entregable-head">
           <strong>Copys (TXT)</strong>
+          <div class="tarea-detalle__entregable-acciones">
+            <button type="button" class="btn btn--small btn--accent" data-crear-copys-ts>Crear copy</button>
+          </div>
         </div>
         <p class="tarea-detalle__entregable-hint">
-          Un bloque · tres secciones (A / B / C). Copiar · Guardar · Mejorar (reemplaza con la última versión).
+          <strong>Crear copy</strong> pregunta si hay campaña/promo y arma 3 versiones (A/B/C) con CTA distinto.
+          Luego: Copiar · Guardar · Mejorar.
           ${tarea.productoUrl ? `<a href="${escapeHtml(tarea.productoUrl)}" target="_blank" rel="noopener">Ver producto</a>` : ''}
+          ${tarea.campanaCopy?.activa && tarea.campanaCopy?.texto ? ` · Campaña: <em>${escapeHtml(tarea.campanaCopy.texto)}</em>` : ''}
         </p>
         <div class="prompt-bloque">${secciones}</div>
       </div>`;
@@ -4865,6 +4870,179 @@ async function cargarYBindCopysEcr(tarea) {
   });
 }
 
+function metaProductoTsDeTarea(tarea) {
+  const madre = madreDeTarea(tarea) || tarea;
+  const url = madre?.productoUrl || tarea?.productoUrl || '';
+  const titulo = nombreBaseTarea(madre) || madre?.titulo || 'Producto Trendseeker';
+  const producto = String(titulo)
+    .replace(/^Contenido\s*\d+\s*\/\s*12\s*·\s*/i, '')
+    .replace(/^C\d+\s*\/\s*12\s*—\s*/i, '')
+    .trim();
+  let n = Number(tarea?.contenidoSerie || madre?.contenidoSerie) || 0;
+  if (!n) {
+    const m = String(tarea?.titulo || madre?.titulo || '').match(/C?\s*(\d+)\s*\/\s*12/i);
+    if (m) n = Number(m[1]);
+  }
+  const blob = `${producto} ${url} ${madre?.notas || ''} ${tarea?.notas || ''}`;
+  let publico = 'unisex';
+  if (/niñ[oa]|ninos|kids|infantil/i.test(blob)) publico = 'ninos';
+  else if (/hombre|men\b|masculino/i.test(blob)) publico = 'hombre';
+  else if (/mujer|women|femenin/i.test(blob)) publico = 'mujer';
+  const skuMatch = String(madre?.notas || '').match(/SKU[:\s]+([A-Z0-9\-]+)/i);
+  const sku = skuMatch ? skuMatch[1] : '';
+  const bullets = [];
+  const notas = String(madre?.notas || '');
+  const car = notas.match(/Características:\s*([^.]+)/i);
+  if (car) {
+    car[1].split(/[·•|]/).map((s) => s.trim()).filter(Boolean).slice(0, 5).forEach((b) => bullets.push(b));
+  }
+  if (!bullets.length) {
+    bullets.push('Hunter · calidad TrendSeeker', 'Detalles fieles a la ficha del producto');
+  }
+  return { n, producto, url, sku, bullets, publico };
+}
+
+/** Pregunta campaña/promo antes de Crear copy (TS). */
+function pedirContextoCampanaCopy(tarea) {
+  const prev = tarea.campanaCopy && typeof tarea.campanaCopy === 'object' ? tarea.campanaCopy : {};
+  const quiere = window.confirm(
+    '¿Hay campaña o promoción asociada a este video?\n\n' +
+      'Aceptar = sí (te pediré el detalle)\n' +
+      'Cancelar = sin campaña (copy normal del producto)'
+  );
+  if (!quiere) {
+    tarea.campanaCopy = { activa: false, texto: '', actualizado: toISO(hoy()) };
+    return tarea.campanaCopy;
+  }
+  const texto = window.prompt(
+    'Escribe la campaña o promoción (ej: 20% OFF Hunter solo este finde · código LLUVIA20 · 2x1 en Travel Trainer):',
+    prev.texto || ''
+  );
+  const limpio = String(texto || '').trim();
+  tarea.campanaCopy = {
+    activa: !!limpio,
+    texto: limpio,
+    actualizado: toISO(hoy()),
+  };
+  return tarea.campanaCopy;
+}
+
+/**
+ * Genera 3 copys TS (A corta · B historia · C checklist) con CTAs distintos.
+ * Respeta el público del producto (hombre / mujer / niños).
+ */
+function generarCopysTsVideoAbc(tarea, campana) {
+  const meta = metaProductoTsDeTarea(tarea);
+  const camp = campana && campana.activa && campana.texto ? String(campana.texto).trim() : '';
+  const bullets = (meta.bullets || []).slice(0, 5).map((b) => `✓ ${b}`).join('\n');
+  const link = meta.url || 'https://trendseeker.cl/';
+  const prod = meta.producto || 'Producto Hunter';
+  const serie = meta.n ? `C${meta.n}/12` : 'TS';
+  const skuLine = meta.sku ? `SKU: ${meta.sku}\n` : '';
+  const publico = meta.publico || 'unisex';
+  const publicoLabel =
+    publico === 'hombre' ? 'HOMBRE' : publico === 'mujer' ? 'MUJER' : publico === 'ninos' ? 'NIÑOS' : 'UNISEX';
+  const tagPublico =
+    publico === 'hombre' ? '#Hombre' : publico === 'mujer' ? '#Mujer' : publico === 'ninos' ? '#Kids' : '';
+
+  const hookA =
+    publico === 'hombre'
+      ? 'Cuando la calle se moja… él sigue igual. 🖤☔'
+      : publico === 'mujer'
+        ? 'Cuando la calle se moja… ella sigue con estilo. 🖤☔'
+        : publico === 'ninos'
+          ? 'Cuando hay charcos… ellos también salen. 🖤☔'
+          : 'Cuando la calle se moja… el calzado sigue. 🖤☔';
+
+  const tallaTxt =
+    publico === 'hombre'
+      ? 'tu talla de hombre'
+      : publico === 'mujer'
+        ? 'tu talla de mujer'
+        : publico === 'ninos'
+          ? 'la talla de tus kids'
+          : 'tu talla';
+
+  const publicoLinea =
+    publico === 'hombre'
+      ? `${prod} — para hombre.`
+      : publico === 'mujer'
+        ? `${prod} — para mujer.`
+        : publico === 'ninos'
+          ? `${prod} — para niños.`
+          : `${prod}.`;
+
+  const checklistTitulo =
+    publico === 'hombre' ? 'Checklist para él ⚡' : publico === 'mujer' ? 'Checklist para ella ⚡' : 'Checklist rápido ⚡';
+
+  const bloqueCampanaA = camp ? `\n🔥 Ahora con campaña: ${camp}\n` : '';
+  const bloqueCampanaB = camp
+    ? `\nEsta semana corre: ${camp}.\nSi te late el video, aprovecha la promo antes de que cierre.\n`
+    : '';
+  const bloqueCampanaC = camp ? `\nPromo activa → ${camp}\n` : '';
+
+  const ctaA = camp
+    ? `👉 Aprovecha la promo y elige ${tallaTxt} ahora:\n${link}`
+    : `👉 Elige ${tallaTxt} y llévatelas:\n${link}`;
+  const ctaB = camp
+    ? `🛒 Entra con la promo y reserva ${tallaTxt}:\n${link}\n\n¿Primer par Hunter o ya eres fan? Comenta 👇`
+    : `🛒 Entra y reserva ${tallaTxt} ahora:\n${link}\n\n¿Primer par Hunter o ya eres fan? Comenta 👇`;
+  const ctaC = camp
+    ? `🔥 CTA: usa la promo, elige ${tallaTxt} y llévatelas hoy\n${link}\n\nGuarda este video si estás armando tu look 📌`
+    : `🔥 CTA: haz clic, elige ${tallaTxt} y llévatelas hoy\n${link}\n\nGuarda este video si estás armando tu look 📌`;
+
+  const A = `COPY VIDEO · Trendseeker · ${serie} · Versión A
+Producto: ${prod}
+${skuLine}Link: ${link}
+Público: ${publicoLabel}
+
+${hookA}
+${bloqueCampanaA}
+${publicoLinea}
+${bullets || '✓ Ver ficha del producto'}
+
+${ctaA}
+
+#Hunter #TrendSeeker #TrendSeekerChile ${tagPublico}
+`.replace(/\s+\n/g, '\n');
+
+  const B = `COPY VIDEO · Trendseeker · ${serie} · Versión B
+Producto: ${prod}
+${skuLine}Link: ${link}
+Público: ${publicoLabel}
+
+No es solo “otro post”.
+Es el calzado del video —y rinde en la calle de verdad. 🌧️🏙️
+${bloqueCampanaB}
+${publicoLinea}
+Características reales de ficha, sin inventar.
+Si buscas un par que se vea bien y aguante el día a día, este clip es para ti.
+
+${ctaB}
+
+#Hunter #TrendSeeker #StreetReady ${tagPublico}
+`.replace(/\s+\n/g, '\n');
+
+  const C = `COPY VIDEO · Trendseeker · ${serie} · Versión C
+Producto: ${prod}
+${skuLine}Link: ${link}
+Público: ${publicoLabel}
+
+${checklistTitulo}
+□ ¿Te gustó el video?
+□ ¿Encaja con tu estilo?
+□ ¿Listo para elegir ${tallaTxt}?
+${bloqueCampanaC}
+${bullets || '✓ Ficha del producto en el link'}
+
+${ctaC}
+
+#HunterBoots #TrendSeekerChile #ShopNow ${tagPublico}
+`.replace(/\s+\n/g, '\n');
+
+  return { A, B, C };
+}
+
 async function cargarCopysAbcEnVista(tarea) {
   const root = document.querySelector('[data-entregable="copys-txt"]');
   if (!root) return;
@@ -4905,6 +5083,52 @@ async function cargarCopysAbcEnVista(tarea) {
       }
     })
   );
+
+  root.querySelector('[data-crear-copys-ts]')?.addEventListener('click', async () => {
+    const t = tareaDe(tarea.id);
+    if (!t) return;
+    const hayTexto = [...root.querySelectorAll('[data-copy-texto]')].some((ta) => (ta.value || '').trim());
+    if (hayTexto && !confirm('¿Reemplazar las 3 versiones A/B/C con copys nuevos?')) return;
+
+    const campana = pedirContextoCampanaCopy(t);
+    mostrarToast(
+      campana.activa
+        ? 'Creando 3 copys con la campaña…'
+        : 'Creando 3 copys del producto (sin campaña)…'
+    );
+    const generados = generarCopysTsVideoAbc(t, campana);
+    const archivosNow = archivosCopyDeTarea(t);
+    let guardados = 0;
+    for (const ver of ['A', 'B', 'C']) {
+      const bloque = root.querySelector(`[data-copy-version="${ver}"]`);
+      const ta = bloque?.querySelector('[data-copy-texto]');
+      const archivo = bloque?.getAttribute('data-copy-archivo') || archivosNow[ver] || '';
+      if (ta) ta.value = generados[ver];
+      if (archivo) {
+        const ok = await guardarPromptTxtEnDisco(archivo, generados[ver]);
+        if (ok) {
+          guardados += 1;
+          registrarHistorialEntregable(t, {
+            tipo: 'copys-txt',
+            version: ver,
+            accion: 'crear',
+            archivo,
+            texto: generados[ver],
+          });
+        }
+      }
+    }
+    t.entregableArchivosCopy = archivosNow;
+    t.entregableArchivo = archivosNow.A;
+    try { guardar(); } catch { /* ignore */ }
+    mostrarToast(
+      guardados === 3
+        ? (campana.activa
+            ? '3 copys listos con campaña — revisa A/B/C'
+            : '3 copys listos — revisa A/B/C y Copiar')
+        : 'Copys armados en pantalla (guarda si el server no respondió)'
+    );
+  });
 
   root.querySelectorAll('[data-copiar-copy-version]').forEach((btn) => {
     btn.addEventListener('click', async () => {
