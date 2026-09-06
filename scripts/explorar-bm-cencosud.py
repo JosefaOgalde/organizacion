@@ -5992,24 +5992,31 @@ def resolver_modal_cambios(page, *, salir: bool = False) -> bool:
                 except Exception:
                     continue
         return False
-    get_by_text = getattr(page, "get_by_text", None)
-    try:
-        if get_by_text:
-            aviso = get_by_text("Tienes cambios sin guardar", exact=False)
-            if hasattr(aviso, "count") and aviso.count() == 0:
-                return False
+    for fr in _frames_pagina(page):
+        get_by_text = getattr(fr, "get_by_text", None)
+        try:
+            if get_by_text:
+                aviso = get_by_text("Tienes cambios sin guardar", exact=False)
+                if hasattr(aviso, "count") and aviso.count() == 0:
+                    continue
+            locator = getattr(fr, "locator", None)
+            if not locator:
+                continue
+        except Exception:
+            continue
         for sel in (
             "button:has-text('Cancelar')",
             "[role='button']:has-text('Cancelar')",
         ):
-            loc = page.locator(sel)
-            if not loc.count():
+            try:
+                loc = locator(sel)
+                if not loc.count():
+                    continue
+                loc.last.click(timeout=2_000)
+                page.wait_for_timeout(250)
+                return True
+            except Exception:
                 continue
-            loc.last.click(timeout=2_000)
-            page.wait_for_timeout(250)
-            return True
-    except Exception:
-        return False
     return False
 
 
@@ -7320,6 +7327,12 @@ def fill_from_receta(
         else:
             print(f"  ✗ tags incompletos ({n_tags}/{len(cats)}) — NO guardo ni Volver")
             return False
+    if cats and not resultados.get("tags"):
+        print(
+            "  ✗ Los tags del JSON no quedaron cargados. No publico.",
+            file=sys.stderr,
+        )
+        return False
 
     ings = receta.get("ingredientes") or []
     if abrir_grupo("ingredientes", ["field_ingredientes"]) and puede_rellenar_editor(
