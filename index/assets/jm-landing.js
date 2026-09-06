@@ -43,17 +43,18 @@
     const backupV = window.JM_BACKUP_FICHA?.version || 0;
     if (v < backupV) {
       cli.ficha.landing.objetivosEspecificos = [...(window.JM_OBJETIVOS?.especificos || [])];
-      // Conservar completada del seed (progreso del repo); no forzar false
-      cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({
-        ...t,
-        completada: !!t.completada,
-        comentario: t.comentario || ''
-      }));
+      if (typeof window.jmFusionarChecklistSeed === 'function') {
+        window.jmFusionarChecklistSeed(cli);
+      }
       cli.ficha.landingVersion = backupV;
       cli.ficha.backupJoyasMercuryV = backupV;
     }
     if (!Array.isArray(cli.ficha.landing.todos) || !cli.ficha.landing.todos.length) {
-      cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({ ...t, comentario: t.comentario || '' }));
+      if (typeof window.jmFusionarChecklistSeed === 'function') {
+        window.jmFusionarChecklistSeed(cli);
+      } else {
+        cli.ficha.landing.todos = (window.JM_TODO_SEED || []).map((t) => ({ ...t }));
+      }
     }
     if (typeof window.asegurarDocumentosJM === 'function') window.asegurarDocumentosJM(cli);
   }
