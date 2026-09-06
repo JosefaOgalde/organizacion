@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Impresoreando · Estimador de costo 3D</title>
+  <meta name="description" content="Pega o arrastra la captura del slicer y recibe un estimado de costo 3D." />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <style>
+    :root {
+      --border: #d4b06a;
+      --bg: #faf6eb;
+      --text: #7a5c28;
+      --ink: #2a2114;
+      --card: #fffdf7;
+      --muted: #8a7350;
+      --ok: #2f7a4e;
+      --accent: #c47a3a;
+      --max: 720px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: linear-gradient(180deg, var(--bg), #f3eee0 45%, #eee8d8);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    .top {
+      background: var(--card);
+      border-bottom: 2px solid var(--border);
+    }
+    .shell {
+      width: min(100% - 2rem, var(--max));
+      margin: 0 auto;
+    }
+    .top .shell {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.9rem 0;
+    }
+    .logo { height: 48px; width: auto; display: block; }
+    .logo-mobile {
+      display: none;
+      height: 52px;
+      width: 52px;
+      object-fit: contain;
+    }
+    @media (max-width: 720px) {
+      .logo-desktop { display: none; }
+      .logo-mobile { display: block; }
+      .nav-link { font-size: 0.9rem; }
+    }
+    .nav-link {
+      color: var(--text);
+      font-weight: 650;
+      text-decoration: none;
+    }
+    .nav-link:hover { text-decoration: underline; }
+    main.shell { padding: 1.25rem 0 2.5rem; }
+    h1 {
+      margin: 0 0 0.35rem;
+      font-size: clamp(1.35rem, 3vw, 1.75rem);
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 0.35rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      background: #eef7f0;
+      border: 1px solid #b7d8c2;
+      color: var(--ok);
+      font-size: 0.72rem;
+      font-weight: 700;
+      vertical-align: middle;
+    }
+    .lead {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .disclaimer {
+      margin: 0 0 1rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid #ead7a8;
+      background: #fff8ee;
+      color: var(--text);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid #e6d7b0;
+      border-radius: 14px;
+      padding: 1rem 1.05rem 1.15rem;
+    }
+    .card h2 {
+      margin: 0 0 0.65rem;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+    .drop {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 1rem;
+      background: #fff;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .drop.is-over { border-color: var(--accent); background: #fff8ee; }
+    .drop.has-img { padding: 0; min-height: 280px; }
+    .drop img {
+      display: block;
+      width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      background: #1a1510;
+    }
+    .drop-copy { color: var(--muted); line-height: 1.45; pointer-events: none; }
+    .drop-copy strong { color: var(--text); }
+    .drop input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    button {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 0.5rem 0.85rem;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    button.primary {
+      background: #7a5c28;
+      border-color: #7a5c28;
+      color: #fff;
+    }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .result {
+      margin-top: 1rem;
+      border-top: 1px solid #eee3c8;
+      padding-top: 0.85rem;
+    }
+    .kpi {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem;
+      margin-bottom: 0.75rem;
+    }
+    .kpi div {
+      background: #fff;
+      border: 1px solid #eee3c8;
+      border-radius: 12px;
+      padding: 0.7rem 0.75rem;
+    }
+    .kpi span {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.15rem;
+    }
+    .kpi strong {
+      font-size: 1.25rem;
+      color: var(--ok);
+    }
+    .kpi .muted strong { color: var(--ink); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.4rem 0.2rem;
+      border-bottom: 1px solid #f0e6cc;
+    }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .total-row td { font-weight: 700; border-bottom: 0; padding-top: 0.55rem; }
+    .status {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      background: #fff8ee;
+      border: 1px solid #ead7a8;
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    .status.ok { background: #eef7f0; border-color: #b7d8c2; color: var(--ok); }
+    .status.busy { background: #eef3fb; border-color: #b8cce8; color: #2a4a7a; }
+    .status.err { background: #fff0ee; border-color: #e5b8b0; color: #8a3a30; }
+    .meta {
+      margin: 0.5rem 0 0.75rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="shell">
+      <a class="nav-link" href="https://www.instagram.com/impresoreando/" target="_blank" rel="noopener">← @impresoreando</a>
+      <img
+        class="logo logo-desktop"
+        src="https://cdn.jsdelivr.net/gh/JosefaOgalde/organizacion@cursor/imp-calcular-costo-imagen-6079/docs/calcular-costo/logo-impresoreando.png"
+        alt="Impresoreando"
+        width="220"
+        height="48"
+      />
+      <img
+        class="logo logo-mobile"
+        src="https://cdn.jsdelivr.net/gh/JosefaOgalde/organizacion@cursor/imp-calcular-costo-imagen-6079/docs/calcular-costo/icono-gato-mobile.png"
+        alt="Impresoreando"
+        width="52"
+        height="52"
+      />
+      <a class="nav-link" href="https://www.instagram.com/impresoreando/" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <h1>Estimador de costo 3D <span class="badge">estimado</span></h1>
+    <p class="lead">
+      Pega (Ctrl+V) o arrastra la captura del slicer. Leemos gramos y tiempo y
+      entregamos el estimado. Sin argolla ni bolsa.
+    </p>
+    <p class="disclaimer">
+      Fórmula fija: PLA+ negro/rojo <strong>$17.986/kg</strong> · impresora
+      <strong>Centauri Carbon 2</strong> · margen <strong>+100%</strong> ·
+      <strong>sin metal ni bolsa</strong>. Valores aproximados.
+    </p>
+
+    <section class="card">
+      <h2>Captura del slicer</h2>
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="Pegar o arrastrar imagen del slicer">
+        <div class="drop-copy" id="drop-copy">
+          <strong>Pega o arrastra la imagen aquí</strong><br />
+          también puedes tocar para elegir un archivo
+        </div>
+        <input id="file" type="file" accept="image/*" capture="environment" />
+      </div>
+      <div class="actions">
+        <button type="button" id="btn-clear" disabled>Quitar imagen</button>
+        <button type="button" class="primary" id="btn-copy" disabled>Copiar estimado</button>
+      </div>
+
+      <div class="result" id="result" hidden>
+        <div class="kpi">
+          <div class="muted"><span>Costo estimado / u</span><strong id="out-costo">$0</strong></div>
+          <div><span>Precio sugerido (est.)</span><strong id="out-pvp">$0</strong></div>
+        </div>
+        <p class="meta" id="out-meta"></p>
+        <table>
+          <thead><tr><th>Concepto</th><th class="num">CLP</th></tr></thead>
+          <tbody id="out-rows"></tbody>
+        </table>
+      </div>
+      <p class="status" id="status">Pega o arrastra la captura del slicer para obtener el estimado.</p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const money = (n) =>
+        Number(n || 0).toLocaleString('es-CL', {
+          style: 'currency',
+          currency: 'CLP',
+          maximumFractionDigits: 0,
+        });
+      const round2 = (n) => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
+
+      const KG = 17986;
+      const TARIFA = 200;
+      const KW = 0.28;
+      const MARGEN = 100;
+      const LABEL = 'Centauri Carbon 2';
+
+      const TESS_CDNS = [
+        'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js',
+        'https://unpkg.com/tesseract.js@5/dist/tesseract.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js',
+      ];
+
+      const drop = document.getElementById('drop');
+      const dropCopy = document.getElementById('drop-copy');
+      const fileInput = document.getElementById('file');
+      const btnClear = document.getElementById('btn-clear');
+      const btnCopy = document.getElementById('btn-copy');
+      const result = document.getElementById('result');
+      const status = document.getElementById('status');
+
+      let objectUrl = null;
+      let readToken = 0;
+      let lastEstimado = null;
+      let tessPromise = null;
+
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = src;
+          s.async = true;
+          s.onload = () => resolve(src);
+          s.onerror = () => reject(new Error('fail ' + src));
+          document.head.appendChild(s);
+        });
+      }
+
+      function ensureTesseract() {
+        if (window.Tesseract) return Promise.resolve(window.Tesseract);
+        if (tessPromise) return tessPromise;
+        tessPromise = (async () => {
+          let lastErr = null;
+          for (const src of TESS_CDNS) {
+            try {
+              await loadScript(src);
+              if (window.Tesseract) return window.Tesseract;
+            } catch (e) {
+              lastErr = e;
+            }
+          }
+          throw lastErr || new Error('Tesseract no disponible');
+        })();
+        return tessPromise;
+      }
+
+      function parseSlicerText(raw) {
+        const norm = String(raw || '').replace(/\r/g, '\n');
+        let gramos = null;
+
+        const totalLine = norm
+          .split('\n')
+          .find((line) => /total/i.test(line) && /\d/.test(line) && /g\b/i.test(line));
+        if (totalLine) {
+          const m = totalLine.match(/(\d+[.,]\d+)\s*g\b/i);
+          if (m) gramos = parseFloat(m[1].replace(',', '.'));
+        }
+        if (!gramos) {
+          // Prefer values near "filamento" / filament panel
+          const near = norm.match(/filamento[\s\S]{0,220}?(\d+[.,]\d+)\s*g\b/i);
+          if (near) gramos = parseFloat(near[1].replace(',', '.'));
+        }
+        if (!gramos) {
+          const grams = [...norm.matchAll(/(\d+[.,]\d+)\s*g\b/gi)].map((m) =>
+            parseFloat(m[1].replace(',', '.'))
+          );
+          if (grams.length) gramos = Math.max(...grams);
+        }
+
+        let horas = null;
+        const hms =
+          norm.match(/tiempo\s*total[^\n]{0,100}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i) ||
+          norm.match(/tiempo\s*de\s*impresi[oó]n[^\n]{0,100}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i) ||
+          norm.match(/total[^\n]{0,60}?(\d+)\s*h[^\d]{0,8}(\d+)\s*m/i);
+        if (hms) {
+          horas = round2(Number(hms[1]) + Number(hms[2]) / 60);
+        } else {
+          // Solo minutos + segundos: 43m 58s / 43 min 58 s
+          const ms =
+            norm.match(/tiempo\s*total[^\n]{0,100}?(\d+)\s*m(?:in)?[^\d]{0,8}(\d+)\s*s/i) ||
+            norm.match(/tiempo\s*estimado[^\n]{0,100}?(\d+)\s*m(?:in)?[^\d]{0,8}(\d+)\s*s/i) ||
+            norm.match(/(\d+)\s*m(?:in)?[^\d]{0,8}(\d+)\s*s/i);
+          if (ms) {
+            horas = round2((Number(ms[1]) + Number(ms[2]) / 60) / 60);
+          } else {
+            const onlyMin = norm.match(/tiempo\s*total[^\n]{0,80}?(\d+)\s*m(?:in)?\b/i);
+            if (onlyMin) horas = round2(Number(onlyMin[1]) / 60);
+          }
+        }
+        if (!horas) {
+          const times = [...norm.matchAll(/(\d+)\s*h[^\d]{0,8}(\d+)\s*m/gi)].map((m) =>
+            round2(Number(m[1]) + Number(m[2]) / 60)
+          );
+          if (times.length) horas = Math.max(...times);
+        }
+
+        return { gramos, horas };
+      }
+
+      function mostrarEstimado(gramos, horas) {
+        const filamento = round2((gramos / 1000) * KG);
+        const luz = round2(horas * TARIFA * KW);
+        const costo = round2(filamento + luz);
+        const pvp = Math.round(costo * (1 + MARGEN / 100));
+
+        const rows = [
+          ['Filamento (' + gramos + ' g × ' + money(KG) + '/kg)', filamento],
+          ['Luz (' + horas + ' h · ' + LABEL + ')', luz],
+          ['Total costo estimado / u', costo],
+        ];
+
+        document.getElementById('out-costo').textContent = money(costo);
+        document.getElementById('out-pvp').textContent = money(pvp);
+        document.getElementById('out-meta').textContent =
+          gramos +
+          ' g · ' +
+          horas +
+          ' h · PLA+ $17.986/kg · Centauri · sin metal ni bolsa · +' +
+          MARGEN +
+          '%';
+        document.getElementById('out-rows').innerHTML = rows
+          .map((r, i) => {
+            const last = i === rows.length - 1;
+            return (
+              '<tr class="' +
+              (last ? 'total-row' : '') +
+              '"><td>' +
+              r[0] +
+              '</td><td class="num">' +
+              money(r[1]) +
+              '</td></tr>'
+            );
+          })
+          .join('');
+
+        lastEstimado = { gramos, horas, costo, pvp };
+        result.hidden = false;
+        btnCopy.disabled = false;
+        status.className = 'status ok';
+        status.textContent =
+          'Estimado listo · costo ~' + money(costo) + ' · precio sugerido ~' + money(pvp) + '.';
+      }
+
+      async function leerYCalcular(img) {
+        if (!img || !img.src) {
+          status.className = 'status err';
+          status.textContent = 'No hay imagen para leer.';
+          return;
+        }
+
+        const token = ++readToken;
+        result.hidden = true;
+        btnCopy.disabled = true;
+        lastEstimado = null;
+        status.className = 'status busy';
+        status.textContent = 'Preparando lectura de la captura…';
+
+        try {
+          await ensureTesseract();
+        } catch {
+          if (token !== readToken) return;
+          status.className = 'status err';
+          status.textContent =
+            'No se pudo cargar el lector de imagen (internet/CDN). Revisa la conexión y vuelve a intentar.';
+          return;
+        }
+
+        if (token !== readToken) return;
+        status.className = 'status busy';
+        status.textContent = 'Leyendo gramos y tiempo de la captura…';
+
+        try {
+          const { data } = await Tesseract.recognize(img.src, 'spa+eng', {
+            logger: () => {},
+          });
+          if (token !== readToken) return;
+
+          const parsed = parseSlicerText(data.text || '');
+          if (!(parsed.gramos > 0) || !(parsed.horas > 0)) {
+            status.className = 'status err';
+            status.textContent =
+              'No pudimos leer gramos y tiempo. Usa una captura donde se vea Total (g) y el tiempo (ej. 43m 58s).';
+            return;
+          }
+          mostrarEstimado(parsed.gramos, parsed.horas);
+        } catch {
+          if (token !== readToken) return;
+          status.className = 'status err';
+          status.textContent = 'Error al leer la imagen. Prueba con otra captura más nítida.';
+        }
+      }
+
+      function setImage(file) {
+        if (!file || !String(file.type || '').startsWith('image/')) return;
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        objectUrl = URL.createObjectURL(file);
+        drop.classList.add('has-img');
+        dropCopy.hidden = true;
+        let img = drop.querySelector('img');
+        if (!img) {
+          img = document.createElement('img');
+          img.alt = 'Captura slicer';
+          drop.insertBefore(img, fileInput);
+        }
+        img.onload = () => leerYCalcular(img);
+        img.src = objectUrl;
+        btnClear.disabled = false;
+      }
+
+      function clearImage() {
+        readToken++;
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        objectUrl = null;
+        lastEstimado = null;
+        drop.classList.remove('has-img');
+        dropCopy.hidden = false;
+        const img = drop.querySelector('img');
+        if (img) img.remove();
+        fileInput.value = '';
+        btnClear.disabled = true;
+        btnCopy.disabled = true;
+        result.hidden = true;
+        status.className = 'status';
+        status.textContent = 'Pega o arrastra la captura del slicer para obtener el estimado.';
+      }
+
+      function textoEstimado() {
+        if (!lastEstimado) return '';
+        const e = lastEstimado;
+        return [
+          'Impresoreando · estimado 3D',
+          e.gramos + ' g · ' + e.horas + ' h · Centauri · PLA+ $17.986/kg',
+          'Sin metal ni bolsa',
+          'Costo estimado: ' + money(e.costo),
+          'Precio sugerido (+100%): ' + money(e.pvp),
+          'Valores aproximados; el precio final puede variar.',
+        ].join('\n');
+      }
+
+      fileInput.addEventListener('change', () => {
+        const f = fileInput.files && fileInput.files[0];
+        if (f) setImage(f);
+      });
+      btnClear.addEventListener('click', clearImage);
+      btnCopy.addEventListener('click', async () => {
+        const text = textoEstimado();
+        if (!text) return;
+        try {
+          await navigator.clipboard.writeText(text);
+          status.className = 'status ok';
+          status.textContent = 'Estimado copiado. Pégalo en WhatsApp u otro chat.';
+        } catch {
+          window.prompt('Copia este estimado:', text);
+        }
+      });
+
+      ['dragenter', 'dragover'].forEach((ev) => {
+        drop.addEventListener(ev, (e) => {
+          e.preventDefault();
+          drop.classList.add('is-over');
+        });
+      });
+      ['dragleave', 'drop'].forEach((ev) => {
+        drop.addEventListener(ev, (e) => {
+          e.preventDefault();
+          drop.classList.remove('is-over');
+        });
+      });
+      drop.addEventListener('drop', (e) => {
+        const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (f) setImage(f);
+      });
+
+      window.addEventListener('paste', (e) => {
+        const items = e.clipboardData && e.clipboardData.items;
+        if (!items) return;
+        for (const it of items) {
+          if (it.type && it.type.startsWith('image/')) {
+            const f = it.getAsFile();
+            if (f) setImage(f);
+            break;
+          }
+        }
+      });
+
+      // Precarga el lector en segundo plano
+      ensureTesseract().catch(() => {});
+    })();
+  </script>
+</body>
+</html>
