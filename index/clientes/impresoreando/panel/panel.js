@@ -5817,6 +5817,8 @@
   };
 
   function renderRedes() {
+    const panel = $('#tab-redes');
+    if (!panel) return;
     const c = CAMPANA_REDES_IMP;
     const pilares = c.pilares
       .map(
@@ -5835,7 +5837,7 @@
       .join('');
     const pendientes = c.pendientes.map((p) => `<li>${escapeHtml(p)}</li>`).join('');
 
-    $('#tab-redes').innerHTML = `
+    panel.innerHTML = `
       <div class="imp-card imp-card--redes">
         <p class="imp-redes-kicker">Campaña · ${escapeHtml(c.mes)}</p>
         <h2>Redes sociales — ${escapeHtml(c.canal)}</h2>
@@ -5875,7 +5877,7 @@
       </div>
     `;
 
-    $('#tab-redes')?.querySelectorAll('[data-goto-tab]').forEach((btn) => {
+    panel.querySelectorAll('[data-goto-tab]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const tab = btn.getAttribute('data-goto-tab');
         document.querySelector(`#imp-tabs button[data-tab="${tab}"]`)?.click();
