@@ -201,6 +201,20 @@ class PublicarRecetaTests(unittest.TestCase):
                 self.assertEqual(runtime.lanzamientos, 0)
                 self.assertEqual(guardada["estado"], receta["estado"])
 
+    def test_publicacion_bloquea_formato_bloques_sin_tiempo_total(self):
+        ejemplo = (
+            SCRIPT_PATH.parents[1]
+            / "index/clientes/Herramientas/carga-recetas-cencosud/ejemplos/churrascas-bloques.json"
+        )
+        receta = json.loads(ejemplo.read_text(encoding="utf-8"))
+        del receta["bloques"]["cabecera"]["tiempoTotal"]
+
+        exit_code, runtime, guardada = self.ejecutar(receta)
+
+        self.assertEqual(exit_code, 3)
+        self.assertEqual(runtime.lanzamientos, 0)
+        self.assertEqual(guardada, receta)
+
     def test_sku_faltante_no_bloquea_publicacion(self):
         receta = {
             **self.receta_valida,
