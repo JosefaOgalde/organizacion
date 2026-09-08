@@ -27,6 +27,7 @@ class ParseRecetaWordTests(unittest.TestCase):
         "Título: Receta segura\n"
         "Descripción: Una receta de prueba\n"
         "Porciones: 4\n"
+        "Tiempo de preparación: 15 min\n"
         "Dificultad: fácil\n"
         "Categorías: Cena\n"
         "Ingredientes:\n"
@@ -198,6 +199,55 @@ class ParseRecetaWordTests(unittest.TestCase):
                 "almuerzo",
             ],
         )
+
+    def test_jumbo_sin_tiempo_total_queda_en_borrador(self):
+        texto = (
+            "Meta título:\n"
+            "Sopa de verduras | Recetas Jumbo\n"
+            "descripción:\n"
+            "Una sopa casera y reconfortante.\n"
+            "Sopa de verduras\n"
+            "Tags: cena\n"
+            "Ingredientes:\n"
+            "1 kg verduras\n"
+            "Paso a paso:\n"
+            "Cocinar las verduras.\n"
+        )
+
+        receta = self.modulo.construir_receta_jumbo(
+            texto.splitlines(), texto, "inbox/sopa.docx"
+        )
+
+        self.assertIsNone(receta["tiempoTotal"])
+        self.assertIn("tiempoTotal", receta["camposFaltantes"])
+        self.assertEqual(receta["estado"], "borrador")
+
+    def test_simple_exige_al_menos_una_duracion(self):
+        texto = (
+            "Título: Sopa de verduras\n"
+            "Descripción: Una sopa casera y reconfortante.\n"
+            "Porciones: 4\n"
+            "Tiempo de preparación: 15 min\n"
+            "Dificultad: fácil\n"
+            "Categorías: cena\n"
+            "Ingredientes:\n"
+            "1 kg verduras\n"
+            "Pasos:\n"
+            "Cocinar las verduras.\n"
+        )
+
+        con_tiempo = self.modulo.construir_receta_simple(
+            texto, texto.splitlines(), "inbox/sopa.docx"
+        )
+        sin_tiempo_texto = texto.replace("Tiempo de preparación: 15 min\n", "")
+        sin_tiempo = self.modulo.construir_receta_simple(
+            sin_tiempo_texto, sin_tiempo_texto.splitlines(), "inbox/sopa.docx"
+        )
+
+        self.assertNotIn("tiempoTotal", con_tiempo["camposFaltantes"])
+        self.assertEqual(con_tiempo["estado"], "listo-para-cargar")
+        self.assertIn("tiempoTotal", sin_tiempo["camposFaltantes"])
+        self.assertEqual(sin_tiempo["estado"], "borrador")
 
     def test_extrae_png_aunque_el_word_la_guarde_como_bin(self):
         png = b"\x89PNG\r\n\x1a\n" + b"\x00" * 16

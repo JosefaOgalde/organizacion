@@ -170,6 +170,8 @@ def expandir_bloques(doc: dict, *, fuente: str = "") -> dict:
         faltantes.append("pasos")
     if not porciones:
         faltantes.append("porciones")
+    if not tiempo_total:
+        faltantes.append("tiempoTotal")
     if not dificultad:
         faltantes.append("dificultad")
     if not categorias:
