@@ -150,6 +150,7 @@ class ExplorarBmTests(unittest.TestCase):
             "descripcion": "Descripción",
             "ingredientes": [{"nombre": "Ingrediente"}],
             "pasos": [{"orden": 1, "texto": "Preparar"}],
+            "tiempoTotal": "30 min",
             "estado": "listo-para-cargar",
             "camposFaltantes": [],
         }
@@ -308,6 +309,30 @@ class ExplorarBmTests(unittest.TestCase):
                 exit_code = self.modulo.main()
 
         self.assertEqual(exit_code, 3)
+
+    def test_main_bloquea_json_antiguo_sin_duracion(self):
+        receta = {**self.receta_valida, "tiempoTotal": None}
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "receta.json"
+            path.write_text(json.dumps(receta), encoding="utf-8")
+            argv = ["explorar-bm-cencosud.py", "--fill-json", str(path), "--publish"]
+            with (
+                patch.object(sys, "argv", argv),
+                contextlib.redirect_stdout(io.StringIO()),
+                contextlib.redirect_stderr(io.StringIO()),
+            ):
+                exit_code = self.modulo.main()
+
+        self.assertEqual(exit_code, 3)
+
+    def test_preflight_acepta_tiempo_de_coccion(self):
+        receta = {
+            **self.receta_valida,
+            "tiempoTotal": None,
+            "tiempoCoccion": "20 min",
+        }
+
+        self.assertEqual(self.modulo.errores_prepublicacion(receta), [])
 
     def test_publicacion_aborta_si_falla_rellenado_requerido(self):
         runtime = RuntimeFalso({"#pasos"})

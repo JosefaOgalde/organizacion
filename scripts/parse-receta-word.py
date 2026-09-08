@@ -384,6 +384,8 @@ def construir_receta_jumbo(lines: list[str], texto: str, fuente: str) -> dict:
         faltantes.append("pasos")
     if not barra.get("porciones"):
         faltantes.append("porciones")
+    if not barra.get("tiempoTotal"):
+        faltantes.append("tiempoTotal")
     if not barra.get("dificultad"):
         faltantes.append("dificultad")
     if not categorias:
@@ -484,6 +486,8 @@ def construir_receta_simple(texto: str, lines: list[str], fuente: str) -> dict:
         faltantes.append("pasos")
     if not porciones:
         faltantes.append("porciones")
+    if not any((t_tot, t_prep, t_coc)):
+        faltantes.append("tiempoTotal")
     if not dificultad:
         faltantes.append("dificultad")
     if not categorias:

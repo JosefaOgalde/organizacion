@@ -64,6 +64,7 @@ SCREENSHOT_PATH = SECRETS / "bm-screenshot.png"
 MAPA_SELECTORES_PATH = SECRETS / "bm-selectores.json"
 CAMPOS_REQUERIDOS_PUBLICACION = ("titulo", "descripcion", "ingredientes", "pasos")
 CAMPOS_FALTANTES_NO_BLOQUEANTES = {"ingredientes.skuCencosud"}
+CAMPOS_DURACION = ("tiempoTotal", "tiempoPreparacion", "tiempoCoccion")
 
 # CMS Jumbo Recetas: cada bloque se edita con su lápiz (no es un formulario plano).
 COMPONENTES_CMS = (
@@ -302,6 +303,8 @@ def errores_prepublicacion(receta: dict) -> list[str]:
     vacios = [campo for campo in CAMPOS_REQUERIDOS_PUBLICACION if not receta.get(campo)]
     if vacios:
         errores.append("campos requeridos vacíos=" + ", ".join(vacios))
+    if not any(str(receta.get(campo) or "").strip() for campo in CAMPOS_DURACION):
+        errores.append("duración vacía (se requiere tiempoTotal, tiempoPreparacion o tiempoCoccion)")
     return errores
 
 

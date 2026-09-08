@@ -151,6 +151,7 @@ class PublicarRecetaTests(unittest.TestCase):
             "descripcion": "Descripción",
             "ingredientes": [{"nombre": "Ingrediente"}],
             "pasos": [{"orden": 1, "texto": "Preparar"}],
+            "tiempoTotal": "30 min",
             "estado": "listo-para-cargar",
             "camposFaltantes": [],
         }
@@ -214,6 +215,24 @@ class PublicarRecetaTests(unittest.TestCase):
         self.assertEqual(exit_code, 3)
         self.assertEqual(runtime.lanzamientos, 0)
         self.assertEqual(guardada, receta)
+
+    def test_publicacion_bloquea_json_antiguo_sin_duracion(self):
+        receta = {**self.receta_valida, "tiempoTotal": None}
+
+        exit_code, runtime, guardada = self.ejecutar(receta)
+
+        self.assertEqual(exit_code, 3)
+        self.assertEqual(runtime.lanzamientos, 0)
+        self.assertEqual(guardada, receta)
+
+    def test_preflight_acepta_tiempo_de_preparacion(self):
+        receta = {
+            **self.receta_valida,
+            "tiempoTotal": None,
+            "tiempoPreparacion": "15 min",
+        }
+
+        self.assertEqual(self.modulo.errores_prepublicacion(receta), [])
 
     def test_sku_faltante_no_bloquea_publicacion(self):
         receta = {
