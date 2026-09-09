@@ -235,6 +235,7 @@ class PublicarRecetaTests(unittest.TestCase):
     def test_reproduccion_regresion_publica_sin_rellenar_metadatos_seo(self):
         receta = {
             **self.receta_valida,
+            "categorias": ["Categoría centinela"],
             "seo": {
                 "metaTitulo": "Título SEO centinela",
                 "metaDescripcion": "Descripción SEO centinela",
@@ -248,8 +249,42 @@ class PublicarRecetaTests(unittest.TestCase):
                 "field_meta_descripcion": "#meta-description",
             }
         )
+        explorar = self.modulo._cargar_explorar()
 
-        exit_code, runtime, guardada = self.ejecutar(receta)
+        with contextlib.ExitStack() as stack:
+            for nombre, retorno in {
+                "esperar_ficha_en_lienzo": "https://bm.invalid/ficha-centinela",
+                "avisar_si_salio_de_default": False,
+                "gestor_sin_ficha": False,
+                "en_vista_default_cms": False,
+                "_hay_modal_sin_guardar": False,
+                "editor_actual": None,
+                "esperar_lienzo_bloques": True,
+                "bloque_ya_cargado": False,
+                "abrir_lapiz_componente": True,
+                "restaurar_ficha_si_salio": False,
+                "parece_cms_vacio": False,
+                "puede_rellenar_editor": True,
+                "asegurar_titulo_cabecera": True,
+                "sigue_duracion_invalida": False,
+                "subir_imagen_portada": True,
+                "finalizar_editor_cabecera": True,
+                "fill_lista_tags": 1,
+                "finalizar_editor_tags": True,
+                "fill_lista_acordeones": 1,
+                "guardar_y_volver_al_lienzo": True,
+                "finalizar_editor_instrucciones": True,
+                "escribir_paso_a_paso_html": True,
+                "resolver_borrador_editor": False,
+                "activar_html_paso_a_paso": True,
+                "sigue_dato_requerido": False,
+                "finalizar_editor_seo": True,
+            }.items():
+                stack.enter_context(patch.object(explorar, nombre, return_value=retorno))
+            stack.enter_context(
+                patch.object(self.modulo, "_cargar_explorar", return_value=explorar)
+            )
+            exit_code, runtime, guardada = self.ejecutar(receta)
 
         self.assertEqual(exit_code, 0)
         self.assertEqual(runtime.clicks, ["#publicar"])
