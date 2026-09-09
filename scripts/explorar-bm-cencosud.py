@@ -66,26 +66,6 @@ CAMPOS_REQUERIDOS_PUBLICACION = ("titulo", "descripcion", "ingredientes", "pasos
 CAMPOS_FALTANTES_NO_BLOQUEANTES = {"ingredientes.skuCencosud"}
 
 
-def _agent_debug_log(hypothesis_id: str, location: str, message: str, data: dict) -> None:
-    try:
-        with Path("/opt/cursor/logs/debug.log").open("a", encoding="utf-8") as log:
-            log.write(
-                json.dumps(
-                    {
-                        "hypothesisId": hypothesis_id,
-                        "location": location,
-                        "message": message,
-                        "data": data,
-                        "timestamp": __import__("time").time_ns() // 1_000_000,
-                    },
-                    ensure_ascii=False,
-                )
-                + "\n"
-            )
-    except OSError:
-        pass
-
-
 # CMS Jumbo Recetas: cada bloque se edita con su lápiz (no es un formulario plano).
 COMPONENTES_CMS = (
     {
@@ -6615,19 +6595,6 @@ def escribir_paso_a_paso_html(page, html: str) -> bool:
 def rellenar_seo_html(page, receta: dict) -> bool:
     """Enciende HTML + Script y pega Consejos con etiquetas en content *."""
     html = html_seo_consejos(receta)
-    seo = receta.get("seo") or {}
-    # region agent log
-    _agent_debug_log(
-        "B",
-        "explorar-bm-cencosud.py:rellenar_seo_html/entrada",
-        "El helper SEO prepara únicamente el contenido HTML",
-        {
-            "htmlPresent": bool(html),
-            "metaTituloPresent": bool(seo.get("metaTitulo")),
-            "metaDescripcionPresent": bool(seo.get("metaDescripcion")),
-        },
-    )
-    # endregion
     if not html:
         print("  · Sin HTML de Consejos para SEO.")
         return False
@@ -7066,22 +7033,6 @@ def fill_from_receta(
         for nombre, _key, valor in metadatos_seo
         if valor is not None and str(valor).strip()
     )
-    # region agent log
-    _agent_debug_log(
-        "A",
-        "explorar-bm-cencosud.py:fill_from_receta/entrada",
-        "fill_from_receta recibió metadatos y selectores SEO",
-        {
-            "dryRun": dry_run,
-            "metaTituloPresent": bool(seo.get("metaTitulo")),
-            "metaDescripcionPresent": bool(seo.get("metaDescripcion")),
-            "metaTituloSelectorPresent": bool(selectores.get("field_meta_titulo")),
-            "metaDescripcionSelectorPresent": bool(
-                selectores.get("field_meta_descripcion")
-            ),
-        },
-    )
-    # endregion
     url_ficha = url_ficha or url_actual(page)
     if es_lista_proyectos_cms(url_ficha):
         print(
@@ -7100,18 +7051,6 @@ def fill_from_receta(
         )
 
     def fill(key: str, value: str | None) -> bool:
-        # region agent log
-        _agent_debug_log(
-            "A",
-            "explorar-bm-cencosud.py:fill_from_receta/fill",
-            "Campo solicitado al helper interno fill",
-            {
-                "key": key,
-                "valuePresent": value is not None and value != "",
-                "selectorPresent": bool(selectores.get(key)),
-            },
-        )
-        # endregion
         if value is None or value == "":
             return False
         if key in ("field_tiempo", "field_porciones", "field_tiempo_prep", "field_tiempo_coccion"):
@@ -7442,22 +7381,6 @@ def fill_from_receta(
     else:
         resultados.setdefault("pasos", False)
 
-    seo_component = next(c for c in COMPONENTES_CMS if c["clave"] == "seo")
-    # region agent log
-    _agent_debug_log(
-        "C",
-        "explorar-bm-cencosud.py:fill_from_receta/grupo-seo",
-        "El flujo abre SEO solicitando solo field_seo_html",
-        {
-            "requestedFields": ["field_seo_html"],
-            "componentFields": list(seo_component["campos"]),
-            "metaTituloSelectorPresent": bool(selectores.get("field_meta_titulo")),
-            "metaDescripcionSelectorPresent": bool(
-                selectores.get("field_meta_descripcion")
-            ),
-        },
-    )
-    # endregion
     campos_editor_seo = ["field_seo_html"] + [
         key
         for nombre, key, _valor in metadatos_seo
@@ -7508,19 +7431,6 @@ def fill_from_receta(
         fallos_requeridos = [
             campo for campo in campos_requeridos if not resultados.get(campo, False)
         ]
-        # region agent log
-        _agent_debug_log(
-            "D",
-            "explorar-bm-cencosud.py:fill_from_receta/prepublicacion",
-            "La compuerta de publicación evalúa campos requeridos",
-            {
-                "resultadosTrue": sorted(k for k, v in resultados.items() if v),
-                "requiredFailures": fallos_requeridos,
-                "metaTituloTracked": "meta_titulo" in resultados,
-                "metaDescripcionTracked": "meta_descripcion" in resultados,
-            },
-        )
-        # endregion
         if fallos_requeridos:
             print(
                 "Publicación abortada: falló el rellenado de campos requeridos: "
