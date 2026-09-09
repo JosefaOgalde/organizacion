@@ -46,6 +46,7 @@ class LocatorFalso:
         return "input"
 
     def fill(self, _value):
+        self.runtime.fills.append((self.selector, _value))
         return None
 
     def select_option(self, **_kwargs):
@@ -132,6 +133,7 @@ class RuntimeFalso:
     def __init__(self, selectores_ausentes=()):
         self.selectores_ausentes = set(selectores_ausentes)
         self.clicks = []
+        self.fills = []
         self.gotos = []
         self.lanzamientos = 0
 
@@ -229,6 +231,89 @@ class PublicarRecetaTests(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertEqual(runtime.clicks, ["#publicar"])
         self.assertEqual(guardada["estado"], "cargado")
+
+    def test_reproduccion_regresion_rellena_y_exige_metadatos_seo_presentes(self):
+        receta = {
+            **self.receta_valida,
+            "categorias": ["Categoría centinela"],
+            "seo": {
+                "metaTitulo": "Título SEO centinela",
+                "metaDescripcion": "Descripción SEO centinela",
+            },
+            "tips": ["Consejo centinela"],
+        }
+        self.selectores.update(
+            {
+                "field_seo_html": "#seo-html",
+                "field_meta_titulo": "#meta-title",
+                "field_meta_descripcion": "#meta-description",
+            }
+        )
+        explorar = self.modulo._cargar_explorar()
+
+        with contextlib.ExitStack() as stack:
+            for nombre, retorno in {
+                "esperar_ficha_en_lienzo": "https://bm.invalid/ficha-centinela",
+                "avisar_si_salio_de_default": False,
+                "gestor_sin_ficha": False,
+                "en_vista_default_cms": False,
+                "_hay_modal_sin_guardar": False,
+                "editor_actual": None,
+                "esperar_lienzo_bloques": True,
+                "bloque_ya_cargado": False,
+                "abrir_lapiz_componente": True,
+                "restaurar_ficha_si_salio": False,
+                "parece_cms_vacio": False,
+                "puede_rellenar_editor": True,
+                "asegurar_titulo_cabecera": True,
+                "sigue_duracion_invalida": False,
+                "subir_imagen_portada": True,
+                "finalizar_editor_cabecera": True,
+                "fill_lista_tags": 1,
+                "finalizar_editor_tags": True,
+                "fill_lista_acordeones": 1,
+                "guardar_y_volver_al_lienzo": True,
+                "finalizar_editor_instrucciones": True,
+                "escribir_paso_a_paso_html": True,
+                "resolver_borrador_editor": False,
+                "activar_html_paso_a_paso": True,
+                "sigue_dato_requerido": False,
+                "finalizar_editor_seo": True,
+            }.items():
+                stack.enter_context(patch.object(explorar, nombre, return_value=retorno))
+            stack.enter_context(
+                patch.object(self.modulo, "_cargar_explorar", return_value=explorar)
+            )
+            exit_code, runtime, guardada = self.ejecutar(receta)
+
+            self.assertEqual(exit_code, 0)
+            self.assertEqual(runtime.clicks, ["#publicar"])
+            self.assertIn(("#meta-title", "Título SEO centinela"), runtime.fills)
+            self.assertIn(
+                ("#meta-description", "Descripción SEO centinela"), runtime.fills
+            )
+            self.assertEqual(guardada["estado"], "cargado")
+
+            for selector_fallido in ("#meta-title", "#meta-description"):
+                with self.subTest(selector_fallido=selector_fallido):
+                    exit_code, runtime, guardada = self.ejecutar(
+                        receta, selectores_ausentes={selector_fallido}
+                    )
+
+                    self.assertEqual(exit_code, 4)
+                    self.assertEqual(runtime.clicks, [])
+                    self.assertEqual(guardada["estado"], "listo-para-cargar")
+
+            receta_antigua = {
+                **self.receta_valida,
+                "categorias": ["Categoría centinela"],
+                "tips": ["Consejo centinela"],
+            }
+            exit_code, runtime, guardada = self.ejecutar(receta_antigua)
+
+            self.assertEqual(exit_code, 0)
+            self.assertEqual(runtime.clicks, ["#publicar"])
+            self.assertEqual(guardada["estado"], "cargado")
 
     def test_dry_run_conserva_flujo_de_borrador(self):
         receta = {
