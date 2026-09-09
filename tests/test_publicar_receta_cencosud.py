@@ -286,23 +286,34 @@ class PublicarRecetaTests(unittest.TestCase):
             )
             exit_code, runtime, guardada = self.ejecutar(receta)
 
-        self.assertEqual(exit_code, 0)
-        self.assertEqual(runtime.clicks, ["#publicar"])
-        self.assertIn(("#meta-title", "Título SEO centinela"), runtime.fills)
-        self.assertIn(
-            ("#meta-description", "Descripción SEO centinela"), runtime.fills
-        )
-        self.assertEqual(guardada["estado"], "cargado")
+            self.assertEqual(exit_code, 0)
+            self.assertEqual(runtime.clicks, ["#publicar"])
+            self.assertIn(("#meta-title", "Título SEO centinela"), runtime.fills)
+            self.assertIn(
+                ("#meta-description", "Descripción SEO centinela"), runtime.fills
+            )
+            self.assertEqual(guardada["estado"], "cargado")
 
-        for selector_fallido in ("#meta-title", "#meta-description"):
-            with self.subTest(selector_fallido=selector_fallido):
-                exit_code, runtime, guardada = self.ejecutar(
-                    receta, selectores_ausentes={selector_fallido}
-                )
+            for selector_fallido in ("#meta-title", "#meta-description"):
+                with self.subTest(selector_fallido=selector_fallido):
+                    exit_code, runtime, guardada = self.ejecutar(
+                        receta, selectores_ausentes={selector_fallido}
+                    )
 
-                self.assertEqual(exit_code, 4)
-                self.assertEqual(runtime.clicks, [])
-                self.assertEqual(guardada["estado"], "listo-para-cargar")
+                    self.assertEqual(exit_code, 4)
+                    self.assertEqual(runtime.clicks, [])
+                    self.assertEqual(guardada["estado"], "listo-para-cargar")
+
+            receta_antigua = {
+                **self.receta_valida,
+                "categorias": ["Categoría centinela"],
+                "tips": ["Consejo centinela"],
+            }
+            exit_code, runtime, guardada = self.ejecutar(receta_antigua)
+
+            self.assertEqual(exit_code, 0)
+            self.assertEqual(runtime.clicks, ["#publicar"])
+            self.assertEqual(guardada["estado"], "cargado")
 
     def test_dry_run_conserva_flujo_de_borrador(self):
         receta = {
