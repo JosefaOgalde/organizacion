@@ -7057,6 +7057,15 @@ def fill_from_receta(
 ) -> bool:
     resultados = {}
     seo = receta.get("seo") or {}
+    metadatos_seo = (
+        ("meta_titulo", "field_meta_titulo", seo.get("metaTitulo")),
+        ("meta_descripcion", "field_meta_descripcion", seo.get("metaDescripcion")),
+    )
+    metadatos_requeridos = tuple(
+        nombre
+        for nombre, _key, valor in metadatos_seo
+        if valor is not None and str(valor).strip()
+    )
     # region agent log
     _agent_debug_log(
         "A",
@@ -7215,6 +7224,13 @@ def fill_from_receta(
         guardar_y_volver_al_lienzo(page, url_ficha)
         return ok_keys
 
+    def fill_metadatos_seo() -> dict[str, bool]:
+        return {
+            nombre: fill(key, valor)
+            for nombre, key, valor in metadatos_seo
+            if nombre in metadatos_requeridos
+        }
+
     print("Rellenando la receta completa (lápiz de cada bloque, Cabecera incluida)…")
     print(f"  · Textos «Edita este componente» visibles: {_contar_placeholder_vacio(page)}")
     if _hay_modal_sin_guardar(page):
@@ -7297,6 +7313,7 @@ def fill_from_receta(
     if editor_actual(page) == "seo":
         print("  · Ya estoy en SEO HTML. Enciendo HTML + Script y pego las etiquetas.")
         html_seo = html_seo_consejos(receta)
+        resultados.update(fill_metadatos_seo())
         if rellenar_seo_html(page, receta):
             resultados["seo"] = True
             if not finalizar_editor_seo(page, url_ficha, html_seo):
@@ -7441,8 +7458,14 @@ def fill_from_receta(
         },
     )
     # endregion
-    if abrir_grupo("seo", ["field_seo_html"]) and puede_rellenar_editor(page, "seo"):
+    campos_editor_seo = ["field_seo_html"] + [
+        key
+        for nombre, key, _valor in metadatos_seo
+        if nombre in metadatos_requeridos
+    ]
+    if abrir_grupo("seo", campos_editor_seo) and puede_rellenar_editor(page, "seo"):
         html_seo = html_seo_consejos(receta)
+        resultados.update(fill_metadatos_seo())
         if rellenar_seo_html(page, receta):
             resultados["seo"] = True
             if not finalizar_editor_seo(page, url_ficha, html_seo):
@@ -7481,8 +7504,9 @@ def fill_from_receta(
             print("Dry-run: cada editor se guardó con su lápiz. No publico.")
         return True
     else:
+        campos_requeridos = CAMPOS_REQUERIDOS_PUBLICACION + metadatos_requeridos
         fallos_requeridos = [
-            campo for campo in CAMPOS_REQUERIDOS_PUBLICACION if not resultados.get(campo, False)
+            campo for campo in campos_requeridos if not resultados.get(campo, False)
         ]
         # region agent log
         _agent_debug_log(

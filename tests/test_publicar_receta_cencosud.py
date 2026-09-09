@@ -232,7 +232,7 @@ class PublicarRecetaTests(unittest.TestCase):
         self.assertEqual(runtime.clicks, ["#publicar"])
         self.assertEqual(guardada["estado"], "cargado")
 
-    def test_reproduccion_regresion_publica_sin_rellenar_metadatos_seo(self):
+    def test_reproduccion_regresion_rellena_y_exige_metadatos_seo_presentes(self):
         receta = {
             **self.receta_valida,
             "categorias": ["Categoría centinela"],
@@ -288,10 +288,21 @@ class PublicarRecetaTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 0)
         self.assertEqual(runtime.clicks, ["#publicar"])
-        selectores_rellenados = {selector for selector, _value in runtime.fills}
-        self.assertNotIn("#meta-title", selectores_rellenados)
-        self.assertNotIn("#meta-description", selectores_rellenados)
+        self.assertIn(("#meta-title", "Título SEO centinela"), runtime.fills)
+        self.assertIn(
+            ("#meta-description", "Descripción SEO centinela"), runtime.fills
+        )
         self.assertEqual(guardada["estado"], "cargado")
+
+        for selector_fallido in ("#meta-title", "#meta-description"):
+            with self.subTest(selector_fallido=selector_fallido):
+                exit_code, runtime, guardada = self.ejecutar(
+                    receta, selectores_ausentes={selector_fallido}
+                )
+
+                self.assertEqual(exit_code, 4)
+                self.assertEqual(runtime.clicks, [])
+                self.assertEqual(guardada["estado"], "listo-para-cargar")
 
     def test_dry_run_conserva_flujo_de_borrador(self):
         receta = {
