@@ -46,6 +46,7 @@ class LocatorFalso:
         return "input"
 
     def fill(self, _value):
+        self.runtime.fills.append((self.selector, _value))
         return None
 
     def select_option(self, **_kwargs):
@@ -132,6 +133,7 @@ class RuntimeFalso:
     def __init__(self, selectores_ausentes=()):
         self.selectores_ausentes = set(selectores_ausentes)
         self.clicks = []
+        self.fills = []
         self.gotos = []
         self.lanzamientos = 0
 
@@ -228,6 +230,32 @@ class PublicarRecetaTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 0)
         self.assertEqual(runtime.clicks, ["#publicar"])
+        self.assertEqual(guardada["estado"], "cargado")
+
+    def test_reproduccion_regresion_publica_sin_rellenar_metadatos_seo(self):
+        receta = {
+            **self.receta_valida,
+            "seo": {
+                "metaTitulo": "Título SEO centinela",
+                "metaDescripcion": "Descripción SEO centinela",
+            },
+            "tips": ["Consejo centinela"],
+        }
+        self.selectores.update(
+            {
+                "field_seo_html": "#seo-html",
+                "field_meta_titulo": "#meta-title",
+                "field_meta_descripcion": "#meta-description",
+            }
+        )
+
+        exit_code, runtime, guardada = self.ejecutar(receta)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(runtime.clicks, ["#publicar"])
+        selectores_rellenados = {selector for selector, _value in runtime.fills}
+        self.assertNotIn("#meta-title", selectores_rellenados)
+        self.assertNotIn("#meta-description", selectores_rellenados)
         self.assertEqual(guardada["estado"], "cargado")
 
     def test_dry_run_conserva_flujo_de_borrador(self):

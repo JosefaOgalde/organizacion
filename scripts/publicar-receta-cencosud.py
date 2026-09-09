@@ -46,6 +46,26 @@ CAMPOS_REQUERIDOS_PUBLICACION = ("titulo", "descripcion", "ingredientes", "pasos
 CAMPOS_FALTANTES_NO_BLOQUEANTES = {"ingredientes.skuCencosud"}
 
 
+def _agent_debug_log(hypothesis_id: str, location: str, message: str, data: dict) -> None:
+    try:
+        with Path("/opt/cursor/logs/debug.log").open("a", encoding="utf-8") as log:
+            log.write(
+                json.dumps(
+                    {
+                        "hypothesisId": hypothesis_id,
+                        "location": location,
+                        "message": message,
+                        "data": data,
+                        "timestamp": __import__("time").time_ns() // 1_000_000,
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n"
+            )
+    except OSError:
+        pass
+
+
 def _cargar_explorar():
     spec = importlib.util.spec_from_file_location("explorar_bm_cencosud", EXPLORAR_PATH)
     modulo = importlib.util.module_from_spec(spec)
@@ -228,9 +248,34 @@ def main() -> int:
         url_ficha = explorar.esperar_ficha_en_lienzo(page, headed=headed)
 
         print("Rellenando (solo lápices del lienzo; no toco la paleta)…")
+        seo = receta.get("seo") or {}
+        # region agent log
+        _agent_debug_log(
+            "A",
+            "publicar-receta-cencosud.py:main/delegacion",
+            "Publicador delega la receta completa a fill_from_receta",
+            {
+                "dryRun": dry,
+                "metaTituloPresent": bool(seo.get("metaTitulo")),
+                "metaDescripcionPresent": bool(seo.get("metaDescripcion")),
+                "metaTituloSelectorPresent": bool(selectores.get("field_meta_titulo")),
+                "metaDescripcionSelectorPresent": bool(
+                    selectores.get("field_meta_descripcion")
+                ),
+            },
+        )
+        # endregion
         carga_ok = explorar.fill_from_receta(
             page, receta, selectores, dry_run=dry, url_ficha=url_ficha
         )
+        # region agent log
+        _agent_debug_log(
+            "D",
+            "publicar-receta-cencosud.py:main/retorno",
+            "fill_from_receta devolvió control al publicador",
+            {"dryRun": dry, "cargaOk": bool(carga_ok)},
+        )
+        # endregion
         resultado = 0
         if dry:
             if carga_ok:
