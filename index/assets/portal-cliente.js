@@ -599,7 +599,7 @@
     return `<div class="portal-imp-cta-row" id="portal-imp-panel-cta">
       <a href="./panel/" class="portal-imp-panel-cta">Resumen 50/50</a>
       <a href="#estrategia-redes" class="portal-imp-panel-cta portal-imp-panel-cta--redes">Estrategia redes ↓</a>
-      <a href="./panel/?tab=costos" class="portal-imp-panel-cta portal-imp-panel-cta--calc">Calculadora de productos</a>
+      <a href="./panel/costo/" class="portal-imp-panel-cta portal-imp-panel-cta--calc">Calculadora de productos</a>
       <a href="./catalogo/" class="portal-imp-panel-cta">Catálogo IG</a>
     </div>`;
   }
@@ -640,7 +640,7 @@
             }
             if (c.slug === 'impresoreando' && /costos de producci/i.test(e)) {
               return `<li class="portal-landing-chip portal-landing-chip--link">
-                <a href="./panel/?tab=costos" class="portal-landing-chip__a">${escapeHtml(e)}</a>
+                <a href="./panel/costo/" class="portal-landing-chip__a">${escapeHtml(e)}</a>
               </li>`;
             }
             if (c.slug === 'impresoreando' && /cat[aá]logo/i.test(e)) {
@@ -675,7 +675,7 @@
       <h2>${escapeHtml(s.titulo)}</h2>
       <p>${escapeHtml(s.texto)}</p>
       ${esPanelImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./panel/">Resumen 50/50 →</a></p>` : ''}
-      ${esCalcImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./panel/?tab=costos">Calculadora de productos →</a></p>` : ''}
+      ${esCalcImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./panel/costo/">Calculadora de productos →</a></p>` : ''}
       ${esCatImp ? `<p class="portal-imp-panel-sec__action"><a class="portal-btn" href="./catalogo/">Ver catálogo 1080×1350 →</a></p>` : ''}
     </section>`;
       })
@@ -811,7 +811,7 @@
       c.slug === 'impresoreando'
         ? `<a href="./panel/" class="portal-btn portal-btn--imp-panel">Resumen 50/50</a>
            <a href="#estrategia-redes" class="portal-btn" style="background:#eef7f2;border-color:#5a8f7b;color:#2f5c4a">Estrategia redes ↓</a>
-           <a href="./panel/?tab=costos" class="portal-btn portal-btn--imp-calc">Calculadora</a>
+           <a href="./panel/costo/" class="portal-btn portal-btn--imp-calc">Calculadora</a>
            <a href="./catalogo/" class="portal-btn">Catálogo IG</a>`
         : '';
 

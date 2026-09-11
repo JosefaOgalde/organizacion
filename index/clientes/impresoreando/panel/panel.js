@@ -5604,9 +5604,8 @@
       <div class="imp-card">
         <h2>Costos por pieza (luz + materiales)</h2>
         <p class="imp-muted">Cada producto muestra <strong>nombre, SKU, costo y precio venta</strong>. Abrí <strong>Parámetros y desglose</strong> para editar. Luego <strong>Guardar parámetros</strong> y <strong>Guardar online</strong>.</p>
-        <p class="imp-muted">$/kg filamento ref.: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> · tarifa Chile <strong>${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp}</strong> $/kWh · ${p.impresoraModelo || 'Centauri Carbon 2'} <strong>${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw}</strong> kW</p>
+        <p class="imp-muted">$/kg filamento ref.: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> · tarifa Chile <strong>${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp}</strong> $/kWh · ${p.impresoraModelo || 'Centauri Carbon 2'} <strong>${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw}</strong> kW · <a href="./costo/">Calculadora online (celular)</a></p>
       </div>
-      ${blocks || '<div class="imp-card">Sin productos aún — usa la calculadora y Guarda como producto</div>'}
       <div class="imp-card">
         <h3>Calculadora rápida de pieza</h3>
         <form class="imp-form" id="form-calc-pieza">
@@ -5636,9 +5635,11 @@
         <div class="imp-calc-live" id="calc-pieza-live">Calculando…</div>
         <div class="imp-form-actions" style="margin-top:0.75rem">
           <button type="button" class="imp-btn imp-btn--primary" id="btn-calc-guardar">Guardar como producto</button>
+          <a class="imp-btn" href="./costo/">Abrir calculadora online</a>
           <span class="imp-muted">Total g = modelo + soportes + purge · abre modal con SKU y nombre</span>
         </div>
       </div>
+      ${blocks || '<div class="imp-card">Sin productos aún — usa la calculadora y Guarda como producto</div>'}
     `;
 
     const updateCalc = () => {

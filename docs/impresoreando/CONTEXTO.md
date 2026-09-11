@@ -9,12 +9,14 @@ Negocio impresiones 3D · Instagram @impresoreando · socios **Josefa + Nicolás
 | UI panel | `index/clientes/impresoreando/panel/` → `panel.js` · `panel.css` · `index.html` |
 | Logo | `identidad/logo-impresoreando.png` (wordmark proporción correcta) · ver `IDENTIDAD.md` · bump `?v=imp-logo-20260728` |
 | Venta rápida | `…/panel/venta/` |
+| Calculadora costo | `…/panel/costo/` · misma fórmula que Costos · celular / túnel |
 | Seed (repo) | `data/impresoreando-seed.json` |
 | Live (gitignored) | `data/impresoreando-live.json` |
 | API | `GET/POST /api/impresoreando` · `POST /api/impresoreando/venta` en `scripts/organizacion-server.js` |
 | Arranque | `git pull` → `ABRIR-LARAVEL.bat` → `http://127.0.0.1:8000/…` (mismo flujo que el resto del repo). El bat corre `scripts/sync-impresoreando-seed-a-live.js` + `force-imp-fiados-012-013.js` + `force-imp-ventas-014-015-fiado-008.js` + `force-imp-producto-abre-lata-esmalte-flor.js` para meter PED/productos/ventas nuevos del seed en el live local. Si no ves fiados/ventas nuevas: `node scripts/force-imp-ventas-014-015-fiado-008.js` y recarga Pedidos/Ventas. |
 | Landing | `http://127.0.0.1:8000/index/clientes/impresoreando/` · CTA **Resumen 50/50** · logo `identidad/logo-impresoreando.png` |
 | Panel / Resumen | `http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen` |
+| Calculadora costo | `http://127.0.0.1:8000/index/clientes/impresoreando/panel/costo/` · landing CTA **Calculadora de productos** |
 | Panel / Redes | `…/panel/?tab=redes` — campaña IG (junto a Bitácora) |
 | Estrategia redes | En la landing: `…/impresoreando/#estrategia-redes` (bloque verde siempre visible) · bat `VER-REDES-IMP.bat` · doc `docs/ESTRATEGIA-REDES-AGOSTO-2026.md` |
 | Catálogo IG | `…/impresoreando/catalogo/` · 1080×1350 · PDF `catalogo/export/catalogo-impresoreando.pdf` · `exportar-pngs.js` + `exportar-pdf.js` |
@@ -146,7 +148,7 @@ Calcular con la fórmula del panel y devolver costo/u + PVP sugerido (+margen 10
 
 ## Productos / costos
 
-Calculadora en `?tab=costos`. Tarjeta compacta: nombre · SKU · costo · precio venta · Eliminar. Resto en `<details> Parámetros y desglose`.
+Calculadora en `?tab=costos` y página online `…/panel/costo/` (celular / `ABRIR-VENTA-PUBLICA.bat`). Tarjeta compacta: nombre · SKU · costo · precio venta · Eliminar. Resto en `<details> Parámetros y desglose`.
 
 **Fórmula:** `filamento = g/1000 × $/kg` + `luz = horas × tarifaKwh × consumoKw` + pintado + metal + bolsa (+ recargo perfil si aplica).  
 **Markup sugerido:** `precio = costo × (1 + margenObjetivoPct/100)` (default +100%).  
@@ -220,7 +222,7 @@ ENVIAR-STATUS-IMPRESOREANDO.bat
 
 ## Celular / red
 
-`localhost` en el teléfono **no** funciona. Misma WiFi → IP de `GET /api/acceso` → `lan[]`. Fuera → `ABRIR-VENTA-PUBLICA.bat` (loca.lt) con `ABRIR-LARAVEL.bat` abierto (:8000).
+`localhost` en el teléfono **no** funciona. Misma WiFi → IP de `GET /api/acceso` → `lan[]`. Fuera → `ABRIR-VENTA-PUBLICA.bat` (loca.lt) con `ABRIR-LARAVEL.bat` abierto (:8000). El túnel entrega **venta** y **calculadora** (`…/panel/venta/` · `…/panel/costo/`).
 
 ## RFID handheld (tarjetas) — vigente
 

@@ -16,6 +16,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const PORT = Number(process.env.PORT) || 8000;
 const VENTA_PATH = '/index/clientes/impresoreando/panel/venta/';
+const COSTO_PATH = '/index/clientes/impresoreando/panel/costo/';
 
 function lanUrls() {
   const out = [];
@@ -24,6 +25,7 @@ function lanUrls() {
     for (const info of list || []) {
       if (info.family !== 'IPv4' || info.internal) continue;
       out.push(`http://${info.address}:${PORT}${VENTA_PATH}`);
+      out.push(`http://${info.address}:${PORT}${COSTO_PATH}`);
     }
   }
   return out;
@@ -45,7 +47,7 @@ function checkServer() {
 
 async function main() {
   console.log('');
-  console.log('  Impresoreando — túnel público para registrar ventas');
+  console.log('  Impresoreando — túnel público (ventas + calculadora)');
   console.log('  --------------------------------------------------');
   const ok = await checkServer();
   if (!ok) {
@@ -84,7 +86,8 @@ async function main() {
       console.log('');
       console.log('  ==============================================');
       console.log('  LINK PARA JOSEFA / NICOLÁS (cualquier lugar):');
-      console.log('  ' + base + VENTA_PATH);
+      console.log('  Venta:        ' + base + VENTA_PATH);
+      console.log('  Calculadora:  ' + base + COSTO_PATH);
       console.log('  ==============================================');
       console.log('  Compártelo por WhatsApp. No uses localhost en el celular.');
       console.log('');

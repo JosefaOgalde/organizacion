@@ -53,7 +53,8 @@ Abre:
 |-----|-----|
 | Panel socios | http://127.0.0.1:8000/index/clientes/impresoreando/panel/ |
 | Resumen | http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=resumen |
-| Calculadora de productos | http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=costos |
+| Calculadora de productos | http://127.0.0.1:8000/index/clientes/impresoreando/panel/costo/ |
+| Costos (lista) | http://127.0.0.1:8000/index/clientes/impresoreando/panel/?tab=costos |
 | Landing | http://127.0.0.1:8000/index/clientes/impresoreando/ |
 | Portal | http://127.0.0.1:8000/index/clientes/ |
 
