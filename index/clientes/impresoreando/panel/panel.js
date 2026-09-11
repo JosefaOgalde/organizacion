@@ -89,6 +89,7 @@
     if (asegurarProductoLimpiadorBrochas(d)) changed = true;
     if (asegurarProductoAlcanciaChanchito(d)) changed = true;
     if (asegurarProductoSoporteCelularChimuelo(d)) changed = true;
+    if (asegurarProductoLlaveroOnePiece(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
@@ -1237,6 +1238,71 @@
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     const id = 'prod-soporte-celular-chimuelo';
     const seed = seedSoporteCelularChimuelo();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
+      existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /**
+   * Llavero One Piece — slicer Elegoo 8,94 g · 17 m 23 s · PLA+ negro/rojo + argolla + bolsa.
+   * Soft seed: aplica si pendienteCosto o sin gramos; no pisa edición local con g.
+   */
+  function seedLlaveroOnePiece() {
+    const filamentoModeloGramos = 7.31;
+    const filamentoSoportesGramos = 0.11;
+    const filamentoPurgeGramos = 1.52; // descargado 0,71 + torre 0,80 + 0,01 redondeo slicer
+    const filamentoGramos = round2(
+      filamentoModeloGramos + filamentoSoportesGramos + filamentoPurgeGramos
+    ); // 8,94 g · 2,97 m
+    const horasImpresion = round2((17 + 23 / 60) / 60); // 17 m 23 s → 0,29 h
+    // fil 160,79 + luz 16,24 + argolla 50 + bolsa 50 = 277,03 → PVP fórmula +100% $554
+    return {
+      sku: 'LLONEPI001',
+      nombre: 'Llavero One Piece',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoModeloGramos,
+      filamentoSoportesGramos,
+      filamentoPurgeGramos,
+      filamentoMetros: 2.97,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 1,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 1667,
+      costoSlicerRef: 0.18,
+      pendienteCosto: false,
+      notas:
+        `Slicer 1 ud (todo al costo): modelo ${filamentoModeloGramos} g (2,43 m) + soportes ${filamentoSoportesGramos} g (0,04 m) + descargado 0,71 g + torre 0,80 g = ${filamentoGramos} g · 2,97 m · 17 m 23 s · coste slicer 0,18 · 2 cambios filamento. Multicolor: fil.1 1,32 g + fil.2 rojo 7,62 g. PLA+ negro/rojo $17.986/kg · Elegoo. Fil ~$161 (incl. purga/torre) + luz ~$16 + argolla $50 + bolsa $50 = costo ~$277 · PVP fórmula +100% ~$554 · cobrado $1.667/u (3× Cata SIE $5.000).`,
+    };
+  }
+
+  function asegurarProductoLlaveroOnePiece(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-llavero-one-piece';
+    const seed = seedLlaveroOnePiece();
     const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
     if (!existing) {
       d.productos.push({ id, ...seed });
@@ -3275,6 +3341,7 @@
       'prod-torreon': { sku: 'TORREON001', nombre: 'Torreón' },
       'prod-limpiador-brochas': { sku: 'LMBROC001', nombre: 'Limpiador de brochas' },
       'prod-alcancia-chanchito': { sku: 'ALCHAN001', nombre: 'Alcancía chanchito' },
+      'prod-llavero-one-piece': { sku: 'LLONEPI001', nombre: 'Llavero One Piece' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',

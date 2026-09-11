@@ -104,6 +104,13 @@ function main() {
       live.productos.push(JSON.parse(JSON.stringify(sp)));
       n += 1;
       console.log('+ producto', sku);
+    } else if (
+      !(Number(live.productos[idx].filamentoGramos) > 0) ||
+      live.productos[idx].pendienteCosto
+    ) {
+      live.productos[idx] = { ...live.productos[idx], ...JSON.parse(JSON.stringify(sp)) };
+      n += 1;
+      console.log('~ producto', sku);
     }
   }
 
