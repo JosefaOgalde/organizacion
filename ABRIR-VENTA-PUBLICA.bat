@@ -2,7 +2,7 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 echo.
-echo  Impresoreando — link publico para registrar ventas
+echo  Impresoreando — link publico (ventas + calculadora de costo)
 echo  (celular / cualquier red, no uses localhost en el telefono)
 echo.
 echo  1) Deja ABRIR-LARAVEL.bat corriendo en otra ventana (:8000)

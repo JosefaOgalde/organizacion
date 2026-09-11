@@ -26,7 +26,7 @@ const FORCE_VEN_IDS = [
   'ven-mel-soporte-020',
 ];
 const FORCE_GAS_IDS = ['gas-entrada-evento-3d-16100'];
-const FORCE_PROD_SKUS = ['LLONEPI001', 'ALCHAN001'];
+const FORCE_PROD_SKUS = ['LLONEPI001', 'ALCHAN001', 'ALESFL001'];
 
 function main() {
   if (!fs.existsSync(SEED)) {
@@ -104,6 +104,13 @@ function main() {
       live.productos.push(JSON.parse(JSON.stringify(sp)));
       n += 1;
       console.log('+ producto', sku);
+    } else if (
+      !(Number(live.productos[idx].filamentoGramos) > 0) ||
+      live.productos[idx].pendienteCosto
+    ) {
+      live.productos[idx] = { ...live.productos[idx], ...JSON.parse(JSON.stringify(sp)) };
+      n += 1;
+      console.log('~ producto', sku);
     }
   }
 

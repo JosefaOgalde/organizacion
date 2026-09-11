@@ -89,6 +89,7 @@
     if (asegurarProductoLimpiadorBrochas(d)) changed = true;
     if (asegurarProductoAlcanciaChanchito(d)) changed = true;
     if (asegurarProductoSoporteCelularChimuelo(d)) changed = true;
+    if (asegurarProductoAbreLataEsmalteFlor(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
@@ -1237,6 +1238,71 @@
     d.productos = Array.isArray(d.productos) ? d.productos : [];
     const id = 'prod-soporte-celular-chimuelo';
     const seed = seedSoporteCelularChimuelo();
+    const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
+    if (!existing) {
+      d.productos.push({ id, ...seed });
+      return true;
+    }
+    let changed = false;
+    if (existing.sku !== seed.sku) {
+      existing.sku = seed.sku;
+      changed = true;
+    }
+    if (existing.nombre !== seed.nombre) {
+      existing.nombre = seed.nombre;
+      changed = true;
+    }
+    if (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) {
+      Object.assign(existing, seed);
+      return true;
+    }
+    if (!(Number(existing.precioVentaSugeridoClp) > 0)) {
+      existing.precioVentaSugeridoClp = seed.precioVentaSugeridoClp;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /**
+   * Abre lata esmalte flor — slicer Elegoo 8,94 g · 17 m 23 s · PLA+ negro/rojo + bolsa.
+   * No es llavero: sin argolla. Soft seed: no pisa edición local con g.
+   */
+  function seedAbreLataEsmalteFlor() {
+    const filamentoModeloGramos = 7.31;
+    const filamentoSoportesGramos = 0.11;
+    const filamentoPurgeGramos = 1.52; // descargado 0,71 + torre 0,80 + 0,01 redondeo slicer
+    const filamentoGramos = round2(
+      filamentoModeloGramos + filamentoSoportesGramos + filamentoPurgeGramos
+    ); // 8,94 g · 2,97 m
+    const horasImpresion = round2((17 + 23 / 60) / 60); // 17 m 23 s → 0,29 h
+    // fil 160,79 + luz 16,24 + bolsa 50 = 227,03 → PVP fórmula +100% $454
+    return {
+      sku: 'ALESFL001',
+      nombre: 'Abre lata esmalte flor',
+      activo: true,
+      impresoraId: 'imp-centauri-carbon-2',
+      filamentoModeloGramos,
+      filamentoSoportesGramos,
+      filamentoPurgeGramos,
+      filamentoMetros: 2.97,
+      filamentoGramos,
+      costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
+      horasImpresion,
+      minutosPintado: 0,
+      unidadesMetal: 0,
+      unidadesBolsa: 1,
+      precioVentaSugeridoClp: 454,
+      costoSlicerRef: 0.18,
+      pendienteCosto: false,
+      notas:
+        `Slicer 1 ud (todo al costo): modelo ${filamentoModeloGramos} g (2,43 m) + soportes ${filamentoSoportesGramos} g (0,04 m) + descargado 0,71 g + torre 0,80 g = ${filamentoGramos} g · 2,97 m · 17 m 23 s · coste slicer 0,18 · 2 cambios filamento. Multicolor: fil.1 1,32 g + fil.2 rojo 7,62 g. PLA+ negro/rojo $17.986/kg · Elegoo. Fil ~$161 (incl. purga/torre) + luz ~$16 + bolsa $50 = costo ~$227 · PVP sugerido $454. Sin argolla (no es llavero).`,
+    };
+  }
+
+  function asegurarProductoAbreLataEsmalteFlor(d) {
+    d.productos = Array.isArray(d.productos) ? d.productos : [];
+    const id = 'prod-abre-lata-esmalte-flor';
+    const seed = seedAbreLataEsmalteFlor();
     const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
     if (!existing) {
       d.productos.push({ id, ...seed });
@@ -3209,6 +3275,8 @@
     if (/(porta\s*completos?|portacompleto)/.test(t) && /bull/.test(t)) return 'PCPEBUL';
     if (/(porta\s*completos?|portacompleto)/.test(t) && /gato/.test(t)) return 'PCGATO';
     if (/(porta\s*completos?|portacompleto)/.test(t) && /perro/.test(t)) return 'PCPERRO';
+    if (/abre\s*lata/.test(t) && /(flor|esmalte)/.test(t)) return 'ALESFL';
+    if (/abre\s*lata/.test(t)) return 'ABLATA';
     if (/porta\s*lata/.test(t) && /monster|mons/.test(t)) return 'PLMONS';
     if (/bob|esponja/.test(t)) return 'PTBOBES';
     if (/nave/.test(t) && /horiz/.test(t)) return 'NAVEHOR';
@@ -3275,6 +3343,8 @@
       'prod-torreon': { sku: 'TORREON001', nombre: 'Torreón' },
       'prod-limpiador-brochas': { sku: 'LMBROC001', nombre: 'Limpiador de brochas' },
       'prod-alcancia-chanchito': { sku: 'ALCHAN001', nombre: 'Alcancía chanchito' },
+      'prod-llavero-one-piece': { sku: 'LLONEPI001', nombre: 'Llavero One Piece' },
+      'prod-abre-lata-esmalte-flor': { sku: 'ALESFL001', nombre: 'Abre lata esmalte flor' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',
@@ -5534,9 +5604,8 @@
       <div class="imp-card">
         <h2>Costos por pieza (luz + materiales)</h2>
         <p class="imp-muted">Cada producto muestra <strong>nombre, SKU, costo y precio venta</strong>. Abrí <strong>Parámetros y desglose</strong> para editar. Luego <strong>Guardar parámetros</strong> y <strong>Guardar online</strong>.</p>
-        <p class="imp-muted">$/kg filamento ref.: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> · tarifa Chile <strong>${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp}</strong> $/kWh · ${p.impresoraModelo || 'Centauri Carbon 2'} <strong>${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw}</strong> kW</p>
+        <p class="imp-muted">$/kg filamento ref.: <strong>${money(avgFilKg)}</strong> · luz/hora ≈ <strong>${money(costoHoraImpresora())}</strong> · tarifa Chile <strong>${p.tarifaKwhClp ?? LUZ_CHILE.tarifaKwhClp}</strong> $/kWh · ${p.impresoraModelo || 'Centauri Carbon 2'} <strong>${p.consumoImpresoraKw ?? LUZ_CHILE.consumoImpresoraKw}</strong> kW · <a href="./costo/">Calculadora online (celular)</a></p>
       </div>
-      ${blocks || '<div class="imp-card">Sin productos aún — usa la calculadora y Guarda como producto</div>'}
       <div class="imp-card">
         <h3>Calculadora rápida de pieza</h3>
         <form class="imp-form" id="form-calc-pieza">
@@ -5566,9 +5635,11 @@
         <div class="imp-calc-live" id="calc-pieza-live">Calculando…</div>
         <div class="imp-form-actions" style="margin-top:0.75rem">
           <button type="button" class="imp-btn imp-btn--primary" id="btn-calc-guardar">Guardar como producto</button>
+          <a class="imp-btn" href="./costo/">Abrir calculadora online</a>
           <span class="imp-muted">Total g = modelo + soportes + purge · abre modal con SKU y nombre</span>
         </div>
       </div>
+      ${blocks || '<div class="imp-card">Sin productos aún — usa la calculadora y Guarda como producto</div>'}
     `;
 
     const updateCalc = () => {

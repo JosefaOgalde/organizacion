@@ -130,6 +130,7 @@ if not errorlevel 1 (
   if exist "scripts\asegurar-impresoreando-live.js" node scripts\asegurar-impresoreando-live.js >nul 2>&1
   if exist "scripts\sync-impresoreando-seed-a-live.js" node scripts\sync-impresoreando-seed-a-live.js >nul 2>&1
   if exist "scripts\force-imp-producto-limpiador-brochas.js" node scripts\force-imp-producto-limpiador-brochas.js >nul 2>&1
+  if exist "scripts\force-imp-producto-abre-lata-esmalte-flor.js" node scripts\force-imp-producto-abre-lata-esmalte-flor.js >nul 2>&1
   if exist "scripts\force-imp-fiados-012-013.js" node scripts\force-imp-fiados-012-013.js >nul 2>&1
   if exist "scripts\force-imp-ventas-014-015-fiado-008.js" node scripts\force-imp-ventas-014-015-fiado-008.js >nul 2>&1
   if exist "scripts\force-imp-ped-007-anulado.js" node scripts\force-imp-ped-007-anulado.js >nul 2>&1

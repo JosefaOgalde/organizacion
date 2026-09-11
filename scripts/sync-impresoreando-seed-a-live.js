@@ -102,8 +102,11 @@ function main() {
       changed += 1;
       continue;
     }
-    // Completa g/h/precio si el live quedó vacío y el seed ya tiene cálculo.
-    if (!(Number(existing.filamentoGramos) > 0) && Number(sp.filamentoGramos) > 0) {
+    // Completa g/h/precio si el live quedó vacío o pendiente de costo y el seed ya tiene cálculo.
+    if (
+      (!(Number(existing.filamentoGramos) > 0) || existing.pendienteCosto) &&
+      Number(sp.filamentoGramos) > 0
+    ) {
       Object.assign(existing, sp);
       changed += 1;
     } else if (!(Number(existing.precioVentaSugeridoClp) > 0) && Number(sp.precioVentaSugeridoClp) > 0) {

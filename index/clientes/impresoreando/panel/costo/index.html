@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de costo · Impresoreando</title>
+  <link rel="stylesheet" href="../panel.css?v=imp-calc-online-1" />
+  <style>
+    .imp-venta-titulo {
+      margin: 0.35rem 0 0;
+      color: var(--imp-text);
+      font-size: 1.2rem;
+    }
+    .costo-ok {
+      display: none;
+      margin: 0.75rem 0;
+      padding: 0.75rem 0.9rem;
+      border-radius: 12px;
+      background: #dcefdc;
+      color: var(--imp-ok);
+      font-weight: 600;
+    }
+    .costo-ok.is-on { display: block; }
+    #costo-live { margin-top: 0.85rem; }
+    .imp-kg-otro[hidden] { display: none; }
+  </style>
+</head>
+<body class="imp-body">
+  <div class="imp-top-bleed">
+    <header class="imp-top imp-shell">
+      <div class="imp-brand">
+        <a class="imp-back" href="../?tab=costos">← Costos producto</a>
+        <a class="imp-logo-link" href="../../" aria-label="Impresoreando">
+          <img class="imp-logo" src="../../identidad/logo-ima2.png?v=ima2-claro-1" width="280" height="59" alt="impresoreando" />
+        </a>
+        <h1 class="imp-venta-titulo">Calculadora de costo</h1>
+        <p class="imp-sub">Misma fórmula del panel · Josefa + Nicolás · se guarda online</p>
+      </div>
+      <div class="imp-top-actions">
+        <span id="costo-status" class="imp-status">Cargando…</span>
+        <a class="imp-btn" href="../venta/">Registrar venta</a>
+      </div>
+    </header>
+  </div>
+
+  <main class="imp-main imp-shell">
+    <div class="imp-card">
+      <h2>Pieza desde el slicer</h2>
+      <p class="imp-muted">Gramos = modelo + soportes + purge/descargado/torre. Impresora <strong>nueva</strong> = Elegoo · <strong>antigua</strong> = Ender (recargo + otro $/kg).</p>
+      <div id="costo-ok" class="costo-ok">Producto guardado en Costos ✓</div>
+      <form class="imp-form" id="form-calc-online">
+        <label class="imp-form-span">Impresora
+          <select name="impresoraId" id="sel-impresora"></select>
+        </label>
+        <label>Modelo (g)<input name="modelo" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0" /></label>
+        <label>Soportes (g)<input name="soportes" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0" /></label>
+        <label>Purge / torre (g)<input name="purge" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0" /></label>
+        <label class="imp-form-span">Filamento
+          <select name="kgPreset" id="sel-kg">
+            <option value="17986">PLA+ negro / rojo · $17.986/kg</option>
+            <option value="16829">PLA amarillo / café · $16.829/kg</option>
+            <option value="12690">PLA blanco · $12.690/kg</option>
+            <option value="otro">Otro $/kg…</option>
+          </select>
+        </label>
+        <label class="imp-kg-otro" id="lbl-kg-otro" hidden>$ / kg (CLP)<input name="kg" type="number" min="0" step="0.01" inputmode="decimal" value="17986" /></label>
+        <label>Horas<input name="horasPart" type="number" min="0" step="1" inputmode="numeric" value="0" /></label>
+        <label>Minutos<input name="minutosPart" type="number" min="0" max="59" step="1" inputmode="numeric" value="0" /></label>
+        <label>Minutos pintado<input name="m" type="number" min="0" step="0.01" inputmode="decimal" value="0" /></label>
+        <label>Argollas metal<input name="metal" type="number" min="0" step="1" inputmode="numeric" value="0" /></label>
+        <label>Bolsas<input name="bolsa" type="number" min="0" step="1" inputmode="numeric" value="1" /></label>
+        <label class="imp-form-span">Nombre (para guardar)
+          <input name="nombre" placeholder="Ej. Abre lata esmalte flor" />
+        </label>
+      </form>
+      <div class="imp-costo-live" id="costo-live">Escribe los gramos del slicer…</div>
+      <div class="imp-form-actions" style="margin-top:0.75rem">
+        <button type="button" class="imp-btn imp-btn--primary" id="btn-guardar-prod">Guardar producto online</button>
+        <a class="imp-btn" href="../?tab=costos">Ver lista de Costos</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="./costo.js?v=imp-calc-online-4"></script>
+</body>
+</html>
