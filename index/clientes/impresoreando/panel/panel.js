@@ -89,7 +89,7 @@
     if (asegurarProductoLimpiadorBrochas(d)) changed = true;
     if (asegurarProductoAlcanciaChanchito(d)) changed = true;
     if (asegurarProductoSoporteCelularChimuelo(d)) changed = true;
-    if (asegurarProductoLlaveroOnePiece(d)) changed = true;
+    if (asegurarProductoAbreLataEsmalteFlor(d)) changed = true;
     if (eliminarProductosPlantillaObsoletos(d)) changed = true;
     if (asegurarGastosDisenosCults(d)) changed = true;
     if (asegurarGastosCompras20260729(d)) changed = true;
@@ -1264,10 +1264,10 @@
   }
 
   /**
-   * Llavero One Piece — slicer Elegoo 8,94 g · 17 m 23 s · PLA+ negro/rojo + argolla + bolsa.
-   * Soft seed: aplica si pendienteCosto o sin gramos; no pisa edición local con g.
+   * Abre lata esmalte flor — slicer Elegoo 8,94 g · 17 m 23 s · PLA+ negro/rojo + bolsa.
+   * No es llavero: sin argolla. Soft seed: no pisa edición local con g.
    */
-  function seedLlaveroOnePiece() {
+  function seedAbreLataEsmalteFlor() {
     const filamentoModeloGramos = 7.31;
     const filamentoSoportesGramos = 0.11;
     const filamentoPurgeGramos = 1.52; // descargado 0,71 + torre 0,80 + 0,01 redondeo slicer
@@ -1275,10 +1275,10 @@
       filamentoModeloGramos + filamentoSoportesGramos + filamentoPurgeGramos
     ); // 8,94 g · 2,97 m
     const horasImpresion = round2((17 + 23 / 60) / 60); // 17 m 23 s → 0,29 h
-    // fil 160,79 + luz 16,24 + argolla 50 + bolsa 50 = 277,03 → PVP fórmula +100% $554
+    // fil 160,79 + luz 16,24 + bolsa 50 = 227,03 → PVP fórmula +100% $454
     return {
-      sku: 'LLONEPI001',
-      nombre: 'Llavero One Piece',
+      sku: 'ALESFL001',
+      nombre: 'Abre lata esmalte flor',
       activo: true,
       impresoraId: 'imp-centauri-carbon-2',
       filamentoModeloGramos,
@@ -1289,20 +1289,20 @@
       costoFilamentoKgClp: COSTO_PLA_NEGRO_KG,
       horasImpresion,
       minutosPintado: 0,
-      unidadesMetal: 1,
+      unidadesMetal: 0,
       unidadesBolsa: 1,
-      precioVentaSugeridoClp: 1667,
+      precioVentaSugeridoClp: 454,
       costoSlicerRef: 0.18,
       pendienteCosto: false,
       notas:
-        `Slicer 1 ud (todo al costo): modelo ${filamentoModeloGramos} g (2,43 m) + soportes ${filamentoSoportesGramos} g (0,04 m) + descargado 0,71 g + torre 0,80 g = ${filamentoGramos} g · 2,97 m · 17 m 23 s · coste slicer 0,18 · 2 cambios filamento. Multicolor: fil.1 1,32 g + fil.2 rojo 7,62 g. PLA+ negro/rojo $17.986/kg · Elegoo. Fil ~$161 (incl. purga/torre) + luz ~$16 + argolla $50 + bolsa $50 = costo ~$277 · PVP fórmula +100% ~$554 · cobrado $1.667/u (3× Cata SIE $5.000).`,
+        `Slicer 1 ud (todo al costo): modelo ${filamentoModeloGramos} g (2,43 m) + soportes ${filamentoSoportesGramos} g (0,04 m) + descargado 0,71 g + torre 0,80 g = ${filamentoGramos} g · 2,97 m · 17 m 23 s · coste slicer 0,18 · 2 cambios filamento. Multicolor: fil.1 1,32 g + fil.2 rojo 7,62 g. PLA+ negro/rojo $17.986/kg · Elegoo. Fil ~$161 (incl. purga/torre) + luz ~$16 + bolsa $50 = costo ~$227 · PVP sugerido $454. Sin argolla (no es llavero).`,
     };
   }
 
-  function asegurarProductoLlaveroOnePiece(d) {
+  function asegurarProductoAbreLataEsmalteFlor(d) {
     d.productos = Array.isArray(d.productos) ? d.productos : [];
-    const id = 'prod-llavero-one-piece';
-    const seed = seedLlaveroOnePiece();
+    const id = 'prod-abre-lata-esmalte-flor';
+    const seed = seedAbreLataEsmalteFlor();
     const existing = d.productos.find((p) => p.id === id || p.sku === seed.sku);
     if (!existing) {
       d.productos.push({ id, ...seed });
@@ -3275,6 +3275,8 @@
     if (/(porta\s*completos?|portacompleto)/.test(t) && /bull/.test(t)) return 'PCPEBUL';
     if (/(porta\s*completos?|portacompleto)/.test(t) && /gato/.test(t)) return 'PCGATO';
     if (/(porta\s*completos?|portacompleto)/.test(t) && /perro/.test(t)) return 'PCPERRO';
+    if (/abre\s*lata/.test(t) && /(flor|esmalte)/.test(t)) return 'ALESFL';
+    if (/abre\s*lata/.test(t)) return 'ABLATA';
     if (/porta\s*lata/.test(t) && /monster|mons/.test(t)) return 'PLMONS';
     if (/bob|esponja/.test(t)) return 'PTBOBES';
     if (/nave/.test(t) && /horiz/.test(t)) return 'NAVEHOR';
@@ -3342,6 +3344,7 @@
       'prod-limpiador-brochas': { sku: 'LMBROC001', nombre: 'Limpiador de brochas' },
       'prod-alcancia-chanchito': { sku: 'ALCHAN001', nombre: 'Alcancía chanchito' },
       'prod-llavero-one-piece': { sku: 'LLONEPI001', nombre: 'Llavero One Piece' },
+      'prod-abre-lata-esmalte-flor': { sku: 'ALESFL001', nombre: 'Abre lata esmalte flor' },
     };
     const SKU_ALIAS = {
       MCPERROBU001: 'MCPEBUL001',

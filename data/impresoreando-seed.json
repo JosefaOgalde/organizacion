@@ -1069,7 +1069,7 @@
       "montoBruto": 5001,
       "descuentoClp": 1,
       "montoNeto": 5000,
-      "costoTotal": 831.09,
+      "costoTotal": 0,
       "canal": "WhatsApp",
       "notas": "Transferido desde PED-015 · 3× Llavero One Piece · pagado $5.000",
       "socioRegistro": "Ambos",
@@ -1081,8 +1081,8 @@
           "nombre": "Llavero One Piece",
           "cantidad": 3,
           "precioUnitarioClp": 1667,
-          "costoUnitarioClp": 277.03,
-          "filamento": "multicolor"
+          "costoUnitarioClp": 0,
+          "filamento": ""
         }
       ]
     },
@@ -1537,6 +1537,17 @@
       "sku": "LLONEPI001",
       "nombre": "Llavero One Piece",
       "activo": true,
+      "unidadesMetal": 1,
+      "unidadesBolsa": 1,
+      "precioVentaSugeridoClp": 1667,
+      "pendienteCosto": true,
+      "notas": "3 uds cobradas a Cata SIE $5.000 total ($1.667/u). Costo pendiente (sin imagen slicer)."
+    },
+    {
+      "id": "prod-abre-lata-esmalte-flor",
+      "sku": "ALESFL001",
+      "nombre": "Abre lata esmalte flor",
+      "activo": true,
       "impresoraId": "imp-centauri-carbon-2",
       "filamentoModeloGramos": 7.31,
       "filamentoSoportesGramos": 0.11,
@@ -1546,12 +1557,12 @@
       "costoFilamentoKgClp": 17986,
       "horasImpresion": 0.29,
       "minutosPintado": 0,
-      "unidadesMetal": 1,
+      "unidadesMetal": 0,
       "unidadesBolsa": 1,
-      "precioVentaSugeridoClp": 1667,
+      "precioVentaSugeridoClp": 454,
       "costoSlicerRef": 0.18,
       "pendienteCosto": false,
-      "notas": "Slicer 1 ud (todo al costo): modelo 7.31 g (2,43 m) + soportes 0.11 g (0,04 m) + descargado 0,71 g + torre 0,80 g = 8.94 g · 2,97 m · 17 m 23 s · coste slicer 0,18 · 2 cambios filamento. Multicolor: fil.1 1,32 g + fil.2 rojo 7,62 g. PLA+ negro/rojo $17.986/kg · Elegoo. Fil ~$161 (incl. purga/torre) + luz ~$16 + argolla $50 + bolsa $50 = costo ~$277 · PVP fórmula +100% ~$554 · cobrado $1.667/u (3× Cata SIE $5.000)."
+      "notas": "Slicer 1 ud (todo al costo): modelo 7.31 g (2,43 m) + soportes 0.11 g (0,04 m) + descargado 0,71 g + torre 0,80 g = 8.94 g · 2,97 m · 17 m 23 s · coste slicer 0,18 · 2 cambios filamento. Multicolor: fil.1 1,32 g + fil.2 rojo 7,62 g. PLA+ negro/rojo $17.986/kg · Elegoo. Fil ~$161 (incl. purga/torre) + luz ~$16 + bolsa $50 = costo ~$227 · PVP sugerido $454. Sin argolla (no es llavero)."
     }
   ],
   "planAds": {
@@ -2201,8 +2212,8 @@
           "nombre": "Llavero One Piece",
           "cantidad": 3,
           "precioUnitarioClp": 1667,
-          "costoUnitarioClp": 277.03,
-          "filamento": "multicolor",
+          "costoUnitarioClp": 0,
+          "filamento": "",
           "estado": "listo",
           "listos": 3,
           "enImpresion": 0
@@ -2211,7 +2222,7 @@
       "montoBruto": 5001,
       "descuentoClp": 1,
       "montoNeto": 5000,
-      "costoTotal": 831.09,
+      "costoTotal": 0,
       "estado": "transferido",
       "ventaId": "ven-cata-onepiece-018",
       "notas": "3× Llavero One Piece · transferido a venta I000018 · pagado $5.000",
