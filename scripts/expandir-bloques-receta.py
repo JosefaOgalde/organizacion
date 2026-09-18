@@ -124,6 +124,8 @@ def _lista_pasos(inst_bloque) -> tuple[list[dict], str]:
 def _lista_consejos(seo_bloque: dict) -> tuple[str, list[str]]:
     titulo = (seo_bloque.get("consejosTitulo") or seo_bloque.get("tipsTitulo") or seo_bloque.get("htmlTitulo") or "").strip()
     raw = seo_bloque.get("consejos") or seo_bloque.get("tips") or []
+    if isinstance(raw, str):
+        raw = [raw]
     consejos = [str(c).strip() for c in raw if str(c).strip()]
     return titulo, consejos
 

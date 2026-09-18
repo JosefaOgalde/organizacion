@@ -33,6 +33,14 @@ class TestExpandirBloques(unittest.TestCase):
         with self.assertRaises(ValueError):
             mod.expandir_bloques({"titulo": "Solo titulo"})
 
+    def test_consejo_unico_como_texto_no_se_divide_en_caracteres(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["bloques"]["seo"]["consejos"] = "Usa ingredientes a temperatura ambiente."
+
+        receta = mod.expandir_bloques(doc)
+
+        self.assertEqual(receta["tips"], ["Usa ingredientes a temperatura ambiente."])
+
 
 if __name__ == "__main__":
     unittest.main()
