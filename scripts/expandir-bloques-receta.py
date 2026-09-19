@@ -78,6 +78,10 @@ def _lista_ingredientes(ing_bloque) -> list[dict]:
         items = ing_bloque.get("items") or ing_bloque.get("ingredientes") or []
     else:
         items = []
+    if isinstance(items, (str, dict)):
+        items = [items]
+    elif not isinstance(items, list):
+        items = []
     out: list[dict] = []
     for item in items:
         if isinstance(item, str):
@@ -107,6 +111,10 @@ def _lista_pasos(inst_bloque) -> tuple[list[dict], str]:
         raw_pasos = inst_bloque.get("pasos") or inst_bloque.get("items") or []
     elif isinstance(inst_bloque, list):
         raw_pasos = inst_bloque
+    if isinstance(raw_pasos, (str, dict)):
+        raw_pasos = [raw_pasos]
+    elif not isinstance(raw_pasos, list):
+        raw_pasos = []
     pasos: list[dict] = []
     for i, item in enumerate(raw_pasos, 1):
         if isinstance(item, str):

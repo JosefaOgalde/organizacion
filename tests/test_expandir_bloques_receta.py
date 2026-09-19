@@ -33,6 +33,50 @@ class TestExpandirBloques(unittest.TestCase):
         with self.assertRaises(ValueError):
             mod.expandir_bloques({"titulo": "Solo titulo"})
 
+    def test_ingrediente_textual_es_un_item_no_caracteres(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["bloques"]["ingredientes"]["items"] = "1 taza de harina"
+
+        receta = mod.expandir_bloques(doc)
+
+        self.assertEqual(len(receta["ingredientes"]), 1)
+        self.assertEqual(receta["ingredientes"][0]["nombre"], "1 taza de harina")
+        self.assertEqual(receta["estado"], "listo-para-cargar")
+
+    def test_paso_textual_es_un_item_no_caracteres(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["bloques"]["instrucciones"]["pasos"] = "Mezclar todos los ingredientes."
+
+        receta = mod.expandir_bloques(doc)
+
+        self.assertEqual(
+            receta["pasos"],
+            [{"orden": 1, "texto": "Mezclar todos los ingredientes."}],
+        )
+        self.assertEqual(receta["estado"], "listo-para-cargar")
+
+    def test_objetos_unicos_no_se_iteran_por_sus_claves(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["bloques"]["ingredientes"]["items"] = {
+            "nombre": "Harina",
+            "cantidad": "500",
+            "unidad": "g",
+        }
+        doc["bloques"]["instrucciones"]["pasos"] = {
+            "orden": 7,
+            "texto": "Mezclar la harina.",
+        }
+
+        receta = mod.expandir_bloques(doc)
+
+        self.assertEqual(len(receta["ingredientes"]), 1)
+        self.assertEqual(receta["ingredientes"][0]["nombre"], "Harina")
+        self.assertEqual(
+            receta["pasos"],
+            [{"orden": 7, "texto": "Mezclar la harina."}],
+        )
+        self.assertEqual(receta["estado"], "listo-para-cargar")
+
 
 if __name__ == "__main__":
     unittest.main()
