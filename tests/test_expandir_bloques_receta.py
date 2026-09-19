@@ -55,6 +55,28 @@ class TestExpandirBloques(unittest.TestCase):
         )
         self.assertEqual(receta["estado"], "listo-para-cargar")
 
+    def test_objetos_unicos_no_se_iteran_por_sus_claves(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["bloques"]["ingredientes"]["items"] = {
+            "nombre": "Harina",
+            "cantidad": "500",
+            "unidad": "g",
+        }
+        doc["bloques"]["instrucciones"]["pasos"] = {
+            "orden": 7,
+            "texto": "Mezclar la harina.",
+        }
+
+        receta = mod.expandir_bloques(doc)
+
+        self.assertEqual(len(receta["ingredientes"]), 1)
+        self.assertEqual(receta["ingredientes"][0]["nombre"], "Harina")
+        self.assertEqual(
+            receta["pasos"],
+            [{"orden": 7, "texto": "Mezclar la harina."}],
+        )
+        self.assertEqual(receta["estado"], "listo-para-cargar")
+
 
 if __name__ == "__main__":
     unittest.main()
