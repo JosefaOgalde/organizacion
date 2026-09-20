@@ -33,6 +33,33 @@ class TestExpandirBloques(unittest.TestCase):
         with self.assertRaises(ValueError):
             mod.expandir_bloques({"titulo": "Solo titulo"})
 
+    def test_porciones_sin_numero_de_bm_deja_receta_en_borrador(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["bloques"]["cabecera"]["porciones"] = "cuatro personas"
+
+        receta = mod.expandir_bloques(doc)
+
+        self.assertIn("porciones", receta["camposFaltantes"])
+        self.assertEqual(receta["estado"], "borrador")
+
+    def test_porciones_con_numero_en_texto_siguen_publicables(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["bloques"]["cabecera"]["porciones"] = "6 personas"
+
+        receta = mod.expandir_bloques(doc)
+
+        self.assertNotIn("porciones", receta["camposFaltantes"])
+        self.assertEqual(receta["estado"], "listo-para-cargar")
+
+    def test_sin_consejos_seo_deja_receta_en_borrador(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["bloques"]["seo"]["consejos"] = []
+
+        receta = mod.expandir_bloques(doc)
+
+        self.assertIn("tips", receta["camposFaltantes"])
+        self.assertEqual(receta["estado"], "borrador")
+
 
 if __name__ == "__main__":
     unittest.main()
