@@ -39,6 +39,21 @@ BLOQUES_DIR = CRC / "bloques"
 DIFICULTADES = {"muy facil", "facil", "media", "dificil", "absurdamente dificil"}
 
 
+def _numero_bm_valido(valor) -> bool:
+    """El BM solo acepta números >= 1 en campos como Porciones."""
+    if valor is None or isinstance(valor, bool):
+        return False
+    if isinstance(valor, (int, float)):
+        return valor >= 1
+    m = re.search(r"(?<![-\d])\d+[.,]?\d*", str(valor))
+    if not m:
+        return False
+    try:
+        return float(m.group(0).replace(",", ".")) >= 1
+    except ValueError:
+        return False
+
+
 def slugify(s: str) -> str:
     s = s.lower().strip()
     s = re.sub(r"[áàäâ]", "a", s)
@@ -168,7 +183,7 @@ def expandir_bloques(doc: dict, *, fuente: str = "") -> dict:
         faltantes.append("ingredientes")
     if not pasos:
         faltantes.append("pasos")
-    if not porciones:
+    if not _numero_bm_valido(porciones):
         faltantes.append("porciones")
     if not dificultad:
         faltantes.append("dificultad")
