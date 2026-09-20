@@ -51,6 +51,15 @@ class TestExpandirBloques(unittest.TestCase):
         self.assertNotIn("porciones", receta["camposFaltantes"])
         self.assertEqual(receta["estado"], "listo-para-cargar")
 
+    def test_sin_consejos_seo_deja_receta_en_borrador(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["bloques"]["seo"]["consejos"] = []
+
+        receta = mod.expandir_bloques(doc)
+
+        self.assertIn("tips", receta["camposFaltantes"])
+        self.assertEqual(receta["estado"], "borrador")
+
 
 if __name__ == "__main__":
     unittest.main()

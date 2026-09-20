@@ -189,6 +189,8 @@ def expandir_bloques(doc: dict, *, fuente: str = "") -> dict:
         faltantes.append("dificultad")
     if not categorias:
         faltantes.append("categorias")
+    if not tips:
+        faltantes.append("tips")
     if any(i.get("skuCencosud") is None for i in ingredientes):
         faltantes.append("ingredientes.skuCencosud")
 
