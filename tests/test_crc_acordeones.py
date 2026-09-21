@@ -911,7 +911,7 @@ class CrcRutasFotoTests(unittest.TestCase):
                 self.headers = email.message.EmailMessage()
                 self.headers["Content-Type"] = "image/jpeg"
 
-            def read(self):
+            def read(self, _limite=-1):
                 return jpeg
 
             def __enter__(self):
@@ -927,6 +927,45 @@ class CrcRutasFotoTests(unittest.TestCase):
             self.assertIsNotNone(out)
             self.assertEqual(out.suffix, ".jpg")
             self.assertEqual(out.read_bytes()[:3], b"\xff\xd8\xff")
+
+    def test_descarga_rechaza_imagen_remota_sobre_el_limite(self):
+        class Resp:
+            def __init__(self):
+                self.headers = email.message.EmailMessage()
+                self.headers["Content-Type"] = "image/jpeg"
+
+            def read(self, limite=-1):
+                return b"\xff\xd8\xff\xe0" + b"\x00" * limite
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp) / "media"
+            with (
+                patch.object(self.rutas, "MAX_IMAGE_BYTES", 16),
+                patch.object(self.rutas.urllib.request, "urlopen", return_value=Resp()),
+            ):
+                out = self.rutas.descargar_imagen_url("https://cdn.ejemplo.cl/grande", dest)
+            self.assertIsNone(out)
+            self.assertEqual(list(dest.iterdir()), [])
+
+    def test_docx_omite_imagen_comprimida_sobre_el_limite(self):
+        jpeg = b"\xff\xd8\xff\xe0" + b"\x00" * 32
+        with tempfile.TemporaryDirectory() as tmp:
+            docx = Path(tmp) / "grande.docx"
+            dest = Path(tmp) / "media"
+            with zipfile.ZipFile(docx, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+                zf.writestr("word/media/portada.jpg", jpeg)
+            omitidas = []
+            with patch.object(self.rutas, "MAX_IMAGE_BYTES", 16):
+                guardadas = self.rutas.extraer_imagenes_docx(docx, dest, omitidas)
+            self.assertEqual(guardadas, [])
+            self.assertTrue(any("demasiado grande" in item for item in omitidas))
+            self.assertEqual(list(dest.iterdir()), [])
 
     def test_asegurar_foto_desde_word_con_enlace(self):
         jpeg = b"\xff\xd8\xff\xe0" + b"\x00" * 20
