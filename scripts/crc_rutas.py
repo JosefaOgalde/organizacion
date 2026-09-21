@@ -12,6 +12,8 @@ from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 
 EXT_RASTER_BM = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"}
+MAX_IMAGE_BYTES = 25 * 1024 * 1024
+MAX_DOCX_MEDIA_BYTES = 100 * 1024 * 1024
 
 NOMBRES_PROYECTO = (
     "implementacion-recetas-jumbo",
@@ -93,11 +95,32 @@ def extraer_imagenes_docx(
     """Saca word/media/* del .docx. Usa magic bytes, no solo la extensión del zip."""
     dest_dir.mkdir(parents=True, exist_ok=True)
     guardadas: list[Path] = []
+    total_bytes = 0
     try:
         with zipfile.ZipFile(path) as zf:
-            medias = [n for n in zf.namelist() if n.startswith("word/media/")]
-            for i, name in enumerate(medias, 1):
-                data = zf.read(name)
+            medias = [
+                info
+                for info in zf.infolist()
+                if info.filename.startswith("word/media/") and not info.is_dir()
+            ]
+            for i, info in enumerate(medias, 1):
+                name = info.filename
+                if (
+                    info.file_size > MAX_IMAGE_BYTES
+                    or total_bytes + info.file_size > MAX_DOCX_MEDIA_BYTES
+                ):
+                    if omitidas is not None:
+                        omitidas.append(f"{name} (demasiado grande)")
+                    continue
+                with zf.open(info) as media:
+                    data = media.read(MAX_IMAGE_BYTES + 1)
+                if (
+                    len(data) > MAX_IMAGE_BYTES
+                    or total_bytes + len(data) > MAX_DOCX_MEDIA_BYTES
+                ):
+                    if omitidas is not None:
+                        omitidas.append(f"{name} (demasiado grande)")
+                    continue
                 ext = ext_por_magic(data) or Path(name).suffix.lower()
                 if ext not in EXT_RASTER_BM:
                     if omitidas is not None:
@@ -106,6 +129,7 @@ def extraer_imagenes_docx(
                 out = dest_dir / f"portada-{i}{ext}"
                 out.write_bytes(data)
                 guardadas.append(out)
+                total_bytes += len(data)
     except Exception:
         return []
     return guardadas
@@ -298,11 +322,19 @@ def descargar_imagen_url(
     )
     try:
         with urllib.request.urlopen(req, timeout=45) as resp:
-            data = resp.read()
             ctype = ""
             headers = getattr(resp, "headers", None)
             if headers is not None and hasattr(headers, "get_content_type"):
                 ctype = headers.get_content_type() or ""
+            content_length = headers.get("Content-Length") if headers is not None else None
+            try:
+                if content_length and int(content_length) > MAX_IMAGE_BYTES:
+                    return None
+            except (TypeError, ValueError):
+                pass
+            data = resp.read(MAX_IMAGE_BYTES + 1)
+            if len(data) > MAX_IMAGE_BYTES:
+                return None
     except (urllib.error.URLError, TimeoutError, OSError, ValueError):
         return None
     ext = ext_por_magic(data)
