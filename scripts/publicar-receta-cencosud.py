@@ -131,6 +131,9 @@ def main() -> int:
     ap.add_argument("--headed", action="store_true", help="Navegador visible (recomendado)")
     ap.add_argument("--no-session", action="store_true", help="No reutilizar bm-session.json")
     args = ap.parse_args()
+    # region agent log
+    open("/opt/cursor/logs/debug.log", "a", encoding="utf-8").write(json.dumps({"hypothesisId": "D", "location": "scripts/publicar-receta-cencosud.py:135", "message": "main recibió argumentos", "data": {"explicitPath": args.json_path is not None, "cliDryRun": args.dry_run, "headed": args.headed, "noSession": args.no_session}, "timestamp": __import__("time").time_ns() // 1_000_000}) + "\n")
+    # endregion
 
     if args.json_path:
         path = args.json_path.expanduser().resolve()
@@ -149,7 +152,11 @@ def main() -> int:
         print(f"No existe JSON: {path}", file=sys.stderr)
         return 1
 
-    receta = json.loads(path.read_text(encoding="utf-8"))
+    payload_fuente = path.read_text(encoding="utf-8")
+    receta = json.loads(payload_fuente)
+    # region agent log
+    open("/opt/cursor/logs/debug.log", "a", encoding="utf-8").write(json.dumps({"hypothesisId": "A", "location": "scripts/publicar-receta-cencosud.py:157", "message": "fuente JSON cargada", "data": {"sourcePath": str(path), "sourceBytes": len(payload_fuente.encode("utf-8")), "topLevelKeys": sorted(receta.keys()), "hasBloquesKey": "bloques" in receta}, "timestamp": __import__("time").time_ns() // 1_000_000}) + "\n")
+    # endregion
     try:
         from expandir_bloques_receta import es_formato_bloques, expandir_bloques
     except ImportError:
@@ -161,12 +168,19 @@ def main() -> int:
         spec.loader.exec_module(mod)
         es_formato_bloques = mod.es_formato_bloques
         expandir_bloques = mod.expandir_bloques
-    if es_formato_bloques(receta):
+    formato_bloques = es_formato_bloques(receta)
+    # region agent log
+    open("/opt/cursor/logs/debug.log", "a", encoding="utf-8").write(json.dumps({"hypothesisId": "A", "location": "scripts/publicar-receta-cencosud.py:173", "message": "decisión de expansión", "data": {"detectedBlocks": formato_bloques, "bloquesType": type(receta.get("bloques")).__name__, "bloquesKeys": sorted(receta.get("bloques", {}).keys()) if isinstance(receta.get("bloques"), dict) else []}, "timestamp": __import__("time").time_ns() // 1_000_000}) + "\n")
+    # endregion
+    if formato_bloques:
         try:
             rel = str(path.relative_to(ROOT))
         except ValueError:
             rel = str(path)
         receta = expandir_bloques(receta, fuente=rel)
+        # region agent log
+        open("/opt/cursor/logs/debug.log", "a", encoding="utf-8").write(json.dumps({"hypothesisId": "A", "location": "scripts/publicar-receta-cencosud.py:182", "message": "expansión terminada en memoria", "data": {"sourcePath": str(path), "expandedTopLevelKeys": sorted(receta.keys()), "expandedHasBloques": "bloques" in receta, "expandedEstado": receta.get("estado")}, "timestamp": __import__("time").time_ns() // 1_000_000}) + "\n")
+        # endregion
         print("Formato: 5 bloques → receta expandida")
     env = load_env(ENV_PATH)
     selectores = load_selectores()
@@ -174,6 +188,9 @@ def main() -> int:
     dry = args.dry_run or env.get("CENCOSUD_BM_DRY_RUN", "true").lower() in ("1", "true", "yes")
     headed = args.headed or env.get("CENCOSUD_BM_HEADED", "true").lower() in ("1", "true", "yes")
     errores_preflight = [] if dry else errores_prepublicacion(receta)
+    # region agent log
+    open("/opt/cursor/logs/debug.log", "a", encoding="utf-8").write(json.dumps({"hypothesisId": "C,D", "location": "scripts/publicar-receta-cencosud.py:195", "message": "gates previos al navegador", "data": {"cliDryRun": args.dry_run, "envDryRun": env.get("CENCOSUD_BM_DRY_RUN"), "effectiveDryRun": dry, "usableSelectors": len({k: v for k, v in selectores.items() if v}), "preflightErrorCount": len(errores_preflight)}, "timestamp": __import__("time").time_ns() // 1_000_000}) + "\n")
+    # endregion
 
     print("=== Carga CRC → BM ===")
     print(f"carpeta: {CRC}")
@@ -231,6 +248,9 @@ def main() -> int:
         carga_ok = explorar.fill_from_receta(
             page, receta, selectores, dry_run=dry, url_ficha=url_ficha
         )
+        # region agent log
+        open("/opt/cursor/logs/debug.log", "a", encoding="utf-8").write(json.dumps({"hypothesisId": "B", "location": "scripts/publicar-receta-cencosud.py:257", "message": "relleno BM simulado terminó", "data": {"effectiveDryRun": dry, "cargaOk": carga_ok, "estadoBeforeMutation": receta.get("estado")}, "timestamp": __import__("time").time_ns() // 1_000_000}) + "\n")
+        # endregion
         resultado = 0
         if dry:
             if carga_ok:
@@ -241,7 +261,14 @@ def main() -> int:
             else:
                 receta["estado"] = "cargado"
 
-        path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        payload_guardado = json.dumps(receta, ensure_ascii=False, indent=2) + "\n"
+        # region agent log
+        open("/opt/cursor/logs/debug.log", "a", encoding="utf-8").write(json.dumps({"hypothesisId": "A,B", "location": "scripts/publicar-receta-cencosud.py:271", "message": "inmediatamente antes de escribir sobre path", "data": {"writePath": str(path), "payloadChanged": payload_guardado != payload_fuente, "sourceHadBloques": formato_bloques, "outputTopLevelKeys": sorted(receta.keys()), "effectiveDryRun": dry, "cargaOk": carga_ok, "resultado": resultado, "finalEstado": receta.get("estado")}, "timestamp": __import__("time").time_ns() // 1_000_000}) + "\n")
+        # endregion
+        path.write_text(payload_guardado, encoding="utf-8")
+        # region agent log
+        open("/opt/cursor/logs/debug.log", "a", encoding="utf-8").write(json.dumps({"hypothesisId": "A,B", "location": "scripts/publicar-receta-cencosud.py:276", "message": "escritura sobre path completada", "data": {"writePath": str(path), "readBackMatchesExpanded": path.read_text(encoding="utf-8") == payload_guardado, "writtenBytes": len(payload_guardado.encode("utf-8")), "sourceOverwritten": payload_guardado != payload_fuente}, "timestamp": __import__("time").time_ns() // 1_000_000}) + "\n")
+        # endregion
         context.storage_state(path=str(SESSION_PATH))
 
         if headed:
