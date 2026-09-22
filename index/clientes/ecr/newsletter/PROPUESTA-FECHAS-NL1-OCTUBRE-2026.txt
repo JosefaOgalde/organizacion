@@ -1,0 +1,29 @@
+PROPUESTA FECHAS — ECR NL 1 octubre 2026
+Artículo: Tercerización en evolución: las tendencias que están redefiniendo la operación
+ART 26 · Copys: copys/COPY-tercerizacion-en-evolucion.txt
+
+============================================================
+PATRÓN PEDIDO
+
+  Semana 1 → martes = Feed
+  Semana 2 → lunes = Carrusel · miércoles = Video
+  (no publicar lun–mar–mié seguidos de la misma semana)
+
+============================================================
+FERIADO QUE BLOQUEA
+
+  lun 12 oct 2026 = Encuentro de Dos Mundos (fin de semana largo 10–12)
+  → no se puede usar el lunes de la semana 2 para el carrusel.
+
+============================================================
+PROPUESTA AJUSTADA (primeros 15 días · 11:00)
+
+  mar 6 oct  · Feed — invitación a leer el artículo
+  mar 13 oct · Carrusel — invitación a leer el artículo
+               (ideal era lun 12; se mueve 1 día por feriado)
+  mié 14 oct · Video — invitación a leer el artículo
+
+============================================================
+DESCARTADA (ideal sin feriado)
+
+  mar 6 · lun 12 · mié 14  → inválida: lun 12 feriado Chile
