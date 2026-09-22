@@ -3,26 +3,27 @@ Artículo: Tercerización en evolución: las tendencias que están redefiniendo 
 ART 26 · Copys: copys/COPY-tercerizacion-en-evolucion.txt
 
 ============================================================
-CALENDARIO (primeros 15 días de octubre 2026)
+PATRÓN PEDIDO
 
-Lun–mar–mié disponibles en la quincena:
-  · Semana 5–7 oct → OK
-  · Semana 12–14 oct → NO (lun 12 = feriado Chile «Encuentro de Dos Mundos»)
-
-Otros feriados octubre 2026 (fuera de esta ventana o no bloquean):
-  · sáb 31 oct — Día de las Iglesias Evangélicas y Protestantes
+  Semana 1 → martes = Feed
+  Semana 2 → lunes = Carrusel · miércoles = Video
+  (no publicar lun–mar–mié seguidos de la misma semana)
 
 ============================================================
-PROPUESTA (3 publicaciones · 11:00)
+FERIADO QUE BLOQUEA
 
-  lun 5 oct  · Feed — invitación a leer el artículo
-  mar 6 oct  · Carrusel — invitación a leer el artículo
-  mié 7 oct  · Video — invitación a leer el artículo
-
-Horario: 11:00 (mismo criterio que NL previos)
+  lun 12 oct 2026 = Encuentro de Dos Mundos (fin de semana largo 10–12)
+  → no se puede usar el lunes de la semana 2 para el carrusel.
 
 ============================================================
-NOTA
+PROPUESTA AJUSTADA (primeros 15 días · 11:00)
 
-No usar lun 12 / mar 13 / mié 14: el lunes es feriado nacional
-y además cae en fin de semana largo (10–12 oct).
+  mar 6 oct  · Feed — invitación a leer el artículo
+  mar 13 oct · Carrusel — invitación a leer el artículo
+               (ideal era lun 12; se mueve 1 día por feriado)
+  mié 14 oct · Video — invitación a leer el artículo
+
+============================================================
+DESCARTADA (ideal sin feriado)
+
+  mar 6 · lun 12 · mié 14  → inválida: lun 12 feriado Chile
