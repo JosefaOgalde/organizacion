@@ -243,6 +243,34 @@ class PublicarRecetaTests(unittest.TestCase):
         self.assertEqual(runtime.clicks, ["#borrador"])
         self.assertEqual(guardada["estado"], "cargado")
 
+    def test_dry_run_bloques_conserva_fuente_editable(self):
+        receta = {
+            "id": "fuente-editable",
+            "bloques": {
+                "cabecera": {
+                    "titulo": "Fuente editable",
+                    "descripcion": "Descripción",
+                    "porciones": 4,
+                    "tiempoTotal": "30 minutos",
+                    "dificultad": "facil",
+                },
+                "tags": {"categorias": ["Almuerzo"]},
+                "ingredientes": {"items": [{"nombre": "Ingrediente"}]},
+                "instrucciones": {"pasos": [{"texto": "Preparar"}]},
+                "seo": {
+                    "metaTitulo": "Fuente editable",
+                    "metaDescripcion": "Descripción",
+                    "consejos": ["Consejo"],
+                },
+            },
+        }
+
+        exit_code, runtime, guardada = self.ejecutar(receta, args=("--dry-run",))
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(runtime.lanzamientos, 1)
+        self.assertEqual(guardada, receta)
+
     def test_no_sigue_nav_nueva_receta_hacia_proyectos(self):
         self.selectores["nav_nueva_receta"] = "/cms/projects"
         exit_code, runtime, _guardada = self.ejecutar(self.receta_valida, args=("--dry-run",))

@@ -161,7 +161,8 @@ def main() -> int:
         spec.loader.exec_module(mod)
         es_formato_bloques = mod.es_formato_bloques
         expandir_bloques = mod.expandir_bloques
-    if es_formato_bloques(receta):
+    formato_bloques = es_formato_bloques(receta)
+    if formato_bloques:
         try:
             rel = str(path.relative_to(ROOT))
         except ValueError:
@@ -241,7 +242,11 @@ def main() -> int:
             else:
                 receta["estado"] = "cargado"
 
-        path.write_text(json.dumps(receta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        if not formato_bloques:
+            path.write_text(
+                json.dumps(receta, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
         context.storage_state(path=str(SESSION_PATH))
 
         if headed:
