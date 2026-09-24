@@ -33,6 +33,23 @@ class TestExpandirBloques(unittest.TestCase):
         with self.assertRaises(ValueError):
             mod.expandir_bloques({"titulo": "Solo titulo"})
 
+    def test_ordena_pasos_por_campo_orden(self):
+        doc = json.loads(EJEMPLO.read_text(encoding="utf-8"))
+        doc["bloques"]["instrucciones"]["pasos"] = [
+            {"orden": 2, "texto": "Hornear la mezcla."},
+            {"orden": 1, "texto": "Mezclar los ingredientes."},
+        ]
+
+        receta = mod.expandir_bloques(doc)
+
+        self.assertEqual(
+            [(paso["orden"], paso["texto"]) for paso in receta["pasos"]],
+            [
+                (1, "Mezclar los ingredientes."),
+                (2, "Hornear la mezcla."),
+            ],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

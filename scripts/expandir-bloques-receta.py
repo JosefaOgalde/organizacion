@@ -118,6 +118,7 @@ def _lista_pasos(inst_bloque) -> tuple[list[dict], str]:
             if texto:
                 orden = item.get("orden") or i
                 pasos.append({"orden": int(orden), "texto": texto})
+    pasos.sort(key=lambda paso: paso["orden"])
     return pasos, pregunta
 
 
