@@ -4,6 +4,7 @@
 |----------|---------|
 | Tecnología sin integración (NL 1 ago) | `COPY-tecnologia-sin-integracion.txt` ← versión enviada al cliente |
 | Equipos en terreno / ART 23 (NL 2 ago) | `COPY-equipos-en-terreno.txt` · espejo `../COPY-ART23-equipos-en-terreno.txt` |
+| **FLOW 2.0 / ART 28 (NL noviembre)** | `COPY-flow-2.0.txt` |
 
 **Formato oficial:** [FORMATO-COPYS-ECR.md](./FORMATO-COPYS-ECR.md)
 

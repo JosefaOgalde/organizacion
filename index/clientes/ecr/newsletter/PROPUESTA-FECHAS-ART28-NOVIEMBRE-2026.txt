@@ -1,0 +1,28 @@
+PROPUESTA FECHAS — ECR ART 28 · noviembre 2026
+Artículo: FLOW 2.0: Outsourcing flexible para los desafíos de fin de año
+Copys: copys/COPY-flow-2.0.txt
+
+============================================================
+CALENDARIO (primeros 15 días de noviembre 2026)
+
+  dom 1 nov = feriado Todos los Santos (cae domingo → no bloquea lun–mié)
+  Lun–mié útiles en la quincena:
+    · 2–4 nov
+    · 9–11 nov
+  (lun 16 ya queda fuera de la primera quincena)
+
+============================================================
+PATRÓN
+
+  Semana 1 → martes = Feed
+  Semana 2 → lunes = Carrusel · miércoles = Video
+  Al menos 1 día de diferencia entre piezas (no lun–mar–mié seguidos)
+
+============================================================
+PROPUESTA (3 publicaciones · 11:00)
+
+  mar 3 nov  · Feed — invitación a leer el artículo
+  lun 9 nov  · Carrusel — invitación a leer el artículo
+  mié 11 nov · Video — invitación a leer el artículo
+
+Espaciado: 6 días entre Feed y Carrusel · 2 días entre Carrusel y Video.
