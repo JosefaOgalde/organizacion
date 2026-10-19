@@ -1,0 +1,33 @@
+ESTADO — ART 28 FLOW 2.0 (guardar / retomar)
+Actualizado: 19 oct 2026
+Rama GitHub: cursor/ecr-art28-flow-noviembre-78d6
+PR: https://github.com/JosefaOgalde/organizacion/pull/221
+Todo pusheado · working tree limpio
+
+============================================================
+ARTÍCULO
+  Título: FLOW 2.0: Outsourcing flexible para los desafíos de fin de año
+  PDF:  articulos/ART28-flow-2.0.pdf
+  TXT:  articulos/ART28-flow-2.0.txt
+
+============================================================
+FECHAS (11:00) — primera quincena noviembre 2026
+  mar 3 nov  · Feed
+  lun 9 nov  · Carrusel
+  mié 11 nov · Video
+  (feriado dom 1 nov Todos los Santos no bloquea)
+  Detalle: PROPUESTA-FECHAS-ART28-NOVIEMBRE-2026.txt
+
+============================================================
+COPYS (versión CORTA — lista para pegar)
+  Archivo: copys/COPY-flow-2.0.txt
+  Contiene: Feed A/B · Carrusel A/B · Video A/B
+  Línea vacía en cada uno = pegar link del artículo
+  Subtarea Copys: Crear · Copiar · Guardar
+
+============================================================
+AL VOLVER
+  1) git fetch && git checkout cursor/ecr-art28-flow-noviembre-78d6
+  2) Abrir COPY-flow-2.0.txt y PROPUESTA-FECHAS-ART28-NOVIEMBRE-2026.txt
+  3) Pegar link del artículo cuando esté publicado
+  4) Programar LinkedIn: 3 · 9 · 11 nov 11:00
