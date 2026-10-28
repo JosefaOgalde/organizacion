@@ -1,6 +1,6 @@
-# Grilla Reels Blowfish / TrendSeeker
+# Grilla Reels Blowfish / TrendSeeker · 8 contenidos
 
-Prioridad: **Play y Marley primero**, después el resto. **C8 = por definir**.
+Total: **8**. Prioridad: **Play y Marley primero**. **C8 = por definir**.
 Calendario: **lunes a viernes** (noviembre 2026).
 
 | # | Día | Fecha | Contenido | Archivo video | Link sugerido |
@@ -13,10 +13,8 @@ Calendario: **lunes a viernes** (noviembre 2026).
 | C6 | vie | 2026-11-13 | Vero Correa | `Vero Correa.mp4` | https://trendseeker.cl/ |
 | C7 | lun | 2026-11-16 | Reel | `Reel.mp4` | https://trendseeker.cl/ |
 | C8 | mié | 2026-11-18 | Por definir | `—` | — |
-| C9 | vie | 2026-11-20 | Por definir | `—` | — |
-| C10 | lun | 2026-11-23 | Por definir | `—` | — |
 
-## Orden de publicación (regla de negocio)
+## Orden
 1. Playa Play Reel
 2. Ciudad Play Reel
 3. MARLEY
@@ -25,9 +23,7 @@ Calendario: **lunes a viernes** (noviembre 2026).
 6. Vero Correa
 7. Reel
 8. **Por definir**
-9–10. Por definir
 
-## Fuente videos
+## Videos
 Notion: https://app.notion.com/p/407e059235b7810181aae33886524698
-Estado al armar el pack: **pendiente de subir** en Notion (siguen en Descargas del PC).
-Usar `EMPAQUETAR-ZIP-LOCAL.bat` en el PC de Josefa para meter los MP4 y generar el ZIP final.
+Si aún no están en Notion: usar `EMPAQUETAR-ZIP-LOCAL.bat` con los MP4 de Descargas.

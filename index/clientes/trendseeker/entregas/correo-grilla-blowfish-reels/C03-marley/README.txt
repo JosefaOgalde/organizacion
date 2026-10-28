@@ -1,3 +1,3 @@
-C3/10 · MARLEY
+C3/8 · MARLEY
 2026-11-06 (vie)
 Modelo Marley. Elegir color del video al fijar link.
