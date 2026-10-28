@@ -1,6 +1,10 @@
 PACK CORREO · Grilla nov 2026 · 8 · ajuste Vale
 Hunter A/B (C1+C6) · Accesorios «completa el look» · C7–C8 BF TBD
 
+CANAL Agent ↔ Cursor Bot = Notion
+https://app.notion.com/p/407e059235b7810181aae33886524698
+Subir videos/briefs/estados ahí (no solo ruta Descargas).
+
 1) 00-GRILLA.md
 2) 01-DIAGRAMACION.md
 3) copys/
