@@ -1,0 +1,47 @@
+[
+  {
+    "n": 1,
+    "src": null,
+    "note": "Tito en proceso — Hunter zapatillas",
+    "dest_dir": "C01-hunter-zapatillas/videos"
+  },
+  {
+    "n": 2,
+    "src": "Reel_Blowfish_Primavera_Final-2.mp4",
+    "dest_dir": "C02-reel-blowfish-primavera/videos"
+  },
+  {
+    "n": 3,
+    "src": null,
+    "note": "Accesorios — video por definir",
+    "dest_dir": "C03-accesorios/videos"
+  },
+  {
+    "n": 4,
+    "src": "Parlane white Adaptado.mp4",
+    "dest_dir": "C04-parlane-white/videos"
+  },
+  {
+    "n": 5,
+    "src": "Vero Correa.mp4",
+    "dest_dir": "C05-vero-correa/videos"
+  },
+  {
+    "n": 6,
+    "src": null,
+    "note": "Hunter zapatillas — video por definir",
+    "dest_dir": "C06-hunter-zapatillas/videos"
+  },
+  {
+    "n": 7,
+    "src": null,
+    "note": "Black Friday TBD",
+    "dest_dir": "C07-por-definir-bf/videos"
+  },
+  {
+    "n": 8,
+    "src": null,
+    "note": "Black Friday TBD",
+    "dest_dir": "C08-por-definir-bf/videos"
+  }
+]
