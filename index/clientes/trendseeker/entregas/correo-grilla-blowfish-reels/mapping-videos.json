@@ -1,37 +1,47 @@
 [
   {
     "n": 1,
-    "src": "Playa Play Reel.mp4",
-    "dest_dir": "C01-playa-play-reel/videos"
+    "src": null,
+    "note": "Tito en proceso — Hunter zapatillas",
+    "dest_dir": "C01-hunter-zapatillas/videos"
   },
   {
     "n": 2,
-    "src": "Ciudad Play Reel.mp4",
-    "dest_dir": "C02-ciudad-play-reel/videos"
+    "src": "Reel_Blowfish_Primavera_Final-2.mp4",
+    "dest_dir": "C02-reel-blowfish-primavera/videos"
   },
   {
     "n": 3,
-    "src": "MARLEY.mp4",
-    "dest_dir": "C03-marley/videos"
+    "src": null,
+    "note": "Accesorios — video por definir",
+    "dest_dir": "C03-accesorios/videos"
   },
   {
     "n": 4,
-    "src": "Reel-Blowfish.mp4",
-    "dest_dir": "C04-reel-blowfish/videos"
+    "src": "Parlane white Adaptado.mp4",
+    "dest_dir": "C04-parlane-white/videos"
   },
   {
     "n": 5,
-    "src": "Parlane white Adaptado.mp4",
-    "dest_dir": "C05-parlane-white/videos"
+    "src": "Vero Correa.mp4",
+    "dest_dir": "C05-vero-correa/videos"
   },
   {
     "n": 6,
-    "src": "Vero Correa.mp4",
-    "dest_dir": "C06-vero-correa/videos"
+    "src": null,
+    "note": "Hunter zapatillas — video por definir",
+    "dest_dir": "C06-hunter-zapatillas/videos"
   },
   {
     "n": 7,
-    "src": "Reel.mp4",
-    "dest_dir": "C07-reel-general/videos"
+    "src": null,
+    "note": "Black Friday TBD",
+    "dest_dir": "C07-por-definir-bf/videos"
+  },
+  {
+    "n": 8,
+    "src": null,
+    "note": "Black Friday TBD",
+    "dest_dir": "C08-por-definir-bf/videos"
   }
 ]

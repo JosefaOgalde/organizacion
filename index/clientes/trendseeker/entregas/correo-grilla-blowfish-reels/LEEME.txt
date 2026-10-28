@@ -1,6 +1,12 @@
-PACK CORREO · 8 contenidos · Play/Marley primero · C8 por definir
+PACK CORREO · Grilla nov 2026 · 8 contenidos · ajuste Vale
+Hunter + accesorios + Blowfish Primavera · C7–C8 Black Friday TBD
+
 1) 00-GRILLA.md
 2) 01-DIAGRAMACION.md
-3) copys/
-4) EMPAQUETAR-ZIP-LOCAL.bat (mete videos desde Descargas)
+3) copys/ (C1 falta · C2=A · C4=B · C5=A)
+4) EMPAQUETAR-ZIP-LOCAL.bat
+   → mete videos desde Descargas (mínimo Primavera Final-2)
 5) Enviar ZIP + 02-EMAIL-BORRADOR.txt
+
+Video C2 (Vale):
+  %USERPROFILE%\Downloads\Reel_Blowfish_Primavera_Final-2.mp4

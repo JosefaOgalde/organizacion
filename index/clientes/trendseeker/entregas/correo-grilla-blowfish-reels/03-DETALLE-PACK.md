@@ -1,65 +1,59 @@
-# Detalle pack · 8 contenidos
+# Detalle pack · 8 contenidos · ajuste Vale
 
-## C1/8 · Playa Play Reel
+## C1/8 · Hunter zapatillas
 - Fecha: 2026-11-02 (lun)
-- Marca/línea: Blowfish Malibu / Play
-- Video: `Playa Play Reel.mp4`
-- Carpeta: `C01-playa-play-reel/`
-- Link: https://trendseeker.cl/producto/play-dusty-pink-hipster/
-- Notas: Reel Play en playa. Confirmar color exacto del zapato en el video al programar.
+- Marca: Hunter · zapatillas
+- Video: **Tito (en proceso)** — aún no llega
+- Carpeta: `C01-hunter-zapatillas/`
+- Link: https://trendseeker.cl/marca/hunter/
+- Copy: **PENDIENTE** (Vale: «Faltaría Copy»)
 
-## C2/8 · Ciudad Play Reel
+## C2/8 · Reel Blowfish Primavera
 - Fecha: 2026-11-04 (mié)
-- Marca/línea: Blowfish Malibu / Play
-- Video: `Ciudad Play Reel.mp4`
-- Carpeta: `C02-ciudad-play-reel/`
-- Link: https://trendseeker.cl/producto/play-navy/
-- Notas: Reel Play en ciudad / calle.
-
-## C3/8 · MARLEY
-- Fecha: 2026-11-06 (vie)
-- Marca/línea: Blowfish Malibu / Marley
-- Video: `MARLEY.mp4`
-- Carpeta: `C03-marley/`
-- Link: https://trendseeker.cl/producto/marley-slate-grey/
-- Notas: Modelo Marley. Elegir color del video al fijar link.
-
-## C4/8 · Reel Blowfish
-- Fecha: 2026-11-09 (lun)
-- Marca/línea: Blowfish Malibu / Blowfish
-- Video: `Reel-Blowfish.mp4`
-- Carpeta: `C04-reel-blowfish/`
+- Marca: Blowfish Malibu
+- Video: `Reel_Blowfish_Primavera_Final-2.mp4` (adjunto Vale / Descargas)
+- Carpeta: `C02-reel-blowfish-primavera/`
 - Link: https://trendseeker.cl/?s=blowfish&post_type=product
-- Notas: Reel general Blowfish. Ajustar URL al producto héroe del video.
+- Copy: **Versión A** (ex C04 Reel Blowfish)
 
-## C5/8 · Parlane White Adaptado
-- Fecha: 2026-11-11 (mié)
-- Marca/línea: Blowfish Malibu / Parlane
+## C3/8 · Accesorios
+- Fecha: 2026-11-10 (mar)
+- Marca: TrendSeeker / accesorios (Hunter u otras — confirmar)
+- Video: por definir
+- Carpeta: `C03-accesorios/`
+- Link: https://trendseeker.cl/?s=accesorios&post_type=product
+- Copy: draft en pack (ajustar a productos del video)
+
+## C4/8 · Parlane White
+- Fecha: 2026-11-12 (jue)
+- Marca: Blowfish Malibu / Parlane
 - Video: `Parlane white Adaptado.mp4`
-- Carpeta: `C05-parlane-white/`
+- Carpeta: `C04-parlane-white/`
 - Link: https://trendseeker.cl/producto/parlane-white/
-- Notas: Parlane white — link canónico white.
+- Copy: **Versión B**
 
-## C6/8 · Vero Correa
-- Fecha: 2026-11-13 (vie)
-- Marca/línea: TrendSeeker / collab / UGC
-- Video: `Vero Correa.mp4`
-- Carpeta: `C06-vero-correa/`
-- Link: https://trendseeker.cl/
-- Notas: Pieza con Vero Correa. Mencionar crédito @ si aplica; confirmar producto en frame.
-
-## C7/8 · Reel
+## C5/8 · Vero Correa
 - Fecha: 2026-11-16 (lun)
-- Marca/línea: TrendSeeker / Reel
-- Video: `Reel.mp4`
-- Carpeta: `C07-reel-general/`
+- Marca: TrendSeeker / collab
+- Video: `Vero Correa.mp4`
+- Carpeta: `C05-vero-correa/`
 - Link: https://trendseeker.cl/
-- Notas: Reel genérico — revisar producto héroe antes de publicar.
+- Copy: **Versión A**
 
-## C8/8 · Por definir
-- Fecha: 2026-11-18 (mié)
-- Marca/línea: — / TBD
-- Video: `—`
-- Carpeta: `C08-por-definir/`
-- Link: —
-- Notas: SLOT C8 POR DEFINIR — no incluir video.
+## C6/8 · Hunter zapatillas
+- Fecha: 2026-11-19 (jue)
+- Marca: Hunter · zapatillas
+- Video: por definir
+- Carpeta: `C06-hunter-zapatillas/`
+- Link: https://trendseeker.cl/marca/hunter/
+- Copy: draft (ajustar a modelo del video)
+
+## C7/8 · Por definir · Black Friday
+- Fecha: 2026-11-24 (mar)
+- Carpeta: `C07-por-definir-bf/`
+- Notas: slot BF — no diagramar hasta definir pieza.
+
+## C8/8 · Por definir · Black Friday
+- Fecha: 2026-11-27 (vie)
+- Carpeta: `C08-por-definir-bf/`
+- Notas: slot BF — no diagramar hasta definir pieza.
