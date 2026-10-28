@@ -35,7 +35,7 @@ const HORAS = {
 const CONTENIDOS = [
   {
     n: 1,
-    fecha: '2026-09-02',
+    fecha: '2026-09-01',
     grilla: 'emergerdelpescador',
     producto: 'Contenido collab · @emergerdelpescador',
     url: 'https://trendseeker.cl/',
@@ -47,7 +47,7 @@ const CONTENIDOS = [
   },
   {
     n: 2,
-    fecha: '2026-09-04',
+    fecha: '2026-09-03',
     grilla: 'Fernando Mosso',
     producto: 'Contenido Fernando Mosso (creado por nosotros)',
     url: 'https://trendseeker.cl/',
@@ -58,7 +58,7 @@ const CONTENIDOS = [
   },
   {
     n: 3,
-    fecha: '2026-09-08',
+    fecha: '2026-09-05',
     grilla: 'rivertrout',
     producto: 'Contenido collab · @rivertrout (pieza 1)',
     url: 'https://trendseeker.cl/',
@@ -70,7 +70,7 @@ const CONTENIDOS = [
   },
   {
     n: 4,
-    fecha: '2026-09-10',
+    fecha: '2026-09-08',
     grilla: 'rivertrout',
     producto: 'Contenido collab · @rivertrout (pieza 2)',
     url: 'https://trendseeker.cl/',
@@ -82,7 +82,7 @@ const CONTENIDOS = [
   },
   {
     n: 5,
-    fecha: '2026-09-12',
+    fecha: '2026-09-10',
     grilla: 'Chaqueta Neptune',
     producto: 'Chaqueta Neptune (creado por nosotros)',
     url: 'https://trendseeker.cl/',
@@ -93,7 +93,7 @@ const CONTENIDOS = [
   },
   {
     n: 6,
-    fecha: '2026-09-15',
+    fecha: '2026-09-12',
     grilla: 'rivertrout',
     producto: 'Contenido collab · @rivertrout (pieza 3)',
     url: 'https://trendseeker.cl/',
@@ -105,7 +105,7 @@ const CONTENIDOS = [
   },
   {
     n: 7,
-    fecha: '2026-09-18',
+    fecha: '2026-09-15',
     grilla: 'Primavera · Cambia de aire',
     producto: 'Banner/feed primavera multi-marca «Cambia de aire»',
     url: 'https://trendseeker.cl/',
@@ -119,7 +119,7 @@ const CONTENIDOS = [
   },
   {
     n: 8,
-    fecha: '2026-09-22',
+    fecha: '2026-09-17',
     grilla: 'Por definir',
     producto: 'Sep C8 — por definir con usuaria',
     url: 'https://trendseeker.cl/',
@@ -130,7 +130,7 @@ const CONTENIDOS = [
   },
   {
     n: 9,
-    fecha: '2026-09-24',
+    fecha: '2026-09-19',
     grilla: 'Por definir',
     producto: 'Sep C9 — por definir con usuaria',
     url: 'https://trendseeker.cl/',
@@ -141,7 +141,7 @@ const CONTENIDOS = [
   },
   {
     n: 10,
-    fecha: '2026-09-26',
+    fecha: '2026-09-22',
     grilla: 'Por definir',
     producto: 'Sep C10 — por definir con usuaria',
     url: 'https://trendseeker.cl/',
