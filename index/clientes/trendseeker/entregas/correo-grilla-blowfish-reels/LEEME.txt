@@ -1,0 +1,9 @@
+PACK CORREO · TrendSeeker Grilla Blowfish Reels
+==============================================
+1) Lee 00-GRILLA.md
+2) Lee 01-DIAGRAMACION.md
+3) Usa copys/ (o los COPY dentro de cada Cxx)
+4) Corre EMPAQUETAR-ZIP-LOCAL.bat en tu PC (mete los videos de Descargas)
+5) Envía el ZIP + pega 02-EMAIL-BORRADOR.txt
+
+Orden videos: Play/Marley primero. C8 por definir.

@@ -1,0 +1,37 @@
+[
+  {
+    "n": 1,
+    "src": "Playa Play Reel.mp4",
+    "dest_dir": "C01-playa-play-reel/videos"
+  },
+  {
+    "n": 2,
+    "src": "Ciudad Play Reel.mp4",
+    "dest_dir": "C02-ciudad-play-reel/videos"
+  },
+  {
+    "n": 3,
+    "src": "MARLEY.mp4",
+    "dest_dir": "C03-marley/videos"
+  },
+  {
+    "n": 4,
+    "src": "Reel-Blowfish.mp4",
+    "dest_dir": "C04-reel-blowfish/videos"
+  },
+  {
+    "n": 5,
+    "src": "Parlane white Adaptado.mp4",
+    "dest_dir": "C05-parlane-white/videos"
+  },
+  {
+    "n": 6,
+    "src": "Vero Correa.mp4",
+    "dest_dir": "C06-vero-correa/videos"
+  },
+  {
+    "n": 7,
+    "src": "Reel.mp4",
+    "dest_dir": "C07-reel-general/videos"
+  }
+]
