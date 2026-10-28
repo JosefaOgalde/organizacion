@@ -1,5 +1,3 @@
-Contenido C1/10 · emergerdelpescador
-Fecha grilla: 2026-09-01 (lun)
+C1/10 · emergerdelpescador
+2026-09-01 (mar)
 Origen: collab
-
-Colocar el video del contenido en la carpeta videos/.

@@ -1,5 +1,5 @@
-Contenido C8/10 · Por definir
-Fecha grilla: 2026-09-17 (mié)
+C8/10 · Por definir
+2026-09-18 (vie)
 Origen: tbd
 
-ESTADO: POR DEFINIR — no asignar video hasta confirmar pieza.
+POR DEFINIR — no asignar video todavía.

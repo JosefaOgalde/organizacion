@@ -1,5 +1,3 @@
-Contenido C9/10 · Por definir
-Fecha grilla: 2026-09-19 (vie)
+C9/10 · Por definir
+2026-09-21 (lun)
 Origen: tbd
-
-ESTADO: pendiente de definir pieza/video.

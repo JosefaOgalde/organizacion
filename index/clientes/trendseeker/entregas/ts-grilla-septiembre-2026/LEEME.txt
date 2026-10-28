@@ -1,18 +1,15 @@
 TrendSeeker · Pack grilla septiembre 2026
-========================================
-Fechas: lunes a viernes. C8 = POR DEFINIR.
+Fechas lun–vie. C8 = POR DEFINIR.
 
-Estructura:
-  C01 2026-09-01 lun · emergerdelpescador → C01-emergerdelpescador/
-  C02 2026-09-03 mié · Fernando Mosso → C02-fernando-mosso/
-  C03 2026-09-05 vie · rivertrout → C03-rivertrout-1/
-  C04 2026-09-08 lun · rivertrout → C04-rivertrout-2/
-  C05 2026-09-10 mié · Chaqueta Neptune → C05-chaqueta-neptune/
-  C06 2026-09-12 vie · rivertrout → C06-rivertrout-3/
-  C07 2026-09-15 lun · Primavera · Cambia de aire → C07-primavera-cambia-de-aire/
-  C08 2026-09-17 mié · Por definir → C08-por-definir/
-  C09 2026-09-19 vie · Por definir → C09-tbd-c9/
-  C10 2026-09-22 lun · Por definir → C10-tbd-c10/
+C01 2026-09-01 mar · emergerdelpescador
+C02 2026-09-03 jue · Fernando Mosso
+C03 2026-09-07 lun · rivertrout
+C04 2026-09-09 mié · rivertrout
+C05 2026-09-11 vie · Chaqueta Neptune
+C06 2026-09-14 lun · rivertrout
+C07 2026-09-16 mié · Primavera · Cambia de aire
+C08 2026-09-18 vie · Por definir
+C09 2026-09-21 lun · Por definir
+C10 2026-09-23 mié · Por definir
 
-NOTA: si adjuntaste videos en el chat y no aparecen en esta carpeta,
-vuelve a subirlos al agente; no llegaron al entorno cloud.
+Si los videos del chat no aparecen: reenviar adjuntos al agente.

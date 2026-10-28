@@ -1,5 +1,3 @@
-Contenido C3/10 · rivertrout
-Fecha grilla: 2026-09-05 (vie)
+C3/10 · rivertrout
+2026-09-07 (lun)
 Origen: collab
-
-Colocar el video del contenido en la carpeta videos/.

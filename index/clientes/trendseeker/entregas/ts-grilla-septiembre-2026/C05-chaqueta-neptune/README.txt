@@ -1,5 +1,3 @@
-Contenido C5/10 · Chaqueta Neptune
-Fecha grilla: 2026-09-10 (mié)
+C5/10 · Chaqueta Neptune
+2026-09-11 (vie)
 Origen: propio
-
-Colocar el video del contenido en la carpeta videos/.
